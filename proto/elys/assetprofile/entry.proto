@@ -1,0 +1,25 @@
+syntax = "proto3";
+package elysnetwork.elys.assetprofile;
+
+option go_package = "github.com/elys-network/elys/x/assetprofile/types";
+
+message Entry {
+  string baseDenom = 1; 
+  uint64 decimals = 2; 
+  string denom = 3; 
+  string path = 4; 
+  string ibcChannelId = 5; 
+  string ibcCounterpartyChannelId = 6; 
+  string displayName = 7; 
+  string displaySymbol = 8; 
+  string network = 9; 
+  string address = 10; 
+  string externalSymbol = 11; 
+  string transferLimit = 12; 
+  repeated string permissions = 13; 
+  string unitDenom = 14; 
+  string ibcCounterpartyDenom = 15; 
+  string ibcCounterpartyChainId = 16; 
+  string authority = 17;
+}
+

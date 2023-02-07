@@ -1,26 +1,58 @@
 syntax = "proto3";
+
 package elysnetwork.elys.assetprofile;
 
 import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
 import "elys/assetprofile/params.proto";
+import "elys/assetprofile/entry.proto";
 
 option go_package = "github.com/elys-network/elys/x/assetprofile/types";
 
 // Query defines the gRPC querier service.
 service Query {
+  
   // Parameters queries the parameters of the module.
-  rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
+  rpc Params (QueryParamsRequest) returns (QueryParamsResponse) {
     option (google.api.http).get = "/elys-network/elys/assetprofile/params";
+  
+  }
+  
+  // Queries a list of Entry items.
+  rpc Entry    (QueryGetEntryRequest) returns (QueryGetEntryResponse) {
+    option (google.api.http).get = "/elys-network/elys/assetprofile/entry/{baseDenom}";
+  
+  }
+  rpc EntryAll (QueryAllEntryRequest) returns (QueryAllEntryResponse) {
+    option (google.api.http).get = "/elys-network/elys/assetprofile/entry";
+  
   }
 }
-
 // QueryParamsRequest is request type for the Query/Params RPC method.
 message QueryParamsRequest {}
 
 // QueryParamsResponse is response type for the Query/Params RPC method.
 message QueryParamsResponse {
+  
   // params holds all the parameters of this module.
   Params params = 1 [(gogoproto.nullable) = false];
 }
+
+message QueryGetEntryRequest {
+  string baseDenom = 1;
+}
+
+message QueryGetEntryResponse {
+  Entry entry = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryAllEntryRequest {
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+message QueryAllEntryResponse {
+  repeated Entry                                  entry      = 1 [(gogoproto.nullable) = false];
+           cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
