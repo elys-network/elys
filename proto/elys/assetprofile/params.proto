@@ -1,0 +1,12 @@
+syntax = "proto3";
+package elysnetwork.elys.assetprofile;
+
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/elys-network/elys/x/assetprofile/types";
+
+// Params defines the parameters for the module.
+message Params {
+  option (gogoproto.goproto_stringer) = false;
+  
+}
