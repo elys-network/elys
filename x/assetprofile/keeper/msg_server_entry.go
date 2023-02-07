@@ -3,12 +3,18 @@ package keeper
 import (
 	"context"
 
+	"cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	"github.com/elys-network/elys/x/assetprofile/types"
 )
 
 func (k msgServer) CreateEntry(goCtx context.Context, msg *types.MsgCreateEntry) (*types.MsgCreateEntryResponse, error) {
+	if k.authority != msg.Authority {
+		return nil, errors.Wrapf(govtypes.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.authority, msg.Authority)
+	}
+
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	// Check if the value already exists
@@ -48,6 +54,10 @@ func (k msgServer) CreateEntry(goCtx context.Context, msg *types.MsgCreateEntry)
 }
 
 func (k msgServer) UpdateEntry(goCtx context.Context, msg *types.MsgUpdateEntry) (*types.MsgUpdateEntryResponse, error) {
+	if k.authority != msg.Authority {
+		return nil, errors.Wrapf(govtypes.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.authority, msg.Authority)
+	}
+
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	// Check if the value exists
@@ -90,6 +100,10 @@ func (k msgServer) UpdateEntry(goCtx context.Context, msg *types.MsgUpdateEntry)
 }
 
 func (k msgServer) DeleteEntry(goCtx context.Context, msg *types.MsgDeleteEntry) (*types.MsgDeleteEntryResponse, error) {
+	if k.authority != msg.Authority {
+		return nil, errors.Wrapf(govtypes.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.authority, msg.Authority)
+	}
+
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	// Check if the value exists
