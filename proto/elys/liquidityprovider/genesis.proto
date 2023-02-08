@@ -1,0 +1,12 @@
+syntax = "proto3";
+package elysnetwork.elys.liquidityprovider;
+
+import "gogoproto/gogo.proto";
+import "elys/liquidityprovider/params.proto";
+
+option go_package = "github.com/elys-network/elys/x/liquidityprovider/types";
+
+// GenesisState defines the liquidityprovider module's genesis state.
+message GenesisState {
+  Params params = 1 [(gogoproto.nullable) = false];
+}

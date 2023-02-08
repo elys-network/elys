@@ -8,6 +8,8 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/stretchr/testify/require"
 
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	keepertest "github.com/elys-network/elys/testutil/keeper"
 	"github.com/elys-network/elys/x/assetprofile/keeper"
 	"github.com/elys-network/elys/x/assetprofile/types"
@@ -20,7 +22,7 @@ func TestEntryMsgServerCreate(t *testing.T) {
 	k, ctx := keepertest.AssetprofileKeeper(t)
 	srv := keeper.NewMsgServerImpl(*k)
 	wctx := sdk.WrapSDKContext(ctx)
-	authority := "A"
+	authority := authtypes.NewModuleAddress(govtypes.ModuleName).String()
 	for i := 0; i < 5; i++ {
 		expected := &types.MsgCreateEntry{Authority: authority,
 			BaseDenom: strconv.Itoa(i),
@@ -36,7 +38,7 @@ func TestEntryMsgServerCreate(t *testing.T) {
 }
 
 func TestEntryMsgServerUpdate(t *testing.T) {
-	authority := "A"
+	authority := authtypes.NewModuleAddress(govtypes.ModuleName).String()
 
 	for _, tc := range []struct {
 		desc    string
@@ -50,11 +52,11 @@ func TestEntryMsgServerUpdate(t *testing.T) {
 			},
 		},
 		{
-			desc: "Unauthorized",
+			desc: "InvalidSigner",
 			request: &types.MsgUpdateEntry{Authority: "B",
 				BaseDenom: strconv.Itoa(0),
 			},
-			err: sdkerrors.ErrUnauthorized,
+			err: govtypes.ErrInvalidSigner,
 		},
 		{
 			desc: "KeyNotFound",
@@ -90,7 +92,7 @@ func TestEntryMsgServerUpdate(t *testing.T) {
 }
 
 func TestEntryMsgServerDelete(t *testing.T) {
-	authority := "A"
+	authority := authtypes.NewModuleAddress(govtypes.ModuleName).String()
 
 	for _, tc := range []struct {
 		desc    string
@@ -104,11 +106,11 @@ func TestEntryMsgServerDelete(t *testing.T) {
 			},
 		},
 		{
-			desc: "Unauthorized",
+			desc: "InvalidSigner",
 			request: &types.MsgDeleteEntry{Authority: "B",
 				BaseDenom: strconv.Itoa(0),
 			},
-			err: sdkerrors.ErrUnauthorized,
+			err: govtypes.ErrInvalidSigner,
 		},
 		{
 			desc: "KeyNotFound",

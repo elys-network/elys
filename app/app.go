@@ -106,6 +106,10 @@ import (
 	assetprofilemodule "github.com/elys-network/elys/x/assetprofile"
 	assetprofilemodulekeeper "github.com/elys-network/elys/x/assetprofile/keeper"
 	assetprofilemoduletypes "github.com/elys-network/elys/x/assetprofile/types"
+	liquidityprovidermodule "github.com/elys-network/elys/x/liquidityprovider"
+	liquidityprovidermodulekeeper "github.com/elys-network/elys/x/liquidityprovider/keeper"
+	liquidityprovidermoduletypes "github.com/elys-network/elys/x/liquidityprovider/types"
+
 	// this line is used by starport scaffolding # stargate/app/moduleImport
 
 	appparams "github.com/elys-network/elys/app/params"
@@ -165,6 +169,7 @@ var (
 		ica.AppModuleBasic{},
 		vesting.AppModuleBasic{},
 		assetprofilemodule.AppModuleBasic{},
+		liquidityprovidermodule.AppModuleBasic{},
 		// this line is used by starport scaffolding # stargate/app/moduleBasic
 	)
 
@@ -239,6 +244,8 @@ type App struct {
 	ScopedICAHostKeeper  capabilitykeeper.ScopedKeeper
 
 	AssetprofileKeeper assetprofilemodulekeeper.Keeper
+
+	LiquidityproviderKeeper liquidityprovidermodulekeeper.Keeper
 	// this line is used by starport scaffolding # stargate/app/keeperDeclaration
 
 	// mm is the module manager
@@ -284,6 +291,7 @@ func New(
 		ibctransfertypes.StoreKey, icahosttypes.StoreKey, capabilitytypes.StoreKey, group.StoreKey,
 		icacontrollertypes.StoreKey,
 		assetprofilemoduletypes.StoreKey,
+		liquidityprovidermoduletypes.StoreKey,
 		// this line is used by starport scaffolding # stargate/app/storeKey
 	)
 	tkeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey)
@@ -500,8 +508,17 @@ func New(
 		keys[assetprofilemoduletypes.StoreKey],
 		keys[assetprofilemoduletypes.MemStoreKey],
 		app.GetSubspace(assetprofilemoduletypes.ModuleName),
+		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 	assetprofileModule := assetprofilemodule.NewAppModule(appCodec, app.AssetprofileKeeper, app.AccountKeeper, app.BankKeeper)
+
+	app.LiquidityproviderKeeper = *liquidityprovidermodulekeeper.NewKeeper(
+		appCodec,
+		keys[liquidityprovidermoduletypes.StoreKey],
+		keys[liquidityprovidermoduletypes.MemStoreKey],
+		app.GetSubspace(liquidityprovidermoduletypes.ModuleName),
+	)
+	liquidityproviderModule := liquidityprovidermodule.NewAppModule(appCodec, app.LiquidityproviderKeeper, app.AccountKeeper, app.BankKeeper)
 
 	// this line is used by starport scaffolding # stargate/app/keeperDefinition
 
@@ -569,6 +586,7 @@ func New(
 		transferModule,
 		icaModule,
 		assetprofileModule,
+		liquidityproviderModule,
 		// this line is used by starport scaffolding # stargate/app/appModule
 	)
 
@@ -599,6 +617,7 @@ func New(
 		paramstypes.ModuleName,
 		vestingtypes.ModuleName,
 		assetprofilemoduletypes.ModuleName,
+		liquidityprovidermoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/beginBlockers
 	)
 
@@ -624,6 +643,7 @@ func New(
 		upgradetypes.ModuleName,
 		vestingtypes.ModuleName,
 		assetprofilemoduletypes.ModuleName,
+		liquidityprovidermoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/endBlockers
 	)
 
@@ -654,6 +674,7 @@ func New(
 		upgradetypes.ModuleName,
 		vestingtypes.ModuleName,
 		assetprofilemoduletypes.ModuleName,
+		liquidityprovidermoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/initGenesis
 	)
 
@@ -684,6 +705,7 @@ func New(
 		ibc.NewAppModule(app.IBCKeeper),
 		transferModule,
 		assetprofileModule,
+		liquidityproviderModule,
 		// this line is used by starport scaffolding # stargate/app/appModule
 	)
 	app.sm.RegisterStoreDecoders()
@@ -889,6 +911,7 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(icacontrollertypes.SubModuleName)
 	paramsKeeper.Subspace(icahosttypes.SubModuleName)
 	paramsKeeper.Subspace(assetprofilemoduletypes.ModuleName)
+	paramsKeeper.Subspace(liquidityprovidermoduletypes.ModuleName)
 	// this line is used by starport scaffolding # stargate/app/paramSubspace
 
 	return paramsKeeper

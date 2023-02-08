@@ -8,18 +8,16 @@ import (
 	"github.com/cosmos/cosmos-sdk/store"
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	typesparams "github.com/cosmos/cosmos-sdk/x/params/types"
-	"github.com/elys-network/elys/x/assetprofile/keeper"
-	"github.com/elys-network/elys/x/assetprofile/types"
+	"github.com/elys-network/elys/x/liquidityprovider/keeper"
+	"github.com/elys-network/elys/x/liquidityprovider/types"
 	"github.com/stretchr/testify/require"
 	"github.com/tendermint/tendermint/libs/log"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 	tmdb "github.com/tendermint/tm-db"
 )
 
-func AssetprofileKeeper(t testing.TB) (*keeper.Keeper, sdk.Context) {
+func LiquidityproviderKeeper(t testing.TB) (*keeper.Keeper, sdk.Context) {
 	storeKey := sdk.NewKVStoreKey(types.StoreKey)
 	memStoreKey := storetypes.NewMemoryStoreKey(types.MemStoreKey)
 
@@ -36,14 +34,13 @@ func AssetprofileKeeper(t testing.TB) (*keeper.Keeper, sdk.Context) {
 		types.Amino,
 		storeKey,
 		memStoreKey,
-		"AssetprofileParams",
+		"LiquidityproviderParams",
 	)
 	k := keeper.NewKeeper(
 		cdc,
 		storeKey,
 		memStoreKey,
 		paramsSubspace,
-		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 
 	ctx := sdk.NewContext(stateStore, tmproto.Header{}, false, log.NewNopLogger())
