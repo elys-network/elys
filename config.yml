@@ -2,20 +2,101 @@ version: 1
 accounts:
   - name: alice
     coins:
-      - 20000elys
-      - 200000000stake
+      - 200000000000000000000aelys
   - name: bob
     coins:
-      - 10000elys
-      - 100000000stake
+      - 100000000000000000000aelys
 client:
   openapi:
     path: docs/static/openapi.yml
 faucet:
   name: bob
   coins:
-    - 5elys
-    - 100000stake
+    - 100000000000000000aelys
 validators:
   - name: alice
-    bonded: 100000000stake
+    bonded: 100000000000000000000aelys
+genesis:
+  app_state:
+    staking:
+      params:
+        bond_denom: aelys
+    gov:
+      deposit_params:
+        max_deposit_period: 20s
+        min_deposit:
+          - amount: "10000000000000000000"
+            denom: aelys
+      voting_params:
+        voting_period: 20s
+    bank:
+      denom_metadata:
+        - base: aelys
+          denom_units:
+            - denom: aelys
+              exponent: 0
+              aliases:
+                - attoelys
+            - denom: felys
+              exponent: 3
+              aliases:
+                - femtoelys
+            - denom: pelys
+              exponent: 6
+              aliases:
+                - picoelys
+            - denom: nelys
+              exponent: 9
+              aliases:
+                - nanoelys
+            - denom: uelys
+              exponent: 12
+              aliases:
+                - microelys
+            - denom: melys
+              exponent: 15
+              aliases:
+                - millielys
+            - denom: elys
+              exponent: 18
+              aliases: []
+          name: elys
+          symbol: elys
+          description: Native Elys token definition
+          display: elys
+    assetprofile:
+      entryList:
+        - address: ""
+          authority: elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3
+          baseDenom: aelys
+          decimals: "18"
+          denom: aelys
+          displayName: ELYS
+          displaySymbol: ""
+          externalSymbol: ""
+          ibcChannelId: ""
+          ibcCounterpartyChainId: ""
+          ibcCounterpartyChannelId: ""
+          ibcCounterpartyDenom: ""
+          network: ""
+          path: ""
+          permissions: []
+          transferLimit: ""
+          unitDenom: ""
+        - address: ""
+          authority: elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3
+          baseDenom: cusdc
+          decimals: "6"
+          denom: cusdc
+          displayName: USDC
+          displaySymbol: ""
+          externalSymbol: ""
+          ibcChannelId: ""
+          ibcCounterpartyChainId: ""
+          ibcCounterpartyChannelId: ""
+          ibcCounterpartyDenom: ""
+          network: ""
+          path: ""
+          permissions: []
+          transferLimit: ""
+          unitDenom: ""
