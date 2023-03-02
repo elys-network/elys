@@ -106,6 +106,9 @@ import (
 	assetprofilemodule "github.com/elys-network/elys/x/assetprofile"
 	assetprofilemodulekeeper "github.com/elys-network/elys/x/assetprofile/keeper"
 	assetprofilemoduletypes "github.com/elys-network/elys/x/assetprofile/types"
+	epochsmodule "github.com/elys-network/elys/x/epochs"
+	epochsmodulekeeper "github.com/elys-network/elys/x/epochs/keeper"
+	epochsmoduletypes "github.com/elys-network/elys/x/epochs/types"
 	liquidityprovidermodule "github.com/elys-network/elys/x/liquidityprovider"
 	liquidityprovidermodulekeeper "github.com/elys-network/elys/x/liquidityprovider/keeper"
 	liquidityprovidermoduletypes "github.com/elys-network/elys/x/liquidityprovider/types"
@@ -168,6 +171,7 @@ var (
 		transfer.AppModuleBasic{},
 		ica.AppModuleBasic{},
 		vesting.AppModuleBasic{},
+		epochsmodule.AppModuleBasic{},
 		assetprofilemodule.AppModuleBasic{},
 		liquidityprovidermodule.AppModuleBasic{},
 		// this line is used by starport scaffolding # stargate/app/moduleBasic
@@ -243,6 +247,8 @@ type App struct {
 	ScopedTransferKeeper capabilitykeeper.ScopedKeeper
 	ScopedICAHostKeeper  capabilitykeeper.ScopedKeeper
 
+	EpochsKeeper epochsmodulekeeper.Keeper
+
 	AssetprofileKeeper assetprofilemodulekeeper.Keeper
 
 	LiquidityproviderKeeper liquidityprovidermodulekeeper.Keeper
@@ -290,6 +296,7 @@ func New(
 		paramstypes.StoreKey, ibchost.StoreKey, upgradetypes.StoreKey, feegrant.StoreKey, evidencetypes.StoreKey,
 		ibctransfertypes.StoreKey, icahosttypes.StoreKey, capabilitytypes.StoreKey, group.StoreKey,
 		icacontrollertypes.StoreKey,
+		epochsmoduletypes.StoreKey,
 		assetprofilemoduletypes.StoreKey,
 		liquidityprovidermoduletypes.StoreKey,
 		// this line is used by starport scaffolding # stargate/app/storeKey
@@ -503,6 +510,15 @@ func New(
 		govConfig,
 	)
 
+	epochsKeeper := epochsmodulekeeper.NewKeeper(appCodec, keys[epochsmoduletypes.StoreKey])
+	app.EpochsKeeper = *epochsKeeper.SetHooks(
+		epochsmodulekeeper.NewMultiEpochHooks(
+		// insert epoch hooks receivers here
+		// app.IncentivesKeeper.Hooks(),
+		),
+	)
+	epochsModule := epochsmodule.NewAppModule(appCodec, app.EpochsKeeper)
+
 	app.AssetprofileKeeper = *assetprofilemodulekeeper.NewKeeper(
 		appCodec,
 		keys[assetprofilemoduletypes.StoreKey],
@@ -585,6 +601,7 @@ func New(
 		params.NewAppModule(app.ParamsKeeper),
 		transferModule,
 		icaModule,
+		epochsModule,
 		assetprofileModule,
 		liquidityproviderModule,
 		// this line is used by starport scaffolding # stargate/app/appModule
@@ -598,6 +615,8 @@ func New(
 		// upgrades should be run first
 		upgradetypes.ModuleName,
 		capabilitytypes.ModuleName,
+		// Note: epochs' begin should be "real" start of epochs, we keep epochs beginblock at the beginning
+		epochsmoduletypes.ModuleName,
 		minttypes.ModuleName,
 		distrtypes.ModuleName,
 		slashingtypes.ModuleName,
@@ -625,6 +644,8 @@ func New(
 		crisistypes.ModuleName,
 		govtypes.ModuleName,
 		stakingtypes.ModuleName,
+		// Note: epochs' endblock should be "real" end of epochs, we keep epochs endblock at the end
+		epochsmoduletypes.ModuleName,
 		ibctransfertypes.ModuleName,
 		ibchost.ModuleName,
 		icatypes.ModuleName,
@@ -673,6 +694,7 @@ func New(
 		paramstypes.ModuleName,
 		upgradetypes.ModuleName,
 		vestingtypes.ModuleName,
+		epochsmoduletypes.ModuleName,
 		assetprofilemoduletypes.ModuleName,
 		liquidityprovidermoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/initGenesis
@@ -704,6 +726,7 @@ func New(
 		evidence.NewAppModule(app.EvidenceKeeper),
 		ibc.NewAppModule(app.IBCKeeper),
 		transferModule,
+		epochsModule,
 		assetprofileModule,
 		liquidityproviderModule,
 		// this line is used by starport scaffolding # stargate/app/appModule
