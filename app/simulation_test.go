@@ -57,7 +57,7 @@ func BenchmarkSimulation(b *testing.B) {
 
 	encoding := app.MakeEncodingConfig()
 
-	app := app.New(
+	app := app.NewElysApp(
 		logger,
 		db,
 		nil,

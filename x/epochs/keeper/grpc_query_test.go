@@ -1,194 +1,126 @@
 package keeper_test
 
-// import (
-// 	"fmt"
-// 	"time"
+import (
+	"strconv"
+	"testing"
 
-// 	sdk "github.com/cosmos/cosmos-sdk/types"
-// 	"github.com/cosmos/cosmos-sdk/types/query"
-// 	"github.com/elys-network/elys/x/epochs/types"
-// )
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/types/query"
+	"github.com/stretchr/testify/require"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 
-// func (suite *KeeperTestSuite) TestEpochInfo() {
-// 	var (
-// 		req    *types.QueryEpochsInfoRequest
-// 		expRes *types.QueryEpochsInfoResponse
-// 	)
+	keepertest "github.com/elys-network/elys/testutil/keeper"
+	"github.com/elys-network/elys/testutil/nullify"
+	"github.com/elys-network/elys/x/epochs/types"
+)
 
-// 	testCases := []struct {
-// 		name     string
-// 		malleate func()
-// 		expPass  bool
-// 	}{
-// 		{
-// 			"default EpochInfos",
-// 			func() {
-// 				req = &types.QueryEpochsInfoRequest{}
+// Prevent strconv unused error
+var _ = strconv.IntSize
 
-// 				day := types.EpochInfo{
-// 					Identifier:              types.DayEpochID,
-// 					StartTime:               time.Time{},
-// 					Duration:                time.Hour * 24,
-// 					CurrentEpoch:            0,
-// 					CurrentEpochStartHeight: 1,
-// 					CurrentEpochStartTime:   time.Time{},
-// 					EpochCountingStarted:    false,
-// 				}
-// 				day.StartTime = suite.ctx.BlockTime()
-// 				day.CurrentEpochStartHeight = suite.ctx.BlockHeight()
+func TestEpochInfoQuerySingle(t *testing.T) {
+	keeper, ctx := keepertest.EpochsKeeper(t)
+	wctx := sdk.WrapSDKContext(ctx)
+	msgs := createEpochInfos(keeper, ctx)
+	for _, tc := range []struct {
+		desc     string
+		request  *types.QueryCurrentEpochRequest
+		response *types.QueryCurrentEpochResponse
+		err      error
+	}{
+		{
+			desc: "First",
+			request: &types.QueryCurrentEpochRequest{
+				Identifier: msgs[0].Identifier,
+			},
+			response: &types.QueryCurrentEpochResponse{CurrentEpoch: msgs[0].CurrentEpoch},
+		},
+		{
+			desc: "Second",
+			request: &types.QueryCurrentEpochRequest{
+				Identifier: msgs[1].Identifier,
+			},
+			response: &types.QueryCurrentEpochResponse{CurrentEpoch: msgs[1].CurrentEpoch},
+		},
+		{
+			desc: "KeyNotFound",
+			request: &types.QueryCurrentEpochRequest{
+				Identifier: strconv.Itoa(100000),
+			},
+			err: status.Errorf(codes.NotFound, "epoch info not found: %s", strconv.Itoa(100000)),
+		},
+		{
+			desc: "InvalidRequest",
+			err:  status.Error(codes.InvalidArgument, "empty request"),
+		},
+	} {
+		t.Run(tc.desc, func(t *testing.T) {
+			response, err := keeper.CurrentEpoch(wctx, tc.request)
+			if tc.err != nil {
+				require.ErrorIs(t, err, tc.err)
+			} else {
+				require.NoError(t, err)
+				require.Equal(t,
+					nullify.Fill(tc.response),
+					nullify.Fill(response),
+				)
+			}
+		})
+	}
+}
 
-// 				week := types.EpochInfo{
-// 					Identifier:              types.WeekEpochID,
-// 					StartTime:               time.Time{},
-// 					Duration:                time.Hour * 24 * 7,
-// 					CurrentEpoch:            0,
-// 					CurrentEpochStartHeight: 1,
-// 					CurrentEpochStartTime:   time.Time{},
-// 					EpochCountingStarted:    false,
-// 				}
-// 				week.StartTime = suite.ctx.BlockTime()
-// 				week.CurrentEpochStartHeight = suite.ctx.BlockHeight()
+func TestEntryQueryPaginated(t *testing.T) {
+	keeper, ctx := keepertest.EpochsKeeper(t)
+	wctx := sdk.WrapSDKContext(ctx)
+	msgs := createEpochInfos(keeper, ctx)
 
-// 				expRes = &types.QueryEpochsInfoResponse{
-// 					Epochs: []types.EpochInfo{day, week},
-// 					Pagination: &query.PageResponse{
-// 						NextKey: nil,
-// 						Total:   uint64(2),
-// 					},
-// 				}
-// 			},
-// 			true,
-// 		},
-// 		{
-// 			"set epoch info",
-// 			func() {
-// 				day := types.EpochInfo{
-// 					Identifier:              types.DayEpochID,
-// 					StartTime:               time.Time{},
-// 					Duration:                time.Hour * 24,
-// 					CurrentEpoch:            0,
-// 					CurrentEpochStartHeight: 1,
-// 					CurrentEpochStartTime:   time.Time{},
-// 					EpochCountingStarted:    false,
-// 				}
-// 				day.StartTime = suite.ctx.BlockTime()
-// 				day.CurrentEpochStartHeight = suite.ctx.BlockHeight()
-
-// 				week := types.EpochInfo{
-// 					Identifier:              types.WeekEpochID,
-// 					StartTime:               time.Time{},
-// 					Duration:                time.Hour * 24 * 7,
-// 					CurrentEpoch:            0,
-// 					CurrentEpochStartHeight: 1,
-// 					CurrentEpochStartTime:   time.Time{},
-// 					EpochCountingStarted:    false,
-// 				}
-// 				week.StartTime = suite.ctx.BlockTime()
-// 				week.CurrentEpochStartHeight = suite.ctx.BlockHeight()
-
-// 				quarter := types.EpochInfo{
-// 					Identifier:              "quarter",
-// 					StartTime:               time.Time{},
-// 					Duration:                time.Hour * 24 * 7 * 13,
-// 					CurrentEpoch:            0,
-// 					CurrentEpochStartHeight: 1,
-// 					CurrentEpochStartTime:   time.Time{},
-// 					EpochCountingStarted:    false,
-// 				}
-// 				quarter.StartTime = suite.ctx.BlockTime()
-// 				quarter.CurrentEpochStartHeight = suite.ctx.BlockHeight()
-// 				suite.app.EpochsKeeper.SetEpochInfo(suite.ctx, quarter)
-// 				suite.Commit()
-
-// 				req = &types.QueryEpochsInfoRequest{}
-// 				expRes = &types.QueryEpochsInfoResponse{
-// 					Epochs: []types.EpochInfo{day, quarter, week},
-// 					Pagination: &query.PageResponse{
-// 						NextKey: nil,
-// 						Total:   uint64(3),
-// 					},
-// 				}
-// 			},
-// 			true,
-// 		},
-// 	}
-// 	for _, tc := range testCases {
-// 		suite.Run(fmt.Sprintf("Case %s", tc.name), func() {
-// 			suite.SetupTest() // reset
-
-// 			ctx := sdk.WrapSDKContext(suite.ctx)
-// 			tc.malleate()
-
-// 			res, err := suite.queryClient.EpochInfos(ctx, req)
-// 			if tc.expPass {
-// 				suite.Require().NoError(err)
-// 				suite.Require().Equal(expRes, res)
-// 			} else {
-// 				suite.Require().Error(err)
-// 			}
-// 		})
-// 	}
-// }
-
-// func (suite *KeeperTestSuite) TestCurrentEpoch() {
-// 	var (
-// 		req    *types.QueryCurrentEpochRequest
-// 		expRes *types.QueryCurrentEpochResponse
-// 	)
-
-// 	testCases := []struct {
-// 		name     string
-// 		malleate func()
-// 		expPass  bool
-// 	}{
-// 		{
-// 			"unknown identifier",
-// 			func() {
-// 				defaultCurrentEpoch := int64(0)
-// 				req = &types.QueryCurrentEpochRequest{Identifier: "second"}
-// 				expRes = &types.QueryCurrentEpochResponse{
-// 					CurrentEpoch: defaultCurrentEpoch,
-// 				}
-// 			},
-// 			false,
-// 		},
-// 		{
-// 			"week - default currentEpoch",
-// 			func() {
-// 				defaultCurrentEpoch := int64(0)
-// 				req = &types.QueryCurrentEpochRequest{Identifier: types.WeekEpochID}
-// 				expRes = &types.QueryCurrentEpochResponse{
-// 					CurrentEpoch: defaultCurrentEpoch,
-// 				}
-// 			},
-// 			true,
-// 		},
-// 		{
-// 			"day - default currentEpoch",
-// 			func() {
-// 				defaultCurrentEpoch := int64(0)
-// 				req = &types.QueryCurrentEpochRequest{Identifier: types.DayEpochID}
-// 				expRes = &types.QueryCurrentEpochResponse{
-// 					CurrentEpoch: defaultCurrentEpoch,
-// 				}
-// 			},
-// 			true,
-// 		},
-// 	}
-// 	for _, tc := range testCases {
-// 		suite.Run(fmt.Sprintf("Case %s", tc.name), func() {
-// 			suite.SetupTest() // reset
-
-// 			ctx := sdk.WrapSDKContext(suite.ctx)
-// 			tc.malleate()
-
-// 			res, err := suite.queryClient.CurrentEpoch(ctx, req)
-// 			if tc.expPass {
-// 				suite.Require().NoError(err)
-// 				suite.Require().Equal(expRes, res)
-// 			} else {
-// 				suite.Require().Error(err)
-// 			}
-// 		})
-// 	}
-// }
+	request := func(next []byte, offset, limit uint64, total bool) *types.QueryEpochsInfoRequest {
+		return &types.QueryEpochsInfoRequest{
+			Pagination: &query.PageRequest{
+				Key:        next,
+				Offset:     offset,
+				Limit:      limit,
+				CountTotal: total,
+			},
+		}
+	}
+	t.Run("ByOffset", func(t *testing.T) {
+		step := 2
+		for i := 0; i < len(msgs); i += step {
+			resp, err := keeper.EpochInfos(wctx, request(nil, uint64(i), uint64(step), false))
+			require.NoError(t, err)
+			require.LessOrEqual(t, len(resp.Epochs), step)
+			require.Subset(t,
+				nullify.Fill(msgs),
+				nullify.Fill(resp.Epochs),
+			)
+		}
+	})
+	t.Run("ByKey", func(t *testing.T) {
+		step := 2
+		var next []byte
+		for i := 0; i < len(msgs); i += step {
+			resp, err := keeper.EpochInfos(wctx, request(next, 0, uint64(step), false))
+			require.NoError(t, err)
+			require.LessOrEqual(t, len(resp.Epochs), step)
+			require.Subset(t,
+				nullify.Fill(msgs),
+				nullify.Fill(resp.Epochs),
+			)
+			next = resp.Pagination.NextKey
+		}
+	})
+	t.Run("Total", func(t *testing.T) {
+		resp, err := keeper.EpochInfos(wctx, request(nil, 0, 0, true))
+		require.NoError(t, err)
+		require.Equal(t, len(msgs), int(resp.Pagination.Total))
+		require.ElementsMatch(t,
+			nullify.Fill(msgs),
+			nullify.Fill(resp.Epochs),
+		)
+	})
+	t.Run("InvalidRequest", func(t *testing.T) {
+		_, err := keeper.EpochInfos(wctx, nil)
+		require.ErrorIs(t, err, status.Error(codes.InvalidArgument, "empty request"))
+	})
+}
