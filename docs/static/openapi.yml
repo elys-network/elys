@@ -32848,7 +32848,7 @@ paths:
                   additionalProperties: {}
       tags:
         - Query
-  /evmos/epochs/v1/current_epoch:
+  /elys-network/elys/epochs/v1/current_epoch:
     get:
       summary: CurrentEpoch provide current epoch of specified identifier
       operationId: ElysnetworkElysEpochsV1CurrentEpoch
@@ -32893,7 +32893,7 @@ paths:
           type: string
       tags:
         - Query
-  /evmos/epochs/v1/epochs:
+  /elys-network/elys/epochs/v1/epochs:
     get:
       summary: EpochInfos provide running epochInfos
       operationId: ElysnetworkElysEpochsV1EpochInfos
