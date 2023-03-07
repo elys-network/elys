@@ -8,7 +8,7 @@
 # for the Elys codebase whenever code changes are pushed or a pull request is opened.
 
 name: Run unit tests
-on: [push, pull_request]
+on: push
 
 jobs:
   test:
