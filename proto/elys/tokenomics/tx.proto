@@ -1,0 +1,7 @@
+syntax = "proto3";
+package elysnetwork.elys.tokenomics;
+
+option go_package = "github.com/elys-network/elys/x/tokenomics/types";
+
+// Msg defines the Msg service.
+service Msg {}
