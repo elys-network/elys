@@ -33251,6 +33251,65 @@ paths:
           type: string
       tags:
         - Query
+  /elys-network/elys/tokenomics/genesis_inflation:
+    get:
+      summary: Queries a GenesisInflation by index.
+      operationId: ElysnetworkElysTokenomicsGenesisInflation
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              GenesisInflation:
+                type: object
+                properties:
+                  inflation:
+                    type: object
+                    properties:
+                      lmRewards:
+                        type: string
+                        format: uint64
+                      icsStakingRewards:
+                        type: string
+                        format: uint64
+                      communityFund:
+                        type: string
+                        format: uint64
+                      strategicReserve:
+                        type: string
+                        format: uint64
+                      teamTokensVested:
+                        type: string
+                        format: uint64
+                  seedVesting:
+                    type: string
+                    format: uint64
+                  strategicSalesVesting:
+                    type: string
+                    format: uint64
+                  authority:
+                    type: string
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      tags:
+        - Query
   /elys-network/elys/tokenomics/params:
     get:
       summary: Parameters queries the parameters of the module.
@@ -67800,11 +67859,60 @@ definitions:
         format: uint64
       authority:
         type: string
+  elysnetwork.elys.tokenomics.GenesisInflation:
+    type: object
+    properties:
+      inflation:
+        type: object
+        properties:
+          lmRewards:
+            type: string
+            format: uint64
+          icsStakingRewards:
+            type: string
+            format: uint64
+          communityFund:
+            type: string
+            format: uint64
+          strategicReserve:
+            type: string
+            format: uint64
+          teamTokensVested:
+            type: string
+            format: uint64
+      seedVesting:
+        type: string
+        format: uint64
+      strategicSalesVesting:
+        type: string
+        format: uint64
+      authority:
+        type: string
+  elysnetwork.elys.tokenomics.InflationEntry:
+    type: object
+    properties:
+      lmRewards:
+        type: string
+        format: uint64
+      icsStakingRewards:
+        type: string
+        format: uint64
+      communityFund:
+        type: string
+        format: uint64
+      strategicReserve:
+        type: string
+        format: uint64
+      teamTokensVested:
+        type: string
+        format: uint64
   elysnetwork.elys.tokenomics.MsgCreateAirdropResponse:
     type: object
   elysnetwork.elys.tokenomics.MsgDeleteAirdropResponse:
     type: object
   elysnetwork.elys.tokenomics.MsgUpdateAirdropResponse:
+    type: object
+  elysnetwork.elys.tokenomics.MsgUpdateGenesisInflationResponse:
     type: object
   elysnetwork.elys.tokenomics.Params:
     type: object
@@ -67859,6 +67967,38 @@ definitions:
           intent:
             type: string
           amount:
+            type: string
+            format: uint64
+          authority:
+            type: string
+  elysnetwork.elys.tokenomics.QueryGetGenesisInflationResponse:
+    type: object
+    properties:
+      GenesisInflation:
+        type: object
+        properties:
+          inflation:
+            type: object
+            properties:
+              lmRewards:
+                type: string
+                format: uint64
+              icsStakingRewards:
+                type: string
+                format: uint64
+              communityFund:
+                type: string
+                format: uint64
+              strategicReserve:
+                type: string
+                format: uint64
+              teamTokensVested:
+                type: string
+                format: uint64
+          seedVesting:
+            type: string
+            format: uint64
+          strategicSalesVesting:
             type: string
             format: uint64
           authority:

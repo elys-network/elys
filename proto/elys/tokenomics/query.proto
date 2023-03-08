@@ -7,6 +7,7 @@ import "google/api/annotations.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
 import "elys/tokenomics/params.proto";
 import "elys/tokenomics/airdrop.proto";
+import "elys/tokenomics/genesis_inflation.proto";
 
 option go_package = "github.com/elys-network/elys/x/tokenomics/types";
 
@@ -26,6 +27,12 @@ service Query {
   }
   rpc AirdropAll (QueryAllAirdropRequest) returns (QueryAllAirdropResponse) {
     option (google.api.http).get = "/elys-network/elys/tokenomics/airdrop";
+  
+  }
+  
+  // Queries a GenesisInflation by index.
+  rpc GenesisInflation (QueryGetGenesisInflationRequest) returns (QueryGetGenesisInflationResponse) {
+    option (google.api.http).get = "/elys-network/elys/tokenomics/genesis_inflation";
   
   }
 }
@@ -54,5 +61,11 @@ message QueryAllAirdropRequest {
 message QueryAllAirdropResponse {
   repeated Airdrop                                airdrop    = 1 [(gogoproto.nullable) = false];
            cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+message QueryGetGenesisInflationRequest {}
+
+message QueryGetGenesisInflationResponse {
+  GenesisInflation GenesisInflation = 1 [(gogoproto.nullable) = false];
 }
 

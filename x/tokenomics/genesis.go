@@ -12,6 +12,10 @@ func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) 
 	for _, elem := range genState.AirdropList {
 		k.SetAirdrop(ctx, elem)
 	}
+	// Set if defined
+	if genState.GenesisInflation != nil {
+		k.SetGenesisInflation(ctx, *genState.GenesisInflation)
+	}
 	// this line is used by starport scaffolding # genesis/module/init
 	k.SetParams(ctx, genState.Params)
 }
@@ -22,6 +26,11 @@ func ExportGenesis(ctx sdk.Context, k keeper.Keeper) *types.GenesisState {
 	genesis.Params = k.GetParams(ctx)
 
 	genesis.AirdropList = k.GetAllAirdrop(ctx)
+	// Get all genesisInflation
+	genesisInflation, found := k.GetGenesisInflation(ctx)
+	if found {
+		genesis.GenesisInflation = &genesisInflation
+	}
 	// this line is used by starport scaffolding # genesis/module/export
 
 	return genesis

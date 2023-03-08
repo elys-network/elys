@@ -3,14 +3,17 @@ syntax = "proto3";
 package elysnetwork.elys.tokenomics;
 
 import "elys/tokenomics/airdrop.proto";
+import "elys/tokenomics/genesis_inflation.proto";
+import "elys/tokenomics/inflation_entry.proto";
 
 option go_package = "github.com/elys-network/elys/x/tokenomics/types";
 
 // Msg defines the Msg service.
 service Msg {
-  rpc CreateAirdrop (MsgCreateAirdrop) returns (MsgCreateAirdropResponse);
-  rpc UpdateAirdrop (MsgUpdateAirdrop) returns (MsgUpdateAirdropResponse);
-  rpc DeleteAirdrop (MsgDeleteAirdrop) returns (MsgDeleteAirdropResponse);
+  rpc CreateAirdrop          (MsgCreateAirdrop         ) returns (MsgCreateAirdropResponse         );
+  rpc UpdateAirdrop          (MsgUpdateAirdrop         ) returns (MsgUpdateAirdropResponse         );
+  rpc DeleteAirdrop          (MsgDeleteAirdrop         ) returns (MsgDeleteAirdropResponse         );
+  rpc UpdateGenesisInflation (MsgUpdateGenesisInflation) returns (MsgUpdateGenesisInflationResponse);
 }
 message MsgCreateAirdrop {
   string authority = 1;
@@ -34,4 +37,17 @@ message MsgDeleteAirdrop {
 }
 
 message MsgDeleteAirdropResponse {}
+
+message MsgUpdateGenesisInflation {
+  string authority             = 1;
+  InflationEntry inflation             = 3;
+  uint64 seedVesting           = 4;
+  uint64 strategicSalesVesting = 5;
+}
+
+message MsgUpdateGenesisInflationResponse {}
+
+message MsgDeleteGenesisInflation {
+  string authority = 1;
+}
 

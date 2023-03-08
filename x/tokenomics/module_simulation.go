@@ -36,6 +36,18 @@ const (
 	// TODO: Determine the simulation weight value
 	defaultWeightMsgDeleteAirdrop int = 100
 
+	opWeightMsgCreateGenesisInflation = "op_weight_msg_genesis_inflation"
+	// TODO: Determine the simulation weight value
+	defaultWeightMsgCreateGenesisInflation int = 100
+
+	opWeightMsgUpdateGenesisInflation = "op_weight_msg_genesis_inflation"
+	// TODO: Determine the simulation weight value
+	defaultWeightMsgUpdateGenesisInflation int = 100
+
+	opWeightMsgDeleteGenesisInflation = "op_weight_msg_genesis_inflation"
+	// TODO: Determine the simulation weight value
+	defaultWeightMsgDeleteGenesisInflation int = 100
+
 	// this line is used by starport scaffolding # simapp/module/const
 )
 
@@ -112,6 +124,31 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 		weightMsgDeleteAirdrop,
 		tokenomicssimulation.SimulateMsgDeleteAirdrop(am.accountKeeper, am.bankKeeper, am.keeper),
 	))
+
+	var weightMsgCreateGenesisInflation int
+	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgCreateGenesisInflation, &weightMsgCreateGenesisInflation, nil,
+		func(_ *rand.Rand) {
+			weightMsgCreateGenesisInflation = defaultWeightMsgCreateGenesisInflation
+		},
+	)
+
+	var weightMsgUpdateGenesisInflation int
+	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgUpdateGenesisInflation, &weightMsgUpdateGenesisInflation, nil,
+		func(_ *rand.Rand) {
+			weightMsgUpdateGenesisInflation = defaultWeightMsgUpdateGenesisInflation
+		},
+	)
+	operations = append(operations, simulation.NewWeightedOperation(
+		weightMsgUpdateGenesisInflation,
+		tokenomicssimulation.SimulateMsgUpdateGenesisInflation(am.accountKeeper, am.bankKeeper, am.keeper),
+	))
+
+	var weightMsgDeleteGenesisInflation int
+	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgDeleteGenesisInflation, &weightMsgDeleteGenesisInflation, nil,
+		func(_ *rand.Rand) {
+			weightMsgDeleteGenesisInflation = defaultWeightMsgDeleteGenesisInflation
+		},
+	)
 
 	// this line is used by starport scaffolding # simapp/module/operation
 

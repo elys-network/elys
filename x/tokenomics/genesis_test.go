@@ -22,6 +22,11 @@ func TestGenesis(t *testing.T) {
 				Intent: "1",
 			},
 		},
+		GenesisInflation: &types.GenesisInflation{
+			Inflation:             "46",
+			SeedVesting:           85,
+			StrategicSalesVesting: 5,
+		},
 		// this line is used by starport scaffolding # genesis/test/state
 	}
 
@@ -34,5 +39,6 @@ func TestGenesis(t *testing.T) {
 	nullify.Fill(got)
 
 	require.ElementsMatch(t, genesisState.AirdropList, got.AirdropList)
+	require.Equal(t, genesisState.GenesisInflation, got.GenesisInflation)
 	// this line is used by starport scaffolding # genesis/test/assert
 }

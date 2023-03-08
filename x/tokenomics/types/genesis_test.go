@@ -30,6 +30,11 @@ func TestGenesisState_Validate(t *testing.T) {
 						Intent: "1",
 					},
 				},
+				GenesisInflation: &types.GenesisInflation{
+					Inflation:             "92",
+					SeedVesting:           94,
+					StrategicSalesVesting: 51,
+				},
 				// this line is used by starport scaffolding # types/genesis/validField
 			},
 			valid: true,
