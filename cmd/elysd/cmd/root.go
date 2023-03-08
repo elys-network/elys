@@ -33,6 +33,7 @@ import (
 	tmcli "github.com/tendermint/tendermint/libs/cli"
 	"github.com/tendermint/tendermint/libs/log"
 	dbm "github.com/tendermint/tm-db"
+
 	// this line is used by starport scaffolding # root/moduleImport
 
 	"github.com/elys-network/elys/app"
@@ -258,7 +259,7 @@ func (a appCreator) newApp(
 		cast.ToUint32(appOpts.Get(server.FlagStateSyncSnapshotKeepRecent)),
 	)
 
-	return app.New(
+	return app.NewElysApp(
 		logger,
 		db,
 		traceStore,
@@ -297,7 +298,7 @@ func (a appCreator) appExport(
 		return servertypes.ExportedApp{}, errors.New("application home not set")
 	}
 
-	app := app.New(
+	app := app.NewElysApp(
 		logger,
 		db,
 		traceStore,
