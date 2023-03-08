@@ -19,6 +19,31 @@ func TestEpochsExportGenesis(t *testing.T) {
 	chainStartTime := ctx.BlockTime()
 	chainStartHeight := ctx.BlockHeight()
 
+	genesisState := types.GenesisState{
+		Epochs: []types.EpochInfo{
+			{
+				Identifier:              types.WeekEpochID,
+				StartTime:               time.Time{},
+				Duration:                time.Hour * 24 * 7,
+				CurrentEpoch:            0,
+				CurrentEpochStartHeight: 0,
+				CurrentEpochStartTime:   time.Time{},
+				EpochCountingStarted:    false,
+			},
+			{
+				Identifier:              types.DayEpochID,
+				StartTime:               time.Time{},
+				Duration:                time.Hour * 24,
+				CurrentEpoch:            0,
+				CurrentEpochStartHeight: 0,
+				CurrentEpochStartTime:   time.Time{},
+				EpochCountingStarted:    false,
+			},
+		},
+	}
+
+	epochs.InitGenesis(ctx, app.EpochsKeeper, genesisState)
+
 	genesis := epochs.ExportGenesis(ctx, app.EpochsKeeper)
 	require.Len(t, genesis.Epochs, 2)
 
