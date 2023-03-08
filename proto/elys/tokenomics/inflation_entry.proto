@@ -1,0 +1,13 @@
+syntax = "proto3";
+package elysnetwork.elys.tokenomics;
+
+option go_package = "github.com/elys-network/elys/x/tokenomics/types";
+
+message InflationEntry {
+  
+  uint64 lmRewards = 1; 
+  uint64 icsStakingRewards = 2; 
+  uint64 communityFund = 3; 
+  uint64 strategicReserve = 4; 
+  uint64 teamTokensVested = 5; 
+}
