@@ -6,10 +6,10 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	"github.com/stretchr/testify/require"
-
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
+	"github.com/stretchr/testify/require"
+
 	keepertest "github.com/elys-network/elys/testutil/keeper"
 	"github.com/elys-network/elys/x/tokenomics/keeper"
 	"github.com/elys-network/elys/x/tokenomics/types"
@@ -18,50 +18,55 @@ import (
 // Prevent strconv unused error
 var _ = strconv.IntSize
 
-func TestAirdropMsgServerCreate(t *testing.T) {
+func TestTimeBasedInflationMsgServerCreate(t *testing.T) {
 	k, ctx := keepertest.TokenomicsKeeper(t)
 	srv := keeper.NewMsgServerImpl(*k)
 	wctx := sdk.WrapSDKContext(ctx)
 	authority := authtypes.NewModuleAddress(govtypes.ModuleName).String()
 	for i := 0; i < 5; i++ {
-		expected := &types.MsgCreateAirdrop{Authority: authority,
-			Intent: strconv.Itoa(i),
+		expected := &types.MsgCreateTimeBasedInflation{Authority: authority,
+			StartBlockHeight: uint64(i),
+			EndBlockHeight:   uint64(i),
 		}
-		_, err := srv.CreateAirdrop(wctx, expected)
+		_, err := srv.CreateTimeBasedInflation(wctx, expected)
 		require.NoError(t, err)
-		rst, found := k.GetAirdrop(ctx,
-			expected.Intent,
+		rst, found := k.GetTimeBasedInflation(ctx,
+			expected.StartBlockHeight,
+			expected.EndBlockHeight,
 		)
 		require.True(t, found)
 		require.Equal(t, expected.Authority, rst.Authority)
 	}
 }
 
-func TestAirdropMsgServerUpdate(t *testing.T) {
+func TestTimeBasedInflationMsgServerUpdate(t *testing.T) {
 	authority := authtypes.NewModuleAddress(govtypes.ModuleName).String()
 
 	for _, tc := range []struct {
 		desc    string
-		request *types.MsgUpdateAirdrop
+		request *types.MsgUpdateTimeBasedInflation
 		err     error
 	}{
 		{
 			desc: "Completed",
-			request: &types.MsgUpdateAirdrop{Authority: authority,
-				Intent: strconv.Itoa(0),
+			request: &types.MsgUpdateTimeBasedInflation{Authority: authority,
+				StartBlockHeight: 0,
+				EndBlockHeight:   0,
 			},
 		},
 		{
 			desc: "InvalidSigner",
-			request: &types.MsgUpdateAirdrop{Authority: "B",
-				Intent: strconv.Itoa(0),
+			request: &types.MsgUpdateTimeBasedInflation{Authority: "B",
+				StartBlockHeight: 0,
+				EndBlockHeight:   0,
 			},
 			err: govtypes.ErrInvalidSigner,
 		},
 		{
 			desc: "KeyNotFound",
-			request: &types.MsgUpdateAirdrop{Authority: authority,
-				Intent: strconv.Itoa(100000),
+			request: &types.MsgUpdateTimeBasedInflation{Authority: authority,
+				StartBlockHeight: 100000,
+				EndBlockHeight:   100000,
 			},
 			err: sdkerrors.ErrKeyNotFound,
 		},
@@ -70,19 +75,21 @@ func TestAirdropMsgServerUpdate(t *testing.T) {
 			k, ctx := keepertest.TokenomicsKeeper(t)
 			srv := keeper.NewMsgServerImpl(*k)
 			wctx := sdk.WrapSDKContext(ctx)
-			expected := &types.MsgCreateAirdrop{Authority: authority,
-				Intent: strconv.Itoa(0),
+			expected := &types.MsgCreateTimeBasedInflation{Authority: authority,
+				StartBlockHeight: 0,
+				EndBlockHeight:   0,
 			}
-			_, err := srv.CreateAirdrop(wctx, expected)
+			_, err := srv.CreateTimeBasedInflation(wctx, expected)
 			require.NoError(t, err)
 
-			_, err = srv.UpdateAirdrop(wctx, tc.request)
+			_, err = srv.UpdateTimeBasedInflation(wctx, tc.request)
 			if tc.err != nil {
 				require.ErrorIs(t, err, tc.err)
 			} else {
 				require.NoError(t, err)
-				rst, found := k.GetAirdrop(ctx,
-					expected.Intent,
+				rst, found := k.GetTimeBasedInflation(ctx,
+					expected.StartBlockHeight,
+					expected.EndBlockHeight,
 				)
 				require.True(t, found)
 				require.Equal(t, expected.Authority, rst.Authority)
@@ -91,31 +98,34 @@ func TestAirdropMsgServerUpdate(t *testing.T) {
 	}
 }
 
-func TestAirdropMsgServerDelete(t *testing.T) {
+func TestTimeBasedInflationMsgServerDelete(t *testing.T) {
 	authority := authtypes.NewModuleAddress(govtypes.ModuleName).String()
 
 	for _, tc := range []struct {
 		desc    string
-		request *types.MsgDeleteAirdrop
+		request *types.MsgDeleteTimeBasedInflation
 		err     error
 	}{
 		{
 			desc: "Completed",
-			request: &types.MsgDeleteAirdrop{Authority: authority,
-				Intent: strconv.Itoa(0),
+			request: &types.MsgDeleteTimeBasedInflation{Authority: authority,
+				StartBlockHeight: 0,
+				EndBlockHeight:   0,
 			},
 		},
 		{
 			desc: "InvalidSigner",
-			request: &types.MsgDeleteAirdrop{Authority: "B",
-				Intent: strconv.Itoa(0),
+			request: &types.MsgDeleteTimeBasedInflation{Authority: "B",
+				StartBlockHeight: 0,
+				EndBlockHeight:   0,
 			},
 			err: govtypes.ErrInvalidSigner,
 		},
 		{
 			desc: "KeyNotFound",
-			request: &types.MsgDeleteAirdrop{Authority: authority,
-				Intent: strconv.Itoa(100000),
+			request: &types.MsgDeleteTimeBasedInflation{Authority: authority,
+				StartBlockHeight: 100000,
+				EndBlockHeight:   100000,
 			},
 			err: sdkerrors.ErrKeyNotFound,
 		},
@@ -125,17 +135,19 @@ func TestAirdropMsgServerDelete(t *testing.T) {
 			srv := keeper.NewMsgServerImpl(*k)
 			wctx := sdk.WrapSDKContext(ctx)
 
-			_, err := srv.CreateAirdrop(wctx, &types.MsgCreateAirdrop{Authority: authority,
-				Intent: strconv.Itoa(0),
+			_, err := srv.CreateTimeBasedInflation(wctx, &types.MsgCreateTimeBasedInflation{Authority: authority,
+				StartBlockHeight: 0,
+				EndBlockHeight:   0,
 			})
 			require.NoError(t, err)
-			_, err = srv.DeleteAirdrop(wctx, tc.request)
+			_, err = srv.DeleteTimeBasedInflation(wctx, tc.request)
 			if tc.err != nil {
 				require.ErrorIs(t, err, tc.err)
 			} else {
 				require.NoError(t, err)
-				_, found := k.GetAirdrop(ctx,
-					tc.request.Intent,
+				_, found := k.GetTimeBasedInflation(ctx,
+					tc.request.StartBlockHeight,
+					tc.request.EndBlockHeight,
 				)
 				require.False(t, found)
 			}

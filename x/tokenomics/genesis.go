@@ -16,6 +16,10 @@ func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) 
 	if genState.GenesisInflation != nil {
 		k.SetGenesisInflation(ctx, *genState.GenesisInflation)
 	}
+	// Set all the timeBasedInflation
+	for _, elem := range genState.TimeBasedInflationList {
+		k.SetTimeBasedInflation(ctx, elem)
+	}
 	// this line is used by starport scaffolding # genesis/module/init
 	k.SetParams(ctx, genState.Params)
 }
@@ -31,6 +35,7 @@ func ExportGenesis(ctx sdk.Context, k keeper.Keeper) *types.GenesisState {
 	if found {
 		genesis.GenesisInflation = &genesisInflation
 	}
+	genesis.TimeBasedInflationList = k.GetAllTimeBasedInflation(ctx)
 	// this line is used by starport scaffolding # genesis/module/export
 
 	return genesis

@@ -23,9 +23,25 @@ func TestGenesis(t *testing.T) {
 			},
 		},
 		GenesisInflation: &types.GenesisInflation{
-			Inflation:             "46",
+			Inflation: &types.InflationEntry{
+				LmRewards:         10,
+				IcsStakingRewards: 10,
+				CommunityFund:     10,
+				StrategicReserve:  10,
+				TeamTokensVested:  10,
+			},
 			SeedVesting:           85,
 			StrategicSalesVesting: 5,
+		},
+		TimeBasedInflationList: []types.TimeBasedInflation{
+			{
+				StartBlockHeight: 0,
+				EndBlockHeight:   0,
+			},
+			{
+				StartBlockHeight: 1,
+				EndBlockHeight:   1,
+			},
 		},
 		// this line is used by starport scaffolding # genesis/test/state
 	}
@@ -40,5 +56,6 @@ func TestGenesis(t *testing.T) {
 
 	require.ElementsMatch(t, genesisState.AirdropList, got.AirdropList)
 	require.Equal(t, genesisState.GenesisInflation, got.GenesisInflation)
+	require.ElementsMatch(t, genesisState.TimeBasedInflationList, got.TimeBasedInflationList)
 	// this line is used by starport scaffolding # genesis/test/assert
 }

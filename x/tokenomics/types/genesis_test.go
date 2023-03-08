@@ -31,9 +31,25 @@ func TestGenesisState_Validate(t *testing.T) {
 					},
 				},
 				GenesisInflation: &types.GenesisInflation{
-					Inflation:             "92",
+					Inflation: &types.InflationEntry{
+						LmRewards:         10,
+						IcsStakingRewards: 10,
+						CommunityFund:     10,
+						StrategicReserve:  10,
+						TeamTokensVested:  10,
+					},
 					SeedVesting:           94,
 					StrategicSalesVesting: 51,
+				},
+				TimeBasedInflationList: []types.TimeBasedInflation{
+					{
+						StartBlockHeight: 0,
+						EndBlockHeight:   0,
+					},
+					{
+						StartBlockHeight: 1,
+						EndBlockHeight:   1,
+					},
 				},
 				// this line is used by starport scaffolding # types/genesis/validField
 			},
@@ -48,6 +64,22 @@ func TestGenesisState_Validate(t *testing.T) {
 					},
 					{
 						Intent: "0",
+					},
+				},
+			},
+			valid: false,
+		},
+		{
+			desc: "duplicated timeBasedInflation",
+			genState: &types.GenesisState{
+				TimeBasedInflationList: []types.TimeBasedInflation{
+					{
+						StartBlockHeight: 0,
+						EndBlockHeight:   0,
+					},
+					{
+						StartBlockHeight: 0,
+						EndBlockHeight:   0,
 					},
 				},
 			},

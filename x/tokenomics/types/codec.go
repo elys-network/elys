@@ -12,6 +12,9 @@ func RegisterCodec(cdc *codec.LegacyAmino) {
 	cdc.RegisterConcrete(&MsgUpdateAirdrop{}, "tokenomics/UpdateAirdrop", nil)
 	cdc.RegisterConcrete(&MsgDeleteAirdrop{}, "tokenomics/DeleteAirdrop", nil)
 	cdc.RegisterConcrete(&MsgUpdateGenesisInflation{}, "tokenomics/UpdateGenesisInflation", nil)
+	cdc.RegisterConcrete(&MsgCreateTimeBasedInflation{}, "tokenomics/CreateTimeBasedInflation", nil)
+	cdc.RegisterConcrete(&MsgUpdateTimeBasedInflation{}, "tokenomics/UpdateTimeBasedInflation", nil)
+	cdc.RegisterConcrete(&MsgDeleteTimeBasedInflation{}, "tokenomics/DeleteTimeBasedInflation", nil)
 	// this line is used by starport scaffolding # 2
 }
 
@@ -23,6 +26,11 @@ func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 	)
 	registry.RegisterImplementations((*sdk.Msg)(nil),
 		&MsgUpdateGenesisInflation{},
+	)
+	registry.RegisterImplementations((*sdk.Msg)(nil),
+		&MsgCreateTimeBasedInflation{},
+		&MsgUpdateTimeBasedInflation{},
+		&MsgDeleteTimeBasedInflation{},
 	)
 	// this line is used by starport scaffolding # 3
 

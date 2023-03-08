@@ -48,6 +48,18 @@ const (
 	// TODO: Determine the simulation weight value
 	defaultWeightMsgDeleteGenesisInflation int = 100
 
+	opWeightMsgCreateTimeBasedInflation = "op_weight_msg_time_based_inflation"
+	// TODO: Determine the simulation weight value
+	defaultWeightMsgCreateTimeBasedInflation int = 100
+
+	opWeightMsgUpdateTimeBasedInflation = "op_weight_msg_time_based_inflation"
+	// TODO: Determine the simulation weight value
+	defaultWeightMsgUpdateTimeBasedInflation int = 100
+
+	opWeightMsgDeleteTimeBasedInflation = "op_weight_msg_time_based_inflation"
+	// TODO: Determine the simulation weight value
+	defaultWeightMsgDeleteTimeBasedInflation int = 100
+
 	// this line is used by starport scaffolding # simapp/module/const
 )
 
@@ -67,6 +79,18 @@ func (AppModule) GenerateGenesisState(simState *module.SimulationState) {
 			{
 				Authority: sample.AccAddress(),
 				Intent:    "1",
+			},
+		},
+		TimeBasedInflationList: []types.TimeBasedInflation{
+			{
+				Authority:        sample.AccAddress(),
+				StartBlockHeight: 0,
+				EndBlockHeight:   0,
+			},
+			{
+				Authority:        sample.AccAddress(),
+				StartBlockHeight: 1,
+				EndBlockHeight:   1,
 			},
 		},
 		// this line is used by starport scaffolding # simapp/module/genesisState
@@ -149,6 +173,39 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 			weightMsgDeleteGenesisInflation = defaultWeightMsgDeleteGenesisInflation
 		},
 	)
+
+	var weightMsgCreateTimeBasedInflation int
+	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgCreateTimeBasedInflation, &weightMsgCreateTimeBasedInflation, nil,
+		func(_ *rand.Rand) {
+			weightMsgCreateTimeBasedInflation = defaultWeightMsgCreateTimeBasedInflation
+		},
+	)
+	operations = append(operations, simulation.NewWeightedOperation(
+		weightMsgCreateTimeBasedInflation,
+		tokenomicssimulation.SimulateMsgCreateTimeBasedInflation(am.accountKeeper, am.bankKeeper, am.keeper),
+	))
+
+	var weightMsgUpdateTimeBasedInflation int
+	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgUpdateTimeBasedInflation, &weightMsgUpdateTimeBasedInflation, nil,
+		func(_ *rand.Rand) {
+			weightMsgUpdateTimeBasedInflation = defaultWeightMsgUpdateTimeBasedInflation
+		},
+	)
+	operations = append(operations, simulation.NewWeightedOperation(
+		weightMsgUpdateTimeBasedInflation,
+		tokenomicssimulation.SimulateMsgUpdateTimeBasedInflation(am.accountKeeper, am.bankKeeper, am.keeper),
+	))
+
+	var weightMsgDeleteTimeBasedInflation int
+	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgDeleteTimeBasedInflation, &weightMsgDeleteTimeBasedInflation, nil,
+		func(_ *rand.Rand) {
+			weightMsgDeleteTimeBasedInflation = defaultWeightMsgDeleteTimeBasedInflation
+		},
+	)
+	operations = append(operations, simulation.NewWeightedOperation(
+		weightMsgDeleteTimeBasedInflation,
+		tokenomicssimulation.SimulateMsgDeleteTimeBasedInflation(am.accountKeeper, am.bankKeeper, am.keeper),
+	))
 
 	// this line is used by starport scaffolding # simapp/module/operation
 

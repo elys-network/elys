@@ -455,6 +455,326 @@ func (m *MsgDeleteGenesisInflation) GetAuthority() string {
 	return ""
 }
 
+type MsgCreateTimeBasedInflation struct {
+	Authority        string          `protobuf:"bytes,1,opt,name=authority,proto3" json:"authority,omitempty"`
+	StartBlockHeight uint64          `protobuf:"varint,2,opt,name=startBlockHeight,proto3" json:"startBlockHeight,omitempty"`
+	EndBlockHeight   uint64          `protobuf:"varint,3,opt,name=endBlockHeight,proto3" json:"endBlockHeight,omitempty"`
+	Description      string          `protobuf:"bytes,4,opt,name=description,proto3" json:"description,omitempty"`
+	Inflation        *InflationEntry `protobuf:"bytes,5,opt,name=inflation,proto3" json:"inflation,omitempty"`
+}
+
+func (m *MsgCreateTimeBasedInflation) Reset()         { *m = MsgCreateTimeBasedInflation{} }
+func (m *MsgCreateTimeBasedInflation) String() string { return proto.CompactTextString(m) }
+func (*MsgCreateTimeBasedInflation) ProtoMessage()    {}
+func (*MsgCreateTimeBasedInflation) Descriptor() ([]byte, []int) {
+	return fileDescriptor_ee42f255ebbc1c1c, []int{9}
+}
+func (m *MsgCreateTimeBasedInflation) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgCreateTimeBasedInflation) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgCreateTimeBasedInflation.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgCreateTimeBasedInflation) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgCreateTimeBasedInflation.Merge(m, src)
+}
+func (m *MsgCreateTimeBasedInflation) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgCreateTimeBasedInflation) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgCreateTimeBasedInflation.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgCreateTimeBasedInflation proto.InternalMessageInfo
+
+func (m *MsgCreateTimeBasedInflation) GetAuthority() string {
+	if m != nil {
+		return m.Authority
+	}
+	return ""
+}
+
+func (m *MsgCreateTimeBasedInflation) GetStartBlockHeight() uint64 {
+	if m != nil {
+		return m.StartBlockHeight
+	}
+	return 0
+}
+
+func (m *MsgCreateTimeBasedInflation) GetEndBlockHeight() uint64 {
+	if m != nil {
+		return m.EndBlockHeight
+	}
+	return 0
+}
+
+func (m *MsgCreateTimeBasedInflation) GetDescription() string {
+	if m != nil {
+		return m.Description
+	}
+	return ""
+}
+
+func (m *MsgCreateTimeBasedInflation) GetInflation() *InflationEntry {
+	if m != nil {
+		return m.Inflation
+	}
+	return nil
+}
+
+type MsgCreateTimeBasedInflationResponse struct {
+}
+
+func (m *MsgCreateTimeBasedInflationResponse) Reset()         { *m = MsgCreateTimeBasedInflationResponse{} }
+func (m *MsgCreateTimeBasedInflationResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgCreateTimeBasedInflationResponse) ProtoMessage()    {}
+func (*MsgCreateTimeBasedInflationResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_ee42f255ebbc1c1c, []int{10}
+}
+func (m *MsgCreateTimeBasedInflationResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgCreateTimeBasedInflationResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgCreateTimeBasedInflationResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgCreateTimeBasedInflationResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgCreateTimeBasedInflationResponse.Merge(m, src)
+}
+func (m *MsgCreateTimeBasedInflationResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgCreateTimeBasedInflationResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgCreateTimeBasedInflationResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgCreateTimeBasedInflationResponse proto.InternalMessageInfo
+
+type MsgUpdateTimeBasedInflation struct {
+	Authority        string          `protobuf:"bytes,1,opt,name=authority,proto3" json:"authority,omitempty"`
+	StartBlockHeight uint64          `protobuf:"varint,2,opt,name=startBlockHeight,proto3" json:"startBlockHeight,omitempty"`
+	EndBlockHeight   uint64          `protobuf:"varint,3,opt,name=endBlockHeight,proto3" json:"endBlockHeight,omitempty"`
+	Description      string          `protobuf:"bytes,4,opt,name=description,proto3" json:"description,omitempty"`
+	Inflation        *InflationEntry `protobuf:"bytes,5,opt,name=inflation,proto3" json:"inflation,omitempty"`
+}
+
+func (m *MsgUpdateTimeBasedInflation) Reset()         { *m = MsgUpdateTimeBasedInflation{} }
+func (m *MsgUpdateTimeBasedInflation) String() string { return proto.CompactTextString(m) }
+func (*MsgUpdateTimeBasedInflation) ProtoMessage()    {}
+func (*MsgUpdateTimeBasedInflation) Descriptor() ([]byte, []int) {
+	return fileDescriptor_ee42f255ebbc1c1c, []int{11}
+}
+func (m *MsgUpdateTimeBasedInflation) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgUpdateTimeBasedInflation) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgUpdateTimeBasedInflation.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgUpdateTimeBasedInflation) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgUpdateTimeBasedInflation.Merge(m, src)
+}
+func (m *MsgUpdateTimeBasedInflation) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgUpdateTimeBasedInflation) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgUpdateTimeBasedInflation.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgUpdateTimeBasedInflation proto.InternalMessageInfo
+
+func (m *MsgUpdateTimeBasedInflation) GetAuthority() string {
+	if m != nil {
+		return m.Authority
+	}
+	return ""
+}
+
+func (m *MsgUpdateTimeBasedInflation) GetStartBlockHeight() uint64 {
+	if m != nil {
+		return m.StartBlockHeight
+	}
+	return 0
+}
+
+func (m *MsgUpdateTimeBasedInflation) GetEndBlockHeight() uint64 {
+	if m != nil {
+		return m.EndBlockHeight
+	}
+	return 0
+}
+
+func (m *MsgUpdateTimeBasedInflation) GetDescription() string {
+	if m != nil {
+		return m.Description
+	}
+	return ""
+}
+
+func (m *MsgUpdateTimeBasedInflation) GetInflation() *InflationEntry {
+	if m != nil {
+		return m.Inflation
+	}
+	return nil
+}
+
+type MsgUpdateTimeBasedInflationResponse struct {
+}
+
+func (m *MsgUpdateTimeBasedInflationResponse) Reset()         { *m = MsgUpdateTimeBasedInflationResponse{} }
+func (m *MsgUpdateTimeBasedInflationResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgUpdateTimeBasedInflationResponse) ProtoMessage()    {}
+func (*MsgUpdateTimeBasedInflationResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_ee42f255ebbc1c1c, []int{12}
+}
+func (m *MsgUpdateTimeBasedInflationResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgUpdateTimeBasedInflationResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgUpdateTimeBasedInflationResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgUpdateTimeBasedInflationResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgUpdateTimeBasedInflationResponse.Merge(m, src)
+}
+func (m *MsgUpdateTimeBasedInflationResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgUpdateTimeBasedInflationResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgUpdateTimeBasedInflationResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgUpdateTimeBasedInflationResponse proto.InternalMessageInfo
+
+type MsgDeleteTimeBasedInflation struct {
+	Authority        string `protobuf:"bytes,1,opt,name=authority,proto3" json:"authority,omitempty"`
+	StartBlockHeight uint64 `protobuf:"varint,2,opt,name=startBlockHeight,proto3" json:"startBlockHeight,omitempty"`
+	EndBlockHeight   uint64 `protobuf:"varint,3,opt,name=endBlockHeight,proto3" json:"endBlockHeight,omitempty"`
+}
+
+func (m *MsgDeleteTimeBasedInflation) Reset()         { *m = MsgDeleteTimeBasedInflation{} }
+func (m *MsgDeleteTimeBasedInflation) String() string { return proto.CompactTextString(m) }
+func (*MsgDeleteTimeBasedInflation) ProtoMessage()    {}
+func (*MsgDeleteTimeBasedInflation) Descriptor() ([]byte, []int) {
+	return fileDescriptor_ee42f255ebbc1c1c, []int{13}
+}
+func (m *MsgDeleteTimeBasedInflation) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgDeleteTimeBasedInflation) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgDeleteTimeBasedInflation.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgDeleteTimeBasedInflation) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgDeleteTimeBasedInflation.Merge(m, src)
+}
+func (m *MsgDeleteTimeBasedInflation) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgDeleteTimeBasedInflation) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgDeleteTimeBasedInflation.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgDeleteTimeBasedInflation proto.InternalMessageInfo
+
+func (m *MsgDeleteTimeBasedInflation) GetAuthority() string {
+	if m != nil {
+		return m.Authority
+	}
+	return ""
+}
+
+func (m *MsgDeleteTimeBasedInflation) GetStartBlockHeight() uint64 {
+	if m != nil {
+		return m.StartBlockHeight
+	}
+	return 0
+}
+
+func (m *MsgDeleteTimeBasedInflation) GetEndBlockHeight() uint64 {
+	if m != nil {
+		return m.EndBlockHeight
+	}
+	return 0
+}
+
+type MsgDeleteTimeBasedInflationResponse struct {
+}
+
+func (m *MsgDeleteTimeBasedInflationResponse) Reset()         { *m = MsgDeleteTimeBasedInflationResponse{} }
+func (m *MsgDeleteTimeBasedInflationResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgDeleteTimeBasedInflationResponse) ProtoMessage()    {}
+func (*MsgDeleteTimeBasedInflationResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_ee42f255ebbc1c1c, []int{14}
+}
+func (m *MsgDeleteTimeBasedInflationResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgDeleteTimeBasedInflationResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgDeleteTimeBasedInflationResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgDeleteTimeBasedInflationResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgDeleteTimeBasedInflationResponse.Merge(m, src)
+}
+func (m *MsgDeleteTimeBasedInflationResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgDeleteTimeBasedInflationResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgDeleteTimeBasedInflationResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgDeleteTimeBasedInflationResponse proto.InternalMessageInfo
+
 func init() {
 	proto.RegisterType((*MsgCreateAirdrop)(nil), "elysnetwork.elys.tokenomics.MsgCreateAirdrop")
 	proto.RegisterType((*MsgCreateAirdropResponse)(nil), "elysnetwork.elys.tokenomics.MsgCreateAirdropResponse")
@@ -465,41 +785,58 @@ func init() {
 	proto.RegisterType((*MsgUpdateGenesisInflation)(nil), "elysnetwork.elys.tokenomics.MsgUpdateGenesisInflation")
 	proto.RegisterType((*MsgUpdateGenesisInflationResponse)(nil), "elysnetwork.elys.tokenomics.MsgUpdateGenesisInflationResponse")
 	proto.RegisterType((*MsgDeleteGenesisInflation)(nil), "elysnetwork.elys.tokenomics.MsgDeleteGenesisInflation")
+	proto.RegisterType((*MsgCreateTimeBasedInflation)(nil), "elysnetwork.elys.tokenomics.MsgCreateTimeBasedInflation")
+	proto.RegisterType((*MsgCreateTimeBasedInflationResponse)(nil), "elysnetwork.elys.tokenomics.MsgCreateTimeBasedInflationResponse")
+	proto.RegisterType((*MsgUpdateTimeBasedInflation)(nil), "elysnetwork.elys.tokenomics.MsgUpdateTimeBasedInflation")
+	proto.RegisterType((*MsgUpdateTimeBasedInflationResponse)(nil), "elysnetwork.elys.tokenomics.MsgUpdateTimeBasedInflationResponse")
+	proto.RegisterType((*MsgDeleteTimeBasedInflation)(nil), "elysnetwork.elys.tokenomics.MsgDeleteTimeBasedInflation")
+	proto.RegisterType((*MsgDeleteTimeBasedInflationResponse)(nil), "elysnetwork.elys.tokenomics.MsgDeleteTimeBasedInflationResponse")
 }
 
 func init() { proto.RegisterFile("elys/tokenomics/tx.proto", fileDescriptor_ee42f255ebbc1c1c) }
 
 var fileDescriptor_ee42f255ebbc1c1c = []byte{
-	// 462 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xb4, 0x94, 0x4d, 0x8b, 0xd3, 0x40,
-	0x18, 0xc7, 0x3b, 0x76, 0x5d, 0xe8, 0x2c, 0x82, 0x04, 0x5c, 0x62, 0xd4, 0x50, 0x2b, 0xe2, 0x82,
-	0x6c, 0x02, 0xeb, 0x0b, 0x78, 0x11, 0x7c, 0x43, 0x7b, 0xd8, 0x4b, 0x44, 0x0f, 0x5e, 0xd6, 0x6c,
-	0xfb, 0x98, 0x1d, 0x36, 0x9d, 0x09, 0x33, 0x4f, 0x70, 0xf3, 0x2d, 0xfa, 0xb1, 0x3c, 0xf6, 0xe8,
-	0xc1, 0x83, 0xb4, 0x9f, 0x43, 0x90, 0x4c, 0x5e, 0xea, 0x84, 0xb6, 0xb1, 0xca, 0xde, 0x32, 0xf3,
-	0xfc, 0x9f, 0xf9, 0xcd, 0xfc, 0x9f, 0x3f, 0xa1, 0x36, 0xc4, 0x99, 0xf2, 0x51, 0x9c, 0x03, 0x17,
-	0x13, 0x36, 0x52, 0x3e, 0x5e, 0x78, 0x89, 0x14, 0x28, 0xac, 0x5b, 0x79, 0x85, 0x03, 0x7e, 0x15,
-	0xf2, 0xdc, 0xcb, 0xbf, 0xbd, 0xa5, 0xca, 0xb9, 0xd3, 0x6c, 0x0b, 0x99, 0x1c, 0x4b, 0x91, 0x14,
-	0xbd, 0xce, 0x83, 0x66, 0x39, 0x02, 0x0e, 0x8a, 0xa9, 0x13, 0xc6, 0xbf, 0xc4, 0x21, 0x32, 0xc1,
-	0x4b, 0xe1, 0xfd, 0xa6, 0xb0, 0x16, 0x9c, 0x00, 0x47, 0x99, 0x15, 0xb2, 0xc1, 0x67, 0x7a, 0xfd,
-	0x58, 0x45, 0xaf, 0x24, 0x84, 0x08, 0x2f, 0x0a, 0x92, 0x75, 0x9b, 0xf6, 0xc2, 0x14, 0xcf, 0x84,
-	0x64, 0x98, 0xd9, 0xa4, 0x4f, 0x0e, 0x7a, 0xc1, 0x72, 0xc3, 0xda, 0xa7, 0xbb, 0x8c, 0x23, 0x70,
-	0xb4, 0xaf, 0xe8, 0x52, 0xb9, 0xca, 0xf7, 0xc3, 0x89, 0x48, 0x39, 0xda, 0xdd, 0x3e, 0x39, 0xd8,
-	0x09, 0xca, 0xd5, 0xc0, 0xa1, 0x76, 0x93, 0x10, 0x80, 0x4a, 0x04, 0x57, 0x50, 0xd2, 0x3f, 0x24,
-	0xe3, 0x4b, 0xa6, 0x1b, 0x84, 0x9a, 0xfe, 0x4e, 0xd3, 0x5f, 0x43, 0x0c, 0xff, 0x49, 0x2f, 0x29,
-	0xc6, 0x49, 0x35, 0xe5, 0x07, 0xa1, 0x37, 0xeb, 0x2b, 0xbc, 0x2d, 0xa6, 0x35, 0xac, 0x66, 0xd1,
-	0xc2, 0x1b, 0xd2, 0x5e, 0x3d, 0x36, 0xfd, 0xb0, 0xbd, 0xa3, 0x87, 0xde, 0x86, 0xf4, 0x78, 0xf5,
-	0xc1, 0x6f, 0xf2, 0x19, 0x07, 0xcb, 0x6e, 0xab, 0x4f, 0xf7, 0x14, 0xc0, 0xf8, 0x23, 0x28, 0x64,
-	0x3c, 0xb2, 0x77, 0xb4, 0x4b, 0x7f, 0x6e, 0x59, 0x8f, 0xe9, 0x0d, 0x85, 0x32, 0x44, 0x88, 0xd8,
-	0xe8, 0x7d, 0x18, 0x83, 0xaa, 0xb4, 0x57, 0xb5, 0x76, 0x75, 0x71, 0x70, 0x8f, 0xde, 0x5d, 0xfb,
-	0xba, 0xda, 0x83, 0x67, 0xda, 0x82, 0xc2, 0x9f, 0xed, 0x2c, 0x38, 0xfa, 0xd5, 0xa5, 0xdd, 0x63,
-	0x15, 0x59, 0x29, 0xbd, 0x66, 0xa6, 0xf4, 0x70, 0xa3, 0x11, 0xcd, 0xc8, 0x39, 0x4f, 0xb6, 0x92,
-	0x57, 0x37, 0xcf, 0xb1, 0x66, 0x3c, 0x5b, 0xb1, 0x86, 0xbc, 0x1d, 0xbb, 0x32, 0x9a, 0x39, 0xd6,
-	0xcc, 0x65, 0x2b, 0xd6, 0x90, 0xb7, 0x63, 0x57, 0x66, 0xd5, 0x9a, 0x12, 0xba, 0xbf, 0x26, 0xa8,
-	0x4f, 0xff, 0xee, 0x21, 0xcd, 0x3e, 0xe7, 0xf9, 0xbf, 0xf5, 0x55, 0x57, 0x7a, 0x39, 0xfc, 0x36,
-	0x77, 0xc9, 0x6c, 0xee, 0x92, 0x9f, 0x73, 0x97, 0x4c, 0x17, 0x6e, 0x67, 0xb6, 0x70, 0x3b, 0xdf,
-	0x17, 0x6e, 0xe7, 0x93, 0x1f, 0x31, 0x3c, 0x4b, 0x4f, 0xbd, 0x91, 0x98, 0xf8, 0xf9, 0xb9, 0x87,
-	0x25, 0x44, 0x2f, 0xfc, 0x0b, 0xe3, 0xd7, 0x9b, 0x25, 0xa0, 0x4e, 0x77, 0xf5, 0x2f, 0xef, 0xd1,
-	0xef, 0x00, 0x00, 0x00, 0xff, 0xff, 0xb6, 0xaf, 0x8d, 0x4f, 0x9a, 0x05, 0x00, 0x00,
+	// 626 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe4, 0x56, 0x4d, 0x6f, 0xd3, 0x40,
+	0x10, 0x8d, 0x69, 0x5a, 0x94, 0xad, 0x40, 0x95, 0x25, 0x2a, 0xe3, 0x82, 0x15, 0x52, 0x15, 0xaa,
+	0xa2, 0x3a, 0x52, 0xf9, 0x50, 0xb8, 0x20, 0x08, 0x20, 0x9a, 0x43, 0x2f, 0xe1, 0xe3, 0xc0, 0x25,
+	0x38, 0xf1, 0xe0, 0xac, 0x92, 0xec, 0x5a, 0xde, 0x8d, 0x68, 0x7e, 0x05, 0x3d, 0xf1, 0x9b, 0x7a,
+	0xec, 0x91, 0x03, 0x07, 0x94, 0xfc, 0x0d, 0x0e, 0xc8, 0x6b, 0x67, 0x93, 0x75, 0xe2, 0x38, 0x4d,
+	0x85, 0x84, 0xc4, 0x2d, 0x9e, 0x7d, 0xb3, 0xef, 0xcd, 0x9b, 0xd9, 0x51, 0x90, 0x01, 0xdd, 0x01,
+	0x2b, 0x73, 0xda, 0x01, 0x42, 0x7b, 0xb8, 0xc5, 0xca, 0xfc, 0xd4, 0xf6, 0x03, 0xca, 0xa9, 0xbe,
+	0x13, 0x9e, 0x10, 0xe0, 0x5f, 0x69, 0xd0, 0xb1, 0xc3, 0xdf, 0xf6, 0x04, 0x65, 0xde, 0x4d, 0xa6,
+	0x39, 0x38, 0x70, 0x03, 0xea, 0x47, 0xb9, 0xe6, 0x83, 0xe4, 0xb1, 0x07, 0x04, 0x18, 0x66, 0x0d,
+	0x4c, 0xbe, 0x74, 0x1d, 0x8e, 0x29, 0x89, 0x81, 0x7b, 0x49, 0xa0, 0x04, 0x34, 0x80, 0xf0, 0x60,
+	0x10, 0xc3, 0x0e, 0x66, 0x54, 0xe2, 0x1e, 0x34, 0x9a, 0x0e, 0x03, 0x37, 0x79, 0x65, 0xe9, 0x33,
+	0xda, 0x3a, 0x61, 0xde, 0xab, 0x00, 0x1c, 0x0e, 0x2f, 0x23, 0x55, 0xfa, 0x1d, 0x54, 0x70, 0xfa,
+	0xbc, 0x4d, 0x03, 0xcc, 0x07, 0x86, 0x56, 0xd4, 0xf6, 0x0b, 0xf5, 0x49, 0x40, 0xdf, 0x46, 0x1b,
+	0x98, 0x70, 0x20, 0xdc, 0xb8, 0x26, 0x8e, 0xe2, 0xaf, 0x30, 0xee, 0xf4, 0x68, 0x9f, 0x70, 0x63,
+	0xad, 0xa8, 0xed, 0xe7, 0xeb, 0xf1, 0x57, 0xc9, 0x44, 0x46, 0x92, 0xa1, 0x0e, 0xcc, 0xa7, 0x84,
+	0x41, 0xcc, 0xfe, 0xc1, 0x77, 0xff, 0x32, 0xbb, 0xc2, 0x20, 0xd9, 0x8f, 0x05, 0xfb, 0x6b, 0xe8,
+	0xc2, 0x15, 0xd9, 0x63, 0x16, 0xe5, 0x26, 0xc9, 0xf2, 0x53, 0x43, 0xb7, 0xa5, 0x84, 0xb7, 0x51,
+	0x67, 0x6b, 0xe3, 0x2e, 0x64, 0xf0, 0xd5, 0x50, 0x41, 0x36, 0x4c, 0x14, 0xb6, 0x79, 0xf4, 0xd0,
+	0x5e, 0x30, 0x69, 0xb6, 0xbc, 0xf8, 0x4d, 0x38, 0x0f, 0xf5, 0x49, 0xb6, 0x5e, 0x44, 0x9b, 0x0c,
+	0xc0, 0xfd, 0x08, 0x8c, 0x63, 0xe2, 0x19, 0x79, 0xe1, 0xd2, 0x74, 0x48, 0x7f, 0x8c, 0x6e, 0x31,
+	0x1e, 0x38, 0x1c, 0x3c, 0xdc, 0x7a, 0xe7, 0x74, 0x81, 0x8d, 0xb1, 0xeb, 0x02, 0x3b, 0xff, 0xb0,
+	0xb4, 0x8b, 0xee, 0xa5, 0x56, 0x27, 0x3d, 0x78, 0x26, 0x2c, 0x88, 0xfc, 0xb9, 0x9c, 0x05, 0xa5,
+	0xdf, 0x1a, 0xda, 0x91, 0xf3, 0xf3, 0x1e, 0xf7, 0xa0, 0x1a, 0xce, 0xf1, 0xb2, 0x06, 0x1e, 0xa0,
+	0x2d, 0xc6, 0x9d, 0x80, 0x57, 0xbb, 0xb4, 0xd5, 0x39, 0x06, 0xec, 0xb5, 0xa3, 0xd6, 0xe5, 0xeb,
+	0x33, 0x71, 0xfd, 0x3e, 0xba, 0x09, 0xc4, 0x9d, 0x46, 0x46, 0xa3, 0x94, 0x88, 0x86, 0x4e, 0xba,
+	0xc0, 0x5a, 0x01, 0xf6, 0x45, 0x5b, 0xf2, 0x82, 0x73, 0x3a, 0xa4, 0xb6, 0x6d, 0xfd, 0x2a, 0x6d,
+	0x2b, 0xed, 0xa1, 0xdd, 0x05, 0xd5, 0x4b, 0x83, 0x63, 0x97, 0xa2, 0x36, 0xfc, 0xaf, 0x2e, 0xa5,
+	0x55, 0x2f, 0x5d, 0xfa, 0x16, 0xb9, 0x14, 0xcd, 0xe1, 0xbf, 0xe0, 0x52, 0x2c, 0x3c, 0x4d, 0xd0,
+	0x58, 0xf8, 0xd1, 0xf9, 0x75, 0xb4, 0x76, 0xc2, 0x3c, 0xbd, 0x8f, 0x6e, 0xa8, 0xab, 0xfa, 0x70,
+	0xa1, 0x61, 0xc9, 0xbd, 0x6b, 0x3e, 0xb9, 0x14, 0x7c, 0x4c, 0x1f, 0xd2, 0xaa, 0x3b, 0x3a, 0x93,
+	0x56, 0x81, 0x67, 0xd3, 0xce, 0xdd, 0xcf, 0x21, 0xad, 0xba, 0x9c, 0x33, 0x69, 0x15, 0x78, 0x36,
+	0xed, 0xdc, 0x85, 0xad, 0x9f, 0x69, 0x68, 0x3b, 0x65, 0x5b, 0x3f, 0x5d, 0xae, 0x90, 0x64, 0x9e,
+	0xf9, 0x7c, 0xb5, 0x3c, 0x29, 0xe9, 0xbb, 0x86, 0x8c, 0xd4, 0x0d, 0x58, 0x59, 0xae, 0xa9, 0xb3,
+	0x99, 0xe6, 0x8b, 0x55, 0x33, 0x15, 0x61, 0xa9, 0x4b, 0xa7, 0xb2, 0x5c, 0xd5, 0xab, 0x08, 0xcb,
+	0x7a, 0xea, 0x42, 0x58, 0xea, 0x3b, 0xaf, 0x2c, 0x37, 0x18, 0xab, 0x08, 0xcb, 0x7a, 0xca, 0xd5,
+	0xda, 0xf9, 0xd0, 0xd2, 0x2e, 0x86, 0x96, 0xf6, 0x6b, 0x68, 0x69, 0x67, 0x23, 0x2b, 0x77, 0x31,
+	0xb2, 0x72, 0x3f, 0x46, 0x56, 0xee, 0x53, 0xd9, 0xc3, 0xbc, 0xdd, 0x6f, 0xda, 0x2d, 0xda, 0x2b,
+	0x87, 0x37, 0x1f, 0xc6, 0x34, 0xe2, 0xa3, 0x7c, 0xaa, 0xfc, 0xa1, 0x1b, 0xf8, 0xc0, 0x9a, 0x1b,
+	0xe2, 0x2f, 0xdc, 0xa3, 0x3f, 0x01, 0x00, 0x00, 0xff, 0xff, 0x7c, 0xcd, 0x1b, 0x23, 0x96, 0x0a,
+	0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -518,6 +855,9 @@ type MsgClient interface {
 	UpdateAirdrop(ctx context.Context, in *MsgUpdateAirdrop, opts ...grpc.CallOption) (*MsgUpdateAirdropResponse, error)
 	DeleteAirdrop(ctx context.Context, in *MsgDeleteAirdrop, opts ...grpc.CallOption) (*MsgDeleteAirdropResponse, error)
 	UpdateGenesisInflation(ctx context.Context, in *MsgUpdateGenesisInflation, opts ...grpc.CallOption) (*MsgUpdateGenesisInflationResponse, error)
+	CreateTimeBasedInflation(ctx context.Context, in *MsgCreateTimeBasedInflation, opts ...grpc.CallOption) (*MsgCreateTimeBasedInflationResponse, error)
+	UpdateTimeBasedInflation(ctx context.Context, in *MsgUpdateTimeBasedInflation, opts ...grpc.CallOption) (*MsgUpdateTimeBasedInflationResponse, error)
+	DeleteTimeBasedInflation(ctx context.Context, in *MsgDeleteTimeBasedInflation, opts ...grpc.CallOption) (*MsgDeleteTimeBasedInflationResponse, error)
 }
 
 type msgClient struct {
@@ -564,12 +904,42 @@ func (c *msgClient) UpdateGenesisInflation(ctx context.Context, in *MsgUpdateGen
 	return out, nil
 }
 
+func (c *msgClient) CreateTimeBasedInflation(ctx context.Context, in *MsgCreateTimeBasedInflation, opts ...grpc.CallOption) (*MsgCreateTimeBasedInflationResponse, error) {
+	out := new(MsgCreateTimeBasedInflationResponse)
+	err := c.cc.Invoke(ctx, "/elysnetwork.elys.tokenomics.Msg/CreateTimeBasedInflation", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) UpdateTimeBasedInflation(ctx context.Context, in *MsgUpdateTimeBasedInflation, opts ...grpc.CallOption) (*MsgUpdateTimeBasedInflationResponse, error) {
+	out := new(MsgUpdateTimeBasedInflationResponse)
+	err := c.cc.Invoke(ctx, "/elysnetwork.elys.tokenomics.Msg/UpdateTimeBasedInflation", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) DeleteTimeBasedInflation(ctx context.Context, in *MsgDeleteTimeBasedInflation, opts ...grpc.CallOption) (*MsgDeleteTimeBasedInflationResponse, error) {
+	out := new(MsgDeleteTimeBasedInflationResponse)
+	err := c.cc.Invoke(ctx, "/elysnetwork.elys.tokenomics.Msg/DeleteTimeBasedInflation", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // MsgServer is the server API for Msg service.
 type MsgServer interface {
 	CreateAirdrop(context.Context, *MsgCreateAirdrop) (*MsgCreateAirdropResponse, error)
 	UpdateAirdrop(context.Context, *MsgUpdateAirdrop) (*MsgUpdateAirdropResponse, error)
 	DeleteAirdrop(context.Context, *MsgDeleteAirdrop) (*MsgDeleteAirdropResponse, error)
 	UpdateGenesisInflation(context.Context, *MsgUpdateGenesisInflation) (*MsgUpdateGenesisInflationResponse, error)
+	CreateTimeBasedInflation(context.Context, *MsgCreateTimeBasedInflation) (*MsgCreateTimeBasedInflationResponse, error)
+	UpdateTimeBasedInflation(context.Context, *MsgUpdateTimeBasedInflation) (*MsgUpdateTimeBasedInflationResponse, error)
+	DeleteTimeBasedInflation(context.Context, *MsgDeleteTimeBasedInflation) (*MsgDeleteTimeBasedInflationResponse, error)
 }
 
 // UnimplementedMsgServer can be embedded to have forward compatible implementations.
@@ -587,6 +957,15 @@ func (*UnimplementedMsgServer) DeleteAirdrop(ctx context.Context, req *MsgDelete
 }
 func (*UnimplementedMsgServer) UpdateGenesisInflation(ctx context.Context, req *MsgUpdateGenesisInflation) (*MsgUpdateGenesisInflationResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateGenesisInflation not implemented")
+}
+func (*UnimplementedMsgServer) CreateTimeBasedInflation(ctx context.Context, req *MsgCreateTimeBasedInflation) (*MsgCreateTimeBasedInflationResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateTimeBasedInflation not implemented")
+}
+func (*UnimplementedMsgServer) UpdateTimeBasedInflation(ctx context.Context, req *MsgUpdateTimeBasedInflation) (*MsgUpdateTimeBasedInflationResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateTimeBasedInflation not implemented")
+}
+func (*UnimplementedMsgServer) DeleteTimeBasedInflation(ctx context.Context, req *MsgDeleteTimeBasedInflation) (*MsgDeleteTimeBasedInflationResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteTimeBasedInflation not implemented")
 }
 
 func RegisterMsgServer(s grpc1.Server, srv MsgServer) {
@@ -665,6 +1044,60 @@ func _Msg_UpdateGenesisInflation_Handler(srv interface{}, ctx context.Context, d
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Msg_CreateTimeBasedInflation_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgCreateTimeBasedInflation)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).CreateTimeBasedInflation(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/elysnetwork.elys.tokenomics.Msg/CreateTimeBasedInflation",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).CreateTimeBasedInflation(ctx, req.(*MsgCreateTimeBasedInflation))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_UpdateTimeBasedInflation_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgUpdateTimeBasedInflation)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).UpdateTimeBasedInflation(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/elysnetwork.elys.tokenomics.Msg/UpdateTimeBasedInflation",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).UpdateTimeBasedInflation(ctx, req.(*MsgUpdateTimeBasedInflation))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_DeleteTimeBasedInflation_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgDeleteTimeBasedInflation)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).DeleteTimeBasedInflation(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/elysnetwork.elys.tokenomics.Msg/DeleteTimeBasedInflation",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).DeleteTimeBasedInflation(ctx, req.(*MsgDeleteTimeBasedInflation))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var _Msg_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "elysnetwork.elys.tokenomics.Msg",
 	HandlerType: (*MsgServer)(nil),
@@ -684,6 +1117,18 @@ var _Msg_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UpdateGenesisInflation",
 			Handler:    _Msg_UpdateGenesisInflation_Handler,
+		},
+		{
+			MethodName: "CreateTimeBasedInflation",
+			Handler:    _Msg_CreateTimeBasedInflation_Handler,
+		},
+		{
+			MethodName: "UpdateTimeBasedInflation",
+			Handler:    _Msg_UpdateTimeBasedInflation_Handler,
+		},
+		{
+			MethodName: "DeleteTimeBasedInflation",
+			Handler:    _Msg_DeleteTimeBasedInflation_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
@@ -985,6 +1430,233 @@ func (m *MsgDeleteGenesisInflation) MarshalToSizedBuffer(dAtA []byte) (int, erro
 	return len(dAtA) - i, nil
 }
 
+func (m *MsgCreateTimeBasedInflation) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgCreateTimeBasedInflation) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgCreateTimeBasedInflation) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Inflation != nil {
+		{
+			size, err := m.Inflation.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintTx(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x2a
+	}
+	if len(m.Description) > 0 {
+		i -= len(m.Description)
+		copy(dAtA[i:], m.Description)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Description)))
+		i--
+		dAtA[i] = 0x22
+	}
+	if m.EndBlockHeight != 0 {
+		i = encodeVarintTx(dAtA, i, uint64(m.EndBlockHeight))
+		i--
+		dAtA[i] = 0x18
+	}
+	if m.StartBlockHeight != 0 {
+		i = encodeVarintTx(dAtA, i, uint64(m.StartBlockHeight))
+		i--
+		dAtA[i] = 0x10
+	}
+	if len(m.Authority) > 0 {
+		i -= len(m.Authority)
+		copy(dAtA[i:], m.Authority)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Authority)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgCreateTimeBasedInflationResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgCreateTimeBasedInflationResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgCreateTimeBasedInflationResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgUpdateTimeBasedInflation) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgUpdateTimeBasedInflation) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgUpdateTimeBasedInflation) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Inflation != nil {
+		{
+			size, err := m.Inflation.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintTx(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x2a
+	}
+	if len(m.Description) > 0 {
+		i -= len(m.Description)
+		copy(dAtA[i:], m.Description)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Description)))
+		i--
+		dAtA[i] = 0x22
+	}
+	if m.EndBlockHeight != 0 {
+		i = encodeVarintTx(dAtA, i, uint64(m.EndBlockHeight))
+		i--
+		dAtA[i] = 0x18
+	}
+	if m.StartBlockHeight != 0 {
+		i = encodeVarintTx(dAtA, i, uint64(m.StartBlockHeight))
+		i--
+		dAtA[i] = 0x10
+	}
+	if len(m.Authority) > 0 {
+		i -= len(m.Authority)
+		copy(dAtA[i:], m.Authority)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Authority)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgUpdateTimeBasedInflationResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgUpdateTimeBasedInflationResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgUpdateTimeBasedInflationResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgDeleteTimeBasedInflation) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgDeleteTimeBasedInflation) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgDeleteTimeBasedInflation) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.EndBlockHeight != 0 {
+		i = encodeVarintTx(dAtA, i, uint64(m.EndBlockHeight))
+		i--
+		dAtA[i] = 0x18
+	}
+	if m.StartBlockHeight != 0 {
+		i = encodeVarintTx(dAtA, i, uint64(m.StartBlockHeight))
+		i--
+		dAtA[i] = 0x10
+	}
+	if len(m.Authority) > 0 {
+		i -= len(m.Authority)
+		copy(dAtA[i:], m.Authority)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Authority)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgDeleteTimeBasedInflationResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgDeleteTimeBasedInflationResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgDeleteTimeBasedInflationResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	return len(dAtA) - i, nil
+}
+
 func encodeVarintTx(dAtA []byte, offset int, v uint64) int {
 	offset -= sovTx(v)
 	base := offset
@@ -1122,6 +1794,106 @@ func (m *MsgDeleteGenesisInflation) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
+	return n
+}
+
+func (m *MsgCreateTimeBasedInflation) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Authority)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	if m.StartBlockHeight != 0 {
+		n += 1 + sovTx(uint64(m.StartBlockHeight))
+	}
+	if m.EndBlockHeight != 0 {
+		n += 1 + sovTx(uint64(m.EndBlockHeight))
+	}
+	l = len(m.Description)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	if m.Inflation != nil {
+		l = m.Inflation.Size()
+		n += 1 + l + sovTx(uint64(l))
+	}
+	return n
+}
+
+func (m *MsgCreateTimeBasedInflationResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	return n
+}
+
+func (m *MsgUpdateTimeBasedInflation) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Authority)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	if m.StartBlockHeight != 0 {
+		n += 1 + sovTx(uint64(m.StartBlockHeight))
+	}
+	if m.EndBlockHeight != 0 {
+		n += 1 + sovTx(uint64(m.EndBlockHeight))
+	}
+	l = len(m.Description)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	if m.Inflation != nil {
+		l = m.Inflation.Size()
+		n += 1 + l + sovTx(uint64(l))
+	}
+	return n
+}
+
+func (m *MsgUpdateTimeBasedInflationResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	return n
+}
+
+func (m *MsgDeleteTimeBasedInflation) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Authority)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	if m.StartBlockHeight != 0 {
+		n += 1 + sovTx(uint64(m.StartBlockHeight))
+	}
+	if m.EndBlockHeight != 0 {
+		n += 1 + sovTx(uint64(m.EndBlockHeight))
+	}
+	return n
+}
+
+func (m *MsgDeleteTimeBasedInflationResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
 	return n
 }
 
@@ -1928,6 +2700,652 @@ func (m *MsgDeleteGenesisInflation) Unmarshal(dAtA []byte) error {
 			}
 			m.Authority = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgCreateTimeBasedInflation) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgCreateTimeBasedInflation: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgCreateTimeBasedInflation: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Authority", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Authority = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field StartBlockHeight", wireType)
+			}
+			m.StartBlockHeight = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.StartBlockHeight |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 3:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field EndBlockHeight", wireType)
+			}
+			m.EndBlockHeight = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.EndBlockHeight |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Description", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Description = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 5:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Inflation", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Inflation == nil {
+				m.Inflation = &InflationEntry{}
+			}
+			if err := m.Inflation.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgCreateTimeBasedInflationResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgCreateTimeBasedInflationResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgCreateTimeBasedInflationResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgUpdateTimeBasedInflation) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgUpdateTimeBasedInflation: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgUpdateTimeBasedInflation: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Authority", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Authority = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field StartBlockHeight", wireType)
+			}
+			m.StartBlockHeight = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.StartBlockHeight |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 3:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field EndBlockHeight", wireType)
+			}
+			m.EndBlockHeight = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.EndBlockHeight |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Description", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Description = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 5:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Inflation", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Inflation == nil {
+				m.Inflation = &InflationEntry{}
+			}
+			if err := m.Inflation.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgUpdateTimeBasedInflationResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgUpdateTimeBasedInflationResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgUpdateTimeBasedInflationResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgDeleteTimeBasedInflation) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgDeleteTimeBasedInflation: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgDeleteTimeBasedInflation: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Authority", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Authority = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field StartBlockHeight", wireType)
+			}
+			m.StartBlockHeight = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.StartBlockHeight |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 3:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field EndBlockHeight", wireType)
+			}
+			m.EndBlockHeight = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.EndBlockHeight |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgDeleteTimeBasedInflationResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgDeleteTimeBasedInflationResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgDeleteTimeBasedInflationResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
 		default:
 			iNdEx = preIndex
 			skippy, err := skipTx(dAtA[iNdEx:])
