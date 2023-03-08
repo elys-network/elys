@@ -18,6 +18,9 @@ type (
 		storeKey   storetypes.StoreKey
 		memKey     storetypes.StoreKey
 		paramstore paramtypes.Subspace
+		// the address capable of executing a Msg* messages. Typically, this
+		// should be the x/gov module account.
+		authority string
 	}
 )
 
@@ -26,6 +29,7 @@ func NewKeeper(
 	storeKey,
 	memKey storetypes.StoreKey,
 	ps paramtypes.Subspace,
+	authority string,
 
 ) *Keeper {
 	// set KeyTable if it has not already been set
@@ -38,6 +42,7 @@ func NewKeeper(
 		storeKey:   storeKey,
 		memKey:     memKey,
 		paramstore: ps,
+		authority:  authority,
 	}
 }
 

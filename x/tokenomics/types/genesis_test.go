@@ -19,12 +19,34 @@ func TestGenesisState_Validate(t *testing.T) {
 			valid:    true,
 		},
 		{
-			desc:     "valid genesis state",
+			desc: "valid genesis state",
 			genState: &types.GenesisState{
 
+				AirdropList: []types.Airdrop{
+					{
+						Intent: "0",
+					},
+					{
+						Intent: "1",
+					},
+				},
 				// this line is used by starport scaffolding # types/genesis/validField
 			},
 			valid: true,
+		},
+		{
+			desc: "duplicated airdrop",
+			genState: &types.GenesisState{
+				AirdropList: []types.Airdrop{
+					{
+						Intent: "0",
+					},
+					{
+						Intent: "0",
+					},
+				},
+			},
+			valid: false,
 		},
 		// this line is used by starport scaffolding # types/genesis/testcase
 	} {

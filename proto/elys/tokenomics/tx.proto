@@ -1,7 +1,37 @@
 syntax = "proto3";
+
 package elysnetwork.elys.tokenomics;
+
+import "elys/tokenomics/airdrop.proto";
 
 option go_package = "github.com/elys-network/elys/x/tokenomics/types";
 
 // Msg defines the Msg service.
-service Msg {}
+service Msg {
+  rpc CreateAirdrop (MsgCreateAirdrop) returns (MsgCreateAirdropResponse);
+  rpc UpdateAirdrop (MsgUpdateAirdrop) returns (MsgUpdateAirdropResponse);
+  rpc DeleteAirdrop (MsgDeleteAirdrop) returns (MsgDeleteAirdropResponse);
+}
+message MsgCreateAirdrop {
+  string authority = 1;
+  string intent    = 2;
+  uint64 amount    = 3;
+}
+
+message MsgCreateAirdropResponse {}
+
+message MsgUpdateAirdrop {
+  string authority = 1;
+  string intent    = 2;
+  uint64 amount    = 3;
+}
+
+message MsgUpdateAirdropResponse {}
+
+message MsgDeleteAirdrop {
+  string authority = 1;
+  string intent    = 2;
+}
+
+message MsgDeleteAirdropResponse {}
+
