@@ -1,0 +1,12 @@
+syntax = "proto3";
+package elysnetwork.elys.oracle;
+
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/elys-network/elys/x/oracle/types";
+
+// Params defines the parameters for the module.
+message Params {
+  option (gogoproto.goproto_stringer) = false;
+  
+}
