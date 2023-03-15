@@ -1,0 +1,32 @@
+syntax = "proto3";
+package elysnetwork.elys.commitment;
+
+import "gogoproto/gogo.proto";
+import "elys/commitment/params.proto";
+
+option go_package = "github.com/elys-network/elys/x/commitment/types";
+
+// GenesisState defines the commitment module's genesis state.
+message Commitments {
+    string address = 1;
+    repeated CommittedTokens committed_tokens = 2;
+    repeated UncommittedTokens uncommitted_tokens = 3;
+}
+
+message CommittedTokens {
+    string denom = 1;
+    string amount = 2 [
+        (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Uint",
+        (gogoproto.nullable) = false,
+        (gogoproto.moretags) = "yaml:\"amount\""
+      ];
+}
+
+message UncommittedTokens {
+    string denom = 1;
+    string amount = 2 [
+        (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Uint",
+        (gogoproto.nullable) = false,
+        (gogoproto.moretags) = "yaml:\"amount\""
+      ];
+}
