@@ -16,7 +16,7 @@ message Commitments {
 message CommittedTokens {
     string denom = 1;
     string amount = 2 [
-        (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Uint",
+        (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
         (gogoproto.nullable) = false,
         (gogoproto.moretags) = "yaml:\"amount\""
       ];
@@ -25,7 +25,7 @@ message CommittedTokens {
 message UncommittedTokens {
     string denom = 1;
     string amount = 2 [
-        (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Uint",
+        (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
         (gogoproto.nullable) = false,
         (gogoproto.moretags) = "yaml:\"amount\""
       ];

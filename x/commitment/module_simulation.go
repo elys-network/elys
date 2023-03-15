@@ -24,7 +24,19 @@ var (
 )
 
 const (
-// this line is used by starport scaffolding # simapp/module/const
+	opWeightMsgCommitTokens = "op_weight_msg_commit_tokens"
+	// TODO: Determine the simulation weight value
+	defaultWeightMsgCommitTokens int = 100
+
+	opWeightMsgUncommitTokens = "op_weight_msg_uncommit_tokens"
+	// TODO: Determine the simulation weight value
+	defaultWeightMsgUncommitTokens int = 100
+
+	opWeightMsgWithdrawTokens = "op_weight_msg_withdraw_tokens"
+	// TODO: Determine the simulation weight value
+	defaultWeightMsgWithdrawTokens int = 100
+
+	// this line is used by starport scaffolding # simapp/module/const
 )
 
 // GenerateGenesisState creates a randomized GenState of the module
@@ -57,6 +69,39 @@ func (am AppModule) RegisterStoreDecoder(_ sdk.StoreDecoderRegistry) {}
 // WeightedOperations returns the all the gov module operations with their respective weights.
 func (am AppModule) WeightedOperations(simState module.SimulationState) []simtypes.WeightedOperation {
 	operations := make([]simtypes.WeightedOperation, 0)
+
+	var weightMsgCommitTokens int
+	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgCommitTokens, &weightMsgCommitTokens, nil,
+		func(_ *rand.Rand) {
+			weightMsgCommitTokens = defaultWeightMsgCommitTokens
+		},
+	)
+	operations = append(operations, simulation.NewWeightedOperation(
+		weightMsgCommitTokens,
+		commitmentsimulation.SimulateMsgCommitTokens(am.accountKeeper, am.bankKeeper, am.keeper),
+	))
+
+	var weightMsgUncommitTokens int
+	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgUncommitTokens, &weightMsgUncommitTokens, nil,
+		func(_ *rand.Rand) {
+			weightMsgUncommitTokens = defaultWeightMsgUncommitTokens
+		},
+	)
+	operations = append(operations, simulation.NewWeightedOperation(
+		weightMsgUncommitTokens,
+		commitmentsimulation.SimulateMsgUncommitTokens(am.accountKeeper, am.bankKeeper, am.keeper),
+	))
+
+	var weightMsgWithdrawTokens int
+	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgWithdrawTokens, &weightMsgWithdrawTokens, nil,
+		func(_ *rand.Rand) {
+			weightMsgWithdrawTokens = defaultWeightMsgWithdrawTokens
+		},
+	)
+	operations = append(operations, simulation.NewWeightedOperation(
+		weightMsgWithdrawTokens,
+		commitmentsimulation.SimulateMsgWithdrawTokens(am.accountKeeper, am.bankKeeper, am.keeper),
+	))
 
 	// this line is used by starport scaffolding # simapp/module/operation
 
