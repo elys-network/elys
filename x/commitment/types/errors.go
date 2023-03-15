@@ -8,5 +8,6 @@ import (
 
 // x/commitment module sentinel errors
 var (
-	ErrSample = sdkerrors.Register(ModuleName, 1100, "sample error")
+	ErrCommitmentsNotFound           = sdkerrors.Register(ModuleName, 1, "commitments not found for creator")
+	ErrInsufficientUncommittedTokens = sdkerrors.Register(ModuleName, 2, "insufficient uncommitted tokens for creator and denom")
 )

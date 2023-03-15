@@ -36,6 +36,10 @@ const (
 	// TODO: Determine the simulation weight value
 	defaultWeightMsgWithdrawTokens int = 100
 
+	opWeightMsgDepositTokens = "op_weight_msg_deposit_tokens"
+	// TODO: Determine the simulation weight value
+	defaultWeightMsgDepositTokens int = 100
+
 	// this line is used by starport scaffolding # simapp/module/const
 )
 
@@ -101,6 +105,17 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 	operations = append(operations, simulation.NewWeightedOperation(
 		weightMsgWithdrawTokens,
 		commitmentsimulation.SimulateMsgWithdrawTokens(am.accountKeeper, am.bankKeeper, am.keeper),
+	))
+
+	var weightMsgDepositTokens int
+	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgDepositTokens, &weightMsgDepositTokens, nil,
+		func(_ *rand.Rand) {
+			weightMsgDepositTokens = defaultWeightMsgDepositTokens
+		},
+	)
+	operations = append(operations, simulation.NewWeightedOperation(
+		weightMsgDepositTokens,
+		commitmentsimulation.SimulateMsgDepositTokens(am.accountKeeper, am.bankKeeper, am.keeper),
 	))
 
 	// this line is used by starport scaffolding # simapp/module/operation

@@ -67497,6 +67497,8 @@ definitions:
     description: QueryParamsResponse is response type for the Query/Params RPC method.
   elysnetwork.elys.commitment.MsgCommitTokensResponse:
     type: object
+  elysnetwork.elys.commitment.MsgDepositTokensResponse:
+    type: object
   elysnetwork.elys.commitment.MsgUncommitTokensResponse:
     type: object
   elysnetwork.elys.commitment.MsgWithdrawTokensResponse:

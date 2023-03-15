@@ -12,7 +12,7 @@ import (
 )
 
 func TestKeeper_SetGetRemoveCommitments(t *testing.T) {
-	k, ctx := keepertest.CommitmentKeeper(t)
+	keeper, ctx := keepertest.CommitmentKeeper(t)
 
 	addr := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
 	commitments := types.Commitments{
@@ -20,17 +20,17 @@ func TestKeeper_SetGetRemoveCommitments(t *testing.T) {
 	}
 
 	// Test SetCommitments
-	k.SetCommitments(ctx, commitments)
+	keeper.SetCommitments(ctx, commitments)
 
 	// Test GetCommitments
-	retrievedCommitments, found := k.GetCommitments(ctx, addr.String())
+	retrievedCommitments, found := keeper.GetCommitments(ctx, addr.String())
 	require.True(t, found)
 	assert.Equal(t, commitments, retrievedCommitments)
 
 	// Test RemoveCommitments
-	k.RemoveCommitments(ctx, addr.String())
+	keeper.RemoveCommitments(ctx, addr.String())
 
 	// Test that commitments are removed
-	_, found = k.GetCommitments(ctx, addr.String())
+	_, found = keeper.GetCommitments(ctx, addr.String())
 	assert.False(t, found)
 }
