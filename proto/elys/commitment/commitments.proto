@@ -8,7 +8,7 @@ option go_package = "github.com/elys-network/elys/x/commitment/types";
 
 // GenesisState defines the commitment module's genesis state.
 message Commitments {
-    string address = 1;
+    string creator = 1;
     repeated CommittedTokens committed_tokens = 2;
     repeated UncommittedTokens uncommitted_tokens = 3;
 }

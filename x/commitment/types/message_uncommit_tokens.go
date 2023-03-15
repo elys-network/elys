@@ -38,7 +38,7 @@ func (msg *MsgUncommitTokens) GetSignBytes() []byte {
 	return sdk.MustSortJSON(bz)
 }
 
-func (msg *MsgUncommitTokens) ValidateBasic() error {
+func (msg *MsgUncommitTokens) ValidateBasic() error { // TODO
 	_, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
