@@ -38,10 +38,15 @@ func (msg *MsgCommitTokens) GetSignBytes() []byte {
 	return sdk.MustSortJSON(bz)
 }
 
-func (msg *MsgCommitTokens) ValidateBasic() error { // TODO
+func (msg *MsgCommitTokens) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid creator address: %v", err)
 	}
+
+	if msg.Amount.IsNegative() {
+		return sdkerrors.Wrapf(ErrInvalidAmount, "Amount cannot be negative")
+	}
+
 	return nil
 }

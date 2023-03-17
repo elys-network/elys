@@ -18,48 +18,29 @@ func (k msgServer) CommitTokens(goCtx context.Context, msg *types.MsgCommitToken
 	}
 
 	// Check if the uncommitted tokens have enough amount to be committed
-	uncommittedTokens := commitments.GetUncommittedTokens()
-	uncommittedAmount := sdk.NewInt(0)
-	for _, token := range uncommittedTokens {
-		if token.Denom == msg.Denom {
-			uncommittedAmount = token.Amount
-			break
-		}
-	}
+	uncommittedToken, _ := commitments.GetUncommittedTokensForDenom(msg.Denom)
 
-	if uncommittedAmount.LT(msg.Amount) {
+	if uncommittedToken.Amount.LT(msg.Amount) {
 		return nil, sdkerrors.Wrapf(types.ErrInsufficientUncommittedTokens, "creator: %s, denom: %s", msg.Creator, msg.Denom)
 	}
 
 	// Update the uncommitted tokens amount
-	for _, token := range uncommittedTokens {
-		if token.Denom == msg.Denom {
-			token.Amount = token.Amount.Sub(msg.Amount)
-			break
-		}
-	}
+	uncommittedToken.Amount = uncommittedToken.Amount.Sub(msg.Amount)
 
 	// Update the committed tokens amount
-	committedTokens := commitments.GetCommittedTokens()
-	found = false
-	for _, token := range committedTokens {
-		if token.Denom == msg.Denom {
-			token.Amount = token.Amount.Add(msg.Amount)
-			found = true
-			break
-		}
-	}
-
-	if !found {
+	committedToken, found := commitments.GetCommittedTokensForDenom(msg.Denom)
+	if found {
+		committedToken.Amount = committedToken.Amount.Add(msg.Amount)
+	} else {
+		committedTokens := commitments.GetCommittedTokens()
 		committedTokens = append(committedTokens, &types.CommittedTokens{
 			Denom:  msg.Denom,
 			Amount: msg.Amount,
 		})
+		commitments.CommittedTokens = committedTokens
 	}
 
 	// Update the commitments
-	commitments.CommittedTokens = committedTokens
-	commitments.UncommittedTokens = uncommittedTokens
 	k.SetCommitments(ctx, commitments)
 
 	return &types.MsgCommitTokensResponse{}, nil
