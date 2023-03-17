@@ -117,3 +117,58 @@ genesis:
           currentEpoch: "0"
           currentEpochStartHeight: "0"
           epochCountingStarted: false
+    tokenomics:
+      airdropList:
+        - intent: AtomStakers
+          amount: 9999999
+          authority: elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3
+        - intent: RowanStakersLP
+          amount: 9999999
+          authority: elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3
+        - intent: Juno
+          amount: 9999999
+          authority: elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3
+        - intent: Osmo
+          amount: 9999999
+          authority: elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3
+        - intent: Evmos
+          amount: 9999999
+          authority: elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3
+      genesisInflation:
+        inflation:
+          lmRewards: 9999999
+          icsStakingRewards: 9999999
+          communityFund: 9999999
+          strategicReserve: 9999999
+          teamTokensVested: 9999999
+        seedVesting: 9999999
+        strategicSalesVesting: 9999999
+        authority: elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3
+      timeBasedInflationList:
+        - startBlockHeight: 1
+          endBlockHeight: 6307200
+          description: 1st Year Inflation
+          inflation:
+            lmRewards: 9999999
+            icsStakingRewards: 9999999
+            communityFund: 9999999
+            strategicReserve: 9999999
+            teamTokensVested: 9999999
+        - startBlockHeight: 6307201
+          endBlockHeight: 12614401
+          description: 2nd Year Inflation
+          inflation:
+            lmRewards: 9999999
+            icsStakingRewards: 9999999
+            communityFund: 9999999
+            strategicReserve: 9999999
+            teamTokensVested: 9999999
+        - startBlockHeight: 12614402
+          endBlockHeight: 18921602
+          description: 3rd Year Inflation
+          inflation:
+            lmRewards: 9999999
+            icsStakingRewards: 9999999
+            communityFund: 9999999
+            strategicReserve: 9999999
+            teamTokensVested: 9999999
