@@ -1,6 +1,8 @@
 package oracle
 
 import (
+	"fmt"
+
 	"github.com/bandprotocol/bandchain-packet/obi"
 	"github.com/bandprotocol/bandchain-packet/packet"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -15,11 +17,13 @@ func (im IBCModule) handleOraclePacket(
 	ctx sdk.Context,
 	modulePacket channeltypes.Packet,
 ) (channeltypes.Acknowledgement, error) {
+	fmt.Println("handleOraclePacket1")
 	var ack channeltypes.Acknowledgement
 	var modulePacketData packet.OracleResponsePacketData
 	if err := types.ModuleCdc.UnmarshalJSON(modulePacket.GetData(), &modulePacketData); err != nil {
 		return ack, nil
 	}
+	fmt.Println("handleOraclePacket2", modulePacketData)
 
 	switch modulePacketData.GetClientID() {
 
@@ -31,6 +35,7 @@ func (im IBCModule) handleOraclePacket(
 				"cannot decode the coinRates received packet")
 		}
 		im.keeper.SetCoinRatesResult(ctx, types.OracleRequestID(modulePacketData.RequestID), coinRatesResult)
+		fmt.Println("handleOraclePacket3", coinRatesResult)
 
 		// TODO: CoinRates oracle data reception logic
 		// this line is used by starport scaffolding # oracle/module/recv
@@ -39,6 +44,7 @@ func (im IBCModule) handleOraclePacket(
 		err := sdkerrors.Wrapf(sdkerrors.ErrJSONUnmarshal,
 			"oracle received packet not found: %s", modulePacketData.GetClientID())
 		ack = channeltypes.NewErrorAcknowledgement(err)
+		fmt.Println("handleOraclePacket4", err)
 		return ack, err
 
 	}
@@ -47,6 +53,7 @@ func (im IBCModule) handleOraclePacket(
 			packet.NewOracleRequestPacketAcknowledgement(modulePacketData.RequestID),
 		),
 	)
+	fmt.Println("handleOraclePacket5", modulePacketData.RequestID)
 	return ack, nil
 }
 
@@ -57,33 +64,40 @@ func (im IBCModule) handleOracleAcknowledgment(
 	ack channeltypes.Acknowledgement,
 	modulePacket channeltypes.Packet,
 ) (*sdk.Result, error) {
+	fmt.Println("handleOracleAcknowledgment-1", ack.Response)
 	switch resp := ack.Response.(type) {
 	case *channeltypes.Acknowledgement_Result:
+		fmt.Println("handleOracleAcknowledgment1", resp)
 		var oracleAck packet.OracleRequestPacketAcknowledgement
 		err := types.ModuleCdc.UnmarshalJSON(resp.Result, &oracleAck)
 		if err != nil {
 			return nil, nil
 		}
+		fmt.Println("handleOracleAcknowledgment2", oracleAck)
 
 		var data packet.OracleRequestPacketData
 		if err = types.ModuleCdc.UnmarshalJSON(modulePacket.GetData(), &data); err != nil {
 			return nil, nil
 		}
 		requestID := types.OracleRequestID(oracleAck.RequestID)
+		fmt.Println("handleOracleAcknowledgment3", requestID)
 
 		switch data.GetClientID() {
 
 		case types.CoinRatesClientIDKey:
+			fmt.Println("handleOracleAcknowledgment4", requestID)
 			var coinRatesData types.CoinRatesCallData
 			if err = obi.Decode(data.GetCalldata(), &coinRatesData); err != nil {
 				return nil, sdkerrors.Wrap(err,
 					"cannot decode the coinRates oracle acknowledgment packet")
 			}
+			fmt.Println("handleOracleAcknowledgment5", requestID)
 			im.keeper.SetLastCoinRatesID(ctx, requestID)
 			return &sdk.Result{}, nil
 			// this line is used by starport scaffolding # oracle/module/ack
 
 		default:
+			fmt.Println("handleOracleAcknowledgment6", data.GetClientID())
 			return nil, sdkerrors.Wrapf(sdkerrors.ErrJSONUnmarshal,
 				"oracle acknowledgment packet not found: %s", data.GetClientID())
 		}

@@ -4,8 +4,8 @@ import (
 	"testing"
 
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	"github.com/stretchr/testify/require"
 	"github.com/elys-network/elys/testutil/sample"
+	"github.com/stretchr/testify/require"
 )
 
 func TestMsgCoinRatesData_ValidateBasic(t *testing.T) {
@@ -17,21 +17,21 @@ func TestMsgCoinRatesData_ValidateBasic(t *testing.T) {
 		{
 			name: "invalid address",
 			msg: MsgCoinRatesData{
-				Creator: "invalid_address",
+				Creator:       "invalid_address",
 				SourceChannel: "channel-0",
 			},
 			err: sdkerrors.ErrInvalidAddress,
 		}, {
 			name: "invalid source channel",
 			msg: MsgCoinRatesData{
-				Creator: sample.AccAddress(),
+				Creator:       sample.AccAddress(),
 				SourceChannel: "",
 			},
 			err: sdkerrors.ErrInvalidRequest,
 		}, {
 			name: "valid message",
 			msg: MsgCoinRatesData{
-				Creator: sample.AccAddress(),
+				Creator:       sample.AccAddress(),
 				SourceChannel: "channel-0",
 			},
 		},

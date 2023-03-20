@@ -6,8 +6,8 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
-	"github.com/spf13/cobra"
 	"github.com/elys-network/elys/x/oracle/types"
+	"github.com/spf13/cobra"
 )
 
 // CmdCoinRatesResult queries request result by reqID

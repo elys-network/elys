@@ -3,8 +3,8 @@ package keeper
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	gogotypes "github.com/gogo/protobuf/types"
 	"github.com/elys-network/elys/x/oracle/types"
+	gogotypes "github.com/gogo/protobuf/types"
 )
 
 // SetCoinRatesResult saves the CoinRates result

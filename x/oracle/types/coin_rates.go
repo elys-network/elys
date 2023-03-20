@@ -33,16 +33,16 @@ func NewMsgCoinRatesData(
 	executeGas uint64,
 ) *MsgCoinRatesData {
 	return &MsgCoinRatesData{
-		ClientID:       				CoinRatesClientIDKey,
-		Creator:	creator,
-		OracleScriptID: 				uint64(oracleScriptID),
-		SourceChannel:  				sourceChannel,
-		Calldata:       				calldata,
-		AskCount:       				askCount,
-		MinCount:       				minCount,
-		FeeLimit:       				feeLimit,
-		PrepareGas:     				prepareGas,
-		ExecuteGas:     				executeGas,
+		ClientID:       CoinRatesClientIDKey,
+		Creator:        creator,
+		OracleScriptID: uint64(oracleScriptID),
+		SourceChannel:  sourceChannel,
+		Calldata:       calldata,
+		AskCount:       askCount,
+		MinCount:       minCount,
+		FeeLimit:       feeLimit,
+		PrepareGas:     prepareGas,
+		ExecuteGas:     executeGas,
 	}
 }
 
