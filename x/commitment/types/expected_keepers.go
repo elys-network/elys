@@ -19,3 +19,9 @@ type BankKeeper interface {
 	BurnCoins(ctx sdk.Context, moduleName string, amt sdk.Coins) error
 	// Methods imported from bank should be defined here
 }
+
+// StakingKeeper defines the expected interface contract the vesting module
+// requires for finding and changing the delegated tokens, used in clawback.
+type StakingKeeper interface {
+	BondDenom(ctx sdk.Context) string
+}

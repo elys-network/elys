@@ -67495,11 +67495,15 @@ definitions:
         description: params holds all the parameters of this module.
         type: object
     description: QueryParamsResponse is response type for the Query/Params RPC method.
+  elysnetwork.elys.commitment.MsgCancelVestResponse:
+    type: object
   elysnetwork.elys.commitment.MsgCommitTokensResponse:
     type: object
   elysnetwork.elys.commitment.MsgDepositTokensResponse:
     type: object
   elysnetwork.elys.commitment.MsgUncommitTokensResponse:
+    type: object
+  elysnetwork.elys.commitment.MsgVestResponse:
     type: object
   elysnetwork.elys.commitment.MsgWithdrawTokensResponse:
     type: object

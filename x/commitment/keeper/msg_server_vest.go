@@ -7,10 +7,15 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
 	"github.com/elys-network/elys/x/commitment/types"
+	epochstypes "github.com/elys-network/elys/x/epochs/types"
 )
 
-func (k msgServer) WithdrawTokens(goCtx context.Context, msg *types.MsgWithdrawTokens) (*types.MsgWithdrawTokensResponse, error) {
+func (k msgServer) Vest(goCtx context.Context, msg *types.MsgVest) (*types.MsgVestResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	if msg.Denom != "eden" {
+		return nil, sdkerrors.Wrapf(types.ErrInvalidDenom, "denom: %s", msg.Denom)
+	}
 
 	// Get the Commitments for the creator
 	commitments, found := k.GetCommitments(ctx, msg.Creator)
@@ -42,21 +47,21 @@ func (k msgServer) WithdrawTokens(goCtx context.Context, msg *types.MsgWithdrawT
 
 	// Subtract the withdrawn amount from the uncommitted balance
 	uncommittedToken.Amount = uncommittedToken.Amount.Sub(requestedAmount)
+
+	// Create vesting tokens entry and add to commitments
+	vestingTokens := commitments.GetVestingTokens()
+	vestingTokens = append(vestingTokens, &types.VestingTokens{
+		Denom:           k.stakingKeeper.BondDenom(ctx), // TODO: param or map
+		TotalAmount:     msg.Amount,
+		UnvestedAmount:  msg.Amount,
+		EpochIdentifier: epochstypes.DayEpochID, // TODO: gov param?
+		NumEpochs:       180,
+		CurrentEpoch:    0,
+	})
+	commitments.VestingTokens = vestingTokens
+
 	// Update the commitments
 	k.SetCommitments(ctx, commitments)
 
-	withdrawCoins := sdk.NewCoins(sdk.NewCoin(msg.Denom, requestedAmount))
-
-	// Mint the withdrawn tokens to the module account
-	err := k.bankKeeper.MintCoins(ctx, types.ModuleName, withdrawCoins)
-	if err != nil {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrInsufficientFunds, "unable to mint withdrawn tokens")
-	}
-	// Send the minted coins to the user's account
-	err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, sdk.AccAddress(msg.Creator), withdrawCoins)
-	if err != nil {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrInsufficientFunds, "unable to send withdrawn tokens")
-	}
-
-	return &types.MsgWithdrawTokensResponse{}, nil
+	return &types.MsgVestResponse{}, nil
 }

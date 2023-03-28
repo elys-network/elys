@@ -40,6 +40,14 @@ const (
 	// TODO: Determine the simulation weight value
 	defaultWeightMsgDepositTokens int = 100
 
+	opWeightMsgVest = "op_weight_msg_vest"
+	// TODO: Determine the simulation weight value
+	defaultWeightMsgVest int = 100
+
+	opWeightMsgCancelVest = "op_weight_msg_cancel_vest"
+	// TODO: Determine the simulation weight value
+	defaultWeightMsgCancelVest int = 100
+
 	// this line is used by starport scaffolding # simapp/module/const
 )
 
@@ -116,6 +124,28 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 	operations = append(operations, simulation.NewWeightedOperation(
 		weightMsgDepositTokens,
 		commitmentsimulation.SimulateMsgDepositTokens(am.accountKeeper, am.bankKeeper, am.keeper),
+	))
+
+	var weightMsgVest int
+	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgVest, &weightMsgVest, nil,
+		func(_ *rand.Rand) {
+			weightMsgVest = defaultWeightMsgVest
+		},
+	)
+	operations = append(operations, simulation.NewWeightedOperation(
+		weightMsgVest,
+		commitmentsimulation.SimulateMsgVest(am.accountKeeper, am.bankKeeper, am.keeper),
+	))
+
+	var weightMsgCancelVest int
+	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgCancelVest, &weightMsgCancelVest, nil,
+		func(_ *rand.Rand) {
+			weightMsgCancelVest = defaultWeightMsgCancelVest
+		},
+	)
+	operations = append(operations, simulation.NewWeightedOperation(
+		weightMsgCancelVest,
+		commitmentsimulation.SimulateMsgCancelVest(am.accountKeeper, am.bankKeeper, am.keeper),
 	))
 
 	// this line is used by starport scaffolding # simapp/module/operation

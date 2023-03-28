@@ -45,3 +45,23 @@ func (k Keeper) RemoveCommitments(
 		creator,
 	))
 }
+
+// IterateCommitments iterates over all Commitments and performs a
+// callback.
+func (k Keeper) IterateCommitments(
+	ctx sdk.Context,
+	handlerFn func(commitments types.Commitments) (stop bool),
+) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.CommitmentsKeyPrefix))
+	iterator := sdk.KVStorePrefixIterator(store, []byte{})
+	defer iterator.Close()
+
+	for ; iterator.Valid(); iterator.Next() {
+		var commitments types.Commitments
+		k.cdc.MustUnmarshal(iterator.Value(), &commitments)
+
+		if handlerFn(commitments) {
+			break
+		}
+	}
+}

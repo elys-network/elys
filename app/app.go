@@ -116,6 +116,7 @@ import (
 	commitmentmodule "github.com/elys-network/elys/x/commitment"
 	commitmentmodulekeeper "github.com/elys-network/elys/x/commitment/keeper"
 	commitmentmoduletypes "github.com/elys-network/elys/x/commitment/types"
+
 	// this line is used by starport scaffolding # stargate/app/moduleImport
 
 	appparams "github.com/elys-network/elys/app/params"
@@ -551,6 +552,7 @@ func NewElysApp(
 		app.GetSubspace(commitmentmoduletypes.ModuleName),
 
 		app.BankKeeper,
+		app.StakingKeeper,
 	)
 	commitmentModule := commitmentmodule.NewAppModule(appCodec, app.CommitmentKeeper, app.AccountKeeper, app.BankKeeper)
 

@@ -12,14 +12,12 @@ service Msg {
   rpc UncommitTokens (MsgUncommitTokens) returns (MsgUncommitTokensResponse);
   rpc WithdrawTokens (MsgWithdrawTokens) returns (MsgWithdrawTokensResponse);
   rpc DepositTokens  (MsgDepositTokens ) returns (MsgDepositTokensResponse );
+  rpc Vest           (MsgVest          ) returns (MsgVestResponse          );
+  rpc CancelVest     (MsgCancelVest    ) returns (MsgCancelVestResponse    );
 }
 message MsgCommitTokens {
   string creator = 1;
-  string amount  = 2 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", 
-  (gogoproto.nullable) = false, 
-  (gogoproto.moretags) = "yaml:\"amount\""
-  ];    
+  string amount  = 2 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false, (gogoproto.moretags) = "yaml:\"amount\""];
   string denom   = 3;
 }
 
@@ -27,11 +25,7 @@ message MsgCommitTokensResponse {}
 
 message MsgUncommitTokens {
   string creator = 1;
-  string amount  = 2 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", 
-  (gogoproto.nullable) = false, 
-  (gogoproto.moretags) = "yaml:\"amount\""
-  ];    
+  string amount  = 2 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false, (gogoproto.moretags) = "yaml:\"amount\""];
   string denom   = 3;
 }
 
@@ -39,11 +33,7 @@ message MsgUncommitTokensResponse {}
 
 message MsgWithdrawTokens {
   string creator = 1;
-  string amount  = 2 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", 
-  (gogoproto.nullable) = false, 
-  (gogoproto.moretags) = "yaml:\"amount\""
-  ];    
+  string amount  = 2 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false, (gogoproto.moretags) = "yaml:\"amount\""];
   string denom   = 3;
 }
 
@@ -51,13 +41,25 @@ message MsgWithdrawTokensResponse {}
 
 message MsgDepositTokens {
   string creator = 1;
-  string amount  = 2 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", 
-  (gogoproto.nullable) = false, 
-  (gogoproto.moretags) = "yaml:\"amount\""
-  ];    
+  string amount  = 2 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false, (gogoproto.moretags) = "yaml:\"amount\""];
   string denom   = 3;
 }
 
 message MsgDepositTokensResponse {}
+
+message MsgVest {
+  string creator = 1;
+  string amount  = 2 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false, (gogoproto.moretags) = "yaml:\"amount\""];
+  string denom   = 3;
+}
+
+message MsgVestResponse {}
+
+message MsgCancelVest {
+  string creator = 1;
+  string amount  = 2 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false, (gogoproto.moretags) = "yaml:\"amount\""];
+  string denom   = 3;
+}
+
+message MsgCancelVestResponse {}
 
