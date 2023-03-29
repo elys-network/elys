@@ -89,10 +89,10 @@ func TestGetSetDeleteEpochInfo(t *testing.T) {
 	// Create a new EpochInfo struct
 	epoch := types.EpochInfo{
 		Identifier:              "epoch1",
-		StartTime:               time.Now(),
+		StartTime:               time.Now().UTC(),
 		Duration:                time.Hour * 24 * 7, // 1 week
 		CurrentEpoch:            1,
-		CurrentEpochStartTime:   time.Now(),
+		CurrentEpochStartTime:   time.Now().UTC(),
 		EpochCountingStarted:    true,
 		CurrentEpochStartHeight: 1,
 	}
@@ -124,30 +124,30 @@ func TestIterateEpochInfo(t *testing.T) {
 	// Create some sample epoch infos
 	epoch1 := types.EpochInfo{
 		Identifier:              "epoch1",
-		StartTime:               time.Now(),
+		StartTime:               time.Now().UTC(),
 		Duration:                time.Hour * 24 * 7, // 1 week
 		CurrentEpoch:            1,
-		CurrentEpochStartTime:   time.Now(),
+		CurrentEpochStartTime:   time.Now().UTC(),
 		EpochCountingStarted:    true,
 		CurrentEpochStartHeight: 1,
 	}
 
 	epoch2 := types.EpochInfo{
 		Identifier:              "epoch2",
-		StartTime:               time.Now(),
+		StartTime:               time.Now().UTC(),
 		Duration:                time.Hour * 24 * 7, // 1 week
 		CurrentEpoch:            2,
-		CurrentEpochStartTime:   time.Now(),
+		CurrentEpochStartTime:   time.Now().UTC(),
 		EpochCountingStarted:    true,
 		CurrentEpochStartHeight: 2,
 	}
 
 	epoch3 := types.EpochInfo{
 		Identifier:              "epoch3",
-		StartTime:               time.Now(),
+		StartTime:               time.Now().UTC(),
 		Duration:                time.Hour * 24 * 7, // 1 week
 		CurrentEpoch:            3,
-		CurrentEpochStartTime:   time.Now(),
+		CurrentEpochStartTime:   time.Now().UTC(),
 		EpochCountingStarted:    true,
 		CurrentEpochStartHeight: 3,
 	}
@@ -167,13 +167,3 @@ func TestIterateEpochInfo(t *testing.T) {
 		return false
 	})
 }
-
-// func TestAllEpochInfos(t *testing.T) {
-//     // Create a new instance of the EpochsKeeper and context
-//     k, ctx := EpochsKeeper(t)
-
-//     // Create some sample epoch infos
-//     epoch1 := types.EpochInfo{
-//         Identifier:             "epoch1",
-//         StartTime:              time.Now(),
-//         Duration:               time.Hour * 24 * 7, // 1
