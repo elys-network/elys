@@ -1,0 +1,39 @@
+syntax = "proto3";
+package elysnetwork.elys.oracle;
+
+import "gogoproto/gogo.proto";
+import "cosmos/base/v1beta1/coin.proto";
+import "elys/oracle/coin_rates.proto";
+// this line is used by starport scaffolding # proto/tx/import
+
+option go_package = "github.com/elys-network/elys/x/oracle/types";
+
+// Msg defines the Msg service.
+service Msg {
+      rpc CoinRatesData(MsgCoinRatesData) returns (MsgCoinRatesDataResponse);
+// this line is used by starport scaffolding # proto/tx/rpc
+}
+
+message MsgCoinRatesData {
+  string creator = 1;
+  uint64 oracle_script_id = 2 [
+    (gogoproto.customname) = "OracleScriptID",
+    (gogoproto.moretags) = "yaml:\"oracle_script_id\""
+  ];
+  string source_channel = 3;
+  CoinRatesCallData calldata = 4;
+  uint64 ask_count = 5;
+  uint64 min_count = 6;
+  repeated cosmos.base.v1beta1.Coin fee_limit = 7 [
+    (gogoproto.nullable) = false,
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
+  ];
+  uint64 prepare_gas = 8;
+  uint64 execute_gas = 9;
+  string client_id = 10 [(gogoproto.customname) = "ClientID"];
+}
+
+message MsgCoinRatesDataResponse {
+}
+
+// this line is used by starport scaffolding # proto/tx/message

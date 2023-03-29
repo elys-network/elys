@@ -113,6 +113,9 @@ import (
 	liquidityprovidermodulekeeper "github.com/elys-network/elys/x/liquidityprovider/keeper"
 	liquidityprovidermoduletypes "github.com/elys-network/elys/x/liquidityprovider/types"
 
+	oraclemodule "github.com/elys-network/elys/x/oracle"
+	oraclemodulekeeper "github.com/elys-network/elys/x/oracle/keeper"
+	oraclemoduletypes "github.com/elys-network/elys/x/oracle/types"
 	// this line is used by starport scaffolding # stargate/app/moduleImport
 
 	appparams "github.com/elys-network/elys/app/params"
@@ -174,6 +177,7 @@ var (
 		epochsmodule.AppModuleBasic{},
 		assetprofilemodule.AppModuleBasic{},
 		liquidityprovidermodule.AppModuleBasic{},
+		oraclemodule.AppModuleBasic{},
 		// this line is used by starport scaffolding # stargate/app/moduleBasic
 	)
 
@@ -252,6 +256,8 @@ type ElysApp struct {
 	AssetprofileKeeper assetprofilemodulekeeper.Keeper
 
 	LiquidityproviderKeeper liquidityprovidermodulekeeper.Keeper
+	ScopedOracleKeeper      capabilitykeeper.ScopedKeeper
+	OracleKeeper            oraclemodulekeeper.Keeper
 	// this line is used by starport scaffolding # stargate/app/keeperDeclaration
 
 	// mm is the module manager
@@ -299,6 +305,7 @@ func NewElysApp(
 		epochsmoduletypes.StoreKey,
 		assetprofilemoduletypes.StoreKey,
 		liquidityprovidermoduletypes.StoreKey,
+		oraclemoduletypes.StoreKey,
 		// this line is used by starport scaffolding # stargate/app/storeKey
 	)
 	tkeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey)
@@ -536,6 +543,20 @@ func NewElysApp(
 	)
 	liquidityproviderModule := liquidityprovidermodule.NewAppModule(appCodec, app.LiquidityproviderKeeper, app.AccountKeeper, app.BankKeeper)
 
+	scopedOracleKeeper := app.CapabilityKeeper.ScopeToModule(oraclemoduletypes.ModuleName)
+	app.ScopedOracleKeeper = scopedOracleKeeper
+	app.OracleKeeper = *oraclemodulekeeper.NewKeeper(
+		appCodec,
+		keys[oraclemoduletypes.StoreKey],
+		keys[oraclemoduletypes.MemStoreKey],
+		app.GetSubspace(oraclemoduletypes.ModuleName),
+		app.IBCKeeper.ChannelKeeper,
+		&app.IBCKeeper.PortKeeper,
+		scopedOracleKeeper,
+	)
+	oracleModule := oraclemodule.NewAppModule(appCodec, app.OracleKeeper, app.AccountKeeper, app.BankKeeper)
+
+	oracleIBCModule := oraclemodule.NewIBCModule(app.OracleKeeper)
 	// this line is used by starport scaffolding # stargate/app/keeperDefinition
 
 	/**** IBC Routing ****/
@@ -547,6 +568,7 @@ func NewElysApp(
 	ibcRouter := ibcporttypes.NewRouter()
 	ibcRouter.AddRoute(icahosttypes.SubModuleName, icaHostIBCModule).
 		AddRoute(ibctransfertypes.ModuleName, transferIBCModule)
+	ibcRouter.AddRoute(oraclemoduletypes.ModuleName, oracleIBCModule)
 	// this line is used by starport scaffolding # ibc/app/router
 	app.IBCKeeper.SetRouter(ibcRouter)
 
@@ -604,6 +626,7 @@ func NewElysApp(
 		epochsModule,
 		assetprofileModule,
 		liquidityproviderModule,
+		oracleModule,
 		// this line is used by starport scaffolding # stargate/app/appModule
 	)
 
@@ -637,6 +660,7 @@ func NewElysApp(
 		vestingtypes.ModuleName,
 		assetprofilemoduletypes.ModuleName,
 		liquidityprovidermoduletypes.ModuleName,
+		oraclemoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/beginBlockers
 	)
 
@@ -665,6 +689,7 @@ func NewElysApp(
 		vestingtypes.ModuleName,
 		assetprofilemoduletypes.ModuleName,
 		liquidityprovidermoduletypes.ModuleName,
+		oraclemoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/endBlockers
 	)
 
@@ -697,6 +722,7 @@ func NewElysApp(
 		epochsmoduletypes.ModuleName,
 		assetprofilemoduletypes.ModuleName,
 		liquidityprovidermoduletypes.ModuleName,
+		oraclemoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/initGenesis
 	)
 
@@ -729,6 +755,7 @@ func NewElysApp(
 		epochsModule,
 		assetprofileModule,
 		liquidityproviderModule,
+		oracleModule,
 		// this line is used by starport scaffolding # stargate/app/appModule
 	)
 	app.sm.RegisterStoreDecoders()
@@ -935,6 +962,7 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(icahosttypes.SubModuleName)
 	paramsKeeper.Subspace(assetprofilemoduletypes.ModuleName)
 	paramsKeeper.Subspace(liquidityprovidermoduletypes.ModuleName)
+	paramsKeeper.Subspace(oraclemoduletypes.ModuleName)
 	// this line is used by starport scaffolding # stargate/app/paramSubspace
 
 	return paramsKeeper
