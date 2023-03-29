@@ -3,38 +3,52 @@ package keeper_test
 import (
 	"testing"
 
+	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	keepertest "github.com/elys-network/elys/testutil/keeper"
+	"github.com/elys-network/elys/app"
 	commitmentkeeper "github.com/elys-network/elys/x/commitment/keeper"
 	"github.com/elys-network/elys/x/commitment/types"
 	"github.com/stretchr/testify/require"
 )
 
 func TestDepositTokens(t *testing.T) {
-	t.Skip() // TODO test keeper needs bank keeper
+	t.Skip()
+	app := app.InitElysTestApp(true)
+
+	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
 	// Create a test context and keeper
-	keeper, ctx := keepertest.CommitmentKeeper(t)
-	msgServer := commitmentkeeper.NewMsgServerImpl(*keeper)
+	keeper := app.CommitmentKeeper
+
+	msgServer := commitmentkeeper.NewMsgServerImpl(keeper)
 
 	// Create a new account
 	creator, _ := sdk.AccAddressFromBech32("cosmos1xv9tklw7d82sezh9haa573wufgy59vmwe6xxe5")
-
+	acc := app.AccountKeeper.GetAccount(ctx, creator)
+	if acc == nil {
+		acc = app.AccountKeeper.NewAccountWithAddress(ctx, creator)
+		app.AccountKeeper.SetAccount(ctx, acc)
+	}
 	// Create a deposit message
 	depositMsg := &types.MsgDepositTokens{
 		Creator: creator.String(),
-		Denom:   "stake",
+		Denom:   "eden",
 		Amount:  sdk.NewInt(100),
 	}
 
 	// Add initial funds to creator's account
-	// coins := sdk.NewCoins(sdk.NewCoin("stake", sdk.NewInt(200)))
-	// err := keeper.bankKeeper.MintCoins(ctx, types.ModuleName, coins)
-	// require.NoError(t, err)
-	// // err = keeper.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, creator, coins)
-	// require.NoError(t, err)
+	coins := sdk.NewCoins(sdk.NewCoin("eden", sdk.NewInt(200)))
+	err := app.BankKeeper.MintCoins(ctx, types.ModuleName, coins)
+	require.NoError(t, err)
+	err = app.BankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, creator, coins)
+	require.NoError(t, err)
+	balance := app.BankKeeper.GetBalance(ctx, creator, depositMsg.Denom)
+	require.Equal(t, coins.AmountOf("eden"), balance.Amount, "creator balance did not initialize")
+
+	require.NoError(t, err)
 
 	// Execute the DepositTokens function
-	_, err := msgServer.DepositTokens(ctx, depositMsg)
+	_, err = msgServer.DepositTokens(ctx, depositMsg)
 	require.NoError(t, err)
 
 	// Check if the tokens were deposited and uncommitted balance was updated
@@ -45,6 +59,6 @@ func TestDepositTokens(t *testing.T) {
 	require.Equal(t, depositMsg.Amount, uncommittedBalance, "uncommitted balance did not update correctly")
 
 	// Check if the deposited tokens were burned
-	// remainingCoins := k.bankKeeper.GetBalance(ctx, creator, depositMsg.Denom)
-	// require.Equal(t, sdk.NewInt(100), remainingCoins.Amount, "tokens were not burned correctly")
+	remainingCoins := app.BankKeeper.GetBalance(ctx, creator, depositMsg.Denom)
+	require.Equal(t, sdk.NewInt(100), remainingCoins.Amount, "tokens were not burned correctly")
 }

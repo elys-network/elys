@@ -3,8 +3,10 @@ package keeper_test
 import (
 	"testing"
 
+	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	keepertest "github.com/elys-network/elys/testutil/keeper"
+	"github.com/elys-network/elys/app"
 	commitmentkeeper "github.com/elys-network/elys/x/commitment/keeper"
 	"github.com/elys-network/elys/x/commitment/types"
 	"github.com/stretchr/testify/assert"
@@ -13,8 +15,12 @@ import (
 
 func TestCommitTokens(t *testing.T) {
 	// Create a test context and keeper
-	keeper, ctx := keepertest.CommitmentKeeper(t)
-	msgServer := commitmentkeeper.NewMsgServerImpl(*keeper)
+	app := app.InitElysTestApp(true)
+
+	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
+	// Create a test context and keeper
+	keeper := app.CommitmentKeeper
+	msgServer := commitmentkeeper.NewMsgServerImpl(keeper)
 
 	// Define the test data
 	creator := "test_creator"
