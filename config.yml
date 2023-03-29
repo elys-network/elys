@@ -1,64 +1,57 @@
 version: 1
 accounts:
-  - name: alice
+  - name: treasury
     coins:
-      - 200000000000000000000aelys
-  - name: bob
+      - 9000000000000000uelys
+      - 200000000stake
+  - name: seed
     coins:
-      - 100000000000000000000aelys
+      - 9000000000000000uelys
+      - 100000000stake
 client:
   openapi:
     path: docs/static/openapi.yml
 faucet:
-  name: bob
+  name: seed
   coins:
-    - 100000000000000000aelys
+    - 1000000000000000uelys
+    - 100000stake
 validators:
-  - name: alice
-    bonded: 100000000000000000000aelys
+  - name: treasury
+    bonded: 100000000stake
 genesis:
   app_state:
-    staking:
-      params:
-        bond_denom: aelys
+    crisis:
+      constant_fee:
+        denom: stake
     gov:
       deposit_params:
         max_deposit_period: 20s
         min_deposit:
-          - amount: "10000000000000000000"
-            denom: aelys
+          - amount: "10000000"
+            denom: stake
       voting_params:
         voting_period: 20s
+    mint:
+      params:
+        mint_denom: stake
+    staking:
+      params:
+        bond_denom: stake
     bank:
       denom_metadata:
-        - base: aelys
+        - base: uelys
           denom_units:
-            - denom: aelys
-              exponent: 0
-              aliases:
-                - attoelys
-            - denom: felys
-              exponent: 3
-              aliases:
-                - femtoelys
-            - denom: pelys
-              exponent: 6
-              aliases:
-                - picoelys
-            - denom: nelys
-              exponent: 9
-              aliases:
-                - nanoelys
             - denom: uelys
-              exponent: 12
+              exponent: 0
               aliases:
                 - microelys
             - denom: melys
-              exponent: 15
+              exponent: 3
               aliases:
                 - millielys
             - denom: elys
-              exponent: 18
+              exponent: 6
               aliases: []
           name: elys
           symbol: elys
@@ -68,9 +61,9 @@ genesis:
       entryList:
         - address: ""
           authority: elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3
-          baseDenom: aelys
+          baseDenom: uelys
           decimals: "18"
-          denom: aelys
+          denom: uelys
           displayName: ELYS
           displaySymbol: ""
           externalSymbol: ""
@@ -172,3 +165,4 @@ genesis:
             communityFund: 9999999
             strategicReserve: 9999999
             teamTokensVested: 9999999
+  chain_id: elystestnet-1
