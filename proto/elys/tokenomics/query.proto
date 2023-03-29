@@ -1,0 +1,101 @@
+syntax = "proto3";
+
+package elysnetwork.elys.tokenomics;
+
+import "gogoproto/gogo.proto";
+import "google/api/annotations.proto";
+import "cosmos/base/query/v1beta1/pagination.proto";
+import "elys/tokenomics/params.proto";
+import "elys/tokenomics/airdrop.proto";
+import "elys/tokenomics/genesis_inflation.proto";
+import "elys/tokenomics/time_based_inflation.proto";
+import "elys/tokenomics/inflation_entry.proto";
+
+option go_package = "github.com/elys-network/elys/x/tokenomics/types";
+
+// Query defines the gRPC querier service.
+service Query {
+  
+  // Parameters queries the parameters of the module.
+  rpc Params (QueryParamsRequest) returns (QueryParamsResponse) {
+    option (google.api.http).get = "/elys-network/elys/tokenomics/params";
+  
+  }
+  
+  // Queries a list of Airdrop items.
+  rpc Airdrop    (QueryGetAirdropRequest) returns (QueryGetAirdropResponse) {
+    option (google.api.http).get = "/elys-network/elys/tokenomics/airdrop/{intent}";
+  
+  }
+  rpc AirdropAll (QueryAllAirdropRequest) returns (QueryAllAirdropResponse) {
+    option (google.api.http).get = "/elys-network/elys/tokenomics/airdrop";
+  
+  }
+  
+  // Queries a GenesisInflation by index.
+  rpc GenesisInflation (QueryGetGenesisInflationRequest) returns (QueryGetGenesisInflationResponse) {
+    option (google.api.http).get = "/elys-network/elys/tokenomics/genesis_inflation";
+  
+  }
+  
+  // Queries a list of TimeBasedInflation items.
+  rpc TimeBasedInflation    (QueryGetTimeBasedInflationRequest) returns (QueryGetTimeBasedInflationResponse) {
+    option (google.api.http).get = "/elys-network/elys/tokenomics/time_based_inflation/{startBlockHeight}/{endBlockHeight}";
+  
+  }
+  rpc TimeBasedInflationAll (QueryAllTimeBasedInflationRequest) returns (QueryAllTimeBasedInflationResponse) {
+    option (google.api.http).get = "/elys-network/elys/tokenomics/time_based_inflation";
+  
+  }
+}
+// QueryParamsRequest is request type for the Query/Params RPC method.
+message QueryParamsRequest {}
+
+// QueryParamsResponse is response type for the Query/Params RPC method.
+message QueryParamsResponse {
+  
+  // params holds all the parameters of this module.
+  Params params = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryGetAirdropRequest {
+  string intent = 1;
+}
+
+message QueryGetAirdropResponse {
+  Airdrop airdrop = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryAllAirdropRequest {
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+message QueryAllAirdropResponse {
+  repeated Airdrop                                airdrop    = 1 [(gogoproto.nullable) = false];
+           cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+message QueryGetGenesisInflationRequest {}
+
+message QueryGetGenesisInflationResponse {
+  GenesisInflation GenesisInflation = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryGetTimeBasedInflationRequest {
+  uint64 startBlockHeight = 1;
+  uint64 endBlockHeight   = 2;
+}
+
+message QueryGetTimeBasedInflationResponse {
+  TimeBasedInflation timeBasedInflation = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryAllTimeBasedInflationRequest {
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+message QueryAllTimeBasedInflationResponse {
+  repeated TimeBasedInflation                     timeBasedInflation = 1 [(gogoproto.nullable) = false];
+           cosmos.base.query.v1beta1.PageResponse pagination         = 2;
+}
+

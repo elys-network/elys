@@ -1,0 +1,11 @@
+syntax = "proto3";
+package elysnetwork.elys.tokenomics;
+
+option go_package = "github.com/elys-network/elys/x/tokenomics/types";
+
+message Airdrop {
+  string intent = 1; 
+  uint64 amount = 2; 
+  string authority = 3;
+}
+

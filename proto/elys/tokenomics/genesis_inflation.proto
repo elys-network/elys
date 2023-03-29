@@ -1,0 +1,13 @@
+syntax = "proto3";
+package elysnetwork.elys.tokenomics;
+
+import "elys/tokenomics/inflation_entry.proto";
+
+option go_package = "github.com/elys-network/elys/x/tokenomics/types";
+
+message GenesisInflation {
+  InflationEntry inflation = 1; 
+  uint64 seedVesting = 2; 
+  uint64 strategicSalesVesting = 3; 
+  string authority = 4;
+}
