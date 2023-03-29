@@ -13,6 +13,7 @@ bandd keys add validator --keyring-backend=test --home=$HOME/.band
 bandd keys add user1 --recover --keyring-backend=test < mnt.txt;
 bandd add-genesis-account $(bandd keys show validator -a --keyring-backend=test --home=$HOME/.band) 100000000000uband --home=$HOME/.band
 bandd add-genesis-account $(bandd keys show user1 -a --keyring-backend=test --home=$HOME/.band) 10000000uband --home=$HOME/.band
+bandd add-genesis-account band12zyg3xanvupc6upytvsghhlkl8l9cm2rtzn57q 10000000uband --home=$HOME/.band
 bandd gentx validator 500000000uband --keyring-backend=test --home=$HOME/.band --chain-id=$chain_id
 bandd collect-gentxs --home=$HOME/.band
 
