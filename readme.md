@@ -52,7 +52,7 @@ sudo tar -C /usr/local -xzf go1.19.7.linux-amd64.tar.gz
 Append the following line to the end of the `~/.bashrc` file:
 
 ```
-export PATH=$PATH:/usr/local/go/bin
+export PATH=$PATH:/usr/local/go/bin:$HOME/go/bin
 ```
 
 Run the following command:
@@ -90,33 +90,33 @@ curl https://get.ignite.com/elys-network/elys@latest! | sudo bash
 Enter the following command to initialize the validator node and request to join the network:
 
 ```
-ignite network chain init 4
-ignite network chain join 4 --amount 95000000uelys
+ignite network chain init 12
+ignite network chain join 12 --amount 95000000uelys
 ```
 
 The coordinator will then have to approve the validator requests with the following commands:
 
 ```
-ignite network request list 4
-ignite network request approve 4 <REQUEST_ID>,<REQUEST_ID>
+ignite network request list 12
+ignite network request approve 12 <REQUEST_ID>,<REQUEST_ID>
 ```
 
 Once all the validators needed for the validator set are approved, to launch the chain use the following command:
 
 ```
-ignite network chain launch 4
+ignite network chain launch 12
 ```
 
 Each validator is now ready to prepare their nodes for launch by using this command:
 
 ```
-ignite network chain prepare 4
+ignite network chain prepare 12
 ```
 
 The output of this command will show a command that a validator would use to launch their node such as:
 
 ```
-elysd start --home $HOME/spn/4 2> elysd.log &
+elysd start --home $HOME/spn/12 2> elysd.log &
 ```
 
 ## Boilerplate Generation
