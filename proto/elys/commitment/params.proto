@@ -8,5 +8,12 @@ option go_package = "github.com/elys-network/elys/x/commitment/types";
 // Params defines the parameters for the module.
 message Params {
   option (gogoproto.goproto_stringer) = false;
-  
+  repeated VestingInfo vesting_infos = 1;
+}
+
+message VestingInfo {
+  string base_denom = 1;
+  string vesting_denom = 2;
+  string epoch_identifier = 3;
+  int64 num_epochs = 4;
 }
