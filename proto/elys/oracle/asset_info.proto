@@ -1,0 +1,12 @@
+syntax = "proto3";
+package elysnetwork.elys.oracle;
+
+option go_package = "github.com/elys-network/elys/x/oracle/types";
+
+message AssetInfo {
+  string denom = 1;
+  string display = 2;
+  string bandTicker = 3;
+  string binanceTicker = 4;
+  string osmosisTicker = 5;
+}
