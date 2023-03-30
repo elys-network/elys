@@ -22,9 +22,31 @@ func TestGenesisState_Validate(t *testing.T) {
 			desc: "valid genesis state",
 			genState: &types.GenesisState{
 				PortId: types.PortID,
+				AssetInfoList: []types.AssetInfo{
+					{
+						Denom: "satoshi",
+					},
+					{
+						Denom: "wei",
+					},
+				},
 				// this line is used by starport scaffolding # types/genesis/validField
 			},
 			valid: true,
+		},
+		{
+			desc: "duplicated assetInfo",
+			genState: &types.GenesisState{
+				AssetInfoList: []types.AssetInfo{
+					{
+						Denom: "satoshi",
+					},
+					{
+						Denom: "satoshi",
+					},
+				},
+			},
+			valid: false,
 		},
 		// this line is used by starport scaffolding # types/genesis/testcase
 	} {

@@ -9,12 +9,20 @@ import (
 
 func RegisterCodec(cdc *codec.LegacyAmino) {
 	cdc.RegisterConcrete(&MsgCoinRatesData{}, "oracle/CoinRatesData", nil)
+	cdc.RegisterConcrete(&MsgCreateAssetInfo{}, "oracle/CreateAssetInfo", nil)
+	cdc.RegisterConcrete(&MsgUpdateAssetInfo{}, "oracle/UpdateAssetInfo", nil)
+	cdc.RegisterConcrete(&MsgDeleteAssetInfo{}, "oracle/DeleteAssetInfo", nil)
 	// this line is used by starport scaffolding # 2
 }
 
 func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 	registry.RegisterImplementations((*sdk.Msg)(nil),
 		&MsgCoinRatesData{},
+	)
+	registry.RegisterImplementations((*sdk.Msg)(nil),
+		&MsgCreateAssetInfo{},
+		&MsgUpdateAssetInfo{},
+		&MsgDeleteAssetInfo{},
 	)
 	// this line is used by starport scaffolding # 3
 

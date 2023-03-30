@@ -24,7 +24,19 @@ var (
 )
 
 const (
-// this line is used by starport scaffolding # simapp/module/const
+	opWeightMsgCreateAssetInfo = "op_weight_msg_asset_info"
+	// TODO: Determine the simulation weight value
+	defaultWeightMsgCreateAssetInfo int = 100
+
+	opWeightMsgUpdateAssetInfo = "op_weight_msg_asset_info"
+	// TODO: Determine the simulation weight value
+	defaultWeightMsgUpdateAssetInfo int = 100
+
+	opWeightMsgDeleteAssetInfo = "op_weight_msg_asset_info"
+	// TODO: Determine the simulation weight value
+	defaultWeightMsgDeleteAssetInfo int = 100
+
+	// this line is used by starport scaffolding # simapp/module/const
 )
 
 // GenerateGenesisState creates a randomized GenState of the module
@@ -36,6 +48,14 @@ func (AppModule) GenerateGenesisState(simState *module.SimulationState) {
 	oracleGenesis := types.GenesisState{
 		Params: types.DefaultParams(),
 		PortId: types.PortID,
+		AssetInfoList: []types.AssetInfo{
+			{
+				Denom: "satoshi",
+			},
+			{
+				Denom: "wei",
+			},
+		},
 		// this line is used by starport scaffolding # simapp/module/genesisState
 	}
 	simState.GenState[types.ModuleName] = simState.Cdc.MustMarshalJSON(&oracleGenesis)
@@ -58,6 +78,39 @@ func (am AppModule) RegisterStoreDecoder(_ sdk.StoreDecoderRegistry) {}
 // WeightedOperations returns the all the gov module operations with their respective weights.
 func (am AppModule) WeightedOperations(simState module.SimulationState) []simtypes.WeightedOperation {
 	operations := make([]simtypes.WeightedOperation, 0)
+
+	var weightMsgCreateAssetInfo int
+	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgCreateAssetInfo, &weightMsgCreateAssetInfo, nil,
+		func(_ *rand.Rand) {
+			weightMsgCreateAssetInfo = defaultWeightMsgCreateAssetInfo
+		},
+	)
+	operations = append(operations, simulation.NewWeightedOperation(
+		weightMsgCreateAssetInfo,
+		oraclesimulation.SimulateMsgCreateAssetInfo(am.accountKeeper, am.bankKeeper, am.keeper),
+	))
+
+	var weightMsgUpdateAssetInfo int
+	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgUpdateAssetInfo, &weightMsgUpdateAssetInfo, nil,
+		func(_ *rand.Rand) {
+			weightMsgUpdateAssetInfo = defaultWeightMsgUpdateAssetInfo
+		},
+	)
+	operations = append(operations, simulation.NewWeightedOperation(
+		weightMsgUpdateAssetInfo,
+		oraclesimulation.SimulateMsgUpdateAssetInfo(am.accountKeeper, am.bankKeeper, am.keeper),
+	))
+
+	var weightMsgDeleteAssetInfo int
+	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgDeleteAssetInfo, &weightMsgDeleteAssetInfo, nil,
+		func(_ *rand.Rand) {
+			weightMsgDeleteAssetInfo = defaultWeightMsgDeleteAssetInfo
+		},
+	)
+	operations = append(operations, simulation.NewWeightedOperation(
+		weightMsgDeleteAssetInfo,
+		oraclesimulation.SimulateMsgDeleteAssetInfo(am.accountKeeper, am.bankKeeper, am.keeper),
+	))
 
 	// this line is used by starport scaffolding # simapp/module/operation
 

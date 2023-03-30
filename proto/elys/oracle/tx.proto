@@ -4,13 +4,17 @@ package elysnetwork.elys.oracle;
 import "gogoproto/gogo.proto";
 import "cosmos/base/v1beta1/coin.proto";
 import "elys/oracle/coin_rates.proto";
+import "elys/oracle/asset_info.proto";
 // this line is used by starport scaffolding # proto/tx/import
 
 option go_package = "github.com/elys-network/elys/x/oracle/types";
 
 // Msg defines the Msg service.
 service Msg {
-      rpc CoinRatesData(MsgCoinRatesData) returns (MsgCoinRatesDataResponse);
+  rpc CoinRatesData(MsgCoinRatesData) returns (MsgCoinRatesDataResponse);
+  rpc CreateAssetInfo(MsgCreateAssetInfo) returns (MsgCreateAssetInfoResponse);
+  rpc UpdateAssetInfo(MsgUpdateAssetInfo) returns (MsgUpdateAssetInfoResponse);
+  rpc DeleteAssetInfo(MsgDeleteAssetInfo) returns (MsgDeleteAssetInfoResponse);
 // this line is used by starport scaffolding # proto/tx/rpc
 }
 
@@ -35,5 +39,31 @@ message MsgCoinRatesData {
 
 message MsgCoinRatesDataResponse {
 }
+
+message MsgCreateAssetInfo {
+  string creator = 1;
+  string denom = 2;
+  string display = 3;
+  string bandTicker = 4;
+  string binanceTicker = 5;
+  string osmosisTicker = 6;
+}
+message MsgCreateAssetInfoResponse {}
+
+message MsgUpdateAssetInfo {
+  string creator = 1;
+  string denom = 2;
+  string display = 3;
+  string bandTicker = 4;
+  string binanceTicker = 5;
+  string osmosisTicker = 6;
+}
+message MsgUpdateAssetInfoResponse {}
+
+message MsgDeleteAssetInfo {
+  string creator = 1;
+  string denom = 2;
+}
+message MsgDeleteAssetInfoResponse {}
 
 // this line is used by starport scaffolding # proto/tx/message

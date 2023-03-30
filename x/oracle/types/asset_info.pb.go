@@ -23,6 +23,11 @@ var _ = math.Inf
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
 type AssetInfo struct {
+	Denom         string `protobuf:"bytes,1,opt,name=denom,proto3" json:"denom,omitempty"`
+	Display       string `protobuf:"bytes,2,opt,name=display,proto3" json:"display,omitempty"`
+	BandTicker    string `protobuf:"bytes,3,opt,name=bandTicker,proto3" json:"bandTicker,omitempty"`
+	BinanceTicker string `protobuf:"bytes,4,opt,name=binanceTicker,proto3" json:"binanceTicker,omitempty"`
+	OsmosisTicker string `protobuf:"bytes,5,opt,name=osmosisTicker,proto3" json:"osmosisTicker,omitempty"`
 }
 
 func (m *AssetInfo) Reset()         { *m = AssetInfo{} }
@@ -58,6 +63,41 @@ func (m *AssetInfo) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_AssetInfo proto.InternalMessageInfo
 
+func (m *AssetInfo) GetDenom() string {
+	if m != nil {
+		return m.Denom
+	}
+	return ""
+}
+
+func (m *AssetInfo) GetDisplay() string {
+	if m != nil {
+		return m.Display
+	}
+	return ""
+}
+
+func (m *AssetInfo) GetBandTicker() string {
+	if m != nil {
+		return m.BandTicker
+	}
+	return ""
+}
+
+func (m *AssetInfo) GetBinanceTicker() string {
+	if m != nil {
+		return m.BinanceTicker
+	}
+	return ""
+}
+
+func (m *AssetInfo) GetOsmosisTicker() string {
+	if m != nil {
+		return m.OsmosisTicker
+	}
+	return ""
+}
+
 func init() {
 	proto.RegisterType((*AssetInfo)(nil), "elysnetwork.elys.oracle.AssetInfo")
 }
@@ -65,16 +105,22 @@ func init() {
 func init() { proto.RegisterFile("elys/oracle/asset_info.proto", fileDescriptor_26ff023b6e1e9d73) }
 
 var fileDescriptor_26ff023b6e1e9d73 = []byte{
-	// 143 bytes of a gzipped FileDescriptorProto
+	// 234 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x92, 0x49, 0xcd, 0xa9, 0x2c,
 	0xd6, 0xcf, 0x2f, 0x4a, 0x4c, 0xce, 0x49, 0xd5, 0x4f, 0x2c, 0x2e, 0x4e, 0x2d, 0x89, 0xcf, 0xcc,
 	0x4b, 0xcb, 0xd7, 0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x17, 0x12, 0x07, 0xc9, 0xe6, 0xa5, 0x96, 0x94,
-	0xe7, 0x17, 0x65, 0xeb, 0x81, 0xd8, 0x7a, 0x10, 0x95, 0x4a, 0xdc, 0x5c, 0x9c, 0x8e, 0x20, 0xc5,
-	0x9e, 0x79, 0x69, 0xf9, 0x4e, 0xae, 0x27, 0x1e, 0xc9, 0x31, 0x5e, 0x78, 0x24, 0xc7, 0xf8, 0xe0,
-	0x91, 0x1c, 0xe3, 0x84, 0xc7, 0x72, 0x0c, 0x17, 0x1e, 0xcb, 0x31, 0xdc, 0x78, 0x2c, 0xc7, 0x10,
-	0xa5, 0x9d, 0x9e, 0x59, 0x92, 0x51, 0x9a, 0xa4, 0x97, 0x9c, 0x9f, 0xab, 0x0f, 0xd2, 0xae, 0x0b,
-	0x35, 0x0b, 0xcc, 0xd1, 0xaf, 0x80, 0xd9, 0x5b, 0x52, 0x59, 0x90, 0x5a, 0x9c, 0xc4, 0x06, 0xb6,
-	0xd3, 0x18, 0x10, 0x00, 0x00, 0xff, 0xff, 0xf0, 0xeb, 0x2a, 0x03, 0x93, 0x00, 0x00, 0x00,
+	0xe7, 0x17, 0x65, 0xeb, 0x81, 0xd8, 0x7a, 0x10, 0x95, 0x4a, 0xcb, 0x19, 0xb9, 0x38, 0x1d, 0x41,
+	0xaa, 0x3d, 0xf3, 0xd2, 0xf2, 0x85, 0x44, 0xb8, 0x58, 0x53, 0x52, 0xf3, 0xf2, 0x73, 0x25, 0x18,
+	0x15, 0x18, 0x35, 0x38, 0x83, 0x20, 0x1c, 0x21, 0x09, 0x2e, 0xf6, 0x94, 0xcc, 0xe2, 0x82, 0x9c,
+	0xc4, 0x4a, 0x09, 0x26, 0xb0, 0x38, 0x8c, 0x2b, 0x24, 0xc7, 0xc5, 0x95, 0x94, 0x98, 0x97, 0x12,
+	0x92, 0x99, 0x9c, 0x9d, 0x5a, 0x24, 0xc1, 0x0c, 0x96, 0x44, 0x12, 0x11, 0x52, 0xe1, 0xe2, 0x4d,
+	0xca, 0xcc, 0x4b, 0xcc, 0x4b, 0x4e, 0x85, 0x2a, 0x61, 0x01, 0x2b, 0x41, 0x15, 0x04, 0xa9, 0xca,
+	0x2f, 0xce, 0xcd, 0x2f, 0xce, 0x2c, 0x86, 0xaa, 0x62, 0x85, 0xa8, 0x42, 0x11, 0x74, 0x72, 0x3d,
+	0xf1, 0x48, 0x8e, 0xf1, 0xc2, 0x23, 0x39, 0xc6, 0x07, 0x8f, 0xe4, 0x18, 0x27, 0x3c, 0x96, 0x63,
+	0xb8, 0xf0, 0x58, 0x8e, 0xe1, 0xc6, 0x63, 0x39, 0x86, 0x28, 0xed, 0xf4, 0xcc, 0x92, 0x8c, 0xd2,
+	0x24, 0xbd, 0xe4, 0xfc, 0x5c, 0x7d, 0x90, 0xdf, 0x74, 0xa1, 0x1e, 0x05, 0x73, 0xf4, 0x2b, 0x60,
+	0x81, 0x52, 0x52, 0x59, 0x90, 0x5a, 0x9c, 0xc4, 0x06, 0x0e, 0x10, 0x63, 0x40, 0x00, 0x00, 0x00,
+	0xff, 0xff, 0x19, 0x74, 0x27, 0x67, 0x30, 0x01, 0x00, 0x00,
 }
 
 func (m *AssetInfo) Marshal() (dAtA []byte, err error) {
@@ -97,6 +143,41 @@ func (m *AssetInfo) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
+	if len(m.OsmosisTicker) > 0 {
+		i -= len(m.OsmosisTicker)
+		copy(dAtA[i:], m.OsmosisTicker)
+		i = encodeVarintAssetInfo(dAtA, i, uint64(len(m.OsmosisTicker)))
+		i--
+		dAtA[i] = 0x2a
+	}
+	if len(m.BinanceTicker) > 0 {
+		i -= len(m.BinanceTicker)
+		copy(dAtA[i:], m.BinanceTicker)
+		i = encodeVarintAssetInfo(dAtA, i, uint64(len(m.BinanceTicker)))
+		i--
+		dAtA[i] = 0x22
+	}
+	if len(m.BandTicker) > 0 {
+		i -= len(m.BandTicker)
+		copy(dAtA[i:], m.BandTicker)
+		i = encodeVarintAssetInfo(dAtA, i, uint64(len(m.BandTicker)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.Display) > 0 {
+		i -= len(m.Display)
+		copy(dAtA[i:], m.Display)
+		i = encodeVarintAssetInfo(dAtA, i, uint64(len(m.Display)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Denom) > 0 {
+		i -= len(m.Denom)
+		copy(dAtA[i:], m.Denom)
+		i = encodeVarintAssetInfo(dAtA, i, uint64(len(m.Denom)))
+		i--
+		dAtA[i] = 0xa
+	}
 	return len(dAtA) - i, nil
 }
 
@@ -117,6 +198,26 @@ func (m *AssetInfo) Size() (n int) {
 	}
 	var l int
 	_ = l
+	l = len(m.Denom)
+	if l > 0 {
+		n += 1 + l + sovAssetInfo(uint64(l))
+	}
+	l = len(m.Display)
+	if l > 0 {
+		n += 1 + l + sovAssetInfo(uint64(l))
+	}
+	l = len(m.BandTicker)
+	if l > 0 {
+		n += 1 + l + sovAssetInfo(uint64(l))
+	}
+	l = len(m.BinanceTicker)
+	if l > 0 {
+		n += 1 + l + sovAssetInfo(uint64(l))
+	}
+	l = len(m.OsmosisTicker)
+	if l > 0 {
+		n += 1 + l + sovAssetInfo(uint64(l))
+	}
 	return n
 }
 
@@ -155,6 +256,166 @@ func (m *AssetInfo) Unmarshal(dAtA []byte) error {
 			return fmt.Errorf("proto: AssetInfo: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Denom", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowAssetInfo
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthAssetInfo
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthAssetInfo
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Denom = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Display", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowAssetInfo
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthAssetInfo
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthAssetInfo
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Display = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field BandTicker", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowAssetInfo
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthAssetInfo
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthAssetInfo
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.BandTicker = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field BinanceTicker", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowAssetInfo
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthAssetInfo
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthAssetInfo
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.BinanceTicker = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 5:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field OsmosisTicker", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowAssetInfo
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthAssetInfo
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthAssetInfo
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.OsmosisTicker = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipAssetInfo(dAtA[iNdEx:])

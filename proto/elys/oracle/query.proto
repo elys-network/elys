@@ -6,26 +6,33 @@ import "google/api/annotations.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
 import "elys/oracle/params.proto";
 import "elys/oracle/coin_rates.proto";
+import "elys/oracle/asset_info.proto";
 // this line is used by starport scaffolding # 1
 
 option go_package = "github.com/elys-network/elys/x/oracle/types";
 
 // Query defines the gRPC querier service.
 service Query {
-  // Parameters queries the parameters of the module.
-  rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
-    option (google.api.http).get = "/elys-network/elys/oracle/params";
-  }
-  
+	// Parameters queries the parameters of the module.
+	rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
+		option (google.api.http).get = "/elys-network/elys/oracle/params";
+	}
   	// CoinRatesResult defines a rpc handler method for MsgCoinRatesData.
   	rpc CoinRatesResult(QueryCoinRatesRequest) returns (QueryCoinRatesResponse) {
 		option (google.api.http).get = "/elys/oracle/coin_rates_result/{request_id}";
   	}
-
   	// LastCoinRatesId query the last CoinRates result id
   	rpc LastCoinRatesId(QueryLastCoinRatesIdRequest) returns (QueryLastCoinRatesIdResponse) {
 		option (google.api.http).get = "/elys/oracle/last_coin_rates_id";
   	}
+	// Queries a AssetInfo by index.
+	rpc AssetInfo(QueryGetAssetInfoRequest) returns (QueryGetAssetInfoResponse) {
+		option (google.api.http).get = "/elys-network/elys/oracle/asset_info/{denom}";
+	}
+	// Queries a list of AssetInfo items.
+	rpc AssetInfoAll(QueryAllAssetInfoRequest) returns (QueryAllAssetInfoResponse) {
+		option (google.api.http).get = "/elys-network/elys/oracle/asset_info";
+	}
 // this line is used by starport scaffolding # 2
 }
 
@@ -47,5 +54,22 @@ message QueryCoinRatesResponse {
 message QueryLastCoinRatesIdRequest {}
 
 message QueryLastCoinRatesIdResponse {int64 request_id = 1;}
+
+message QueryGetAssetInfoRequest {
+	string denom = 1;
+}
+
+message QueryGetAssetInfoResponse {
+	AssetInfo assetInfo = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryAllAssetInfoRequest {
+	cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+message QueryAllAssetInfoResponse {
+	repeated AssetInfo assetInfo = 1 [(gogoproto.nullable) = false];
+	cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
 
 // this line is used by starport scaffolding # 3
