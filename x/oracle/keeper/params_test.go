@@ -1,18 +1,13 @@
 package keeper_test
 
-// import (
-// 	"testing"
+import (
+	"github.com/elys-network/elys/x/oracle/types"
+)
 
-// 	testkeeper "github.com/elys-network/elys/testutil/keeper"
-// 	"github.com/elys-network/elys/x/oracle/types"
-// 	"github.com/stretchr/testify/require"
-// )
+func (suite *KeeperTestSuite) TestGetParams() {
+	k, ctx := suite.app.OracleKeeper, suite.ctx
+	params := types.DefaultParams()
 
-// func TestGetParams(t *testing.T) {
-// 	k, ctx := testkeeper.OracleKeeper(t)
-// 	params := types.DefaultParams()
-
-// 	k.SetParams(ctx, params)
-
-// 	require.EqualValues(t, params, k.GetParams(ctx))
-// }
+	k.SetParams(ctx, params)
+	suite.Require().Equal(params, k.GetParams(ctx))
+}

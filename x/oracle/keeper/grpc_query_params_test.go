@@ -1,21 +1,17 @@
 package keeper_test
 
-// import (
-// 	"testing"
+import (
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/elys-network/elys/x/oracle/types"
+)
 
-// 	sdk "github.com/cosmos/cosmos-sdk/types"
-// 	testkeeper "github.com/elys-network/elys/testutil/keeper"
-// 	"github.com/elys-network/elys/x/oracle/types"
-// 	"github.com/stretchr/testify/require"
-// )
+func (suite *KeeperTestSuite) TestParamsQuery() {
+	keeper, ctx := suite.app.OracleKeeper, suite.ctx
+	wctx := sdk.WrapSDKContext(ctx)
+	params := types.DefaultParams()
+	keeper.SetParams(ctx, params)
 
-// func TestParamsQuery(t *testing.T) {
-// 	keeper, ctx := testkeeper.OracleKeeper(t)
-// 	wctx := sdk.WrapSDKContext(ctx)
-// 	params := types.DefaultParams()
-// 	keeper.SetParams(ctx, params)
-
-// 	response, err := keeper.Params(wctx, &types.QueryParamsRequest{})
-// 	require.NoError(t, err)
-// 	require.Equal(t, &types.QueryParamsResponse{Params: params}, response)
-// }
+	response, err := keeper.Params(wctx, &types.QueryParamsRequest{})
+	suite.Require().NoError(err)
+	suite.Require().Equal(&types.QueryParamsResponse{Params: params}, response)
+}

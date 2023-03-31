@@ -14,7 +14,7 @@ func (k msgServer) CreateAssetInfo(goCtx context.Context, msg *types.MsgCreateAs
 	// Check if the value already exists
 	_, isFound := k.GetAssetInfo(ctx, msg.Denom)
 	if isFound {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "index already set")
+		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "asset already set")
 	}
 
 	assetInfo := types.AssetInfo{
