@@ -119,6 +119,48 @@ The output of this command will show a command that a validator would use to lau
 elysd start --home $HOME/spn/12 2> elysd.log &
 ```
 
+A systemd service can be created to auto-start the `elysd` service.
+
+Create the new file `/etc/systemd/system/elysd.service` with this content:
+
+```
+[Unit]
+Description=Elysd Service
+Wants=network.target
+After=network.target
+
+[Service]
+Environment=HOME=/home/ubuntu
+Type=simple
+Restart=on-failure
+WorkingDirectory=/home/ubuntu
+SyslogIdentifier=elysd.user-daemon
+ExecStart=/home/ubuntu/go/bin/elysd start --home spn/12 2>&1
+ExecStop=/usr/bin/pkill elysd
+
+[Install]
+WantedBy=multi-user.target
+```
+
+Then you can use those commands to enable and start the service:
+
+```
+sudo systemctl enable elysd.service
+sudo systemctl start elysd.service
+```
+
+You can check the status of the service at any time using this command:
+
+```
+sudo systemctl status elysd.service
+```
+
+Or follow the service logs by using this command:
+
+```
+sudo journalctl -u elysd.service -f
+```
+
 ## Boilerplate Generation
 
 The boilerplate was generated using `ignite CLI`, which provides a convenient way to generate new chains, modules, messages, and more. The initial modules that are part of the repository include `AssetProfile` and `LiquidityProvider`, both of which were generated using the `ignite CLI`.
