@@ -117,6 +117,10 @@ import (
 	commitmentmodulekeeper "github.com/elys-network/elys/x/commitment/keeper"
 	commitmentmoduletypes "github.com/elys-network/elys/x/commitment/types"
 
+	tokenomicsmodule "github.com/elys-network/elys/x/tokenomics"
+	tokenomicsmodulekeeper "github.com/elys-network/elys/x/tokenomics/keeper"
+	tokenomicsmoduletypes "github.com/elys-network/elys/x/tokenomics/types"
+
 	// this line is used by starport scaffolding # stargate/app/moduleImport
 
 	appparams "github.com/elys-network/elys/app/params"
@@ -179,6 +183,7 @@ var (
 		assetprofilemodule.AppModuleBasic{},
 		liquidityprovidermodule.AppModuleBasic{},
 		commitmentmodule.AppModuleBasic{},
+		tokenomicsmodule.AppModuleBasic{},
 		// this line is used by starport scaffolding # stargate/app/moduleBasic
 	)
 
@@ -260,6 +265,8 @@ type ElysApp struct {
 	LiquidityproviderKeeper liquidityprovidermodulekeeper.Keeper
 
 	CommitmentKeeper commitmentmodulekeeper.Keeper
+
+	TokenomicsKeeper tokenomicsmodulekeeper.Keeper
 	// this line is used by starport scaffolding # stargate/app/keeperDeclaration
 
 	// mm is the module manager
@@ -308,6 +315,7 @@ func NewElysApp(
 		assetprofilemoduletypes.StoreKey,
 		liquidityprovidermoduletypes.StoreKey,
 		commitmentmoduletypes.StoreKey,
+		tokenomicsmoduletypes.StoreKey,
 		// this line is used by starport scaffolding # stargate/app/storeKey
 	)
 	tkeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey)
@@ -556,6 +564,15 @@ func NewElysApp(
 	)
 	commitmentModule := commitmentmodule.NewAppModule(appCodec, app.CommitmentKeeper, app.AccountKeeper, app.BankKeeper)
 
+	app.TokenomicsKeeper = *tokenomicsmodulekeeper.NewKeeper(
+		appCodec,
+		keys[tokenomicsmoduletypes.StoreKey],
+		keys[tokenomicsmoduletypes.MemStoreKey],
+		app.GetSubspace(tokenomicsmoduletypes.ModuleName),
+		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+	)
+	tokenomicsModule := tokenomicsmodule.NewAppModule(appCodec, app.TokenomicsKeeper, app.AccountKeeper, app.BankKeeper)
+
 	// this line is used by starport scaffolding # stargate/app/keeperDefinition
 
 	/**** IBC Routing ****/
@@ -625,6 +642,7 @@ func NewElysApp(
 		assetprofileModule,
 		liquidityproviderModule,
 		commitmentModule,
+		tokenomicsModule,
 		// this line is used by starport scaffolding # stargate/app/appModule
 	)
 
@@ -659,6 +677,7 @@ func NewElysApp(
 		assetprofilemoduletypes.ModuleName,
 		liquidityprovidermoduletypes.ModuleName,
 		commitmentmoduletypes.ModuleName,
+		tokenomicsmoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/beginBlockers
 	)
 
@@ -688,6 +707,7 @@ func NewElysApp(
 		assetprofilemoduletypes.ModuleName,
 		liquidityprovidermoduletypes.ModuleName,
 		commitmentmoduletypes.ModuleName,
+		tokenomicsmoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/endBlockers
 	)
 
@@ -721,6 +741,7 @@ func NewElysApp(
 		assetprofilemoduletypes.ModuleName,
 		liquidityprovidermoduletypes.ModuleName,
 		commitmentmoduletypes.ModuleName,
+		tokenomicsmoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/initGenesis
 	)
 
@@ -754,6 +775,7 @@ func NewElysApp(
 		assetprofileModule,
 		liquidityproviderModule,
 		commitmentModule,
+		tokenomicsModule,
 		// this line is used by starport scaffolding # stargate/app/appModule
 	)
 	app.sm.RegisterStoreDecoders()
@@ -961,6 +983,7 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(assetprofilemoduletypes.ModuleName)
 	paramsKeeper.Subspace(liquidityprovidermoduletypes.ModuleName)
 	paramsKeeper.Subspace(commitmentmoduletypes.ModuleName)
+	paramsKeeper.Subspace(tokenomicsmoduletypes.ModuleName)
 	// this line is used by starport scaffolding # stargate/app/paramSubspace
 
 	return paramsKeeper
