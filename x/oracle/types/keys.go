@@ -23,8 +23,38 @@ const (
 var (
 	// PortKey defines the key to store the port ID in store
 	PortKey = KeyPrefix("oracle-port-")
+	// AssetInfoKeyPrefix is the prefix to retrieve all AssetInfo
+	AssetInfoKeyPrefix = "AssetInfo/value/"
+	// PriceKeyPrefix is the prefix to retrieve all Price
+	PriceKeyPrefix = "Price/value/"
 )
 
 func KeyPrefix(p string) []byte {
 	return []byte(p)
+}
+
+// AssetInfoKey returns the store key to retrieve a AssetInfo from the index fields
+func AssetInfoKey(
+	denom string,
+) []byte {
+	var key []byte
+
+	indexBytes := []byte(denom)
+	key = append(key, indexBytes...)
+	key = append(key, []byte("/")...)
+
+	return key
+}
+
+// PriceKey returns the store key to retrieve a Price from the index fields
+func PriceKey(
+	asset string,
+) []byte {
+	var key []byte
+
+	indexBytes := []byte(asset)
+	key = append(key, indexBytes...)
+	key = append(key, []byte("/")...)
+
+	return key
 }

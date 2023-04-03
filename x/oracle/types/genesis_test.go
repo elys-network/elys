@@ -30,6 +30,14 @@ func TestGenesisState_Validate(t *testing.T) {
 						Denom: "wei",
 					},
 				},
+				PriceList: []types.Price{
+					{
+						Asset: "asset0",
+					},
+					{
+						Asset: "asset1",
+					},
+				},
 				// this line is used by starport scaffolding # types/genesis/validField
 			},
 			valid: true,
@@ -43,6 +51,20 @@ func TestGenesisState_Validate(t *testing.T) {
 					},
 					{
 						Denom: "satoshi",
+					},
+				},
+			},
+			valid: false,
+		},
+		{
+			desc: "duplicated price",
+			genState: &types.GenesisState{
+				PriceList: []types.Price{
+					{
+						Asset: "asset0",
+					},
+					{
+						Asset: "asset0",
 					},
 				},
 			},

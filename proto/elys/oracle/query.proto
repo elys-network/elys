@@ -7,6 +7,7 @@ import "cosmos/base/query/v1beta1/pagination.proto";
 import "elys/oracle/params.proto";
 import "elys/oracle/coin_rates.proto";
 import "elys/oracle/asset_info.proto";
+import "elys/oracle/price.proto";
 // this line is used by starport scaffolding # 1
 
 option go_package = "github.com/elys-network/elys/x/oracle/types";
@@ -32,6 +33,14 @@ service Query {
 	// Queries a list of AssetInfo items.
 	rpc AssetInfoAll(QueryAllAssetInfoRequest) returns (QueryAllAssetInfoResponse) {
 		option (google.api.http).get = "/elys-network/elys/oracle/asset_info";
+	}
+    // Queries a Price by asset.
+    rpc Price(QueryGetPriceRequest) returns (QueryGetPriceResponse) {
+		option (google.api.http).get = "/elys-network/elys/oracle/price/{asset}";
+	}
+	// Queries a list of Price items.
+	rpc PriceAll(QueryAllPriceRequest) returns (QueryAllPriceResponse) {
+		option (google.api.http).get = "/elys-network/elys/oracle/price";
 	}
 // this line is used by starport scaffolding # 2
 }
@@ -69,6 +78,23 @@ message QueryAllAssetInfoRequest {
 
 message QueryAllAssetInfoResponse {
 	repeated AssetInfo assetInfo = 1 [(gogoproto.nullable) = false];
+	cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+message QueryGetPriceRequest {
+	string asset = 1;
+}
+
+message QueryGetPriceResponse {
+	Price price = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryAllPriceRequest {
+	cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+message QueryAllPriceResponse {
+	repeated Price price = 1 [(gogoproto.nullable) = false];
 	cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 

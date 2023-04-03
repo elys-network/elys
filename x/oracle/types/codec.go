@@ -13,6 +13,9 @@ func RegisterCodec(cdc *codec.LegacyAmino) {
 	cdc.RegisterConcrete(&MsgCreateAssetInfo{}, "oracle/CreateAssetInfo", nil)
 	cdc.RegisterConcrete(&MsgUpdateAssetInfo{}, "oracle/UpdateAssetInfo", nil)
 	cdc.RegisterConcrete(&MsgDeleteAssetInfo{}, "oracle/DeleteAssetInfo", nil)
+	cdc.RegisterConcrete(&MsgCreatePrice{}, "oracle/CreatePrice", nil)
+	cdc.RegisterConcrete(&MsgUpdatePrice{}, "oracle/UpdatePrice", nil)
+	cdc.RegisterConcrete(&MsgDeletePrice{}, "oracle/DeletePrice", nil)
 	// this line is used by starport scaffolding # 2
 }
 
@@ -32,6 +35,11 @@ func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 		&ProposalRemoveAssetInfo{},
 	)
 
+	registry.RegisterImplementations((*sdk.Msg)(nil),
+		&MsgCreatePrice{},
+		&MsgUpdatePrice{},
+		&MsgDeletePrice{},
+	)
 	// this line is used by starport scaffolding # 3
 
 	msgservice.RegisterMsgServiceDesc(registry, &_Msg_serviceDesc)

@@ -1,0 +1,16 @@
+syntax = "proto3";
+package elysnetwork.elys.oracle;
+
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/elys-network/elys/x/oracle/types";
+
+message Price {
+  string asset = 1;
+  string price = 2 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  string source = 3;
+  string provider = 4;
+}

@@ -42,7 +42,10 @@ func GetTxCmd() *cobra.Command {
 	cmd.AddCommand(CmdDeleteAssetInfo())
 	cmd.AddCommand(CmdSubmitAddAssetInfoProposal())
 	cmd.AddCommand(CmdSubmitRemoveAssetInfoProposal())
-	// this line is used by starport scaffolding # 1
+	cmd.AddCommand(CmdCreatePrice())
+	cmd.AddCommand(CmdUpdatePrice())
+	cmd.AddCommand(CmdDeletePrice())
+// this line is used by starport scaffolding # 1
 
 	return cmd
 }

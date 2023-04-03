@@ -5,6 +5,7 @@ import "gogoproto/gogo.proto";
 import "cosmos/base/v1beta1/coin.proto";
 import "elys/oracle/coin_rates.proto";
 import "elys/oracle/asset_info.proto";
+import "elys/oracle/price.proto";
 // this line is used by starport scaffolding # proto/tx/import
 
 option go_package = "github.com/elys-network/elys/x/oracle/types";
@@ -15,6 +16,9 @@ service Msg {
   rpc CreateAssetInfo(MsgCreateAssetInfo) returns (MsgCreateAssetInfoResponse);
   rpc UpdateAssetInfo(MsgUpdateAssetInfo) returns (MsgUpdateAssetInfoResponse);
   rpc DeleteAssetInfo(MsgDeleteAssetInfo) returns (MsgDeleteAssetInfoResponse);
+  rpc CreatePrice(MsgCreatePrice) returns (MsgCreatePriceResponse);
+  rpc UpdatePrice(MsgUpdatePrice) returns (MsgUpdatePriceResponse);
+  rpc DeletePrice(MsgDeletePrice) returns (MsgDeletePriceResponse);
 // this line is used by starport scaffolding # proto/tx/rpc
 }
 
@@ -65,5 +69,33 @@ message MsgDeleteAssetInfo {
   string denom = 2;
 }
 message MsgDeleteAssetInfoResponse {}
+
+message MsgCreatePrice {
+  string asset = 1;
+  string price = 2 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  string source = 3;
+  string provider = 4;
+}
+message MsgCreatePriceResponse {}
+
+message MsgUpdatePrice {
+  string asset = 1;
+  string price = 2 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  string source = 3;
+  string provider = 4;
+}
+message MsgUpdatePriceResponse {}
+
+message MsgDeletePrice {
+  string creator = 1;
+  string asset = 2;
+}
+message MsgDeletePriceResponse {}
 
 // this line is used by starport scaffolding # proto/tx/message

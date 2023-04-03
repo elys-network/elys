@@ -22,7 +22,15 @@ package oracle_test
 // 				Denom: "wei",
 // 			},
 // 		},
-// 		// this line is used by starport scaffolding # genesis/test/state
+// 		PriceList: []types.Price{
+// 		{
+// 			Index: "0",
+// },
+// 		{
+// 			Index: "1",
+// },
+// 	},
+// this line is used by starport scaffolding # genesis/test/state
 // 	}
 
 // 	k, ctx := keepertest.OracleKeeper(t)
@@ -36,5 +44,6 @@ package oracle_test
 // 	require.Equal(t, genesisState.PortId, got.PortId)
 
 // 	require.ElementsMatch(t, genesisState.AssetInfoList, got.AssetInfoList)
-// 	// this line is used by starport scaffolding # genesis/test/assert
+// 	require.ElementsMatch(t, genesisState.PriceList, got.PriceList)
+// this line is used by starport scaffolding # genesis/test/assert
 // }
