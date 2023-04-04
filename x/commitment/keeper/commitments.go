@@ -68,11 +68,11 @@ func (k Keeper) IterateCommitments(
 	}
 }
 
-func (k Keeper) DeductCommitments(ctx sdk.Context, creator string, denom string, amount sdk.Int) (types.Commitments, sdk.Int, error) {
+func (k Keeper) DeductCommitments(ctx sdk.Context, creator string, denom string, amount sdk.Int) (types.Commitments, error) {
 	// Get the Commitments for the creator
 	commitments, found := k.GetCommitments(ctx, creator)
 	if !found {
-		return types.Commitments{}, sdk.Int{}, sdkerrors.Wrapf(types.ErrCommitmentsNotFound, "creator: %s", creator)
+		return types.Commitments{}, sdkerrors.Wrapf(types.ErrCommitmentsNotFound, "creator: %s", creator)
 	}
 
 	// Get user's uncommitted balance
@@ -92,7 +92,7 @@ func (k Keeper) DeductCommitments(ctx sdk.Context, creator string, denom string,
 				committedToken.Amount = committedToken.Amount.Sub(difference)
 				requestedAmount = requestedAmount.Sub(difference)
 			} else {
-				return types.Commitments{}, sdk.Int{}, sdkerrors.Wrap(sdkerrors.ErrInsufficientFunds, "not enough tokens to withdraw")
+				return types.Commitments{}, sdkerrors.Wrap(sdkerrors.ErrInsufficientFunds, "not enough tokens to withdraw")
 			}
 		}
 	}
@@ -100,5 +100,5 @@ func (k Keeper) DeductCommitments(ctx sdk.Context, creator string, denom string,
 	// Subtract the withdrawn amount from the uncommitted balance
 	uncommittedToken.Amount = uncommittedToken.Amount.Sub(requestedAmount)
 
-	return commitments, requestedAmount, nil
+	return commitments, nil
 }

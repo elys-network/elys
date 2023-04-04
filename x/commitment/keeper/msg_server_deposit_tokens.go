@@ -13,8 +13,14 @@ func (k msgServer) DepositTokens(goCtx context.Context, msg *types.MsgDepositTok
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	depositCoins := sdk.NewCoins(sdk.NewCoin(msg.Denom, msg.Amount))
+
+	addr, err := sdk.AccAddressFromBech32(msg.Creator)
+	if err != nil {
+		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "unable to convert address from bech32")
+	}
+
 	// send the deposited coins to the module
-	err := k.bankKeeper.SendCoinsFromAccountToModule(ctx, sdk.AccAddress(msg.Creator), types.ModuleName, depositCoins)
+	err = k.bankKeeper.SendCoinsFromAccountToModule(ctx, addr, types.ModuleName, depositCoins)
 	if err != nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrInsufficientFunds, fmt.Sprintf("unable to send deposit tokens: %v", depositCoins))
 	}
@@ -37,10 +43,11 @@ func (k msgServer) DepositTokens(goCtx context.Context, msg *types.MsgDepositTok
 	uncommittedToken, _ := commitments.GetUncommittedTokensForDenom(msg.Denom)
 	if !found {
 		uncommittedTokens := commitments.GetUncommittedTokens()
-		uncommittedTokens = append(uncommittedTokens, &types.UncommittedTokens{
+		uncommittedToken = &types.UncommittedTokens{
 			Denom:  msg.Denom,
 			Amount: sdk.ZeroInt(),
-		})
+		}
+		uncommittedTokens = append(uncommittedTokens, uncommittedToken)
 		commitments.UncommittedTokens = uncommittedTokens
 	}
 	// Update the uncommitted tokens amount

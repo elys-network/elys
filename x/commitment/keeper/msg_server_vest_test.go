@@ -35,6 +35,7 @@ func TestVest(t *testing.T) {
 			VestingDenom:    "uelys",
 			EpochIdentifier: "tenseconds",
 			NumEpochs:       10,
+			VestNowFactor:   sdk.NewInt(90),
 		},
 	}
 

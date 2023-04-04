@@ -14,7 +14,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestWithdrawTokens(t *testing.T) {
+func TestVestNow(t *testing.T) {
 	app := app.InitElysTestApp(true)
 
 	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
@@ -22,14 +22,29 @@ func TestWithdrawTokens(t *testing.T) {
 	keeper := app.CommitmentKeeper
 
 	msgServer := commitmentkeeper.NewMsgServerImpl(keeper)
-
 	creatorAddr, _ := sdk.AccAddressFromBech32("cosmos1xv9tklw7d82sezh9haa573wufgy59vmwe6xxe5")
 
 	// Define the test data
 	creator := creatorAddr.String()
 	denom := "eden"
-	initialUncommitted := sdk.NewInt(50)
-	initialCommitted := sdk.NewInt(100)
+	initialUncommitted := sdk.NewInt(5000)
+	initialCommitted := sdk.NewInt(10000)
+
+	vestingInfos := []*types.VestingInfo{
+		{
+			BaseDenom:       "eden",
+			VestingDenom:    "uelys",
+			EpochIdentifier: "tenseconds",
+			NumEpochs:       10,
+			VestNowFactor:   sdk.NewInt(90),
+		},
+	}
+
+	params := types.Params{
+		VestingInfos: vestingInfos,
+	}
+
+	keeper.SetParams(ctx, params)
 
 	// Set up initial commitments object with sufficient uncommitted & committed tokens
 	uncommittedTokens := types.UncommittedTokens{
@@ -51,33 +66,32 @@ func TestWithdrawTokens(t *testing.T) {
 	keeper.SetCommitments(ctx, initialCommitments)
 
 	// Test scenario 1: Withdraw within uncommitted balance
-	msg := &types.MsgWithdrawTokens{
+	msg := &types.MsgVestNow{
 		Creator: creator,
-		Amount:  sdk.NewInt(30),
+		Amount:  sdk.NewInt(3000),
 		Denom:   denom,
 	}
 
-	_, err := msgServer.WithdrawTokens(ctx, msg)
+	_, err := msgServer.VestNow(ctx, msg)
 	require.NoError(t, err)
 
 	updatedCommitments, found := keeper.GetCommitments(ctx, creator)
 	require.True(t, found)
 
 	uncommittedBalance := updatedCommitments.GetUncommittedAmountForDenom(denom)
-	assert.Equal(t, sdk.NewInt(20), uncommittedBalance)
-
-	// Check if the withdrawn tokens were received
-	creatorBalance := app.BankKeeper.GetBalance(ctx, creatorAddr, denom)
-	require.Equal(t, sdk.NewInt(30), creatorBalance.Amount, "tokens were not withdrawn correctly")
+	assert.Equal(t, sdk.NewInt(2000), uncommittedBalance)
+	// Check if the vested tokens were received
+	creatorBalance := app.BankKeeper.GetBalance(ctx, creatorAddr, vestingInfos[0].VestingDenom)
+	require.Equal(t, sdk.NewInt(33), creatorBalance.Amount, "tokens were not vested correctly")
 
 	// Test scenario 2: Withdraw more than uncommitted balance but within total balance
-	msg = &types.MsgWithdrawTokens{
+	msg = &types.MsgVestNow{
 		Creator: creator,
-		Amount:  sdk.NewInt(70),
+		Amount:  sdk.NewInt(7000),
 		Denom:   denom,
 	}
 
-	_, err = msgServer.WithdrawTokens(ctx, msg)
+	_, err = msgServer.VestNow(ctx, msg)
 	require.NoError(t, err)
 
 	updatedCommitments, found = keeper.GetCommitments(ctx, creator)
@@ -87,19 +101,20 @@ func TestWithdrawTokens(t *testing.T) {
 	assert.Equal(t, sdk.NewInt(0), uncommittedBalance)
 
 	committedBalance := updatedCommitments.GetCommittedAmountForDenom(denom)
-	assert.Equal(t, sdk.NewInt(50), committedBalance)
+	assert.Equal(t, sdk.NewInt(5000), committedBalance)
 
-	// Check if the withdrawn tokens were received
-	creatorBalance = app.BankKeeper.GetBalance(ctx, creatorAddr, denom)
-	require.Equal(t, sdk.NewInt(100), creatorBalance.Amount, "tokens were not withdrawn correctly")
+	// Check if the vested tokens were received
+	creatorBalance = app.BankKeeper.GetBalance(ctx, creatorAddr, vestingInfos[0].VestingDenom)
+
+	require.Equal(t, sdk.NewInt(110), creatorBalance.Amount, "tokens were not vested correctly")
 
 	// Test scenario 3: Withdraw more than total balance
-	msg = &types.MsgWithdrawTokens{
+	msg = &types.MsgVestNow{
 		Creator: creator,
-		Amount:  sdk.NewInt(100),
+		Amount:  sdk.NewInt(10000),
 		Denom:   denom,
 	}
 
-	_, err = msgServer.WithdrawTokens(ctx, msg)
+	_, err = msgServer.VestNow(ctx, msg)
 	require.Error(t, err)
 }

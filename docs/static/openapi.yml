@@ -32876,6 +32876,8 @@ paths:
                         num_epochs:
                           type: string
                           format: int64
+                        vest_now_factor:
+                          type: string
             description: >-
               QueryParamsResponse is response type for the Query/Params RPC
               method.
@@ -68154,6 +68156,8 @@ definitions:
             num_epochs:
               type: string
               format: int64
+            vest_now_factor:
+              type: string
     description: Params defines the parameters for the module.
   elysnetwork.elys.commitment.QueryParamsResponse:
     type: object
@@ -68176,6 +68180,8 @@ definitions:
                 num_epochs:
                   type: string
                   format: int64
+                vest_now_factor:
+                  type: string
     description: QueryParamsResponse is response type for the Query/Params RPC method.
   elysnetwork.elys.commitment.QueryShowCommitmentsResponse:
     type: object
@@ -68242,6 +68248,8 @@ definitions:
       num_epochs:
         type: string
         format: int64
+      vest_now_factor:
+        type: string
   elysnetwork.elys.commitment.VestingTokens:
     type: object
     properties:

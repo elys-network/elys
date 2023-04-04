@@ -13,7 +13,6 @@ import (
 )
 
 func TestDepositTokens(t *testing.T) {
-	t.Skip()
 	app := app.InitElysTestApp(true)
 
 	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
@@ -24,11 +23,7 @@ func TestDepositTokens(t *testing.T) {
 
 	// Create a new account
 	creator, _ := sdk.AccAddressFromBech32("cosmos1xv9tklw7d82sezh9haa573wufgy59vmwe6xxe5")
-	acc := app.AccountKeeper.GetAccount(ctx, creator)
-	if acc == nil {
-		acc = app.AccountKeeper.NewAccountWithAddress(ctx, creator)
-		app.AccountKeeper.SetAccount(ctx, acc)
-	}
+
 	// Create a deposit message
 	depositMsg := &types.MsgDepositTokens{
 		Creator: creator.String(),
@@ -58,7 +53,11 @@ func TestDepositTokens(t *testing.T) {
 	uncommittedBalance := commitments.GetUncommittedAmountForDenom(depositMsg.Denom)
 	require.Equal(t, depositMsg.Amount, uncommittedBalance, "uncommitted balance did not update correctly")
 
-	// Check if the deposited tokens were burned
+	// Check if the deposited tokens were deducted from creator balance
 	remainingCoins := app.BankKeeper.GetBalance(ctx, creator, depositMsg.Denom)
-	require.Equal(t, sdk.NewInt(100), remainingCoins.Amount, "tokens were not burned correctly")
+	require.Equal(t, sdk.NewInt(100), remainingCoins.Amount, "tokens were not deducted correctly")
+
+	// Check if the deposited tokens were burned
+	remainingCoins = app.BankKeeper.GetBalance(ctx, app.AccountKeeper.GetModuleAddress(types.ModuleName), depositMsg.Denom)
+	require.Equal(t, sdk.NewInt(0), remainingCoins.Amount, "tokens were not burned correctly")
 }

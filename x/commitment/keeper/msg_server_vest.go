@@ -18,7 +18,7 @@ func (k msgServer) Vest(goCtx context.Context, msg *types.MsgVest) (*types.MsgVe
 		return nil, sdkerrors.Wrapf(types.ErrInvalidDenom, "denom: %s", msg.Denom)
 	}
 
-	commitments, _, err := k.DeductCommitments(ctx, msg.Creator, msg.Denom, msg.Amount)
+	commitments, err := k.DeductCommitments(ctx, msg.Creator, msg.Denom, msg.Amount)
 	if err != nil {
 		return nil, err
 	}

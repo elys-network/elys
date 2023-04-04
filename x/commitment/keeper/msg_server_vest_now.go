@@ -17,22 +17,28 @@ func (k msgServer) VestNow(goCtx context.Context, msg *types.MsgVestNow) (*types
 		return nil, sdkerrors.Wrapf(types.ErrInvalidDenom, "denom: %s", msg.Denom)
 	}
 
-	commitments, requestedAmount, err := k.DeductCommitments(ctx, msg.Creator, msg.Denom, msg.Amount)
+	commitments, err := k.DeductCommitments(ctx, msg.Creator, msg.Denom, msg.Amount)
 	if err != nil {
 		return nil, err
 	}
 
-	// vestAmount := requestedAmount.Quo() // TODO pull premium factor from params
+	vestAmount := msg.Amount.Quo(vestingInfo.VestNowFactor)
 
-	withdrawCoins := sdk.NewCoins(sdk.NewCoin(vestingInfo.VestingDenom, requestedAmount))
+	withdrawCoins := sdk.NewCoins(sdk.NewCoin(vestingInfo.VestingDenom, vestAmount))
 
 	// Mint the vested tokens to the module account
 	err = k.bankKeeper.MintCoins(ctx, types.ModuleName, withdrawCoins)
 	if err != nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrInsufficientFunds, "unable to mint withdrawn tokens")
 	}
+
+	addr, err := sdk.AccAddressFromBech32(commitments.Creator)
+	if err != nil {
+		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "unable to convert address from bech32")
+	}
+
 	// Send the minted coins to the user's account
-	err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, sdk.AccAddress(commitments.Creator), withdrawCoins)
+	err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, addr, withdrawCoins)
 	if err != nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrInsufficientFunds, "unable to send withdrawn tokens")
 	}

@@ -3,6 +3,7 @@ package keeper_test
 import (
 	"testing"
 
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
 	"github.com/elys-network/elys/app"
@@ -24,6 +25,7 @@ func TestGetParams(t *testing.T) {
 			VestingDenom:    "uelys",
 			EpochIdentifier: "tenseconds",
 			NumEpochs:       10,
+			VestNowFactor:   sdk.NewInt(90),
 		},
 	}
 
@@ -44,6 +46,7 @@ func TestEncodeDecodeParams(t *testing.T) {
 			VestingDenom:    "uelys",
 			EpochIdentifier: "tenseconds",
 			NumEpochs:       10,
+			VestNowFactor:   sdk.NewInt(90),
 		},
 	}
 
@@ -75,6 +78,7 @@ func TestGetParamsNew(t *testing.T) {
 			VestingDenom:    "uelys",
 			EpochIdentifier: "tenseconds",
 			NumEpochs:       10,
+			VestNowFactor:   sdk.NewInt(90),
 		},
 	}
 
@@ -104,12 +108,14 @@ func TestGetVestingInfo(t *testing.T) {
 			VestingDenom:    "uelys",
 			EpochIdentifier: "tenseconds",
 			NumEpochs:       10,
+			VestNowFactor:   sdk.NewInt(90),
 		},
 		{
 			BaseDenom:       "test",
 			VestingDenom:    "test_vesting",
 			EpochIdentifier: "tenseconds",
 			NumEpochs:       10,
+			VestNowFactor:   sdk.NewInt(90),
 		},
 	}
 
