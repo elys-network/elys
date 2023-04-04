@@ -529,8 +529,8 @@ func NewElysApp(
 	epochsKeeper := epochsmodulekeeper.NewKeeper(appCodec, keys[epochsmoduletypes.StoreKey])
 	app.EpochsKeeper = *epochsKeeper.SetHooks(
 		epochsmodulekeeper.NewMultiEpochHooks(
-		// insert epoch hooks receivers here
-		// app.IncentivesKeeper.Hooks(),
+			// insert epoch hooks receivers here
+			app.OracleKeeper.Hooks(),
 		),
 	)
 	epochsModule := epochsmodule.NewAppModule(appCodec, app.EpochsKeeper)

@@ -33271,6 +33271,48 @@ paths:
               params:
                 description: params holds all the parameters of this module.
                 type: object
+                properties:
+                  band_channel_source:
+                    type: string
+                  oracle_script_id:
+                    type: string
+                    format: uint64
+                  multiplier:
+                    type: string
+                    format: uint64
+                  ask_count:
+                    type: string
+                    format: uint64
+                  min_count:
+                    type: string
+                    format: uint64
+                  fee_limit:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        denom:
+                          type: string
+                        amount:
+                          type: string
+                      description: >-
+                        Coin defines a token with a denomination and an amount.
+
+
+                        NOTE: The amount field is an Int which implements the
+                        custom method
+
+                        signatures required by gogoproto.
+                  prepare_gas:
+                    type: string
+                    format: uint64
+                  execute_gas:
+                    type: string
+                    format: uint64
+                  client_id:
+                    type: string
+                  band_epoch:
+                    type: string
             description: >-
               QueryParamsResponse is response type for the Query/Params RPC
               method.
@@ -68580,6 +68622,45 @@ definitions:
     type: object
   elysnetwork.elys.oracle.Params:
     type: object
+    properties:
+      band_channel_source:
+        type: string
+      oracle_script_id:
+        type: string
+        format: uint64
+      multiplier:
+        type: string
+        format: uint64
+      ask_count:
+        type: string
+        format: uint64
+      min_count:
+        type: string
+        format: uint64
+      fee_limit:
+        type: array
+        items:
+          type: object
+          properties:
+            denom:
+              type: string
+            amount:
+              type: string
+          description: |-
+            Coin defines a token with a denomination and an amount.
+
+            NOTE: The amount field is an Int which implements the custom method
+            signatures required by gogoproto.
+      prepare_gas:
+        type: string
+        format: uint64
+      execute_gas:
+        type: string
+        format: uint64
+      client_id:
+        type: string
+      band_epoch:
+        type: string
     description: Params defines the parameters for the module.
   elysnetwork.elys.oracle.Price:
     type: object
@@ -68731,6 +68812,48 @@ definitions:
       params:
         description: params holds all the parameters of this module.
         type: object
+        properties:
+          band_channel_source:
+            type: string
+          oracle_script_id:
+            type: string
+            format: uint64
+          multiplier:
+            type: string
+            format: uint64
+          ask_count:
+            type: string
+            format: uint64
+          min_count:
+            type: string
+            format: uint64
+          fee_limit:
+            type: array
+            items:
+              type: object
+              properties:
+                denom:
+                  type: string
+                amount:
+                  type: string
+              description: >-
+                Coin defines a token with a denomination and an amount.
+
+
+                NOTE: The amount field is an Int which implements the custom
+                method
+
+                signatures required by gogoproto.
+          prepare_gas:
+            type: string
+            format: uint64
+          execute_gas:
+            type: string
+            format: uint64
+          client_id:
+            type: string
+          band_epoch:
+            type: string
     description: QueryParamsResponse is response type for the Query/Params RPC method.
   elysnetwork.elys.tokenomics.Airdrop:
     type: object
