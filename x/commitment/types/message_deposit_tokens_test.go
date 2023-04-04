@@ -3,6 +3,7 @@ package types
 import (
 	"testing"
 
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/elys-network/elys/testutil/sample"
 	"github.com/stretchr/testify/require"
@@ -18,12 +19,14 @@ func TestMsgDepositTokens_ValidateBasic(t *testing.T) {
 			name: "invalid address",
 			msg: MsgDepositTokens{
 				Creator: "invalid_address",
+				Amount:  sdk.ZeroInt(),
 			},
 			err: sdkerrors.ErrInvalidAddress,
 		}, {
 			name: "valid address",
 			msg: MsgDepositTokens{
 				Creator: sample.AccAddress(),
+				Amount:  sdk.ZeroInt(),
 			},
 		},
 	}
