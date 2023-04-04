@@ -28,8 +28,9 @@ func (k Keeper) VestTokens(ctx sdk.Context) error {
 					"vestingtokens", vesting, commitments.Creator,
 				)
 			}
+
 			// Send the minted coins to the user's account
-			err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, sdk.AccAddress(commitments.Creator), withdrawCoins)
+			err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, sdk.MustAccAddressFromBech32(commitments.Creator), withdrawCoins)
 			if err != nil {
 				logger.Debug(
 					"unable to send vested tokens",

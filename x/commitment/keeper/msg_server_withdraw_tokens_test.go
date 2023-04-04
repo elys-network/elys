@@ -27,7 +27,7 @@ func TestWithdrawTokens(t *testing.T) {
 
 	// Define the test data
 	creator := creatorAddr.String()
-	denom := "eden"
+	denom := "ueden"
 	initialUncommitted := sdk.NewInt(50)
 	initialCommitted := sdk.NewInt(100)
 

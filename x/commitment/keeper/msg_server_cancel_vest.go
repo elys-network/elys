@@ -12,7 +12,9 @@ import (
 func (k msgServer) CancelVest(goCtx context.Context, msg *types.MsgCancelVest) (*types.MsgCancelVestResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	if msg.Denom != "eden" {
+	vestingInfo := k.GetVestingInfo(ctx, msg.Denom)
+
+	if vestingInfo == nil {
 		return nil, sdkerrors.Wrapf(types.ErrInvalidDenom, "denom: %s", msg.Denom)
 	}
 

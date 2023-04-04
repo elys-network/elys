@@ -4,7 +4,7 @@ accounts:
     coins:
       - 9000000000000000uelys
       - 200000000stake
-      - 100000000eden
+      - 100000000ueden
   - name: seed
     coins:
       - 9000000000000000uelys
@@ -58,6 +58,23 @@ genesis:
           symbol: elys
           description: Native Elys token definition
           display: elys
+        - base: ueden
+          denom_units:
+            - denom: ueden
+              exponent: 0
+              aliases:
+                - microeden
+            - denom: meden
+              exponent: 3
+              aliases:
+                - millieden
+            - denom: eden
+              exponent: 6
+              aliases: []
+          name: eden
+          symbol: eden
+          description: Eden token definition
+          display: eden
     assetprofile:
       entryList:
         - address: ""
@@ -94,6 +111,23 @@ genesis:
           permissions: []
           transferLimit: ""
           unitDenom: ""
+        - address: ""
+          authority: elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3
+          baseDenom: ueden
+          decimals: "18"
+          denom: ueden
+          displayName: EDEN
+          displaySymbol: ""
+          externalSymbol: ""
+          ibcChannelId: ""
+          ibcCounterpartyChainId: ""
+          ibcCounterpartyChannelId: ""
+          ibcCounterpartyDenom: ""
+          network: ""
+          path: ""
+          permissions: []
+          transferLimit: ""
+          unitDenom: ""
     epochs:
       epochs:
         - identifier: week
@@ -119,7 +153,7 @@ genesis:
     commitment:
       params:
         vesting_infos:
-          - base_denom: eden
+          - base_denom: ueden
             vesting_denom: uelys
             epoch_identifier: tenseconds
             num_epochs: "10"

@@ -27,18 +27,18 @@ func TestDepositTokens(t *testing.T) {
 	// Create a deposit message
 	depositMsg := &types.MsgDepositTokens{
 		Creator: creator.String(),
-		Denom:   "eden",
+		Denom:   "ueden",
 		Amount:  sdk.NewInt(100),
 	}
 
 	// Add initial funds to creator's account
-	coins := sdk.NewCoins(sdk.NewCoin("eden", sdk.NewInt(200)))
+	coins := sdk.NewCoins(sdk.NewCoin("ueden", sdk.NewInt(200)))
 	err := app.BankKeeper.MintCoins(ctx, types.ModuleName, coins)
 	require.NoError(t, err)
 	err = app.BankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, creator, coins)
 	require.NoError(t, err)
 	balance := app.BankKeeper.GetBalance(ctx, creator, depositMsg.Denom)
-	require.Equal(t, coins.AmountOf("eden"), balance.Amount, "creator balance did not initialize")
+	require.Equal(t, coins.AmountOf("ueden"), balance.Amount, "creator balance did not initialize")
 
 	require.NoError(t, err)
 

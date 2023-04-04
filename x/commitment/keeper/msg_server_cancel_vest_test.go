@@ -22,6 +22,22 @@ func TestCancelVest(t *testing.T) {
 
 	msgServer := commitmentkeeper.NewMsgServerImpl(keeper)
 
+	vestingInfos := []*types.VestingInfo{
+		{
+			BaseDenom:       "ueden",
+			VestingDenom:    "uelys",
+			EpochIdentifier: "tenseconds",
+			NumEpochs:       10,
+			VestNowFactor:   sdk.NewInt(90),
+		},
+	}
+
+	params := types.Params{
+		VestingInfos: vestingInfos,
+	}
+
+	keeper.SetParams(ctx, params)
+
 	// Create a new account
 	creator, _ := sdk.AccAddressFromBech32("cosmos1xv9tklw7d82sezh9haa573wufgy59vmwe6xxe5")
 	acc := app.AccountKeeper.GetAccount(ctx, creator)
@@ -32,7 +48,7 @@ func TestCancelVest(t *testing.T) {
 	// Create a cancel vesting message
 	cancelVestMsg := &types.MsgCancelVest{
 		Creator: creator.String(),
-		Denom:   "eden",
+		Denom:   "ueden",
 		Amount:  sdk.NewInt(25),
 	}
 
@@ -41,7 +57,7 @@ func TestCancelVest(t *testing.T) {
 		Creator: creator.String(),
 		VestingTokens: []*types.VestingTokens{
 			{
-				Denom:           "eden",
+				Denom:           "ueden",
 				TotalAmount:     sdk.NewInt(100),
 				UnvestedAmount:  sdk.NewInt(100),
 				EpochIdentifier: epochstypes.DayEpochID,

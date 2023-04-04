@@ -26,13 +26,13 @@ func TestVestNow(t *testing.T) {
 
 	// Define the test data
 	creator := creatorAddr.String()
-	denom := "eden"
+	denom := "ueden"
 	initialUncommitted := sdk.NewInt(5000)
 	initialCommitted := sdk.NewInt(10000)
 
 	vestingInfos := []*types.VestingInfo{
 		{
-			BaseDenom:       "eden",
+			BaseDenom:       "ueden",
 			VestingDenom:    "uelys",
 			EpochIdentifier: "tenseconds",
 			NumEpochs:       10,

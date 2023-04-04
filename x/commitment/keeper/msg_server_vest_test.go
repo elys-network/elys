@@ -31,7 +31,7 @@ func TestVest(t *testing.T) {
 
 	vestingInfos := []*types.VestingInfo{
 		{
-			BaseDenom:       "eden",
+			BaseDenom:       "ueden",
 			VestingDenom:    "uelys",
 			EpochIdentifier: "tenseconds",
 			NumEpochs:       10,
@@ -48,7 +48,7 @@ func TestVest(t *testing.T) {
 	// Create a vesting message
 	vestMsg := &types.MsgVest{
 		Creator: creator.String(),
-		Denom:   "eden",
+		Denom:   "ueden",
 		Amount:  sdk.NewInt(100),
 	}
 
@@ -57,13 +57,13 @@ func TestVest(t *testing.T) {
 		Creator: creator.String(),
 		CommittedTokens: []*types.CommittedTokens{
 			{
-				Denom:  "eden",
+				Denom:  "ueden",
 				Amount: sdk.NewInt(50),
 			},
 		},
 		UncommittedTokens: []*types.UncommittedTokens{
 			{
-				Denom:  "eden",
+				Denom:  "ueden",
 				Amount: sdk.NewInt(150),
 			},
 		},

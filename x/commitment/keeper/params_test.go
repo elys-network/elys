@@ -21,7 +21,7 @@ func TestGetParams(t *testing.T) {
 
 	vestingInfos := []*types.VestingInfo{
 		{
-			BaseDenom:       "eden",
+			BaseDenom:       "ueden",
 			VestingDenom:    "uelys",
 			EpochIdentifier: "tenseconds",
 			NumEpochs:       10,
@@ -42,7 +42,7 @@ func TestGetParams(t *testing.T) {
 func TestEncodeDecodeParams(t *testing.T) {
 	vestingInfos := []*types.VestingInfo{
 		{
-			BaseDenom:       "eden",
+			BaseDenom:       "ueden",
 			VestingDenom:    "uelys",
 			EpochIdentifier: "tenseconds",
 			NumEpochs:       10,
@@ -74,7 +74,7 @@ func TestGetParamsNew(t *testing.T) {
 
 	vestingInfos := []*types.VestingInfo{
 		{
-			BaseDenom:       "eden",
+			BaseDenom:       "ueden",
 			VestingDenom:    "uelys",
 			EpochIdentifier: "tenseconds",
 			NumEpochs:       10,
@@ -104,7 +104,7 @@ func TestGetVestingInfo(t *testing.T) {
 
 	vestingInfos := []*types.VestingInfo{
 		{
-			BaseDenom:       "eden",
+			BaseDenom:       "ueden",
 			VestingDenom:    "uelys",
 			EpochIdentifier: "tenseconds",
 			NumEpochs:       10,
@@ -126,9 +126,9 @@ func TestGetVestingInfo(t *testing.T) {
 	k.SetParams(ctx, params)
 
 	// Test GetVestingInfo with existing base denom
-	vestingInfo := k.GetVestingInfo(ctx, "eden")
+	vestingInfo := k.GetVestingInfo(ctx, "ueden")
 	require.NotNil(t, vestingInfo)
-	require.Equal(t, "eden", vestingInfo.BaseDenom)
+	require.Equal(t, "ueden", vestingInfo.BaseDenom)
 	require.Equal(t, "uelys", vestingInfo.VestingDenom)
 
 	// Test GetVestingInfo with non-existing base denom
