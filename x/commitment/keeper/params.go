@@ -5,12 +5,27 @@ import (
 	"github.com/elys-network/elys/x/commitment/types"
 )
 
-// GetParams get all parameters as types.Params
+// GetParams returns the current parameters of the Commitment module
 func (k Keeper) GetParams(ctx sdk.Context) types.Params {
-	return types.NewParams()
+	var params types.Params
+	k.paramstore.GetParamSet(ctx, &params)
+	return params
 }
 
 // SetParams set the params
 func (k Keeper) SetParams(ctx sdk.Context, params types.Params) {
 	k.paramstore.SetParamSet(ctx, &params)
+}
+
+// GetVestingDenom returns the vesting denom for the given base denom
+func (k Keeper) GetVestingInfo(ctx sdk.Context, baseDenom string) *types.VestingInfo {
+	params := k.GetParams(ctx)
+
+	for _, vestingInfo := range params.VestingInfos {
+		if vestingInfo.BaseDenom == baseDenom {
+			return vestingInfo
+		}
+	}
+
+	return nil
 }

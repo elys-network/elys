@@ -18,8 +18,8 @@ func TestCommitTokens(t *testing.T) {
 	app := app.InitElysTestApp(true)
 
 	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
-	// Create a test context and keeper
 	keeper := app.CommitmentKeeper
+
 	msgServer := commitmentkeeper.NewMsgServerImpl(keeper)
 
 	// Define the test data

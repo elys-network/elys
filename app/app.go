@@ -527,11 +527,22 @@ func NewElysApp(
 		govConfig,
 	)
 
+	app.CommitmentKeeper = *commitmentmodulekeeper.NewKeeper(
+		appCodec,
+		keys[commitmentmoduletypes.StoreKey],
+		keys[commitmentmoduletypes.MemStoreKey],
+		app.GetSubspace(commitmentmoduletypes.ModuleName),
+
+		app.BankKeeper,
+		app.StakingKeeper,
+	)
+	commitmentModule := commitmentmodule.NewAppModule(appCodec, app.CommitmentKeeper, app.AccountKeeper, app.BankKeeper)
+
 	epochsKeeper := epochsmodulekeeper.NewKeeper(appCodec, keys[epochsmoduletypes.StoreKey])
 	app.EpochsKeeper = *epochsKeeper.SetHooks(
 		epochsmodulekeeper.NewMultiEpochHooks(
-		// insert epoch hooks receivers here
-		// app.IncentivesKeeper.Hooks(),
+			// insert epoch hooks receivers here
+			app.CommitmentKeeper.Hooks(),
 		),
 	)
 	epochsModule := epochsmodule.NewAppModule(appCodec, app.EpochsKeeper)
@@ -552,17 +563,6 @@ func NewElysApp(
 		app.GetSubspace(liquidityprovidermoduletypes.ModuleName),
 	)
 	liquidityproviderModule := liquidityprovidermodule.NewAppModule(appCodec, app.LiquidityproviderKeeper, app.AccountKeeper, app.BankKeeper)
-
-	app.CommitmentKeeper = *commitmentmodulekeeper.NewKeeper(
-		appCodec,
-		keys[commitmentmoduletypes.StoreKey],
-		keys[commitmentmoduletypes.MemStoreKey],
-		app.GetSubspace(commitmentmoduletypes.ModuleName),
-
-		app.BankKeeper,
-		app.StakingKeeper,
-	)
-	commitmentModule := commitmentmodule.NewAppModule(appCodec, app.CommitmentKeeper, app.AccountKeeper, app.BankKeeper)
 
 	app.TokenomicsKeeper = *tokenomicsmodulekeeper.NewKeeper(
 		appCodec,

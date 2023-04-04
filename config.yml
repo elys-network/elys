@@ -4,6 +4,7 @@ accounts:
     coins:
       - 9000000000000000uelys
       - 200000000stake
+      - 100000000eden
   - name: seed
     coins:
       - 9000000000000000uelys
@@ -110,6 +111,18 @@ genesis:
           currentEpoch: "0"
           currentEpochStartHeight: "0"
           epochCountingStarted: false
+        - identifier: tenseconds
+          duration: "10s"
+          currentEpoch: "0"
+          currentEpochStartHeight: "0"
+          epochCountingStarted: false
+    commitment:
+      params:
+        vesting_infos:
+          - base_denom: eden
+            vesting_denom: uelys
+            epoch_identifier: tenseconds
+            num_epochs: "10"
     tokenomics:
       airdropList:
         - intent: AtomStakers

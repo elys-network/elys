@@ -3,6 +3,7 @@ package keeper
 import (
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/elys-network/elys/x/commitment/types"
 )
 
@@ -53,6 +54,7 @@ func (k Keeper) IterateCommitments(
 	handlerFn func(commitments types.Commitments) (stop bool),
 ) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.CommitmentsKeyPrefix))
+
 	iterator := sdk.KVStorePrefixIterator(store, []byte{})
 	defer iterator.Close()
 
@@ -64,4 +66,39 @@ func (k Keeper) IterateCommitments(
 			break
 		}
 	}
+}
+
+func (k Keeper) DeductCommitments(ctx sdk.Context, creator string, denom string, amount sdk.Int) (types.Commitments, sdk.Int, error) {
+	// Get the Commitments for the creator
+	commitments, found := k.GetCommitments(ctx, creator)
+	if !found {
+		return types.Commitments{}, sdk.Int{}, sdkerrors.Wrapf(types.ErrCommitmentsNotFound, "creator: %s", creator)
+	}
+
+	// Get user's uncommitted balance
+	uncommittedToken, _ := commitments.GetUncommittedTokensForDenom(denom)
+
+	requestedAmount := amount
+
+	// Check if there are enough uncommitted tokens to withdraw
+	if uncommittedToken.Amount.LT(requestedAmount) {
+		// Calculate the difference between the requested amount and the available uncommitted balance
+		difference := requestedAmount.Sub(uncommittedToken.Amount)
+
+		committedToken, found := commitments.GetCommittedTokensForDenom(denom)
+		if found {
+			if committedToken.Amount.GTE(difference) {
+				// Uncommit the required committed tokens
+				committedToken.Amount = committedToken.Amount.Sub(difference)
+				requestedAmount = requestedAmount.Sub(difference)
+			} else {
+				return types.Commitments{}, sdk.Int{}, sdkerrors.Wrap(sdkerrors.ErrInsufficientFunds, "not enough tokens to withdraw")
+			}
+		}
+	}
+
+	// Subtract the withdrawn amount from the uncommitted balance
+	uncommittedToken.Amount = uncommittedToken.Amount.Sub(requestedAmount)
+
+	return commitments, requestedAmount, nil
 }

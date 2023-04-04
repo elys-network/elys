@@ -10,6 +10,7 @@ func (k Keeper) VestTokens(ctx sdk.Context) error {
 
 	k.IterateCommitments(ctx, func(commitments types.Commitments) (stop bool) {
 		logger := k.Logger(ctx)
+		logger.Info("insideiteratehandler")
 
 		for index := len(commitments.VestingTokens) - 1; index >= 0; index-- {
 			vesting := commitments.VestingTokens[index]

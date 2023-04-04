@@ -32861,6 +32861,21 @@ paths:
               params:
                 description: params holds all the parameters of this module.
                 type: object
+                properties:
+                  vesting_infos:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        base_denom:
+                          type: string
+                        vesting_denom:
+                          type: string
+                        epoch_identifier:
+                          type: string
+                        num_epochs:
+                          type: string
+                          format: int64
             description: >-
               QueryParamsResponse is response type for the Query/Params RPC
               method.
@@ -32882,6 +32897,84 @@ paths:
                     '@type':
                       type: string
                   additionalProperties: {}
+      tags:
+        - Query
+  /elys-network/elys/commitment/show_commitments/{creator}:
+    get:
+      summary: Queries a list of ShowCommitments items.
+      operationId: ElysnetworkElysCommitmentShowCommitments
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              commitments:
+                type: object
+                properties:
+                  creator:
+                    type: string
+                  committed_tokens:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        denom:
+                          type: string
+                        amount:
+                          type: string
+                  uncommitted_tokens:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        denom:
+                          type: string
+                        amount:
+                          type: string
+                  vesting_tokens:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        denom:
+                          type: string
+                        total_amount:
+                          type: string
+                        unvested_amount:
+                          type: string
+                        epoch_identifier:
+                          type: string
+                        num_epochs:
+                          type: string
+                          format: int64
+                        current_epoch:
+                          type: string
+                          format: int64
+                description: GenesisState defines the commitment module's genesis state.
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: creator
+          in: path
+          required: true
+          type: string
       tags:
         - Query
   /elys-network/elys/epochs/v1/current_epoch:
@@ -67980,6 +68073,56 @@ definitions:
         description: params holds all the parameters of this module.
         type: object
     description: QueryParamsResponse is response type for the Query/Params RPC method.
+  elysnetwork.elys.commitment.Commitments:
+    type: object
+    properties:
+      creator:
+        type: string
+      committed_tokens:
+        type: array
+        items:
+          type: object
+          properties:
+            denom:
+              type: string
+            amount:
+              type: string
+      uncommitted_tokens:
+        type: array
+        items:
+          type: object
+          properties:
+            denom:
+              type: string
+            amount:
+              type: string
+      vesting_tokens:
+        type: array
+        items:
+          type: object
+          properties:
+            denom:
+              type: string
+            total_amount:
+              type: string
+            unvested_amount:
+              type: string
+            epoch_identifier:
+              type: string
+            num_epochs:
+              type: string
+              format: int64
+            current_epoch:
+              type: string
+              format: int64
+    description: GenesisState defines the commitment module's genesis state.
+  elysnetwork.elys.commitment.CommittedTokens:
+    type: object
+    properties:
+      denom:
+        type: string
+      amount:
+        type: string
   elysnetwork.elys.commitment.MsgCancelVestResponse:
     type: object
   elysnetwork.elys.commitment.MsgCommitTokensResponse:
@@ -67988,12 +68131,29 @@ definitions:
     type: object
   elysnetwork.elys.commitment.MsgUncommitTokensResponse:
     type: object
+  elysnetwork.elys.commitment.MsgVestNowResponse:
+    type: object
   elysnetwork.elys.commitment.MsgVestResponse:
     type: object
   elysnetwork.elys.commitment.MsgWithdrawTokensResponse:
     type: object
   elysnetwork.elys.commitment.Params:
     type: object
+    properties:
+      vesting_infos:
+        type: array
+        items:
+          type: object
+          properties:
+            base_denom:
+              type: string
+            vesting_denom:
+              type: string
+            epoch_identifier:
+              type: string
+            num_epochs:
+              type: string
+              format: int64
     description: Params defines the parameters for the module.
   elysnetwork.elys.commitment.QueryParamsResponse:
     type: object
@@ -68001,7 +68161,104 @@ definitions:
       params:
         description: params holds all the parameters of this module.
         type: object
+        properties:
+          vesting_infos:
+            type: array
+            items:
+              type: object
+              properties:
+                base_denom:
+                  type: string
+                vesting_denom:
+                  type: string
+                epoch_identifier:
+                  type: string
+                num_epochs:
+                  type: string
+                  format: int64
     description: QueryParamsResponse is response type for the Query/Params RPC method.
+  elysnetwork.elys.commitment.QueryShowCommitmentsResponse:
+    type: object
+    properties:
+      commitments:
+        type: object
+        properties:
+          creator:
+            type: string
+          committed_tokens:
+            type: array
+            items:
+              type: object
+              properties:
+                denom:
+                  type: string
+                amount:
+                  type: string
+          uncommitted_tokens:
+            type: array
+            items:
+              type: object
+              properties:
+                denom:
+                  type: string
+                amount:
+                  type: string
+          vesting_tokens:
+            type: array
+            items:
+              type: object
+              properties:
+                denom:
+                  type: string
+                total_amount:
+                  type: string
+                unvested_amount:
+                  type: string
+                epoch_identifier:
+                  type: string
+                num_epochs:
+                  type: string
+                  format: int64
+                current_epoch:
+                  type: string
+                  format: int64
+        description: GenesisState defines the commitment module's genesis state.
+  elysnetwork.elys.commitment.UncommittedTokens:
+    type: object
+    properties:
+      denom:
+        type: string
+      amount:
+        type: string
+  elysnetwork.elys.commitment.VestingInfo:
+    type: object
+    properties:
+      base_denom:
+        type: string
+      vesting_denom:
+        type: string
+      epoch_identifier:
+        type: string
+      num_epochs:
+        type: string
+        format: int64
+  elysnetwork.elys.commitment.VestingTokens:
+    type: object
+    properties:
+      denom:
+        type: string
+      total_amount:
+        type: string
+      unvested_amount:
+        type: string
+      epoch_identifier:
+        type: string
+      num_epochs:
+        type: string
+        format: int64
+      current_epoch:
+        type: string
+        format: int64
   elysnetwork.elys.epochs.v1.EpochInfo:
     type: object
     properties:

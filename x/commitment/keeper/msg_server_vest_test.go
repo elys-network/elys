@@ -28,6 +28,22 @@ func TestVest(t *testing.T) {
 		acc = app.AccountKeeper.NewAccountWithAddress(ctx, creator)
 		app.AccountKeeper.SetAccount(ctx, acc)
 	}
+
+	vestingInfos := []*types.VestingInfo{
+		{
+			BaseDenom:       "eden",
+			VestingDenom:    "uelys",
+			EpochIdentifier: "tenseconds",
+			NumEpochs:       10,
+		},
+	}
+
+	params := types.Params{
+		VestingInfos: vestingInfos,
+	}
+
+	keeper.SetParams(ctx, params)
+
 	// Create a vesting message
 	vestMsg := &types.MsgVest{
 		Creator: creator.String(),

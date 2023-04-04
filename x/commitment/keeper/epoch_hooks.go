@@ -10,9 +10,10 @@ func (k Keeper) BeforeEpochStart(_ sdk.Context, _ string, _ int64) {}
 
 // AfterEpochEnd distributes vested tokens at the end of each epoch
 func (k Keeper) AfterEpochEnd(ctx sdk.Context, epochIdentifier string, _ int64) {
-
+	logger := k.Logger(ctx)
+	logger.Info("Vestingg")
 	// check if epochIdentifier signal equals the identifier in the params
-	if epochIdentifier != "day" { // TODO gov param
+	if epochIdentifier != "tenseconds" { // TODO gov param
 		return
 	}
 
