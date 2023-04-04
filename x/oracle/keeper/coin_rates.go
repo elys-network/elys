@@ -17,9 +17,7 @@ func (k Keeper) SetCoinRatesResult(ctx sdk.Context, requestID types.OracleReques
 func (k Keeper) GetCoinRatesResult(ctx sdk.Context, id types.OracleRequestID) (types.CoinRatesResult, error) {
 	bz := ctx.KVStore(k.storeKey).Get(types.CoinRatesResultStoreKey(id))
 	if bz == nil {
-		return types.CoinRatesResult{}, sdkerrors.Wrapf(types.ErrSample,
-			"GetResult: Result for request ID %d is not available.", id,
-		)
+		return types.CoinRatesResult{}, sdkerrors.Wrapf(types.ErrSample, "Result for request ID %d is not available.", id)
 	}
 	var result types.CoinRatesResult
 	k.cdc.MustUnmarshal(bz, &result)
@@ -39,4 +37,21 @@ func (k Keeper) SetLastCoinRatesID(ctx sdk.Context, id types.OracleRequestID) {
 	store := ctx.KVStore(k.storeKey)
 	store.Set(types.KeyPrefix(types.LastCoinRatesIDKey),
 		k.cdc.MustMarshalLengthPrefixed(&gogotypes.Int64Value{Value: int64(id)}))
+}
+
+// SetBandRequest saves band request waiting for responses
+func (k Keeper) SetBandRequest(ctx sdk.Context, requestID types.OracleRequestID, result types.CoinRatesCallData) {
+	store := ctx.KVStore(k.storeKey)
+	store.Set(types.CoinRatesResultStoreKey(requestID), k.cdc.MustMarshal(&result))
+}
+
+// SetBandRequest returns band request waiting for responses
+func (k Keeper) GetBandRequest(ctx sdk.Context, id types.OracleRequestID) (types.CoinRatesCallData, error) {
+	bz := ctx.KVStore(k.storeKey).Get(types.CoinRatesResultStoreKey(id))
+	if bz == nil {
+		return types.CoinRatesCallData{}, sdkerrors.Wrapf(types.ErrSample, "CoinRatesCallData for request ID %d is not available.", id)
+	}
+	var result types.CoinRatesCallData
+	k.cdc.MustUnmarshal(bz, &result)
+	return result, nil
 }

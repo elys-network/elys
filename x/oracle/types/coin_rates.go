@@ -18,6 +18,9 @@ var (
 
 	// CoinRatesClientIDKey is query request identifier
 	CoinRatesClientIDKey = "coin_rates_id"
+
+	// PrefixKeyBandRequest is the prefix for band requests
+	PrefixKeyBandRequest = "band_request_"
 )
 
 // NewMsgCoinRatesData creates a new CoinRates message
@@ -86,4 +89,8 @@ func (m *MsgCoinRatesData) ValidateBasic() error {
 // CoinRatesResultStoreKey is a function to generate key for each result in store
 func CoinRatesResultStoreKey(requestID OracleRequestID) []byte {
 	return append(KeyPrefix(CoinRatesResultStoreKeyPrefix), int64ToBytes(int64(requestID))...)
+}
+
+func BandRequestStoreKey(requestID OracleRequestID) []byte {
+	return append(KeyPrefix(PrefixKeyBandRequest), int64ToBytes(int64(requestID))...)
 }

@@ -31,13 +31,30 @@ func (im IBCModule) handleOraclePacket(
 		var coinRatesResult types.CoinRatesResult
 		if err := obi.Decode(modulePacketData.Result, &coinRatesResult); err != nil {
 			ack = channeltypes.NewErrorAcknowledgement(err)
-			return ack, sdkerrors.Wrap(sdkerrors.ErrUnknownRequest,
-				"cannot decode the coinRates received packet")
+			return ack, sdkerrors.Wrap(sdkerrors.ErrUnknownRequest, "cannot decode the coinRates received packet")
 		}
-		im.keeper.SetCoinRatesResult(ctx, types.OracleRequestID(modulePacketData.RequestID), coinRatesResult)
+		reqID := types.OracleRequestID(modulePacketData.RequestID)
+		im.keeper.SetCoinRatesResult(ctx, reqID, coinRatesResult)
 		fmt.Println("handleOraclePacket3", coinRatesResult)
 
-		// TODO: CoinRates oracle data reception logic
+		params := im.keeper.GetParams(ctx)
+		request, err := im.keeper.GetBandRequest(ctx, reqID)
+		if err != nil {
+			return ack, sdkerrors.Wrap(sdkerrors.ErrUnknownRequest, "historical request does not exist")
+		}
+
+		if len(request.Symbols) != len(coinRatesResult.Rates) {
+			return ack, sdkerrors.Wrap(sdkerrors.ErrUnknownRequest, "request and result count does not match")
+		}
+
+		for index, symbol := range request.Symbols {
+			im.keeper.SetPrice(ctx, types.Price{
+				Asset:    symbol,
+				Price:    sdk.NewDecWithPrec(int64(coinRatesResult.Rates[index]), int64(params.Multiplier)),
+				Source:   "bandchain",
+				Provider: "automation",
+			})
+		}
 		// this line is used by starport scaffolding # oracle/module/recv
 
 	default:
@@ -93,6 +110,7 @@ func (im IBCModule) handleOracleAcknowledgment(
 			}
 			fmt.Println("handleOracleAcknowledgment5", requestID)
 			im.keeper.SetLastCoinRatesID(ctx, requestID)
+			im.keeper.SetBandRequest(ctx, requestID, coinRatesData)
 			return &sdk.Result{}, nil
 			// this line is used by starport scaffolding # oracle/module/ack
 
