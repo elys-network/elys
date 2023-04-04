@@ -28,21 +28,21 @@ func (suite *KeeperTestSuite) TestPriceFeederQuerySingle() {
 		{
 			desc: "First",
 			request: &types.QueryGetPriceFeederRequest{
-				Index: msgs[0].Feeder,
+				Feeder: msgs[0].Feeder,
 			},
 			response: &types.QueryGetPriceFeederResponse{PriceFeeder: msgs[0]},
 		},
 		{
 			desc: "Second",
 			request: &types.QueryGetPriceFeederRequest{
-				Index: msgs[1].Feeder,
+				Feeder: msgs[1].Feeder,
 			},
 			response: &types.QueryGetPriceFeederResponse{PriceFeeder: msgs[1]},
 		},
 		{
 			desc: "KeyNotFound",
 			request: &types.QueryGetPriceFeederRequest{
-				Index: strconv.Itoa(100000),
+				Feeder: strconv.Itoa(100000),
 			},
 			err: status.Error(codes.NotFound, "not found"),
 		},

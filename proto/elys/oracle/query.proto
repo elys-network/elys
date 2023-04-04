@@ -27,7 +27,7 @@ service Query {
   	rpc LastCoinRatesId(QueryLastCoinRatesIdRequest) returns (QueryLastCoinRatesIdResponse) {
 		option (google.api.http).get = "/elys/oracle/last_coin_rates_id";
   	}
-	// Queries a AssetInfo by index.
+	// Queries a AssetInfo by denom.
 	rpc AssetInfo(QueryGetAssetInfoRequest) returns (QueryGetAssetInfoResponse) {
 		option (google.api.http).get = "/elys-network/elys/oracle/asset_info/{denom}";
 	}
@@ -43,9 +43,9 @@ service Query {
 	rpc PriceAll(QueryAllPriceRequest) returns (QueryAllPriceResponse) {
 		option (google.api.http).get = "/elys-network/elys/oracle/price";
 	}
-// Queries a PriceFeeder by index.
+	// Queries a PriceFeeder by feeder.
 	rpc PriceFeeder(QueryGetPriceFeederRequest) returns (QueryGetPriceFeederResponse) {
-		option (google.api.http).get = "/elys-network/elys/oracle/price_feeder/{index}";
+		option (google.api.http).get = "/elys-network/elys/oracle/price_feeder/{feeder}";
 	}
 
 	// Queries a list of PriceFeeder items.
@@ -110,8 +110,7 @@ message QueryAllPriceResponse {
 }
 
 message QueryGetPriceFeederRequest {
-	  string index = 1;
-
+	string feeder = 1;
 }
 
 message QueryGetPriceFeederResponse {

@@ -312,15 +312,15 @@ func request_Query_PriceFeeder_0(ctx context.Context, marshaler runtime.Marshale
 		_   = err
 	)
 
-	val, ok = pathParams["index"]
+	val, ok = pathParams["feeder"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "index")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "feeder")
 	}
 
-	protoReq.Index, err = runtime.String(val)
+	protoReq.Feeder, err = runtime.String(val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "index", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "feeder", err)
 	}
 
 	msg, err := client.PriceFeeder(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
@@ -339,15 +339,15 @@ func local_request_Query_PriceFeeder_0(ctx context.Context, marshaler runtime.Ma
 		_   = err
 	)
 
-	val, ok = pathParams["index"]
+	val, ok = pathParams["feeder"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "index")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "feeder")
 	}
 
-	protoReq.Index, err = runtime.String(val)
+	protoReq.Feeder, err = runtime.String(val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "index", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "feeder", err)
 	}
 
 	msg, err := server.PriceFeeder(ctx, &protoReq)
@@ -816,7 +816,7 @@ var (
 
 	pattern_Query_PriceAll_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"elys-network", "elys", "oracle", "price"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_PriceFeeder_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"elys-network", "elys", "oracle", "price_feeder", "index"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Query_PriceFeeder_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"elys-network", "elys", "oracle", "price_feeder", "feeder"}, "", runtime.AssumeColonVerbOpt(true)))
 
 	pattern_Query_PriceFeederAll_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"elys-network", "elys", "oracle", "price_feeder"}, "", runtime.AssumeColonVerbOpt(true)))
 )

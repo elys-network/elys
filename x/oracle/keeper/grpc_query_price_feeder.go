@@ -45,10 +45,7 @@ func (k Keeper) PriceFeeder(c context.Context, req *types.QueryGetPriceFeederReq
 	}
 	ctx := sdk.UnwrapSDKContext(c)
 
-	val, found := k.GetPriceFeeder(
-		ctx,
-		req.Index,
-	)
+	val, found := k.GetPriceFeeder(ctx, req.Feeder)
 	if !found {
 		return nil, status.Error(codes.NotFound, "not found")
 	}

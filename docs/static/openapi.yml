@@ -33212,7 +33212,7 @@ paths:
         - Query
   /elys-network/elys/oracle/asset_info/{denom}:
     get:
-      summary: Queries a AssetInfo by index.
+      summary: Queries a AssetInfo by denom.
       operationId: ElysnetworkElysOracleAssetInfo
       responses:
         '200':
@@ -33634,9 +33634,9 @@ paths:
           type: boolean
       tags:
         - Query
-  /elys-network/elys/oracle/price_feeder/{index}:
+  /elys-network/elys/oracle/price_feeder/{feeder}:
     get:
-      summary: Queries a PriceFeeder by index.
+      summary: Queries a PriceFeeder by feeder.
       operationId: ElysnetworkElysOraclePriceFeeder
       responses:
         '200':
@@ -33670,7 +33670,7 @@ paths:
                       type: string
                   additionalProperties: {}
       parameters:
-        - name: index
+        - name: feeder
           in: path
           required: true
           type: string
