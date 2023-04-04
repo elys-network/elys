@@ -6,6 +6,7 @@ import "cosmos/base/v1beta1/coin.proto";
 import "elys/oracle/coin_rates.proto";
 import "elys/oracle/asset_info.proto";
 import "elys/oracle/price.proto";
+import "elys/oracle/price_feeder.proto";
 // this line is used by starport scaffolding # proto/tx/import
 
 option go_package = "github.com/elys-network/elys/x/oracle/types";
@@ -19,6 +20,9 @@ service Msg {
   rpc CreatePrice(MsgCreatePrice) returns (MsgCreatePriceResponse);
   rpc UpdatePrice(MsgUpdatePrice) returns (MsgUpdatePriceResponse);
   rpc DeletePrice(MsgDeletePrice) returns (MsgDeletePriceResponse);
+  rpc CreatePriceFeeder(MsgCreatePriceFeeder) returns (MsgCreatePriceFeederResponse);
+  rpc UpdatePriceFeeder(MsgUpdatePriceFeeder) returns (MsgUpdatePriceFeederResponse);
+  rpc DeletePriceFeeder(MsgDeletePriceFeeder) returns (MsgDeletePriceFeederResponse);
 // this line is used by starport scaffolding # proto/tx/rpc
 }
 
@@ -97,5 +101,25 @@ message MsgDeletePrice {
   string asset = 2;
 }
 message MsgDeletePriceResponse {}
+
+message MsgCreatePriceFeeder {
+  string creator = 1;
+  string feeder = 2;
+  bool is_active = 3;
+}
+message MsgCreatePriceFeederResponse {}
+
+message MsgUpdatePriceFeeder {
+  string creator = 1;
+  string feeder = 2;
+  bool is_active = 3;
+}
+message MsgUpdatePriceFeederResponse {}
+
+message MsgDeletePriceFeeder {
+  string creator = 1;
+  string feeder = 2;
+}
+message MsgDeletePriceFeederResponse {}
 
 // this line is used by starport scaffolding # proto/tx/message

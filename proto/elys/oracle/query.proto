@@ -8,6 +8,7 @@ import "elys/oracle/params.proto";
 import "elys/oracle/coin_rates.proto";
 import "elys/oracle/asset_info.proto";
 import "elys/oracle/price.proto";
+import "elys/oracle/price_feeder.proto";
 // this line is used by starport scaffolding # 1
 
 option go_package = "github.com/elys-network/elys/x/oracle/types";
@@ -42,6 +43,16 @@ service Query {
 	rpc PriceAll(QueryAllPriceRequest) returns (QueryAllPriceResponse) {
 		option (google.api.http).get = "/elys-network/elys/oracle/price";
 	}
+// Queries a PriceFeeder by index.
+	rpc PriceFeeder(QueryGetPriceFeederRequest) returns (QueryGetPriceFeederResponse) {
+		option (google.api.http).get = "/elys-network/elys/oracle/price_feeder/{index}";
+	}
+
+	// Queries a list of PriceFeeder items.
+	rpc PriceFeederAll(QueryAllPriceFeederRequest) returns (QueryAllPriceFeederResponse) {
+		option (google.api.http).get = "/elys-network/elys/oracle/price_feeder";
+	}
+
 // this line is used by starport scaffolding # 2
 }
 
@@ -95,6 +106,24 @@ message QueryAllPriceRequest {
 
 message QueryAllPriceResponse {
 	repeated Price price = 1 [(gogoproto.nullable) = false];
+	cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+message QueryGetPriceFeederRequest {
+	  string index = 1;
+
+}
+
+message QueryGetPriceFeederResponse {
+	PriceFeeder priceFeeder = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryAllPriceFeederRequest {
+	cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+message QueryAllPriceFeederResponse {
+	repeated PriceFeeder priceFeeder = 1 [(gogoproto.nullable) = false];
 	cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 

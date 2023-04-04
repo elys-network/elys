@@ -181,7 +181,7 @@ func validateChannel(i interface{}) error {
 	}
 
 	if v == "" {
-		return fmt.Errorf("channel should not be empty: %d", v)
+		return fmt.Errorf("channel should not be empty: %s", v)
 	}
 
 	return nil

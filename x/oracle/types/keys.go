@@ -27,6 +27,8 @@ var (
 	AssetInfoKeyPrefix = "AssetInfo/value/"
 	// PriceKeyPrefix is the prefix to retrieve all Price
 	PriceKeyPrefix = "Price/value/"
+	// PriceFeederKeyPrefix is the prefix to retrieve all PriceFeeder
+	PriceFeederKeyPrefix = "PriceFeeder/value/"
 )
 
 func KeyPrefix(p string) []byte {
@@ -34,9 +36,7 @@ func KeyPrefix(p string) []byte {
 }
 
 // AssetInfoKey returns the store key to retrieve a AssetInfo from the index fields
-func AssetInfoKey(
-	denom string,
-) []byte {
+func AssetInfoKey(denom string) []byte {
 	var key []byte
 
 	indexBytes := []byte(denom)
@@ -47,12 +47,21 @@ func AssetInfoKey(
 }
 
 // PriceKey returns the store key to retrieve a Price from the index fields
-func PriceKey(
-	asset string,
-) []byte {
+func PriceKey(asset string) []byte {
 	var key []byte
 
 	indexBytes := []byte(asset)
+	key = append(key, indexBytes...)
+	key = append(key, []byte("/")...)
+
+	return key
+}
+
+// PriceFeederKey returns the store key to retrieve a PriceFeeder from the feeder fields
+func PriceFeederKey(feeder string) []byte {
+	var key []byte
+
+	indexBytes := []byte(feeder)
 	key = append(key, indexBytes...)
 	key = append(key, []byte("/")...)
 

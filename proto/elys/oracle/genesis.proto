@@ -5,6 +5,7 @@ import "gogoproto/gogo.proto";
 import "elys/oracle/params.proto";
 import "elys/oracle/asset_info.proto";
 import "elys/oracle/price.proto";
+import "elys/oracle/price_feeder.proto";
 // this line is used by starport scaffolding # genesis/proto/import
 
 option go_package = "github.com/elys-network/elys/x/oracle/types";
@@ -15,5 +16,6 @@ message GenesisState {
   string port_id = 2;
   repeated AssetInfo assetInfoList = 3 [(gogoproto.nullable) = false];
   repeated Price priceList = 4 [(gogoproto.nullable) = false];
+  repeated PriceFeeder priceFeederList = 5 [(gogoproto.nullable) = false];
   // this line is used by starport scaffolding # genesis/proto/state
 }

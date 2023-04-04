@@ -30,6 +30,14 @@ package oracle_test
 // 			Index: "1",
 // },
 // 	},
+// PriceFeederList: []types.PriceFeeder{
+// 		{
+// 			Index: "0",
+// },
+// 		{
+// 			Index: "1",
+// },
+// 	},
 // this line is used by starport scaffolding # genesis/test/state
 // 	}
 
@@ -45,5 +53,6 @@ package oracle_test
 
 // 	require.ElementsMatch(t, genesisState.AssetInfoList, got.AssetInfoList)
 // 	require.ElementsMatch(t, genesisState.PriceList, got.PriceList)
+// require.ElementsMatch(t, genesisState.PriceFeederList, got.PriceFeederList)
 // this line is used by starport scaffolding # genesis/test/assert
 // }

@@ -22,6 +22,7 @@ func TestGenesisState_Validate(t *testing.T) {
 			desc: "valid genesis state",
 			genState: &types.GenesisState{
 				PortId: types.PortID,
+				Params: types.DefaultParams(),
 				AssetInfoList: []types.AssetInfo{
 					{
 						Denom: "satoshi",
@@ -36,6 +37,14 @@ func TestGenesisState_Validate(t *testing.T) {
 					},
 					{
 						Asset: "asset1",
+					},
+				},
+				PriceFeederList: []types.PriceFeeder{
+					{
+						Feeder: "0",
+					},
+					{
+						Feeder: "1",
 					},
 				},
 				// this line is used by starport scaffolding # types/genesis/validField
@@ -65,6 +74,20 @@ func TestGenesisState_Validate(t *testing.T) {
 					},
 					{
 						Asset: "asset0",
+					},
+				},
+			},
+			valid: false,
+		},
+		{
+			desc: "duplicated priceFeeder",
+			genState: &types.GenesisState{
+				PriceFeederList: []types.PriceFeeder{
+					{
+						Feeder: "0",
+					},
+					{
+						Feeder: "0",
 					},
 				},
 			},

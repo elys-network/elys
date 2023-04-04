@@ -48,6 +48,18 @@ const (
 	// TODO: Determine the simulation weight value
 	defaultWeightMsgDeletePrice int = 100
 
+	opWeightMsgCreatePriceFeeder = "op_weight_msg_price_feeder"
+	// TODO: Determine the simulation weight value
+	defaultWeightMsgCreatePriceFeeder int = 100
+
+	opWeightMsgUpdatePriceFeeder = "op_weight_msg_price_feeder"
+	// TODO: Determine the simulation weight value
+	defaultWeightMsgUpdatePriceFeeder int = 100
+
+	opWeightMsgDeletePriceFeeder = "op_weight_msg_price_feeder"
+	// TODO: Determine the simulation weight value
+	defaultWeightMsgDeletePriceFeeder int = 100
+
 	// this line is used by starport scaffolding # simapp/module/const
 )
 
@@ -78,6 +90,12 @@ func (AppModule) GenerateGenesisState(simState *module.SimulationState) {
 				Provider: sample.AccAddress(),
 				Asset:    "BTC",
 				Price:    sdk.OneDec(),
+			},
+		},
+		PriceFeederList: []types.PriceFeeder{
+			{
+				Feeder:   sample.AccAddress(),
+				IsActive: true,
 			},
 		},
 		// this line is used by starport scaffolding # simapp/module/genesisState
@@ -167,6 +185,39 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 	operations = append(operations, simulation.NewWeightedOperation(
 		weightMsgDeletePrice,
 		oraclesimulation.SimulateMsgDeletePrice(am.accountKeeper, am.bankKeeper, am.keeper),
+	))
+
+	var weightMsgCreatePriceFeeder int
+	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgCreatePriceFeeder, &weightMsgCreatePriceFeeder, nil,
+		func(_ *rand.Rand) {
+			weightMsgCreatePriceFeeder = defaultWeightMsgCreatePriceFeeder
+		},
+	)
+	operations = append(operations, simulation.NewWeightedOperation(
+		weightMsgCreatePriceFeeder,
+		oraclesimulation.SimulateMsgCreatePriceFeeder(am.accountKeeper, am.bankKeeper, am.keeper),
+	))
+
+	var weightMsgUpdatePriceFeeder int
+	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgUpdatePriceFeeder, &weightMsgUpdatePriceFeeder, nil,
+		func(_ *rand.Rand) {
+			weightMsgUpdatePriceFeeder = defaultWeightMsgUpdatePriceFeeder
+		},
+	)
+	operations = append(operations, simulation.NewWeightedOperation(
+		weightMsgUpdatePriceFeeder,
+		oraclesimulation.SimulateMsgUpdatePriceFeeder(am.accountKeeper, am.bankKeeper, am.keeper),
+	))
+
+	var weightMsgDeletePriceFeeder int
+	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgDeletePriceFeeder, &weightMsgDeletePriceFeeder, nil,
+		func(_ *rand.Rand) {
+			weightMsgDeletePriceFeeder = defaultWeightMsgDeletePriceFeeder
+		},
+	)
+	operations = append(operations, simulation.NewWeightedOperation(
+		weightMsgDeletePriceFeeder,
+		oraclesimulation.SimulateMsgDeletePriceFeeder(am.accountKeeper, am.bankKeeper, am.keeper),
 	))
 
 	// this line is used by starport scaffolding # simapp/module/operation
