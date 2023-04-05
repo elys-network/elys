@@ -8,84 +8,22 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestMsgCreatePrice_ValidateBasic(t *testing.T) {
+func TestMsgFeedPrice_ValidateBasic(t *testing.T) {
 	tests := []struct {
 		name string
-		msg  MsgCreatePrice
+		msg  MsgFeedPrice
 		err  error
 	}{
 		{
 			name: "invalid address",
-			msg: MsgCreatePrice{
+			msg: MsgFeedPrice{
 				Provider: "invalid_address",
 			},
 			err: sdkerrors.ErrInvalidAddress,
 		}, {
 			name: "valid address",
-			msg: MsgCreatePrice{
+			msg: MsgFeedPrice{
 				Provider: sample.AccAddress(),
-			},
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			err := tt.msg.ValidateBasic()
-			if tt.err != nil {
-				require.ErrorIs(t, err, tt.err)
-				return
-			}
-			require.NoError(t, err)
-		})
-	}
-}
-
-func TestMsgUpdatePrice_ValidateBasic(t *testing.T) {
-	tests := []struct {
-		name string
-		msg  MsgUpdatePrice
-		err  error
-	}{
-		{
-			name: "invalid address",
-			msg: MsgUpdatePrice{
-				Provider: "invalid_address",
-			},
-			err: sdkerrors.ErrInvalidAddress,
-		}, {
-			name: "valid address",
-			msg: MsgUpdatePrice{
-				Provider: sample.AccAddress(),
-			},
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			err := tt.msg.ValidateBasic()
-			if tt.err != nil {
-				require.ErrorIs(t, err, tt.err)
-				return
-			}
-			require.NoError(t, err)
-		})
-	}
-}
-
-func TestMsgDeletePrice_ValidateBasic(t *testing.T) {
-	tests := []struct {
-		name string
-		msg  MsgDeletePrice
-		err  error
-	}{
-		{
-			name: "invalid address",
-			msg: MsgDeletePrice{
-				Creator: "invalid_address",
-			},
-			err: sdkerrors.ErrInvalidAddress,
-		}, {
-			name: "valid address",
-			msg: MsgDeletePrice{
-				Creator: sample.AccAddress(),
 			},
 		},
 	}

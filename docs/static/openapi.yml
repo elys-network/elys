@@ -33359,6 +33359,9 @@ paths:
                       type: string
                     provider:
                       type: string
+                    timestamp:
+                      type: string
+                      format: uint64
               pagination:
                 type: object
                 properties:
@@ -33485,6 +33488,9 @@ paths:
                     type: string
                   provider:
                     type: string
+                  timestamp:
+                    type: string
+                    format: uint64
         default:
           description: An unexpected error response.
           schema:
@@ -68778,19 +68784,15 @@ definitions:
     type: object
   elysnetwork.elys.oracle.MsgCreatePriceFeederResponse:
     type: object
-  elysnetwork.elys.oracle.MsgCreatePriceResponse:
-    type: object
   elysnetwork.elys.oracle.MsgDeleteAssetInfoResponse:
     type: object
   elysnetwork.elys.oracle.MsgDeletePriceFeederResponse:
     type: object
-  elysnetwork.elys.oracle.MsgDeletePriceResponse:
+  elysnetwork.elys.oracle.MsgFeedPriceResponse:
     type: object
   elysnetwork.elys.oracle.MsgUpdateAssetInfoResponse:
     type: object
   elysnetwork.elys.oracle.MsgUpdatePriceFeederResponse:
-    type: object
-  elysnetwork.elys.oracle.MsgUpdatePriceResponse:
     type: object
   elysnetwork.elys.oracle.Params:
     type: object
@@ -68845,6 +68847,9 @@ definitions:
         type: string
       provider:
         type: string
+      timestamp:
+        type: string
+        format: uint64
   elysnetwork.elys.oracle.PriceFeeder:
     type: object
     properties:
@@ -68950,6 +68955,9 @@ definitions:
               type: string
             provider:
               type: string
+            timestamp:
+              type: string
+              format: uint64
       pagination:
         type: object
         properties:
@@ -69027,6 +69035,9 @@ definitions:
             type: string
           provider:
             type: string
+          timestamp:
+            type: string
+            format: uint64
   elysnetwork.elys.oracle.QueryLastCoinRatesIdResponse:
     type: object
     properties:

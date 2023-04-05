@@ -17,9 +17,7 @@ service Msg {
   rpc CreateAssetInfo(MsgCreateAssetInfo) returns (MsgCreateAssetInfoResponse);
   rpc UpdateAssetInfo(MsgUpdateAssetInfo) returns (MsgUpdateAssetInfoResponse);
   rpc DeleteAssetInfo(MsgDeleteAssetInfo) returns (MsgDeleteAssetInfoResponse);
-  rpc CreatePrice(MsgCreatePrice) returns (MsgCreatePriceResponse);
-  rpc UpdatePrice(MsgUpdatePrice) returns (MsgUpdatePriceResponse);
-  rpc DeletePrice(MsgDeletePrice) returns (MsgDeletePriceResponse);
+  rpc FeedPrice(MsgFeedPrice) returns (MsgFeedPriceResponse);
   rpc CreatePriceFeeder(MsgCreatePriceFeeder) returns (MsgCreatePriceFeederResponse);
   rpc UpdatePriceFeeder(MsgUpdatePriceFeeder) returns (MsgUpdatePriceFeederResponse);
   rpc DeletePriceFeeder(MsgDeletePriceFeeder) returns (MsgDeletePriceFeederResponse);
@@ -74,7 +72,7 @@ message MsgDeleteAssetInfo {
 }
 message MsgDeleteAssetInfoResponse {}
 
-message MsgCreatePrice {
+message MsgFeedPrice {
   string asset = 1;
   string price = 2 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
@@ -83,24 +81,7 @@ message MsgCreatePrice {
   string source = 3;
   string provider = 4;
 }
-message MsgCreatePriceResponse {}
-
-message MsgUpdatePrice {
-  string asset = 1;
-  string price = 2 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
-    (gogoproto.nullable) = false
-  ];
-  string source = 3;
-  string provider = 4;
-}
-message MsgUpdatePriceResponse {}
-
-message MsgDeletePrice {
-  string creator = 1;
-  string asset = 2;
-}
-message MsgDeletePriceResponse {}
+message MsgFeedPriceResponse {}
 
 message MsgCreatePriceFeeder {
   string creator = 1;

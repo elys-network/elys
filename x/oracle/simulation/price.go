@@ -16,7 +16,7 @@ import (
 // Prevent strconv unused error
 var _ = strconv.IntSize
 
-func SimulateMsgCreatePrice(
+func SimulateMsgFeedPrice(
 	ak types.AccountKeeper,
 	bk types.BankKeeper,
 	k keeper.Keeper,
@@ -26,7 +26,7 @@ func SimulateMsgCreatePrice(
 		simAccount, _ := simtypes.RandomAcc(r, accs)
 
 		i := r.Int()
-		msg := &types.MsgCreatePrice{
+		msg := &types.MsgFeedPrice{
 			Provider: simAccount.Address.String(),
 			Asset:    "asset" + strconv.Itoa(i),
 		}
@@ -35,98 +35,6 @@ func SimulateMsgCreatePrice(
 		if found {
 			return simtypes.NoOpMsg(types.ModuleName, msg.Type(), "Price already exist"), nil, nil
 		}
-
-		txCtx := simulation.OperationInput{
-			R:               r,
-			App:             app,
-			TxGen:           simappparams.MakeTestEncodingConfig().TxConfig,
-			Cdc:             nil,
-			Msg:             msg,
-			MsgType:         msg.Type(),
-			Context:         ctx,
-			SimAccount:      simAccount,
-			ModuleName:      types.ModuleName,
-			CoinsSpentInMsg: sdk.NewCoins(),
-			AccountKeeper:   ak,
-			Bankkeeper:      bk,
-		}
-		return simulation.GenAndDeliverTxWithRandFees(txCtx)
-	}
-}
-
-func SimulateMsgUpdatePrice(
-	ak types.AccountKeeper,
-	bk types.BankKeeper,
-	k keeper.Keeper,
-) simtypes.Operation {
-	return func(r *rand.Rand, app *baseapp.BaseApp, ctx sdk.Context, accs []simtypes.Account, chainID string,
-	) (simtypes.OperationMsg, []simtypes.FutureOperation, error) {
-		var (
-			simAccount = simtypes.Account{}
-			price      = types.Price{}
-			msg        = &types.MsgUpdatePrice{}
-			allPrice   = k.GetAllPrice(ctx)
-			found      = false
-		)
-		for _, obj := range allPrice {
-			simAccount, found = FindAccount(accs, obj.Provider)
-			if found {
-				price = obj
-				break
-			}
-		}
-		if !found {
-			return simtypes.NoOpMsg(types.ModuleName, msg.Type(), "price creator not found"), nil, nil
-		}
-		msg.Provider = simAccount.Address.String()
-
-		msg.Asset = price.Asset
-
-		txCtx := simulation.OperationInput{
-			R:               r,
-			App:             app,
-			TxGen:           simappparams.MakeTestEncodingConfig().TxConfig,
-			Cdc:             nil,
-			Msg:             msg,
-			MsgType:         msg.Type(),
-			Context:         ctx,
-			SimAccount:      simAccount,
-			ModuleName:      types.ModuleName,
-			CoinsSpentInMsg: sdk.NewCoins(),
-			AccountKeeper:   ak,
-			Bankkeeper:      bk,
-		}
-		return simulation.GenAndDeliverTxWithRandFees(txCtx)
-	}
-}
-
-func SimulateMsgDeletePrice(
-	ak types.AccountKeeper,
-	bk types.BankKeeper,
-	k keeper.Keeper,
-) simtypes.Operation {
-	return func(r *rand.Rand, app *baseapp.BaseApp, ctx sdk.Context, accs []simtypes.Account, chainID string,
-	) (simtypes.OperationMsg, []simtypes.FutureOperation, error) {
-		var (
-			simAccount = simtypes.Account{}
-			price      = types.Price{}
-			msg        = &types.MsgUpdatePrice{}
-			allPrice   = k.GetAllPrice(ctx)
-			found      = false
-		)
-		for _, obj := range allPrice {
-			simAccount, found = FindAccount(accs, obj.Provider)
-			if found {
-				price = obj
-				break
-			}
-		}
-		if !found {
-			return simtypes.NoOpMsg(types.ModuleName, msg.Type(), "price creator not found"), nil, nil
-		}
-		msg.Provider = simAccount.Address.String()
-
-		msg.Asset = price.Asset
 
 		txCtx := simulation.OperationInput{
 			R:               r,
