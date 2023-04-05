@@ -12,15 +12,13 @@ import (
 	"github.com/tendermint/tendermint/libs/log"
 )
 
-type (
-	Keeper struct {
-		*cosmosibckeeper.Keeper
-		cdc        codec.BinaryCodec
-		storeKey   storetypes.StoreKey
-		memKey     storetypes.StoreKey
-		paramstore paramtypes.Subspace
-	}
-)
+type Keeper struct {
+	*cosmosibckeeper.Keeper
+	cdc        codec.BinaryCodec
+	storeKey   storetypes.StoreKey
+	memKey     storetypes.StoreKey
+	paramstore paramtypes.Subspace
+}
 
 func NewKeeper(
 	cdc codec.BinaryCodec,
@@ -30,7 +28,6 @@ func NewKeeper(
 	channelKeeper cosmosibckeeper.ChannelKeeper,
 	portKeeper cosmosibckeeper.PortKeeper,
 	scopedKeeper cosmosibckeeper.ScopedKeeper,
-
 ) *Keeper {
 	// set KeyTable if it has not already been set
 	if !ps.HasKeyTable() {
