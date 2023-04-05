@@ -20,6 +20,7 @@ func createNPrice(keeper *keeper.Keeper, ctx sdk.Context, n int) []types.Price {
 		items[i].Price = sdk.NewDec(1)
 		items[i].Price = sdk.NewDec(1)
 		items[i].Source = "binance"
+		items[i].Timestamp = uint64(i)
 
 		keeper.SetPrice(ctx, items[i])
 	}
@@ -30,7 +31,7 @@ func (suite *KeeperTestSuite) TestPriceGet() {
 	k, ctx := suite.app.OracleKeeper, suite.ctx
 	items := createNPrice(&k, ctx, 10)
 	for _, item := range items {
-		rst, found := k.GetPrice(ctx, item.Asset)
+		rst, found := k.GetPrice(ctx, item.Asset, item.Source, item.Timestamp)
 		suite.Require().True(found)
 		suite.Require().Equal(
 			nullify.Fill(&item),
@@ -42,8 +43,8 @@ func (suite *KeeperTestSuite) TestPriceRemove() {
 	k, ctx := suite.app.OracleKeeper, suite.ctx
 	items := createNPrice(&k, ctx, 10)
 	for _, item := range items {
-		k.RemovePrice(ctx, item.Asset)
-		_, found := k.GetPrice(ctx, item.Asset)
+		k.RemovePrice(ctx, item.Asset, item.Source, item.Timestamp)
+		_, found := k.GetPrice(ctx, item.Asset, item.Source, item.Timestamp)
 		suite.Require().False(found)
 	}
 }

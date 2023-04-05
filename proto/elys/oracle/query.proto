@@ -37,7 +37,7 @@ service Query {
 	}
     // Queries a Price by asset.
     rpc Price(QueryGetPriceRequest) returns (QueryGetPriceResponse) {
-		option (google.api.http).get = "/elys-network/elys/oracle/price/{asset}";
+		option (google.api.http).get = "/elys-network/elys/oracle/price";
 	}
 	// Queries a list of Price items.
 	rpc PriceAll(QueryAllPriceRequest) returns (QueryAllPriceResponse) {
@@ -94,6 +94,8 @@ message QueryAllAssetInfoResponse {
 
 message QueryGetPriceRequest {
 	string asset = 1;
+	string source = 2;
+	uint64 timestamp = 3;
 }
 
 message QueryGetPriceResponse {

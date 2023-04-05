@@ -5,19 +5,19 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
-const TypeMsgRequestBandPrice = "coin_rates_data"
+const TypeMsgRequestBandPrice = "request_band_price"
 
 var (
 	_ sdk.Msg = &MsgRequestBandPrice{}
 
 	// BandPriceResultStoreKeyPrefix is a prefix for storing result
-	BandPriceResultStoreKeyPrefix = "coin_rates_result"
+	BandPriceResultStoreKeyPrefix = "band_price_result"
 
 	// LastBandRequestIdKey is the key for the last request id
-	LastBandRequestIdKey = "coin_rates_last_id"
+	LastBandRequestIdKey = "last_band_request_id"
 
 	// BandPriceClientIDKey is query request identifier
-	BandPriceClientIDKey = "coin_rates_id"
+	BandPriceClientIDKey = "band_price_id"
 
 	// PrefixKeyBandRequest is the prefix for band requests
 	PrefixKeyBandRequest = "band_request_"

@@ -45,10 +45,46 @@ func (k Keeper) Price(c context.Context, req *types.QueryGetPriceRequest) (*type
 	}
 	ctx := sdk.UnwrapSDKContext(c)
 
-	val, found := k.GetPrice(ctx, req.Asset)
+	// if both source and timestamp are defined, use specific value
+	if req.Source != "" && req.Timestamp != 0 {
+		val, found := k.GetPrice(ctx, req.Asset, req.Source, req.Timestamp)
+		if !found {
+			return nil, status.Error(codes.NotFound, "not found")
+		}
+		return &types.QueryGetPriceResponse{Price: val}, nil
+	}
+
+	// if source is specified use latest price from source
+	if req.Source != "" {
+		val, found := k.GetLatestPriceFromAssetAndSource(ctx, req.Asset, req.Source)
+		if !found {
+			return nil, status.Error(codes.NotFound, "not found")
+		}
+		return &types.QueryGetPriceResponse{Price: val}, nil
+	}
+
+	// try out band source
+	val, found := k.GetLatestPriceFromAssetAndSource(ctx, req.Asset, types.BAND)
+	if found {
+		return &types.QueryGetPriceResponse{Price: val}, nil
+	}
+
+	// try out binance source
+	val, found = k.GetLatestPriceFromAssetAndSource(ctx, req.Asset, types.BINANCE)
+	if found {
+		return &types.QueryGetPriceResponse{Price: val}, nil
+	}
+
+	// try out osmosis source
+	val, found = k.GetLatestPriceFromAssetAndSource(ctx, req.Asset, types.OSMOSIS)
+	if found {
+		return &types.QueryGetPriceResponse{Price: val}, nil
+	}
+
+	// find from any source if band source does not exist
+	val, found = k.GetLatestPriceFromAnySource(ctx, req.Asset)
 	if !found {
 		return nil, status.Error(codes.NotFound, "not found")
 	}
-
 	return &types.QueryGetPriceResponse{Price: val}, nil
 }

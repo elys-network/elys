@@ -29,9 +29,10 @@ func SimulateMsgFeedPrice(
 		msg := &types.MsgFeedPrice{
 			Provider: simAccount.Address.String(),
 			Asset:    "asset" + strconv.Itoa(i),
+			Source:   types.BAND,
 		}
 
-		_, found := k.GetPrice(ctx, msg.Asset)
+		_, found := k.GetPrice(ctx, msg.Asset, msg.Source, uint64(ctx.BlockTime().Unix()))
 		if found {
 			return simtypes.NoOpMsg(types.ModuleName, msg.Type(), "Price already exist"), nil, nil
 		}

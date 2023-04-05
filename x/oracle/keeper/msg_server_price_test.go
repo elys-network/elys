@@ -21,10 +21,11 @@ func (suite *KeeperTestSuite) TestPriceMsgServerCreate() {
 		expected := &types.MsgFeedPrice{
 			Provider: creator,
 			Asset:    strconv.Itoa(i),
+			Source:   "binance",
 		}
 		_, err := srv.FeedPrice(wctx, expected)
 		suite.Require().NoError(err)
-		rst, found := k.GetPrice(ctx, expected.Asset)
+		rst, found := k.GetPrice(ctx, expected.Asset, expected.Source, uint64(ctx.BlockTime().Unix()))
 		suite.Require().True(found)
 		suite.Require().Equal(expected.Provider, rst.Provider)
 	}

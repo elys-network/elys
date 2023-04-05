@@ -51,7 +51,7 @@ func (im IBCModule) handleOraclePacket(
 			im.keeper.SetPrice(ctx, types.Price{
 				Asset:    symbol,
 				Price:    sdk.NewDecWithPrec(int64(BandPriceResult.Rates[index]), int64(params.Multiplier)),
-				Source:   "bandchain",
+				Source:   types.BAND,
 				Provider: "automation",
 			})
 		}

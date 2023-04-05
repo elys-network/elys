@@ -4,21 +4,11 @@ import (
 	"context"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/elys-network/elys/x/oracle/types"
 )
 
 func (k msgServer) FeedPrice(goCtx context.Context, msg *types.MsgFeedPrice) (*types.MsgFeedPriceResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-
-	// Check if the value already exists
-	_, isFound := k.GetPrice(
-		ctx,
-		msg.Asset,
-	)
-	if isFound {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "index already set")
-	}
 
 	var price = types.Price{
 		Provider:  msg.Provider,
