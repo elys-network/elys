@@ -6,22 +6,21 @@ import (
 )
 
 const (
-	TypeMsgCreateAssetInfo = "create_asset_info"
-	TypeMsgUpdateAssetInfo = "update_asset_info"
+	TypeMsgSetAssetInfo    = "update_asset_info"
 	TypeMsgDeleteAssetInfo = "delete_asset_info"
 )
 
-var _ sdk.Msg = &MsgCreateAssetInfo{}
+var _ sdk.Msg = &MsgSetAssetInfo{}
 
-func NewMsgCreateAssetInfo(
+func NewMsgSetAssetInfo(
 	creator string,
 	denom string,
 	display string,
 	bandTicker string,
 	binanceTicker string,
 	osmosisTicker string,
-) *MsgCreateAssetInfo {
-	return &MsgCreateAssetInfo{
+) *MsgSetAssetInfo {
+	return &MsgSetAssetInfo{
 		Creator:       creator,
 		Denom:         denom,
 		Display:       display,
@@ -31,15 +30,15 @@ func NewMsgCreateAssetInfo(
 	}
 }
 
-func (msg *MsgCreateAssetInfo) Route() string {
+func (msg *MsgSetAssetInfo) Route() string {
 	return RouterKey
 }
 
-func (msg *MsgCreateAssetInfo) Type() string {
-	return TypeMsgCreateAssetInfo
+func (msg *MsgSetAssetInfo) Type() string {
+	return TypeMsgSetAssetInfo
 }
 
-func (msg *MsgCreateAssetInfo) GetSigners() []sdk.AccAddress {
+func (msg *MsgSetAssetInfo) GetSigners() []sdk.AccAddress {
 	creator, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
 		panic(err)
@@ -47,61 +46,12 @@ func (msg *MsgCreateAssetInfo) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{creator}
 }
 
-func (msg *MsgCreateAssetInfo) GetSignBytes() []byte {
+func (msg *MsgSetAssetInfo) GetSignBytes() []byte {
 	bz := ModuleCdc.MustMarshalJSON(msg)
 	return sdk.MustSortJSON(bz)
 }
 
-func (msg *MsgCreateAssetInfo) ValidateBasic() error {
-	_, err := sdk.AccAddressFromBech32(msg.Creator)
-	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
-	}
-	return nil
-}
-
-var _ sdk.Msg = &MsgUpdateAssetInfo{}
-
-func NewMsgUpdateAssetInfo(
-	creator string,
-	denom string,
-	display string,
-	bandTicker string,
-	binanceTicker string,
-	osmosisTicker string,
-) *MsgUpdateAssetInfo {
-	return &MsgUpdateAssetInfo{
-		Creator:       creator,
-		Denom:         denom,
-		Display:       display,
-		BandTicker:    bandTicker,
-		BinanceTicker: binanceTicker,
-		OsmosisTicker: osmosisTicker,
-	}
-}
-
-func (msg *MsgUpdateAssetInfo) Route() string {
-	return RouterKey
-}
-
-func (msg *MsgUpdateAssetInfo) Type() string {
-	return TypeMsgUpdateAssetInfo
-}
-
-func (msg *MsgUpdateAssetInfo) GetSigners() []sdk.AccAddress {
-	creator, err := sdk.AccAddressFromBech32(msg.Creator)
-	if err != nil {
-		panic(err)
-	}
-	return []sdk.AccAddress{creator}
-}
-
-func (msg *MsgUpdateAssetInfo) GetSignBytes() []byte {
-	bz := ModuleCdc.MustMarshalJSON(msg)
-	return sdk.MustSortJSON(bz)
-}
-
-func (msg *MsgUpdateAssetInfo) ValidateBasic() error {
+func (msg *MsgSetAssetInfo) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)

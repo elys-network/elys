@@ -24,13 +24,9 @@ var (
 )
 
 const (
-	opWeightMsgCreateAssetInfo = "op_weight_msg_asset_info"
+	opWeightMsgSetAssetInfo = "op_weight_msg_asset_info"
 	// TODO: Determine the simulation weight value
-	defaultWeightMsgCreateAssetInfo int = 100
-
-	opWeightMsgUpdateAssetInfo = "op_weight_msg_asset_info"
-	// TODO: Determine the simulation weight value
-	defaultWeightMsgUpdateAssetInfo int = 100
+	defaultWeightMsgSetAssetInfo int = 100
 
 	opWeightMsgDeleteAssetInfo = "op_weight_msg_asset_info"
 	// TODO: Determine the simulation weight value
@@ -39,10 +35,6 @@ const (
 	opWeightMsgFeedPrice = "op_weight_msg_price"
 	// TODO: Determine the simulation weight value
 	defaultWeightMsgFeedPrice int = 100
-
-	opWeightMsgCreatePriceFeeder = "op_weight_msg_price_feeder"
-	// TODO: Determine the simulation weight value
-	defaultWeightMsgCreatePriceFeeder int = 100
 
 	opWeightMsgDeletePriceFeeder = "op_weight_msg_price_feeder"
 	// TODO: Determine the simulation weight value
@@ -109,26 +101,15 @@ func (am AppModule) RegisterStoreDecoder(_ sdk.StoreDecoderRegistry) {}
 func (am AppModule) WeightedOperations(simState module.SimulationState) []simtypes.WeightedOperation {
 	operations := make([]simtypes.WeightedOperation, 0)
 
-	var weightMsgCreateAssetInfo int
-	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgCreateAssetInfo, &weightMsgCreateAssetInfo, nil,
+	var weightMsgSetAssetInfo int
+	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgSetAssetInfo, &weightMsgSetAssetInfo, nil,
 		func(_ *rand.Rand) {
-			weightMsgCreateAssetInfo = defaultWeightMsgCreateAssetInfo
+			weightMsgSetAssetInfo = defaultWeightMsgSetAssetInfo
 		},
 	)
 	operations = append(operations, simulation.NewWeightedOperation(
-		weightMsgCreateAssetInfo,
-		oraclesimulation.SimulateMsgCreateAssetInfo(am.accountKeeper, am.bankKeeper, am.keeper),
-	))
-
-	var weightMsgUpdateAssetInfo int
-	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgUpdateAssetInfo, &weightMsgUpdateAssetInfo, nil,
-		func(_ *rand.Rand) {
-			weightMsgUpdateAssetInfo = defaultWeightMsgUpdateAssetInfo
-		},
-	)
-	operations = append(operations, simulation.NewWeightedOperation(
-		weightMsgUpdateAssetInfo,
-		oraclesimulation.SimulateMsgUpdateAssetInfo(am.accountKeeper, am.bankKeeper, am.keeper),
+		weightMsgSetAssetInfo,
+		oraclesimulation.SimulateMsgSetAssetInfo(am.accountKeeper, am.bankKeeper, am.keeper),
 	))
 
 	var weightMsgDeleteAssetInfo int
@@ -151,17 +132,6 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 	operations = append(operations, simulation.NewWeightedOperation(
 		weightMsgFeedPrice,
 		oraclesimulation.SimulateMsgFeedPrice(am.accountKeeper, am.bankKeeper, am.keeper),
-	))
-
-	var weightMsgCreatePriceFeeder int
-	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgCreatePriceFeeder, &weightMsgCreatePriceFeeder, nil,
-		func(_ *rand.Rand) {
-			weightMsgCreatePriceFeeder = defaultWeightMsgCreatePriceFeeder
-		},
-	)
-	operations = append(operations, simulation.NewWeightedOperation(
-		weightMsgCreatePriceFeeder,
-		oraclesimulation.SimulateMsgCreatePriceFeeder(am.accountKeeper, am.bankKeeper, am.keeper),
 	))
 
 	var weightMsgDeletePriceFeeder int

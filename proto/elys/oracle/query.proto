@@ -5,7 +5,7 @@ import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
 import "elys/oracle/params.proto";
-import "elys/oracle/coin_rates.proto";
+import "elys/oracle/band_price.proto";
 import "elys/oracle/asset_info.proto";
 import "elys/oracle/price.proto";
 import "elys/oracle/price_feeder.proto";
@@ -19,13 +19,13 @@ service Query {
 	rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
 		option (google.api.http).get = "/elys-network/elys/oracle/params";
 	}
-  	// CoinRatesResult defines a rpc handler method for MsgCoinRatesData.
+  	// CoinRatesResult defines a rpc handler method for MsgRequestBandPrice.
   	rpc CoinRatesResult(QueryCoinRatesRequest) returns (QueryCoinRatesResponse) {
-		option (google.api.http).get = "/elys/oracle/coin_rates_result/{request_id}";
+		option (google.api.http).get = "/elys/oracle/band_price_result/{request_id}";
   	}
-  	// LastCoinRatesId query the last CoinRates result id
-  	rpc LastCoinRatesId(QueryLastCoinRatesIdRequest) returns (QueryLastCoinRatesIdResponse) {
-		option (google.api.http).get = "/elys/oracle/last_coin_rates_id";
+  	// LastBandRequestId query the last CoinRates result id
+  	rpc LastBandRequestId(QueryLastBandRequestIdRequest) returns (QueryLastBandRequestIdResponse) {
+		option (google.api.http).get = "/elys/oracle/last_band_price_request_id";
   	}
 	// Queries a AssetInfo by denom.
 	rpc AssetInfo(QueryGetAssetInfoRequest) returns (QueryGetAssetInfoResponse) {
@@ -71,9 +71,9 @@ message QueryCoinRatesResponse {
   CoinRatesResult result = 1;
 }
 
-message QueryLastCoinRatesIdRequest {}
+message QueryLastBandRequestIdRequest {}
 
-message QueryLastCoinRatesIdResponse {int64 request_id = 1;}
+message QueryLastBandRequestIdResponse {int64 request_id = 1;}
 
 message QueryGetAssetInfoRequest {
 	string denom = 1;

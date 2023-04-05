@@ -6,34 +6,33 @@ import (
 )
 
 const (
-	TypeMsgCreatePriceFeeder = "create_price_feeder"
-	TypeMsgUpdatePriceFeeder = "update_price_feeder"
+	TypeMsgSetPriceFeeder    = "update_price_feeder"
 	TypeMsgDeletePriceFeeder = "delete_price_feeder"
 )
 
-var _ sdk.Msg = &MsgCreatePriceFeeder{}
+var _ sdk.Msg = &MsgSetPriceFeeder{}
 
-func NewMsgCreatePriceFeeder(
+func NewMsgSetPriceFeeder(
 	creator string,
 	feeder string,
 	isActive bool,
-) *MsgCreatePriceFeeder {
-	return &MsgCreatePriceFeeder{
+) *MsgSetPriceFeeder {
+	return &MsgSetPriceFeeder{
 		Creator:  creator,
 		Feeder:   feeder,
 		IsActive: isActive,
 	}
 }
 
-func (msg *MsgCreatePriceFeeder) Route() string {
+func (msg *MsgSetPriceFeeder) Route() string {
 	return RouterKey
 }
 
-func (msg *MsgCreatePriceFeeder) Type() string {
-	return TypeMsgCreatePriceFeeder
+func (msg *MsgSetPriceFeeder) Type() string {
+	return TypeMsgSetPriceFeeder
 }
 
-func (msg *MsgCreatePriceFeeder) GetSigners() []sdk.AccAddress {
+func (msg *MsgSetPriceFeeder) GetSigners() []sdk.AccAddress {
 	creator, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
 		panic(err)
@@ -41,55 +40,12 @@ func (msg *MsgCreatePriceFeeder) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{creator}
 }
 
-func (msg *MsgCreatePriceFeeder) GetSignBytes() []byte {
+func (msg *MsgSetPriceFeeder) GetSignBytes() []byte {
 	bz := ModuleCdc.MustMarshalJSON(msg)
 	return sdk.MustSortJSON(bz)
 }
 
-func (msg *MsgCreatePriceFeeder) ValidateBasic() error {
-	_, err := sdk.AccAddressFromBech32(msg.Creator)
-	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
-	}
-	return nil
-}
-
-var _ sdk.Msg = &MsgUpdatePriceFeeder{}
-
-func NewMsgUpdatePriceFeeder(
-	creator string,
-	feeder string,
-	isActive bool,
-) *MsgUpdatePriceFeeder {
-	return &MsgUpdatePriceFeeder{
-		Creator:  creator,
-		Feeder:   feeder,
-		IsActive: isActive,
-	}
-}
-
-func (msg *MsgUpdatePriceFeeder) Route() string {
-	return RouterKey
-}
-
-func (msg *MsgUpdatePriceFeeder) Type() string {
-	return TypeMsgUpdatePriceFeeder
-}
-
-func (msg *MsgUpdatePriceFeeder) GetSigners() []sdk.AccAddress {
-	creator, err := sdk.AccAddressFromBech32(msg.Creator)
-	if err != nil {
-		panic(err)
-	}
-	return []sdk.AccAddress{creator}
-}
-
-func (msg *MsgUpdatePriceFeeder) GetSignBytes() []byte {
-	bz := ModuleCdc.MustMarshalJSON(msg)
-	return sdk.MustSortJSON(bz)
-}
-
-func (msg *MsgUpdatePriceFeeder) ValidateBasic() error {
+func (msg *MsgSetPriceFeeder) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)

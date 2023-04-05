@@ -103,14 +103,14 @@ func (im IBCModule) handleOracleAcknowledgment(
 
 		case types.CoinRatesClientIDKey:
 			fmt.Println("handleOracleAcknowledgment4", requestID)
-			var coinRatesData types.CoinRatesCallData
-			if err = obi.Decode(data.GetCalldata(), &coinRatesData); err != nil {
+			var RequestBandPrice types.CoinRatesCallData
+			if err = obi.Decode(data.GetCalldata(), &RequestBandPrice); err != nil {
 				return nil, sdkerrors.Wrap(err,
 					"cannot decode the coinRates oracle acknowledgment packet")
 			}
 			fmt.Println("handleOracleAcknowledgment5", requestID)
-			im.keeper.SetLastCoinRatesID(ctx, requestID)
-			im.keeper.SetBandRequest(ctx, requestID, coinRatesData)
+			im.keeper.SetLastBandRequestId(ctx, requestID)
+			im.keeper.SetBandRequest(ctx, requestID, RequestBandPrice)
 			return &sdk.Result{}, nil
 			// this line is used by starport scaffolding # oracle/module/ack
 

@@ -5,16 +5,16 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
-const TypeMsgCoinRatesData = "coin_rates_data"
+const TypeMsgRequestBandPrice = "coin_rates_data"
 
 var (
-	_ sdk.Msg = &MsgCoinRatesData{}
+	_ sdk.Msg = &MsgRequestBandPrice{}
 
 	// CoinRatesResultStoreKeyPrefix is a prefix for storing result
 	CoinRatesResultStoreKeyPrefix = "coin_rates_result"
 
-	// LastCoinRatesIDKey is the key for the last request id
-	LastCoinRatesIDKey = "coin_rates_last_id"
+	// LastBandRequestIdKey is the key for the last request id
+	LastBandRequestIdKey = "coin_rates_last_id"
 
 	// CoinRatesClientIDKey is query request identifier
 	CoinRatesClientIDKey = "coin_rates_id"
@@ -23,8 +23,8 @@ var (
 	PrefixKeyBandRequest = "band_request_"
 )
 
-// NewMsgCoinRatesData creates a new CoinRates message
-func NewMsgCoinRatesData(
+// NewMsgRequestBandPrice creates a new CoinRates message
+func NewMsgRequestBandPrice(
 	creator string,
 	oracleScriptID OracleScriptID,
 	sourceChannel string,
@@ -34,8 +34,8 @@ func NewMsgCoinRatesData(
 	feeLimit sdk.Coins,
 	prepareGas uint64,
 	executeGas uint64,
-) *MsgCoinRatesData {
-	return &MsgCoinRatesData{
+) *MsgRequestBandPrice {
+	return &MsgRequestBandPrice{
 		ClientID:       CoinRatesClientIDKey,
 		Creator:        creator,
 		OracleScriptID: uint64(oracleScriptID),
@@ -50,17 +50,17 @@ func NewMsgCoinRatesData(
 }
 
 // Route returns the message route
-func (m *MsgCoinRatesData) Route() string {
+func (m *MsgRequestBandPrice) Route() string {
 	return RouterKey
 }
 
 // Type returns the message type
-func (m *MsgCoinRatesData) Type() string {
-	return TypeMsgCoinRatesData
+func (m *MsgRequestBandPrice) Type() string {
+	return TypeMsgRequestBandPrice
 }
 
 // GetSigners returns the message signers
-func (m *MsgCoinRatesData) GetSigners() []sdk.AccAddress {
+func (m *MsgRequestBandPrice) GetSigners() []sdk.AccAddress {
 	creator, err := sdk.AccAddressFromBech32(m.Creator)
 	if err != nil {
 		panic(err)
@@ -69,13 +69,13 @@ func (m *MsgCoinRatesData) GetSigners() []sdk.AccAddress {
 }
 
 // GetSignBytes returns the signed bytes from the message
-func (m *MsgCoinRatesData) GetSignBytes() []byte {
+func (m *MsgRequestBandPrice) GetSignBytes() []byte {
 	bz := ModuleCdc.MustMarshalJSON(m)
 	return sdk.MustSortJSON(bz)
 }
 
 // ValidateBasic check the basic message validation
-func (m *MsgCoinRatesData) ValidateBasic() error {
+func (m *MsgRequestBandPrice) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(m.Creator)
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)

@@ -12,34 +12,17 @@ import (
 // Prevent strconv unused error
 var _ = strconv.IntSize
 
-func (suite *KeeperTestSuite) TestPriceFeederMsgServerCreate() {
-	k, ctx := suite.app.OracleKeeper, suite.ctx
-	srv := keeper.NewMsgServerImpl(k)
-	wctx := sdk.WrapSDKContext(ctx)
-	creator := "A"
-	for i := 0; i < 5; i++ {
-		expected := &types.MsgCreatePriceFeeder{Creator: creator,
-			Feeder: strconv.Itoa(i),
-		}
-		_, err := srv.CreatePriceFeeder(wctx, expected)
-		suite.Require().NoError(err)
-		rst, found := k.GetPriceFeeder(ctx, expected.Feeder)
-		suite.Require().True(found)
-		suite.Require().Equal(expected.Feeder, rst.Feeder)
-	}
-}
-
 func (suite *KeeperTestSuite) TestPriceFeederMsgServerUpdate() {
 	creator := "A"
 
 	for _, tc := range []struct {
 		desc    string
-		request *types.MsgUpdatePriceFeeder
+		request *types.MsgSetPriceFeeder
 		err     error
 	}{
 		{
 			desc: "Completed",
-			request: &types.MsgUpdatePriceFeeder{Creator: creator,
+			request: &types.MsgSetPriceFeeder{Creator: creator,
 				Feeder: strconv.Itoa(0),
 			},
 		},
@@ -49,22 +32,16 @@ func (suite *KeeperTestSuite) TestPriceFeederMsgServerUpdate() {
 			k, ctx := suite.app.OracleKeeper, suite.ctx
 			srv := keeper.NewMsgServerImpl(k)
 			wctx := sdk.WrapSDKContext(ctx)
-			expected := &types.MsgCreatePriceFeeder{Creator: creator,
-				Feeder: strconv.Itoa(0),
-			}
-			_, err := srv.CreatePriceFeeder(wctx, expected)
-			suite.Require().NoError(err)
-
-			_, err = srv.UpdatePriceFeeder(wctx, tc.request)
+			_, err := srv.SetPriceFeeder(wctx, tc.request)
 			if tc.err != nil {
 				suite.Require().ErrorIs(err, tc.err)
 			} else {
 				suite.Require().NoError(err)
 				rst, found := k.GetPriceFeeder(ctx,
-					expected.Feeder,
+					tc.request.Feeder,
 				)
 				suite.Require().True(found)
-				suite.Require().Equal(expected.Feeder, rst.Feeder)
+				suite.Require().Equal(tc.request.Feeder, rst.Feeder)
 			}
 		})
 	}
@@ -89,9 +66,9 @@ func (suite *KeeperTestSuite) TestPriceFeederMsgServerDelete() {
 			k, ctx := suite.app.OracleKeeper, suite.ctx
 			srv := keeper.NewMsgServerImpl(k)
 			wctx := sdk.WrapSDKContext(ctx)
-
-			_, err := srv.CreatePriceFeeder(wctx, &types.MsgCreatePriceFeeder{Creator: creator,
-				Feeder: strconv.Itoa(0),
+			_, err := srv.SetPriceFeeder(wctx, &types.MsgSetPriceFeeder{
+				Creator: creator,
+				Feeder:  strconv.Itoa(0),
 			})
 			suite.Require().NoError(err)
 			_, err = srv.DeletePriceFeeder(wctx, tc.request)

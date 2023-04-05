@@ -8,52 +8,21 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestMsgCreatePriceFeeder_ValidateBasic(t *testing.T) {
+func TestMsgSetPriceFeeder_ValidateBasic(t *testing.T) {
 	tests := []struct {
 		name string
-		msg  MsgCreatePriceFeeder
+		msg  MsgSetPriceFeeder
 		err  error
 	}{
 		{
 			name: "invalid address",
-			msg: MsgCreatePriceFeeder{
+			msg: MsgSetPriceFeeder{
 				Creator: "invalid_address",
 			},
 			err: sdkerrors.ErrInvalidAddress,
 		}, {
 			name: "valid address",
-			msg: MsgCreatePriceFeeder{
-				Creator: sample.AccAddress(),
-			},
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			err := tt.msg.ValidateBasic()
-			if tt.err != nil {
-				require.ErrorIs(t, err, tt.err)
-				return
-			}
-			require.NoError(t, err)
-		})
-	}
-}
-
-func TestMsgUpdatePriceFeeder_ValidateBasic(t *testing.T) {
-	tests := []struct {
-		name string
-		msg  MsgUpdatePriceFeeder
-		err  error
-	}{
-		{
-			name: "invalid address",
-			msg: MsgUpdatePriceFeeder{
-				Creator: "invalid_address",
-			},
-			err: sdkerrors.ErrInvalidAddress,
-		}, {
-			name: "valid address",
-			msg: MsgUpdatePriceFeeder{
+			msg: MsgSetPriceFeeder{
 				Creator: sample.AccAddress(),
 			},
 		},

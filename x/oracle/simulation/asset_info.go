@@ -16,45 +16,7 @@ import (
 // Prevent strconv unused error
 var _ = strconv.IntSize
 
-func SimulateMsgCreateAssetInfo(
-	ak types.AccountKeeper,
-	bk types.BankKeeper,
-	k keeper.Keeper,
-) simtypes.Operation {
-	return func(r *rand.Rand, app *baseapp.BaseApp, ctx sdk.Context, accs []simtypes.Account, chainID string,
-	) (simtypes.OperationMsg, []simtypes.FutureOperation, error) {
-		simAccount, _ := simtypes.RandomAcc(r, accs)
-
-		i := r.Int()
-		msg := &types.MsgCreateAssetInfo{
-			Creator: simAccount.Address.String(),
-			Denom:   "denom" + strconv.Itoa(i),
-		}
-
-		_, found := k.GetAssetInfo(ctx, msg.Denom)
-		if found {
-			return simtypes.NoOpMsg(types.ModuleName, msg.Type(), "AssetInfo already exist"), nil, nil
-		}
-
-		txCtx := simulation.OperationInput{
-			R:               r,
-			App:             app,
-			TxGen:           simappparams.MakeTestEncodingConfig().TxConfig,
-			Cdc:             nil,
-			Msg:             msg,
-			MsgType:         msg.Type(),
-			Context:         ctx,
-			SimAccount:      simAccount,
-			ModuleName:      types.ModuleName,
-			CoinsSpentInMsg: sdk.NewCoins(),
-			AccountKeeper:   ak,
-			Bankkeeper:      bk,
-		}
-		return simulation.GenAndDeliverTxWithRandFees(txCtx)
-	}
-}
-
-func SimulateMsgUpdateAssetInfo(
+func SimulateMsgSetAssetInfo(
 	ak types.AccountKeeper,
 	bk types.BankKeeper,
 	k keeper.Keeper,
@@ -64,7 +26,7 @@ func SimulateMsgUpdateAssetInfo(
 		var (
 			simAccount = simtypes.Account{}
 			assetInfo  = types.AssetInfo{}
-			msg        = &types.MsgUpdateAssetInfo{}
+			msg        = &types.MsgSetAssetInfo{}
 		)
 
 		simAccount = accs[0]
@@ -99,7 +61,7 @@ func SimulateMsgDeleteAssetInfo(
 		var (
 			simAccount = simtypes.Account{}
 			assetInfo  = types.AssetInfo{}
-			msg        = &types.MsgUpdateAssetInfo{}
+			msg        = &types.MsgSetAssetInfo{}
 		)
 
 		simAccount = accs[0]

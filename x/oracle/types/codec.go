@@ -9,24 +9,21 @@ import (
 )
 
 func RegisterCodec(cdc *codec.LegacyAmino) {
-	cdc.RegisterConcrete(&MsgCoinRatesData{}, "oracle/CoinRatesData", nil)
-	cdc.RegisterConcrete(&MsgCreateAssetInfo{}, "oracle/CreateAssetInfo", nil)
-	cdc.RegisterConcrete(&MsgUpdateAssetInfo{}, "oracle/UpdateAssetInfo", nil)
+	cdc.RegisterConcrete(&MsgRequestBandPrice{}, "oracle/RequestBandPrice", nil)
+	cdc.RegisterConcrete(&MsgSetAssetInfo{}, "oracle/SetAssetInfo", nil)
 	cdc.RegisterConcrete(&MsgDeleteAssetInfo{}, "oracle/DeleteAssetInfo", nil)
 	cdc.RegisterConcrete(&MsgFeedPrice{}, "oracle/FeedPrice", nil)
-	cdc.RegisterConcrete(&MsgCreatePriceFeeder{}, "oracle/CreatePriceFeeder", nil)
-	cdc.RegisterConcrete(&MsgUpdatePriceFeeder{}, "oracle/UpdatePriceFeeder", nil)
+	cdc.RegisterConcrete(&MsgSetPriceFeeder{}, "oracle/SetPriceFeeder", nil)
 	cdc.RegisterConcrete(&MsgDeletePriceFeeder{}, "oracle/DeletePriceFeeder", nil)
 	// this line is used by starport scaffolding # 2
 }
 
 func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 	registry.RegisterImplementations((*sdk.Msg)(nil),
-		&MsgCoinRatesData{},
+		&MsgRequestBandPrice{},
 	)
 	registry.RegisterImplementations((*sdk.Msg)(nil),
-		&MsgCreateAssetInfo{},
-		&MsgUpdateAssetInfo{},
+		&MsgSetAssetInfo{},
 		&MsgDeleteAssetInfo{},
 	)
 
@@ -40,8 +37,7 @@ func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 		&MsgFeedPrice{},
 	)
 	registry.RegisterImplementations((*sdk.Msg)(nil),
-		&MsgCreatePriceFeeder{},
-		&MsgUpdatePriceFeeder{},
+		&MsgSetPriceFeeder{},
 		&MsgDeletePriceFeeder{},
 	)
 	// this line is used by starport scaffolding # 3

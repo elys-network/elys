@@ -3,7 +3,7 @@ package elysnetwork.elys.oracle;
 
 import "gogoproto/gogo.proto";
 import "cosmos/base/v1beta1/coin.proto";
-import "elys/oracle/coin_rates.proto";
+import "elys/oracle/band_price.proto";
 import "elys/oracle/asset_info.proto";
 import "elys/oracle/price.proto";
 import "elys/oracle/price_feeder.proto";
@@ -13,18 +13,16 @@ option go_package = "github.com/elys-network/elys/x/oracle/types";
 
 // Msg defines the Msg service.
 service Msg {
-  rpc CoinRatesData(MsgCoinRatesData) returns (MsgCoinRatesDataResponse);
-  rpc CreateAssetInfo(MsgCreateAssetInfo) returns (MsgCreateAssetInfoResponse);
-  rpc UpdateAssetInfo(MsgUpdateAssetInfo) returns (MsgUpdateAssetInfoResponse);
-  rpc DeleteAssetInfo(MsgDeleteAssetInfo) returns (MsgDeleteAssetInfoResponse);
   rpc FeedPrice(MsgFeedPrice) returns (MsgFeedPriceResponse);
-  rpc CreatePriceFeeder(MsgCreatePriceFeeder) returns (MsgCreatePriceFeederResponse);
-  rpc UpdatePriceFeeder(MsgUpdatePriceFeeder) returns (MsgUpdatePriceFeederResponse);
+  rpc RequestBandPrice(MsgRequestBandPrice) returns (MsgRequestBandPriceResponse);
+  rpc SetAssetInfo(MsgSetAssetInfo) returns (MsgSetAssetInfoResponse);
+  rpc DeleteAssetInfo(MsgDeleteAssetInfo) returns (MsgDeleteAssetInfoResponse);
+  rpc SetPriceFeeder(MsgSetPriceFeeder) returns (MsgSetPriceFeederResponse);
   rpc DeletePriceFeeder(MsgDeletePriceFeeder) returns (MsgDeletePriceFeederResponse);
 // this line is used by starport scaffolding # proto/tx/rpc
 }
 
-message MsgCoinRatesData {
+message MsgRequestBandPrice {
   string creator = 1;
   uint64 oracle_script_id = 2 [
     (gogoproto.customname) = "OracleScriptID",
@@ -43,10 +41,10 @@ message MsgCoinRatesData {
   string client_id = 10 [(gogoproto.customname) = "ClientID"];
 }
 
-message MsgCoinRatesDataResponse {
+message MsgRequestBandPriceResponse {
 }
 
-message MsgCreateAssetInfo {
+message MsgSetAssetInfo {
   string creator = 1;
   string denom = 2;
   string display = 3;
@@ -54,17 +52,7 @@ message MsgCreateAssetInfo {
   string binanceTicker = 5;
   string osmosisTicker = 6;
 }
-message MsgCreateAssetInfoResponse {}
-
-message MsgUpdateAssetInfo {
-  string creator = 1;
-  string denom = 2;
-  string display = 3;
-  string bandTicker = 4;
-  string binanceTicker = 5;
-  string osmosisTicker = 6;
-}
-message MsgUpdateAssetInfoResponse {}
+message MsgSetAssetInfoResponse {}
 
 message MsgDeleteAssetInfo {
   string creator = 1;
@@ -83,19 +71,12 @@ message MsgFeedPrice {
 }
 message MsgFeedPriceResponse {}
 
-message MsgCreatePriceFeeder {
+message MsgSetPriceFeeder {
   string creator = 1;
   string feeder = 2;
   bool is_active = 3;
 }
-message MsgCreatePriceFeederResponse {}
-
-message MsgUpdatePriceFeeder {
-  string creator = 1;
-  string feeder = 2;
-  bool is_active = 3;
-}
-message MsgUpdatePriceFeederResponse {}
+message MsgSetPriceFeederResponse {}
 
 message MsgDeletePriceFeeder {
   string creator = 1;

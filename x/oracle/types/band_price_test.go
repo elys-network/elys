@@ -8,29 +8,29 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestMsgCoinRatesData_ValidateBasic(t *testing.T) {
+func TestMsgRequestBandPrice_ValidateBasic(t *testing.T) {
 	tests := []struct {
 		name string
-		msg  MsgCoinRatesData
+		msg  MsgRequestBandPrice
 		err  error
 	}{
 		{
 			name: "invalid address",
-			msg: MsgCoinRatesData{
+			msg: MsgRequestBandPrice{
 				Creator:       "invalid_address",
 				SourceChannel: "channel-0",
 			},
 			err: sdkerrors.ErrInvalidAddress,
 		}, {
 			name: "invalid source channel",
-			msg: MsgCoinRatesData{
+			msg: MsgRequestBandPrice{
 				Creator:       sample.AccAddress(),
 				SourceChannel: "",
 			},
 			err: sdkerrors.ErrInvalidRequest,
 		}, {
 			name: "valid message",
-			msg: MsgCoinRatesData{
+			msg: MsgRequestBandPrice{
 				Creator:       sample.AccAddress(),
 				SourceChannel: "channel-0",
 			},

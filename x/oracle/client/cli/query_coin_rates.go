@@ -40,8 +40,8 @@ func CmdCoinRatesResult() *cobra.Command {
 	return cmd
 }
 
-// CmdLastCoinRatesID queries latest request
-func CmdLastCoinRatesID() *cobra.Command {
+// CmdLastBandRequestId queries latest request
+func CmdLastBandRequestId() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "last-coin-rates-id",
 		Short: "Query the last request id returned by CoinRates ack packet",
@@ -52,7 +52,7 @@ func CmdLastCoinRatesID() *cobra.Command {
 				return err
 			}
 			queryClient := types.NewQueryClient(clientCtx)
-			r, err := queryClient.LastCoinRatesId(context.Background(), &types.QueryLastCoinRatesIdRequest{})
+			r, err := queryClient.LastBandRequestId(context.Background(), &types.QueryLastBandRequestIdRequest{})
 			if err != nil {
 				return err
 			}

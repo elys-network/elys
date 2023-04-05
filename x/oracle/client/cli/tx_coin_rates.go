@@ -12,8 +12,8 @@ import (
 	"github.com/elys-network/elys/x/oracle/types"
 )
 
-// CmdRequestCoinRatesData creates and broadcast a CoinRates request transaction
-func CmdRequestCoinRatesData() *cobra.Command {
+// CmdRequestRequestBandPrice creates and broadcast a CoinRates request transaction
+func CmdRequestRequestBandPrice() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "coin-rates-data [oracle-script-id] [requested-validator-count] [sufficient-validator-count]",
 		Short: "Make a new CoinRates query request via an existing BandChain oracle script",
@@ -87,7 +87,7 @@ func CmdRequestCoinRatesData() *cobra.Command {
 				return err
 			}
 
-			msg := types.NewMsgCoinRatesData(
+			msg := types.NewMsgRequestBandPrice(
 				clientCtx.GetFromAddress().String(),
 				oracleScriptID,
 				channel,

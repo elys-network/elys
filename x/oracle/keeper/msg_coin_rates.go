@@ -14,9 +14,9 @@ import (
 	"github.com/elys-network/elys/x/oracle/types"
 )
 
-// CoinRatesData creates the CoinRates packet
+// RequestBandPrice creates the CoinRates packet
 // data with obi encoded and send it to the channel
-func (k msgServer) CoinRatesData(goCtx context.Context, msg *types.MsgCoinRatesData) (*types.MsgCoinRatesDataResponse, error) {
+func (k msgServer) RequestBandPrice(goCtx context.Context, msg *types.MsgRequestBandPrice) (*types.MsgRequestBandPriceResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	sourcePort := types.PortID
@@ -43,5 +43,5 @@ func (k msgServer) CoinRatesData(goCtx context.Context, msg *types.MsgCoinRatesD
 		return nil, err
 	}
 
-	return &types.MsgCoinRatesDataResponse{}, nil
+	return &types.MsgRequestBandPriceResponse{}, nil
 }

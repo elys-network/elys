@@ -17,9 +17,9 @@ func (k Keeper) CoinRatesResult(c context.Context, req *types.QueryCoinRatesRequ
 	return &types.QueryCoinRatesResponse{Result: &result}, nil
 }
 
-// LastCoinRatesId returns the last CoinRates request Id
-func (k Keeper) LastCoinRatesId(c context.Context, req *types.QueryLastCoinRatesIdRequest) (*types.QueryLastCoinRatesIdResponse, error) {
+// LastBandRequestId returns the last CoinRates request Id
+func (k Keeper) LastBandRequestId(c context.Context, req *types.QueryLastBandRequestIdRequest) (*types.QueryLastBandRequestIdResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
-	id := k.GetLastCoinRatesID(ctx)
-	return &types.QueryLastCoinRatesIdResponse{RequestId: id}, nil
+	id := k.GetLastBandRequestId(ctx)
+	return &types.QueryLastBandRequestIdResponse{RequestId: id}, nil
 }

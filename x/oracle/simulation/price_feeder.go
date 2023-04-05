@@ -16,45 +16,7 @@ import (
 // Prevent strconv unused error
 var _ = strconv.IntSize
 
-func SimulateMsgCreatePriceFeeder(
-	ak types.AccountKeeper,
-	bk types.BankKeeper,
-	k keeper.Keeper,
-) simtypes.Operation {
-	return func(r *rand.Rand, app *baseapp.BaseApp, ctx sdk.Context, accs []simtypes.Account, chainID string,
-	) (simtypes.OperationMsg, []simtypes.FutureOperation, error) {
-		simAccount, _ := simtypes.RandomAcc(r, accs)
-
-		i := r.Int()
-		msg := &types.MsgCreatePriceFeeder{
-			Creator: simAccount.Address.String(),
-			Feeder:  strconv.Itoa(i),
-		}
-
-		_, found := k.GetPriceFeeder(ctx, msg.Feeder)
-		if found {
-			return simtypes.NoOpMsg(types.ModuleName, msg.Type(), "PriceFeeder already exist"), nil, nil
-		}
-
-		txCtx := simulation.OperationInput{
-			R:               r,
-			App:             app,
-			TxGen:           simappparams.MakeTestEncodingConfig().TxConfig,
-			Cdc:             nil,
-			Msg:             msg,
-			MsgType:         msg.Type(),
-			Context:         ctx,
-			SimAccount:      simAccount,
-			ModuleName:      types.ModuleName,
-			CoinsSpentInMsg: sdk.NewCoins(),
-			AccountKeeper:   ak,
-			Bankkeeper:      bk,
-		}
-		return simulation.GenAndDeliverTxWithRandFees(txCtx)
-	}
-}
-
-func SimulateMsgUpdatePriceFeeder(
+func SimulateMsgSetPriceFeeder(
 	ak types.AccountKeeper,
 	bk types.BankKeeper,
 	k keeper.Keeper,
@@ -64,7 +26,7 @@ func SimulateMsgUpdatePriceFeeder(
 		var (
 			simAccount     = simtypes.Account{}
 			priceFeeder    = types.PriceFeeder{}
-			msg            = &types.MsgUpdatePriceFeeder{}
+			msg            = &types.MsgSetPriceFeeder{}
 			allPriceFeeder = k.GetAllPriceFeeder(ctx)
 			found          = false
 		)
@@ -110,7 +72,7 @@ func SimulateMsgDeletePriceFeeder(
 		var (
 			simAccount     = simtypes.Account{}
 			priceFeeder    = types.PriceFeeder{}
-			msg            = &types.MsgUpdatePriceFeeder{}
+			msg            = &types.MsgSetPriceFeeder{}
 			allPriceFeeder = k.GetAllPriceFeeder(ctx)
 			found          = false
 		)

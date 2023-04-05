@@ -24,18 +24,18 @@ func (k Keeper) GetCoinRatesResult(ctx sdk.Context, id types.OracleRequestID) (t
 	return result, nil
 }
 
-// GetLastCoinRatesID return the id from the last CoinRates request
-func (k Keeper) GetLastCoinRatesID(ctx sdk.Context) int64 {
-	bz := ctx.KVStore(k.storeKey).Get(types.KeyPrefix(types.LastCoinRatesIDKey))
+// GetLastBandRequestId return the id from the last CoinRates request
+func (k Keeper) GetLastBandRequestId(ctx sdk.Context) int64 {
+	bz := ctx.KVStore(k.storeKey).Get(types.KeyPrefix(types.LastBandRequestIdKey))
 	intV := gogotypes.Int64Value{}
 	k.cdc.MustUnmarshalLengthPrefixed(bz, &intV)
 	return intV.GetValue()
 }
 
-// SetLastCoinRatesID saves the id from the last CoinRates request
-func (k Keeper) SetLastCoinRatesID(ctx sdk.Context, id types.OracleRequestID) {
+// SetLastBandRequestId saves the id from the last CoinRates request
+func (k Keeper) SetLastBandRequestId(ctx sdk.Context, id types.OracleRequestID) {
 	store := ctx.KVStore(k.storeKey)
-	store.Set(types.KeyPrefix(types.LastCoinRatesIDKey),
+	store.Set(types.KeyPrefix(types.LastBandRequestIdKey),
 		k.cdc.MustMarshalLengthPrefixed(&gogotypes.Int64Value{Value: int64(id)}))
 }
 
