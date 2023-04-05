@@ -52,7 +52,7 @@ func (AppModule) GenerateGenesisState(simState *module.SimulationState) {
 	oracleGenesis := types.GenesisState{
 		Params: types.DefaultParams(),
 		PortId: types.PortID,
-		AssetInfoList: []types.AssetInfo{
+		AssetInfos: []types.AssetInfo{
 			{
 				Denom: "satoshi",
 			},
@@ -60,7 +60,7 @@ func (AppModule) GenerateGenesisState(simState *module.SimulationState) {
 				Denom: "wei",
 			},
 		},
-		PriceList: []types.Price{
+		Prices: []types.Price{
 			{
 				Provider: sample.AccAddress(),
 				Asset:    "BTC",
@@ -72,7 +72,7 @@ func (AppModule) GenerateGenesisState(simState *module.SimulationState) {
 				Price:    sdk.OneDec(),
 			},
 		},
-		PriceFeederList: []types.PriceFeeder{
+		PriceFeeders: []types.PriceFeeder{
 			{
 				Feeder:   sample.AccAddress(),
 				IsActive: true,

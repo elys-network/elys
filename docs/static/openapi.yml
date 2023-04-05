@@ -33313,6 +33313,11 @@ paths:
                     type: string
                   band_epoch:
                     type: string
+                  price_expiry_time:
+                    type: string
+                    format: uint64
+                  module_admin:
+                    type: string
             description: >-
               QueryParamsResponse is response type for the Query/Params RPC
               method.
@@ -33465,55 +33470,6 @@ paths:
           in: query
           required: false
           type: boolean
-      tags:
-        - Query
-  /elys-network/elys/oracle/price/{asset}:
-    get:
-      summary: Queries a Price by asset.
-      operationId: ElysnetworkElysOraclePrice
-      responses:
-        '200':
-          description: A successful response.
-          schema:
-            type: object
-            properties:
-              price:
-                type: object
-                properties:
-                  asset:
-                    type: string
-                  price:
-                    type: string
-                  source:
-                    type: string
-                  provider:
-                    type: string
-                  timestamp:
-                    type: string
-                    format: uint64
-        default:
-          description: An unexpected error response.
-          schema:
-            type: object
-            properties:
-              code:
-                type: integer
-                format: int32
-              message:
-                type: string
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    '@type':
-                      type: string
-                  additionalProperties: {}
-      parameters:
-        - name: asset
-          in: path
-          required: true
-          type: string
       tags:
         - Query
   /elys-network/elys/oracle/price_feeder:
@@ -68831,6 +68787,11 @@ definitions:
         type: string
       band_epoch:
         type: string
+      price_expiry_time:
+        type: string
+        format: uint64
+      module_admin:
+        type: string
     description: Params defines the parameters for the module.
   elysnetwork.elys.oracle.Price:
     type: object
@@ -69087,6 +69048,11 @@ definitions:
           client_id:
             type: string
           band_epoch:
+            type: string
+          price_expiry_time:
+            type: string
+            format: uint64
+          module_admin:
             type: string
     description: QueryParamsResponse is response type for the Query/Params RPC method.
   elysnetwork.elys.tokenomics.Airdrop:

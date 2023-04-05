@@ -10,6 +10,15 @@ import (
 func (k msgServer) FeedPrice(goCtx context.Context, msg *types.MsgFeedPrice) (*types.MsgFeedPriceResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
+	feeder, found := k.Keeper.GetPriceFeeder(ctx, msg.Provider)
+	if !found {
+		return nil, types.ErrNotAPriceFeeder
+	}
+
+	if !feeder.IsActive {
+		return nil, types.ErrPriceFeederNotActive
+	}
+
 	var price = types.Price{
 		Provider:  msg.Provider,
 		Asset:     msg.Asset,

@@ -23,7 +23,7 @@ func TestGenesisState_Validate(t *testing.T) {
 			genState: &types.GenesisState{
 				PortId: types.PortID,
 				Params: types.DefaultParams(),
-				AssetInfoList: []types.AssetInfo{
+				AssetInfos: []types.AssetInfo{
 					{
 						Denom: "satoshi",
 					},
@@ -31,7 +31,7 @@ func TestGenesisState_Validate(t *testing.T) {
 						Denom: "wei",
 					},
 				},
-				PriceList: []types.Price{
+				Prices: []types.Price{
 					{
 						Asset: "asset0",
 					},
@@ -39,7 +39,7 @@ func TestGenesisState_Validate(t *testing.T) {
 						Asset: "asset1",
 					},
 				},
-				PriceFeederList: []types.PriceFeeder{
+				PriceFeeders: []types.PriceFeeder{
 					{
 						Feeder: "0",
 					},
@@ -54,7 +54,7 @@ func TestGenesisState_Validate(t *testing.T) {
 		{
 			desc: "duplicated assetInfo",
 			genState: &types.GenesisState{
-				AssetInfoList: []types.AssetInfo{
+				AssetInfos: []types.AssetInfo{
 					{
 						Denom: "satoshi",
 					},
@@ -68,7 +68,7 @@ func TestGenesisState_Validate(t *testing.T) {
 		{
 			desc: "duplicated price",
 			genState: &types.GenesisState{
-				PriceList: []types.Price{
+				Prices: []types.Price{
 					{
 						Asset: "asset0",
 					},
@@ -82,7 +82,7 @@ func TestGenesisState_Validate(t *testing.T) {
 		{
 			desc: "duplicated priceFeeder",
 			genState: &types.GenesisState{
-				PriceFeederList: []types.PriceFeeder{
+				PriceFeeders: []types.PriceFeeder{
 					{
 						Feeder: "0",
 					},

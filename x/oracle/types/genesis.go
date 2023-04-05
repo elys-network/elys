@@ -12,11 +12,11 @@ const DefaultIndex uint64 = 1
 // DefaultGenesis returns the default genesis state
 func DefaultGenesis() *GenesisState {
 	return &GenesisState{
-		PortId:          PortID,
-		Params:          DefaultParams(),
-		AssetInfoList:   []AssetInfo{},
-		PriceList:       []Price{},
-		PriceFeederList: []PriceFeeder{},
+		PortId:       PortID,
+		Params:       DefaultParams(),
+		AssetInfos:   []AssetInfo{},
+		Prices:       []Price{},
+		PriceFeeders: []PriceFeeder{},
 		// this line is used by starport scaffolding # genesis/types/default
 	}
 }
@@ -30,7 +30,7 @@ func (gs GenesisState) Validate() error {
 	// Check for duplicated index in assetInfo
 	assetInfoIndexMap := make(map[string]struct{})
 
-	for _, elem := range gs.AssetInfoList {
+	for _, elem := range gs.AssetInfos {
 		index := string(AssetInfoKey(elem.Denom))
 		if _, ok := assetInfoIndexMap[index]; ok {
 			return fmt.Errorf("duplicated index for assetInfo")
@@ -40,7 +40,7 @@ func (gs GenesisState) Validate() error {
 	// Check for duplicated index in price
 	priceIndexMap := make(map[string]struct{})
 
-	for _, elem := range gs.PriceList {
+	for _, elem := range gs.Prices {
 		index := string(PriceKey(elem.Asset, elem.Source, elem.Timestamp))
 		if _, ok := priceIndexMap[index]; ok {
 			return fmt.Errorf("duplicated index for price")
@@ -50,7 +50,7 @@ func (gs GenesisState) Validate() error {
 	// Check for duplicated index in priceFeeder
 	priceFeederIndexMap := make(map[string]struct{})
 
-	for _, elem := range gs.PriceFeederList {
+	for _, elem := range gs.PriceFeeders {
 		index := string(PriceFeederKey(elem.Feeder))
 		if _, ok := priceFeederIndexMap[index]; ok {
 			return fmt.Errorf("duplicated index for priceFeeder")

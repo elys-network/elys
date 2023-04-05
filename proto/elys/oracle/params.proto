@@ -26,4 +26,6 @@ message Params {
   uint64 execute_gas = 8;
   string client_id = 9 [ (gogoproto.customname) = "ClientID" ];
   string band_epoch = 10;
+  uint64 price_expiry_time = 11;
+  string module_admin = 12;
 }

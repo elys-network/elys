@@ -9,6 +9,11 @@ import (
 
 func (k msgServer) SetAssetInfo(goCtx context.Context, msg *types.MsgSetAssetInfo) (*types.MsgSetAssetInfoResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	params := k.GetParams(ctx)
+	if msg.Creator != params.ModuleAdmin {
+		return nil, types.ErrNotModuleAdmin
+	}
 	assetInfo := types.AssetInfo{
 		Denom:         msg.Denom,
 		Display:       msg.Display,
@@ -24,6 +29,10 @@ func (k msgServer) SetAssetInfo(goCtx context.Context, msg *types.MsgSetAssetInf
 func (k msgServer) DeleteAssetInfo(goCtx context.Context, msg *types.MsgDeleteAssetInfo) (*types.MsgDeleteAssetInfoResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
+	params := k.GetParams(ctx)
+	if msg.Creator != params.ModuleAdmin {
+		return nil, types.ErrNotModuleAdmin
+	}
 	k.RemoveAssetInfo(ctx, msg.Denom)
 	return &types.MsgDeleteAssetInfoResponse{}, nil
 }

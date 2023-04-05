@@ -19,6 +19,8 @@ var (
 	KeyFeeLimit          = []byte("FeeLimit")
 	KeyPrepareGas        = []byte("PrepareGas")
 	KeyExecuteGas        = []byte("ExecuteGas")
+	KeyModuleAdmin       = []byte("ModuleAdmin")
+	KeyPriceExpiryTime   = []byte("PriceExpiryTime")
 )
 
 var _ paramtypes.ParamSet = (*Params)(nil)
@@ -39,6 +41,8 @@ func NewParams(
 	feeLimit sdk.Coins,
 	prepareGas uint64,
 	executeGas uint64,
+	priceExpiryTime uint64,
+	moduleAdmin string,
 ) Params {
 	return Params{
 		BandEpoch:         bandEpoch,
@@ -51,6 +55,8 @@ func NewParams(
 		FeeLimit:          feeLimit,
 		PrepareGas:        prepareGas,
 		ExecuteGas:        executeGas,
+		PriceExpiryTime:   priceExpiryTime,
+		ModuleAdmin:       moduleAdmin,
 	}
 }
 
@@ -66,6 +72,8 @@ func DefaultParams() Params {
 		sdk.NewCoins(sdk.NewInt64Coin("uband", 30)),
 		600000,
 		600000,
+		86400, // 1 day old data
+		"",
 	)
 }
 
@@ -82,6 +90,8 @@ func (p *Params) ParamSetPairs() paramtypes.ParamSetPairs {
 		paramtypes.NewParamSetPair(KeyFeeLimit, &p.FeeLimit, validateFeeLimit),
 		paramtypes.NewParamSetPair(KeyPrepareGas, &p.PrepareGas, validateGas),
 		paramtypes.NewParamSetPair(KeyExecuteGas, &p.ExecuteGas, validateGas),
+		paramtypes.NewParamSetPair(KeyModuleAdmin, &p.ModuleAdmin, validateAdmin),
+		paramtypes.NewParamSetPair(KeyPriceExpiryTime, &p.PriceExpiryTime, validatePriceExpiryTime),
 	}
 }
 
@@ -116,6 +126,12 @@ func (p Params) Validate() error {
 		return err
 	}
 	if err := validateGas(p.ExecuteGas); err != nil {
+		return err
+	}
+	if err := validateAdmin(p.ModuleAdmin); err != nil {
+		return err
+	}
+	if err := validatePriceExpiryTime(p.PriceExpiryTime); err != nil {
 		return err
 	}
 
@@ -213,6 +229,24 @@ func validateGas(i interface{}) error {
 	_, ok := i.(uint64)
 	if !ok {
 		return fmt.Errorf("invalid type for gas: %T", i)
+	}
+
+	return nil
+}
+
+func validateAdmin(i interface{}) error {
+	_, ok := i.(string)
+	if !ok {
+		return fmt.Errorf("invalid type for module admin: %T", i)
+	}
+
+	return nil
+}
+
+func validatePriceExpiryTime(i interface{}) error {
+	_, ok := i.(uint64)
+	if !ok {
+		return fmt.Errorf("invalid type for module admin: %T", i)
 	}
 
 	return nil

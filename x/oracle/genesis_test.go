@@ -14,7 +14,7 @@ package oracle_test
 // 	genesisState := types.GenesisState{
 // 		Params: types.DefaultParams(),
 // 		PortId: types.PortID,
-// 		AssetInfoList: []types.AssetInfo{
+// 		AssetInfos: []types.AssetInfo{
 // 			{
 // 				Denom: "satoshi",
 // 			},
@@ -22,7 +22,7 @@ package oracle_test
 // 				Denom: "wei",
 // 			},
 // 		},
-// 		PriceList: []types.Price{
+// 		Prices: []types.Price{
 // 		{
 // 			Index: "0",
 // },
@@ -30,7 +30,7 @@ package oracle_test
 // 			Index: "1",
 // },
 // 	},
-// PriceFeederList: []types.PriceFeeder{
+// PriceFeeders: []types.PriceFeeder{
 // 		{
 // 			Index: "0",
 // },
@@ -51,8 +51,8 @@ package oracle_test
 
 // 	require.Equal(t, genesisState.PortId, got.PortId)
 
-// 	require.ElementsMatch(t, genesisState.AssetInfoList, got.AssetInfoList)
-// 	require.ElementsMatch(t, genesisState.PriceList, got.PriceList)
-// require.ElementsMatch(t, genesisState.PriceFeederList, got.PriceFeederList)
+// 	require.ElementsMatch(t, genesisState.AssetInfos, got.AssetInfos)
+// 	require.ElementsMatch(t, genesisState.Prices, got.Prices)
+// require.ElementsMatch(t, genesisState.PriceFeeders, got.PriceFeeders)
 // this line is used by starport scaffolding # genesis/test/assert
 // }
