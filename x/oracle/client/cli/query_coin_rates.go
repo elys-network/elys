@@ -10,11 +10,11 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// CmdCoinRatesResult queries request result by reqID
-func CmdCoinRatesResult() *cobra.Command {
+// CmdBandPriceResult queries request result by reqID
+func CmdBandPriceResult() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "coin-rates-result [request-id]",
-		Short: "Query the CoinRates result data by id",
+		Use:   "band-price-result [request-id]",
+		Short: "Query the BandPrice result data by id",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientQueryContext(cmd)
@@ -26,7 +26,7 @@ func CmdCoinRatesResult() *cobra.Command {
 				return err
 			}
 			queryClient := types.NewQueryClient(clientCtx)
-			r, err := queryClient.CoinRatesResult(context.Background(), &types.QueryCoinRatesRequest{RequestId: id})
+			r, err := queryClient.BandPriceResult(context.Background(), &types.QueryBandPriceRequest{RequestId: id})
 			if err != nil {
 				return err
 			}
@@ -43,8 +43,8 @@ func CmdCoinRatesResult() *cobra.Command {
 // CmdLastBandRequestId queries latest request
 func CmdLastBandRequestId() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "last-coin-rates-id",
-		Short: "Query the last request id returned by CoinRates ack packet",
+		Use:   "last-band-request-id",
+		Short: "Query the last request id returned by BandPrice ack packet",
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientQueryContext(cmd)

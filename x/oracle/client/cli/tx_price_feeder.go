@@ -12,8 +12,8 @@ import (
 
 func CmdSetPriceFeeder() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "update-price-feeder [feeder] [isActive]",
-		Short: "Update a priceFeeder",
+		Use:   "set-price-feeder [feeder] [isActive]",
+		Short: "Set a price feeder",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			clientCtx, err := client.GetClientTxContext(cmd)

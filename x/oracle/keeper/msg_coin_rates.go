@@ -14,7 +14,7 @@ import (
 	"github.com/elys-network/elys/x/oracle/types"
 )
 
-// RequestBandPrice creates the CoinRates packet
+// RequestBandPrice creates the BandPrice packet
 // data with obi encoded and send it to the channel
 func (k msgServer) RequestBandPrice(goCtx context.Context, msg *types.MsgRequestBandPrice) (*types.MsgRequestBandPriceResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)

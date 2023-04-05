@@ -30,7 +30,7 @@ func (k Keeper) BeforeEpochStart(ctx sdk.Context, epochIdentifier string, epochN
 				symbols = append(symbols, assetInfo.BandTicker)
 			}
 		}
-		encodedCalldata := obi.MustEncode(&types.CoinRatesCallData{
+		encodedCalldata := obi.MustEncode(&types.BandPriceCallData{
 			Symbols:    symbols,
 			Multiplier: 1,
 		})

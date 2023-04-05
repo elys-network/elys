@@ -42,7 +42,7 @@ func NewParams(
 ) Params {
 	return Params{
 		BandEpoch:         bandEpoch,
-		ClientID:          CoinRatesClientIDKey,
+		ClientID:          BandPriceClientIDKey,
 		OracleScriptID:    uint64(oracleScriptID),
 		Multiplier:        multiplier,
 		BandChannelSource: bandChannelSrc,

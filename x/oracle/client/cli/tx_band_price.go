@@ -12,11 +12,11 @@ import (
 	"github.com/elys-network/elys/x/oracle/types"
 )
 
-// CmdRequestRequestBandPrice creates and broadcast a CoinRates request transaction
-func CmdRequestRequestBandPrice() *cobra.Command {
+// CmdRequestBandPrice creates and broadcast a BandPrice request transaction
+func CmdRequestBandPrice() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "coin-rates-data [oracle-script-id] [requested-validator-count] [sufficient-validator-count]",
-		Short: "Make a new CoinRates query request via an existing BandChain oracle script",
+		Use:   "request-band-price [oracle-script-id] [requested-validator-count] [sufficient-validator-count]",
+		Short: "Make a new BandPrice query request via an existing BandChain oracle script",
 		Args:  cobra.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// retrieve the oracle script id.
@@ -55,7 +55,7 @@ func CmdRequestRequestBandPrice() *cobra.Command {
 				return err
 			}
 
-			calldata := &types.CoinRatesCallData{
+			calldata := &types.BandPriceCallData{
 				Symbols:    symbols,
 				Multiplier: multiplier,
 			}

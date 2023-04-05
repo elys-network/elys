@@ -10,8 +10,8 @@ import (
 
 func CmdSetAssetInfo() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "update-asset-info [denom] [display] [bandTicker] [binanceTicker] [osmosisTicker]",
-		Short: "Update an asset info",
+		Use:   "set-asset-info [denom] [display] [bandTicker] [binanceTicker] [osmosisTicker]",
+		Short: "Set an asset info",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			clientCtx, err := client.GetClientTxContext(cmd)

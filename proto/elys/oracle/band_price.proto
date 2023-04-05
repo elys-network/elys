@@ -3,11 +3,11 @@ package elysnetwork.elys.oracle;
 
 option go_package = "github.com/elys-network/elys/x/oracle/types";
 
-message CoinRatesCallData {
+message BandPriceCallData {
   repeated string symbols = 1;
   uint64 multiplier = 2;
 }
 
-message CoinRatesResult {
+message BandPriceResult {
   repeated uint64 rates = 1;
 }

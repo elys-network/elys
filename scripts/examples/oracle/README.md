@@ -52,13 +52,13 @@ ignite relayer connect
 ### Send price request to bandchain
 
 ```
-elysd tx oracle coin-rates-data 37 1 1 --channel channel-0 --symbols "BTC,ETH,XRP,BCH" --multiplier 1000000 --fee-limit 30uband --prepare-gas 600000 --execute-gas 600000 --from alice --chain-id elys -y
+elysd tx oracle request-band-price 37 1 1 --channel channel-0 --symbols "BTC,ETH,XRP,BCH" --multiplier 1000000 --fee-limit 30uband --prepare-gas 600000 --execute-gas 600000 --from alice --chain-id elys -y
 ```
 
 ### Check request id created on bandchain received on Elys
 
 ```
-elysd query oracle last-coin-rates-id
+elysd query oracle last-band-request-id
 
 request_id: "2"
 ```
@@ -66,7 +66,7 @@ request_id: "2"
 ### Check response from bandchain for price request
 
 ```
-elysd query oracle coin-rates-result 1
+elysd query oracle band-price-result 1
 
 result:
   rates:
@@ -111,17 +111,17 @@ ignite relayer connect
 ### Send price request to bandchain
 
 ```
-elysd tx oracle coin-rates-data 37 4 3 --channel channel-0 --symbols "BTC,ETH,XRP,BCH" --multiplier 1000000 --fee-limit 30uband --prepare-gas 600000 --execute-gas 600000 --from alice --chain-id elys -y
+elysd tx oracle request-band-price 37 4 3 --channel channel-0 --symbols "BTC,ETH,XRP,BCH" --multiplier 1000000 --fee-limit 30uband --prepare-gas 600000 --execute-gas 600000 --from alice --chain-id elys -y
 ```
 
 ### Check request id created on bandchain received on Elys
 
 ```
-elysd query oracle last-coin-rates-id
+elysd query oracle last-band-request-id
 ```
 
 ### Check response from bandchain for price request
 
 ```
-elysd query oracle coin-rates-result 0
+elysd query oracle band-price-result 0
 ```

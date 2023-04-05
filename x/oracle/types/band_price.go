@@ -10,25 +10,25 @@ const TypeMsgRequestBandPrice = "coin_rates_data"
 var (
 	_ sdk.Msg = &MsgRequestBandPrice{}
 
-	// CoinRatesResultStoreKeyPrefix is a prefix for storing result
-	CoinRatesResultStoreKeyPrefix = "coin_rates_result"
+	// BandPriceResultStoreKeyPrefix is a prefix for storing result
+	BandPriceResultStoreKeyPrefix = "coin_rates_result"
 
 	// LastBandRequestIdKey is the key for the last request id
 	LastBandRequestIdKey = "coin_rates_last_id"
 
-	// CoinRatesClientIDKey is query request identifier
-	CoinRatesClientIDKey = "coin_rates_id"
+	// BandPriceClientIDKey is query request identifier
+	BandPriceClientIDKey = "coin_rates_id"
 
 	// PrefixKeyBandRequest is the prefix for band requests
 	PrefixKeyBandRequest = "band_request_"
 )
 
-// NewMsgRequestBandPrice creates a new CoinRates message
+// NewMsgRequestBandPrice creates a new BandPrice message
 func NewMsgRequestBandPrice(
 	creator string,
 	oracleScriptID OracleScriptID,
 	sourceChannel string,
-	calldata *CoinRatesCallData,
+	calldata *BandPriceCallData,
 	askCount uint64,
 	minCount uint64,
 	feeLimit sdk.Coins,
@@ -36,7 +36,7 @@ func NewMsgRequestBandPrice(
 	executeGas uint64,
 ) *MsgRequestBandPrice {
 	return &MsgRequestBandPrice{
-		ClientID:       CoinRatesClientIDKey,
+		ClientID:       BandPriceClientIDKey,
 		Creator:        creator,
 		OracleScriptID: uint64(oracleScriptID),
 		SourceChannel:  sourceChannel,
@@ -86,9 +86,9 @@ func (m *MsgRequestBandPrice) ValidateBasic() error {
 	return nil
 }
 
-// CoinRatesResultStoreKey is a function to generate key for each result in store
-func CoinRatesResultStoreKey(requestID OracleRequestID) []byte {
-	return append(KeyPrefix(CoinRatesResultStoreKeyPrefix), int64ToBytes(int64(requestID))...)
+// BandPriceResultStoreKey is a function to generate key for each result in store
+func BandPriceResultStoreKey(requestID OracleRequestID) []byte {
+	return append(KeyPrefix(BandPriceResultStoreKeyPrefix), int64ToBytes(int64(requestID))...)
 }
 
 func BandRequestStoreKey(requestID OracleRequestID) []byte {

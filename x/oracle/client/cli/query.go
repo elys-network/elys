@@ -25,7 +25,7 @@ func GetQueryCmd(queryRoute string) *cobra.Command {
 	}
 
 	cmd.AddCommand(CmdQueryParams())
-	cmd.AddCommand(CmdCoinRatesResult())
+	cmd.AddCommand(CmdBandPriceResult())
 	cmd.AddCommand(CmdLastBandRequestId())
 	cmd.AddCommand(CmdListAssetInfo())
 	cmd.AddCommand(CmdShowAssetInfo())

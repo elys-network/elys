@@ -19,11 +19,11 @@ service Query {
 	rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
 		option (google.api.http).get = "/elys-network/elys/oracle/params";
 	}
-  	// CoinRatesResult defines a rpc handler method for MsgRequestBandPrice.
-  	rpc CoinRatesResult(QueryCoinRatesRequest) returns (QueryCoinRatesResponse) {
+  	// BandPriceResult defines a rpc handler method for MsgRequestBandPrice.
+  	rpc BandPriceResult(QueryBandPriceRequest) returns (QueryBandPriceResponse) {
 		option (google.api.http).get = "/elys/oracle/band_price_result/{request_id}";
   	}
-  	// LastBandRequestId query the last CoinRates result id
+  	// LastBandRequestId query the last BandPrice result id
   	rpc LastBandRequestId(QueryLastBandRequestIdRequest) returns (QueryLastBandRequestIdResponse) {
 		option (google.api.http).get = "/elys/oracle/last_band_price_request_id";
   	}
@@ -65,10 +65,10 @@ message QueryParamsResponse {
   Params params = 1 [(gogoproto.nullable) = false];
 }
 
-message QueryCoinRatesRequest {int64 request_id = 1;}
+message QueryBandPriceRequest {int64 request_id = 1;}
 
-message QueryCoinRatesResponse {
-  CoinRatesResult result = 1;
+message QueryBandPriceResponse {
+  BandPriceResult result = 1;
 }
 
 message QueryLastBandRequestIdRequest {}
