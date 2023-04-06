@@ -68738,6 +68738,8 @@ definitions:
     type: object
   elysnetwork.elys.oracle.MsgDeletePriceFeederResponse:
     type: object
+  elysnetwork.elys.oracle.MsgFeedMultiplePricesResponse:
+    type: object
   elysnetwork.elys.oracle.MsgFeedPriceResponse:
     type: object
   elysnetwork.elys.oracle.MsgRequestBandPriceResponse:

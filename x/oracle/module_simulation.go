@@ -40,6 +40,10 @@ const (
 	// TODO: Determine the simulation weight value
 	defaultWeightMsgDeletePriceFeeder int = 100
 
+	opWeightMsgFeedMultiplePrices = "op_weight_msg_feed_multiple_prices"
+	// TODO: Determine the simulation weight value
+	defaultWeightMsgFeedMultiplePrices int = 100
+
 	// this line is used by starport scaffolding # simapp/module/const
 )
 
@@ -143,6 +147,17 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 	operations = append(operations, simulation.NewWeightedOperation(
 		weightMsgDeletePriceFeeder,
 		oraclesimulation.SimulateMsgDeletePriceFeeder(am.accountKeeper, am.bankKeeper, am.keeper),
+	))
+
+	var weightMsgFeedMultiplePrices int
+	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgFeedMultiplePrices, &weightMsgFeedMultiplePrices, nil,
+		func(_ *rand.Rand) {
+			weightMsgFeedMultiplePrices = defaultWeightMsgFeedMultiplePrices
+		},
+	)
+	operations = append(operations, simulation.NewWeightedOperation(
+		weightMsgFeedMultiplePrices,
+		oraclesimulation.SimulateMsgFeedMultiplePrices(am.accountKeeper, am.bankKeeper, am.keeper),
 	))
 
 	// this line is used by starport scaffolding # simapp/module/operation
