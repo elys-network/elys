@@ -17,6 +17,10 @@ func (suite *KeeperTestSuite) TestPriceMsgServerCreate() {
 	srv := keeper.NewMsgServerImpl(k)
 	wctx := sdk.WrapSDKContext(ctx)
 	creator := "A"
+	suite.app.OracleKeeper.SetPriceFeeder(ctx, types.PriceFeeder{
+		Feeder:   creator,
+		IsActive: true,
+	})
 	for i := 0; i < 5; i++ {
 		expected := &types.MsgFeedPrice{
 			Provider: creator,

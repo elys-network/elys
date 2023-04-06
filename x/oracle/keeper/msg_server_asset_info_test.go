@@ -22,14 +22,18 @@ func (suite *KeeperTestSuite) TestMsgServerSetAssetInfo() {
 	}{
 		{
 			desc: "Completed",
-			request: &types.MsgSetAssetInfo{Creator: creator,
-				Denom: "denom" + strconv.Itoa(0),
+			request: &types.MsgSetAssetInfo{
+				Creator: creator,
+				Denom:   "denom" + strconv.Itoa(0),
 			},
 		},
 	} {
 		suite.Run(tc.desc, func() {
 			suite.SetupTest()
 			k, ctx := suite.app.OracleKeeper, suite.ctx
+			params := types.DefaultParams()
+			params.ModuleAdmin = creator
+			suite.app.OracleKeeper.SetParams(ctx, params)
 			srv := keeper.NewMsgServerImpl(k)
 			wctx := sdk.WrapSDKContext(ctx)
 			_, err := srv.SetAssetInfo(wctx, tc.request)
@@ -63,6 +67,9 @@ func (suite *KeeperTestSuite) TestAssetInfoMsgServerDelete() {
 		suite.Run(tc.desc, func() {
 			suite.SetupTest()
 			k, ctx := suite.app.OracleKeeper, suite.ctx
+			params := types.DefaultParams()
+			params.ModuleAdmin = creator
+			suite.app.OracleKeeper.SetParams(ctx, params)
 			srv := keeper.NewMsgServerImpl(k)
 			wctx := sdk.WrapSDKContext(ctx)
 

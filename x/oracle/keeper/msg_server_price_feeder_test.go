@@ -22,14 +22,19 @@ func (suite *KeeperTestSuite) TestPriceFeederMsgServerUpdate() {
 	}{
 		{
 			desc: "Completed",
-			request: &types.MsgSetPriceFeeder{Creator: creator,
-				Feeder: strconv.Itoa(0),
+			request: &types.MsgSetPriceFeeder{
+				Creator: creator,
+				Feeder:  strconv.Itoa(0),
 			},
 		},
 	} {
 		suite.Run(tc.desc, func() {
 			suite.SetupTest()
 			k, ctx := suite.app.OracleKeeper, suite.ctx
+			params := types.DefaultParams()
+			params.ModuleAdmin = creator
+			suite.app.OracleKeeper.SetParams(ctx, params)
+
 			srv := keeper.NewMsgServerImpl(k)
 			wctx := sdk.WrapSDKContext(ctx)
 			_, err := srv.SetPriceFeeder(wctx, tc.request)
@@ -64,6 +69,10 @@ func (suite *KeeperTestSuite) TestPriceFeederMsgServerDelete() {
 	} {
 		suite.Run(tc.desc, func() {
 			k, ctx := suite.app.OracleKeeper, suite.ctx
+			params := types.DefaultParams()
+			params.ModuleAdmin = creator
+			suite.app.OracleKeeper.SetParams(ctx, params)
+
 			srv := keeper.NewMsgServerImpl(k)
 			wctx := sdk.WrapSDKContext(ctx)
 			_, err := srv.SetPriceFeeder(wctx, &types.MsgSetPriceFeeder{
