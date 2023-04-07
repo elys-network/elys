@@ -12,7 +12,7 @@ func CmdSetAssetInfo() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "set-asset-info [denom] [display] [bandTicker] [binanceTicker] [osmosisTicker]",
 		Short: "Set an asset info",
-		Args:  cobra.ExactArgs(1),
+		Args:  cobra.ExactArgs(5),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {

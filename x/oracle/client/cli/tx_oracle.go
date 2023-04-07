@@ -7,4 +7,6 @@ const (
 	flagFeeLimit   = "fee-limit"
 	flagPrepareGas = "prepare-gas"
 	flagExecuteGas = "execute-gas"
+	flagSource     = "source"
+	flagTimestamp  = "timestamp"
 )

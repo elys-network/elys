@@ -14,10 +14,7 @@ func (k Keeper) SetAssetInfo(ctx sdk.Context, assetInfo types.AssetInfo) {
 }
 
 // GetAssetInfo returns a assetInfo from its index
-func (k Keeper) GetAssetInfo(
-	ctx sdk.Context,
-	denom string,
-) (val types.AssetInfo, found bool) {
+func (k Keeper) GetAssetInfo(ctx sdk.Context, denom string) (val types.AssetInfo, found bool) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.AssetInfoKeyPrefix))
 	bz := store.Get(types.AssetInfoKey(denom))
 	if bz == nil {

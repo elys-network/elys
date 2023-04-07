@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -45,6 +46,7 @@ func (k Keeper) Price(c context.Context, req *types.QueryGetPriceRequest) (*type
 	}
 	ctx := sdk.UnwrapSDKContext(c)
 
+	fmt.Println("Price1")
 	// if both source and timestamp are defined, use specific value
 	if req.Source != "" && req.Timestamp != 0 {
 		val, found := k.GetPrice(ctx, req.Asset, req.Source, req.Timestamp)
@@ -54,6 +56,7 @@ func (k Keeper) Price(c context.Context, req *types.QueryGetPriceRequest) (*type
 		return &types.QueryGetPriceResponse{Price: val}, nil
 	}
 
+	fmt.Println("Price2")
 	// if source is specified use latest price from source
 	if req.Source != "" {
 		val, found := k.GetLatestPriceFromAssetAndSource(ctx, req.Asset, req.Source)
@@ -63,24 +66,28 @@ func (k Keeper) Price(c context.Context, req *types.QueryGetPriceRequest) (*type
 		return &types.QueryGetPriceResponse{Price: val}, nil
 	}
 
+	fmt.Println("Price3")
 	// try out band source
 	val, found := k.GetLatestPriceFromAssetAndSource(ctx, req.Asset, types.BAND)
 	if found {
 		return &types.QueryGetPriceResponse{Price: val}, nil
 	}
 
+	fmt.Println("Price4")
 	// try out binance source
 	val, found = k.GetLatestPriceFromAssetAndSource(ctx, req.Asset, types.BINANCE)
 	if found {
 		return &types.QueryGetPriceResponse{Price: val}, nil
 	}
 
+	fmt.Println("Price5")
 	// try out osmosis source
 	val, found = k.GetLatestPriceFromAssetAndSource(ctx, req.Asset, types.OSMOSIS)
 	if found {
 		return &types.QueryGetPriceResponse{Price: val}, nil
 	}
 
+	fmt.Println("Price6")
 	// find from any source if band source does not exist
 	val, found = k.GetLatestPriceFromAnySource(ctx, req.Asset)
 	if !found {

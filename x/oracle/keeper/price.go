@@ -8,14 +8,14 @@ import (
 
 // SetPrice set a specific price in the store from its index
 func (k Keeper) SetPrice(ctx sdk.Context, price types.Price) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.PriceKeyPrefix))
+	store := ctx.KVStore(k.storeKey)
 	b := k.cdc.MustMarshal(&price)
 	store.Set(types.PriceKey(price.Asset, price.Source, price.Timestamp), b)
 }
 
 // GetPrice returns a price from its index
 func (k Keeper) GetPrice(ctx sdk.Context, asset, source string, timestamp uint64) (val types.Price, found bool) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.PriceKeyPrefix))
+	store := ctx.KVStore(k.storeKey)
 
 	b := store.Get(types.PriceKey(asset, source, timestamp))
 	if b == nil {
@@ -27,8 +27,8 @@ func (k Keeper) GetPrice(ctx sdk.Context, asset, source string, timestamp uint64
 }
 
 func (k Keeper) GetLatestPriceFromAssetAndSource(ctx sdk.Context, asset, source string) (val types.Price, found bool) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.PriceKeyPrefixAssetAndSource(asset, source))
-	iterator := sdk.KVStoreReversePrefixIterator(store, []byte{})
+	store := ctx.KVStore(k.storeKey)
+	iterator := sdk.KVStoreReversePrefixIterator(store, types.PriceKeyPrefixAssetAndSource(asset, source))
 	defer iterator.Close()
 
 	for ; iterator.Valid(); iterator.Next() {
@@ -41,8 +41,8 @@ func (k Keeper) GetLatestPriceFromAssetAndSource(ctx sdk.Context, asset, source 
 }
 
 func (k Keeper) GetLatestPriceFromAnySource(ctx sdk.Context, asset string) (val types.Price, found bool) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.PriceKeyPrefixAsset(asset))
-	iterator := sdk.KVStoreReversePrefixIterator(store, []byte{})
+	store := ctx.KVStore(k.storeKey)
+	iterator := sdk.KVStoreReversePrefixIterator(store, types.PriceKeyPrefixAsset(asset))
 	defer iterator.Close()
 
 	for ; iterator.Valid(); iterator.Next() {
@@ -56,7 +56,7 @@ func (k Keeper) GetLatestPriceFromAnySource(ctx sdk.Context, asset string) (val 
 
 // RemovePrice removes a price from the store
 func (k Keeper) RemovePrice(ctx sdk.Context, asset, source string, timestamp uint64) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.PriceKeyPrefix))
+	store := ctx.KVStore(k.storeKey)
 	store.Delete(types.PriceKey(asset, source, timestamp))
 }
 

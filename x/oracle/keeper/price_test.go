@@ -57,3 +57,66 @@ func (suite *KeeperTestSuite) TestPriceGetAll() {
 		nullify.Fill(k.GetAllPrice(ctx)),
 	)
 }
+
+func (suite *KeeperTestSuite) TestGetLatestPriceFromAssetAndSource() {
+	prices := []types.Price{
+		{
+			Asset:     "BTC",
+			Price:     sdk.NewDec(1),
+			Source:    "binance",
+			Timestamp: 100000,
+		},
+		{
+			Asset:     "BTC",
+			Price:     sdk.NewDec(2),
+			Source:    "band",
+			Timestamp: 100000,
+		},
+		{
+			Asset:     "BTC",
+			Price:     sdk.NewDec(3),
+			Source:    "band",
+			Timestamp: 110000,
+		},
+	}
+	for _, price := range prices {
+		suite.app.OracleKeeper.SetPrice(suite.ctx, price)
+	}
+	price, found := suite.app.OracleKeeper.GetLatestPriceFromAssetAndSource(suite.ctx, "BTC", "binance")
+	suite.Require().True(found)
+	suite.Require().Equal(price, prices[0])
+	price, found = suite.app.OracleKeeper.GetLatestPriceFromAssetAndSource(suite.ctx, "BTC", "osmosis")
+	suite.Require().False(found)
+	price, found = suite.app.OracleKeeper.GetLatestPriceFromAssetAndSource(suite.ctx, "BTC", "band")
+	suite.Require().True(found)
+	suite.Require().Equal(price, prices[2])
+}
+
+func (suite *KeeperTestSuite) TestGetLatestPriceFromAnySource() {
+	prices := []types.Price{
+		{
+			Asset:     "BTC",
+			Price:     sdk.NewDec(1),
+			Source:    "binance",
+			Timestamp: 100000,
+		},
+		{
+			Asset:     "BTC",
+			Price:     sdk.NewDec(2),
+			Source:    "band",
+			Timestamp: 100000,
+		},
+		{
+			Asset:     "BTC",
+			Price:     sdk.NewDec(3),
+			Source:    "band",
+			Timestamp: 110000,
+		},
+	}
+	for _, price := range prices {
+		suite.app.OracleKeeper.SetPrice(suite.ctx, price)
+	}
+	price, found := suite.app.OracleKeeper.GetLatestPriceFromAnySource(suite.ctx, "BTC")
+	suite.Require().True(found)
+	suite.Require().Equal(price, prices[0])
+}

@@ -65,7 +65,7 @@ func DefaultParams() Params {
 	return NewParams(
 		"band_epoch",
 		37,
-		1000000,
+		18, // decimal 18
 		"channel-0",
 		4,
 		3,
@@ -73,7 +73,7 @@ func DefaultParams() Params {
 		600000,
 		600000,
 		86400, // 1 day old data
-		"",
+		"elys12tzylat4udvjj56uuhu3vj2n4vgp7cf9fwna9w", // alice
 	)
 }
 
