@@ -67,6 +67,10 @@ You can also use the `make install` command to install the binary in the `bin` d
 
 </details>
 
+## Validator Guide
+
+The validator guide is accessible [here](./validator.md).
+
 ## Network Launch
 
 This section provides a step-by-step guide on how to launch a new network, such as a testnet, for Elys. The guide includes instructions on how to use Ignite commands to set up and configure the new network.
