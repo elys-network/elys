@@ -10,7 +10,9 @@ ignite chain serve
 
 `serve` command installs dependencies, builds, initializes, and starts Elys in development.
 
-### Install
+## Installation
+
+### With Ignite
 
 To install the latest version of Elys binary, execute the following command on your machine:
 
@@ -18,7 +20,61 @@ To install the latest version of Elys binary, execute the following command on y
 curl https://get.ignite.com/elys-network/elys@latest! | sudo bash
 ```
 
-## Coordinator Configuration
+### With Makefile
+
+This section provides a step-by-step guide on how to build the Elys Chain binary from the source code using the provided makefile. The makefile automates the build process and generates a binary executable that can be run on your local machine.
+
+<details>
+<summary>Click to expand/collapse</summary>
+
+1. Clone the Elys chain repository:
+
+```bash
+git clone https://github.com/elys-network/elys.git
+```
+
+2. Navigate to the cloned repository:
+
+```bash
+cd elys
+```
+
+3. Optionally, checkout the specific branch or tag you want to build:
+
+```bash
+git checkout <branch or tag>
+```
+
+4. Ensure that you have the necessary dependencies installed. For instance, on Ubuntu you need to install the `make` tool:
+
+```bash
+sudo apt-get install --yes make
+```
+
+5. Run the `make build` command to build the binary:
+
+```bash
+make build
+```
+
+6. The binary will be generated in the `./build` directory. You can run the binary using the following command:
+
+```bash
+./build/elysd
+```
+
+You can also use the `make install` command to install the binary in the `bin` directory of your `GOPATH`.
+
+</details>
+
+## Network Launch
+
+This section provides a step-by-step guide on how to launch a new network, such as a testnet, for Elys. The guide includes instructions on how to use Ignite commands to set up and configure the new network.
+
+<details>
+<summary>Click to expand/collapse</summary>
+
+### Coordinator Configuration
 
 To publish the information about Elys chain as a coordinator, run the following command:
 
@@ -26,11 +82,11 @@ To publish the information about Elys chain as a coordinator, run the following 
 ignite network chain publish github.com/elys-network/elys --tag v0.1.0 --chain-id elystestnet-1 --account-balance 10000000000uelys
 ```
 
-## Validator Configuration
+### Validator Configuration
 
 This documentation presupposes the validator node is currently operational on `Ubuntu 22.04.2 LTS`.
 
-### Prerequisites
+#### Prerequisites
 
 Before launching a validator node, a set of tools must be installed.
 
@@ -161,21 +217,30 @@ Or follow the service logs by using this command:
 sudo journalctl -u elysd.service -f
 ```
 
-## Boilerplate Generation
+</details>
+
+## Architecture
+
+This section contains documentation on the architecture of the Elys chain, including the current design and components of the system.
+
+<details>
+<summary>Click to expand/collapse</summary>
+
+### Boilerplate Generation
 
 The boilerplate was generated using `ignite CLI`, which provides a convenient way to generate new chains, modules, messages, and more. The initial modules that are part of the repository include `AssetProfile` and `LiquidityProvider`, both of which were generated using the `ignite CLI`.
 
 `AssetProfile` requires all changes to go through governance proposals (i.e., adding, updating, or deleting an asset profile entry). Similarly, any modules that expose parameters must require governance proposals to update the module parameters.
 
-## Configuration File
+### Configuration File
 
 The repository also includes a `config.yml` file, which provides a convenient way to initiate the genesis account, set up a faucet for testnet, define initial validators, and override initial genesis states. Although `ignite` provides the network layer that allows for easy onboarding of new validators to a chain network, the `config.yml` file can be used to specify additional configurations.
 
 In the current `config.yml` file, additional denom metadata has been defined to allow for easy setting of the ELYS amount using any exponent (decimal precision) following the EVMOS good practices. The governance params have also been overridden to reduce the voting period to 20 seconds for local test purposes. Multiple `config.yml` files can be created for each environment (local, testnet, mainnet) with their specific parameters.
 
-## Asset Profile
+### Asset Profile
 
-### Add Entry using Gov Proposal
+#### Add Entry using Gov Proposal
 
 A proposal can be submitted to add one or multiple entries in the asset profile module. The proposal must be in the following format:
 
@@ -241,7 +306,7 @@ To vote on a proposal, use the following command:
 elysd tx gov vote 1 yes --from alice --yes
 ```
 
-### Update Entry using Gov Proposal
+#### Update Entry using Gov Proposal
 
 A proposal can be submitted to update one or multiple entries in the asset profile module. The proposal must be in the following format:
 
@@ -287,7 +352,7 @@ To vote on a proposal, use the following command:
 elysd tx gov vote 1 yes --from alice --yes
 ```
 
-### Delete Entry using Gov Proposal
+#### Delete Entry using Gov Proposal
 
 A proposal can be submitted to delete one or multiple entries in the asset profile module. The proposal must be in the following format:
 
@@ -318,7 +383,7 @@ To vote on a proposal, use the following command:
 elysd tx gov vote 1 yes --from alice --yes
 ```
 
-### CLI to Query List of Entries
+#### CLI to Query List of Entries
 
 To query the list of entries in the asset profile module, use the following command:
 
@@ -326,9 +391,9 @@ To query the list of entries in the asset profile module, use the following comm
 elysd q assetprofile list-entry
 ```
 
-## Tokenomics
+### Tokenomics
 
-### Set Genesis Inflation parameters using Gov Proposal
+#### Set Genesis Inflation parameters using Gov Proposal
 
 A proposal can be submitted to set the genesis inflation parameters in the tokenomics module. The proposal must be in the following format:
 
@@ -367,7 +432,7 @@ To vote on a proposal, use the following command:
 elysd tx gov vote 1 yes --from alice --yes
 ```
 
-### CLI to Query the Genesis Inflation parameters
+#### CLI to Query the Genesis Inflation parameters
 
 To query the gensis inflation parameters in the tokenomics module, use the following command:
 
@@ -375,7 +440,7 @@ To query the gensis inflation parameters in the tokenomics module, use the follo
 elysd q tokenomics show-genesis-inflation
 ```
 
-### Add Airdrop entry using Gov Proposal
+#### Add Airdrop entry using Gov Proposal
 
 A proposal can be submitted to add one or multiple airdrop entries in the tokenomics module. The proposal must be in the following format:
 
@@ -431,7 +496,7 @@ To vote on a proposal, use the following command:
 elysd tx gov vote 1 yes --from alice --yes
 ```
 
-### Update Airdrop entry using Gov Proposal
+#### Update Airdrop entry using Gov Proposal
 
 A proposal can be submitted to update one or multiple airdrop entries in the tokenomics module. The proposal must be in the following format:
 
@@ -463,7 +528,7 @@ To vote on a proposal, use the following command:
 elysd tx gov vote 1 yes --from alice --yes
 ```
 
-### Delete Airdrop entry using Gov Proposal
+#### Delete Airdrop entry using Gov Proposal
 
 A proposal can be submitted to delete one or multiple airdrop entries in the tokenomics module. The proposal must be in the following format:
 
@@ -494,7 +559,7 @@ To vote on a proposal, use the following command:
 elysd tx gov vote 1 yes --from alice --yes
 ```
 
-### CLI to Query List of Airdrop entries
+#### CLI to Query List of Airdrop entries
 
 To query the list of airdrop entries in the tokenomics module, use the following command:
 
@@ -502,7 +567,7 @@ To query the list of airdrop entries in the tokenomics module, use the following
 elysd q tokenomics list-airdrop
 ```
 
-### Add Time-Based-Inflation entry using Gov Proposal
+#### Add Time-Based-Inflation entry using Gov Proposal
 
 A proposal can be submitted to add one or multiple time-based-inflation entries in the tokenomics module. The proposal must be in the following format:
 
@@ -570,7 +635,7 @@ To vote on a proposal, use the following command:
 elysd tx gov vote 1 yes --from alice --yes
 ```
 
-### Update Time-Based-Inflation entry using Gov Proposal
+#### Update Time-Based-Inflation entry using Gov Proposal
 
 A proposal can be submitted to update one or multiple time-based-inflation entries in the tokenomics module. The proposal must be in the following format:
 
@@ -610,7 +675,7 @@ To vote on a proposal, use the following command:
 elysd tx gov vote 1 yes --from alice --yes
 ```
 
-### Delete Time-Based-Inflation entry using Gov Proposal
+#### Delete Time-Based-Inflation entry using Gov Proposal
 
 A proposal can be submitted to delete one or multiple time-based-inflation entries in the tokenomics module. The proposal must be in the following format:
 
@@ -642,13 +707,15 @@ To vote on a proposal, use the following command:
 elysd tx gov vote 1 yes --from alice --yes
 ```
 
-### CLI to Query List of Time-Based-Inflation entries
+#### CLI to Query List of Time-Based-Inflation entries
 
 To query the list of the time-based-inflation entries in the tokenomics module, use the following command:
 
 ```
 elysd q tokenomics list-time-based-inflation
 ```
+
+</details>
 
 ## Release
 
@@ -663,8 +730,7 @@ After a draft release is created, make your final changes from the release page 
 
 ## Learn more
 
-- [Ignite CLI](https://ignite.com/cli)
-- [Tutorials](https://docs.ignite.com/guide)
-- [Ignite CLI docs](https://docs.ignite.com)
-- [Cosmos SDK docs](https://docs.cosmos.network)
-- [Developer Chat](https://discord.gg/ignite)
+- [Twitter](https://twitter.com/elys_network)
+- [TestNet Explorer](https://testnet.elys.network)
+- [Developer Chat](https://discord.gg/3JtgtGJ3By)
+- [Github](https://github.com/elys-network)
