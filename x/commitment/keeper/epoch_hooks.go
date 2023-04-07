@@ -10,15 +10,18 @@ func (k Keeper) BeforeEpochStart(_ sdk.Context, _ string, _ int64) {}
 
 // AfterEpochEnd distributes vested tokens at the end of each epoch
 func (k Keeper) AfterEpochEnd(ctx sdk.Context, epochIdentifier string, _ int64) {
-	logger := k.Logger(ctx)
-	logger.Info("Vestingg")
-	// check if epochIdentifier signal equals the identifier in the params
-	if epochIdentifier != "tenseconds" { // TODO gov param
-		return
-	}
 
-	if err := k.VestTokens(ctx); err != nil {
-		panic(err)
+	// Future Improvement: check all VestingInfos and get all VestingTokens by denom
+	// 	so we can iterate different denoms in different EpochIdentifiers
+	vestingInfo := k.GetVestingInfo(ctx, "ueden")
+	if vestingInfo != nil {
+		if epochIdentifier == vestingInfo.EpochIdentifier {
+			k.Logger(ctx).Info("Vesting tokens for vestingInfo", vestingInfo)
+			if err := k.VestTokens(ctx); err != nil {
+				k.Logger(ctx).Error("Error vesting tokens", "vestingInfo", vestingInfo)
+				panic(err)
+			}
+		}
 	}
 }
 
