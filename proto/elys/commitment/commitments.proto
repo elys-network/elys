@@ -1,0 +1,52 @@
+syntax = "proto3";
+package elysnetwork.elys.commitment;
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/duration.proto";
+
+import "gogoproto/gogo.proto";
+import "elys/commitment/params.proto";
+
+option go_package = "github.com/elys-network/elys/x/commitment/types";
+
+// GenesisState defines the commitment module's genesis state.
+message Commitments {
+    string creator = 1;
+    repeated CommittedTokens committed_tokens = 2;
+    repeated UncommittedTokens uncommitted_tokens = 3;
+    repeated VestingTokens vesting_tokens = 4;
+}
+
+message CommittedTokens {
+    string denom = 1;
+    string amount = 2 [
+        (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+        (gogoproto.nullable) = false,
+        (gogoproto.moretags) = "yaml:\"amount\""
+      ];
+}
+
+message UncommittedTokens {
+    string denom = 1;
+    string amount = 2 [
+        (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+        (gogoproto.nullable) = false,
+        (gogoproto.moretags) = "yaml:\"amount\""
+      ];
+}
+
+message VestingTokens {
+    string denom = 1;
+    string total_amount = 2 [
+        (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+        (gogoproto.nullable) = false,
+        (gogoproto.moretags) = "yaml:\"amount\""
+      ];
+    string unvested_amount = 3 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false,
+    (gogoproto.moretags) = "yaml:\"amount\""
+    ];
+    string epoch_identifier = 4;
+    int64 num_epochs = 5;
+    int64 current_epoch = 6;
+}

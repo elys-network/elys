@@ -1,0 +1,12 @@
+syntax = "proto3";
+package elysnetwork.elys.commitment;
+
+import "gogoproto/gogo.proto";
+import "elys/commitment/params.proto";
+
+option go_package = "github.com/elys-network/elys/x/commitment/types";
+
+// GenesisState defines the commitment module's genesis state.
+message GenesisState {
+  Params params = 1 [(gogoproto.nullable) = false];
+}

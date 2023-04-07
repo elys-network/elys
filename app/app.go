@@ -113,9 +113,13 @@ import (
 	liquidityprovidermodulekeeper "github.com/elys-network/elys/x/liquidityprovider/keeper"
 	liquidityprovidermoduletypes "github.com/elys-network/elys/x/liquidityprovider/types"
 
+	commitmentmodule "github.com/elys-network/elys/x/commitment"
+	commitmentmodulekeeper "github.com/elys-network/elys/x/commitment/keeper"
+	commitmentmoduletypes "github.com/elys-network/elys/x/commitment/types"
 	oraclemodule "github.com/elys-network/elys/x/oracle"
 	oraclekeeper "github.com/elys-network/elys/x/oracle/keeper"
 	oracletypes "github.com/elys-network/elys/x/oracle/types"
+
 	tokenomicsmodule "github.com/elys-network/elys/x/tokenomics"
 	tokenomicsmodulekeeper "github.com/elys-network/elys/x/tokenomics/keeper"
 	tokenomicsmoduletypes "github.com/elys-network/elys/x/tokenomics/types"
@@ -182,20 +186,22 @@ var (
 		assetprofilemodule.AppModuleBasic{},
 		liquidityprovidermodule.AppModuleBasic{},
 		oraclemodule.AppModuleBasic{},
+		commitmentmodule.AppModuleBasic{},
 		tokenomicsmodule.AppModuleBasic{},
 		// this line is used by starport scaffolding # stargate/app/moduleBasic
 	)
 
 	// module account permissions
 	maccPerms = map[string][]string{
-		authtypes.FeeCollectorName:     nil,
-		distrtypes.ModuleName:          nil,
-		icatypes.ModuleName:            nil,
-		minttypes.ModuleName:           {authtypes.Minter},
-		stakingtypes.BondedPoolName:    {authtypes.Burner, authtypes.Staking},
-		stakingtypes.NotBondedPoolName: {authtypes.Burner, authtypes.Staking},
-		govtypes.ModuleName:            {authtypes.Burner},
-		ibctransfertypes.ModuleName:    {authtypes.Minter, authtypes.Burner},
+		authtypes.FeeCollectorName:       nil,
+		distrtypes.ModuleName:            nil,
+		icatypes.ModuleName:              nil,
+		minttypes.ModuleName:             {authtypes.Minter},
+		stakingtypes.BondedPoolName:      {authtypes.Burner, authtypes.Staking},
+		stakingtypes.NotBondedPoolName:   {authtypes.Burner, authtypes.Staking},
+		govtypes.ModuleName:              {authtypes.Burner},
+		ibctransfertypes.ModuleName:      {authtypes.Minter, authtypes.Burner},
+		commitmentmoduletypes.ModuleName: {authtypes.Minter, authtypes.Burner, authtypes.Staking},
 		// this line is used by starport scaffolding # stargate/app/maccPerms
 	}
 )
@@ -264,6 +270,8 @@ type ElysApp struct {
 	ScopedOracleKeeper      capabilitykeeper.ScopedKeeper
 	OracleKeeper            oraclekeeper.Keeper
 
+	CommitmentKeeper commitmentmodulekeeper.Keeper
+
 	TokenomicsKeeper tokenomicsmodulekeeper.Keeper
 	// this line is used by starport scaffolding # stargate/app/keeperDeclaration
 
@@ -313,6 +321,7 @@ func NewElysApp(
 		assetprofilemoduletypes.StoreKey,
 		liquidityprovidermoduletypes.StoreKey,
 		oracletypes.StoreKey,
+		commitmentmoduletypes.StoreKey,
 		tokenomicsmoduletypes.StoreKey,
 		// this line is used by starport scaffolding # stargate/app/storeKey
 	)
@@ -541,11 +550,23 @@ func NewElysApp(
 		govConfig,
 	)
 
+	app.CommitmentKeeper = *commitmentmodulekeeper.NewKeeper(
+		appCodec,
+		keys[commitmentmoduletypes.StoreKey],
+		keys[commitmentmoduletypes.MemStoreKey],
+		app.GetSubspace(commitmentmoduletypes.ModuleName),
+
+		app.BankKeeper,
+		app.StakingKeeper,
+	)
+	commitmentModule := commitmentmodule.NewAppModule(appCodec, app.CommitmentKeeper, app.AccountKeeper, app.BankKeeper)
+
 	epochsKeeper := epochsmodulekeeper.NewKeeper(appCodec, keys[epochsmoduletypes.StoreKey])
 	app.EpochsKeeper = *epochsKeeper.SetHooks(
 		epochsmodulekeeper.NewMultiEpochHooks(
 			// insert epoch hooks receivers here
 			app.OracleKeeper.Hooks(),
+			app.CommitmentKeeper.Hooks(),
 		),
 	)
 	epochsModule := epochsmodule.NewAppModule(appCodec, app.EpochsKeeper)
@@ -646,6 +667,7 @@ func NewElysApp(
 		assetprofileModule,
 		liquidityproviderModule,
 		oracleModule,
+		commitmentModule,
 		tokenomicsModule,
 		// this line is used by starport scaffolding # stargate/app/appModule
 	)
@@ -681,6 +703,7 @@ func NewElysApp(
 		assetprofilemoduletypes.ModuleName,
 		liquidityprovidermoduletypes.ModuleName,
 		oracletypes.ModuleName,
+		commitmentmoduletypes.ModuleName,
 		tokenomicsmoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/beginBlockers
 	)
@@ -711,6 +734,7 @@ func NewElysApp(
 		assetprofilemoduletypes.ModuleName,
 		liquidityprovidermoduletypes.ModuleName,
 		oracletypes.ModuleName,
+		commitmentmoduletypes.ModuleName,
 		tokenomicsmoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/endBlockers
 	)
@@ -745,6 +769,7 @@ func NewElysApp(
 		assetprofilemoduletypes.ModuleName,
 		liquidityprovidermoduletypes.ModuleName,
 		oracletypes.ModuleName,
+		commitmentmoduletypes.ModuleName,
 		tokenomicsmoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/initGenesis
 	)
@@ -779,6 +804,7 @@ func NewElysApp(
 		assetprofileModule,
 		liquidityproviderModule,
 		oracleModule,
+		commitmentModule,
 		tokenomicsModule,
 		// this line is used by starport scaffolding # stargate/app/appModule
 	)
@@ -987,6 +1013,7 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(assetprofilemoduletypes.ModuleName)
 	paramsKeeper.Subspace(liquidityprovidermoduletypes.ModuleName)
 	paramsKeeper.Subspace(oracletypes.ModuleName)
+	paramsKeeper.Subspace(commitmentmoduletypes.ModuleName)
 	paramsKeeper.Subspace(tokenomicsmoduletypes.ModuleName)
 	// this line is used by starport scaffolding # stargate/app/paramSubspace
 
