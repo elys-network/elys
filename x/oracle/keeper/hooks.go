@@ -1,7 +1,6 @@
 package keeper
 
 import (
-	"fmt"
 	"time"
 
 	"github.com/bandprotocol/bandchain-packet/obi"
@@ -17,14 +16,12 @@ import (
 func (k Keeper) BeforeEpochStart(ctx sdk.Context, epochIdentifier string, epochNumber int64) {
 	params := k.GetParams(ctx)
 	if epochIdentifier == params.BandEpoch {
-		fmt.Println("bandEpoch start")
 		sourcePort := types.PortID
 		channelCap, ok := k.ScopedKeeper.GetCapability(ctx, host.ChannelCapabilityPath(sourcePort, params.BandChannelSource))
 		if !ok {
 			return
 		}
 
-		fmt.Println("bandEpoch operation1")
 		assetInfos := k.GetAllAssetInfo(ctx)
 		symbols := []string{}
 		for _, assetInfo := range assetInfos {
@@ -36,7 +33,6 @@ func (k Keeper) BeforeEpochStart(ctx sdk.Context, epochIdentifier string, epochN
 		if len(symbols) == 0 {
 			return
 		}
-		fmt.Println("bandEpoch operation2")
 		encodedCalldata := obi.MustEncode(types.BandPriceCallData{
 			Symbols:    symbols,
 			Multiplier: params.Multiplier,
@@ -52,13 +48,10 @@ func (k Keeper) BeforeEpochStart(ctx sdk.Context, epochIdentifier string, epochN
 			params.ExecuteGas,
 		)
 
-		fmt.Println("bandEpoch operation3")
-		sequence, err := k.ChannelKeeper.SendPacket(ctx, channelCap, sourcePort, params.BandChannelSource, clienttypes.NewHeight(0, 0), uint64(ctx.BlockTime().UnixNano()+int64(10*time.Minute)), packetData.GetBytes())
+		_, err := k.ChannelKeeper.SendPacket(ctx, channelCap, sourcePort, params.BandChannelSource, clienttypes.NewHeight(0, 0), uint64(ctx.BlockTime().UnixNano()+int64(10*time.Minute)), packetData.GetBytes())
 		if err != nil {
-			fmt.Println("epoch sequence", sequence, err)
 			return
 		}
-		fmt.Println("bandEpoch operation4")
 	}
 }
 

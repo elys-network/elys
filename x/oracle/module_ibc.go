@@ -1,8 +1,6 @@
 package oracle
 
 import (
-	"fmt"
-
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	capabilitytypes "github.com/cosmos/cosmos-sdk/x/capability/types"
@@ -139,7 +137,6 @@ func (im IBCModule) OnRecvPacket(
 	relayer sdk.AccAddress,
 ) ibcexported.Acknowledgement {
 	var ack channeltypes.Acknowledgement
-	fmt.Println("OnRecvPacket1")
 
 	oracleAck, err := im.handleOraclePacket(ctx, modulePacket)
 	if err != nil {
@@ -162,7 +159,6 @@ func (im IBCModule) OnAcknowledgementPacket(
 		return sdkerrors.Wrapf(sdkerrors.ErrUnknownRequest, "cannot unmarshal packet acknowledgement: %v", err)
 	}
 
-	fmt.Println("OnAcknowledgementPacket1")
 	sdkResult, err := im.handleOracleAcknowledgment(ctx, ack, modulePacket)
 	if err != nil {
 		return err
@@ -182,7 +178,6 @@ func (im IBCModule) OnTimeoutPacket(
 	modulePacket channeltypes.Packet,
 	relayer sdk.AccAddress,
 ) error {
-	fmt.Println("OnTimeoutPacket1")
 
 	return nil
 }
