@@ -1,0 +1,9 @@
+syntax = "proto3";
+package elysnetwork.elys.oracle;
+
+option go_package = "github.com/elys-network/elys/x/oracle/types";
+
+message PriceFeeder {
+  string feeder = 1;
+  bool is_active = 2;
+}

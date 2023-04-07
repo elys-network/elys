@@ -33211,6 +33211,641 @@ paths:
                   additionalProperties: {}
       tags:
         - Query
+  /elys-network/elys/oracle/asset_info:
+    get:
+      summary: Queries a list of AssetInfo items.
+      operationId: ElysnetworkElysOracleAssetInfoAll
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              assetInfo:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    denom:
+                      type: string
+                    display:
+                      type: string
+                    bandTicker:
+                      type: string
+                    binanceTicker:
+                      type: string
+                    osmosisTicker:
+                      type: string
+              pagination:
+                type: object
+                properties:
+                  next_key:
+                    type: string
+                    format: byte
+                    description: |-
+                      next_key is the key to be passed to PageRequest.key to
+                      query the next page most efficiently. It will be empty if
+                      there are no more results.
+                  total:
+                    type: string
+                    format: uint64
+                    title: >-
+                      total is total number of results available if
+                      PageRequest.count_total
+
+                      was set, its value is undefined otherwise
+                description: >-
+                  PageResponse is to be embedded in gRPC response messages where
+                  the
+
+                  corresponding request message has used PageRequest.
+
+                   message SomeResponse {
+                           repeated Bar results = 1;
+                           PageResponse page = 2;
+                   }
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: pagination.key
+          description: |-
+            key is a value returned in PageResponse.next_key to begin
+            querying the next page most efficiently. Only one of offset or key
+            should be set.
+          in: query
+          required: false
+          type: string
+          format: byte
+        - name: pagination.offset
+          description: >-
+            offset is a numeric offset that can be used when key is unavailable.
+
+            It is less efficient than using key. Only one of offset or key
+            should
+
+            be set.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.limit
+          description: >-
+            limit is the total number of results to be returned in the result
+            page.
+
+            If left empty it will default to a value to be set by each app.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.count_total
+          description: >-
+            count_total is set to true  to indicate that the result set should
+            include
+
+            a count of the total number of items available for pagination in
+            UIs.
+
+            count_total is only respected when offset is used. It is ignored
+            when key
+
+            is set.
+          in: query
+          required: false
+          type: boolean
+        - name: pagination.reverse
+          description: >-
+            reverse is set to true if results are to be returned in the
+            descending order.
+
+
+            Since: cosmos-sdk 0.43
+          in: query
+          required: false
+          type: boolean
+      tags:
+        - Query
+  /elys-network/elys/oracle/asset_info/{denom}:
+    get:
+      summary: Queries a AssetInfo by denom.
+      operationId: ElysnetworkElysOracleAssetInfo
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              assetInfo:
+                type: object
+                properties:
+                  denom:
+                    type: string
+                  display:
+                    type: string
+                  bandTicker:
+                    type: string
+                  binanceTicker:
+                    type: string
+                  osmosisTicker:
+                    type: string
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: denom
+          in: path
+          required: true
+          type: string
+      tags:
+        - Query
+  /elys-network/elys/oracle/params:
+    get:
+      summary: Parameters queries the parameters of the module.
+      operationId: ElysnetworkElysOracleParams
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              params:
+                description: params holds all the parameters of this module.
+                type: object
+                properties:
+                  band_channel_source:
+                    type: string
+                  oracle_script_id:
+                    type: string
+                    format: uint64
+                  multiplier:
+                    type: string
+                    format: uint64
+                  ask_count:
+                    type: string
+                    format: uint64
+                  min_count:
+                    type: string
+                    format: uint64
+                  fee_limit:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        denom:
+                          type: string
+                        amount:
+                          type: string
+                      description: >-
+                        Coin defines a token with a denomination and an amount.
+
+
+                        NOTE: The amount field is an Int which implements the
+                        custom method
+
+                        signatures required by gogoproto.
+                  prepare_gas:
+                    type: string
+                    format: uint64
+                  execute_gas:
+                    type: string
+                    format: uint64
+                  client_id:
+                    type: string
+                  band_epoch:
+                    type: string
+                  price_expiry_time:
+                    type: string
+                    format: uint64
+                  module_admin:
+                    type: string
+            description: >-
+              QueryParamsResponse is response type for the Query/Params RPC
+              method.
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      tags:
+        - Query
+  /elys-network/elys/oracle/price:
+    get:
+      summary: Queries a list of Price items.
+      operationId: ElysnetworkElysOraclePriceAll
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              price:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    asset:
+                      type: string
+                    price:
+                      type: string
+                    source:
+                      type: string
+                    provider:
+                      type: string
+                    timestamp:
+                      type: string
+                      format: uint64
+              pagination:
+                type: object
+                properties:
+                  next_key:
+                    type: string
+                    format: byte
+                    description: |-
+                      next_key is the key to be passed to PageRequest.key to
+                      query the next page most efficiently. It will be empty if
+                      there are no more results.
+                  total:
+                    type: string
+                    format: uint64
+                    title: >-
+                      total is total number of results available if
+                      PageRequest.count_total
+
+                      was set, its value is undefined otherwise
+                description: >-
+                  PageResponse is to be embedded in gRPC response messages where
+                  the
+
+                  corresponding request message has used PageRequest.
+
+                   message SomeResponse {
+                           repeated Bar results = 1;
+                           PageResponse page = 2;
+                   }
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: pagination.key
+          description: |-
+            key is a value returned in PageResponse.next_key to begin
+            querying the next page most efficiently. Only one of offset or key
+            should be set.
+          in: query
+          required: false
+          type: string
+          format: byte
+        - name: pagination.offset
+          description: >-
+            offset is a numeric offset that can be used when key is unavailable.
+
+            It is less efficient than using key. Only one of offset or key
+            should
+
+            be set.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.limit
+          description: >-
+            limit is the total number of results to be returned in the result
+            page.
+
+            If left empty it will default to a value to be set by each app.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.count_total
+          description: >-
+            count_total is set to true  to indicate that the result set should
+            include
+
+            a count of the total number of items available for pagination in
+            UIs.
+
+            count_total is only respected when offset is used. It is ignored
+            when key
+
+            is set.
+          in: query
+          required: false
+          type: boolean
+        - name: pagination.reverse
+          description: >-
+            reverse is set to true if results are to be returned in the
+            descending order.
+
+
+            Since: cosmos-sdk 0.43
+          in: query
+          required: false
+          type: boolean
+      tags:
+        - Query
+  /elys-network/elys/oracle/price_feeder:
+    get:
+      summary: Queries a list of PriceFeeder items.
+      operationId: ElysnetworkElysOraclePriceFeederAll
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              priceFeeder:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    feeder:
+                      type: string
+                    is_active:
+                      type: boolean
+              pagination:
+                type: object
+                properties:
+                  next_key:
+                    type: string
+                    format: byte
+                    description: |-
+                      next_key is the key to be passed to PageRequest.key to
+                      query the next page most efficiently. It will be empty if
+                      there are no more results.
+                  total:
+                    type: string
+                    format: uint64
+                    title: >-
+                      total is total number of results available if
+                      PageRequest.count_total
+
+                      was set, its value is undefined otherwise
+                description: >-
+                  PageResponse is to be embedded in gRPC response messages where
+                  the
+
+                  corresponding request message has used PageRequest.
+
+                   message SomeResponse {
+                           repeated Bar results = 1;
+                           PageResponse page = 2;
+                   }
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: pagination.key
+          description: |-
+            key is a value returned in PageResponse.next_key to begin
+            querying the next page most efficiently. Only one of offset or key
+            should be set.
+          in: query
+          required: false
+          type: string
+          format: byte
+        - name: pagination.offset
+          description: >-
+            offset is a numeric offset that can be used when key is unavailable.
+
+            It is less efficient than using key. Only one of offset or key
+            should
+
+            be set.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.limit
+          description: >-
+            limit is the total number of results to be returned in the result
+            page.
+
+            If left empty it will default to a value to be set by each app.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.count_total
+          description: >-
+            count_total is set to true  to indicate that the result set should
+            include
+
+            a count of the total number of items available for pagination in
+            UIs.
+
+            count_total is only respected when offset is used. It is ignored
+            when key
+
+            is set.
+          in: query
+          required: false
+          type: boolean
+        - name: pagination.reverse
+          description: >-
+            reverse is set to true if results are to be returned in the
+            descending order.
+
+
+            Since: cosmos-sdk 0.43
+          in: query
+          required: false
+          type: boolean
+      tags:
+        - Query
+  /elys-network/elys/oracle/price_feeder/{feeder}:
+    get:
+      summary: Queries a PriceFeeder by feeder.
+      operationId: ElysnetworkElysOraclePriceFeeder
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              priceFeeder:
+                type: object
+                properties:
+                  feeder:
+                    type: string
+                  is_active:
+                    type: boolean
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: feeder
+          in: path
+          required: true
+          type: string
+      tags:
+        - Query
+  /elys/oracle/band_price_result/{request_id}:
+    get:
+      summary: BandPriceResult defines a rpc handler method for MsgRequestBandPrice.
+      operationId: ElysnetworkElysOracleBandPriceResult
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              result:
+                type: object
+                properties:
+                  rates:
+                    type: array
+                    items:
+                      type: string
+                      format: uint64
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: request_id
+          in: path
+          required: true
+          type: string
+          format: int64
+      tags:
+        - Query
+  /elys/oracle/last_band_price_request_id:
+    get:
+      summary: LastBandRequestId query the last BandPrice result id
+      operationId: ElysnetworkElysOracleLastBandRequestId
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              request_id:
+                type: string
+                format: int64
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      tags:
+        - Query
   /elys-network/elys/tokenomics/airdrop:
     get:
       operationId: ElysnetworkElysTokenomicsAirdropAll
@@ -68390,6 +69025,360 @@ definitions:
       params:
         description: params holds all the parameters of this module.
         type: object
+    description: QueryParamsResponse is response type for the Query/Params RPC method.
+  elysnetwork.elys.oracle.AssetInfo:
+    type: object
+    properties:
+      denom:
+        type: string
+      display:
+        type: string
+      bandTicker:
+        type: string
+      binanceTicker:
+        type: string
+      osmosisTicker:
+        type: string
+  elysnetwork.elys.oracle.BandPriceCallData:
+    type: object
+    properties:
+      symbols:
+        type: array
+        items:
+          type: string
+      multiplier:
+        type: string
+        format: uint64
+  elysnetwork.elys.oracle.BandPriceResult:
+    type: object
+    properties:
+      rates:
+        type: array
+        items:
+          type: string
+          format: uint64
+  elysnetwork.elys.oracle.MsgDeleteAssetInfoResponse:
+    type: object
+  elysnetwork.elys.oracle.MsgDeletePriceFeederResponse:
+    type: object
+  elysnetwork.elys.oracle.MsgFeedMultiplePricesResponse:
+    type: object
+  elysnetwork.elys.oracle.MsgFeedPriceResponse:
+    type: object
+  elysnetwork.elys.oracle.MsgRequestBandPriceResponse:
+    type: object
+  elysnetwork.elys.oracle.MsgSetAssetInfoResponse:
+    type: object
+  elysnetwork.elys.oracle.MsgSetPriceFeederResponse:
+    type: object
+  elysnetwork.elys.oracle.Params:
+    type: object
+    properties:
+      band_channel_source:
+        type: string
+      oracle_script_id:
+        type: string
+        format: uint64
+      multiplier:
+        type: string
+        format: uint64
+      ask_count:
+        type: string
+        format: uint64
+      min_count:
+        type: string
+        format: uint64
+      fee_limit:
+        type: array
+        items:
+          type: object
+          properties:
+            denom:
+              type: string
+            amount:
+              type: string
+          description: |-
+            Coin defines a token with a denomination and an amount.
+
+            NOTE: The amount field is an Int which implements the custom method
+            signatures required by gogoproto.
+      prepare_gas:
+        type: string
+        format: uint64
+      execute_gas:
+        type: string
+        format: uint64
+      client_id:
+        type: string
+      band_epoch:
+        type: string
+      price_expiry_time:
+        type: string
+        format: uint64
+      module_admin:
+        type: string
+    description: Params defines the parameters for the module.
+  elysnetwork.elys.oracle.Price:
+    type: object
+    properties:
+      asset:
+        type: string
+      price:
+        type: string
+      source:
+        type: string
+      provider:
+        type: string
+      timestamp:
+        type: string
+        format: uint64
+  elysnetwork.elys.oracle.PriceFeeder:
+    type: object
+    properties:
+      feeder:
+        type: string
+      is_active:
+        type: boolean
+  elysnetwork.elys.oracle.QueryAllAssetInfoResponse:
+    type: object
+    properties:
+      assetInfo:
+        type: array
+        items:
+          type: object
+          properties:
+            denom:
+              type: string
+            display:
+              type: string
+            bandTicker:
+              type: string
+            binanceTicker:
+              type: string
+            osmosisTicker:
+              type: string
+      pagination:
+        type: object
+        properties:
+          next_key:
+            type: string
+            format: byte
+            description: |-
+              next_key is the key to be passed to PageRequest.key to
+              query the next page most efficiently. It will be empty if
+              there are no more results.
+          total:
+            type: string
+            format: uint64
+            title: >-
+              total is total number of results available if
+              PageRequest.count_total
+
+              was set, its value is undefined otherwise
+        description: |-
+          PageResponse is to be embedded in gRPC response messages where the
+          corresponding request message has used PageRequest.
+
+           message SomeResponse {
+                   repeated Bar results = 1;
+                   PageResponse page = 2;
+           }
+  elysnetwork.elys.oracle.QueryAllPriceFeederResponse:
+    type: object
+    properties:
+      priceFeeder:
+        type: array
+        items:
+          type: object
+          properties:
+            feeder:
+              type: string
+            is_active:
+              type: boolean
+      pagination:
+        type: object
+        properties:
+          next_key:
+            type: string
+            format: byte
+            description: |-
+              next_key is the key to be passed to PageRequest.key to
+              query the next page most efficiently. It will be empty if
+              there are no more results.
+          total:
+            type: string
+            format: uint64
+            title: >-
+              total is total number of results available if
+              PageRequest.count_total
+
+              was set, its value is undefined otherwise
+        description: |-
+          PageResponse is to be embedded in gRPC response messages where the
+          corresponding request message has used PageRequest.
+
+           message SomeResponse {
+                   repeated Bar results = 1;
+                   PageResponse page = 2;
+           }
+  elysnetwork.elys.oracle.QueryAllPriceResponse:
+    type: object
+    properties:
+      price:
+        type: array
+        items:
+          type: object
+          properties:
+            asset:
+              type: string
+            price:
+              type: string
+            source:
+              type: string
+            provider:
+              type: string
+            timestamp:
+              type: string
+              format: uint64
+      pagination:
+        type: object
+        properties:
+          next_key:
+            type: string
+            format: byte
+            description: |-
+              next_key is the key to be passed to PageRequest.key to
+              query the next page most efficiently. It will be empty if
+              there are no more results.
+          total:
+            type: string
+            format: uint64
+            title: >-
+              total is total number of results available if
+              PageRequest.count_total
+
+              was set, its value is undefined otherwise
+        description: |-
+          PageResponse is to be embedded in gRPC response messages where the
+          corresponding request message has used PageRequest.
+
+           message SomeResponse {
+                   repeated Bar results = 1;
+                   PageResponse page = 2;
+           }
+  elysnetwork.elys.oracle.QueryBandPriceResponse:
+    type: object
+    properties:
+      result:
+        type: object
+        properties:
+          rates:
+            type: array
+            items:
+              type: string
+              format: uint64
+  elysnetwork.elys.oracle.QueryGetAssetInfoResponse:
+    type: object
+    properties:
+      assetInfo:
+        type: object
+        properties:
+          denom:
+            type: string
+          display:
+            type: string
+          bandTicker:
+            type: string
+          binanceTicker:
+            type: string
+          osmosisTicker:
+            type: string
+  elysnetwork.elys.oracle.QueryGetPriceFeederResponse:
+    type: object
+    properties:
+      priceFeeder:
+        type: object
+        properties:
+          feeder:
+            type: string
+          is_active:
+            type: boolean
+  elysnetwork.elys.oracle.QueryGetPriceResponse:
+    type: object
+    properties:
+      price:
+        type: object
+        properties:
+          asset:
+            type: string
+          price:
+            type: string
+          source:
+            type: string
+          provider:
+            type: string
+          timestamp:
+            type: string
+            format: uint64
+  elysnetwork.elys.oracle.QueryLastBandRequestIdResponse:
+    type: object
+    properties:
+      request_id:
+        type: string
+        format: int64
+  elysnetwork.elys.oracle.QueryParamsResponse:
+    type: object
+    properties:
+      params:
+        description: params holds all the parameters of this module.
+        type: object
+        properties:
+          band_channel_source:
+            type: string
+          oracle_script_id:
+            type: string
+            format: uint64
+          multiplier:
+            type: string
+            format: uint64
+          ask_count:
+            type: string
+            format: uint64
+          min_count:
+            type: string
+            format: uint64
+          fee_limit:
+            type: array
+            items:
+              type: object
+              properties:
+                denom:
+                  type: string
+                amount:
+                  type: string
+              description: >-
+                Coin defines a token with a denomination and an amount.
+
+
+                NOTE: The amount field is an Int which implements the custom
+                method
+
+                signatures required by gogoproto.
+          prepare_gas:
+            type: string
+            format: uint64
+          execute_gas:
+            type: string
+            format: uint64
+          client_id:
+            type: string
+          band_epoch:
+            type: string
+          price_expiry_time:
+            type: string
+            format: uint64
+          module_admin:
+            type: string
     description: QueryParamsResponse is response type for the Query/Params RPC method.
   elysnetwork.elys.tokenomics.Airdrop:
     type: object

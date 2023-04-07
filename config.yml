@@ -5,6 +5,11 @@ accounts:
       - 9000000000000000uelys
       - 200000000stake
       - 100000000ueden
+    mnemonic: olympic slide park figure frost benefit deer reform fly pull price airport submit monitor silk insect uphold convince pupil project ignore roof warfare slight
+  - name: bob
+    coins:
+      - 100000000000000000000aelys
+    mnemonic: lucky toe fee soul alley subway rhythm weather danger convince huge rug tennis churn skate return finish service vivid route cabin idea brush wear
   - name: seed
     coins:
       - 9000000000000000uelys
@@ -142,6 +147,11 @@ genesis:
           epochCountingStarted: false
         - identifier: hour
           duration: "1h"
+          currentEpoch: "0"
+          currentEpochStartHeight: "0"
+          epochCountingStarted: false
+        - identifier: band_epoch
+          duration: "15s"
           currentEpoch: "0"
           currentEpochStartHeight: "0"
           epochCountingStarted: false

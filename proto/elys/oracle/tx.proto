@@ -1,0 +1,96 @@
+syntax = "proto3";
+package elysnetwork.elys.oracle;
+
+import "gogoproto/gogo.proto";
+import "cosmos/base/v1beta1/coin.proto";
+import "elys/oracle/band_price.proto";
+import "elys/oracle/asset_info.proto";
+import "elys/oracle/price.proto";
+import "elys/oracle/price_feeder.proto";
+// this line is used by starport scaffolding # proto/tx/import
+
+option go_package = "github.com/elys-network/elys/x/oracle/types";
+
+// Msg defines the Msg service.
+service Msg {
+  rpc FeedPrice(MsgFeedPrice) returns (MsgFeedPriceResponse);
+  rpc FeedMultiplePrices(MsgFeedMultiplePrices) returns (MsgFeedMultiplePricesResponse);
+  rpc RequestBandPrice(MsgRequestBandPrice) returns (MsgRequestBandPriceResponse);
+  rpc SetAssetInfo(MsgSetAssetInfo) returns (MsgSetAssetInfoResponse);
+  rpc DeleteAssetInfo(MsgDeleteAssetInfo) returns (MsgDeleteAssetInfoResponse);
+  rpc SetPriceFeeder(MsgSetPriceFeeder) returns (MsgSetPriceFeederResponse);
+  rpc DeletePriceFeeder(MsgDeletePriceFeeder) returns (MsgDeletePriceFeederResponse);
+// this line is used by starport scaffolding # proto/tx/rpc
+}
+
+message MsgRequestBandPrice {
+  string creator = 1;
+  uint64 oracle_script_id = 2 [
+    (gogoproto.customname) = "OracleScriptID",
+    (gogoproto.moretags) = "yaml:\"oracle_script_id\""
+  ];
+  string source_channel = 3;
+  BandPriceCallData calldata = 4;
+  uint64 ask_count = 5;
+  uint64 min_count = 6;
+  repeated cosmos.base.v1beta1.Coin fee_limit = 7 [
+    (gogoproto.nullable) = false,
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
+  ];
+  uint64 prepare_gas = 8;
+  uint64 execute_gas = 9;
+  string client_id = 10 [(gogoproto.customname) = "ClientID"];
+}
+
+message MsgRequestBandPriceResponse {
+}
+
+message MsgSetAssetInfo {
+  string creator = 1;
+  string denom = 2;
+  string display = 3;
+  string bandTicker = 4;
+  string binanceTicker = 5;
+  string osmosisTicker = 6;
+}
+message MsgSetAssetInfoResponse {}
+
+message MsgDeleteAssetInfo {
+  string creator = 1;
+  string denom = 2;
+}
+message MsgDeleteAssetInfoResponse {}
+
+message MsgFeedPrice {
+  string asset = 1;
+  string price = 2 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  string source = 3;
+  string provider = 4;
+}
+message MsgFeedPriceResponse {}
+
+message MsgSetPriceFeeder {
+  string creator = 1;
+  string feeder = 2;
+  bool is_active = 3;
+}
+message MsgSetPriceFeederResponse {}
+
+message MsgDeletePriceFeeder {
+  string creator = 1;
+  string feeder = 2;
+}
+message MsgDeletePriceFeederResponse {}
+
+message MsgFeedMultiplePrices {
+  string creator = 1;
+  repeated Price prices = 2 [ (gogoproto.nullable) = false ];
+}
+
+message MsgFeedMultiplePricesResponse {
+}
+
+// this line is used by starport scaffolding # proto/tx/message

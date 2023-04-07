@@ -116,6 +116,9 @@ import (
 	commitmentmodule "github.com/elys-network/elys/x/commitment"
 	commitmentmodulekeeper "github.com/elys-network/elys/x/commitment/keeper"
 	commitmentmoduletypes "github.com/elys-network/elys/x/commitment/types"
+	oraclemodule "github.com/elys-network/elys/x/oracle"
+	oraclekeeper "github.com/elys-network/elys/x/oracle/keeper"
+	oracletypes "github.com/elys-network/elys/x/oracle/types"
 
 	tokenomicsmodule "github.com/elys-network/elys/x/tokenomics"
 	tokenomicsmodulekeeper "github.com/elys-network/elys/x/tokenomics/keeper"
@@ -182,6 +185,7 @@ var (
 		epochsmodule.AppModuleBasic{},
 		assetprofilemodule.AppModuleBasic{},
 		liquidityprovidermodule.AppModuleBasic{},
+		oraclemodule.AppModuleBasic{},
 		commitmentmodule.AppModuleBasic{},
 		tokenomicsmodule.AppModuleBasic{},
 		// this line is used by starport scaffolding # stargate/app/moduleBasic
@@ -263,6 +267,8 @@ type ElysApp struct {
 	AssetprofileKeeper assetprofilemodulekeeper.Keeper
 
 	LiquidityproviderKeeper liquidityprovidermodulekeeper.Keeper
+	ScopedOracleKeeper      capabilitykeeper.ScopedKeeper
+	OracleKeeper            oraclekeeper.Keeper
 
 	CommitmentKeeper commitmentmodulekeeper.Keeper
 
@@ -314,6 +320,7 @@ func NewElysApp(
 		epochsmoduletypes.StoreKey,
 		assetprofilemoduletypes.StoreKey,
 		liquidityprovidermoduletypes.StoreKey,
+		oracletypes.StoreKey,
 		commitmentmoduletypes.StoreKey,
 		tokenomicsmoduletypes.StoreKey,
 		// this line is used by starport scaffolding # stargate/app/storeKey
@@ -507,13 +514,29 @@ func NewElysApp(
 	// If evidence needs to be handled for the app, set routes in router here and seal
 	app.EvidenceKeeper = *evidenceKeeper
 
+	scopedOracleKeeper := app.CapabilityKeeper.ScopeToModule(oracletypes.ModuleName)
+	app.ScopedOracleKeeper = scopedOracleKeeper
+	app.OracleKeeper = *oraclekeeper.NewKeeper(
+		appCodec,
+		keys[oracletypes.StoreKey],
+		keys[oracletypes.MemStoreKey],
+		app.GetSubspace(oracletypes.ModuleName),
+		app.IBCKeeper.ChannelKeeper,
+		&app.IBCKeeper.PortKeeper,
+		scopedOracleKeeper,
+	)
+	oracleModule := oraclemodule.NewAppModule(appCodec, app.OracleKeeper, app.AccountKeeper, app.BankKeeper)
+
+	oracleIBCModule := oraclemodule.NewIBCModule(app.OracleKeeper)
+
 	govRouter := govv1beta1.NewRouter()
 	govRouter.
 		AddRoute(govtypes.RouterKey, govv1beta1.ProposalHandler).
 		AddRoute(paramproposal.RouterKey, params.NewParamChangeProposalHandler(app.ParamsKeeper)).
 		AddRoute(distrtypes.RouterKey, distr.NewCommunityPoolSpendProposalHandler(app.DistrKeeper)).
 		AddRoute(upgradetypes.RouterKey, upgrade.NewSoftwareUpgradeProposalHandler(app.UpgradeKeeper)).
-		AddRoute(ibcclienttypes.RouterKey, ibcclient.NewClientProposalHandler(app.IBCKeeper.ClientKeeper))
+		AddRoute(ibcclienttypes.RouterKey, ibcclient.NewClientProposalHandler(app.IBCKeeper.ClientKeeper)).
+		AddRoute(oracletypes.RouterKey, oraclemodule.NewAssetInfoProposalHandler(&app.OracleKeeper))
 	govConfig := govtypes.DefaultConfig()
 	app.GovKeeper = govkeeper.NewKeeper(
 		appCodec,
@@ -542,6 +565,7 @@ func NewElysApp(
 	app.EpochsKeeper = *epochsKeeper.SetHooks(
 		epochsmodulekeeper.NewMultiEpochHooks(
 			// insert epoch hooks receivers here
+			app.OracleKeeper.Hooks(),
 			app.CommitmentKeeper.Hooks(),
 		),
 	)
@@ -583,7 +607,8 @@ func NewElysApp(
 	// Create static IBC router, add transfer route, then set and seal it
 	ibcRouter := ibcporttypes.NewRouter()
 	ibcRouter.AddRoute(icahosttypes.SubModuleName, icaHostIBCModule).
-		AddRoute(ibctransfertypes.ModuleName, transferIBCModule)
+		AddRoute(ibctransfertypes.ModuleName, transferIBCModule).
+		AddRoute(oracletypes.ModuleName, oracleIBCModule)
 	// this line is used by starport scaffolding # ibc/app/router
 	app.IBCKeeper.SetRouter(ibcRouter)
 
@@ -641,6 +666,7 @@ func NewElysApp(
 		epochsModule,
 		assetprofileModule,
 		liquidityproviderModule,
+		oracleModule,
 		commitmentModule,
 		tokenomicsModule,
 		// this line is used by starport scaffolding # stargate/app/appModule
@@ -676,6 +702,7 @@ func NewElysApp(
 		vestingtypes.ModuleName,
 		assetprofilemoduletypes.ModuleName,
 		liquidityprovidermoduletypes.ModuleName,
+		oracletypes.ModuleName,
 		commitmentmoduletypes.ModuleName,
 		tokenomicsmoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/beginBlockers
@@ -706,6 +733,7 @@ func NewElysApp(
 		vestingtypes.ModuleName,
 		assetprofilemoduletypes.ModuleName,
 		liquidityprovidermoduletypes.ModuleName,
+		oracletypes.ModuleName,
 		commitmentmoduletypes.ModuleName,
 		tokenomicsmoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/endBlockers
@@ -740,6 +768,7 @@ func NewElysApp(
 		epochsmoduletypes.ModuleName,
 		assetprofilemoduletypes.ModuleName,
 		liquidityprovidermoduletypes.ModuleName,
+		oracletypes.ModuleName,
 		commitmentmoduletypes.ModuleName,
 		tokenomicsmoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/initGenesis
@@ -774,6 +803,7 @@ func NewElysApp(
 		epochsModule,
 		assetprofileModule,
 		liquidityproviderModule,
+		oracleModule,
 		commitmentModule,
 		tokenomicsModule,
 		// this line is used by starport scaffolding # stargate/app/appModule
@@ -982,6 +1012,7 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(icahosttypes.SubModuleName)
 	paramsKeeper.Subspace(assetprofilemoduletypes.ModuleName)
 	paramsKeeper.Subspace(liquidityprovidermoduletypes.ModuleName)
+	paramsKeeper.Subspace(oracletypes.ModuleName)
 	paramsKeeper.Subspace(commitmentmoduletypes.ModuleName)
 	paramsKeeper.Subspace(tokenomicsmoduletypes.ModuleName)
 	// this line is used by starport scaffolding # stargate/app/paramSubspace
