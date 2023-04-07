@@ -1,0 +1,24 @@
+syntax = "proto3";
+package elysnetwork.elys.commitment;
+
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/elys-network/elys/x/commitment/types";
+
+// Params defines the parameters for the module.
+message Params {
+  option (gogoproto.goproto_stringer) = false;
+  repeated VestingInfo vesting_infos = 1;
+}
+
+message VestingInfo {
+  string base_denom = 1;
+  string vesting_denom = 2;
+  string epoch_identifier = 3;
+  int64 num_epochs = 4;
+  string vest_now_factor = 5 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false,
+    (gogoproto.moretags) = "yaml:\"amount\""
+  ];
+}

@@ -81,3 +81,89 @@ func TestEntryGetAll(t *testing.T) {
 		nullify.Fill(keeper.AllEpochInfos(ctx)),
 	)
 }
+
+func TestGetSetDeleteEpochInfo(t *testing.T) {
+	// Create a new instance of the EpochsKeeper and context
+	k, ctx := keepertest.EpochsKeeper(t)
+
+	// Create a new EpochInfo struct
+	epoch := types.EpochInfo{
+		Identifier:              "epoch1",
+		StartTime:               time.Now().UTC(),
+		Duration:                time.Hour * 24 * 7, // 1 week
+		CurrentEpoch:            1,
+		CurrentEpochStartTime:   time.Now().UTC(),
+		EpochCountingStarted:    true,
+		CurrentEpochStartHeight: 1,
+	}
+
+	// Set the epoch info
+	k.SetEpochInfo(ctx, epoch)
+
+	// Retrieve the epoch info
+	storedEpoch, found := k.GetEpochInfo(ctx, epoch.Identifier)
+
+	// Ensure the epoch info was found
+	require.True(t, found)
+
+	// Ensure the epoch info is correct
+	require.Equal(t, epoch, storedEpoch)
+
+	// Delete the epoch info
+	k.DeleteEpochInfo(ctx, epoch.Identifier)
+
+	// Ensure the epoch info was deleted
+	_, found = k.GetEpochInfo(ctx, epoch.Identifier)
+	require.False(t, found)
+}
+
+func TestIterateEpochInfo(t *testing.T) {
+	// Create a new instance of the EpochsKeeper and context
+	k, ctx := keepertest.EpochsKeeper(t)
+
+	// Create some sample epoch infos
+	epoch1 := types.EpochInfo{
+		Identifier:              "epoch1",
+		StartTime:               time.Now().UTC(),
+		Duration:                time.Hour * 24 * 7, // 1 week
+		CurrentEpoch:            1,
+		CurrentEpochStartTime:   time.Now().UTC(),
+		EpochCountingStarted:    true,
+		CurrentEpochStartHeight: 1,
+	}
+
+	epoch2 := types.EpochInfo{
+		Identifier:              "epoch2",
+		StartTime:               time.Now().UTC(),
+		Duration:                time.Hour * 24 * 7, // 1 week
+		CurrentEpoch:            2,
+		CurrentEpochStartTime:   time.Now().UTC(),
+		EpochCountingStarted:    true,
+		CurrentEpochStartHeight: 2,
+	}
+
+	epoch3 := types.EpochInfo{
+		Identifier:              "epoch3",
+		StartTime:               time.Now().UTC(),
+		Duration:                time.Hour * 24 * 7, // 1 week
+		CurrentEpoch:            3,
+		CurrentEpochStartTime:   time.Now().UTC(),
+		EpochCountingStarted:    true,
+		CurrentEpochStartHeight: 3,
+	}
+
+	// Set the epoch infos
+	k.SetEpochInfo(ctx, epoch1)
+	k.SetEpochInfo(ctx, epoch2)
+	k.SetEpochInfo(ctx, epoch3)
+
+	// Iterate over the epoch infos and ensure they are correct
+	expectedEpochs := []types.EpochInfo{epoch1, epoch2, epoch3}
+	var i int64 = 0
+	k.IterateEpochInfo(ctx, func(index int64, epoch types.EpochInfo) (stop bool) {
+		require.Equal(t, expectedEpochs[index], epoch)
+		require.Equal(t, i, index)
+		i++
+		return false
+	})
+}
