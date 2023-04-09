@@ -14,10 +14,10 @@ ldflags = -X github.com/cosmos/cosmos-sdk/version.Name=$(NAME) \
 
 BUILD_FLAGS := -ldflags '$(ldflags)' -tags '$(GOTAGS)'
 
-build:
+build: check-version
 	GOFLAGS=$(GOFLAGS) go build $(BUILD_FLAGS) -o ./build/$(BINARY) ./cmd/$(BINARY)/main.go
 
-install:
+install: check-version
 	GOFLAGS=$(GOFLAGS) go install $(BUILD_FLAGS) ./cmd/$(BINARY)/main.go
 
 build-all:
@@ -35,3 +35,11 @@ clean:
 
 test:
 	GOFLAGS=$(GOFLAGS) go test -v ./...
+
+# Add check to make sure we are using the proper Go version before proceeding with anything
+check-version:
+	@if ! go version | grep -q "go1.19"; then \
+		echo "\033[0;31mERROR:\033[0m Go version 1.19 is required for compiling elysd. It looks like you are using" "$(shell go version) \nThere are potential consensus-breaking changes that can occur when running binaries compiled with different versions of Go. Please download Go version 1.19 and retry. Thank you!"; \
+		exit 1; \
+	fi
+	
