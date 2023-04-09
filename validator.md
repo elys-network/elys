@@ -1,6 +1,6 @@
 # Validator Guide
 
-The Elys blockchain network is built on top of the Terdermint consensus engine. Terdermint leverages a group of validators tasked with appending new blocks to the blockchain. These validators engage in the consensus protocol by propagating vote messages consisting of cryptographic signatures, which are individually signed by each validator's private key.
+The Elys blockchain network is built on top of the Tendermint consensus engine. Tendermint leverages a group of validators tasked with appending new blocks to the blockchain. These validators engage in the consensus protocol by propagating vote messages consisting of cryptographic signatures, which are individually signed by each validator's private key.
 
 Validators have the option to bond their staking tokens and accept delegated tokens from Elys Network token holders. The Elys Network's native token is called ELYS. Initially, Elys launched with four validators, whose selection was based on the amount of stake delegated to them. The validator candidates with the highest delegated stake are deemed the top validators and are included in the active Elys validator set.
 
