@@ -101,15 +101,14 @@ The `<key_name>` specifies the validator being edited. If certain flags are not 
 
 The `--identity` flag can be utilized to verify the identity of validators with systems like Keybase or UPort. When using Keybase, the `--identity` flag should be populated with a 16-digit string generated from a keybase.io account. This is a secure method of verifying the validator's identity across multiple online networks. The Keybase API can retrieve the Keybase avatar, allowing validators to add a logo to their validator profile.
 
-```bash
-elysd tx staking edit-validator
---moniker="choose a moniker" \
+````bash
+elysd tx staking edit-validator \
+ --new-moniker="choose a moniker" \
  --website="https://elys.network" \
- --identity=9F0D65E29B4CBC8E \
  --details="To infinity and beyond!" \
  --chain-id=<chain_id> \
  --gas="auto" \
- --gas-prices="0.025uelys" \
+ --fees=0.1elys \
  --from=<key_name> \
  --commission-rate="0.10"
 ```
@@ -127,7 +126,7 @@ Use the following command to view the validator's information:
 
 ```bash
 elysd query staking validator <account_cosmos>
-```
+````
 
 ## Validator Signing Information Tracking
 
