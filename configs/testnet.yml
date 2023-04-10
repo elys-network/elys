@@ -1,27 +1,27 @@
 version: 1
 accounts:
   - name: nirvana
-    address: cosmos1gpv36nyuw5a92hehea3jqaadss9smsqscrgcwr
+    address: elys1gpv36nyuw5a92hehea3jqaadss9smsqscr3lrp
     coins:
       - 9000000000000000uelys
       - 9000000000000000ueden
   - name: utopia
-    address: cosmos1arm80rgjzlczm526hs3eam6g3sjgz5r7snhz5e
+    address: elys1arm80rgjzlczm526hs3eam6g3sjgz5r7snw9em
     coins:
       - 9000000000000000uelys
       - 9000000000000000ueden
   - name: shangrila
-    address: cosmos1ch0eyje2nd4t865fgqza3re27t27lcvzx2ezyc
+    address: elys1ch0eyje2nd4t865fgqza3re27t27lcvzx2q9f6
     coins:
       - 9000000000000000uelys
       - 9000000000000000ueden
   - name: arcadia
-    address: cosmos1mxnhpne27dgsypepe0tt7k3qstwzn2hw6pwst4
+    address: elys1mxnhpne27dgsypepe0tt7k3qstwzn2hw6phhxh
     coins:
       - 9000000000000000uelys
       - 9000000000000000ueden
   - name: euphoria
-    address: cosmos1hcsm79x44af4eqxr79aua52tf9k33krkk07eau
+    address: elys1hcsm79x44af4eqxr79aua52tf9k33krkk087s7
     coins:
       - 9000000000000000uelys
       - 9000000000000000ueden
