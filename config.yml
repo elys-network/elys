@@ -29,12 +29,12 @@ genesis:
         denom: uelys
     gov:
       deposit_params:
-        max_deposit_period: 60s
+        max_deposit_period: 20s
         min_deposit:
           - amount: "10000000"
             denom: uelys
       voting_params:
-        voting_period: 60s
+        voting_period: 20s
     mint:
       params:
         mint_denom: uelys
