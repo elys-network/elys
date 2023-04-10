@@ -1,7 +1,7 @@
 NAME?=elys
 BINARY?=$(NAME)d
 COMMIT:=$(shell git log -1 --format='%H')
-VERSION:=$(shell git describe --tags)
+VERSION:=$(shell git describe --tags --abbrev=8 | sed 's/-g/-/' | sed 's/-[0-9]*-/-/' | sed 's/v//')
 
 GOFLAGS:=""
 GOTAGS:=ledger
