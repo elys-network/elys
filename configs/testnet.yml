@@ -3,28 +3,23 @@ accounts:
   - name: nirvana
     address: elys1gpv36nyuw5a92hehea3jqaadss9smsqscr3lrp
     coins:
-      - 20000000000000uelys
-      - 20000000000000ueden
+      - 25000000000000uelys
+      - 25000000000000ueden
   - name: utopia
     address: elys1arm80rgjzlczm526hs3eam6g3sjgz5r7snw9em
     coins:
-      - 20000000000000uelys
-      - 20000000000000ueden
+      - 25000000000000uelys
+      - 25000000000000ueden
   - name: shangrila
     address: elys1ch0eyje2nd4t865fgqza3re27t27lcvzx2q9f6
     coins:
-      - 20000000000000uelys
-      - 20000000000000ueden
-  - name: arcadia
-    address: elys1mxnhpne27dgsypepe0tt7k3qstwzn2hw6phhxh
-    coins:
-      - 20000000000000uelys
-      - 20000000000000ueden
+      - 25000000000000uelys
+      - 25000000000000ueden
   - name: euphoria
     address: elys1hcsm79x44af4eqxr79aua52tf9k33krkk087s7
     coins:
-      - 20000000000000uelys
-      - 20000000000000ueden
+      - 25000000000000uelys
+      - 25000000000000ueden
 client:
   openapi:
     path: docs/static/openapi.yml
@@ -49,6 +44,9 @@ genesis:
     mint:
       params:
         mint_denom: uelys
+        inflation_rate_change: "0.07"
+        inflation_max: "0.2"
+        inflation_min: "0.07"
     slashing:
       params:
         signed_blocks_window: "10000"
