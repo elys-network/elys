@@ -3,36 +3,36 @@ accounts:
   - name: nirvana
     address: elys1gpv36nyuw5a92hehea3jqaadss9smsqscr3lrp
     coins:
-      - 9000000000000000uelys
-      - 9000000000000000ueden
+      - 20000000000000uelys
+      - 20000000000000ueden
   - name: utopia
     address: elys1arm80rgjzlczm526hs3eam6g3sjgz5r7snw9em
     coins:
-      - 9000000000000000uelys
-      - 9000000000000000ueden
+      - 20000000000000uelys
+      - 20000000000000ueden
   - name: shangrila
     address: elys1ch0eyje2nd4t865fgqza3re27t27lcvzx2q9f6
     coins:
-      - 9000000000000000uelys
-      - 9000000000000000ueden
+      - 20000000000000uelys
+      - 20000000000000ueden
   - name: arcadia
     address: elys1mxnhpne27dgsypepe0tt7k3qstwzn2hw6phhxh
     coins:
-      - 9000000000000000uelys
-      - 9000000000000000ueden
+      - 20000000000000uelys
+      - 20000000000000ueden
   - name: euphoria
     address: elys1hcsm79x44af4eqxr79aua52tf9k33krkk087s7
     coins:
-      - 9000000000000000uelys
-      - 9000000000000000ueden
+      - 20000000000000uelys
+      - 20000000000000ueden
 client:
   openapi:
     path: docs/static/openapi.yml
 faucet:
   name: nirvana
   coins:
-    - 1000000000000000uelys
-    - 1000000000000000ueden
+    - 10000000000000uelys
+    - 10000000000000ueden
 genesis:
   app_state:
     crisis:
@@ -40,18 +40,26 @@ genesis:
         denom: uelys
     gov:
       deposit_params:
-        max_deposit_period: 20s
+        max_deposit_period: 60s
         min_deposit:
           - amount: "10000000"
             denom: uelys
       voting_params:
-        voting_period: 20s
+        voting_period: 60s
     mint:
       params:
         mint_denom: uelys
+    slashing:
+      params:
+        signed_blocks_window: "10000"
+        min_signed_per_window: "0.5"
+        downtime_jail_duration: 600s
+        slash_fraction_double_sign: "0.05"
+        slash_fraction_downtime: "0.0001"
     staking:
       params:
         bond_denom: uelys
+        unbonding_time: 1209600s
     bank:
       denom_metadata:
         - base: uelys

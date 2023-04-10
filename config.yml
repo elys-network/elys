@@ -3,7 +3,6 @@ accounts:
   - name: treasury
     coins:
       - 9000000000000000uelys
-      - 200000000stake
       - 100000000ueden
     mnemonic: olympic slide park figure frost benefit deer reform fly pull price airport submit monitor silk insect uphold convince pupil project ignore roof warfare slight
   - name: bob
@@ -13,7 +12,6 @@ accounts:
   - name: seed
     coins:
       - 9000000000000000uelys
-      - 100000000stake
 client:
   openapi:
     path: docs/static/openapi.yml
@@ -21,29 +19,36 @@ faucet:
   name: seed
   coins:
     - 1000000000000000uelys
-    - 100000stake
 validators:
   - name: treasury
-    bonded: 100000000stake
+    bonded: 100000000uelys
 genesis:
   app_state:
     crisis:
       constant_fee:
-        denom: stake
+        denom: uelys
     gov:
       deposit_params:
         max_deposit_period: 20s
         min_deposit:
           - amount: "10000000"
-            denom: stake
+            denom: uelys
       voting_params:
         voting_period: 20s
     mint:
       params:
-        mint_denom: stake
+        mint_denom: uelys
+    slashing:
+      params:
+        signed_blocks_window: "10000"
+        min_signed_per_window: "0.5"
+        downtime_jail_duration: 600s
+        slash_fraction_double_sign: "0.05"
+        slash_fraction_downtime: "0.0001"
     staking:
       params:
-        bond_denom: stake
+        bond_denom: uelys
+        unbonding_time: 1209600s
     bank:
       denom_metadata:
         - base: uelys
