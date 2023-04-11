@@ -77,7 +77,7 @@ elysd tx staking create-validator \
   --commission-max-change-rate="0.01" \
   --min-self-delegation="1000000" \
   --gas="auto" \
-  --gas-prices="0.025uelys" \
+  --fees="0.1elys" \
   --from=<key_name>
 ```
 
@@ -191,7 +191,7 @@ If the voting power of the validator appears to be lower than before, it implies
 
 The default maximum number of files that can be opened by a Linux process is 1024, which may be insufficient for `elysd`, resulting in process crashes. To resolve this, execute ulimit -n 4096 to increase the number of open files allowed, and restart the process with `elysd` start. If you are using a process manager like systemd to launch `elysd`, it may require additional configuration. A sample systemd file to resolve this issue is provided below:
 
-```toml
+```
 # /etc/systemd/system/elysd.service
 [Unit]
 Description=Elys Node
