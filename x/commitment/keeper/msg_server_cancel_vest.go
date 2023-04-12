@@ -51,6 +51,20 @@ func (k msgServer) CancelVest(goCtx context.Context, msg *types.MsgCancelVest) (
 		return nil, sdkerrors.Wrapf(types.ErrInsufficientVestingTokens, "denom: %s, amount: %s", msg.Denom, msg.Amount)
 	}
 
+	// Update the uncommitted tokens amount
+	uncommittedToken, found := commitments.GetUncommittedTokensForDenom(msg.Denom)
+
+	if found {
+		uncommittedToken.Amount = uncommittedToken.Amount.Add(msg.Amount)
+	} else {
+		uncommittedTokens := commitments.GetUncommittedTokens()
+		uncommittedTokens = append(uncommittedTokens, &types.UncommittedTokens{
+			Denom:  msg.Denom,
+			Amount: msg.Amount,
+		})
+		commitments.UncommittedTokens = uncommittedTokens
+	}
+
 	k.SetCommitments(ctx, commitments)
 
 	return &types.MsgCancelVestResponse{}, nil
