@@ -574,6 +574,7 @@ func NewElysApp(
 		keys[incentivemoduletypes.StoreKey],
 		keys[incentivemoduletypes.MemStoreKey],
 		app.GetSubspace(incentivemoduletypes.ModuleName),
+		app.CommitmentKeeper,
 	)
 	incentiveModule := incentivemodule.NewAppModule(appCodec, app.IncentiveKeeper, app.AccountKeeper, app.BankKeeper)
 
