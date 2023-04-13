@@ -2,6 +2,14 @@
 
 **Elys** is a blockchain built using Cosmos SDK and Tendermint and created with [Ignite CLI](https://ignite.com/cli).
 
+| Parameter     | Value                                 |
+| ------------- | -------------                         |
+| Chain ID      | elystestnet-1                         |
+| Denomination  | uelys                                 |
+| Decimals      | 18 (1 elys= 1000000uelys              |
+| Version       | v0.2.3                                |
+| RPC Endpoint  | https://rpc.testnet.elys.network:443  |
+
 ## Get started
 
 ```
