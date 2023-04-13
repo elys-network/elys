@@ -127,6 +127,7 @@ import (
 	incentivemodule "github.com/elys-network/elys/x/incentive"
 	incentivemodulekeeper "github.com/elys-network/elys/x/incentive/keeper"
 	incentivemoduletypes "github.com/elys-network/elys/x/incentive/types"
+
 	// this line is used by starport scaffolding # stargate/app/moduleImport
 
 	appparams "github.com/elys-network/elys/app/params"
@@ -568,12 +569,21 @@ func NewElysApp(
 	)
 	commitmentModule := commitmentmodule.NewAppModule(appCodec, app.CommitmentKeeper, app.AccountKeeper, app.BankKeeper)
 
+	app.IncentiveKeeper = *incentivemodulekeeper.NewKeeper(
+		appCodec,
+		keys[incentivemoduletypes.StoreKey],
+		keys[incentivemoduletypes.MemStoreKey],
+		app.GetSubspace(incentivemoduletypes.ModuleName),
+	)
+	incentiveModule := incentivemodule.NewAppModule(appCodec, app.IncentiveKeeper, app.AccountKeeper, app.BankKeeper)
+
 	epochsKeeper := epochsmodulekeeper.NewKeeper(appCodec, keys[epochsmoduletypes.StoreKey])
 	app.EpochsKeeper = *epochsKeeper.SetHooks(
 		epochsmodulekeeper.NewMultiEpochHooks(
 			// insert epoch hooks receivers here
 			app.OracleKeeper.Hooks(),
 			app.CommitmentKeeper.Hooks(),
+			app.IncentiveKeeper.Hooks(),
 		),
 	)
 	epochsModule := epochsmodule.NewAppModule(appCodec, app.EpochsKeeper)
@@ -603,14 +613,6 @@ func NewElysApp(
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 	tokenomicsModule := tokenomicsmodule.NewAppModule(appCodec, app.TokenomicsKeeper, app.AccountKeeper, app.BankKeeper)
-
-	app.IncentiveKeeper = *incentivemodulekeeper.NewKeeper(
-		appCodec,
-		keys[incentivemoduletypes.StoreKey],
-		keys[incentivemoduletypes.MemStoreKey],
-		app.GetSubspace(incentivemoduletypes.ModuleName),
-	)
-	incentiveModule := incentivemodule.NewAppModule(appCodec, app.IncentiveKeeper, app.AccountKeeper, app.BankKeeper)
 
 	// this line is used by starport scaffolding # stargate/app/keeperDefinition
 
