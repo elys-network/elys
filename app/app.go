@@ -638,6 +638,7 @@ func NewElysApp(
 			// insert staking hooks receivers here
 			app.DistrKeeper.Hooks(),
 			app.SlashingKeeper.Hooks(),
+			app.IncentiveKeeper.StakingHooks(),
 		),
 	)
 
