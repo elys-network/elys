@@ -1,47 +1,25 @@
 package keeper
 
 import (
-	"errors"
-
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 )
 
 // Creating a commitment object for a delegator if one does not exist:
 func (k Keeper) BeforeDelegationCreated(ctx sdk.Context, delAddr sdk.AccAddress, valAddr sdk.ValAddress) error {
-	// must not run on genesis
-	if ctx.BlockHeight() <= 1 {
-		return errors.New(" must not run on genesis")
-	}
-
 	return nil
 }
 
 // Updating commitments on delegation changes
 func (k Keeper) AfterDelegationModified(ctx sdk.Context, delAddr sdk.AccAddress, valAddr sdk.ValAddress) error {
-	// must not run on genesis
-	if ctx.BlockHeight() <= 1 {
-		return errors.New(" must not run on genesis")
-	}
-
 	return nil
 }
 
 func (k Keeper) BeforeDelegationRemoved(ctx sdk.Context, delAddr sdk.AccAddress, valAddr sdk.ValAddress) error {
-	// must not run on genesis
-	if ctx.BlockHeight() <= 1 {
-		return errors.New(" must not run on genesis")
-	}
-
 	return nil
 }
 
 func (k Keeper) BeforeDelegationSharesModified(ctx sdk.Context, delAddr sdk.AccAddress, valAddr sdk.ValAddress) error {
-	// must not run on genesis
-	if ctx.BlockHeight() <= 1 {
-		return errors.New(" must not run on genesis")
-	}
-
 	return nil
 }
 
