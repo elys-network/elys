@@ -1,29 +1,48 @@
 package keeper
 
 import (
+	"errors"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 )
 
 // Creating a commitment object for a delegator if one does not exist:
-func (k Keeper) BeforeDelegationCreated(ctx sdk.Context, delAddr sdk.AccAddress, valAddr sdk.ValAddress) {
+func (k Keeper) BeforeDelegationCreated(ctx sdk.Context, delAddr sdk.AccAddress, valAddr sdk.ValAddress) error {
+	// must not run on genesis
+	if ctx.BlockHeight() <= 1 {
+		return errors.New(" must not run on genesis")
+	}
 
+	return nil
 }
 
 // Updating commitments on delegation changes
-func (k Keeper) AfterDelegationModified(ctx sdk.Context, delAddr sdk.AccAddress, valAddr sdk.ValAddress) {
+func (k Keeper) AfterDelegationModified(ctx sdk.Context, delAddr sdk.AccAddress, valAddr sdk.ValAddress) error {
 	// must not run on genesis
 	if ctx.BlockHeight() <= 1 {
-		return
+		return errors.New(" must not run on genesis")
 	}
+
+	return nil
 }
 
-func (k Keeper) BeforeDelegationRemoved(ctx sdk.Context, delAddr sdk.AccAddress, valAddr sdk.ValAddress) {
+func (k Keeper) BeforeDelegationRemoved(ctx sdk.Context, delAddr sdk.AccAddress, valAddr sdk.ValAddress) error {
+	// must not run on genesis
+	if ctx.BlockHeight() <= 1 {
+		return errors.New(" must not run on genesis")
+	}
 
+	return nil
 }
 
-func (k Keeper) BeforeDelegationSharesModified(ctx sdk.Context, delAddr sdk.AccAddress, valAddr sdk.ValAddress) {
+func (k Keeper) BeforeDelegationSharesModified(ctx sdk.Context, delAddr sdk.AccAddress, valAddr sdk.ValAddress) error {
+	// must not run on genesis
+	if ctx.BlockHeight() <= 1 {
+		return errors.New(" must not run on genesis")
+	}
 
+	return nil
 }
 
 // ________________________________________________________________________________________
@@ -70,21 +89,21 @@ func (h StakingHooks) AfterValidatorBeginUnbonding(ctx sdk.Context, consAddr sdk
 
 // Must be called when a delegation is created
 func (h StakingHooks) BeforeDelegationCreated(ctx sdk.Context, delAddr sdk.AccAddress, valAddr sdk.ValAddress) error {
-	return nil
+	return h.k.BeforeDelegationCreated(ctx, delAddr, valAddr)
 }
 
 // Must be called when a delegation's shares are modified
 func (h StakingHooks) BeforeDelegationSharesModified(ctx sdk.Context, delAddr sdk.AccAddress, valAddr sdk.ValAddress) error {
-	return nil
+	return h.k.BeforeDelegationSharesModified(ctx, delAddr, valAddr)
 }
 
 // Must be called when a delegation is removed
 func (h StakingHooks) BeforeDelegationRemoved(ctx sdk.Context, delAddr sdk.AccAddress, valAddr sdk.ValAddress) error {
-	return nil
+	return h.k.BeforeDelegationRemoved(ctx, delAddr, valAddr)
 }
 
 func (h StakingHooks) AfterDelegationModified(ctx sdk.Context, delAddr sdk.AccAddress, valAddr sdk.ValAddress) error {
-	return nil
+	return h.k.AfterDelegationModified(ctx, delAddr, valAddr)
 }
 
 func (h StakingHooks) BeforeValidatorSlashed(ctx sdk.Context, valAddr sdk.ValAddress, fraction sdk.Dec) error {
