@@ -33188,6 +33188,47 @@ paths:
               params:
                 description: params holds all the parameters of this module.
                 type: object
+                properties:
+                  LPIncentives:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        amount:
+                          type: string
+                          title: reward amount
+                        epochIdentifier:
+                          type: string
+                          title: epoch identifier
+                        start_time:
+                          type: string
+                          format: date-time
+                          title: start_time of the distribution
+                        numEpochs:
+                          type: string
+                          format: int64
+                          title: distribution duration
+                      title: Incentive Info
+                  StakeIncentives:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        amount:
+                          type: string
+                          title: reward amount
+                        epochIdentifier:
+                          type: string
+                          title: epoch identifier
+                        start_time:
+                          type: string
+                          format: date-time
+                          title: start_time of the distribution
+                        numEpochs:
+                          type: string
+                          format: int64
+                          title: distribution duration
+                      title: Incentive Info
             description: >-
               QueryParamsResponse is response type for the Query/Params RPC
               method.
@@ -69052,8 +69093,67 @@ definitions:
     description: |-
       QueryEpochsInfoResponse is the response type for the Query/EpochInfos RPC
       method.
+  elysnetwork.elys.incentive.IncentiveInfo:
+    type: object
+    properties:
+      amount:
+        type: string
+        title: reward amount
+      epochIdentifier:
+        type: string
+        title: epoch identifier
+      start_time:
+        type: string
+        format: date-time
+        title: start_time of the distribution
+      numEpochs:
+        type: string
+        format: int64
+        title: distribution duration
+    title: Incentive Info
   elysnetwork.elys.incentive.Params:
     type: object
+    properties:
+      LPIncentives:
+        type: array
+        items:
+          type: object
+          properties:
+            amount:
+              type: string
+              title: reward amount
+            epochIdentifier:
+              type: string
+              title: epoch identifier
+            start_time:
+              type: string
+              format: date-time
+              title: start_time of the distribution
+            numEpochs:
+              type: string
+              format: int64
+              title: distribution duration
+          title: Incentive Info
+      StakeIncentives:
+        type: array
+        items:
+          type: object
+          properties:
+            amount:
+              type: string
+              title: reward amount
+            epochIdentifier:
+              type: string
+              title: epoch identifier
+            start_time:
+              type: string
+              format: date-time
+              title: start_time of the distribution
+            numEpochs:
+              type: string
+              format: int64
+              title: distribution duration
+          title: Incentive Info
     description: Params defines the parameters for the module.
   elysnetwork.elys.incentive.QueryParamsResponse:
     type: object
@@ -69061,6 +69161,47 @@ definitions:
       params:
         description: params holds all the parameters of this module.
         type: object
+        properties:
+          LPIncentives:
+            type: array
+            items:
+              type: object
+              properties:
+                amount:
+                  type: string
+                  title: reward amount
+                epochIdentifier:
+                  type: string
+                  title: epoch identifier
+                start_time:
+                  type: string
+                  format: date-time
+                  title: start_time of the distribution
+                numEpochs:
+                  type: string
+                  format: int64
+                  title: distribution duration
+              title: Incentive Info
+          StakeIncentives:
+            type: array
+            items:
+              type: object
+              properties:
+                amount:
+                  type: string
+                  title: reward amount
+                epochIdentifier:
+                  type: string
+                  title: epoch identifier
+                start_time:
+                  type: string
+                  format: date-time
+                  title: start_time of the distribution
+                numEpochs:
+                  type: string
+                  format: int64
+                  title: distribution duration
+              title: Incentive Info
     description: QueryParamsResponse is response type for the Query/Params RPC method.
   elysnetwork.elys.liquidityprovider.Params:
     type: object

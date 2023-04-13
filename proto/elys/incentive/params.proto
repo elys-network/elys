@@ -2,11 +2,13 @@ syntax = "proto3";
 package elysnetwork.elys.incentive;
 
 import "gogoproto/gogo.proto";
+import "elys/incentive/incentive.proto";
 
 option go_package = "github.com/elys-network/elys/x/incentive/types";
 
 // Params defines the parameters for the module.
 message Params {
   option (gogoproto.goproto_stringer) = false;
-  
+	repeated IncentiveInfo LPIncentives = 1 [(gogoproto.nullable) = false];
+	repeated IncentiveInfo StakeIncentives = 2 [(gogoproto.nullable) = false];
 }
