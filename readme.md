@@ -1,6 +1,14 @@
 # Elys
 
-**Elys** is a blockchain built using Cosmos SDK and Tendermint and created with [Ignite CLI](https://ignite.com/cli).
+**Elys** is a blockchain built using Cosmos SDK, Tendermint and Ignite.
+
+| Parameter    | Value                                |
+| ------------ | ------------------------------------ |
+| Chain ID     | elystestnet-1                        |
+| Denomination | uelys                                |
+| Decimals     | 6 (1 elys= 1000000uelys)             |
+| Version      | v0.2.3                               |
+| RPC Endpoint | https://rpc.testnet.elys.network:443 |
 
 ## Get started
 
@@ -44,7 +52,8 @@ cd elys
 ```bash
 git checkout <version>
 ```
-note: 'latest' is currently not recognized but will be supported in the next version  (eg use 'git checkout v.0.2.3') 
+
+note: 'latest' is currently not recognized but will be supported in the next version (eg use 'git checkout v.0.2.3')
 
 4. Ensure that you have the necessary dependencies installed. For instance, on Ubuntu you need to install the `make` tool:
 
