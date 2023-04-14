@@ -1,0 +1,20 @@
+syntax = "proto3";
+package elysnetwork.elys.incentive;
+import "gogoproto/gogo.proto";
+import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/elys-network/elys/x/incentive/types";
+
+// Incentive Info
+message IncentiveInfo {
+    // reward amount
+	string amount = 1 
+        [ (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false, (gogoproto.moretags) = "yaml:\"amount\""];
+    // epoch identifier
+	string epochIdentifier = 2;
+    // start_time of the distribution
+    google.protobuf.Timestamp start_time = 3 
+        [(gogoproto.stdtime) = true, (gogoproto.nullable) = false, (gogoproto.moretags) = "yaml:\"start_time\""];
+    // distribution duration
+	int64 numEpochs = 4;
+}
