@@ -26,7 +26,7 @@ func (k msgServer) CancelVest(goCtx context.Context, msg *types.MsgCancelVest) (
 
 	remainingToCancel := msg.Amount
 
-	for i := 0; i < len(commitments.VestingTokens) && !remainingToCancel.IsZero(); {
+	for i := 0; i < len(commitments.VestingTokens) && !remainingToCancel.IsZero(); i++ {
 		vesting := commitments.VestingTokens[i]
 
 		if vesting.Denom == msg.Denom {
@@ -37,13 +37,10 @@ func (k msgServer) CancelVest(goCtx context.Context, msg *types.MsgCancelVest) (
 
 			if vesting.TotalAmount.IsZero() {
 				commitments.VestingTokens = append(commitments.VestingTokens[:i], commitments.VestingTokens[i+1:]...)
-			} else {
-				i++
+				i--
 			}
 
 			remainingToCancel = remainingToCancel.Sub(cancelAmount)
-		} else {
-			i++
 		}
 	}
 
