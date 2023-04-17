@@ -558,7 +558,7 @@ func NewElysApp(
 		govConfig,
 	)
 
-	app.CommitmentKeeper = *commitmentmodulekeeper.NewKeeper(
+	commitmentKeeper := *commitmentmodulekeeper.NewKeeper(
 		appCodec,
 		keys[commitmentmoduletypes.StoreKey],
 		keys[commitmentmoduletypes.MemStoreKey],
@@ -567,16 +567,23 @@ func NewElysApp(
 		app.BankKeeper,
 		app.StakingKeeper,
 	)
-	commitmentModule := commitmentmodule.NewAppModule(appCodec, app.CommitmentKeeper, app.AccountKeeper, app.BankKeeper)
 
 	app.IncentiveKeeper = *incentivemodulekeeper.NewKeeper(
 		appCodec,
 		keys[incentivemoduletypes.StoreKey],
 		keys[incentivemoduletypes.MemStoreKey],
 		app.GetSubspace(incentivemoduletypes.ModuleName),
-		app.CommitmentKeeper,
+		commitmentKeeper,
 	)
 	incentiveModule := incentivemodule.NewAppModule(appCodec, app.IncentiveKeeper, app.AccountKeeper, app.BankKeeper)
+
+	app.CommitmentKeeper = *commitmentKeeper.SetHooks(
+		commitmentmodulekeeper.NewMultiEpochHooks(
+			app.IncentiveKeeper.CommitmentHooks(),
+		),
+	)
+
+	commitmentModule := commitmentmodule.NewAppModule(appCodec, app.CommitmentKeeper, app.AccountKeeper, app.BankKeeper)
 
 	epochsKeeper := epochsmodulekeeper.NewKeeper(appCodec, keys[epochsmoduletypes.StoreKey])
 	app.EpochsKeeper = *epochsKeeper.SetHooks(

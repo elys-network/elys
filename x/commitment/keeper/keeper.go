@@ -18,6 +18,7 @@ type (
 		storeKey   storetypes.StoreKey
 		memKey     storetypes.StoreKey
 		paramstore paramtypes.Subspace
+		hooks      types.CommitmentHooks
 
 		bankKeeper    types.BankKeeper
 		stakingKeeper types.StakingKeeper
@@ -55,4 +56,15 @@ func (k Keeper) Logger(ctx sdk.Context) log.Logger {
 
 func (k Keeper) BankKeeper() types.BankKeeper {
 	return k.bankKeeper
+}
+
+// SetHooks set the epoch hooks
+func (k *Keeper) SetHooks(eh types.CommitmentHooks) *Keeper {
+	if k.hooks != nil {
+		panic("cannot set epochs hooks twice")
+	}
+
+	k.hooks = eh
+
+	return k
 }

@@ -56,5 +56,18 @@ func (k msgServer) DepositTokens(goCtx context.Context, msg *types.MsgDepositTok
 	// Update the commitments
 	k.SetCommitments(ctx, commitments)
 
+	// Emit Hook commitment changed
+	k.HookCommitmentChanged(ctx, msg.Creator, sdk.NewCoin(msg.Denom, msg.Amount))
+
+	// Emit blockchain event
+	ctx.EventManager().EmitEvent(
+		sdk.NewEvent(
+			types.EventTypeCommitmentChanged,
+			sdk.NewAttribute(types.AttributeCreator, msg.Creator),
+			sdk.NewAttribute(types.AttributeAmount, msg.Amount.String()),
+			sdk.NewAttribute(types.AttributeDenom, msg.Denom),
+		),
+	)
+	
 	return &types.MsgDepositTokensResponse{}, nil
 }
