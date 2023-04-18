@@ -17,16 +17,14 @@ func NewMsgSetAssetInfo(
 	denom string,
 	display string,
 	bandTicker string,
-	binanceTicker string,
-	osmosisTicker string,
+	elysTicker string,
 ) *MsgSetAssetInfo {
 	return &MsgSetAssetInfo{
-		Creator:       creator,
-		Denom:         denom,
-		Display:       display,
-		BandTicker:    bandTicker,
-		BinanceTicker: binanceTicker,
-		OsmosisTicker: osmosisTicker,
+		Creator:    creator,
+		Denom:      denom,
+		Display:    display,
+		BandTicker: bandTicker,
+		ElysTicker: elysTicker,
 	}
 }
 

@@ -25,11 +25,10 @@ func NewAssetInfoProposalHandler(k *keeper.Keeper) govtypes.Handler {
 
 func handleSoftwareUpgradeProposal(ctx sdk.Context, k *keeper.Keeper, p *types.ProposalAddAssetInfo) error {
 	k.SetAssetInfo(ctx, types.AssetInfo{
-		Denom:         p.Denom,
-		Display:       p.Display,
-		BandTicker:    p.BandTicker,
-		BinanceTicker: p.BinanceTicker,
-		OsmosisTicker: p.OsmosisTicker,
+		Denom:      p.Denom,
+		Display:    p.Display,
+		BandTicker: p.BandTicker,
+		ElysTicker: p.ElysTicker,
 	})
 	return nil
 }

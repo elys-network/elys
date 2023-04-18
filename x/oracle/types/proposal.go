@@ -15,17 +15,15 @@ func NewProposalAddAssetInfo(
 	denom string,
 	display string,
 	bandTicker string,
-	binanceTicker string,
-	osmosisTicker string,
+	elysTicker string,
 ) gov.Content {
 	return &ProposalAddAssetInfo{
-		Title:         title,
-		Description:   description,
-		Denom:         denom,
-		Display:       display,
-		BandTicker:    bandTicker,
-		BinanceTicker: binanceTicker,
-		OsmosisTicker: osmosisTicker,
+		Title:       title,
+		Description: description,
+		Denom:       denom,
+		Display:     display,
+		BandTicker:  bandTicker,
+		ElysTicker:  elysTicker,
 	}
 }
 

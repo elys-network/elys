@@ -15,11 +15,10 @@ func (k msgServer) SetAssetInfo(goCtx context.Context, msg *types.MsgSetAssetInf
 		return nil, types.ErrNotModuleAdmin
 	}
 	assetInfo := types.AssetInfo{
-		Denom:         msg.Denom,
-		Display:       msg.Display,
-		BandTicker:    msg.BandTicker,
-		BinanceTicker: msg.BinanceTicker,
-		OsmosisTicker: msg.OsmosisTicker,
+		Denom:      msg.Denom,
+		Display:    msg.Display,
+		BandTicker: msg.BandTicker,
+		ElysTicker: msg.ElysTicker,
 	}
 
 	k.Keeper.SetAssetInfo(ctx, assetInfo)

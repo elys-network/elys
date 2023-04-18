@@ -9,8 +9,7 @@ message ProposalAddAssetInfo {
   string denom = 3;
   string display = 4;
   string bandTicker = 5;
-  string binanceTicker = 6;
-  string osmosisTicker = 7;
+  string elysTicker = 6;
 }
 
 message ProposalRemoveAssetInfo {

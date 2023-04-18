@@ -52,8 +52,8 @@ func GetTxCmd() *cobra.Command {
 
 func CmdSubmitAddAssetInfoProposal() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "add-asset-info-proposal [denom] [display] [bandTicker] [binanceTicker] [osmosisTicker]",
-		Args:  cobra.ExactArgs(5),
+		Use:   "add-asset-info-proposal [denom] [display] [bandTicker] [elysTicker]",
+		Args:  cobra.ExactArgs(4),
 		Short: "Submit an add asset info proposal",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
@@ -78,7 +78,6 @@ func CmdSubmitAddAssetInfoProposal() *cobra.Command {
 				args[1],
 				args[2],
 				args[3],
-				args[4],
 			)
 
 			from := clientCtx.GetFromAddress()

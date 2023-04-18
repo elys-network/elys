@@ -50,8 +50,7 @@ message MsgSetAssetInfo {
   string denom = 2;
   string display = 3;
   string bandTicker = 4;
-  string binanceTicker = 5;
-  string osmosisTicker = 6;
+  string elysTicker = 5;
 }
 message MsgSetAssetInfoResponse {}
 

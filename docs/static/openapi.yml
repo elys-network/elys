@@ -33232,9 +33232,7 @@ paths:
                       type: string
                     bandTicker:
                       type: string
-                    binanceTicker:
-                      type: string
-                    osmosisTicker:
+                    elysTicker:
                       type: string
               pagination:
                 type: object
@@ -33360,9 +33358,7 @@ paths:
                     type: string
                   bandTicker:
                     type: string
-                  binanceTicker:
-                    type: string
-                  osmosisTicker:
+                  elysTicker:
                     type: string
         default:
           description: An unexpected error response.
@@ -69035,9 +69031,7 @@ definitions:
         type: string
       bandTicker:
         type: string
-      binanceTicker:
-        type: string
-      osmosisTicker:
+      elysTicker:
         type: string
   elysnetwork.elys.oracle.BandPriceCallData:
     type: object
@@ -69153,9 +69147,7 @@ definitions:
               type: string
             bandTicker:
               type: string
-            binanceTicker:
-              type: string
-            osmosisTicker:
+            elysTicker:
               type: string
       pagination:
         type: object
@@ -69289,9 +69281,7 @@ definitions:
             type: string
           bandTicker:
             type: string
-          binanceTicker:
-            type: string
-          osmosisTicker:
+          elysTicker:
             type: string
   elysnetwork.elys.oracle.QueryGetPriceFeederResponse:
     type: object

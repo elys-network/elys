@@ -7,18 +7,16 @@ import (
 func (suite *KeeperTestSuite) TestAssetInfoSetGetDelete() {
 	assetInfos := []types.AssetInfo{
 		{
-			Denom:         "satoshi",
-			Display:       "BTC",
-			BandTicker:    "BTC",
-			BinanceTicker: "",
-			OsmosisTicker: "",
+			Denom:      "satoshi",
+			Display:    "BTC",
+			BandTicker: "BTC",
+			ElysTicker: "",
 		},
 		{
-			Denom:         "wei",
-			Display:       "ETH",
-			BandTicker:    "ETH",
-			BinanceTicker: "",
-			OsmosisTicker: "",
+			Denom:      "wei",
+			Display:    "ETH",
+			BandTicker: "ETH",
+			ElysTicker: "",
 		},
 	}
 
