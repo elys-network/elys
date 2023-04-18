@@ -1,0 +1,12 @@
+syntax = "proto3";
+package elysnetwork.elys.incentive;
+
+import "gogoproto/gogo.proto";
+import "elys/incentive/params.proto";
+
+option go_package = "github.com/elys-network/elys/x/incentive/types";
+
+// GenesisState defines the incentive module's genesis state.
+message GenesisState {
+  Params params = 1 [(gogoproto.nullable) = false];
+}

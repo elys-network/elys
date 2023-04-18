@@ -1,27 +1,33 @@
 version: 1
 accounts:
-  - name: treasury
+  - name: nirvana
+    address: elys1gpv36nyuw5a92hehea3jqaadss9smsqscr3lrp
     coins:
-      - 9000000000000000uelys
-      - 100000000ueden
-    mnemonic: olympic slide park figure frost benefit deer reform fly pull price airport submit monitor silk insect uphold convince pupil project ignore roof warfare slight
-  - name: bob
+      - 25000000000000uelys
+      - 25000000000000ueden
+  - name: utopia
+    address: elys1arm80rgjzlczm526hs3eam6g3sjgz5r7snw9em
     coins:
-      - 9000000000000000uelys
-    mnemonic: lucky toe fee soul alley subway rhythm weather danger convince huge rug tennis churn skate return finish service vivid route cabin idea brush wear
-  - name: seed
+      - 25000000000000uelys
+      - 25000000000000ueden
+  - name: shangrila
+    address: elys1ch0eyje2nd4t865fgqza3re27t27lcvzx2q9f6
     coins:
-      - 9000000000000000uelys
+      - 25000000000000uelys
+      - 25000000000000ueden
+  - name: euphoria
+    address: elys1hcsm79x44af4eqxr79aua52tf9k33krkk087s7
+    coins:
+      - 25000000000000uelys
+      - 25000000000000ueden
 client:
   openapi:
     path: docs/static/openapi.yml
 faucet:
-  name: seed
+  name: nirvana
   coins:
-    - 1000000000000000uelys
-validators:
-  - name: treasury
-    bonded: 100000000uelys
+    - 10000000000000uelys
+    - 10000000000000ueden
 genesis:
   app_state:
     crisis:
@@ -29,12 +35,12 @@ genesis:
         denom: uelys
     gov:
       deposit_params:
-        max_deposit_period: 20s
+        max_deposit_period: 60s
         min_deposit:
           - amount: "10000000"
             denom: uelys
       voting_params:
-        voting_period: 20s
+        voting_period: 60s
     mint:
       params:
         mint_denom: uelys
@@ -231,26 +237,4 @@ genesis:
             communityFund: 9999999
             strategicReserve: 9999999
             teamTokensVested: 9999999
-    oracle:
-      assetInfos:
-      params:
-        ask_count: "4"
-        band_channel_source: "channel-0"
-        band_epoch: "band_epoch"
-        client_id: "band_price_id"
-        execute_gas: "600000"
-        fee_limit:
-          - amount: "30"
-            denom: "uband"
-        min_count: "3"
-        module_admin: "elys12tzylat4udvjj56uuhu3vj2n4vgp7cf9fwna9w"
-        multiplier: "18"
-        oracle_script_id: "37"
-        prepare_gas: "600000"
-        price_expiry_time: "86400"
-      portId: "oracle"
-      priceFeeders:
-        - feeder: "elys12tzylat4udvjj56uuhu3vj2n4vgp7cf9fwna9w"
-          is_active: true
-      prices:
   chain_id: elystestnet-1
