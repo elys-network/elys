@@ -17,8 +17,6 @@ elysd query gov proposals
 elysd tx oracle request-band-price
 elysd tx oracle add-asset-info-proposal satoshi BTC BTC "" "" --title="title" --description="description" --deposit="10000000000000000000aelys" --from=alice --chain-id=elys --broadcast-mode=block --yes
 elysd tx oracle remove-asset-info-proposal satoshi --title="title" --description="description" --deposit="10000000000000000000aelys" --from=alice --chain-id=elys --broadcast-mode=block --yes
-elysd tx oracle set-asset-info satoshi BTC BTC "" "" --from=alice --chain-id=elys --broadcast-mode=block --yes
-elysd tx oracle delete-asset-info satoshi --from=alice --chain-id=elys --broadcast-mode=block --yes
 elysd tx oracle set-price-feeder $(elysd keys show -a alice --keyring-backend=test) true --from=alice --chain-id=elys --broadcast-mode=block --yes
 elysd tx oracle delete-price-feeder $(elysd keys show -a alice --keyring-backend=test) --from=alice --chain-id=elys --broadcast-mode=block --yes
 elysd tx oracle feed-price BTC 20001 elys --from=alice --chain-id=elys --broadcast-mode=block --yes

@@ -32,7 +32,6 @@ func (suite *KeeperTestSuite) TestPriceFeederMsgServerUpdate() {
 			suite.SetupTest()
 			k, ctx := suite.app.OracleKeeper, suite.ctx
 			params := types.DefaultParams()
-			params.ModuleAdmin = creator
 			suite.app.OracleKeeper.SetParams(ctx, params)
 
 			srv := keeper.NewMsgServerImpl(k)
@@ -70,7 +69,6 @@ func (suite *KeeperTestSuite) TestPriceFeederMsgServerDelete() {
 		suite.Run(tc.desc, func() {
 			k, ctx := suite.app.OracleKeeper, suite.ctx
 			params := types.DefaultParams()
-			params.ModuleAdmin = creator
 			suite.app.OracleKeeper.SetParams(ctx, params)
 
 			srv := keeper.NewMsgServerImpl(k)

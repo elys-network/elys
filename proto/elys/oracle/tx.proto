@@ -16,8 +16,6 @@ service Msg {
   rpc FeedPrice(MsgFeedPrice) returns (MsgFeedPriceResponse);
   rpc FeedMultiplePrices(MsgFeedMultiplePrices) returns (MsgFeedMultiplePricesResponse);
   rpc RequestBandPrice(MsgRequestBandPrice) returns (MsgRequestBandPriceResponse);
-  rpc SetAssetInfo(MsgSetAssetInfo) returns (MsgSetAssetInfoResponse);
-  rpc DeleteAssetInfo(MsgDeleteAssetInfo) returns (MsgDeleteAssetInfoResponse);
   rpc SetPriceFeeder(MsgSetPriceFeeder) returns (MsgSetPriceFeederResponse);
   rpc DeletePriceFeeder(MsgDeletePriceFeeder) returns (MsgDeletePriceFeederResponse);
 // this line is used by starport scaffolding # proto/tx/rpc
@@ -44,21 +42,6 @@ message MsgRequestBandPrice {
 
 message MsgRequestBandPriceResponse {
 }
-
-message MsgSetAssetInfo {
-  string creator = 1;
-  string denom = 2;
-  string display = 3;
-  string bandTicker = 4;
-  string elysTicker = 5;
-}
-message MsgSetAssetInfoResponse {}
-
-message MsgDeleteAssetInfo {
-  string creator = 1;
-  string denom = 2;
-}
-message MsgDeleteAssetInfoResponse {}
 
 message MsgFeedPrice {
   string asset = 1;
