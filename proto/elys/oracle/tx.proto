@@ -55,15 +55,13 @@ message MsgFeedPrice {
 message MsgFeedPriceResponse {}
 
 message MsgSetPriceFeeder {
-  string creator = 1;
-  string feeder = 2;
-  bool is_active = 3;
+  string feeder = 1;
+  bool is_active = 2;
 }
 message MsgSetPriceFeederResponse {}
 
 message MsgDeletePriceFeeder {
-  string creator = 1;
-  string feeder = 2;
+  string feeder = 1;
 }
 message MsgDeletePriceFeederResponse {}
 
