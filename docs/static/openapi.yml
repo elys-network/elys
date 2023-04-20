@@ -32848,6 +32848,45 @@ paths:
                   additionalProperties: {}
       tags:
         - Query
+  /elys-network/elys/burner/params:
+    get:
+      summary: Parameters queries the parameters of the module.
+      operationId: ElysnetworkElysBurnerParams
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              params:
+                description: params holds all the parameters of this module.
+                type: object
+                properties:
+                  epochIdentifier:
+                    type: string
+            description: >-
+              QueryParamsResponse is response type for the Query/Params RPC
+              method.
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      tags:
+        - Query
   /elys-network/elys/commitment/params:
     get:
       summary: Parameters queries the parameters of the module.
@@ -68780,6 +68819,22 @@ definitions:
       params:
         description: params holds all the parameters of this module.
         type: object
+    description: QueryParamsResponse is response type for the Query/Params RPC method.
+  elysnetwork.elys.burner.Params:
+    type: object
+    properties:
+      epochIdentifier:
+        type: string
+    description: Params defines the parameters for the module.
+  elysnetwork.elys.burner.QueryParamsResponse:
+    type: object
+    properties:
+      params:
+        description: params holds all the parameters of this module.
+        type: object
+        properties:
+          epochIdentifier:
+            type: string
     description: QueryParamsResponse is response type for the Query/Params RPC method.
   elysnetwork.elys.commitment.Commitments:
     type: object

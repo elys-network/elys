@@ -9,16 +9,17 @@ import (
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
 	"github.com/tendermint/tendermint/libs/log"
 
-	"github.com/elys-network/elys/x/incentive/types"
+	"github.com/elys-network/elys/x/burner/types"
 )
 
 type (
 	Keeper struct {
-		cdc              codec.BinaryCodec
-		storeKey         storetypes.StoreKey
-		memKey           storetypes.StoreKey
-		paramstore       paramtypes.Subspace
-		commitmentKeeper types.CommitmentKeeper
+		cdc        codec.BinaryCodec
+		storeKey   storetypes.StoreKey
+		memKey     storetypes.StoreKey
+		paramstore paramtypes.Subspace
+
+		bankKeeper types.BankKeeper
 	}
 )
 
@@ -27,7 +28,8 @@ func NewKeeper(
 	storeKey,
 	memKey storetypes.StoreKey,
 	ps paramtypes.Subspace,
-	ck types.CommitmentKeeper,
+
+	bankKeeper types.BankKeeper,
 ) *Keeper {
 	// set KeyTable if it has not already been set
 	if !ps.HasKeyTable() {
@@ -35,11 +37,12 @@ func NewKeeper(
 	}
 
 	return &Keeper{
-		cdc:              cdc,
-		storeKey:         storeKey,
-		memKey:           memKey,
-		paramstore:       ps,
-		commitmentKeeper: ck,
+		cdc:        cdc,
+		storeKey:   storeKey,
+		memKey:     memKey,
+		paramstore: ps,
+
+		bankKeeper: bankKeeper,
 	}
 }
 
