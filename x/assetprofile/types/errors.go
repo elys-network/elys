@@ -8,5 +8,5 @@ import (
 
 // x/assetprofile module sentinel errors
 var (
-	ErrSample = sdkerrors.Register(ModuleName, 1100, "sample error")
+	ErrAssetProfileNotFound = sdkerrors.Register(ModuleName, 1100, "asset profile not found for denom")
 )

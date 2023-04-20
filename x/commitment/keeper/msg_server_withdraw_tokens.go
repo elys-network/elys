@@ -5,12 +5,21 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-
+	aptypes "github.com/elys-network/elys/x/assetprofile/types"
 	"github.com/elys-network/elys/x/commitment/types"
 )
 
 func (k msgServer) WithdrawTokens(goCtx context.Context, msg *types.MsgWithdrawTokens) (*types.MsgWithdrawTokensResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	assetProfile, found := k.apKeeper.GetEntry(ctx, msg.Denom)
+	if !found {
+		return nil, sdkerrors.Wrapf(aptypes.ErrAssetProfileNotFound, "denom: %s", msg.Denom)
+	}
+
+	if !assetProfile.WithdrawEnabled {
+		return nil, sdkerrors.Wrapf(types.ErrWithdrawDisabled, "denom: %s", msg.Denom)
+	}
 
 	commitments, err := k.DeductCommitments(ctx, msg.Creator, msg.Denom, msg.Amount)
 	if err != nil {
@@ -50,6 +59,6 @@ func (k msgServer) WithdrawTokens(goCtx context.Context, msg *types.MsgWithdrawT
 			sdk.NewAttribute(types.AttributeDenom, msg.Denom),
 		),
 	)
-	
+
 	return &types.MsgWithdrawTokensResponse{}, nil
 }
