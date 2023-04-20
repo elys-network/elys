@@ -44,9 +44,9 @@ genesis:
     mint:
       params:
         mint_denom: uelys
-        inflation_rate_change: "0.07"
-        inflation_max: "0.2"
-        inflation_min: "0.07"
+        inflation_rate_change: "0.0"
+        inflation_max: "0.0"
+        inflation_min: "0.0"
     slashing:
       params:
         signed_blocks_window: "10000"
