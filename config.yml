@@ -88,7 +88,7 @@ genesis:
         - address: ""
           authority: elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3
           baseDenom: uelys
-          decimals: "18"
+          decimals: "6"
           denom: uelys
           displayName: ELYS
           displaySymbol: ""
@@ -126,7 +126,7 @@ genesis:
         - address: ""
           authority: elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3
           baseDenom: ueden
-          decimals: "18"
+          decimals: "6"
           denom: ueden
           displayName: EDEN
           displaySymbol: ""
@@ -145,7 +145,7 @@ genesis:
         - address: ""
           authority: elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3
           baseDenom: uedenb
-          decimals: "18"
+          decimals: "6"
           denom: uedenb
           displayName: EDEN-BOOST
           displaySymbol: ""
