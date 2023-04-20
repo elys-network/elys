@@ -73,13 +73,14 @@ elysd tx staking create-validator \
   --moniker="choose a moniker" \
   --chain-id=<chain_id> \
   --commission-rate="0.05" \
-  --commission-max-rate="0.10" \
+  --commission-max-rate="0.50" \
   --commission-max-change-rate="0.01" \
   --min-self-delegation="1000000" \
   --gas="auto" \
   --fees="0.1elys" \
   --from=<key_name>
 ```
+**Note:** `comission-max-rate` is a permanent parameter and cannot be changed in a future validator edit. The example above shows a maximum validator comission of 50%
 
 ### Commission Parameters
 
