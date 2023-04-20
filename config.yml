@@ -174,15 +174,15 @@ genesis:
     incentive:
       params:
         lp_incentives:
-          - amount: 10000000
+          - amount: "10000000"
             epoch_identifier: day
-            start_time: 1680341771
-            num_epochs: 365
+            start_time: "2023-04-20T12:34:56.789Z"
+            num_epochs: "365"
         stake_incentives:
-          - amount: 10000000
+          - amount: "10000000"
             epoch_identifier: day
-            start_time: 1680341771
-            num_epochs: 365
+            start_time: "2023-04-20T12:34:56.789Z"
+            num_epochs: "365"
     tokenomics:
       airdropList:
         - intent: AtomStakers
