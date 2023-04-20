@@ -14,4 +14,5 @@ var (
 	ErrInvalidAmount                 = sdkerrors.Register(ModuleName, 1004, "invalid amount")
 	ErrInvalidDenom                  = sdkerrors.Register(ModuleName, 1005, "invalid denom")
 	ErrInsufficientVestingTokens     = sdkerrors.Register(ModuleName, 1006, "insufficient vesting tokens for creator and denom")
+	ErrCommitDisabled                = sdkerrors.Register(ModuleName, 1007, "commitment disabled for denom")
 )

@@ -6,11 +6,21 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	aptypes "github.com/elys-network/elys/x/assetprofile/types"
 	"github.com/elys-network/elys/x/commitment/types"
 )
 
 func (k msgServer) DepositTokens(goCtx context.Context, msg *types.MsgDepositTokens) (*types.MsgDepositTokensResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	assetProfile, found := k.apKeeper.GetEntry(ctx, msg.Denom)
+	if !found {
+		return nil, sdkerrors.Wrapf(aptypes.ErrAssetProfileNotFound, "denom: %s", msg.Denom)
+	}
+
+	if !assetProfile.CommitEnabled {
+		return nil, sdkerrors.Wrapf(types.ErrCommitDisabled, "denom: %s", msg.Denom)
+	}
 
 	depositCoins := sdk.NewCoins(sdk.NewCoin(msg.Denom, msg.Amount))
 

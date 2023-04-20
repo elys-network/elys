@@ -558,6 +558,15 @@ func NewElysApp(
 		govConfig,
 	)
 
+	app.AssetprofileKeeper = *assetprofilemodulekeeper.NewKeeper(
+		appCodec,
+		keys[assetprofilemoduletypes.StoreKey],
+		keys[assetprofilemoduletypes.MemStoreKey],
+		app.GetSubspace(assetprofilemoduletypes.ModuleName),
+		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+	)
+	assetprofileModule := assetprofilemodule.NewAppModule(appCodec, app.AssetprofileKeeper, app.AccountKeeper, app.BankKeeper)
+
 	commitmentKeeper := *commitmentmodulekeeper.NewKeeper(
 		appCodec,
 		keys[commitmentmoduletypes.StoreKey],
@@ -566,6 +575,7 @@ func NewElysApp(
 
 		app.BankKeeper,
 		app.StakingKeeper,
+		app.AssetprofileKeeper,
 	)
 
 	app.IncentiveKeeper = *incentivemodulekeeper.NewKeeper(
@@ -596,15 +606,6 @@ func NewElysApp(
 		),
 	)
 	epochsModule := epochsmodule.NewAppModule(appCodec, app.EpochsKeeper)
-
-	app.AssetprofileKeeper = *assetprofilemodulekeeper.NewKeeper(
-		appCodec,
-		keys[assetprofilemoduletypes.StoreKey],
-		keys[assetprofilemoduletypes.MemStoreKey],
-		app.GetSubspace(assetprofilemoduletypes.ModuleName),
-		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
-	)
-	assetprofileModule := assetprofilemodule.NewAppModule(appCodec, app.AssetprofileKeeper, app.AccountKeeper, app.BankKeeper)
 
 	app.LiquidityproviderKeeper = *liquidityprovidermodulekeeper.NewKeeper(
 		appCodec,
