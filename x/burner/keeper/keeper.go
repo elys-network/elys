@@ -49,3 +49,11 @@ func NewKeeper(
 func (k Keeper) Logger(ctx sdk.Context) log.Logger {
 	return ctx.Logger().With("module", fmt.Sprintf("x/%s", types.ModuleName))
 }
+
+// BurnTokens burns all the tokens of a given denom
+func (k Keeper) BurnTokens(ctx sdk.Context, denom string) error {
+	// get the module wallet balance for the given denom
+	balance := k.bankKeeper.GetBalance(ctx, types.ModuleAddress, denom)
+	// burn the tokens
+	return k.bankKeeper.BurnCoins(ctx, types.ModuleName, sdk.NewCoins(balance))
+}
