@@ -103,6 +103,7 @@ genesis:
           transferLimit: ""
           unitDenom: ""
           commitEnabled: false
+          withdrawEnabled: true
         - address: ""
           authority: elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3
           baseDenom: cusdc
@@ -121,6 +122,7 @@ genesis:
           transferLimit: ""
           unitDenom: ""
           commitEnabled: false
+          withdrawEnabled: true
         - address: ""
           authority: elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3
           baseDenom: ueden
@@ -139,6 +141,7 @@ genesis:
           transferLimit: ""
           unitDenom: ""
           commitEnabled: true
+          withdrawEnabled: true
     epochs:
       epochs:
         - identifier: week
