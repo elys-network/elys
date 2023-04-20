@@ -153,7 +153,7 @@ func (k Keeper) FindProperIncentiveParm(ctx sdk.Context, epochIdentifier string)
 	}
 
 	// Find approporiate Incentive Info
-	for _, ii := range params.LPIncentives {
+	for _, ii := range params.LpIncentives {
 		if ii.EpochIdentifier == epochIdentifier && timestamp >= ii.StartTime.Unix() {
 			lpIncentive = ii
 		}

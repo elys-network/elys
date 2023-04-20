@@ -33189,7 +33189,7 @@ paths:
                 description: params holds all the parameters of this module.
                 type: object
                 properties:
-                  LPIncentives:
+                  lp_incentives:
                     type: array
                     items:
                       type: object
@@ -33197,19 +33197,19 @@ paths:
                         amount:
                           type: string
                           title: reward amount
-                        epochIdentifier:
+                        epoch_identifier:
                           type: string
                           title: epoch identifier
                         start_time:
                           type: string
                           format: date-time
                           title: start_time of the distribution
-                        numEpochs:
+                        num_epochs:
                           type: string
                           format: int64
                           title: distribution duration
                       title: Incentive Info
-                  StakeIncentives:
+                  stake_incentives:
                     type: array
                     items:
                       type: object
@@ -33217,14 +33217,14 @@ paths:
                         amount:
                           type: string
                           title: reward amount
-                        epochIdentifier:
+                        epoch_identifier:
                           type: string
                           title: epoch identifier
                         start_time:
                           type: string
                           format: date-time
                           title: start_time of the distribution
-                        numEpochs:
+                        num_epochs:
                           type: string
                           format: int64
                           title: distribution duration
@@ -69099,14 +69099,14 @@ definitions:
       amount:
         type: string
         title: reward amount
-      epochIdentifier:
+      epoch_identifier:
         type: string
         title: epoch identifier
       start_time:
         type: string
         format: date-time
         title: start_time of the distribution
-      numEpochs:
+      num_epochs:
         type: string
         format: int64
         title: distribution duration
@@ -69114,7 +69114,7 @@ definitions:
   elysnetwork.elys.incentive.Params:
     type: object
     properties:
-      LPIncentives:
+      lp_incentives:
         type: array
         items:
           type: object
@@ -69122,19 +69122,19 @@ definitions:
             amount:
               type: string
               title: reward amount
-            epochIdentifier:
+            epoch_identifier:
               type: string
               title: epoch identifier
             start_time:
               type: string
               format: date-time
               title: start_time of the distribution
-            numEpochs:
+            num_epochs:
               type: string
               format: int64
               title: distribution duration
           title: Incentive Info
-      StakeIncentives:
+      stake_incentives:
         type: array
         items:
           type: object
@@ -69142,14 +69142,14 @@ definitions:
             amount:
               type: string
               title: reward amount
-            epochIdentifier:
+            epoch_identifier:
               type: string
               title: epoch identifier
             start_time:
               type: string
               format: date-time
               title: start_time of the distribution
-            numEpochs:
+            num_epochs:
               type: string
               format: int64
               title: distribution duration
@@ -69162,7 +69162,7 @@ definitions:
         description: params holds all the parameters of this module.
         type: object
         properties:
-          LPIncentives:
+          lp_incentives:
             type: array
             items:
               type: object
@@ -69170,19 +69170,19 @@ definitions:
                 amount:
                   type: string
                   title: reward amount
-                epochIdentifier:
+                epoch_identifier:
                   type: string
                   title: epoch identifier
                 start_time:
                   type: string
                   format: date-time
                   title: start_time of the distribution
-                numEpochs:
+                num_epochs:
                   type: string
                   format: int64
                   title: distribution duration
               title: Incentive Info
-          StakeIncentives:
+          stake_incentives:
             type: array
             items:
               type: object
@@ -69190,14 +69190,14 @@ definitions:
                 amount:
                   type: string
                   title: reward amount
-                epochIdentifier:
+                epoch_identifier:
                   type: string
                   title: epoch identifier
                 start_time:
                   type: string
                   format: date-time
                   title: start_time of the distribution
-                numEpochs:
+                num_epochs:
                   type: string
                   format: int64
                   title: distribution duration
