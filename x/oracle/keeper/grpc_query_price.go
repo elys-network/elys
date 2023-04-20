@@ -69,14 +69,8 @@ func (k Keeper) Price(c context.Context, req *types.QueryGetPriceRequest) (*type
 		return &types.QueryGetPriceResponse{Price: val}, nil
 	}
 
-	// try out binance source
-	val, found = k.GetLatestPriceFromAssetAndSource(ctx, req.Asset, types.BINANCE)
-	if found {
-		return &types.QueryGetPriceResponse{Price: val}, nil
-	}
-
-	// try out osmosis source
-	val, found = k.GetLatestPriceFromAssetAndSource(ctx, req.Asset, types.OSMOSIS)
+	// try out elys source
+	val, found = k.GetLatestPriceFromAssetAndSource(ctx, req.Asset, types.ELYS)
 	if found {
 		return &types.QueryGetPriceResponse{Price: val}, nil
 	}

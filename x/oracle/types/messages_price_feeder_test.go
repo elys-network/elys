@@ -17,13 +17,13 @@ func TestMsgSetPriceFeeder_ValidateBasic(t *testing.T) {
 		{
 			name: "invalid address",
 			msg: MsgSetPriceFeeder{
-				Creator: "invalid_address",
+				Feeder: "invalid_address",
 			},
 			err: sdkerrors.ErrInvalidAddress,
 		}, {
 			name: "valid address",
 			msg: MsgSetPriceFeeder{
-				Creator: sample.AccAddress(),
+				Feeder: sample.AccAddress(),
 			},
 		},
 	}
@@ -48,13 +48,13 @@ func TestMsgDeletePriceFeeder_ValidateBasic(t *testing.T) {
 		{
 			name: "invalid address",
 			msg: MsgDeletePriceFeeder{
-				Creator: "invalid_address",
+				Feeder: "invalid_address",
 			},
 			err: sdkerrors.ErrInvalidAddress,
 		}, {
 			name: "valid address",
 			msg: MsgDeletePriceFeeder{
-				Creator: sample.AccAddress(),
+				Feeder: sample.AccAddress(),
 			},
 		},
 	}

@@ -2,6 +2,7 @@ package cli
 
 import (
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/spf13/cobra"
@@ -37,10 +38,10 @@ func GetTxCmd() *cobra.Command {
 	}
 
 	cmd.AddCommand(CmdRequestBandPrice())
-	cmd.AddCommand(CmdSetAssetInfo())
-	cmd.AddCommand(CmdDeleteAssetInfo())
 	cmd.AddCommand(CmdSubmitAddAssetInfoProposal())
 	cmd.AddCommand(CmdSubmitRemoveAssetInfoProposal())
+	cmd.AddCommand(CmdSubmitAddPriceFeedersProposal())
+	cmd.AddCommand(CmdSubmitRemovePriceFeedersProposal())
 	cmd.AddCommand(CmdFeedPrice())
 	cmd.AddCommand(CmdSetPriceFeeder())
 	cmd.AddCommand(CmdDeletePriceFeeder())
@@ -52,8 +53,8 @@ func GetTxCmd() *cobra.Command {
 
 func CmdSubmitAddAssetInfoProposal() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "add-asset-info-proposal [denom] [display] [bandTicker] [binanceTicker] [osmosisTicker]",
-		Args:  cobra.ExactArgs(5),
+		Use:   "add-asset-info-proposal [denom] [display] [bandTicker] [elysTicker]",
+		Args:  cobra.ExactArgs(4),
 		Short: "Submit an add asset info proposal",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
@@ -78,7 +79,6 @@ func CmdSubmitAddAssetInfoProposal() *cobra.Command {
 				args[1],
 				args[2],
 				args[3],
-				args[4],
 			)
 
 			from := clientCtx.GetFromAddress()
@@ -134,6 +134,118 @@ func CmdSubmitRemoveAssetInfoProposal() *cobra.Command {
 				title,
 				description,
 				args[0],
+			)
+
+			from := clientCtx.GetFromAddress()
+
+			depositStr, err := cmd.Flags().GetString(cli.FlagDeposit)
+			if err != nil {
+				return err
+			}
+			deposit, err := sdk.ParseCoinsNormalized(depositStr)
+			if err != nil {
+				return err
+			}
+
+			msg, err := v1beta1.NewMsgSubmitProposal(content, deposit, from)
+			if err != nil {
+				return err
+			}
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+		},
+	}
+
+	cmd.Flags().String(cli.FlagTitle, "", "title of proposal")
+	cmd.Flags().String(cli.FlagDescription, "", "description of proposal")
+	cmd.Flags().String(cli.FlagDeposit, "", "deposit of proposal")
+	flags.AddTxFlagsToCmd(cmd)
+
+	return cmd
+}
+
+func CmdSubmitAddPriceFeedersProposal() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "add-price-feeders-proposal [feeders]",
+		Args:  cobra.ExactArgs(1),
+		Short: "Submit an add price feeders proposal",
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			title, err := cmd.Flags().GetString(cli.FlagTitle)
+			if err != nil {
+				return err
+			}
+
+			description, err := cmd.Flags().GetString(cli.FlagDescription)
+			if err != nil {
+				return err
+			}
+
+			feeders := strings.Split(args[0], ",")
+			content := types.NewProposalAddPriceFeeders(
+				title,
+				description,
+				feeders,
+			)
+
+			from := clientCtx.GetFromAddress()
+
+			depositStr, err := cmd.Flags().GetString(cli.FlagDeposit)
+			if err != nil {
+				return err
+			}
+			deposit, err := sdk.ParseCoinsNormalized(depositStr)
+			if err != nil {
+				return err
+			}
+
+			msg, err := v1beta1.NewMsgSubmitProposal(content, deposit, from)
+			if err != nil {
+				return err
+			}
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+		},
+	}
+
+	cmd.Flags().String(cli.FlagTitle, "", "title of proposal")
+	cmd.Flags().String(cli.FlagDescription, "", "description of proposal")
+	cmd.Flags().String(cli.FlagDeposit, "", "deposit of proposal")
+	flags.AddTxFlagsToCmd(cmd)
+
+	return cmd
+}
+
+func CmdSubmitRemovePriceFeedersProposal() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "remove-price-feeders-proposal [feeders]",
+		Args:  cobra.ExactArgs(1),
+		Short: "Submit a remove price feeders proposal",
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			title, err := cmd.Flags().GetString(cli.FlagTitle)
+			if err != nil {
+				return err
+			}
+
+			description, err := cmd.Flags().GetString(cli.FlagDescription)
+			if err != nil {
+				return err
+			}
+
+			feeders := strings.Split(args[0], ",")
+			content := types.NewProposalRemovePriceFeeders(
+				title,
+				description,
+				feeders,
 			)
 
 			from := clientCtx.GetFromAddress()

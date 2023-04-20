@@ -33309,9 +33309,7 @@ paths:
                       type: string
                     bandTicker:
                       type: string
-                    binanceTicker:
-                      type: string
-                    osmosisTicker:
+                    elysTicker:
                       type: string
               pagination:
                 type: object
@@ -33437,9 +33435,7 @@ paths:
                     type: string
                   bandTicker:
                     type: string
-                  binanceTicker:
-                    type: string
-                  osmosisTicker:
+                  elysTicker:
                     type: string
         default:
           description: An unexpected error response.
@@ -33524,8 +33520,6 @@ paths:
                   price_expiry_time:
                     type: string
                     format: uint64
-                  module_admin:
-                    type: string
             description: >-
               QueryParamsResponse is response type for the Query/Params RPC
               method.
@@ -69222,9 +69216,7 @@ definitions:
         type: string
       bandTicker:
         type: string
-      binanceTicker:
-        type: string
-      osmosisTicker:
+      elysTicker:
         type: string
   elysnetwork.elys.oracle.BandPriceCallData:
     type: object
@@ -69244,8 +69236,6 @@ definitions:
         items:
           type: string
           format: uint64
-  elysnetwork.elys.oracle.MsgDeleteAssetInfoResponse:
-    type: object
   elysnetwork.elys.oracle.MsgDeletePriceFeederResponse:
     type: object
   elysnetwork.elys.oracle.MsgFeedMultiplePricesResponse:
@@ -69253,8 +69243,6 @@ definitions:
   elysnetwork.elys.oracle.MsgFeedPriceResponse:
     type: object
   elysnetwork.elys.oracle.MsgRequestBandPriceResponse:
-    type: object
-  elysnetwork.elys.oracle.MsgSetAssetInfoResponse:
     type: object
   elysnetwork.elys.oracle.MsgSetPriceFeederResponse:
     type: object
@@ -69302,8 +69290,6 @@ definitions:
       price_expiry_time:
         type: string
         format: uint64
-      module_admin:
-        type: string
     description: Params defines the parameters for the module.
   elysnetwork.elys.oracle.Price:
     type: object
@@ -69340,9 +69326,7 @@ definitions:
               type: string
             bandTicker:
               type: string
-            binanceTicker:
-              type: string
-            osmosisTicker:
+            elysTicker:
               type: string
       pagination:
         type: object
@@ -69476,9 +69460,7 @@ definitions:
             type: string
           bandTicker:
             type: string
-          binanceTicker:
-            type: string
-          osmosisTicker:
+          elysTicker:
             type: string
   elysnetwork.elys.oracle.QueryGetPriceFeederResponse:
     type: object
@@ -69564,8 +69546,6 @@ definitions:
           price_expiry_time:
             type: string
             format: uint64
-          module_admin:
-            type: string
     description: QueryParamsResponse is response type for the Query/Params RPC method.
   elysnetwork.elys.tokenomics.Airdrop:
     type: object

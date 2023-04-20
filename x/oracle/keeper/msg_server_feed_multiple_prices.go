@@ -21,6 +21,7 @@ func (k msgServer) FeedMultiplePrices(goCtx context.Context, msg *types.MsgFeedM
 
 	for _, price := range msg.Prices {
 		price.Provider = msg.Creator
+		price.Timestamp = uint64(ctx.BlockTime().Unix())
 		k.SetPrice(ctx, price)
 	}
 

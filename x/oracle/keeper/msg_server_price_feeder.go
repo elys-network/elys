@@ -9,9 +9,9 @@ import (
 
 func (k msgServer) SetPriceFeeder(goCtx context.Context, msg *types.MsgSetPriceFeeder) (*types.MsgSetPriceFeederResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	params := k.GetParams(ctx)
-	if msg.Creator != params.ModuleAdmin {
-		return nil, types.ErrNotModuleAdmin
+	_, found := k.Keeper.GetPriceFeeder(ctx, msg.Feeder)
+	if !found {
+		return nil, types.ErrNotAPriceFeeder
 	}
 	k.Keeper.SetPriceFeeder(ctx, types.PriceFeeder{
 		Feeder:   msg.Feeder,
@@ -22,9 +22,9 @@ func (k msgServer) SetPriceFeeder(goCtx context.Context, msg *types.MsgSetPriceF
 
 func (k msgServer) DeletePriceFeeder(goCtx context.Context, msg *types.MsgDeletePriceFeeder) (*types.MsgDeletePriceFeederResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	params := k.GetParams(ctx)
-	if msg.Creator != params.ModuleAdmin {
-		return nil, types.ErrNotModuleAdmin
+	_, found := k.Keeper.GetPriceFeeder(ctx, msg.Feeder)
+	if !found {
+		return nil, types.ErrNotAPriceFeeder
 	}
 	k.RemovePriceFeeder(ctx, msg.Feeder)
 	return &types.MsgDeletePriceFeederResponse{}, nil

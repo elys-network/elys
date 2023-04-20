@@ -19,7 +19,7 @@ func createNPrice(keeper *keeper.Keeper, ctx sdk.Context, n int) []types.Price {
 		items[i].Asset = "asset" + strconv.Itoa(i)
 		items[i].Price = sdk.NewDec(1)
 		items[i].Price = sdk.NewDec(1)
-		items[i].Source = "binance"
+		items[i].Source = "elys"
 		items[i].Timestamp = uint64(i)
 
 		keeper.SetPrice(ctx, items[i])
@@ -63,7 +63,7 @@ func (suite *KeeperTestSuite) TestGetLatestPriceFromAssetAndSource() {
 		{
 			Asset:     "BTC",
 			Price:     sdk.NewDec(1),
-			Source:    "binance",
+			Source:    "elys",
 			Timestamp: 100000,
 		},
 		{
@@ -82,11 +82,9 @@ func (suite *KeeperTestSuite) TestGetLatestPriceFromAssetAndSource() {
 	for _, price := range prices {
 		suite.app.OracleKeeper.SetPrice(suite.ctx, price)
 	}
-	price, found := suite.app.OracleKeeper.GetLatestPriceFromAssetAndSource(suite.ctx, "BTC", "binance")
+	price, found := suite.app.OracleKeeper.GetLatestPriceFromAssetAndSource(suite.ctx, "BTC", "elys")
 	suite.Require().True(found)
 	suite.Require().Equal(price, prices[0])
-	price, found = suite.app.OracleKeeper.GetLatestPriceFromAssetAndSource(suite.ctx, "BTC", "osmosis")
-	suite.Require().False(found)
 	price, found = suite.app.OracleKeeper.GetLatestPriceFromAssetAndSource(suite.ctx, "BTC", "band")
 	suite.Require().True(found)
 	suite.Require().Equal(price, prices[2])
@@ -97,7 +95,7 @@ func (suite *KeeperTestSuite) TestGetLatestPriceFromAnySource() {
 		{
 			Asset:     "BTC",
 			Price:     sdk.NewDec(1),
-			Source:    "binance",
+			Source:    "elys",
 			Timestamp: 100000,
 		},
 		{
