@@ -17,7 +17,7 @@ func (suite *KeeperTestSuite) TestEndBlock() {
 		{
 			Asset:     "BTC",
 			Price:     sdk.NewDec(1),
-			Source:    "binance",
+			Source:    "elys",
 			Timestamp: uint64(now.Unix()),
 		},
 		{

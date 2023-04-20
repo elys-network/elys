@@ -40,8 +40,6 @@ func SimulateMsgSetPriceFeeder(
 		if !found {
 			return simtypes.NoOpMsg(types.ModuleName, msg.Type(), "priceFeeder creator not found"), nil, nil
 		}
-		msg.Creator = simAccount.Address.String()
-
 		msg.Feeder = priceFeeder.Feeder
 
 		txCtx := simulation.OperationInput{
@@ -86,8 +84,6 @@ func SimulateMsgDeletePriceFeeder(
 		if !found {
 			return simtypes.NoOpMsg(types.ModuleName, msg.Type(), "priceFeeder creator not found"), nil, nil
 		}
-		msg.Creator = simAccount.Address.String()
-
 		msg.Feeder = priceFeeder.Feeder
 
 		txCtx := simulation.OperationInput{

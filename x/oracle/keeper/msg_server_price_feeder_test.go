@@ -23,8 +23,8 @@ func (suite *KeeperTestSuite) TestPriceFeederMsgServerUpdate() {
 		{
 			desc: "Completed",
 			request: &types.MsgSetPriceFeeder{
-				Creator: creator,
-				Feeder:  strconv.Itoa(0),
+				Feeder:   creator,
+				IsActive: false,
 			},
 		},
 	} {
@@ -32,8 +32,11 @@ func (suite *KeeperTestSuite) TestPriceFeederMsgServerUpdate() {
 			suite.SetupTest()
 			k, ctx := suite.app.OracleKeeper, suite.ctx
 			params := types.DefaultParams()
-			params.ModuleAdmin = creator
 			suite.app.OracleKeeper.SetParams(ctx, params)
+			suite.app.OracleKeeper.SetPriceFeeder(ctx, types.PriceFeeder{
+				Feeder:   creator,
+				IsActive: true,
+			})
 
 			srv := keeper.NewMsgServerImpl(k)
 			wctx := sdk.WrapSDKContext(ctx)
@@ -62,25 +65,23 @@ func (suite *KeeperTestSuite) TestPriceFeederMsgServerDelete() {
 	}{
 		{
 			desc: "Completed",
-			request: &types.MsgDeletePriceFeeder{Creator: creator,
-				Feeder: strconv.Itoa(0),
+			request: &types.MsgDeletePriceFeeder{
+				Feeder: creator,
 			},
 		},
 	} {
 		suite.Run(tc.desc, func() {
 			k, ctx := suite.app.OracleKeeper, suite.ctx
 			params := types.DefaultParams()
-			params.ModuleAdmin = creator
 			suite.app.OracleKeeper.SetParams(ctx, params)
+			suite.app.OracleKeeper.SetPriceFeeder(ctx, types.PriceFeeder{
+				Feeder:   creator,
+				IsActive: true,
+			})
 
 			srv := keeper.NewMsgServerImpl(k)
 			wctx := sdk.WrapSDKContext(ctx)
-			_, err := srv.SetPriceFeeder(wctx, &types.MsgSetPriceFeeder{
-				Creator: creator,
-				Feeder:  strconv.Itoa(0),
-			})
-			suite.Require().NoError(err)
-			_, err = srv.DeletePriceFeeder(wctx, tc.request)
+			_, err := srv.DeletePriceFeeder(wctx, tc.request)
 			if tc.err != nil {
 				suite.Require().ErrorIs(err, tc.err)
 			} else {

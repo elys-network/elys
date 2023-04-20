@@ -10,7 +10,7 @@ func (suite *KeeperTestSuite) TestGRPCQueryPrice() {
 		{
 			Asset:     "BTC",
 			Price:     sdk.NewDec(1),
-			Source:    "binance",
+			Source:    "elys",
 			Timestamp: 100000,
 		},
 		{
@@ -36,20 +36,20 @@ func (suite *KeeperTestSuite) TestGRPCQueryPrice() {
 	suite.Require().Equal(resp.Price, prices[2])
 	resp, err = suite.app.OracleKeeper.Price(sdk.WrapSDKContext(suite.ctx), &types.QueryGetPriceRequest{
 		Asset:  "BTC",
-		Source: "binance",
+		Source: "elys",
 	})
 	suite.Require().NoError(err)
 	suite.Require().Equal(resp.Price, prices[0])
 	resp, err = suite.app.OracleKeeper.Price(sdk.WrapSDKContext(suite.ctx), &types.QueryGetPriceRequest{
 		Asset:     "BTC",
-		Source:    "binance",
+		Source:    "elys",
 		Timestamp: 100000,
 	})
 	suite.Require().NoError(err)
 	suite.Require().Equal(resp.Price, prices[0])
 	resp, err = suite.app.OracleKeeper.Price(sdk.WrapSDKContext(suite.ctx), &types.QueryGetPriceRequest{
 		Asset:     "BTC",
-		Source:    "binance",
+		Source:    "elys",
 		Timestamp: 11000,
 	})
 	suite.Require().Error(err)

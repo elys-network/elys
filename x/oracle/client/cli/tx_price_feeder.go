@@ -12,9 +12,9 @@ import (
 
 func CmdSetPriceFeeder() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "set-price-feeder [feeder] [isActive]",
+		Use:   "set-price-feeder [isActive]",
 		Short: "Set a price feeder",
-		Args:  cobra.ExactArgs(2),
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
@@ -27,7 +27,6 @@ func CmdSetPriceFeeder() *cobra.Command {
 			}
 			msg := types.NewMsgSetPriceFeeder(
 				clientCtx.GetFromAddress().String(),
-				args[0],
 				isActive,
 			)
 			if err := msg.ValidateBasic(); err != nil {
@@ -44,9 +43,9 @@ func CmdSetPriceFeeder() *cobra.Command {
 
 func CmdDeletePriceFeeder() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "delete-price-feeder [feeder]",
+		Use:   "delete-price-feeder",
 		Short: "Delete a priceFeeder",
-		Args:  cobra.ExactArgs(1),
+		Args:  cobra.ExactArgs(0),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
@@ -55,7 +54,6 @@ func CmdDeletePriceFeeder() *cobra.Command {
 
 			msg := types.NewMsgDeletePriceFeeder(
 				clientCtx.GetFromAddress().String(),
-				args[0],
 			)
 			if err := msg.ValidateBasic(); err != nil {
 				return err

@@ -24,14 +24,6 @@ var (
 )
 
 const (
-	opWeightMsgSetAssetInfo = "op_weight_msg_asset_info"
-	// TODO: Determine the simulation weight value
-	defaultWeightMsgSetAssetInfo int = 100
-
-	opWeightMsgDeleteAssetInfo = "op_weight_msg_asset_info"
-	// TODO: Determine the simulation weight value
-	defaultWeightMsgDeleteAssetInfo int = 100
-
 	opWeightMsgFeedPrice = "op_weight_msg_price"
 	// TODO: Determine the simulation weight value
 	defaultWeightMsgFeedPrice int = 100
@@ -104,28 +96,6 @@ func (am AppModule) RegisterStoreDecoder(_ sdk.StoreDecoderRegistry) {}
 // WeightedOperations returns the all the gov module operations with their respective weights.
 func (am AppModule) WeightedOperations(simState module.SimulationState) []simtypes.WeightedOperation {
 	operations := make([]simtypes.WeightedOperation, 0)
-
-	var weightMsgSetAssetInfo int
-	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgSetAssetInfo, &weightMsgSetAssetInfo, nil,
-		func(_ *rand.Rand) {
-			weightMsgSetAssetInfo = defaultWeightMsgSetAssetInfo
-		},
-	)
-	operations = append(operations, simulation.NewWeightedOperation(
-		weightMsgSetAssetInfo,
-		oraclesimulation.SimulateMsgSetAssetInfo(am.accountKeeper, am.bankKeeper, am.keeper),
-	))
-
-	var weightMsgDeleteAssetInfo int
-	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgDeleteAssetInfo, &weightMsgDeleteAssetInfo, nil,
-		func(_ *rand.Rand) {
-			weightMsgDeleteAssetInfo = defaultWeightMsgDeleteAssetInfo
-		},
-	)
-	operations = append(operations, simulation.NewWeightedOperation(
-		weightMsgDeleteAssetInfo,
-		oraclesimulation.SimulateMsgDeleteAssetInfo(am.accountKeeper, am.bankKeeper, am.keeper),
-	))
 
 	var weightMsgFeedPrice int
 	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgFeedPrice, &weightMsgFeedPrice, nil,

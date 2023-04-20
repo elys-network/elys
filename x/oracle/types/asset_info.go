@@ -1,7 +1,6 @@
 package types
 
 var (
-	BAND    = "band"
-	BINANCE = "binance"
-	OSMOSIS = "osmosis"
+	BAND = "band"
+	ELYS = "elys"
 )

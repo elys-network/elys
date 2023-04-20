@@ -13,12 +13,10 @@ const (
 var _ sdk.Msg = &MsgSetPriceFeeder{}
 
 func NewMsgSetPriceFeeder(
-	creator string,
 	feeder string,
 	isActive bool,
 ) *MsgSetPriceFeeder {
 	return &MsgSetPriceFeeder{
-		Creator:  creator,
 		Feeder:   feeder,
 		IsActive: isActive,
 	}
@@ -33,7 +31,7 @@ func (msg *MsgSetPriceFeeder) Type() string {
 }
 
 func (msg *MsgSetPriceFeeder) GetSigners() []sdk.AccAddress {
-	creator, err := sdk.AccAddressFromBech32(msg.Creator)
+	creator, err := sdk.AccAddressFromBech32(msg.Feeder)
 	if err != nil {
 		panic(err)
 	}
@@ -46,9 +44,9 @@ func (msg *MsgSetPriceFeeder) GetSignBytes() []byte {
 }
 
 func (msg *MsgSetPriceFeeder) ValidateBasic() error {
-	_, err := sdk.AccAddressFromBech32(msg.Creator)
+	_, err := sdk.AccAddressFromBech32(msg.Feeder)
 	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid feeder address (%s)", err)
 	}
 	return nil
 }
@@ -56,12 +54,10 @@ func (msg *MsgSetPriceFeeder) ValidateBasic() error {
 var _ sdk.Msg = &MsgDeletePriceFeeder{}
 
 func NewMsgDeletePriceFeeder(
-	creator string,
 	feeder string,
 ) *MsgDeletePriceFeeder {
 	return &MsgDeletePriceFeeder{
-		Creator: creator,
-		Feeder:  feeder,
+		Feeder: feeder,
 	}
 }
 func (msg *MsgDeletePriceFeeder) Route() string {
@@ -73,7 +69,7 @@ func (msg *MsgDeletePriceFeeder) Type() string {
 }
 
 func (msg *MsgDeletePriceFeeder) GetSigners() []sdk.AccAddress {
-	creator, err := sdk.AccAddressFromBech32(msg.Creator)
+	creator, err := sdk.AccAddressFromBech32(msg.Feeder)
 	if err != nil {
 		panic(err)
 	}
@@ -86,9 +82,9 @@ func (msg *MsgDeletePriceFeeder) GetSignBytes() []byte {
 }
 
 func (msg *MsgDeletePriceFeeder) ValidateBasic() error {
-	_, err := sdk.AccAddressFromBech32(msg.Creator)
+	_, err := sdk.AccAddressFromBech32(msg.Feeder)
 	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid feeder address (%s)", err)
 	}
 	return nil
 }

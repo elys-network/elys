@@ -25,7 +25,7 @@ func (suite *KeeperTestSuite) TestPriceMsgServerCreate() {
 		expected := &types.MsgFeedPrice{
 			Provider: creator,
 			Asset:    strconv.Itoa(i),
-			Source:   "binance",
+			Source:   "elys",
 		}
 		_, err := srv.FeedPrice(wctx, expected)
 		suite.Require().NoError(err)

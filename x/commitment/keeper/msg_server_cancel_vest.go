@@ -26,7 +26,7 @@ func (k msgServer) CancelVest(goCtx context.Context, msg *types.MsgCancelVest) (
 
 	remainingToCancel := msg.Amount
 
-	for i := 0; i < len(commitments.VestingTokens) && !remainingToCancel.IsZero(); {
+	for i := 0; i < len(commitments.VestingTokens) && !remainingToCancel.IsZero(); i++ {
 		vesting := commitments.VestingTokens[i]
 
 		if vesting.Denom == msg.Denom {
@@ -37,18 +37,29 @@ func (k msgServer) CancelVest(goCtx context.Context, msg *types.MsgCancelVest) (
 
 			if vesting.TotalAmount.IsZero() {
 				commitments.VestingTokens = append(commitments.VestingTokens[:i], commitments.VestingTokens[i+1:]...)
-			} else {
-				i++
+				i--
 			}
 
 			remainingToCancel = remainingToCancel.Sub(cancelAmount)
-		} else {
-			i++
 		}
 	}
 
 	if !remainingToCancel.IsZero() {
 		return nil, sdkerrors.Wrapf(types.ErrInsufficientVestingTokens, "denom: %s, amount: %s", msg.Denom, msg.Amount)
+	}
+
+	// Update the uncommitted tokens amount
+	uncommittedToken, found := commitments.GetUncommittedTokensForDenom(msg.Denom)
+
+	if found {
+		uncommittedToken.Amount = uncommittedToken.Amount.Add(msg.Amount)
+	} else {
+		uncommittedTokens := commitments.GetUncommittedTokens()
+		uncommittedTokens = append(uncommittedTokens, &types.UncommittedTokens{
+			Denom:  msg.Denom,
+			Amount: msg.Amount,
+		})
+		commitments.UncommittedTokens = uncommittedTokens
 	}
 
 	k.SetCommitments(ctx, commitments)

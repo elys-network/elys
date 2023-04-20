@@ -586,6 +586,15 @@ func NewElysApp(
 
 	commitmentModule := commitmentmodule.NewAppModule(appCodec, app.CommitmentKeeper, app.AccountKeeper, app.BankKeeper)
 
+	app.IncentiveKeeper = *incentivemodulekeeper.NewKeeper(
+		appCodec,
+		keys[incentivemoduletypes.StoreKey],
+		keys[incentivemoduletypes.MemStoreKey],
+		app.GetSubspace(incentivemoduletypes.ModuleName),
+		app.CommitmentKeeper,
+	)
+	incentiveModule := incentivemodule.NewAppModule(appCodec, app.IncentiveKeeper, app.AccountKeeper, app.BankKeeper)
+
 	epochsKeeper := epochsmodulekeeper.NewKeeper(appCodec, keys[epochsmoduletypes.StoreKey])
 	app.EpochsKeeper = *epochsKeeper.SetHooks(
 		epochsmodulekeeper.NewMultiEpochHooks(
@@ -868,6 +877,8 @@ func NewElysApp(
 	app.SetInitChainer(app.InitChainer)
 	app.SetBeginBlocker(app.BeginBlocker)
 	app.SetEndBlocker(app.EndBlocker)
+
+	SetupHandlers(app)
 
 	if loadLatest {
 		if err := app.LoadLatestVersion(); err != nil {
