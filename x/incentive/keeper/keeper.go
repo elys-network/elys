@@ -273,17 +273,39 @@ func (k Keeper) UpdateCommitments(ctx sdk.Context, creator string, new_uncommitt
 	commitments, _ := k.cmk.GetCommitments(ctx, creator)
 
 	// Update uncommitted Eden and Eden-Boost token balances in the Commitments structure
-	k.UpdateEdenTokens(commitments, new_uncommitted_eden_tokens)
-	k.UpdateEdenBoostTokens(commitments, new_uncommitted_eden_boost_tokens)
+	k.UpdateEdenTokens(&commitments, new_uncommitted_eden_tokens)
+	k.UpdateEdenBoostTokens(&commitments, new_uncommitted_eden_boost_tokens)
 
 	// Save the updated Commitments
 	k.cmk.SetCommitments(ctx, commitments)
 }
 
-func (k Keeper) UpdateEdenTokens(commitments ctypes.Commitments, new_uncommitted_eden_tokens sdk.Int) {
-	// Update the uncommitted Eden token balance
+// Update the uncommitted Eden token balance
+func (k Keeper) UpdateEdenTokens(commitments *ctypes.Commitments, new_uncommitted_eden_tokens sdk.Int) {
+	uncommittedEden, found := commitments.GetUncommittedTokensForDenom(types.Eden)
+	if !found {
+		uncommittedTokens := commitments.GetUncommittedTokens()
+		uncommittedTokens = append(uncommittedTokens, &ctypes.UncommittedTokens{
+			Denom:  types.Eden,
+			Amount: new_uncommitted_eden_tokens,
+		})
+		commitments.UncommittedTokens = uncommittedTokens
+	} else {
+		uncommittedEden.Amount = uncommittedEden.Amount.Add(new_uncommitted_eden_tokens)
+	}
 }
 
-func (k Keeper) UpdateEdenBoostTokens(commitments ctypes.Commitments, new_uncommitted_eden_boost_tokens sdk.Int) {
-	// Update the uncommitted Eden-Boost token balance
+// Update the uncommitted Eden-Boost token balance
+func (k Keeper) UpdateEdenBoostTokens(commitments *ctypes.Commitments, new_uncommitted_eden_boost_tokens sdk.Int) {
+	uncommittedEdenBoost, found := commitments.GetUncommittedTokensForDenom(types.Eden)
+	if !found {
+		uncommittedTokens := commitments.GetUncommittedTokens()
+		uncommittedTokens = append(uncommittedTokens, &ctypes.UncommittedTokens{
+			Denom:  types.EdenB,
+			Amount: new_uncommitted_eden_boost_tokens,
+		})
+		commitments.UncommittedTokens = uncommittedTokens
+	} else {
+		uncommittedEdenBoost.Amount = uncommittedEdenBoost.Amount.Add(new_uncommitted_eden_boost_tokens)
+	}
 }

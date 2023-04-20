@@ -576,7 +576,7 @@ func NewElysApp(
 		commitmentKeeper,
 		app.StakingKeeper,
 	)
-	incentiveModule := incentivemodule.NewAppModule(appCodec, app.IncentiveKeeper, app.AccountKeeper, app.BankKeeper)
+	incentiveModule := incentivemodule.NewAppModule(appCodec, app.IncentiveKeeper)
 
 	app.CommitmentKeeper = *commitmentKeeper.SetHooks(
 		commitmentmodulekeeper.NewMultiEpochHooks(

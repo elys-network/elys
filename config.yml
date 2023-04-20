@@ -176,6 +176,18 @@ genesis:
             epoch_identifier: tenseconds
             num_epochs: "10"
             vest_now_factor: "90"
+    incentive:
+      params:
+        lp_incentives:
+          - amount: 10000000
+            epoch_identifier: day
+            start_time: 1680341771
+            num_epochs: 365
+        stake_incentives:
+          - amount: 10000000
+            epoch_identifier: day
+            start_time: 1680341771
+            num_epochs: 365
     tokenomics:
       airdropList:
         - intent: AtomStakers

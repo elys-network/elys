@@ -7,7 +7,6 @@ import (
 
 // Process commitmentChanged hook
 func (k Keeper) CommitmentChanged(ctx sdk.Context, creator string, amount sdk.Coin) {
-
 }
 
 // ___________________________________________________________________________________________________
