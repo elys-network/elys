@@ -247,4 +247,14 @@ genesis:
         - feeder: "elys12tzylat4udvjj56uuhu3vj2n4vgp7cf9fwna9w"
           is_active: true
       prices:
+    burner:
+      params:
+        epochIdentifier: day
+      historyList:
+        - timestamp: "1629792000"
+          denom: "uelys"
+          amount: "1000000"
+        - timestamp: "1629792000"
+          denom: "ueden"
+          amount: "1000000"
   chain_id: elystestnet-1
