@@ -12,18 +12,16 @@ func (k Keeper) BeforeEpochStart(ctx sdk.Context, epochIdentifier string, epochN
 
 // AfterEpochEnd distributes vested tokens at the end of each epoch
 func (k Keeper) AfterEpochEnd(ctx sdk.Context, epochIdentifier string, _ int64) {
-	// Future Improvement: check all VestingInfos and get all VestingTokens by denom
-	// so we can iterate different denoms in different EpochIdentifiers
-	// vestingInfo := k.GetVestingInfo(ctx, "ueden")
-	// if vestingInfo != nil {
-	// 	if epochIdentifier == vestingInfo.EpochIdentifier {
-	// 		k.Logger(ctx).Info("Vesting tokens for vestingInfo", vestingInfo)
-	// 		if err := k.VestTokens(ctx); err != nil {
-	// 			k.Logger(ctx).Error("Error vesting tokens", "vestingInfo", vestingInfo)
-	// 			panic(err)
-	// 		}
-	// 	}
-	// }
+	// Find out incentive param using epochIdentifier and current block timestamp
+	foundIncentive, _, _ := k.FindProperIncentiveParm(ctx, epochIdentifier)
+
+	// If there is no incentive available with the current epoch and timestamp,
+	if !foundIncentive {
+		return
+	}
+
+	// Update uncommitted token amount
+	k.UpdateUncommittedTokens(ctx, epochIdentifier)
 }
 
 // ___________________________________________________________________________________________________

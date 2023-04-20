@@ -50,7 +50,7 @@ func (k Keeper) RemoveCommitments(
 // IterateCommitments iterates over all Commitments and performs a
 // callback.
 func (k Keeper) IterateCommitments(
-	ctx sdk.Context,
+	ctx sdk.Context, epochIdentifider string,
 	handlerFn func(commitments types.Commitments) (stop bool),
 ) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.CommitmentsKeyPrefix))

@@ -68,6 +68,6 @@ func (k msgServer) DepositTokens(goCtx context.Context, msg *types.MsgDepositTok
 			sdk.NewAttribute(types.AttributeDenom, msg.Denom),
 		),
 	)
-	
+
 	return &types.MsgDepositTokensResponse{}, nil
 }

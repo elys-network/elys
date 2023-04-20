@@ -17,7 +17,7 @@ func (k Keeper) AfterEpochEnd(ctx sdk.Context, epochIdentifier string, _ int64) 
 	if vestingInfo != nil {
 		if epochIdentifier == vestingInfo.EpochIdentifier {
 			k.Logger(ctx).Info("Vesting tokens for vestingInfo", vestingInfo)
-			if err := k.VestTokens(ctx); err != nil {
+			if err := k.VestTokens(ctx, epochIdentifier); err != nil {
 				k.Logger(ctx).Error("Error vesting tokens", "vestingInfo", vestingInfo)
 				panic(err)
 			}

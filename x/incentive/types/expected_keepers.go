@@ -2,21 +2,28 @@ package types
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/x/auth/types"
+	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
+	ctypes "github.com/elys-network/elys/x/commitment/types"
 )
-
-// AccountKeeper defines the expected account keeper used for simulations (noalias)
-type AccountKeeper interface {
-	GetAccount(ctx sdk.Context, addr sdk.AccAddress) types.AccountI
-	// Methods imported from account should be defined here
-}
-
-// BankKeeper defines the expected interface needed to retrieve account balances.
-type BankKeeper interface {
-	SpendableCoins(ctx sdk.Context, addr sdk.AccAddress) sdk.Coins
-	// Methods imported from bank should be defined here
-}
 
 // CommitmentKeeper
 type CommitmentKeeper interface {
+	// Iterate all commitment
+	IterateCommitments(sdk.Context, string, func(ctypes.Commitments) (stop bool))
+	// Initiate commitment according to standard staking
+	StandardStakingToken(sdk.Context, string, string) error
+	// Update commitment
+	SetCommitments(sdk.Context, ctypes.Commitments)
+	// Get commitment
+	GetCommitments(sdk.Context, string) (ctypes.Commitments, bool)
+}
+
+// Staking keeper
+type StakingKeeper interface {
+	TotalBondedTokens(sdk.Context) sdk.Int // total bonded tokens within the validator set
+	// iterate through all delegations from one delegator by validator-AccAddress,
+	// execute func for each validator
+	IterateDelegations(ctx sdk.Context, delegator sdk.AccAddress, fn func(index int64, delegation stakingtypes.DelegationI) (stop bool))
+	// get a particular validator by operator address
+	Validator(sdk.Context, sdk.ValAddress) stakingtypes.ValidatorI
 }
