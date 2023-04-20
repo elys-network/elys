@@ -19,12 +19,38 @@ func TestGenesisState_Validate(t *testing.T) {
 			valid:    true,
 		},
 		{
-			desc:     "valid genesis state",
+			desc: "valid genesis state",
 			genState: &types.GenesisState{
 
+				HistoryList: []types.History{
+					{
+						Timestamp: "0",
+						Denom:     "0",
+					},
+					{
+						Timestamp: "1",
+						Denom:     "1",
+					},
+				},
 				// this line is used by starport scaffolding # types/genesis/validField
 			},
 			valid: true,
+		},
+		{
+			desc: "duplicated history",
+			genState: &types.GenesisState{
+				HistoryList: []types.History{
+					{
+						Timestamp: "0",
+						Denom:     "0",
+					},
+					{
+						Timestamp: "0",
+						Denom:     "0",
+					},
+				},
+			},
+			valid: false,
 		},
 		// this line is used by starport scaffolding # types/genesis/testcase
 	} {

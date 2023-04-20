@@ -14,6 +14,16 @@ func TestGenesis(t *testing.T) {
 	genesisState := types.GenesisState{
 		Params: types.DefaultParams(),
 
+		HistoryList: []types.History{
+			{
+				Timestamp: "0",
+				Denom:     "0",
+			},
+			{
+				Timestamp: "1",
+				Denom:     "1",
+			},
+		},
 		// this line is used by starport scaffolding # genesis/test/state
 	}
 
@@ -25,5 +35,6 @@ func TestGenesis(t *testing.T) {
 	nullify.Fill(&genesisState)
 	nullify.Fill(got)
 
+	require.ElementsMatch(t, genesisState.HistoryList, got.HistoryList)
 	// this line is used by starport scaffolding # genesis/test/assert
 }
