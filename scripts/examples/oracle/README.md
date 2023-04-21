@@ -6,7 +6,7 @@
 git clone git@github.com:elys-network/bandchain.git
 git checkout v2_4_1_customization
 go install ./cmd/bandd
-sh ./x/oracle/start_band.sh
+sh ./scripts/examples/oracle/start_band.sh
 ```
 
 ### Start elys chain
