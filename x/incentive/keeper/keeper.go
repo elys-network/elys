@@ -162,6 +162,7 @@ func (k Keeper) UpdateUncommittedTokens(ctx sdk.Context, epochIdentifier string,
 
 	// Calculate eden amount per epoch
 	edenAmountPerEpoch := stakeIncentive.Amount.Quo(sdk.NewInt(stakeIncentive.NumEpochs))
+	edenBoostAPR := stakeIncentive.EdenBoostApr
 
 	// Iterate all delegations for the specified delegator
 	// Process to increase uncomitted token amount of Eden & Eden boost
@@ -177,7 +178,7 @@ func (k Keeper) UpdateUncommittedTokens(ctx sdk.Context, epochIdentifier string,
 			newUncommittedEdenTokens := k.CalculateNewUncommittedEdenTokens(ctx, delegatedAmt, commitments, edenAmountPerEpoch)
 
 			// Calculate new uncommitted Eden-Boost tokens for staker and Eden token holders
-			newUncommittedEdenBoostTokens := k.CalculateNewUncommittedEdenBoostTokens(ctx, delegatedAmt, commitments, epochIdentifier)
+			newUncommittedEdenBoostTokens := k.CalculateNewUncommittedEdenBoostTokens(ctx, delegatedAmt, commitments, epochIdentifier, edenBoostAPR)
 
 			// Update Commitments with new uncommitted token amounts
 			k.UpdateCommitments(ctx, creator, &commitments, newUncommittedEdenTokens, newUncommittedEdenBoostTokens)
@@ -221,17 +222,17 @@ func (k Keeper) CalculateEpochCountsPerYear(epochIdentifier string) int64 {
 }
 
 // Calculate new Eden-Boost token amounts based on the given conditions and user's current uncommitted token balance
-func (k Keeper) CalculateNewUncommittedEdenBoostTokens(ctx sdk.Context, delegatedAmt sdk.Int, commitments ctypes.Commitments, epochIdentifier string) sdk.Int {
+func (k Keeper) CalculateNewUncommittedEdenBoostTokens(ctx sdk.Context, delegatedAmt sdk.Int, commitments ctypes.Commitments, epochIdentifier string, edenBoostAPR int64) sdk.Int {
 	// Get eden commitments
 	edenCommitted := commitments.GetCommittedAmountForDenom(types.Eden)
 
 	// Gompute eden reward based on above and param factors for each
 	totalEden := delegatedAmt.Add(edenCommitted)
 
-	// Calculate 100% APR for eden boost
+	// Calculate edenBoostAPR % APR for eden boost
 	epochNumsPerYear := k.CalculateEpochCountsPerYear(epochIdentifier)
 
-	return totalEden.Quo(sdk.NewInt(epochNumsPerYear))
+	return totalEden.Quo(sdk.NewInt(epochNumsPerYear)).Quo(sdk.NewInt(100)).Mul(sdk.NewInt(edenBoostAPR))
 }
 
 func (k Keeper) UpdateCommitments(ctx sdk.Context, creator string, commitments *ctypes.Commitments, newUncommittedEdenTokens sdk.Int, newUncommittedEdenBoostTokens sdk.Int) {

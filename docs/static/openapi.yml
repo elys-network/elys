@@ -33211,6 +33211,9 @@ paths:
                         current_epoch:
                           type: string
                           format: int64
+                        eden_boost_apr:
+                          type: string
+                          format: int64
                       title: Incentive Info
                   stake_incentives:
                     type: array
@@ -33232,6 +33235,9 @@ paths:
                           format: int64
                           title: distribution duration
                         current_epoch:
+                          type: string
+                          format: int64
+                        eden_boost_apr:
                           type: string
                           format: int64
                       title: Incentive Info
@@ -69113,6 +69119,9 @@ definitions:
       current_epoch:
         type: string
         format: int64
+      eden_boost_apr:
+        type: string
+        format: int64
     title: Incentive Info
   elysnetwork.elys.incentive.Params:
     type: object
@@ -69139,6 +69148,9 @@ definitions:
             current_epoch:
               type: string
               format: int64
+            eden_boost_apr:
+              type: string
+              format: int64
           title: Incentive Info
       stake_incentives:
         type: array
@@ -69160,6 +69172,9 @@ definitions:
               format: int64
               title: distribution duration
             current_epoch:
+              type: string
+              format: int64
+            eden_boost_apr:
               type: string
               format: int64
           title: Incentive Info
@@ -69193,6 +69208,9 @@ definitions:
                 current_epoch:
                   type: string
                   format: int64
+                eden_boost_apr:
+                  type: string
+                  format: int64
               title: Incentive Info
           stake_incentives:
             type: array
@@ -69214,6 +69232,9 @@ definitions:
                   format: int64
                   title: distribution duration
                 current_epoch:
+                  type: string
+                  format: int64
+                eden_boost_apr:
                   type: string
                   format: int64
               title: Incentive Info

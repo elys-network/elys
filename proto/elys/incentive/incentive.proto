@@ -18,4 +18,5 @@ message IncentiveInfo {
     // distribution duration
 	int64 num_epochs = 4;
     int64 current_epoch = 5;
+    int64 eden_boost_apr = 6;
 }

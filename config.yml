@@ -178,11 +178,15 @@ genesis:
             epoch_identifier: day
             start_time: "2023-04-20T12:34:56.789Z"
             num_epochs: "365"
+            current_epoch: "0"
+            eden_boost_apr: "100"
         stake_incentives:
           - amount: "10000000"
             epoch_identifier: day
             start_time: "2023-04-20T12:34:56.789Z"
             num_epochs: "365"
+            current_epoch: "0"
+            eden_boost_apr: "100"
     tokenomics:
       airdropList:
         - intent: AtomStakers
