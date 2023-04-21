@@ -21,5 +21,7 @@ message Entry {
   string ibcCounterpartyDenom = 15; 
   string ibcCounterpartyChainId = 16; 
   string authority = 17;
+  bool commit_enabled = 18;
+  bool withdraw_enabled = 19;
 }
 
