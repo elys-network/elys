@@ -8,7 +8,7 @@ import (
 
 func (k Keeper) VestTokens(ctx sdk.Context, epochIdentifier string) error {
 	// Future Improvement: get all VestingTokens by denom and iterate
-	k.IterateCommitments(ctx, epochIdentifier, func(commitments types.Commitments) (stop bool) {
+	k.IterateCommitments(ctx, func(commitments types.Commitments) (stop bool) {
 		logger := k.Logger(ctx)
 
 		for index := len(commitments.VestingTokens) - 1; index >= 0; index-- {

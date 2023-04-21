@@ -13,7 +13,7 @@ func (k Keeper) BeforeEpochStart(ctx sdk.Context, epochIdentifier string, epochN
 // AfterEpochEnd distributes vested tokens at the end of each epoch
 func (k Keeper) AfterEpochEnd(ctx sdk.Context, epochIdentifier string, _ int64) {
 	// Find out incentive param using epochIdentifier and current block timestamp
-	foundIncentive, _, _ := k.GetProperIncentiveParam(ctx, epochIdentifier)
+	foundIncentive, stakeIncentive, lpIncentive := k.GetProperIncentiveParam(ctx, epochIdentifier)
 
 	// If there is no incentive available with the current epoch and timestamp,
 	if !foundIncentive {
@@ -21,7 +21,7 @@ func (k Keeper) AfterEpochEnd(ctx sdk.Context, epochIdentifier string, _ int64) 
 	}
 
 	// Update uncommitted token amount
-	k.UpdateUncommittedTokens(ctx, epochIdentifier)
+	k.UpdateUncommittedTokens(ctx, epochIdentifier, stakeIncentive, lpIncentive)
 }
 
 // ___________________________________________________________________________________________________

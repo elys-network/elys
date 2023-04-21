@@ -56,14 +56,14 @@ func (k Keeper) Logger(ctx sdk.Context) log.Logger {
 }
 
 // Update total commitment info
-func (k Keeper) UpdateTotalCommitmentInfo(ctx sdk.Context, epochIdentifier string) {
+func (k Keeper) UpdateTotalCommitmentInfo(ctx sdk.Context) {
 	// Fetch total staked Elys amount again
 	k.tci.TotalElysBonded = k.stk.TotalBondedTokens(ctx)
 	// Initialize with amount zero
 	k.tci.TotalCommitted = sdk.ZeroInt()
 
 	// Iterate to calculate total Eden and Eden boost committed
-	k.cmk.IterateCommitments(ctx, epochIdentifier, func(commitments ctypes.Commitments) bool {
+	k.cmk.IterateCommitments(ctx, func(commitments ctypes.Commitments) bool {
 		committedEdenToken := commitments.GetCommittedAmountForDenom(types.Eden)
 		committedEdenBoostToken := commitments.GetCommittedAmountForDenom(types.EdenB)
 
@@ -135,29 +135,38 @@ func (k Keeper) GetProperIncentiveParam(ctx sdk.Context, epochIdentifier string)
 		return false, types.IncentiveInfo{}, types.IncentiveInfo{}
 	}
 
+	// Increase current epoch of Stake incentive param
+	stakeIncentive.CurrentEpoch = stakeIncentive.CurrentEpoch + 1
+	if stakeIncentive.CurrentEpoch == stakeIncentive.NumEpochs {
+		params.StakeIncentives = params.StakeIncentives[1:]
+	}
+
+	// Increase current epoch of Lp incentive param
+	lpIncentive.CurrentEpoch = lpIncentive.CurrentEpoch + 1
+	if lpIncentive.CurrentEpoch == lpIncentive.NumEpochs {
+		params.LpIncentives = params.LpIncentives[1:]
+	}
+
+	// Update params
+	k.SetParams(ctx, params)
+
 	// return found, stake, lp incentive params
 	return foundIncentive, stakeIncentive, lpIncentive
 }
 
 // Update uncommitted token amount
 // Called back through epoch hook
-func (k Keeper) UpdateUncommittedTokens(ctx sdk.Context, epochIdentifier string) {
+func (k Keeper) UpdateUncommittedTokens(ctx sdk.Context, epochIdentifier string, stakeIncentive types.IncentiveInfo, lpIncentive types.IncentiveInfo) {
 	// Recalculate total committed info
-	k.UpdateTotalCommitmentInfo(ctx, epochIdentifier)
+	k.UpdateTotalCommitmentInfo(ctx)
+
+	// Calculate eden amount per epoch
+	edenAmountPerEpoch := stakeIncentive.Amount.Quo(sdk.NewInt(stakeIncentive.NumEpochs))
 
 	// Iterate all delegations for the specified delegator
 	// Process to increase uncomitted token amount of Eden & Eden boost
 	k.cmk.IterateCommitments(
-		ctx, epochIdentifier,
-		func(commitments ctypes.Commitments) bool {
-			// Find out active incentive params
-			foundIncentive, stakeIncentive, lpIncentive := k.GetProperIncentiveParam(ctx, epochIdentifier)
-
-			// If we don't have incentive params ready
-			if !foundIncentive {
-				return true
-			}
-
+		ctx, func(commitments ctypes.Commitments) bool {
 			// Commitment owner
 			creator := commitments.Creator
 
@@ -165,7 +174,7 @@ func (k Keeper) UpdateUncommittedTokens(ctx sdk.Context, epochIdentifier string)
 			delegatedAmt := k.CalculateDelegatedAmount(ctx, creator)
 
 			// Calculate new uncommitted Eden tokens for LP, staker, and Eden token holders
-			newUncommittedEdenTokens := k.CalculateNewUncommittedEdenTokens(ctx, delegatedAmt, commitments, stakeIncentive, lpIncentive)
+			newUncommittedEdenTokens := k.CalculateNewUncommittedEdenTokens(ctx, delegatedAmt, commitments, edenAmountPerEpoch)
 
 			// Calculate new uncommitted Eden-Boost tokens for staker and Eden token holders
 			newUncommittedEdenBoostTokens := k.CalculateNewUncommittedEdenBoostTokens(ctx, delegatedAmt, commitments, epochIdentifier)
@@ -179,7 +188,7 @@ func (k Keeper) UpdateUncommittedTokens(ctx sdk.Context, epochIdentifier string)
 }
 
 // Calculate new Eden token amounts based on the given conditions and user's current uncommitted token balance
-func (k Keeper) CalculateNewUncommittedEdenTokens(ctx sdk.Context, delegatedAmt sdk.Int, commitments ctypes.Commitments, stakeIncentive types.IncentiveInfo, lpIncentive types.IncentiveInfo) sdk.Int {
+func (k Keeper) CalculateNewUncommittedEdenTokens(ctx sdk.Context, delegatedAmt sdk.Int, commitments ctypes.Commitments, edenAmountPerEpoch sdk.Int) sdk.Int {
 	// Get LP commitments - Skip for now
 	edenCommittedByLP := sdk.ZeroInt()
 
@@ -190,9 +199,6 @@ func (k Keeper) CalculateNewUncommittedEdenTokens(ctx sdk.Context, delegatedAmt 
 	// compute eden reward based on above and param factors for each
 	totalEdenCommittedByStake := delegatedAmt.Add(edenCommitted).Add(edenBoostCommitted).Add(edenCommittedByLP)
 	stakeShare := k.CalculateTotalShareOfStaking(totalEdenCommittedByStake)
-
-	// Calculate eden amount per epoch
-	edenAmountPerEpoch := stakeIncentive.Amount.Quo(sdk.NewInt(stakeIncentive.NumEpochs))
 
 	// Calculate newly creating eden amount by its share
 	newEdenAllocated := stakeShare.MulInt(edenAmountPerEpoch)

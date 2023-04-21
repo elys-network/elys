@@ -19,7 +19,7 @@ type CommitmentKeeperI interface {
 	StandardStakingToken(sdk.Context, string, string) error
 
 	// Iterate all commitments
-	IterateCommitments(sdk.Context, string, func(types.Commitments) (stop bool))
+	IterateCommitments(sdk.Context, func(types.Commitments) (stop bool))
 
 	// Update commitment
 	SetCommitments(ctx sdk.Context, commitments types.Commitments)

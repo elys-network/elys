@@ -9,7 +9,7 @@ import (
 // CommitmentKeeper
 type CommitmentKeeper interface {
 	// Iterate all commitment
-	IterateCommitments(sdk.Context, string, func(ctypes.Commitments) (stop bool))
+	IterateCommitments(sdk.Context, func(ctypes.Commitments) (stop bool))
 	// Initiate commitment according to standard staking
 	StandardStakingToken(sdk.Context, string, string) error
 	// Update commitment
