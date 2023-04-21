@@ -251,10 +251,10 @@ genesis:
       params:
         epochIdentifier: tenseconds
       historyList:
-        - timestamp: "1629792000"
+        - timestamp: "2023-04-21 14:57:03.612566186 +0000 UTC"
           denom: "uelys"
           amount: "1000000"
-        - timestamp: "1629792000"
+        - timestamp: "2023-04-21 14:57:03.612566186 +0000 UTC"
           denom: "ueden"
           amount: "1000000"
   chain_id: elystestnet-1

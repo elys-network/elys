@@ -47,6 +47,20 @@ func (k Keeper) burnTokensForDenom(ctx sdk.Context, balance sdk.Coins, denom str
 		return err
 	}
 	k.Logger(ctx).Info("Burned tokens for denom", denom)
+
+	// check if balance has at least one coin
+	if len(balance) == 0 {
+		return nil
+	}
+
+	// Record a history item
+	history := types.History{
+		Timestamp: ctx.BlockTime().String(),
+		Denom:     denom,
+		Amount:    balance[0].Amount.String(),
+	}
+	k.SetHistory(ctx, history)
+
 	return nil
 }
 
