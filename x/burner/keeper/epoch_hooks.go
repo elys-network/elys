@@ -8,21 +8,15 @@ import (
 // BeforeEpochStart performs a no-op
 func (k Keeper) BeforeEpochStart(_ sdk.Context, _ string, _ int64) {}
 
-// AfterEpochEnd distributes vested tokens at the end of each epoch
+// AfterEpochEnd burns native tokens held in the module wallet at the end of each epoch
 func (k Keeper) AfterEpochEnd(ctx sdk.Context, epochIdentifier string, _ int64) {
+	if !k.ShouldBurnTokens(ctx, epochIdentifier) {
+		return
+	}
 
-	// Future Improvement: check all VestingInfos and get all VestingTokens by denom
-	// 	so we can iterate different denoms in different EpochIdentifiers
-	params := k.GetParams(ctx)
-	if epochIdentifier == params.EpochIdentifier {
-		denoms := k.bankKeeper.GetAllDenomMetaData(ctx)
-		for _, denom := range denoms {
-			k.Logger(ctx).Info("Burning tokens for denom", denom.Base)
-			if err := k.BurnTokens(ctx, denom.Base); err != nil {
-				k.Logger(ctx).Error("Error burning tokens", "denom", denom.Base)
-				panic(err)
-			}
-		}
+	if err := k.BurnTokensForAllDenoms(ctx); err != nil {
+		k.Logger(ctx).Error("Error burning tokens", "error", err)
+		panic(err)
 	}
 }
 
