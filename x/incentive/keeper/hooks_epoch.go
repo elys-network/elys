@@ -13,7 +13,7 @@ func (k Keeper) BeforeEpochStart(ctx sdk.Context, epochIdentifier string, epochN
 // AfterEpochEnd distributes vested tokens at the end of each epoch
 func (k Keeper) AfterEpochEnd(ctx sdk.Context, epochIdentifier string, _ int64) {
 	// Find out incentive param using epochIdentifier and current block timestamp
-	foundIncentive, _, _ := k.FindProperIncentiveParm(ctx, epochIdentifier)
+	foundIncentive, _, _ := k.GetProperIncentiveParam(ctx, epochIdentifier)
 
 	// If there is no incentive available with the current epoch and timestamp,
 	if !foundIncentive {

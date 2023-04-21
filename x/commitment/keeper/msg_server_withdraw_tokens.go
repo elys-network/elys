@@ -39,7 +39,7 @@ func (k msgServer) WithdrawTokens(goCtx context.Context, msg *types.MsgWithdrawT
 	}
 
 	// Emit Hook commitment changed
-	k.HookCommitmentChanged(ctx, msg.Creator, sdk.NewCoin(msg.Denom, msg.Amount))
+	k.AfterCommitmentChange(ctx, msg.Creator, sdk.NewCoin(msg.Denom, msg.Amount))
 
 	// Emit blockchain event
 	ctx.EventManager().EmitEvent(
@@ -50,6 +50,6 @@ func (k msgServer) WithdrawTokens(goCtx context.Context, msg *types.MsgWithdrawT
 			sdk.NewAttribute(types.AttributeDenom, msg.Denom),
 		),
 	)
-	
+
 	return &types.MsgWithdrawTokensResponse{}, nil
 }

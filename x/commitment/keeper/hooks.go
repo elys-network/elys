@@ -22,6 +22,6 @@ func (mh MultiCommitmentHooks) CommitmentChanged(ctx sdk.Context, creator string
 }
 
 // Committed executes the indicated for committed hook
-func (k Keeper) HookCommitmentChanged(ctx sdk.Context, creator string, amount sdk.Coin) {
+func (k Keeper) AfterCommitmentChange(ctx sdk.Context, creator string, amount sdk.Coin) {
 	k.hooks.CommitmentChanged(ctx, creator, amount)
 }

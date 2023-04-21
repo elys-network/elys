@@ -60,24 +60,14 @@ func (k Keeper) UpdateTotalCommitmentInfo(ctx sdk.Context, epochIdentifier strin
 	// Fetch total staked Elys amount again
 	k.tci.TotalElysBonded = k.stk.TotalBondedTokens(ctx)
 	// Initialize with amount zero
-	k.tci.TotalEdenCommitted = sdk.ZeroInt()
-	k.tci.TotalEdenBoostCommitted = sdk.ZeroInt()
+	k.tci.TotalCommitted = sdk.ZeroInt()
 
 	// Iterate to calculate total Eden and Eden boost committed
 	k.cmk.IterateCommitments(ctx, epochIdentifier, func(commitments ctypes.Commitments) bool {
-		committedTokens := commitments.CommittedTokens
-		// Sum Eden and Eden boost committed
-		for _, c := range committedTokens {
-			// Eden
-			if c.Denom == types.Eden {
-				k.tci.TotalEdenCommitted = k.tci.TotalEdenCommitted.Add(c.Amount)
-			}
+		committedEdenToken := commitments.GetCommittedAmountForDenom(types.Eden)
+		committedEdenBoostToken := commitments.GetCommittedAmountForDenom(types.EdenB)
 
-			// Eden boost
-			if c.Denom == types.EdenB {
-				k.tci.TotalEdenBoostCommitted = k.tci.TotalEdenCommitted.Add(c.Amount)
-			}
-		}
+		k.tci.TotalCommitted = k.tci.TotalCommitted.Add(committedEdenToken).Add(committedEdenBoostToken)
 
 		return false
 	})
@@ -86,7 +76,7 @@ func (k Keeper) UpdateTotalCommitmentInfo(ctx sdk.Context, epochIdentifier strin
 // Calculate total share of staking
 func (k Keeper) CalculateTotalShareOfStaking(amount sdk.Int) sdk.Dec {
 	// Total statked = Elys staked + Eden Committed + Eden boost Committed
-	totalStaked := k.tci.TotalElysBonded.Add(k.tci.TotalEdenCommitted).Add(k.tci.TotalEdenBoostCommitted)
+	totalStaked := k.tci.TotalElysBonded.Add(k.tci.TotalCommitted)
 
 	// Share = Amount / Total Staked
 	return sdk.NewDecFromInt(amount).QuoInt(totalStaked)
@@ -101,8 +91,7 @@ func (k Keeper) CalculateDelegatedAmount(ctx sdk.Context, delegator string) sdk.
 	}
 
 	// Get elys delegation for creator address
-	delegatedAmt := sdk.ZeroInt()
-
+	delegatedAmt := sdk.ZeroDec()
 	// Iterate all delegations for the specified delegator
 	k.stk.IterateDelegations(
 		ctx, delAdr,
@@ -112,51 +101,38 @@ func (k Keeper) CalculateDelegatedAmount(ctx sdk.Context, delegator string) sdk.
 			// Get validator
 			val := k.stk.Validator(ctx, valAddr)
 
-			/****************************************************************************************/
-			// --------------------(Cosmos SDK staking module implementation)------------------------
-			// del.Shares = val.GetDelegatorShares().MulInt(amt).QuoInt(val.GetTokens())
-			// amt = del.Shares * val.GetTokens / val.GetDelegatorShares()
-			/****************************************************************************************/
-			amt := del.GetShares().MulInt(val.GetTokens()).Quo(val.GetDelegatorShares()).TruncateInt()
-
-			// Sum the individual delegation
-			delegatedAmt.Add(amt)
+			shares := del.GetShares()
+			tokens := val.TokensFromSharesTruncated(shares)
+			delegatedAmt = delegatedAmt.Add(tokens)
 			return false
 		},
 	)
 
-	return delegatedAmt
+	return delegatedAmt.TruncateInt()
 }
 
 // Find out active incentive params
-func (k Keeper) FindProperIncentiveParm(ctx sdk.Context, epochIdentifier string) (bool, types.IncentiveInfo, types.IncentiveInfo) {
-	// Incentive params initialize
-	stakeIncentive := types.IncentiveInfo{}
-	lpIncentive := types.IncentiveInfo{}
+func (k Keeper) GetProperIncentiveParam(ctx sdk.Context, epochIdentifier string) (bool, types.IncentiveInfo, types.IncentiveInfo) {
+	// Fetch incentive params
+	params := k.GetParams(ctx)
+
+	// If we don't have enough params
+	if len(params.StakeIncentives) < 1 || len(params.LpIncentives) < 1 {
+		return false, types.IncentiveInfo{}, types.IncentiveInfo{}
+	}
 
 	// Current block timestamp
 	timestamp := ctx.BlockTime().Unix()
 	foundIncentive := false
 
-	// Fetch incentive params
-	params := k.GetParams(ctx)
+	// Incentive params initialize
+	stakeIncentive := params.StakeIncentives[0]
+	lpIncentive := params.LpIncentives[0]
 
-	// Find approporiate Incentive Info
 	// Consider epochIdentifier and start time
 	// Consider epochNumber as well
-	for _, ii := range params.StakeIncentives {
-		if ii.EpochIdentifier == epochIdentifier && timestamp >= ii.StartTime.Unix() {
-			stakeIncentive = ii
-			foundIncentive = true
-			break
-		}
-	}
-
-	// Find approporiate Incentive Info
-	for _, ii := range params.LpIncentives {
-		if ii.EpochIdentifier == epochIdentifier && timestamp >= ii.StartTime.Unix() {
-			lpIncentive = ii
-		}
+	if stakeIncentive.EpochIdentifier != epochIdentifier || timestamp < stakeIncentive.StartTime.Unix() {
+		return false, types.IncentiveInfo{}, types.IncentiveInfo{}
 	}
 
 	// return found, stake, lp incentive params
@@ -175,7 +151,7 @@ func (k Keeper) UpdateUncommittedTokens(ctx sdk.Context, epochIdentifier string)
 		ctx, epochIdentifier,
 		func(commitments ctypes.Commitments) bool {
 			// Find out active incentive params
-			foundIncentive, stakeIncentive, lpIncentive := k.FindProperIncentiveParm(ctx, epochIdentifier)
+			foundIncentive, stakeIncentive, lpIncentive := k.GetProperIncentiveParam(ctx, epochIdentifier)
 
 			// If we don't have incentive params ready
 			if !foundIncentive {
@@ -189,13 +165,13 @@ func (k Keeper) UpdateUncommittedTokens(ctx sdk.Context, epochIdentifier string)
 			delegatedAmt := k.CalculateDelegatedAmount(ctx, creator)
 
 			// Calculate new uncommitted Eden tokens for LP, staker, and Eden token holders
-			new_uncommitted_eden_tokens := k.CalculateNewUncommittedEdenTokens(ctx, delegatedAmt, commitments, stakeIncentive, lpIncentive)
+			newUncommittedEdenTokens := k.CalculateNewUncommittedEdenTokens(ctx, delegatedAmt, commitments, stakeIncentive, lpIncentive)
 
 			// Calculate new uncommitted Eden-Boost tokens for staker and Eden token holders
-			new_uncommitted_eden_boost_tokens := k.CalculateNewUncommittedEdenBoostTokens(ctx, delegatedAmt, commitments, epochIdentifier, stakeIncentive, lpIncentive)
+			newUncommittedEdenBoostTokens := k.CalculateNewUncommittedEdenBoostTokens(ctx, delegatedAmt, commitments, epochIdentifier)
 
 			// Update Commitments with new uncommitted token amounts
-			k.UpdateCommitments(ctx, creator, new_uncommitted_eden_tokens, new_uncommitted_eden_boost_tokens)
+			k.UpdateCommitments(ctx, creator, &commitments, newUncommittedEdenTokens, newUncommittedEdenBoostTokens)
 
 			return false
 		},
@@ -208,19 +184,8 @@ func (k Keeper) CalculateNewUncommittedEdenTokens(ctx sdk.Context, delegatedAmt 
 	edenCommittedByLP := sdk.ZeroInt()
 
 	// Get eden commitments and eden boost commitments
-	edenCommitted := sdk.ZeroInt()
-	edenBoostCommitted := sdk.ZeroInt()
-	for _, c := range commitments.CommittedTokens {
-		// Eden committed
-		if c.Denom == types.Eden {
-			edenCommitted = c.Amount
-		}
-
-		// Eden boost committed
-		if c.Denom == types.EdenB {
-			edenBoostCommitted = c.Amount
-		}
-	}
+	edenCommitted := commitments.GetCommittedAmountForDenom(types.Eden)
+	edenBoostCommitted := commitments.GetCommittedAmountForDenom(types.EdenB)
 
 	// compute eden reward based on above and param factors for each
 	totalEdenCommittedByStake := delegatedAmt.Add(edenCommitted).Add(edenBoostCommitted).Add(edenCommittedByLP)
@@ -250,15 +215,9 @@ func (k Keeper) CalculateEpochCountsPerYear(epochIdentifier string) int64 {
 }
 
 // Calculate new Eden-Boost token amounts based on the given conditions and user's current uncommitted token balance
-func (k Keeper) CalculateNewUncommittedEdenBoostTokens(ctx sdk.Context, delegatedAmt sdk.Int, commitments ctypes.Commitments, epochIdentifier string, stakeIncentive types.IncentiveInfo, lpIncentive types.IncentiveInfo) sdk.Int {
+func (k Keeper) CalculateNewUncommittedEdenBoostTokens(ctx sdk.Context, delegatedAmt sdk.Int, commitments ctypes.Commitments, epochIdentifier string) sdk.Int {
 	// Get eden commitments
-	edenCommitted := sdk.ZeroInt()
-	for _, c := range commitments.CommittedTokens {
-		// Eden committed
-		if c.Denom == types.Eden {
-			edenCommitted = c.Amount
-		}
-	}
+	edenCommitted := commitments.GetCommittedAmountForDenom(types.Eden)
 
 	// Gompute eden reward based on above and param factors for each
 	totalEden := delegatedAmt.Add(edenCommitted)
@@ -269,15 +228,13 @@ func (k Keeper) CalculateNewUncommittedEdenBoostTokens(ctx sdk.Context, delegate
 	return totalEden.Quo(sdk.NewInt(epochNumsPerYear))
 }
 
-func (k Keeper) UpdateCommitments(ctx sdk.Context, creator string, new_uncommitted_eden_tokens sdk.Int, new_uncommitted_eden_boost_tokens sdk.Int) {
-	commitments, _ := k.cmk.GetCommitments(ctx, creator)
-
+func (k Keeper) UpdateCommitments(ctx sdk.Context, creator string, commitments *ctypes.Commitments, newUncommittedEdenTokens sdk.Int, newUncommittedEdenBoostTokens sdk.Int) {
 	// Update uncommitted Eden and Eden-Boost token balances in the Commitments structure
-	k.UpdateEdenTokens(&commitments, new_uncommitted_eden_tokens)
-	k.UpdateEdenBoostTokens(&commitments, new_uncommitted_eden_boost_tokens)
+	k.UpdateEdenTokens(commitments, newUncommittedEdenTokens)
+	k.UpdateEdenBoostTokens(commitments, newUncommittedEdenBoostTokens)
 
 	// Save the updated Commitments
-	k.cmk.SetCommitments(ctx, commitments)
+	k.cmk.SetCommitments(ctx, *commitments)
 }
 
 // Update the uncommitted Eden token balance

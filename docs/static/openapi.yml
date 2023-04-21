@@ -33208,6 +33208,9 @@ paths:
                           type: string
                           format: int64
                           title: distribution duration
+                        current_epoch:
+                          type: string
+                          format: int64
                       title: Incentive Info
                   stake_incentives:
                     type: array
@@ -33228,6 +33231,9 @@ paths:
                           type: string
                           format: int64
                           title: distribution duration
+                        current_epoch:
+                          type: string
+                          format: int64
                       title: Incentive Info
             description: >-
               QueryParamsResponse is response type for the Query/Params RPC
@@ -69104,6 +69110,9 @@ definitions:
         type: string
         format: int64
         title: distribution duration
+      current_epoch:
+        type: string
+        format: int64
     title: Incentive Info
   elysnetwork.elys.incentive.Params:
     type: object
@@ -69127,6 +69136,9 @@ definitions:
               type: string
               format: int64
               title: distribution duration
+            current_epoch:
+              type: string
+              format: int64
           title: Incentive Info
       stake_incentives:
         type: array
@@ -69147,6 +69159,9 @@ definitions:
               type: string
               format: int64
               title: distribution duration
+            current_epoch:
+              type: string
+              format: int64
           title: Incentive Info
     description: Params defines the parameters for the module.
   elysnetwork.elys.incentive.QueryParamsResponse:
@@ -69175,6 +69190,9 @@ definitions:
                   type: string
                   format: int64
                   title: distribution duration
+                current_epoch:
+                  type: string
+                  format: int64
               title: Incentive Info
           stake_incentives:
             type: array
@@ -69195,6 +69213,9 @@ definitions:
                   type: string
                   format: int64
                   title: distribution duration
+                current_epoch:
+                  type: string
+                  format: int64
               title: Incentive Info
     description: QueryParamsResponse is response type for the Query/Params RPC method.
   elysnetwork.elys.liquidityprovider.Params:

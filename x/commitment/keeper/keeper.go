@@ -120,7 +120,7 @@ func (k Keeper) StandardStakingToken(ctx sdk.Context, creator string, denom stri
 	k.SetCommitments(ctx, commitments)
 
 	// Emit Hook commitment changed
-	k.HookCommitmentChanged(ctx, creator, sdk.NewCoin(denom, sdk.ZeroInt()))
+	k.AfterCommitmentChange(ctx, creator, sdk.NewCoin(denom, sdk.ZeroInt()))
 
 	// Emit blockchain event
 	ctx.EventManager().EmitEvent(

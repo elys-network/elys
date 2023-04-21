@@ -17,4 +17,5 @@ message IncentiveInfo {
         [(gogoproto.stdtime) = true, (gogoproto.nullable) = false, (gogoproto.moretags) = "yaml:\"start_time\""];
     // distribution duration
 	int64 num_epochs = 4;
+    int64 current_epoch = 5;
 }

@@ -11,8 +11,6 @@ type TotalCommitmentInfo struct {
 	TotalElysBonded sdk.Int
 	// Total LP committed
 	TotalLPCommitted sdk.Int
-	// Total Eden committed
-	TotalEdenCommitted sdk.Int
-	// Total Eden boost committed
-	TotalEdenBoostCommitted sdk.Int
+	// Total Eden + Eden boost committed
+	TotalCommitted sdk.Int
 }
