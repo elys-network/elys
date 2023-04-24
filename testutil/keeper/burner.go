@@ -11,13 +11,14 @@ import (
 	typesparams "github.com/cosmos/cosmos-sdk/x/params/types"
 	"github.com/elys-network/elys/x/burner/keeper"
 	"github.com/elys-network/elys/x/burner/types"
+	"github.com/elys-network/elys/x/burner/types/mocks"
 	"github.com/stretchr/testify/require"
 	"github.com/tendermint/tendermint/libs/log"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 	tmdb "github.com/tendermint/tm-db"
 )
 
-func BurnerKeeper(t testing.TB) (*keeper.Keeper, sdk.Context) {
+func BurnerKeeper(t testing.TB) (*keeper.Keeper, sdk.Context, *mocks.BankKeeper) {
 	storeKey := sdk.NewKVStoreKey(types.StoreKey)
 	memStoreKey := storetypes.NewMemoryStoreKey(types.MemStoreKey)
 
@@ -36,12 +37,16 @@ func BurnerKeeper(t testing.TB) (*keeper.Keeper, sdk.Context) {
 		memStoreKey,
 		"BurnerParams",
 	)
+
+	bankKeeper := mocks.NewBankKeeper(t)
+
 	k := keeper.NewKeeper(
 		cdc,
 		storeKey,
 		memStoreKey,
 		paramsSubspace,
 		nil,
+		bankKeeper,
 	)
 
 	ctx := sdk.NewContext(stateStore, tmproto.Header{}, false, log.NewNopLogger())
@@ -49,5 +54,5 @@ func BurnerKeeper(t testing.TB) (*keeper.Keeper, sdk.Context) {
 	// Initialize params
 	k.SetParams(ctx, types.DefaultParams())
 
-	return k, ctx
+	return k, ctx, bankKeeper
 }
