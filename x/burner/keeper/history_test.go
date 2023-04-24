@@ -27,7 +27,7 @@ func createNHistory(keeper *keeper.Keeper, ctx sdk.Context, n int) []types.Histo
 }
 
 func TestHistoryGet(t *testing.T) {
-	keeper, ctx := keepertest.BurnerKeeper(t)
+	keeper, ctx, _ := keepertest.BurnerKeeper(t)
 	items := createNHistory(keeper, ctx, 10)
 	for _, item := range items {
 		rst, found := keeper.GetHistory(ctx,
@@ -42,7 +42,7 @@ func TestHistoryGet(t *testing.T) {
 	}
 }
 func TestHistoryRemove(t *testing.T) {
-	keeper, ctx := keepertest.BurnerKeeper(t)
+	keeper, ctx, _ := keepertest.BurnerKeeper(t)
 	items := createNHistory(keeper, ctx, 10)
 	for _, item := range items {
 		keeper.RemoveHistory(ctx,
@@ -58,7 +58,7 @@ func TestHistoryRemove(t *testing.T) {
 }
 
 func TestHistoryGetAll(t *testing.T) {
-	keeper, ctx := keepertest.BurnerKeeper(t)
+	keeper, ctx, _ := keepertest.BurnerKeeper(t)
 	items := createNHistory(keeper, ctx, 10)
 	require.ElementsMatch(t,
 		nullify.Fill(items),
