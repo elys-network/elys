@@ -14,6 +14,8 @@ type AccountKeeper interface {
 }
 
 // BankKeeper defines the expected interface needed to retrieve account balances.
+//
+//go:generate mockery --srcpkg . --name BankKeeper --structname BankKeeper --filename bank_keeper.go --with-expecter
 type BankKeeper interface {
 	SpendableCoins(ctx sdk.Context, addr sdk.AccAddress) sdk.Coins
 	BurnCoins(ctx sdk.Context, moduleName string, amt sdk.Coins) error

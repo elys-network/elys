@@ -11,13 +11,14 @@ import (
 	typesparams "github.com/cosmos/cosmos-sdk/x/params/types"
 	"github.com/elys-network/elys/x/burner/keeper"
 	"github.com/elys-network/elys/x/burner/types"
+	"github.com/elys-network/elys/x/burner/types/mocks"
 	"github.com/stretchr/testify/require"
 	"github.com/tendermint/tendermint/libs/log"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 	tmdb "github.com/tendermint/tm-db"
 )
 
-func BurnerKeeper(t testing.TB) (*keeper.Keeper, sdk.Context) {
+func BurnerKeeper(t testing.TB) (*keeper.Keeper, sdk.Context, *mocks.BankKeeper) {
 	storeKey := sdk.NewKVStoreKey(types.StoreKey)
 	memStoreKey := storetypes.NewMemoryStoreKey(types.MemStoreKey)
 
@@ -37,22 +38,7 @@ func BurnerKeeper(t testing.TB) (*keeper.Keeper, sdk.Context) {
 		"BurnerParams",
 	)
 
-	// create a new test instance of the authKeeper
-	// authKeeper := authkeeper.NewAccountKeeper(
-	// 	cdc,
-	// 	// pass in a mock key-value store
-	// 	storeKey,
-	// 	// pass in the auth module's parameter subspace
-	// 	paramsSubspace,
-	// 	// pass in a custom "account constructor" function
-	// 	func() authtypes.AccountI {
-	// 		// this function is called when creating a new account
-	// 		return &authtypes.BaseAccount{}
-	// 	},
-	// 	// pass in a custom "account prototype" function
-	// 	map[string][]string{},
-	// 	"elys",
-	// )
+	bankKeeper := mocks.NewBankKeeper(t)
 
 	k := keeper.NewKeeper(
 		cdc,
@@ -60,7 +46,7 @@ func BurnerKeeper(t testing.TB) (*keeper.Keeper, sdk.Context) {
 		memStoreKey,
 		paramsSubspace,
 		nil,
-		nil,
+		bankKeeper,
 	)
 
 	ctx := sdk.NewContext(stateStore, tmproto.Header{}, false, log.NewNopLogger())
@@ -68,5 +54,5 @@ func BurnerKeeper(t testing.TB) (*keeper.Keeper, sdk.Context) {
 	// Initialize params
 	k.SetParams(ctx, types.DefaultParams())
 
-	return k, ctx
+	return k, ctx, bankKeeper
 }

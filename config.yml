@@ -249,7 +249,7 @@ genesis:
       prices:
     burner:
       params:
-        epochIdentifier: tenseconds
+        epochIdentifier: day
       historyList:
         - timestamp: "2023-04-21 14:57:03.612566186 +0000 UTC"
           denom: "uelys"
