@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"fmt"
+	"math"
 
 	"github.com/cosmos/cosmos-sdk/codec"
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
@@ -9,7 +10,6 @@ import (
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
 	"github.com/tendermint/tendermint/libs/log"
 
-	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	ctypes "github.com/elys-network/elys/x/commitment/types"
 	etypes "github.com/elys-network/elys/x/epochs/types"
 	"github.com/elys-network/elys/x/incentive/types"
@@ -92,21 +92,19 @@ func (k Keeper) CalculateDelegatedAmount(ctx sdk.Context, delegator string) sdk.
 
 	// Get elys delegation for creator address
 	delegatedAmt := sdk.ZeroDec()
-	// Iterate all delegations for the specified delegator
-	k.stk.IterateDelegations(
-		ctx, delAdr,
-		func(_ int64, del stakingtypes.DelegationI) (stop bool) {
-			// Get validator address
-			valAddr := del.GetValidatorAddr()
-			// Get validator
-			val := k.stk.Validator(ctx, valAddr)
 
-			shares := del.GetShares()
-			tokens := val.TokensFromSharesTruncated(shares)
-			delegatedAmt = delegatedAmt.Add(tokens)
-			return false
-		},
-	)
+	// Get all delegations
+	delegations := k.stk.GetDelegatorDelegations(ctx, delAdr, math.MaxUint16)
+	for _, del := range delegations {
+		// Get validator address
+		valAddr := del.GetValidatorAddr()
+		// Get validator
+		val := k.stk.Validator(ctx, valAddr)
+
+		shares := del.GetShares()
+		tokens := val.TokensFromSharesTruncated(shares)
+		delegatedAmt = delegatedAmt.Add(tokens)
+	}
 
 	return delegatedAmt.TruncateInt()
 }

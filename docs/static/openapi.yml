@@ -32632,6 +32632,10 @@ paths:
                       type: string
                     authority:
                       type: string
+                    commit_enabled:
+                      type: boolean
+                    withdraw_enabled:
+                      type: boolean
               pagination:
                 type: object
                 properties:
@@ -32787,6 +32791,10 @@ paths:
                     type: string
                   authority:
                     type: string
+                  commit_enabled:
+                    type: boolean
+                  withdraw_enabled:
+                    type: boolean
         default:
           description: An unexpected error response.
           schema:
@@ -68663,6 +68671,10 @@ definitions:
         type: string
       authority:
         type: string
+      commit_enabled:
+        type: boolean
+      withdraw_enabled:
+        type: boolean
   elysnetwork.elys.assetprofile.MsgCreateEntryResponse:
     type: object
   elysnetwork.elys.assetprofile.MsgDeleteEntryResponse:
@@ -68717,6 +68729,10 @@ definitions:
               type: string
             authority:
               type: string
+            commit_enabled:
+              type: boolean
+            withdraw_enabled:
+              type: boolean
       pagination:
         type: object
         properties:
@@ -68786,6 +68802,10 @@ definitions:
             type: string
           authority:
             type: string
+          commit_enabled:
+            type: boolean
+          withdraw_enabled:
+            type: boolean
   elysnetwork.elys.assetprofile.QueryParamsResponse:
     type: object
     properties:

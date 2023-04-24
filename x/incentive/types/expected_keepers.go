@@ -26,4 +26,6 @@ type StakingKeeper interface {
 	IterateDelegations(ctx sdk.Context, delegator sdk.AccAddress, fn func(index int64, delegation stakingtypes.DelegationI) (stop bool))
 	// get a particular validator by operator address
 	Validator(sdk.Context, sdk.ValAddress) stakingtypes.ValidatorI
+	// GetDelegatorDelegations returns a given amount of all the delegations from a delegator.
+	GetDelegatorDelegations(ctx sdk.Context, delegator sdk.AccAddress, maxRetrieve uint16) (delegations []stakingtypes.Delegation)
 }
