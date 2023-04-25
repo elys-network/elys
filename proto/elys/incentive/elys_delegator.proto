@@ -7,7 +7,6 @@ message ElysDelegator {
   string index = 1; 
   string delegatorAddr = 2; 
   string validatorAddr = 3; 
-  string commitmentId = 4; 
   
 }
 

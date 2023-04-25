@@ -13,7 +13,12 @@ func (k Keeper) BeforeDelegationCreated(ctx sdk.Context, delAddr sdk.AccAddress,
 		return nil
 	}
 
+	// Create an entity in commitment module
 	k.cmk.StandardStakingToken(ctx, delAddr.String(), types.Eden)
+
+	// Record the standard elys staking item
+	k.RecordElysDelegationInfo(ctx, delAddr.String(), valAddr.String())
+
 	return nil
 }
 

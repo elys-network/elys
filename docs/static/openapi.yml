@@ -33415,8 +33415,6 @@ paths:
                       type: string
                     validatorAddr:
                       type: string
-                    commitmentId:
-                      type: string
               pagination:
                 type: object
                 properties:
@@ -33540,8 +33538,6 @@ paths:
                   delegatorAddr:
                     type: string
                   validatorAddr:
-                    type: string
-                  commitmentId:
                     type: string
         default:
           description: An unexpected error response.
@@ -69590,8 +69586,6 @@ definitions:
         type: string
       validatorAddr:
         type: string
-      commitmentId:
-        type: string
   elysnetwork.elys.incentive.IncentiveInfo:
     type: object
     properties:
@@ -69686,8 +69680,6 @@ definitions:
               type: string
             validatorAddr:
               type: string
-            commitmentId:
-              type: string
       pagination:
         type: object
         properties:
@@ -69725,8 +69717,6 @@ definitions:
           delegatorAddr:
             type: string
           validatorAddr:
-            type: string
-          commitmentId:
             type: string
   elysnetwork.elys.incentive.QueryParamsResponse:
     type: object
