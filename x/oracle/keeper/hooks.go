@@ -16,6 +16,9 @@ import (
 func (k Keeper) BeforeEpochStart(ctx sdk.Context, epochIdentifier string, epochNumber int64) {
 	params := k.GetParams(ctx)
 	if epochIdentifier == params.BandEpoch {
+		if params.BandChannelSource == "" {
+			return
+		}
 		sourcePort := types.PortID
 		channelCap, ok := k.ScopedKeeper.GetCapability(ctx, host.ChannelCapabilityPath(sourcePort, params.BandChannelSource))
 		if !ok {

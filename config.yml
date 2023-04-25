@@ -228,6 +228,14 @@ genesis:
             teamTokensVested: 9999999
     oracle:
       assetInfos:
+        - denom: "satoshi"
+          display: "BTC"
+          bandTicker: "BTC"
+          elysTicker: "BTC"
+        - denom: "wei"
+          display: "ETH"
+          bandTicker: "ETH"
+          elysTicker: "ETH"
       params:
         ask_count: "4"
         band_channel_source: "channel-0"
