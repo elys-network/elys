@@ -131,6 +131,7 @@ import (
 	burnermodule "github.com/elys-network/elys/x/burner"
 	burnermodulekeeper "github.com/elys-network/elys/x/burner/keeper"
 	burnermoduletypes "github.com/elys-network/elys/x/burner/types"
+
 	// this line is used by starport scaffolding # stargate/app/moduleImport
 
 	appparams "github.com/elys-network/elys/app/params"
@@ -210,8 +211,8 @@ var (
 		stakingtypes.NotBondedPoolName:   {authtypes.Burner, authtypes.Staking},
 		govtypes.ModuleName:              {authtypes.Burner},
 		ibctransfertypes.ModuleName:      {authtypes.Minter, authtypes.Burner},
-		commitmentmoduletypes.ModuleName: {authtypes.Minter, authtypes.Burner, authtypes.Staking},
-		burnermoduletypes.ModuleName:     {authtypes.Minter, authtypes.Burner, authtypes.Staking},
+		commitmentmoduletypes.ModuleName: {authtypes.Minter, authtypes.Burner},
+		burnermoduletypes.ModuleName:     {authtypes.Burner},
 		// this line is used by starport scaffolding # stargate/app/maccPerms
 	}
 )
@@ -604,17 +605,6 @@ func NewElysApp(
 
 	commitmentModule := commitmentmodule.NewAppModule(appCodec, app.CommitmentKeeper, app.AccountKeeper, app.BankKeeper)
 
-	epochsKeeper := epochsmodulekeeper.NewKeeper(appCodec, keys[epochsmoduletypes.StoreKey])
-	app.EpochsKeeper = *epochsKeeper.SetHooks(
-		epochsmodulekeeper.NewMultiEpochHooks(
-			// insert epoch hooks receivers here
-			app.OracleKeeper.Hooks(),
-			app.CommitmentKeeper.Hooks(),
-			app.IncentiveKeeper.Hooks(),
-		),
-	)
-	epochsModule := epochsmodule.NewAppModule(appCodec, app.EpochsKeeper)
-
 	app.LiquidityproviderKeeper = *liquidityprovidermodulekeeper.NewKeeper(
 		appCodec,
 		keys[liquidityprovidermoduletypes.StoreKey],
@@ -638,9 +628,15 @@ func NewElysApp(
 		keys[burnermoduletypes.MemStoreKey],
 		app.GetSubspace(burnermoduletypes.ModuleName),
 
+		app.AccountKeeper,
 		app.BankKeeper,
 	)
 	burnerModule := burnermodule.NewAppModule(appCodec, app.BurnerKeeper, app.AccountKeeper, app.BankKeeper)
+
+	app.EpochsKeeper = *epochsmodulekeeper.NewKeeper(
+		appCodec,
+		keys[epochsmoduletypes.StoreKey],
+	)
 
 	// this line is used by starport scaffolding # stargate/app/keeperDefinition
 
@@ -675,6 +671,17 @@ func NewElysApp(
 		// insert governance hooks receivers here
 		),
 	)
+
+	app.EpochsKeeper = *app.EpochsKeeper.SetHooks(
+		epochsmodulekeeper.NewMultiEpochHooks(
+			// insert epoch hooks receivers here
+			app.OracleKeeper.Hooks(),
+			app.CommitmentKeeper.Hooks(),
+			app.IncentiveKeeper.Hooks(),
+			app.BurnerKeeper.Hooks(),
+		),
+	)
+	epochsModule := epochsmodule.NewAppModule(appCodec, app.EpochsKeeper)
 
 	/**** Module Options ****/
 
