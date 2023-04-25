@@ -11,7 +11,7 @@ type CommitmentKeeper interface {
 	// Iterate all commitment
 	IterateCommitments(sdk.Context, func(ctypes.Commitments) (stop bool))
 	// Initiate commitment according to standard staking
-	StandardStakingToken(sdk.Context, string, string) error
+	StandardStakingToken(sdk.Context, string, string, string) error
 	// Update commitment
 	SetCommitments(sdk.Context, ctypes.Commitments)
 	// Get commitment

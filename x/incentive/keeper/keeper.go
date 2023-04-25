@@ -10,6 +10,7 @@ import (
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
 	"github.com/tendermint/tendermint/libs/log"
 
+	stypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	ctypes "github.com/elys-network/elys/x/commitment/types"
 	etypes "github.com/elys-network/elys/x/epochs/types"
 	"github.com/elys-network/elys/x/incentive/types"
@@ -178,6 +179,9 @@ func (k Keeper) UpdateUncommittedTokens(ctx sdk.Context, epochIdentifier string,
 			// Calculate new uncommitted Eden-Boost tokens for staker and Eden token holders
 			newUncommittedEdenBoostTokens := k.CalculateNewUncommittedEdenBoostTokens(ctx, delegatedAmt, commitments, epochIdentifier, edenBoostAPR)
 
+			// commission
+			//
+
 			// Update Commitments with new uncommitted token amounts
 			k.UpdateCommitments(ctx, creator, &commitments, newUncommittedEdenTokens, newUncommittedEdenBoostTokens)
 
@@ -291,4 +295,54 @@ func (k Keeper) RecordElysDelegationInfo(ctx sdk.Context, delegator string, vali
 
 	// Set delegation item
 	k.SetElysDelegator(ctx, item)
+}
+
+func (k Keeper) UpdateEdenTokensForValidator(ctx sdk.Context, validator string, new_uncommitted_eden_tokens sdk.Int) {
+	commitments, bfound := k.cmk.GetCommitments(ctx, validator)
+	if !bfound {
+		return
+	}
+
+	uncommittedEden, found := commitments.GetUncommittedTokensForDenom(types.Eden)
+	if !found {
+		uncommittedTokens := commitments.GetUncommittedTokens()
+		uncommittedTokens = append(uncommittedTokens, &ctypes.UncommittedTokens{
+			Denom:  types.Eden,
+			Amount: new_uncommitted_eden_tokens,
+		})
+		commitments.UncommittedTokens = uncommittedTokens
+	} else {
+		uncommittedEden.Amount = uncommittedEden.Amount.Add(new_uncommitted_eden_tokens)
+	}
+}
+
+// Give commissions to validators
+func (k Keeper) GiveCommissionToValidators(ctx sdk.Context, delegator string, totalDelegationAmt sdk.Int, newUncommittedAmt sdk.Int) {
+	delAdr, err := sdk.AccAddressFromBech32(delegator)
+	if err != nil {
+		return
+	}
+
+	totalGiven := sdk.ZeroInt()
+	k.stk.IterateDelegations(ctx, delAdr, func(index int64, del stypes.DelegationI) (stop bool) {
+		valAddr := del.GetValidatorAddr()
+		// Get validator
+		val := k.stk.Validator(ctx, valAddr)
+		// Get commission rate
+		comm_rate := val.GetCommission()
+		// Get delegator share
+		shares := del.GetShares()
+		// Get token amount delegated
+		tokens := val.TokensFromSharesTruncated(shares)
+
+		// to given = delegated amount / total delegation * newly minted eden * commission rate / 100
+		commission := tokens.QuoInt(totalDelegationAmt).MulInt(newUncommittedAmt).Mul(comm_rate).QuoInt(sdk.NewInt(100))
+		// Sum total commission given
+		totalGiven = totalGiven.Add(commission.TruncateInt())
+
+		// increase uncomitted token amount of validator's commitment
+		k.UpdateEdenTokensForValidator(ctx, valAddr.String(), commission.TruncateInt())
+
+		return false
+	})
 }
