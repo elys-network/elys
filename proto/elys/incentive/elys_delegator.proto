@@ -1,0 +1,13 @@
+syntax = "proto3";
+package elysnetwork.elys.incentive;
+
+option go_package = "github.com/elys-network/elys/x/incentive/types";
+
+message ElysDelegator {
+  string index = 1; 
+  string delegatorAddr = 2; 
+  string validatorAddr = 3; 
+  string commitmentId = 4; 
+  
+}
+

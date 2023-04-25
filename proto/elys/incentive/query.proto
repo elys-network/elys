@@ -1,26 +1,58 @@
 syntax = "proto3";
+
 package elysnetwork.elys.incentive;
 
 import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
 import "elys/incentive/params.proto";
+import "elys/incentive/elys_delegator.proto";
 
 option go_package = "github.com/elys-network/elys/x/incentive/types";
 
 // Query defines the gRPC querier service.
 service Query {
+  
   // Parameters queries the parameters of the module.
-  rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
+  rpc Params (QueryParamsRequest) returns (QueryParamsResponse) {
     option (google.api.http).get = "/elys-network/elys/incentive/params";
+  
+  }
+  
+  // Queries a list of ElysDelegator items.
+  rpc ElysDelegator    (QueryGetElysDelegatorRequest) returns (QueryGetElysDelegatorResponse) {
+    option (google.api.http).get = "/elys-network/elys/incentive/elys_delegator/{index}";
+  
+  }
+  rpc ElysDelegatorAll (QueryAllElysDelegatorRequest) returns (QueryAllElysDelegatorResponse) {
+    option (google.api.http).get = "/elys-network/elys/incentive/elys_delegator";
+  
   }
 }
-
 // QueryParamsRequest is request type for the Query/Params RPC method.
 message QueryParamsRequest {}
 
 // QueryParamsResponse is response type for the Query/Params RPC method.
 message QueryParamsResponse {
+  
   // params holds all the parameters of this module.
   Params params = 1 [(gogoproto.nullable) = false];
 }
+
+message QueryGetElysDelegatorRequest {
+  string index = 1;
+}
+
+message QueryGetElysDelegatorResponse {
+  ElysDelegator elysDelegator = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryAllElysDelegatorRequest {
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+message QueryAllElysDelegatorResponse {
+  repeated ElysDelegator                          elysDelegator = 1 [(gogoproto.nullable) = false];
+           cosmos.base.query.v1beta1.PageResponse pagination    = 2;
+}
+
