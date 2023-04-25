@@ -279,27 +279,6 @@ func (k Keeper) UpdateEdenBoostTokens(commitments *ctypes.Commitments, new_uncom
 	}
 }
 
-// Record elys delegation info - delegator addr + staker addr
-func (k Keeper) RecordElysDelegationInfo(ctx sdk.Context, delegator string, validator string) {
-	// If we have already a list, just ignore it
-	if k.GetElysDelegatorFromAddresses(ctx, delegator, validator) {
-		return
-	}
-
-	// Get total item count
-	nCount := k.GetTotalElysDelegationItemCount(ctx)
-
-	// Initiate a new elys delegation item
-	item := types.ElysDelegator{
-		Index:         fmt.Sprintf("%d", nCount+1),
-		DelegatorAddr: delegator,
-		ValidatorAddr: validator,
-	}
-
-	// Set delegation item
-	k.SetElysDelegator(ctx, item)
-}
-
 // Increase uncommitted token amount for the corresponding validator
 func (k Keeper) UpdateEdenTokensForValidator(ctx sdk.Context, validator string, new_uncommitted_eden_tokens sdk.Int) {
 	commitments, bfound := k.cmk.GetCommitments(ctx, validator)
