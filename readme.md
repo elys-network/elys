@@ -7,7 +7,7 @@
 | Chain ID     | elystestnet-1                        |
 | Denomination | uelys                                |
 | Decimals     | 6 (1 elys= 1000000uelys)             |
-| Version      | v0.3.1                               |
+| Version      | v0.4.0                               |
 | RPC Endpoint | https://rpc.testnet.elys.network:443 |
 
 ## Get started
