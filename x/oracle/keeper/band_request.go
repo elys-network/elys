@@ -42,12 +42,12 @@ func (k Keeper) SetLastBandRequestId(ctx sdk.Context, id types.OracleRequestID) 
 // SetBandRequest saves band request waiting for responses
 func (k Keeper) SetBandRequest(ctx sdk.Context, requestID types.OracleRequestID, result types.BandPriceCallData) {
 	store := ctx.KVStore(k.storeKey)
-	store.Set(types.BandPriceResultStoreKey(requestID), k.cdc.MustMarshal(&result))
+	store.Set(types.BandRequestStoreKey(requestID), k.cdc.MustMarshal(&result))
 }
 
 // SetBandRequest returns band request waiting for responses
 func (k Keeper) GetBandRequest(ctx sdk.Context, id types.OracleRequestID) (types.BandPriceCallData, error) {
-	bz := ctx.KVStore(k.storeKey).Get(types.BandPriceResultStoreKey(id))
+	bz := ctx.KVStore(k.storeKey).Get(types.BandRequestStoreKey(id))
 	if bz == nil {
 		return types.BandPriceCallData{}, sdkerrors.Wrapf(types.ErrNotAvailable, "BandPriceCallData for request ID %d is not available.", id)
 	}

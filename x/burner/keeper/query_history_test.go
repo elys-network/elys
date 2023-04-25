@@ -19,7 +19,7 @@ import (
 var _ = strconv.IntSize
 
 func TestHistoryQuerySingle(t *testing.T) {
-	keeper, ctx := keepertest.BurnerKeeper(t)
+	keeper, ctx, _ := keepertest.BurnerKeeper(t)
 	wctx := sdk.WrapSDKContext(ctx)
 	msgs := createNHistory(keeper, ctx, 2)
 	for _, tc := range []struct {
@@ -73,7 +73,7 @@ func TestHistoryQuerySingle(t *testing.T) {
 }
 
 func TestHistoryQueryPaginated(t *testing.T) {
-	keeper, ctx := keepertest.BurnerKeeper(t)
+	keeper, ctx, _ := keepertest.BurnerKeeper(t)
 	wctx := sdk.WrapSDKContext(ctx)
 	msgs := createNHistory(keeper, ctx, 5)
 
