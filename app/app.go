@@ -605,15 +605,6 @@ func NewElysApp(
 
 	commitmentModule := commitmentmodule.NewAppModule(appCodec, app.CommitmentKeeper, app.AccountKeeper, app.BankKeeper)
 
-	app.AssetprofileKeeper = *assetprofilemodulekeeper.NewKeeper(
-		appCodec,
-		keys[assetprofilemoduletypes.StoreKey],
-		keys[assetprofilemoduletypes.MemStoreKey],
-		app.GetSubspace(assetprofilemoduletypes.ModuleName),
-		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
-	)
-	assetprofileModule := assetprofilemodule.NewAppModule(appCodec, app.AssetprofileKeeper, app.AccountKeeper, app.BankKeeper)
-
 	app.LiquidityproviderKeeper = *liquidityprovidermodulekeeper.NewKeeper(
 		appCodec,
 		keys[liquidityprovidermoduletypes.StoreKey],
