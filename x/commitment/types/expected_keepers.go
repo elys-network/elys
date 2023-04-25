@@ -3,6 +3,7 @@ package types
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth/types"
+	aptypes "github.com/elys-network/elys/x/assetprofile/types"
 )
 
 // AccountKeeper defines the expected account keeper used for simulations (noalias)
@@ -24,4 +25,9 @@ type BankKeeper interface {
 // requires for finding and changing the delegated tokens, used in clawback.
 type StakingKeeper interface {
 	BondDenom(ctx sdk.Context) string
+}
+
+// AssetProfileKeeper defines the expected interface needed to retrieve denom info
+type AssetProfileKeeper interface {
+	GetEntry(ctx sdk.Context, baseDenom string) (val aptypes.Entry, found bool)
 }

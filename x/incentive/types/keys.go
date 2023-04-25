@@ -14,6 +14,24 @@ const (
 	MemStoreKey = "mem_incentive"
 )
 
+// Denom definition - Eden and Eden boost
+const (
+	// Eden denom
+	Eden = "ueden"
+
+	// Eden Boost denom
+	EdenB = "uedenb"
+
+	// 52.1429 weeks
+	WeeksPerYear = 52
+
+	// 365 days
+	DaysPerYear = 365
+
+	// 8760 hours
+	HoursPerYear = 8760
+)
+
 func KeyPrefix(p string) []byte {
 	return []byte(p)
 }

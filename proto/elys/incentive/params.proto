@@ -9,6 +9,6 @@ option go_package = "github.com/elys-network/elys/x/incentive/types";
 // Params defines the parameters for the module.
 message Params {
   option (gogoproto.goproto_stringer) = false;
-	repeated IncentiveInfo LPIncentives = 1 [(gogoproto.nullable) = false];
-	repeated IncentiveInfo StakeIncentives = 2 [(gogoproto.nullable) = false];
+	repeated IncentiveInfo lp_incentives = 1 [(gogoproto.nullable) = false];
+	repeated IncentiveInfo stake_incentives = 2 [(gogoproto.nullable) = false];
 }

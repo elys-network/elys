@@ -567,26 +567,6 @@ func NewElysApp(
 		govConfig,
 	)
 
-	app.CommitmentKeeper = *commitmentmodulekeeper.NewKeeper(
-		appCodec,
-		keys[commitmentmoduletypes.StoreKey],
-		keys[commitmentmoduletypes.MemStoreKey],
-		app.GetSubspace(commitmentmoduletypes.ModuleName),
-
-		app.BankKeeper,
-		app.StakingKeeper,
-	)
-	commitmentModule := commitmentmodule.NewAppModule(appCodec, app.CommitmentKeeper, app.AccountKeeper, app.BankKeeper)
-
-	app.IncentiveKeeper = *incentivemodulekeeper.NewKeeper(
-		appCodec,
-		keys[incentivemoduletypes.StoreKey],
-		keys[incentivemoduletypes.MemStoreKey],
-		app.GetSubspace(incentivemoduletypes.ModuleName),
-		app.CommitmentKeeper,
-	)
-	incentiveModule := incentivemodule.NewAppModule(appCodec, app.IncentiveKeeper, app.AccountKeeper, app.BankKeeper)
-
 	app.AssetprofileKeeper = *assetprofilemodulekeeper.NewKeeper(
 		appCodec,
 		keys[assetprofilemoduletypes.StoreKey],
@@ -595,6 +575,35 @@ func NewElysApp(
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 	assetprofileModule := assetprofilemodule.NewAppModule(appCodec, app.AssetprofileKeeper, app.AccountKeeper, app.BankKeeper)
+
+	commitmentKeeper := *commitmentmodulekeeper.NewKeeper(
+		appCodec,
+		keys[commitmentmoduletypes.StoreKey],
+		keys[commitmentmoduletypes.MemStoreKey],
+		app.GetSubspace(commitmentmoduletypes.ModuleName),
+
+		app.BankKeeper,
+		app.StakingKeeper,
+		app.AssetprofileKeeper,
+	)
+
+	app.IncentiveKeeper = *incentivemodulekeeper.NewKeeper(
+		appCodec,
+		keys[incentivemoduletypes.StoreKey],
+		keys[incentivemoduletypes.MemStoreKey],
+		app.GetSubspace(incentivemoduletypes.ModuleName),
+		commitmentKeeper,
+		app.StakingKeeper,
+	)
+	incentiveModule := incentivemodule.NewAppModule(appCodec, app.IncentiveKeeper)
+
+	app.CommitmentKeeper = *commitmentKeeper.SetHooks(
+		commitmentmodulekeeper.NewMultiEpochHooks(
+			app.IncentiveKeeper.CommitmentHooks(),
+		),
+	)
+
+	commitmentModule := commitmentmodule.NewAppModule(appCodec, app.CommitmentKeeper, app.AccountKeeper, app.BankKeeper)
 
 	app.LiquidityproviderKeeper = *liquidityprovidermodulekeeper.NewKeeper(
 		appCodec,

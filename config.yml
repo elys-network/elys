@@ -88,7 +88,7 @@ genesis:
         - address: ""
           authority: elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3
           baseDenom: uelys
-          decimals: "18"
+          decimals: "6"
           denom: uelys
           displayName: ELYS
           displaySymbol: ""
@@ -102,6 +102,8 @@ genesis:
           permissions: []
           transferLimit: ""
           unitDenom: ""
+          commitEnabled: false
+          withdrawEnabled: true
         - address: ""
           authority: elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3
           baseDenom: cusdc
@@ -119,10 +121,12 @@ genesis:
           permissions: []
           transferLimit: ""
           unitDenom: ""
+          commitEnabled: false
+          withdrawEnabled: true
         - address: ""
           authority: elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3
           baseDenom: ueden
-          decimals: "18"
+          decimals: "6"
           denom: ueden
           displayName: EDEN
           displaySymbol: ""
@@ -136,6 +140,27 @@ genesis:
           permissions: []
           transferLimit: ""
           unitDenom: ""
+          commitEnabled: true
+          withdrawEnabled: true
+        - address: ""
+          authority: elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3
+          baseDenom: uedenb
+          decimals: "6"
+          denom: uedenb
+          displayName: EDEN-BOOST
+          displaySymbol: ""
+          externalSymbol: ""
+          ibcChannelId: ""
+          ibcCounterpartyChainId: ""
+          ibcCounterpartyChannelId: ""
+          ibcCounterpartyDenom: ""
+          network: ""
+          path: ""
+          permissions: []
+          transferLimit: ""
+          unitDenom: ""
+          commitEnabled: true
+          withdrawEnabled: false
     epochs:
       epochs:
         - identifier: week
@@ -171,6 +196,22 @@ genesis:
             epoch_identifier: tenseconds
             num_epochs: "10"
             vest_now_factor: "90"
+    incentive:
+      params:
+        lp_incentives:
+          - amount: "10000000"
+            epoch_identifier: day
+            start_time: "2023-04-20T12:34:56.789Z"
+            num_epochs: "365"
+            current_epoch: "0"
+            eden_boost_apr: "100"
+        stake_incentives:
+          - amount: "10000000"
+            epoch_identifier: day
+            start_time: "2023-04-20T12:34:56.789Z"
+            num_epochs: "365"
+            current_epoch: "0"
+            eden_boost_apr: "100"
     tokenomics:
       airdropList:
         - intent: AtomStakers

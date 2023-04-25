@@ -11,10 +11,12 @@ message IncentiveInfo {
 	string amount = 1 
         [ (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false, (gogoproto.moretags) = "yaml:\"amount\""];
     // epoch identifier
-	string epochIdentifier = 2;
+	string epoch_identifier = 2;
     // start_time of the distribution
     google.protobuf.Timestamp start_time = 3 
         [(gogoproto.stdtime) = true, (gogoproto.nullable) = false, (gogoproto.moretags) = "yaml:\"start_time\""];
     // distribution duration
-	int64 numEpochs = 4;
+	int64 num_epochs = 4;
+    int64 current_epoch = 5;
+    int64 eden_boost_apr = 6;
 }

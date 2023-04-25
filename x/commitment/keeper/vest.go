@@ -6,7 +6,7 @@ import (
 	"github.com/elys-network/elys/x/commitment/types"
 )
 
-func (k Keeper) VestTokens(ctx sdk.Context) error {
+func (k Keeper) VestTokens(ctx sdk.Context, epochIdentifier string) error {
 	// Future Improvement: get all VestingTokens by denom and iterate
 	k.IterateCommitments(ctx, func(commitments types.Commitments) (stop bool) {
 		logger := k.Logger(ctx)
