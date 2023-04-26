@@ -30,7 +30,8 @@ func loadUpgradeStore(app *ElysApp) {
 
 	if shouldLoadUpgradeStore(app, upgradeInfo) {
 		storeUpgrades := storetypes.StoreUpgrades{
-			Added: []string{"burner"},
+			Added:   []string{"burner"},
+			Deleted: []string{"incentive"},
 		}
 		// Use upgrade store loader for the initial loading of all stores when app starts,
 		// it checks if version == upgradeHeight and applies store upgrades before loading the stores,
