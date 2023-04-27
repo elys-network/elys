@@ -22,7 +22,7 @@ services:
   band1:
     image: elyszone:band
     volumes:
-      - ./state/band1:/home/band/.band
+      - ./state/band1:/root/.band
     ports:
       - "26557:26657"
       - "1307:1317"
@@ -31,12 +31,12 @@ services:
   band2:
     image: elyszone:band
     volumes:
-      - ./state/band2:/home/band/.band
+      - ./state/band2:/root/.band
 
   band3:
     image: elyszone:band
     volumes:
-      - ./state/band3:/home/band/.band
+      - ./state/band3:/root/.band
 
   hermes:
     image: elyszone:hermes

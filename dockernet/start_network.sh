@@ -42,10 +42,3 @@ done
 # Start the chain and create the transfer channels
 bash $SRC/start_chain.sh 
 bash $SRC/start_relayers.sh 
-
-# Register all host zones 
-for i in ${!OTHER_CHAINS[@]}; do
-    bash $SRC/register_host.sh ${OTHER_CHAINS[$i]} $i 
-done
-
-$SRC/create_logs.sh &

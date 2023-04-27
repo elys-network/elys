@@ -25,6 +25,7 @@ UPGRADE_OLD_COMMIT_HASH=""
 # COIN TYPES
 # Coin types can be found at https://github.com/satoshilabs/slips/blob/master/slip-0044.md
 COSMOS_COIN_TYPE=118
+BAND_COIN_TYPE=494
 ETH_COIN_TYPE=60
 TERRA_COIN_TYPE=330
 
@@ -85,7 +86,6 @@ BAND_REV_ACCT=grev1
 BAND_ADDRESS_PREFIX=band
 BAND_DENOM=uband
 BAND_RPC_PORT=26557
-BAND_COIN_TYPE=$COSMOS_COIN_TYPE
 BAND_MAIN_CMD="$BAND_BINARY --home $DOCKERNET_HOME/state/${BAND_NODE_PREFIX}1"
 
 # RELAYER
@@ -107,7 +107,7 @@ ELYS_ADDRESS() {
   $ELYS_MAIN_CMD keys show ${ELYS_VAL_PREFIX}1 --keyring-backend test -a | grep $ELYS_ADDRESS_PREFIX
 }
 BAND_ADDRESS() { 
-  $BAND_MAIN_CMD keys show ${BAND_VAL_PREFIX}1 --keyring-backend test -a 
+  $BAND_MAIN_CMD keys show ${BAND_VAL_PREFIX}1 --keyring-backend test -a | grep $BAND_ADDRESS_PREFIX
 }
 
 CSLEEP() {
