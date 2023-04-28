@@ -6,6 +6,7 @@ import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
 import "elys/incentive/params.proto";
+import "elys/incentive/distribution.proto";
 
 option go_package = "github.com/elys-network/elys/x/incentive/types";
 
@@ -17,6 +18,12 @@ service Query {
     option (google.api.http).get = "/elys-network/elys/incentive/params";
   
   }
+  
+  // Queries a list of ValidatorOutstandingRewards items.
+  rpc ValidatorOutstandingRewards (QueryValidatorOutstandingRewardsRequest) returns (QueryValidatorOutstandingRewardsResponse) {
+    option (google.api.http).get = "/elys-network/elys/incentive/validators/{validator_address}/outstanding_rewards";
+  
+  }
 }
 // QueryParamsRequest is request type for the Query/Params RPC method.
 message QueryParamsRequest {}
@@ -26,5 +33,13 @@ message QueryParamsResponse {
   
   // params holds all the parameters of this module.
   Params params = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryValidatorOutstandingRewardsRequest {
+  string validator_address = 1;
+}
+
+message QueryValidatorOutstandingRewardsResponse {
+  ValidatorOutstandingRewards rewards = 1 [(gogoproto.nullable) = false];
 }
 
