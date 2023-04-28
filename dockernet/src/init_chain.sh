@@ -132,6 +132,16 @@ if [ "$CHAIN" == "ELYS" ]; then
         RELAYER_ADDRESS=$($MAIN_CMD keys show $RELAYER_ACCT --keyring-backend test -a)
         $MAIN_CMD add-genesis-account ${RELAYER_ADDRESS} ${VAL_TOKENS}${DENOM}
     done
+
+    # add price feeder accounts
+    for i in "${!PRICE_FEEDER_ACCTS[@]}"; do
+        PRICE_FEEDER_ACCT="${PRICE_FEEDER_ACCTS[i]}"
+        PRICE_FEEDER_MNEMONIC="${PRICE_FEEDER_MNEMONICS[i]}"
+
+        echo "$PRICE_FEEDER_MNEMONIC" | $MAIN_CMD keys add $PRICE_FEEDER_ACCT --recover --keyring-backend=test >> $KEYS_LOGS 2>&1
+        PRICE_FEEDER_ADDRESS=$($MAIN_CMD keys show $PRICE_FEEDER_ACCT --keyring-backend test -a)
+        $MAIN_CMD add-genesis-account ${PRICE_FEEDER_ADDRESS} ${VAL_TOKENS}${DENOM}
+    done
 else 
     # add a revenue account
     REV_ACCT_VAR=${CHAIN}_REV_ACCT

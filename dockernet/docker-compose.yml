@@ -45,6 +45,13 @@ services:
       - ./state/hermes/config.toml:/home/hermes/.hermes/config.toml
     restart: always
 
+  price-feeder:
+    image: elyszone:feeder
+    volumes:
+      - ./state/price-feeder:/root/.feeder
+      - ./state/elys1:/root/.elys
+    restart: always
+
   relayer-band:
     image: elyszone:relayer
     volumes:

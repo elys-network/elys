@@ -25,4 +25,4 @@ COPY --from=builder /app/build/price-feeder /bin/price-feeder
 
 EXPOSE 7171
 
-ENTRYPOINT ["price-feeder", "price-feeder.toml"]
+ENTRYPOINT ["price-feeder", "/root/.feeder/price-feeder.toml"]

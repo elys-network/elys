@@ -101,6 +101,13 @@ RELAYER_MNEMONICS=(
   "$RELAYER_BAND_MNEMONIC"
 )
 
+PRICE_FEEDER_ELYS_ACCT=feeder
+PRICE_FEEDER_ACCTS=($PRICE_FEEDER_ELYS_ACCT)
+PRICE_FEEDER_MNEMONIC="surprise pear reject sail fresh west equal tragic rain divorce direct roast piece canyon rival amateur leaf poet admit frequent point measure vapor abstract"
+PRICE_FEEDER_MNEMONICS=(
+  "$PRICE_FEEDER_MNEMONIC"
+)
+
 ELYS_ADDRESS() { 
   # After an upgrade, the keys query can sometimes print migration info, 
   # so we need to filter by valid addresses using the prefix

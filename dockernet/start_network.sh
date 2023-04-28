@@ -42,3 +42,4 @@ done
 # Start the chain and create the transfer channels
 bash $SRC/start_chain.sh 
 bash $SRC/start_relayers.sh 
+bash $SRC/start_price_feeder.sh
