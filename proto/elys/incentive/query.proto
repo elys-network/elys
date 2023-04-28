@@ -62,6 +62,12 @@ service Query {
     option (google.api.http).get = "/elys-network/elys/incentive/community_pool";
   
   }
+  
+  // Queries a list of DelegatorWithdrawAddress items.
+  rpc DelegatorWithdrawAddress (QueryDelegatorWithdrawAddressRequest) returns (QueryDelegatorWithdrawAddressResponse) {
+    option (google.api.http).get = "/elys-network/elys/incentive/delegators/{delegator_address}/withdraw_address";
+  
+  }
 }
 // QueryParamsRequest is request type for the Query/Params RPC method.
 message QueryParamsRequest {}
@@ -157,8 +163,21 @@ message QueryDelegatorValidatorsResponse {
 message QueryCommunityPoolRequest {}
 
 message QueryCommunityPoolResponse {
-    // pool defines community pool's coins.
-    repeated cosmos.base.v1beta1.DecCoin pool = 1
-    [(gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.DecCoins", (gogoproto.nullable) = false];
+  
+  // pool defines community pool's coins.
+  repeated cosmos.base.v1beta1.DecCoin pool = 1 [(gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.DecCoins", (gogoproto.nullable) = false];
+}
+
+message QueryDelegatorWithdrawAddressRequest {
+  option (gogoproto.goproto_getters) = false;
+ 
+  string delegator_address = 1;
+}
+
+message QueryDelegatorWithdrawAddressResponse {
+  option (gogoproto.goproto_getters) = false;
+
+  // withdraw_address defines the delegator address to query for.
+  string withdraw_address = 1;
 }
 
