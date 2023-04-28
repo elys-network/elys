@@ -33461,6 +33461,10 @@ paths:
                           type: string
                           format: int64
                       title: Incentive Info
+                  community_tax:
+                    type: string
+                  withdraw_addr_enabled:
+                    type: boolean
             description: >-
               QueryParamsResponse is response type for the Query/Params RPC
               method.
@@ -69487,6 +69491,10 @@ definitions:
               type: string
               format: int64
           title: Incentive Info
+      community_tax:
+        type: string
+      withdraw_addr_enabled:
+        type: boolean
     description: Params defines the parameters for the module.
   elysnetwork.elys.incentive.QueryParamsResponse:
     type: object
@@ -69547,6 +69555,10 @@ definitions:
                   type: string
                   format: int64
               title: Incentive Info
+          community_tax:
+            type: string
+          withdraw_addr_enabled:
+            type: boolean
     description: QueryParamsResponse is response type for the Query/Params RPC method.
   elysnetwork.elys.liquidityprovider.Params:
     type: object
