@@ -33488,9 +33488,66 @@ paths:
                   additionalProperties: {}
       tags:
         - Query
+  /elys-network/elys/incentive/validators/{validator_address}/commission:
+    get:
+      summary: ValidatorCommission queries accumulated commission for a validator.
+      operationId: ElysnetworkElysIncentiveValidatorCommission
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              commission:
+                description: commission defines the commision the validator received.
+                type: object
+                properties:
+                  commission:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        denom:
+                          type: string
+                        amount:
+                          type: string
+                      description: >-
+                        DecCoin defines a token with a denomination and a
+                        decimal amount.
+
+
+                        NOTE: The amount field is an Dec which implements the
+                        custom method
+
+                        signatures required by gogoproto.
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: validator_address
+          in: path
+          required: true
+          type: string
+      tags:
+        - Query
   /elys-network/elys/incentive/validators/{validator_address}/outstanding_rewards:
     get:
-      summary: Queries a list of ValidatorOutstandingRewards items.
+      summary: ValidatorOutstandingRewards queries rewards of a validator address.
       operationId: ElysnetworkElysIncentiveValidatorOutstandingRewards
       responses:
         '200':
@@ -69617,6 +69674,31 @@ definitions:
           withdraw_addr_enabled:
             type: boolean
     description: QueryParamsResponse is response type for the Query/Params RPC method.
+  elysnetwork.elys.incentive.QueryValidatorCommissionResponse:
+    type: object
+    properties:
+      commission:
+        description: commission defines the commision the validator received.
+        type: object
+        properties:
+          commission:
+            type: array
+            items:
+              type: object
+              properties:
+                denom:
+                  type: string
+                amount:
+                  type: string
+              description: >-
+                DecCoin defines a token with a denomination and a decimal
+                amount.
+
+
+                NOTE: The amount field is an Dec which implements the custom
+                method
+
+                signatures required by gogoproto.
   elysnetwork.elys.incentive.QueryValidatorOutstandingRewardsResponse:
     type: object
     properties:
@@ -69642,6 +69724,24 @@ definitions:
 
                 signatures required by gogoproto.
         description: "ValidatorOutstandingRewards represents outstanding (un-withdrawn) rewards\r\nfor a validator inexpensive to track, allows simple sanity checks."
+  elysnetwork.elys.incentive.ValidatorAccumulatedCommission:
+    type: object
+    properties:
+      commission:
+        type: array
+        items:
+          type: object
+          properties:
+            denom:
+              type: string
+            amount:
+              type: string
+          description: |-
+            DecCoin defines a token with a denomination and a decimal amount.
+
+            NOTE: The amount field is an Dec which implements the custom method
+            signatures required by gogoproto.
+    description: "ValidatorAccumulatedCommission represents accumulated commission\r\nfor a validator kept as a running counter, can be withdrawn at any time."
   elysnetwork.elys.incentive.ValidatorOutstandingRewards:
     type: object
     properties:
