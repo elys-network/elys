@@ -33395,6 +33395,64 @@ paths:
           type: boolean
       tags:
         - Query
+  /elys-network/elys/incentive/delegators/{delegator_address}/rewards/{validator_address}:
+    get:
+      summary: Queries a list of DelegationRewards items.
+      operationId: ElysnetworkElysIncentiveDelegationRewards
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              rewards:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    denom:
+                      type: string
+                    amount:
+                      type: string
+                  description: >-
+                    DecCoin defines a token with a denomination and a decimal
+                    amount.
+
+
+                    NOTE: The amount field is an Dec which implements the custom
+                    method
+
+                    signatures required by gogoproto.
+                description: rewards defines the rewards accrued by a delegation.
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: delegator_address
+          in: path
+          required: true
+          type: string
+        - name: validator_address
+          in: path
+          required: true
+          type: string
+      tags:
+        - Query
   /elys-network/elys/incentive/params:
     get:
       summary: Parameters queries the parameters of the module.
@@ -69749,6 +69807,24 @@ definitions:
       withdraw_addr_enabled:
         type: boolean
     description: Params defines the parameters for the module.
+  elysnetwork.elys.incentive.QueryDelegationRewardsResponse:
+    type: object
+    properties:
+      rewards:
+        type: array
+        items:
+          type: object
+          properties:
+            denom:
+              type: string
+            amount:
+              type: string
+          description: |-
+            DecCoin defines a token with a denomination and a decimal amount.
+
+            NOTE: The amount field is an Dec which implements the custom method
+            signatures required by gogoproto.
+        description: rewards defines the rewards accrued by a delegation.
   elysnetwork.elys.incentive.QueryParamsResponse:
     type: object
     properties:

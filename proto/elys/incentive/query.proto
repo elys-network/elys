@@ -2,11 +2,13 @@ syntax = "proto3";
 
 package elysnetwork.elys.incentive;
 
-import "gogoproto/gogo.proto";
-import "google/api/annotations.proto";
-import "cosmos/base/query/v1beta1/pagination.proto";
 import "elys/incentive/params.proto";
 import "elys/incentive/distribution.proto";
+
+import "gogoproto/gogo.proto";
+import "google/api/annotations.proto";
+import "cosmos/base/v1beta1/coin.proto";
+import "cosmos/base/query/v1beta1/pagination.proto";
 
 option go_package = "github.com/elys-network/elys/x/incentive/types";
 
@@ -34,6 +36,12 @@ service Query {
   // ValidatorSlashes queries slash events of a validator.
   rpc ValidatorSlashes (QueryValidatorSlashesRequest) returns (QueryValidatorSlashesResponse) {
     option (google.api.http).get = "/elys-network/elys/incentive/validators/{validator_address}/slashes";
+  
+  }
+  
+  // Queries a list of DelegationRewards items.
+  rpc DelegationRewards (QueryDelegationRewardsRequest) returns (QueryDelegationRewardsResponse) {
+    option (google.api.http).get = "/elys-network/elys/incentive/delegators/{delegator_address}/rewards/{validator_address}";
   
   }
 }
@@ -66,23 +74,40 @@ message QueryValidatorCommissionResponse {
 }
 
 message QueryValidatorSlashesRequest {
-  option (gogoproto.goproto_getters)  = false;
-
+  option (gogoproto.goproto_getters) = false;
+  
   // validator_address defines the validator address to query for.
   string validator_address = 1;
+  
   // starting_height defines the optional starting height to query the slashes.
   uint64 starting_height = 2;
+  
   // starting_height defines the optional ending height to query the slashes.
   uint64 ending_height = 3;
+  
   // pagination defines an optional pagination for the request.
   cosmos.base.query.v1beta1.PageRequest pagination = 4;
 }
 
 message QueryValidatorSlashesResponse {
+  
   // slashes defines the slashes the validator received.
   repeated ValidatorSlashEvent slashes = 1 [(gogoproto.nullable) = false];
-
+  
   // pagination defines the pagination in the response.
   cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+message QueryDelegationRewardsRequest {
+  option (gogoproto.goproto_getters) = false;
+
+  string delegator_address = 1;
+  string validator_address = 2;
+}
+
+message QueryDelegationRewardsResponse {
+  // rewards defines the rewards accrued by a delegation.
+  repeated cosmos.base.v1beta1.DecCoin rewards = 1
+      [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.DecCoins"];
 }
 
