@@ -30,6 +30,12 @@ service Query {
     option (google.api.http).get = "/elys-network/elys/incentive/validators/{validator_address}/commission";
   
   }
+  
+  // ValidatorSlashes queries slash events of a validator.
+  rpc ValidatorSlashes (QueryValidatorSlashesRequest) returns (QueryValidatorSlashesResponse) {
+    option (google.api.http).get = "/elys-network/elys/incentive/validators/{validator_address}/slashes";
+  
+  }
 }
 // QueryParamsRequest is request type for the Query/Params RPC method.
 message QueryParamsRequest {}
@@ -54,7 +60,29 @@ message QueryValidatorCommissionRequest {
 }
 
 message QueryValidatorCommissionResponse {
+  
   // commission defines the commision the validator received.
   ValidatorAccumulatedCommission commission = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryValidatorSlashesRequest {
+  option (gogoproto.goproto_getters)  = false;
+
+  // validator_address defines the validator address to query for.
+  string validator_address = 1;
+  // starting_height defines the optional starting height to query the slashes.
+  uint64 starting_height = 2;
+  // starting_height defines the optional ending height to query the slashes.
+  uint64 ending_height = 3;
+  // pagination defines an optional pagination for the request.
+  cosmos.base.query.v1beta1.PageRequest pagination = 4;
+}
+
+message QueryValidatorSlashesResponse {
+  // slashes defines the slashes the validator received.
+  repeated ValidatorSlashEvent slashes = 1 [(gogoproto.nullable) = false];
+
+  // pagination defines the pagination in the response.
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
