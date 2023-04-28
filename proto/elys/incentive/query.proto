@@ -4,7 +4,6 @@ package elysnetwork.elys.incentive;
 
 import "elys/incentive/params.proto";
 import "elys/incentive/distribution.proto";
-
 import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
 import "cosmos/base/v1beta1/coin.proto";
@@ -42,6 +41,12 @@ service Query {
   // Queries a list of DelegationRewards items.
   rpc DelegationRewards (QueryDelegationRewardsRequest) returns (QueryDelegationRewardsResponse) {
     option (google.api.http).get = "/elys-network/elys/incentive/delegators/{delegator_address}/rewards/{validator_address}";
+  
+  }
+  
+  // Queries a list of DelegationTotalRewards items.
+  rpc DelegationTotalRewards (QueryDelegationTotalRewardsRequest) returns (QueryDelegationTotalRewardsResponse) {
+    option (google.api.http).get = "/elys-network/elys/incentive/delegators/{delegator_address}/rewards";
   
   }
 }
@@ -100,14 +105,27 @@ message QueryValidatorSlashesResponse {
 
 message QueryDelegationRewardsRequest {
   option (gogoproto.goproto_getters) = false;
-
   string delegator_address = 1;
   string validator_address = 2;
 }
 
 message QueryDelegationRewardsResponse {
+  
   // rewards defines the rewards accrued by a delegation.
-  repeated cosmos.base.v1beta1.DecCoin rewards = 1
-      [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.DecCoins"];
+  repeated cosmos.base.v1beta1.DecCoin rewards = 1 [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.DecCoins"];
+}
+
+message QueryDelegationTotalRewardsRequest {
+  option (gogoproto.goproto_getters) = false;
+ 
+  string delegator_address = 1;
+}
+
+message QueryDelegationTotalRewardsResponse {
+    // rewards defines all the rewards accrued by a delegator.
+    repeated DelegationDelegatorReward rewards = 1 [(gogoproto.nullable) = false];
+    // total defines the sum of all the rewards.
+    repeated cosmos.base.v1beta1.DecCoin total = 2
+        [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.DecCoins"];
 }
 

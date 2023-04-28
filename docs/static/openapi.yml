@@ -33395,6 +33395,87 @@ paths:
           type: boolean
       tags:
         - Query
+  /elys-network/elys/incentive/delegators/{delegator_address}/rewards:
+    get:
+      summary: Queries a list of DelegationTotalRewards items.
+      operationId: ElysnetworkElysIncentiveDelegationTotalRewards
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              rewards:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    validator_address:
+                      type: string
+                    reward:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          denom:
+                            type: string
+                          amount:
+                            type: string
+                        description: >-
+                          DecCoin defines a token with a denomination and a
+                          decimal amount.
+
+
+                          NOTE: The amount field is an Dec which implements the
+                          custom method
+
+                          signatures required by gogoproto.
+                  description: "DelegationDelegatorReward represents the properties\r\nof a delegator's delegation reward."
+                description: rewards defines all the rewards accrued by a delegator.
+              total:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    denom:
+                      type: string
+                    amount:
+                      type: string
+                  description: >-
+                    DecCoin defines a token with a denomination and a decimal
+                    amount.
+
+
+                    NOTE: The amount field is an Dec which implements the custom
+                    method
+
+                    signatures required by gogoproto.
+                description: total defines the sum of all the rewards.
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: delegator_address
+          in: path
+          required: true
+          type: string
+      tags:
+        - Query
   /elys-network/elys/incentive/delegators/{delegator_address}/rewards/{validator_address}:
     get:
       summary: Queries a list of DelegationRewards items.
@@ -69723,6 +69804,26 @@ definitions:
     description: |-
       QueryEpochsInfoResponse is the response type for the Query/EpochInfos RPC
       method.
+  elysnetwork.elys.incentive.DelegationDelegatorReward:
+    type: object
+    properties:
+      validator_address:
+        type: string
+      reward:
+        type: array
+        items:
+          type: object
+          properties:
+            denom:
+              type: string
+            amount:
+              type: string
+          description: |-
+            DecCoin defines a token with a denomination and a decimal amount.
+
+            NOTE: The amount field is an Dec which implements the custom method
+            signatures required by gogoproto.
+    description: "DelegationDelegatorReward represents the properties\r\nof a delegator's delegation reward."
   elysnetwork.elys.incentive.IncentiveInfo:
     type: object
     properties:
@@ -69825,6 +69926,51 @@ definitions:
             NOTE: The amount field is an Dec which implements the custom method
             signatures required by gogoproto.
         description: rewards defines the rewards accrued by a delegation.
+  elysnetwork.elys.incentive.QueryDelegationTotalRewardsResponse:
+    type: object
+    properties:
+      rewards:
+        type: array
+        items:
+          type: object
+          properties:
+            validator_address:
+              type: string
+            reward:
+              type: array
+              items:
+                type: object
+                properties:
+                  denom:
+                    type: string
+                  amount:
+                    type: string
+                description: >-
+                  DecCoin defines a token with a denomination and a decimal
+                  amount.
+
+
+                  NOTE: The amount field is an Dec which implements the custom
+                  method
+
+                  signatures required by gogoproto.
+          description: "DelegationDelegatorReward represents the properties\r\nof a delegator's delegation reward."
+        description: rewards defines all the rewards accrued by a delegator.
+      total:
+        type: array
+        items:
+          type: object
+          properties:
+            denom:
+              type: string
+            amount:
+              type: string
+          description: |-
+            DecCoin defines a token with a denomination and a decimal amount.
+
+            NOTE: The amount field is an Dec which implements the custom method
+            signatures required by gogoproto.
+        description: total defines the sum of all the rewards.
   elysnetwork.elys.incentive.QueryParamsResponse:
     type: object
     properties:
