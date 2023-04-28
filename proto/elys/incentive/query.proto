@@ -56,6 +56,12 @@ service Query {
     option (google.api.http).get = "/elys-network/elys/incentive/delegators/{delegator_address}/validators";
   
   }
+  
+  // Queries a list of CommunityPool items.
+  rpc CommunityPool (QueryCommunityPoolRequest) returns (QueryCommunityPoolResponse) {
+    option (google.api.http).get = "/elys-network/elys/incentive/community_pool";
+  
+  }
 }
 // QueryParamsRequest is request type for the Query/Params RPC method.
 message QueryParamsRequest {}
@@ -138,14 +144,21 @@ message QueryDelegationTotalRewardsResponse {
 
 message QueryDelegatorValidatorsRequest {
   option (gogoproto.goproto_getters) = false;
-
   string delegator_address = 1;
 }
 
 message QueryDelegatorValidatorsResponse {
   option (gogoproto.goproto_getters) = false;
-
+  
   // validators defines the validators a delegator is delegating for.
   repeated string validators = 1;
+}
+
+message QueryCommunityPoolRequest {}
+
+message QueryCommunityPoolResponse {
+    // pool defines community pool's coins.
+    repeated cosmos.base.v1beta1.DecCoin pool = 1
+    [(gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.DecCoins", (gogoproto.nullable) = false];
 }
 

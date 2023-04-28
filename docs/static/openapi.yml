@@ -33395,6 +33395,35 @@ paths:
           type: boolean
       tags:
         - Query
+  /elys-network/elys/incentive/community_pool:
+    get:
+      summary: Queries a list of CommunityPool items.
+      operationId: ElysnetworkElysIncentiveCommunityPool
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      tags:
+        - Query
   /elys-network/elys/incentive/delegators/{delegator_address}/rewards:
     get:
       summary: |-
@@ -69952,6 +69981,8 @@ definitions:
       withdraw_addr_enabled:
         type: boolean
     description: Params defines the parameters for the module.
+  elysnetwork.elys.incentive.QueryCommunityPoolResponse:
+    type: object
   elysnetwork.elys.incentive.QueryDelegationRewardsResponse:
     type: object
     properties:
