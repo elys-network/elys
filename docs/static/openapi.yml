@@ -33397,7 +33397,9 @@ paths:
         - Query
   /elys-network/elys/incentive/delegators/{delegator_address}/rewards:
     get:
-      summary: Queries a list of DelegationTotalRewards items.
+      summary: |-
+        DelegationTotalRewards queries the total rewards accrued by a each
+        validator.
       operationId: ElysnetworkElysIncentiveDelegationTotalRewards
       responses:
         '200':
@@ -33478,7 +33480,7 @@ paths:
         - Query
   /elys-network/elys/incentive/delegators/{delegator_address}/rewards/{validator_address}:
     get:
-      summary: Queries a list of DelegationRewards items.
+      summary: DelegationRewards queries the total rewards accrued by a delegation.
       operationId: ElysnetworkElysIncentiveDelegationRewards
       responses:
         '200':
@@ -33529,6 +33531,48 @@ paths:
           required: true
           type: string
         - name: validator_address
+          in: path
+          required: true
+          type: string
+      tags:
+        - Query
+  /elys-network/elys/incentive/delegators/{delegator_address}/validators:
+    get:
+      summary: DelegatorValidators queries the validators of a delegator.
+      operationId: ElysnetworkElysIncentiveDelegatorValidators
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              validators:
+                type: array
+                items:
+                  type: string
+                description: >-
+                  validators defines the validators a delegator is delegating
+                  for.
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: delegator_address
           in: path
           required: true
           type: string
@@ -69971,6 +70015,14 @@ definitions:
             NOTE: The amount field is an Dec which implements the custom method
             signatures required by gogoproto.
         description: total defines the sum of all the rewards.
+  elysnetwork.elys.incentive.QueryDelegatorValidatorsResponse:
+    type: object
+    properties:
+      validators:
+        type: array
+        items:
+          type: string
+        description: validators defines the validators a delegator is delegating for.
   elysnetwork.elys.incentive.QueryParamsResponse:
     type: object
     properties:

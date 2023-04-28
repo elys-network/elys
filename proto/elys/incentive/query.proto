@@ -38,15 +38,22 @@ service Query {
   
   }
   
-  // Queries a list of DelegationRewards items.
+  // DelegationRewards queries the total rewards accrued by a delegation.
   rpc DelegationRewards (QueryDelegationRewardsRequest) returns (QueryDelegationRewardsResponse) {
     option (google.api.http).get = "/elys-network/elys/incentive/delegators/{delegator_address}/rewards/{validator_address}";
   
   }
   
-  // Queries a list of DelegationTotalRewards items.
+  // DelegationTotalRewards queries the total rewards accrued by a each
+  // validator.
   rpc DelegationTotalRewards (QueryDelegationTotalRewardsRequest) returns (QueryDelegationTotalRewardsResponse) {
     option (google.api.http).get = "/elys-network/elys/incentive/delegators/{delegator_address}/rewards";
+  
+  }
+  
+  // DelegatorValidators queries the validators of a delegator.
+  rpc DelegatorValidators (QueryDelegatorValidatorsRequest) returns (QueryDelegatorValidatorsResponse) {
+    option (google.api.http).get = "/elys-network/elys/incentive/delegators/{delegator_address}/validators";
   
   }
 }
@@ -117,15 +124,28 @@ message QueryDelegationRewardsResponse {
 
 message QueryDelegationTotalRewardsRequest {
   option (gogoproto.goproto_getters) = false;
- 
   string delegator_address = 1;
 }
 
 message QueryDelegationTotalRewardsResponse {
-    // rewards defines all the rewards accrued by a delegator.
-    repeated DelegationDelegatorReward rewards = 1 [(gogoproto.nullable) = false];
-    // total defines the sum of all the rewards.
-    repeated cosmos.base.v1beta1.DecCoin total = 2
-        [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.DecCoins"];
+  
+  // rewards defines all the rewards accrued by a delegator.
+  repeated DelegationDelegatorReward rewards = 1 [(gogoproto.nullable) = false];
+  
+  // total defines the sum of all the rewards.
+  repeated cosmos.base.v1beta1.DecCoin total = 2 [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.DecCoins"];
+}
+
+message QueryDelegatorValidatorsRequest {
+  option (gogoproto.goproto_getters) = false;
+
+  string delegator_address = 1;
+}
+
+message QueryDelegatorValidatorsResponse {
+  option (gogoproto.goproto_getters) = false;
+
+  // validators defines the validators a delegator is delegating for.
+  repeated string validators = 1;
 }
 
