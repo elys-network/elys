@@ -69979,6 +69979,8 @@ definitions:
         type: string
         format: int64
     title: Incentive Info
+  elysnetwork.elys.incentive.MsgSetWithdrawAddressResponse:
+    type: object
   elysnetwork.elys.incentive.Params:
     type: object
     properties:

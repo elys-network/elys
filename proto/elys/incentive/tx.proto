@@ -1,7 +1,18 @@
 syntax = "proto3";
+
 package elysnetwork.elys.incentive;
 
 option go_package = "github.com/elys-network/elys/x/incentive/types";
 
 // Msg defines the Msg service.
-service Msg {}
+service Msg {
+  rpc SetWithdrawAddress (MsgSetWithdrawAddress) returns (MsgSetWithdrawAddressResponse);
+}
+
+message MsgSetWithdrawAddress {
+  string delegator_address = 1;
+  string withdraw_address  = 2;
+}
+
+message MsgSetWithdrawAddressResponse {}
+

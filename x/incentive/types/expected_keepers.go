@@ -29,3 +29,9 @@ type StakingKeeper interface {
 	// GetDelegatorDelegations returns a given amount of all the delegations from a delegator.
 	GetDelegatorDelegations(ctx sdk.Context, delegator sdk.AccAddress, maxRetrieve uint16) (delegations []stakingtypes.Delegation)
 }
+
+type AccountKeeper interface {
+}
+
+type BankKeeper interface {
+}

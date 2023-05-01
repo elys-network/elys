@@ -24,7 +24,11 @@ var (
 )
 
 const (
-// this line is used by starport scaffolding # simapp/module/const
+	opWeightMsgSetWithdrawAddress = "op_weight_msg_set_withdraw_address"
+	// TODO: Determine the simulation weight value
+	defaultWeightMsgSetWithdrawAddress int = 100
+
+	// this line is used by starport scaffolding # simapp/module/const
 )
 
 // GenerateGenesisState creates a randomized GenState of the module
@@ -57,6 +61,13 @@ func (am AppModule) RegisterStoreDecoder(_ sdk.StoreDecoderRegistry) {}
 // WeightedOperations returns the all the gov module operations with their respective weights.
 func (am AppModule) WeightedOperations(simState module.SimulationState) []simtypes.WeightedOperation {
 	operations := make([]simtypes.WeightedOperation, 0)
+
+	var weightMsgSetWithdrawAddress int
+	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgSetWithdrawAddress, &weightMsgSetWithdrawAddress, nil,
+		func(_ *rand.Rand) {
+			weightMsgSetWithdrawAddress = defaultWeightMsgSetWithdrawAddress
+		},
+	)
 
 	// this line is used by starport scaffolding # simapp/module/operation
 
