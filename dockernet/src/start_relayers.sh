@@ -26,6 +26,7 @@ for chain in ${OTHER_CHAINS[@]}; do
 
     printf "ELYS <> $chain - Creating client, connection, and transfer channel..." | tee -a $relayer_logs
     $relayer_exec rly transact link elys-${chain_name} >> $relayer_logs 2>&1
+    $relayer_exec rly transact channel elys-${chain_name} --src-port oracle --dst-port oracle --version "bandchain-1" >> $relayer_logs 2>&1
     echo "Done."
 
     $DOCKER_COMPOSE up -d relayer-${chain_name}
