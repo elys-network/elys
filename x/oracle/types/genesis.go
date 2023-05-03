@@ -12,11 +12,29 @@ const DefaultIndex uint64 = 1
 // DefaultGenesis returns the default genesis state
 func DefaultGenesis() *GenesisState {
 	return &GenesisState{
-		PortId:       PortID,
-		Params:       DefaultParams(),
-		AssetInfos:   []AssetInfo{},
-		Prices:       []Price{},
-		PriceFeeders: []PriceFeeder{},
+		PortId: PortID,
+		Params: DefaultParams(),
+		AssetInfos: []AssetInfo{
+			{
+				Denom:      "satoshi",
+				Display:    "BTC",
+				BandTicker: "BTC",
+				ElysTicker: "BTC",
+			},
+			{
+				Denom:      "wei",
+				Display:    "ETH",
+				BandTicker: "ETH",
+				ElysTicker: "ETH",
+			},
+		},
+		Prices: []Price{},
+		PriceFeeders: []PriceFeeder{
+			{
+				Feeder:   "elys1mxk8wmns33vs6yynsaeud2k97xkl5dqlkjv3j9",
+				IsActive: true,
+			},
+		},
 		// this line is used by starport scaffolding # genesis/types/default
 	}
 }

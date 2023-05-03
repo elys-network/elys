@@ -7,6 +7,13 @@ COMMIT:=$(shell git log -1 --format='%H')
 VERSION:=$(shell git describe --tags --match 'v*' --abbrev=8 | sed 's/-g/-/' | sed 's/-[0-9]*-/-/')
 GOFLAGS:=""
 GOTAGS:=ledger
+
+BUILDDIR ?= $(CURDIR)/build
+DOCKER := $(shell which docker)
+DOCKER_BUF := $(DOCKER) run --rm -v $(CURDIR):/workspace --workdir /workspace bufbuild/buf:1.7.0
+DOCKERNET_HOME=./dockernet
+DOCKERNET_COMPOSE_FILE=$(DOCKERNET_HOME)/docker-compose.yml
+
 ldflags = -X github.com/cosmos/cosmos-sdk/version.Name=$(NAME) \
 		  -X github.com/cosmos/cosmos-sdk/version.AppName=$(NAME) \
 		  -X github.com/cosmos/cosmos-sdk/version.ServerName=$(BINARY) \
@@ -93,3 +100,19 @@ help: Makefile
 .PHONY: help
 
 .DEFAULT_GOAL := install
+
+build-docker:
+	@bash $(DOCKERNET_HOME)/build.sh -${build} ${BUILDDIR}
+
+start-docker: build-docker
+	@bash $(DOCKERNET_HOME)/start_network.sh
+
+clean-docker:
+	@docker-compose -f $(DOCKERNET_COMPOSE_FILE) stop
+	@docker-compose -f $(DOCKERNET_COMPOSE_FILE) down
+	rm -rf $(DOCKERNET_HOME)/state
+	docker image prune -a
+
+stop-docker:
+	@bash $(DOCKERNET_HOME)/pkill.sh
+	docker-compose -f $(DOCKERNET_COMPOSE_FILE) down --remove-orphans
