@@ -124,9 +124,9 @@ import (
 	tokenomicsmodulekeeper "github.com/elys-network/elys/x/tokenomics/keeper"
 	tokenomicsmoduletypes "github.com/elys-network/elys/x/tokenomics/types"
 
-	incentivemodule "github.com/elys-network/elys/x/incentive"
-	incentivemodulekeeper "github.com/elys-network/elys/x/incentive/keeper"
-	incentivemoduletypes "github.com/elys-network/elys/x/incentive/types"
+	// incentivemodule "github.com/elys-network/elys/x/incentive"
+	// incentivemodulekeeper "github.com/elys-network/elys/x/incentive/keeper"
+	// incentivemoduletypes "github.com/elys-network/elys/x/incentive/types"
 
 	burnermodule "github.com/elys-network/elys/x/burner"
 	burnermodulekeeper "github.com/elys-network/elys/x/burner/keeper"
@@ -196,7 +196,7 @@ var (
 		oraclemodule.AppModuleBasic{},
 		commitmentmodule.AppModuleBasic{},
 		tokenomicsmodule.AppModuleBasic{},
-		incentivemodule.AppModuleBasic{},
+		// incentivemodule.AppModuleBasic{},
 		burnermodule.AppModuleBasic{},
 		// this line is used by starport scaffolding # stargate/app/moduleBasic
 	)
@@ -285,7 +285,7 @@ type ElysApp struct {
 
 	TokenomicsKeeper tokenomicsmodulekeeper.Keeper
 
-	IncentiveKeeper incentivemodulekeeper.Keeper
+	// IncentiveKeeper incentivemodulekeeper.Keeper
 
 	BurnerKeeper burnermodulekeeper.Keeper
 	// this line is used by starport scaffolding # stargate/app/keeperDeclaration
@@ -338,7 +338,7 @@ func NewElysApp(
 		oracletypes.StoreKey,
 		commitmentmoduletypes.StoreKey,
 		tokenomicsmoduletypes.StoreKey,
-		incentivemoduletypes.StoreKey,
+		// incentivemoduletypes.StoreKey,
 		burnermoduletypes.StoreKey,
 		// this line is used by starport scaffolding # stargate/app/storeKey
 	)
@@ -587,19 +587,19 @@ func NewElysApp(
 		app.AssetprofileKeeper,
 	)
 
-	app.IncentiveKeeper = *incentivemodulekeeper.NewKeeper(
-		appCodec,
-		keys[incentivemoduletypes.StoreKey],
-		keys[incentivemoduletypes.MemStoreKey],
-		app.GetSubspace(incentivemoduletypes.ModuleName),
-		commitmentKeeper,
-		app.StakingKeeper,
-	)
-	incentiveModule := incentivemodule.NewAppModule(appCodec, app.IncentiveKeeper)
+	// app.IncentiveKeeper = *incentivemodulekeeper.NewKeeper(
+	// 	appCodec,
+	// 	keys[incentivemoduletypes.StoreKey],
+	// 	keys[incentivemoduletypes.MemStoreKey],
+	// 	app.GetSubspace(incentivemoduletypes.ModuleName),
+	// 	commitmentKeeper,
+	// 	app.StakingKeeper,
+	// )
+	// incentiveModule := incentivemodule.NewAppModule(appCodec, app.IncentiveKeeper)
 
 	app.CommitmentKeeper = *commitmentKeeper.SetHooks(
 		commitmentmodulekeeper.NewMultiEpochHooks(
-			app.IncentiveKeeper.CommitmentHooks(),
+		// app.IncentiveKeeper.CommitmentHooks(),
 		),
 	)
 
@@ -662,7 +662,7 @@ func NewElysApp(
 			// insert staking hooks receivers here
 			app.DistrKeeper.Hooks(),
 			app.SlashingKeeper.Hooks(),
-			app.IncentiveKeeper.StakingHooks(),
+			// app.IncentiveKeeper.StakingHooks(),
 		),
 	)
 
@@ -677,7 +677,7 @@ func NewElysApp(
 			// insert epoch hooks receivers here
 			app.OracleKeeper.Hooks(),
 			app.CommitmentKeeper.Hooks(),
-			app.IncentiveKeeper.Hooks(),
+			// app.IncentiveKeeper.Hooks(),
 			app.BurnerKeeper.Hooks(),
 		),
 	)
@@ -722,7 +722,7 @@ func NewElysApp(
 		oracleModule,
 		commitmentModule,
 		tokenomicsModule,
-		incentiveModule,
+		// incentiveModule,
 		burnerModule,
 		// this line is used by starport scaffolding # stargate/app/appModule
 	)
@@ -760,7 +760,7 @@ func NewElysApp(
 		oracletypes.ModuleName,
 		commitmentmoduletypes.ModuleName,
 		tokenomicsmoduletypes.ModuleName,
-		incentivemoduletypes.ModuleName,
+		// incentivemoduletypes.ModuleName,
 		burnermoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/beginBlockers
 	)
@@ -793,7 +793,7 @@ func NewElysApp(
 		oracletypes.ModuleName,
 		commitmentmoduletypes.ModuleName,
 		tokenomicsmoduletypes.ModuleName,
-		incentivemoduletypes.ModuleName,
+		// incentivemoduletypes.ModuleName,
 		burnermoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/endBlockers
 	)
@@ -830,7 +830,7 @@ func NewElysApp(
 		oracletypes.ModuleName,
 		commitmentmoduletypes.ModuleName,
 		tokenomicsmoduletypes.ModuleName,
-		incentivemoduletypes.ModuleName,
+		// incentivemoduletypes.ModuleName,
 		burnermoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/initGenesis
 	)
@@ -867,7 +867,7 @@ func NewElysApp(
 		oracleModule,
 		commitmentModule,
 		tokenomicsModule,
-		incentiveModule,
+		// incentiveModule,
 		burnerModule,
 		// this line is used by starport scaffolding # stargate/app/appModule
 	)
@@ -1080,7 +1080,7 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(oracletypes.ModuleName)
 	paramsKeeper.Subspace(commitmentmoduletypes.ModuleName)
 	paramsKeeper.Subspace(tokenomicsmoduletypes.ModuleName)
-	paramsKeeper.Subspace(incentivemoduletypes.ModuleName)
+	// paramsKeeper.Subspace(incentivemoduletypes.ModuleName)
 	paramsKeeper.Subspace(burnermoduletypes.ModuleName)
 	// this line is used by starport scaffolding # stargate/app/paramSubspace
 
