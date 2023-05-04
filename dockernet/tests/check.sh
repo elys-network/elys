@@ -15,6 +15,6 @@ source "./assert.sh"
 band_price=$(elysd query oracle show-price BTC --source=band)
 assert_contain "$band_price" "asset: BTC" "band price check failure"
 
-elys_price=$(elysd query oracle show-price BTC --source=binance)
+elys_price=$(elysd query oracle show-price BTC --source=elys)
 assert_contain "$elys_price" "asset: BTC" "elys price check failure"
 echo "All passed"
