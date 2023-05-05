@@ -85,12 +85,6 @@ Volatility of swapping assets + pool slippage + target weight change
 
 TODO: should have exact Maths formula for calculating slippage.
 
-### Fee distribution schedule
-
-Fees are transferred to fee collector wallet and distributed per epoch to LPs and stakers.
-
-LPs claim rewards through commitment module.
-
 ## Endpoints
 
 ### Gov Proposals
@@ -111,6 +105,15 @@ LPs claim rewards through commitment module.
 - EstimatedSwapOutAmount(SwapCoin, outToken) -> amount
 - EstimatedLPTokenAmountAfterDeposit(depositCoins) -> amount
 - EstimatedWithdrawAmount(lpTokenAmount, outToken) -> outTokenAmount
+
+### Epoch actions
+
+#### Fee distribution
+
+Fees are transferred to fee collector wallet and distributed per epoch to LPs and stakers per epoch.
+
+LPs claim rewards through `commitment` module.
+For stakers, will need to distribute through `incentive` module.
 
 ## Risk management
 
