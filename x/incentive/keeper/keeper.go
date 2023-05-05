@@ -10,6 +10,7 @@ import (
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
 	"github.com/tendermint/tendermint/libs/log"
 
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	stypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	ctypes "github.com/elys-network/elys/x/commitment/types"
 	etypes "github.com/elys-network/elys/x/epochs/types"
@@ -25,8 +26,8 @@ type (
 		cmk        types.CommitmentKeeper
 		stk        types.StakingKeeper
 		tci        *types.TotalCommitmentInfo
-		authKeeper    types.AccountKeeper
-		bankKeeper    types.BankKeeper
+		authKeeper types.AccountKeeper
+		bankKeeper types.BankKeeper
 
 		feeCollectorName string // name of the FeeCollector ModuleAccount
 	}
@@ -39,7 +40,7 @@ func NewKeeper(
 	ps paramtypes.Subspace,
 	ck types.CommitmentKeeper,
 	sk types.StakingKeeper,
-	ak types.AccountKeeper, 
+	ak types.AccountKeeper,
 	bk types.BankKeeper,
 	feeCollectorName string,
 ) *Keeper {
@@ -49,13 +50,13 @@ func NewKeeper(
 	}
 
 	return &Keeper{
-		cdc:        cdc,
-		storeKey:   storeKey,
-		memKey:     memKey,
-		paramstore: ps,
-		cmk:        ck,
-		stk:        sk,
-		tci:        &types.TotalCommitmentInfo{},
+		cdc:              cdc,
+		storeKey:         storeKey,
+		memKey:           memKey,
+		paramstore:       ps,
+		cmk:              ck,
+		stk:              sk,
+		tci:              &types.TotalCommitmentInfo{},
 		feeCollectorName: feeCollectorName,
 		authKeeper:       ak,
 		bankKeeper:       bk,
@@ -347,4 +348,102 @@ func (k Keeper) GiveCommissionToValidators(ctx sdk.Context, delegator string, to
 	})
 
 	return totalGiven
+}
+
+// SetWithdrawAddr sets a new address that will receive the rewards upon withdrawal
+func (k Keeper) SetWithdrawAddr(ctx sdk.Context, delegatorAddr sdk.AccAddress, withdrawAddr sdk.AccAddress) error {
+	if k.bankKeeper.BlockedAddr(withdrawAddr) {
+		return sdkerrors.Wrapf(sdkerrors.ErrUnauthorized, "%s is not allowed to receive external funds", withdrawAddr)
+	}
+
+	if !k.GetWithdrawAddrEnabled(ctx) {
+		return types.ErrSetWithdrawAddrDisabled
+	}
+
+	ctx.EventManager().EmitEvent(
+		sdk.NewEvent(
+			types.EventTypeSetWithdrawAddress,
+			sdk.NewAttribute(types.AttributeKeyWithdrawAddress, withdrawAddr.String()),
+		),
+	)
+
+	k.SetDelegatorWithdrawAddr(ctx, delegatorAddr, withdrawAddr)
+	return nil
+}
+
+// withdraw rewards from a delegation
+func (k Keeper) WithdrawDelegationRewards(ctx sdk.Context, delAddr sdk.AccAddress, valAddr sdk.ValAddress) (sdk.Coins, error) {
+	val := k.stk.Validator(ctx, valAddr)
+	if val == nil {
+		return nil, types.ErrNoValidatorDistInfo
+	}
+
+	del := k.stk.Delegation(ctx, delAddr, valAddr)
+	if del == nil {
+		return nil, types.ErrEmptyDelegationDistInfo
+	}
+
+	// withdraw rewards
+	rewards, err := k.withdrawDelegationRewards(ctx, val, del)
+	if err != nil {
+		return nil, err
+	}
+
+	if rewards.IsZero() {
+		baseDenom, _ := sdk.GetBaseDenom()
+		rewards = sdk.Coins{sdk.Coin{
+			Denom:  baseDenom,
+			Amount: sdk.ZeroInt(),
+		}}
+	}
+
+	// reinitialize the delegation
+	k.initializeDelegation(ctx, valAddr, delAddr)
+	return rewards, nil
+}
+
+// withdraw validator commission
+func (k Keeper) WithdrawValidatorCommission(ctx sdk.Context, valAddr sdk.ValAddress) (sdk.Coins, error) {
+	// fetch validator accumulated commission
+	accumCommission := k.GetValidatorAccumulatedCommission(ctx, valAddr)
+	if accumCommission.Commission.IsZero() {
+		return nil, types.ErrNoValidatorCommission
+	}
+
+	commission, remainder := accumCommission.Commission.TruncateDecimal()
+	k.SetValidatorAccumulatedCommission(ctx, valAddr, types.ValidatorAccumulatedCommission{Commission: remainder}) // leave remainder to withdraw later
+
+	// update outstanding
+	outstanding := k.GetValidatorOutstandingRewards(ctx, valAddr).Rewards
+	k.SetValidatorOutstandingRewards(ctx, valAddr, types.ValidatorOutstandingRewards{Rewards: outstanding.Sub(sdk.NewDecCoinsFromCoins(commission...))})
+
+	if !commission.IsZero() {
+		accAddr := sdk.AccAddress(valAddr)
+		withdrawAddr := k.GetDelegatorWithdrawAddr(ctx, accAddr)
+		err := k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, withdrawAddr, commission)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	ctx.EventManager().EmitEvent(
+		sdk.NewEvent(
+			types.EventTypeWithdrawCommission,
+			sdk.NewAttribute(sdk.AttributeKeyAmount, commission.String()),
+		),
+	)
+
+	return commission, nil
+}
+
+// GetTotalRewards returns the total amount of fee distribution rewards held in the store
+func (k Keeper) GetTotalRewards(ctx sdk.Context) (totalRewards sdk.DecCoins) {
+	k.IterateValidatorOutstandingRewards(ctx,
+		func(_ sdk.ValAddress, rewards types.ValidatorOutstandingRewards) (stop bool) {
+			totalRewards = totalRewards.Add(rewards.Rewards...)
+			return false
+		},
+	)
+
+	return totalRewards
 }

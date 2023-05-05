@@ -31,6 +31,9 @@ type StakingKeeper interface {
 	GetDelegatorDelegations(ctx sdk.Context, delegator sdk.AccAddress, maxRetrieve uint16) (delegations []stakingtypes.Delegation)
 	// get a particular validator by consensus address
 	ValidatorByConsAddr(sdk.Context, sdk.ConsAddress) stakingtypes.ValidatorI
+	// Delegation allows for getting a particular delegation for a given validator
+	// and delegator outside the scope of the staking module.
+	Delegation(sdk.Context, sdk.AccAddress, sdk.ValAddress) stakingtypes.DelegationI
 }
 
 // AccountKeeper defines the expected account keeper used for simulations (noalias)
