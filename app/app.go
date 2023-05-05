@@ -213,6 +213,7 @@ var (
 		ibctransfertypes.ModuleName:      {authtypes.Minter, authtypes.Burner},
 		commitmentmoduletypes.ModuleName: {authtypes.Minter, authtypes.Burner},
 		burnermoduletypes.ModuleName:     {authtypes.Burner},
+		incentivemoduletypes.ModuleName:  nil,
 		// this line is used by starport scaffolding # stargate/app/maccPerms
 	}
 )
@@ -594,6 +595,9 @@ func NewElysApp(
 		app.GetSubspace(incentivemoduletypes.ModuleName),
 		commitmentKeeper,
 		app.StakingKeeper,
+		app.AccountKeeper,
+		app.BankKeeper,
+		authtypes.FeeCollectorName,
 	)
 	incentiveModule := incentivemodule.NewAppModule(appCodec, app.IncentiveKeeper)
 

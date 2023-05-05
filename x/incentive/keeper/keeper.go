@@ -25,6 +25,10 @@ type (
 		cmk        types.CommitmentKeeper
 		stk        types.StakingKeeper
 		tci        *types.TotalCommitmentInfo
+		authKeeper    types.AccountKeeper
+		bankKeeper    types.BankKeeper
+
+		feeCollectorName string // name of the FeeCollector ModuleAccount
 	}
 )
 
@@ -35,6 +39,9 @@ func NewKeeper(
 	ps paramtypes.Subspace,
 	ck types.CommitmentKeeper,
 	sk types.StakingKeeper,
+	ak types.AccountKeeper, 
+	bk types.BankKeeper,
+	feeCollectorName string,
 ) *Keeper {
 	// set KeyTable if it has not already been set
 	if !ps.HasKeyTable() {
@@ -49,6 +56,9 @@ func NewKeeper(
 		cmk:        ck,
 		stk:        sk,
 		tci:        &types.TotalCommitmentInfo{},
+		feeCollectorName: feeCollectorName,
+		authKeeper:       ak,
+		bankKeeper:       bk,
 	}
 }
 

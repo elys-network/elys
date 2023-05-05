@@ -16,3 +16,16 @@ func (k Keeper) GetParams(ctx sdk.Context) types.Params {
 func (k Keeper) SetParams(ctx sdk.Context, params types.Params) {
 	k.paramstore.SetParamSet(ctx, &params)
 }
+
+// GetCommunityTax returns the current distribution community tax.
+func (k Keeper) GetCommunityTax(ctx sdk.Context) (percent sdk.Dec) {
+	k.paramstore.Get(ctx, types.ParamStoreKeyCommunityTax, &percent)
+	return percent
+}
+
+// GetWithdrawAddrEnabled returns the current distribution withdraw address
+// enabled parameter.
+func (k Keeper) GetWithdrawAddrEnabled(ctx sdk.Context) (enabled bool) {
+	k.paramstore.Get(ctx, types.ParamStoreKeyWithdrawAddrEnabled, &enabled)
+	return enabled
+}
