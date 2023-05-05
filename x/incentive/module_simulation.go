@@ -32,6 +32,10 @@ const (
 	// TODO: Determine the simulation weight value
 	defaultWeightMsgWithdrawValidatorCommission int = 100
 
+	opWeightMsgWithdrawDelegatorReward = "op_weight_msg_withdraw_delegator_reward"
+	// TODO: Determine the simulation weight value
+	defaultWeightMsgWithdrawDelegatorReward int = 100
+
 	// this line is used by starport scaffolding # simapp/module/const
 )
 
@@ -77,6 +81,13 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgWithdrawValidatorCommission, &weightMsgWithdrawValidatorCommission, nil,
 		func(_ *rand.Rand) {
 			weightMsgWithdrawValidatorCommission = defaultWeightMsgWithdrawValidatorCommission
+		},
+	)
+
+	var weightMsgWithdrawDelegatorReward int
+	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgWithdrawDelegatorReward, &weightMsgWithdrawDelegatorReward, nil,
+		func(_ *rand.Rand) {
+			weightMsgWithdrawDelegatorReward = defaultWeightMsgWithdrawDelegatorReward
 		},
 	)
 

@@ -69981,6 +69981,24 @@ definitions:
     title: Incentive Info
   elysnetwork.elys.incentive.MsgSetWithdrawAddressResponse:
     type: object
+  elysnetwork.elys.incentive.MsgWithdrawDelegatorRewardResponse:
+    type: object
+    properties:
+      amount:
+        type: array
+        items:
+          type: object
+          properties:
+            denom:
+              type: string
+            amount:
+              type: string
+          description: |-
+            Coin defines a token with a denomination and an amount.
+
+            NOTE: The amount field is an Int which implements the custom method
+            signatures required by gogoproto.
+        title: 'Since: cosmos-sdk 0.46'
   elysnetwork.elys.incentive.MsgWithdrawValidatorCommissionResponse:
     type: object
   elysnetwork.elys.incentive.Params:
