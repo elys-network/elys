@@ -214,6 +214,54 @@ genesis:
             eden_boost_apr: "100"
         community_tax: "0.02"
         withdraw_addr_enabled: true
+      fee_pool:
+        community_pool:
+          - amount: "1000000"
+            denom: uelys
+      delegator_withdraw_infos:
+        - delegator_address: ""
+          withdraw_address: ""
+      previous_proposer: ""
+      outstanding_rewards:
+        - validator_address: ""
+          outstanding_rewards:
+            - amount: "0"
+              denom: uelys
+      validator_accumulated_commissions:
+        - validator_address: ""
+          accumulated:
+            commission:
+              - amount: "0"
+                denom: uelys
+      validator_historical_rewards:
+        - validator_address: ""
+          period: 21
+          rewards: 
+            cumulative_reward_ratio:
+              - amount: "0"
+                denom: uelys
+            reference_count: 0
+      validator_current_rewards:
+        - validator_address: ""
+          rewards:
+            rewards:
+              - amount: "0"
+                denom: uelys
+            period: 0
+      delegator_starting_infos:
+        - delegator_address: ""
+          validator_address: ""
+          starting_info:
+            previous_period: 0
+            stake: "0.0"
+            height: 0
+      validator_slash_events:
+        - validator_address: ""
+          height: 0
+          period: 0
+          validator_slash_event:
+            validator_period: 0
+            fraction: "0.0"
     tokenomics:
       airdropList:
         - intent: AtomStakers
