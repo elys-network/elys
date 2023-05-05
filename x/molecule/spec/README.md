@@ -13,43 +13,9 @@ GLP documenet
 https://gmxio.gitbook.io/gmx/glp
 https://app.gmx.io/#/buy_glp
 
-## Msg endpoints
+## State
 
-- CreateVault(assets, ratios)
-- Deposit(assets) - calculate slippage based on weight change
-- Swap(asset->target_asset) - calculate slippage based on weight change
-- Withdraw(lp->target_asset) - calculate slippage based on weight change
-- UpdateVaultConfig(vaultId, targetWeights) - who has the permisison? Gov?
-
-## Query endpoints
-
-- QueryVaults - Vault configs
-- QueryVault(vaultId) - LP price, vault config, vault TVL
-- EstimatedSwapOutAmount(SwapCoin, outToken) -> amount
-- EstimatedLPTokenAmountAfterDeposit(depositCoins) -> amount
-- EstimatedWithdrawAmount(lpTokenAmount, outToken) -> outTokenAmount
-
-## Fund management
-
-Create a vault account address to manage funds per vault? Or manage all funds in molecule module account?
-
-## Fee configuration
-
-## Slippage
-
-There should be well-formed slippage calculator considering oracle. (Consider GMX model)
-
-One option is to introduce dynamically configurable slippage by governance of molecule token.
-
-Volatility could be configured for individual assets, and slippage could be configured for pool itself.
-
-For 4 asset pool (ETH, BTC, ATOM, USDC), different slippage could be executed based on following option.
-
-Volatility of swapping assets + pool slippage + target weight change
-
-TODO: should have exact Maths formula for calculating slippage.
-
-## Example molecule vault configuration
+### Vault
 
 ```protobuf
 message AssetVolatility {
@@ -101,11 +67,50 @@ Number of The fee is always swapped to USDC and sent to the major molecule fee w
 Price of Major molecule token at any point = (USD value of all assets within the major molecule +/- Margin Gains/Losses)/circulating supply of Major Molecule Tokens
 ```
 
-## Fee distribution schedule
+### Fund management
 
-Technically, it would be easier to distribute to LPs and stakers instantly.
+Create a vault account address to manage funds per vault? Or manage all funds in molecule module account?
 
-Question: the rewards should be claimable or autocompounded by increasing LP value?
+### Slippage
+
+There should be well-formed slippage calculator considering oracle. (Consider GMX model)
+
+One option is to introduce dynamically configurable slippage by governance of molecule token.
+
+Volatility could be configured for individual assets, and slippage could be configured for pool itself.
+
+For 4 asset pool (ETH, BTC, ATOM, USDC), different slippage could be executed based on following option.
+
+Volatility of swapping assets + pool slippage + target weight change
+
+TODO: should have exact Maths formula for calculating slippage.
+
+### Fee distribution schedule
+
+Fees are transferred to fee collector wallet and distributed per epoch to LPs and stakers.
+
+LPs claim rewards through commitment module.
+
+## Endpoints
+
+### Gov Proposals
+
+- CreateVault(assets, ratios)
+- UpdateVaultConfig(vaultId, targetWeights)
+
+### Msg endpoints
+
+- Deposit(assets) - calculate slippage based on weight change
+- Swap(asset->target_asset) - calculate slippage based on weight change
+- Withdraw(lp->target_asset) - calculate slippage based on weight change
+
+### Query endpoints
+
+- QueryVaults - Vault configs
+- QueryVault(vaultId) - LP price, vault config, vault TVL, fees collected
+- EstimatedSwapOutAmount(SwapCoin, outToken) -> amount
+- EstimatedLPTokenAmountAfterDeposit(depositCoins) -> amount
+- EstimatedWithdrawAmount(lpTokenAmount, outToken) -> outTokenAmount
 
 ## Risk management
 
@@ -119,7 +124,4 @@ Question: the rewards should be claimable or autocompounded by increasing LP val
 - Weights are balanced by the incentive structure to hit close to the target weights
 - Unit test to check final slippage on example values
 - Low liquidity coin and high liquidity coin (low liquidity coin won't be able to use full oracle price)
-
-Question: Is this to track users' history?
-
-- Once the user buys the major molecule TKN, it is automatically “ committed” in the commitment molecule
+- Once the user buys the major molecule TKN, it is automatically “ committed” in the commitment molecule to receive rewards
