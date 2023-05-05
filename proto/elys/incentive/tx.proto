@@ -6,13 +6,19 @@ option go_package = "github.com/elys-network/elys/x/incentive/types";
 
 // Msg defines the Msg service.
 service Msg {
-  rpc SetWithdrawAddress (MsgSetWithdrawAddress) returns (MsgSetWithdrawAddressResponse);
+  rpc SetWithdrawAddress          (MsgSetWithdrawAddress         ) returns (MsgSetWithdrawAddressResponse         );
+  rpc WithdrawValidatorCommission (MsgWithdrawValidatorCommission) returns (MsgWithdrawValidatorCommissionResponse);
 }
-
 message MsgSetWithdrawAddress {
   string delegator_address = 1;
   string withdraw_address  = 2;
 }
 
 message MsgSetWithdrawAddressResponse {}
+
+message MsgWithdrawValidatorCommission {
+  string validator_address = 1;
+}
+
+message MsgWithdrawValidatorCommissionResponse {}
 

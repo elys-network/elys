@@ -9,12 +9,16 @@ import (
 
 func RegisterCodec(cdc *codec.LegacyAmino) {
 	cdc.RegisterConcrete(&MsgSetWithdrawAddress{}, "incentive/SetWithdrawAddress", nil)
+	cdc.RegisterConcrete(&MsgWithdrawValidatorCommission{}, "incentive/WithdrawValidatorCommission", nil)
 	// this line is used by starport scaffolding # 2
 }
 
 func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 	registry.RegisterImplementations((*sdk.Msg)(nil),
 		&MsgSetWithdrawAddress{},
+	)
+	registry.RegisterImplementations((*sdk.Msg)(nil),
+		&MsgWithdrawValidatorCommission{},
 	)
 	// this line is used by starport scaffolding # 3
 

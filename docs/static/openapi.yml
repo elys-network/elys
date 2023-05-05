@@ -69981,6 +69981,8 @@ definitions:
     title: Incentive Info
   elysnetwork.elys.incentive.MsgSetWithdrawAddressResponse:
     type: object
+  elysnetwork.elys.incentive.MsgWithdrawValidatorCommissionResponse:
+    type: object
   elysnetwork.elys.incentive.Params:
     type: object
     properties:

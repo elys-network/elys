@@ -28,6 +28,10 @@ const (
 	// TODO: Determine the simulation weight value
 	defaultWeightMsgSetWithdrawAddress int = 100
 
+	opWeightMsgWithdrawValidatorCommission = "op_weight_msg_withdraw_validator_commission"
+	// TODO: Determine the simulation weight value
+	defaultWeightMsgWithdrawValidatorCommission int = 100
+
 	// this line is used by starport scaffolding # simapp/module/const
 )
 
@@ -66,6 +70,13 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgSetWithdrawAddress, &weightMsgSetWithdrawAddress, nil,
 		func(_ *rand.Rand) {
 			weightMsgSetWithdrawAddress = defaultWeightMsgSetWithdrawAddress
+		},
+	)
+
+	var weightMsgWithdrawValidatorCommission int
+	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgWithdrawValidatorCommission, &weightMsgWithdrawValidatorCommission, nil,
+		func(_ *rand.Rand) {
+			weightMsgWithdrawValidatorCommission = defaultWeightMsgWithdrawValidatorCommission
 		},
 	)
 
