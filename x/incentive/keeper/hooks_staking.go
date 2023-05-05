@@ -84,7 +84,7 @@ func (h StakingHooks) AfterValidatorRemoved(ctx sdk.Context, consAddr sdk.ConsAd
 		if !coins.IsZero() {
 			accAddr := sdk.AccAddress(valAddr)
 			withdrawAddr := h.k.GetDelegatorWithdrawAddr(ctx, accAddr)
-
+			// Convert Elys to USDC and send
 			if err := h.k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, withdrawAddr, coins); err != nil {
 				return err
 			}
