@@ -13,13 +13,21 @@ GLP documenet
 https://gmxio.gitbook.io/gmx/glp
 https://app.gmx.io/#/buy_glp
 
-## Endpoints
+## Msg endpoints
 
 - CreateVault(assets, ratios)
 - Deposit(assets) - calculate slippage based on weight change
 - Swap(asset->target_asset) - calculate slippage based on weight change
 - Withdraw(lp->target_asset) - calculate slippage based on weight change
 - UpdateVaultConfig(vaultId, targetWeights) - who has the permisison? Gov?
+
+## Query endpoints
+
+- QueryVaults - Vault configs
+- QueryVault(vaultId) - LP price, vault config, vault TVL
+- EstimatedSwapOutAmount(SwapCoin, outToken) -> amount
+- EstimatedLPTokenAmountAfterDeposit(depositCoins) -> amount
+- EstimatedWithdrawAmount(lpTokenAmount, outToken) -> outTokenAmount
 
 ## Fund management
 
