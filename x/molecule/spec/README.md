@@ -1,0 +1,117 @@
+# Molecule module
+
+Resources:
+https://www.notion.so/5-Molecule-Token-Adding-Liquidity-to-a-Multi-Asset-Pool-1fc49e859f96457a9469d9c9ed5d06cf
+
+Vault contract (Main logic seems to be here)
+https://arbiscan.io/address/0x489ee077994B6658eAfA855C308275EAd8097C4A#code
+Reward Router
+https://arbiscan.io/address/0xB95DB5B167D75e6d04227CfFFA61069348d271F5#code
+GLP manager
+https://arbiscan.io/address/0x3963FfC9dff443c2A94f21b129D429891E32ec18#code
+GLP documenet
+https://gmxio.gitbook.io/gmx/glp
+https://app.gmx.io/#/buy_glp
+
+## Endpoints
+
+- CreateVault(assets, ratios)
+- Deposit(assets) - calculate slippage based on weight change
+- Swap(asset->target_asset) - calculate slippage based on weight change
+- Withdraw(lp->target_asset) - calculate slippage based on weight change
+- UpdateVaultConfig(vaultId, targetWeights) - who has the permisison? Gov?
+
+## Fund management
+
+Create a vault account address to manage funds per vault? Or manage all funds in molecule module account?
+
+## Fee configuration
+
+## Slippage
+
+There should be well-formed slippage calculator considering oracle. (Consider GMX model)
+
+One option is to introduce dynamically configurable slippage by governance of molecule token.
+
+Volatility could be configured for individual assets, and slippage could be configured for pool itself.
+
+For 4 asset pool (ETH, BTC, ATOM, USDC), different slippage could be executed based on following option.
+
+Volatility of swapping assets + pool slippage + target weight change
+
+TODO: should have exact Maths formula for calculating slippage.
+
+## Example molecule vault configuration
+
+```protobuf
+message AssetVolatility {
+    string asset = 1;
+    string volatility = 2 [
+        (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+        (gogoproto.nullable) = false
+    ];
+}
+message AssetWeight {
+    string asset = 1;
+    string weight = 2 [
+        (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+        (gogoproto.nullable) = false
+    ];
+}
+message Vault {
+    repeated AssetWeight weights = 1; // default: 22.5% ETH, 20% BTC, 22.5% ATOM, 35% USDC
+    string slippage_discount = 2 [
+        (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+        (gogoproto.nullable) = false
+    ]; // slippage discount is setting the slippage discount where slippage calculation is done based on elys liquidity
+    string default_swap_fee = 3 [
+        (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+        (gogoproto.nullable) = false
+    ]; // fee amount on swap without considering weight - 0.01%
+    string slippage_fee = 4 [
+        (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+        (gogoproto.nullable) = false
+    ]; // fee amount for weight change after the operation - fees will vary between 0.01% to 1%
+    string lp_fee_portion = 5 [
+        (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+        (gogoproto.nullable) = false
+    ]; // fees that is sent to liquidity providers - 65%
+    string stake_fee_portion = 6 [
+        (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+        (gogoproto.nullable) = false
+    ]; // fees that is sent to stakers - 35%
+}
+```
+
+```go
+Major molecule tokens = (USD value of deposit Asset - fees)/Price of Major Molecule.
+
+Initial Major molecule token price = $1
+
+Number of The fee is always swapped to USDC and sent to the major molecule fee wallet which stores all the revenue.
+
+Price of Major molecule token at any point = (USD value of all assets within the major molecule +/- Margin Gains/Losses)/circulating supply of Major Molecule Tokens
+```
+
+## Fee distribution schedule
+
+Technically, it would be easier to distribute to LPs and stakers instantly.
+
+Question: the rewards should be claimable or autocompounded by increasing LP value?
+
+## Risk management
+
+- Need to have a way to stop deposit/withdrawal of specific token within the vault?
+- Need to have a way to stop overall deposit/withdrawal on the vault?
+
+## To consider
+
+- Protect LP from volatile markets and market arbs
+- Oracle difference % from sudden dump on third party market
+- Weights are balanced by the incentive structure to hit close to the target weights
+- Unit test to check final slippage on example values
+- Low liquidity coin and high liquidity coin (low liquidity coin won't be able to use full oracle price)
+
+Question: Is this to track users' history?
+
+- Once the user buys the major molecule TKN, it is automatically “ committed” in the commitment molecule
