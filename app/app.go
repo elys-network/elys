@@ -723,6 +723,7 @@ func NewElysApp(
 		// Note: epochs' begin should be "real" start of epochs, we keep epochs beginblock at the beginning
 		epochsmoduletypes.ModuleName,
 		minttypes.ModuleName,
+		incentivemoduletypes.ModuleName,
 		slashingtypes.ModuleName,
 		evidencetypes.ModuleName,
 		stakingtypes.ModuleName,
@@ -744,7 +745,6 @@ func NewElysApp(
 		oracletypes.ModuleName,
 		commitmentmoduletypes.ModuleName,
 		tokenomicsmoduletypes.ModuleName,
-		incentivemoduletypes.ModuleName,
 		burnermoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/beginBlockers
 	)
@@ -761,6 +761,7 @@ func NewElysApp(
 		capabilitytypes.ModuleName,
 		authtypes.ModuleName,
 		banktypes.ModuleName,
+		incentivemoduletypes.ModuleName,
 		slashingtypes.ModuleName,
 		minttypes.ModuleName,
 		genutiltypes.ModuleName,
@@ -776,7 +777,6 @@ func NewElysApp(
 		oracletypes.ModuleName,
 		commitmentmoduletypes.ModuleName,
 		tokenomicsmoduletypes.ModuleName,
-		incentivemoduletypes.ModuleName,
 		burnermoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/endBlockers
 	)
@@ -790,6 +790,7 @@ func NewElysApp(
 		capabilitytypes.ModuleName,
 		authtypes.ModuleName,
 		banktypes.ModuleName,
+		incentivemoduletypes.ModuleName,
 		stakingtypes.ModuleName,
 		slashingtypes.ModuleName,
 		govtypes.ModuleName,
@@ -812,7 +813,6 @@ func NewElysApp(
 		oracletypes.ModuleName,
 		commitmentmoduletypes.ModuleName,
 		tokenomicsmoduletypes.ModuleName,
-		incentivemoduletypes.ModuleName,
 		burnermoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/initGenesis
 	)
