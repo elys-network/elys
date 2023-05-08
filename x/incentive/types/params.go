@@ -24,8 +24,8 @@ func ParamKeyTable() paramtypes.KeyTable {
 // NewParams creates a new Params instance
 func NewParams() Params {
 	return Params{
-		LpIncentives:        []IncentiveInfo{},
-		StakeIncentives:     []IncentiveInfo{},
+		LpIncentives:        []IncentiveInfo(nil),
+		StakeIncentives:     []IncentiveInfo(nil),
 		CommunityTax:        sdk.NewDecWithPrec(2, 2), // 2%
 		WithdrawAddrEnabled: true,
 	}
