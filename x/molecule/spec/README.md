@@ -77,6 +77,8 @@ Create a vault account address to manage funds per vault? Or manage all funds in
 
 There should be well-formed slippage calculator considering oracle. (Consider GMX model)
 
+We will introduce `external_liquidity` parameter to provide as less as slippage considering external exchanges.
+
 One option is to introduce dynamically configurable slippage by governance of molecule token.
 
 Volatility could be configured for individual assets, and slippage could be configured for pool itself.
@@ -121,6 +123,7 @@ For stakers, will need to distribute through `incentive` module.
 
 - Need to have a way to stop deposit/withdrawal of specific token within the vault?
 - Need to have a way to stop overall deposit/withdrawal on the vault?
+- When oracle has large difference between several platforms, it's not trustworthy, and Molecule token will need ask high fees so that it does not give more than the minimum price or just redirect the operation to normal Elys AMM.
 
 ## To consider
 
