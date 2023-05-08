@@ -233,6 +233,20 @@ sudo journalctl -u elysd.service -f
 
 </details>
 
+## Denom Units
+
+The `denom_units` property is an array of objects defined in the [config.yml](./config.yml) file, with each object defining a single denomination unit. Each unit object has three properties - `denom`, `exponent`, and `aliases`.
+
+For the ELYS token, there are three denomination units defined with aliases:
+
+- `uelys`: This is the base unit of the ELYS token, and has no aliases.
+
+- `melys`: This unit has an exponent of 3, which means that 1 `melys` is equal to 1000 `uelys`. It has one alias - `millielys`.
+
+- `elys`: This unit has an exponent of 6, which means that 1 `elys` is equal to 1,000,000 `uelys`. It has no aliases.
+
+The aliases for the `melys` unit are specified as `millielys`, which is a common prefix used to denote a thousandth of a unit. These aliases can be used interchangeably with the primary unit names in order to make the values more readable and easier to work with.
+
 ## Architecture
 
 This section contains documentation on the architecture of the Elys chain, including the current design and components of the system.
