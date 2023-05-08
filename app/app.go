@@ -206,7 +206,6 @@ var (
 		govtypes.ModuleName:              {authtypes.Burner},
 		ibctransfertypes.ModuleName:      {authtypes.Minter, authtypes.Burner},
 		commitmentmoduletypes.ModuleName: {authtypes.Minter, authtypes.Burner},
-		incentivemoduletypes.ModuleName:  {authtypes.Minter, authtypes.Burner},
 		burnermoduletypes.ModuleName:     {authtypes.Burner},
 		incentivemoduletypes.ModuleName:  nil,
 		// this line is used by starport scaffolding # stargate/app/maccPerms
