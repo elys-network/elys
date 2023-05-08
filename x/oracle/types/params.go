@@ -63,8 +63,8 @@ func DefaultParams() Params {
 	return NewParams(
 		"band_epoch",
 		37,
-		18, // decimal 18
-		"channel-0",
+		18,          // decimal 18
+		"channel-1", // used on dockernet
 		4,
 		3,
 		sdk.NewCoins(sdk.NewInt64Coin("uband", 30)),

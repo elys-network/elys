@@ -13,7 +13,7 @@ const (
 	ModuleName = "incentive"
 
 	// StoreKey defines the primary module store key
-	StoreKey = ModuleName
+	StoreKey = ModuleName + "_store"
 
 	// RouterKey defines the module's message routing key
 	RouterKey = ModuleName
