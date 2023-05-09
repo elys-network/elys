@@ -212,6 +212,12 @@ genesis:
             num_epochs: "365"
             current_epoch: "0"
             eden_boost_apr: "100"
+        community_tax: "0.02"
+        withdraw_addr_enabled: true
+      fee_pool:
+        community_pool:
+          - amount: "0"
+            denom: uelys
     tokenomics:
       airdropList:
         - intent: AtomStakers
