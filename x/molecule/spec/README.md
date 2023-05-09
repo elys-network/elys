@@ -81,7 +81,19 @@ Price of Major molecule token at any point = (USD value of all assets within the
 
 Create a vault account address to manage funds per vault? Or manage all funds in molecule module account?
 
+### Vault types
+
+Vaults are splitted into major vault and minor vault.
+Major vault relies fully on oracle price.
+Minor vault relies on both liquidity and oracle for swap operation.
+
+### Fees
+
+Fees are collected for each operation interacting with molecule module.
+
 ### Slippage
+
+Slippage is applied to secure liquidity providers' bonded liquidity.
 
 There should be well-formed slippage calculator considering oracle. (Consider GMX model)
 
@@ -110,6 +122,8 @@ Therefore, we additionally introduce weight recovery treasury
 
 1. 10% of fees are put in weight recovery treasury
 2. Once weight is broken, users who recover the weight by doing swap, or adding new lp are incentivized.
+
+TODO: determine the distribution mechanism of weight recovery treasury.
 
 One way of recovering the imbalanced weight is to use $10K fund from the team to recover imbalanced $100K.
 E.g. JUNO has $100K more and it's imbalanced, team could swap $10K worth of USD to JUNO on Elys, swap received JUNO to USD on Osmosis and repeated the process 10 times to recover whole weight.
