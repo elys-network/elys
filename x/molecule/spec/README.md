@@ -51,11 +51,19 @@ message Vault {
     string lp_fee_portion = 5 [
         (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
         (gogoproto.nullable) = false
-    ]; // fees that is sent to liquidity providers - 65%
-    string stake_fee_portion = 6 [
+    ]; // fees that is sent to liquidity providers - 60%
+    string staking_fee_portion = 6 [
         (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
         (gogoproto.nullable) = false
-    ]; // fees that is sent to stakers - 35%
+    ]; // fees that is sent to stakers - 30%
+    string weight_balance_fee_portion = 7 [
+        (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+        (gogoproto.nullable) = false
+    ]; // fees to be spent when weight is broken - 10%
+    string broken_weight_threshold = 8 [
+        (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+        (gogoproto.nullable) = false
+    ]; // threshold weight difference to determine broken weight status - 20%
 }
 ```
 
@@ -91,23 +99,21 @@ TODO: should have exact Maths formula for calculating slippage.
 
 ### Asset weight recovery once it's broken
 
-Asset weight recovery when it's broken is a challenging problem without incentive structure.
-
 Following items are applied to keep the weight not broken
 
 1. Slippage on swap when imbalanced
 2. More fees on deposit when imbalanced
 
-When weight is broken, users won't be using the Swap feature.
-My opinion is for specific period when weight is lower than threshold, partial fees collected could be given to users based on the weight they recover.
+But this is not enough incentivization to recover the broken weight.
 
-Let’s assume there’s $100 fee collected and weight broken to 75%:25% level (edited)
-If the pool enters weight rebalance period, users who swap JUNO to USDC gets fees.
-I think this could be implemented something like funding fee on perpetual market.
-People who break weight pay more fees
-People who help weight balanced get small incentives when the weight is broken more than threshold
-I think we don’t require a lot of funds to rebalance the weight
-If we have $1K, we can do the swap operation repetitively in case fees are not enough and we will need to do ourselves.
+Therefore, we additionally introduce weight recovery treasury
+
+1. 10% of fees are put in weight recovery treasury
+2. Once weight is broken, users who recover the weight by doing swap, or adding new lp are incentivized.
+
+One way of recovering the imbalanced weight is to use $10K fund from the team to recover imbalanced $100K.
+E.g. JUNO has $100K more and it's imbalanced, team could swap $10K worth of USD to JUNO on Elys, swap received JUNO to USD on Osmosis and repeated the process 10 times to recover whole weight.
+During the execution, fees will be spent, but weight should be recovered spending no more than $1K.
 
 ## Endpoints
 
