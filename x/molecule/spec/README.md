@@ -173,3 +173,4 @@ For stakers, will need to distribute through `incentive` module.
 - Unit test to check final slippage on example values
 - Low liquidity coin and high liquidity coin (low liquidity coin won't be able to use full oracle price)
 - Once the user buys the major molecule TKN, it is automatically “ committed” in the commitment molecule to receive rewards
+- LPs should not lose underlying value as long as underlying tokens are recovered back to original status
