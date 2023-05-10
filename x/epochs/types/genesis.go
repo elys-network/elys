@@ -18,6 +18,7 @@ package types
 
 import (
 	"fmt"
+	"time"
 )
 
 // NewGenesisState creates a new genesis state instance
@@ -27,7 +28,15 @@ func NewGenesisState(epochs []EpochInfo) *GenesisState {
 
 // DefaultGenesisState returns the default epochs genesis state
 func DefaultGenesisState() *GenesisState {
-	return NewGenesisState([]EpochInfo{})
+	return NewGenesisState([]EpochInfo{
+		{
+			Identifier:              "band_epoch",
+			Duration:                time.Second * 15,
+			CurrentEpoch:            0,
+			CurrentEpochStartHeight: 0,
+			EpochCountingStarted:    false,
+		},
+	})
 }
 
 // Validate performs basic genesis state validation returning an error upon any

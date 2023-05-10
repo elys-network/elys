@@ -1,0 +1,103 @@
+gas_adjustment = 1
+feed_interval = "5s"
+
+[server]
+listen_addr = "0.0.0.0:7171"
+read_timeout = "20s"
+verbose_cors = true
+write_timeout = "20s"
+
+[[deviation_thresholds]]
+base = "USDT"
+threshold = "1.5"
+
+[[deviation_thresholds]]
+base = "ATOM"
+threshold = "1.5"
+
+[[currency_pairs]]
+base = "USDT"
+providers = [
+  "binanceus",
+]
+quote = "USD"
+
+[[currency_pairs]]
+base = "ATOM"
+providers = [
+  "binance",
+]
+quote = "USDT"
+
+[[currency_pairs]]
+base = "ATOM"
+providers = [
+  "kraken",
+]
+quote = "USD"
+
+[[currency_pairs]]
+base = "OSMO"
+providers = [
+  "osmosisv2",
+]
+quote = "ATOM"
+
+[[currency_pairs]]
+base = "OSMO"
+providers = [
+  "crypto",
+]
+quote = "USD"
+
+[[currency_pairs]]
+base = "JUNO"
+quote = "OSMO"
+providers = [ "osmosisv2",]
+
+[[currency_pairs]]
+base = "BTC"
+providers = [
+  "binance",
+]
+quote = "USDT"
+
+[[currency_pairs]]
+base = "ETH"
+providers = [
+  "binance",
+]
+quote = "USDT"
+
+[account]
+address = "elys1mxk8wmns33vs6yynsaeud2k97xkl5dqlkjv3j9"
+chain_id = "ELYS"
+validator = "elysvaloper12tzylat4udvjj56uuhu3vj2n4vgp7cf9pwcqcs"
+
+[keyring]
+backend = "test"
+dir = "/root/.elys"
+
+[rpc]
+grpc_endpoint = "http://elys1:9090"
+rpc_timeout = "100ms"
+tmrpc_endpoint = "http://elys1:26657"
+
+[telemetry]
+enable-hostname = true
+enable-hostname-label = true
+enable-service-label = true
+enabled = true
+global-labels = [["chain_id", "elys"]]
+service-name = "price-feeder"
+prometheus-retention-time = 100
+
+[[provider_endpoints]]
+name = "binance"
+rest = "https://api1.binance.com"
+websocket = "stream.binance.com:9443"
+
+[[provider_endpoints]]
+name = "osmosisv2"
+rest = "https://api.osmo-api.prod.network.umee.cc"
+websocket = "api.osmo-api.prod.network.umee.cc"

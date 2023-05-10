@@ -74,7 +74,7 @@ func (app *ElysApp) prepForZeroHeightGenesis(ctx sdk.Context, jailAllowedAddrs [
 
 	// withdraw all validator commission
 	app.StakingKeeper.IterateValidators(ctx, func(_ int64, val stakingtypes.ValidatorI) (stop bool) {
-		_, err := app.DistrKeeper.WithdrawValidatorCommission(ctx, val.GetOperator())
+		_, err := app.IncentiveKeeper.WithdrawValidatorCommission(ctx, val.GetOperator())
 		if err != nil {
 			panic(err)
 		}
@@ -84,17 +84,17 @@ func (app *ElysApp) prepForZeroHeightGenesis(ctx sdk.Context, jailAllowedAddrs [
 	// withdraw all delegator rewards
 	dels := app.StakingKeeper.GetAllDelegations(ctx)
 	for _, delegation := range dels {
-		_, err := app.DistrKeeper.WithdrawDelegationRewards(ctx, delegation.GetDelegatorAddr(), delegation.GetValidatorAddr())
+		_, err := app.IncentiveKeeper.WithdrawDelegationRewards(ctx, delegation.GetDelegatorAddr(), delegation.GetValidatorAddr())
 		if err != nil {
 			panic(err)
 		}
 	}
 
 	// clear validator slash events
-	app.DistrKeeper.DeleteAllValidatorSlashEvents(ctx)
+	app.IncentiveKeeper.DeleteAllValidatorSlashEvents(ctx)
 
 	// clear validator historical rewards
-	app.DistrKeeper.DeleteAllValidatorHistoricalRewards(ctx)
+	app.IncentiveKeeper.DeleteAllValidatorHistoricalRewards(ctx)
 
 	// set context height to zero
 	height := ctx.BlockHeight()
@@ -103,12 +103,12 @@ func (app *ElysApp) prepForZeroHeightGenesis(ctx sdk.Context, jailAllowedAddrs [
 	// reinitialize all validators
 	app.StakingKeeper.IterateValidators(ctx, func(_ int64, val stakingtypes.ValidatorI) (stop bool) {
 		// donate any unwithdrawn outstanding reward fraction tokens to the community pool
-		scraps := app.DistrKeeper.GetValidatorOutstandingRewardsCoins(ctx, val.GetOperator())
-		feePool := app.DistrKeeper.GetFeePool(ctx)
+		scraps := app.IncentiveKeeper.GetValidatorOutstandingRewardsCoins(ctx, val.GetOperator())
+		feePool := app.IncentiveKeeper.GetFeePool(ctx)
 		feePool.CommunityPool = feePool.CommunityPool.Add(scraps...)
-		app.DistrKeeper.SetFeePool(ctx, feePool)
+		app.IncentiveKeeper.SetFeePool(ctx, feePool)
 
-		err := app.DistrKeeper.Hooks().AfterValidatorCreated(ctx, val.GetOperator())
+		err := app.IncentiveKeeper.StakingHooks().AfterValidatorCreated(ctx, val.GetOperator())
 		if err != nil {
 			panic(err)
 		}
@@ -117,11 +117,11 @@ func (app *ElysApp) prepForZeroHeightGenesis(ctx sdk.Context, jailAllowedAddrs [
 
 	// reinitialize all delegations
 	for _, del := range dels {
-		err := app.DistrKeeper.Hooks().BeforeDelegationCreated(ctx, del.GetDelegatorAddr(), del.GetValidatorAddr())
+		err := app.IncentiveKeeper.StakingHooks().BeforeDelegationCreated(ctx, del.GetDelegatorAddr(), del.GetValidatorAddr())
 		if err != nil {
 			panic(err)
 		}
-		err = app.DistrKeeper.Hooks().AfterDelegationModified(ctx, del.GetDelegatorAddr(), del.GetValidatorAddr())
+		err = app.IncentiveKeeper.StakingHooks().AfterDelegationModified(ctx, del.GetDelegatorAddr(), del.GetValidatorAddr())
 		if err != nil {
 			panic(err)
 		}

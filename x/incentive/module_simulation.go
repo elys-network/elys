@@ -24,7 +24,19 @@ var (
 )
 
 const (
-// this line is used by starport scaffolding # simapp/module/const
+	opWeightMsgSetWithdrawAddress = "op_weight_msg_set_withdraw_address"
+	// TODO: Determine the simulation weight value
+	defaultWeightMsgSetWithdrawAddress int = 100
+
+	opWeightMsgWithdrawValidatorCommission = "op_weight_msg_withdraw_validator_commission"
+	// TODO: Determine the simulation weight value
+	defaultWeightMsgWithdrawValidatorCommission int = 100
+
+	opWeightMsgWithdrawDelegatorReward = "op_weight_msg_withdraw_delegator_reward"
+	// TODO: Determine the simulation weight value
+	defaultWeightMsgWithdrawDelegatorReward int = 100
+
+	// this line is used by starport scaffolding # simapp/module/const
 )
 
 // GenerateGenesisState creates a randomized GenState of the module
@@ -57,6 +69,27 @@ func (am AppModule) RegisterStoreDecoder(_ sdk.StoreDecoderRegistry) {}
 // WeightedOperations returns the all the gov module operations with their respective weights.
 func (am AppModule) WeightedOperations(simState module.SimulationState) []simtypes.WeightedOperation {
 	operations := make([]simtypes.WeightedOperation, 0)
+
+	var weightMsgSetWithdrawAddress int
+	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgSetWithdrawAddress, &weightMsgSetWithdrawAddress, nil,
+		func(_ *rand.Rand) {
+			weightMsgSetWithdrawAddress = defaultWeightMsgSetWithdrawAddress
+		},
+	)
+
+	var weightMsgWithdrawValidatorCommission int
+	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgWithdrawValidatorCommission, &weightMsgWithdrawValidatorCommission, nil,
+		func(_ *rand.Rand) {
+			weightMsgWithdrawValidatorCommission = defaultWeightMsgWithdrawValidatorCommission
+		},
+	)
+
+	var weightMsgWithdrawDelegatorReward int
+	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgWithdrawDelegatorReward, &weightMsgWithdrawDelegatorReward, nil,
+		func(_ *rand.Rand) {
+			weightMsgWithdrawDelegatorReward = defaultWeightMsgWithdrawDelegatorReward
+		},
+	)
 
 	// this line is used by starport scaffolding # simapp/module/operation
 

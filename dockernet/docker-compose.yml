@@ -1,0 +1,60 @@
+version: "3"
+services:
+  elys1:
+    image: elyszone:elys
+    volumes:
+      - ./state/elys1:/home/elys/.elys
+    ports:
+      - "26657:26657"
+      - "1317:1317"
+      - "9090:9090"
+
+  elys2:
+    image: elyszone:elys
+    volumes:
+      - ./state/elys2:/home/elys/.elys
+
+  elys3:
+    image: elyszone:elys
+    volumes:
+      - ./state/elys3:/home/elys/.elys
+
+  band1:
+    image: elyszone:band
+    volumes:
+      - ./state/band1:/root/.band
+    ports:
+      - "26557:26657"
+      - "1307:1317"
+      - "9080:9090"
+
+  band2:
+    image: elyszone:band
+    volumes:
+      - ./state/band2:/root/.band
+
+  band3:
+    image: elyszone:band
+    volumes:
+      - ./state/band3:/root/.band
+
+  hermes:
+    image: elyszone:hermes
+    volumes:
+      - ~/.hermes:/home/hermes/.hermes
+      - ./state/hermes/config.toml:/home/hermes/.hermes/config.toml
+    restart: always
+
+  price-feeder:
+    image: elyszone:feeder
+    volumes:
+      - ./state/price-feeder:/root/.feeder
+      - ./state/elys1:/root/.elys
+    restart: always
+
+  relayer-band:
+    image: elyszone:relayer
+    volumes:
+      - ./state/relayer-band:/home/relayer/.relayer
+    restart: always
+    command: ["bash", "start.sh", "elys-band"]
