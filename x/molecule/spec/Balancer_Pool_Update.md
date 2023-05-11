@@ -65,6 +65,7 @@ type PoolParams struct {
 	SwapFee                  sdk.Dec
 	ExitFee                  sdk.Dec
 	SmoothWeightChangeParams *SmoothWeightChangeParams
+	WeightBreakingFee        sdk.Dec
     UseOracle                bool
     SlippageReduction        sdk.Dec
 }
@@ -75,15 +76,186 @@ type PoolParams struct {
 
 # Swap logic change on Elys
 
-Swap logic should be different per oracle case and no oracle case.
+Swap logic should be different per oracle case and no oracle case. Weight is dynamically determined from oracle and based on new weight, swap out amount is determined.
+
+```go
+Slippage = (InAmount/Spot_Price - Swap_out_amount) / (InAmount/Spot_Price)
+ActualSlippage = Slippage * params.SlippageReduction
+```
+
+## Osmosis swap logic
+
+```go
+func (server msgServer) SwapExactAmountIn(goCtx context.Context, msg *types.MsgSwapExactAmountIn) (*types.MsgSwapExactAmountInResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	sender, err := sdk.AccAddressFromBech32(msg.Sender)
+	if err != nil {
+		return nil, err
+	}
+
+	tokenOutAmount, err := server.keeper.MultihopSwapExactAmountIn(ctx, sender, msg.Routes, msg.TokenIn, msg.TokenOutMinAmount)
+	if err != nil {
+		return nil, err
+	}
+
+	// Swap event is handled elsewhere
+	ctx.EventManager().EmitEvents(sdk.Events{
+		sdk.NewEvent(
+			sdk.EventTypeMessage,
+			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
+			sdk.NewAttribute(sdk.AttributeKeySender, msg.Sender),
+		),
+	})
+
+	return &types.MsgSwapExactAmountInResponse{TokenOutAmount: tokenOutAmount}, nil
+}
+
+func (server msgServer) SwapExactAmountOut(goCtx context.Context, msg *types.MsgSwapExactAmountOut) (*types.MsgSwapExactAmountOutResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	sender, err := sdk.AccAddressFromBech32(msg.Sender)
+	if err != nil {
+		return nil, err
+	}
+
+	tokenInAmount, err := server.keeper.MultihopSwapExactAmountOut(ctx, sender, msg.Routes, msg.TokenInMaxAmount, msg.TokenOut)
+	if err != nil {
+		return nil, err
+	}
+
+	// Swap event is handled elsewhere
+	ctx.EventManager().EmitEvents(sdk.Events{
+		sdk.NewEvent(
+			sdk.EventTypeMessage,
+			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
+			sdk.NewAttribute(sdk.AttributeKeySender, msg.Sender),
+		),
+	})
+
+	return &types.MsgSwapExactAmountOutResponse{TokenInAmount: tokenInAmount}, nil
+}
+```
+
+## Fees on normal AMM
+
+Swap Fee
+
+## Fees on hybrid AMM
+
+Swap Fee + WeightBreakFee
+
+```go
+WeightDiffAvg = Average(abs(Weight - TargetWeight))
+WeightBreak = max(WeightDiffAvg(AfterAction) - WeightDiffAvg(BeforeAction), 0)
+WeightBreakFee = WeightBreak \* WeightBreakingFee
+```
+
+Note:
+WeightBreakFee goes to WeightRecoveryTreasury
 
 # AddLiquidity logic change on Elys
 
 AddLiquidity logic should be different per oracle case and no oracle case.
 
+## Osmosis add liquidity logic
+
+```go
+func (server msgServer) JoinPool(goCtx context.Context, msg *types.MsgJoinPool) (*types.MsgJoinPoolResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	sender, err := sdk.AccAddressFromBech32(msg.Sender)
+	if err != nil {
+		return nil, err
+	}
+
+	neededLp, sharesOut, err := server.keeper.JoinPoolNoSwap(ctx, sender, msg.PoolId, msg.ShareOutAmount, msg.TokenInMaxs)
+	if err != nil {
+		return nil, err
+	}
+
+	ctx.EventManager().EmitEvents(sdk.Events{
+		sdk.NewEvent(
+			sdk.EventTypeMessage,
+			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
+			sdk.NewAttribute(sdk.AttributeKeySender, msg.Sender),
+		),
+	})
+
+	return &types.MsgJoinPoolResponse{
+		ShareOutAmount: sharesOut,
+		TokenIn:        neededLp,
+	}, nil
+}
+```
+
+## Fees on normal AMM
+
+No Fee on Add liquidity
+
+## Fees on hybrid AMM
+
+WeightBreakFee
+
+```go
+WeightDiffAvg = Average(abs(Weight - TargetWeight))
+WeightBreak = max(WeightDiffAvg(AfterAction) - WeightDiffAvg(BeforeAction), 0)
+WeightBreakFee = WeightBreak \* WeightBreakingFee
+```
+
+Note:
+WeightBreakFee goes to WeightRecoveryTreasury
+
 # RemoveLiquidity logic change on Elys
 
 RemoveLiquidity logic should be different per oracle case and no oracle case.
+
+## Osmosis remove liquidity logic
+
+```go
+func (server msgServer) ExitPool(goCtx context.Context, msg *types.MsgExitPool) (*types.MsgExitPoolResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	sender, err := sdk.AccAddressFromBech32(msg.Sender)
+	if err != nil {
+		return nil, err
+	}
+
+	exitCoins, err := server.keeper.ExitPool(ctx, sender, msg.PoolId, msg.ShareInAmount, msg.TokenOutMins)
+	if err != nil {
+		return nil, err
+	}
+
+	ctx.EventManager().EmitEvents(sdk.Events{
+		sdk.NewEvent(
+			sdk.EventTypeMessage,
+			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
+			sdk.NewAttribute(sdk.AttributeKeySender, msg.Sender),
+		),
+	})
+
+	return &types.MsgExitPoolResponse{
+		TokenOut: exitCoins,
+	}, nil
+}
+```
+
+## Fees on normal AMM
+
+Exit Fee on Remove liquidity
+
+## Fees on hybrid AMM
+
+Exit Fee + WeightBreakFee
+
+```go
+WeightDiffAvg = Average(abs(Weight - TargetWeight))
+WeightBreak = max(WeightDiffAvg(AfterAction) - WeightDiffAvg(BeforeAction), 0)
+WeightBreakFee = WeightBreak \* WeightBreakingFee
+```
+
+Note:
+WeightBreakFee goes to WeightRecoveryTreasury
 
 # Fee distribution logic change on Elys
 
