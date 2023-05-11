@@ -663,7 +663,7 @@ func NewElysApp(
 			// insert epoch hooks receivers here
 			app.OracleKeeper.Hooks(),
 			app.CommitmentKeeper.Hooks(),
-			app.IncentiveKeeper.Hooks(),
+			// app.IncentiveKeeper.Hooks(),
 			app.BurnerKeeper.Hooks(),
 		),
 	)
