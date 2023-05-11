@@ -19,6 +19,9 @@ func setUpgradeHandler(app *ElysApp) {
 	app.UpgradeKeeper.SetUpgradeHandler(version.Version, func(ctx sdk.Context, plan types.Plan, vm m.VersionMap) (m.VersionMap, error) {
 		app.Logger().Info("Running upgrade handler for " + version.Version)
 
+		// init genesis for new incentive module
+		app.IncentiveKeeper.InitGenesis(ctx, *incentivemoduletypes.DefaultGenesis())
+
 		return app.mm.RunMigrations(ctx, app.configurator, vm)
 	})
 }
@@ -31,7 +34,7 @@ func loadUpgradeStore(app *ElysApp) {
 
 	if shouldLoadUpgradeStore(app, upgradeInfo) {
 		storeUpgrades := storetypes.StoreUpgrades{
-			Added: []string{incentivemoduletypes.StoreKey},
+			// Added: []string{},
 		}
 		// Use upgrade store loader for the initial loading of all stores when app starts,
 		// it checks if version == upgradeHeight and applies store upgrades before loading the stores,
