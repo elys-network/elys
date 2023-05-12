@@ -77,7 +77,7 @@ func (k Keeper) incrementReferenceCount(ctx sdk.Context, valAddr sdk.ValAddress,
 func (k Keeper) decrementReferenceCount(ctx sdk.Context, valAddr sdk.ValAddress, period uint64) {
 	historical := k.GetValidatorHistoricalRewards(ctx, valAddr, period)
 	if historical.ReferenceCount == 0 {
-		panic("cannot set negative reference count")
+		return
 	}
 	historical.ReferenceCount--
 	if historical.ReferenceCount == 0 {
