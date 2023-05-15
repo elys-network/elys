@@ -13,7 +13,7 @@ order: 5
 - How much do LPs loss when price go down and recover to original?
 - Need to have a way to stop deposit/withdrawal of specific token within the vault?
 - Need to have a way to stop overall deposit/withdrawal on the vault?
-- When oracle has large difference between several platforms, it's not trustworthy, and Molecule token will need ask high fees so that it does not give more than the minimum price or just redirect the operation to normal Elys AMM.
+- When oracle has large difference between several platforms, it's not trustworthy, and `oracle` based pool will need ask high fees so that it does not give more than the minimum price or just redirect the operation to normal Elys AMM.
 
 ## To consider
 
@@ -22,7 +22,7 @@ order: 5
 - Weights are balanced by the incentive structure to hit close to the target weights
 - Unit test to check final slippage on example values
 - Low liquidity coin and high liquidity coin (low liquidity coin won't be able to use full oracle price)
-- Once the user buys the major molecule TKN, it is automatically “ committed” in the commitment molecule to receive rewards
+- Once the user buys the major molecule TKN, it is automatically “committed” in the commitment molecule to receive rewards
 - LPs should not lose underlying value as long as underlying tokens are recovered back to original status
 
 ## Automatic pool parameters adjustment from asset volatility

@@ -1,4 +1,4 @@
-# Molecule
+# Oracle based pool
 
 ## Contents
 
