@@ -6,3 +6,8 @@ release/
 .DS_Store
 docs/diagrams
 build
+dockernet/state
+dockernet/logs
+dockernet/upgrades/binaries
+dockernet/upgrades/cosmovisor
+dockernet/temp.sh

@@ -38,8 +38,8 @@ genesis:
         inflation_min: "0.0"
     slashing:
       params:
-        signed_blocks_window: "10000"
-        min_signed_per_window: "0.5"
+        signed_blocks_window: "30000"
+        min_signed_per_window: "0.05"
         downtime_jail_duration: 600s
         slash_fraction_double_sign: "0.05"
         slash_fraction_downtime: "0.0001"
@@ -212,6 +212,12 @@ genesis:
             num_epochs: "365"
             current_epoch: "0"
             eden_boost_apr: "100"
+        community_tax: "0.02"
+        withdraw_addr_enabled: true
+      fee_pool:
+        community_pool:
+          - amount: "0"
+            denom: uelys
     tokenomics:
       airdropList:
         - intent: AtomStakers

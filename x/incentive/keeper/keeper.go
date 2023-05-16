@@ -10,6 +10,8 @@ import (
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
 	"github.com/tendermint/tendermint/libs/log"
 
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	stypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	ctypes "github.com/elys-network/elys/x/commitment/types"
 	etypes "github.com/elys-network/elys/x/epochs/types"
 	"github.com/elys-network/elys/x/incentive/types"
@@ -24,6 +26,10 @@ type (
 		cmk        types.CommitmentKeeper
 		stk        types.StakingKeeper
 		tci        *types.TotalCommitmentInfo
+		authKeeper types.AccountKeeper
+		bankKeeper types.BankKeeper
+
+		feeCollectorName string // name of the FeeCollector ModuleAccount
 	}
 )
 
@@ -34,6 +40,9 @@ func NewKeeper(
 	ps paramtypes.Subspace,
 	ck types.CommitmentKeeper,
 	sk types.StakingKeeper,
+	ak types.AccountKeeper,
+	bk types.BankKeeper,
+	feeCollectorName string,
 ) *Keeper {
 	// set KeyTable if it has not already been set
 	if !ps.HasKeyTable() {
@@ -41,13 +50,16 @@ func NewKeeper(
 	}
 
 	return &Keeper{
-		cdc:        cdc,
-		storeKey:   storeKey,
-		memKey:     memKey,
-		paramstore: ps,
-		cmk:        ck,
-		stk:        sk,
-		tci:        &types.TotalCommitmentInfo{},
+		cdc:              cdc,
+		storeKey:         storeKey,
+		memKey:           memKey,
+		paramstore:       ps,
+		cmk:              ck,
+		stk:              sk,
+		tci:              &types.TotalCommitmentInfo{},
+		feeCollectorName: feeCollectorName,
+		authKeeper:       ak,
+		bankKeeper:       bk,
 	}
 }
 
@@ -175,6 +187,12 @@ func (k Keeper) UpdateUncommittedTokens(ctx sdk.Context, epochIdentifier string,
 			// Calculate new uncommitted Eden tokens for LP, staker, and Eden token holders
 			newUncommittedEdenTokens := k.CalculateNewUncommittedEdenTokens(ctx, delegatedAmt, commitments, edenAmountPerEpoch)
 
+			// Give commission to validators
+			totalCommissionGiven := k.GiveCommissionToValidators(ctx, creator, delegatedAmt, newUncommittedEdenTokens)
+
+			// Minus the given amount and increase with the remains only
+			newUncommittedEdenTokens = newUncommittedEdenTokens.Sub(totalCommissionGiven)
+
 			// Calculate new uncommitted Eden-Boost tokens for staker and Eden token holders
 			newUncommittedEdenBoostTokens := k.CalculateNewUncommittedEdenBoostTokens(ctx, delegatedAmt, commitments, epochIdentifier, edenBoostAPR)
 
@@ -224,7 +242,7 @@ func (k Keeper) CalculateNewUncommittedEdenBoostTokens(ctx sdk.Context, delegate
 	// Get eden commitments
 	edenCommitted := commitments.GetCommittedAmountForDenom(types.Eden)
 
-	// Gompute eden reward based on above and param factors for each
+	// Compute eden reward based on above and param factors for each
 	totalEden := delegatedAmt.Add(edenCommitted)
 
 	// Calculate edenBoostAPR % APR for eden boost
@@ -270,4 +288,163 @@ func (k Keeper) UpdateEdenBoostTokens(commitments *ctypes.Commitments, new_uncom
 	} else {
 		uncommittedEdenBoost.Amount = uncommittedEdenBoost.Amount.Add(new_uncommitted_eden_boost_tokens)
 	}
+}
+
+// Increase uncommitted token amount for the corresponding validator
+func (k Keeper) UpdateEdenTokensForValidator(ctx sdk.Context, validator string, new_uncommitted_eden_tokens sdk.Int) {
+	commitments, bfound := k.cmk.GetCommitments(ctx, validator)
+	if !bfound {
+		return
+	}
+
+	// Get record for uncommitted eden
+	uncommittedEden, found := commitments.GetUncommittedTokensForDenom(types.Eden)
+	if !found {
+		uncommittedTokens := commitments.GetUncommittedTokens()
+		uncommittedTokens = append(uncommittedTokens, &ctypes.UncommittedTokens{
+			Denom:  types.Eden,
+			Amount: new_uncommitted_eden_tokens,
+		})
+		commitments.UncommittedTokens = uncommittedTokens
+	} else {
+		uncommittedEden.Amount = uncommittedEden.Amount.Add(new_uncommitted_eden_tokens)
+	}
+
+	// Update commmitment
+	k.cmk.SetCommitments(ctx, commitments)
+}
+
+// Give commissions to validators
+func (k Keeper) GiveCommissionToValidators(ctx sdk.Context, delegator string, totalDelegationAmt sdk.Int, newUncommittedAmt sdk.Int) sdk.Int {
+	delAdr, err := sdk.AccAddressFromBech32(delegator)
+	if err != nil {
+		return sdk.ZeroInt()
+	}
+
+	// Total Eden given
+	totalGiven := sdk.ZeroInt()
+
+	// Iterate all delegated validators
+	k.stk.IterateDelegations(ctx, delAdr, func(index int64, del stypes.DelegationI) (stop bool) {
+		valAddr := del.GetValidatorAddr()
+		// Get validator
+		val := k.stk.Validator(ctx, valAddr)
+		// Get commission rate
+		comm_rate := val.GetCommission()
+		// Get delegator share
+		shares := del.GetShares()
+		// Get token amount delegated
+		delegatedAmt := val.TokensFromSharesTruncated(shares)
+
+		// to give = delegated amount / total delegation * newly minted eden * commission rate / 100
+		commission := delegatedAmt.QuoInt(totalDelegationAmt).MulInt(newUncommittedAmt).Mul(comm_rate).QuoInt(sdk.NewInt(100))
+		// Sum total commission given
+		totalGiven = totalGiven.Add(commission.TruncateInt())
+
+		// increase uncomitted token amount of validator's commitment
+		k.UpdateEdenTokensForValidator(ctx, valAddr.String(), commission.TruncateInt())
+
+		return false
+	})
+
+	return totalGiven
+}
+
+// SetWithdrawAddr sets a new address that will receive the rewards upon withdrawal
+func (k Keeper) SetWithdrawAddr(ctx sdk.Context, delegatorAddr sdk.AccAddress, withdrawAddr sdk.AccAddress) error {
+	if k.bankKeeper.BlockedAddr(withdrawAddr) {
+		return sdkerrors.Wrapf(sdkerrors.ErrUnauthorized, "%s is not allowed to receive external funds", withdrawAddr)
+	}
+
+	if !k.GetWithdrawAddrEnabled(ctx) {
+		return types.ErrSetWithdrawAddrDisabled
+	}
+
+	ctx.EventManager().EmitEvent(
+		sdk.NewEvent(
+			types.EventTypeSetWithdrawAddress,
+			sdk.NewAttribute(types.AttributeKeyWithdrawAddress, withdrawAddr.String()),
+		),
+	)
+
+	k.SetDelegatorWithdrawAddr(ctx, delegatorAddr, withdrawAddr)
+	return nil
+}
+
+// withdraw rewards from a delegation
+func (k Keeper) WithdrawDelegationRewards(ctx sdk.Context, delAddr sdk.AccAddress, valAddr sdk.ValAddress) (sdk.Coins, error) {
+	val := k.stk.Validator(ctx, valAddr)
+	if val == nil {
+		return nil, types.ErrNoValidatorDistInfo
+	}
+
+	del := k.stk.Delegation(ctx, delAddr, valAddr)
+	if del == nil {
+		return nil, types.ErrEmptyDelegationDistInfo
+	}
+
+	// withdraw rewards
+	rewards, err := k.withdrawDelegationRewards(ctx, val, del)
+	if err != nil {
+		return nil, err
+	}
+
+	if rewards.IsZero() {
+		baseDenom, _ := sdk.GetBaseDenom()
+		rewards = sdk.Coins{sdk.Coin{
+			Denom:  baseDenom,
+			Amount: sdk.ZeroInt(),
+		}}
+	}
+
+	// reinitialize the delegation
+	k.initializeDelegation(ctx, valAddr, delAddr)
+	return rewards, nil
+}
+
+// withdraw validator commission
+func (k Keeper) WithdrawValidatorCommission(ctx sdk.Context, valAddr sdk.ValAddress) (sdk.Coins, error) {
+	// fetch validator accumulated commission
+	accumCommission := k.GetValidatorAccumulatedCommission(ctx, valAddr)
+	if accumCommission.Commission.IsZero() {
+		return nil, types.ErrNoValidatorCommission
+	}
+
+	commission, remainder := accumCommission.Commission.TruncateDecimal()
+	k.SetValidatorAccumulatedCommission(ctx, valAddr, types.ValidatorAccumulatedCommission{Commission: remainder}) // leave remainder to withdraw later
+
+	// update outstanding
+	outstanding := k.GetValidatorOutstandingRewards(ctx, valAddr).Rewards
+	k.SetValidatorOutstandingRewards(ctx, valAddr, types.ValidatorOutstandingRewards{Rewards: outstanding.Sub(sdk.NewDecCoinsFromCoins(commission...))})
+
+	if !commission.IsZero() {
+		accAddr := sdk.AccAddress(valAddr)
+		withdrawAddr := k.GetDelegatorWithdrawAddr(ctx, accAddr)
+		// Convert Elys to USDC and send
+		err := k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, withdrawAddr, commission)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	ctx.EventManager().EmitEvent(
+		sdk.NewEvent(
+			types.EventTypeWithdrawCommission,
+			sdk.NewAttribute(sdk.AttributeKeyAmount, commission.String()),
+		),
+	)
+
+	return commission, nil
+}
+
+// GetTotalRewards returns the total amount of fee distribution rewards held in the store
+func (k Keeper) GetTotalRewards(ctx sdk.Context) (totalRewards sdk.DecCoins) {
+	k.IterateValidatorOutstandingRewards(ctx,
+		func(_ sdk.ValAddress, rewards types.ValidatorOutstandingRewards) (stop bool) {
+			totalRewards = totalRewards.Add(rewards.Rewards...)
+			return false
+		},
+	)
+
+	return totalRewards
 }
