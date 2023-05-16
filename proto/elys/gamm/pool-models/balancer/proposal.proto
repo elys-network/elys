@@ -1,0 +1,28 @@
+syntax = "proto3";
+package elysnetwork.elys.gamm.v1beta1;
+
+import "gogoproto/gogo.proto";
+import "elys/gamm/pool-models/balancer/balancerPool.proto";
+
+option go_package = "github.com/elys-network/elys/x/gamm/pool-models/balancer";
+
+message ProposalCreateBalancerPool {
+  elysnetwork.elys.gamm.v1beta1.PoolParams pool_params = 1
+      [ (gogoproto.moretags) = "yaml:\"pool_params\"" ];
+
+  repeated elysnetwork.elys.gamm.v1beta1.PoolAsset pool_assets = 2
+      [ (gogoproto.nullable) = false ];
+
+  string future_pool_governor = 3
+      [ (gogoproto.moretags) = "yaml:\"future_pool_governor\"" ];
+}
+
+message ProposalUpdatePoolParams {
+  string title = 1;
+  string description = 2;
+  uint64 pool_id = 3 [ (gogoproto.moretags) = "yaml:\"pool_id\"" ];
+  elysnetwork.elys.gamm.v1beta1.PoolParams pool_params = 4 [
+    (gogoproto.moretags) = "yaml:\"balancer_pool_params\"",
+    (gogoproto.nullable) = false
+  ];
+}

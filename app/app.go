@@ -129,18 +129,17 @@ import (
 	burnermoduletypes "github.com/elys-network/elys/x/burner/types"
 
 	gammmodule "github.com/elys-network/elys/x/gamm"
-	gammmodulekeeper "github.com/elys-network/elys/x/gamm/keeper"
+	// gammmodulekeeper "github.com/elys-network/elys/x/gamm/keeper"
 	gammmoduletypes "github.com/elys-network/elys/x/gamm/types"
 
-	poolmanagermodule "github.com/elys-network/elys/x/poolmanager"
-	poolmanagermodulekeeper "github.com/elys-network/elys/x/poolmanager/keeper"
+	// poolmanagermodule "github.com/elys-network/elys/x/poolmanager"
+	// poolmanagermodulekeeper "github.com/elys-network/elys/x/poolmanager/keeper"
 	poolmanagermoduletypes "github.com/elys-network/elys/x/poolmanager/types"
 
 	// this line is used by starport scaffolding # stargate/app/moduleImport
 
 	appparams "github.com/elys-network/elys/app/params"
 	"github.com/elys-network/elys/docs"
-
 )
 
 const (
@@ -208,18 +207,18 @@ var (
 
 	// module account permissions
 	maccPerms = map[string][]string{
-		authtypes.FeeCollectorName:       nil,
-		icatypes.ModuleName:              nil,
-		minttypes.ModuleName:             {authtypes.Minter},
-		stakingtypes.BondedPoolName:      {authtypes.Burner, authtypes.Staking},
-		stakingtypes.NotBondedPoolName:   {authtypes.Burner, authtypes.Staking},
-		govtypes.ModuleName:              {authtypes.Burner},
-		ibctransfertypes.ModuleName:      {authtypes.Minter, authtypes.Burner},
-		commitmentmoduletypes.ModuleName: {authtypes.Minter, authtypes.Burner},
-		burnermoduletypes.ModuleName:     {authtypes.Burner},
-		gammmoduletypes.ModuleName:                     {authtypes.Minter, authtypes.Burner},
-		poolmanagermoduletypes.ModuleName:              nil,
-		incentivemoduletypes.ModuleName:  nil,
+		authtypes.FeeCollectorName:        nil,
+		icatypes.ModuleName:               nil,
+		minttypes.ModuleName:              {authtypes.Minter},
+		stakingtypes.BondedPoolName:       {authtypes.Burner, authtypes.Staking},
+		stakingtypes.NotBondedPoolName:    {authtypes.Burner, authtypes.Staking},
+		govtypes.ModuleName:               {authtypes.Burner},
+		ibctransfertypes.ModuleName:       {authtypes.Minter, authtypes.Burner},
+		commitmentmoduletypes.ModuleName:  {authtypes.Minter, authtypes.Burner},
+		burnermoduletypes.ModuleName:      {authtypes.Burner},
+		gammmoduletypes.ModuleName:        {authtypes.Minter, authtypes.Burner},
+		poolmanagermoduletypes.ModuleName: nil,
+		incentivemoduletypes.ModuleName:   nil,
 		// this line is used by starport scaffolding # stargate/app/maccPerms
 	}
 )
@@ -637,10 +636,10 @@ func NewElysApp(
 		keys[epochsmoduletypes.StoreKey],
 	)
 
-	app.GAMMKeeper = *gammmodulekeeper.NewKeeper()
-	gammmodule.NewAppModule(appCodec, *app.GAMMKeeper, app.AccountKeeper, app.BankKeeper)
+	// app.GAMMKeeper = *gammmodulekeeper.NewKeeper()
+	// gammmodule.NewAppModule(appCodec, *app.GAMMKeeper, app.AccountKeeper, app.BankKeeper)
 
-	poolmanagermodule.NewAppModule(*app.PoolManagerKeeper, app.GAMMKeeper),
+	// poolmanagermodule.NewAppModule(*app.PoolManagerKeeper, app.GAMMKeeper)
 
 	// this line is used by starport scaffolding # stargate/app/keeperDefinition
 
@@ -887,7 +886,7 @@ func NewElysApp(
 			SignModeHandler: encodingConfig.TxConfig.SignModeHandler(),
 			FeegrantKeeper:  app.FeeGrantKeeper,
 			SigGasConsumer:  ante.DefaultSigVerificationGasConsumer,
-			GAMMKeeper: app.GAMMKeeper,
+			// GAMMKeeper: app.GAMMKeeper,
 		},
 	)
 	if err != nil {
