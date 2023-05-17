@@ -10,6 +10,7 @@ option go_package = "github.com/elys-network/elys/x/amm/types";
 // Msg defines the Msg service.
 service Msg {
   rpc CreatePool (MsgCreatePool) returns (MsgCreatePoolResponse);
+  rpc JoinPool   (MsgJoinPool  ) returns (MsgJoinPoolResponse  );
 }
 message MsgCreatePool {
            string                   creator         = 1;
@@ -22,4 +23,13 @@ message MsgCreatePool {
 }
 
 message MsgCreatePoolResponse {}
+
+message MsgJoinPool {
+           string                   creator        = 1;
+           uint64                   poolId         = 2;
+  repeated cosmos.base.v1beta1.Coin maxAmountsIn   = 3 [(gogoproto.nullable) = false];
+           string                   shareAmountOut = 4;
+}
+
+message MsgJoinPoolResponse {}
 
