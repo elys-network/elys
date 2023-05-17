@@ -1,0 +1,13 @@
+syntax = "proto3";
+package elysnetwork.elys.amm;
+
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/elys-network/elys/x/amm/types";
+
+// Params defines the parameters for the module.
+message Params {
+  option (gogoproto.goproto_stringer) = false;
+  
+  uint64 poolCreationFee = 1 [(gogoproto.moretags) = "yaml:\"pool_creation_fee\""];
+}

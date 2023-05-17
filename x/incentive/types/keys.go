@@ -44,7 +44,6 @@ func KeyPrefix(p string) []byte {
 	return []byte(p)
 }
 
-
 // Keys for distribution store
 // Items are stored with the following key: values
 //
