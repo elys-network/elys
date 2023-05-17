@@ -69412,6 +69412,8 @@ definitions:
     description: Period defines a length of time and amount of coins that will vest.
   elysnetwork.elys.amm.MsgCreatePoolResponse:
     type: object
+  elysnetwork.elys.amm.MsgExitPoolResponse:
+    type: object
   elysnetwork.elys.amm.MsgJoinPoolResponse:
     type: object
   elysnetwork.elys.amm.Params:

@@ -32,6 +32,10 @@ const (
 	// TODO: Determine the simulation weight value
 	defaultWeightMsgJoinPool int = 100
 
+	opWeightMsgExitPool = "op_weight_msg_exit_pool"
+	// TODO: Determine the simulation weight value
+	defaultWeightMsgExitPool int = 100
+
 	// this line is used by starport scaffolding # simapp/module/const
 )
 
@@ -90,6 +94,17 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 	operations = append(operations, simulation.NewWeightedOperation(
 		weightMsgJoinPool,
 		ammsimulation.SimulateMsgJoinPool(am.accountKeeper, am.bankKeeper, am.keeper),
+	))
+
+	var weightMsgExitPool int
+	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgExitPool, &weightMsgExitPool, nil,
+		func(_ *rand.Rand) {
+			weightMsgExitPool = defaultWeightMsgExitPool
+		},
+	)
+	operations = append(operations, simulation.NewWeightedOperation(
+		weightMsgExitPool,
+		ammsimulation.SimulateMsgExitPool(am.accountKeeper, am.bankKeeper, am.keeper),
 	))
 
 	// this line is used by starport scaffolding # simapp/module/operation

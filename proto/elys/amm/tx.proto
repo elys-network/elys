@@ -11,6 +11,7 @@ option go_package = "github.com/elys-network/elys/x/amm/types";
 service Msg {
   rpc CreatePool (MsgCreatePool) returns (MsgCreatePoolResponse);
   rpc JoinPool   (MsgJoinPool  ) returns (MsgJoinPoolResponse  );
+  rpc ExitPool   (MsgExitPool  ) returns (MsgExitPoolResponse  );
 }
 message MsgCreatePool {
            string                   creator         = 1;
@@ -32,4 +33,13 @@ message MsgJoinPool {
 }
 
 message MsgJoinPoolResponse {}
+
+message MsgExitPool {
+           string                   creator       = 1;
+           uint64                   poolId        = 2;
+  repeated cosmos.base.v1beta1.Coin maxAmountsOut = 3 [(gogoproto.nullable) = false];
+           string                   shareAmountIn = 4;
+}
+
+message MsgExitPoolResponse {}
 
