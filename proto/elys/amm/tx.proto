@@ -1,7 +1,25 @@
 syntax = "proto3";
+
 package elysnetwork.elys.amm;
+
+import "gogoproto/gogo.proto";
+import "cosmos/base/v1beta1/coin.proto";
 
 option go_package = "github.com/elys-network/elys/x/amm/types";
 
 // Msg defines the Msg service.
-service Msg {}
+service Msg {
+  rpc CreatePool (MsgCreatePool) returns (MsgCreatePoolResponse);
+}
+message MsgCreatePool {
+           string                   creator         = 1;
+  repeated cosmos.base.v1beta1.Coin weights         = 2 [(gogoproto.nullable) = false];
+  repeated cosmos.base.v1beta1.Coin initialDeposit  = 3 [(gogoproto.nullable) = false];
+           uint64                   swapFee         = 4;
+           uint64                   exitFee         = 5;
+           string                   futureGovernor  = 6;
+  repeated uint64                   scallingFactors = 7;
+}
+
+message MsgCreatePoolResponse {}
+
