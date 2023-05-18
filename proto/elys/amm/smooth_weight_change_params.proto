@@ -1,0 +1,14 @@
+syntax = "proto3";
+package elysnetwork.elys.amm;
+
+import "elys/amm/pool_asset.proto";
+
+option go_package = "github.com/elys-network/elys/x/amm/types";
+
+message SmoothWeightChangeParams {
+  
+  string startTime = 1; 
+  string duration = 2; 
+  repeated PoolAsset initialPoolWeights = 3; 
+  repeated PoolAsset targetPoolWeights = 4; 
+}
