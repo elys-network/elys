@@ -7,7 +7,7 @@
 | Chain ID     | elystestnet-1                        |
 | Denomination | uelys                                |
 | Decimals     | 6 (1 elys= 1000000uelys)             |
-| Version      | v0.4.0                               |
+| Version      | v0.5.4                               |
 | RPC Endpoint | https://rpc.testnet.elys.network:443 |
 
 ## Get started
@@ -311,13 +311,13 @@ A proposal can be submitted to add one or multiple entries in the asset profile 
 To submit a proposal, use the following command:
 
 ```
-elysd tx gov submit-proposal /tmp/proposal.json --from alice --yes
+elysd tx gov submit-proposal /tmp/proposal.json --from walletname --yes
 ```
 
 To vote on a proposal, use the following command:
 
 ```
-elysd tx gov vote 1 yes --from alice --yes
+elysd tx gov vote 1 yes --from walletname --yes
 ```
 
 #### Update Entry using Gov Proposal
@@ -357,13 +357,13 @@ A proposal can be submitted to update one or multiple entries in the asset profi
 To submit a proposal, use the following command:
 
 ```
-elysd tx gov submit-proposal /tmp/proposal.json --from alice --yes
+elysd tx gov submit-proposal /tmp/proposal.json --from walletname --yes
 ```
 
 To vote on a proposal, use the following command:
 
 ```
-elysd tx gov vote 1 yes --from alice --yes
+elysd tx gov vote 1 yes --from walletname --yes
 ```
 
 #### Delete Entry using Gov Proposal
@@ -388,13 +388,13 @@ A proposal can be submitted to delete one or multiple entries in the asset profi
 To submit a proposal, use the following command:
 
 ```
-elysd tx gov submit-proposal /tmp/proposal.json --from alice --yes
+elysd tx gov submit-proposal /tmp/proposal.json --from walletname --yes
 ```
 
 To vote on a proposal, use the following command:
 
 ```
-elysd tx gov vote 1 yes --from alice --yes
+elysd tx gov vote 1 yes --from walletname --yes
 ```
 
 #### CLI to Query List of Entries
@@ -437,13 +437,13 @@ A proposal can be submitted to set the genesis inflation parameters in the token
 To submit a proposal, use the following command:
 
 ```
-elysd tx gov submit-proposal /tmp/proposal.json --from alice --yes
+elysd tx gov submit-proposal /tmp/proposal.json --from walletname --yes
 ```
 
 To vote on a proposal, use the following command:
 
 ```
-elysd tx gov vote 1 yes --from alice --yes
+elysd tx gov vote 1 yes --from walletname --yes
 ```
 
 #### CLI to Query the Genesis Inflation parameters
@@ -501,13 +501,13 @@ A proposal can be submitted to add one or multiple airdrop entries in the tokeno
 To submit a proposal, use the following command:
 
 ```
-elysd tx gov submit-proposal /tmp/proposal.json --from alice --yes
+elysd tx gov submit-proposal /tmp/proposal.json --from walletname --yes
 ```
 
 To vote on a proposal, use the following command:
 
 ```
-elysd tx gov vote 1 yes --from alice --yes
+elysd tx gov vote 1 yes --from walletname --yes
 ```
 
 #### Update Airdrop entry using Gov Proposal
@@ -533,13 +533,13 @@ A proposal can be submitted to update one or multiple airdrop entries in the tok
 To submit a proposal, use the following command:
 
 ```
-elysd tx gov submit-proposal /tmp/proposal.json --from alice --yes
+elysd tx gov submit-proposal /tmp/proposal.json --from walletname --yes
 ```
 
 To vote on a proposal, use the following command:
 
 ```
-elysd tx gov vote 1 yes --from alice --yes
+elysd tx gov vote 1 yes --from walletname --yes
 ```
 
 #### Delete Airdrop entry using Gov Proposal
@@ -564,13 +564,13 @@ A proposal can be submitted to delete one or multiple airdrop entries in the tok
 To submit a proposal, use the following command:
 
 ```
-elysd tx gov submit-proposal /tmp/proposal.json --from alice --yes
+elysd tx gov submit-proposal /tmp/proposal.json --from walletname --yes
 ```
 
 To vote on a proposal, use the following command:
 
 ```
-elysd tx gov vote 1 yes --from alice --yes
+elysd tx gov vote 1 yes --from walletname --yes
 ```
 
 #### CLI to Query List of Airdrop entries
@@ -640,13 +640,13 @@ A proposal can be submitted to add one or multiple time-based-inflation entries 
 To submit a proposal, use the following command:
 
 ```
-elysd tx gov submit-proposal /tmp/proposal.json --from alice --yes
+elysd tx gov submit-proposal /tmp/proposal.json --from walletname --yes
 ```
 
 To vote on a proposal, use the following command:
 
 ```
-elysd tx gov vote 1 yes --from alice --yes
+elysd tx gov vote 1 yes --from walletname --yes
 ```
 
 #### Update Time-Based-Inflation entry using Gov Proposal
@@ -680,13 +680,13 @@ A proposal can be submitted to update one or multiple time-based-inflation entri
 To submit a proposal, use the following command:
 
 ```
-elysd tx gov submit-proposal /tmp/proposal.json --from alice --yes
+elysd tx gov submit-proposal /tmp/proposal.json --from walletname --yes
 ```
 
 To vote on a proposal, use the following command:
 
 ```
-elysd tx gov vote 1 yes --from alice --yes
+elysd tx gov vote 1 yes --from walletname --yes
 ```
 
 #### Delete Time-Based-Inflation entry using Gov Proposal
@@ -712,13 +712,13 @@ A proposal can be submitted to delete one or multiple time-based-inflation entri
 To submit a proposal, use the following command:
 
 ```
-elysd tx gov submit-proposal /tmp/proposal.json --from alice --yes
+elysd tx gov submit-proposal /tmp/proposal.json --from walletname --yes
 ```
 
 To vote on a proposal, use the following command:
 
 ```
-elysd tx gov vote 1 yes --from alice --yes
+elysd tx gov vote 1 yes --from walletname --yes
 ```
 
 #### CLI to Query List of Time-Based-Inflation entries
