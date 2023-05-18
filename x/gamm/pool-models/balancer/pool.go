@@ -589,8 +589,17 @@ func (p Pool) CalcOutAmtGivenIn(
 		slippage := balancerSlippage.Mul(sdk.OneDec().Sub(p.PoolParams.SlippageReduction))
 
 		weightDistance := p.WeightDistanceFromTarget()
-		weightBreakingFee := p.PoolParams.WeightBreakingFeeMutliplier.Mul(weightDistance.Sub(initialWeightDistance))
-		tokenAmountOutInt = oracleOutAmount.Sub(slippage).Sub(weightBreakingFee).TruncateInt()
+		distanceDiff := weightDistance.Sub(initialWeightDistance)
+		weightBreakingFee := sdk.ZeroDec()
+		if distanceDiff.IsPositive() {
+			weightBreakingFee = p.PoolParams.WeightBreakingFeeMutliplier.Mul(distanceDiff)
+		}
+		weightBalanceBonus := sdk.ZeroDec()
+		// TODO: bonus should be coming from separate pool
+		if weightDistance.LT(p.PoolParams.ThresholdWeightDiff) && distanceDiff.IsNegative() {
+			weightBalanceBonus = p.PoolParams.WeightBreakingFeeMutliplier.Mul(distanceDiff).Abs()
+		}
+		tokenAmountOutInt = oracleOutAmount.Sub(slippage).Add(weightBalanceBonus).Sub(weightBreakingFee).TruncateInt()
 	}
 	if !tokenAmountOutInt.IsPositive() {
 		return sdk.Coin{}, sdkerrors.Wrapf(types.ErrInvalidMathApprox, "token amount must be positive")
