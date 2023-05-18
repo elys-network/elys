@@ -1,26 +1,61 @@
 syntax = "proto3";
+
 package elysnetwork.elys.amm;
 
 import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
 import "elys/amm/params.proto";
+import "elys/amm/pool.proto";
+import "elys/amm/pool_asset.proto";
+import "elys/amm/pool_params.proto";
+import "cosmos/base/v1beta1/coin.proto";
 
 option go_package = "github.com/elys-network/elys/x/amm/types";
 
 // Query defines the gRPC querier service.
 service Query {
+  
   // Parameters queries the parameters of the module.
-  rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
+  rpc Params (QueryParamsRequest) returns (QueryParamsResponse) {
     option (google.api.http).get = "/elys-network/elys/amm/params";
+  
+  }
+  
+  // Queries a list of Pool items.
+  rpc Pool    (QueryGetPoolRequest) returns (QueryGetPoolResponse) {
+    option (google.api.http).get = "/elys-network/elys/amm/pool/{poolId}";
+  
+  }
+  rpc PoolAll (QueryAllPoolRequest) returns (QueryAllPoolResponse) {
+    option (google.api.http).get = "/elys-network/elys/amm/pool";
+  
   }
 }
-
 // QueryParamsRequest is request type for the Query/Params RPC method.
 message QueryParamsRequest {}
 
 // QueryParamsResponse is response type for the Query/Params RPC method.
 message QueryParamsResponse {
+  
   // params holds all the parameters of this module.
   Params params = 1 [(gogoproto.nullable) = false];
 }
+
+message QueryGetPoolRequest {
+  uint64 poolId = 1;
+}
+
+message QueryGetPoolResponse {
+  Pool pool = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryAllPoolRequest {
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+message QueryAllPoolResponse {
+  repeated Pool                                   pool       = 1 [(gogoproto.nullable) = false];
+           cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+

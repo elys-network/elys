@@ -23,7 +23,9 @@ message MsgCreatePool {
   repeated uint64                   scallingFactors = 7;
 }
 
-message MsgCreatePoolResponse {}
+message MsgCreatePoolResponse {
+  uint64 pool_id = 1 [(gogoproto.customname) = "PoolID"];
+}
 
 message MsgJoinPool {
            string                   creator        = 1;
