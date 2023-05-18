@@ -598,6 +598,7 @@ func (p Pool) CalcOutAmtGivenIn(
 		// TODO: bonus should be coming from separate pool
 		if weightDistance.LT(p.PoolParams.ThresholdWeightDiff) && distanceDiff.IsNegative() {
 			weightBalanceBonus = p.PoolParams.WeightBreakingFeeMutliplier.Mul(distanceDiff).Abs()
+			// TODO: we might skip swap fee in case it's a balance recovery operation
 		}
 		tokenAmountOutInt = oracleOutAmount.Sub(slippage).Add(weightBalanceBonus).Sub(weightBreakingFee).TruncateInt()
 	}
