@@ -12,6 +12,7 @@ import (
 
 	"github.com/elys-network/elys/x/gamm/pool-models/internal/cfmm_common"
 	"github.com/elys-network/elys/x/gamm/types"
+	oraclekeeper "github.com/elys-network/elys/x/oracle/keeper"
 	poolmanagertypes "github.com/elys-network/elys/x/poolmanager/types"
 )
 
@@ -486,6 +487,53 @@ func (p Pool) GetType() poolmanagertypes.PoolType {
 	return poolmanagertypes.Balancer
 }
 
+func (p Pool) NormalizedWeights() []PoolAsset {
+	poolWeights := []PoolAsset{}
+	for i, asset := range p.PoolAssets {
+		poolWeights = append(poolWeights, asset)
+		poolWeights[i].Weight = asset.Weight.Quo(p.TotalWeight)
+	}
+	return poolWeights
+}
+
+func (p Pool) OraclePoolNormalizedWeights() ([]PoolAsset, error) {
+	// TODO: pool object does not have oracle keeper and adding pseudo keeper here
+	oracle := oraclekeeper.Keeper{}
+	oraclePoolWeights := []PoolAsset{}
+	totalWeight := sdk.ZeroDec()
+	for i, asset := range p.PoolAssets {
+		oraclePoolWeights = append(oraclePoolWeights, asset)
+
+		tokenPriceInfo, found := oracle.GetPrice(ctx, asset.Token.Denom, "", 0)
+		if !found {
+			return oraclePoolWeights, fmt.Errorf("price for token not set: %s", asset.Token.Denom)
+		}
+		tokenPrice := tokenPriceInfo.Price
+		oraclePoolWeights[i].Weight = tokenPrice.Mul(asset.Token.Amount.ToDec()).TruncateInt()
+		totalWeight = totalWeight.Add(oraclePoolWeights[i].Weight.ToDec())
+	}
+
+	for i, asset := range oraclePoolWeights {
+		oraclePoolWeights[i].Weight = asset.Weight.Quo(totalWeight)
+	}
+	return oraclePoolWeights, nil
+}
+
+func (p Pool) WeightDistanceFromTarget() sdk.Dec {
+	oracleWeights, err := p.OraclePoolNormalizedWeights()
+	if err != nil {
+		return sdk.ZeroDec()
+	}
+	targetWeights := p.NormalizedWeights()
+
+	distanceSum := sdk.ZeroDec()
+	for i := range p.PoolAssets {
+		distance := targetWeights[i].Weight.Sub(oracleWeights[i].Weight).Abs()
+		distanceSum = distanceSum.Add(distance)
+	}
+	return distanceSum.Quo(sdk.NewDec(int64(len(p.PoolAssets))))
+}
+
 // CalcOutAmtGivenIn calculates tokens to be swapped out given the provided
 // amount and fee deducted, using solveConstantFunctionInvariant.
 func (p Pool) CalcOutAmtGivenIn(
@@ -499,13 +547,32 @@ func (p Pool) CalcOutAmtGivenIn(
 		return sdk.Coin{}, err
 	}
 
+	initialWeightDistance := sdk.ZeroDec()
 	tokenAmountInAfterFee := tokenIn.Amount.ToDec().Mul(sdk.OneDec().Sub(swapFee))
 	poolTokenInBalance := poolAssetIn.Token.Amount.ToDec()
 	poolPostSwapInBalance := poolTokenInBalance.Add(tokenAmountInAfterFee)
 
+	// TODO: pool object does not have oracle keeper and adding pseudo keeper here
+	oracle := oraclekeeper.Keeper{}
+	inTokenPriceInfo, found := oracle.GetPrice(ctx, poolAssetIn.Token.Denom, "", 0)
+	if !found {
+		return sdk.Coin{}, fmt.Errorf("price for inToken not set: %s", poolAssetIn.Token.Denom)
+	}
+	outTokenPriceInfo, found := oracle.GetPrice(ctx, poolAssetOut.Token.Denom, "", 0)
+	if !found {
+		return sdk.Coin{}, fmt.Errorf("price for outToken not set: %s", poolAssetOut.Token.Denom)
+	}
+	inTokenPrice := inTokenPriceInfo.Price
+	outTokenPrice := outTokenPriceInfo.Price
+	if p.PoolParams.UseOracle { // TODO: weight should be normalized weight
+		initialWeightDistance = p.WeightDistanceFromTarget()
+		poolAssetIn.Weight = inTokenPrice.Mul(poolAssetIn.Token.Amount.ToDec()).TruncateInt()
+		poolAssetOut.Weight = inTokenPrice.Mul(poolAssetOut.Token.Amount.ToDec()).TruncateInt()
+	}
+
 	// deduct swapfee on the tokensIn
 	// delta balanceOut is positive(tokens inside the pool decreases)
-	tokenAmountOut := solveConstantFunctionInvariant(
+	balancerTokenAmountOut := solveConstantFunctionInvariant(
 		poolTokenInBalance,
 		poolPostSwapInBalance,
 		poolAssetIn.Weight.ToDec(),
@@ -514,7 +581,17 @@ func (p Pool) CalcOutAmtGivenIn(
 	)
 
 	// We ignore the decimal component, as we round down the token amount out.
-	tokenAmountOutInt := tokenAmountOut.TruncateInt()
+	tokenAmountOutInt := balancerTokenAmountOut.TruncateInt()
+	if p.PoolParams.UseOracle {
+		oracleOutAmount := poolTokenInBalance.Mul(inTokenPrice).Quo(outTokenPrice)
+
+		balancerSlippage := oracleOutAmount.Sub(balancerTokenAmountOut)
+		slippage := balancerSlippage.Mul(sdk.OneDec().Sub(p.PoolParams.SlippageReduction))
+
+		weightDistance := p.WeightDistanceFromTarget()
+		weightBreakingFee := p.PoolParams.WeightBreakingFeeMutliplier.Mul(weightDistance.Sub(initialWeightDistance))
+		tokenAmountOutInt = oracleOutAmount.Sub(slippage).Sub(weightBreakingFee).TruncateInt()
+	}
 	if !tokenAmountOutInt.IsPositive() {
 		return sdk.Coin{}, sdkerrors.Wrapf(types.ErrInvalidMathApprox, "token amount must be positive")
 	}
