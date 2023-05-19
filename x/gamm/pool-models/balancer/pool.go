@@ -504,11 +504,10 @@ func (p Pool) OraclePoolNormalizedWeights() ([]PoolAsset, error) {
 	for i, asset := range p.PoolAssets {
 		oraclePoolWeights = append(oraclePoolWeights, asset)
 
-		tokenPriceInfo, found := oracle.GetPrice(ctx, asset.Token.Denom, "", 0)
-		if !found {
+		tokenPrice := oracle.GetAssetPriceFromDenom(ctx, asset.Token.Denom)
+		if tokenPrice.IsZero() {
 			return oraclePoolWeights, fmt.Errorf("price for token not set: %s", asset.Token.Denom)
 		}
-		tokenPrice := tokenPriceInfo.Price
 		oraclePoolWeights[i].Weight = tokenPrice.Mul(asset.Token.Amount.ToDec()).TruncateInt()
 		totalWeight = totalWeight.Add(oraclePoolWeights[i].Weight.ToDec())
 	}
@@ -554,16 +553,14 @@ func (p Pool) CalcOutAmtGivenIn(
 
 	// TODO: pool object does not have oracle keeper and adding pseudo keeper here
 	oracle := oraclekeeper.Keeper{}
-	inTokenPriceInfo, found := oracle.GetPrice(ctx, poolAssetIn.Token.Denom, "", 0)
-	if !found {
+	inTokenPrice := oracle.GetAssetPriceFromDenom(ctx, poolAssetIn.Token.Denom)
+	if inTokenPrice.IsZero() {
 		return sdk.Coin{}, fmt.Errorf("price for inToken not set: %s", poolAssetIn.Token.Denom)
 	}
-	outTokenPriceInfo, found := oracle.GetPrice(ctx, poolAssetOut.Token.Denom, "", 0)
-	if !found {
+	outTokenPrice := oracle.GetAssetPriceFromDenom(ctx, poolAssetOut.Token.Denom)
+	if outTokenPrice.IsZero() {
 		return sdk.Coin{}, fmt.Errorf("price for outToken not set: %s", poolAssetOut.Token.Denom)
 	}
-	inTokenPrice := inTokenPriceInfo.Price
-	outTokenPrice := outTokenPriceInfo.Price
 	if p.PoolParams.UseOracle { // TODO: weight should be normalized weight
 		initialWeightDistance = p.WeightDistanceFromTarget()
 		poolAssetIn.Weight = inTokenPrice.Mul(poolAssetIn.Token.Amount.ToDec()).TruncateInt()
