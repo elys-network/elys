@@ -597,7 +597,7 @@ func (p Pool) CalcOutAmtGivenIn(
 			weightBalanceBonus = p.PoolParams.WeightBreakingFeeMutliplier.Mul(distanceDiff).Abs()
 			// TODO: we might skip swap fee in case it's a balance recovery operation
 		}
-		tokenAmountOutInt = oracleOutAmount.Sub(slippage).Add(weightBalanceBonus).Sub(weightBreakingFee).TruncateInt()
+		tokenAmountOutInt = oracleOutAmount.Sub(slippage).Mul(sdk.OneDec().Add(weightBalanceBonus).Sub(weightBreakingFee)).TruncateInt()
 	}
 	if !tokenAmountOutInt.IsPositive() {
 		return sdk.Coin{}, sdkerrors.Wrapf(types.ErrInvalidMathApprox, "token amount must be positive")
@@ -887,6 +887,51 @@ func (p *Pool) CalcJoinPoolNoSwapShares(ctx sdk.Context, tokensIn sdk.Coins, swa
 	err = ensureDenomInPool(poolAssetsByDenom, tokensIn)
 	if err != nil {
 		return sdk.ZeroInt(), sdk.NewCoins(), err
+	}
+
+	if p.PoolParams.UseOracle {
+		initialWeightDistance := p.WeightDistanceFromTarget()
+		oracle := oraclekeeper.Keeper{}
+		tvl := sdk.ZeroDec()
+		for _, asset := range p.PoolAssets {
+			tokenPrice := oracle.GetAssetPriceFromDenom(ctx, asset.Token.Denom)
+			if tokenPrice.IsZero() {
+				return sdk.ZeroInt(), sdk.Coins{}, fmt.Errorf("price for token not set: %s", asset.Token.Denom)
+			}
+			v := tokenPrice.Mul(asset.Token.Amount.ToDec())
+			tvl = tvl.Add(v)
+		}
+
+		joinValue := sdk.ZeroDec()
+		for _, asset := range tokensIn {
+			tokenPrice := oracle.GetAssetPriceFromDenom(ctx, asset.Denom)
+			if tokenPrice.IsZero() {
+				return sdk.ZeroInt(), sdk.Coins{}, fmt.Errorf("price for token not set: %s", asset.Denom)
+			}
+			v := tokenPrice.Mul(asset.Amount.ToDec())
+			joinValue = joinValue.Add(v)
+		}
+
+		updatedPool := p
+		for i, asset := range updatedPool.PoolAssets {
+			updatedPool.PoolAssets[i].Token.Amount = asset.Token.Amount.Add(tokensIn.AmountOf(asset.Token.Denom))
+		}
+		weightDistance := updatedPool.WeightDistanceFromTarget()
+		distanceDiff := weightDistance.Sub(initialWeightDistance)
+		weightBreakingFee := sdk.ZeroDec()
+		if distanceDiff.IsPositive() {
+			weightBreakingFee = p.PoolParams.WeightBreakingFeeMutliplier.Mul(distanceDiff)
+		}
+		weightBalanceBonus := sdk.ZeroDec()
+		// TODO: bonus should be coming from separate pool
+		if weightDistance.LT(p.PoolParams.ThresholdWeightDiff) && distanceDiff.IsNegative() {
+			weightBalanceBonus = p.PoolParams.WeightBreakingFeeMutliplier.Mul(distanceDiff).Abs()
+			// TODO: we might skip swap fee in case it's a balance recovery operation
+		}
+
+		totalShares := p.GetTotalShares()
+		numShares := totalShares.Mul(joinValue).Quo(tvl).Mul(sdk.OneDec().Add(weightBalanceBonus).Sub(weightBreakingFee))
+		return numShares, tokensIn, nil
 	}
 
 	// ensure that there aren't too many or too few assets in `tokensIn`
