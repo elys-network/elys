@@ -96,16 +96,6 @@ func (min MinCommissionDecorator) AnteHandle(
 			if msg.Commission.Rate.LT(minCommissionRate) {
 				return sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "commission can't be lower than 5%")
 			}
-			val, err := min.getValidator(ctx, msg.ValidatorAddress)
-			if err != nil {
-				return err
-			}
-			projectedVotingPower := min.CalculateDelegateProjectedVotingPower(ctx, val, sdk.NewDecFromInt(msg.Value.Amount))
-			if projectedVotingPower.GTE(maxVotingPower) {
-				return sdkerrors.Wrapf(
-					sdkerrors.ErrInvalidRequest,
-					"This validator has a voting power of %s%%. Delegations not allowed to a validator whose post-delegation voting power is more than %s%%. Please delegate to a validator with less bonded tokens", projectedVotingPower, maxVotingPower)
-			}
 		case *stakingtypes.MsgEditValidator:
 			// if commission rate is nil, it means only
 			// other fields are affected - skip
