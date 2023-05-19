@@ -60,6 +60,16 @@ func (min MinCommissionDecorator) getTotalDelegatedTokens(ctx sdk.Context) sdk.I
 }
 
 // Returns the projected voting power as a percentage (not a fraction)
+func (min MinCommissionDecorator) CalculateValidatorProjectedVotingPower(ctx sdk.Context, delegateAmount sdk.Dec) sdk.Dec {
+	totalDelegatedTokens := sdk.NewDecFromInt(min.getTotalDelegatedTokens(ctx))
+
+	projectedTotalDelegatedTokens := totalDelegatedTokens.Add(delegateAmount)
+	projectedValidatorTokens := delegateAmount
+
+	return projectedValidatorTokens.Quo(projectedTotalDelegatedTokens).Mul(sdk.NewDec(100))
+}
+
+// Returns the projected voting power as a percentage (not a fraction)
 func (min MinCommissionDecorator) CalculateDelegateProjectedVotingPower(ctx sdk.Context, validator stakingtypes.ValidatorI, delegateAmount sdk.Dec) sdk.Dec {
 	validatorTokens := sdk.NewDecFromInt(validator.GetTokens())
 	totalDelegatedTokens := sdk.NewDecFromInt(min.getTotalDelegatedTokens(ctx))
@@ -95,6 +105,12 @@ func (min MinCommissionDecorator) AnteHandle(
 			// commission set below 5%
 			if msg.Commission.Rate.LT(minCommissionRate) {
 				return sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "commission can't be lower than 5%")
+			}
+			projectedVotingPower := min.CalculateValidatorProjectedVotingPower(ctx, sdk.NewDecFromInt(msg.Value.Amount))
+			if projectedVotingPower.GTE(maxVotingPower) {
+				return sdkerrors.Wrapf(
+					sdkerrors.ErrInvalidRequest,
+					"This validator has a voting power of %s%%. Delegations not allowed to a validator whose post-delegation voting power is more than %s%%. Please delegate to a validator with less bonded tokens", projectedVotingPower, maxVotingPower)
 			}
 		case *stakingtypes.MsgEditValidator:
 			// if commission rate is nil, it means only
