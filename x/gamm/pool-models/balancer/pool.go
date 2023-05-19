@@ -596,6 +596,8 @@ func (p Pool) CalcOutAmtGivenIn(
 		if weightDistance.LT(p.PoolParams.ThresholdWeightDiff) && distanceDiff.IsNegative() {
 			weightBalanceBonus = p.PoolParams.WeightBreakingFeeMutliplier.Mul(distanceDiff).Abs()
 			// TODO: we might skip swap fee in case it's a balance recovery operation
+			// TODO: what if weightBalanceBonus amount is not enough since it's large swap? (Should provide maximum)
+			// TODO: weightBalanceBonus should maintain several tokens - not just USD and swap out amount is in that token
 		}
 		tokenAmountOutInt = oracleOutAmount.Sub(slippage).Mul(sdk.OneDec().Add(weightBalanceBonus).Sub(weightBreakingFee)).TruncateInt()
 	}
