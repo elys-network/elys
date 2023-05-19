@@ -62,6 +62,10 @@ func (min MinCommissionDecorator) getTotalDelegatedTokens(ctx sdk.Context) sdk.I
 // Returns the projected voting power as a percentage (not a fraction)
 func (min MinCommissionDecorator) CalculateValidatorProjectedVotingPower(ctx sdk.Context, delegateAmount sdk.Dec) sdk.Dec {
 	totalDelegatedTokens := sdk.NewDecFromInt(min.getTotalDelegatedTokens(ctx))
+	// If I am the first validator, then accept 100% voting power
+	if totalDelegatedTokens.LTE(sdk.ZeroDec()) {
+		return sdk.ZeroDec()
+	}
 
 	projectedTotalDelegatedTokens := totalDelegatedTokens.Add(delegateAmount)
 	projectedValidatorTokens := delegateAmount
