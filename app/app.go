@@ -131,6 +131,7 @@ import (
 	ammmodule "github.com/elys-network/elys/x/amm"
 	ammmodulekeeper "github.com/elys-network/elys/x/amm/keeper"
 	ammmoduletypes "github.com/elys-network/elys/x/amm/types"
+
 	// this line is used by starport scaffolding # stargate/app/moduleImport
 
 	appparams "github.com/elys-network/elys/app/params"
@@ -887,13 +888,18 @@ func NewElysApp(
 	app.SetInitChainer(app.InitChainer)
 	app.SetBeginBlocker(app.BeginBlocker)
 
-	anteHandler, err := ante.NewAnteHandler(
-		ante.HandlerOptions{
-			AccountKeeper:   app.AccountKeeper,
-			BankKeeper:      app.BankKeeper,
-			SignModeHandler: encodingConfig.TxConfig.SignModeHandler(),
-			FeegrantKeeper:  app.FeeGrantKeeper,
-			SigGasConsumer:  ante.DefaultSigVerificationGasConsumer,
+	anteHandler, err := NewAnteHandler(
+		HandlerOptions{
+			HandlerOptions: ante.HandlerOptions{
+				AccountKeeper:   app.AccountKeeper,
+				SignModeHandler: encodingConfig.TxConfig.SignModeHandler(),
+				FeegrantKeeper:  app.FeeGrantKeeper,
+				SigGasConsumer:  ante.DefaultSigVerificationGasConsumer,
+			},
+			StakingKeeper: app.StakingKeeper,
+			IBCKeeper:     app.IBCKeeper,
+			BankKeeper:    app.BankKeeper,
+			Cdc:           appCodec,
 		},
 	)
 	if err != nil {
