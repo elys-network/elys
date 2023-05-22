@@ -11,6 +11,7 @@ import (
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	ibcante "github.com/cosmos/ibc-go/v6/modules/core/ante"
 	ibckeeper "github.com/cosmos/ibc-go/v6/modules/core/keeper"
+	"github.com/elys-network/elys/app/params"
 )
 
 // HandlerOptions extends the SDK's AnteHandler options by requiring the IBC
@@ -52,7 +53,6 @@ func (min MinCommissionDecorator) getTotalDelegatedTokens(ctx sdk.Context) sdk.I
 	bondDenom := min.sk.BondDenom(ctx)
 	bondedPool := min.sk.GetBondedPool(ctx)
 	notBondedPool := min.sk.GetNotBondedPool(ctx)
-
 	notBondedAmount := min.bankkeeper.GetBalance(ctx, notBondedPool.GetAddress(), bondDenom).Amount
 	bondedAmount := min.bankkeeper.GetBalance(ctx, bondedPool.GetAddress(), bondDenom).Amount
 
@@ -77,7 +77,6 @@ func (min MinCommissionDecorator) CalculateValidatorProjectedVotingPower(ctx sdk
 func (min MinCommissionDecorator) CalculateDelegateProjectedVotingPower(ctx sdk.Context, validator stakingtypes.ValidatorI, delegateAmount sdk.Dec) sdk.Dec {
 	validatorTokens := sdk.NewDecFromInt(validator.GetTokens())
 	totalDelegatedTokens := sdk.NewDecFromInt(min.getTotalDelegatedTokens(ctx))
-
 	projectedTotalDelegatedTokens := totalDelegatedTokens.Add(delegateAmount)
 	projectedValidatorTokens := validatorTokens.Add(delegateAmount)
 
@@ -88,7 +87,6 @@ func (min MinCommissionDecorator) CalculateDelegateProjectedVotingPower(ctx sdk.
 func (min MinCommissionDecorator) CalculateRedelegateProjectedVotingPower(ctx sdk.Context, validator stakingtypes.ValidatorI, delegateAmount sdk.Dec) sdk.Dec {
 	validatorTokens := sdk.NewDecFromInt(validator.GetTokens())
 	projectedTotalDelegatedTokens := sdk.NewDecFromInt(min.getTotalDelegatedTokens(ctx)) // no additional delegated tokens
-
 	projectedValidatorTokens := validatorTokens.Add(delegateAmount)
 
 	return projectedValidatorTokens.Quo(projectedTotalDelegatedTokens).Mul(sdk.NewDec(100))
@@ -99,22 +97,19 @@ func (min MinCommissionDecorator) AnteHandle(
 	simulate bool, next sdk.AnteHandler,
 ) (newCtx sdk.Context, err error) {
 	msgs := tx.GetMsgs()
-	minCommissionRate := sdk.NewDecWithPrec(5, 2) // 5% as a fraction
-	maxVotingPower := sdk.NewDecWithPrec(66, 1)   // 6.6%
-
 	validMsg := func(m sdk.Msg) error {
 		switch msg := m.(type) {
 		case *stakingtypes.MsgCreateValidator:
 			// prevent new validators joining the set with
 			// commission set below 5%
-			if msg.Commission.Rate.LT(minCommissionRate) {
+			if msg.Commission.Rate.LT(params.MinCommissionRate) {
 				return sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "commission can't be lower than 5%")
 			}
 			projectedVotingPower := min.CalculateValidatorProjectedVotingPower(ctx, sdk.NewDecFromInt(msg.Value.Amount))
-			if projectedVotingPower.GTE(maxVotingPower) {
+			if projectedVotingPower.GTE(params.MaxVotingPower) {
 				return sdkerrors.Wrapf(
 					sdkerrors.ErrInvalidRequest,
-					"This validator has a voting power of %s%%. Delegations not allowed to a validator whose post-delegation voting power is more than %s%%. Please delegate to a validator with less bonded tokens", projectedVotingPower, maxVotingPower)
+					"This validator has a voting power of %s%%. Delegations not allowed to a validator whose post-delegation voting power is more than %s%%. Please delegate to a validator with less bonded tokens", projectedVotingPower, params.MaxVotingPower)
 			}
 		case *stakingtypes.MsgEditValidator:
 			// if commission rate is nil, it means only
@@ -122,7 +117,7 @@ func (min MinCommissionDecorator) AnteHandle(
 			if msg.CommissionRate == nil {
 				break
 			}
-			if msg.CommissionRate.LT(minCommissionRate) {
+			if msg.CommissionRate.LT(params.MinCommissionRate) {
 				return sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "commission can't be lower than 5%")
 			}
 		case *stakingtypes.MsgDelegate:
@@ -132,10 +127,10 @@ func (min MinCommissionDecorator) AnteHandle(
 			}
 
 			projectedVotingPower := min.CalculateDelegateProjectedVotingPower(ctx, val, sdk.NewDecFromInt(msg.Amount.Amount))
-			if projectedVotingPower.GTE(maxVotingPower) {
+			if projectedVotingPower.GTE(params.MaxVotingPower) {
 				return sdkerrors.Wrapf(
 					sdkerrors.ErrInvalidRequest,
-					"This validator has a voting power of %s%%. Delegations not allowed to a validator whose post-delegation voting power is more than %s%%. Please delegate to a validator with less bonded tokens", projectedVotingPower, maxVotingPower)
+					"This validator has a voting power of %s%%. Delegations not allowed to a validator whose post-delegation voting power is more than %s%%. Please delegate to a validator with less bonded tokens", projectedVotingPower, params.MaxVotingPower)
 			}
 		case *stakingtypes.MsgBeginRedelegate:
 			dstVal, err := min.getValidator(ctx, msg.ValidatorDstAddress)
@@ -153,10 +148,10 @@ func (min MinCommissionDecorator) AnteHandle(
 			}
 
 			projectedVotingPower := min.CalculateRedelegateProjectedVotingPower(ctx, dstVal, delegateAmount)
-			if projectedVotingPower.GTE(maxVotingPower) {
+			if projectedVotingPower.GTE(params.MaxVotingPower) {
 				return sdkerrors.Wrapf(
 					sdkerrors.ErrInvalidRequest,
-					"This validator has a voting power of %s%%. Delegations not allowed to a validator whose post-delegation voting power is more than %s%%. Please redelegate to a validator with less bonded tokens", projectedVotingPower, maxVotingPower)
+					"This validator has a voting power of %s%%. Delegations not allowed to a validator whose post-delegation voting power is more than %s%%. Please redelegate to a validator with less bonded tokens", projectedVotingPower, params.MaxVotingPower)
 			}
 		}
 
