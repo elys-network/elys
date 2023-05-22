@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	"strconv"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/amm/types"
@@ -15,22 +16,22 @@ func (k msgServer) CreatePool(goCtx context.Context, msg *types.MsgCreatePool) (
 
 	_ = ctx
 
-	// poolId, err = k.Keeper.CreatePool(ctx, msg)
-	// if err != nil {
-	// 	return 0, err
-	// }
+	poolId, err := k.Keeper.CreatePool(ctx, msg)
+	if err != nil {
+		return &types.MsgCreatePoolResponse{}, err
+	}
 
-	// ctx.EventManager().EmitEvents(sdk.Events{
-	// 	sdk.NewEvent(
-	// 		types.TypeEvtPoolCreated,
-	// 		sdk.NewAttribute(types.AttributeKeyPoolId, strconv.FormatUint(poolId, 10)),
-	// 	),
-	// 	sdk.NewEvent(
-	// 		sdk.EventTypeMessage,
-	// 		sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
-	// 		sdk.NewAttribute(sdk.AttributeKeySender, msg.PoolCreator().String()),
-	// 	),
-	// })
+	ctx.EventManager().EmitEvents(sdk.Events{
+		sdk.NewEvent(
+			types.TypeEvtPoolCreated,
+			sdk.NewAttribute(types.AttributeKeyPoolId, strconv.FormatUint(poolId, 10)),
+		),
+		sdk.NewEvent(
+			sdk.EventTypeMessage,
+			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
+			sdk.NewAttribute(sdk.AttributeKeySender, msg.GetSigners()[0].String()),
+		),
+	})
 
 	return &types.MsgCreatePoolResponse{
 		PoolID: /*poolId*/ 0,

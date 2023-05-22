@@ -678,6 +678,12 @@ func NewElysApp(
 		),
 	)
 
+	app.AmmKeeper.SetHooks(
+		ammmoduletypes.NewMultiAmmHooks(
+		// insert amm hooks receivers here
+		),
+	)
+
 	app.EpochsKeeper = *app.EpochsKeeper.SetHooks(
 		epochsmodulekeeper.NewMultiEpochHooks(
 			// insert epoch hooks receivers here

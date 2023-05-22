@@ -8,7 +8,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/tx"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/amm/types"
-	"github.com/spf13/cast"
 	"github.com/spf13/cobra"
 )
 
@@ -28,11 +27,11 @@ func CmdCreatePool() *cobra.Command {
 			if err != nil {
 				return err
 			}
-			argSwapFee, err := cast.ToUint64E(args[2])
+			argSwapFee, err := sdk.NewDecFromStr(args[2])
 			if err != nil {
 				return err
 			}
-			argExitFee, err := cast.ToUint64E(args[3])
+			argExitFee, err := sdk.NewDecFromStr(args[3])
 			if err != nil {
 				return err
 			}

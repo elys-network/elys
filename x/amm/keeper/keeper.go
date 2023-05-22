@@ -18,6 +18,7 @@ type (
 		storeKey   storetypes.StoreKey
 		memKey     storetypes.StoreKey
 		paramstore paramtypes.Subspace
+		hooks      types.AmmHooks
 
 		bankKeeper    types.BankKeeper
 		accountKeeper types.AccountKeeper
@@ -51,4 +52,15 @@ func NewKeeper(
 
 func (k Keeper) Logger(ctx sdk.Context) log.Logger {
 	return ctx.Logger().With("module", fmt.Sprintf("x/%s", types.ModuleName))
+}
+
+// Set the gamm hooks.
+func (k *Keeper) SetHooks(gh types.AmmHooks) *Keeper {
+	if k.hooks != nil {
+		panic("cannot set amm hooks twice")
+	}
+
+	k.hooks = gh
+
+	return k
 }
