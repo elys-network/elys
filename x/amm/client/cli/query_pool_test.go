@@ -7,6 +7,7 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	clitestutil "github.com/cosmos/cosmos-sdk/testutil/cli"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
 	tmcli "github.com/tendermint/tendermint/libs/cli"
 	"google.golang.org/grpc/codes"
@@ -29,7 +30,8 @@ func networkWithPoolObjects(t *testing.T, n int) (*network.Network, []types.Pool
 
 	for i := 0; i < n; i++ {
 		pool := types.Pool{
-			PoolId: uint64(i),
+			PoolId:      uint64(i),
+			TotalWeight: sdk.NewInt(100),
 		}
 		nullify.Fill(&pool)
 		state.PoolList = append(state.PoolList, pool)
