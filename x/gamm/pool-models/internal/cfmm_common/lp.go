@@ -56,7 +56,12 @@ func CalcExitPool(ctx sdk.Context, pool types.CFMMPoolI, exitingShares sdk.Int, 
 
 		updatedPool := pool
 		for i, asset := range updatedPool.PoolAssets {
-			updatedPool.PoolAssets[i].Token.Amount = asset.Token.Amount.Add(tokensIn.AmountOf(asset.Token.Denom))
+			if asset.Token.Denom == tokenOutDenom {
+				updatedPool.PoolAssets[i].Token.Amount = asset.Token.Amount.Sub(tokenOutAmount)
+				if updatedPool.PoolAssets[i].Token.Amount.IsNegative() {
+					return sdk.Coins{}, fmt.Errorf("out amount exceed liquidity balance")
+				}
+			}
 		}
 		weightDistance := updatedPool.WeightDistanceFromTarget()
 		distanceDiff := weightDistance.Sub(initialWeightDistance)
