@@ -1,13 +1,10 @@
 syntax = "proto3";
 package elysnetwork.elys.amm;
 
-import "elys/amm/smooth_weight_change_params.proto";
-
 option go_package = "github.com/elys-network/elys/x/amm/types";
 
 message PoolParams {
   
   uint64 swapFee = 1; 
   uint64 exitFee = 2; 
-  SmoothWeightChangeParams smoothWeightChangeParams = 3; 
 }

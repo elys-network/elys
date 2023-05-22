@@ -32640,12 +32640,6 @@ paths:
                       format: uint64
                     address:
                       type: string
-                    poolType:
-                      type: string
-                      enum:
-                        - STABLE_SWAP
-                        - BALANCER
-                      default: STABLE_SWAP
                     poolParams:
                       type: object
                       properties:
@@ -32655,62 +32649,6 @@ paths:
                         exitFee:
                           type: string
                           format: uint64
-                        smoothWeightChangeParams:
-                          type: object
-                          properties:
-                            startTime:
-                              type: string
-                              format: date-time
-                            duration:
-                              type: string
-                            initialPoolWeights:
-                              type: array
-                              items:
-                                type: object
-                                properties:
-                                  token:
-                                    type: object
-                                    properties:
-                                      denom:
-                                        type: string
-                                      amount:
-                                        type: string
-                                    description: >-
-                                      Coin defines a token with a denomination
-                                      and an amount.
-
-
-                                      NOTE: The amount field is an Int which
-                                      implements the custom method
-
-                                      signatures required by gogoproto.
-                                  weight:
-                                    type: string
-                            targetPoolWeights:
-                              type: array
-                              items:
-                                type: object
-                                properties:
-                                  token:
-                                    type: object
-                                    properties:
-                                      denom:
-                                        type: string
-                                      amount:
-                                        type: string
-                                    description: >-
-                                      Coin defines a token with a denomination
-                                      and an amount.
-
-
-                                      NOTE: The amount field is an Int which
-                                      implements the custom method
-
-                                      signatures required by gogoproto.
-                                  weight:
-                                    type: string
-                    futurePoolGovernor:
-                      type: string
                     totalShares:
                       type: object
                       properties:
@@ -32748,31 +32686,6 @@ paths:
                         weight:
                           type: string
                     totalWeight:
-                      type: string
-                    poolLiquidity:
-                      type: array
-                      items:
-                        type: object
-                        properties:
-                          denom:
-                            type: string
-                          amount:
-                            type: string
-                        description: >-
-                          Coin defines a token with a denomination and an
-                          amount.
-
-
-                          NOTE: The amount field is an Int which implements the
-                          custom method
-
-                          signatures required by gogoproto.
-                    scalingFactors:
-                      type: array
-                      items:
-                        type: string
-                        format: uint64
-                    scalingFactorController:
                       type: string
               pagination:
                 type: object
@@ -32897,12 +32810,6 @@ paths:
                     format: uint64
                   address:
                     type: string
-                  poolType:
-                    type: string
-                    enum:
-                      - STABLE_SWAP
-                      - BALANCER
-                    default: STABLE_SWAP
                   poolParams:
                     type: object
                     properties:
@@ -32912,62 +32819,6 @@ paths:
                       exitFee:
                         type: string
                         format: uint64
-                      smoothWeightChangeParams:
-                        type: object
-                        properties:
-                          startTime:
-                            type: string
-                            format: date-time
-                          duration:
-                            type: string
-                          initialPoolWeights:
-                            type: array
-                            items:
-                              type: object
-                              properties:
-                                token:
-                                  type: object
-                                  properties:
-                                    denom:
-                                      type: string
-                                    amount:
-                                      type: string
-                                  description: >-
-                                    Coin defines a token with a denomination and
-                                    an amount.
-
-
-                                    NOTE: The amount field is an Int which
-                                    implements the custom method
-
-                                    signatures required by gogoproto.
-                                weight:
-                                  type: string
-                          targetPoolWeights:
-                            type: array
-                            items:
-                              type: object
-                              properties:
-                                token:
-                                  type: object
-                                  properties:
-                                    denom:
-                                      type: string
-                                    amount:
-                                      type: string
-                                  description: >-
-                                    Coin defines a token with a denomination and
-                                    an amount.
-
-
-                                    NOTE: The amount field is an Int which
-                                    implements the custom method
-
-                                    signatures required by gogoproto.
-                                weight:
-                                  type: string
-                  futurePoolGovernor:
-                    type: string
                   totalShares:
                     type: object
                     properties:
@@ -33005,30 +32856,6 @@ paths:
                       weight:
                         type: string
                   totalWeight:
-                    type: string
-                  poolLiquidity:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        denom:
-                          type: string
-                        amount:
-                          type: string
-                      description: >-
-                        Coin defines a token with a denomination and an amount.
-
-
-                        NOTE: The amount field is an Int which implements the
-                        custom method
-
-                        signatures required by gogoproto.
-                  scalingFactors:
-                    type: array
-                    items:
-                      type: string
-                      format: uint64
-                  scalingFactorController:
                     type: string
         default:
           description: An unexpected error response.
@@ -69855,12 +69682,6 @@ definitions:
     type: object
   elysnetwork.elys.amm.MsgJoinPoolResponse:
     type: object
-  elysnetwork.elys.amm.POOL_TYPE:
-    type: string
-    enum:
-      - STABLE_SWAP
-      - BALANCER
-    default: STABLE_SWAP
   elysnetwork.elys.amm.Params:
     type: object
     properties:
@@ -69876,12 +69697,6 @@ definitions:
         format: uint64
       address:
         type: string
-      poolType:
-        type: string
-        enum:
-          - STABLE_SWAP
-          - BALANCER
-        default: STABLE_SWAP
       poolParams:
         type: object
         properties:
@@ -69891,60 +69706,6 @@ definitions:
           exitFee:
             type: string
             format: uint64
-          smoothWeightChangeParams:
-            type: object
-            properties:
-              startTime:
-                type: string
-                format: date-time
-              duration:
-                type: string
-              initialPoolWeights:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    token:
-                      type: object
-                      properties:
-                        denom:
-                          type: string
-                        amount:
-                          type: string
-                      description: >-
-                        Coin defines a token with a denomination and an amount.
-
-
-                        NOTE: The amount field is an Int which implements the
-                        custom method
-
-                        signatures required by gogoproto.
-                    weight:
-                      type: string
-              targetPoolWeights:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    token:
-                      type: object
-                      properties:
-                        denom:
-                          type: string
-                        amount:
-                          type: string
-                      description: >-
-                        Coin defines a token with a denomination and an amount.
-
-
-                        NOTE: The amount field is an Int which implements the
-                        custom method
-
-                        signatures required by gogoproto.
-                    weight:
-                      type: string
-      futurePoolGovernor:
-        type: string
       totalShares:
         type: object
         properties:
@@ -69979,27 +69740,6 @@ definitions:
             type: string
       totalWeight:
         type: string
-      poolLiquidity:
-        type: array
-        items:
-          type: object
-          properties:
-            denom:
-              type: string
-            amount:
-              type: string
-          description: |-
-            Coin defines a token with a denomination and an amount.
-
-            NOTE: The amount field is an Int which implements the custom method
-            signatures required by gogoproto.
-      scalingFactors:
-        type: array
-        items:
-          type: string
-          format: uint64
-      scalingFactorController:
-        type: string
   elysnetwork.elys.amm.PoolAsset:
     type: object
     properties:
@@ -70026,58 +69766,6 @@ definitions:
       exitFee:
         type: string
         format: uint64
-      smoothWeightChangeParams:
-        type: object
-        properties:
-          startTime:
-            type: string
-            format: date-time
-          duration:
-            type: string
-          initialPoolWeights:
-            type: array
-            items:
-              type: object
-              properties:
-                token:
-                  type: object
-                  properties:
-                    denom:
-                      type: string
-                    amount:
-                      type: string
-                  description: >-
-                    Coin defines a token with a denomination and an amount.
-
-
-                    NOTE: The amount field is an Int which implements the custom
-                    method
-
-                    signatures required by gogoproto.
-                weight:
-                  type: string
-          targetPoolWeights:
-            type: array
-            items:
-              type: object
-              properties:
-                token:
-                  type: object
-                  properties:
-                    denom:
-                      type: string
-                    amount:
-                      type: string
-                  description: >-
-                    Coin defines a token with a denomination and an amount.
-
-
-                    NOTE: The amount field is an Int which implements the custom
-                    method
-
-                    signatures required by gogoproto.
-                weight:
-                  type: string
   elysnetwork.elys.amm.QueryAllPoolResponse:
     type: object
     properties:
@@ -70091,12 +69779,6 @@ definitions:
               format: uint64
             address:
               type: string
-            poolType:
-              type: string
-              enum:
-                - STABLE_SWAP
-                - BALANCER
-              default: STABLE_SWAP
             poolParams:
               type: object
               properties:
@@ -70106,62 +69788,6 @@ definitions:
                 exitFee:
                   type: string
                   format: uint64
-                smoothWeightChangeParams:
-                  type: object
-                  properties:
-                    startTime:
-                      type: string
-                      format: date-time
-                    duration:
-                      type: string
-                    initialPoolWeights:
-                      type: array
-                      items:
-                        type: object
-                        properties:
-                          token:
-                            type: object
-                            properties:
-                              denom:
-                                type: string
-                              amount:
-                                type: string
-                            description: >-
-                              Coin defines a token with a denomination and an
-                              amount.
-
-
-                              NOTE: The amount field is an Int which implements
-                              the custom method
-
-                              signatures required by gogoproto.
-                          weight:
-                            type: string
-                    targetPoolWeights:
-                      type: array
-                      items:
-                        type: object
-                        properties:
-                          token:
-                            type: object
-                            properties:
-                              denom:
-                                type: string
-                              amount:
-                                type: string
-                            description: >-
-                              Coin defines a token with a denomination and an
-                              amount.
-
-
-                              NOTE: The amount field is an Int which implements
-                              the custom method
-
-                              signatures required by gogoproto.
-                          weight:
-                            type: string
-            futurePoolGovernor:
-              type: string
             totalShares:
               type: object
               properties:
@@ -70198,30 +69824,6 @@ definitions:
                 weight:
                   type: string
             totalWeight:
-              type: string
-            poolLiquidity:
-              type: array
-              items:
-                type: object
-                properties:
-                  denom:
-                    type: string
-                  amount:
-                    type: string
-                description: >-
-                  Coin defines a token with a denomination and an amount.
-
-
-                  NOTE: The amount field is an Int which implements the custom
-                  method
-
-                  signatures required by gogoproto.
-            scalingFactors:
-              type: array
-              items:
-                type: string
-                format: uint64
-            scalingFactorController:
               type: string
       pagination:
         type: object
@@ -70260,12 +69862,6 @@ definitions:
             format: uint64
           address:
             type: string
-          poolType:
-            type: string
-            enum:
-              - STABLE_SWAP
-              - BALANCER
-            default: STABLE_SWAP
           poolParams:
             type: object
             properties:
@@ -70275,62 +69871,6 @@ definitions:
               exitFee:
                 type: string
                 format: uint64
-              smoothWeightChangeParams:
-                type: object
-                properties:
-                  startTime:
-                    type: string
-                    format: date-time
-                  duration:
-                    type: string
-                  initialPoolWeights:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        token:
-                          type: object
-                          properties:
-                            denom:
-                              type: string
-                            amount:
-                              type: string
-                          description: >-
-                            Coin defines a token with a denomination and an
-                            amount.
-
-
-                            NOTE: The amount field is an Int which implements
-                            the custom method
-
-                            signatures required by gogoproto.
-                        weight:
-                          type: string
-                  targetPoolWeights:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        token:
-                          type: object
-                          properties:
-                            denom:
-                              type: string
-                            amount:
-                              type: string
-                          description: >-
-                            Coin defines a token with a denomination and an
-                            amount.
-
-
-                            NOTE: The amount field is an Int which implements
-                            the custom method
-
-                            signatures required by gogoproto.
-                        weight:
-                          type: string
-          futurePoolGovernor:
-            type: string
           totalShares:
             type: object
             properties:
@@ -70368,30 +69908,6 @@ definitions:
                 type: string
           totalWeight:
             type: string
-          poolLiquidity:
-            type: array
-            items:
-              type: object
-              properties:
-                denom:
-                  type: string
-                amount:
-                  type: string
-              description: >-
-                Coin defines a token with a denomination and an amount.
-
-
-                NOTE: The amount field is an Int which implements the custom
-                method
-
-                signatures required by gogoproto.
-          scalingFactors:
-            type: array
-            items:
-              type: string
-              format: uint64
-          scalingFactorController:
-            type: string
   elysnetwork.elys.amm.QueryParamsResponse:
     type: object
     properties:
@@ -70403,58 +69919,6 @@ definitions:
             type: string
             format: uint64
     description: QueryParamsResponse is response type for the Query/Params RPC method.
-  elysnetwork.elys.amm.SmoothWeightChangeParams:
-    type: object
-    properties:
-      startTime:
-        type: string
-        format: date-time
-      duration:
-        type: string
-      initialPoolWeights:
-        type: array
-        items:
-          type: object
-          properties:
-            token:
-              type: object
-              properties:
-                denom:
-                  type: string
-                amount:
-                  type: string
-              description: >-
-                Coin defines a token with a denomination and an amount.
-
-
-                NOTE: The amount field is an Int which implements the custom
-                method
-
-                signatures required by gogoproto.
-            weight:
-              type: string
-      targetPoolWeights:
-        type: array
-        items:
-          type: object
-          properties:
-            token:
-              type: object
-              properties:
-                denom:
-                  type: string
-                amount:
-                  type: string
-              description: >-
-                Coin defines a token with a denomination and an amount.
-
-
-                NOTE: The amount field is an Int which implements the custom
-                method
-
-                signatures required by gogoproto.
-            weight:
-              type: string
   elysnetwork.elys.assetprofile.Entry:
     type: object
     properties:
