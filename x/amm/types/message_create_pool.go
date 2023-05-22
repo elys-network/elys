@@ -9,15 +9,13 @@ const TypeMsgCreatePool = "create_pool"
 
 var _ sdk.Msg = &MsgCreatePool{}
 
-func NewMsgCreatePool(creator string, weights sdk.Coins, initialDeposit sdk.Coins, swapFee uint64, exitFee uint64, futureGovernor string, scallingFactors []uint64) *MsgCreatePool {
+func NewMsgCreatePool(creator string, weights sdk.Coins, initialDeposit sdk.Coins, swapFee uint64, exitFee uint64) *MsgCreatePool {
 	return &MsgCreatePool{
-		Creator:         creator,
-		Weights:         weights,
-		InitialDeposit:  initialDeposit,
-		SwapFee:         swapFee,
-		ExitFee:         exitFee,
-		FutureGovernor:  futureGovernor,
-		ScallingFactors: scallingFactors,
+		Creator:        creator,
+		Weights:        weights,
+		InitialDeposit: initialDeposit,
+		SwapFee:        swapFee,
+		ExitFee:        exitFee,
 	}
 }
 

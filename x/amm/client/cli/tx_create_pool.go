@@ -10,14 +10,13 @@ import (
 	"github.com/elys-network/elys/x/amm/types"
 	"github.com/spf13/cast"
 	"github.com/spf13/cobra"
-	"strings"
 )
 
 var _ = strconv.Itoa(0)
 
 func CmdCreatePool() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "create-pool [weights] [initial-deposit] [swap-fee] [exit-fee] [future-governor] [scalling-factors]",
+		Use:   "create-pool [weights] [initial-deposit] [swap-fee] [exit-fee]",
 		Short: "create a new pool and provide the liquidity to it",
 		Args:  cobra.ExactArgs(6),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
@@ -37,16 +36,6 @@ func CmdCreatePool() *cobra.Command {
 			if err != nil {
 				return err
 			}
-			argFutureGovernor := args[4]
-			argCastScallingFactors := strings.Split(args[5], listSeparator)
-			argScallingFactors := make([]uint64, len(argCastScallingFactors))
-			for i, arg := range argCastScallingFactors {
-				value, err := cast.ToUint64E(arg)
-				if err != nil {
-					return err
-				}
-				argScallingFactors[i] = value
-			}
 
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
@@ -59,8 +48,6 @@ func CmdCreatePool() *cobra.Command {
 				argInitialDeposit,
 				argSwapFee,
 				argExitFee,
-				argFutureGovernor,
-				argScallingFactors,
 			)
 			if err := msg.ValidateBasic(); err != nil {
 				return err

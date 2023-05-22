@@ -7,23 +7,13 @@ import "elys/amm/pool_asset.proto";
 import "gogoproto/gogo.proto"; 
 import "cosmos/base/v1beta1/coin.proto"; 
 
-enum POOL_TYPE {
-  STABLE_SWAP = 0;
-  BALANCER = 1;  
-}
-
 message Pool {
   uint64 poolId = 1; 
   string address = 2; 
-  POOL_TYPE poolType = 3; 
-  PoolParams poolParams = 4; 
-  string futurePoolGovernor = 5; 
-  cosmos.base.v1beta1.Coin totalShares = 6 [(gogoproto.nullable) = false]; 
-  PoolAsset poolAssets = 7; 
-  string totalWeight = 8; 
-  repeated cosmos.base.v1beta1.Coin poolLiquidity = 9 [(gogoproto.nullable) = false]; 
-  repeated uint64 scalingFactors = 10; 
-  string scalingFactorController = 11; 
+  PoolParams poolParams = 3; 
+  cosmos.base.v1beta1.Coin totalShares = 4 [(gogoproto.nullable) = false]; 
+  PoolAsset poolAssets = 5; 
+  string totalWeight = 6; 
   
 }
 
