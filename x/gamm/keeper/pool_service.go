@@ -298,6 +298,7 @@ func (k Keeper) ExitPool(
 	poolId uint64,
 	shareInAmount sdk.Int,
 	tokenOutMins sdk.Coins,
+	tokenOutDenom string,
 ) (exitCoins sdk.Coins, err error) {
 	pool, err := k.GetPoolAndPoke(ctx, poolId)
 	if err != nil {
@@ -311,7 +312,7 @@ func (k Keeper) ExitPool(
 		return sdk.Coins{}, sdkerrors.Wrapf(types.ErrInvalidMathApprox, "Trying to exit a negative amount of shares")
 	}
 	exitFee := pool.GetExitFee(ctx)
-	exitCoins, err = pool.ExitPool(ctx, shareInAmount, exitFee)
+	exitCoins, err = pool.ExitPool(ctx, shareInAmount, tokenOutDenom, exitFee)
 	if err != nil {
 		return sdk.Coins{}, err
 	}

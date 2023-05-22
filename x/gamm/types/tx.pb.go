@@ -8,10 +8,10 @@ import (
 	fmt "fmt"
 	github_com_cosmos_cosmos_sdk_types "github.com/cosmos/cosmos-sdk/types"
 	types "github.com/cosmos/cosmos-sdk/types"
+	types1 "github.com/elys-network/elys/x/poolmanager/types"
 	_ "github.com/gogo/protobuf/gogoproto"
 	grpc1 "github.com/gogo/protobuf/grpc"
 	proto "github.com/gogo/protobuf/proto"
-	types1 "github.com/elys-network/elys/x/poolmanager/types"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
@@ -145,6 +145,7 @@ type MsgExitPool struct {
 	PoolId        uint64                                 `protobuf:"varint,2,opt,name=pool_id,json=poolId,proto3" json:"pool_id,omitempty" yaml:"pool_id"`
 	ShareInAmount github_com_cosmos_cosmos_sdk_types.Int `protobuf:"bytes,3,opt,name=share_in_amount,json=shareInAmount,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"share_in_amount" yaml:"share_in_amount"`
 	TokenOutMins  []types.Coin                           `protobuf:"bytes,4,rep,name=token_out_mins,json=tokenOutMins,proto3" json:"token_out_mins" yaml:"token_out_min_amounts"`
+	TokenOutDenom string                                 // not empty when exit with one token
 }
 
 func (m *MsgExitPool) Reset()         { *m = MsgExitPool{} }

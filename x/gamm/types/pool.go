@@ -29,7 +29,7 @@ type CFMMPoolI interface {
 	// ExitPool exits #numShares LP shares from the pool, decreases its internal liquidity & LP share totals,
 	// and returns the number of coins that are being returned.
 	// This mutates the pool and state.
-	ExitPool(ctx sdk.Context, numShares sdk.Int, exitFee sdk.Dec) (exitedCoins sdk.Coins, err error)
+	ExitPool(ctx sdk.Context, numShares sdk.Int, tokenOutDenom string, exitFee sdk.Dec) (exitedCoins sdk.Coins, err error)
 	// CalcJoinPoolNoSwapShares returns how many LP shares JoinPoolNoSwap would return on these arguments.
 	// This does not mutate the pool, or state.
 	CalcJoinPoolNoSwapShares(ctx sdk.Context, tokensIn sdk.Coins, swapFee sdk.Dec) (numShares sdk.Int, newLiquidity sdk.Coins, err error)

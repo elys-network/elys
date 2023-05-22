@@ -61,11 +61,11 @@ message MsgExitPool {
     (gogoproto.moretags) = "yaml:\"share_in_amount\"",
     (gogoproto.nullable) = false
   ];
-
   repeated cosmos.base.v1beta1.Coin token_out_mins = 4 [
     (gogoproto.moretags) = "yaml:\"token_out_min_amounts\"",
     (gogoproto.nullable) = false
   ];
+  string token_out_denom = 5; // not empty when exit with one token
 }
 
 message MsgExitPoolResponse {

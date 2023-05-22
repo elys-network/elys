@@ -2,18 +2,20 @@ package cfmm_common
 
 import (
 	"errors"
+	"fmt"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
 	"github.com/elys-network/elys/osmomath"
 	"github.com/elys-network/elys/x/gamm/types"
+	oraclekeeper "github.com/elys-network/elys/x/oracle/keeper"
 )
 
 const errMsgFormatSharesLargerThanMax = "%s resulted shares is larger than the max amount of %s"
 
 // CalcExitPool returns how many tokens should come out, when exiting k LP shares against a "standard" CFMM
-func CalcExitPool(ctx sdk.Context, pool types.CFMMPoolI, exitingShares sdk.Int, exitFee sdk.Dec) (sdk.Coins, error) {
+func CalcExitPool(ctx sdk.Context, pool types.CFMMPoolI, exitingShares sdk.Int, tokenOutDenom string, exitFee sdk.Dec) (sdk.Coins, error) {
 	totalShares := pool.GetTotalShares()
 	if exitingShares.GTE(totalShares) {
 		return sdk.Coins{}, sdkerrors.Wrapf(types.ErrLimitMaxAmount, errMsgFormatSharesLargerThanMax, exitingShares, totalShares)
@@ -34,6 +36,36 @@ func CalcExitPool(ctx sdk.Context, pool types.CFMMPoolI, exitingShares sdk.Int, 
 	// exitedCoins = shareOutRatio * pool liquidity
 	exitedCoins := sdk.Coins{}
 	poolLiquidity := pool.GetTotalPoolLiquidity(ctx)
+
+	if pool.PoolParams.UseOracle && tokenOutDenom != "" {
+		oracle := oraclekeeper.Keeper{}
+
+		initialWeightDistance := pool.WeightDistanceFromTarget()
+		tvl := sdk.ZeroDec()
+		for _, asset := range poolLiquidity {
+			tokenPrice := oracle.GetAssetPriceFromDenom(ctx, asset.Denom)
+			if tokenPrice.IsZero() {
+				return sdk.Coins{}, fmt.Errorf("price for token not set: %s", asset.Denom)
+			}
+			v := tokenPrice.Mul(asset.Amount.ToDec())
+			tvl = tvl.Add(v)
+		}
+
+		tokenPrice := oracle.GetAssetPriceFromDenom(ctx, tokenOutDenom)
+		tokenOutAmount := tvl.Mul(refundedShares).Quo(totalShares).Quo(tokenPrice)
+
+		updatedPool := pool
+		for i, asset := range updatedPool.PoolAssets {
+			updatedPool.PoolAssets[i].Token.Amount = asset.Token.Amount.Add(tokensIn.AmountOf(asset.Token.Denom))
+		}
+		weightDistance := updatedPool.WeightDistanceFromTarget()
+		distanceDiff := weightDistance.Sub(initialWeightDistance)
+		weightBreakingFee := sdk.ZeroDec()
+		if distanceDiff.IsPositive() {
+			weightBreakingFee = pool.PoolParams.WeightBreakingFeeMutliplier.Mul(distanceDiff)
+		}
+		return sdk.Coins{sdk.NewCoin(tokenOutDenom, tokenOutAmount.Mul(sdk.OneDec().Sub(weightBreakingFee)).RoundInt())}, nil
+	}
 
 	for _, asset := range poolLiquidity {
 		// round down here, due to not wanting to over-exit
