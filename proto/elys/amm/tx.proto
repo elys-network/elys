@@ -17,8 +17,16 @@ message MsgCreatePool {
            string                   creator         = 1;
   repeated cosmos.base.v1beta1.Coin weights         = 2 [(gogoproto.nullable) = false];
   repeated cosmos.base.v1beta1.Coin initialDeposit  = 3 [(gogoproto.nullable) = false];
-           uint64                   swapFee         = 4;
-           uint64                   exitFee         = 5;
+           string                   swapFee         = 4 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.moretags) = "yaml:\"swap_fee\"",
+    (gogoproto.nullable) = false
+  ];
+           string                   exitFee         = 5 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.moretags) = "yaml:\"swap_fee\"",
+    (gogoproto.nullable) = false
+  ];
 }
 
 message MsgCreatePoolResponse {

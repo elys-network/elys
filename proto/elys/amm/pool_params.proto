@@ -1,10 +1,21 @@
 syntax = "proto3";
 package elysnetwork.elys.amm;
 
+import "gogoproto/gogo.proto"; 
+import "cosmos_proto/cosmos.proto";
+
 option go_package = "github.com/elys-network/elys/x/amm/types";
 
 message PoolParams {
   
-  uint64 swapFee = 1; 
-  uint64 exitFee = 2; 
+  string swapFee = 1 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.moretags) = "yaml:\"swap_fee\"",
+    (gogoproto.nullable) = false
+  ];
+  string exitFee = 2 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.moretags) = "yaml:\"exit_fee\"",
+    (gogoproto.nullable) = false
+  ];
 }

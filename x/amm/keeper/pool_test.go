@@ -19,6 +19,7 @@ func createNPool(keeper *keeper.Keeper, ctx sdk.Context, n int) []types.Pool {
 	items := make([]types.Pool, n)
 	for i := range items {
 		items[i].PoolId = uint64(i)
+		items[i].TotalWeight = sdk.NewInt(100)
 
 		keeper.SetPool(ctx, items[i])
 	}

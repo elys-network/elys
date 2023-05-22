@@ -8,5 +8,10 @@ import (
 
 // x/amm module sentinel errors
 var (
-	ErrSample = sdkerrors.Register(ModuleName, 1100, "sample error")
+	ErrInvalidPool = sdkerrors.Register(ModuleName, 10, "attempting to create an invalid pool")
+
+	ErrNegativeSwapFee = sdkerrors.Register(ModuleName, 23, "swap fee is negative")
+	ErrNegativeExitFee = sdkerrors.Register(ModuleName, 24, "exit fee is negative")
+	ErrTooMuchSwapFee  = sdkerrors.Register(ModuleName, 25, "swap fee should be lesser than 1 (100%)")
+	ErrTooMuchExitFee  = sdkerrors.Register(ModuleName, 26, "exit fee should be lesser than 1 (100%)")
 )

@@ -32645,10 +32645,8 @@ paths:
                       properties:
                         swapFee:
                           type: string
-                          format: uint64
                         exitFee:
                           type: string
-                          format: uint64
                     totalShares:
                       type: object
                       properties:
@@ -32665,26 +32663,28 @@ paths:
 
                         signatures required by gogoproto.
                     poolAssets:
-                      type: object
-                      properties:
-                        token:
-                          type: object
-                          properties:
-                            denom:
-                              type: string
-                            amount:
-                              type: string
-                          description: >-
-                            Coin defines a token with a denomination and an
-                            amount.
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          token:
+                            type: object
+                            properties:
+                              denom:
+                                type: string
+                              amount:
+                                type: string
+                            description: >-
+                              Coin defines a token with a denomination and an
+                              amount.
 
 
-                            NOTE: The amount field is an Int which implements
-                            the custom method
+                              NOTE: The amount field is an Int which implements
+                              the custom method
 
-                            signatures required by gogoproto.
-                        weight:
-                          type: string
+                              signatures required by gogoproto.
+                          weight:
+                            type: string
                     totalWeight:
                       type: string
               pagination:
@@ -32815,10 +32815,8 @@ paths:
                     properties:
                       swapFee:
                         type: string
-                        format: uint64
                       exitFee:
                         type: string
-                        format: uint64
                   totalShares:
                     type: object
                     properties:
@@ -32835,26 +32833,28 @@ paths:
 
                       signatures required by gogoproto.
                   poolAssets:
-                    type: object
-                    properties:
-                      token:
-                        type: object
-                        properties:
-                          denom:
-                            type: string
-                          amount:
-                            type: string
-                        description: >-
-                          Coin defines a token with a denomination and an
-                          amount.
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        token:
+                          type: object
+                          properties:
+                            denom:
+                              type: string
+                            amount:
+                              type: string
+                          description: >-
+                            Coin defines a token with a denomination and an
+                            amount.
 
 
-                          NOTE: The amount field is an Int which implements the
-                          custom method
+                            NOTE: The amount field is an Int which implements
+                            the custom method
 
-                          signatures required by gogoproto.
-                      weight:
-                        type: string
+                            signatures required by gogoproto.
+                        weight:
+                          type: string
                   totalWeight:
                     type: string
         default:
@@ -69702,10 +69702,8 @@ definitions:
         properties:
           swapFee:
             type: string
-            format: uint64
           exitFee:
             type: string
-            format: uint64
       totalShares:
         type: object
         properties:
@@ -69719,25 +69717,27 @@ definitions:
           NOTE: The amount field is an Int which implements the custom method
           signatures required by gogoproto.
       poolAssets:
-        type: object
-        properties:
-          token:
-            type: object
-            properties:
-              denom:
-                type: string
-              amount:
-                type: string
-            description: >-
-              Coin defines a token with a denomination and an amount.
+        type: array
+        items:
+          type: object
+          properties:
+            token:
+              type: object
+              properties:
+                denom:
+                  type: string
+                amount:
+                  type: string
+              description: >-
+                Coin defines a token with a denomination and an amount.
 
 
-              NOTE: The amount field is an Int which implements the custom
-              method
+                NOTE: The amount field is an Int which implements the custom
+                method
 
-              signatures required by gogoproto.
-          weight:
-            type: string
+                signatures required by gogoproto.
+            weight:
+              type: string
       totalWeight:
         type: string
   elysnetwork.elys.amm.PoolAsset:
@@ -69762,10 +69762,8 @@ definitions:
     properties:
       swapFee:
         type: string
-        format: uint64
       exitFee:
         type: string
-        format: uint64
   elysnetwork.elys.amm.QueryAllPoolResponse:
     type: object
     properties:
@@ -69784,10 +69782,8 @@ definitions:
               properties:
                 swapFee:
                   type: string
-                  format: uint64
                 exitFee:
                   type: string
-                  format: uint64
             totalShares:
               type: object
               properties:
@@ -69804,25 +69800,27 @@ definitions:
 
                 signatures required by gogoproto.
             poolAssets:
-              type: object
-              properties:
-                token:
-                  type: object
-                  properties:
-                    denom:
-                      type: string
-                    amount:
-                      type: string
-                  description: >-
-                    Coin defines a token with a denomination and an amount.
+              type: array
+              items:
+                type: object
+                properties:
+                  token:
+                    type: object
+                    properties:
+                      denom:
+                        type: string
+                      amount:
+                        type: string
+                    description: >-
+                      Coin defines a token with a denomination and an amount.
 
 
-                    NOTE: The amount field is an Int which implements the custom
-                    method
+                      NOTE: The amount field is an Int which implements the
+                      custom method
 
-                    signatures required by gogoproto.
-                weight:
-                  type: string
+                      signatures required by gogoproto.
+                  weight:
+                    type: string
             totalWeight:
               type: string
       pagination:
@@ -69867,10 +69865,8 @@ definitions:
             properties:
               swapFee:
                 type: string
-                format: uint64
               exitFee:
                 type: string
-                format: uint64
           totalShares:
             type: object
             properties:
@@ -69887,25 +69883,27 @@ definitions:
 
               signatures required by gogoproto.
           poolAssets:
-            type: object
-            properties:
-              token:
-                type: object
-                properties:
-                  denom:
-                    type: string
-                  amount:
-                    type: string
-                description: >-
-                  Coin defines a token with a denomination and an amount.
+            type: array
+            items:
+              type: object
+              properties:
+                token:
+                  type: object
+                  properties:
+                    denom:
+                      type: string
+                    amount:
+                      type: string
+                  description: >-
+                    Coin defines a token with a denomination and an amount.
 
 
-                  NOTE: The amount field is an Int which implements the custom
-                  method
+                    NOTE: The amount field is an Int which implements the custom
+                    method
 
-                  signatures required by gogoproto.
-              weight:
-                type: string
+                    signatures required by gogoproto.
+                weight:
+                  type: string
           totalWeight:
             type: string
   elysnetwork.elys.amm.QueryParamsResponse:

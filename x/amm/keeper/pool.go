@@ -7,12 +7,13 @@ import (
 )
 
 // SetPool set a specific pool in the store from its index
-func (k Keeper) SetPool(ctx sdk.Context, pool types.Pool) {
+func (k Keeper) SetPool(ctx sdk.Context, pool types.Pool) error {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.PoolKeyPrefix))
 	b := k.cdc.MustMarshal(&pool)
 	store.Set(types.PoolKey(
 		pool.PoolId,
 	), b)
+	return nil
 }
 
 // GetPool returns a pool from its index
@@ -60,4 +61,34 @@ func (k Keeper) GetAllPool(ctx sdk.Context) (list []types.Pool) {
 	}
 
 	return
+}
+
+// GetLatestPool retrieves the latest pool item from the list of pools
+func (k Keeper) GetLatestPool(ctx sdk.Context) (val types.Pool, found bool) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.PoolKeyPrefix))
+	iterator := sdk.KVStoreReversePrefixIterator(store, []byte{})
+	defer iterator.Close()
+
+	if !iterator.Valid() {
+		return val, false
+	}
+
+	k.cdc.MustUnmarshal(iterator.Value(), &val)
+	return val, true
+}
+
+// GetNextPoolId returns the next pool id.
+func (k Keeper) GetNextPoolId(ctx sdk.Context) uint64 {
+	latestPool, found := k.GetLatestPool(ctx)
+	if !found {
+		return 0
+	}
+	return latestPool.PoolId + 1
+}
+
+// PoolExists checks if a pool with the given poolId exists in the list of pools
+func (k Keeper) PoolExists(ctx sdk.Context, poolId uint64) bool {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.PoolKeyPrefix))
+	b := store.Get(types.PoolKey(poolId))
+	return b != nil
 }
