@@ -34,6 +34,7 @@ func GetTxCmd() *cobra.Command {
 	cmd.AddCommand(CmdJoinPool())
 	cmd.AddCommand(CmdExitPool())
 	cmd.AddCommand(CmdSwapExactAmountIn())
+	cmd.AddCommand(CmdSwapExactAmountOut())
 	// this line is used by starport scaffolding # 1
 
 	return cmd
