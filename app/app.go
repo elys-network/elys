@@ -132,6 +132,10 @@ import (
 	ammmodulekeeper "github.com/elys-network/elys/x/amm/keeper"
 	ammmoduletypes "github.com/elys-network/elys/x/amm/types"
 
+	parametermodule "github.com/elys-network/elys/x/parameter"
+	parametermodulekeeper "github.com/elys-network/elys/x/parameter/keeper"
+	parametermoduletypes "github.com/elys-network/elys/x/parameter/types"
+
 	// this line is used by starport scaffolding # stargate/app/moduleImport
 
 	appparams "github.com/elys-network/elys/app/params"
@@ -198,6 +202,7 @@ var (
 		incentivemodule.AppModuleBasic{},
 		burnermodule.AppModuleBasic{},
 		ammmodule.AppModuleBasic{},
+		parametermodule.AppModuleBasic{},
 		// this line is used by starport scaffolding # stargate/app/moduleBasic
 	)
 
@@ -290,6 +295,8 @@ type ElysApp struct {
 	BurnerKeeper burnermodulekeeper.Keeper
 
 	AmmKeeper ammmodulekeeper.Keeper
+
+	ParameterKeeper parametermodulekeeper.Keeper
 	// this line is used by starport scaffolding # stargate/app/keeperDeclaration
 
 	// mm is the module manager
@@ -343,6 +350,7 @@ func NewElysApp(
 		incentivemoduletypes.StoreKey,
 		burnermoduletypes.StoreKey,
 		ammmoduletypes.StoreKey,
+		parametermoduletypes.StoreKey,
 		// this line is used by starport scaffolding # stargate/app/storeKey
 	)
 	tkeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey)
@@ -539,27 +547,6 @@ func NewElysApp(
 
 	oracleIBCModule := oraclemodule.NewIBCModule(app.OracleKeeper)
 
-	govRouter := govv1beta1.NewRouter()
-	govRouter.
-		AddRoute(govtypes.RouterKey, govv1beta1.ProposalHandler).
-		AddRoute(paramproposal.RouterKey, params.NewParamChangeProposalHandler(app.ParamsKeeper)).
-		// AddRoute(distrtypes.RouterKey, distr.NewCommunityPoolSpendProposalHandler(app.DistrKeeper)).
-		AddRoute(upgradetypes.RouterKey, upgrade.NewSoftwareUpgradeProposalHandler(app.UpgradeKeeper)).
-		AddRoute(ibcclienttypes.RouterKey, ibcclient.NewClientProposalHandler(app.IBCKeeper.ClientKeeper)).
-		AddRoute(oracletypes.RouterKey, oraclemodule.NewAssetInfoProposalHandler(&app.OracleKeeper))
-	govConfig := govtypes.DefaultConfig()
-	app.GovKeeper = govkeeper.NewKeeper(
-		appCodec,
-		keys[govtypes.StoreKey],
-		app.GetSubspace(govtypes.ModuleName),
-		app.AccountKeeper,
-		app.BankKeeper,
-		&app.StakingKeeper,
-		govRouter,
-		app.MsgServiceRouter(),
-		govConfig,
-	)
-
 	app.AssetprofileKeeper = *assetprofilemodulekeeper.NewKeeper(
 		appCodec,
 		keys[assetprofilemoduletypes.StoreKey],
@@ -645,6 +632,35 @@ func NewElysApp(
 	)
 	ammModule := ammmodule.NewAppModule(appCodec, app.AmmKeeper, app.AccountKeeper, app.BankKeeper)
 
+	app.ParameterKeeper = *parametermodulekeeper.NewKeeper(
+		appCodec,
+		keys[parametermoduletypes.StoreKey],
+		keys[parametermoduletypes.MemStoreKey],
+		app.GetSubspace(parametermoduletypes.ModuleName),
+	)
+	parameterModule := parametermodule.NewAppModule(appCodec, app.ParameterKeeper, app.AccountKeeper, app.BankKeeper)
+
+	govRouter := govv1beta1.NewRouter()
+	govRouter.
+		AddRoute(govtypes.RouterKey, govv1beta1.ProposalHandler).
+		AddRoute(paramproposal.RouterKey, params.NewParamChangeProposalHandler(app.ParamsKeeper)).
+		// AddRoute(distrtypes.RouterKey, distr.NewCommunityPoolSpendProposalHandler(app.DistrKeeper)).
+		AddRoute(upgradetypes.RouterKey, upgrade.NewSoftwareUpgradeProposalHandler(app.UpgradeKeeper)).
+		AddRoute(ibcclienttypes.RouterKey, ibcclient.NewClientProposalHandler(app.IBCKeeper.ClientKeeper)).
+		AddRoute(oracletypes.RouterKey, oraclemodule.NewAssetInfoProposalHandler(&app.OracleKeeper)).
+		AddRoute(parametermoduletypes.RouterKey, parametermodule.NewParameterChangeProposalHandler(&app.ParameterKeeper))
+	govConfig := govtypes.DefaultConfig()
+	app.GovKeeper = govkeeper.NewKeeper(
+		appCodec,
+		keys[govtypes.StoreKey],
+		app.GetSubspace(govtypes.ModuleName),
+		app.AccountKeeper,
+		app.BankKeeper,
+		&app.StakingKeeper,
+		govRouter,
+		app.MsgServiceRouter(),
+		govConfig,
+	)
 	// this line is used by starport scaffolding # stargate/app/keeperDefinition
 
 	/**** IBC Routing ****/
@@ -736,6 +752,7 @@ func NewElysApp(
 		incentiveModule,
 		burnerModule,
 		ammModule,
+		parameterModule,
 		// this line is used by starport scaffolding # stargate/app/appModule
 	)
 
@@ -774,6 +791,7 @@ func NewElysApp(
 		tokenomicsmoduletypes.ModuleName,
 		burnermoduletypes.ModuleName,
 		ammmoduletypes.ModuleName,
+		parametermoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/beginBlockers
 	)
 
@@ -807,6 +825,7 @@ func NewElysApp(
 		tokenomicsmoduletypes.ModuleName,
 		burnermoduletypes.ModuleName,
 		ammmoduletypes.ModuleName,
+		parametermoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/endBlockers
 	)
 
@@ -844,6 +863,7 @@ func NewElysApp(
 		tokenomicsmoduletypes.ModuleName,
 		burnermoduletypes.ModuleName,
 		ammmoduletypes.ModuleName,
+		parametermoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/initGenesis
 	)
 
@@ -881,6 +901,7 @@ func NewElysApp(
 		incentiveModule,
 		burnerModule,
 		ammModule,
+		parameterModule,
 		// this line is used by starport scaffolding # stargate/app/appModule
 	)
 	app.sm.RegisterStoreDecoders()
@@ -902,10 +923,11 @@ func NewElysApp(
 				FeegrantKeeper:  app.FeeGrantKeeper,
 				SigGasConsumer:  ante.DefaultSigVerificationGasConsumer,
 			},
-			StakingKeeper: app.StakingKeeper,
-			IBCKeeper:     app.IBCKeeper,
-			BankKeeper:    app.BankKeeper,
-			Cdc:           appCodec,
+			StakingKeeper:   app.StakingKeeper,
+			IBCKeeper:       app.IBCKeeper,
+			BankKeeper:      app.BankKeeper,
+			Cdc:             appCodec,
+			ParameterKeeper: app.ParameterKeeper,
 		},
 	)
 	if err != nil {
@@ -1099,6 +1121,7 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(incentivemoduletypes.ModuleName)
 	paramsKeeper.Subspace(burnermoduletypes.ModuleName)
 	paramsKeeper.Subspace(ammmoduletypes.ModuleName)
+	paramsKeeper.Subspace(parametermoduletypes.ModuleName)
 	// this line is used by starport scaffolding # stargate/app/paramSubspace
 
 	return paramsKeeper
