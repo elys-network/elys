@@ -69682,6 +69682,8 @@ definitions:
     type: object
   elysnetwork.elys.amm.MsgJoinPoolResponse:
     type: object
+  elysnetwork.elys.amm.MsgSwapExactAmountInResponse:
+    type: object
   elysnetwork.elys.amm.Params:
     type: object
     properties:

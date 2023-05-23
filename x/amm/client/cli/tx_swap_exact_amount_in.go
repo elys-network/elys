@@ -1,0 +1,64 @@
+package cli
+
+import (
+	"strconv"
+
+	"strings"
+
+	"cosmossdk.io/math"
+	"github.com/cosmos/cosmos-sdk/client"
+	"github.com/cosmos/cosmos-sdk/client/flags"
+	"github.com/cosmos/cosmos-sdk/client/tx"
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/elys-network/elys/x/amm/types"
+	"github.com/spf13/cast"
+	"github.com/spf13/cobra"
+)
+
+var _ = strconv.Itoa(0)
+
+func CmdSwapExactAmountIn() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "swap-exact-amount-in [token-in] [token-out-min-amount] [swap-route-pool-ids] [swap-route-denoms]",
+		Short: "Swap an exact amount of tokens for a minimum of another token, similar to swapping a token on the trade screen GUI.",
+		Args:  cobra.ExactArgs(4),
+		RunE: func(cmd *cobra.Command, args []string) (err error) {
+			argTokenIn, err := sdk.ParseCoinNormalized(args[0])
+			if err != nil {
+				return err
+			}
+			argTokenOutMinAmount := math.NewUintFromString(args[1])
+			argCastSwapRoutePoolIds := strings.Split(args[2], listSeparator)
+			argSwapRoutePoolIds := make([]uint64, len(argCastSwapRoutePoolIds))
+			for i, arg := range argCastSwapRoutePoolIds {
+				value, err := cast.ToUint64E(arg)
+				if err != nil {
+					return err
+				}
+				argSwapRoutePoolIds[i] = value
+			}
+			argSwapRouteDenoms := strings.Split(args[3], listSeparator)
+
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			msg := types.NewMsgSwapExactAmountIn(
+				clientCtx.GetFromAddress().String(),
+				argTokenIn,
+				argTokenOutMinAmount,
+				argSwapRoutePoolIds,
+				argSwapRouteDenoms,
+			)
+			if err := msg.ValidateBasic(); err != nil {
+				return err
+			}
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+
+	return cmd
+}
