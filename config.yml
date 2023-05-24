@@ -312,4 +312,9 @@ genesis:
         - timestamp: "2023-04-21 14:57:03.612566186 +0000 UTC"
           denom: "ueden"
           amount: "1000000"
+    parameter:
+      anteHandlerParamList:
+        - minCommissionRate: "0.05"
+          maxVotingPower: "0.66"
+          minSelfDelegation: "1"
   chain_id: elystestnet-1

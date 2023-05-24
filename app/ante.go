@@ -11,26 +11,29 @@ import (
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	ibcante "github.com/cosmos/ibc-go/v6/modules/core/ante"
 	ibckeeper "github.com/cosmos/ibc-go/v6/modules/core/keeper"
+	parameterkeeper "github.com/elys-network/elys/x/parameter/keeper"
 )
 
 // HandlerOptions extends the SDK's AnteHandler options by requiring the IBC
 // channel keeper.
 type HandlerOptions struct {
 	ante.HandlerOptions
-	Cdc           codec.BinaryCodec
-	StakingKeeper stakingkeeper.Keeper
-	BankKeeper    bankkeeper.Keeper
-	IBCKeeper     *ibckeeper.Keeper
+	Cdc             codec.BinaryCodec
+	StakingKeeper   stakingkeeper.Keeper
+	BankKeeper      bankkeeper.Keeper
+	IBCKeeper       *ibckeeper.Keeper
+	ParameterKeeper parameterkeeper.Keeper
 }
 
 type MinCommissionDecorator struct {
-	sk         stakingkeeper.Keeper
-	bankkeeper bankkeeper.Keeper
-	cdc        codec.BinaryCodec
+	sk  stakingkeeper.Keeper
+	bk  bankkeeper.Keeper
+	cdc codec.BinaryCodec
+	pk  parameterkeeper.Keeper
 }
 
-func NewMinCommissionDecorator(cdc codec.BinaryCodec, sk stakingkeeper.Keeper, bk bankkeeper.Keeper) MinCommissionDecorator {
-	return MinCommissionDecorator{cdc: cdc, sk: sk, bankkeeper: bk}
+func NewMinCommissionDecorator(cdc codec.BinaryCodec, sk stakingkeeper.Keeper, bk bankkeeper.Keeper, pk parameterkeeper.Keeper) MinCommissionDecorator {
+	return MinCommissionDecorator{cdc: cdc, sk: sk, bk: bk, pk: pk}
 }
 
 // getValidator returns the validator belonging to a given bech32 validator address
@@ -53,8 +56,8 @@ func (min MinCommissionDecorator) getTotalDelegatedTokens(ctx sdk.Context) sdk.I
 	bondedPool := min.sk.GetBondedPool(ctx)
 	notBondedPool := min.sk.GetNotBondedPool(ctx)
 
-	notBondedAmount := min.bankkeeper.GetBalance(ctx, notBondedPool.GetAddress(), bondDenom).Amount
-	bondedAmount := min.bankkeeper.GetBalance(ctx, bondedPool.GetAddress(), bondDenom).Amount
+	notBondedAmount := min.bk.GetBalance(ctx, notBondedPool.GetAddress(), bondDenom).Amount
+	bondedAmount := min.bk.GetBalance(ctx, bondedPool.GetAddress(), bondDenom).Amount
 
 	return notBondedAmount.Add(bondedAmount)
 }
@@ -101,6 +104,13 @@ func (min MinCommissionDecorator) AnteHandle(
 	msgs := tx.GetMsgs()
 	minCommissionRate := sdk.NewDecWithPrec(5, 2) // 5% as a fraction
 	maxVotingPower := sdk.NewDecWithPrec(66, 1)   // 6.6%
+
+	// Fetch parameter from parameter module
+	params, found := min.pk.GetAnteHandlerParam(ctx)
+	if found {
+		minCommissionRate = params.MinCommissionRate
+		maxVotingPower = params.MaxVotingPower
+	}
 
 	validMsg := func(m sdk.Msg) error {
 		switch msg := m.(type) {
@@ -225,7 +235,7 @@ func NewAnteHandler(options HandlerOptions) (sdk.AnteHandler, error) {
 
 	anteDecorators := []sdk.AnteDecorator{
 		ante.NewSetUpContextDecorator(), // outermost AnteDecorator. SetUpContext must be called first
-		NewMinCommissionDecorator(options.Cdc, options.StakingKeeper, options.BankKeeper),
+		NewMinCommissionDecorator(options.Cdc, options.StakingKeeper, options.BankKeeper, options.ParameterKeeper),
 		ante.NewExtensionOptionsDecorator(options.ExtensionOptionChecker),
 		ante.NewValidateBasicDecorator(),
 		ante.NewTxTimeoutHeightDecorator(),
