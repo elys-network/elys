@@ -1,17 +1,24 @@
 package types
 
-import (
-// this line is used by starport scaffolding # genesis/types/import
-)
-
 // DefaultIndex is the default global index
 const DefaultIndex uint64 = 1
+
+//nolint:interfacer
+func NewGenesisState(
+	params Params, fp FeePool,
+) *GenesisState {
+	return &GenesisState{
+		Params:  params,
+		FeePool: fp,
+	}
+}
 
 // DefaultGenesis returns the default genesis state
 func DefaultGenesis() *GenesisState {
 	return &GenesisState{
 		// this line is used by starport scaffolding # genesis/types/default
-		Params: DefaultParams(),
+		Params:  DefaultParams(),
+		FeePool: InitialFeePool(),
 	}
 }
 
@@ -19,6 +26,9 @@ func DefaultGenesis() *GenesisState {
 // failure.
 func (gs GenesisState) Validate() error {
 	// this line is used by starport scaffolding # genesis/types/validate
+	if err := gs.Params.ValidateBasic(); err != nil {
+		return err
+	}
 
-	return gs.Params.Validate()
+	return gs.FeePool.ValidateGenesis()
 }

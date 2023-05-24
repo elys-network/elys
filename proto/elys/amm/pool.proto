@@ -1,0 +1,24 @@
+syntax = "proto3";
+package elysnetwork.elys.amm;
+
+option go_package = "github.com/elys-network/elys/x/amm/types";
+import "elys/amm/pool_params.proto"; 
+import "elys/amm/pool_asset.proto"; 
+import "gogoproto/gogo.proto"; 
+import "cosmos/base/v1beta1/coin.proto";
+import "cosmos_proto/cosmos.proto";
+
+message Pool {
+  uint64 poolId = 1; 
+  string address = 2; 
+  PoolParams poolParams = 3; 
+  cosmos.base.v1beta1.Coin totalShares = 4 [(gogoproto.nullable) = false]; 
+  repeated PoolAsset poolAssets = 5; 
+  string totalWeight = 6 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.moretags) = "yaml:\"total_weight\"",
+    (gogoproto.nullable) = false
+  ];
+  
+}
+

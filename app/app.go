@@ -40,10 +40,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/crisis"
 	crisiskeeper "github.com/cosmos/cosmos-sdk/x/crisis/keeper"
 	crisistypes "github.com/cosmos/cosmos-sdk/x/crisis/types"
-	distr "github.com/cosmos/cosmos-sdk/x/distribution"
-	distrclient "github.com/cosmos/cosmos-sdk/x/distribution/client"
-	distrkeeper "github.com/cosmos/cosmos-sdk/x/distribution/keeper"
-	distrtypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
 	"github.com/cosmos/cosmos-sdk/x/evidence"
 	evidencekeeper "github.com/cosmos/cosmos-sdk/x/evidence/keeper"
 	evidencetypes "github.com/cosmos/cosmos-sdk/x/evidence/types"
@@ -132,6 +128,14 @@ import (
 	burnermodulekeeper "github.com/elys-network/elys/x/burner/keeper"
 	burnermoduletypes "github.com/elys-network/elys/x/burner/types"
 
+	ammmodule "github.com/elys-network/elys/x/amm"
+	ammmodulekeeper "github.com/elys-network/elys/x/amm/keeper"
+	ammmoduletypes "github.com/elys-network/elys/x/amm/types"
+
+	parametermodule "github.com/elys-network/elys/x/parameter"
+	parametermodulekeeper "github.com/elys-network/elys/x/parameter/keeper"
+	parametermoduletypes "github.com/elys-network/elys/x/parameter/types"
+
 	// this line is used by starport scaffolding # stargate/app/moduleImport
 
 	appparams "github.com/elys-network/elys/app/params"
@@ -141,6 +145,9 @@ import (
 const (
 	AccountAddressPrefix = "elys"
 	Name                 = "elys"
+
+	// Temperal declaration until we have dex module
+	DexRevenueCollectorName = "dev_revenue_collector"
 )
 
 // this line is used by starport scaffolding # stargate/wasm/app/enabledProposals
@@ -151,7 +158,7 @@ func getGovProposalHandlers() []govclient.ProposalHandler {
 
 	govProposalHandlers = append(govProposalHandlers,
 		paramsclient.ProposalHandler,
-		distrclient.ProposalHandler,
+		// distrclient.ProposalHandler,
 		upgradeclient.LegacyProposalHandler,
 		upgradeclient.LegacyCancelProposalHandler,
 		ibcclientclient.UpdateClientProposalHandler,
@@ -177,7 +184,6 @@ var (
 		capability.AppModuleBasic{},
 		staking.AppModuleBasic{},
 		mint.AppModuleBasic{},
-		distr.AppModuleBasic{},
 		gov.NewAppModuleBasic(getGovProposalHandlers()),
 		params.AppModuleBasic{},
 		crisis.AppModuleBasic{},
@@ -198,13 +204,15 @@ var (
 		tokenomicsmodule.AppModuleBasic{},
 		incentivemodule.AppModuleBasic{},
 		burnermodule.AppModuleBasic{},
+		ammmodule.AppModuleBasic{},
+		parametermodule.AppModuleBasic{},
 		// this line is used by starport scaffolding # stargate/app/moduleBasic
 	)
 
 	// module account permissions
 	maccPerms = map[string][]string{
 		authtypes.FeeCollectorName:       nil,
-		distrtypes.ModuleName:            nil,
+		DexRevenueCollectorName:          nil,
 		icatypes.ModuleName:              nil,
 		minttypes.ModuleName:             {authtypes.Minter},
 		stakingtypes.BondedPoolName:      {authtypes.Burner, authtypes.Staking},
@@ -212,8 +220,9 @@ var (
 		govtypes.ModuleName:              {authtypes.Burner},
 		ibctransfertypes.ModuleName:      {authtypes.Minter, authtypes.Burner},
 		commitmentmoduletypes.ModuleName: {authtypes.Minter, authtypes.Burner},
-		incentivemoduletypes.ModuleName:  {authtypes.Minter, authtypes.Burner},
 		burnermoduletypes.ModuleName:     {authtypes.Burner},
+		incentivemoduletypes.ModuleName:  nil,
+		ammmoduletypes.ModuleName:        {authtypes.Minter, authtypes.Burner, authtypes.Staking},
 		// this line is used by starport scaffolding # stargate/app/maccPerms
 	}
 )
@@ -257,7 +266,6 @@ type ElysApp struct {
 	StakingKeeper    stakingkeeper.Keeper
 	SlashingKeeper   slashingkeeper.Keeper
 	MintKeeper       mintkeeper.Keeper
-	DistrKeeper      distrkeeper.Keeper
 	GovKeeper        govkeeper.Keeper
 	CrisisKeeper     crisiskeeper.Keeper
 	UpgradeKeeper    upgradekeeper.Keeper
@@ -289,6 +297,10 @@ type ElysApp struct {
 	IncentiveKeeper incentivemodulekeeper.Keeper
 
 	BurnerKeeper burnermodulekeeper.Keeper
+
+	AmmKeeper ammmodulekeeper.Keeper
+
+	ParameterKeeper parametermodulekeeper.Keeper
 	// this line is used by starport scaffolding # stargate/app/keeperDeclaration
 
 	// mm is the module manager
@@ -329,7 +341,7 @@ func NewElysApp(
 
 	keys := sdk.NewKVStoreKeys(
 		authtypes.StoreKey, authz.ModuleName, banktypes.StoreKey, stakingtypes.StoreKey,
-		minttypes.StoreKey, distrtypes.StoreKey, slashingtypes.StoreKey, govtypes.StoreKey,
+		minttypes.StoreKey, slashingtypes.StoreKey, govtypes.StoreKey,
 		paramstypes.StoreKey, ibchost.StoreKey, upgradetypes.StoreKey, feegrant.StoreKey, evidencetypes.StoreKey,
 		ibctransfertypes.StoreKey, icahosttypes.StoreKey, capabilitytypes.StoreKey, group.StoreKey,
 		icacontrollertypes.StoreKey,
@@ -341,6 +353,8 @@ func NewElysApp(
 		tokenomicsmoduletypes.StoreKey,
 		incentivemoduletypes.StoreKey,
 		burnermoduletypes.StoreKey,
+		ammmoduletypes.StoreKey,
+		parametermoduletypes.StoreKey,
 		// this line is used by starport scaffolding # stargate/app/storeKey
 	)
 	tkeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey)
@@ -421,16 +435,6 @@ func NewElysApp(
 		&app.StakingKeeper,
 		app.AccountKeeper,
 		app.BankKeeper,
-		authtypes.FeeCollectorName,
-	)
-
-	app.DistrKeeper = distrkeeper.NewKeeper(
-		appCodec,
-		keys[distrtypes.StoreKey],
-		app.GetSubspace(distrtypes.ModuleName),
-		app.AccountKeeper,
-		app.BankKeeper,
-		&app.StakingKeeper,
 		authtypes.FeeCollectorName,
 	)
 
@@ -547,27 +551,6 @@ func NewElysApp(
 
 	oracleIBCModule := oraclemodule.NewIBCModule(app.OracleKeeper)
 
-	govRouter := govv1beta1.NewRouter()
-	govRouter.
-		AddRoute(govtypes.RouterKey, govv1beta1.ProposalHandler).
-		AddRoute(paramproposal.RouterKey, params.NewParamChangeProposalHandler(app.ParamsKeeper)).
-		AddRoute(distrtypes.RouterKey, distr.NewCommunityPoolSpendProposalHandler(app.DistrKeeper)).
-		AddRoute(upgradetypes.RouterKey, upgrade.NewSoftwareUpgradeProposalHandler(app.UpgradeKeeper)).
-		AddRoute(ibcclienttypes.RouterKey, ibcclient.NewClientProposalHandler(app.IBCKeeper.ClientKeeper)).
-		AddRoute(oracletypes.RouterKey, oraclemodule.NewAssetInfoProposalHandler(&app.OracleKeeper))
-	govConfig := govtypes.DefaultConfig()
-	app.GovKeeper = govkeeper.NewKeeper(
-		appCodec,
-		keys[govtypes.StoreKey],
-		app.GetSubspace(govtypes.ModuleName),
-		app.AccountKeeper,
-		app.BankKeeper,
-		&app.StakingKeeper,
-		govRouter,
-		app.MsgServiceRouter(),
-		govConfig,
-	)
-
 	app.AssetprofileKeeper = *assetprofilemodulekeeper.NewKeeper(
 		appCodec,
 		keys[assetprofilemoduletypes.StoreKey],
@@ -595,6 +578,10 @@ func NewElysApp(
 		app.GetSubspace(incentivemoduletypes.ModuleName),
 		commitmentKeeper,
 		app.StakingKeeper,
+		app.AccountKeeper,
+		app.BankKeeper,
+		authtypes.FeeCollectorName,
+		DexRevenueCollectorName,
 	)
 	incentiveModule := incentivemodule.NewAppModule(appCodec, app.IncentiveKeeper)
 
@@ -639,6 +626,46 @@ func NewElysApp(
 		keys[epochsmoduletypes.StoreKey],
 	)
 
+	app.AmmKeeper = *ammmodulekeeper.NewKeeper(
+		appCodec,
+		keys[ammmoduletypes.StoreKey],
+		keys[ammmoduletypes.MemStoreKey],
+		app.GetSubspace(ammmoduletypes.ModuleName),
+
+		app.BankKeeper,
+		app.AccountKeeper,
+	)
+	ammModule := ammmodule.NewAppModule(appCodec, app.AmmKeeper, app.AccountKeeper, app.BankKeeper)
+
+	app.ParameterKeeper = *parametermodulekeeper.NewKeeper(
+		appCodec,
+		keys[parametermoduletypes.StoreKey],
+		keys[parametermoduletypes.MemStoreKey],
+		app.GetSubspace(parametermoduletypes.ModuleName),
+	)
+	parameterModule := parametermodule.NewAppModule(appCodec, app.ParameterKeeper, app.AccountKeeper, app.BankKeeper)
+
+	govRouter := govv1beta1.NewRouter()
+	govRouter.
+		AddRoute(govtypes.RouterKey, govv1beta1.ProposalHandler).
+		AddRoute(paramproposal.RouterKey, params.NewParamChangeProposalHandler(app.ParamsKeeper)).
+		// AddRoute(distrtypes.RouterKey, distr.NewCommunityPoolSpendProposalHandler(app.DistrKeeper)).
+		AddRoute(upgradetypes.RouterKey, upgrade.NewSoftwareUpgradeProposalHandler(app.UpgradeKeeper)).
+		AddRoute(ibcclienttypes.RouterKey, ibcclient.NewClientProposalHandler(app.IBCKeeper.ClientKeeper)).
+		AddRoute(oracletypes.RouterKey, oraclemodule.NewAssetInfoProposalHandler(&app.OracleKeeper)).
+		AddRoute(parametermoduletypes.RouterKey, parametermodule.NewParameterChangeProposalHandler(&app.ParameterKeeper))
+	govConfig := govtypes.DefaultConfig()
+	app.GovKeeper = govkeeper.NewKeeper(
+		appCodec,
+		keys[govtypes.StoreKey],
+		app.GetSubspace(govtypes.ModuleName),
+		app.AccountKeeper,
+		app.BankKeeper,
+		&app.StakingKeeper,
+		govRouter,
+		app.MsgServiceRouter(),
+		govConfig,
+	)
 	// this line is used by starport scaffolding # stargate/app/keeperDefinition
 
 	/**** IBC Routing ****/
@@ -661,7 +688,6 @@ func NewElysApp(
 	app.StakingKeeper.SetHooks(
 		stakingtypes.NewMultiStakingHooks(
 			// insert staking hooks receivers here
-			app.DistrKeeper.Hooks(),
 			app.SlashingKeeper.Hooks(),
 			app.IncentiveKeeper.StakingHooks(),
 		),
@@ -670,6 +696,12 @@ func NewElysApp(
 	app.GovKeeper.SetHooks(
 		govtypes.NewMultiGovHooks(
 		// insert governance hooks receivers here
+		),
+	)
+
+	app.AmmKeeper.SetHooks(
+		ammmoduletypes.NewMultiAmmHooks(
+		// insert amm hooks receivers here
 		),
 	)
 
@@ -709,7 +741,6 @@ func NewElysApp(
 		gov.NewAppModule(appCodec, app.GovKeeper, app.AccountKeeper, app.BankKeeper),
 		mint.NewAppModule(appCodec, app.MintKeeper, app.AccountKeeper, minttypes.DefaultInflationCalculationFn),
 		slashing.NewAppModule(appCodec, app.SlashingKeeper, app.AccountKeeper, app.BankKeeper, app.StakingKeeper),
-		distr.NewAppModule(appCodec, app.DistrKeeper, app.AccountKeeper, app.BankKeeper, app.StakingKeeper),
 		staking.NewAppModule(appCodec, app.StakingKeeper, app.AccountKeeper, app.BankKeeper),
 		upgrade.NewAppModule(app.UpgradeKeeper),
 		evidence.NewAppModule(app.EvidenceKeeper),
@@ -725,6 +756,8 @@ func NewElysApp(
 		tokenomicsModule,
 		incentiveModule,
 		burnerModule,
+		ammModule,
+		parameterModule,
 		// this line is used by starport scaffolding # stargate/app/appModule
 	)
 
@@ -739,7 +772,7 @@ func NewElysApp(
 		// Note: epochs' begin should be "real" start of epochs, we keep epochs beginblock at the beginning
 		epochsmoduletypes.ModuleName,
 		minttypes.ModuleName,
-		distrtypes.ModuleName,
+		incentivemoduletypes.ModuleName,
 		slashingtypes.ModuleName,
 		evidencetypes.ModuleName,
 		stakingtypes.ModuleName,
@@ -761,8 +794,9 @@ func NewElysApp(
 		oracletypes.ModuleName,
 		commitmentmoduletypes.ModuleName,
 		tokenomicsmoduletypes.ModuleName,
-		incentivemoduletypes.ModuleName,
 		burnermoduletypes.ModuleName,
+		ammmoduletypes.ModuleName,
+		parametermoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/beginBlockers
 	)
 
@@ -778,7 +812,7 @@ func NewElysApp(
 		capabilitytypes.ModuleName,
 		authtypes.ModuleName,
 		banktypes.ModuleName,
-		distrtypes.ModuleName,
+		incentivemoduletypes.ModuleName,
 		slashingtypes.ModuleName,
 		minttypes.ModuleName,
 		genutiltypes.ModuleName,
@@ -794,8 +828,9 @@ func NewElysApp(
 		oracletypes.ModuleName,
 		commitmentmoduletypes.ModuleName,
 		tokenomicsmoduletypes.ModuleName,
-		incentivemoduletypes.ModuleName,
 		burnermoduletypes.ModuleName,
+		ammmoduletypes.ModuleName,
+		parametermoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/endBlockers
 	)
 
@@ -808,7 +843,7 @@ func NewElysApp(
 		capabilitytypes.ModuleName,
 		authtypes.ModuleName,
 		banktypes.ModuleName,
-		distrtypes.ModuleName,
+		incentivemoduletypes.ModuleName,
 		stakingtypes.ModuleName,
 		slashingtypes.ModuleName,
 		govtypes.ModuleName,
@@ -831,8 +866,9 @@ func NewElysApp(
 		oracletypes.ModuleName,
 		commitmentmoduletypes.ModuleName,
 		tokenomicsmoduletypes.ModuleName,
-		incentivemoduletypes.ModuleName,
 		burnermoduletypes.ModuleName,
+		ammmoduletypes.ModuleName,
+		parametermoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/initGenesis
 	)
 
@@ -855,7 +891,6 @@ func NewElysApp(
 		gov.NewAppModule(appCodec, app.GovKeeper, app.AccountKeeper, app.BankKeeper),
 		mint.NewAppModule(appCodec, app.MintKeeper, app.AccountKeeper, minttypes.DefaultInflationCalculationFn),
 		staking.NewAppModule(appCodec, app.StakingKeeper, app.AccountKeeper, app.BankKeeper),
-		distr.NewAppModule(appCodec, app.DistrKeeper, app.AccountKeeper, app.BankKeeper, app.StakingKeeper),
 		slashing.NewAppModule(appCodec, app.SlashingKeeper, app.AccountKeeper, app.BankKeeper, app.StakingKeeper),
 		params.NewAppModule(app.ParamsKeeper),
 		groupmodule.NewAppModule(appCodec, app.GroupKeeper, app.AccountKeeper, app.BankKeeper, app.interfaceRegistry),
@@ -870,6 +905,8 @@ func NewElysApp(
 		tokenomicsModule,
 		incentiveModule,
 		burnerModule,
+		ammModule,
+		parameterModule,
 		// this line is used by starport scaffolding # stargate/app/appModule
 	)
 	app.sm.RegisterStoreDecoders()
@@ -883,13 +920,19 @@ func NewElysApp(
 	app.SetInitChainer(app.InitChainer)
 	app.SetBeginBlocker(app.BeginBlocker)
 
-	anteHandler, err := ante.NewAnteHandler(
-		ante.HandlerOptions{
-			AccountKeeper:   app.AccountKeeper,
+	anteHandler, err := NewAnteHandler(
+		HandlerOptions{
+			HandlerOptions: ante.HandlerOptions{
+				AccountKeeper:   app.AccountKeeper,
+				SignModeHandler: encodingConfig.TxConfig.SignModeHandler(),
+				FeegrantKeeper:  app.FeeGrantKeeper,
+				SigGasConsumer:  ante.DefaultSigVerificationGasConsumer,
+			},
+			StakingKeeper:   app.StakingKeeper,
+			IBCKeeper:       app.IBCKeeper,
 			BankKeeper:      app.BankKeeper,
-			SignModeHandler: encodingConfig.TxConfig.SignModeHandler(),
-			FeegrantKeeper:  app.FeeGrantKeeper,
-			SigGasConsumer:  ante.DefaultSigVerificationGasConsumer,
+			Cdc:             appCodec,
+			ParameterKeeper: app.ParameterKeeper,
 		},
 	)
 	if err != nil {
@@ -1068,7 +1111,6 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(banktypes.ModuleName)
 	paramsKeeper.Subspace(stakingtypes.ModuleName)
 	paramsKeeper.Subspace(minttypes.ModuleName)
-	paramsKeeper.Subspace(distrtypes.ModuleName)
 	paramsKeeper.Subspace(slashingtypes.ModuleName)
 	paramsKeeper.Subspace(govtypes.ModuleName).WithKeyTable(govv1.ParamKeyTable())
 	paramsKeeper.Subspace(crisistypes.ModuleName)
@@ -1083,6 +1125,8 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(tokenomicsmoduletypes.ModuleName)
 	paramsKeeper.Subspace(incentivemoduletypes.ModuleName)
 	paramsKeeper.Subspace(burnermoduletypes.ModuleName)
+	paramsKeeper.Subspace(ammmoduletypes.ModuleName)
+	paramsKeeper.Subspace(parametermoduletypes.ModuleName)
 	// this line is used by starport scaffolding # stargate/app/paramSubspace
 
 	return paramsKeeper

@@ -1,26 +1,47 @@
 syntax = "proto3";
+
 package elysnetwork.elys.incentive;
 
+import "elys/incentive/params.proto";
+import "elys/incentive/distribution.proto";
 import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
+import "cosmos/base/v1beta1/coin.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
-import "elys/incentive/params.proto";
 
 option go_package = "github.com/elys-network/elys/x/incentive/types";
 
 // Query defines the gRPC querier service.
 service Query {
+  
   // Parameters queries the parameters of the module.
-  rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
+  rpc Params (QueryParamsRequest) returns (QueryParamsResponse) {
     option (google.api.http).get = "/elys-network/elys/incentive/params";
+  
   }
+  
+  // Queries a list of CommunityPool items.
+  rpc CommunityPool (QueryCommunityPoolRequest) returns (QueryCommunityPoolResponse) {
+    option (google.api.http).get = "/elys-network/elys/incentive/community_pool";
+  
+  }
+  
 }
-
 // QueryParamsRequest is request type for the Query/Params RPC method.
 message QueryParamsRequest {}
 
 // QueryParamsResponse is response type for the Query/Params RPC method.
 message QueryParamsResponse {
+  
   // params holds all the parameters of this module.
   Params params = 1 [(gogoproto.nullable) = false];
 }
+
+message QueryCommunityPoolRequest {}
+
+message QueryCommunityPoolResponse {
+  
+  // pool defines community pool's coins.
+  repeated cosmos.base.v1beta1.DecCoin pool = 1 [(gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.DecCoins", (gogoproto.nullable) = false];
+}
+

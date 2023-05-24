@@ -7,7 +7,7 @@
 | Chain ID     | elystestnet-1                        |
 | Denomination | uelys                                |
 | Decimals     | 6 (1 elys= 1000000uelys)             |
-| Version      | v0.4.0                               |
+| Version      | v0.5.4                               |
 | RPC Endpoint | https://rpc.testnet.elys.network:443 |
 
 ## Get started
@@ -311,13 +311,13 @@ A proposal can be submitted to add one or multiple entries in the asset profile 
 To submit a proposal, use the following command:
 
 ```
-elysd tx gov submit-proposal /tmp/proposal.json --from alice --yes
+elysd tx gov submit-proposal /tmp/proposal.json --from walletname --yes
 ```
 
 To vote on a proposal, use the following command:
 
 ```
-elysd tx gov vote 1 yes --from alice --yes
+elysd tx gov vote 1 yes --from walletname --yes
 ```
 
 #### Update Entry using Gov Proposal
@@ -357,13 +357,13 @@ A proposal can be submitted to update one or multiple entries in the asset profi
 To submit a proposal, use the following command:
 
 ```
-elysd tx gov submit-proposal /tmp/proposal.json --from alice --yes
+elysd tx gov submit-proposal /tmp/proposal.json --from walletname --yes
 ```
 
 To vote on a proposal, use the following command:
 
 ```
-elysd tx gov vote 1 yes --from alice --yes
+elysd tx gov vote 1 yes --from walletname --yes
 ```
 
 #### Delete Entry using Gov Proposal
@@ -388,13 +388,13 @@ A proposal can be submitted to delete one or multiple entries in the asset profi
 To submit a proposal, use the following command:
 
 ```
-elysd tx gov submit-proposal /tmp/proposal.json --from alice --yes
+elysd tx gov submit-proposal /tmp/proposal.json --from walletname --yes
 ```
 
 To vote on a proposal, use the following command:
 
 ```
-elysd tx gov vote 1 yes --from alice --yes
+elysd tx gov vote 1 yes --from walletname --yes
 ```
 
 #### CLI to Query List of Entries
@@ -437,13 +437,13 @@ A proposal can be submitted to set the genesis inflation parameters in the token
 To submit a proposal, use the following command:
 
 ```
-elysd tx gov submit-proposal /tmp/proposal.json --from alice --yes
+elysd tx gov submit-proposal /tmp/proposal.json --from walletname --yes
 ```
 
 To vote on a proposal, use the following command:
 
 ```
-elysd tx gov vote 1 yes --from alice --yes
+elysd tx gov vote 1 yes --from walletname --yes
 ```
 
 #### CLI to Query the Genesis Inflation parameters
@@ -501,13 +501,13 @@ A proposal can be submitted to add one or multiple airdrop entries in the tokeno
 To submit a proposal, use the following command:
 
 ```
-elysd tx gov submit-proposal /tmp/proposal.json --from alice --yes
+elysd tx gov submit-proposal /tmp/proposal.json --from walletname --yes
 ```
 
 To vote on a proposal, use the following command:
 
 ```
-elysd tx gov vote 1 yes --from alice --yes
+elysd tx gov vote 1 yes --from walletname --yes
 ```
 
 #### Update Airdrop entry using Gov Proposal
@@ -533,13 +533,13 @@ A proposal can be submitted to update one or multiple airdrop entries in the tok
 To submit a proposal, use the following command:
 
 ```
-elysd tx gov submit-proposal /tmp/proposal.json --from alice --yes
+elysd tx gov submit-proposal /tmp/proposal.json --from walletname --yes
 ```
 
 To vote on a proposal, use the following command:
 
 ```
-elysd tx gov vote 1 yes --from alice --yes
+elysd tx gov vote 1 yes --from walletname --yes
 ```
 
 #### Delete Airdrop entry using Gov Proposal
@@ -564,13 +564,13 @@ A proposal can be submitted to delete one or multiple airdrop entries in the tok
 To submit a proposal, use the following command:
 
 ```
-elysd tx gov submit-proposal /tmp/proposal.json --from alice --yes
+elysd tx gov submit-proposal /tmp/proposal.json --from walletname --yes
 ```
 
 To vote on a proposal, use the following command:
 
 ```
-elysd tx gov vote 1 yes --from alice --yes
+elysd tx gov vote 1 yes --from walletname --yes
 ```
 
 #### CLI to Query List of Airdrop entries
@@ -640,13 +640,13 @@ A proposal can be submitted to add one or multiple time-based-inflation entries 
 To submit a proposal, use the following command:
 
 ```
-elysd tx gov submit-proposal /tmp/proposal.json --from alice --yes
+elysd tx gov submit-proposal /tmp/proposal.json --from walletname --yes
 ```
 
 To vote on a proposal, use the following command:
 
 ```
-elysd tx gov vote 1 yes --from alice --yes
+elysd tx gov vote 1 yes --from walletname --yes
 ```
 
 #### Update Time-Based-Inflation entry using Gov Proposal
@@ -680,13 +680,13 @@ A proposal can be submitted to update one or multiple time-based-inflation entri
 To submit a proposal, use the following command:
 
 ```
-elysd tx gov submit-proposal /tmp/proposal.json --from alice --yes
+elysd tx gov submit-proposal /tmp/proposal.json --from walletname --yes
 ```
 
 To vote on a proposal, use the following command:
 
 ```
-elysd tx gov vote 1 yes --from alice --yes
+elysd tx gov vote 1 yes --from walletname --yes
 ```
 
 #### Delete Time-Based-Inflation entry using Gov Proposal
@@ -712,13 +712,13 @@ A proposal can be submitted to delete one or multiple time-based-inflation entri
 To submit a proposal, use the following command:
 
 ```
-elysd tx gov submit-proposal /tmp/proposal.json --from alice --yes
+elysd tx gov submit-proposal /tmp/proposal.json --from walletname --yes
 ```
 
 To vote on a proposal, use the following command:
 
 ```
-elysd tx gov vote 1 yes --from alice --yes
+elysd tx gov vote 1 yes --from walletname --yes
 ```
 
 #### CLI to Query List of Time-Based-Inflation entries
@@ -728,6 +728,73 @@ To query the list of the time-based-inflation entries in the tokenomics module, 
 ```
 elysd q tokenomics list-time-based-inflation
 ```
+
+### Denom Units
+
+The `denom_units` property is an array of objects defined in the [config.yml](./config.yml) file, with each object defining a single denomination unit. Each unit object has three properties - `denom`, `exponent`, and `aliases`.
+
+For the ELYS token, there are three denomination units defined with aliases:
+
+- `uelys`: This is the base unit of the ELYS token, and has no aliases.
+
+- `melys`: This unit has an exponent of 3, which means that 1 `melys` is equal to 1000 `uelys`. It has one alias - `millielys`.
+
+- `elys`: This unit has an exponent of 6, which means that 1 `elys` is equal to 1,000,000 `uelys`. It has no aliases.
+
+The aliases for the `melys` unit are specified as `millielys`, which is a common prefix used to denote a thousandth of a unit. These aliases can be used interchangeably with the primary unit names in order to make the values more readable and easier to work with.
+
+</details>
+
+## TestNet Parameters
+
+Here are the definitions and current values of each individual parameter of the Elys TestNet Network as of May 8th, 2023.
+
+<details>
+<summary>Click to expand/collapse</summary>
+
+### Minting
+
+Defines the rules for automated minting of new tokens. In the current implementation, minting is entirely disabled.
+
+### Staking
+
+Defines the rules for staking and delegating tokens in the network. Validators and delegators must lock their tokens for a certain period to participate in consensus and receive rewards. The `unbonding_time` parameter specifies the duration for which a validator's tokens are locked after they unbond.
+
+- `Max_entries`: The maximum number of entries in the validator set. Current value: 7.
+- `Historical_entries`: The number of entries to keep in the historical validator set. Current value: 10,000.
+- `Unbonding_time`: The time period for which a validator's tokens are locked after they unbond. Current value: 1,209,600 seconds (equals to 14 days).
+- `Max_validators`: The maximum number of validators that can be active at once. Current value: 100.
+- `Bond_denom: The denomination used for staking tokens. Current value: `uelys`.
+
+### Governance
+
+Defines the rules for proposing and voting on changes to the network. To make a proposal, a minimum deposit of ELYS is required. The proposal must then go through a voting process where a certain percentage of bonded tokens must vote, and a certain percentage of those votes must be in favor of the proposal for it to pass.
+
+- `Min_deposit`: The minimum amount of ELYS required for a proposal to enter voting. Current value: 10 ELYS.
+- `Max_deposit_period`: The maximum period for which deposits can be made for a proposal. Current value: 60.
+- `Quorum: The minimum percentage of total bonded tokens that must vote for a proposal to be considered valid. Current value: 33.4%.
+- `Threshold`: The minimum percentage of yes votes required for a proposal to pass. Current value: 50%.
+- `Veto_threshold`: The percentage of no votes required to veto a proposal. Current value: 33.4%.
+- `Voting_period`: The period for which voting on a proposal is open. Current value: 60.
+
+### Distribution
+
+Defines the distribution of rewards and fees in the network. Block proposers receive a portion of the block rewards as an incentive to maintain the network. The `community_tax` parameter specifies the percentage of the rewards that are allocated to a community pool for network development and improvement.
+
+- `Community_tax`: The percentage of inflation that is allocated to the community pool. Current value: 2%.
+- `Base_proposer_reward`: The base percentage of block rewards given to proposers. Current value: 1%.
+- `Bonus_proposer_reward`: The additional percentage of block rewards given to proposers if they include all valid transactions. Current value: 4%.
+- `Withdraw_addr_enabled`: A boolean flag that indicates whether withdraw addresses are enabled. Current value: true.
+
+### Slashing
+
+Defines the penalties for validators who violate the network rules or fail to perform their duties. Validators who sign blocks incorrectly or go offline for too long will be penalized with a percentage of their bonded tokens being slashed. The `signed_blocks_window` parameter specifies the number of blocks used to determine a validator's uptime percentage, and the `min_signed_per_window` parameter specifies the minimum percentage of blocks that a validator must sign in each window to avoid being slashed. The `downtime_jail_duration` parameter specifies the duration for which a validator is jailed if they miss too many blocks.
+
+- `Signed_blocks_window`: The number of blocks used to determine a validator's uptime percentage. Current value: 30,000.
+- `Min_signed_per_window`: The minimum percentage of blocks that a validator must sign in each window to avoid being slashed. Current value: 5%.
+- `Downtime_jail_duration`: The duration for which a validator is jailed if they miss too many blocks. Current value: 600 seconds.
+- `Slash_fraction_double_sign`: The percentage of a validator's bonded tokens that are slashed if they double sign. Current value: 0.01%.
+- `Slash_fraction_downtime`: The percentage of a validator's bonded tokens that are slashed if they are offline for too long. Current value: 5%.
 
 </details>
 

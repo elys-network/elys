@@ -1,0 +1,16 @@
+syntax = "proto3";
+package elysnetwork.elys.incentive;
+
+option go_package            = "github.com/elys-network/elys/x/incentive/types";
+option (gogoproto.equal_all) = true;
+
+import "gogoproto/gogo.proto";
+import "cosmos/base/v1beta1/coin.proto";
+
+// FeePool is the global fee pool for distribution.
+message FeePool {
+  repeated cosmos.base.v1beta1.DecCoin community_pool = 1 [
+    (gogoproto.nullable)     = false,
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.DecCoins"
+  ];
+}
