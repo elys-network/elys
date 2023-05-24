@@ -526,3 +526,4 @@ func (suite *KeeperTestSuite) TestExitPool_Events() {
 // TODO: Check weight recovery treasury empty case
 // TODO: handle case bonus pool does not have enough amount
 // TODO: check fee distribution
+// TODO: write table driven data on spec folder for various cases to show the comparison with Osmosis
