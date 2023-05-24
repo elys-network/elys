@@ -98,9 +98,9 @@ func (k Keeper) StandardStakingToken(ctx sdk.Context, delegator string, validato
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "unable to convert address from bech32")
 	}
 
-	_, err = sdk.AccAddressFromBech32(validator)
+	_, err = sdk.ValAddressFromBech32(validator)
 	if err != nil {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "unable to convert address from bech32")
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "unable to convert validator address from bech32")
 	}
 
 	/***********************************************************/

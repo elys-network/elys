@@ -22,8 +22,11 @@ const (
 	MemStoreKey = "mem_incentive"
 )
 
-// Denom definition - Eden and Eden boost
+// Denom definition - Elys, Eden and Eden boost
 const (
+	// Eden denom
+	Elys = "uelys"
+
 	// Eden denom
 	Eden = "ueden"
 

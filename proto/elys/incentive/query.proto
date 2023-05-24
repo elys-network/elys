@@ -20,54 +20,12 @@ service Query {
   
   }
   
-  // ValidatorOutstandingRewards queries rewards of a validator address.
-  rpc ValidatorOutstandingRewards (QueryValidatorOutstandingRewardsRequest) returns (QueryValidatorOutstandingRewardsResponse) {
-    option (google.api.http).get = "/elys-network/elys/incentive/validators/{validator_address}/outstanding_rewards";
-  
-  }
-  
-  // ValidatorCommission queries accumulated commission for a validator.
-  rpc ValidatorCommission (QueryValidatorCommissionRequest) returns (QueryValidatorCommissionResponse) {
-    option (google.api.http).get = "/elys-network/elys/incentive/validators/{validator_address}/commission";
-  
-  }
-  
-  // ValidatorSlashes queries slash events of a validator.
-  rpc ValidatorSlashes (QueryValidatorSlashesRequest) returns (QueryValidatorSlashesResponse) {
-    option (google.api.http).get = "/elys-network/elys/incentive/validators/{validator_address}/slashes";
-  
-  }
-  
-  // DelegationRewards queries the total rewards accrued by a delegation.
-  rpc DelegationRewards (QueryDelegationRewardsRequest) returns (QueryDelegationRewardsResponse) {
-    option (google.api.http).get = "/elys-network/elys/incentive/delegators/{delegator_address}/rewards/{validator_address}";
-  
-  }
-  
-  // DelegationTotalRewards queries the total rewards accrued by a each
-  // validator.
-  rpc DelegationTotalRewards (QueryDelegationTotalRewardsRequest) returns (QueryDelegationTotalRewardsResponse) {
-    option (google.api.http).get = "/elys-network/elys/incentive/delegators/{delegator_address}/rewards";
-  
-  }
-  
-  // DelegatorValidators queries the validators of a delegator.
-  rpc DelegatorValidators (QueryDelegatorValidatorsRequest) returns (QueryDelegatorValidatorsResponse) {
-    option (google.api.http).get = "/elys-network/elys/incentive/delegators/{delegator_address}/validators";
-  
-  }
-  
   // Queries a list of CommunityPool items.
   rpc CommunityPool (QueryCommunityPoolRequest) returns (QueryCommunityPoolResponse) {
     option (google.api.http).get = "/elys-network/elys/incentive/community_pool";
   
   }
   
-  // Queries a list of DelegatorWithdrawAddress items.
-  rpc DelegatorWithdrawAddress (QueryDelegatorWithdrawAddressRequest) returns (QueryDelegatorWithdrawAddressResponse) {
-    option (google.api.http).get = "/elys-network/elys/incentive/delegators/{delegator_address}/withdraw_address";
-  
-  }
 }
 // QueryParamsRequest is request type for the Query/Params RPC method.
 message QueryParamsRequest {}
@@ -79,105 +37,11 @@ message QueryParamsResponse {
   Params params = 1 [(gogoproto.nullable) = false];
 }
 
-message QueryValidatorOutstandingRewardsRequest {
-  string validator_address = 1;
-}
-
-message QueryValidatorOutstandingRewardsResponse {
-  ValidatorOutstandingRewards rewards = 1 [(gogoproto.nullable) = false];
-}
-
-message QueryValidatorCommissionRequest {
-  string validator_address = 1;
-}
-
-message QueryValidatorCommissionResponse {
-  
-  // commission defines the commision the validator received.
-  ValidatorAccumulatedCommission commission = 1 [(gogoproto.nullable) = false];
-}
-
-message QueryValidatorSlashesRequest {
-  option (gogoproto.goproto_getters) = false;
-  
-  // validator_address defines the validator address to query for.
-  string validator_address = 1;
-  
-  // starting_height defines the optional starting height to query the slashes.
-  uint64 starting_height = 2;
-  
-  // starting_height defines the optional ending height to query the slashes.
-  uint64 ending_height = 3;
-  
-  // pagination defines an optional pagination for the request.
-  cosmos.base.query.v1beta1.PageRequest pagination = 4;
-}
-
-message QueryValidatorSlashesResponse {
-  
-  // slashes defines the slashes the validator received.
-  repeated ValidatorSlashEvent slashes = 1 [(gogoproto.nullable) = false];
-  
-  // pagination defines the pagination in the response.
-  cosmos.base.query.v1beta1.PageResponse pagination = 2;
-}
-
-message QueryDelegationRewardsRequest {
-  option (gogoproto.goproto_getters) = false;
-  string delegator_address = 1;
-  string validator_address = 2;
-}
-
-message QueryDelegationRewardsResponse {
-  
-  // rewards defines the rewards accrued by a delegation.
-  repeated cosmos.base.v1beta1.DecCoin rewards = 1 [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.DecCoins"];
-}
-
-message QueryDelegationTotalRewardsRequest {
-  option (gogoproto.goproto_getters) = false;
-  string delegator_address = 1;
-}
-
-message QueryDelegationTotalRewardsResponse {
-  
-  // rewards defines all the rewards accrued by a delegator.
-  repeated DelegationDelegatorReward rewards = 1 [(gogoproto.nullable) = false];
-  
-  // total defines the sum of all the rewards.
-  repeated cosmos.base.v1beta1.DecCoin total = 2 [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.DecCoins"];
-}
-
-message QueryDelegatorValidatorsRequest {
-  option (gogoproto.goproto_getters) = false;
-  string delegator_address = 1;
-}
-
-message QueryDelegatorValidatorsResponse {
-  option (gogoproto.goproto_getters) = false;
-  
-  // validators defines the validators a delegator is delegating for.
-  repeated string validators = 1;
-}
-
 message QueryCommunityPoolRequest {}
 
 message QueryCommunityPoolResponse {
   
   // pool defines community pool's coins.
   repeated cosmos.base.v1beta1.DecCoin pool = 1 [(gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.DecCoins", (gogoproto.nullable) = false];
-}
-
-message QueryDelegatorWithdrawAddressRequest {
-  option (gogoproto.goproto_getters) = false;
- 
-  string delegator_address = 1;
-}
-
-message QueryDelegatorWithdrawAddressResponse {
-  option (gogoproto.goproto_getters) = false;
-
-  // withdraw_address defines the delegator address to query for.
-  string withdraw_address = 1;
 }
 

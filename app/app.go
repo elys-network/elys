@@ -145,6 +145,9 @@ import (
 const (
 	AccountAddressPrefix = "elys"
 	Name                 = "elys"
+
+	// Temperal declaration until we have dex module
+	DexRevenueCollectorName = "dev_revenue_collector"
 )
 
 // this line is used by starport scaffolding # stargate/wasm/app/enabledProposals
@@ -209,6 +212,7 @@ var (
 	// module account permissions
 	maccPerms = map[string][]string{
 		authtypes.FeeCollectorName:       nil,
+		DexRevenueCollectorName:          nil,
 		icatypes.ModuleName:              nil,
 		minttypes.ModuleName:             {authtypes.Minter},
 		stakingtypes.BondedPoolName:      {authtypes.Burner, authtypes.Staking},
@@ -577,6 +581,7 @@ func NewElysApp(
 		app.AccountKeeper,
 		app.BankKeeper,
 		authtypes.FeeCollectorName,
+		DexRevenueCollectorName,
 	)
 	incentiveModule := incentivemodule.NewAppModule(appCodec, app.IncentiveKeeper)
 
