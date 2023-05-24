@@ -518,5 +518,11 @@ func (suite *KeeperTestSuite) TestExitPool_Events() {
 // - Check weight breaking fee
 // - Check slippage
 
+// TODO: check combined scenario - $500 JUNO sell, $500 JUNO buy (weight breaking)
+// TODO: check combined scenario - $500 JUNO sell, $500 JUNO buy (weight not breaking)
+// TODO: run simulation test with a lot of traffic, and see pool status after the execution
+// TODO: Check maximum weight breaking fee applied
+// TODO: Check maximum weight recovery bonus applied
+// TODO: Check weight recovery treasury empty case
 // TODO: handle case bonus pool does not have enough amount
 // TODO: check fee distribution
