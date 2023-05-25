@@ -70197,6 +70197,16 @@ definitions:
         type: string
         format: int64
     title: Incentive Info
+  elysnetwork.elys.incentive.MsgWithdrawRewardsResponse:
+    type: object
+    description: >-
+      MsgWithdrawDelegatorRewardResponse defines the Msg/WithdrawDelegatorReward
+      response type.
+  elysnetwork.elys.incentive.MsgWithdrawValidatorCommissionResponse:
+    type: object
+    description: >-
+      MsgWithdrawValidatorCommissionResponse defines the
+      Msg/WithdrawValidatorCommission response type.
   elysnetwork.elys.incentive.Params:
     type: object
     properties:

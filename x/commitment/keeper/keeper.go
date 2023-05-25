@@ -10,7 +10,9 @@ import (
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
 	"github.com/tendermint/tendermint/libs/log"
 
+	aptypes "github.com/elys-network/elys/x/assetprofile/types"
 	"github.com/elys-network/elys/x/commitment/types"
+	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
 
 // Interface declearation
@@ -26,6 +28,18 @@ type CommitmentKeeperI interface {
 
 	// Get commitment
 	GetCommitments(sdk.Context, string) (types.Commitments, bool)
+
+	// Withdraw tokens
+	// context, creator, denom, amount
+	ProcessWithdrawTokens(sdk.Context, string, string, sdk.Int) error
+
+	// Withdraw USDC from Elys
+	ProcessWithdrawElysTokens(sdk.Context, string, string, sdk.Int) error
+	// Withdraw validator commission
+	// context, delegator, validator, denom, amount
+	ProcessWithdrawValidatorCommission(sdk.Context, string, string, string, sdk.Int) error
+	// Withdraw validator commission USDC from Elys
+	ProcessWithdrawValidatorElysCommission(sdk.Context, string, string, string, sdk.Int) error
 }
 
 var _ CommitmentKeeperI = Keeper{}
@@ -175,6 +189,244 @@ func (k Keeper) StandardStakingToken(ctx sdk.Context, delegator string, validato
 			types.EventTypeCommitmentChanged,
 			sdk.NewAttribute(types.AttributeCreator, validator),
 			sdk.NewAttribute(types.AttributeAmount, sdk.ZeroInt().String()),
+			sdk.NewAttribute(types.AttributeDenom, denom),
+		),
+	)
+
+	return nil
+}
+
+// Withdraw Token
+func (k Keeper) ProcessWithdrawTokens(ctx sdk.Context, creator string, denom string, amount sdk.Int) error {
+	assetProfile, found := k.apKeeper.GetEntry(ctx, denom)
+	if !found {
+		return sdkerrors.Wrapf(aptypes.ErrAssetProfileNotFound, "denom: %s", denom)
+	}
+
+	if !assetProfile.WithdrawEnabled {
+		return sdkerrors.Wrapf(types.ErrWithdrawDisabled, "denom: %s", denom)
+	}
+
+	commitments, err := k.DeductCommitments(ctx, creator, denom, amount)
+	if err != nil {
+		return err
+	}
+
+	// Update the commitments
+	k.SetCommitments(ctx, commitments)
+
+	withdrawCoins := sdk.NewCoins(sdk.NewCoin(denom, amount))
+
+	// Mint the withdrawn tokens to the module account
+	err = k.bankKeeper.MintCoins(ctx, types.ModuleName, withdrawCoins)
+	if err != nil {
+		return sdkerrors.Wrap(sdkerrors.ErrInsufficientFunds, "unable to mint withdrawn tokens")
+	}
+
+	addr, err := sdk.AccAddressFromBech32(commitments.Creator)
+	if err != nil {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "unable to convert address from bech32")
+	}
+
+	// Send the minted coins to the user's account
+	err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, addr, withdrawCoins)
+	if err != nil {
+		return sdkerrors.Wrap(sdkerrors.ErrInsufficientFunds, "unable to send withdrawn tokens")
+	}
+
+	// Emit Hook commitment changed
+	k.AfterCommitmentChange(ctx, creator, sdk.NewCoin(denom, amount))
+
+	// Emit blockchain event
+	ctx.EventManager().EmitEvent(
+		sdk.NewEvent(
+			types.EventTypeCommitmentChanged,
+			sdk.NewAttribute(types.AttributeCreator, creator),
+			sdk.NewAttribute(types.AttributeAmount, amount.String()),
+			sdk.NewAttribute(types.AttributeDenom, denom),
+		),
+	)
+
+	return nil
+}
+
+// Withdraw Token Elys
+// Convert Elys to USDC and withdraw
+func (k Keeper) ProcessWithdrawElysTokens(ctx sdk.Context, creator string, denom string, amount sdk.Int) error {
+	// This only access Elys and convert it into USDC
+	if denom != ptypes.Elys {
+		return sdkerrors.Wrapf(aptypes.ErrAssetProfileNotFound, "denom: %s", denom)
+	}
+
+	assetProfile, found := k.apKeeper.GetEntry(ctx, denom)
+	if !found {
+		return sdkerrors.Wrapf(aptypes.ErrAssetProfileNotFound, "denom: %s", denom)
+	}
+
+	if !assetProfile.WithdrawEnabled {
+		return sdkerrors.Wrapf(types.ErrWithdrawDisabled, "denom: %s", denom)
+	}
+
+	commitments, err := k.DeductCommitments(ctx, creator, denom, amount)
+	if err != nil {
+		return err
+	}
+
+	// Update the commitments
+	k.SetCommitments(ctx, commitments)
+
+	denom = ptypes.USDC
+	// Calculate convert amount USDC from Elys
+	// Should implement it here.
+	withdrawCoins := sdk.NewCoins(sdk.NewCoin(denom, amount))
+
+	// Mint the withdrawn tokens to the module account
+	// For now it is mint, but later on, it will be just accessing to USDC pool
+	err = k.bankKeeper.MintCoins(ctx, types.ModuleName, withdrawCoins)
+	if err != nil {
+		return sdkerrors.Wrap(sdkerrors.ErrInsufficientFunds, "unable to mint withdrawn tokens")
+	}
+
+	addr, err := sdk.AccAddressFromBech32(commitments.Creator)
+	if err != nil {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "unable to convert address from bech32")
+	}
+
+	// Send the minted coins to the user's account
+	err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, addr, withdrawCoins)
+	if err != nil {
+		return sdkerrors.Wrap(sdkerrors.ErrInsufficientFunds, "unable to send withdrawn tokens")
+	}
+
+	// Emit Hook commitment changed
+	k.AfterCommitmentChange(ctx, creator, sdk.NewCoin(denom, amount))
+
+	// Emit blockchain event
+	ctx.EventManager().EmitEvent(
+		sdk.NewEvent(
+			types.EventTypeCommitmentChanged,
+			sdk.NewAttribute(types.AttributeCreator, creator),
+			sdk.NewAttribute(types.AttributeAmount, amount.String()),
+			sdk.NewAttribute(types.AttributeDenom, denom),
+		),
+	)
+
+	return nil
+}
+
+// Withdraw Token
+func (k Keeper) ProcessWithdrawValidatorCommission(ctx sdk.Context, delegator string, creator string, denom string, amount sdk.Int) error {
+	assetProfile, found := k.apKeeper.GetEntry(ctx, denom)
+	if !found {
+		return sdkerrors.Wrapf(aptypes.ErrAssetProfileNotFound, "denom: %s", denom)
+	}
+
+	if !assetProfile.WithdrawEnabled {
+		return sdkerrors.Wrapf(types.ErrWithdrawDisabled, "denom: %s", denom)
+	}
+
+	commitments, err := k.DeductCommitments(ctx, creator, denom, amount)
+	if err != nil {
+		return err
+	}
+
+	// Update the commitments
+	k.SetCommitments(ctx, commitments)
+
+	withdrawCoins := sdk.NewCoins(sdk.NewCoin(denom, amount))
+
+	// Mint the withdrawn tokens to the module account
+	err = k.bankKeeper.MintCoins(ctx, types.ModuleName, withdrawCoins)
+	if err != nil {
+		return sdkerrors.Wrap(sdkerrors.ErrInsufficientFunds, "unable to mint withdrawn tokens")
+	}
+
+	// Withdraw to the delegated wallet
+	addr, err := sdk.AccAddressFromBech32(delegator)
+	if err != nil {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "unable to convert address from bech32")
+	}
+
+	// Send the minted coins to the user's account
+	err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, addr, withdrawCoins)
+	if err != nil {
+		return sdkerrors.Wrap(sdkerrors.ErrInsufficientFunds, "unable to send withdrawn tokens")
+	}
+
+	// Emit Hook commitment changed
+	k.AfterCommitmentChange(ctx, creator, sdk.NewCoin(denom, amount))
+
+	// Emit blockchain event
+	ctx.EventManager().EmitEvent(
+		sdk.NewEvent(
+			types.EventTypeCommitmentChanged,
+			sdk.NewAttribute(types.AttributeCreator, creator),
+			sdk.NewAttribute(types.AttributeAmount, amount.String()),
+			sdk.NewAttribute(types.AttributeDenom, denom),
+		),
+	)
+
+	return nil
+}
+
+// Withdraw Token Elys
+// Convert Elys to USDC and withdraw
+func (k Keeper) ProcessWithdrawValidatorElysCommission(ctx sdk.Context, delegator string, creator string, denom string, amount sdk.Int) error {
+	// This only access Elys and convert it into USDC
+	if denom != ptypes.Elys {
+		return sdkerrors.Wrapf(aptypes.ErrAssetProfileNotFound, "denom: %s", denom)
+	}
+
+	assetProfile, found := k.apKeeper.GetEntry(ctx, denom)
+	if !found {
+		return sdkerrors.Wrapf(aptypes.ErrAssetProfileNotFound, "denom: %s", denom)
+	}
+
+	if !assetProfile.WithdrawEnabled {
+		return sdkerrors.Wrapf(types.ErrWithdrawDisabled, "denom: %s", denom)
+	}
+
+	commitments, err := k.DeductCommitments(ctx, creator, denom, amount)
+	if err != nil {
+		return err
+	}
+
+	// Update the commitments
+	k.SetCommitments(ctx, commitments)
+
+	denom = ptypes.USDC
+	// Calculate convert amount USDC from Elys
+	// Should implement it here.
+	withdrawCoins := sdk.NewCoins(sdk.NewCoin(denom, amount))
+
+	// Mint the withdrawn tokens to the module account
+	// For now it is mint, but later on, it will be just accessing to USDC pool
+	err = k.bankKeeper.MintCoins(ctx, types.ModuleName, withdrawCoins)
+	if err != nil {
+		return sdkerrors.Wrap(sdkerrors.ErrInsufficientFunds, "unable to mint withdrawn tokens")
+	}
+
+	// Withdraw to the delegated wallet
+	addr, err := sdk.AccAddressFromBech32(delegator)
+	if err != nil {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "unable to convert address from bech32")
+	}
+
+	// Send the minted coins to the user's account
+	err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, addr, withdrawCoins)
+	if err != nil {
+		return sdkerrors.Wrap(sdkerrors.ErrInsufficientFunds, "unable to send withdrawn tokens")
+	}
+
+	// Emit Hook commitment changed
+	k.AfterCommitmentChange(ctx, creator, sdk.NewCoin(denom, amount))
+
+	// Emit blockchain event
+	ctx.EventManager().EmitEvent(
+		sdk.NewEvent(
+			types.EventTypeCommitmentChanged,
+			sdk.NewAttribute(types.AttributeCreator, creator),
+			sdk.NewAttribute(types.AttributeAmount, amount.String()),
 			sdk.NewAttribute(types.AttributeDenom, denom),
 		),
 	)
