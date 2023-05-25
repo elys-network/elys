@@ -21,6 +21,29 @@ const (
 	AnteStoreKey = "ante-handler-param"
 )
 
+const (
+	// Eden denom
+	Elys = "uelys"
+
+	// Eden denom
+	Eden = "ueden"
+
+	// Eden Boost denom
+	EdenB = "uedenb"
+	
+	// USDC
+	USDC = "usdc"
+
+	// 52.1429 weeks
+	WeeksPerYear = 52
+
+	// 365 days
+	DaysPerYear = 365
+
+	// 8760 hours
+	HoursPerYear = 8760
+)
+
 var _ binary.ByteOrder
 
 func KeyPrefix(p string) []byte {
