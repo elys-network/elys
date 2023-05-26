@@ -8,7 +8,10 @@ import (
 
 // x/amm module sentinel errors
 var (
-	ErrInvalidPool = sdkerrors.Register(ModuleName, 10, "attempting to create an invalid pool")
+	ErrLimitMinAmount      = sdkerrors.Register(ModuleName, 7, "calculated amount is lesser than min amount")
+	ErrInvalidMathApprox   = sdkerrors.Register(ModuleName, 8, "invalid calculated result")
+	ErrInvalidPool         = sdkerrors.Register(ModuleName, 10, "attempting to create an invalid pool")
+	ErrDenomNotFoundInPool = sdkerrors.Register(ModuleName, 11, "denom does not exist in pool")
 
 	ErrNegativeSwapFee = sdkerrors.Register(ModuleName, 23, "swap fee is negative")
 	ErrNegativeExitFee = sdkerrors.Register(ModuleName, 24, "exit fee is negative")

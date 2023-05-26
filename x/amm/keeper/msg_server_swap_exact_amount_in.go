@@ -13,5 +13,14 @@ func (k msgServer) SwapExactAmountIn(goCtx context.Context, msg *types.MsgSwapEx
 	// TODO: Handling the message
 	_ = ctx
 
+	// Swap event is handled elsewhere
+	ctx.EventManager().EmitEvents(sdk.Events{
+		sdk.NewEvent(
+			sdk.EventTypeMessage,
+			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
+			sdk.NewAttribute(sdk.AttributeKeySender, msg.Creator),
+		),
+	})
+
 	return &types.MsgSwapExactAmountInResponse{}, nil
 }
