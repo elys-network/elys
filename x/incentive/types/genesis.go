@@ -1,29 +1,15 @@
 package types
 
-import (
-	sdk "github.com/cosmos/cosmos-sdk/types"
-)
-
 // DefaultIndex is the default global index
 const DefaultIndex uint64 = 1
 
 //nolint:interfacer
 func NewGenesisState(
-	params Params, fp FeePool, dwis []DelegatorWithdrawInfo, pp sdk.ConsAddress, r []ValidatorOutstandingRewardsRecord,
-	acc []ValidatorAccumulatedCommissionRecord, historical []ValidatorHistoricalRewardsRecord,
-	cur []ValidatorCurrentRewardsRecord, dels []DelegatorStartingInfoRecord, slashes []ValidatorSlashEventRecord,
+	params Params, fp FeePool,
 ) *GenesisState {
 	return &GenesisState{
-		Params:                          params,
-		FeePool:                         fp,
-		DelegatorWithdrawInfos:          dwis,
-		PreviousProposer:                pp.String(),
-		OutstandingRewards:              r,
-		ValidatorAccumulatedCommissions: acc,
-		ValidatorHistoricalRewards:      historical,
-		ValidatorCurrentRewards:         cur,
-		DelegatorStartingInfos:          dels,
-		ValidatorSlashEvents:            slashes,
+		Params:  params,
+		FeePool: fp,
 	}
 }
 
@@ -31,16 +17,8 @@ func NewGenesisState(
 func DefaultGenesis() *GenesisState {
 	return &GenesisState{
 		// this line is used by starport scaffolding # genesis/types/default
-		Params:                          DefaultParams(),
-		FeePool:                         InitialFeePool(),
-		DelegatorWithdrawInfos:          []DelegatorWithdrawInfo{},
-		PreviousProposer:                "",
-		OutstandingRewards:              []ValidatorOutstandingRewardsRecord{},
-		ValidatorAccumulatedCommissions: []ValidatorAccumulatedCommissionRecord{},
-		ValidatorHistoricalRewards:      []ValidatorHistoricalRewardsRecord{},
-		ValidatorCurrentRewards:         []ValidatorCurrentRewardsRecord{},
-		DelegatorStartingInfos:          []DelegatorStartingInfoRecord{},
-		ValidatorSlashEvents:            []ValidatorSlashEventRecord{},
+		Params:  DefaultParams(),
+		FeePool: InitialFeePool(),
 	}
 }
 

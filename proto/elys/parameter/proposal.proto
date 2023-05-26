@@ -1,0 +1,22 @@
+syntax = "proto3";
+package elysnetwork.elys.parameter;
+
+option go_package = "github.com/elys-network/elys/x/parameter/types";
+
+message ProposalUpdateMinCommission {
+  string title = 1;
+  string description = 2;
+  string minCommission = 3;
+}
+
+message ProposalUpdateMaxVotingPower {
+  string title = 1;
+  string description = 2;
+  string maxVotingPower = 3;
+}
+
+message ProposalUpdateMinSelfDelegation {
+  string title = 1;
+  string description = 2;
+  string minSelfDelegation = 3;
+}

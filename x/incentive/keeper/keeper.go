@@ -15,6 +15,7 @@ import (
 	ctypes "github.com/elys-network/elys/x/commitment/types"
 	etypes "github.com/elys-network/elys/x/epochs/types"
 	"github.com/elys-network/elys/x/incentive/types"
+	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
 
 type (
@@ -29,7 +30,10 @@ type (
 		authKeeper types.AccountKeeper
 		bankKeeper types.BankKeeper
 
-		feeCollectorName string // name of the FeeCollector ModuleAccount
+		feeCollectorName    string // name of the FeeCollector ModuleAccount
+		dexRevCollectorName string // name of the Dex Revenue ModuleAccount
+
+		lpk *LiquidityKeeper
 	}
 )
 
@@ -43,6 +47,7 @@ func NewKeeper(
 	ak types.AccountKeeper,
 	bk types.BankKeeper,
 	feeCollectorName string,
+	dexRevCollectorName string,
 ) *Keeper {
 	// set KeyTable if it has not already been set
 	if !ps.HasKeyTable() {
@@ -50,16 +55,18 @@ func NewKeeper(
 	}
 
 	return &Keeper{
-		cdc:              cdc,
-		storeKey:         storeKey,
-		memKey:           memKey,
-		paramstore:       ps,
-		cmk:              ck,
-		stk:              sk,
-		tci:              &types.TotalCommitmentInfo{},
-		feeCollectorName: feeCollectorName,
-		authKeeper:       ak,
-		bankKeeper:       bk,
+		cdc:                 cdc,
+		storeKey:            storeKey,
+		memKey:              memKey,
+		paramstore:          ps,
+		cmk:                 ck,
+		stk:                 sk,
+		tci:                 &types.TotalCommitmentInfo{},
+		feeCollectorName:    feeCollectorName,
+		dexRevCollectorName: dexRevCollectorName,
+		authKeeper:          ak,
+		bankKeeper:          bk,
+		lpk:                 NewLiquidityKeeper(),
 	}
 }
 
@@ -67,20 +74,76 @@ func (k Keeper) Logger(ctx sdk.Context) log.Logger {
 	return ctx.Logger().With("module", fmt.Sprintf("x/%s", types.ModuleName))
 }
 
+// Move gas fees collected to incentive module
+func (k Keeper) CollectGasFeesToIncentiveModule(ctx sdk.Context) sdk.Coins {
+	// fetch and clear the collected fees for distribution, since this is
+	// called in BeginBlock, collected fees will be from the previous block
+	// (and distributed to the previous proposer)
+	feeCollector := k.authKeeper.GetModuleAccount(ctx, k.feeCollectorName)
+	feesCollectedInt := k.bankKeeper.GetAllBalances(ctx, feeCollector.GetAddress())
+	// feesCollected := sdk.NewDecCoinsFromCoins(feesCollectedInt...)
+
+	// transfer collected fees to the distribution module account
+	err := k.bankKeeper.SendCoinsFromModuleToModule(ctx, k.feeCollectorName, types.ModuleName, feesCollectedInt)
+	if err != nil {
+		panic(err)
+	}
+
+	return feesCollectedInt
+}
+
+// Pull DEX revenus collected to incentive module
+func (k Keeper) CollectDEXRevenusToIncentiveModule(ctx sdk.Context) sdk.Coins {
+	// transfer collected fees to the distribution module account
+
+	return sdk.Coins{}
+}
+
+// Fund community pool based on community tax
+func (k Keeper) UpdateCommunityPool(ctx sdk.Context, amt sdk.DecCoins) sdk.DecCoins {
+	// calculate fraction allocated to validators
+	communityTax := k.GetCommunityTax(ctx)
+	communityRevenus := amt.MulDecTruncate(communityTax)
+
+	// allocate community funding
+	feePool := k.GetFeePool(ctx)
+	feePool.CommunityPool = feePool.CommunityPool.Add(communityRevenus...)
+	k.SetFeePool(ctx, feePool)
+
+	return amt.Sub(communityRevenus)
+}
+
 // Update total commitment info
 func (k Keeper) UpdateTotalCommitmentInfo(ctx sdk.Context) {
 	// Fetch total staked Elys amount again
 	k.tci.TotalElysBonded = k.stk.TotalBondedTokens(ctx)
 	// Initialize with amount zero
-	k.tci.TotalCommitted = sdk.ZeroInt()
+	k.tci.TotalEdenEdenBoostCommitted = sdk.ZeroInt()
+	// Initialize with amount zero
+	k.tci.TotalFeesCollected = sdk.Coins{}
+	// Initialize Lp tokens amount
+	k.tci.TotalLpTokensCommitted = make(map[string]sdk.Int)
 
-	// Iterate to calculate total Eden and Eden boost committed
+	// Collect gas fees collected
+	fees := k.CollectGasFeesToIncentiveModule(ctx)
+	// Collect DEX revenus collected
+	dexFees := k.CollectDEXRevenusToIncentiveModule(ctx)
+	// Calculate total fees - DEX revenus + Gas fees collected
+	k.tci.TotalFeesCollected = k.tci.TotalFeesCollected.Add(dexFees...).Add(fees...)
+
+	// Iterate to calculate total Eden, Eden boost and Lp tokens committed
 	k.cmk.IterateCommitments(ctx, func(commitments ctypes.Commitments) bool {
-		committedEdenToken := commitments.GetCommittedAmountForDenom(types.Eden)
-		committedEdenBoostToken := commitments.GetCommittedAmountForDenom(types.EdenB)
+		committedEdenToken := commitments.GetCommittedAmountForDenom(ptypes.Eden)
+		committedEdenBoostToken := commitments.GetCommittedAmountForDenom(ptypes.EdenB)
 
-		k.tci.TotalCommitted = k.tci.TotalCommitted.Add(committedEdenToken).Add(committedEdenBoostToken)
+		k.tci.TotalEdenEdenBoostCommitted = k.tci.TotalEdenEdenBoostCommitted.Add(committedEdenToken).Add(committedEdenBoostToken)
 
+		// Iterate to calcaulte total Lp tokens committed
+		k.lpk.IterateLiquidityPools(ctx, func(l LiquidityPool) bool {
+			committedLpToken := commitments.GetCommittedAmountForDenom(l.lpToken)
+			k.tci.TotalLpTokensCommitted[l.lpToken] = k.tci.TotalLpTokensCommitted[l.lpToken].Add(committedLpToken)
+			return false
+		})
 		return false
 	})
 }
@@ -88,7 +151,10 @@ func (k Keeper) UpdateTotalCommitmentInfo(ctx sdk.Context) {
 // Calculate total share of staking
 func (k Keeper) CalculateTotalShareOfStaking(amount sdk.Int) sdk.Dec {
 	// Total statked = Elys staked + Eden Committed + Eden boost Committed
-	totalStaked := k.tci.TotalElysBonded.Add(k.tci.TotalCommitted)
+	totalStaked := k.tci.TotalElysBonded.Add(k.tci.TotalEdenEdenBoostCommitted)
+	if totalStaked.LTE(sdk.ZeroInt()) {
+		return sdk.ZeroDec()
+	}
 
 	// Share = Amount / Total Staked
 	return sdk.NewDecFromInt(amount).QuoInt(totalStaked)
@@ -99,6 +165,7 @@ func (k Keeper) CalculateDelegatedAmount(ctx sdk.Context, delegator string) sdk.
 	// Derivate bech32 based delegator address
 	delAdr, err := sdk.AccAddressFromBech32(delegator)
 	if err != nil {
+		// This could be validator address
 		return sdk.ZeroInt()
 	}
 
@@ -170,68 +237,194 @@ func (k Keeper) UpdateUncommittedTokens(ctx sdk.Context, epochIdentifier string,
 	// Recalculate total committed info
 	k.UpdateTotalCommitmentInfo(ctx)
 
+	// Calculate 65% for LP, 35% for Stakers
+	dexRevenue := sdk.NewDecCoinsFromCoins(k.tci.TotalFeesCollected...)
+	devRevenue65 := dexRevenue.MulDecTruncate(sdk.NewDecWithPrec(65, 1))
+	devRevenue35 := dexRevenue.Sub(devRevenue65)
+
+	// Fund community pool based on the communtiy tax
+	devRevenueRemained35 := k.UpdateCommunityPool(ctx, devRevenue35)
+
+	// Elys amount in sdk.Dec type
+	devRevenue65Amt := devRevenue65.AmountOf(ptypes.Elys)
+	devRevenue35Amt := devRevenueRemained35.AmountOf(ptypes.Elys)
+
 	// Calculate eden amount per epoch
-	edenAmountPerEpoch := stakeIncentive.Amount.Quo(sdk.NewInt(stakeIncentive.NumEpochs))
+	edenAmountPerEpochStake := stakeIncentive.Amount.Quo(sdk.NewInt(stakeIncentive.NumEpochs))
+	edenAmountPerEpochLp := lpIncentive.Amount.Quo(sdk.NewInt(lpIncentive.NumEpochs))
 	edenBoostAPR := stakeIncentive.EdenBoostApr
 
-	// Iterate all delegations for the specified delegator
+	// Proxy TVL
+	// Multiplier on each liquidity pool
+	// We have 3 pools of 20, 30, 40 TVL
+	// We have mulitplier of 0.3, 0.5, 1.0
+	// Proxy TVL = 20*0.3+30*0.5+40*1.0
+	totalProxyTVL := k.lpk.CalculateProxyTVL()
+
+	totalEdenGiven := sdk.ZeroInt()
+	totalEdenGivenLP := sdk.ZeroInt()
+	totalRewardsGiven := sdk.ZeroInt()
+	totalRewardsGivenLP := sdk.ZeroInt()
 	// Process to increase uncomitted token amount of Eden & Eden boost
 	k.cmk.IterateCommitments(
 		ctx, func(commitments ctypes.Commitments) bool {
 			// Commitment owner
 			creator := commitments.Creator
+			_, err := sdk.AccAddressFromBech32(creator)
+			if err != nil {
+				// This could be validator address
+				return false
+			}
 
 			// Calculate delegated amount per delegator
 			delegatedAmt := k.CalculateDelegatedAmount(ctx, creator)
 
-			// Calculate new uncommitted Eden tokens for LP, staker, and Eden token holders
-			newUncommittedEdenTokens := k.CalculateNewUncommittedEdenTokens(ctx, delegatedAmt, commitments, edenAmountPerEpoch)
+			// Calculate new uncommitted Eden tokens from Eden & Eden boost committed, Dex rewards distribution
+			newUncommittedEdenTokens, dexRewards, dexRewardsByStake := k.CalculateNewUncommittedEdenTokensAndDexRewards(ctx, delegatedAmt, commitments, edenAmountPerEpochStake, devRevenue35Amt)
+			totalEdenGiven = totalEdenGiven.Add(newUncommittedEdenTokens)
+			totalRewardsGiven = totalRewardsGiven.Add(dexRewards)
 
-			// Give commission to validators
-			totalCommissionGiven := k.GiveCommissionToValidators(ctx, creator, delegatedAmt, newUncommittedEdenTokens)
+			// Calculate new uncommitted Eden tokens from LpTokens committed, Dex rewards distribution
+			newUncommittedEdenTokensLp, dexRewardsLp := k.CalculateNewUncommittedEdenTokensFromLPAndDexRewards(ctx, totalProxyTVL, commitments, edenAmountPerEpochLp, devRevenue65Amt)
+			totalEdenGivenLP = totalEdenGivenLP.Add(newUncommittedEdenTokensLp)
+			totalRewardsGivenLP = totalRewardsGivenLP.Add(dexRewardsLp)
+
+			// Calculate the total Eden uncommitted amount
+			newUncommittedEdenTokens = newUncommittedEdenTokens.Add(newUncommittedEdenTokensLp)
+
+			// Give commission to validators ( Eden from stakers and Dex rewards from stakers. )
+			edenCommissionGiven, dexRewardsCommissionGiven := k.GiveCommissionToValidators(ctx, creator, delegatedAmt, newUncommittedEdenTokens, dexRewardsByStake)
 
 			// Minus the given amount and increase with the remains only
-			newUncommittedEdenTokens = newUncommittedEdenTokens.Sub(totalCommissionGiven)
+			newUncommittedEdenTokens = newUncommittedEdenTokens.Sub(edenCommissionGiven)
+
+			// Plus LpDexRewards and minus commission given
+			dexRewards = dexRewards.Add(dexRewardsLp).Sub(dexRewardsCommissionGiven)
 
 			// Calculate new uncommitted Eden-Boost tokens for staker and Eden token holders
 			newUncommittedEdenBoostTokens := k.CalculateNewUncommittedEdenBoostTokens(ctx, delegatedAmt, commitments, epochIdentifier, edenBoostAPR)
 
 			// Update Commitments with new uncommitted token amounts
-			k.UpdateCommitments(ctx, creator, &commitments, newUncommittedEdenTokens, newUncommittedEdenBoostTokens)
+			k.UpdateCommitments(ctx, creator, &commitments, newUncommittedEdenTokens, newUncommittedEdenBoostTokens, dexRewards)
 
 			return false
 		},
 	)
+
+	// Calcualte the remainings
+	edenRemained := edenAmountPerEpochStake.Sub(totalEdenGiven)
+	edenRemainedLP := edenAmountPerEpochLp.Sub(totalEdenGivenLP)
+	dexRewardsRemained := devRevenue35Amt.Sub(sdk.NewDecFromInt(totalRewardsGiven))
+	dexRewardsRemainedLP := devRevenue65Amt.Sub(sdk.NewDecFromInt(totalRewardsGivenLP))
+
+	// Fund community the remain coins
+	// ----------------------------------
+	edenRemainedCoin := sdk.NewDecCoin(ptypes.Eden, edenRemained.Add(edenRemainedLP))
+	dexRewardsRemainedCoin := sdk.NewDecCoinFromDec(ptypes.Elys, dexRewardsRemained.Add(dexRewardsRemainedLP))
+
+	feePool := k.GetFeePool(ctx)
+	feePool.CommunityPool = feePool.CommunityPool.Add(edenRemainedCoin)
+	feePool.CommunityPool = feePool.CommunityPool.Add(dexRewardsRemainedCoin)
+	k.SetFeePool(ctx, feePool)
+	// ----------------------------------
 }
 
 // Calculate new Eden token amounts based on the given conditions and user's current uncommitted token balance
-func (k Keeper) CalculateNewUncommittedEdenTokens(ctx sdk.Context, delegatedAmt sdk.Int, commitments ctypes.Commitments, edenAmountPerEpoch sdk.Int) sdk.Int {
-	// Get LP commitments - Skip for now
-	edenCommittedByLP := sdk.ZeroInt()
-
+func (k Keeper) CalculateNewUncommittedEdenTokensAndDexRewards(ctx sdk.Context, delegatedAmt sdk.Int, commitments ctypes.Commitments, edenAmountPerEpoch sdk.Int, devRevenue35Amt sdk.Dec) (sdk.Int, sdk.Int, sdk.Dec) {
+	// -----------Eden & Eden boost calculation ---------------------
+	// --------------------------------------------------------------
 	// Get eden commitments and eden boost commitments
-	edenCommitted := commitments.GetCommittedAmountForDenom(types.Eden)
-	edenBoostCommitted := commitments.GetCommittedAmountForDenom(types.EdenB)
+	edenCommitted := commitments.GetCommittedAmountForDenom(ptypes.Eden)
+	edenBoostCommitted := commitments.GetCommittedAmountForDenom(ptypes.EdenB)
 
 	// compute eden reward based on above and param factors for each
-	totalEdenCommittedByStake := delegatedAmt.Add(edenCommitted).Add(edenBoostCommitted).Add(edenCommittedByLP)
+	totalEdenCommittedByStake := delegatedAmt.Add(edenCommitted).Add(edenBoostCommitted)
 	stakeShare := k.CalculateTotalShareOfStaking(totalEdenCommittedByStake)
 
 	// Calculate newly creating eden amount by its share
 	newEdenAllocated := stakeShare.MulInt(edenAmountPerEpoch)
 
-	return newEdenAllocated.TruncateInt()
+	// -----------------Fund community Eden token----------------------
+	// ----------------------------------------------------------------
+	edenCoin := sdk.NewDecCoinFromDec(ptypes.Eden, newEdenAllocated)
+	newEdenCoinRemained := k.UpdateCommunityPool(ctx, sdk.DecCoins{edenCoin})
+
+	// Get remained Eden amount
+	newEdenAllocated = newEdenCoinRemained.AmountOf(ptypes.Eden)
+
+	// --------------------DEX rewards calculation --------------------
+	// ----------------------------------------------------------------
+	// Calculate dex rewards
+	dexRewards := stakeShare.Mul(devRevenue35Amt).TruncateInt()
+
+	// Calculate only elys staking share
+	stakeShareByStakeOnly := k.CalculateTotalShareOfStaking(delegatedAmt)
+	dexRewardsByStakeOnly := stakeShareByStakeOnly.Mul(devRevenue35Amt)
+
+	return newEdenAllocated.TruncateInt(), dexRewards, dexRewardsByStakeOnly
+}
+
+// Calculate new Eden token amounts based on LpElys committed and MElys committed
+func (k Keeper) CalculateNewUncommittedEdenTokensFromLPAndDexRewards(ctx sdk.Context, totalProxyTVL sdk.Dec, commitments ctypes.Commitments, edenAmountPerEpochLp sdk.Int, devRevenue65Amt sdk.Dec) (sdk.Int, sdk.Int) {
+	// Method 2 - Using Proxy TVL
+	totalNewEdenAllocated := sdk.ZeroInt()
+	totalDexRewardsAllocated := sdk.ZeroDec()
+
+	// Iterate to calculate total Eden from LpElys, MElys committed
+	k.lpk.IterateLiquidityPools(ctx, func(l LiquidityPool) bool {
+		// ------------ New Eden calculation -------------------
+		// -----------------------------------------------------
+		// newEdenAllocated = 80 / ( 80 + 90 + 200 + 0) * 100
+		// Pool share = 80
+		// edenAmountPerEpochLp = 100
+
+		// Calculate Proxy TVL share considering multiplier
+		proxyTVL := sdk.NewDecFromInt(l.TVL).MulInt64(l.multiplier)
+		poolShare := proxyTVL.Quo(totalProxyTVL)
+
+		// Calculate new Eden for this pool
+		newEdenAllocatedForPool := poolShare.MulInt(edenAmountPerEpochLp)
+
+		// this lp token committed
+		commmittedLpToken := commitments.GetCommittedAmountForDenom(l.lpToken)
+		// this lp token total committed
+		totalCommittedLpToken := k.tci.TotalLpTokensCommitted[l.lpToken]
+
+		// Calculalte lp token share of the pool
+		lpShare := sdk.NewDecFromInt(commmittedLpToken).QuoInt(totalCommittedLpToken)
+
+		// Calculate new Eden allocated per LP
+		newEdenAllocated := lpShare.Mul(newEdenAllocatedForPool).TruncateInt()
+
+		// Sum the total amount
+		totalNewEdenAllocated = totalNewEdenAllocated.Add(newEdenAllocated)
+		// -------------------------------------------------------
+
+		// ------------------- DEX rewards calculation -------------------
+		// ---------------------------------------------------------------
+		// Calculate dex rewards per pool
+		dexRewardsAllocatedForPool := poolShare.Mul(devRevenue65Amt)
+		// Calculate dex rewards per lp
+		dexRewardsForLP := lpShare.Mul(dexRewardsAllocatedForPool)
+		// Sum total rewards per commitment
+		totalDexRewardsAllocated = totalDexRewardsAllocated.Add(dexRewardsForLP)
+		//----------------------------------------------------------------
+		return false
+	})
+
+	// return
+	return totalNewEdenAllocated, totalDexRewardsAllocated.TruncateInt()
 }
 
 // Calculate epoch counts per year to be used in APR calculation
 func (k Keeper) CalculateEpochCountsPerYear(epochIdentifier string) int64 {
 	switch epochIdentifier {
 	case etypes.WeekEpochID:
-		return types.WeeksPerYear
+		return ptypes.WeeksPerYear
 	case etypes.DayEpochID:
-		return types.DaysPerYear
+		return ptypes.DaysPerYear
 	case etypes.HourEpochID:
-		return types.HoursPerYear
+		return ptypes.HoursPerYear
 	}
 
 	return 0
@@ -240,7 +433,7 @@ func (k Keeper) CalculateEpochCountsPerYear(epochIdentifier string) int64 {
 // Calculate new Eden-Boost token amounts based on the given conditions and user's current uncommitted token balance
 func (k Keeper) CalculateNewUncommittedEdenBoostTokens(ctx sdk.Context, delegatedAmt sdk.Int, commitments ctypes.Commitments, epochIdentifier string, edenBoostAPR int64) sdk.Int {
 	// Get eden commitments
-	edenCommitted := commitments.GetCommittedAmountForDenom(types.Eden)
+	edenCommitted := commitments.GetCommittedAmountForDenom(ptypes.Eden)
 
 	// Compute eden reward based on above and param factors for each
 	totalEden := delegatedAmt.Add(edenCommitted)
@@ -251,22 +444,25 @@ func (k Keeper) CalculateNewUncommittedEdenBoostTokens(ctx sdk.Context, delegate
 	return totalEden.Quo(sdk.NewInt(epochNumsPerYear)).Quo(sdk.NewInt(100)).Mul(sdk.NewInt(edenBoostAPR))
 }
 
-func (k Keeper) UpdateCommitments(ctx sdk.Context, creator string, commitments *ctypes.Commitments, newUncommittedEdenTokens sdk.Int, newUncommittedEdenBoostTokens sdk.Int) {
-	// Update uncommitted Eden and Eden-Boost token balances in the Commitments structure
-	k.UpdateEdenTokens(commitments, newUncommittedEdenTokens)
-	k.UpdateEdenBoostTokens(commitments, newUncommittedEdenBoostTokens)
+func (k Keeper) UpdateCommitments(ctx sdk.Context, creator string, commitments *ctypes.Commitments, newUncommittedEdenTokens sdk.Int, newUncommittedEdenBoostTokens sdk.Int, dexRewards sdk.Int) {
+	// Update uncommitted Eden balances in the Commitments structure
+	k.UpdateTokensCommitment(commitments, newUncommittedEdenTokens, ptypes.Eden)
+	// Update uncommitted Eden-Boost token balances in the Commitments structure
+	k.UpdateTokensCommitment(commitments, newUncommittedEdenBoostTokens, ptypes.EdenB)
+	// Update Elys balances in the Commitments structure
+	k.UpdateTokensCommitment(commitments, dexRewards, ptypes.Elys)
 
 	// Save the updated Commitments
 	k.cmk.SetCommitments(ctx, *commitments)
 }
 
 // Update the uncommitted Eden token balance
-func (k Keeper) UpdateEdenTokens(commitments *ctypes.Commitments, new_uncommitted_eden_tokens sdk.Int) {
-	uncommittedEden, found := commitments.GetUncommittedTokensForDenom(types.Eden)
+func (k Keeper) UpdateTokensCommitment(commitments *ctypes.Commitments, new_uncommitted_eden_tokens sdk.Int, denom string) {
+	uncommittedEden, found := commitments.GetUncommittedTokensForDenom(denom)
 	if !found {
 		uncommittedTokens := commitments.GetUncommittedTokens()
 		uncommittedTokens = append(uncommittedTokens, &ctypes.UncommittedTokens{
-			Denom:  types.Eden,
+			Denom:  denom,
 			Amount: new_uncommitted_eden_tokens,
 		})
 		commitments.UncommittedTokens = uncommittedTokens
@@ -275,54 +471,38 @@ func (k Keeper) UpdateEdenTokens(commitments *ctypes.Commitments, new_uncommitte
 	}
 }
 
-// Update the uncommitted Eden-Boost token balance
-func (k Keeper) UpdateEdenBoostTokens(commitments *ctypes.Commitments, new_uncommitted_eden_boost_tokens sdk.Int) {
-	uncommittedEdenBoost, found := commitments.GetUncommittedTokensForDenom(types.Eden)
-	if !found {
-		uncommittedTokens := commitments.GetUncommittedTokens()
-		uncommittedTokens = append(uncommittedTokens, &ctypes.UncommittedTokens{
-			Denom:  types.EdenB,
-			Amount: new_uncommitted_eden_boost_tokens,
-		})
-		commitments.UncommittedTokens = uncommittedTokens
-	} else {
-		uncommittedEdenBoost.Amount = uncommittedEdenBoost.Amount.Add(new_uncommitted_eden_boost_tokens)
-	}
-}
-
 // Increase uncommitted token amount for the corresponding validator
-func (k Keeper) UpdateEdenTokensForValidator(ctx sdk.Context, validator string, new_uncommitted_eden_tokens sdk.Int) {
+func (k Keeper) UpdateTokensForValidator(ctx sdk.Context, validator string, new_uncommitted_eden_tokens sdk.Int, dexRewards sdk.Dec) {
 	commitments, bfound := k.cmk.GetCommitments(ctx, validator)
 	if !bfound {
 		return
 	}
 
-	// Get record for uncommitted eden
-	uncommittedEden, found := commitments.GetUncommittedTokensForDenom(types.Eden)
-	if !found {
-		uncommittedTokens := commitments.GetUncommittedTokens()
-		uncommittedTokens = append(uncommittedTokens, &ctypes.UncommittedTokens{
-			Denom:  types.Eden,
-			Amount: new_uncommitted_eden_tokens,
-		})
-		commitments.UncommittedTokens = uncommittedTokens
-	} else {
-		uncommittedEden.Amount = uncommittedEden.Amount.Add(new_uncommitted_eden_tokens)
-	}
+	// Update Eden amount
+	k.UpdateTokensCommitment(&commitments, new_uncommitted_eden_tokens, ptypes.Eden)
+
+	// Update Elys amount
+	k.UpdateTokensCommitment(&commitments, dexRewards.TruncateInt(), ptypes.Elys)
 
 	// Update commmitment
 	k.cmk.SetCommitments(ctx, commitments)
 }
 
 // Give commissions to validators
-func (k Keeper) GiveCommissionToValidators(ctx sdk.Context, delegator string, totalDelegationAmt sdk.Int, newUncommittedAmt sdk.Int) sdk.Int {
+func (k Keeper) GiveCommissionToValidators(ctx sdk.Context, delegator string, totalDelegationAmt sdk.Int, newUncommittedAmt sdk.Int, dexRewards sdk.Dec) (sdk.Int, sdk.Int) {
 	delAdr, err := sdk.AccAddressFromBech32(delegator)
 	if err != nil {
-		return sdk.ZeroInt()
+		return sdk.ZeroInt(), sdk.ZeroInt()
+	}
+
+	// If there is no delegation, (not elys staker)
+	if totalDelegationAmt.LTE(sdk.ZeroInt()) {
+		return sdk.ZeroInt(), sdk.ZeroInt()
 	}
 
 	// Total Eden given
-	totalGiven := sdk.ZeroInt()
+	totalEdenGiven := sdk.ZeroInt()
+	totalDexRewardsGiven := sdk.ZeroInt()
 
 	// Iterate all delegated validators
 	k.stk.IterateDelegations(ctx, delAdr, func(index int64, del stypes.DelegationI) (stop bool) {
@@ -336,115 +516,102 @@ func (k Keeper) GiveCommissionToValidators(ctx sdk.Context, delegator string, to
 		// Get token amount delegated
 		delegatedAmt := val.TokensFromSharesTruncated(shares)
 
-		// to give = delegated amount / total delegation * newly minted eden * commission rate / 100
-		commission := delegatedAmt.QuoInt(totalDelegationAmt).MulInt(newUncommittedAmt).Mul(comm_rate).QuoInt(sdk.NewInt(100))
+		//-----------------------------
+		// Eden commission
+		//-----------------------------
+		// to give = delegated amount / total delegation * newly minted eden * commission rate
+		edenCommission := delegatedAmt.QuoInt(totalDelegationAmt).MulInt(newUncommittedAmt).Mul(comm_rate)
 		// Sum total commission given
-		totalGiven = totalGiven.Add(commission.TruncateInt())
+		totalEdenGiven = totalEdenGiven.Add(edenCommission.TruncateInt())
+		//-----------------------------
+
+		//-----------------------------
+		// Dex rewards commission
+		//-----------------------------
+		// to give = delegated amount / total delegation * newly minted eden * commission rate
+		dexRewardsCommission := delegatedAmt.QuoInt(totalDelegationAmt).Mul(dexRewards).Mul(comm_rate)
+		// Sum total commission given
+		totalDexRewardsGiven = totalDexRewardsGiven.Add(dexRewardsCommission.TruncateInt())
+		//-----------------------------
 
 		// increase uncomitted token amount of validator's commitment
-		k.UpdateEdenTokensForValidator(ctx, valAddr.String(), commission.TruncateInt())
+		k.UpdateTokensForValidator(ctx, valAddr.String(), edenCommission.TruncateInt(), dexRewardsCommission)
 
 		return false
 	})
 
-	return totalGiven
+	return totalEdenGiven, totalDexRewardsGiven
 }
 
-// SetWithdrawAddr sets a new address that will receive the rewards upon withdrawal
-func (k Keeper) SetWithdrawAddr(ctx sdk.Context, delegatorAddr sdk.AccAddress, withdrawAddr sdk.AccAddress) error {
-	if k.bankKeeper.BlockedAddr(withdrawAddr) {
-		return sdkerrors.Wrapf(sdkerrors.ErrUnauthorized, "%s is not allowed to receive external funds", withdrawAddr)
-	}
-
-	if !k.GetWithdrawAddrEnabled(ctx) {
-		return types.ErrSetWithdrawAddrDisabled
-	}
-
-	ctx.EventManager().EmitEvent(
-		sdk.NewEvent(
-			types.EventTypeSetWithdrawAddress,
-			sdk.NewAttribute(types.AttributeKeyWithdrawAddress, withdrawAddr.String()),
-		),
-	)
-
-	k.SetDelegatorWithdrawAddr(ctx, delegatorAddr, withdrawAddr)
-	return nil
-}
-
-// withdraw rewards from a delegation
-func (k Keeper) WithdrawDelegationRewards(ctx sdk.Context, delAddr sdk.AccAddress, valAddr sdk.ValAddress) (sdk.Coins, error) {
-	val := k.stk.Validator(ctx, valAddr)
-	if val == nil {
-		return nil, types.ErrNoValidatorDistInfo
-	}
-
-	del := k.stk.Delegation(ctx, delAddr, valAddr)
-	if del == nil {
-		return nil, types.ErrEmptyDelegationDistInfo
-	}
-
-	// withdraw rewards
-	rewards, err := k.withdrawDelegationRewards(ctx, val, del)
+// withdraw rewards
+// Eden, EdenBoost and Elys to USDC
+func (k Keeper) ProcessWithdrawRewards(ctx sdk.Context, delegator string) error {
+	_, err := sdk.AccAddressFromBech32(delegator)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	if rewards.IsZero() {
-		baseDenom, _ := sdk.GetBaseDenom()
-		rewards = sdk.Coins{sdk.Coin{
-			Denom:  baseDenom,
-			Amount: sdk.ZeroInt(),
-		}}
+	// Get commitments
+	commitments, bfound := k.cmk.GetCommitments(ctx, delegator)
+	if !bfound {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "unable to find commitment")
 	}
 
-	// reinitialize the delegation
-	k.initializeDelegation(ctx, valAddr, delAddr)
-	return rewards, nil
+	// Eden
+	uncommittedEden, _ := commitments.GetUncommittedTokensForDenom(ptypes.Eden)
+	// Eden B
+	uncommittedEdenB, _ := commitments.GetUncommittedTokensForDenom(ptypes.EdenB)
+	// Elys
+	uncommittedElys, _ := commitments.GetUncommittedTokensForDenom(ptypes.Elys)
+
+	// Withdraw Eden
+	err = k.cmk.ProcessWithdrawTokens(ctx, delegator, ptypes.Eden, uncommittedEden.Amount)
+
+	// Withdraw Eden Boost
+	err = k.cmk.ProcessWithdrawTokens(ctx, delegator, ptypes.EdenB, uncommittedEdenB.Amount)
+
+	// Convert Elys to USDC
+	// Conversion is done inside commmitment module, later on we will have swap module
+	err = k.cmk.ProcessWithdrawElysTokens(ctx, delegator, ptypes.Elys, uncommittedElys.Amount)
+
+	return err
 }
 
 // withdraw validator commission
-func (k Keeper) WithdrawValidatorCommission(ctx sdk.Context, valAddr sdk.ValAddress) (sdk.Coins, error) {
-	// fetch validator accumulated commission
-	accumCommission := k.GetValidatorAccumulatedCommission(ctx, valAddr)
-	if accumCommission.Commission.IsZero() {
-		return nil, types.ErrNoValidatorCommission
+// Eden, EdenBoost and Elys to USDC
+func (k Keeper) ProcessWithdrawValidatorCommission(ctx sdk.Context, delegator string, validator string) error {
+	_, err := sdk.AccAddressFromBech32(delegator)
+	if err != nil {
+		return err
 	}
 
-	commission, remainder := accumCommission.Commission.TruncateDecimal()
-	k.SetValidatorAccumulatedCommission(ctx, valAddr, types.ValidatorAccumulatedCommission{Commission: remainder}) // leave remainder to withdraw later
-
-	// update outstanding
-	outstanding := k.GetValidatorOutstandingRewards(ctx, valAddr).Rewards
-	k.SetValidatorOutstandingRewards(ctx, valAddr, types.ValidatorOutstandingRewards{Rewards: outstanding.Sub(sdk.NewDecCoinsFromCoins(commission...))})
-
-	if !commission.IsZero() {
-		accAddr := sdk.AccAddress(valAddr)
-		withdrawAddr := k.GetDelegatorWithdrawAddr(ctx, accAddr)
-		// Convert Elys to USDC and send
-		err := k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, withdrawAddr, commission)
-		if err != nil {
-			return nil, err
-		}
+	_, err = sdk.ValAddressFromBech32(validator)
+	if err != nil {
+		return err
 	}
 
-	ctx.EventManager().EmitEvent(
-		sdk.NewEvent(
-			types.EventTypeWithdrawCommission,
-			sdk.NewAttribute(sdk.AttributeKeyAmount, commission.String()),
-		),
-	)
+	// Get commitments
+	commitments, bfound := k.cmk.GetCommitments(ctx, validator)
+	if !bfound {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "unable to find commitment")
+	}
 
-	return commission, nil
-}
+	// Eden
+	uncommittedEden, _ := commitments.GetUncommittedTokensForDenom(ptypes.Eden)
+	// Eden B
+	uncommittedEdenB, _ := commitments.GetUncommittedTokensForDenom(ptypes.EdenB)
+	// Elys
+	uncommittedElys, _ := commitments.GetUncommittedTokensForDenom(ptypes.Elys)
 
-// GetTotalRewards returns the total amount of fee distribution rewards held in the store
-func (k Keeper) GetTotalRewards(ctx sdk.Context) (totalRewards sdk.DecCoins) {
-	k.IterateValidatorOutstandingRewards(ctx,
-		func(_ sdk.ValAddress, rewards types.ValidatorOutstandingRewards) (stop bool) {
-			totalRewards = totalRewards.Add(rewards.Rewards...)
-			return false
-		},
-	)
+	// Withdraw Eden
+	err = k.cmk.ProcessWithdrawValidatorCommission(ctx, delegator, validator, ptypes.Eden, uncommittedEden.Amount)
 
-	return totalRewards
+	// Withdraw Eden Boost
+	err = k.cmk.ProcessWithdrawValidatorCommission(ctx, delegator, validator, ptypes.EdenB, uncommittedEdenB.Amount)
+
+	// Convert Elys to USDC
+	// Conversion is done inside commmitment module, later on we will have swap module
+	err = k.cmk.ProcessWithdrawValidatorElysCommission(ctx, delegator, validator, ptypes.Elys, uncommittedElys.Amount)
+
+	return err
 }

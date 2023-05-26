@@ -33746,227 +33746,6 @@ paths:
                   additionalProperties: {}
       tags:
         - Query
-  /elys-network/elys/incentive/delegators/{delegator_address}/rewards:
-    get:
-      summary: |-
-        DelegationTotalRewards queries the total rewards accrued by a each
-        validator.
-      operationId: ElysnetworkElysIncentiveDelegationTotalRewards
-      responses:
-        '200':
-          description: A successful response.
-          schema:
-            type: object
-            properties:
-              rewards:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    validator_address:
-                      type: string
-                    reward:
-                      type: array
-                      items:
-                        type: object
-                        properties:
-                          denom:
-                            type: string
-                          amount:
-                            type: string
-                        description: >-
-                          DecCoin defines a token with a denomination and a
-                          decimal amount.
-
-
-                          NOTE: The amount field is an Dec which implements the
-                          custom method
-
-                          signatures required by gogoproto.
-                  description: "DelegationDelegatorReward represents the properties\r\nof a delegator's delegation reward."
-                description: rewards defines all the rewards accrued by a delegator.
-              total:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    denom:
-                      type: string
-                    amount:
-                      type: string
-                  description: >-
-                    DecCoin defines a token with a denomination and a decimal
-                    amount.
-
-
-                    NOTE: The amount field is an Dec which implements the custom
-                    method
-
-                    signatures required by gogoproto.
-                description: total defines the sum of all the rewards.
-        default:
-          description: An unexpected error response.
-          schema:
-            type: object
-            properties:
-              code:
-                type: integer
-                format: int32
-              message:
-                type: string
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    '@type':
-                      type: string
-                  additionalProperties: {}
-      parameters:
-        - name: delegator_address
-          in: path
-          required: true
-          type: string
-      tags:
-        - Query
-  /elys-network/elys/incentive/delegators/{delegator_address}/rewards/{validator_address}:
-    get:
-      summary: DelegationRewards queries the total rewards accrued by a delegation.
-      operationId: ElysnetworkElysIncentiveDelegationRewards
-      responses:
-        '200':
-          description: A successful response.
-          schema:
-            type: object
-            properties:
-              rewards:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    denom:
-                      type: string
-                    amount:
-                      type: string
-                  description: >-
-                    DecCoin defines a token with a denomination and a decimal
-                    amount.
-
-
-                    NOTE: The amount field is an Dec which implements the custom
-                    method
-
-                    signatures required by gogoproto.
-                description: rewards defines the rewards accrued by a delegation.
-        default:
-          description: An unexpected error response.
-          schema:
-            type: object
-            properties:
-              code:
-                type: integer
-                format: int32
-              message:
-                type: string
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    '@type':
-                      type: string
-                  additionalProperties: {}
-      parameters:
-        - name: delegator_address
-          in: path
-          required: true
-          type: string
-        - name: validator_address
-          in: path
-          required: true
-          type: string
-      tags:
-        - Query
-  /elys-network/elys/incentive/delegators/{delegator_address}/validators:
-    get:
-      summary: DelegatorValidators queries the validators of a delegator.
-      operationId: ElysnetworkElysIncentiveDelegatorValidators
-      responses:
-        '200':
-          description: A successful response.
-          schema:
-            type: object
-            properties:
-              validators:
-                type: array
-                items:
-                  type: string
-                description: >-
-                  validators defines the validators a delegator is delegating
-                  for.
-        default:
-          description: An unexpected error response.
-          schema:
-            type: object
-            properties:
-              code:
-                type: integer
-                format: int32
-              message:
-                type: string
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    '@type':
-                      type: string
-                  additionalProperties: {}
-      parameters:
-        - name: delegator_address
-          in: path
-          required: true
-          type: string
-      tags:
-        - Query
-  /elys-network/elys/incentive/delegators/{delegator_address}/withdraw_address:
-    get:
-      summary: Queries a list of DelegatorWithdrawAddress items.
-      operationId: ElysnetworkElysIncentiveDelegatorWithdrawAddress
-      responses:
-        '200':
-          description: A successful response.
-          schema:
-            type: object
-            properties:
-              withdraw_address:
-                type: string
-                description: withdraw_address defines the delegator address to query for.
-        default:
-          description: An unexpected error response.
-          schema:
-            type: object
-            properties:
-              code:
-                type: integer
-                format: int32
-              message:
-                type: string
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    '@type':
-                      type: string
-                  additionalProperties: {}
-      parameters:
-        - name: delegator_address
-          in: path
-          required: true
-          type: string
-      tags:
-        - Query
   /elys-network/elys/incentive/params:
     get:
       summary: Parameters queries the parameters of the module.
@@ -34058,259 +33837,6 @@ paths:
                     '@type':
                       type: string
                   additionalProperties: {}
-      tags:
-        - Query
-  /elys-network/elys/incentive/validators/{validator_address}/commission:
-    get:
-      summary: ValidatorCommission queries accumulated commission for a validator.
-      operationId: ElysnetworkElysIncentiveValidatorCommission
-      responses:
-        '200':
-          description: A successful response.
-          schema:
-            type: object
-            properties:
-              commission:
-                description: commission defines the commision the validator received.
-                type: object
-                properties:
-                  commission:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        denom:
-                          type: string
-                        amount:
-                          type: string
-                      description: >-
-                        DecCoin defines a token with a denomination and a
-                        decimal amount.
-
-
-                        NOTE: The amount field is an Dec which implements the
-                        custom method
-
-                        signatures required by gogoproto.
-        default:
-          description: An unexpected error response.
-          schema:
-            type: object
-            properties:
-              code:
-                type: integer
-                format: int32
-              message:
-                type: string
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    '@type':
-                      type: string
-                  additionalProperties: {}
-      parameters:
-        - name: validator_address
-          in: path
-          required: true
-          type: string
-      tags:
-        - Query
-  /elys-network/elys/incentive/validators/{validator_address}/outstanding_rewards:
-    get:
-      summary: ValidatorOutstandingRewards queries rewards of a validator address.
-      operationId: ElysnetworkElysIncentiveValidatorOutstandingRewards
-      responses:
-        '200':
-          description: A successful response.
-          schema:
-            type: object
-            properties:
-              rewards:
-                type: object
-                properties:
-                  rewards:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        denom:
-                          type: string
-                        amount:
-                          type: string
-                      description: >-
-                        DecCoin defines a token with a denomination and a
-                        decimal amount.
-
-
-                        NOTE: The amount field is an Dec which implements the
-                        custom method
-
-                        signatures required by gogoproto.
-                description: "ValidatorOutstandingRewards represents outstanding (un-withdrawn) rewards\r\nfor a validator inexpensive to track, allows simple sanity checks."
-        default:
-          description: An unexpected error response.
-          schema:
-            type: object
-            properties:
-              code:
-                type: integer
-                format: int32
-              message:
-                type: string
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    '@type':
-                      type: string
-                  additionalProperties: {}
-      parameters:
-        - name: validator_address
-          in: path
-          required: true
-          type: string
-      tags:
-        - Query
-  /elys-network/elys/incentive/validators/{validator_address}/slashes:
-    get:
-      summary: ValidatorSlashes queries slash events of a validator.
-      operationId: ElysnetworkElysIncentiveValidatorSlashes
-      responses:
-        '200':
-          description: A successful response.
-          schema:
-            type: object
-            properties:
-              slashes:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    validator_period:
-                      type: string
-                      format: uint64
-                    fraction:
-                      type: string
-                  description: "ValidatorSlashEvent represents a validator slash event.\r\nHeight is implicit within the store key.\r\nThis is needed to calculate appropriate amount of staking tokens\r\nfor delegations which are withdrawn after a slash has occurred."
-                description: slashes defines the slashes the validator received.
-              pagination:
-                description: pagination defines the pagination in the response.
-                type: object
-                properties:
-                  next_key:
-                    type: string
-                    format: byte
-                    description: |-
-                      next_key is the key to be passed to PageRequest.key to
-                      query the next page most efficiently. It will be empty if
-                      there are no more results.
-                  total:
-                    type: string
-                    format: uint64
-                    title: >-
-                      total is total number of results available if
-                      PageRequest.count_total
-
-                      was set, its value is undefined otherwise
-        default:
-          description: An unexpected error response.
-          schema:
-            type: object
-            properties:
-              code:
-                type: integer
-                format: int32
-              message:
-                type: string
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    '@type':
-                      type: string
-                  additionalProperties: {}
-      parameters:
-        - name: validator_address
-          description: validator_address defines the validator address to query for.
-          in: path
-          required: true
-          type: string
-        - name: starting_height
-          description: >-
-            starting_height defines the optional starting height to query the
-            slashes.
-          in: query
-          required: false
-          type: string
-          format: uint64
-        - name: ending_height
-          description: >-
-            starting_height defines the optional ending height to query the
-            slashes.
-          in: query
-          required: false
-          type: string
-          format: uint64
-        - name: pagination.key
-          description: |-
-            key is a value returned in PageResponse.next_key to begin
-            querying the next page most efficiently. Only one of offset or key
-            should be set.
-          in: query
-          required: false
-          type: string
-          format: byte
-        - name: pagination.offset
-          description: >-
-            offset is a numeric offset that can be used when key is unavailable.
-
-            It is less efficient than using key. Only one of offset or key
-            should
-
-            be set.
-          in: query
-          required: false
-          type: string
-          format: uint64
-        - name: pagination.limit
-          description: >-
-            limit is the total number of results to be returned in the result
-            page.
-
-            If left empty it will default to a value to be set by each app.
-          in: query
-          required: false
-          type: string
-          format: uint64
-        - name: pagination.count_total
-          description: >-
-            count_total is set to true  to indicate that the result set should
-            include
-
-            a count of the total number of items available for pagination in
-            UIs.
-
-            count_total is only respected when offset is used. It is ignored
-            when key
-
-            is set.
-          in: query
-          required: false
-          type: boolean
-        - name: pagination.reverse
-          description: >-
-            reverse is set to true if results are to be returned in the
-            descending order.
-
-
-            Since: cosmos-sdk 0.43
-          in: query
-          required: false
-          type: boolean
       tags:
         - Query
   /elys-network/elys/liquidityprovider/params:
@@ -34958,6 +34484,167 @@ paths:
               request_id:
                 type: string
                 format: int64
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      tags:
+        - Query
+  /elys-network/elys/parameter/ante_handler_param:
+    get:
+      operationId: ElysnetworkElysParameterAnteHandlerParamAll
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              anteHandlerParam:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    minCommissionRate:
+                      type: string
+                    maxVotingPower:
+                      type: string
+                    minSelfDelegation:
+                      type: string
+              pagination:
+                type: object
+                properties:
+                  next_key:
+                    type: string
+                    format: byte
+                    description: |-
+                      next_key is the key to be passed to PageRequest.key to
+                      query the next page most efficiently. It will be empty if
+                      there are no more results.
+                  total:
+                    type: string
+                    format: uint64
+                    title: >-
+                      total is total number of results available if
+                      PageRequest.count_total
+
+                      was set, its value is undefined otherwise
+                description: >-
+                  PageResponse is to be embedded in gRPC response messages where
+                  the
+
+                  corresponding request message has used PageRequest.
+
+                   message SomeResponse {
+                           repeated Bar results = 1;
+                           PageResponse page = 2;
+                   }
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: pagination.key
+          description: |-
+            key is a value returned in PageResponse.next_key to begin
+            querying the next page most efficiently. Only one of offset or key
+            should be set.
+          in: query
+          required: false
+          type: string
+          format: byte
+        - name: pagination.offset
+          description: >-
+            offset is a numeric offset that can be used when key is unavailable.
+
+            It is less efficient than using key. Only one of offset or key
+            should
+
+            be set.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.limit
+          description: >-
+            limit is the total number of results to be returned in the result
+            page.
+
+            If left empty it will default to a value to be set by each app.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.count_total
+          description: >-
+            count_total is set to true  to indicate that the result set should
+            include
+
+            a count of the total number of items available for pagination in
+            UIs.
+
+            count_total is only respected when offset is used. It is ignored
+            when key
+
+            is set.
+          in: query
+          required: false
+          type: boolean
+        - name: pagination.reverse
+          description: >-
+            reverse is set to true if results are to be returned in the
+            descending order.
+
+
+            Since: cosmos-sdk 0.43
+          in: query
+          required: false
+          type: boolean
+      tags:
+        - Query
+  /elys-network/elys/parameter/params:
+    get:
+      summary: Parameters queries the parameters of the module.
+      operationId: ElysnetworkElysParameterParams
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              params:
+                description: params holds all the parameters of this module.
+                type: object
+            description: >-
+              QueryParamsResponse is response type for the Query/Params RPC
+              method.
         default:
           description: An unexpected error response.
           schema:
@@ -70486,26 +70173,6 @@ definitions:
     description: |-
       QueryEpochsInfoResponse is the response type for the Query/EpochInfos RPC
       method.
-  elysnetwork.elys.incentive.DelegationDelegatorReward:
-    type: object
-    properties:
-      validator_address:
-        type: string
-      reward:
-        type: array
-        items:
-          type: object
-          properties:
-            denom:
-              type: string
-            amount:
-              type: string
-          description: |-
-            DecCoin defines a token with a denomination and a decimal amount.
-
-            NOTE: The amount field is an Dec which implements the custom method
-            signatures required by gogoproto.
-    description: "DelegationDelegatorReward represents the properties\r\nof a delegator's delegation reward."
   elysnetwork.elys.incentive.IncentiveInfo:
     type: object
     properties:
@@ -70530,44 +70197,16 @@ definitions:
         type: string
         format: int64
     title: Incentive Info
-  elysnetwork.elys.incentive.MsgSetWithdrawAddressResponse:
+  elysnetwork.elys.incentive.MsgWithdrawRewardsResponse:
     type: object
-  elysnetwork.elys.incentive.MsgWithdrawDelegatorRewardResponse:
-    type: object
-    properties:
-      amount:
-        type: array
-        items:
-          type: object
-          properties:
-            denom:
-              type: string
-            amount:
-              type: string
-          description: |-
-            Coin defines a token with a denomination and an amount.
-
-            NOTE: The amount field is an Int which implements the custom method
-            signatures required by gogoproto.
-        title: 'Since: cosmos-sdk 0.46'
+    description: >-
+      MsgWithdrawDelegatorRewardResponse defines the Msg/WithdrawDelegatorReward
+      response type.
   elysnetwork.elys.incentive.MsgWithdrawValidatorCommissionResponse:
     type: object
-    properties:
-      amount:
-        type: array
-        items:
-          type: object
-          properties:
-            denom:
-              type: string
-            amount:
-              type: string
-          description: |-
-            Coin defines a token with a denomination and an amount.
-
-            NOTE: The amount field is an Int which implements the custom method
-            signatures required by gogoproto.
-        title: 'Since: cosmos-sdk 0.46'
+    description: >-
+      MsgWithdrawValidatorCommissionResponse defines the
+      Msg/WithdrawValidatorCommission response type.
   elysnetwork.elys.incentive.Params:
     type: object
     properties:
@@ -70646,83 +70285,6 @@ definitions:
             NOTE: The amount field is an Dec which implements the custom method
             signatures required by gogoproto.
         description: pool defines community pool's coins.
-  elysnetwork.elys.incentive.QueryDelegationRewardsResponse:
-    type: object
-    properties:
-      rewards:
-        type: array
-        items:
-          type: object
-          properties:
-            denom:
-              type: string
-            amount:
-              type: string
-          description: |-
-            DecCoin defines a token with a denomination and a decimal amount.
-
-            NOTE: The amount field is an Dec which implements the custom method
-            signatures required by gogoproto.
-        description: rewards defines the rewards accrued by a delegation.
-  elysnetwork.elys.incentive.QueryDelegationTotalRewardsResponse:
-    type: object
-    properties:
-      rewards:
-        type: array
-        items:
-          type: object
-          properties:
-            validator_address:
-              type: string
-            reward:
-              type: array
-              items:
-                type: object
-                properties:
-                  denom:
-                    type: string
-                  amount:
-                    type: string
-                description: >-
-                  DecCoin defines a token with a denomination and a decimal
-                  amount.
-
-
-                  NOTE: The amount field is an Dec which implements the custom
-                  method
-
-                  signatures required by gogoproto.
-          description: "DelegationDelegatorReward represents the properties\r\nof a delegator's delegation reward."
-        description: rewards defines all the rewards accrued by a delegator.
-      total:
-        type: array
-        items:
-          type: object
-          properties:
-            denom:
-              type: string
-            amount:
-              type: string
-          description: |-
-            DecCoin defines a token with a denomination and a decimal amount.
-
-            NOTE: The amount field is an Dec which implements the custom method
-            signatures required by gogoproto.
-        description: total defines the sum of all the rewards.
-  elysnetwork.elys.incentive.QueryDelegatorValidatorsResponse:
-    type: object
-    properties:
-      validators:
-        type: array
-        items:
-          type: string
-        description: validators defines the validators a delegator is delegating for.
-  elysnetwork.elys.incentive.QueryDelegatorWithdrawAddressResponse:
-    type: object
-    properties:
-      withdraw_address:
-        type: string
-        description: withdraw_address defines the delegator address to query for.
   elysnetwork.elys.incentive.QueryParamsResponse:
     type: object
     properties:
@@ -70787,135 +70349,6 @@ definitions:
           withdraw_addr_enabled:
             type: boolean
     description: QueryParamsResponse is response type for the Query/Params RPC method.
-  elysnetwork.elys.incentive.QueryValidatorCommissionResponse:
-    type: object
-    properties:
-      commission:
-        description: commission defines the commision the validator received.
-        type: object
-        properties:
-          commission:
-            type: array
-            items:
-              type: object
-              properties:
-                denom:
-                  type: string
-                amount:
-                  type: string
-              description: >-
-                DecCoin defines a token with a denomination and a decimal
-                amount.
-
-
-                NOTE: The amount field is an Dec which implements the custom
-                method
-
-                signatures required by gogoproto.
-  elysnetwork.elys.incentive.QueryValidatorOutstandingRewardsResponse:
-    type: object
-    properties:
-      rewards:
-        type: object
-        properties:
-          rewards:
-            type: array
-            items:
-              type: object
-              properties:
-                denom:
-                  type: string
-                amount:
-                  type: string
-              description: >-
-                DecCoin defines a token with a denomination and a decimal
-                amount.
-
-
-                NOTE: The amount field is an Dec which implements the custom
-                method
-
-                signatures required by gogoproto.
-        description: "ValidatorOutstandingRewards represents outstanding (un-withdrawn) rewards\r\nfor a validator inexpensive to track, allows simple sanity checks."
-  elysnetwork.elys.incentive.QueryValidatorSlashesResponse:
-    type: object
-    properties:
-      slashes:
-        type: array
-        items:
-          type: object
-          properties:
-            validator_period:
-              type: string
-              format: uint64
-            fraction:
-              type: string
-          description: "ValidatorSlashEvent represents a validator slash event.\r\nHeight is implicit within the store key.\r\nThis is needed to calculate appropriate amount of staking tokens\r\nfor delegations which are withdrawn after a slash has occurred."
-        description: slashes defines the slashes the validator received.
-      pagination:
-        description: pagination defines the pagination in the response.
-        type: object
-        properties:
-          next_key:
-            type: string
-            format: byte
-            description: |-
-              next_key is the key to be passed to PageRequest.key to
-              query the next page most efficiently. It will be empty if
-              there are no more results.
-          total:
-            type: string
-            format: uint64
-            title: >-
-              total is total number of results available if
-              PageRequest.count_total
-
-              was set, its value is undefined otherwise
-  elysnetwork.elys.incentive.ValidatorAccumulatedCommission:
-    type: object
-    properties:
-      commission:
-        type: array
-        items:
-          type: object
-          properties:
-            denom:
-              type: string
-            amount:
-              type: string
-          description: |-
-            DecCoin defines a token with a denomination and a decimal amount.
-
-            NOTE: The amount field is an Dec which implements the custom method
-            signatures required by gogoproto.
-    description: "ValidatorAccumulatedCommission represents accumulated commission\r\nfor a validator kept as a running counter, can be withdrawn at any time."
-  elysnetwork.elys.incentive.ValidatorOutstandingRewards:
-    type: object
-    properties:
-      rewards:
-        type: array
-        items:
-          type: object
-          properties:
-            denom:
-              type: string
-            amount:
-              type: string
-          description: |-
-            DecCoin defines a token with a denomination and a decimal amount.
-
-            NOTE: The amount field is an Dec which implements the custom method
-            signatures required by gogoproto.
-    description: "ValidatorOutstandingRewards represents outstanding (un-withdrawn) rewards\r\nfor a validator inexpensive to track, allows simple sanity checks."
-  elysnetwork.elys.incentive.ValidatorSlashEvent:
-    type: object
-    properties:
-      validator_period:
-        type: string
-        format: uint64
-      fraction:
-        type: string
-    description: "ValidatorSlashEvent represents a validator slash event.\r\nHeight is implicit within the store key.\r\nThis is needed to calculate appropriate amount of staking tokens\r\nfor delegations which are withdrawn after a slash has occurred."
   elysnetwork.elys.liquidityprovider.Params:
     type: object
     description: Params defines the parameters for the module.
@@ -71265,6 +70698,65 @@ definitions:
           price_expiry_time:
             type: string
             format: uint64
+    description: QueryParamsResponse is response type for the Query/Params RPC method.
+  elysnetwork.elys.parameter.AnteHandlerParam:
+    type: object
+    properties:
+      minCommissionRate:
+        type: string
+      maxVotingPower:
+        type: string
+      minSelfDelegation:
+        type: string
+  elysnetwork.elys.parameter.Params:
+    type: object
+    description: Params defines the parameters for the module.
+  elysnetwork.elys.parameter.QueryAllAnteHandlerParamResponse:
+    type: object
+    properties:
+      anteHandlerParam:
+        type: array
+        items:
+          type: object
+          properties:
+            minCommissionRate:
+              type: string
+            maxVotingPower:
+              type: string
+            minSelfDelegation:
+              type: string
+      pagination:
+        type: object
+        properties:
+          next_key:
+            type: string
+            format: byte
+            description: |-
+              next_key is the key to be passed to PageRequest.key to
+              query the next page most efficiently. It will be empty if
+              there are no more results.
+          total:
+            type: string
+            format: uint64
+            title: >-
+              total is total number of results available if
+              PageRequest.count_total
+
+              was set, its value is undefined otherwise
+        description: |-
+          PageResponse is to be embedded in gRPC response messages where the
+          corresponding request message has used PageRequest.
+
+           message SomeResponse {
+                   repeated Bar results = 1;
+                   PageResponse page = 2;
+           }
+  elysnetwork.elys.parameter.QueryParamsResponse:
+    type: object
+    properties:
+      params:
+        description: params holds all the parameters of this module.
+        type: object
     description: QueryParamsResponse is response type for the Query/Params RPC method.
   elysnetwork.elys.tokenomics.Airdrop:
     type: object
