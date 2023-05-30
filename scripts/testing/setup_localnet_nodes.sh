@@ -22,6 +22,7 @@ required_variables=(
     "VALIDATOR_PRIVATE_KEY_THIRD_LINES"
     "VALIDATOR_ACCOUNT_PASSPHRASES"
     "BINARY"
+    "CHAIN_ID"
     "SNAPSHOT_URL"
     "SNAPSHOT_PATH"
 )
@@ -94,9 +95,15 @@ else
 fi
 
 # Step 1: Initialize nodes
-for folder in "${NODE_FOLDERS[@]}"; do
+for index in "${!NODE_FOLDERS[@]}"; do
+    folder="${NODE_FOLDERS[index]}"
+    node_rpc_port="${NODE_RPC_PORTS[index]}"
     echo "Initializing $folder node..."
-    ${BINARY} init $folder --home /tmp/$folder >/dev/null 2>&1
+    ${BINARY} init $folder --chain-id ${CHAIN_ID} --home /tmp/$folder >/dev/null 2>&1
+    echo "Configuring $folder node..."
+    ${BINARY} config node tcp://localhost:${node_rpc_port} --home /tmp/$folder >/dev/null 2>&1
+    ${BINARY} config keyring-backend test --home /tmp/$folder >/dev/null 2>&1
+    ${BINARY} config broadcast-mode block --home /tmp/$folder >/dev/null 2>&1
 done
 
 # Step 2: Update files

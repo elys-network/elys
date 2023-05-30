@@ -74,5 +74,6 @@ VALIDATOR_ACCOUNT_PASSPHRASES=(
 )
 
 BINARY="/tmp/elysd"
+CHAIN_ID="elystestnet-1"
 SNAPSHOT_URL="https://snapshots.polkachu.com/testnet-snapshots/elys/elys_770630.tar.lz4"
 SNAPSHOT_PATH="/tmp/elys_testnet_snapshot.tar.lz4"
