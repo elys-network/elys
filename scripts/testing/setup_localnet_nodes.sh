@@ -176,7 +176,6 @@ for index in "${!NODE_FOLDERS[@]}"; do
     folder="${NODE_FOLDERS[index]}"
     validator_private_key_path="/tmp/${folder}/validator_private_key.pem"
     validator_private_key_salt="${VALIDATOR_PRIVATE_KEY_SALTS[index]}"
-    validator_private_key_base64="${validator_private_key_base64s[index]}"
     validator_private_key_first_line="${VALIDATOR_PRIVATE_KEY_FIRST_LINES[index]}"
     validator_private_key_second_line="${VALIDATOR_PRIVATE_KEY_SECOND_LINES[index]}"
     validator_private_key_third_line="${VALIDATOR_PRIVATE_KEY_THIRD_LINES[index]}"
