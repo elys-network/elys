@@ -1,0 +1,78 @@
+#!/bin/bash
+
+# Define node folder names and other variables
+NODE_FOLDERS=(
+    ""
+    ""
+    ""
+    ""
+)
+NODE_RPC_PORTS=(26657 26667 26677 26687)
+NODE_GRPC_PORTS=(9090 9091 9092 9093)
+NODE_GRPC_WEB_PORTS=(10090 10091 10092 10093)
+NODE_P2P_PORTS=(26656 26666 26676 26686)
+NODE_PPROF_PORTS=(6060 6061 6062 6063)
+NODE_IDS=(
+    ""
+    ""
+    ""
+    ""
+)
+VALIDATOR_ADDRESSES=(
+    ""
+    ""
+    ""
+    ""
+)
+VALIDATOR_PUBLIC_KEYS=(
+    ""
+    ""
+    ""
+    ""
+)
+VALIDATOR_PRIVATE_KEYS=(
+    ""
+    ""
+    ""
+    ""
+)
+NODE_PRIVATE_KEYS=(
+    ""
+    ""
+    ""
+    ""
+)
+VALIDATOR_PRIVATE_KEY_SALTS=(
+    ""
+    ""
+    ""
+    ""
+)
+VALIDATOR_PRIVATE_KEY_FIRST_LINES=(
+    ""
+    ""
+    ""
+    ""
+)
+VALIDATOR_PRIVATE_KEY_SECOND_LINES=(
+    ""
+    ""
+    ""
+    ""
+)
+VALIDATOR_PRIVATE_KEY_THIRD_LINES=(
+    ""
+    ""
+    ""
+    ""
+)
+VALIDATOR_ACCOUNT_PASSPHRASES=(
+    ""
+    ""
+    ""
+    ""
+)
+
+BINARY="/tmp/elysd"
+SNAPSHOT_URL="https://snapshots.polkachu.com/testnet-snapshots/elys/elys_770630.tar.lz4"
+SNAPSHOT_PATH="/tmp/elys_testnet_snapshot.tar.lz4"
