@@ -215,7 +215,24 @@ for folder in "${NODE_FOLDERS[@]}"; do
     lz4 -c -d ${SNAPSHOT_PATH} | tar -x -C /tmp/$folder
 done
 
-# # Step 5: Start nodes
+# Step 5: Add missing upgrade info to data folder
+for folder in "${NODE_FOLDERS[@]}"; do
+    echo "Adding missing upgrade info to data folder for $folder node..."
+
+    upgrade_info_content=$(cat <<EOF
+{
+    "name": "v0.5.3",
+    "time": "0001-01-01T00:00:00Z",
+    "height": 477000,
+    "info": "{\"binaries\":{\"linux/amd64\":\"https://github.com/elys-network/elys/releases/download/v0.5.3/elys._v0.5.3_linux_amd64.tar.gz?checksum=4d8824eb30e416420666ffc30e74b7d57c1f913b89e38f24aae889660d322c0f\"}}"
+}
+EOF
+)
+
+    echo "${upgrade_info_content}" > /tmp/$folder/data/upgrade-info.json
+done
+
+# # Step 6: Start nodes
 # for folder in "${NODE_FOLDERS[@]}"; do
 #     echo "Starting $folder node..."
 #     ${BINARY} start --home /tmp/$folder
