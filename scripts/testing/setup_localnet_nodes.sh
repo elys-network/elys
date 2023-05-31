@@ -280,11 +280,11 @@ submit_upgrade_proposal() {
     local first_folder="${NODE_FOLDERS[0]}"
 
     ${BINARY} tx gov submit-legacy-proposal software-upgrade \
-        v0.6.1 \
+        ${NEW_VERSION} \
         --deposit=10000000uelys \
         --upgrade-height=770750 \
-        --title="v0.6.1" \
-        --description="v0.6.1" \
+        --title="${NEW_VERSION}" \
+        --description="${NEW_VERSION}" \
         --no-validate \
         --from=validator \
         --fees=100000uelys \
@@ -294,7 +294,7 @@ submit_upgrade_proposal() {
 
     for folder in "${NODE_FOLDERS[@]}"; do
         ${BINARY} tx gov vote \
-            11 \
+            ${PROPOSAL_ID} \
             yes \
             --from=validator \
             --fees=100000uelys \
