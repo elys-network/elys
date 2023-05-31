@@ -3,6 +3,12 @@
 # Load environment variables
 source scripts/testing/variables.sh
 
+# Check if screen is installed
+if ! command -v screen &> /dev/null; then
+    echo "Error: screen is not installed. Please install screen and try again."
+    exit 1
+fi
+
 # List of environment variables to check
 required_variables=(
     "NODE_FOLDERS"
@@ -47,6 +53,15 @@ fi
 # All required variables are present
 echo "All required environment variables are set."
 
+# Check if any of the named screens already exist
+existing_screens=()
+for folder in "${NODE_FOLDERS[@]}"; do
+    screen -ls "$folder" | grep -q "$folder"
+    if [ $? -eq 0 ]; then
+        existing_screens+=("$folder")
+    fi
+done
+
 # Check if node folders already exist
 existing_folders=()
 for folder in "${NODE_FOLDERS[@]}"; do
@@ -54,6 +69,32 @@ for folder in "${NODE_FOLDERS[@]}"; do
         existing_folders+=("$folder")
     fi
 done
+
+# If existing screens are found, prompt user for confirmation to stop them
+if [[ ${#existing_screens[@]} -gt 0 ]]; then
+    echo "The following screens already exist:"
+    for screen_name in "${existing_screens[@]}"; do
+        echo "- $screen_name"
+    done
+    
+    read -p "Do you want to stop these screens? (y/n): " choice
+    case $choice in
+        [Yy]*)
+            # Stop existing screens
+            for screen_name in "${existing_screens[@]}"; do
+                screen -S "$screen_name" -X quit
+            done
+            ;;
+        [Nn]*)
+            echo "Exiting..."
+            exit 0
+            ;;
+        *)
+            echo "Invalid choice. Exiting..."
+            exit 1
+            ;;
+    esac
+fi
 
 # Prompt user for deletion confirmation
 if [[ ${#existing_folders[@]} -gt 0 ]]; then
@@ -232,8 +273,21 @@ EOF
     echo "${upgrade_info_content}" > /tmp/$folder/data/upgrade-info.json
 done
 
-# # Step 6: Start nodes
-# for folder in "${NODE_FOLDERS[@]}"; do
-#     echo "Starting $folder node..."
-#     ${BINARY} start --home /tmp/$folder
-# done
+# Step 6: Start nodes in separate screen sessions
+for folder in "${NODE_FOLDERS[@]}"; do
+    echo "Starting $folder node..."
+
+    # Create a screen session and execute the start command inside it
+    screen -dmS "$folder" "${BINARY}" start --home "/tmp/$folder"
+
+    # Add a small delay between starting each screen session (optional)
+    sleep 1
+done
+
+# Step 7: Displays all screens available
+screen -ls
+
+echo "You can attach to a screen with the following command:"
+echo "screen -r <screen_name>"
+echo "Example: screen -r node0"
+echo "You can detach from a screen by pressing Ctrl+A and then Ctrl+D"
