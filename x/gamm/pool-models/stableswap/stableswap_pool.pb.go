@@ -72,9 +72,10 @@ var xxx_messageInfo_PoolParams proto.InternalMessageInfo
 
 // Pool is the stableswap Pool struct
 type Pool struct {
-	Address    string     `protobuf:"bytes,1,opt,name=address,proto3" json:"address,omitempty" yaml:"address"`
-	Id         uint64     `protobuf:"varint,2,opt,name=id,proto3" json:"id,omitempty"`
-	PoolParams PoolParams `protobuf:"bytes,3,opt,name=pool_params,json=poolParams,proto3" json:"pool_params" yaml:"stableswap_pool_params"`
+	Address           string `protobuf:"bytes,1,opt,name=address,proto3" json:"address,omitempty" yaml:"address"`
+	RebalanceTreasury string
+	Id                uint64     `protobuf:"varint,2,opt,name=id,proto3" json:"id,omitempty"`
+	PoolParams        PoolParams `protobuf:"bytes,3,opt,name=pool_params,json=poolParams,proto3" json:"pool_params" yaml:"stableswap_pool_params"`
 	// This string specifies who will govern the pool in the future.
 	// Valid forms of this are:
 	// {token name},{duration}

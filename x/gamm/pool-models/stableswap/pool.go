@@ -53,6 +53,7 @@ func NewStableswapPool(poolId uint64,
 
 	pool := Pool{
 		Address:                 types.NewPoolAddress(poolId).String(),
+		RebalanceTreasury:       types.NewPoolRebalanceTreasury(poolId).String(),
 		Id:                      poolId,
 		PoolParams:              stableswapPoolParams,
 		TotalShares:             sdk.NewCoin(types.GetPoolShareDenom(poolId), types.InitPoolSharesSupply),

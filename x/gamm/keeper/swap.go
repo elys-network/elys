@@ -25,14 +25,9 @@ func (k Keeper) SwapExactAmountIn(
 	tokenIn sdk.Coin,
 	tokenOutDenom string,
 	tokenOutMinAmount sdk.Int,
-	swapFee sdk.Dec,
 ) (tokenOutAmount sdk.Int, err error) {
 	if tokenIn.Denom == tokenOutDenom {
 		return sdk.Int{}, errors.New("cannot trade same denomination in and out")
-	}
-	poolSwapFee := pool.GetSwapFee(ctx)
-	if swapFee.LT(poolSwapFee.QuoInt64(2)) {
-		return sdk.Int{}, fmt.Errorf("given swap fee (%s) must be greater than or equal to half of the pool's swap fee (%s)", swapFee, poolSwapFee)
 	}
 	tokensIn := sdk.Coins{tokenIn}
 
@@ -50,7 +45,7 @@ func (k Keeper) SwapExactAmountIn(
 
 	// Executes the swap in the pool and stores the output. Updates pool assets but
 	// does not actually transfer any tokens to or from the pool.
-	tokenOutCoin, err := cfmmPool.SwapOutAmtGivenIn(ctx, tokensIn, tokenOutDenom, swapFee)
+	tokenOutCoin, err := cfmmPool.SwapOutAmtGivenIn(ctx, tokensIn, tokenOutDenom)
 	if err != nil {
 		return sdk.Int{}, err
 	}
@@ -185,6 +180,15 @@ func (k Keeper) updatePoolForSwap(
 	if err != nil {
 		return err
 	}
+
+	// TODO: split fees between staking/LPs/rebalance treasury
+	swapFeeCoins := portionCoins(sdk.Coins{tokenIn}, pool.SwapFee)
+	rebalanceTreasury := pool.GetRebalanceTreasury(ctx)
+	err = k.bankKeeper.SendCoins(ctx, pool.GetAddress(), rebalanceTreasury, swapFeeCoins)
+	if err != nil {
+		return err
+	}
+	k.OnCollectFee(ctx, pool, swapFeeCoins)
 
 	err = k.bankKeeper.SendCoins(ctx, pool.GetAddress(), sender, sdk.Coins{
 		tokenOut,

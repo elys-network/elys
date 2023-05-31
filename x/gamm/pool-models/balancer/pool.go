@@ -43,11 +43,13 @@ var (
 // * poolID doesn't already exist
 func NewBalancerPool(poolId uint64, balancerPoolParams PoolParams, assets []PoolAsset, futureGovernor string, blockTime time.Time) (Pool, error) {
 	poolAddr := types.NewPoolAddress(poolId)
+	poolRebalanceTreasuryAddr := types.NewPoolRebalanceTreasury(poolId)
 
 	// pool thats created up to ensuring the assets and params are valid.
 	// We assume that FuturePoolGovernor is valid.
 	pool := &Pool{
 		Address:            poolAddr.String(),
+		RebalanceTreasury:  poolRebalanceTreasuryAddr.String(),
 		Id:                 poolId,
 		PoolParams:         PoolParams{},
 		TotalWeight:        sdk.ZeroInt(),
@@ -539,7 +541,6 @@ func (p Pool) CalcOutAmtGivenIn(
 	ctx sdk.Context,
 	tokensIn sdk.Coins,
 	tokenOutDenom string,
-	swapFee sdk.Dec,
 ) (sdk.Coin, error) {
 	tokenIn, poolAssetIn, poolAssetOut, err := p.parsePoolAssets(tokensIn, tokenOutDenom)
 	if err != nil {
@@ -547,9 +548,9 @@ func (p Pool) CalcOutAmtGivenIn(
 	}
 
 	initialWeightDistance := sdk.ZeroDec()
-	tokenAmountInAfterFee := tokenIn.Amount.ToDec().Mul(sdk.OneDec().Sub(swapFee))
+	tokenAmountIn := tokenIn.Amount.ToDec()
 	poolTokenInBalance := poolAssetIn.Token.Amount.ToDec()
-	poolPostSwapInBalance := poolTokenInBalance.Add(tokenAmountInAfterFee)
+	poolPostSwapInBalance := poolTokenInBalance.Add(tokenAmountIn)
 
 	// TODO: pool object does not have oracle keeper and adding pseudo keeper here
 	oracle := oraclekeeper.Keeper{}
@@ -613,11 +614,10 @@ func (p *Pool) SwapOutAmtGivenIn(
 	ctx sdk.Context,
 	tokensIn sdk.Coins,
 	tokenOutDenom string,
-	swapFee sdk.Dec,
 ) (
 	tokenOut sdk.Coin, err error,
 ) {
-	tokenOutCoin, err := p.CalcOutAmtGivenIn(ctx, tokensIn, tokenOutDenom, swapFee)
+	tokenOutCoin, err := p.CalcOutAmtGivenIn(ctx, tokensIn, tokenOutDenom)
 	if err != nil {
 		return sdk.Coin{}, err
 	}
@@ -982,7 +982,7 @@ func (p *Pool) calcJoinSingleAssetTokensIn(tokensIn sdk.Coins, totalShares sdk.I
 }
 
 func (p *Pool) ExitPool(ctx sdk.Context, exitingShares sdk.Int, tokenOutDenom string, exitFee sdk.Dec) (exitingCoins sdk.Coins, err error) {
-	exitingCoins, err = p.CalcExitPoolCoinsFromShares(ctx, exitingShares, tokenOutDenom, exitFee)
+	exitingCoins, err = p.CalcExitPoolCoinsFromShares(ctx, exitingShares, tokenOutDenom)
 	if err != nil {
 		return sdk.Coins{}, err
 	}
@@ -1008,8 +1008,8 @@ func (p *Pool) exitPool(ctx sdk.Context, exitingCoins sdk.Coins, exitingShares s
 	return nil
 }
 
-func (p *Pool) CalcExitPoolCoinsFromShares(ctx sdk.Context, exitingShares sdk.Int, tokenOutDenom string, exitFee sdk.Dec) (exitedCoins sdk.Coins, err error) {
-	return cfmm_common.CalcExitPool(ctx, p, exitingShares, tokenOutDenom, exitFee)
+func (p *Pool) CalcExitPoolCoinsFromShares(ctx sdk.Context, exitingShares sdk.Int, tokenOutDenom string) (exitedCoins sdk.Coins, err error) {
+	return cfmm_common.CalcExitPool(ctx, p, exitingShares, tokenOutDenom)
 }
 
 func (p *Pool) CalcTokenInShareAmountOut(

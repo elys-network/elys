@@ -15,7 +15,7 @@ import (
 const errMsgFormatSharesLargerThanMax = "%s resulted shares is larger than the max amount of %s"
 
 // CalcExitPool returns how many tokens should come out, when exiting k LP shares against a "standard" CFMM
-func CalcExitPool(ctx sdk.Context, pool types.CFMMPoolI, exitingShares sdk.Int, tokenOutDenom string, exitFee sdk.Dec) (sdk.Coins, error) {
+func CalcExitPool(ctx sdk.Context, pool types.CFMMPoolI, exitingShares sdk.Int, tokenOutDenom string) (sdk.Coins, error) {
 	totalShares := pool.GetTotalShares()
 	if exitingShares.GTE(totalShares) {
 		return sdk.Coins{}, sdkerrors.Wrapf(types.ErrLimitMaxAmount, errMsgFormatSharesLargerThanMax, exitingShares, totalShares)
@@ -24,13 +24,7 @@ func CalcExitPool(ctx sdk.Context, pool types.CFMMPoolI, exitingShares sdk.Int, 
 	// refundedShares = exitingShares * (1 - exit fee)
 	// with 0 exit fee optimization
 	var refundedShares sdk.Dec
-	if !exitFee.IsZero() {
-		// exitingShares * (1 - exit fee)
-		oneSubExitFee := sdk.OneDec().SubMut(exitFee)
-		refundedShares = oneSubExitFee.MulIntMut(exitingShares)
-	} else {
-		refundedShares = exitingShares.ToDec()
-	}
+	refundedShares = exitingShares.ToDec()
 
 	shareOutRatio := refundedShares.QuoInt(totalShares)
 	// exitedCoins = shareOutRatio * pool liquidity

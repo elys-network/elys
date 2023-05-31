@@ -36,6 +36,15 @@ func (k Keeper) applyExitPoolStateChange(ctx sdk.Context, pool poolmanagertypes.
 		return err
 	}
 
+	// TODO: split fees between staking/LPs/rebalance treasury
+	exitFeeCoins := portionCoins(exitFee, pool.ExitFee)
+	rebalanceTreasury := pool.GetRebalanceTreasury(ctx)
+	err = k.bankKeeper.SendCoins(ctx, exiter, rebalanceTreasury, exitFeeCoins)
+	if err != nil {
+		return err
+	}
+	k.OnCollectFee(ctx, pool, exitFeeCoins)
+
 	err = k.BurnPoolShareFromAccount(ctx, pool, exiter, numShares)
 	if err != nil {
 		return err

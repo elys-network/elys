@@ -138,9 +138,10 @@ message Pool {
   option (cosmos_proto.implements_interface) = "PoolI";
 
   string address = 1 [ (gogoproto.moretags) = "yaml:\"address\"" ];
-  uint64 id = 2;
+  string rebalance_treasury = 2;
+  uint64 id = 3;
 
-  PoolParams pool_params = 3 [
+  PoolParams pool_params = 4 [
     (gogoproto.moretags) = "yaml:\"balancer_pool_params\"",
     (gogoproto.nullable) = false
   ];
@@ -154,21 +155,21 @@ message Pool {
   // a time specified as 0w,1w,2w, etc. which specifies how long the token
   // would need to be locked up to count in governance. 0w means no lockup.
   // TODO: Further improve these docs
-  string future_pool_governor = 4
+  string future_pool_governor = 5
       [ (gogoproto.moretags) = "yaml:\"future_pool_governor\"" ];
   // sum of all LP tokens sent out
-  cosmos.base.v1beta1.Coin total_shares = 5 [
+  cosmos.base.v1beta1.Coin total_shares = 6 [
     (gogoproto.moretags) = "yaml:\"total_shares\"",
     (gogoproto.nullable) = false
   ];
   // These are assumed to be sorted by denomiation.
   // They contain the pool asset and the information about the weight
-  repeated elys.gamm.v1beta1.PoolAsset pool_assets = 6 [
+  repeated elys.gamm.v1beta1.PoolAsset pool_assets = 7 [
     (gogoproto.moretags) = "yaml:\"pool_assets\"",
     (gogoproto.nullable) = false
   ];
   // sum of all non-normalized pool weights
-  string total_weight = 7 [
+  string total_weight = 8 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
     (gogoproto.moretags) = "yaml:\"total_weight\"",
     (gogoproto.nullable) = false
