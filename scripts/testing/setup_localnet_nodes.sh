@@ -321,11 +321,6 @@ prompt_to_submit_software_upgrade() {
     esac
 }
 
-#!/bin/bash
-
-# Array of RPC ports to check
-NODE_RPC_PORTS=(26657 26667 26677 26687)
-
 # Function to check if port is open
 check_port_open() {
   local port=$1
