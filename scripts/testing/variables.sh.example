@@ -73,10 +73,11 @@ VALIDATOR_ACCOUNT_PASSPHRASES=(
     ""
 )
 
-BINARY="/tmp/elysd"
+BINARY="/tmp/elysd-053"
 CHAIN_ID="elystestnet-1"
 SNAPSHOT_URL="https://snapshots.polkachu.com/testnet-snapshots/elys/elys_770630.tar.lz4"
 SNAPSHOT_PATH="/tmp/elys_testnet_snapshot.tar.lz4"
 NEW_VERSION="v0.6.1"
+NEW_BINARY="/tmp/elysd-061"
 PROPOSAL_ID="11"
 UPGRADE_HEIGHT="770750"

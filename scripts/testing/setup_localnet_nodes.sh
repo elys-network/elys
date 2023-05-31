@@ -266,6 +266,27 @@ start_nodes_in_screens() {
     done
 }
 
+# Function to start nodes in separate screen sessions with new binary version
+prompt_start_nodes_in_screens_with_new_binary_version() {
+  read -p "Do you want to start the nodes with the new binary version? (y/n): " choice
+  case $choice in
+    [Yy]*)
+      for folder in "${NODE_FOLDERS[@]}"; do
+        echo "Starting $folder node in a screen session..."
+
+        screen -dmS "$folder" "${NEW_BINARY}" start --home "/tmp/$folder"
+        sleep 1
+      done
+      ;;
+    [Nn]*)
+      echo "Skipping node startup with new binary version."
+      ;;
+    *)
+      echo "Invalid choice. Skipping node startup with new binary version."
+      ;;
+  esac
+}
+
 # Function to display all screen sessions
 display_screen_sessions() {
     screen -ls
@@ -379,6 +400,10 @@ required_variables=(
     "CHAIN_ID"
     "SNAPSHOT_URL"
     "SNAPSHOT_PATH"
+    "NEW_VERSION"
+    "NEW_BINARY"
+    "PROPOSAL_ID"
+    "UPGRADE_HEIGHT"
 )
 
 # Check if screen is installed
@@ -428,6 +453,12 @@ echo "Proceeding with the next steps..."
 
 # Prompt user to submit a software upgrade proposal
 prompt_to_submit_software_upgrade
+
+# Check if any of the named screens exist and prompt to stop them
+prompt_to_stop_screens
+
+# Prompt to start nodes with new binary version
+prompt_start_nodes_in_screens_with_new_binary_version
 
 # Check if any of the named screens exist and prompt to stop them
 prompt_to_stop_screens
