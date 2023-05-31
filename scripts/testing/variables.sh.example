@@ -79,3 +79,4 @@ SNAPSHOT_URL="https://snapshots.polkachu.com/testnet-snapshots/elys/elys_770630.
 SNAPSHOT_PATH="/tmp/elys_testnet_snapshot.tar.lz4"
 NEW_VERSION="v0.6.1"
 PROPOSAL_ID="11"
+UPGRADE_HEIGHT="770750"

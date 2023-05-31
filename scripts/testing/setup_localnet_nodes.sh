@@ -48,7 +48,7 @@ prompt_to_stop_screens() {
         case $choice in
             [Yy]*)
                 for screen_name in "${existing_screens[@]}"; do
-                    screen -S "$screen_name" -X quit
+                    screen -S "${screen_name}" -X stuff "^C"
                 done
                 ;;
             [Nn]*)
@@ -279,10 +279,11 @@ display_screen_sessions() {
 submit_upgrade_proposal() {
     local first_folder="${NODE_FOLDERS[0]}"
 
+    echo "Submitting software upgrade proposal..."
     ${BINARY} tx gov submit-legacy-proposal software-upgrade \
         ${NEW_VERSION} \
         --deposit=10000000uelys \
-        --upgrade-height=770750 \
+        --upgrade-height=${UPGRADE_HEIGHT} \
         --title="${NEW_VERSION}" \
         --description="${NEW_VERSION}" \
         --no-validate \
@@ -290,16 +291,17 @@ submit_upgrade_proposal() {
         --fees=100000uelys \
         --gas=auto \
         --home="/tmp/${first_folder}" \
-        -y
+        -y >/dev/null 2>&1
 
     for folder in "${NODE_FOLDERS[@]}"; do
+        echo "Voting on software upgrade proposal for $folder node..."
         ${BINARY} tx gov vote \
             ${PROPOSAL_ID} \
             yes \
             --from=validator \
             --fees=100000uelys \
             --home="/tmp/${folder}" \
-            -y
+            -y >/dev/null 2>&1
     done
 }
 
@@ -317,6 +319,42 @@ prompt_to_submit_software_upgrade() {
             echo "Invalid choice. No software upgrade proposal submitted."
             ;;
     esac
+}
+
+#!/bin/bash
+
+# Array of RPC ports to check
+NODE_RPC_PORTS=(26657 26667 26677 26687)
+
+# Function to check if port is open
+check_port_open() {
+  local port=$1
+  nc -z localhost "$port" >/dev/null 2>&1
+}
+
+# Wait for all RPC ports to become available
+wait_for_rpc_ports() {
+  local timeout=60
+  local interval=5
+  local counter=0
+
+  echo "Waiting for RPC ports to become available..."
+
+  for port in "${NODE_RPC_PORTS[@]}"; do
+    until check_port_open "$port" || [ "$counter" -eq "$timeout" ]; do
+      counter=$((counter + interval))
+      sleep "$interval"
+    done
+
+    if [ "$counter" -eq "$timeout" ]; then
+      echo "Timeout: Failed to connect to RPC port $port."
+      exit 1
+    fi
+
+    echo "RPC port $port is now open."
+  done
+
+  echo "All RPC ports are open."
 }
 
 # Main script execution
@@ -386,6 +424,12 @@ start_nodes_in_screens
 
 # Display all screen sessions
 display_screen_sessions
+
+# Wait for RPC ports
+wait_for_rpc_ports
+
+# Continue with the next steps of your script
+echo "Proceeding with the next steps..."
 
 # Prompt user to submit a software upgrade proposal
 prompt_to_submit_software_upgrade
