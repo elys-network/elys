@@ -32687,6 +32687,24 @@ paths:
                             type: string
                     totalWeight:
                       type: string
+                    poolLiquidity:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          denom:
+                            type: string
+                          amount:
+                            type: string
+                        description: >-
+                          Coin defines a token with a denomination and an
+                          amount.
+
+
+                          NOTE: The amount field is an Int which implements the
+                          custom method
+
+                          signatures required by gogoproto.
               pagination:
                 type: object
                 properties:
@@ -32857,6 +32875,23 @@ paths:
                           type: string
                   totalWeight:
                     type: string
+                  poolLiquidity:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        denom:
+                          type: string
+                        amount:
+                          type: string
+                      description: >-
+                        Coin defines a token with a denomination and an amount.
+
+
+                        NOTE: The amount field is an Int which implements the
+                        custom method
+
+                        signatures required by gogoproto.
         default:
           description: An unexpected error response.
           schema:
@@ -69431,6 +69466,20 @@ definitions:
               type: string
       totalWeight:
         type: string
+      poolLiquidity:
+        type: array
+        items:
+          type: object
+          properties:
+            denom:
+              type: string
+            amount:
+              type: string
+          description: |-
+            Coin defines a token with a denomination and an amount.
+
+            NOTE: The amount field is an Int which implements the custom method
+            signatures required by gogoproto.
   elysnetwork.elys.amm.PoolAsset:
     type: object
     properties:
@@ -69514,6 +69563,23 @@ definitions:
                     type: string
             totalWeight:
               type: string
+            poolLiquidity:
+              type: array
+              items:
+                type: object
+                properties:
+                  denom:
+                    type: string
+                  amount:
+                    type: string
+                description: >-
+                  Coin defines a token with a denomination and an amount.
+
+
+                  NOTE: The amount field is an Int which implements the custom
+                  method
+
+                  signatures required by gogoproto.
       pagination:
         type: object
         properties:
@@ -69597,6 +69663,23 @@ definitions:
                   type: string
           totalWeight:
             type: string
+          poolLiquidity:
+            type: array
+            items:
+              type: object
+              properties:
+                denom:
+                  type: string
+                amount:
+                  type: string
+              description: >-
+                Coin defines a token with a denomination and an amount.
+
+
+                NOTE: The amount field is an Int which implements the custom
+                method
+
+                signatures required by gogoproto.
   elysnetwork.elys.amm.QueryParamsResponse:
     type: object
     properties:
