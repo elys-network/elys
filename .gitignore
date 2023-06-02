@@ -11,3 +11,5 @@ dockernet/logs
 dockernet/upgrades/binaries
 dockernet/upgrades/cosmovisor
 dockernet/temp.sh
+.env*
+scripts/testing/variables.sh
