@@ -126,10 +126,8 @@ func (k Keeper) UpdateTotalCommitmentInfo(ctx sdk.Context) {
 
 	// Collect gas fees collected
 	fees := k.CollectGasFeesToIncentiveModule(ctx)
-	// Collect DEX revenus collected
-	dexFees := k.CollectDEXRevenusToIncentiveModule(ctx)
 	// Calculate total fees - DEX revenus + Gas fees collected
-	k.tci.TotalFeesCollected = k.tci.TotalFeesCollected.Add(dexFees...).Add(fees...)
+	k.tci.TotalFeesCollected = k.tci.TotalFeesCollected.Add(fees...)
 
 	// Iterate to calculate total Eden, Eden boost and Lp tokens committed
 	k.cmk.IterateCommitments(ctx, func(commitments ctypes.Commitments) bool {
@@ -238,16 +236,20 @@ func (k Keeper) UpdateUncommittedTokens(ctx sdk.Context, epochIdentifier string,
 	k.UpdateTotalCommitmentInfo(ctx)
 
 	// Calculate 65% for LP, 35% for Stakers
-	dexRevenue := sdk.NewDecCoinsFromCoins(k.tci.TotalFeesCollected...)
-	devRevenue65 := dexRevenue.MulDecTruncate(sdk.NewDecWithPrec(65, 1))
-	devRevenue35 := dexRevenue.Sub(devRevenue65)
+	// Collect DEX revenue collected
+	dexRevenue := k.CollectDEXRevenusToIncentiveModule(ctx)
+
+	dexRevenueDec := sdk.NewDecCoinsFromCoins(dexRevenue...)
+	rewardPercentForLps := k.GetDEXRewardPercentForLPs(ctx)
+	devRevenueForLps := dexRevenueDec.MulDecTruncate(rewardPercentForLps)
+	devRevenueForStakers := dexRevenueDec.Sub(devRevenueForLps)
 
 	// Fund community pool based on the communtiy tax
-	devRevenueRemained35 := k.UpdateCommunityPool(ctx, devRevenue35)
+	devRevenueRemained35 := k.UpdateCommunityPool(ctx, devRevenueForStakers)
 
 	// Elys amount in sdk.Dec type
-	devRevenue65Amt := devRevenue65.AmountOf(ptypes.Elys)
-	devRevenue35Amt := devRevenueRemained35.AmountOf(ptypes.Elys)
+	devRevenueLPsAmt := devRevenueForLps.AmountOf(ptypes.Elys)
+	devRevenueStakersAmt := devRevenueRemained35.AmountOf(ptypes.Elys)
 
 	// Calculate eden amount per epoch
 	edenAmountPerEpochStake := stakeIncentive.Amount.Quo(sdk.NewInt(stakeIncentive.NumEpochs))
@@ -280,12 +282,12 @@ func (k Keeper) UpdateUncommittedTokens(ctx sdk.Context, epochIdentifier string,
 			delegatedAmt := k.CalculateDelegatedAmount(ctx, creator)
 
 			// Calculate new uncommitted Eden tokens from Eden & Eden boost committed, Dex rewards distribution
-			newUncommittedEdenTokens, dexRewards, dexRewardsByStake := k.CalculateNewUncommittedEdenTokensAndDexRewards(ctx, delegatedAmt, commitments, edenAmountPerEpochStake, devRevenue35Amt)
+			newUncommittedEdenTokens, dexRewards, dexRewardsByStake := k.CalculateNewUncommittedEdenTokensAndDexRewards(ctx, delegatedAmt, commitments, edenAmountPerEpochStake, devRevenueStakersAmt)
 			totalEdenGiven = totalEdenGiven.Add(newUncommittedEdenTokens)
 			totalRewardsGiven = totalRewardsGiven.Add(dexRewards)
 
 			// Calculate new uncommitted Eden tokens from LpTokens committed, Dex rewards distribution
-			newUncommittedEdenTokensLp, dexRewardsLp := k.CalculateNewUncommittedEdenTokensFromLPAndDexRewards(ctx, totalProxyTVL, commitments, edenAmountPerEpochLp, devRevenue65Amt)
+			newUncommittedEdenTokensLp, dexRewardsLp := k.CalculateNewUncommittedEdenTokensFromLPAndDexRewards(ctx, totalProxyTVL, commitments, edenAmountPerEpochLp)
 			totalEdenGivenLP = totalEdenGivenLP.Add(newUncommittedEdenTokensLp)
 			totalRewardsGivenLP = totalRewardsGivenLP.Add(dexRewardsLp)
 
@@ -311,11 +313,14 @@ func (k Keeper) UpdateUncommittedTokens(ctx sdk.Context, epochIdentifier string,
 		},
 	)
 
+	// After give DEX rewards, we should update its record in order to avoid double spend.
+	k.lpk.UpdateRewardsAccmulated(ctx)
+
 	// Calcualte the remainings
 	edenRemained := edenAmountPerEpochStake.Sub(totalEdenGiven)
 	edenRemainedLP := edenAmountPerEpochLp.Sub(totalEdenGivenLP)
-	dexRewardsRemained := devRevenue35Amt.Sub(sdk.NewDecFromInt(totalRewardsGiven))
-	dexRewardsRemainedLP := devRevenue65Amt.Sub(sdk.NewDecFromInt(totalRewardsGivenLP))
+	dexRewardsRemained := devRevenueStakersAmt.Sub(sdk.NewDecFromInt(totalRewardsGiven))
+	dexRewardsRemainedLP := devRevenueLPsAmt.Sub(sdk.NewDecFromInt(totalRewardsGivenLP))
 
 	// Fund community the remain coins
 	// ----------------------------------
@@ -365,7 +370,7 @@ func (k Keeper) CalculateNewUncommittedEdenTokensAndDexRewards(ctx sdk.Context, 
 }
 
 // Calculate new Eden token amounts based on LpElys committed and MElys committed
-func (k Keeper) CalculateNewUncommittedEdenTokensFromLPAndDexRewards(ctx sdk.Context, totalProxyTVL sdk.Dec, commitments ctypes.Commitments, edenAmountPerEpochLp sdk.Int, devRevenue65Amt sdk.Dec) (sdk.Int, sdk.Int) {
+func (k Keeper) CalculateNewUncommittedEdenTokensFromLPAndDexRewards(ctx sdk.Context, totalProxyTVL sdk.Dec, commitments ctypes.Commitments, edenAmountPerEpochLp sdk.Int) (sdk.Int, sdk.Int) {
 	// Method 2 - Using Proxy TVL
 	totalNewEdenAllocated := sdk.ZeroInt()
 	totalDexRewardsAllocated := sdk.ZeroDec()
@@ -402,8 +407,8 @@ func (k Keeper) CalculateNewUncommittedEdenTokensFromLPAndDexRewards(ctx sdk.Con
 
 		// ------------------- DEX rewards calculation -------------------
 		// ---------------------------------------------------------------
-		// Calculate dex rewards per pool
-		dexRewardsAllocatedForPool := poolShare.Mul(devRevenue65Amt)
+		// Get dex rewards per pool
+		dexRewardsAllocatedForPool := l.rewards
 		// Calculate dex rewards per lp
 		dexRewardsForLP := lpShare.Mul(dexRewardsAllocatedForPool)
 		// Sum total rewards per commitment
@@ -585,6 +590,7 @@ func (k Keeper) ProcessWithdrawValidatorCommission(ctx sdk.Context, delegator st
 		return err
 	}
 
+	// Check validator address
 	_, err = sdk.ValAddressFromBech32(validator)
 	if err != nil {
 		return err

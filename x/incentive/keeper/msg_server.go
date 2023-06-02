@@ -50,7 +50,7 @@ func (k msgServer) WithdrawValidatorCommission(goCtx context.Context, msg *types
 	}
 
 	// Get owner of the validator address
-	validatorOwner := sdk.AccAddress(validatorAddr.Bytes())
+	validatorCreator := sdk.AccAddress(validatorAddr.Bytes())
 	if err != nil {
 		return nil, err
 	}
@@ -61,9 +61,12 @@ func (k msgServer) WithdrawValidatorCommission(goCtx context.Context, msg *types
 	}
 
 	// If it is not requested by the validator creator
-	if strings.EqualFold(validatorOwner.String(), delegator.String()) {
+	if strings.EqualFold(validatorCreator.String(), delegator.String()) {
 		return &types.MsgWithdrawValidatorCommissionResponse{}, nil
 	}
+
+	// Withdraw validator commission
+	err = k.ProcessWithdrawValidatorCommission(ctx, msg.DelegatorAddress, msg.ValidatorAddress)
 
 	ctx.EventManager().EmitEvent(
 		sdk.NewEvent(

@@ -12,6 +12,7 @@ type LiquidityPool struct {
 	TVL        sdk.Int
 	multiplier int64
 	lpToken    string
+	rewards    sdk.Dec
 }
 
 // LP Deposits
@@ -86,4 +87,8 @@ func (k LiquidityKeeper) CalculateLiquidateTVL(ctx sdk.Context, delegator string
 	}
 
 	return liquidatedAmt
+}
+
+// After rewarding, reset the rewards that were given to avoid double paid.
+func (k LiquidityKeeper) UpdateRewardsAccmulated(ctx sdk.Context) {
 }
