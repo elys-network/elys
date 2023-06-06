@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package elysnetwork.elys.amm;
+
+import "gogoproto/gogo.proto";
+import "cosmos_proto/cosmos.proto";
+
+option go_package = "github.com/elys-network/elys/x/amm/types";
+
+message SwapAmountInRoute {
+  uint64 pool_id = 1 [ (gogoproto.moretags) = "yaml:\"pool_id\"" ];
+  string token_out_denom = 2
+      [ (gogoproto.moretags) = "yaml:\"token_out_denom\"" ];
+}
+
+message SwapAmountOutRoute {
+  uint64 pool_id = 1 [ (gogoproto.moretags) = "yaml:\"pool_id\"" ];
+  string token_in_denom = 2
+      [ (gogoproto.moretags) = "yaml:\"token_out_denom\"" ];
+}

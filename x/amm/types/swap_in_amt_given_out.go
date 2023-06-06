@@ -7,7 +7,7 @@ func (p *Pool) SwapInAmtGivenOut(
 	ctx sdk.Context, tokensOut sdk.Coins, tokenInDenom string, swapFee sdk.Dec) (
 	tokenIn sdk.Coin, err error,
 ) {
-	tokenInCoin, err := p.CalcInAmtGivenOut(ctx, tokensOut, tokenInDenom, swapFee)
+	tokenInCoin, err := p.CalcInAmtGivenOut(tokensOut, tokenInDenom, swapFee)
 	if err != nil {
 		return sdk.Coin{}, err
 	}

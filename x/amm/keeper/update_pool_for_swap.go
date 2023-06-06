@@ -24,14 +24,16 @@ func (k Keeper) updatePoolForSwap(
 		return err
 	}
 
-	err = k.bankKeeper.SendCoins(ctx, sender, pool.GetAddress(), sdk.Coins{
+	acc := sdk.AccAddress(pool.GetAddress())
+
+	err = k.bankKeeper.SendCoins(ctx, sender, acc, sdk.Coins{
 		tokenIn,
 	})
 	if err != nil {
 		return err
 	}
 
-	err = k.bankKeeper.SendCoins(ctx, pool.GetAddress(), sender, sdk.Coins{
+	err = k.bankKeeper.SendCoins(ctx, acc, sender, sdk.Coins{
 		tokenOut,
 	})
 	if err != nil {

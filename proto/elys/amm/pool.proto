@@ -19,10 +19,6 @@ message Pool {
     (gogoproto.moretags) = "yaml:\"total_weight\"",
     (gogoproto.nullable) = false
   ];
-  repeated cosmos.base.v1beta1.Coin poolLiquidity = 7 [
-    (gogoproto.nullable) = false,
-    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
-  ];
   
 }
 

@@ -5,12 +5,14 @@ package elysnetwork.elys.amm;
 import "gogoproto/gogo.proto";
 import "elys/amm/params.proto";
 import "elys/amm/pool.proto";
+import "elys/amm/denom_liquidity.proto";
 
 option go_package = "github.com/elys-network/elys/x/amm/types";
 
 // GenesisState defines the amm module's genesis state.
 message GenesisState {
-           Params params   = 1 [(gogoproto.nullable) = false];
-  repeated Pool   poolList = 2 [(gogoproto.nullable) = false];
+           Params         params             = 1 [(gogoproto.nullable) = false];
+  repeated Pool           poolList           = 2 [(gogoproto.nullable) = false];
+  repeated DenomLiquidity denomLiquidityList = 3 [(gogoproto.nullable) = false];
 }
 

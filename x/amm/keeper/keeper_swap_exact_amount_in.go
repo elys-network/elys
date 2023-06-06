@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/elys-network/elys/x/amm/types"
@@ -21,21 +22,21 @@ func (k Keeper) SwapExactAmountIn(
 	pool types.Pool,
 	tokenIn sdk.Coin,
 	tokenOutDenom string,
-	tokenOutMinAmount sdk.Int,
+	tokenOutMinAmount math.Int,
 	swapFee sdk.Dec,
-) (tokenOutAmount sdk.Int, err error) {
+) (tokenOutAmount math.Int, err error) {
 	if tokenIn.Denom == tokenOutDenom {
-		return sdk.Int{}, errors.New("cannot trade same denomination in and out")
+		return math.Int{}, errors.New("cannot trade same denomination in and out")
 	}
 	poolSwapFee := pool.GetPoolParams().SwapFee
 	if swapFee.LT(poolSwapFee.QuoInt64(2)) {
-		return sdk.Int{}, fmt.Errorf("given swap fee (%s) must be greater than or equal to half of the pool's swap fee (%s)", swapFee, poolSwapFee)
+		return math.Int{}, fmt.Errorf("given swap fee (%s) must be greater than or equal to half of the pool's swap fee (%s)", swapFee, poolSwapFee)
 	}
 	tokensIn := sdk.Coins{tokenIn}
 
 	defer func() {
 		if r := recover(); r != nil {
-			tokenOutAmount = sdk.Int{}
+			tokenOutAmount = math.Int{}
 			err = fmt.Errorf("function swapExactAmountIn failed due to internal reason: %v", r)
 		}
 	}()
@@ -44,23 +45,23 @@ func (k Keeper) SwapExactAmountIn(
 	// does not actually transfer any tokens to or from the pool.
 	tokenOutCoin, err := pool.SwapOutAmtGivenIn(ctx, tokensIn, tokenOutDenom, swapFee)
 	if err != nil {
-		return sdk.Int{}, err
+		return math.Int{}, err
 	}
 
 	tokenOutAmount = tokenOutCoin.Amount
 
 	if !tokenOutAmount.IsPositive() {
-		return sdk.Int{}, sdkerrors.Wrapf(types.ErrInvalidMathApprox, "token amount must be positive")
+		return math.Int{}, sdkerrors.Wrapf(types.ErrInvalidMathApprox, "token amount must be positive")
 	}
 
 	if tokenOutAmount.LT(tokenOutMinAmount) {
-		return sdk.Int{}, sdkerrors.Wrapf(types.ErrLimitMinAmount, "%s token is lesser than min amount", tokenOutDenom)
+		return math.Int{}, sdkerrors.Wrapf(types.ErrLimitMinAmount, "%s token is lesser than min amount", tokenOutDenom)
 	}
 
 	// Settles balances between the tx sender and the pool to match the swap that was executed earlier.
 	// Also emits swap event and updates related liquidity metrics
 	if err := k.updatePoolForSwap(ctx, pool, sender, tokenIn, tokenOutCoin); err != nil {
-		return sdk.Int{}, err
+		return math.Int{}, err
 	}
 
 	return tokenOutAmount, nil

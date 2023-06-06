@@ -17,7 +17,7 @@ var (
 
 	// https://www.wolframalpha.com/input?i=2.718281828459045235360287471352662498&assumption=%22ClashPrefs%22+-%3E+%7B%22Math%22%7D
 	// nolint: unused
-	eulersNumber = sdk.MustNewDecFromStr("2.718281828459045235360287471352662498")
+	// eulersNumber = sdk.MustNewDecFromStr("2.718281828459045235360287471352662498")
 )
 
 // Pow computes base^(exp)

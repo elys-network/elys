@@ -8,7 +8,6 @@ import (
 // CalcOutAmtGivenIn calculates tokens to be swapped out given the provided
 // amount and fee deducted, using solveConstantFunctionInvariant.
 func (p Pool) CalcOutAmtGivenIn(
-	ctx sdk.Context,
 	tokensIn sdk.Coins,
 	tokenOutDenom string,
 	swapFee sdk.Dec,

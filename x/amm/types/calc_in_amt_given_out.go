@@ -8,7 +8,7 @@ import (
 // CalcInAmtGivenOut calculates token to be provided, fee added,
 // given the swapped out amount, using solveConstantFunctionInvariant.
 func (p Pool) CalcInAmtGivenOut(
-	ctx sdk.Context, tokensOut sdk.Coins, tokenInDenom string, swapFee sdk.Dec) (
+	tokensOut sdk.Coins, tokenInDenom string, swapFee sdk.Dec) (
 	tokenIn sdk.Coin, err error,
 ) {
 	tokenOut, poolAssetOut, poolAssetIn, err := p.parsePoolAssets(tokensOut, tokenInDenom)
