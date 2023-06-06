@@ -147,7 +147,7 @@ const (
 	Name                 = "elys"
 
 	// Temperal declaration until we have dex module
-	DexRevenueCollectorName = "dev_revenue_collector"
+	DexRevenueCollectorName = "dexRevenueCollector"
 )
 
 // this line is used by starport scaffolding # stargate/wasm/app/enabledProposals
