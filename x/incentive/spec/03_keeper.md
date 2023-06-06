@@ -39,6 +39,8 @@ And configure total rewards for LPs for pool.
 Rewards = EpochTotalRewards * UserLPCommitment / TotalLPCommitment
 ```
 
+Rewards for LPs should be combined with Eden, Eden boost and DEX/margin rewards.
+
 TODO: Problem in this logic - Users can run a bot to instantly put liquidity just before reward distribution and take it out. This happens because of zero lockup time and epoch based reward distribution. One of lockup or epoch based distribution modified. This is common problem on reward distribution per epoch.
 Unless there's a way to track if the commitment was done past epoch and not unbonded so far.
 
