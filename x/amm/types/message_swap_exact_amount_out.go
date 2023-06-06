@@ -1,6 +1,7 @@
 package types
 
 import (
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
@@ -9,7 +10,7 @@ const TypeMsgSwapExactAmountOut = "swap_exact_amount_out"
 
 var _ sdk.Msg = &MsgSwapExactAmountOut{}
 
-func NewMsgSwapExactAmountOut(sender string, tokenOut sdk.Coin, tokenOutMaxAmount sdk.Int, swapRoutePoolIds []uint64, swapRouteDenoms []string) *MsgSwapExactAmountOut {
+func NewMsgSwapExactAmountOut(sender string, tokenOut sdk.Coin, tokenInMaxAmount math.Int, swapRoutePoolIds []uint64, swapRouteDenoms []string) *MsgSwapExactAmountOut {
 	if len(swapRoutePoolIds) != len(swapRouteDenoms) {
 		return nil // or raise an error as the input lists should have the same length
 	}
@@ -24,10 +25,10 @@ func NewMsgSwapExactAmountOut(sender string, tokenOut sdk.Coin, tokenOutMaxAmoun
 	}
 
 	return &MsgSwapExactAmountOut{
-		Sender:            sender,
-		Routes:            routes,
-		TokenOut:          tokenOut,
-		TokenOutMaxAmount: tokenOutMaxAmount,
+		Sender:           sender,
+		Routes:           routes,
+		TokenOut:         tokenOut,
+		TokenInMaxAmount: tokenInMaxAmount,
 	}
 }
 
