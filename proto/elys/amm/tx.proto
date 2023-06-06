@@ -5,6 +5,8 @@ package elysnetwork.elys.amm;
 import "gogoproto/gogo.proto";
 import "cosmos/base/v1beta1/coin.proto";
 import "elys/amm/swap_route.proto"; 
+import "elys/amm/pool_params.proto"; 
+import "elys/amm/pool_asset.proto"; 
 
 option go_package = "github.com/elys-network/elys/x/amm/types";
 
@@ -17,11 +19,9 @@ service Msg {
   rpc SwapExactAmountOut (MsgSwapExactAmountOut) returns (MsgSwapExactAmountOutResponse);
 }
 message MsgCreatePool {
-           string                   creator        = 1;
-  repeated cosmos.base.v1beta1.Coin weights        = 2 [(gogoproto.nullable)   = false                                   ] ;
-  repeated cosmos.base.v1beta1.Coin initialDeposit = 3 [(gogoproto.nullable)   = false                                   ] ;
-           string                   swapFee        = 4 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.moretags) = "yaml:\"swap_fee\"", (gogoproto.nullable) = false];
-           string                   exitFee        = 5 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.moretags) = "yaml:\"swap_fee\"", (gogoproto.nullable) = false];
+           string                   sender         = 1;
+           PoolParams               poolParams     = 2 [ (gogoproto.moretags) = "yaml:\"pool_params\"" ];
+  repeated PoolAsset                poolAssets     = 3 [(gogoproto.nullable)   = false                                   ] ;
 }
 
 message MsgCreatePoolResponse {
