@@ -18,6 +18,6 @@ message Pool {
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
     (gogoproto.nullable) = false
   ];
-  
+  string rebalanceTreasury = 7;
 }
 
