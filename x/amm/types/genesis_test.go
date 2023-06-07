@@ -30,6 +30,14 @@ func TestGenesisState_Validate(t *testing.T) {
 						PoolId: 1,
 					},
 				},
+				DenomLiquidityList: []types.DenomLiquidity{
+					{
+						Denom: "0",
+					},
+					{
+						Denom: "1",
+					},
+				},
 				// this line is used by starport scaffolding # types/genesis/validField
 			},
 			valid: true,
@@ -43,6 +51,20 @@ func TestGenesisState_Validate(t *testing.T) {
 					},
 					{
 						PoolId: 0,
+					},
+				},
+			},
+			valid: false,
+		},
+		{
+			desc: "duplicated denomLiquidity",
+			genState: &types.GenesisState{
+				DenomLiquidityList: []types.DenomLiquidity{
+					{
+						Denom: "0",
+					},
+					{
+						Denom: "0",
 					},
 				},
 			},

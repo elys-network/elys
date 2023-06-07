@@ -22,6 +22,14 @@ func TestGenesis(t *testing.T) {
 				PoolId: 1,
 			},
 		},
+		DenomLiquidityList: []types.DenomLiquidity{
+			{
+				Denom: "0",
+			},
+			{
+				Denom: "1",
+			},
+		},
 		// this line is used by starport scaffolding # genesis/test/state
 	}
 
@@ -34,5 +42,6 @@ func TestGenesis(t *testing.T) {
 	nullify.Fill(got)
 
 	require.ElementsMatch(t, genesisState.PoolList, got.PoolList)
+	require.ElementsMatch(t, genesisState.DenomLiquidityList, got.DenomLiquidityList)
 	// this line is used by starport scaffolding # genesis/test/assert
 }

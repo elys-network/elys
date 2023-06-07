@@ -17,13 +17,13 @@ func TestMsgSwapExactAmountOut_ValidateBasic(t *testing.T) {
 		{
 			name: "invalid address",
 			msg: MsgSwapExactAmountOut{
-				Creator: "invalid_address",
+				Sender: "invalid_address",
 			},
 			err: sdkerrors.ErrInvalidAddress,
 		}, {
 			name: "valid address",
 			msg: MsgSwapExactAmountOut{
-				Creator: sample.AccAddress(),
+				Sender: sample.AccAddress(),
 			},
 		},
 	}

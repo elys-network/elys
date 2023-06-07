@@ -10,6 +10,7 @@ import "elys/amm/pool.proto";
 import "elys/amm/pool_asset.proto";
 import "elys/amm/pool_params.proto";
 import "cosmos/base/v1beta1/coin.proto";
+import "elys/amm/denom_liquidity.proto";
 
 option go_package = "github.com/elys-network/elys/x/amm/types";
 
@@ -29,6 +30,16 @@ service Query {
   }
   rpc PoolAll (QueryAllPoolRequest) returns (QueryAllPoolResponse) {
     option (google.api.http).get = "/elys-network/elys/amm/pool";
+  
+  }
+  
+  // Queries a list of DenomLiquidity items.
+  rpc DenomLiquidity    (QueryGetDenomLiquidityRequest) returns (QueryGetDenomLiquidityResponse) {
+    option (google.api.http).get = "/elys-network/elys/amm/denom_liquidity/{denom}";
+  
+  }
+  rpc DenomLiquidityAll (QueryAllDenomLiquidityRequest) returns (QueryAllDenomLiquidityResponse) {
+    option (google.api.http).get = "/elys-network/elys/amm/denom_liquidity";
   
   }
 }
@@ -57,5 +68,22 @@ message QueryAllPoolRequest {
 message QueryAllPoolResponse {
   repeated Pool                                   pool       = 1 [(gogoproto.nullable) = false];
            cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+message QueryGetDenomLiquidityRequest {
+  string denom = 1;
+}
+
+message QueryGetDenomLiquidityResponse {
+  DenomLiquidity denomLiquidity = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryAllDenomLiquidityRequest {
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+message QueryAllDenomLiquidityResponse {
+  repeated DenomLiquidity                         denomLiquidity = 1 [(gogoproto.nullable) = false];
+           cosmos.base.query.v1beta1.PageResponse pagination     = 2;
 }
 
