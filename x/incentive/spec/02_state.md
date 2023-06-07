@@ -17,6 +17,10 @@ message Params {
     (gogoproto.nullable) = false
   ];
   bool withdraw_addr_enabled = 4;
+  string reward_portion_for_lps = 5 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
 }
 ```
 
@@ -39,7 +43,7 @@ message IncentiveInfo {
 }
 ```
 
-`IncentiveInfo` describes the incentive information for specific pool.
+`IncentiveInfo` has the inflationary reward amount per epoch - Eden token.
 
 ## FeePool
 

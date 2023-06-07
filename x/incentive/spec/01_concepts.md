@@ -4,10 +4,16 @@ order: 1
 
 # Concepts
 
-The Incentive module is designed to reward the ecosystem participants including liquidity providers (LPs), stakers, and Eden token holders.
+The Incentive module is designed to reward the ecosystem participants including liquidity providers (LPs), Elys stakers, and Eden committers. We have 2 kinds of rewards in Elys ecosystem - inflationary reward and non-inflationary rewards. 
 
-- Fees are collected from amm, margin, gas fees
-- Additional reward tokens come from commitment module by increasing their uncommitted token balances periodically. This module is integrated with the commitment module and updates accounting for both Eden tokens and Eden-Boost tokens.
-- Distribution targets are LP token and delegators.
-- Reward tokens are in Eden, Eden Boost, USDC (ELYS token is never rewarded - ELYS token within the reward pool swapped to USDC)
-- Community pool management
+1. Inflationary rewards
+- Given the amount in each epoch, incentive module distribute it to stakers and LPs by increasing uncommitted token balances periodically. It utilizes the commitment module and updates accounting for both Eden tokens and Eden-Boost tokens of each Elys staker and LP.
+
+2. Non-inflationary rewards
+- Fees that are collected from amm, margin and transaction gas fees.
+
+3. Functions
+- Distribute inflationary rewards and non-inflationary rewards to stakers and LPs.
+- It distributes Eden and Eden boost tokens as inflationary rewards.
+- It distributes only USDC as non-inflationary rewards. Fees collected from different parts will be converted into USDC using amm module.
+- It funds community pool based on community pool tax.

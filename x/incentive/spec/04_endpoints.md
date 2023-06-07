@@ -10,7 +10,7 @@ order: 4
 
 ## Msg endpoints
 
-- WithdrawRewards() - withdraw rewards of delegator from a single validator
+- WithdrawRewards() - withdraw rewards of delegator from all validators
 - WithdrawValidatorCommission() - withdraw the full commission to the validator address.
 - WithdrawLPRewards() - withdraw liquidity provider rewards (TODO)
 

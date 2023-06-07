@@ -14,11 +14,11 @@ There's constant reward pool address per liquidity pool id which will be distrib
     }
 ```
 
-DEX revenue and margin revenue to be distributed to specific pool liquidity providers is sent to the address and incentive module distribute the those tokens to relevant pool LPs.
+Generates an address to be used in collecting DEX revenue and margin revenue from the specified pool. We will have unique reward wallet address per pool and incentive module will access these wallets and distribute them to the specified LPs.
 
 ## Elys token to USDC conversion
 
-Before reward distribution, it will be needed to check if it has positive Elys balance and in this case, execute swap operation.
+Gas fees will be collected in Elys. It should be converted into USDC before being distributed. Other DEX fees will be collected in USDC. Meaning incentive module doesn't need to work on converting DEX fees collected. To convert Elys to USDC, we can use the following function to execute swap operation and have USDC converted.
 
 ```go
 ammKeeper.SwapExactAmountIn(goCtx, &types.MsgSwapExactAmountIn{
@@ -32,11 +32,26 @@ ammKeeper.SwapExactAmountIn(goCtx, &types.MsgSwapExactAmountIn{
 
 ## Reward distribution logic for LPs
 
-Reward distribution for LPs will need to iterate LP reward pools with positive balance.
-And configure total rewards for LPs for pool.
+1. Inflationary rewards distribution
+We need to iterate LP pools and then calculate the rewarding amount for LPs of the specified pool.
+We use proxy TVL rather than pure TVL for calculating each pool share. Given the Eden amount per epoch, we use multiplier of each pool. We can calculate proxy TVL by using multiplier and then can calculate each pool share.
+
+Each pool has unique LP token and it is committed to commitment module. We can calculate the total committed LP token amount and amount LP token committed by specific liquidity provider. We can then calculate his share to the pool and then finally we calculate his Eden allocation during the epoch.
 
 ```go
-Rewards = EpochTotalRewards * UserLPCommitment / TotalLPCommitment
+// Proxy TVL
+// Multiplier on each liquidity pool
+// We have 3 pools of 20, 30, 40 TVL
+// We have mulitplier of 0.3, 0.5, 1.0
+// Proxy TVL = 20*0.3+30*0.5+40*1.0
+Rewards = RewardsAmountOfPoolPerEpoch * UserLPCommitment / TotalLPCommitment
+```
+
+2. Non-inflationary rewards distribution
+We need to iterate LP reward pools with positive balance and then calculate the rewarding amount for LPs of the specified pool. We should calculate the LPs share of the specified pool.
+
+```go
+Rewards = l.rewardAmount * UserLPCommitment / TotalLPCommitmentOfPool
 ```
 
 Rewards for LPs should be combined with Eden, Eden boost and DEX/margin rewards.
@@ -45,5 +60,21 @@ TODO: Problem in this logic - Users can run a bot to instantly put liquidity jus
 Unless there's a way to track if the commitment was done past epoch and not unbonded so far.
 
 ## Reward distribution logic for stakers
+1. Inflationary rewards distribution
+Given the amount of Eden per epoch, we calculate the amount of Eden and Eden boost for stakers.
 
-This mechanism should be similar to Cosmos SDK's distribution module does except for epoch based operation.
+```go
+    // Calculate total share of staking considering Eden committed, Eden boost committed and Elys staked.
+	stakeShare := k.CalculateTotalShareOfStaking(totalEdenCommittedByStake)
+	newEdenAllocated := stakeShare.MulInt(edenAmountPerEpoch)
+```
+
+2. Non-inflationary rewards distribution
+35% of all DEX revenue is distributed to the stakers according to their staking share.
+```go
+    dexRewards := stakeShare.Mul(dexRevenueAmtForStakers).TruncateInt()
+```
+
+## Withdraw rewards
+1. Withdraw rewards of LPs and stakers
+2. Withdraw commissions of validators.
