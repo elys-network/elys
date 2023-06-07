@@ -18,4 +18,9 @@ message Params {
   ];
 
   bool withdraw_addr_enabled = 4;
+  // Dex revenue percent for lps, 100 - reward_portion_for_lps = revenue percent for stakers.
+  string reward_portion_for_lps = 5 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
 }
