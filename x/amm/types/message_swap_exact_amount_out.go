@@ -1,6 +1,7 @@
 package types
 
 import (
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
@@ -9,13 +10,25 @@ const TypeMsgSwapExactAmountOut = "swap_exact_amount_out"
 
 var _ sdk.Msg = &MsgSwapExactAmountOut{}
 
-func NewMsgSwapExactAmountOut(creator string, tokenOut sdk.Coin, tokenOutMaxAmount sdk.Uint, swapRoutePoolIds []uint64, swapRouteDenoms []string) *MsgSwapExactAmountOut {
+func NewMsgSwapExactAmountOut(sender string, tokenOut sdk.Coin, tokenInMaxAmount math.Int, swapRoutePoolIds []uint64, swapRouteDenoms []string) *MsgSwapExactAmountOut {
+	if len(swapRoutePoolIds) != len(swapRouteDenoms) {
+		return nil // or raise an error as the input lists should have the same length
+	}
+
+	var routes []SwapAmountOutRoute
+	for i := 0; i < len(swapRoutePoolIds); i++ {
+		route := SwapAmountOutRoute{
+			PoolId:       swapRoutePoolIds[i],
+			TokenInDenom: swapRouteDenoms[i],
+		}
+		routes = append(routes, route)
+	}
+
 	return &MsgSwapExactAmountOut{
-		Creator:           creator,
-		TokenOut:          tokenOut,
-		TokenOutMaxAmount: tokenOutMaxAmount,
-		SwapRoutePoolIds:  swapRoutePoolIds,
-		SwapRouteDenoms:   swapRouteDenoms,
+		Sender:           sender,
+		Routes:           routes,
+		TokenOut:         tokenOut,
+		TokenInMaxAmount: tokenInMaxAmount,
 	}
 }
 
@@ -28,11 +41,11 @@ func (msg *MsgSwapExactAmountOut) Type() string {
 }
 
 func (msg *MsgSwapExactAmountOut) GetSigners() []sdk.AccAddress {
-	creator, err := sdk.AccAddressFromBech32(msg.Creator)
+	sender, err := sdk.AccAddressFromBech32(msg.Sender)
 	if err != nil {
 		panic(err)
 	}
-	return []sdk.AccAddress{creator}
+	return []sdk.AccAddress{sender}
 }
 
 func (msg *MsgSwapExactAmountOut) GetSignBytes() []byte {
@@ -41,9 +54,9 @@ func (msg *MsgSwapExactAmountOut) GetSignBytes() []byte {
 }
 
 func (msg *MsgSwapExactAmountOut) ValidateBasic() error {
-	_, err := sdk.AccAddressFromBech32(msg.Creator)
+	_, err := sdk.AccAddressFromBech32(msg.Sender)
 	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid sender address (%s)", err)
 	}
 	return nil
 }

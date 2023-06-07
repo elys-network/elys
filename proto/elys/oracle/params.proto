@@ -12,8 +12,7 @@ message Params {
   
   string band_channel_source = 1;
   uint64 oracle_script_id = 2 [
-    (gogoproto.customname) = "OracleScriptID",
-    (gogoproto.moretags) = "yaml:\"oracle_script_id\""
+    (gogoproto.customname) = "OracleScriptID"
   ];
   uint64 multiplier = 3;
   uint64 ask_count = 4;

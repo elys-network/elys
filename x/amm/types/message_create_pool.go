@@ -9,13 +9,11 @@ const TypeMsgCreatePool = "create_pool"
 
 var _ sdk.Msg = &MsgCreatePool{}
 
-func NewMsgCreatePool(creator string, weights sdk.Coins, initialDeposit sdk.Coins, swapFee sdk.Dec, exitFee sdk.Dec) *MsgCreatePool {
+func NewMsgCreatePool(sender string, poolParams *PoolParams, poolAssets []PoolAsset) *MsgCreatePool {
 	return &MsgCreatePool{
-		Creator:        creator,
-		Weights:        weights,
-		InitialDeposit: initialDeposit,
-		SwapFee:        swapFee,
-		ExitFee:        exitFee,
+		Sender:     sender,
+		PoolParams: poolParams,
+		PoolAssets: poolAssets,
 	}
 }
 
@@ -28,11 +26,11 @@ func (msg *MsgCreatePool) Type() string {
 }
 
 func (msg *MsgCreatePool) GetSigners() []sdk.AccAddress {
-	creator, err := sdk.AccAddressFromBech32(msg.Creator)
+	sender, err := sdk.AccAddressFromBech32(msg.Sender)
 	if err != nil {
 		panic(err)
 	}
-	return []sdk.AccAddress{creator}
+	return []sdk.AccAddress{sender}
 }
 
 func (msg *MsgCreatePool) GetSignBytes() []byte {
@@ -41,9 +39,21 @@ func (msg *MsgCreatePool) GetSignBytes() []byte {
 }
 
 func (msg *MsgCreatePool) ValidateBasic() error {
-	_, err := sdk.AccAddressFromBech32(msg.Creator)
+	_, err := sdk.AccAddressFromBech32(msg.Sender)
 	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid sender address (%s)", err)
 	}
 	return nil
+}
+
+func (msg *MsgCreatePool) InitialLiquidity() sdk.Coins {
+	var coins sdk.Coins
+	for _, asset := range msg.PoolAssets {
+		coins = append(coins, asset.Token)
+	}
+	if coins == nil {
+		panic("InitialLiquidity coins is equal to nil - this shouldn't happen")
+	}
+	coins = coins.Sort()
+	return coins
 }

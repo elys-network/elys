@@ -1,6 +1,7 @@
 package cli
 
 import (
+	"errors"
 	"strconv"
 
 	"github.com/cosmos/cosmos-sdk/client"
@@ -41,12 +42,31 @@ func CmdCreatePool() *cobra.Command {
 				return err
 			}
 
+			if len(argInitialDeposit) != len(argWeights) {
+				return errors.New("deposit tokens and token weights should have same length")
+			}
+
+			var poolAssets []types.PoolAsset
+			for i := 0; i < len(argWeights); i++ {
+				if argWeights[i].Denom != argInitialDeposit[i].Denom {
+					return errors.New("deposit tokens and token weights should have same denom order")
+				}
+
+				poolAssets = append(poolAssets, types.PoolAsset{
+					Weight: argWeights[i].Amount,
+					Token:  argInitialDeposit[i],
+				})
+			}
+
+			poolParams := &types.PoolParams{
+				SwapFee: argSwapFee,
+				ExitFee: argExitFee,
+			}
+
 			msg := types.NewMsgCreatePool(
 				clientCtx.GetFromAddress().String(),
-				argWeights,
-				argInitialDeposit,
-				argSwapFee,
-				argExitFee,
+				poolParams,
+				poolAssets,
 			)
 			if err := msg.ValidateBasic(); err != nil {
 				return err

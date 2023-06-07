@@ -30,7 +30,7 @@ const (
 
 	// Eden Boost denom
 	EdenB = "uedenb"
-	
+
 	// USDC
 	USDC = "usdc"
 
