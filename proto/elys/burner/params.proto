@@ -9,5 +9,5 @@ option go_package = "github.com/elys-network/elys/x/burner/types";
 message Params {
   option (gogoproto.goproto_stringer) = false;
   
-  string epochIdentifier = 1 [(gogoproto.moretags) = "yaml:\"epoch_identifier\""];
+  string epochIdentifier = 1;
 }

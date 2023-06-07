@@ -1,6 +1,7 @@
 package cli
 
 import (
+	"errors"
 	"strconv"
 
 	"strings"
@@ -27,7 +28,10 @@ func CmdSwapExactAmountOut() *cobra.Command {
 			if err != nil {
 				return err
 			}
-			argTokenOutMaxAmount := math.NewUintFromString(args[1])
+			argTokenOutMaxAmount, ok := math.NewIntFromString(args[1])
+			if !ok {
+				return errors.New("invalid token-out-max-amount")
+			}
 			argCastSwapRoutePoolIds := strings.Split(args[2], listSeparator)
 			argSwapRoutePoolIds := make([]uint64, len(argCastSwapRoutePoolIds))
 			for i, arg := range argCastSwapRoutePoolIds {

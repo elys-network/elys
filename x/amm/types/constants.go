@@ -6,6 +6,8 @@ import (
 
 const (
 	OneShareExponent = 18
+
+	BalancerGasFeeForSwap = 10_000
 )
 
 var (

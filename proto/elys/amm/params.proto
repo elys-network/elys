@@ -9,5 +9,5 @@ option go_package = "github.com/elys-network/elys/x/amm/types";
 message Params {
   option (gogoproto.goproto_stringer) = false;
   
-  uint64 poolCreationFee = 1 [(gogoproto.moretags) = "yaml:\"pool_creation_fee\""];
+  uint64 poolCreationFee = 1;
 }

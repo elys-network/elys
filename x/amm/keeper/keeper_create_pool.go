@@ -53,12 +53,12 @@ func (k Keeper) CreatePool(ctx sdk.Context, msg *types.MsgCreatePool) (uint64, e
 		return 0, err
 	}
 
-	// // Send initial liquidity to the pool's address.
-	// initialPoolLiquidity := msg.InitialLiquidity()
-	// err = k.bankKeeper.SendCoins(ctx, sender, pool.GetAddress(), initialPoolLiquidity)
-	// if err != nil {
-	// 	return 0, err
-	// }
+	// Send initial liquidity to the pool's address.
+	initialPoolLiquidity := msg.InitialLiquidity()
+	err = k.bankKeeper.SendCoins(ctx, sender, address, initialPoolLiquidity)
+	if err != nil {
+		return 0, err
+	}
 
 	// emitCreatePoolEvents(ctx, poolId, msg)
 	return pool.GetPoolId(), nil

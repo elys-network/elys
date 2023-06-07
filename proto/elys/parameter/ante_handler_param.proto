@@ -9,17 +9,14 @@ option go_package = "github.com/elys-network/elys/x/parameter/types";
 message AnteHandlerParam { 
   string minCommissionRate = 1 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
-    (gogoproto.moretags) = "yaml:\"min_commission_rate\"",
     (gogoproto.nullable) = false
   ];
   string maxVotingPower = 2 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
-    (gogoproto.moretags) = "yaml:\"max_voting_power\"",
     (gogoproto.nullable) = false
   ];
   string minSelfDelegation = 3 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
-    (gogoproto.moretags) = "yaml:\"min_self_delegation\"",
     (gogoproto.nullable) = false
   ];
 }

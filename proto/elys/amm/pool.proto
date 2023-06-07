@@ -16,7 +16,6 @@ message Pool {
   repeated PoolAsset poolAssets = 5; 
   string totalWeight = 6 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
-    (gogoproto.moretags) = "yaml:\"total_weight\"",
     (gogoproto.nullable) = false
   ];
   
