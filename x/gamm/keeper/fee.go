@@ -19,4 +19,5 @@ func (k Keeper) OnCollectFee(ctx sdk.Context, pool poolmanagertypes.PoolI, fee s
 	// TODO: transfer 60% to LPs through commitment module
 	// TODO: transfer 30% to stakers through incentive module
 	// keep remaining 10% on fees treasury
+	// TODO: swap fees to pool FeeDenom (this is normally USDC)
 }

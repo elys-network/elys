@@ -113,6 +113,8 @@ message PoolParams {
     (gogoproto.moretags) = "yaml:\"smooth_weight_change_params\"",
     (gogoproto.nullable) = true
   ];
+  // denom for fee collection
+  string fee_denom = 11;
 }
 
 // Pool asset is an internal struct that combines the amount of the

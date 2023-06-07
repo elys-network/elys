@@ -260,6 +260,8 @@ type Pool struct {
 	PoolAssets []PoolAsset `protobuf:"bytes,6,rep,name=pool_assets,json=poolAssets,proto3" json:"pool_assets" yaml:"pool_assets"`
 	// sum of all non-normalized pool weights
 	TotalWeight github_com_cosmos_cosmos_sdk_types.Int `protobuf:"bytes,7,opt,name=total_weight,json=totalWeight,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"total_weight" yaml:"total_weight"`
+	// denom for fee collection
+	FeeDenom string
 }
 
 func (m *Pool) Reset()      { *m = Pool{} }
