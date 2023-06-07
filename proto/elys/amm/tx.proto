@@ -42,6 +42,7 @@ message MsgExitPool {
            uint64                   poolId        = 2;
   repeated cosmos.base.v1beta1.Coin maxAmountsOut = 3 [(gogoproto.nullable) = false];
            string                   shareAmountIn = 4;
+           string                   tokenOutDenom = 5;
 }
 
 message MsgExitPoolResponse {}
