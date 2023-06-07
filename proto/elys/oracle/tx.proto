@@ -24,8 +24,7 @@ service Msg {
 message MsgRequestBandPrice {
   string creator = 1;
   uint64 oracle_script_id = 2 [
-    (gogoproto.customname) = "OracleScriptID",
-    (gogoproto.moretags) = "yaml:\"oracle_script_id\""
+    (gogoproto.customname) = "OracleScriptID"
   ];
   string source_channel = 3;
   BandPriceCallData calldata = 4;

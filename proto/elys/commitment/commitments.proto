@@ -20,8 +20,7 @@ message CommittedTokens {
     string denom = 1;
     string amount = 2 [
         (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
-        (gogoproto.nullable) = false,
-        (gogoproto.moretags) = "yaml:\"amount\""
+        (gogoproto.nullable) = false
       ];
 }
 
@@ -29,8 +28,7 @@ message UncommittedTokens {
     string denom = 1;
     string amount = 2 [
         (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
-        (gogoproto.nullable) = false,
-        (gogoproto.moretags) = "yaml:\"amount\""
+        (gogoproto.nullable) = false
       ];
 }
 
@@ -38,13 +36,11 @@ message VestingTokens {
     string denom = 1;
     string total_amount = 2 [
         (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
-        (gogoproto.nullable) = false,
-        (gogoproto.moretags) = "yaml:\"amount\""
+        (gogoproto.nullable) = false
       ];
     string unvested_amount = 3 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
-    (gogoproto.nullable) = false,
-    (gogoproto.moretags) = "yaml:\"amount\""
+    (gogoproto.nullable) = false
     ];
     string epoch_identifier = 4;
     int64 num_epochs = 5;

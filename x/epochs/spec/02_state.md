@@ -9,7 +9,7 @@ order: 2
 The `x/epochs` module keeps the following `objects in state`:
 
 | State Object | Description         | Key                  | Value               | Store |
-|--------------|---------------------|----------------------|---------------------|-------|
+| ------------ | ------------------- | -------------------- | ------------------- | ----- |
 | `EpochInfo`  | Epoch info bytecode | `[]byte{identifier}` | `[]byte{epochInfo}` | KV    |
 
 ### EpochInfo
@@ -29,20 +29,17 @@ message EpochInfo {
     string identifier = 1;
     google.protobuf.Timestamp start_time = 2 [
         (gogoproto.stdtime) = true,
-        (gogoproto.nullable) = false,
-        (gogoproto.moretags) = "yaml:\"start_time\""
+        (gogoproto.nullable) = false
     ];
     google.protobuf.Duration duration = 3 [
         (gogoproto.nullable) = false,
         (gogoproto.stdduration) = true,
-        (gogoproto.jsontag) = "duration,omitempty",
-        (gogoproto.moretags) = "yaml:\"duration\""
+        (gogoproto.jsontag) = "duration,omitempty"
     ];
     int64 current_epoch = 4;
     google.protobuf.Timestamp current_epoch_start_time = 5 [
         (gogoproto.stdtime) = true,
-        (gogoproto.nullable) = false,
-        (gogoproto.moretags) = "yaml:\"current_epoch_start_time\""
+        (gogoproto.nullable) = false
     ];
     bool epoch_counting_started = 6;
     reserved 7;

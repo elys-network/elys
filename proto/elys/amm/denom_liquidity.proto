@@ -8,7 +8,7 @@ option go_package = "github.com/elys-network/elys/x/amm/types";
 
 message DenomLiquidity {
   string denom = 1; 
-  string liquidity = 2 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.moretags) = "yaml:\"taken_out_min_amount\"", (gogoproto.nullable) = false];
+  string liquidity = 2 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false];
   
 }
 
