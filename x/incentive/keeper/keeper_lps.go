@@ -6,7 +6,7 @@ import (
 )
 
 // Calculate new Eden token amounts based on LpElys committed and MElys committed
-func (k Keeper) CalculateRewardsForLPs(ctx sdk.Context, totalProxyTVL sdk.Dec, commitments ctypes.Commitments, edenAmountPerEpochLp sdk.Int, dexRevenueAmtForLPs sdk.Dec) (sdk.Int, sdk.Int) {
+func (k Keeper) CalculateRewardsForLPs(ctx sdk.Context, totalProxyTVL sdk.Dec, commitments ctypes.Commitments, edenAmountPerEpochLp sdk.Int) (sdk.Int, sdk.Int) {
 	// Method 2 - Using Proxy TVL
 	totalNewEdenAllocated := sdk.ZeroInt()
 	totalDexRewardsAllocated := sdk.ZeroDec()
@@ -43,8 +43,8 @@ func (k Keeper) CalculateRewardsForLPs(ctx sdk.Context, totalProxyTVL sdk.Dec, c
 
 		// ------------------- DEX rewards calculation -------------------
 		// ---------------------------------------------------------------
-		// Calculate dex rewards per pool
-		dexRewardsAllocatedForPool := poolShare.Mul(dexRevenueAmtForLPs)
+		// Get dex rewards per pool
+		dexRewardsAllocatedForPool := l.poolRewards
 		// Calculate dex rewards per lp
 		dexRewardsForLP := lpShare.Mul(dexRewardsAllocatedForPool)
 		// Sum total rewards per commitment

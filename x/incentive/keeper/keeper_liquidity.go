@@ -8,10 +8,11 @@ import (
 // --------------------------------------------
 // Liquidity pool
 type LiquidityPool struct {
-	index      string
-	TVL        sdk.Int
-	multiplier int64
-	lpToken    string
+	index       string
+	TVL         sdk.Int
+	multiplier  int64
+	lpToken     string
+	poolRewards sdk.Dec
 }
 
 // LP Deposits
@@ -86,4 +87,12 @@ func (k LiquidityKeeper) CalculateLiquidateTVL(ctx sdk.Context, delegator string
 	}
 
 	return liquidatedAmt
+}
+
+// Draft function
+// TODO:
+// + After we distribute rewards from each pool, we should reset the amount of rewards accumulated
+// + in each pool in order to avoid double paying.
+// + Regarding reward wallet topic, I still need to discuss with team members. So draft this part.
+func (k LiquidityKeeper) UpdateRewardsAccmulated(ctx sdk.Context) {
 }

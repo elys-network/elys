@@ -77,20 +77,24 @@ func (k Keeper) UpdateUncommittedTokens(ctx sdk.Context, epochIdentifier string,
 	k.UpdateTotalCommitmentInfo(ctx)
 
 	// Calculate 65% for LP, 35% for Stakers
-	dexRevenue := sdk.NewDecCoinsFromCoins(k.tci.TotalFeesCollected...)
-	dexRevenueForLps := dexRevenue.MulDecTruncate(sdk.NewDecWithPrec(65, 1))
-	dexRevenueForStakers := dexRevenue.Sub(dexRevenueForLps)
+	// Collect DEX revenue collected
+	dexRevenue := k.CollectDEXRevenusToIncentiveModule(ctx)
+
+	dexRevenueDec := sdk.NewDecCoinsFromCoins(dexRevenue...)
+	rewardPercentForLps := k.GetDEXRewardPercentForLPs(ctx)
+	dexRevenueForLps := dexRevenueDec.MulDecTruncate(rewardPercentForLps)
+	dexRevenueForStakers := dexRevenueDec.Sub(dexRevenueForLps)
 
 	// Fund community pool based on the communtiy tax
 	dexRevenueRemainedForStakers := k.UpdateCommunityPool(ctx, dexRevenueForStakers)
 
 	// Elys amount in sdk.Dec type
-	dexRevenueAmtForLPs := dexRevenueForLps.AmountOf(ptypes.Elys)
-	dexRevenueAmtForStakers := dexRevenueRemainedForStakers.AmountOf(ptypes.Elys)
+	dexRevenueLPsAmt := dexRevenueForLps.AmountOf(ptypes.Elys)
+	dexRevenueStakersAmt := dexRevenueRemainedForStakers.AmountOf(ptypes.Elys)
 
 	// Calculate eden amount per epoch
-	edenAmountPerEpochStake := stakeIncentive.Amount.Quo(sdk.NewInt(stakeIncentive.NumEpochs))
-	edenAmountPerEpochLp := lpIncentive.Amount.Quo(sdk.NewInt(lpIncentive.NumEpochs))
+	edenAmountPerEpochStakers := stakeIncentive.Amount.Quo(sdk.NewInt(stakeIncentive.NumEpochs))
+	edenAmountPerEpochLPs := lpIncentive.Amount.Quo(sdk.NewInt(lpIncentive.NumEpochs))
 	edenBoostAPR := stakeIncentive.EdenBoostApr
 
 	// Proxy TVL
@@ -119,12 +123,12 @@ func (k Keeper) UpdateUncommittedTokens(ctx sdk.Context, epochIdentifier string,
 			delegatedAmt := k.CalculateDelegatedAmount(ctx, creator)
 
 			// Calculate new uncommitted Eden tokens from Eden & Eden boost committed, Dex rewards distribution
-			newUncommittedEdenTokens, dexRewards, dexRewardsByStake := k.CalculateRewardsForStakers(ctx, delegatedAmt, commitments, edenAmountPerEpochStake, dexRevenueAmtForStakers)
+			newUncommittedEdenTokens, dexRewards, dexRewardsByStakers := k.CalculateRewardsForStakers(ctx, delegatedAmt, commitments, edenAmountPerEpochStakers, dexRevenueStakersAmt)
 			totalEdenGiven = totalEdenGiven.Add(newUncommittedEdenTokens)
 			totalRewardsGiven = totalRewardsGiven.Add(dexRewards)
 
 			// Calculate new uncommitted Eden tokens from LpTokens committed, Dex rewards distribution
-			newUncommittedEdenTokensLp, dexRewardsLp := k.CalculateRewardsForLPs(ctx, totalProxyTVL, commitments, edenAmountPerEpochLp, dexRevenueAmtForLPs)
+			newUncommittedEdenTokensLp, dexRewardsLp := k.CalculateRewardsForLPs(ctx, totalProxyTVL, commitments, edenAmountPerEpochLPs)
 			totalEdenGivenLP = totalEdenGivenLP.Add(newUncommittedEdenTokensLp)
 			totalRewardsGivenLP = totalRewardsGivenLP.Add(dexRewardsLp)
 
@@ -132,7 +136,7 @@ func (k Keeper) UpdateUncommittedTokens(ctx sdk.Context, epochIdentifier string,
 			newUncommittedEdenTokens = newUncommittedEdenTokens.Add(newUncommittedEdenTokensLp)
 
 			// Give commission to validators ( Eden from stakers and Dex rewards from stakers. )
-			edenCommissionGiven, dexRewardsCommissionGiven := k.GiveCommissionToValidators(ctx, creator, delegatedAmt, newUncommittedEdenTokens, dexRewardsByStake)
+			edenCommissionGiven, dexRewardsCommissionGiven := k.GiveCommissionToValidators(ctx, creator, delegatedAmt, newUncommittedEdenTokens, dexRewardsByStakers)
 
 			// Minus the given amount and increase with the remains only
 			newUncommittedEdenTokens = newUncommittedEdenTokens.Sub(edenCommissionGiven)
@@ -150,11 +154,14 @@ func (k Keeper) UpdateUncommittedTokens(ctx sdk.Context, epochIdentifier string,
 		},
 	)
 
+	// After give DEX rewards, we should update its record in order to avoid double spend.
+	k.lpk.UpdateRewardsAccmulated(ctx)
+
 	// Calcualte the remainings
-	edenRemained := edenAmountPerEpochStake.Sub(totalEdenGiven)
-	edenRemainedLP := edenAmountPerEpochLp.Sub(totalEdenGivenLP)
-	dexRewardsRemained := dexRevenueAmtForStakers.Sub(sdk.NewDecFromInt(totalRewardsGiven))
-	dexRewardsRemainedLP := dexRevenueAmtForLPs.Sub(sdk.NewDecFromInt(totalRewardsGivenLP))
+	edenRemained := edenAmountPerEpochStakers.Sub(totalEdenGiven)
+	edenRemainedLP := edenAmountPerEpochLPs.Sub(totalEdenGivenLP)
+	dexRewardsRemained := dexRevenueStakersAmt.Sub(sdk.NewDecFromInt(totalRewardsGiven))
+	dexRewardsRemainedLP := dexRevenueLPsAmt.Sub(sdk.NewDecFromInt(totalRewardsGivenLP))
 
 	// Fund community the remain coins
 	// ----------------------------------

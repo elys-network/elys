@@ -121,6 +121,7 @@ func (k Keeper) ProcessWithdrawValidatorCommission(ctx sdk.Context, delegator st
 		return err
 	}
 
+	// Check validator address
 	_, err = sdk.ValAddressFromBech32(validator)
 	if err != nil {
 		return err

@@ -33,6 +33,12 @@ func (k Keeper) GetWithdrawAddrEnabled(ctx sdk.Context) (enabled bool) {
 	return enabled
 }
 
+// GetDEXRewardPercentForLPs returns the dex revenue percent for Lps
+func (k Keeper) GetDEXRewardPercentForLPs(ctx sdk.Context) (percent sdk.Dec) {
+	k.paramstore.Get(ctx, types.ParamStoreKeyRewardPercentForLps, &percent)
+	return percent
+}
+
 // Find out active incentive params
 func (k Keeper) GetProperIncentiveParam(ctx sdk.Context, epochIdentifier string) (bool, types.IncentiveInfo, types.IncentiveInfo) {
 	// Fetch incentive params
@@ -103,10 +109,8 @@ func (k Keeper) UpdateTotalCommitmentInfo(ctx sdk.Context) {
 
 	// Collect gas fees collected
 	fees := k.CollectGasFeesToIncentiveModule(ctx)
-	// Collect DEX revenus collected
-	dexFees := k.CollectDEXRevenusToIncentiveModule(ctx)
 	// Calculate total fees - DEX revenus + Gas fees collected
-	k.tci.TotalFeesCollected = k.tci.TotalFeesCollected.Add(dexFees...).Add(fees...)
+	k.tci.TotalFeesCollected = k.tci.TotalFeesCollected.Add(fees...)
 
 	// Iterate to calculate total Eden, Eden boost and Lp tokens committed
 	k.cmk.IterateCommitments(ctx, func(commitments ctypes.Commitments) bool {
