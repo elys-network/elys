@@ -81,8 +81,8 @@ func (k Keeper) UpdateUncommittedTokens(ctx sdk.Context, epochIdentifier string,
 	dexRevenue := k.CollectDEXRevenusToIncentiveModule(ctx)
 
 	dexRevenueDec := sdk.NewDecCoinsFromCoins(dexRevenue...)
-	rewardPercentForLps := k.GetDEXRewardPercentForLPs(ctx)
-	dexRevenueForLps := dexRevenueDec.MulDecTruncate(rewardPercentForLps)
+	rewardPortionForLps := k.GetDEXRewardPortionForLPs(ctx)
+	dexRevenueForLps := dexRevenueDec.MulDecTruncate(rewardPortionForLps)
 	dexRevenueForStakers := dexRevenueDec.Sub(dexRevenueForLps)
 
 	// Fund community pool based on the communtiy tax

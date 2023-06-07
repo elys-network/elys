@@ -107,7 +107,8 @@ func (k Keeper) ProcessWithdrawRewards(ctx sdk.Context, delegator string) error 
 	err = k.cmk.ProcessWithdrawTokens(ctx, delegator, ptypes.EdenB, uncommittedEdenB.Amount)
 
 	// Convert Elys to USDC
-	// Conversion is done inside commmitment module, later on we will have swap module
+	// TODO:
+	// + Conversion is done inside commmitment module using amm module that will come soon.
 	err = k.cmk.ProcessWithdrawElysTokens(ctx, delegator, ptypes.Elys, uncommittedElys.Amount)
 
 	return err
@@ -147,7 +148,8 @@ func (k Keeper) ProcessWithdrawValidatorCommission(ctx sdk.Context, delegator st
 	err = k.cmk.ProcessWithdrawValidatorCommission(ctx, delegator, validator, ptypes.EdenB, uncommittedEdenB.Amount)
 
 	// Convert Elys to USDC
-	// Conversion is done inside commmitment module, later on we will have swap module
+	// TODO:
+	// + Conversion is done inside commmitment module using amm module that will come soon.
 	err = k.cmk.ProcessWithdrawValidatorElysCommission(ctx, delegator, validator, ptypes.Elys, uncommittedElys.Amount)
 
 	return err

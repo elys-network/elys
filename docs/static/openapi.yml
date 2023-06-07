@@ -33981,10 +33981,10 @@ paths:
                     type: string
                   withdraw_addr_enabled:
                     type: boolean
-                  reward_percent_for_lps:
+                  reward_portion_for_lps:
                     type: string
                     description: >-
-                      Dex revenue percent for lps, 100 - reward_percent_for_lps
+                      Dex revenue percent for lps, 100 - reward_portion_for_lps
                       = revenue percent for stakers.
             description: >-
               QueryParamsResponse is response type for the Query/Params RPC
@@ -70513,10 +70513,10 @@ definitions:
         type: string
       withdraw_addr_enabled:
         type: boolean
-      reward_percent_for_lps:
+      reward_portion_for_lps:
         type: string
         description: >-
-          Dex revenue percent for lps, 100 - reward_percent_for_lps = revenue
+          Dex revenue percent for lps, 100 - reward_portion_for_lps = revenue
           percent for stakers.
     description: Params defines the parameters for the module.
   elysnetwork.elys.incentive.QueryCommunityPoolResponse:
@@ -70600,10 +70600,10 @@ definitions:
             type: string
           withdraw_addr_enabled:
             type: boolean
-          reward_percent_for_lps:
+          reward_portion_for_lps:
             type: string
             description: >-
-              Dex revenue percent for lps, 100 - reward_percent_for_lps =
+              Dex revenue percent for lps, 100 - reward_portion_for_lps =
               revenue percent for stakers.
     description: QueryParamsResponse is response type for the Query/Params RPC method.
   elysnetwork.elys.liquidityprovider.Params:

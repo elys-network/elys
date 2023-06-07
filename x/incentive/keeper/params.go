@@ -33,9 +33,9 @@ func (k Keeper) GetWithdrawAddrEnabled(ctx sdk.Context) (enabled bool) {
 	return enabled
 }
 
-// GetDEXRewardPercentForLPs returns the dex revenue percent for Lps
-func (k Keeper) GetDEXRewardPercentForLPs(ctx sdk.Context) (percent sdk.Dec) {
-	k.paramstore.Get(ctx, types.ParamStoreKeyRewardPercentForLps, &percent)
+// GetDEXRewardPortionForLPs returns the dex revenue percent for Lps
+func (k Keeper) GetDEXRewardPortionForLPs(ctx sdk.Context) (percent sdk.Dec) {
+	k.paramstore.Get(ctx, types.ParamStoreKeyRewardPortionForLps, &percent)
 	return percent
 }
 

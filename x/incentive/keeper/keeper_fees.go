@@ -12,7 +12,6 @@ func (k Keeper) CollectGasFeesToIncentiveModule(ctx sdk.Context) sdk.Coins {
 	// (and distributed to the previous proposer)
 	feeCollector := k.authKeeper.GetModuleAccount(ctx, k.feeCollectorName)
 	feesCollectedInt := k.bankKeeper.GetAllBalances(ctx, feeCollector.GetAddress())
-	// feesCollected := sdk.NewDecCoinsFromCoins(feesCollectedInt...)
 
 	// transfer collected fees to the distribution module account
 	err := k.bankKeeper.SendCoinsFromModuleToModule(ctx, k.feeCollectorName, types.ModuleName, feesCollectedInt)
@@ -24,8 +23,8 @@ func (k Keeper) CollectGasFeesToIncentiveModule(ctx sdk.Context) sdk.Coins {
 }
 
 // Pull DEX revenus collected to incentive module
+// TODO:
+// + transfer collected fees from different wallets(liquidity pool, margin module etc) to the distribution module account
 func (k Keeper) CollectDEXRevenusToIncentiveModule(ctx sdk.Context) sdk.Coins {
-	// transfer collected fees to the distribution module account
-
 	return sdk.Coins{}
 }
