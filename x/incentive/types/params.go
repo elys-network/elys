@@ -14,6 +14,7 @@ var _ paramtypes.ParamSet = (*Params)(nil)
 var (
 	ParamStoreKeyCommunityTax        = []byte("communitytax")
 	ParamStoreKeyWithdrawAddrEnabled = []byte("withdrawaddrenabled")
+	ParamStoreKeyRewardPortionForLps = []byte("rewardportionforlps")
 )
 
 // ParamKeyTable the param key table for launch module
@@ -28,6 +29,7 @@ func NewParams() Params {
 		StakeIncentives:     []IncentiveInfo(nil),
 		CommunityTax:        sdk.NewDecWithPrec(2, 2), // 2%
 		WithdrawAddrEnabled: true,
+		RewardPortionForLps: sdk.NewDecWithPrec(65, 2),
 	}
 }
 
@@ -41,6 +43,7 @@ func (p *Params) ParamSetPairs() paramtypes.ParamSetPairs {
 	return paramtypes.ParamSetPairs{
 		paramtypes.NewParamSetPair(ParamStoreKeyCommunityTax, &p.CommunityTax, validateCommunityTax),
 		paramtypes.NewParamSetPair(ParamStoreKeyWithdrawAddrEnabled, &p.WithdrawAddrEnabled, validateWithdrawAddrEnabled),
+		paramtypes.NewParamSetPair(ParamStoreKeyRewardPortionForLps, &p.RewardPortionForLps, validateRewardPortionForLps),
 	}
 }
 
@@ -89,6 +92,25 @@ func validateWithdrawAddrEnabled(i interface{}) error {
 	_, ok := i.(bool)
 	if !ok {
 		return fmt.Errorf("invalid parameter type: %T", i)
+	}
+
+	return nil
+}
+
+func validateRewardPortionForLps(i interface{}) error {
+	v, ok := i.(sdk.Dec)
+	if !ok {
+		return fmt.Errorf("invalid parameter type: %T", i)
+	}
+
+	if v.IsNil() {
+		return fmt.Errorf("reward percent for lp must be not nil")
+	}
+	if v.IsNegative() {
+		return fmt.Errorf("reward percent for lp must be positive: %s", v)
+	}
+	if v.GT(sdk.OneDec()) {
+		return fmt.Errorf("reward percent for lp too large: %s", v)
 	}
 
 	return nil

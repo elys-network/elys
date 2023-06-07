@@ -64,6 +64,12 @@ func (k msgServer) WithdrawValidatorCommission(goCtx context.Context, msg *types
 	if strings.EqualFold(validatorOwner.String(), delegator.String()) {
 		return &types.MsgWithdrawValidatorCommissionResponse{}, nil
 	}
+	
+	// Withdraw validator commission
+	err = k.ProcessWithdrawValidatorCommission(ctx, msg.DelegatorAddress, msg.ValidatorAddress)
+	if err != nil {
+		return &types.MsgWithdrawValidatorCommissionResponse{}, err
+	}
 
 	ctx.EventManager().EmitEvent(
 		sdk.NewEvent(

@@ -214,6 +214,7 @@ genesis:
             eden_boost_apr: "100"
         community_tax: "0.02"
         withdraw_addr_enabled: true
+        reward_portion_for_lps: "0.65"
       fee_pool:
         community_pool:
           - amount: "0"
