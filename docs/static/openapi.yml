@@ -32812,6 +32812,23 @@ paths:
                           type: string
                         exitFee:
                           type: string
+                        useOracle:
+                          type: boolean
+                        weightBreakingFeeMultiplier:
+                          type: string
+                        slippageReduction:
+                          type: string
+                        lpFeePortion:
+                          type: string
+                        stakingFeePortion:
+                          type: string
+                        weightRecoveryFeePortion:
+                          type: string
+                        thresholdWeightDifference:
+                          type: string
+                        feeDenom:
+                          type: string
+                          title: denom for fee collection
                     totalShares:
                       type: object
                       properties:
@@ -32851,6 +32868,8 @@ paths:
                           weight:
                             type: string
                     totalWeight:
+                      type: string
+                    rebalanceTreasury:
                       type: string
               pagination:
                 type: object
@@ -32982,6 +33001,23 @@ paths:
                         type: string
                       exitFee:
                         type: string
+                      useOracle:
+                        type: boolean
+                      weightBreakingFeeMultiplier:
+                        type: string
+                      slippageReduction:
+                        type: string
+                      lpFeePortion:
+                        type: string
+                      stakingFeePortion:
+                        type: string
+                      weightRecoveryFeePortion:
+                        type: string
+                      thresholdWeightDifference:
+                        type: string
+                      feeDenom:
+                        type: string
+                        title: denom for fee collection
                   totalShares:
                     type: object
                     properties:
@@ -33021,6 +33057,8 @@ paths:
                         weight:
                           type: string
                   totalWeight:
+                    type: string
+                  rebalanceTreasury:
                     type: string
         default:
           description: An unexpected error response.
@@ -69578,6 +69616,23 @@ definitions:
             type: string
           exitFee:
             type: string
+          useOracle:
+            type: boolean
+          weightBreakingFeeMultiplier:
+            type: string
+          slippageReduction:
+            type: string
+          lpFeePortion:
+            type: string
+          stakingFeePortion:
+            type: string
+          weightRecoveryFeePortion:
+            type: string
+          thresholdWeightDifference:
+            type: string
+          feeDenom:
+            type: string
+            title: denom for fee collection
       totalShares:
         type: object
         properties:
@@ -69614,6 +69669,8 @@ definitions:
               type: string
       totalWeight:
         type: string
+      rebalanceTreasury:
+        type: string
   elysnetwork.elys.amm.PoolAsset:
     type: object
     properties:
@@ -69638,6 +69695,23 @@ definitions:
         type: string
       exitFee:
         type: string
+      useOracle:
+        type: boolean
+      weightBreakingFeeMultiplier:
+        type: string
+      slippageReduction:
+        type: string
+      lpFeePortion:
+        type: string
+      stakingFeePortion:
+        type: string
+      weightRecoveryFeePortion:
+        type: string
+      thresholdWeightDifference:
+        type: string
+      feeDenom:
+        type: string
+        title: denom for fee collection
   elysnetwork.elys.amm.QueryAllDenomLiquidityResponse:
     type: object
     properties:
@@ -69696,6 +69770,23 @@ definitions:
                   type: string
                 exitFee:
                   type: string
+                useOracle:
+                  type: boolean
+                weightBreakingFeeMultiplier:
+                  type: string
+                slippageReduction:
+                  type: string
+                lpFeePortion:
+                  type: string
+                stakingFeePortion:
+                  type: string
+                weightRecoveryFeePortion:
+                  type: string
+                thresholdWeightDifference:
+                  type: string
+                feeDenom:
+                  type: string
+                  title: denom for fee collection
             totalShares:
               type: object
               properties:
@@ -69734,6 +69825,8 @@ definitions:
                   weight:
                     type: string
             totalWeight:
+              type: string
+            rebalanceTreasury:
               type: string
       pagination:
         type: object
@@ -69789,6 +69882,23 @@ definitions:
                 type: string
               exitFee:
                 type: string
+              useOracle:
+                type: boolean
+              weightBreakingFeeMultiplier:
+                type: string
+              slippageReduction:
+                type: string
+              lpFeePortion:
+                type: string
+              stakingFeePortion:
+                type: string
+              weightRecoveryFeePortion:
+                type: string
+              thresholdWeightDifference:
+                type: string
+              feeDenom:
+                type: string
+                title: denom for fee collection
           totalShares:
             type: object
             properties:
@@ -69827,6 +69937,8 @@ definitions:
                 weight:
                   type: string
           totalWeight:
+            type: string
+          rebalanceTreasury:
             type: string
   elysnetwork.elys.amm.QueryParamsResponse:
     type: object
