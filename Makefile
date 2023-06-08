@@ -7,6 +7,23 @@ COMMIT:=$(shell git log -1 --format='%H')
 VERSION:=$(shell git describe --tags --match 'v*' --abbrev=8 | sed 's/-g/-/' | sed 's/-[0-9]*-/-/')
 GOFLAGS:=""
 GOTAGS:=ledger
+SHELL := /bin/bash # Use bash syntax
+
+# currently installed Go version
+GO_MAJOR_VERSION = $(shell go version | cut -c 14- | cut -d' ' -f1 | cut -d'.' -f1)
+GO_MINOR_VERSION = $(shell go version | cut -c 14- | cut -d' ' -f1 | cut -d'.' -f2)
+
+# minimum supported Go version
+GO_MINIMUM_MAJOR_VERSION = $(shell cat go.mod | grep -E 'go [0-9].[0-9]+' | cut -d ' ' -f2 | cut -d'.' -f1)
+GO_MINIMUM_MINOR_VERSION = $(shell cat go.mod | grep -E 'go [0-9].[0-9]+' | cut -d ' ' -f2 | cut -d'.' -f2)
+
+RED=\033[0;31m
+GREEN=\033[0;32m
+LGREEN=\033[1;32m
+NOCOLOR=\033[0m
+GO_CURR_VERSION=$(shell echo -e "Current Go version: $(LGREEN)$(GO_MAJOR_VERSION).$(GREEN)$(GO_MINOR_VERSION)$(NOCOLOR)")
+GO_VERSION_ERR_MSG=$(shell echo -e '$(RED)❌ ERROR$(NOCOLOR): Go version $(LGREEN)$(GO_MINIMUM_MAJOR_VERSION).$(GREEN)$(GO_MINIMUM_MINOR_VERSION)$(NOCOLOR)+ is required')
+
 
 BUILDDIR ?= $(CURDIR)/build
 DOCKER := $(shell which docker)
@@ -83,8 +100,14 @@ go.sum: go.mod
 
 # Add check to make sure we are using the proper Go version before proceeding with anything
 check-version:
-	@if ! go version | grep -q "go1.19"; then \
-		echo "\033[0;31mERROR:\033[0m Go version 1.19 is required for compiling elysd. It looks like you are using" "$(shell go version) \nThere are potential consensus-breaking changes that can occur when running binaries compiled with different versions of Go. Please download Go version 1.19 and retry. Thank you!"; \
+	@echo '$(GO_CURR_VERSION)'
+	@if [[ $(GO_MAJOR_VERSION) -eq $(GO_MINIMUM_MAJOR_VERSION) && $(GO_MINOR_VERSION) -ge $(GO_MINIMUM_MINOR_VERSION) ]]; then \
+		exit 0; \
+	elif [[ $(GO_MAJOR_VERSION) -lt $(GO_MINIMUM_MAJOR_VERSION) ]]; then \
+		echo '$(GO_VERSION_ERR_MSG)'; \
+		exit 1; \
+	elif [[ $(GO_MINOR_VERSION) -lt $(GO_MINIMUM_MINOR_VERSION) ]]; then \
+		echo '$(GO_VERSION_ERR_MSG)'; \
 		exit 1; \
 	fi
 
