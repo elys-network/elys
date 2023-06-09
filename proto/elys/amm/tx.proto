@@ -29,19 +29,22 @@ message MsgCreatePoolResponse {
 }
 
 message MsgJoinPool {
-           string                   creator        = 1;
+           string                   sender        = 1;
            uint64                   poolId         = 2;
   repeated cosmos.base.v1beta1.Coin maxAmountsIn   = 3 [(gogoproto.nullable) = false];
-           string                   shareAmountOut = 4;
+           string                   shareAmountOut = 4 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false];
 }
 
-message MsgJoinPoolResponse {}
+message MsgJoinPoolResponse {
+           string                   shareAmountOut = 1 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false];
+  repeated cosmos.base.v1beta1.Coin tokenIn = 2 [(gogoproto.nullable) = false];
+}
 
 message MsgExitPool {
-           string                   creator       = 1;
+           string                   sender       = 1;
            uint64                   poolId        = 2;
   repeated cosmos.base.v1beta1.Coin maxAmountsOut = 3 [(gogoproto.nullable) = false];
-           string                   shareAmountIn = 4;
+           string                   shareAmountIn = 4 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false];
            string                   tokenOutDenom = 5;
 }
 

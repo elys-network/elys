@@ -19,7 +19,7 @@ func SimulateMsgJoinPool(
 	) (simtypes.OperationMsg, []simtypes.FutureOperation, error) {
 		simAccount, _ := simtypes.RandomAcc(r, accs)
 		msg := &types.MsgJoinPool{
-			Creator: simAccount.Address.String(),
+			Sender: simAccount.Address.String(),
 		}
 
 		// TODO: Handling the JoinPool simulation

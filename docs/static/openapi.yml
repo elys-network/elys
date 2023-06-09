@@ -69584,6 +69584,23 @@ definitions:
     type: object
   elysnetwork.elys.amm.MsgJoinPoolResponse:
     type: object
+    properties:
+      shareAmountOut:
+        type: string
+      tokenIn:
+        type: array
+        items:
+          type: object
+          properties:
+            denom:
+              type: string
+            amount:
+              type: string
+          description: |-
+            Coin defines a token with a denomination and an amount.
+
+            NOTE: The amount field is an Int which implements the custom method
+            signatures required by gogoproto.
   elysnetwork.elys.amm.MsgSwapExactAmountInResponse:
     type: object
     properties:

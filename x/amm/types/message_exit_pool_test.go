@@ -17,13 +17,13 @@ func TestMsgExitPool_ValidateBasic(t *testing.T) {
 		{
 			name: "invalid address",
 			msg: MsgExitPool{
-				Creator: "invalid_address",
+				Sender: "invalid_address",
 			},
 			err: sdkerrors.ErrInvalidAddress,
 		}, {
 			name: "valid address",
 			msg: MsgExitPool{
-				Creator: sample.AccAddress(),
+				Sender: sample.AccAddress(),
 			},
 		},
 	}

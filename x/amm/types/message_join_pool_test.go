@@ -17,13 +17,13 @@ func TestMsgJoinPool_ValidateBasic(t *testing.T) {
 		{
 			name: "invalid address",
 			msg: MsgJoinPool{
-				Creator: "invalid_address",
+				Sender: "invalid_address",
 			},
 			err: sdkerrors.ErrInvalidAddress,
 		}, {
 			name: "valid address",
 			msg: MsgJoinPool{
-				Creator: sample.AccAddress(),
+				Sender: sample.AccAddress(),
 			},
 		},
 	}

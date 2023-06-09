@@ -24,3 +24,9 @@ var (
 
 	ErrInvalidPoolId = sdkerrors.Register(ModuleName, 91, "invalid pool id")
 )
+
+const (
+	invalidInputDenomsErrFormat = "input denoms must already exist in the pool (%s)"
+
+	formatRepeatingPoolAssetsNotAllowedErrFormat = "repeating pool assets not allowed, found %s"
+)
