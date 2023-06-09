@@ -9,7 +9,7 @@ const TypeMsgExitPool = "exit_pool"
 
 var _ sdk.Msg = &MsgExitPool{}
 
-func NewMsgExitPool(sender string, poolId uint64, maxAmountsOut sdk.Coins, shareAmountIn string) *MsgExitPool {
+func NewMsgExitPool(sender string, poolId uint64, maxAmountsOut sdk.Coins, shareAmountIn sdk.Int) *MsgExitPool {
 	return &MsgExitPool{
 		Sender:        sender,
 		PoolId:        poolId,

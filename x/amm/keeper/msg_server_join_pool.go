@@ -27,7 +27,7 @@ func (k msgServer) JoinPool(goCtx context.Context, msg *types.MsgJoinPool) (*typ
 		return nil, err
 	}
 
-	neededLp, sharesOut, err := k.JoinPoolNoSwap(ctx, sender, msg.PoolId, msg.ShareOutAmount, msg.TokenInMaxs)
+	neededLp, sharesOut, err := k.JoinPoolNoSwap(ctx, sender, msg.PoolId, msg.ShareAmountOut, msg.MaxAmountsIn)
 	if err != nil {
 		return nil, err
 	}
@@ -41,7 +41,7 @@ func (k msgServer) JoinPool(goCtx context.Context, msg *types.MsgJoinPool) (*typ
 	})
 
 	return &types.MsgJoinPoolResponse{
-		ShareOutAmount: sharesOut,
+		ShareAmountOut: sharesOut,
 		TokenIn:        neededLp,
 	}, nil
 }
