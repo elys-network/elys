@@ -2,28 +2,37 @@ package app
 
 import (
 	"encoding/json"
+	"strconv"
 	"time"
 
 	sdkmath "cosmossdk.io/math"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	cryptocodec "github.com/cosmos/cosmos-sdk/crypto/codec"
+	"github.com/cosmos/cosmos-sdk/crypto/keys/ed25519"
 	"github.com/cosmos/cosmos-sdk/simapp"
 	"github.com/cosmos/cosmos-sdk/testutil/mock"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
+	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	abci "github.com/tendermint/tendermint/abci/types"
 	"github.com/tendermint/tendermint/crypto/secp256k1"
 	"github.com/tendermint/tendermint/libs/log"
+	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 	tmtypes "github.com/tendermint/tendermint/types"
 	dbm "github.com/tendermint/tm-db"
+
+	"github.com/elys-network/elys/x/commitment/types"
+	ctypes "github.com/elys-network/elys/x/commitment/types"
+	ikeeper "github.com/elys-network/elys/x/incentive/keeper"
+	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
 
 const Bech32Prefix = "elys"
 
-// Initializes a new ElysApp without IBC functionality
-func InitElysTestApp(initChain bool) *ElysApp {
+// Initiate a new ElysApp object - Common function used by the following 2 functions.
+func InitiateNewElysApp() *ElysApp {
 	db := dbm.NewMemDB()
 	app := NewElysApp(
 		log.NewNopLogger(),
@@ -36,8 +45,15 @@ func InitElysTestApp(initChain bool) *ElysApp {
 		MakeEncodingConfig(),
 		simapp.EmptyAppOptions{},
 	)
+
+	return app
+}
+
+// Initializes a new ElysApp without IBC functionality
+func InitElysTestApp(initChain bool) *ElysApp {
+	app := InitiateNewElysApp()
 	if initChain {
-		genesisState := GenesisStateWithValSet(app)
+		genesisState, valSet, _ := GenesisStateWithValSet(app)
 		stateBytes, err := json.MarshalIndent(genesisState, "", " ")
 		if err != nil {
 			panic(err)
@@ -50,12 +66,51 @@ func InitElysTestApp(initChain bool) *ElysApp {
 				AppStateBytes:   stateBytes,
 			},
 		)
+
+		// commit genesis changes
+		app.Commit()
+		app.BeginBlock(abci.RequestBeginBlock{Header: tmproto.Header{
+			Height:             app.LastBlockHeight() + 1,
+			AppHash:            app.LastCommitID().Hash,
+			ValidatorsHash:     valSet.Hash(),
+			NextValidatorsHash: valSet.Hash(),
+		}})
 	}
 
 	return app
 }
 
-func GenesisStateWithValSet(app *ElysApp) GenesisState {
+// Initializes a new ElysApp without IBC functionality and returns genesis account (delegator)
+func InitElysTestAppWithGenAccount() (*ElysApp, sdk.AccAddress) {
+	app := InitiateNewElysApp()
+
+	genesisState, valSet, genAcount := GenesisStateWithValSet(app)
+	stateBytes, err := json.MarshalIndent(genesisState, "", " ")
+	if err != nil {
+		panic(err)
+	}
+
+	app.InitChain(
+		abci.RequestInitChain{
+			Validators:      []abci.ValidatorUpdate{},
+			ConsensusParams: simapp.DefaultConsensusParams,
+			AppStateBytes:   stateBytes,
+		},
+	)
+
+	// commit genesis changes
+	app.Commit()
+	app.BeginBlock(abci.RequestBeginBlock{Header: tmproto.Header{
+		Height:             app.LastBlockHeight() + 1,
+		AppHash:            app.LastCommitID().Hash,
+		ValidatorsHash:     valSet.Hash(),
+		NextValidatorsHash: valSet.Hash(),
+	}})
+
+	return app, genAcount
+}
+
+func GenesisStateWithValSet(app *ElysApp) (GenesisState, *tmtypes.ValidatorSet, sdk.AccAddress) {
 	privVal := mock.NewPV()
 	pubKey, _ := privVal.GetPubKey()
 	validator := tmtypes.NewValidator(pubKey, 1)
@@ -67,7 +122,7 @@ func GenesisStateWithValSet(app *ElysApp) GenesisState {
 	acc := authtypes.NewBaseAccountWithAddress(senderPrivKey.PubKey().Address().Bytes())
 	balance := banktypes.Balance{
 		Address: acc.GetAddress().String(),
-		Coins:   sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdkmath.NewInt(100000000000000))),
+		Coins:   sdk.NewCoins(sdk.NewCoin(ptypes.Elys, sdkmath.NewInt(100000000000000))),
 	}
 
 	//////////////////////
@@ -103,7 +158,10 @@ func GenesisStateWithValSet(app *ElysApp) GenesisState {
 
 	}
 	// set validators and delegations
-	stakingGenesis := stakingtypes.NewGenesisState(stakingtypes.DefaultParams(), validators, delegations)
+	params := stakingtypes.DefaultParams()
+	params.BondDenom = ptypes.Elys
+
+	stakingGenesis := stakingtypes.NewGenesisState(params, validators, delegations)
 	genesisState[stakingtypes.ModuleName] = app.AppCodec().MustMarshalJSON(stakingGenesis)
 
 	totalSupply := sdk.NewCoins()
@@ -114,17 +172,133 @@ func GenesisStateWithValSet(app *ElysApp) GenesisState {
 
 	for range delegations {
 		// add delegated tokens to total supply
-		totalSupply = totalSupply.Add(sdk.NewCoin(sdk.DefaultBondDenom, bondAmt))
+		totalSupply = totalSupply.Add(sdk.NewCoin(ptypes.Elys, bondAmt))
 	}
 
 	// add bonded amount to bonded pool module account
 	balances = append(balances, banktypes.Balance{
 		Address: authtypes.NewModuleAddress(stakingtypes.BondedPoolName).String(),
-		Coins:   sdk.Coins{sdk.NewCoin(sdk.DefaultBondDenom, bondAmt)},
+		Coins:   sdk.Coins{sdk.NewCoin(ptypes.Elys, bondAmt)},
 	})
 
 	// update total supply
 	bankGenesis := banktypes.NewGenesisState(banktypes.DefaultGenesisState().Params, balances, totalSupply, []banktypes.Metadata{})
 	genesisState[banktypes.ModuleName] = app.AppCodec().MustMarshalJSON(bankGenesis)
-	return genesisState
+	return genesisState, valSet, genAccs[0].GetAddress()
+}
+
+type GenerateAccountStrategy func(int) []sdk.AccAddress
+
+// createRandomAccounts is a strategy used by addTestAddrs() in order to generated addresses in random order.
+func createRandomAccounts(accNum int) []sdk.AccAddress {
+	testAddrs := make([]sdk.AccAddress, accNum)
+	for i := 0; i < accNum; i++ {
+		pk := ed25519.GenPrivKey().PubKey()
+		testAddrs[i] = sdk.AccAddress(pk.Address())
+	}
+
+	return testAddrs
+}
+
+// AddTestAddrs constructs and returns accNum amount of accounts with an
+// initial balance of accAmt in random order
+func AddTestAddrs(app *ElysApp, ctx sdk.Context, accNum int, accAmt sdk.Int) []sdk.AccAddress {
+	return addTestAddrs(app, ctx, accNum, accAmt, createRandomAccounts)
+}
+
+func addTestAddrs(app *ElysApp, ctx sdk.Context, accNum int, accAmt sdk.Int, strategy GenerateAccountStrategy) []sdk.AccAddress {
+	testAddrs := strategy(accNum)
+
+	bondDenom := app.StakingKeeper.BondDenom(ctx)
+	initCoins := sdk.NewCoins(sdk.NewCoin(bondDenom, accAmt))
+
+	for _, addr := range testAddrs {
+		initAccountWithCoins(app, ctx, addr, initCoins)
+	}
+
+	return testAddrs
+}
+
+func initAccountWithCoins(app *ElysApp, ctx sdk.Context, addr sdk.AccAddress, coins sdk.Coins) {
+	err := app.BankKeeper.MintCoins(ctx, minttypes.ModuleName, coins)
+	if err != nil {
+		panic(err)
+	}
+
+	err = app.BankKeeper.SendCoinsFromModuleToAccount(ctx, minttypes.ModuleName, addr, coins)
+	if err != nil {
+		panic(err)
+	}
+}
+
+// Add 2 dummy liquidty pool and dummy deposit history
+func AddTestLiquidityPool(addresses []sdk.AccAddress) *ikeeper.LiquidityKeeper {
+	lpk := ikeeper.NewLiquidityKeeper()
+	lpk.AddLiquidityPool("elys-usdc", sdk.NewInt(0), 5, "lp-elys-usdc", sdk.NewDec(10000))
+	lpk.AddLiquidityPool("ueden-usdc", sdk.NewInt(0), 4, "lp-ueden-usdc", sdk.NewDec(1000))
+	lpk.AddLiquidityPool("juno-usdc", sdk.NewInt(0), 2, "lp-juno-usdc", sdk.NewDec(100))
+
+	for i, addr := range addresses {
+		amt := sdk.NewInt(500)
+		amt = amt.Mul(sdk.NewInt((int64)(i + 1)))
+		lpk.DepositTokenToLP(strconv.Itoa(i), "elys-usdc", amt, addr.String(), "elys")
+	}
+
+	for i, addr := range addresses {
+		amt := sdk.NewInt(2000)
+		amt = amt.Quo(sdk.NewInt((int64)(i + 1)))
+		lpk.DepositTokenToLP(strconv.Itoa(i), "ueden-usdc", amt, addr.String(), "ueden")
+	}
+	return lpk
+}
+
+// Add testing commitments
+func AddTestCommitment(app *ElysApp, ctx sdk.Context, address sdk.AccAddress, committed []sdk.Coins, uncommitted []sdk.Coins) {
+	commitment, found := app.CommitmentKeeper.GetCommitments(ctx, address.String())
+	if !found {
+		commitment = ctypes.Commitments{
+			Creator:           address.String(),
+			CommittedTokens:   []*types.CommittedTokens{},
+			UncommittedTokens: []*types.UncommittedTokens{},
+		}
+	}
+
+	// Loop uncommitted tokens
+	for _, uc := range uncommitted {
+		Denom := uc.GetDenomByIndex(0)
+
+		// Get the uncommitted tokens for the creator
+		uncommittedToken, _ := commitment.GetUncommittedTokensForDenom(Denom)
+		if !found {
+			uncommittedTokens := commitment.GetUncommittedTokens()
+			uncommittedToken = &types.UncommittedTokens{
+				Denom:  Denom,
+				Amount: sdk.ZeroInt(),
+			}
+			uncommittedTokens = append(uncommittedTokens, uncommittedToken)
+			commitment.UncommittedTokens = uncommittedTokens
+		}
+		// Update the uncommitted tokens amount
+		uncommittedToken.Amount = uncommittedToken.Amount.Add(uc.AmountOf(Denom))
+	}
+
+	for _, c := range committed {
+		Denom := c.GetDenomByIndex(0)
+
+		// Get the uncommitted tokens for the creator
+		committedToken, _ := commitment.GetCommittedTokensForDenom(Denom)
+		if !found {
+			committedTokens := commitment.GetCommittedTokens()
+			committedToken = &types.CommittedTokens{
+				Denom:  Denom,
+				Amount: sdk.ZeroInt(),
+			}
+			committedTokens = append(committedTokens, committedToken)
+			commitment.CommittedTokens = committedTokens
+		}
+		// Update the uncommitted tokens amount
+		committedToken.Amount = committedToken.Amount.Add(c.AmountOf(Denom))
+	}
+
+	app.CommitmentKeeper.SetCommitments(ctx, commitment)
 }
