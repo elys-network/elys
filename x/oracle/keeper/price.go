@@ -3,6 +3,7 @@ package keeper
 import (
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	ammtypes "github.com/elys-network/elys/x/amm/types"
 	"github.com/elys-network/elys/x/oracle/types"
 )
 
@@ -74,4 +75,34 @@ func (k Keeper) GetAllPrice(ctx sdk.Context) (list []types.Price) {
 	}
 
 	return
+}
+
+func (k Keeper) GetAssetPrice(ctx sdk.Context, asset string) (types.Price, bool) {
+	// try out elys source
+	val, found := k.GetLatestPriceFromAssetAndSource(ctx, asset, types.ELYS)
+	if found {
+		return val, true
+	}
+
+	// try out band source
+	val, found = k.GetLatestPriceFromAssetAndSource(ctx, asset, types.BAND)
+	if found {
+		return val, true
+	}
+
+	// find from any source if band source does not exist
+	return k.GetLatestPriceFromAnySource(ctx, asset)
+}
+
+func (k Keeper) GetAssetPriceFromDenom(ctx sdk.Context, denom string) sdk.Dec {
+	info, found := k.GetAssetInfo(ctx, denom)
+	if !found {
+		return sdk.ZeroDec()
+	}
+	price, found := k.GetAssetPrice(ctx, info.Display)
+	if !found {
+		return sdk.ZeroDec()
+	}
+	ten := sdk.NewDec(10)
+	return price.Price.Quo(ammtypes.Pow(ten, sdk.NewDec(int64(info.Decimal))))
 }
