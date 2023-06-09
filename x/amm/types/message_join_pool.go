@@ -9,9 +9,9 @@ const TypeMsgJoinPool = "join_pool"
 
 var _ sdk.Msg = &MsgJoinPool{}
 
-func NewMsgJoinPool(creator string, poolId uint64, maxAmountsIn sdk.Coins, shareAmountOut string) *MsgJoinPool {
+func NewMsgJoinPool(sender string, poolId uint64, maxAmountsIn sdk.Coins, shareAmountOut string) *MsgJoinPool {
 	return &MsgJoinPool{
-		Creator:        creator,
+		Sender:         sender,
 		PoolId:         poolId,
 		MaxAmountsIn:   maxAmountsIn,
 		ShareAmountOut: shareAmountOut,
@@ -27,11 +27,11 @@ func (msg *MsgJoinPool) Type() string {
 }
 
 func (msg *MsgJoinPool) GetSigners() []sdk.AccAddress {
-	creator, err := sdk.AccAddressFromBech32(msg.Creator)
+	sender, err := sdk.AccAddressFromBech32(msg.Sender)
 	if err != nil {
 		panic(err)
 	}
-	return []sdk.AccAddress{creator}
+	return []sdk.AccAddress{sender}
 }
 
 func (msg *MsgJoinPool) GetSignBytes() []byte {
@@ -40,9 +40,9 @@ func (msg *MsgJoinPool) GetSignBytes() []byte {
 }
 
 func (msg *MsgJoinPool) ValidateBasic() error {
-	_, err := sdk.AccAddressFromBech32(msg.Creator)
+	_, err := sdk.AccAddressFromBech32(msg.Sender)
 	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid sender address (%s)", err)
 	}
 	return nil
 }

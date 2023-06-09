@@ -9,9 +9,9 @@ const TypeMsgExitPool = "exit_pool"
 
 var _ sdk.Msg = &MsgExitPool{}
 
-func NewMsgExitPool(creator string, poolId uint64, maxAmountsOut sdk.Coins, shareAmountIn string) *MsgExitPool {
+func NewMsgExitPool(sender string, poolId uint64, maxAmountsOut sdk.Coins, shareAmountIn string) *MsgExitPool {
 	return &MsgExitPool{
-		Creator:       creator,
+		Sender:        sender,
 		PoolId:        poolId,
 		MaxAmountsOut: maxAmountsOut,
 		ShareAmountIn: shareAmountIn,
@@ -27,11 +27,11 @@ func (msg *MsgExitPool) Type() string {
 }
 
 func (msg *MsgExitPool) GetSigners() []sdk.AccAddress {
-	creator, err := sdk.AccAddressFromBech32(msg.Creator)
+	sender, err := sdk.AccAddressFromBech32(msg.Sender)
 	if err != nil {
 		panic(err)
 	}
-	return []sdk.AccAddress{creator}
+	return []sdk.AccAddress{sender}
 }
 
 func (msg *MsgExitPool) GetSignBytes() []byte {
@@ -40,9 +40,9 @@ func (msg *MsgExitPool) GetSignBytes() []byte {
 }
 
 func (msg *MsgExitPool) ValidateBasic() error {
-	_, err := sdk.AccAddressFromBech32(msg.Creator)
+	_, err := sdk.AccAddressFromBech32(msg.Sender)
 	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid sender address (%s)", err)
 	}
 	return nil
 }
