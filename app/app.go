@@ -631,9 +631,9 @@ func NewElysApp(
 		keys[ammmoduletypes.StoreKey],
 		keys[ammmoduletypes.MemStoreKey],
 		app.GetSubspace(ammmoduletypes.ModuleName),
-
 		app.BankKeeper,
 		app.AccountKeeper,
+		app.OracleKeeper,
 	)
 	ammModule := ammmodule.NewAppModule(appCodec, app.AmmKeeper, app.AccountKeeper, app.BankKeeper)
 
