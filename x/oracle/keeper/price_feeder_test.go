@@ -13,6 +13,14 @@ import (
 var _ = strconv.IntSize
 
 func createNPriceFeeder(keeper *keeper.Keeper, ctx sdk.Context, n int) []types.PriceFeeder {
+	// Clear existing price feeders
+	// Current it does have one price feeder from genesis.json
+	priceFeeders := keeper.GetAllPriceFeeder(ctx)
+	for _, p := range priceFeeders {
+		keeper.RemovePriceFeeder(ctx, p.GetFeeder())
+	}
+
+	// Add new n price feeders
 	items := make([]types.PriceFeeder, n)
 	for i := range items {
 		items[i].Feeder = strconv.Itoa(i)

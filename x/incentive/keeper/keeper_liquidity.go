@@ -38,6 +38,38 @@ func NewLiquidityKeeper() *LiquidityKeeper {
 	}
 }
 
+// Add dummy liquidity pool
+func (k LiquidityKeeper) AddLiquidityPool(index string, TVL sdk.Int, multiplier int64, lpToken string, poolRewards sdk.Dec) {
+	lp := &LiquidityPool{
+		index:       index,
+		TVL:         TVL,
+		multiplier:  multiplier,
+		lpToken:     lpToken,
+		poolRewards: poolRewards,
+	}
+
+	k.liquidityPool[index] = lp
+}
+
+// Add dummy liquidity pool
+func (k LiquidityKeeper) DepositTokenToLP(index string, LpIndex string, amount sdk.Int, ownerAddress string, denom string) {
+	lp, ok := k.liquidityPool[LpIndex]
+	if !ok {
+		return
+	}
+
+	lpDeposit := LpDeposit{
+		index:        index,
+		LpIndex:      LpIndex,
+		amount:       amount,
+		ownerAddress: ownerAddress,
+		denom:        denom,
+	}
+
+	lp.TVL = lp.TVL.Add(amount)
+	k.lpDeposits = append(k.lpDeposits, lpDeposit)
+}
+
 // IterateLiquidty iterates over all LiquidityPools and performs a
 // callback.
 func (k LiquidityKeeper) IterateLiquidityPools(
