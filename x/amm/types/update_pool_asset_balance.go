@@ -8,7 +8,7 @@ import (
 
 func (p *Pool) UpdatePoolAssetBalance(coin sdk.Coin) error {
 	// Check that PoolAsset exists.
-	assetIndex, existingAsset, err := p.getPoolAssetAndIndex(coin.Denom)
+	assetIndex, existingAsset, err := p.GetPoolAssetAndIndex(coin.Denom)
 	if err != nil {
 		return err
 	}

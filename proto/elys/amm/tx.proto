@@ -48,7 +48,9 @@ message MsgExitPool {
            string                   tokenOutDenom = 5;
 }
 
-message MsgExitPoolResponse {}
+message MsgExitPoolResponse {
+  repeated cosmos.base.v1beta1.Coin tokenOut = 2 [(gogoproto.nullable) = false];
+}
 
 message MsgSwapExactAmountIn {
            string                   sender           = 1;

@@ -26,7 +26,8 @@ var (
 )
 
 const (
-	invalidInputDenomsErrFormat = "input denoms must already exist in the pool (%s)"
-
-	formatRepeatingPoolAssetsNotAllowedErrFormat = "repeating pool assets not allowed, found %s"
+	InvalidInputDenomsErrFormat                  = "input denoms must already exist in the pool (%s)"
+	FormatRepeatingPoolAssetsNotAllowedErrFormat = "repeating pool assets not allowed, found %s"
+	FormatNoPoolAssetFoundErrFormat              = "can't find the PoolAsset (%s)"
+	ErrMsgFormatSharesLargerThanMax              = "%s resulted shares is larger than the max amount of %s"
 )
