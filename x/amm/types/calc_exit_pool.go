@@ -11,7 +11,7 @@ import (
 func CalcExitPool(ctx sdk.Context, pool Pool, exitingShares sdk.Int, exitFee sdk.Dec) (sdk.Coins, error) {
 	totalShares := pool.GetTotalShares()
 	if exitingShares.GTE(totalShares.Amount) {
-		return sdk.Coins{}, sdkerrors.Wrapf(ErrLimitMaxAmount, errMsgFormatSharesLargerThanMax, exitingShares, totalShares)
+		return sdk.Coins{}, sdkerrors.Wrapf(ErrLimitMaxAmount, ErrMsgFormatSharesLargerThanMax, exitingShares, totalShares)
 	}
 
 	// refundedShares = exitingShares * (1 - exit fee)

@@ -6,7 +6,7 @@ import (
 
 func (p *Pool) addToPoolAssetBalances(coins sdk.Coins) error {
 	for _, coin := range coins {
-		i, poolAsset, err := p.getPoolAssetAndIndex(coin.Denom)
+		i, poolAsset, err := p.GetPoolAssetAndIndex(coin.Denom)
 		if err != nil {
 			return err
 		}

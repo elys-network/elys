@@ -20,17 +20,23 @@ const (
 
 func EmitSwapEvent(ctx sdk.Context, sender sdk.AccAddress, poolId uint64, input sdk.Coins, output sdk.Coins) {
 	ctx.EventManager().EmitEvents(sdk.Events{
-		newSwapEvent(sender, poolId, input, output),
+		NewSwapEvent(sender, poolId, input, output),
 	})
 }
 
 func EmitAddLiquidityEvent(ctx sdk.Context, sender sdk.AccAddress, poolId uint64, liquidity sdk.Coins) {
 	ctx.EventManager().EmitEvents(sdk.Events{
-		newAddLiquidityEvent(sender, poolId, liquidity),
+		NewAddLiquidityEvent(sender, poolId, liquidity),
 	})
 }
 
-func newSwapEvent(sender sdk.AccAddress, poolId uint64, input sdk.Coins, output sdk.Coins) sdk.Event {
+func EmitRemoveLiquidityEvent(ctx sdk.Context, sender sdk.AccAddress, poolId uint64, liquidity sdk.Coins) {
+	ctx.EventManager().EmitEvents(sdk.Events{
+		NewRemoveLiquidityEvent(sender, poolId, liquidity),
+	})
+}
+
+func NewSwapEvent(sender sdk.AccAddress, poolId uint64, input sdk.Coins, output sdk.Coins) sdk.Event {
 	return sdk.NewEvent(
 		TypeEvtTokenSwapped,
 		sdk.NewAttribute(sdk.AttributeKeyModule, AttributeValueCategory),
@@ -41,7 +47,7 @@ func newSwapEvent(sender sdk.AccAddress, poolId uint64, input sdk.Coins, output 
 	)
 }
 
-func newAddLiquidityEvent(sender sdk.AccAddress, poolId uint64, liquidity sdk.Coins) sdk.Event {
+func NewAddLiquidityEvent(sender sdk.AccAddress, poolId uint64, liquidity sdk.Coins) sdk.Event {
 	return sdk.NewEvent(
 		TypeEvtPoolJoined,
 		sdk.NewAttribute(sdk.AttributeKeyModule, AttributeValueCategory),
@@ -51,13 +57,7 @@ func newAddLiquidityEvent(sender sdk.AccAddress, poolId uint64, liquidity sdk.Co
 	)
 }
 
-func EmitRemoveLiquidityEvent(ctx sdk.Context, sender sdk.AccAddress, poolId uint64, liquidity sdk.Coins) {
-	ctx.EventManager().EmitEvents(sdk.Events{
-		newRemoveLiquidityEvent(sender, poolId, liquidity),
-	})
-}
-
-func newRemoveLiquidityEvent(sender sdk.AccAddress, poolId uint64, liquidity sdk.Coins) sdk.Event {
+func NewRemoveLiquidityEvent(sender sdk.AccAddress, poolId uint64, liquidity sdk.Coins) sdk.Event {
 	return sdk.NewEvent(
 		TypeEvtPoolExited,
 		sdk.NewAttribute(sdk.AttributeKeyModule, AttributeValueCategory),

@@ -1,28 +1,29 @@
-package types
+package types_test
 
 import (
 	"testing"
 
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/elys-network/elys/testutil/sample"
+	"github.com/elys-network/elys/x/amm/types"
 	"github.com/stretchr/testify/require"
 )
 
 func TestMsgSwapExactAmountIn_ValidateBasic(t *testing.T) {
 	tests := []struct {
 		name string
-		msg  MsgSwapExactAmountIn
+		msg  types.MsgSwapExactAmountIn
 		err  error
 	}{
 		{
 			name: "invalid address",
-			msg: MsgSwapExactAmountIn{
+			msg: types.MsgSwapExactAmountIn{
 				Sender: "invalid_address",
 			},
 			err: sdkerrors.ErrInvalidAddress,
 		}, {
 			name: "valid address",
-			msg: MsgSwapExactAmountIn{
+			msg: types.MsgSwapExactAmountIn{
 				Sender: sample.AccAddress(),
 			},
 		},

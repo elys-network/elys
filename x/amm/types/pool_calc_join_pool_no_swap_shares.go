@@ -17,12 +17,12 @@ import (
 // We should simplify this logic further in the future using multi-join equations.
 func (p *Pool) CalcJoinPoolNoSwapShares(tokensIn sdk.Coins, swapFee sdk.Dec) (numShares sdk.Int, tokensJoined sdk.Coins, err error) {
 	// get all 'pool assets' (aka current pool liquidity + balancer weight)
-	poolAssetsByDenom, err := getPoolAssetsByDenom(p.GetAllPoolAssets())
+	poolAssetsByDenom, err := GetPoolAssetsByDenom(p.GetAllPoolAssets())
 	if err != nil {
 		return sdk.ZeroInt(), sdk.NewCoins(), err
 	}
 
-	err = ensureDenomInPool(poolAssetsByDenom, tokensIn)
+	err = EnsureDenomInPool(poolAssetsByDenom, tokensIn)
 	if err != nil {
 		return sdk.ZeroInt(), sdk.NewCoins(), err
 	}
