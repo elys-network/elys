@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	"math"
 	"strings"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -49,22 +50,30 @@ func (k msgServer) WithdrawValidatorCommission(goCtx context.Context, msg *types
 		return nil, err
 	}
 
-	// Get owner of the validator address
-	validatorOwner := sdk.AccAddress(validatorAddr.Bytes())
-	if err != nil {
-		return nil, err
-	}
-
 	delegator, err := sdk.AccAddressFromBech32(msg.DelegatorAddress)
 	if err != nil {
 		return nil, err
 	}
 
-	// If it is not requested by the validator creator
-	if strings.EqualFold(validatorOwner.String(), delegator.String()) {
-		return &types.MsgWithdrawValidatorCommissionResponse{}, nil
+	found := false
+	// Get all delegations
+	delegations := k.stk.GetDelegatorDelegations(ctx, delegator, math.MaxUint16)
+	for _, del := range delegations {
+		// Get validator address
+		valAddr := del.GetValidatorAddr()
+
+		// If it is not requested by the validator creator
+		if strings.EqualFold(validatorAddr.String(), valAddr.String()) {
+			found = true
+			break
+		}
 	}
-	
+
+	// Couldn't find the validator of the delegator.
+	if !found {
+		return &types.MsgWithdrawValidatorCommissionResponse{}, err
+	}
+
 	// Withdraw validator commission
 	err = k.ProcessWithdrawValidatorCommission(ctx, msg.DelegatorAddress, msg.ValidatorAddress)
 	if err != nil {

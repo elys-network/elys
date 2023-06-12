@@ -76,21 +76,36 @@ func (k Keeper) UpdateUncommittedTokens(ctx sdk.Context, epochIdentifier string,
 	// Recalculate total committed info
 	k.UpdateTotalCommitmentInfo(ctx)
 
-	// Calculate 65% for LP, 35% for Stakers
 	// Collect DEX revenue collected
+	// Assume these are collected in USDC
 	dexRevenue := k.CollectDEXRevenusToIncentiveModule(ctx)
 
+	// Calculate each portion of DEX revenue - stakers, LPs
 	dexRevenueDec := sdk.NewDecCoinsFromCoins(dexRevenue...)
 	rewardPortionForLps := k.GetDEXRewardPortionForLPs(ctx)
 	dexRevenueForLps := dexRevenueDec.MulDecTruncate(rewardPortionForLps)
 	dexRevenueForStakers := dexRevenueDec.Sub(dexRevenueForLps)
 
+	// Calculate each portion of Gas fees collected - stakers, LPs
+	// TODO:
+	// Assume these are also converted into USDC after collected
+	gasFeeCollectedDec := sdk.NewDecCoinsFromCoins(k.tci.TotalFeesCollected...)
+	gasFeesForLps := gasFeeCollectedDec.MulDecTruncate(rewardPortionForLps)
+	gasFeesForStakers := gasFeeCollectedDec.Sub(gasFeesForLps)
+
+	// Sum Dex revenue for stakers + Gas fees for stakers and name it dex Revenus for stakers
+	// But won't sum dex revenue for LPs and gas fees for LPs as the LP revenue will be rewared by pool.
+	dexRevenueForStakers = dexRevenueForStakers.Add(gasFeesForStakers...)
+
 	// Fund community pool based on the communtiy tax
 	dexRevenueRemainedForStakers := k.UpdateCommunityPool(ctx, dexRevenueForStakers)
 
-	// Elys amount in sdk.Dec type
-	dexRevenueLPsAmt := dexRevenueForLps.AmountOf(ptypes.Elys)
-	dexRevenueStakersAmt := dexRevenueRemainedForStakers.AmountOf(ptypes.Elys)
+	// TODO:
+	// Dummy denom for USDC
+	// USDC amount in sdk.Dec type
+	dexRevenueLPsAmt := dexRevenueForLps.AmountOf(ptypes.USDC)
+	dexRevenueStakersAmt := dexRevenueRemainedForStakers.AmountOf(ptypes.USDC)
+	gasFeesLPsAmt := gasFeesForLps.AmountOf(ptypes.USDC)
 
 	// Calculate eden amount per epoch
 	edenAmountPerEpochStakers := stakeIncentive.Amount.Quo(sdk.NewInt(stakeIncentive.NumEpochs))
@@ -123,14 +138,19 @@ func (k Keeper) UpdateUncommittedTokens(ctx sdk.Context, epochIdentifier string,
 			delegatedAmt := k.CalculateDelegatedAmount(ctx, creator)
 
 			// Calculate new uncommitted Eden tokens from Eden & Eden boost committed, Dex rewards distribution
+			// Distribute gas fees to stakers
 			newUncommittedEdenTokens, dexRewards, dexRewardsByStakers := k.CalculateRewardsForStakers(ctx, delegatedAmt, commitments, edenAmountPerEpochStakers, dexRevenueStakersAmt)
 			totalEdenGiven = totalEdenGiven.Add(newUncommittedEdenTokens)
 			totalRewardsGiven = totalRewardsGiven.Add(dexRewards)
 
 			// Calculate new uncommitted Eden tokens from LpTokens committed, Dex rewards distribution
-			newUncommittedEdenTokensLp, dexRewardsLp := k.CalculateRewardsForLPs(ctx, totalProxyTVL, commitments, edenAmountPerEpochLPs)
+			// Distribute gas fees to LPs
+			newUncommittedEdenTokensLp, dexRewardsLp := k.CalculateRewardsForLPs(ctx, totalProxyTVL, commitments, edenAmountPerEpochLPs, gasFeesLPsAmt)
 			totalEdenGivenLP = totalEdenGivenLP.Add(newUncommittedEdenTokensLp)
 			totalRewardsGivenLP = totalRewardsGivenLP.Add(dexRewardsLp)
+
+			// TODO:
+			// Distribute Gas fees collected to stakers and LPs
 
 			// Calculate the total Eden uncommitted amount
 			newUncommittedEdenTokens = newUncommittedEdenTokens.Add(newUncommittedEdenTokensLp)
@@ -161,12 +181,14 @@ func (k Keeper) UpdateUncommittedTokens(ctx sdk.Context, epochIdentifier string,
 	edenRemained := edenAmountPerEpochStakers.Sub(totalEdenGiven)
 	edenRemainedLP := edenAmountPerEpochLPs.Sub(totalEdenGivenLP)
 	dexRewardsRemained := dexRevenueStakersAmt.Sub(sdk.NewDecFromInt(totalRewardsGiven))
-	dexRewardsRemainedLP := dexRevenueLPsAmt.Sub(sdk.NewDecFromInt(totalRewardsGivenLP))
+	dexRewardsRemainedLP := dexRevenueLPsAmt.Add(gasFeesLPsAmt).Sub(sdk.NewDecFromInt(totalRewardsGivenLP))
 
 	// Fund community the remain coins
 	// ----------------------------------
 	edenRemainedCoin := sdk.NewDecCoin(ptypes.Eden, edenRemained.Add(edenRemainedLP))
-	dexRewardsRemainedCoin := sdk.NewDecCoinFromDec(ptypes.Elys, dexRewardsRemained.Add(dexRewardsRemainedLP))
+	// TODO:
+	// Dummy denom for USDC
+	dexRewardsRemainedCoin := sdk.NewDecCoinFromDec(ptypes.USDC, dexRewardsRemained.Add(dexRewardsRemainedLP))
 
 	feePool := k.GetFeePool(ctx)
 	feePool.CommunityPool = feePool.CommunityPool.Add(edenRemainedCoin)
@@ -180,8 +202,15 @@ func (k Keeper) UpdateCommitments(ctx sdk.Context, creator string, commitments *
 	k.UpdateTokensCommitment(commitments, newUncommittedEdenTokens, ptypes.Eden)
 	// Update uncommitted Eden-Boost token balances in the Commitments structure
 	k.UpdateTokensCommitment(commitments, newUncommittedEdenBoostTokens, ptypes.EdenB)
-	// Update Elys balances in the Commitments structure
-	k.UpdateTokensCommitment(commitments, dexRewards, ptypes.Elys)
+
+	// TODO:
+	// Assume all dex revenue are collected to incentive module in USDC
+	// These are the rewards from each pool, margin, gas fee.
+	// Gas fees (Elys) is also converted into USDC and collected into total dex revenue wallet
+	// of incentive module.
+	// Update USDC balances in the Commitments structure.
+	// USDC token denom is dummy one for now until we have real usdc brought through bridge.
+	k.UpdateTokensCommitment(commitments, dexRewards, ptypes.USDC)
 
 	// Save the updated Commitments
 	k.cmk.SetCommitments(ctx, *commitments)

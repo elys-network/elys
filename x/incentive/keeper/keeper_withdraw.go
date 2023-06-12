@@ -17,8 +17,8 @@ func (k Keeper) UpdateTokensForValidator(ctx sdk.Context, validator string, new_
 	// Update Eden amount
 	k.UpdateTokensCommitment(&commitments, new_uncommitted_eden_tokens, ptypes.Eden)
 
-	// Update Elys amount
-	k.UpdateTokensCommitment(&commitments, dexRewards.TruncateInt(), ptypes.Elys)
+	// Update USDC amount
+	k.UpdateTokensCommitment(&commitments, dexRewards.TruncateInt(), ptypes.USDC)
 
 	// Update commmitment
 	k.cmk.SetCommitments(ctx, commitments)
@@ -57,6 +57,7 @@ func (k Keeper) GiveCommissionToValidators(ctx sdk.Context, delegator string, to
 		//-----------------------------
 		// to give = delegated amount / total delegation * newly minted eden * commission rate
 		edenCommission := delegatedAmt.QuoInt(totalDelegationAmt).MulInt(newUncommittedAmt).Mul(comm_rate)
+
 		// Sum total commission given
 		totalEdenGiven = totalEdenGiven.Add(edenCommission.TruncateInt())
 		//-----------------------------
@@ -94,28 +95,26 @@ func (k Keeper) ProcessWithdrawRewards(ctx sdk.Context, delegator string) error 
 	}
 
 	// Eden
-	uncommittedEden, _ := commitments.GetUncommittedTokensForDenom(ptypes.Eden)
-	// Eden B
-	uncommittedEdenB, _ := commitments.GetUncommittedTokensForDenom(ptypes.EdenB)
-	// Elys
-	uncommittedElys, _ := commitments.GetUncommittedTokensForDenom(ptypes.Elys)
+	uncommittedEden, bfound := commitments.GetUncommittedTokensForDenom(ptypes.Eden)
+	if bfound {
+		// Withdraw Eden
+		err = k.cmk.ProcessWithdrawTokens(ctx, delegator, ptypes.Eden, uncommittedEden.Amount)
+	}
 
-	// Withdraw Eden
-	err = k.cmk.ProcessWithdrawTokens(ctx, delegator, ptypes.Eden, uncommittedEden.Amount)
-
-	// Withdraw Eden Boost
-	err = k.cmk.ProcessWithdrawTokens(ctx, delegator, ptypes.EdenB, uncommittedEdenB.Amount)
-
-	// Convert Elys to USDC
-	// TODO:
-	// + Conversion is done inside commmitment module using amm module that will come soon.
-	err = k.cmk.ProcessWithdrawElysTokens(ctx, delegator, ptypes.Elys, uncommittedElys.Amount)
+	// USDC
+	uncommittedUsdc, bfound := commitments.GetUncommittedTokensForDenom(ptypes.USDC)
+	if bfound {
+		// TODO:
+		// All dex rewards are only paid in USDC
+		// USDC denom is still dummy until we have real USDC in our chain.
+		err = k.cmk.ProcessWithdrawTokens(ctx, delegator, ptypes.USDC, uncommittedUsdc.Amount)
+	}
 
 	return err
 }
 
-// withdraw validator commission
-// Eden, EdenBoost and Elys to USDC
+// Withdraw validator commission
+// Eden, EdenBoost and USDC
 func (k Keeper) ProcessWithdrawValidatorCommission(ctx sdk.Context, delegator string, validator string) error {
 	_, err := sdk.AccAddressFromBech32(delegator)
 	if err != nil {
@@ -135,22 +134,20 @@ func (k Keeper) ProcessWithdrawValidatorCommission(ctx sdk.Context, delegator st
 	}
 
 	// Eden
-	uncommittedEden, _ := commitments.GetUncommittedTokensForDenom(ptypes.Eden)
-	// Eden B
-	uncommittedEdenB, _ := commitments.GetUncommittedTokensForDenom(ptypes.EdenB)
-	// Elys
-	uncommittedElys, _ := commitments.GetUncommittedTokensForDenom(ptypes.Elys)
+	uncommittedEden, bfound := commitments.GetUncommittedTokensForDenom(ptypes.Eden)
+	if bfound {
+		// Withdraw Eden
+		err = k.cmk.ProcessWithdrawValidatorCommission(ctx, delegator, validator, ptypes.Eden, uncommittedEden.Amount)
+	}
 
-	// Withdraw Eden
-	err = k.cmk.ProcessWithdrawValidatorCommission(ctx, delegator, validator, ptypes.Eden, uncommittedEden.Amount)
-
-	// Withdraw Eden Boost
-	err = k.cmk.ProcessWithdrawValidatorCommission(ctx, delegator, validator, ptypes.EdenB, uncommittedEdenB.Amount)
-
-	// Convert Elys to USDC
-	// TODO:
-	// + Conversion is done inside commmitment module using amm module that will come soon.
-	err = k.cmk.ProcessWithdrawValidatorElysCommission(ctx, delegator, validator, ptypes.Elys, uncommittedElys.Amount)
+	// USDC
+	uncommittedUsdc, bfound := commitments.GetUncommittedTokensForDenom(ptypes.USDC)
+	if bfound {
+		// TODO:
+		// All dex rewards are only paid in USDC
+		// USDC denom is still dummy until we have real USDC in our chain.
+		err = k.cmk.ProcessWithdrawValidatorCommission(ctx, delegator, validator, ptypes.USDC, uncommittedUsdc.Amount)
+	}
 
 	return err
 }
