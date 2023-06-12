@@ -25,7 +25,7 @@ type BankKeeper interface {
 	// Methods imported from bank should be defined here
 }
 
-// BankKeeper defines the expected interface needed to retrieve price info
+// OracleKeeper defines the expected interface needed to retrieve price info
 type OracleKeeper interface {
 	GetAssetPriceFromDenom(ctx sdk.Context, denom string) sdk.Dec
 }
