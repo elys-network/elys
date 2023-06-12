@@ -29,7 +29,7 @@ type (
 		feeCollectorName    string // name of the FeeCollector ModuleAccount
 		dexRevCollectorName string // name of the Dex Revenue ModuleAccount
 
-		lpk *LiquidityKeeper
+		Lpk *LiquidityKeeper
 	}
 )
 
@@ -62,7 +62,7 @@ func NewKeeper(
 		dexRevCollectorName: dexRevCollectorName,
 		authKeeper:          ak,
 		bankKeeper:          bk,
-		lpk:                 NewLiquidityKeeper(),
+		Lpk:                 NewLiquidityKeeper(),
 	}
 }
 
@@ -102,7 +102,7 @@ func (k Keeper) UpdateUncommittedTokens(ctx sdk.Context, epochIdentifier string,
 	// We have 3 pools of 20, 30, 40 TVL
 	// We have mulitplier of 0.3, 0.5, 1.0
 	// Proxy TVL = 20*0.3+30*0.5+40*1.0
-	totalProxyTVL := k.lpk.CalculateProxyTVL()
+	totalProxyTVL := k.Lpk.CalculateProxyTVL()
 
 	totalEdenGiven := sdk.ZeroInt()
 	totalEdenGivenLP := sdk.ZeroInt()
@@ -155,7 +155,7 @@ func (k Keeper) UpdateUncommittedTokens(ctx sdk.Context, epochIdentifier string,
 	)
 
 	// After give DEX rewards, we should update its record in order to avoid double spend.
-	k.lpk.UpdateRewardsAccmulated(ctx)
+	k.Lpk.UpdateRewardsAccmulated(ctx)
 
 	// Calcualte the remainings
 	edenRemained := edenAmountPerEpochStakers.Sub(totalEdenGiven)

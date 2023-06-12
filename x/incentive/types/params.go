@@ -5,6 +5,7 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
+	etypes "github.com/elys-network/elys/x/epochs/types"
 	"gopkg.in/yaml.v2"
 )
 
@@ -15,6 +16,8 @@ var (
 	ParamStoreKeyCommunityTax        = []byte("communitytax")
 	ParamStoreKeyWithdrawAddrEnabled = []byte("withdrawaddrenabled")
 	ParamStoreKeyRewardPortionForLps = []byte("rewardportionforlps")
+	ParamStoreKeyLPIncentives        = []byte("lpincentives")
+	ParamStoreKeyStkIncentives       = []byte("stkincentives")
 )
 
 // ParamKeyTable the param key table for launch module
@@ -44,11 +47,33 @@ func (p *Params) ParamSetPairs() paramtypes.ParamSetPairs {
 		paramtypes.NewParamSetPair(ParamStoreKeyCommunityTax, &p.CommunityTax, validateCommunityTax),
 		paramtypes.NewParamSetPair(ParamStoreKeyWithdrawAddrEnabled, &p.WithdrawAddrEnabled, validateWithdrawAddrEnabled),
 		paramtypes.NewParamSetPair(ParamStoreKeyRewardPortionForLps, &p.RewardPortionForLps, validateRewardPortionForLps),
+		paramtypes.NewParamSetPair(ParamStoreKeyLPIncentives, &p.LpIncentives, validateLPIncentives),
+		paramtypes.NewParamSetPair(ParamStoreKeyStkIncentives, &p.StakeIncentives, validateStakeIncentives),
 	}
 }
 
 // Validate validates the set of params
 func (p Params) Validate() error {
+	if err := validateCommunityTax(p.CommunityTax); err != nil {
+		return err
+	}
+
+	if err := validateWithdrawAddrEnabled(p.WithdrawAddrEnabled); err != nil {
+		return err
+	}
+
+	if err := validateRewardPortionForLps(p.RewardPortionForLps); err != nil {
+		return err
+	}
+
+	if err := validateLPIncentives(p.LpIncentives); err != nil {
+		return err
+	}
+
+	if err := validateStakeIncentives(p.StakeIncentives); err != nil {
+		return err
+	}
+
 	return nil
 }
 
@@ -111,6 +136,78 @@ func validateRewardPortionForLps(i interface{}) error {
 	}
 	if v.GT(sdk.OneDec()) {
 		return fmt.Errorf("reward percent for lp too large: %s", v)
+	}
+
+	return nil
+}
+
+func validateLPIncentives(i interface{}) error {
+	v, ok := i.([]IncentiveInfo)
+	if !ok {
+		return fmt.Errorf("invalid parameter type: %T", i)
+	}
+	if v == nil {
+		return nil
+	}
+
+	for _, vv := range v {
+		if vv.Amount.LTE(sdk.ZeroInt()) {
+			return fmt.Errorf("invalid amount: %v", vv)
+		}
+
+		if vv.EpochIdentifier != etypes.WeekEpochID &&
+			vv.EpochIdentifier != etypes.DayEpochID &&
+			vv.EpochIdentifier != etypes.HourEpochID {
+			return fmt.Errorf("invalid epoch: %v", vv)
+		}
+
+		if vv.NumEpochs < 1 {
+			return fmt.Errorf("invalid num epoch: %v", vv)
+		}
+
+		if vv.CurrentEpoch < 0 {
+			return fmt.Errorf("invalid current epoch: %v", vv)
+		}
+
+		if vv.EdenBoostApr < 1 {
+			return fmt.Errorf("invalid eden boot apr: %v", vv)
+		}
+	}
+
+	return nil
+}
+
+func validateStakeIncentives(i interface{}) error {
+	v, ok := i.([]IncentiveInfo)
+	if !ok {
+		return fmt.Errorf("invalid parameter type: %T", i)
+	}
+	if v == nil {
+		return nil
+	}
+
+	for _, vv := range v {
+		if vv.Amount.LTE(sdk.ZeroInt()) {
+			return fmt.Errorf("invalid amount: %v", vv)
+		}
+
+		if vv.EpochIdentifier != etypes.WeekEpochID &&
+			vv.EpochIdentifier != etypes.DayEpochID &&
+			vv.EpochIdentifier != etypes.HourEpochID {
+			return fmt.Errorf("invalid epoch: %v", vv)
+		}
+
+		if vv.NumEpochs < 1 {
+			return fmt.Errorf("invalid num epoch: %v", vv)
+		}
+
+		if vv.CurrentEpoch < 0 {
+			return fmt.Errorf("invalid current epoch: %v", vv)
+		}
+
+		if vv.EdenBoostApr < 1 {
+			return fmt.Errorf("invalid eden boot apr: %v", vv)
+		}
 	}
 
 	return nil

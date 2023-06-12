@@ -28,7 +28,10 @@ func CmdJoinPool() *cobra.Command {
 			if err != nil {
 				return err
 			}
-			argShareAmountOut := args[2]
+			argShareAmountOut, ok := sdk.NewIntFromString(args[2])
+			if !ok {
+				return err
+			}
 
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
