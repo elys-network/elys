@@ -105,7 +105,7 @@ func TestCalculateTotalShareOfStaking(t *testing.T) {
 }
 
 func TestCalculateDelegatedAmount(t *testing.T) {
-	app, genAccount := simapp.InitElysTestAppWithGenAccount()
+	app, genAccount, _ := simapp.InitElysTestAppWithGenAccount()
 	ctx := app.BaseApp.NewContext(initChain, tmproto.Header{})
 
 	ik := app.IncentiveKeeper

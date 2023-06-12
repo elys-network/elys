@@ -6,7 +6,7 @@ import (
 )
 
 // Calculate new Eden token amounts based on LpElys committed and MElys committed
-func (k Keeper) CalculateRewardsForLPs(ctx sdk.Context, totalProxyTVL sdk.Dec, commitments ctypes.Commitments, edenAmountPerEpochLp sdk.Int) (sdk.Int, sdk.Int) {
+func (k Keeper) CalculateRewardsForLPs(ctx sdk.Context, totalProxyTVL sdk.Dec, commitments ctypes.Commitments, edenAmountPerEpochLp sdk.Int, gasFeesForLPs sdk.Dec) (sdk.Int, sdk.Int) {
 	// Method 2 - Using Proxy TVL
 	totalNewEdenAllocated := sdk.ZeroInt()
 	totalDexRewardsAllocated := sdk.ZeroDec()
@@ -57,6 +57,17 @@ func (k Keeper) CalculateRewardsForLPs(ctx sdk.Context, totalProxyTVL sdk.Dec, c
 		dexRewardsForLP := lpShare.Mul(dexRewardsAllocatedForPool)
 		// Sum total rewards per commitment
 		totalDexRewardsAllocated = totalDexRewardsAllocated.Add(dexRewardsForLP)
+
+		//----------------------------------------------------------------
+
+		// ------------------- Gas rewards calculation -------------------
+		// ---------------------------------------------------------------
+		// Get gas fee rewards per pool
+		gasRewardsAllocatedForPool := poolShare.Mul(gasFeesForLPs)
+		// Calculate gas fee rewards per lp
+		gasRewardsForLP := lpShare.Mul(gasRewardsAllocatedForPool)
+		// Sum total rewards per commitment
+		totalDexRewardsAllocated = totalDexRewardsAllocated.Add(gasRewardsForLP)
 
 		//----------------------------------------------------------------
 		return false

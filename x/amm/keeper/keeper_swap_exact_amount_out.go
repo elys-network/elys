@@ -39,7 +39,7 @@ func (k Keeper) SwapExactAmountOut(
 			"can't get more tokens out than there are tokens in the pool")
 	}
 
-	tokenIn, err := pool.SwapInAmtGivenOut(ctx, sdk.Coins{tokenOut}, tokenInDenom, swapFee)
+	tokenIn, weightBalanceBonus, err := pool.SwapInAmtGivenOut(ctx, k.oracleKeeper, sdk.Coins{tokenOut}, tokenInDenom, swapFee)
 	if err != nil {
 		return math.Int{}, err
 	}
@@ -53,7 +53,7 @@ func (k Keeper) SwapExactAmountOut(
 		return math.Int{}, sdkerrors.Wrapf(types.ErrLimitMaxAmount, "Swap requires %s, which is greater than the amount %s", tokenIn, tokenInMaxAmount)
 	}
 
-	err = k.updatePoolForSwap(ctx, pool, sender, tokenIn, tokenOut)
+	err = k.updatePoolForSwap(ctx, pool, sender, tokenIn, tokenOut, weightBalanceBonus)
 	if err != nil {
 		return math.Int{}, err
 	}

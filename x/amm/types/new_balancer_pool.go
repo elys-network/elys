@@ -15,16 +15,18 @@ import (
 // * poolID doesn't already exist
 func NewBalancerPool(poolId uint64, balancerPoolParams PoolParams, assets []PoolAsset, blockTime time.Time) (Pool, error) {
 	poolAddr := NewPoolAddress(poolId)
+	poolRebalanceTreasuryAddr := NewPoolRebalanceTreasury(poolId)
 
 	// pool thats created up to ensuring the assets and params are valid.
 	// We assume that FuturePoolGovernor is valid.
 	pool := &Pool{
-		PoolId:      poolId,
-		Address:     poolAddr.String(),
-		PoolParams:  &PoolParams{},
-		TotalWeight: math.ZeroInt(),
-		TotalShares: sdk.NewCoin(GetPoolShareDenom(poolId), InitPoolSharesSupply),
-		PoolAssets:  nil,
+		PoolId:            poolId,
+		Address:           poolAddr.String(),
+		RebalanceTreasury: poolRebalanceTreasuryAddr.String(),
+		PoolParams:        &PoolParams{},
+		TotalWeight:       math.ZeroInt(),
+		TotalShares:       sdk.NewCoin(GetPoolShareDenom(poolId), InitPoolSharesSupply),
+		PoolAssets:        nil,
 	}
 
 	err := pool.SetInitialPoolAssets(assets)

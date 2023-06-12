@@ -10,6 +10,7 @@ message ProposalAddAssetInfo {
   string display = 4;
   string bandTicker = 5;
   string elysTicker = 6;
+  uint64 decimal = 7;
 }
 
 message ProposalRemoveAssetInfo {

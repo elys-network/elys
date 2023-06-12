@@ -53,7 +53,7 @@ func InitiateNewElysApp() *ElysApp {
 func InitElysTestApp(initChain bool) *ElysApp {
 	app := InitiateNewElysApp()
 	if initChain {
-		genesisState, valSet, _ := GenesisStateWithValSet(app)
+		genesisState, valSet, _, _ := GenesisStateWithValSet(app)
 		stateBytes, err := json.MarshalIndent(genesisState, "", " ")
 		if err != nil {
 			panic(err)
@@ -81,10 +81,10 @@ func InitElysTestApp(initChain bool) *ElysApp {
 }
 
 // Initializes a new ElysApp without IBC functionality and returns genesis account (delegator)
-func InitElysTestAppWithGenAccount() (*ElysApp, sdk.AccAddress) {
+func InitElysTestAppWithGenAccount() (*ElysApp, sdk.AccAddress, sdk.ValAddress) {
 	app := InitiateNewElysApp()
 
-	genesisState, valSet, genAcount := GenesisStateWithValSet(app)
+	genesisState, valSet, genAcount, valAddress := GenesisStateWithValSet(app)
 	stateBytes, err := json.MarshalIndent(genesisState, "", " ")
 	if err != nil {
 		panic(err)
@@ -107,10 +107,10 @@ func InitElysTestAppWithGenAccount() (*ElysApp, sdk.AccAddress) {
 		NextValidatorsHash: valSet.Hash(),
 	}})
 
-	return app, genAcount
+	return app, genAcount, valAddress
 }
 
-func GenesisStateWithValSet(app *ElysApp) (GenesisState, *tmtypes.ValidatorSet, sdk.AccAddress) {
+func GenesisStateWithValSet(app *ElysApp) (GenesisState, *tmtypes.ValidatorSet, sdk.AccAddress, sdk.ValAddress) {
 	privVal := mock.NewPV()
 	pubKey, _ := privVal.GetPubKey()
 	validator := tmtypes.NewValidator(pubKey, 1)
@@ -150,8 +150,8 @@ func GenesisStateWithValSet(app *ElysApp) (GenesisState, *tmtypes.ValidatorSet, 
 			Description:       stakingtypes.Description{},
 			UnbondingHeight:   int64(0),
 			UnbondingTime:     time.Unix(0, 0).UTC(),
-			Commission:        stakingtypes.NewCommission(sdk.ZeroDec(), sdk.ZeroDec(), sdk.ZeroDec()),
-			MinSelfDelegation: sdkmath.ZeroInt(),
+			Commission:        stakingtypes.NewCommission(sdk.NewDecWithPrec(5, 2), sdk.NewDecWithPrec(10, 2), sdk.NewDecWithPrec(10, 2)),
+			MinSelfDelegation: sdkmath.OneInt(),
 		}
 		validators = append(validators, validator)
 		delegations = append(delegations, stakingtypes.NewDelegation(genAccs[0].GetAddress(), val.Address.Bytes(), sdk.OneDec()))
@@ -184,7 +184,7 @@ func GenesisStateWithValSet(app *ElysApp) (GenesisState, *tmtypes.ValidatorSet, 
 	// update total supply
 	bankGenesis := banktypes.NewGenesisState(banktypes.DefaultGenesisState().Params, balances, totalSupply, []banktypes.Metadata{})
 	genesisState[banktypes.ModuleName] = app.AppCodec().MustMarshalJSON(bankGenesis)
-	return genesisState, valSet, genAccs[0].GetAddress()
+	return genesisState, valSet, genAccs[0].GetAddress(), sdk.ValAddress(validator.Address)
 }
 
 type GenerateAccountStrategy func(int) []sdk.AccAddress

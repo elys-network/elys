@@ -80,8 +80,9 @@ func TestCalculateRewardsForLPs(t *testing.T) {
 	// Recalculate total committed info
 	ik.UpdateTotalCommitmentInfo(ctx)
 
+	gasFeesLPsAmt := sdk.NewDec(1000)
 	// Calculate rewards for LPs
-	newUncommittedEdenTokensLp, dexRewardsLp := ik.CalculateRewardsForLPs(ctx, totalProxyTVL, commitment, edenAmountPerEpochLp)
+	newUncommittedEdenTokensLp, dexRewardsLp := ik.CalculateRewardsForLPs(ctx, totalProxyTVL, commitment, edenAmountPerEpochLp, gasFeesLPsAmt)
 	require.Equal(t, newUncommittedEdenTokensLp, sdk.NewInt(999999))
-	require.Equal(t, dexRewardsLp, sdk.NewInt(11000))
+	require.Equal(t, dexRewardsLp, sdk.NewInt(12000))
 }

@@ -35,6 +35,7 @@ func handleAddAssetInfoProposal(ctx sdk.Context, k *keeper.Keeper, p *types.Prop
 		Display:    p.Display,
 		BandTicker: p.BandTicker,
 		ElysTicker: p.ElysTicker,
+		Decimal:    p.Decimal,
 	})
 	return nil
 }

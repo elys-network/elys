@@ -8,4 +8,5 @@ message AssetInfo {
   string display = 2;
   string bandTicker = 3;
   string elysTicker = 4;
+  uint64 decimal = 5;
 }
