@@ -8,6 +8,7 @@ import (
 
 const (
 	TypeEvtPoolJoined   = "pool_joined"
+	TypeEvtPoolExited   = "pool_exited"
 	TypeEvtPoolCreated  = "pool_created"
 	TypeEvtTokenSwapped = "token_swapped"
 
@@ -47,5 +48,21 @@ func newAddLiquidityEvent(sender sdk.AccAddress, poolId uint64, liquidity sdk.Co
 		sdk.NewAttribute(sdk.AttributeKeySender, sender.String()),
 		sdk.NewAttribute(AttributeKeyPoolId, strconv.FormatUint(poolId, 10)),
 		sdk.NewAttribute(AttributeKeyTokensIn, liquidity.String()),
+	)
+}
+
+func EmitRemoveLiquidityEvent(ctx sdk.Context, sender sdk.AccAddress, poolId uint64, liquidity sdk.Coins) {
+	ctx.EventManager().EmitEvents(sdk.Events{
+		newRemoveLiquidityEvent(sender, poolId, liquidity),
+	})
+}
+
+func newRemoveLiquidityEvent(sender sdk.AccAddress, poolId uint64, liquidity sdk.Coins) sdk.Event {
+	return sdk.NewEvent(
+		TypeEvtPoolExited,
+		sdk.NewAttribute(sdk.AttributeKeyModule, AttributeValueCategory),
+		sdk.NewAttribute(sdk.AttributeKeySender, sender.String()),
+		sdk.NewAttribute(AttributeKeyPoolId, strconv.FormatUint(poolId, 10)),
+		sdk.NewAttribute(AttributeKeyTokensOut, liquidity.String()),
 	)
 }
