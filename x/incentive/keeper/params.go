@@ -108,8 +108,10 @@ func (k Keeper) UpdateTotalCommitmentInfo(ctx sdk.Context) {
 	k.tci.TotalLpTokensCommitted = make(map[string]sdk.Int)
 
 	// Collect gas fees collected
+	// TODO:
+	// Convert Elys to USDC
 	fees := k.CollectGasFeesToIncentiveModule(ctx)
-	// Calculate total fees - DEX revenus + Gas fees collected
+	// Calculate total fees - Gas fees collected
 	k.tci.TotalFeesCollected = k.tci.TotalFeesCollected.Add(fees...)
 
 	// Iterate to calculate total Eden, Eden boost and Lp tokens committed

@@ -75,7 +75,10 @@ func (k Keeper) DeductCommitments(ctx sdk.Context, creator string, denom string,
 	}
 
 	// Get user's uncommitted balance
-	uncommittedToken, _ := commitments.GetUncommittedTokensForDenom(denom)
+	uncommittedToken, found := commitments.GetUncommittedTokensForDenom(denom)
+	if !found {
+		return types.Commitments{}, sdkerrors.Wrapf(types.ErrCommitmentsNotFound, "creator: %s", creator)
+	}
 
 	requestedAmount := amount
 
@@ -98,6 +101,5 @@ func (k Keeper) DeductCommitments(ctx sdk.Context, creator string, denom string,
 
 	// Subtract the withdrawn amount from the uncommitted balance
 	uncommittedToken.Amount = uncommittedToken.Amount.Sub(requestedAmount)
-
 	return commitments, nil
 }

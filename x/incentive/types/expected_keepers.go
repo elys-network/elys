@@ -19,12 +19,8 @@ type CommitmentKeeper interface {
 	GetCommitments(sdk.Context, string) (ctypes.Commitments, bool)
 	// Withdraw tokens
 	ProcessWithdrawTokens(sdk.Context, string, string, sdk.Int) error
-	// Withdraw USDC from Elys
-	ProcessWithdrawElysTokens(sdk.Context, string, string, sdk.Int) error
 	// Withdraw validator commission
 	ProcessWithdrawValidatorCommission(sdk.Context, string, string, string, sdk.Int) error
-	// Withdraw validator commission USDC from Elys
-	ProcessWithdrawValidatorElysCommission(sdk.Context, string, string, string, sdk.Int) error
 }
 
 // Staking keeper

@@ -32,7 +32,7 @@ const (
 	EdenB = "uedenb"
 
 	// USDC
-	USDC = "usdc"
+	USDC = "cusdc"
 
 	// 52.1429 weeks
 	WeeksPerYear = 52
