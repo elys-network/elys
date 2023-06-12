@@ -34106,6 +34106,9 @@ paths:
                       type: string
                     elysTicker:
                       type: string
+                    decimal:
+                      type: string
+                      format: uint64
               pagination:
                 type: object
                 properties:
@@ -34232,6 +34235,9 @@ paths:
                     type: string
                   elysTicker:
                     type: string
+                  decimal:
+                    type: string
+                    format: uint64
         default:
           description: An unexpected error response.
           schema:
@@ -70771,6 +70777,9 @@ definitions:
         type: string
       elysTicker:
         type: string
+      decimal:
+        type: string
+        format: uint64
   elysnetwork.elys.oracle.BandPriceCallData:
     type: object
     properties:
@@ -70881,6 +70890,9 @@ definitions:
               type: string
             elysTicker:
               type: string
+            decimal:
+              type: string
+              format: uint64
       pagination:
         type: object
         properties:
@@ -71015,6 +71027,9 @@ definitions:
             type: string
           elysTicker:
             type: string
+          decimal:
+            type: string
+            format: uint64
   elysnetwork.elys.oracle.QueryGetPriceFeederResponse:
     type: object
     properties:

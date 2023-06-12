@@ -25,6 +25,7 @@ func NewProposalAddAssetInfo(
 	display string,
 	bandTicker string,
 	elysTicker string,
+	decimal uint64,
 ) gov.Content {
 	return &ProposalAddAssetInfo{
 		Title:       title,
@@ -33,6 +34,7 @@ func NewProposalAddAssetInfo(
 		Display:     display,
 		BandTicker:  bandTicker,
 		ElysTicker:  elysTicker,
+		Decimal:     decimal,
 	}
 }
 

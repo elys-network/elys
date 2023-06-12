@@ -2,6 +2,7 @@ package cli
 
 import (
 	"fmt"
+	"strconv"
 	"strings"
 	"time"
 
@@ -53,8 +54,8 @@ func GetTxCmd() *cobra.Command {
 
 func CmdSubmitAddAssetInfoProposal() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "add-asset-info-proposal [denom] [display] [bandTicker] [elysTicker]",
-		Args:  cobra.ExactArgs(4),
+		Use:   "add-asset-info-proposal [denom] [display] [bandTicker] [elysTicker] [decimal]",
+		Args:  cobra.ExactArgs(5),
 		Short: "Submit an add asset info proposal",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
@@ -72,6 +73,11 @@ func CmdSubmitAddAssetInfoProposal() *cobra.Command {
 				return err
 			}
 
+			decimal, err := strconv.Atoi(args[4])
+			if err != nil {
+				return err
+			}
+
 			content := types.NewProposalAddAssetInfo(
 				title,
 				description,
@@ -79,6 +85,7 @@ func CmdSubmitAddAssetInfoProposal() *cobra.Command {
 				args[1],
 				args[2],
 				args[3],
+				uint64(decimal),
 			)
 
 			from := clientCtx.GetFromAddress()
