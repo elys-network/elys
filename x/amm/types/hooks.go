@@ -18,7 +18,7 @@ type AmmHooks interface {
 
 var _ AmmHooks = MultiAmmHooks{}
 
-// combine multiple gamm hooks, all hook functions are run in array sequence.
+// combine multiple amm hooks, all hook functions are run in array sequence.
 type MultiAmmHooks []AmmHooks
 
 // Creates hooks for the Amm Module.
