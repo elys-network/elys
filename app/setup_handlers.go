@@ -19,14 +19,12 @@ func setUpgradeHandler(app *ElysApp) {
 	app.UpgradeKeeper.SetUpgradeHandler(version.Version, func(ctx sdk.Context, plan types.Plan, vm m.VersionMap) (m.VersionMap, error) {
 		app.Logger().Info("Running upgrade handler for " + version.Version)
 
-		// Run migrations
-		verisionMap, err := app.mm.RunMigrations(ctx, app.configurator, vm)
-
 		// Set Params of incentive module with the new paramset added
 		params := incentivemoduletypes.DefaultParams()
 		app.IncentiveKeeper.SetParams(ctx, params)
 
-		return verisionMap, err
+		// Run migrations
+		return app.mm.RunMigrations(ctx, app.configurator, vm)
 	})
 }
 
