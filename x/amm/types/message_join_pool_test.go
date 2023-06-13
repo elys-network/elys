@@ -1,29 +1,30 @@
-package types
+package types_test
 
 import (
 	"testing"
 
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/elys-network/elys/testutil/sample"
+	"github.com/elys-network/elys/x/amm/types"
 	"github.com/stretchr/testify/require"
 )
 
 func TestMsgJoinPool_ValidateBasic(t *testing.T) {
 	tests := []struct {
 		name string
-		msg  MsgJoinPool
+		msg  types.MsgJoinPool
 		err  error
 	}{
 		{
 			name: "invalid address",
-			msg: MsgJoinPool{
-				Creator: "invalid_address",
+			msg: types.MsgJoinPool{
+				Sender: "invalid_address",
 			},
 			err: sdkerrors.ErrInvalidAddress,
 		}, {
 			name: "valid address",
-			msg: MsgJoinPool{
-				Creator: sample.AccAddress(),
+			msg: types.MsgJoinPool{
+				Sender: sample.AccAddress(),
 			},
 		},
 	}

@@ -108,8 +108,10 @@ func (k Keeper) UpdateTotalCommitmentInfo(ctx sdk.Context) {
 	k.tci.TotalLpTokensCommitted = make(map[string]sdk.Int)
 
 	// Collect gas fees collected
+	// TODO:
+	// Convert Elys to USDC
 	fees := k.CollectGasFeesToIncentiveModule(ctx)
-	// Calculate total fees - DEX revenus + Gas fees collected
+	// Calculate total fees - Gas fees collected
 	k.tci.TotalFeesCollected = k.tci.TotalFeesCollected.Add(fees...)
 
 	// Iterate to calculate total Eden, Eden boost and Lp tokens committed
@@ -119,10 +121,15 @@ func (k Keeper) UpdateTotalCommitmentInfo(ctx sdk.Context) {
 
 		k.tci.TotalEdenEdenBoostCommitted = k.tci.TotalEdenEdenBoostCommitted.Add(committedEdenToken).Add(committedEdenBoostToken)
 
-		// Iterate to calcaulte total Lp tokens committed
-		k.lpk.IterateLiquidityPools(ctx, func(l LiquidityPool) bool {
+		// Iterate to calculate total Lp tokens committed
+		k.Lpk.IterateLiquidityPools(ctx, func(l LiquidityPool) bool {
 			committedLpToken := commitments.GetCommittedAmountForDenom(l.lpToken)
-			k.tci.TotalLpTokensCommitted[l.lpToken] = k.tci.TotalLpTokensCommitted[l.lpToken].Add(committedLpToken)
+			amt, ok := k.tci.TotalLpTokensCommitted[l.lpToken]
+			if !ok {
+				k.tci.TotalLpTokensCommitted[l.lpToken] = committedLpToken
+			} else {
+				k.tci.TotalLpTokensCommitted[l.lpToken] = amt.Add(committedLpToken)
+			}
 			return false
 		})
 		return false

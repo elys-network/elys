@@ -28,7 +28,10 @@ func CmdExitPool() *cobra.Command {
 			if err != nil {
 				return err
 			}
-			argShareAmountIn := args[2]
+			argShareAmountIn, ok := sdk.NewIntFromString(args[2])
+			if !ok {
+				return err
+			}
 
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {

@@ -19,7 +19,7 @@ func SimulateMsgExitPool(
 	) (simtypes.OperationMsg, []simtypes.FutureOperation, error) {
 		simAccount, _ := simtypes.RandomAcc(r, accs)
 		msg := &types.MsgExitPool{
-			Creator: simAccount.Address.String(),
+			Sender: simAccount.Address.String(),
 		}
 
 		// TODO: Handling the ExitPool simulation

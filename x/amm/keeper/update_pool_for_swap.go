@@ -44,6 +44,12 @@ func (k Keeper) UpdatePoolForSwap(
 	if err != nil {
 		return err
 	}
+	k.OnCollectFee(ctx, pool, swapFeeCoins)
+
+	err = k.bankKeeper.SendCoins(ctx, poolAddr, sender, sdk.Coins{tokenOut})
+	if err != nil {
+		return err
+	}
 
 	// calculate treasury amount to send as bonus
 	rebalanceTreasuryAddr := sdk.MustAccAddressFromBech32(pool.GetRebalanceTreasury())

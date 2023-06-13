@@ -6,13 +6,13 @@ import (
 )
 
 // Calculate new Eden token amounts based on LpElys committed and MElys committed
-func (k Keeper) CalculateRewardsForLPs(ctx sdk.Context, totalProxyTVL sdk.Dec, commitments ctypes.Commitments, edenAmountPerEpochLp sdk.Int) (sdk.Int, sdk.Int) {
+func (k Keeper) CalculateRewardsForLPs(ctx sdk.Context, totalProxyTVL sdk.Dec, commitments ctypes.Commitments, edenAmountPerEpochLp sdk.Int, gasFeesForLPs sdk.Dec) (sdk.Int, sdk.Int) {
 	// Method 2 - Using Proxy TVL
 	totalNewEdenAllocated := sdk.ZeroInt()
 	totalDexRewardsAllocated := sdk.ZeroDec()
 
 	// Iterate to calculate total Eden from LpElys, MElys committed
-	k.lpk.IterateLiquidityPools(ctx, func(l LiquidityPool) bool {
+	k.Lpk.IterateLiquidityPools(ctx, func(l LiquidityPool) bool {
 		// ------------ New Eden calculation -------------------
 		// -----------------------------------------------------
 		// newEdenAllocated = 80 / ( 80 + 90 + 200 + 0) * 100
@@ -29,7 +29,15 @@ func (k Keeper) CalculateRewardsForLPs(ctx sdk.Context, totalProxyTVL sdk.Dec, c
 		// this lp token committed
 		commmittedLpToken := commitments.GetCommittedAmountForDenom(l.lpToken)
 		// this lp token total committed
-		totalCommittedLpToken := k.tci.TotalLpTokensCommitted[l.lpToken]
+		totalCommittedLpToken, ok := k.tci.TotalLpTokensCommitted[l.lpToken]
+		if !ok {
+			return false
+		}
+
+		// If total committed LP token amount is zero
+		if totalCommittedLpToken.LTE(sdk.ZeroInt()) {
+			return false
+		}
 
 		// Calculalte lp token share of the pool
 		lpShare := sdk.NewDecFromInt(commmittedLpToken).QuoInt(totalCommittedLpToken)
@@ -49,6 +57,18 @@ func (k Keeper) CalculateRewardsForLPs(ctx sdk.Context, totalProxyTVL sdk.Dec, c
 		dexRewardsForLP := lpShare.Mul(dexRewardsAllocatedForPool)
 		// Sum total rewards per commitment
 		totalDexRewardsAllocated = totalDexRewardsAllocated.Add(dexRewardsForLP)
+
+		//----------------------------------------------------------------
+
+		// ------------------- Gas rewards calculation -------------------
+		// ---------------------------------------------------------------
+		// Get gas fee rewards per pool
+		gasRewardsAllocatedForPool := poolShare.Mul(gasFeesForLPs)
+		// Calculate gas fee rewards per lp
+		gasRewardsForLP := lpShare.Mul(gasRewardsAllocatedForPool)
+		// Sum total rewards per commitment
+		totalDexRewardsAllocated = totalDexRewardsAllocated.Add(gasRewardsForLP)
+
 		//----------------------------------------------------------------
 		return false
 	})

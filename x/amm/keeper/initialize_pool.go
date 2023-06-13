@@ -16,7 +16,7 @@ import (
 // - Calls the AfterPoolCreated hook
 func (k Keeper) InitializePool(ctx sdk.Context, pool *types.Pool, sender sdk.AccAddress) (err error) {
 	// Mint the initial pool shares share token to the sender
-	err = k.MintPoolShareToAccount(ctx, pool, sender, pool.GetTotalShares().Amount)
+	err = k.MintPoolShareToAccount(ctx, *pool, sender, pool.GetTotalShares().Amount)
 	if err != nil {
 		return err
 	}

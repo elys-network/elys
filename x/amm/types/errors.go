@@ -24,3 +24,10 @@ var (
 
 	ErrInvalidPoolId = sdkerrors.Register(ModuleName, 91, "invalid pool id")
 )
+
+const (
+	InvalidInputDenomsErrFormat                  = "input denoms must already exist in the pool (%s)"
+	FormatRepeatingPoolAssetsNotAllowedErrFormat = "repeating pool assets not allowed, found %s"
+	FormatNoPoolAssetFoundErrFormat              = "can't find the PoolAsset (%s)"
+	ErrMsgFormatSharesLargerThanMax              = "%s resulted shares is larger than the max amount of %s"
+)

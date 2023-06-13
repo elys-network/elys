@@ -1,29 +1,30 @@
-package types
+package types_test
 
 import (
 	"testing"
 
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/elys-network/elys/testutil/sample"
+	"github.com/elys-network/elys/x/amm/types"
 	"github.com/stretchr/testify/require"
 )
 
 func TestMsgExitPool_ValidateBasic(t *testing.T) {
 	tests := []struct {
 		name string
-		msg  MsgExitPool
+		msg  types.MsgExitPool
 		err  error
 	}{
 		{
 			name: "invalid address",
-			msg: MsgExitPool{
-				Creator: "invalid_address",
+			msg: types.MsgExitPool{
+				Sender: "invalid_address",
 			},
 			err: sdkerrors.ErrInvalidAddress,
 		}, {
 			name: "valid address",
-			msg: MsgExitPool{
-				Creator: sample.AccAddress(),
+			msg: types.MsgExitPool{
+				Sender: sample.AccAddress(),
 			},
 		},
 	}

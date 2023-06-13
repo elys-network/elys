@@ -57,7 +57,7 @@ func (k Keeper) Logger(ctx sdk.Context) log.Logger {
 	return ctx.Logger().With("module", fmt.Sprintf("x/%s", types.ModuleName))
 }
 
-// Set the gamm hooks.
+// Set the amm hooks.
 func (k *Keeper) SetHooks(gh types.AmmHooks) *Keeper {
 	if k.hooks != nil {
 		panic("cannot set amm hooks twice")
