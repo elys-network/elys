@@ -40,12 +40,6 @@ func (k Keeper) UpdatePoolForSwap(
 		k.OnCollectFee(ctx, pool, swapFeeCoins)
 	}
 
-	err = k.bankKeeper.SendCoins(ctx, poolAddr, sender, tokensOut)
-	if err != nil {
-		return err
-	}
-	k.OnCollectFee(ctx, pool, swapFeeCoins)
-
 	err = k.bankKeeper.SendCoins(ctx, poolAddr, sender, sdk.Coins{tokenOut})
 	if err != nil {
 		return err
