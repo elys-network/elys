@@ -8,7 +8,7 @@ import (
 func portionCoins(coins sdk.Coins, portion sdk.Dec) sdk.Coins {
 	portionCoins := sdk.Coins{}
 	for _, coin := range coins {
-		portionAmount := sdk.NewDecFromInt(coin.Amount).Mul(sdk.OneDec().Sub(portion)).RoundInt()
+		portionAmount := sdk.NewDecFromInt(coin.Amount).Mul(portion).RoundInt()
 		portionCoins = portionCoins.Add(sdk.NewCoin(
 			coin.Denom, portionAmount,
 		))
