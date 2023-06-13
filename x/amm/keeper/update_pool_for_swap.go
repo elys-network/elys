@@ -5,10 +5,10 @@ import (
 	"github.com/elys-network/elys/x/amm/types"
 )
 
-// updatePoolForSwap takes a pool, sender, and tokenIn, tokenOut amounts
+// UpdatePoolForSwap takes a pool, sender, and tokenIn, tokenOut amounts
 // It then updates the pool's balances to the new reserve amounts, and
 // sends the in tokens from the sender to the pool, and the out tokens from the pool to the sender.
-func (k Keeper) updatePoolForSwap(
+func (k Keeper) UpdatePoolForSwap(
 	ctx sdk.Context,
 	pool types.Pool,
 	sender sdk.AccAddress,
@@ -25,18 +25,20 @@ func (k Keeper) updatePoolForSwap(
 	}
 
 	poolAddr := sdk.MustAccAddressFromBech32(pool.GetAddress())
-	err = k.bankKeeper.SendCoins(ctx, sender, poolAddr, sdk.Coins{tokenIn})
+	err = k.bankKeeper.SendCoins(ctx, sender, poolAddr, tokensIn)
 	if err != nil {
 		return err
 	}
 
-	swapFeeCoins := portionCoins(sdk.Coins{tokenIn}, pool.PoolParams.SwapFee)
-	rebalanceTreasury := sdk.MustAccAddressFromBech32(pool.GetRebalanceTreasury())
-	err = k.bankKeeper.SendCoins(ctx, poolAddr, rebalanceTreasury, swapFeeCoins)
-	if err != nil {
-		return err
+	swapFeeCoins := portionCoins(tokensIn, pool.PoolParams.SwapFee)
+	if swapFeeCoins.IsAllPositive() {
+		rebalanceTreasury := sdk.MustAccAddressFromBech32(pool.GetRebalanceTreasury())
+		err = k.bankKeeper.SendCoins(ctx, poolAddr, rebalanceTreasury, swapFeeCoins)
+		if err != nil {
+			return err
+		}
+		k.OnCollectFee(ctx, pool, swapFeeCoins)
 	}
-	k.OnCollectFee(ctx, pool, swapFeeCoins)
 
 	err = k.bankKeeper.SendCoins(ctx, poolAddr, sender, sdk.Coins{tokenOut})
 	if err != nil {
@@ -64,6 +66,7 @@ func (k Keeper) updatePoolForSwap(
 	k.hooks.AfterSwap(ctx, sender, pool.GetPoolId(), tokensIn, tokensOut)
 	k.RecordTotalLiquidityIncrease(ctx, tokensIn)
 	k.RecordTotalLiquidityDecrease(ctx, tokensOut)
+	k.RecordTotalLiquidityDecrease(ctx, swapFeeCoins)
 
-	return err
+	return nil
 }

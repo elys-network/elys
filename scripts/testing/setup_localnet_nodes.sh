@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# debug
+# set -x
+
 # Function to check if screen is installed
 check_screen_installed() {
     if ! command -v screen &> /dev/null; then
@@ -244,10 +247,10 @@ add_missing_upgrade_info() {
 
         local upgrade_info_content=$(cat <<EOF
 {
-    "name": "v0.5.3",
+    "name": "${VERSION}",
     "time": "0001-01-01T00:00:00Z",
-    "height": 477000,
-    "info": "{\"binaries\":{\"linux/amd64\":\"https://github.com/elys-network/elys/releases/download/v0.5.3/elys._v0.5.3_linux_amd64.tar.gz?checksum=4d8824eb30e416420666ffc30e74b7d57c1f913b89e38f24aae889660d322c0f\"}}"
+    "height": ${PREVIOUS_UPGRADE_HEIGHT},
+    "info": ""
 }
 EOF
         )
@@ -396,7 +399,9 @@ required_variables=(
     "VALIDATOR_PRIVATE_KEY_SECOND_LINES"
     "VALIDATOR_PRIVATE_KEY_THIRD_LINES"
     "VALIDATOR_ACCOUNT_PASSPHRASES"
+    "VERSION"
     "BINARY"
+    "PREVIOUS_UPGRADE_HEIGHT"
     "CHAIN_ID"
     "SNAPSHOT_URL"
     "SNAPSHOT_PATH"

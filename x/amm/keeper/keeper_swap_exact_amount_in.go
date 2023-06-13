@@ -55,7 +55,7 @@ func (k Keeper) SwapExactAmountIn(
 
 	// Settles balances between the tx sender and the pool to match the swap that was executed earlier.
 	// Also emits swap event and updates related liquidity metrics
-	if err := k.updatePoolForSwap(ctx, pool, sender, tokenIn, tokenOutCoin, weightBalanceBonus); err != nil {
+	if err := k.UpdatePoolForSwap(ctx, pool, sender, tokenIn, tokenOutCoin, weightBalanceBonus); err != nil {
 		return math.Int{}, err
 	}
 
