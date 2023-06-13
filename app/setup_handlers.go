@@ -6,7 +6,6 @@ import (
 	m "github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/cosmos/cosmos-sdk/version"
 	"github.com/cosmos/cosmos-sdk/x/upgrade/types"
-	incentivemoduletypes "github.com/elys-network/elys/x/incentive/types"
 )
 
 func SetupHandlers(app *ElysApp) {
@@ -18,10 +17,6 @@ func SetupHandlers(app *ElysApp) {
 func setUpgradeHandler(app *ElysApp) {
 	app.UpgradeKeeper.SetUpgradeHandler(version.Version, func(ctx sdk.Context, plan types.Plan, vm m.VersionMap) (m.VersionMap, error) {
 		app.Logger().Info("Running upgrade handler for " + version.Version)
-
-		p := incentivemoduletypes.DefaultParams()
-		paramStore := app.GetSubspace(incentivemoduletypes.ModuleName)
-		paramStore.SetParamSet(ctx, &p)
 
 		return app.mm.RunMigrations(ctx, app.configurator, vm)
 	})

@@ -1,6 +1,7 @@
 #!/bin/bash
 
-set -x
+# debug
+# set -x
 
 # Function to check if screen is installed
 check_screen_installed() {
