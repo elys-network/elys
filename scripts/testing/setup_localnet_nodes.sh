@@ -192,6 +192,28 @@ EOF
         # Update p2p laddr in config with node port
         sed -i "s/^pprof_laddr =.*/pprof_laddr = \"localhost:${node_pprof_port}\"/" "$config_path"
 
+        # Reduce timeout propose in config
+        sed -i "s/^timeout_propose =.*/timeout_propose = \"3s\"/" "$config_path"
+
+        # Reduce timeout propose delta in config
+        sed -i "s/^timeout_propose_delta =.*/timeout_propose_delta = \"500ms\"/" "$config_path"
+
+        # Reduce timeout prevote in config
+        sed -i "s/^timeout_prevote =.*/timeout_prevote = \"1s\"/" "$config_path"
+
+        # Reduce timeout prevote delta in config
+        sed -i "s/^timeout_prevote_delta =.*/timeout_prevote_delta = \"500ms\"/" "$config_path"
+
+        # Reduce timeout precommit in config
+        sed -i "s/^timeout_precommit =.*/timeout_precommit = \"1s\"/" "$config_path"
+
+        # Reduce timeout precommit delta in config
+        sed -i "s/^timeout_precommit_delta =.*/timeout_precommit_delta = \"500ms\"/" "$config_path"
+
+        # Reduce timeout commit in config
+        sed -i "s/^timeout_commit =.*/timeout_commit = \"4s\"/" "$config_path"
+
+
         # Update grpc in app with node port
         sed -i "s/^address = \"0.0.0.0:9090\"/address = \"0.0.0.0:${node_grpc_port}\"/" "$app_path"
 
