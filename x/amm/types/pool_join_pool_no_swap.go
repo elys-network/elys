@@ -8,6 +8,9 @@ import (
 )
 
 func (p *Pool) TVL(ctx sdk.Context, oracleKeeper OracleKeeper) (sdk.Dec, error) {
+	// TODO: handle non-oracle pool case
+	// OracleAssetsTVL * TotalWeight / OracleAssetsWeight
+
 	tvl := sdk.ZeroDec()
 	for _, asset := range p.PoolAssets {
 		tokenPrice := oracleKeeper.GetAssetPriceFromDenom(ctx, asset.Token.Denom)
