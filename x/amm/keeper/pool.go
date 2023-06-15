@@ -92,3 +92,19 @@ func (k Keeper) PoolExists(ctx sdk.Context, poolId uint64) bool {
 	b := store.Get(types.PoolKey(poolId))
 	return b != nil
 }
+
+// Get pool Ids that contains the denom in pool assets
+func (k Keeper) GetAllPoolIdsWithDenom(ctx sdk.Context, denom string) (list []uint64) {
+	pools := k.GetAllPool(ctx)
+
+	for _, p := range pools {
+		for _, asset := range p.PoolAssets {
+			if denom == asset.Token.Denom {
+				list = append(list, p.PoolId)
+				break
+			}
+		}
+	}
+
+	return list
+}

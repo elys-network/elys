@@ -25,6 +25,7 @@ type (
 		tci        *types.TotalCommitmentInfo
 		authKeeper types.AccountKeeper
 		bankKeeper types.BankKeeper
+		amm        types.AmmKeeper
 
 		feeCollectorName    string // name of the FeeCollector ModuleAccount
 		dexRevCollectorName string // name of the Dex Revenue ModuleAccount
@@ -42,6 +43,7 @@ func NewKeeper(
 	sk types.StakingKeeper,
 	ak types.AccountKeeper,
 	bk types.BankKeeper,
+	amm types.AmmKeeper,
 	feeCollectorName string,
 	dexRevCollectorName string,
 ) *Keeper {
@@ -62,6 +64,7 @@ func NewKeeper(
 		dexRevCollectorName: dexRevCollectorName,
 		authKeeper:          ak,
 		bankKeeper:          bk,
+		amm:                 amm,
 		Lpk:                 NewLiquidityKeeper(),
 	}
 }
