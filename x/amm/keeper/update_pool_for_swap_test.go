@@ -1,17 +1,11 @@
 package keeper_test
 
 import (
-	"fmt"
-	"strconv"
-
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 	"github.com/elys-network/elys/x/amm/types"
 	"github.com/tendermint/tendermint/crypto/ed25519"
 )
-
-// Prevent strconv unused error
-var _ = strconv.IntSize
 
 func (suite *KeeperTestSuite) TestUpdatePoolForSwap() {
 	for _, tc := range []struct {
@@ -158,7 +152,6 @@ func (suite *KeeperTestSuite) TestUpdatePoolForSwap() {
 				suite.Require().NoError(err)
 
 				// check pool balance increase/decrease
-				fmt.Println("poolAddr", poolAddr.String())
 				balances := suite.app.BankKeeper.GetAllBalances(suite.ctx, poolAddr)
 				suite.Require().Equal(balances.String(), tc.expPoolBalance.String())
 

@@ -7,22 +7,6 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-func (p *Pool) TVL(ctx sdk.Context, oracleKeeper OracleKeeper) (sdk.Dec, error) {
-	// TODO: handle non-oracle pool case
-	// OracleAssetsTVL * TotalWeight / OracleAssetsWeight
-
-	tvl := sdk.ZeroDec()
-	for _, asset := range p.PoolAssets {
-		tokenPrice := oracleKeeper.GetAssetPriceFromDenom(ctx, asset.Token.Denom)
-		if tokenPrice.IsZero() {
-			return sdk.ZeroDec(), fmt.Errorf("token price not set: %s", asset.Token.Denom)
-		}
-		v := tokenPrice.Mul(sdk.NewDecFromInt(asset.Token.Amount))
-		tvl = tvl.Add(v)
-	}
-	return tvl, nil
-}
-
 // JoinPoolNoSwap calculates the number of shares needed for an all-asset join given tokensIn with swapFee applied.
 // It updates the liquidity if the pool is joined successfully. If not, returns error.
 func (p *Pool) JoinPoolNoSwap(ctx sdk.Context, oracleKeeper OracleKeeper, tokensIn sdk.Coins, swapFee sdk.Dec) (numShares math.Int, err error) {
@@ -30,6 +14,9 @@ func (p *Pool) JoinPoolNoSwap(ctx sdk.Context, oracleKeeper OracleKeeper, tokens
 	if err != nil {
 		return math.Int{}, err
 	}
+
+	// update pool with the calculated share and liquidity needed to join pool
+	p.IncreaseLiquidity(numShares, tokensJoined)
 
 	if p.PoolParams.UseOracle {
 		initialWeightDistance := p.WeightDistanceFromTarget(ctx, oracleKeeper, p.PoolAssets)
@@ -71,7 +58,5 @@ func (p *Pool) JoinPoolNoSwap(ctx sdk.Context, oracleKeeper OracleKeeper, tokens
 		return numShares.RoundInt(), nil
 	}
 
-	// update pool with the calculated share and liquidity needed to join pool
-	p.IncreaseLiquidity(numShares, tokensJoined)
 	return numShares, nil
 }
