@@ -52,10 +52,13 @@ func (p *Pool) SwapInAmtGivenOut(
 	inAmountAfterSlippage := oracleInAmount.Sub(slippage)
 
 	// calculate weight distance difference to calculate bonus/cut on the operation
-	newAssetPools := p.NewPoolAssetsAfterSwap(
+	newAssetPools, err := p.NewPoolAssetsAfterSwap(
 		sdk.Coins{sdk.NewCoin(tokenInDenom, inAmountAfterSlippage.TruncateInt())},
 		tokensOut,
 	)
+	if err != nil {
+		return sdk.Coin{}, sdk.ZeroDec(), err
+	}
 	weightDistance := p.WeightDistanceFromTarget(ctx, oracleKeeper, newAssetPools)
 	distanceDiff := weightDistance.Sub(initialWeightDistance)
 
@@ -67,8 +70,7 @@ func (p *Pool) SwapInAmtGivenOut(
 
 	// bonus is valid when distance is lower than original distance and when threshold weight reached
 	weightBalanceBonus = sdk.ZeroDec()
-	// TODO: bonus should be coming from separate pool
-	if weightDistance.LT(p.PoolParams.ThresholdWeightDifference) && distanceDiff.IsNegative() {
+	if initialWeightDistance.GT(p.PoolParams.ThresholdWeightDifference) && distanceDiff.IsNegative() {
 		weightBalanceBonus = p.PoolParams.WeightBreakingFeeMultiplier.Mul(distanceDiff).Abs()
 		// TODO: we might skip swap fee in case it's a balance recovery operation
 		// TODO: what if weightBalanceBonus amount is not enough since it's large swap? (Should provide maximum)

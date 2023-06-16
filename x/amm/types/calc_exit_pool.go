@@ -35,10 +35,13 @@ func CalcExitPool(ctx sdk.Context, oracleKeeper OracleKeeper, pool Pool, exiting
 		tokenPrice := oracleKeeper.GetAssetPriceFromDenom(ctx, tokenOutDenom)
 		oracleOutAmount := tvl.Mul(refundedShares).Quo(refundedShares).Quo(tokenPrice)
 
-		newAssetPools := pool.NewPoolAssetsAfterSwap(
+		newAssetPools, err := pool.NewPoolAssetsAfterSwap(
 			sdk.Coins{},
 			sdk.Coins{sdk.NewCoin(tokenOutDenom, oracleOutAmount.RoundInt())},
 		)
+		if err != nil {
+			return sdk.Coins{}, err
+		}
 		for _, asset := range newAssetPools {
 			if asset.Token.Amount.IsNegative() {
 				return sdk.Coins{}, fmt.Errorf("out amount exceeds liquidity balance")

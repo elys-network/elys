@@ -35,10 +35,13 @@ func (p *Pool) JoinPoolNoSwap(ctx sdk.Context, oracleKeeper OracleKeeper, tokens
 			joinValue = joinValue.Add(v)
 		}
 
-		newAssetPools := p.NewPoolAssetsAfterSwap(
+		newAssetPools, err := p.NewPoolAssetsAfterSwap(
 			tokensIn,
 			sdk.Coins{},
 		)
+		if err != nil {
+			return sdk.ZeroInt(), err
+		}
 		weightDistance := p.WeightDistanceFromTarget(ctx, oracleKeeper, newAssetPools)
 
 		distanceDiff := weightDistance.Sub(initialWeightDistance)
@@ -47,7 +50,7 @@ func (p *Pool) JoinPoolNoSwap(ctx sdk.Context, oracleKeeper OracleKeeper, tokens
 			weightBreakingFee = p.PoolParams.WeightBreakingFeeMultiplier.Mul(distanceDiff)
 		}
 		weightBalanceBonus := sdk.ZeroDec()
-		if weightDistance.LT(p.PoolParams.ThresholdWeightDifference) && distanceDiff.IsNegative() {
+		if initialWeightDistance.GT(p.PoolParams.ThresholdWeightDifference) && distanceDiff.IsNegative() {
 			weightBalanceBonus = p.PoolParams.WeightBreakingFeeMultiplier.Mul(distanceDiff).Abs()
 		}
 
