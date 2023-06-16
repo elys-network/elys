@@ -10,6 +10,7 @@ import (
 	"github.com/tendermint/tendermint/libs/log"
 
 	"github.com/elys-network/elys/x/amm/types"
+	commitmentkeeper "github.com/elys-network/elys/x/commitment/keeper"
 )
 
 type (
@@ -20,9 +21,11 @@ type (
 		paramstore paramtypes.Subspace
 		hooks      types.AmmHooks
 
-		bankKeeper    types.BankKeeper
-		accountKeeper types.AccountKeeper
-		oracleKeeper  types.OracleKeeper
+		bankKeeper       types.BankKeeper
+		accountKeeper    types.AccountKeeper
+		oracleKeeper     types.OracleKeeper
+		commitmentKeeper *commitmentkeeper.Keeper
+		apKeeper         types.AssetProfileKeeper
 	}
 )
 
@@ -35,6 +38,8 @@ func NewKeeper(
 	bankKeeper types.BankKeeper,
 	accountKeeper types.AccountKeeper,
 	oracleKeeper types.OracleKeeper,
+	commitmentKeeper *commitmentkeeper.Keeper,
+	apKeeper types.AssetProfileKeeper,
 ) *Keeper {
 	// set KeyTable if it has not already been set
 	if !ps.HasKeyTable() {
@@ -47,9 +52,11 @@ func NewKeeper(
 		memKey:     memKey,
 		paramstore: ps,
 
-		bankKeeper:    bankKeeper,
-		accountKeeper: accountKeeper,
-		oracleKeeper:  oracleKeeper,
+		bankKeeper:       bankKeeper,
+		accountKeeper:    accountKeeper,
+		oracleKeeper:     oracleKeeper,
+		commitmentKeeper: commitmentKeeper,
+		apKeeper:         apKeeper,
 	}
 }
 
