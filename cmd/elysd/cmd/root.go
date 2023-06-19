@@ -6,6 +6,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"time"
 
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/client"
@@ -75,6 +76,10 @@ func NewRootCmd() (*cobra.Command, appparams.EncodingConfig) {
 
 			customAppTemplate, customAppConfig := initAppConfig()
 			customTMConfig := initTendermintConfig()
+
+			// override the default timeout commit value
+			customTMConfig.Consensus.TimeoutCommit = 4000 * time.Millisecond
+
 			return server.InterceptConfigsPreRunHandler(
 				cmd, customAppTemplate, customAppConfig, customTMConfig,
 			)
@@ -343,7 +348,7 @@ func initAppConfig() (string, interface{}) {
 	//   own app.toml to override, or use this default value.
 	//
 	// In simapp, we set the min gas prices to 0.
-	srvCfg.MinGasPrices = "0stake"
+	srvCfg.MinGasPrices = "0uelys"
 
 	customAppConfig := CustomAppConfig{
 		Config: *srvCfg,
