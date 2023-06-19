@@ -91,19 +91,20 @@ func (p *Pool) SwapOutAmtGivenIn(
 	oracleKeeper OracleKeeper,
 	tokensIn sdk.Coins,
 	tokenOutDenom string,
+	swapFee sdk.Dec,
 ) (tokenOut sdk.Coin, weightBalanceBonus sdk.Dec, err error) {
-	tokenOutCoin, err := p.CalcOutAmtGivenIn(tokensIn, tokenOutDenom)
+	balancerOutCoin, err := p.CalcOutAmtGivenIn(tokensIn, tokenOutDenom, swapFee)
 	if err != nil {
 		return sdk.Coin{}, sdk.ZeroDec(), err
 	}
 
 	// early return with balancer swap if normal amm pool
 	if !p.PoolParams.UseOracle {
-		err = p.applySwap(ctx, tokensIn, sdk.Coins{tokenOutCoin})
+		err = p.applySwap(ctx, tokensIn, sdk.Coins{balancerOutCoin}, sdk.ZeroDec(), swapFee)
 		if err != nil {
 			return sdk.Coin{}, sdk.ZeroDec(), err
 		}
-		return tokenOutCoin, sdk.ZeroDec(), nil
+		return balancerOutCoin, sdk.ZeroDec(), nil
 	}
 
 	tokenIn, poolAssetIn, poolAssetOut, err := p.parsePoolAssets(tokensIn, tokenOutDenom)
@@ -128,7 +129,8 @@ func (p *Pool) SwapOutAmtGivenIn(
 	// outAmountAfterSlippage = oracleOutAmount - slippage
 	// TODO: consider when slippage is minus
 	oracleOutAmount := sdk.NewDecFromInt(tokenIn.Amount).Mul(inTokenPrice).Quo(outTokenPrice)
-	balancerSlippage := oracleOutAmount.Sub(sdk.NewDecFromInt(tokenOutCoin.Amount))
+	balancerOutWithoutFee := sdk.NewDecFromInt(balancerOutCoin.Amount).Quo(sdk.OneDec().Sub(swapFee))
+	balancerSlippage := oracleOutAmount.Sub(balancerOutWithoutFee)
 	slippage := balancerSlippage.Mul(sdk.OneDec().Sub(p.PoolParams.SlippageReduction))
 	outAmountAfterSlippage := oracleOutAmount.Sub(slippage)
 
@@ -157,9 +159,11 @@ func (p *Pool) SwapOutAmtGivenIn(
 		// TODO: what if weightBalanceBonus amount is not enough since it's large swap? (Should provide maximum)
 		// TODO: weightBalanceBonus should maintain several tokens - not just USD and swap out amount is in that token
 	}
-	tokenAmountOutInt := outAmountAfterSlippage.Mul(sdk.OneDec().Sub(weightBreakingFee)).TruncateInt()
+	tokenAmountOutInt := outAmountAfterSlippage.
+		Mul(sdk.OneDec().Sub(weightBreakingFee)).
+		Mul(sdk.OneDec().Sub(swapFee)).TruncateInt()
 	oracleOutCoin := sdk.NewCoin(tokenOutDenom, tokenAmountOutInt)
-	err = p.applySwap(ctx, tokensIn, sdk.Coins{oracleOutCoin})
+	err = p.applySwap(ctx, tokensIn, sdk.Coins{oracleOutCoin}, sdk.ZeroDec(), swapFee)
 	if err != nil {
 		return sdk.Coin{}, sdk.ZeroDec(), err
 	}

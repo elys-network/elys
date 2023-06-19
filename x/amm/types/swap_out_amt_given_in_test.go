@@ -427,6 +427,7 @@ func (suite *TestSuite) TestSwapOutAmtGivenIn() {
 		thresholdWeightDiff sdk.Dec
 		tokenIn             sdk.Coin
 		outTokenDenom       string
+		swapFee             sdk.Dec
 		expRecoveryBonus    sdk.Dec
 		expTokenOut         sdk.Coin
 		expErr              bool
@@ -460,6 +461,7 @@ func (suite *TestSuite) TestSwapOutAmtGivenIn() {
 			thresholdWeightDiff: sdk.NewDecWithPrec(20, 2),              // 20%
 			tokenIn:             sdk.NewInt64Coin("uusdt", 100_000_000), // 100 USDC
 			outTokenDenom:       "uusdc",
+			swapFee:             sdk.ZeroDec(),
 			expRecoveryBonus:    sdk.ZeroDec(),
 			expTokenOut:         sdk.NewInt64Coin("uusdc", 94161125),
 			expErr:              false,
@@ -493,6 +495,7 @@ func (suite *TestSuite) TestSwapOutAmtGivenIn() {
 			thresholdWeightDiff: sdk.NewDecWithPrec(20, 2),              // 20%
 			tokenIn:             sdk.NewInt64Coin("uusdt", 100_000_000), // 100 USDC
 			outTokenDenom:       "uusdc",
+			swapFee:             sdk.ZeroDec(),
 			expRecoveryBonus:    sdk.ZeroDec(),
 			expTokenOut:         sdk.NewInt64Coin("uusdc", 88723966),
 			expErr:              false,
@@ -526,6 +529,7 @@ func (suite *TestSuite) TestSwapOutAmtGivenIn() {
 			thresholdWeightDiff: sdk.NewDecWithPrec(20, 2),              // 20%
 			tokenIn:             sdk.NewInt64Coin("uusdc", 100_000_000), // 100 USDC
 			outTokenDenom:       "uusdt",
+			swapFee:             sdk.ZeroDec(),
 			expRecoveryBonus:    sdk.MustNewDecFromStr("0.052267002518891688"),
 			expTokenOut:         sdk.NewInt64Coin("uusdt", 115_000_000),
 			expErr:              false,
@@ -559,8 +563,9 @@ func (suite *TestSuite) TestSwapOutAmtGivenIn() {
 			thresholdWeightDiff: sdk.NewDecWithPrec(20, 2),              // 20%
 			tokenIn:             sdk.NewInt64Coin("uusdc", 100_000_000), // 100 USDC
 			outTokenDenom:       "uusdt",
+			swapFee:             sdk.NewDecWithPrec(1, 2), // 1%
 			expRecoveryBonus:    sdk.ZeroDec(),
-			expTokenOut:         sdk.NewInt64Coin("uusdt", 250_000_000),
+			expTokenOut:         sdk.NewInt64Coin("uusdt", 247913188),
 			expErr:              false,
 		},
 	} {
@@ -593,7 +598,7 @@ func (suite *TestSuite) TestSwapOutAmtGivenIn() {
 				PoolAssets:  tc.poolAssets,
 				TotalWeight: sdk.ZeroInt(),
 			}
-			tokenOut, weightBonus, err := pool.SwapOutAmtGivenIn(suite.ctx, suite.app.OracleKeeper, sdk.Coins{tc.tokenIn}, tc.outTokenDenom)
+			tokenOut, weightBonus, err := pool.SwapOutAmtGivenIn(suite.ctx, suite.app.OracleKeeper, sdk.Coins{tc.tokenIn}, tc.outTokenDenom, tc.swapFee)
 			if tc.expErr {
 				suite.Require().Error(err)
 			} else {

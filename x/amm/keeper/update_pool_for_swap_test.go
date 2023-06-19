@@ -13,7 +13,8 @@ func (suite *KeeperTestSuite) TestUpdatePoolForSwap() {
 		senderInitBalance   sdk.Coins
 		poolInitBalance     sdk.Coins
 		treasuryInitBalance sdk.Coins
-		swapFee             sdk.Dec
+		swapFeeIn           sdk.Dec
+		swapFeeOut          sdk.Dec
 		tokenIn             sdk.Coin
 		tokenOut            sdk.Coin
 		weightBalanceBonus  sdk.Dec
@@ -27,7 +28,8 @@ func (suite *KeeperTestSuite) TestUpdatePoolForSwap() {
 			senderInitBalance:   sdk.Coins{sdk.NewInt64Coin("uelys", 1000000), sdk.NewInt64Coin("uusdc", 1000000)},
 			poolInitBalance:     sdk.Coins{sdk.NewInt64Coin("uelys", 1000000), sdk.NewInt64Coin("uusdc", 100)},
 			treasuryInitBalance: sdk.Coins{sdk.NewInt64Coin("uelys", 1000000), sdk.NewInt64Coin("uusdc", 1000000)},
-			swapFee:             sdk.ZeroDec(),
+			swapFeeIn:           sdk.ZeroDec(),
+			swapFeeOut:          sdk.ZeroDec(),
 			tokenIn:             sdk.NewInt64Coin("uelys", 10000),
 			tokenOut:            sdk.NewInt64Coin("uusdc", 10000),
 			weightBalanceBonus:  sdk.ZeroDec(),
@@ -41,7 +43,8 @@ func (suite *KeeperTestSuite) TestUpdatePoolForSwap() {
 			senderInitBalance:   sdk.Coins{sdk.NewInt64Coin("uelys", 100)},
 			poolInitBalance:     sdk.Coins{sdk.NewInt64Coin("uelys", 1000000), sdk.NewInt64Coin("uusdc", 1000000)},
 			treasuryInitBalance: sdk.Coins{sdk.NewInt64Coin("uelys", 1000000), sdk.NewInt64Coin("uusdc", 1000000)},
-			swapFee:             sdk.ZeroDec(),
+			swapFeeIn:           sdk.ZeroDec(),
+			swapFeeOut:          sdk.ZeroDec(),
 			tokenIn:             sdk.NewInt64Coin("uelys", 10000),
 			tokenOut:            sdk.NewInt64Coin("uusdc", 10000),
 			weightBalanceBonus:  sdk.ZeroDec(),
@@ -55,7 +58,8 @@ func (suite *KeeperTestSuite) TestUpdatePoolForSwap() {
 			senderInitBalance:   sdk.Coins{sdk.NewInt64Coin("uelys", 1000000), sdk.NewInt64Coin("uusdc", 1000000)},
 			poolInitBalance:     sdk.Coins{sdk.NewInt64Coin("uelys", 1000000), sdk.NewInt64Coin("uusdc", 1000000)},
 			treasuryInitBalance: sdk.Coins{sdk.NewInt64Coin("uelys", 1000000), sdk.NewInt64Coin("uusdc", 1000000)},
-			swapFee:             sdk.NewDecWithPrec(1, 2), // 1%
+			swapFeeIn:           sdk.NewDecWithPrec(1, 2), // 1%
+			swapFeeOut:          sdk.ZeroDec(),
 			tokenIn:             sdk.NewInt64Coin("uelys", 10000),
 			tokenOut:            sdk.NewInt64Coin("uusdc", 10000),
 			weightBalanceBonus:  sdk.ZeroDec(),
@@ -69,7 +73,8 @@ func (suite *KeeperTestSuite) TestUpdatePoolForSwap() {
 			senderInitBalance:   sdk.Coins{sdk.NewInt64Coin("uelys", 1000000), sdk.NewInt64Coin("uusdc", 1000000)},
 			poolInitBalance:     sdk.Coins{sdk.NewInt64Coin("uelys", 1000000), sdk.NewInt64Coin("uusdc", 1000000)},
 			treasuryInitBalance: sdk.Coins{sdk.NewInt64Coin("uelys", 1000000), sdk.NewInt64Coin("uusdc", 1000000)},
-			swapFee:             sdk.ZeroDec(),
+			swapFeeIn:           sdk.ZeroDec(),
+			swapFeeOut:          sdk.ZeroDec(),
 			tokenIn:             sdk.NewInt64Coin("uelys", 10000),
 			tokenOut:            sdk.NewInt64Coin("uusdc", 10000),
 			weightBalanceBonus:  sdk.ZeroDec(),
@@ -83,7 +88,8 @@ func (suite *KeeperTestSuite) TestUpdatePoolForSwap() {
 			senderInitBalance:   sdk.Coins{sdk.NewInt64Coin("uelys", 1000000), sdk.NewInt64Coin("uusdc", 1000000)},
 			poolInitBalance:     sdk.Coins{sdk.NewInt64Coin("uelys", 1000000), sdk.NewInt64Coin("uusdc", 1000000)},
 			treasuryInitBalance: sdk.Coins{sdk.NewInt64Coin("uelys", 1000000), sdk.NewInt64Coin("uusdc", 1000000)},
-			swapFee:             sdk.ZeroDec(),
+			swapFeeIn:           sdk.ZeroDec(),
+			swapFeeOut:          sdk.ZeroDec(),
 			tokenIn:             sdk.NewInt64Coin("uelys", 10000),
 			tokenOut:            sdk.NewInt64Coin("uusdc", 10000),
 			weightBalanceBonus:  sdk.NewDecWithPrec(3, 1), // 30% bonus
@@ -97,7 +103,8 @@ func (suite *KeeperTestSuite) TestUpdatePoolForSwap() {
 			senderInitBalance:   sdk.Coins{sdk.NewInt64Coin("uelys", 1000000), sdk.NewInt64Coin("uusdc", 1000000)},
 			poolInitBalance:     sdk.Coins{sdk.NewInt64Coin("uelys", 1000000), sdk.NewInt64Coin("uusdc", 1000000)},
 			treasuryInitBalance: sdk.Coins{sdk.NewInt64Coin("uelys", 1000000), sdk.NewInt64Coin("uusdc", 100)},
-			swapFee:             sdk.ZeroDec(),
+			swapFeeIn:           sdk.ZeroDec(),
+			swapFeeOut:          sdk.ZeroDec(),
 			tokenIn:             sdk.NewInt64Coin("uelys", 10000),
 			tokenOut:            sdk.NewInt64Coin("uusdc", 10000),
 			weightBalanceBonus:  sdk.NewDecWithPrec(3, 1), // 30% bonus
@@ -140,12 +147,12 @@ func (suite *KeeperTestSuite) TestUpdatePoolForSwap() {
 				PoolId:            1,
 				Address:           poolAddr.String(),
 				RebalanceTreasury: treasuryAddr.String(),
-				PoolParams:        &types.PoolParams{SwapFee: tc.swapFee},
+				PoolParams:        &types.PoolParams{},
 				TotalShares:       sdk.Coin{},
 				PoolAssets:        []*types.PoolAsset(nil),
 				TotalWeight:       sdk.ZeroInt(),
 			}
-			err = suite.app.AmmKeeper.UpdatePoolForSwap(suite.ctx, pool, sender, tc.tokenIn, tc.tokenOut, tc.weightBalanceBonus)
+			err = suite.app.AmmKeeper.UpdatePoolForSwap(suite.ctx, pool, sender, tc.tokenIn, tc.tokenOut, tc.swapFeeIn, tc.swapFeeOut, tc.weightBalanceBonus)
 			if !tc.expPass {
 				suite.Require().Error(err)
 			} else {
