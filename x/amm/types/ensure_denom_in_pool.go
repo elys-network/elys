@@ -6,7 +6,7 @@ import (
 )
 
 // ensureDenomInPool check to make sure the input denoms exist in the provided pool asset map
-func EnsureDenomInPool(poolAssetsByDenom map[string]*PoolAsset, tokensIn sdk.Coins) error {
+func EnsureDenomInPool(poolAssetsByDenom map[string]PoolAsset, tokensIn sdk.Coins) error {
 	for _, coin := range tokensIn {
 		_, ok := poolAssetsByDenom[coin.Denom]
 		if !ok {

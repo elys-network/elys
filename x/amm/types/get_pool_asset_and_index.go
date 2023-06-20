@@ -33,5 +33,5 @@ func (p Pool) GetPoolAssetAndIndex(denom string) (int, PoolAsset, error) {
 		return -1, PoolAsset{}, errorsmod.Wrapf(ErrDenomNotFoundInPool, fmt.Sprintf(FormatNoPoolAssetFoundErrFormat, denom))
 	}
 
-	return i, *p.PoolAssets[i], nil
+	return i, p.PoolAssets[i], nil
 }

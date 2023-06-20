@@ -11,9 +11,9 @@ import "cosmos_proto/cosmos.proto";
 message Pool {
   uint64 poolId = 1; 
   string address = 2; 
-  PoolParams poolParams = 3; 
+  PoolParams poolParams = 3 [(gogoproto.nullable) = false]; 
   cosmos.base.v1beta1.Coin totalShares = 4 [(gogoproto.nullable) = false]; 
-  repeated PoolAsset poolAssets = 5; 
+  repeated PoolAsset poolAssets = 5 [(gogoproto.nullable) = false]; 
   string totalWeight = 6 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
     (gogoproto.nullable) = false

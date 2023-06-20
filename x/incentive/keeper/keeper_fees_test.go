@@ -1,6 +1,7 @@
 package keeper_test
 
 import (
+	"fmt"
 	"testing"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -77,8 +78,22 @@ func TestCollectGasFeesToIncentiveModule(t *testing.T) {
 	require.Equal(t, poolId, uint64(0))
 	//
 
+	pools := amm.GetAllPool(ctx)
+
+	// check length of pools
+	require.Equal(t, len(pools), 1)
+
+	fmt.Println((pools[0].PoolAssets[0]).Token)
+	fmt.Println((pools[0].PoolAssets[1]).Token)
+
+	// check block height
+	require.Equal(t, int64(0), ctx.BlockHeight())
+
 	// Collect gas fees again
 	collectedAmt = ik.CollectGasFeesToIncentiveModule(ctx)
+
+	// check block height
+	require.Equal(t, int64(0), ctx.BlockHeight())
 
 	// It should be 10 usdc
 	require.Equal(t, collectedAmt, sdk.Coins{sdk.NewCoin(ptypes.USDC, sdk.NewInt(10))})

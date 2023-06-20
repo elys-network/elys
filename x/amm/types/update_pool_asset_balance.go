@@ -19,6 +19,6 @@ func (p *Pool) UpdatePoolAssetBalance(coin sdk.Coin) error {
 
 	// Update the supply of the asset
 	existingAsset.Token = coin
-	p.PoolAssets[assetIndex] = &existingAsset
+	p.PoolAssets[assetIndex] = existingAsset
 	return nil
 }

@@ -11,7 +11,7 @@ type AssetWeight struct {
 	Weight sdk.Dec
 }
 
-func NormalizedWeights(poolAssets []*PoolAsset) (poolWeights []AssetWeight) {
+func NormalizedWeights(poolAssets []PoolAsset) (poolWeights []AssetWeight) {
 	totalWeight := sdk.ZeroInt()
 	for _, asset := range poolAssets {
 		totalWeight = totalWeight.Add(asset.Weight)
@@ -48,10 +48,10 @@ func (p Pool) OraclePoolNormalizedWeights(ctx sdk.Context, oracleKeeper OracleKe
 	return oraclePoolWeights, nil
 }
 
-func (p Pool) NewPoolAssetsAfterSwap(inCoins sdk.Coins, outCoins sdk.Coins) (poolAssets []*PoolAsset) {
+func (p Pool) NewPoolAssetsAfterSwap(inCoins sdk.Coins, outCoins sdk.Coins) (poolAssets []PoolAsset) {
 	for _, asset := range p.PoolAssets {
 		denom := asset.Token.Denom
-		poolAssets = append(poolAssets, &PoolAsset{
+		poolAssets = append(poolAssets, PoolAsset{
 			Token:  sdk.NewCoin(denom, asset.Token.Amount.Add(inCoins.AmountOf(denom)).Sub(outCoins.AmountOf(denom))),
 			Weight: asset.Weight,
 		})
@@ -59,7 +59,7 @@ func (p Pool) NewPoolAssetsAfterSwap(inCoins sdk.Coins, outCoins sdk.Coins) (poo
 	return
 }
 
-func (p Pool) WeightDistanceFromTarget(ctx sdk.Context, oracleKeeper OracleKeeper, poolAssets []*PoolAsset) sdk.Dec {
+func (p Pool) WeightDistanceFromTarget(ctx sdk.Context, oracleKeeper OracleKeeper, poolAssets []PoolAsset) sdk.Dec {
 	oracleWeights, err := p.OraclePoolNormalizedWeights(ctx, oracleKeeper)
 	if err != nil {
 		return sdk.ZeroDec()
