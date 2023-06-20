@@ -11,7 +11,7 @@ func (k Keeper) applyExitPoolStateChange(ctx sdk.Context, pool types.Pool, exite
 		return err
 	}
 
-	exitFeeCoins := portionCoins(exitCoins, pool.PoolParams.ExitFee)
+	exitFeeCoins := PortionCoins(exitCoins, pool.PoolParams.ExitFee)
 	rebalanceTreasury := sdk.MustAccAddressFromBech32(pool.GetRebalanceTreasury())
 	err = k.bankKeeper.SendCoins(ctx, exiter, rebalanceTreasury, exitFeeCoins)
 	if err != nil {

@@ -32,7 +32,7 @@ func (k Keeper) UpdatePoolForSwap(
 		return err
 	}
 
-	swapFeeInCoins := portionCoins(tokensIn, swapFeeIn)
+	swapFeeInCoins := PortionCoins(tokensIn, swapFeeIn)
 	if swapFeeInCoins.IsAllPositive() {
 		rebalanceTreasury := sdk.MustAccAddressFromBech32(pool.GetRebalanceTreasury())
 		err = k.bankKeeper.SendCoins(ctx, poolAddr, rebalanceTreasury, swapFeeInCoins)
@@ -47,7 +47,7 @@ func (k Keeper) UpdatePoolForSwap(
 		return err
 	}
 
-	swapFeeOutCoins := portionCoins(tokensOut, swapFeeOut)
+	swapFeeOutCoins := PortionCoins(tokensOut, swapFeeOut)
 	if swapFeeOutCoins.IsAllPositive() {
 		rebalanceTreasury := sdk.MustAccAddressFromBech32(pool.GetRebalanceTreasury())
 		err = k.bankKeeper.SendCoins(ctx, sender, rebalanceTreasury, swapFeeOutCoins)
