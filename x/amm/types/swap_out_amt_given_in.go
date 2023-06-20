@@ -156,8 +156,6 @@ func (p *Pool) SwapOutAmtGivenIn(
 	if initialWeightDistance.GT(p.PoolParams.ThresholdWeightDifference) && distanceDiff.IsNegative() {
 		weightBalanceBonus = p.PoolParams.WeightBreakingFeeMultiplier.Mul(distanceDiff).Abs()
 		// TODO: we might skip swap fee in case it's a balance recovery operation
-		// TODO: what if weightBalanceBonus amount is not enough since it's large swap? (Should provide maximum)
-		// TODO: weightBalanceBonus should maintain several tokens - not just USD and swap out amount is in that token
 	}
 	tokenAmountOutInt := outAmountAfterSlippage.
 		Mul(sdk.OneDec().Sub(weightBreakingFee)).
