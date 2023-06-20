@@ -11,7 +11,7 @@ import (
 func (suite *TestSuite) TestSwapInAmtGivenOut() {
 	for _, tc := range []struct {
 		desc                string
-		poolAssets          []*types.PoolAsset
+		poolAssets          []types.PoolAsset
 		useOracle           bool
 		slippageReduction   sdk.Dec
 		thresholdWeightDiff sdk.Dec
@@ -36,7 +36,7 @@ func (suite *TestSuite) TestSwapInAmtGivenOut() {
 		// - Check bonus being zero
 		{
 			desc: "oracle pool scenario1",
-			poolAssets: []*types.PoolAsset{
+			poolAssets: []types.PoolAsset{
 				{
 					Token:  sdk.NewInt64Coin("uusdc", 1000_000_000), // 1000 USDT
 					Weight: sdk.NewInt(50),
@@ -70,7 +70,7 @@ func (suite *TestSuite) TestSwapInAmtGivenOut() {
 		// - Check bonus not be zero
 		{
 			desc: "oracle pool scenario2",
-			poolAssets: []*types.PoolAsset{
+			poolAssets: []types.PoolAsset{
 				{
 					Token:  sdk.NewInt64Coin("uusdc", 500_000_000), // 1000 USDT
 					Weight: sdk.NewInt(50),
@@ -104,7 +104,7 @@ func (suite *TestSuite) TestSwapInAmtGivenOut() {
 		// - Check bonus be zero
 		{
 			desc: "oracle pool scenario3",
-			poolAssets: []*types.PoolAsset{
+			poolAssets: []types.PoolAsset{
 				{
 					Token:  sdk.NewInt64Coin("uusdc", 500_000_000), // 1000 USDT
 					Weight: sdk.NewInt(50),
@@ -138,7 +138,7 @@ func (suite *TestSuite) TestSwapInAmtGivenOut() {
 		// - Check bonus be zero
 		{
 			desc: "non-oracle pool scenario1",
-			poolAssets: []*types.PoolAsset{
+			poolAssets: []types.PoolAsset{
 				{
 					Token:  sdk.NewInt64Coin("uusdc", 500_000_000), // 1000 USDT
 					Weight: sdk.NewInt(50),
@@ -177,7 +177,7 @@ func (suite *TestSuite) TestSwapInAmtGivenOut() {
 				PoolId:            1,
 				Address:           poolAddr.String(),
 				RebalanceTreasury: treasuryAddr.String(),
-				PoolParams: &types.PoolParams{
+				PoolParams: types.PoolParams{
 					SwapFee:                     sdk.ZeroDec(),
 					UseOracle:                   tc.useOracle,
 					SlippageReduction:           tc.slippageReduction,

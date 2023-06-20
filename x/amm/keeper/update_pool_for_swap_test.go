@@ -147,9 +147,9 @@ func (suite *KeeperTestSuite) TestUpdatePoolForSwap() {
 				PoolId:            1,
 				Address:           poolAddr.String(),
 				RebalanceTreasury: treasuryAddr.String(),
-				PoolParams:        &types.PoolParams{},
+				PoolParams:        types.PoolParams{},
 				TotalShares:       sdk.Coin{},
-				PoolAssets:        []*types.PoolAsset(nil),
+				PoolAssets:        []types.PoolAsset(nil),
 				TotalWeight:       sdk.ZeroInt(),
 			}
 			err = suite.app.AmmKeeper.UpdatePoolForSwap(suite.ctx, pool, sender, tc.tokenIn, tc.tokenOut, tc.swapFeeIn, tc.swapFeeOut, tc.weightBalanceBonus)

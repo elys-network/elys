@@ -13,17 +13,17 @@ import (
 func TestNormalizedWeights(t *testing.T) {
 	for _, tc := range []struct {
 		desc        string
-		poolAssets  []*types.PoolAsset
+		poolAssets  []types.PoolAsset
 		poolWeights []types.AssetWeight
 	}{
 		{
 			desc:        "empty assets case",
-			poolAssets:  []*types.PoolAsset{},
+			poolAssets:  []types.PoolAsset{},
 			poolWeights: []types.AssetWeight{},
 		},
 		{
 			desc: "total weight zero case",
-			poolAssets: []*types.PoolAsset{
+			poolAssets: []types.PoolAsset{
 				{
 					Token:  sdk.NewInt64Coin("uelys", 1000),
 					Weight: sdk.ZeroInt(),
@@ -38,7 +38,7 @@ func TestNormalizedWeights(t *testing.T) {
 		},
 		{
 			desc: "positive weights with one zero",
-			poolAssets: []*types.PoolAsset{
+			poolAssets: []types.PoolAsset{
 				{
 					Token:  sdk.NewInt64Coin("uelys", 1000),
 					Weight: sdk.ZeroInt(),
@@ -61,7 +61,7 @@ func TestNormalizedWeights(t *testing.T) {
 		},
 		{
 			desc: "all positive weights",
-			poolAssets: []*types.PoolAsset{
+			poolAssets: []types.PoolAsset{
 				{
 					Token:  sdk.NewInt64Coin("uelys", 1000),
 					Weight: sdk.OneInt(),
@@ -92,13 +92,13 @@ func TestNormalizedWeights(t *testing.T) {
 func (suite *TestSuite) TestOraclePoolNormalizedWeights() {
 	for _, tc := range []struct {
 		desc        string
-		poolAssets  []*types.PoolAsset
+		poolAssets  []types.PoolAsset
 		poolWeights []types.AssetWeight
 		expError    bool
 	}{
 		{
 			desc: "oracle pool all asset prices set case",
-			poolAssets: []*types.PoolAsset{
+			poolAssets: []types.PoolAsset{
 				{
 					Token:  sdk.NewInt64Coin("uusdc", 1000_000_000), // 1000 USDT
 					Weight: sdk.NewInt(50),
@@ -122,7 +122,7 @@ func (suite *TestSuite) TestOraclePoolNormalizedWeights() {
 		},
 		{
 			desc: "oracle pool all asset prices set and amount zero case",
-			poolAssets: []*types.PoolAsset{
+			poolAssets: []types.PoolAsset{
 				{
 					Token:  sdk.NewInt64Coin("uusdc", 0), // 1000 USDT
 					Weight: sdk.NewInt(50),
@@ -146,7 +146,7 @@ func (suite *TestSuite) TestOraclePoolNormalizedWeights() {
 		},
 		{
 			desc: "oracle pool one asset price not set",
-			poolAssets: []*types.PoolAsset{
+			poolAssets: []types.PoolAsset{
 				{
 					Token:  sdk.NewInt64Coin("uUSDT", 1000_000_000), // 1000 USDT
 					Weight: sdk.NewInt(50),
@@ -184,15 +184,15 @@ func (suite *TestSuite) TestOraclePoolNormalizedWeights() {
 func (suite *TestSuite) TestNewPoolAssetsAfterSwap() {
 	for _, tc := range []struct {
 		desc            string
-		poolAssets      []*types.PoolAsset
+		poolAssets      []types.PoolAsset
 		inCoins         sdk.Coins
 		outCoins        sdk.Coins
-		poolAssetsAfter []*types.PoolAsset
+		poolAssetsAfter []types.PoolAsset
 		expErr          bool
 	}{
 		{
 			desc: "positive in and no out case",
-			poolAssets: []*types.PoolAsset{
+			poolAssets: []types.PoolAsset{
 				{
 					Token:  sdk.NewInt64Coin("uusdc", 1000_000_000), // 1000 USDT
 					Weight: sdk.NewInt(50),
@@ -204,7 +204,7 @@ func (suite *TestSuite) TestNewPoolAssetsAfterSwap() {
 			},
 			inCoins:  sdk.Coins{sdk.NewInt64Coin("uusdc", 1000_000)},
 			outCoins: sdk.Coins{},
-			poolAssetsAfter: []*types.PoolAsset{
+			poolAssetsAfter: []types.PoolAsset{
 				{
 					Token:  sdk.NewInt64Coin("uusdc", 1001_000_000), // 1000 USDT
 					Weight: sdk.NewInt(50),
@@ -218,7 +218,7 @@ func (suite *TestSuite) TestNewPoolAssetsAfterSwap() {
 		},
 		{
 			desc: "no in and positive out case",
-			poolAssets: []*types.PoolAsset{
+			poolAssets: []types.PoolAsset{
 				{
 					Token:  sdk.NewInt64Coin("uusdc", 1000_000_000), // 1000 USDT
 					Weight: sdk.NewInt(50),
@@ -230,7 +230,7 @@ func (suite *TestSuite) TestNewPoolAssetsAfterSwap() {
 			},
 			inCoins:  sdk.Coins{},
 			outCoins: sdk.Coins{sdk.NewInt64Coin("uusdc", 1000_000)},
-			poolAssetsAfter: []*types.PoolAsset{
+			poolAssetsAfter: []types.PoolAsset{
 				{
 					Token:  sdk.NewInt64Coin("uusdc", 999_000_000), // 999 USDT
 					Weight: sdk.NewInt(50),
@@ -244,7 +244,7 @@ func (suite *TestSuite) TestNewPoolAssetsAfterSwap() {
 		},
 		{
 			desc: "positive in and positive out case",
-			poolAssets: []*types.PoolAsset{
+			poolAssets: []types.PoolAsset{
 				{
 					Token:  sdk.NewInt64Coin("uusdc", 1000_000_000), // 1000 USDT
 					Weight: sdk.NewInt(50),
@@ -256,7 +256,7 @@ func (suite *TestSuite) TestNewPoolAssetsAfterSwap() {
 			},
 			inCoins:  sdk.Coins{sdk.NewInt64Coin("uusdt", 1000_000)},
 			outCoins: sdk.Coins{sdk.NewInt64Coin("uusdc", 1000_000)},
-			poolAssetsAfter: []*types.PoolAsset{
+			poolAssetsAfter: []types.PoolAsset{
 				{
 					Token:  sdk.NewInt64Coin("uusdc", 999_000_000), // 999 USDT
 					Weight: sdk.NewInt(50),
@@ -270,7 +270,7 @@ func (suite *TestSuite) TestNewPoolAssetsAfterSwap() {
 		},
 		{
 			desc: "withdrawing more than pool size",
-			poolAssets: []*types.PoolAsset{
+			poolAssets: []types.PoolAsset{
 				{
 					Token:  sdk.NewInt64Coin("uusdc", 1000_000_000), // 1000 USDT
 					Weight: sdk.NewInt(50),
@@ -282,7 +282,7 @@ func (suite *TestSuite) TestNewPoolAssetsAfterSwap() {
 			},
 			inCoins:         sdk.Coins{sdk.NewInt64Coin("uusdt", 1000_000)},
 			outCoins:        sdk.Coins{sdk.NewInt64Coin("uusdc", 1001_000_000)},
-			poolAssetsAfter: []*types.PoolAsset{},
+			poolAssetsAfter: []types.PoolAsset{},
 			expErr:          true,
 		},
 	} {
@@ -304,7 +304,7 @@ func (suite *TestSuite) TestNewPoolAssetsAfterSwap() {
 				PoolId:            1,
 				Address:           poolAddr.String(),
 				RebalanceTreasury: treasuryAddr.String(),
-				PoolParams: &types.PoolParams{
+				PoolParams: types.PoolParams{
 					SwapFee:   sdk.ZeroDec(),
 					UseOracle: true,
 				},
@@ -326,12 +326,12 @@ func (suite *TestSuite) TestNewPoolAssetsAfterSwap() {
 func (suite *TestSuite) TestWeightDistanceFromTarget() {
 	for _, tc := range []struct {
 		desc        string
-		poolAssets  []*types.PoolAsset
+		poolAssets  []types.PoolAsset
 		expDistance sdk.Dec
 	}{
 		{
 			desc: "zero balance for one asset",
-			poolAssets: []*types.PoolAsset{
+			poolAssets: []types.PoolAsset{
 				{
 					Token:  sdk.NewInt64Coin("uusdc", 0), // 1000 USDT
 					Weight: sdk.NewInt(50),
@@ -345,7 +345,7 @@ func (suite *TestSuite) TestWeightDistanceFromTarget() {
 		},
 		{
 			desc: "zero for all assets",
-			poolAssets: []*types.PoolAsset{
+			poolAssets: []types.PoolAsset{
 				{
 					Token:  sdk.NewInt64Coin("uusdc", 0), // 1000 USDT
 					Weight: sdk.NewInt(50),
@@ -359,7 +359,7 @@ func (suite *TestSuite) TestWeightDistanceFromTarget() {
 		},
 		{
 			desc: "all positive",
-			poolAssets: []*types.PoolAsset{
+			poolAssets: []types.PoolAsset{
 				{
 					Token:  sdk.NewInt64Coin("uusdc", 500_000_000), // 1000 USDT
 					Weight: sdk.NewInt(50),
@@ -373,7 +373,7 @@ func (suite *TestSuite) TestWeightDistanceFromTarget() {
 		},
 		{
 			desc: "zero distance",
-			poolAssets: []*types.PoolAsset{
+			poolAssets: []types.PoolAsset{
 				{
 					Token:  sdk.NewInt64Coin("uusdc", 1000_000_000), // 1000 USDT
 					Weight: sdk.NewInt(50),
@@ -404,7 +404,7 @@ func (suite *TestSuite) TestWeightDistanceFromTarget() {
 				PoolId:            1,
 				Address:           poolAddr.String(),
 				RebalanceTreasury: treasuryAddr.String(),
-				PoolParams: &types.PoolParams{
+				PoolParams: types.PoolParams{
 					SwapFee:   sdk.ZeroDec(),
 					UseOracle: true,
 				},
@@ -421,7 +421,7 @@ func (suite *TestSuite) TestWeightDistanceFromTarget() {
 func (suite *TestSuite) TestSwapOutAmtGivenIn() {
 	for _, tc := range []struct {
 		desc                string
-		poolAssets          []*types.PoolAsset
+		poolAssets          []types.PoolAsset
 		useOracle           bool
 		slippageReduction   sdk.Dec
 		thresholdWeightDiff sdk.Dec
@@ -446,7 +446,7 @@ func (suite *TestSuite) TestSwapOutAmtGivenIn() {
 		// - Check bonus being zero
 		{
 			desc: "oracle pool scenario1",
-			poolAssets: []*types.PoolAsset{
+			poolAssets: []types.PoolAsset{
 				{
 					Token:  sdk.NewInt64Coin("uusdc", 1000_000_000), // 1000 USDT
 					Weight: sdk.NewInt(50),
@@ -480,7 +480,7 @@ func (suite *TestSuite) TestSwapOutAmtGivenIn() {
 		// - Check bonus not be zero
 		{
 			desc: "oracle pool scenario2",
-			poolAssets: []*types.PoolAsset{
+			poolAssets: []types.PoolAsset{
 				{
 					Token:  sdk.NewInt64Coin("uusdc", 500_000_000), // 1000 USDT
 					Weight: sdk.NewInt(50),
@@ -514,7 +514,7 @@ func (suite *TestSuite) TestSwapOutAmtGivenIn() {
 		// - Check bonus be zero
 		{
 			desc: "oracle pool scenario3",
-			poolAssets: []*types.PoolAsset{
+			poolAssets: []types.PoolAsset{
 				{
 					Token:  sdk.NewInt64Coin("uusdc", 500_000_000), // 1000 USDT
 					Weight: sdk.NewInt(50),
@@ -548,7 +548,7 @@ func (suite *TestSuite) TestSwapOutAmtGivenIn() {
 		// - Check bonus be zero
 		{
 			desc: "non-oracle pool scenario1",
-			poolAssets: []*types.PoolAsset{
+			poolAssets: []types.PoolAsset{
 				{
 					Token:  sdk.NewInt64Coin("uusdc", 500_000_000), // 1000 USDT
 					Weight: sdk.NewInt(50),
@@ -587,7 +587,7 @@ func (suite *TestSuite) TestSwapOutAmtGivenIn() {
 				PoolId:            1,
 				Address:           poolAddr.String(),
 				RebalanceTreasury: treasuryAddr.String(),
-				PoolParams: &types.PoolParams{
+				PoolParams: types.PoolParams{
 					SwapFee:                     sdk.ZeroDec(),
 					UseOracle:                   tc.useOracle,
 					SlippageReduction:           tc.slippageReduction,

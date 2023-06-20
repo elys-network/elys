@@ -154,11 +154,11 @@ func (suite *KeeperTestSuite) TestSwapExactAmountIn() {
 				PoolId:            1,
 				Address:           poolAddr.String(),
 				RebalanceTreasury: treasuryAddr.String(),
-				PoolParams: &types.PoolParams{
+				PoolParams: types.PoolParams{
 					SwapFee: tc.swapFeeIn,
 				},
 				TotalShares: sdk.Coin{},
-				PoolAssets: []*types.PoolAsset{
+				PoolAssets: []types.PoolAsset{
 					{
 						Token:  tc.poolInitBalance[0],
 						Weight: sdk.NewInt(10),
