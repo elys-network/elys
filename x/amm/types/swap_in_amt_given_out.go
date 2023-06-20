@@ -11,18 +11,18 @@ func (p *Pool) SwapInAmtGivenOut(
 	ctx sdk.Context, oracleKeeper OracleKeeper, tokensOut sdk.Coins, tokenInDenom string, swapFee sdk.Dec) (
 	tokenIn sdk.Coin, weightBalanceBonus sdk.Dec, err error,
 ) {
-	tokenInCoin, err := p.CalcInAmtGivenOut(tokensOut, tokenInDenom, swapFee)
+	balancerInCoin, err := p.CalcInAmtGivenOut(tokensOut, tokenInDenom, swapFee)
 	if err != nil {
 		return sdk.Coin{}, sdk.ZeroDec(), err
 	}
 
 	// early return with balancer swap if normal amm pool
 	if !p.PoolParams.UseOracle {
-		err = p.applySwap(ctx, sdk.Coins{tokenInCoin}, tokensOut)
+		err = p.applySwap(ctx, sdk.Coins{balancerInCoin}, tokensOut, swapFee, sdk.ZeroDec())
 		if err != nil {
 			return sdk.Coin{}, sdk.ZeroDec(), err
 		}
-		return tokenInCoin, sdk.ZeroDec(), nil
+		return balancerInCoin, sdk.ZeroDec(), nil
 	}
 
 	tokenOut, poolAssetOut, poolAssetIn, err := p.parsePoolAssets(tokensOut, tokenInDenom)
@@ -47,15 +47,19 @@ func (p *Pool) SwapInAmtGivenOut(
 	// outAmountAfterSlippage = oracleOutAmount - slippage
 	// TODO: consider when slippage is positive
 	oracleInAmount := sdk.NewDecFromInt(tokenOut.Amount).Mul(outTokenPrice).Quo(inTokenPrice)
-	balancerSlippage := oracleInAmount.Sub(sdk.NewDecFromInt(tokenInCoin.Amount))
+	balancerInWithoutFee := sdk.NewDecFromInt(balancerInCoin.Amount).Quo(sdk.OneDec().Sub(swapFee))
+	balancerSlippage := oracleInAmount.Sub(balancerInWithoutFee)
 	slippage := balancerSlippage.Mul(sdk.OneDec().Sub(p.PoolParams.SlippageReduction))
 	inAmountAfterSlippage := oracleInAmount.Sub(slippage)
 
 	// calculate weight distance difference to calculate bonus/cut on the operation
-	newAssetPools := p.NewPoolAssetsAfterSwap(
+	newAssetPools, err := p.NewPoolAssetsAfterSwap(
 		sdk.Coins{sdk.NewCoin(tokenInDenom, inAmountAfterSlippage.TruncateInt())},
 		tokensOut,
 	)
+	if err != nil {
+		return sdk.Coin{}, sdk.ZeroDec(), err
+	}
 	weightDistance := p.WeightDistanceFromTarget(ctx, oracleKeeper, newAssetPools)
 	distanceDiff := weightDistance.Sub(initialWeightDistance)
 
@@ -67,16 +71,16 @@ func (p *Pool) SwapInAmtGivenOut(
 
 	// bonus is valid when distance is lower than original distance and when threshold weight reached
 	weightBalanceBonus = sdk.ZeroDec()
-	// TODO: bonus should be coming from separate pool
-	if weightDistance.LT(p.PoolParams.ThresholdWeightDifference) && distanceDiff.IsNegative() {
+	if initialWeightDistance.GT(p.PoolParams.ThresholdWeightDifference) && distanceDiff.IsNegative() {
 		weightBalanceBonus = p.PoolParams.WeightBreakingFeeMultiplier.Mul(distanceDiff).Abs()
 		// TODO: we might skip swap fee in case it's a balance recovery operation
-		// TODO: what if weightBalanceBonus amount is not enough since it's large swap? (Should provide maximum)
-		// TODO: weightBalanceBonus should maintain several tokens - not just USD and swap out amount is in that token
 	}
-	tokenAmountInInt := inAmountAfterSlippage.Mul(sdk.OneDec().Add(weightBreakingFee)).TruncateInt()
+	tokenAmountInInt := inAmountAfterSlippage.
+		Mul(sdk.OneDec().Add(weightBreakingFee)).
+		Quo(sdk.OneDec().Sub(swapFee)).
+		TruncateInt()
 	oracleInCoin := sdk.NewCoin(tokenInDenom, tokenAmountInInt)
-	err = p.applySwap(ctx, sdk.Coins{oracleInCoin}, tokensOut)
+	err = p.applySwap(ctx, sdk.Coins{oracleInCoin}, tokensOut, swapFee, sdk.ZeroDec())
 	if err != nil {
 		return sdk.Coin{}, sdk.ZeroDec(), err
 	}

@@ -59,7 +59,7 @@ func (k Keeper) JoinPoolNoSwap(
 		}
 	}
 
-	sharesOut, err = pool.JoinPoolNoSwap(neededLpLiquidity, pool.GetPoolParams().SwapFee)
+	sharesOut, err = pool.JoinPoolNoSwap(ctx, k.oracleKeeper, neededLpLiquidity, pool.GetPoolParams().SwapFee)
 	if err != nil {
 		return nil, sdk.ZeroInt(), err
 	}
