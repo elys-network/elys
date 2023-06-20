@@ -7,7 +7,7 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	simapp "github.com/elys-network/elys/app"
 	"github.com/elys-network/elys/x/amm/types"
-	atypes "github.com/elys-network/elys/x/amm/types"
+	ammtypes "github.com/elys-network/elys/x/amm/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 	"github.com/stretchr/testify/require"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
@@ -41,15 +41,15 @@ func TestCollectGasFeesToIncentiveModule(t *testing.T) {
 	err = app.BankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, addr[0], usdcToken)
 	require.NoError(t, err)
 
-	var poolAssets []atypes.PoolAsset
+	var poolAssets []ammtypes.PoolAsset
 	// Elys
-	poolAssets = append(poolAssets, atypes.PoolAsset{
+	poolAssets = append(poolAssets, ammtypes.PoolAsset{
 		Weight: sdk.NewInt(50),
 		Token:  sdk.NewCoin(ptypes.Elys, sdk.NewInt(100000)),
 	})
 
 	// USDC
-	poolAssets = append(poolAssets, atypes.PoolAsset{
+	poolAssets = append(poolAssets, ammtypes.PoolAsset{
 		Weight: sdk.NewInt(50),
 		Token:  sdk.NewCoin(ptypes.USDC, sdk.NewInt(10000)),
 	})
@@ -60,7 +60,7 @@ func TestCollectGasFeesToIncentiveModule(t *testing.T) {
 	argExitFee, err := sdk.NewDecFromStr("0.1")
 	require.NoError(t, err)
 
-	poolParams := &atypes.PoolParams{
+	poolParams := &ammtypes.PoolParams{
 		SwapFee: argSwapFee,
 		ExitFee: argExitFee,
 	}

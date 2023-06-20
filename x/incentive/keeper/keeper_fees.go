@@ -2,7 +2,7 @@ package keeper
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	atypes "github.com/elys-network/elys/x/amm/types"
+	ammtypes "github.com/elys-network/elys/x/amm/types"
 	"github.com/elys-network/elys/x/incentive/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
@@ -51,8 +51,8 @@ func (k Keeper) CollectGasFeesToIncentiveModule(ctx sdk.Context) sdk.Coins {
 
 	// Prepare route, considering every pool will have USDC pair
 	// So use only 1 route. Elys to USDC
-	routes := make([]atypes.SwapAmountInRoute, 0)
-	route := atypes.SwapAmountInRoute{
+	routes := make([]ammtypes.SwapAmountInRoute, 0)
+	route := ammtypes.SwapAmountInRoute{
 		PoolId:        poolId,
 		TokenOutDenom: ptypes.USDC,
 	}

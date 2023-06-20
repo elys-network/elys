@@ -4,7 +4,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
-	atypes "github.com/elys-network/elys/x/amm/types"
+	ammtypes "github.com/elys-network/elys/x/amm/types"
 	ctypes "github.com/elys-network/elys/x/commitment/types"
 )
 
@@ -73,13 +73,13 @@ type AmmKeeper interface {
 	RouteExactAmountIn(
 		ctx sdk.Context,
 		sender sdk.AccAddress,
-		routes []atypes.SwapAmountInRoute,
+		routes []ammtypes.SwapAmountInRoute,
 		tokenIn sdk.Coin,
 		tokenOutMinAmount sdk.Int,
 	) (tokenOutAmount sdk.Int, err error)
 	// Get pool Ids that contains the denom in pool assets
 	GetAllPoolIdsWithDenom(sdk.Context, string) []uint64
 	// GetPool returns a pool from its index
-	GetPool(sdk.Context, uint64) (atypes.Pool, bool)
-	GetAllPool(sdk.Context) []atypes.Pool
+	GetPool(sdk.Context, uint64) (ammtypes.Pool, bool)
+	GetAllPool(sdk.Context) []ammtypes.Pool
 }
