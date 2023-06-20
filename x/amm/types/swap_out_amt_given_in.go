@@ -19,7 +19,6 @@ func NormalizedWeights(poolAssets []PoolAsset) (poolWeights []AssetWeight) {
 	if totalWeight.IsZero() {
 		totalWeight = sdk.OneInt()
 	}
-	poolWeights := []AssetWeight{}
 	for _, asset := range poolAssets {
 		poolWeights = append(poolWeights, AssetWeight{
 			Asset:  asset.Token.Denom,
@@ -29,7 +28,7 @@ func NormalizedWeights(poolAssets []PoolAsset) (poolWeights []AssetWeight) {
 	return poolWeights
 }
 
-func OraclePoolNormalizedWeights(ctx sdk.Context, oracleKeeper OracleKeeper, poolAssets []*PoolAsset) ([]AssetWeight, error) {
+func OraclePoolNormalizedWeights(ctx sdk.Context, oracleKeeper OracleKeeper, poolAssets []PoolAsset) ([]AssetWeight, error) {
 	oraclePoolWeights := []AssetWeight{}
 	totalWeight := sdk.ZeroDec()
 	for _, asset := range poolAssets {
@@ -55,10 +54,10 @@ func OraclePoolNormalizedWeights(ctx sdk.Context, oracleKeeper OracleKeeper, poo
 	return oraclePoolWeights, nil
 }
 
-func (p Pool) NewPoolAssetsAfterSwap(inCoins sdk.Coins, outCoins sdk.Coins) (poolAssets []PoolAsset) {
+func (p Pool) NewPoolAssetsAfterSwap(inCoins sdk.Coins, outCoins sdk.Coins) (poolAssets []PoolAsset, err error) {
 	for _, asset := range p.PoolAssets {
 		denom := asset.Token.Denom
-    amountAfterSwap := asset.Token.Amount.Add(inCoins.AmountOf(denom)).Sub(outCoins.AmountOf(denom))
+		amountAfterSwap := asset.Token.Amount.Add(inCoins.AmountOf(denom)).Sub(outCoins.AmountOf(denom))
 		if amountAfterSwap.IsNegative() {
 			return poolAssets, fmt.Errorf("negative pool amount after swap")
 		}
