@@ -5,7 +5,7 @@ import (
 	"github.com/elys-network/elys/x/amm/types"
 )
 
-func portionCoins(coins sdk.Coins, portion sdk.Dec) sdk.Coins {
+func PortionCoins(coins sdk.Coins, portion sdk.Dec) sdk.Coins {
 	portionCoins := sdk.Coins{}
 	for _, coin := range coins {
 		portionAmount := sdk.NewDecFromInt(coin.Amount).Mul(portion).RoundInt()

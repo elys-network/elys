@@ -7,7 +7,7 @@ import (
 	"github.com/tendermint/tendermint/crypto/ed25519"
 )
 
-func (suite *KeeperTestSuite) TestUpdatePoolForSwap() {
+func (suite *KeeperTestSuite) TestSwapExactAmountOut() {
 	for _, tc := range []struct {
 		desc                string
 		senderInitBalance   sdk.Coins
@@ -16,6 +16,7 @@ func (suite *KeeperTestSuite) TestUpdatePoolForSwap() {
 		swapFeeIn           sdk.Dec
 		swapFeeOut          sdk.Dec
 		tokenIn             sdk.Coin
+		tokenInMax          sdk.Int
 		tokenOut            sdk.Coin
 		weightBalanceBonus  sdk.Dec
 		expSenderBalance    sdk.Coins
@@ -31,6 +32,7 @@ func (suite *KeeperTestSuite) TestUpdatePoolForSwap() {
 			swapFeeIn:           sdk.ZeroDec(),
 			swapFeeOut:          sdk.ZeroDec(),
 			tokenIn:             sdk.NewInt64Coin("uelys", 10000),
+			tokenInMax:          sdk.NewInt(10000000),
 			tokenOut:            sdk.NewInt64Coin("uusdc", 10000),
 			weightBalanceBonus:  sdk.ZeroDec(),
 			expSenderBalance:    sdk.Coins{},
@@ -46,6 +48,7 @@ func (suite *KeeperTestSuite) TestUpdatePoolForSwap() {
 			swapFeeIn:           sdk.ZeroDec(),
 			swapFeeOut:          sdk.ZeroDec(),
 			tokenIn:             sdk.NewInt64Coin("uelys", 10000),
+			tokenInMax:          sdk.NewInt(10000000),
 			tokenOut:            sdk.NewInt64Coin("uusdc", 10000),
 			weightBalanceBonus:  sdk.ZeroDec(),
 			expSenderBalance:    sdk.Coins{},
@@ -60,12 +63,13 @@ func (suite *KeeperTestSuite) TestUpdatePoolForSwap() {
 			treasuryInitBalance: sdk.Coins{sdk.NewInt64Coin("uelys", 1000000), sdk.NewInt64Coin("uusdc", 1000000)},
 			swapFeeIn:           sdk.NewDecWithPrec(1, 2), // 1%
 			swapFeeOut:          sdk.ZeroDec(),
-			tokenIn:             sdk.NewInt64Coin("uelys", 10000),
+			tokenIn:             sdk.NewInt64Coin("uelys", 10102),
+			tokenInMax:          sdk.NewInt(10000000),
 			tokenOut:            sdk.NewInt64Coin("uusdc", 10000),
 			weightBalanceBonus:  sdk.ZeroDec(),
-			expSenderBalance:    sdk.Coins{sdk.NewInt64Coin("uelys", 990000), sdk.NewInt64Coin("uusdc", 1010000)},
-			expPoolBalance:      sdk.Coins{sdk.NewInt64Coin("uelys", 1009900), sdk.NewInt64Coin("uusdc", 990000)},
-			expTreasuryBalance:  sdk.Coins{sdk.NewInt64Coin("uelys", 1000100), sdk.NewInt64Coin("uusdc", 1000000)},
+			expSenderBalance:    sdk.Coins{sdk.NewInt64Coin("uelys", 989898), sdk.NewInt64Coin("uusdc", 1010000)},
+			expPoolBalance:      sdk.Coins{sdk.NewInt64Coin("uelys", 1010102), sdk.NewInt64Coin("uusdc", 990000)},
+			expTreasuryBalance:  sdk.Coins{sdk.NewInt64Coin("uelys", 1000000), sdk.NewInt64Coin("uusdc", 1000000)},
 			expPass:             true,
 		},
 		{
@@ -75,11 +79,12 @@ func (suite *KeeperTestSuite) TestUpdatePoolForSwap() {
 			treasuryInitBalance: sdk.Coins{sdk.NewInt64Coin("uelys", 1000000), sdk.NewInt64Coin("uusdc", 1000000)},
 			swapFeeIn:           sdk.ZeroDec(),
 			swapFeeOut:          sdk.ZeroDec(),
-			tokenIn:             sdk.NewInt64Coin("uelys", 10000),
+			tokenIn:             sdk.NewInt64Coin("uelys", 10102),
+			tokenInMax:          sdk.NewInt(10000000),
 			tokenOut:            sdk.NewInt64Coin("uusdc", 10000),
 			weightBalanceBonus:  sdk.ZeroDec(),
-			expSenderBalance:    sdk.Coins{sdk.NewInt64Coin("uelys", 990000), sdk.NewInt64Coin("uusdc", 1010000)},
-			expPoolBalance:      sdk.Coins{sdk.NewInt64Coin("uelys", 1010000), sdk.NewInt64Coin("uusdc", 990000)},
+			expSenderBalance:    sdk.Coins{sdk.NewInt64Coin("uelys", 989898), sdk.NewInt64Coin("uusdc", 1010000)},
+			expPoolBalance:      sdk.Coins{sdk.NewInt64Coin("uelys", 1010102), sdk.NewInt64Coin("uusdc", 990000)},
 			expTreasuryBalance:  sdk.Coins{sdk.NewInt64Coin("uelys", 1000000), sdk.NewInt64Coin("uusdc", 1000000)},
 			expPass:             true,
 		},
@@ -90,12 +95,13 @@ func (suite *KeeperTestSuite) TestUpdatePoolForSwap() {
 			treasuryInitBalance: sdk.Coins{sdk.NewInt64Coin("uelys", 1000000), sdk.NewInt64Coin("uusdc", 1000000)},
 			swapFeeIn:           sdk.ZeroDec(),
 			swapFeeOut:          sdk.ZeroDec(),
-			tokenIn:             sdk.NewInt64Coin("uelys", 10000),
+			tokenIn:             sdk.NewInt64Coin("uelys", 10102),
+			tokenInMax:          sdk.NewInt(10000000),
 			tokenOut:            sdk.NewInt64Coin("uusdc", 10000),
 			weightBalanceBonus:  sdk.NewDecWithPrec(3, 1), // 30% bonus
-			expSenderBalance:    sdk.Coins{sdk.NewInt64Coin("uelys", 990000), sdk.NewInt64Coin("uusdc", 1013000)},
-			expPoolBalance:      sdk.Coins{sdk.NewInt64Coin("uelys", 1010000), sdk.NewInt64Coin("uusdc", 990000)},
-			expTreasuryBalance:  sdk.Coins{sdk.NewInt64Coin("uelys", 1000000), sdk.NewInt64Coin("uusdc", 997000)},
+			expSenderBalance:    sdk.Coins{sdk.NewInt64Coin("uelys", 989898), sdk.NewInt64Coin("uusdc", 1010000)},
+			expPoolBalance:      sdk.Coins{sdk.NewInt64Coin("uelys", 1010102), sdk.NewInt64Coin("uusdc", 990000)},
+			expTreasuryBalance:  sdk.Coins{sdk.NewInt64Coin("uelys", 1000000), sdk.NewInt64Coin("uusdc", 1000000)},
 			expPass:             true,
 		},
 		{
@@ -105,12 +111,13 @@ func (suite *KeeperTestSuite) TestUpdatePoolForSwap() {
 			treasuryInitBalance: sdk.Coins{sdk.NewInt64Coin("uelys", 1000000), sdk.NewInt64Coin("uusdc", 100)},
 			swapFeeIn:           sdk.ZeroDec(),
 			swapFeeOut:          sdk.ZeroDec(),
-			tokenIn:             sdk.NewInt64Coin("uelys", 10000),
+			tokenIn:             sdk.NewInt64Coin("uelys", 10102),
+			tokenInMax:          sdk.NewInt(10000000),
 			tokenOut:            sdk.NewInt64Coin("uusdc", 10000),
 			weightBalanceBonus:  sdk.NewDecWithPrec(3, 1), // 30% bonus
-			expSenderBalance:    sdk.Coins{sdk.NewInt64Coin("uelys", 990000), sdk.NewInt64Coin("uusdc", 1010100)},
-			expPoolBalance:      sdk.Coins{sdk.NewInt64Coin("uelys", 1010000), sdk.NewInt64Coin("uusdc", 990000)},
-			expTreasuryBalance:  sdk.Coins{sdk.NewInt64Coin("uelys", 1000000)},
+			expSenderBalance:    sdk.Coins{sdk.NewInt64Coin("uelys", 989898), sdk.NewInt64Coin("uusdc", 1010000)},
+			expPoolBalance:      sdk.Coins{sdk.NewInt64Coin("uelys", 1010102), sdk.NewInt64Coin("uusdc", 990000)},
+			expTreasuryBalance:  sdk.Coins{sdk.NewInt64Coin("uelys", 1000000), sdk.NewInt64Coin("uusdc", 100)},
 			expPass:             true,
 		},
 	} {
@@ -147,16 +154,29 @@ func (suite *KeeperTestSuite) TestUpdatePoolForSwap() {
 				PoolId:            1,
 				Address:           poolAddr.String(),
 				RebalanceTreasury: treasuryAddr.String(),
-				PoolParams:        &types.PoolParams{},
-				TotalShares:       sdk.Coin{},
-				PoolAssets:        []*types.PoolAsset(nil),
-				TotalWeight:       sdk.ZeroInt(),
+				PoolParams: &types.PoolParams{
+					SwapFee: tc.swapFeeOut,
+				},
+				TotalShares: sdk.Coin{},
+				PoolAssets: []*types.PoolAsset{
+					{
+						Token:  tc.poolInitBalance[0],
+						Weight: sdk.NewInt(10),
+					},
+					{
+						Token:  tc.poolInitBalance[1],
+						Weight: sdk.NewInt(10),
+					},
+				},
+				TotalWeight: sdk.ZeroInt(),
 			}
-			err = suite.app.AmmKeeper.UpdatePoolForSwap(suite.ctx, pool, sender, tc.tokenIn, tc.tokenOut, tc.swapFeeIn, tc.swapFeeOut, tc.weightBalanceBonus)
+
+			tokenInAmount, err := suite.app.AmmKeeper.SwapExactAmountOut(suite.ctx, sender, pool, tc.tokenIn.Denom, tc.tokenInMax, tc.tokenOut, tc.swapFeeOut)
 			if !tc.expPass {
 				suite.Require().Error(err)
 			} else {
 				suite.Require().NoError(err)
+				suite.Require().Equal(tokenInAmount.String(), tc.tokenIn.Amount.String())
 
 				// check pool balance increase/decrease
 				balances := suite.app.BankKeeper.GetAllBalances(suite.ctx, poolAddr)

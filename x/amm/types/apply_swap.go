@@ -3,7 +3,7 @@ package types
 import sdk "github.com/cosmos/cosmos-sdk/types"
 
 // ApplySwap.
-func (p *Pool) applySwap(ctx sdk.Context, tokensIn sdk.Coins, tokensOut sdk.Coins) error {
+func (p *Pool) applySwap(ctx sdk.Context, tokensIn sdk.Coins, tokensOut sdk.Coins, swapFeeIn, swapFeeOut sdk.Dec) error {
 	// Fixed gas consumption per swap to prevent spam
 	ctx.GasMeter().ConsumeGas(BalancerGasFeeForSwap, "balancer swap computation")
 	// Also ensures that len(tokensIn) = 1 = len(tokensOut)
@@ -11,8 +11,10 @@ func (p *Pool) applySwap(ctx sdk.Context, tokensIn sdk.Coins, tokensOut sdk.Coin
 	if err != nil {
 		return err
 	}
-	inPoolAsset.Token.Amount = inPoolAsset.Token.Amount.Add(tokensIn[0].Amount)
-	outPoolAsset.Token.Amount = outPoolAsset.Token.Amount.Sub(tokensOut[0].Amount)
+	inTokensAfterFee := sdk.NewDecFromInt(tokensIn[0].Amount).Mul(sdk.OneDec().Sub(swapFeeIn)).TruncateInt()
+	outTokensAfterFee := sdk.NewDecFromInt(tokensOut[0].Amount).Mul(sdk.OneDec().Sub(swapFeeOut)).TruncateInt()
+	inPoolAsset.Token.Amount = inPoolAsset.Token.Amount.Add(inTokensAfterFee)
+	outPoolAsset.Token.Amount = outPoolAsset.Token.Amount.Sub(outTokensAfterFee)
 
 	return p.UpdatePoolAssetBalances(sdk.NewCoins(
 		inPoolAsset.Token,

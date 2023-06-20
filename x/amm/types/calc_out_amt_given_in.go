@@ -10,14 +10,16 @@ import (
 func (p Pool) CalcOutAmtGivenIn(
 	tokensIn sdk.Coins,
 	tokenOutDenom string,
+	swapFee sdk.Dec,
 ) (sdk.Coin, error) {
 	tokenIn, poolAssetIn, poolAssetOut, err := p.parsePoolAssets(tokensIn, tokenOutDenom)
 	if err != nil {
 		return sdk.Coin{}, err
 	}
 
+	tokenAmountInAfterFee := sdk.NewDecFromInt(tokenIn.Amount).Mul(sdk.OneDec().Sub(swapFee))
 	poolTokenInBalance := sdk.NewDecFromInt(poolAssetIn.Token.Amount)
-	poolPostSwapInBalance := poolTokenInBalance.Add(sdk.NewDecFromInt(tokenIn.Amount))
+	poolPostSwapInBalance := poolTokenInBalance.Add(tokenAmountInAfterFee)
 
 	// deduct swapfee on the tokensIn
 	// delta balanceOut is positive(tokens inside the pool decreases)

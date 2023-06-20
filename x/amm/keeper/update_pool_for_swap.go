@@ -14,6 +14,8 @@ func (k Keeper) UpdatePoolForSwap(
 	sender sdk.AccAddress,
 	tokenIn sdk.Coin,
 	tokenOut sdk.Coin,
+	swapFeeIn sdk.Dec,
+	swapFeeOut sdk.Dec,
 	weightBalanceBonus sdk.Dec,
 ) error {
 	tokensIn := sdk.Coins{tokenIn}
@@ -30,19 +32,29 @@ func (k Keeper) UpdatePoolForSwap(
 		return err
 	}
 
-	swapFeeCoins := portionCoins(tokensIn, pool.PoolParams.SwapFee)
-	if swapFeeCoins.IsAllPositive() {
+	swapFeeInCoins := PortionCoins(tokensIn, swapFeeIn)
+	if swapFeeInCoins.IsAllPositive() {
 		rebalanceTreasury := sdk.MustAccAddressFromBech32(pool.GetRebalanceTreasury())
-		err = k.bankKeeper.SendCoins(ctx, poolAddr, rebalanceTreasury, swapFeeCoins)
+		err = k.bankKeeper.SendCoins(ctx, poolAddr, rebalanceTreasury, swapFeeInCoins)
 		if err != nil {
 			return err
 		}
-		k.OnCollectFee(ctx, pool, swapFeeCoins)
+		k.OnCollectFee(ctx, pool, swapFeeInCoins)
 	}
 
 	err = k.bankKeeper.SendCoins(ctx, poolAddr, sender, sdk.Coins{tokenOut})
 	if err != nil {
 		return err
+	}
+
+	swapFeeOutCoins := PortionCoins(tokensOut, swapFeeOut)
+	if swapFeeOutCoins.IsAllPositive() {
+		rebalanceTreasury := sdk.MustAccAddressFromBech32(pool.GetRebalanceTreasury())
+		err = k.bankKeeper.SendCoins(ctx, sender, rebalanceTreasury, swapFeeOutCoins)
+		if err != nil {
+			return err
+		}
+		k.OnCollectFee(ctx, pool, swapFeeOutCoins)
 	}
 
 	// calculate treasury amount to send as bonus
@@ -66,7 +78,7 @@ func (k Keeper) UpdatePoolForSwap(
 	k.hooks.AfterSwap(ctx, sender, pool.GetPoolId(), tokensIn, tokensOut)
 	k.RecordTotalLiquidityIncrease(ctx, tokensIn)
 	k.RecordTotalLiquidityDecrease(ctx, tokensOut)
-	k.RecordTotalLiquidityDecrease(ctx, swapFeeCoins)
+	k.RecordTotalLiquidityDecrease(ctx, swapFeeInCoins)
 
 	return nil
 }
