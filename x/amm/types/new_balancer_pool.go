@@ -23,7 +23,7 @@ func NewBalancerPool(poolId uint64, balancerPoolParams PoolParams, assets []Pool
 		PoolId:            poolId,
 		Address:           poolAddr.String(),
 		RebalanceTreasury: poolRebalanceTreasuryAddr.String(),
-		PoolParams:        &PoolParams{},
+		PoolParams:        PoolParams{},
 		TotalWeight:       math.ZeroInt(),
 		TotalShares:       sdk.NewCoin(GetPoolShareDenom(poolId), InitPoolSharesSupply),
 		PoolAssets:        nil,

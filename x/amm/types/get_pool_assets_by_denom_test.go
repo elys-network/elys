@@ -10,7 +10,7 @@ import (
 )
 
 func TestGetPoolAssetsByDenom(t *testing.T) {
-	poolAssets := []*types.PoolAsset{
+	poolAssets := []types.PoolAsset{
 		{
 			Token:  sdk.Coin{Denom: "token1", Amount: sdk.NewInt(100)},
 			Weight: sdk.NewInt(10),
@@ -29,7 +29,7 @@ func TestGetPoolAssetsByDenom(t *testing.T) {
 	require.Equal(t, poolAssets[1], poolAssetsByDenom["token2"])
 
 	// Test case 2: Duplicate pool asset
-	duplicatePoolAssets := []*types.PoolAsset{
+	duplicatePoolAssets := []types.PoolAsset{
 		{
 			Token:  sdk.Coin{Denom: "token1", Amount: sdk.NewInt(100)},
 			Weight: sdk.NewInt(10),

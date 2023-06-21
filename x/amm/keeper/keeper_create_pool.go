@@ -60,6 +60,11 @@ func (k Keeper) CreatePool(ctx sdk.Context, msg *types.MsgCreatePool) (uint64, e
 		return 0, err
 	}
 
+	// Increase liquidty amount
+	for _, asset := range msg.PoolAssets {
+		k.RecordTotalLiquidityIncrease(ctx, sdk.Coins{asset.Token})
+	}
+
 	// emitCreatePoolEvents(ctx, poolId, msg)
 	return pool.GetPoolId(), nil
 }

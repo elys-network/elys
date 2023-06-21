@@ -5,16 +5,16 @@ import (
 )
 
 func (p Pool) parsePoolAssetsByDenoms(tokenADenom, tokenBDenom string) (
-	Aasset *PoolAsset, Basset *PoolAsset, err error,
+	Aasset PoolAsset, Basset PoolAsset, err error,
 ) {
 	Aasset, found1 := GetPoolAssetByDenom(p.PoolAssets, tokenADenom)
 	Basset, found2 := GetPoolAssetByDenom(p.PoolAssets, tokenBDenom)
 
 	if !found1 {
-		return &PoolAsset{}, &PoolAsset{}, fmt.Errorf("(%s) does not exist in the pool", tokenADenom)
+		return PoolAsset{}, PoolAsset{}, fmt.Errorf("(%s) does not exist in the pool", tokenADenom)
 	}
 	if !found2 {
-		return &PoolAsset{}, &PoolAsset{}, fmt.Errorf("(%s) does not exist in the pool", tokenBDenom)
+		return PoolAsset{}, PoolAsset{}, fmt.Errorf("(%s) does not exist in the pool", tokenBDenom)
 	}
 	return Aasset, Basset, nil
 }

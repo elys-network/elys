@@ -12,6 +12,7 @@ func (k Keeper) ExitPool(
 	poolId uint64,
 	shareInAmount sdk.Int,
 	tokenOutMins sdk.Coins,
+	tokenOutDenom string,
 ) (exitCoins sdk.Coins, err error) {
 	pool, poolExists := k.GetPool(ctx, poolId)
 	if !poolExists {
@@ -24,8 +25,7 @@ func (k Keeper) ExitPool(
 	} else if shareInAmount.LTE(sdk.ZeroInt()) {
 		return sdk.Coins{}, sdkerrors.Wrapf(types.ErrInvalidMathApprox, "Trying to exit a negative amount of shares")
 	}
-	exitFee := pool.GetPoolParams().SwapFee
-	exitCoins, err = pool.ExitPool(ctx, shareInAmount, exitFee)
+	exitCoins, err = pool.ExitPool(ctx, k.oracleKeeper, shareInAmount, tokenOutDenom)
 	if err != nil {
 		return sdk.Coins{}, err
 	}
@@ -39,6 +39,9 @@ func (k Keeper) ExitPool(
 	if err != nil {
 		return sdk.Coins{}, err
 	}
+
+	// Decrease liquidty amount
+	k.RecordTotalLiquidityDecrease(ctx, exitCoins)
 
 	return exitCoins, nil
 }

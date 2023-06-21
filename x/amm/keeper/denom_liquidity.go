@@ -111,6 +111,7 @@ func (k Keeper) DecreaseDenomLiquidity(
 
 	var denomLiquidity types.DenomLiquidity
 	k.cdc.MustUnmarshal(b, &denomLiquidity)
+
 	if denomLiquidity.Liquidity.LT(amount) {
 		return fmt.Errorf("not enough liquidity")
 	}

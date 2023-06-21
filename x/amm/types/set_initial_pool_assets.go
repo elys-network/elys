@@ -21,7 +21,7 @@ func (p *Pool) SetInitialPoolAssets(PoolAssets []PoolAsset) error {
 	}
 
 	newTotalWeight := p.TotalWeight
-	scaledPoolAssets := make([]*PoolAsset, 0, len(PoolAssets))
+	scaledPoolAssets := make([]PoolAsset, 0, len(PoolAssets))
 
 	// TODO: Refactor this into PoolAsset.validate()
 	for _, asset := range PoolAssets {
@@ -41,7 +41,7 @@ func (p *Pool) SetInitialPoolAssets(PoolAssets []PoolAsset) error {
 
 		// Scale weight from the user provided weight to the correct internal weight
 		asset.Weight = asset.Weight.MulRaw(GuaranteedWeightPrecision)
-		scaledPoolAssets = append(scaledPoolAssets, &asset)
+		scaledPoolAssets = append(scaledPoolAssets, asset)
 		newTotalWeight = newTotalWeight.Add(asset.Weight)
 	}
 
@@ -49,6 +49,7 @@ func (p *Pool) SetInitialPoolAssets(PoolAssets []PoolAsset) error {
 	// Furthermore, consider changing the underlying data type to allow in-place modification if the
 	// number of PoolAssets is expected to be large.
 	p.PoolAssets = append(p.PoolAssets, scaledPoolAssets...)
+
 	sortPoolAssetsByDenom(p.PoolAssets)
 
 	p.TotalWeight = newTotalWeight

@@ -9,7 +9,7 @@ import (
 )
 
 func TestGetPoolAssetByDenom(t *testing.T) {
-	poolAssets := []*types.PoolAsset{
+	poolAssets := []types.PoolAsset{
 		{
 			Token:  sdk.Coin{Denom: "token1", Amount: sdk.NewInt(100)},
 			Weight: sdk.NewInt(10),

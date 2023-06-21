@@ -20,6 +20,18 @@ func createNPool(keeper *keeper.Keeper, ctx sdk.Context, n int) []types.Pool {
 	for i := range items {
 		items[i].PoolId = uint64(i)
 		items[i].TotalWeight = sdk.NewInt(100)
+		items[i].PoolParams = types.PoolParams{
+			SwapFee:                     sdk.ZeroDec(),
+			ExitFee:                     sdk.ZeroDec(),
+			UseOracle:                   false,
+			WeightBreakingFeeMultiplier: sdk.ZeroDec(),
+			SlippageReduction:           sdk.ZeroDec(),
+			LpFeePortion:                sdk.ZeroDec(),
+			StakingFeePortion:           sdk.ZeroDec(),
+			WeightRecoveryFeePortion:    sdk.ZeroDec(),
+			ThresholdWeightDifference:   sdk.ZeroDec(),
+			FeeDenom:                    "",
+		}
 
 		keeper.SetPool(ctx, items[i])
 	}

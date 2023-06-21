@@ -571,6 +571,19 @@ func NewElysApp(
 		app.AssetprofileKeeper,
 	)
 
+	app.AmmKeeper = *ammmodulekeeper.NewKeeper(
+		appCodec,
+		keys[ammmoduletypes.StoreKey],
+		keys[ammmoduletypes.MemStoreKey],
+		app.GetSubspace(ammmoduletypes.ModuleName),
+		app.BankKeeper,
+		app.AccountKeeper,
+		app.OracleKeeper,
+    &app.CommitmentKeeper,
+		app.AssetprofileKeeper,
+	)
+	ammModule := ammmodule.NewAppModule(appCodec, app.AmmKeeper, app.AccountKeeper, app.BankKeeper)
+
 	app.IncentiveKeeper = *incentivemodulekeeper.NewKeeper(
 		appCodec,
 		keys[incentivemoduletypes.StoreKey],
@@ -580,6 +593,7 @@ func NewElysApp(
 		app.StakingKeeper,
 		app.AccountKeeper,
 		app.BankKeeper,
+		app.AmmKeeper,
 		authtypes.FeeCollectorName,
 		DexRevenueCollectorName,
 	)
@@ -625,19 +639,6 @@ func NewElysApp(
 		appCodec,
 		keys[epochsmoduletypes.StoreKey],
 	)
-
-	app.AmmKeeper = *ammmodulekeeper.NewKeeper(
-		appCodec,
-		keys[ammmoduletypes.StoreKey],
-		keys[ammmoduletypes.MemStoreKey],
-		app.GetSubspace(ammmoduletypes.ModuleName),
-		app.BankKeeper,
-		app.AccountKeeper,
-		app.OracleKeeper,
-		&app.CommitmentKeeper,
-		app.AssetprofileKeeper,
-	)
-	ammModule := ammmodule.NewAppModule(appCodec, app.AmmKeeper, app.AccountKeeper, app.BankKeeper)
 
 	app.ParameterKeeper = *parametermodulekeeper.NewKeeper(
 		appCodec,

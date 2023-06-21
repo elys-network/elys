@@ -53,7 +53,7 @@ func (k Keeper) SwapExactAmountOut(
 		return math.Int{}, sdkerrors.Wrapf(types.ErrLimitMaxAmount, "Swap requires %s, which is greater than the amount %s", tokenIn, tokenInMaxAmount)
 	}
 
-	err = k.UpdatePoolForSwap(ctx, pool, sender, tokenIn, tokenOut, weightBalanceBonus)
+	err, _ = k.UpdatePoolForSwap(ctx, pool, sender, tokenIn, tokenOut, swapFee, sdk.ZeroDec(), weightBalanceBonus)
 	if err != nil {
 		return math.Int{}, err
 	}
