@@ -66,7 +66,7 @@ func (suite *KeeperTestSuite) TestMsgServerSwapExactAmountIn() {
 			swapFeeOut:          sdk.ZeroDec(),
 			tokenIn:             sdk.NewInt64Coin("uelys", 10000),
 			tokenOutMin:         sdk.ZeroInt(),
-			tokenOut:            sdk.NewInt64Coin("uusdc", 9802),
+			tokenOut:            sdk.NewInt64Coin("uusdc", 9704),
 			weightBalanceBonus:  sdk.ZeroDec(),
 			expSenderBalance:    sdk.Coins{sdk.NewInt64Coin("uelys", 990000), sdk.NewInt64Coin("uusdc", 1009704)},
 			expPoolBalance:      sdk.Coins{sdk.NewInt64Coin("uelys", 1010000), sdk.NewInt64Coin("uusdc", 990198)},
@@ -155,11 +155,11 @@ func (suite *KeeperTestSuite) TestMsgServerSwapExactAmountIn() {
 				PoolId:            1,
 				Address:           poolAddr.String(),
 				RebalanceTreasury: treasuryAddr.String(),
-				PoolParams: &types.PoolParams{
+				PoolParams: types.PoolParams{
 					SwapFee: tc.swapFeeIn,
 				},
 				TotalShares: sdk.Coin{},
-				PoolAssets: []*types.PoolAsset{
+				PoolAssets: []types.PoolAsset{
 					{
 						Token:  tc.poolInitBalance[0],
 						Weight: sdk.NewInt(10),
