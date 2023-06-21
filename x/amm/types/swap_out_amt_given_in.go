@@ -12,6 +12,7 @@ type AssetWeight struct {
 }
 
 func NormalizedWeights(poolAssets []PoolAsset) (poolWeights []AssetWeight) {
+	poolWeights = []AssetWeight{}
 	totalWeight := sdk.ZeroInt()
 	for _, asset := range poolAssets {
 		totalWeight = totalWeight.Add(asset.Weight)
