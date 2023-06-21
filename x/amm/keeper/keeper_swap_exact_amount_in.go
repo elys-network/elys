@@ -34,12 +34,12 @@ func (k Keeper) SwapExactAmountIn(
 	}
 	tokensIn := sdk.Coins{tokenIn}
 
-	// defer func() {
-	// 	if r := recover(); r != nil {
-	// 		tokenOutAmount = math.Int{}
-	// 		err = fmt.Errorf("function swapExactAmountIn failed due to internal reason: %v", r)
-	// 	}
-	// }()
+	defer func() {
+		if r := recover(); r != nil {
+			tokenOutAmount = math.Int{}
+			err = fmt.Errorf("function swapExactAmountIn failed due to internal reason: %v", r)
+		}
+	}()
 
 	// Executes the swap in the pool and stores the output. Updates pool assets but
 	// does not actually transfer any tokens to or from the pool.

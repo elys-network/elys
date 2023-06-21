@@ -54,11 +54,8 @@ func TestCollectGasFeesToIncentiveModule(t *testing.T) {
 		Token:  sdk.NewCoin(ptypes.USDC, sdk.NewInt(10000)),
 	})
 
-	argSwapFee, err := sdk.NewDecFromStr("0.1")
-	require.NoError(t, err)
-
-	argExitFee, err := sdk.NewDecFromStr("0.1")
-	require.NoError(t, err)
+	argSwapFee := sdk.MustNewDecFromStr("0.1")
+	argExitFee := sdk.MustNewDecFromStr("0.1")
 
 	poolParams := &ammtypes.PoolParams{
 		SwapFee: argSwapFee,
@@ -75,7 +72,6 @@ func TestCollectGasFeesToIncentiveModule(t *testing.T) {
 	poolId, err := amm.CreatePool(ctx, msg)
 	require.NoError(t, err)
 	require.Equal(t, poolId, uint64(0))
-	//
 
 	pools := amm.GetAllPool(ctx)
 
@@ -91,6 +87,6 @@ func TestCollectGasFeesToIncentiveModule(t *testing.T) {
 	// check block height
 	require.Equal(t, int64(0), ctx.BlockHeight())
 
-	// It should be 10 usdc
+	// It should be 7 usdc
 	require.Equal(t, collectedAmt, sdk.Coins{sdk.NewCoin(ptypes.USDC, sdk.NewInt(7))})
 }
