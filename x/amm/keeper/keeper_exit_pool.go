@@ -41,7 +41,7 @@ func (k Keeper) ExitPool(
 	}
 
 	// Decrease liquidty amount
-	k.RecordTotalLiquidityIncrease(ctx, exitCoins)
+	k.RecordTotalLiquidityDecrease(ctx, exitCoins)
 
 	return exitCoins, nil
 }
