@@ -34,6 +34,9 @@ const (
 	// USDC
 	USDC = "cusdc"
 
+	// BaseDecimal
+	BASE_DECIMAL = 6
+
 	// 52.1429 weeks
 	WeeksPerYear = 52
 

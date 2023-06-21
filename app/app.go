@@ -579,6 +579,8 @@ func NewElysApp(
 		app.BankKeeper,
 		app.AccountKeeper,
 		app.OracleKeeper,
+    &app.CommitmentKeeper,
+		app.AssetprofileKeeper,
 	)
 	ammModule := ammmodule.NewAppModule(appCodec, app.AmmKeeper, app.AccountKeeper, app.BankKeeper)
 

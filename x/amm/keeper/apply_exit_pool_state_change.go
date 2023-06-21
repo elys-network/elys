@@ -3,10 +3,31 @@ package keeper
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/amm/types"
+	commitmentkeeper "github.com/elys-network/elys/x/commitment/keeper"
+	ctypes "github.com/elys-network/elys/x/commitment/types"
 )
 
 func (k Keeper) applyExitPoolStateChange(ctx sdk.Context, pool types.Pool, exiter sdk.AccAddress, numShares sdk.Int, exitCoins sdk.Coins) error {
-	err := k.bankKeeper.SendCoins(ctx, sdk.AccAddress(pool.GetAddress()), exiter, exitCoins)
+	// Withdraw exit amount of token from commitment module to exiter's wallet.
+	msgServer := commitmentkeeper.NewMsgServerImpl(*k.commitmentKeeper)
+
+	poolShareDenom := types.GetPoolShareDenom(pool.GetPoolId())
+	amount := exitCoins.AmountOf(poolShareDenom)
+
+	// Withdraw token msag
+	msgWithdrawToken := &ctypes.MsgWithdrawTokens{
+		Creator: exiter.String(),
+		Amount:  amount,
+		Denom:   poolShareDenom,
+	}
+
+	// Withdraw committed LP token
+	_, err := msgServer.WithdrawTokens(ctx, msgWithdrawToken)
+	if err != nil {
+		return err
+	}
+
+	err = k.bankKeeper.SendCoins(ctx, sdk.AccAddress(pool.GetAddress()), exiter, exitCoins)
 	if err != nil {
 		return err
 	}
