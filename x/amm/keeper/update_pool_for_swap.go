@@ -17,19 +17,19 @@ func (k Keeper) UpdatePoolForSwap(
 	swapFeeIn sdk.Dec,
 	swapFeeOut sdk.Dec,
 	weightBalanceBonus sdk.Dec,
-) error {
+) (error, sdk.Int) {
 	tokensIn := sdk.Coins{tokenIn}
 	tokensOut := sdk.Coins{tokenOut}
 
 	err := k.SetPool(ctx, pool)
 	if err != nil {
-		return err
+		return err, sdk.ZeroInt()
 	}
 
 	poolAddr := sdk.MustAccAddressFromBech32(pool.GetAddress())
 	err = k.bankKeeper.SendCoins(ctx, sender, poolAddr, tokensIn)
 	if err != nil {
-		return err
+		return err, sdk.ZeroInt()
 	}
 
 	swapFeeInCoins := PortionCoins(tokensIn, swapFeeIn)
@@ -37,14 +37,14 @@ func (k Keeper) UpdatePoolForSwap(
 		rebalanceTreasury := sdk.MustAccAddressFromBech32(pool.GetRebalanceTreasury())
 		err = k.bankKeeper.SendCoins(ctx, poolAddr, rebalanceTreasury, swapFeeInCoins)
 		if err != nil {
-			return err
+			return err, sdk.ZeroInt()
 		}
 		k.OnCollectFee(ctx, pool, swapFeeInCoins)
 	}
 
 	err = k.bankKeeper.SendCoins(ctx, poolAddr, sender, sdk.Coins{tokenOut})
 	if err != nil {
-		return err
+		return err, sdk.ZeroInt()
 	}
 
 	swapFeeOutCoins := PortionCoins(tokensOut, swapFeeOut)
@@ -52,7 +52,7 @@ func (k Keeper) UpdatePoolForSwap(
 		rebalanceTreasury := sdk.MustAccAddressFromBech32(pool.GetRebalanceTreasury())
 		err = k.bankKeeper.SendCoins(ctx, sender, rebalanceTreasury, swapFeeOutCoins)
 		if err != nil {
-			return err
+			return err, sdk.ZeroInt()
 		}
 		k.OnCollectFee(ctx, pool, swapFeeOutCoins)
 	}
@@ -70,15 +70,17 @@ func (k Keeper) UpdatePoolForSwap(
 		bonusToken := sdk.NewCoin(tokenOut.Denom, bonusTokenAmount)
 		err = k.bankKeeper.SendCoins(ctx, rebalanceTreasuryAddr, sender, sdk.Coins{bonusToken})
 		if err != nil {
-			return err
+			return err, sdk.ZeroInt()
 		}
 	}
 
 	types.EmitSwapEvent(ctx, sender, pool.GetPoolId(), tokensIn, tokensOut)
-	k.hooks.AfterSwap(ctx, sender, pool.GetPoolId(), tokensIn, tokensOut)
+	if k.hooks != nil {
+		k.hooks.AfterSwap(ctx, sender, pool.GetPoolId(), tokensIn, tokensOut)
+	}
 	k.RecordTotalLiquidityIncrease(ctx, tokensIn)
 	k.RecordTotalLiquidityDecrease(ctx, tokensOut)
 	k.RecordTotalLiquidityDecrease(ctx, swapFeeInCoins)
 
-	return nil
+	return nil, swapFeeOutCoins.AmountOf(tokenOut.Denom)
 }

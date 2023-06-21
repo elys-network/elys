@@ -1,8 +1,6 @@
 package keeper
 
 import (
-	"fmt"
-
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	"github.com/elys-network/elys/x/incentive/types"
@@ -73,7 +71,6 @@ func (k Keeper) CollectGasFeesToIncentiveModule(ctx sdk.Context) sdk.Coins {
 	// Convert Elys to USDC
 	tokenOutAmount, err := k.amm.RouteExactAmountIn(ctx, feeCollector.GetAddress(), routes, tokenIn, tokenOutMinAmount)
 	if err != nil {
-		fmt.Println(err)
 		return sdk.Coins{}
 	}
 

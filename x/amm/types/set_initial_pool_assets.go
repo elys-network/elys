@@ -16,8 +16,6 @@ import (
 // CreatePool.ValidateBasic()
 func (p *Pool) SetInitialPoolAssets(PoolAssets []PoolAsset) error {
 	exists := make(map[string]bool)
-	// fmt.Println("###### SetInitialPoolAssets ######")
-	// fmt.Println(PoolAssets)
 	for _, asset := range p.PoolAssets {
 		exists[asset.Token.Denom] = true
 	}
@@ -27,9 +25,6 @@ func (p *Pool) SetInitialPoolAssets(PoolAssets []PoolAsset) error {
 
 	// TODO: Refactor this into PoolAsset.validate()
 	for _, asset := range PoolAssets {
-		fmt.Println("###### ASSET ITERATION ######")
-		fmt.Println(asset)
-
 		if asset.Token.Amount.LTE(sdk.ZeroInt()) {
 			return fmt.Errorf("can't add the zero or negative balance of token")
 		}
@@ -48,28 +43,14 @@ func (p *Pool) SetInitialPoolAssets(PoolAssets []PoolAsset) error {
 		asset.Weight = asset.Weight.MulRaw(GuaranteedWeightPrecision)
 		scaledPoolAssets = append(scaledPoolAssets, asset)
 		newTotalWeight = newTotalWeight.Add(asset.Weight)
-
-		fmt.Println("###### ITERATION LOOP ######")
-		fmt.Println(scaledPoolAssets)
 	}
-
-	fmt.Println("###### AFTER LOOP ######")
-	fmt.Println(scaledPoolAssets)
 
 	// TODO: Change this to a more efficient sorted insert algorithm.
 	// Furthermore, consider changing the underlying data type to allow in-place modification if the
 	// number of PoolAssets is expected to be large.
 	p.PoolAssets = append(p.PoolAssets, scaledPoolAssets...)
 
-	// assign scaledPoolAssets ([]PoolAsset) to p.PoolAssets ([]*PoolAsset)
-
-	// fmt.Println("###### AFTER ######")
-	// fmt.Println(p.PoolAssets)
-
 	sortPoolAssetsByDenom(p.PoolAssets)
-
-	// fmt.Println("###### AFTER SORT ######")
-	// fmt.Println(p.PoolAssets)
 
 	p.TotalWeight = newTotalWeight
 

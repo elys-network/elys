@@ -34,12 +34,12 @@ func (k Keeper) SwapExactAmountIn(
 	}
 	tokensIn := sdk.Coins{tokenIn}
 
-	defer func() {
-		if r := recover(); r != nil {
-			tokenOutAmount = math.Int{}
-			err = fmt.Errorf("function swapExactAmountIn failed due to internal reason: %v", r)
-		}
-	}()
+	// defer func() {
+	// 	if r := recover(); r != nil {
+	// 		tokenOutAmount = math.Int{}
+	// 		err = fmt.Errorf("function swapExactAmountIn failed due to internal reason: %v", r)
+	// 	}
+	// }()
 
 	// Executes the swap in the pool and stores the output. Updates pool assets but
 	// does not actually transfer any tokens to or from the pool.
@@ -60,9 +60,11 @@ func (k Keeper) SwapExactAmountIn(
 
 	// Settles balances between the tx sender and the pool to match the swap that was executed earlier.
 	// Also emits swap event and updates related liquidity metrics
-	if err := k.UpdatePoolForSwap(ctx, pool, sender, tokenIn, tokenOutCoin, sdk.ZeroDec(), swapFee, weightBalanceBonus); err != nil {
+	err, swapOutFee := k.UpdatePoolForSwap(ctx, pool, sender, tokenIn, tokenOutCoin, sdk.ZeroDec(), swapFee, weightBalanceBonus)
+	if err != nil {
 		return math.Int{}, err
 	}
 
-	return tokenOutAmount, nil
+	// Minus swap out fee from the token out amount
+	return tokenOutAmount.Sub(swapOutFee), nil
 }
