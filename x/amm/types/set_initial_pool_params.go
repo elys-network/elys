@@ -5,8 +5,8 @@ import (
 )
 
 // setInitialPoolParams
-func (p *Pool) setInitialPoolParams(params PoolParams, sortedAssets []*PoolAsset, curBlockTime time.Time) error {
-	p.PoolParams = &params
+func (p *Pool) setInitialPoolParams(params PoolParams, sortedAssets []PoolAsset, curBlockTime time.Time) error {
+	p.PoolParams = params
 
 	return nil
 }

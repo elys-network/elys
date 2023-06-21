@@ -4,6 +4,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
+	ammtypes "github.com/elys-network/elys/x/amm/types"
 	ctypes "github.com/elys-network/elys/x/commitment/types"
 )
 
@@ -62,4 +63,23 @@ type BankKeeper interface {
 	SendCoinsFromAccountToModule(ctx sdk.Context, senderAddr sdk.AccAddress, recipientModule string, amt sdk.Coins) error
 
 	BlockedAddr(addr sdk.AccAddress) bool
+}
+
+// AmmKeeper defines the expected interface needed to swap tokens
+type AmmKeeper interface {
+	// RouteExactAmountIn defines the input denom and input amount for the first pool,
+	// the output of the first pool is chained as the input for the next routed pool
+	// transaction succeeds when final amount out is greater than tokenOutMinAmount defined.
+	RouteExactAmountIn(
+		ctx sdk.Context,
+		sender sdk.AccAddress,
+		routes []ammtypes.SwapAmountInRoute,
+		tokenIn sdk.Coin,
+		tokenOutMinAmount sdk.Int,
+	) (tokenOutAmount sdk.Int, err error)
+	// Get pool Ids that contains the denom in pool assets
+	GetAllPoolIdsWithDenom(sdk.Context, string) []uint64
+	// GetPool returns a pool from its index
+	GetPool(sdk.Context, uint64) (ammtypes.Pool, bool)
+	GetAllPool(sdk.Context) []ammtypes.Pool
 }

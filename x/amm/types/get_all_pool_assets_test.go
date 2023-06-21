@@ -9,7 +9,7 @@ import (
 )
 
 func TestPool_GetAllPoolAssets(t *testing.T) {
-	poolAssets := []*types.PoolAsset{
+	poolAssets := []types.PoolAsset{
 		{
 			Token:  sdk.NewCoin("token1", sdk.NewInt(100)),
 			Weight: sdk.NewInt(10),

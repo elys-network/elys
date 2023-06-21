@@ -11,7 +11,7 @@ import (
 )
 
 func TestEnsureDenomInPool(t *testing.T) {
-	poolAssetsByDenom := map[string]*types.PoolAsset{
+	poolAssetsByDenom := map[string]types.PoolAsset{
 		"abc": {Token: sdk.NewCoin("abc", math.ZeroInt())},
 		"def": {Token: sdk.NewCoin("def", math.ZeroInt())},
 		"ghi": {Token: sdk.NewCoin("ghi", math.ZeroInt())},

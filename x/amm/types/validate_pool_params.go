@@ -4,7 +4,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-func (params PoolParams) Validate(poolWeights []*PoolAsset) error {
+func (params PoolParams) Validate(poolWeights []PoolAsset) error {
 	if params.ExitFee.IsNegative() {
 		return ErrNegativeExitFee
 	}

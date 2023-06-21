@@ -11,7 +11,7 @@ import (
 )
 
 func TestPool_GetPoolAssetAndIndex(t *testing.T) {
-	poolAssets := []*types.PoolAsset{
+	poolAssets := []types.PoolAsset{
 		{
 			Token:  sdk.NewCoin("token1", sdk.NewInt(100)),
 			Weight: sdk.NewInt(10),
@@ -30,7 +30,7 @@ func TestPool_GetPoolAssetAndIndex(t *testing.T) {
 	index, poolAsset, err := pool.GetPoolAssetAndIndex("token1")
 	require.NoError(t, err)
 	require.Equal(t, 0, index)
-	require.Equal(t, poolAssets[0], &poolAsset)
+	require.Equal(t, poolAssets[0], poolAsset)
 
 	// Test case 2: Non-existing PoolAsset
 	nonExistingDenom := "nonExistingToken"

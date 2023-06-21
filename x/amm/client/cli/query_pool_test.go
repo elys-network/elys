@@ -32,6 +32,18 @@ func networkWithPoolObjects(t *testing.T, n int) (*network.Network, []types.Pool
 		pool := types.Pool{
 			PoolId:      uint64(i),
 			TotalWeight: sdk.NewInt(100),
+			PoolParams: types.PoolParams{
+				SwapFee:                     sdk.ZeroDec(),
+				ExitFee:                     sdk.ZeroDec(),
+				UseOracle:                   false,
+				WeightBreakingFeeMultiplier: sdk.ZeroDec(),
+				SlippageReduction:           sdk.ZeroDec(),
+				LpFeePortion:                sdk.ZeroDec(),
+				StakingFeePortion:           sdk.ZeroDec(),
+				WeightRecoveryFeePortion:    sdk.ZeroDec(),
+				ThresholdWeightDifference:   sdk.ZeroDec(),
+				FeeDenom:                    "",
+			},
 		}
 		nullify.Fill(&pool)
 		state.PoolList = append(state.PoolList, pool)

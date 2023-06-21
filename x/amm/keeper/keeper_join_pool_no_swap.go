@@ -70,5 +70,9 @@ func (k Keeper) JoinPoolNoSwap(
 	}
 
 	err = k.applyJoinPoolStateChange(ctx, pool, sender, sharesOut, neededLpLiquidity)
+
+	// Increase liquidty amount
+	k.RecordTotalLiquidityIncrease(ctx, neededLpLiquidity)
+
 	return neededLpLiquidity, sharesOut, err
 }

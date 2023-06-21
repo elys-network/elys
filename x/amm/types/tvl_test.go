@@ -11,14 +11,14 @@ import (
 func (suite *TestSuite) TestTVL() {
 	for _, tc := range []struct {
 		desc       string
-		poolAssets []*types.PoolAsset
+		poolAssets []types.PoolAsset
 		useOracle  bool
 		expTVL     sdk.Dec
 		expError   bool
 	}{
 		{
 			desc: "oracle pool all asset prices set case",
-			poolAssets: []*types.PoolAsset{
+			poolAssets: []types.PoolAsset{
 				{
 					Token:  sdk.NewInt64Coin("uusdc", 1000_000_000), // 1000 USDT
 					Weight: sdk.NewInt(50),
@@ -34,7 +34,7 @@ func (suite *TestSuite) TestTVL() {
 		},
 		{
 			desc: "oracle pool one asset price not set",
-			poolAssets: []*types.PoolAsset{
+			poolAssets: []types.PoolAsset{
 				{
 					Token:  sdk.NewInt64Coin("ujuno", 1000_000_000), // 1000 JUNO
 					Weight: sdk.NewInt(50),
@@ -50,7 +50,7 @@ func (suite *TestSuite) TestTVL() {
 		},
 		{
 			desc: "non-oracle pool not asset price set",
-			poolAssets: []*types.PoolAsset{
+			poolAssets: []types.PoolAsset{
 				{
 					Token:  sdk.NewInt64Coin("ujuno", 1000_000_000), // 1000 JUNO
 					Weight: sdk.NewInt(50),
@@ -66,7 +66,7 @@ func (suite *TestSuite) TestTVL() {
 		},
 		{
 			desc: "non-oracle pool one price set",
-			poolAssets: []*types.PoolAsset{
+			poolAssets: []types.PoolAsset{
 				{
 					Token:  sdk.NewInt64Coin("ujuno", 1000_000_000), // 1000 JUNO
 					Weight: sdk.NewInt(50),
@@ -99,7 +99,7 @@ func (suite *TestSuite) TestTVL() {
 				PoolId:            1,
 				Address:           poolAddr.String(),
 				RebalanceTreasury: treasuryAddr.String(),
-				PoolParams: &types.PoolParams{
+				PoolParams: types.PoolParams{
 					SwapFee:   sdk.ZeroDec(),
 					UseOracle: tc.useOracle,
 				},
