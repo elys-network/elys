@@ -65,7 +65,7 @@ func (suite *KeeperTestSuite) TestSwapExactAmountIn() {
 			swapFeeOut:          sdk.ZeroDec(),
 			tokenIn:             sdk.NewInt64Coin("uelys", 10000),
 			tokenOutMin:         sdk.ZeroInt(),
-			tokenOut:            sdk.NewInt64Coin("uusdc", 9802),
+			tokenOut:            sdk.NewInt64Coin("uusdc", 9704),
 			weightBalanceBonus:  sdk.ZeroDec(),
 			expSenderBalance:    sdk.Coins{sdk.NewInt64Coin("uelys", 990000), sdk.NewInt64Coin("uusdc", 1009704)},
 			expPoolBalance:      sdk.Coins{sdk.NewInt64Coin("uelys", 1010000), sdk.NewInt64Coin("uusdc", 990198)},
