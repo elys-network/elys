@@ -147,10 +147,21 @@ func (suite *KeeperTestSuite) TestUpdatePoolForSwap() {
 				PoolId:            1,
 				Address:           poolAddr.String(),
 				RebalanceTreasury: treasuryAddr.String(),
-				PoolParams:        types.PoolParams{},
-				TotalShares:       sdk.Coin{},
-				PoolAssets:        []types.PoolAsset(nil),
-				TotalWeight:       sdk.ZeroInt(),
+				PoolParams: types.PoolParams{
+					SwapFee:                     sdk.ZeroDec(),
+					ExitFee:                     sdk.ZeroDec(),
+					UseOracle:                   false,
+					WeightBreakingFeeMultiplier: sdk.ZeroDec(),
+					SlippageReduction:           sdk.ZeroDec(),
+					LpFeePortion:                sdk.ZeroDec(),
+					StakingFeePortion:           sdk.ZeroDec(),
+					WeightRecoveryFeePortion:    sdk.ZeroDec(),
+					ThresholdWeightDifference:   sdk.ZeroDec(),
+					FeeDenom:                    "",
+				},
+				TotalShares: sdk.Coin{},
+				PoolAssets:  []types.PoolAsset(nil),
+				TotalWeight: sdk.ZeroInt(),
 			}
 			err = suite.app.AmmKeeper.UpdatePoolForSwap(suite.ctx, pool, sender, tc.tokenIn, tc.tokenOut, tc.swapFeeIn, tc.swapFeeOut, tc.weightBalanceBonus)
 			if !tc.expPass {
