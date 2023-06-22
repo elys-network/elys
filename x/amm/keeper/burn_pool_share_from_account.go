@@ -5,19 +5,16 @@ import (
 	"github.com/elys-network/elys/x/amm/types"
 )
 
-// BurnPoolShareFromAccount burns `amount` of the given pools shares held by `addr`.
+// BurnPoolShareFromAccount burns `amount` of the given pool's shares held by `addr`.
 func (k Keeper) BurnPoolShareFromAccount(ctx sdk.Context, pool types.Pool, addr sdk.AccAddress, amount sdk.Int) error {
-	amt := sdk.Coins{
-		sdk.NewCoin(types.GetPoolShareDenom(pool.GetPoolId()), amount),
-	}
+	coin := sdk.NewCoin(types.GetPoolShareDenom(pool.GetPoolId()), amount)
+	coins := sdk.NewCoins(coin)
 
-	err := k.bankKeeper.SendCoinsFromAccountToModule(ctx, addr, types.ModuleName, amt)
-	if err != nil {
+	if err := k.bankKeeper.SendCoinsFromAccountToModule(ctx, addr, types.ModuleName, coins); err != nil {
 		return err
 	}
 
-	err = k.bankKeeper.BurnCoins(ctx, types.ModuleName, amt)
-	if err != nil {
+	if err := k.bankKeeper.BurnCoins(ctx, types.ModuleName, coins); err != nil {
 		return err
 	}
 

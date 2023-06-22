@@ -24,19 +24,19 @@ func (k Keeper) SwapExactAmountOut(
 	swapFee sdk.Dec,
 ) (tokenInAmount math.Int, err error) {
 	if tokenInDenom == tokenOut.Denom {
-		return math.Int{}, errors.New("cannot trade same denomination in and out")
+		return math.Int{}, errors.New("cannot trade the same denomination in and out")
 	}
+
 	defer func() {
 		if r := recover(); r != nil {
 			tokenInAmount = math.Int{}
-			err = fmt.Errorf("function swapExactAmountOut failed due to internal reason: %v", r)
+			err = fmt.Errorf("function SwapExactAmountOut failed due to an internal reason: %v", r)
 		}
 	}()
 
 	poolOutBal := pool.GetTotalPoolLiquidity().AmountOf(tokenOut.Denom)
 	if tokenOut.Amount.GTE(poolOutBal) {
-		return math.Int{}, sdkerrors.Wrapf(types.ErrTooManyTokensOut,
-			"can't get more tokens out than there are tokens in the pool")
+		return math.Int{}, sdkerrors.Wrapf(types.ErrTooManyTokensOut, "cannot get more tokens out than there are tokens in the pool")
 	}
 
 	tokenIn, weightBalanceBonus, err := pool.SwapInAmtGivenOut(ctx, k.oracleKeeper, sdk.Coins{tokenOut}, tokenInDenom, swapFee)
@@ -50,12 +50,13 @@ func (k Keeper) SwapExactAmountOut(
 	}
 
 	if tokenInAmount.GT(tokenInMaxAmount) {
-		return math.Int{}, sdkerrors.Wrapf(types.ErrLimitMaxAmount, "Swap requires %s, which is greater than the amount %s", tokenIn, tokenInMaxAmount)
+		return math.Int{}, sdkerrors.Wrapf(types.ErrLimitMaxAmount, "swap requires %s, which is greater than the amount %s", tokenIn, tokenInMaxAmount)
 	}
 
 	err, _ = k.UpdatePoolForSwap(ctx, pool, sender, tokenIn, tokenOut, swapFee, sdk.ZeroDec(), weightBalanceBonus)
 	if err != nil {
 		return math.Int{}, err
 	}
+
 	return tokenInAmount, nil
 }

@@ -6,18 +6,15 @@ import (
 )
 
 func (k Keeper) applyJoinPoolStateChange(ctx sdk.Context, pool types.Pool, joiner sdk.AccAddress, numShares sdk.Int, joinCoins sdk.Coins) error {
-	err := k.bankKeeper.SendCoins(ctx, joiner, sdk.AccAddress(pool.GetAddress()), joinCoins)
-	if err != nil {
+	if err := k.bankKeeper.SendCoins(ctx, joiner, sdk.AccAddress(pool.GetAddress()), joinCoins); err != nil {
 		return err
 	}
 
-	err = k.MintPoolShareToAccount(ctx, pool, joiner, numShares)
-	if err != nil {
+	if err := k.MintPoolShareToAccount(ctx, pool, joiner, numShares); err != nil {
 		return err
 	}
 
-	err = k.SetPool(ctx, pool)
-	if err != nil {
+	if err := k.SetPool(ctx, pool); err != nil {
 		return err
 	}
 
