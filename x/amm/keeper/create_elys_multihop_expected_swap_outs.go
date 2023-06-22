@@ -22,7 +22,11 @@ func (k Keeper) createElysMultihopExpectedSwapOuts(
 		}
 
 		swapFee := pool.GetPoolParams().SwapFee
-		tokenIn, err := pool.CalcInAmtGivenOut(sdk.NewCoins(tokenOut), route.TokenInDenom, cumulativeRouteSwapFee.Mul((swapFee.Quo(sumOfSwapFees))))
+		actualSwapFee := sdk.ZeroDec()
+		if sumOfSwapFees.IsPositive() {
+			actualSwapFee = cumulativeRouteSwapFee.Mul((swapFee.Quo(sumOfSwapFees)))
+		}
+		tokenIn, err := pool.CalcInAmtGivenOut(sdk.NewCoins(tokenOut), route.TokenInDenom, actualSwapFee)
 		if err != nil {
 			return nil, err
 		}

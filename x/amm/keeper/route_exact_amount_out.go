@@ -89,7 +89,7 @@ func (k Keeper) RouteExactAmountOut(ctx sdk.Context,
 		// }
 
 		swapFee := pool.GetPoolParams().SwapFee
-		if isMultiHopRouted {
+		if isMultiHopRouted && sumOfSwapFees.IsPositive() {
 			swapFee = routeSwapFee.Mul((swapFee.Quo(sumOfSwapFees)))
 		}
 
