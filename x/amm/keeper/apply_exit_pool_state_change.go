@@ -14,7 +14,7 @@ func (k Keeper) applyExitPoolStateChange(ctx sdk.Context, pool types.Pool, exite
 	poolShareDenom := types.GetPoolShareDenom(pool.GetPoolId())
 	amount := exitCoins.AmountOf(poolShareDenom)
 
-	// Withdraw token msag
+	// Withdraw token message
 	msgWithdrawToken := &ctypes.MsgWithdrawTokens{
 		Creator: exiter.String(),
 		Amount:  amount,
@@ -27,26 +27,23 @@ func (k Keeper) applyExitPoolStateChange(ctx sdk.Context, pool types.Pool, exite
 		return err
 	}
 
-	err = k.bankKeeper.SendCoins(ctx, sdk.AccAddress(pool.GetAddress()), exiter, exitCoins)
-	if err != nil {
+	if err := k.bankKeeper.SendCoins(ctx, sdk.AccAddress(pool.GetAddress()), exiter, exitCoins); err != nil {
 		return err
 	}
 
 	exitFeeCoins := PortionCoins(exitCoins, pool.PoolParams.ExitFee)
 	rebalanceTreasury := sdk.MustAccAddressFromBech32(pool.GetRebalanceTreasury())
-	err = k.bankKeeper.SendCoins(ctx, exiter, rebalanceTreasury, exitFeeCoins)
-	if err != nil {
+	if err := k.bankKeeper.SendCoins(ctx, exiter, rebalanceTreasury, exitFeeCoins); err != nil {
 		return err
 	}
+
 	k.OnCollectFee(ctx, pool, exitFeeCoins)
 
-	err = k.BurnPoolShareFromAccount(ctx, pool, exiter, numShares)
-	if err != nil {
+	if err := k.BurnPoolShareFromAccount(ctx, pool, exiter, numShares); err != nil {
 		return err
 	}
 
-	err = k.SetPool(ctx, pool)
-	if err != nil {
+	if err := k.SetPool(ctx, pool); err != nil {
 		return err
 	}
 

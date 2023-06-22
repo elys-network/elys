@@ -38,18 +38,16 @@ func TestWithdrawCommitedLPTokenFromCommitmentModule(t *testing.T) {
 	err = app.BankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, addr[0], usdcToken)
 	require.NoError(t, err)
 
-	var poolAssets []atypes.PoolAsset
-	// Elys
-	poolAssets = append(poolAssets, atypes.PoolAsset{
-		Weight: sdk.NewInt(50),
-		Token:  sdk.NewCoin(ptypes.Elys, sdk.NewInt(100000)),
-	})
-
-	// USDC
-	poolAssets = append(poolAssets, atypes.PoolAsset{
-		Weight: sdk.NewInt(50),
-		Token:  sdk.NewCoin(ptypes.USDC, sdk.NewInt(10000)),
-	})
+	poolAssets := []atypes.PoolAsset{
+		{
+			Weight: sdk.NewInt(50),
+			Token:  sdk.NewCoin(ptypes.Elys, sdk.NewInt(100000)),
+		},
+		{
+			Weight: sdk.NewInt(50),
+			Token:  sdk.NewCoin(ptypes.USDC, sdk.NewInt(10000)),
+		},
+	}
 
 	argSwapFee, err := sdk.NewDecFromStr("0.1")
 	require.NoError(t, err)

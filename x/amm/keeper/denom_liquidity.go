@@ -9,119 +9,72 @@ import (
 	"github.com/elys-network/elys/x/amm/types"
 )
 
-// SetDenomLiquidity set a specific denomLiquidity in the store from its index
+// SetDenomLiquidity sets a specific denomLiquidity in the store from its index
 func (k Keeper) SetDenomLiquidity(ctx sdk.Context, denomLiquidity types.DenomLiquidity) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.DenomLiquidityKeyPrefix))
 	b := k.cdc.MustMarshal(&denomLiquidity)
-	store.Set(types.DenomLiquidityKey(
-		denomLiquidity.Denom,
-	), b)
+	store.Set(types.DenomLiquidityKey(denomLiquidity.Denom), b)
 }
 
 // GetDenomLiquidity returns a denomLiquidity from its index
-func (k Keeper) GetDenomLiquidity(
-	ctx sdk.Context,
-	denom string,
-
-) (val types.DenomLiquidity, found bool) {
+func (k Keeper) GetDenomLiquidity(ctx sdk.Context, denom string) (val types.DenomLiquidity, found bool) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.DenomLiquidityKeyPrefix))
-
-	b := store.Get(types.DenomLiquidityKey(
-		denom,
-	))
+	b := store.Get(types.DenomLiquidityKey(denom))
 	if b == nil {
 		return val, false
 	}
-
 	k.cdc.MustUnmarshal(b, &val)
 	return val, true
 }
 
 // RemoveDenomLiquidity removes a denomLiquidity from the store
-func (k Keeper) RemoveDenomLiquidity(
-	ctx sdk.Context,
-	denom string,
-
-) {
+func (k Keeper) RemoveDenomLiquidity(ctx sdk.Context, denom string) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.DenomLiquidityKeyPrefix))
-	store.Delete(types.DenomLiquidityKey(
-		denom,
-	))
+	store.Delete(types.DenomLiquidityKey(denom))
 }
 
 // GetAllDenomLiquidity returns all denomLiquidity
 func (k Keeper) GetAllDenomLiquidity(ctx sdk.Context) (list []types.DenomLiquidity) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.DenomLiquidityKeyPrefix))
 	iterator := sdk.KVStorePrefixIterator(store, []byte{})
-
 	defer iterator.Close()
-
 	for ; iterator.Valid(); iterator.Next() {
 		var val types.DenomLiquidity
 		k.cdc.MustUnmarshal(iterator.Value(), &val)
 		list = append(list, val)
 	}
-
 	return
 }
 
 // IncreaseDenomLiquidity increases the liquidity of a denom by a certain amount
-func (k Keeper) IncreaseDenomLiquidity(
-	ctx sdk.Context,
-	denom string,
-	amount math.Int,
-
-) error {
+func (k Keeper) IncreaseDenomLiquidity(ctx sdk.Context, denom string, amount math.Int) error {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.DenomLiquidityKeyPrefix))
-
-	b := store.Get(types.DenomLiquidityKey(
-		denom,
-	))
+	b := store.Get(types.DenomLiquidityKey(denom))
 	if b == nil {
 		return fmt.Errorf("denom not found")
 	}
-
 	var denomLiquidity types.DenomLiquidity
 	k.cdc.MustUnmarshal(b, &denomLiquidity)
 	denomLiquidity.Liquidity = denomLiquidity.Liquidity.Add(amount)
-
 	newB := k.cdc.MustMarshal(&denomLiquidity)
-	store.Set(types.DenomLiquidityKey(
-		denom,
-	), newB)
-
+	store.Set(types.DenomLiquidityKey(denom), newB)
 	return nil
 }
 
 // DecreaseDenomLiquidity decreases the liquidity of a denom by a certain amount
-func (k Keeper) DecreaseDenomLiquidity(
-	ctx sdk.Context,
-	denom string,
-	amount math.Int,
-
-) error {
+func (k Keeper) DecreaseDenomLiquidity(ctx sdk.Context, denom string, amount math.Int) error {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.DenomLiquidityKeyPrefix))
-
-	b := store.Get(types.DenomLiquidityKey(
-		denom,
-	))
+	b := store.Get(types.DenomLiquidityKey(denom))
 	if b == nil {
 		return fmt.Errorf("denom not found")
 	}
-
 	var denomLiquidity types.DenomLiquidity
 	k.cdc.MustUnmarshal(b, &denomLiquidity)
-
 	if denomLiquidity.Liquidity.LT(amount) {
 		return fmt.Errorf("not enough liquidity")
 	}
-
 	denomLiquidity.Liquidity = denomLiquidity.Liquidity.Sub(amount)
-
 	newB := k.cdc.MustMarshal(&denomLiquidity)
-	store.Set(types.DenomLiquidityKey(
-		denom,
-	), newB)
-
+	store.Set(types.DenomLiquidityKey(denom), newB)
 	return nil
 }

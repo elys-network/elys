@@ -10,7 +10,7 @@ import (
 	"github.com/elys-network/elys/x/amm/types"
 )
 
-// swapExactAmountIn is an internal method for swapping an exact amount of tokens
+// SwapExactAmountIn is an internal method for swapping an exact amount of tokens
 // as input to a pool, using the provided swapFee. This is intended to allow
 // different swap fees as determined by multi-hops, or when recovering from
 // chain liveness failures.
@@ -26,7 +26,7 @@ func (k Keeper) SwapExactAmountIn(
 	swapFee sdk.Dec,
 ) (tokenOutAmount math.Int, err error) {
 	if tokenIn.Denom == tokenOutDenom {
-		return math.Int{}, errors.New("cannot trade same denomination in and out")
+		return math.Int{}, errors.New("cannot trade the same denomination in and out")
 	}
 	poolSwapFee := pool.GetPoolParams().SwapFee
 	if swapFee.LT(poolSwapFee.QuoInt64(2)) {
@@ -37,7 +37,7 @@ func (k Keeper) SwapExactAmountIn(
 	defer func() {
 		if r := recover(); r != nil {
 			tokenOutAmount = math.Int{}
-			err = fmt.Errorf("function swapExactAmountIn failed due to internal reason: %v", r)
+			err = fmt.Errorf("function SwapExactAmountIn failed due to an internal reason: %v", r)
 		}
 	}()
 
@@ -55,16 +55,16 @@ func (k Keeper) SwapExactAmountIn(
 	}
 
 	if tokenOutAmount.LT(tokenOutMinAmount) {
-		return math.Int{}, sdkerrors.Wrapf(types.ErrLimitMinAmount, "%s token is lesser than min amount", tokenOutDenom)
+		return math.Int{}, sdkerrors.Wrapf(types.ErrLimitMinAmount, "%s token is lesser than the minimum amount", tokenOutDenom)
 	}
 
 	// Settles balances between the tx sender and the pool to match the swap that was executed earlier.
-	// Also emits swap event and updates related liquidity metrics
+	// Also emits a swap event and updates related liquidity metrics.
 	err, swapOutFee := k.UpdatePoolForSwap(ctx, pool, sender, tokenIn, tokenOutCoin, sdk.ZeroDec(), swapFee, weightBalanceBonus)
 	if err != nil {
 		return math.Int{}, err
 	}
 
-	// Minus swap out fee from the token out amount
+	// Subtract swap out fee from the token out amount.
 	return tokenOutAmount.Sub(swapOutFee), nil
 }
