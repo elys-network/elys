@@ -15,6 +15,15 @@ import (
 // - Records total liquidity increase
 // - Calls the AfterPoolCreated hook
 func (k Keeper) InitializePool(ctx sdk.Context, pool *types.Pool, sender sdk.AccAddress) (err error) {
+	tvl, err := pool.TVL(ctx, k.oracleKeeper)
+	if err != nil {
+		return err
+	}
+
+	if tvl.IsPositive() {
+		pool.TotalShares = sdk.NewCoin(pool.TotalShares.Denom, tvl.Mul(sdk.NewDecFromInt(types.OneShare)).RoundInt())
+	}
+
 	// Mint the initial pool shares share token to the sender
 	err = k.MintPoolShareToAccount(ctx, *pool, sender, pool.GetTotalShares().Amount)
 	if err != nil {
