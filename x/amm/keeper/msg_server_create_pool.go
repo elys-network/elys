@@ -14,8 +14,6 @@ import (
 func (k msgServer) CreatePool(goCtx context.Context, msg *types.MsgCreatePool) (*types.MsgCreatePoolResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	_ = ctx
-
 	poolId, err := k.Keeper.CreatePool(ctx, msg)
 	if err != nil {
 		return &types.MsgCreatePoolResponse{}, err
