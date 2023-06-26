@@ -6,7 +6,7 @@ import (
 )
 
 func (k Keeper) applyJoinPoolStateChange(ctx sdk.Context, pool types.Pool, joiner sdk.AccAddress, numShares sdk.Int, joinCoins sdk.Coins) error {
-	if err := k.bankKeeper.SendCoins(ctx, joiner, sdk.AccAddress(pool.GetAddress()), joinCoins); err != nil {
+	if err := k.bankKeeper.SendCoins(ctx, joiner, sdk.MustAccAddressFromBech32(pool.GetAddress()), joinCoins); err != nil {
 		return err
 	}
 

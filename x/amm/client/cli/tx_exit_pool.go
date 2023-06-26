@@ -16,7 +16,7 @@ var _ = strconv.Itoa(0)
 
 func CmdExitPool() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "exit-pool [pool-id] [max-amounts-out] [share-amount-in]",
+		Use:   "exit-pool [pool-id] [min-amounts-out] [share-amount-in]",
 		Short: "exit a new pool and withdraw the liquidity from it",
 		Args:  cobra.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
@@ -24,7 +24,7 @@ func CmdExitPool() *cobra.Command {
 			if err != nil {
 				return err
 			}
-			argMaxAmountsOut, err := sdk.ParseCoinsNormalized(args[1])
+			argMinAmountsOut, err := sdk.ParseCoinsNormalized(args[1])
 			if err != nil {
 				return err
 			}
@@ -41,7 +41,7 @@ func CmdExitPool() *cobra.Command {
 			msg := types.NewMsgExitPool(
 				clientCtx.GetFromAddress().String(),
 				argPoolId,
-				argMaxAmountsOut,
+				argMinAmountsOut,
 				argShareAmountIn,
 			)
 			if err := msg.ValidateBasic(); err != nil {
