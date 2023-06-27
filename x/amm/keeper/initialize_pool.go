@@ -57,7 +57,8 @@ func (k Keeper) InitializePool(ctx sdk.Context, pool *types.Pool, sender sdk.Acc
 		return err
 	}
 
-	k.hooks.AfterPoolCreated(ctx, sender, pool.GetPoolId())
-	// k.RecordTotalLiquidityIncrease(ctx, pool.GetTotalPoolLiquidity(ctx))
+	if k.hooks != nil {
+		k.hooks.AfterPoolCreated(ctx, sender, pool.GetPoolId())
+	}
 	return nil
 }

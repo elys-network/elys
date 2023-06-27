@@ -32,8 +32,11 @@ const (
 	EdenB = "uedenb"
 
 	// USDC
-	USDC = "cusdc"
+	USDC = "uusdc"
 
+	// USDT
+	USDT = "uusdt"
+	
 	// BaseDecimal
 	BASE_DECIMAL = 6
 

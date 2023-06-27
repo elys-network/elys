@@ -18,6 +18,7 @@ var (
 	ParamStoreKeyRewardPortionForLps = []byte("rewardportionforlps")
 	ParamStoreKeyLPIncentives        = []byte("lpincentives")
 	ParamStoreKeyStkIncentives       = []byte("stkincentives")
+	ParamStoreKeyPoolInfos           = []byte("poolinfos")
 )
 
 // ParamKeyTable the param key table for launch module
@@ -33,6 +34,7 @@ func NewParams() Params {
 		CommunityTax:        sdk.NewDecWithPrec(2, 2), // 2%
 		WithdrawAddrEnabled: true,
 		RewardPortionForLps: sdk.NewDecWithPrec(65, 2),
+		PoolInfos:           []PoolInfo(nil),
 	}
 }
 
@@ -49,6 +51,7 @@ func (p *Params) ParamSetPairs() paramtypes.ParamSetPairs {
 		paramtypes.NewParamSetPair(ParamStoreKeyRewardPortionForLps, &p.RewardPortionForLps, validateRewardPortionForLps),
 		paramtypes.NewParamSetPair(ParamStoreKeyLPIncentives, &p.LpIncentives, validateLPIncentives),
 		paramtypes.NewParamSetPair(ParamStoreKeyStkIncentives, &p.StakeIncentives, validateStakeIncentives),
+		paramtypes.NewParamSetPair(ParamStoreKeyPoolInfos, &p.PoolInfos, validatePoolInfos),
 	}
 }
 
@@ -71,6 +74,10 @@ func (p Params) Validate() error {
 	}
 
 	if err := validateStakeIncentives(p.StakeIncentives); err != nil {
+		return err
+	}
+
+	if err := validatePoolInfos(p.PoolInfos); err != nil {
 		return err
 	}
 
@@ -208,6 +215,15 @@ func validateStakeIncentives(i interface{}) error {
 		if vv.EdenBoostApr < 1 {
 			return fmt.Errorf("invalid eden boot apr: %v", vv)
 		}
+	}
+
+	return nil
+}
+
+func validatePoolInfos(i interface{}) error {
+	_, ok := i.([]PoolInfo)
+	if !ok {
+		return fmt.Errorf("invalid parameter type: %T", i)
 	}
 
 	return nil

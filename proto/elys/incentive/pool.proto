@@ -1,0 +1,14 @@
+syntax = "proto3";
+package elysnetwork.elys.incentive;
+
+option go_package = "github.com/elys-network/elys/x/incentive/types";
+
+// Pool Info
+message PoolInfo {
+    // reward amount
+	uint64 pool_id = 1;
+    // reward wallet address
+    string reward_wallet = 2;
+    // multiplier for lp rewards
+	uint64 multiplier = 3;
+}

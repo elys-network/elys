@@ -38,5 +38,5 @@ type AssetProfileKeeper interface {
 	// SetEntry set a specific entry in the store from its index
 	SetEntry(ctx sdk.Context, entry atypes.Entry)
 	// GetEntry returns a entry from its index
-	GetEntry( ctx sdk.Context, baseDenom string,) (val atypes.Entry, found bool)
+	GetEntry(ctx sdk.Context, baseDenom string) (val atypes.Entry, found bool)
 }

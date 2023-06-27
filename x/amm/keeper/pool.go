@@ -108,3 +108,24 @@ func (k Keeper) GetAllPoolIdsWithDenom(ctx sdk.Context, denom string) (list []ui
 
 	return list
 }
+
+// IterateLiquidty iterates over all LiquidityPools and performs a
+// callback.
+func (k Keeper) IterateLiquidityPools(ctx sdk.Context, handlerFn func(pool types.Pool) (stop bool),
+) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.PoolKeyPrefix))
+	iterator := sdk.KVStorePrefixIterator(store, []byte{})
+
+	defer iterator.Close()
+
+	for ; iterator.Valid(); iterator.Next() {
+		var pool types.Pool
+		k.cdc.MustUnmarshal(iterator.Value(), &pool)
+
+		if handlerFn(pool) {
+			break
+		}
+	}
+
+	return
+}

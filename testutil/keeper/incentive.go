@@ -46,6 +46,7 @@ func IncentiveKeeper(t testing.TB) (*keeper.Keeper, sdk.Context) {
 		nil,
 		nil,
 		nil,
+		nil,
 		"",
 		"",
 	)
