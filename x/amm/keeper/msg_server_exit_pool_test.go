@@ -39,7 +39,7 @@ func (suite *KeeperTestSuite) TestMsgServerExitPool() {
 			shareInAmount:    types.OneShare.Quo(sdk.NewInt(5)),
 			tokenOutDenom:    "",
 			minAmountsOut:    sdk.Coins{sdk.NewInt64Coin("uusdc", 100000), sdk.NewInt64Coin("uusdt", 100000)},
-			expSenderBalance: sdk.Coins{},
+			expSenderBalance: sdk.Coins{sdk.NewInt64Coin("uusdc", 100000), sdk.NewInt64Coin("uusdt", 100000)},
 			expTokenIn:       sdk.Coins{sdk.NewInt64Coin("uusdc", 100000), sdk.NewInt64Coin("uusdt", 100000)},
 			expPass:          true,
 		},
@@ -157,13 +157,13 @@ func (suite *KeeperTestSuite) TestMsgServerExitPool() {
 				suite.Require().Error(err)
 			} else {
 				suite.Require().NoError(err)
-				suite.Require().Equal(resp.TokenOut, tc.minAmountsOut)
+				suite.Require().Equal(sdk.Coins(resp.TokenOut).String(), tc.minAmountsOut.String())
 
 				pools := suite.app.AmmKeeper.GetAllPool(suite.ctx)
 				suite.Require().Len(pools, 1)
-				suite.Require().Equal(pools[0].PoolId, uint64(1))
+				suite.Require().Equal(pools[0].PoolId, uint64(0))
 				suite.Require().Equal(pools[0].PoolParams, tc.poolParams)
-				suite.Require().Equal(pools[0].TotalShares.Amount.String(), pool.TotalShares.Amount.Add(tc.shareInAmount).String())
+				suite.Require().Equal(pools[0].TotalShares.Amount.String(), pool.TotalShares.Amount.Sub(tc.shareInAmount).String())
 
 				// check balance change on sender
 				balances := suite.app.BankKeeper.GetAllBalances(suite.ctx, sender)
@@ -174,7 +174,7 @@ func (suite *KeeperTestSuite) TestMsgServerExitPool() {
 				suite.Require().True(found)
 				suite.Require().Len(commitments.CommittedTokens, 1)
 				suite.Require().Equal(commitments.CommittedTokens[0].Denom, "amm/pool/0")
-				suite.Require().Equal(commitments.CommittedTokens[0].Amount.String(), tc.shareInAmount.String())
+				suite.Require().Equal(commitments.CommittedTokens[0].Amount.String(), pool.TotalShares.Amount.Sub(tc.shareInAmount).String())
 			}
 		})
 	}
