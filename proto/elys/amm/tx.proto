@@ -43,7 +43,7 @@ message MsgJoinPoolResponse {
 message MsgExitPool {
            string                   sender       = 1;
            uint64                   poolId        = 2;
-  repeated cosmos.base.v1beta1.Coin maxAmountsOut = 3 [(gogoproto.nullable) = false];
+  repeated cosmos.base.v1beta1.Coin minAmountsOut = 3 [(gogoproto.nullable) = false];
            string                   shareAmountIn = 4 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false];
            string                   tokenOutDenom = 5;
 }

@@ -12,22 +12,21 @@ func (k Keeper) applyExitPoolStateChange(ctx sdk.Context, pool types.Pool, exite
 	msgServer := commitmentkeeper.NewMsgServerImpl(*k.commitmentKeeper)
 
 	poolShareDenom := types.GetPoolShareDenom(pool.GetPoolId())
-	amount := exitCoins.AmountOf(poolShareDenom)
 
 	// Withdraw token message
 	msgWithdrawToken := &ctypes.MsgWithdrawTokens{
 		Creator: exiter.String(),
-		Amount:  amount,
+		Amount:  numShares,
 		Denom:   poolShareDenom,
 	}
 
 	// Withdraw committed LP token
-	_, err := msgServer.WithdrawTokens(ctx, msgWithdrawToken)
+	_, err := msgServer.WithdrawTokens(sdk.WrapSDKContext(ctx), msgWithdrawToken)
 	if err != nil {
 		return err
 	}
 
-	if err := k.bankKeeper.SendCoins(ctx, sdk.AccAddress(pool.GetAddress()), exiter, exitCoins); err != nil {
+	if err := k.bankKeeper.SendCoins(ctx, sdk.MustAccAddressFromBech32(pool.GetAddress()), exiter, exitCoins); err != nil {
 		return err
 	}
 
