@@ -18,7 +18,6 @@ func (suite *KeeperTestSuite) TestMsgServerExitPool() {
 		minAmountsOut     sdk.Coins
 		expSenderBalance  sdk.Coins
 		expTotalLiquidity sdk.Coins
-		expTokenIn        sdk.Coins
 		expPass           bool
 	}{
 		{
@@ -40,7 +39,6 @@ func (suite *KeeperTestSuite) TestMsgServerExitPool() {
 			tokenOutDenom:    "",
 			minAmountsOut:    sdk.Coins{sdk.NewInt64Coin("uusdc", 100000), sdk.NewInt64Coin("uusdt", 100000)},
 			expSenderBalance: sdk.Coins{sdk.NewInt64Coin("uusdc", 100000), sdk.NewInt64Coin("uusdt", 100000)},
-			expTokenIn:       sdk.Coins{sdk.NewInt64Coin("uusdc", 100000), sdk.NewInt64Coin("uusdt", 100000)},
 			expPass:          true,
 		},
 		{
@@ -62,7 +60,6 @@ func (suite *KeeperTestSuite) TestMsgServerExitPool() {
 			tokenOutDenom:    "",
 			minAmountsOut:    sdk.Coins{sdk.NewInt64Coin("uusdc", 1000000)},
 			expSenderBalance: sdk.Coins{},
-			expTokenIn:       sdk.Coins{},
 			expPass:          false,
 		},
 		{
@@ -80,16 +77,14 @@ func (suite *KeeperTestSuite) TestMsgServerExitPool() {
 				ThresholdWeightDifference:   sdk.NewDecWithPrec(2, 1), // 20%
 				FeeDenom:                    "",
 			},
-			shareInAmount:    sdk.NewInt(833333333333333333), // weight breaking fee
-			tokenOutDenom:    "",
-			minAmountsOut:    sdk.Coins{sdk.NewInt64Coin("uusdt", 1000000)},
-			expSenderBalance: sdk.Coins{},
-			expTokenIn:       sdk.Coins{sdk.NewInt64Coin("uusdt", 1000000)},
+			shareInAmount:    types.OneShare.Quo(sdk.NewInt(10)),
+			tokenOutDenom:    "uusdt",
+			minAmountsOut:    sdk.Coins{sdk.NewInt64Coin("uusdt", 97368)},
+			expSenderBalance: sdk.Coins{sdk.NewInt64Coin("uusdt", 97368)},
 			expPass:          true,
 		},
 		{
 			desc:            "oracle pool exit - weight recovering on imbalanced pool",
-			minAmountsOut:   sdk.Coins{sdk.NewInt64Coin("uusdt", 1000000)},
 			poolInitBalance: sdk.Coins{sdk.NewInt64Coin("uusdc", 1500000), sdk.NewInt64Coin("uusdt", 500000)},
 			poolParams: types.PoolParams{
 				SwapFee:                     sdk.ZeroDec(),
@@ -103,10 +98,10 @@ func (suite *KeeperTestSuite) TestMsgServerExitPool() {
 				ThresholdWeightDifference:   sdk.NewDecWithPrec(2, 1), // 20%
 				FeeDenom:                    "",
 			},
-			shareInAmount:    sdk.NewInt(1250000000000000000), // weight breaking fee
-			tokenOutDenom:    "",
-			expSenderBalance: sdk.Coins{},
-			expTokenIn:       sdk.Coins{sdk.NewInt64Coin("uusdt", 1000000)},
+			shareInAmount:    types.OneShare.Quo(sdk.NewInt(10)),
+			tokenOutDenom:    "uusdc",
+			minAmountsOut:    sdk.Coins{sdk.NewInt64Coin("uusdc", 100000)},
+			expSenderBalance: sdk.Coins{sdk.NewInt64Coin("uusdc", 100000)},
 			expPass:          true,
 		},
 	} {

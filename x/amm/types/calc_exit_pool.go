@@ -33,7 +33,7 @@ func CalcExitPool(ctx sdk.Context, oracleKeeper OracleKeeper, pool Pool, exiting
 		}
 
 		tokenPrice := oracleKeeper.GetAssetPriceFromDenom(ctx, tokenOutDenom)
-		oracleOutAmount := tvl.Mul(refundedShares).Quo(refundedShares).Quo(tokenPrice)
+		oracleOutAmount := tvl.Mul(refundedShares).Quo(sdk.NewDecFromInt(totalShares.Amount)).Quo(tokenPrice)
 
 		newAssetPools, err := pool.NewPoolAssetsAfterSwap(
 			sdk.Coins{},
