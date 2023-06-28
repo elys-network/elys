@@ -2,6 +2,7 @@ package keeper
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	ammtypes "github.com/elys-network/elys/x/amm/types"
 	ctypes "github.com/elys-network/elys/x/commitment/types"
 	etypes "github.com/elys-network/elys/x/epochs/types"
 	"github.com/elys-network/elys/x/incentive/types"
@@ -37,6 +38,75 @@ func (k Keeper) GetWithdrawAddrEnabled(ctx sdk.Context) (enabled bool) {
 func (k Keeper) GetDEXRewardPortionForLPs(ctx sdk.Context) (percent sdk.Dec) {
 	k.paramstore.Get(ctx, types.ParamStoreKeyRewardPortionForLps, &percent)
 	return percent
+}
+
+// GetPoolInfo
+func (k Keeper) GetPoolInfo(ctx sdk.Context, poolId uint64) (types.PoolInfo, bool) {
+	// Fetch incentive params
+	params := k.GetParams(ctx)
+
+	poolInfos := params.PoolInfos
+	for _, ps := range poolInfos {
+		if ps.PoolId == poolId {
+			return ps, true
+		}
+	}
+
+	return types.PoolInfo{}, false
+}
+
+// InitPoolMultiplier: create a pool information responding to the pool creation.
+func (k Keeper) InitPoolMultiplier(ctx sdk.Context, poolId uint64) bool {
+	// Fetch incentive params
+	params := k.GetParams(ctx)
+	poolInfos := params.PoolInfos
+
+	for _, ps := range poolInfos {
+		if ps.PoolId == poolId {
+			return true
+		}
+	}
+
+	// Initiate a new pool info
+	poolInfo := types.PoolInfo{
+		// reward amount
+		PoolId: poolId,
+		// reward wallet address
+		RewardWallet: types.GetLPRewardsPoolAddress(poolId).String(),
+		// multiplier for lp rewards
+		Multiplier: 1,
+	}
+
+	// Update pool information
+	params.PoolInfos = append(params.PoolInfos, poolInfo)
+	k.SetParams(ctx, params)
+
+	return true
+}
+
+// UpdatePoolMultipliers updates pool multipliers through gov proposal
+func (k Keeper) UpdatePoolMultipliers(ctx sdk.Context, poolMultipliers []types.PoolMultipliers) bool {
+	if len(poolMultipliers) < 1 {
+		return false
+	}
+
+	// Fetch incentive params
+	params := k.GetParams(ctx)
+
+	// Update pool multiplier
+	for _, pm := range poolMultipliers {
+		for i, p := range params.PoolInfos {
+			// If we found matching poolId
+			if p.PoolId == pm.PoolId {
+				params.PoolInfos[i].Multiplier = pm.Multiplier
+			}
+		}
+	}
+
+	// Update parameter
+	k.SetParams(ctx, params)
+
+	return true
 }
 
 // Find out active incentive params
@@ -122,13 +192,15 @@ func (k Keeper) UpdateTotalCommitmentInfo(ctx sdk.Context) {
 		k.tci.TotalEdenEdenBoostCommitted = k.tci.TotalEdenEdenBoostCommitted.Add(committedEdenToken).Add(committedEdenBoostToken)
 
 		// Iterate to calculate total Lp tokens committed
-		k.Lpk.IterateLiquidityPools(ctx, func(l LiquidityPool) bool {
-			committedLpToken := commitments.GetCommittedAmountForDenom(l.lpToken)
-			amt, ok := k.tci.TotalLpTokensCommitted[l.lpToken]
+		k.amm.IterateLiquidityPools(ctx, func(p ammtypes.Pool) bool {
+			lpToken := ammtypes.GetPoolShareDenom(p.GetPoolId())
+
+			committedLpToken := commitments.GetCommittedAmountForDenom(lpToken)
+			amt, ok := k.tci.TotalLpTokensCommitted[lpToken]
 			if !ok {
-				k.tci.TotalLpTokensCommitted[l.lpToken] = committedLpToken
+				k.tci.TotalLpTokensCommitted[lpToken] = committedLpToken
 			} else {
-				k.tci.TotalLpTokensCommitted[l.lpToken] = amt.Add(committedLpToken)
+				k.tci.TotalLpTokensCommitted[lpToken] = amt.Add(committedLpToken)
 			}
 			return false
 		})

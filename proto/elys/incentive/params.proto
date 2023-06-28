@@ -3,6 +3,7 @@ package elysnetwork.elys.incentive;
 
 import "gogoproto/gogo.proto";
 import "elys/incentive/incentive.proto";
+import "elys/incentive/pool.proto";
 
 option go_package = "github.com/elys-network/elys/x/incentive/types";
 
@@ -23,4 +24,8 @@ message Params {
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
+  
+  // Pool information
+  // poolId, reward wallet, mulitplier
+	repeated PoolInfo pool_infos = 6 [(gogoproto.nullable) = false];
 }

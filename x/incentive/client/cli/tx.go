@@ -2,6 +2,7 @@ package cli
 
 import (
 	"fmt"
+	"strconv"
 	"strings"
 	"time"
 
@@ -9,11 +10,13 @@ import (
 	"github.com/spf13/pflag"
 
 	"github.com/cosmos/cosmos-sdk/client"
-	// "github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/cosmos/cosmos-sdk/version"
+	"github.com/cosmos/cosmos-sdk/x/gov/client/cli"
+	"github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
 	"github.com/elys-network/elys/x/incentive/types"
 )
 
@@ -40,7 +43,8 @@ func GetTxCmd() *cobra.Command {
 		RunE:                       client.ValidateCmd,
 	}
 	cmd.AddCommand(
-		NewWithdrawRewardsCmd(),
+		CmdWithdrawRewardsCmd(),
+		CmdUpdatePoolInfoProposal(),
 	)
 
 	// this line is used by starport scaffolding # 1
@@ -76,8 +80,8 @@ func newSplitAndApply(
 	return nil
 }
 
-// NewWithdrawRewardsCmd returns a CLI command handler for creating a MsgWithdrawDelegatorReward transaction.
-func NewWithdrawRewardsCmd() *cobra.Command {
+// CmdWithdrawRewardsCmd returns a CLI command handler for creating a MsgWithdrawDelegatorReward transaction.
+func CmdWithdrawRewardsCmd() *cobra.Command {
 	bech32PrefixValAddr := sdk.GetConfig().GetBech32ValidatorAddrPrefix()
 
 	cmd := &cobra.Command{
@@ -119,6 +123,91 @@ $ %s tx incentive withdraw-rewards --from mykey --commission --validator-address
 
 	cmd.Flags().Bool(FlagCommission, false, "Withdraw the validator's commission in addition to the rewards")
 	cmd.Flags().String(FlagValidatorAddress, "", "Validator's operator address to withdraw commission from")
+	flags.AddTxFlagsToCmd(cmd)
+
+	return cmd
+}
+
+// CmdUpdatePoolInfoProposal returns a CLI command handler for submitting a UpdatePoolInfo proposal.
+func CmdUpdatePoolInfoProposal() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "update-pool-info [pool-ids] [multipliers]",
+		Short: "Submit an update-pool-info proposal",
+		Long:  "e.g. update-pool-info 1,2,3,4, 1,1,2,2",
+		Args:  cobra.ExactArgs(2),
+		RunE: func(cmd *cobra.Command, args []string) (err error) {
+			argPoolIds := args[0]
+			argMultipliers := args[1]
+
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			title, err := cmd.Flags().GetString(cli.FlagTitle)
+			if err != nil {
+				return err
+			}
+
+			description, err := cmd.Flags().GetString(cli.FlagDescription)
+			if err != nil {
+				return err
+			}
+
+			poolIds := strings.Split(argPoolIds, ",")
+			multipliers := strings.Split(argMultipliers, ",")
+			if len(poolIds) < 1 || len(poolIds) != len(multipliers) {
+				return sdkerrors.Wrapf(sdkerrors.ErrInvalidType, "invalid parameter")
+			}
+
+			poolMultipliers := make([]types.PoolMultipliers, 0)
+			for i := range poolIds {
+				poolId, err := strconv.ParseUint(poolIds[i], 10, 64)
+				if err != nil {
+					return sdkerrors.Wrapf(sdkerrors.ErrInvalidType, "invalid parameter")
+				}
+
+				multiplier, err := strconv.ParseUint(multipliers[i], 10, 64)
+				if err != nil {
+					return sdkerrors.Wrapf(sdkerrors.ErrInvalidType, "invalid parameter")
+				}
+				poolMultiplier := types.PoolMultipliers{
+					PoolId:     poolId,
+					Multiplier: multiplier,
+				}
+
+				poolMultipliers = append(poolMultipliers, poolMultiplier)
+			}
+
+			content := types.NewProposalUpdatePoolMultipliers(
+				title,
+				description,
+				poolMultipliers,
+			)
+
+			from := clientCtx.GetFromAddress()
+
+			depositStr, err := cmd.Flags().GetString(cli.FlagDeposit)
+			if err != nil {
+				return err
+			}
+			deposit, err := sdk.ParseCoinsNormalized(depositStr)
+			if err != nil {
+				return err
+			}
+
+			msg, err := v1beta1.NewMsgSubmitProposal(content, deposit, from)
+			if err != nil {
+				return err
+			}
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+		},
+	}
+
+	cmd.Flags().String(cli.FlagTitle, "", "title of proposal")
+	cmd.Flags().String(cli.FlagDescription, "", "description of proposal")
+	cmd.Flags().String(cli.FlagDeposit, "", "deposit of proposal")
 	flags.AddTxFlagsToCmd(cmd)
 
 	return cmd

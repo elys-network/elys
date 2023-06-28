@@ -9,6 +9,7 @@ import (
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
 	"github.com/tendermint/tendermint/libs/log"
 
+	ammtypes "github.com/elys-network/elys/x/amm/types"
 	ctypes "github.com/elys-network/elys/x/commitment/types"
 	"github.com/elys-network/elys/x/incentive/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
@@ -16,21 +17,20 @@ import (
 
 type (
 	Keeper struct {
-		cdc        codec.BinaryCodec
-		storeKey   storetypes.StoreKey
-		memKey     storetypes.StoreKey
-		paramstore paramtypes.Subspace
-		cmk        types.CommitmentKeeper
-		stk        types.StakingKeeper
-		tci        *types.TotalCommitmentInfo
-		authKeeper types.AccountKeeper
-		bankKeeper types.BankKeeper
-		amm        types.AmmKeeper
+		cdc          codec.BinaryCodec
+		storeKey     storetypes.StoreKey
+		memKey       storetypes.StoreKey
+		paramstore   paramtypes.Subspace
+		cmk          types.CommitmentKeeper
+		stk          types.StakingKeeper
+		tci          *types.TotalCommitmentInfo
+		authKeeper   types.AccountKeeper
+		bankKeeper   types.BankKeeper
+		amm          types.AmmKeeper
+		oracleKeeper types.OracleKeeper
 
 		feeCollectorName    string // name of the FeeCollector ModuleAccount
 		dexRevCollectorName string // name of the Dex Revenue ModuleAccount
-
-		Lpk *LiquidityKeeper
 	}
 )
 
@@ -44,6 +44,7 @@ func NewKeeper(
 	ak types.AccountKeeper,
 	bk types.BankKeeper,
 	amm types.AmmKeeper,
+	ok types.OracleKeeper,
 	feeCollectorName string,
 	dexRevCollectorName string,
 ) *Keeper {
@@ -65,7 +66,7 @@ func NewKeeper(
 		authKeeper:          ak,
 		bankKeeper:          bk,
 		amm:                 amm,
-		Lpk:                 NewLiquidityKeeper(),
+		oracleKeeper:        ok,
 	}
 }
 
@@ -120,7 +121,7 @@ func (k Keeper) UpdateUncommittedTokens(ctx sdk.Context, epochIdentifier string,
 	// We have 3 pools of 20, 30, 40 TVL
 	// We have mulitplier of 0.3, 0.5, 1.0
 	// Proxy TVL = 20*0.3+30*0.5+40*1.0
-	totalProxyTVL := k.Lpk.CalculateProxyTVL()
+	totalProxyTVL := k.CalculateProxyTVL(ctx)
 
 	totalEdenGiven := sdk.ZeroInt()
 	totalEdenGivenLP := sdk.ZeroInt()
@@ -177,8 +178,9 @@ func (k Keeper) UpdateUncommittedTokens(ctx sdk.Context, epochIdentifier string,
 		},
 	)
 
+	// TODO
 	// After give DEX rewards, we should update its record in order to avoid double spend.
-	k.Lpk.UpdateRewardsAccmulated(ctx)
+	// UpdateRewardsAccmulated(ctx)
 
 	// Calcualte the remainings
 	edenRemained := edenAmountPerEpochStakers.Sub(totalEdenGiven)
@@ -232,4 +234,47 @@ func (k Keeper) UpdateTokensCommitment(commitments *ctypes.Commitments, new_unco
 	} else {
 		uncommittedEden.Amount = uncommittedEden.Amount.Add(new_uncommitted_eden_tokens)
 	}
+}
+
+// Calculate Proxy TVL
+func (k Keeper) CalculateProxyTVL(ctx sdk.Context) sdk.Dec {
+	multipliedShareSum := sdk.ZeroDec()
+	k.amm.IterateLiquidityPools(ctx, func(p ammtypes.Pool) bool {
+		tvl, err := p.TVL(ctx, k.oracleKeeper)
+		if err != nil {
+			return false
+		}
+
+		// Get pool info from incentive param
+		poolInfo, found := k.GetPoolInfo(ctx, p.GetPoolId())
+		if !found {
+			return false
+		}
+
+		proxyTVL := tvl.MulInt64((int64)(poolInfo.Multiplier))
+
+		// Calculate total pool share by TVL and multiplier
+		multipliedShareSum = multipliedShareSum.Add(proxyTVL)
+
+		return false
+	})
+
+	// return total sum of TVL share using multiplier of all pools
+	return multipliedShareSum
+}
+
+// Caculate total TVL
+func (k Keeper) CalculateTVL(ctx sdk.Context) sdk.Dec {
+	TVL := sdk.ZeroDec()
+
+	k.amm.IterateLiquidityPools(ctx, func(p ammtypes.Pool) bool {
+		tvl, err := p.TVL(ctx, k.oracleKeeper)
+		if err != nil {
+			return false
+		}
+		TVL = TVL.Add(tvl)
+		return false
+	})
+
+	return TVL
 }

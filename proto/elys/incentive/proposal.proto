@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package elysnetwork.elys.incentive;
+
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/elys-network/elys/x/incentive/types";
+
+message PoolMultipliers {
+  uint64 poolId = 1;
+  uint64 multiplier = 2;
+}
+
+message ProposalUpdatePoolMultipliers {
+  string title = 1;
+  string description = 2;
+  repeated PoolMultipliers poolMultipliers = 3 [ (gogoproto.nullable) = false ];
+}

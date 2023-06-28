@@ -579,7 +579,7 @@ func NewElysApp(
 		app.BankKeeper,
 		app.AccountKeeper,
 		app.OracleKeeper,
-    &app.CommitmentKeeper,
+		&app.CommitmentKeeper,
 		app.AssetprofileKeeper,
 	)
 	ammModule := ammmodule.NewAppModule(appCodec, app.AmmKeeper, app.AccountKeeper, app.BankKeeper)
@@ -594,6 +594,7 @@ func NewElysApp(
 		app.AccountKeeper,
 		app.BankKeeper,
 		app.AmmKeeper,
+		app.OracleKeeper,
 		authtypes.FeeCollectorName,
 		DexRevenueCollectorName,
 	)
@@ -656,6 +657,7 @@ func NewElysApp(
 		AddRoute(upgradetypes.RouterKey, upgrade.NewSoftwareUpgradeProposalHandler(app.UpgradeKeeper)).
 		AddRoute(ibcclienttypes.RouterKey, ibcclient.NewClientProposalHandler(app.IBCKeeper.ClientKeeper)).
 		AddRoute(oracletypes.RouterKey, oraclemodule.NewAssetInfoProposalHandler(&app.OracleKeeper)).
+		AddRoute(incentivemoduletypes.RouterKey, incentivemodule.NewPoolInfoProposalHandler(&app.IncentiveKeeper)).
 		AddRoute(parametermoduletypes.RouterKey, parametermodule.NewParameterChangeProposalHandler(&app.ParameterKeeper))
 	govConfig := govtypes.DefaultConfig()
 	app.GovKeeper = govkeeper.NewKeeper(
@@ -704,7 +706,8 @@ func NewElysApp(
 
 	app.AmmKeeper.SetHooks(
 		ammmoduletypes.NewMultiAmmHooks(
-		// insert amm hooks receivers here
+			// insert amm hooks receivers here
+			app.IncentiveKeeper.AmmHooks(),
 		),
 	)
 

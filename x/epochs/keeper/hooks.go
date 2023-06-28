@@ -48,10 +48,17 @@ func (mh MultiEpochHooks) BeforeEpochStart(ctx sdk.Context, epochIdentifier stri
 
 // AfterEpochEnd executes the indicated hook after epochs ends
 func (k Keeper) AfterEpochEnd(ctx sdk.Context, identifier string, epochNumber int64) {
+	if k.hooks == nil {
+		return
+	}
 	k.hooks.AfterEpochEnd(ctx, identifier, epochNumber)
 }
 
 // BeforeEpochStart executes the indicated hook before the epochs
 func (k Keeper) BeforeEpochStart(ctx sdk.Context, identifier string, epochNumber int64) {
+	if k.hooks == nil {
+		return
+	}
+
 	k.hooks.BeforeEpochStart(ctx, identifier, epochNumber)
 }

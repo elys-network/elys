@@ -50,7 +50,7 @@ func (k msgServer) DepositTokens(goCtx context.Context, msg *types.MsgDepositTok
 		}
 	}
 	// Get the uncommitted tokens for the creator
-	uncommittedToken, _ := commitments.GetUncommittedTokensForDenom(msg.Denom)
+	uncommittedToken, found := commitments.GetUncommittedTokensForDenom(msg.Denom)
 	if !found {
 		uncommittedTokens := commitments.GetUncommittedTokens()
 		uncommittedToken = &types.UncommittedTokens{
@@ -60,6 +60,7 @@ func (k msgServer) DepositTokens(goCtx context.Context, msg *types.MsgDepositTok
 		uncommittedTokens = append(uncommittedTokens, uncommittedToken)
 		commitments.UncommittedTokens = uncommittedTokens
 	}
+
 	// Update the uncommitted tokens amount
 	uncommittedToken.Amount = uncommittedToken.Amount.Add(msg.Amount)
 

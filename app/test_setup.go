@@ -2,7 +2,6 @@ package app
 
 import (
 	"encoding/json"
-	"strconv"
 	"time"
 
 	sdkmath "cosmossdk.io/math"
@@ -25,7 +24,6 @@ import (
 
 	"github.com/elys-network/elys/x/commitment/types"
 	ctypes "github.com/elys-network/elys/x/commitment/types"
-	ikeeper "github.com/elys-network/elys/x/incentive/keeper"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
 
@@ -229,27 +227,6 @@ func initAccountWithCoins(app *ElysApp, ctx sdk.Context, addr sdk.AccAddress, co
 	if err != nil {
 		panic(err)
 	}
-}
-
-// Add 2 dummy liquidty pool and dummy deposit history
-func AddTestLiquidityPool(addresses []sdk.AccAddress) *ikeeper.LiquidityKeeper {
-	lpk := ikeeper.NewLiquidityKeeper()
-	lpk.AddLiquidityPool("elys-usdc", sdk.NewInt(0), 5, "lp-elys-usdc", sdk.NewDec(10000))
-	lpk.AddLiquidityPool("ueden-usdc", sdk.NewInt(0), 4, "lp-ueden-usdc", sdk.NewDec(1000))
-	lpk.AddLiquidityPool("juno-usdc", sdk.NewInt(0), 2, "lp-juno-usdc", sdk.NewDec(100))
-
-	for i, addr := range addresses {
-		amt := sdk.NewInt(500)
-		amt = amt.Mul(sdk.NewInt((int64)(i + 1)))
-		lpk.DepositTokenToLP(strconv.Itoa(i), "elys-usdc", amt, addr.String(), "elys")
-	}
-
-	for i, addr := range addresses {
-		amt := sdk.NewInt(2000)
-		amt = amt.Quo(sdk.NewInt((int64)(i + 1)))
-		lpk.DepositTokenToLP(strconv.Itoa(i), "ueden-usdc", amt, addr.String(), "ueden")
-	}
-	return lpk
 }
 
 // Add testing commitments
