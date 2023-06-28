@@ -32,7 +32,7 @@ func (suite *KeeperTestSuite) TestMsgServerCreatePool() {
 				StakingFeePortion:           sdk.ZeroDec(),
 				WeightRecoveryFeePortion:    sdk.ZeroDec(),
 				ThresholdWeightDifference:   sdk.ZeroDec(),
-				FeeDenom:                    "",
+				FeeDenom:                    "uusdc",
 			},
 			poolAssets: []types.PoolAsset{
 				{
@@ -61,7 +61,7 @@ func (suite *KeeperTestSuite) TestMsgServerCreatePool() {
 				StakingFeePortion:           sdk.ZeroDec(),
 				WeightRecoveryFeePortion:    sdk.ZeroDec(),
 				ThresholdWeightDifference:   sdk.ZeroDec(),
-				FeeDenom:                    "",
+				FeeDenom:                    "uusdc",
 			},
 			poolAssets: []types.PoolAsset{
 				{
@@ -90,7 +90,7 @@ func (suite *KeeperTestSuite) TestMsgServerCreatePool() {
 				StakingFeePortion:           sdk.ZeroDec(),
 				WeightRecoveryFeePortion:    sdk.ZeroDec(),
 				ThresholdWeightDifference:   sdk.ZeroDec(),
-				FeeDenom:                    "",
+				FeeDenom:                    "uusdc",
 			},
 			poolAssets: []types.PoolAsset{
 				{

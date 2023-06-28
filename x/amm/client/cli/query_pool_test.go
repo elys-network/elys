@@ -42,7 +42,7 @@ func networkWithPoolObjects(t *testing.T, n int) (*network.Network, []types.Pool
 				StakingFeePortion:           sdk.ZeroDec(),
 				WeightRecoveryFeePortion:    sdk.ZeroDec(),
 				ThresholdWeightDifference:   sdk.ZeroDec(),
-				FeeDenom:                    "",
+				FeeDenom:                    "uusdc",
 			},
 		}
 		nullify.Fill(&pool)

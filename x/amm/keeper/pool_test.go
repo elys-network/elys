@@ -30,7 +30,7 @@ func createNPool(keeper *keeper.Keeper, ctx sdk.Context, n int) []types.Pool {
 			StakingFeePortion:           sdk.ZeroDec(),
 			WeightRecoveryFeePortion:    sdk.ZeroDec(),
 			ThresholdWeightDifference:   sdk.ZeroDec(),
-			FeeDenom:                    "",
+			FeeDenom:                    "uusdc",
 		}
 
 		keeper.SetPool(ctx, items[i])
