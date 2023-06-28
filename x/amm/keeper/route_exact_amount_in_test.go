@@ -69,7 +69,7 @@ func (suite *KeeperTestSuite) TestRouteExactAmountIn() {
 			weightBalanceBonus:  sdk.ZeroDec(),
 			expSenderBalance:    sdk.Coins{sdk.NewInt64Coin("uelys", 990000), sdk.NewInt64Coin("uusdc", 1009704)},
 			expPoolBalance:      sdk.Coins{sdk.NewInt64Coin("uelys", 1010000), sdk.NewInt64Coin("uusdc", 990198)},
-			expTreasuryBalance:  sdk.Coins{sdk.NewInt64Coin("uelys", 1000000), sdk.NewInt64Coin("uusdc", 1000098)},
+			expTreasuryBalance:  sdk.Coins{sdk.NewInt64Coin("uelys", 1000000), sdk.NewInt64Coin("uusdc", 1000010)},
 			expPass:             true,
 		},
 		{
@@ -155,7 +155,8 @@ func (suite *KeeperTestSuite) TestRouteExactAmountIn() {
 				Address:           poolAddr.String(),
 				RebalanceTreasury: treasuryAddr.String(),
 				PoolParams: types.PoolParams{
-					SwapFee: tc.swapFeeIn,
+					SwapFee:  tc.swapFeeIn,
+					FeeDenom: "uusdc",
 				},
 				TotalShares: sdk.Coin{},
 				PoolAssets: []types.PoolAsset{

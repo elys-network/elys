@@ -34,7 +34,7 @@ func (suite *KeeperTestSuite) TestMsgServerJoinPool() {
 				StakingFeePortion:           sdk.ZeroDec(),
 				WeightRecoveryFeePortion:    sdk.ZeroDec(),
 				ThresholdWeightDifference:   sdk.ZeroDec(),
-				FeeDenom:                    "",
+				FeeDenom:                    "uusdc",
 			},
 			shareOutAmount:   types.OneShare.Quo(sdk.NewInt(5)),
 			expSenderBalance: sdk.Coins{},
@@ -55,7 +55,7 @@ func (suite *KeeperTestSuite) TestMsgServerJoinPool() {
 				StakingFeePortion:           sdk.ZeroDec(),
 				WeightRecoveryFeePortion:    sdk.ZeroDec(),
 				ThresholdWeightDifference:   sdk.ZeroDec(),
-				FeeDenom:                    "",
+				FeeDenom:                    "uusdc",
 			},
 			shareOutAmount:   types.OneShare.Quo(sdk.NewInt(5)),
 			expSenderBalance: sdk.Coins{},
@@ -76,7 +76,7 @@ func (suite *KeeperTestSuite) TestMsgServerJoinPool() {
 				StakingFeePortion:           sdk.ZeroDec(),
 				WeightRecoveryFeePortion:    sdk.ZeroDec(),
 				ThresholdWeightDifference:   sdk.NewDecWithPrec(2, 1), // 20%
-				FeeDenom:                    "",
+				FeeDenom:                    "uusdc",
 			},
 			shareOutAmount:   sdk.NewInt(833333333333333333), // weight breaking fee
 			expSenderBalance: sdk.Coins{},
@@ -97,7 +97,7 @@ func (suite *KeeperTestSuite) TestMsgServerJoinPool() {
 				StakingFeePortion:           sdk.ZeroDec(),
 				WeightRecoveryFeePortion:    sdk.ZeroDec(),
 				ThresholdWeightDifference:   sdk.NewDecWithPrec(2, 1), // 20%
-				FeeDenom:                    "",
+				FeeDenom:                    "uusdc",
 			},
 			shareOutAmount:   sdk.NewInt(1250000000000000000), // weight breaking fee
 			expSenderBalance: sdk.Coins{},

@@ -157,7 +157,7 @@ func (suite *KeeperTestSuite) TestUpdatePoolForSwap() {
 					StakingFeePortion:           sdk.ZeroDec(),
 					WeightRecoveryFeePortion:    sdk.ZeroDec(),
 					ThresholdWeightDifference:   sdk.ZeroDec(),
-					FeeDenom:                    "",
+					FeeDenom:                    "uusdc",
 				},
 				TotalShares: sdk.Coin{},
 				PoolAssets:  []types.PoolAsset(nil),
