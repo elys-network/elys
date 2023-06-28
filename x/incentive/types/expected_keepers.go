@@ -55,6 +55,7 @@ type AccountKeeper interface {
 // BankKeeper defines the expected interface needed to retrieve account balances.
 type BankKeeper interface {
 	GetAllBalances(ctx sdk.Context, addr sdk.AccAddress) sdk.Coins
+	GetBalance(ctx sdk.Context, addr sdk.AccAddress, denom string) sdk.Coin
 
 	SpendableCoins(ctx sdk.Context, addr sdk.AccAddress) sdk.Coins
 
@@ -81,5 +82,13 @@ type AmmKeeper interface {
 	GetAllPoolIdsWithDenom(sdk.Context, string) []uint64
 	// GetPool returns a pool from its index
 	GetPool(sdk.Context, uint64) (ammtypes.Pool, bool)
+	// Get all pools
 	GetAllPool(sdk.Context) []ammtypes.Pool
+	// IterateCommitments iterates over all Commitments and performs a callback.
+	IterateLiquidityPools(sdk.Context, func(ammtypes.Pool) bool)
+}
+
+// OracleKeeper defines the expected interface needed to retrieve price info
+type OracleKeeper interface {
+	GetAssetPriceFromDenom(ctx sdk.Context, denom string) sdk.Dec
 }

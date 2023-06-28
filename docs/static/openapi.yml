@@ -33728,6 +33728,26 @@ paths:
                     description: >-
                       Dex revenue percent for lps, 100 - reward_portion_for_lps
                       = revenue percent for stakers.
+                  pool_infos:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        pool_id:
+                          type: string
+                          format: uint64
+                          title: reward amount
+                        reward_wallet:
+                          type: string
+                          title: reward wallet address
+                        multiplier:
+                          type: string
+                          format: uint64
+                          title: multiplier for lp rewards
+                      title: Pool Info
+                    title: |-
+                      Pool information
+                      poolId, reward wallet, mulitplier
             description: >-
               QueryParamsResponse is response type for the Query/Params RPC
               method.
@@ -70069,7 +70089,42 @@ definitions:
         description: >-
           Dex revenue percent for lps, 100 - reward_portion_for_lps = revenue
           percent for stakers.
+      pool_infos:
+        type: array
+        items:
+          type: object
+          properties:
+            pool_id:
+              type: string
+              format: uint64
+              title: reward amount
+            reward_wallet:
+              type: string
+              title: reward wallet address
+            multiplier:
+              type: string
+              format: uint64
+              title: multiplier for lp rewards
+          title: Pool Info
+        title: |-
+          Pool information
+          poolId, reward wallet, mulitplier
     description: Params defines the parameters for the module.
+  elysnetwork.elys.incentive.PoolInfo:
+    type: object
+    properties:
+      pool_id:
+        type: string
+        format: uint64
+        title: reward amount
+      reward_wallet:
+        type: string
+        title: reward wallet address
+      multiplier:
+        type: string
+        format: uint64
+        title: multiplier for lp rewards
+    title: Pool Info
   elysnetwork.elys.incentive.QueryCommunityPoolResponse:
     type: object
     properties:
@@ -70156,6 +70211,26 @@ definitions:
             description: >-
               Dex revenue percent for lps, 100 - reward_portion_for_lps =
               revenue percent for stakers.
+          pool_infos:
+            type: array
+            items:
+              type: object
+              properties:
+                pool_id:
+                  type: string
+                  format: uint64
+                  title: reward amount
+                reward_wallet:
+                  type: string
+                  title: reward wallet address
+                multiplier:
+                  type: string
+                  format: uint64
+                  title: multiplier for lp rewards
+              title: Pool Info
+            title: |-
+              Pool information
+              poolId, reward wallet, mulitplier
     description: QueryParamsResponse is response type for the Query/Params RPC method.
   elysnetwork.elys.liquidityprovider.Params:
     type: object
