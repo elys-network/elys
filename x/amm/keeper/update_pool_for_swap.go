@@ -39,7 +39,10 @@ func (k Keeper) UpdatePoolForSwap(
 		if err != nil {
 			return err, sdk.ZeroInt()
 		}
-		k.OnCollectFee(ctx, pool, swapFeeInCoins)
+		err = k.OnCollectFee(ctx, pool, swapFeeInCoins)
+		if err != nil {
+			return err, sdk.ZeroInt()
+		}
 	}
 
 	err = k.bankKeeper.SendCoins(ctx, poolAddr, sender, sdk.Coins{tokenOut})
@@ -54,7 +57,10 @@ func (k Keeper) UpdatePoolForSwap(
 		if err != nil {
 			return err, sdk.ZeroInt()
 		}
-		k.OnCollectFee(ctx, pool, swapFeeOutCoins)
+		err = k.OnCollectFee(ctx, pool, swapFeeOutCoins)
+		if err != nil {
+			return err, sdk.ZeroInt()
+		}
 	}
 
 	// calculate treasury amount to send as bonus

@@ -36,7 +36,9 @@ func (k Keeper) applyExitPoolStateChange(ctx sdk.Context, pool types.Pool, exite
 		return err
 	}
 
-	k.OnCollectFee(ctx, pool, exitFeeCoins)
+	if err := k.OnCollectFee(ctx, pool, exitFeeCoins); err != nil {
+		return err
+	}
 
 	if err := k.BurnPoolShareFromAccount(ctx, pool, exiter, numShares); err != nil {
 		return err
