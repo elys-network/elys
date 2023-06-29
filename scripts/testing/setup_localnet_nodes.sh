@@ -51,7 +51,8 @@ prompt_to_stop_screens() {
         case $choice in
             [Yy]*)
                 for screen_name in "${existing_screens[@]}"; do
-                    screen -S "${screen_name}" -X stuff "^C"
+                    screen -XS "${screen_name}" stuff "^C"
+                    screen -XS "${screen_name}" quit
                 done
                 ;;
             [Nn]*)
@@ -174,51 +175,51 @@ EOF
         echo "$node_key_content" > "$node_key_path"
 
         # Update config file peers
-        peers=${peers::-1} # Remove last comma
-        sed -i "s/^persistent_peers =.*/persistent_peers = \"${peers}\"/" "$config_path"
+        peers=${peers%,} # Remove last comma
+
+        sed -i "" "s/^persistent_peers =.*/persistent_peers = \"${peers}\"/" "$config_path"
 
         # Set config file allow_duplicate_ip property to true
-        sed -i "s/^allow_duplicate_ip =.*/allow_duplicate_ip = true/" "$config_path"
+        sed -i "" "s/^allow_duplicate_ip =.*/allow_duplicate_ip = true/" "$config_path"
 
-        # Set config file allow_duplicate_ip property to true
-        sed -i "s/^cors_allowed_origins =.*/cors_allowed_origins = [\"*\"]/" "$config_path"
+        # Set config file cors_allowed_origins property to wildcard
+        sed -i "" "s/^cors_allowed_origins =.*/cors_allowed_origins = [\"*\"]/" "$config_path"
 
         # Update rpc laddr in config with node port
-        sed -i "s/^laddr = \"tcp:\/\/127.0.0.1:26657\"/laddr = \"tcp:\/\/127.0.0.1:${node_rpc_port}\"/" "$config_path"
+        sed -i "" "s/^laddr = \"tcp:\/\/127.0.0.1:26657\"/laddr = \"tcp:\/\/127.0.0.1:${node_rpc_port}\"/" "$config_path"
 
         # Update p2p laddr in config with node port
-        sed -i "s/^laddr = \"tcp:\/\/0.0.0.0:26656\"/laddr = \"tcp:\/\/127.0.0.1:${node_p2p_port}\"/" "$config_path"
+        sed -i "" "s/^laddr = \"tcp:\/\/0.0.0.0:26656\"/laddr = \"tcp:\/\/127.0.0.1:${node_p2p_port}\"/" "$config_path"
 
         # Update p2p laddr in config with node port
-        sed -i "s/^pprof_laddr =.*/pprof_laddr = \"localhost:${node_pprof_port}\"/" "$config_path"
+        sed -i "" "s/^pprof_laddr =.*/pprof_laddr = \"localhost:${node_pprof_port}\"/" "$config_path"
 
         # Reduce timeout propose in config
-        sed -i "s/^timeout_propose =.*/timeout_propose = \"3s\"/" "$config_path"
+        sed -i "" "s/^timeout_propose =.*/timeout_propose = \"3s\"/" "$config_path"
 
         # Reduce timeout propose delta in config
-        sed -i "s/^timeout_propose_delta =.*/timeout_propose_delta = \"500ms\"/" "$config_path"
+        sed -i "" "s/^timeout_propose_delta =.*/timeout_propose_delta = \"500ms\"/" "$config_path"
 
         # Reduce timeout prevote in config
-        sed -i "s/^timeout_prevote =.*/timeout_prevote = \"1s\"/" "$config_path"
+        sed -i "" "s/^timeout_prevote =.*/timeout_prevote = \"1s\"/" "$config_path"
 
         # Reduce timeout prevote delta in config
-        sed -i "s/^timeout_prevote_delta =.*/timeout_prevote_delta = \"500ms\"/" "$config_path"
+        sed -i "" "s/^timeout_prevote_delta =.*/timeout_prevote_delta = \"500ms\"/" "$config_path"
 
         # Reduce timeout precommit in config
-        sed -i "s/^timeout_precommit =.*/timeout_precommit = \"1s\"/" "$config_path"
+        sed -i "" "s/^timeout_precommit =.*/timeout_precommit = \"1s\"/" "$config_path"
 
         # Reduce timeout precommit delta in config
-        sed -i "s/^timeout_precommit_delta =.*/timeout_precommit_delta = \"500ms\"/" "$config_path"
+        sed -i "" "s/^timeout_precommit_delta =.*/timeout_precommit_delta = \"500ms\"/" "$config_path"
 
         # Reduce timeout commit in config
-        sed -i "s/^timeout_commit =.*/timeout_commit = \"4s\"/" "$config_path"
-
+        sed -i "" "s/^timeout_commit =.*/timeout_commit = \"4s\"/" "$config_path"
 
         # Update grpc in app with node port
-        sed -i "s/^address = \"0.0.0.0:9090\"/address = \"0.0.0.0:${node_grpc_port}\"/" "$app_path"
+        sed -i "" "s/^address = \"0.0.0.0:9090\"/address = \"0.0.0.0:${node_grpc_port}\"/" "$app_path"
 
         # Update grpc web in app with node port
-        sed -i "s/^address = \"0.0.0.0:9091\"/address = \"0.0.0.0:${node_grpc_web_port}\"/" "$app_path"
+        sed -i "" "s/^address = \"0.0.0.0:9091\"/address = \"0.0.0.0:${node_grpc_web_port}\"/" "$app_path"
     done
 }
 
