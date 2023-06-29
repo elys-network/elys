@@ -27,7 +27,7 @@ func (k Keeper) OnCollectFee(ctx sdk.Context, pool types.Pool, fee sdk.Coins) er
 	if err != nil {
 		return nil
 	}
-	return k.SwapFeesToRevenueToken(ctx, pool, fee)
+	return k.SwapFeesToRevenueToken(ctx, pool, revenueAmount)
 }
 
 // No fee management required when doing swap from fees to revenue token
