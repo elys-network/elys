@@ -3,25 +3,17 @@ package keeper
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
-	"github.com/elys-network/elys/x/incentive/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
 
-// Move gas fees collected to incentive module
-func (k Keeper) CollectGasFeesToIncentiveModule(ctx sdk.Context) sdk.Coins {
-	// fetch and clear the collected fees for distribution, since this is
-	// called in BeginBlock, collected fees will be from the previous block
-	// (and distributed to the previous proposer)
-	feeCollector := k.authKeeper.GetModuleAccount(ctx, k.feeCollectorName)
-	feesCollectedInt := k.bankKeeper.GetAllBalances(ctx, feeCollector.GetAddress())
-
-	// Get pool Ids that can convert Elys
-	poolIds := k.amm.GetAllPoolIdsWithDenom(ctx, ptypes.Elys)
+// FindPool function gets a pool that can convert in_denom token to out_denom token
+// TODO:
+// Later on: add a logic to choose best pool
+func (k Keeper) FindPool(ctx sdk.Context, in_denom string, out_denom string) (ammtypes.Pool, bool) {
+	// Get pool ids that can convert tokenIn
+	poolIds := k.amm.GetAllPoolIdsWithDenom(ctx, in_denom)
 	poolId := uint64(9999999)
 
-	// Choose a pool that can convert Elys to USDC
-	// TODO:
-	// Later on: add a logic to choose best pool
 	for _, pId := range poolIds {
 		// Get a pool with poolId
 		pool, found := k.amm.GetPool(ctx, pId)
@@ -32,7 +24,7 @@ func (k Keeper) CollectGasFeesToIncentiveModule(ctx sdk.Context) sdk.Coins {
 		// Loop pool assets to find out USDC pair
 		for _, asset := range pool.PoolAssets {
 			// if USDC available,
-			if asset.Token.Denom == ptypes.USDC {
+			if asset.Token.Denom == out_denom {
 				poolId = pool.PoolId
 				break
 			}
@@ -46,45 +38,72 @@ func (k Keeper) CollectGasFeesToIncentiveModule(ctx sdk.Context) sdk.Coins {
 
 	// If the pool is not availble,
 	if poolId == uint64(9999999) {
-		return sdk.Coins{}
+		return ammtypes.Pool{}, false
 	}
 
-	// Prepare route, considering every pool will have USDC pair
-	// So use only 1 route. Elys to USDC
-	routes := make([]ammtypes.SwapAmountInRoute, 0)
-	route := ammtypes.SwapAmountInRoute{
-		PoolId:        poolId,
-		TokenOutDenom: ptypes.USDC,
+	// Return a pool found
+	return k.amm.GetPool(ctx, poolId)
+}
+
+// Move gas fees collected to dex revenue wallet
+// Convert it into USDC
+func (k Keeper) CollectGasFeesToIncentiveModule(ctx sdk.Context) sdk.Coins {
+	// fetch and clear the collected fees for distribution, since this is
+	// called in BeginBlock, collected fees will be from the previous block
+	// (and distributed to the previous proposer)
+	feeCollector := k.authKeeper.GetModuleAccount(ctx, k.feeCollectorName)
+	feesCollectedInt := k.bankKeeper.GetAllBalances(ctx, feeCollector.GetAddress())
+
+	// Total Swapped coin
+	totalSwappedCoins := sdk.Coins{}
+
+	for _, tokenIn := range feesCollectedInt {
+		// skip for fee denom - usdc
+		if tokenIn.Denom == ptypes.USDC {
+			continue
+		}
+
+		// Find a pool that can convert tokenIn to usdc
+		pool, found := k.FindPool(ctx, tokenIn.Denom, ptypes.USDC)
+		if !found {
+			continue
+		}
+
+		// Executes the swap in the pool and stores the output. Updates pool assets but
+		// does not actually transfer any tokens to or from the pool.
+		tokenOutCoin, _, err := pool.SwapOutAmtGivenIn(ctx, k.oracleKeeper, sdk.Coins{tokenIn}, ptypes.USDC, sdk.ZeroDec())
+		if err != nil {
+			continue
+		}
+
+		tokenOutAmount := tokenOutCoin.Amount
+
+		if !tokenOutAmount.IsPositive() {
+			continue
+		}
+
+		// Settles balances between the tx sender and the pool to match the swap that was executed earlier.
+		// Also emits a swap event and updates related liquidity metrics.
+		err, _ = k.amm.UpdatePoolForSwap(ctx, pool, feeCollector.GetAddress(), tokenIn, tokenOutCoin, sdk.ZeroDec(), sdk.ZeroDec(), sdk.ZeroDec())
+		if err != nil {
+			continue
+		}
+
+		// Swapped USDC coin
+		swappedCoin := sdk.NewCoin(ptypes.USDC, tokenOutAmount)
+		swappedCoins := sdk.NewCoins(swappedCoin)
+
+		// Transfer converted USDC fees to the Dex revenue module account
+		err = k.bankKeeper.SendCoinsFromModuleToModule(ctx, k.feeCollectorName, k.dexRevCollectorName, swappedCoins)
+		if err != nil {
+			panic(err)
+		}
+
+		// Sum total swapped
+		totalSwappedCoins = totalSwappedCoins.Add(swappedCoins...)
 	}
 
-	// Routes
-	routes = append(routes, route)
-
-	// Amount in (Elys amount in sdk.Int)
-	amtIn := feesCollectedInt.AmountOf(ptypes.Elys)
-	// Elys token amount
-	tokenIn := sdk.NewCoin(ptypes.Elys, amtIn)
-
-	// Set zero to min out amount in order to have result all the time.
-	tokenOutMinAmount := sdk.ZeroInt()
-
-	// Convert Elys to USDC
-	tokenOutAmount, err := k.amm.RouteExactAmountIn(ctx, feeCollector.GetAddress(), routes, tokenIn, tokenOutMinAmount)
-	if err != nil {
-		return sdk.Coins{}
-	}
-
-	// Swapped USDC coin
-	swappedCoin := sdk.NewCoin(ptypes.USDC, tokenOutAmount)
-	swappedCoins := sdk.NewCoins(swappedCoin)
-
-	// Transfer converted USDC fees to the distribution module account
-	err = k.bankKeeper.SendCoinsFromModuleToModule(ctx, k.feeCollectorName, types.ModuleName, swappedCoins)
-	if err != nil {
-		panic(err)
-	}
-
-	return swappedCoins
+	return totalSwappedCoins
 }
 
 // Pull DEX revenus collected to incentive module

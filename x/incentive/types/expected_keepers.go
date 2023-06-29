@@ -68,16 +68,19 @@ type BankKeeper interface {
 
 // AmmKeeper defines the expected interface needed to swap tokens
 type AmmKeeper interface {
-	// RouteExactAmountIn defines the input denom and input amount for the first pool,
-	// the output of the first pool is chained as the input for the next routed pool
-	// transaction succeeds when final amount out is greater than tokenOutMinAmount defined.
-	RouteExactAmountIn(
+	// UpdatePoolForSwap takes a pool, sender, and tokenIn, tokenOut amounts
+	// It then updates the pool's balances to the new reserve amounts, and
+	// sends the in tokens from the sender to the pool, and the out tokens from the pool to the sender.
+	UpdatePoolForSwap(
 		ctx sdk.Context,
+		pool ammtypes.Pool,
 		sender sdk.AccAddress,
-		routes []ammtypes.SwapAmountInRoute,
 		tokenIn sdk.Coin,
-		tokenOutMinAmount sdk.Int,
-	) (tokenOutAmount sdk.Int, err error)
+		tokenOut sdk.Coin,
+		swapFeeIn sdk.Dec,
+		swapFeeOut sdk.Dec,
+		weightBalanceBonus sdk.Dec,
+	) (error, sdk.Int)
 	// Get pool Ids that contains the denom in pool assets
 	GetAllPoolIdsWithDenom(sdk.Context, string) []uint64
 	// GetPool returns a pool from its index
