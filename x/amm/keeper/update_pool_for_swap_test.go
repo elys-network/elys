@@ -64,8 +64,8 @@ func (suite *KeeperTestSuite) TestUpdatePoolForSwap() {
 			tokenOut:            sdk.NewInt64Coin("uusdc", 10000),
 			weightBalanceBonus:  sdk.ZeroDec(),
 			expSenderBalance:    sdk.Coins{sdk.NewInt64Coin("uelys", 990000), sdk.NewInt64Coin("uusdc", 1010000)},
-			expPoolBalance:      sdk.Coins{sdk.NewInt64Coin("uelys", 1009900), sdk.NewInt64Coin("uusdc", 990000)},
-			expTreasuryBalance:  sdk.Coins{sdk.NewInt64Coin("uelys", 1000100), sdk.NewInt64Coin("uusdc", 1000000)},
+			expPoolBalance:      sdk.Coins{sdk.NewInt64Coin("uelys", 1009990), sdk.NewInt64Coin("uusdc", 989911)},
+			expTreasuryBalance:  sdk.Coins{sdk.NewInt64Coin("uelys", 1000010), sdk.NewInt64Coin("uusdc", 1000000)},
 			expPass:             true,
 		},
 		{
@@ -157,10 +157,19 @@ func (suite *KeeperTestSuite) TestUpdatePoolForSwap() {
 					StakingFeePortion:           sdk.ZeroDec(),
 					WeightRecoveryFeePortion:    sdk.ZeroDec(),
 					ThresholdWeightDifference:   sdk.ZeroDec(),
-					FeeDenom:                    "",
+					FeeDenom:                    "uusdc",
 				},
 				TotalShares: sdk.Coin{},
-				PoolAssets:  []types.PoolAsset(nil),
+				PoolAssets: []types.PoolAsset{
+					{
+						Token:  tc.poolInitBalance[0],
+						Weight: sdk.NewInt(10),
+					},
+					{
+						Token:  tc.poolInitBalance[1],
+						Weight: sdk.NewInt(10),
+					},
+				},
 				TotalWeight: sdk.ZeroInt(),
 			}
 			err, _ = suite.app.AmmKeeper.UpdatePoolForSwap(suite.ctx, pool, sender, tc.tokenIn, tc.tokenOut, tc.swapFeeIn, tc.swapFeeOut, tc.weightBalanceBonus)

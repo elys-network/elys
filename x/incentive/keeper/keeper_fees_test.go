@@ -17,7 +17,11 @@ func TestCollectGasFeesToIncentiveModule(t *testing.T) {
 	app := simapp.InitElysTestApp(initChain)
 	ctx := app.BaseApp.NewContext(initChain, tmproto.Header{})
 
-	ik, bk, amm := app.IncentiveKeeper, app.BankKeeper, app.AmmKeeper
+	ik, bk, amm, oracle := app.IncentiveKeeper, app.BankKeeper, app.AmmKeeper, app.OracleKeeper
+
+	// Setup coin prices
+	SetupStableCoinPrices(ctx, oracle)
+
 	// Collect gas fees
 	collectedAmt := ik.CollectGasFeesToIncentiveModule(ctx)
 
@@ -87,6 +91,6 @@ func TestCollectGasFeesToIncentiveModule(t *testing.T) {
 	// check block height
 	require.Equal(t, int64(0), ctx.BlockHeight())
 
-	// It should be 7 usdc
-	require.Equal(t, collectedAmt, sdk.Coins{sdk.NewCoin(ptypes.USDC, sdk.NewInt(7))})
+	// It should be 9 usdc
+	require.Equal(t, collectedAmt, sdk.Coins{sdk.NewCoin(ptypes.USDC, sdk.NewInt(9))})
 }
