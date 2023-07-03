@@ -11,7 +11,7 @@ This document is an extension to [CONTRIBUTING](./CONTRIBUTING.md) and provides 
 - "Depend upon abstractions, [not] concretions".
 - Try to limit the number of methods you are exposing. It's easier to expose something later than to hide it.
 - Take advantage of `internal` package concept.
-- Follow agreed-upon design patterns and naming conventions.
+- Follow agreed-upon design patterns and [naming conventions](https://medium.com/@kdnotes/golang-naming-rules-and-conventions-8efeecd23b68).
 - publicly-exposed functions are named logically, have forward-thinking arguments and return types.
 - Avoid global variables and global configurators.
 - Favor composable and extensible designs.
@@ -25,11 +25,11 @@ Performance:
 Security:
 
 - Pay proper attention to exploits involving:
-  - gas usage
+  - gas usage (avoid continuously growing gas fees per operation)
   - transaction verification and signatures
   - malleability
-  - code must be always deterministic
-- Thread safety. If some functionality is not thread-safe, or uses something that is not thread-safe, then clearly indicate the risk on each level.
+  - code must be always deterministic (possible non-deterministic operations like random, sort, functions that behave differently per OS)
+- Thread safety. If some functionality is not thread-safe, or uses something that is not thread-safe, then clearly indicate the risk on each level. (Some operations could have different result if it's executed in parallel e.g. swap operations in parallel)
 
 ## Automated Tests
 
