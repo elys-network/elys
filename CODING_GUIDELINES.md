@@ -31,6 +31,7 @@ Security:
   - transaction verification and signatures
   - malleability
   - code must be always deterministic (possible non-deterministic operations like random, sort, functions that behave differently per OS)
+  - Panics handling (zero division, empty pointer)
 - Thread safety. If some functionality is not thread-safe, or uses something that is not thread-safe, then clearly indicate the risk on each level. (Some operations could have different result if it's executed in parallel e.g. swap operations in parallel)
 
 ## Automated Tests
