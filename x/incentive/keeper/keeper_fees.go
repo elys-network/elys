@@ -3,6 +3,7 @@ package keeper
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
+	"github.com/elys-network/elys/x/incentive/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
 
@@ -106,10 +107,57 @@ func (k Keeper) CollectGasFeesToIncentiveModule(ctx sdk.Context) sdk.Coins {
 	return totalSwappedCoins
 }
 
-// Pull DEX revenus collected to incentive module
-// TODO:
-// + transfer collected fees from different wallets(liquidity pool, margin module etc) to the distribution module account
+// Collect all DEX revenues to DEX revenue wallet,
+// while tracking the 65% of it for LPs reward distribution
+// transfer collected fees from different wallets(liquidity pool, margin module etc) to the distribution module account
 // Assume this is already in USDC.
-func (k Keeper) CollectDEXRevenusToIncentiveModule(ctx sdk.Context) sdk.Coins {
-	return sdk.Coins{}
+// TODO:
+// + Collect revenue from margin, lend module
+func (k Keeper) CollectDEXRevenue(ctx sdk.Context) (sdk.Coins, sdk.DecCoins) {
+	// Total colllected revenue amount
+	amountTotalCollected := sdk.Coins{}
+	amountLPsCollected := sdk.DecCoins{}
+
+	// Iterate to calculate total Eden from LpElys, MElys committed
+	k.amm.IterateLiquidityPools(ctx, func(p ammtypes.Pool) bool {
+		// Get pool Id
+		poolId := p.GetPoolId()
+
+		// Get dex rewards per pool
+		revenueAddress := ammtypes.NewPoolRevenueAddress(poolId)
+
+		// Revenue amount
+		revenue := k.bankKeeper.GetAllBalances(ctx, revenueAddress)
+
+		// Transfer revenue to a single wallet of DEX revenue wallet.
+		err := k.bankKeeper.SendCoinsFromModuleToModule(ctx, revenueAddress.String(), k.dexRevCollectorName, revenue)
+		if err != nil {
+			panic(err)
+		}
+
+		// LPs Portion param
+		rewardPortionForLps := k.GetDEXRewardPortionForLPs(ctx)
+
+		// Calculate revenue portion for LPs
+		revenueDec := sdk.NewDecCoinsFromCoins(revenue...)
+
+		// LPs portion of pool revenue
+		revenuePortionForLPs := revenueDec.MulDecTruncate(rewardPortionForLps)
+
+		// Get track key
+		trackKey := types.GetPoolRevenueTrackKey(poolId)
+
+		// Store revenue portion for Lps temporarilly
+		k.tci.PoolRevenueTrack[trackKey] = revenuePortionForLPs.AmountOf(ptypes.USDC)
+
+		// Sum total collected amount
+		amountTotalCollected = amountTotalCollected.Add(revenue...)
+
+		// Sum total amount for LPs
+		amountLPsCollected = amountLPsCollected.Add(revenuePortionForLPs...)
+
+		return false
+	})
+
+	return amountTotalCollected, amountLPsCollected
 }

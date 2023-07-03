@@ -80,20 +80,17 @@ func (k Keeper) UpdateUncommittedTokens(ctx sdk.Context, epochIdentifier string,
 	// Recalculate total committed info
 	k.UpdateTotalCommitmentInfo(ctx)
 
-	// Collect DEX revenue collected
+	// Collect DEX revenue while tracking 65% of it for LPs reward calculation
 	// Assume these are collected in USDC
-	dexRevenue := k.CollectDEXRevenusToIncentiveModule(ctx)
+	dexRevenue, dexRevenueForLps := k.CollectDEXRevenue(ctx)
 
 	// Calculate each portion of DEX revenue - stakers, LPs
 	dexRevenueDec := sdk.NewDecCoinsFromCoins(dexRevenue...)
-	rewardPortionForLps := k.GetDEXRewardPortionForLPs(ctx)
-	dexRevenueForLps := dexRevenueDec.MulDecTruncate(rewardPortionForLps)
 	dexRevenueForStakers := dexRevenueDec.Sub(dexRevenueForLps)
 
 	// Calculate each portion of Gas fees collected - stakers, LPs
-	// TODO:
-	// Assume these are also converted into USDC after collected
 	gasFeeCollectedDec := sdk.NewDecCoinsFromCoins(k.tci.TotalFeesCollected...)
+	rewardPortionForLps := k.GetDEXRewardPortionForLPs(ctx)
 	gasFeesForLps := gasFeeCollectedDec.MulDecTruncate(rewardPortionForLps)
 	gasFeesForStakers := gasFeeCollectedDec.Sub(gasFeesForLps)
 
@@ -153,9 +150,6 @@ func (k Keeper) UpdateUncommittedTokens(ctx sdk.Context, epochIdentifier string,
 			totalEdenGivenLP = totalEdenGivenLP.Add(newUncommittedEdenTokensLp)
 			totalRewardsGivenLP = totalRewardsGivenLP.Add(dexRewardsLp)
 
-			// TODO:
-			// Distribute Gas fees collected to stakers and LPs
-
 			// Calculate the total Eden uncommitted amount
 			newUncommittedEdenTokens = newUncommittedEdenTokens.Add(newUncommittedEdenTokensLp)
 
@@ -177,10 +171,6 @@ func (k Keeper) UpdateUncommittedTokens(ctx sdk.Context, epochIdentifier string,
 			return false
 		},
 	)
-
-	// TODO
-	// After give DEX rewards, we should update its record in order to avoid double spend.
-	// UpdateRewardsAccmulated(ctx)
 
 	// Calcualte the remainings
 	edenRemained := edenAmountPerEpochStakers.Sub(totalEdenGiven)
@@ -208,13 +198,12 @@ func (k Keeper) UpdateCommitments(ctx sdk.Context, creator string, commitments *
 	// Update uncommitted Eden-Boost token balances in the Commitments structure
 	k.UpdateTokensCommitment(commitments, newUncommittedEdenBoostTokens, ptypes.EdenB)
 
-	// TODO:
-	// Assume all dex revenue are collected to incentive module in USDC
-	// These are the rewards from each pool, margin, gas fee.
-	// Gas fees (Elys) is also converted into USDC and collected into total dex revenue wallet
-	// of incentive module.
+	// All dex revenue are collected to incentive module in USDC
+	// Gas fees (Elys) are also converted into USDC and collected into total dex revenue wallet of incentive module.
 	// Update USDC balances in the Commitments structure.
+	// TODO:
 	// USDC token denom is dummy one for now until we have real usdc brought through bridge.
+	// These are the rewards from each pool, margin, gas fee.
 	k.UpdateTokensCommitment(commitments, dexRewards, ptypes.USDC)
 
 	// Save the updated Commitments

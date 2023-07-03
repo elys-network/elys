@@ -72,7 +72,7 @@ func (k Keeper) InitPoolMultiplier(ctx sdk.Context, poolId uint64) bool {
 		// reward amount
 		PoolId: poolId,
 		// reward wallet address
-		RewardWallet: types.GetLPRewardsPoolAddress(poolId).String(),
+		RewardWallet: ammtypes.NewPoolRevenueAddress(poolId).String(),
 		// multiplier for lp rewards
 		Multiplier: 1,
 	}
@@ -114,6 +114,9 @@ func (k Keeper) GetProperIncentiveParam(ctx sdk.Context, epochIdentifier string)
 	// Fetch incentive params
 	params := k.GetParams(ctx)
 
+	// Update params
+	defer k.SetParams(ctx, params)
+
 	// If we don't have enough params
 	if len(params.StakeIncentives) < 1 || len(params.LpIncentives) < 1 {
 		return false, types.IncentiveInfo{}, types.IncentiveInfo{}
@@ -136,17 +139,22 @@ func (k Keeper) GetProperIncentiveParam(ctx sdk.Context, epochIdentifier string)
 	// Increase current epoch of Stake incentive param
 	stakeIncentive.CurrentEpoch = stakeIncentive.CurrentEpoch + 1
 	if stakeIncentive.CurrentEpoch == stakeIncentive.NumEpochs {
-		params.StakeIncentives = params.StakeIncentives[1:]
+		if len(params.StakeIncentives) > 1 {
+			params.StakeIncentives = params.StakeIncentives[1:]
+		} else {
+			return false, types.IncentiveInfo{}, types.IncentiveInfo{}
+		}
 	}
 
 	// Increase current epoch of Lp incentive param
 	lpIncentive.CurrentEpoch = lpIncentive.CurrentEpoch + 1
 	if lpIncentive.CurrentEpoch == lpIncentive.NumEpochs {
-		params.LpIncentives = params.LpIncentives[1:]
+		if len(params.LpIncentives) > 1 {
+			params.LpIncentives = params.LpIncentives[1:]
+		} else {
+			return false, types.IncentiveInfo{}, types.IncentiveInfo{}
+		}
 	}
-
-	// Update params
-	k.SetParams(ctx, params)
 
 	// return found, stake, lp incentive params
 	return foundIncentive, stakeIncentive, lpIncentive
@@ -176,6 +184,8 @@ func (k Keeper) UpdateTotalCommitmentInfo(ctx sdk.Context) {
 	k.tci.TotalFeesCollected = sdk.Coins{}
 	// Initialize Lp tokens amount
 	k.tci.TotalLpTokensCommitted = make(map[string]sdk.Int)
+	// ReInitialize Pool revenue tracker
+	k.tci.PoolRevenueTrack = make(map[string]sdk.Dec)
 
 	// Collect gas fees collected
 	fees := k.CollectGasFeesToIncentiveModule(ctx)
