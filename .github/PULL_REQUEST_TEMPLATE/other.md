@@ -5,6 +5,10 @@ Closes: #XXXX
 <!-- Add a description of the changes that this PR introduces and the files that
 are the most critical to review. -->
 
+### What has Changed?
+
+What specific problem were you aiming to address, and how did you successfully resolve it? If tests were not uploaded for this pull request or if coverage decreased, please provide an explanation for the change.
+
 ---
 
 ### Author Checklist
@@ -30,3 +34,7 @@ I have...
 - [ ] confirmed the correct [type prefix](https://github.com/commitizen/conventional-commit-types/blob/v3.0.0/index.json) in the PR title
 - [ ] confirmed all author checklist items have been addressed
 - [ ] confirmed that this PR does not change production code
+
+### Screenshots and Videos
+
+Please provide any relevant before and after screenshots by uploading them here. Additionally, demo videos can be highly beneficial in demonstrating the process.

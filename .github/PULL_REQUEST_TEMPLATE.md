@@ -12,6 +12,10 @@ Closes: #XXXX
 <!-- Add a description of the changes that this PR introduces and the files that
 are the most critical to review. -->
 
+### What has Changed?
+
+What specific problem were you aiming to address, and how did you successfully resolve it? If tests were not uploaded for this pull request or if coverage decreased, please provide an explanation for the change.
+
 ---
 
 ### Author Checklist
@@ -47,3 +51,11 @@ I have...
 - [ ] reviewed documentation is accurate
 - [ ] reviewed tests and test coverage
 - [ ] manually tested (if applicable)
+
+### Deployment Notes
+
+Are there any specific considerations to take into account when deploying these changes? This may include new dependencies, scripts that need to be executed, or any aspects that can only be evaluated in a deployed environment.
+
+### Screenshots and Videos
+
+Please provide any relevant before and after screenshots by uploading them here. Additionally, demo videos can be highly beneficial in demonstrating the process.
