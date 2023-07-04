@@ -130,7 +130,7 @@ func (k Keeper) CollectDEXRevenue(ctx sdk.Context) (sdk.Coins, sdk.DecCoins) {
 		revenue := k.bankKeeper.GetAllBalances(ctx, revenueAddress)
 
 		// Transfer revenue to a single wallet of DEX revenue wallet.
-		err := k.bankKeeper.SendCoinsFromModuleToModule(ctx, revenueAddress.String(), k.dexRevCollectorName, revenue)
+		err := k.bankKeeper.SendCoinsFromAccountToModule(ctx, revenueAddress, k.dexRevCollectorName, revenue)
 		if err != nil {
 			panic(err)
 		}

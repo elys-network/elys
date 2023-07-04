@@ -36,7 +36,9 @@ const (
 
 	// USDT
 	USDT = "uusdt"
-	
+
+	ATOM = "uatom"
+
 	// BaseDecimal
 	BASE_DECIMAL = 6
 

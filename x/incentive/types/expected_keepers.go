@@ -24,6 +24,8 @@ type CommitmentKeeper interface {
 	ProcessWithdrawValidatorCommission(sdk.Context, string, string, string, sdk.Int) error
 	// Withdraw tokens - only USDC
 	ProcessWithdrawUSDC(ctx sdk.Context, creator string, denom string, amount sdk.Int) error
+	// Withdraw validator commission - only USDC
+	ProcessWithdrawValidatorCommissionUSDC(sdk.Context, string, string, string, sdk.Int) error
 }
 
 // Staking keeper
