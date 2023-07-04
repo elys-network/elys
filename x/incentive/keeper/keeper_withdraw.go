@@ -187,7 +187,7 @@ func (k Keeper) ProcessWithdrawValidatorCommission(ctx sdk.Context, delegator st
 
 		// TODO:
 		// USDC denom is still dummy until we have real USDC in our chain.
-		err = k.cmk.ProcessWithdrawValidatorCommissionUSDC(ctx, delegator, validator, ptypes.USDC, uncommittedUsdc.Amount)
+		err = k.cmk.ProcessWithdrawUSDC(ctx, validator, ptypes.USDC, uncommittedUsdc.Amount)
 		if err != nil {
 			return sdkerrors.Wrapf(types.ErrIntOverflowTx, "Internal error with amount: %d", uncommittedUsdc.Amount)
 		}

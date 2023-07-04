@@ -45,18 +45,16 @@ func TestCollectGasFeesToIncentiveModule(t *testing.T) {
 	err = app.BankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, addr[0], usdcToken)
 	require.NoError(t, err)
 
-	var poolAssets []ammtypes.PoolAsset
-	// Elys
-	poolAssets = append(poolAssets, ammtypes.PoolAsset{
-		Weight: sdk.NewInt(50),
-		Token:  sdk.NewCoin(ptypes.Elys, sdk.NewInt(100000)),
-	})
-
-	// USDC
-	poolAssets = append(poolAssets, ammtypes.PoolAsset{
-		Weight: sdk.NewInt(50),
-		Token:  sdk.NewCoin(ptypes.USDC, sdk.NewInt(10000)),
-	})
+	poolAssets := []ammtypes.PoolAsset{
+		{
+			Weight: sdk.NewInt(50),
+			Token:  sdk.NewCoin(ptypes.Elys, sdk.NewInt(100000)),
+		},
+		{
+			Weight: sdk.NewInt(50),
+			Token:  sdk.NewCoin(ptypes.USDC, sdk.NewInt(10000)),
+		},
+	}
 
 	argSwapFee := sdk.MustNewDecFromStr("0.1")
 	argExitFee := sdk.MustNewDecFromStr("0.1")
@@ -122,18 +120,16 @@ func TestCollectDEXRevenueToIncentiveModule(t *testing.T) {
 	err = bk.SendCoinsFromModuleToAccount(ctx, types.ModuleName, addr[0], usdcToken)
 	require.NoError(t, err)
 
-	var poolAssets []ammtypes.PoolAsset
-	// Elys
-	poolAssets = append(poolAssets, ammtypes.PoolAsset{
-		Weight: sdk.NewInt(50),
-		Token:  sdk.NewCoin(ptypes.Elys, sdk.NewInt(100000)),
-	})
-
-	// USDC
-	poolAssets = append(poolAssets, ammtypes.PoolAsset{
-		Weight: sdk.NewInt(50),
-		Token:  sdk.NewCoin(ptypes.USDC, sdk.NewInt(10000)),
-	})
+	poolAssets := []ammtypes.PoolAsset{
+		{
+			Weight: sdk.NewInt(50),
+			Token:  sdk.NewCoin(ptypes.Elys, sdk.NewInt(100000)),
+		},
+		{
+			Weight: sdk.NewInt(50),
+			Token:  sdk.NewCoin(ptypes.USDC, sdk.NewInt(10000)),
+		},
+	}
 
 	argSwapFee := sdk.MustNewDecFromStr("0.1")
 	argExitFee := sdk.MustNewDecFromStr("0.1")
@@ -171,18 +167,16 @@ func TestCollectDEXRevenueToIncentiveModule(t *testing.T) {
 	err = bk.SendCoinsFromModuleToAccount(ctx, types.ModuleName, addr[1], atomToken)
 	require.NoError(t, err)
 
-	var poolAssets2 []ammtypes.PoolAsset
-	// Atom
-	poolAssets2 = append(poolAssets2, ammtypes.PoolAsset{
-		Weight: sdk.NewInt(50),
-		Token:  sdk.NewCoin(ptypes.ATOM, sdk.NewInt(150000)),
-	})
-
-	// USDC
-	poolAssets2 = append(poolAssets2, ammtypes.PoolAsset{
-		Weight: sdk.NewInt(50),
-		Token:  sdk.NewCoin(ptypes.USDC, sdk.NewInt(10000)),
-	})
+	poolAssets2 := []ammtypes.PoolAsset{
+		{
+			Weight: sdk.NewInt(50),
+			Token:  sdk.NewCoin(ptypes.ATOM, sdk.NewInt(150000)),
+		},
+		{
+			Weight: sdk.NewInt(50),
+			Token:  sdk.NewCoin(ptypes.USDC, sdk.NewInt(10000)),
+		},
+	}
 
 	msg = types.NewMsgCreatePool(
 		addr[1].String(),
