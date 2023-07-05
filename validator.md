@@ -80,6 +80,7 @@ elysd tx staking create-validator \
   --fees="0.1elys" \
   --from=<key_name>
 ```
+
 **Note:** `comission-max-rate` is a permanent parameter and cannot be changed in a future validator edit. The example above shows a maximum validator comission of 50%
 
 ### Commission Parameters
@@ -210,3 +211,17 @@ LimitNOFILE=4096
 [Install]
 WantedBy=multi-user.target
 ```
+
+### Minimum gas prices
+
+Elys supports multiple tokens as gas prices e.g. ATOM, USDC, ELYS. For this, we expect validators to set min gas price in multiple tokens.
+
+```
+elysd start --minimum-gas-prices="0.01ibc/uatom,0.01uelys"
+```
+
+Or configure `minimum-gas-price` section to `"0.01ibc/uatom,0.01uelys"` at `$NODE_HOME/config/app.toml`.
+
+The foreign assets for ATOM and USDC would be coming from IBC and this will need to be set differently on mainnet and testnet.
+
+We recommend validators to check the community social channels for foreign denoms and minimum gas prices settings.
