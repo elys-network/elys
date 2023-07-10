@@ -12,6 +12,8 @@ import (
 
 	aptypes "github.com/elys-network/elys/x/assetprofile/types"
 	"github.com/elys-network/elys/x/commitment/types"
+
+	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
 
 // Interface declearation
@@ -35,6 +37,10 @@ type CommitmentKeeperI interface {
 	// Withdraw validator commission
 	// context, delegator, validator, denom, amount
 	ProcessWithdrawValidatorCommission(sdk.Context, string, string, string, sdk.Int) error
+
+	// Withdraw tokens - only USDC
+	// context, creator, denom, amount
+	ProcessWithdrawUSDC(ctx sdk.Context, creator string, denom string, amount sdk.Int) error
 }
 
 var _ CommitmentKeeperI = Keeper{}
@@ -283,6 +289,46 @@ func (k Keeper) ProcessWithdrawValidatorCommission(ctx sdk.Context, delegator st
 	if err != nil {
 		return sdkerrors.Wrap(sdkerrors.ErrInsufficientFunds, "unable to send withdrawn tokens")
 	}
+
+	// Emit Hook commitment changed
+	k.AfterCommitmentChange(ctx, creator, sdk.NewCoin(denom, amount))
+
+	// Emit blockchain event
+	ctx.EventManager().EmitEvent(
+		sdk.NewEvent(
+			types.EventTypeCommitmentChanged,
+			sdk.NewAttribute(types.AttributeCreator, creator),
+			sdk.NewAttribute(types.AttributeAmount, amount.String()),
+			sdk.NewAttribute(types.AttributeDenom, denom),
+		),
+	)
+
+	return nil
+}
+
+// Withdraw Token - USDC
+// Only withraw USDC from dexRevenue wallet
+func (k Keeper) ProcessWithdrawUSDC(ctx sdk.Context, creator string, denom string, amount sdk.Int) error {
+	if denom != ptypes.USDC {
+		return sdkerrors.Wrapf(types.ErrWithdrawDisabled, "denom: %s", denom)
+	}
+
+	assetProfile, found := k.apKeeper.GetEntry(ctx, denom)
+	if !found {
+		return sdkerrors.Wrapf(aptypes.ErrAssetProfileNotFound, "denom: %s", denom)
+	}
+
+	if !assetProfile.WithdrawEnabled {
+		return sdkerrors.Wrapf(types.ErrWithdrawDisabled, "denom: %s", denom)
+	}
+
+	commitments, err := k.DeductCommitments(ctx, creator, denom, amount)
+	if err != nil {
+		return err
+	}
+
+	// Update the commitments
+	k.SetCommitments(ctx, commitments)
 
 	// Emit Hook commitment changed
 	k.AfterCommitmentChange(ctx, creator, sdk.NewCoin(denom, amount))
