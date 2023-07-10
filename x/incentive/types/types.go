@@ -1,10 +1,9 @@
 package types
 
 import (
-	"fmt"
+	fmt "fmt"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 )
 
 // TotalCommitmentInfo
@@ -18,9 +17,12 @@ type TotalCommitmentInfo struct {
 	TotalFeesCollected sdk.Coins
 	// Total Lp Token committed
 	TotalLpTokensCommitted map[string]sdk.Int
+	// Revenue tracking per pool, key => (poolId)
+	PoolRevenueTrack map[string]sdk.Dec
 }
 
-// Returns the rewards wallet per pool
-func GetLPRewardsPoolAddress(poolId uint64) sdk.AccAddress {
-	return authtypes.NewModuleAddress(fmt.Sprintf("lp_rewards_pool_%d", poolId))
+// Returns the pool revenue tracking key.
+// Unique per pool per epoch, clean once complete the calculation.
+func GetPoolRevenueTrackKey(poolId uint64) string {
+	return fmt.Sprintf("pool_revenue_%d", poolId)
 }
