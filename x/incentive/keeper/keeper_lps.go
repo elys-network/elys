@@ -5,7 +5,6 @@ import (
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	ctypes "github.com/elys-network/elys/x/commitment/types"
 	"github.com/elys-network/elys/x/incentive/types"
-	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
 
 // Calculate new Eden token amounts based on LpElys committed and MElys committed
@@ -71,10 +70,14 @@ func (k Keeper) CalculateRewardsForLPs(ctx sdk.Context, totalProxyTVL sdk.Dec, c
 		// ------------------- DEX rewards calculation -------------------
 		// ---------------------------------------------------------------
 		// Get dex rewards per pool
-		rewardAddress := types.GetLPRewardsPoolAddress(p.GetPoolId())
-		rewardAmount := k.bankKeeper.GetBalance(ctx, rewardAddress, ptypes.USDC).Amount
+		// Get track key
+		trackKey := types.GetPoolRevenueTrackKey(poolId)
+		// Get tracked amount for Lps per pool
+		dexRewardsAllocatedForPool, ok := k.tci.PoolRevenueTrack[trackKey]
+		if !ok {
+			dexRewardsAllocatedForPool = sdk.NewDec(0)
+		}
 
-		dexRewardsAllocatedForPool := sdk.NewDecFromInt(rewardAmount)
 		// Calculate dex rewards per lp
 		dexRewardsForLP := lpShare.Mul(dexRewardsAllocatedForPool)
 		// Sum total rewards per commitment

@@ -34,6 +34,11 @@ func SetupStableCoinPrices(ctx sdk.Context, oracle oraclekeeper.Keeper) {
 		Display: "ELYS",
 		Decimal: 6,
 	})
+	oracle.SetAssetInfo(ctx, oracletypes.AssetInfo{
+		Denom:   ptypes.ATOM,
+		Display: "ATOM",
+		Decimal: 6,
+	})
 
 	oracle.SetPrice(ctx, oracletypes.Price{
 		Asset:     "USDC",
@@ -53,6 +58,13 @@ func SetupStableCoinPrices(ctx sdk.Context, oracle oraclekeeper.Keeper) {
 		Asset:     "ELYS",
 		Price:     sdk.NewDec(100),
 		Source:    "elys",
+		Provider:  provider.String(),
+		Timestamp: uint64(ctx.BlockTime().Unix()),
+	})
+	oracle.SetPrice(ctx, oracletypes.Price{
+		Asset:     "ATOM",
+		Price:     sdk.NewDec(100),
+		Source:    "atom",
 		Provider:  provider.String(),
 		Timestamp: uint64(ctx.BlockTime().Unix()),
 	})

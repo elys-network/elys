@@ -8,6 +8,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	simapp "github.com/elys-network/elys/app"
 	aptypes "github.com/elys-network/elys/x/assetprofile/types"
+	ctypes "github.com/elys-network/elys/x/commitment/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 	"github.com/stretchr/testify/require"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
@@ -80,7 +81,19 @@ func TestProcessWithdrawRewards(t *testing.T) {
 	_, found = app.CommitmentKeeper.GetCommitments(ctx, addr[1].String())
 	require.True(t, found)
 
-	err := ik.ProcessWithdrawRewards(ctx, addr[0].String())
+	// Get dex revenue wallet
+	dexRewardUSDC := sdk.NewCoins(sdk.NewCoin(ptypes.USDC, sdk.NewInt(5000)))
+
+	// Mint 5000 usdc
+	err := app.BankKeeper.MintCoins(ctx, ctypes.ModuleName, dexRewardUSDC)
+	require.NoError(t, err)
+
+	// Transfer 5000 USDC to dex revenue wallet
+	err = app.BankKeeper.SendCoinsFromModuleToModule(ctx, ctypes.ModuleName, simapp.DexRevenueCollectorName, dexRewardUSDC)
+	require.NoError(t, err)
+
+	// Withdraw rewards
+	err = ik.ProcessWithdrawRewards(ctx, addr[0].String())
 	require.NoError(t, err)
 
 	edenCoin := app.BankKeeper.GetBalance(ctx, addr[0], ptypes.Eden)
@@ -95,6 +108,17 @@ func TestProcessWithdrawValidatorCommission(t *testing.T) {
 	ctx := app.BaseApp.NewContext(initChain, tmproto.Header{})
 
 	ik := app.IncentiveKeeper
+
+	// Get dex revenue wallet
+	dexRewardUSDC := sdk.NewCoins(sdk.NewCoin(ptypes.USDC, sdk.NewInt(5000)))
+
+	// Mint 5000 usdc
+	err := app.BankKeeper.MintCoins(ctx, ctypes.ModuleName, dexRewardUSDC)
+	require.NoError(t, err)
+
+	// Transfer 5000 USDC to dex revenue wallet
+	err = app.BankKeeper.SendCoinsFromModuleToModule(ctx, ctypes.ModuleName, simapp.DexRevenueCollectorName, dexRewardUSDC)
+	require.NoError(t, err)
 
 	delegator := genAccount.String()
 	// Calculate delegated amount per delegator
