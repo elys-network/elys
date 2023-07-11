@@ -3,12 +3,16 @@ syntax = "proto3";
 package elysnetwork.elys.incentive;
 
 import "gogoproto/gogo.proto";
+import "cosmos_proto/cosmos.proto";
 
 option go_package = "github.com/elys-network/elys/x/incentive/types";
 
 message PoolMultipliers {
   uint64 poolId = 1;
-  uint64 multiplier = 2;
+  string multiplier = 2 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
 }
 
 message ProposalUpdatePoolMultipliers {

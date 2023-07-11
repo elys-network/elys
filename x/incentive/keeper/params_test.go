@@ -107,14 +107,14 @@ func TestUpdatePoolMultiplierInfo(t *testing.T) {
 
 	poolInfo, found := ik.GetPoolInfo(ctx, resp.PoolID)
 	require.True(t, found)
-	require.Equal(t, poolInfo.Multiplier, (uint64)(1))
+	require.Equal(t, poolInfo.Multiplier, sdk.NewDec(1))
 
 	poolMultipliers := make([]types.PoolMultipliers, 0)
 	for i := range poolIds {
 		poolId, err := strconv.ParseUint(poolIds[i], 10, 64)
 		require.NoError(t, err)
 
-		multiplier, err := strconv.ParseUint(multipliers[i], 10, 64)
+		multiplier, err := sdk.NewDecFromStr(multipliers[i])
 		require.NoError(t, err)
 
 		poolMultiplier := types.PoolMultipliers{
@@ -131,5 +131,5 @@ func TestUpdatePoolMultiplierInfo(t *testing.T) {
 	require.True(t, found)
 
 	// After setting up, it should become 5.
-	require.Equal(t, poolInfo.Multiplier, (uint64)(5))
+	require.Equal(t, poolInfo.Multiplier, sdk.NewDec(5))
 }
