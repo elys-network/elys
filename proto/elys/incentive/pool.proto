@@ -3,6 +3,9 @@ package elysnetwork.elys.incentive;
 
 option go_package = "github.com/elys-network/elys/x/incentive/types";
 
+import "gogoproto/gogo.proto";
+import "cosmos_proto/cosmos.proto";
+
 // Pool Info
 message PoolInfo {
     // reward amount
@@ -10,5 +13,8 @@ message PoolInfo {
     // reward wallet address
     string reward_wallet = 2;
     // multiplier for lp rewards
-	uint64 multiplier = 3;
+    string multiplier = 3 [
+        (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+        (gogoproto.nullable) = false
+      ];
 }

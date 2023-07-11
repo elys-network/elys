@@ -74,7 +74,7 @@ func (k Keeper) InitPoolMultiplier(ctx sdk.Context, poolId uint64) bool {
 		// reward wallet address
 		RewardWallet: ammtypes.NewPoolRevenueAddress(poolId).String(),
 		// multiplier for lp rewards
-		Multiplier: 1,
+		Multiplier: sdk.NewDec(1),
 	}
 
 	// Update pool information

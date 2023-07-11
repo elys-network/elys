@@ -167,7 +167,7 @@ func CmdUpdatePoolInfoProposal() *cobra.Command {
 					return sdkerrors.Wrapf(sdkerrors.ErrInvalidType, "invalid parameter")
 				}
 
-				multiplier, err := strconv.ParseUint(multipliers[i], 10, 64)
+				multiplier, err := sdk.NewDecFromStr(multipliers[i])
 				if err != nil {
 					return sdkerrors.Wrapf(sdkerrors.ErrInvalidType, "invalid parameter")
 				}

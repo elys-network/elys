@@ -240,7 +240,7 @@ func (k Keeper) CalculateProxyTVL(ctx sdk.Context) sdk.Dec {
 			return false
 		}
 
-		proxyTVL := tvl.MulInt64((int64)(poolInfo.Multiplier))
+		proxyTVL := tvl.Mul(poolInfo.Multiplier)
 
 		// Calculate total pool share by TVL and multiplier
 		multipliedShareSum = multipliedShareSum.Add(proxyTVL)
