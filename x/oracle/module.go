@@ -17,7 +17,7 @@ import (
 	cdctypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
-	porttypes "github.com/cosmos/ibc-go/v6/modules/core/05-port/types"
+	porttypes "github.com/cosmos/ibc-go/v7/modules/core/05-port/types"
 	"github.com/elys-network/elys/x/oracle/client/cli"
 	"github.com/elys-network/elys/x/oracle/keeper"
 	"github.com/elys-network/elys/x/oracle/types"

@@ -3,6 +3,7 @@ package keeper
 import (
 	"testing"
 
+	"github.com/cometbft/cometbft/libs/log"
 	"github.com/cosmos/cosmos-sdk/codec"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	"github.com/cosmos/cosmos-sdk/store"
@@ -11,7 +12,6 @@ import (
 	"github.com/elys-network/elys/x/epochs/keeper"
 	"github.com/elys-network/elys/x/epochs/types"
 	"github.com/stretchr/testify/require"
-	"github.com/tendermint/tendermint/libs/log"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 	tmdb "github.com/tendermint/tm-db"
 )
