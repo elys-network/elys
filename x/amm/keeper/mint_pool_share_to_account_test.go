@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"testing"
 
+	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	simapp "github.com/elys-network/elys/app"
@@ -11,7 +12,6 @@ import (
 	atypes "github.com/elys-network/elys/x/amm/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 	"github.com/stretchr/testify/require"
-	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 )
 
 func TestCommitMintedLPTokenToCommitmentModule(t *testing.T) {

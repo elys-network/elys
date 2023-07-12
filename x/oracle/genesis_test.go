@@ -3,13 +3,13 @@ package oracle_test
 import (
 	"testing"
 
+	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	simapp "github.com/elys-network/elys/app"
 	"github.com/elys-network/elys/testutil/nullify"
 	"github.com/elys-network/elys/x/oracle"
 	"github.com/elys-network/elys/x/oracle/types"
 	"github.com/stretchr/testify/require"
-	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 )
 
 const (
