@@ -1,5 +1,5 @@
 syntax = "proto3";
-package elysnetwork.elys.commitment;
+package elys.commitment;
 
 import "gogoproto/gogo.proto";
 import "elys/commitment/params.proto";

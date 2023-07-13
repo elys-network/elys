@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package elysnetwork.elys.assetprofile;
+package elys.assetprofile;
 
 import "gogoproto/gogo.proto";
 import "elys/assetprofile/params.proto";

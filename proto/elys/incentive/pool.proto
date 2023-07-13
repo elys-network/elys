@@ -1,5 +1,5 @@
 syntax = "proto3";
-package elysnetwork.elys.incentive;
+package elys.incentive;
 
 option go_package = "github.com/elys-network/elys/x/incentive/types";
 

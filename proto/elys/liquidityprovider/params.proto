@@ -1,5 +1,5 @@
 syntax = "proto3";
-package elysnetwork.elys.liquidityprovider;
+package elys.liquidityprovider;
 
 import "gogoproto/gogo.proto";
 

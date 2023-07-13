@@ -1,5 +1,5 @@
 syntax = "proto3";
-package elysnetwork.elys.tokenomics;
+package elys.tokenomics;
 
 import "elys/tokenomics/inflation_entry.proto"; 
 
