@@ -180,7 +180,7 @@ func GenesisStateWithValSet(app *ElysApp) (GenesisState, *tmtypes.ValidatorSet, 
 	})
 
 	// update total supply
-	bankGenesis := banktypes.NewGenesisState(banktypes.DefaultGenesisState().Params, balances, totalSupply, []banktypes.Metadata{})
+	bankGenesis := banktypes.NewGenesisState(banktypes.DefaultGenesisState().Params, balances, totalSupply, []banktypes.Metadata{}, []banktypes.SendEnabled{})
 	genesisState[banktypes.ModuleName] = app.AppCodec().MustMarshalJSON(bankGenesis)
 	return genesisState, valSet, genAccs[0].GetAddress(), sdk.ValAddress(validator.Address)
 }

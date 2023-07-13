@@ -20,7 +20,7 @@ func (k msgServer) RequestBandPrice(goCtx context.Context, msg *types.MsgRequest
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	sourcePort := types.PortID
-	channelCap, ok := k.ScopedKeeper.GetCapability(ctx, host.ChannelCapabilityPath(sourcePort, msg.SourceChannel))
+	channelCap, ok := k.scopedKeeper.GetCapability(ctx, host.ChannelCapabilityPath(sourcePort, msg.SourceChannel))
 	if !ok {
 		return nil, sdkerrors.Wrap(channeltypes.ErrChannelCapabilityNotFound,
 			"module does not own channel capability")
@@ -38,7 +38,7 @@ func (k msgServer) RequestBandPrice(goCtx context.Context, msg *types.MsgRequest
 		msg.ExecuteGas,
 	)
 
-	_, err := k.ChannelKeeper.SendPacket(ctx, channelCap, sourcePort, msg.SourceChannel, clienttypes.NewHeight(0, 0), uint64(ctx.BlockTime().UnixNano()+int64(10*time.Minute)), packetData.GetBytes())
+	_, err := k.channelKeeper.SendPacket(ctx, channelCap, sourcePort, msg.SourceChannel, clienttypes.NewHeight(0, 0), uint64(ctx.BlockTime().UnixNano()+int64(10*time.Minute)), packetData.GetBytes())
 	if err != nil {
 		return nil, err
 	}

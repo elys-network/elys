@@ -19,20 +19,20 @@ import (
 type HandlerOptions struct {
 	ante.HandlerOptions
 	Cdc             codec.BinaryCodec
-	StakingKeeper   stakingkeeper.Keeper
+	StakingKeeper   *stakingkeeper.Keeper
 	BankKeeper      bankkeeper.Keeper
 	IBCKeeper       *ibckeeper.Keeper
 	ParameterKeeper parameterkeeper.Keeper
 }
 
 type MinCommissionDecorator struct {
-	sk  stakingkeeper.Keeper
+	sk  *stakingkeeper.Keeper
 	bk  bankkeeper.Keeper
 	cdc codec.BinaryCodec
 	pk  parameterkeeper.Keeper
 }
 
-func NewMinCommissionDecorator(cdc codec.BinaryCodec, sk stakingkeeper.Keeper, bk bankkeeper.Keeper, pk parameterkeeper.Keeper) MinCommissionDecorator {
+func NewMinCommissionDecorator(cdc codec.BinaryCodec, sk *stakingkeeper.Keeper, bk bankkeeper.Keeper, pk parameterkeeper.Keeper) MinCommissionDecorator {
 	return MinCommissionDecorator{cdc: cdc, sk: sk, bk: bk, pk: pk}
 }
 
