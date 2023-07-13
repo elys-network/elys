@@ -55,6 +55,12 @@ func (h StakingHooks) AfterValidatorCreated(ctx sdk.Context, valAddr sdk.ValAddr
 	return nil
 }
 
+// staking StakingHooks
+// Must be called when a validator is created
+func (h StakingHooks) AfterUnbondingInitiated(ctx sdk.Context, id uint64) error {
+	return nil
+}
+
 // Must be called when a validator's state changes
 func (h StakingHooks) BeforeValidatorModified(ctx sdk.Context, valAddr sdk.ValAddress) error {
 	return nil
