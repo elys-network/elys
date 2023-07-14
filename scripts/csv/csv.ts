@@ -2,7 +2,7 @@ import { ExportToCsv } from 'export-to-csv';
 
 const options = { 
     fieldSeparator: ',',
-    quoteStrings: '"',
+    quoteStrings: '',
     decimalSeparator: '.',
     showLabels: true, 
     showTitle: true,
@@ -12,6 +12,8 @@ const options = {
     useKeysAsHeaders: true,
   };
 
+// Input table formatted data
+// Output csv file
 export const GenerateCSV = (data: any) => {
     const csvExporter = new ExportToCsv(options);
     const fs = require('fs')
