@@ -14,7 +14,7 @@ import (
 func TestPortionCoins(t *testing.T) {
 	coins := sdk.Coins{sdk.NewInt64Coin("ueden", 1000), sdk.NewInt64Coin("uelys", 10000)}
 	portion := keeper.PortionCoins(coins, sdk.ZeroDec())
-	require.Equal(t, portion, sdk.Coins(nil))
+	require.Equal(t, portion, sdk.Coins{})
 
 	portion = keeper.PortionCoins(coins, sdk.NewDecWithPrec(1, 1))
 	require.Equal(t, portion, sdk.Coins{sdk.NewInt64Coin("ueden", 100), sdk.NewInt64Coin("uelys", 1000)})

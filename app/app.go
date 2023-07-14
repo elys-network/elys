@@ -1,6 +1,7 @@
 package app
 
 import (
+	"encoding/json"
 	"fmt"
 	"io"
 	"os"
@@ -10,7 +11,6 @@ import (
 	reflectionv1 "cosmossdk.io/api/cosmos/reflection/v1"
 	dbm "github.com/cometbft/cometbft-db"
 	abci "github.com/cometbft/cometbft/abci/types"
-	tmjson "github.com/cometbft/cometbft/libs/json"
 	"github.com/cometbft/cometbft/libs/log"
 	tmos "github.com/cometbft/cometbft/libs/os"
 	"github.com/cosmos/cosmos-sdk/baseapp"
@@ -185,7 +185,7 @@ var (
 	ModuleBasics = module.NewBasicManager(
 		auth.AppModuleBasic{},
 		authzmodule.AppModuleBasic{},
-		genutil.AppModuleBasic{},
+		genutil.NewAppModuleBasic(genutiltypes.DefaultMessageValidator),
 		bank.AppModuleBasic{},
 		capability.AppModuleBasic{},
 		staking.AppModuleBasic{},
@@ -355,6 +355,8 @@ func NewElysApp(
 		burnermoduletypes.StoreKey,
 		ammmoduletypes.StoreKey,
 		parametermoduletypes.StoreKey,
+		crisistypes.StoreKey,
+		consensusparamtypes.StoreKey,
 		// this line is used by starport scaffolding # stargate/app/storeKey
 	)
 	tkeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey)
@@ -678,11 +680,6 @@ func NewElysApp(
 
 	govKeeper.SetLegacyRouter(govRouter)
 
-	app.GovKeeper = *govKeeper.SetHooks(
-		govtypes.NewMultiGovHooks(
-		// register the governance hooks
-		),
-	)
 	// this line is used by starport scaffolding # stargate/app/keeperDefinition
 
 	/**** IBC Routing ****/
@@ -710,9 +707,9 @@ func NewElysApp(
 		),
 	)
 
-	app.GovKeeper.SetHooks(
+	app.GovKeeper = *govKeeper.SetHooks(
 		govtypes.NewMultiGovHooks(
-		// insert governance hooks receivers here
+		// register the governance hooks
 		),
 	)
 
@@ -979,7 +976,7 @@ func (app *ElysApp) EndBlocker(ctx sdk.Context, req abci.RequestEndBlock) abci.R
 // InitChainer application update at chain initialization
 func (app *ElysApp) InitChainer(ctx sdk.Context, req abci.RequestInitChain) abci.ResponseInitChain {
 	var genesisState GenesisState
-	if err := tmjson.Unmarshal(req.AppStateBytes, &genesisState); err != nil {
+	if err := json.Unmarshal(req.AppStateBytes, &genesisState); err != nil {
 		panic(err)
 	}
 	app.UpgradeKeeper.SetModuleVersionMap(ctx, app.mm.GetVersionMap())
@@ -1136,7 +1133,12 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	return paramsKeeper
 }
 
-// SimulationManager implements the SimulationApp interface
+// SimulationManager returns the app SimulationManager
 func (app *ElysApp) SimulationManager() *module.SimulationManager {
 	return app.sm
+}
+
+// ModuleManager returns the app ModuleManager
+func (app *ElysApp) ModuleManager() *module.Manager {
+	return app.mm
 }
