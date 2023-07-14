@@ -136,6 +136,9 @@ import (
 	parametermodulekeeper "github.com/elys-network/elys/x/parameter/keeper"
 	parametermoduletypes "github.com/elys-network/elys/x/parameter/types"
 
+	marginmodule "github.com/elys-network/elys/x/margin"
+	marginmodulekeeper "github.com/elys-network/elys/x/margin/keeper"
+	marginmoduletypes "github.com/elys-network/elys/x/margin/types"
 	// this line is used by starport scaffolding # stargate/app/moduleImport
 
 	appparams "github.com/elys-network/elys/app/params"
@@ -206,6 +209,7 @@ var (
 		burnermodule.AppModuleBasic{},
 		ammmodule.AppModuleBasic{},
 		parametermodule.AppModuleBasic{},
+		marginmodule.AppModuleBasic{},
 		// this line is used by starport scaffolding # stargate/app/moduleBasic
 	)
 
@@ -301,6 +305,8 @@ type ElysApp struct {
 	AmmKeeper ammmodulekeeper.Keeper
 
 	ParameterKeeper parametermodulekeeper.Keeper
+
+	MarginKeeper marginmodulekeeper.Keeper
 	// this line is used by starport scaffolding # stargate/app/keeperDeclaration
 
 	// mm is the module manager
@@ -355,6 +361,7 @@ func NewElysApp(
 		burnermoduletypes.StoreKey,
 		ammmoduletypes.StoreKey,
 		parametermoduletypes.StoreKey,
+		marginmoduletypes.StoreKey,
 		// this line is used by starport scaffolding # stargate/app/storeKey
 	)
 	tkeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey)
@@ -671,6 +678,15 @@ func NewElysApp(
 		app.MsgServiceRouter(),
 		govConfig,
 	)
+
+	app.MarginKeeper = *marginmodulekeeper.NewKeeper(
+		appCodec,
+		keys[marginmoduletypes.StoreKey],
+		keys[marginmoduletypes.MemStoreKey],
+		app.GetSubspace(marginmoduletypes.ModuleName),
+	)
+	marginModule := marginmodule.NewAppModule(appCodec, app.MarginKeeper, app.AccountKeeper, app.BankKeeper)
+
 	// this line is used by starport scaffolding # stargate/app/keeperDefinition
 
 	/**** IBC Routing ****/
@@ -764,6 +780,7 @@ func NewElysApp(
 		burnerModule,
 		ammModule,
 		parameterModule,
+		marginModule,
 		// this line is used by starport scaffolding # stargate/app/appModule
 	)
 
@@ -803,6 +820,7 @@ func NewElysApp(
 		burnermoduletypes.ModuleName,
 		ammmoduletypes.ModuleName,
 		parametermoduletypes.ModuleName,
+		marginmoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/beginBlockers
 	)
 
@@ -837,6 +855,7 @@ func NewElysApp(
 		burnermoduletypes.ModuleName,
 		ammmoduletypes.ModuleName,
 		parametermoduletypes.ModuleName,
+		marginmoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/endBlockers
 	)
 
@@ -875,6 +894,7 @@ func NewElysApp(
 		burnermoduletypes.ModuleName,
 		ammmoduletypes.ModuleName,
 		parametermoduletypes.ModuleName,
+		marginmoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/initGenesis
 	)
 
@@ -913,6 +933,7 @@ func NewElysApp(
 		burnerModule,
 		ammModule,
 		parameterModule,
+		marginModule,
 		// this line is used by starport scaffolding # stargate/app/appModule
 	)
 	app.sm.RegisterStoreDecoders()
@@ -1133,6 +1154,7 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(burnermoduletypes.ModuleName)
 	paramsKeeper.Subspace(ammmoduletypes.ModuleName)
 	paramsKeeper.Subspace(parametermoduletypes.ModuleName)
+	paramsKeeper.Subspace(marginmoduletypes.ModuleName)
 	// this line is used by starport scaffolding # stargate/app/paramSubspace
 
 	return paramsKeeper
