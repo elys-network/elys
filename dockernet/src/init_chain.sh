@@ -24,6 +24,7 @@ set_elys_genesis() {
     jq '.app_state.staking.params.unbonding_time = $newVal' --arg newVal "$UNBONDING_TIME" $genesis_config > json.tmp && mv json.tmp $genesis_config
     jq '.app_state.gov.deposit_params.max_deposit_period = $newVal' --arg newVal "$MAX_DEPOSIT_PERIOD" $genesis_config > json.tmp && mv json.tmp $genesis_config
     jq '.app_state.gov.voting_params.voting_period = $newVal' --arg newVal "$VOTING_PERIOD" $genesis_config > json.tmp && mv json.tmp $genesis_config
+    jq '.app_state.parameter.anteHandlerParamList[0].maxVotingPower = $newVal' --arg newVal "100.000000000000000000" $genesis_config > json.tmp && mv json.tmp $genesis_config
 }
 
 set_band_genesis() {

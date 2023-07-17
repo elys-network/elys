@@ -110,13 +110,13 @@ To install the `build-essential` package, enter the following command:
 sudo apt install build-essential
 ```
 
-Install `go` version `1.19`
+Install `go` version `1.20`
 
 ```
 cd /tmp
-wget https://go.dev/dl/go1.19.7.linux-amd64.tar.gz
+wget https://go.dev/dl/go1.20.6.linux-amd64.tar.gz
 sudo rm -rf /usr/local/go
-sudo tar -C /usr/local -xzf go1.19.7.linux-amd64.tar.gz
+sudo tar -C /usr/local -xzf go1.20.6.linux-amd64.tar.gz
 ```
 
 Append the following line to the end of the `~/.bashrc` file:
@@ -134,7 +134,7 @@ go version
 This should return the following output:
 
 ```
-go version go1.19.7 linux/amd64
+go version go1.20.6 linux/amd64
 ```
 
 Install `ignite-cli`
