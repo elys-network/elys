@@ -36447,7 +36447,7 @@ paths:
   /elys-network/elys/margin/params:
     get:
       summary: Parameters queries the parameters of the module.
-      operationId: ElysnetworkElysMarginParams
+      operationId: ElysMarginParams
       responses:
         '200':
           description: A successful response.
@@ -74614,17 +74614,17 @@ definitions:
         description: params holds all the parameters of this module.
         type: object
     description: QueryParamsResponse is response type for the Query/Params RPC method.
-  elysnetwork.elys.margin.Params:
+  elys.margin.Params:
     type: object
     description: Params defines the parameters for the module.
-  elysnetwork.elys.margin.QueryParamsResponse:
+  elys.margin.QueryParamsResponse:
     type: object
     properties:
       params:
         description: params holds all the parameters of this module.
         type: object
     description: QueryParamsResponse is response type for the Query/Params RPC method.
-  elysnetwork.elys.oracle.AssetInfo:
+  elys.oracle.AssetInfo:
     type: object
     properties:
       denom:
