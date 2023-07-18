@@ -12,7 +12,7 @@ chains:
       rpc-addr: http://elys1:26657
       account-prefix: elys
       keyring-backend: test
-      gas-adjustment: 1.2
+      gas-adjustment: 1.5
       gas-prices: 0.01uelys
       debug: false
       timeout: 20s
@@ -26,7 +26,7 @@ chains:
       rpc-addr: http://band1:26657
       account-prefix: band
       keyring-backend: test
-      gas-adjustment: 1.2
+      gas-adjustment: 1.5
       gas-prices: 0.01uband
       debug: false
       timeout: 20s
