@@ -22,8 +22,6 @@ require (
 	github.com/spf13/cobra v1.7.0
 	github.com/spf13/pflag v1.0.5
 	github.com/stretchr/testify v1.8.4
-	github.com/tendermint/tendermint v0.34.11
-	github.com/tendermint/tm-db v0.6.4
 	google.golang.org/genproto/googleapis/api v0.0.0-20230530153820-e85fd2cbaebc
 	google.golang.org/grpc v1.55.0
 	google.golang.org/protobuf v1.30.0
@@ -45,7 +43,6 @@ require (
 	github.com/huandu/skiplist v1.2.0 // indirect
 	github.com/linxGnu/grocksdb v1.7.16 // indirect
 	github.com/stretchr/objx v0.5.0 // indirect
-	github.com/tecbot/gorocksdb v0.0.0-20191217155057-f0fad39f321c // indirect
 	github.com/tidwall/btree v1.6.0 // indirect
 	google.golang.org/genproto v0.0.0-20230526203410-71b5a4ffd15e // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20230530153820-e85fd2cbaebc // indirect

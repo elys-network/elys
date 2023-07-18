@@ -7,6 +7,8 @@ accounts:
   - name: seed
     coins:
       - 9000000000000000uelys
+build:
+  main: cmd/elysd
 client:
   openapi:
     path: docs/static/openapi.yml
