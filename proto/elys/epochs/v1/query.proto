@@ -1,5 +1,5 @@
 syntax = "proto3";
-package elysnetwork.elys.epochs.v1;
+package elys.epochs.v1;
 
 import "cosmos/base/query/v1beta1/pagination.proto";
 import "elys/epochs/v1/genesis.proto";

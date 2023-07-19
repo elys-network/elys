@@ -3,18 +3,18 @@ package keeper_test
 import (
 	"testing"
 
+	"github.com/cometbft/cometbft/crypto/ed25519"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 	"github.com/elys-network/elys/x/amm/keeper"
 	"github.com/elys-network/elys/x/amm/types"
 	"github.com/stretchr/testify/require"
-	"github.com/tendermint/tendermint/crypto/ed25519"
 )
 
 func TestPortionCoins(t *testing.T) {
 	coins := sdk.Coins{sdk.NewInt64Coin("ueden", 1000), sdk.NewInt64Coin("uelys", 10000)}
 	portion := keeper.PortionCoins(coins, sdk.ZeroDec())
-	require.Equal(t, portion, sdk.Coins(nil))
+	require.Equal(t, portion, sdk.Coins{})
 
 	portion = keeper.PortionCoins(coins, sdk.NewDecWithPrec(1, 1))
 	require.Equal(t, portion, sdk.Coins{sdk.NewInt64Coin("ueden", 100), sdk.NewInt64Coin("uelys", 1000)})

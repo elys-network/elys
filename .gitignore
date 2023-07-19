@@ -16,3 +16,4 @@ scripts/testing/variables.sh
 scripts/csv/dist
 scripts/csv/node_modules
 scripts/csv/.env
+price-feeder

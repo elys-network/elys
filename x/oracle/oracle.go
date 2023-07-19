@@ -5,7 +5,7 @@ import (
 	"github.com/bandprotocol/bandchain-packet/packet"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	channeltypes "github.com/cosmos/ibc-go/v6/modules/core/04-channel/types"
+	channeltypes "github.com/cosmos/ibc-go/v7/modules/core/04-channel/types"
 	"github.com/elys-network/elys/x/oracle/types"
 )
 
@@ -51,7 +51,6 @@ func (im IBCModule) handleOraclePacket(
 				Timestamp: uint64(ctx.BlockTime().Unix()),
 			})
 		}
-		// this line is used by starport scaffolding # oracle/module/recv
 
 	default:
 		err := sdkerrors.Wrapf(sdkerrors.ErrJSONUnmarshal, "oracle received packet not found: %s", modulePacketData.GetClientID())

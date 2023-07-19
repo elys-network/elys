@@ -1,5 +1,5 @@
 syntax = "proto3";
-package elysnetwork.elys.epochs.v1;
+package elys.epochs.v1;
 
 import "gogoproto/gogo.proto";
 import "google/protobuf/duration.proto";

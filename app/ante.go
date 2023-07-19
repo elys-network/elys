@@ -9,8 +9,8 @@ import (
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
-	ibcante "github.com/cosmos/ibc-go/v6/modules/core/ante"
-	ibckeeper "github.com/cosmos/ibc-go/v6/modules/core/keeper"
+	ibcante "github.com/cosmos/ibc-go/v7/modules/core/ante"
+	ibckeeper "github.com/cosmos/ibc-go/v7/modules/core/keeper"
 	parameterkeeper "github.com/elys-network/elys/x/parameter/keeper"
 )
 
@@ -19,20 +19,20 @@ import (
 type HandlerOptions struct {
 	ante.HandlerOptions
 	Cdc             codec.BinaryCodec
-	StakingKeeper   stakingkeeper.Keeper
+	StakingKeeper   *stakingkeeper.Keeper
 	BankKeeper      bankkeeper.Keeper
 	IBCKeeper       *ibckeeper.Keeper
 	ParameterKeeper parameterkeeper.Keeper
 }
 
 type MinCommissionDecorator struct {
-	sk  stakingkeeper.Keeper
+	sk  *stakingkeeper.Keeper
 	bk  bankkeeper.Keeper
 	cdc codec.BinaryCodec
 	pk  parameterkeeper.Keeper
 }
 
-func NewMinCommissionDecorator(cdc codec.BinaryCodec, sk stakingkeeper.Keeper, bk bankkeeper.Keeper, pk parameterkeeper.Keeper) MinCommissionDecorator {
+func NewMinCommissionDecorator(cdc codec.BinaryCodec, sk *stakingkeeper.Keeper, bk bankkeeper.Keeper, pk parameterkeeper.Keeper) MinCommissionDecorator {
 	return MinCommissionDecorator{cdc: cdc, sk: sk, bk: bk, pk: pk}
 }
 
@@ -103,7 +103,7 @@ func (min MinCommissionDecorator) AnteHandle(
 ) (newCtx sdk.Context, err error) {
 	msgs := tx.GetMsgs()
 	minCommissionRate := sdk.NewDecWithPrec(5, 2) // 5% as a fraction
-	maxVotingPower := sdk.NewDecWithPrec(66, 1)   // 6.6%
+	maxVotingPower := sdk.NewDec(100)             // 100%
 
 	// Fetch parameter from parameter module
 	params, found := min.pk.GetAnteHandlerParam(ctx)

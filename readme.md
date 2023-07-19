@@ -110,13 +110,13 @@ To install the `build-essential` package, enter the following command:
 sudo apt install build-essential
 ```
 
-Install `go` version `1.19`
+Install `go` version `1.20`
 
 ```
 cd /tmp
-wget https://go.dev/dl/go1.19.7.linux-amd64.tar.gz
+wget https://go.dev/dl/go1.20.6.linux-amd64.tar.gz
 sudo rm -rf /usr/local/go
-sudo tar -C /usr/local -xzf go1.19.7.linux-amd64.tar.gz
+sudo tar -C /usr/local -xzf go1.20.6.linux-amd64.tar.gz
 ```
 
 Append the following line to the end of the `~/.bashrc` file:
@@ -134,7 +134,7 @@ go version
 This should return the following output:
 
 ```
-go version go1.19.7 linux/amd64
+go version go1.20.6 linux/amd64
 ```
 
 Install `ignite-cli`
@@ -264,7 +264,7 @@ A proposal can be submitted to add one or multiple entries in the asset profile 
   "description": "add new entries",
   "messages": [
     {
-      "@type": "/elysnetwork.elys.assetprofile.MsgCreateEntry",
+      "@type": "/elys.assetprofile.MsgCreateEntry",
       "authority": "elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3",
       "baseDenom": "mytoken2",
       "decimals": "18",
@@ -284,7 +284,7 @@ A proposal can be submitted to add one or multiple entries in the asset profile 
       "ibcCounterpartyChainId": "test"
     },
     {
-      "@type": "/elysnetwork.elys.assetprofile.MsgCreateEntry",
+      "@type": "/elys.assetprofile.MsgCreateEntry",
       "authority": "elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3",
       "baseDenom": "mytoken3",
       "decimals": "18",
@@ -330,7 +330,7 @@ A proposal can be submitted to update one or multiple entries in the asset profi
   "description": "update existing entries",
   "messages": [
     {
-      "@type": "/elysnetwork.elys.assetprofile.MsgUpdateEntry",
+      "@type": "/elys.assetprofile.MsgUpdateEntry",
       "authority": "elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3",
       "baseDenom": "mytoken2",
       "decimals": "18",
@@ -376,7 +376,7 @@ A proposal can be submitted to delete one or multiple entries in the asset profi
   "description": "delete entries",
   "messages": [
     {
-      "@type": "/elysnetwork.elys.assetprofile.MsgDeleteEntry",
+      "@type": "/elys.assetprofile.MsgDeleteEntry",
       "authority": "elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3",
       "baseDenom": "mytoken2"
     }
@@ -417,7 +417,7 @@ A proposal can be submitted to set the genesis inflation parameters in the token
   "description": "set new genesis inflation params",
   "messages": [
     {
-      "@type": "/elysnetwork.elys.tokenomics.MsgUpdateGenesisInflation",
+      "@type": "/elys.tokenomics.MsgUpdateGenesisInflation",
       "authority": "elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3",
       "inflation": {
         "lmRewards": "9999999",
@@ -464,31 +464,31 @@ A proposal can be submitted to add one or multiple airdrop entries in the tokeno
   "description": "add new airdrop entries",
   "messages": [
     {
-      "@type": "/elysnetwork.elys.tokenomics.MsgCreateAirdrop",
+      "@type": "/elys.tokenomics.MsgCreateAirdrop",
       "authority": "elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3",
       "intent": "AtomStakers",
       "amount": "9999999"
     },
     {
-      "@type": "/elysnetwork.elys.tokenomics.MsgCreateAirdrop",
+      "@type": "/elys.tokenomics.MsgCreateAirdrop",
       "authority": "elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3",
       "intent": "RowanStakersLP",
       "amount": "9999999"
     },
     {
-      "@type": "/elysnetwork.elys.tokenomics.MsgCreateAirdrop",
+      "@type": "/elys.tokenomics.MsgCreateAirdrop",
       "authority": "elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3",
       "intent": "Juno",
       "amount": "9999999"
     },
     {
-      "@type": "/elysnetwork.elys.tokenomics.MsgCreateAirdrop",
+      "@type": "/elys.tokenomics.MsgCreateAirdrop",
       "authority": "elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3",
       "intent": "Osmo",
       "amount": "9999999"
     },
     {
-      "@type": "/elysnetwork.elys.tokenomics.MsgCreateAirdrop",
+      "@type": "/elys.tokenomics.MsgCreateAirdrop",
       "authority": "elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3",
       "intent": "Evmos",
       "amount": "9999999"
@@ -520,7 +520,7 @@ A proposal can be submitted to update one or multiple airdrop entries in the tok
   "description": "update existing entries",
   "messages": [
     {
-      "@type": "/elysnetwork.elys.tokenomics.MsgUpdateAirdrop",
+      "@type": "/elys.tokenomics.MsgUpdateAirdrop",
       "authority": "elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3",
       "intent": "AtomStakers",
       "amount": "9999999"
@@ -552,7 +552,7 @@ A proposal can be submitted to delete one or multiple airdrop entries in the tok
   "description": "delete airdrop entries",
   "messages": [
     {
-      "@type": "/elysnetwork.elys.tokenomics.MsgDeleteAirdrop",
+      "@type": "/elys.tokenomics.MsgDeleteAirdrop",
       "authority": "elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3",
       "intent": "AtomStakers"
     }
@@ -591,7 +591,7 @@ A proposal can be submitted to add one or multiple time-based-inflation entries 
   "description": "add new time-based-inflation entries",
   "messages": [
     {
-      "@type": "/elysnetwork.elys.tokenomics.MsgCreateTimeBasedInflation",
+      "@type": "/elys.tokenomics.MsgCreateTimeBasedInflation",
       "authority": "elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3",
       "startBlockHeight": "1",
       "endBlockHeight": "6307200",
@@ -605,7 +605,7 @@ A proposal can be submitted to add one or multiple time-based-inflation entries 
       }
     },
     {
-      "@type": "/elysnetwork.elys.tokenomics.MsgCreateTimeBasedInflation",
+      "@type": "/elys.tokenomics.MsgCreateTimeBasedInflation",
       "authority": "elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3",
       "startBlockHeight": "6307201",
       "endBlockHeight": "6307200",
@@ -619,7 +619,7 @@ A proposal can be submitted to add one or multiple time-based-inflation entries 
       }
     },
     {
-      "@type": "/elysnetwork.elys.tokenomics.MsgCreateTimeBasedInflation",
+      "@type": "/elys.tokenomics.MsgCreateTimeBasedInflation",
       "authority": "elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3",
       "startBlockHeight": "12614402",
       "endBlockHeight": "18921602",
@@ -659,7 +659,7 @@ A proposal can be submitted to update one or multiple time-based-inflation entri
   "description": "update existing time-based-inflation entries",
   "messages": [
     {
-      "@type": "/elysnetwork.elys.tokenomics.MsgUpdateTimeBasedInflation",
+      "@type": "/elys.tokenomics.MsgUpdateTimeBasedInflation",
       "authority": "elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3",
       "startBlockHeight": "12614402",
       "endBlockHeight": "18921602",
@@ -699,7 +699,7 @@ A proposal can be submitted to delete one or multiple time-based-inflation entri
   "description": "delete time-based-inflation entries",
   "messages": [
     {
-      "@type": "/elysnetwork.elys.tokenomics.MsgDeleteTimeBasedInflation",
+      "@type": "/elys.tokenomics.MsgDeleteTimeBasedInflation",
       "authority": "elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3",
       "startBlockHeight": "12614402",
       "endBlockHeight": "18921602"

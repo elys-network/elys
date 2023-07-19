@@ -1,5 +1,5 @@
 syntax = "proto3";
-package elysnetwork.elys.oracle;
+package elys.oracle;
 
 import "gogoproto/gogo.proto";
 import "cosmos/base/v1beta1/coin.proto";

@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package elysnetwork.elys.parameter;
+package elys.parameter;
 
 import "gogoproto/gogo.proto";
 import "elys/parameter/params.proto";

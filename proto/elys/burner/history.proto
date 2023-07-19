@@ -1,5 +1,5 @@
 syntax = "proto3";
-package elysnetwork.elys.burner;
+package elys.burner;
 
 option go_package = "github.com/elys-network/elys/x/burner/types";
 

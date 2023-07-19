@@ -1,6 +1,6 @@
 # syntax = docker/dockerfile:1
 
-ARG GO_VERSION="1.19"
+ARG GO_VERSION="1.20"
 ARG RUNNER_IMAGE="alpine:3.16"
 
 FROM golang:${GO_VERSION}-alpine as builder
@@ -18,7 +18,7 @@ RUN --mount=type=cache,target=/root/.cache/go-build \
 # Copy the remaining files
 COPY . .
 
-RUN LINK_STATICALLY=true make build
+RUN go build -o /opt/build/elysd ./cmd/elysd
 
 # Add to a distroless container
 FROM ${RUNNER_IMAGE}
