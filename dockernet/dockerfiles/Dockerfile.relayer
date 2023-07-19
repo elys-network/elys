@@ -3,11 +3,11 @@ FROM golang:1.19-alpine3.15 AS builder
 
 WORKDIR /src/
 
-ENV COMMIT_HASH=01039ea63d8e6fdd188ea47fc168a0b57e5fa660
+ENV COMMIT_HASH=d484c0969b1af7c34ee8848e2e27f78f61b9a426
 
 RUN apk add --update git make gcc linux-headers libc-dev eudev-dev 
-RUN git clone https://github.com/cosmos/relayer.git \
-    && cd relayer \
+RUN git clone https://github.com/elys-network/cosmos-relayer.git \
+    && cd cosmos-relayer \
     && git checkout $COMMIT_HASH \
     && make install
 

@@ -51,7 +51,6 @@ func (im IBCModule) handleOraclePacket(
 				Timestamp: uint64(ctx.BlockTime().Unix()),
 			})
 		}
-		// this line is used by starport scaffolding # oracle/module/recv
 
 	default:
 		err := sdkerrors.Wrapf(sdkerrors.ErrJSONUnmarshal, "oracle received packet not found: %s", modulePacketData.GetClientID())
