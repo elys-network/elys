@@ -12,6 +12,9 @@ const (
 
 	// MemStoreKey defines the in-memory store key
 	MemStoreKey = "mem_margin"
+
+	// ParamsKey is the prefix for parameters of margin module
+	ParamsKey = "margin_params"
 )
 
 func KeyPrefix(p string) []byte {

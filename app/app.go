@@ -689,7 +689,8 @@ func NewElysApp(
 		AddRoute(ibcclienttypes.RouterKey, ibcclient.NewClientProposalHandler(app.IBCKeeper.ClientKeeper)).
 		AddRoute(oracletypes.RouterKey, oraclemodule.NewAssetInfoProposalHandler(&app.OracleKeeper)).
 		AddRoute(incentivemoduletypes.RouterKey, incentivemodule.NewPoolInfoProposalHandler(&app.IncentiveKeeper)).
-		AddRoute(parametermoduletypes.RouterKey, parametermodule.NewParameterChangeProposalHandler(&app.ParameterKeeper))
+		AddRoute(parametermoduletypes.RouterKey, parametermodule.NewParameterChangeProposalHandler(&app.ParameterKeeper)).
+		AddRoute(marginmoduletypes.RouterKey, marginmodule.NewMarginProposalHandler(&app.MarginKeeper))
 
 	govKeeper.SetLegacyRouter(govRouter)
 
@@ -697,7 +698,6 @@ func NewElysApp(
 		appCodec,
 		keys[marginmoduletypes.StoreKey],
 		keys[marginmoduletypes.MemStoreKey],
-		app.GetSubspace(marginmoduletypes.ModuleName),
 	)
 	marginModule := marginmodule.NewAppModule(appCodec, app.MarginKeeper, app.AccountKeeper, app.BankKeeper)
 

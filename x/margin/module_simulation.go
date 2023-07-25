@@ -1,6 +1,8 @@
 package margin
 
 import (
+	"math/rand"
+
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
@@ -20,7 +22,15 @@ var (
 )
 
 const (
-// this line is used by starport scaffolding # simapp/module/const
+	opWeightMsgOpen = "op_weight_msg_open"
+	// TODO: Determine the simulation weight value
+	defaultWeightMsgOpen int = 100
+
+	opWeightMsgClosep = "op_weight_msg_closep"
+	// TODO: Determine the simulation weight value
+	defaultWeightMsgClosep int = 100
+
+	// this line is used by starport scaffolding # simapp/module/const
 )
 
 // GenerateGenesisState creates a randomized GenState of the module
@@ -47,6 +57,28 @@ func (am AppModule) RegisterStoreDecoder(_ sdk.StoreDecoderRegistry) {}
 // WeightedOperations returns the all the gov module operations with their respective weights.
 func (am AppModule) WeightedOperations(simState module.SimulationState) []simtypes.WeightedOperation {
 	operations := make([]simtypes.WeightedOperation, 0)
+
+	var weightMsgOpen int
+	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgOpen, &weightMsgOpen, nil,
+		func(_ *rand.Rand) {
+			weightMsgOpen = defaultWeightMsgOpen
+		},
+	)
+	operations = append(operations, simulation.NewWeightedOperation(
+		weightMsgOpen,
+		marginsimulation.SimulateMsgOpen(am.accountKeeper, am.bankKeeper, am.keeper),
+	))
+
+	var weightMsgClosep int
+	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgClosep, &weightMsgClosep, nil,
+		func(_ *rand.Rand) {
+			weightMsgClosep = defaultWeightMsgClosep
+		},
+	)
+	operations = append(operations, simulation.NewWeightedOperation(
+		weightMsgClosep,
+		marginsimulation.SimulateMsgClosep(am.accountKeeper, am.bankKeeper, am.keeper),
+	))
 
 	// this line is used by starport scaffolding # simapp/module/operation
 

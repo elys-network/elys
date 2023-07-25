@@ -1,7 +1,36 @@
 syntax = "proto3";
+
 package elys.margin;
 
 option go_package = "github.com/elys-network/elys/x/margin/types";
 
+import "gogoproto/gogo.proto";
+
+enum Position {
+  UNSPECIFIED = 0;
+  LONG        = 1;
+  SHORT       = 2;
+}
 // Msg defines the Msg service.
-service Msg {}
+service Msg {
+  rpc Open   (MsgOpen  ) returns (MsgOpenResponse  );
+  rpc Close (MsgClose) returns (MsgCloseResponse);
+}
+message MsgOpen {
+  string   creator          = 1;
+  string   collateralAsset  = 2;
+  string   collateralAmount = 3 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false];
+  string   borrowAsset      = 4;
+  Position position         = 5;
+  string   leverage         = 6 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+}
+
+message MsgOpenResponse {}
+
+message MsgClose {
+  string creator = 1;
+  uint64 id      = 2;
+}
+
+message MsgCloseResponse {}
+
