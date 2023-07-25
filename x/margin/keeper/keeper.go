@@ -13,9 +13,10 @@ import (
 
 type (
 	Keeper struct {
-		cdc      codec.BinaryCodec
-		storeKey storetypes.StoreKey
-		memKey   storetypes.StoreKey
+		cdc       codec.BinaryCodec
+		storeKey  storetypes.StoreKey
+		memKey    storetypes.StoreKey
+		authority string
 	}
 )
 
@@ -23,12 +24,18 @@ func NewKeeper(
 	cdc codec.BinaryCodec,
 	storeKey,
 	memKey storetypes.StoreKey,
-
+	authority string,
 ) *Keeper {
+	// ensure that authority is a valid AccAddress
+	if _, err := sdk.AccAddressFromBech32(authority); err != nil {
+		panic("authority is not a valid acc address")
+	}
+
 	return &Keeper{
-		cdc:      cdc,
-		storeKey: storeKey,
-		memKey:   memKey,
+		cdc:       cdc,
+		storeKey:  storeKey,
+		memKey:    memKey,
+		authority: authority,
 	}
 }
 

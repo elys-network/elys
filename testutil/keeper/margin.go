@@ -11,6 +11,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/store"
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/types/address"
 	"github.com/elys-network/elys/x/margin/keeper"
 	"github.com/elys-network/elys/x/margin/types"
 	"github.com/stretchr/testify/require"
@@ -28,17 +29,20 @@ func MarginKeeper(t testing.TB) (*keeper.Keeper, sdk.Context) {
 
 	registry := codectypes.NewInterfaceRegistry()
 	cdc := codec.NewProtoCodec(registry)
+	govAddress := sdk.AccAddress(address.Module("gov"))
 
 	k := keeper.NewKeeper(
 		cdc,
 		storeKey,
 		memStoreKey,
+		govAddress.String(),
 	)
 
 	ctx := sdk.NewContext(stateStore, tmproto.Header{}, false, log.NewNopLogger())
 
 	// Initialize params
-	k.SetParams(ctx, types.DefaultParams())
+	params := types.DefaultParams()
+	k.SetParams(ctx, &params)
 
 	return k, ctx
 }

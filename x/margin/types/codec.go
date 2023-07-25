@@ -5,28 +5,26 @@ import (
 	cdctypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/msgservice"
-	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
 )
 
 func RegisterCodec(cdc *codec.LegacyAmino) {
 	cdc.RegisterConcrete(&MsgOpen{}, "margin/Open", nil)
 	cdc.RegisterConcrete(&MsgClose{}, "margin/Close", nil)
+	cdc.RegisterConcrete(&MsgUpdateParams{}, "margin/UpdateParams", nil)
+	cdc.RegisterConcrete(&MsgUpdatePools{}, "margin/UpdatePools", nil)
+	cdc.RegisterConcrete(&MsgWhitelist{}, "margin/Whitelist", nil)
+	cdc.RegisterConcrete(&MsgDewhitelist{}, "margin/Dewhitelist", nil)
 	// this line is used by starport scaffolding # 2
 }
 
 func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 	registry.RegisterImplementations((*sdk.Msg)(nil),
 		&MsgOpen{},
-	)
-	registry.RegisterImplementations((*sdk.Msg)(nil),
 		&MsgClose{},
-	)
-	registry.RegisterImplementations(
-		(*govtypes.Content)(nil),
-		&ProposalUpdateParams{},
-		&ProposalUpdatePools{},
-		&ProposalWhitelist{},
-		&ProposalDewhitelist{},
+		&MsgUpdateParams{},
+		&MsgUpdatePools{},
+		&MsgWhitelist{},
+		&MsgDewhitelist{},
 	)
 
 	// this line is used by starport scaffolding # 3

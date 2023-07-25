@@ -73501,7 +73501,15 @@ definitions:
     description: QueryParamsResponse is response type for the Query/Params RPC method.
   elys.margin.MsgCloseResponse:
     type: object
+  elys.margin.MsgDewhitelistResponse:
+    type: object
   elys.margin.MsgOpenResponse:
+    type: object
+  elys.margin.MsgUpdateParamsResponse:
+    type: object
+  elys.margin.MsgUpdatePoolsResponse:
+    type: object
+  elys.margin.MsgWhitelistResponse:
     type: object
   elys.margin.Params:
     type: object

@@ -18,13 +18,13 @@ func (k Keeper) GetParams(ctx sdk.Context) (params types.Params) {
 }
 
 // SetParams set the params
-func (k Keeper) SetParams(ctx sdk.Context, params types.Params) error {
+func (k Keeper) SetParams(ctx sdk.Context, params *types.Params) error {
 	if err := params.Validate(); err != nil {
 		return err
 	}
 
 	store := ctx.KVStore(k.storeKey)
-	bz, err := k.cdc.Marshal(&params)
+	bz, err := k.cdc.Marshal(params)
 	if err != nil {
 		return err
 	}

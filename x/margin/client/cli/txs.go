@@ -10,8 +10,9 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/types/address"
 	"github.com/cosmos/cosmos-sdk/x/gov/client/cli"
-	"github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
+	v1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1"
 	"github.com/elys-network/elys/x/margin/types"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -152,7 +153,12 @@ func CmdUpdateParams() *cobra.Command {
 				return err
 			}
 
-			description, err := cmd.Flags().GetString(cli.FlagDescription)
+			summary, err := cmd.Flags().GetString(cli.FlagSummary)
+			if err != nil {
+				return err
+			}
+
+			metadata, err := cmd.Flags().GetString(cli.FlagMetadata)
 			if err != nil {
 				return err
 			}
@@ -163,32 +169,40 @@ func CmdUpdateParams() *cobra.Command {
 				return errors.New("invalid leverage max, it has to be between 1-10.")
 			}
 
-			content := types.NewProposalUpdateParams(
-				title,
-				description,
-				sdk.MustNewDecFromStr(viper.GetString("leverage-max")),
-				sdk.MustNewDecFromStr(viper.GetString("interest-rate-max")),
-				sdk.MustNewDecFromStr(viper.GetString("interest-rate-min")),
-				sdk.MustNewDecFromStr(viper.GetString("interest-rate-increase")),
-				sdk.MustNewDecFromStr(viper.GetString("interest-rate-decrease")),
-				sdk.MustNewDecFromStr(viper.GetString("health-gain-factor")),
-				viper.GetUint64("epoch-length"),
-				sdk.MustNewDecFromStr(viper.GetString("removal-queue-threshold")),
-				viper.GetUint64("max-open-positions"),
-				sdk.MustNewDecFromStr(viper.GetString("pool-open-threshold")),
-				sdk.MustNewDecFromStr(viper.GetString("force-close-fund-percentage")),
-				viper.GetString("force-close-fund-address"),
-				sdk.MustNewDecFromStr(viper.GetString("incremental-interest-payment-fund-percentage")),
-				viper.GetString("incremental-interest-payment-fund-address"),
-				sdk.MustNewDecFromStr(viper.GetString("sq-modifier")),
-				sdk.MustNewDecFromStr(viper.GetString("safety-factor")),
-				viper.GetBool("incremental-interest-payment-enabled"),
-				viper.GetBool("whitelisting-enabled"),
+			params := &types.Params{
+				LeverageMax:                              leverage_max,
+				InterestRateMax:                          sdk.MustNewDecFromStr(viper.GetString("interest-rate-max")),
+				InterestRateMin:                          sdk.MustNewDecFromStr(viper.GetString("interest-rate-min")),
+				InterestRateIncrease:                     sdk.MustNewDecFromStr(viper.GetString("interest-rate-increase")),
+				InterestRateDecrease:                     sdk.MustNewDecFromStr(viper.GetString("interest-rate-decrease")),
+				HealthGainFactor:                         sdk.MustNewDecFromStr(viper.GetString("health-gain-factor")),
+				EpochLength:                              viper.GetUint64("epoch-length"),
+				RemovalQueueThreshold:                    sdk.MustNewDecFromStr(viper.GetString("removal-queue-threshold")),
+				MaxOpenPositions:                         viper.GetUint64("max-open-positions"),
+				PoolOpenThreshold:                        sdk.MustNewDecFromStr(viper.GetString("pool-open-threshold")),
+				ForceCloseFundPercentage:                 sdk.MustNewDecFromStr(viper.GetString("force-close-fund-percentage")),
+				ForceCloseFundAddress:                    viper.GetString("force-close-fund-address"),
+				IncrementalInterestPaymentFundPercentage: sdk.MustNewDecFromStr(viper.GetString("incremental-interest-payment-fund-percentage")),
+				IncrementalInterestPaymentFundAddress:    viper.GetString("incremental-interest-payment-fund-address"),
+				SqModifier:                               sdk.MustNewDecFromStr(viper.GetString("sq-modifier")),
+				SafetyFactor:                             sdk.MustNewDecFromStr(viper.GetString("safety-factor")),
+				IncrementalInterestPaymentEnabled:        viper.GetBool("incremental-interest-payment-enabled"),
+				WhitelistingEnabled:                      viper.GetBool("whitelisting-enabled"),
+			}
+
+			signer := clientCtx.GetFromAddress()
+			if signer == nil {
+				return errors.New("signer address is missing")
+			}
+
+			govAddress := sdk.AccAddress(address.Module("gov"))
+			msg := types.NewMsgUpdateParams(
+				govAddress.String(),
+				params,
 			)
 
-			from := clientCtx.GetFromAddress()
-			if from == nil {
-				return errors.New("signer address is missing")
+			if err := msg.ValidateBasic(); err != nil {
+				return err
 			}
 
 			depositStr, err := cmd.Flags().GetString(cli.FlagDeposit)
@@ -200,11 +214,11 @@ func CmdUpdateParams() *cobra.Command {
 				return err
 			}
 
-			msg, err := v1beta1.NewMsgSubmitProposal(content, deposit, from)
+			govMsg, err := v1.NewMsgSubmitProposal([]sdk.Msg{msg}, deposit, signer.String(), metadata, title, summary)
 			if err != nil {
 				return err
 			}
-			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), govMsg)
 		},
 	}
 
@@ -227,7 +241,8 @@ func CmdUpdateParams() *cobra.Command {
 	cmd.Flags().String("safety-factor", "", "the safety factor used in liquidation ratio")
 	cmd.Flags().Bool("whitelisting-enabled", false, "Enable whitelisting")
 	cmd.Flags().String(cli.FlagTitle, "", "title of proposal")
-	cmd.Flags().String(cli.FlagDescription, "", "description of proposal")
+	cmd.Flags().String(cli.FlagSummary, "", "summary of proposal")
+	cmd.Flags().String(cli.FlagMetadata, "", "metadata of proposal")
 	cmd.Flags().String(cli.FlagDeposit, "", "deposit of proposal")
 	_ = cmd.MarkFlagRequired("leverage-max")
 	_ = cmd.MarkFlagRequired("interest-rate-max")
@@ -247,7 +262,8 @@ func CmdUpdateParams() *cobra.Command {
 	_ = cmd.MarkFlagRequired("safety-factor")
 	_ = cmd.MarkFlagRequired("whitelisting-enabled")
 	_ = cmd.MarkFlagRequired(cli.FlagTitle)
-	_ = cmd.MarkFlagRequired(cli.FlagDescription)
+	_ = cmd.MarkFlagRequired(cli.FlagSummary)
+	_ = cmd.MarkFlagRequired(cli.FlagMetadata)
 	_ = cmd.MarkFlagRequired(cli.FlagDeposit)
 	flags.AddTxFlagsToCmd(cmd)
 	return cmd
@@ -273,7 +289,12 @@ func CmdUpdatePools() *cobra.Command {
 				return err
 			}
 
-			description, err := cmd.Flags().GetString(cli.FlagDescription)
+			summary, err := cmd.Flags().GetString(cli.FlagSummary)
+			if err != nil {
+				return err
+			}
+
+			metadata, err := cmd.Flags().GetString(cli.FlagMetadata)
 			if err != nil {
 				return err
 			}
@@ -293,11 +314,16 @@ func CmdUpdatePools() *cobra.Command {
 				return err
 			}
 
-			content := types.NewProposalUpdatePools(
-				title,
-				description,
+			govAddress := sdk.AccAddress(address.Module("gov"))
+			msg := types.NewMsgUpdatePools(
+				govAddress.String(),
 				pools,
-				closedPools)
+				closedPools,
+			)
+
+			if err := msg.ValidateBasic(); err != nil {
+				return err
+			}
 
 			depositStr, err := cmd.Flags().GetString(cli.FlagDeposit)
 			if err != nil {
@@ -309,21 +335,23 @@ func CmdUpdatePools() *cobra.Command {
 				return err
 			}
 
-			msg, err := v1beta1.NewMsgSubmitProposal(content, deposit, signer)
+			govMsg, err := v1.NewMsgSubmitProposal([]sdk.Msg{msg}, deposit, signer.String(), metadata, title, summary)
 			if err != nil {
 				return err
 			}
 
-			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), govMsg)
 		},
 	}
 	cmd.Flags().String("closed-pools", "", "pools that new positions cannot be opened on")
 	cmd.Flags().String(cli.FlagTitle, "", "title of proposal")
-	cmd.Flags().String(cli.FlagDescription, "", "description of proposal")
+	cmd.Flags().String(cli.FlagSummary, "", "summary of proposal")
+	cmd.Flags().String(cli.FlagMetadata, "", "metadata of proposal")
 	cmd.Flags().String(cli.FlagDeposit, "", "deposit of proposal")
 	_ = cmd.MarkFlagRequired("closed-pools")
 	_ = cmd.MarkFlagRequired(cli.FlagTitle)
-	_ = cmd.MarkFlagRequired(cli.FlagDescription)
+	_ = cmd.MarkFlagRequired(cli.FlagSummary)
+	_ = cmd.MarkFlagRequired(cli.FlagMetadata)
 	_ = cmd.MarkFlagRequired(cli.FlagDeposit)
 
 	flags.AddTxFlagsToCmd(cmd)
@@ -365,7 +393,12 @@ func CmdWhitelist() *cobra.Command {
 				return err
 			}
 
-			description, err := cmd.Flags().GetString(cli.FlagDescription)
+			summary, err := cmd.Flags().GetString(cli.FlagSummary)
+			if err != nil {
+				return err
+			}
+
+			metadata, err := cmd.Flags().GetString(cli.FlagMetadata)
 			if err != nil {
 				return err
 			}
@@ -375,11 +408,14 @@ func CmdWhitelist() *cobra.Command {
 				return errors.New("signer address is missing")
 			}
 
-			content := types.NewProposalWhitelist(
-				title,
-				description,
+			govAddress := sdk.AccAddress(address.Module("gov"))
+			msg := types.NewMsgWhitelist(
+				govAddress.String(),
 				args[0],
 			)
+			if err := msg.ValidateBasic(); err != nil {
+				return err
+			}
 
 			depositStr, err := cmd.Flags().GetString(cli.FlagDeposit)
 			if err != nil {
@@ -391,12 +427,12 @@ func CmdWhitelist() *cobra.Command {
 				return err
 			}
 
-			msg, err := v1beta1.NewMsgSubmitProposal(content, deposit, signer)
+			govMsg, err := v1.NewMsgSubmitProposal([]sdk.Msg{msg}, deposit, signer.String(), metadata, title, summary)
 			if err != nil {
 				return err
 			}
 
-			err = tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+			err = tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), govMsg)
 			if err != nil {
 				return err
 			}
@@ -404,12 +440,15 @@ func CmdWhitelist() *cobra.Command {
 			return nil
 		},
 	}
+
 	cmd.Flags().String(cli.FlagTitle, "", "title of proposal")
-	cmd.Flags().String(cli.FlagDescription, "", "description of proposal")
+	cmd.Flags().String(cli.FlagSummary, "", "summary of proposal")
+	cmd.Flags().String(cli.FlagMetadata, "", "metadata of proposal")
 	cmd.Flags().String(cli.FlagDeposit, "", "deposit of proposal")
 
 	_ = cmd.MarkFlagRequired(cli.FlagTitle)
-	_ = cmd.MarkFlagRequired(cli.FlagDescription)
+	_ = cmd.MarkFlagRequired(cli.FlagSummary)
+	_ = cmd.MarkFlagRequired(cli.FlagMetadata)
 	_ = cmd.MarkFlagRequired(cli.FlagDeposit)
 
 	flags.AddTxFlagsToCmd(cmd)
@@ -437,7 +476,12 @@ func CmdDewhitelist() *cobra.Command {
 				return err
 			}
 
-			description, err := cmd.Flags().GetString(cli.FlagDescription)
+			summary, err := cmd.Flags().GetString(cli.FlagSummary)
+			if err != nil {
+				return err
+			}
+
+			metadata, err := cmd.Flags().GetString(cli.FlagMetadata)
 			if err != nil {
 				return err
 			}
@@ -447,11 +491,14 @@ func CmdDewhitelist() *cobra.Command {
 				return errors.New("signer address is missing")
 			}
 
-			content := types.NewProposalDewhitelist(
-				title,
-				description,
+			govAddress := sdk.AccAddress(address.Module("gov"))
+			msg := types.NewMsgDewhitelist(
+				govAddress.String(),
 				args[0],
 			)
+			if err := msg.ValidateBasic(); err != nil {
+				return err
+			}
 
 			depositStr, err := cmd.Flags().GetString(cli.FlagDeposit)
 			if err != nil {
@@ -463,12 +510,12 @@ func CmdDewhitelist() *cobra.Command {
 				return err
 			}
 
-			msg, err := v1beta1.NewMsgSubmitProposal(content, deposit, signer)
+			govMsg, err := v1.NewMsgSubmitProposal([]sdk.Msg{msg}, deposit, signer.String(), metadata, title, summary)
 			if err != nil {
 				return err
 			}
 
-			err = tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+			err = tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), govMsg)
 			if err != nil {
 				return err
 			}
@@ -478,11 +525,13 @@ func CmdDewhitelist() *cobra.Command {
 	}
 
 	cmd.Flags().String(cli.FlagTitle, "", "title of proposal")
-	cmd.Flags().String(cli.FlagDescription, "", "description of proposal")
+	cmd.Flags().String(cli.FlagSummary, "", "summary of proposal")
+	cmd.Flags().String(cli.FlagMetadata, "", "metadata of proposal")
 	cmd.Flags().String(cli.FlagDeposit, "", "deposit of proposal")
 
 	_ = cmd.MarkFlagRequired(cli.FlagTitle)
-	_ = cmd.MarkFlagRequired(cli.FlagDescription)
+	_ = cmd.MarkFlagRequired(cli.FlagSummary)
+	_ = cmd.MarkFlagRequired(cli.FlagMetadata)
 	_ = cmd.MarkFlagRequired(cli.FlagDeposit)
 
 	flags.AddTxFlagsToCmd(cmd)
