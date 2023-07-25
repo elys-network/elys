@@ -10,7 +10,7 @@ option go_package = "github.com/elys-network/elys/x/parameter/types";
 
 // GenesisState defines the parameter module's genesis state.
 message GenesisState {
-           Params           params               = 1 [(gogoproto.nullable) = false];
-  repeated AnteHandlerParam anteHandlerParamList = 2 [(gogoproto.nullable) = false];
+  Params           params               = 1 [(gogoproto.nullable) = false];
+  AnteHandlerParam anteHandlerParam = 2 [(gogoproto.nullable) = false];
 }
 
