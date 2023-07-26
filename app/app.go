@@ -158,7 +158,7 @@ const (
 	AccountAddressPrefix = "elys"
 	Name                 = "elys"
 
-	// Temperal declaration until we have dex module
+	// Dex revenue consolidating wallet
 	DexRevenueCollectorName = "dexRevenueCollector"
 )
 
@@ -697,7 +697,7 @@ func NewElysApp(
 		appCodec,
 		keys[marginmoduletypes.StoreKey],
 		keys[marginmoduletypes.MemStoreKey],
-		app.GetSubspace(marginmoduletypes.ModuleName),
+		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 	marginModule := marginmodule.NewAppModule(appCodec, app.MarginKeeper, app.AccountKeeper, app.BankKeeper)
 

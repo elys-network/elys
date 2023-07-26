@@ -1,7 +1,70 @@
 syntax = "proto3";
+
 package elys.margin;
 
 option go_package = "github.com/elys-network/elys/x/margin/types";
 
+import "gogoproto/gogo.proto";
+import "elys/margin/params.proto";
+import "elys/margin/types.proto";
+
 // Msg defines the Msg service.
-service Msg {}
+service Msg {
+  rpc Open         (MsgOpen        ) returns (MsgOpenResponse        );
+  rpc Close        (MsgClose       ) returns (MsgCloseResponse       );
+  rpc UpdateParams (MsgUpdateParams) returns (MsgUpdateParamsResponse);
+  rpc UpdatePools  (MsgUpdatePools ) returns (MsgUpdatePoolsResponse );
+  rpc Whitelist    (MsgWhitelist   ) returns (MsgWhitelistResponse   );
+  rpc Dewhitelist  (MsgDewhitelist ) returns (MsgDewhitelistResponse );
+}
+message MsgOpen {
+  string   creator          = 1;
+  string   collateralAsset  = 2;
+  string   collateralAmount = 3 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false];
+  string   borrowAsset      = 4;
+  Position position         = 5;
+  string   leverage         = 6 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+}
+
+message MsgOpenResponse {}
+
+message MsgClose {
+  string creator = 1;
+  uint64 id      = 2;
+}
+
+message MsgCloseResponse {}
+
+message MsgUpdateParams {
+  
+  // authority is the address that controls the module (defaults to x/gov unless overwritten).
+  string authority = 1;
+  
+  // NOTE: All parameters must be supplied.
+  Params params = 2;
+}
+
+message MsgUpdateParamsResponse {}
+
+message MsgUpdatePools {
+  string authority            = 1;
+  repeated string pools       = 2;
+  repeated string closedPools = 3;
+}
+
+message MsgUpdatePoolsResponse {}
+
+message MsgWhitelist {
+  string authority          = 1;
+  string whitelistedAddress = 2;
+}
+
+message MsgWhitelistResponse {}
+
+message MsgDewhitelist {
+  string authority          = 1;
+  string whitelistedAddress = 2;
+}
+
+message MsgDewhitelistResponse {}
+

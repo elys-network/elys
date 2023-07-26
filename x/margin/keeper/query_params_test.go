@@ -13,9 +13,9 @@ func TestParamsQuery(t *testing.T) {
 	keeper, ctx := testkeeper.MarginKeeper(t)
 	wctx := sdk.WrapSDKContext(ctx)
 	params := types.DefaultParams()
-	keeper.SetParams(ctx, params)
+	keeper.SetParams(ctx, &params)
 
-	response, err := keeper.Params(wctx, &types.QueryParamsRequest{})
+	response, err := keeper.Params(wctx, &types.ParamsRequest{})
 	require.NoError(t, err)
-	require.Equal(t, &types.QueryParamsResponse{Params: params}, response)
+	require.Equal(t, &types.ParamsResponse{Params: params}, response)
 }

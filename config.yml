@@ -30,6 +30,23 @@ genesis:
         min_deposit:
           - amount: "10000000"
             denom: uelys
+      params:
+        burn_proposal_deposit_prevote: false
+        burn_vote_quorum: false
+        burn_vote_veto: true
+        max_deposit_period: 20s
+        min_deposit:
+          - amount: "10000000"
+            denom: uelys
+        min_initial_deposit_ratio: "0.000000000000000000"
+        quorum: "0.334000000000000000"
+        threshold: "0.500000000000000000"
+        veto_threshold: "0.334000000000000000"
+        voting_period: 20s
+      tally_params:
+        quorum: "0.334000000000000000"
+        threshold: "0.500000000000000000"
+        veto_threshold: "0.334000000000000000"
       voting_params:
         voting_period: 20s
     mint:
@@ -317,8 +334,28 @@ genesis:
           denom: "ueden"
           amount: "1000000"
     parameter:
-      anteHandlerParamList:
-        - minCommissionRate: "0.05"
-          maxVotingPower: "0.66"
-          minSelfDelegation: "1"
+      anteHandlerParam:
+        minCommissionRate: "0.05"
+        maxVotingPower: "0.66"
+        minSelfDelegation: "1"
+    margin:
+      params:
+        leverage_max: "10"
+        interest_rate_max: "1.0"
+        interest_rate_min: "1.0"
+        interest_rate_increase: "1.0"
+        interest_rate_decrease: "1.0"
+        health_gain_factor: "1.0"
+        epoch_length: 1
+        removal_queue_threshold: "1.0"
+        max_open_positions: 9999
+        pool_open_threshold: "1.0"
+        force_close_fund_percentage: "1.0"
+        force_close_fund_address: ""
+        incremental_interest_payment_fund_percentage: "1.0"
+        incremental_interest_payment_fund_address: ""
+        sq_modifier: "1.0"
+        safety_factor: "1.0"
+        incremental_interest_payment_enabled: true
+        whitelisting_enabled: true
   chain_id: elystestnet-1
