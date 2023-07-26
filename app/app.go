@@ -158,7 +158,7 @@ const (
 	AccountAddressPrefix = "elys"
 	Name                 = "elys"
 
-	// Temperal declaration until we have dex module
+	// Dex revenue consolidating wallet
 	DexRevenueCollectorName = "dexRevenueCollector"
 )
 

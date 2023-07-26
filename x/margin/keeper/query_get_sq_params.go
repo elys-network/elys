@@ -9,11 +9,15 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-func (k Keeper) Params(goCtx context.Context, req *types.ParamsRequest) (*types.ParamsResponse, error) {
+func (k Keeper) GetSQParams(goCtx context.Context, req *types.GetSQParamsRequest) (*types.GetSQParamsResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
+
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	return &types.ParamsResponse{Params: k.GetParams(ctx)}, nil
+	// TODO: Process the query
+	_ = ctx
+
+	return &types.GetSQParamsResponse{}, nil
 }
