@@ -10,6 +10,8 @@ import (
 	"testing"
 	"time"
 
+	"github.com/CosmWasm/wasmd/x/wasm"
+	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
 	dbm "github.com/cometbft/cometbft-db"
 	abci "github.com/cometbft/cometbft/abci/types"
 	"github.com/cometbft/cometbft/libs/log"
@@ -86,17 +88,17 @@ func BenchmarkSimulation(b *testing.B) {
 	appOptions[flags.FlagHome] = app.DefaultNodeHome
 	appOptions[server.FlagInvCheckPeriod] = simcli.FlagPeriodValue
 
+	nodeHome := ""
+	appOptions[flags.FlagHome] = nodeHome // ensure unique folder
+	appOptions[server.FlagInvCheckPeriod] = 1
 	bApp := app.NewElysApp(
 		logger,
 		db,
 		nil,
 		true,
-		map[int64]bool{},
-		app.DefaultNodeHome,
-		0,
-		app.MakeEncodingConfig(),
+		wasmtypes.EnableAllProposals,
 		appOptions,
-		baseapp.SetChainID(config.ChainID),
+		[]wasm.Option{},
 	)
 	require.Equal(b, app.Name, bApp.Name())
 
@@ -167,11 +169,9 @@ func TestAppStateDeterminism(t *testing.T) {
 				db,
 				nil,
 				true,
-				map[int64]bool{},
-				app.DefaultNodeHome,
-				simcli.FlagPeriodValue,
-				app.MakeEncodingConfig(),
+				wasmtypes.EnableAllProposals,
 				appOptions,
+				[]wasm.Option{},
 				fauxMerkleModeOpt,
 				baseapp.SetChainID(chainID),
 			)
@@ -245,11 +245,9 @@ func TestAppImportExport(t *testing.T) {
 		db,
 		nil,
 		true,
-		map[int64]bool{},
-		app.DefaultNodeHome,
-		0,
-		app.MakeEncodingConfig(),
+		wasmtypes.EnableAllProposals,
 		appOptions,
+		[]wasm.Option{},
 		baseapp.SetChainID(config.ChainID),
 	)
 	require.Equal(t, app.Name, bApp.Name())
@@ -306,11 +304,9 @@ func TestAppImportExport(t *testing.T) {
 		newDB,
 		nil,
 		true,
-		map[int64]bool{},
-		app.DefaultNodeHome,
-		0,
-		app.MakeEncodingConfig(),
+		wasmtypes.EnableAllProposals,
 		appOptions,
+		[]wasm.Option{},
 		baseapp.SetChainID(config.ChainID),
 	)
 	require.Equal(t, app.Name, bApp.Name())
@@ -399,11 +395,9 @@ func TestAppSimulationAfterImport(t *testing.T) {
 		db,
 		nil,
 		true,
-		map[int64]bool{},
-		app.DefaultNodeHome,
-		0,
-		app.MakeEncodingConfig(),
+		wasmtypes.EnableAllProposals,
 		appOptions,
+		[]wasm.Option{},
 		fauxMerkleModeOpt,
 		baseapp.SetChainID(config.ChainID),
 	)
@@ -466,11 +460,9 @@ func TestAppSimulationAfterImport(t *testing.T) {
 		newDB,
 		nil,
 		true,
-		map[int64]bool{},
-		app.DefaultNodeHome,
-		0,
-		app.MakeEncodingConfig(),
+		wasmtypes.EnableAllProposals,
 		appOptions,
+		[]wasm.Option{},
 		fauxMerkleModeOpt,
 		baseapp.SetChainID(config.ChainID),
 	)
