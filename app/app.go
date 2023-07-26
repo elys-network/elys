@@ -433,7 +433,10 @@ func NewElysApp(
 	)
 
 	// set the BaseApp's parameter store
-	app.ConsensusParamsKeeper = consensusparamkeeper.NewKeeper(appCodec, keys[upgradetypes.StoreKey], authtypes.NewModuleAddress(govtypes.ModuleName).String())
+	app.ConsensusParamsKeeper = consensusparamkeeper.NewKeeper(
+		appCodec, keys[consensusparamtypes.StoreKey],
+		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+	)
 	bApp.SetParamStore(&app.ConsensusParamsKeeper)
 
 	// add capability keeper and ScopeToModule for ibc module
@@ -1047,10 +1050,8 @@ func NewElysApp(
 	// initialize BaseApp
 	app.SetInitChainer(app.InitChainer)
 	app.SetBeginBlocker(app.BeginBlocker)
-
-	app.SetInitChainer(app.InitChainer)
-	app.SetBeginBlocker(app.BeginBlocker)
 	app.SetEndBlocker(app.EndBlocker)
+	SetupHandlers(app)
 	app.setAnteHandler(encodingConfig.TxConfig, wasmConfig, keys[wasm.StoreKey])
 
 	// must be before Loading version
@@ -1102,7 +1103,11 @@ func (app *ElysApp) setAnteHandler(txConfig client.TxConfig, wasmConfig wasmtype
 				FeegrantKeeper:  app.FeeGrantKeeper,
 				SigGasConsumer:  ante.DefaultSigVerificationGasConsumer,
 			},
+			StakingKeeper:     app.StakingKeeper,
 			IBCKeeper:         app.IBCKeeper,
+			BankKeeper:        app.BankKeeper,
+			Cdc:               app.appCodec,
+			ParameterKeeper:   app.ParameterKeeper,
 			WasmConfig:        &wasmConfig,
 			TXCounterStoreKey: txCounterStoreKey,
 		},
