@@ -6,12 +6,8 @@ option go_package = "github.com/elys-network/elys/x/margin/types";
 
 import "gogoproto/gogo.proto";
 import "elys/margin/params.proto";
+import "elys/margin/types.proto";
 
-enum Position {
-  UNSPECIFIED = 0;
-  LONG        = 1;
-  SHORT       = 2;
-}
 // Msg defines the Msg service.
 service Msg {
   rpc Open         (MsgOpen        ) returns (MsgOpenResponse        );

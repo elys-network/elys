@@ -166,7 +166,7 @@ const (
 	AccountAddressPrefix = "elys"
 	Name                 = "elys"
 
-	// Temperal declaration until we have dex module
+	// Dex revenue consolidating wallet
 	DexRevenueCollectorName = "dexRevenueCollector"
 
 	// If EnabledSpecificProposals is "", and this is "true", then enable all x/wasm proposals.
