@@ -36,7 +36,7 @@ jobs:
         uses: elys-network/elys/actions/cli@main
         if: ${{ steps.vars.outputs.is_release_type_latest == 'false' && steps.vars.outputs.should_release == 'true' }}
         with:
-          args: chain build --release --release.prefix ${{ steps.vars.outputs.tarball_prefix }} -t linux:amd64 -t darwin:amd64 -t darwin:arm64
+          args: chain build --release --release.prefix ${{ steps.vars.outputs.tarball_prefix }} -t linux:amd64 -t darwin:amd64 -t darwin:arm64 -y
 
       # Disabled for now, as it's not working properly.
       # - name: Delete the "latest" Release
