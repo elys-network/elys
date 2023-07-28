@@ -1,0 +1,12 @@
+syntax = "proto3";
+package elys.bridgeamm;
+
+import "gogoproto/gogo.proto";
+import "elys/bridgeamm/params.proto";
+
+option go_package = "github.com/elys-network/elys/x/bridgeamm/types";
+
+// GenesisState defines the bridgeamm module's genesis state.
+message GenesisState {
+  Params params = 1 [(gogoproto.nullable) = false];
+}

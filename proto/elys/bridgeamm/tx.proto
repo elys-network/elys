@@ -1,0 +1,7 @@
+syntax = "proto3";
+package elys.bridgeamm;
+
+option go_package = "github.com/elys-network/elys/x/bridgeamm/types";
+
+// Msg defines the Msg service.
+service Msg {}

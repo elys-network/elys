@@ -148,6 +148,9 @@ import (
 	marginmodulekeeper "github.com/elys-network/elys/x/margin/keeper"
 	marginmoduletypes "github.com/elys-network/elys/x/margin/types"
 
+	bridgeammmodule "github.com/elys-network/elys/x/bridgeamm"
+	bridgeammmodulekeeper "github.com/elys-network/elys/x/bridgeamm/keeper"
+	bridgeammmoduletypes "github.com/elys-network/elys/x/bridgeamm/types"
 	// this line is used by starport scaffolding # stargate/app/moduleImport
 
 	appparams "github.com/elys-network/elys/app/params"
@@ -222,6 +225,7 @@ var (
 		ammmodule.AppModuleBasic{},
 		parametermodule.AppModuleBasic{},
 		marginmodule.AppModuleBasic{},
+		bridgeammmodule.AppModuleBasic{},
 		// this line is used by starport scaffolding # stargate/app/moduleBasic
 	)
 
@@ -239,6 +243,7 @@ var (
 		burnermoduletypes.ModuleName:     {authtypes.Burner},
 		incentivemoduletypes.ModuleName:  nil,
 		ammmoduletypes.ModuleName:        {authtypes.Minter, authtypes.Burner, authtypes.Staking},
+		bridgeammmoduletypes.ModuleName:  {authtypes.Minter, authtypes.Burner, authtypes.Staking},
 		// this line is used by starport scaffolding # stargate/app/maccPerms
 	}
 )
@@ -311,6 +316,8 @@ type ElysApp struct {
 	AmmKeeper               ammmodulekeeper.Keeper
 	ParameterKeeper         parametermodulekeeper.Keeper
 	MarginKeeper            marginmodulekeeper.Keeper
+
+	BridgeammKeeper bridgeammmodulekeeper.Keeper
 	// this line is used by starport scaffolding # stargate/app/keeperDeclaration
 
 	// mm is the module manager
@@ -370,6 +377,7 @@ func NewElysApp(
 		crisistypes.StoreKey,
 		consensusparamtypes.StoreKey,
 		marginmoduletypes.StoreKey,
+		bridgeammmoduletypes.StoreKey,
 		// this line is used by starport scaffolding # stargate/app/storeKey
 	)
 	tkeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey)
@@ -701,6 +709,16 @@ func NewElysApp(
 	)
 	marginModule := marginmodule.NewAppModule(appCodec, app.MarginKeeper, app.AccountKeeper, app.BankKeeper)
 
+	app.BridgeammKeeper = *bridgeammmodulekeeper.NewKeeper(
+		appCodec,
+		keys[bridgeammmoduletypes.StoreKey],
+		keys[bridgeammmoduletypes.MemStoreKey],
+		app.GetSubspace(bridgeammmoduletypes.ModuleName),
+
+		app.BankKeeper,
+	)
+	bridgeammModule := bridgeammmodule.NewAppModule(appCodec, app.BridgeammKeeper, app.AccountKeeper, app.BankKeeper)
+
 	// this line is used by starport scaffolding # stargate/app/keeperDefinition
 
 	/**** IBC Routing ****/
@@ -796,6 +814,7 @@ func NewElysApp(
 		ammModule,
 		parameterModule,
 		marginModule,
+		bridgeammModule,
 		// this line is used by starport scaffolding # stargate/app/appModule
 	)
 
@@ -837,6 +856,7 @@ func NewElysApp(
 		parametermoduletypes.ModuleName,
 		consensusparamtypes.ModuleName,
 		marginmoduletypes.ModuleName,
+		bridgeammmoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/beginBlockers
 	)
 
@@ -873,6 +893,7 @@ func NewElysApp(
 		parametermoduletypes.ModuleName,
 		consensusparamtypes.ModuleName,
 		marginmoduletypes.ModuleName,
+		bridgeammmoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/endBlockers
 	)
 
@@ -913,6 +934,7 @@ func NewElysApp(
 		parametermoduletypes.ModuleName,
 		consensusparamtypes.ModuleName,
 		marginmoduletypes.ModuleName,
+		bridgeammmoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/initGenesis
 	)
 
@@ -1154,6 +1176,7 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(ammmoduletypes.ModuleName)
 	paramsKeeper.Subspace(parametermoduletypes.ModuleName)
 	paramsKeeper.Subspace(marginmoduletypes.ModuleName)
+	paramsKeeper.Subspace(bridgeammmoduletypes.ModuleName)
 	// this line is used by starport scaffolding # stargate/app/paramSubspace
 
 	return paramsKeeper
