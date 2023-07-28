@@ -186,7 +186,6 @@ func getGovProposalHandlers() []govclient.ProposalHandler {
 
 	govProposalHandlers = append(govProposalHandlers,
 		paramsclient.ProposalHandler,
-		// distrclient.ProposalHandler,
 		upgradeclient.LegacyProposalHandler,
 		upgradeclient.LegacyCancelProposalHandler,
 		ibcclientclient.UpdateClientProposalHandler,
@@ -303,6 +302,7 @@ type ElysApp struct {
 	cdc               *codec.LegacyAmino
 	appCodec          codec.Codec
 	interfaceRegistry types.InterfaceRegistry
+	txConfig          client.TxConfig
 
 	// keys to access the substores
 	keys    map[string]*storetypes.KVStoreKey
@@ -390,13 +390,14 @@ func NewElysApp(
 	bApp.SetTxEncoder(txConfig.TxEncoder())
 
 	keys := sdk.NewKVStoreKeys(
-		authtypes.StoreKey, authz.ModuleName, banktypes.StoreKey, stakingtypes.StoreKey,
+		authtypes.StoreKey, authz.ModuleName, banktypes.StoreKey, stakingtypes.StoreKey, crisistypes.StoreKey,
 		minttypes.StoreKey, slashingtypes.StoreKey, govtypes.StoreKey,
 		paramstypes.StoreKey, ibcexported.StoreKey, upgradetypes.StoreKey, feegrant.StoreKey, evidencetypes.StoreKey,
 		ibctransfertypes.StoreKey, icahosttypes.StoreKey, capabilitytypes.StoreKey, group.StoreKey,
 		ibcfeetypes.StoreKey,
 		icacontrollertypes.StoreKey,
 		wasm.StoreKey,
+		consensusparamtypes.StoreKey,
 		epochsmoduletypes.StoreKey,
 		assetprofilemoduletypes.StoreKey,
 		liquidityprovidermoduletypes.StoreKey,
@@ -407,8 +408,6 @@ func NewElysApp(
 		burnermoduletypes.StoreKey,
 		ammmoduletypes.StoreKey,
 		parametermoduletypes.StoreKey,
-		crisistypes.StoreKey,
-		consensusparamtypes.StoreKey,
 		marginmoduletypes.StoreKey,
 		// this line is used by starport scaffolding # stargate/app/storeKey
 	)
@@ -420,6 +419,7 @@ func NewElysApp(
 		cdc:               cdc,
 		appCodec:          appCodec,
 		interfaceRegistry: interfaceRegistry,
+		txConfig:          txConfig,
 		keys:              keys,
 		tkeys:             tkeys,
 		memKeys:           memKeys,
@@ -776,7 +776,6 @@ func NewElysApp(
 	govRouter.
 		AddRoute(govtypes.RouterKey, govv1beta1.ProposalHandler).
 		AddRoute(paramproposal.RouterKey, params.NewParamChangeProposalHandler(app.ParamsKeeper)).
-		// AddRoute(distrtypes.RouterKey, distr.NewCommunityPoolSpendProposalHandler(app.DistrKeeper)).
 		AddRoute(upgradetypes.RouterKey, upgrade.NewSoftwareUpgradeProposalHandler(app.UpgradeKeeper)).
 		AddRoute(ibcclienttypes.RouterKey, ibcclient.NewClientProposalHandler(app.IBCKeeper.ClientKeeper)).
 		AddRoute(oracletypes.RouterKey, oraclemodule.NewAssetInfoProposalHandler(&app.OracleKeeper)).
@@ -929,6 +928,7 @@ func NewElysApp(
 		group.ModuleName,
 		paramstypes.ModuleName,
 		vestingtypes.ModuleName,
+		consensusparamtypes.ModuleName,
 		assetprofilemoduletypes.ModuleName,
 		liquidityprovidermoduletypes.ModuleName,
 		oracletypes.ModuleName,
@@ -937,7 +937,6 @@ func NewElysApp(
 		burnermoduletypes.ModuleName,
 		ammmoduletypes.ModuleName,
 		parametermoduletypes.ModuleName,
-		consensusparamtypes.ModuleName,
 		marginmoduletypes.ModuleName,
 		wasm.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/beginBlockers
@@ -966,6 +965,7 @@ func NewElysApp(
 		paramstypes.ModuleName,
 		upgradetypes.ModuleName,
 		vestingtypes.ModuleName,
+		consensusparamtypes.ModuleName,
 		assetprofilemoduletypes.ModuleName,
 		liquidityprovidermoduletypes.ModuleName,
 		oracletypes.ModuleName,
@@ -974,7 +974,6 @@ func NewElysApp(
 		burnermoduletypes.ModuleName,
 		ammmoduletypes.ModuleName,
 		parametermoduletypes.ModuleName,
-		consensusparamtypes.ModuleName,
 		marginmoduletypes.ModuleName,
 		wasm.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/endBlockers
@@ -985,7 +984,7 @@ func NewElysApp(
 	// NOTE: Capability module must occur first so that it can initialize any capabilities
 	// so that other modules that want to create or claim capabilities afterwards in InitChain
 	// can do so safely.
-	app.mm.SetOrderInitGenesis(
+	genesisModuleOrder := []string{
 		capabilitytypes.ModuleName,
 		authtypes.ModuleName,
 		banktypes.ModuleName,
@@ -1006,6 +1005,7 @@ func NewElysApp(
 		paramstypes.ModuleName,
 		upgradetypes.ModuleName,
 		vestingtypes.ModuleName,
+		consensusparamtypes.ModuleName,
 		epochsmoduletypes.ModuleName,
 		assetprofilemoduletypes.ModuleName,
 		liquidityprovidermoduletypes.ModuleName,
@@ -1015,11 +1015,12 @@ func NewElysApp(
 		burnermoduletypes.ModuleName,
 		ammmoduletypes.ModuleName,
 		parametermoduletypes.ModuleName,
-		consensusparamtypes.ModuleName,
 		marginmoduletypes.ModuleName,
 		wasm.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/initGenesis
-	)
+	}
+	app.mm.SetOrderInitGenesis(genesisModuleOrder...)
+	app.mm.SetOrderExportGenesis(genesisModuleOrder...)
 
 	// Uncomment if you want to set a custom migration order here.
 	// app.mm.SetOrderMigrations(custom order)
@@ -1306,6 +1307,16 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 // SimulationManager returns the app SimulationManager
 func (app *ElysApp) SimulationManager() *module.SimulationManager {
 	return app.sm
+}
+
+// TxConfig returns App's TxConfig.
+func (app *ElysApp) TxConfig() client.TxConfig {
+	return app.txConfig
+}
+
+// Configurator get app configurator
+func (app *ElysApp) Configurator() module.Configurator {
+	return app.configurator
 }
 
 // ModuleManager returns the app ModuleManager

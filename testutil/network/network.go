@@ -39,6 +39,8 @@ func New(t *testing.T, configs ...network.Config) *network.Network {
 	}
 	net, err := network.New(t, t.TempDir(), cfg)
 	require.NoError(t, err)
+	_, err = net.WaitForHeight(1)
+	require.NoError(t, err)
 	t.Cleanup(net.Cleanup)
 	return net
 }
@@ -46,8 +48,10 @@ func New(t *testing.T, configs ...network.Config) *network.Network {
 // DefaultConfig will initialize config for the network with custom application,
 // genesis and single validator. All other parameters are inherited from cosmos-sdk/testutil/network.DefaultConfig
 func DefaultConfig() network.Config {
-	encoding := app.MakeEncodingConfig()
-	chainId := "elys-" + cometbftrand.NewRand().Str(6)
+	var (
+		encoding = app.MakeEncodingConfig()
+		chainId  = "elys-" + cometbftrand.NewRand().Str(6)
+	)
 	return network.Config{
 		Codec:             encoding.Marshaler,
 		TxConfig:          encoding.TxConfig,
