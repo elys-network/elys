@@ -1,6 +1,7 @@
 package app
 
 import (
+	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -10,6 +11,7 @@ import (
 	crisistypes "github.com/cosmos/cosmos-sdk/x/crisis/types"
 	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
+	margintypes "github.com/elys-network/elys/x/margin/types"
 )
 
 func SetupHandlers(app *ElysApp) {
@@ -44,6 +46,8 @@ func loadUpgradeStore(app *ElysApp) {
 			Added: []string{
 				consensustypes.ModuleName,
 				crisistypes.ModuleName,
+				margintypes.ModuleName,
+				wasmtypes.ModuleName,
 			},
 		}
 		// Use upgrade store loader for the initial loading of all stores when app starts,
