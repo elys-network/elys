@@ -5,6 +5,8 @@ import (
 	"testing"
 	"time"
 
+	"github.com/CosmWasm/wasmd/x/wasm"
+	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
 	cometbftdb "github.com/cometbft/cometbft-db"
 	cometbftrand "github.com/cometbft/cometbft/libs/rand"
 	"github.com/cosmos/cosmos-sdk/baseapp"
@@ -52,6 +54,9 @@ func DefaultConfig() network.Config {
 		encoding = app.MakeEncodingConfig()
 		chainId  = "elys-" + cometbftrand.NewRand().Str(6)
 	)
+
+	appOptions := make(simtestutil.AppOptionsMap, 0)
+
 	return network.Config{
 		Codec:             encoding.Marshaler,
 		TxConfig:          encoding.TxConfig,
@@ -60,9 +65,10 @@ func DefaultConfig() network.Config {
 		AccountRetriever:  authtypes.AccountRetriever{},
 		AppConstructor: func(val network.ValidatorI) servertypes.Application {
 			return app.NewElysApp(
-				val.GetCtx().Logger, cometbftdb.NewMemDB(), nil, true, map[int64]bool{}, val.GetCtx().Config.RootDir, 0,
-				encoding,
-				simtestutil.EmptyAppOptions{},
+				val.GetCtx().Logger, cometbftdb.NewMemDB(), nil, true,
+				wasmtypes.EnableAllProposals,
+				appOptions,
+				[]wasm.Option{},
 				baseapp.SetPruning(pruningtypes.NewPruningOptionsFromString(val.GetAppConfig().Pruning)),
 				baseapp.SetMinGasPrices(val.GetAppConfig().MinGasPrices),
 				baseapp.SetChainID(chainId),

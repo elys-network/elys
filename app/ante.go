@@ -1,7 +1,10 @@
 package app
 
 import (
+	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
+	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
 	"github.com/cosmos/cosmos-sdk/codec"
+	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/cosmos/cosmos-sdk/x/auth/ante"
@@ -18,11 +21,13 @@ import (
 // channel keeper.
 type HandlerOptions struct {
 	ante.HandlerOptions
-	Cdc             codec.BinaryCodec
-	StakingKeeper   *stakingkeeper.Keeper
-	BankKeeper      bankkeeper.Keeper
-	IBCKeeper       *ibckeeper.Keeper
-	ParameterKeeper parameterkeeper.Keeper
+	Cdc               codec.BinaryCodec
+	StakingKeeper     *stakingkeeper.Keeper
+	BankKeeper        bankkeeper.Keeper
+	IBCKeeper         *ibckeeper.Keeper
+	WasmConfig        *wasmtypes.WasmConfig
+	ParameterKeeper   parameterkeeper.Keeper
+	TXCounterStoreKey storetypes.StoreKey
 }
 
 type MinCommissionDecorator struct {
@@ -224,6 +229,10 @@ func NewAnteHandler(options HandlerOptions) (sdk.AnteHandler, error) {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrLogic, "sign mode handler is required for ante builder")
 	}
 
+	if options.WasmConfig == nil {
+		return nil, sdkerrors.Wrap(sdkerrors.ErrLogic, "wasm config is required for ante builder")
+	}
+
 	if options.FeegrantKeeper == nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrLogic, "feegrant keeper is required for ante builder")
 	}
@@ -235,6 +244,8 @@ func NewAnteHandler(options HandlerOptions) (sdk.AnteHandler, error) {
 
 	anteDecorators := []sdk.AnteDecorator{
 		ante.NewSetUpContextDecorator(), // outermost AnteDecorator. SetUpContext must be called first
+		wasmkeeper.NewLimitSimulationGasDecorator(options.WasmConfig.SimulationGasLimit), // after setup context to enforce limits early
+		wasmkeeper.NewCountTXDecorator(options.TXCounterStoreKey),
 		NewMinCommissionDecorator(options.Cdc, options.StakingKeeper, options.BankKeeper, options.ParameterKeeper),
 		ante.NewExtensionOptionsDecorator(options.ExtensionOptionChecker),
 		ante.NewValidateBasicDecorator(),
