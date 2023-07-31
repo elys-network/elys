@@ -23,7 +23,6 @@ import (
 	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
 	burnertypes "github.com/elys-network/elys/x/burner/types"
 	commitmenttypes "github.com/elys-network/elys/x/commitment/types"
-	epochstypes "github.com/elys-network/elys/x/epochs/types"
 	incentivetypes "github.com/elys-network/elys/x/incentive/types"
 	liquidityprovidertypes "github.com/elys-network/elys/x/liquidityprovider/types"
 	margintypes "github.com/elys-network/elys/x/margin/types"
@@ -62,27 +61,25 @@ func setUpgradeHandler(app *ElysApp) {
 		case crisistypes.ModuleName:
 			keyTable = crisistypes.ParamKeyTable() //nolint:staticcheck
 		case ammtypes.ModuleName:
-			keyTable = crisistypes.ParamKeyTable() //nolint:staticcheck
+			keyTable = ammtypes.ParamKeyTable() //nolint:staticcheck
 		case assetprofiletypes.ModuleName:
-			keyTable = crisistypes.ParamKeyTable() //nolint:staticcheck
+			keyTable = assetprofiletypes.ParamKeyTable() //nolint:staticcheck
 		case burnertypes.ModuleName:
-			keyTable = crisistypes.ParamKeyTable() //nolint:staticcheck
+			keyTable = burnertypes.ParamKeyTable() //nolint:staticcheck
 		case commitmenttypes.ModuleName:
-			keyTable = crisistypes.ParamKeyTable() //nolint:staticcheck
-		case epochstypes.ModuleName:
-			keyTable = crisistypes.ParamKeyTable() //nolint:staticcheck
+			keyTable = commitmenttypes.ParamKeyTable() //nolint:staticcheck
 		case incentivetypes.ModuleName:
-			keyTable = crisistypes.ParamKeyTable() //nolint:staticcheck
+			keyTable = incentivetypes.ParamKeyTable() //nolint:staticcheck
 		case liquidityprovidertypes.ModuleName:
-			keyTable = crisistypes.ParamKeyTable() //nolint:staticcheck
+			keyTable = liquidityprovidertypes.ParamKeyTable() //nolint:staticcheck
 		case margintypes.ModuleName:
-			keyTable = crisistypes.ParamKeyTable() //nolint:staticcheck
+			keyTable = margintypes.ParamKeyTable() //nolint:staticcheck
 		case oracletypes.ModuleName:
-			keyTable = crisistypes.ParamKeyTable() //nolint:staticcheck
+			keyTable = oracletypes.ParamKeyTable() //nolint:staticcheck
 		case parametertypes.ModuleName:
-			keyTable = crisistypes.ParamKeyTable() //nolint:staticcheck
+			keyTable = parametertypes.ParamKeyTable() //nolint:staticcheck
 		case tokenomicstypes.ModuleName:
-			keyTable = crisistypes.ParamKeyTable() //nolint:staticcheck
+			keyTable = tokenomicstypes.ParamKeyTable() //nolint:staticcheck
 		}
 
 		if !subspace.HasKeyTable() {
