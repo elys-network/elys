@@ -42,6 +42,10 @@ const (
 	// TODO: Determine the simulation weight value
 	defaultWeightMsgSwapExactAmountOut int = 100
 
+	opWeightMsgFeedSlippageReduction = "op_weight_msg_feed_slippage_reduction"
+	// TODO: Determine the simulation weight value
+	defaultWeightMsgFeedSlippageReduction int = 100
+
 	// this line is used by starport scaffolding # simapp/module/const
 )
 
@@ -123,6 +127,17 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 	operations = append(operations, simulation.NewWeightedOperation(
 		weightMsgSwapExactAmountOut,
 		ammsimulation.SimulateMsgSwapExactAmountOut(am.accountKeeper, am.bankKeeper, am.keeper),
+	))
+
+	var weightMsgFeedSlippageReduction int
+	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgFeedSlippageReduction, &weightMsgFeedSlippageReduction, nil,
+		func(_ *rand.Rand) {
+			weightMsgFeedSlippageReduction = defaultWeightMsgFeedSlippageReduction
+		},
+	)
+	operations = append(operations, simulation.NewWeightedOperation(
+		weightMsgFeedSlippageReduction,
+		ammsimulation.SimulateMsgFeedSlippageReduction(am.accountKeeper, am.bankKeeper, am.keeper),
 	))
 
 	// this line is used by starport scaffolding # simapp/module/operation

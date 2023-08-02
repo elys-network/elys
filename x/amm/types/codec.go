@@ -13,6 +13,7 @@ func RegisterCodec(cdc *codec.LegacyAmino) {
 	cdc.RegisterConcrete(&MsgExitPool{}, "amm/ExitPool", nil)
 	cdc.RegisterConcrete(&MsgSwapExactAmountIn{}, "amm/SwapExactAmountIn", nil)
 	cdc.RegisterConcrete(&MsgSwapExactAmountOut{}, "amm/SwapExactAmountOut", nil)
+	cdc.RegisterConcrete(&MsgFeedSlippageReduction{}, "amm/FeedSlippageReduction", nil)
 	// this line is used by starport scaffolding # 2
 }
 
@@ -31,6 +32,9 @@ func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 	)
 	registry.RegisterImplementations((*sdk.Msg)(nil),
 		&MsgSwapExactAmountOut{},
+	)
+	registry.RegisterImplementations((*sdk.Msg)(nil),
+		&MsgFeedSlippageReduction{},
 	)
 	// this line is used by starport scaffolding # 3
 
