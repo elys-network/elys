@@ -5,6 +5,7 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	atypes "github.com/elys-network/elys/x/assetprofile/types"
+	oracletypes "github.com/elys-network/elys/x/oracle/types"
 )
 
 // AccountKeeper defines the expected account keeper used for simulations (noalias)
@@ -31,6 +32,7 @@ type BankKeeper interface {
 // OracleKeeper defines the expected interface needed to retrieve price info
 type OracleKeeper interface {
 	GetAssetPriceFromDenom(ctx sdk.Context, denom string) sdk.Dec
+	GetPriceFeeder(ctx sdk.Context, feeder string) (val oracletypes.PriceFeeder, found bool)
 }
 
 // AssetProfileKeeper defines the expected interfaces

@@ -77,8 +77,8 @@ message MsgSwapExactAmountOutResponse {
 
 message MsgFeedSlippageReduction {
   string sender = 1;
-  string poolId  = 2;
-  string slippageReduction = 2 [
+  uint64 poolId  = 2;
+  string slippageReduction = 3 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
