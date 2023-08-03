@@ -34244,7 +34244,6 @@ paths:
                           enum:
                             - ACCESS_TYPE_UNSPECIFIED
                             - ACCESS_TYPE_NOBODY
-                            - ACCESS_TYPE_ONLY_ADDRESS
                             - ACCESS_TYPE_EVERYBODY
                             - ACCESS_TYPE_ANY_OF_ADDRESSES
                           default: ACCESS_TYPE_UNSPECIFIED
@@ -34252,16 +34251,9 @@ paths:
                             - ACCESS_TYPE_UNSPECIFIED: AccessTypeUnspecified
                             placeholder for empty value
                              - ACCESS_TYPE_NOBODY: AccessTypeNobody forbidden
-                             - ACCESS_TYPE_ONLY_ADDRESS: AccessTypeOnlyAddress restricted to a single address
-                            Deprecated: use AccessTypeAnyOfAddresses instead
                              - ACCESS_TYPE_EVERYBODY: AccessTypeEverybody unrestricted
                              - ACCESS_TYPE_ANY_OF_ADDRESSES: AccessTypeAnyOfAddresses allow any of the addresses
                           title: AccessType permission types
-                        address:
-                          type: string
-                          title: |-
-                            Address
-                            Deprecated: replaced by addresses
                         addresses:
                           type: array
                           items:
@@ -34564,7 +34556,6 @@ paths:
                         enum:
                           - ACCESS_TYPE_UNSPECIFIED
                           - ACCESS_TYPE_NOBODY
-                          - ACCESS_TYPE_ONLY_ADDRESS
                           - ACCESS_TYPE_EVERYBODY
                           - ACCESS_TYPE_ANY_OF_ADDRESSES
                         default: ACCESS_TYPE_UNSPECIFIED
@@ -34572,16 +34563,9 @@ paths:
                           - ACCESS_TYPE_UNSPECIFIED: AccessTypeUnspecified
                           placeholder for empty value
                            - ACCESS_TYPE_NOBODY: AccessTypeNobody forbidden
-                           - ACCESS_TYPE_ONLY_ADDRESS: AccessTypeOnlyAddress restricted to a single address
-                          Deprecated: use AccessTypeAnyOfAddresses instead
                            - ACCESS_TYPE_EVERYBODY: AccessTypeEverybody unrestricted
                            - ACCESS_TYPE_ANY_OF_ADDRESSES: AccessTypeAnyOfAddresses allow any of the addresses
                         title: AccessType permission types
-                      address:
-                        type: string
-                        title: |-
-                          Address
-                          Deprecated: replaced by addresses
                       addresses:
                         type: array
                         items:
@@ -35097,7 +35081,6 @@ paths:
                         enum:
                           - ACCESS_TYPE_UNSPECIFIED
                           - ACCESS_TYPE_NOBODY
-                          - ACCESS_TYPE_ONLY_ADDRESS
                           - ACCESS_TYPE_EVERYBODY
                           - ACCESS_TYPE_ANY_OF_ADDRESSES
                         default: ACCESS_TYPE_UNSPECIFIED
@@ -35105,16 +35088,9 @@ paths:
                           - ACCESS_TYPE_UNSPECIFIED: AccessTypeUnspecified
                           placeholder for empty value
                            - ACCESS_TYPE_NOBODY: AccessTypeNobody forbidden
-                           - ACCESS_TYPE_ONLY_ADDRESS: AccessTypeOnlyAddress restricted to a single address
-                          Deprecated: use AccessTypeAnyOfAddresses instead
                            - ACCESS_TYPE_EVERYBODY: AccessTypeEverybody unrestricted
                            - ACCESS_TYPE_ANY_OF_ADDRESSES: AccessTypeAnyOfAddresses allow any of the addresses
                         title: AccessType permission types
-                      address:
-                        type: string
-                        title: |-
-                          Address
-                          Deprecated: replaced by addresses
                       addresses:
                         type: array
                         items:
@@ -35125,7 +35101,6 @@ paths:
                     enum:
                       - ACCESS_TYPE_UNSPECIFIED
                       - ACCESS_TYPE_NOBODY
-                      - ACCESS_TYPE_ONLY_ADDRESS
                       - ACCESS_TYPE_EVERYBODY
                       - ACCESS_TYPE_ANY_OF_ADDRESSES
                     default: ACCESS_TYPE_UNSPECIFIED
@@ -35133,8 +35108,6 @@ paths:
                       - ACCESS_TYPE_UNSPECIFIED: AccessTypeUnspecified
                       placeholder for empty value
                        - ACCESS_TYPE_NOBODY: AccessTypeNobody forbidden
-                       - ACCESS_TYPE_ONLY_ADDRESS: AccessTypeOnlyAddress restricted to a single address
-                      Deprecated: use AccessTypeAnyOfAddresses instead
                        - ACCESS_TYPE_EVERYBODY: AccessTypeEverybody unrestricted
                        - ACCESS_TYPE_ANY_OF_ADDRESSES: AccessTypeAnyOfAddresses allow any of the addresses
                     title: AccessType permission types
@@ -76089,7 +76062,6 @@ definitions:
         enum:
           - ACCESS_TYPE_UNSPECIFIED
           - ACCESS_TYPE_NOBODY
-          - ACCESS_TYPE_ONLY_ADDRESS
           - ACCESS_TYPE_EVERYBODY
           - ACCESS_TYPE_ANY_OF_ADDRESSES
         default: ACCESS_TYPE_UNSPECIFIED
@@ -76097,16 +76069,9 @@ definitions:
           - ACCESS_TYPE_UNSPECIFIED: AccessTypeUnspecified placeholder for empty
           value
            - ACCESS_TYPE_NOBODY: AccessTypeNobody forbidden
-           - ACCESS_TYPE_ONLY_ADDRESS: AccessTypeOnlyAddress restricted to a single address
-          Deprecated: use AccessTypeAnyOfAddresses instead
            - ACCESS_TYPE_EVERYBODY: AccessTypeEverybody unrestricted
            - ACCESS_TYPE_ANY_OF_ADDRESSES: AccessTypeAnyOfAddresses allow any of the addresses
         title: AccessType permission types
-      address:
-        type: string
-        title: |-
-          Address
-          Deprecated: replaced by addresses
       addresses:
         type: array
         items:
@@ -76117,7 +76082,6 @@ definitions:
     enum:
       - ACCESS_TYPE_UNSPECIFIED
       - ACCESS_TYPE_NOBODY
-      - ACCESS_TYPE_ONLY_ADDRESS
       - ACCESS_TYPE_EVERYBODY
       - ACCESS_TYPE_ANY_OF_ADDRESSES
     default: ACCESS_TYPE_UNSPECIFIED
@@ -76125,8 +76089,6 @@ definitions:
       - ACCESS_TYPE_UNSPECIFIED: AccessTypeUnspecified placeholder for empty
       value
        - ACCESS_TYPE_NOBODY: AccessTypeNobody forbidden
-       - ACCESS_TYPE_ONLY_ADDRESS: AccessTypeOnlyAddress restricted to a single address
-      Deprecated: use AccessTypeAnyOfAddresses instead
        - ACCESS_TYPE_EVERYBODY: AccessTypeEverybody unrestricted
        - ACCESS_TYPE_ANY_OF_ADDRESSES: AccessTypeAnyOfAddresses allow any of the addresses
     title: AccessType permission types
@@ -76150,7 +76112,6 @@ definitions:
             enum:
               - ACCESS_TYPE_UNSPECIFIED
               - ACCESS_TYPE_NOBODY
-              - ACCESS_TYPE_ONLY_ADDRESS
               - ACCESS_TYPE_EVERYBODY
               - ACCESS_TYPE_ANY_OF_ADDRESSES
             default: ACCESS_TYPE_UNSPECIFIED
@@ -76158,16 +76119,9 @@ definitions:
               - ACCESS_TYPE_UNSPECIFIED: AccessTypeUnspecified placeholder for
               empty value
                - ACCESS_TYPE_NOBODY: AccessTypeNobody forbidden
-               - ACCESS_TYPE_ONLY_ADDRESS: AccessTypeOnlyAddress restricted to a single address
-              Deprecated: use AccessTypeAnyOfAddresses instead
                - ACCESS_TYPE_EVERYBODY: AccessTypeEverybody unrestricted
                - ACCESS_TYPE_ANY_OF_ADDRESSES: AccessTypeAnyOfAddresses allow any of the addresses
             title: AccessType permission types
-          address:
-            type: string
-            title: |-
-              Address
-              Deprecated: replaced by addresses
           addresses:
             type: array
             items:
@@ -76338,6 +76292,11 @@ definitions:
         format: byte
         title: base64-encode raw value
     title: Model is a struct that holds a KV pair
+  cosmwasm.wasm.v1.MsgAddCodeUploadParamsAddressesResponse:
+    type: object
+    description: |-
+      MsgAddCodeUploadParamsAddressesResponse defines the response
+      structure for executing a MsgAddCodeUploadParamsAddresses message.
   cosmwasm.wasm.v1.MsgClearAdminResponse:
     type: object
     title: MsgClearAdminResponse returns empty data
@@ -76388,6 +76347,11 @@ definitions:
       MsgPinCodes message.
 
       Since: 0.40
+  cosmwasm.wasm.v1.MsgRemoveCodeUploadParamsAddressesResponse:
+    type: object
+    description: |-
+      MsgRemoveCodeUploadParamsAddressesResponse defines the response
+      structure for executing a MsgRemoveCodeUploadParamsAddresses message.
   cosmwasm.wasm.v1.MsgStoreAndInstantiateContractResponse:
     type: object
     properties:
@@ -76458,7 +76422,6 @@ definitions:
             enum:
               - ACCESS_TYPE_UNSPECIFIED
               - ACCESS_TYPE_NOBODY
-              - ACCESS_TYPE_ONLY_ADDRESS
               - ACCESS_TYPE_EVERYBODY
               - ACCESS_TYPE_ANY_OF_ADDRESSES
             default: ACCESS_TYPE_UNSPECIFIED
@@ -76466,16 +76429,9 @@ definitions:
               - ACCESS_TYPE_UNSPECIFIED: AccessTypeUnspecified placeholder for
               empty value
                - ACCESS_TYPE_NOBODY: AccessTypeNobody forbidden
-               - ACCESS_TYPE_ONLY_ADDRESS: AccessTypeOnlyAddress restricted to a single address
-              Deprecated: use AccessTypeAnyOfAddresses instead
                - ACCESS_TYPE_EVERYBODY: AccessTypeEverybody unrestricted
                - ACCESS_TYPE_ANY_OF_ADDRESSES: AccessTypeAnyOfAddresses allow any of the addresses
             title: AccessType permission types
-          address:
-            type: string
-            title: |-
-              Address
-              Deprecated: replaced by addresses
           addresses:
             type: array
             items:
@@ -76486,7 +76442,6 @@ definitions:
         enum:
           - ACCESS_TYPE_UNSPECIFIED
           - ACCESS_TYPE_NOBODY
-          - ACCESS_TYPE_ONLY_ADDRESS
           - ACCESS_TYPE_EVERYBODY
           - ACCESS_TYPE_ANY_OF_ADDRESSES
         default: ACCESS_TYPE_UNSPECIFIED
@@ -76494,8 +76449,6 @@ definitions:
           - ACCESS_TYPE_UNSPECIFIED: AccessTypeUnspecified placeholder for empty
           value
            - ACCESS_TYPE_NOBODY: AccessTypeNobody forbidden
-           - ACCESS_TYPE_ONLY_ADDRESS: AccessTypeOnlyAddress restricted to a single address
-          Deprecated: use AccessTypeAnyOfAddresses instead
            - ACCESS_TYPE_EVERYBODY: AccessTypeEverybody unrestricted
            - ACCESS_TYPE_ANY_OF_ADDRESSES: AccessTypeAnyOfAddresses allow any of the addresses
         title: AccessType permission types
@@ -76562,7 +76515,6 @@ definitions:
                 enum:
                   - ACCESS_TYPE_UNSPECIFIED
                   - ACCESS_TYPE_NOBODY
-                  - ACCESS_TYPE_ONLY_ADDRESS
                   - ACCESS_TYPE_EVERYBODY
                   - ACCESS_TYPE_ANY_OF_ADDRESSES
                 default: ACCESS_TYPE_UNSPECIFIED
@@ -76570,16 +76522,9 @@ definitions:
                   - ACCESS_TYPE_UNSPECIFIED: AccessTypeUnspecified placeholder
                   for empty value
                    - ACCESS_TYPE_NOBODY: AccessTypeNobody forbidden
-                   - ACCESS_TYPE_ONLY_ADDRESS: AccessTypeOnlyAddress restricted to a single address
-                  Deprecated: use AccessTypeAnyOfAddresses instead
                    - ACCESS_TYPE_EVERYBODY: AccessTypeEverybody unrestricted
                    - ACCESS_TYPE_ANY_OF_ADDRESSES: AccessTypeAnyOfAddresses allow any of the addresses
                 title: AccessType permission types
-              address:
-                type: string
-                title: |-
-                  Address
-                  Deprecated: replaced by addresses
               addresses:
                 type: array
                 items:
@@ -76615,7 +76560,6 @@ definitions:
                   enum:
                     - ACCESS_TYPE_UNSPECIFIED
                     - ACCESS_TYPE_NOBODY
-                    - ACCESS_TYPE_ONLY_ADDRESS
                     - ACCESS_TYPE_EVERYBODY
                     - ACCESS_TYPE_ANY_OF_ADDRESSES
                   default: ACCESS_TYPE_UNSPECIFIED
@@ -76623,16 +76567,9 @@ definitions:
                     - ACCESS_TYPE_UNSPECIFIED: AccessTypeUnspecified placeholder
                     for empty value
                      - ACCESS_TYPE_NOBODY: AccessTypeNobody forbidden
-                     - ACCESS_TYPE_ONLY_ADDRESS: AccessTypeOnlyAddress restricted to a single address
-                    Deprecated: use AccessTypeAnyOfAddresses instead
                      - ACCESS_TYPE_EVERYBODY: AccessTypeEverybody unrestricted
                      - ACCESS_TYPE_ANY_OF_ADDRESSES: AccessTypeAnyOfAddresses allow any of the addresses
                   title: AccessType permission types
-                address:
-                  type: string
-                  title: |-
-                    Address
-                    Deprecated: replaced by addresses
                 addresses:
                   type: array
                   items:
@@ -76916,7 +76853,6 @@ definitions:
                 enum:
                   - ACCESS_TYPE_UNSPECIFIED
                   - ACCESS_TYPE_NOBODY
-                  - ACCESS_TYPE_ONLY_ADDRESS
                   - ACCESS_TYPE_EVERYBODY
                   - ACCESS_TYPE_ANY_OF_ADDRESSES
                 default: ACCESS_TYPE_UNSPECIFIED
@@ -76924,16 +76860,9 @@ definitions:
                   - ACCESS_TYPE_UNSPECIFIED: AccessTypeUnspecified placeholder
                   for empty value
                    - ACCESS_TYPE_NOBODY: AccessTypeNobody forbidden
-                   - ACCESS_TYPE_ONLY_ADDRESS: AccessTypeOnlyAddress restricted to a single address
-                  Deprecated: use AccessTypeAnyOfAddresses instead
                    - ACCESS_TYPE_EVERYBODY: AccessTypeEverybody unrestricted
                    - ACCESS_TYPE_ANY_OF_ADDRESSES: AccessTypeAnyOfAddresses allow any of the addresses
                 title: AccessType permission types
-              address:
-                type: string
-                title: |-
-                  Address
-                  Deprecated: replaced by addresses
               addresses:
                 type: array
                 items:
@@ -76944,7 +76873,6 @@ definitions:
             enum:
               - ACCESS_TYPE_UNSPECIFIED
               - ACCESS_TYPE_NOBODY
-              - ACCESS_TYPE_ONLY_ADDRESS
               - ACCESS_TYPE_EVERYBODY
               - ACCESS_TYPE_ANY_OF_ADDRESSES
             default: ACCESS_TYPE_UNSPECIFIED
@@ -76952,8 +76880,6 @@ definitions:
               - ACCESS_TYPE_UNSPECIFIED: AccessTypeUnspecified placeholder for
               empty value
                - ACCESS_TYPE_NOBODY: AccessTypeNobody forbidden
-               - ACCESS_TYPE_ONLY_ADDRESS: AccessTypeOnlyAddress restricted to a single address
-              Deprecated: use AccessTypeAnyOfAddresses instead
                - ACCESS_TYPE_EVERYBODY: AccessTypeEverybody unrestricted
                - ACCESS_TYPE_ANY_OF_ADDRESSES: AccessTypeAnyOfAddresses allow any of the addresses
             title: AccessType permission types
