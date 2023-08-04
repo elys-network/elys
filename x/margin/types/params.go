@@ -4,8 +4,37 @@ import (
 	fmt "fmt"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
 	"gopkg.in/yaml.v2"
 )
+
+var _ paramtypes.ParamSet = (*Params)(nil)
+
+var (
+	KeyLeverageMax                              = []byte("LeverageMax")
+	KeyInterestRateMax                          = []byte("InterestRateMax")
+	KeyInterestRateMin                          = []byte("InterestRateMin")
+	KeyInterestRateIncrease                     = []byte("InterestRateIncrease")
+	KeyInterestRateDecrease                     = []byte("InterestRateDecrease")
+	KeyHealthGainFactor                         = []byte("HealthGainFactor")
+	KeyEpochLength                              = []byte("EpochLength")
+	KeyRemovalQueueThreshold                    = []byte("RemovalQueueThreshold")
+	KeyMaxOpenPositions                         = []byte("MaxOpenPositions")
+	KeyPoolOpenThreshold                        = []byte("PoolOpenThreshold")
+	KeyForceCloseFundPercentage                 = []byte("ForceCloseFundPercentage")
+	KeyForceCloseFundAddress                    = []byte("ForceCloseFundAddress")
+	KeyIncrementalInterestPaymentFundPercentage = []byte("IncrementalInterestPaymentFundPercentage")
+	KeyIncrementalInterestPaymentFundAddress    = []byte("IncrementalInterestPaymentFundAddress")
+	KeySqModifier                               = []byte("SqModifier")
+	KeySafetyFactor                             = []byte("SafetyFactor")
+	KeyIncrementalInterestPaymentEnabled        = []byte("IncrementalInterestPaymentEnabled")
+	KeyWhitelistingEnabled                      = []byte("WhitelistingEnabled")
+)
+
+// ParamKeyTable the param key table for launch module
+func ParamKeyTable() paramtypes.KeyTable {
+	return paramtypes.NewKeyTable().RegisterParamSet(&Params{})
+}
 
 // NewParams creates a new Params instance
 func NewParams() Params {
@@ -34,6 +63,30 @@ func NewParams() Params {
 // DefaultParams returns a default set of parameters
 func DefaultParams() Params {
 	return NewParams()
+}
+
+// ParamSetPairs get the params.ParamSet
+func (p *Params) ParamSetPairs() paramtypes.ParamSetPairs {
+	return paramtypes.ParamSetPairs{
+		paramtypes.NewParamSetPair(KeyLeverageMax, &p.LeverageMax, validateLeverageMax),
+		paramtypes.NewParamSetPair(KeyInterestRateMax, &p.InterestRateMax, validateInterestRateMax),
+		paramtypes.NewParamSetPair(KeyInterestRateMin, &p.InterestRateMin, validateInterestRateMin),
+		paramtypes.NewParamSetPair(KeyInterestRateIncrease, &p.InterestRateIncrease, validateInterestRateIncrease),
+		paramtypes.NewParamSetPair(KeyInterestRateDecrease, &p.InterestRateDecrease, validateInterestRateDecrease),
+		paramtypes.NewParamSetPair(KeyHealthGainFactor, &p.HealthGainFactor, validateHealthGainFactor),
+		paramtypes.NewParamSetPair(KeyEpochLength, &p.EpochLength, validateEpochLength),
+		paramtypes.NewParamSetPair(KeyRemovalQueueThreshold, &p.RemovalQueueThreshold, validateRemovalQueueThreshold),
+		paramtypes.NewParamSetPair(KeyMaxOpenPositions, &p.MaxOpenPositions, validateMaxOpenPositions),
+		paramtypes.NewParamSetPair(KeyPoolOpenThreshold, &p.PoolOpenThreshold, validatePoolOpenThreshold),
+		paramtypes.NewParamSetPair(KeyForceCloseFundPercentage, &p.ForceCloseFundPercentage, validateForceCloseFundPercentage),
+		paramtypes.NewParamSetPair(KeyForceCloseFundAddress, &p.ForceCloseFundAddress, validateForceCloseFundAddress),
+		paramtypes.NewParamSetPair(KeyIncrementalInterestPaymentFundPercentage, &p.IncrementalInterestPaymentFundPercentage, validateIncrementalInterestPaymentFundPercentage),
+		paramtypes.NewParamSetPair(KeyIncrementalInterestPaymentFundAddress, &p.IncrementalInterestPaymentFundAddress, validateIncrementalInterestPaymentFundAddress),
+		paramtypes.NewParamSetPair(KeySqModifier, &p.SqModifier, validateSqModifier),
+		paramtypes.NewParamSetPair(KeySafetyFactor, &p.SafetyFactor, validateSafetyFactor),
+		paramtypes.NewParamSetPair(KeyIncrementalInterestPaymentEnabled, &p.IncrementalInterestPaymentEnabled, validateIncrementalInterestPaymentEnabled),
+		paramtypes.NewParamSetPair(KeyWhitelistingEnabled, &p.WhitelistingEnabled, validateWhitelistingEnabled),
+	}
 }
 
 // Validate validates the set of params
