@@ -386,7 +386,15 @@ func NewElysApp(
 		baseAppOptions...,
 	)
 	bApp.SetCommitMultiStoreTracer(traceStore)
+
+	//
+	// NOTE: This is a temporary fix to allow the version command to work with the current version
+	// of Elys. This should be removed once the version command is refactored.
+	if !strings.HasPrefix(version.Version, "v") {
+		version.Version = "v" + version.Version
+	}
 	bApp.SetVersion(version.Version)
+
 	bApp.SetInterfaceRegistry(interfaceRegistry)
 	bApp.SetTxEncoder(txConfig.TxEncoder())
 
