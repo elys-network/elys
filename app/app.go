@@ -799,6 +799,8 @@ func NewElysApp(
 		keys[marginmoduletypes.StoreKey],
 		keys[marginmoduletypes.MemStoreKey],
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+		app.AmmKeeper,
+		app.BankKeeper,
 	)
 	marginModule := marginmodule.NewAppModule(appCodec, app.MarginKeeper, app.AccountKeeper, app.BankKeeper)
 

@@ -27,7 +27,7 @@ func CmdGetMTP() *cobra.Command {
 
 			params := &types.MTPRequest{}
 
-			res, err := queryClient.GetMTP(cmd.Context(), params)
+			res, err := queryClient.MTP(cmd.Context(), params)
 			if err != nil {
 				return err
 			}
