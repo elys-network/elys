@@ -45,9 +45,9 @@ func NewParams() Params {
 		InterestRateIncrease:                     sdk.NewDec(1),
 		InterestRateDecrease:                     sdk.NewDec(1),
 		HealthGainFactor:                         sdk.NewDec(1),
-		EpochLength:                              (uint64)(1),
+		EpochLength:                              (int64)(1),
 		RemovalQueueThreshold:                    sdk.NewDec(1),
-		MaxOpenPositions:                         (uint64)(9999),
+		MaxOpenPositions:                         (int64)(9999),
 		PoolOpenThreshold:                        sdk.NewDec(1),
 		ForceCloseFundPercentage:                 sdk.NewDec(1),
 		ForceCloseFundAddress:                    "",
@@ -255,7 +255,7 @@ func validateHealthGainFactor(i interface{}) error {
 }
 
 func validateEpochLength(i interface{}) error {
-	_, ok := i.(uint64)
+	_, ok := i.(int64)
 	if !ok {
 		return fmt.Errorf("invalid parameter type: %T", i)
 	}
@@ -280,7 +280,7 @@ func validateRemovalQueueThreshold(i interface{}) error {
 }
 
 func validateMaxOpenPositions(i interface{}) error {
-	_, ok := i.(uint64)
+	_, ok := i.(int64)
 	if !ok {
 		return fmt.Errorf("invalid parameter type: %T", i)
 	}

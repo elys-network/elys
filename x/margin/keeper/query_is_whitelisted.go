@@ -15,9 +15,10 @@ func (k Keeper) IsWhitelisted(goCtx context.Context, req *types.IsWhitelistedReq
 	}
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
+	isWhitelisted := k.CheckIfWhitelisted(ctx, req.Address)
 
-	// TODO: Process the query
-	_ = ctx
-
-	return &types.IsWhitelistedResponse{}, nil
+	return &types.IsWhitelistedResponse{
+		Address:       req.Address,
+		IsWhitelisted: isWhitelisted,
+	}, nil
 }
