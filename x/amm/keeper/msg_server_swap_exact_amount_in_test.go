@@ -196,3 +196,106 @@ func (suite *KeeperTestSuite) TestMsgServerSwapExactAmountIn() {
 		})
 	}
 }
+
+func (suite *KeeperTestSuite) TestMsgServerSlippageDifferenceWhenSplit() {
+	suite.SetupTest()
+	suite.SetupStableCoinPrices()
+
+	senderInitBalance := sdk.Coins{sdk.NewInt64Coin("uusdc", 1000000)}
+	swapFee := sdk.ZeroDec()
+	tokenIn := sdk.NewInt64Coin("uusdc", 100000)
+	tokenOutMin := sdk.ZeroInt()
+	tokenOut := sdk.NewInt64Coin("uusdt", 95454)
+	swapRoute := []types.SwapAmountInRoute{
+		{
+			PoolId:        1,
+			TokenOutDenom: "uusdt",
+		},
+	}
+	expSenderBalance := sdk.Coins{sdk.NewInt64Coin("uusdc", 900000), sdk.NewInt64Coin("uusdt", 95454)}
+	expSenderBalanceSplitSwap := sdk.Coins{sdk.NewInt64Coin("uusdc", 900000), sdk.NewInt64Coin("uusdt", 95334)}
+
+	// bootstrap accounts
+	sender := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
+	poolAddr := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
+	treasuryAddr := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
+	poolCoins := sdk.Coins{sdk.NewInt64Coin("uusdc", 1000000), sdk.NewInt64Coin("uusdt", 1000000)}
+
+	// bootstrap balances
+	err := suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, senderInitBalance)
+	suite.Require().NoError(err)
+	err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, sender, senderInitBalance)
+	suite.Require().NoError(err)
+	err = suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, poolCoins)
+	suite.Require().NoError(err)
+	err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, poolAddr, poolCoins)
+	suite.Require().NoError(err)
+	// execute function
+	suite.app.AmmKeeper.SetDenomLiquidity(suite.ctx, types.DenomLiquidity{
+		Denom:     "uusdc",
+		Liquidity: sdk.NewInt(1000000),
+	})
+	suite.app.AmmKeeper.SetDenomLiquidity(suite.ctx, types.DenomLiquidity{
+		Denom:     "uusdt",
+		Liquidity: sdk.NewInt(1000000),
+	})
+
+	pool := types.Pool{
+		PoolId:            1,
+		Address:           poolAddr.String(),
+		RebalanceTreasury: treasuryAddr.String(),
+		PoolParams: types.PoolParams{
+			SwapFee:           swapFee,
+			FeeDenom:          "uusdc",
+			UseOracle:         true,
+			SlippageReduction: sdk.NewDecWithPrec(50, 2), // 50%
+		},
+		TotalShares: sdk.Coin{},
+		PoolAssets: []types.PoolAsset{
+			{
+				Token:  poolCoins[0],
+				Weight: sdk.NewInt(10),
+			},
+			{
+				Token:  poolCoins[1],
+				Weight: sdk.NewInt(10),
+			},
+		},
+		TotalWeight: sdk.ZeroInt(),
+	}
+	suite.app.AmmKeeper.SetPool(suite.ctx, pool)
+
+	cacheCtx, _ := suite.ctx.CacheContext()
+	msgServer := keeper.NewMsgServerImpl(suite.app.AmmKeeper)
+	resp, err := msgServer.SwapExactAmountIn(
+		sdk.WrapSDKContext(cacheCtx),
+		&types.MsgSwapExactAmountIn{
+			Sender:            sender.String(),
+			Routes:            swapRoute,
+			TokenIn:           tokenIn,
+			TokenOutMinAmount: tokenOutMin,
+		})
+	suite.Require().NoError(err)
+	suite.Require().Equal(resp.TokenOutAmount.String(), tokenOut.Amount.String())
+
+	// check balance change on sender
+	balances := suite.app.BankKeeper.GetAllBalances(cacheCtx, sender)
+	suite.Require().Equal(balances.String(), expSenderBalance.String())
+
+	// execute 100x swap with split
+	cacheCtx, _ = suite.ctx.CacheContext()
+	for i := 0; i < 100; i++ {
+		resp, err = msgServer.SwapExactAmountIn(
+			sdk.WrapSDKContext(cacheCtx),
+			&types.MsgSwapExactAmountIn{
+				Sender:            sender.String(),
+				Routes:            swapRoute,
+				TokenIn:           sdk.Coin{Denom: tokenIn.Denom, Amount: tokenIn.Amount.Quo(sdk.NewInt(100))},
+				TokenOutMinAmount: tokenOutMin,
+			})
+		suite.Require().NoError(err)
+	}
+	// check balance change on sender after splitting swap to 100
+	balances = suite.app.BankKeeper.GetAllBalances(cacheCtx, sender)
+	suite.Require().Equal(balances.String(), expSenderBalanceSplitSwap.String())
+}
