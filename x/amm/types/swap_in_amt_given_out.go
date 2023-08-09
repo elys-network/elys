@@ -6,6 +6,42 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
+func (p Pool) CalcGivenOutSlippage(
+	ctx sdk.Context,
+	oracleKeeper OracleKeeper,
+	tokensOut sdk.Coins,
+	tokenInDenom string,
+) (sdk.Dec, error) {
+	balancerInCoin, err := p.CalcInAmtGivenOut(tokensOut, tokenInDenom, sdk.ZeroDec())
+	if err != nil {
+		return sdk.ZeroDec(), err
+	}
+
+	tokenOut, poolAssetOut, poolAssetIn, err := p.parsePoolAssets(tokensOut, tokenInDenom)
+	if err != nil {
+		return sdk.ZeroDec(), err
+	}
+
+	// ensure token prices for in/out tokens set properly
+	inTokenPrice := oracleKeeper.GetAssetPriceFromDenom(ctx, tokenInDenom)
+	if inTokenPrice.IsZero() {
+		return sdk.ZeroDec(), fmt.Errorf("price for inToken not set: %s", poolAssetIn.Token.Denom)
+	}
+	outTokenPrice := oracleKeeper.GetAssetPriceFromDenom(ctx, tokenOut.Denom)
+	if outTokenPrice.IsZero() {
+		return sdk.ZeroDec(), fmt.Errorf("price for outToken not set: %s", poolAssetOut.Token.Denom)
+	}
+
+	// in amount is calculated in this formula
+	oracleInAmount := sdk.NewDecFromInt(tokenOut.Amount).Mul(outTokenPrice).Quo(inTokenPrice)
+	balancerIn := sdk.NewDecFromInt(balancerInCoin.Amount)
+	balancerSlippage := balancerIn.Sub(oracleInAmount)
+	if balancerSlippage.IsNegative() {
+		return sdk.ZeroDec(), nil
+	}
+	return balancerSlippage, nil
+}
+
 // SwapInAmtGivenOut is a mutative method for CalcOutAmtGivenIn, which includes the actual swap.
 func (p *Pool) SwapInAmtGivenOut(
 	ctx sdk.Context, oracleKeeper OracleKeeper, tokensOut sdk.Coins, tokenInDenom string, swapFee sdk.Dec) (
@@ -43,14 +79,14 @@ func (p *Pool) SwapInAmtGivenOut(
 	initialWeightDistance := p.WeightDistanceFromTarget(ctx, oracleKeeper, p.PoolAssets)
 
 	// in amount is calculated in this formula
-	// slippage = (oracleOutAmount-balancerOutAmount)*slippageReduction
-	// outAmountAfterSlippage = oracleOutAmount - slippage
-	// TODO: consider when slippage is positive
+	// balancer slippage amount = Max(oracleOutAmount-balancerOutAmount, 0)
+	// resizedAmount = tokenIn / externalLiquidityRatio
+	// actualSlippageAmount = balancer slippage(resizedAmount)
 	oracleInAmount := sdk.NewDecFromInt(tokenOut.Amount).Mul(outTokenPrice).Quo(inTokenPrice)
-	balancerInWithoutFee := sdk.NewDecFromInt(balancerInCoin.Amount).Quo(sdk.OneDec().Sub(swapFee))
-	balancerSlippage := oracleInAmount.Sub(balancerInWithoutFee)
-	slippage := balancerSlippage.Mul(sdk.OneDec().Sub(p.PoolParams.SlippageReduction))
-	inAmountAfterSlippage := oracleInAmount.Sub(slippage)
+
+	resizedAmount := sdk.NewDecFromInt(tokenOut.Amount).Quo(p.PoolParams.ExternalLiquidityRatio).RoundInt()
+	slippageAmount, err := p.CalcGivenOutSlippage(ctx, oracleKeeper, sdk.Coins{sdk.NewCoin(tokenOut.Denom, resizedAmount)}, tokenInDenom)
+	inAmountAfterSlippage := oracleInAmount.Add(slippageAmount)
 
 	// calculate weight distance difference to calculate bonus/cut on the operation
 	newAssetPools, err := p.NewPoolAssetsAfterSwap(

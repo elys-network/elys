@@ -205,15 +205,15 @@ func (suite *KeeperTestSuite) TestMsgServerSlippageDifferenceWhenSplit() {
 	swapFee := sdk.ZeroDec()
 	tokenIn := sdk.NewInt64Coin("uusdc", 100000)
 	tokenOutMin := sdk.ZeroInt()
-	tokenOut := sdk.NewInt64Coin("uusdt", 95454)
+	tokenOut := sdk.NewInt64Coin("uusdt", 97619)
 	swapRoute := []types.SwapAmountInRoute{
 		{
 			PoolId:        1,
 			TokenOutDenom: "uusdt",
 		},
 	}
-	expSenderBalance := sdk.Coins{sdk.NewInt64Coin("uusdc", 900000), sdk.NewInt64Coin("uusdt", 95454)}
-	expSenderBalanceSplitSwap := sdk.Coins{sdk.NewInt64Coin("uusdc", 900000), sdk.NewInt64Coin("uusdt", 95334)}
+	expSenderBalance := sdk.Coins{sdk.NewInt64Coin("uusdc", 900000), sdk.NewInt64Coin("uusdt", 97619)}
+	expSenderBalanceSplitSwap := sdk.Coins{sdk.NewInt64Coin("uusdc", 900000), sdk.NewInt64Coin("uusdt", 95354)}
 
 	// bootstrap accounts
 	sender := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
@@ -245,10 +245,10 @@ func (suite *KeeperTestSuite) TestMsgServerSlippageDifferenceWhenSplit() {
 		Address:           poolAddr.String(),
 		RebalanceTreasury: treasuryAddr.String(),
 		PoolParams: types.PoolParams{
-			SwapFee:           swapFee,
-			FeeDenom:          "uusdc",
-			UseOracle:         true,
-			SlippageReduction: sdk.NewDecWithPrec(50, 2), // 50%
+			SwapFee:                swapFee,
+			FeeDenom:               "uusdc",
+			UseOracle:              true,
+			ExternalLiquidityRatio: sdk.NewDec(2), // 2x
 		},
 		TotalShares: sdk.Coin{},
 		PoolAssets: []types.PoolAsset{

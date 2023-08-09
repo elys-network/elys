@@ -80,8 +80,8 @@ func (server msgServer) SwapExactAmountOut(goCtx context.Context, msg *types.Msg
 Swap logic should be different per oracle case and no oracle case. Weight is dynamically determined from oracle and based on new weight, swap out amount is determined.
 
 ```go
-Slippage = (InAmount/Spot_Price - Swap_out_amount) / (InAmount/Spot_Price)
-ActualSlippage = Slippage * params.SlippageReduction
+Slippage(InAmount) = (InAmount/Spot_Price - Swap_out_amount) / (InAmount/Spot_Price)
+ActualSlippage(InAmount) = Slippage(InAmount/params.ExternalLiquidityRatio)
 ```
 
 ### Fees on swap operation

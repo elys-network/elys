@@ -152,7 +152,7 @@ func (suite *KeeperTestSuite) TestUpdatePoolForSwap() {
 					ExitFee:                     sdk.ZeroDec(),
 					UseOracle:                   false,
 					WeightBreakingFeeMultiplier: sdk.ZeroDec(),
-					SlippageReduction:           sdk.ZeroDec(),
+					ExternalLiquidityRatio:      sdk.NewDec(1),
 					LpFeePortion:                sdk.ZeroDec(),
 					StakingFeePortion:           sdk.ZeroDec(),
 					WeightRecoveryFeePortion:    sdk.ZeroDec(),

@@ -85,6 +85,41 @@ func (p Pool) WeightDistanceFromTarget(ctx sdk.Context, oracleKeeper OracleKeepe
 	return distanceSum.Quo(sdk.NewDec(int64(len(p.PoolAssets))))
 }
 
+func (p Pool) CalcGivenInSlippage(
+	ctx sdk.Context,
+	oracleKeeper OracleKeeper,
+	tokensIn sdk.Coins,
+	tokenOutDenom string,
+) (sdk.Dec, error) {
+	balancerOutCoin, err := p.CalcOutAmtGivenIn(tokensIn, tokenOutDenom, sdk.ZeroDec())
+	if err != nil {
+		return sdk.ZeroDec(), err
+	}
+
+	tokenIn, poolAssetIn, poolAssetOut, err := p.parsePoolAssets(tokensIn, tokenOutDenom)
+	if err != nil {
+		return sdk.ZeroDec(), err
+	}
+
+	// ensure token prices for in/out tokens set properly
+	inTokenPrice := oracleKeeper.GetAssetPriceFromDenom(ctx, tokenIn.Denom)
+	if inTokenPrice.IsZero() {
+		return sdk.ZeroDec(), fmt.Errorf("price for inToken not set: %s", poolAssetIn.Token.Denom)
+	}
+	outTokenPrice := oracleKeeper.GetAssetPriceFromDenom(ctx, tokenOutDenom)
+	if outTokenPrice.IsZero() {
+		return sdk.ZeroDec(), fmt.Errorf("price for outToken not set: %s", poolAssetOut.Token.Denom)
+	}
+
+	oracleOutAmount := sdk.NewDecFromInt(tokenIn.Amount).Mul(inTokenPrice).Quo(outTokenPrice)
+	balancerOut := sdk.NewDecFromInt(balancerOutCoin.Amount)
+	slippageAmount := oracleOutAmount.Sub(balancerOut)
+	if slippageAmount.IsNegative() {
+		return sdk.ZeroDec(), nil
+	}
+	return slippageAmount, nil
+}
+
 // SwapOutAmtGivenIn is a mutative method for CalcOutAmtGivenIn, which includes the actual swap.
 func (p *Pool) SwapOutAmtGivenIn(
 	ctx sdk.Context,
@@ -125,14 +160,58 @@ func (p *Pool) SwapOutAmtGivenIn(
 	initialWeightDistance := p.WeightDistanceFromTarget(ctx, oracleKeeper, p.PoolAssets)
 
 	// out amount is calculated in this formula
-	// slippage = (oracleOutAmount-balancerOutAmount)*slippageReduction
-	// outAmountAfterSlippage = oracleOutAmount - slippage
-	// TODO: consider when slippage is minus
+	// balancer slippage amount = Max(oracleOutAmount-balancerOutAmount, 0)
+	// resizedAmount = tokenIn / externalLiquidityRatio
+	// actualSlippageAmount = balancer slippage(resizedAmount)
 	oracleOutAmount := sdk.NewDecFromInt(tokenIn.Amount).Mul(inTokenPrice).Quo(outTokenPrice)
-	balancerOutWithoutFee := sdk.NewDecFromInt(balancerOutCoin.Amount).Quo(sdk.OneDec().Sub(swapFee))
-	balancerSlippage := oracleOutAmount.Sub(balancerOutWithoutFee)
-	slippage := balancerSlippage.Mul(sdk.OneDec().Sub(p.PoolParams.SlippageReduction))
-	outAmountAfterSlippage := oracleOutAmount.Sub(slippage)
+	resizedAmount := sdk.NewDecFromInt(tokenIn.Amount).Quo(p.PoolParams.ExternalLiquidityRatio).RoundInt()
+	slippageAmount, err := p.CalcGivenInSlippage(ctx, oracleKeeper, sdk.Coins{sdk.NewCoin(tokenIn.Denom, resizedAmount)}, tokenOutDenom)
+	if err != nil {
+		return sdk.Coin{}, sdk.ZeroDec(), err
+	}
+	outAmountAfterSlippage := oracleOutAmount.Sub(slippageAmount)
+
+	// oracleOutAmount = 100 ATOM
+	// BalancerOutAmount = 95 ATOM
+	// balancerSlippageAmount = 5
+	// slippageAmount = 5 * (1 - 99%) = 0.05 ATOM
+	// Final amount = 99.95 ATOM
+	// Osmosis liq=$100 million
+	// Elys liq = $1 million
+	// reduction = 99% // (100 - 1)/(100)
+
+	// we know swap in amount - 1000 USDC
+	// price impact for Osmosis pool - 1000/(50000000 + 1000) = roughly 0.002%
+	// balancer price impact - balancerSlippageAmount / oracleOutAmount = 5%
+	// 0.002% / 5% = 0.0004 != 0.01 (slippage reduction factor) (right?)
+
+	// Elys normal amm pool = Osmosis normal amm pool (80/20 pool,
+	// we can create same virtual pool on Elys and calculate slippage)
+
+	// actual out amount = oracle out amount - slippage(Osmosis)
+
+	// Oracle price
+	// 1% depth
+	// $1mil
+	// Price impact for $1000
+	// 0.001% - price impact
+	// Out amount = (oracleOutAmount*(1-0.001%))
+	// First $100, 0.0001%
+	// For second $100, 0.0002%
+	// Triangle in pricing
+	// in amount = 100 ATOM
+	// linear model USDC/USDT stable pool, BTC/USDC
+	// Assume: it's linear model
+	// out amount = ? USDC
+	// Formula to calculate out amount
+	// We won't use Elys pool data here
+	// Reduction 98% - 99.9%
+	// Slippage reduction is dynamic based on trade size
+	// approximate value = slippage reduction
+	// Dream's solution:
+	// Dynamic slippage reduction
+	// $1000 trade: 95%
+	// $10000 trade: 80%
 
 	// calculate weight distance difference to calculate bonus/cut on the operation
 	newAssetPools, err := p.NewPoolAssetsAfterSwap(
