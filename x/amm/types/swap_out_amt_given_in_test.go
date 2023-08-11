@@ -497,7 +497,7 @@ func (suite *TestSuite) TestSwapOutAmtGivenIn() {
 			outTokenDenom:          "uusdc",
 			swapFee:                sdk.ZeroDec(),
 			expRecoveryBonus:       sdk.ZeroDec(),
-			expTokenOut:            sdk.NewInt64Coin("uusdc", 88894516),
+			expTokenOut:            sdk.NewInt64Coin("uusdc", 94879993),
 			expErr:                 false,
 		},
 		// scenario3 - oracle based
@@ -530,8 +530,8 @@ func (suite *TestSuite) TestSwapOutAmtGivenIn() {
 			tokenIn:                sdk.NewInt64Coin("uusdc", 100_000_000), // 100 USDC
 			outTokenDenom:          "uusdt",
 			swapFee:                sdk.ZeroDec(),
-			expRecoveryBonus:       sdk.MustNewDecFromStr("0.050000000000000000"),
-			expTokenOut:            sdk.NewInt64Coin("uusdt", 100000000),
+			expRecoveryBonus:       sdk.MustNewDecFromStr("0.049980307192773716"),
+			expTokenOut:            sdk.NewInt64Coin("uusdt", 99868706),
 			expErr:                 false,
 		},
 		// scenario1 - non-oracle based

@@ -91,7 +91,7 @@ func (p Pool) CalcGivenInSlippage(
 	tokensIn sdk.Coins,
 	tokenOutDenom string,
 ) (sdk.Dec, error) {
-	balancerOutCoin, err := p.CalcOutAmtGivenIn(tokensIn, tokenOutDenom, sdk.ZeroDec())
+	balancerOutCoin, err := p.CalcOutAmtGivenIn(ctx, oracleKeeper, tokensIn, tokenOutDenom, sdk.ZeroDec())
 	if err != nil {
 		return sdk.ZeroDec(), err
 	}
@@ -128,7 +128,7 @@ func (p *Pool) SwapOutAmtGivenIn(
 	tokenOutDenom string,
 	swapFee sdk.Dec,
 ) (tokenOut sdk.Coin, weightBalanceBonus sdk.Dec, err error) {
-	balancerOutCoin, err := p.CalcOutAmtGivenIn(tokensIn, tokenOutDenom, swapFee)
+	balancerOutCoin, err := p.CalcOutAmtGivenIn(ctx, oracleKeeper, tokensIn, tokenOutDenom, swapFee)
 	if err != nil {
 		return sdk.Coin{}, sdk.ZeroDec(), err
 	}

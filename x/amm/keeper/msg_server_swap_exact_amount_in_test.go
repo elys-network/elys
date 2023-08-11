@@ -1,6 +1,8 @@
 package keeper_test
 
 import (
+	"fmt"
+
 	"github.com/cometbft/cometbft/crypto/ed25519"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
@@ -205,15 +207,15 @@ func (suite *KeeperTestSuite) TestMsgServerSlippageDifferenceWhenSplit() {
 	swapFee := sdk.ZeroDec()
 	tokenIn := sdk.NewInt64Coin("uusdc", 100000)
 	tokenOutMin := sdk.ZeroInt()
-	tokenOut := sdk.NewInt64Coin("uusdt", 97619)
+	tokenOut := sdk.NewInt64Coin("uusdt", 99900)
 	swapRoute := []types.SwapAmountInRoute{
 		{
 			PoolId:        1,
 			TokenOutDenom: "uusdt",
 		},
 	}
-	expSenderBalance := sdk.Coins{sdk.NewInt64Coin("uusdc", 900000), sdk.NewInt64Coin("uusdt", 97619)}
-	expSenderBalanceSplitSwap := sdk.Coins{sdk.NewInt64Coin("uusdc", 900000), sdk.NewInt64Coin("uusdt", 95354)}
+	expSenderBalance := sdk.Coins{sdk.NewInt64Coin("uusdc", 900000), sdk.NewInt64Coin("uusdt", 99900)}
+	expSenderBalanceSplitSwap := sdk.Coins{sdk.NewInt64Coin("uusdc", 900000), sdk.NewInt64Coin("uusdt", 99984)}
 
 	// bootstrap accounts
 	sender := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
@@ -248,7 +250,7 @@ func (suite *KeeperTestSuite) TestMsgServerSlippageDifferenceWhenSplit() {
 			SwapFee:                swapFee,
 			FeeDenom:               "uusdc",
 			UseOracle:              true,
-			ExternalLiquidityRatio: sdk.NewDec(2), // 2x
+			ExternalLiquidityRatio: sdk.NewDec(10), // 2x
 		},
 		TotalShares: sdk.Coin{},
 		PoolAssets: []types.PoolAsset{
@@ -284,16 +286,17 @@ func (suite *KeeperTestSuite) TestMsgServerSlippageDifferenceWhenSplit() {
 
 	// execute 100x swap with split
 	cacheCtx, _ = suite.ctx.CacheContext()
-	for i := 0; i < 100; i++ {
+	for i := 0; i < 10; i++ {
 		resp, err = msgServer.SwapExactAmountIn(
 			sdk.WrapSDKContext(cacheCtx),
 			&types.MsgSwapExactAmountIn{
 				Sender:            sender.String(),
 				Routes:            swapRoute,
-				TokenIn:           sdk.Coin{Denom: tokenIn.Denom, Amount: tokenIn.Amount.Quo(sdk.NewInt(100))},
+				TokenIn:           sdk.Coin{Denom: tokenIn.Denom, Amount: tokenIn.Amount.Quo(sdk.NewInt(10))},
 				TokenOutMinAmount: tokenOutMin,
 			})
 		suite.Require().NoError(err)
+		fmt.Printf("outAmount%d: %s\n", i, resp.TokenOutAmount.String())
 	}
 	// check balance change on sender after splitting swap to 100
 	balances = suite.app.BankKeeper.GetAllBalances(cacheCtx, sender)
