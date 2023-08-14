@@ -1,59 +1,33 @@
-# This workflow is useful if you want to automate the process of:
-#
-# a) Creating a new prelease when you push a new tag with a "v" prefix (version).
-#
-#    This type of prerelease is meant to be used for production: alpha, beta, rc, etc. types of releases.
-#    After the prerelease is created, you need to make your changes on the release page at the relevant
-#    Github page and publish your release.
-#
-# b) Creating/updating the "latest" prerelease when you push to your default branch.
-#    Disabled for now, as it's not working properly.
-#
-#    This type of prelease is useful to make your bleeding-edge binaries available to advanced users.
-#
-# The workflow will not run if there is no tag pushed with a "v" prefix and no change pushed to your
-# default branch.
-name: Release
+# This workflow creates a release using goreleaser
+# via the 'make release' command.
+
+name: Create release
+
 on:
-  push:
-    tags:
-      - "v*"
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: 'The desired tag for the release (e.g. v0.1.0).'
+        required: true
+
+permissions:
+  contents: write
 
 jobs:
-  might_release:
-    runs-on: ubuntu-latest
+  release:
+    name: Create release
+    runs-on: self-hosted
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
+      -
+        name: Check out repository code
+        uses: actions/checkout@v3
         with:
           fetch-depth: 0
-
-      - name: Prepare Release Variables
-        id: vars
-        uses: ignite/cli/actions/release/vars@main
-
-      - name: Issue Release Assets
-        uses: elys-network/elys/actions/cli@main
-        if: ${{ steps.vars.outputs.is_release_type_latest == 'false' && steps.vars.outputs.should_release == 'true' }}
-        with:
-          args: chain build --release --release.prefix ${{ steps.vars.outputs.tarball_prefix }} -t linux:amd64 -t darwin:amd64 -t darwin:arm64 -y
-
-      # Disabled for now, as it's not working properly.
-      # - name: Delete the "latest" Release
-      #   uses: dev-drprasad/delete-tag-and-release@v0.2.1
-      #   if: ${{ steps.vars.outputs.is_release_type_latest == 'true' }}
-      #   with:
-      #     tag_name: ${{ steps.vars.outputs.tag_name }}
-      #     delete_release: true
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Publish the Release
-        uses: softprops/action-gh-release@v1
-        if: ${{ steps.vars.outputs.is_release_type_latest == 'false' && steps.vars.outputs.should_release == 'true' }}
-        with:
-          tag_name: ${{ steps.vars.outputs.tag_name }}
-          files: release/*
-          prerelease: true
+          ref: ${{ github.event.inputs.release_tag }}
+      - 
+        name: Make release
+        run: |
+          sudo rm -rf dist
+          make release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
