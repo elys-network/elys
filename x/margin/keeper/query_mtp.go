@@ -16,8 +16,10 @@ func (k Keeper) MTP(goCtx context.Context, req *types.MTPRequest) (*types.MTPRes
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	// TODO: Process the query
-	_ = ctx
+	mtp, err := k.GetMTP(ctx, req.Address, req.Id)
+	if err != nil {
+		return &types.MTPResponse{}, nil
+	}
 
-	return &types.MTPResponse{}, nil
+	return &types.MTPResponse{Mtp: &mtp}, nil
 }

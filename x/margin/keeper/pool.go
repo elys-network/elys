@@ -47,7 +47,7 @@ func (k Keeper) RemovePool(
 }
 
 // GetAllPool returns all pool
-func (k Keeper) GetAllPool(ctx sdk.Context) (list []types.Pool) {
+func (k Keeper) GetAllPools(ctx sdk.Context) (list []types.Pool) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.PoolKeyPrefix))
 	iterator := sdk.KVStorePrefixIterator(store, []byte{})
 

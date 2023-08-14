@@ -14,10 +14,15 @@ func (k Keeper) GetPositionsForAddress(goCtx context.Context, req *types.Positio
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
-	ctx := sdk.UnwrapSDKContext(goCtx)
+	addr, err := sdk.AccAddressFromBech32(req.Address)
+	if err != nil {
+		return nil, err
+	}
 
-	// TODO: Process the query
-	_ = ctx
+	mtps, pageRes, err := k.GetMTPsForAddress(sdk.UnwrapSDKContext(goCtx), addr, req.Pagination)
+	if err != nil {
+		return nil, err
+	}
 
-	return &types.PositionsForAddressResponse{}, nil
+	return &types.PositionsForAddressResponse{Mtps: mtps, Pagination: pageRes}, nil
 }

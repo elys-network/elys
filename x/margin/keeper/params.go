@@ -108,7 +108,7 @@ func (k Keeper) GetSafetyFactor(ctx sdk.Context) sdk.Dec {
 
 func (k Keeper) GetEnabledPools(ctx sdk.Context) []uint64 {
 	poolIds := make([]uint64, 0)
-	pools := k.GetAllPool(ctx)
+	pools := k.GetAllPools(ctx)
 	for _, p := range pools {
 		if p.Enabled {
 			poolIds = append(poolIds, p.AmmPoolId)
