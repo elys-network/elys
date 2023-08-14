@@ -2,17 +2,12 @@
 # via the 'make release' command.
 
 name: Create release
-
 on:
-  workflow_dispatch:
-    inputs:
-      release_tag:
-        description: 'The desired tag for the release (e.g. v0.1.0).'
-        required: true
-
+  push:
+    tags:
+      - v*
 permissions:
   contents: write
-
 jobs:
   release:
     name: Create release
