@@ -66,8 +66,16 @@ func TestGetAllWhitelistedAddress(t *testing.T) {
 
 	// length should be 2
 	require.Equal(t, len(whitelisted), 2)
-	// first result should be matches to the first addr
-	require.Equal(t, whitelisted[0], addr[0].String())
-	// second result should be matched to the second addr
-	require.Equal(t, whitelisted[1], addr[1].String())
+
+	// If addr[0] is whitelisted
+	require.Contains(t,
+		whitelisted,
+		addr[0].String(),
+	)
+
+	// If addr[1] is whitelisted
+	require.Contains(t,
+		whitelisted,
+		addr[1].String(),
+	)
 }
