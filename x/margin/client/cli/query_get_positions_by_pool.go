@@ -13,12 +13,15 @@ var _ = strconv.Itoa(0)
 
 func CmdGetPositionsByPool() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "get-positions-by-pool [asset]",
+		Use:   "get-positions-by-pool [amm_pool_id]",
 		Short: "Query get-positions-by-pool",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
-			reqAsset := args[0]
-
+			reqId := args[0]
+			id, err := strconv.ParseUint(reqId, 10, 64)
+			if err != nil {
+				return err
+			}
 			clientCtx, err := client.GetClientQueryContext(cmd)
 			if err != nil {
 				return err
@@ -27,8 +30,7 @@ func CmdGetPositionsByPool() *cobra.Command {
 			queryClient := types.NewQueryClient(clientCtx)
 
 			params := &types.PositionsByPoolRequest{
-
-				Asset: reqAsset,
+				AmmPoolId: id,
 			}
 
 			res, err := queryClient.GetPositionsByPool(cmd.Context(), params)
