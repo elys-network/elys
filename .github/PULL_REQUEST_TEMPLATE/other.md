@@ -1,6 +1,8 @@
 ## Description
 
-Closes: #XXXX
+Closes:
+* https://github.com/elys-network/issues/issues/XXX
+* https://github.com/elys-network/issues/issues/XXX
 
 <!-- Add a description of the changes that this PR introduces and the files that
 are the most critical to review. -->
