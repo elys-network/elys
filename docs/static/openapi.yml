@@ -38758,19 +38758,20 @@ paths:
                   additionalProperties: {}
       tags:
         - Query
-  /elys-network/elys/margin/get-sq-params/{pool}:
+  /elys-network/elys/margin/is-whitelisted:
     get:
-      summary: Queries a list of GetSQParams items.
-      operationId: ElysMarginGetSQParams
+      summary: Queries a list of IsWhitelisted items.
+      operationId: ElysMarginIsWhitelisted
       responses:
         '200':
           description: A successful response.
           schema:
             type: object
             properties:
-              begin_block:
+              address:
                 type: string
-                format: int64
+              is_whitelisted:
+                type: boolean
         default:
           description: An unexpected error response.
           schema:
@@ -38790,15 +38791,15 @@ paths:
                       type: string
                   additionalProperties: {}
       parameters:
-        - name: pool
-          in: path
-          required: true
+        - name: address
+          in: query
+          required: false
           type: string
       tags:
         - Query
-  /elys-network/elys/margin/get_mtp:
+  /elys-network/elys/margin/mtp/{address}/{id}:
     get:
-      summary: Queries a list of GetMTP items.
+      summary: Queries a list of MTP items.
       operationId: ElysMarginMTP
       responses:
         '200':
@@ -38841,6 +38842,9 @@ paths:
                   id:
                     type: string
                     format: uint64
+                  amm_pool_id:
+                    type: string
+                    format: uint64
         default:
           description: An unexpected error response.
           schema:
@@ -38861,56 +38865,17 @@ paths:
                   additionalProperties: {}
       parameters:
         - name: address
-          in: query
-          required: false
+          in: path
+          required: true
           type: string
         - name: id
-          in: query
-          required: false
+          in: path
+          required: true
           type: string
           format: uint64
       tags:
         - Query
-  /elys-network/elys/margin/is-whitelisted:
-    get:
-      summary: Queries a list of IsWhitelisted items.
-      operationId: ElysMarginIsWhitelisted
-      responses:
-        '200':
-          description: A successful response.
-          schema:
-            type: object
-            properties:
-              address:
-                type: string
-              is_whitelisted:
-                type: boolean
-        default:
-          description: An unexpected error response.
-          schema:
-            type: object
-            properties:
-              code:
-                type: integer
-                format: int32
-              message:
-                type: string
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    '@type':
-                      type: string
-                  additionalProperties: {}
-      parameters:
-        - name: address
-          in: query
-          required: false
-          type: string
-      tags:
-        - Query
-  /elys-network/elys/margin/mtps-by-pool/{asset}/{pagination.key}:
+  /elys-network/elys/margin/mtps-by-pool/{amm_pool_id}/{pagination.key}:
     get:
       summary: Queries a list of GetPositionsByPool items.
       operationId: ElysMarginGetPositionsByPool
@@ -38955,6 +38920,9 @@ paths:
                         - SHORT
                       default: UNSPECIFIED
                     id:
+                      type: string
+                      format: uint64
+                    amm_pool_id:
                       type: string
                       format: uint64
               pagination:
@@ -39004,10 +38972,11 @@ paths:
                       type: string
                   additionalProperties: {}
       parameters:
-        - name: asset
+        - name: amm_pool_id
           in: path
           required: true
           type: string
+          format: uint64
         - name: pagination.key
           description: |-
             key is a value returned in PageResponse.next_key to begin
@@ -39111,6 +39080,9 @@ paths:
                         - SHORT
                       default: UNSPECIFIED
                     id:
+                      type: string
+                      format: uint64
+                    amm_pool_id:
                       type: string
                       format: uint64
               pagination:
@@ -39552,6 +39524,9 @@ paths:
                         - SHORT
                       default: UNSPECIFIED
                     id:
+                      type: string
+                      format: uint64
+                    amm_pool_id:
                       type: string
                       format: uint64
               pagination:
@@ -78403,12 +78378,6 @@ definitions:
         description: params holds all the parameters of this module.
         type: object
     description: QueryParamsResponse is response type for the Query/Params RPC method.
-  elys.margin.GetSQParamsResponse:
-    type: object
-    properties:
-      begin_block:
-        type: string
-        format: int64
   elys.margin.IsWhitelistedResponse:
     type: object
     properties:
@@ -78451,6 +78420,9 @@ definitions:
       id:
         type: string
         format: uint64
+      amm_pool_id:
+        type: string
+        format: uint64
   elys.margin.MTPResponse:
     type: object
     properties:
@@ -78487,6 +78459,9 @@ definitions:
               - SHORT
             default: UNSPECIFIED
           id:
+            type: string
+            format: uint64
+          amm_pool_id:
             type: string
             format: uint64
   elys.margin.MsgCloseResponse:
@@ -78666,6 +78641,9 @@ definitions:
             id:
               type: string
               format: uint64
+            amm_pool_id:
+              type: string
+              format: uint64
       pagination:
         type: object
         properties:
@@ -78732,6 +78710,9 @@ definitions:
             id:
               type: string
               format: uint64
+            amm_pool_id:
+              type: string
+              format: uint64
       pagination:
         type: object
         properties:
@@ -78796,6 +78777,9 @@ definitions:
                 - SHORT
               default: UNSPECIFIED
             id:
+              type: string
+              format: uint64
+            amm_pool_id:
               type: string
               format: uint64
       pagination:

@@ -17,15 +17,21 @@ func CmdGetPositions() *cobra.Command {
 		Short: "Query get-positions",
 		Args:  cobra.ExactArgs(0),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
-
 			clientCtx, err := client.GetClientQueryContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			pageReq, err := client.ReadPageRequest(cmd.Flags())
 			if err != nil {
 				return err
 			}
 
 			queryClient := types.NewQueryClient(clientCtx)
 
-			params := &types.PositionsRequest{}
+			params := &types.PositionsRequest{
+				Pagination: pageReq,
+			}
 
 			res, err := queryClient.GetPositions(cmd.Context(), params)
 			if err != nil {
@@ -36,6 +42,7 @@ func CmdGetPositions() *cobra.Command {
 		},
 	}
 
+	flags.AddPaginationFlagsToCmd(cmd, cmd.Use)
 	flags.AddQueryFlagsToCmd(cmd)
 
 	return cmd

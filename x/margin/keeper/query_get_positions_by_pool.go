@@ -15,9 +15,13 @@ func (k Keeper) GetPositionsByPool(goCtx context.Context, req *types.PositionsBy
 	}
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
+	mtps, pageRes, err := k.GetMTPsForPool(ctx, req.AmmPoolId, req.Pagination)
+	if err != nil {
+		return nil, err
+	}
 
-	// TODO: Process the query
-	_ = ctx
-
-	return &types.PositionsByPoolResponse{}, nil
+	return &types.PositionsByPoolResponse{
+		Mtps:       mtps,
+		Pagination: pageRes,
+	}, nil
 }
