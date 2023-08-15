@@ -23,6 +23,9 @@ import (
 
 type (
 	Keeper struct {
+		types.AuthorizationChecker
+		types.PositionChecker
+		types.PoolChecker
 		cdc        codec.BinaryCodec
 		storeKey   storetypes.StoreKey
 		memKey     storetypes.StoreKey

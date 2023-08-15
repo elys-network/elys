@@ -72,8 +72,11 @@ build-with-checksum: build-all do-checksum
 
 ## mocks: Generate mocks
 mocks:
-	@echo Generating mocks
-	@go install github.com/vektra/mockery/v2
+	@echo "Generating mocks"
+	@if ! command -v mockery &> /dev/null; then \
+		echo "mockery binary not found, installing..."; \
+		go install github.com/vektra/mockery/v2@latest; \
+	fi
 	@go generate ./...
 
 ## test-unit: Run unit tests
