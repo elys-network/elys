@@ -420,7 +420,7 @@ func NewElysApp(
 		marginmoduletypes.StoreKey,
 		// this line is used by starport scaffolding # stargate/app/storeKey
 	)
-	tkeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey)
+	tkeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey, ammmoduletypes.TStoreKey)
 	memKeys := sdk.NewMemoryStoreKeys(capabilitytypes.MemStoreKey)
 
 	// load state streaming if enabled
@@ -670,7 +670,7 @@ func NewElysApp(
 	app.AmmKeeper = *ammmodulekeeper.NewKeeper(
 		appCodec,
 		keys[ammmoduletypes.StoreKey],
-		keys[ammmoduletypes.MemStoreKey],
+		keys[ammmoduletypes.TStoreKey],
 		app.GetSubspace(ammmoduletypes.ModuleName),
 		app.BankKeeper,
 		app.AccountKeeper,
