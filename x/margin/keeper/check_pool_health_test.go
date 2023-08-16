@@ -16,7 +16,7 @@ func TestCheckPoolHealth_PoolNotFound(t *testing.T) {
 	mockChecker := new(mocks.PoolChecker)
 
 	// Create an instance of Keeper with the mock checker
-	keeper := keeper.Keeper{
+	k := keeper.Keeper{
 		PoolChecker: mockChecker,
 	}
 
@@ -27,7 +27,7 @@ func TestCheckPoolHealth_PoolNotFound(t *testing.T) {
 	// Mock behavior
 	mockChecker.On("GetPool", ctx, poolId).Return(types.Pool{}, false)
 
-	err := keeper.CheckPoolHealth(ctx, poolId)
+	err := k.CheckPoolHealth(ctx, poolId)
 
 	// Expect an error about invalid collateral asset
 	assert.True(t, errors.Is(err, types.ErrInvalidBorrowingAsset))
@@ -38,7 +38,7 @@ func TestCheckPoolHealth_PoolDisabledOrClosed(t *testing.T) {
 	mockChecker := new(mocks.PoolChecker)
 
 	// Create an instance of Keeper with the mock checker
-	keeper := keeper.Keeper{
+	k := keeper.Keeper{
 		PoolChecker: mockChecker,
 	}
 
@@ -51,7 +51,7 @@ func TestCheckPoolHealth_PoolDisabledOrClosed(t *testing.T) {
 	mockChecker.On("GetPool", ctx, poolId).Return(pool, true)
 	mockChecker.On("IsPoolEnabled", ctx, poolId).Return(false)
 
-	err := keeper.CheckPoolHealth(ctx, poolId)
+	err := k.CheckPoolHealth(ctx, poolId)
 
 	// Expect an error about the pool being disabled or closed
 	assert.True(t, errors.Is(err, types.ErrMTPDisabled))
@@ -62,7 +62,7 @@ func TestCheckPoolHealth_PoolHealthTooLow(t *testing.T) {
 	mockChecker := new(mocks.PoolChecker)
 
 	// Create an instance of Keeper with the mock checker
-	keeper := keeper.Keeper{
+	k := keeper.Keeper{
 		PoolChecker: mockChecker,
 	}
 
@@ -80,7 +80,7 @@ func TestCheckPoolHealth_PoolHealthTooLow(t *testing.T) {
 	mockChecker.On("IsPoolClosed", ctx, poolId).Return(false)
 	mockChecker.On("GetPoolOpenThreshold", ctx).Return(sdk.NewDec(10)) // threshold higher than health
 
-	err := keeper.CheckPoolHealth(ctx, poolId)
+	err := k.CheckPoolHealth(ctx, poolId)
 
 	// Expect an error about pool health being too low
 	assert.True(t, errors.Is(err, types.ErrMTPDisabled))
@@ -91,7 +91,7 @@ func TestCheckPoolHealth_PoolIsHealthy(t *testing.T) {
 	mockChecker := new(mocks.PoolChecker)
 
 	// Create an instance of Keeper with the mock checker
-	keeper := keeper.Keeper{
+	k := keeper.Keeper{
 		PoolChecker: mockChecker,
 	}
 
@@ -109,7 +109,7 @@ func TestCheckPoolHealth_PoolIsHealthy(t *testing.T) {
 	mockChecker.On("IsPoolClosed", ctx, poolId).Return(false)
 	mockChecker.On("GetPoolOpenThreshold", ctx).Return(sdk.NewDec(10))
 
-	err := keeper.CheckPoolHealth(ctx, poolId)
+	err := k.CheckPoolHealth(ctx, poolId)
 
 	// Expect no errors
 	assert.Nil(t, err)

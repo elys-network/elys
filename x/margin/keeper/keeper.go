@@ -26,6 +26,7 @@ type (
 		types.AuthorizationChecker
 		types.PositionChecker
 		types.PoolChecker
+		types.OpenLongChecker
 		cdc        codec.BinaryCodec
 		storeKey   storetypes.StoreKey
 		memKey     storetypes.StoreKey
