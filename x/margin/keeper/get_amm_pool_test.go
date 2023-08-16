@@ -5,43 +5,48 @@ import (
 	"testing"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	ammtypes "github.com/elys-network/elys/x/amm/types"
 	"github.com/elys-network/elys/x/margin/keeper"
 	"github.com/elys-network/elys/x/margin/types"
 	"github.com/elys-network/elys/x/margin/types/mocks"
 	"github.com/stretchr/testify/assert"
 )
 
-func TestGetFirstValidPool_NoPoolID(t *testing.T) {
+func TestGetAmmPool_PoolNotFound(t *testing.T) {
 	mockAmm := new(mocks.AmmKeeper)
 	k := keeper.NewKeeper(nil, nil, nil, "cosmos1ysxv266l8w76lq0vy44ktzajdr9u9yhlxzlvga", mockAmm, nil)
 
 	ctx := sdk.Context{} // mock or setup a context
 	borrowAsset := "testAsset"
+	poolId := uint64(42)
 
 	// Mock behavior
-	mockAmm.On("GetAllPoolIdsWithDenom", ctx, borrowAsset).Return([]uint64{})
+	mockAmm.On("GetPool", ctx, poolId).Return(ammtypes.Pool{}, false)
 
-	_, err := k.GetFirstValidPool(ctx, borrowAsset)
+	_, err := k.GetAmmPool(ctx, poolId, borrowAsset)
 
-	// Expect an error about invalid borrowing asset
-	assert.True(t, errors.Is(err, types.ErrInvalidBorrowingAsset))
+	// Expect an error about the pool not existing
+	assert.True(t, errors.Is(err, types.ErrPoolDoesNotExist))
 	mockAmm.AssertExpectations(t)
 }
 
-func TestGetFirstValidPool_ValidPoolID(t *testing.T) {
+func TestGetAmmPool_PoolFound(t *testing.T) {
 	mockAmm := new(mocks.AmmKeeper)
 	k := keeper.NewKeeper(nil, nil, nil, "cosmos1ysxv266l8w76lq0vy44ktzajdr9u9yhlxzlvga", mockAmm, nil)
 
 	ctx := sdk.Context{} // mock or setup a context
 	borrowAsset := "testAsset"
+	poolId := uint64(42)
+
+	expectedPool := ammtypes.Pool{}
 
 	// Mock behavior
-	mockAmm.On("GetAllPoolIdsWithDenom", ctx, borrowAsset).Return([]uint64{42, 43, 44})
+	mockAmm.On("GetPool", ctx, poolId).Return(expectedPool, true)
 
-	poolID, err := k.GetFirstValidPool(ctx, borrowAsset)
+	pool, err := k.GetAmmPool(ctx, poolId, borrowAsset)
 
-	// Expect no error and the first pool ID to be returned
+	// Expect no error and the correct pool to be returned
 	assert.Nil(t, err)
-	assert.Equal(t, uint64(42), poolID)
+	assert.Equal(t, expectedPool, pool)
 	mockAmm.AssertExpectations(t)
 }

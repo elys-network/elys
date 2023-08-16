@@ -11,22 +11,22 @@ import (
 )
 
 func TestValidateCollateralAsset_ValidCollateralAsset(t *testing.T) {
-	keeper := keeper.Keeper{}
+	k := keeper.Keeper{}
 
 	collateralAsset := paramtypes.USDC // Correct asset
 
-	err := keeper.ValidateCollateralAsset(collateralAsset)
+	err := k.ValidateCollateralAsset(collateralAsset)
 
 	// Expect no error
 	assert.Nil(t, err)
 }
 
 func TestValidateCollateralAsset_InvalidCollateralAsset(t *testing.T) {
-	keeper := keeper.Keeper{}
+	k := keeper.Keeper{}
 
 	collateralAsset := "INVALID_ASSET" // Incorrect asset
 
-	err := keeper.ValidateCollateralAsset(collateralAsset)
+	err := k.ValidateCollateralAsset(collateralAsset)
 
 	// Expect an error about invalid collateral asset
 	assert.True(t, errors.Is(err, types.ErrInvalidCollateralAsset))
