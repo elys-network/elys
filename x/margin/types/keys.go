@@ -19,6 +19,8 @@ const (
 	ParamsKey = "margin_params"
 )
 
+const MaxPageLimit = 100
+
 var (
 	MTPPrefix          = []byte{0x01}
 	MTPCountPrefix     = []byte{0x02}

@@ -23,9 +23,16 @@ func CmdGetWhitelist() *cobra.Command {
 				return err
 			}
 
+			pageReq, err := client.ReadPageRequest(cmd.Flags())
+			if err != nil {
+				return err
+			}
+
 			queryClient := types.NewQueryClient(clientCtx)
 
-			params := &types.WhitelistRequest{}
+			params := &types.WhitelistRequest{
+				Pagination: pageReq,
+			}
 
 			res, err := queryClient.GetWhitelist(cmd.Context(), params)
 			if err != nil {
@@ -36,6 +43,7 @@ func CmdGetWhitelist() *cobra.Command {
 		},
 	}
 
+	flags.AddPaginationFlagsToCmd(cmd, cmd.Use)
 	flags.AddQueryFlagsToCmd(cmd)
 
 	return cmd

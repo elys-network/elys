@@ -13,7 +13,6 @@ import (
 	v1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1"
 	"github.com/elys-network/elys/x/margin/types"
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 )
 
 var _ = strconv.Itoa(0)
@@ -44,31 +43,115 @@ func CmdUpdateParams() *cobra.Command {
 				return err
 			}
 
-			leverage_max := sdk.MustNewDecFromStr(viper.GetString("leverage-max"))
+			leverage_max, err := cmd.Flags().GetString("leverage-max")
+			if err != nil {
+				return err
+			}
 
-			if leverage_max.GT(sdk.NewDec(10)) || leverage_max.LT(sdk.NewDec(1)) {
-				return errors.New("invalid leverage max, it has to be between 1-10.")
+			interest_rate_max, err := cmd.Flags().GetString("interest-rate-max")
+			if err != nil {
+				return err
+			}
+
+			interest_rate_min, err := cmd.Flags().GetString("interest-rate-min")
+			if err != nil {
+				return err
+			}
+
+			interest_rate_increase, err := cmd.Flags().GetString("interest-rate-increase")
+			if err != nil {
+				return err
+			}
+
+			interest_rate_decrease, err := cmd.Flags().GetString("interest-rate-decrease")
+			if err != nil {
+				return err
+			}
+
+			health_gain_factor, err := cmd.Flags().GetString("health-gain-factor")
+			if err != nil {
+				return err
+			}
+
+			epoch_length, err := cmd.Flags().GetInt64("epoch-length")
+			if err != nil {
+				return err
+			}
+
+			removal_queue_threshold, err := cmd.Flags().GetString("removal-queue-threshold")
+			if err != nil {
+				return err
+			}
+
+			maxOpenPositions, err := cmd.Flags().GetInt64("max-open-positions")
+			if err != nil {
+				return err
+			}
+
+			poolOpenThreshold, err := cmd.Flags().GetString("pool-open-threshold")
+			if err != nil {
+				return err
+			}
+
+			forceCloseFundPercentage, err := cmd.Flags().GetString("force-close-fund-percentage")
+			if err != nil {
+				return err
+			}
+
+			forceCloseFundAddress, err := cmd.Flags().GetString("force-close-fund-address")
+			if err != nil {
+				return err
+			}
+
+			incrementalInterestPaymentFundPercentage, err := cmd.Flags().GetString("incremental-interest-payment-fund-percentage")
+			if err != nil {
+				return err
+			}
+
+			incrementalInterestPaymentFundAddress, err := cmd.Flags().GetString("incremental-interest-payment-fund-address")
+			if err != nil {
+				return err
+			}
+
+			sqModifier, err := cmd.Flags().GetString("sq-modifier")
+			if err != nil {
+				return err
+			}
+
+			safetyFactor, err := cmd.Flags().GetString("safety-factor")
+			if err != nil {
+				return err
+			}
+
+			incrementalInterestPaymentEnabled, err := cmd.Flags().GetBool("incremental-interest-payment-enabled")
+			if err != nil {
+				return err
+			}
+
+			whitelistingEnabled, err := cmd.Flags().GetBool("whitelisting-enabled")
+			if err != nil {
+				return err
 			}
 
 			params := &types.Params{
-				LeverageMax:                              leverage_max,
-				InterestRateMax:                          sdk.MustNewDecFromStr(viper.GetString("interest-rate-max")),
-				InterestRateMin:                          sdk.MustNewDecFromStr(viper.GetString("interest-rate-min")),
-				InterestRateIncrease:                     sdk.MustNewDecFromStr(viper.GetString("interest-rate-increase")),
-				InterestRateDecrease:                     sdk.MustNewDecFromStr(viper.GetString("interest-rate-decrease")),
-				HealthGainFactor:                         sdk.MustNewDecFromStr(viper.GetString("health-gain-factor")),
-				EpochLength:                              viper.GetInt64("epoch-length"),
-				RemovalQueueThreshold:                    sdk.MustNewDecFromStr(viper.GetString("removal-queue-threshold")),
-				MaxOpenPositions:                         viper.GetInt64("max-open-positions"),
-				PoolOpenThreshold:                        sdk.MustNewDecFromStr(viper.GetString("pool-open-threshold")),
-				ForceCloseFundPercentage:                 sdk.MustNewDecFromStr(viper.GetString("force-close-fund-percentage")),
-				ForceCloseFundAddress:                    viper.GetString("force-close-fund-address"),
-				IncrementalInterestPaymentFundPercentage: sdk.MustNewDecFromStr(viper.GetString("incremental-interest-payment-fund-percentage")),
-				IncrementalInterestPaymentFundAddress:    viper.GetString("incremental-interest-payment-fund-address"),
-				SqModifier:                               sdk.MustNewDecFromStr(viper.GetString("sq-modifier")),
-				SafetyFactor:                             sdk.MustNewDecFromStr(viper.GetString("safety-factor")),
-				IncrementalInterestPaymentEnabled:        viper.GetBool("incremental-interest-payment-enabled"),
-				WhitelistingEnabled:                      viper.GetBool("whitelisting-enabled"),
+				LeverageMax:                              sdk.MustNewDecFromStr(leverage_max),
+				InterestRateMax:                          sdk.MustNewDecFromStr(interest_rate_max),
+				InterestRateMin:                          sdk.MustNewDecFromStr(interest_rate_min),
+				InterestRateIncrease:                     sdk.MustNewDecFromStr(interest_rate_increase),
+				InterestRateDecrease:                     sdk.MustNewDecFromStr(interest_rate_decrease),
+				HealthGainFactor:                         sdk.MustNewDecFromStr(health_gain_factor),
+				EpochLength:                              epoch_length,
+				RemovalQueueThreshold:                    sdk.MustNewDecFromStr(removal_queue_threshold),
+				MaxOpenPositions:                         maxOpenPositions,
+				PoolOpenThreshold:                        sdk.MustNewDecFromStr(poolOpenThreshold),
+				ForceCloseFundPercentage:                 sdk.MustNewDecFromStr(forceCloseFundPercentage),
+				ForceCloseFundAddress:                    forceCloseFundAddress,
+				IncrementalInterestPaymentFundPercentage: sdk.MustNewDecFromStr(incrementalInterestPaymentFundPercentage),
+				IncrementalInterestPaymentFundAddress:    incrementalInterestPaymentFundAddress,
+				SqModifier:                               sdk.MustNewDecFromStr(sqModifier),
+				SafetyFactor:                             sdk.MustNewDecFromStr(safetyFactor),
+				IncrementalInterestPaymentEnabled:        incrementalInterestPaymentEnabled,
+				WhitelistingEnabled:                      whitelistingEnabled,
 			}
 
 			signer := clientCtx.GetFromAddress()
@@ -90,6 +173,7 @@ func CmdUpdateParams() *cobra.Command {
 			if err != nil {
 				return err
 			}
+
 			deposit, err := sdk.ParseCoinsNormalized(depositStr)
 			if err != nil {
 				return err
@@ -110,7 +194,7 @@ func CmdUpdateParams() *cobra.Command {
 	cmd.Flags().String("interest-rate-decrease", "", "interest rate decrease (decimal)")
 	cmd.Flags().String("health-gain-factor", "", "health gain factor (decimal)")
 	cmd.Flags().Int64("epoch-length", 1, "epoch length in blocks (integer)")
-	cmd.Flags().Uint64("max-open-positions", 10000, "max open positions")
+	cmd.Flags().Int64("max-open-positions", 10000, "max open positions")
 	cmd.Flags().String("removal-queue-threshold", "", "removal queue threshold (decimal range 0-1)")
 	cmd.Flags().String("pool-open-threshold", "", "threshold to prevent new positions (decimal range 0-1)")
 	cmd.Flags().String("force-close-fund-percentage", "", "percentage of force close proceeds for fund (decimal range 0-1)")

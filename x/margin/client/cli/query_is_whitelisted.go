@@ -13,9 +13,9 @@ var _ = strconv.Itoa(0)
 
 func CmdIsWhitelisted() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "is-whitelisted",
+		Use:   "is-whitelisted [address]",
 		Short: "Query is-whitelisted",
-		Args:  cobra.ExactArgs(0),
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 
 			clientCtx, err := client.GetClientQueryContext(cmd)
@@ -25,7 +25,9 @@ func CmdIsWhitelisted() *cobra.Command {
 
 			queryClient := types.NewQueryClient(clientCtx)
 
-			params := &types.IsWhitelistedRequest{}
+			params := &types.IsWhitelistedRequest{
+				Address: args[0],
+			}
 
 			res, err := queryClient.IsWhitelisted(cmd.Context(), params)
 			if err != nil {

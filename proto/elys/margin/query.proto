@@ -20,12 +20,6 @@ service Query {
   
   }
   
-  // Queries a list of GetMTP items.
-  rpc MTP (MTPRequest) returns (MTPResponse) {
-    option (google.api.http).get = "/elys-network/elys/margin/get_mtp";
-  
-  }
-  
   // Queries a list of GetPositions items.
   rpc GetPositions (PositionsRequest) returns (PositionsResponse) {
     option (google.api.http).get = "/elys-network/elys/margin/positions/{pagination.key}";
@@ -34,7 +28,7 @@ service Query {
   
   // Queries a list of GetPositionsByPool items.
   rpc GetPositionsByPool (PositionsByPoolRequest) returns (PositionsByPoolResponse) {
-    option (google.api.http).get = "/elys-network/elys/margin/mtps-by-pool/{asset}/{pagination.key}";
+    option (google.api.http).get = "/elys-network/elys/margin/mtps-by-pool/{amm_pool_id}/{pagination.key}";
   
   }
   
@@ -43,13 +37,7 @@ service Query {
     option (google.api.http).get = "/elys-network/elys/margin/status";
   
   }
-  
-  // Queries a list of GetSQParams items.
-  rpc GetSQParams (GetSQParamsRequest) returns (GetSQParamsResponse) {
-    option (google.api.http).get = "/elys-network/elys/margin/get-sq-params/{pool}";
-  
-  }
-  
+    
   // Queries a list of GetPositionsForAddress items.
   rpc GetPositionsForAddress (PositionsForAddressRequest) returns (PositionsForAddressResponse) {
     option (google.api.http).get = "/elys-network/elys/margin/mtps-for-address/{address}/{pagination.key}";
@@ -69,12 +57,18 @@ service Query {
   }
   
   // Queries a list of Pool items.
-  rpc Pool    (QueryGetPoolRequest) returns (QueryGetPoolResponse) {
+  rpc Pool  (QueryGetPoolRequest) returns (QueryGetPoolResponse) {
     option (google.api.http).get = "/elys-network/elys/margin/pool/{index}";
   
   }
   rpc Pools (QueryAllPoolRequest) returns (QueryAllPoolResponse) {
     option (google.api.http).get = "/elys-network/elys/margin/pool/{pagination.key}";
+  
+  }
+  
+  // Queries a list of MTP items.
+  rpc MTP (MTPRequest) returns (MTPResponse) {
+    option (google.api.http).get = "/elys-network/elys/margin/mtp/{address}/{id}";
   
   }
 }
@@ -88,15 +82,6 @@ message ParamsResponse {
   Params params = 1 [(gogoproto.nullable) = false];
 }
 
-message MTPRequest {
-  string address = 1;
-  uint64 id      = 2;
-}
-
-message MTPResponse {
-  MTP mtp = 1;
-}
-
 message PositionsRequest {
   cosmos.base.query.v1beta1.PageRequest pagination = 1;
 }
@@ -107,8 +92,8 @@ message PositionsResponse {
 }
 
 message PositionsByPoolRequest {
-  string                                asset      = 1;
-  cosmos.base.query.v1beta1.PageRequest pagination = 2;
+  uint64                                amm_pool_id = 1;
+  cosmos.base.query.v1beta1.PageRequest pagination  = 2;
 }
 
 message PositionsByPoolResponse {
@@ -121,14 +106,6 @@ message StatusRequest {}
 message StatusResponse {
   uint64 open_mtp_count     = 1;
   uint64 lifetime_mtp_count = 2;
-}
-
-message GetSQParamsRequest {
-  string pool = 1;
-}
-
-message GetSQParamsResponse {
-  int64 begin_block = 1;
 }
 
 message PositionsForAddressRequest {
@@ -174,5 +151,14 @@ message QueryAllPoolRequest {
 message QueryAllPoolResponse {
   repeated Pool                                   pool       = 1 [(gogoproto.nullable) = false];
            cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+message MTPRequest {
+  string address = 1;
+  uint64 id      = 2;
+}
+
+message MTPResponse {
+  MTP mtp = 1;
 }
 

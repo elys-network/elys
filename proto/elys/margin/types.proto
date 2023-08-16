@@ -50,4 +50,9 @@ message MTP {
   ];
   Position position = 12;
   uint64 id = 13;
+  uint64 amm_pool_id = 14;
+}
+
+message WhiteList { 
+  repeated string validator_list = 1; 
 }

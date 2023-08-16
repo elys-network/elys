@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	"fmt"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/margin/types"
@@ -15,9 +16,17 @@ func (k Keeper) GetWhitelist(goCtx context.Context, req *types.WhitelistRequest)
 	}
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
+	if req.Pagination.Limit > types.MaxPageLimit {
+		return nil, status.Error(codes.InvalidArgument, fmt.Sprintf("page size greater than max %d", types.MaxPageLimit))
+	}
 
-	// TODO: Process the query
-	_ = ctx
+	whitelist, page, err := k.GetWhitelistedAddress(ctx, req.Pagination)
+	if err != nil {
+		return nil, err
+	}
 
-	return &types.WhitelistResponse{}, nil
+	return &types.WhitelistResponse{
+		Whitelist:  whitelist,
+		Pagination: page,
+	}, nil
 }

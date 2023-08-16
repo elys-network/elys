@@ -5,12 +5,15 @@ package elys.margin;
 import "gogoproto/gogo.proto";
 import "elys/margin/params.proto";
 import "elys/margin/pool.proto";
+import "elys/margin/types.proto";
 
 option go_package = "github.com/elys-network/elys/x/margin/types";
 
 // GenesisState defines the margin module's genesis state.
 message GenesisState {
-           Params params   = 1 [(gogoproto.nullable) = false];
-  repeated Pool   poolList = 2 [(gogoproto.nullable) = false];
+           Params params            = 1 [(gogoproto.nullable) = false];
+  repeated Pool   pool_list         = 2 [(gogoproto.nullable) = false];
+  repeated MTP    mtp_list          = 3 [(gogoproto.nullable) = false];
+  repeated string address_whitelist = 4;
 }
 

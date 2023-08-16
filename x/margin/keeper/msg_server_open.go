@@ -105,7 +105,7 @@ func (k msgServer) OpenLong(ctx sdk.Context, poolId uint64, msg *types.MsgOpen) 
 
 	collateralAmountDec := sdk.NewDecFromBigInt(msg.CollateralAmount.BigInt())
 
-	mtp := types.NewMTP(msg.Creator, msg.CollateralAsset, msg.BorrowAsset, msg.Position, leverage)
+	mtp := types.NewMTP(msg.Creator, msg.CollateralAsset, msg.BorrowAsset, msg.Position, leverage, poolId)
 
 	pool, found := k.GetPool(ctx, poolId)
 	if !found {

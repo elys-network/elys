@@ -16,8 +16,7 @@ func (k msgServer) Whitelist(goCtx context.Context, msg *types.MsgWhitelist) (*t
 		return nil, sdkerrors.Wrapf(govtypes.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.authority, msg.Authority)
 	}
 
-	// TODO: Handling the message
-	_ = ctx
+	k.Keeper.WhitelistAddress(ctx, msg.WhitelistedAddress)
 
 	return &types.MsgWhitelistResponse{}, nil
 }
