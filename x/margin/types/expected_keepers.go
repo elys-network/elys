@@ -1,18 +1,43 @@
 package types
 
 import (
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/x/auth/types"
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 )
 
+//go:generate mockery --srcpkg . --name AuthorizationChecker --structname AuthorizationChecker --filename authorization_checker.go --with-expecter
+type AuthorizationChecker interface {
+	IsWhitelistingEnabled(ctx sdk.Context) bool
+	CheckIfWhitelisted(ctx sdk.Context, creator string) bool
+}
+
+//go:generate mockery --srcpkg . --name PositionChecker --structname PositionChecker --filename position_checker.go --with-expecter
+type PositionChecker interface {
+	GetOpenMTPCount(ctx sdk.Context) uint64
+	GetMaxOpenPositions(ctx sdk.Context) int
+}
+
+//go:generate mockery --srcpkg . --name PoolChecker --structname PoolChecker --filename pool_checker.go --with-expecter
+type PoolChecker interface {
+	GetPool(ctx sdk.Context, poolId uint64) (Pool, bool)
+	IsPoolEnabled(ctx sdk.Context, poolId uint64) bool
+	IsPoolClosed(ctx sdk.Context, poolId uint64) bool
+	GetPoolOpenThreshold(ctx sdk.Context) math.LegacyDec
+}
+
 // AccountKeeper defines the expected account keeper used for simulations (noalias)
+//
+//go:generate mockery --srcpkg . --name AccountKeeper --structname AccountKeeper --filename account_keeper.go --with-expecter
 type AccountKeeper interface {
-	GetAccount(ctx sdk.Context, addr sdk.AccAddress) types.AccountI
+	GetAccount(ctx sdk.Context, addr sdk.AccAddress) authtypes.AccountI
 	// Methods imported from account should be defined here
 }
 
 // AmmKeeper defines the expected interface needed to swap tokens
+//
+//go:generate mockery --srcpkg . --name AmmKeeper --structname AmmKeeper --filename amm_keeper.go --with-expecter
 type AmmKeeper interface {
 	// Get pool Ids that contains the denom in pool assets
 	GetAllPoolIdsWithDenom(sdk.Context, string) []uint64
@@ -25,6 +50,8 @@ type AmmKeeper interface {
 }
 
 // BankKeeper defines the expected interface needed to retrieve account balances.
+//
+//go:generate mockery --srcpkg . --name BankKeeper --structname BankKeeper --filename bank_keeper.go --with-expecter
 type BankKeeper interface {
 	GetAllBalances(ctx sdk.Context, addr sdk.AccAddress) sdk.Coins
 	GetBalance(ctx sdk.Context, addr sdk.AccAddress, denom string) sdk.Coin
