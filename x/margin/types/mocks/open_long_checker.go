@@ -177,23 +177,23 @@ func (_c *OpenLongChecker_EstimateSwap_Call) RunAndReturn(run func(types.Context
 	return _c
 }
 
-// GetAmmPool provides a mock function with given fields: ctx, poolId, borrowAsset
-func (_m *OpenLongChecker) GetAmmPool(ctx types.Context, poolId uint64, borrowAsset string) (ammtypes.Pool, error) {
-	ret := _m.Called(ctx, poolId, borrowAsset)
+// GetAmmPool provides a mock function with given fields: ctx, poolId, noneNativeAsset
+func (_m *OpenLongChecker) GetAmmPool(ctx types.Context, poolId uint64, noneNativeAsset string) (ammtypes.Pool, error) {
+	ret := _m.Called(ctx, poolId, noneNativeAsset)
 
 	var r0 ammtypes.Pool
 	var r1 error
 	if rf, ok := ret.Get(0).(func(types.Context, uint64, string) (ammtypes.Pool, error)); ok {
-		return rf(ctx, poolId, borrowAsset)
+		return rf(ctx, poolId, noneNativeAsset)
 	}
 	if rf, ok := ret.Get(0).(func(types.Context, uint64, string) ammtypes.Pool); ok {
-		r0 = rf(ctx, poolId, borrowAsset)
+		r0 = rf(ctx, poolId, noneNativeAsset)
 	} else {
 		r0 = ret.Get(0).(ammtypes.Pool)
 	}
 
 	if rf, ok := ret.Get(1).(func(types.Context, uint64, string) error); ok {
-		r1 = rf(ctx, poolId, borrowAsset)
+		r1 = rf(ctx, poolId, noneNativeAsset)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -209,12 +209,12 @@ type OpenLongChecker_GetAmmPool_Call struct {
 // GetAmmPool is a helper method to define mock.On call
 //   - ctx types.Context
 //   - poolId uint64
-//   - borrowAsset string
-func (_e *OpenLongChecker_Expecter) GetAmmPool(ctx interface{}, poolId interface{}, borrowAsset interface{}) *OpenLongChecker_GetAmmPool_Call {
-	return &OpenLongChecker_GetAmmPool_Call{Call: _e.mock.On("GetAmmPool", ctx, poolId, borrowAsset)}
+//   - noneNativeAsset string
+func (_e *OpenLongChecker_Expecter) GetAmmPool(ctx interface{}, poolId interface{}, noneNativeAsset interface{}) *OpenLongChecker_GetAmmPool_Call {
+	return &OpenLongChecker_GetAmmPool_Call{Call: _e.mock.On("GetAmmPool", ctx, poolId, noneNativeAsset)}
 }
 
-func (_c *OpenLongChecker_GetAmmPool_Call) Run(run func(ctx types.Context, poolId uint64, borrowAsset string)) *OpenLongChecker_GetAmmPool_Call {
+func (_c *OpenLongChecker_GetAmmPool_Call) Run(run func(ctx types.Context, poolId uint64, noneNativeAsset string)) *OpenLongChecker_GetAmmPool_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		run(args[0].(types.Context), args[1].(uint64), args[2].(string))
 	})
@@ -227,6 +227,60 @@ func (_c *OpenLongChecker_GetAmmPool_Call) Return(_a0 ammtypes.Pool, _a1 error) 
 }
 
 func (_c *OpenLongChecker_GetAmmPool_Call) RunAndReturn(run func(types.Context, uint64, string) (ammtypes.Pool, error)) *OpenLongChecker_GetAmmPool_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// GetAmmPoolBalance provides a mock function with given fields: ctx, ammPool, assetDenom
+func (_m *OpenLongChecker) GetAmmPoolBalance(ctx types.Context, ammPool ammtypes.Pool, assetDenom string) (math.Int, error) {
+	ret := _m.Called(ctx, ammPool, assetDenom)
+
+	var r0 math.Int
+	var r1 error
+	if rf, ok := ret.Get(0).(func(types.Context, ammtypes.Pool, string) (math.Int, error)); ok {
+		return rf(ctx, ammPool, assetDenom)
+	}
+	if rf, ok := ret.Get(0).(func(types.Context, ammtypes.Pool, string) math.Int); ok {
+		r0 = rf(ctx, ammPool, assetDenom)
+	} else {
+		r0 = ret.Get(0).(math.Int)
+	}
+
+	if rf, ok := ret.Get(1).(func(types.Context, ammtypes.Pool, string) error); ok {
+		r1 = rf(ctx, ammPool, assetDenom)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// OpenLongChecker_GetAmmPoolBalance_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetAmmPoolBalance'
+type OpenLongChecker_GetAmmPoolBalance_Call struct {
+	*mock.Call
+}
+
+// GetAmmPoolBalance is a helper method to define mock.On call
+//   - ctx types.Context
+//   - ammPool ammtypes.Pool
+//   - assetDenom string
+func (_e *OpenLongChecker_Expecter) GetAmmPoolBalance(ctx interface{}, ammPool interface{}, assetDenom interface{}) *OpenLongChecker_GetAmmPoolBalance_Call {
+	return &OpenLongChecker_GetAmmPoolBalance_Call{Call: _e.mock.On("GetAmmPoolBalance", ctx, ammPool, assetDenom)}
+}
+
+func (_c *OpenLongChecker_GetAmmPoolBalance_Call) Run(run func(ctx types.Context, ammPool ammtypes.Pool, assetDenom string)) *OpenLongChecker_GetAmmPoolBalance_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(types.Context), args[1].(ammtypes.Pool), args[2].(string))
+	})
+	return _c
+}
+
+func (_c *OpenLongChecker_GetAmmPoolBalance_Call) Return(_a0 math.Int, _a1 error) *OpenLongChecker_GetAmmPoolBalance_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *OpenLongChecker_GetAmmPoolBalance_Call) RunAndReturn(run func(types.Context, ammtypes.Pool, string) (math.Int, error)) *OpenLongChecker_GetAmmPoolBalance_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -368,13 +422,13 @@ func (_c *OpenLongChecker_GetSafetyFactor_Call) RunAndReturn(run func(types.Cont
 	return _c
 }
 
-// HasSufficientPoolBalance provides a mock function with given fields: ctx, ammPool, borrowAsset, requiredAmount
-func (_m *OpenLongChecker) HasSufficientPoolBalance(ctx types.Context, ammPool ammtypes.Pool, borrowAsset string, requiredAmount math.Int) bool {
-	ret := _m.Called(ctx, ammPool, borrowAsset, requiredAmount)
+// HasSufficientPoolBalance provides a mock function with given fields: ctx, ammPool, assetDenom, requiredAmount
+func (_m *OpenLongChecker) HasSufficientPoolBalance(ctx types.Context, ammPool ammtypes.Pool, assetDenom string, requiredAmount math.Int) bool {
+	ret := _m.Called(ctx, ammPool, assetDenom, requiredAmount)
 
 	var r0 bool
 	if rf, ok := ret.Get(0).(func(types.Context, ammtypes.Pool, string, math.Int) bool); ok {
-		r0 = rf(ctx, ammPool, borrowAsset, requiredAmount)
+		r0 = rf(ctx, ammPool, assetDenom, requiredAmount)
 	} else {
 		r0 = ret.Get(0).(bool)
 	}
@@ -390,13 +444,13 @@ type OpenLongChecker_HasSufficientPoolBalance_Call struct {
 // HasSufficientPoolBalance is a helper method to define mock.On call
 //   - ctx types.Context
 //   - ammPool ammtypes.Pool
-//   - borrowAsset string
+//   - assetDenom string
 //   - requiredAmount math.Int
-func (_e *OpenLongChecker_Expecter) HasSufficientPoolBalance(ctx interface{}, ammPool interface{}, borrowAsset interface{}, requiredAmount interface{}) *OpenLongChecker_HasSufficientPoolBalance_Call {
-	return &OpenLongChecker_HasSufficientPoolBalance_Call{Call: _e.mock.On("HasSufficientPoolBalance", ctx, ammPool, borrowAsset, requiredAmount)}
+func (_e *OpenLongChecker_Expecter) HasSufficientPoolBalance(ctx interface{}, ammPool interface{}, assetDenom interface{}, requiredAmount interface{}) *OpenLongChecker_HasSufficientPoolBalance_Call {
+	return &OpenLongChecker_HasSufficientPoolBalance_Call{Call: _e.mock.On("HasSufficientPoolBalance", ctx, ammPool, assetDenom, requiredAmount)}
 }
 
-func (_c *OpenLongChecker_HasSufficientPoolBalance_Call) Run(run func(ctx types.Context, ammPool ammtypes.Pool, borrowAsset string, requiredAmount math.Int)) *OpenLongChecker_HasSufficientPoolBalance_Call {
+func (_c *OpenLongChecker_HasSufficientPoolBalance_Call) Run(run func(ctx types.Context, ammPool ammtypes.Pool, assetDenom string, requiredAmount math.Int)) *OpenLongChecker_HasSufficientPoolBalance_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		run(args[0].(types.Context), args[1].(ammtypes.Pool), args[2].(string), args[3].(math.Int))
 	})
@@ -452,6 +506,40 @@ func (_c *OpenLongChecker_IsPoolEnabled_Call) Return(_a0 bool) *OpenLongChecker_
 }
 
 func (_c *OpenLongChecker_IsPoolEnabled_Call) RunAndReturn(run func(types.Context, uint64) bool) *OpenLongChecker_IsPoolEnabled_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// SetPool provides a mock function with given fields: ctx, pool
+func (_m *OpenLongChecker) SetPool(ctx types.Context, pool margintypes.Pool) {
+	_m.Called(ctx, pool)
+}
+
+// OpenLongChecker_SetPool_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'SetPool'
+type OpenLongChecker_SetPool_Call struct {
+	*mock.Call
+}
+
+// SetPool is a helper method to define mock.On call
+//   - ctx types.Context
+//   - pool margintypes.Pool
+func (_e *OpenLongChecker_Expecter) SetPool(ctx interface{}, pool interface{}) *OpenLongChecker_SetPool_Call {
+	return &OpenLongChecker_SetPool_Call{Call: _e.mock.On("SetPool", ctx, pool)}
+}
+
+func (_c *OpenLongChecker_SetPool_Call) Run(run func(ctx types.Context, pool margintypes.Pool)) *OpenLongChecker_SetPool_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(types.Context), args[1].(margintypes.Pool))
+	})
+	return _c
+}
+
+func (_c *OpenLongChecker_SetPool_Call) Return() *OpenLongChecker_SetPool_Call {
+	_c.Call.Return()
+	return _c
+}
+
+func (_c *OpenLongChecker_SetPool_Call) RunAndReturn(run func(types.Context, margintypes.Pool)) *OpenLongChecker_SetPool_Call {
 	_c.Call.Return(run)
 	return _c
 }

@@ -13,22 +13,26 @@ func (k Keeper) OpenLong(ctx sdk.Context, poolId uint64, msg *types.MsgOpen) (*t
 	collateralAmountDec := sdk.NewDecFromBigInt(msg.CollateralAmount.BigInt())
 	mtp := types.NewMTP(msg.Creator, msg.CollateralAsset, msg.BorrowAsset, msg.Position, leverage, poolId)
 
+	// Get token asset other than USDC
+	noneNativeAsset := k.GetNoneNativeAsset(msg.CollateralAsset, msg.BorrowAsset)
+
 	pool, found := k.OpenLongChecker.GetPool(ctx, poolId)
 	if !found {
-		return nil, sdkerrors.Wrap(types.ErrPoolDoesNotExist, msg.BorrowAsset)
+		return nil, sdkerrors.Wrap(types.ErrPoolDoesNotExist, noneNativeAsset)
 	}
+
 	if !k.OpenLongChecker.IsPoolEnabled(ctx, poolId) {
-		return nil, sdkerrors.Wrap(types.ErrMTPDisabled, msg.BorrowAsset)
+		return nil, sdkerrors.Wrap(types.ErrMTPDisabled, noneNativeAsset)
 	}
 
 	leveragedAmount := sdk.NewInt(collateralAmountDec.Mul(leverage).TruncateInt().Int64())
 
-	ammPool, err := k.OpenLongChecker.GetAmmPool(ctx, poolId, msg.BorrowAsset)
+	ammPool, err := k.OpenLongChecker.GetAmmPool(ctx, poolId, noneNativeAsset)
 	if err != nil {
 		return nil, err
 	}
 
-	if !k.OpenLongChecker.HasSufficientPoolBalance(ctx, ammPool, msg.BorrowAsset, leveragedAmount) {
+	if !k.OpenLongChecker.HasSufficientPoolBalance(ctx, ammPool, msg.CollateralAsset, leveragedAmount) {
 		return nil, sdkerrors.Wrap(types.ErrBorrowTooHigh, leveragedAmount.String())
 	}
 
@@ -45,7 +49,7 @@ func (k Keeper) OpenLong(ctx sdk.Context, poolId uint64, msg *types.MsgOpen) (*t
 		return nil, err
 	}
 
-	if !k.OpenLongChecker.HasSufficientPoolBalance(ctx, ammPool, msg.CollateralAsset, custodyAmount) {
+	if !k.OpenLongChecker.HasSufficientPoolBalance(ctx, ammPool, msg.BorrowAsset, custodyAmount) {
 		return nil, sdkerrors.Wrap(types.ErrCustodyTooHigh, custodyAmount.String())
 	}
 

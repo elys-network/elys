@@ -7,10 +7,10 @@ import (
 	"github.com/elys-network/elys/x/margin/types"
 )
 
-func (k Keeper) GetAmmPool(ctx sdk.Context, poolId uint64, borrowAsset string) (ammtypes.Pool, error) {
+func (k Keeper) GetAmmPool(ctx sdk.Context, poolId uint64, noneNativeAsset string) (ammtypes.Pool, error) {
 	ammPool, found := k.amm.GetPool(ctx, poolId)
 	if !found {
-		return ammPool, sdkerrors.Wrap(types.ErrPoolDoesNotExist, borrowAsset)
+		return ammPool, sdkerrors.Wrap(types.ErrPoolDoesNotExist, noneNativeAsset)
 	}
 	return ammPool, nil
 }
