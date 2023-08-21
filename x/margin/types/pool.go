@@ -102,7 +102,14 @@ func (p *Pool) UpdateBlockInterest(ctx sdk.Context, assetDenom string, amount sd
 }
 
 // Initialite pool asset according to its corresponding amm pool assets.
-func (p *Pool) InitiatePool(ctx sdk.Context, ammPool ammtypes.Pool) {
+func (p *Pool) InitiatePool(ctx sdk.Context, ammPool *ammtypes.Pool) error {
+	if ammPool == nil {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidType, "invalid amm pool")
+	}
+
+	// Set pool Id
+	p.AmmPoolId = ammPool.PoolId
+
 	for _, asset := range ammPool.PoolAssets {
 		poolAsset := PoolAsset{
 			Liabilities:          sdk.ZeroInt(),
@@ -115,4 +122,6 @@ func (p *Pool) InitiatePool(ctx sdk.Context, ammPool ammtypes.Pool) {
 
 		p.PoolAssets = append(p.PoolAssets, poolAsset)
 	}
+
+	return nil
 }

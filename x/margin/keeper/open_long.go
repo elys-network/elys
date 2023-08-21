@@ -14,20 +14,20 @@ func (k Keeper) OpenLong(ctx sdk.Context, poolId uint64, msg *types.MsgOpen) (*t
 	mtp := types.NewMTP(msg.Creator, msg.CollateralAsset, msg.BorrowAsset, msg.Position, leverage, poolId)
 
 	// Get token asset other than USDC
-	noneNativeAsset := k.GetNoneNativeAsset(msg.CollateralAsset, msg.BorrowAsset)
+	nonNativeAsset := k.GetNonNativeAsset(msg.CollateralAsset, msg.BorrowAsset)
 
 	pool, found := k.OpenLongChecker.GetPool(ctx, poolId)
 	if !found {
-		return nil, sdkerrors.Wrap(types.ErrPoolDoesNotExist, noneNativeAsset)
+		return nil, sdkerrors.Wrap(types.ErrPoolDoesNotExist, nonNativeAsset)
 	}
 
 	if !k.OpenLongChecker.IsPoolEnabled(ctx, poolId) {
-		return nil, sdkerrors.Wrap(types.ErrMTPDisabled, noneNativeAsset)
+		return nil, sdkerrors.Wrap(types.ErrMTPDisabled, nonNativeAsset)
 	}
 
 	leveragedAmount := sdk.NewInt(collateralAmountDec.Mul(leverage).TruncateInt().Int64())
 
-	ammPool, err := k.OpenLongChecker.GetAmmPool(ctx, poolId, noneNativeAsset)
+	ammPool, err := k.OpenLongChecker.GetAmmPool(ctx, poolId, nonNativeAsset)
 	if err != nil {
 		return nil, err
 	}

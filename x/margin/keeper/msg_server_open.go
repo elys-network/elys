@@ -20,15 +20,15 @@ func (k msgServer) Open(goCtx context.Context, msg *types.MsgOpen) (*types.MsgOp
 	}
 
 	// Get token asset other than USDC
-	noneNativeAsset := k.GetNoneNativeAsset(msg.CollateralAsset, msg.BorrowAsset)
+	nonNativeAsset := k.GetNonNativeAsset(msg.CollateralAsset, msg.BorrowAsset)
 
 	// Get the first valid pool
-	poolId, err := k.GetFirstValidPool(ctx, noneNativeAsset)
+	poolId, err := k.GetFirstValidPool(ctx, nonNativeAsset)
 	if err != nil {
 		return nil, err
 	}
 
-	ammPool, err := k.OpenLongChecker.GetAmmPool(ctx, poolId, noneNativeAsset)
+	ammPool, err := k.OpenLongChecker.GetAmmPool(ctx, poolId, nonNativeAsset)
 	if err != nil {
 		return nil, err
 	}

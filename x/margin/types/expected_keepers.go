@@ -32,7 +32,7 @@ type OpenLongChecker interface {
 	GetMaxLeverageParam(ctx sdk.Context) sdk.Dec
 	GetPool(ctx sdk.Context, poolId uint64) (Pool, bool)
 	IsPoolEnabled(ctx sdk.Context, poolId uint64) bool
-	GetAmmPool(ctx sdk.Context, poolId uint64, noneNativeAsset string) (ammtypes.Pool, error)
+	GetAmmPool(ctx sdk.Context, poolId uint64, nonNativeAsset string) (ammtypes.Pool, error)
 	HasSufficientPoolBalance(ctx sdk.Context, ammPool ammtypes.Pool, assetDenom string, requiredAmount sdk.Int) bool
 	CheckMinLiabilities(ctx sdk.Context, collateralTokenAmt sdk.Coin, eta sdk.Dec, pool Pool, ammPool ammtypes.Pool, borrowAsset string) error
 	EstimateSwap(ctx sdk.Context, leveragedAmtTokenIn sdk.Coin, borrowAsset string, ammPool ammtypes.Pool) (sdk.Int, error)
