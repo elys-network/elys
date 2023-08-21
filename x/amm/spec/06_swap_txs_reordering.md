@@ -3,8 +3,7 @@
 To provide lowest slippage as possible on the block, module sort the swap requests into a specific order.
 
 This removes possibility of MEV attack on swap transactions.
-
-Instead of executing messages directly, on the endblocker, we store the requests on transient store and execute in specific order to minimize maximum slippage.
+MEV attacks are coming by changing transaction orders on the block. Instead of executing messages directly that is provided by validator, on the endblocker, we store the requests on transient store and execute in specific order to minimize maximum slippage.
 
 ## To consider on algorithm
 
