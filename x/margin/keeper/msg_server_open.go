@@ -37,7 +37,7 @@ func (k msgServer) Open(goCtx context.Context, msg *types.MsgOpen) (*types.MsgOp
 	// If margin pool doesn't exist yet, we should initiate it according to its corresponding ammPool
 	if !found {
 		pool = types.NewPool(poolId)
-		pool.InitiatePool(ctx, ammPool)
+		pool.InitiatePool(ctx, &ammPool)
 
 		k.OpenLongChecker.SetPool(ctx, pool)
 	}
