@@ -10,6 +10,7 @@ import (
 func (p Pool) CalcInAmtGivenOut(
 	ctx sdk.Context,
 	oracle OracleKeeper,
+	snapshot *Pool,
 	tokensOut sdk.Coins, tokenInDenom string, swapFee sdk.Dec) (
 	tokenIn sdk.Coin, err error,
 ) {
@@ -21,6 +22,7 @@ func (p Pool) CalcInAmtGivenOut(
 	outWeight := sdk.NewDecFromInt(poolAssetOut.Weight)
 	inWeight := sdk.NewDecFromInt(poolAssetIn.Weight)
 	if p.PoolParams.UseOracle {
+		_, poolAssetOut, poolAssetIn, err := snapshot.parsePoolAssets(tokensOut, tokenInDenom)
 		oracleWeights, err := OraclePoolNormalizedWeights(ctx, oracle, []PoolAsset{poolAssetIn, poolAssetOut})
 		if err != nil {
 			return sdk.Coin{}, err

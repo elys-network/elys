@@ -9,10 +9,11 @@ import (
 func (p Pool) CalcGivenOutSlippage(
 	ctx sdk.Context,
 	oracleKeeper OracleKeeper,
+	snapshot *Pool,
 	tokensOut sdk.Coins,
 	tokenInDenom string,
 ) (sdk.Dec, error) {
-	balancerInCoin, err := p.CalcInAmtGivenOut(ctx, oracleKeeper, tokensOut, tokenInDenom, sdk.ZeroDec())
+	balancerInCoin, err := p.CalcInAmtGivenOut(ctx, oracleKeeper, snapshot, tokensOut, tokenInDenom, sdk.ZeroDec())
 	if err != nil {
 		return sdk.ZeroDec(), err
 	}
@@ -44,16 +45,17 @@ func (p Pool) CalcGivenOutSlippage(
 
 // SwapInAmtGivenOut is a mutative method for CalcOutAmtGivenIn, which includes the actual swap.
 func (p *Pool) SwapInAmtGivenOut(
-	ctx sdk.Context, oracleKeeper OracleKeeper, tokensOut sdk.Coins, tokenInDenom string, swapFee sdk.Dec) (
+	ctx sdk.Context, oracleKeeper OracleKeeper, snapshot *Pool,
+	tokensOut sdk.Coins, tokenInDenom string, swapFee sdk.Dec) (
 	tokenIn sdk.Coin, weightBalanceBonus sdk.Dec, err error,
 ) {
-	balancerInCoin, err := p.CalcInAmtGivenOut(ctx, oracleKeeper, tokensOut, tokenInDenom, swapFee)
-	if err != nil {
-		return sdk.Coin{}, sdk.ZeroDec(), err
-	}
-
 	// early return with balancer swap if normal amm pool
 	if !p.PoolParams.UseOracle {
+		balancerInCoin, err := p.CalcInAmtGivenOut(ctx, oracleKeeper, snapshot, tokensOut, tokenInDenom, swapFee)
+		if err != nil {
+			return sdk.Coin{}, sdk.ZeroDec(), err
+		}
+
 		err = p.applySwap(ctx, sdk.Coins{balancerInCoin}, tokensOut, swapFee, sdk.ZeroDec())
 		if err != nil {
 			return sdk.Coin{}, sdk.ZeroDec(), err
@@ -85,7 +87,13 @@ func (p *Pool) SwapInAmtGivenOut(
 	oracleInAmount := sdk.NewDecFromInt(tokenOut.Amount).Mul(outTokenPrice).Quo(inTokenPrice)
 
 	resizedAmount := sdk.NewDecFromInt(tokenOut.Amount).Quo(p.PoolParams.ExternalLiquidityRatio).RoundInt()
-	slippageAmount, err := p.CalcGivenOutSlippage(ctx, oracleKeeper, sdk.Coins{sdk.NewCoin(tokenOut.Denom, resizedAmount)}, tokenInDenom)
+	slippageAmount, err := p.CalcGivenOutSlippage(
+		ctx,
+		oracleKeeper,
+		snapshot,
+		sdk.Coins{sdk.NewCoin(tokenOut.Denom, resizedAmount)},
+		tokenInDenom,
+	)
 	inAmountAfterSlippage := oracleInAmount.Add(slippageAmount)
 
 	// calculate weight distance difference to calculate bonus/cut on the operation

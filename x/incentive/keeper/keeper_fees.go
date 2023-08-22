@@ -72,7 +72,8 @@ func (k Keeper) CollectGasFeesToIncentiveModule(ctx sdk.Context) sdk.Coins {
 
 		// Executes the swap in the pool and stores the output. Updates pool assets but
 		// does not actually transfer any tokens to or from the pool.
-		tokenOutCoin, _, err := pool.SwapOutAmtGivenIn(ctx, k.oracleKeeper, sdk.Coins{tokenIn}, ptypes.USDC, sdk.ZeroDec())
+		snapshot := k.amm.GetPoolSnapshotOrSet(ctx, pool)
+		tokenOutCoin, _, err := pool.SwapOutAmtGivenIn(ctx, k.oracleKeeper, &snapshot, sdk.Coins{tokenIn}, ptypes.USDC, sdk.ZeroDec())
 		if err != nil {
 			continue
 		}

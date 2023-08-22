@@ -101,7 +101,8 @@ func (k Keeper) EstimateSwap(ctx sdk.Context, tokenInAmount sdk.Coin, tokenOutDe
 
 	tokensIn := sdk.Coins{tokenInAmount}
 	// Estimate swap
-	swapResult, err := ammPool.CalcOutAmtGivenIn(ctx, k.oracleKeeper, tokensIn, tokenOutDenom, sdk.ZeroDec())
+	snapshot := k.amm.GetPoolSnapshotOrSet(ctx, ammPool)
+	swapResult, err := ammPool.CalcOutAmtGivenIn(ctx, k.oracleKeeper, &snapshot, tokensIn, tokenOutDenom, sdk.ZeroDec())
 
 	if err != nil {
 		return sdk.ZeroInt(), err

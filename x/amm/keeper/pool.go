@@ -10,9 +10,7 @@ import (
 func (k Keeper) SetPool(ctx sdk.Context, pool types.Pool) error {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.PoolKeyPrefix))
 	b := k.cdc.MustMarshal(&pool)
-	store.Set(types.PoolKey(
-		pool.PoolId,
-	), b)
+	store.Set(types.PoolKey(pool.PoolId), b)
 	return nil
 }
 
@@ -20,13 +18,10 @@ func (k Keeper) SetPool(ctx sdk.Context, pool types.Pool) error {
 func (k Keeper) GetPool(
 	ctx sdk.Context,
 	poolId uint64,
-
 ) (val types.Pool, found bool) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.PoolKeyPrefix))
 
-	b := store.Get(types.PoolKey(
-		poolId,
-	))
+	b := store.Get(types.PoolKey(poolId))
 	if b == nil {
 		return val, false
 	}
@@ -128,4 +123,22 @@ func (k Keeper) IterateLiquidityPools(ctx sdk.Context, handlerFn func(pool types
 	}
 
 	return
+}
+
+// GetPoolSnapshotOrSet returns a pool snapshot or set the snapshot
+func (k Keeper) GetPoolSnapshotOrSet(
+	ctx sdk.Context,
+	pool types.Pool,
+) (val types.Pool) {
+	store := prefix.NewStore(ctx.KVStore(k.transientStoreKey), types.KeyPrefix(types.PoolKeyPrefix))
+
+	b := store.Get(types.PoolKey(pool.PoolId))
+	if b == nil {
+		b := k.cdc.MustMarshal(&pool)
+		store.Set(types.PoolKey(pool.PoolId), b)
+		return pool
+	}
+
+	k.cdc.MustUnmarshal(b, &val)
+	return val
 }
