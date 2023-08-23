@@ -190,6 +190,7 @@ func (suite *KeeperTestSuite) TestMsgServerSwapExactAmountIn() {
 			} else {
 				suite.Require().NoError(err)
 				suite.Require().Equal(resp.TokenOutAmount.String(), tc.tokenOut.Amount.String())
+				suite.app.AmmKeeper.EndBlocker(suite.ctx)
 
 				// check balance change on sender
 				balances := suite.app.BankKeeper.GetAllBalances(suite.ctx, sender)
@@ -215,7 +216,7 @@ func (suite *KeeperTestSuite) TestMsgServerSlippageDifferenceWhenSplit() {
 		},
 	}
 	expSenderBalance := sdk.Coins{sdk.NewInt64Coin("uusdc", 900000), sdk.NewInt64Coin("uusdt", 99900)}
-	expSenderBalanceSplitSwap := sdk.Coins{sdk.NewInt64Coin("uusdc", 900000), sdk.NewInt64Coin("uusdt", 99984)}
+	expSenderBalanceSplitSwap := sdk.Coins{sdk.NewInt64Coin("uusdc", 900000), sdk.NewInt64Coin("uusdt", 99024)}
 
 	// bootstrap accounts
 	sender := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
@@ -279,6 +280,7 @@ func (suite *KeeperTestSuite) TestMsgServerSlippageDifferenceWhenSplit() {
 		})
 	suite.Require().NoError(err)
 	suite.Require().Equal(resp.TokenOutAmount.String(), tokenOut.Amount.String())
+	suite.app.AmmKeeper.EndBlocker(cacheCtx)
 
 	// check balance change on sender
 	balances := suite.app.BankKeeper.GetAllBalances(cacheCtx, sender)
@@ -286,18 +288,19 @@ func (suite *KeeperTestSuite) TestMsgServerSlippageDifferenceWhenSplit() {
 
 	// execute 100x swap with split
 	cacheCtx, _ = suite.ctx.CacheContext()
-	for i := 0; i < 10; i++ {
+	for i := 0; i < 100; i++ {
 		resp, err = msgServer.SwapExactAmountIn(
 			sdk.WrapSDKContext(cacheCtx),
 			&types.MsgSwapExactAmountIn{
 				Sender:            sender.String(),
 				Routes:            swapRoute,
-				TokenIn:           sdk.Coin{Denom: tokenIn.Denom, Amount: tokenIn.Amount.Quo(sdk.NewInt(10))},
+				TokenIn:           sdk.Coin{Denom: tokenIn.Denom, Amount: tokenIn.Amount.Quo(sdk.NewInt(100))},
 				TokenOutMinAmount: tokenOutMin,
 			})
 		suite.Require().NoError(err)
 		fmt.Printf("outAmount%d: %s\n", i, resp.TokenOutAmount.String())
 	}
+	suite.app.AmmKeeper.EndBlocker(cacheCtx)
 	// check balance change on sender after splitting swap to 100
 	balances = suite.app.BankKeeper.GetAllBalances(cacheCtx, sender)
 	suite.Require().Equal(balances.String(), expSenderBalanceSplitSwap.String())

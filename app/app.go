@@ -670,7 +670,7 @@ func NewElysApp(
 	app.AmmKeeper = *ammmodulekeeper.NewKeeper(
 		appCodec,
 		keys[ammmoduletypes.StoreKey],
-		keys[ammmoduletypes.TStoreKey],
+		tkeys[ammmoduletypes.TStoreKey],
 		app.GetSubspace(ammmoduletypes.ModuleName),
 		app.BankKeeper,
 		app.AccountKeeper,

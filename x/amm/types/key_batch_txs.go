@@ -4,6 +4,8 @@ import (
 	"encoding/binary"
 	fmt "fmt"
 	"strings"
+
+	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 var _ binary.ByteOrder
@@ -21,7 +23,7 @@ func TKeyPrefixSwapExactAmountIn(m *MsgSwapExactAmountIn, index uint64) []byte {
 		routeKeys = append(routeKeys, fmt.Sprintf("%d/%s", route.PoolId, route.TokenOutDenom))
 	}
 	prefix = append(prefix, []byte(strings.Join(routeKeys, "/"))...)
-	return prefix
+	return append(prefix, sdk.Uint64ToBigEndian(index)...)
 }
 
 func TKeyPrefixSwapExactAmountOut(m *MsgSwapExactAmountOut, index uint64) []byte {
@@ -31,5 +33,5 @@ func TKeyPrefixSwapExactAmountOut(m *MsgSwapExactAmountOut, index uint64) []byte
 		routeKeys = append(routeKeys, fmt.Sprintf("%d/%s", route.PoolId, route.TokenInDenom))
 	}
 	prefix = append(prefix, []byte(strings.Join(routeKeys, "/"))...)
-	return prefix
+	return append(prefix, sdk.Uint64ToBigEndian(index)...)
 }
