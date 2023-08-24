@@ -19,7 +19,7 @@ const (
 func TKeyPrefixSwapExactAmountIn(m *MsgSwapExactAmountIn, index uint64) []byte {
 	prefix := []byte(m.TokenIn.Denom + "/")
 	routeKeys := []string{}
-	for _, route := range m.Routes {
+	for _, route := range m.Routes[:1] {
 		routeKeys = append(routeKeys, fmt.Sprintf("%d/%s", route.PoolId, route.TokenOutDenom))
 	}
 	prefix = append(prefix, []byte(strings.Join(routeKeys, "/"))...)
@@ -27,11 +27,13 @@ func TKeyPrefixSwapExactAmountIn(m *MsgSwapExactAmountIn, index uint64) []byte {
 }
 
 func TKeyPrefixSwapExactAmountOut(m *MsgSwapExactAmountOut, index uint64) []byte {
-	prefix := []byte(m.TokenOut.Denom + "/")
+	prefix := []byte("/" + m.TokenOut.Denom)
 	routeKeys := []string{}
-	for _, route := range m.Routes {
-		routeKeys = append(routeKeys, fmt.Sprintf("%d/%s", route.PoolId, route.TokenInDenom))
+	for i := len(m.Routes) - 1; i >= 0; i-- {
+		route := m.Routes[i]
+		routeKeys = append(routeKeys, fmt.Sprintf("%s/%d", route.TokenInDenom, route.PoolId))
+		break
 	}
-	prefix = append(prefix, []byte(strings.Join(routeKeys, "/"))...)
+	prefix = append([]byte(strings.Join(routeKeys, "/")), prefix...)
 	return append(prefix, sdk.Uint64ToBigEndian(index)...)
 }
