@@ -18,19 +18,7 @@ var _ = strconv.IntSize
 func createNPool(keeper *keeper.Keeper, ctx sdk.Context, n int) []types.Pool {
 	items := make([]types.Pool, n)
 	for i := range items {
-		items[i].AmmPoolId = (uint64)(i)
-		items[i].Health = sdk.ZeroDec()
-		items[i].Enabled = true
-		items[i].Closed = false
-		items[i].ExternalLiabilities = sdk.ZeroInt()
-		items[i].ExternalCustody = sdk.ZeroInt()
-		items[i].NativeLiabilities = sdk.ZeroInt()
-		items[i].NativeCustody = sdk.ZeroInt()
-		items[i].InterestRate = sdk.ZeroDec()
-		items[i].NativeAssetBalance = sdk.ZeroInt()
-		items[i].ExternalAssetBalance = sdk.ZeroInt()
-		items[i].UnsettledExternalLiabilities = sdk.ZeroInt()
-		items[i].BlockInterestNative = sdk.ZeroInt()
+		items[i] = types.NewPool((uint64)(i))
 
 		keeper.SetPool(ctx, items[i])
 	}

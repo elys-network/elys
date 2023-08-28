@@ -79,7 +79,11 @@ func (k msgServer) CloseLong(ctx sdk.Context, msg *types.MsgClose) (*types.MTP, 
 		interestPayment := CalcMTPInterestLiabilities(&mtp, pool.InterestRate, epochPosition, epochLength)
 		finalInterestPayment := k.HandleInterestPayment(ctx, interestPayment, &mtp, &pool, ammPool)
 
-		pool.BlockInterestNative = pool.BlockInterestNative.Add(finalInterestPayment)
+		err = pool.UpdateBlockInterest(ctx, mtp.CollateralAsset, finalInterestPayment, true)
+		if err != nil {
+			return nil, sdk.ZeroInt(), err
+		}
+
 		mtp.MtpHealth, err = k.UpdateMTPHealth(ctx, mtp, ammPool)
 		if err != nil {
 			return nil, sdk.ZeroInt(), err

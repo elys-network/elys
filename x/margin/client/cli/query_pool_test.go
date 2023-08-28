@@ -12,7 +12,6 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/testutil/network"
 	"github.com/elys-network/elys/testutil/nullify"
 	"github.com/elys-network/elys/x/margin/client/cli"
@@ -27,21 +26,7 @@ func networkWithPoolObjects(t *testing.T, n int) (*network.Network, []types.Pool
 	cfg := network.DefaultConfig()
 	state := types.GenesisState{}
 	for i := 0; i < n; i++ {
-		pool := types.Pool{
-			AmmPoolId:                    (uint64)(i),
-			Health:                       sdk.NewDec(0),
-			Enabled:                      true,
-			Closed:                       false,
-			ExternalLiabilities:          sdk.NewInt(0),
-			ExternalCustody:              sdk.NewInt(1),
-			NativeLiabilities:            sdk.NewInt(1),
-			NativeCustody:                sdk.NewInt(1),
-			InterestRate:                 sdk.NewDec(0),
-			NativeAssetBalance:           sdk.NewInt(0),
-			ExternalAssetBalance:         sdk.NewInt(0),
-			UnsettledExternalLiabilities: sdk.NewInt(0),
-			BlockInterestNative:          sdk.NewInt(0),
-		}
+		pool := types.NewPool((uint64)(i))
 		nullify.Fill(&pool)
 		state.PoolList = append(state.PoolList, pool)
 	}
