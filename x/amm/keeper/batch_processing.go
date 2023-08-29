@@ -28,6 +28,12 @@ func (k Keeper) SetSwapExactAmountInRequests(ctx sdk.Context, msg *types.MsgSwap
 	return nil
 }
 
+// DeleteSwapExactAmountInRequest removes a swap exact amount in request
+func (k Keeper) DeleteSwapExactAmountInRequest(ctx sdk.Context, msg *types.MsgSwapExactAmountIn, index uint64) {
+	store := prefix.NewStore(ctx.TransientStore(k.transientStoreKey), types.KeyPrefix(types.TSwapExactAmountInKey))
+	store.Delete(types.TKeyPrefixSwapExactAmountIn(msg, index))
+}
+
 // GetAllSwapExactAmountInRequests returns all SwapExactAmountIn requests
 func (k Keeper) GetAllSwapExactAmountInRequests(ctx sdk.Context) (list []types.MsgSwapExactAmountIn) {
 	store := prefix.NewStore(ctx.TransientStore(k.transientStoreKey), types.KeyPrefix(types.TSwapExactAmountInKey))
@@ -44,12 +50,32 @@ func (k Keeper) GetAllSwapExactAmountInRequests(ctx sdk.Context) (list []types.M
 	return
 }
 
+func (k Keeper) GetFirstSwapExactAmountInRequest(ctx sdk.Context, sprefix []byte) (*types.MsgSwapExactAmountIn, uint64) {
+	store := prefix.NewStore(ctx.TransientStore(k.transientStoreKey), types.KeyPrefix(types.TSwapExactAmountInKey))
+	iterator := sdk.KVStorePrefixIterator(store, sprefix)
+
+	defer iterator.Close()
+	if !iterator.Valid() {
+		return nil, 0
+	}
+	var val types.MsgSwapExactAmountIn
+	k.cdc.MustUnmarshal(iterator.Value(), &val)
+	key := iterator.Key()
+	return &val, sdk.BigEndianToUint64(key[len(key)-8:])
+}
+
 // SetSwapExactAmountInRequests stores swap exact amount out request
 func (k Keeper) SetSwapExactAmountOutRequests(ctx sdk.Context, msg *types.MsgSwapExactAmountOut, index uint64) error {
 	store := prefix.NewStore(ctx.TransientStore(k.transientStoreKey), types.KeyPrefix(types.TSwapExactAmountOutKey))
 	b := k.cdc.MustMarshal(msg)
 	store.Set(types.TKeyPrefixSwapExactAmountOut(msg, index), b)
 	return nil
+}
+
+// DeleteSwapExactAmountOutRequest deletes a swap exact amount out request
+func (k Keeper) DeleteSwapExactAmountOutRequest(ctx sdk.Context, msg *types.MsgSwapExactAmountOut, index uint64) {
+	store := prefix.NewStore(ctx.TransientStore(k.transientStoreKey), types.KeyPrefix(types.TSwapExactAmountOutKey))
+	store.Delete(types.TKeyPrefixSwapExactAmountOut(msg, index))
 }
 
 // GetAllSwapExactAmountOutRequests returns all SwapExactAmountOut requests
@@ -66,4 +92,18 @@ func (k Keeper) GetAllSwapExactAmountOutRequests(ctx sdk.Context) (list []types.
 	}
 
 	return
+}
+
+func (k Keeper) GetFirstSwapExactAmountOutRequest(ctx sdk.Context, sprefix []byte) (*types.MsgSwapExactAmountOut, uint64) {
+	store := prefix.NewStore(ctx.TransientStore(k.transientStoreKey), types.KeyPrefix(types.TSwapExactAmountOutKey))
+	iterator := sdk.KVStorePrefixIterator(store, sprefix)
+
+	defer iterator.Close()
+	if !iterator.Valid() {
+		return nil, 0
+	}
+	var val types.MsgSwapExactAmountOut
+	k.cdc.MustUnmarshal(iterator.Value(), &val)
+	key := iterator.Key()
+	return &val, sdk.BigEndianToUint64(key[len(key)-8:])
 }

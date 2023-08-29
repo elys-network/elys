@@ -1,6 +1,8 @@
 package keeper
 
 import (
+	"fmt"
+	"strings"
 	"time"
 
 	"cosmossdk.io/math"
@@ -10,55 +12,215 @@ import (
 	"github.com/elys-network/elys/x/amm/types"
 )
 
+func (k Keeper) GetStackedSlippage(ctx sdk.Context, poolId uint64) sdk.Dec {
+	pool, found := k.GetPool(ctx, poolId)
+	if !found {
+		return sdk.ZeroDec()
+	}
+	snapshot := k.GetPoolSnapshotOrSet(ctx, pool)
+	return pool.StackedRatioFromSnapshot(ctx, k.oracleKeeper, &snapshot)
+}
+
+func (k Keeper) ApplySwapRequest(ctx sdk.Context, msg sdk.Msg) error {
+	switch msg.(type) {
+	case *types.MsgSwapExactAmountIn:
+		msg := msg.(*types.MsgSwapExactAmountIn)
+		sender, err := sdk.AccAddressFromBech32(msg.Sender)
+		if err != nil {
+			return err
+		}
+		_, err = k.RouteExactAmountIn(ctx, sender, msg.Routes, msg.TokenIn, math.Int(msg.TokenOutMinAmount))
+		if err != nil {
+			return err
+		}
+		return nil
+	case *types.MsgSwapExactAmountOut:
+		msg := msg.(*types.MsgSwapExactAmountOut)
+		sender, err := sdk.AccAddressFromBech32(msg.Sender)
+		if err != nil {
+			return err
+		}
+		_, err = k.RouteExactAmountOut(ctx, sender, msg.Routes, msg.TokenInMaxAmount, msg.TokenOut)
+		if err != nil {
+			return err
+		}
+		return nil
+	default:
+		return fmt.Errorf("unexpected swap message")
+	}
+}
+
+func (k Keeper) DeleteSwapRequest(ctx sdk.Context, msg sdk.Msg, index uint64) {
+	switch msg.(type) {
+	case *types.MsgSwapExactAmountIn:
+		msg := msg.(*types.MsgSwapExactAmountIn)
+		k.DeleteSwapExactAmountInRequest(ctx, msg, index)
+	case *types.MsgSwapExactAmountOut:
+		msg := msg.(*types.MsgSwapExactAmountOut)
+		k.DeleteSwapExactAmountOutRequest(ctx, msg, index)
+	}
+}
+
+func (k Keeper) SelectOneSwapRequest(ctx sdk.Context, sprefix []byte) (sdk.Msg, uint64) {
+	msg1, index := k.GetFirstSwapExactAmountInRequest(ctx, sprefix)
+	if index != 0 {
+		return msg1, index
+	}
+	msg2, index := k.GetFirstSwapExactAmountOutRequest(ctx, sprefix)
+	return msg2, index
+}
+
+func (k Keeper) SelectReverseSwapRequest(ctx sdk.Context, msg sdk.Msg) (sdk.Msg, uint64) {
+	sprefix := []byte{}
+	switch msg.(type) {
+	case *types.MsgSwapExactAmountIn:
+		msg := msg.(*types.MsgSwapExactAmountIn)
+		sprefix = types.TKeyPrefixSwapExactAmountInPrefix(msg)
+	case *types.MsgSwapExactAmountOut:
+		msg := msg.(*types.MsgSwapExactAmountOut)
+		sprefix = types.TKeyPrefixSwapExactAmountOutPrefix(msg)
+	}
+
+	split := strings.Split(string(sprefix), "/")
+	for i, j := 0, len(split)-1; i < j; i, j = i+1, j-1 {
+		split[i], split[j] = split[j], split[i]
+	}
+	rprefix := strings.Join(split, "/")
+	return k.SelectOneSwapRequest(ctx, []byte(rprefix))
+}
+
+func (k Keeper) FirstPoolId(msg sdk.Msg) uint64 {
+	switch msg.(type) {
+	case *types.MsgSwapExactAmountIn:
+		msg := msg.(*types.MsgSwapExactAmountIn)
+		return types.FirstPoolIdFromSwapExactAmountIn(msg)
+	case *types.MsgSwapExactAmountOut:
+		msg := msg.(*types.MsgSwapExactAmountOut)
+		return types.FirstPoolIdFromSwapExactAmountOut(msg)
+	}
+	return 0
+}
+
+func (k Keeper) ExecuteSwapRequests(ctx sdk.Context) []sdk.Msg {
+	// Algorithm
+	// - Select a random swap request
+	//   - Try execution on cache context, and check stacked slippage
+	//   - Check if opposite direction request exists (Same pool id with opposite in/out tokens)
+	//   - If opposite direction request exists, try execution on cache context, and check stacked slippage
+	//   - Apply the swap request which as lower stacked slippage
+	//   - If one of the swaps fail, not apply any changes and remove the swap request
+	// - Repeat the process until the swap requests run-out
+	requests := []sdk.Msg{}
+	for {
+		var index1, index2 uint64
+		var msg1, msg2 sdk.Msg
+		msg1, index1 = k.SelectOneSwapRequest(ctx, []byte{})
+		if index1 == 0 {
+			break
+		}
+
+		msg2, index2 = k.SelectReverseSwapRequest(ctx, msg1)
+		if index2 == 0 {
+			cachedCtx, write := ctx.CacheContext()
+			err := k.ApplySwapRequest(cachedCtx, msg1)
+			if err == nil {
+				write()
+			}
+			// remove msg1 from the store
+			k.DeleteSwapRequest(ctx, msg1, index1)
+			requests = append(requests, msg1)
+			continue
+		}
+
+		poolId := k.FirstPoolId(msg1)
+		cachedCtx1, write1 := ctx.CacheContext()
+		err1 := k.ApplySwapRequest(cachedCtx1, msg1)
+		stackedSlippage1 := k.GetStackedSlippage(cachedCtx1, poolId)
+
+		cachedCtx2, write2 := ctx.CacheContext()
+		err2 := k.ApplySwapRequest(cachedCtx2, msg2)
+		stackedSlippage2 := k.GetStackedSlippage(cachedCtx2, poolId)
+
+		if err1 == nil && err2 == nil {
+			if stackedSlippage1.LT(stackedSlippage2) {
+				write1()
+				// remove msg1 from the store
+				k.DeleteSwapRequest(ctx, msg1, index1)
+				requests = append(requests, msg1)
+			} else {
+				write2()
+				// remove msg2 from the store
+				k.DeleteSwapRequest(ctx, msg2, index2)
+				requests = append(requests, msg2)
+			}
+		} else if err1 == nil {
+			// remove msg2 from the store
+			k.DeleteSwapRequest(ctx, msg2, index2)
+			requests = append(requests, msg2)
+		} else if err2 == nil {
+			// remove msg1 from the store
+			k.DeleteSwapRequest(ctx, msg1, index1)
+			requests = append(requests, msg1)
+		} else {
+			// remove both msg1, msg2 messages
+			k.DeleteSwapRequest(ctx, msg1, index1)
+			k.DeleteSwapRequest(ctx, msg2, index2)
+			requests = append(requests, msg1, msg2)
+		}
+	}
+	return requests
+}
+
 // EndBlocker of amm module
 func (k Keeper) EndBlocker(ctx sdk.Context) {
 	defer telemetry.ModuleMeasureSince(types.ModuleName, time.Now(), telemetry.MetricKeyBeginBlocker)
 
-	swapInRequests := k.GetAllSwapExactAmountInRequests(ctx)
-	for _, msg := range swapInRequests {
-		sender, err := sdk.AccAddressFromBech32(msg.Sender)
-		if err != nil {
-			continue
-		}
+	k.ExecuteSwapRequests(ctx)
+	// swapInRequests := k.GetAllSwapExactAmountInRequests(ctx)
+	// for _, msg := range swapInRequests {
+	// 	sender, err := sdk.AccAddressFromBech32(msg.Sender)
+	// 	if err != nil {
+	// 		continue
+	// 	}
 
-		cacheCtx, write := ctx.CacheContext()
-		_, err = k.RouteExactAmountIn(cacheCtx, sender, msg.Routes, msg.TokenIn, math.Int(msg.TokenOutMinAmount))
-		if err != nil {
-			continue
-		}
-		write()
+	// 	cacheCtx, write := ctx.CacheContext()
+	// 	_, err = k.RouteExactAmountIn(cacheCtx, sender, msg.Routes, msg.TokenIn, math.Int(msg.TokenOutMinAmount))
+	// 	if err != nil {
+	// 		continue
+	// 	}
+	// 	write()
 
-		// Swap event is handled elsewhere
-		ctx.EventManager().EmitEvents(sdk.Events{
-			sdk.NewEvent(
-				sdk.EventTypeMessage,
-				sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
-				sdk.NewAttribute(sdk.AttributeKeySender, msg.Sender),
-			),
-		})
+	// 	// Swap event is handled elsewhere
+	// 	ctx.EventManager().EmitEvents(sdk.Events{
+	// 		sdk.NewEvent(
+	// 			sdk.EventTypeMessage,
+	// 			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
+	// 			sdk.NewAttribute(sdk.AttributeKeySender, msg.Sender),
+	// 		),
+	// 	})
 
-	}
-	swapOutRequests := k.GetAllSwapExactAmountOutRequests(ctx)
-	for _, msg := range swapOutRequests {
-		sender, err := sdk.AccAddressFromBech32(msg.Sender)
-		if err != nil {
-			continue
-		}
+	// }
+	// swapOutRequests := k.GetAllSwapExactAmountOutRequests(ctx)
+	// for _, msg := range swapOutRequests {
+	// 	sender, err := sdk.AccAddressFromBech32(msg.Sender)
+	// 	if err != nil {
+	// 		continue
+	// 	}
 
-		cacheCtx, write := ctx.CacheContext()
-		_, err = k.RouteExactAmountOut(cacheCtx, sender, msg.Routes, msg.TokenInMaxAmount, msg.TokenOut)
-		if err != nil {
-			continue
-		}
-		write()
+	// 	cacheCtx, write := ctx.CacheContext()
+	// 	_, err = k.RouteExactAmountOut(cacheCtx, sender, msg.Routes, msg.TokenInMaxAmount, msg.TokenOut)
+	// 	if err != nil {
+	// 		continue
+	// 	}
+	// 	write()
 
-		// Swap event is handled elsewhere
-		ctx.EventManager().EmitEvents(sdk.Events{
-			sdk.NewEvent(
-				sdk.EventTypeMessage,
-				sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
-				sdk.NewAttribute(sdk.AttributeKeySender, msg.Sender),
-			),
-		})
-	}
+	// 	// Swap event is handled elsewhere
+	// 	ctx.EventManager().EmitEvents(sdk.Events{
+	// 		sdk.NewEvent(
+	// 			sdk.EventTypeMessage,
+	// 			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
+	// 			sdk.NewAttribute(sdk.AttributeKeySender, msg.Sender),
+	// 		),
+	// 	})
+	// }
 }

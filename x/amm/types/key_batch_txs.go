@@ -16,17 +16,29 @@ const (
 	TSwapExactAmountOutKey = "batch/swap-exact-amount-out"
 )
 
-func TKeyPrefixSwapExactAmountIn(m *MsgSwapExactAmountIn, index uint64) []byte {
+func TKeyPrefixSwapExactAmountInPrefix(m *MsgSwapExactAmountIn) []byte {
 	prefix := []byte(m.TokenIn.Denom + "/")
 	routeKeys := []string{}
 	for _, route := range m.Routes[:1] {
 		routeKeys = append(routeKeys, fmt.Sprintf("%d/%s", route.PoolId, route.TokenOutDenom))
 	}
 	prefix = append(prefix, []byte(strings.Join(routeKeys, "/"))...)
+	return prefix
+}
+
+func FirstPoolIdFromSwapExactAmountIn(m *MsgSwapExactAmountIn) uint64 {
+	for _, route := range m.Routes {
+		return route.PoolId
+	}
+	return 0
+}
+
+func TKeyPrefixSwapExactAmountIn(m *MsgSwapExactAmountIn, index uint64) []byte {
+	prefix := TKeyPrefixSwapExactAmountInPrefix(m)
 	return append(prefix, sdk.Uint64ToBigEndian(index)...)
 }
 
-func TKeyPrefixSwapExactAmountOut(m *MsgSwapExactAmountOut, index uint64) []byte {
+func TKeyPrefixSwapExactAmountOutPrefix(m *MsgSwapExactAmountOut) []byte {
 	prefix := []byte("/" + m.TokenOut.Denom)
 	routeKeys := []string{}
 	for i := len(m.Routes) - 1; i >= 0; i-- {
@@ -35,5 +47,18 @@ func TKeyPrefixSwapExactAmountOut(m *MsgSwapExactAmountOut, index uint64) []byte
 		break
 	}
 	prefix = append([]byte(strings.Join(routeKeys, "/")), prefix...)
+	return prefix
+}
+
+func FirstPoolIdFromSwapExactAmountOut(m *MsgSwapExactAmountOut) uint64 {
+	for i := len(m.Routes) - 1; i >= 0; i-- {
+		route := m.Routes[i]
+		return route.PoolId
+	}
+	return 0
+}
+
+func TKeyPrefixSwapExactAmountOut(m *MsgSwapExactAmountOut, index uint64) []byte {
+	prefix := TKeyPrefixSwapExactAmountOutPrefix(m)
 	return append(prefix, sdk.Uint64ToBigEndian(index)...)
 }

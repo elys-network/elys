@@ -70,6 +70,17 @@ func (p Pool) NewPoolAssetsAfterSwap(inCoins sdk.Coins, outCoins sdk.Coins) (poo
 	return
 }
 
+func (p Pool) StackedRatioFromSnapshot(ctx sdk.Context, oracleKeeper OracleKeeper, snapshot *Pool) sdk.Dec {
+	stackedRatio := sdk.ZeroDec()
+	for index, asset := range snapshot.PoolAssets {
+		assetDiff := sdk.NewDecFromInt(p.PoolAssets[index].Token.Amount.Sub(asset.Token.Amount).Abs())
+		assetStacked := assetDiff.Quo(sdk.NewDecFromInt(asset.Token.Amount))
+		stackedRatio = stackedRatio.Add(assetStacked)
+	}
+
+	return stackedRatio
+}
+
 func (p Pool) WeightDistanceFromTarget(ctx sdk.Context, oracleKeeper OracleKeeper, poolAssets []PoolAsset) sdk.Dec {
 	oracleWeights, err := OraclePoolNormalizedWeights(ctx, oracleKeeper, poolAssets)
 	if err != nil {
