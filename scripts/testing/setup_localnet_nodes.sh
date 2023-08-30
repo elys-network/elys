@@ -122,7 +122,7 @@ initialize_nodes() {
         echo "Configuring $folder node..."
         ${BINARY} config node "tcp://localhost:${node_rpc_port}" --home "/tmp/$folder" >/dev/null 2>&1
         ${BINARY} config keyring-backend test --home "/tmp/$folder" >/dev/null 2>&1
-        ${BINARY} config broadcast-mode block --home "/tmp/$folder" >/dev/null 2>&1
+        ${BINARY} config broadcast-mode sync --home "/tmp/$folder" >/dev/null 2>&1
     done
 }
 
@@ -216,10 +216,10 @@ EOF
         sed -i "" "s/^timeout_commit =.*/timeout_commit = \"4s\"/" "$config_path"
 
         # Update grpc in app with node port
-        sed -i "" "s/^address = \"0.0.0.0:9090\"/address = \"0.0.0.0:${node_grpc_port}\"/" "$app_path"
+        sed -i "" "s/^address = \"localhost:9090\"/address = \"localhost:${node_grpc_port}\"/" "$app_path"
 
         # Update grpc web in app with node port
-        sed -i "" "s/^address = \"0.0.0.0:9091\"/address = \"0.0.0.0:${node_grpc_web_port}\"/" "$app_path"
+        sed -i "" "s/^address = \"localhost:9091\"/address = \"localhost:${node_grpc_web_port}\"/" "$app_path"
     done
 }
 
@@ -336,7 +336,7 @@ submit_upgrade_proposal() {
         --no-validate \
         --from=validator \
         --fees=100000uelys \
-        --gas=auto \
+        --gas=200000 \
         --home="/tmp/${first_folder}" \
         -y >/dev/null 2>&1
 
@@ -347,6 +347,7 @@ submit_upgrade_proposal() {
             yes \
             --from=validator \
             --fees=100000uelys \
+            --gas=200000 \
             --home="/tmp/${folder}" \
             -y >/dev/null 2>&1
     done
@@ -397,6 +398,9 @@ wait_for_rpc_ports() {
   done
 
   echo "All RPC ports are open."
+
+  echo "Waiting 5 seconds for blockchain state to become available..."
+  sleep 5
 }
 
 # Main script execution
