@@ -12,8 +12,9 @@ func (p Pool) CalcGivenOutSlippage(
 	snapshot *Pool,
 	tokensOut sdk.Coins,
 	tokenInDenom string,
+	accPoolKeeper AccountedPoolKeeper,
 ) (sdk.Dec, error) {
-	balancerInCoin, err := p.CalcInAmtGivenOut(ctx, oracleKeeper, snapshot, tokensOut, tokenInDenom, sdk.ZeroDec())
+	balancerInCoin, err := p.CalcInAmtGivenOut(ctx, oracleKeeper, snapshot, tokensOut, tokenInDenom, sdk.ZeroDec(), accPoolKeeper)
 	if err != nil {
 		return sdk.ZeroDec(), err
 	}
@@ -93,6 +94,7 @@ func (p *Pool) SwapInAmtGivenOut(
 		snapshot,
 		sdk.Coins{sdk.NewCoin(tokenOut.Denom, resizedAmount)},
 		tokenInDenom,
+		accPoolKeeper,
 	)
 	inAmountAfterSlippage := oracleInAmount.Add(slippageAmount)
 

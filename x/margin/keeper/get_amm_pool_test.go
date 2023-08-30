@@ -14,7 +14,7 @@ import (
 
 func TestGetAmmPool_PoolNotFound(t *testing.T) {
 	mockAmm := new(mocks.AmmKeeper)
-	k := keeper.NewKeeper(nil, nil, nil, "cosmos1ysxv266l8w76lq0vy44ktzajdr9u9yhlxzlvga", mockAmm, nil, nil)
+	k := keeper.NewKeeper(nil, nil, nil, "cosmos1ysxv266l8w76lq0vy44ktzajdr9u9yhlxzlvga", mockAmm, nil, nil, nil)
 
 	ctx := sdk.Context{} // mock or setup a context
 	borrowAsset := "testAsset"
@@ -32,7 +32,7 @@ func TestGetAmmPool_PoolNotFound(t *testing.T) {
 
 func TestGetAmmPool_PoolFound(t *testing.T) {
 	mockAmm := new(mocks.AmmKeeper)
-	k := keeper.NewKeeper(nil, nil, nil, "cosmos1ysxv266l8w76lq0vy44ktzajdr9u9yhlxzlvga", mockAmm, nil, nil)
+	k := keeper.NewKeeper(nil, nil, nil, "cosmos1ysxv266l8w76lq0vy44ktzajdr9u9yhlxzlvga", mockAmm, nil, nil, nil)
 
 	ctx := sdk.Context{} // mock or setup a context
 	borrowAsset := "testAsset"
