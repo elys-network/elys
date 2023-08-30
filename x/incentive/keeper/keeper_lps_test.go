@@ -146,7 +146,7 @@ func TestCalculateRewardsForLPs(t *testing.T) {
 		ExitFee:                     sdk.ZeroDec(),
 		UseOracle:                   false,
 		WeightBreakingFeeMultiplier: sdk.ZeroDec(),
-		SlippageReduction:           sdk.ZeroDec(),
+		ExternalLiquidityRatio:      sdk.OneDec(),
 		LpFeePortion:                sdk.ZeroDec(),
 		StakingFeePortion:           sdk.ZeroDec(),
 		WeightRecoveryFeePortion:    sdk.ZeroDec(),

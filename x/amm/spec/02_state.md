@@ -70,7 +70,7 @@ type PoolAsset struct {
 ## PoolParams
 
 - `UseOracle` is set to true when the weights are dynamically calculated based on oracle.
-- `SlippageReduction` is to provide lowest slippage possible within safety bound.
+- `ExternalLiquidityRatio` is configured from external liquidity fetcher oracle
 - `WeightBreakingFeeMutliplier` is the parameter used to calculate weight breaking fee from weight break attribute.
 - `LpFeePortion` is the fee portion to be given to liquidity providers.
 - `StakingFeePortion` is the fee portion to be spent to stakeholders.
@@ -84,7 +84,7 @@ type PoolParams struct {
 	SmoothWeightChangeParams    *SmoothWeightChangeParams
 	WeightBreakingFeeMutliplier sdk.Dec
     UseOracle                   bool
-    SlippageReduction           sdk.Dec
+    ExternalLiquidityRatio      sdk.Dec
     LpFeePortion                sdk.Dec
     StakingFeePortion           sdk.Dec
     WeightRecoveryFeePortion    sdk.Dec

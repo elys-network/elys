@@ -1,6 +1,8 @@
 package keeper_test
 
 import (
+	"fmt"
+
 	"github.com/cometbft/cometbft/crypto/ed25519"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
@@ -188,6 +190,7 @@ func (suite *KeeperTestSuite) TestMsgServerSwapExactAmountIn() {
 			} else {
 				suite.Require().NoError(err)
 				suite.Require().Equal(resp.TokenOutAmount.String(), tc.tokenOut.Amount.String())
+				suite.app.AmmKeeper.EndBlocker(suite.ctx)
 
 				// check balance change on sender
 				balances := suite.app.BankKeeper.GetAllBalances(suite.ctx, sender)
@@ -205,15 +208,15 @@ func (suite *KeeperTestSuite) TestMsgServerSlippageDifferenceWhenSplit() {
 	swapFee := sdk.ZeroDec()
 	tokenIn := sdk.NewInt64Coin("uusdc", 100000)
 	tokenOutMin := sdk.ZeroInt()
-	tokenOut := sdk.NewInt64Coin("uusdt", 95454)
+	tokenOut := sdk.NewInt64Coin("uusdt", 99900)
 	swapRoute := []types.SwapAmountInRoute{
 		{
 			PoolId:        1,
 			TokenOutDenom: "uusdt",
 		},
 	}
-	expSenderBalance := sdk.Coins{sdk.NewInt64Coin("uusdc", 900000), sdk.NewInt64Coin("uusdt", 95454)}
-	expSenderBalanceSplitSwap := sdk.Coins{sdk.NewInt64Coin("uusdc", 900000), sdk.NewInt64Coin("uusdt", 95334)}
+	expSenderBalance := sdk.Coins{sdk.NewInt64Coin("uusdc", 900000), sdk.NewInt64Coin("uusdt", 99900)}
+	expSenderBalanceSplitSwap := sdk.Coins{sdk.NewInt64Coin("uusdc", 900000), sdk.NewInt64Coin("uusdt", 99024)}
 
 	// bootstrap accounts
 	sender := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
@@ -245,10 +248,10 @@ func (suite *KeeperTestSuite) TestMsgServerSlippageDifferenceWhenSplit() {
 		Address:           poolAddr.String(),
 		RebalanceTreasury: treasuryAddr.String(),
 		PoolParams: types.PoolParams{
-			SwapFee:           swapFee,
-			FeeDenom:          "uusdc",
-			UseOracle:         true,
-			SlippageReduction: sdk.NewDecWithPrec(50, 2), // 50%
+			SwapFee:                swapFee,
+			FeeDenom:               "uusdc",
+			UseOracle:              true,
+			ExternalLiquidityRatio: sdk.NewDec(10), // 2x
 		},
 		TotalShares: sdk.Coin{},
 		PoolAssets: []types.PoolAsset{
@@ -277,6 +280,7 @@ func (suite *KeeperTestSuite) TestMsgServerSlippageDifferenceWhenSplit() {
 		})
 	suite.Require().NoError(err)
 	suite.Require().Equal(resp.TokenOutAmount.String(), tokenOut.Amount.String())
+	suite.app.AmmKeeper.EndBlocker(cacheCtx)
 
 	// check balance change on sender
 	balances := suite.app.BankKeeper.GetAllBalances(cacheCtx, sender)
@@ -294,7 +298,9 @@ func (suite *KeeperTestSuite) TestMsgServerSlippageDifferenceWhenSplit() {
 				TokenOutMinAmount: tokenOutMin,
 			})
 		suite.Require().NoError(err)
+		fmt.Printf("outAmount%d: %s\n", i, resp.TokenOutAmount.String())
 	}
+	suite.app.AmmKeeper.EndBlocker(cacheCtx)
 	// check balance change on sender after splitting swap to 100
 	balances = suite.app.BankKeeper.GetAllBalances(cacheCtx, sender)
 	suite.Require().Equal(balances.String(), expSenderBalanceSplitSwap.String())

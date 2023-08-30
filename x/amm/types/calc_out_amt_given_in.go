@@ -9,6 +9,8 @@ import (
 // amount and fee deducted, using solveConstantFunctionInvariant.
 func (p Pool) CalcOutAmtGivenIn(
 	ctx sdk.Context,
+	oracle OracleKeeper,
+	snapshot *Pool,
 	tokensIn sdk.Coins,
 	tokenOutDenom string,
 	swapFee sdk.Dec,
@@ -36,14 +38,26 @@ func (p Pool) CalcOutAmtGivenIn(
 
 	poolPostSwapInBalance := poolTokenInBalance.Add(tokenAmountInAfterFee)
 
+	outWeight := sdk.NewDecFromInt(poolAssetOut.Weight)
+	inWeight := sdk.NewDecFromInt(poolAssetIn.Weight)
+	if p.PoolParams.UseOracle {
+		_, poolAssetIn, poolAssetOut, err := snapshot.parsePoolAssets(tokensIn, tokenOutDenom)
+		oracleWeights, err := OraclePoolNormalizedWeights(ctx, oracle, []PoolAsset{poolAssetIn, poolAssetOut})
+		if err != nil {
+			return sdk.Coin{}, err
+		}
+		inWeight = oracleWeights[0].Weight
+		outWeight = oracleWeights[1].Weight
+	}
+
 	// deduct swapfee on the tokensIn
 	// delta balanceOut is positive(tokens inside the pool decreases)
 	tokenAmountOut := solveConstantFunctionInvariant(
 		poolTokenInBalance,
 		poolPostSwapInBalance,
-		sdk.NewDecFromInt(poolAssetIn.Weight),
+		inWeight,
 		poolTokenOutBalance,
-		sdk.NewDecFromInt(poolAssetOut.Weight),
+		outWeight,
 	)
 
 	// We ignore the decimal component, as we round down the token amount out.

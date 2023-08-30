@@ -43,7 +43,8 @@ func (k Keeper) SwapExactAmountIn(
 
 	// Executes the swap in the pool and stores the output. Updates pool assets but
 	// does not actually transfer any tokens to or from the pool.
-	tokenOutCoin, weightBalanceBonus, err := pool.SwapOutAmtGivenIn(ctx, k.oracleKeeper, tokensIn, tokenOutDenom, swapFee, k.accountedPoolKeeper)
+	snapshot := k.GetPoolSnapshotOrSet(ctx, pool)
+	tokenOutCoin, weightBalanceBonus, err := pool.SwapOutAmtGivenIn(ctx, k.oracleKeeper, &snapshot, tokensIn, tokenOutDenom, swapFee, k.accountedPoolKeeper)
 	if err != nil {
 		return math.Int{}, err
 	}
