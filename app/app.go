@@ -158,6 +158,10 @@ import (
 	marginmodulekeeper "github.com/elys-network/elys/x/margin/keeper"
 	marginmoduletypes "github.com/elys-network/elys/x/margin/types"
 
+	accountedpoolmodule "github.com/elys-network/elys/x/accountedpool"
+	accountedpoolmodulekeeper "github.com/elys-network/elys/x/accountedpool/keeper"
+	accountedpoolmoduletypes "github.com/elys-network/elys/x/accountedpool/types"
+
 	// this line is used by starport scaffolding # stargate/app/moduleImport
 
 	"github.com/elys-network/elys/docs"
@@ -257,6 +261,7 @@ var (
 		ammmodule.AppModuleBasic{},
 		parametermodule.AppModuleBasic{},
 		marginmodule.AppModuleBasic{},
+		accountedpoolmodule.AppModuleBasic{},
 		// this line is used by starport scaffolding # stargate/app/moduleBasic
 	)
 
@@ -351,6 +356,8 @@ type ElysApp struct {
 	AmmKeeper               ammmodulekeeper.Keeper
 	ParameterKeeper         parametermodulekeeper.Keeper
 	MarginKeeper            marginmodulekeeper.Keeper
+
+	AccountedPoolKeeper accountedpoolmodulekeeper.Keeper
 	// this line is used by starport scaffolding # stargate/app/keeperDeclaration
 
 	// mm is the module manager
@@ -418,6 +425,7 @@ func NewElysApp(
 		ammmoduletypes.StoreKey,
 		parametermoduletypes.StoreKey,
 		marginmoduletypes.StoreKey,
+		accountedpoolmoduletypes.StoreKey,
 		// this line is used by starport scaffolding # stargate/app/storeKey
 	)
 	tkeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey)
@@ -677,6 +685,7 @@ func NewElysApp(
 		app.OracleKeeper,
 		&app.CommitmentKeeper,
 		app.AssetprofileKeeper,
+		app.AccountedPoolKeeper,
 	)
 	ammModule := ammmodule.NewAppModule(appCodec, app.AmmKeeper, app.AccountKeeper, app.BankKeeper)
 
@@ -691,6 +700,7 @@ func NewElysApp(
 		app.BankKeeper,
 		app.AmmKeeper,
 		app.OracleKeeper,
+		app.AccountedPoolKeeper,
 		authtypes.FeeCollectorName,
 		DexRevenueCollectorName,
 	)
@@ -809,8 +819,20 @@ func NewElysApp(
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 		app.AmmKeeper,
 		app.BankKeeper,
+		app.AccountedPoolKeeper,
 	)
 	marginModule := marginmodule.NewAppModule(appCodec, app.MarginKeeper, app.AccountKeeper, app.BankKeeper)
+
+	app.AccountedPoolKeeper = *accountedpoolmodulekeeper.NewKeeper(
+		appCodec,
+		keys[accountedpoolmoduletypes.StoreKey],
+		keys[accountedpoolmoduletypes.MemStoreKey],
+		app.GetSubspace(accountedpoolmoduletypes.ModuleName),
+		app.AmmKeeper,
+		app.MarginKeeper,
+		app.BankKeeper,
+	)
+	accountedPoolModule := accountedpoolmodule.NewAppModule(appCodec, app.AccountedPoolKeeper, app.AccountKeeper, app.BankKeeper)
 
 	// this line is used by starport scaffolding # stargate/app/keeperDefinition
 
@@ -855,6 +877,7 @@ func NewElysApp(
 		ammmoduletypes.NewMultiAmmHooks(
 			// insert amm hooks receivers here
 			app.IncentiveKeeper.AmmHooks(),
+			app.AccountedPoolKeeper.AmmHooks(),
 		),
 	)
 
@@ -865,9 +888,17 @@ func NewElysApp(
 			app.CommitmentKeeper.Hooks(),
 			app.IncentiveKeeper.Hooks(),
 			app.BurnerKeeper.Hooks(),
+			app.AccountedPoolKeeper.Hooks(),
 		),
 	)
 	epochsModule := epochsmodule.NewAppModule(appCodec, app.EpochsKeeper)
+
+	app.MarginKeeper.SetHooks(
+		marginmoduletypes.NewMultiMarginHooks(
+			// insert margin hooks receivers here
+			app.AccountedPoolKeeper.MarginHooks(),
+		),
+	)
 
 	/**** Module Options ****/
 
@@ -914,6 +945,7 @@ func NewElysApp(
 		ammModule,
 		parameterModule,
 		marginModule,
+		accountedPoolModule,
 		// this line is used by starport scaffolding # stargate/app/appModule
 	)
 
@@ -956,6 +988,7 @@ func NewElysApp(
 		parametermoduletypes.ModuleName,
 		marginmoduletypes.ModuleName,
 		wasm.ModuleName,
+		accountedpoolmoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/beginBlockers
 	)
 
@@ -993,6 +1026,7 @@ func NewElysApp(
 		parametermoduletypes.ModuleName,
 		marginmoduletypes.ModuleName,
 		wasm.ModuleName,
+		accountedpoolmoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/endBlockers
 	)
 
@@ -1034,6 +1068,7 @@ func NewElysApp(
 		parametermoduletypes.ModuleName,
 		marginmoduletypes.ModuleName,
 		wasm.ModuleName,
+		accountedpoolmoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/initGenesis
 	}
 	app.mm.SetOrderInitGenesis(genesisModuleOrder...)
@@ -1329,6 +1364,7 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(ammmoduletypes.ModuleName)
 	paramsKeeper.Subspace(parametermoduletypes.ModuleName)
 	paramsKeeper.Subspace(marginmoduletypes.ModuleName)
+	paramsKeeper.Subspace(accountedpoolmoduletypes.ModuleName)
 	// this line is used by starport scaffolding # stargate/app/paramSubspace
 
 	return paramsKeeper

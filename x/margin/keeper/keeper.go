@@ -32,6 +32,9 @@ type (
 		authority  string
 		amm        types.AmmKeeper
 		bankKeeper types.BankKeeper
+		apKeeper   types.AccountedPoolKeeper
+
+		hooks types.MarginHooks
 	}
 )
 
@@ -42,6 +45,7 @@ func NewKeeper(
 	authority string,
 	amm types.AmmKeeper,
 	bk types.BankKeeper,
+	apKeeper types.AccountedPoolKeeper,
 ) *Keeper {
 	// ensure that authority is a valid AccAddress
 	if _, err := sdk.AccAddressFromBech32(authority); err != nil {
@@ -55,6 +59,7 @@ func NewKeeper(
 		authority:  authority,
 		amm:        amm,
 		bankKeeper: bk,
+		apKeeper:   apKeeper,
 	}
 }
 
@@ -98,7 +103,7 @@ func (k Keeper) EstimateSwap(ctx sdk.Context, tokenInAmount sdk.Coin, tokenOutDe
 
 	tokensIn := sdk.Coins{tokenInAmount}
 	// Estimate swap
-	swapResult, err := ammPool.CalcOutAmtGivenIn(tokensIn, tokenOutDenom, sdk.ZeroDec())
+	swapResult, err := ammPool.CalcOutAmtGivenIn(ctx, tokensIn, tokenOutDenom, sdk.ZeroDec(), k.apKeeper)
 
 	if err != nil {
 		return sdk.ZeroInt(), err
@@ -772,4 +777,15 @@ func (k Keeper) WhitelistAddress(ctx sdk.Context, address string) {
 func (k Keeper) DewhitelistAddress(ctx sdk.Context, address string) {
 	store := ctx.KVStore(k.storeKey)
 	store.Delete(types.GetWhitelistKey(address))
+}
+
+// Set the margin hooks.
+func (k *Keeper) SetHooks(gh types.MarginHooks) *Keeper {
+	if k.hooks != nil {
+		panic("cannot set margin hooks twice")
+	}
+
+	k.hooks = gh
+
+	return k
 }

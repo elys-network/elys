@@ -83,3 +83,8 @@ type BankKeeper interface {
 	BlockedAddr(addr sdk.AccAddress) bool
 	HasBalance(ctx sdk.Context, addr sdk.AccAddress, amt sdk.Coin) bool
 }
+
+// AccountedPoolKeeper defines the expected interface
+type AccountedPoolKeeper interface {
+	GetAccountedBalance(sdk.Context, uint64, string) sdk.Int
+}

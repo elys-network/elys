@@ -20,7 +20,7 @@ func (k Keeper) CalculateRewardsForLPs(ctx sdk.Context, totalProxyTVL sdk.Dec, c
 		// newEdenAllocated = 80 / ( 80 + 90 + 200 + 0) * 100
 		// Pool share = 80
 		// edenAmountPerEpochLp = 100
-		tvl, err := p.TVL(ctx, k.oracleKeeper)
+		tvl, err := p.TVL(ctx, k.oracleKeeper, k.accountedPoolKeeper)
 		if err != nil {
 			return false
 		}

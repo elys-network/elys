@@ -17,17 +17,18 @@ import (
 
 type (
 	Keeper struct {
-		cdc          codec.BinaryCodec
-		storeKey     storetypes.StoreKey
-		memKey       storetypes.StoreKey
-		paramstore   paramtypes.Subspace
-		cmk          types.CommitmentKeeper
-		stk          types.StakingKeeper
-		tci          *types.TotalCommitmentInfo
-		authKeeper   types.AccountKeeper
-		bankKeeper   types.BankKeeper
-		amm          types.AmmKeeper
-		oracleKeeper types.OracleKeeper
+		cdc                 codec.BinaryCodec
+		storeKey            storetypes.StoreKey
+		memKey              storetypes.StoreKey
+		paramstore          paramtypes.Subspace
+		cmk                 types.CommitmentKeeper
+		stk                 types.StakingKeeper
+		tci                 *types.TotalCommitmentInfo
+		authKeeper          types.AccountKeeper
+		bankKeeper          types.BankKeeper
+		amm                 types.AmmKeeper
+		oracleKeeper        types.OracleKeeper
+		accountedPoolKeeper types.AccountedPoolKeeper
 
 		feeCollectorName    string // name of the FeeCollector ModuleAccount
 		dexRevCollectorName string // name of the Dex Revenue ModuleAccount
@@ -45,6 +46,7 @@ func NewKeeper(
 	bk types.BankKeeper,
 	amm types.AmmKeeper,
 	ok types.OracleKeeper,
+	apk types.AccountedPoolKeeper,
 	feeCollectorName string,
 	dexRevCollectorName string,
 ) *Keeper {
@@ -67,6 +69,7 @@ func NewKeeper(
 		bankKeeper:          bk,
 		amm:                 amm,
 		oracleKeeper:        ok,
+		accountedPoolKeeper: apk,
 	}
 }
 
@@ -229,7 +232,7 @@ func (k Keeper) UpdateTokensCommitment(commitments *ctypes.Commitments, new_unco
 func (k Keeper) CalculateProxyTVL(ctx sdk.Context) sdk.Dec {
 	multipliedShareSum := sdk.ZeroDec()
 	k.amm.IterateLiquidityPools(ctx, func(p ammtypes.Pool) bool {
-		tvl, err := p.TVL(ctx, k.oracleKeeper)
+		tvl, err := p.TVL(ctx, k.oracleKeeper, k.accountedPoolKeeper)
 		if err != nil {
 			return false
 		}
@@ -257,7 +260,7 @@ func (k Keeper) CalculateTVL(ctx sdk.Context) sdk.Dec {
 	TVL := sdk.ZeroDec()
 
 	k.amm.IterateLiquidityPools(ctx, func(p ammtypes.Pool) bool {
-		tvl, err := p.TVL(ctx, k.oracleKeeper)
+		tvl, err := p.TVL(ctx, k.oracleKeeper, k.accountedPoolKeeper)
 		if err != nil {
 			return false
 		}

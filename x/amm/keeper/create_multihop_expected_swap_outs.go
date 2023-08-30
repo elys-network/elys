@@ -26,7 +26,7 @@ func (k Keeper) createMultihopExpectedSwapOuts(
 			return nil, types.ErrInvalidPoolId
 		}
 
-		tokenIn, err := pool.CalcInAmtGivenOut(sdk.NewCoins(tokenOut), route.TokenInDenom, pool.GetPoolParams().SwapFee)
+		tokenIn, err := pool.CalcInAmtGivenOut(ctx, sdk.NewCoins(tokenOut), route.TokenInDenom, pool.GetPoolParams().SwapFee, k.accountedPoolKeeper)
 		if err != nil {
 			return nil, err
 		}

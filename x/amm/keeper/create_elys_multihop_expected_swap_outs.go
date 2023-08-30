@@ -27,7 +27,7 @@ func (k Keeper) createElysMultihopExpectedSwapOuts(
 			actualSwapFee = cumulativeRouteSwapFee.Mul(swapFee.Quo(sumOfSwapFees))
 		}
 
-		tokenIn, err := pool.CalcInAmtGivenOut(sdk.NewCoins(tokenOut), route.TokenInDenom, actualSwapFee)
+		tokenIn, err := pool.CalcInAmtGivenOut(ctx, sdk.NewCoins(tokenOut), route.TokenInDenom, actualSwapFee, k.accountedPoolKeeper)
 		if err != nil {
 			return nil, err
 		}

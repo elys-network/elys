@@ -97,3 +97,8 @@ type AmmKeeper interface {
 type OracleKeeper interface {
 	GetAssetPriceFromDenom(ctx sdk.Context, denom string) sdk.Dec
 }
+
+// AccountedPoolKeeper
+type AccountedPoolKeeper interface {
+	GetAccountedBalance(sdk.Context, uint64, string) sdk.Int
+}

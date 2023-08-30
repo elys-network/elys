@@ -4,8 +4,8 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-func (p *Pool) ExitPool(ctx sdk.Context, oracleKeeper OracleKeeper, exitingShares sdk.Int, tokenOutDenom string) (exitingCoins sdk.Coins, err error) {
-	exitingCoins, err = p.CalcExitPoolCoinsFromShares(ctx, oracleKeeper, exitingShares, tokenOutDenom)
+func (p *Pool) ExitPool(ctx sdk.Context, oracleKeeper OracleKeeper, accountedPoolKeeepr AccountedPoolKeeper, exitingShares sdk.Int, tokenOutDenom string) (exitingCoins sdk.Coins, err error) {
+	exitingCoins, err = p.CalcExitPoolCoinsFromShares(ctx, oracleKeeper, accountedPoolKeeepr, exitingShares, tokenOutDenom)
 	if err != nil {
 		return sdk.Coins{}, err
 	}

@@ -92,15 +92,16 @@ func (p *Pool) SwapOutAmtGivenIn(
 	tokensIn sdk.Coins,
 	tokenOutDenom string,
 	swapFee sdk.Dec,
+	accPoolKeeper AccountedPoolKeeper,
 ) (tokenOut sdk.Coin, weightBalanceBonus sdk.Dec, err error) {
-	balancerOutCoin, err := p.CalcOutAmtGivenIn(tokensIn, tokenOutDenom, swapFee)
+	balancerOutCoin, err := p.CalcOutAmtGivenIn(ctx, tokensIn, tokenOutDenom, swapFee, accPoolKeeper)
 	if err != nil {
 		return sdk.Coin{}, sdk.ZeroDec(), err
 	}
 
 	// early return with balancer swap if normal amm pool
 	if !p.PoolParams.UseOracle {
-		err = p.applySwap(ctx, tokensIn, sdk.Coins{balancerOutCoin}, sdk.ZeroDec(), swapFee)
+		err = p.applySwap(ctx, tokensIn, sdk.Coins{balancerOutCoin}, sdk.ZeroDec(), swapFee, accPoolKeeper)
 		if err != nil {
 			return sdk.Coin{}, sdk.ZeroDec(), err
 		}
@@ -161,7 +162,7 @@ func (p *Pool) SwapOutAmtGivenIn(
 		Mul(sdk.OneDec().Sub(weightBreakingFee)).
 		Mul(sdk.OneDec().Sub(swapFee)).TruncateInt()
 	oracleOutCoin := sdk.NewCoin(tokenOutDenom, tokenAmountOutInt)
-	err = p.applySwap(ctx, tokensIn, sdk.Coins{oracleOutCoin}, sdk.ZeroDec(), swapFee)
+	err = p.applySwap(ctx, tokensIn, sdk.Coins{oracleOutCoin}, sdk.ZeroDec(), swapFee, accPoolKeeper)
 	if err != nil {
 		return sdk.Coin{}, sdk.ZeroDec(), err
 	}

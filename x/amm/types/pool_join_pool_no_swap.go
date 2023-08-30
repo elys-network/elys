@@ -9,7 +9,7 @@ import (
 
 // JoinPoolNoSwap calculates the number of shares needed for an all-asset join given tokensIn with swapFee applied.
 // It updates the liquidity if the pool is joined successfully. If not, returns error.
-func (p *Pool) JoinPoolNoSwap(ctx sdk.Context, oracleKeeper OracleKeeper, tokensIn sdk.Coins) (numShares math.Int, err error) {
+func (p *Pool) JoinPoolNoSwap(ctx sdk.Context, oracleKeeper OracleKeeper, accountedPoolKeeper AccountedPoolKeeper, tokensIn sdk.Coins) (numShares math.Int, err error) {
 	if !p.PoolParams.UseOracle {
 		numShares, tokensJoined, err := p.CalcJoinPoolNoSwapShares(tokensIn)
 		if err != nil {
@@ -22,7 +22,7 @@ func (p *Pool) JoinPoolNoSwap(ctx sdk.Context, oracleKeeper OracleKeeper, tokens
 	}
 
 	initialWeightDistance := p.WeightDistanceFromTarget(ctx, oracleKeeper, p.PoolAssets)
-	tvl, err := p.TVL(ctx, oracleKeeper)
+	tvl, err := p.TVL(ctx, oracleKeeper, accountedPoolKeeper)
 	if err != nil {
 		return sdk.ZeroInt(), err
 	}

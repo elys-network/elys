@@ -9,7 +9,7 @@ import (
 )
 
 // CalcExitPool returns how many tokens should come out, when exiting k LP shares against a "standard" CFMM
-func CalcExitPool(ctx sdk.Context, oracleKeeper OracleKeeper, pool Pool, exitingShares sdk.Int, tokenOutDenom string) (sdk.Coins, error) {
+func CalcExitPool(ctx sdk.Context, oracleKeeper OracleKeeper, pool Pool, accountedPoolKeeper AccountedPoolKeeper, exitingShares sdk.Int, tokenOutDenom string) (sdk.Coins, error) {
 	totalShares := pool.GetTotalShares()
 	if exitingShares.GTE(totalShares.Amount) {
 		return sdk.Coins{}, sdkerrors.Wrapf(ErrLimitMaxAmount, ErrMsgFormatSharesLargerThanMax, exitingShares, totalShares)
@@ -27,7 +27,7 @@ func CalcExitPool(ctx sdk.Context, oracleKeeper OracleKeeper, pool Pool, exiting
 
 	if pool.PoolParams.UseOracle && tokenOutDenom != "" {
 		initialWeightDistance := pool.WeightDistanceFromTarget(ctx, oracleKeeper, pool.PoolAssets)
-		tvl, err := pool.TVL(ctx, oracleKeeper)
+		tvl, err := pool.TVL(ctx, oracleKeeper, accountedPoolKeeper)
 		if err != nil {
 			return sdk.Coins{}, err
 		}

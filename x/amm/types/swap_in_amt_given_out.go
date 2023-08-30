@@ -8,17 +8,17 @@ import (
 
 // SwapInAmtGivenOut is a mutative method for CalcOutAmtGivenIn, which includes the actual swap.
 func (p *Pool) SwapInAmtGivenOut(
-	ctx sdk.Context, oracleKeeper OracleKeeper, tokensOut sdk.Coins, tokenInDenom string, swapFee sdk.Dec) (
+	ctx sdk.Context, oracleKeeper OracleKeeper, tokensOut sdk.Coins, tokenInDenom string, swapFee sdk.Dec, accPoolKeeper AccountedPoolKeeper) (
 	tokenIn sdk.Coin, weightBalanceBonus sdk.Dec, err error,
 ) {
-	balancerInCoin, err := p.CalcInAmtGivenOut(tokensOut, tokenInDenom, swapFee)
+	balancerInCoin, err := p.CalcInAmtGivenOut(ctx, tokensOut, tokenInDenom, swapFee, accPoolKeeper)
 	if err != nil {
 		return sdk.Coin{}, sdk.ZeroDec(), err
 	}
 
 	// early return with balancer swap if normal amm pool
 	if !p.PoolParams.UseOracle {
-		err = p.applySwap(ctx, sdk.Coins{balancerInCoin}, tokensOut, swapFee, sdk.ZeroDec())
+		err = p.applySwap(ctx, sdk.Coins{balancerInCoin}, tokensOut, swapFee, sdk.ZeroDec(), accPoolKeeper)
 		if err != nil {
 			return sdk.Coin{}, sdk.ZeroDec(), err
 		}
@@ -80,7 +80,7 @@ func (p *Pool) SwapInAmtGivenOut(
 		Quo(sdk.OneDec().Sub(swapFee)).
 		TruncateInt()
 	oracleInCoin := sdk.NewCoin(tokenInDenom, tokenAmountInInt)
-	err = p.applySwap(ctx, sdk.Coins{oracleInCoin}, tokensOut, swapFee, sdk.ZeroDec())
+	err = p.applySwap(ctx, sdk.Coins{oracleInCoin}, tokensOut, swapFee, sdk.ZeroDec(), accPoolKeeper)
 	if err != nil {
 		return sdk.Coin{}, sdk.ZeroDec(), err
 	}
