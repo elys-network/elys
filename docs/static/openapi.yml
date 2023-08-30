@@ -39289,24 +39289,25 @@ paths:
                     type: boolean
                   closed:
                     type: boolean
-                  external_liabilities:
-                    type: string
-                  external_custody:
-                    type: string
-                  native_liabilities:
-                    type: string
-                  native_custody:
-                    type: string
                   interest_rate:
                     type: string
-                  native_asset_balance:
-                    type: string
-                  external_asset_balance:
-                    type: string
-                  unsettled_external_liabilities:
-                    type: string
-                  block_interest_native:
-                    type: string
+                  poolAssets:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        liabilities:
+                          type: string
+                        custody:
+                          type: string
+                        asset_balance:
+                          type: string
+                        unsettled_liabilities:
+                          type: string
+                        block_interest:
+                          type: string
+                        asset_denom:
+                          type: string
         default:
           description: An unexpected error response.
           schema:
@@ -39356,24 +39357,25 @@ paths:
                       type: boolean
                     closed:
                       type: boolean
-                    external_liabilities:
-                      type: string
-                    external_custody:
-                      type: string
-                    native_liabilities:
-                      type: string
-                    native_custody:
-                      type: string
                     interest_rate:
                       type: string
-                    native_asset_balance:
-                      type: string
-                    external_asset_balance:
-                      type: string
-                    unsettled_external_liabilities:
-                      type: string
-                    block_interest_native:
-                      type: string
+                    poolAssets:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          liabilities:
+                            type: string
+                          custody:
+                            type: string
+                          asset_balance:
+                            type: string
+                          unsettled_liabilities:
+                            type: string
+                          block_interest:
+                            type: string
+                          asset_denom:
+                            type: string
               pagination:
                 type: object
                 properties:
@@ -78576,23 +78578,39 @@ definitions:
         type: boolean
       closed:
         type: boolean
-      external_liabilities:
-        type: string
-      external_custody:
-        type: string
-      native_liabilities:
-        type: string
-      native_custody:
-        type: string
       interest_rate:
         type: string
-      native_asset_balance:
+      poolAssets:
+        type: array
+        items:
+          type: object
+          properties:
+            liabilities:
+              type: string
+            custody:
+              type: string
+            asset_balance:
+              type: string
+            unsettled_liabilities:
+              type: string
+            block_interest:
+              type: string
+            asset_denom:
+              type: string
+  elys.margin.PoolAsset:
+    type: object
+    properties:
+      liabilities:
         type: string
-      external_asset_balance:
+      custody:
         type: string
-      unsettled_external_liabilities:
+      asset_balance:
         type: string
-      block_interest_native:
+      unsettled_liabilities:
+        type: string
+      block_interest:
+        type: string
+      asset_denom:
         type: string
   elys.margin.Position:
     type: string
@@ -78825,24 +78843,25 @@ definitions:
               type: boolean
             closed:
               type: boolean
-            external_liabilities:
-              type: string
-            external_custody:
-              type: string
-            native_liabilities:
-              type: string
-            native_custody:
-              type: string
             interest_rate:
               type: string
-            native_asset_balance:
-              type: string
-            external_asset_balance:
-              type: string
-            unsettled_external_liabilities:
-              type: string
-            block_interest_native:
-              type: string
+            poolAssets:
+              type: array
+              items:
+                type: object
+                properties:
+                  liabilities:
+                    type: string
+                  custody:
+                    type: string
+                  asset_balance:
+                    type: string
+                  unsettled_liabilities:
+                    type: string
+                  block_interest:
+                    type: string
+                  asset_denom:
+                    type: string
       pagination:
         type: object
         properties:
@@ -78884,24 +78903,25 @@ definitions:
             type: boolean
           closed:
             type: boolean
-          external_liabilities:
-            type: string
-          external_custody:
-            type: string
-          native_liabilities:
-            type: string
-          native_custody:
-            type: string
           interest_rate:
             type: string
-          native_asset_balance:
-            type: string
-          external_asset_balance:
-            type: string
-          unsettled_external_liabilities:
-            type: string
-          block_interest_native:
-            type: string
+          poolAssets:
+            type: array
+            items:
+              type: object
+              properties:
+                liabilities:
+                  type: string
+                custody:
+                  type: string
+                asset_balance:
+                  type: string
+                unsettled_liabilities:
+                  type: string
+                block_interest:
+                  type: string
+                asset_denom:
+                  type: string
   elys.margin.StatusResponse:
     type: object
     properties:

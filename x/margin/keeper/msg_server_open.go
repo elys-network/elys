@@ -19,13 +19,27 @@ func (k msgServer) Open(goCtx context.Context, msg *types.MsgOpen) (*types.MsgOp
 		return nil, err
 	}
 
-	if err := k.ValidateCollateralAsset(msg.CollateralAsset); err != nil {
+	// Get token asset other than USDC
+	nonNativeAsset := k.GetNonNativeAsset(msg.CollateralAsset, msg.BorrowAsset)
+
+	// Get the first valid pool
+	poolId, err := k.GetFirstValidPool(ctx, nonNativeAsset)
+	if err != nil {
 		return nil, err
 	}
 
-	poolId, err := k.GetFirstValidPool(ctx, msg.BorrowAsset)
+	ammPool, err := k.OpenLongChecker.GetAmmPool(ctx, poolId, nonNativeAsset)
 	if err != nil {
 		return nil, err
+	}
+
+	pool, found := k.PoolChecker.GetPool(ctx, poolId)
+	// If margin pool doesn't exist yet, we should initiate it according to its corresponding ammPool
+	if !found {
+		pool = types.NewPool(poolId)
+		pool.InitiatePool(ctx, &ammPool)
+
+		k.OpenLongChecker.SetPool(ctx, pool)
 	}
 
 	if err := k.CheckPoolHealth(ctx, poolId); err != nil {

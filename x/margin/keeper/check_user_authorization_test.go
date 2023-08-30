@@ -16,7 +16,7 @@ func TestCheckUserAuthorization_WhitelistingEnabledUserWhitelisted(t *testing.T)
 	mockChecker := new(mocks.AuthorizationChecker)
 
 	// Create an instance of Keeper with the mock checker
-	keeper := keeper.Keeper{
+	k := keeper.Keeper{
 		AuthorizationChecker: mockChecker,
 	}
 
@@ -27,7 +27,7 @@ func TestCheckUserAuthorization_WhitelistingEnabledUserWhitelisted(t *testing.T)
 	mockChecker.On("IsWhitelistingEnabled", ctx).Return(true)
 	mockChecker.On("CheckIfWhitelisted", ctx, "whitelistedUser").Return(true)
 
-	err := keeper.CheckUserAuthorization(ctx, msg)
+	err := k.CheckUserAuthorization(ctx, msg)
 
 	// Expect no error
 	assert.Nil(t, err)
@@ -39,7 +39,7 @@ func TestCheckUserAuthorization_WhitelistingEnabledUserNotWhitelisted(t *testing
 	mockChecker := new(mocks.AuthorizationChecker)
 
 	// Create an instance of Keeper with the mock checker
-	keeper := keeper.Keeper{
+	k := keeper.Keeper{
 		AuthorizationChecker: mockChecker,
 	}
 
@@ -50,7 +50,7 @@ func TestCheckUserAuthorization_WhitelistingEnabledUserNotWhitelisted(t *testing
 	mockChecker.On("IsWhitelistingEnabled", ctx).Return(true)
 	mockChecker.On("CheckIfWhitelisted", ctx, "nonWhitelistedUser").Return(false)
 
-	err := keeper.CheckUserAuthorization(ctx, msg)
+	err := k.CheckUserAuthorization(ctx, msg)
 
 	// Expect an unauthorized error
 	assert.True(t, errors.Is(err, types.ErrUnauthorised))
@@ -62,7 +62,7 @@ func TestCheckUserAuthorization_WhitelistingDisabled(t *testing.T) {
 	mockChecker := new(mocks.AuthorizationChecker)
 
 	// Create an instance of Keeper with the mock checker
-	keeper := keeper.Keeper{
+	k := keeper.Keeper{
 		AuthorizationChecker: mockChecker,
 	}
 
@@ -72,7 +72,7 @@ func TestCheckUserAuthorization_WhitelistingDisabled(t *testing.T) {
 	// Mock behavior
 	mockChecker.On("IsWhitelistingEnabled", ctx).Return(false)
 
-	err := keeper.CheckUserAuthorization(ctx, msg)
+	err := k.CheckUserAuthorization(ctx, msg)
 
 	// Expect no error
 	assert.Nil(t, err)

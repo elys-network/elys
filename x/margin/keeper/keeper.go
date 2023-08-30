@@ -18,7 +18,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/query"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	"github.com/elys-network/elys/x/margin/types"
-	paramtypes "github.com/elys-network/elys/x/parameter/types"
 )
 
 type (
@@ -26,6 +25,7 @@ type (
 		types.AuthorizationChecker
 		types.PositionChecker
 		types.PoolChecker
+		types.OpenLongChecker
 		cdc          codec.BinaryCodec
 		storeKey     storetypes.StoreKey
 		memKey       storetypes.StoreKey
@@ -149,8 +149,15 @@ func (k Keeper) Borrow(ctx sdk.Context, collateralAsset string, collateralAmount
 		return err
 	}
 
-	pool.ExternalAssetBalance = pool.ExternalAssetBalance.Add(collateralAmount)
-	pool.ExternalLiabilities = pool.ExternalLiabilities.Add(mtp.Liabilities)
+	err = pool.UpdateBalance(ctx, collateralAsset, collateralAmount, true)
+	if err != nil {
+		return err
+	}
+
+	err = pool.UpdateLiabilities(ctx, collateralAsset, mtp.Liabilities, true)
+	if err != nil {
+		return err
+	}
 
 	k.SetPool(ctx, *pool)
 
@@ -170,32 +177,23 @@ func (k Keeper) CalculatePoolHealth(ctx sdk.Context, pool *types.Pool) sdk.Dec {
 		return sdk.ZeroDec()
 	}
 
-	// Other than USDC is Exteral in AMM
-	AMMExternalAssetBalance, err := k.GetPoolBalanceOfExternal(ctx, ammPool)
-	if err != nil {
-		return sdk.ZeroDec()
+	H := sdk.NewDec(1)
+	for _, asset := range pool.PoolAssets {
+		ammBalance, err := k.GetAmmPoolBalance(ctx, ammPool, asset.AssetDenom)
+		if err != nil {
+			return sdk.ZeroDec()
+		}
+
+		balance := sdk.NewDecFromInt(asset.AssetBalance.Add(ammBalance))
+		liabilities := sdk.NewDecFromInt(asset.Liabilities)
+
+		if balance.Add(liabilities).IsZero() {
+			return sdk.ZeroDec()
+		}
+
+		mul := balance.Quo(balance.Add(liabilities))
+		H = H.Mul(mul)
 	}
-
-	// Native token is USDC in AMM
-	AMMNativeAssetBalance, err := k.GetPoolBalanceOfNative(ctx, ammPool)
-	if err != nil {
-		return sdk.ZeroDec()
-	}
-
-	// can be both X and Y
-	ExternalAssetBalance := sdk.NewDecFromBigInt(pool.ExternalAssetBalance.BigInt()).Add(AMMExternalAssetBalance)
-	ExternalLiabilities := sdk.NewDecFromBigInt(pool.ExternalLiabilities.BigInt())
-	NativeAssetBalance := sdk.NewDecFromBigInt(pool.NativeAssetBalance.BigInt()).Add(AMMNativeAssetBalance)
-	NativeLiabilities := sdk.NewDecFromBigInt(pool.NativeLiabilities.BigInt())
-
-	if ExternalAssetBalance.Add(ExternalLiabilities).IsZero() || NativeAssetBalance.Add(NativeLiabilities).IsZero() {
-		return sdk.ZeroDec()
-	}
-
-	mul1 := ExternalAssetBalance.Quo(ExternalAssetBalance.Add(ExternalLiabilities))
-	mul2 := NativeAssetBalance.Quo(NativeAssetBalance.Add(NativeLiabilities))
-
-	H := mul1.Mul(mul2)
 
 	return H
 }
@@ -223,8 +221,15 @@ func (k Keeper) UpdateMTPHealth(ctx sdk.Context, mtp types.MTP, ammPool ammtypes
 }
 
 func (k Keeper) TakeInCustody(ctx sdk.Context, mtp types.MTP, pool *types.Pool) error {
-	pool.ExternalAssetBalance = pool.ExternalAssetBalance.Sub(mtp.CustodyAmount)
-	pool.ExternalCustody = pool.ExternalCustody.Add(mtp.CustodyAmount)
+	err := pool.UpdateBalance(ctx, mtp.CustodyAsset, mtp.CustodyAmount, false)
+	if err != nil {
+		return nil
+	}
+
+	err = pool.UpdateCustody(ctx, mtp.CustodyAsset, mtp.CustodyAmount, true)
+	if err != nil {
+		return nil
+	}
 
 	k.SetPool(ctx, *pool)
 
@@ -232,8 +237,15 @@ func (k Keeper) TakeInCustody(ctx sdk.Context, mtp types.MTP, pool *types.Pool) 
 }
 
 func (k Keeper) TakeOutCustody(ctx sdk.Context, mtp types.MTP, pool *types.Pool) error {
-	pool.ExternalCustody = pool.ExternalCustody.Sub(mtp.CustodyAmount)
-	pool.ExternalAssetBalance = pool.ExternalAssetBalance.Add(mtp.CustodyAmount)
+	err := pool.UpdateBalance(ctx, mtp.CustodyAsset, mtp.CustodyAmount, true)
+	if err != nil {
+		return err
+	}
+
+	err = pool.UpdateCustody(ctx, mtp.CustodyAsset, mtp.CustodyAmount, false)
+	if err != nil {
+		return err
+	}
 
 	k.SetPool(ctx, *pool)
 
@@ -306,8 +318,15 @@ func (k Keeper) IncrementalInterestPayment(ctx sdk.Context, interestPayment sdk.
 		k.EmitFundPayment(ctx, mtp, takeAmount, mtp.CustodyAsset, types.EventIncrementalPayFund)
 	}
 
-	pool.ExternalCustody = pool.ExternalCustody.Sub(interestPaymentCustody)
-	pool.ExternalAssetBalance = pool.ExternalAssetBalance.Add(actualInterestPaymentCustody)
+	err = pool.UpdateCustody(ctx, mtp.CustodyAsset, interestPaymentCustody, false)
+	if err != nil {
+		return sdk.ZeroInt(), err
+	}
+
+	err = pool.UpdateBalance(ctx, mtp.CustodyAsset, actualInterestPaymentCustody, true)
+	if err != nil {
+		return sdk.ZeroInt(), err
+	}
 
 	err = k.SetMTP(ctx, mtp)
 	if err != nil {
@@ -325,18 +344,6 @@ func (k Keeper) InterestRateComputation(ctx sdk.Context, pool types.Pool, ammPoo
 		return sdk.ZeroDec(), sdkerrors.Wrap(types.ErrBalanceNotAvailable, "Balance not available")
 	}
 
-	// Other than USDC is Exteral in AMM
-	AMMExternalAssetBalance, err := k.GetPoolBalanceOfExternal(ctx, ammPool)
-	if err != nil {
-		return sdk.ZeroDec(), err
-	}
-
-	// Native token is USDC in AMM
-	AMMNativeAssetBalance, err := k.GetPoolBalanceOfNative(ctx, ammPool)
-	if err != nil {
-		return sdk.ZeroDec(), err
-	}
-
 	interestRateMax := k.GetInterestRateMax(ctx)
 	interestRateMin := k.GetInterestRateMin(ctx)
 	interestRateIncrease := k.GetInterestRateIncrease(ctx)
@@ -345,15 +352,23 @@ func (k Keeper) InterestRateComputation(ctx sdk.Context, pool types.Pool, ammPoo
 
 	prevInterestRate := pool.InterestRate
 
-	ExternalAssetBalance := sdk.NewDecFromBigInt(pool.ExternalAssetBalance.BigInt()).Add(AMMExternalAssetBalance)
-	ExternalLiabilities := sdk.NewDecFromBigInt(pool.ExternalLiabilities.BigInt())
-	NativeAssetBalance := sdk.NewDecFromBigInt(pool.NativeAssetBalance.BigInt()).Add(AMMNativeAssetBalance)
-	NativeLiabilities := sdk.NewDecFromBigInt(pool.NativeLiabilities.BigInt())
+	targetInterestRate := healthGainFactor
+	for _, asset := range pool.PoolAssets {
+		ammBalance, err := k.GetAmmPoolBalance(ctx, ammPool, asset.AssetDenom)
+		if err != nil {
+			return sdk.ZeroDec(), err
+		}
 
-	mul1 := ExternalAssetBalance.Add(ExternalLiabilities).Quo(ExternalAssetBalance)
-	mul2 := NativeAssetBalance.Add(NativeLiabilities).Quo(NativeAssetBalance)
+		balance := sdk.NewDecFromInt(asset.AssetBalance.Add(ammBalance))
+		liabilities := sdk.NewDecFromInt(asset.Liabilities)
 
-	targetInterestRate := healthGainFactor.Mul(mul1).Mul(mul2)
+		if balance.Add(liabilities).IsZero() {
+			return sdk.ZeroDec(), err
+		}
+
+		mul := balance.Add(liabilities).Quo(balance)
+		targetInterestRate = targetInterestRate.Mul(mul)
+	}
 
 	interestRateChange := targetInterestRate.Sub(prevInterestRate)
 	interestRate := prevInterestRate
@@ -469,9 +484,25 @@ func (k Keeper) Repay(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, ammPool
 		}
 	}
 
-	pool.ExternalAssetBalance = pool.ExternalAssetBalance.Sub(returnAmount)
-	pool.ExternalLiabilities = pool.ExternalLiabilities.Sub(mtp.Liabilities)
-	pool.UnsettledExternalLiabilities = pool.UnsettledExternalLiabilities.Add(debtI).Add(debtP)
+	err = pool.UpdateBalance(ctx, mtp.CollateralAsset, returnAmount, false)
+	if err != nil {
+		return err
+	}
+
+	err = pool.UpdateLiabilities(ctx, mtp.CollateralAsset, mtp.Liabilities, false)
+	if err != nil {
+		return err
+	}
+
+	err = pool.UpdateUnsettledLiabilities(ctx, mtp.CollateralAsset, debtI, true)
+	if err != nil {
+		return err
+	}
+
+	err = pool.UpdateUnsettledLiabilities(ctx, mtp.CollateralAsset, debtP, true)
+	if err != nil {
+		return err
+	}
 
 	err = k.DestroyMTP(ctx, mtp.Address, mtp.Id)
 	if err != nil {
@@ -716,29 +747,6 @@ func CalcMTPInterestLiabilities(mtp *types.MTP, interestRate sdk.Dec, epochPosit
 	}
 
 	return interestNewInt
-}
-
-// Get balance of collateral
-// Assume USDC as collateral in Elys
-func (k Keeper) GetPoolBalanceOfNative(ctx sdk.Context, ammPool ammtypes.Pool) (sdk.Dec, error) {
-	for _, asset := range ammPool.PoolAssets {
-		if asset.Token.Denom == paramtypes.USDC {
-			return sdk.NewDecFromInt(asset.Token.Amount), nil
-		}
-	}
-
-	return sdk.ZeroDec(), sdkerrors.Wrap(types.ErrBalanceNotAvailable, "Balance not available")
-}
-
-// Get balance of custody
-func (k Keeper) GetPoolBalanceOfExternal(ctx sdk.Context, ammPool ammtypes.Pool) (sdk.Dec, error) {
-	for _, asset := range ammPool.PoolAssets {
-		if asset.Token.Denom != paramtypes.USDC {
-			return sdk.NewDecFromInt(asset.Token.Amount), nil
-		}
-	}
-
-	return sdk.ZeroDec(), sdkerrors.Wrap(types.ErrBalanceNotAvailable, "Balance not available")
 }
 
 func (k Keeper) GetWhitelistedAddress(ctx sdk.Context, pagination *query.PageRequest) ([]string, *query.PageResponse, error) {

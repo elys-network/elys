@@ -16,7 +16,7 @@ func TestCheckMaxOpenPositions_OpenPositionsBelowMax(t *testing.T) {
 	mockChecker := new(mocks.PositionChecker)
 
 	// Create an instance of Keeper with the mock checker
-	keeper := keeper.Keeper{
+	k := keeper.Keeper{
 		PositionChecker: mockChecker,
 	}
 
@@ -26,7 +26,7 @@ func TestCheckMaxOpenPositions_OpenPositionsBelowMax(t *testing.T) {
 	mockChecker.On("GetOpenMTPCount", ctx).Return(uint64(5))
 	mockChecker.On("GetMaxOpenPositions", ctx).Return(10)
 
-	err := keeper.CheckMaxOpenPositions(ctx)
+	err := k.CheckMaxOpenPositions(ctx)
 
 	// Expect no error
 	assert.Nil(t, err)
@@ -38,7 +38,7 @@ func TestCheckMaxOpenPositions_OpenPositionsEqualToMax(t *testing.T) {
 	mockChecker := new(mocks.PositionChecker)
 
 	// Create an instance of Keeper with the mock checker
-	keeper := keeper.Keeper{
+	k := keeper.Keeper{
 		PositionChecker: mockChecker,
 	}
 
@@ -48,7 +48,7 @@ func TestCheckMaxOpenPositions_OpenPositionsEqualToMax(t *testing.T) {
 	mockChecker.On("GetOpenMTPCount", ctx).Return(uint64(10))
 	mockChecker.On("GetMaxOpenPositions", ctx).Return(10)
 
-	err := keeper.CheckMaxOpenPositions(ctx)
+	err := k.CheckMaxOpenPositions(ctx)
 
 	// Expect an error about max open positions
 	assert.True(t, errors.Is(err, types.ErrMaxOpenPositions))
@@ -60,7 +60,7 @@ func TestCheckMaxOpenPositions_OpenPositionsExceedMax(t *testing.T) {
 	mockChecker := new(mocks.PositionChecker)
 
 	// Create an instance of Keeper with the mock checker
-	keeper := keeper.Keeper{
+	k := keeper.Keeper{
 		PositionChecker: mockChecker,
 	}
 
@@ -70,7 +70,7 @@ func TestCheckMaxOpenPositions_OpenPositionsExceedMax(t *testing.T) {
 	mockChecker.On("GetOpenMTPCount", ctx).Return(uint64(11))
 	mockChecker.On("GetMaxOpenPositions", ctx).Return(10)
 
-	err := keeper.CheckMaxOpenPositions(ctx)
+	err := k.CheckMaxOpenPositions(ctx)
 
 	// Expect an error about max open positions
 	assert.True(t, errors.Is(err, types.ErrMaxOpenPositions))
