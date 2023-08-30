@@ -39,6 +39,10 @@ func (_m *AmmKeeper) GetAllPool(_a0 types.Context) []ammtypes.Pool {
 	return r0
 }
 
+func (_m *AmmKeeper) GetPoolSnapshotOrSet(ctx types.Context, pool ammtypes.Pool) ammtypes.Pool {
+	return ammtypes.Pool{}
+}
+
 // AmmKeeper_GetAllPool_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetAllPool'
 type AmmKeeper_GetAllPool_Call struct {
 	*mock.Call
