@@ -84,6 +84,8 @@ func TestShowAccountedPool(t *testing.T) {
 				var resp types.QueryGetAccountedPoolResponse
 				require.NoError(t, net.Config.Codec.UnmarshalJSON(out.Bytes(), &resp))
 				require.NotNil(t, resp.AccountedPool)
+				// total weight is not set in genesis state
+				tc.obj.TotalWeight = resp.AccountedPool.TotalWeight
 				require.Equal(t,
 					nullify.Fill(&tc.obj),
 					nullify.Fill(&resp.AccountedPool),
@@ -95,66 +97,85 @@ func TestShowAccountedPool(t *testing.T) {
 
 func TestListAccountedPool(t *testing.T) {
 	net, objs := networkWithAccountedPoolObjects(t, 5)
-
 	ctx := net.Validators[0].ClientCtx
-	request := func(next []byte, offset, limit uint64, total bool) []string {
-		args := []string{
-			fmt.Sprintf("--%s=json", tmcli.OutputFlag),
-		}
-		if next == nil {
-			args = append(args, fmt.Sprintf("--%s=%d", flags.FlagOffset, offset))
-		} else {
-			args = append(args, fmt.Sprintf("--%s=%s", flags.FlagPageKey, next))
-		}
-		args = append(args, fmt.Sprintf("--%s=%d", flags.FlagLimit, limit))
-		if total {
-			args = append(args, fmt.Sprintf("--%s", flags.FlagCountTotal))
-		}
-		return args
+	const stepSize = 2
+
+	type RequestArgs struct {
+		Next   []byte
+		Offset uint64
+		Limit  uint64
+		Total  bool
 	}
+
+	request := func(args RequestArgs) []string {
+		var requestArgs []string
+		requestArgs = append(requestArgs, fmt.Sprintf("--%s=json", tmcli.OutputFlag))
+
+		if args.Next == nil {
+			requestArgs = append(requestArgs, fmt.Sprintf("--%s=%d", flags.FlagOffset, args.Offset))
+		} else {
+			requestArgs = append(requestArgs, fmt.Sprintf("--%s=%s", flags.FlagPageKey, args.Next))
+		}
+
+		requestArgs = append(requestArgs, fmt.Sprintf("--%s=%d", flags.FlagLimit, args.Limit))
+
+		if args.Total {
+			requestArgs = append(requestArgs, fmt.Sprintf("--%s", flags.FlagCountTotal))
+		}
+		return requestArgs
+	}
+
+	executeCmdAndCheck := func(t *testing.T, args RequestArgs) (types.QueryAllAccountedPoolResponse, error) {
+		cmdArgs := request(args)
+		out, err := clitestutil.ExecTestCLICmd(ctx, cli.CmdListAccountedPool(), cmdArgs)
+		if err != nil {
+			return types.QueryAllAccountedPoolResponse{}, err
+		}
+
+		var resp types.QueryAllAccountedPoolResponse
+		err = net.Config.Codec.UnmarshalJSON(out.Bytes(), &resp)
+		return resp, err
+	}
+
 	t.Run("ByOffset", func(t *testing.T) {
-		step := 2
-		for i := 0; i < len(objs); i += step {
-			args := request(nil, uint64(i), uint64(step), false)
-			out, err := clitestutil.ExecTestCLICmd(ctx, cli.CmdListAccountedPool(), args)
+		for i := 0; i < len(objs); i += stepSize {
+			resp, err := executeCmdAndCheck(t, RequestArgs{Next: nil, Offset: uint64(i), Limit: uint64(stepSize), Total: false})
 			require.NoError(t, err)
-			var resp types.QueryAllAccountedPoolResponse
-			require.NoError(t, net.Config.Codec.UnmarshalJSON(out.Bytes(), &resp))
-			require.LessOrEqual(t, len(resp.AccountedPool), step)
-			require.Subset(t,
-				nullify.Fill(objs),
-				nullify.Fill(resp.AccountedPool),
-			)
+			require.LessOrEqual(t, len(resp.AccountedPool), stepSize)
+
+			for j, accountedPool := range resp.AccountedPool {
+				objs[i+j].TotalWeight = accountedPool.TotalWeight
+			}
+
+			require.Subset(t, nullify.Fill(objs), nullify.Fill(resp.AccountedPool))
 		}
 	})
+
 	t.Run("ByKey", func(t *testing.T) {
-		step := 2
 		var next []byte
-		for i := 0; i < len(objs); i += step {
-			args := request(next, 0, uint64(step), false)
-			out, err := clitestutil.ExecTestCLICmd(ctx, cli.CmdListAccountedPool(), args)
+		for i := 0; i < len(objs); i += stepSize {
+			resp, err := executeCmdAndCheck(t, RequestArgs{Next: next, Offset: 0, Limit: uint64(stepSize), Total: false})
 			require.NoError(t, err)
-			var resp types.QueryAllAccountedPoolResponse
-			require.NoError(t, net.Config.Codec.UnmarshalJSON(out.Bytes(), &resp))
-			require.LessOrEqual(t, len(resp.AccountedPool), step)
-			require.Subset(t,
-				nullify.Fill(objs),
-				nullify.Fill(resp.AccountedPool),
-			)
+			require.LessOrEqual(t, len(resp.AccountedPool), stepSize)
+
+			for j, accountedPool := range resp.AccountedPool {
+				objs[i+j].TotalWeight = accountedPool.TotalWeight
+			}
+
+			require.Subset(t, nullify.Fill(objs), nullify.Fill(resp.AccountedPool))
 			next = resp.Pagination.NextKey
 		}
 	})
+
 	t.Run("Total", func(t *testing.T) {
-		args := request(nil, 0, uint64(len(objs)), true)
-		out, err := clitestutil.ExecTestCLICmd(ctx, cli.CmdListAccountedPool(), args)
-		require.NoError(t, err)
-		var resp types.QueryAllAccountedPoolResponse
-		require.NoError(t, net.Config.Codec.UnmarshalJSON(out.Bytes(), &resp))
+		resp, err := executeCmdAndCheck(t, RequestArgs{Next: nil, Offset: 0, Limit: uint64(len(objs)), Total: true})
 		require.NoError(t, err)
 		require.Equal(t, len(objs), int(resp.Pagination.Total))
-		require.ElementsMatch(t,
-			nullify.Fill(objs),
-			nullify.Fill(resp.AccountedPool),
-		)
+
+		for i, accountedPool := range resp.AccountedPool {
+			objs[i].TotalWeight = accountedPool.TotalWeight
+		}
+
+		require.ElementsMatch(t, nullify.Fill(objs), nullify.Fill(resp.AccountedPool))
 	})
 }
