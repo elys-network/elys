@@ -128,31 +128,32 @@ help: Makefile
 
 .DEFAULT_GOAL := install
 
+## build-docker: Build docker image
 build-docker:
 	@bash $(DOCKERNET_HOME)/build.sh -${build} ${BUILDDIR}
 
+## start-docker: Start docker network
 start-docker: build-docker
 	@bash $(DOCKERNET_HOME)/start_network.sh
 
+## clean-docker: Clean docker network
 clean-docker:
 	@docker-compose -f $(DOCKERNET_COMPOSE_FILE) stop
 	@docker-compose -f $(DOCKERNET_COMPOSE_FILE) down
 	rm -rf $(DOCKERNET_HOME)/state
 	docker image prune -a
 
+## stop-docker: Stop docker network
 stop-docker:
 	@bash $(DOCKERNET_HOME)/pkill.sh
 	docker-compose -f $(DOCKERNET_COMPOSE_FILE) down --remove-orphans
 
 .PHONY: build-docker start-docker clean-docker stop-docker
 
-###############################################################################
-###                                Release                                  ###
-###############################################################################
-
 GORELEASER_IMAGE := ghcr.io/goreleaser/goreleaser-cross:v$(GO_VERSION)
 COSMWASM_VERSION := $(shell go list -m github.com/CosmWasm/wasmvm | sed 's/.* //')
 
+## release: Build binaries for all platforms and generate checksums
 ifdef GITHUB_TOKEN
 release:
 	docker run \
@@ -170,6 +171,7 @@ release:
 	@echo "Error: GITHUB_TOKEN is not defined. Please define it before running 'make release'."
 endif
 
+## release-dry-run: Dry-run build process for all platforms and generate checksums
 release-dry-run:
 	docker run \
 		--rm \
@@ -182,6 +184,7 @@ release-dry-run:
 		--clean \
 		--skip-publish
 
+## release-snapshot: Build snapshots for all platforms and generate checksums
 release-snapshot:
 	docker run \
 		--rm \
