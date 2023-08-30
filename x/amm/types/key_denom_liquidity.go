@@ -10,9 +10,7 @@ const (
 )
 
 // DenomLiquidityKey returns the store key to retrieve a DenomLiquidity from the index fields
-func DenomLiquidityKey(
-	denom string,
-) []byte {
+func DenomLiquidityKey(denom string) []byte {
 	var key []byte
 
 	denomBytes := []byte(denom)

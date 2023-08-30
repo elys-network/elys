@@ -15,10 +15,16 @@ func (k msgServer) SwapExactAmountOut(goCtx context.Context, msg *types.MsgSwapE
 		return nil, err
 	}
 
-	tokenInAmount, err := k.RouteExactAmountOut(ctx, sender, msg.Routes, msg.TokenInMaxAmount, msg.TokenOut)
+	// Try executing the tx on cached context environment, to filter invalid transactions out
+	cacheCtx, _ := ctx.CacheContext()
+	tokenInAmount, err := k.RouteExactAmountOut(cacheCtx, sender, msg.Routes, msg.TokenInMaxAmount, msg.TokenOut)
 	if err != nil {
 		return nil, err
 	}
+
+	lastSwapIndex := k.GetLastSwapRequestIndex(ctx)
+	k.SetSwapExactAmountOutRequests(ctx, msg, lastSwapIndex+1)
+	k.SetLastSwapRequestIndex(ctx, lastSwapIndex+1)
 
 	// Swap event is handled elsewhere
 	ctx.EventManager().EmitEvents(sdk.Events{

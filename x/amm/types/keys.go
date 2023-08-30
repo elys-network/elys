@@ -10,8 +10,8 @@ const (
 	// RouterKey defines the module's message routing key
 	RouterKey = ModuleName
 
-	// MemStoreKey defines the in-memory store key
-	MemStoreKey = "mem_amm"
+	// TStoreKey defines the transient store key
+	TStoreKey = "transient_amm"
 )
 
 func KeyPrefix(p string) []byte {

@@ -26,12 +26,13 @@ type (
 		types.PositionChecker
 		types.PoolChecker
 		types.OpenLongChecker
-		cdc        codec.BinaryCodec
-		storeKey   storetypes.StoreKey
-		memKey     storetypes.StoreKey
-		authority  string
-		amm        types.AmmKeeper
-		bankKeeper types.BankKeeper
+		cdc          codec.BinaryCodec
+		storeKey     storetypes.StoreKey
+		memKey       storetypes.StoreKey
+		authority    string
+		amm          types.AmmKeeper
+		bankKeeper   types.BankKeeper
+		oracleKeeper ammtypes.OracleKeeper
 	}
 )
 
@@ -42,6 +43,7 @@ func NewKeeper(
 	authority string,
 	amm types.AmmKeeper,
 	bk types.BankKeeper,
+	oracleKeeper ammtypes.OracleKeeper,
 ) *Keeper {
 	// ensure that authority is a valid AccAddress
 	if _, err := sdk.AccAddressFromBech32(authority); err != nil {
@@ -49,12 +51,13 @@ func NewKeeper(
 	}
 
 	return &Keeper{
-		cdc:        cdc,
-		storeKey:   storeKey,
-		memKey:     memKey,
-		authority:  authority,
-		amm:        amm,
-		bankKeeper: bk,
+		cdc:          cdc,
+		storeKey:     storeKey,
+		memKey:       memKey,
+		authority:    authority,
+		amm:          amm,
+		bankKeeper:   bk,
+		oracleKeeper: oracleKeeper,
 	}
 }
 
@@ -98,7 +101,8 @@ func (k Keeper) EstimateSwap(ctx sdk.Context, tokenInAmount sdk.Coin, tokenOutDe
 
 	tokensIn := sdk.Coins{tokenInAmount}
 	// Estimate swap
-	swapResult, err := ammPool.CalcOutAmtGivenIn(tokensIn, tokenOutDenom, sdk.ZeroDec())
+	snapshot := k.amm.GetPoolSnapshotOrSet(ctx, ammPool)
+	swapResult, err := ammPool.CalcOutAmtGivenIn(ctx, k.oracleKeeper, &snapshot, tokensIn, tokenOutDenom, sdk.ZeroDec())
 
 	if err != nil {
 		return sdk.ZeroInt(), err

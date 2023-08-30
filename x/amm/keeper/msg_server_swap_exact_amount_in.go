@@ -3,6 +3,7 @@ package keeper
 import (
 	"context"
 
+	// "cosmossdk.io/math"
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/amm/types"
@@ -16,10 +17,16 @@ func (k msgServer) SwapExactAmountIn(goCtx context.Context, msg *types.MsgSwapEx
 		return nil, err
 	}
 
-	tokenOutAmount, err := k.RouteExactAmountIn(ctx, sender, msg.Routes, msg.TokenIn, math.Int(msg.TokenOutMinAmount))
+	// Try executing the tx on cached context environment, to filter invalid transactions out
+	cacheCtx, _ := ctx.CacheContext()
+	tokenOutAmount, err := k.RouteExactAmountIn(cacheCtx, sender, msg.Routes, msg.TokenIn, math.Int(msg.TokenOutMinAmount))
 	if err != nil {
 		return nil, err
 	}
+
+	lastSwapIndex := k.GetLastSwapRequestIndex(ctx)
+	k.SetSwapExactAmountInRequests(ctx, msg, lastSwapIndex+1)
+	k.SetLastSwapRequestIndex(ctx, lastSwapIndex+1)
 
 	// Swap event is handled elsewhere
 	ctx.EventManager().EmitEvents(sdk.Events{

@@ -8,6 +8,9 @@ import (
 // CalcInAmtGivenOut calculates token to be provided, fee added,
 // given the swapped out amount, using solveConstantFunctionInvariant.
 func (p Pool) CalcInAmtGivenOut(
+	ctx sdk.Context,
+	oracle OracleKeeper,
+	snapshot *Pool,
 	tokensOut sdk.Coins, tokenInDenom string, swapFee sdk.Dec) (
 	tokenIn sdk.Coin, err error,
 ) {
@@ -16,15 +19,27 @@ func (p Pool) CalcInAmtGivenOut(
 		return sdk.Coin{}, err
 	}
 
+	outWeight := sdk.NewDecFromInt(poolAssetOut.Weight)
+	inWeight := sdk.NewDecFromInt(poolAssetIn.Weight)
+	if p.PoolParams.UseOracle {
+		_, poolAssetOut, poolAssetIn, err := snapshot.parsePoolAssets(tokensOut, tokenInDenom)
+		oracleWeights, err := OraclePoolNormalizedWeights(ctx, oracle, []PoolAsset{poolAssetIn, poolAssetOut})
+		if err != nil {
+			return sdk.Coin{}, err
+		}
+		inWeight = oracleWeights[0].Weight
+		outWeight = oracleWeights[1].Weight
+	}
+
 	// delta balanceOut is positive(tokens inside the pool decreases)
 	poolTokenOutBalance := sdk.NewDecFromInt(poolAssetOut.Token.Amount)
 	poolPostSwapOutBalance := poolTokenOutBalance.Sub(sdk.NewDecFromInt(tokenOut.Amount))
 	// (x_0)(y_0) = (x_0 + in)(y_0 - out)
 	tokenAmountIn := solveConstantFunctionInvariant(
 		poolTokenOutBalance, poolPostSwapOutBalance,
-		sdk.NewDecFromInt(poolAssetOut.Weight),
+		outWeight,
 		sdk.NewDecFromInt(poolAssetIn.Token.Amount),
-		sdk.NewDecFromInt(poolAssetIn.Weight),
+		inWeight,
 	).Neg()
 
 	// We deduct a swap fee on the input asset. The swap happens by following the invariant curve on the input * (1 - swap fee)

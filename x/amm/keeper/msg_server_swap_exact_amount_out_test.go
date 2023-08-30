@@ -187,6 +187,7 @@ func (suite *KeeperTestSuite) TestMsgServerSwapExactAmountOut() {
 			} else {
 				suite.Require().NoError(err)
 				suite.Require().Equal(resp.TokenInAmount.String(), tc.tokenIn.Amount.String())
+				suite.app.AmmKeeper.EndBlocker(suite.ctx)
 
 				// check balance change on sender
 				balances := suite.app.BankKeeper.GetAllBalances(suite.ctx, sender)

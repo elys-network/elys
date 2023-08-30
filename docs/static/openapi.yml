@@ -37472,7 +37472,7 @@ paths:
                           type: boolean
                         weightBreakingFeeMultiplier:
                           type: string
-                        slippageReduction:
+                        externalLiquidityRatio:
                           type: string
                         lpFeePortion:
                           type: string
@@ -37661,7 +37661,7 @@ paths:
                         type: boolean
                       weightBreakingFeeMultiplier:
                         type: string
-                      slippageReduction:
+                      externalLiquidityRatio:
                         type: string
                       lpFeePortion:
                         type: string
@@ -77208,7 +77208,7 @@ definitions:
             type: boolean
           weightBreakingFeeMultiplier:
             type: string
-          slippageReduction:
+          externalLiquidityRatio:
             type: string
           lpFeePortion:
             type: string
@@ -77287,7 +77287,7 @@ definitions:
         type: boolean
       weightBreakingFeeMultiplier:
         type: string
-      slippageReduction:
+      externalLiquidityRatio:
         type: string
       lpFeePortion:
         type: string
@@ -77362,7 +77362,7 @@ definitions:
                   type: boolean
                 weightBreakingFeeMultiplier:
                   type: string
-                slippageReduction:
+                externalLiquidityRatio:
                   type: string
                 lpFeePortion:
                   type: string
@@ -77474,7 +77474,7 @@ definitions:
                 type: boolean
               weightBreakingFeeMultiplier:
                 type: string
-              slippageReduction:
+              externalLiquidityRatio:
                 type: string
               lpFeePortion:
                 type: string
