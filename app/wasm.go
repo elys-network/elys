@@ -63,7 +63,6 @@ func CustomQuerier(qp *QueryPlugin) func(ctx sdk.Context, request json.RawMessag
 				Price: []oracletypes.Price{},
 				Pagination: &query.PageResponse{
 					NextKey: nil,
-					Total:   0,
 				},
 			}
 
