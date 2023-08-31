@@ -357,5 +357,5 @@ genesis:
         sq_modifier: "1.0"
         safety_factor: "1.0"
         incremental_interest_payment_enabled: true
-        whitelisting_enabled: true
+        whitelisting_enabled: false
   chain_id: elystestnet-1

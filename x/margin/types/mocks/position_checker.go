@@ -21,14 +21,14 @@ func (_m *PositionChecker) EXPECT() *PositionChecker_Expecter {
 }
 
 // GetMaxOpenPositions provides a mock function with given fields: ctx
-func (_m *PositionChecker) GetMaxOpenPositions(ctx types.Context) int {
+func (_m *PositionChecker) GetMaxOpenPositions(ctx types.Context) int64 {
 	ret := _m.Called(ctx)
 
-	var r0 int
-	if rf, ok := ret.Get(0).(func(types.Context) int); ok {
+	var r0 int64
+	if rf, ok := ret.Get(0).(func(types.Context) int64); ok {
 		r0 = rf(ctx)
 	} else {
-		r0 = ret.Get(0).(int)
+		r0 = ret.Get(0).(int64)
 	}
 
 	return r0
@@ -52,12 +52,12 @@ func (_c *PositionChecker_GetMaxOpenPositions_Call) Run(run func(ctx types.Conte
 	return _c
 }
 
-func (_c *PositionChecker_GetMaxOpenPositions_Call) Return(_a0 int) *PositionChecker_GetMaxOpenPositions_Call {
+func (_c *PositionChecker_GetMaxOpenPositions_Call) Return(_a0 int64) *PositionChecker_GetMaxOpenPositions_Call {
 	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *PositionChecker_GetMaxOpenPositions_Call) RunAndReturn(run func(types.Context) int) *PositionChecker_GetMaxOpenPositions_Call {
+func (_c *PositionChecker_GetMaxOpenPositions_Call) RunAndReturn(run func(types.Context) int64) *PositionChecker_GetMaxOpenPositions_Call {
 	_c.Call.Return(run)
 	return _c
 }

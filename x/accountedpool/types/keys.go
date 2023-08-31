@@ -2,7 +2,7 @@ package types
 
 const (
 	// ModuleName defines the module name
-	ModuleName = "tvl"
+	ModuleName = "poolaccounted"
 
 	// StoreKey defines the primary module store key
 	StoreKey = ModuleName
@@ -11,10 +11,10 @@ const (
 	RouterKey = ModuleName
 
 	// MemStoreKey defines the in-memory store key
-	MemStoreKey = "mem_tvl"
+	MemStoreKey = "mem_poolaccounted"
 
-	// ParamsKey is the prefix for parameters of margin module
-	ParamsKey = "tvl_params"
+	// ParamsKey is the prefix for parameters of poolaccounted module
+	ParamsKey = "poolaccounted_params"
 )
 
 func KeyPrefix(p string) []byte {

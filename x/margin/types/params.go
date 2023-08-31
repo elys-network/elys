@@ -56,7 +56,7 @@ func NewParams() Params {
 		SqModifier:                               sdk.NewDec(1),
 		SafetyFactor:                             sdk.NewDec(1),
 		IncrementalInterestPaymentEnabled:        true,
-		WhitelistingEnabled:                      true,
+		WhitelistingEnabled:                      false,
 	}
 }
 

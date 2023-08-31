@@ -14,8 +14,6 @@ import (
 
 type (
 	Keeper struct {
-		types.InvariantChecker
-
 		cdc        codec.BinaryCodec
 		storeKey   storetypes.StoreKey
 		memKey     storetypes.StoreKey

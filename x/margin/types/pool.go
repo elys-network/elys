@@ -9,10 +9,10 @@ import (
 func NewPool(poolId uint64) Pool {
 	return Pool{
 		AmmPoolId:    poolId,
-		Health:       sdk.ZeroDec(),
+		Health:       sdk.NewDec(100),
 		Enabled:      true,
 		Closed:       false,
-		InterestRate: sdk.ZeroDec(),
+		InterestRate: sdk.NewDecFromIntWithPrec(sdk.NewInt(1), 1),
 		PoolAssets:   []PoolAsset{},
 	}
 }

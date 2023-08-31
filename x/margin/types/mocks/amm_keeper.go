@@ -39,10 +39,6 @@ func (_m *AmmKeeper) GetAllPool(_a0 types.Context) []ammtypes.Pool {
 	return r0
 }
 
-func (_m *AmmKeeper) GetPoolSnapshotOrSet(ctx types.Context, pool ammtypes.Pool) ammtypes.Pool {
-	return ammtypes.Pool{}
-}
-
 // AmmKeeper_GetAllPool_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetAllPool'
 type AmmKeeper_GetAllPool_Call struct {
 	*mock.Call
@@ -165,6 +161,49 @@ func (_c *AmmKeeper_GetPool_Call) Return(_a0 ammtypes.Pool, _a1 bool) *AmmKeeper
 }
 
 func (_c *AmmKeeper_GetPool_Call) RunAndReturn(run func(types.Context, uint64) (ammtypes.Pool, bool)) *AmmKeeper_GetPool_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// GetPoolSnapshotOrSet provides a mock function with given fields: ctx, pool
+func (_m *AmmKeeper) GetPoolSnapshotOrSet(ctx types.Context, pool ammtypes.Pool) ammtypes.Pool {
+	ret := _m.Called(ctx, pool)
+
+	var r0 ammtypes.Pool
+	if rf, ok := ret.Get(0).(func(types.Context, ammtypes.Pool) ammtypes.Pool); ok {
+		r0 = rf(ctx, pool)
+	} else {
+		r0 = ret.Get(0).(ammtypes.Pool)
+	}
+
+	return r0
+}
+
+// AmmKeeper_GetPoolSnapshotOrSet_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetPoolSnapshotOrSet'
+type AmmKeeper_GetPoolSnapshotOrSet_Call struct {
+	*mock.Call
+}
+
+// GetPoolSnapshotOrSet is a helper method to define mock.On call
+//   - ctx types.Context
+//   - pool ammtypes.Pool
+func (_e *AmmKeeper_Expecter) GetPoolSnapshotOrSet(ctx interface{}, pool interface{}) *AmmKeeper_GetPoolSnapshotOrSet_Call {
+	return &AmmKeeper_GetPoolSnapshotOrSet_Call{Call: _e.mock.On("GetPoolSnapshotOrSet", ctx, pool)}
+}
+
+func (_c *AmmKeeper_GetPoolSnapshotOrSet_Call) Run(run func(ctx types.Context, pool ammtypes.Pool)) *AmmKeeper_GetPoolSnapshotOrSet_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(types.Context), args[1].(ammtypes.Pool))
+	})
+	return _c
+}
+
+func (_c *AmmKeeper_GetPoolSnapshotOrSet_Call) Return(val ammtypes.Pool) *AmmKeeper_GetPoolSnapshotOrSet_Call {
+	_c.Call.Return(val)
+	return _c
+}
+
+func (_c *AmmKeeper_GetPoolSnapshotOrSet_Call) RunAndReturn(run func(types.Context, ammtypes.Pool) ammtypes.Pool) *AmmKeeper_GetPoolSnapshotOrSet_Call {
 	_c.Call.Return(run)
 	return _c
 }

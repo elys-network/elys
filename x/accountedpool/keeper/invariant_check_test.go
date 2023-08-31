@@ -12,7 +12,6 @@ import (
 	"github.com/stretchr/testify/require"
 
 	margintypes "github.com/elys-network/elys/x/margin/types"
-	"github.com/elys-network/elys/x/margin/types/mocks"
 )
 
 func TestCheckBalanceInvariant_InvalidBalance(t *testing.T) {
@@ -101,23 +100,9 @@ func TestCheckBalanceInvariant_InvalidBalance(t *testing.T) {
 		margintypes.Position_LONG,
 		sdk.NewDec(5),
 	)
-	// Setup the mock checker
-	mockAuthorizationChecker := new(mocks.AuthorizationChecker)
-	mk.AuthorizationChecker = mockAuthorizationChecker
-
-	// Mock behavior
-	mockAuthorizationChecker.On("IsWhitelistingEnabled", ctx).Return(true)
-	mockAuthorizationChecker.On("CheckIfWhitelisted", ctx, pool.GetAddress()).Return(true)
-
-	// Setup the mock checker
-	mockPositionChecker := new(mocks.PositionChecker)
-
-	// Mock behavior
-	mockPositionChecker.On("GetOpenMTPCount", ctx).Return(uint64(0))
-	mockPositionChecker.On("GetMaxOpenPositions", ctx).Return(10)
-	mk.PositionChecker = mockPositionChecker
 
 	_, err = mk.Open(ctx, msg2)
+	panic(err)
 	require.NoError(t, err)
 
 	mtps := mk.GetAllMTPs(ctx)

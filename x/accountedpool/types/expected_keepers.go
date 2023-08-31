@@ -53,8 +53,3 @@ type MarginKeeper interface {
 	IsPoolClosed(ctx sdk.Context, poolId uint64) bool
 	GetAllMTPs(ctx sdk.Context) []margintypes.MTP
 }
-
-//go:generate mockery --srcpkg . --name InvariantChecker --structname InvariantChecker --filename invariant_check.go --with-expecter
-type InvariantChecker interface {
-	InvariantCheck(ctx sdk.Context) error
-}

@@ -26,6 +26,7 @@ func (k Keeper) GetAccountedPool(
 	b := store.Get(types.AccountedPoolKey(
 		PoolId,
 	))
+
 	if b == nil {
 		return val, false
 	}

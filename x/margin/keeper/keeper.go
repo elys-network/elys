@@ -54,7 +54,7 @@ func NewKeeper(
 		panic("authority is not a valid acc address")
 	}
 
-	return &Keeper{
+	keeper := &Keeper{
 		cdc:          cdc,
 		storeKey:     storeKey,
 		memKey:       memKey,
@@ -64,6 +64,13 @@ func NewKeeper(
 		oracleKeeper: oracleKeeper,
 		apKeeper:     apKeeper,
 	}
+
+	keeper.AuthorizationChecker = keeper
+	keeper.PositionChecker = keeper
+	keeper.PoolChecker = keeper
+	keeper.OpenLongChecker = keeper
+
+	return keeper
 }
 
 func (k Keeper) Logger(ctx sdk.Context) log.Logger {
