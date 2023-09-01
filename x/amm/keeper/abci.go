@@ -1,7 +1,6 @@
 package keeper
 
 import (
-	"fmt"
 	"strings"
 	"time"
 
@@ -22,9 +21,8 @@ func (k Keeper) GetStackedSlippage(ctx sdk.Context, poolId uint64) sdk.Dec {
 }
 
 func (k Keeper) ApplySwapRequest(ctx sdk.Context, msg sdk.Msg) error {
-	switch msg.(type) {
+	switch msg := msg.(type) {
 	case *types.MsgSwapExactAmountIn:
-		msg := msg.(*types.MsgSwapExactAmountIn)
 		sender, err := sdk.AccAddressFromBech32(msg.Sender)
 		if err != nil {
 			return err
@@ -35,7 +33,6 @@ func (k Keeper) ApplySwapRequest(ctx sdk.Context, msg sdk.Msg) error {
 		}
 		return nil
 	case *types.MsgSwapExactAmountOut:
-		msg := msg.(*types.MsgSwapExactAmountOut)
 		sender, err := sdk.AccAddressFromBech32(msg.Sender)
 		if err != nil {
 			return err
@@ -46,17 +43,15 @@ func (k Keeper) ApplySwapRequest(ctx sdk.Context, msg sdk.Msg) error {
 		}
 		return nil
 	default:
-		return fmt.Errorf("unexpected swap message")
+		return types.ErrInvalidSwapMsgType
 	}
 }
 
 func (k Keeper) DeleteSwapRequest(ctx sdk.Context, msg sdk.Msg, index uint64) {
-	switch msg.(type) {
+	switch msg := msg.(type) {
 	case *types.MsgSwapExactAmountIn:
-		msg := msg.(*types.MsgSwapExactAmountIn)
 		k.DeleteSwapExactAmountInRequest(ctx, msg, index)
 	case *types.MsgSwapExactAmountOut:
-		msg := msg.(*types.MsgSwapExactAmountOut)
 		k.DeleteSwapExactAmountOutRequest(ctx, msg, index)
 	}
 }
@@ -72,12 +67,10 @@ func (k Keeper) SelectOneSwapRequest(ctx sdk.Context, sprefix []byte) (sdk.Msg, 
 
 func (k Keeper) SelectReverseSwapRequest(ctx sdk.Context, msg sdk.Msg) (sdk.Msg, uint64) {
 	sprefix := []byte{}
-	switch msg.(type) {
+	switch msg := msg.(type) {
 	case *types.MsgSwapExactAmountIn:
-		msg := msg.(*types.MsgSwapExactAmountIn)
 		sprefix = types.TKeyPrefixSwapExactAmountInPrefix(msg)
 	case *types.MsgSwapExactAmountOut:
-		msg := msg.(*types.MsgSwapExactAmountOut)
 		sprefix = types.TKeyPrefixSwapExactAmountOutPrefix(msg)
 	}
 
@@ -90,12 +83,10 @@ func (k Keeper) SelectReverseSwapRequest(ctx sdk.Context, msg sdk.Msg) (sdk.Msg,
 }
 
 func (k Keeper) FirstPoolId(msg sdk.Msg) uint64 {
-	switch msg.(type) {
+	switch msg := msg.(type) {
 	case *types.MsgSwapExactAmountIn:
-		msg := msg.(*types.MsgSwapExactAmountIn)
 		return types.FirstPoolIdFromSwapExactAmountIn(msg)
 	case *types.MsgSwapExactAmountOut:
-		msg := msg.(*types.MsgSwapExactAmountOut)
 		return types.FirstPoolIdFromSwapExactAmountOut(msg)
 	}
 	return 0
@@ -176,51 +167,4 @@ func (k Keeper) EndBlocker(ctx sdk.Context) {
 	defer telemetry.ModuleMeasureSince(types.ModuleName, time.Now(), telemetry.MetricKeyBeginBlocker)
 
 	k.ExecuteSwapRequests(ctx)
-	// swapInRequests := k.GetAllSwapExactAmountInRequests(ctx)
-	// for _, msg := range swapInRequests {
-	// 	sender, err := sdk.AccAddressFromBech32(msg.Sender)
-	// 	if err != nil {
-	// 		continue
-	// 	}
-
-	// 	cacheCtx, write := ctx.CacheContext()
-	// 	_, err = k.RouteExactAmountIn(cacheCtx, sender, msg.Routes, msg.TokenIn, math.Int(msg.TokenOutMinAmount))
-	// 	if err != nil {
-	// 		continue
-	// 	}
-	// 	write()
-
-	// 	// Swap event is handled elsewhere
-	// 	ctx.EventManager().EmitEvents(sdk.Events{
-	// 		sdk.NewEvent(
-	// 			sdk.EventTypeMessage,
-	// 			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
-	// 			sdk.NewAttribute(sdk.AttributeKeySender, msg.Sender),
-	// 		),
-	// 	})
-
-	// }
-	// swapOutRequests := k.GetAllSwapExactAmountOutRequests(ctx)
-	// for _, msg := range swapOutRequests {
-	// 	sender, err := sdk.AccAddressFromBech32(msg.Sender)
-	// 	if err != nil {
-	// 		continue
-	// 	}
-
-	// 	cacheCtx, write := ctx.CacheContext()
-	// 	_, err = k.RouteExactAmountOut(cacheCtx, sender, msg.Routes, msg.TokenInMaxAmount, msg.TokenOut)
-	// 	if err != nil {
-	// 		continue
-	// 	}
-	// 	write()
-
-	// 	// Swap event is handled elsewhere
-	// 	ctx.EventManager().EmitEvents(sdk.Events{
-	// 		sdk.NewEvent(
-	// 			sdk.EventTypeMessage,
-	// 			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
-	// 			sdk.NewAttribute(sdk.AttributeKeySender, msg.Sender),
-	// 		),
-	// 	})
-	// }
 }
