@@ -102,7 +102,6 @@ func TestCheckBalanceInvariant_InvalidBalance(t *testing.T) {
 	)
 
 	_, err = mk.Open(ctx, msg2)
-	panic(err)
 	require.NoError(t, err)
 
 	mtps := mk.GetAllMTPs(ctx)

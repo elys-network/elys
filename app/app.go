@@ -422,10 +422,10 @@ func NewElysApp(
 		tokenomicsmoduletypes.StoreKey,
 		incentivemoduletypes.StoreKey,
 		burnermoduletypes.StoreKey,
+		accountedpoolmoduletypes.StoreKey,
 		ammmoduletypes.StoreKey,
 		parametermoduletypes.StoreKey,
 		marginmoduletypes.StoreKey,
-		accountedpoolmoduletypes.StoreKey,
 		// this line is used by starport scaffolding # stargate/app/storeKey
 	)
 	tkeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey, ammmoduletypes.TStoreKey)
@@ -815,6 +815,17 @@ func NewElysApp(
 	}
 	govKeeper.SetLegacyRouter(govRouter)
 
+	app.AccountedPoolKeeper = *accountedpoolmodulekeeper.NewKeeper(
+		appCodec,
+		keys[accountedpoolmoduletypes.StoreKey],
+		keys[accountedpoolmoduletypes.MemStoreKey],
+		app.GetSubspace(accountedpoolmoduletypes.ModuleName),
+		app.AmmKeeper,
+		app.MarginKeeper,
+		app.BankKeeper,
+	)
+	accountedPoolModule := accountedpoolmodule.NewAppModule(appCodec, app.AccountedPoolKeeper, app.AccountKeeper, app.BankKeeper)
+
 	app.MarginKeeper = *marginmodulekeeper.NewKeeper(
 		appCodec,
 		keys[marginmoduletypes.StoreKey],
@@ -826,17 +837,6 @@ func NewElysApp(
 		app.AccountedPoolKeeper,
 	)
 	marginModule := marginmodule.NewAppModule(appCodec, app.MarginKeeper, app.AccountKeeper, app.BankKeeper)
-
-	app.AccountedPoolKeeper = *accountedpoolmodulekeeper.NewKeeper(
-		appCodec,
-		keys[accountedpoolmoduletypes.StoreKey],
-		keys[accountedpoolmoduletypes.MemStoreKey],
-		app.GetSubspace(accountedpoolmoduletypes.ModuleName),
-		app.AmmKeeper,
-		app.MarginKeeper,
-		app.BankKeeper,
-	)
-	accountedPoolModule := accountedpoolmodule.NewAppModule(appCodec, app.AccountedPoolKeeper, app.AccountKeeper, app.BankKeeper)
 
 	// this line is used by starport scaffolding # stargate/app/keeperDefinition
 
