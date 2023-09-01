@@ -9,6 +9,7 @@ import (
 	wasmvmtypes "github.com/CosmWasm/wasmvm/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	query "github.com/cosmos/cosmos-sdk/types/query"
+	oraclekeeper "github.com/elys-network/elys/x/oracle/keeper"
 	oracletypes "github.com/elys-network/elys/x/oracle/types"
 )
 
@@ -26,15 +27,22 @@ func AllCapabilities() []string {
 }
 
 type QueryPlugin struct {
+	oracleKeeper *oraclekeeper.Keeper
 }
 
 // NewQueryPlugin returns a reference to a new QueryPlugin.
-func NewQueryPlugin() *QueryPlugin {
-	return &QueryPlugin{}
+func NewQueryPlugin(
+	oracle *oraclekeeper.Keeper,
+) *QueryPlugin {
+	return &QueryPlugin{
+		oracleKeeper: oracle,
+	}
 }
 
-func RegisterCustomPlugins() []wasmkeeper.Option {
-	wasmQueryPlugin := NewQueryPlugin()
+func RegisterCustomPlugins(
+	oracle *oraclekeeper.Keeper,
+) []wasmkeeper.Option {
+	wasmQueryPlugin := NewQueryPlugin(oracle)
 
 	queryPluginOpt := wasmkeeper.WithQueryPlugins(&wasmkeeper.QueryPlugins{
 		Custom: CustomQuerier(wasmQueryPlugin),
@@ -57,21 +65,30 @@ func CustomQuerier(qp *QueryPlugin) func(ctx sdk.Context, request json.RawMessag
 		case contractQuery.PriceAll != nil:
 			pagination := contractQuery.PriceAll.Pagination
 
-			_ = pagination
+			// Calling the PriceAll function and handling its response
+			priceResponse, err := qp.oracleKeeper.PriceAll(ctx, &oracletypes.QueryAllPriceRequest{Pagination: pagination})
+			if err != nil {
+				return nil, errorsmod.Wrap(err, "failed to get all prices")
+			}
+
+			// copy array priceResponse.Price
+			price := make([]oracletypes.Price, len(priceResponse.Price))
+			copy(price, priceResponse.Price)
 
 			res := AllPriceResponse{
-				Price: []oracletypes.Price{},
+				Price: price,
 				Pagination: &query.PageResponse{
-					NextKey: nil,
+					NextKey: priceResponse.Pagination.NextKey,
 				},
 			}
 
-			bz, err := json.Marshal(res)
+			// Serializing the response to a JSON byte array
+			responseBytes, err := json.Marshal(res)
 			if err != nil {
-				return nil, errorsmod.Wrap(err, "elys price all query response")
+				return nil, errorsmod.Wrap(err, "failed to serialize price response")
 			}
 
-			return bz, nil
+			return responseBytes, nil
 
 		default:
 			return nil, wasmvmtypes.UnsupportedRequest{Kind: "unknown elys query variant"}
@@ -84,12 +101,10 @@ type ElysQuery struct {
 }
 
 type PriceAll struct {
-	// oracletypes.QueryAllPriceRequest
 	Pagination *query.PageRequest `protobuf:"bytes,1,opt,name=pagination,proto3" json:"pagination,omitempty"`
 }
 
 type AllPriceResponse struct {
-	// oracletypes.QueryAllPriceResponse
 	Price      []oracletypes.Price `protobuf:"bytes,1,rep,name=price,proto3" json:"price"`
 	Pagination *query.PageResponse `protobuf:"bytes,2,opt,name=pagination,proto3" json:"pagination,omitempty"`
 }
