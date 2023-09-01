@@ -8,8 +8,8 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
-func CalcExitValueWithoutSlippage(ctx sdk.Context, oracleKeeper OracleKeeper, pool Pool, exitingShares sdk.Int, tokenOutDenom string) (sdk.Dec, error) {
-	tvl, err := pool.TVL(ctx, oracleKeeper)
+func CalcExitValueWithoutSlippage(ctx sdk.Context, oracleKeeper OracleKeeper, accPoolKeeper AccountedPoolKeeper, pool Pool, exitingShares sdk.Int, tokenOutDenom string) (sdk.Dec, error) {
+	tvl, err := pool.TVL(ctx, oracleKeeper, accPoolKeeper)
 	if err != nil {
 		return sdk.ZeroDec(), err
 	}
@@ -57,6 +57,7 @@ func CalcExitValueWithoutSlippage(ctx sdk.Context, oracleKeeper OracleKeeper, po
 			&pool,
 			sdk.Coins{sdk.NewCoin(exitedCoin.Denom, resizedAmount)},
 			tokenOutDenom,
+			accPoolKeeper,
 		)
 		if err != nil {
 			return sdk.ZeroDec(), err
@@ -88,7 +89,7 @@ func CalcExitPool(ctx sdk.Context, oracleKeeper OracleKeeper, pool Pool, account
 	if pool.PoolParams.UseOracle && tokenOutDenom != "" {
 		initialWeightDistance := pool.WeightDistanceFromTarget(ctx, oracleKeeper, pool.PoolAssets)
 		tokenPrice := oracleKeeper.GetAssetPriceFromDenom(ctx, tokenOutDenom)
-		exitValueWithoutSlippage, err := CalcExitValueWithoutSlippage(ctx, oracleKeeper, pool, exitingShares, tokenOutDenom)
+		exitValueWithoutSlippage, err := CalcExitValueWithoutSlippage(ctx, oracleKeeper, accountedPoolKeeper, pool, exitingShares, tokenOutDenom)
 		if err != nil {
 			return sdk.Coins{}, err
 		}

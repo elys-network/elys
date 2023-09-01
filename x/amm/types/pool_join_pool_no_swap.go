@@ -17,7 +17,7 @@ type InternalSwapRequest struct {
 	OutToken string
 }
 
-func (p *Pool) CalcJoinValueWithoutSlippage(ctx sdk.Context, oracleKeeper OracleKeeper, tokensIn sdk.Coins) (math.LegacyDec, error) {
+func (p *Pool) CalcJoinValueWithoutSlippage(ctx sdk.Context, oracleKeeper OracleKeeper, accountedPoolKeeper AccountedPoolKeeper, tokensIn sdk.Coins) (math.LegacyDec, error) {
 	joinValue := sdk.ZeroDec()
 	for _, asset := range tokensIn {
 		tokenPrice := oracleKeeper.GetAssetPriceFromDenom(ctx, asset.Denom)
@@ -99,6 +99,7 @@ func (p *Pool) CalcJoinValueWithoutSlippage(ctx sdk.Context, oracleKeeper Oracle
 			p,
 			sdk.Coins{sdk.NewCoin(req.InAmount.Denom, resizedAmount)},
 			req.OutToken,
+			accountedPoolKeeper,
 		)
 		if err != nil {
 			return sdk.ZeroDec(), err
@@ -124,7 +125,7 @@ func (p *Pool) JoinPoolNoSwap(ctx sdk.Context, oracleKeeper OracleKeeper, accoun
 		return numShares, nil
 	}
 
-	joinValueWithoutSlippage, err := p.CalcJoinValueWithoutSlippage(ctx, oracleKeeper, tokensIn)
+	joinValueWithoutSlippage, err := p.CalcJoinValueWithoutSlippage(ctx, oracleKeeper, accountedPoolKeeper, tokensIn)
 	if err != nil {
 		return sdk.ZeroInt(), err
 	}
