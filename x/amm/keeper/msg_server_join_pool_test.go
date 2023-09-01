@@ -78,7 +78,7 @@ func (suite *KeeperTestSuite) TestMsgServerJoinPool() {
 				ThresholdWeightDifference:   sdk.NewDecWithPrec(2, 1), // 20%
 				FeeDenom:                    "uusdc",
 			},
-			shareOutAmount:   sdk.NewInt(833333333333333333), // weight breaking fee
+			shareOutAmount:   sdk.NewInt(694444166666666666), // weight breaking fee
 			expSenderBalance: sdk.Coins{},
 			expTokenIn:       sdk.Coins{sdk.NewInt64Coin("uusdt", 1000000)},
 			expPass:          true,
@@ -99,9 +99,30 @@ func (suite *KeeperTestSuite) TestMsgServerJoinPool() {
 				ThresholdWeightDifference:   sdk.NewDecWithPrec(2, 1), // 20%
 				FeeDenom:                    "uusdc",
 			},
-			shareOutAmount:   sdk.NewInt(1250000000000000000), // weight breaking fee
+			shareOutAmount:   sdk.NewInt(805987500000000000), // weight recovery direction
 			expSenderBalance: sdk.Coins{},
 			expTokenIn:       sdk.Coins{sdk.NewInt64Coin("uusdt", 1000000)},
+			expPass:          true,
+		},
+		{
+			desc:              "oracle pool join - zero slippage add liquidity",
+			senderInitBalance: sdk.Coins{sdk.NewInt64Coin("uusdc", 1500000), sdk.NewInt64Coin("uusdt", 500000)},
+			poolInitBalance:   sdk.Coins{sdk.NewInt64Coin("uusdc", 1500000), sdk.NewInt64Coin("uusdt", 500000)},
+			poolParams: types.PoolParams{
+				SwapFee:                     sdk.ZeroDec(),
+				ExitFee:                     sdk.ZeroDec(),
+				UseOracle:                   true,
+				WeightBreakingFeeMultiplier: sdk.NewDecWithPrec(1, 0), // 1.00
+				ExternalLiquidityRatio:      sdk.NewDec(1),
+				LpFeePortion:                sdk.ZeroDec(),
+				StakingFeePortion:           sdk.ZeroDec(),
+				WeightRecoveryFeePortion:    sdk.ZeroDec(),
+				ThresholdWeightDifference:   sdk.NewDecWithPrec(2, 1), // 20%
+				FeeDenom:                    "uusdc",
+			},
+			shareOutAmount:   sdk.NewInt(2000000000000000000),
+			expSenderBalance: sdk.Coins{},
+			expTokenIn:       sdk.Coins{sdk.NewInt64Coin("uusdc", 1500000), sdk.NewInt64Coin("uusdt", 500000)},
 			expPass:          true,
 		},
 	} {
