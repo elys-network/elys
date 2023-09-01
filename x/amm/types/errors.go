@@ -22,7 +22,8 @@ var (
 
 	ErrTooManyTokensOut = sdkerrors.Register(ModuleName, 31, "tx is trying to get more tokens out of the pool than exist")
 
-	ErrInvalidPoolId = sdkerrors.Register(ModuleName, 91, "invalid pool id")
+	ErrInvalidPoolId      = sdkerrors.Register(ModuleName, 91, "invalid pool id")
+	ErrInvalidSwapMsgType = sdkerrors.Register(ModuleName, 92, "unexpected swap message type")
 )
 
 const (
