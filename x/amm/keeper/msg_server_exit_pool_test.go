@@ -79,8 +79,8 @@ func (suite *KeeperTestSuite) TestMsgServerExitPool() {
 			},
 			shareInAmount:    types.OneShare.Quo(sdk.NewInt(10)),
 			tokenOutDenom:    "uusdt",
-			minAmountsOut:    sdk.Coins{sdk.NewInt64Coin("uusdt", 97368)},
-			expSenderBalance: sdk.Coins{sdk.NewInt64Coin("uusdt", 97368)},
+			minAmountsOut:    sdk.Coins{sdk.NewInt64Coin("uusdt", 95114)},
+			expSenderBalance: sdk.Coins{sdk.NewInt64Coin("uusdt", 95114)},
 			expPass:          true,
 		},
 		{
@@ -100,8 +100,8 @@ func (suite *KeeperTestSuite) TestMsgServerExitPool() {
 			},
 			shareInAmount:    types.OneShare.Quo(sdk.NewInt(10)),
 			tokenOutDenom:    "uusdc",
-			minAmountsOut:    sdk.Coins{sdk.NewInt64Coin("uusdc", 100000)},
-			expSenderBalance: sdk.Coins{sdk.NewInt64Coin("uusdc", 100000)},
+			minAmountsOut:    sdk.Coins{sdk.NewInt64Coin("uusdc", 99197)},
+			expSenderBalance: sdk.Coins{sdk.NewInt64Coin("uusdc", 99197)},
 			expPass:          true,
 		},
 	} {

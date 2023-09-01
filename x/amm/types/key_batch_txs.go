@@ -1,14 +1,11 @@
 package types
 
 import (
-	"encoding/binary"
 	fmt "fmt"
 	"strings"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
-
-var _ binary.ByteOrder
 
 const (
 	TLastSwapRequestIndex  = "last-swap-request-index"
@@ -17,7 +14,7 @@ const (
 )
 
 func TKeyPrefixSwapExactAmountInPrefix(m *MsgSwapExactAmountIn) []byte {
-	prefix := []byte(m.TokenIn.Denom + "/")
+	prefix := []byte(fmt.Sprintf("%s/", m.TokenIn.Denom))
 	routeKeys := []string{}
 	for _, route := range m.Routes[:1] {
 		routeKeys = append(routeKeys, fmt.Sprintf("%d/%s", route.PoolId, route.TokenOutDenom))
@@ -27,8 +24,8 @@ func TKeyPrefixSwapExactAmountInPrefix(m *MsgSwapExactAmountIn) []byte {
 }
 
 func FirstPoolIdFromSwapExactAmountIn(m *MsgSwapExactAmountIn) uint64 {
-	for _, route := range m.Routes {
-		return route.PoolId
+	if len(m.Routes) > 0 {
+		return m.Routes[0].PoolId
 	}
 	return 0
 }
@@ -39,12 +36,11 @@ func TKeyPrefixSwapExactAmountIn(m *MsgSwapExactAmountIn, index uint64) []byte {
 }
 
 func TKeyPrefixSwapExactAmountOutPrefix(m *MsgSwapExactAmountOut) []byte {
-	prefix := []byte("/" + m.TokenOut.Denom)
+	prefix := []byte(fmt.Sprintf("/%s", m.TokenOut.Denom))
 	routeKeys := []string{}
-	for i := len(m.Routes) - 1; i >= 0; i-- {
-		route := m.Routes[i]
+	if len(m.Routes) > 0 {
+		route := m.Routes[len(m.Routes)-1]
 		routeKeys = append(routeKeys, fmt.Sprintf("%s/%d", route.TokenInDenom, route.PoolId))
-		break
 	}
 	prefix = append([]byte(strings.Join(routeKeys, "/")), prefix...)
 	return prefix

@@ -276,16 +276,14 @@ func (suite *KeeperTestSuite) TestExecuteSwapRequests() {
 
 			msgServer := keeper.NewMsgServerImpl(suite.app.AmmKeeper)
 			for _, msg := range tc.swapMsgs {
-				switch msg.(type) {
+				switch msg := msg.(type) {
 				case *types.MsgSwapExactAmountIn:
-					msg := msg.(*types.MsgSwapExactAmountIn)
 					_, err := msgServer.SwapExactAmountIn(
 						sdk.WrapSDKContext(suite.ctx),
 						msg,
 					)
 					suite.Require().NoError(err)
 				case *types.MsgSwapExactAmountOut:
-					msg := msg.(*types.MsgSwapExactAmountOut)
 					_, err := msgServer.SwapExactAmountOut(
 						sdk.WrapSDKContext(suite.ctx),
 						msg,
