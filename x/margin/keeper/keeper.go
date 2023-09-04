@@ -155,8 +155,14 @@ func (k Keeper) Borrow(ctx sdk.Context, collateralAsset string, collateralAmount
 	}
 	mtp.MtpHealth = h
 
+	ammPoolAddr, err := sdk.AccAddressFromBech32(ammPool.Address)
+	if err != nil {
+		return err
+	}
+
 	collateralCoins := sdk.NewCoins(collateralCoin)
-	err = k.bankKeeper.SendCoinsFromAccountToModule(ctx, mtpAddress, ammPool.Address, collateralCoins)
+	err = k.bankKeeper.SendCoins(ctx, mtpAddress, ammPoolAddr, collateralCoins)
+
 	if err != nil {
 		return err
 	}
