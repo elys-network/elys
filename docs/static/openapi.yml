@@ -77123,6 +77123,18 @@ definitions:
     title: |-
       QuerySmartContractStateResponse is the response type for the
       Query/SmartContractState RPC method
+  cosmos.base.v1beta1.DecCoin:
+    type: object
+    properties:
+      denom:
+        type: string
+      amount:
+        type: string
+    description: |-
+      DecCoin defines a token with a denomination and a decimal amount.
+
+      NOTE: The amount field is an Dec which implements the custom method
+      signatures required by gogoproto.
   elys.amm.DenomLiquidity:
     type: object
     properties:
@@ -77130,6 +77142,31 @@ definitions:
         type: string
       liquidity:
         type: string
+  elys.amm.ExternalLiquidity:
+    type: object
+    properties:
+      poolId:
+        type: string
+        format: uint64
+      amounts:
+        type: array
+        items:
+          type: object
+          properties:
+            denom:
+              type: string
+            amount:
+              type: string
+          description: |-
+            DecCoin defines a token with a denomination and a decimal amount.
+
+            NOTE: The amount field is an Dec which implements the custom method
+            signatures required by gogoproto.
+      depth:
+        type: string
+    description: >-
+      ExternalLiquidity defines price, volume, and time information for an
+      exchange rate.
   elys.amm.MsgCreatePoolResponse:
     type: object
     properties:
@@ -77153,6 +77190,8 @@ definitions:
 
             NOTE: The amount field is an Int which implements the custom method
             signatures required by gogoproto.
+  elys.amm.MsgFeedMultipleExternalLiquidityResponse:
+    type: object
   elys.amm.MsgJoinPoolResponse:
     type: object
     properties:
@@ -78120,18 +78159,6 @@ definitions:
     description: |-
       QueryEpochsInfoResponse is the response type for the Query/EpochInfos RPC
       method.
-  cosmos.base.v1beta1.DecCoin:
-    type: object
-    properties:
-      denom:
-        type: string
-      amount:
-        type: string
-    description: |-
-      DecCoin defines a token with a denomination and a decimal amount.
-
-      NOTE: The amount field is an Dec which implements the custom method
-      signatures required by gogoproto.
   elys.incentive.IncentiveInfo:
     type: object
     properties:
