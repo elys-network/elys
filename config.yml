@@ -358,4 +358,5 @@ genesis:
         safety_factor: "1.0"
         incremental_interest_payment_enabled: true
         whitelisting_enabled: false
+        invariant_check_epoch: day
   chain_id: elystestnet-1

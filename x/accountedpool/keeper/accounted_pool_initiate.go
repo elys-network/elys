@@ -8,17 +8,12 @@ import (
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 )
 
-func (k Keeper) InitiateAccountedPool(ctx sdk.Context, poolId uint64) error {
+func (k Keeper) InitiateAccountedPool(ctx sdk.Context, ammPool ammtypes.Pool) error {
+	poolId := ammPool.PoolId
 	// Check if already exists
 	exists := k.PoolExists(ctx, poolId)
 	if exists {
 		return errors.New("already existed pool!")
-	}
-
-	// Get amm pool
-	ammPool, found := k.amm.GetPool(ctx, poolId)
-	if !found {
-		return errors.New("invalid pool!")
 	}
 
 	// Initiate pool

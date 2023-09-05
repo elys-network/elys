@@ -33,7 +33,6 @@ type (
 		amm          types.AmmKeeper
 		bankKeeper   types.BankKeeper
 		oracleKeeper ammtypes.OracleKeeper
-		apKeeper     types.AccountedPoolKeeper
 
 		hooks types.MarginHooks
 	}
@@ -47,7 +46,6 @@ func NewKeeper(
 	amm types.AmmKeeper,
 	bk types.BankKeeper,
 	oracleKeeper ammtypes.OracleKeeper,
-	apKeeper types.AccountedPoolKeeper,
 ) *Keeper {
 	// ensure that authority is a valid AccAddress
 	if _, err := sdk.AccAddressFromBech32(authority); err != nil {
@@ -62,7 +60,6 @@ func NewKeeper(
 		amm:          amm,
 		bankKeeper:   bk,
 		oracleKeeper: oracleKeeper,
-		apKeeper:     apKeeper,
 	}
 
 	keeper.AuthorizationChecker = keeper
@@ -114,7 +111,7 @@ func (k Keeper) EstimateSwap(ctx sdk.Context, tokenInAmount sdk.Coin, tokenOutDe
 	tokensIn := sdk.Coins{tokenInAmount}
 	// Estimate swap
 	snapshot := k.amm.GetPoolSnapshotOrSet(ctx, ammPool)
-	swapResult, err := ammPool.CalcOutAmtGivenIn(ctx, k.oracleKeeper, &snapshot, tokensIn, tokenOutDenom, sdk.ZeroDec(), k.apKeeper)
+	swapResult, err := k.amm.CalcOutAmtGivenIn(ctx, ammPool.PoolId, k.oracleKeeper, &snapshot, tokensIn, tokenOutDenom, sdk.ZeroDec())
 
 	if err != nil {
 		return sdk.ZeroInt(), err

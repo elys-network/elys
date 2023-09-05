@@ -66,6 +66,8 @@ type AmmKeeper interface {
 	// IterateCommitments iterates over all Commitments and performs a callback.
 	IterateLiquidityPools(sdk.Context, func(ammtypes.Pool) bool)
 	GetPoolSnapshotOrSet(ctx sdk.Context, pool ammtypes.Pool) (val ammtypes.Pool)
+
+	CalcOutAmtGivenIn(ctx sdk.Context, poolId uint64, oracle ammtypes.OracleKeeper, snapshot *ammtypes.Pool, tokensIn sdk.Coins, tokenOutDenom string, swapFee sdk.Dec) (sdk.Coin, error)
 }
 
 // BankKeeper defines the expected interface needed to retrieve account balances.
@@ -84,9 +86,4 @@ type BankKeeper interface {
 
 	BlockedAddr(addr sdk.AccAddress) bool
 	HasBalance(ctx sdk.Context, addr sdk.AccAddress, amt sdk.Coin) bool
-}
-
-// AccountedPoolKeeper defines the expected interface
-type AccountedPoolKeeper interface {
-	GetAccountedBalance(sdk.Context, uint64, string) sdk.Int
 }

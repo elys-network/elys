@@ -8,5 +8,4 @@ option go_package = "github.com/elys-network/elys/x/accountedpool/types";
 // Params defines the parameters for the module.
 message Params {
   option (gogoproto.goproto_stringer) = false;
-  string invariant_check_epoch = 1;
 }

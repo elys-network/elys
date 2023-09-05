@@ -4,16 +4,16 @@ import sdk "github.com/cosmos/cosmos-sdk/types"
 
 type AmmHooks interface {
 	// AfterPoolCreated is called after CreatePool
-	AfterPoolCreated(ctx sdk.Context, sender sdk.AccAddress, poolId uint64)
+	AfterPoolCreated(ctx sdk.Context, sender sdk.AccAddress, pool Pool)
 
 	// AfterJoinPool is called after JoinPool, JoinSwapExternAmountIn, and JoinSwapShareAmountOut
-	AfterJoinPool(ctx sdk.Context, sender sdk.AccAddress, poolId uint64, enterCoins sdk.Coins, shareOutAmount sdk.Int)
+	AfterJoinPool(ctx sdk.Context, sender sdk.AccAddress, pool Pool, enterCoins sdk.Coins, shareOutAmount sdk.Int)
 
 	// AfterExitPool is called after ExitPool, ExitSwapShareAmountIn, and ExitSwapExternAmountOut
-	AfterExitPool(ctx sdk.Context, sender sdk.AccAddress, poolId uint64, shareInAmount sdk.Int, exitCoins sdk.Coins)
+	AfterExitPool(ctx sdk.Context, sender sdk.AccAddress, pool Pool, shareInAmount sdk.Int, exitCoins sdk.Coins)
 
 	// AfterSwap is called after SwapExactAmountIn and SwapExactAmountOut
-	AfterSwap(ctx sdk.Context, sender sdk.AccAddress, poolId uint64, input sdk.Coins, output sdk.Coins)
+	AfterSwap(ctx sdk.Context, sender sdk.AccAddress, pool Pool, input sdk.Coins, output sdk.Coins)
 }
 
 var _ AmmHooks = MultiAmmHooks{}
@@ -26,26 +26,26 @@ func NewMultiAmmHooks(hooks ...AmmHooks) MultiAmmHooks {
 	return hooks
 }
 
-func (h MultiAmmHooks) AfterPoolCreated(ctx sdk.Context, sender sdk.AccAddress, poolId uint64) {
+func (h MultiAmmHooks) AfterPoolCreated(ctx sdk.Context, sender sdk.AccAddress, pool Pool) {
 	for i := range h {
-		h[i].AfterPoolCreated(ctx, sender, poolId)
+		h[i].AfterPoolCreated(ctx, sender, pool)
 	}
 }
 
-func (h MultiAmmHooks) AfterJoinPool(ctx sdk.Context, sender sdk.AccAddress, poolId uint64, enterCoins sdk.Coins, shareOutAmount sdk.Int) {
+func (h MultiAmmHooks) AfterJoinPool(ctx sdk.Context, sender sdk.AccAddress, pool Pool, enterCoins sdk.Coins, shareOutAmount sdk.Int) {
 	for i := range h {
-		h[i].AfterJoinPool(ctx, sender, poolId, enterCoins, shareOutAmount)
+		h[i].AfterJoinPool(ctx, sender, pool, enterCoins, shareOutAmount)
 	}
 }
 
-func (h MultiAmmHooks) AfterExitPool(ctx sdk.Context, sender sdk.AccAddress, poolId uint64, shareInAmount sdk.Int, exitCoins sdk.Coins) {
+func (h MultiAmmHooks) AfterExitPool(ctx sdk.Context, sender sdk.AccAddress, pool Pool, shareInAmount sdk.Int, exitCoins sdk.Coins) {
 	for i := range h {
-		h[i].AfterExitPool(ctx, sender, poolId, shareInAmount, exitCoins)
+		h[i].AfterExitPool(ctx, sender, pool, shareInAmount, exitCoins)
 	}
 }
 
-func (h MultiAmmHooks) AfterSwap(ctx sdk.Context, sender sdk.AccAddress, poolId uint64, input sdk.Coins, output sdk.Coins) {
+func (h MultiAmmHooks) AfterSwap(ctx sdk.Context, sender sdk.AccAddress, pool Pool, input sdk.Coins, output sdk.Coins) {
 	for i := range h {
-		h[i].AfterSwap(ctx, sender, poolId, input, output)
+		h[i].AfterSwap(ctx, sender, pool, input, output)
 	}
 }

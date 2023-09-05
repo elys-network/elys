@@ -18,7 +18,7 @@ func TestCheckBalanceInvariant_InvalidBalance(t *testing.T) {
 	app := simapp.InitElysTestApp(true)
 	ctx := app.BaseApp.NewContext(true, tmproto.Header{})
 
-	mk, ak, amm, oracle := app.MarginKeeper, app.AccountedPoolKeeper, app.AmmKeeper, app.OracleKeeper
+	mk, amm, oracle := app.MarginKeeper, app.AmmKeeper, app.OracleKeeper
 
 	// Setup coin prices
 	SetupStableCoinPrices(ctx, oracle)
@@ -112,7 +112,7 @@ func TestCheckBalanceInvariant_InvalidBalance(t *testing.T) {
 	require.Equal(t, balances.AmountOf(ptypes.ATOM), sdk.NewInt(100000))
 
 	// Check balance invariant check
-	err = ak.InvariantCheck(ctx)
+	err = mk.InvariantCheck(ctx)
 	require.NoError(t, err)
 
 	mtpId := mtps[0].Id
@@ -130,6 +130,6 @@ func TestCheckBalanceInvariant_InvalidBalance(t *testing.T) {
 	require.Equal(t, balances.AmountOf(ptypes.ATOM), sdk.NewInt(100000))
 
 	// Check balance invariant check
-	err = ak.InvariantCheck(ctx)
+	err = mk.InvariantCheck(ctx)
 	require.NoError(t, err)
 }

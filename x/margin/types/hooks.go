@@ -1,16 +1,19 @@
 package types
 
-import sdk "github.com/cosmos/cosmos-sdk/types"
+import (
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	ammtypes "github.com/elys-network/elys/x/amm/types"
+)
 
 type MarginHooks interface {
 	// AfterMarginPositionOpended is called after OpenLong or OpenShort position.
-	AfterMarginPositionOpended(ctx sdk.Context, poolId uint64)
+	AfterMarginPositionOpended(ctx sdk.Context, ammPool ammtypes.Pool, marginPool Pool)
 
 	// AfterMarginPositionModified is called after a position gets modified.
-	AfterMarginPositionModified(ctx sdk.Context, poolId uint64)
+	AfterMarginPositionModified(ctx sdk.Context, ammPool ammtypes.Pool, marginPool Pool)
 
 	// AfterMarginPositionClosed is called after a position gets closed.
-	AfterMarginPositionClosed(ctx sdk.Context, poolId uint64)
+	AfterMarginPositionClosed(ctx sdk.Context, ammPool ammtypes.Pool, marginPool Pool)
 }
 
 var _ MarginHooks = MultiMarginHooks{}
@@ -23,20 +26,20 @@ func NewMultiMarginHooks(hooks ...MarginHooks) MultiMarginHooks {
 	return hooks
 }
 
-func (h MultiMarginHooks) AfterMarginPositionOpended(ctx sdk.Context, poolId uint64) {
+func (h MultiMarginHooks) AfterMarginPositionOpended(ctx sdk.Context, ammPool ammtypes.Pool, marginPool Pool) {
 	for i := range h {
-		h[i].AfterMarginPositionOpended(ctx, poolId)
+		h[i].AfterMarginPositionOpended(ctx, ammPool, marginPool)
 	}
 }
 
-func (h MultiMarginHooks) AfterMarginPositionModified(ctx sdk.Context, poolId uint64) {
+func (h MultiMarginHooks) AfterMarginPositionModified(ctx sdk.Context, ammPool ammtypes.Pool, marginPool Pool) {
 	for i := range h {
-		h[i].AfterMarginPositionModified(ctx, poolId)
+		h[i].AfterMarginPositionModified(ctx, ammPool, marginPool)
 	}
 }
 
-func (h MultiMarginHooks) AfterMarginPositionClosed(ctx sdk.Context, poolId uint64) {
+func (h MultiMarginHooks) AfterMarginPositionClosed(ctx sdk.Context, ammPool ammtypes.Pool, marginPool Pool) {
 	for i := range h {
-		h[i].AfterMarginPositionClosed(ctx, poolId)
+		h[i].AfterMarginPositionClosed(ctx, ammPool, marginPool)
 	}
 }

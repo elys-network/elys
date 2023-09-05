@@ -56,7 +56,7 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen) (*types.MsgOpenRespons
 	ctx.EventManager().EmitEvent(k.GenerateOpenEvent(mtp))
 
 	if k.hooks != nil {
-		k.hooks.AfterMarginPositionOpended(ctx, poolId)
+		k.hooks.AfterMarginPositionOpended(ctx, ammPool, pool)
 	}
 
 	return &types.MsgOpenResponse{}, nil

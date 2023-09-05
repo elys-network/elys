@@ -37494,9 +37494,6 @@ paths:
               params:
                 description: params holds all the parameters of this module.
                 type: object
-                properties:
-                  invariant_check_epoch:
-                    type: string
             description: >-
               QueryParamsResponse is response type for the Query/Params RPC
               method.
@@ -39529,6 +39526,8 @@ paths:
                     type: boolean
                   whitelisting_enabled:
                     type: boolean
+                  invariant_check_epoch:
+                    type: string
             description: ParamsResponse is response type for the Query/Params RPC method.
         default:
           description: An unexpected error response.
@@ -77450,9 +77449,6 @@ definitions:
         type: string
   elys.accountedpool.Params:
     type: object
-    properties:
-      invariant_check_epoch:
-        type: string
     description: Params defines the parameters for the module.
   elys.accountedpool.QueryAllAccountedPoolResponse:
     type: object
@@ -77584,9 +77580,6 @@ definitions:
       params:
         description: params holds all the parameters of this module.
         type: object
-        properties:
-          invariant_check_epoch:
-            type: string
     description: QueryParamsResponse is response type for the Query/Params RPC method.
   elys.amm.PoolAsset:
     type: object
@@ -78984,6 +78977,8 @@ definitions:
         type: boolean
       whitelisting_enabled:
         type: boolean
+      invariant_check_epoch:
+        type: string
     description: Params defines the parameters for the module.
   elys.margin.ParamsResponse:
     type: object
@@ -79030,6 +79025,8 @@ definitions:
             type: boolean
           whitelisting_enabled:
             type: boolean
+          invariant_check_epoch:
+            type: string
     description: ParamsResponse is response type for the Query/Params RPC method.
   elys.margin.Pool:
     type: object

@@ -12,7 +12,7 @@ func (k Keeper) AmmPoolBalanceCheck(ctx sdk.Context, poolId uint64) error {
 		return errors.New("pool doesn't exist!")
 	}
 
-	marginPool, found := k.margin.GetPool(ctx, poolId)
+	marginPool, found := k.GetPool(ctx, poolId)
 	if !found {
 		return errors.New("pool doesn't exist!")
 	}
@@ -25,7 +25,7 @@ func (k Keeper) AmmPoolBalanceCheck(ctx sdk.Context, poolId uint64) error {
 	// bank balance should be ammPool balance + margin pool balance
 	balances := k.bankKeeper.GetAllBalances(ctx, address)
 	for _, balance := range balances {
-		ammBalance := k.GetAmmPoolBalance(ammPool, balance.Denom)
+		ammBalance, _ := k.GetAmmPoolBalance(ctx, ammPool, balance.Denom)
 		marginBalance, _, _ := k.GetMarginPoolBalances(marginPool, balance.Denom)
 
 		diff := ammBalance.Add(marginBalance).Sub(balance.Amount)
@@ -38,7 +38,7 @@ func (k Keeper) AmmPoolBalanceCheck(ctx sdk.Context, poolId uint64) error {
 
 // Check if amm pool balance in bank module is correct
 func (k Keeper) InvariantCheck(ctx sdk.Context) error {
-	mtps := k.margin.GetAllMTPs(ctx)
+	mtps := k.GetAllMTPs(ctx)
 	for _, mtp := range mtps {
 		ammPoolId := mtp.AmmPoolId
 		err := k.AmmPoolBalanceCheck(ctx, ammPoolId)

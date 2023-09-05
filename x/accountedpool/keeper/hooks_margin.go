@@ -2,19 +2,20 @@ package keeper
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	ammtypes "github.com/elys-network/elys/x/amm/types"
 	margintypes "github.com/elys-network/elys/x/margin/types"
 )
 
-func (k Keeper) AfterMarginPositionOpended(ctx sdk.Context, poolId uint64) {
-	k.UpdateAccountedPool(ctx, poolId)
+func (k Keeper) AfterMarginPositionOpended(ctx sdk.Context, ammPool ammtypes.Pool, marginPool margintypes.Pool) {
+	k.UpdateAccountedPoolByMargin(ctx, ammPool, marginPool)
 }
 
-func (k Keeper) AfterMarginPositionModified(ctx sdk.Context, poolId uint64) {
-	k.UpdateAccountedPool(ctx, poolId)
+func (k Keeper) AfterMarginPositionModified(ctx sdk.Context, ammPool ammtypes.Pool, marginPool margintypes.Pool) {
+	k.UpdateAccountedPoolByMargin(ctx, ammPool, marginPool)
 }
 
-func (k Keeper) AfterMarginPositionClosed(ctx sdk.Context, poolId uint64) {
-	k.UpdateAccountedPool(ctx, poolId)
+func (k Keeper) AfterMarginPositionClosed(ctx sdk.Context, ammPool ammtypes.Pool, marginPool margintypes.Pool) {
+	k.UpdateAccountedPoolByMargin(ctx, ammPool, marginPool)
 }
 
 // Hooks wrapper struct for tvl keeper
@@ -29,14 +30,14 @@ func (k Keeper) MarginHooks() MarginHooks {
 	return MarginHooks{k}
 }
 
-func (h MarginHooks) AfterMarginPositionOpended(ctx sdk.Context, poolId uint64) {
-	h.k.AfterMarginPositionOpended(ctx, poolId)
+func (h MarginHooks) AfterMarginPositionOpended(ctx sdk.Context, ammPool ammtypes.Pool, marginPool margintypes.Pool) {
+	h.k.AfterMarginPositionOpended(ctx, ammPool, marginPool)
 }
 
-func (h MarginHooks) AfterMarginPositionModified(ctx sdk.Context, poolId uint64) {
-	h.k.AfterMarginPositionModified(ctx, poolId)
+func (h MarginHooks) AfterMarginPositionModified(ctx sdk.Context, ammPool ammtypes.Pool, marginPool margintypes.Pool) {
+	h.k.AfterMarginPositionModified(ctx, ammPool, marginPool)
 }
 
-func (h MarginHooks) AfterMarginPositionClosed(ctx sdk.Context, poolId uint64) {
-	h.k.AfterMarginPositionClosed(ctx, poolId)
+func (h MarginHooks) AfterMarginPositionClosed(ctx sdk.Context, ammPool ammtypes.Pool, marginPool margintypes.Pool) {
+	h.k.AfterMarginPositionClosed(ctx, ammPool, marginPool)
 }

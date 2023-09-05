@@ -31,22 +31,27 @@ func (k Keeper) GetMarginPoolBalances(marginPool margintypes.Pool, denom string)
 }
 
 // Update accounted pool balance
-func (k Keeper) UpdateAccountedPool(ctx sdk.Context, poolId uint64) error {
-	// Check if already exists
-	exists := k.PoolExists(ctx, poolId)
-	if !exists {
-		return errors.New("pool doesn't exist!")
-	}
-
-	// Get amm pool
-	ammPool, found := k.amm.GetPool(ctx, poolId)
-	if !found {
-		return errors.New("pool doesn't exist!")
-	}
-
+func (k Keeper) UpdateAccountedPoolByAMM(ctx sdk.Context, ammPool ammtypes.Pool) error {
+	poolId := ammPool.PoolId
 	// Get margin pool
 	marginPool, found := k.margin.GetPool(ctx, poolId)
 	if !found {
+		return errors.New("pool doesn't exist!")
+	}
+
+	return k.UpdateAccountedPool(ctx, ammPool, marginPool)
+}
+
+// Update accounted pool balance
+func (k Keeper) UpdateAccountedPoolByMargin(ctx sdk.Context, ammPool ammtypes.Pool, marginPool margintypes.Pool) error {
+	return k.UpdateAccountedPool(ctx, ammPool, marginPool)
+}
+
+func (k Keeper) UpdateAccountedPool(ctx sdk.Context, ammPool ammtypes.Pool, marginPool margintypes.Pool) error {
+	poolId := ammPool.PoolId
+	// Check if already exists
+	exists := k.PoolExists(ctx, poolId)
+	if !exists {
 		return errors.New("pool doesn't exist!")
 	}
 

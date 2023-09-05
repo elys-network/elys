@@ -60,7 +60,7 @@ func (k Keeper) CloseLong(ctx sdk.Context, msg *types.MsgClose) (*types.MTP, sdk
 	}
 
 	if k.hooks != nil {
-		k.hooks.AfterMarginPositionClosed(ctx, poolId)
+		k.hooks.AfterMarginPositionClosed(ctx, ammPool, pool)
 	}
 
 	return &mtp, repayAmount, nil
