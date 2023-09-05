@@ -150,7 +150,7 @@ checksum:
   algorithm: sha256
 # Docs: https://goreleaser.com/customization/changelog/
 changelog:
-  skip: false
+  skip: true
 # Docs: https://goreleaser.com/customization/release/
 release:
   github:
