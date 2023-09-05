@@ -111,7 +111,9 @@ func loadUpgradeStore(app *ElysApp) {
 
 	if shouldLoadUpgradeStore(app, upgradeInfo) {
 		storeUpgrades := storetypes.StoreUpgrades{
-			// Added: []string{},
+			Added: []string{
+				accountedpooltypes.ModuleName,
+			},
 		}
 		// Use upgrade store loader for the initial loading of all stores when app starts,
 		// it checks if version == upgradeHeight and applies store upgrades before loading the stores,
