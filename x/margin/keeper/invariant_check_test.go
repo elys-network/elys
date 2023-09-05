@@ -1,6 +1,7 @@
 package keeper_test
 
 import (
+	"errors"
 	"testing"
 
 	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
@@ -113,7 +114,7 @@ func TestCheckBalanceInvariant_InvalidBalance(t *testing.T) {
 
 	// Check balance invariant check
 	err = mk.InvariantCheck(ctx)
-	require.NoError(t, err)
+	require.Equal(t, err, errors.New("balance mismatch!"))
 
 	mtpId := mtps[0].Id
 	// Create a margin position close msg
@@ -126,7 +127,7 @@ func TestCheckBalanceInvariant_InvalidBalance(t *testing.T) {
 	require.NoError(t, err)
 
 	balances = app.BankKeeper.GetAllBalances(ctx, poolAddress)
-	require.Equal(t, balances.AmountOf(ptypes.USDC), sdk.NewInt(10000))
+	require.Equal(t, balances.AmountOf(ptypes.USDC), sdk.NewInt(10046))
 	require.Equal(t, balances.AmountOf(ptypes.ATOM), sdk.NewInt(100000))
 
 	// Check balance invariant check

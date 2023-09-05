@@ -43,7 +43,7 @@ func (k Keeper) InvariantCheck(ctx sdk.Context) error {
 		ammPoolId := mtp.AmmPoolId
 		err := k.AmmPoolBalanceCheck(ctx, ammPoolId)
 		if err != nil {
-			panic(err)
+			return err
 		}
 	}
 

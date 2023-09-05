@@ -11,6 +11,7 @@ import (
 	"github.com/elys-network/elys/x/accountedpool/types"
 	margintypes "github.com/elys-network/elys/x/margin/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
+	"github.com/stretchr/testify/require"
 )
 
 func TestAccountedPoolUpdate(t *testing.T) {
@@ -65,8 +66,8 @@ func TestAccountedPoolUpdate(t *testing.T) {
 				AssetDenom:           ptypes.USDC,
 			},
 			{
-				Liabilities:          sdk.NewInt(50),
-				Custody:              sdk.NewInt(0),
+				Liabilities:          sdk.NewInt(0),
+				Custody:              sdk.NewInt(50),
 				AssetBalance:         sdk.NewInt(0),
 				UnsettledLiabilities: sdk.NewInt(0),
 				BlockInterest:        sdk.NewInt(0),
@@ -77,4 +78,12 @@ func TestAccountedPoolUpdate(t *testing.T) {
 	// Update accounted pool
 	apk.UpdateAccountedPool(ctx, ammPool, marginPool)
 
+	apool, found := apk.GetAccountedPool(ctx, (uint64)(0))
+	require.Equal(t, found, true)
+	require.Equal(t, apool.PoolId, (uint64)(0))
+
+	usdcBalance := apk.GetAccountedBalance(ctx, (uint64)(0), ptypes.USDC)
+	require.Equal(t, usdcBalance, sdk.NewInt(1000+400+100))
+	atomBalance := apk.GetAccountedBalance(ctx, (uint64)(0), ptypes.ATOM)
+	require.Equal(t, atomBalance, sdk.NewInt(100))
 }

@@ -492,7 +492,13 @@ func (k Keeper) Repay(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, ammPool
 			if err != nil {
 				return err
 			}
-			err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, ammPool.Address, addr, returnCoins)
+
+			ammPoolAddr, err := sdk.AccAddressFromBech32(ammPool.Address)
+			if err != nil {
+				return err
+			}
+
+			err = k.bankKeeper.SendCoins(ctx, ammPoolAddr, addr, returnCoins)
 			if err != nil {
 				return err
 			}
