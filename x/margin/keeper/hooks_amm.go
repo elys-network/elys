@@ -6,23 +6,45 @@ import (
 )
 
 // AfterPoolCreated is called after CreatePool
-func (k Keeper) AfterPoolCreated(ctx sdk.Context, sender sdk.AccAddress, pool ammtypes.Pool) {
-	k.InitiateAccountedPool(ctx, pool)
+func (k Keeper) AfterPoolCreated(ctx sdk.Context, sender sdk.AccAddress, ammPool ammtypes.Pool) {
+	if k.hooks != nil {
+		k.hooks.AfterAmmPoolCreated(ctx, ammPool)
+	}
 }
 
 // AfterJoinPool is called after JoinPool, JoinSwapExternAmountIn, and JoinSwapShareAmountOut
-func (k Keeper) AfterJoinPool(ctx sdk.Context, sender sdk.AccAddress, pool ammtypes.Pool, enterCoins sdk.Coins, shareOutAmount sdk.Int) {
-	k.UpdateAccountedPoolByAMM(ctx, pool)
+func (k Keeper) AfterJoinPool(ctx sdk.Context, sender sdk.AccAddress, ammPool ammtypes.Pool, enterCoins sdk.Coins, shareOutAmount sdk.Int) {
+	marginPool, found := k.GetPool(ctx, ammPool.PoolId)
+	if !found {
+		return
+	}
+
+	if k.hooks != nil {
+		k.hooks.AfterAmmJoinPool(ctx, ammPool, marginPool)
+	}
 }
 
 // AfterExitPool is called after ExitPool, ExitSwapShareAmountIn, and ExitSwapExternAmountOut
-func (k Keeper) AfterExitPool(ctx sdk.Context, sender sdk.AccAddress, pool ammtypes.Pool, shareInAmount sdk.Int, exitCoins sdk.Coins) {
-	k.UpdateAccountedPoolByAMM(ctx, pool)
+func (k Keeper) AfterExitPool(ctx sdk.Context, sender sdk.AccAddress, ammPool ammtypes.Pool, shareInAmount sdk.Int, exitCoins sdk.Coins) {
+	marginPool, found := k.GetPool(ctx, ammPool.PoolId)
+	if !found {
+		return
+	}
+
+	if k.hooks != nil {
+		k.hooks.AfterAmmExitPool(ctx, ammPool, marginPool)
+	}
 }
 
 // AfterSwap is called after SwapExactAmountIn and SwapExactAmountOut
-func (k Keeper) AfterSwap(ctx sdk.Context, sender sdk.AccAddress, pool ammtypes.Pool, input sdk.Coins, output sdk.Coins) {
-	k.UpdateAccountedPoolByAMM(ctx, pool)
+func (k Keeper) AfterSwap(ctx sdk.Context, sender sdk.AccAddress, ammPool ammtypes.Pool, input sdk.Coins, output sdk.Coins) {
+	marginPool, found := k.GetPool(ctx, ammPool.PoolId)
+	if !found {
+		return
+	}
+	if k.hooks != nil {
+		k.hooks.AfterAmmSwap(ctx, ammPool, marginPool)
+	}
 }
 
 // Hooks wrapper struct for tvl keeper

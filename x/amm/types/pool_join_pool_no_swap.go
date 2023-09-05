@@ -131,7 +131,7 @@ func (p *Pool) JoinPoolNoSwap(ctx sdk.Context, oracleKeeper OracleKeeper, accoun
 	}
 
 	initialWeightDistance := p.WeightDistanceFromTarget(ctx, oracleKeeper, p.PoolAssets)
-	tvl, err := p.TVL(ctx, oracleKeeper, accountedPoolKeeper)
+	tvl, err := p.TVL(ctx, oracleKeeper)
 	if err != nil {
 		return sdk.ZeroInt(), err
 	}

@@ -92,6 +92,15 @@ type AmmKeeper interface {
 	// IterateCommitments iterates over all Commitments and performs a callback.
 	IterateLiquidityPools(sdk.Context, func(ammtypes.Pool) bool)
 	GetPoolSnapshotOrSet(ctx sdk.Context, pool ammtypes.Pool) (val ammtypes.Pool)
+
+	SwapOutAmtGivenIn(
+		ctx sdk.Context, poolId uint64,
+		oracleKeeper ammtypes.OracleKeeper,
+		snapshot *ammtypes.Pool,
+		tokensIn sdk.Coins,
+		tokenOutDenom string,
+		swapFee sdk.Dec,
+	) (tokenOut sdk.Coin, weightBalanceBonus sdk.Dec, err error)
 }
 
 // OracleKeeper defines the expected interface needed to retrieve price info

@@ -107,7 +107,7 @@ func (suite *TestSuite) TestTVL() {
 				PoolAssets:  tc.poolAssets,
 				TotalWeight: sdk.ZeroInt(),
 			}
-			tvl, err := pool.TVL(suite.ctx, suite.app.OracleKeeper, suite.app.AccountedPoolKeeper)
+			tvl, err := pool.TVL(suite.ctx, suite.app.OracleKeeper)
 			if tc.expError {
 				suite.Require().Error(err)
 			} else {

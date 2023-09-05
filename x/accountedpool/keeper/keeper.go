@@ -18,7 +18,6 @@ type (
 		storeKey   storetypes.StoreKey
 		memKey     storetypes.StoreKey
 		paramstore paramtypes.Subspace
-		margin     types.MarginKeeper
 		bankKeeper types.BankKeeper
 	}
 )
@@ -28,7 +27,6 @@ func NewKeeper(
 	storeKey,
 	memKey storetypes.StoreKey,
 	ps paramtypes.Subspace,
-	margin types.MarginKeeper,
 	bk types.BankKeeper,
 ) *Keeper {
 	// set KeyTable if it has not already been set
@@ -41,7 +39,6 @@ func NewKeeper(
 		storeKey:   storeKey,
 		memKey:     memKey,
 		paramstore: ps,
-		margin:     margin,
 		bankKeeper: bk,
 	}
 }

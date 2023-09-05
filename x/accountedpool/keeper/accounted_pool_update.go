@@ -30,23 +30,6 @@ func (k Keeper) GetMarginPoolBalances(marginPool margintypes.Pool, denom string)
 	return sdk.ZeroInt(), sdk.ZeroInt(), sdk.ZeroInt()
 }
 
-// Update accounted pool balance
-func (k Keeper) UpdateAccountedPoolByAMM(ctx sdk.Context, ammPool ammtypes.Pool) error {
-	poolId := ammPool.PoolId
-	// Get margin pool
-	marginPool, found := k.margin.GetPool(ctx, poolId)
-	if !found {
-		return errors.New("pool doesn't exist!")
-	}
-
-	return k.UpdateAccountedPool(ctx, ammPool, marginPool)
-}
-
-// Update accounted pool balance
-func (k Keeper) UpdateAccountedPoolByMargin(ctx sdk.Context, ammPool ammtypes.Pool, marginPool margintypes.Pool) error {
-	return k.UpdateAccountedPool(ctx, ammPool, marginPool)
-}
-
 func (k Keeper) UpdateAccountedPool(ctx sdk.Context, ammPool ammtypes.Pool, marginPool margintypes.Pool) error {
 	poolId := ammPool.PoolId
 	// Check if already exists

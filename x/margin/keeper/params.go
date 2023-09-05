@@ -95,8 +95,8 @@ func (k Keeper) GetIncrementalInterestPaymentFundAddress(ctx sdk.Context) sdk.Ac
 	return addr
 }
 
-func (k Keeper) GetMaxOpenPositions(ctx sdk.Context) int64 {
-	return k.GetParams(ctx).MaxOpenPositions
+func (k Keeper) GetMaxOpenPositions(ctx sdk.Context) uint64 {
+	return (uint64)(k.GetParams(ctx).MaxOpenPositions)
 }
 
 func (k Keeper) GetIncrementalInterestPaymentEnabled(ctx sdk.Context) bool {

@@ -675,6 +675,15 @@ func NewElysApp(
 		app.AssetprofileKeeper,
 	)
 
+	app.AccountedPoolKeeper = *accountedpoolmodulekeeper.NewKeeper(
+		appCodec,
+		keys[accountedpoolmoduletypes.StoreKey],
+		keys[accountedpoolmoduletypes.MemStoreKey],
+		app.GetSubspace(accountedpoolmoduletypes.ModuleName),
+		app.BankKeeper,
+	)
+	accountedPoolModule := accountedpoolmodule.NewAppModule(appCodec, app.AccountedPoolKeeper, app.AccountKeeper, app.BankKeeper)
+
 	app.AmmKeeper = *ammmodulekeeper.NewKeeper(
 		appCodec,
 		keys[ammmoduletypes.StoreKey],
@@ -700,7 +709,6 @@ func NewElysApp(
 		app.BankKeeper,
 		app.AmmKeeper,
 		app.OracleKeeper,
-		app.AccountedPoolKeeper,
 		authtypes.FeeCollectorName,
 		DexRevenueCollectorName,
 	)
@@ -826,16 +834,6 @@ func NewElysApp(
 	)
 	marginModule := marginmodule.NewAppModule(appCodec, app.MarginKeeper, app.AccountKeeper, app.BankKeeper)
 
-	app.AccountedPoolKeeper = *accountedpoolmodulekeeper.NewKeeper(
-		appCodec,
-		keys[accountedpoolmoduletypes.StoreKey],
-		keys[accountedpoolmoduletypes.MemStoreKey],
-		app.GetSubspace(accountedpoolmoduletypes.ModuleName),
-		app.MarginKeeper,
-		app.BankKeeper,
-	)
-	accountedPoolModule := accountedpoolmodule.NewAppModule(appCodec, app.AccountedPoolKeeper, app.AccountKeeper, app.BankKeeper)
-
 	// this line is used by starport scaffolding # stargate/app/keeperDefinition
 
 	/**** IBC Routing ****/
@@ -879,7 +877,7 @@ func NewElysApp(
 		ammmoduletypes.NewMultiAmmHooks(
 			// insert amm hooks receivers here
 			app.IncentiveKeeper.AmmHooks(),
-			app.AccountedPoolKeeper.AmmHooks(),
+			app.MarginKeeper.AmmHooks(),
 		),
 	)
 

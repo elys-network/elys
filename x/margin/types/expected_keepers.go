@@ -16,7 +16,7 @@ type AuthorizationChecker interface {
 //go:generate mockery --srcpkg . --name PositionChecker --structname PositionChecker --filename position_checker.go --with-expecter
 type PositionChecker interface {
 	GetOpenMTPCount(ctx sdk.Context) uint64
-	GetMaxOpenPositions(ctx sdk.Context) int64
+	GetMaxOpenPositions(ctx sdk.Context) uint64
 }
 
 //go:generate mockery --srcpkg . --name PoolChecker --structname PoolChecker --filename pool_checker.go --with-expecter

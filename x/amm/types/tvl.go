@@ -6,7 +6,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-func (p *Pool) TVL(ctx sdk.Context, oracleKeeper OracleKeeper, accountedPoolKeeepr AccountedPoolKeeper) (sdk.Dec, error) {
+func (p *Pool) TVL(ctx sdk.Context, oracleKeeper OracleKeeper) (sdk.Dec, error) {
 	// OracleAssetsTVL * TotalWeight / OracleAssetsWeight
 	// E.g. JUNO / USDT / USDC (30:30:30)
 	// TVL = USDC_USDT_liquidity * 90 / 60
