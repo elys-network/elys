@@ -16,7 +16,7 @@ type AuthorizationChecker interface {
 //go:generate mockery --srcpkg . --name PositionChecker --structname PositionChecker --filename position_checker.go --with-expecter
 type PositionChecker interface {
 	GetOpenMTPCount(ctx sdk.Context) uint64
-	GetMaxOpenPositions(ctx sdk.Context) int
+	GetMaxOpenPositions(ctx sdk.Context) uint64
 }
 
 //go:generate mockery --srcpkg . --name PoolChecker --structname PoolChecker --filename pool_checker.go --with-expecter
@@ -66,6 +66,8 @@ type AmmKeeper interface {
 	// IterateCommitments iterates over all Commitments and performs a callback.
 	IterateLiquidityPools(sdk.Context, func(ammtypes.Pool) bool)
 	GetPoolSnapshotOrSet(ctx sdk.Context, pool ammtypes.Pool) (val ammtypes.Pool)
+
+	CalcOutAmtGivenIn(ctx sdk.Context, poolId uint64, oracle ammtypes.OracleKeeper, snapshot *ammtypes.Pool, tokensIn sdk.Coins, tokenOutDenom string, swapFee sdk.Dec) (sdk.Coin, error)
 }
 
 // BankKeeper defines the expected interface needed to retrieve account balances.
@@ -80,6 +82,7 @@ type BankKeeper interface {
 	SendCoinsFromModuleToModule(ctx sdk.Context, senderModule string, recipientModule string, amt sdk.Coins) error
 	SendCoinsFromModuleToAccount(ctx sdk.Context, senderModule string, recipientAddr sdk.AccAddress, amt sdk.Coins) error
 	SendCoinsFromAccountToModule(ctx sdk.Context, senderAddr sdk.AccAddress, recipientModule string, amt sdk.Coins) error
+	SendCoins(ctx sdk.Context, fromAddr sdk.AccAddress, toAddr sdk.AccAddress, amt sdk.Coins) error
 
 	BlockedAddr(addr sdk.AccAddress) bool
 	HasBalance(ctx sdk.Context, addr sdk.AccAddress, amt sdk.Coin) bool

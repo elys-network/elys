@@ -1,0 +1,7 @@
+syntax = "proto3";
+package elys.accountedpool;
+
+option go_package = "github.com/elys-network/elys/x/accountedpool/types";
+
+// Msg defines the Msg service.
+service Msg {}

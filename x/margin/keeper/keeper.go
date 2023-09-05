@@ -33,6 +33,8 @@ type (
 		amm          types.AmmKeeper
 		bankKeeper   types.BankKeeper
 		oracleKeeper ammtypes.OracleKeeper
+
+		hooks types.MarginHooks
 	}
 )
 
@@ -50,7 +52,7 @@ func NewKeeper(
 		panic("authority is not a valid acc address")
 	}
 
-	return &Keeper{
+	keeper := &Keeper{
 		cdc:          cdc,
 		storeKey:     storeKey,
 		memKey:       memKey,
@@ -59,6 +61,13 @@ func NewKeeper(
 		bankKeeper:   bk,
 		oracleKeeper: oracleKeeper,
 	}
+
+	keeper.AuthorizationChecker = keeper
+	keeper.PositionChecker = keeper
+	keeper.PoolChecker = keeper
+	keeper.OpenLongChecker = keeper
+
+	return keeper
 }
 
 func (k Keeper) Logger(ctx sdk.Context) log.Logger {
@@ -102,7 +111,7 @@ func (k Keeper) EstimateSwap(ctx sdk.Context, tokenInAmount sdk.Coin, tokenOutDe
 	tokensIn := sdk.Coins{tokenInAmount}
 	// Estimate swap
 	snapshot := k.amm.GetPoolSnapshotOrSet(ctx, ammPool)
-	swapResult, err := ammPool.CalcOutAmtGivenIn(ctx, k.oracleKeeper, &snapshot, tokensIn, tokenOutDenom, sdk.ZeroDec())
+	swapResult, err := k.amm.CalcOutAmtGivenIn(ctx, ammPool.PoolId, k.oracleKeeper, &snapshot, tokensIn, tokenOutDenom, sdk.ZeroDec())
 
 	if err != nil {
 		return sdk.ZeroInt(), err
@@ -143,8 +152,14 @@ func (k Keeper) Borrow(ctx sdk.Context, collateralAsset string, collateralAmount
 	}
 	mtp.MtpHealth = h
 
+	ammPoolAddr, err := sdk.AccAddressFromBech32(ammPool.Address)
+	if err != nil {
+		return err
+	}
+
 	collateralCoins := sdk.NewCoins(collateralCoin)
-	err = k.bankKeeper.SendCoinsFromAccountToModule(ctx, mtpAddress, ammPool.Address, collateralCoins)
+	err = k.bankKeeper.SendCoins(ctx, mtpAddress, ammPoolAddr, collateralCoins)
+
 	if err != nil {
 		return err
 	}
@@ -477,7 +492,13 @@ func (k Keeper) Repay(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, ammPool
 			if err != nil {
 				return err
 			}
-			err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, ammPool.Address, addr, returnCoins)
+
+			ammPoolAddr, err := sdk.AccAddressFromBech32(ammPool.Address)
+			if err != nil {
+				return err
+			}
+
+			err = k.bankKeeper.SendCoins(ctx, ammPoolAddr, addr, returnCoins)
 			if err != nil {
 				return err
 			}
@@ -776,4 +797,15 @@ func (k Keeper) WhitelistAddress(ctx sdk.Context, address string) {
 func (k Keeper) DewhitelistAddress(ctx sdk.Context, address string) {
 	store := ctx.KVStore(k.storeKey)
 	store.Delete(types.GetWhitelistKey(address))
+}
+
+// Set the margin hooks.
+func (k *Keeper) SetHooks(gh types.MarginHooks) *Keeper {
+	if k.hooks != nil {
+		panic("cannot set margin hooks twice")
+	}
+
+	k.hooks = gh
+
+	return k
 }

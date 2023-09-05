@@ -21,11 +21,12 @@ type (
 		paramstore        paramtypes.Subspace
 		hooks             types.AmmHooks
 
-		bankKeeper       types.BankKeeper
-		accountKeeper    types.AccountKeeper
-		oracleKeeper     types.OracleKeeper
-		commitmentKeeper *commitmentkeeper.Keeper
-		apKeeper         types.AssetProfileKeeper
+		bankKeeper          types.BankKeeper
+		accountKeeper       types.AccountKeeper
+		oracleKeeper        types.OracleKeeper
+		commitmentKeeper    *commitmentkeeper.Keeper
+		apKeeper            types.AssetProfileKeeper
+		accountedPoolKeeper types.AccountedPoolKeeper
 	}
 )
 
@@ -40,6 +41,7 @@ func NewKeeper(
 	oracleKeeper types.OracleKeeper,
 	commitmentKeeper *commitmentkeeper.Keeper,
 	apKeeper types.AssetProfileKeeper,
+	accountedPoolKeeper types.AccountedPoolKeeper,
 ) *Keeper {
 	// set KeyTable if it has not already been set
 	if !ps.HasKeyTable() {
@@ -57,6 +59,7 @@ func NewKeeper(
 		oracleKeeper:     oracleKeeper,
 		commitmentKeeper: commitmentKeeper,
 		apKeeper:         apKeeper,
+		accountedPoolKeeper: accountedPoolKeeper,
 	}
 }
 

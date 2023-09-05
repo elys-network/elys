@@ -24,7 +24,7 @@ func TestCheckMaxOpenPositions_OpenPositionsBelowMax(t *testing.T) {
 
 	// Mock behavior
 	mockChecker.On("GetOpenMTPCount", ctx).Return(uint64(5))
-	mockChecker.On("GetMaxOpenPositions", ctx).Return(10)
+	mockChecker.On("GetMaxOpenPositions", ctx).Return(uint64(10))
 
 	err := k.CheckMaxOpenPositions(ctx)
 
@@ -46,7 +46,7 @@ func TestCheckMaxOpenPositions_OpenPositionsEqualToMax(t *testing.T) {
 
 	// Mock behavior
 	mockChecker.On("GetOpenMTPCount", ctx).Return(uint64(10))
-	mockChecker.On("GetMaxOpenPositions", ctx).Return(10)
+	mockChecker.On("GetMaxOpenPositions", ctx).Return(uint64(10))
 
 	err := k.CheckMaxOpenPositions(ctx)
 
@@ -68,7 +68,7 @@ func TestCheckMaxOpenPositions_OpenPositionsExceedMax(t *testing.T) {
 
 	// Mock behavior
 	mockChecker.On("GetOpenMTPCount", ctx).Return(uint64(11))
-	mockChecker.On("GetMaxOpenPositions", ctx).Return(10)
+	mockChecker.On("GetMaxOpenPositions", ctx).Return(uint64(10))
 
 	err := k.CheckMaxOpenPositions(ctx)
 

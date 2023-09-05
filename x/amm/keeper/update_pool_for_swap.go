@@ -93,7 +93,7 @@ func (k Keeper) UpdatePoolForSwap(
 
 	types.EmitSwapEvent(ctx, sender, pool.GetPoolId(), tokensIn, tokensOut)
 	if k.hooks != nil {
-		k.hooks.AfterSwap(ctx, sender, pool.GetPoolId(), tokensIn, tokensOut)
+		k.hooks.AfterSwap(ctx, sender, pool, tokensIn, tokensOut)
 	}
 	k.RecordTotalLiquidityIncrease(ctx, tokensIn)
 	k.RecordTotalLiquidityDecrease(ctx, tokensOut)
