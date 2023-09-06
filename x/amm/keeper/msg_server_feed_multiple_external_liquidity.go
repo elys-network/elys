@@ -23,6 +23,17 @@ func AssetsValue(ctx sdk.Context, oracleKeeper types.OracleKeeper, elCoins sdk.D
 	return totalValue, nil
 }
 
+func LiquidityRatioFromPriceDepth(depth sdk.Dec) sdk.Dec {
+	if depth == sdk.OneDec() {
+		return sdk.OneDec()
+	}
+	sqrt, err := sdk.OneDec().Sub(depth).ApproxSqrt()
+	if err != nil {
+		panic(err)
+	}
+	return sdk.OneDec().Sub(sqrt)
+}
+
 func (k msgServer) FeedMultipleExternalLiquidity(goCtx context.Context, msg *types.MsgFeedMultipleExternalLiquidity) (*types.MsgFeedMultipleExternalLiquidityResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
@@ -52,6 +63,7 @@ func (k msgServer) FeedMultipleExternalLiquidity(goCtx context.Context, msg *typ
 		}
 
 		elRatio := elValue.Quo(tvl)
+		elRatio = elRatio.Quo(LiquidityRatioFromPriceDepth(el.Depth))
 		if elRatio.LT(sdk.OneDec()) {
 			elRatio = sdk.OneDec()
 		}
