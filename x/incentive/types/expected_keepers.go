@@ -6,6 +6,7 @@ import (
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	ctypes "github.com/elys-network/elys/x/commitment/types"
+	oracletypes "github.com/elys-network/elys/x/oracle/types"
 )
 
 // CommitmentKeeper
@@ -97,4 +98,5 @@ type AmmKeeper interface {
 // OracleKeeper defines the expected interface needed to retrieve price info
 type OracleKeeper interface {
 	GetAssetPriceFromDenom(ctx sdk.Context, denom string) sdk.Dec
+	GetPriceFeeder(ctx sdk.Context, feeder string) (val oracletypes.PriceFeeder, found bool)
 }
