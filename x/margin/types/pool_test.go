@@ -61,7 +61,7 @@ func TestPool_UpdateBalanceInvalid(t *testing.T) {
 	denom := "testAsset2"
 	err := pool.UpdateBalance(ctx, denom, sdk.NewInt(100), true)
 	// Expect that there is invalid asset denom error.
-	assert.True(t, errors.Is(err, sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, "invalid assset denom")))
+	assert.True(t, errors.Is(err, sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, "invalid asset denom")))
 
 	// Expect that there is still 0 balance
 	assert.Equal(t, pool.PoolAssets[0].AssetBalance, sdk.NewInt(0))
@@ -117,7 +117,7 @@ func TestPool_UpdateLiabilitiesInvalid(t *testing.T) {
 	denom := "testAsset2"
 	err := pool.UpdateLiabilities(ctx, denom, sdk.NewInt(100), true)
 	// Expect that there is invalid asset denom error.
-	assert.True(t, errors.Is(err, sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, "invalid assset denom")))
+	assert.True(t, errors.Is(err, sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, "invalid asset denom")))
 
 	// Expect that there is still 0 liabilities
 	assert.Equal(t, pool.PoolAssets[0].Liabilities, sdk.NewInt(0))
@@ -173,7 +173,7 @@ func TestPool_UpdateCustodyInvalid(t *testing.T) {
 	denom := "testAsset2"
 	err := pool.UpdateCustody(ctx, denom, sdk.NewInt(100), true)
 	// Expect that there is invalid asset denom error.
-	assert.True(t, errors.Is(err, sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, "invalid assset denom")))
+	assert.True(t, errors.Is(err, sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, "invalid asset denom")))
 
 	// Expect that there is still 0 custody
 	assert.Equal(t, pool.PoolAssets[0].Custody, sdk.NewInt(0))
@@ -229,7 +229,7 @@ func TestPool_UpdateUnsettledLiabilitiesInvalid(t *testing.T) {
 	denom := "testAsset2"
 	err := pool.UpdateUnsettledLiabilities(ctx, denom, sdk.NewInt(100), true)
 	// Expect that there is invalid asset denom error.
-	assert.True(t, errors.Is(err, sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, "invalid assset denom")))
+	assert.True(t, errors.Is(err, sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, "invalid asset denom")))
 
 	// Expect that there is still 0 UnsettledLiabilities
 	assert.Equal(t, pool.PoolAssets[0].UnsettledLiabilities, sdk.NewInt(0))
@@ -285,7 +285,7 @@ func TestPool_UpdateBlockInterestInvalid(t *testing.T) {
 	denom := "testAsset2"
 	err := pool.UpdateBlockInterest(ctx, denom, sdk.NewInt(100), true)
 	// Expect that there is invalid asset denom error.
-	assert.True(t, errors.Is(err, sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, "invalid assset denom")))
+	assert.True(t, errors.Is(err, sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, "invalid asset denom")))
 
 	// Expect that there is still 0 BlockInterest
 	assert.Equal(t, pool.PoolAssets[0].BlockInterest, sdk.NewInt(0))

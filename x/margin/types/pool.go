@@ -31,7 +31,7 @@ func (p *Pool) UpdateBalance(ctx sdk.Context, assetDenom string, amount sdk.Int,
 		}
 	}
 
-	return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, "invalid assset denom")
+	return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, "invalid asset denom")
 }
 
 // Update the asset liabilities
@@ -48,7 +48,7 @@ func (p *Pool) UpdateLiabilities(ctx sdk.Context, assetDenom string, amount sdk.
 		}
 	}
 
-	return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, "invalid assset denom")
+	return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, "invalid asset denom")
 }
 
 // Update the asset custody
@@ -64,7 +64,7 @@ func (p *Pool) UpdateCustody(ctx sdk.Context, assetDenom string, amount sdk.Int,
 		}
 	}
 
-	return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, "invalid assset denom")
+	return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, "invalid asset denom")
 }
 
 // Update the unsettled liabilities balance
@@ -81,7 +81,7 @@ func (p *Pool) UpdateUnsettledLiabilities(ctx sdk.Context, assetDenom string, am
 		}
 	}
 
-	return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, "invalid assset denom")
+	return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, "invalid asset denom")
 }
 
 // Update the unsettled liabilities balance
@@ -98,7 +98,7 @@ func (p *Pool) UpdateBlockInterest(ctx sdk.Context, assetDenom string, amount sd
 		}
 	}
 
-	return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, "invalid assset denom")
+	return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, "invalid asset denom")
 }
 
 // Initialite pool asset according to its corresponding amm pool assets.

@@ -27,6 +27,7 @@ type (
 		types.PositionChecker
 		types.PoolChecker
 		types.OpenLongChecker
+		types.CloseLongChecker
 		cdc          codec.BinaryCodec
 		storeKey     storetypes.StoreKey
 		memKey       storetypes.StoreKey
@@ -100,28 +101,6 @@ func (k Keeper) GetOpenMTPCount(ctx sdk.Context) uint64 {
 func (k Keeper) CheckIfWhitelisted(ctx sdk.Context, address string) bool {
 	store := ctx.KVStore(k.storeKey)
 	return store.Has(types.GetWhitelistKey(address))
-}
-
-// Swap estimation using amm CalcOutAmtGivenIn function
-func (k Keeper) EstimateSwap(ctx sdk.Context, tokenInAmount sdk.Coin, tokenOutDenom string, ammPool ammtypes.Pool) (sdk.Int, error) {
-	marginEnabled := k.IsPoolEnabled(ctx, ammPool.PoolId)
-	if !marginEnabled {
-		return sdk.ZeroInt(), sdkerrors.Wrap(types.ErrMarginDisabled, "Margin disabled pool")
-	}
-
-	tokensIn := sdk.Coins{tokenInAmount}
-	// Estimate swap
-	snapshot := k.amm.GetPoolSnapshotOrSet(ctx, ammPool)
-	swapResult, err := k.amm.CalcOutAmtGivenIn(ctx, ammPool.PoolId, k.oracleKeeper, &snapshot, tokensIn, tokenOutDenom, sdk.ZeroDec())
-
-	if err != nil {
-		return sdk.ZeroInt(), err
-	}
-
-	if swapResult.IsZero() {
-		return sdk.ZeroInt(), types.ErrAmountTooLow
-	}
-	return swapResult.Amount, nil
 }
 
 // Swap estimation using amm CalcInAmtGivenOut function
@@ -250,29 +229,6 @@ func (k Keeper) CalculatePoolHealth(ctx sdk.Context, pool *types.Pool) sdk.Dec {
 	return H
 }
 
-func (k Keeper) UpdateMTPHealth(ctx sdk.Context, mtp types.MTP, ammPool ammtypes.Pool) (sdk.Dec, error) {
-	xl := mtp.Liabilities
-
-	if xl.IsZero() {
-		return sdk.ZeroDec(), nil
-	}
-	// include unpaid interest in debt (from disabled incremental pay)
-	if mtp.InterestUnpaidCollateral.GT(sdk.ZeroInt()) {
-		xl = xl.Add(mtp.InterestUnpaidCollateral)
-	}
-
-	custodyTokenIn := sdk.NewCoin(mtp.CustodyAsset, mtp.CustodyAmount)
-	// All liabilty is in usdc
-	C, err := k.EstimateSwapGivenOut(ctx, custodyTokenIn, ptypes.USDC, ammPool)
-	if err != nil {
-		return sdk.ZeroDec(), err
-	}
-
-	lr := sdk.NewDecFromBigInt(C.BigInt()).Quo(sdk.NewDecFromBigInt(xl.BigInt()))
-
-	return lr, nil
-}
-
 func (k Keeper) TakeInCustody(ctx sdk.Context, mtp types.MTP, pool *types.Pool) error {
 	err := pool.UpdateBalance(ctx, mtp.CustodyAsset, mtp.CustodyAmount, false)
 	if err != nil {
@@ -287,38 +243,6 @@ func (k Keeper) TakeInCustody(ctx sdk.Context, mtp types.MTP, pool *types.Pool) 
 	k.SetPool(ctx, *pool)
 
 	return nil
-}
-
-func (k Keeper) TakeOutCustody(ctx sdk.Context, mtp types.MTP, pool *types.Pool) error {
-	err := pool.UpdateBalance(ctx, mtp.CustodyAsset, mtp.CustodyAmount, true)
-	if err != nil {
-		return err
-	}
-
-	err = pool.UpdateCustody(ctx, mtp.CustodyAsset, mtp.CustodyAmount, false)
-	if err != nil {
-		return err
-	}
-
-	k.SetPool(ctx, *pool)
-
-	return nil
-}
-
-func (k Keeper) HandleInterestPayment(ctx sdk.Context, interestPayment sdk.Int, mtp *types.MTP, pool *types.Pool, ammPool ammtypes.Pool) sdk.Int {
-	incrementalInterestPaymentEnabled := k.GetIncrementalInterestPaymentEnabled(ctx)
-	// if incremental payment on, pay interest
-	if incrementalInterestPaymentEnabled {
-		finalInterestPayment, err := k.IncrementalInterestPayment(ctx, interestPayment, mtp, pool, ammPool)
-		if err != nil {
-			ctx.Logger().Error(sdkerrors.Wrap(err, "error executing incremental interest payment").Error())
-		} else {
-			return finalInterestPayment
-		}
-	} else { // else update unpaid mtp interest
-		mtp.InterestUnpaidCollateral = interestPayment
-	}
-	return sdk.ZeroInt()
 }
 
 func (k Keeper) IncrementalInterestPayment(ctx sdk.Context, interestPayment sdk.Int, mtp *types.MTP, pool *types.Pool, ammPool ammtypes.Pool) (sdk.Int, error) {
@@ -491,104 +415,6 @@ func (k Keeper) CheckMinLiabilities(ctx sdk.Context, collateralAmount sdk.Coin, 
 	return nil
 }
 
-func (k Keeper) Repay(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, ammPool ammtypes.Pool, repayAmount sdk.Int, takeFundPayment bool) error {
-	// nolint:staticcheck,ineffassign
-	returnAmount, debtP, debtI := sdk.ZeroInt(), sdk.ZeroInt(), sdk.ZeroInt()
-	Liabilities := mtp.Liabilities
-	InterestUnpaidCollateral := mtp.InterestUnpaidCollateral
-
-	var err error
-	mtp.MtpHealth, err = k.UpdateMTPHealth(ctx, *mtp, ammPool)
-	if err != nil {
-		return err
-	}
-
-	have := repayAmount
-	owe := Liabilities.Add(InterestUnpaidCollateral)
-
-	if have.LT(Liabilities) {
-		//can't afford principle liability
-		returnAmount = sdk.ZeroInt()
-		debtP = Liabilities.Sub(have)
-		debtI = InterestUnpaidCollateral
-	} else if have.LT(owe) {
-		// v principle liability; x excess liability
-		returnAmount = sdk.ZeroInt()
-		debtP = sdk.ZeroInt()
-		debtI = Liabilities.Add(InterestUnpaidCollateral).Sub(have)
-	} else {
-		// can afford both
-		returnAmount = have.Sub(Liabilities).Sub(InterestUnpaidCollateral)
-		debtP = sdk.ZeroInt()
-		debtI = sdk.ZeroInt()
-	}
-	if !returnAmount.IsZero() {
-		actualReturnAmount := returnAmount
-		if takeFundPayment {
-			takePercentage := k.GetForceCloseFundPercentage(ctx)
-
-			fundAddr := k.GetForceCloseFundAddress(ctx)
-			takeAmount, err := k.TakeFundPayment(ctx, returnAmount, mtp.CollateralAsset, takePercentage, fundAddr, &ammPool)
-			if err != nil {
-				return err
-			}
-			actualReturnAmount = returnAmount.Sub(takeAmount)
-			if !takeAmount.IsZero() {
-				k.EmitFundPayment(ctx, mtp, takeAmount, mtp.CollateralAsset, types.EventRepayFund)
-			}
-		}
-
-		if !actualReturnAmount.IsZero() {
-			var coins sdk.Coins
-			returnCoin := sdk.NewCoin(mtp.CollateralAsset, sdk.NewIntFromBigInt(actualReturnAmount.BigInt()))
-			returnCoins := coins.Add(returnCoin)
-			addr, err := sdk.AccAddressFromBech32(mtp.Address)
-			if err != nil {
-				return err
-			}
-
-			ammPoolAddr, err := sdk.AccAddressFromBech32(ammPool.Address)
-			if err != nil {
-				return err
-			}
-
-			err = k.bankKeeper.SendCoins(ctx, ammPoolAddr, addr, returnCoins)
-			if err != nil {
-				return err
-			}
-		}
-	}
-
-	err = pool.UpdateBalance(ctx, mtp.CollateralAsset, returnAmount, false)
-	if err != nil {
-		return err
-	}
-
-	err = pool.UpdateLiabilities(ctx, mtp.CollateralAsset, mtp.Liabilities, false)
-	if err != nil {
-		return err
-	}
-
-	err = pool.UpdateUnsettledLiabilities(ctx, mtp.CollateralAsset, debtI, true)
-	if err != nil {
-		return err
-	}
-
-	err = pool.UpdateUnsettledLiabilities(ctx, mtp.CollateralAsset, debtP, true)
-	if err != nil {
-		return err
-	}
-
-	err = k.DestroyMTP(ctx, mtp.Address, mtp.Id)
-	if err != nil {
-		return err
-	}
-
-	k.SetPool(ctx, *pool)
-
-	return nil
-}
-
 func (k Keeper) DestroyMTP(ctx sdk.Context, mtpAddress string, id uint64) error {
 	key := types.GetMTPKey(mtpAddress, id)
 	store := ctx.KVStore(k.storeKey)
@@ -653,18 +479,6 @@ func (k Keeper) SetOpenMTPCount(ctx sdk.Context, count uint64) {
 func (k Keeper) SetMTPCount(ctx sdk.Context, count uint64) {
 	store := ctx.KVStore(k.storeKey)
 	store.Set(types.MTPCountPrefix, types.GetUint64Bytes(count))
-}
-
-func (k Keeper) GetMTP(ctx sdk.Context, mtpAddress string, id uint64) (types.MTP, error) {
-	var mtp types.MTP
-	key := types.GetMTPKey(mtpAddress, id)
-	store := ctx.KVStore(k.storeKey)
-	if !store.Has(key) {
-		return mtp, types.ErrMTPDoesNotExist
-	}
-	bz := store.Get(key)
-	k.cdc.MustUnmarshal(bz, &mtp)
-	return mtp, nil
 }
 
 func (k Keeper) GetWhitelistAddressIterator(ctx sdk.Context) sdk.Iterator {
@@ -787,41 +601,6 @@ func (k Keeper) GetMTPsForAddress(ctx sdk.Context, mtpAddress sdk.Address, pagin
 	}
 
 	return mtps, pageRes, nil
-}
-
-// get position of current block in epoch
-func GetEpochPosition(ctx sdk.Context, epochLength int64) int64 {
-	if epochLength <= 0 {
-		epochLength = 1
-	}
-	currentHeight := ctx.BlockHeight()
-	return currentHeight % epochLength
-}
-
-func CalcMTPInterestLiabilities(mtp *types.MTP, interestRate sdk.Dec, epochPosition, epochLength int64) sdk.Int {
-	var interestRational, liabilitiesRational, rate, epochPositionRational, epochLengthRational big.Rat
-
-	rate.SetFloat64(interestRate.MustFloat64())
-
-	liabilitiesRational.SetInt(mtp.Liabilities.BigInt().Add(mtp.Liabilities.BigInt(), mtp.InterestUnpaidCollateral.BigInt()))
-	interestRational.Mul(&rate, &liabilitiesRational)
-
-	if epochPosition > 0 { // prorate interest if within epoch
-		epochPositionRational.SetInt64(epochPosition)
-		epochLengthRational.SetInt64(epochLength)
-		epochPositionRational.Quo(&epochPositionRational, &epochLengthRational)
-		interestRational.Mul(&interestRational, &epochPositionRational)
-	}
-
-	interestNew := interestRational.Num().Quo(interestRational.Num(), interestRational.Denom())
-
-	interestNewInt := sdk.NewIntFromBigInt(interestNew.Add(interestNew, mtp.InterestUnpaidCollateral.BigInt()))
-	// round up to lowest digit if interest too low and rate not 0
-	if interestNewInt.IsZero() && !interestRate.IsZero() {
-		interestNewInt = sdk.NewInt(1)
-	}
-
-	return interestNewInt
 }
 
 func (k Keeper) GetWhitelistedAddress(ctx sdk.Context, pagination *query.PageRequest) ([]string, *query.PageResponse, error) {
