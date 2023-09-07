@@ -68,6 +68,7 @@ func NewKeeper(
 	keeper.PositionChecker = keeper
 	keeper.PoolChecker = keeper
 	keeper.OpenLongChecker = keeper
+	keeper.CloseLongChecker = keeper
 
 	return keeper
 }
