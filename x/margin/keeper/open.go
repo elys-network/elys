@@ -7,6 +7,10 @@ import (
 )
 
 func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen) (*types.MsgOpenResponse, error) {
+	if err := k.CheckLongingAssets(ctx, msg.CollateralAsset, msg.BorrowAsset); err != nil {
+		return nil, err
+	}
+
 	if err := k.CheckUserAuthorization(ctx, msg); err != nil {
 		return nil, err
 	}
