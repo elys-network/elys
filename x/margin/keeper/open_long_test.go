@@ -32,12 +32,15 @@ func TestOpenLong_PoolNotFound(t *testing.T) {
 		msg = &types.MsgOpen{
 			Leverage:         math.LegacyNewDec(10),
 			CollateralAmount: math.NewInt(1),
+			CollateralAsset:  "aaa",
+			BorrowAsset:      "bbb",
 		}
 		poolId = uint64(42)
 	)
 
 	// Mock behavior
 	mockChecker.On("GetMaxLeverageParam", ctx).Return(msg.Leverage)
+	mockChecker.On("GetNonNativeAsset", msg.CollateralAsset, msg.BorrowAsset).Return(msg.CollateralAsset)
 	mockChecker.On("GetPool", ctx, poolId).Return(types.Pool{}, false)
 
 	_, err := k.OpenLong(ctx, poolId, msg)
@@ -67,6 +70,7 @@ func TestOpenLong_PoolDisabled(t *testing.T) {
 
 	// Mock behaviors
 	mockChecker.On("GetMaxLeverageParam", ctx).Return(msg.Leverage)
+	mockChecker.On("GetNonNativeAsset", msg.CollateralAsset, msg.BorrowAsset).Return(msg.CollateralAsset)
 	mockChecker.On("GetPool", ctx, poolId).Return(types.Pool{}, true)
 	mockChecker.On("IsPoolEnabled", ctx, poolId).Return(false)
 
@@ -101,6 +105,7 @@ func TestOpenLong_InsufficientAmmPoolBalanceForLeveragedAmount(t *testing.T) {
 
 	// Mock the behaviors to get to the HasSufficientPoolBalance check
 	mockChecker.On("GetMaxLeverageParam", ctx).Return(msg.Leverage)
+	mockChecker.On("GetNonNativeAsset", msg.CollateralAsset, msg.BorrowAsset).Return(msg.BorrowAsset)
 	mockChecker.On("GetPool", ctx, poolId).Return(types.Pool{}, true)
 	mockChecker.On("IsPoolEnabled", ctx, poolId).Return(true)
 	mockChecker.On("GetAmmPool", ctx, poolId, msg.BorrowAsset).Return(ammtypes.Pool{}, nil) // Assuming a valid pool is returned
@@ -139,6 +144,7 @@ func TestOpenLong_InsufficientLiabilities(t *testing.T) {
 
 	// Mock the behaviors to get to the CheckMinLiabilities check
 	mockChecker.On("GetMaxLeverageParam", ctx).Return(msg.Leverage)
+	mockChecker.On("GetNonNativeAsset", msg.CollateralAsset, msg.BorrowAsset).Return(msg.BorrowAsset)
 	mockChecker.On("GetPool", ctx, poolId).Return(types.Pool{}, true)
 	mockChecker.On("IsPoolEnabled", ctx, poolId).Return(true)
 	mockChecker.On("GetAmmPool", ctx, poolId, msg.BorrowAsset).Return(ammtypes.Pool{}, nil)                              // Assuming a valid pool is returned
@@ -180,6 +186,7 @@ func TestOpenLong_InsufficientAmmPoolBalanceForCustody(t *testing.T) {
 	)
 	// Mock behaviors
 	mockChecker.On("GetMaxLeverageParam", ctx).Return(msg.Leverage)
+	mockChecker.On("GetNonNativeAsset", msg.CollateralAsset, msg.BorrowAsset).Return(msg.BorrowAsset)
 	mockChecker.On("GetPool", ctx, poolId).Return(types.Pool{}, true)
 	mockChecker.On("IsPoolEnabled", ctx, poolId).Return(true)
 	mockChecker.On("GetAmmPool", ctx, poolId, msg.BorrowAsset).Return(ammtypes.Pool{}, nil)
@@ -231,6 +238,7 @@ func TestOpenLong_ErrorsDuringOperations(t *testing.T) {
 
 	// Mock behaviors
 	mockChecker.On("GetMaxLeverageParam", ctx).Return(msg.Leverage)
+	mockChecker.On("GetNonNativeAsset", msg.CollateralAsset, msg.BorrowAsset).Return(msg.BorrowAsset)
 	mockChecker.On("GetPool", ctx, poolId).Return(types.Pool{}, true)
 	mockChecker.On("IsPoolEnabled", ctx, poolId).Return(true)
 	mockChecker.On("GetAmmPool", ctx, poolId, msg.BorrowAsset).Return(ammtypes.Pool{}, nil)
@@ -287,6 +295,7 @@ func TestOpenLong_LeverageRatioLessThanSafetyFactor(t *testing.T) {
 
 	// Mock behaviors
 	mockChecker.On("GetMaxLeverageParam", ctx).Return(msg.Leverage)
+	mockChecker.On("GetNonNativeAsset", msg.CollateralAsset, msg.BorrowAsset).Return(msg.BorrowAsset)
 	mockChecker.On("GetPool", ctx, poolId).Return(types.Pool{}, true)
 	mockChecker.On("IsPoolEnabled", ctx, poolId).Return(true)
 	mockChecker.On("GetAmmPool", ctx, poolId, msg.BorrowAsset).Return(ammtypes.Pool{}, nil)
@@ -349,6 +358,7 @@ func TestOpenLong_Success(t *testing.T) {
 
 	// Mock behaviors
 	mockChecker.On("GetMaxLeverageParam", ctx).Return(msg.Leverage)
+	mockChecker.On("GetNonNativeAsset", msg.CollateralAsset, msg.BorrowAsset).Return(msg.BorrowAsset)
 	mockChecker.On("GetPool", ctx, poolId).Return(types.Pool{}, true)
 	mockChecker.On("IsPoolEnabled", ctx, poolId).Return(true)
 	mockChecker.On("GetAmmPool", ctx, poolId, msg.BorrowAsset).Return(ammtypes.Pool{}, nil)

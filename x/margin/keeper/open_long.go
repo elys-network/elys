@@ -15,7 +15,7 @@ func (k Keeper) OpenLong(ctx sdk.Context, poolId uint64, msg *types.MsgOpen) (*t
 	mtp := types.NewMTP(msg.Creator, msg.CollateralAsset, msg.BorrowAsset, msg.Position, leverage, poolId)
 
 	// Get token asset other than USDC
-	nonNativeAsset := k.GetNonNativeAsset(msg.CollateralAsset, msg.BorrowAsset)
+	nonNativeAsset := k.OpenLongChecker.GetNonNativeAsset(msg.CollateralAsset, msg.BorrowAsset)
 
 	pool, found := k.OpenLongChecker.GetPool(ctx, poolId)
 	if !found {
