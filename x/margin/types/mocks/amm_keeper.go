@@ -25,6 +25,64 @@ func (_m *AmmKeeper) EXPECT() *AmmKeeper_Expecter {
 	return &AmmKeeper_Expecter{mock: &_m.Mock}
 }
 
+// CalcInAmtGivenOut provides a mock function with given fields: ctx, poolId, oracle, snapshot, tokensOut, tokenInDenom, swapFee
+func (_m *AmmKeeper) CalcInAmtGivenOut(ctx types.Context, poolId uint64, oracle ammtypes.OracleKeeper, snapshot *ammtypes.Pool, tokensOut types.Coins, tokenInDenom string, swapFee math.LegacyDec) (types.Coin, error) {
+	ret := _m.Called(ctx, poolId, oracle, snapshot, tokensOut, tokenInDenom, swapFee)
+
+	var r0 types.Coin
+	var r1 error
+	if rf, ok := ret.Get(0).(func(types.Context, uint64, ammtypes.OracleKeeper, *ammtypes.Pool, types.Coins, string, math.LegacyDec) (types.Coin, error)); ok {
+		return rf(ctx, poolId, oracle, snapshot, tokensOut, tokenInDenom, swapFee)
+	}
+	if rf, ok := ret.Get(0).(func(types.Context, uint64, ammtypes.OracleKeeper, *ammtypes.Pool, types.Coins, string, math.LegacyDec) types.Coin); ok {
+		r0 = rf(ctx, poolId, oracle, snapshot, tokensOut, tokenInDenom, swapFee)
+	} else {
+		r0 = ret.Get(0).(types.Coin)
+	}
+
+	if rf, ok := ret.Get(1).(func(types.Context, uint64, ammtypes.OracleKeeper, *ammtypes.Pool, types.Coins, string, math.LegacyDec) error); ok {
+		r1 = rf(ctx, poolId, oracle, snapshot, tokensOut, tokenInDenom, swapFee)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// AmmKeeper_CalcInAmtGivenOut_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'CalcInAmtGivenOut'
+type AmmKeeper_CalcInAmtGivenOut_Call struct {
+	*mock.Call
+}
+
+// CalcInAmtGivenOut is a helper method to define mock.On call
+//   - ctx types.Context
+//   - poolId uint64
+//   - oracle ammtypes.OracleKeeper
+//   - snapshot *ammtypes.Pool
+//   - tokensOut types.Coins
+//   - tokenInDenom string
+//   - swapFee math.LegacyDec
+func (_e *AmmKeeper_Expecter) CalcInAmtGivenOut(ctx interface{}, poolId interface{}, oracle interface{}, snapshot interface{}, tokensOut interface{}, tokenInDenom interface{}, swapFee interface{}) *AmmKeeper_CalcInAmtGivenOut_Call {
+	return &AmmKeeper_CalcInAmtGivenOut_Call{Call: _e.mock.On("CalcInAmtGivenOut", ctx, poolId, oracle, snapshot, tokensOut, tokenInDenom, swapFee)}
+}
+
+func (_c *AmmKeeper_CalcInAmtGivenOut_Call) Run(run func(ctx types.Context, poolId uint64, oracle ammtypes.OracleKeeper, snapshot *ammtypes.Pool, tokensOut types.Coins, tokenInDenom string, swapFee math.LegacyDec)) *AmmKeeper_CalcInAmtGivenOut_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(types.Context), args[1].(uint64), args[2].(ammtypes.OracleKeeper), args[3].(*ammtypes.Pool), args[4].(types.Coins), args[5].(string), args[6].(math.LegacyDec))
+	})
+	return _c
+}
+
+func (_c *AmmKeeper_CalcInAmtGivenOut_Call) Return(tokenIn types.Coin, err error) *AmmKeeper_CalcInAmtGivenOut_Call {
+	_c.Call.Return(tokenIn, err)
+	return _c
+}
+
+func (_c *AmmKeeper_CalcInAmtGivenOut_Call) RunAndReturn(run func(types.Context, uint64, ammtypes.OracleKeeper, *ammtypes.Pool, types.Coins, string, math.LegacyDec) (types.Coin, error)) *AmmKeeper_CalcInAmtGivenOut_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // CalcOutAmtGivenIn provides a mock function with given fields: ctx, poolId, oracle, snapshot, tokensIn, tokenOutDenom, swapFee
 func (_m *AmmKeeper) CalcOutAmtGivenIn(ctx types.Context, poolId uint64, oracle ammtypes.OracleKeeper, snapshot *ammtypes.Pool, tokensIn types.Coins, tokenOutDenom string, swapFee math.LegacyDec) (types.Coin, error) {
 	ret := _m.Called(ctx, poolId, oracle, snapshot, tokensIn, tokenOutDenom, swapFee)
