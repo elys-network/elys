@@ -7,58 +7,42 @@ import (
 )
 
 func (k Keeper) CloseLong(ctx sdk.Context, msg *types.MsgClose) (*types.MTP, sdk.Int, error) {
-	mtp, err := k.GetMTP(ctx, msg.Creator, msg.Id)
+	// Retrieve MTP
+	mtp, err := k.CloseLongChecker.GetMTP(ctx, msg.Creator, msg.Id)
 	if err != nil {
 		return nil, sdk.ZeroInt(), err
 	}
 
-	// Amm pool Id
-	poolId := mtp.AmmPoolId
-
-	// Get pool from pool Id
-	pool, found := k.GetPool(ctx, poolId)
+	// Retrieve Pool
+	pool, found := k.CloseLongChecker.GetPool(ctx, mtp.AmmPoolId)
 	if !found {
 		return nil, sdk.ZeroInt(), sdkerrors.Wrap(types.ErrInvalidBorrowingAsset, "invalid pool id")
 	}
 
-	ammPool, found := k.amm.GetPool(ctx, poolId)
-	if !found {
-		return nil, sdk.ZeroInt(), sdkerrors.Wrap(types.ErrPoolDoesNotExist, mtp.CustodyAsset)
-	}
-
-	epochLength := k.GetEpochLength(ctx)
-	epochPosition := GetEpochPosition(ctx, epochLength)
-	if epochPosition > 0 {
-		interestPayment := CalcMTPInterestLiabilities(&mtp, pool.InterestRate, epochPosition, epochLength)
-		finalInterestPayment := k.HandleInterestPayment(ctx, interestPayment, &mtp, &pool, ammPool)
-
-		err = pool.UpdateBlockInterest(ctx, mtp.CollateralAsset, finalInterestPayment, true)
-		if err != nil {
-			return nil, sdk.ZeroInt(), err
-		}
-
-		mtp.MtpHealth, err = k.UpdateMTPHealth(ctx, mtp, ammPool)
-		if err != nil {
-			return nil, sdk.ZeroInt(), err
-		}
-	}
-
-	err = k.TakeOutCustody(ctx, mtp, &pool)
+	// Retrieve AmmPool
+	ammPool, err := k.CloseLongChecker.GetAmmPool(ctx, mtp.AmmPoolId, mtp.CustodyAsset)
 	if err != nil {
 		return nil, sdk.ZeroInt(), err
 	}
 
-	cutodyAmtTokenIn := sdk.NewCoin(mtp.CustodyAsset, mtp.CustodyAmount)
-	repayAmount, err := k.EstimateSwap(ctx, cutodyAmtTokenIn, mtp.CollateralAsset, ammPool)
+	// Handle Interest if within epoch position
+	if err := k.CloseLongChecker.HandleInterest(ctx, &mtp, &pool, ammPool); err != nil {
+		return nil, sdk.ZeroInt(), err
+	}
+
+	// Take out custody
+	err = k.CloseLongChecker.TakeOutCustody(ctx, mtp, &pool)
 	if err != nil {
 		return nil, sdk.ZeroInt(), err
 	}
 
-	err = k.Repay(ctx, &mtp, &pool, ammPool, repayAmount, false)
+	// Estimate swap and repay
+	repayAmount, err := k.CloseLongChecker.EstimateAndRepay(ctx, mtp, pool, ammPool)
 	if err != nil {
 		return nil, sdk.ZeroInt(), err
 	}
 
+	// Hooks after margin position closed
 	if k.hooks != nil {
 		k.hooks.AfterMarginPositionClosed(ctx, ammPool, pool)
 	}

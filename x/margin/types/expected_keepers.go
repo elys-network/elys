@@ -48,6 +48,20 @@ type OpenLongChecker interface {
 	CheckLongingAssets(ctx sdk.Context, collateralAsset string, borrowAsset string) error
 }
 
+//go:generate mockery --srcpkg . --name CloseLongChecker --structname CloseLongChecker --filename close_long_checker.go --with-expecter
+type CloseLongChecker interface {
+	GetMTP(ctx sdk.Context, mtpAddress string, id uint64) (MTP, error)
+	GetPool(
+		ctx sdk.Context,
+		poolId uint64,
+
+	) (val Pool, found bool)
+	GetAmmPool(ctx sdk.Context, poolId uint64, nonNativeAsset string) (ammtypes.Pool, error)
+	HandleInterest(ctx sdk.Context, mtp *MTP, pool *Pool, ammPool ammtypes.Pool) error
+	TakeOutCustody(ctx sdk.Context, mtp MTP, pool *Pool) error
+	EstimateAndRepay(ctx sdk.Context, mtp MTP, pool Pool, ammPool ammtypes.Pool) (sdk.Int, error)
+}
+
 // AccountKeeper defines the expected account keeper used for simulations (noalias)
 //
 //go:generate mockery --srcpkg . --name AccountKeeper --structname AccountKeeper --filename account_keeper.go --with-expecter
