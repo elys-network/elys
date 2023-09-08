@@ -7,49 +7,40 @@ import (
 )
 
 func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen) (*types.MsgOpenResponse, error) {
-	if err := k.CheckLongingAssets(ctx, msg.CollateralAsset, msg.BorrowAsset); err != nil {
+	if err := k.OpenChecker.CheckLongingAssets(ctx, msg.CollateralAsset, msg.BorrowAsset); err != nil {
 		return nil, err
 	}
 
-	if err := k.CheckUserAuthorization(ctx, msg); err != nil {
+	if err := k.OpenChecker.CheckUserAuthorization(ctx, msg); err != nil {
 		return nil, err
 	}
 
-	if err := k.CheckMaxOpenPositions(ctx); err != nil {
+	if err := k.OpenChecker.CheckMaxOpenPositions(ctx); err != nil {
 		return nil, err
 	}
 
 	// Get token asset other than USDC
-	nonNativeAsset := k.GetNonNativeAsset(msg.CollateralAsset, msg.BorrowAsset)
+	nonNativeAsset := k.OpenChecker.GetNonNativeAsset(msg.CollateralAsset, msg.BorrowAsset)
 
-	// Get the first valid pool
-	poolId, err := k.GetFirstValidPool(ctx, nonNativeAsset)
+	// Get pool id, amm pool, and margin pool
+	poolId, ammPool, pool, err := k.OpenChecker.PreparePools(ctx, nonNativeAsset)
 	if err != nil {
 		return nil, err
 	}
 
-	ammPool, err := k.OpenLongChecker.GetAmmPool(ctx, poolId, nonNativeAsset)
-	if err != nil {
-		return nil, err
-	}
-
-	pool, found := k.PoolChecker.GetPool(ctx, poolId)
-	// If margin pool doesn't exist yet, we should initiate it according to its corresponding ammPool
-	if !found {
-		pool = types.NewPool(poolId)
-		pool.InitiatePool(ctx, &ammPool)
-
-		k.OpenLongChecker.SetPool(ctx, pool)
-	}
-
-	if err := k.CheckPoolHealth(ctx, poolId); err != nil {
+	if err := k.OpenChecker.CheckPoolHealth(ctx, poolId); err != nil {
 		return nil, err
 	}
 
 	var mtp *types.MTP
 	switch msg.Position {
 	case types.Position_LONG:
-		mtp, err = k.OpenLong(ctx, poolId, msg)
+		mtp, err = k.OpenChecker.OpenLong(ctx, poolId, msg)
+		if err != nil {
+			return nil, err
+		}
+	case types.Position_SHORT:
+		mtp, err = k.OpenChecker.OpenShort(ctx, poolId, msg)
 		if err != nil {
 			return nil, err
 		}
@@ -57,7 +48,7 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen) (*types.MsgOpenRespons
 		return nil, sdkerrors.Wrap(types.ErrInvalidPosition, msg.Position.String())
 	}
 
-	ctx.EventManager().EmitEvent(k.GenerateOpenEvent(mtp))
+	k.OpenChecker.EmitOpenEvent(ctx, mtp)
 
 	if k.hooks != nil {
 		k.hooks.AfterMarginPositionOpended(ctx, ammPool, pool)
