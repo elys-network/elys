@@ -7,11 +7,7 @@ import (
 )
 
 // GetPool returns a pool from its index
-func (k Keeper) GetPool(
-	ctx sdk.Context,
-	poolId uint64,
-
-) (val types.Pool, found bool) {
+func (k Keeper) GetPool(ctx sdk.Context, poolId uint64) (val types.Pool, found bool) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.PoolKeyPrefix))
 
 	b := store.Get(types.PoolKey(

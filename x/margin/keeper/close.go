@@ -22,6 +22,11 @@ func (k Keeper) Close(ctx sdk.Context, msg *types.MsgClose) (*types.MsgCloseResp
 		if err != nil {
 			return nil, err
 		}
+	case types.Position_SHORT:
+		closedMtp, repayAmount, err = k.CloseShort(ctx, msg)
+		if err != nil {
+			return nil, err
+		}
 	default:
 		return nil, sdkerrors.Wrap(types.ErrInvalidPosition, mtp.Position.String())
 	}

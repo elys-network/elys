@@ -27,6 +27,19 @@ type PoolChecker interface {
 	GetPoolOpenThreshold(ctx sdk.Context) math.LegacyDec
 }
 
+//go:generate mockery --srcpkg . --name OpenChecker --structname OpenChecker --filename open_checker.go --with-expecter
+type OpenChecker interface {
+	CheckLongingAssets(ctx sdk.Context, collateralAsset string, borrowAsset string) error
+	CheckUserAuthorization(ctx sdk.Context, msg *MsgOpen) error
+	CheckMaxOpenPositions(ctx sdk.Context) error
+	GetNonNativeAsset(collateralAsset string, borrowAsset string) string
+	PreparePools(ctx sdk.Context, nonNativeAsset string) (poolId uint64, ammPool ammtypes.Pool, pool Pool, err error)
+	CheckPoolHealth(ctx sdk.Context, poolId uint64) error
+	OpenLong(ctx sdk.Context, poolId uint64, msg *MsgOpen) (*MTP, error)
+	OpenShort(ctx sdk.Context, poolId uint64, msg *MsgOpen) (*MTP, error)
+	EmitOpenEvent(ctx sdk.Context, mtp *MTP)
+}
+
 //go:generate mockery --srcpkg . --name OpenLongChecker --structname OpenLongChecker --filename open_long_checker.go --with-expecter
 type OpenLongChecker interface {
 	GetMaxLeverageParam(ctx sdk.Context) sdk.Dec
@@ -50,6 +63,20 @@ type OpenLongChecker interface {
 
 //go:generate mockery --srcpkg . --name CloseLongChecker --structname CloseLongChecker --filename close_long_checker.go --with-expecter
 type CloseLongChecker interface {
+	GetMTP(ctx sdk.Context, mtpAddress string, id uint64) (MTP, error)
+	GetPool(
+		ctx sdk.Context,
+		poolId uint64,
+
+	) (val Pool, found bool)
+	GetAmmPool(ctx sdk.Context, poolId uint64, nonNativeAsset string) (ammtypes.Pool, error)
+	HandleInterest(ctx sdk.Context, mtp *MTP, pool *Pool, ammPool ammtypes.Pool) error
+	TakeOutCustody(ctx sdk.Context, mtp MTP, pool *Pool) error
+	EstimateAndRepay(ctx sdk.Context, mtp MTP, pool Pool, ammPool ammtypes.Pool) (sdk.Int, error)
+}
+
+//go:generate mockery --srcpkg . --name CloseShortChecker --structname CloseShortChecker --filename close_short_checker.go --with-expecter
+type CloseShortChecker interface {
 	GetMTP(ctx sdk.Context, mtpAddress string, id uint64) (MTP, error)
 	GetPool(
 		ctx sdk.Context,
