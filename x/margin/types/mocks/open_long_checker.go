@@ -166,6 +166,51 @@ func (_c *OpenLongChecker_CheckMinLiabilities_Call) RunAndReturn(run func(types.
 	return _c
 }
 
+// CheckSameAssetPosition provides a mock function with given fields: ctx, msg
+func (_m *OpenLongChecker) CheckSameAssetPosition(ctx types.Context, msg *margintypes.MsgOpen) *margintypes.MTP {
+	ret := _m.Called(ctx, msg)
+
+	var r0 *margintypes.MTP
+	if rf, ok := ret.Get(0).(func(types.Context, *margintypes.MsgOpen) *margintypes.MTP); ok {
+		r0 = rf(ctx, msg)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*margintypes.MTP)
+		}
+	}
+
+	return r0
+}
+
+// OpenLongChecker_CheckSameAssetPosition_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'CheckSameAssetPosition'
+type OpenLongChecker_CheckSameAssetPosition_Call struct {
+	*mock.Call
+}
+
+// CheckSameAssetPosition is a helper method to define mock.On call
+//   - ctx types.Context
+//   - msg *margintypes.MsgOpen
+func (_e *OpenLongChecker_Expecter) CheckSameAssetPosition(ctx interface{}, msg interface{}) *OpenLongChecker_CheckSameAssetPosition_Call {
+	return &OpenLongChecker_CheckSameAssetPosition_Call{Call: _e.mock.On("CheckSameAssetPosition", ctx, msg)}
+}
+
+func (_c *OpenLongChecker_CheckSameAssetPosition_Call) Run(run func(ctx types.Context, msg *margintypes.MsgOpen)) *OpenLongChecker_CheckSameAssetPosition_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(types.Context), args[1].(*margintypes.MsgOpen))
+	})
+	return _c
+}
+
+func (_c *OpenLongChecker_CheckSameAssetPosition_Call) Return(_a0 *margintypes.MTP) *OpenLongChecker_CheckSameAssetPosition_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *OpenLongChecker_CheckSameAssetPosition_Call) RunAndReturn(run func(types.Context, *margintypes.MsgOpen) *margintypes.MTP) *OpenLongChecker_CheckSameAssetPosition_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // EstimateSwap provides a mock function with given fields: ctx, leveragedAmtTokenIn, borrowAsset, ammPool
 func (_m *OpenLongChecker) EstimateSwap(ctx types.Context, leveragedAmtTokenIn types.Coin, borrowAsset string, ammPool ammtypes.Pool) (math.Int, error) {
 	ret := _m.Called(ctx, leveragedAmtTokenIn, borrowAsset, ammPool)

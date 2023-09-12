@@ -59,6 +59,7 @@ type OpenLongChecker interface {
 	SetPool(ctx sdk.Context, pool Pool)
 	GetAmmPoolBalance(ctx sdk.Context, ammPool ammtypes.Pool, assetDenom string) (sdk.Int, error)
 	CheckLongingAssets(ctx sdk.Context, collateralAsset string, borrowAsset string) error
+	CheckSameAssetPosition(ctx sdk.Context, msg *MsgOpen) *MTP
 }
 
 //go:generate mockery --srcpkg . --name CloseLongChecker --structname CloseLongChecker --filename close_long_checker.go --with-expecter

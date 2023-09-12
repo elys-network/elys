@@ -15,7 +15,12 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen) (*types.MsgOpenRespons
 		return nil, err
 	}
 
-	if err := k.OpenChecker.CheckMaxOpenPositions(ctx); err != nil {
+	// Check if it is the same asset, same direction position for the same trader.
+	if mtp := k.CheckSameAssetPosition(ctx, msg); mtp != nil {
+		return k.OpenConsolidate(ctx, mtp, msg)
+	}
+
+	if err := k.CheckMaxOpenPositions(ctx); err != nil {
 		return nil, err
 	}
 
