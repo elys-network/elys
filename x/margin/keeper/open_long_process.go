@@ -84,5 +84,14 @@ func (k Keeper) ProcessOpenLong(ctx sdk.Context, mtp *types.MTP, leverage sdk.De
 		return nil, types.ErrMTPUnhealthy
 	}
 
+	// Update consolidated collateral amount
+	k.CalcMTPConsolidateCollateral(ctx, mtp)
+
+	// Calculate consolidate liabiltiy
+	k.CalcMTPConsolidateLiability(ctx, mtp)
+
+	// Set MTP
+	k.SetMTP(ctx, mtp)
+
 	return mtp, nil
 }
