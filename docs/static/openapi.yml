@@ -39638,18 +39638,18 @@ paths:
                     items:
                       type: object
                       properties:
+                        liabilities:
+                          type: string
                         custody:
                           type: string
                         asset_balance:
+                          type: string
+                        unsettled_liabilities:
                           type: string
                         block_interest:
                           type: string
                         asset_denom:
                           type: string
-                  liabilities:
-                    type: string
-                  unsettled_liabilities:
-                    type: string
         default:
           description: An unexpected error response.
           schema:
@@ -39706,18 +39706,18 @@ paths:
                       items:
                         type: object
                         properties:
+                          liabilities:
+                            type: string
                           custody:
                             type: string
                           asset_balance:
+                            type: string
+                          unsettled_liabilities:
                             type: string
                           block_interest:
                             type: string
                           asset_denom:
                             type: string
-                    liabilities:
-                      type: string
-                    unsettled_liabilities:
-                      type: string
               pagination:
                 type: object
                 properties:
@@ -79167,24 +79167,28 @@ definitions:
         items:
           type: object
           properties:
+            liabilities:
+              type: string
             custody:
               type: string
             asset_balance:
+              type: string
+            unsettled_liabilities:
               type: string
             block_interest:
               type: string
             asset_denom:
               type: string
-      liabilities:
-        type: string
-      unsettled_liabilities:
-        type: string
   elys.margin.PoolAsset:
     type: object
     properties:
+      liabilities:
+        type: string
       custody:
         type: string
       asset_balance:
+        type: string
+      unsettled_liabilities:
         type: string
       block_interest:
         type: string
@@ -79488,18 +79492,18 @@ definitions:
               items:
                 type: object
                 properties:
+                  liabilities:
+                    type: string
                   custody:
                     type: string
                   asset_balance:
+                    type: string
+                  unsettled_liabilities:
                     type: string
                   block_interest:
                     type: string
                   asset_denom:
                     type: string
-            liabilities:
-              type: string
-            unsettled_liabilities:
-              type: string
       pagination:
         type: object
         properties:
@@ -79548,18 +79552,18 @@ definitions:
             items:
               type: object
               properties:
+                liabilities:
+                  type: string
                 custody:
                   type: string
                 asset_balance:
+                  type: string
+                unsettled_liabilities:
                   type: string
                 block_interest:
                   type: string
                 asset_denom:
                   type: string
-          liabilities:
-            type: string
-          unsettled_liabilities:
-            type: string
   elys.margin.StatusResponse:
     type: object
     properties:
