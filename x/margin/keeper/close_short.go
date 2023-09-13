@@ -19,32 +19,41 @@ func (k Keeper) CloseShort(ctx sdk.Context, msg *types.MsgClose) (*types.MTP, sd
 		return nil, sdk.ZeroInt(), sdkerrors.Wrap(types.ErrInvalidBorrowingAsset, "invalid pool id")
 	}
 
-	// Retrieve AmmPool
-	ammPool, err := k.CloseShortChecker.GetAmmPool(ctx, mtp.AmmPoolId, mtp.CustodyAsset)
-	if err != nil {
-		return nil, sdk.ZeroInt(), err
-	}
+	repayAmount := sdk.ZeroInt()
+	for _, custodyAsset := range mtp.CustodyAssets {
+		// Retrieve AmmPool
+		ammPool, err := k.CloseShortChecker.GetAmmPool(ctx, mtp.AmmPoolId, custodyAsset)
+		if err != nil {
+			return nil, sdk.ZeroInt(), err
+		}
 
-	// Handle Interest if within epoch position
-	if err := k.CloseShortChecker.HandleInterest(ctx, &mtp, &pool, ammPool); err != nil {
-		return nil, sdk.ZeroInt(), err
-	}
+		for _, collateralAsset := range mtp.CollateralAssets {
 
-	// Take out custody
-	err = k.CloseShortChecker.TakeOutCustody(ctx, mtp, &pool)
-	if err != nil {
-		return nil, sdk.ZeroInt(), err
-	}
+			// Handle Interest if within epoch position
+			if err := k.CloseShortChecker.HandleInterest(ctx, &mtp, &pool, ammPool, collateralAsset, custodyAsset); err != nil {
+				return nil, sdk.ZeroInt(), err
+			}
+		}
 
-	// Estimate swap and repay
-	repayAmount, err := k.CloseShortChecker.EstimateAndRepay(ctx, mtp, pool, ammPool)
-	if err != nil {
-		return nil, sdk.ZeroInt(), err
-	}
+		// Take out custody
+		err = k.CloseShortChecker.TakeOutCustody(ctx, mtp, &pool, custodyAsset)
+		if err != nil {
+			return nil, sdk.ZeroInt(), err
+		}
 
-	// Hooks after margin position closed
-	if k.hooks != nil {
-		k.hooks.AfterMarginPositionClosed(ctx, ammPool, pool)
+		for _, collateralAsset := range mtp.CollateralAssets {
+			// Estimate swap and repay
+			repayAmt, err := k.CloseShortChecker.EstimateAndRepay(ctx, mtp, pool, ammPool, collateralAsset, custodyAsset)
+			if err != nil {
+				return nil, sdk.ZeroInt(), err
+			}
+			repayAmount = repayAmount.Add(repayAmt)
+		}
+
+		// Hooks after margin position closed
+		if k.hooks != nil {
+			k.hooks.AfterMarginPositionClosed(ctx, ammPool, pool)
+		}
 	}
 
 	return &mtp, repayAmount, nil

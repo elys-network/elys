@@ -14,18 +14,35 @@ func (k Keeper) UpdateMTPHealth(ctx sdk.Context, mtp types.MTP, ammPool ammtypes
 		return sdk.ZeroDec(), nil
 	}
 	// include unpaid interest in debt (from disabled incremental pay)
-	if mtp.InterestUnpaidCollateral.GT(sdk.ZeroInt()) {
-		xl = xl.Add(mtp.InterestUnpaidCollateral)
+	for i := range mtp.CollateralAssets {
+		if mtp.InterestUnpaidCollaterals[i].GT(sdk.ZeroInt()) {
+			unpaidCollaterals := sdk.NewCoin(mtp.CollateralAssets[i], mtp.InterestUnpaidCollaterals[i])
+
+			if mtp.CollateralAssets[i] == ptypes.USDC {
+				xl = xl.Add(mtp.InterestUnpaidCollaterals[i])
+			} else {
+				C, err := k.EstimateSwapGivenOut(ctx, unpaidCollaterals, ptypes.USDC, ammPool)
+				if err != nil {
+					return sdk.ZeroDec(), err
+				}
+
+				xl = xl.Add(C)
+			}
+		}
 	}
 
-	custodyTokenIn := sdk.NewCoin(mtp.CustodyAsset, mtp.CustodyAmount)
-	// All liabilty is in usdc
-	C, err := k.EstimateSwapGivenOut(ctx, custodyTokenIn, ptypes.USDC, ammPool)
-	if err != nil {
-		return sdk.ZeroDec(), err
+	custodyAmtInUSDC := sdk.ZeroInt()
+	for i := range mtp.CustodyAssets {
+		custodyTokenIn := sdk.NewCoin(mtp.CustodyAssets[i], mtp.CustodyAmounts[i])
+		// All liabilty is in usdc
+		C, err := k.EstimateSwapGivenOut(ctx, custodyTokenIn, ptypes.USDC, ammPool)
+		if err != nil {
+			return sdk.ZeroDec(), err
+		}
+		custodyAmtInUSDC = custodyAmtInUSDC.Add(C)
 	}
 
-	lr := sdk.NewDecFromBigInt(C.BigInt()).Quo(sdk.NewDecFromBigInt(xl.BigInt()))
+	lr := sdk.NewDecFromBigInt(custodyAmtInUSDC.BigInt()).Quo(sdk.NewDecFromBigInt(xl.BigInt()))
 
 	return lr, nil
 }

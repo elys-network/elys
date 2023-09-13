@@ -10,7 +10,7 @@ func (k Keeper) OpenConsolidateLong(ctx sdk.Context, poolId uint64, mtp *types.M
 	leverage := sdk.MinDec(msg.Leverage, maxLeverage)
 	eta := leverage.Sub(sdk.OneDec())
 	collateralAmountDec := sdk.NewDecFromBigInt(msg.CollateralAmount.BigInt())
-	mtp.Leverage = leverage
+	mtp.Leverages = append(mtp.Leverages, leverage)
 
 	return k.ProcessOpenLong(ctx, mtp, leverage, eta, collateralAmountDec, poolId, msg)
 }

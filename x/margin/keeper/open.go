@@ -15,8 +15,8 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen) (*types.MsgOpenRespons
 		return nil, err
 	}
 
-	// Check if it is the same asset, same direction position for the same trader.
-	if mtp := k.CheckSameAssetPosition(ctx, msg); mtp != nil {
+	// Check if it is the same direction position for the same trader.
+	if mtp := k.CheckSamePosition(ctx, msg); mtp != nil {
 		return k.OpenConsolidate(ctx, mtp, msg)
 	}
 

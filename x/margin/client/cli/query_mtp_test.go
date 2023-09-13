@@ -37,20 +37,20 @@ func networkWithMTPObjects(t *testing.T, n int) (*network.Network, []*types.MTP)
 	cfg := network.DefaultConfig()
 	for i := 0; i < n; i++ {
 		mtp := types.MTP{
-			Address:                  addr[i].String(),
-			CollateralAsset:          paramtypes.USDC,
-			CollateralAmount:         sdk.NewInt(0),
-			Liabilities:              sdk.NewInt(0),
-			InterestPaidCollateral:   sdk.NewInt(0),
-			InterestPaidCustody:      sdk.NewInt(0),
-			InterestUnpaidCollateral: sdk.NewInt(0),
-			CustodyAsset:             "ATOM",
-			CustodyAmount:            sdk.NewInt(0),
-			Leverage:                 sdk.NewDec(0),
-			MtpHealth:                sdk.NewDec(0),
-			Position:                 types.Position_LONG,
-			Id:                       (uint64)(i + 1),
-			AmmPoolId:                (uint64)(i + 1),
+			Address:                   addr[i].String(),
+			CollateralAssets:          []string{paramtypes.USDC},
+			CollateralAmounts:         []sdk.Int{sdk.NewInt(0)},
+			Liabilities:               sdk.NewInt(0),
+			InterestPaidCollaterals:   []sdk.Int{sdk.NewInt(0)},
+			InterestPaidCustodys:      []sdk.Int{sdk.NewInt(0)},
+			InterestUnpaidCollaterals: []sdk.Int{sdk.NewInt(0)},
+			CustodyAssets:             []string{"ATOM"},
+			CustodyAmounts:            []sdk.Int{sdk.NewInt(0)},
+			Leverages:                 []sdk.Dec{sdk.NewDec(0)},
+			MtpHealth:                 sdk.NewDec(0),
+			Position:                  types.Position_LONG,
+			Id:                        (uint64)(i + 1),
+			AmmPoolId:                 (uint64)(i + 1),
 		}
 		nullify.Fill(&mtp)
 		mtps = append(mtps, &mtp)

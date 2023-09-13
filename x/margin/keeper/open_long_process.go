@@ -63,7 +63,7 @@ func (k Keeper) ProcessOpenLong(ctx sdk.Context, mtp *types.MTP, leverage sdk.De
 		return nil, sdkerrors.Wrap(types.ErrCustodyTooHigh, custodyAmount.String())
 	}
 
-	err = k.OpenLongChecker.Borrow(ctx, msg.CollateralAsset, msg.CollateralAmount, custodyAmount, mtp, &ammPool, &pool, eta)
+	err = k.OpenLongChecker.Borrow(ctx, msg.CollateralAsset, msg.BorrowAsset, msg.CollateralAmount, custodyAmount, mtp, &ammPool, &pool, eta)
 	if err != nil {
 		return nil, err
 	}

@@ -5,7 +5,7 @@ import (
 	"github.com/elys-network/elys/x/margin/types"
 )
 
-func (k Keeper) CheckSameAssetPosition(ctx sdk.Context, msg *types.MsgOpen) *types.MTP {
+func (k Keeper) CheckSamePosition(ctx sdk.Context, msg *types.MsgOpen) *types.MTP {
 	mtps := k.GetAllMTPs(ctx)
 	for _, mtp := range mtps {
 		if mtp.Address == msg.Creator && mtp.Position == msg.Position {

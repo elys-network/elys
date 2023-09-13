@@ -4,15 +4,33 @@ import (
 	"math/big"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	ammtypes "github.com/elys-network/elys/x/amm/types"
 	"github.com/elys-network/elys/x/margin/types"
+	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
 
-func (k Keeper) CalcMTPInterestLiabilities(mtp *types.MTP, interestRate sdk.Dec, epochPosition, epochLength int64) sdk.Int {
+func (k Keeper) CalcMTPInterestLiabilities(ctx sdk.Context, mtp *types.MTP, interestRate sdk.Dec, epochPosition, epochLength int64, ammPool ammtypes.Pool, collateralAsset string) sdk.Int {
 	var interestRational, liabilitiesRational, rate, epochPositionRational, epochLengthRational big.Rat
 
 	rate.SetFloat64(interestRate.MustFloat64())
 
-	liabilitiesRational.SetInt(mtp.Liabilities.BigInt().Add(mtp.Liabilities.BigInt(), mtp.InterestUnpaidCollateral.BigInt()))
+	collateralIndex, _ := k.GetMTPAssetIndex(mtp, collateralAsset, "")
+	unpaidCollaterals := sdk.ZeroInt()
+	// Calculate collateral interests in usdc
+	if mtp.CollateralAssets[collateralIndex] == ptypes.USDC {
+		unpaidCollaterals = unpaidCollaterals.Add(mtp.InterestUnpaidCollaterals[collateralIndex])
+	} else {
+		// Liability is in usdc, so convert it to usdc
+		unpaidCollateralIn := sdk.NewCoin(mtp.CollateralAssets[collateralIndex], mtp.InterestUnpaidCollaterals[collateralIndex])
+		C, err := k.EstimateSwapGivenOut(ctx, unpaidCollateralIn, ptypes.USDC, ammPool)
+		if err != nil {
+			return sdk.ZeroInt()
+		}
+
+		unpaidCollaterals = unpaidCollaterals.Add(C)
+	}
+
+	liabilitiesRational.SetInt(mtp.Liabilities.BigInt().Add(mtp.Liabilities.BigInt(), unpaidCollaterals.BigInt()))
 	interestRational.Mul(&rate, &liabilitiesRational)
 
 	if epochPosition > 0 { // prorate interest if within epoch
@@ -24,7 +42,7 @@ func (k Keeper) CalcMTPInterestLiabilities(mtp *types.MTP, interestRate sdk.Dec,
 
 	interestNew := interestRational.Num().Quo(interestRational.Num(), interestRational.Denom())
 
-	interestNewInt := sdk.NewIntFromBigInt(interestNew.Add(interestNew, mtp.InterestUnpaidCollateral.BigInt()))
+	interestNewInt := sdk.NewIntFromBigInt(interestNew.Add(interestNew, unpaidCollaterals.BigInt()))
 	// round up to lowest digit if interest too low and rate not 0
 	if interestNewInt.IsZero() && !interestRate.IsZero() {
 		interestNewInt = sdk.NewInt(1)
