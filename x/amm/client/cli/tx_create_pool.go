@@ -16,9 +16,10 @@ var _ = strconv.Itoa(0)
 
 func CmdCreatePool() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "create-pool [weights] [initial-deposit] [swap-fee] [exit-fee]",
-		Short: "create a new pool and provide the liquidity to it",
-		Args:  cobra.ExactArgs(6),
+		Use:     "create-pool [weights] [initial-deposit] [swap-fee] [exit-fee]",
+		Short:   "create a new pool and provide the liquidity to it",
+		Example: `elysd tx amm create-pool 100ueden,100uelys 1000000ueden,1000000uelys 0.00 0.00  --from=treasury --keyring-backend=test --chain-id=elystestnet-1 --yes --gas=1000000`,
+		Args:    cobra.ExactArgs(4),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			argWeights, err := sdk.ParseCoinsNormalized(args[0])
 			if err != nil {
