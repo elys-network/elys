@@ -38,6 +38,10 @@ type OpenChecker interface {
 	OpenLong(ctx sdk.Context, poolId uint64, msg *MsgOpen) (*MTP, error)
 	OpenShort(ctx sdk.Context, poolId uint64, msg *MsgOpen) (*MTP, error)
 	EmitOpenEvent(ctx sdk.Context, mtp *MTP)
+	SetMTP(ctx sdk.Context, mtp *MTP) error
+	CheckSamePosition(ctx sdk.Context, msg *MsgOpen) *MTP
+	GetOpenMTPCount(ctx sdk.Context) uint64
+	GetMaxOpenPositions(ctx sdk.Context) uint64
 }
 
 //go:generate mockery --srcpkg . --name OpenLongChecker --structname OpenLongChecker --filename open_long_checker.go --with-expecter
