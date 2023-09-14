@@ -121,7 +121,9 @@ func TestCloseLong_ErrorHandleInterest(t *testing.T) {
 			Id:      1,
 		}
 		mtp = types.MTP{
-			AmmPoolId: 2,
+			AmmPoolId:        2,
+			CustodyAssets:    []string{"uatom"},
+			CollateralAssets: []string{"uusdc"},
 		}
 		pool = types.Pool{
 			InterestRate: math.LegacyNewDec(2),
@@ -133,7 +135,7 @@ func TestCloseLong_ErrorHandleInterest(t *testing.T) {
 	mockChecker.On("GetMTP", ctx, msg.Creator, msg.Id).Return(mtp, nil)
 	mockChecker.On("GetPool", ctx, mtp.AmmPoolId).Return(pool, true)
 	mockChecker.On("GetAmmPool", ctx, mtp.AmmPoolId, mtp.CustodyAssets[0]).Return(ammPool, nil)
-	mockChecker.On("HandleInterest", ctx, &mtp, &pool, ammPool).Return(errors.New("error executing handle interest"))
+	mockChecker.On("HandleInterest", ctx, &mtp, &pool, ammPool, mtp.CollateralAssets[0], mtp.CustodyAssets[0]).Return(errors.New("error executing handle interest"))
 
 	_, _, err := k.CloseLong(ctx, msg)
 
@@ -158,7 +160,9 @@ func TestCloseLong_ErrorTakeOutCustody(t *testing.T) {
 			Id:      1,
 		}
 		mtp = types.MTP{
-			AmmPoolId: 2,
+			AmmPoolId:        2,
+			CustodyAssets:    []string{"uatom"},
+			CollateralAssets: []string{"uusdc"},
 		}
 		pool = types.Pool{
 			InterestRate: math.LegacyNewDec(2),
@@ -170,8 +174,8 @@ func TestCloseLong_ErrorTakeOutCustody(t *testing.T) {
 	mockChecker.On("GetMTP", ctx, msg.Creator, msg.Id).Return(mtp, nil)
 	mockChecker.On("GetPool", ctx, mtp.AmmPoolId).Return(pool, true)
 	mockChecker.On("GetAmmPool", ctx, mtp.AmmPoolId, mtp.CustodyAssets[0]).Return(ammPool, nil)
-	mockChecker.On("HandleInterest", ctx, &mtp, &pool, ammPool).Return(nil)
-	mockChecker.On("TakeOutCustody", ctx, mtp, &pool).Return(errors.New("error executing take out custody"))
+	mockChecker.On("HandleInterest", ctx, &mtp, &pool, ammPool, mtp.CollateralAssets[0], mtp.CustodyAssets[0]).Return(nil)
+	mockChecker.On("TakeOutCustody", ctx, mtp, &pool, mtp.CustodyAssets[0]).Return(errors.New("error executing take out custody"))
 
 	_, _, err := k.CloseLong(ctx, msg)
 
@@ -196,7 +200,9 @@ func TestCloseLong_ErrorEstimateAndRepay(t *testing.T) {
 			Id:      1,
 		}
 		mtp = types.MTP{
-			AmmPoolId: 2,
+			AmmPoolId:        2,
+			CustodyAssets:    []string{"uatom"},
+			CollateralAssets: []string{"uusdc"},
 		}
 		pool = types.Pool{
 			InterestRate: math.LegacyNewDec(2),
@@ -208,9 +214,9 @@ func TestCloseLong_ErrorEstimateAndRepay(t *testing.T) {
 	mockChecker.On("GetMTP", ctx, msg.Creator, msg.Id).Return(mtp, nil)
 	mockChecker.On("GetPool", ctx, mtp.AmmPoolId).Return(pool, true)
 	mockChecker.On("GetAmmPool", ctx, mtp.AmmPoolId, mtp.CustodyAssets[0]).Return(ammPool, nil)
-	mockChecker.On("HandleInterest", ctx, &mtp, &pool, ammPool).Return(nil)
-	mockChecker.On("TakeOutCustody", ctx, mtp, &pool).Return(nil)
-	mockChecker.On("EstimateAndRepay", ctx, mtp, pool, ammPool).Return(sdk.Int{}, errors.New("error executing estimate and repay"))
+	mockChecker.On("HandleInterest", ctx, &mtp, &pool, ammPool, mtp.CollateralAssets[0], mtp.CustodyAssets[0]).Return(nil)
+	mockChecker.On("TakeOutCustody", ctx, mtp, &pool, mtp.CustodyAssets[0]).Return(nil)
+	mockChecker.On("EstimateAndRepay", ctx, mtp, pool, ammPool, mtp.CollateralAssets[0], mtp.CustodyAssets[0]).Return(sdk.Int{}, errors.New("error executing estimate and repay"))
 
 	_, _, err := k.CloseLong(ctx, msg)
 
@@ -235,7 +241,9 @@ func TestCloseLong_SuccessfulClosingLongPosition(t *testing.T) {
 			Id:      1,
 		}
 		mtp = types.MTP{
-			AmmPoolId: 2,
+			AmmPoolId:        2,
+			CustodyAssets:    []string{"uatom"},
+			CollateralAssets: []string{"uusdc"},
 		}
 		pool = types.Pool{
 			InterestRate: math.LegacyNewDec(2),
@@ -248,9 +256,9 @@ func TestCloseLong_SuccessfulClosingLongPosition(t *testing.T) {
 	mockChecker.On("GetMTP", ctx, msg.Creator, msg.Id).Return(mtp, nil)
 	mockChecker.On("GetPool", ctx, mtp.AmmPoolId).Return(pool, true)
 	mockChecker.On("GetAmmPool", ctx, mtp.AmmPoolId, mtp.CustodyAssets[0]).Return(ammPool, nil)
-	mockChecker.On("HandleInterest", ctx, &mtp, &pool, ammPool).Return(nil)
-	mockChecker.On("TakeOutCustody", ctx, mtp, &pool).Return(nil)
-	mockChecker.On("EstimateAndRepay", ctx, mtp, pool, ammPool).Return(repayAmount, nil)
+	mockChecker.On("HandleInterest", ctx, &mtp, &pool, ammPool, mtp.CollateralAssets[0], mtp.CustodyAssets[0]).Return(nil)
+	mockChecker.On("TakeOutCustody", ctx, mtp, &pool, mtp.CustodyAssets[0]).Return(nil)
+	mockChecker.On("EstimateAndRepay", ctx, mtp, pool, ammPool, mtp.CollateralAssets[0], mtp.CustodyAssets[0]).Return(repayAmount, nil)
 
 	mtpOut, repayAmountOut, err := k.CloseLong(ctx, msg)
 

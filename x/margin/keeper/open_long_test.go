@@ -262,7 +262,7 @@ func TestOpenLong_ErrorsDuringOperations(t *testing.T) {
 	mtp := types.NewMTP(msg.Creator, msg.CollateralAsset, msg.BorrowAsset, msg.Position, msg.Leverage, poolId)
 
 	borrowError := errors.New("borrow error")
-	mockChecker.On("Borrow", ctx, msg.CollateralAsset, msg.CollateralAmount, custodyAmount, mtp, &ammtypes.Pool{}, &types.Pool{}, eta).Return(borrowError)
+	mockChecker.On("Borrow", ctx, msg.CollateralAsset, msg.BorrowAsset, msg.CollateralAmount, custodyAmount, mtp, &ammtypes.Pool{}, &types.Pool{}, eta).Return(borrowError)
 
 	_, err := k.OpenLong(ctx, poolId, msg)
 
@@ -318,7 +318,7 @@ func TestOpenLong_LeverageRatioLessThanSafetyFactor(t *testing.T) {
 
 	mtp := types.NewMTP(msg.Creator, msg.CollateralAsset, msg.BorrowAsset, msg.Position, msg.Leverage, poolId)
 
-	mockChecker.On("Borrow", ctx, msg.CollateralAsset, msg.CollateralAmount, custodyAmount, mtp, &ammtypes.Pool{}, &types.Pool{}, eta).Return(nil)
+	mockChecker.On("Borrow", ctx, msg.CollateralAsset, msg.BorrowAsset, msg.CollateralAmount, custodyAmount, mtp, &ammtypes.Pool{}, &types.Pool{}, eta).Return(nil)
 	mockChecker.On("UpdatePoolHealth", ctx, &types.Pool{}).Return(nil)
 	mockChecker.On("TakeInCustody", ctx, *mtp, &types.Pool{}).Return(nil)
 
@@ -381,7 +381,7 @@ func TestOpenLong_Success(t *testing.T) {
 
 	mtp := types.NewMTP(msg.Creator, msg.CollateralAsset, msg.BorrowAsset, msg.Position, msg.Leverage, poolId)
 
-	mockChecker.On("Borrow", ctx, msg.CollateralAsset, msg.CollateralAmount, custodyAmount, mtp, &ammtypes.Pool{}, &types.Pool{}, eta).Return(nil)
+	mockChecker.On("Borrow", ctx, msg.CollateralAsset, msg.BorrowAsset, msg.CollateralAmount, custodyAmount, mtp, &ammtypes.Pool{}, &types.Pool{}, eta).Return(nil)
 	mockChecker.On("UpdatePoolHealth", ctx, &types.Pool{}).Return(nil)
 	mockChecker.On("TakeInCustody", ctx, *mtp, &types.Pool{}).Return(nil)
 

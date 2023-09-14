@@ -3,24 +3,20 @@ package keeper_test
 import (
 	"testing"
 
+	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/x/margin/keeper"
+	simapp "github.com/elys-network/elys/app"
 	"github.com/elys-network/elys/x/margin/types"
-	"github.com/elys-network/elys/x/margin/types/mocks"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestCheckSameAssets_NewPosition(t *testing.T) {
-	// Setup the mock checker
-	mockChecker := new(mocks.PositionChecker)
+	app := simapp.InitElysTestApp(true)
+	ctx := app.BaseApp.NewContext(true, tmproto.Header{})
 
-	// Create an instance of Keeper with the mock checker
-	k := keeper.Keeper{
-		PositionChecker: mockChecker,
-	}
+	k := app.MarginKeeper
 
-	ctx := sdk.Context{} // mock or setup a context
 	mtp := types.NewMTP("creator", ptypes.USDC, ptypes.ATOM, types.Position_LONG, sdk.NewDec(5), 1)
 	k.SetMTP(ctx, mtp)
 
@@ -37,5 +33,4 @@ func TestCheckSameAssets_NewPosition(t *testing.T) {
 
 	// Expect no error
 	assert.Nil(t, mtp)
-	mockChecker.AssertExpectations(t)
 }
