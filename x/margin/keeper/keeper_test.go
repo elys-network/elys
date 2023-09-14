@@ -6,7 +6,6 @@ import (
 	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	simapp "github.com/elys-network/elys/app"
-	"github.com/elys-network/elys/testutil/nullify"
 	"github.com/elys-network/elys/x/margin/types"
 	paramtypes "github.com/elys-network/elys/x/parameter/types"
 	"github.com/stretchr/testify/require"
@@ -41,16 +40,15 @@ func TestSetGetMTP(t *testing.T) {
 			MtpHealth:                 sdk.NewDec(0),
 			Position:                  types.Position_LONG,
 			Id:                        0,
+			ConsolidateLeverage:       sdk.ZeroDec(),
+			SumCollateral:             sdk.ZeroInt(),
 		}
-		nullify.Fill(&mtp)
-
 		err := margin.SetMTP(ctx, &mtp)
 		require.NoError(t, err)
 	}
 
 	mtpCount := margin.GetMTPCount(ctx)
 	require.Equal(t, mtpCount, (uint64)(2))
-
 }
 
 func TestGetAllWhitelistedAddress(t *testing.T) {
