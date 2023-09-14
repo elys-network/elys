@@ -28,8 +28,10 @@ type (
 		types.PoolChecker
 		types.OpenChecker
 		types.OpenLongChecker
+		types.OpenShortChecker
 		types.CloseLongChecker
 		types.CloseShortChecker
+
 		cdc          codec.BinaryCodec
 		storeKey     storetypes.StoreKey
 		memKey       storetypes.StoreKey
@@ -71,6 +73,7 @@ func NewKeeper(
 	keeper.PoolChecker = keeper
 	keeper.OpenChecker = keeper
 	keeper.OpenLongChecker = keeper
+	keeper.OpenShortChecker = keeper
 	keeper.CloseLongChecker = keeper
 	keeper.CloseShortChecker = keeper
 

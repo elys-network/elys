@@ -5,9 +5,9 @@ import (
 	"github.com/elys-network/elys/x/margin/types"
 )
 
-func (k Keeper) OpenLong(ctx sdk.Context, poolId uint64, msg *types.MsgOpen) (*types.MTP, error) {
+func (k Keeper) OpenShort(ctx sdk.Context, poolId uint64, msg *types.MsgOpen) (*types.MTP, error) {
 	// Determine the maximum leverage available and compute the effective leverage to be used.
-	maxLeverage := k.OpenLongChecker.GetMaxLeverageParam(ctx)
+	maxLeverage := k.OpenShortChecker.GetMaxLeverageParam(ctx)
 	leverage := sdk.MinDec(msg.Leverage, maxLeverage)
 
 	// Calculate the eta value.
@@ -19,6 +19,6 @@ func (k Keeper) OpenLong(ctx sdk.Context, poolId uint64, msg *types.MsgOpen) (*t
 	// Initialize a new Margin Trading Position (MTP).
 	mtp := types.NewMTP(msg.Creator, msg.CollateralAsset, msg.BorrowAsset, msg.Position, leverage, poolId)
 
-	// Call the function to process the open long logic.
-	return k.ProcessOpenLong(ctx, mtp, leverage, eta, collateralAmountDec, poolId, msg)
+	// Call the function to process the open short logic.
+	return k.ProcessOpenShort(ctx, mtp, leverage, eta, collateralAmountDec, poolId, msg)
 }

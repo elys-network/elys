@@ -9,7 +9,7 @@ import (
 
 func (k Keeper) ProcessOpenLong(ctx sdk.Context, mtp *types.MTP, leverage sdk.Dec, eta sdk.Dec, collateralAmountDec sdk.Dec, poolId uint64, msg *types.MsgOpen) (*types.MTP, error) {
 	// Get token asset other than USDC
-	nonNativeAsset := k.OpenLongChecker.GetNonNativeAsset(msg.CollateralAsset, msg.BorrowAsset)
+	nonNativeAsset := k.OpenLongChecker.GetTradingAsset(msg.CollateralAsset, msg.BorrowAsset)
 
 	pool, found := k.OpenLongChecker.GetPool(ctx, poolId)
 	if !found {
@@ -85,13 +85,13 @@ func (k Keeper) ProcessOpenLong(ctx sdk.Context, mtp *types.MTP, leverage sdk.De
 	}
 
 	// Update consolidated collateral amount
-	k.CalcMTPConsolidateCollateral(ctx, mtp)
+	k.OpenLongChecker.CalcMTPConsolidateCollateral(ctx, mtp)
 
 	// Calculate consolidate liabiltiy
-	k.CalcMTPConsolidateLiability(ctx, mtp)
+	k.OpenLongChecker.CalcMTPConsolidateLiability(ctx, mtp)
 
 	// Set MTP
-	k.SetMTP(ctx, mtp)
+	k.OpenLongChecker.SetMTP(ctx, mtp)
 
 	return mtp, nil
 }

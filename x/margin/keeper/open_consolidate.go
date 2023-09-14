@@ -8,7 +8,7 @@ import (
 
 func (k Keeper) OpenConsolidate(ctx sdk.Context, mtp *types.MTP, msg *types.MsgOpen) (*types.MsgOpenResponse, error) {
 	// Get token asset other than USDC
-	nonNativeAsset := k.OpenLongChecker.GetNonNativeAsset(msg.CollateralAsset, msg.BorrowAsset)
+	nonNativeAsset := k.OpenLongChecker.GetTradingAsset(msg.CollateralAsset, msg.BorrowAsset)
 
 	poolId := mtp.AmmPoolId
 	pool, found := k.OpenLongChecker.GetPool(ctx, poolId)

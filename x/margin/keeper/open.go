@@ -25,7 +25,7 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen) (*types.MsgOpenRespons
 	}
 
 	// Get token asset other than USDC
-	nonNativeAsset := k.OpenChecker.GetNonNativeAsset(msg.CollateralAsset, msg.BorrowAsset)
+	nonNativeAsset := k.OpenChecker.GetTradingAsset(msg.CollateralAsset, msg.BorrowAsset)
 
 	// Get pool id, amm pool, and margin pool
 	poolId, ammPool, pool, err := k.OpenChecker.PreparePools(ctx, nonNativeAsset)

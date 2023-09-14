@@ -230,8 +230,8 @@ func (_c *OpenChecker_EmitOpenEvent_Call) RunAndReturn(run func(types.Context, *
 	return _c
 }
 
-// GetNonNativeAsset provides a mock function with given fields: collateralAsset, borrowAsset
-func (_m *OpenChecker) GetNonNativeAsset(collateralAsset string, borrowAsset string) string {
+// GetTradingAsset provides a mock function with given fields: collateralAsset, borrowAsset
+func (_m *OpenChecker) GetTradingAsset(collateralAsset string, borrowAsset string) string {
 	ret := _m.Called(collateralAsset, borrowAsset)
 
 	var r0 string
@@ -244,31 +244,31 @@ func (_m *OpenChecker) GetNonNativeAsset(collateralAsset string, borrowAsset str
 	return r0
 }
 
-// OpenChecker_GetNonNativeAsset_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetNonNativeAsset'
-type OpenChecker_GetNonNativeAsset_Call struct {
+// OpenChecker_GetTradingAsset_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetTradingAsset'
+type OpenChecker_GetTradingAsset_Call struct {
 	*mock.Call
 }
 
-// GetNonNativeAsset is a helper method to define mock.On call
+// GetTradingAsset is a helper method to define mock.On call
 //   - collateralAsset string
 //   - borrowAsset string
-func (_e *OpenChecker_Expecter) GetNonNativeAsset(collateralAsset interface{}, borrowAsset interface{}) *OpenChecker_GetNonNativeAsset_Call {
-	return &OpenChecker_GetNonNativeAsset_Call{Call: _e.mock.On("GetNonNativeAsset", collateralAsset, borrowAsset)}
+func (_e *OpenChecker_Expecter) GetTradingAsset(collateralAsset interface{}, borrowAsset interface{}) *OpenChecker_GetTradingAsset_Call {
+	return &OpenChecker_GetTradingAsset_Call{Call: _e.mock.On("GetTradingAsset", collateralAsset, borrowAsset)}
 }
 
-func (_c *OpenChecker_GetNonNativeAsset_Call) Run(run func(collateralAsset string, borrowAsset string)) *OpenChecker_GetNonNativeAsset_Call {
+func (_c *OpenChecker_GetTradingAsset_Call) Run(run func(collateralAsset string, borrowAsset string)) *OpenChecker_GetTradingAsset_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		run(args[0].(string), args[1].(string))
 	})
 	return _c
 }
 
-func (_c *OpenChecker_GetNonNativeAsset_Call) Return(_a0 string) *OpenChecker_GetNonNativeAsset_Call {
+func (_c *OpenChecker_GetTradingAsset_Call) Return(_a0 string) *OpenChecker_GetTradingAsset_Call {
 	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *OpenChecker_GetNonNativeAsset_Call) RunAndReturn(run func(string, string) string) *OpenChecker_GetNonNativeAsset_Call {
+func (_c *OpenChecker_GetTradingAsset_Call) RunAndReturn(run func(string, string) string) *OpenChecker_GetTradingAsset_Call {
 	_c.Call.Return(run)
 	return _c
 }
