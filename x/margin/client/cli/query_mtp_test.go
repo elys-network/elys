@@ -15,7 +15,6 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	simapp "github.com/elys-network/elys/app"
 	"github.com/elys-network/elys/testutil/network"
-	"github.com/elys-network/elys/testutil/nullify"
 	"github.com/elys-network/elys/x/margin/client/cli"
 	"github.com/elys-network/elys/x/margin/types"
 	paramtypes "github.com/elys-network/elys/x/parameter/types"
@@ -51,8 +50,10 @@ func networkWithMTPObjects(t *testing.T, n int) (*network.Network, []*types.MTP)
 			Position:                  types.Position_LONG,
 			Id:                        (uint64)(i + 1),
 			AmmPoolId:                 (uint64)(i + 1),
+			ConsolidateLeverage:       sdk.ZeroDec(),
+			SumCollateral:             sdk.ZeroInt(),
 		}
-		nullify.Fill(&mtp)
+
 		mtps = append(mtps, &mtp)
 		state.MtpList = append(state.MtpList, mtp)
 	}
@@ -115,8 +116,8 @@ func TestShowMTP(t *testing.T) {
 				require.NoError(t, net.Config.Codec.UnmarshalJSON(out.Bytes(), &resp))
 				require.NotNil(t, resp.Mtp)
 				require.Equal(t,
-					nullify.Fill(&tc.obj),
-					nullify.Fill(resp.Mtp),
+					tc.obj,
+					resp.Mtp,
 				)
 			}
 		})
