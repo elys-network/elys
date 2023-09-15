@@ -9,6 +9,7 @@ import (
 
 	"github.com/elys-network/elys/testutil/network"
 	"github.com/elys-network/elys/x/margin/client/cli"
+	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
 
 // Prevent strconv unused error
@@ -30,7 +31,7 @@ func TestOpenPosition(t *testing.T) {
 	// Tendermint RPC calls.
 	// ...
 	args := []string{
-		"--collateral_asset=uusdc",
+		"--collateral_asset=" + ptypes.BaseCurrency,
 		"--borrow_asset=uatom",
 		"--collateral_amount=1000",
 		"--position=long",

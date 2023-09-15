@@ -6,6 +6,7 @@ import (
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 	"github.com/elys-network/elys/x/amm/keeper"
 	"github.com/elys-network/elys/x/amm/types"
+	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
 
 func (suite *KeeperTestSuite) TestMsgServerJoinPool() {
@@ -22,8 +23,8 @@ func (suite *KeeperTestSuite) TestMsgServerJoinPool() {
 	}{
 		{
 			desc:              "successful non-oracle join pool",
-			senderInitBalance: sdk.Coins{sdk.NewInt64Coin("uusdc", 100000), sdk.NewInt64Coin("uusdt", 100000)},
-			poolInitBalance:   sdk.Coins{sdk.NewInt64Coin("uusdc", 1000000), sdk.NewInt64Coin("uusdt", 1000000)},
+			senderInitBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 100000), sdk.NewInt64Coin("uusdt", 100000)},
+			poolInitBalance:   sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000), sdk.NewInt64Coin("uusdt", 1000000)},
 			poolParams: types.PoolParams{
 				SwapFee:                     sdk.ZeroDec(),
 				ExitFee:                     sdk.ZeroDec(),
@@ -34,17 +35,17 @@ func (suite *KeeperTestSuite) TestMsgServerJoinPool() {
 				StakingFeePortion:           sdk.ZeroDec(),
 				WeightRecoveryFeePortion:    sdk.ZeroDec(),
 				ThresholdWeightDifference:   sdk.ZeroDec(),
-				FeeDenom:                    "uusdc",
+				FeeDenom:                    ptypes.BaseCurrency,
 			},
 			shareOutAmount:   types.OneShare.Quo(sdk.NewInt(5)),
 			expSenderBalance: sdk.Coins{},
-			expTokenIn:       sdk.Coins{sdk.NewInt64Coin("uusdc", 100000), sdk.NewInt64Coin("uusdt", 100000)},
+			expTokenIn:       sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 100000), sdk.NewInt64Coin("uusdt", 100000)},
 			expPass:          true,
 		},
 		{
 			desc:              "not enough balance to join pool - non-oracle pool",
-			senderInitBalance: sdk.Coins{sdk.NewInt64Coin("uusdc", 1000000)},
-			poolInitBalance:   sdk.Coins{sdk.NewInt64Coin("uusdc", 1000000), sdk.NewInt64Coin("uusdt", 1000000)},
+			senderInitBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)},
+			poolInitBalance:   sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000), sdk.NewInt64Coin("uusdt", 1000000)},
 			poolParams: types.PoolParams{
 				SwapFee:                     sdk.ZeroDec(),
 				ExitFee:                     sdk.ZeroDec(),
@@ -55,7 +56,7 @@ func (suite *KeeperTestSuite) TestMsgServerJoinPool() {
 				StakingFeePortion:           sdk.ZeroDec(),
 				WeightRecoveryFeePortion:    sdk.ZeroDec(),
 				ThresholdWeightDifference:   sdk.ZeroDec(),
-				FeeDenom:                    "uusdc",
+				FeeDenom:                    ptypes.BaseCurrency,
 			},
 			shareOutAmount:   types.OneShare.Quo(sdk.NewInt(5)),
 			expSenderBalance: sdk.Coins{},
@@ -65,7 +66,7 @@ func (suite *KeeperTestSuite) TestMsgServerJoinPool() {
 		{
 			desc:              "oracle pool join - breaking weight on balanced pool",
 			senderInitBalance: sdk.Coins{sdk.NewInt64Coin("uusdt", 1000000)},
-			poolInitBalance:   sdk.Coins{sdk.NewInt64Coin("uusdc", 1000000), sdk.NewInt64Coin("uusdt", 1000000)},
+			poolInitBalance:   sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000), sdk.NewInt64Coin("uusdt", 1000000)},
 			poolParams: types.PoolParams{
 				SwapFee:                     sdk.ZeroDec(),
 				ExitFee:                     sdk.ZeroDec(),
@@ -76,7 +77,7 @@ func (suite *KeeperTestSuite) TestMsgServerJoinPool() {
 				StakingFeePortion:           sdk.ZeroDec(),
 				WeightRecoveryFeePortion:    sdk.ZeroDec(),
 				ThresholdWeightDifference:   sdk.NewDecWithPrec(2, 1), // 20%
-				FeeDenom:                    "uusdc",
+				FeeDenom:                    ptypes.BaseCurrency,
 			},
 			shareOutAmount:   sdk.NewInt(694444166666666666), // weight breaking fee
 			expSenderBalance: sdk.Coins{},
@@ -86,7 +87,7 @@ func (suite *KeeperTestSuite) TestMsgServerJoinPool() {
 		{
 			desc:              "oracle pool join - weight recovering on imbalanced pool",
 			senderInitBalance: sdk.Coins{sdk.NewInt64Coin("uusdt", 1000000)},
-			poolInitBalance:   sdk.Coins{sdk.NewInt64Coin("uusdc", 1500000), sdk.NewInt64Coin("uusdt", 500000)},
+			poolInitBalance:   sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 1500000), sdk.NewInt64Coin("uusdt", 500000)},
 			poolParams: types.PoolParams{
 				SwapFee:                     sdk.ZeroDec(),
 				ExitFee:                     sdk.ZeroDec(),
@@ -97,7 +98,7 @@ func (suite *KeeperTestSuite) TestMsgServerJoinPool() {
 				StakingFeePortion:           sdk.ZeroDec(),
 				WeightRecoveryFeePortion:    sdk.ZeroDec(),
 				ThresholdWeightDifference:   sdk.NewDecWithPrec(2, 1), // 20%
-				FeeDenom:                    "uusdc",
+				FeeDenom:                    ptypes.BaseCurrency,
 			},
 			shareOutAmount:   sdk.NewInt(805987500000000000), // weight recovery direction
 			expSenderBalance: sdk.Coins{},
@@ -106,8 +107,8 @@ func (suite *KeeperTestSuite) TestMsgServerJoinPool() {
 		},
 		{
 			desc:              "oracle pool join - zero slippage add liquidity",
-			senderInitBalance: sdk.Coins{sdk.NewInt64Coin("uusdc", 1500000), sdk.NewInt64Coin("uusdt", 500000)},
-			poolInitBalance:   sdk.Coins{sdk.NewInt64Coin("uusdc", 1500000), sdk.NewInt64Coin("uusdt", 500000)},
+			senderInitBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 1500000), sdk.NewInt64Coin("uusdt", 500000)},
+			poolInitBalance:   sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 1500000), sdk.NewInt64Coin("uusdt", 500000)},
 			poolParams: types.PoolParams{
 				SwapFee:                     sdk.ZeroDec(),
 				ExitFee:                     sdk.ZeroDec(),
@@ -118,11 +119,11 @@ func (suite *KeeperTestSuite) TestMsgServerJoinPool() {
 				StakingFeePortion:           sdk.ZeroDec(),
 				WeightRecoveryFeePortion:    sdk.ZeroDec(),
 				ThresholdWeightDifference:   sdk.NewDecWithPrec(2, 1), // 20%
-				FeeDenom:                    "uusdc",
+				FeeDenom:                    ptypes.BaseCurrency,
 			},
 			shareOutAmount:   sdk.NewInt(2000000000000000000),
 			expSenderBalance: sdk.Coins{},
-			expTokenIn:       sdk.Coins{sdk.NewInt64Coin("uusdc", 1500000), sdk.NewInt64Coin("uusdt", 500000)},
+			expTokenIn:       sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 1500000), sdk.NewInt64Coin("uusdt", 500000)},
 			expPass:          true,
 		},
 	} {

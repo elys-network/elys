@@ -5,6 +5,6 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-func (p *Pool) CalcExitPoolCoinsFromShares(ctx sdk.Context, oracleKeeper OracleKeeper, exitingShares math.Int, tokenOutDenom string) (exitedCoins sdk.Coins, err error) {
-	return CalcExitPool(ctx, oracleKeeper, *p, exitingShares, tokenOutDenom)
+func (p *Pool) CalcExitPoolCoinsFromShares(ctx sdk.Context, oracleKeeper OracleKeeper, accountedPoolKeeper AccountedPoolKeeper, exitingShares math.Int, tokenOutDenom string) (exitedCoins sdk.Coins, err error) {
+	return CalcExitPool(ctx, oracleKeeper, *p, accountedPoolKeeper, exitingShares, tokenOutDenom)
 }

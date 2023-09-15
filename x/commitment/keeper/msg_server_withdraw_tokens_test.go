@@ -11,6 +11,7 @@ import (
 	aptypes "github.com/elys-network/elys/x/assetprofile/types"
 	commitmentkeeper "github.com/elys-network/elys/x/commitment/keeper"
 	"github.com/elys-network/elys/x/commitment/types"
+	ptypes "github.com/elys-network/elys/x/parameter/types"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -28,7 +29,7 @@ func TestWithdrawTokens(t *testing.T) {
 
 	// Define the test data
 	creator := creatorAddr.String()
-	denom := "ueden"
+	denom := ptypes.Eden
 	initialUncommitted := sdk.NewInt(50)
 	initialCommitted := sdk.NewInt(100)
 

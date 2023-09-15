@@ -43,3 +43,8 @@ type AssetProfileKeeper interface {
 	// GetEntry returns a entry from its index
 	GetEntry(ctx sdk.Context, baseDenom string) (val atypes.Entry, found bool)
 }
+
+// AccountedPoolKeeper defines the expected interfaces
+type AccountedPoolKeeper interface {
+	GetAccountedBalance(sdk.Context, uint64, string) sdk.Int
+}

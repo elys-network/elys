@@ -8,16 +8,17 @@ import (
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 	"github.com/elys-network/elys/x/amm/keeper"
 	"github.com/elys-network/elys/x/amm/types"
+	ptypes "github.com/elys-network/elys/x/parameter/types"
 	"github.com/stretchr/testify/require"
 )
 
 func TestPortionCoins(t *testing.T) {
-	coins := sdk.Coins{sdk.NewInt64Coin("ueden", 1000), sdk.NewInt64Coin("uelys", 10000)}
+	coins := sdk.Coins{sdk.NewInt64Coin(ptypes.Eden, 1000), sdk.NewInt64Coin(ptypes.Elys, 10000)}
 	portion := keeper.PortionCoins(coins, sdk.ZeroDec())
 	require.Equal(t, portion, sdk.Coins{})
 
 	portion = keeper.PortionCoins(coins, sdk.NewDecWithPrec(1, 1))
-	require.Equal(t, portion, sdk.Coins{sdk.NewInt64Coin("ueden", 100), sdk.NewInt64Coin("uelys", 1000)})
+	require.Equal(t, portion, sdk.Coins{sdk.NewInt64Coin(ptypes.Eden, 100), sdk.NewInt64Coin(ptypes.Elys, 1000)})
 
 	portion = keeper.PortionCoins(coins, sdk.NewDec(1))
 	require.Equal(t, portion, coins)
@@ -33,23 +34,23 @@ func (suite *KeeperTestSuite) TestOnCollectFee() {
 	}{
 		{
 			desc:              "multiple fees collected",
-			fee:               sdk.Coins{sdk.NewInt64Coin("uelys", 1000), sdk.NewInt64Coin("uusdc", 1000)},
-			poolInitBalance:   sdk.Coins{sdk.NewInt64Coin("uelys", 1000000), sdk.NewInt64Coin("uusdc", 1000000)},
-			expRevenueBalance: sdk.Coins{sdk.NewInt64Coin("uusdc", 1799)},
+			fee:               sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 1000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1000)},
+			poolInitBalance:   sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 1000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)},
+			expRevenueBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 1799)},
 			expPass:           true,
 		},
 		{
 			desc:              "zero fees collected",
 			fee:               sdk.Coins{},
-			poolInitBalance:   sdk.Coins{sdk.NewInt64Coin("uelys", 1000000), sdk.NewInt64Coin("uusdc", 1000000)},
+			poolInitBalance:   sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 1000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)},
 			expRevenueBalance: sdk.Coins{},
 			expPass:           true,
 		},
 		{
-			desc:              "usdc fee collected",
-			fee:               sdk.Coins{sdk.NewInt64Coin("uusdc", 1000)},
-			poolInitBalance:   sdk.Coins{sdk.NewInt64Coin("uelys", 1000000), sdk.NewInt64Coin("uusdc", 1000000)},
-			expRevenueBalance: sdk.Coins{sdk.NewInt64Coin("uusdc", 900)},
+			desc:              "base currency fee collected",
+			fee:               sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 1000)},
+			poolInitBalance:   sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 1000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)},
+			expRevenueBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 900)},
 			expPass:           true,
 		},
 	} {
@@ -92,7 +93,7 @@ func (suite *KeeperTestSuite) TestOnCollectFee() {
 					StakingFeePortion:           sdk.ZeroDec(),
 					WeightRecoveryFeePortion:    sdk.ZeroDec(),
 					ThresholdWeightDifference:   sdk.ZeroDec(),
-					FeeDenom:                    "uusdc",
+					FeeDenom:                    ptypes.BaseCurrency,
 				},
 				TotalShares: sdk.Coin{},
 				PoolAssets: []types.PoolAsset{
@@ -131,23 +132,23 @@ func (suite *KeeperTestSuite) TestSwapFeesToRevenueToken() {
 	}{
 		{
 			desc:              "multiple fees collected",
-			fee:               sdk.Coins{sdk.NewInt64Coin("uelys", 1000), sdk.NewInt64Coin("uusdc", 1000)},
-			poolInitBalance:   sdk.Coins{sdk.NewInt64Coin("uelys", 1000000), sdk.NewInt64Coin("uusdc", 1000000)},
-			expRevenueBalance: sdk.Coins{sdk.NewInt64Coin("uusdc", 1999)},
+			fee:               sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 1000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1000)},
+			poolInitBalance:   sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 1000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)},
+			expRevenueBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 1999)},
 			expPass:           true,
 		},
 		{
 			desc:              "zero fees collected",
 			fee:               sdk.Coins{},
-			poolInitBalance:   sdk.Coins{sdk.NewInt64Coin("uelys", 1000000), sdk.NewInt64Coin("uusdc", 1000000)},
+			poolInitBalance:   sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 1000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)},
 			expRevenueBalance: sdk.Coins{},
 			expPass:           true,
 		},
 		{
-			desc:              "usdc fee collected",
-			fee:               sdk.Coins{sdk.NewInt64Coin("uusdc", 1000)},
-			poolInitBalance:   sdk.Coins{sdk.NewInt64Coin("uelys", 1000000), sdk.NewInt64Coin("uusdc", 1000000)},
-			expRevenueBalance: sdk.Coins{sdk.NewInt64Coin("uusdc", 1000)},
+			desc:              "base currency fee collected",
+			fee:               sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 1000)},
+			poolInitBalance:   sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 1000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)},
+			expRevenueBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 1000)},
 			expPass:           true,
 		},
 	} {
@@ -190,7 +191,7 @@ func (suite *KeeperTestSuite) TestSwapFeesToRevenueToken() {
 					StakingFeePortion:           sdk.ZeroDec(),
 					WeightRecoveryFeePortion:    sdk.ZeroDec(),
 					ThresholdWeightDifference:   sdk.ZeroDec(),
-					FeeDenom:                    "uusdc",
+					FeeDenom:                    ptypes.BaseCurrency,
 				},
 				TotalShares: sdk.Coin{},
 				PoolAssets: []types.PoolAsset{

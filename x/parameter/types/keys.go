@@ -31,12 +31,10 @@ const (
 	// Eden Boost denom
 	EdenB = "uedenb"
 
-	// USDC
-	USDC = "uusdc"
+	// Base currency
+	BaseCurrency = "uusdc"
 
-	// USDT
-	USDT = "uusdt"
-
+	// Atom denom
 	ATOM = "uatom"
 
 	// BaseDecimal

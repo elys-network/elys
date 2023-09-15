@@ -38,7 +38,7 @@ func TestCollectGasFeesToIncentiveModule(t *testing.T) {
 
 	// Create a pool
 	// Mint 100000USDC
-	usdcToken := sdk.NewCoins(sdk.NewCoin(ptypes.USDC, sdk.NewInt(100000)))
+	usdcToken := sdk.NewCoins(sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(100000)))
 
 	err = app.BankKeeper.MintCoins(ctx, types.ModuleName, usdcToken)
 	require.NoError(t, err)
@@ -52,7 +52,7 @@ func TestCollectGasFeesToIncentiveModule(t *testing.T) {
 		},
 		{
 			Weight: sdk.NewInt(50),
-			Token:  sdk.NewCoin(ptypes.USDC, sdk.NewInt(10000)),
+			Token:  sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(10000)),
 		},
 	}
 
@@ -90,7 +90,7 @@ func TestCollectGasFeesToIncentiveModule(t *testing.T) {
 	require.Equal(t, int64(0), ctx.BlockHeight())
 
 	// It should be 9 usdc
-	require.Equal(t, collectedAmt, sdk.Coins{sdk.NewCoin(ptypes.USDC, sdk.NewInt(9))})
+	require.Equal(t, collectedAmt, sdk.Coins{sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(9))})
 }
 
 func TestCollectDEXRevenueToIncentiveModule(t *testing.T) {
@@ -113,7 +113,7 @@ func TestCollectDEXRevenueToIncentiveModule(t *testing.T) {
 	// #######################
 	// ####### POOL 1 ########
 	// Mint 100000USDC
-	usdcToken := sdk.NewCoins(sdk.NewCoin(ptypes.USDC, sdk.NewInt(100000)))
+	usdcToken := sdk.NewCoins(sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(100000)))
 
 	err := bk.MintCoins(ctx, types.ModuleName, usdcToken)
 	require.NoError(t, err)
@@ -127,7 +127,7 @@ func TestCollectDEXRevenueToIncentiveModule(t *testing.T) {
 		},
 		{
 			Weight: sdk.NewInt(50),
-			Token:  sdk.NewCoin(ptypes.USDC, sdk.NewInt(10000)),
+			Token:  sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(10000)),
 		},
 	}
 
@@ -153,7 +153,7 @@ func TestCollectDEXRevenueToIncentiveModule(t *testing.T) {
 	// ####### POOL 2 ########
 	// ATOM+USDC pool
 	// Mint uusdc
-	usdcToken = sdk.NewCoins(sdk.NewCoin(ptypes.USDC, sdk.NewInt(200000)))
+	usdcToken = sdk.NewCoins(sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(200000)))
 
 	err = app.BankKeeper.MintCoins(ctx, types.ModuleName, usdcToken)
 	require.NoError(t, err)
@@ -174,7 +174,7 @@ func TestCollectDEXRevenueToIncentiveModule(t *testing.T) {
 		},
 		{
 			Weight: sdk.NewInt(50),
-			Token:  sdk.NewCoin(ptypes.USDC, sdk.NewInt(10000)),
+			Token:  sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(10000)),
 		},
 	}
 
@@ -199,7 +199,7 @@ func TestCollectDEXRevenueToIncentiveModule(t *testing.T) {
 
 	// Fill in pool #1 revenue wallet
 	revenueAddress1 := ammtypes.NewPoolRevenueAddress(0)
-	usdcRevToken1 := sdk.NewCoins(sdk.NewCoin(ptypes.USDC, sdk.NewInt(1000)))
+	usdcRevToken1 := sdk.NewCoins(sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(1000)))
 	err = app.BankKeeper.MintCoins(ctx, types.ModuleName, usdcRevToken1)
 	require.NoError(t, err)
 	err = app.BankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, revenueAddress1, usdcRevToken1)
@@ -207,7 +207,7 @@ func TestCollectDEXRevenueToIncentiveModule(t *testing.T) {
 
 	// Fill in pool #2 revenue wallet
 	revenueAddress2 := ammtypes.NewPoolRevenueAddress(1)
-	usdcRevToken2 := sdk.NewCoins(sdk.NewCoin(ptypes.USDC, sdk.NewInt(2000)))
+	usdcRevToken2 := sdk.NewCoins(sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(2000)))
 	err = app.BankKeeper.MintCoins(ctx, types.ModuleName, usdcRevToken2)
 	require.NoError(t, err)
 	err = app.BankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, revenueAddress2, usdcRevToken2)
@@ -220,7 +220,7 @@ func TestCollectDEXRevenueToIncentiveModule(t *testing.T) {
 	require.Equal(t, int64(0), ctx.BlockHeight())
 
 	// It should be 3000=1000+2000 usdc
-	require.Equal(t, collectedAmt, sdk.Coins{sdk.NewCoin(ptypes.USDC, sdk.NewInt(3000))})
+	require.Equal(t, collectedAmt, sdk.Coins{sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(3000))})
 	// It should be 1950=3000*0.65 usdc
-	require.Equal(t, rewardForLpsAmt, sdk.DecCoins{sdk.NewDecCoin(ptypes.USDC, sdk.NewInt(1950))})
+	require.Equal(t, rewardForLpsAmt, sdk.DecCoins{sdk.NewDecCoin(ptypes.BaseCurrency, sdk.NewInt(1950))})
 }

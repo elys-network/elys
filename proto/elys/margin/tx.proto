@@ -31,6 +31,8 @@ message MsgOpenResponse {}
 message MsgClose {
   string creator = 1;
   uint64 id      = 2;
+  string collateralAsset = 3;
+  string custodyAsset = 4;
 }
 
 message MsgCloseResponse {}

@@ -195,6 +195,51 @@ func (_c *BankKeeper_HasBalance_Call) RunAndReturn(run func(types.Context, types
 	return _c
 }
 
+// SendCoins provides a mock function with given fields: ctx, fromAddr, toAddr, amt
+func (_m *BankKeeper) SendCoins(ctx types.Context, fromAddr types.AccAddress, toAddr types.AccAddress, amt types.Coins) error {
+	ret := _m.Called(ctx, fromAddr, toAddr, amt)
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(types.Context, types.AccAddress, types.AccAddress, types.Coins) error); ok {
+		r0 = rf(ctx, fromAddr, toAddr, amt)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// BankKeeper_SendCoins_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'SendCoins'
+type BankKeeper_SendCoins_Call struct {
+	*mock.Call
+}
+
+// SendCoins is a helper method to define mock.On call
+//   - ctx types.Context
+//   - fromAddr types.AccAddress
+//   - toAddr types.AccAddress
+//   - amt types.Coins
+func (_e *BankKeeper_Expecter) SendCoins(ctx interface{}, fromAddr interface{}, toAddr interface{}, amt interface{}) *BankKeeper_SendCoins_Call {
+	return &BankKeeper_SendCoins_Call{Call: _e.mock.On("SendCoins", ctx, fromAddr, toAddr, amt)}
+}
+
+func (_c *BankKeeper_SendCoins_Call) Run(run func(ctx types.Context, fromAddr types.AccAddress, toAddr types.AccAddress, amt types.Coins)) *BankKeeper_SendCoins_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(types.Context), args[1].(types.AccAddress), args[2].(types.AccAddress), args[3].(types.Coins))
+	})
+	return _c
+}
+
+func (_c *BankKeeper_SendCoins_Call) Return(_a0 error) *BankKeeper_SendCoins_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *BankKeeper_SendCoins_Call) RunAndReturn(run func(types.Context, types.AccAddress, types.AccAddress, types.Coins) error) *BankKeeper_SendCoins_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // SendCoinsFromAccountToModule provides a mock function with given fields: ctx, senderAddr, recipientModule, amt
 func (_m *BankKeeper) SendCoinsFromAccountToModule(ctx types.Context, senderAddr types.AccAddress, recipientModule string, amt types.Coins) error {
 	ret := _m.Called(ctx, senderAddr, recipientModule, amt)

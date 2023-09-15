@@ -26,13 +26,13 @@ func (_m *OpenLongChecker) EXPECT() *OpenLongChecker_Expecter {
 	return &OpenLongChecker_Expecter{mock: &_m.Mock}
 }
 
-// Borrow provides a mock function with given fields: ctx, collateralAsset, collateralAmount, custodyAmount, mtp, ammPool, pool, eta
-func (_m *OpenLongChecker) Borrow(ctx types.Context, collateralAsset string, collateralAmount math.Int, custodyAmount math.Int, mtp *margintypes.MTP, ammPool *ammtypes.Pool, pool *margintypes.Pool, eta math.LegacyDec) error {
-	ret := _m.Called(ctx, collateralAsset, collateralAmount, custodyAmount, mtp, ammPool, pool, eta)
+// Borrow provides a mock function with given fields: ctx, collateralAsset, custodyAsset, collateralAmount, custodyAmount, mtp, ammPool, pool, eta
+func (_m *OpenLongChecker) Borrow(ctx types.Context, collateralAsset string, custodyAsset string, collateralAmount math.Int, custodyAmount math.Int, mtp *margintypes.MTP, ammPool *ammtypes.Pool, pool *margintypes.Pool, eta math.LegacyDec) error {
+	ret := _m.Called(ctx, collateralAsset, custodyAsset, collateralAmount, custodyAmount, mtp, ammPool, pool, eta)
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(types.Context, string, math.Int, math.Int, *margintypes.MTP, *ammtypes.Pool, *margintypes.Pool, math.LegacyDec) error); ok {
-		r0 = rf(ctx, collateralAsset, collateralAmount, custodyAmount, mtp, ammPool, pool, eta)
+	if rf, ok := ret.Get(0).(func(types.Context, string, string, math.Int, math.Int, *margintypes.MTP, *ammtypes.Pool, *margintypes.Pool, math.LegacyDec) error); ok {
+		r0 = rf(ctx, collateralAsset, custodyAsset, collateralAmount, custodyAmount, mtp, ammPool, pool, eta)
 	} else {
 		r0 = ret.Error(0)
 	}
@@ -48,19 +48,20 @@ type OpenLongChecker_Borrow_Call struct {
 // Borrow is a helper method to define mock.On call
 //   - ctx types.Context
 //   - collateralAsset string
+//   - custodyAsset string
 //   - collateralAmount math.Int
 //   - custodyAmount math.Int
 //   - mtp *margintypes.MTP
 //   - ammPool *ammtypes.Pool
 //   - pool *margintypes.Pool
 //   - eta math.LegacyDec
-func (_e *OpenLongChecker_Expecter) Borrow(ctx interface{}, collateralAsset interface{}, collateralAmount interface{}, custodyAmount interface{}, mtp interface{}, ammPool interface{}, pool interface{}, eta interface{}) *OpenLongChecker_Borrow_Call {
-	return &OpenLongChecker_Borrow_Call{Call: _e.mock.On("Borrow", ctx, collateralAsset, collateralAmount, custodyAmount, mtp, ammPool, pool, eta)}
+func (_e *OpenLongChecker_Expecter) Borrow(ctx interface{}, collateralAsset interface{}, custodyAsset interface{}, collateralAmount interface{}, custodyAmount interface{}, mtp interface{}, ammPool interface{}, pool interface{}, eta interface{}) *OpenLongChecker_Borrow_Call {
+	return &OpenLongChecker_Borrow_Call{Call: _e.mock.On("Borrow", ctx, collateralAsset, custodyAsset, collateralAmount, custodyAmount, mtp, ammPool, pool, eta)}
 }
 
-func (_c *OpenLongChecker_Borrow_Call) Run(run func(ctx types.Context, collateralAsset string, collateralAmount math.Int, custodyAmount math.Int, mtp *margintypes.MTP, ammPool *ammtypes.Pool, pool *margintypes.Pool, eta math.LegacyDec)) *OpenLongChecker_Borrow_Call {
+func (_c *OpenLongChecker_Borrow_Call) Run(run func(ctx types.Context, collateralAsset string, custodyAsset string, collateralAmount math.Int, custodyAmount math.Int, mtp *margintypes.MTP, ammPool *ammtypes.Pool, pool *margintypes.Pool, eta math.LegacyDec)) *OpenLongChecker_Borrow_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(types.Context), args[1].(string), args[2].(math.Int), args[3].(math.Int), args[4].(*margintypes.MTP), args[5].(*ammtypes.Pool), args[6].(*margintypes.Pool), args[7].(math.LegacyDec))
+		run(args[0].(types.Context), args[1].(string), args[2].(string), args[3].(math.Int), args[4].(math.Int), args[5].(*margintypes.MTP), args[6].(*ammtypes.Pool), args[7].(*margintypes.Pool), args[8].(math.LegacyDec))
 	})
 	return _c
 }
@@ -70,7 +71,128 @@ func (_c *OpenLongChecker_Borrow_Call) Return(_a0 error) *OpenLongChecker_Borrow
 	return _c
 }
 
-func (_c *OpenLongChecker_Borrow_Call) RunAndReturn(run func(types.Context, string, math.Int, math.Int, *margintypes.MTP, *ammtypes.Pool, *margintypes.Pool, math.LegacyDec) error) *OpenLongChecker_Borrow_Call {
+func (_c *OpenLongChecker_Borrow_Call) RunAndReturn(run func(types.Context, string, string, math.Int, math.Int, *margintypes.MTP, *ammtypes.Pool, *margintypes.Pool, math.LegacyDec) error) *OpenLongChecker_Borrow_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// CalcMTPConsolidateCollateral provides a mock function with given fields: ctx, mtp
+func (_m *OpenLongChecker) CalcMTPConsolidateCollateral(ctx types.Context, mtp *margintypes.MTP) error {
+	ret := _m.Called(ctx, mtp)
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(types.Context, *margintypes.MTP) error); ok {
+		r0 = rf(ctx, mtp)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// OpenLongChecker_CalcMTPConsolidateCollateral_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'CalcMTPConsolidateCollateral'
+type OpenLongChecker_CalcMTPConsolidateCollateral_Call struct {
+	*mock.Call
+}
+
+// CalcMTPConsolidateCollateral is a helper method to define mock.On call
+//   - ctx types.Context
+//   - mtp *margintypes.MTP
+func (_e *OpenLongChecker_Expecter) CalcMTPConsolidateCollateral(ctx interface{}, mtp interface{}) *OpenLongChecker_CalcMTPConsolidateCollateral_Call {
+	return &OpenLongChecker_CalcMTPConsolidateCollateral_Call{Call: _e.mock.On("CalcMTPConsolidateCollateral", ctx, mtp)}
+}
+
+func (_c *OpenLongChecker_CalcMTPConsolidateCollateral_Call) Run(run func(ctx types.Context, mtp *margintypes.MTP)) *OpenLongChecker_CalcMTPConsolidateCollateral_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(types.Context), args[1].(*margintypes.MTP))
+	})
+	return _c
+}
+
+func (_c *OpenLongChecker_CalcMTPConsolidateCollateral_Call) Return(_a0 error) *OpenLongChecker_CalcMTPConsolidateCollateral_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *OpenLongChecker_CalcMTPConsolidateCollateral_Call) RunAndReturn(run func(types.Context, *margintypes.MTP) error) *OpenLongChecker_CalcMTPConsolidateCollateral_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// CalcMTPConsolidateLiability provides a mock function with given fields: ctx, mtp
+func (_m *OpenLongChecker) CalcMTPConsolidateLiability(ctx types.Context, mtp *margintypes.MTP) {
+	_m.Called(ctx, mtp)
+}
+
+// OpenLongChecker_CalcMTPConsolidateLiability_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'CalcMTPConsolidateLiability'
+type OpenLongChecker_CalcMTPConsolidateLiability_Call struct {
+	*mock.Call
+}
+
+// CalcMTPConsolidateLiability is a helper method to define mock.On call
+//   - ctx types.Context
+//   - mtp *margintypes.MTP
+func (_e *OpenLongChecker_Expecter) CalcMTPConsolidateLiability(ctx interface{}, mtp interface{}) *OpenLongChecker_CalcMTPConsolidateLiability_Call {
+	return &OpenLongChecker_CalcMTPConsolidateLiability_Call{Call: _e.mock.On("CalcMTPConsolidateLiability", ctx, mtp)}
+}
+
+func (_c *OpenLongChecker_CalcMTPConsolidateLiability_Call) Run(run func(ctx types.Context, mtp *margintypes.MTP)) *OpenLongChecker_CalcMTPConsolidateLiability_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(types.Context), args[1].(*margintypes.MTP))
+	})
+	return _c
+}
+
+func (_c *OpenLongChecker_CalcMTPConsolidateLiability_Call) Return() *OpenLongChecker_CalcMTPConsolidateLiability_Call {
+	_c.Call.Return()
+	return _c
+}
+
+func (_c *OpenLongChecker_CalcMTPConsolidateLiability_Call) RunAndReturn(run func(types.Context, *margintypes.MTP)) *OpenLongChecker_CalcMTPConsolidateLiability_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// CheckLongingAssets provides a mock function with given fields: ctx, collateralAsset, borrowAsset
+func (_m *OpenLongChecker) CheckLongingAssets(ctx types.Context, collateralAsset string, borrowAsset string) error {
+	ret := _m.Called(ctx, collateralAsset, borrowAsset)
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(types.Context, string, string) error); ok {
+		r0 = rf(ctx, collateralAsset, borrowAsset)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// OpenLongChecker_CheckLongingAssets_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'CheckLongingAssets'
+type OpenLongChecker_CheckLongingAssets_Call struct {
+	*mock.Call
+}
+
+// CheckLongingAssets is a helper method to define mock.On call
+//   - ctx types.Context
+//   - collateralAsset string
+//   - borrowAsset string
+func (_e *OpenLongChecker_Expecter) CheckLongingAssets(ctx interface{}, collateralAsset interface{}, borrowAsset interface{}) *OpenLongChecker_CheckLongingAssets_Call {
+	return &OpenLongChecker_CheckLongingAssets_Call{Call: _e.mock.On("CheckLongingAssets", ctx, collateralAsset, borrowAsset)}
+}
+
+func (_c *OpenLongChecker_CheckLongingAssets_Call) Run(run func(ctx types.Context, collateralAsset string, borrowAsset string)) *OpenLongChecker_CheckLongingAssets_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(types.Context), args[1].(string), args[2].(string))
+	})
+	return _c
+}
+
+func (_c *OpenLongChecker_CheckLongingAssets_Call) Return(_a0 error) *OpenLongChecker_CheckLongingAssets_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *OpenLongChecker_CheckLongingAssets_Call) RunAndReturn(run func(types.Context, string, string) error) *OpenLongChecker_CheckLongingAssets_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -118,6 +240,51 @@ func (_c *OpenLongChecker_CheckMinLiabilities_Call) Return(_a0 error) *OpenLongC
 }
 
 func (_c *OpenLongChecker_CheckMinLiabilities_Call) RunAndReturn(run func(types.Context, types.Coin, math.LegacyDec, margintypes.Pool, ammtypes.Pool, string) error) *OpenLongChecker_CheckMinLiabilities_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// CheckSamePosition provides a mock function with given fields: ctx, msg
+func (_m *OpenLongChecker) CheckSamePosition(ctx types.Context, msg *margintypes.MsgOpen) *margintypes.MTP {
+	ret := _m.Called(ctx, msg)
+
+	var r0 *margintypes.MTP
+	if rf, ok := ret.Get(0).(func(types.Context, *margintypes.MsgOpen) *margintypes.MTP); ok {
+		r0 = rf(ctx, msg)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*margintypes.MTP)
+		}
+	}
+
+	return r0
+}
+
+// OpenLongChecker_CheckSamePosition_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'CheckSamePosition'
+type OpenLongChecker_CheckSamePosition_Call struct {
+	*mock.Call
+}
+
+// CheckSamePosition is a helper method to define mock.On call
+//   - ctx types.Context
+//   - msg *margintypes.MsgOpen
+func (_e *OpenLongChecker_Expecter) CheckSamePosition(ctx interface{}, msg interface{}) *OpenLongChecker_CheckSamePosition_Call {
+	return &OpenLongChecker_CheckSamePosition_Call{Call: _e.mock.On("CheckSamePosition", ctx, msg)}
+}
+
+func (_c *OpenLongChecker_CheckSamePosition_Call) Run(run func(ctx types.Context, msg *margintypes.MsgOpen)) *OpenLongChecker_CheckSamePosition_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(types.Context), args[1].(*margintypes.MsgOpen))
+	})
+	return _c
+}
+
+func (_c *OpenLongChecker_CheckSamePosition_Call) Return(_a0 *margintypes.MTP) *OpenLongChecker_CheckSamePosition_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *OpenLongChecker_CheckSamePosition_Call) RunAndReturn(run func(types.Context, *margintypes.MsgOpen) *margintypes.MTP) *OpenLongChecker_CheckSamePosition_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -177,23 +344,78 @@ func (_c *OpenLongChecker_EstimateSwap_Call) RunAndReturn(run func(types.Context
 	return _c
 }
 
-// GetAmmPool provides a mock function with given fields: ctx, poolId, nonNativeAsset
-func (_m *OpenLongChecker) GetAmmPool(ctx types.Context, poolId uint64, nonNativeAsset string) (ammtypes.Pool, error) {
-	ret := _m.Called(ctx, poolId, nonNativeAsset)
+// EstimateSwapGivenOut provides a mock function with given fields: ctx, tokenOutAmount, tokenInDenom, ammPool
+func (_m *OpenLongChecker) EstimateSwapGivenOut(ctx types.Context, tokenOutAmount types.Coin, tokenInDenom string, ammPool ammtypes.Pool) (math.Int, error) {
+	ret := _m.Called(ctx, tokenOutAmount, tokenInDenom, ammPool)
+
+	var r0 math.Int
+	var r1 error
+	if rf, ok := ret.Get(0).(func(types.Context, types.Coin, string, ammtypes.Pool) (math.Int, error)); ok {
+		return rf(ctx, tokenOutAmount, tokenInDenom, ammPool)
+	}
+	if rf, ok := ret.Get(0).(func(types.Context, types.Coin, string, ammtypes.Pool) math.Int); ok {
+		r0 = rf(ctx, tokenOutAmount, tokenInDenom, ammPool)
+	} else {
+		r0 = ret.Get(0).(math.Int)
+	}
+
+	if rf, ok := ret.Get(1).(func(types.Context, types.Coin, string, ammtypes.Pool) error); ok {
+		r1 = rf(ctx, tokenOutAmount, tokenInDenom, ammPool)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// OpenLongChecker_EstimateSwapGivenOut_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'EstimateSwapGivenOut'
+type OpenLongChecker_EstimateSwapGivenOut_Call struct {
+	*mock.Call
+}
+
+// EstimateSwapGivenOut is a helper method to define mock.On call
+//   - ctx types.Context
+//   - tokenOutAmount types.Coin
+//   - tokenInDenom string
+//   - ammPool ammtypes.Pool
+func (_e *OpenLongChecker_Expecter) EstimateSwapGivenOut(ctx interface{}, tokenOutAmount interface{}, tokenInDenom interface{}, ammPool interface{}) *OpenLongChecker_EstimateSwapGivenOut_Call {
+	return &OpenLongChecker_EstimateSwapGivenOut_Call{Call: _e.mock.On("EstimateSwapGivenOut", ctx, tokenOutAmount, tokenInDenom, ammPool)}
+}
+
+func (_c *OpenLongChecker_EstimateSwapGivenOut_Call) Run(run func(ctx types.Context, tokenOutAmount types.Coin, tokenInDenom string, ammPool ammtypes.Pool)) *OpenLongChecker_EstimateSwapGivenOut_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(types.Context), args[1].(types.Coin), args[2].(string), args[3].(ammtypes.Pool))
+	})
+	return _c
+}
+
+func (_c *OpenLongChecker_EstimateSwapGivenOut_Call) Return(_a0 math.Int, _a1 error) *OpenLongChecker_EstimateSwapGivenOut_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *OpenLongChecker_EstimateSwapGivenOut_Call) RunAndReturn(run func(types.Context, types.Coin, string, ammtypes.Pool) (math.Int, error)) *OpenLongChecker_EstimateSwapGivenOut_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// GetAmmPool provides a mock function with given fields: ctx, poolId, tradingAsset
+func (_m *OpenLongChecker) GetAmmPool(ctx types.Context, poolId uint64, tradingAsset string) (ammtypes.Pool, error) {
+	ret := _m.Called(ctx, poolId, tradingAsset)
 
 	var r0 ammtypes.Pool
 	var r1 error
 	if rf, ok := ret.Get(0).(func(types.Context, uint64, string) (ammtypes.Pool, error)); ok {
-		return rf(ctx, poolId, nonNativeAsset)
+		return rf(ctx, poolId, tradingAsset)
 	}
 	if rf, ok := ret.Get(0).(func(types.Context, uint64, string) ammtypes.Pool); ok {
-		r0 = rf(ctx, poolId, nonNativeAsset)
+		r0 = rf(ctx, poolId, tradingAsset)
 	} else {
 		r0 = ret.Get(0).(ammtypes.Pool)
 	}
 
 	if rf, ok := ret.Get(1).(func(types.Context, uint64, string) error); ok {
-		r1 = rf(ctx, poolId, nonNativeAsset)
+		r1 = rf(ctx, poolId, tradingAsset)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -209,12 +431,12 @@ type OpenLongChecker_GetAmmPool_Call struct {
 // GetAmmPool is a helper method to define mock.On call
 //   - ctx types.Context
 //   - poolId uint64
-//   - nonNativeAsset string
-func (_e *OpenLongChecker_Expecter) GetAmmPool(ctx interface{}, poolId interface{}, nonNativeAsset interface{}) *OpenLongChecker_GetAmmPool_Call {
-	return &OpenLongChecker_GetAmmPool_Call{Call: _e.mock.On("GetAmmPool", ctx, poolId, nonNativeAsset)}
+//   - tradingAsset string
+func (_e *OpenLongChecker_Expecter) GetAmmPool(ctx interface{}, poolId interface{}, tradingAsset interface{}) *OpenLongChecker_GetAmmPool_Call {
+	return &OpenLongChecker_GetAmmPool_Call{Call: _e.mock.On("GetAmmPool", ctx, poolId, tradingAsset)}
 }
 
-func (_c *OpenLongChecker_GetAmmPool_Call) Run(run func(ctx types.Context, poolId uint64, nonNativeAsset string)) *OpenLongChecker_GetAmmPool_Call {
+func (_c *OpenLongChecker_GetAmmPool_Call) Run(run func(ctx types.Context, poolId uint64, tradingAsset string)) *OpenLongChecker_GetAmmPool_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		run(args[0].(types.Context), args[1].(uint64), args[2].(string))
 	})
@@ -422,6 +644,49 @@ func (_c *OpenLongChecker_GetSafetyFactor_Call) RunAndReturn(run func(types.Cont
 	return _c
 }
 
+// GetTradingAsset provides a mock function with given fields: collateralAsset, borrowAsset
+func (_m *OpenLongChecker) GetTradingAsset(collateralAsset string, borrowAsset string) string {
+	ret := _m.Called(collateralAsset, borrowAsset)
+
+	var r0 string
+	if rf, ok := ret.Get(0).(func(string, string) string); ok {
+		r0 = rf(collateralAsset, borrowAsset)
+	} else {
+		r0 = ret.Get(0).(string)
+	}
+
+	return r0
+}
+
+// OpenLongChecker_GetTradingAsset_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetTradingAsset'
+type OpenLongChecker_GetTradingAsset_Call struct {
+	*mock.Call
+}
+
+// GetTradingAsset is a helper method to define mock.On call
+//   - collateralAsset string
+//   - borrowAsset string
+func (_e *OpenLongChecker_Expecter) GetTradingAsset(collateralAsset interface{}, borrowAsset interface{}) *OpenLongChecker_GetTradingAsset_Call {
+	return &OpenLongChecker_GetTradingAsset_Call{Call: _e.mock.On("GetTradingAsset", collateralAsset, borrowAsset)}
+}
+
+func (_c *OpenLongChecker_GetTradingAsset_Call) Run(run func(collateralAsset string, borrowAsset string)) *OpenLongChecker_GetTradingAsset_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(string), args[1].(string))
+	})
+	return _c
+}
+
+func (_c *OpenLongChecker_GetTradingAsset_Call) Return(_a0 string) *OpenLongChecker_GetTradingAsset_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *OpenLongChecker_GetTradingAsset_Call) RunAndReturn(run func(string, string) string) *OpenLongChecker_GetTradingAsset_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // HasSufficientPoolBalance provides a mock function with given fields: ctx, ammPool, assetDenom, requiredAmount
 func (_m *OpenLongChecker) HasSufficientPoolBalance(ctx types.Context, ammPool ammtypes.Pool, assetDenom string, requiredAmount math.Int) bool {
 	ret := _m.Called(ctx, ammPool, assetDenom, requiredAmount)
@@ -506,6 +771,49 @@ func (_c *OpenLongChecker_IsPoolEnabled_Call) Return(_a0 bool) *OpenLongChecker_
 }
 
 func (_c *OpenLongChecker_IsPoolEnabled_Call) RunAndReturn(run func(types.Context, uint64) bool) *OpenLongChecker_IsPoolEnabled_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// SetMTP provides a mock function with given fields: ctx, mtp
+func (_m *OpenLongChecker) SetMTP(ctx types.Context, mtp *margintypes.MTP) error {
+	ret := _m.Called(ctx, mtp)
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(types.Context, *margintypes.MTP) error); ok {
+		r0 = rf(ctx, mtp)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// OpenLongChecker_SetMTP_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'SetMTP'
+type OpenLongChecker_SetMTP_Call struct {
+	*mock.Call
+}
+
+// SetMTP is a helper method to define mock.On call
+//   - ctx types.Context
+//   - mtp *margintypes.MTP
+func (_e *OpenLongChecker_Expecter) SetMTP(ctx interface{}, mtp interface{}) *OpenLongChecker_SetMTP_Call {
+	return &OpenLongChecker_SetMTP_Call{Call: _e.mock.On("SetMTP", ctx, mtp)}
+}
+
+func (_c *OpenLongChecker_SetMTP_Call) Run(run func(ctx types.Context, mtp *margintypes.MTP)) *OpenLongChecker_SetMTP_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(types.Context), args[1].(*margintypes.MTP))
+	})
+	return _c
+}
+
+func (_c *OpenLongChecker_SetMTP_Call) Return(_a0 error) *OpenLongChecker_SetMTP_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *OpenLongChecker_SetMTP_Call) RunAndReturn(run func(types.Context, *margintypes.MTP) error) *OpenLongChecker_SetMTP_Call {
 	_c.Call.Return(run)
 	return _c
 }

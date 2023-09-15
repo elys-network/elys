@@ -11,7 +11,7 @@ func (p Pool) CalcInAmtGivenOut(
 	ctx sdk.Context,
 	oracle OracleKeeper,
 	snapshot *Pool,
-	tokensOut sdk.Coins, tokenInDenom string, swapFee sdk.Dec) (
+	tokensOut sdk.Coins, tokenInDenom string, swapFee sdk.Dec, accountedPool AccountedPoolKeeper) (
 	tokenIn sdk.Coin, err error,
 ) {
 	tokenOut, poolAssetOut, poolAssetIn, err := p.parsePoolAssets(tokensOut, tokenInDenom)
@@ -33,12 +33,25 @@ func (p Pool) CalcInAmtGivenOut(
 
 	// delta balanceOut is positive(tokens inside the pool decreases)
 	poolTokenOutBalance := sdk.NewDecFromInt(poolAssetOut.Token.Amount)
+	// accounted pool balance
+	acountedPoolAssetOutAmt := accountedPool.GetAccountedBalance(ctx, p.PoolId, poolAssetOut.Token.Denom)
+	if acountedPoolAssetOutAmt.GT(sdk.ZeroInt()) {
+		poolTokenOutBalance = sdk.NewDecFromInt(acountedPoolAssetOutAmt)
+	}
+
+	poolTokenInBalance := sdk.NewDecFromInt(poolAssetIn.Token.Amount)
+	// accounted pool balance
+	acountedPoolAssetInAmt := accountedPool.GetAccountedBalance(ctx, p.PoolId, poolAssetIn.Token.Denom)
+	if acountedPoolAssetInAmt.GT(sdk.ZeroInt()) {
+		poolTokenInBalance = sdk.NewDecFromInt(acountedPoolAssetInAmt)
+	}
+
 	poolPostSwapOutBalance := poolTokenOutBalance.Sub(sdk.NewDecFromInt(tokenOut.Amount))
 	// (x_0)(y_0) = (x_0 + in)(y_0 - out)
 	tokenAmountIn := solveConstantFunctionInvariant(
 		poolTokenOutBalance, poolPostSwapOutBalance,
 		outWeight,
-		sdk.NewDecFromInt(poolAssetIn.Token.Amount),
+		poolTokenInBalance,
 		inWeight,
 	).Neg()
 

@@ -1,0 +1,11 @@
+syntax = "proto3";
+package elys.accountedpool;
+
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/elys-network/elys/x/accountedpool/types";
+
+// Params defines the parameters for the module.
+message Params {
+  option (gogoproto.goproto_stringer) = false;
+}

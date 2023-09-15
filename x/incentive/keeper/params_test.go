@@ -39,7 +39,7 @@ func TestUpdatePoolMultiplierInfo(t *testing.T) {
 
 	// Create a pool
 	// Mint 100000USDC
-	usdcToken := sdk.NewCoins(sdk.NewCoin(ptypes.USDC, sdk.NewInt(100000)))
+	usdcToken := sdk.NewCoins(sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(100000)))
 
 	err := app.BankKeeper.MintCoins(ctx, ammtypes.ModuleName, usdcToken)
 	require.NoError(t, err)
@@ -56,7 +56,7 @@ func TestUpdatePoolMultiplierInfo(t *testing.T) {
 	// USDC
 	poolAssets = append(poolAssets, ammtypes.PoolAsset{
 		Weight: sdk.NewInt(50),
-		Token:  sdk.NewCoin(ptypes.USDC, sdk.NewInt(100)),
+		Token:  sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(100)),
 	})
 
 	poolParams := &ammtypes.PoolParams{

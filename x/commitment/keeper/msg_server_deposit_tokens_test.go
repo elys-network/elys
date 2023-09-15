@@ -10,6 +10,7 @@ import (
 	aptypes "github.com/elys-network/elys/x/assetprofile/types"
 	commitmentkeeper "github.com/elys-network/elys/x/commitment/keeper"
 	"github.com/elys-network/elys/x/commitment/types"
+	ptypes "github.com/elys-network/elys/x/parameter/types"
 	"github.com/stretchr/testify/require"
 )
 
@@ -28,7 +29,7 @@ func TestDepositTokens(t *testing.T) {
 	// Create a deposit message
 	depositMsg := &types.MsgDepositTokens{
 		Creator: creator.String(),
-		Denom:   "ueden",
+		Denom:   ptypes.Eden,
 		Amount:  sdk.NewInt(100),
 	}
 
@@ -36,13 +37,13 @@ func TestDepositTokens(t *testing.T) {
 	app.AssetprofileKeeper.SetEntry(ctx, aptypes.Entry{BaseDenom: depositMsg.Denom, CommitEnabled: true})
 
 	// Add initial funds to creator's account
-	coins := sdk.NewCoins(sdk.NewCoin("ueden", sdk.NewInt(200)))
+	coins := sdk.NewCoins(sdk.NewCoin(ptypes.Eden, sdk.NewInt(200)))
 	err := app.BankKeeper.MintCoins(ctx, types.ModuleName, coins)
 	require.NoError(t, err)
 	err = app.BankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, creator, coins)
 	require.NoError(t, err)
 	balance := app.BankKeeper.GetBalance(ctx, creator, depositMsg.Denom)
-	require.Equal(t, coins.AmountOf("ueden"), balance.Amount, "creator balance did not initialize")
+	require.Equal(t, coins.AmountOf(ptypes.Eden), balance.Amount, "creator balance did not initialize")
 
 	require.NoError(t, err)
 

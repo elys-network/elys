@@ -14,6 +14,7 @@ func (p Pool) CalcOutAmtGivenIn(
 	tokensIn sdk.Coins,
 	tokenOutDenom string,
 	swapFee sdk.Dec,
+	accountedPool AccountedPoolKeeper,
 ) (sdk.Coin, error) {
 	tokenIn, poolAssetIn, poolAssetOut, err := p.parsePoolAssets(tokensIn, tokenOutDenom)
 	if err != nil {
@@ -22,6 +23,19 @@ func (p Pool) CalcOutAmtGivenIn(
 
 	tokenAmountInAfterFee := sdk.NewDecFromInt(tokenIn.Amount).Mul(sdk.OneDec().Sub(swapFee))
 	poolTokenInBalance := sdk.NewDecFromInt(poolAssetIn.Token.Amount)
+	// accounted pool balance
+	acountedPoolAssetInAmt := accountedPool.GetAccountedBalance(ctx, p.PoolId, poolAssetIn.Token.Denom)
+	if acountedPoolAssetInAmt.GT(sdk.ZeroInt()) {
+		poolTokenInBalance = sdk.NewDecFromInt(acountedPoolAssetInAmt)
+	}
+
+	poolTokenOutBalance := sdk.NewDecFromInt(poolAssetOut.Token.Amount)
+	// accounted pool balance
+	acountedPoolAssetOutAmt := accountedPool.GetAccountedBalance(ctx, p.PoolId, poolAssetOut.Token.Denom)
+	if acountedPoolAssetOutAmt.GT(sdk.ZeroInt()) {
+		poolTokenOutBalance = sdk.NewDecFromInt(acountedPoolAssetOutAmt)
+	}
+
 	poolPostSwapInBalance := poolTokenInBalance.Add(tokenAmountInAfterFee)
 
 	outWeight := sdk.NewDecFromInt(poolAssetOut.Weight)
@@ -42,7 +56,7 @@ func (p Pool) CalcOutAmtGivenIn(
 		poolTokenInBalance,
 		poolPostSwapInBalance,
 		inWeight,
-		sdk.NewDecFromInt(poolAssetOut.Token.Amount),
+		poolTokenOutBalance,
 		outWeight,
 	)
 

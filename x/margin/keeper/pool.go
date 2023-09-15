@@ -6,34 +6,6 @@ import (
 	"github.com/elys-network/elys/x/margin/types"
 )
 
-// SetPool set a specific pool in the store from its index
-func (k Keeper) SetPool(ctx sdk.Context, pool types.Pool) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.PoolKeyPrefix))
-	b := k.cdc.MustMarshal(&pool)
-	store.Set(types.PoolKey(
-		pool.AmmPoolId,
-	), b)
-}
-
-// GetPool returns a pool from its index
-func (k Keeper) GetPool(
-	ctx sdk.Context,
-	poolId uint64,
-
-) (val types.Pool, found bool) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.PoolKeyPrefix))
-
-	b := store.Get(types.PoolKey(
-		poolId,
-	))
-	if b == nil {
-		return val, false
-	}
-
-	k.cdc.MustUnmarshal(b, &val)
-	return val, true
-}
-
 // RemovePool removes a pool from the store
 func (k Keeper) RemovePool(
 	ctx sdk.Context,

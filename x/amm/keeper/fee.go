@@ -41,7 +41,7 @@ func (k Keeper) SwapFeesToRevenueToken(ctx sdk.Context, pool types.Pool, fee sdk
 		// Executes the swap in the pool and stores the output. Updates pool assets but
 		// does not actually transfer any tokens to or from the pool.
 		snapshot := k.GetPoolSnapshotOrSet(ctx, pool)
-		tokenOutCoin, _, err := pool.SwapOutAmtGivenIn(ctx, k.oracleKeeper, &snapshot, sdk.Coins{tokenIn}, pool.PoolParams.FeeDenom, sdk.ZeroDec())
+		tokenOutCoin, _, err := pool.SwapOutAmtGivenIn(ctx, k.oracleKeeper, &snapshot, sdk.Coins{tokenIn}, pool.PoolParams.FeeDenom, sdk.ZeroDec(), k.accountedPoolKeeper)
 		if err != nil {
 			return err
 		}

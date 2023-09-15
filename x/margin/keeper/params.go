@@ -5,18 +5,6 @@ import (
 	"github.com/elys-network/elys/x/margin/types"
 )
 
-// GetParams get all parameters as types.Params
-func (k Keeper) GetParams(ctx sdk.Context) (params types.Params) {
-	store := ctx.KVStore(k.storeKey)
-	bz := store.Get(types.KeyPrefix(types.ParamsKey))
-	if bz == nil {
-		return params
-	}
-
-	k.cdc.MustUnmarshal(bz, &params)
-	return params
-}
-
 // SetParams set the params
 func (k Keeper) SetParams(ctx sdk.Context, params *types.Params) error {
 	if err := params.Validate(); err != nil {
@@ -57,10 +45,6 @@ func (k Keeper) GetHealthGainFactor(ctx sdk.Context) sdk.Dec {
 	return k.GetParams(ctx).HealthGainFactor
 }
 
-func (k Keeper) GetEpochLength(ctx sdk.Context) int64 {
-	return k.GetParams(ctx).EpochLength
-}
-
 func (k Keeper) GetPoolOpenThreshold(ctx sdk.Context) sdk.Dec {
 	return k.GetParams(ctx).PoolOpenThreshold
 }
@@ -95,8 +79,8 @@ func (k Keeper) GetIncrementalInterestPaymentFundAddress(ctx sdk.Context) sdk.Ac
 	return addr
 }
 
-func (k Keeper) GetMaxOpenPositions(ctx sdk.Context) int64 {
-	return k.GetParams(ctx).MaxOpenPositions
+func (k Keeper) GetMaxOpenPositions(ctx sdk.Context) uint64 {
+	return (uint64)(k.GetParams(ctx).MaxOpenPositions)
 }
 
 func (k Keeper) GetIncrementalInterestPaymentEnabled(ctx sdk.Context) bool {

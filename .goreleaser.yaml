@@ -21,7 +21,7 @@ builds:
     ldflags:
       - -X github.com/cosmos/cosmos-sdk/version.Name=elys
       - -X github.com/cosmos/cosmos-sdk/version.AppName=elysd
-      - -X github.com/cosmos/cosmos-sdk/version.Version={{ .Version }}
+      - -X github.com/cosmos/cosmos-sdk/version.Version=v{{ .Version }}
       - -X github.com/cosmos/cosmos-sdk/version.Commit={{ .Commit }}
       - -X github.com/cosmos/cosmos-sdk/version.BuildTags=netgo,ledger,static_wasm
       - -w -s
@@ -49,7 +49,7 @@ builds:
     ldflags:
       - -X github.com/cosmos/cosmos-sdk/version.Name=elys
       - -X github.com/cosmos/cosmos-sdk/version.AppName=elysd
-      - -X github.com/cosmos/cosmos-sdk/version.Version={{ .Version }}
+      - -X github.com/cosmos/cosmos-sdk/version.Version=v{{ .Version }}
       - -X github.com/cosmos/cosmos-sdk/version.Commit={{ .Commit }}
       - -X github.com/cosmos/cosmos-sdk/version.BuildTags=netgo,ledger,static_wasm
       - -w -s
@@ -76,7 +76,7 @@ builds:
     ldflags:
       - -X github.com/cosmos/cosmos-sdk/version.Name=elys
       - -X github.com/cosmos/cosmos-sdk/version.AppName=elysd
-      - -X github.com/cosmos/cosmos-sdk/version.Version={{ .Version }}
+      - -X github.com/cosmos/cosmos-sdk/version.Version=v{{ .Version }}
       - -X github.com/cosmos/cosmos-sdk/version.Commit={{ .Commit }}
       - -X github.com/cosmos/cosmos-sdk/version.BuildTags=netgo,ledger,muslc,osusergo
       - -w -s
@@ -105,7 +105,7 @@ builds:
     ldflags:
       - -X github.com/cosmos/cosmos-sdk/version.Name=elys 
       - -X github.com/cosmos/cosmos-sdk/version.AppName=elysd 
-      - -X github.com/cosmos/cosmos-sdk/version.Version={{ .Version }} 
+      - -X github.com/cosmos/cosmos-sdk/version.Version=v{{ .Version }} 
       - -X github.com/cosmos/cosmos-sdk/version.Commit={{ .Commit }}
       - -X github.com/cosmos/cosmos-sdk/version.BuildTags=netgo,ledger,muslc,osusergo
       - -w -s
@@ -130,7 +130,7 @@ archives:
       - elysd-linux-arm64
       - elysd-darwin-amd64
       - elysd-darwin-arm64
-    name_template: "{{.ProjectName}}-{{ .Version }}-{{ .Os }}-{{ .Arch }}"
+    name_template: "{{.ProjectName}}-v{{ .Version }}-{{ .Os }}-{{ .Arch }}"
     format: tar.gz
     files:
       - none*
@@ -141,7 +141,7 @@ archives:
       - elysd-linux-arm64
       - elysd-darwin-amd64
       - elysd-darwin-arm64
-    name_template: "{{.ProjectName}}-{{ .Version }}-{{ .Os }}-{{ .Arch }}"
+    name_template: "{{.ProjectName}}-v{{ .Version }}-{{ .Os }}-{{ .Arch }}"
     format: binary
     files:
       - none*
@@ -158,16 +158,14 @@ release:
     name: elys
   replace_existing_draft: true
   header: |
+    ## Description
+
     < DESCRIPTION OF RELEASE >
-
-    ## Changelog
-
-    See the full changelog [here](https://github.com/elys-network/elys/blob/v{{ .Version }}/CHANGELOG.md)
 
     ## ⚡️ Binaries
 
     Binaries for Linux and Darwin (amd64 and arm64) are available below.
-    Darwin users can also use the same universal binary `elysd-{{ .Version }}-darwin-all` for both amd64 and arm64.
+    Darwin users can also use the same universal binary `elysd-v{{ .Version }}-darwin-all` for both amd64 and arm64.
 
     #### 🔨 Build from source
 
@@ -178,7 +176,11 @@ release:
     cd elys && git checkout v{{ .Version }}
     make install
     ````
-  name_template: "elys v{{.Version}} 🧪"
+
+    ## What's Changed
+
+    See the full changelog [here](https://github.com/elys-network/elys/blob/v{{ .Version }}/CHANGELOG.md)
+  name_template: "v{{.Version}}"
   mode: replace
   draft: true
 

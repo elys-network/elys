@@ -13,6 +13,7 @@ import (
 
 	simapp "github.com/elys-network/elys/app"
 	oracletypes "github.com/elys-network/elys/x/oracle/types"
+	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
 
 const (
@@ -39,7 +40,7 @@ func (suite *TestSuite) SetupStableCoinPrices() {
 	// prices set for USDT and USDC
 	provider := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
 	suite.app.OracleKeeper.SetAssetInfo(suite.ctx, oracletypes.AssetInfo{
-		Denom:   "uusdc",
+		Denom:   ptypes.BaseCurrency,
 		Display: "USDC",
 		Decimal: 6,
 	})

@@ -28,7 +28,7 @@ func (k Keeper) createElysMultihopExpectedSwapOuts(
 		}
 
 		snapshot := k.GetPoolSnapshotOrSet(ctx, pool)
-		tokenIn, err := pool.CalcInAmtGivenOut(ctx, k.oracleKeeper, &snapshot, sdk.NewCoins(tokenOut), route.TokenInDenom, actualSwapFee)
+		tokenIn, err := pool.CalcInAmtGivenOut(ctx, k.oracleKeeper, &snapshot, sdk.NewCoins(tokenOut), route.TokenInDenom, actualSwapFee, k.accountedPoolKeeper)
 		if err != nil {
 			return nil, err
 		}

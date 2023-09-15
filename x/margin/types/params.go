@@ -5,6 +5,7 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
+	epochtypes "github.com/elys-network/elys/x/epochs/types"
 	"gopkg.in/yaml.v2"
 )
 
@@ -29,6 +30,7 @@ var (
 	KeySafetyFactor                             = []byte("SafetyFactor")
 	KeyIncrementalInterestPaymentEnabled        = []byte("IncrementalInterestPaymentEnabled")
 	KeyWhitelistingEnabled                      = []byte("WhitelistingEnabled")
+	KeyInvariantCheckEpoch                      = []byte("InvariantCheckEpoch")
 )
 
 // ParamKeyTable the param key table for launch module
@@ -56,7 +58,8 @@ func NewParams() Params {
 		SqModifier:                               sdk.NewDec(1),
 		SafetyFactor:                             sdk.NewDec(1),
 		IncrementalInterestPaymentEnabled:        true,
-		WhitelistingEnabled:                      true,
+		WhitelistingEnabled:                      false,
+		InvariantCheckEpoch:                      epochtypes.DayEpochID,
 	}
 }
 
@@ -86,6 +89,7 @@ func (p *Params) ParamSetPairs() paramtypes.ParamSetPairs {
 		paramtypes.NewParamSetPair(KeySafetyFactor, &p.SafetyFactor, validateSafetyFactor),
 		paramtypes.NewParamSetPair(KeyIncrementalInterestPaymentEnabled, &p.IncrementalInterestPaymentEnabled, validateIncrementalInterestPaymentEnabled),
 		paramtypes.NewParamSetPair(KeyWhitelistingEnabled, &p.WhitelistingEnabled, validateWhitelistingEnabled),
+		paramtypes.NewParamSetPair(KeyInvariantCheckEpoch, &p.InvariantCheckEpoch, validateInvariantCheckEpoch),
 	}
 }
 
@@ -145,7 +149,9 @@ func (p Params) Validate() error {
 	if err := validateWhitelistingEnabled(p.WhitelistingEnabled); err != nil {
 		return err
 	}
-
+	if err := validateInvariantCheckEpoch(p.InvariantCheckEpoch); err != nil {
+		return err
+	}
 	return nil
 }
 
@@ -399,6 +405,19 @@ func validatePoolOpenThreshold(i interface{}) error {
 	}
 	if v.IsNegative() {
 		return fmt.Errorf("pool open threshold must be positive: %s", v)
+	}
+
+	return nil
+}
+
+func validateInvariantCheckEpoch(i interface{}) error {
+	epoch, ok := i.(string)
+	if !ok {
+		return fmt.Errorf("invalid parameter type: %T", i)
+	}
+
+	if epoch != epochtypes.DayEpochID && epoch != epochtypes.WeekEpochID && epoch != epochtypes.HourEpochID {
+		return fmt.Errorf("invalid parameter type: %T", i)
 	}
 
 	return nil

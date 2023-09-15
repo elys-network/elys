@@ -38,21 +38,21 @@ func (k Keeper) AmmHooks() AmmHooks {
 }
 
 // AfterPoolCreated is called after CreatePool
-func (h AmmHooks) AfterPoolCreated(ctx sdk.Context, sender sdk.AccAddress, poolId uint64) {
-	h.k.AfterPoolCreated(ctx, sender, poolId)
+func (h AmmHooks) AfterPoolCreated(ctx sdk.Context, sender sdk.AccAddress, pool ammtypes.Pool) {
+	h.k.AfterPoolCreated(ctx, sender, pool.PoolId)
 }
 
 // AfterJoinPool is called after JoinPool, JoinSwapExternAmountIn, and JoinSwapShareAmountOut
-func (h AmmHooks) AfterJoinPool(ctx sdk.Context, sender sdk.AccAddress, poolId uint64, enterCoins sdk.Coins, shareOutAmount sdk.Int) {
-	h.k.AfterJoinPool(ctx, sender, poolId, enterCoins, shareOutAmount)
+func (h AmmHooks) AfterJoinPool(ctx sdk.Context, sender sdk.AccAddress, pool ammtypes.Pool, enterCoins sdk.Coins, shareOutAmount sdk.Int) {
+	h.k.AfterJoinPool(ctx, sender, pool.PoolId, enterCoins, shareOutAmount)
 }
 
 // AfterExitPool is called after ExitPool, ExitSwapShareAmountIn, and ExitSwapExternAmountOut
-func (h AmmHooks) AfterExitPool(ctx sdk.Context, sender sdk.AccAddress, poolId uint64, shareInAmount sdk.Int, exitCoins sdk.Coins) {
-	h.k.AfterExitPool(ctx, sender, poolId, shareInAmount, exitCoins)
+func (h AmmHooks) AfterExitPool(ctx sdk.Context, sender sdk.AccAddress, pool ammtypes.Pool, shareInAmount sdk.Int, exitCoins sdk.Coins) {
+	h.k.AfterExitPool(ctx, sender, pool.PoolId, shareInAmount, exitCoins)
 }
 
 // AfterSwap is called after SwapExactAmountIn and SwapExactAmountOut
-func (h AmmHooks) AfterSwap(ctx sdk.Context, sender sdk.AccAddress, poolId uint64, input sdk.Coins, output sdk.Coins) {
-	h.k.AfterSwap(ctx, sender, poolId, input, output)
+func (h AmmHooks) AfterSwap(ctx sdk.Context, sender sdk.AccAddress, pool ammtypes.Pool, input sdk.Coins, output sdk.Coins) {
+	h.k.AfterSwap(ctx, sender, pool.PoolId, input, output)
 }

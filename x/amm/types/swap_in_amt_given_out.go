@@ -12,8 +12,9 @@ func (p Pool) CalcGivenOutSlippage(
 	snapshot *Pool,
 	tokensOut sdk.Coins,
 	tokenInDenom string,
+	accPoolKeeper AccountedPoolKeeper,
 ) (sdk.Dec, error) {
-	balancerInCoin, err := p.CalcInAmtGivenOut(ctx, oracleKeeper, snapshot, tokensOut, tokenInDenom, sdk.ZeroDec())
+	balancerInCoin, err := p.CalcInAmtGivenOut(ctx, oracleKeeper, snapshot, tokensOut, tokenInDenom, sdk.ZeroDec(), accPoolKeeper)
 	if err != nil {
 		return sdk.ZeroDec(), err
 	}
@@ -46,17 +47,17 @@ func (p Pool) CalcGivenOutSlippage(
 // SwapInAmtGivenOut is a mutative method for CalcOutAmtGivenIn, which includes the actual swap.
 func (p *Pool) SwapInAmtGivenOut(
 	ctx sdk.Context, oracleKeeper OracleKeeper, snapshot *Pool,
-	tokensOut sdk.Coins, tokenInDenom string, swapFee sdk.Dec) (
+	tokensOut sdk.Coins, tokenInDenom string, swapFee sdk.Dec, accPoolKeeper AccountedPoolKeeper) (
 	tokenIn sdk.Coin, weightBalanceBonus sdk.Dec, err error,
 ) {
 	// early return with balancer swap if normal amm pool
 	if !p.PoolParams.UseOracle {
-		balancerInCoin, err := p.CalcInAmtGivenOut(ctx, oracleKeeper, snapshot, tokensOut, tokenInDenom, swapFee)
+		balancerInCoin, err := p.CalcInAmtGivenOut(ctx, oracleKeeper, snapshot, tokensOut, tokenInDenom, swapFee, accPoolKeeper)
 		if err != nil {
 			return sdk.Coin{}, sdk.ZeroDec(), err
 		}
 
-		err = p.applySwap(ctx, sdk.Coins{balancerInCoin}, tokensOut, swapFee, sdk.ZeroDec())
+		err = p.applySwap(ctx, sdk.Coins{balancerInCoin}, tokensOut, swapFee, sdk.ZeroDec(), accPoolKeeper)
 		if err != nil {
 			return sdk.Coin{}, sdk.ZeroDec(), err
 		}
@@ -93,6 +94,7 @@ func (p *Pool) SwapInAmtGivenOut(
 		snapshot,
 		sdk.Coins{sdk.NewCoin(tokenOut.Denom, resizedAmount)},
 		tokenInDenom,
+		accPoolKeeper,
 	)
 	inAmountAfterSlippage := oracleInAmount.Add(slippageAmount)
 
@@ -123,7 +125,7 @@ func (p *Pool) SwapInAmtGivenOut(
 		Quo(sdk.OneDec().Sub(swapFee)).
 		TruncateInt()
 	oracleInCoin := sdk.NewCoin(tokenInDenom, tokenAmountInInt)
-	err = p.applySwap(ctx, sdk.Coins{oracleInCoin}, tokensOut, swapFee, sdk.ZeroDec())
+	err = p.applySwap(ctx, sdk.Coins{oracleInCoin}, tokensOut, swapFee, sdk.ZeroDec(), accPoolKeeper)
 	if err != nil {
 		return sdk.Coin{}, sdk.ZeroDec(), err
 	}

@@ -6,6 +6,7 @@ import (
 	"github.com/cometbft/cometbft/crypto/ed25519"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/amm/types"
+	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
 
 func (suite *TestSuite) TestTVL() {
@@ -20,7 +21,7 @@ func (suite *TestSuite) TestTVL() {
 			desc: "oracle pool all asset prices set case",
 			poolAssets: []types.PoolAsset{
 				{
-					Token:  sdk.NewInt64Coin("uusdc", 1000_000_000), // 1000 USDT
+					Token:  sdk.NewInt64Coin(ptypes.BaseCurrency, 1000_000_000), // 1000 USDT
 					Weight: sdk.NewInt(50),
 				},
 				{
@@ -72,7 +73,7 @@ func (suite *TestSuite) TestTVL() {
 					Weight: sdk.NewInt(50),
 				},
 				{
-					Token:  sdk.NewInt64Coin("uusdc", 1000_000_000), // 1000 USDC
+					Token:  sdk.NewInt64Coin(ptypes.BaseCurrency, 1000_000_000), // 1000 USDC
 					Weight: sdk.NewInt(50),
 				},
 			},

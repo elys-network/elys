@@ -9,6 +9,7 @@ import (
 	"github.com/elys-network/elys/app"
 	commitmentkeeper "github.com/elys-network/elys/x/commitment/keeper"
 	"github.com/elys-network/elys/x/commitment/types"
+	ptypes "github.com/elys-network/elys/x/parameter/types"
 	"github.com/stretchr/testify/require"
 )
 
@@ -31,8 +32,8 @@ func TestVest(t *testing.T) {
 
 	vestingInfos := []*types.VestingInfo{
 		{
-			BaseDenom:       "ueden",
-			VestingDenom:    "uelys",
+			BaseDenom:       ptypes.Eden,
+			VestingDenom:    ptypes.Elys,
 			EpochIdentifier: "tenseconds",
 			NumEpochs:       10,
 			VestNowFactor:   sdk.NewInt(90),
@@ -48,7 +49,7 @@ func TestVest(t *testing.T) {
 	// Create a vesting message
 	vestMsg := &types.MsgVest{
 		Creator: creator.String(),
-		Denom:   "ueden",
+		Denom:   ptypes.Eden,
 		Amount:  sdk.NewInt(100),
 	}
 
@@ -57,13 +58,13 @@ func TestVest(t *testing.T) {
 		Creator: creator.String(),
 		CommittedTokens: []*types.CommittedTokens{
 			{
-				Denom:  "ueden",
+				Denom:  ptypes.Eden,
 				Amount: sdk.NewInt(50),
 			},
 		},
 		UncommittedTokens: []*types.UncommittedTokens{
 			{
-				Denom:  "ueden",
+				Denom:  ptypes.Eden,
 				Amount: sdk.NewInt(150),
 			},
 		},
