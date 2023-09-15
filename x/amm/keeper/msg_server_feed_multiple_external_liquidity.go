@@ -12,6 +12,9 @@ import (
 func AssetsValue(ctx sdk.Context, oracleKeeper types.OracleKeeper, amountDepthInfo []types.AssetAmountDepth) (sdk.Dec, sdk.Dec, error) {
 	totalValue := sdk.ZeroDec()
 	totalDepth := sdk.ZeroDec()
+	if len(amountDepthInfo) == 0 {
+		return sdk.ZeroDec(), sdk.ZeroDec(), nil
+	}
 	for _, asset := range amountDepthInfo {
 		price, found := oracleKeeper.GetAssetPrice(ctx, asset.Asset)
 		if !found {
@@ -22,7 +25,8 @@ func AssetsValue(ctx sdk.Context, oracleKeeper types.OracleKeeper, amountDepthIn
 		}
 		totalDepth = totalDepth.Add(asset.Depth)
 	}
-	return totalValue, totalDepth, nil
+	avgDepth := totalDepth.Quo(sdk.NewDec(int64(len(amountDepthInfo))))
+	return totalValue, avgDepth, nil
 }
 
 func LiquidityRatioFromPriceDepth(depth sdk.Dec) sdk.Dec {
