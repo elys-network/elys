@@ -77678,6 +77678,15 @@ definitions:
           signatures required by gogoproto.
       weight:
         type: string
+  elys.amm.AssetAmountDepth:
+    type: object
+    properties:
+      asset:
+        type: string
+      amount:
+        type: string
+      depth:
+        type: string
   elys.amm.DenomLiquidity:
     type: object
     properties:
@@ -77685,6 +77694,26 @@ definitions:
         type: string
       liquidity:
         type: string
+  elys.amm.ExternalLiquidity:
+    type: object
+    properties:
+      poolId:
+        type: string
+        format: uint64
+      amountDepthInfo:
+        type: array
+        items:
+          type: object
+          properties:
+            asset:
+              type: string
+            amount:
+              type: string
+            depth:
+              type: string
+    description: >-
+      ExternalLiquidity defines price, volume, and time information for an
+      exchange rate.
   elys.amm.MsgCreatePoolResponse:
     type: object
     properties:
@@ -77708,6 +77737,8 @@ definitions:
 
             NOTE: The amount field is an Int which implements the custom method
             signatures required by gogoproto.
+  elys.amm.MsgFeedMultipleExternalLiquidityResponse:
+    type: object
   elys.amm.MsgJoinPoolResponse:
     type: object
     properties:

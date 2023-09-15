@@ -17,6 +17,7 @@ service Msg {
   rpc ExitPool           (MsgExitPool          ) returns (MsgExitPoolResponse          );
   rpc SwapExactAmountIn  (MsgSwapExactAmountIn ) returns (MsgSwapExactAmountInResponse );
   rpc SwapExactAmountOut (MsgSwapExactAmountOut) returns (MsgSwapExactAmountOutResponse);
+  rpc FeedMultipleExternalLiquidity(MsgFeedMultipleExternalLiquidity) returns (MsgFeedMultipleExternalLiquidityResponse);
 }
 message MsgCreatePool {
            string                   sender         = 1;
@@ -74,3 +75,28 @@ message MsgSwapExactAmountOutResponse {
            string                   tokenInAmount = 1 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false];
   }
 
+message MsgFeedMultipleExternalLiquidity {
+  string sender = 1;
+  repeated ExternalLiquidity liquidity = 2 [(gogoproto.nullable) = false];
+}
+message MsgFeedMultipleExternalLiquidityResponse {}
+
+message AssetAmountDepth {
+  string asset = 1;
+  string amount = 2 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  string depth = 3 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+}
+
+// ExternalLiquidity defines price, volume, and time information for an exchange rate.
+message ExternalLiquidity {
+  uint64 poolId = 1;
+  repeated AssetAmountDepth amountDepthInfo = 2 [
+    (gogoproto.nullable) = false
+  ];
+}

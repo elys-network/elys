@@ -12,8 +12,9 @@ import (
 
 func CmdListPool() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "list-pool",
-		Short: "list all pool",
+		Use:     "list-pool",
+		Short:   "list all pool",
+		Example: "elysd query amm list-pool",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
 
