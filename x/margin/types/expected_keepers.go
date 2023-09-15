@@ -29,7 +29,8 @@ type PoolChecker interface {
 
 //go:generate mockery --srcpkg . --name OpenChecker --structname OpenChecker --filename open_checker.go --with-expecter
 type OpenChecker interface {
-	CheckLongingAssets(ctx sdk.Context, collateralAsset string, borrowAsset string) error
+	CheckLongAssets(ctx sdk.Context, collateralAsset string, borrowAsset string) error
+	CheckShortAssets(ctx sdk.Context, collateralAsset string, borrowAsset string) error
 	CheckUserAuthorization(ctx sdk.Context, msg *MsgOpen) error
 	CheckMaxOpenPositions(ctx sdk.Context) error
 	GetTradingAsset(collateralAsset string, borrowAsset string) string

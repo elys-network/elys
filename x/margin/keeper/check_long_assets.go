@@ -7,7 +7,7 @@ import (
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
 
-func (k Keeper) CheckLongingAssets(ctx sdk.Context, collateralAsset string, borrowAsset string) error {
+func (k Keeper) CheckLongAssets(ctx sdk.Context, collateralAsset string, borrowAsset string) error {
 	if borrowAsset == ptypes.BaseCurrency {
 		return sdkerrors.Wrap(types.ErrInvalidBorrowingAsset, "invalid borrowing asset")
 	}

@@ -6,7 +6,7 @@ import (
 )
 
 func (k Keeper) ProcessOpenShort(ctx sdk.Context, mtp *types.MTP, leverage sdk.Dec, eta sdk.Dec, collateralAmountDec sdk.Dec, poolId uint64, msg *types.MsgOpen) (*types.MTP, error) {
-	// // Determine the trading asset.
+	// Determine the trading asset.
 	// tradingAsset := k.OpenShortChecker.GetTradingAsset(msg.CollateralAsset, msg.BorrowAsset)
 
 	// // Fetch the pool associated with the given pool ID.
@@ -30,9 +30,12 @@ func (k Keeper) ProcessOpenShort(ctx sdk.Context, mtp *types.MTP, leverage sdk.D
 	// leveragedAmount := sdk.NewInt(collateralAmountDec.Mul(leverage).TruncateInt().Int64())
 
 	// // Borrow the asset the user wants to short.
-	// // ... (Logic to borrow the asset; error handling) ...
+	// // err = k.OpenLongChecker.Borrow(ctx, msg.CollateralAsset, msg.BorrowAsset, msg.CollateralAmount, custodyAmount, mtp, &ammPool, &pool, eta)
+	// // if err != nil {
+	// // 	return nil, err
+	// // }
 
-	// // Swap the borrowed asset for base currency.
+	// // Calculate the custody amount.
 	// swappedAmount, err := k.OpenShortChecker.EstimateSwap(ctx, leveragedAmount, ptypes.BaseCurrency, ammPool)
 	// if err != nil {
 	// 	return nil, err
