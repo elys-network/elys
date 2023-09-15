@@ -2,6 +2,8 @@ version: 1
 accounts:
   - name: treasury
     coins:
+      - 100000000uatom
+      - 100000000uusdt
       - 9000000000000000uelys
       - 100000000ueden
     mnemonic: olympic slide park figure frost benefit deer reform fly pull price airport submit monitor silk insect uphold convince pupil project ignore roof warfare slight
@@ -301,10 +303,22 @@ genesis:
           display: "BTC"
           bandTicker: "BTC"
           elysTicker: "BTC"
+          decimal: 9
         - denom: "wei"
           display: "ETH"
           bandTicker: "ETH"
           elysTicker: "ETH"
+          decimal: 18
+        - denom: "uatom"
+          display: "ATOM"
+          bandTicker: "ATOM"
+          elysTicker: "ATOM"
+          decimal: 6
+        - denom: "uusdt"
+          display: "USDT"
+          bandTicker: "USDT"
+          elysTicker: "USDT"
+          decimal: 6
       params:
         ask_count: "4"
         band_channel_source: "channel-0"
@@ -324,6 +338,16 @@ genesis:
         - feeder: "elys12tzylat4udvjj56uuhu3vj2n4vgp7cf9fwna9w"
           is_active: true
       prices:
+        - asset: USDT
+          price: "1.00"
+          provider: elys12tzylat4udvjj56uuhu3vj2n4vgp7cf9fwna9w
+          source: elys
+          timestamp: "1694743319"
+        - asset: USDC
+          price: "1.00"
+          provider: elys12tzylat4udvjj56uuhu3vj2n4vgp7cf9fwna9w
+          source: elys
+          timestamp: "1694743319"
     burner:
       params:
         epochIdentifier: day

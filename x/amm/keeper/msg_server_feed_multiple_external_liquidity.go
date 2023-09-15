@@ -12,11 +12,11 @@ import (
 func AssetsValue(ctx sdk.Context, oracleKeeper types.OracleKeeper, elCoins sdk.DecCoins) (sdk.Dec, error) {
 	totalValue := sdk.ZeroDec()
 	for _, asset := range elCoins {
-		tokenPrice := oracleKeeper.GetAssetPriceFromDenom(ctx, asset.Denom)
-		if tokenPrice.IsZero() {
-			return sdk.ZeroDec(), fmt.Errorf("token price not set: %s", asset.Denom)
+		price, found := oracleKeeper.GetAssetPrice(ctx, asset.Denom)
+		if !found {
+			return sdk.ZeroDec(), fmt.Errorf("asset price not set: %s", asset.Denom)
 		} else {
-			v := tokenPrice.Mul(asset.Amount)
+			v := price.Price.Mul(asset.Amount)
 			totalValue = totalValue.Add(v)
 		}
 	}
@@ -62,8 +62,13 @@ func (k msgServer) FeedMultipleExternalLiquidity(goCtx context.Context, msg *typ
 			return nil, err
 		}
 
+		fmt.Println("tvl", tvl.String())
+		fmt.Println("elValue", elValue.String())
+
 		elRatio := elValue.Quo(tvl)
+		fmt.Println("elRatio1", elRatio.String(), el.Depth)
 		elRatio = elRatio.Quo(LiquidityRatioFromPriceDepth(el.Depth))
+		fmt.Println("elRatio2", elRatio.String())
 		if elRatio.LT(sdk.OneDec()) {
 			elRatio = sdk.OneDec()
 		}
