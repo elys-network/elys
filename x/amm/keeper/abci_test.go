@@ -8,6 +8,7 @@ import (
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 	"github.com/elys-network/elys/x/amm/keeper"
 	"github.com/elys-network/elys/x/amm/types"
+	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
 
 func (suite *KeeperTestSuite) TestExecuteSwapRequests() {
@@ -20,17 +21,17 @@ func (suite *KeeperTestSuite) TestExecuteSwapRequests() {
 	}{
 		{
 			desc:              "single swap request",
-			senderInitBalance: sdk.Coins{sdk.NewInt64Coin("uelys", 1000000), sdk.NewInt64Coin("uusdc", 1000000)},
+			senderInitBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 1000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)},
 			swapMsgs: []sdk.Msg{
 				&types.MsgSwapExactAmountIn{
 					Sender: sender.String(),
 					Routes: []types.SwapAmountInRoute{
 						{
 							PoolId:        1,
-							TokenOutDenom: "uusdc",
+							TokenOutDenom: ptypes.BaseCurrency,
 						},
 					},
-					TokenIn:           sdk.NewInt64Coin("uelys", 10000),
+					TokenIn:           sdk.NewInt64Coin(ptypes.Elys, 10000),
 					TokenOutMinAmount: sdk.ZeroInt(),
 				},
 			},
@@ -38,17 +39,17 @@ func (suite *KeeperTestSuite) TestExecuteSwapRequests() {
 		},
 		{
 			desc:              "two requests with opposite direction",
-			senderInitBalance: sdk.Coins{sdk.NewInt64Coin("uelys", 1000000), sdk.NewInt64Coin("uusdc", 1000000)},
+			senderInitBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 1000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)},
 			swapMsgs: []sdk.Msg{
 				&types.MsgSwapExactAmountIn{
 					Sender: sender.String(),
 					Routes: []types.SwapAmountInRoute{
 						{
 							PoolId:        1,
-							TokenOutDenom: "uusdc",
+							TokenOutDenom: ptypes.BaseCurrency,
 						},
 					},
-					TokenIn:           sdk.NewInt64Coin("uelys", 10000),
+					TokenIn:           sdk.NewInt64Coin(ptypes.Elys, 10000),
 					TokenOutMinAmount: sdk.ZeroInt(),
 				},
 				&types.MsgSwapExactAmountIn{
@@ -56,10 +57,10 @@ func (suite *KeeperTestSuite) TestExecuteSwapRequests() {
 					Routes: []types.SwapAmountInRoute{
 						{
 							PoolId:        1,
-							TokenOutDenom: "uelys",
+							TokenOutDenom: ptypes.Elys,
 						},
 					},
-					TokenIn:           sdk.NewInt64Coin("uusdc", 8000),
+					TokenIn:           sdk.NewInt64Coin(ptypes.BaseCurrency, 8000),
 					TokenOutMinAmount: sdk.ZeroInt(),
 				},
 			},
@@ -67,17 +68,17 @@ func (suite *KeeperTestSuite) TestExecuteSwapRequests() {
 		},
 		{
 			desc:              "three requests",
-			senderInitBalance: sdk.Coins{sdk.NewInt64Coin("uelys", 1000000), sdk.NewInt64Coin("uusdc", 1000000)},
+			senderInitBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 1000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)},
 			swapMsgs: []sdk.Msg{
 				&types.MsgSwapExactAmountIn{
 					Sender: sender.String(),
 					Routes: []types.SwapAmountInRoute{
 						{
 							PoolId:        1,
-							TokenOutDenom: "uusdc",
+							TokenOutDenom: ptypes.BaseCurrency,
 						},
 					},
-					TokenIn:           sdk.NewInt64Coin("uelys", 11000),
+					TokenIn:           sdk.NewInt64Coin(ptypes.Elys, 11000),
 					TokenOutMinAmount: sdk.ZeroInt(),
 				},
 				&types.MsgSwapExactAmountIn{
@@ -85,10 +86,10 @@ func (suite *KeeperTestSuite) TestExecuteSwapRequests() {
 					Routes: []types.SwapAmountInRoute{
 						{
 							PoolId:        1,
-							TokenOutDenom: "uelys",
+							TokenOutDenom: ptypes.Elys,
 						},
 					},
-					TokenIn:           sdk.NewInt64Coin("uusdc", 8000),
+					TokenIn:           sdk.NewInt64Coin(ptypes.BaseCurrency, 8000),
 					TokenOutMinAmount: sdk.ZeroInt(),
 				},
 				&types.MsgSwapExactAmountIn{
@@ -96,10 +97,10 @@ func (suite *KeeperTestSuite) TestExecuteSwapRequests() {
 					Routes: []types.SwapAmountInRoute{
 						{
 							PoolId:        1,
-							TokenOutDenom: "uelys",
+							TokenOutDenom: ptypes.Elys,
 						},
 					},
-					TokenIn:           sdk.NewInt64Coin("uusdc", 1000),
+					TokenIn:           sdk.NewInt64Coin(ptypes.BaseCurrency, 1000),
 					TokenOutMinAmount: sdk.ZeroInt(),
 				},
 			},
@@ -107,17 +108,17 @@ func (suite *KeeperTestSuite) TestExecuteSwapRequests() {
 		},
 		{
 			desc:              "three requests combining different swap msg types",
-			senderInitBalance: sdk.Coins{sdk.NewInt64Coin("uelys", 1000000), sdk.NewInt64Coin("uusdc", 1000000)},
+			senderInitBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 1000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)},
 			swapMsgs: []sdk.Msg{
 				&types.MsgSwapExactAmountIn{
 					Sender: sender.String(),
 					Routes: []types.SwapAmountInRoute{
 						{
 							PoolId:        1,
-							TokenOutDenom: "uusdc",
+							TokenOutDenom: ptypes.BaseCurrency,
 						},
 					},
-					TokenIn:           sdk.NewInt64Coin("uelys", 11000),
+					TokenIn:           sdk.NewInt64Coin(ptypes.Elys, 11000),
 					TokenOutMinAmount: sdk.ZeroInt(),
 				},
 				&types.MsgSwapExactAmountOut{
@@ -125,10 +126,10 @@ func (suite *KeeperTestSuite) TestExecuteSwapRequests() {
 					Routes: []types.SwapAmountOutRoute{
 						{
 							PoolId:       1,
-							TokenInDenom: "uusdc",
+							TokenInDenom: ptypes.BaseCurrency,
 						},
 					},
-					TokenOut:         sdk.NewInt64Coin("uelys", 8000),
+					TokenOut:         sdk.NewInt64Coin(ptypes.Elys, 8000),
 					TokenInMaxAmount: sdk.NewInt(1000000),
 				},
 				&types.MsgSwapExactAmountIn{
@@ -136,10 +137,10 @@ func (suite *KeeperTestSuite) TestExecuteSwapRequests() {
 					Routes: []types.SwapAmountInRoute{
 						{
 							PoolId:        1,
-							TokenOutDenom: "uelys",
+							TokenOutDenom: ptypes.Elys,
 						},
 					},
-					TokenIn:           sdk.NewInt64Coin("uusdc", 1000),
+					TokenIn:           sdk.NewInt64Coin(ptypes.BaseCurrency, 1000),
 					TokenOutMinAmount: sdk.ZeroInt(),
 				},
 			},
@@ -147,17 +148,17 @@ func (suite *KeeperTestSuite) TestExecuteSwapRequests() {
 		},
 		{
 			desc:              "three requests combining different swap msg types",
-			senderInitBalance: sdk.Coins{sdk.NewInt64Coin("uelys", 1000000), sdk.NewInt64Coin("uusdc", 1000000)},
+			senderInitBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 1000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)},
 			swapMsgs: []sdk.Msg{
 				&types.MsgSwapExactAmountIn{
 					Sender: sender.String(),
 					Routes: []types.SwapAmountInRoute{
 						{
 							PoolId:        1,
-							TokenOutDenom: "uusdc",
+							TokenOutDenom: ptypes.BaseCurrency,
 						},
 					},
-					TokenIn:           sdk.NewInt64Coin("uelys", 11000),
+					TokenIn:           sdk.NewInt64Coin(ptypes.Elys, 11000),
 					TokenOutMinAmount: sdk.ZeroInt(),
 				},
 				&types.MsgSwapExactAmountOut{
@@ -165,10 +166,10 @@ func (suite *KeeperTestSuite) TestExecuteSwapRequests() {
 					Routes: []types.SwapAmountOutRoute{
 						{
 							PoolId:       1,
-							TokenInDenom: "uusdc",
+							TokenInDenom: ptypes.BaseCurrency,
 						},
 					},
-					TokenOut:         sdk.NewInt64Coin("uelys", 8000),
+					TokenOut:         sdk.NewInt64Coin(ptypes.Elys, 8000),
 					TokenInMaxAmount: sdk.NewInt(1000000),
 				},
 				&types.MsgSwapExactAmountIn{
@@ -176,14 +177,14 @@ func (suite *KeeperTestSuite) TestExecuteSwapRequests() {
 					Routes: []types.SwapAmountInRoute{
 						{
 							PoolId:        1,
-							TokenOutDenom: "uelys",
+							TokenOutDenom: ptypes.Elys,
 						},
 						{
 							PoolId:        2,
 							TokenOutDenom: "uusdt",
 						},
 					},
-					TokenIn:           sdk.NewInt64Coin("uusdc", 1000),
+					TokenIn:           sdk.NewInt64Coin(ptypes.BaseCurrency, 1000),
 					TokenOutMinAmount: sdk.ZeroInt(),
 				},
 			},
@@ -198,8 +199,8 @@ func (suite *KeeperTestSuite) TestExecuteSwapRequests() {
 			treasuryAddr := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
 			poolAddr2 := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
 			treasuryAddr2 := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
-			poolCoins := sdk.Coins{sdk.NewInt64Coin("uelys", 1000000), sdk.NewInt64Coin("uusdc", 1000000)}
-			pool2Coins := sdk.Coins{sdk.NewInt64Coin("uelys", 1000000), sdk.NewInt64Coin("uusdt", 1000000)}
+			poolCoins := sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 1000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)}
+			pool2Coins := sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 1000000), sdk.NewInt64Coin("uusdt", 1000000)}
 
 			// bootstrap balances
 			err := suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, tc.senderInitBalance)
@@ -217,11 +218,11 @@ func (suite *KeeperTestSuite) TestExecuteSwapRequests() {
 
 			// execute function
 			suite.app.AmmKeeper.SetDenomLiquidity(suite.ctx, types.DenomLiquidity{
-				Denom:     "uelys",
+				Denom:     ptypes.Elys,
 				Liquidity: sdk.NewInt(2000000),
 			})
 			suite.app.AmmKeeper.SetDenomLiquidity(suite.ctx, types.DenomLiquidity{
-				Denom:     "uusdc",
+				Denom:     ptypes.BaseCurrency,
 				Liquidity: sdk.NewInt(1000000),
 			})
 			suite.app.AmmKeeper.SetDenomLiquidity(suite.ctx, types.DenomLiquidity{
@@ -235,7 +236,7 @@ func (suite *KeeperTestSuite) TestExecuteSwapRequests() {
 				RebalanceTreasury: treasuryAddr.String(),
 				PoolParams: types.PoolParams{
 					SwapFee:  sdk.ZeroDec(),
-					FeeDenom: "uusdc",
+					FeeDenom: ptypes.BaseCurrency,
 				},
 				TotalShares: sdk.Coin{},
 				PoolAssets: []types.PoolAsset{
@@ -256,7 +257,7 @@ func (suite *KeeperTestSuite) TestExecuteSwapRequests() {
 				RebalanceTreasury: treasuryAddr2.String(),
 				PoolParams: types.PoolParams{
 					SwapFee:  sdk.ZeroDec(),
-					FeeDenom: "uusdc",
+					FeeDenom: ptypes.BaseCurrency,
 				},
 				TotalShares: sdk.Coin{},
 				PoolAssets: []types.PoolAsset{

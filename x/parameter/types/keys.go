@@ -34,12 +34,7 @@ const (
 	// Base currency
 	BaseCurrency = "uusdc"
 
-	// USDC
-	USDC = "uusdc"
-
-	// USDT
-	USDT = "uusdt"
-
+	// Atom denom
 	ATOM = "uatom"
 
 	// BaseDecimal

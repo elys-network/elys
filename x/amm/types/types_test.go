@@ -39,7 +39,7 @@ func (suite *TestSuite) SetupStableCoinPrices() {
 	// prices set for USDT and USDC
 	provider := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
 	suite.app.OracleKeeper.SetAssetInfo(suite.ctx, oracletypes.AssetInfo{
-		Denom:   "uusdc",
+		Denom:   ptypes.BaseCurrency,
 		Display: "USDC",
 		Decimal: 6,
 	})

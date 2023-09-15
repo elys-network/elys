@@ -53,7 +53,7 @@ func TestProcessWithdrawRewards(t *testing.T) {
 	uedenToken := sdk.NewCoins(sdk.NewCoin(ptypes.Eden, sdk.NewInt(2000)))
 	uedenBToken := sdk.NewCoins(sdk.NewCoin(ptypes.EdenB, sdk.NewInt(2000)))
 	lpToken := sdk.NewCoins(sdk.NewCoin("lp-elys-usdc", sdk.NewInt(500)))
-	usdcToken := sdk.NewCoins(sdk.NewCoin(ptypes.USDC, sdk.NewInt(500)))
+	usdcToken := sdk.NewCoins(sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(500)))
 
 	uncommitted = append(uncommitted, uedenToken)
 	uncommitted = append(uncommitted, uedenBToken)
@@ -61,7 +61,7 @@ func TestProcessWithdrawRewards(t *testing.T) {
 	uncommitted = append(uncommitted, usdcToken)
 
 	// Set assetprofile entry for denom
-	app.AssetprofileKeeper.SetEntry(ctx, aptypes.Entry{BaseDenom: ptypes.USDC, CommitEnabled: false, WithdrawEnabled: true})
+	app.AssetprofileKeeper.SetEntry(ctx, aptypes.Entry{BaseDenom: ptypes.BaseCurrency, CommitEnabled: false, WithdrawEnabled: true})
 	app.AssetprofileKeeper.SetEntry(ctx, aptypes.Entry{BaseDenom: ptypes.Eden, CommitEnabled: true, WithdrawEnabled: true})
 	app.AssetprofileKeeper.SetEntry(ctx, aptypes.Entry{BaseDenom: ptypes.EdenB, CommitEnabled: true, WithdrawEnabled: true})
 	app.AssetprofileKeeper.SetEntry(ctx, aptypes.Entry{BaseDenom: "lp-elys-usdc", CommitEnabled: true, WithdrawEnabled: false})
@@ -82,7 +82,7 @@ func TestProcessWithdrawRewards(t *testing.T) {
 	require.True(t, found)
 
 	// Get dex revenue wallet
-	dexRewardUSDC := sdk.NewCoins(sdk.NewCoin(ptypes.USDC, sdk.NewInt(5000)))
+	dexRewardUSDC := sdk.NewCoins(sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(5000)))
 
 	// Mint 5000 usdc
 	err := app.BankKeeper.MintCoins(ctx, ctypes.ModuleName, dexRewardUSDC)
@@ -99,7 +99,7 @@ func TestProcessWithdrawRewards(t *testing.T) {
 	edenCoin := app.BankKeeper.GetBalance(ctx, addr[0], ptypes.Eden)
 	require.Equal(t, sdk.Coins{edenCoin}, uedenToken)
 
-	usdcCoin := app.BankKeeper.GetBalance(ctx, addr[0], ptypes.USDC)
+	usdcCoin := app.BankKeeper.GetBalance(ctx, addr[0], ptypes.BaseCurrency)
 	require.Equal(t, sdk.Coins{usdcCoin}, usdcToken)
 }
 
@@ -110,7 +110,7 @@ func TestProcessWithdrawValidatorCommission(t *testing.T) {
 	ik := app.IncentiveKeeper
 
 	// Get dex revenue wallet
-	dexRewardUSDC := sdk.NewCoins(sdk.NewCoin(ptypes.USDC, sdk.NewInt(5000)))
+	dexRewardUSDC := sdk.NewCoins(sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(5000)))
 
 	// Mint 5000 usdc
 	err := app.BankKeeper.MintCoins(ctx, ctypes.ModuleName, dexRewardUSDC)
@@ -130,7 +130,7 @@ func TestProcessWithdrawValidatorCommission(t *testing.T) {
 	app.CommitmentKeeper.StandardStakingToken(ctx, delegator, valAddress.String(), ptypes.Eden)
 
 	// Set assetprofile entry for denom
-	app.AssetprofileKeeper.SetEntry(ctx, aptypes.Entry{BaseDenom: ptypes.USDC, CommitEnabled: false, WithdrawEnabled: true})
+	app.AssetprofileKeeper.SetEntry(ctx, aptypes.Entry{BaseDenom: ptypes.BaseCurrency, CommitEnabled: false, WithdrawEnabled: true})
 	app.AssetprofileKeeper.SetEntry(ctx, aptypes.Entry{BaseDenom: ptypes.Eden, CommitEnabled: true, WithdrawEnabled: true})
 	app.AssetprofileKeeper.SetEntry(ctx, aptypes.Entry{BaseDenom: ptypes.EdenB, CommitEnabled: true, WithdrawEnabled: true})
 

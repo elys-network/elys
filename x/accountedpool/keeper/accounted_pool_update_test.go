@@ -31,7 +31,7 @@ func TestAccountedPoolUpdate(t *testing.T) {
 		TotalShares: sdk.NewCoin("lp-token", sdk.NewInt(100)),
 		PoolAssets: []ammtypes.PoolAsset{
 			{Token: sdk.NewCoin(ptypes.ATOM, sdk.NewInt(100))},
-			{Token: sdk.NewCoin(ptypes.USDC, sdk.NewInt(1000))},
+			{Token: sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(1000))},
 		},
 		TotalWeight:       sdk.NewInt(100),
 		RebalanceTreasury: addr[0].String(),
@@ -63,7 +63,7 @@ func TestAccountedPoolUpdate(t *testing.T) {
 				AssetBalance:         sdk.NewInt(100),
 				UnsettledLiabilities: sdk.NewInt(0),
 				BlockInterest:        sdk.NewInt(0),
-				AssetDenom:           ptypes.USDC,
+				AssetDenom:           ptypes.BaseCurrency,
 			},
 			{
 				Liabilities:          sdk.NewInt(0),
@@ -82,7 +82,7 @@ func TestAccountedPoolUpdate(t *testing.T) {
 	require.Equal(t, found, true)
 	require.Equal(t, apool.PoolId, (uint64)(0))
 
-	usdcBalance := apk.GetAccountedBalance(ctx, (uint64)(0), ptypes.USDC)
+	usdcBalance := apk.GetAccountedBalance(ctx, (uint64)(0), ptypes.BaseCurrency)
 	require.Equal(t, usdcBalance, sdk.NewInt(1000+400+100))
 	atomBalance := apk.GetAccountedBalance(ctx, (uint64)(0), ptypes.ATOM)
 	require.Equal(t, atomBalance, sdk.NewInt(100))

@@ -10,6 +10,7 @@ import (
 
 	commitmentkeeper "github.com/elys-network/elys/x/commitment/keeper"
 	"github.com/elys-network/elys/x/commitment/types"
+	ptypes "github.com/elys-network/elys/x/parameter/types"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -26,14 +27,14 @@ func TestVestNow(t *testing.T) {
 
 	// Define the test data
 	creator := creatorAddr.String()
-	denom := "ueden"
+	denom := ptypes.Eden
 	initialUncommitted := sdk.NewInt(5000)
 	initialCommitted := sdk.NewInt(10000)
 
 	vestingInfos := []*types.VestingInfo{
 		{
-			BaseDenom:       "ueden",
-			VestingDenom:    "uelys",
+			BaseDenom:       ptypes.Eden,
+			VestingDenom:    ptypes.Elys,
 			EpochIdentifier: "tenseconds",
 			NumEpochs:       10,
 			VestNowFactor:   sdk.NewInt(90),

@@ -9,6 +9,7 @@ import (
 	"github.com/elys-network/elys/testutil/nullify"
 	"github.com/elys-network/elys/x/amm/keeper"
 	"github.com/elys-network/elys/x/amm/types"
+	ptypes "github.com/elys-network/elys/x/parameter/types"
 	"github.com/stretchr/testify/require"
 )
 
@@ -30,7 +31,7 @@ func createNPool(keeper *keeper.Keeper, ctx sdk.Context, n int) []types.Pool {
 			StakingFeePortion:           sdk.ZeroDec(),
 			WeightRecoveryFeePortion:    sdk.ZeroDec(),
 			ThresholdWeightDifference:   sdk.ZeroDec(),
-			FeeDenom:                    "uusdc",
+			FeeDenom:                    ptypes.BaseCurrency,
 		}
 
 		keeper.SetPool(ctx, items[i])

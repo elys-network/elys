@@ -6,6 +6,7 @@ import (
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 	"github.com/elys-network/elys/x/amm/keeper"
 	"github.com/elys-network/elys/x/amm/types"
+	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
 
 func (suite *KeeperTestSuite) TestMsgServerCreatePool() {
@@ -21,7 +22,7 @@ func (suite *KeeperTestSuite) TestMsgServerCreatePool() {
 	}{
 		{
 			desc:              "zero tvl pool creation",
-			senderInitBalance: sdk.Coins{sdk.NewInt64Coin("ueden", 1000000), sdk.NewInt64Coin("uelys", 1000000)},
+			senderInitBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.Eden, 1000000), sdk.NewInt64Coin(ptypes.Elys, 1000000)},
 			poolParams: types.PoolParams{
 				SwapFee:                     sdk.ZeroDec(),
 				ExitFee:                     sdk.ZeroDec(),
@@ -32,15 +33,15 @@ func (suite *KeeperTestSuite) TestMsgServerCreatePool() {
 				StakingFeePortion:           sdk.ZeroDec(),
 				WeightRecoveryFeePortion:    sdk.ZeroDec(),
 				ThresholdWeightDifference:   sdk.ZeroDec(),
-				FeeDenom:                    "uusdc",
+				FeeDenom:                    ptypes.BaseCurrency,
 			},
 			poolAssets: []types.PoolAsset{
 				{
-					Token:  sdk.NewInt64Coin("ueden", 1000000),
+					Token:  sdk.NewInt64Coin(ptypes.Eden, 1000000),
 					Weight: sdk.OneInt(),
 				},
 				{
-					Token:  sdk.NewInt64Coin("uelys", 1000000),
+					Token:  sdk.NewInt64Coin(ptypes.Elys, 1000000),
 					Weight: sdk.OneInt(),
 				},
 			},
@@ -50,7 +51,7 @@ func (suite *KeeperTestSuite) TestMsgServerCreatePool() {
 		},
 		{
 			desc:              "positive tvl pool creation",
-			senderInitBalance: sdk.Coins{sdk.NewInt64Coin("ueden", 1000000), sdk.NewInt64Coin("uusdc", 1000000)},
+			senderInitBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.Eden, 1000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)},
 			poolParams: types.PoolParams{
 				SwapFee:                     sdk.ZeroDec(),
 				ExitFee:                     sdk.ZeroDec(),
@@ -61,15 +62,15 @@ func (suite *KeeperTestSuite) TestMsgServerCreatePool() {
 				StakingFeePortion:           sdk.ZeroDec(),
 				WeightRecoveryFeePortion:    sdk.ZeroDec(),
 				ThresholdWeightDifference:   sdk.ZeroDec(),
-				FeeDenom:                    "uusdc",
+				FeeDenom:                    ptypes.BaseCurrency,
 			},
 			poolAssets: []types.PoolAsset{
 				{
-					Token:  sdk.NewInt64Coin("ueden", 1000000),
+					Token:  sdk.NewInt64Coin(ptypes.Eden, 1000000),
 					Weight: sdk.OneInt(),
 				},
 				{
-					Token:  sdk.NewInt64Coin("uusdc", 1000000),
+					Token:  sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000),
 					Weight: sdk.OneInt(),
 				},
 			},
@@ -79,7 +80,7 @@ func (suite *KeeperTestSuite) TestMsgServerCreatePool() {
 		},
 		{
 			desc:              "not enough balance to create pool",
-			senderInitBalance: sdk.Coins{sdk.NewInt64Coin("ueden", 1000000)},
+			senderInitBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.Eden, 1000000)},
 			poolParams: types.PoolParams{
 				SwapFee:                     sdk.ZeroDec(),
 				ExitFee:                     sdk.ZeroDec(),
@@ -90,15 +91,15 @@ func (suite *KeeperTestSuite) TestMsgServerCreatePool() {
 				StakingFeePortion:           sdk.ZeroDec(),
 				WeightRecoveryFeePortion:    sdk.ZeroDec(),
 				ThresholdWeightDifference:   sdk.ZeroDec(),
-				FeeDenom:                    "uusdc",
+				FeeDenom:                    ptypes.BaseCurrency,
 			},
 			poolAssets: []types.PoolAsset{
 				{
-					Token:  sdk.NewInt64Coin("ueden", 1000000),
+					Token:  sdk.NewInt64Coin(ptypes.Eden, 1000000),
 					Weight: sdk.OneInt(),
 				},
 				{
-					Token:  sdk.NewInt64Coin("uusdc", 1000000),
+					Token:  sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000),
 					Weight: sdk.OneInt(),
 				},
 			},

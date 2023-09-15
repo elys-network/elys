@@ -104,9 +104,9 @@ func (k Keeper) UpdateUncommittedTokens(ctx sdk.Context, epochIdentifier string,
 	// TODO:
 	// Dummy denom for USDC
 	// USDC amount in sdk.Dec type
-	dexRevenueLPsAmt := dexRevenueForLps.AmountOf(ptypes.USDC)
-	dexRevenueStakersAmt := dexRevenueRemainedForStakers.AmountOf(ptypes.USDC)
-	gasFeesLPsAmt := gasFeesForLps.AmountOf(ptypes.USDC)
+	dexRevenueLPsAmt := dexRevenueForLps.AmountOf(ptypes.BaseCurrency)
+	dexRevenueStakersAmt := dexRevenueRemainedForStakers.AmountOf(ptypes.BaseCurrency)
+	gasFeesLPsAmt := gasFeesForLps.AmountOf(ptypes.BaseCurrency)
 
 	// Calculate eden amount per epoch
 	edenAmountPerEpochStakers := stakeIncentive.Amount.Quo(sdk.NewInt(stakeIncentive.NumEpochs))
@@ -183,7 +183,7 @@ func (k Keeper) UpdateUncommittedTokens(ctx sdk.Context, epochIdentifier string,
 	edenRemainedCoin := sdk.NewDecCoin(ptypes.Eden, edenRemained.Add(edenRemainedLP))
 	// TODO:
 	// Dummy denom for USDC
-	dexRewardsRemainedCoin := sdk.NewDecCoinFromDec(ptypes.USDC, dexRewardsRemained.Add(dexRewardsRemainedLP))
+	dexRewardsRemainedCoin := sdk.NewDecCoinFromDec(ptypes.BaseCurrency, dexRewardsRemained.Add(dexRewardsRemainedLP))
 
 	feePool := k.GetFeePool(ctx)
 	feePool.CommunityPool = feePool.CommunityPool.Add(edenRemainedCoin)
@@ -204,7 +204,7 @@ func (k Keeper) UpdateCommitments(ctx sdk.Context, creator string, commitments *
 	// TODO:
 	// USDC token denom is dummy one for now until we have real usdc brought through bridge.
 	// These are the rewards from each pool, margin, gas fee.
-	k.UpdateTokensCommitment(commitments, dexRewards, ptypes.USDC)
+	k.UpdateTokensCommitment(commitments, dexRewards, ptypes.BaseCurrency)
 
 	// Save the updated Commitments
 	k.cmk.SetCommitments(ctx, *commitments)

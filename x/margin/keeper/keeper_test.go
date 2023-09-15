@@ -92,7 +92,7 @@ func SetupStableCoinPrices(ctx sdk.Context, oracle oraclekeeper.Keeper) {
 		Decimal: 6,
 	})
 	oracle.SetAssetInfo(ctx, oracletypes.AssetInfo{
-		Denom:   ptypes.USDT,
+		Denom:   "uusdt",
 		Display: "USDT",
 		Decimal: 6,
 	})

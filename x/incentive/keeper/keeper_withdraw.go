@@ -19,7 +19,7 @@ func (k Keeper) UpdateTokensForValidator(ctx sdk.Context, validator string, new_
 	k.UpdateTokensCommitment(&commitments, new_uncommitted_eden_tokens, ptypes.Eden)
 
 	// Update USDC amount
-	k.UpdateTokensCommitment(&commitments, dexRewards.TruncateInt(), ptypes.USDC)
+	k.UpdateTokensCommitment(&commitments, dexRewards.TruncateInt(), ptypes.BaseCurrency)
 
 	// Update commmitment
 	k.cmk.SetCommitments(ctx, commitments)
@@ -103,13 +103,13 @@ func (k Keeper) ProcessWithdrawRewards(ctx sdk.Context, delegator string) error 
 	}
 
 	// USDC
-	uncommittedUsdc, bfound := commitments.GetUncommittedTokensForDenom(ptypes.USDC)
+	uncommittedUsdc, bfound := commitments.GetUncommittedTokensForDenom(ptypes.BaseCurrency)
 	if bfound {
 		// Get dex revenue wallet
 		revenueCollector := k.authKeeper.GetModuleAccount(ctx, k.dexRevCollectorName)
 
 		// Revenue wallet usdc balance
-		usdcBalance := k.bankKeeper.GetBalance(ctx, revenueCollector.GetAddress(), ptypes.USDC)
+		usdcBalance := k.bankKeeper.GetBalance(ctx, revenueCollector.GetAddress(), ptypes.BaseCurrency)
 
 		// Balance check
 		if uncommittedUsdc.Amount.GT(usdcBalance.Amount) {
@@ -119,7 +119,7 @@ func (k Keeper) ProcessWithdrawRewards(ctx sdk.Context, delegator string) error 
 		// All dex rewards are only paid in USDC
 		// TODO:
 		// USDC denom is still dummy until we have real USDC in our chain.
-		err = k.cmk.ProcessWithdrawUSDC(ctx, delegator, ptypes.USDC, uncommittedUsdc.Amount)
+		err = k.cmk.ProcessWithdrawUSDC(ctx, delegator, ptypes.BaseCurrency, uncommittedUsdc.Amount)
 		if err != nil {
 			return sdkerrors.Wrapf(types.ErrIntOverflowTx, "Internal error with amount: %d", uncommittedUsdc.Amount)
 		}
@@ -133,7 +133,7 @@ func (k Keeper) ProcessWithdrawRewards(ctx sdk.Context, delegator string) error 
 		// Set withdraw usdc amount
 		// TODO
 		// USDC denom is still dummy
-		revenue := sdk.NewCoin(ptypes.USDC, uncommittedUsdc.Amount)
+		revenue := sdk.NewCoin(ptypes.BaseCurrency, uncommittedUsdc.Amount)
 		// Transfer revenue to a single wallet of DEX revenue wallet.
 		err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, k.dexRevCollectorName, addr, sdk.NewCoins(revenue))
 		if err != nil {
@@ -172,13 +172,13 @@ func (k Keeper) ProcessWithdrawValidatorCommission(ctx sdk.Context, delegator st
 	}
 
 	// USDC
-	uncommittedUsdc, bfound := commitments.GetUncommittedTokensForDenom(ptypes.USDC)
+	uncommittedUsdc, bfound := commitments.GetUncommittedTokensForDenom(ptypes.BaseCurrency)
 	if bfound {
 		// Get dex revenue wallet
 		revenueCollector := k.authKeeper.GetModuleAccount(ctx, k.dexRevCollectorName)
 
 		// Revenue wallet usdc balance
-		usdcBalance := k.bankKeeper.GetBalance(ctx, revenueCollector.GetAddress(), ptypes.USDC)
+		usdcBalance := k.bankKeeper.GetBalance(ctx, revenueCollector.GetAddress(), ptypes.BaseCurrency)
 
 		// Balance check
 		if uncommittedUsdc.Amount.GT(usdcBalance.Amount) {
@@ -187,7 +187,7 @@ func (k Keeper) ProcessWithdrawValidatorCommission(ctx sdk.Context, delegator st
 
 		// TODO:
 		// USDC denom is still dummy until we have real USDC in our chain.
-		err = k.cmk.ProcessWithdrawUSDC(ctx, validator, ptypes.USDC, uncommittedUsdc.Amount)
+		err = k.cmk.ProcessWithdrawUSDC(ctx, validator, ptypes.BaseCurrency, uncommittedUsdc.Amount)
 		if err != nil {
 			return sdkerrors.Wrapf(types.ErrIntOverflowTx, "Internal error with amount: %d", uncommittedUsdc.Amount)
 		}
@@ -201,7 +201,7 @@ func (k Keeper) ProcessWithdrawValidatorCommission(ctx sdk.Context, delegator st
 		// Set withdraw usdc amount
 		// TODO
 		// USDC denom is still dummy
-		revenue := sdk.NewCoin(ptypes.USDC, uncommittedUsdc.Amount)
+		revenue := sdk.NewCoin(ptypes.BaseCurrency, uncommittedUsdc.Amount)
 		// Transfer revenue to a single wallet of DEX revenue wallet.
 		err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, k.dexRevCollectorName, addr, sdk.NewCoins(revenue))
 		if err != nil {

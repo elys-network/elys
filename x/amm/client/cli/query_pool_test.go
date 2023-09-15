@@ -17,6 +17,7 @@ import (
 	"github.com/elys-network/elys/testutil/nullify"
 	"github.com/elys-network/elys/x/amm/client/cli"
 	"github.com/elys-network/elys/x/amm/types"
+	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
 
 // Prevent strconv unused error
@@ -42,7 +43,7 @@ func networkWithPoolObjects(t *testing.T, n int) (*network.Network, []types.Pool
 				StakingFeePortion:           sdk.ZeroDec(),
 				WeightRecoveryFeePortion:    sdk.ZeroDec(),
 				ThresholdWeightDifference:   sdk.ZeroDec(),
-				FeeDenom:                    "uusdc",
+				FeeDenom:                    ptypes.BaseCurrency,
 			},
 		}
 		nullify.Fill(&pool)
