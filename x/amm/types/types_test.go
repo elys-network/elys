@@ -13,6 +13,7 @@ import (
 
 	simapp "github.com/elys-network/elys/app"
 	oracletypes "github.com/elys-network/elys/x/oracle/types"
+	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
 
 const (
