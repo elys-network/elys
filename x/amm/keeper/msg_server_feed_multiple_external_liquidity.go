@@ -9,18 +9,20 @@ import (
 	oracletypes "github.com/elys-network/elys/x/oracle/types"
 )
 
-func AssetsValue(ctx sdk.Context, oracleKeeper types.OracleKeeper, elCoins sdk.DecCoins) (sdk.Dec, error) {
+func AssetsValue(ctx sdk.Context, oracleKeeper types.OracleKeeper, amountDepthInfo []types.AssetAmountDepth) (sdk.Dec, sdk.Dec, error) {
 	totalValue := sdk.ZeroDec()
-	for _, asset := range elCoins {
-		price, found := oracleKeeper.GetAssetPrice(ctx, asset.Denom)
+	totalDepth := sdk.ZeroDec()
+	for _, asset := range amountDepthInfo {
+		price, found := oracleKeeper.GetAssetPrice(ctx, asset.Asset)
 		if !found {
-			return sdk.ZeroDec(), fmt.Errorf("asset price not set: %s", asset.Denom)
+			return sdk.ZeroDec(), sdk.ZeroDec(), fmt.Errorf("asset price not set: %s", asset.Asset)
 		} else {
 			v := price.Price.Mul(asset.Amount)
 			totalValue = totalValue.Add(v)
 		}
+		totalDepth = totalDepth.Add(asset.Depth)
 	}
-	return totalValue, nil
+	return totalValue, totalDepth, nil
 }
 
 func LiquidityRatioFromPriceDepth(depth sdk.Dec) sdk.Dec {
@@ -57,18 +59,13 @@ func (k msgServer) FeedMultipleExternalLiquidity(goCtx context.Context, msg *typ
 			return nil, err
 		}
 
-		elValue, err := AssetsValue(ctx, k.oracleKeeper, el.Amounts)
+		elValue, elDepth, err := AssetsValue(ctx, k.oracleKeeper, el.AmountDepthInfo)
 		if err != nil {
 			return nil, err
 		}
 
-		fmt.Println("tvl", tvl.String())
-		fmt.Println("elValue", elValue.String())
-
 		elRatio := elValue.Quo(tvl)
-		fmt.Println("elRatio1", elRatio.String(), el.Depth)
-		elRatio = elRatio.Quo(LiquidityRatioFromPriceDepth(el.Depth))
-		fmt.Println("elRatio2", elRatio.String())
+		elRatio = elRatio.Quo(LiquidityRatioFromPriceDepth(elDepth))
 		if elRatio.LT(sdk.OneDec()) {
 			elRatio = sdk.OneDec()
 		}
