@@ -399,23 +399,23 @@ func (_c *OpenLongChecker_EstimateSwapGivenOut_Call) RunAndReturn(run func(types
 	return _c
 }
 
-// GetAmmPool provides a mock function with given fields: ctx, poolId, nonNativeAsset
-func (_m *OpenLongChecker) GetAmmPool(ctx types.Context, poolId uint64, nonNativeAsset string) (ammtypes.Pool, error) {
-	ret := _m.Called(ctx, poolId, nonNativeAsset)
+// GetAmmPool provides a mock function with given fields: ctx, poolId, tradingAsset
+func (_m *OpenLongChecker) GetAmmPool(ctx types.Context, poolId uint64, tradingAsset string) (ammtypes.Pool, error) {
+	ret := _m.Called(ctx, poolId, tradingAsset)
 
 	var r0 ammtypes.Pool
 	var r1 error
 	if rf, ok := ret.Get(0).(func(types.Context, uint64, string) (ammtypes.Pool, error)); ok {
-		return rf(ctx, poolId, nonNativeAsset)
+		return rf(ctx, poolId, tradingAsset)
 	}
 	if rf, ok := ret.Get(0).(func(types.Context, uint64, string) ammtypes.Pool); ok {
-		r0 = rf(ctx, poolId, nonNativeAsset)
+		r0 = rf(ctx, poolId, tradingAsset)
 	} else {
 		r0 = ret.Get(0).(ammtypes.Pool)
 	}
 
 	if rf, ok := ret.Get(1).(func(types.Context, uint64, string) error); ok {
-		r1 = rf(ctx, poolId, nonNativeAsset)
+		r1 = rf(ctx, poolId, tradingAsset)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -431,12 +431,12 @@ type OpenLongChecker_GetAmmPool_Call struct {
 // GetAmmPool is a helper method to define mock.On call
 //   - ctx types.Context
 //   - poolId uint64
-//   - nonNativeAsset string
-func (_e *OpenLongChecker_Expecter) GetAmmPool(ctx interface{}, poolId interface{}, nonNativeAsset interface{}) *OpenLongChecker_GetAmmPool_Call {
-	return &OpenLongChecker_GetAmmPool_Call{Call: _e.mock.On("GetAmmPool", ctx, poolId, nonNativeAsset)}
+//   - tradingAsset string
+func (_e *OpenLongChecker_Expecter) GetAmmPool(ctx interface{}, poolId interface{}, tradingAsset interface{}) *OpenLongChecker_GetAmmPool_Call {
+	return &OpenLongChecker_GetAmmPool_Call{Call: _e.mock.On("GetAmmPool", ctx, poolId, tradingAsset)}
 }
 
-func (_c *OpenLongChecker_GetAmmPool_Call) Run(run func(ctx types.Context, poolId uint64, nonNativeAsset string)) *OpenLongChecker_GetAmmPool_Call {
+func (_c *OpenLongChecker_GetAmmPool_Call) Run(run func(ctx types.Context, poolId uint64, tradingAsset string)) *OpenLongChecker_GetAmmPool_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		run(args[0].(types.Context), args[1].(uint64), args[2].(string))
 	})

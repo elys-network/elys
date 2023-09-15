@@ -14,10 +14,10 @@ func (k Keeper) Repay(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, ammPool
 	Liabilities := mtp.Liabilities
 	InterestUnpaidCollateral := mtp.InterestUnpaidCollaterals[collateralIndex]
 
-	if collateralAsset != ptypes.USDC {
-		// swap to usdc
+	if collateralAsset != ptypes.BaseCurrency {
+		// swap to base currency
 		unpaidCollateralIn := sdk.NewCoin(mtp.CollateralAssets[collateralIndex], mtp.InterestUnpaidCollaterals[collateralIndex])
-		C, err := k.EstimateSwapGivenOut(ctx, unpaidCollateralIn, ptypes.USDC, ammPool)
+		C, err := k.EstimateSwapGivenOut(ctx, unpaidCollateralIn, ptypes.BaseCurrency, ammPool)
 		if err != nil {
 			return err
 		}
@@ -57,21 +57,21 @@ func (k Keeper) Repay(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, ammPool
 			takePercentage := k.GetForceCloseFundPercentage(ctx)
 
 			fundAddr := k.GetForceCloseFundAddress(ctx)
-			takeAmount, err := k.TakeFundPayment(ctx, returnAmount, ptypes.USDC, takePercentage, fundAddr, &ammPool)
+			takeAmount, err := k.TakeFundPayment(ctx, returnAmount, ptypes.BaseCurrency, takePercentage, fundAddr, &ammPool)
 			if err != nil {
 				return err
 			}
 			actualReturnAmount = returnAmount.Sub(takeAmount)
 			if !takeAmount.IsZero() {
-				k.EmitFundPayment(ctx, mtp, takeAmount, ptypes.USDC, types.EventRepayFund)
+				k.EmitFundPayment(ctx, mtp, takeAmount, ptypes.BaseCurrency, types.EventRepayFund)
 			}
 		}
 
-		// actualReturnAmount is so far in usdc, now should convert it to collateralAsset in order to return
+		// actualReturnAmount is so far in base currency, now should convert it to collateralAsset in order to return
 		if !actualReturnAmount.IsZero() {
-			if collateralAsset != ptypes.USDC {
-				// swap to usdc
-				amtTokenIn := sdk.NewCoin(ptypes.USDC, actualReturnAmount)
+			if collateralAsset != ptypes.BaseCurrency {
+				// swap to base currency
+				amtTokenIn := sdk.NewCoin(ptypes.BaseCurrency, actualReturnAmount)
 				C, err := k.EstimateSwapGivenOut(ctx, amtTokenIn, collateralAsset, ammPool)
 				if err != nil {
 					return err
@@ -101,10 +101,10 @@ func (k Keeper) Repay(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, ammPool
 	}
 
 	// before updating collateral asset balance, we should convert returnAmount to collateralAsset
-	// because so far returnAmount is in usdc.
-	if collateralAsset != ptypes.USDC {
-		// swap to usdc
-		amtTokenIn := sdk.NewCoin(ptypes.USDC, returnAmount)
+	// because so far returnAmount is in base currency.
+	if collateralAsset != ptypes.BaseCurrency {
+		// swap to base currency
+		amtTokenIn := sdk.NewCoin(ptypes.BaseCurrency, returnAmount)
 		C, err := k.EstimateSwapGivenOut(ctx, amtTokenIn, collateralAsset, ammPool)
 		if err != nil {
 			return err
@@ -118,21 +118,20 @@ func (k Keeper) Repay(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, ammPool
 		return err
 	}
 
-	// Need to be checked by Caner for short
 	// long position
-	err = pool.UpdateLiabilities(ctx, ptypes.USDC, mtp.Liabilities, false)
+	err = pool.UpdateLiabilities(ctx, ptypes.BaseCurrency, mtp.Liabilities, false)
 	if err != nil {
 		return err
 	}
 
 	// long position
-	err = pool.UpdateUnsettledLiabilities(ctx, ptypes.USDC, debtI, true)
+	err = pool.UpdateUnsettledLiabilities(ctx, ptypes.BaseCurrency, debtI, true)
 	if err != nil {
 		return err
 	}
 
 	// long position
-	err = pool.UpdateUnsettledLiabilities(ctx, ptypes.USDC, debtP, true)
+	err = pool.UpdateUnsettledLiabilities(ctx, ptypes.BaseCurrency, debtP, true)
 	if err != nil {
 		return err
 	}

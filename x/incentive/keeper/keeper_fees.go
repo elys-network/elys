@@ -60,12 +60,12 @@ func (k Keeper) CollectGasFeesToIncentiveModule(ctx sdk.Context) sdk.Coins {
 
 	for _, tokenIn := range feesCollectedInt {
 		// skip for fee denom - usdc
-		if tokenIn.Denom == ptypes.USDC {
+		if tokenIn.Denom == ptypes.BaseCurrency {
 			continue
 		}
 
 		// Find a pool that can convert tokenIn to usdc
-		pool, found := k.FindPool(ctx, tokenIn.Denom, ptypes.USDC)
+		pool, found := k.FindPool(ctx, tokenIn.Denom, ptypes.BaseCurrency)
 		if !found {
 			continue
 		}
@@ -73,7 +73,7 @@ func (k Keeper) CollectGasFeesToIncentiveModule(ctx sdk.Context) sdk.Coins {
 		// Executes the swap in the pool and stores the output. Updates pool assets but
 		// does not actually transfer any tokens to or from the pool.
 		snapshot := k.amm.GetPoolSnapshotOrSet(ctx, pool)
-		tokenOutCoin, _, err := k.amm.SwapOutAmtGivenIn(ctx, pool.PoolId, k.oracleKeeper, &snapshot, sdk.Coins{tokenIn}, ptypes.USDC, sdk.ZeroDec())
+		tokenOutCoin, _, err := k.amm.SwapOutAmtGivenIn(ctx, pool.PoolId, k.oracleKeeper, &snapshot, sdk.Coins{tokenIn}, ptypes.BaseCurrency, sdk.ZeroDec())
 		if err != nil {
 			continue
 		}
@@ -92,7 +92,7 @@ func (k Keeper) CollectGasFeesToIncentiveModule(ctx sdk.Context) sdk.Coins {
 		}
 
 		// Swapped USDC coin
-		swappedCoin := sdk.NewCoin(ptypes.USDC, tokenOutAmount)
+		swappedCoin := sdk.NewCoin(ptypes.BaseCurrency, tokenOutAmount)
 		swappedCoins := sdk.NewCoins(swappedCoin)
 
 		// Transfer converted USDC fees to the Dex revenue module account
@@ -149,7 +149,7 @@ func (k Keeper) CollectDEXRevenue(ctx sdk.Context) (sdk.Coins, sdk.DecCoins) {
 		trackKey := types.GetPoolRevenueTrackKey(poolId)
 
 		// Store revenue portion for Lps temporarilly
-		k.tci.PoolRevenueTrack[trackKey] = revenuePortionForLPs.AmountOf(ptypes.USDC)
+		k.tci.PoolRevenueTrack[trackKey] = revenuePortionForLPs.AmountOf(ptypes.BaseCurrency)
 
 		// Sum total collected amount
 		amountTotalCollected = amountTotalCollected.Add(revenue...)

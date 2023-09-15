@@ -8,6 +8,7 @@ import (
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 	"github.com/elys-network/elys/x/amm/keeper"
 	"github.com/elys-network/elys/x/amm/types"
+	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
 
 func (suite *KeeperTestSuite) TestMsgServerSwapExactAmountIn() {
@@ -24,47 +25,47 @@ func (suite *KeeperTestSuite) TestMsgServerSwapExactAmountIn() {
 	}{
 		{
 			desc:              "successful execution with positive swap fee",
-			senderInitBalance: sdk.Coins{sdk.NewInt64Coin("uelys", 1000000), sdk.NewInt64Coin("uusdc", 1000000)},
+			senderInitBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 1000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)},
 			swapFee:           sdk.NewDecWithPrec(1, 2), // 1%
-			tokenIn:           sdk.NewInt64Coin("uelys", 10000),
+			tokenIn:           sdk.NewInt64Coin(ptypes.Elys, 10000),
 			tokenOutMin:       sdk.ZeroInt(),
-			tokenOut:          sdk.NewInt64Coin("uusdc", 9704),
+			tokenOut:          sdk.NewInt64Coin(ptypes.BaseCurrency, 9704),
 			swapRoute: []types.SwapAmountInRoute{
 				{
 					PoolId:        1,
-					TokenOutDenom: "uusdc",
+					TokenOutDenom: ptypes.BaseCurrency,
 				},
 			},
-			expSenderBalance: sdk.Coins{sdk.NewInt64Coin("uelys", 990000), sdk.NewInt64Coin("uusdc", 1009704)},
+			expSenderBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 990000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1009704)},
 			expPass:          true,
 		},
 		{
 			desc:              "successful execution with zero swap fee",
-			senderInitBalance: sdk.Coins{sdk.NewInt64Coin("uelys", 1000000), sdk.NewInt64Coin("uusdc", 1000000)},
+			senderInitBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 1000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)},
 			swapFee:           sdk.ZeroDec(),
-			tokenIn:           sdk.NewInt64Coin("uelys", 10000),
+			tokenIn:           sdk.NewInt64Coin(ptypes.Elys, 10000),
 			tokenOutMin:       sdk.ZeroInt(),
-			tokenOut:          sdk.NewInt64Coin("uusdc", 9900),
+			tokenOut:          sdk.NewInt64Coin(ptypes.BaseCurrency, 9900),
 			swapRoute: []types.SwapAmountInRoute{
 				{
 					PoolId:        1,
-					TokenOutDenom: "uusdc",
+					TokenOutDenom: ptypes.BaseCurrency,
 				},
 			},
-			expSenderBalance: sdk.Coins{sdk.NewInt64Coin("uelys", 990000), sdk.NewInt64Coin("uusdc", 1009900)},
+			expSenderBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 990000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1009900)},
 			expPass:          true,
 		},
 		{
 			desc:              "not available pool as route",
-			senderInitBalance: sdk.Coins{sdk.NewInt64Coin("uelys", 1000000), sdk.NewInt64Coin("uusdc", 1000000)},
+			senderInitBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 1000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)},
 			swapFee:           sdk.ZeroDec(),
-			tokenIn:           sdk.NewInt64Coin("uelys", 10000),
+			tokenIn:           sdk.NewInt64Coin(ptypes.Elys, 10000),
 			tokenOutMin:       sdk.ZeroInt(),
-			tokenOut:          sdk.NewInt64Coin("uusdc", 9900),
+			tokenOut:          sdk.NewInt64Coin(ptypes.BaseCurrency, 9900),
 			swapRoute: []types.SwapAmountInRoute{
 				{
 					PoolId:        3,
-					TokenOutDenom: "uusdc",
+					TokenOutDenom: ptypes.BaseCurrency,
 				},
 			},
 			expSenderBalance: sdk.Coins{},
@@ -72,22 +73,22 @@ func (suite *KeeperTestSuite) TestMsgServerSwapExactAmountIn() {
 		},
 		{
 			desc:              "multiple routes",
-			senderInitBalance: sdk.Coins{sdk.NewInt64Coin("uelys", 1000000), sdk.NewInt64Coin("uusdc", 1000000)},
+			senderInitBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 1000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)},
 			swapFee:           sdk.ZeroDec(),
-			tokenIn:           sdk.NewInt64Coin("uusdc", 10000),
+			tokenIn:           sdk.NewInt64Coin(ptypes.BaseCurrency, 10000),
 			tokenOutMin:       sdk.ZeroInt(),
 			tokenOut:          sdk.NewInt64Coin("uusdt", 9802),
 			swapRoute: []types.SwapAmountInRoute{
 				{
 					PoolId:        1,
-					TokenOutDenom: "uelys",
+					TokenOutDenom: ptypes.Elys,
 				},
 				{
 					PoolId:        2,
 					TokenOutDenom: "uusdt",
 				},
 			},
-			expSenderBalance: sdk.Coins{sdk.NewInt64Coin("uelys", 1000000), sdk.NewInt64Coin("uusdc", 990000), sdk.NewInt64Coin("uusdt", 9802)},
+			expSenderBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 1000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 990000), sdk.NewInt64Coin("uusdt", 9802)},
 			expPass:          true,
 		},
 	} {
@@ -100,8 +101,8 @@ func (suite *KeeperTestSuite) TestMsgServerSwapExactAmountIn() {
 			treasuryAddr := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
 			poolAddr2 := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
 			treasuryAddr2 := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
-			poolCoins := sdk.Coins{sdk.NewInt64Coin("uelys", 1000000), sdk.NewInt64Coin("uusdc", 1000000)}
-			pool2Coins := sdk.Coins{sdk.NewInt64Coin("uelys", 1000000), sdk.NewInt64Coin("uusdt", 1000000)}
+			poolCoins := sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 1000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)}
+			pool2Coins := sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 1000000), sdk.NewInt64Coin("uusdt", 1000000)}
 
 			// bootstrap balances
 			err := suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, tc.senderInitBalance)
@@ -119,11 +120,11 @@ func (suite *KeeperTestSuite) TestMsgServerSwapExactAmountIn() {
 
 			// execute function
 			suite.app.AmmKeeper.SetDenomLiquidity(suite.ctx, types.DenomLiquidity{
-				Denom:     "uelys",
+				Denom:     ptypes.Elys,
 				Liquidity: sdk.NewInt(2000000),
 			})
 			suite.app.AmmKeeper.SetDenomLiquidity(suite.ctx, types.DenomLiquidity{
-				Denom:     "uusdc",
+				Denom:     ptypes.BaseCurrency,
 				Liquidity: sdk.NewInt(1000000),
 			})
 			suite.app.AmmKeeper.SetDenomLiquidity(suite.ctx, types.DenomLiquidity{
@@ -137,7 +138,7 @@ func (suite *KeeperTestSuite) TestMsgServerSwapExactAmountIn() {
 				RebalanceTreasury: treasuryAddr.String(),
 				PoolParams: types.PoolParams{
 					SwapFee:  tc.swapFee,
-					FeeDenom: "uusdc",
+					FeeDenom: ptypes.BaseCurrency,
 				},
 				TotalShares: sdk.Coin{},
 				PoolAssets: []types.PoolAsset{
@@ -158,7 +159,7 @@ func (suite *KeeperTestSuite) TestMsgServerSwapExactAmountIn() {
 				RebalanceTreasury: treasuryAddr2.String(),
 				PoolParams: types.PoolParams{
 					SwapFee:  tc.swapFee,
-					FeeDenom: "uusdc",
+					FeeDenom: ptypes.BaseCurrency,
 				},
 				TotalShares: sdk.Coin{},
 				PoolAssets: []types.PoolAsset{
@@ -204,9 +205,9 @@ func (suite *KeeperTestSuite) TestMsgServerSlippageDifferenceWhenSplit() {
 	suite.SetupTest()
 	suite.SetupStableCoinPrices()
 
-	senderInitBalance := sdk.Coins{sdk.NewInt64Coin("uusdc", 1000000)}
+	senderInitBalance := sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)}
 	swapFee := sdk.ZeroDec()
-	tokenIn := sdk.NewInt64Coin("uusdc", 100000)
+	tokenIn := sdk.NewInt64Coin(ptypes.BaseCurrency, 100000)
 	tokenOutMin := sdk.ZeroInt()
 	tokenOut := sdk.NewInt64Coin("uusdt", 99900)
 	swapRoute := []types.SwapAmountInRoute{
@@ -215,14 +216,14 @@ func (suite *KeeperTestSuite) TestMsgServerSlippageDifferenceWhenSplit() {
 			TokenOutDenom: "uusdt",
 		},
 	}
-	expSenderBalance := sdk.Coins{sdk.NewInt64Coin("uusdc", 900000), sdk.NewInt64Coin("uusdt", 99900)}
-	expSenderBalanceSplitSwap := sdk.Coins{sdk.NewInt64Coin("uusdc", 900000), sdk.NewInt64Coin("uusdt", 99024)}
+	expSenderBalance := sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 900000), sdk.NewInt64Coin("uusdt", 99900)}
+	expSenderBalanceSplitSwap := sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 900000), sdk.NewInt64Coin("uusdt", 99024)}
 
 	// bootstrap accounts
 	sender := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
 	poolAddr := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
 	treasuryAddr := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
-	poolCoins := sdk.Coins{sdk.NewInt64Coin("uusdc", 1000000), sdk.NewInt64Coin("uusdt", 1000000)}
+	poolCoins := sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000), sdk.NewInt64Coin("uusdt", 1000000)}
 
 	// bootstrap balances
 	err := suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, senderInitBalance)
@@ -235,7 +236,7 @@ func (suite *KeeperTestSuite) TestMsgServerSlippageDifferenceWhenSplit() {
 	suite.Require().NoError(err)
 	// execute function
 	suite.app.AmmKeeper.SetDenomLiquidity(suite.ctx, types.DenomLiquidity{
-		Denom:     "uusdc",
+		Denom:     ptypes.BaseCurrency,
 		Liquidity: sdk.NewInt(1000000),
 	})
 	suite.app.AmmKeeper.SetDenomLiquidity(suite.ctx, types.DenomLiquidity{
@@ -249,7 +250,7 @@ func (suite *KeeperTestSuite) TestMsgServerSlippageDifferenceWhenSplit() {
 		RebalanceTreasury: treasuryAddr.String(),
 		PoolParams: types.PoolParams{
 			SwapFee:                swapFee,
-			FeeDenom:               "uusdc",
+			FeeDenom:               ptypes.BaseCurrency,
 			UseOracle:              true,
 			ExternalLiquidityRatio: sdk.NewDec(10), // 2x
 		},

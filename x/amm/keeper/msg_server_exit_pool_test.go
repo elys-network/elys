@@ -6,6 +6,7 @@ import (
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 	"github.com/elys-network/elys/x/amm/keeper"
 	"github.com/elys-network/elys/x/amm/types"
+	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
 
 func (suite *KeeperTestSuite) TestMsgServerExitPool() {
@@ -22,7 +23,7 @@ func (suite *KeeperTestSuite) TestMsgServerExitPool() {
 	}{
 		{
 			desc:            "successful non-oracle exit pool",
-			poolInitBalance: sdk.Coins{sdk.NewInt64Coin("uusdc", 1000000), sdk.NewInt64Coin("uusdt", 1000000)},
+			poolInitBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000), sdk.NewInt64Coin("uusdt", 1000000)},
 			poolParams: types.PoolParams{
 				SwapFee:                     sdk.ZeroDec(),
 				ExitFee:                     sdk.ZeroDec(),
@@ -33,17 +34,17 @@ func (suite *KeeperTestSuite) TestMsgServerExitPool() {
 				StakingFeePortion:           sdk.ZeroDec(),
 				WeightRecoveryFeePortion:    sdk.ZeroDec(),
 				ThresholdWeightDifference:   sdk.ZeroDec(),
-				FeeDenom:                    "uusdc",
+				FeeDenom:                    ptypes.BaseCurrency,
 			},
 			shareInAmount:    types.OneShare.Quo(sdk.NewInt(5)),
 			tokenOutDenom:    "",
-			minAmountsOut:    sdk.Coins{sdk.NewInt64Coin("uusdc", 100000), sdk.NewInt64Coin("uusdt", 100000)},
-			expSenderBalance: sdk.Coins{sdk.NewInt64Coin("uusdc", 100000), sdk.NewInt64Coin("uusdt", 100000)},
+			minAmountsOut:    sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 100000), sdk.NewInt64Coin("uusdt", 100000)},
+			expSenderBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 100000), sdk.NewInt64Coin("uusdt", 100000)},
 			expPass:          true,
 		},
 		{
 			desc:            "not enough balance to exit pool - non-oracle pool",
-			poolInitBalance: sdk.Coins{sdk.NewInt64Coin("uusdc", 1000000), sdk.NewInt64Coin("uusdt", 1000000)},
+			poolInitBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000), sdk.NewInt64Coin("uusdt", 1000000)},
 			poolParams: types.PoolParams{
 				SwapFee:                     sdk.ZeroDec(),
 				ExitFee:                     sdk.ZeroDec(),
@@ -54,17 +55,17 @@ func (suite *KeeperTestSuite) TestMsgServerExitPool() {
 				StakingFeePortion:           sdk.ZeroDec(),
 				WeightRecoveryFeePortion:    sdk.ZeroDec(),
 				ThresholdWeightDifference:   sdk.ZeroDec(),
-				FeeDenom:                    "uusdc",
+				FeeDenom:                    ptypes.BaseCurrency,
 			},
 			shareInAmount:    types.OneShare.Quo(sdk.NewInt(5)),
 			tokenOutDenom:    "",
-			minAmountsOut:    sdk.Coins{sdk.NewInt64Coin("uusdc", 1000000)},
+			minAmountsOut:    sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)},
 			expSenderBalance: sdk.Coins{},
 			expPass:          false,
 		},
 		{
 			desc:            "oracle pool exit - breaking weight on balanced pool",
-			poolInitBalance: sdk.Coins{sdk.NewInt64Coin("uusdc", 1000000), sdk.NewInt64Coin("uusdt", 1000000)},
+			poolInitBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000), sdk.NewInt64Coin("uusdt", 1000000)},
 			poolParams: types.PoolParams{
 				SwapFee:                     sdk.ZeroDec(),
 				ExitFee:                     sdk.ZeroDec(),
@@ -75,7 +76,7 @@ func (suite *KeeperTestSuite) TestMsgServerExitPool() {
 				StakingFeePortion:           sdk.ZeroDec(),
 				WeightRecoveryFeePortion:    sdk.ZeroDec(),
 				ThresholdWeightDifference:   sdk.NewDecWithPrec(2, 1), // 20%
-				FeeDenom:                    "uusdc",
+				FeeDenom:                    ptypes.BaseCurrency,
 			},
 			shareInAmount:    types.OneShare.Quo(sdk.NewInt(10)),
 			tokenOutDenom:    "uusdt",
@@ -85,7 +86,7 @@ func (suite *KeeperTestSuite) TestMsgServerExitPool() {
 		},
 		{
 			desc:            "oracle pool exit - weight recovering on imbalanced pool",
-			poolInitBalance: sdk.Coins{sdk.NewInt64Coin("uusdc", 1500000), sdk.NewInt64Coin("uusdt", 500000)},
+			poolInitBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 1500000), sdk.NewInt64Coin("uusdt", 500000)},
 			poolParams: types.PoolParams{
 				SwapFee:                     sdk.ZeroDec(),
 				ExitFee:                     sdk.ZeroDec(),
@@ -96,12 +97,12 @@ func (suite *KeeperTestSuite) TestMsgServerExitPool() {
 				StakingFeePortion:           sdk.ZeroDec(),
 				WeightRecoveryFeePortion:    sdk.ZeroDec(),
 				ThresholdWeightDifference:   sdk.NewDecWithPrec(2, 1), // 20%
-				FeeDenom:                    "uusdc",
+				FeeDenom:                    ptypes.BaseCurrency,
 			},
 			shareInAmount:    types.OneShare.Quo(sdk.NewInt(10)),
-			tokenOutDenom:    "uusdc",
-			minAmountsOut:    sdk.Coins{sdk.NewInt64Coin("uusdc", 99197)},
-			expSenderBalance: sdk.Coins{sdk.NewInt64Coin("uusdc", 99197)},
+			tokenOutDenom:    ptypes.BaseCurrency,
+			minAmountsOut:    sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 99197)},
+			expSenderBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 99197)},
 			expPass:          true,
 		},
 	} {

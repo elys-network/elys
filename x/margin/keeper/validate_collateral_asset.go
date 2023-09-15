@@ -7,7 +7,7 @@ import (
 )
 
 func (k Keeper) ValidateCollateralAsset(collateralAsset string) error {
-	if collateralAsset != paramtypes.USDC {
+	if collateralAsset != paramtypes.BaseCurrency {
 		return sdkerrors.Wrap(types.ErrInvalidCollateralAsset, "invalid collateral asset")
 	}
 	return nil

@@ -8,6 +8,7 @@ import (
 
 	"github.com/elys-network/elys/app"
 	"github.com/elys-network/elys/x/commitment/types"
+	ptypes "github.com/elys-network/elys/x/parameter/types"
 	"github.com/stretchr/testify/require"
 )
 
@@ -21,8 +22,8 @@ func TestGetParams(t *testing.T) {
 
 	vestingInfos := []*types.VestingInfo{
 		{
-			BaseDenom:       "ueden",
-			VestingDenom:    "uelys",
+			BaseDenom:       ptypes.Eden,
+			VestingDenom:    ptypes.Elys,
 			EpochIdentifier: "tenseconds",
 			NumEpochs:       10,
 			VestNowFactor:   sdk.NewInt(90),
@@ -42,8 +43,8 @@ func TestGetParams(t *testing.T) {
 func TestEncodeDecodeParams(t *testing.T) {
 	vestingInfos := []*types.VestingInfo{
 		{
-			BaseDenom:       "ueden",
-			VestingDenom:    "uelys",
+			BaseDenom:       ptypes.Eden,
+			VestingDenom:    ptypes.Elys,
 			EpochIdentifier: "tenseconds",
 			NumEpochs:       10,
 			VestNowFactor:   sdk.NewInt(90),
@@ -74,8 +75,8 @@ func TestGetParamsNew(t *testing.T) {
 
 	vestingInfos := []*types.VestingInfo{
 		{
-			BaseDenom:       "ueden",
-			VestingDenom:    "uelys",
+			BaseDenom:       ptypes.Eden,
+			VestingDenom:    ptypes.Elys,
 			EpochIdentifier: "tenseconds",
 			NumEpochs:       10,
 			VestNowFactor:   sdk.NewInt(90),
@@ -104,8 +105,8 @@ func TestGetVestingInfo(t *testing.T) {
 
 	vestingInfos := []*types.VestingInfo{
 		{
-			BaseDenom:       "ueden",
-			VestingDenom:    "uelys",
+			BaseDenom:       ptypes.Eden,
+			VestingDenom:    ptypes.Elys,
 			EpochIdentifier: "tenseconds",
 			NumEpochs:       10,
 			VestNowFactor:   sdk.NewInt(90),
@@ -126,10 +127,10 @@ func TestGetVestingInfo(t *testing.T) {
 	k.SetParams(ctx, params)
 
 	// Test GetVestingInfo with existing base denom
-	vestingInfo := k.GetVestingInfo(ctx, "ueden")
+	vestingInfo := k.GetVestingInfo(ctx, ptypes.Eden)
 	require.NotNil(t, vestingInfo)
-	require.Equal(t, "ueden", vestingInfo.BaseDenom)
-	require.Equal(t, "uelys", vestingInfo.VestingDenom)
+	require.Equal(t, ptypes.Eden, vestingInfo.BaseDenom)
+	require.Equal(t, ptypes.Elys, vestingInfo.VestingDenom)
 
 	// Test GetVestingInfo with non-existing base denom
 	vestingInfo = k.GetVestingInfo(ctx, "nonexistent")

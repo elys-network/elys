@@ -7,20 +7,20 @@ import (
 )
 
 func (k Keeper) OpenConsolidate(ctx sdk.Context, mtp *types.MTP, msg *types.MsgOpen) (*types.MsgOpenResponse, error) {
-	// Get token asset other than USDC
-	nonNativeAsset := k.OpenLongChecker.GetTradingAsset(msg.CollateralAsset, msg.BorrowAsset)
+	// Get token asset other than base currency
+	tradingAsset := k.OpenLongChecker.GetTradingAsset(msg.CollateralAsset, msg.BorrowAsset)
 
 	poolId := mtp.AmmPoolId
 	pool, found := k.OpenLongChecker.GetPool(ctx, poolId)
 	if !found {
-		return nil, sdkerrors.Wrap(types.ErrPoolDoesNotExist, nonNativeAsset)
+		return nil, sdkerrors.Wrap(types.ErrPoolDoesNotExist, tradingAsset)
 	}
 
 	if !k.OpenLongChecker.IsPoolEnabled(ctx, poolId) {
-		return nil, sdkerrors.Wrap(types.ErrMTPDisabled, nonNativeAsset)
+		return nil, sdkerrors.Wrap(types.ErrMTPDisabled, tradingAsset)
 	}
 
-	ammPool, err := k.OpenLongChecker.GetAmmPool(ctx, poolId, nonNativeAsset)
+	ammPool, err := k.OpenLongChecker.GetAmmPool(ctx, poolId, tradingAsset)
 	if err != nil {
 		return nil, err
 	}

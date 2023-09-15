@@ -31,7 +31,7 @@ func TestWithdrawCommitedLPTokenFromCommitmentModule(t *testing.T) {
 
 	// Create a pool
 	// Mint 100000USDC
-	usdcToken := sdk.NewCoins(sdk.NewCoin(ptypes.USDC, sdk.NewInt(100000)))
+	usdcToken := sdk.NewCoins(sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(100000)))
 
 	err = app.BankKeeper.MintCoins(ctx, types.ModuleName, usdcToken)
 	require.NoError(t, err)
@@ -45,7 +45,7 @@ func TestWithdrawCommitedLPTokenFromCommitmentModule(t *testing.T) {
 		},
 		{
 			Weight: sdk.NewInt(50),
-			Token:  sdk.NewCoin(ptypes.USDC, sdk.NewInt(10000)),
+			Token:  sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(10000)),
 		},
 	}
 

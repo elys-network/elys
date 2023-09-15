@@ -514,37 +514,37 @@ func (_c *OpenChecker_OpenShort_Call) RunAndReturn(run func(types.Context, uint6
 	return _c
 }
 
-// PreparePools provides a mock function with given fields: ctx, nonNativeAsset
-func (_m *OpenChecker) PreparePools(ctx types.Context, nonNativeAsset string) (uint64, ammtypes.Pool, margintypes.Pool, error) {
-	ret := _m.Called(ctx, nonNativeAsset)
+// PreparePools provides a mock function with given fields: ctx, tradingAsset
+func (_m *OpenChecker) PreparePools(ctx types.Context, tradingAsset string) (uint64, ammtypes.Pool, margintypes.Pool, error) {
+	ret := _m.Called(ctx, tradingAsset)
 
 	var r0 uint64
 	var r1 ammtypes.Pool
 	var r2 margintypes.Pool
 	var r3 error
 	if rf, ok := ret.Get(0).(func(types.Context, string) (uint64, ammtypes.Pool, margintypes.Pool, error)); ok {
-		return rf(ctx, nonNativeAsset)
+		return rf(ctx, tradingAsset)
 	}
 	if rf, ok := ret.Get(0).(func(types.Context, string) uint64); ok {
-		r0 = rf(ctx, nonNativeAsset)
+		r0 = rf(ctx, tradingAsset)
 	} else {
 		r0 = ret.Get(0).(uint64)
 	}
 
 	if rf, ok := ret.Get(1).(func(types.Context, string) ammtypes.Pool); ok {
-		r1 = rf(ctx, nonNativeAsset)
+		r1 = rf(ctx, tradingAsset)
 	} else {
 		r1 = ret.Get(1).(ammtypes.Pool)
 	}
 
 	if rf, ok := ret.Get(2).(func(types.Context, string) margintypes.Pool); ok {
-		r2 = rf(ctx, nonNativeAsset)
+		r2 = rf(ctx, tradingAsset)
 	} else {
 		r2 = ret.Get(2).(margintypes.Pool)
 	}
 
 	if rf, ok := ret.Get(3).(func(types.Context, string) error); ok {
-		r3 = rf(ctx, nonNativeAsset)
+		r3 = rf(ctx, tradingAsset)
 	} else {
 		r3 = ret.Error(3)
 	}
@@ -559,12 +559,12 @@ type OpenChecker_PreparePools_Call struct {
 
 // PreparePools is a helper method to define mock.On call
 //   - ctx types.Context
-//   - nonNativeAsset string
-func (_e *OpenChecker_Expecter) PreparePools(ctx interface{}, nonNativeAsset interface{}) *OpenChecker_PreparePools_Call {
-	return &OpenChecker_PreparePools_Call{Call: _e.mock.On("PreparePools", ctx, nonNativeAsset)}
+//   - tradingAsset string
+func (_e *OpenChecker_Expecter) PreparePools(ctx interface{}, tradingAsset interface{}) *OpenChecker_PreparePools_Call {
+	return &OpenChecker_PreparePools_Call{Call: _e.mock.On("PreparePools", ctx, tradingAsset)}
 }
 
-func (_c *OpenChecker_PreparePools_Call) Run(run func(ctx types.Context, nonNativeAsset string)) *OpenChecker_PreparePools_Call {
+func (_c *OpenChecker_PreparePools_Call) Run(run func(ctx types.Context, tradingAsset string)) *OpenChecker_PreparePools_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		run(args[0].(types.Context), args[1].(string))
 	})

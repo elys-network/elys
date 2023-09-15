@@ -10,6 +10,7 @@ import (
 	commitmentkeeper "github.com/elys-network/elys/x/commitment/keeper"
 	"github.com/elys-network/elys/x/commitment/types"
 	epochstypes "github.com/elys-network/elys/x/epochs/types"
+	ptypes "github.com/elys-network/elys/x/parameter/types"
 	"github.com/stretchr/testify/require"
 )
 
@@ -24,8 +25,8 @@ func TestCancelVest(t *testing.T) {
 
 	vestingInfos := []*types.VestingInfo{
 		{
-			BaseDenom:       "ueden",
-			VestingDenom:    "uelys",
+			BaseDenom:       ptypes.Eden,
+			VestingDenom:    ptypes.Elys,
 			EpochIdentifier: "tenseconds",
 			NumEpochs:       10,
 			VestNowFactor:   sdk.NewInt(90),
@@ -48,7 +49,7 @@ func TestCancelVest(t *testing.T) {
 	// Create a cancel vesting message
 	cancelVestMsg := &types.MsgCancelVest{
 		Creator: creator.String(),
-		Denom:   "ueden",
+		Denom:   ptypes.Eden,
 		Amount:  sdk.NewInt(25),
 	}
 
@@ -57,7 +58,7 @@ func TestCancelVest(t *testing.T) {
 		Creator: creator.String(),
 		VestingTokens: []*types.VestingTokens{
 			{
-				Denom:           "ueden",
+				Denom:           ptypes.Eden,
 				TotalAmount:     sdk.NewInt(100),
 				UnvestedAmount:  sdk.NewInt(100),
 				EpochIdentifier: epochstypes.DayEpochID,
@@ -79,7 +80,7 @@ func TestCancelVest(t *testing.T) {
 	require.Equal(t, sdk.NewInt(75), newCommitments.VestingTokens[0].TotalAmount, "total amount was not updated correctly")
 	require.Equal(t, sdk.NewInt(75), newCommitments.VestingTokens[0].UnvestedAmount, "unvested amount was not updated correctly")
 	// check if the uncommitted tokens were updated correctly
-	require.Equal(t, sdk.NewInt(25), newCommitments.GetUncommittedAmountForDenom("ueden"))
+	require.Equal(t, sdk.NewInt(25), newCommitments.GetUncommittedAmountForDenom(ptypes.Eden))
 
 	// Try to cancel an amount that exceeds the unvested amount
 	cancelVestMsg.Amount = sdk.NewInt(101)

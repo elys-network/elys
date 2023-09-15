@@ -6,6 +6,7 @@ import (
 	"github.com/cometbft/cometbft/crypto/ed25519"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/amm/types"
+	ptypes "github.com/elys-network/elys/x/parameter/types"
 	"github.com/stretchr/testify/require"
 )
 
@@ -22,10 +23,10 @@ func TestTKeyPrefixSwapExactAmountIn(t *testing.T) {
 			},
 			{
 				PoolId:        2,
-				TokenOutDenom: "uusdc",
+				TokenOutDenom: ptypes.BaseCurrency,
 			},
 		},
-		TokenIn:           sdk.Coin{Denom: "uelys", Amount: sdk.NewInt(100)},
+		TokenIn:           sdk.Coin{Denom: ptypes.Elys, Amount: sdk.NewInt(100)},
 		TokenOutMinAmount: sdk.ZeroInt(),
 	}, 1)
 
@@ -40,11 +41,11 @@ func TestTKeyPrefixSwapExactAmountOut(t *testing.T) {
 		Routes: []types.SwapAmountOutRoute{
 			{
 				PoolId:       1,
-				TokenInDenom: "uelys",
+				TokenInDenom: ptypes.Elys,
 			},
 			{
 				PoolId:       2,
-				TokenInDenom: "uusdc",
+				TokenInDenom: ptypes.BaseCurrency,
 			},
 		},
 		TokenOut:         sdk.Coin{Denom: "uusdt", Amount: sdk.NewInt(100)},

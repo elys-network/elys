@@ -20,12 +20,12 @@ func SetupStableCoinPrices(ctx sdk.Context, oracle oraclekeeper.Keeper) {
 	// prices set for USDT and USDC
 	provider := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
 	oracle.SetAssetInfo(ctx, oracletypes.AssetInfo{
-		Denom:   ptypes.USDC,
+		Denom:   ptypes.BaseCurrency,
 		Display: "USDC",
 		Decimal: 6,
 	})
 	oracle.SetAssetInfo(ctx, oracletypes.AssetInfo{
-		Denom:   ptypes.USDT,
+		Denom:   "uusdt",
 		Display: "USDT",
 		Decimal: 6,
 	})
@@ -86,7 +86,7 @@ func TestCalculateRewardsForLPs(t *testing.T) {
 	var uncommitted []sdk.Coins
 
 	// Prepare uncommitted tokens
-	uedenToken := sdk.NewCoins(sdk.NewCoin("ueden", sdk.NewInt(2000)))
+	uedenToken := sdk.NewCoins(sdk.NewCoin(ptypes.Eden, sdk.NewInt(2000)))
 	uncommitted = append(uncommitted, uedenToken)
 
 	err := app.BankKeeper.MintCoins(ctx, ctypes.ModuleName, uedenToken)
@@ -95,7 +95,7 @@ func TestCalculateRewardsForLPs(t *testing.T) {
 	require.NoError(t, err)
 
 	// Prepare committed tokens
-	uedenToken = sdk.NewCoins(sdk.NewCoin("ueden", sdk.NewInt(500)))
+	uedenToken = sdk.NewCoins(sdk.NewCoin(ptypes.Eden, sdk.NewInt(500)))
 	lpToken1 := sdk.NewCoins(sdk.NewCoin("lp-elys-usdc", sdk.NewInt(500)))
 	lpToken2 := sdk.NewCoins(sdk.NewCoin("lp-ueden-usdc", sdk.NewInt(2000)))
 	committed = append(committed, uedenToken)
@@ -121,7 +121,7 @@ func TestCalculateRewardsForLPs(t *testing.T) {
 
 	// Create a pool
 	// Mint 100000USDC
-	usdcToken := sdk.NewCoins(sdk.NewCoin(ptypes.USDC, sdk.NewInt(100000)))
+	usdcToken := sdk.NewCoins(sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(100000)))
 
 	err = app.BankKeeper.MintCoins(ctx, ammtypes.ModuleName, usdcToken)
 	require.NoError(t, err)
@@ -138,7 +138,7 @@ func TestCalculateRewardsForLPs(t *testing.T) {
 	// USDC
 	poolAssets = append(poolAssets, ammtypes.PoolAsset{
 		Weight: sdk.NewInt(50),
-		Token:  sdk.NewCoin(ptypes.USDC, sdk.NewInt(100)),
+		Token:  sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(100)),
 	})
 
 	poolParams := &ammtypes.PoolParams{

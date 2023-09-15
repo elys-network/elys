@@ -8,36 +8,36 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestGetTradingAsset_WhenCollateralIsUSDC(t *testing.T) {
+func TestGetTradingAsset_WhenCollateralIsBaseCurrency(t *testing.T) {
 	// Create an instance of Keeper
 	k := keeper.Keeper{}
 
-	// Test case: collateral is USDC and borrow is ATOM
-	result := k.GetTradingAsset(ptypes.USDC, ptypes.ATOM)
+	// Test case: collateral is base currency and borrow is ATOM
+	result := k.GetTradingAsset(ptypes.BaseCurrency, ptypes.ATOM)
 	assert.Equal(t, ptypes.ATOM, result)
 
-	// Test case: both collateral and borrow are USDC
-	result = k.GetTradingAsset(ptypes.USDC, ptypes.USDC)
-	assert.Equal(t, ptypes.USDC, result)
+	// Test case: both collateral and borrow are base currency
+	result = k.GetTradingAsset(ptypes.BaseCurrency, ptypes.BaseCurrency)
+	assert.Equal(t, ptypes.BaseCurrency, result)
 
-	// Test case: collateral is USDC and borrow is some other asset (e.g., BTC)
-	result = k.GetTradingAsset(ptypes.USDC, "BTC")
+	// Test case: collateral is base currency and borrow is some other asset (e.g., BTC)
+	result = k.GetTradingAsset(ptypes.BaseCurrency, "BTC")
 	assert.Equal(t, "BTC", result)
 }
 
-func TestGetTradingAsset_WhenCollateralIsNotUSDC(t *testing.T) {
+func TestGetTradingAsset_WhenCollateralIsNotBaseCurrency(t *testing.T) {
 	// Create an instance of Keeper
 	k := keeper.Keeper{}
 
-	// Test case: collateral is ATOM and borrow is USDC
-	result := k.GetTradingAsset(ptypes.ATOM, ptypes.USDC)
+	// Test case: collateral is ATOM and borrow is base currency
+	result := k.GetTradingAsset(ptypes.ATOM, ptypes.BaseCurrency)
 	assert.Equal(t, ptypes.ATOM, result)
 
 	// Test case: both collateral and borrow are ATOM
 	result = k.GetTradingAsset(ptypes.ATOM, ptypes.ATOM)
 	assert.Equal(t, ptypes.ATOM, result)
 
-	// Test case: collateral is some other asset (e.g., BTC) and borrow is USDC
-	result = k.GetTradingAsset("BTC", ptypes.USDC)
+	// Test case: collateral is some other asset (e.g., BTC) and borrow is base currency
+	result = k.GetTradingAsset("BTC", ptypes.BaseCurrency)
 	assert.Equal(t, "BTC", result)
 }

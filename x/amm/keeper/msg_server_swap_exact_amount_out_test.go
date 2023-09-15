@@ -6,6 +6,7 @@ import (
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 	"github.com/elys-network/elys/x/amm/keeper"
 	"github.com/elys-network/elys/x/amm/types"
+	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
 
 func (suite *KeeperTestSuite) TestMsgServerSwapExactAmountOut() {
@@ -22,47 +23,47 @@ func (suite *KeeperTestSuite) TestMsgServerSwapExactAmountOut() {
 	}{
 		{
 			desc:              "successful execution with positive swap fee",
-			senderInitBalance: sdk.Coins{sdk.NewInt64Coin("uelys", 1000000), sdk.NewInt64Coin("uusdc", 1000000)},
+			senderInitBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 1000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)},
 			swapFee:           sdk.NewDecWithPrec(1, 2), // 1%
-			tokenIn:           sdk.NewInt64Coin("uelys", 10204),
+			tokenIn:           sdk.NewInt64Coin(ptypes.Elys, 10204),
 			tokenInMax:        sdk.NewInt(10000000),
-			tokenOut:          sdk.NewInt64Coin("uusdc", 10000),
+			tokenOut:          sdk.NewInt64Coin(ptypes.BaseCurrency, 10000),
 			swapRoutes: []types.SwapAmountOutRoute{
 				{
 					PoolId:       1,
-					TokenInDenom: "uelys",
+					TokenInDenom: ptypes.Elys,
 				},
 			},
-			expSenderBalance: sdk.Coins{sdk.NewInt64Coin("uelys", 989796), sdk.NewInt64Coin("uusdc", 1010000)},
+			expSenderBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 989796), sdk.NewInt64Coin(ptypes.BaseCurrency, 1010000)},
 			expPass:          true,
 		},
 		{
 			desc:              "successful execution with zero swap fee",
-			senderInitBalance: sdk.Coins{sdk.NewInt64Coin("uelys", 1000000), sdk.NewInt64Coin("uusdc", 1000000)},
+			senderInitBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 1000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)},
 			swapFee:           sdk.ZeroDec(),
-			tokenIn:           sdk.NewInt64Coin("uelys", 10102),
+			tokenIn:           sdk.NewInt64Coin(ptypes.Elys, 10102),
 			tokenInMax:        sdk.NewInt(10000000),
-			tokenOut:          sdk.NewInt64Coin("uusdc", 10000),
+			tokenOut:          sdk.NewInt64Coin(ptypes.BaseCurrency, 10000),
 			swapRoutes: []types.SwapAmountOutRoute{
 				{
 					PoolId:       1,
-					TokenInDenom: "uelys",
+					TokenInDenom: ptypes.Elys,
 				},
 			},
-			expSenderBalance: sdk.Coins{sdk.NewInt64Coin("uelys", 989898), sdk.NewInt64Coin("uusdc", 1010000)},
+			expSenderBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 989898), sdk.NewInt64Coin(ptypes.BaseCurrency, 1010000)},
 			expPass:          true,
 		},
 		{
 			desc:              "not available pool as route",
-			senderInitBalance: sdk.Coins{sdk.NewInt64Coin("uelys", 1000000), sdk.NewInt64Coin("uusdc", 1000000)},
+			senderInitBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 1000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)},
 			swapFee:           sdk.ZeroDec(),
-			tokenIn:           sdk.NewInt64Coin("uelys", 10102),
+			tokenIn:           sdk.NewInt64Coin(ptypes.Elys, 10102),
 			tokenInMax:        sdk.NewInt(10000000),
-			tokenOut:          sdk.NewInt64Coin("uusdc", 10000),
+			tokenOut:          sdk.NewInt64Coin(ptypes.BaseCurrency, 10000),
 			swapRoutes: []types.SwapAmountOutRoute{
 				{
 					PoolId:       3,
-					TokenInDenom: "uelys",
+					TokenInDenom: ptypes.Elys,
 				},
 			},
 			expSenderBalance: sdk.Coins{},
@@ -70,22 +71,22 @@ func (suite *KeeperTestSuite) TestMsgServerSwapExactAmountOut() {
 		},
 		{
 			desc:              "multiple routes",
-			senderInitBalance: sdk.Coins{sdk.NewInt64Coin("uelys", 1000000), sdk.NewInt64Coin("uusdc", 1000000)},
+			senderInitBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 1000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)},
 			swapFee:           sdk.ZeroDec(),
-			tokenIn:           sdk.NewInt64Coin("uusdc", 10206),
+			tokenIn:           sdk.NewInt64Coin(ptypes.BaseCurrency, 10206),
 			tokenInMax:        sdk.NewInt(10000000),
 			tokenOut:          sdk.NewInt64Coin("uusdt", 10000),
 			swapRoutes: []types.SwapAmountOutRoute{
 				{
 					PoolId:       1,
-					TokenInDenom: "uusdc",
+					TokenInDenom: ptypes.BaseCurrency,
 				},
 				{
 					PoolId:       2,
-					TokenInDenom: "uelys",
+					TokenInDenom: ptypes.Elys,
 				},
 			},
-			expSenderBalance: sdk.Coins{sdk.NewInt64Coin("uelys", 1000000), sdk.NewInt64Coin("uusdc", 989794), sdk.NewInt64Coin("uusdt", 10000)},
+			expSenderBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 1000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 989794), sdk.NewInt64Coin("uusdt", 10000)},
 			expPass:          true,
 		},
 	} {
@@ -98,8 +99,8 @@ func (suite *KeeperTestSuite) TestMsgServerSwapExactAmountOut() {
 			treasuryAddr := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
 			poolAddr2 := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
 			treasuryAddr2 := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
-			poolCoins := sdk.Coins{sdk.NewInt64Coin("uelys", 1000000), sdk.NewInt64Coin("uusdc", 1000000)}
-			pool2Coins := sdk.Coins{sdk.NewInt64Coin("uelys", 1000000), sdk.NewInt64Coin("uusdt", 1000000)}
+			poolCoins := sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 1000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)}
+			pool2Coins := sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 1000000), sdk.NewInt64Coin("uusdt", 1000000)}
 
 			// bootstrap balances
 			err := suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, tc.senderInitBalance)
@@ -117,11 +118,11 @@ func (suite *KeeperTestSuite) TestMsgServerSwapExactAmountOut() {
 
 			// execute function
 			suite.app.AmmKeeper.SetDenomLiquidity(suite.ctx, types.DenomLiquidity{
-				Denom:     "uelys",
+				Denom:     ptypes.Elys,
 				Liquidity: sdk.NewInt(2000000),
 			})
 			suite.app.AmmKeeper.SetDenomLiquidity(suite.ctx, types.DenomLiquidity{
-				Denom:     "uusdc",
+				Denom:     ptypes.BaseCurrency,
 				Liquidity: sdk.NewInt(1000000),
 			})
 			suite.app.AmmKeeper.SetDenomLiquidity(suite.ctx, types.DenomLiquidity{
@@ -135,7 +136,7 @@ func (suite *KeeperTestSuite) TestMsgServerSwapExactAmountOut() {
 				RebalanceTreasury: treasuryAddr.String(),
 				PoolParams: types.PoolParams{
 					SwapFee:  tc.swapFee,
-					FeeDenom: "uusdc",
+					FeeDenom: ptypes.BaseCurrency,
 				},
 				TotalShares: sdk.Coin{},
 				PoolAssets: []types.PoolAsset{

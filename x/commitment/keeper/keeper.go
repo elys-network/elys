@@ -309,7 +309,7 @@ func (k Keeper) ProcessWithdrawValidatorCommission(ctx sdk.Context, delegator st
 // Withdraw Token - USDC
 // Only withraw USDC from dexRevenue wallet
 func (k Keeper) ProcessWithdrawUSDC(ctx sdk.Context, creator string, denom string, amount sdk.Int) error {
-	if denom != ptypes.USDC {
+	if denom != ptypes.BaseCurrency {
 		return sdkerrors.Wrapf(types.ErrWithdrawDisabled, "denom: %s", denom)
 	}
 

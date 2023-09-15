@@ -24,11 +24,11 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen) (*types.MsgOpenRespons
 		return nil, err
 	}
 
-	// Get token asset other than USDC
-	nonNativeAsset := k.OpenChecker.GetTradingAsset(msg.CollateralAsset, msg.BorrowAsset)
+	// Get token asset other than base currency
+	tradingAsset := k.OpenChecker.GetTradingAsset(msg.CollateralAsset, msg.BorrowAsset)
 
 	// Get pool id, amm pool, and margin pool
-	poolId, ammPool, pool, err := k.OpenChecker.PreparePools(ctx, nonNativeAsset)
+	poolId, ammPool, pool, err := k.OpenChecker.PreparePools(ctx, tradingAsset)
 	if err != nil {
 		return nil, err
 	}
