@@ -153,6 +153,51 @@ func (_c *OpenChecker_CheckPoolHealth_Call) RunAndReturn(run func(types.Context,
 	return _c
 }
 
+// CheckSamePosition provides a mock function with given fields: ctx, msg
+func (_m *OpenChecker) CheckSamePosition(ctx types.Context, msg *margintypes.MsgOpen) *margintypes.MTP {
+	ret := _m.Called(ctx, msg)
+
+	var r0 *margintypes.MTP
+	if rf, ok := ret.Get(0).(func(types.Context, *margintypes.MsgOpen) *margintypes.MTP); ok {
+		r0 = rf(ctx, msg)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*margintypes.MTP)
+		}
+	}
+
+	return r0
+}
+
+// OpenChecker_CheckSamePosition_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'CheckSamePosition'
+type OpenChecker_CheckSamePosition_Call struct {
+	*mock.Call
+}
+
+// CheckSamePosition is a helper method to define mock.On call
+//   - ctx types.Context
+//   - msg *margintypes.MsgOpen
+func (_e *OpenChecker_Expecter) CheckSamePosition(ctx interface{}, msg interface{}) *OpenChecker_CheckSamePosition_Call {
+	return &OpenChecker_CheckSamePosition_Call{Call: _e.mock.On("CheckSamePosition", ctx, msg)}
+}
+
+func (_c *OpenChecker_CheckSamePosition_Call) Run(run func(ctx types.Context, msg *margintypes.MsgOpen)) *OpenChecker_CheckSamePosition_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(types.Context), args[1].(*margintypes.MsgOpen))
+	})
+	return _c
+}
+
+func (_c *OpenChecker_CheckSamePosition_Call) Return(_a0 *margintypes.MTP) *OpenChecker_CheckSamePosition_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *OpenChecker_CheckSamePosition_Call) RunAndReturn(run func(types.Context, *margintypes.MsgOpen) *margintypes.MTP) *OpenChecker_CheckSamePosition_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // CheckUserAuthorization provides a mock function with given fields: ctx, msg
 func (_m *OpenChecker) CheckUserAuthorization(ctx types.Context, msg *margintypes.MsgOpen) error {
 	ret := _m.Called(ctx, msg)
@@ -230,8 +275,92 @@ func (_c *OpenChecker_EmitOpenEvent_Call) RunAndReturn(run func(types.Context, *
 	return _c
 }
 
-// GetNonNativeAsset provides a mock function with given fields: collateralAsset, borrowAsset
-func (_m *OpenChecker) GetNonNativeAsset(collateralAsset string, borrowAsset string) string {
+// GetMaxOpenPositions provides a mock function with given fields: ctx
+func (_m *OpenChecker) GetMaxOpenPositions(ctx types.Context) uint64 {
+	ret := _m.Called(ctx)
+
+	var r0 uint64
+	if rf, ok := ret.Get(0).(func(types.Context) uint64); ok {
+		r0 = rf(ctx)
+	} else {
+		r0 = ret.Get(0).(uint64)
+	}
+
+	return r0
+}
+
+// OpenChecker_GetMaxOpenPositions_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetMaxOpenPositions'
+type OpenChecker_GetMaxOpenPositions_Call struct {
+	*mock.Call
+}
+
+// GetMaxOpenPositions is a helper method to define mock.On call
+//   - ctx types.Context
+func (_e *OpenChecker_Expecter) GetMaxOpenPositions(ctx interface{}) *OpenChecker_GetMaxOpenPositions_Call {
+	return &OpenChecker_GetMaxOpenPositions_Call{Call: _e.mock.On("GetMaxOpenPositions", ctx)}
+}
+
+func (_c *OpenChecker_GetMaxOpenPositions_Call) Run(run func(ctx types.Context)) *OpenChecker_GetMaxOpenPositions_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(types.Context))
+	})
+	return _c
+}
+
+func (_c *OpenChecker_GetMaxOpenPositions_Call) Return(_a0 uint64) *OpenChecker_GetMaxOpenPositions_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *OpenChecker_GetMaxOpenPositions_Call) RunAndReturn(run func(types.Context) uint64) *OpenChecker_GetMaxOpenPositions_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// GetOpenMTPCount provides a mock function with given fields: ctx
+func (_m *OpenChecker) GetOpenMTPCount(ctx types.Context) uint64 {
+	ret := _m.Called(ctx)
+
+	var r0 uint64
+	if rf, ok := ret.Get(0).(func(types.Context) uint64); ok {
+		r0 = rf(ctx)
+	} else {
+		r0 = ret.Get(0).(uint64)
+	}
+
+	return r0
+}
+
+// OpenChecker_GetOpenMTPCount_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetOpenMTPCount'
+type OpenChecker_GetOpenMTPCount_Call struct {
+	*mock.Call
+}
+
+// GetOpenMTPCount is a helper method to define mock.On call
+//   - ctx types.Context
+func (_e *OpenChecker_Expecter) GetOpenMTPCount(ctx interface{}) *OpenChecker_GetOpenMTPCount_Call {
+	return &OpenChecker_GetOpenMTPCount_Call{Call: _e.mock.On("GetOpenMTPCount", ctx)}
+}
+
+func (_c *OpenChecker_GetOpenMTPCount_Call) Run(run func(ctx types.Context)) *OpenChecker_GetOpenMTPCount_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(types.Context))
+	})
+	return _c
+}
+
+func (_c *OpenChecker_GetOpenMTPCount_Call) Return(_a0 uint64) *OpenChecker_GetOpenMTPCount_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *OpenChecker_GetOpenMTPCount_Call) RunAndReturn(run func(types.Context) uint64) *OpenChecker_GetOpenMTPCount_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// GetTradingAsset provides a mock function with given fields: collateralAsset, borrowAsset
+func (_m *OpenChecker) GetTradingAsset(collateralAsset string, borrowAsset string) string {
 	ret := _m.Called(collateralAsset, borrowAsset)
 
 	var r0 string
@@ -244,31 +373,31 @@ func (_m *OpenChecker) GetNonNativeAsset(collateralAsset string, borrowAsset str
 	return r0
 }
 
-// OpenChecker_GetNonNativeAsset_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetNonNativeAsset'
-type OpenChecker_GetNonNativeAsset_Call struct {
+// OpenChecker_GetTradingAsset_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetTradingAsset'
+type OpenChecker_GetTradingAsset_Call struct {
 	*mock.Call
 }
 
-// GetNonNativeAsset is a helper method to define mock.On call
+// GetTradingAsset is a helper method to define mock.On call
 //   - collateralAsset string
 //   - borrowAsset string
-func (_e *OpenChecker_Expecter) GetNonNativeAsset(collateralAsset interface{}, borrowAsset interface{}) *OpenChecker_GetNonNativeAsset_Call {
-	return &OpenChecker_GetNonNativeAsset_Call{Call: _e.mock.On("GetNonNativeAsset", collateralAsset, borrowAsset)}
+func (_e *OpenChecker_Expecter) GetTradingAsset(collateralAsset interface{}, borrowAsset interface{}) *OpenChecker_GetTradingAsset_Call {
+	return &OpenChecker_GetTradingAsset_Call{Call: _e.mock.On("GetTradingAsset", collateralAsset, borrowAsset)}
 }
 
-func (_c *OpenChecker_GetNonNativeAsset_Call) Run(run func(collateralAsset string, borrowAsset string)) *OpenChecker_GetNonNativeAsset_Call {
+func (_c *OpenChecker_GetTradingAsset_Call) Run(run func(collateralAsset string, borrowAsset string)) *OpenChecker_GetTradingAsset_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		run(args[0].(string), args[1].(string))
 	})
 	return _c
 }
 
-func (_c *OpenChecker_GetNonNativeAsset_Call) Return(_a0 string) *OpenChecker_GetNonNativeAsset_Call {
+func (_c *OpenChecker_GetTradingAsset_Call) Return(_a0 string) *OpenChecker_GetTradingAsset_Call {
 	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *OpenChecker_GetNonNativeAsset_Call) RunAndReturn(run func(string, string) string) *OpenChecker_GetNonNativeAsset_Call {
+func (_c *OpenChecker_GetTradingAsset_Call) RunAndReturn(run func(string, string) string) *OpenChecker_GetTradingAsset_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -448,6 +577,49 @@ func (_c *OpenChecker_PreparePools_Call) Return(poolId uint64, ammPool ammtypes.
 }
 
 func (_c *OpenChecker_PreparePools_Call) RunAndReturn(run func(types.Context, string) (uint64, ammtypes.Pool, margintypes.Pool, error)) *OpenChecker_PreparePools_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// SetMTP provides a mock function with given fields: ctx, mtp
+func (_m *OpenChecker) SetMTP(ctx types.Context, mtp *margintypes.MTP) error {
+	ret := _m.Called(ctx, mtp)
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(types.Context, *margintypes.MTP) error); ok {
+		r0 = rf(ctx, mtp)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// OpenChecker_SetMTP_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'SetMTP'
+type OpenChecker_SetMTP_Call struct {
+	*mock.Call
+}
+
+// SetMTP is a helper method to define mock.On call
+//   - ctx types.Context
+//   - mtp *margintypes.MTP
+func (_e *OpenChecker_Expecter) SetMTP(ctx interface{}, mtp interface{}) *OpenChecker_SetMTP_Call {
+	return &OpenChecker_SetMTP_Call{Call: _e.mock.On("SetMTP", ctx, mtp)}
+}
+
+func (_c *OpenChecker_SetMTP_Call) Run(run func(ctx types.Context, mtp *margintypes.MTP)) *OpenChecker_SetMTP_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(types.Context), args[1].(*margintypes.MTP))
+	})
+	return _c
+}
+
+func (_c *OpenChecker_SetMTP_Call) Return(_a0 error) *OpenChecker_SetMTP_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *OpenChecker_SetMTP_Call) RunAndReturn(run func(types.Context, *margintypes.MTP) error) *OpenChecker_SetMTP_Call {
 	_c.Call.Return(run)
 	return _c
 }

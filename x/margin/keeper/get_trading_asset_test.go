@@ -8,36 +8,36 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestGetNonNativeAsset_WhenCollateralIsUSDC(t *testing.T) {
+func TestGetTradingAsset_WhenCollateralIsUSDC(t *testing.T) {
 	// Create an instance of Keeper
 	k := keeper.Keeper{}
 
 	// Test case: collateral is USDC and borrow is ATOM
-	result := k.GetNonNativeAsset(ptypes.USDC, ptypes.ATOM)
+	result := k.GetTradingAsset(ptypes.USDC, ptypes.ATOM)
 	assert.Equal(t, ptypes.ATOM, result)
 
 	// Test case: both collateral and borrow are USDC
-	result = k.GetNonNativeAsset(ptypes.USDC, ptypes.USDC)
+	result = k.GetTradingAsset(ptypes.USDC, ptypes.USDC)
 	assert.Equal(t, ptypes.USDC, result)
 
 	// Test case: collateral is USDC and borrow is some other asset (e.g., BTC)
-	result = k.GetNonNativeAsset(ptypes.USDC, "BTC")
+	result = k.GetTradingAsset(ptypes.USDC, "BTC")
 	assert.Equal(t, "BTC", result)
 }
 
-func TestGetNonNativeAsset_WhenCollateralIsNotUSDC(t *testing.T) {
+func TestGetTradingAsset_WhenCollateralIsNotUSDC(t *testing.T) {
 	// Create an instance of Keeper
 	k := keeper.Keeper{}
 
 	// Test case: collateral is ATOM and borrow is USDC
-	result := k.GetNonNativeAsset(ptypes.ATOM, ptypes.USDC)
+	result := k.GetTradingAsset(ptypes.ATOM, ptypes.USDC)
 	assert.Equal(t, ptypes.ATOM, result)
 
 	// Test case: both collateral and borrow are ATOM
-	result = k.GetNonNativeAsset(ptypes.ATOM, ptypes.ATOM)
+	result = k.GetTradingAsset(ptypes.ATOM, ptypes.ATOM)
 	assert.Equal(t, ptypes.ATOM, result)
 
 	// Test case: collateral is some other asset (e.g., BTC) and borrow is USDC
-	result = k.GetNonNativeAsset("BTC", ptypes.USDC)
+	result = k.GetTradingAsset("BTC", ptypes.USDC)
 	assert.Equal(t, "BTC", result)
 }

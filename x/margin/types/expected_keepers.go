@@ -32,18 +32,22 @@ type OpenChecker interface {
 	CheckLongingAssets(ctx sdk.Context, collateralAsset string, borrowAsset string) error
 	CheckUserAuthorization(ctx sdk.Context, msg *MsgOpen) error
 	CheckMaxOpenPositions(ctx sdk.Context) error
-	GetNonNativeAsset(collateralAsset string, borrowAsset string) string
+	GetTradingAsset(collateralAsset string, borrowAsset string) string
 	PreparePools(ctx sdk.Context, nonNativeAsset string) (poolId uint64, ammPool ammtypes.Pool, pool Pool, err error)
 	CheckPoolHealth(ctx sdk.Context, poolId uint64) error
 	OpenLong(ctx sdk.Context, poolId uint64, msg *MsgOpen) (*MTP, error)
 	OpenShort(ctx sdk.Context, poolId uint64, msg *MsgOpen) (*MTP, error)
 	EmitOpenEvent(ctx sdk.Context, mtp *MTP)
+	SetMTP(ctx sdk.Context, mtp *MTP) error
+	CheckSamePosition(ctx sdk.Context, msg *MsgOpen) *MTP
+	GetOpenMTPCount(ctx sdk.Context) uint64
+	GetMaxOpenPositions(ctx sdk.Context) uint64
 }
 
 //go:generate mockery --srcpkg . --name OpenLongChecker --structname OpenLongChecker --filename open_long_checker.go --with-expecter
 type OpenLongChecker interface {
 	GetMaxLeverageParam(ctx sdk.Context) sdk.Dec
-	GetNonNativeAsset(collateralAsset string, borrowAsset string) string
+	GetTradingAsset(collateralAsset string, borrowAsset string) string
 	GetPool(ctx sdk.Context, poolId uint64) (Pool, bool)
 	IsPoolEnabled(ctx sdk.Context, poolId uint64) bool
 	GetAmmPool(ctx sdk.Context, poolId uint64, nonNativeAsset string) (ammtypes.Pool, error)
@@ -51,7 +55,7 @@ type OpenLongChecker interface {
 	CheckMinLiabilities(ctx sdk.Context, collateralTokenAmt sdk.Coin, eta sdk.Dec, pool Pool, ammPool ammtypes.Pool, borrowAsset string) error
 	EstimateSwap(ctx sdk.Context, leveragedAmtTokenIn sdk.Coin, borrowAsset string, ammPool ammtypes.Pool) (sdk.Int, error)
 	EstimateSwapGivenOut(ctx sdk.Context, tokenOutAmount sdk.Coin, tokenInDenom string, ammPool ammtypes.Pool) (sdk.Int, error)
-	Borrow(ctx sdk.Context, collateralAsset string, collateralAmount sdk.Int, custodyAmount sdk.Int, mtp *MTP, ammPool *ammtypes.Pool, pool *Pool, eta sdk.Dec) error
+	Borrow(ctx sdk.Context, collateralAsset string, custodyAsset string, collateralAmount sdk.Int, custodyAmount sdk.Int, mtp *MTP, ammPool *ammtypes.Pool, pool *Pool, eta sdk.Dec) error
 	UpdatePoolHealth(ctx sdk.Context, pool *Pool) error
 	TakeInCustody(ctx sdk.Context, mtp MTP, pool *Pool) error
 	UpdateMTPHealth(ctx sdk.Context, mtp MTP, ammPool ammtypes.Pool) (sdk.Dec, error)
@@ -59,6 +63,32 @@ type OpenLongChecker interface {
 	SetPool(ctx sdk.Context, pool Pool)
 	GetAmmPoolBalance(ctx sdk.Context, ammPool ammtypes.Pool, assetDenom string) (sdk.Int, error)
 	CheckLongingAssets(ctx sdk.Context, collateralAsset string, borrowAsset string) error
+	CheckSamePosition(ctx sdk.Context, msg *MsgOpen) *MTP
+	SetMTP(ctx sdk.Context, mtp *MTP) error
+	CalcMTPConsolidateCollateral(ctx sdk.Context, mtp *MTP) error
+	CalcMTPConsolidateLiability(ctx sdk.Context, mtp *MTP)
+}
+
+//go:generate mockery --srcpkg . --name OpenShortChecker --structname OpenShortChecker --filename open_short_checker.go --with-expecter
+type OpenShortChecker interface {
+	GetMaxLeverageParam(ctx sdk.Context) sdk.Dec
+	GetTradingAsset(collateralAsset string, borrowAsset string) string
+	GetPool(ctx sdk.Context, poolId uint64) (Pool, bool)
+	IsPoolEnabled(ctx sdk.Context, poolId uint64) bool
+	GetAmmPool(ctx sdk.Context, poolId uint64, nonNativeAsset string) (ammtypes.Pool, error)
+	HasSufficientPoolBalance(ctx sdk.Context, ammPool ammtypes.Pool, assetDenom string, requiredAmount sdk.Int) bool
+	CheckMinLiabilities(ctx sdk.Context, collateralTokenAmt sdk.Coin, eta sdk.Dec, pool Pool, ammPool ammtypes.Pool, borrowAsset string) error
+	EstimateSwap(ctx sdk.Context, leveragedAmtTokenIn sdk.Coin, borrowAsset string, ammPool ammtypes.Pool) (sdk.Int, error)
+	EstimateSwapGivenOut(ctx sdk.Context, tokenOutAmount sdk.Coin, tokenInDenom string, ammPool ammtypes.Pool) (sdk.Int, error)
+	Borrow(ctx sdk.Context, collateralAsset string, custodyAsset string, collateralAmount sdk.Int, custodyAmount sdk.Int, mtp *MTP, ammPool *ammtypes.Pool, pool *Pool, eta sdk.Dec) error
+	UpdatePoolHealth(ctx sdk.Context, pool *Pool) error
+	TakeInCustody(ctx sdk.Context, mtp MTP, pool *Pool) error
+	UpdateMTPHealth(ctx sdk.Context, mtp MTP, ammPool ammtypes.Pool) (sdk.Dec, error)
+	GetSafetyFactor(ctx sdk.Context) sdk.Dec
+	SetPool(ctx sdk.Context, pool Pool)
+	GetAmmPoolBalance(ctx sdk.Context, ammPool ammtypes.Pool, assetDenom string) (sdk.Int, error)
+	CheckShortAssets(ctx sdk.Context, collateralAsset string, borrowAsset string) error
+	CheckSamePosition(ctx sdk.Context, msg *MsgOpen) *MTP
 }
 
 //go:generate mockery --srcpkg . --name CloseLongChecker --structname CloseLongChecker --filename close_long_checker.go --with-expecter
@@ -70,9 +100,9 @@ type CloseLongChecker interface {
 
 	) (val Pool, found bool)
 	GetAmmPool(ctx sdk.Context, poolId uint64, nonNativeAsset string) (ammtypes.Pool, error)
-	HandleInterest(ctx sdk.Context, mtp *MTP, pool *Pool, ammPool ammtypes.Pool) error
-	TakeOutCustody(ctx sdk.Context, mtp MTP, pool *Pool) error
-	EstimateAndRepay(ctx sdk.Context, mtp MTP, pool Pool, ammPool ammtypes.Pool) (sdk.Int, error)
+	HandleInterest(ctx sdk.Context, mtp *MTP, pool *Pool, ammPool ammtypes.Pool, collateralAsset string, custodyAsset string) error
+	TakeOutCustody(ctx sdk.Context, mtp MTP, pool *Pool, custodyAsset string) error
+	EstimateAndRepay(ctx sdk.Context, mtp MTP, pool Pool, ammPool ammtypes.Pool, collateralAsset string, custodyAsset string) (sdk.Int, error)
 }
 
 //go:generate mockery --srcpkg . --name CloseShortChecker --structname CloseShortChecker --filename close_short_checker.go --with-expecter
@@ -84,9 +114,9 @@ type CloseShortChecker interface {
 
 	) (val Pool, found bool)
 	GetAmmPool(ctx sdk.Context, poolId uint64, nonNativeAsset string) (ammtypes.Pool, error)
-	HandleInterest(ctx sdk.Context, mtp *MTP, pool *Pool, ammPool ammtypes.Pool) error
-	TakeOutCustody(ctx sdk.Context, mtp MTP, pool *Pool) error
-	EstimateAndRepay(ctx sdk.Context, mtp MTP, pool Pool, ammPool ammtypes.Pool) (sdk.Int, error)
+	HandleInterest(ctx sdk.Context, mtp *MTP, pool *Pool, ammPool ammtypes.Pool, collateralAsset string, custodyAsset string) error
+	TakeOutCustody(ctx sdk.Context, mtp MTP, pool *Pool, custodyAsset string) error
+	EstimateAndRepay(ctx sdk.Context, mtp MTP, pool Pool, ammPool ammtypes.Pool, collateralAsset string, custodyAsset string) (sdk.Int, error)
 }
 
 // AccountKeeper defines the expected account keeper used for simulations (noalias)

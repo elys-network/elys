@@ -78,14 +78,18 @@ func TestOpen_ErrorCheckMaxOpenPositions(t *testing.T) {
 	var (
 		ctx = sdk.Context{} // Mock or setup a context
 		msg = &types.MsgOpen{
+			Creator:         "creator",
 			CollateralAsset: "aaa",
 			BorrowAsset:     "bbb",
+			Position:        types.Position_LONG,
+			Leverage:        sdk.NewDec(10),
 		}
 	)
 
 	// Mock behavior
 	mockChecker.On("CheckLongingAssets", ctx, msg.CollateralAsset, msg.BorrowAsset).Return(nil)
 	mockChecker.On("CheckUserAuthorization", ctx, msg).Return(nil)
+	mockChecker.On("CheckSamePosition", ctx, msg).Return(nil)
 	mockChecker.On("CheckMaxOpenPositions", ctx).Return(sdkerrors.Wrap(types.ErrMaxOpenPositions, "cannot open new positions"))
 
 	_, err := k.Open(ctx, msg)
@@ -106,16 +110,20 @@ func TestOpen_ErrorPreparePools(t *testing.T) {
 	var (
 		ctx = sdk.Context{} // Mock or setup a context
 		msg = &types.MsgOpen{
+			Creator:         "creator",
 			CollateralAsset: "aaa",
 			BorrowAsset:     "bbb",
+			Position:        types.Position_LONG,
+			Leverage:        sdk.NewDec(10),
 		}
 	)
 
 	// Mock behavior
 	mockChecker.On("CheckLongingAssets", ctx, msg.CollateralAsset, msg.BorrowAsset).Return(nil)
 	mockChecker.On("CheckUserAuthorization", ctx, msg).Return(nil)
+	mockChecker.On("CheckSamePosition", ctx, msg).Return(nil)
 	mockChecker.On("CheckMaxOpenPositions", ctx).Return(nil)
-	mockChecker.On("GetNonNativeAsset", msg.CollateralAsset, msg.BorrowAsset).Return(msg.BorrowAsset)
+	mockChecker.On("GetTradingAsset", msg.CollateralAsset, msg.BorrowAsset).Return(msg.BorrowAsset)
 	mockChecker.On("PreparePools", ctx, msg.BorrowAsset).Return(uint64(0), ammtypes.Pool{}, types.Pool{}, errors.New("error executing prepare pools"))
 
 	_, err := k.Open(ctx, msg)
@@ -145,8 +153,9 @@ func TestOpen_ErrorCheckPoolHealth(t *testing.T) {
 	// Mock behavior
 	mockChecker.On("CheckLongingAssets", ctx, msg.CollateralAsset, msg.BorrowAsset).Return(nil)
 	mockChecker.On("CheckUserAuthorization", ctx, msg).Return(nil)
+	mockChecker.On("CheckSamePosition", ctx, msg).Return(nil)
 	mockChecker.On("CheckMaxOpenPositions", ctx).Return(nil)
-	mockChecker.On("GetNonNativeAsset", msg.CollateralAsset, msg.BorrowAsset).Return(msg.BorrowAsset)
+	mockChecker.On("GetTradingAsset", msg.CollateralAsset, msg.BorrowAsset).Return(msg.BorrowAsset)
 	mockChecker.On("PreparePools", ctx, msg.BorrowAsset).Return(poolId, ammtypes.Pool{}, types.Pool{}, nil)
 	mockChecker.On("CheckPoolHealth", ctx, poolId).Return(sdkerrors.Wrap(types.ErrInvalidBorrowingAsset, "invalid collateral asset"))
 
@@ -177,8 +186,9 @@ func TestOpen_ErrorInvalidPosition(t *testing.T) {
 	// Mock behavior
 	mockChecker.On("CheckLongingAssets", ctx, msg.CollateralAsset, msg.BorrowAsset).Return(nil)
 	mockChecker.On("CheckUserAuthorization", ctx, msg).Return(nil)
+	mockChecker.On("CheckSamePosition", ctx, msg).Return(nil)
 	mockChecker.On("CheckMaxOpenPositions", ctx).Return(nil)
-	mockChecker.On("GetNonNativeAsset", msg.CollateralAsset, msg.BorrowAsset).Return(msg.BorrowAsset)
+	mockChecker.On("GetTradingAsset", msg.CollateralAsset, msg.BorrowAsset).Return(msg.BorrowAsset)
 	mockChecker.On("PreparePools", ctx, msg.BorrowAsset).Return(poolId, ammtypes.Pool{}, types.Pool{}, nil)
 	mockChecker.On("CheckPoolHealth", ctx, poolId).Return(nil)
 
@@ -210,8 +220,9 @@ func TestOpen_ErrorOpenLong(t *testing.T) {
 	// Mock behavior
 	mockChecker.On("CheckLongingAssets", ctx, msg.CollateralAsset, msg.BorrowAsset).Return(nil)
 	mockChecker.On("CheckUserAuthorization", ctx, msg).Return(nil)
+	mockChecker.On("CheckSamePosition", ctx, msg).Return(nil)
 	mockChecker.On("CheckMaxOpenPositions", ctx).Return(nil)
-	mockChecker.On("GetNonNativeAsset", msg.CollateralAsset, msg.BorrowAsset).Return(msg.BorrowAsset)
+	mockChecker.On("GetTradingAsset", msg.CollateralAsset, msg.BorrowAsset).Return(msg.BorrowAsset)
 	mockChecker.On("PreparePools", ctx, msg.BorrowAsset).Return(poolId, ammtypes.Pool{}, types.Pool{}, nil)
 	mockChecker.On("CheckPoolHealth", ctx, poolId).Return(nil)
 	mockChecker.On("OpenLong", ctx, poolId, msg).Return(&types.MTP{}, errors.New("error executing open long"))
@@ -244,8 +255,9 @@ func TestOpen_ErrorOpenShort(t *testing.T) {
 	// Mock behavior
 	mockChecker.On("CheckLongingAssets", ctx, msg.CollateralAsset, msg.BorrowAsset).Return(nil)
 	mockChecker.On("CheckUserAuthorization", ctx, msg).Return(nil)
+	mockChecker.On("CheckSamePosition", ctx, msg).Return(nil)
 	mockChecker.On("CheckMaxOpenPositions", ctx).Return(nil)
-	mockChecker.On("GetNonNativeAsset", msg.CollateralAsset, msg.BorrowAsset).Return(msg.BorrowAsset)
+	mockChecker.On("GetTradingAsset", msg.CollateralAsset, msg.BorrowAsset).Return(msg.BorrowAsset)
 	mockChecker.On("PreparePools", ctx, msg.BorrowAsset).Return(poolId, ammtypes.Pool{}, types.Pool{}, nil)
 	mockChecker.On("CheckPoolHealth", ctx, poolId).Return(nil)
 	mockChecker.On("OpenShort", ctx, poolId, msg).Return(&types.MTP{}, errors.New("error executing open short"))
@@ -279,8 +291,9 @@ func TestOpen_Successful(t *testing.T) {
 	// Mock behavior
 	mockChecker.On("CheckLongingAssets", ctx, msg.CollateralAsset, msg.BorrowAsset).Return(nil)
 	mockChecker.On("CheckUserAuthorization", ctx, msg).Return(nil)
+	mockChecker.On("CheckSamePosition", ctx, msg).Return(nil)
 	mockChecker.On("CheckMaxOpenPositions", ctx).Return(nil)
-	mockChecker.On("GetNonNativeAsset", msg.CollateralAsset, msg.BorrowAsset).Return(msg.BorrowAsset)
+	mockChecker.On("GetTradingAsset", msg.CollateralAsset, msg.BorrowAsset).Return(msg.BorrowAsset)
 	mockChecker.On("PreparePools", ctx, msg.BorrowAsset).Return(poolId, ammtypes.Pool{}, types.Pool{}, nil)
 	mockChecker.On("CheckPoolHealth", ctx, poolId).Return(nil)
 	mockChecker.On("OpenShort", ctx, poolId, msg).Return(mtp, nil)

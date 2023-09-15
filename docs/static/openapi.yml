@@ -39092,24 +39092,40 @@ paths:
                 properties:
                   address:
                     type: string
-                  collateral_asset:
-                    type: string
-                  collateral_amount:
-                    type: string
+                  collateral_assets:
+                    type: array
+                    items:
+                      type: string
+                  collateral_amounts:
+                    type: array
+                    items:
+                      type: string
                   liabilities:
                     type: string
-                  interest_paid_collateral:
-                    type: string
-                  interest_paid_custody:
-                    type: string
-                  interest_unpaid_collateral:
-                    type: string
-                  custody_asset:
-                    type: string
-                  custody_amount:
-                    type: string
-                  leverage:
-                    type: string
+                  interest_paid_collaterals:
+                    type: array
+                    items:
+                      type: string
+                  interest_paid_custodys:
+                    type: array
+                    items:
+                      type: string
+                  interest_unpaid_collaterals:
+                    type: array
+                    items:
+                      type: string
+                  custody_assets:
+                    type: array
+                    items:
+                      type: string
+                  custody_amounts:
+                    type: array
+                    items:
+                      type: string
+                  leverages:
+                    type: array
+                    items:
+                      type: string
                   mtp_health:
                     type: string
                   position:
@@ -39125,6 +39141,10 @@ paths:
                   amm_pool_id:
                     type: string
                     format: uint64
+                  consolidate_leverage:
+                    type: string
+                  sum_collateral:
+                    type: string
         default:
           description: An unexpected error response.
           schema:
@@ -39172,24 +39192,40 @@ paths:
                   properties:
                     address:
                       type: string
-                    collateral_asset:
-                      type: string
-                    collateral_amount:
-                      type: string
+                    collateral_assets:
+                      type: array
+                      items:
+                        type: string
+                    collateral_amounts:
+                      type: array
+                      items:
+                        type: string
                     liabilities:
                       type: string
-                    interest_paid_collateral:
-                      type: string
-                    interest_paid_custody:
-                      type: string
-                    interest_unpaid_collateral:
-                      type: string
-                    custody_asset:
-                      type: string
-                    custody_amount:
-                      type: string
-                    leverage:
-                      type: string
+                    interest_paid_collaterals:
+                      type: array
+                      items:
+                        type: string
+                    interest_paid_custodys:
+                      type: array
+                      items:
+                        type: string
+                    interest_unpaid_collaterals:
+                      type: array
+                      items:
+                        type: string
+                    custody_assets:
+                      type: array
+                      items:
+                        type: string
+                    custody_amounts:
+                      type: array
+                      items:
+                        type: string
+                    leverages:
+                      type: array
+                      items:
+                        type: string
                     mtp_health:
                       type: string
                     position:
@@ -39205,6 +39241,10 @@ paths:
                     amm_pool_id:
                       type: string
                       format: uint64
+                    consolidate_leverage:
+                      type: string
+                    sum_collateral:
+                      type: string
               pagination:
                 type: object
                 properties:
@@ -39332,24 +39372,40 @@ paths:
                   properties:
                     address:
                       type: string
-                    collateral_asset:
-                      type: string
-                    collateral_amount:
-                      type: string
+                    collateral_assets:
+                      type: array
+                      items:
+                        type: string
+                    collateral_amounts:
+                      type: array
+                      items:
+                        type: string
                     liabilities:
                       type: string
-                    interest_paid_collateral:
-                      type: string
-                    interest_paid_custody:
-                      type: string
-                    interest_unpaid_collateral:
-                      type: string
-                    custody_asset:
-                      type: string
-                    custody_amount:
-                      type: string
-                    leverage:
-                      type: string
+                    interest_paid_collaterals:
+                      type: array
+                      items:
+                        type: string
+                    interest_paid_custodys:
+                      type: array
+                      items:
+                        type: string
+                    interest_unpaid_collaterals:
+                      type: array
+                      items:
+                        type: string
+                    custody_assets:
+                      type: array
+                      items:
+                        type: string
+                    custody_amounts:
+                      type: array
+                      items:
+                        type: string
+                    leverages:
+                      type: array
+                      items:
+                        type: string
                     mtp_health:
                       type: string
                     position:
@@ -39365,6 +39421,10 @@ paths:
                     amm_pool_id:
                       type: string
                       format: uint64
+                    consolidate_leverage:
+                      type: string
+                    sum_collateral:
+                      type: string
               pagination:
                 type: object
                 properties:
@@ -39780,24 +39840,40 @@ paths:
                   properties:
                     address:
                       type: string
-                    collateral_asset:
-                      type: string
-                    collateral_amount:
-                      type: string
+                    collateral_assets:
+                      type: array
+                      items:
+                        type: string
+                    collateral_amounts:
+                      type: array
+                      items:
+                        type: string
                     liabilities:
                       type: string
-                    interest_paid_collateral:
-                      type: string
-                    interest_paid_custody:
-                      type: string
-                    interest_unpaid_collateral:
-                      type: string
-                    custody_asset:
-                      type: string
-                    custody_amount:
-                      type: string
-                    leverage:
-                      type: string
+                    interest_paid_collaterals:
+                      type: array
+                      items:
+                        type: string
+                    interest_paid_custodys:
+                      type: array
+                      items:
+                        type: string
+                    interest_unpaid_collaterals:
+                      type: array
+                      items:
+                        type: string
+                    custody_assets:
+                      type: array
+                      items:
+                        type: string
+                    custody_amounts:
+                      type: array
+                      items:
+                        type: string
+                    leverages:
+                      type: array
+                      items:
+                        type: string
                     mtp_health:
                       type: string
                     position:
@@ -39813,6 +39889,10 @@ paths:
                     amm_pool_id:
                       type: string
                       format: uint64
+                    consolidate_leverage:
+                      type: string
+                    sum_collateral:
+                      type: string
               pagination:
                 type: object
                 properties:
@@ -78850,24 +78930,40 @@ definitions:
     properties:
       address:
         type: string
-      collateral_asset:
-        type: string
-      collateral_amount:
-        type: string
+      collateral_assets:
+        type: array
+        items:
+          type: string
+      collateral_amounts:
+        type: array
+        items:
+          type: string
       liabilities:
         type: string
-      interest_paid_collateral:
-        type: string
-      interest_paid_custody:
-        type: string
-      interest_unpaid_collateral:
-        type: string
-      custody_asset:
-        type: string
-      custody_amount:
-        type: string
-      leverage:
-        type: string
+      interest_paid_collaterals:
+        type: array
+        items:
+          type: string
+      interest_paid_custodys:
+        type: array
+        items:
+          type: string
+      interest_unpaid_collaterals:
+        type: array
+        items:
+          type: string
+      custody_assets:
+        type: array
+        items:
+          type: string
+      custody_amounts:
+        type: array
+        items:
+          type: string
+      leverages:
+        type: array
+        items:
+          type: string
       mtp_health:
         type: string
       position:
@@ -78883,6 +78979,10 @@ definitions:
       amm_pool_id:
         type: string
         format: uint64
+      consolidate_leverage:
+        type: string
+      sum_collateral:
+        type: string
   elys.margin.MTPResponse:
     type: object
     properties:
@@ -78891,24 +78991,40 @@ definitions:
         properties:
           address:
             type: string
-          collateral_asset:
-            type: string
-          collateral_amount:
-            type: string
+          collateral_assets:
+            type: array
+            items:
+              type: string
+          collateral_amounts:
+            type: array
+            items:
+              type: string
           liabilities:
             type: string
-          interest_paid_collateral:
-            type: string
-          interest_paid_custody:
-            type: string
-          interest_unpaid_collateral:
-            type: string
-          custody_asset:
-            type: string
-          custody_amount:
-            type: string
-          leverage:
-            type: string
+          interest_paid_collaterals:
+            type: array
+            items:
+              type: string
+          interest_paid_custodys:
+            type: array
+            items:
+              type: string
+          interest_unpaid_collaterals:
+            type: array
+            items:
+              type: string
+          custody_assets:
+            type: array
+            items:
+              type: string
+          custody_amounts:
+            type: array
+            items:
+              type: string
+          leverages:
+            type: array
+            items:
+              type: string
           mtp_health:
             type: string
           position:
@@ -78924,6 +79040,10 @@ definitions:
           amm_pool_id:
             type: string
             format: uint64
+          consolidate_leverage:
+            type: string
+          sum_collateral:
+            type: string
   elys.margin.MsgCloseResponse:
     type: object
   elys.margin.MsgDewhitelistResponse:
@@ -79091,24 +79211,40 @@ definitions:
           properties:
             address:
               type: string
-            collateral_asset:
-              type: string
-            collateral_amount:
-              type: string
+            collateral_assets:
+              type: array
+              items:
+                type: string
+            collateral_amounts:
+              type: array
+              items:
+                type: string
             liabilities:
               type: string
-            interest_paid_collateral:
-              type: string
-            interest_paid_custody:
-              type: string
-            interest_unpaid_collateral:
-              type: string
-            custody_asset:
-              type: string
-            custody_amount:
-              type: string
-            leverage:
-              type: string
+            interest_paid_collaterals:
+              type: array
+              items:
+                type: string
+            interest_paid_custodys:
+              type: array
+              items:
+                type: string
+            interest_unpaid_collaterals:
+              type: array
+              items:
+                type: string
+            custody_assets:
+              type: array
+              items:
+                type: string
+            custody_amounts:
+              type: array
+              items:
+                type: string
+            leverages:
+              type: array
+              items:
+                type: string
             mtp_health:
               type: string
             position:
@@ -79124,6 +79260,10 @@ definitions:
             amm_pool_id:
               type: string
               format: uint64
+            consolidate_leverage:
+              type: string
+            sum_collateral:
+              type: string
       pagination:
         type: object
         properties:
@@ -79160,24 +79300,40 @@ definitions:
           properties:
             address:
               type: string
-            collateral_asset:
-              type: string
-            collateral_amount:
-              type: string
+            collateral_assets:
+              type: array
+              items:
+                type: string
+            collateral_amounts:
+              type: array
+              items:
+                type: string
             liabilities:
               type: string
-            interest_paid_collateral:
-              type: string
-            interest_paid_custody:
-              type: string
-            interest_unpaid_collateral:
-              type: string
-            custody_asset:
-              type: string
-            custody_amount:
-              type: string
-            leverage:
-              type: string
+            interest_paid_collaterals:
+              type: array
+              items:
+                type: string
+            interest_paid_custodys:
+              type: array
+              items:
+                type: string
+            interest_unpaid_collaterals:
+              type: array
+              items:
+                type: string
+            custody_assets:
+              type: array
+              items:
+                type: string
+            custody_amounts:
+              type: array
+              items:
+                type: string
+            leverages:
+              type: array
+              items:
+                type: string
             mtp_health:
               type: string
             position:
@@ -79193,6 +79349,10 @@ definitions:
             amm_pool_id:
               type: string
               format: uint64
+            consolidate_leverage:
+              type: string
+            sum_collateral:
+              type: string
       pagination:
         type: object
         properties:
@@ -79229,24 +79389,40 @@ definitions:
           properties:
             address:
               type: string
-            collateral_asset:
-              type: string
-            collateral_amount:
-              type: string
+            collateral_assets:
+              type: array
+              items:
+                type: string
+            collateral_amounts:
+              type: array
+              items:
+                type: string
             liabilities:
               type: string
-            interest_paid_collateral:
-              type: string
-            interest_paid_custody:
-              type: string
-            interest_unpaid_collateral:
-              type: string
-            custody_asset:
-              type: string
-            custody_amount:
-              type: string
-            leverage:
-              type: string
+            interest_paid_collaterals:
+              type: array
+              items:
+                type: string
+            interest_paid_custodys:
+              type: array
+              items:
+                type: string
+            interest_unpaid_collaterals:
+              type: array
+              items:
+                type: string
+            custody_assets:
+              type: array
+              items:
+                type: string
+            custody_amounts:
+              type: array
+              items:
+                type: string
+            leverages:
+              type: array
+              items:
+                type: string
             mtp_health:
               type: string
             position:
@@ -79262,6 +79438,10 @@ definitions:
             amm_pool_id:
               type: string
               format: uint64
+            consolidate_leverage:
+              type: string
+            sum_collateral:
+              type: string
       pagination:
         type: object
         properties:

@@ -15,12 +15,17 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen) (*types.MsgOpenRespons
 		return nil, err
 	}
 
+	// Check if it is the same direction position for the same trader.
+	if mtp := k.OpenChecker.CheckSamePosition(ctx, msg); mtp != nil {
+		return k.OpenConsolidate(ctx, mtp, msg)
+	}
+
 	if err := k.OpenChecker.CheckMaxOpenPositions(ctx); err != nil {
 		return nil, err
 	}
 
 	// Get token asset other than USDC
-	nonNativeAsset := k.OpenChecker.GetNonNativeAsset(msg.CollateralAsset, msg.BorrowAsset)
+	nonNativeAsset := k.OpenChecker.GetTradingAsset(msg.CollateralAsset, msg.BorrowAsset)
 
 	// Get pool id, amm pool, and margin pool
 	poolId, ammPool, pool, err := k.OpenChecker.PreparePools(ctx, nonNativeAsset)
