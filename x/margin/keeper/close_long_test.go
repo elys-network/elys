@@ -11,6 +11,7 @@ import (
 	"github.com/elys-network/elys/x/margin/keeper"
 	"github.com/elys-network/elys/x/margin/types"
 	"github.com/elys-network/elys/x/margin/types/mocks"
+	ptypes "github.com/elys-network/elys/x/parameter/types"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -123,7 +124,7 @@ func TestCloseLong_ErrorHandleInterest(t *testing.T) {
 		mtp = types.MTP{
 			AmmPoolId:        2,
 			CustodyAssets:    []string{"uatom"},
-			CollateralAssets: []string{"uusdc"},
+			CollateralAssets: []string{ptypes.BaseCurrency},
 		}
 		pool = types.Pool{
 			InterestRate: math.LegacyNewDec(2),
@@ -162,7 +163,7 @@ func TestCloseLong_ErrorTakeOutCustody(t *testing.T) {
 		mtp = types.MTP{
 			AmmPoolId:        2,
 			CustodyAssets:    []string{"uatom"},
-			CollateralAssets: []string{"uusdc"},
+			CollateralAssets: []string{ptypes.BaseCurrency},
 		}
 		pool = types.Pool{
 			InterestRate: math.LegacyNewDec(2),
@@ -202,7 +203,7 @@ func TestCloseLong_ErrorEstimateAndRepay(t *testing.T) {
 		mtp = types.MTP{
 			AmmPoolId:        2,
 			CustodyAssets:    []string{"uatom"},
-			CollateralAssets: []string{"uusdc"},
+			CollateralAssets: []string{ptypes.BaseCurrency},
 		}
 		pool = types.Pool{
 			InterestRate: math.LegacyNewDec(2),
@@ -243,7 +244,7 @@ func TestCloseLong_SuccessfulClosingLongPosition(t *testing.T) {
 		mtp = types.MTP{
 			AmmPoolId:        2,
 			CustodyAssets:    []string{"uatom"},
-			CollateralAssets: []string{"uusdc"},
+			CollateralAssets: []string{ptypes.BaseCurrency},
 		}
 		pool = types.Pool{
 			InterestRate: math.LegacyNewDec(2),

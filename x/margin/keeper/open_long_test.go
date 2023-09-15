@@ -96,7 +96,7 @@ func TestOpenLong_InsufficientAmmPoolBalanceForLeveragedAmount(t *testing.T) {
 			Leverage:         math.LegacyNewDec(2),
 			CollateralAmount: math.NewInt(1000),
 			Creator:          "",
-			CollateralAsset:  "uusdc",
+			CollateralAsset:  ptypes.BaseCurrency,
 			BorrowAsset:      "uatom",
 			Position:         types.Position_LONG,
 		}
@@ -135,7 +135,7 @@ func TestOpenLong_InsufficientLiabilities(t *testing.T) {
 			Leverage:         math.LegacyNewDec(2),
 			CollateralAmount: math.NewInt(1000),
 			Creator:          "",
-			CollateralAsset:  "uusdc",
+			CollateralAsset:  ptypes.BaseCurrency,
 			BorrowAsset:      "uatom",
 			Position:         types.Position_LONG,
 		}
@@ -178,7 +178,7 @@ func TestOpenLong_InsufficientAmmPoolBalanceForCustody(t *testing.T) {
 			Leverage:         math.LegacyNewDec(10),
 			CollateralAmount: math.NewInt(1000),
 			Creator:          "",
-			CollateralAsset:  "uusdc",
+			CollateralAsset:  ptypes.BaseCurrency,
 			BorrowAsset:      "uatom",
 			Position:         types.Position_LONG,
 		}
@@ -229,7 +229,7 @@ func TestOpenLong_ErrorsDuringOperations(t *testing.T) {
 			Leverage:         math.LegacyNewDec(10),
 			CollateralAmount: math.NewInt(1000),
 			Creator:          "",
-			CollateralAsset:  "uusdc",
+			CollateralAsset:  ptypes.BaseCurrency,
 			BorrowAsset:      "uatom",
 			Position:         types.Position_LONG,
 		}
@@ -286,7 +286,7 @@ func TestOpenLong_LeverageRatioLessThanSafetyFactor(t *testing.T) {
 			Leverage:         math.LegacyNewDec(10),
 			CollateralAmount: math.NewInt(1000),
 			Creator:          "",
-			CollateralAsset:  "uusdc",
+			CollateralAsset:  ptypes.BaseCurrency,
 			BorrowAsset:      "uatom",
 			Position:         types.Position_LONG,
 		}
@@ -349,7 +349,7 @@ func TestOpenLong_Success(t *testing.T) {
 			Leverage:         math.LegacyNewDec(10),
 			CollateralAmount: math.NewInt(1000),
 			Creator:          "",
-			CollateralAsset:  "uusdc",
+			CollateralAsset:  ptypes.BaseCurrency,
 			BorrowAsset:      "uatom",
 			Position:         types.Position_LONG,
 		}
@@ -403,7 +403,7 @@ func TestOpenLong_Success(t *testing.T) {
 	mockChecker.AssertExpectations(t)
 }
 
-func TestOpenLong_USDC_Collateral(t *testing.T) {
+func TestOpenLong_BaseCurrency_Collateral(t *testing.T) {
 	app := simapp.InitElysTestApp(true)
 	ctx := app.BaseApp.NewContext(true, tmproto.Header{})
 
@@ -417,7 +417,7 @@ func TestOpenLong_USDC_Collateral(t *testing.T) {
 
 	// Create a pool
 	// Mint 100000USDC
-	usdcToken := sdk.NewCoins(sdk.NewCoin(ptypes.USDC, sdk.NewInt(100000)))
+	usdcToken := sdk.NewCoins(sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(100000)))
 	// Mint 100000ATOM
 	atomToken := sdk.NewCoins(sdk.NewCoin(ptypes.ATOM, sdk.NewInt(100000)))
 
@@ -438,7 +438,7 @@ func TestOpenLong_USDC_Collateral(t *testing.T) {
 		},
 		{
 			Weight: sdk.NewInt(50),
-			Token:  sdk.NewCoin(ptypes.USDC, sdk.NewInt(10000)),
+			Token:  sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(10000)),
 		},
 	}
 
@@ -477,13 +477,13 @@ func TestOpenLong_USDC_Collateral(t *testing.T) {
 
 	// Balance check before create a margin position
 	balances := app.BankKeeper.GetAllBalances(ctx, poolAddress)
-	require.Equal(t, balances.AmountOf(ptypes.USDC), sdk.NewInt(10000))
+	require.Equal(t, balances.AmountOf(ptypes.BaseCurrency), sdk.NewInt(10000))
 	require.Equal(t, balances.AmountOf(ptypes.ATOM), sdk.NewInt(100000))
 
 	// Create a margin position open msg
 	msg2 := types.NewMsgOpen(
 		addr[0].String(),
-		ptypes.USDC,
+		ptypes.BaseCurrency,
 		sdk.NewInt(100),
 		ptypes.ATOM,
 		types.Position_LONG,
@@ -497,7 +497,7 @@ func TestOpenLong_USDC_Collateral(t *testing.T) {
 	require.Equal(t, len(mtps), 1)
 
 	balances = app.BankKeeper.GetAllBalances(ctx, poolAddress)
-	require.Equal(t, balances.AmountOf(ptypes.USDC), sdk.NewInt(10100))
+	require.Equal(t, balances.AmountOf(ptypes.BaseCurrency), sdk.NewInt(10100))
 	require.Equal(t, balances.AmountOf(ptypes.ATOM), sdk.NewInt(100000))
 
 	_, found = mk.OpenLongChecker.GetPool(ctx, pool.PoolId)
@@ -521,7 +521,7 @@ func TestOpenLong_ATOM_Collateral(t *testing.T) {
 
 	// Create a pool
 	// Mint 100000USDC
-	usdcToken := sdk.NewCoins(sdk.NewCoin(ptypes.USDC, sdk.NewInt(100000)))
+	usdcToken := sdk.NewCoins(sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(100000)))
 	// Mint 100000ATOM
 	atomToken := sdk.NewCoins(sdk.NewCoin(ptypes.ATOM, sdk.NewInt(100000)))
 
@@ -542,7 +542,7 @@ func TestOpenLong_ATOM_Collateral(t *testing.T) {
 		},
 		{
 			Weight: sdk.NewInt(50),
-			Token:  sdk.NewCoin(ptypes.USDC, sdk.NewInt(10000)),
+			Token:  sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(10000)),
 		},
 	}
 
@@ -581,7 +581,7 @@ func TestOpenLong_ATOM_Collateral(t *testing.T) {
 
 	// Balance check before create a margin position
 	balances := app.BankKeeper.GetAllBalances(ctx, poolAddress)
-	require.Equal(t, balances.AmountOf(ptypes.USDC), sdk.NewInt(10000))
+	require.Equal(t, balances.AmountOf(ptypes.BaseCurrency), sdk.NewInt(10000))
 	require.Equal(t, balances.AmountOf(ptypes.ATOM), sdk.NewInt(1000))
 
 	// Create a margin position open msg
@@ -601,7 +601,7 @@ func TestOpenLong_ATOM_Collateral(t *testing.T) {
 	require.Equal(t, len(mtps), 1)
 
 	balances = app.BankKeeper.GetAllBalances(ctx, poolAddress)
-	require.Equal(t, balances.AmountOf(ptypes.USDC), sdk.NewInt(10000))
+	require.Equal(t, balances.AmountOf(ptypes.BaseCurrency), sdk.NewInt(10000))
 	require.Equal(t, balances.AmountOf(ptypes.ATOM), sdk.NewInt(1010))
 
 	_, found = mk.OpenLongChecker.GetPool(ctx, pool.PoolId)

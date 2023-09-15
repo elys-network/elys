@@ -8,15 +8,15 @@ import (
 )
 
 func (k Keeper) CheckLongingAssets(ctx sdk.Context, collateralAsset string, borrowAsset string) error {
-	if borrowAsset == ptypes.USDC {
+	if borrowAsset == ptypes.BaseCurrency {
 		return sdkerrors.Wrap(types.ErrInvalidBorrowingAsset, "invalid borrowing asset")
 	}
 
-	if collateralAsset == borrowAsset && collateralAsset == ptypes.USDC {
+	if collateralAsset == borrowAsset && collateralAsset == ptypes.BaseCurrency {
 		return sdkerrors.Wrap(types.ErrInvalidBorrowingAsset, "invalid borrowing asset")
 	}
 
-	if collateralAsset != borrowAsset && collateralAsset != ptypes.USDC {
+	if collateralAsset != borrowAsset && collateralAsset != ptypes.BaseCurrency {
 		return sdkerrors.Wrap(types.ErrInvalidBorrowingAsset, "invalid borrowing asset")
 	}
 

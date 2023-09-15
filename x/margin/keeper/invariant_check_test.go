@@ -29,7 +29,7 @@ func TestCheckBalanceInvariant_InvalidBalance(t *testing.T) {
 
 	// Create a pool
 	// Mint 100000USDC
-	usdcToken := sdk.NewCoins(sdk.NewCoin(ptypes.USDC, sdk.NewInt(100000)))
+	usdcToken := sdk.NewCoins(sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(100000)))
 	// Mint 100000ATOM
 	atomToken := sdk.NewCoins(sdk.NewCoin(ptypes.ATOM, sdk.NewInt(100000)))
 
@@ -50,7 +50,7 @@ func TestCheckBalanceInvariant_InvalidBalance(t *testing.T) {
 		},
 		{
 			Weight: sdk.NewInt(50),
-			Token:  sdk.NewCoin(ptypes.USDC, sdk.NewInt(10000)),
+			Token:  sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(10000)),
 		},
 	}
 
@@ -89,13 +89,13 @@ func TestCheckBalanceInvariant_InvalidBalance(t *testing.T) {
 
 	// Balance check before create a margin position
 	balances := app.BankKeeper.GetAllBalances(ctx, poolAddress)
-	require.Equal(t, balances.AmountOf(ptypes.USDC), sdk.NewInt(10000))
+	require.Equal(t, balances.AmountOf(ptypes.BaseCurrency), sdk.NewInt(10000))
 	require.Equal(t, balances.AmountOf(ptypes.ATOM), sdk.NewInt(1000))
 
 	// Create a margin position open msg
 	msg2 := margintypes.NewMsgOpen(
 		addr[0].String(),
-		ptypes.USDC,
+		ptypes.BaseCurrency,
 		sdk.NewInt(100),
 		ptypes.ATOM,
 		margintypes.Position_LONG,
@@ -109,7 +109,7 @@ func TestCheckBalanceInvariant_InvalidBalance(t *testing.T) {
 	require.Equal(t, len(mtps), 1)
 
 	balances = app.BankKeeper.GetAllBalances(ctx, poolAddress)
-	require.Equal(t, balances.AmountOf(ptypes.USDC), sdk.NewInt(10100))
+	require.Equal(t, balances.AmountOf(ptypes.BaseCurrency), sdk.NewInt(10100))
 	require.Equal(t, balances.AmountOf(ptypes.ATOM), sdk.NewInt(1000))
 
 	// Check balance invariant check
@@ -127,7 +127,7 @@ func TestCheckBalanceInvariant_InvalidBalance(t *testing.T) {
 	require.NoError(t, err)
 
 	balances = app.BankKeeper.GetAllBalances(ctx, poolAddress)
-	require.Equal(t, balances.AmountOf(ptypes.USDC), sdk.NewInt(10052))
+	require.Equal(t, balances.AmountOf(ptypes.BaseCurrency), sdk.NewInt(10052))
 	require.Equal(t, balances.AmountOf(ptypes.ATOM), sdk.NewInt(1000))
 
 	// Check balance invariant check

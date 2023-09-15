@@ -13,7 +13,7 @@ import (
 func TestValidateCollateralAsset_ValidCollateralAsset(t *testing.T) {
 	k := keeper.Keeper{}
 
-	collateralAsset := paramtypes.USDC // Correct asset
+	collateralAsset := paramtypes.BaseCurrency // Correct asset
 
 	err := k.ValidateCollateralAsset(collateralAsset)
 

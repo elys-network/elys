@@ -31,6 +31,9 @@ const (
 	// Eden Boost denom
 	EdenB = "uedenb"
 
+	// Base currency
+	BaseCurrency = "uusdc"
+
 	// USDC
 	USDC = "uusdc"
 

@@ -16,13 +16,13 @@ func (k Keeper) CalcMTPInterestLiabilities(ctx sdk.Context, mtp *types.MTP, inte
 
 	collateralIndex, _ := k.GetMTPAssetIndex(mtp, collateralAsset, "")
 	unpaidCollaterals := sdk.ZeroInt()
-	// Calculate collateral interests in usdc
-	if mtp.CollateralAssets[collateralIndex] == ptypes.USDC {
+	// Calculate collateral interests in base currency
+	if mtp.CollateralAssets[collateralIndex] == ptypes.BaseCurrency {
 		unpaidCollaterals = unpaidCollaterals.Add(mtp.InterestUnpaidCollaterals[collateralIndex])
 	} else {
-		// Liability is in usdc, so convert it to usdc
+		// Liability is in base currency, so convert it to base currency
 		unpaidCollateralIn := sdk.NewCoin(mtp.CollateralAssets[collateralIndex], mtp.InterestUnpaidCollaterals[collateralIndex])
-		C, err := k.EstimateSwapGivenOut(ctx, unpaidCollateralIn, ptypes.USDC, ammPool)
+		C, err := k.EstimateSwapGivenOut(ctx, unpaidCollateralIn, ptypes.BaseCurrency, ammPool)
 		if err != nil {
 			return sdk.ZeroInt()
 		}

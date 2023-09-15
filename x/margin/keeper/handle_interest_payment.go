@@ -24,12 +24,12 @@ func (k Keeper) HandleInterestPayment(ctx sdk.Context, collateralAsset string, c
 			return sdk.ZeroInt()
 		}
 
-		// collateralAsset is in usdc
-		if mtp.CollateralAssets[collateralIndex] == ptypes.USDC {
+		// collateralAsset is in base currency
+		if mtp.CollateralAssets[collateralIndex] == ptypes.BaseCurrency {
 			mtp.InterestUnpaidCollaterals[collateralIndex] = interestPayment
 		} else {
 			// swap
-			amtTokenIn := sdk.NewCoin(ptypes.USDC, interestPayment)
+			amtTokenIn := sdk.NewCoin(ptypes.BaseCurrency, interestPayment)
 			interestPayment, err := k.EstimateSwap(ctx, amtTokenIn, collateralAsset, ammPool) // may need spot price here to not deduct fee
 			if err != nil {
 				return sdk.ZeroInt()

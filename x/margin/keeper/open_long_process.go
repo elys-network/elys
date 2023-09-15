@@ -8,32 +8,32 @@ import (
 )
 
 func (k Keeper) ProcessOpenLong(ctx sdk.Context, mtp *types.MTP, leverage sdk.Dec, eta sdk.Dec, collateralAmountDec sdk.Dec, poolId uint64, msg *types.MsgOpen) (*types.MTP, error) {
-	// Get token asset other than USDC
-	nonNativeAsset := k.OpenLongChecker.GetTradingAsset(msg.CollateralAsset, msg.BorrowAsset)
+	// Get token asset other than base currency
+	tradingAsset := k.OpenLongChecker.GetTradingAsset(msg.CollateralAsset, msg.BorrowAsset)
 
 	pool, found := k.OpenLongChecker.GetPool(ctx, poolId)
 	if !found {
-		return nil, sdkerrors.Wrap(types.ErrPoolDoesNotExist, nonNativeAsset)
+		return nil, sdkerrors.Wrap(types.ErrPoolDoesNotExist, tradingAsset)
 	}
 
 	if !k.OpenLongChecker.IsPoolEnabled(ctx, poolId) {
-		return nil, sdkerrors.Wrap(types.ErrMTPDisabled, nonNativeAsset)
+		return nil, sdkerrors.Wrap(types.ErrMTPDisabled, tradingAsset)
 	}
 
-	ammPool, err := k.OpenLongChecker.GetAmmPool(ctx, poolId, nonNativeAsset)
+	ammPool, err := k.OpenLongChecker.GetAmmPool(ctx, poolId, tradingAsset)
 	if err != nil {
 		return nil, err
 	}
 
 	leveragedAmount := sdk.NewInt(collateralAmountDec.Mul(leverage).TruncateInt().Int64())
-	// If collateral is not native (usdc), calculate the borrowing amount in usdc and check the balance
-	if msg.CollateralAsset != ptypes.USDC {
+	// If collateral is not base currency, calculate the borrowing amount in base currency and check the balance
+	if msg.CollateralAsset != ptypes.BaseCurrency {
 		custodyAmtToken := sdk.NewCoin(msg.CollateralAsset, leveragedAmount)
-		borrowingAmount, err := k.OpenLongChecker.EstimateSwapGivenOut(ctx, custodyAmtToken, ptypes.USDC, ammPool)
+		borrowingAmount, err := k.OpenLongChecker.EstimateSwapGivenOut(ctx, custodyAmtToken, ptypes.BaseCurrency, ammPool)
 		if err != nil {
 			return nil, err
 		}
-		if !k.OpenLongChecker.HasSufficientPoolBalance(ctx, ammPool, ptypes.USDC, borrowingAmount) {
+		if !k.OpenLongChecker.HasSufficientPoolBalance(ctx, ammPool, ptypes.BaseCurrency, borrowingAmount) {
 			return nil, sdkerrors.Wrap(types.ErrBorrowTooHigh, leveragedAmount.String())
 		}
 	} else {
@@ -54,8 +54,8 @@ func (k Keeper) ProcessOpenLong(ctx sdk.Context, mtp *types.MTP, leverage sdk.De
 		return nil, err
 	}
 
-	// If the collateral asset is not usdc, custody amount equals to leverage amount
-	if msg.CollateralAsset != ptypes.USDC {
+	// If the collateral asset is not base currency, custody amount equals to leverage amount
+	if msg.CollateralAsset != ptypes.BaseCurrency {
 		custodyAmount = leveragedAmount
 	}
 

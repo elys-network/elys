@@ -31,10 +31,10 @@ If we have 3 oracle price sources for example and one experiences a massive cand
 
 ## Reference codebases for margin
 
-- Get reference code from Caner
+- TBD
 
 ## Notes
 
-- Margin code to be the base code for LP leveraging - Only real difference being that for margin the borrow is from the pool liqudity itself while for LP leveraging the borrow is from USDC deposit
+- Margin code to be the base code for LP leveraging - Only real difference being that for margin the borrow is from the pool liqudity itself while for LP leveraging the borrow is from base currency deposit
 
 - Ultimately when we have cross margin, that’s when margin positions and LP positions can interact

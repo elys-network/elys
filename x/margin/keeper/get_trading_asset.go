@@ -5,7 +5,7 @@ import (
 )
 
 func (k Keeper) GetTradingAsset(collateralAsset string, borrowAsset string) string {
-	if collateralAsset == paramtypes.USDC {
+	if collateralAsset == paramtypes.BaseCurrency {
 		return borrowAsset
 	}
 

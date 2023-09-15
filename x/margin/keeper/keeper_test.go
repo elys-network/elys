@@ -28,7 +28,7 @@ func TestSetGetMTP(t *testing.T) {
 	for i := 0; i < 2; i++ {
 		mtp := types.MTP{
 			Address:                   addr[i].String(),
-			CollateralAssets:          []string{paramtypes.USDC},
+			CollateralAssets:          []string{paramtypes.BaseCurrency},
 			CollateralAmounts:         []sdk.Int{sdk.NewInt(0)},
 			Liabilities:               sdk.NewInt(0),
 			InterestPaidCollaterals:   []sdk.Int{sdk.NewInt(0)},
@@ -87,7 +87,7 @@ func SetupStableCoinPrices(ctx sdk.Context, oracle oraclekeeper.Keeper) {
 	// prices set for USDT and USDC
 	provider := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
 	oracle.SetAssetInfo(ctx, oracletypes.AssetInfo{
-		Denom:   ptypes.USDC,
+		Denom:   ptypes.BaseCurrency,
 		Display: "USDC",
 		Decimal: 6,
 	})

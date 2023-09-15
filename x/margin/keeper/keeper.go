@@ -147,14 +147,14 @@ func (k Keeper) Borrow(ctx sdk.Context, collateralAsset string, custodyAsset str
 	collateralAmountDec := sdk.NewDecFromBigInt(collateralAmount.BigInt())
 	liabilitiesDec := collateralAmountDec.Mul(eta)
 
-	// If collateral asset is not usdc, should calculate liability in usdc with the given out.
-	// Liability has to be in USDC
-	if collateralAsset != ptypes.USDC {
+	// If collateral asset is not base currency, should calculate liability in base currency with the given out.
+	// Liability has to be in base currency
+	if collateralAsset != ptypes.BaseCurrency {
 		// ATOM amount
 		etaAmt := liabilitiesDec.TruncateInt()
 		etaAmtToken := sdk.NewCoin(collateralAsset, etaAmt)
-		// Calculate usdc amount given atom out amount and we use it liabilty amount in usdc
-		liabilityAmt, err := k.OpenLongChecker.EstimateSwapGivenOut(ctx, etaAmtToken, ptypes.USDC, *ammPool)
+		// Calculate base currency amount given atom out amount and we use it liabilty amount in base currency
+		liabilityAmt, err := k.OpenLongChecker.EstimateSwapGivenOut(ctx, etaAmtToken, ptypes.BaseCurrency, *ammPool)
 		if err != nil {
 			return err
 		}
@@ -198,8 +198,8 @@ func (k Keeper) Borrow(ctx sdk.Context, collateralAsset string, custodyAsset str
 		return err
 	}
 
-	// All liability has to be in usdc
-	err = pool.UpdateLiabilities(ctx, ptypes.USDC, mtp.Liabilities, true)
+	// All liability has to be in base currency
+	err = pool.UpdateLiabilities(ctx, ptypes.BaseCurrency, mtp.Liabilities, true)
 	if err != nil {
 		return err
 	}
@@ -263,13 +263,13 @@ func (k Keeper) TakeInCustody(ctx sdk.Context, mtp types.MTP, pool *types.Pool) 
 func (k Keeper) IncrementalInterestPayment(ctx sdk.Context, collateralAsset string, custodyAsset string, interestPayment sdk.Int, mtp *types.MTP, pool *types.Pool, ammPool ammtypes.Pool) (sdk.Int, error) {
 	collateralIndex, custodyIndex := k.GetMTPAssetIndex(mtp, collateralAsset, custodyAsset)
 	// if mtp has unpaid interest, add to payment
-	// convert it into usdc
+	// convert it into base currency
 	if mtp.InterestUnpaidCollaterals[collateralIndex].GT(sdk.ZeroInt()) {
-		if mtp.CollateralAssets[collateralIndex] == ptypes.USDC {
+		if mtp.CollateralAssets[collateralIndex] == ptypes.BaseCurrency {
 			interestPayment = interestPayment.Add(mtp.InterestUnpaidCollaterals[collateralIndex])
 		} else {
 			unpaidCollateralIn := sdk.NewCoin(mtp.CollateralAssets[collateralIndex], mtp.InterestUnpaidCollaterals[collateralIndex])
-			C, err := k.EstimateSwapGivenOut(ctx, unpaidCollateralIn, ptypes.USDC, ammPool)
+			C, err := k.EstimateSwapGivenOut(ctx, unpaidCollateralIn, ptypes.BaseCurrency, ammPool)
 			if err != nil {
 				return sdk.ZeroInt(), err
 			}
@@ -278,17 +278,17 @@ func (k Keeper) IncrementalInterestPayment(ctx sdk.Context, collateralAsset stri
 		}
 	}
 
-	interestPaymentTokenIn := sdk.NewCoin(ptypes.USDC, interestPayment)
+	interestPaymentTokenIn := sdk.NewCoin(ptypes.BaseCurrency, interestPayment)
 	// swap interest payment to custody asset for payment
 	interestPaymentCustody, err := k.EstimateSwap(ctx, interestPaymentTokenIn, mtp.CustodyAssets[custodyIndex], ammPool)
 	if err != nil {
 		return sdk.ZeroInt(), err
 	}
 
-	// If collateralAset is not in usdc, convert it to original asset format
-	if collateralAsset != ptypes.USDC {
+	// If collateralAset is not in base currency, convert it to original asset format
+	if collateralAsset != ptypes.BaseCurrency {
 		// swap custody amount to collateral for updating interest unpaid
-		amtTokenIn := sdk.NewCoin(ptypes.USDC, interestPayment)
+		amtTokenIn := sdk.NewCoin(ptypes.BaseCurrency, interestPayment)
 		interestPayment, err = k.EstimateSwap(ctx, amtTokenIn, collateralAsset, ammPool) // may need spot price here to not deduct fee
 		if err != nil {
 			return sdk.ZeroInt(), err
@@ -416,11 +416,11 @@ func (k Keeper) CheckMinLiabilities(ctx sdk.Context, collateralAmount sdk.Coin, 
 	liabilitiesDec := collateralAmountDec.Mul(eta)
 	liabilities := sdk.NewUint(liabilitiesDec.TruncateInt().Uint64())
 
-	// In Long position, liabilty has to be always in USDC
-	if collateralAmount.Denom != ptypes.USDC {
+	// In Long position, liabilty has to be always in base currency
+	if collateralAmount.Denom != ptypes.BaseCurrency {
 		outAmt := liabilitiesDec.TruncateInt()
 		outAmtToken := sdk.NewCoin(collateralAmount.Denom, outAmt)
-		inAmt, err := k.OpenLongChecker.EstimateSwapGivenOut(ctx, outAmtToken, ptypes.USDC, ammPool)
+		inAmt, err := k.OpenLongChecker.EstimateSwapGivenOut(ctx, outAmtToken, ptypes.BaseCurrency, ammPool)
 		if err != nil {
 			return types.ErrBorrowTooLow
 		}
@@ -437,9 +437,9 @@ func (k Keeper) CheckMinLiabilities(ctx sdk.Context, collateralAmount sdk.Coin, 
 		return types.ErrBorrowTooLow
 	}
 
-	// If collateral is not usdc, custody amount is already checked in HasSufficientBalance function.
+	// If collateral is not base currency, custody amount is already checked in HasSufficientBalance function.
 	// its liability balance checked in the above if statement, so return
-	if collateralAmount.Denom != ptypes.USDC {
+	if collateralAmount.Denom != ptypes.BaseCurrency {
 		return nil
 	}
 

@@ -6,22 +6,22 @@ import (
 )
 
 func (k Keeper) ProcessOpenShort(ctx sdk.Context, mtp *types.MTP, leverage sdk.Dec, eta sdk.Dec, collateralAmountDec sdk.Dec, poolId uint64, msg *types.MsgOpen) (*types.MTP, error) {
-	// // Determine the non-native asset (i.e., not USDC).
-	// nonNativeAsset := k.OpenShortChecker.GetTradingAsset(msg.CollateralAsset, msg.BorrowAsset)
+	// // Determine the trading asset.
+	// tradingAsset := k.OpenShortChecker.GetTradingAsset(msg.CollateralAsset, msg.BorrowAsset)
 
 	// // Fetch the pool associated with the given pool ID.
 	// pool, found := k.OpenShortChecker.GetPool(ctx, poolId)
 	// if !found {
-	// 	return nil, sdkerrors.Wrap(types.ErrPoolDoesNotExist, nonNativeAsset)
+	// 	return nil, sdkerrors.Wrap(types.ErrPoolDoesNotExist, tradingAsset)
 	// }
 
 	// // Check if the pool is enabled.
 	// if !k.OpenShortChecker.IsPoolEnabled(ctx, poolId) {
-	// 	return nil, sdkerrors.Wrap(types.ErrMTPDisabled, nonNativeAsset)
+	// 	return nil, sdkerrors.Wrap(types.ErrMTPDisabled, tradingAsset)
 	// }
 
 	// // Fetch the corresponding AMM (Automated Market Maker) pool.
-	// ammPool, err := k.OpenShortChecker.GetAmmPool(ctx, poolId, nonNativeAsset)
+	// ammPool, err := k.OpenShortChecker.GetAmmPool(ctx, poolId, tradingAsset)
 	// if err != nil {
 	// 	return nil, err
 	// }
@@ -32,8 +32,8 @@ func (k Keeper) ProcessOpenShort(ctx sdk.Context, mtp *types.MTP, leverage sdk.D
 	// // Borrow the asset the user wants to short.
 	// // ... (Logic to borrow the asset; error handling) ...
 
-	// // Swap the borrowed asset for USDC.
-	// swappedAmount, err := k.OpenShortChecker.EstimateSwap(ctx, leveragedAmount, ptypes.USDC, ammPool)
+	// // Swap the borrowed asset for base currency.
+	// swappedAmount, err := k.OpenShortChecker.EstimateSwap(ctx, leveragedAmount, ptypes.BaseCurrency, ammPool)
 	// if err != nil {
 	// 	return nil, err
 	// }

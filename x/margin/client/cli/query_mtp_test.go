@@ -37,7 +37,7 @@ func networkWithMTPObjects(t *testing.T, n int) (*network.Network, []*types.MTP)
 	for i := 0; i < n; i++ {
 		mtp := types.MTP{
 			Address:                   addr[i].String(),
-			CollateralAssets:          []string{paramtypes.USDC},
+			CollateralAssets:          []string{paramtypes.BaseCurrency},
 			CollateralAmounts:         []sdk.Int{sdk.NewInt(0)},
 			Liabilities:               sdk.NewInt(0),
 			InterestPaidCollaterals:   []sdk.Int{sdk.NewInt(0)},

@@ -18,10 +18,10 @@ func (k Keeper) UpdateMTPHealth(ctx sdk.Context, mtp types.MTP, ammPool ammtypes
 		if mtp.InterestUnpaidCollaterals[i].GT(sdk.ZeroInt()) {
 			unpaidCollaterals := sdk.NewCoin(mtp.CollateralAssets[i], mtp.InterestUnpaidCollaterals[i])
 
-			if mtp.CollateralAssets[i] == ptypes.USDC {
+			if mtp.CollateralAssets[i] == ptypes.BaseCurrency {
 				xl = xl.Add(mtp.InterestUnpaidCollaterals[i])
 			} else {
-				C, err := k.EstimateSwapGivenOut(ctx, unpaidCollaterals, ptypes.USDC, ammPool)
+				C, err := k.EstimateSwapGivenOut(ctx, unpaidCollaterals, ptypes.BaseCurrency, ammPool)
 				if err != nil {
 					return sdk.ZeroDec(), err
 				}
@@ -31,18 +31,18 @@ func (k Keeper) UpdateMTPHealth(ctx sdk.Context, mtp types.MTP, ammPool ammtypes
 		}
 	}
 
-	custodyAmtInUSDC := sdk.ZeroInt()
+	custodyAmtInBaseCurrency := sdk.ZeroInt()
 	for i := range mtp.CustodyAssets {
 		custodyTokenIn := sdk.NewCoin(mtp.CustodyAssets[i], mtp.CustodyAmounts[i])
-		// All liabilty is in usdc
-		C, err := k.EstimateSwapGivenOut(ctx, custodyTokenIn, ptypes.USDC, ammPool)
+		// All liabilty is in base currency
+		C, err := k.EstimateSwapGivenOut(ctx, custodyTokenIn, ptypes.BaseCurrency, ammPool)
 		if err != nil {
 			return sdk.ZeroDec(), err
 		}
-		custodyAmtInUSDC = custodyAmtInUSDC.Add(C)
+		custodyAmtInBaseCurrency = custodyAmtInBaseCurrency.Add(C)
 	}
 
-	lr := sdk.NewDecFromBigInt(custodyAmtInUSDC.BigInt()).Quo(sdk.NewDecFromBigInt(xl.BigInt()))
+	lr := sdk.NewDecFromBigInt(custodyAmtInBaseCurrency.BigInt()).Quo(sdk.NewDecFromBigInt(xl.BigInt()))
 
 	return lr, nil
 }
