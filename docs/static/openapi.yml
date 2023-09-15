@@ -77678,6 +77678,15 @@ definitions:
           signatures required by gogoproto.
       weight:
         type: string
+  elys.amm.AssetAmountDepth:
+    type: object
+    properties:
+      asset:
+        type: string
+      amount:
+        type: string
+      depth:
+        type: string
   elys.amm.DenomLiquidity:
     type: object
     properties:
@@ -77691,22 +77700,17 @@ definitions:
       poolId:
         type: string
         format: uint64
-      amounts:
+      amountDepthInfo:
         type: array
         items:
           type: object
           properties:
-            denom:
+            asset:
               type: string
             amount:
               type: string
-          description: |-
-            DecCoin defines a token with a denomination and a decimal amount.
-
-            NOTE: The amount field is an Dec which implements the custom method
-            signatures required by gogoproto.
-      depth:
-        type: string
+            depth:
+              type: string
     description: >-
       ExternalLiquidity defines price, volume, and time information for an
       exchange rate.
@@ -78685,6 +78689,18 @@ definitions:
     description: |-
       QueryEpochsInfoResponse is the response type for the Query/EpochInfos RPC
       method.
+  cosmos.base.v1beta1.DecCoin:
+    type: object
+    properties:
+      denom:
+        type: string
+      amount:
+        type: string
+    description: |-
+      DecCoin defines a token with a denomination and a decimal amount.
+
+      NOTE: The amount field is an Dec which implements the custom method
+      signatures required by gogoproto.
   elys.incentive.IncentiveInfo:
     type: object
     properties:
