@@ -198,6 +198,50 @@ func (_c *OpenChecker_CheckSamePosition_Call) RunAndReturn(run func(types.Contex
 	return _c
 }
 
+// CheckShortAssets provides a mock function with given fields: ctx, collateralAsset, borrowAsset
+func (_m *OpenChecker) CheckShortAssets(ctx types.Context, collateralAsset string, borrowAsset string) error {
+	ret := _m.Called(ctx, collateralAsset, borrowAsset)
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(types.Context, string, string) error); ok {
+		r0 = rf(ctx, collateralAsset, borrowAsset)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// OpenChecker_CheckShortAssets_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'CheckShortAssets'
+type OpenChecker_CheckShortAssets_Call struct {
+	*mock.Call
+}
+
+// CheckShortAssets is a helper method to define mock.On call
+//   - ctx types.Context
+//   - collateralAsset string
+//   - borrowAsset string
+func (_e *OpenChecker_Expecter) CheckShortAssets(ctx interface{}, collateralAsset interface{}, borrowAsset interface{}) *OpenChecker_CheckShortAssets_Call {
+	return &OpenChecker_CheckShortAssets_Call{Call: _e.mock.On("CheckShortAssets", ctx, collateralAsset, borrowAsset)}
+}
+
+func (_c *OpenChecker_CheckShortAssets_Call) Run(run func(ctx types.Context, collateralAsset string, borrowAsset string)) *OpenChecker_CheckShortAssets_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(types.Context), args[1].(string), args[2].(string))
+	})
+	return _c
+}
+
+func (_c *OpenChecker_CheckShortAssets_Call) Return(_a0 error) *OpenChecker_CheckShortAssets_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *OpenChecker_CheckShortAssets_Call) RunAndReturn(run func(types.Context, string, string) error) *OpenChecker_CheckShortAssets_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // CheckUserAuthorization provides a mock function with given fields: ctx, msg
 func (_m *OpenChecker) CheckUserAuthorization(ctx types.Context, msg *margintypes.MsgOpen) error {
 	ret := _m.Called(ctx, msg)
