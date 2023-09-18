@@ -63,7 +63,7 @@ type OpenLongChecker interface {
 	GetSafetyFactor(ctx sdk.Context) sdk.Dec
 	SetPool(ctx sdk.Context, pool Pool)
 	GetAmmPoolBalance(ctx sdk.Context, ammPool ammtypes.Pool, assetDenom string) (sdk.Int, error)
-	CheckLongingAssets(ctx sdk.Context, collateralAsset string, borrowAsset string) error
+	CheckLongAssets(ctx sdk.Context, collateralAsset string, borrowAsset string) error
 	CheckSamePosition(ctx sdk.Context, msg *MsgOpen) *MTP
 	SetMTP(ctx sdk.Context, mtp *MTP) error
 	CalcMTPConsolidateCollateral(ctx sdk.Context, mtp *MTP) error
