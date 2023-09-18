@@ -24,8 +24,8 @@ func (_m *OpenChecker) EXPECT() *OpenChecker_Expecter {
 	return &OpenChecker_Expecter{mock: &_m.Mock}
 }
 
-// CheckLongingAssets provides a mock function with given fields: ctx, collateralAsset, borrowAsset
-func (_m *OpenChecker) CheckLongingAssets(ctx types.Context, collateralAsset string, borrowAsset string) error {
+// CheckLongAssets provides a mock function with given fields: ctx, collateralAsset, borrowAsset
+func (_m *OpenChecker) CheckLongAssets(ctx types.Context, collateralAsset string, borrowAsset string) error {
 	ret := _m.Called(ctx, collateralAsset, borrowAsset)
 
 	var r0 error
@@ -38,32 +38,32 @@ func (_m *OpenChecker) CheckLongingAssets(ctx types.Context, collateralAsset str
 	return r0
 }
 
-// OpenChecker_CheckLongingAssets_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'CheckLongingAssets'
-type OpenChecker_CheckLongingAssets_Call struct {
+// OpenChecker_CheckLongAssets_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'CheckLongAssets'
+type OpenChecker_CheckLongAssets_Call struct {
 	*mock.Call
 }
 
-// CheckLongingAssets is a helper method to define mock.On call
+// CheckLongAssets is a helper method to define mock.On call
 //   - ctx types.Context
 //   - collateralAsset string
 //   - borrowAsset string
-func (_e *OpenChecker_Expecter) CheckLongingAssets(ctx interface{}, collateralAsset interface{}, borrowAsset interface{}) *OpenChecker_CheckLongingAssets_Call {
-	return &OpenChecker_CheckLongingAssets_Call{Call: _e.mock.On("CheckLongingAssets", ctx, collateralAsset, borrowAsset)}
+func (_e *OpenChecker_Expecter) CheckLongAssets(ctx interface{}, collateralAsset interface{}, borrowAsset interface{}) *OpenChecker_CheckLongAssets_Call {
+	return &OpenChecker_CheckLongAssets_Call{Call: _e.mock.On("CheckLongAssets", ctx, collateralAsset, borrowAsset)}
 }
 
-func (_c *OpenChecker_CheckLongingAssets_Call) Run(run func(ctx types.Context, collateralAsset string, borrowAsset string)) *OpenChecker_CheckLongingAssets_Call {
+func (_c *OpenChecker_CheckLongAssets_Call) Run(run func(ctx types.Context, collateralAsset string, borrowAsset string)) *OpenChecker_CheckLongAssets_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		run(args[0].(types.Context), args[1].(string), args[2].(string))
 	})
 	return _c
 }
 
-func (_c *OpenChecker_CheckLongingAssets_Call) Return(_a0 error) *OpenChecker_CheckLongingAssets_Call {
+func (_c *OpenChecker_CheckLongAssets_Call) Return(_a0 error) *OpenChecker_CheckLongAssets_Call {
 	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *OpenChecker_CheckLongingAssets_Call) RunAndReturn(run func(types.Context, string, string) error) *OpenChecker_CheckLongingAssets_Call {
+func (_c *OpenChecker_CheckLongAssets_Call) RunAndReturn(run func(types.Context, string, string) error) *OpenChecker_CheckLongAssets_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -194,6 +194,50 @@ func (_c *OpenChecker_CheckSamePosition_Call) Return(_a0 *margintypes.MTP) *Open
 }
 
 func (_c *OpenChecker_CheckSamePosition_Call) RunAndReturn(run func(types.Context, *margintypes.MsgOpen) *margintypes.MTP) *OpenChecker_CheckSamePosition_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// CheckShortAssets provides a mock function with given fields: ctx, collateralAsset, borrowAsset
+func (_m *OpenChecker) CheckShortAssets(ctx types.Context, collateralAsset string, borrowAsset string) error {
+	ret := _m.Called(ctx, collateralAsset, borrowAsset)
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(types.Context, string, string) error); ok {
+		r0 = rf(ctx, collateralAsset, borrowAsset)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// OpenChecker_CheckShortAssets_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'CheckShortAssets'
+type OpenChecker_CheckShortAssets_Call struct {
+	*mock.Call
+}
+
+// CheckShortAssets is a helper method to define mock.On call
+//   - ctx types.Context
+//   - collateralAsset string
+//   - borrowAsset string
+func (_e *OpenChecker_Expecter) CheckShortAssets(ctx interface{}, collateralAsset interface{}, borrowAsset interface{}) *OpenChecker_CheckShortAssets_Call {
+	return &OpenChecker_CheckShortAssets_Call{Call: _e.mock.On("CheckShortAssets", ctx, collateralAsset, borrowAsset)}
+}
+
+func (_c *OpenChecker_CheckShortAssets_Call) Run(run func(ctx types.Context, collateralAsset string, borrowAsset string)) *OpenChecker_CheckShortAssets_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(types.Context), args[1].(string), args[2].(string))
+	})
+	return _c
+}
+
+func (_c *OpenChecker_CheckShortAssets_Call) Return(_a0 error) *OpenChecker_CheckShortAssets_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *OpenChecker_CheckShortAssets_Call) RunAndReturn(run func(types.Context, string, string) error) *OpenChecker_CheckShortAssets_Call {
 	_c.Call.Return(run)
 	return _c
 }

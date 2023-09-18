@@ -25,10 +25,10 @@ func TestCheckLongAssets_InvalidAssets(t *testing.T) {
 
 	ctx := sdk.Context{} // mock or setup a context
 
-	err := k.CheckLongingAssets(ctx, ptypes.BaseCurrency, ptypes.BaseCurrency)
+	err := k.CheckLongAssets(ctx, ptypes.BaseCurrency, ptypes.BaseCurrency)
 	assert.True(t, errors.Is(err, sdkerrors.Wrap(types.ErrInvalidBorrowingAsset, "invalid borrowing asset")))
 
-	err = k.CheckLongingAssets(ctx, ptypes.ATOM, ptypes.BaseCurrency)
+	err = k.CheckLongAssets(ctx, ptypes.ATOM, ptypes.BaseCurrency)
 	assert.True(t, errors.Is(err, sdkerrors.Wrap(types.ErrInvalidBorrowingAsset, "invalid borrowing asset")))
 
 	// Expect no error
@@ -46,10 +46,10 @@ func TestCheckLongAssets_ValidAssets(t *testing.T) {
 
 	ctx := sdk.Context{} // mock or setup a context
 
-	err := k.CheckLongingAssets(ctx, ptypes.BaseCurrency, ptypes.ATOM)
+	err := k.CheckLongAssets(ctx, ptypes.BaseCurrency, ptypes.ATOM)
 	assert.Nil(t, err)
 
-	err = k.CheckLongingAssets(ctx, ptypes.ATOM, ptypes.ATOM)
+	err = k.CheckLongAssets(ctx, ptypes.ATOM, ptypes.ATOM)
 	assert.Nil(t, err)
 
 	// Expect an error about max open positions
