@@ -25,6 +25,8 @@ type CommitmentKeeper interface {
 	ProcessWithdrawValidatorCommission(sdk.Context, string, string, string, sdk.Int) error
 	// Withdraw tokens - only USDC
 	ProcessWithdrawUSDC(ctx sdk.Context, creator string, denom string, amount sdk.Int) error
+	// Deduct commitments
+	DeductCommitments(ctx sdk.Context, creator string, denom string, amount sdk.Int) (ctypes.Commitments, error)
 }
 
 // Staking keeper
