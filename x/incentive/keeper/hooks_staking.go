@@ -26,11 +26,11 @@ func (k Keeper) AfterDelegationModified(ctx sdk.Context, delAddr sdk.AccAddress,
 }
 
 func (k Keeper) BeforeDelegationRemoved(ctx sdk.Context, delAddr sdk.AccAddress, valAddr sdk.ValAddress) error {
-	return k.BurnEdenBFromElysUnstaking(ctx, delAddr)
+	return nil
 }
 
 func (k Keeper) BeforeDelegationSharesModified(ctx sdk.Context, delAddr sdk.AccAddress, valAddr sdk.ValAddress) error {
-	return k.BurnEdenBFromElysUnstaking(ctx, delAddr)
+	return nil
 }
 
 // ________________________________________________________________________________________

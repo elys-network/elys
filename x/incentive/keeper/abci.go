@@ -29,6 +29,12 @@ import (
 // EndBlocker of incentive module
 func (k Keeper) EndBlocker(ctx sdk.Context) {
 	defer telemetry.ModuleMeasureSince(types.ModuleName, time.Now(), telemetry.MetricKeyEndBlocker)
+	params := k.GetParams(ctx)
+	// Update Elys staked amount every n blocks
+	if params.ElysStakeTrackingRate == 0 || ctx.BlockHeight()%params.ElysStakeTrackingRate != 0 {
+		return
+	}
+
 	// Track the amount of Elys staked
 	k.cmk.IterateCommitments(
 		ctx, func(commitments ctypes.Commitments) bool {

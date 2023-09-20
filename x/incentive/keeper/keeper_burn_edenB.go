@@ -2,7 +2,6 @@ package keeper
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
 
@@ -11,20 +10,23 @@ func (k Keeper) BurnEdenBFromElysUnstaking(ctx sdk.Context, delegator sdk.AccAdd
 	delAddr := delegator.String()
 	// Get commitments
 	commitments, found := k.cmk.GetCommitments(ctx, delAddr)
+	// should return nil otherwise it will break staking module
 	if !found {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid address %s", delegator.String())
+		return nil
 	}
 
 	// Get previous amount
 	prevElysStaked, found := k.GetElysStaked(ctx, delAddr)
+	// should return nil otherwise it will break staking module
 	if !found {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid address %s", delegator.String())
+		return nil
 	}
 
 	// Calculate current delegated amount of delegator
 	delegatedAmt := k.CalculateDelegatedAmount(ctx, delAddr)
 
 	// If not unstaked,
+	// should return nil otherwise it will break staking module
 	if delegatedAmt.GTE(prevElysStaked.Amount) {
 		return nil
 	}
@@ -41,10 +43,15 @@ func (k Keeper) BurnEdenBFromElysUnstaking(ctx sdk.Context, delegator sdk.AccAdd
 	// Unstaked
 	unstakedElys := prevElysStaked.Amount.Sub(delegatedAmt)
 
-	edenBToBurn := unstakedElys.Quo(edenCommitted.Add(prevElysStaked.Amount)).Mul(totalEdenB)
+	unstakedElysDec := sdk.NewDecFromInt(unstakedElys)
+	edenCommittedAndElysStakedDec := sdk.NewDecFromInt(edenCommitted.Add(prevElysStaked.Amount))
+	totalEdenBDec := sdk.NewDecFromInt(totalEdenB)
+	edenBToBurn := unstakedElysDec.Quo(edenCommittedAndElysStakedDec).Mul(totalEdenBDec)
 
 	// Burn EdenB ( Deduction EdenB in commitment module)
-	_, err := k.cmk.DeductCommitments(ctx, delAddr, ptypes.EdenB, edenBToBurn)
+	commitment, err := k.cmk.DeductCommitments(ctx, delAddr, ptypes.EdenB, edenBToBurn.TruncateInt())
+	k.cmk.SetCommitments(ctx, commitment)
+
 	return err
 }
 
@@ -53,12 +60,13 @@ func (k Keeper) BurnEdenBFromEdenUncommitted(ctx sdk.Context, delegator string, 
 	// Get elys staked amount
 	elysStaked, found := k.GetElysStaked(ctx, delegator)
 	if !found {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid address %s", delegator)
+		return nil
 	}
 
 	commitments, found := k.cmk.GetCommitments(ctx, delegator)
+	// should return nil otherwise it will break commitment module
 	if !found {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid address %s", delegator)
+		return nil
 	}
 
 	edenCommitted := commitments.GetCommittedAmountForDenom(ptypes.Eden)
@@ -70,9 +78,15 @@ func (k Keeper) BurnEdenBFromEdenUncommitted(ctx sdk.Context, delegator string, 
 	// Total EdenB amount
 	totalEdenB := edenBCommitted.Add(edenBUncommitted)
 
-	edenBToBurn := uncommittedAmt.Quo(edenCommitted.Add(elysStaked.Amount)).Mul(totalEdenB)
+	uncommittedAmtDec := sdk.NewDecFromInt(uncommittedAmt)
+	edenCommittedAndElysStakedDec := sdk.NewDecFromInt(edenCommitted.Add(elysStaked.Amount))
+	totalEdenBDec := sdk.NewDecFromInt(totalEdenB)
+
+	edenBToBurn := uncommittedAmtDec.Quo(edenCommittedAndElysStakedDec).Mul(totalEdenBDec)
 
 	// Burn EdenB ( Deduction EdenB in commitment module)
-	_, err := k.cmk.DeductCommitments(ctx, delegator, ptypes.EdenB, edenBToBurn)
+	commitment, err := k.cmk.DeductCommitments(ctx, delegator, ptypes.EdenB, edenBToBurn.TruncateInt())
+	k.cmk.SetCommitments(ctx, commitment)
+
 	return err
 }

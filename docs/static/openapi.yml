@@ -38979,6 +38979,9 @@ paths:
                     title: |-
                       Pool information
                       poolId, reward wallet, mulitplier
+                  elys_stake_tracking_rate:
+                    type: string
+                    format: int64
             description: >-
               QueryParamsResponse is response type for the Query/Params RPC
               method.
@@ -78818,6 +78821,9 @@ definitions:
         title: |-
           Pool information
           poolId, reward wallet, mulitplier
+      elys_stake_tracking_rate:
+        type: string
+        format: int64
     description: Params defines the parameters for the module.
   elys.incentive.PoolInfo:
     type: object
@@ -78938,6 +78944,9 @@ definitions:
             title: |-
               Pool information
               poolId, reward wallet, mulitplier
+          elys_stake_tracking_rate:
+            type: string
+            format: int64
     description: QueryParamsResponse is response type for the Query/Params RPC method.
   elys.liquidityprovider.Params:
     type: object

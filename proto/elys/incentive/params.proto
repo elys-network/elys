@@ -28,4 +28,6 @@ message Params {
   // Pool information
   // poolId, reward wallet, mulitplier
 	repeated PoolInfo pool_infos = 6 [(gogoproto.nullable) = false];
+
+	int64 elys_stake_tracking_rate = 7;
 }
