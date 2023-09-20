@@ -39,7 +39,7 @@ func (k Keeper) ProcessOpenLong(ctx sdk.Context, mtp *types.MTP, leverage sdk.De
 			return nil, err
 		}
 		if !k.OpenLongChecker.HasSufficientPoolBalance(ctx, ammPool, ptypes.BaseCurrency, borrowingAmount) {
-			return nil, sdkerrors.Wrap(types.ErrBorrowTooHigh, leveragedAmount.String())
+			return nil, sdkerrors.Wrap(types.ErrBorrowTooHigh, borrowingAmount.String())
 		}
 	} else {
 		if !k.OpenLongChecker.HasSufficientPoolBalance(ctx, ammPool, msg.CollateralAsset, leveragedAmount) {
