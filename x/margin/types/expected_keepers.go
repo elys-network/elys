@@ -90,6 +90,9 @@ type OpenShortChecker interface {
 	GetAmmPoolBalance(ctx sdk.Context, ammPool ammtypes.Pool, assetDenom string) (sdk.Int, error)
 	CheckShortAssets(ctx sdk.Context, collateralAsset string, borrowAsset string) error
 	CheckSamePosition(ctx sdk.Context, msg *MsgOpen) *MTP
+	SetMTP(ctx sdk.Context, mtp *MTP) error
+	CalcMTPConsolidateCollateral(ctx sdk.Context, mtp *MTP) error
+	CalcMTPConsolidateLiability(ctx sdk.Context, mtp *MTP)
 }
 
 //go:generate mockery --srcpkg . --name CloseLongChecker --structname CloseLongChecker --filename close_long_checker.go --with-expecter
