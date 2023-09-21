@@ -140,7 +140,21 @@ func (k Keeper) UpdateUncommittedTokens(ctx sdk.Context, epochIdentifier string,
 
 			// Calculate new uncommitted Eden tokens from Eden & Eden boost committed, Dex rewards distribution
 			// Distribute gas fees to stakers
-			newUncommittedEdenTokens, dexRewards, dexRewardsByStakers := k.CalculateRewardsForStakers(ctx, delegatedAmt, commitments, edenAmountPerEpochStakers, dexRevenueStakersAmt)
+
+			// Calculate new uncommitted Eden tokens from Elys staked
+			newUncommittedEdenTokens, dexRewards, dexRewardsByStakers := k.CalculateRewardsForStakersByElysStaked(ctx, delegatedAmt, edenAmountPerEpochStakers, dexRevenueStakersAmt)
+			totalEdenGiven = totalEdenGiven.Add(newUncommittedEdenTokens)
+			totalRewardsGiven = totalRewardsGiven.Add(dexRewards)
+
+			// Calculate new uncommitted Eden tokens from Eden committed
+			edenCommitted := commitments.GetCommittedAmountForDenom(ptypes.Eden)
+			newUncommittedEdenTokens, dexRewards = k.CalculateRewardsForStakersByCommitted(ctx, edenCommitted, edenAmountPerEpochStakers, dexRevenueStakersAmt)
+			totalEdenGiven = totalEdenGiven.Add(newUncommittedEdenTokens)
+			totalRewardsGiven = totalRewardsGiven.Add(dexRewards)
+
+			// Calculate new uncommitted Eden tokens from Eden Boost committed
+			edenBoostCommitted := commitments.GetCommittedAmountForDenom(ptypes.EdenB)
+			newUncommittedEdenTokens, dexRewards = k.CalculateRewardsForStakersByCommitted(ctx, edenBoostCommitted, edenAmountPerEpochStakers, dexRevenueStakersAmt)
 			totalEdenGiven = totalEdenGiven.Add(newUncommittedEdenTokens)
 			totalRewardsGiven = totalRewardsGiven.Add(dexRewards)
 

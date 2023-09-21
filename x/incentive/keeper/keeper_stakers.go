@@ -7,16 +7,10 @@ import (
 )
 
 // Calculate new Eden token amounts based on the given conditions and user's current uncommitted token balance
-func (k Keeper) CalculateRewardsForStakers(ctx sdk.Context, delegatedAmt sdk.Int, commitments ctypes.Commitments, edenAmountPerEpoch sdk.Int, dexRevenueAmtForStakers sdk.Dec) (sdk.Int, sdk.Int, sdk.Dec) {
-	// -----------Eden & Eden boost calculation ---------------------
+func (k Keeper) CalculateRewardsForStakersByElysStaked(ctx sdk.Context, delegatedAmt sdk.Int, edenAmountPerEpoch sdk.Int, dexRevenueAmtForStakers sdk.Dec) (sdk.Int, sdk.Int, sdk.Dec) {
+	// -----------Eden calculation ---------------------
 	// --------------------------------------------------------------
-	// Get eden commitments and eden boost commitments
-	edenCommitted := commitments.GetCommittedAmountForDenom(ptypes.Eden)
-	edenBoostCommitted := commitments.GetCommittedAmountForDenom(ptypes.EdenB)
-
-	// compute eden reward based on above and param factors for each
-	totalEdenCommittedByStake := delegatedAmt.Add(edenCommitted).Add(edenBoostCommitted)
-	stakeShare := k.CalculateTotalShareOfStaking(totalEdenCommittedByStake)
+	stakeShare := k.CalculateTotalShareOfStaking(delegatedAmt)
 
 	// Calculate newly creating eden amount by its share
 	newEdenAllocated := stakeShare.MulInt(edenAmountPerEpoch)
@@ -39,6 +33,31 @@ func (k Keeper) CalculateRewardsForStakers(ctx sdk.Context, delegatedAmt sdk.Int
 	dexRewardsByStakeOnly := stakeShareByStakeOnly.Mul(dexRevenueAmtForStakers)
 
 	return newEdenAllocated.TruncateInt(), dexRewards, dexRewardsByStakeOnly
+}
+
+// Calculate new Eden token amounts based on the given conditions and user's current uncommitted token balance
+func (k Keeper) CalculateRewardsForStakersByCommitted(ctx sdk.Context, amt sdk.Int, edenAmountPerEpoch sdk.Int, dexRevenueAmtForStakers sdk.Dec) (sdk.Int, sdk.Int) {
+	// -----------Eden calculation ---------------------
+	// --------------------------------------------------------------
+	stakeShare := k.CalculateTotalShareOfStaking(amt)
+
+	// Calculate newly creating eden amount by its share
+	newEdenAllocated := stakeShare.MulInt(edenAmountPerEpoch)
+
+	// -----------------Fund community Eden token----------------------
+	// ----------------------------------------------------------------
+	edenCoin := sdk.NewDecCoinFromDec(ptypes.Eden, newEdenAllocated)
+	newEdenCoinRemained := k.UpdateCommunityPool(ctx, sdk.DecCoins{edenCoin})
+
+	// Get remained Eden amount
+	newEdenAllocated = newEdenCoinRemained.AmountOf(ptypes.Eden)
+
+	// --------------------DEX rewards calculation --------------------
+	// ----------------------------------------------------------------
+	// Calculate dex rewards
+	dexRewards := stakeShare.Mul(dexRevenueAmtForStakers).TruncateInt()
+
+	return newEdenAllocated.TruncateInt(), dexRewards
 }
 
 // Calculate new Eden-Boost token amounts based on the given conditions and user's current uncommitted token balance
