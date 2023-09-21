@@ -12,6 +12,8 @@ const (
 
 	// MemStoreKey defines the in-memory store key
 	MemStoreKey = "mem_incentive"
+
+	ElysStakedKeyPrefix = "ElysStaked/value/"
 )
 
 func KeyPrefix(p string) []byte {
@@ -21,3 +23,16 @@ func KeyPrefix(p string) []byte {
 var (
 	FeePoolKey = []byte{0x00} // key for global distribution state
 )
+
+// ElysStakedKey returns the store key to retrieve a ElysStaked from the address fields
+func ElysStakedKey(
+	address string,
+) []byte {
+	var key []byte
+
+	addressBytes := []byte(address)
+	key = append(key, addressBytes...)
+	key = append(key, []byte("/")...)
+
+	return key
+}

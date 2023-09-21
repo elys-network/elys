@@ -101,12 +101,28 @@ func TestCalculateRewardsForStakers(t *testing.T) {
 	// Recalculate total committed info
 	ik.UpdateTotalCommitmentInfo(ctx)
 
+	totalEdenGiven := sdk.ZeroInt()
+	totalRewardsGiven := sdk.ZeroInt()
+
 	dexRevenueStakersAmt := sdk.NewDec(100000)
 	edenAmountPerEpochStakers := sdk.NewInt(100000)
 	// Calculate delegated amount per delegator
 	delegatedAmt := sdk.NewInt(1000)
-	// Calculate new uncommitted Eden tokens from Eden & Eden boost committed, Dex rewards distribution
-	newUncommittedEdenTokens, dexRewards, _ := ik.CalculateRewardsForStakers(ctx, delegatedAmt, commitment, edenAmountPerEpochStakers, dexRevenueStakersAmt)
-	require.Equal(t, newUncommittedEdenTokens, sdk.NewInt(292))
-	require.Equal(t, dexRewards, sdk.NewInt(298))
+	// Calculate new uncommitted Eden tokens from Elys staked Eden & Eden boost committed, Dex rewards distribution
+	newUncommittedEdenTokens, dexRewards, _ := ik.CalculateRewardsForStakersByElysStaked(ctx, delegatedAmt, edenAmountPerEpochStakers, dexRevenueStakersAmt)
+	totalEdenGiven = totalEdenGiven.Add(newUncommittedEdenTokens)
+	totalRewardsGiven = totalRewardsGiven.Add(dexRewards)
+
+	// Calculate new uncommitted Eden tokens from Eden committed, Dex rewards distribution
+	newUncommittedEdenTokens, dexRewards = ik.CalculateRewardsForStakersByCommitted(ctx, delegatedAmt, edenAmountPerEpochStakers, dexRevenueStakersAmt)
+	totalEdenGiven = totalEdenGiven.Add(newUncommittedEdenTokens)
+	totalRewardsGiven = totalRewardsGiven.Add(dexRewards)
+
+	// Calculate new uncommitted Eden tokens from Eden boost committed, Dex rewards distribution
+	newUncommittedEdenTokens, dexRewards = ik.CalculateRewardsForStakersByCommitted(ctx, delegatedAmt, edenAmountPerEpochStakers, dexRevenueStakersAmt)
+	totalEdenGiven = totalEdenGiven.Add(newUncommittedEdenTokens)
+	totalRewardsGiven = totalRewardsGiven.Add(dexRewards)
+
+	require.Equal(t, totalEdenGiven, sdk.NewInt(291))
+	require.Equal(t, totalRewardsGiven, sdk.NewInt(297))
 }

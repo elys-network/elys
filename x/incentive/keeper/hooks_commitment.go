@@ -9,6 +9,11 @@ import (
 func (k Keeper) CommitmentChanged(ctx sdk.Context, creator string, amount sdk.Coin) {
 }
 
+// Process eden uncommitted hook
+func (k Keeper) EdenUncommitted(ctx sdk.Context, creator string, amount sdk.Coin) {
+	k.BurnEdenBFromEdenUncommitted(ctx, creator, amount.Amount)
+}
+
 // ___________________________________________________________________________________________________
 
 // Hooks wrapper struct for incentive keeper
@@ -26,4 +31,9 @@ func (k Keeper) CommitmentHooks() CommitmentHooks {
 // CommitmentChanged implements CommentmentHook
 func (h CommitmentHooks) CommitmentChanged(ctx sdk.Context, creator string, amount sdk.Coin) {
 	h.k.CommitmentChanged(ctx, creator, amount)
+}
+
+// EdenUncommitted implements EdenUncommitted
+func (h CommitmentHooks) EdenUncommitted(ctx sdk.Context, creator string, amount sdk.Coin) {
+	h.k.EdenUncommitted(ctx, creator, amount)
 }

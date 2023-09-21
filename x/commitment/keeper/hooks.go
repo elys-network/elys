@@ -21,10 +21,25 @@ func (mh MultiCommitmentHooks) CommitmentChanged(ctx sdk.Context, creator string
 	}
 }
 
+// Committed is called when staker committed his token
+func (mh MultiCommitmentHooks) EdenUncommitted(ctx sdk.Context, creator string, amount sdk.Coin) {
+	for i := range mh {
+		mh[i].EdenUncommitted(ctx, creator, amount)
+	}
+}
+
 // Committed executes the indicated for committed hook
 func (k Keeper) AfterCommitmentChange(ctx sdk.Context, creator string, amount sdk.Coin) {
 	if k.hooks == nil {
 		return
 	}
 	k.hooks.CommitmentChanged(ctx, creator, amount)
+}
+
+// Committed executes the indicated for committed hook
+func (k Keeper) EdenUncommitted(ctx sdk.Context, creator string, amount sdk.Coin) {
+	if k.hooks == nil {
+		return
+	}
+	k.hooks.EdenUncommitted(ctx, creator, amount)
 }

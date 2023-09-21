@@ -238,6 +238,7 @@ genesis:
         withdraw_addr_enabled: true
         reward_portion_for_lps: "0.65"
         pool_infos: []
+        elys_stake_tracking_rate: "10"
       fee_pool:
         community_pool:
           - amount: "0"

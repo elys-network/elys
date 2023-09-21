@@ -25,7 +25,6 @@ service Query {
     option (google.api.http).get = "/elys-network/elys/incentive/community_pool";
   
   }
-  
 }
 // QueryParamsRequest is request type for the Query/Params RPC method.
 message QueryParamsRequest {}
