@@ -6,7 +6,7 @@ import (
 	"github.com/elys-network/elys/x/incentive/types"
 )
 
-// SetSuperAdmin set a specific superAdmin in the store from its index
+// SetElysStaked set a specific elysStaked in the store from its index
 func (k Keeper) SetElysStaked(ctx sdk.Context, elysStaked types.ElysStaked) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.ElysStakedKeyPrefix))
 	b := k.cdc.MustMarshal(&elysStaked)
@@ -15,7 +15,7 @@ func (k Keeper) SetElysStaked(ctx sdk.Context, elysStaked types.ElysStaked) {
 	), b)
 }
 
-// GetSuperAdmin returns a superAdmin from its index
+// GetElysStaked returns a elysStaked from its index
 func (k Keeper) GetElysStaked(
 	ctx sdk.Context,
 	address string,
@@ -34,7 +34,7 @@ func (k Keeper) GetElysStaked(
 	return val, true
 }
 
-// RemoveSuperAdmin removes a superAdmin from the store
+// RemoveElysStaked removes a elysStaked from the store
 func (k Keeper) RemoveElysStaked(
 	ctx sdk.Context,
 	address string,
@@ -46,7 +46,7 @@ func (k Keeper) RemoveElysStaked(
 	))
 }
 
-// GetAllSuperAdmin returns all superAdmin
+// GetAllElysStaked returns all elysStaked
 func (k Keeper) GetAllElysStaked(ctx sdk.Context) (list []types.ElysStaked) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.ElysStakedKeyPrefix))
 	iterator := sdk.KVStorePrefixIterator(store, []byte{})
