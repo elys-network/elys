@@ -12,5 +12,4 @@ var (
 	ErrUnsupportedTransferhookRoute = errorsmod.Register(ModuleName, 1505, "unsupported transferhook route")
 	ErrInvalidReceiverAddress       = errorsmod.Register(ModuleName, 1506, "receiver address must be specified when using transferhook")
 	ErrPacketForwardingInactive     = errorsmod.Register(ModuleName, 1507, "transferhook packet forwarding is disabled")
-	ErrInvalidMemoSize              = errorsmod.Register(ModuleName, 1508, "the memo or receiver field exceeded the max allowable size")
 )
