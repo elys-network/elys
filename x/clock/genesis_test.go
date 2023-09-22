@@ -21,7 +21,7 @@ type GenesisTestSuite struct {
 
 	ctx sdk.Context
 
-	app *app.App
+	app *app.ElysApp
 }
 
 func TestGenesisTestSuite(t *testing.T) {
@@ -29,13 +29,10 @@ func TestGenesisTestSuite(t *testing.T) {
 }
 
 func (suite *GenesisTestSuite) SetupTest() {
-	app := app.Setup(suite.T())
-	ctx := app.BaseApp.NewContext(false, tmproto.Header{
+	suite.app = app.InitElysTestApp(true)
+	suite.ctx = suite.app.BaseApp.NewContext(false, tmproto.Header{
 		ChainID: "testing",
 	})
-
-	suite.app = app
-	suite.ctx = ctx
 }
 
 func (suite *GenesisTestSuite) TestClockInitGenesis() {
@@ -92,14 +89,14 @@ func (suite *GenesisTestSuite) TestClockInitGenesis() {
 
 			if tc.expPanic {
 				suite.Require().Panics(func() {
-					clock.InitGenesis(suite.ctx, suite.app.AppKeepers.ClockKeeper, tc.genesis)
+					clock.InitGenesis(suite.ctx, suite.app.ClockKeeper, tc.genesis)
 				})
 			} else {
 				suite.Require().NotPanics(func() {
-					clock.InitGenesis(suite.ctx, suite.app.AppKeepers.ClockKeeper, tc.genesis)
+					clock.InitGenesis(suite.ctx, suite.app.ClockKeeper, tc.genesis)
 				})
 
-				params := suite.app.AppKeepers.ClockKeeper.GetParams(suite.ctx)
+				params := suite.app.ClockKeeper.GetParams(suite.ctx)
 				suite.Require().Equal(tc.genesis.Params, params)
 			}
 		})

@@ -42,7 +42,7 @@ func (s *IntegrationTestSuite) TestClockQueryParams() {
 		tc := tc
 		s.Run(tc.desc, func() {
 			// Set the params to what is expected, then query and ensure the query is the same
-			err := s.app.AppKeepers.ClockKeeper.SetParams(s.ctx, tc.Expected)
+			err := s.app.ClockKeeper.SetParams(s.ctx, tc.Expected)
 			s.Require().NoError(err)
 
 			// Contracts check

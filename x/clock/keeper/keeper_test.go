@@ -30,8 +30,7 @@ type IntegrationTestSuite struct {
 
 func (s *IntegrationTestSuite) SetupTest() {
 	isCheckTx := false
-	s.app = app.Setup(s.T())
-
+	s.app = app.InitElysTestApp(true)
 	s.ctx = s.app.BaseApp.NewContext(isCheckTx, tmproto.Header{
 		ChainID: "testing",
 		Height:  1,

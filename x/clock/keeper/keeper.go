@@ -2,11 +2,10 @@ package keeper
 
 import (
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
-
 	"github.com/cosmos/cosmos-sdk/codec"
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-
+	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
 	"github.com/elys-network/elys/x/clock/types"
 )
 
@@ -23,10 +22,16 @@ type Keeper struct {
 func NewKeeper(
 	key storetypes.StoreKey,
 	cdc codec.BinaryCodec,
+	ps paramtypes.Subspace,
 	contractKeeper wasmkeeper.PermissionedKeeper,
 	authority string,
-) Keeper {
-	return Keeper{
+) *Keeper {
+	// set KeyTable if it has not already been set
+	if !ps.HasKeyTable() {
+		ps = ps.WithKeyTable(types.ParamKeyTable())
+	}
+
+	return &Keeper{
 		cdc:            cdc,
 		storeKey:       key,
 		contractKeeper: contractKeeper,

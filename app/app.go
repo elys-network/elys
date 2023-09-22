@@ -865,9 +865,10 @@ func NewElysApp(
 	)
 	marginModule := marginmodule.NewAppModule(appCodec, app.MarginKeeper, app.AccountKeeper, app.BankKeeper)
 
-	app.ClockKeeper = clockmodulekeeper.NewKeeper(
+	app.ClockKeeper = *clockmodulekeeper.NewKeeper(
 		keys[clockmoduletypes.StoreKey],
 		appCodec,
+		app.GetSubspace(clockmoduletypes.ModuleName),
 		*app.ContractKeeper,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)

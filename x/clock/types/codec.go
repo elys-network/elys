@@ -12,7 +12,9 @@ import (
 )
 
 var (
-	amino    = codec.NewLegacyAmino()
+	amino = codec.NewLegacyAmino()
+	// retro compatibility purpose with the test interface
+	Amino    = amino
 	AminoCdc = codec.NewAminoCodec(amino)
 )
 
