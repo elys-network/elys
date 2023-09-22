@@ -20,6 +20,7 @@ import (
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
 	burnertypes "github.com/elys-network/elys/x/burner/types"
+	clocktypes "github.com/elys-network/elys/x/clock/types"
 	commitmenttypes "github.com/elys-network/elys/x/commitment/types"
 	incentivetypes "github.com/elys-network/elys/x/incentive/types"
 	liquidityprovidertypes "github.com/elys-network/elys/x/liquidityprovider/types"
@@ -80,6 +81,8 @@ func setUpgradeHandler(app *ElysApp) {
 			keyTable = tokenomicstypes.ParamKeyTable() //nolint:staticcheck
 		case accountedpooltypes.ModuleName:
 			keyTable = accountedpooltypes.ParamKeyTable() //nolint:staticcheck
+		case clocktypes.ModuleName:
+			keyTable = clocktypes.ParamKeyTable() //nolint:staticcheck
 		}
 
 		if !subspace.HasKeyTable() {
@@ -112,7 +115,7 @@ func loadUpgradeStore(app *ElysApp) {
 	if shouldLoadUpgradeStore(app, upgradeInfo) {
 		storeUpgrades := storetypes.StoreUpgrades{
 			Added: []string{
-				accountedpooltypes.ModuleName,
+				clocktypes.ModuleName,
 			},
 		}
 		// Use upgrade store loader for the initial loading of all stores when app starts,
