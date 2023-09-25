@@ -10,9 +10,6 @@ import (
 
 	autocliv1 "cosmossdk.io/api/cosmos/autocli/v1"
 	reflectionv1 "cosmossdk.io/api/cosmos/reflection/v1"
-	"github.com/CosmWasm/wasmd/x/wasm"
-	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
-	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
 	dbm "github.com/cometbft/cometbft-db"
 	abci "github.com/cometbft/cometbft/abci/types"
 	"github.com/cometbft/cometbft/libs/log"
@@ -95,6 +92,9 @@ import (
 	upgradeclient "github.com/cosmos/cosmos-sdk/x/upgrade/client"
 	upgradekeeper "github.com/cosmos/cosmos-sdk/x/upgrade/keeper"
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
+	ibc_hooks "github.com/cosmos/ibc-apps/modules/ibc-hooks/v7"
+	ibchookskeeper "github.com/cosmos/ibc-apps/modules/ibc-hooks/v7/keeper"
+	ibchookstypes "github.com/cosmos/ibc-apps/modules/ibc-hooks/v7/types"
 	ica "github.com/cosmos/ibc-go/v7/modules/apps/27-interchain-accounts"
 	icacontrollerkeeper "github.com/cosmos/ibc-go/v7/modules/apps/27-interchain-accounts/controller/keeper"
 	icacontrollertypes "github.com/cosmos/ibc-go/v7/modules/apps/27-interchain-accounts/controller/types"
@@ -162,6 +162,14 @@ import (
 	accountedpoolmodulekeeper "github.com/elys-network/elys/x/accountedpool/keeper"
 	accountedpoolmoduletypes "github.com/elys-network/elys/x/accountedpool/types"
 
+	clockmodule "github.com/elys-network/elys/x/clock"
+	clockmodulekeeper "github.com/elys-network/elys/x/clock/keeper"
+	clockmoduletypes "github.com/elys-network/elys/x/clock/types"
+
+	wasmmodule "github.com/CosmWasm/wasmd/x/wasm"
+	wasmmodulekeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
+	wasmmoduletypes "github.com/CosmWasm/wasmd/x/wasm/types"
+
 	// this line is used by starport scaffolding # stargate/app/moduleImport
 
 	"github.com/elys-network/elys/docs"
@@ -203,15 +211,15 @@ func getGovProposalHandlers() []govclient.ProposalHandler {
 
 // GetEnabledProposals parses the ProposalsEnabled / EnableSpecificProposals values to
 // produce a list of enabled proposals to pass into wasmd app.
-func GetEnabledProposals() []wasm.ProposalType {
+func GetEnabledProposals() []wasmmodule.ProposalType {
 	if EnableSpecificProposals == "" {
 		if ProposalsEnabled == "true" {
-			return wasm.EnableAllProposals
+			return wasmmodule.EnableAllProposals
 		}
-		return wasm.DisableAllProposals
+		return wasmmodule.DisableAllProposals
 	}
 	chunks := strings.Split(EnableSpecificProposals, ",")
-	proposals, err := wasm.ConvertToProposals(chunks)
+	proposals, err := wasmmodule.ConvertToProposals(chunks)
 	if err != nil {
 		panic(err)
 	}
@@ -249,7 +257,7 @@ var (
 		ibcfee.AppModuleBasic{},
 		vesting.AppModuleBasic{},
 		consensus.AppModuleBasic{},
-		wasm.AppModuleBasic{},
+		wasmmodule.AppModuleBasic{},
 		epochsmodule.AppModuleBasic{},
 		assetprofilemodule.AppModuleBasic{},
 		liquidityprovidermodule.AppModuleBasic{},
@@ -262,6 +270,7 @@ var (
 		parametermodule.AppModuleBasic{},
 		marginmodule.AppModuleBasic{},
 		accountedpoolmodule.AppModuleBasic{},
+		clockmodule.AppModuleBasic{},
 		// this line is used by starport scaffolding # stargate/app/moduleBasic
 	)
 
@@ -280,7 +289,7 @@ var (
 		burnermoduletypes.ModuleName:     {authtypes.Burner},
 		incentivemoduletypes.ModuleName:  nil,
 		ammmoduletypes.ModuleName:        {authtypes.Minter, authtypes.Burner, authtypes.Staking},
-		wasm.ModuleName:                  {authtypes.Burner},
+		wasmmoduletypes.ModuleName:       {authtypes.Burner},
 		// this line is used by starport scaffolding # stargate/app/maccPerms
 	}
 )
@@ -329,13 +338,14 @@ type ElysApp struct {
 	ParamsKeeper          paramskeeper.Keeper
 	IBCKeeper             *ibckeeper.Keeper // IBC Keeper must be a pointer in the app, so we can SetRouter on it correctly
 	IBCFeeKeeper          ibcfeekeeper.Keeper
+	IBCHooksKeeper        *ibchookskeeper.Keeper
 	EvidenceKeeper        evidencekeeper.Keeper
 	TransferKeeper        ibctransferkeeper.Keeper
 	ICAHostKeeper         icahostkeeper.Keeper
 	FeeGrantKeeper        feegrantkeeper.Keeper
 	GroupKeeper           groupkeeper.Keeper
 	ConsensusParamsKeeper consensusparamkeeper.Keeper
-	WasmKeeper            wasm.Keeper
+	WasmKeeper            wasmmodulekeeper.Keeper
 
 	// make scoped keepers public for test purposes
 	ScopedIBCKeeper      capabilitykeeper.ScopedKeeper
@@ -356,6 +366,8 @@ type ElysApp struct {
 	AmmKeeper               ammmodulekeeper.Keeper
 	ParameterKeeper         parametermodulekeeper.Keeper
 	MarginKeeper            marginmodulekeeper.Keeper
+	ContractKeeper          *wasmmodulekeeper.PermissionedKeeper
+	ClockKeeper             clockmodulekeeper.Keeper
 
 	AccountedPoolKeeper accountedpoolmodulekeeper.Keeper
 	// this line is used by starport scaffolding # stargate/app/keeperDeclaration
@@ -366,6 +378,10 @@ type ElysApp struct {
 	// sm is the simulation manager
 	sm           *module.SimulationManager
 	configurator module.Configurator
+
+	// Middleware wrapper
+	Ics20WasmHooks   *ibc_hooks.WasmHooks
+	HooksICS4Wrapper ibc_hooks.ICS4Middleware
 }
 
 // New returns a reference to an initialized blockchain app
@@ -374,9 +390,9 @@ func NewElysApp(
 	db dbm.DB,
 	traceStore io.Writer,
 	loadLatest bool,
-	enabledProposals []wasm.ProposalType,
+	enabledProposals []wasmmodule.ProposalType,
 	appOpts servertypes.AppOptions,
-	wasmOpts []wasm.Option,
+	wasmOpts []wasmmodule.Option,
 	baseAppOptions ...func(*baseapp.BaseApp),
 ) *ElysApp {
 	encodingConfig := MakeEncodingConfig()
@@ -412,7 +428,7 @@ func NewElysApp(
 		ibctransfertypes.StoreKey, icahosttypes.StoreKey, capabilitytypes.StoreKey, group.StoreKey,
 		ibcfeetypes.StoreKey,
 		icacontrollertypes.StoreKey,
-		wasm.StoreKey,
+		wasmmodule.StoreKey,
 		consensusparamtypes.StoreKey,
 		epochsmoduletypes.StoreKey,
 		assetprofilemoduletypes.StoreKey,
@@ -426,6 +442,7 @@ func NewElysApp(
 		ammmoduletypes.StoreKey,
 		parametermoduletypes.StoreKey,
 		marginmoduletypes.StoreKey,
+		clockmoduletypes.StoreKey,
 		// this line is used by starport scaffolding # stargate/app/storeKey
 	)
 	tkeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey, ammmoduletypes.TStoreKey)
@@ -474,7 +491,7 @@ func NewElysApp(
 	scopedICAControllerKeeper := app.CapabilityKeeper.ScopeToModule(icacontrollertypes.SubModuleName)
 	scopedTransferKeeper := app.CapabilityKeeper.ScopeToModule(ibctransfertypes.ModuleName)
 	scopedICAHostKeeper := app.CapabilityKeeper.ScopeToModule(icahosttypes.SubModuleName)
-	scopedWasmKeeper := app.CapabilityKeeper.ScopeToModule(wasm.ModuleName)
+	scopedWasmKeeper := app.CapabilityKeeper.ScopeToModule(wasmmodule.ModuleName)
 	// this line is used by starport scaffolding # stargate/app/scopedKeeper
 
 	// add keepers
@@ -764,7 +781,7 @@ func NewElysApp(
 	parameterModule := parametermodule.NewAppModule(appCodec, app.ParameterKeeper, app.AccountKeeper, app.BankKeeper)
 
 	wasmDir := filepath.Join(homePath, "wasm")
-	wasmConfig, err := wasm.ReadWasmConfig(appOpts)
+	wasmConfig, err := wasmmodule.ReadWasmConfig(appOpts)
 	if err != nil {
 		panic(fmt.Sprintf("error while reading wasm config: %s", err))
 	}
@@ -775,9 +792,9 @@ func NewElysApp(
 
 	wasmOpts = append(RegisterCustomPlugins(&app.OracleKeeper), wasmOpts...)
 
-	app.WasmKeeper = wasm.NewKeeper(
+	app.WasmKeeper = wasmmodule.NewKeeper(
 		appCodec,
-		keys[wasm.StoreKey],
+		keys[wasmmodule.StoreKey],
 		app.AccountKeeper,
 		app.BankKeeper,
 		app.StakingKeeper,
@@ -795,6 +812,23 @@ func NewElysApp(
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 		wasmOpts...,
 	)
+
+	// Configure the hooks keeper
+	hooksKeeper := ibchookskeeper.NewKeeper(
+		keys[ibchookstypes.StoreKey],
+	)
+	app.IBCHooksKeeper = &hooksKeeper
+
+	wasmHooks := ibc_hooks.NewWasmHooks(app.IBCHooksKeeper, &app.WasmKeeper, AccountAddressPrefix) // The contract keeper needs to be set later
+	app.Ics20WasmHooks = &wasmHooks
+	app.HooksICS4Wrapper = ibc_hooks.NewICS4Middleware(
+		app.IBCKeeper.ChannelKeeper,
+		app.Ics20WasmHooks,
+	)
+
+	// set the contract keeper for the Ics20WasmHooks
+	app.ContractKeeper = wasmmodulekeeper.NewDefaultPermissionKeeper(app.WasmKeeper)
+	app.Ics20WasmHooks.ContractKeeper = &app.WasmKeeper
 
 	govConfig := govtypes.DefaultConfig()
 	govKeeper := govkeeper.NewKeeper(
@@ -819,7 +853,7 @@ func NewElysApp(
 		AddRoute(parametermoduletypes.RouterKey, parametermodule.NewParameterChangeProposalHandler(&app.ParameterKeeper))
 	// The gov proposal types can be individually enabled
 	if len(enabledProposals) != 0 {
-		govRouter.AddRoute(wasm.RouterKey, wasm.NewWasmProposalHandler(app.WasmKeeper, enabledProposals))
+		govRouter.AddRoute(wasmmodule.RouterKey, wasmmodule.NewWasmProposalHandler(app.WasmKeeper, enabledProposals))
 	}
 	govKeeper.SetLegacyRouter(govRouter)
 
@@ -834,6 +868,15 @@ func NewElysApp(
 	)
 	marginModule := marginmodule.NewAppModule(appCodec, app.MarginKeeper, app.AccountKeeper, app.BankKeeper)
 
+	app.ClockKeeper = *clockmodulekeeper.NewKeeper(
+		keys[clockmoduletypes.StoreKey],
+		appCodec,
+		app.GetSubspace(clockmoduletypes.ModuleName),
+		*app.ContractKeeper,
+		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+	)
+	clockModule := clockmodule.NewAppModule(appCodec, app.ClockKeeper)
+
 	// this line is used by starport scaffolding # stargate/app/keeperDefinition
 
 	/**** IBC Routing ****/
@@ -843,14 +886,14 @@ func NewElysApp(
 
 	// Create fee enabled wasm ibc Stack
 	var wasmStack ibcporttypes.IBCModule
-	wasmStack = wasm.NewIBCHandler(app.WasmKeeper, app.IBCKeeper.ChannelKeeper, app.IBCFeeKeeper)
+	wasmStack = wasmmodule.NewIBCHandler(app.WasmKeeper, app.IBCKeeper.ChannelKeeper, app.IBCFeeKeeper)
 	wasmStack = ibcfee.NewIBCMiddleware(wasmStack, app.IBCFeeKeeper)
 
 	// Create static IBC router, add transfer route, then set and seal it
 	ibcRouter := ibcporttypes.NewRouter()
 	ibcRouter.AddRoute(icahosttypes.SubModuleName, icaHostIBCModule).
 		AddRoute(ibctransfertypes.ModuleName, transferIBCModule).
-		AddRoute(wasm.ModuleName, wasmStack).
+		AddRoute(wasmmodule.ModuleName, wasmStack).
 		AddRoute(oracletypes.ModuleName, oracleIBCModule)
 	// this line is used by starport scaffolding # ibc/app/router
 	app.IBCKeeper.SetRouter(ibcRouter)
@@ -929,7 +972,7 @@ func NewElysApp(
 		upgrade.NewAppModule(app.UpgradeKeeper),
 		evidence.NewAppModule(app.EvidenceKeeper),
 		consensus.NewAppModule(appCodec, app.ConsensusParamsKeeper),
-		wasm.NewAppModule(appCodec, &app.WasmKeeper, app.StakingKeeper, app.AccountKeeper, app.BankKeeper, app.MsgServiceRouter(), app.GetSubspace(wasmtypes.ModuleName)),
+		wasmmodule.NewAppModule(appCodec, &app.WasmKeeper, app.StakingKeeper, app.AccountKeeper, app.BankKeeper, app.MsgServiceRouter(), app.GetSubspace(wasmmoduletypes.ModuleName)),
 		ibc.NewAppModule(app.IBCKeeper),
 		params.NewAppModule(app.ParamsKeeper),
 		transferModule,
@@ -946,6 +989,7 @@ func NewElysApp(
 		parameterModule,
 		marginModule,
 		accountedPoolModule,
+		clockModule,
 		// this line is used by starport scaffolding # stargate/app/appModule
 	)
 
@@ -987,8 +1031,9 @@ func NewElysApp(
 		ammmoduletypes.ModuleName,
 		parametermoduletypes.ModuleName,
 		marginmoduletypes.ModuleName,
-		wasm.ModuleName,
+		wasmmodule.ModuleName,
 		accountedpoolmoduletypes.ModuleName,
+		clockmoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/beginBlockers
 	)
 
@@ -1025,8 +1070,9 @@ func NewElysApp(
 		ammmoduletypes.ModuleName,
 		parametermoduletypes.ModuleName,
 		marginmoduletypes.ModuleName,
-		wasm.ModuleName,
+		wasmmodule.ModuleName,
 		accountedpoolmoduletypes.ModuleName,
+		clockmoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/endBlockers
 	)
 
@@ -1067,8 +1113,9 @@ func NewElysApp(
 		ammmoduletypes.ModuleName,
 		parametermoduletypes.ModuleName,
 		marginmoduletypes.ModuleName,
-		wasm.ModuleName,
+		wasmmodule.ModuleName,
 		accountedpoolmoduletypes.ModuleName,
+		clockmoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/initGenesis
 	}
 	app.mm.SetOrderInitGenesis(genesisModuleOrder...)
@@ -1105,14 +1152,14 @@ func NewElysApp(
 	app.SetBeginBlocker(app.BeginBlocker)
 	app.SetEndBlocker(app.EndBlocker)
 	SetupHandlers(app)
-	app.setAnteHandler(encodingConfig.TxConfig, wasmConfig, keys[wasm.StoreKey])
+	app.setAnteHandler(encodingConfig.TxConfig, wasmConfig, keys[wasmmodule.StoreKey])
 
 	// must be before Loading version
 	// requires the snapshot store to be created and registered as a BaseAppOption
 	// see cmd/wasmd/root.go: 206 - 214 approx
 	if manager := app.SnapshotManager(); manager != nil {
 		err := manager.RegisterExtensions(
-			wasmkeeper.NewWasmSnapshotter(app.CommitMultiStore(), &app.WasmKeeper),
+			wasmmodulekeeper.NewWasmSnapshotter(app.CommitMultiStore(), &app.WasmKeeper),
 		)
 		if err != nil {
 			panic(fmt.Errorf("failed to register snapshot extension: %s", err))
@@ -1159,7 +1206,7 @@ func NewElysApp(
 	return app
 }
 
-func (app *ElysApp) setAnteHandler(txConfig client.TxConfig, wasmConfig wasmtypes.WasmConfig, txCounterStoreKey storetypes.StoreKey) {
+func (app *ElysApp) setAnteHandler(txConfig client.TxConfig, wasmConfig wasmmoduletypes.WasmConfig, txCounterStoreKey storetypes.StoreKey) {
 	anteHandler, err := NewAnteHandler(
 		HandlerOptions{
 			HandlerOptions: ante.HandlerOptions{
@@ -1365,6 +1412,7 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(parametermoduletypes.ModuleName)
 	paramsKeeper.Subspace(marginmoduletypes.ModuleName)
 	paramsKeeper.Subspace(accountedpoolmoduletypes.ModuleName)
+	paramsKeeper.Subspace(clockmoduletypes.ModuleName)
 	// this line is used by starport scaffolding # stargate/app/paramSubspace
 
 	return paramsKeeper

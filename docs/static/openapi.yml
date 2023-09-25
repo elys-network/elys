@@ -38509,6 +38509,90 @@ paths:
                   additionalProperties: {}
       tags:
         - Query
+  /elys/clock/v1/contracts:
+    get:
+      summary: ClockContracts
+      operationId: ElysClockV1ClockContracts
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              contract_addresses:
+                type: array
+                items:
+                  type: string
+            description: >-
+              QueryClockContractsResponse is the response type for the
+              Query/ClockContracts RPC method.
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      tags:
+        - Query
+  /elys/clock/v1/params:
+    get:
+      summary: Params
+      operationId: ElysClockV1Params
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              params:
+                type: object
+                properties:
+                  contract_addresses:
+                    type: array
+                    items:
+                      type: string
+                    description: >-
+                      contract_addresses stores the list of executable contracts
+                      to be ticked on every block.
+                  contract_gas_limit:
+                    type: string
+                    format: uint64
+                description: Params defines the set of module parameters.
+            description: >-
+              QueryClockContractsResponse is the response type for the
+              Query/ClockContracts RPC method.
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      tags:
+        - Query
   /elys-network/elys/commitment/params:
     get:
       summary: Parameters queries the parameters of the module.
@@ -78386,6 +78470,57 @@ definitions:
           epochIdentifier:
             type: string
     description: QueryParamsResponse is response type for the Query/Params RPC method.
+  elys.clock.v1.MsgUpdateParamsResponse:
+    type: object
+    description: |-
+      MsgUpdateParamsResponse defines the response structure for executing a
+      MsgUpdateParams message.
+
+      Since: cosmos-sdk 0.47
+  elys.clock.v1.Params:
+    type: object
+    properties:
+      contract_addresses:
+        type: array
+        items:
+          type: string
+        description: >-
+          contract_addresses stores the list of executable contracts to be
+          ticked on every block.
+      contract_gas_limit:
+        type: string
+        format: uint64
+    description: Params defines the set of module parameters.
+  elys.clock.v1.QueryClockContractsResponse:
+    type: object
+    properties:
+      contract_addresses:
+        type: array
+        items:
+          type: string
+    description: >-
+      QueryClockContractsResponse is the response type for the
+      Query/ClockContracts RPC method.
+  elys.clock.v1.QueryParamsResponse:
+    type: object
+    properties:
+      params:
+        type: object
+        properties:
+          contract_addresses:
+            type: array
+            items:
+              type: string
+            description: >-
+              contract_addresses stores the list of executable contracts to be
+              ticked on every block.
+          contract_gas_limit:
+            type: string
+            format: uint64
+        description: Params defines the set of module parameters.
+    description: >-
+      QueryClockContractsResponse is the response type for the
+      Query/ClockContracts RPC method.
   elys.commitment.Commitments:
     type: object
     properties:
