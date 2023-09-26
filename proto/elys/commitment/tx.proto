@@ -8,13 +8,14 @@ option go_package = "github.com/elys-network/elys/x/commitment/types";
 
 // Msg defines the Msg service.
 service Msg {
-  rpc CommitTokens   (MsgCommitTokens  ) returns (MsgCommitTokensResponse  );
-  rpc UncommitTokens (MsgUncommitTokens) returns (MsgUncommitTokensResponse);
-  rpc WithdrawTokens (MsgWithdrawTokens) returns (MsgWithdrawTokensResponse);
-  rpc DepositTokens  (MsgDepositTokens ) returns (MsgDepositTokensResponse );
-  rpc Vest           (MsgVest          ) returns (MsgVestResponse          );
-  rpc CancelVest     (MsgCancelVest    ) returns (MsgCancelVestResponse    );
-  rpc VestNow        (MsgVestNow       ) returns (MsgVestNowResponse       );
+  rpc CommitTokens      (MsgCommitTokens     ) returns (MsgCommitTokensResponse     );
+  rpc UncommitTokens    (MsgUncommitTokens   ) returns (MsgUncommitTokensResponse   );
+  rpc WithdrawTokens    (MsgWithdrawTokens   ) returns (MsgWithdrawTokensResponse   );
+  rpc DepositTokens     (MsgDepositTokens    ) returns (MsgDepositTokensResponse    );
+  rpc Vest              (MsgVest             ) returns (MsgVestResponse             );
+  rpc CancelVest        (MsgCancelVest       ) returns (MsgCancelVestResponse       );
+  rpc VestNow           (MsgVestNow          ) returns (MsgVestNowResponse          );
+  rpc UpdateVestingInfo (MsgUpdateVestingInfo) returns (MsgUpdateVestingInfoResponse);
 }
 message MsgCommitTokens {
   string creator = 1;
@@ -71,4 +72,16 @@ message MsgVestNow {
 }
 
 message MsgVestNowResponse {}
+
+message MsgUpdateVestingInfo {
+  string authority         = 1;
+  string baseDenom       = 2;
+  string vestingDenom    = 3;
+  string epochIdentifier = 4;
+  string numEpochs       = 5;
+  string vestNowFactor   = 6;
+  string numMaxVestings  = 7;
+}
+
+message MsgUpdateVestingInfoResponse {}
 

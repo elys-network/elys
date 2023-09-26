@@ -27,6 +27,7 @@ func TestGetParams(t *testing.T) {
 			EpochIdentifier: "tenseconds",
 			NumEpochs:       10,
 			VestNowFactor:   sdk.NewInt(90),
+			NumMaxVestings:  10,
 		},
 	}
 
@@ -48,6 +49,7 @@ func TestEncodeDecodeParams(t *testing.T) {
 			EpochIdentifier: "tenseconds",
 			NumEpochs:       10,
 			VestNowFactor:   sdk.NewInt(90),
+			NumMaxVestings:  10,
 		},
 	}
 
@@ -80,6 +82,7 @@ func TestGetParamsNew(t *testing.T) {
 			EpochIdentifier: "tenseconds",
 			NumEpochs:       10,
 			VestNowFactor:   sdk.NewInt(90),
+			NumMaxVestings:  10,
 		},
 	}
 
@@ -110,6 +113,7 @@ func TestGetVestingInfo(t *testing.T) {
 			EpochIdentifier: "tenseconds",
 			NumEpochs:       10,
 			VestNowFactor:   sdk.NewInt(90),
+			NumMaxVestings:  10,
 		},
 		{
 			BaseDenom:       "test",
@@ -117,6 +121,7 @@ func TestGetVestingInfo(t *testing.T) {
 			EpochIdentifier: "tenseconds",
 			NumEpochs:       10,
 			VestNowFactor:   sdk.NewInt(90),
+			NumMaxVestings:  10,
 		},
 	}
 
@@ -127,17 +132,17 @@ func TestGetVestingInfo(t *testing.T) {
 	k.SetParams(ctx, params)
 
 	// Test GetVestingInfo with existing base denom
-	vestingInfo := k.GetVestingInfo(ctx, ptypes.Eden)
+	vestingInfo, _ := k.GetVestingInfo(ctx, ptypes.Eden)
 	require.NotNil(t, vestingInfo)
 	require.Equal(t, ptypes.Eden, vestingInfo.BaseDenom)
 	require.Equal(t, ptypes.Elys, vestingInfo.VestingDenom)
 
 	// Test GetVestingInfo with non-existing base denom
-	vestingInfo = k.GetVestingInfo(ctx, "nonexistent")
+	vestingInfo, _ = k.GetVestingInfo(ctx, "nonexistent")
 	require.Nil(t, vestingInfo)
 
 	// Test GetVestingInfo with another existing base denom
-	vestingInfo = k.GetVestingInfo(ctx, "test")
+	vestingInfo, _ = k.GetVestingInfo(ctx, "test")
 	require.NotNil(t, vestingInfo)
 	require.Equal(t, "test", vestingInfo.BaseDenom)
 	require.Equal(t, "test_vesting", vestingInfo.VestingDenom)

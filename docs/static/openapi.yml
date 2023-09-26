@@ -78582,6 +78582,8 @@ definitions:
     type: object
   elys.commitment.MsgUncommitTokensResponse:
     type: object
+  elys.commitment.MsgUpdateVestingInfoResponse:
+    type: object
   elys.commitment.MsgVestNowResponse:
     type: object
   elys.commitment.MsgVestResponse:

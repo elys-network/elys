@@ -54,11 +54,11 @@ func NewKeeper(
 		transientStoreKey: transientStoreKey,
 		paramstore:        ps,
 
-		bankKeeper:       bankKeeper,
-		accountKeeper:    accountKeeper,
-		oracleKeeper:     oracleKeeper,
-		commitmentKeeper: commitmentKeeper,
-		apKeeper:         apKeeper,
+		bankKeeper:          bankKeeper,
+		accountKeeper:       accountKeeper,
+		oracleKeeper:        oracleKeeper,
+		commitmentKeeper:    commitmentKeeper,
+		apKeeper:            apKeeper,
 		accountedPoolKeeper: accountedPoolKeeper,
 	}
 }

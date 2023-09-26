@@ -12,7 +12,7 @@ import (
 func (k msgServer) Vest(goCtx context.Context, msg *types.MsgVest) (*types.MsgVestResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	vestingInfo := k.GetVestingInfo(ctx, msg.Denom)
+	vestingInfo, _ := k.GetVestingInfo(ctx, msg.Denom)
 
 	if vestingInfo == nil {
 		return nil, sdkerrors.Wrapf(types.ErrInvalidDenom, "denom: %s", msg.Denom)
