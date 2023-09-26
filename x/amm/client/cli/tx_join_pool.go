@@ -16,9 +16,10 @@ var _ = strconv.Itoa(0)
 
 func CmdJoinPool() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "join-pool [pool-id] [max-amounts-in] [share-amount-out]",
-		Short: "join a new pool and provide the liquidity to it",
-		Args:  cobra.ExactArgs(3),
+		Use:     "join-pool [pool-id] [max-amounts-in] [share-amount-out]",
+		Short:   "join a new pool and provide the liquidity to it",
+		Example: `elysd tx amm join-pool 0 2000ueden,2000uelys 200000000000000000 --from=treasury --keyring-backend=test --chain-id=elystestnet-1 --yes --gas=1000000`,
+		Args:    cobra.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			argPoolId, err := cast.ToUint64E(args[0])
 			if err != nil {

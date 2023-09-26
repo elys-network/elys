@@ -15,8 +15,10 @@ var _ = strconv.Itoa(0)
 
 func CmdClose() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "close",
-		Short: "Close margin position",
+		Use:     "close [mtp-id] [flags]",
+		Short:   "Close margin position",
+		Example: `elysd tx margin close 1 --from=treasury --keyring-backend=test --chain-id=elystestnet-1 --yes --gas=1000000`,
+		Args:    cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
@@ -27,14 +29,14 @@ func CmdClose() *cobra.Command {
 				return errors.New("signer address is missing")
 			}
 
-			id, err := cmd.Flags().GetUint64("id")
-			if err != nil {
-				return err
+			argMtpId, ok := strconv.ParseUint(args[0], 10, 64)
+			if ok != nil {
+				return errors.New("invalid mtp id")
 			}
 
 			msg := types.NewMsgClose(
 				signer.String(),
-				id,
+				argMtpId,
 			)
 			if err := msg.ValidateBasic(); err != nil {
 				return err
@@ -42,8 +44,7 @@ func CmdClose() *cobra.Command {
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
 		},
 	}
-	cmd.Flags().Uint64("id", 0, "id of the position")
-	_ = cmd.MarkFlagRequired("id")
+
 	flags.AddTxFlagsToCmd(cmd)
 
 	return cmd
