@@ -18,7 +18,7 @@ func CmdCreatePool() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:     "create-pool [weights] [initial-deposit] [swap-fee] [exit-fee]",
 		Short:   "create a new pool and provide the liquidity to it",
-		Example: `elysd tx amm create-pool 100uusdc,100uatom 100000000000uusdc,100000000000uatom 0.00 0.00  --from=treasury --keyring-backend=test --chain-id=elystestnet-1 --yes --gas=1000000`,
+		Example: `elysd tx amm create-pool 100uatom,100uusdc 100000000000uatom,100000000000uusdc 0.00 0.00  --from=treasury --keyring-backend=test --chain-id=elystestnet-1 --yes --gas=1000000`,
 		Args:    cobra.ExactArgs(4),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			argWeights, err := sdk.ParseCoinsNormalized(args[0])
