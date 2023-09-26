@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	"encoding/json"
 	"strings"
 	"time"
 
@@ -166,5 +167,9 @@ func (k Keeper) ExecuteSwapRequests(ctx sdk.Context) []sdk.Msg {
 func (k Keeper) EndBlocker(ctx sdk.Context) {
 	defer telemetry.ModuleMeasureSince(types.ModuleName, time.Now(), telemetry.MetricKeyBeginBlocker)
 
-	k.ExecuteSwapRequests(ctx)
+	msgs := k.ExecuteSwapRequests(ctx)
+	if len(msgs) > 0 {
+		bz, _ := json.Marshal(msgs)
+		k.Logger(ctx).Info("Executed swap requests: " + string(bz))
+	}
 }

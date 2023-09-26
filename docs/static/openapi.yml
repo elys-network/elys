@@ -41450,7 +41450,6 @@ paths:
                 properties:
                   amm_active:
                     type: boolean
-                    title: turn off each module
             description: >-
               QueryParamsResponse is response type for the Query/Params RPC
               method.
@@ -83096,7 +83095,6 @@ definitions:
     properties:
       amm_active:
         type: boolean
-        title: turn off each module
     description: Params defines the parameters for the module.
   elys.transferhook.QueryParamsResponse:
     type: object
@@ -83107,7 +83105,6 @@ definitions:
         properties:
           amm_active:
             type: boolean
-            title: turn off each module
     description: QueryParamsResponse is response type for the Query/Params RPC method.
   ibc.applications.fee.v1.Fee:
     type: object

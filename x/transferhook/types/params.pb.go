@@ -25,7 +25,6 @@ const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
 // Params defines the parameters for the module.
 type Params struct {
-	// turn off each module
 	AmmActive bool `protobuf:"varint,1,opt,name=amm_active,json=ammActive,proto3" json:"amm_active,omitempty"`
 }
 
