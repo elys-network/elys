@@ -22,7 +22,7 @@ func TestClosePosition(t *testing.T) {
 	// Tendermint RPC calls.
 	// ...
 	args := []string{
-		"--id=1",
+		"1",
 		"--from=" + val.Address.String(),
 		"-y",
 	}
