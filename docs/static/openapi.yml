@@ -38623,6 +38623,9 @@ paths:
                           format: int64
                         vest_now_factor:
                           type: string
+                        num_max_vestings:
+                          type: string
+                          format: int64
             description: >-
               QueryParamsResponse is response type for the Query/Params RPC
               method.
@@ -78604,6 +78607,9 @@ definitions:
               format: int64
             vest_now_factor:
               type: string
+            num_max_vestings:
+              type: string
+              format: int64
     description: Params defines the parameters for the module.
   elys.commitment.QueryParamsResponse:
     type: object
@@ -78628,6 +78634,9 @@ definitions:
                   format: int64
                 vest_now_factor:
                   type: string
+                num_max_vestings:
+                  type: string
+                  format: int64
     description: QueryParamsResponse is response type for the Query/Params RPC method.
   elys.commitment.QueryShowCommitmentsResponse:
     type: object
@@ -78696,6 +78705,9 @@ definitions:
         format: int64
       vest_now_factor:
         type: string
+      num_max_vestings:
+        type: string
+        format: int64
   elys.commitment.VestingTokens:
     type: object
     properties:
