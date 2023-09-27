@@ -91,14 +91,14 @@ func TestUpdatePoolMultiplierInfo(t *testing.T) {
 	require.Equal(t, len(pools), 1)
 
 	// check balance change on sender
-	balances := bk.GetBalance(ctx, addr[0], "amm/pool/0")
-	require.Equal(t, balances, sdk.NewCoin("amm/pool/0", sdk.NewInt(0)))
+	balances := bk.GetBalance(ctx, addr[0], "amm/pool/1")
+	require.Equal(t, balances, sdk.NewCoin("amm/pool/1", sdk.NewInt(0)))
 
 	// check lp token commitment
 	commitments, found := ck.GetCommitments(ctx, addr[0].String())
 	require.True(t, found)
 	require.Len(t, commitments.CommittedTokens, 1)
-	require.Equal(t, commitments.CommittedTokens[0].Denom, "amm/pool/0")
+	require.Equal(t, commitments.CommittedTokens[0].Denom, "amm/pool/1")
 	require.Equal(t, commitments.CommittedTokens[0].Amount.String(), "100100000000000000000")
 
 	poolIds := strings.Split("0,1,2", ",")
