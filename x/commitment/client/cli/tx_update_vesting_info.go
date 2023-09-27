@@ -45,32 +45,32 @@ func CmdUpdateVestingInfo() *cobra.Command {
 				return err
 			}
 
-			argBaseDenom, err := cmd.Flags().GetString(types.BaseDenom)
+			argBaseDenom, err := cmd.Flags().GetString(BaseDenom)
 			if err != nil {
 				return err
 			}
 
-			argVestingDenom, err := cmd.Flags().GetString(types.VestingDenom)
+			argVestingDenom, err := cmd.Flags().GetString(VestingDenom)
 			if err != nil {
 				return err
 			}
 
-			argEpochIdentifier, err := cmd.Flags().GetString(types.EpochIdentifier)
+			argEpochIdentifier, err := cmd.Flags().GetString(EpochIdentifier)
 			if err != nil {
 				return err
 			}
 
-			argNumEpochs, err := cmd.Flags().GetString(types.NumEpochs)
+			argNumEpochs, err := cmd.Flags().GetString(NumEpochs)
 			if err != nil {
 				return err
 			}
 
-			argVestNowFactor, err := cmd.Flags().GetString(types.VestNowFactor)
+			argVestNowFactor, err := cmd.Flags().GetString(VestNowFactor)
 			if err != nil {
 				return err
 			}
 
-			argNumMaxVestings, err := cmd.Flags().GetString(types.NumMaxVestings)
+			argNumMaxVestings, err := cmd.Flags().GetString(NumMaxVestings)
 			if err != nil {
 				return err
 			}
@@ -128,22 +128,22 @@ func CmdUpdateVestingInfo() *cobra.Command {
 		},
 	}
 
-	cmd.Flags().String(types.BaseDenom, "", "base denom")
-	cmd.Flags().String(types.VestingDenom, "", "vesting-denom")
-	cmd.Flags().String(types.EpochIdentifier, "", "epoch-identifier")
-	cmd.Flags().String(types.NumEpochs, "", "num-epochs")
-	cmd.Flags().String(types.VestNowFactor, "", "vest-now-factor")
-	cmd.Flags().String(types.NumMaxVestings, "", "num-max-vestings")
+	cmd.Flags().String(BaseDenom, "", "base denom")
+	cmd.Flags().String(VestingDenom, "", "vesting-denom")
+	cmd.Flags().String(EpochIdentifier, "", "epoch-identifier")
+	cmd.Flags().String(NumEpochs, "", "num-epochs")
+	cmd.Flags().String(VestNowFactor, "", "vest-now-factor")
+	cmd.Flags().String(NumMaxVestings, "", "num-max-vestings")
 	cmd.Flags().String(cli.FlagTitle, "", "title of proposal")
 	cmd.Flags().String(cli.FlagSummary, "", "summary of proposal")
 	cmd.Flags().String(cli.FlagMetadata, "", "metadata of proposal")
 	cmd.Flags().String(cli.FlagDeposit, "", "deposit of proposal")
-	_ = cmd.MarkFlagRequired("base-denom")
-	_ = cmd.MarkFlagRequired("vesting-denom")
-	_ = cmd.MarkFlagRequired("epoch-identifier")
-	_ = cmd.MarkFlagRequired("num-epochs")
-	_ = cmd.MarkFlagRequired("vest-now-factor")
-	_ = cmd.MarkFlagRequired("num-max-vestings")
+	_ = cmd.MarkFlagRequired(BaseDenom)
+	_ = cmd.MarkFlagRequired(VestingDenom)
+	_ = cmd.MarkFlagRequired(EpochIdentifier)
+	_ = cmd.MarkFlagRequired(NumEpochs)
+	_ = cmd.MarkFlagRequired(VestNowFactor)
+	_ = cmd.MarkFlagRequired(NumMaxVestings)
 	_ = cmd.MarkFlagRequired(cli.FlagTitle)
 	_ = cmd.MarkFlagRequired(cli.FlagSummary)
 	_ = cmd.MarkFlagRequired(cli.FlagMetadata)
