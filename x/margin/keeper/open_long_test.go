@@ -459,7 +459,7 @@ func TestOpenLong_BaseCurrency_Collateral(t *testing.T) {
 	// Create a ATOM+USDC pool
 	poolId, err := amm.CreatePool(ctx, msg)
 	require.NoError(t, err)
-	require.Equal(t, poolId, uint64(0))
+	require.Equal(t, poolId, uint64(1))
 
 	pools := amm.GetAllPool(ctx)
 
@@ -563,7 +563,7 @@ func TestOpenLong_ATOM_Collateral(t *testing.T) {
 	// Create a ATOM+USDC pool
 	poolId, err := amm.CreatePool(ctx, msg)
 	require.NoError(t, err)
-	require.Equal(t, poolId, uint64(0))
+	require.Equal(t, poolId, uint64(1))
 
 	pools := amm.GetAllPool(ctx)
 
