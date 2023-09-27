@@ -165,7 +165,7 @@ func TestCalculateRewardsForLPs(t *testing.T) {
 		})
 
 	require.NoError(t, err)
-	require.Equal(t, resp.PoolID, uint64(0))
+	require.Equal(t, resp.PoolID, uint64(1))
 
 	pools := amm.GetAllPool(ctx)
 

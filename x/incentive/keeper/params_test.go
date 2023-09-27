@@ -83,7 +83,7 @@ func TestUpdatePoolMultiplierInfo(t *testing.T) {
 		})
 
 	require.NoError(t, err)
-	require.Equal(t, resp.PoolID, uint64(0))
+	require.Equal(t, resp.PoolID, uint64(1))
 
 	pools := amm.GetAllPool(ctx)
 
@@ -101,7 +101,7 @@ func TestUpdatePoolMultiplierInfo(t *testing.T) {
 	require.Equal(t, commitments.CommittedTokens[0].Denom, "amm/pool/1")
 	require.Equal(t, commitments.CommittedTokens[0].Amount.String(), "100100000000000000000")
 
-	poolIds := strings.Split("0,1,2", ",")
+	poolIds := strings.Split("1,2,3", ",")
 	multipliers := strings.Split("5,1,1", ",")
 	require.Len(t, poolIds, 3)
 

@@ -32,6 +32,6 @@ func (k msgServer) CreatePool(goCtx context.Context, msg *types.MsgCreatePool) (
 	})
 
 	return &types.MsgCreatePoolResponse{
-		PoolID: /*poolId*/ 0,
+		PoolID: poolId,
 	}, nil
 }
