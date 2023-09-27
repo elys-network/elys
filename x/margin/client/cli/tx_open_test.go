@@ -31,11 +31,11 @@ func TestOpenPosition(t *testing.T) {
 	// Tendermint RPC calls.
 	// ...
 	args := []string{
-		"--collateral_asset=" + ptypes.BaseCurrency,
-		"--borrow_asset=uatom",
-		"--collateral_amount=1000",
-		"--position=long",
-		"--leverage=1.5",
+		"open",
+		"1.5",
+		ptypes.BaseCurrency,
+		"1000",
+		"uatom",
 		"--from=" + val.Address.String(),
 		"-y",
 	}
