@@ -46,7 +46,7 @@ func (suite *KeeperTestSuite) TestMsgServerCreatePool() {
 				},
 			},
 			expSenderBalance: sdk.Coins{},
-			expLpCommitment:  sdk.NewCoin("amm/pool/0", sdk.NewInt(100).Mul(types.OneShare)),
+			expLpCommitment:  sdk.NewCoin("amm/pool/1", sdk.NewInt(100).Mul(types.OneShare)),
 			expPass:          true,
 		},
 		{
@@ -75,7 +75,7 @@ func (suite *KeeperTestSuite) TestMsgServerCreatePool() {
 				},
 			},
 			expSenderBalance: sdk.Coins{},
-			expLpCommitment:  sdk.NewCoin("amm/pool/0", sdk.NewInt(2).Mul(types.OneShare)),
+			expLpCommitment:  sdk.NewCoin("amm/pool/1", sdk.NewInt(2).Mul(types.OneShare)),
 			expPass:          true,
 		},
 		{
@@ -138,7 +138,7 @@ func (suite *KeeperTestSuite) TestMsgServerCreatePool() {
 
 				pools := suite.app.AmmKeeper.GetAllPool(suite.ctx)
 				suite.Require().Len(pools, 1)
-				suite.Require().Equal(pools[0].PoolId, uint64(0))
+				suite.Require().Equal(pools[0].PoolId, uint64(1))
 				suite.Require().Equal(pools[0].PoolParams, tc.poolParams)
 				suite.Require().Equal(pools[0].TotalShares.Amount.String(), tc.expLpCommitment.Amount.String())
 

@@ -69,7 +69,7 @@ func TestWithdrawCommitedLPTokenFromCommitmentModule(t *testing.T) {
 	// Create a Elys+USDC pool
 	poolId, err := amm.CreatePool(ctx, msg)
 	require.NoError(t, err)
-	require.Equal(t, poolId, uint64(0))
+	require.Equal(t, poolId, uint64(1))
 	//
 
 	_, found := amm.GetPool(ctx, poolId)
