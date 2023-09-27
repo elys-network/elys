@@ -13,12 +13,13 @@ var _ paramtypes.ParamSet = (*Params)(nil)
 
 // Parameter keys
 var (
-	ParamStoreKeyCommunityTax        = []byte("communitytax")
-	ParamStoreKeyWithdrawAddrEnabled = []byte("withdrawaddrenabled")
-	ParamStoreKeyRewardPortionForLps = []byte("rewardportionforlps")
-	ParamStoreKeyLPIncentives        = []byte("lpincentives")
-	ParamStoreKeyStkIncentives       = []byte("stkincentives")
-	ParamStoreKeyPoolInfos           = []byte("poolinfos")
+	ParamStoreKeyCommunityTax          = []byte("communitytax")
+	ParamStoreKeyWithdrawAddrEnabled   = []byte("withdrawaddrenabled")
+	ParamStoreKeyRewardPortionForLps   = []byte("rewardportionforlps")
+	ParamStoreKeyLPIncentives          = []byte("lpincentives")
+	ParamStoreKeyStkIncentives         = []byte("stkincentives")
+	ParamStoreKeyPoolInfos             = []byte("poolinfos")
+	ParamStoreKeyElysStakeTrackingRate = []byte("elysstaketrackingrate")
 )
 
 // ParamKeyTable the param key table for launch module
@@ -29,12 +30,13 @@ func ParamKeyTable() paramtypes.KeyTable {
 // NewParams creates a new Params instance
 func NewParams() Params {
 	return Params{
-		LpIncentives:        []IncentiveInfo(nil),
-		StakeIncentives:     []IncentiveInfo(nil),
-		CommunityTax:        sdk.NewDecWithPrec(2, 2), // 2%
-		WithdrawAddrEnabled: true,
-		RewardPortionForLps: sdk.NewDecWithPrec(65, 2),
-		PoolInfos:           []PoolInfo(nil),
+		LpIncentives:          []IncentiveInfo(nil),
+		StakeIncentives:       []IncentiveInfo(nil),
+		CommunityTax:          sdk.NewDecWithPrec(2, 2), // 2%
+		WithdrawAddrEnabled:   true,
+		RewardPortionForLps:   sdk.NewDecWithPrec(65, 2),
+		PoolInfos:             []PoolInfo(nil),
+		ElysStakeTrackingRate: 10,
 	}
 }
 
@@ -52,11 +54,16 @@ func (p *Params) ParamSetPairs() paramtypes.ParamSetPairs {
 		paramtypes.NewParamSetPair(ParamStoreKeyLPIncentives, &p.LpIncentives, validateLPIncentives),
 		paramtypes.NewParamSetPair(ParamStoreKeyStkIncentives, &p.StakeIncentives, validateStakeIncentives),
 		paramtypes.NewParamSetPair(ParamStoreKeyPoolInfos, &p.PoolInfos, validatePoolInfos),
+		paramtypes.NewParamSetPair(ParamStoreKeyElysStakeTrackingRate, &p.ElysStakeTrackingRate, validateElysStakeTrakcingRate),
 	}
 }
 
 // Validate validates the set of params
 func (p Params) Validate() error {
+	if err := p.ValidateBasic(); err != nil {
+		return err
+	}
+
 	if err := validateCommunityTax(p.CommunityTax); err != nil {
 		return err
 	}
@@ -78,6 +85,10 @@ func (p Params) Validate() error {
 	}
 
 	if err := validatePoolInfos(p.PoolInfos); err != nil {
+		return err
+	}
+
+	if err := validateElysStakeTrakcingRate(p.ElysStakeTrackingRate); err != nil {
 		return err
 	}
 
@@ -222,6 +233,15 @@ func validateStakeIncentives(i interface{}) error {
 
 func validatePoolInfos(i interface{}) error {
 	_, ok := i.([]PoolInfo)
+	if !ok {
+		return fmt.Errorf("invalid parameter type: %T", i)
+	}
+
+	return nil
+}
+
+func validateElysStakeTrakcingRate(i interface{}) error {
+	_, ok := i.(int64)
 	if !ok {
 		return fmt.Errorf("invalid parameter type: %T", i)
 	}

@@ -2,8 +2,9 @@ version: 1
 accounts:
   - name: treasury
     coins:
-      - 100000000uatom
-      - 100000000uusdt
+      - 1000000000000uatom
+      - 1000000000000uusdc
+      - 1000000000000uusdt
       - 9000000000000000uelys
       - 100000000ueden
     mnemonic: olympic slide park figure frost benefit deer reform fly pull price airport submit monitor silk insect uphold convince pupil project ignore roof warfare slight
@@ -238,6 +239,7 @@ genesis:
         withdraw_addr_enabled: true
         reward_portion_for_lps: "0.65"
         pool_infos: []
+        elys_stake_tracking_rate: "10"
       fee_pool:
         community_pool:
           - amount: "0"

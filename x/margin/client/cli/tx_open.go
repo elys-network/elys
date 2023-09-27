@@ -16,8 +16,10 @@ var _ = strconv.Itoa(0)
 
 func CmdOpen() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "open",
-		Short: "Open margin position",
+		Use:     "open [position] [leverage] [collateral-asset] [collateral-amount] [borrow-asset] [flags]",
+		Short:   "Open margin position",
+		Example: `elysd tx margin open long 5 uusdc 100000000 uatom --from=treasury --keyring-backend=test --chain-id=elystestnet-1 --yes --gas=1000000`,
+		Args:    cobra.ExactArgs(5),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
@@ -29,49 +31,29 @@ func CmdOpen() *cobra.Command {
 				return errors.New("signer address is missing")
 			}
 
-			collateralAsset, err := cmd.Flags().GetString("collateral_asset")
+			argPosition := types.GetPositionFromString(args[0])
+
+			argLeverage, err := sdk.NewDecFromStr(args[1])
 			if err != nil {
 				return err
 			}
 
-			collateralAmount, err := cmd.Flags().GetString("collateral_amount")
-			if err != nil {
-				return err
-			}
+			argCollateralAsset := args[2]
 
-			borrowAsset, err := cmd.Flags().GetString("borrow_asset")
-			if err != nil {
-				return err
-			}
-
-			position, err := cmd.Flags().GetString("position")
-			if err != nil {
-				return err
-			}
-			positionEnum := types.GetPositionFromString(position)
-
-			leverage, err := cmd.Flags().GetString("leverage")
-			if err != nil {
-				return err
-			}
-
-			leverageDec, err := sdk.NewDecFromStr(leverage)
-			if err != nil {
-				return err
-			}
-
-			collateralAmt, ok := sdk.NewIntFromString(collateralAmount)
+			argCollateralAmount, ok := sdk.NewIntFromString(args[3])
 			if !ok {
 				return errors.New("invalid collateral amount")
 			}
 
+			argBorrowAsset := args[4]
+
 			msg := types.NewMsgOpen(
-				clientCtx.GetFromAddress().String(),
-				collateralAsset,
-				collateralAmt,
-				borrowAsset,
-				positionEnum,
-				leverageDec,
+				signer.String(),
+				argCollateralAsset,
+				argCollateralAmount,
+				argBorrowAsset,
+				argPosition,
+				argLeverage,
 			)
 
 			if err := msg.ValidateBasic(); err != nil {
@@ -80,16 +62,7 @@ func CmdOpen() *cobra.Command {
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
 		},
 	}
-	cmd.Flags().String("collateral_amount", "0", "amount of collateral asset")
-	cmd.Flags().String("collateral_asset", "", "symbol of asset")
-	cmd.Flags().String("borrow_asset", "", "symbol of asset")
-	cmd.Flags().String("position", "", "type of position")
-	cmd.Flags().String("leverage", "", "leverage of position")
-	_ = cmd.MarkFlagRequired("collateral_amount")
-	_ = cmd.MarkFlagRequired("collateral_asset")
-	_ = cmd.MarkFlagRequired("borrow_asset")
-	_ = cmd.MarkFlagRequired("position")
-	_ = cmd.MarkFlagRequired("leverage")
+
 	flags.AddTxFlagsToCmd(cmd)
 
 	return cmd

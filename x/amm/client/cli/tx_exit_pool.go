@@ -16,9 +16,10 @@ var _ = strconv.Itoa(0)
 
 func CmdExitPool() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "exit-pool [pool-id] [min-amounts-out] [share-amount-in]",
-		Short: "exit a new pool and withdraw the liquidity from it",
-		Args:  cobra.ExactArgs(3),
+		Use:     "exit-pool [pool-id] [min-amounts-out] [share-amount-in]",
+		Short:   "exit a new pool and withdraw the liquidity from it",
+		Example: `elysd tx amm exit-pool 0 1000uatom,1000uusdc 200000000000000000 --from=treasury --keyring-backend=test --chain-id=elystestnet-1 --yes --gas=1000000`,
+		Args:    cobra.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			argPoolId, err := cast.ToUint64E(args[0])
 			if err != nil {
