@@ -78,9 +78,9 @@ message MsgUpdateVestingInfo {
   string baseDenom       = 2;
   string vestingDenom    = 3;
   string epochIdentifier = 4;
-  string numEpochs       = 5;
-  string vestNowFactor   = 6;
-  string numMaxVestings  = 7;
+  int64 numEpochs       = 5;
+  int64 vestNowFactor   = 6;
+  int64 numMaxVestings  = 7;
 }
 
 message MsgUpdateVestingInfoResponse {}

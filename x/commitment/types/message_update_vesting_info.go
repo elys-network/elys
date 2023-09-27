@@ -9,7 +9,7 @@ const TypeMsgUpdateVestingInfo = "update_vesting_info"
 
 var _ sdk.Msg = &MsgUpdateVestingInfo{}
 
-func NewMsgUpdateVestingInfo(creator string, baseDenom string, vestingDenom string, epochIdentifier string, numEpochs string, vestNowFactor string, numMaxVestings string) *MsgUpdateVestingInfo {
+func NewMsgUpdateVestingInfo(creator string, baseDenom string, vestingDenom string, epochIdentifier string, numEpochs int64, vestNowFactor int64, numMaxVestings int64) *MsgUpdateVestingInfo {
 	return &MsgUpdateVestingInfo{
 		Authority:       creator,
 		BaseDenom:       baseDenom,

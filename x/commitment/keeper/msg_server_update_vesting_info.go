@@ -2,7 +2,6 @@ package keeper
 
 import (
 	"context"
-	"strconv"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
@@ -17,21 +16,6 @@ func (k msgServer) UpdateVestingInfo(goCtx context.Context, msg *types.MsgUpdate
 		return nil, sdkerrors.Wrapf(govtypes.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.authority, msg.Authority)
 	}
 
-	numEpochs, err := strconv.ParseInt(msg.NumEpochs, 10, 64)
-	if err != nil {
-		return nil, sdkerrors.Wrapf(govtypes.ErrInvalidProposalMsg, "invalid proposal; %s", msg.NumEpochs)
-	}
-
-	vestNowFactor, err := strconv.ParseInt(msg.VestNowFactor, 10, 64)
-	if err != nil {
-		return nil, sdkerrors.Wrapf(govtypes.ErrInvalidProposalMsg, "invalid proposal; %s", msg.VestNowFactor)
-	}
-
-	maxVestings, err := strconv.ParseInt(msg.NumMaxVestings, 10, 64)
-	if err != nil {
-		return nil, sdkerrors.Wrapf(govtypes.ErrInvalidProposalMsg, "invalid proposal; %s", msg.NumMaxVestings)
-	}
-
 	params := k.GetParams(ctx)
 	vestingInfo, index := k.GetVestingInfo(ctx, msg.BaseDenom)
 	if vestingInfo == nil {
@@ -39,18 +23,18 @@ func (k msgServer) UpdateVestingInfo(goCtx context.Context, msg *types.MsgUpdate
 			BaseDenom:       msg.BaseDenom,
 			VestingDenom:    msg.VestingDenom,
 			EpochIdentifier: msg.EpochIdentifier,
-			NumEpochs:       numEpochs,
-			VestNowFactor:   sdk.NewInt(vestNowFactor),
-			NumMaxVestings:  maxVestings,
+			NumEpochs:       msg.NumEpochs,
+			VestNowFactor:   sdk.NewInt(msg.VestNowFactor),
+			NumMaxVestings:  msg.NumMaxVestings,
 		}
 		params.VestingInfos = append(params.VestingInfos, vestingInfo)
 	} else {
 		params.VestingInfos[index].BaseDenom = msg.BaseDenom
 		params.VestingInfos[index].VestingDenom = msg.VestingDenom
 		params.VestingInfos[index].EpochIdentifier = msg.EpochIdentifier
-		params.VestingInfos[index].NumEpochs = numEpochs
-		params.VestingInfos[index].VestNowFactor = sdk.NewInt(vestNowFactor)
-		params.VestingInfos[index].NumMaxVestings = maxVestings
+		params.VestingInfos[index].NumEpochs = msg.NumEpochs
+		params.VestingInfos[index].VestNowFactor = sdk.NewInt(msg.VestNowFactor)
+		params.VestingInfos[index].NumMaxVestings = msg.NumMaxVestings
 	}
 
 	// store params

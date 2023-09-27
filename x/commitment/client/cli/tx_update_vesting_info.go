@@ -9,7 +9,9 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/tx"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/address"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/cosmos/cosmos-sdk/x/gov/client/cli"
+	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	v1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1"
 	"github.com/elys-network/elys/x/commitment/types"
 	"github.com/spf13/cobra"
@@ -43,32 +45,32 @@ func CmdUpdateVestingInfo() *cobra.Command {
 				return err
 			}
 
-			argBaseDenom, err := cmd.Flags().GetString("base-denom")
+			argBaseDenom, err := cmd.Flags().GetString(types.BaseDenom)
 			if err != nil {
 				return err
 			}
 
-			argVestingDenom, err := cmd.Flags().GetString("vesting-denom")
+			argVestingDenom, err := cmd.Flags().GetString(types.VestingDenom)
 			if err != nil {
 				return err
 			}
 
-			argEpochIdentifier, err := cmd.Flags().GetString("epoch-identifier")
+			argEpochIdentifier, err := cmd.Flags().GetString(types.EpochIdentifier)
 			if err != nil {
 				return err
 			}
 
-			argNumEpochs, err := cmd.Flags().GetString("num-epochs")
+			argNumEpochs, err := cmd.Flags().GetString(types.NumEpochs)
 			if err != nil {
 				return err
 			}
 
-			argVestNowFactor, err := cmd.Flags().GetString("vest-now-factor")
+			argVestNowFactor, err := cmd.Flags().GetString(types.VestNowFactor)
 			if err != nil {
 				return err
 			}
 
-			argNumMaxVestings, err := cmd.Flags().GetString("num-max-vestings")
+			argNumMaxVestings, err := cmd.Flags().GetString(types.NumMaxVestings)
 			if err != nil {
 				return err
 			}
@@ -78,15 +80,30 @@ func CmdUpdateVestingInfo() *cobra.Command {
 				return errors.New("signer address is missing")
 			}
 
-			govAddress := sdk.AccAddress(address.Module("gov"))
+			numEpochs, err := strconv.ParseInt(argNumEpochs, 10, 64)
+			if err != nil {
+				return sdkerrors.Wrapf(govtypes.ErrInvalidProposalMsg, "invalid proposal; %d", argNumEpochs)
+			}
+
+			vestNowFactor, err := strconv.ParseInt(argVestNowFactor, 10, 64)
+			if err != nil {
+				return sdkerrors.Wrapf(govtypes.ErrInvalidProposalMsg, "invalid proposal; %d", argVestNowFactor)
+			}
+
+			maxVestings, err := strconv.ParseInt(argNumMaxVestings, 10, 64)
+			if err != nil {
+				return sdkerrors.Wrapf(govtypes.ErrInvalidProposalMsg, "invalid proposal; %d", argNumMaxVestings)
+			}
+
+			govAddress := sdk.AccAddress(address.Module(govtypes.ModuleName))
 			msg := types.NewMsgUpdateVestingInfo(
 				govAddress.String(),
 				argBaseDenom,
 				argVestingDenom,
 				argEpochIdentifier,
-				argNumEpochs,
-				argVestNowFactor,
-				argNumMaxVestings,
+				numEpochs,
+				vestNowFactor,
+				maxVestings,
 			)
 			if err := msg.ValidateBasic(); err != nil {
 				return err
@@ -111,12 +128,12 @@ func CmdUpdateVestingInfo() *cobra.Command {
 		},
 	}
 
-	cmd.Flags().String("base-denom", "", "base denom (string)")
-	cmd.Flags().String("vesting-denom", "", "vesting-denom (string)")
-	cmd.Flags().String("epoch-identifier", "", "epoch-identifier (string)")
-	cmd.Flags().String("num-epochs", "", "num-epochs (int64)")
-	cmd.Flags().String("vest-now-factor", "", "vest-now-factor (decimal)")
-	cmd.Flags().String("num-max-vestings", "", "num-max-vestings (int64)")
+	cmd.Flags().String(types.BaseDenom, "", "base denom")
+	cmd.Flags().String(types.VestingDenom, "", "vesting-denom")
+	cmd.Flags().String(types.EpochIdentifier, "", "epoch-identifier")
+	cmd.Flags().String(types.NumEpochs, "", "num-epochs")
+	cmd.Flags().String(types.VestNowFactor, "", "vest-now-factor")
+	cmd.Flags().String(types.NumMaxVestings, "", "num-max-vestings")
 	cmd.Flags().String(cli.FlagTitle, "", "title of proposal")
 	cmd.Flags().String(cli.FlagSummary, "", "summary of proposal")
 	cmd.Flags().String(cli.FlagMetadata, "", "metadata of proposal")

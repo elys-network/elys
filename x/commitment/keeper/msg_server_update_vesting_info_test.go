@@ -33,9 +33,9 @@ func TestAddVestingInfo(t *testing.T) {
 		BaseDenom:       "test_denom",
 		VestingDenom:    "test_denom",
 		EpochIdentifier: "day",
-		NumEpochs:       "10",
-		VestNowFactor:   "10",
-		NumMaxVestings:  "10",
+		NumEpochs:       10,
+		VestNowFactor:   10,
+		NumMaxVestings:  10,
 	}
 	_, err := msgServer.UpdateVestingInfo(ctx, &msg)
 	require.NoError(t, err)
@@ -79,9 +79,9 @@ func TestUpdateVestingInfo(t *testing.T) {
 		BaseDenom:       "test_denom",
 		VestingDenom:    "test_denom",
 		EpochIdentifier: "day",
-		NumEpochs:       "10",
-		VestNowFactor:   "10",
-		NumMaxVestings:  "10",
+		NumEpochs:       10,
+		VestNowFactor:   10,
+		NumMaxVestings:  10,
 	}
 	_, err := msgServer.UpdateVestingInfo(ctx, &msg)
 	require.NoError(t, err)
