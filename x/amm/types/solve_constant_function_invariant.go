@@ -31,3 +31,41 @@ func solveConstantFunctionInvariant(
 	amountY := tokenBalanceUnknownBefore.Mul(paranthetical)
 	return amountY
 }
+
+// feeRatio returns the fee ratio that is defined as follows:
+// 1 - ((1 - normalizedTokenWeightOut) * spreadFactor)
+func feeRatio(normalizedWeight, spreadFactor sdk.Dec) sdk.Dec {
+	return sdk.OneDec().Sub((sdk.OneDec().Sub(normalizedWeight)).Mul(spreadFactor))
+}
+
+// balancer notation: pAo - pool shares amount out, given single asset in
+// the second argument requires the tokenWeightIn / total token weight.
+func calcPoolSharesOutGivenSingleAssetIn(
+	tokenBalanceIn,
+	normalizedTokenWeightIn,
+	poolShares,
+	tokenAmountIn,
+	spreadFactor sdk.Dec,
+) sdk.Dec {
+	// deduct spread factor on the in asset.
+	// We don't charge spread factor on the token amount that we imagine as unswapped (the normalized weight).
+	// So effective_swapfee = spread factor * (1 - normalized_token_weight)
+	tokenAmountInAfterFee := tokenAmountIn.Mul(feeRatio(normalizedTokenWeightIn, spreadFactor))
+	// To figure out the number of shares we add, first notice that in balancer we can treat
+	// the number of shares as linearly related to the `k` value function. This is due to the normalization.
+	// e.g.
+	// if x^.5 y^.5 = k, then we `n` x the liquidity to `(nx)^.5 (ny)^.5 = nk = k'`
+	// We generalize this linear relation to do the liquidity add for the not-all-asset case.
+	// Suppose we increase the supply of x by x', so we want to solve for `k'/k`.
+	// This is `(x + x')^{weight} * old_terms / (x^{weight} * old_terms) = (x + x')^{weight} / (x^{weight})`
+	// The number of new shares we need to make is then `old_shares * ((k'/k) - 1)`
+	// Whats very cool, is that this turns out to be the exact same `solveConstantFunctionInvariant` code
+	// with the answer's sign reversed.
+	poolAmountOut := solveConstantFunctionInvariant(
+		tokenBalanceIn.Add(tokenAmountInAfterFee),
+		tokenBalanceIn,
+		normalizedTokenWeightIn,
+		poolShares,
+		sdk.OneDec()).Neg()
+	return poolAmountOut
+}
