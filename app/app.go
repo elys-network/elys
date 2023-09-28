@@ -690,6 +690,7 @@ func NewElysApp(
 		app.BankKeeper,
 		app.StakingKeeper,
 		app.AssetprofileKeeper,
+		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 
 	app.AccountedPoolKeeper = *accountedpoolmodulekeeper.NewKeeper(

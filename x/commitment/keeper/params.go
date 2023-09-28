@@ -18,14 +18,14 @@ func (k Keeper) SetParams(ctx sdk.Context, params types.Params) {
 }
 
 // GetVestingDenom returns the vesting denom for the given base denom
-func (k Keeper) GetVestingInfo(ctx sdk.Context, baseDenom string) *types.VestingInfo {
+func (k Keeper) GetVestingInfo(ctx sdk.Context, baseDenom string) (*types.VestingInfo, int) {
 	params := k.GetParams(ctx)
 
-	for _, vestingInfo := range params.VestingInfos {
+	for i, vestingInfo := range params.VestingInfos {
 		if vestingInfo.BaseDenom == baseDenom {
-			return vestingInfo
+			return vestingInfo, i
 		}
 	}
 
-	return nil
+	return nil, 0
 }
