@@ -119,6 +119,7 @@ func loadUpgradeStore(app *ElysApp) {
 		storeUpgrades := storetypes.StoreUpgrades{
 			Added: []string{
 				clocktypes.ModuleName,
+				transferhooktypes.StoreKey,
 			},
 		}
 		// Use upgrade store loader for the initial loading of all stores when app starts,
