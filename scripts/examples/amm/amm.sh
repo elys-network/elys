@@ -2,7 +2,7 @@
 
 TREASURY=$(elysd keys show -a treasury --keyring-backend=test)
 
-elysd tx amm create-pool 10uatom,10uusdt 10000uatom,10000uusdt 0.00 0.00 --from=treasury --keyring-backend=test --chain-id=elystestnet-1 --yes --gas=1000000
+elysd tx amm create-pool elysd tx amm create-pool 10uatom,10uusdt 10000uatom,10000uusdt --swap-fee=0.00 --exit-fee=0.00 --use-oracle=false --from=treasury --keyring-backend=test --chain-id=elystestnet-1 --yes --gas=1000000
 
 # single asset add-liquidity
 elysd tx amm join-pool 0 2000uatom 90000000000000000 true --from=treasury --keyring-backend=test --chain-id=elystestnet-1 --yes --gas=1000000
