@@ -118,7 +118,7 @@ func loadUpgradeStore(app *ElysApp) {
 	if shouldLoadUpgradeStore(app, upgradeInfo) {
 		storeUpgrades := storetypes.StoreUpgrades{
 			Added: []string{
-				clocktypes.ModuleName,
+				clocktypes.StoreKey,
 				transferhooktypes.StoreKey,
 			},
 		}
