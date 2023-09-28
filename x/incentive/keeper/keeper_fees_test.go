@@ -73,7 +73,7 @@ func TestCollectGasFeesToIncentiveModule(t *testing.T) {
 	// Create a Elys+USDC pool
 	poolId, err := amm.CreatePool(ctx, msg)
 	require.NoError(t, err)
-	require.Equal(t, poolId, uint64(0))
+	require.Equal(t, poolId, uint64(1))
 
 	pools := amm.GetAllPool(ctx)
 
@@ -148,7 +148,7 @@ func TestCollectDEXRevenueToIncentiveModule(t *testing.T) {
 	// Create a Elys+USDC pool
 	poolId, err := amm.CreatePool(ctx, msg)
 	require.NoError(t, err)
-	require.Equal(t, poolId, uint64(0))
+	require.Equal(t, poolId, uint64(1))
 
 	// ####### POOL 2 ########
 	// ATOM+USDC pool
@@ -187,7 +187,7 @@ func TestCollectDEXRevenueToIncentiveModule(t *testing.T) {
 	// Create a ATOM+USDC pool
 	poolId, err = amm.CreatePool(ctx, msg)
 	require.NoError(t, err)
-	require.Equal(t, poolId, uint64(1))
+	require.Equal(t, poolId, uint64(2))
 
 	pools := amm.GetAllPool(ctx)
 
@@ -207,7 +207,7 @@ func TestCollectDEXRevenueToIncentiveModule(t *testing.T) {
 
 	// Fill in pool #2 revenue wallet
 	revenueAddress2 := ammtypes.NewPoolRevenueAddress(1)
-	usdcRevToken2 := sdk.NewCoins(sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(2000)))
+	usdcRevToken2 := sdk.NewCoins(sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(3000)))
 	err = app.BankKeeper.MintCoins(ctx, types.ModuleName, usdcRevToken2)
 	require.NoError(t, err)
 	err = app.BankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, revenueAddress2, usdcRevToken2)

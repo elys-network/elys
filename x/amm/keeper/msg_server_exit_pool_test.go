@@ -157,7 +157,7 @@ func (suite *KeeperTestSuite) TestMsgServerExitPool() {
 
 				pools := suite.app.AmmKeeper.GetAllPool(suite.ctx)
 				suite.Require().Len(pools, 1)
-				suite.Require().Equal(pools[0].PoolId, uint64(0))
+				suite.Require().Equal(pools[0].PoolId, uint64(1))
 				suite.Require().Equal(pools[0].PoolParams, tc.poolParams)
 				suite.Require().Equal(pools[0].TotalShares.Amount.String(), pool.TotalShares.Amount.Sub(tc.shareInAmount).String())
 
@@ -169,7 +169,7 @@ func (suite *KeeperTestSuite) TestMsgServerExitPool() {
 				commitments, found := suite.app.CommitmentKeeper.GetCommitments(suite.ctx, sender.String())
 				suite.Require().True(found)
 				suite.Require().Len(commitments.CommittedTokens, 1)
-				suite.Require().Equal(commitments.CommittedTokens[0].Denom, "amm/pool/0")
+				suite.Require().Equal(commitments.CommittedTokens[0].Denom, "amm/pool/1")
 				suite.Require().Equal(commitments.CommittedTokens[0].Amount.String(), pool.TotalShares.Amount.Sub(tc.shareInAmount).String())
 			}
 		})

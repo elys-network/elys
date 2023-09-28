@@ -71,7 +71,7 @@ func TestCheckBalanceInvariant_InvalidBalance(t *testing.T) {
 	// Create a ATOM+USDC pool
 	poolId, err := amm.CreatePool(ctx, msg)
 	require.NoError(t, err)
-	require.Equal(t, poolId, uint64(0))
+	require.Equal(t, poolId, uint64(1))
 
 	pools := amm.GetAllPool(ctx)
 
