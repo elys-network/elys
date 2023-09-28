@@ -21,6 +21,7 @@ func (k Keeper) JoinPoolNoSwap(
 	poolId uint64,
 	shareOutAmount sdk.Int,
 	tokenInMaxs sdk.Coins,
+	noRemaining bool,
 ) (tokenIn sdk.Coins, sharesOut sdk.Int, err error) {
 	// defer to catch panics, in case something internal overflows.
 	defer func() {
@@ -37,30 +38,35 @@ func (k Keeper) JoinPoolNoSwap(
 	}
 
 	if !pool.PoolParams.UseOracle {
-		// we do an abstract calculation on the lp liquidity coins needed to have
-		// the designated amount of given shares of the pool without performing swap
-		neededLpLiquidity, err := types.GetMaximalNoSwapLPAmount(pool, shareOutAmount)
-		if err != nil {
-			return nil, sdk.ZeroInt(), err
+		tokensIn := tokenInMaxs
+		if !noRemaining {
+			// we do an abstract calculation on the lp liquidity coins needed to have
+			// the designated amount of given shares of the pool without performing swap
+			neededLpLiquidity, err := types.GetMaximalNoSwapLPAmount(pool, shareOutAmount)
+			if err != nil {
+				return nil, sdk.ZeroInt(), err
+			}
+
+			// check that needed lp liquidity does not exceed the given `tokenInMaxs` parameter. Return error if so.
+			//if tokenInMaxs == 0, don't do this check.
+			if tokenInMaxs.Len() != 0 {
+				if !(neededLpLiquidity.DenomsSubsetOf(tokenInMaxs)) {
+					return nil, sdk.ZeroInt(), sdkerrors.Wrapf(types.ErrLimitMaxAmount, "TokenInMaxs does not include all the tokens that are part of the target pool,"+
+						" upperbound: %v, needed %v", tokenInMaxs, neededLpLiquidity)
+				} else if !(tokenInMaxs.DenomsSubsetOf(neededLpLiquidity)) {
+					return nil, sdk.ZeroInt(), sdkerrors.Wrapf(types.ErrDenomNotFoundInPool, "TokenInMaxs includes tokens that are not part of the target pool,"+
+						" input tokens: %v, pool tokens %v", tokenInMaxs, neededLpLiquidity)
+				}
+				if !(tokenInMaxs.IsAllGTE(neededLpLiquidity)) {
+					return nil, sdk.ZeroInt(), sdkerrors.Wrapf(types.ErrLimitMaxAmount, "TokenInMaxs is less than the needed LP liquidity to this JoinPoolNoSwap,"+
+						" upperbound: %v, needed %v", tokenInMaxs, neededLpLiquidity)
+				}
+			}
+
+			tokensIn = neededLpLiquidity
 		}
 
-		// check that needed lp liquidity does not exceed the given `tokenInMaxs` parameter. Return error if so.
-		//if tokenInMaxs == 0, don't do this check.
-		if tokenInMaxs.Len() != 0 {
-			if !(neededLpLiquidity.DenomsSubsetOf(tokenInMaxs)) {
-				return nil, sdk.ZeroInt(), sdkerrors.Wrapf(types.ErrLimitMaxAmount, "TokenInMaxs does not include all the tokens that are part of the target pool,"+
-					" upperbound: %v, needed %v", tokenInMaxs, neededLpLiquidity)
-			} else if !(tokenInMaxs.DenomsSubsetOf(neededLpLiquidity)) {
-				return nil, sdk.ZeroInt(), sdkerrors.Wrapf(types.ErrDenomNotFoundInPool, "TokenInMaxs includes tokens that are not part of the target pool,"+
-					" input tokens: %v, pool tokens %v", tokenInMaxs, neededLpLiquidity)
-			}
-			if !(tokenInMaxs.IsAllGTE(neededLpLiquidity)) {
-				return nil, sdk.ZeroInt(), sdkerrors.Wrapf(types.ErrLimitMaxAmount, "TokenInMaxs is less than the needed LP liquidity to this JoinPoolNoSwap,"+
-					" upperbound: %v, needed %v", tokenInMaxs, neededLpLiquidity)
-			}
-		}
-
-		sharesOut, err = pool.JoinPoolNoSwap(ctx, k.oracleKeeper, k.accountedPoolKeeper, neededLpLiquidity)
+		sharesOut, err = pool.JoinPool(ctx, k.oracleKeeper, k.accountedPoolKeeper, tokensIn)
 		if err != nil {
 			return nil, sdk.ZeroInt(), err
 		}
@@ -71,16 +77,16 @@ func (k Keeper) JoinPoolNoSwap(
 				shareOutAmount, sharesOut))
 		}
 
-		err = k.applyJoinPoolStateChange(ctx, pool, sender, sharesOut, neededLpLiquidity)
+		err = k.applyJoinPoolStateChange(ctx, pool, sender, sharesOut, tokensIn)
 
 		// Increase liquidty amount
-		k.RecordTotalLiquidityIncrease(ctx, neededLpLiquidity)
+		k.RecordTotalLiquidityIncrease(ctx, tokensIn)
 
-		return neededLpLiquidity, sharesOut, err
+		return tokensIn, sharesOut, err
 	}
 
 	// on oracle pool, full tokenInMaxs are used regardless shareOutAmount
-	sharesOut, err = pool.JoinPoolNoSwap(ctx, k.oracleKeeper, k.accountedPoolKeeper, tokenInMaxs)
+	sharesOut, err = pool.JoinPool(ctx, k.oracleKeeper, k.accountedPoolKeeper, tokenInMaxs)
 	if err != nil {
 		return nil, sdk.ZeroInt(), err
 	}
