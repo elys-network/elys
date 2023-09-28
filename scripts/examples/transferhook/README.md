@@ -43,9 +43,9 @@ elysd tx ibc-transfer transfer transfer channel-0 $ACC1 100$ATOM_IBC --chain-id=
 elysd tx amm create-pool 10uatom,10uusdt 10000uatom,10000uusdt --swap-fee=0.00 --exit-fee=0.00 --use-oracle=false --from=treasury --keyring-backend=test --chain-id=elystestnet-1 --yes --gas=1000000
 
 # swap with transferhook
-elysd tx ibc-transfer transfer transfer channel-0 '{"transferhook":{"receiver":"'$ACC1'","amm":{"action":"Swap","routes":[{"pool_id":0,"token_out_denom": "uusdt"}]}}}' 100$ATOM_IBC --chain-id=marstestnet-1 --from=acc1 --keyring-backend=test -y --node=http://localhost:26659
+elysd tx ibc-transfer transfer transfer channel-0 '{"transferhook":{"receiver":"'$ACC1'","amm":{"action":"Swap","routes":[{"pool_id":1,"token_out_denom": "uusdt"}]}}}' 100$ATOM_IBC --chain-id=marstestnet-1 --from=acc1 --keyring-backend=test -y --node=http://localhost:26659
 elysd query bank balances $ACC1 --node=http://localhost:26657
 
-elysd tx amm swap-exact-amount-in 10uatom 1 0 uusdt --from=acc1 --keyring-backend=test --chain-id=elystestnet-1 --yes --gas=1000000
+elysd tx amm swap-exact-amount-in 10uatom 1 1 uusdt --from=acc1 --keyring-backend=test --chain-id=elystestnet-1 --yes --gas=1000000
 elysd query bank balances $ACC1 --node=http://localhost:26657
 ```
