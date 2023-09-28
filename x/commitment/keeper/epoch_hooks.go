@@ -14,7 +14,7 @@ func (k Keeper) AfterEpochEnd(ctx sdk.Context, epochIdentifier string, _ int64) 
 
 	// Future Improvement: check all VestingInfos and get all VestingTokens by denom
 	// 	so we can iterate different denoms in different EpochIdentifiers
-	vestingInfo := k.GetVestingInfo(ctx, ptypes.Eden)
+	vestingInfo, _ := k.GetVestingInfo(ctx, ptypes.Eden)
 	if vestingInfo != nil {
 		if epochIdentifier == vestingInfo.EpochIdentifier {
 			k.Logger(ctx).Info("Vesting tokens for vestingInfo", vestingInfo)
