@@ -2,7 +2,7 @@
 
 ### Start mars chain
 
-ignite chain serve --verbose --reset-once -c mars.yml
+ignite chain serve --verbose --reset-once -c ./scripts/examples/transferhook/mars.yml
 
 ### Start elys chain
 
