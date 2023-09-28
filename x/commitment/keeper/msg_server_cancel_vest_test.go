@@ -30,6 +30,7 @@ func TestCancelVest(t *testing.T) {
 			EpochIdentifier: "tenseconds",
 			NumEpochs:       10,
 			VestNowFactor:   sdk.NewInt(90),
+			NumMaxVestings:  10,
 		},
 	}
 

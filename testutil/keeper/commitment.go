@@ -11,6 +11,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/store"
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/types/address"
+	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	typesparams "github.com/cosmos/cosmos-sdk/x/params/types"
 	"github.com/elys-network/elys/x/commitment/keeper"
 	"github.com/elys-network/elys/x/commitment/types"
@@ -36,6 +38,8 @@ func CommitmentKeeper(t testing.TB) (*keeper.Keeper, sdk.Context) {
 		memStoreKey,
 		"CommitmentParams",
 	)
+
+	govAddress := sdk.AccAddress(address.Module(govtypes.ModuleName))
 	k := keeper.NewKeeper(
 		cdc,
 		storeKey,
@@ -44,6 +48,7 @@ func CommitmentKeeper(t testing.TB) (*keeper.Keeper, sdk.Context) {
 		nil,
 		nil,
 		nil,
+		govAddress.String(),
 	)
 
 	ctx := sdk.NewContext(stateStore, tmproto.Header{}, false, log.NewNopLogger())

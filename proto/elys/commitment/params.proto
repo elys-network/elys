@@ -20,4 +20,5 @@ message VestingInfo {
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
     (gogoproto.nullable) = false
   ];
+  int64 num_max_vestings = 6;
 }

@@ -56,6 +56,7 @@ type (
 		bankKeeper    types.BankKeeper
 		stakingKeeper types.StakingKeeper
 		apKeeper      types.AssetProfileKeeper
+		authority     string
 	}
 )
 
@@ -68,6 +69,7 @@ func NewKeeper(
 	bankKeeper types.BankKeeper,
 	stakingKeeper types.StakingKeeper,
 	apKeeper types.AssetProfileKeeper,
+	authority string,
 ) *Keeper {
 	// set KeyTable if it has not already been set
 	if !ps.HasKeyTable() {
@@ -83,6 +85,7 @@ func NewKeeper(
 		bankKeeper:    bankKeeper,
 		stakingKeeper: stakingKeeper,
 		apKeeper:      apKeeper,
+		authority:     authority,
 	}
 }
 
