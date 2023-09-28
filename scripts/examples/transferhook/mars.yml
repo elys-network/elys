@@ -1,0 +1,403 @@
+version: 1
+accounts:
+  - name: treasury2
+    coins:
+      - 100000000uatom
+      - 100000000uusdt
+      - 9000000000000000uelys
+      - 100000000ueden
+    mnemonic: attend copy blast obey agent clinic monkey blur doctor sibling impact stomach judge rubber actress forest wage silent sick key divide exotic junk velvet
+  - name: seed2
+    coins:
+      - 9000000000000000uelys
+build:
+  main: cmd/elysd
+client:
+  openapi:
+    path: docs/static/openapi.yml
+faucet:
+  name: seed2
+  coins:
+    - 1000000000000000uelys
+  host: :4501
+validators:
+  - name: treasury2
+    bonded: 100000000uelys
+    home: $HOME/.mars
+    app:
+      api:
+        address: :1318
+      grpc:
+        address: :9092
+      grpc-web:
+        address: :9093
+    config:
+      moniker: "elys2val"
+      p2p:
+        laddr: :26658
+      rpc:
+        laddr: :26659
+        pprof_laddr: :6061
+genesis:
+  app_state:
+    crisis:
+      constant_fee:
+        denom: uelys
+    gov:
+      deposit_params:
+        max_deposit_period: 20s
+        min_deposit:
+          - amount: "10000000"
+            denom: uelys
+      params:
+        burn_proposal_deposit_prevote: false
+        burn_vote_quorum: false
+        burn_vote_veto: true
+        max_deposit_period: 20s
+        min_deposit:
+          - amount: "10000000"
+            denom: uelys
+        min_initial_deposit_ratio: "0.000000000000000000"
+        quorum: "0.334000000000000000"
+        threshold: "0.500000000000000000"
+        veto_threshold: "0.334000000000000000"
+        voting_period: 20s
+      tally_params:
+        quorum: "0.334000000000000000"
+        threshold: "0.500000000000000000"
+        veto_threshold: "0.334000000000000000"
+      voting_params:
+        voting_period: 20s
+    mint:
+      params:
+        mint_denom: uelys
+        inflation_rate_change: "0.0"
+        inflation_max: "0.0"
+        inflation_min: "0.0"
+    slashing:
+      params:
+        signed_blocks_window: "30000"
+        min_signed_per_window: "0.05"
+        downtime_jail_duration: 600s
+        slash_fraction_double_sign: "0.05"
+        slash_fraction_downtime: "0.0001"
+    staking:
+      params:
+        bond_denom: uelys
+        unbonding_time: 1209600s
+    bank:
+      denom_metadata:
+        - base: uelys
+          denom_units:
+            - denom: uelys
+              exponent: 0
+              aliases:
+                - microelys
+            - denom: melys
+              exponent: 3
+              aliases:
+                - millielys
+            - denom: elys
+              exponent: 6
+              aliases: []
+          name: elys
+          symbol: elys
+          description: Native Elys token definition
+          display: elys
+        - base: ueden
+          denom_units:
+            - denom: ueden
+              exponent: 0
+              aliases:
+                - microeden
+            - denom: meden
+              exponent: 3
+              aliases:
+                - millieden
+            - denom: eden
+              exponent: 6
+              aliases: []
+          name: eden
+          symbol: eden
+          description: Eden token definition
+          display: eden
+    assetprofile:
+      entryList:
+        - address: ""
+          authority: elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3
+          baseDenom: uelys
+          decimals: "6"
+          denom: uelys
+          displayName: ELYS
+          displaySymbol: ""
+          externalSymbol: ""
+          ibcChannelId: ""
+          ibcCounterpartyChainId: ""
+          ibcCounterpartyChannelId: ""
+          ibcCounterpartyDenom: ""
+          network: ""
+          path: ""
+          permissions: []
+          transferLimit: ""
+          unitDenom: ""
+          commitEnabled: false
+          withdrawEnabled: true
+        - address: ""
+          authority: elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3
+          baseDenom: cusdc
+          decimals: "6"
+          denom: cusdc
+          displayName: USDC
+          displaySymbol: ""
+          externalSymbol: ""
+          ibcChannelId: ""
+          ibcCounterpartyChainId: ""
+          ibcCounterpartyChannelId: ""
+          ibcCounterpartyDenom: ""
+          network: ""
+          path: ""
+          permissions: []
+          transferLimit: ""
+          unitDenom: ""
+          commitEnabled: false
+          withdrawEnabled: true
+        - address: ""
+          authority: elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3
+          baseDenom: ueden
+          decimals: "6"
+          denom: ueden
+          displayName: EDEN
+          displaySymbol: ""
+          externalSymbol: ""
+          ibcChannelId: ""
+          ibcCounterpartyChainId: ""
+          ibcCounterpartyChannelId: ""
+          ibcCounterpartyDenom: ""
+          network: ""
+          path: ""
+          permissions: []
+          transferLimit: ""
+          unitDenom: ""
+          commitEnabled: true
+          withdrawEnabled: true
+        - address: ""
+          authority: elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3
+          baseDenom: uedenb
+          decimals: "6"
+          denom: uedenb
+          displayName: EDEN-BOOST
+          displaySymbol: ""
+          externalSymbol: ""
+          ibcChannelId: ""
+          ibcCounterpartyChainId: ""
+          ibcCounterpartyChannelId: ""
+          ibcCounterpartyDenom: ""
+          network: ""
+          path: ""
+          permissions: []
+          transferLimit: ""
+          unitDenom: ""
+          commitEnabled: true
+          withdrawEnabled: false
+    epochs:
+      epochs:
+        - identifier: week
+          duration: "168h"
+          currentEpoch: "0"
+          currentEpochStartHeight: "0"
+          epochCountingStarted: false
+        - identifier: day
+          duration: "24h"
+          currentEpoch: "0"
+          currentEpochStartHeight: "0"
+          epochCountingStarted: false
+        - identifier: hour
+          duration: "1h"
+          currentEpoch: "0"
+          currentEpochStartHeight: "0"
+          epochCountingStarted: false
+        - identifier: band_epoch
+          duration: "15s"
+          currentEpoch: "0"
+          currentEpochStartHeight: "0"
+          epochCountingStarted: false
+        - identifier: tenseconds
+          duration: "10s"
+          currentEpoch: "0"
+          currentEpochStartHeight: "0"
+          epochCountingStarted: false
+    commitment:
+      params:
+        vesting_infos:
+          - base_denom: ueden
+            vesting_denom: uelys
+            epoch_identifier: tenseconds
+            num_epochs: "10"
+            vest_now_factor: "90"
+    incentive:
+      params:
+        lp_incentives:
+          - amount: "10000000"
+            epoch_identifier: week
+            start_time: "2023-04-20T12:34:56.789Z"
+            num_epochs: "50"
+            current_epoch: "0"
+            eden_boost_apr: "100"
+        stake_incentives:
+          - amount: "10000000"
+            epoch_identifier: week
+            start_time: "2023-04-20T12:34:56.789Z"
+            num_epochs: "50"
+            current_epoch: "0"
+            eden_boost_apr: "100"
+        community_tax: "0.02"
+        withdraw_addr_enabled: true
+        reward_portion_for_lps: "0.65"
+        pool_infos: []
+      fee_pool:
+        community_pool:
+          - amount: "0"
+            denom: uelys
+    tokenomics:
+      airdropList:
+        - intent: AtomStakers
+          amount: 9999999
+          authority: elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3
+        - intent: RowanStakersLP
+          amount: 9999999
+          authority: elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3
+        - intent: Juno
+          amount: 9999999
+          authority: elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3
+        - intent: Osmo
+          amount: 9999999
+          authority: elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3
+        - intent: Evmos
+          amount: 9999999
+          authority: elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3
+      genesisInflation:
+        inflation:
+          lmRewards: 9999999
+          icsStakingRewards: 9999999
+          communityFund: 9999999
+          strategicReserve: 9999999
+          teamTokensVested: 9999999
+        seedVesting: 9999999
+        strategicSalesVesting: 9999999
+        authority: elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3
+      timeBasedInflationList:
+        - startBlockHeight: 1
+          endBlockHeight: 6307200
+          description: 1st Year Inflation
+          inflation:
+            lmRewards: 9999999
+            icsStakingRewards: 9999999
+            communityFund: 9999999
+            strategicReserve: 9999999
+            teamTokensVested: 9999999
+        - startBlockHeight: 6307201
+          endBlockHeight: 12614401
+          description: 2nd Year Inflation
+          inflation:
+            lmRewards: 9999999
+            icsStakingRewards: 9999999
+            communityFund: 9999999
+            strategicReserve: 9999999
+            teamTokensVested: 9999999
+        - startBlockHeight: 12614402
+          endBlockHeight: 18921602
+          description: 3rd Year Inflation
+          inflation:
+            lmRewards: 9999999
+            icsStakingRewards: 9999999
+            communityFund: 9999999
+            strategicReserve: 9999999
+            teamTokensVested: 9999999
+    oracle:
+      assetInfos:
+        - denom: "satoshi"
+          display: "BTC"
+          bandTicker: "BTC"
+          elysTicker: "BTC"
+          decimal: 9
+        - denom: "wei"
+          display: "ETH"
+          bandTicker: "ETH"
+          elysTicker: "ETH"
+          decimal: 18
+        - denom: "uatom"
+          display: "ATOM"
+          bandTicker: "ATOM"
+          elysTicker: "ATOM"
+          decimal: 6
+        - denom: "uusdt"
+          display: "USDT"
+          bandTicker: "USDT"
+          elysTicker: "USDT"
+          decimal: 6
+      params:
+        ask_count: "4"
+        band_channel_source: "channel-0"
+        band_epoch: "band_epoch"
+        client_id: "band_price_id"
+        execute_gas: "600000"
+        fee_limit:
+          - amount: "30"
+            denom: "uband"
+        min_count: "3"
+        multiplier: "18"
+        oracle_script_id: "37"
+        prepare_gas: "600000"
+        price_expiry_time: "86400"
+      portId: "oracle"
+      priceFeeders:
+        - feeder: "elys12tzylat4udvjj56uuhu3vj2n4vgp7cf9fwna9w"
+          is_active: true
+      prices:
+        - asset: USDT
+          price: "1.00"
+          provider: elys12tzylat4udvjj56uuhu3vj2n4vgp7cf9fwna9w
+          source: elys
+          timestamp: "1694743319"
+        - asset: USDC
+          price: "1.00"
+          provider: elys12tzylat4udvjj56uuhu3vj2n4vgp7cf9fwna9w
+          source: elys
+          timestamp: "1694743319"
+    burner:
+      params:
+        epochIdentifier: day
+      historyList:
+        - timestamp: "2023-04-21 14:57:03.612566186 +0000 UTC"
+          denom: "uelys"
+          amount: "1000000"
+        - timestamp: "2023-04-21 14:57:03.612566186 +0000 UTC"
+          denom: "ueden"
+          amount: "1000000"
+    parameter:
+      anteHandlerParam:
+        minCommissionRate: "0.05"
+        maxVotingPower: "0.66"
+        minSelfDelegation: "1"
+    margin:
+      params:
+        leverage_max: "10"
+        interest_rate_max: "0.00000027"
+        interest_rate_min: "0.00000003"
+        interest_rate_increase: "0.000000000333333333"
+        interest_rate_decrease: "0.000000000333333333"
+        health_gain_factor: "0.000000022"
+        epoch_length: 1
+        removal_queue_threshold: "0.35"
+        max_open_positions: 9999
+        pool_open_threshold: "1.0"
+        force_close_fund_percentage: "1.0"
+        force_close_fund_address: "elys1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqnrec2l"
+        incremental_interest_payment_fund_percentage: "0.35"
+        incremental_interest_payment_fund_address: "elys1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqnrec2l"
+        sq_modifier: "10000000000000000000000000"
+        safety_factor: "1.05"
+        incremental_interest_payment_enabled: true
+        whitelisting_enabled: false
+        invariant_check_epoch: day
+  chain_id: marstestnet-1

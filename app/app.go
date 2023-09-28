@@ -113,6 +113,7 @@ import (
 	ibcclientclient "github.com/cosmos/ibc-go/v7/modules/core/02-client/client"
 	ibcclienttypes "github.com/cosmos/ibc-go/v7/modules/core/02-client/types"
 	ibcporttypes "github.com/cosmos/ibc-go/v7/modules/core/05-port/types"
+	porttypes "github.com/cosmos/ibc-go/v7/modules/core/05-port/types"
 	ibcexported "github.com/cosmos/ibc-go/v7/modules/core/exported"
 	ibckeeper "github.com/cosmos/ibc-go/v7/modules/core/keeper"
 	solomachine "github.com/cosmos/ibc-go/v7/modules/light-clients/06-solomachine"
@@ -161,6 +162,10 @@ import (
 	accountedpoolmodule "github.com/elys-network/elys/x/accountedpool"
 	accountedpoolmodulekeeper "github.com/elys-network/elys/x/accountedpool/keeper"
 	accountedpoolmoduletypes "github.com/elys-network/elys/x/accountedpool/types"
+
+	"github.com/elys-network/elys/x/transferhook"
+	transferhookkeeper "github.com/elys-network/elys/x/transferhook/keeper"
+	transferhooktypes "github.com/elys-network/elys/x/transferhook/types"
 
 	clockmodule "github.com/elys-network/elys/x/clock"
 	clockmodulekeeper "github.com/elys-network/elys/x/clock/keeper"
@@ -270,6 +275,7 @@ var (
 		parametermodule.AppModuleBasic{},
 		marginmodule.AppModuleBasic{},
 		accountedpoolmodule.AppModuleBasic{},
+		transferhook.AppModuleBasic{},
 		clockmodule.AppModuleBasic{},
 		// this line is used by starport scaffolding # stargate/app/moduleBasic
 	)
@@ -366,6 +372,7 @@ type ElysApp struct {
 	AmmKeeper               ammmodulekeeper.Keeper
 	ParameterKeeper         parametermodulekeeper.Keeper
 	MarginKeeper            marginmodulekeeper.Keeper
+	TransferhookKeeper      transferhookkeeper.Keeper
 	ContractKeeper          *wasmmodulekeeper.PermissionedKeeper
 	ClockKeeper             clockmodulekeeper.Keeper
 
@@ -442,6 +449,7 @@ func NewElysApp(
 		ammmoduletypes.StoreKey,
 		parametermoduletypes.StoreKey,
 		marginmoduletypes.StoreKey,
+		transferhooktypes.StoreKey,
 		clockmoduletypes.StoreKey,
 		// this line is used by starport scaffolding # stargate/app/storeKey
 	)
@@ -814,6 +822,12 @@ func NewElysApp(
 		wasmOpts...,
 	)
 
+	app.TransferhookKeeper = *transferhookkeeper.NewKeeper(
+		appCodec,
+		keys[transferhooktypes.StoreKey],
+		app.GetSubspace(transferhooktypes.ModuleName),
+		app.AmmKeeper)
+	transferhookModule := transferhook.NewAppModule(appCodec, app.TransferhookKeeper)
 	// Configure the hooks keeper
 	hooksKeeper := ibchookskeeper.NewKeeper(
 		keys[ibchookstypes.StoreKey],
@@ -890,10 +904,13 @@ func NewElysApp(
 	wasmStack = wasmmodule.NewIBCHandler(app.WasmKeeper, app.IBCKeeper.ChannelKeeper, app.IBCFeeKeeper)
 	wasmStack = ibcfee.NewIBCMiddleware(wasmStack, app.IBCFeeKeeper)
 
+	var transferStack porttypes.IBCModule = transferIBCModule
+	transferStack = transferhook.NewIBCModule(app.TransferhookKeeper, transferStack)
+
 	// Create static IBC router, add transfer route, then set and seal it
 	ibcRouter := ibcporttypes.NewRouter()
 	ibcRouter.AddRoute(icahosttypes.SubModuleName, icaHostIBCModule).
-		AddRoute(ibctransfertypes.ModuleName, transferIBCModule).
+		AddRoute(ibctransfertypes.ModuleName, transferStack).
 		AddRoute(wasmmodule.ModuleName, wasmStack).
 		AddRoute(oracletypes.ModuleName, oracleIBCModule)
 	// this line is used by starport scaffolding # ibc/app/router
@@ -990,6 +1007,7 @@ func NewElysApp(
 		parameterModule,
 		marginModule,
 		accountedPoolModule,
+		transferhookModule,
 		clockModule,
 		// this line is used by starport scaffolding # stargate/app/appModule
 	)
@@ -1034,6 +1052,7 @@ func NewElysApp(
 		marginmoduletypes.ModuleName,
 		wasmmodule.ModuleName,
 		accountedpoolmoduletypes.ModuleName,
+		transferhooktypes.ModuleName,
 		clockmoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/beginBlockers
 	)
@@ -1073,6 +1092,7 @@ func NewElysApp(
 		marginmoduletypes.ModuleName,
 		wasmmodule.ModuleName,
 		accountedpoolmoduletypes.ModuleName,
+		transferhooktypes.ModuleName,
 		clockmoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/endBlockers
 	)
@@ -1116,6 +1136,7 @@ func NewElysApp(
 		marginmoduletypes.ModuleName,
 		wasmmodule.ModuleName,
 		accountedpoolmoduletypes.ModuleName,
+		transferhooktypes.ModuleName,
 		clockmoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/initGenesis
 	}
@@ -1413,6 +1434,7 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(parametermoduletypes.ModuleName)
 	paramsKeeper.Subspace(marginmoduletypes.ModuleName)
 	paramsKeeper.Subspace(accountedpoolmoduletypes.ModuleName)
+	paramsKeeper.Subspace(transferhooktypes.ModuleName)
 	paramsKeeper.Subspace(clockmoduletypes.ModuleName)
 	// this line is used by starport scaffolding # stargate/app/paramSubspace
 
