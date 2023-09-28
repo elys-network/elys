@@ -111,10 +111,20 @@ func (p *Pool) CalcJoinValueWithoutSlippage(ctx sdk.Context, oracleKeeper Oracle
 	return joinValueWithoutSlippage, nil
 }
 
-// JoinPoolNoSwap calculates the number of shares needed for an all-asset join given tokensIn with swapFee applied.
+// JoinPool calculates the number of shares needed for an all-asset join given tokensIn with swapFee applied.
 // It updates the liquidity if the pool is joined successfully. If not, returns error.
-func (p *Pool) JoinPoolNoSwap(ctx sdk.Context, oracleKeeper OracleKeeper, accountedPoolKeeper AccountedPoolKeeper, tokensIn sdk.Coins) (numShares math.Int, err error) {
+func (p *Pool) JoinPool(ctx sdk.Context, oracleKeeper OracleKeeper, accountedPoolKeeper AccountedPoolKeeper, tokensIn sdk.Coins) (numShares math.Int, err error) {
 	if !p.PoolParams.UseOracle {
+		if len(tokensIn) == 1 {
+			numShares, tokensJoined, err := p.CalcSingleAssetJoinPoolShares(tokensIn)
+			if err != nil {
+				return math.Int{}, err
+			}
+
+			// update pool with the calculated share and liquidity needed to join pool
+			p.IncreaseLiquidity(numShares, tokensJoined)
+			return numShares, nil
+		}
 		numShares, tokensJoined, err := p.CalcJoinPoolNoSwapShares(tokensIn)
 		if err != nil {
 			return math.Int{}, err

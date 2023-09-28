@@ -72,7 +72,7 @@ func (k Keeper) MintPoolShareToAccount(ctx sdk.Context, pool types.Pool, addr sd
 	}
 
 	// Deposit LP token
-	_, err = msgServer.DepositTokens(ctx, msgDepositToken)
+	_, err = msgServer.DepositTokens(sdk.WrapSDKContext(ctx), msgDepositToken)
 	if err != nil {
 		return err
 	}
@@ -85,7 +85,7 @@ func (k Keeper) MintPoolShareToAccount(ctx sdk.Context, pool types.Pool, addr sd
 	}
 
 	// Commit LP token
-	_, err = msgServer.CommitTokens(ctx, msgCommitToken)
+	_, err = msgServer.CommitTokens(sdk.WrapSDKContext(ctx), msgCommitToken)
 	if err != nil {
 		return err
 	}
