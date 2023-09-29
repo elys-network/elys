@@ -340,6 +340,10 @@ submit_upgrade_proposal() {
         --home="/tmp/${first_folder}" \
         -y >/dev/null 2>&1
 
+
+    echo "Waiting 5 seconds for proposal to become available..."
+    sleep 5
+
     for folder in "${NODE_FOLDERS[@]}"; do
         echo "Voting on software upgrade proposal for $folder node..."
         ${BINARY} tx gov vote \
