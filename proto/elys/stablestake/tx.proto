@@ -1,0 +1,7 @@
+syntax = "proto3";
+package elys.stablestake;
+
+option go_package = "github.com/elys-network/elys/x/stablestake/types";
+
+// Msg defines the Msg service.
+service Msg {}
