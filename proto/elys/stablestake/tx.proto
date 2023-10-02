@@ -1,7 +1,25 @@
 syntax = "proto3";
+
 package elys.stablestake;
 
 option go_package = "github.com/elys-network/elys/x/stablestake/types";
 
 // Msg defines the Msg service.
-service Msg {}
+service Msg {
+  rpc Bond(MsgBond) returns (MsgBondResponse);
+  rpc Unbond(MsgUnbond) returns (MsgUnbondResponse);
+}
+message MsgBond {
+  string creator = 1;
+  string amount  = 2;
+}
+
+message MsgBondResponse {}
+
+message MsgUnbond {
+  string creator = 1;
+  string amount  = 2;
+}
+
+message MsgUnbondResponse {}
+
