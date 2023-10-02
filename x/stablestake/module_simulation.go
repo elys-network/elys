@@ -23,7 +23,15 @@ var (
 )
 
 const (
-// this line is used by starport scaffolding # simapp/module/const
+	opWeightMsgBond = "op_weight_msg_stake"
+	// TODO: Determine the simulation weight value
+	defaultWeightMsgBond int = 100
+
+	opWeightMsgUnbond = "op_weight_msg_unbond"
+	// TODO: Determine the simulation weight value
+	defaultWeightMsgUnbond int = 100
+
+	// this line is used by starport scaffolding # simapp/module/const
 )
 
 // GenerateGenesisState creates a randomized GenState of the module.
@@ -51,6 +59,28 @@ func (AppModule) ProposalContents(_ module.SimulationState) []simtypes.WeightedP
 func (am AppModule) WeightedOperations(simState module.SimulationState) []simtypes.WeightedOperation {
 	operations := make([]simtypes.WeightedOperation, 0)
 
+	var weightMsgBond int
+	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgBond, &weightMsgBond, nil,
+		func(_ *rand.Rand) {
+			weightMsgBond = defaultWeightMsgBond
+		},
+	)
+	operations = append(operations, simulation.NewWeightedOperation(
+		weightMsgBond,
+		stablestakesimulation.SimulateMsgBond(am.accountKeeper, am.bankKeeper, am.keeper),
+	))
+
+	var weightMsgUnbond int
+	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgUnbond, &weightMsgUnbond, nil,
+		func(_ *rand.Rand) {
+			weightMsgUnbond = defaultWeightMsgUnbond
+		},
+	)
+	operations = append(operations, simulation.NewWeightedOperation(
+		weightMsgUnbond,
+		stablestakesimulation.SimulateMsgUnbond(am.accountKeeper, am.bankKeeper, am.keeper),
+	))
+
 	// this line is used by starport scaffolding # simapp/module/operation
 
 	return operations
@@ -59,6 +89,22 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 // ProposalMsgs returns msgs used for governance proposals for simulations.
 func (am AppModule) ProposalMsgs(simState module.SimulationState) []simtypes.WeightedProposalMsg {
 	return []simtypes.WeightedProposalMsg{
+		simulation.NewWeightedProposalMsg(
+			opWeightMsgBond,
+			defaultWeightMsgBond,
+			func(r *rand.Rand, ctx sdk.Context, accs []simtypes.Account) sdk.Msg {
+				stablestakesimulation.SimulateMsgBond(am.accountKeeper, am.bankKeeper, am.keeper)
+				return nil
+			},
+		),
+		simulation.NewWeightedProposalMsg(
+			opWeightMsgUnbond,
+			defaultWeightMsgUnbond,
+			func(r *rand.Rand, ctx sdk.Context, accs []simtypes.Account) sdk.Msg {
+				stablestakesimulation.SimulateMsgUnbond(am.accountKeeper, am.bankKeeper, am.keeper)
+				return nil
+			},
+		),
 		// this line is used by starport scaffolding # simapp/module/OpMsg
 	}
 }
