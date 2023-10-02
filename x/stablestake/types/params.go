@@ -22,13 +22,16 @@ func ParamKeyTable() paramtypes.KeyTable {
 }
 
 // NewParams creates a new Params instance
-func NewParams() Params {
-	return Params{}
+func NewParams(depositDenom string, redemptionRate sdk.Dec) Params {
+	return Params{
+		DepositDenom:   depositDenom,
+		RedemptionRate: redemptionRate,
+	}
 }
 
 // DefaultParams returns a default set of parameters
 func DefaultParams() Params {
-	return NewParams()
+	return NewParams("uusdc", sdk.OneDec())
 }
 
 // ParamSetPairs get the params.ParamSet
