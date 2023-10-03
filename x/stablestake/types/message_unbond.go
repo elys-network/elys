@@ -9,7 +9,7 @@ const TypeMsgUnbond = "unbond"
 
 var _ sdk.Msg = &MsgUnbond{}
 
-func NewMsgUnbond(creator string, amount string) *MsgUnbond {
+func NewMsgUnbond(creator string, amount sdk.Int) *MsgUnbond {
 	return &MsgUnbond{
 		Creator: creator,
 		Amount:  amount,
