@@ -28,7 +28,7 @@ func (k msgServer) Unbond(goCtx context.Context, msg *types.MsgUnbond) (*types.M
 
 	redemptionAmount := sdk.NewDecFromInt(shareCoin.Amount).Mul(params.RedemptionRate).RoundInt()
 	redemptionCoin := sdk.NewCoin(params.DepositDenom, redemptionAmount)
-	err = k.bk.SendCoinsFromAccountToModule(ctx, sender, types.ModuleName, sdk.Coins{redemptionCoin})
+	err = k.bk.SendCoinsFromModuleToAccount(ctx, types.ModuleName, sender, sdk.Coins{redemptionCoin})
 	if err != nil {
 		return nil, err
 	}
