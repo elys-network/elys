@@ -9,7 +9,7 @@ const TypeMsgBond = "stake"
 
 var _ sdk.Msg = &MsgBond{}
 
-func NewMsgBond(creator string, amount string) *MsgBond {
+func NewMsgBond(creator string, amount sdk.Int) *MsgBond {
 	return &MsgBond{
 		Creator: creator,
 		Amount:  amount,
