@@ -1,0 +1,12 @@
+syntax = "proto3";
+package elys.leveragelp;
+
+import "gogoproto/gogo.proto";
+import "elys/leveragelp/params.proto";
+
+option go_package = "github.com/elys-network/elys/x/leveragelp/types";
+
+// GenesisState defines the leveragelp module's genesis state.
+message GenesisState {
+  Params params = 1 [(gogoproto.nullable) = false];
+}

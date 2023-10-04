@@ -39092,6 +39092,42 @@ paths:
                   additionalProperties: {}
       tags:
         - Query
+  /elys-network/elys/leveragelp/params:
+    get:
+      summary: Parameters queries the parameters of the module.
+      operationId: ElysLeveragelpParams
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              params:
+                description: params holds all the parameters of this module.
+                type: object
+            description: >-
+              QueryParamsResponse is response type for the Query/Params RPC
+              method.
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      tags:
+        - Query
   /elys-network/elys/liquidityprovider/params:
     get:
       summary: Parameters queries the parameters of the module.
@@ -81888,6 +81924,16 @@ definitions:
           elys_stake_tracking_rate:
             type: string
             format: int64
+    description: QueryParamsResponse is response type for the Query/Params RPC method.
+  elys.leveragelp.Params:
+    type: object
+    description: Params defines the parameters for the module.
+  elys.leveragelp.QueryParamsResponse:
+    type: object
+    properties:
+      params:
+        description: params holds all the parameters of this module.
+        type: object
     description: QueryParamsResponse is response type for the Query/Params RPC method.
   elys.liquidityprovider.Params:
     type: object
