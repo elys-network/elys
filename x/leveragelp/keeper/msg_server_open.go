@@ -10,8 +10,5 @@ import (
 func (k msgServer) Open(goCtx context.Context, msg *types.MsgOpen) (*types.MsgOpenResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	// TODO: Handling the message
-	_ = ctx
-
-	return &types.MsgOpenResponse{}, nil
+	return k.Keeper.Open(ctx, msg)
 }

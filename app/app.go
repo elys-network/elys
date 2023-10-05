@@ -182,6 +182,7 @@ import (
 	leveragelpmodule "github.com/elys-network/elys/x/leveragelp"
 	leveragelpmodulekeeper "github.com/elys-network/elys/x/leveragelp/keeper"
 	leveragelpmoduletypes "github.com/elys-network/elys/x/leveragelp/types"
+
 	// this line is used by starport scaffolding # stargate/app/moduleImport
 
 	"github.com/elys-network/elys/docs"
@@ -921,7 +922,10 @@ func NewElysApp(
 		appCodec,
 		keys[leveragelpmoduletypes.StoreKey],
 		keys[leveragelpmoduletypes.MemStoreKey],
-		app.GetSubspace(leveragelpmoduletypes.ModuleName),
+		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+		app.AmmKeeper,
+		app.BankKeeper,
+		app.OracleKeeper,
 	)
 	leveragelpModule := leveragelpmodule.NewAppModule(appCodec, app.LeveragelpKeeper, app.AccountKeeper, app.BankKeeper)
 

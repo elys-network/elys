@@ -19,7 +19,6 @@ var (
 	_ = leveragelpsimulation.FindAccount
 	_ = simulation.MsgEntryKind
 	_ = baseapp.Paramspace
-	_ = rand.Rand{}
 )
 
 const (
@@ -27,18 +26,30 @@ const (
 	// TODO: Determine the simulation weight value
 	defaultWeightMsgOpen int = 100
 
-	opWeightMsgClosePosition = "op_weight_msg_close_position"
+	opWeightMsgClosep = "op_weight_msg_closep"
 	// TODO: Determine the simulation weight value
-	defaultWeightMsgClosePosition int = 100
+	defaultWeightMsgClosep int = 100
 
 	opWeightMsgUpdateParams = "op_weight_msg_update_params"
 	// TODO: Determine the simulation weight value
 	defaultWeightMsgUpdateParams int = 100
 
+	opWeightMsgUpdatePools = "op_weight_msg_update_pools"
+	// TODO: Determine the simulation weight value
+	defaultWeightMsgUpdatePools int = 100
+
+	opWeightMsgWhitelist = "op_weight_msg_whitelist"
+	// TODO: Determine the simulation weight value
+	defaultWeightMsgWhitelist int = 100
+
+	opWeightMsgDewhitelist = "op_weight_msg_dewhitelist"
+	// TODO: Determine the simulation weight value
+	defaultWeightMsgDewhitelist int = 100
+
 	// this line is used by starport scaffolding # simapp/module/const
 )
 
-// GenerateGenesisState creates a randomized GenState of the module.
+// GenerateGenesisState creates a randomized GenState of the module
 func (AppModule) GenerateGenesisState(simState *module.SimulationState) {
 	accs := make([]string, len(simState.Accounts))
 	for i, acc := range simState.Accounts {
@@ -51,13 +62,13 @@ func (AppModule) GenerateGenesisState(simState *module.SimulationState) {
 	simState.GenState[types.ModuleName] = simState.Cdc.MustMarshalJSON(&leveragelpGenesis)
 }
 
-// RegisterStoreDecoder registers a decoder.
-func (am AppModule) RegisterStoreDecoder(_ sdk.StoreDecoderRegistry) {}
-
-// ProposalContents doesn't return any content functions for governance proposals.
+// ProposalContents doesn't return any content functions for governance proposals
 func (AppModule) ProposalContents(_ module.SimulationState) []simtypes.WeightedProposalContent {
 	return nil
 }
+
+// RegisterStoreDecoder registers a decoder
+func (am AppModule) RegisterStoreDecoder(_ sdk.StoreDecoderRegistry) {}
 
 // WeightedOperations returns the all the gov module operations with their respective weights.
 func (am AppModule) WeightedOperations(simState module.SimulationState) []simtypes.WeightedOperation {
@@ -74,15 +85,15 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 		leveragelpsimulation.SimulateMsgOpen(am.accountKeeper, am.bankKeeper, am.keeper),
 	))
 
-	var weightMsgClosePosition int
-	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgClosePosition, &weightMsgClosePosition, nil,
+	var weightMsgClosep int
+	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgClosep, &weightMsgClosep, nil,
 		func(_ *rand.Rand) {
-			weightMsgClosePosition = defaultWeightMsgClosePosition
+			weightMsgClosep = defaultWeightMsgClosep
 		},
 	)
 	operations = append(operations, simulation.NewWeightedOperation(
-		weightMsgClosePosition,
-		leveragelpsimulation.SimulateMsgClosePosition(am.accountKeeper, am.bankKeeper, am.keeper),
+		weightMsgClosep,
+		leveragelpsimulation.SimulateMsgClosep(am.accountKeeper, am.bankKeeper, am.keeper),
 	))
 
 	var weightMsgUpdateParams int
@@ -91,43 +102,41 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 			weightMsgUpdateParams = defaultWeightMsgUpdateParams
 		},
 	)
+
+	var weightMsgUpdatePools int
+	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgUpdatePools, &weightMsgUpdatePools, nil,
+		func(_ *rand.Rand) {
+			weightMsgUpdatePools = defaultWeightMsgUpdatePools
+		},
+	)
 	operations = append(operations, simulation.NewWeightedOperation(
-		weightMsgUpdateParams,
-		leveragelpsimulation.SimulateMsgUpdateParams(am.accountKeeper, am.bankKeeper, am.keeper),
+		weightMsgUpdatePools,
+		leveragelpsimulation.SimulateMsgUpdatePools(am.accountKeeper, am.bankKeeper, am.keeper),
+	))
+
+	var weightMsgWhitelist int
+	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgWhitelist, &weightMsgWhitelist, nil,
+		func(_ *rand.Rand) {
+			weightMsgWhitelist = defaultWeightMsgWhitelist
+		},
+	)
+	operations = append(operations, simulation.NewWeightedOperation(
+		weightMsgWhitelist,
+		leveragelpsimulation.SimulateMsgWhitelist(am.accountKeeper, am.bankKeeper, am.keeper),
+	))
+
+	var weightMsgDewhitelist int
+	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgDewhitelist, &weightMsgDewhitelist, nil,
+		func(_ *rand.Rand) {
+			weightMsgDewhitelist = defaultWeightMsgDewhitelist
+		},
+	)
+	operations = append(operations, simulation.NewWeightedOperation(
+		weightMsgDewhitelist,
+		leveragelpsimulation.SimulateMsgDewhitelist(am.accountKeeper, am.bankKeeper, am.keeper),
 	))
 
 	// this line is used by starport scaffolding # simapp/module/operation
 
 	return operations
-}
-
-// ProposalMsgs returns msgs used for governance proposals for simulations.
-func (am AppModule) ProposalMsgs(simState module.SimulationState) []simtypes.WeightedProposalMsg {
-	return []simtypes.WeightedProposalMsg{
-		simulation.NewWeightedProposalMsg(
-			opWeightMsgOpen,
-			defaultWeightMsgOpen,
-			func(r *rand.Rand, ctx sdk.Context, accs []simtypes.Account) sdk.Msg {
-				leveragelpsimulation.SimulateMsgOpen(am.accountKeeper, am.bankKeeper, am.keeper)
-				return nil
-			},
-		),
-		simulation.NewWeightedProposalMsg(
-			opWeightMsgClosePosition,
-			defaultWeightMsgClosePosition,
-			func(r *rand.Rand, ctx sdk.Context, accs []simtypes.Account) sdk.Msg {
-				leveragelpsimulation.SimulateMsgClosePosition(am.accountKeeper, am.bankKeeper, am.keeper)
-				return nil
-			},
-		),
-		simulation.NewWeightedProposalMsg(
-			opWeightMsgUpdateParams,
-			defaultWeightMsgUpdateParams,
-			func(r *rand.Rand, ctx sdk.Context, accs []simtypes.Account) sdk.Msg {
-				leveragelpsimulation.SimulateMsgUpdateParams(am.accountKeeper, am.bankKeeper, am.keeper)
-				return nil
-			},
-		),
-		// this line is used by starport scaffolding # simapp/module/OpMsg
-	}
 }

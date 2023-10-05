@@ -7,11 +7,8 @@ import (
 	"github.com/elys-network/elys/x/leveragelp/types"
 )
 
-func (k msgServer) ClosePosition(goCtx context.Context, msg *types.MsgClosePosition) (*types.MsgClosePositionResponse, error) {
+func (k msgServer) Close(goCtx context.Context, msg *types.MsgClose) (*types.MsgCloseResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	// TODO: Handling the message
-	_ = ctx
-
-	return &types.MsgClosePositionResponse{}, nil
+	return k.Keeper.Close(ctx, msg)
 }

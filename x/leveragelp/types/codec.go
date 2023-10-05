@@ -9,21 +9,24 @@ import (
 
 func RegisterCodec(cdc *codec.LegacyAmino) {
 	cdc.RegisterConcrete(&MsgOpen{}, "leveragelp/Open", nil)
-	cdc.RegisterConcrete(&MsgClosePosition{}, "leveragelp/ClosePosition", nil)
+	cdc.RegisterConcrete(&MsgClose{}, "leveragelp/Close", nil)
 	cdc.RegisterConcrete(&MsgUpdateParams{}, "leveragelp/UpdateParams", nil)
+	cdc.RegisterConcrete(&MsgUpdatePools{}, "leveragelp/UpdatePools", nil)
+	cdc.RegisterConcrete(&MsgWhitelist{}, "leveragelp/Whitelist", nil)
+	cdc.RegisterConcrete(&MsgDewhitelist{}, "leveragelp/Dewhitelist", nil)
 	// this line is used by starport scaffolding # 2
 }
 
 func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 	registry.RegisterImplementations((*sdk.Msg)(nil),
 		&MsgOpen{},
-	)
-	registry.RegisterImplementations((*sdk.Msg)(nil),
-		&MsgClosePosition{},
-	)
-	registry.RegisterImplementations((*sdk.Msg)(nil),
+		&MsgClose{},
 		&MsgUpdateParams{},
+		&MsgUpdatePools{},
+		&MsgWhitelist{},
+		&MsgDewhitelist{},
 	)
+
 	// this line is used by starport scaffolding # 3
 
 	msgservice.RegisterMsgServiceDesc(registry, &_Msg_serviceDesc)
