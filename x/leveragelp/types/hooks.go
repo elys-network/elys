@@ -6,7 +6,7 @@ import (
 )
 
 type LeveragelpHooks interface {
-	// AfterLeveragelpPositionOpended is called after OpenLong or OpenShort position.
+	// AfterLeveragelpPositionOpended is called after Open position.
 	AfterLeveragelpPositionOpended(ctx sdk.Context, ammPool ammtypes.Pool, leveragelpPool Pool)
 
 	// AfterLeveragelpPositionModified is called after a position gets modified.

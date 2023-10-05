@@ -226,41 +226,6 @@ func TestOpen_ErrorOpenLong(t *testing.T) {
 	mockChecker.AssertExpectations(t)
 }
 
-func TestOpen_ErrorOpenShort(t *testing.T) {
-	// Setup the mock checker
-	mockChecker := new(mocks.OpenChecker)
-
-	// Create an instance of Keeper with the mock checker
-	k := keeper.Keeper{
-		OpenChecker: mockChecker,
-	}
-
-	var (
-		ctx = sdk.Context{} // Mock or setup a context
-		msg = &types.MsgOpen{
-			CollateralAsset: "aaa",
-			BorrowAsset:     "bbb",
-			Position:        types.Position_SHORT,
-		}
-		poolId = uint64(1)
-	)
-
-	// Mock behavior
-	mockChecker.On("CheckShortAssets", ctx, msg.CollateralAsset, msg.BorrowAsset).Return(nil)
-	mockChecker.On("CheckUserAuthorization", ctx, msg).Return(nil)
-	mockChecker.On("CheckSamePosition", ctx, msg).Return(nil)
-	mockChecker.On("CheckMaxOpenPositions", ctx).Return(nil)
-	mockChecker.On("GetTradingAsset", msg.CollateralAsset, msg.BorrowAsset).Return(msg.BorrowAsset)
-	mockChecker.On("PreparePools", ctx, msg.BorrowAsset).Return(poolId, ammtypes.Pool{}, types.Pool{}, nil)
-	mockChecker.On("CheckPoolHealth", ctx, poolId).Return(nil)
-	mockChecker.On("OpenShort", ctx, poolId, msg).Return(&types.MTP{}, errors.New("error executing open short"))
-
-	_, err := k.Open(ctx, msg)
-
-	assert.Equal(t, errors.New("error executing open short"), err)
-	mockChecker.AssertExpectations(t)
-}
-
 func TestOpen_Successful(t *testing.T) {
 	// Setup the mock checker
 	mockChecker := new(mocks.OpenChecker)
@@ -275,21 +240,21 @@ func TestOpen_Successful(t *testing.T) {
 		msg = &types.MsgOpen{
 			CollateralAsset: "aaa",
 			BorrowAsset:     "bbb",
-			Position:        types.Position_SHORT,
+			Position:        types.Position_LONG,
 		}
 		poolId = uint64(1)
 		mtp    = &types.MTP{}
 	)
 
 	// Mock behavior
-	mockChecker.On("CheckShortAssets", ctx, msg.CollateralAsset, msg.BorrowAsset).Return(nil)
+	mockChecker.On("CheckLongAssets", ctx, msg.CollateralAsset, msg.BorrowAsset).Return(nil)
 	mockChecker.On("CheckUserAuthorization", ctx, msg).Return(nil)
 	mockChecker.On("CheckSamePosition", ctx, msg).Return(nil)
 	mockChecker.On("CheckMaxOpenPositions", ctx).Return(nil)
 	mockChecker.On("GetTradingAsset", msg.CollateralAsset, msg.BorrowAsset).Return(msg.BorrowAsset)
 	mockChecker.On("PreparePools", ctx, msg.BorrowAsset).Return(poolId, ammtypes.Pool{}, types.Pool{}, nil)
 	mockChecker.On("CheckPoolHealth", ctx, poolId).Return(nil)
-	mockChecker.On("OpenShort", ctx, poolId, msg).Return(mtp, nil)
+	mockChecker.On("OpenLong", ctx, poolId, msg).Return(mtp, nil)
 	mockChecker.On("EmitOpenEvent", ctx, mtp).Return()
 
 	_, err := k.Open(ctx, msg)

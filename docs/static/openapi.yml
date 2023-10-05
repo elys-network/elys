@@ -39187,7 +39187,6 @@ paths:
                     enum:
                       - UNSPECIFIED
                       - LONG
-                      - SHORT
                     default: UNSPECIFIED
                   id:
                     type: string
@@ -39287,7 +39286,6 @@ paths:
                       enum:
                         - UNSPECIFIED
                         - LONG
-                        - SHORT
                       default: UNSPECIFIED
                     id:
                       type: string
@@ -39467,7 +39465,6 @@ paths:
                       enum:
                         - UNSPECIFIED
                         - LONG
-                        - SHORT
                       default: UNSPECIFIED
                     id:
                       type: string
@@ -39935,7 +39932,6 @@ paths:
                       enum:
                         - UNSPECIFIED
                         - LONG
-                        - SHORT
                       default: UNSPECIFIED
                     id:
                       type: string
@@ -83057,7 +83053,6 @@ definitions:
         enum:
           - UNSPECIFIED
           - LONG
-          - SHORT
         default: UNSPECIFIED
       id:
         type: string
@@ -83118,7 +83113,6 @@ definitions:
             enum:
               - UNSPECIFIED
               - LONG
-              - SHORT
             default: UNSPECIFIED
           id:
             type: string
@@ -83285,7 +83279,6 @@ definitions:
     enum:
       - UNSPECIFIED
       - LONG
-      - SHORT
     default: UNSPECIFIED
   elys.leveragelp.PositionsByPoolResponse:
     type: object
@@ -83338,7 +83331,6 @@ definitions:
               enum:
                 - UNSPECIFIED
                 - LONG
-                - SHORT
               default: UNSPECIFIED
             id:
               type: string
@@ -83427,7 +83419,6 @@ definitions:
               enum:
                 - UNSPECIFIED
                 - LONG
-                - SHORT
               default: UNSPECIFIED
             id:
               type: string
@@ -83516,7 +83507,6 @@ definitions:
               enum:
                 - UNSPECIFIED
                 - LONG
-                - SHORT
               default: UNSPECIFIED
             id:
               type: string

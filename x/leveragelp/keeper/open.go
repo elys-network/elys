@@ -7,14 +7,10 @@ import (
 )
 
 func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen) (*types.MsgOpenResponse, error) {
-	// Determine the type of position (long or short) and validate assets accordingly.
+	// Determine the type of position and validate assets accordingly.
 	switch msg.Position {
 	case types.Position_LONG:
 		if err := k.OpenChecker.CheckLongAssets(ctx, msg.CollateralAsset, msg.BorrowAsset); err != nil {
-			return nil, err
-		}
-	case types.Position_SHORT:
-		if err := k.OpenChecker.CheckShortAssets(ctx, msg.CollateralAsset, msg.BorrowAsset); err != nil {
 			return nil, err
 		}
 	default:
@@ -51,11 +47,6 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen) (*types.MsgOpenRespons
 	switch msg.Position {
 	case types.Position_LONG:
 		mtp, err = k.OpenChecker.OpenLong(ctx, poolId, msg)
-		if err != nil {
-			return nil, err
-		}
-	case types.Position_SHORT:
-		mtp, err = k.OpenChecker.OpenShort(ctx, poolId, msg)
 		if err != nil {
 			return nil, err
 		}

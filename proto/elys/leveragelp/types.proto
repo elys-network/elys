@@ -9,7 +9,6 @@ import "gogoproto/gogo.proto";
 enum Position {
   UNSPECIFIED = 0;
   LONG = 1;
-  SHORT = 2;
 }
 
 message MTP {

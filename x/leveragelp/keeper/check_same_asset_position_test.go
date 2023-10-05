@@ -25,12 +25,12 @@ func TestCheckSameAssets_NewPosition(t *testing.T) {
 		CollateralAsset:  ptypes.ATOM,
 		CollateralAmount: sdk.NewInt(100),
 		BorrowAsset:      ptypes.ATOM,
-		Position:         types.Position_SHORT,
+		Position:         types.Position_LONG,
 		Leverage:         sdk.NewDec(1),
 	}
 
 	mtp = k.CheckSamePosition(ctx, msg)
 
 	// Expect no error
-	assert.Nil(t, mtp)
+	assert.NotNil(t, mtp)
 }

@@ -198,50 +198,6 @@ func (_c *OpenChecker_CheckSamePosition_Call) RunAndReturn(run func(types.Contex
 	return _c
 }
 
-// CheckShortAssets provides a mock function with given fields: ctx, collateralAsset, borrowAsset
-func (_m *OpenChecker) CheckShortAssets(ctx types.Context, collateralAsset string, borrowAsset string) error {
-	ret := _m.Called(ctx, collateralAsset, borrowAsset)
-
-	var r0 error
-	if rf, ok := ret.Get(0).(func(types.Context, string, string) error); ok {
-		r0 = rf(ctx, collateralAsset, borrowAsset)
-	} else {
-		r0 = ret.Error(0)
-	}
-
-	return r0
-}
-
-// OpenChecker_CheckShortAssets_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'CheckShortAssets'
-type OpenChecker_CheckShortAssets_Call struct {
-	*mock.Call
-}
-
-// CheckShortAssets is a helper method to define mock.On call
-//   - ctx types.Context
-//   - collateralAsset string
-//   - borrowAsset string
-func (_e *OpenChecker_Expecter) CheckShortAssets(ctx interface{}, collateralAsset interface{}, borrowAsset interface{}) *OpenChecker_CheckShortAssets_Call {
-	return &OpenChecker_CheckShortAssets_Call{Call: _e.mock.On("CheckShortAssets", ctx, collateralAsset, borrowAsset)}
-}
-
-func (_c *OpenChecker_CheckShortAssets_Call) Run(run func(ctx types.Context, collateralAsset string, borrowAsset string)) *OpenChecker_CheckShortAssets_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(types.Context), args[1].(string), args[2].(string))
-	})
-	return _c
-}
-
-func (_c *OpenChecker_CheckShortAssets_Call) Return(_a0 error) *OpenChecker_CheckShortAssets_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *OpenChecker_CheckShortAssets_Call) RunAndReturn(run func(types.Context, string, string) error) *OpenChecker_CheckShortAssets_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
 // CheckUserAuthorization provides a mock function with given fields: ctx, msg
 func (_m *OpenChecker) CheckUserAuthorization(ctx types.Context, msg *leveragelptypes.MsgOpen) error {
 	ret := _m.Called(ctx, msg)
@@ -498,62 +454,6 @@ func (_c *OpenChecker_OpenLong_Call) Return(_a0 *leveragelptypes.MTP, _a1 error)
 }
 
 func (_c *OpenChecker_OpenLong_Call) RunAndReturn(run func(types.Context, uint64, *leveragelptypes.MsgOpen) (*leveragelptypes.MTP, error)) *OpenChecker_OpenLong_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// OpenShort provides a mock function with given fields: ctx, poolId, msg
-func (_m *OpenChecker) OpenShort(ctx types.Context, poolId uint64, msg *leveragelptypes.MsgOpen) (*leveragelptypes.MTP, error) {
-	ret := _m.Called(ctx, poolId, msg)
-
-	var r0 *leveragelptypes.MTP
-	var r1 error
-	if rf, ok := ret.Get(0).(func(types.Context, uint64, *leveragelptypes.MsgOpen) (*leveragelptypes.MTP, error)); ok {
-		return rf(ctx, poolId, msg)
-	}
-	if rf, ok := ret.Get(0).(func(types.Context, uint64, *leveragelptypes.MsgOpen) *leveragelptypes.MTP); ok {
-		r0 = rf(ctx, poolId, msg)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*leveragelptypes.MTP)
-		}
-	}
-
-	if rf, ok := ret.Get(1).(func(types.Context, uint64, *leveragelptypes.MsgOpen) error); ok {
-		r1 = rf(ctx, poolId, msg)
-	} else {
-		r1 = ret.Error(1)
-	}
-
-	return r0, r1
-}
-
-// OpenChecker_OpenShort_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'OpenShort'
-type OpenChecker_OpenShort_Call struct {
-	*mock.Call
-}
-
-// OpenShort is a helper method to define mock.On call
-//   - ctx types.Context
-//   - poolId uint64
-//   - msg *leveragelptypes.MsgOpen
-func (_e *OpenChecker_Expecter) OpenShort(ctx interface{}, poolId interface{}, msg interface{}) *OpenChecker_OpenShort_Call {
-	return &OpenChecker_OpenShort_Call{Call: _e.mock.On("OpenShort", ctx, poolId, msg)}
-}
-
-func (_c *OpenChecker_OpenShort_Call) Run(run func(ctx types.Context, poolId uint64, msg *leveragelptypes.MsgOpen)) *OpenChecker_OpenShort_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(types.Context), args[1].(uint64), args[2].(*leveragelptypes.MsgOpen))
-	})
-	return _c
-}
-
-func (_c *OpenChecker_OpenShort_Call) Return(_a0 *leveragelptypes.MTP, _a1 error) *OpenChecker_OpenShort_Call {
-	_c.Call.Return(_a0, _a1)
-	return _c
-}
-
-func (_c *OpenChecker_OpenShort_Call) RunAndReturn(run func(types.Context, uint64, *leveragelptypes.MsgOpen) (*leveragelptypes.MTP, error)) *OpenChecker_OpenShort_Call {
 	_c.Call.Return(run)
 	return _c
 }
