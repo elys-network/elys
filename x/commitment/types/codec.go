@@ -11,11 +11,12 @@ func RegisterCodec(cdc *codec.LegacyAmino) {
 	cdc.RegisterConcrete(&MsgCommitTokens{}, "commitment/CommitTokens", nil)
 	cdc.RegisterConcrete(&MsgUncommitTokens{}, "commitment/UncommitTokens", nil)
 	cdc.RegisterConcrete(&MsgWithdrawTokens{}, "commitment/WithdrawTokens", nil)
-	cdc.RegisterConcrete(&MsgDepositTokens{}, "commitment/DepositTokens", nil)
+	cdc.RegisterConcrete(&MsgCommitLiquidTokens{}, "commitment/CommitLiquidTokens", nil)
 	cdc.RegisterConcrete(&MsgVest{}, "commitment/Vest", nil)
 	cdc.RegisterConcrete(&MsgCancelVest{}, "commitment/CancelVest", nil)
 	cdc.RegisterConcrete(&MsgVestNow{}, "commitment/VestNow", nil)
 	cdc.RegisterConcrete(&MsgUpdateVestingInfo{}, "commitment/UpdateVestingInfo", nil)
+	cdc.RegisterConcrete(&MsgVestLiquid{}, "commitment/VestLiquid", nil)
 	// this line is used by starport scaffolding # 2
 }
 
@@ -30,7 +31,7 @@ func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 		&MsgWithdrawTokens{},
 	)
 	registry.RegisterImplementations((*sdk.Msg)(nil),
-		&MsgDepositTokens{},
+		&MsgCommitLiquidTokens{},
 	)
 	registry.RegisterImplementations((*sdk.Msg)(nil),
 		&MsgVest{},
@@ -43,6 +44,9 @@ func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 	)
 	registry.RegisterImplementations((*sdk.Msg)(nil),
 		&MsgUpdateVestingInfo{},
+	)
+	registry.RegisterImplementations((*sdk.Msg)(nil),
+		&MsgVestLiquid{},
 	)
 	// this line is used by starport scaffolding # 3
 

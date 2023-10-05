@@ -82479,13 +82479,15 @@ definitions:
         type: string
   elys.commitment.MsgCancelVestResponse:
     type: object
-  elys.commitment.MsgCommitTokensResponse:
+  elys.commitment.MsgCommitLiquidTokensResponse:
     type: object
-  elys.commitment.MsgDepositTokensResponse:
+  elys.commitment.MsgCommitTokensResponse:
     type: object
   elys.commitment.MsgUncommitTokensResponse:
     type: object
   elys.commitment.MsgUpdateVestingInfoResponse:
+    type: object
+  elys.commitment.MsgVestLiquidResponse:
     type: object
   elys.commitment.MsgVestNowResponse:
     type: object

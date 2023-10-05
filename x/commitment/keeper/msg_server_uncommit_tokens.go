@@ -10,6 +10,7 @@ import (
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
 
+// uncommit the committed one and make it liquid immediately.
 func (k msgServer) UncommitTokens(goCtx context.Context, msg *types.MsgUncommitTokens) (*types.MsgUncommitTokensResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
@@ -30,8 +31,6 @@ func (k msgServer) UncommitTokens(goCtx context.Context, msg *types.MsgUncommitT
 
 	// Check if the committed tokens have enough amount to be uncommitted
 	committedToken, _ := commitments.GetCommittedTokensForDenom(msg.Denom)
-	// committedAmount := commitments.GetCommittedAmountForDenom(msg.Denom)
-
 	if committedToken.Amount.LT(msg.Amount) {
 		return nil, sdkerrors.Wrapf(types.ErrInsufficientCommittedTokens, "creator: %s, denom: %s", msg.Creator, msg.Denom)
 	}
@@ -39,22 +38,27 @@ func (k msgServer) UncommitTokens(goCtx context.Context, msg *types.MsgUncommitT
 	// Update the committed tokens amount
 	committedToken.Amount = committedToken.Amount.Sub(msg.Amount)
 
-	// Update the uncommitted tokens amount
-	uncommittedToken, found := commitments.GetUncommittedTokensForDenom(msg.Denom)
-
-	if found {
-		uncommittedToken.Amount = uncommittedToken.Amount.Add(msg.Amount)
-	} else {
-		uncommittedTokens := commitments.GetUncommittedTokens()
-		uncommittedTokens = append(uncommittedTokens, &types.UncommittedTokens{
-			Denom:  msg.Denom,
-			Amount: msg.Amount,
-		})
-		commitments.UncommittedTokens = uncommittedTokens
-	}
-
 	// Update the commitments
 	k.SetCommitments(ctx, commitments)
+
+	liquidCoins := sdk.NewCoins(sdk.NewCoin(msg.Denom, msg.Amount))
+
+	// Mint the withdrawn tokens to the module account
+	err := k.bankKeeper.MintCoins(ctx, types.ModuleName, liquidCoins)
+	if err != nil {
+		return nil, sdkerrors.Wrap(sdkerrors.ErrInsufficientFunds, "unable to mint liquid tokens")
+	}
+
+	addr, err := sdk.AccAddressFromBech32(commitments.Creator)
+	if err != nil {
+		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "unable to convert address from bech32")
+	}
+
+	// Send the minted coins to the user's account
+	err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, addr, liquidCoins)
+	if err != nil {
+		return nil, sdkerrors.Wrap(sdkerrors.ErrInsufficientFunds, "unable to send liquid tokens")
+	}
 
 	// Emit Hook commitment changed
 	k.AfterCommitmentChange(ctx, msg.Creator, sdk.NewCoin(msg.Denom, msg.Amount))

@@ -14,7 +14,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestDepositTokens(t *testing.T) {
+func TestCommitLiquidTokens(t *testing.T) {
 	app := app.InitElysTestApp(true)
 
 	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
@@ -27,14 +27,14 @@ func TestDepositTokens(t *testing.T) {
 	creator, _ := sdk.AccAddressFromBech32("cosmos1xv9tklw7d82sezh9haa573wufgy59vmwe6xxe5")
 
 	// Create a deposit message
-	depositMsg := &types.MsgDepositTokens{
+	commitMsg := &types.MsgCommitLiquidTokens{
 		Creator: creator.String(),
 		Denom:   ptypes.Eden,
 		Amount:  sdk.NewInt(100),
 	}
 
 	// Set assetprofile entry for denom
-	app.AssetprofileKeeper.SetEntry(ctx, aptypes.Entry{BaseDenom: depositMsg.Denom, CommitEnabled: true})
+	app.AssetprofileKeeper.SetEntry(ctx, aptypes.Entry{BaseDenom: commitMsg.Denom, CommitEnabled: true})
 
 	// Add initial funds to creator's account
 	coins := sdk.NewCoins(sdk.NewCoin(ptypes.Eden, sdk.NewInt(200)))
@@ -42,27 +42,27 @@ func TestDepositTokens(t *testing.T) {
 	require.NoError(t, err)
 	err = app.BankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, creator, coins)
 	require.NoError(t, err)
-	balance := app.BankKeeper.GetBalance(ctx, creator, depositMsg.Denom)
+	balance := app.BankKeeper.GetBalance(ctx, creator, commitMsg.Denom)
 	require.Equal(t, coins.AmountOf(ptypes.Eden), balance.Amount, "creator balance did not initialize")
 
 	require.NoError(t, err)
 
 	// Execute the DepositTokens function
-	_, err = msgServer.DepositTokens(ctx, depositMsg)
+	_, err = msgServer.CommitLiquidTokens(ctx, commitMsg)
 	require.NoError(t, err)
 
 	// Check if the tokens were deposited and uncommitted balance was updated
-	commitments, found := keeper.GetCommitments(ctx, depositMsg.Creator)
+	commitments, found := keeper.GetCommitments(ctx, commitMsg.Creator)
 	require.True(t, found, "commitments not found")
 
-	uncommittedBalance := commitments.GetUncommittedAmountForDenom(depositMsg.Denom)
-	require.Equal(t, depositMsg.Amount, uncommittedBalance, "uncommitted balance did not update correctly")
+	committedBalance := commitments.GetCommittedAmountForDenom(commitMsg.Denom)
+	require.Equal(t, commitMsg.Amount, committedBalance, "committed balance did not update correctly")
 
 	// Check if the deposited tokens were deducted from creator balance
-	remainingCoins := app.BankKeeper.GetBalance(ctx, creator, depositMsg.Denom)
+	remainingCoins := app.BankKeeper.GetBalance(ctx, creator, commitMsg.Denom)
 	require.Equal(t, sdk.NewInt(100), remainingCoins.Amount, "tokens were not deducted correctly")
 
 	// Check if the deposited tokens were burned
-	remainingCoins = app.BankKeeper.GetBalance(ctx, app.AccountKeeper.GetModuleAddress(types.ModuleName), depositMsg.Denom)
+	remainingCoins = app.BankKeeper.GetBalance(ctx, app.AccountKeeper.GetModuleAddress(types.ModuleName), commitMsg.Denom)
 	require.Equal(t, sdk.NewInt(0), remainingCoins.Amount, "tokens were not burned correctly")
 }

@@ -6,19 +6,18 @@ import (
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
-	"github.com/elys-network/elys/x/commitment/types"
-	"github.com/spf13/cobra"
-
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	"github.com/elys-network/elys/x/commitment/types"
+	"github.com/spf13/cobra"
 )
 
 var _ = strconv.Itoa(0)
 
-func CmdDepositTokens() *cobra.Command {
+func CmdVestLiquid() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "deposit-tokens [amount] [denom]",
-		Short: "Broadcast message deposit-tokens",
+		Use:   "vest-liquid [amount] [denom]",
+		Short: "Broadcast message vest-liquid",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			argAmount, found := sdk.NewIntFromString(args[0])
@@ -32,7 +31,7 @@ func CmdDepositTokens() *cobra.Command {
 				return err
 			}
 
-			msg := types.NewMsgDepositTokens(
+			msg := types.NewMsgVestLiquid(
 				clientCtx.GetFromAddress().String(),
 				argAmount,
 				argDenom,
