@@ -28,7 +28,10 @@ func (k msgServer) CommitTokens(goCtx context.Context, msg *types.MsgCommitToken
 	}
 
 	// Check if the uncommitted tokens have enough amount to be committed
-	uncommittedToken, _ := commitments.GetUncommittedTokensForDenom(msg.Denom)
+	uncommittedToken, found := commitments.GetUncommittedTokensForDenom(msg.Denom)
+	if !found {
+		return nil, sdkerrors.Wrapf(types.ErrInsufficientUncommittedTokens, "creator: %s", msg.Creator)
+	}
 
 	if uncommittedToken.Amount.LT(msg.Amount) {
 		return nil, sdkerrors.Wrapf(types.ErrInsufficientUncommittedTokens, "creator: %s, denom: %s", msg.Creator, msg.Denom)

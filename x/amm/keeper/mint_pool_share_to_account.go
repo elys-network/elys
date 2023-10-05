@@ -61,31 +61,18 @@ func (k Keeper) MintPoolShareToAccount(ctx sdk.Context, pool types.Pool, addr sd
 		k.apKeeper.SetEntry(ctx, entry)
 	}
 
-	// Deposit and commit LP token minted
+	// Commit LP token minted
 	msgServer := commitmentkeeper.NewMsgServerImpl(*k.commitmentKeeper)
 
-	// Create a deposit token message
-	msgDepositToken := &ctypes.MsgCommitLiquidTokens{
+	// Create a commit LP token liquidated message
+	msgLiquidCommitLPToken := &ctypes.MsgCommitLiquidTokens{
 		Creator: addr.String(),
 		Denom:   poolShareDenom,
 		Amount:  amount,
 	}
 
-	// Deposit LP token
-	_, err = msgServer.CommitLiquidTokens(sdk.WrapSDKContext(ctx), msgDepositToken)
-	if err != nil {
-		return err
-	}
-
-	// Create a commit token message
-	msgCommitToken := &ctypes.MsgCommitTokens{
-		Creator: addr.String(),
-		Denom:   poolShareDenom,
-		Amount:  amount,
-	}
-
-	// Commit LP token
-	_, err = msgServer.CommitTokens(sdk.WrapSDKContext(ctx), msgCommitToken)
+	// Commit LP token liquidated
+	_, err = msgServer.CommitLiquidTokens(sdk.WrapSDKContext(ctx), msgLiquidCommitLPToken)
 	if err != nil {
 		return err
 	}
