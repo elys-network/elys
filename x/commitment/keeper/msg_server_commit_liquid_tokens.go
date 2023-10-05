@@ -10,7 +10,7 @@ import (
 	"github.com/elys-network/elys/x/commitment/types"
 )
 
-func (k msgServer) DepositTokens(goCtx context.Context, msg *types.MsgDepositTokens) (*types.MsgDepositTokensResponse, error) {
+func (k msgServer) CommitLiquidTokens(goCtx context.Context, msg *types.MsgCommitLiquidTokens) (*types.MsgCommitLiquidTokensResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	assetProfile, found := k.apKeeper.GetEntry(ctx, msg.Denom)
@@ -49,20 +49,20 @@ func (k msgServer) DepositTokens(goCtx context.Context, msg *types.MsgDepositTok
 			UncommittedTokens: []*types.UncommittedTokens{},
 		}
 	}
-	// Get the uncommitted tokens for the creator
-	uncommittedToken, found := commitments.GetUncommittedTokensForDenom(msg.Denom)
+	// Get the committed tokens for the creator
+	committedToken, found := commitments.GetCommittedTokensForDenom(msg.Denom)
 	if !found {
-		uncommittedTokens := commitments.GetUncommittedTokens()
-		uncommittedToken = &types.UncommittedTokens{
+		committedTokens := commitments.GetCommittedTokens()
+		committedToken = &types.CommittedTokens{
 			Denom:  msg.Denom,
 			Amount: sdk.ZeroInt(),
 		}
-		uncommittedTokens = append(uncommittedTokens, uncommittedToken)
-		commitments.UncommittedTokens = uncommittedTokens
+		committedTokens = append(committedTokens, committedToken)
+		commitments.CommittedTokens = committedTokens
 	}
 
-	// Update the uncommitted tokens amount
-	uncommittedToken.Amount = uncommittedToken.Amount.Add(msg.Amount)
+	// Update the committed tokens amount
+	committedToken.Amount = committedToken.Amount.Add(msg.Amount)
 
 	// Update the commitments
 	k.SetCommitments(ctx, commitments)
@@ -80,5 +80,5 @@ func (k msgServer) DepositTokens(goCtx context.Context, msg *types.MsgDepositTok
 		),
 	)
 
-	return &types.MsgDepositTokensResponse{}, nil
+	return &types.MsgCommitLiquidTokensResponse{}, nil
 }

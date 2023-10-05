@@ -39105,6 +39105,47 @@ paths:
               params:
                 description: params holds all the parameters of this module.
                 type: object
+                properties:
+                  leverage_max:
+                    type: string
+                  interest_rate_max:
+                    type: string
+                  interest_rate_min:
+                    type: string
+                  interest_rate_increase:
+                    type: string
+                  interest_rate_decrease:
+                    type: string
+                  health_gain_factor:
+                    type: string
+                  epoch_length:
+                    type: string
+                    format: int64
+                  removal_queue_threshold:
+                    type: string
+                  max_open_positions:
+                    type: string
+                    format: int64
+                  pool_open_threshold:
+                    type: string
+                  force_close_fund_percentage:
+                    type: string
+                  force_close_fund_address:
+                    type: string
+                  incremental_interest_payment_fund_percentage:
+                    type: string
+                  incremental_interest_payment_fund_address:
+                    type: string
+                  sq_modifier:
+                    type: string
+                  safety_factor:
+                    type: string
+                  incremental_interest_payment_enabled:
+                    type: boolean
+                  whitelisting_enabled:
+                    type: boolean
+                  invariant_check_epoch:
+                    type: string
             description: >-
               QueryParamsResponse is response type for the Query/Params RPC
               method.
@@ -81404,13 +81445,15 @@ definitions:
         type: string
   elys.commitment.MsgCancelVestResponse:
     type: object
-  elys.commitment.MsgCommitTokensResponse:
+  elys.commitment.MsgCommitLiquidTokensResponse:
     type: object
-  elys.commitment.MsgDepositTokensResponse:
+  elys.commitment.MsgCommitTokensResponse:
     type: object
   elys.commitment.MsgUncommitTokensResponse:
     type: object
   elys.commitment.MsgUpdateVestingInfoResponse:
+    type: object
+  elys.commitment.MsgVestLiquidResponse:
     type: object
   elys.commitment.MsgVestNowResponse:
     type: object
@@ -81927,6 +81970,47 @@ definitions:
     description: QueryParamsResponse is response type for the Query/Params RPC method.
   elys.leveragelp.Params:
     type: object
+    properties:
+      leverage_max:
+        type: string
+      interest_rate_max:
+        type: string
+      interest_rate_min:
+        type: string
+      interest_rate_increase:
+        type: string
+      interest_rate_decrease:
+        type: string
+      health_gain_factor:
+        type: string
+      epoch_length:
+        type: string
+        format: int64
+      removal_queue_threshold:
+        type: string
+      max_open_positions:
+        type: string
+        format: int64
+      pool_open_threshold:
+        type: string
+      force_close_fund_percentage:
+        type: string
+      force_close_fund_address:
+        type: string
+      incremental_interest_payment_fund_percentage:
+        type: string
+      incremental_interest_payment_fund_address:
+        type: string
+      sq_modifier:
+        type: string
+      safety_factor:
+        type: string
+      incremental_interest_payment_enabled:
+        type: boolean
+      whitelisting_enabled:
+        type: boolean
+      invariant_check_epoch:
+        type: string
     description: Params defines the parameters for the module.
   elys.leveragelp.QueryParamsResponse:
     type: object
@@ -81934,6 +82018,47 @@ definitions:
       params:
         description: params holds all the parameters of this module.
         type: object
+        properties:
+          leverage_max:
+            type: string
+          interest_rate_max:
+            type: string
+          interest_rate_min:
+            type: string
+          interest_rate_increase:
+            type: string
+          interest_rate_decrease:
+            type: string
+          health_gain_factor:
+            type: string
+          epoch_length:
+            type: string
+            format: int64
+          removal_queue_threshold:
+            type: string
+          max_open_positions:
+            type: string
+            format: int64
+          pool_open_threshold:
+            type: string
+          force_close_fund_percentage:
+            type: string
+          force_close_fund_address:
+            type: string
+          incremental_interest_payment_fund_percentage:
+            type: string
+          incremental_interest_payment_fund_address:
+            type: string
+          sq_modifier:
+            type: string
+          safety_factor:
+            type: string
+          incremental_interest_payment_enabled:
+            type: boolean
+          whitelisting_enabled:
+            type: boolean
+          invariant_check_epoch:
+            type: string
     description: QueryParamsResponse is response type for the Query/Params RPC method.
   elys.liquidityprovider.Params:
     type: object

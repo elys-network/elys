@@ -65,14 +65,14 @@ func (k Keeper) MintPoolShareToAccount(ctx sdk.Context, pool types.Pool, addr sd
 	msgServer := commitmentkeeper.NewMsgServerImpl(*k.commitmentKeeper)
 
 	// Create a deposit token message
-	msgDepositToken := &ctypes.MsgDepositTokens{
+	msgDepositToken := &ctypes.MsgCommitLiquidTokens{
 		Creator: addr.String(),
 		Denom:   poolShareDenom,
 		Amount:  amount,
 	}
 
 	// Deposit LP token
-	_, err = msgServer.DepositTokens(sdk.WrapSDKContext(ctx), msgDepositToken)
+	_, err = msgServer.CommitLiquidTokens(sdk.WrapSDKContext(ctx), msgDepositToken)
 	if err != nil {
 		return err
 	}

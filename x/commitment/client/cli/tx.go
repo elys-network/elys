@@ -31,13 +31,14 @@ func GetTxCmd() *cobra.Command {
 	}
 
 	cmd.AddCommand(CmdCommitTokens())
+	cmd.AddCommand(CmdCommitLiquidTokens())
 	cmd.AddCommand(CmdUncommitTokens())
 	cmd.AddCommand(CmdWithdrawTokens())
-	cmd.AddCommand(CmdDepositTokens())
 	cmd.AddCommand(CmdVest())
 	cmd.AddCommand(CmdCancelVest())
 	cmd.AddCommand(CmdVestNow())
 	cmd.AddCommand(CmdUpdateVestingInfo())
+	cmd.AddCommand(CmdVestLiquid())
 	// this line is used by starport scaffolding # 1
 
 	return cmd
