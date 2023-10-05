@@ -11,7 +11,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/store"
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	typesparams "github.com/cosmos/cosmos-sdk/x/params/types"
+	"github.com/cosmos/cosmos-sdk/types/address"
 	"github.com/elys-network/elys/x/leveragelp/keeper"
 	"github.com/elys-network/elys/x/leveragelp/types"
 	"github.com/stretchr/testify/require"
@@ -29,24 +29,23 @@ func LeveragelpKeeper(t testing.TB) (*keeper.Keeper, sdk.Context) {
 
 	registry := codectypes.NewInterfaceRegistry()
 	cdc := codec.NewProtoCodec(registry)
+	govAddress := sdk.AccAddress(address.Module("gov"))
 
-	paramsSubspace := typesparams.NewSubspace(cdc,
-		types.Amino,
-		storeKey,
-		memStoreKey,
-		"LeveragelpParams",
-	)
 	k := keeper.NewKeeper(
 		cdc,
 		storeKey,
 		memStoreKey,
-		paramsSubspace,
+		govAddress.String(),
+		nil,
+		nil,
+		nil,
 	)
 
 	ctx := sdk.NewContext(stateStore, tmproto.Header{}, false, log.NewNopLogger())
 
 	// Initialize params
-	k.SetParams(ctx, types.DefaultParams())
+	params := types.DefaultParams()
+	k.SetParams(ctx, &params)
 
 	return k, ctx
 }

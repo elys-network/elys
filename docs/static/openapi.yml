@@ -39092,22 +39092,20 @@ paths:
                   additionalProperties: {}
       tags:
         - Query
-  /elys-network/elys/leveragelp/params:
+  /elys-network/elys/leveragelp/is-whitelisted:
     get:
-      summary: Parameters queries the parameters of the module.
-      operationId: ElysLeveragelpParams
+      summary: Queries a list of IsWhitelisted items.
+      operationId: ElysLeveragelpIsWhitelisted
       responses:
         '200':
           description: A successful response.
           schema:
             type: object
             properties:
-              params:
-                description: params holds all the parameters of this module.
-                type: object
-            description: >-
-              QueryParamsResponse is response type for the Query/Params RPC
-              method.
+              address:
+                type: string
+              is_whitelisted:
+                type: boolean
         default:
           description: An unexpected error response.
           schema:
@@ -39126,6 +39124,1083 @@ paths:
                     '@type':
                       type: string
                   additionalProperties: {}
+      parameters:
+        - name: address
+          in: query
+          required: false
+          type: string
+      tags:
+        - Query
+  /elys-network/elys/leveragelp/mtp/{address}/{id}:
+    get:
+      summary: Queries a list of MTP items.
+      operationId: ElysLeveragelpMTP
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              mtp:
+                type: object
+                properties:
+                  address:
+                    type: string
+                  collateral_assets:
+                    type: array
+                    items:
+                      type: string
+                  collateral_amounts:
+                    type: array
+                    items:
+                      type: string
+                  liabilities:
+                    type: string
+                  interest_paid_collaterals:
+                    type: array
+                    items:
+                      type: string
+                  interest_paid_custodys:
+                    type: array
+                    items:
+                      type: string
+                  interest_unpaid_collaterals:
+                    type: array
+                    items:
+                      type: string
+                  custody_assets:
+                    type: array
+                    items:
+                      type: string
+                  custody_amounts:
+                    type: array
+                    items:
+                      type: string
+                  leverages:
+                    type: array
+                    items:
+                      type: string
+                  mtp_health:
+                    type: string
+                  position:
+                    type: string
+                    enum:
+                      - UNSPECIFIED
+                      - LONG
+                    default: UNSPECIFIED
+                  id:
+                    type: string
+                    format: uint64
+                  amm_pool_id:
+                    type: string
+                    format: uint64
+                  consolidate_leverage:
+                    type: string
+                  sum_collateral:
+                    type: string
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: address
+          in: path
+          required: true
+          type: string
+        - name: id
+          in: path
+          required: true
+          type: string
+          format: uint64
+      tags:
+        - Query
+  /elys-network/elys/leveragelp/mtps-by-pool/{amm_pool_id}/{pagination.key}:
+    get:
+      summary: Queries a list of GetPositionsByPool items.
+      operationId: ElysLeveragelpGetPositionsByPool
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              mtps:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    address:
+                      type: string
+                    collateral_assets:
+                      type: array
+                      items:
+                        type: string
+                    collateral_amounts:
+                      type: array
+                      items:
+                        type: string
+                    liabilities:
+                      type: string
+                    interest_paid_collaterals:
+                      type: array
+                      items:
+                        type: string
+                    interest_paid_custodys:
+                      type: array
+                      items:
+                        type: string
+                    interest_unpaid_collaterals:
+                      type: array
+                      items:
+                        type: string
+                    custody_assets:
+                      type: array
+                      items:
+                        type: string
+                    custody_amounts:
+                      type: array
+                      items:
+                        type: string
+                    leverages:
+                      type: array
+                      items:
+                        type: string
+                    mtp_health:
+                      type: string
+                    position:
+                      type: string
+                      enum:
+                        - UNSPECIFIED
+                        - LONG
+                      default: UNSPECIFIED
+                    id:
+                      type: string
+                      format: uint64
+                    amm_pool_id:
+                      type: string
+                      format: uint64
+                    consolidate_leverage:
+                      type: string
+                    sum_collateral:
+                      type: string
+              pagination:
+                type: object
+                properties:
+                  next_key:
+                    type: string
+                    format: byte
+                    description: |-
+                      next_key is the key to be passed to PageRequest.key to
+                      query the next page most efficiently. It will be empty if
+                      there are no more results.
+                  total:
+                    type: string
+                    format: uint64
+                    title: >-
+                      total is total number of results available if
+                      PageRequest.count_total
+
+                      was set, its value is undefined otherwise
+                description: >-
+                  PageResponse is to be embedded in gRPC response messages where
+                  the
+
+                  corresponding request message has used PageRequest.
+
+                   message SomeResponse {
+                           repeated Bar results = 1;
+                           PageResponse page = 2;
+                   }
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: amm_pool_id
+          in: path
+          required: true
+          type: string
+          format: uint64
+        - name: pagination.key
+          description: |-
+            key is a value returned in PageResponse.next_key to begin
+            querying the next page most efficiently. Only one of offset or key
+            should be set.
+          in: path
+          required: true
+          type: string
+          format: byte
+        - name: pagination.offset
+          description: >-
+            offset is a numeric offset that can be used when key is unavailable.
+
+            It is less efficient than using key. Only one of offset or key
+            should
+
+            be set.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.limit
+          description: >-
+            limit is the total number of results to be returned in the result
+            page.
+
+            If left empty it will default to a value to be set by each app.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.count_total
+          description: >-
+            count_total is set to true  to indicate that the result set should
+            include
+
+            a count of the total number of items available for pagination in
+            UIs.
+
+            count_total is only respected when offset is used. It is ignored
+            when key
+
+            is set.
+          in: query
+          required: false
+          type: boolean
+        - name: pagination.reverse
+          description: >-
+            reverse is set to true if results are to be returned in the
+            descending order.
+
+
+            Since: cosmos-sdk 0.43
+          in: query
+          required: false
+          type: boolean
+      tags:
+        - Query
+  /elys-network/elys/leveragelp/mtps-for-address/{address}/{pagination.key}:
+    get:
+      summary: Queries a list of GetPositionsForAddress items.
+      operationId: ElysLeveragelpGetPositionsForAddress
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              mtps:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    address:
+                      type: string
+                    collateral_assets:
+                      type: array
+                      items:
+                        type: string
+                    collateral_amounts:
+                      type: array
+                      items:
+                        type: string
+                    liabilities:
+                      type: string
+                    interest_paid_collaterals:
+                      type: array
+                      items:
+                        type: string
+                    interest_paid_custodys:
+                      type: array
+                      items:
+                        type: string
+                    interest_unpaid_collaterals:
+                      type: array
+                      items:
+                        type: string
+                    custody_assets:
+                      type: array
+                      items:
+                        type: string
+                    custody_amounts:
+                      type: array
+                      items:
+                        type: string
+                    leverages:
+                      type: array
+                      items:
+                        type: string
+                    mtp_health:
+                      type: string
+                    position:
+                      type: string
+                      enum:
+                        - UNSPECIFIED
+                        - LONG
+                      default: UNSPECIFIED
+                    id:
+                      type: string
+                      format: uint64
+                    amm_pool_id:
+                      type: string
+                      format: uint64
+                    consolidate_leverage:
+                      type: string
+                    sum_collateral:
+                      type: string
+              pagination:
+                type: object
+                properties:
+                  next_key:
+                    type: string
+                    format: byte
+                    description: |-
+                      next_key is the key to be passed to PageRequest.key to
+                      query the next page most efficiently. It will be empty if
+                      there are no more results.
+                  total:
+                    type: string
+                    format: uint64
+                    title: >-
+                      total is total number of results available if
+                      PageRequest.count_total
+
+                      was set, its value is undefined otherwise
+                description: >-
+                  PageResponse is to be embedded in gRPC response messages where
+                  the
+
+                  corresponding request message has used PageRequest.
+
+                   message SomeResponse {
+                           repeated Bar results = 1;
+                           PageResponse page = 2;
+                   }
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: address
+          in: path
+          required: true
+          type: string
+        - name: pagination.key
+          description: |-
+            key is a value returned in PageResponse.next_key to begin
+            querying the next page most efficiently. Only one of offset or key
+            should be set.
+          in: path
+          required: true
+          type: string
+          format: byte
+        - name: pagination.offset
+          description: >-
+            offset is a numeric offset that can be used when key is unavailable.
+
+            It is less efficient than using key. Only one of offset or key
+            should
+
+            be set.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.limit
+          description: >-
+            limit is the total number of results to be returned in the result
+            page.
+
+            If left empty it will default to a value to be set by each app.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.count_total
+          description: >-
+            count_total is set to true  to indicate that the result set should
+            include
+
+            a count of the total number of items available for pagination in
+            UIs.
+
+            count_total is only respected when offset is used. It is ignored
+            when key
+
+            is set.
+          in: query
+          required: false
+          type: boolean
+        - name: pagination.reverse
+          description: >-
+            reverse is set to true if results are to be returned in the
+            descending order.
+
+
+            Since: cosmos-sdk 0.43
+          in: query
+          required: false
+          type: boolean
+      tags:
+        - Query
+  /elys-network/elys/leveragelp/params:
+    get:
+      summary: Parameters queries the parameters of the module.
+      operationId: ElysLeveragelpParams
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              params:
+                description: params holds all the parameters of this module.
+                type: object
+                properties:
+                  leverage_max:
+                    type: string
+                  interest_rate_max:
+                    type: string
+                  interest_rate_min:
+                    type: string
+                  interest_rate_increase:
+                    type: string
+                  interest_rate_decrease:
+                    type: string
+                  health_gain_factor:
+                    type: string
+                  epoch_length:
+                    type: string
+                    format: int64
+                  removal_queue_threshold:
+                    type: string
+                  max_open_positions:
+                    type: string
+                    format: int64
+                  pool_open_threshold:
+                    type: string
+                  force_close_fund_percentage:
+                    type: string
+                  force_close_fund_address:
+                    type: string
+                  incremental_interest_payment_fund_percentage:
+                    type: string
+                  incremental_interest_payment_fund_address:
+                    type: string
+                  sq_modifier:
+                    type: string
+                  safety_factor:
+                    type: string
+                  incremental_interest_payment_enabled:
+                    type: boolean
+                  whitelisting_enabled:
+                    type: boolean
+                  invariant_check_epoch:
+                    type: string
+            description: ParamsResponse is response type for the Query/Params RPC method.
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      tags:
+        - Query
+  /elys-network/elys/leveragelp/pool/{index}:
+    get:
+      summary: Queries a list of Pool items.
+      operationId: ElysLeveragelpPool
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              pool:
+                type: object
+                properties:
+                  ammPoolId:
+                    type: string
+                    format: uint64
+                  health:
+                    type: string
+                  enabled:
+                    type: boolean
+                  closed:
+                    type: boolean
+                  interest_rate:
+                    type: string
+                  poolAssets:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        liabilities:
+                          type: string
+                        custody:
+                          type: string
+                        asset_balance:
+                          type: string
+                        unsettled_liabilities:
+                          type: string
+                        block_interest:
+                          type: string
+                        asset_denom:
+                          type: string
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: index
+          in: path
+          required: true
+          type: string
+          format: uint64
+      tags:
+        - Query
+  /elys-network/elys/leveragelp/pool/{pagination.key}:
+    get:
+      operationId: ElysLeveragelpPools
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              pool:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    ammPoolId:
+                      type: string
+                      format: uint64
+                    health:
+                      type: string
+                    enabled:
+                      type: boolean
+                    closed:
+                      type: boolean
+                    interest_rate:
+                      type: string
+                    poolAssets:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          liabilities:
+                            type: string
+                          custody:
+                            type: string
+                          asset_balance:
+                            type: string
+                          unsettled_liabilities:
+                            type: string
+                          block_interest:
+                            type: string
+                          asset_denom:
+                            type: string
+              pagination:
+                type: object
+                properties:
+                  next_key:
+                    type: string
+                    format: byte
+                    description: |-
+                      next_key is the key to be passed to PageRequest.key to
+                      query the next page most efficiently. It will be empty if
+                      there are no more results.
+                  total:
+                    type: string
+                    format: uint64
+                    title: >-
+                      total is total number of results available if
+                      PageRequest.count_total
+
+                      was set, its value is undefined otherwise
+                description: >-
+                  PageResponse is to be embedded in gRPC response messages where
+                  the
+
+                  corresponding request message has used PageRequest.
+
+                   message SomeResponse {
+                           repeated Bar results = 1;
+                           PageResponse page = 2;
+                   }
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: pagination.key
+          description: |-
+            key is a value returned in PageResponse.next_key to begin
+            querying the next page most efficiently. Only one of offset or key
+            should be set.
+          in: path
+          required: true
+          type: string
+          format: byte
+        - name: pagination.offset
+          description: >-
+            offset is a numeric offset that can be used when key is unavailable.
+
+            It is less efficient than using key. Only one of offset or key
+            should
+
+            be set.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.limit
+          description: >-
+            limit is the total number of results to be returned in the result
+            page.
+
+            If left empty it will default to a value to be set by each app.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.count_total
+          description: >-
+            count_total is set to true  to indicate that the result set should
+            include
+
+            a count of the total number of items available for pagination in
+            UIs.
+
+            count_total is only respected when offset is used. It is ignored
+            when key
+
+            is set.
+          in: query
+          required: false
+          type: boolean
+        - name: pagination.reverse
+          description: >-
+            reverse is set to true if results are to be returned in the
+            descending order.
+
+
+            Since: cosmos-sdk 0.43
+          in: query
+          required: false
+          type: boolean
+      tags:
+        - Query
+  /elys-network/elys/leveragelp/positions/{pagination.key}:
+    get:
+      summary: Queries a list of GetPositions items.
+      operationId: ElysLeveragelpGetPositions
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              mtps:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    address:
+                      type: string
+                    collateral_assets:
+                      type: array
+                      items:
+                        type: string
+                    collateral_amounts:
+                      type: array
+                      items:
+                        type: string
+                    liabilities:
+                      type: string
+                    interest_paid_collaterals:
+                      type: array
+                      items:
+                        type: string
+                    interest_paid_custodys:
+                      type: array
+                      items:
+                        type: string
+                    interest_unpaid_collaterals:
+                      type: array
+                      items:
+                        type: string
+                    custody_assets:
+                      type: array
+                      items:
+                        type: string
+                    custody_amounts:
+                      type: array
+                      items:
+                        type: string
+                    leverages:
+                      type: array
+                      items:
+                        type: string
+                    mtp_health:
+                      type: string
+                    position:
+                      type: string
+                      enum:
+                        - UNSPECIFIED
+                        - LONG
+                      default: UNSPECIFIED
+                    id:
+                      type: string
+                      format: uint64
+                    amm_pool_id:
+                      type: string
+                      format: uint64
+                    consolidate_leverage:
+                      type: string
+                    sum_collateral:
+                      type: string
+              pagination:
+                type: object
+                properties:
+                  next_key:
+                    type: string
+                    format: byte
+                    description: |-
+                      next_key is the key to be passed to PageRequest.key to
+                      query the next page most efficiently. It will be empty if
+                      there are no more results.
+                  total:
+                    type: string
+                    format: uint64
+                    title: >-
+                      total is total number of results available if
+                      PageRequest.count_total
+
+                      was set, its value is undefined otherwise
+                description: >-
+                  PageResponse is to be embedded in gRPC response messages where
+                  the
+
+                  corresponding request message has used PageRequest.
+
+                   message SomeResponse {
+                           repeated Bar results = 1;
+                           PageResponse page = 2;
+                   }
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: pagination.key
+          description: |-
+            key is a value returned in PageResponse.next_key to begin
+            querying the next page most efficiently. Only one of offset or key
+            should be set.
+          in: path
+          required: true
+          type: string
+          format: byte
+        - name: pagination.offset
+          description: >-
+            offset is a numeric offset that can be used when key is unavailable.
+
+            It is less efficient than using key. Only one of offset or key
+            should
+
+            be set.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.limit
+          description: >-
+            limit is the total number of results to be returned in the result
+            page.
+
+            If left empty it will default to a value to be set by each app.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.count_total
+          description: >-
+            count_total is set to true  to indicate that the result set should
+            include
+
+            a count of the total number of items available for pagination in
+            UIs.
+
+            count_total is only respected when offset is used. It is ignored
+            when key
+
+            is set.
+          in: query
+          required: false
+          type: boolean
+        - name: pagination.reverse
+          description: >-
+            reverse is set to true if results are to be returned in the
+            descending order.
+
+
+            Since: cosmos-sdk 0.43
+          in: query
+          required: false
+          type: boolean
+      tags:
+        - Query
+  /elys-network/elys/leveragelp/status:
+    get:
+      summary: Queries a list of GetStatus items.
+      operationId: ElysLeveragelpGetStatus
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              open_mtp_count:
+                type: string
+                format: uint64
+              lifetime_mtp_count:
+                type: string
+                format: uint64
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      tags:
+        - Query
+  /elys-network/elys/leveragelp/whitelist/{pagination.key}:
+    get:
+      summary: Queries a list of GetWhitelist items.
+      operationId: ElysLeveragelpGetWhitelist
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              whitelist:
+                type: array
+                items:
+                  type: string
+              pagination:
+                type: object
+                properties:
+                  next_key:
+                    type: string
+                    format: byte
+                    description: |-
+                      next_key is the key to be passed to PageRequest.key to
+                      query the next page most efficiently. It will be empty if
+                      there are no more results.
+                  total:
+                    type: string
+                    format: uint64
+                    title: >-
+                      total is total number of results available if
+                      PageRequest.count_total
+
+                      was set, its value is undefined otherwise
+                description: >-
+                  PageResponse is to be embedded in gRPC response messages where
+                  the
+
+                  corresponding request message has used PageRequest.
+
+                   message SomeResponse {
+                           repeated Bar results = 1;
+                           PageResponse page = 2;
+                   }
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: pagination.key
+          description: |-
+            key is a value returned in PageResponse.next_key to begin
+            querying the next page most efficiently. Only one of offset or key
+            should be set.
+          in: path
+          required: true
+          type: string
+          format: byte
+        - name: pagination.offset
+          description: >-
+            offset is a numeric offset that can be used when key is unavailable.
+
+            It is less efficient than using key. Only one of offset or key
+            should
+
+            be set.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.limit
+          description: >-
+            limit is the total number of results to be returned in the result
+            page.
+
+            If left empty it will default to a value to be set by each app.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.count_total
+          description: >-
+            count_total is set to true  to indicate that the result set should
+            include
+
+            a count of the total number of items available for pagination in
+            UIs.
+
+            count_total is only respected when offset is used. It is ignored
+            when key
+
+            is set.
+          in: query
+          required: false
+          type: boolean
+        - name: pagination.reverse
+          description: >-
+            reverse is set to true if results are to be returned in the
+            descending order.
+
+
+            Since: cosmos-sdk 0.43
+          in: query
+          required: false
+          type: boolean
       tags:
         - Query
   /elys-network/elys/liquidityprovider/params:
@@ -81925,16 +83000,688 @@ definitions:
             type: string
             format: int64
     description: QueryParamsResponse is response type for the Query/Params RPC method.
+  elys.leveragelp.IsWhitelistedResponse:
+    type: object
+    properties:
+      address:
+        type: string
+      is_whitelisted:
+        type: boolean
+  elys.leveragelp.MTP:
+    type: object
+    properties:
+      address:
+        type: string
+      collateral_assets:
+        type: array
+        items:
+          type: string
+      collateral_amounts:
+        type: array
+        items:
+          type: string
+      liabilities:
+        type: string
+      interest_paid_collaterals:
+        type: array
+        items:
+          type: string
+      interest_paid_custodys:
+        type: array
+        items:
+          type: string
+      interest_unpaid_collaterals:
+        type: array
+        items:
+          type: string
+      custody_assets:
+        type: array
+        items:
+          type: string
+      custody_amounts:
+        type: array
+        items:
+          type: string
+      leverages:
+        type: array
+        items:
+          type: string
+      mtp_health:
+        type: string
+      position:
+        type: string
+        enum:
+          - UNSPECIFIED
+          - LONG
+        default: UNSPECIFIED
+      id:
+        type: string
+        format: uint64
+      amm_pool_id:
+        type: string
+        format: uint64
+      consolidate_leverage:
+        type: string
+      sum_collateral:
+        type: string
+  elys.leveragelp.MTPResponse:
+    type: object
+    properties:
+      mtp:
+        type: object
+        properties:
+          address:
+            type: string
+          collateral_assets:
+            type: array
+            items:
+              type: string
+          collateral_amounts:
+            type: array
+            items:
+              type: string
+          liabilities:
+            type: string
+          interest_paid_collaterals:
+            type: array
+            items:
+              type: string
+          interest_paid_custodys:
+            type: array
+            items:
+              type: string
+          interest_unpaid_collaterals:
+            type: array
+            items:
+              type: string
+          custody_assets:
+            type: array
+            items:
+              type: string
+          custody_amounts:
+            type: array
+            items:
+              type: string
+          leverages:
+            type: array
+            items:
+              type: string
+          mtp_health:
+            type: string
+          position:
+            type: string
+            enum:
+              - UNSPECIFIED
+              - LONG
+            default: UNSPECIFIED
+          id:
+            type: string
+            format: uint64
+          amm_pool_id:
+            type: string
+            format: uint64
+          consolidate_leverage:
+            type: string
+          sum_collateral:
+            type: string
+  elys.leveragelp.MsgCloseResponse:
+    type: object
+  elys.leveragelp.MsgDewhitelistResponse:
+    type: object
+  elys.leveragelp.MsgOpenResponse:
+    type: object
+  elys.leveragelp.MsgUpdateParamsResponse:
+    type: object
+  elys.leveragelp.MsgUpdatePoolsResponse:
+    type: object
+  elys.leveragelp.MsgWhitelistResponse:
+    type: object
   elys.leveragelp.Params:
     type: object
+    properties:
+      leverage_max:
+        type: string
+      interest_rate_max:
+        type: string
+      interest_rate_min:
+        type: string
+      interest_rate_increase:
+        type: string
+      interest_rate_decrease:
+        type: string
+      health_gain_factor:
+        type: string
+      epoch_length:
+        type: string
+        format: int64
+      removal_queue_threshold:
+        type: string
+      max_open_positions:
+        type: string
+        format: int64
+      pool_open_threshold:
+        type: string
+      force_close_fund_percentage:
+        type: string
+      force_close_fund_address:
+        type: string
+      incremental_interest_payment_fund_percentage:
+        type: string
+      incremental_interest_payment_fund_address:
+        type: string
+      sq_modifier:
+        type: string
+      safety_factor:
+        type: string
+      incremental_interest_payment_enabled:
+        type: boolean
+      whitelisting_enabled:
+        type: boolean
+      invariant_check_epoch:
+        type: string
     description: Params defines the parameters for the module.
-  elys.leveragelp.QueryParamsResponse:
+  elys.leveragelp.ParamsResponse:
     type: object
     properties:
       params:
         description: params holds all the parameters of this module.
         type: object
-    description: QueryParamsResponse is response type for the Query/Params RPC method.
+        properties:
+          leverage_max:
+            type: string
+          interest_rate_max:
+            type: string
+          interest_rate_min:
+            type: string
+          interest_rate_increase:
+            type: string
+          interest_rate_decrease:
+            type: string
+          health_gain_factor:
+            type: string
+          epoch_length:
+            type: string
+            format: int64
+          removal_queue_threshold:
+            type: string
+          max_open_positions:
+            type: string
+            format: int64
+          pool_open_threshold:
+            type: string
+          force_close_fund_percentage:
+            type: string
+          force_close_fund_address:
+            type: string
+          incremental_interest_payment_fund_percentage:
+            type: string
+          incremental_interest_payment_fund_address:
+            type: string
+          sq_modifier:
+            type: string
+          safety_factor:
+            type: string
+          incremental_interest_payment_enabled:
+            type: boolean
+          whitelisting_enabled:
+            type: boolean
+          invariant_check_epoch:
+            type: string
+    description: ParamsResponse is response type for the Query/Params RPC method.
+  elys.leveragelp.Pool:
+    type: object
+    properties:
+      ammPoolId:
+        type: string
+        format: uint64
+      health:
+        type: string
+      enabled:
+        type: boolean
+      closed:
+        type: boolean
+      interest_rate:
+        type: string
+      poolAssets:
+        type: array
+        items:
+          type: object
+          properties:
+            liabilities:
+              type: string
+            custody:
+              type: string
+            asset_balance:
+              type: string
+            unsettled_liabilities:
+              type: string
+            block_interest:
+              type: string
+            asset_denom:
+              type: string
+  elys.leveragelp.PoolAsset:
+    type: object
+    properties:
+      liabilities:
+        type: string
+      custody:
+        type: string
+      asset_balance:
+        type: string
+      unsettled_liabilities:
+        type: string
+      block_interest:
+        type: string
+      asset_denom:
+        type: string
+  elys.leveragelp.Position:
+    type: string
+    enum:
+      - UNSPECIFIED
+      - LONG
+    default: UNSPECIFIED
+  elys.leveragelp.PositionsByPoolResponse:
+    type: object
+    properties:
+      mtps:
+        type: array
+        items:
+          type: object
+          properties:
+            address:
+              type: string
+            collateral_assets:
+              type: array
+              items:
+                type: string
+            collateral_amounts:
+              type: array
+              items:
+                type: string
+            liabilities:
+              type: string
+            interest_paid_collaterals:
+              type: array
+              items:
+                type: string
+            interest_paid_custodys:
+              type: array
+              items:
+                type: string
+            interest_unpaid_collaterals:
+              type: array
+              items:
+                type: string
+            custody_assets:
+              type: array
+              items:
+                type: string
+            custody_amounts:
+              type: array
+              items:
+                type: string
+            leverages:
+              type: array
+              items:
+                type: string
+            mtp_health:
+              type: string
+            position:
+              type: string
+              enum:
+                - UNSPECIFIED
+                - LONG
+              default: UNSPECIFIED
+            id:
+              type: string
+              format: uint64
+            amm_pool_id:
+              type: string
+              format: uint64
+            consolidate_leverage:
+              type: string
+            sum_collateral:
+              type: string
+      pagination:
+        type: object
+        properties:
+          next_key:
+            type: string
+            format: byte
+            description: |-
+              next_key is the key to be passed to PageRequest.key to
+              query the next page most efficiently. It will be empty if
+              there are no more results.
+          total:
+            type: string
+            format: uint64
+            title: >-
+              total is total number of results available if
+              PageRequest.count_total
+
+              was set, its value is undefined otherwise
+        description: |-
+          PageResponse is to be embedded in gRPC response messages where the
+          corresponding request message has used PageRequest.
+
+           message SomeResponse {
+                   repeated Bar results = 1;
+                   PageResponse page = 2;
+           }
+  elys.leveragelp.PositionsForAddressResponse:
+    type: object
+    properties:
+      mtps:
+        type: array
+        items:
+          type: object
+          properties:
+            address:
+              type: string
+            collateral_assets:
+              type: array
+              items:
+                type: string
+            collateral_amounts:
+              type: array
+              items:
+                type: string
+            liabilities:
+              type: string
+            interest_paid_collaterals:
+              type: array
+              items:
+                type: string
+            interest_paid_custodys:
+              type: array
+              items:
+                type: string
+            interest_unpaid_collaterals:
+              type: array
+              items:
+                type: string
+            custody_assets:
+              type: array
+              items:
+                type: string
+            custody_amounts:
+              type: array
+              items:
+                type: string
+            leverages:
+              type: array
+              items:
+                type: string
+            mtp_health:
+              type: string
+            position:
+              type: string
+              enum:
+                - UNSPECIFIED
+                - LONG
+              default: UNSPECIFIED
+            id:
+              type: string
+              format: uint64
+            amm_pool_id:
+              type: string
+              format: uint64
+            consolidate_leverage:
+              type: string
+            sum_collateral:
+              type: string
+      pagination:
+        type: object
+        properties:
+          next_key:
+            type: string
+            format: byte
+            description: |-
+              next_key is the key to be passed to PageRequest.key to
+              query the next page most efficiently. It will be empty if
+              there are no more results.
+          total:
+            type: string
+            format: uint64
+            title: >-
+              total is total number of results available if
+              PageRequest.count_total
+
+              was set, its value is undefined otherwise
+        description: |-
+          PageResponse is to be embedded in gRPC response messages where the
+          corresponding request message has used PageRequest.
+
+           message SomeResponse {
+                   repeated Bar results = 1;
+                   PageResponse page = 2;
+           }
+  elys.leveragelp.PositionsResponse:
+    type: object
+    properties:
+      mtps:
+        type: array
+        items:
+          type: object
+          properties:
+            address:
+              type: string
+            collateral_assets:
+              type: array
+              items:
+                type: string
+            collateral_amounts:
+              type: array
+              items:
+                type: string
+            liabilities:
+              type: string
+            interest_paid_collaterals:
+              type: array
+              items:
+                type: string
+            interest_paid_custodys:
+              type: array
+              items:
+                type: string
+            interest_unpaid_collaterals:
+              type: array
+              items:
+                type: string
+            custody_assets:
+              type: array
+              items:
+                type: string
+            custody_amounts:
+              type: array
+              items:
+                type: string
+            leverages:
+              type: array
+              items:
+                type: string
+            mtp_health:
+              type: string
+            position:
+              type: string
+              enum:
+                - UNSPECIFIED
+                - LONG
+              default: UNSPECIFIED
+            id:
+              type: string
+              format: uint64
+            amm_pool_id:
+              type: string
+              format: uint64
+            consolidate_leverage:
+              type: string
+            sum_collateral:
+              type: string
+      pagination:
+        type: object
+        properties:
+          next_key:
+            type: string
+            format: byte
+            description: |-
+              next_key is the key to be passed to PageRequest.key to
+              query the next page most efficiently. It will be empty if
+              there are no more results.
+          total:
+            type: string
+            format: uint64
+            title: >-
+              total is total number of results available if
+              PageRequest.count_total
+
+              was set, its value is undefined otherwise
+        description: |-
+          PageResponse is to be embedded in gRPC response messages where the
+          corresponding request message has used PageRequest.
+
+           message SomeResponse {
+                   repeated Bar results = 1;
+                   PageResponse page = 2;
+           }
+  elys.leveragelp.QueryAllPoolResponse:
+    type: object
+    properties:
+      pool:
+        type: array
+        items:
+          type: object
+          properties:
+            ammPoolId:
+              type: string
+              format: uint64
+            health:
+              type: string
+            enabled:
+              type: boolean
+            closed:
+              type: boolean
+            interest_rate:
+              type: string
+            poolAssets:
+              type: array
+              items:
+                type: object
+                properties:
+                  liabilities:
+                    type: string
+                  custody:
+                    type: string
+                  asset_balance:
+                    type: string
+                  unsettled_liabilities:
+                    type: string
+                  block_interest:
+                    type: string
+                  asset_denom:
+                    type: string
+      pagination:
+        type: object
+        properties:
+          next_key:
+            type: string
+            format: byte
+            description: |-
+              next_key is the key to be passed to PageRequest.key to
+              query the next page most efficiently. It will be empty if
+              there are no more results.
+          total:
+            type: string
+            format: uint64
+            title: >-
+              total is total number of results available if
+              PageRequest.count_total
+
+              was set, its value is undefined otherwise
+        description: |-
+          PageResponse is to be embedded in gRPC response messages where the
+          corresponding request message has used PageRequest.
+
+           message SomeResponse {
+                   repeated Bar results = 1;
+                   PageResponse page = 2;
+           }
+  elys.leveragelp.QueryGetPoolResponse:
+    type: object
+    properties:
+      pool:
+        type: object
+        properties:
+          ammPoolId:
+            type: string
+            format: uint64
+          health:
+            type: string
+          enabled:
+            type: boolean
+          closed:
+            type: boolean
+          interest_rate:
+            type: string
+          poolAssets:
+            type: array
+            items:
+              type: object
+              properties:
+                liabilities:
+                  type: string
+                custody:
+                  type: string
+                asset_balance:
+                  type: string
+                unsettled_liabilities:
+                  type: string
+                block_interest:
+                  type: string
+                asset_denom:
+                  type: string
+  elys.leveragelp.StatusResponse:
+    type: object
+    properties:
+      open_mtp_count:
+        type: string
+        format: uint64
+      lifetime_mtp_count:
+        type: string
+        format: uint64
+  elys.leveragelp.WhitelistResponse:
+    type: object
+    properties:
+      whitelist:
+        type: array
+        items:
+          type: string
+      pagination:
+        type: object
+        properties:
+          next_key:
+            type: string
+            format: byte
+            description: |-
+              next_key is the key to be passed to PageRequest.key to
+              query the next page most efficiently. It will be empty if
+              there are no more results.
+          total:
+            type: string
+            format: uint64
+            title: >-
+              total is total number of results available if
+              PageRequest.count_total
+
+              was set, its value is undefined otherwise
+        description: |-
+          PageResponse is to be embedded in gRPC response messages where the
+          corresponding request message has used PageRequest.
+
+           message SomeResponse {
+                   repeated Bar results = 1;
+                   PageResponse page = 2;
+           }
   elys.liquidityprovider.Params:
     type: object
     description: Params defines the parameters for the module.

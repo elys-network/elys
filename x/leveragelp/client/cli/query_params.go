@@ -1,11 +1,12 @@
 package cli
 
 import (
+	"context"
+
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
-	"github.com/spf13/cobra"
-
 	"github.com/elys-network/elys/x/leveragelp/types"
+	"github.com/spf13/cobra"
 )
 
 func CmdQueryParams() *cobra.Command {
@@ -14,14 +15,11 @@ func CmdQueryParams() *cobra.Command {
 		Short: "shows the parameters of the module",
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			clientCtx, err := client.GetClientQueryContext(cmd)
-			if err != nil {
-				return err
-			}
+			clientCtx := client.GetClientContextFromCmd(cmd)
 
 			queryClient := types.NewQueryClient(clientCtx)
 
-			res, err := queryClient.Params(cmd.Context(), &types.QueryParamsRequest{})
+			res, err := queryClient.Params(context.Background(), &types.ParamsRequest{})
 			if err != nil {
 				return err
 			}
