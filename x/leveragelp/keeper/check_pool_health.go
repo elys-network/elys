@@ -17,7 +17,7 @@ func (k Keeper) CheckPoolHealth(ctx sdk.Context, poolId uint64) error {
 	}
 
 	if !pool.Health.IsNil() && pool.Health.LTE(k.PoolChecker.GetPoolOpenThreshold(ctx)) {
-		return sdkerrors.Wrap(types.ErrMTPDisabled, "pool health too low to open new positions")
+		return sdkerrors.Wrap(types.ErrInvalidPosition, "pool health too low to open new positions")
 	}
 	return nil
 }

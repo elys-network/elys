@@ -8,7 +8,6 @@ import (
 
 // x/leveragelp module sentinel errors
 var (
-	ErrSample                 = sdkerrors.Register(ModuleName, 1100, "sample error")
 	ErrMTPDoesNotExist        = sdkerrors.Register(ModuleName, 1, "mtp not found")
 	ErrMTPInvalid             = sdkerrors.Register(ModuleName, 2, "mtp invalid")
 	ErrMTPDisabled            = sdkerrors.Register(ModuleName, 3, "leveragelp not enabled for pool")
