@@ -10,7 +10,6 @@ import (
 	wasmvmtypes "github.com/CosmWasm/wasmvm/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	query "github.com/cosmos/cosmos-sdk/types/query"
-	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 	ammkeeper "github.com/elys-network/elys/x/amm/keeper"
 	ammtype "github.com/elys-network/elys/x/amm/types"
 	oraclekeeper "github.com/elys-network/elys/x/oracle/keeper"
@@ -129,7 +128,6 @@ func CustomMessageDecorator(amm *ammkeeper.Keeper) func(wasmkeeper.Messenger) wa
 
 type CustomMessenger struct {
 	wrapped wasmkeeper.Messenger
-	bank    *bankkeeper.BaseKeeper
 	amm     *ammkeeper.Keeper
 }
 
@@ -151,14 +149,14 @@ func (m *CustomMessenger) DispatchMsg(ctx sdk.Context, contractAddr sdk.AccAddre
 }
 
 func (m *CustomMessenger) msgSwapExactAmountIn(ctx sdk.Context, contractAddr sdk.AccAddress, msgSwapExactAmountIn *MsgSwapExactAmountIn) ([]sdk.Event, [][]byte, error) {
-	err := PerformMsgSwapExactAmountIn(m.amm, m.bank, ctx, contractAddr, msgSwapExactAmountIn)
+	err := PerformMsgSwapExactAmountIn(m.amm, ctx, contractAddr, msgSwapExactAmountIn)
 	if err != nil {
 		return nil, nil, errorsmod.Wrap(err, "perform swap")
 	}
 	return nil, nil, nil
 }
 
-func PerformMsgSwapExactAmountIn(f *ammkeeper.Keeper, b *bankkeeper.BaseKeeper, ctx sdk.Context, contractAddr sdk.AccAddress, msgSwapExactAmountIn *MsgSwapExactAmountIn) error {
+func PerformMsgSwapExactAmountIn(f *ammkeeper.Keeper, ctx sdk.Context, contractAddr sdk.AccAddress, msgSwapExactAmountIn *MsgSwapExactAmountIn) error {
 	if msgSwapExactAmountIn == nil {
 		return wasmvmtypes.InvalidRequest{Err: "swap null swap"}
 	}
