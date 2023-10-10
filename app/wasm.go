@@ -149,16 +149,24 @@ func (m *CustomMessenger) DispatchMsg(ctx sdk.Context, contractAddr sdk.AccAddre
 }
 
 func (m *CustomMessenger) msgSwapExactAmountIn(ctx sdk.Context, contractAddr sdk.AccAddress, msgSwapExactAmountIn *MsgSwapExactAmountIn) ([]sdk.Event, [][]byte, error) {
-	err := PerformMsgSwapExactAmountIn(m.amm, ctx, contractAddr, msgSwapExactAmountIn)
+	res, err := PerformMsgSwapExactAmountIn(m.amm, ctx, contractAddr, msgSwapExactAmountIn)
 	if err != nil {
 		return nil, nil, errorsmod.Wrap(err, "perform swap")
 	}
-	return nil, nil, nil
+
+	responseBytes, err := json.Marshal(MsgSwapExactAmountInResponse{TokenOutAmount: res.TokenOutAmount})
+	if err != nil {
+		return nil, nil, errorsmod.Wrap(err, "failed to serialize price response")
+	}
+
+	resp := [][]byte{responseBytes}
+
+	return nil, resp, nil
 }
 
-func PerformMsgSwapExactAmountIn(f *ammkeeper.Keeper, ctx sdk.Context, contractAddr sdk.AccAddress, msgSwapExactAmountIn *MsgSwapExactAmountIn) error {
+func PerformMsgSwapExactAmountIn(f *ammkeeper.Keeper, ctx sdk.Context, contractAddr sdk.AccAddress, msgSwapExactAmountIn *MsgSwapExactAmountIn) (*ammtype.MsgSwapExactAmountInResponse, error) {
 	if msgSwapExactAmountIn == nil {
-		return wasmvmtypes.InvalidRequest{Err: "swap null swap"}
+		return nil, wasmvmtypes.InvalidRequest{Err: "swap null swap"}
 	}
 
 	msgServer := ammkeeper.NewMsgServerImpl(*f)
@@ -174,18 +182,18 @@ func PerformMsgSwapExactAmountIn(f *ammkeeper.Keeper, ctx sdk.Context, contractA
 	msgMsgSwapExactAmountIn := ammtype.NewMsgSwapExactAmountIn(msgSwapExactAmountIn.Sender, msgSwapExactAmountIn.TokenIn, msgSwapExactAmountIn.TokenOutMinAmount, PoolIds, TokenOutDenoms)
 
 	if err := msgMsgSwapExactAmountIn.ValidateBasic(); err != nil {
-		return errorsmod.Wrap(err, "failed validating MsgMsgSwapExactAmountIn")
+		return nil, errorsmod.Wrap(err, "failed validating MsgMsgSwapExactAmountIn")
 	}
 
-	// Create denom
-	_, err := msgServer.SwapExactAmountIn(
+	// Swap
+	resp, err := msgServer.SwapExactAmountIn(
 		sdk.WrapSDKContext(ctx),
 		msgMsgSwapExactAmountIn,
 	)
 	if err != nil {
-		return errorsmod.Wrap(err, "swap msg")
+		return nil, errorsmod.Wrap(err, "swap msg")
 	}
-	return nil
+	return resp, nil
 }
 
 type ElysMsg struct {
@@ -200,5 +208,5 @@ type MsgSwapExactAmountIn struct {
 }
 
 type MsgSwapExactAmountInResponse struct {
-	TokenOutAmount string `protobuf:"bytes,1,opt,name=tokenOutAmount,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"token_out_amount,omitempty"`
+	TokenOutAmount cosmos_sdk_math.Int `protobuf:"bytes,1,opt,name=tokenOutAmount,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"token_out_amount,omitempty"`
 }
