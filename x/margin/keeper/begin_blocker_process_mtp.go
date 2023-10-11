@@ -27,23 +27,38 @@ func BeginBlockerProcessMTP(ctx sdk.Context, k Keeper, mtp *types.MTP, pool type
 	mtp.MtpHealth = h
 	// compute interest
 	// TODO: missing fields
-	// interestPayment := k.CalcMTPInterestLiabilities(ctx, *mtp, pool.InterestRate, 0, 0, ammPool, mtp.CollateralAssets[0])
-	// finalInterestPayment := k.HandleInterestPayment(ctx, mtp.CollateralAssets[0],mtp.CustodyAssets[0], interestPayment, mtp, &pool, ammPool)
-	// nativeAsset := types.GetSettlementAsset()
-	// if types.StringCompare(mtp.CollateralAsset, nativeAsset) { // custody is external, payment is custody
-	// 	pool.BlockInterestExternal = pool.BlockInterestExternal.Add(finalInterestPayment)
-	// } else { // custody is native, payment is custody
-	// 	pool.BlockInterestNative = pool.BlockInterestNative.Add(finalInterestPayment)
-	// }
+	for _, custodyAsset := range mtp.CustodyAssets {
+		// Retrieve AmmPool
+		ammPool, err := k.CloseLongChecker.GetAmmPool(ctx, mtp.AmmPoolId, custodyAsset)
+		if err != nil {
+			ctx.Logger().Error(errors.Wrap(err, fmt.Sprintf("error retrieving amm pool: %d", mtp.AmmPoolId)).Error())
+			return
+		}
+
+		for _, collateralAsset := range mtp.CollateralAssets {
+			// Handle Interest if within epoch position
+			if err := k.CloseLongChecker.HandleInterest(ctx, mtp, &pool, ammPool, collateralAsset, custodyAsset); err != nil {
+				ctx.Logger().Error(errors.Wrap(err, fmt.Sprintf("error handling interest payment: %s", collateralAsset)).Error())
+				return
+			}
+		}
+	}
 
 	_ = k.SetMTP(ctx, mtp)
-	// TODO: missing function
-	// repayAmount, err := k.ForceCloseLong(ctx, *mtp, pool, false, true)
+
+	var repayAmount sdk.Int
+	switch mtp.Position {
+	case types.Position_LONG:
+		repayAmount, err = k.ForceCloseLong(ctx, mtp, &pool, true)
+	case types.Position_SHORT:
+		repayAmount, err = k.ForceCloseShort(ctx, mtp, &pool, true)
+	default:
+		ctx.Logger().Error(errors.Wrap(types.ErrInvalidPosition, fmt.Sprintf("invalid position type: %s", mtp.Position)).Error())
+	}
 
 	if err == nil {
-		// TODO: missing function
 		// Emit event if position was closed
-		// k.EmitForceClose(ctx, mtp, repayAmount, "")
+		k.EmitForceClose(ctx, mtp, repayAmount, "")
 	} else if err != types.ErrMTPUnhealthy {
 		ctx.Logger().Error(errors.Wrap(err, "error executing force close").Error())
 	}
