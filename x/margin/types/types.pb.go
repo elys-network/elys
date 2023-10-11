@@ -6,6 +6,7 @@ package types
 import (
 	fmt "fmt"
 	github_com_cosmos_cosmos_sdk_types "github.com/cosmos/cosmos-sdk/types"
+	types "github.com/cosmos/cosmos-sdk/types"
 	_ "github.com/cosmos/gogoproto/gogoproto"
 	proto "github.com/cosmos/gogoproto/proto"
 	io "io"
@@ -53,22 +54,30 @@ func (Position) EnumDescriptor() ([]byte, []int) {
 }
 
 type MTP struct {
-	Address                   string                                   `protobuf:"bytes,1,opt,name=address,proto3" json:"address,omitempty"`
-	CollateralAssets          []string                                 `protobuf:"bytes,2,rep,name=collateral_assets,json=collateralAssets,proto3" json:"collateral_assets,omitempty"`
-	CollateralAmounts         []github_com_cosmos_cosmos_sdk_types.Int `protobuf:"bytes,3,rep,name=collateral_amounts,json=collateralAmounts,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"collateral_amounts"`
-	Liabilities               github_com_cosmos_cosmos_sdk_types.Int   `protobuf:"bytes,4,opt,name=liabilities,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"liabilities"`
-	InterestPaidCollaterals   []github_com_cosmos_cosmos_sdk_types.Int `protobuf:"bytes,5,rep,name=interest_paid_collaterals,json=interestPaidCollaterals,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"interest_paid_collaterals"`
-	InterestPaidCustodys      []github_com_cosmos_cosmos_sdk_types.Int `protobuf:"bytes,6,rep,name=interest_paid_custodys,json=interestPaidCustodys,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"interest_paid_custodys"`
-	InterestUnpaidCollaterals []github_com_cosmos_cosmos_sdk_types.Int `protobuf:"bytes,7,rep,name=interest_unpaid_collaterals,json=interestUnpaidCollaterals,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"interest_unpaid_collaterals"`
-	CustodyAssets             []string                                 `protobuf:"bytes,8,rep,name=custody_assets,json=custodyAssets,proto3" json:"custody_assets,omitempty"`
-	CustodyAmounts            []github_com_cosmos_cosmos_sdk_types.Int `protobuf:"bytes,9,rep,name=custody_amounts,json=custodyAmounts,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"custody_amounts"`
-	Leverages                 []github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,10,rep,name=leverages,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"leverages"`
-	MtpHealth                 github_com_cosmos_cosmos_sdk_types.Dec   `protobuf:"bytes,11,opt,name=mtp_health,json=mtpHealth,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"mtp_health"`
-	Position                  Position                                 `protobuf:"varint,12,opt,name=position,proto3,enum=elys.margin.Position" json:"position,omitempty"`
-	Id                        uint64                                   `protobuf:"varint,13,opt,name=id,proto3" json:"id,omitempty"`
-	AmmPoolId                 uint64                                   `protobuf:"varint,14,opt,name=amm_pool_id,json=ammPoolId,proto3" json:"amm_pool_id,omitempty"`
-	ConsolidateLeverage       github_com_cosmos_cosmos_sdk_types.Dec   `protobuf:"bytes,15,opt,name=consolidate_leverage,json=consolidateLeverage,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"consolidate_leverage"`
-	SumCollateral             github_com_cosmos_cosmos_sdk_types.Int   `protobuf:"bytes,16,opt,name=sum_collateral,json=sumCollateral,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"sum_collateral"`
+	Address     string       `protobuf:"bytes,1,opt,name=address,proto3" json:"address,omitempty"`
+	Collaterals []types.Coin `protobuf:"bytes,2,rep,name=collaterals,proto3" json:"collaterals"`
+	// repeated string collateral_assets = 2;
+	// repeated string collateral_amounts = 3 [
+	//   (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+	//   (gogoproto.nullable) = false
+	// ];
+	Liabilities               github_com_cosmos_cosmos_sdk_types.Int   `protobuf:"bytes,3,opt,name=liabilities,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"liabilities"`
+	InterestPaidCollaterals   []github_com_cosmos_cosmos_sdk_types.Int `protobuf:"bytes,4,rep,name=interest_paid_collaterals,json=interestPaidCollaterals,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"interest_paid_collaterals"`
+	InterestPaidCustodies     []github_com_cosmos_cosmos_sdk_types.Int `protobuf:"bytes,5,rep,name=interest_paid_custodies,json=interestPaidCustodies,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"interest_paid_custodies"`
+	InterestUnpaidCollaterals []github_com_cosmos_cosmos_sdk_types.Int `protobuf:"bytes,6,rep,name=interest_unpaid_collaterals,json=interestUnpaidCollaterals,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"interest_unpaid_collaterals"`
+	Custodies                 []types.Coin                             `protobuf:"bytes,7,rep,name=custodies,proto3" json:"custodies"`
+	// repeated string custody_assets = 8;
+	// repeated string custody_amounts = 9 [
+	//   (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+	//   (gogoproto.nullable) = false
+	// ];
+	Leverages           []github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,8,rep,name=leverages,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"leverages"`
+	MtpHealth           github_com_cosmos_cosmos_sdk_types.Dec   `protobuf:"bytes,9,opt,name=mtp_health,json=mtpHealth,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"mtp_health"`
+	Position            Position                                 `protobuf:"varint,10,opt,name=position,proto3,enum=elys.margin.Position" json:"position,omitempty"`
+	Id                  uint64                                   `protobuf:"varint,11,opt,name=id,proto3" json:"id,omitempty"`
+	AmmPoolId           uint64                                   `protobuf:"varint,12,opt,name=amm_pool_id,json=ammPoolId,proto3" json:"amm_pool_id,omitempty"`
+	ConsolidateLeverage github_com_cosmos_cosmos_sdk_types.Dec   `protobuf:"bytes,13,opt,name=consolidate_leverage,json=consolidateLeverage,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"consolidate_leverage"`
+	SumCollateral       github_com_cosmos_cosmos_sdk_types.Int   `protobuf:"bytes,14,opt,name=sum_collateral,json=sumCollateral,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"sum_collateral"`
 }
 
 func (m *MTP) Reset()         { *m = MTP{} }
@@ -111,16 +120,16 @@ func (m *MTP) GetAddress() string {
 	return ""
 }
 
-func (m *MTP) GetCollateralAssets() []string {
+func (m *MTP) GetCollaterals() []types.Coin {
 	if m != nil {
-		return m.CollateralAssets
+		return m.Collaterals
 	}
 	return nil
 }
 
-func (m *MTP) GetCustodyAssets() []string {
+func (m *MTP) GetCustodies() []types.Coin {
 	if m != nil {
-		return m.CustodyAssets
+		return m.Custodies
 	}
 	return nil
 }
@@ -199,44 +208,44 @@ func init() {
 func init() { proto.RegisterFile("elys/margin/types.proto", fileDescriptor_cd1c09c977f732f9) }
 
 var fileDescriptor_cd1c09c977f732f9 = []byte{
-	// 591 bytes of a gzipped FileDescriptorProto
+	// 587 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x9c, 0x94, 0xdf, 0x4e, 0xdb, 0x3e,
-	0x14, 0xc7, 0x9b, 0xf2, 0xaf, 0x39, 0xfd, 0x51, 0xfa, 0xf3, 0xd8, 0xf0, 0x36, 0x29, 0x54, 0x48,
-	0x9b, 0xaa, 0x21, 0xda, 0x8d, 0x3d, 0x01, 0xff, 0x36, 0x2a, 0x15, 0x88, 0x02, 0x08, 0x69, 0xd2,
-	0x14, 0x99, 0xda, 0x6a, 0x3d, 0xec, 0x38, 0x8a, 0x1d, 0x36, 0xde, 0x62, 0x8f, 0xc5, 0x25, 0x97,
-	0xd3, 0x2e, 0xd0, 0x04, 0x4f, 0xb1, 0xbb, 0x29, 0x69, 0xd2, 0x86, 0xed, 0x8a, 0x5c, 0x25, 0x3e,
-	0xe7, 0xe8, 0xf3, 0x3d, 0xc7, 0xfe, 0xda, 0xb0, 0xc2, 0xc4, 0x95, 0xee, 0x4a, 0x12, 0x0d, 0x79,
-	0xd0, 0x35, 0x57, 0x21, 0xd3, 0x9d, 0x30, 0x52, 0x46, 0xa1, 0x7a, 0x92, 0xe8, 0x8c, 0x13, 0x2f,
-	0x96, 0x87, 0x6a, 0xa8, 0xd2, 0x78, 0x37, 0xf9, 0x1b, 0x97, 0xac, 0xfd, 0xae, 0xc1, 0xcc, 0xc1,
-	0x89, 0x8b, 0x30, 0x2c, 0x10, 0x4a, 0x23, 0xa6, 0x35, 0xb6, 0x5a, 0x56, 0xdb, 0xf6, 0xf2, 0x25,
-	0x5a, 0x87, 0xff, 0x07, 0x4a, 0x08, 0x62, 0x58, 0x44, 0x84, 0x4f, 0xb4, 0x66, 0x46, 0xe3, 0x6a,
-	0x6b, 0xa6, 0x6d, 0x7b, 0xcd, 0x69, 0x62, 0x2b, 0x8d, 0xa3, 0xcf, 0x80, 0x8a, 0xc5, 0x52, 0xc5,
-	0x81, 0xd1, 0x78, 0x26, 0xa9, 0xde, 0xee, 0x5c, 0xdf, 0xae, 0x56, 0x7e, 0xde, 0xae, 0xbe, 0x1e,
-	0x72, 0x33, 0x8a, 0xcf, 0x3b, 0x03, 0x25, 0xbb, 0x03, 0xa5, 0xa5, 0xd2, 0xd9, 0x67, 0x43, 0xd3,
-	0x8b, 0xac, 0xff, 0x5e, 0x60, 0xbc, 0x82, 0xec, 0xd6, 0x18, 0x84, 0x5c, 0xa8, 0x0b, 0x4e, 0xce,
-	0xb9, 0xe0, 0x86, 0x33, 0x8d, 0x67, 0x93, 0x4e, 0x1f, 0xcd, 0x2d, 0x22, 0xd0, 0x17, 0x78, 0xce,
-	0x03, 0xc3, 0x22, 0xa6, 0x8d, 0x1f, 0x12, 0x4e, 0xfd, 0xa9, 0xa8, 0xc6, 0x73, 0xa5, 0xfa, 0x5e,
-	0xc9, 0x81, 0x2e, 0xe1, 0x74, 0x67, 0x8a, 0x43, 0x14, 0x9e, 0xfd, 0xa5, 0x15, 0x6b, 0xa3, 0xe8,
-	0x95, 0xc6, 0xf3, 0xa5, 0x84, 0x96, 0x1f, 0x08, 0x65, 0x2c, 0x14, 0xc0, 0xcb, 0x89, 0x4a, 0x1c,
-	0xfc, 0x33, 0xd3, 0x42, 0x29, 0xa9, 0xc9, 0x26, 0x9d, 0xa6, 0xc4, 0xe2, 0x54, 0xaf, 0xa0, 0x91,
-	0xcd, 0x91, 0x9b, 0xa3, 0x96, 0x9a, 0x63, 0x31, 0x8b, 0x66, 0xce, 0x38, 0x83, 0xa5, 0x49, 0x59,
-	0x66, 0x0b, 0xbb, 0x54, 0x2b, 0xb9, 0x5a, 0xee, 0x89, 0x3e, 0xd8, 0x82, 0x5d, 0xb2, 0x88, 0x0c,
-	0x99, 0xc6, 0xf0, 0x68, 0xe4, 0x2e, 0x1b, 0x78, 0x53, 0x00, 0x3a, 0x00, 0x90, 0x26, 0xf4, 0x47,
-	0x8c, 0x08, 0x33, 0xc2, 0xf5, 0x47, 0x1b, 0x2c, 0xc5, 0x49, 0x13, 0xee, 0xa7, 0x00, 0xf4, 0x0e,
-	0x6a, 0xa1, 0xd2, 0xdc, 0x70, 0x15, 0xe0, 0xff, 0x5a, 0x56, 0xbb, 0xb1, 0xf9, 0xb4, 0x53, 0xb8,
-	0x94, 0x1d, 0x37, 0x4b, 0x7a, 0x93, 0x32, 0xd4, 0x80, 0x2a, 0xa7, 0x78, 0xb1, 0x65, 0xb5, 0x67,
-	0xbd, 0x2a, 0xa7, 0xc8, 0x81, 0x3a, 0x91, 0xd2, 0x0f, 0x95, 0x12, 0x3e, 0xa7, 0xb8, 0x91, 0x26,
-	0x6c, 0x22, 0xa5, 0xab, 0x94, 0xe8, 0x51, 0x44, 0x60, 0x79, 0xa0, 0x02, 0xad, 0x04, 0xa7, 0xc4,
-	0x30, 0x3f, 0x1f, 0x05, 0x2f, 0x95, 0xea, 0xfd, 0x49, 0x81, 0xd5, 0xcf, 0x50, 0xe8, 0x14, 0x1a,
-	0x3a, 0x96, 0x05, 0x1b, 0xe1, 0x66, 0xa9, 0x9b, 0xb7, 0xa8, 0x63, 0x39, 0xb5, 0xce, 0xda, 0x26,
-	0xd8, 0x67, 0x23, 0x6e, 0x58, 0x9f, 0x6b, 0x93, 0xd8, 0xe8, 0x92, 0xa4, 0xba, 0x2a, 0xf2, 0x05,
-	0xd7, 0x06, 0x5b, 0x63, 0x1b, 0x4d, 0xa2, 0x49, 0xd9, 0x9b, 0xb7, 0x50, 0xcb, 0xf7, 0x0c, 0x2d,
-	0x41, 0xfd, 0xf4, 0xf0, 0xd8, 0xdd, 0xdb, 0xe9, 0x7d, 0xe8, 0xed, 0xed, 0x36, 0x2b, 0xa8, 0x06,
-	0xb3, 0xfd, 0xa3, 0xc3, 0x8f, 0x4d, 0x0b, 0xd9, 0x30, 0x77, 0xbc, 0x7f, 0xe4, 0x9d, 0x34, 0xab,
-	0xdb, 0x7b, 0xd7, 0x77, 0x8e, 0x75, 0x73, 0xe7, 0x58, 0xbf, 0xee, 0x1c, 0xeb, 0xfb, 0xbd, 0x53,
-	0xb9, 0xb9, 0x77, 0x2a, 0x3f, 0xee, 0x9d, 0xca, 0xa7, 0xf5, 0x42, 0xdb, 0xc9, 0xa1, 0x6c, 0x04,
-	0xcc, 0x7c, 0x55, 0xd1, 0x45, 0xba, 0xe8, 0x7e, 0x7b, 0xf0, 0xa2, 0x9e, 0xcf, 0xa7, 0xef, 0xe5,
-	0xfb, 0x3f, 0x01, 0x00, 0x00, 0xff, 0xff, 0x49, 0x3f, 0x3a, 0xe7, 0x6d, 0x05, 0x00, 0x00,
+	0x14, 0xc7, 0x9b, 0xb6, 0x40, 0x73, 0xf2, 0xa3, 0x3f, 0xe4, 0x81, 0x30, 0x4c, 0x0a, 0x15, 0xd2,
+	0xa6, 0x6a, 0x13, 0xc9, 0x60, 0xd7, 0xbb, 0x18, 0xa5, 0x1b, 0x95, 0x0a, 0x44, 0x81, 0x6a, 0xd2,
+	0x6e, 0x22, 0x37, 0xf1, 0x5a, 0x0f, 0x27, 0x8e, 0x62, 0xb7, 0x1b, 0x6f, 0xb1, 0xc7, 0xe2, 0x92,
+	0xcb, 0x69, 0x17, 0x68, 0x6a, 0x9f, 0x60, 0x6f, 0x30, 0x25, 0xfd, 0x17, 0xb6, 0x9b, 0xd1, 0xab,
+	0xc4, 0x3e, 0xc7, 0x9f, 0xef, 0xf9, 0xfa, 0xd8, 0x86, 0x6d, 0xca, 0x6f, 0xa4, 0x1d, 0x92, 0xa4,
+	0xc7, 0x22, 0x5b, 0xdd, 0xc4, 0x54, 0x5a, 0x71, 0x22, 0x94, 0x40, 0x46, 0x1a, 0xb0, 0x26, 0x81,
+	0xdd, 0xcd, 0x9e, 0xe8, 0x89, 0x6c, 0xde, 0x4e, 0xff, 0x26, 0x29, 0xbb, 0xa6, 0x2f, 0x64, 0x28,
+	0xa4, 0xdd, 0x25, 0x92, 0xda, 0xc3, 0xc3, 0x2e, 0x55, 0xe4, 0xd0, 0xf6, 0x05, 0x8b, 0x26, 0xf1,
+	0xfd, 0x5f, 0x6b, 0x50, 0x3a, 0xbb, 0x72, 0x10, 0x86, 0x35, 0x12, 0x04, 0x09, 0x95, 0x12, 0x6b,
+	0x35, 0xad, 0xae, 0xbb, 0xb3, 0x21, 0x7a, 0x0b, 0x86, 0x2f, 0x38, 0x27, 0x8a, 0x26, 0x84, 0x4b,
+	0x5c, 0xac, 0x95, 0xea, 0xc6, 0xd1, 0x8e, 0x35, 0xe1, 0x5a, 0x29, 0xd7, 0x9a, 0x72, 0xad, 0x86,
+	0x60, 0xd1, 0x71, 0xf9, 0xf6, 0x7e, 0xaf, 0xe0, 0xe6, 0xd7, 0x20, 0x07, 0x0c, 0xce, 0x48, 0x97,
+	0x71, 0xa6, 0x18, 0x95, 0xb8, 0x94, 0x0a, 0x1c, 0x5b, 0x69, 0xde, 0x8f, 0xfb, 0xbd, 0xe7, 0x3d,
+	0xa6, 0xfa, 0x83, 0xae, 0xe5, 0x8b, 0xd0, 0x9e, 0x16, 0x3b, 0xf9, 0x1c, 0xc8, 0xe0, 0x7a, 0x6a,
+	0xb7, 0x15, 0x29, 0x37, 0x8f, 0x40, 0x9f, 0x61, 0x87, 0x45, 0x8a, 0x26, 0x54, 0x2a, 0x2f, 0x26,
+	0x2c, 0xf0, 0xf2, 0x25, 0x96, 0x6b, 0xa5, 0x25, 0xf8, 0xdb, 0x33, 0xa0, 0x43, 0x58, 0xd0, 0xc8,
+	0x55, 0xff, 0x09, 0xb6, 0xff, 0xd0, 0x1a, 0x48, 0x25, 0x82, 0xd4, 0xc9, 0xca, 0x52, 0x4a, 0x5b,
+	0x0f, 0x94, 0x66, 0x30, 0x14, 0xc1, 0xd3, 0xb9, 0xce, 0x20, 0xfa, 0xcb, 0xd5, 0xea, 0x52, 0x5a,
+	0xf3, 0x6d, 0xea, 0x64, 0xc4, 0xbc, 0xaf, 0x37, 0xa0, 0x2f, 0x9c, 0xac, 0xfd, 0x5b, 0x5b, 0x17,
+	0x2b, 0x50, 0x1b, 0x74, 0x4e, 0x87, 0x34, 0x21, 0x3d, 0x2a, 0x71, 0xe5, 0xd1, 0xc5, 0x9d, 0x50,
+	0xdf, 0x5d, 0x00, 0xd0, 0x19, 0x40, 0xa8, 0x62, 0xaf, 0x4f, 0x09, 0x57, 0x7d, 0xac, 0x3f, 0xfa,
+	0x84, 0x64, 0xb8, 0x50, 0xc5, 0xa7, 0x19, 0x00, 0x1d, 0x42, 0x25, 0x16, 0x92, 0x29, 0x26, 0x22,
+	0x0c, 0x35, 0xad, 0x5e, 0x3d, 0xda, 0xb2, 0x72, 0x97, 0xc5, 0x72, 0xa6, 0x41, 0x77, 0x9e, 0x86,
+	0xaa, 0x50, 0x64, 0x01, 0x36, 0x6a, 0x5a, 0xbd, 0xec, 0x16, 0x59, 0x80, 0x4c, 0x30, 0x48, 0x18,
+	0x7a, 0xb1, 0x10, 0xdc, 0x63, 0x01, 0xfe, 0x2f, 0x0b, 0xe8, 0x24, 0x0c, 0x1d, 0x21, 0x78, 0x2b,
+	0x40, 0x04, 0x36, 0x7d, 0x11, 0x49, 0xc1, 0x59, 0x40, 0x14, 0xf5, 0x66, 0x56, 0xf0, 0xfa, 0x52,
+	0xb5, 0x3f, 0xc9, 0xb1, 0xda, 0x53, 0x14, 0xea, 0x40, 0x55, 0x0e, 0xc2, 0xdc, 0x29, 0xc0, 0xd5,
+	0xa5, 0xae, 0xce, 0xba, 0x1c, 0x84, 0x8b, 0xce, 0xef, 0x1f, 0x81, 0xfe, 0xa1, 0xcf, 0x14, 0x6d,
+	0x33, 0xa9, 0xd0, 0x33, 0xa8, 0x0e, 0x49, 0xa6, 0x2b, 0x12, 0x8f, 0x33, 0xa9, 0xb0, 0x96, 0xf6,
+	0xd2, 0x5d, 0x9f, 0xcf, 0xa6, 0x69, 0x2f, 0x5e, 0x41, 0x65, 0xb6, 0x67, 0xe8, 0x7f, 0x30, 0x3a,
+	0xe7, 0x97, 0x4e, 0xb3, 0xd1, 0x7a, 0xd7, 0x6a, 0x9e, 0x6c, 0x14, 0x50, 0x05, 0xca, 0xed, 0x8b,
+	0xf3, 0xf7, 0x1b, 0x1a, 0xd2, 0x61, 0xe5, 0xf2, 0xf4, 0xc2, 0xbd, 0xda, 0x28, 0x1e, 0x37, 0x6f,
+	0x47, 0xa6, 0x76, 0x37, 0x32, 0xb5, 0x9f, 0x23, 0x53, 0xfb, 0x36, 0x36, 0x0b, 0x77, 0x63, 0xb3,
+	0xf0, 0x7d, 0x6c, 0x16, 0x3e, 0xbe, 0xcc, 0x95, 0x9d, 0x36, 0xe5, 0x20, 0xa2, 0xea, 0x8b, 0x48,
+	0xae, 0xb3, 0x81, 0xfd, 0xf5, 0xc1, 0x4b, 0xd7, 0x5d, 0xcd, 0xde, 0xa9, 0xd7, 0xbf, 0x03, 0x00,
+	0x00, 0xff, 0xff, 0xd5, 0x55, 0xbd, 0xc8, 0x05, 0x05, 0x00, 0x00,
 }
 
 func (m *MTP) Marshal() (dAtA []byte, err error) {
@@ -268,9 +277,7 @@ func (m *MTP) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i = encodeVarintTypes(dAtA, i, uint64(size))
 	}
 	i--
-	dAtA[i] = 0x1
-	i--
-	dAtA[i] = 0x82
+	dAtA[i] = 0x72
 	{
 		size := m.ConsolidateLeverage.Size()
 		i -= size
@@ -280,21 +287,21 @@ func (m *MTP) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i = encodeVarintTypes(dAtA, i, uint64(size))
 	}
 	i--
-	dAtA[i] = 0x7a
+	dAtA[i] = 0x6a
 	if m.AmmPoolId != 0 {
 		i = encodeVarintTypes(dAtA, i, uint64(m.AmmPoolId))
 		i--
-		dAtA[i] = 0x70
+		dAtA[i] = 0x60
 	}
 	if m.Id != 0 {
 		i = encodeVarintTypes(dAtA, i, uint64(m.Id))
 		i--
-		dAtA[i] = 0x68
+		dAtA[i] = 0x58
 	}
 	if m.Position != 0 {
 		i = encodeVarintTypes(dAtA, i, uint64(m.Position))
 		i--
-		dAtA[i] = 0x60
+		dAtA[i] = 0x50
 	}
 	{
 		size := m.MtpHealth.Size()
@@ -305,7 +312,7 @@ func (m *MTP) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i = encodeVarintTypes(dAtA, i, uint64(size))
 	}
 	i--
-	dAtA[i] = 0x5a
+	dAtA[i] = 0x4a
 	if len(m.Leverages) > 0 {
 		for iNdEx := len(m.Leverages) - 1; iNdEx >= 0; iNdEx-- {
 			{
@@ -317,30 +324,21 @@ func (m *MTP) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 				i = encodeVarintTypes(dAtA, i, uint64(size))
 			}
 			i--
-			dAtA[i] = 0x52
+			dAtA[i] = 0x42
 		}
 	}
-	if len(m.CustodyAmounts) > 0 {
-		for iNdEx := len(m.CustodyAmounts) - 1; iNdEx >= 0; iNdEx-- {
+	if len(m.Custodies) > 0 {
+		for iNdEx := len(m.Custodies) - 1; iNdEx >= 0; iNdEx-- {
 			{
-				size := m.CustodyAmounts[iNdEx].Size()
-				i -= size
-				if _, err := m.CustodyAmounts[iNdEx].MarshalTo(dAtA[i:]); err != nil {
+				size, err := m.Custodies[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
 					return 0, err
 				}
+				i -= size
 				i = encodeVarintTypes(dAtA, i, uint64(size))
 			}
 			i--
-			dAtA[i] = 0x4a
-		}
-	}
-	if len(m.CustodyAssets) > 0 {
-		for iNdEx := len(m.CustodyAssets) - 1; iNdEx >= 0; iNdEx-- {
-			i -= len(m.CustodyAssets[iNdEx])
-			copy(dAtA[i:], m.CustodyAssets[iNdEx])
-			i = encodeVarintTypes(dAtA, i, uint64(len(m.CustodyAssets[iNdEx])))
-			i--
-			dAtA[i] = 0x42
+			dAtA[i] = 0x3a
 		}
 	}
 	if len(m.InterestUnpaidCollaterals) > 0 {
@@ -354,21 +352,21 @@ func (m *MTP) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 				i = encodeVarintTypes(dAtA, i, uint64(size))
 			}
 			i--
-			dAtA[i] = 0x3a
+			dAtA[i] = 0x32
 		}
 	}
-	if len(m.InterestPaidCustodys) > 0 {
-		for iNdEx := len(m.InterestPaidCustodys) - 1; iNdEx >= 0; iNdEx-- {
+	if len(m.InterestPaidCustodies) > 0 {
+		for iNdEx := len(m.InterestPaidCustodies) - 1; iNdEx >= 0; iNdEx-- {
 			{
-				size := m.InterestPaidCustodys[iNdEx].Size()
+				size := m.InterestPaidCustodies[iNdEx].Size()
 				i -= size
-				if _, err := m.InterestPaidCustodys[iNdEx].MarshalTo(dAtA[i:]); err != nil {
+				if _, err := m.InterestPaidCustodies[iNdEx].MarshalTo(dAtA[i:]); err != nil {
 					return 0, err
 				}
 				i = encodeVarintTypes(dAtA, i, uint64(size))
 			}
 			i--
-			dAtA[i] = 0x32
+			dAtA[i] = 0x2a
 		}
 	}
 	if len(m.InterestPaidCollaterals) > 0 {
@@ -382,7 +380,7 @@ func (m *MTP) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 				i = encodeVarintTypes(dAtA, i, uint64(size))
 			}
 			i--
-			dAtA[i] = 0x2a
+			dAtA[i] = 0x22
 		}
 	}
 	{
@@ -394,26 +392,17 @@ func (m *MTP) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i = encodeVarintTypes(dAtA, i, uint64(size))
 	}
 	i--
-	dAtA[i] = 0x22
-	if len(m.CollateralAmounts) > 0 {
-		for iNdEx := len(m.CollateralAmounts) - 1; iNdEx >= 0; iNdEx-- {
+	dAtA[i] = 0x1a
+	if len(m.Collaterals) > 0 {
+		for iNdEx := len(m.Collaterals) - 1; iNdEx >= 0; iNdEx-- {
 			{
-				size := m.CollateralAmounts[iNdEx].Size()
-				i -= size
-				if _, err := m.CollateralAmounts[iNdEx].MarshalTo(dAtA[i:]); err != nil {
+				size, err := m.Collaterals[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
 					return 0, err
 				}
+				i -= size
 				i = encodeVarintTypes(dAtA, i, uint64(size))
 			}
-			i--
-			dAtA[i] = 0x1a
-		}
-	}
-	if len(m.CollateralAssets) > 0 {
-		for iNdEx := len(m.CollateralAssets) - 1; iNdEx >= 0; iNdEx-- {
-			i -= len(m.CollateralAssets[iNdEx])
-			copy(dAtA[i:], m.CollateralAssets[iNdEx])
-			i = encodeVarintTypes(dAtA, i, uint64(len(m.CollateralAssets[iNdEx])))
 			i--
 			dAtA[i] = 0x12
 		}
@@ -481,14 +470,8 @@ func (m *MTP) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovTypes(uint64(l))
 	}
-	if len(m.CollateralAssets) > 0 {
-		for _, s := range m.CollateralAssets {
-			l = len(s)
-			n += 1 + l + sovTypes(uint64(l))
-		}
-	}
-	if len(m.CollateralAmounts) > 0 {
-		for _, e := range m.CollateralAmounts {
+	if len(m.Collaterals) > 0 {
+		for _, e := range m.Collaterals {
 			l = e.Size()
 			n += 1 + l + sovTypes(uint64(l))
 		}
@@ -501,8 +484,8 @@ func (m *MTP) Size() (n int) {
 			n += 1 + l + sovTypes(uint64(l))
 		}
 	}
-	if len(m.InterestPaidCustodys) > 0 {
-		for _, e := range m.InterestPaidCustodys {
+	if len(m.InterestPaidCustodies) > 0 {
+		for _, e := range m.InterestPaidCustodies {
 			l = e.Size()
 			n += 1 + l + sovTypes(uint64(l))
 		}
@@ -513,14 +496,8 @@ func (m *MTP) Size() (n int) {
 			n += 1 + l + sovTypes(uint64(l))
 		}
 	}
-	if len(m.CustodyAssets) > 0 {
-		for _, s := range m.CustodyAssets {
-			l = len(s)
-			n += 1 + l + sovTypes(uint64(l))
-		}
-	}
-	if len(m.CustodyAmounts) > 0 {
-		for _, e := range m.CustodyAmounts {
+	if len(m.Custodies) > 0 {
+		for _, e := range m.Custodies {
 			l = e.Size()
 			n += 1 + l + sovTypes(uint64(l))
 		}
@@ -545,7 +522,7 @@ func (m *MTP) Size() (n int) {
 	l = m.ConsolidateLeverage.Size()
 	n += 1 + l + sovTypes(uint64(l))
 	l = m.SumCollateral.Size()
-	n += 2 + l + sovTypes(uint64(l))
+	n += 1 + l + sovTypes(uint64(l))
 	return n
 }
 
@@ -633,9 +610,9 @@ func (m *MTP) Unmarshal(dAtA []byte) error {
 			iNdEx = postIndex
 		case 2:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field CollateralAssets", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Collaterals", wireType)
 			}
-			var stringLen uint64
+			var msglen int
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowTypes
@@ -645,61 +622,27 @@ func (m *MTP) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
+				msglen |= int(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
+			if msglen < 0 {
 				return ErrInvalidLengthTypes
 			}
-			postIndex := iNdEx + intStringLen
+			postIndex := iNdEx + msglen
 			if postIndex < 0 {
 				return ErrInvalidLengthTypes
 			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.CollateralAssets = append(m.CollateralAssets, string(dAtA[iNdEx:postIndex]))
-			iNdEx = postIndex
-		case 3:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field CollateralAmounts", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTypes
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthTypes
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthTypes
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			var v github_com_cosmos_cosmos_sdk_types.Int
-			m.CollateralAmounts = append(m.CollateralAmounts, v)
-			if err := m.CollateralAmounts[len(m.CollateralAmounts)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+			m.Collaterals = append(m.Collaterals, types.Coin{})
+			if err := m.Collaterals[len(m.Collaterals)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
-		case 4:
+		case 3:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Liabilities", wireType)
 			}
@@ -733,7 +676,7 @@ func (m *MTP) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			iNdEx = postIndex
-		case 5:
+		case 4:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field InterestPaidCollaterals", wireType)
 			}
@@ -769,9 +712,9 @@ func (m *MTP) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			iNdEx = postIndex
-		case 6:
+		case 5:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field InterestPaidCustodys", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field InterestPaidCustodies", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -800,12 +743,12 @@ func (m *MTP) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			var v github_com_cosmos_cosmos_sdk_types.Int
-			m.InterestPaidCustodys = append(m.InterestPaidCustodys, v)
-			if err := m.InterestPaidCustodys[len(m.InterestPaidCustodys)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+			m.InterestPaidCustodies = append(m.InterestPaidCustodies, v)
+			if err := m.InterestPaidCustodies[len(m.InterestPaidCustodies)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
-		case 7:
+		case 6:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field InterestUnpaidCollaterals", wireType)
 			}
@@ -841,11 +784,11 @@ func (m *MTP) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			iNdEx = postIndex
-		case 8:
+		case 7:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field CustodyAssets", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Custodies", wireType)
 			}
-			var stringLen uint64
+			var msglen int
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowTypes
@@ -855,61 +798,27 @@ func (m *MTP) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
+				msglen |= int(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
+			if msglen < 0 {
 				return ErrInvalidLengthTypes
 			}
-			postIndex := iNdEx + intStringLen
+			postIndex := iNdEx + msglen
 			if postIndex < 0 {
 				return ErrInvalidLengthTypes
 			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.CustodyAssets = append(m.CustodyAssets, string(dAtA[iNdEx:postIndex]))
-			iNdEx = postIndex
-		case 9:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field CustodyAmounts", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTypes
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthTypes
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthTypes
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			var v github_com_cosmos_cosmos_sdk_types.Int
-			m.CustodyAmounts = append(m.CustodyAmounts, v)
-			if err := m.CustodyAmounts[len(m.CustodyAmounts)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+			m.Custodies = append(m.Custodies, types.Coin{})
+			if err := m.Custodies[len(m.Custodies)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
-		case 10:
+		case 8:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Leverages", wireType)
 			}
@@ -945,7 +854,7 @@ func (m *MTP) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			iNdEx = postIndex
-		case 11:
+		case 9:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field MtpHealth", wireType)
 			}
@@ -979,7 +888,7 @@ func (m *MTP) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			iNdEx = postIndex
-		case 12:
+		case 10:
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Position", wireType)
 			}
@@ -998,7 +907,7 @@ func (m *MTP) Unmarshal(dAtA []byte) error {
 					break
 				}
 			}
-		case 13:
+		case 11:
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
 			}
@@ -1017,7 +926,7 @@ func (m *MTP) Unmarshal(dAtA []byte) error {
 					break
 				}
 			}
-		case 14:
+		case 12:
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field AmmPoolId", wireType)
 			}
@@ -1036,7 +945,7 @@ func (m *MTP) Unmarshal(dAtA []byte) error {
 					break
 				}
 			}
-		case 15:
+		case 13:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field ConsolidateLeverage", wireType)
 			}
@@ -1070,7 +979,7 @@ func (m *MTP) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			iNdEx = postIndex
-		case 16:
+		case 14:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field SumCollateral", wireType)
 			}

@@ -8,17 +8,17 @@ import (
 
 func (k Keeper) CalcMTPConsolidateCollateral(ctx sdk.Context, mtp *types.MTP) error {
 	consolidateCollateral := sdk.ZeroInt()
-	for i, asset := range mtp.CollateralAssets {
-		if asset == ptypes.BaseCurrency {
-			consolidateCollateral = consolidateCollateral.Add(mtp.CollateralAmounts[i])
+	for _, asset := range mtp.Collaterals {
+		if asset.Denom == ptypes.BaseCurrency {
+			consolidateCollateral = consolidateCollateral.Add(asset.Amount)
 		} else {
 			// swap into base currency
-			_, ammPool, _, err := k.OpenChecker.PreparePools(ctx, asset)
+			_, ammPool, _, err := k.OpenChecker.PreparePools(ctx, asset.Denom)
 			if err != nil {
 				return err
 			}
 
-			collateralAmtIn := sdk.NewCoin(asset, mtp.CollateralAmounts[i])
+			collateralAmtIn := sdk.NewCoin(asset.Denom, asset.Amount)
 			C, err := k.EstimateSwapGivenOut(ctx, collateralAmtIn, ptypes.BaseCurrency, ammPool)
 			if err != nil {
 				return err
