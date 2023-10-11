@@ -156,7 +156,7 @@ func (m *CustomMessenger) msgSwapExactAmountIn(ctx sdk.Context, contractAddr sdk
 
 	responseBytes, err := json.Marshal(MsgSwapExactAmountInResponse{TokenOutAmount: res.TokenOutAmount})
 	if err != nil {
-		return nil, nil, errorsmod.Wrap(err, "failed to serialize price response")
+		return nil, nil, errorsmod.Wrap(err, "failed to serialize swap response")
 	}
 
 	resp := [][]byte{responseBytes}
