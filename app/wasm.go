@@ -139,7 +139,7 @@ func (m *CustomMessenger) DispatchMsg(ctx sdk.Context, contractAddr sdk.AccAddre
 		// leave everything else for the wrapped version
 		var contractMsg ElysMsg
 		if err := json.Unmarshal(msg.Custom, &contractMsg); err != nil {
-			return nil, nil, errorsmod.Wrap(err, "osmosis msg")
+			return nil, nil, errorsmod.Wrap(err, "elys msg")
 		}
 		if contractMsg.MsgSwapExactAmountIn != nil {
 			return m.msgSwapExactAmountIn(ctx, contractAddr, contractMsg.MsgSwapExactAmountIn)
