@@ -377,7 +377,7 @@ genesis:
         epoch_length: 1
         removal_queue_threshold: "0.35"
         max_open_positions: 9999
-        pool_open_threshold: "1.0"
+        pool_open_threshold: "0.65"
         force_close_fund_percentage: "1.0"
         force_close_fund_address: "elys1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqnrec2l"
         incremental_interest_payment_fund_percentage: "0.35"
@@ -387,4 +387,8 @@ genesis:
         incremental_interest_payment_enabled: true
         whitelisting_enabled: false
         invariant_check_epoch: day
+    stablestake:
+      params:
+        deposit_denom: "uusdc"
+        redemption_rate: "1.000000000000000000"
   chain_id: elystestnet-1

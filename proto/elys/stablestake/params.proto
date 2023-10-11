@@ -1,0 +1,17 @@
+syntax = "proto3";
+package elys.stablestake;
+
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/elys-network/elys/x/stablestake/types";
+
+// Params defines the parameters for the module.
+message Params {
+  option (gogoproto.goproto_stringer) = false;
+
+  string deposit_denom = 1;
+  string redemption_rate = 2 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+}

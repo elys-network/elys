@@ -6,7 +6,8 @@ import (
 	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/app"
+	simapp "github.com/elys-network/elys/app"
+
 	aptypes "github.com/elys-network/elys/x/assetprofile/types"
 	commitmentkeeper "github.com/elys-network/elys/x/commitment/keeper"
 	"github.com/elys-network/elys/x/commitment/types"
@@ -15,15 +16,18 @@ import (
 )
 
 func TestUncommitTokens(t *testing.T) {
-	app := app.InitElysTestApp(true)
+	app := simapp.InitElysTestApp(true)
 
 	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
 	// Create a test context and keeper
 	keeper := app.CommitmentKeeper
 	msgServer := commitmentkeeper.NewMsgServerImpl(keeper)
 
+	// Generate 1 random account with 1000000uelys balanced
+	addr := simapp.AddTestAddrs(app, ctx, 1, sdk.NewInt(1000000))
+
 	// Define the test data
-	creator := "test_creator"
+	creator := addr[0].String()
 	denom := "test_denom"
 	initialUncommitted := sdk.NewInt(400)
 	initialCommitted := sdk.NewInt(100)
@@ -68,6 +72,10 @@ func TestUncommitTokens(t *testing.T) {
 	assert.Equal(t, creator, commitments.Creator, "Incorrect creator")
 	assert.Len(t, commitments.CommittedTokens, 1, "Incorrect number of committed tokens")
 	assert.Equal(t, denom, commitments.CommittedTokens[0].Denom, "Incorrect denom")
-	assert.Equal(t, uncommitAmount.Add(initialUncommitted), commitments.UncommittedTokens[0].Amount, "Incorrect amount")
 	assert.Equal(t, sdk.ZeroInt(), commitments.CommittedTokens[0].Amount, "Incorrect amount")
+
+	uncommittedToken := sdk.NewCoins(sdk.NewCoin(denom, uncommitAmount))
+
+	edenCoin := app.BankKeeper.GetBalance(ctx, addr[0], denom)
+	require.Equal(t, sdk.Coins{edenCoin}, uncommittedToken)
 }

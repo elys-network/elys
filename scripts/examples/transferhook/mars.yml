@@ -400,4 +400,8 @@ genesis:
         incremental_interest_payment_enabled: true
         whitelisting_enabled: false
         invariant_check_epoch: day
+    stablestake:
+      params:
+        deposit_denom: "uusdc"
+        redemption_rate: "1.000000000000000000"
   chain_id: marstestnet-1

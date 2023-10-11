@@ -23,6 +23,7 @@ import (
 	clocktypes "github.com/elys-network/elys/x/clock/types"
 	commitmenttypes "github.com/elys-network/elys/x/commitment/types"
 	incentivetypes "github.com/elys-network/elys/x/incentive/types"
+	leveragelptypes "github.com/elys-network/elys/x/leveragelp/types"
 	liquidityprovidertypes "github.com/elys-network/elys/x/liquidityprovider/types"
 	margintypes "github.com/elys-network/elys/x/margin/types"
 	oracletypes "github.com/elys-network/elys/x/oracle/types"
@@ -74,6 +75,8 @@ func setUpgradeHandler(app *ElysApp) {
 			keyTable = liquidityprovidertypes.ParamKeyTable() //nolint:staticcheck
 		case margintypes.ModuleName:
 			keyTable = margintypes.ParamKeyTable() //nolint:staticcheck
+		case leveragelptypes.ModuleName:
+			keyTable = margintypes.ParamKeyTable() //nolint:staticcheck
 		case oracletypes.ModuleName:
 			keyTable = oracletypes.ParamKeyTable() //nolint:staticcheck
 		case parametertypes.ModuleName:
@@ -118,8 +121,7 @@ func loadUpgradeStore(app *ElysApp) {
 	if shouldLoadUpgradeStore(app, upgradeInfo) {
 		storeUpgrades := storetypes.StoreUpgrades{
 			Added: []string{
-				clocktypes.StoreKey,
-				transferhooktypes.StoreKey,
+				leveragelptypes.StoreKey,
 			},
 		}
 		// Use upgrade store loader for the initial loading of all stores when app starts,

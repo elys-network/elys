@@ -175,6 +175,14 @@ import (
 	wasmmodulekeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 	wasmmoduletypes "github.com/CosmWasm/wasmd/x/wasm/types"
 
+	stablestake "github.com/elys-network/elys/x/stablestake"
+	stablestakekeeper "github.com/elys-network/elys/x/stablestake/keeper"
+	stablestaketypes "github.com/elys-network/elys/x/stablestake/types"
+
+	leveragelpmodule "github.com/elys-network/elys/x/leveragelp"
+	leveragelpmodulekeeper "github.com/elys-network/elys/x/leveragelp/keeper"
+	leveragelpmoduletypes "github.com/elys-network/elys/x/leveragelp/types"
+
 	// this line is used by starport scaffolding # stargate/app/moduleImport
 
 	"github.com/elys-network/elys/docs"
@@ -277,6 +285,8 @@ var (
 		accountedpoolmodule.AppModuleBasic{},
 		transferhook.AppModuleBasic{},
 		clockmodule.AppModuleBasic{},
+		stablestake.AppModuleBasic{},
+		leveragelpmodule.AppModuleBasic{},
 		// this line is used by starport scaffolding # stargate/app/moduleBasic
 	)
 
@@ -296,6 +306,7 @@ var (
 		incentivemoduletypes.ModuleName:  nil,
 		ammmoduletypes.ModuleName:        {authtypes.Minter, authtypes.Burner, authtypes.Staking},
 		wasmmoduletypes.ModuleName:       {authtypes.Burner},
+		stablestaketypes.ModuleName:      {authtypes.Minter, authtypes.Burner},
 		// this line is used by starport scaffolding # stargate/app/maccPerms
 	}
 )
@@ -377,6 +388,10 @@ type ElysApp struct {
 	ClockKeeper             clockmodulekeeper.Keeper
 
 	AccountedPoolKeeper accountedpoolmodulekeeper.Keeper
+
+	StablestakeKeeper stablestakekeeper.Keeper
+
+	LeveragelpKeeper leveragelpmodulekeeper.Keeper
 	// this line is used by starport scaffolding # stargate/app/keeperDeclaration
 
 	// mm is the module manager
@@ -451,6 +466,8 @@ func NewElysApp(
 		marginmoduletypes.StoreKey,
 		transferhooktypes.StoreKey,
 		clockmoduletypes.StoreKey,
+		stablestaketypes.StoreKey,
+		leveragelpmoduletypes.StoreKey,
 		// this line is used by starport scaffolding # stargate/app/storeKey
 	)
 	tkeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey, ammmoduletypes.TStoreKey)
@@ -892,6 +909,26 @@ func NewElysApp(
 	)
 	clockModule := clockmodule.NewAppModule(appCodec, app.ClockKeeper)
 
+	app.StablestakeKeeper = *stablestakekeeper.NewKeeper(
+		appCodec,
+		keys[stablestaketypes.StoreKey],
+		keys[stablestaketypes.MemStoreKey],
+		app.GetSubspace(stablestaketypes.ModuleName),
+		app.BankKeeper,
+	)
+	stablestake := stablestake.NewAppModule(appCodec, app.StablestakeKeeper, app.AccountKeeper, app.BankKeeper)
+
+	app.LeveragelpKeeper = *leveragelpmodulekeeper.NewKeeper(
+		appCodec,
+		keys[leveragelpmoduletypes.StoreKey],
+		keys[leveragelpmoduletypes.MemStoreKey],
+		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+		app.AmmKeeper,
+		app.BankKeeper,
+		app.OracleKeeper,
+	)
+	leveragelpModule := leveragelpmodule.NewAppModule(appCodec, app.LeveragelpKeeper, app.AccountKeeper, app.BankKeeper)
+
 	// this line is used by starport scaffolding # stargate/app/keeperDefinition
 
 	/**** IBC Routing ****/
@@ -1009,6 +1046,8 @@ func NewElysApp(
 		accountedPoolModule,
 		transferhookModule,
 		clockModule,
+		stablestake,
+		leveragelpModule,
 		// this line is used by starport scaffolding # stargate/app/appModule
 	)
 
@@ -1054,6 +1093,8 @@ func NewElysApp(
 		accountedpoolmoduletypes.ModuleName,
 		transferhooktypes.ModuleName,
 		clockmoduletypes.ModuleName,
+		stablestaketypes.ModuleName,
+		leveragelpmoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/beginBlockers
 	)
 
@@ -1094,6 +1135,8 @@ func NewElysApp(
 		accountedpoolmoduletypes.ModuleName,
 		transferhooktypes.ModuleName,
 		clockmoduletypes.ModuleName,
+		stablestaketypes.ModuleName,
+		leveragelpmoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/endBlockers
 	)
 
@@ -1138,6 +1181,8 @@ func NewElysApp(
 		accountedpoolmoduletypes.ModuleName,
 		transferhooktypes.ModuleName,
 		clockmoduletypes.ModuleName,
+		stablestaketypes.ModuleName,
+		leveragelpmoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/initGenesis
 	}
 	app.mm.SetOrderInitGenesis(genesisModuleOrder...)
@@ -1436,6 +1481,8 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(accountedpoolmoduletypes.ModuleName)
 	paramsKeeper.Subspace(transferhooktypes.ModuleName)
 	paramsKeeper.Subspace(clockmoduletypes.ModuleName)
+	paramsKeeper.Subspace(stablestaketypes.ModuleName)
+	paramsKeeper.Subspace(leveragelpmoduletypes.ModuleName)
 	// this line is used by starport scaffolding # stargate/app/paramSubspace
 
 	return paramsKeeper

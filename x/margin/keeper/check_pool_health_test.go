@@ -83,7 +83,7 @@ func TestCheckPoolHealth_PoolHealthTooLow(t *testing.T) {
 	err := k.CheckPoolHealth(ctx, poolId)
 
 	// Expect an error about pool health being too low
-	assert.True(t, errors.Is(err, types.ErrMTPDisabled))
+	assert.True(t, errors.Is(err, types.ErrInvalidPosition))
 }
 
 func TestCheckPoolHealth_PoolIsHealthy(t *testing.T) {
