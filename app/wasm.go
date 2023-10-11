@@ -4,11 +4,14 @@ import (
 	"encoding/json"
 
 	errorsmod "cosmossdk.io/errors"
+	cosmos_sdk_math "cosmossdk.io/math"
 	"github.com/CosmWasm/wasmd/x/wasm"
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 	wasmvmtypes "github.com/CosmWasm/wasmvm/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	query "github.com/cosmos/cosmos-sdk/types/query"
+	ammkeeper "github.com/elys-network/elys/x/amm/keeper"
+	ammtype "github.com/elys-network/elys/x/amm/types"
 	oraclekeeper "github.com/elys-network/elys/x/oracle/keeper"
 	oracletypes "github.com/elys-network/elys/x/oracle/types"
 )
@@ -40,6 +43,7 @@ func NewQueryPlugin(
 }
 
 func RegisterCustomPlugins(
+	amm *ammkeeper.Keeper,
 	oracle *oraclekeeper.Keeper,
 ) []wasmkeeper.Option {
 	wasmQueryPlugin := NewQueryPlugin(oracle)
@@ -48,8 +52,12 @@ func RegisterCustomPlugins(
 		Custom: CustomQuerier(wasmQueryPlugin),
 	})
 
+	messengerDecoratorOpt := wasmkeeper.WithMessageHandlerDecorator(
+		CustomMessageDecorator(amm),
+	)
 	return []wasm.Option{
 		queryPluginOpt,
+		messengerDecoratorOpt,
 	}
 }
 
@@ -107,4 +115,98 @@ type PriceAll struct {
 type AllPriceResponse struct {
 	Price      []oracletypes.Price `protobuf:"bytes,1,rep,name=price,proto3" json:"price"`
 	Pagination *query.PageResponse `protobuf:"bytes,2,opt,name=pagination,proto3" json:"pagination,omitempty"`
+}
+
+func CustomMessageDecorator(amm *ammkeeper.Keeper) func(wasmkeeper.Messenger) wasmkeeper.Messenger {
+	return func(old wasmkeeper.Messenger) wasmkeeper.Messenger {
+		return &CustomMessenger{
+			wrapped: old,
+			amm:     amm,
+		}
+	}
+}
+
+type CustomMessenger struct {
+	wrapped wasmkeeper.Messenger
+	amm     *ammkeeper.Keeper
+}
+
+var _ wasmkeeper.Messenger = (*CustomMessenger)(nil)
+
+func (m *CustomMessenger) DispatchMsg(ctx sdk.Context, contractAddr sdk.AccAddress, contractIBCPortID string, msg wasmvmtypes.CosmosMsg) ([]sdk.Event, [][]byte, error) {
+	if msg.Custom != nil {
+		// only handle the happy path where this is really creating / minting / swapping ...
+		// leave everything else for the wrapped version
+		var contractMsg ElysMsg
+		if err := json.Unmarshal(msg.Custom, &contractMsg); err != nil {
+			return nil, nil, errorsmod.Wrap(err, "elys msg")
+		}
+		if contractMsg.MsgSwapExactAmountIn != nil {
+			return m.msgSwapExactAmountIn(ctx, contractAddr, contractMsg.MsgSwapExactAmountIn)
+		}
+	}
+	return m.wrapped.DispatchMsg(ctx, contractAddr, contractIBCPortID, msg)
+}
+
+func (m *CustomMessenger) msgSwapExactAmountIn(ctx sdk.Context, contractAddr sdk.AccAddress, msgSwapExactAmountIn *MsgSwapExactAmountIn) ([]sdk.Event, [][]byte, error) {
+	res, err := PerformMsgSwapExactAmountIn(m.amm, ctx, contractAddr, msgSwapExactAmountIn)
+	if err != nil {
+		return nil, nil, errorsmod.Wrap(err, "perform swap")
+	}
+
+	responseBytes, err := json.Marshal(MsgSwapExactAmountInResponse{TokenOutAmount: res.TokenOutAmount})
+	if err != nil {
+		return nil, nil, errorsmod.Wrap(err, "failed to serialize swap response")
+	}
+
+	resp := [][]byte{responseBytes}
+
+	return nil, resp, nil
+}
+
+func PerformMsgSwapExactAmountIn(f *ammkeeper.Keeper, ctx sdk.Context, contractAddr sdk.AccAddress, msgSwapExactAmountIn *MsgSwapExactAmountIn) (*ammtype.MsgSwapExactAmountInResponse, error) {
+	if msgSwapExactAmountIn == nil {
+		return nil, wasmvmtypes.InvalidRequest{Err: "swap null swap"}
+	}
+
+	msgServer := ammkeeper.NewMsgServerImpl(*f)
+
+	var PoolIds []uint64
+	var TokenOutDenoms []string
+
+	for _, route := range msgSwapExactAmountIn.Routes {
+		PoolIds = append(PoolIds, route.PoolId)
+		TokenOutDenoms = append(TokenOutDenoms, route.TokenOutDenom)
+	}
+
+	msgMsgSwapExactAmountIn := ammtype.NewMsgSwapExactAmountIn(msgSwapExactAmountIn.Sender, msgSwapExactAmountIn.TokenIn, msgSwapExactAmountIn.TokenOutMinAmount, PoolIds, TokenOutDenoms)
+
+	if err := msgMsgSwapExactAmountIn.ValidateBasic(); err != nil {
+		return nil, errorsmod.Wrap(err, "failed validating MsgMsgSwapExactAmountIn")
+	}
+
+	// Swap
+	resp, err := msgServer.SwapExactAmountIn(
+		sdk.WrapSDKContext(ctx),
+		msgMsgSwapExactAmountIn,
+	)
+	if err != nil {
+		return nil, errorsmod.Wrap(err, "swap msg")
+	}
+	return resp, nil
+}
+
+type ElysMsg struct {
+	MsgSwapExactAmountIn *MsgSwapExactAmountIn `json:"msg_swap_exact_amount_in,omitempty"`
+}
+
+type MsgSwapExactAmountIn struct {
+	Sender            string                      `protobuf:"bytes,1,opt,name=sender,proto3" json:"sender,omitempty"`
+	Routes            []ammtype.SwapAmountInRoute `protobuf:"bytes,2,rep,name=routes,proto3" json:"routes,omitempty"`
+	TokenIn           sdk.Coin                    `protobuf:"bytes,3,opt,name=tokenIn,proto3" json:"token_in,omitempty"`
+	TokenOutMinAmount cosmos_sdk_math.Int         `protobuf:"bytes,4,opt,name=tokenOutMinAmount,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"token_out_min_amount,omitempty"`
+}
+
+type MsgSwapExactAmountInResponse struct {
+	TokenOutAmount cosmos_sdk_math.Int `protobuf:"bytes,1,opt,name=tokenOutAmount,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"token_out_amount,omitempty"`
 }
