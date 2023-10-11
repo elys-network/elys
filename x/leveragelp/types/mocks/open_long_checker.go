@@ -153,50 +153,6 @@ func (_c *OpenLongChecker_CalcMTPConsolidateLiability_Call) RunAndReturn(run fun
 	return _c
 }
 
-// CheckLongAssets provides a mock function with given fields: ctx, collateralAsset, borrowAsset
-func (_m *OpenLongChecker) CheckLongAssets(ctx types.Context, collateralAsset string, borrowAsset string) error {
-	ret := _m.Called(ctx, collateralAsset, borrowAsset)
-
-	var r0 error
-	if rf, ok := ret.Get(0).(func(types.Context, string, string) error); ok {
-		r0 = rf(ctx, collateralAsset, borrowAsset)
-	} else {
-		r0 = ret.Error(0)
-	}
-
-	return r0
-}
-
-// OpenLongChecker_CheckLongAssets_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'CheckLongAssets'
-type OpenLongChecker_CheckLongAssets_Call struct {
-	*mock.Call
-}
-
-// CheckLongAssets is a helper method to define mock.On call
-//   - ctx types.Context
-//   - collateralAsset string
-//   - borrowAsset string
-func (_e *OpenLongChecker_Expecter) CheckLongAssets(ctx interface{}, collateralAsset interface{}, borrowAsset interface{}) *OpenLongChecker_CheckLongAssets_Call {
-	return &OpenLongChecker_CheckLongAssets_Call{Call: _e.mock.On("CheckLongAssets", ctx, collateralAsset, borrowAsset)}
-}
-
-func (_c *OpenLongChecker_CheckLongAssets_Call) Run(run func(ctx types.Context, collateralAsset string, borrowAsset string)) *OpenLongChecker_CheckLongAssets_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(types.Context), args[1].(string), args[2].(string))
-	})
-	return _c
-}
-
-func (_c *OpenLongChecker_CheckLongAssets_Call) Return(_a0 error) *OpenLongChecker_CheckLongAssets_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *OpenLongChecker_CheckLongAssets_Call) RunAndReturn(run func(types.Context, string, string) error) *OpenLongChecker_CheckLongAssets_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
 // CheckMinLiabilities provides a mock function with given fields: ctx, collateralTokenAmt, eta, pool, ammPool, borrowAsset
 func (_m *OpenLongChecker) CheckMinLiabilities(ctx types.Context, collateralTokenAmt types.Coin, eta math.LegacyDec, pool leveragelptypes.Pool, ammPool ammtypes.Pool, borrowAsset string) error {
 	ret := _m.Called(ctx, collateralTokenAmt, eta, pool, ammPool, borrowAsset)
@@ -644,49 +600,6 @@ func (_c *OpenLongChecker_GetSafetyFactor_Call) RunAndReturn(run func(types.Cont
 	return _c
 }
 
-// GetTradingAsset provides a mock function with given fields: collateralAsset, borrowAsset
-func (_m *OpenLongChecker) GetTradingAsset(collateralAsset string, borrowAsset string) string {
-	ret := _m.Called(collateralAsset, borrowAsset)
-
-	var r0 string
-	if rf, ok := ret.Get(0).(func(string, string) string); ok {
-		r0 = rf(collateralAsset, borrowAsset)
-	} else {
-		r0 = ret.Get(0).(string)
-	}
-
-	return r0
-}
-
-// OpenLongChecker_GetTradingAsset_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetTradingAsset'
-type OpenLongChecker_GetTradingAsset_Call struct {
-	*mock.Call
-}
-
-// GetTradingAsset is a helper method to define mock.On call
-//   - collateralAsset string
-//   - borrowAsset string
-func (_e *OpenLongChecker_Expecter) GetTradingAsset(collateralAsset interface{}, borrowAsset interface{}) *OpenLongChecker_GetTradingAsset_Call {
-	return &OpenLongChecker_GetTradingAsset_Call{Call: _e.mock.On("GetTradingAsset", collateralAsset, borrowAsset)}
-}
-
-func (_c *OpenLongChecker_GetTradingAsset_Call) Run(run func(collateralAsset string, borrowAsset string)) *OpenLongChecker_GetTradingAsset_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(string), args[1].(string))
-	})
-	return _c
-}
-
-func (_c *OpenLongChecker_GetTradingAsset_Call) Return(_a0 string) *OpenLongChecker_GetTradingAsset_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *OpenLongChecker_GetTradingAsset_Call) RunAndReturn(run func(string, string) string) *OpenLongChecker_GetTradingAsset_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
 // HasSufficientPoolBalance provides a mock function with given fields: ctx, ammPool, assetDenom, requiredAmount
 func (_m *OpenLongChecker) HasSufficientPoolBalance(ctx types.Context, ammPool ammtypes.Pool, assetDenom string, requiredAmount math.Int) bool {
 	ret := _m.Called(ctx, ammPool, assetDenom, requiredAmount)
@@ -848,50 +761,6 @@ func (_c *OpenLongChecker_SetPool_Call) Return() *OpenLongChecker_SetPool_Call {
 }
 
 func (_c *OpenLongChecker_SetPool_Call) RunAndReturn(run func(types.Context, leveragelptypes.Pool)) *OpenLongChecker_SetPool_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// TakeInCustody provides a mock function with given fields: ctx, mtp, pool
-func (_m *OpenLongChecker) TakeInCustody(ctx types.Context, mtp leveragelptypes.MTP, pool *leveragelptypes.Pool) error {
-	ret := _m.Called(ctx, mtp, pool)
-
-	var r0 error
-	if rf, ok := ret.Get(0).(func(types.Context, leveragelptypes.MTP, *leveragelptypes.Pool) error); ok {
-		r0 = rf(ctx, mtp, pool)
-	} else {
-		r0 = ret.Error(0)
-	}
-
-	return r0
-}
-
-// OpenLongChecker_TakeInCustody_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'TakeInCustody'
-type OpenLongChecker_TakeInCustody_Call struct {
-	*mock.Call
-}
-
-// TakeInCustody is a helper method to define mock.On call
-//   - ctx types.Context
-//   - mtp leveragelptypes.MTP
-//   - pool *leveragelptypes.Pool
-func (_e *OpenLongChecker_Expecter) TakeInCustody(ctx interface{}, mtp interface{}, pool interface{}) *OpenLongChecker_TakeInCustody_Call {
-	return &OpenLongChecker_TakeInCustody_Call{Call: _e.mock.On("TakeInCustody", ctx, mtp, pool)}
-}
-
-func (_c *OpenLongChecker_TakeInCustody_Call) Run(run func(ctx types.Context, mtp leveragelptypes.MTP, pool *leveragelptypes.Pool)) *OpenLongChecker_TakeInCustody_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(types.Context), args[1].(leveragelptypes.MTP), args[2].(*leveragelptypes.Pool))
-	})
-	return _c
-}
-
-func (_c *OpenLongChecker_TakeInCustody_Call) Return(_a0 error) *OpenLongChecker_TakeInCustody_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *OpenLongChecker_TakeInCustody_Call) RunAndReturn(run func(types.Context, leveragelptypes.MTP, *leveragelptypes.Pool) error) *OpenLongChecker_TakeInCustody_Call {
 	_c.Call.Return(run)
 	return _c
 }

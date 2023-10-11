@@ -17,15 +17,14 @@ func TestCheckSameAssets_NewPosition(t *testing.T) {
 
 	k := app.LeveragelpKeeper
 
-	mtp := types.NewMTP("creator", ptypes.BaseCurrency, ptypes.ATOM, types.Position_LONG, sdk.NewDec(5), 1)
+	mtp := types.NewMTP("creator", ptypes.BaseCurrency, sdk.NewDec(5), 1)
 	k.SetMTP(ctx, mtp)
 
 	msg := &types.MsgOpen{
 		Creator:          "creator",
 		CollateralAsset:  ptypes.ATOM,
 		CollateralAmount: sdk.NewInt(100),
-		BorrowAsset:      ptypes.ATOM,
-		Position:         types.Position_LONG,
+		AmmPoolId:        1,
 		Leverage:         sdk.NewDec(1),
 	}
 

@@ -17,13 +17,12 @@ func TestGetAmmPool_PoolNotFound(t *testing.T) {
 	k := keeper.NewKeeper(nil, nil, nil, "cosmos1ysxv266l8w76lq0vy44ktzajdr9u9yhlxzlvga", mockAmm, nil, nil)
 
 	ctx := sdk.Context{} // mock or setup a context
-	borrowAsset := "testAsset"
 	poolId := uint64(42)
 
 	// Mock behavior
 	mockAmm.On("GetPool", ctx, poolId).Return(ammtypes.Pool{}, false)
 
-	_, err := k.GetAmmPool(ctx, poolId, borrowAsset)
+	_, err := k.GetAmmPool(ctx, poolId)
 
 	// Expect an error about the pool not existing
 	assert.True(t, errors.Is(err, types.ErrPoolDoesNotExist))
@@ -35,7 +34,6 @@ func TestGetAmmPool_PoolFound(t *testing.T) {
 	k := keeper.NewKeeper(nil, nil, nil, "cosmos1ysxv266l8w76lq0vy44ktzajdr9u9yhlxzlvga", mockAmm, nil, nil)
 
 	ctx := sdk.Context{} // mock or setup a context
-	borrowAsset := "testAsset"
 	poolId := uint64(42)
 
 	expectedPool := ammtypes.Pool{}
@@ -43,7 +41,7 @@ func TestGetAmmPool_PoolFound(t *testing.T) {
 	// Mock behavior
 	mockAmm.On("GetPool", ctx, poolId).Return(expectedPool, true)
 
-	pool, err := k.GetAmmPool(ctx, poolId, borrowAsset)
+	pool, err := k.GetAmmPool(ctx, poolId)
 
 	// Expect no error and the correct pool to be returned
 	assert.Nil(t, err)

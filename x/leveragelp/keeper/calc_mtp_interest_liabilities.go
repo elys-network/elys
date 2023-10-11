@@ -14,7 +14,7 @@ func (k Keeper) CalcMTPInterestLiabilities(ctx sdk.Context, mtp *types.MTP, inte
 
 	rate.SetFloat64(interestRate.MustFloat64())
 
-	collateralIndex, _ := k.GetMTPAssetIndex(mtp, collateralAsset, "")
+	collateralIndex := k.GetMTPAssetIndex(mtp, collateralAsset)
 	unpaidCollaterals := sdk.ZeroInt()
 	// Calculate collateral interests in base currency
 	if mtp.CollateralAssets[collateralIndex] == ptypes.BaseCurrency {

@@ -12,7 +12,7 @@ func (k Keeper) PreparePools(ctx sdk.Context, tradingAsset string) (poolId uint6
 		return
 	}
 
-	ammPool, err = k.GetAmmPool(ctx, poolId, tradingAsset)
+	ammPool, err = k.GetAmmPool(ctx, poolId)
 	if err != nil {
 		return
 	}

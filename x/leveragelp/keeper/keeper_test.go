@@ -27,21 +27,17 @@ func TestSetGetMTP(t *testing.T) {
 
 	for i := 0; i < 2; i++ {
 		mtp := types.MTP{
-			Address:                   addr[i].String(),
-			CollateralAssets:          []string{paramtypes.BaseCurrency},
-			CollateralAmounts:         []sdk.Int{sdk.NewInt(0)},
-			Liabilities:               sdk.NewInt(0),
-			InterestPaidCollaterals:   []sdk.Int{sdk.NewInt(0)},
-			InterestPaidCustodys:      []sdk.Int{sdk.NewInt(0)},
-			InterestUnpaidCollaterals: []sdk.Int{sdk.NewInt(0)},
-			CustodyAssets:             []string{"ATOM"},
-			CustodyAmounts:            []sdk.Int{sdk.NewInt(0)},
-			Leverages:                 []sdk.Dec{sdk.NewDec(0)},
-			MtpHealth:                 sdk.NewDec(0),
-			Position:                  types.Position_LONG,
-			Id:                        0,
-			ConsolidateLeverage:       sdk.ZeroDec(),
-			SumCollateral:             sdk.ZeroInt(),
+			Address:                 addr[i].String(),
+			CollateralAssets:        []string{paramtypes.BaseCurrency},
+			CollateralAmounts:       []sdk.Int{sdk.NewInt(0)},
+			Liabilities:             sdk.NewInt(0),
+			InterestPaidCollaterals: []sdk.Int{sdk.NewInt(0)},
+			AmmPoolId:               1,
+			Leverages:               []sdk.Dec{sdk.NewDec(0)},
+			MtpHealth:               sdk.NewDec(0),
+			Id:                      0,
+			ConsolidateLeverage:     sdk.ZeroDec(),
+			SumCollateral:           sdk.ZeroInt(),
 		}
 		err := leveragelp.SetMTP(ctx, &mtp)
 		require.NoError(t, err)

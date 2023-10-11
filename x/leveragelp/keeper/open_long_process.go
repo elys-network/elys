@@ -1,6 +1,8 @@
 package keeper
 
 import (
+	"fmt"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/elys-network/elys/x/leveragelp/types"
@@ -8,22 +10,19 @@ import (
 )
 
 func (k Keeper) ProcessOpenLong(ctx sdk.Context, mtp *types.MTP, leverage sdk.Dec, eta sdk.Dec, collateralAmountDec sdk.Dec, poolId uint64, msg *types.MsgOpen) (*types.MTP, error) {
-	// Determine the trading asset.
-	tradingAsset := k.OpenLongChecker.GetTradingAsset(msg.CollateralAsset, msg.BorrowAsset)
-
 	// Fetch the pool associated with the given pool ID.
 	pool, found := k.OpenLongChecker.GetPool(ctx, poolId)
 	if !found {
-		return nil, sdkerrors.Wrap(types.ErrPoolDoesNotExist, tradingAsset)
+		return nil, sdkerrors.Wrap(types.ErrPoolDoesNotExist, fmt.Sprintf("poolId: %d", poolId))
 	}
 
 	// Check if the pool is enabled.
 	if !k.OpenLongChecker.IsPoolEnabled(ctx, poolId) {
-		return nil, sdkerrors.Wrap(types.ErrMTPDisabled, tradingAsset)
+		return nil, sdkerrors.Wrap(types.ErrMTPDisabled, fmt.Sprintf("poolId: %d", poolId))
 	}
 
 	// Fetch the corresponding AMM (Automated Market Maker) pool.
-	ammPool, err := k.OpenLongChecker.GetAmmPool(ctx, poolId, tradingAsset)
+	ammPool, err := k.OpenLongChecker.GetAmmPool(ctx, poolId)
 	if err != nil {
 		return nil, err
 	}

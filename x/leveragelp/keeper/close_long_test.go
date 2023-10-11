@@ -145,46 +145,6 @@ func TestCloseLong_ErrorHandleInterest(t *testing.T) {
 	mockChecker.AssertExpectations(t)
 }
 
-func TestCloseLong_ErrorTakeOutCustody(t *testing.T) {
-	// Setup the mock checker
-	mockChecker := new(mocks.CloseLongChecker)
-
-	// Create an instance of Keeper with the mock checker
-	k := keeper.Keeper{
-		CloseLongChecker: mockChecker,
-	}
-
-	var (
-		ctx = sdk.Context{} // Mock or setup a context
-		msg = &types.MsgClose{
-			Creator: "creator",
-			Id:      1,
-		}
-		mtp = types.MTP{
-			AmmPoolId:        2,
-			CustodyAssets:    []string{"uatom"},
-			CollateralAssets: []string{ptypes.BaseCurrency},
-		}
-		pool = types.Pool{
-			InterestRate: math.LegacyNewDec(2),
-		}
-		ammPool = ammtypes.Pool{}
-	)
-
-	// Mock behavior
-	mockChecker.On("GetMTP", ctx, msg.Creator, msg.Id).Return(mtp, nil)
-	mockChecker.On("GetPool", ctx, mtp.AmmPoolId).Return(pool, true)
-	mockChecker.On("GetAmmPool", ctx, mtp.AmmPoolId, mtp.CustodyAssets[0]).Return(ammPool, nil)
-	mockChecker.On("HandleInterest", ctx, &mtp, &pool, ammPool, mtp.CollateralAssets[0], mtp.CustodyAssets[0]).Return(nil)
-	mockChecker.On("TakeOutCustody", ctx, mtp, &pool, mtp.CustodyAssets[0]).Return(errors.New("error executing take out custody"))
-
-	_, _, err := k.CloseLong(ctx, msg)
-
-	// Expect an error about take out custody
-	assert.Equal(t, errors.New("error executing take out custody"), err)
-	mockChecker.AssertExpectations(t)
-}
-
 func TestCloseLong_ErrorEstimateAndRepay(t *testing.T) {
 	// Setup the mock checker
 	mockChecker := new(mocks.CloseLongChecker)

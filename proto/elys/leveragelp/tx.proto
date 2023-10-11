@@ -24,9 +24,8 @@ message MsgOpen {
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
     (gogoproto.nullable) = false
   ];
-  string borrowAsset = 4;
-  Position position = 5;
-  string leverage = 6 [
+  uint64 ammPoolId = 4;
+  string leverage = 5 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
@@ -37,8 +36,6 @@ message MsgOpenResponse {}
 message MsgClose {
   string creator = 1;
   uint64 id = 2;
-  string collateralAsset = 3;
-  string custodyAsset = 4;
 }
 
 message MsgCloseResponse {}

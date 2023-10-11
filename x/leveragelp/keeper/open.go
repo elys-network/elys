@@ -8,13 +8,8 @@ import (
 
 func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen) (*types.MsgOpenResponse, error) {
 	// Determine the type of position and validate assets accordingly.
-	switch msg.Position {
-	case types.Position_LONG:
-		if err := k.OpenChecker.CheckLongAssets(ctx, msg.CollateralAsset, msg.BorrowAsset); err != nil {
-			return nil, err
-		}
-	default:
-		return nil, sdkerrors.Wrap(types.ErrInvalidPosition, msg.Position.String())
+	if err := k.OpenChecker.CheckLongAssets(ctx, msg.CollateralAsset, msg.BorrowAsset); err != nil {
+		return nil, err
 	}
 
 	if err := k.OpenChecker.CheckUserAuthorization(ctx, msg); err != nil {

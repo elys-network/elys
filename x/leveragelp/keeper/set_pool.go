@@ -10,7 +10,5 @@ import (
 func (k Keeper) SetPool(ctx sdk.Context, pool types.Pool) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.PoolKeyPrefix))
 	b := k.cdc.MustMarshal(&pool)
-	store.Set(types.PoolKey(
-		pool.AmmPoolId,
-	), b)
+	store.Set(types.PoolKey(pool.AmmPoolId), b)
 }

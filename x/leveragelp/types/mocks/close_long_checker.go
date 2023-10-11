@@ -291,51 +291,6 @@ func (_c *CloseLongChecker_HandleInterest_Call) RunAndReturn(run func(types.Cont
 	return _c
 }
 
-// TakeOutCustody provides a mock function with given fields: ctx, mtp, pool, custodyAsset
-func (_m *CloseLongChecker) TakeOutCustody(ctx types.Context, mtp leveragelptypes.MTP, pool *leveragelptypes.Pool, custodyAsset string) error {
-	ret := _m.Called(ctx, mtp, pool, custodyAsset)
-
-	var r0 error
-	if rf, ok := ret.Get(0).(func(types.Context, leveragelptypes.MTP, *leveragelptypes.Pool, string) error); ok {
-		r0 = rf(ctx, mtp, pool, custodyAsset)
-	} else {
-		r0 = ret.Error(0)
-	}
-
-	return r0
-}
-
-// CloseLongChecker_TakeOutCustody_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'TakeOutCustody'
-type CloseLongChecker_TakeOutCustody_Call struct {
-	*mock.Call
-}
-
-// TakeOutCustody is a helper method to define mock.On call
-//   - ctx types.Context
-//   - mtp leveragelptypes.MTP
-//   - pool *leveragelptypes.Pool
-//   - custodyAsset string
-func (_e *CloseLongChecker_Expecter) TakeOutCustody(ctx interface{}, mtp interface{}, pool interface{}, custodyAsset interface{}) *CloseLongChecker_TakeOutCustody_Call {
-	return &CloseLongChecker_TakeOutCustody_Call{Call: _e.mock.On("TakeOutCustody", ctx, mtp, pool, custodyAsset)}
-}
-
-func (_c *CloseLongChecker_TakeOutCustody_Call) Run(run func(ctx types.Context, mtp leveragelptypes.MTP, pool *leveragelptypes.Pool, custodyAsset string)) *CloseLongChecker_TakeOutCustody_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(types.Context), args[1].(leveragelptypes.MTP), args[2].(*leveragelptypes.Pool), args[3].(string))
-	})
-	return _c
-}
-
-func (_c *CloseLongChecker_TakeOutCustody_Call) Return(_a0 error) *CloseLongChecker_TakeOutCustody_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *CloseLongChecker_TakeOutCustody_Call) RunAndReturn(run func(types.Context, leveragelptypes.MTP, *leveragelptypes.Pool, string) error) *CloseLongChecker_TakeOutCustody_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
 // NewCloseLongChecker creates a new instance of CloseLongChecker. It also registers a testing interface on the mock and a cleanup function to assert the mocks expectations.
 // The first argument is typically a *testing.T value.
 func NewCloseLongChecker(t interface {

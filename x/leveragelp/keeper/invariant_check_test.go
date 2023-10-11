@@ -97,8 +97,6 @@ func TestCheckBalanceInvariant_InvalidBalance(t *testing.T) {
 		addr[0].String(),
 		ptypes.BaseCurrency,
 		sdk.NewInt(100),
-		ptypes.ATOM,
-		leveragelptypes.Position_LONG,
 		sdk.NewDec(5),
 	)
 

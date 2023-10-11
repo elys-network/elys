@@ -18,9 +18,5 @@ func (k Keeper) OpenConsolidateLong(ctx sdk.Context, poolId uint64, mtp *types.M
 		mtp.CollateralAssets = append(mtp.CollateralAssets, msg.CollateralAsset)
 	}
 
-	if !slices.Contains(mtp.CustodyAssets, msg.BorrowAsset) {
-		mtp.CollateralAssets = append(mtp.CustodyAssets, msg.BorrowAsset)
-	}
-
 	return k.ProcessOpenLong(ctx, mtp, leverage, eta, collateralAmountDec, poolId, msg)
 }

@@ -24,4 +24,5 @@ var (
 	ErrBalanceNotAvailable    = sdkerrors.Register(ModuleName, 18, "user does not have enough balance of the required coin")
 	ErrAmountTooLow           = sdkerrors.Register(ModuleName, 32, "Tx amount is too low")
 	ErrLeveragelpDisabled     = sdkerrors.Register(ModuleName, 33, "leveragelp disabled pool")
+	ErrAmmPoolNotFound        = sdkerrors.Register(ModuleName, 34, "amm pool not found")
 )

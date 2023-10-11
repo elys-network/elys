@@ -189,11 +189,6 @@ func (k Keeper) Borrow(ctx sdk.Context, collateralAsset string, custodyAsset str
 		return err
 	}
 
-	err = pool.UpdateBalance(ctx, collateralAsset, collateralAmount, true)
-	if err != nil {
-		return err
-	}
-
 	// All liability has to be in base currency
 	err = pool.UpdateLiabilities(ctx, ptypes.BaseCurrency, mtp.Liabilities, true)
 	if err != nil {
@@ -213,47 +208,13 @@ func (k Keeper) UpdatePoolHealth(ctx sdk.Context, pool *types.Pool) error {
 }
 
 func (k Keeper) CalculatePoolHealth(ctx sdk.Context, pool *types.Pool) sdk.Dec {
-	ammPool, found := k.amm.GetPool(ctx, pool.AmmPoolId)
-	if !found {
-		return sdk.ZeroDec()
-	}
+	// ammPool, found := k.amm.GetPool(ctx, pool.AmmPoolId)
+	// if !found {
+	// 	return sdk.ZeroDec()
+	// }
 
 	H := sdk.NewDec(1)
-	for _, asset := range pool.PoolAssets {
-		ammBalance, err := k.GetAmmPoolBalance(ctx, ammPool, asset.AssetDenom)
-		if err != nil {
-			return sdk.ZeroDec()
-		}
-
-		balance := sdk.NewDecFromInt(asset.AssetBalance.Add(ammBalance))
-		liabilities := sdk.NewDecFromInt(asset.Liabilities)
-
-		if balance.Add(liabilities).IsZero() {
-			return sdk.ZeroDec()
-		}
-
-		mul := balance.Quo(balance.Add(liabilities))
-		H = H.Mul(mul)
-	}
-
 	return H
-}
-
-func (k Keeper) TakeInCustody(ctx sdk.Context, mtp types.MTP, pool *types.Pool) error {
-	for i := range mtp.CustodyAssets {
-		err := pool.UpdateBalance(ctx, mtp.CustodyAssets[i], mtp.CustodyAmounts[i], false)
-		if err != nil {
-			return nil
-		}
-		err = pool.UpdateCustody(ctx, mtp.CustodyAssets[i], mtp.CustodyAmounts[i], true)
-		if err != nil {
-			return nil
-		}
-	}
-
-	k.SetPool(ctx, *pool)
-
-	return nil
 }
 
 func (k Keeper) IncrementalInterestPayment(ctx sdk.Context, collateralAsset string, custodyAsset string, interestPayment sdk.Int, mtp *types.MTP, pool *types.Pool, ammPool ammtypes.Pool) (sdk.Int, error) {
@@ -330,11 +291,6 @@ func (k Keeper) IncrementalInterestPayment(ctx sdk.Context, collateralAsset stri
 	}
 
 	err = pool.UpdateCustody(ctx, mtp.CustodyAssets[custodyIndex], interestPaymentCustody, false)
-	if err != nil {
-		return sdk.ZeroInt(), err
-	}
-
-	err = pool.UpdateBalance(ctx, mtp.CustodyAssets[custodyIndex], actualInterestPaymentCustody, true)
 	if err != nil {
 		return sdk.ZeroInt(), err
 	}

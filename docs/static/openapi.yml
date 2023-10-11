@@ -39160,34 +39160,16 @@ paths:
                     type: array
                     items:
                       type: string
-                  interest_paid_custodys:
-                    type: array
-                    items:
-                      type: string
-                  interest_unpaid_collaterals:
-                    type: array
-                    items:
-                      type: string
-                  custody_assets:
-                    type: array
-                    items:
-                      type: string
-                  custody_amounts:
-                    type: array
-                    items:
-                      type: string
                   leverages:
+                    type: array
+                    items:
+                      type: string
+                  leverage_lp_amount:
                     type: array
                     items:
                       type: string
                   mtp_health:
                     type: string
-                  position:
-                    type: string
-                    enum:
-                      - UNSPECIFIED
-                      - LONG
-                    default: UNSPECIFIED
                   id:
                     type: string
                     format: uint64
@@ -39259,34 +39241,16 @@ paths:
                       type: array
                       items:
                         type: string
-                    interest_paid_custodys:
-                      type: array
-                      items:
-                        type: string
-                    interest_unpaid_collaterals:
-                      type: array
-                      items:
-                        type: string
-                    custody_assets:
-                      type: array
-                      items:
-                        type: string
-                    custody_amounts:
-                      type: array
-                      items:
-                        type: string
                     leverages:
+                      type: array
+                      items:
+                        type: string
+                    leverage_lp_amount:
                       type: array
                       items:
                         type: string
                     mtp_health:
                       type: string
-                    position:
-                      type: string
-                      enum:
-                        - UNSPECIFIED
-                        - LONG
-                      default: UNSPECIFIED
                     id:
                       type: string
                       format: uint64
@@ -39438,34 +39402,16 @@ paths:
                       type: array
                       items:
                         type: string
-                    interest_paid_custodys:
-                      type: array
-                      items:
-                        type: string
-                    interest_unpaid_collaterals:
-                      type: array
-                      items:
-                        type: string
-                    custody_assets:
-                      type: array
-                      items:
-                        type: string
-                    custody_amounts:
-                      type: array
-                      items:
-                        type: string
                     leverages:
+                      type: array
+                      items:
+                        type: string
+                    leverage_lp_amount:
                       type: array
                       items:
                         type: string
                     mtp_health:
                       type: string
-                    position:
-                      type: string
-                      enum:
-                        - UNSPECIFIED
-                        - LONG
-                      default: UNSPECIFIED
                     id:
                       type: string
                       format: uint64
@@ -39684,23 +39630,8 @@ paths:
                     type: boolean
                   interest_rate:
                     type: string
-                  poolAssets:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        liabilities:
-                          type: string
-                        custody:
-                          type: string
-                        asset_balance:
-                          type: string
-                        unsettled_liabilities:
-                          type: string
-                        block_interest:
-                          type: string
-                        asset_denom:
-                          type: string
+                  leveraged_lp_amount:
+                    type: string
         default:
           description: An unexpected error response.
           schema:
@@ -39752,23 +39683,8 @@ paths:
                       type: boolean
                     interest_rate:
                       type: string
-                    poolAssets:
-                      type: array
-                      items:
-                        type: object
-                        properties:
-                          liabilities:
-                            type: string
-                          custody:
-                            type: string
-                          asset_balance:
-                            type: string
-                          unsettled_liabilities:
-                            type: string
-                          block_interest:
-                            type: string
-                          asset_denom:
-                            type: string
+                    leveraged_lp_amount:
+                      type: string
               pagination:
                 type: object
                 properties:
@@ -39905,34 +39821,16 @@ paths:
                       type: array
                       items:
                         type: string
-                    interest_paid_custodys:
-                      type: array
-                      items:
-                        type: string
-                    interest_unpaid_collaterals:
-                      type: array
-                      items:
-                        type: string
-                    custody_assets:
-                      type: array
-                      items:
-                        type: string
-                    custody_amounts:
-                      type: array
-                      items:
-                        type: string
                     leverages:
+                      type: array
+                      items:
+                        type: string
+                    leverage_lp_amount:
                       type: array
                       items:
                         type: string
                     mtp_health:
                       type: string
-                    position:
-                      type: string
-                      enum:
-                        - UNSPECIFIED
-                        - LONG
-                      default: UNSPECIFIED
                     id:
                       type: string
                       format: uint64
@@ -83028,34 +82926,16 @@ definitions:
         type: array
         items:
           type: string
-      interest_paid_custodys:
-        type: array
-        items:
-          type: string
-      interest_unpaid_collaterals:
-        type: array
-        items:
-          type: string
-      custody_assets:
-        type: array
-        items:
-          type: string
-      custody_amounts:
-        type: array
-        items:
-          type: string
       leverages:
+        type: array
+        items:
+          type: string
+      leverage_lp_amount:
         type: array
         items:
           type: string
       mtp_health:
         type: string
-      position:
-        type: string
-        enum:
-          - UNSPECIFIED
-          - LONG
-        default: UNSPECIFIED
       id:
         type: string
         format: uint64
@@ -83088,34 +82968,16 @@ definitions:
             type: array
             items:
               type: string
-          interest_paid_custodys:
-            type: array
-            items:
-              type: string
-          interest_unpaid_collaterals:
-            type: array
-            items:
-              type: string
-          custody_assets:
-            type: array
-            items:
-              type: string
-          custody_amounts:
-            type: array
-            items:
-              type: string
           leverages:
+            type: array
+            items:
+              type: string
+          leverage_lp_amount:
             type: array
             items:
               type: string
           mtp_health:
             type: string
-          position:
-            type: string
-            enum:
-              - UNSPECIFIED
-              - LONG
-            default: UNSPECIFIED
           id:
             type: string
             format: uint64
@@ -83244,44 +83106,8 @@ definitions:
         type: boolean
       interest_rate:
         type: string
-      poolAssets:
-        type: array
-        items:
-          type: object
-          properties:
-            liabilities:
-              type: string
-            custody:
-              type: string
-            asset_balance:
-              type: string
-            unsettled_liabilities:
-              type: string
-            block_interest:
-              type: string
-            asset_denom:
-              type: string
-  elys.leveragelp.PoolAsset:
-    type: object
-    properties:
-      liabilities:
+      leveraged_lp_amount:
         type: string
-      custody:
-        type: string
-      asset_balance:
-        type: string
-      unsettled_liabilities:
-        type: string
-      block_interest:
-        type: string
-      asset_denom:
-        type: string
-  elys.leveragelp.Position:
-    type: string
-    enum:
-      - UNSPECIFIED
-      - LONG
-    default: UNSPECIFIED
   elys.leveragelp.PositionsByPoolResponse:
     type: object
     properties:
@@ -83306,34 +83132,16 @@ definitions:
               type: array
               items:
                 type: string
-            interest_paid_custodys:
-              type: array
-              items:
-                type: string
-            interest_unpaid_collaterals:
-              type: array
-              items:
-                type: string
-            custody_assets:
-              type: array
-              items:
-                type: string
-            custody_amounts:
-              type: array
-              items:
-                type: string
             leverages:
+              type: array
+              items:
+                type: string
+            leverage_lp_amount:
               type: array
               items:
                 type: string
             mtp_health:
               type: string
-            position:
-              type: string
-              enum:
-                - UNSPECIFIED
-                - LONG
-              default: UNSPECIFIED
             id:
               type: string
               format: uint64
@@ -83394,34 +83202,16 @@ definitions:
               type: array
               items:
                 type: string
-            interest_paid_custodys:
-              type: array
-              items:
-                type: string
-            interest_unpaid_collaterals:
-              type: array
-              items:
-                type: string
-            custody_assets:
-              type: array
-              items:
-                type: string
-            custody_amounts:
-              type: array
-              items:
-                type: string
             leverages:
+              type: array
+              items:
+                type: string
+            leverage_lp_amount:
               type: array
               items:
                 type: string
             mtp_health:
               type: string
-            position:
-              type: string
-              enum:
-                - UNSPECIFIED
-                - LONG
-              default: UNSPECIFIED
             id:
               type: string
               format: uint64
@@ -83482,34 +83272,16 @@ definitions:
               type: array
               items:
                 type: string
-            interest_paid_custodys:
-              type: array
-              items:
-                type: string
-            interest_unpaid_collaterals:
-              type: array
-              items:
-                type: string
-            custody_assets:
-              type: array
-              items:
-                type: string
-            custody_amounts:
-              type: array
-              items:
-                type: string
             leverages:
+              type: array
+              items:
+                type: string
+            leverage_lp_amount:
               type: array
               items:
                 type: string
             mtp_health:
               type: string
-            position:
-              type: string
-              enum:
-                - UNSPECIFIED
-                - LONG
-              default: UNSPECIFIED
             id:
               type: string
               format: uint64
@@ -83565,23 +83337,8 @@ definitions:
               type: boolean
             interest_rate:
               type: string
-            poolAssets:
-              type: array
-              items:
-                type: object
-                properties:
-                  liabilities:
-                    type: string
-                  custody:
-                    type: string
-                  asset_balance:
-                    type: string
-                  unsettled_liabilities:
-                    type: string
-                  block_interest:
-                    type: string
-                  asset_denom:
-                    type: string
+            leveraged_lp_amount:
+              type: string
       pagination:
         type: object
         properties:
@@ -83625,23 +83382,8 @@ definitions:
             type: boolean
           interest_rate:
             type: string
-          poolAssets:
-            type: array
-            items:
-              type: object
-              properties:
-                liabilities:
-                  type: string
-                custody:
-                  type: string
-                asset_balance:
-                  type: string
-                unsettled_liabilities:
-                  type: string
-                block_interest:
-                  type: string
-                asset_denom:
-                  type: string
+          leveraged_lp_amount:
+            type: string
   elys.leveragelp.StatusResponse:
     type: object
     properties:

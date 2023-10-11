@@ -5,31 +5,6 @@ import "gogoproto/gogo.proto";
 
 option go_package = "github.com/elys-network/elys/x/leveragelp/types";
 
-message PoolAsset {
-  string liabilities = 1 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
-    (gogoproto.nullable) = false
-  ];
-  string custody = 2 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
-    (gogoproto.nullable) = false
-  ];
-  string asset_balance = 3 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
-    (gogoproto.nullable) = false,
-    (gogoproto.moretags) = "yaml:\"asset_balance\""
-  ];
-  string unsettled_liabilities = 4 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
-    (gogoproto.nullable) = false
-  ];
-  string block_interest = 5 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
-    (gogoproto.nullable) = false
-  ];
-  string asset_denom = 6;
-}
-
 message Pool {
   uint64 ammPoolId = 1;
   string health = 2 [
@@ -42,5 +17,8 @@ message Pool {
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
-  repeated PoolAsset poolAssets = 6 [ (gogoproto.nullable) = false ];
+  string leveraged_lp_amount = 6 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
 }

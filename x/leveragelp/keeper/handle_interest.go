@@ -13,14 +13,6 @@ func (k Keeper) HandleInterest(ctx sdk.Context, mtp *types.MTP, pool *types.Pool
 		return nil
 	}
 
-	interestPayment := k.CalcMTPInterestLiabilities(ctx, mtp, pool.InterestRate, epochPosition, epochLength, ammPool, collateralAsset)
-	finalInterestPayment := k.HandleInterestPayment(ctx, collateralAsset, custodyAsset, interestPayment, mtp, pool, ammPool)
-
-	// finalInterestPayment is in custodyAsset
-	if err := pool.UpdateBlockInterest(ctx, custodyAsset, finalInterestPayment, true); err != nil {
-		return err
-	}
-
 	_, err := k.UpdateMTPHealth(ctx, *mtp, ammPool)
 	return err
 }

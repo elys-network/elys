@@ -21,7 +21,7 @@ func (k Keeper) BeginBlocker(ctx sdk.Context) {
 			// TODO: fields missing
 			// pool.BlockInterestExternal = sdk.ZeroUint()
 			// pool.BlockInterestNative = sdk.ZeroUint()
-			ammPool, err := k.GetAmmPool(ctx, pool.AmmPoolId, "")
+			ammPool, err := k.GetAmmPool(ctx, pool.AmmPoolId)
 			if err != nil {
 				ctx.Logger().Error(errors.Wrap(err, fmt.Sprintf("error getting amm pool: %d", pool.AmmPoolId)).Error())
 				continue // ?
