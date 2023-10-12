@@ -7,7 +7,6 @@ import (
 )
 
 func (k Keeper) EstimateAndRepay(ctx sdk.Context, mtp types.MTP, pool types.Pool, ammPool ammtypes.Pool, collateralAsset string, custodyAsset string) (sdk.Int, error) {
-	collateralIndex, custodyIndex := k.GetMTPAssetIndex(&mtp, collateralAsset, custodyAsset)
 	cutodyAmtTokenIn := sdk.NewCoin(mtp.CustodyAssets[custodyIndex], mtp.CustodyAmounts[custodyIndex])
 	repayAmount, err := k.EstimateSwap(ctx, cutodyAmtTokenIn, mtp.CollateralAssets[collateralIndex], ammPool)
 	if err != nil {

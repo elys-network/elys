@@ -6,6 +6,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/elys-network/elys/x/leveragelp/types"
+	"golang.org/x/exp/slices"
 )
 
 func (k Keeper) OpenConsolidate(ctx sdk.Context, mtp *types.MTP, msg *types.MsgOpen) (*types.MsgOpenResponse, error) {
@@ -37,4 +38,18 @@ func (k Keeper) OpenConsolidate(ctx sdk.Context, mtp *types.MTP, msg *types.MsgO
 	}
 
 	return &types.MsgOpenResponse{}, nil
+}
+
+func (k Keeper) OpenConsolidateLong(ctx sdk.Context, poolId uint64, mtp *types.MTP, msg *types.MsgOpen) (*types.MTP, error) {
+	maxLeverage := k.OpenLongChecker.GetMaxLeverageParam(ctx)
+	leverage := sdk.MinDec(msg.Leverage, maxLeverage)
+	eta := leverage.Sub(sdk.OneDec())
+	collateralAmountDec := sdk.NewDecFromBigInt(msg.CollateralAmount.BigInt())
+	mtp.Leverages = append(mtp.Leverages, leverage)
+
+	if !slices.Contains(mtp.CollateralAssets, msg.CollateralAsset) {
+		mtp.CollateralAssets = append(mtp.CollateralAssets, msg.CollateralAsset)
+	}
+
+	return k.ProcessOpenLong(ctx, mtp, leverage, eta, collateralAmountDec, poolId, msg)
 }

@@ -19,11 +19,6 @@ func (k Keeper) HandleInterestPayment(ctx sdk.Context, collateralAsset string, c
 			return finalInterestPayment
 		}
 	} else { // else update unpaid mtp interest
-		collateralIndex, _ := k.GetMTPAssetIndex(mtp, collateralAsset, "")
-		if collateralIndex < 0 {
-			return sdk.ZeroInt()
-		}
-
 		// collateralAsset is in base currency
 		if mtp.CollateralAssets[collateralIndex] == ptypes.BaseCurrency {
 			mtp.InterestUnpaidCollaterals[collateralIndex] = interestPayment

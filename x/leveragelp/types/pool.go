@@ -16,39 +16,6 @@ func NewPool(poolId uint64) Pool {
 	}
 }
 
-// Update the asset liabilities
-func (p *Pool) UpdateLiabilities(ctx sdk.Context, assetDenom string, amount sdk.Int, isIncrease bool) error {
-	for i, asset := range p.PoolAssets {
-		if asset.AssetDenom == assetDenom {
-			if isIncrease {
-				p.PoolAssets[i].Liabilities = asset.Liabilities.Add(amount)
-			} else {
-				p.PoolAssets[i].Liabilities = asset.Liabilities.Sub(amount)
-			}
-
-			return nil
-		}
-	}
-
-	return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, "invalid asset denom")
-}
-
-// Update the asset custody
-func (p *Pool) UpdateCustody(ctx sdk.Context, assetDenom string, amount sdk.Int, isIncrease bool) error {
-	for i, asset := range p.PoolAssets {
-		if asset.AssetDenom == assetDenom {
-			if isIncrease {
-				p.PoolAssets[i].Custody = asset.Custody.Add(amount)
-			} else {
-				p.PoolAssets[i].Custody = asset.Custody.Sub(amount)
-			}
-			return nil
-		}
-	}
-
-	return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, "invalid asset denom")
-}
-
 // Initialite pool asset according to its corresponding amm pool assets.
 func (p *Pool) InitiatePool(ctx sdk.Context, ammPool *ammtypes.Pool) error {
 	if ammPool == nil {

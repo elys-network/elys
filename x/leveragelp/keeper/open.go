@@ -2,15 +2,10 @@ package keeper
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/elys-network/elys/x/leveragelp/types"
 )
 
 func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen) (*types.MsgOpenResponse, error) {
-	// Determine the type of position and validate assets accordingly.
-	if err := k.OpenChecker.CheckLongAssets(ctx, msg.CollateralAsset, msg.BorrowAsset); err != nil {
-		return nil, err
-	}
 
 	if err := k.OpenChecker.CheckUserAuthorization(ctx, msg); err != nil {
 		return nil, err
@@ -25,28 +20,13 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen) (*types.MsgOpenRespons
 		return nil, err
 	}
 
-	// Get token asset other than base currency
-	tradingAsset := k.OpenChecker.GetTradingAsset(msg.CollateralAsset, msg.BorrowAsset)
+	if err := k.OpenChecker.CheckPoolHealth(ctx, msg.AmmPoolId); err != nil {
+		return nil, err
+	}
 
-	// Get pool id, amm pool, and leveragelp pool
-	poolId, ammPool, pool, err := k.OpenChecker.PreparePools(ctx, tradingAsset)
+	mtp, err := k.OpenChecker.OpenLong(ctx, msg.AmmPoolId, msg)
 	if err != nil {
 		return nil, err
-	}
-
-	if err := k.OpenChecker.CheckPoolHealth(ctx, poolId); err != nil {
-		return nil, err
-	}
-
-	var mtp *types.MTP
-	switch msg.Position {
-	case types.Position_LONG:
-		mtp, err = k.OpenChecker.OpenLong(ctx, poolId, msg)
-		if err != nil {
-			return nil, err
-		}
-	default:
-		return nil, sdkerrors.Wrap(types.ErrInvalidPosition, msg.Position.String())
 	}
 
 	k.OpenChecker.EmitOpenEvent(ctx, mtp)

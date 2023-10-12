@@ -50,7 +50,6 @@ type OpenLongChecker interface {
 	CheckMinLiabilities(ctx sdk.Context, collateralTokenAmt sdk.Coin, eta sdk.Dec, pool Pool, ammPool ammtypes.Pool, borrowAsset string) error
 	EstimateSwap(ctx sdk.Context, leveragedAmtTokenIn sdk.Coin, borrowAsset string, ammPool ammtypes.Pool) (sdk.Int, error)
 	EstimateSwapGivenOut(ctx sdk.Context, tokenOutAmount sdk.Coin, tokenInDenom string, ammPool ammtypes.Pool) (sdk.Int, error)
-	Borrow(ctx sdk.Context, collateralAsset string, custodyAsset string, collateralAmount sdk.Int, custodyAmount sdk.Int, mtp *MTP, ammPool *ammtypes.Pool, pool *Pool, eta sdk.Dec) error
 	UpdatePoolHealth(ctx sdk.Context, pool *Pool) error
 	UpdateMTPHealth(ctx sdk.Context, mtp MTP, ammPool ammtypes.Pool) (sdk.Dec, error)
 	GetSafetyFactor(ctx sdk.Context) sdk.Dec
@@ -99,6 +98,7 @@ type AmmKeeper interface {
 
 	CalcOutAmtGivenIn(ctx sdk.Context, poolId uint64, oracle ammtypes.OracleKeeper, snapshot *ammtypes.Pool, tokensIn sdk.Coins, tokenOutDenom string, swapFee sdk.Dec) (sdk.Coin, error)
 	CalcInAmtGivenOut(ctx sdk.Context, poolId uint64, oracle ammtypes.OracleKeeper, snapshot *ammtypes.Pool, tokensOut sdk.Coins, tokenInDenom string, swapFee sdk.Dec) (tokenIn sdk.Coin, err error)
+	JoinPoolNoSwap(ctx sdk.Context, sender sdk.AccAddress, poolId uint64, shareOutAmount sdk.Int, tokenInMaxs sdk.Coins, noRemaining bool) (tokenIn sdk.Coins, sharesOut sdk.Int, err error)
 }
 
 // BankKeeper defines the expected interface needed to retrieve account balances.
@@ -117,4 +117,10 @@ type BankKeeper interface {
 
 	BlockedAddr(addr sdk.AccAddress) bool
 	HasBalance(ctx sdk.Context, addr sdk.AccAddress, amt sdk.Coin) bool
+}
+
+// BankKeeper defines the expected interface needed on stablestake
+type StableStakeKeeper interface {
+	Borrow(ctx sdk.Context, addr sdk.AccAddress, amount sdk.Coin) error
+	Repay(ctx sdk.Context, addr sdk.AccAddress, amount sdk.Coin) error
 }

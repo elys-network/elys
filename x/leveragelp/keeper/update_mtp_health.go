@@ -13,24 +13,8 @@ func (k Keeper) UpdateMTPHealth(ctx sdk.Context, mtp types.MTP, ammPool ammtypes
 	if xl.IsZero() {
 		return sdk.ZeroDec(), nil
 	}
-	// include unpaid interest in debt (from disabled incremental pay)
-	for i := range mtp.CollateralAssets {
-		if mtp.InterestUnpaidCollaterals[i].GT(sdk.ZeroInt()) {
-			unpaidCollaterals := sdk.NewCoin(mtp.CollateralAssets[i], mtp.InterestUnpaidCollaterals[i])
 
-			if mtp.CollateralAssets[i] == ptypes.BaseCurrency {
-				xl = xl.Add(mtp.InterestUnpaidCollaterals[i])
-			} else {
-				C, err := k.EstimateSwapGivenOut(ctx, unpaidCollaterals, ptypes.BaseCurrency, ammPool)
-				if err != nil {
-					return sdk.ZeroDec(), err
-				}
-
-				xl = xl.Add(C)
-			}
-		}
-	}
-
+	// TODO: calculate the value of leveragelp tokens holding
 	custodyAmtInBaseCurrency := sdk.ZeroInt()
 	for i := range mtp.CustodyAssets {
 		custodyTokenIn := sdk.NewCoin(mtp.CustodyAssets[i], mtp.CustodyAmounts[i])

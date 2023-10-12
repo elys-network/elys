@@ -37,6 +37,7 @@ type (
 		amm          types.AmmKeeper
 		bankKeeper   types.BankKeeper
 		oracleKeeper ammtypes.OracleKeeper
+		stableKeeper types.StableStakeKeeper
 
 		hooks types.LeveragelpHooks
 	}
@@ -50,6 +51,7 @@ func NewKeeper(
 	amm types.AmmKeeper,
 	bk types.BankKeeper,
 	oracleKeeper ammtypes.OracleKeeper,
+	stableKeeper types.StableStakeKeeper,
 ) *Keeper {
 	// ensure that authority is a valid AccAddress
 	if _, err := sdk.AccAddressFromBech32(authority); err != nil {
@@ -64,6 +66,7 @@ func NewKeeper(
 		amm:          amm,
 		bankKeeper:   bk,
 		oracleKeeper: oracleKeeper,
+		stableKeeper: stableKeeper,
 	}
 
 	keeper.AuthorizationChecker = keeper
@@ -129,77 +132,6 @@ func (k Keeper) EstimateSwapGivenOut(ctx sdk.Context, tokenOutAmount sdk.Coin, t
 	return swapResult.Amount, nil
 }
 
-func (k Keeper) Borrow(ctx sdk.Context, collateralAsset string, custodyAsset string, collateralAmount sdk.Int, custodyAmount sdk.Int, mtp *types.MTP, ammPool *ammtypes.Pool, pool *types.Pool, eta sdk.Dec) error {
-	mtpAddress, err := sdk.AccAddressFromBech32(mtp.Address)
-	if err != nil {
-		return err
-	}
-	collateralCoin := sdk.NewCoin(collateralAsset, collateralAmount)
-
-	if !k.bankKeeper.HasBalance(ctx, mtpAddress, collateralCoin) {
-		return types.ErrBalanceNotAvailable
-	}
-
-	collateralAmountDec := sdk.NewDecFromBigInt(collateralAmount.BigInt())
-	liabilitiesDec := collateralAmountDec.Mul(eta)
-
-	// If collateral asset is not base currency, should calculate liability in base currency with the given out.
-	// Liability has to be in base currency
-	if collateralAsset != ptypes.BaseCurrency {
-		// ATOM amount
-		etaAmt := liabilitiesDec.TruncateInt()
-		etaAmtToken := sdk.NewCoin(collateralAsset, etaAmt)
-		// Calculate base currency amount given atom out amount and we use it liabilty amount in base currency
-		liabilityAmt, err := k.OpenLongChecker.EstimateSwapGivenOut(ctx, etaAmtToken, ptypes.BaseCurrency, *ammPool)
-		if err != nil {
-			return err
-		}
-
-		liabilitiesDec = sdk.NewDecFromInt(liabilityAmt)
-	}
-
-	collateralIndex, custodyIndex := k.GetMTPAssetIndex(mtp, collateralAsset, custodyAsset)
-	if collateralIndex < 0 || custodyIndex < 0 {
-		return sdkerrors.Wrap(types.ErrBalanceNotAvailable, "MTP collateral or custody invalid!")
-	}
-
-	mtp.CollateralAmounts[collateralIndex] = mtp.CollateralAmounts[collateralIndex].Add(collateralAmount)
-	mtp.Liabilities = mtp.Liabilities.Add(sdk.NewIntFromBigInt(liabilitiesDec.TruncateInt().BigInt()))
-	mtp.CustodyAmounts[custodyIndex] = mtp.CustodyAmounts[custodyIndex].Add(custodyAmount)
-	mtp.Leverages = append(mtp.Leverages, eta.Add(sdk.OneDec()))
-
-	// print mtp.CustodyAmount
-	ctx.Logger().Info(fmt.Sprintf("mtp.CustodyAmount: %s", mtp.CustodyAmounts[custodyIndex].String()))
-
-	h, err := k.UpdateMTPHealth(ctx, *mtp, *ammPool) // set mtp in func or return h?
-	if err != nil {
-		return err
-	}
-	mtp.MtpHealth = h
-
-	ammPoolAddr, err := sdk.AccAddressFromBech32(ammPool.Address)
-	if err != nil {
-		return err
-	}
-
-	collateralCoins := sdk.NewCoins(collateralCoin)
-	err = k.bankKeeper.SendCoins(ctx, mtpAddress, ammPoolAddr, collateralCoins)
-
-	if err != nil {
-		return err
-	}
-
-	// All liability has to be in base currency
-	err = pool.UpdateLiabilities(ctx, ptypes.BaseCurrency, mtp.Liabilities, true)
-	if err != nil {
-		return err
-	}
-
-	k.SetPool(ctx, *pool)
-
-	return k.SetMTP(ctx, mtp)
-}
-
 func (k Keeper) UpdatePoolHealth(ctx sdk.Context, pool *types.Pool) error {
 	pool.Health = k.CalculatePoolHealth(ctx, pool)
 	k.SetPool(ctx, *pool)
@@ -218,7 +150,6 @@ func (k Keeper) CalculatePoolHealth(ctx sdk.Context, pool *types.Pool) sdk.Dec {
 }
 
 func (k Keeper) IncrementalInterestPayment(ctx sdk.Context, collateralAsset string, custodyAsset string, interestPayment sdk.Int, mtp *types.MTP, pool *types.Pool, ammPool ammtypes.Pool) (sdk.Int, error) {
-	collateralIndex, custodyIndex := k.GetMTPAssetIndex(mtp, collateralAsset, custodyAsset)
 	// if mtp has unpaid interest, add to payment
 	// convert it into base currency
 	if mtp.InterestUnpaidCollaterals[collateralIndex].GT(sdk.ZeroInt()) {

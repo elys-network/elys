@@ -8,7 +8,6 @@ import (
 )
 
 func (k Keeper) Repay(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, ammPool ammtypes.Pool, repayAmount sdk.Int, takeFundPayment bool, collateralAsset string) error {
-	collateralIndex := k.GetMTPAssetIndex(mtp, collateralAsset)
 	// nolint:staticcheck,ineffassign
 	returnAmount := sdk.ZeroInt()
 	Liabilities := mtp.Liabilities
