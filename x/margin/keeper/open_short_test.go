@@ -65,6 +65,8 @@ func TestOpenShort_PoolDisabled(t *testing.T) {
 		msg = &types.MsgOpen{
 			Leverage:         math.LegacyNewDec(10),
 			CollateralAmount: math.NewInt(1),
+			CollateralAsset:  "aaa",
+			BorrowAsset:      "bbb",
 		}
 		poolId = uint64(42)
 	)
