@@ -20,12 +20,12 @@ func GetPositionFromString(s string) Position {
 func NewMTP(signer string, collateralAsset string, borrowAsset string, position Position, leverage sdk.Dec, poolId uint64) *MTP {
 	return &MTP{
 		Address:                   signer,
-		Collaterals:               sdk.NewCoins(sdk.NewCoin(collateralAsset, sdk.ZeroInt())),
+		Collaterals:               []sdk.Coin{sdk.NewCoin(collateralAsset, sdk.ZeroInt())},
 		Liabilities:               sdk.ZeroInt(),
-		InterestPaidCollaterals:   sdk.NewCoins(sdk.NewCoin(collateralAsset, sdk.NewInt(0))),
-		InterestPaidCustodies:     sdk.NewCoins(sdk.NewCoin(borrowAsset, sdk.NewInt(0))),
-		InterestUnpaidCollaterals: sdk.NewCoins(sdk.NewCoin(collateralAsset, sdk.NewInt(0))),
-		Custodies:                 sdk.NewCoins(sdk.NewCoin(borrowAsset, sdk.ZeroInt())),
+		InterestPaidCollaterals:   []sdk.Coin{sdk.NewCoin(collateralAsset, sdk.ZeroInt())},
+		InterestPaidCustodies:     []sdk.Coin{sdk.NewCoin(borrowAsset, sdk.ZeroInt())},
+		InterestUnpaidCollaterals: []sdk.Coin{sdk.NewCoin(collateralAsset, sdk.ZeroInt())},
+		Custodies:                 []sdk.Coin{sdk.NewCoin(borrowAsset, sdk.ZeroInt())},
 		Leverages:                 []sdk.Dec{leverage},
 		MtpHealth:                 sdk.ZeroDec(),
 		Position:                  position,

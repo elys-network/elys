@@ -90,7 +90,7 @@ func TestCloseLong_AmmPoolNotFound(t *testing.T) {
 		}
 		mtp = types.MTP{
 			AmmPoolId: 2,
-			Custodies: sdk.NewCoins(sdk.NewCoin("uatom", sdk.NewInt(0))),
+			Custodies: []sdk.Coin{sdk.NewCoin("uatom", sdk.NewInt(0))},
 		}
 	)
 
@@ -123,8 +123,8 @@ func TestCloseLong_ErrorHandleInterest(t *testing.T) {
 		}
 		mtp = types.MTP{
 			AmmPoolId:   2,
-			Collaterals: sdk.NewCoins(sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(0))),
-			Custodies:   sdk.NewCoins(sdk.NewCoin("uatom", sdk.NewInt(0))),
+			Collaterals: []sdk.Coin{sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(0))},
+			Custodies:   []sdk.Coin{sdk.NewCoin("uatom", sdk.NewInt(0))},
 		}
 		pool = types.Pool{
 			InterestRate: math.LegacyNewDec(2),
@@ -162,8 +162,8 @@ func TestCloseLong_ErrorTakeOutCustody(t *testing.T) {
 		}
 		mtp = types.MTP{
 			AmmPoolId:   2,
-			Collaterals: sdk.NewCoins(sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(0))),
-			Custodies:   sdk.NewCoins(sdk.NewCoin("uatom", sdk.NewInt(0))),
+			Collaterals: []sdk.Coin{sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(0))},
+			Custodies:   []sdk.Coin{sdk.NewCoin("uatom", sdk.NewInt(0))},
 		}
 		pool = types.Pool{
 			InterestRate: math.LegacyNewDec(2),
@@ -202,8 +202,8 @@ func TestCloseLong_ErrorEstimateAndRepay(t *testing.T) {
 		}
 		mtp = types.MTP{
 			AmmPoolId:   2,
-			Collaterals: sdk.NewCoins(sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(0))),
-			Custodies:   sdk.NewCoins(sdk.NewCoin("uatom", sdk.NewInt(0))),
+			Collaterals: []sdk.Coin{sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(0))},
+			Custodies:   []sdk.Coin{sdk.NewCoin("uatom", sdk.NewInt(0))},
 		}
 		pool = types.Pool{
 			InterestRate: math.LegacyNewDec(2),
@@ -243,8 +243,8 @@ func TestCloseLong_SuccessfulClosingLongPosition(t *testing.T) {
 		}
 		mtp = types.MTP{
 			AmmPoolId:   2,
-			Collaterals: sdk.NewCoins(sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(0))),
-			Custodies:   sdk.NewCoins(sdk.NewCoin("uatom", sdk.NewInt(0))),
+			Collaterals: []sdk.Coin{sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(0))},
+			Custodies:   []sdk.Coin{sdk.NewCoin("uatom", sdk.NewInt(0))},
 		}
 		pool = types.Pool{
 			InterestRate: math.LegacyNewDec(2),

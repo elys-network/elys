@@ -28,12 +28,12 @@ func TestSetGetMTP(t *testing.T) {
 	for i := 0; i < 2; i++ {
 		mtp := types.MTP{
 			Address:                   addr[i].String(),
-			Collaterals:               sdk.NewCoins(sdk.NewCoin(paramtypes.BaseCurrency, sdk.NewInt(0))),
+			Collaterals:               []sdk.Coin{sdk.NewCoin(paramtypes.BaseCurrency, sdk.NewInt(0))},
 			Liabilities:               sdk.NewInt(0),
-			InterestPaidCollaterals:   sdk.NewCoins(sdk.NewCoin(paramtypes.BaseCurrency, sdk.NewInt(0))),
-			InterestPaidCustodies:     sdk.NewCoins(sdk.NewCoin("ATOM", sdk.NewInt(0))),
-			InterestUnpaidCollaterals: sdk.NewCoins(sdk.NewCoin(paramtypes.BaseCurrency, sdk.NewInt(0))),
-			Custodies:                 sdk.NewCoins(sdk.NewCoin("ATOM", sdk.NewInt(0))),
+			InterestPaidCollaterals:   []sdk.Coin{sdk.NewCoin(paramtypes.BaseCurrency, sdk.NewInt(0))},
+			InterestPaidCustodies:     []sdk.Coin{sdk.NewCoin("ATOM", sdk.NewInt(0))},
+			InterestUnpaidCollaterals: []sdk.Coin{sdk.NewCoin(paramtypes.BaseCurrency, sdk.NewInt(0))},
+			Custodies:                 []sdk.Coin{sdk.NewCoin("ATOM", sdk.NewInt(0))},
 			Leverages:                 []sdk.Dec{sdk.NewDec(0)},
 			MtpHealth:                 sdk.NewDec(0),
 			Position:                  types.Position_LONG,
