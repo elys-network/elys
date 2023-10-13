@@ -25,7 +25,7 @@ func (k Keeper) HandleInterestPayment(ctx sdk.Context, collateralAsset string, c
 		}
 
 		// collateralAsset is in base currency
-		if mtp.CollateralAssets[collateralIndex] == ptypes.BaseCurrency {
+		if mtp.Collaterals[collateralIndex].Denom == ptypes.BaseCurrency {
 			mtp.InterestUnpaidCollaterals[collateralIndex] = interestPayment
 		} else {
 			// swap

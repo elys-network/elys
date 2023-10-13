@@ -16,7 +16,7 @@ func (k Keeper) Repay(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, ammPool
 
 	if collateralAsset != ptypes.BaseCurrency {
 		// swap to base currency
-		unpaidCollateralIn := sdk.NewCoin(mtp.CollateralAssets[collateralIndex], mtp.InterestUnpaidCollaterals[collateralIndex])
+		unpaidCollateralIn := sdk.NewCoin(mtp.Collaterals[collateralIndex].Denom, mtp.InterestUnpaidCollaterals[collateralIndex])
 		C, err := k.EstimateSwapGivenOut(ctx, unpaidCollateralIn, ptypes.BaseCurrency, ammPool)
 		if err != nil {
 			return err
@@ -113,7 +113,7 @@ func (k Keeper) Repay(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, ammPool
 		returnAmount = C
 	}
 
-	err = pool.UpdateBalance(ctx, mtp.CollateralAssets[collateralIndex], returnAmount, false)
+	err = pool.UpdateBalance(ctx, mtp.Collaterals[collateralIndex].Denom, returnAmount, false)
 	if err != nil {
 		return err
 	}

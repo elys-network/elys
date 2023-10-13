@@ -54,30 +54,20 @@ func (Position) EnumDescriptor() ([]byte, []int) {
 }
 
 type MTP struct {
-	Address     string       `protobuf:"bytes,1,opt,name=address,proto3" json:"address,omitempty"`
-	Collaterals []types.Coin `protobuf:"bytes,2,rep,name=collaterals,proto3" json:"collaterals"`
-	// repeated string collateral_assets = 2;
-	// repeated string collateral_amounts = 3 [
-	//   (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
-	//   (gogoproto.nullable) = false
-	// ];
+	Address                   string                                   `protobuf:"bytes,1,opt,name=address,proto3" json:"address,omitempty"`
+	Collaterals               []types.Coin                             `protobuf:"bytes,2,rep,name=collaterals,proto3" json:"collaterals"`
 	Liabilities               github_com_cosmos_cosmos_sdk_types.Int   `protobuf:"bytes,3,opt,name=liabilities,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"liabilities"`
 	InterestPaidCollaterals   []github_com_cosmos_cosmos_sdk_types.Int `protobuf:"bytes,4,rep,name=interest_paid_collaterals,json=interestPaidCollaterals,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"interest_paid_collaterals"`
 	InterestPaidCustodies     []github_com_cosmos_cosmos_sdk_types.Int `protobuf:"bytes,5,rep,name=interest_paid_custodies,json=interestPaidCustodies,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"interest_paid_custodies"`
 	InterestUnpaidCollaterals []github_com_cosmos_cosmos_sdk_types.Int `protobuf:"bytes,6,rep,name=interest_unpaid_collaterals,json=interestUnpaidCollaterals,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"interest_unpaid_collaterals"`
 	Custodies                 []types.Coin                             `protobuf:"bytes,7,rep,name=custodies,proto3" json:"custodies"`
-	// repeated string custody_assets = 8;
-	// repeated string custody_amounts = 9 [
-	//   (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
-	//   (gogoproto.nullable) = false
-	// ];
-	Leverages           []github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,8,rep,name=leverages,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"leverages"`
-	MtpHealth           github_com_cosmos_cosmos_sdk_types.Dec   `protobuf:"bytes,9,opt,name=mtp_health,json=mtpHealth,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"mtp_health"`
-	Position            Position                                 `protobuf:"varint,10,opt,name=position,proto3,enum=elys.margin.Position" json:"position,omitempty"`
-	Id                  uint64                                   `protobuf:"varint,11,opt,name=id,proto3" json:"id,omitempty"`
-	AmmPoolId           uint64                                   `protobuf:"varint,12,opt,name=amm_pool_id,json=ammPoolId,proto3" json:"amm_pool_id,omitempty"`
-	ConsolidateLeverage github_com_cosmos_cosmos_sdk_types.Dec   `protobuf:"bytes,13,opt,name=consolidate_leverage,json=consolidateLeverage,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"consolidate_leverage"`
-	SumCollateral       github_com_cosmos_cosmos_sdk_types.Int   `protobuf:"bytes,14,opt,name=sum_collateral,json=sumCollateral,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"sum_collateral"`
+	Leverages                 []github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,8,rep,name=leverages,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"leverages"`
+	MtpHealth                 github_com_cosmos_cosmos_sdk_types.Dec   `protobuf:"bytes,9,opt,name=mtp_health,json=mtpHealth,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"mtp_health"`
+	Position                  Position                                 `protobuf:"varint,10,opt,name=position,proto3,enum=elys.margin.Position" json:"position,omitempty"`
+	Id                        uint64                                   `protobuf:"varint,11,opt,name=id,proto3" json:"id,omitempty"`
+	AmmPoolId                 uint64                                   `protobuf:"varint,12,opt,name=amm_pool_id,json=ammPoolId,proto3" json:"amm_pool_id,omitempty"`
+	ConsolidateLeverage       github_com_cosmos_cosmos_sdk_types.Dec   `protobuf:"bytes,13,opt,name=consolidate_leverage,json=consolidateLeverage,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"consolidate_leverage"`
+	SumCollateral             github_com_cosmos_cosmos_sdk_types.Int   `protobuf:"bytes,14,opt,name=sum_collateral,json=sumCollateral,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"sum_collateral"`
 }
 
 func (m *MTP) Reset()         { *m = MTP{} }

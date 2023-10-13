@@ -20,14 +20,12 @@ func GetPositionFromString(s string) Position {
 func NewMTP(signer string, collateralAsset string, borrowAsset string, position Position, leverage sdk.Dec, poolId uint64) *MTP {
 	return &MTP{
 		Address:                   signer,
-		CollateralAssets:          []string{collateralAsset},
-		CollateralAmounts:         []sdk.Int{sdk.ZeroInt()},
+		Collaterals:               sdk.NewCoins(sdk.NewCoin(collateralAsset, sdk.ZeroInt())),
 		Liabilities:               sdk.ZeroInt(),
 		InterestPaidCollaterals:   []sdk.Int{sdk.ZeroInt()},
-		InterestPaidCustodys:      []sdk.Int{sdk.ZeroInt()},
+		InterestPaidCustodies:     []sdk.Int{sdk.ZeroInt()},
 		InterestUnpaidCollaterals: []sdk.Int{sdk.ZeroInt()},
-		CustodyAssets:             []string{borrowAsset},
-		CustodyAmounts:            []sdk.Int{sdk.ZeroInt()},
+		Custodies:                 sdk.NewCoins(sdk.NewCoin(borrowAsset, sdk.ZeroInt())),
 		Leverages:                 []sdk.Dec{leverage},
 		MtpHealth:                 sdk.ZeroDec(),
 		Position:                  position,
@@ -38,10 +36,11 @@ func NewMTP(signer string, collateralAsset string, borrowAsset string, position 
 }
 
 func (mtp MTP) Validate() error {
-	if len(mtp.CollateralAssets) < 1 {
+	if len(mtp.Collaterals) < 1 {
 		return sdkerrors.Wrap(ErrMTPInvalid, "no asset specified")
 	}
-	for _, asset := range mtp.CollateralAssets {
+	for _, collateral := range mtp.Collaterals {
+		asset := collateral.Denom
 		if asset == "" {
 			return sdkerrors.Wrap(ErrMTPInvalid, "no asset specified")
 		}

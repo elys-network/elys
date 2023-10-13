@@ -29,8 +29,8 @@ func (k Keeper) AmmPoolBalanceCheck(ctx sdk.Context, poolId uint64) error {
 			continue
 		}
 
-		for i := range mtp.CollateralAssets {
-			mtpCollateralBalances = mtpCollateralBalances.Add(sdk.NewCoin(mtp.CollateralAssets[i], mtp.CollateralAmounts[i]))
+		for i := range mtp.Collaterals {
+			mtpCollateralBalances = mtpCollateralBalances.Add(sdk.NewCoin(mtp.Collaterals[i].Denom, mtp.Collaterals[i].Amount))
 		}
 	}
 
