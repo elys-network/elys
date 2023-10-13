@@ -15,11 +15,11 @@ func (k Keeper) UpdateMTPHealth(ctx sdk.Context, mtp types.MTP, ammPool ammtypes
 	}
 	// include unpaid interest in debt (from disabled incremental pay)
 	for i := range mtp.Collaterals {
-		if mtp.InterestUnpaidCollaterals[i].GT(sdk.ZeroInt()) {
-			unpaidCollaterals := sdk.NewCoin(mtp.Collaterals[i].Denom, mtp.InterestUnpaidCollaterals[i])
+		if mtp.InterestUnpaidCollaterals[i].Amount.GT(sdk.ZeroInt()) {
+			unpaidCollaterals := sdk.NewCoin(mtp.Collaterals[i].Denom, mtp.InterestUnpaidCollaterals[i].Amount)
 
 			if mtp.Collaterals[i].Denom == ptypes.BaseCurrency {
-				xl = xl.Add(mtp.InterestUnpaidCollaterals[i])
+				xl = xl.Add(mtp.InterestUnpaidCollaterals[i].Amount)
 			} else {
 				C, err := k.EstimateSwapGivenOut(ctx, unpaidCollaterals, ptypes.BaseCurrency, ammPool)
 				if err != nil {

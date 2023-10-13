@@ -15,24 +15,25 @@ enum Position {
 
 message MTP {
   string address = 1;
-  repeated cosmos.base.v1beta1.Coin collaterals   = 2 [(gogoproto.nullable) = false];
+  repeated cosmos.base.v1beta1.Coin collaterals   = 2 [
+    (gogoproto.nullable) = false
+  ];
   string liabilities = 3 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
     (gogoproto.nullable) = false
   ];
-  repeated string interest_paid_collaterals = 4 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+  repeated cosmos.base.v1beta1.Coin interest_paid_collaterals = 4 [
     (gogoproto.nullable) = false
   ];
-  repeated string interest_paid_custodies = 5 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+  repeated cosmos.base.v1beta1.Coin interest_paid_custodies = 5 [
     (gogoproto.nullable) = false
   ];
-  repeated string interest_unpaid_collaterals = 6 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+  repeated cosmos.base.v1beta1.Coin interest_unpaid_collaterals = 6 [
     (gogoproto.nullable) = false
   ];
-  repeated cosmos.base.v1beta1.Coin custodies   = 7 [(gogoproto.nullable) = false];
+  repeated cosmos.base.v1beta1.Coin custodies   = 7 [
+    (gogoproto.nullable) = false
+  ];
   repeated string leverages = 8 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false

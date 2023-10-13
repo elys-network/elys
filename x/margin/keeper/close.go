@@ -31,20 +31,22 @@ func (k Keeper) Close(ctx sdk.Context, msg *types.MsgClose) (*types.MsgCloseResp
 		return nil, sdkerrors.Wrap(types.ErrInvalidPosition, mtp.Position.String())
 	}
 
+	collateralIndex := len(mtp.Collaterals) - 1
+	custodyIndex := len(mtp.Custodies) - 1
+	mtpPosIndex := len(mtp.Leverages) - 1
+
 	ctx.EventManager().EmitEvent(sdk.NewEvent(types.EventClose,
 		sdk.NewAttribute("id", strconv.FormatInt(int64(closedMtp.Id), 10)),
 		sdk.NewAttribute("position", closedMtp.Position.String()),
 		sdk.NewAttribute("address", closedMtp.Address),
-		// sdk.NewAttribute("collateral_asset", closedMtp.CollateralAssets[0]),
-		// sdk.NewAttribute("collateral_amount", closedMtp.CollateralAmounts[0].String()),
-		// sdk.NewAttribute("custody_asset", closedMtp.CustodyAssets[0]),
-		// sdk.NewAttribute("custody_amount", closedMtp.CustodyAmounts[0].String()),
+		sdk.NewAttribute("collateral", closedMtp.Collaterals[collateralIndex].String()),
+		sdk.NewAttribute("custody", closedMtp.Custodies[custodyIndex].String()),
 		sdk.NewAttribute("repay_amount", repayAmount.String()),
-		// sdk.NewAttribute("leverage", closedMtp.Leverages[0].String()),
+		sdk.NewAttribute("leverage", closedMtp.Leverages[mtpPosIndex].String()),
 		sdk.NewAttribute("liabilities", closedMtp.Liabilities.String()),
-		// sdk.NewAttribute("interest_paid_collateral", mtp.InterestPaidCollaterals[0].String()),
-		// sdk.NewAttribute("interest_paid_custody", mtp.InterestPaidCustodys[0].String()),
-		// sdk.NewAttribute("interest_unpaid_collateral", closedMtp.InterestUnpaidCollaterals[0].String()),
+		sdk.NewAttribute("interest_paid_collateral", mtp.InterestPaidCollaterals[collateralIndex].String()),
+		sdk.NewAttribute("interest_paid_custody", mtp.InterestPaidCustodies[custodyIndex].String()),
+		sdk.NewAttribute("interest_unpaid_collateral", closedMtp.InterestUnpaidCollaterals[collateralIndex].String()),
 		sdk.NewAttribute("health", closedMtp.MtpHealth.String()),
 	))
 

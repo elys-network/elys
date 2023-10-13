@@ -264,11 +264,11 @@ func (k Keeper) IncrementalInterestPayment(ctx sdk.Context, collateralAsset stri
 	collateralIndex, custodyIndex := k.GetMTPAssetIndex(mtp, collateralAsset, custodyAsset)
 	// if mtp has unpaid interest, add to payment
 	// convert it into base currency
-	if mtp.InterestUnpaidCollaterals[collateralIndex].GT(sdk.ZeroInt()) {
+	if mtp.InterestUnpaidCollaterals[collateralIndex].Amount.GT(sdk.ZeroInt()) {
 		if mtp.Collaterals[collateralIndex].Denom == ptypes.BaseCurrency {
-			interestPayment = interestPayment.Add(mtp.InterestUnpaidCollaterals[collateralIndex])
+			interestPayment = interestPayment.Add(mtp.InterestUnpaidCollaterals[collateralIndex].Amount)
 		} else {
-			unpaidCollateralIn := sdk.NewCoin(mtp.Collaterals[collateralIndex].Denom, mtp.InterestUnpaidCollaterals[collateralIndex])
+			unpaidCollateralIn := sdk.NewCoin(mtp.Collaterals[collateralIndex].Denom, mtp.InterestUnpaidCollaterals[collateralIndex].Amount)
 			C, err := k.EstimateSwapGivenOut(ctx, unpaidCollateralIn, ptypes.BaseCurrency, ammPool)
 			if err != nil {
 				return sdk.ZeroInt(), err
@@ -296,7 +296,7 @@ func (k Keeper) IncrementalInterestPayment(ctx sdk.Context, collateralAsset stri
 	}
 
 	// if paying unpaid interest reset to 0
-	mtp.InterestUnpaidCollaterals[collateralIndex] = sdk.ZeroInt()
+	mtp.InterestUnpaidCollaterals[collateralIndex].Amount = sdk.ZeroInt()
 
 	// edge case, not enough custody to cover payment
 	if interestPaymentCustody.GT(mtp.Custodies[custodyIndex].Amount) {
@@ -306,17 +306,17 @@ func (k Keeper) IncrementalInterestPayment(ctx sdk.Context, collateralAsset stri
 		if err != nil {
 			return sdk.ZeroInt(), err
 		}
-		mtp.InterestUnpaidCollaterals[collateralIndex] = interestPayment.Sub(custodyAmountCollateral)
+		mtp.InterestUnpaidCollaterals[collateralIndex].Amount = interestPayment.Sub(custodyAmountCollateral)
 
 		interestPayment = custodyAmountCollateral
 		interestPaymentCustody = mtp.Custodies[custodyIndex].Amount
 	}
 
 	// add payment to total paid - collateral
-	mtp.InterestPaidCollaterals[collateralIndex] = mtp.InterestPaidCollaterals[collateralIndex].Add(interestPayment)
+	mtp.InterestPaidCollaterals[collateralIndex].Amount = mtp.InterestPaidCollaterals[collateralIndex].Amount.Add(interestPayment)
 
 	// add payment to total paid - custody
-	mtp.InterestPaidCustodies[custodyIndex] = mtp.InterestPaidCustodies[custodyIndex].Add(interestPaymentCustody)
+	mtp.InterestPaidCustodies[custodyIndex].Amount = mtp.InterestPaidCustodies[custodyIndex].Amount.Add(interestPaymentCustody)
 
 	// deduct interest payment from custody amount
 	mtp.Custodies[custodyIndex].Amount = mtp.Custodies[custodyIndex].Amount.Sub(interestPaymentCustody)

@@ -16,13 +16,13 @@ func (k Keeper) Repay(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, ammPool
 
 	if collateralAsset != ptypes.BaseCurrency {
 		// swap to base currency
-		unpaidCollateralIn := sdk.NewCoin(mtp.Collaterals[collateralIndex].Denom, mtp.InterestUnpaidCollaterals[collateralIndex])
+		unpaidCollateralIn := sdk.NewCoin(mtp.Collaterals[collateralIndex].Denom, mtp.InterestUnpaidCollaterals[collateralIndex].Amount)
 		C, err := k.EstimateSwapGivenOut(ctx, unpaidCollateralIn, ptypes.BaseCurrency, ammPool)
 		if err != nil {
 			return err
 		}
 
-		InterestUnpaidCollateral = C
+		InterestUnpaidCollateral.Amount = C
 	}
 
 	var err error
@@ -32,21 +32,21 @@ func (k Keeper) Repay(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, ammPool
 	}
 
 	have := repayAmount
-	owe := Liabilities.Add(InterestUnpaidCollateral)
+	owe := Liabilities.Add(InterestUnpaidCollateral.Amount)
 
 	if have.LT(Liabilities) {
 		//can't afford principle liability
 		returnAmount = sdk.ZeroInt()
 		debtP = Liabilities.Sub(have)
-		debtI = InterestUnpaidCollateral
+		debtI = InterestUnpaidCollateral.Amount
 	} else if have.LT(owe) {
 		// v principle liability; x excess liability
 		returnAmount = sdk.ZeroInt()
 		debtP = sdk.ZeroInt()
-		debtI = Liabilities.Add(InterestUnpaidCollateral).Sub(have)
+		debtI = Liabilities.Add(InterestUnpaidCollateral.Amount).Sub(have)
 	} else {
 		// can afford both
-		returnAmount = have.Sub(Liabilities).Sub(InterestUnpaidCollateral)
+		returnAmount = have.Sub(Liabilities).Sub(InterestUnpaidCollateral.Amount)
 		debtP = sdk.ZeroInt()
 		debtI = sdk.ZeroInt()
 	}
