@@ -143,13 +143,16 @@ func (k Keeper) UpdatePoolHealth(ctx sdk.Context, pool *types.Pool) error {
 }
 
 func (k Keeper) CalculatePoolHealth(ctx sdk.Context, pool *types.Pool) sdk.Dec {
-	// ammPool, found := k.amm.GetPool(ctx, pool.AmmPoolId)
-	// if !found {
-	// 	return sdk.ZeroDec()
-	// }
+	ammPool, found := k.amm.GetPool(ctx, pool.AmmPoolId)
+	if !found {
+		return sdk.ZeroDec()
+	}
 
-	H := sdk.NewDec(1)
-	return H
+	if ammPool.TotalShares.Amount.IsZero() {
+		return sdk.OneDec()
+	}
+
+	return sdk.NewDecFromBigInt(pool.LeveragedLpAmount.BigInt()).Quo(sdk.NewDecFromBigInt(ammPool.TotalShares.Amount.BigInt()))
 }
 
 func (k Keeper) IncrementalInterestPayment(ctx sdk.Context, collateralAsset string, custodyAsset string, interestPayment sdk.Int, mtp *types.MTP, pool *types.Pool, ammPool ammtypes.Pool) (sdk.Int, error) {
