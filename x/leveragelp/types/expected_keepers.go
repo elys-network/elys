@@ -5,6 +5,8 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
+	commitmenttypes "github.com/elys-network/elys/x/commitment/types"
+	stablestaketypes "github.com/elys-network/elys/x/stablestake/types"
 )
 
 //go:generate mockery --srcpkg . --name AuthorizationChecker --structname AuthorizationChecker --filename authorization_checker.go --with-expecter
@@ -119,8 +121,13 @@ type BankKeeper interface {
 	HasBalance(ctx sdk.Context, addr sdk.AccAddress, amt sdk.Coin) bool
 }
 
-// BankKeeper defines the expected interface needed on stablestake
+// StableStakeKeeper defines the expected interface needed on stablestake
 type StableStakeKeeper interface {
+	GetDebt(ctx sdk.Context, addr sdk.AccAddress) stablestaketypes.Debt
 	Borrow(ctx sdk.Context, addr sdk.AccAddress, amount sdk.Coin) error
 	Repay(ctx sdk.Context, addr sdk.AccAddress, amount sdk.Coin) error
+}
+
+type CommitmentKeeper interface {
+	GetCommitments(ctx sdk.Context, creator string) (val commitmenttypes.Commitments, found bool)
 }

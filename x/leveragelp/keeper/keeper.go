@@ -38,6 +38,7 @@ type (
 		bankKeeper   types.BankKeeper
 		oracleKeeper ammtypes.OracleKeeper
 		stableKeeper types.StableStakeKeeper
+		commKeeper   types.CommitmentKeeper
 
 		hooks types.LeveragelpHooks
 	}
@@ -52,6 +53,7 @@ func NewKeeper(
 	bk types.BankKeeper,
 	oracleKeeper ammtypes.OracleKeeper,
 	stableKeeper types.StableStakeKeeper,
+	commitmentKeeper types.CommitmentKeeper,
 ) *Keeper {
 	// ensure that authority is a valid AccAddress
 	if _, err := sdk.AccAddressFromBech32(authority); err != nil {
@@ -67,6 +69,7 @@ func NewKeeper(
 		bankKeeper:   bk,
 		oracleKeeper: oracleKeeper,
 		stableKeeper: stableKeeper,
+		commKeeper:   commitmentKeeper,
 	}
 
 	keeper.AuthorizationChecker = keeper

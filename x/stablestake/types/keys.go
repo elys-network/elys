@@ -14,6 +14,10 @@ const (
 	MemStoreKey = "mem_stablestake"
 )
 
+var (
+	DebtPrefixKey = []byte{0x01}
+)
+
 func KeyPrefix(p string) []byte {
 	return []byte(p)
 }

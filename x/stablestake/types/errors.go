@@ -8,5 +8,6 @@ import (
 
 // x/stablestake module sentinel errors
 var (
-	ErrSample = sdkerrors.Register(ModuleName, 1100, "sample error")
+	ErrInvalidDepositDenom = sdkerrors.Register(ModuleName, 1, "invalid deposit denom")
+	ErrInvalidBorrowDenom  = sdkerrors.Register(ModuleName, 1, "invalid borrow denom")
 )

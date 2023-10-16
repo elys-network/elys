@@ -1,0 +1,14 @@
+syntax = "proto3";
+package elys.stablestake;
+
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/elys-network/elys/x/stablestake/types";
+
+message Debt {
+  string address = 1;
+  string debt = 2 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+}

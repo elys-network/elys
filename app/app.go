@@ -926,6 +926,8 @@ func NewElysApp(
 		app.AmmKeeper,
 		app.BankKeeper,
 		app.OracleKeeper,
+		app.StablestakeKeeper,
+		app.CommitmentKeeper,
 	)
 	leveragelpModule := leveragelpmodule.NewAppModule(appCodec, app.LeveragelpKeeper, app.AccountKeeper, app.BankKeeper)
 
