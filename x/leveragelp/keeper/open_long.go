@@ -22,6 +22,8 @@ func (k Keeper) OpenLong(ctx sdk.Context, poolId uint64, msg *types.MsgOpen) (*t
 
 	// Initialize a new Leveragelp Trading Position (MTP).
 	mtp := types.NewMTP(msg.Creator, msg.CollateralAsset, leverage, poolId)
+	mtp.Id = k.GetMTPCount(ctx) + 1
+	k.SetMTPCount(ctx, mtp.Id)
 
 	// Call the function to process the open long logic.
 	return k.ProcessOpenLong(ctx, mtp, leverage, eta, collateralAmountDec, poolId, msg)
@@ -59,10 +61,15 @@ func (k Keeper) ProcessOpenLong(ctx sdk.Context, mtp *types.MTP, leverage sdk.De
 	// 	return nil, err
 	// }
 
-	// Borrow the asset the user wants to long.
-	// TODO: borrow leveragedAmount - collateralAmount
-	// TODO: send collateral coins to MTP address from MTP owner address
+	// send collateral coins to MTP address from MTP owner address
+	mtpOwner := sdk.MustAccAddressFromBech32(mtp.Address)
+	err = k.bankKeeper.SendCoins(ctx, mtpOwner, mtp.GetMTPAddress(), sdk.Coins{sdk.NewCoin(msg.CollateralAsset, msg.CollateralAmount)})
+	if err != nil {
+		return nil, err
+	}
 	leverageCoin := sdk.NewCoin(msg.CollateralAsset, leveragedAmount)
+
+	// borrow leveragedAmount - collateralAmount
 	borrowCoin := sdk.NewCoin(msg.CollateralAsset, leveragedAmount.Sub(msg.CollateralAmount))
 	err = k.stableKeeper.Borrow(ctx, mtp.GetMTPAddress(), borrowCoin)
 	if err != nil {
@@ -81,6 +88,7 @@ func (k Keeper) ProcessOpenLong(ctx sdk.Context, mtp *types.MTP, leverage sdk.De
 	}
 
 	// Update the MTP health.
+	mtp.Liabilities = borrowCoin.Amount
 	lr, err := k.UpdateMTPHealth(ctx, *mtp, ammPool)
 	if err != nil {
 		return nil, err
