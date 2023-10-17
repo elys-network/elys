@@ -97,7 +97,8 @@ func CustomQuerier(qp *QueryPlugin) func(ctx sdk.Context, request json.RawMessag
 			}
 
 			return responseBytes, nil
-
+		case contractQuery.QuerySwapEstimation != nil:
+			return nil, wasmvmtypes.UnsupportedRequest{Kind: "QuerySwapEstimation, not implemented yet"}
 		default:
 			return nil, wasmvmtypes.UnsupportedRequest{Kind: "unknown elys query variant"}
 		}
@@ -105,7 +106,8 @@ func CustomQuerier(qp *QueryPlugin) func(ctx sdk.Context, request json.RawMessag
 }
 
 type ElysQuery struct {
-	PriceAll *PriceAll `json:"price_all,omitempty"`
+	PriceAll            *PriceAll                   `json:"price_all,omitempty"`
+	QuerySwapEstimation *QuerySwapEstimationRequest `json:"query_swap_estimation,omitempty"`
 }
 
 type PriceAll struct {
@@ -115,6 +117,16 @@ type PriceAll struct {
 type AllPriceResponse struct {
 	Price      []oracletypes.Price `protobuf:"bytes,1,rep,name=price,proto3" json:"price"`
 	Pagination *query.PageResponse `protobuf:"bytes,2,opt,name=pagination,proto3" json:"pagination,omitempty"`
+}
+
+type QuerySwapEstimationRequest struct {
+	TokenIn sdk.Coin                    `protobuf:"bytes,2,opt,name=tokenIn,proto3" json:"token_in,omitempty"`
+	Routes  []ammtype.SwapAmountInRoute `protobuf:"bytes,1,rep,name=routes,proto3" json:"routes,omitempty"`
+}
+
+type QuerySwapEstimationResponse struct {
+	SpotPrice sdk.Dec  `protobuf:"bytes,1,opt,name=SpotPrice,proto3" json:"spot_price,omitempty"`
+	TokenOut  sdk.Coin `protobuf:"bytes,2,opt,name=tokenOut,proto3" json:"token_out,omitempty"`
 }
 
 func CustomMessageDecorator(amm *ammkeeper.Keeper) func(wasmkeeper.Messenger) wasmkeeper.Messenger {
