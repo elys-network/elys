@@ -8,15 +8,15 @@ import (
 func (k Keeper) GetMTPAssetIndex(mtp *types.MTP, collateralAsset string, borrowAsset string) (int, int) {
 	collateralIndex := -1
 	borrowIndex := -1
-	for i, asset := range mtp.CollateralAssets {
-		if asset == collateralAsset {
+	for i, asset := range mtp.Collaterals {
+		if asset.Denom == collateralAsset {
 			collateralIndex = i
 			break
 		}
 	}
 
-	for i, asset := range mtp.CustodyAssets {
-		if asset == borrowAsset {
+	for i, asset := range mtp.Custodies {
+		if asset.Denom == borrowAsset {
 			borrowIndex = i
 			break
 		}
