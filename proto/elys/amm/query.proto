@@ -11,6 +11,7 @@ import "elys/amm/pool_asset.proto";
 import "elys/amm/pool_params.proto";
 import "cosmos/base/v1beta1/coin.proto";
 import "elys/amm/denom_liquidity.proto";
+import "elys/amm/swap_route.proto";
 
 option go_package = "github.com/elys-network/elys/x/amm/types";
 
@@ -40,6 +41,12 @@ service Query {
   }
   rpc DenomLiquidityAll (QueryAllDenomLiquidityRequest) returns (QueryAllDenomLiquidityResponse) {
     option (google.api.http).get = "/elys-network/elys/amm/denom_liquidity";
+  
+  }
+
+  // Queries a list of SwapEstimation items.
+  rpc SwapEstimation (QuerySwapEstimationRequest) returns (QuerySwapEstimationResponse) {
+    option (google.api.http).get = "/elys-network/elys/amm/swap_estimation";
   
   }
 }
@@ -85,5 +92,18 @@ message QueryAllDenomLiquidityRequest {
 message QueryAllDenomLiquidityResponse {
   repeated DenomLiquidity                         denomLiquidity = 1 [(gogoproto.nullable) = false];
            cosmos.base.query.v1beta1.PageResponse pagination     = 2;
+}
+
+message QuerySwapEstimationRequest {
+  repeated SwapAmountInRoute        routes  = 1;
+           cosmos.base.v1beta1.Coin tokenIn = 2 [(gogoproto.nullable) = false];
+}
+
+message QuerySwapEstimationResponse {
+  string                   spotPrice = 1 [
+        (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+        (gogoproto.nullable) = false
+  ];
+  cosmos.base.v1beta1.Coin tokenOut  = 2 [(gogoproto.nullable) = false];
 }
 
