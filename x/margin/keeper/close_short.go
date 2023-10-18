@@ -20,15 +20,16 @@ func (k Keeper) CloseShort(ctx sdk.Context, msg *types.MsgClose) (*types.MTP, sd
 	}
 
 	repayAmount := sdk.ZeroInt()
-	for _, custodyAsset := range mtp.CustodyAssets {
+	for _, custody := range mtp.Custodies {
+		custodyAsset := custody.Denom
 		// Retrieve AmmPool
 		ammPool, err := k.CloseShortChecker.GetAmmPool(ctx, mtp.AmmPoolId, custodyAsset)
 		if err != nil {
 			return nil, sdk.ZeroInt(), err
 		}
 
-		for _, collateralAsset := range mtp.CollateralAssets {
-
+		for _, collateral := range mtp.Collaterals {
+			collateralAsset := collateral.Denom
 			// Handle Interest if within epoch position
 			if err := k.CloseShortChecker.HandleInterest(ctx, &mtp, &pool, ammPool, collateralAsset, custodyAsset); err != nil {
 				return nil, sdk.ZeroInt(), err
@@ -41,7 +42,8 @@ func (k Keeper) CloseShort(ctx sdk.Context, msg *types.MsgClose) (*types.MTP, sd
 			return nil, sdk.ZeroInt(), err
 		}
 
-		for _, collateralAsset := range mtp.CollateralAssets {
+		for _, collateral := range mtp.Collaterals {
+			collateralAsset := collateral.Denom
 			// Estimate swap and repay
 			repayAmt, err := k.CloseShortChecker.EstimateAndRepay(ctx, mtp, pool, ammPool, collateralAsset, custodyAsset)
 			if err != nil {
