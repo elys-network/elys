@@ -6,7 +6,7 @@ import (
 	margintypes "github.com/elys-network/elys/x/margin/types"
 )
 
-func (k Keeper) AfterMarginPositionOpended(ctx sdk.Context, ammPool ammtypes.Pool, marginPool margintypes.Pool) {
+func (k Keeper) AfterMarginPositionOpen(ctx sdk.Context, ammPool ammtypes.Pool, marginPool margintypes.Pool) {
 	k.UpdateAccountedPool(ctx, ammPool, marginPool)
 }
 
@@ -50,8 +50,8 @@ func (k Keeper) MarginHooks() MarginHooks {
 	return MarginHooks{k}
 }
 
-func (h MarginHooks) AfterMarginPositionOpended(ctx sdk.Context, ammPool ammtypes.Pool, marginPool margintypes.Pool) {
-	h.k.AfterMarginPositionOpended(ctx, ammPool, marginPool)
+func (h MarginHooks) AfterMarginPositionOpen(ctx sdk.Context, ammPool ammtypes.Pool, marginPool margintypes.Pool) {
+	h.k.AfterMarginPositionOpen(ctx, ammPool, marginPool)
 }
 
 func (h MarginHooks) AfterMarginPositionModified(ctx sdk.Context, ammPool ammtypes.Pool, marginPool margintypes.Pool) {
