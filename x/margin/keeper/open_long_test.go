@@ -64,6 +64,8 @@ func TestOpenLong_PoolDisabled(t *testing.T) {
 		msg = &types.MsgOpen{
 			Leverage:         math.LegacyNewDec(10),
 			CollateralAmount: math.NewInt(1),
+			CollateralAsset:  "aaa",
+			BorrowAsset:      "bbb",
 		}
 		poolId = uint64(42)
 	)
@@ -417,9 +419,9 @@ func TestOpenLong_BaseCurrency_Collateral(t *testing.T) {
 
 	// Create a pool
 	// Mint 100000USDC
-	usdcToken := sdk.NewCoins(sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(100000)))
+	usdcToken := []sdk.Coin{sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(100000))}
 	// Mint 100000ATOM
-	atomToken := sdk.NewCoins(sdk.NewCoin(ptypes.ATOM, sdk.NewInt(100000)))
+	atomToken := []sdk.Coin{sdk.NewCoin(ptypes.ATOM, sdk.NewInt(100000))}
 
 	err := app.BankKeeper.MintCoins(ctx, ammtypes.ModuleName, usdcToken)
 	require.NoError(t, err)
@@ -521,9 +523,9 @@ func TestOpenLong_ATOM_Collateral(t *testing.T) {
 
 	// Create a pool
 	// Mint 100000USDC
-	usdcToken := sdk.NewCoins(sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(100000)))
+	usdcToken := []sdk.Coin{sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(100000))}
 	// Mint 100000ATOM
-	atomToken := sdk.NewCoins(sdk.NewCoin(ptypes.ATOM, sdk.NewInt(100000)))
+	atomToken := []sdk.Coin{sdk.NewCoin(ptypes.ATOM, sdk.NewInt(100000))}
 
 	err := app.BankKeeper.MintCoins(ctx, ammtypes.ModuleName, usdcToken)
 	require.NoError(t, err)

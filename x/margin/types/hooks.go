@@ -6,8 +6,8 @@ import (
 )
 
 type MarginHooks interface {
-	// AfterMarginPositionOpended is called after OpenLong or OpenShort position.
-	AfterMarginPositionOpended(ctx sdk.Context, ammPool ammtypes.Pool, marginPool Pool)
+	// AfterMarginPositionOpen is called after OpenLong or OpenShort position.
+	AfterMarginPositionOpen(ctx sdk.Context, ammPool ammtypes.Pool, marginPool Pool)
 
 	// AfterMarginPositionModified is called after a position gets modified.
 	AfterMarginPositionModified(ctx sdk.Context, ammPool ammtypes.Pool, marginPool Pool)
@@ -38,9 +38,9 @@ func NewMultiMarginHooks(hooks ...MarginHooks) MultiMarginHooks {
 	return hooks
 }
 
-func (h MultiMarginHooks) AfterMarginPositionOpended(ctx sdk.Context, ammPool ammtypes.Pool, marginPool Pool) {
+func (h MultiMarginHooks) AfterMarginPositionOpen(ctx sdk.Context, ammPool ammtypes.Pool, marginPool Pool) {
 	for i := range h {
-		h[i].AfterMarginPositionOpended(ctx, ammPool, marginPool)
+		h[i].AfterMarginPositionOpen(ctx, ammPool, marginPool)
 	}
 }
 

@@ -31,6 +31,11 @@ func (k Keeper) OpenConsolidate(ctx sdk.Context, mtp *types.MTP, msg *types.MsgO
 		if err != nil {
 			return nil, err
 		}
+	case types.Position_SHORT:
+		mtp, err = k.OpenConsolidateShort(ctx, poolId, mtp, msg)
+		if err != nil {
+			return nil, err
+		}
 	default:
 		return nil, sdkerrors.Wrap(types.ErrInvalidPosition, msg.Position.String())
 	}
