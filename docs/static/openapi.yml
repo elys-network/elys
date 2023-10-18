@@ -38022,6 +38022,62 @@ paths:
           format: uint64
       tags:
         - Query
+  /elys-network/elys/amm/swap_estimation:
+    get:
+      summary: Queries a list of SwapEstimation items.
+      operationId: ElysAmmSwapEstimation
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              spotPrice:
+                type: string
+              tokenOut:
+                type: object
+                properties:
+                  denom:
+                    type: string
+                  amount:
+                    type: string
+                description: >-
+                  Coin defines a token with a denomination and an amount.
+
+
+                  NOTE: The amount field is an Int which implements the custom
+                  method
+
+                  signatures required by gogoproto.
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: tokenIn.denom
+          in: query
+          required: false
+          type: string
+        - name: tokenIn.amount
+          in: query
+          required: false
+          type: string
+      tags:
+        - Query
   /elys-network/elys/assetprofile/entry:
     get:
       operationId: ElysAssetprofileEntryAll
@@ -82350,6 +82406,23 @@ definitions:
             type: string
             format: uint64
     description: QueryParamsResponse is response type for the Query/Params RPC method.
+  elys.amm.QuerySwapEstimationResponse:
+    type: object
+    properties:
+      spotPrice:
+        type: string
+      tokenOut:
+        type: object
+        properties:
+          denom:
+            type: string
+          amount:
+            type: string
+        description: |-
+          Coin defines a token with a denomination and an amount.
+
+          NOTE: The amount field is an Int which implements the custom method
+          signatures required by gogoproto.
   elys.amm.SwapAmountInRoute:
     type: object
     properties:
