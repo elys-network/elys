@@ -43,5 +43,6 @@ message Pool {
     (gogoproto.nullable) = false
   ];
   repeated PoolAsset poolAssets = 6 [(gogoproto.nullable) = false]; 
+  int64 lastHeightInterestRateComputed = 7;
 }
 

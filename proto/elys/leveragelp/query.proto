@@ -1,0 +1,153 @@
+syntax = "proto3";
+
+package elys.leveragelp;
+
+import "gogoproto/gogo.proto";
+import "google/api/annotations.proto";
+import "cosmos/base/query/v1beta1/pagination.proto";
+import "elys/leveragelp/params.proto";
+import "elys/leveragelp/types.proto";
+import "elys/leveragelp/pool.proto";
+
+option go_package = "github.com/elys-network/elys/x/leveragelp/types";
+
+// Query defines the gRPC querier service.
+service Query {
+
+  // Parameters queries the parameters of the module.
+  rpc Params(ParamsRequest) returns (ParamsResponse) {
+    option (google.api.http).get = "/elys-network/elys/leveragelp/params";
+  }
+
+  // Queries a list of GetPositions items.
+  rpc GetPositions(PositionsRequest) returns (PositionsResponse) {
+    option (google.api.http).get =
+        "/elys-network/elys/leveragelp/positions/{pagination.key}";
+  }
+
+  // Queries a list of GetPositionsByPool items.
+  rpc GetPositionsByPool(PositionsByPoolRequest)
+      returns (PositionsByPoolResponse) {
+    option (google.api.http).get =
+        "/elys-network/elys/leveragelp/mtps-by-pool/{amm_pool_id}/{pagination.key}";
+  }
+
+  // Queries a list of GetStatus items.
+  rpc GetStatus(StatusRequest) returns (StatusResponse) {
+    option (google.api.http).get = "/elys-network/elys/leveragelp/status";
+  }
+
+  // Queries a list of GetPositionsForAddress items.
+  rpc GetPositionsForAddress(PositionsForAddressRequest)
+      returns (PositionsForAddressResponse) {
+    option (google.api.http).get =
+        "/elys-network/elys/leveragelp/mtps-for-address/{address}/{pagination.key}";
+  }
+
+  // Queries a list of GetWhitelist items.
+  rpc GetWhitelist(WhitelistRequest) returns (WhitelistResponse) {
+    option (google.api.http).get =
+        "/elys-network/elys/leveragelp/whitelist/{pagination.key}";
+  }
+
+  // Queries a list of IsWhitelisted items.
+  rpc IsWhitelisted(IsWhitelistedRequest) returns (IsWhitelistedResponse) {
+    option (google.api.http).get = "/elys-network/elys/leveragelp/is-whitelisted";
+  }
+
+  // Queries a list of Pool items.
+  rpc Pool(QueryGetPoolRequest) returns (QueryGetPoolResponse) {
+    option (google.api.http).get = "/elys-network/elys/leveragelp/pool/{index}";
+  }
+  rpc Pools(QueryAllPoolRequest) returns (QueryAllPoolResponse) {
+    option (google.api.http).get =
+        "/elys-network/elys/leveragelp/pool/{pagination.key}";
+  }
+
+  // Queries a list of MTP items.
+  rpc MTP(MTPRequest) returns (MTPResponse) {
+    option (google.api.http).get =
+        "/elys-network/elys/leveragelp/mtp/{address}/{id}";
+  }
+}
+// ParamsRequest is request type for the Query/Params RPC method.
+message ParamsRequest {}
+
+// ParamsResponse is response type for the Query/Params RPC method.
+message ParamsResponse {
+
+  // params holds all the parameters of this module.
+  Params params = 1 [ (gogoproto.nullable) = false ];
+}
+
+message PositionsRequest {
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+message PositionsResponse {
+  repeated MTP mtps = 1;
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+message PositionsByPoolRequest {
+  uint64 amm_pool_id = 1;
+  cosmos.base.query.v1beta1.PageRequest pagination = 2;
+}
+
+message PositionsByPoolResponse {
+  repeated MTP mtps = 1;
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+message StatusRequest {}
+
+message StatusResponse {
+  uint64 open_mtp_count = 1;
+  uint64 lifetime_mtp_count = 2;
+}
+
+message PositionsForAddressRequest {
+  string address = 1;
+  cosmos.base.query.v1beta1.PageRequest pagination = 2;
+}
+
+message PositionsForAddressResponse {
+  repeated MTP mtps = 1;
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+message WhitelistRequest {
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+message WhitelistResponse {
+  repeated string whitelist = 1;
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+message IsWhitelistedRequest { string address = 1; }
+
+message IsWhitelistedResponse {
+  string address = 1;
+  bool is_whitelisted = 2;
+}
+
+message QueryGetPoolRequest { uint64 index = 1; }
+
+message QueryGetPoolResponse { Pool pool = 1 [ (gogoproto.nullable) = false ]; }
+
+message QueryAllPoolRequest {
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+message QueryAllPoolResponse {
+  repeated Pool pool = 1 [ (gogoproto.nullable) = false ];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+message MTPRequest {
+  string address = 1;
+  uint64 id = 2;
+}
+
+message MTPResponse { MTP mtp = 1; }

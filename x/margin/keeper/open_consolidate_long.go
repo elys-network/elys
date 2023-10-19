@@ -1,8 +1,6 @@
 package keeper
 
 import (
-	"golang.org/x/exp/slices"
-
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/margin/types"
 )
@@ -14,13 +12,8 @@ func (k Keeper) OpenConsolidateLong(ctx sdk.Context, poolId uint64, mtp *types.M
 	collateralAmountDec := sdk.NewDecFromBigInt(msg.CollateralAmount.BigInt())
 	mtp.Leverages = append(mtp.Leverages, leverage)
 
-	if !slices.Contains(mtp.CollateralAssets, msg.CollateralAsset) {
-		mtp.CollateralAssets = append(mtp.CollateralAssets, msg.CollateralAsset)
-	}
-
-	if !slices.Contains(mtp.CustodyAssets, msg.BorrowAsset) {
-		mtp.CollateralAssets = append(mtp.CustodyAssets, msg.BorrowAsset)
-	}
+	mtp.Collaterals = types.AddOrAppendCoin(mtp.Collaterals, sdk.NewCoin(msg.CollateralAsset, sdk.NewInt(0)))
+	mtp.Custodies = types.AddOrAppendCoin(mtp.Custodies, sdk.NewCoin(msg.BorrowAsset, sdk.NewInt(0)))
 
 	return k.ProcessOpenLong(ctx, mtp, leverage, eta, collateralAmountDec, poolId, msg)
 }

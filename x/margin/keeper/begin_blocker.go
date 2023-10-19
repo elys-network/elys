@@ -15,7 +15,6 @@ func (k Keeper) BeginBlocker(ctx sdk.Context) {
 
 	if epochPosition == 0 { // if epoch has passed
 		currentHeight := ctx.BlockHeight()
-		_ = currentHeight
 		pools := k.GetAllPools(ctx)
 		for _, pool := range pools {
 			// TODO: fields missing
@@ -33,8 +32,7 @@ func (k Keeper) BeginBlocker(ctx sdk.Context) {
 					continue // ?
 				}
 				pool.InterestRate = rate
-				// TODO: field missing
-				// pool.LastHeightInterestRateComputed = currentHeight
+				pool.LastHeightInterestRateComputed = currentHeight
 				_ = k.UpdatePoolHealth(ctx, &pool)
 				// TODO: function missing
 				// k.TrackSQBeginBlock(ctx, pool)

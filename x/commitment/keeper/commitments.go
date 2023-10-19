@@ -74,10 +74,15 @@ func (k Keeper) DeductCommitments(ctx sdk.Context, creator string, denom string,
 		return types.Commitments{}, sdkerrors.Wrapf(types.ErrCommitmentsNotFound, "creator: %s", creator)
 	}
 
+	// if deduction amount is zero
+	if amount.Equal(sdk.ZeroInt()) {
+		return commitments, nil
+	}
+
 	// Get user's uncommitted balance
 	uncommittedToken, found := commitments.GetUncommittedTokensForDenom(denom)
 	if !found {
-		return types.Commitments{}, sdkerrors.Wrapf(types.ErrCommitmentsNotFound, "creator: %s", creator)
+		uncommittedToken = &types.UncommittedTokens{Denom: denom, Amount: sdk.ZeroInt()}
 	}
 
 	requestedAmount := amount

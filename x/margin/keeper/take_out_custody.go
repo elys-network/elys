@@ -7,12 +7,12 @@ import (
 
 func (k Keeper) TakeOutCustody(ctx sdk.Context, mtp types.MTP, pool *types.Pool, custodyAsset string) error {
 	_, custodyIndex := k.GetMTPAssetIndex(&mtp, "", custodyAsset)
-	err := pool.UpdateBalance(ctx, mtp.CustodyAssets[custodyIndex], mtp.CustodyAmounts[custodyIndex], true)
+	err := pool.UpdateBalance(ctx, mtp.Custodies[custodyIndex].Denom, mtp.Custodies[custodyIndex].Amount, true)
 	if err != nil {
 		return err
 	}
 
-	err = pool.UpdateCustody(ctx, mtp.CustodyAssets[custodyIndex], mtp.CustodyAmounts[custodyIndex], false)
+	err = pool.UpdateCustody(ctx, mtp.Custodies[custodyIndex].Denom, mtp.Custodies[custodyIndex].Amount, false)
 	if err != nil {
 		return err
 	}
