@@ -198,7 +198,7 @@ func PerformMsgSwapExactAmountIn(f *ammkeeper.Keeper, ctx sdk.Context, contractA
 	}
 
 	// Swap
-	swap_resp, err := msgServer.SwapExactAmountIn(
+	swapResp, err := msgServer.SwapExactAmountIn(
 		sdk.WrapSDKContext(ctx),
 		msgMsgSwapExactAmountIn,
 	)
@@ -207,7 +207,7 @@ func PerformMsgSwapExactAmountIn(f *ammkeeper.Keeper, ctx sdk.Context, contractA
 	}
 
 	var resp = &MsgSwapExactAmountInResponse{
-		TokenOutAmount: swap_resp.TokenOutAmount,
+		TokenOutAmount: swapResp.TokenOutAmount,
 		MetaData:       msgSwapExactAmountIn.MetaData,
 	}
 	return resp, nil
