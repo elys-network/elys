@@ -799,7 +799,7 @@ func NewElysApp(
 	// if we want to allow any custom callbacks
 	availableCapabilities := strings.Join(AllCapabilities(), ",")
 
-	wasmOpts = append(RegisterCustomPlugins(&app.OracleKeeper), wasmOpts...)
+	wasmOpts = append(RegisterCustomPlugins(&app.AmmKeeper, &app.OracleKeeper), wasmOpts...)
 
 	app.WasmKeeper = wasmmodule.NewKeeper(
 		appCodec,
