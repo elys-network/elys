@@ -8,11 +8,12 @@ import (
 
 func NewPool(poolId uint64) Pool {
 	return Pool{
-		AmmPoolId:    poolId,
-		Health:       sdk.NewDec(100),
-		Enabled:      true,
-		Closed:       false,
-		InterestRate: sdk.NewDecFromIntWithPrec(sdk.NewInt(1), 1),
+		AmmPoolId:         poolId,
+		Health:            sdk.NewDec(100),
+		Enabled:           true,
+		Closed:            false,
+		LeveragedLpAmount: sdk.ZeroInt(),
+		LeverageMax:       sdk.NewDec(10),
 	}
 }
 

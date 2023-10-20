@@ -32,5 +32,8 @@ func (k msgServer) Bond(goCtx context.Context, msg *types.MsgBond) (*types.MsgBo
 		return nil, err
 	}
 
+	params.TotalValue = params.TotalValue.Add(msg.Amount)
+	k.SetParams(ctx, params)
+
 	return &types.MsgBondResponse{}, nil
 }

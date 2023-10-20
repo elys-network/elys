@@ -393,8 +393,6 @@ func TestOpenLong_Success(t *testing.T) {
 
 	mockChecker.On("GetSafetyFactor", ctx).Return(safetyFactor)
 
-	mockChecker.On("CalcMTPConsolidateCollateral", ctx, mtp).Return(nil)
-	mockChecker.On("CalcMTPConsolidateLiability", ctx, mtp).Return()
 	mockChecker.On("SetMTP", ctx, mtp).Return(nil)
 
 	_, err := k.OpenLong(ctx, poolId, msg)

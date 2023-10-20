@@ -25,16 +25,6 @@ func BeginBlockerProcessMTP(ctx sdk.Context, k Keeper, mtp *types.MTP, pool type
 		return
 	}
 	mtp.MtpHealth = h
-	// compute interest
-	// TODO: missing fields
-	// interestPayment := k.CalcMTPInterestLiabilities(ctx, *mtp, pool.InterestRate, 0, 0, ammPool, mtp.CollateralAssets[0])
-	// finalInterestPayment := k.HandleInterestPayment(ctx, mtp.CollateralAssets[0],mtp.CustodyAssets[0], interestPayment, mtp, &pool, ammPool)
-	// nativeAsset := types.GetSettlementAsset()
-	// if types.StringCompare(mtp.CollateralAsset, nativeAsset) { // custody is external, payment is custody
-	// 	pool.BlockInterestExternal = pool.BlockInterestExternal.Add(finalInterestPayment)
-	// } else { // custody is native, payment is custody
-	// 	pool.BlockInterestNative = pool.BlockInterestNative.Add(finalInterestPayment)
-	// }
 
 	_ = k.SetMTP(ctx, mtp)
 	// TODO: missing function

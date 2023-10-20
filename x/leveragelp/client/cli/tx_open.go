@@ -16,9 +16,9 @@ var _ = strconv.Itoa(0)
 
 func CmdOpen() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:     "open [position] [leverage] [collateral-asset] [collateral-amount] [borrow-asset] [flags]",
+		Use:     "open [leverage] [collateral-asset] [collateral-amount] [amm-pool-id] [flags]",
 		Short:   "Open leveragelp position",
-		Example: `elysd tx leveragelp open long 5 uusdc 100000000 uatom --from=treasury --keyring-backend=test --chain-id=elystestnet-1 --yes --gas=1000000`,
+		Example: `elysd tx leveragelp open 5 uusdc 100000000 1 --from=treasury --keyring-backend=test --chain-id=elystestnet-1 --yes --gas=1000000`,
 		Args:    cobra.ExactArgs(5),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			clientCtx, err := client.GetClientTxContext(cmd)
@@ -31,29 +31,28 @@ func CmdOpen() *cobra.Command {
 				return errors.New("signer address is missing")
 			}
 
-			argPosition := types.GetPositionFromString(args[0])
-
-			argLeverage, err := sdk.NewDecFromStr(args[1])
+			leverage, err := sdk.NewDecFromStr(args[0])
 			if err != nil {
 				return err
 			}
 
-			argCollateralAsset := args[2]
-
-			argCollateralAmount, ok := sdk.NewIntFromString(args[3])
+			collateralAsset := args[1]
+			collateralAmount, ok := sdk.NewIntFromString(args[2])
 			if !ok {
 				return errors.New("invalid collateral amount")
 			}
 
-			argBorrowAsset := args[4]
+			ammPoolId, err := strconv.Atoi(args[3])
+			if err != nil {
+				return err
+			}
 
 			msg := types.NewMsgOpen(
 				signer.String(),
-				argCollateralAsset,
-				argCollateralAmount,
-				argBorrowAsset,
-				argPosition,
-				argLeverage,
+				collateralAsset,
+				collateralAmount,
+				uint64(ammPoolId),
+				leverage,
 			)
 
 			if err := msg.ValidateBasic(); err != nil {

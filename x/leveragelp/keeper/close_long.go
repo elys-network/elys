@@ -8,52 +8,59 @@ import (
 
 func (k Keeper) CloseLong(ctx sdk.Context, msg *types.MsgClose) (*types.MTP, sdk.Int, error) {
 	// Retrieve MTP
-	mtp, err := k.CloseLongChecker.GetMTP(ctx, msg.Creator, msg.Id)
+	mtp, err := k.GetMTP(ctx, msg.Creator, msg.Id)
 	if err != nil {
 		return nil, sdk.ZeroInt(), err
 	}
 
 	// Retrieve Pool
-	pool, found := k.CloseLongChecker.GetPool(ctx, mtp.AmmPoolId)
+	pool, found := k.GetPool(ctx, mtp.AmmPoolId)
 	if !found {
 		return nil, sdk.ZeroInt(), sdkerrors.Wrap(types.ErrInvalidBorrowingAsset, "invalid pool id")
 	}
 
-	repayAmount := sdk.ZeroInt()
-	for _, custodyAsset := range mtp.CustodyAssets {
-		// Retrieve AmmPool
-		ammPool, err := k.CloseLongChecker.GetAmmPool(ctx, mtp.AmmPoolId, custodyAsset)
-		if err != nil {
-			return nil, sdk.ZeroInt(), err
-		}
+	// Retrieve AmmPool
+	ammPool, err := k.GetAmmPool(ctx, mtp.AmmPoolId)
+	if err != nil {
+		return nil, sdk.ZeroInt(), err
+	}
 
-		for _, collateralAsset := range mtp.CollateralAssets {
-			// Handle Interest if within epoch position
-			if err := k.CloseLongChecker.HandleInterest(ctx, &mtp, &pool, ammPool, collateralAsset, custodyAsset); err != nil {
-				return nil, sdk.ZeroInt(), err
-			}
-		}
+	// Exit liquidity with collateral token
+	exitCoins, err := k.amm.ExitPool(ctx, mtp.GetMTPAddress(), mtp.AmmPoolId, mtp.LeveragedLpAmount, sdk.Coins{}, mtp.Collateral.Denom)
+	if err != nil {
+		return nil, sdk.ZeroInt(), err
+	}
 
-		// Take out custody
-		err = k.CloseLongChecker.TakeOutCustody(ctx, mtp, &pool, custodyAsset)
-		if err != nil {
-			return nil, sdk.ZeroInt(), err
-		}
+	// Repay with interest
+	debt := k.stableKeeper.UpdateInterestStackedByAddress(ctx, mtp.GetMTPAddress())
+	repayAmount := debt.Borrowed.Add(debt.InterestStacked).Sub(debt.InterestPaid)
+	if err != nil {
+		return nil, sdk.ZeroInt(), err
+	}
 
-		for _, collateralAsset := range mtp.CollateralAssets {
-			// Estimate swap and repay
-			repayAmt, err := k.CloseLongChecker.EstimateAndRepay(ctx, mtp, pool, ammPool, collateralAsset, custodyAsset)
-			if err != nil {
-				return nil, sdk.ZeroInt(), err
-			}
+	err = k.stableKeeper.Repay(ctx, mtp.GetMTPAddress(), sdk.NewCoin(mtp.Collateral.Denom, repayAmount))
+	if err != nil {
+		return nil, sdk.ZeroInt(), err
+	}
 
-			repayAmount = repayAmount.Add(repayAmt)
-		}
+	userAmount := exitCoins[0].Amount.Sub(repayAmount)
+	mtpOwner := sdk.MustAccAddressFromBech32(mtp.Address)
+	err = k.bankKeeper.SendCoins(ctx, mtpOwner, mtp.GetMTPAddress(), sdk.Coins{sdk.NewCoin(mtp.Collateral.Denom, userAmount)})
+	if err != nil {
+		return nil, sdk.ZeroInt(), err
+	}
 
-		// Hooks after leveragelp position closed
-		if k.hooks != nil {
-			k.hooks.AfterLeveragelpPositionClosed(ctx, ammPool, pool)
-		}
+	err = k.DestroyMTP(ctx, mtp.Address, mtp.Id)
+	if err != nil {
+		return nil, sdk.ZeroInt(), err
+	}
+
+	pool.LeveragedLpAmount = pool.LeveragedLpAmount.Sub(mtp.LeveragedLpAmount)
+	k.SetPool(ctx, pool)
+
+	// Hooks after leveragelp position closed
+	if k.hooks != nil {
+		k.hooks.AfterLeveragelpPositionClosed(ctx, ammPool, pool)
 	}
 
 	return &mtp, repayAmount, nil

@@ -50,7 +50,6 @@ type OpenLongChecker interface {
 	GetAmmPool(ctx sdk.Context, poolId uint64) (ammtypes.Pool, error)
 	HasSufficientPoolBalance(ctx sdk.Context, ammPool ammtypes.Pool, assetDenom string, requiredAmount sdk.Int) bool
 	CheckMinLiabilities(ctx sdk.Context, collateralTokenAmt sdk.Coin, eta sdk.Dec, pool Pool, ammPool ammtypes.Pool, borrowAsset string) error
-	EstimateSwap(ctx sdk.Context, leveragedAmtTokenIn sdk.Coin, borrowAsset string, ammPool ammtypes.Pool) (sdk.Int, error)
 	EstimateSwapGivenOut(ctx sdk.Context, tokenOutAmount sdk.Coin, tokenInDenom string, ammPool ammtypes.Pool) (sdk.Int, error)
 	UpdatePoolHealth(ctx sdk.Context, pool *Pool) error
 	UpdateMTPHealth(ctx sdk.Context, mtp MTP, ammPool ammtypes.Pool) (sdk.Dec, error)
@@ -59,8 +58,6 @@ type OpenLongChecker interface {
 	GetAmmPoolBalance(ctx sdk.Context, ammPool ammtypes.Pool, assetDenom string) (sdk.Int, error)
 	CheckSamePosition(ctx sdk.Context, msg *MsgOpen) *MTP
 	SetMTP(ctx sdk.Context, mtp *MTP) error
-	CalcMTPConsolidateCollateral(ctx sdk.Context, mtp *MTP) error
-	CalcMTPConsolidateLiability(ctx sdk.Context, mtp *MTP)
 }
 
 //go:generate mockery --srcpkg . --name CloseLongChecker --structname CloseLongChecker --filename close_long_checker.go --with-expecter
@@ -101,6 +98,7 @@ type AmmKeeper interface {
 	CalcOutAmtGivenIn(ctx sdk.Context, poolId uint64, oracle ammtypes.OracleKeeper, snapshot *ammtypes.Pool, tokensIn sdk.Coins, tokenOutDenom string, swapFee sdk.Dec) (sdk.Coin, error)
 	CalcInAmtGivenOut(ctx sdk.Context, poolId uint64, oracle ammtypes.OracleKeeper, snapshot *ammtypes.Pool, tokensOut sdk.Coins, tokenInDenom string, swapFee sdk.Dec) (tokenIn sdk.Coin, err error)
 	JoinPoolNoSwap(ctx sdk.Context, sender sdk.AccAddress, poolId uint64, shareOutAmount sdk.Int, tokenInMaxs sdk.Coins, noRemaining bool) (tokenIn sdk.Coins, sharesOut sdk.Int, err error)
+	ExitPool(ctx sdk.Context, sender sdk.AccAddress, poolId uint64, shareInAmount sdk.Int, tokenOutMins sdk.Coins, tokenOutDenom string) (exitCoins sdk.Coins, err error)
 }
 
 // BankKeeper defines the expected interface needed to retrieve account balances.
@@ -124,6 +122,7 @@ type BankKeeper interface {
 // StableStakeKeeper defines the expected interface needed on stablestake
 type StableStakeKeeper interface {
 	GetDebt(ctx sdk.Context, addr sdk.AccAddress) stablestaketypes.Debt
+	UpdateInterestStackedByAddress(ctx sdk.Context, addr sdk.AccAddress) stablestaketypes.Debt
 	Borrow(ctx sdk.Context, addr sdk.AccAddress, amount sdk.Coin) error
 	Repay(ctx sdk.Context, addr sdk.AccAddress, amount sdk.Coin) error
 }

@@ -41,25 +41,17 @@ func ParamKeyTable() paramtypes.KeyTable {
 // NewParams creates a new Params instance
 func NewParams() Params {
 	return Params{
-		LeverageMax:                              sdk.NewDec(10),
-		InterestRateMax:                          sdk.NewDec(1),
-		InterestRateMin:                          sdk.NewDec(1),
-		InterestRateIncrease:                     sdk.NewDec(1),
-		InterestRateDecrease:                     sdk.NewDec(1),
-		HealthGainFactor:                         sdk.NewDec(1),
-		EpochLength:                              (int64)(1),
-		RemovalQueueThreshold:                    sdk.NewDec(1),
-		MaxOpenPositions:                         (int64)(9999),
-		PoolOpenThreshold:                        sdk.NewDec(1),
-		ForceCloseFundPercentage:                 sdk.NewDec(1),
-		ForceCloseFundAddress:                    "",
-		IncrementalInterestPaymentFundPercentage: sdk.NewDec(1),
-		IncrementalInterestPaymentFundAddress:    "",
-		SqModifier:                               sdk.NewDec(1),
-		SafetyFactor:                             sdk.NewDec(1),
-		IncrementalInterestPaymentEnabled:        true,
-		WhitelistingEnabled:                      false,
-		InvariantCheckEpoch:                      epochtypes.DayEpochID,
+		LeverageMax:              sdk.NewDec(10),
+		EpochLength:              (int64)(1),
+		RemovalQueueThreshold:    sdk.NewDec(1),
+		MaxOpenPositions:         (int64)(9999),
+		PoolOpenThreshold:        sdk.NewDec(1),
+		ForceCloseFundPercentage: sdk.NewDec(1),
+		ForceCloseFundAddress:    "",
+		SqModifier:               sdk.NewDec(1),
+		SafetyFactor:             sdk.NewDec(1),
+		WhitelistingEnabled:      false,
+		InvariantCheckEpoch:      epochtypes.DayEpochID,
 	}
 }
 
@@ -72,22 +64,14 @@ func DefaultParams() Params {
 func (p *Params) ParamSetPairs() paramtypes.ParamSetPairs {
 	return paramtypes.ParamSetPairs{
 		paramtypes.NewParamSetPair(KeyLeverageMax, &p.LeverageMax, validateLeverageMax),
-		paramtypes.NewParamSetPair(KeyInterestRateMax, &p.InterestRateMax, validateInterestRateMax),
-		paramtypes.NewParamSetPair(KeyInterestRateMin, &p.InterestRateMin, validateInterestRateMin),
-		paramtypes.NewParamSetPair(KeyInterestRateIncrease, &p.InterestRateIncrease, validateInterestRateIncrease),
-		paramtypes.NewParamSetPair(KeyInterestRateDecrease, &p.InterestRateDecrease, validateInterestRateDecrease),
-		paramtypes.NewParamSetPair(KeyHealthGainFactor, &p.HealthGainFactor, validateHealthGainFactor),
 		paramtypes.NewParamSetPair(KeyEpochLength, &p.EpochLength, validateEpochLength),
 		paramtypes.NewParamSetPair(KeyRemovalQueueThreshold, &p.RemovalQueueThreshold, validateRemovalQueueThreshold),
 		paramtypes.NewParamSetPair(KeyMaxOpenPositions, &p.MaxOpenPositions, validateMaxOpenPositions),
 		paramtypes.NewParamSetPair(KeyPoolOpenThreshold, &p.PoolOpenThreshold, validatePoolOpenThreshold),
 		paramtypes.NewParamSetPair(KeyForceCloseFundPercentage, &p.ForceCloseFundPercentage, validateForceCloseFundPercentage),
 		paramtypes.NewParamSetPair(KeyForceCloseFundAddress, &p.ForceCloseFundAddress, validateForceCloseFundAddress),
-		paramtypes.NewParamSetPair(KeyIncrementalInterestPaymentFundPercentage, &p.IncrementalInterestPaymentFundPercentage, validateIncrementalInterestPaymentFundPercentage),
-		paramtypes.NewParamSetPair(KeyIncrementalInterestPaymentFundAddress, &p.IncrementalInterestPaymentFundAddress, validateIncrementalInterestPaymentFundAddress),
 		paramtypes.NewParamSetPair(KeySqModifier, &p.SqModifier, validateSqModifier),
 		paramtypes.NewParamSetPair(KeySafetyFactor, &p.SafetyFactor, validateSafetyFactor),
-		paramtypes.NewParamSetPair(KeyIncrementalInterestPaymentEnabled, &p.IncrementalInterestPaymentEnabled, validateIncrementalInterestPaymentEnabled),
 		paramtypes.NewParamSetPair(KeyWhitelistingEnabled, &p.WhitelistingEnabled, validateWhitelistingEnabled),
 		paramtypes.NewParamSetPair(KeyInvariantCheckEpoch, &p.InvariantCheckEpoch, validateInvariantCheckEpoch),
 	}
@@ -96,21 +80,6 @@ func (p *Params) ParamSetPairs() paramtypes.ParamSetPairs {
 // Validate validates the set of params
 func (p Params) Validate() error {
 	if err := validateLeverageMax(p.LeverageMax); err != nil {
-		return err
-	}
-	if err := validateInterestRateMax(p.InterestRateMax); err != nil {
-		return err
-	}
-	if err := validateInterestRateMin(p.InterestRateMin); err != nil {
-		return err
-	}
-	if err := validateInterestRateIncrease(p.InterestRateIncrease); err != nil {
-		return err
-	}
-	if err := validateInterestRateDecrease(p.InterestRateDecrease); err != nil {
-		return err
-	}
-	if err := validateHealthGainFactor(p.HealthGainFactor); err != nil {
 		return err
 	}
 	if err := validateEpochLength(p.EpochLength); err != nil {
@@ -131,19 +100,10 @@ func (p Params) Validate() error {
 	if err := validateForceCloseFundAddress(p.ForceCloseFundAddress); err != nil {
 		return err
 	}
-	if err := validateIncrementalInterestPaymentFundPercentage(p.IncrementalInterestPaymentFundPercentage); err != nil {
-		return err
-	}
-	if err := validateIncrementalInterestPaymentFundAddress(p.IncrementalInterestPaymentFundAddress); err != nil {
-		return err
-	}
 	if err := validateSqModifier(p.SqModifier); err != nil {
 		return err
 	}
 	if err := validateSafetyFactor(p.SafetyFactor); err != nil {
-		return err
-	}
-	if err := validateIncrementalInterestPaymentEnabled(p.IncrementalInterestPaymentEnabled); err != nil {
 		return err
 	}
 	if err := validateWhitelistingEnabled(p.WhitelistingEnabled); err != nil {

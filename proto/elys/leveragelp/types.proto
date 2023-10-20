@@ -13,15 +13,15 @@ message MTP {
   string liabilities = 3 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
     (gogoproto.nullable) = false
-  ];
+  ]; // For recording
   string interest_paid = 4 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
     (gogoproto.nullable) = false
-  ];
+  ]; // For recording
   string leverage = 5 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
-  ];
+  ]; // For recording
   string leveraged_lp_amount = 6 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
     (gogoproto.nullable) = false
@@ -32,14 +32,6 @@ message MTP {
   ];
   uint64 id = 8;
   uint64 amm_pool_id = 9;
-  string consolidate_leverage = 10 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
-    (gogoproto.nullable) = false
-  ];
-  string sum_collateral = 11 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
-    (gogoproto.nullable) = false
-  ];
 }
 
 message WhiteList { repeated string validator_list = 1; }

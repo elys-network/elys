@@ -7,8 +7,18 @@ option go_package = "github.com/elys-network/elys/x/stablestake/types";
 
 message Debt {
   string address = 1;
-  string debt = 2 [
+  string borrowed = 2 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
     (gogoproto.nullable) = false
   ];
+  string interest_paid = 3 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+  string interest_stacked = 4 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+  uint64 borrow_time = 5;
+  uint64 last_interest_calc_time = 6;
 }

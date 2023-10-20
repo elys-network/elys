@@ -8,28 +8,17 @@ import (
 
 func NewMTP(signer string, collateralAsset string, leverage sdk.Dec, poolId uint64) *MTP {
 	return &MTP{
-		Address:                 signer,
-		CollateralAssets:        []string{collateralAsset},
-		CollateralAmounts:       []sdk.Int{sdk.ZeroInt()},
-		Liabilities:             sdk.ZeroInt(),
-		InterestPaidCollaterals: []sdk.Int{sdk.ZeroInt()},
-		Leverages:               []sdk.Dec{leverage},
-		MtpHealth:               sdk.ZeroDec(),
-		AmmPoolId:               poolId,
-		ConsolidateLeverage:     leverage,
-		SumCollateral:           sdk.ZeroInt(),
+		Address:      signer,
+		Collateral:   sdk.NewCoin(collateralAsset, sdk.ZeroInt()),
+		Liabilities:  sdk.ZeroInt(),
+		InterestPaid: sdk.ZeroInt(),
+		Leverage:     leverage,
+		MtpHealth:    sdk.ZeroDec(),
+		AmmPoolId:    poolId,
 	}
 }
 
 func (mtp MTP) Validate() error {
-	if len(mtp.CollateralAssets) < 1 {
-		return sdkerrors.Wrap(ErrMTPInvalid, "no asset specified")
-	}
-	for _, asset := range mtp.CollateralAssets {
-		if asset == "" {
-			return sdkerrors.Wrap(ErrMTPInvalid, "no asset specified")
-		}
-	}
 	if mtp.Address == "" {
 		return sdkerrors.Wrap(ErrMTPInvalid, "no address specified")
 	}

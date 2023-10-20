@@ -36,22 +36,15 @@ func networkWithMTPObjects(t *testing.T, n int) (*network.Network, []*types.MTP)
 	cfg := network.DefaultConfig()
 	for i := 0; i < n; i++ {
 		mtp := types.MTP{
-			Address:                   addr[i].String(),
-			CollateralAssets:          []string{paramtypes.BaseCurrency},
-			CollateralAmounts:         []sdk.Int{sdk.NewInt(0)},
-			Liabilities:               sdk.NewInt(0),
-			InterestPaidCollaterals:   []sdk.Int{sdk.NewInt(0)},
-			InterestPaidCustodys:      []sdk.Int{sdk.NewInt(0)},
-			InterestUnpaidCollaterals: []sdk.Int{sdk.NewInt(0)},
-			CustodyAssets:             []string{"ATOM"},
-			CustodyAmounts:            []sdk.Int{sdk.NewInt(0)},
-			Leverages:                 []sdk.Dec{sdk.NewDec(0)},
-			MtpHealth:                 sdk.NewDec(0),
-			Position:                  types.Position_LONG,
-			Id:                        (uint64)(i + 1),
-			AmmPoolId:                 (uint64)(i + 1),
-			ConsolidateLeverage:       sdk.ZeroDec(),
-			SumCollateral:             sdk.ZeroInt(),
+			Address:             addr[i].String(),
+			Collateral:          sdk.NewCoin(paramtypes.BaseCurrency, sdk.NewInt(0)),
+			Liabilities:         sdk.NewInt(0),
+			InterestPaid:        sdk.NewInt(0),
+			Leverage:            sdk.NewDec(0),
+			MtpHealth:           sdk.NewDec(0),
+			Id:                  (uint64)(i + 1),
+			AmmPoolId:           (uint64)(i + 1),
+			ConsolidateLeverage: sdk.ZeroDec(),
 		}
 
 		mtps = append(mtps, &mtp)

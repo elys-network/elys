@@ -11,7 +11,7 @@ import (
 
 func (k Keeper) OpenLong(ctx sdk.Context, poolId uint64, msg *types.MsgOpen) (*types.MTP, error) {
 	// Determine the maximum leverage available and compute the effective leverage to be used.
-	maxLeverage := k.OpenLongChecker.GetMaxLeverageParam(ctx)
+	maxLeverage := k.GetMaxLeverageParam(ctx)
 	leverage := sdk.MinDec(msg.Leverage, maxLeverage)
 
 	// Calculate the eta value.
@@ -99,12 +99,6 @@ func (k Keeper) ProcessOpenLong(ctx sdk.Context, mtp *types.MTP, leverage sdk.De
 	if lr.LTE(safetyFactor) {
 		return nil, types.ErrMTPUnhealthy
 	}
-
-	// Update consolidated collateral amount
-	k.CalcMTPConsolidateCollateral(ctx, mtp)
-
-	// Calculate consolidate liabiltiy
-	k.CalcMTPConsolidateLiability(ctx, mtp)
 
 	// Set MTP
 	k.SetMTP(ctx, mtp)

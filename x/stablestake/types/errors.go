@@ -9,5 +9,5 @@ import (
 // x/stablestake module sentinel errors
 var (
 	ErrInvalidDepositDenom = sdkerrors.Register(ModuleName, 1, "invalid deposit denom")
-	ErrInvalidBorrowDenom  = sdkerrors.Register(ModuleName, 1, "invalid borrow denom")
+	ErrInvalidBorrowDenom  = sdkerrors.Register(ModuleName, 2, "invalid borrow denom")
 )
