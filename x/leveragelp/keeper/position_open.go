@@ -89,7 +89,7 @@ func (k Keeper) ProcessOpenLong(ctx sdk.Context, mtp *types.MTP, leverage sdk.De
 
 	// Update the MTP health.
 	mtp.Liabilities = borrowCoin.Amount
-	lr, err := k.UpdateMTPHealth(ctx, *mtp, ammPool)
+	lr, err := k.GetMTPHealth(ctx, *mtp, ammPool)
 	if err != nil {
 		return nil, err
 	}

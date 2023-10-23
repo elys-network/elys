@@ -3,77 +3,40 @@ package keeper_test
 import (
 	"testing"
 
+	"github.com/cometbft/cometbft/crypto/ed25519"
 	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
+	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	simapp "github.com/elys-network/elys/app"
-	"github.com/elys-network/elys/x/leveragelp/types"
-	paramtypes "github.com/elys-network/elys/x/parameter/types"
-	"github.com/stretchr/testify/require"
-
-	"github.com/cometbft/cometbft/crypto/ed25519"
 	oraclekeeper "github.com/elys-network/elys/x/oracle/keeper"
 	oracletypes "github.com/elys-network/elys/x/oracle/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
+	"github.com/stretchr/testify/require"
+	"github.com/stretchr/testify/suite"
 )
 
-func TestSetGetMTP(t *testing.T) {
-	app := simapp.InitElysTestApp(true)
-	ctx := app.BaseApp.NewContext(true, tmproto.Header{})
+const (
+	initChain = true
+)
 
-	leveragelp := app.LeveragelpKeeper
+type KeeperTestSuite struct {
+	suite.Suite
 
-	// Generate 2 random accounts with 1000stake balanced
-	addr := simapp.AddTestAddrs(app, ctx, 2, sdk.NewInt(1000000))
-
-	for i := 0; i < 2; i++ {
-		mtp := types.MTP{
-			Address:      addr[i].String(),
-			Collateral:   sdk.NewCoin(paramtypes.BaseCurrency, sdk.NewInt(0)),
-			Liabilities:  sdk.NewInt(0),
-			InterestPaid: sdk.NewInt(0),
-			AmmPoolId:    1,
-			Leverage:     sdk.NewDec(0),
-			MtpHealth:    sdk.NewDec(0),
-			Id:           0,
-		}
-		err := leveragelp.SetMTP(ctx, &mtp)
-		require.NoError(t, err)
-	}
-
-	mtpCount := leveragelp.GetMTPCount(ctx)
-	require.Equal(t, mtpCount, (uint64)(2))
+	legacyAmino *codec.LegacyAmino
+	ctx         sdk.Context
+	app         *simapp.ElysApp
 }
 
-func TestGetAllWhitelistedAddress(t *testing.T) {
-	app := simapp.InitElysTestApp(true)
-	ctx := app.BaseApp.NewContext(true, tmproto.Header{})
+func (suite *KeeperTestSuite) SetupTest() {
+	app := simapp.InitElysTestApp(initChain)
 
-	leveragelp := app.LeveragelpKeeper
+	suite.legacyAmino = app.LegacyAmino()
+	suite.ctx = app.BaseApp.NewContext(initChain, tmproto.Header{})
+	suite.app = app
+}
 
-	// Generate 2 random accounts with 1000stake balanced
-	addr := simapp.AddTestAddrs(app, ctx, 2, sdk.NewInt(1000000))
-
-	// Set whitelisted addresses
-	leveragelp.WhitelistAddress(ctx, addr[0].String())
-	leveragelp.WhitelistAddress(ctx, addr[1].String())
-
-	// Get all whitelisted addresses
-	whitelisted := leveragelp.GetAllWhitelistedAddress(ctx)
-
-	// length should be 2
-	require.Equal(t, len(whitelisted), 2)
-
-	// If addr[0] is whitelisted
-	require.Contains(t,
-		whitelisted,
-		addr[0].String(),
-	)
-
-	// If addr[1] is whitelisted
-	require.Contains(t,
-		whitelisted,
-		addr[1].String(),
-	)
+func TestKeeperSuite(t *testing.T) {
+	suite.Run(t, new(KeeperTestSuite))
 }
 
 func SetupStableCoinPrices(ctx sdk.Context, oracle oraclekeeper.Keeper) {
@@ -128,4 +91,36 @@ func SetupStableCoinPrices(ctx sdk.Context, oracle oraclekeeper.Keeper) {
 		Provider:  provider.String(),
 		Timestamp: uint64(ctx.BlockTime().Unix()),
 	})
+}
+
+func TestGetAllWhitelistedAddress(t *testing.T) {
+	app := simapp.InitElysTestApp(true)
+	ctx := app.BaseApp.NewContext(true, tmproto.Header{})
+
+	leveragelp := app.LeveragelpKeeper
+
+	// Generate 2 random accounts with 1000stake balanced
+	addr := simapp.AddTestAddrs(app, ctx, 2, sdk.NewInt(1000000))
+
+	// Set whitelisted addresses
+	leveragelp.WhitelistAddress(ctx, addr[0].String())
+	leveragelp.WhitelistAddress(ctx, addr[1].String())
+
+	// Get all whitelisted addresses
+	whitelisted := leveragelp.GetAllWhitelistedAddress(ctx)
+
+	// length should be 2
+	require.Equal(t, len(whitelisted), 2)
+
+	// If addr[0] is whitelisted
+	require.Contains(t,
+		whitelisted,
+		addr[0].String(),
+	)
+
+	// If addr[1] is whitelisted
+	require.Contains(t,
+		whitelisted,
+		addr[1].String(),
+	)
 }

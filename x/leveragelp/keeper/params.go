@@ -106,3 +106,15 @@ func (k Keeper) GetSqModifier(ctx sdk.Context) sdk.Dec {
 func (k Keeper) IsWhitelistingEnabled(ctx sdk.Context) bool {
 	return k.GetParams(ctx).WhitelistingEnabled
 }
+
+// GetParams get all parameters as types.Params
+func (k Keeper) GetParams(ctx sdk.Context) (params types.Params) {
+	store := ctx.KVStore(k.storeKey)
+	bz := store.Get(types.KeyPrefix(types.ParamsKey))
+	if bz == nil {
+		return params
+	}
+
+	k.cdc.MustUnmarshal(bz, &params)
+	return params
+}
