@@ -99,6 +99,31 @@ func CustomQuerier(qp *QueryPlugin) func(ctx sdk.Context, request json.RawMessag
 			return responseBytes, nil
 		case contractQuery.QuerySwapEstimation != nil:
 			return nil, wasmvmtypes.UnsupportedRequest{Kind: "QuerySwapEstimation, not implemented yet"}
+
+		case contractQuery.AssetInfo != nil:
+			denom := contractQuery.AssetInfo.Denom
+
+			AssetInfoResp, err := qp.oracleKeeper.AssetInfo(ctx, &oracletypes.QueryGetAssetInfoRequest{Denom: denom})
+			if err != nil {
+				return nil, errorsmod.Wrap(err, "failed to query asset info")
+			}
+
+			res := AssetInfoResponse{
+				AssetInfo: &AssetInfoType{
+					Denom:      AssetInfoResp.AssetInfo.Denom,
+					Display:    AssetInfoResp.AssetInfo.Display,
+					BandTicker: AssetInfoResp.AssetInfo.BandTicker,
+					ElysTicker: AssetInfoResp.AssetInfo.ElysTicker,
+					Decimal:    AssetInfoResp.AssetInfo.Decimal,
+				},
+			}
+
+			responseBytes, err := json.Marshal(res)
+			if err != nil {
+				return nil, errorsmod.Wrap(err, "failed to serialize asset info response")
+			}
+			return responseBytes, nil
+
 		default:
 			return nil, wasmvmtypes.UnsupportedRequest{Kind: "unknown elys query variant"}
 		}
@@ -108,6 +133,7 @@ func CustomQuerier(qp *QueryPlugin) func(ctx sdk.Context, request json.RawMessag
 type ElysQuery struct {
 	PriceAll            *PriceAll                   `json:"price_all,omitempty"`
 	QuerySwapEstimation *QuerySwapEstimationRequest `json:"query_swap_estimation,omitempty"`
+	AssetInfo           *AssetInfo                  `json:"asset_info,omitempty"`
 }
 
 type PriceAll struct {
@@ -127,6 +153,22 @@ type QuerySwapEstimationRequest struct {
 type QuerySwapEstimationResponse struct {
 	SpotPrice sdk.Dec  `protobuf:"bytes,1,opt,name=SpotPrice,proto3" json:"spot_price,omitempty"`
 	TokenOut  sdk.Coin `protobuf:"bytes,2,opt,name=tokenOut,proto3" json:"token_out,omitempty"`
+}
+
+type AssetInfo struct {
+	Denom string `protobuf:"bytes,1,opt,name=Denom,proto3" json:"Denom,omitempty"`
+}
+
+type AssetInfoResponse struct {
+	AssetInfo *AssetInfoType `protobuf:"bytes,1,opt,name=AssetInfo,proto3" json:"asset_info,omitempty"`
+}
+
+type AssetInfoType struct {
+	Denom      string `protobuf:"bytes,1,opt,name=denom,proto3" json:"denom,omitempty"`
+	Display    string `protobuf:"bytes,2,opt,name=display,proto3" json:"display,omitempty"`
+	BandTicker string `protobuf:"bytes,3,opt,name=bandTicker,proto3" json:"band_ticker,omitempty"`
+	ElysTicker string `protobuf:"bytes,4,opt,name=elysTicker,proto3" json:"elys_ticker,omitempty"`
+	Decimal    uint64 `protobuf:"varint,5,opt,name=decimal,proto3" json:"decimal,omitempty"`
 }
 
 func CustomMessageDecorator(amm *ammkeeper.Keeper) func(wasmkeeper.Messenger) wasmkeeper.Messenger {
