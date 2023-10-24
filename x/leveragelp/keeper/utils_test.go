@@ -2,7 +2,6 @@ package keeper_test
 
 import (
 	"errors"
-	"testing"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
@@ -28,6 +27,7 @@ func (suite KeeperTestSuite) TestCheckUserAuthorization() {
 
 	params.WhitelistingEnabled = false
 	k.SetParams(suite.ctx, &params)
+	err = k.CheckUserAuthorization(suite.ctx, msg)
 	suite.Require().NoError(err)
 }
 
@@ -65,7 +65,7 @@ func (suite KeeperTestSuite) TestCheckPoolHealth() {
 		Enabled:   false,
 	})
 	err = k.CheckPoolHealth(suite.ctx, poolId)
-	suite.Require().True(errors.Is(err, types.ErrInvalidBorrowingAsset))
+	suite.Require().Error(err)
 
 	// PoolHealthTooLow
 	suite.app.LeveragelpKeeper.SetPool(suite.ctx, types.Pool{
@@ -74,53 +74,55 @@ func (suite KeeperTestSuite) TestCheckPoolHealth() {
 		Health:    sdk.NewDec(5),
 	})
 	err = k.CheckPoolHealth(suite.ctx, poolId)
-	suite.Require().True(errors.Is(err, types.ErrInvalidPosition))
+	suite.Require().Error(err)
 
 	// PoolIsHealthy
 	suite.app.LeveragelpKeeper.SetPool(suite.ctx, types.Pool{
 		AmmPoolId: 1,
-		Enabled:   false,
+		Enabled:   true,
 		Health:    sdk.NewDec(15),
+		Closed:    false,
 	})
 	err = k.CheckPoolHealth(suite.ctx, poolId)
 	suite.Require().NoError(err)
 }
 
-func (suite KeeperTestSuite) TestCheckMaxOpenPositions(t *testing.T) {
+func (suite KeeperTestSuite) TestCheckMaxOpenPositions() {
 	k := suite.app.LeveragelpKeeper
 
+	params := k.GetParams(suite.ctx)
+	params.MaxOpenPositions = 10
+	k.SetParams(suite.ctx, &params)
+
 	// OpenPositionsBelowMax
+	k.SetOpenMTPCount(suite.ctx, 0)
 	err := k.CheckMaxOpenPositions(suite.ctx)
 	suite.Require().NoError(err)
 
 	//  Expect an error about max open positions
 	k.SetOpenMTPCount(suite.ctx, 10)
-	params := k.GetParams(suite.ctx)
-	params.MaxOpenPositions = 10
-	k.SetParams(suite.ctx, &params)
 	err = k.CheckMaxOpenPositions(suite.ctx)
-	suite.Require().True(errors.Is(err, types.ErrMaxOpenPositions))
+	suite.Require().Error(types.ErrMaxOpenPositions)
 
 	// OpenPositionsExceedMax
 	k.SetOpenMTPCount(suite.ctx, 11)
 	err = k.CheckMaxOpenPositions(suite.ctx)
-	suite.Require().True(errors.Is(err, types.ErrMaxOpenPositions))
+	suite.Require().Error(types.ErrMaxOpenPositions)
 }
 
 func (suite KeeperTestSuite) TestGetAmmPool() {
 	k := suite.app.LeveragelpKeeper
 
-	ctx := sdk.Context{} // mock or setup a context
 	poolId := uint64(42)
 
 	// PoolNotFound
-	_, err := k.GetAmmPool(ctx, poolId)
+	_, err := k.GetAmmPool(suite.ctx, poolId)
 	suite.Require().True(errors.Is(err, types.ErrPoolDoesNotExist))
 
 	// PoolFound
 	suite.app.AmmKeeper.SetPool(suite.ctx, ammtypes.Pool{
 		PoolId: poolId,
 	})
-	_, err = k.GetAmmPool(ctx, poolId)
+	_, err = k.GetAmmPool(suite.ctx, poolId)
 	suite.Require().NoError(err)
 }

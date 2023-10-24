@@ -44,7 +44,7 @@ func (k Keeper) CheckPoolHealth(ctx sdk.Context, poolId uint64) error {
 }
 
 func (k Keeper) CheckMaxOpenPositions(ctx sdk.Context) error {
-	if k.GetOpenMTPCount(ctx) >= (uint64)(k.GetMaxOpenPositions(ctx)) {
+	if k.GetOpenMTPCount(ctx) >= k.GetMaxOpenPositions(ctx) {
 		return sdkerrors.Wrap(types.ErrMaxOpenPositions, "cannot open new positions")
 	}
 	return nil
