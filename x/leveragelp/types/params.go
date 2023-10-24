@@ -12,25 +12,17 @@ import (
 var _ paramtypes.ParamSet = (*Params)(nil)
 
 var (
-	KeyLeverageMax                              = []byte("LeverageMax")
-	KeyInterestRateMax                          = []byte("InterestRateMax")
-	KeyInterestRateMin                          = []byte("InterestRateMin")
-	KeyInterestRateIncrease                     = []byte("InterestRateIncrease")
-	KeyInterestRateDecrease                     = []byte("InterestRateDecrease")
-	KeyHealthGainFactor                         = []byte("HealthGainFactor")
-	KeyEpochLength                              = []byte("EpochLength")
-	KeyRemovalQueueThreshold                    = []byte("RemovalQueueThreshold")
-	KeyMaxOpenPositions                         = []byte("MaxOpenPositions")
-	KeyPoolOpenThreshold                        = []byte("PoolOpenThreshold")
-	KeyForceCloseFundPercentage                 = []byte("ForceCloseFundPercentage")
-	KeyForceCloseFundAddress                    = []byte("ForceCloseFundAddress")
-	KeyIncrementalInterestPaymentFundPercentage = []byte("IncrementalInterestPaymentFundPercentage")
-	KeyIncrementalInterestPaymentFundAddress    = []byte("IncrementalInterestPaymentFundAddress")
-	KeySqModifier                               = []byte("SqModifier")
-	KeySafetyFactor                             = []byte("SafetyFactor")
-	KeyIncrementalInterestPaymentEnabled        = []byte("IncrementalInterestPaymentEnabled")
-	KeyWhitelistingEnabled                      = []byte("WhitelistingEnabled")
-	KeyInvariantCheckEpoch                      = []byte("InvariantCheckEpoch")
+	KeyLeverageMax              = []byte("LeverageMax")
+	KeyEpochLength              = []byte("EpochLength")
+	KeyRemovalQueueThreshold    = []byte("RemovalQueueThreshold")
+	KeyMaxOpenPositions         = []byte("MaxOpenPositions")
+	KeyPoolOpenThreshold        = []byte("PoolOpenThreshold")
+	KeyForceCloseFundPercentage = []byte("ForceCloseFundPercentage")
+	KeyForceCloseFundAddress    = []byte("ForceCloseFundAddress")
+	KeySqModifier               = []byte("SqModifier")
+	KeySafetyFactor             = []byte("SafetyFactor")
+	KeyWhitelistingEnabled      = []byte("WhitelistingEnabled")
+	KeyInvariantCheckEpoch      = []byte("InvariantCheckEpoch")
 )
 
 // ParamKeyTable the param key table for launch module
@@ -140,86 +132,6 @@ func validateLeverageMax(i interface{}) error {
 	return nil
 }
 
-func validateInterestRateMax(i interface{}) error {
-	v, ok := i.(sdk.Dec)
-	if !ok {
-		return fmt.Errorf("invalid parameter type: %T", i)
-	}
-
-	if v.IsNil() {
-		return fmt.Errorf("interest max must be not nil")
-	}
-	if v.IsNegative() {
-		return fmt.Errorf("interest max must be positive: %s", v)
-	}
-
-	return nil
-}
-
-func validateInterestRateMin(i interface{}) error {
-	v, ok := i.(sdk.Dec)
-	if !ok {
-		return fmt.Errorf("invalid parameter type: %T", i)
-	}
-
-	if v.IsNil() {
-		return fmt.Errorf("interest min must be not nil")
-	}
-	if v.IsNegative() {
-		return fmt.Errorf("interest min must be positive: %s", v)
-	}
-
-	return nil
-}
-
-func validateInterestRateIncrease(i interface{}) error {
-	v, ok := i.(sdk.Dec)
-	if !ok {
-		return fmt.Errorf("invalid parameter type: %T", i)
-	}
-
-	if v.IsNil() {
-		return fmt.Errorf("interest rate increase must be not nil")
-	}
-	if v.IsNegative() {
-		return fmt.Errorf("interest rate increase must be positive: %s", v)
-	}
-
-	return nil
-}
-
-func validateInterestRateDecrease(i interface{}) error {
-	v, ok := i.(sdk.Dec)
-	if !ok {
-		return fmt.Errorf("invalid parameter type: %T", i)
-	}
-
-	if v.IsNil() {
-		return fmt.Errorf("interest rate decrease must be not nil")
-	}
-	if v.IsNegative() {
-		return fmt.Errorf("interest rate decrease must be positive: %s", v)
-	}
-
-	return nil
-}
-
-func validateHealthGainFactor(i interface{}) error {
-	v, ok := i.(sdk.Dec)
-	if !ok {
-		return fmt.Errorf("invalid parameter type: %T", i)
-	}
-
-	if v.IsNil() {
-		return fmt.Errorf("health gain factor must be not nil")
-	}
-	if v.IsNegative() {
-		return fmt.Errorf("health gain factor must be positive: %s", v)
-	}
-
-	return nil
-}
-
 func validateEpochLength(i interface{}) error {
 	_, ok := i.(int64)
 	if !ok {
@@ -274,22 +186,6 @@ func validateForceCloseFundAddress(i interface{}) error {
 	_, ok := i.(string)
 	if !ok {
 		return fmt.Errorf("invalid parameter type: %T", i)
-	}
-
-	return nil
-}
-
-func validateIncrementalInterestPaymentFundPercentage(i interface{}) error {
-	v, ok := i.(sdk.Dec)
-	if !ok {
-		return fmt.Errorf("invalid parameter type: %T", i)
-	}
-
-	if v.IsNil() {
-		return fmt.Errorf("incremental interest payment fund percentage must be not nil")
-	}
-	if v.IsNegative() {
-		return fmt.Errorf("incremental interest payment fund percentage must be positive: %s", v)
 	}
 
 	return nil
