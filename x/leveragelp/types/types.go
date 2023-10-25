@@ -6,15 +6,16 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
-func NewMTP(signer string, collateralAsset string, leverage sdk.Dec, poolId uint64) *MTP {
+func NewMTP(signer string, collateral sdk.Coin, leverage sdk.Dec, poolId uint64) *MTP {
 	return &MTP{
-		Address:      signer,
-		Collateral:   sdk.NewCoin(collateralAsset, sdk.ZeroInt()),
-		Liabilities:  sdk.ZeroInt(),
-		InterestPaid: sdk.ZeroInt(),
-		Leverage:     leverage,
-		MtpHealth:    sdk.ZeroDec(),
-		AmmPoolId:    poolId,
+		Address:           signer,
+		Collateral:        collateral,
+		Liabilities:       sdk.ZeroInt(),
+		InterestPaid:      sdk.ZeroInt(),
+		Leverage:          leverage,
+		MtpHealth:         sdk.ZeroDec(),
+		AmmPoolId:         poolId,
+		LeveragedLpAmount: sdk.ZeroInt(),
 	}
 }
 

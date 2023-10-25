@@ -10,7 +10,7 @@ import (
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
 
-func (k Keeper) OpenLong(ctx sdk.Context, poolId uint64, msg *types.MsgOpen) (*types.MTP, error) {
+func (k Keeper) OpenLong(ctx sdk.Context, msg *types.MsgOpen) (*types.MTP, error) {
 	// Determine the maximum leverage available and compute the effective leverage to be used.
 	maxLeverage := k.GetMaxLeverageParam(ctx)
 	leverage := sdk.MinDec(msg.Leverage, maxLeverage)
@@ -19,16 +19,15 @@ func (k Keeper) OpenLong(ctx sdk.Context, poolId uint64, msg *types.MsgOpen) (*t
 	collateralAmountDec := sdk.NewDecFromBigInt(msg.CollateralAmount.BigInt())
 
 	// Initialize a new Leveragelp Trading Position (MTP).
-	mtp := types.NewMTP(msg.Creator, msg.CollateralAsset, leverage, poolId)
+	mtp := types.NewMTP(msg.Creator, sdk.NewCoin(msg.CollateralAsset, msg.CollateralAmount), leverage, msg.AmmPoolId)
 	mtp.Id = k.GetMTPCount(ctx) + 1
 	k.SetMTPCount(ctx, mtp.Id)
 
 	// Call the function to process the open long logic.
-	return k.ProcessOpenLong(ctx, mtp, leverage, collateralAmountDec, poolId, msg)
+	return k.ProcessOpenLong(ctx, mtp, leverage, collateralAmountDec, msg.AmmPoolId, msg)
 }
 
 func (k Keeper) OpenConsolidate(ctx sdk.Context, mtp *types.MTP, msg *types.MsgOpen) (*types.MsgOpenResponse, error) {
-
 	poolId := mtp.AmmPoolId
 	pool, found := k.GetPool(ctx, poolId)
 	if !found {
@@ -44,7 +43,13 @@ func (k Keeper) OpenConsolidate(ctx sdk.Context, mtp *types.MTP, msg *types.MsgO
 		return nil, err
 	}
 
-	mtp, err = k.OpenConsolidateLong(ctx, poolId, mtp, msg)
+	collateralAmountDec := sdk.NewDecFromBigInt(msg.CollateralAmount.BigInt())
+	mtp.Collateral = mtp.Collateral.Add(sdk.NewCoin(msg.CollateralAsset, msg.CollateralAmount))
+	maxLeverage := k.GetMaxLeverageParam(ctx)
+	leverage := sdk.MinDec(msg.Leverage, maxLeverage)
+	mtp.Leverage = leverage
+
+	mtp, err = k.ProcessOpenLong(ctx, mtp, leverage, collateralAmountDec, poolId, msg)
 	if err != nil {
 		return nil, err
 	}
@@ -64,18 +69,6 @@ func (k Keeper) OpenConsolidate(ctx sdk.Context, mtp *types.MTP, msg *types.MsgO
 	}
 
 	return &types.MsgOpenResponse{}, nil
-}
-
-func (k Keeper) OpenConsolidateLong(ctx sdk.Context, poolId uint64, mtp *types.MTP, msg *types.MsgOpen) (*types.MTP, error) {
-
-	collateralAmountDec := sdk.NewDecFromBigInt(msg.CollateralAmount.BigInt())
-	mtp.Collateral = mtp.Collateral.Add(sdk.NewCoin(msg.CollateralAsset, msg.CollateralAmount))
-	// TODO: Leverage won't be required probably
-	maxLeverage := k.GetMaxLeverageParam(ctx)
-	leverage := sdk.MinDec(msg.Leverage, maxLeverage)
-	mtp.Leverage = leverage
-
-	return k.ProcessOpenLong(ctx, mtp, leverage, collateralAmountDec, poolId, msg)
 }
 
 func (k Keeper) ProcessOpenLong(ctx sdk.Context, mtp *types.MTP, leverage sdk.Dec, collateralAmountDec sdk.Dec, poolId uint64, msg *types.MsgOpen) (*types.MTP, error) {
@@ -130,7 +123,6 @@ func (k Keeper) ProcessOpenLong(ctx sdk.Context, mtp *types.MTP, leverage sdk.De
 	}
 
 	// Update the MTP health.
-	mtp.Liabilities = borrowCoin.Amount
 	lr, err := k.GetMTPHealth(ctx, *mtp, ammPool)
 	if err != nil {
 		return nil, err
@@ -143,6 +135,9 @@ func (k Keeper) ProcessOpenLong(ctx sdk.Context, mtp *types.MTP, leverage sdk.De
 	}
 
 	// Set MTP
+	mtp.LeveragedLpAmount = mtp.LeveragedLpAmount.Add(shares)
+	mtp.Liabilities = mtp.Liabilities.Add(borrowCoin.Amount)
+	mtp.MtpHealth = lr
 	k.SetMTP(ctx, mtp)
 
 	return mtp, nil

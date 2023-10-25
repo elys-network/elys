@@ -35,7 +35,7 @@ func (suite KeeperTestSuite) TestCheckSameAssets() {
 	app := suite.app
 	k := app.LeveragelpKeeper
 
-	mtp := types.NewMTP("creator", ptypes.BaseCurrency, sdk.NewDec(5), 1)
+	mtp := types.NewMTP("creator", sdk.NewInt64Coin(ptypes.BaseCurrency, 0), sdk.NewDec(5), 1)
 	k.SetMTP(suite.ctx, mtp)
 
 	msg := &types.MsgOpen{

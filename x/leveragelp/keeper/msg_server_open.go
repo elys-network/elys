@@ -32,7 +32,7 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen) (*types.MsgOpenRespons
 		return nil, err
 	}
 
-	mtp, err := k.OpenLong(ctx, msg.AmmPoolId, msg)
+	mtp, err := k.OpenLong(ctx, msg)
 	if err != nil {
 		return nil, err
 	}
