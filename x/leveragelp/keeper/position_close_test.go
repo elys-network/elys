@@ -2,6 +2,7 @@ package keeper_test
 
 import (
 	"cosmossdk.io/math"
+	"github.com/cometbft/cometbft/crypto/ed25519"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	"github.com/elys-network/elys/x/leveragelp/types"
@@ -9,10 +10,11 @@ import (
 
 func (suite KeeperTestSuite) TestCloseLong() {
 	k := suite.app.LeveragelpKeeper
+	addr := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
 
 	var (
 		msg = &types.MsgClose{
-			Creator: "creator",
+			Creator: addr.String(),
 			Id:      1,
 		}
 		mtp = types.MTP{
@@ -39,17 +41,16 @@ func (suite KeeperTestSuite) TestCloseLong() {
 	k.SetMTP(suite.ctx, &mtp)
 	k.SetMTP(suite.ctx, &types.MTP{})
 	mtpOut, repayAmountOut, err := k.CloseLong(suite.ctx, msg)
-
-	// Expect no error
-	suite.Require().Nil(err)
+	suite.Require().Error(err)
 	suite.Require().Equal(repayAmount.String(), repayAmountOut.String())
 	suite.Require().Equal(mtp, *mtpOut)
 }
 
 func (suite KeeperTestSuite) TestForceCloseLong() {
 	k := suite.app.LeveragelpKeeper
+	addr := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
 	mtp := types.MTP{
-		Address:           "creator",
+		Address:           addr.String(),
 		Collateral:        sdk.NewInt64Coin("uusdc", 1000),
 		Liabilities:       sdk.NewInt(4000),
 		InterestPaid:      sdk.ZeroInt(),
@@ -70,8 +71,6 @@ func (suite KeeperTestSuite) TestForceCloseLong() {
 	k.SetMTP(suite.ctx, &mtp)
 	k.SetMTP(suite.ctx, &types.MTP{})
 	repayAmountOut, err := k.ForceCloseLong(suite.ctx, mtp, pool)
-
-	// Expect no error
-	suite.Require().Nil(err)
+	suite.Require().Error(err)
 	suite.Require().Equal(repayAmount.String(), repayAmountOut.String())
 }

@@ -170,11 +170,10 @@ func (msg *MsgWhitelist) ValidateBasic() error {
 	return nil
 }
 
-func NewMsgUpdatePools(signer string, pools []string, closedPools []string) *MsgUpdatePools {
+func NewMsgUpdatePools(signer string, pools []Pool) *MsgUpdatePools {
 	return &MsgUpdatePools{
-		Authority:   signer,
-		Pools:       pools,
-		ClosedPools: closedPools,
+		Authority: signer,
+		Pools:     pools,
 	}
 }
 

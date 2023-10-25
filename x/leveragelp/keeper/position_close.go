@@ -61,5 +61,5 @@ func (k Keeper) CloseLong(ctx sdk.Context, msg *types.MsgClose) (*types.MTP, sdk
 	}
 
 	repayAmount, err := k.ForceCloseLong(ctx, mtp, pool)
-	return &mtp, repayAmount, nil
+	return &mtp, repayAmount, err
 }
