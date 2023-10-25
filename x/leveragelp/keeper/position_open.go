@@ -54,13 +54,6 @@ func (k Keeper) ProcessOpenLong(ctx sdk.Context, mtp *types.MTP, leverage sdk.De
 	// Calculate the leveraged amount based on the collateral provided and the leverage.
 	leveragedAmount := sdk.NewInt(collateralAmountDec.Mul(leverage).TruncateInt().Int64())
 
-	// Check minimum liabilities - TODO: enable if required
-	// collateralTokenAmt := sdk.NewCoin(msg.CollateralAsset, msg.CollateralAmount)
-	// err = k.CheckMinLiabilities(ctx, collateralTokenAmt, eta, pool, ammPool, msg.BorrowAsset)
-	// if err != nil {
-	// 	return nil, err
-	// }
-
 	// send collateral coins to MTP address from MTP owner address
 	mtpOwner := sdk.MustAccAddressFromBech32(mtp.Address)
 	err = k.bankKeeper.SendCoins(ctx, mtpOwner, mtp.GetMTPAddress(), sdk.Coins{sdk.NewCoin(msg.CollateralAsset, msg.CollateralAmount)})

@@ -42312,12 +42312,6 @@ paths:
                     type: string
                   interest_rate_decrease:
                     type: string
-                  incremental_interest_payment_fund_percentage:
-                    type: string
-                  incremental_interest_payment_fund_address:
-                    type: string
-                  incremental_interest_payment_enabled:
-                    type: boolean
                   health_gain_factor:
                     type: string
                   total_value:
@@ -85056,12 +85050,6 @@ definitions:
         type: string
       interest_rate_decrease:
         type: string
-      incremental_interest_payment_fund_percentage:
-        type: string
-      incremental_interest_payment_fund_address:
-        type: string
-      incremental_interest_payment_enabled:
-        type: boolean
       health_gain_factor:
         type: string
       total_value:
@@ -85091,12 +85079,6 @@ definitions:
             type: string
           interest_rate_decrease:
             type: string
-          incremental_interest_payment_fund_percentage:
-            type: string
-          incremental_interest_payment_fund_address:
-            type: string
-          incremental_interest_payment_enabled:
-            type: boolean
           health_gain_factor:
             type: string
           total_value:
