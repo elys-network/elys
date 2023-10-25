@@ -30,14 +30,17 @@ func AllCapabilities() []string {
 }
 
 type QueryPlugin struct {
+	ammKeeper    *ammkeeper.Keeper
 	oracleKeeper *oraclekeeper.Keeper
 }
 
 // NewQueryPlugin returns a reference to a new QueryPlugin.
 func NewQueryPlugin(
+	amm *ammkeeper.Keeper,
 	oracle *oraclekeeper.Keeper,
 ) *QueryPlugin {
 	return &QueryPlugin{
+		ammKeeper:    amm,
 		oracleKeeper: oracle,
 	}
 }
@@ -46,7 +49,7 @@ func RegisterCustomPlugins(
 	amm *ammkeeper.Keeper,
 	oracle *oraclekeeper.Keeper,
 ) []wasmkeeper.Option {
-	wasmQueryPlugin := NewQueryPlugin(oracle)
+	wasmQueryPlugin := NewQueryPlugin(amm, oracle)
 
 	queryPluginOpt := wasmkeeper.WithQueryPlugins(&wasmkeeper.QueryPlugins{
 		Custom: CustomQuerier(wasmQueryPlugin),
