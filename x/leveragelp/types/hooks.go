@@ -6,14 +6,14 @@ import (
 )
 
 type LeveragelpHooks interface {
-	// AfterLeveragelpPositionOpended is called after Open position.
-	AfterLeveragelpPositionOpended(ctx sdk.Context, ammPool ammtypes.Pool, leveragelpPool Pool)
+	// AfterLeveragelpPositionOpen is called after Open position.
+	AfterLeveragelpPositionOpen(ctx sdk.Context, ammPool ammtypes.Pool, leveragelpPool Pool)
 
 	// AfterLeveragelpPositionModified is called after a position gets modified.
 	AfterLeveragelpPositionModified(ctx sdk.Context, ammPool ammtypes.Pool, leveragelpPool Pool)
 
 	// AfterLeveragelpPositionClosed is called after a position gets closed.
-	AfterLeveragelpPositionClosed(ctx sdk.Context, ammPool ammtypes.Pool, leveragelpPool Pool)
+	AfterLeveragelpPositionClosed(ctx sdk.Context, leveragelpPool Pool)
 
 	// AfterPoolCreated is called after CreatePool
 	AfterAmmPoolCreated(ctx sdk.Context, ammPool ammtypes.Pool)
@@ -38,9 +38,9 @@ func NewMultiLeveragelpHooks(hooks ...LeveragelpHooks) MultiLeveragelpHooks {
 	return hooks
 }
 
-func (h MultiLeveragelpHooks) AfterLeveragelpPositionOpended(ctx sdk.Context, ammPool ammtypes.Pool, leveragelpPool Pool) {
+func (h MultiLeveragelpHooks) AfterLeveragelpPositionOpen(ctx sdk.Context, ammPool ammtypes.Pool, leveragelpPool Pool) {
 	for i := range h {
-		h[i].AfterLeveragelpPositionOpended(ctx, ammPool, leveragelpPool)
+		h[i].AfterLeveragelpPositionOpen(ctx, ammPool, leveragelpPool)
 	}
 }
 
@@ -50,9 +50,9 @@ func (h MultiLeveragelpHooks) AfterLeveragelpPositionModified(ctx sdk.Context, a
 	}
 }
 
-func (h MultiLeveragelpHooks) AfterLeveragelpPositionClosed(ctx sdk.Context, ammPool ammtypes.Pool, leveragelpPool Pool) {
+func (h MultiLeveragelpHooks) AfterLeveragelpPositionClosed(ctx sdk.Context, leveragelpPool Pool) {
 	for i := range h {
-		h[i].AfterLeveragelpPositionClosed(ctx, ammPool, leveragelpPool)
+		h[i].AfterLeveragelpPositionClosed(ctx, leveragelpPool)
 	}
 }
 

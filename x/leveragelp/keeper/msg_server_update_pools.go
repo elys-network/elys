@@ -16,8 +16,9 @@ func (k msgServer) UpdatePools(goCtx context.Context, msg *types.MsgUpdatePools)
 		return nil, sdkerrors.Wrapf(govtypes.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.authority, msg.Authority)
 	}
 
-	// TODO: Handling the message
-	_ = ctx
+	for _, pool := range msg.Pools {
+		k.SetPool(ctx, pool)
+	}
 
 	return &types.MsgUpdatePoolsResponse{}, nil
 }

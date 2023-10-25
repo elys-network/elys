@@ -15,19 +15,15 @@ import (
 	v1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1"
 	"github.com/elys-network/elys/x/leveragelp/types"
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 )
 
 var _ = strconv.Itoa(0)
 
 // Governance command
-// TODO
-// Need to confirm the format of enabled pools and disabled pools list
-// Pool.json
 func CmdUpdatePools() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "update-pools [pool.json]",
-		Short: "Update leveragelp enabled pools, and closed pools",
+		Short: "Update leveragelp pools",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
@@ -60,16 +56,10 @@ func CmdUpdatePools() *cobra.Command {
 				return err
 			}
 
-			closedPools, err := readPoolsJSON(viper.GetString("closed-pools"))
-			if err != nil {
-				return err
-			}
-
 			govAddress := sdk.AccAddress(address.Module("gov"))
 			msg := types.NewMsgUpdatePools(
 				govAddress.String(),
 				pools,
-				closedPools,
 			)
 
 			if err := msg.ValidateBasic(); err != nil {
@@ -109,15 +99,15 @@ func CmdUpdatePools() *cobra.Command {
 	return cmd
 }
 
-func readPoolsJSON(filename string) ([]string, error) {
-	var pools []string
+func readPoolsJSON(filename string) ([]types.Pool, error) {
+	var pools []types.Pool
 	bz, err := ioutil.ReadFile(filename)
 	if err != nil {
-		return []string{}, err
+		return []types.Pool{}, err
 	}
 	err = json.Unmarshal(bz, &pools)
 	if err != nil {
-		return []string{}, err
+		return []types.Pool{}, err
 	}
 
 	return pools, nil

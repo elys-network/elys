@@ -12,8 +12,16 @@ var _ paramtypes.ParamSet = (*Params)(nil)
 
 // Parameter keys
 var (
-	KeyDepositDenom   = []byte("DepositDenom")
-	KeyRedemptionRate = []byte("RedemptionRate")
+	KeyDepositDenom         = []byte("DepositDenom")
+	KeyRedemptionRate       = []byte("RedemptionRate")
+	KeyEpochLength          = []byte("EpochLength")
+	KeyInterestRate         = []byte("InterestRate")
+	KeyInterestRateMax      = []byte("InterestRateMax")
+	KeyInterestRateMin      = []byte("InterestRateMin")
+	KeyInterestRateIncrease = []byte("InterestRateIncrease")
+	KeyInterestRateDecrease = []byte("InterestRateDecrease")
+	KeyHealthGainFactor     = []byte("HealthGainFactor")
+	KeyTotalValue           = []byte("TotalValue")
 )
 
 // ParamKeyTable the param key table for launch module
@@ -22,16 +30,46 @@ func ParamKeyTable() paramtypes.KeyTable {
 }
 
 // NewParams creates a new Params instance
-func NewParams(depositDenom string, redemptionRate sdk.Dec) Params {
+func NewParams(
+	depositDenom string,
+	redemptionRate sdk.Dec,
+	epochLength int64,
+	interestRate sdk.Dec,
+	interestRateMax sdk.Dec,
+	interestRateMin sdk.Dec,
+	interestRateIncrease sdk.Dec,
+	interestRateDecrease sdk.Dec,
+	healthGainFactor sdk.Dec,
+	totalValue sdk.Int,
+) Params {
 	return Params{
-		DepositDenom:   depositDenom,
-		RedemptionRate: redemptionRate,
+		DepositDenom:         depositDenom,
+		RedemptionRate:       redemptionRate,
+		EpochLength:          epochLength,
+		InterestRate:         interestRate,
+		InterestRateMax:      interestRateMax,
+		InterestRateMin:      interestRateMin,
+		InterestRateIncrease: interestRateIncrease,
+		InterestRateDecrease: interestRateDecrease,
+		HealthGainFactor:     healthGainFactor,
+		TotalValue:           totalValue,
 	}
 }
 
 // DefaultParams returns a default set of parameters
 func DefaultParams() Params {
-	return NewParams("uusdc", sdk.OneDec())
+	return NewParams(
+		"uusdc",
+		sdk.OneDec(),
+		1,
+		sdk.NewDec(1),
+		sdk.NewDec(1),
+		sdk.NewDec(1),
+		sdk.NewDec(1),
+		sdk.NewDec(1),
+		sdk.NewDec(1),
+		sdk.NewInt(1),
+	)
 }
 
 // ParamSetPairs get the params.ParamSet
@@ -39,12 +77,48 @@ func (p *Params) ParamSetPairs() paramtypes.ParamSetPairs {
 	return paramtypes.ParamSetPairs{
 		paramtypes.NewParamSetPair(KeyDepositDenom, &p.DepositDenom, validateDepositDenom),
 		paramtypes.NewParamSetPair(KeyRedemptionRate, &p.RedemptionRate, validateRedemptionRate),
+		paramtypes.NewParamSetPair(KeyInterestRate, &p.InterestRate, validateInterestRate),
+		paramtypes.NewParamSetPair(KeyInterestRateMax, &p.InterestRateMax, validateInterestRateMax),
+		paramtypes.NewParamSetPair(KeyInterestRateMin, &p.InterestRateMin, validateInterestRateMin),
+		paramtypes.NewParamSetPair(KeyInterestRateIncrease, &p.InterestRateIncrease, validateInterestRateIncrease),
+		paramtypes.NewParamSetPair(KeyInterestRateDecrease, &p.InterestRateDecrease, validateInterestRateDecrease),
+		paramtypes.NewParamSetPair(KeyHealthGainFactor, &p.HealthGainFactor, validateHealthGainFactor),
+		paramtypes.NewParamSetPair(KeyEpochLength, &p.EpochLength, validateEpochLength),
+		paramtypes.NewParamSetPair(KeyTotalValue, &p.TotalValue, validateTotalValue),
 	}
 }
 
 // Validate validates the set of params
 func (p Params) Validate() error {
 	if err := validateDepositDenom(p.DepositDenom); err != nil {
+		return err
+	}
+
+	if err := validateRedemptionRate(p.RedemptionRate); err != nil {
+		return err
+	}
+	if err := validateInterestRate(p.InterestRate); err != nil {
+		return err
+	}
+	if err := validateInterestRateMax(p.InterestRateMax); err != nil {
+		return err
+	}
+	if err := validateInterestRateMin(p.InterestRateMin); err != nil {
+		return err
+	}
+	if err := validateInterestRateIncrease(p.InterestRateIncrease); err != nil {
+		return err
+	}
+	if err := validateInterestRateDecrease(p.InterestRateDecrease); err != nil {
+		return err
+	}
+	if err := validateHealthGainFactor(p.HealthGainFactor); err != nil {
+		return err
+	}
+	if err := validateEpochLength(p.EpochLength); err != nil {
+		return err
+	}
+	if err := validateTotalValue(p.TotalValue); err != nil {
 		return err
 	}
 
@@ -81,6 +155,127 @@ func validateRedemptionRate(i interface{}) error {
 	}
 	if v.LT(sdk.OneDec()) {
 		return fmt.Errorf("redemption rate must be bigger than 1: %s", v)
+	}
+
+	return nil
+}
+
+func validateEpochLength(i interface{}) error {
+	_, ok := i.(int64)
+	if !ok {
+		return fmt.Errorf("invalid parameter type: %T", i)
+	}
+
+	return nil
+}
+
+func validateInterestRate(i interface{}) error {
+	v, ok := i.(sdk.Dec)
+	if !ok {
+		return fmt.Errorf("invalid parameter type: %T", i)
+	}
+
+	if v.IsNil() {
+		return fmt.Errorf("interest must be not nil")
+	}
+	if v.IsNegative() {
+		return fmt.Errorf("interest must be positive: %s", v)
+	}
+
+	return nil
+}
+
+func validateInterestRateMax(i interface{}) error {
+	v, ok := i.(sdk.Dec)
+	if !ok {
+		return fmt.Errorf("invalid parameter type: %T", i)
+	}
+
+	if v.IsNil() {
+		return fmt.Errorf("interest max must be not nil")
+	}
+	if v.IsNegative() {
+		return fmt.Errorf("interest max must be positive: %s", v)
+	}
+
+	return nil
+}
+
+func validateInterestRateMin(i interface{}) error {
+	v, ok := i.(sdk.Dec)
+	if !ok {
+		return fmt.Errorf("invalid parameter type: %T", i)
+	}
+
+	if v.IsNil() {
+		return fmt.Errorf("interest min must be not nil")
+	}
+	if v.IsNegative() {
+		return fmt.Errorf("interest min must be positive: %s", v)
+	}
+
+	return nil
+}
+
+func validateInterestRateIncrease(i interface{}) error {
+	v, ok := i.(sdk.Dec)
+	if !ok {
+		return fmt.Errorf("invalid parameter type: %T", i)
+	}
+
+	if v.IsNil() {
+		return fmt.Errorf("interest rate increase must be not nil")
+	}
+	if v.IsNegative() {
+		return fmt.Errorf("interest rate increase must be positive: %s", v)
+	}
+
+	return nil
+}
+
+func validateInterestRateDecrease(i interface{}) error {
+	v, ok := i.(sdk.Dec)
+	if !ok {
+		return fmt.Errorf("invalid parameter type: %T", i)
+	}
+
+	if v.IsNil() {
+		return fmt.Errorf("interest rate decrease must be not nil")
+	}
+	if v.IsNegative() {
+		return fmt.Errorf("interest rate decrease must be positive: %s", v)
+	}
+
+	return nil
+}
+
+func validateHealthGainFactor(i interface{}) error {
+	v, ok := i.(sdk.Dec)
+	if !ok {
+		return fmt.Errorf("invalid parameter type: %T", i)
+	}
+
+	if v.IsNil() {
+		return fmt.Errorf("health gain factor must be not nil")
+	}
+	if v.IsNegative() {
+		return fmt.Errorf("health gain factor must be positive: %s", v)
+	}
+
+	return nil
+}
+
+func validateTotalValue(i interface{}) error {
+	v, ok := i.(sdk.Int)
+	if !ok {
+		return fmt.Errorf("invalid parameter type: %T", i)
+	}
+
+	if v.IsNil() {
+		return fmt.Errorf("total value must be not nil")
+	}
+	if v.IsNegative() {
+		return fmt.Errorf("total value must be positive: %s", v)
 	}
 
 	return nil

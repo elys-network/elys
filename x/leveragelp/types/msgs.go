@@ -59,13 +59,12 @@ func (msg *MsgClose) ValidateBasic() error {
 	return nil
 }
 
-func NewMsgOpen(creator string, collateralAsset string, collateralAmount sdk.Int, borrowAsset string, position Position, leverage sdk.Dec) *MsgOpen {
+func NewMsgOpen(creator string, collateralAsset string, collateralAmount sdk.Int, ammPoolId uint64, leverage sdk.Dec) *MsgOpen {
 	return &MsgOpen{
 		Creator:          creator,
 		CollateralAsset:  collateralAsset,
 		CollateralAmount: collateralAmount,
-		BorrowAsset:      borrowAsset,
-		Position:         position,
+		AmmPoolId:        ammPoolId,
 		Leverage:         leverage,
 	}
 }
@@ -171,11 +170,10 @@ func (msg *MsgWhitelist) ValidateBasic() error {
 	return nil
 }
 
-func NewMsgUpdatePools(signer string, pools []string, closedPools []string) *MsgUpdatePools {
+func NewMsgUpdatePools(signer string, pools []Pool) *MsgUpdatePools {
 	return &MsgUpdatePools{
-		Authority:   signer,
-		Pools:       pools,
-		ClosedPools: closedPools,
+		Authority: signer,
+		Pools:     pools,
 	}
 }
 

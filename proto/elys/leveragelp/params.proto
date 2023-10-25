@@ -12,55 +12,29 @@ message Params {
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
-  string interest_rate_max = 2 [
+  string removal_queue_threshold = 2 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
-  string interest_rate_min = 3 [
+  int64 max_open_positions = 3;
+  string pool_open_threshold = 4 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
-  string interest_rate_increase = 4 [
+  string force_close_fund_percentage = 5 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
-  string interest_rate_decrease = 5 [
+  string force_close_fund_address = 6;
+  string sq_modifier = 7 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
-  string health_gain_factor = 6 [
+  string safety_factor = 8 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
-  int64 epoch_length = 7;
-  string removal_queue_threshold = 8 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
-    (gogoproto.nullable) = false
-  ];
-  int64 max_open_positions = 9;
-  string pool_open_threshold = 10 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
-    (gogoproto.nullable) = false
-  ];
-  string force_close_fund_percentage = 11 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
-    (gogoproto.nullable) = false
-  ];
-  string force_close_fund_address = 12;
-  string incremental_interest_payment_fund_percentage = 13 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
-    (gogoproto.nullable) = false
-  ];
-  string incremental_interest_payment_fund_address = 14;
-  string sq_modifier = 15 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
-    (gogoproto.nullable) = false
-  ];
-  string safety_factor = 16 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
-    (gogoproto.nullable) = false
-  ];
-  bool incremental_interest_payment_enabled = 17;
-  bool whitelisting_enabled = 18;
-  string invariant_check_epoch = 19;
+  bool whitelisting_enabled = 9;
+  string invariant_check_epoch = 10;
+  int64 epoch_length = 11;
 }
