@@ -33,7 +33,7 @@ func (k Keeper) ForceCloseShort(ctx sdk.Context, mtp *types.MTP, pool *types.Poo
 			}
 
 			if mtp.MtpHealth.GT(safetyFactor) {
-				return math.ZeroInt(), types.ErrMTPUnhealthy
+				return math.ZeroInt(), types.ErrMTPHealthy
 			}
 
 			err = k.TakeOutCustody(ctx, *mtp, pool, custodyAsset)
