@@ -59,7 +59,7 @@ func (msg *MsgClose) ValidateBasic() error {
 	return nil
 }
 
-func NewMsgOpen(creator string, collateralAsset string, collateralAmount sdk.Int, borrowAsset string, position Position, leverage sdk.Dec) *MsgOpen {
+func NewMsgOpen(creator string, collateralAsset string, collateralAmount sdk.Int, borrowAsset string, position Position, leverage sdk.Dec, takeProfitPrice sdk.Dec) *MsgOpen {
 	return &MsgOpen{
 		Creator:          creator,
 		CollateralAsset:  collateralAsset,
@@ -67,6 +67,7 @@ func NewMsgOpen(creator string, collateralAsset string, collateralAmount sdk.Int
 		BorrowAsset:      borrowAsset,
 		Position:         position,
 		Leverage:         leverage,
+		TakeProfitPrice:  takeProfitPrice,
 	}
 }
 
