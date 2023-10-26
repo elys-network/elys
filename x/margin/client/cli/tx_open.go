@@ -14,6 +14,10 @@ import (
 
 var _ = strconv.Itoa(0)
 
+const (
+	flagTakeProfitPrice = "take-profit"
+)
+
 func CmdOpen() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "open [position] [leverage] [collateral-asset] [collateral-amount] [borrow-asset] [flags]",
@@ -50,7 +54,7 @@ elysd tx margin open short 5 uusdc 100000000 uatom --take-profit 100 --from=trea
 
 			argBorrowAsset := args[4]
 
-			takeProfitPriceStr, err := cmd.Flags().GetString("take-profit")
+			takeProfitPriceStr, err := cmd.Flags().GetString(flagTakeProfitPrice)
 			if err != nil {
 				return err
 			}
@@ -85,7 +89,7 @@ elysd tx margin open short 5 uusdc 100000000 uatom --take-profit 100 --from=trea
 		},
 	}
 
-	cmd.Flags().String("take-profit", types.InfinitePriceString, "Optional take profit price")
+	cmd.Flags().String(flagTakeProfitPrice, types.InfinitePriceString, "Optional take profit price")
 
 	flags.AddTxFlagsToCmd(cmd)
 
