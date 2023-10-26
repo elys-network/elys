@@ -10,10 +10,6 @@ import (
 	stablestaketypes "github.com/elys-network/elys/x/stablestake/types"
 )
 
-// TODO: ProcessOpenLong(ctx sdk.Context, mtp *types.MTP, leverage sdk.Dec, eta sdk.Dec, collateralAmountDec sdk.Dec, poolId uint64, msg *types.MsgOpen) (*types.MTP, error) {
-// TODO: OpenConsolidate(ctx sdk.Context, mtp *types.MTP, msg *types.MsgOpen) (*types.MsgOpenResponse, error) {
-// TODO: OpenConsolidateLong(ctx sdk.Context, poolId uint64, mtp *types.MTP, msg *types.MsgOpen) (*types.MTP, error)
-
 func (suite KeeperTestSuite) TestOpenLong() {
 	k := suite.app.LeveragelpKeeper
 	SetupStableCoinPrices(suite.ctx, suite.app.OracleKeeper)
@@ -57,7 +53,7 @@ func (suite KeeperTestSuite) TestOpenLong() {
 	})
 	k.SetPool(suite.ctx, pool)
 
-	usdcToken := sdk.NewInt64Coin("uusdc", 10000)
+	usdcToken := sdk.NewInt64Coin("uusdc", 100000)
 	err := suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, sdk.Coins{usdcToken})
 	suite.Require().NoError(err)
 	err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, addr, sdk.Coins{usdcToken})
@@ -66,10 +62,11 @@ func (suite KeeperTestSuite) TestOpenLong() {
 	stableMsgServer := stablestakekeeper.NewMsgServerImpl(suite.app.StablestakeKeeper)
 	_, err = stableMsgServer.Bond(sdk.WrapSDKContext(suite.ctx), &stablestaketypes.MsgBond{
 		Creator: addr.String(),
-		Amount:  sdk.NewInt(5000),
+		Amount:  sdk.NewInt(10000),
 	})
 	suite.Require().NoError(err)
 
+	// open a position
 	mtp, err := k.OpenLong(suite.ctx, &types.MsgOpen{
 		Creator:          addr.String(),
 		CollateralAsset:  "uusdc",
@@ -87,4 +84,25 @@ func (suite KeeperTestSuite) TestOpenLong() {
 	suite.Require().Equal(mtp.MtpHealth.String(), "1.234753829797991900")
 	suite.Require().Equal(mtp.Id, uint64(1))
 	suite.Require().Equal(mtp.AmmPoolId, uint64(1))
+
+	// add more to an existing position
+	_, err = k.OpenConsolidate(suite.ctx, mtp, &types.MsgOpen{
+		Creator:          addr.String(),
+		CollateralAsset:  "uusdc",
+		CollateralAmount: sdk.NewInt(1000),
+		AmmPoolId:        1,
+		Leverage:         sdk.NewDec(5),
+	})
+	suite.Require().NoError(err)
+	mtp2, err := k.GetMTP(suite.ctx, mtp.Address, mtp.Id)
+	suite.Require().NoError(err)
+	suite.Require().Equal(mtp2.Address, addr.String())
+	suite.Require().Equal(mtp2.Collateral.String(), "2000uusdc")
+	suite.Require().Equal(mtp2.Liabilities.String(), "8000")
+	suite.Require().Equal(mtp2.InterestPaid.String(), "0")
+	suite.Require().Equal(mtp2.Leverage.String(), "5.000000000000000000")
+	suite.Require().Equal(mtp2.LeveragedLpAmount.String(), "97617696340303092")
+	suite.Require().Equal(mtp2.MtpHealth.String(), "1.220584311300734832")
+	suite.Require().Equal(mtp2.Id, uint64(1))
+	suite.Require().Equal(mtp2.AmmPoolId, uint64(1))
 }
