@@ -515,6 +515,7 @@ func TestOpenShort_BaseCurrency_Collateral(t *testing.T) {
 		ptypes.ATOM,
 		types.Position_SHORT,
 		sdk.NewDec(5),
+		sdk.MustNewDecFromStr(types.TakeProfitPriceDefault),
 	)
 
 	_, err = mk.Open(ctx, msg2)
@@ -619,6 +620,7 @@ func TestOpenShort_ATOM_Collateral(t *testing.T) {
 		ptypes.ATOM,
 		types.Position_SHORT,
 		sdk.NewDec(5),
+		sdk.MustNewDecFromStr(types.TakeProfitPriceDefault),
 	)
 
 	_, err = mk.Open(ctx, msg2)
