@@ -40964,8 +40964,6 @@ paths:
                           type: string
                         asset_balance:
                           type: string
-                        unsettled_liabilities:
-                          type: string
                         block_interest:
                           type: string
                         asset_denom:
@@ -41034,8 +41032,6 @@ paths:
                           custody:
                             type: string
                           asset_balance:
-                            type: string
-                          unsettled_liabilities:
                             type: string
                           block_interest:
                             type: string
@@ -84078,8 +84074,6 @@ definitions:
               type: string
             asset_balance:
               type: string
-            unsettled_liabilities:
-              type: string
             block_interest:
               type: string
             asset_denom:
@@ -84095,8 +84089,6 @@ definitions:
       custody:
         type: string
       asset_balance:
-        type: string
-      unsettled_liabilities:
         type: string
       block_interest:
         type: string
@@ -84577,8 +84569,6 @@ definitions:
                     type: string
                   asset_balance:
                     type: string
-                  unsettled_liabilities:
-                    type: string
                   block_interest:
                     type: string
                   asset_denom:
@@ -84639,8 +84629,6 @@ definitions:
                 custody:
                   type: string
                 asset_balance:
-                  type: string
-                unsettled_liabilities:
                   type: string
                 block_interest:
                   type: string
