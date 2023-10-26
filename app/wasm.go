@@ -211,7 +211,7 @@ func (m *CustomMessenger) msgSwapExactAmountIn(ctx sdk.Context, contractAddr sdk
 		return nil, nil, errorsmod.Wrap(err, "perform swap")
 	}
 
-	responseBytes, err := json.Marshal(MsgSwapExactAmountInResponse{TokenOutAmount: res.TokenOutAmount})
+	responseBytes, err := json.Marshal(*res)
 	if err != nil {
 		return nil, nil, errorsmod.Wrap(err, "failed to serialize swap response")
 	}
@@ -221,7 +221,7 @@ func (m *CustomMessenger) msgSwapExactAmountIn(ctx sdk.Context, contractAddr sdk
 	return nil, resp, nil
 }
 
-func PerformMsgSwapExactAmountIn(f *ammkeeper.Keeper, ctx sdk.Context, contractAddr sdk.AccAddress, msgSwapExactAmountIn *MsgSwapExactAmountIn) (*ammtype.MsgSwapExactAmountInResponse, error) {
+func PerformMsgSwapExactAmountIn(f *ammkeeper.Keeper, ctx sdk.Context, contractAddr sdk.AccAddress, msgSwapExactAmountIn *MsgSwapExactAmountIn) (*MsgSwapExactAmountInResponse, error) {
 	if msgSwapExactAmountIn == nil {
 		return nil, wasmvmtypes.InvalidRequest{Err: "swap null swap"}
 	}
@@ -243,12 +243,17 @@ func PerformMsgSwapExactAmountIn(f *ammkeeper.Keeper, ctx sdk.Context, contractA
 	}
 
 	// Swap
-	resp, err := msgServer.SwapExactAmountIn(
+	swapResp, err := msgServer.SwapExactAmountIn(
 		sdk.WrapSDKContext(ctx),
 		msgMsgSwapExactAmountIn,
 	)
 	if err != nil {
 		return nil, errorsmod.Wrap(err, "swap msg")
+	}
+
+  var resp = &MsgSwapExactAmountInResponse{
+		TokenOutAmount: swapResp.TokenOutAmount,
+		MetaData:       msgSwapExactAmountIn.MetaData,
 	}
 	return resp, nil
 }
@@ -262,8 +267,10 @@ type MsgSwapExactAmountIn struct {
 	Routes            []ammtype.SwapAmountInRoute `protobuf:"bytes,2,rep,name=routes,proto3" json:"routes,omitempty"`
 	TokenIn           sdk.Coin                    `protobuf:"bytes,3,opt,name=tokenIn,proto3" json:"token_in,omitempty"`
 	TokenOutMinAmount cosmos_sdk_math.Int         `protobuf:"bytes,4,opt,name=tokenOutMinAmount,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"token_out_min_amount,omitempty"`
+	MetaData          *[]byte                     `protobuf:"bytes,5,opt,name=tokenData,proto3" json:"meta_data,omitempty"`
 }
 
 type MsgSwapExactAmountInResponse struct {
 	TokenOutAmount cosmos_sdk_math.Int `protobuf:"bytes,1,opt,name=tokenOutAmount,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"token_out_amount,omitempty"`
+	MetaData       *[]byte             `protobuf:"bytes,2,opt,name=tokenData,proto3" json:"meta_data,omitempty"`
 }
