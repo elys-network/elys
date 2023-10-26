@@ -6,6 +6,7 @@ package types
 import (
 	fmt "fmt"
 	github_com_cosmos_cosmos_sdk_types "github.com/cosmos/cosmos-sdk/types"
+	types "github.com/cosmos/cosmos-sdk/types"
 	_ "github.com/cosmos/gogoproto/gogoproto"
 	proto "github.com/cosmos/gogoproto/proto"
 	io "io"
@@ -24,48 +25,16 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
-type Position int32
-
-const (
-	Position_UNSPECIFIED Position = 0
-	Position_LONG        Position = 1
-)
-
-var Position_name = map[int32]string{
-	0: "UNSPECIFIED",
-	1: "LONG",
-}
-
-var Position_value = map[string]int32{
-	"UNSPECIFIED": 0,
-	"LONG":        1,
-}
-
-func (x Position) String() string {
-	return proto.EnumName(Position_name, int32(x))
-}
-
-func (Position) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_992d513dd201f55b, []int{0}
-}
-
 type MTP struct {
-	Address                   string                                   `protobuf:"bytes,1,opt,name=address,proto3" json:"address,omitempty"`
-	CollateralAssets          []string                                 `protobuf:"bytes,2,rep,name=collateral_assets,json=collateralAssets,proto3" json:"collateral_assets,omitempty"`
-	CollateralAmounts         []github_com_cosmos_cosmos_sdk_types.Int `protobuf:"bytes,3,rep,name=collateral_amounts,json=collateralAmounts,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"collateral_amounts"`
-	Liabilities               github_com_cosmos_cosmos_sdk_types.Int   `protobuf:"bytes,4,opt,name=liabilities,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"liabilities"`
-	InterestPaidCollaterals   []github_com_cosmos_cosmos_sdk_types.Int `protobuf:"bytes,5,rep,name=interest_paid_collaterals,json=interestPaidCollaterals,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"interest_paid_collaterals"`
-	InterestPaidCustodys      []github_com_cosmos_cosmos_sdk_types.Int `protobuf:"bytes,6,rep,name=interest_paid_custodys,json=interestPaidCustodys,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"interest_paid_custodys"`
-	InterestUnpaidCollaterals []github_com_cosmos_cosmos_sdk_types.Int `protobuf:"bytes,7,rep,name=interest_unpaid_collaterals,json=interestUnpaidCollaterals,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"interest_unpaid_collaterals"`
-	CustodyAssets             []string                                 `protobuf:"bytes,8,rep,name=custody_assets,json=custodyAssets,proto3" json:"custody_assets,omitempty"`
-	CustodyAmounts            []github_com_cosmos_cosmos_sdk_types.Int `protobuf:"bytes,9,rep,name=custody_amounts,json=custodyAmounts,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"custody_amounts"`
-	Leverages                 []github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,10,rep,name=leverages,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"leverages"`
-	MtpHealth                 github_com_cosmos_cosmos_sdk_types.Dec   `protobuf:"bytes,11,opt,name=mtp_health,json=mtpHealth,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"mtp_health"`
-	Position                  Position                                 `protobuf:"varint,12,opt,name=position,proto3,enum=elys.leveragelp.Position" json:"position,omitempty"`
-	Id                        uint64                                   `protobuf:"varint,13,opt,name=id,proto3" json:"id,omitempty"`
-	AmmPoolId                 uint64                                   `protobuf:"varint,14,opt,name=amm_pool_id,json=ammPoolId,proto3" json:"amm_pool_id,omitempty"`
-	ConsolidateLeverage       github_com_cosmos_cosmos_sdk_types.Dec   `protobuf:"bytes,15,opt,name=consolidate_leverage,json=consolidateLeverage,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"consolidate_leverage"`
-	SumCollateral             github_com_cosmos_cosmos_sdk_types.Int   `protobuf:"bytes,16,opt,name=sum_collateral,json=sumCollateral,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"sum_collateral"`
+	Address           string                                 `protobuf:"bytes,1,opt,name=address,proto3" json:"address,omitempty"`
+	Collateral        types.Coin                             `protobuf:"bytes,2,opt,name=collateral,proto3" json:"collateral"`
+	Liabilities       github_com_cosmos_cosmos_sdk_types.Int `protobuf:"bytes,3,opt,name=liabilities,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"liabilities"`
+	InterestPaid      github_com_cosmos_cosmos_sdk_types.Int `protobuf:"bytes,4,opt,name=interest_paid,json=interestPaid,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"interest_paid"`
+	Leverage          github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,5,opt,name=leverage,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"leverage"`
+	LeveragedLpAmount github_com_cosmos_cosmos_sdk_types.Int `protobuf:"bytes,6,opt,name=leveraged_lp_amount,json=leveragedLpAmount,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"leveraged_lp_amount"`
+	MtpHealth         github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,7,opt,name=mtp_health,json=mtpHealth,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"mtp_health"`
+	Id                uint64                                 `protobuf:"varint,8,opt,name=id,proto3" json:"id,omitempty"`
+	AmmPoolId         uint64                                 `protobuf:"varint,9,opt,name=amm_pool_id,json=ammPoolId,proto3" json:"amm_pool_id,omitempty"`
 }
 
 func (m *MTP) Reset()         { *m = MTP{} }
@@ -108,25 +77,11 @@ func (m *MTP) GetAddress() string {
 	return ""
 }
 
-func (m *MTP) GetCollateralAssets() []string {
+func (m *MTP) GetCollateral() types.Coin {
 	if m != nil {
-		return m.CollateralAssets
+		return m.Collateral
 	}
-	return nil
-}
-
-func (m *MTP) GetCustodyAssets() []string {
-	if m != nil {
-		return m.CustodyAssets
-	}
-	return nil
-}
-
-func (m *MTP) GetPosition() Position {
-	if m != nil {
-		return m.Position
-	}
-	return Position_UNSPECIFIED
+	return types.Coin{}
 }
 
 func (m *MTP) GetId() uint64 {
@@ -188,7 +143,6 @@ func (m *WhiteList) GetValidatorList() []string {
 }
 
 func init() {
-	proto.RegisterEnum("elys.leveragelp.Position", Position_name, Position_value)
 	proto.RegisterType((*MTP)(nil), "elys.leveragelp.MTP")
 	proto.RegisterType((*WhiteList)(nil), "elys.leveragelp.WhiteList")
 }
@@ -196,44 +150,35 @@ func init() {
 func init() { proto.RegisterFile("elys/leveragelp/types.proto", fileDescriptor_992d513dd201f55b) }
 
 var fileDescriptor_992d513dd201f55b = []byte{
-	// 579 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x9c, 0x94, 0xdf, 0x4e, 0xdb, 0x30,
-	0x14, 0xc6, 0x1b, 0x60, 0xd0, 0x9c, 0x8e, 0xb6, 0xf3, 0xd0, 0x66, 0x86, 0x14, 0x2a, 0x24, 0xa6,
-	0x6a, 0x13, 0x89, 0xc4, 0xb4, 0x07, 0xe0, 0xdf, 0xb6, 0x4a, 0x85, 0x45, 0xd9, 0x10, 0xd2, 0xa4,
-	0x29, 0x32, 0xb5, 0xd5, 0x7a, 0x38, 0x71, 0x14, 0x3b, 0x6c, 0xbc, 0xc5, 0x1e, 0x8b, 0x4b, 0x2e,
-	0xa7, 0x5d, 0xa0, 0x09, 0x9e, 0x63, 0xd2, 0x94, 0x90, 0x34, 0x19, 0x5c, 0x35, 0x57, 0xad, 0x7d,
-	0x3e, 0xfd, 0xbe, 0x73, 0x9c, 0xcf, 0x86, 0x35, 0x26, 0x2e, 0x94, 0x23, 0xd8, 0x39, 0x8b, 0xc9,
-	0x98, 0x89, 0xc8, 0xd1, 0x17, 0x11, 0x53, 0x76, 0x14, 0x4b, 0x2d, 0x51, 0x27, 0x2d, 0xda, 0x65,
-	0xf1, 0xc5, 0xca, 0x58, 0x8e, 0x65, 0x56, 0x73, 0xd2, 0x7f, 0x77, 0xb2, 0x8d, 0xbf, 0x4d, 0x98,
-	0x3f, 0xfc, 0xec, 0x22, 0x0c, 0x4b, 0x84, 0xd2, 0x98, 0x29, 0x85, 0x8d, 0x9e, 0xd1, 0x37, 0xbd,
-	0x62, 0x89, 0x5e, 0xc3, 0x93, 0x91, 0x14, 0x82, 0x68, 0x16, 0x13, 0xe1, 0x13, 0xa5, 0x98, 0x56,
-	0x78, 0xae, 0x37, 0xdf, 0x37, 0xbd, 0x6e, 0x59, 0xd8, 0xc9, 0xf6, 0xd1, 0x57, 0x40, 0x55, 0x71,
-	0x20, 0x93, 0x50, 0x2b, 0x3c, 0x9f, 0xaa, 0x77, 0xed, 0xcb, 0xeb, 0xf5, 0xc6, 0xef, 0xeb, 0xf5,
-	0x97, 0x63, 0xae, 0x27, 0xc9, 0xa9, 0x3d, 0x92, 0x81, 0x33, 0x92, 0x2a, 0x90, 0x2a, 0xff, 0xd9,
-	0x52, 0xf4, 0x2c, 0x9f, 0x61, 0x10, 0x6a, 0xaf, 0x62, 0xbb, 0x73, 0x07, 0x42, 0x2e, 0xb4, 0x04,
-	0x27, 0xa7, 0x5c, 0x70, 0xcd, 0x99, 0xc2, 0x0b, 0x69, 0xa7, 0x33, 0x73, 0xab, 0x08, 0xf4, 0x0d,
-	0x56, 0x79, 0xa8, 0x59, 0xcc, 0x94, 0xf6, 0x23, 0xc2, 0xa9, 0x5f, 0x9a, 0x2a, 0xfc, 0xa8, 0x56,
-	0xdf, 0xcf, 0x0b, 0xa0, 0x4b, 0x38, 0xdd, 0x2b, 0x71, 0x88, 0xc2, 0xb3, 0x7b, 0x5e, 0x89, 0xd2,
-	0x92, 0x5e, 0x28, 0xbc, 0x58, 0xcb, 0x68, 0xe5, 0x3f, 0xa3, 0x9c, 0x85, 0x42, 0x58, 0x9b, 0xba,
-	0x24, 0xe1, 0x83, 0x99, 0x96, 0x6a, 0x59, 0x4d, 0x0f, 0xe9, 0x38, 0x23, 0x56, 0xa7, 0xda, 0x84,
-	0x76, 0x3e, 0x47, 0x11, 0x8e, 0x66, 0x16, 0x8e, 0xe5, 0x7c, 0x37, 0x4f, 0xc6, 0x09, 0x74, 0xa6,
-	0xb2, 0x3c, 0x16, 0x66, 0xad, 0x56, 0x0a, 0xb7, 0x22, 0x13, 0x43, 0x30, 0x8b, 0x94, 0x2b, 0x0c,
-	0x33, 0x23, 0xf7, 0xd9, 0xc8, 0x2b, 0x01, 0xe8, 0x10, 0x20, 0xd0, 0x91, 0x3f, 0x61, 0x44, 0xe8,
-	0x09, 0x6e, 0xcd, 0x1c, 0xb0, 0x0c, 0x17, 0xe8, 0xe8, 0x43, 0x06, 0x40, 0x6f, 0xa1, 0x19, 0x49,
-	0xc5, 0x35, 0x97, 0x21, 0x7e, 0xdc, 0x33, 0xfa, 0xed, 0xed, 0x55, 0xfb, 0xde, 0xc5, 0xb4, 0xdd,
-	0x5c, 0xe0, 0x4d, 0xa5, 0xa8, 0x0d, 0x73, 0x9c, 0xe2, 0xe5, 0x9e, 0xd1, 0x5f, 0xf0, 0xe6, 0x38,
-	0x45, 0x16, 0xb4, 0x48, 0x10, 0xf8, 0x91, 0x94, 0xc2, 0xe7, 0x14, 0xb7, 0xb3, 0x82, 0x49, 0x82,
-	0xc0, 0x95, 0x52, 0x0c, 0x28, 0x22, 0xb0, 0x32, 0x92, 0xa1, 0x92, 0x82, 0x53, 0xa2, 0x99, 0x5f,
-	0xc0, 0x71, 0xa7, 0x56, 0xff, 0x4f, 0x2b, 0xac, 0x61, 0x8e, 0x42, 0xc7, 0xd0, 0x56, 0x49, 0x50,
-	0x89, 0x12, 0xee, 0xd6, 0xba, 0x7d, 0xcb, 0x2a, 0x09, 0xca, 0xf8, 0x6c, 0x6c, 0x83, 0x79, 0x32,
-	0xe1, 0x9a, 0x0d, 0xb9, 0xd2, 0x69, 0x94, 0xce, 0x49, 0xe6, 0x2b, 0x63, 0x5f, 0x70, 0xa5, 0xb1,
-	0x71, 0x17, 0xa5, 0xe9, 0x6e, 0x2a, 0x7b, 0xb5, 0x09, 0xcd, 0xe2, 0xcc, 0x50, 0x07, 0x5a, 0xc7,
-	0x47, 0x9f, 0xdc, 0x83, 0xbd, 0xc1, 0xbb, 0xc1, 0xc1, 0x7e, 0xb7, 0x81, 0x9a, 0xb0, 0x30, 0xfc,
-	0x78, 0xf4, 0xbe, 0x6b, 0xec, 0x0e, 0x2e, 0x6f, 0x2c, 0xe3, 0xea, 0xc6, 0x32, 0xfe, 0xdc, 0x58,
-	0xc6, 0xcf, 0x5b, 0xab, 0x71, 0x75, 0x6b, 0x35, 0x7e, 0xdd, 0x5a, 0x8d, 0x2f, 0x4e, 0xa5, 0xd7,
-	0xf4, 0x6b, 0x6c, 0x85, 0x4c, 0x7f, 0x97, 0xf1, 0x59, 0xb6, 0x70, 0x7e, 0x3c, 0x78, 0x52, 0x4f,
-	0x17, 0xb3, 0xc7, 0xf2, 0xcd, 0xbf, 0x00, 0x00, 0x00, 0xff, 0xff, 0xef, 0x3f, 0x25, 0x1e, 0x72,
-	0x05, 0x00, 0x00,
+	// 444 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x9c, 0x93, 0x41, 0x6f, 0xd3, 0x30,
+	0x14, 0xc7, 0x9b, 0xb6, 0x6c, 0x8b, 0xcb, 0x86, 0x30, 0x1c, 0xcc, 0x90, 0xb2, 0x6a, 0x12, 0xa8,
+	0x97, 0xc5, 0xda, 0xf8, 0x00, 0x88, 0xc2, 0x81, 0xa2, 0x4d, 0xaa, 0x02, 0x12, 0x12, 0x07, 0x22,
+	0x27, 0xb6, 0x5a, 0x6b, 0x76, 0x9e, 0x15, 0xbf, 0x15, 0xf6, 0x2d, 0xf8, 0x2c, 0x7c, 0x8a, 0x1d,
+	0x77, 0x44, 0x1c, 0x26, 0xd4, 0x7e, 0x11, 0x94, 0xb4, 0x29, 0x95, 0x38, 0xad, 0xa7, 0xbc, 0x97,
+	0xff, 0xff, 0xfd, 0xf4, 0xb7, 0xf5, 0x4c, 0x9e, 0x2b, 0x73, 0xed, 0xb9, 0x51, 0x33, 0x55, 0x8a,
+	0x89, 0x32, 0x8e, 0xe3, 0xb5, 0x53, 0x3e, 0x76, 0x25, 0x20, 0xd0, 0x47, 0x95, 0x18, 0xff, 0x13,
+	0x0f, 0x9f, 0x4e, 0x60, 0x02, 0xb5, 0xc6, 0xab, 0x6a, 0x69, 0x3b, 0x8c, 0x72, 0xf0, 0x16, 0x3c,
+	0xcf, 0x84, 0x57, 0x7c, 0x76, 0x9a, 0x29, 0x14, 0xa7, 0x3c, 0x07, 0x5d, 0x2c, 0xf5, 0xe3, 0x9f,
+	0x5d, 0xd2, 0xb9, 0xf8, 0x34, 0xa6, 0x8c, 0xec, 0x0a, 0x29, 0x4b, 0xe5, 0x3d, 0x0b, 0xfa, 0xc1,
+	0x20, 0x4c, 0x9a, 0x96, 0xbe, 0x26, 0x24, 0x07, 0x63, 0x04, 0xaa, 0x52, 0x18, 0xd6, 0xee, 0x07,
+	0x83, 0xde, 0xd9, 0xb3, 0x78, 0x89, 0x8d, 0x2b, 0x6c, 0xbc, 0xc2, 0xc6, 0x6f, 0x41, 0x17, 0xc3,
+	0xee, 0xcd, 0xdd, 0x51, 0x2b, 0xd9, 0x18, 0xa1, 0x63, 0xd2, 0x33, 0x5a, 0x64, 0xda, 0x68, 0xd4,
+	0xca, 0xb3, 0x4e, 0x85, 0x1f, 0xc6, 0x95, 0xed, 0xf7, 0xdd, 0xd1, 0xcb, 0x89, 0xc6, 0xe9, 0x55,
+	0x16, 0xe7, 0x60, 0xf9, 0x2a, 0xea, 0xf2, 0x73, 0xe2, 0xe5, 0xe5, 0xea, 0xc0, 0xa3, 0x02, 0x93,
+	0x4d, 0x04, 0xfd, 0x48, 0xf6, 0x75, 0x81, 0xaa, 0x54, 0x1e, 0x53, 0x27, 0xb4, 0x64, 0xdd, 0xad,
+	0x98, 0x0f, 0x1b, 0xc8, 0x58, 0x68, 0x49, 0x3f, 0x90, 0xbd, 0xe6, 0x36, 0xd9, 0x83, 0x7b, 0xf3,
+	0xde, 0xa9, 0x3c, 0x59, 0xcf, 0xd3, 0xaf, 0xe4, 0x49, 0x53, 0xcb, 0xd4, 0xb8, 0x54, 0x58, 0xb8,
+	0x2a, 0x90, 0xed, 0x6c, 0x15, 0xf3, 0xf1, 0x1a, 0x75, 0xee, 0xde, 0xd4, 0x20, 0x7a, 0x41, 0x88,
+	0x45, 0x97, 0x4e, 0x95, 0x30, 0x38, 0x65, 0xbb, 0x5b, 0xa5, 0x0d, 0x2d, 0xba, 0xf7, 0x35, 0x80,
+	0x1e, 0x90, 0xb6, 0x96, 0x6c, 0xaf, 0x1f, 0x0c, 0xba, 0x49, 0x5b, 0x4b, 0x1a, 0x91, 0x9e, 0xb0,
+	0x36, 0x75, 0x00, 0x26, 0xd5, 0x92, 0x85, 0xb5, 0x10, 0x0a, 0x6b, 0xc7, 0x00, 0x66, 0x24, 0x8f,
+	0xcf, 0x48, 0xf8, 0x79, 0xaa, 0x51, 0x9d, 0x6b, 0x8f, 0xf4, 0x05, 0x39, 0x98, 0x09, 0xa3, 0xa5,
+	0x40, 0x28, 0x53, 0xa3, 0x3d, 0xb2, 0xa0, 0xdf, 0x19, 0x84, 0xc9, 0xfe, 0xfa, 0x6f, 0x65, 0x1b,
+	0x8e, 0x6e, 0xe6, 0x51, 0x70, 0x3b, 0x8f, 0x82, 0x3f, 0xf3, 0x28, 0xf8, 0xb1, 0x88, 0x5a, 0xb7,
+	0x8b, 0xa8, 0xf5, 0x6b, 0x11, 0xb5, 0xbe, 0xf0, 0x8d, 0xc0, 0xd5, 0x52, 0x9f, 0x14, 0x0a, 0xbf,
+	0x41, 0x79, 0x59, 0x37, 0xfc, 0xfb, 0x7f, 0x0f, 0x20, 0xdb, 0xa9, 0x57, 0xf7, 0xd5, 0xdf, 0x00,
+	0x00, 0x00, 0xff, 0xff, 0x03, 0x97, 0x2f, 0x68, 0x20, 0x03, 0x00, 0x00,
 }
 
 func (m *MTP) Marshal() (dAtA []byte, err error) {
@@ -256,42 +201,15 @@ func (m *MTP) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	{
-		size := m.SumCollateral.Size()
-		i -= size
-		if _, err := m.SumCollateral.MarshalTo(dAtA[i:]); err != nil {
-			return 0, err
-		}
-		i = encodeVarintTypes(dAtA, i, uint64(size))
-	}
-	i--
-	dAtA[i] = 0x1
-	i--
-	dAtA[i] = 0x82
-	{
-		size := m.ConsolidateLeverage.Size()
-		i -= size
-		if _, err := m.ConsolidateLeverage.MarshalTo(dAtA[i:]); err != nil {
-			return 0, err
-		}
-		i = encodeVarintTypes(dAtA, i, uint64(size))
-	}
-	i--
-	dAtA[i] = 0x7a
 	if m.AmmPoolId != 0 {
 		i = encodeVarintTypes(dAtA, i, uint64(m.AmmPoolId))
 		i--
-		dAtA[i] = 0x70
+		dAtA[i] = 0x48
 	}
 	if m.Id != 0 {
 		i = encodeVarintTypes(dAtA, i, uint64(m.Id))
 		i--
-		dAtA[i] = 0x68
-	}
-	if m.Position != 0 {
-		i = encodeVarintTypes(dAtA, i, uint64(m.Position))
-		i--
-		dAtA[i] = 0x60
+		dAtA[i] = 0x40
 	}
 	{
 		size := m.MtpHealth.Size()
@@ -302,86 +220,37 @@ func (m *MTP) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i = encodeVarintTypes(dAtA, i, uint64(size))
 	}
 	i--
-	dAtA[i] = 0x5a
-	if len(m.Leverages) > 0 {
-		for iNdEx := len(m.Leverages) - 1; iNdEx >= 0; iNdEx-- {
-			{
-				size := m.Leverages[iNdEx].Size()
-				i -= size
-				if _, err := m.Leverages[iNdEx].MarshalTo(dAtA[i:]); err != nil {
-					return 0, err
-				}
-				i = encodeVarintTypes(dAtA, i, uint64(size))
-			}
-			i--
-			dAtA[i] = 0x52
+	dAtA[i] = 0x3a
+	{
+		size := m.LeveragedLpAmount.Size()
+		i -= size
+		if _, err := m.LeveragedLpAmount.MarshalTo(dAtA[i:]); err != nil {
+			return 0, err
 		}
+		i = encodeVarintTypes(dAtA, i, uint64(size))
 	}
-	if len(m.CustodyAmounts) > 0 {
-		for iNdEx := len(m.CustodyAmounts) - 1; iNdEx >= 0; iNdEx-- {
-			{
-				size := m.CustodyAmounts[iNdEx].Size()
-				i -= size
-				if _, err := m.CustodyAmounts[iNdEx].MarshalTo(dAtA[i:]); err != nil {
-					return 0, err
-				}
-				i = encodeVarintTypes(dAtA, i, uint64(size))
-			}
-			i--
-			dAtA[i] = 0x4a
+	i--
+	dAtA[i] = 0x32
+	{
+		size := m.Leverage.Size()
+		i -= size
+		if _, err := m.Leverage.MarshalTo(dAtA[i:]); err != nil {
+			return 0, err
 		}
+		i = encodeVarintTypes(dAtA, i, uint64(size))
 	}
-	if len(m.CustodyAssets) > 0 {
-		for iNdEx := len(m.CustodyAssets) - 1; iNdEx >= 0; iNdEx-- {
-			i -= len(m.CustodyAssets[iNdEx])
-			copy(dAtA[i:], m.CustodyAssets[iNdEx])
-			i = encodeVarintTypes(dAtA, i, uint64(len(m.CustodyAssets[iNdEx])))
-			i--
-			dAtA[i] = 0x42
+	i--
+	dAtA[i] = 0x2a
+	{
+		size := m.InterestPaid.Size()
+		i -= size
+		if _, err := m.InterestPaid.MarshalTo(dAtA[i:]); err != nil {
+			return 0, err
 		}
+		i = encodeVarintTypes(dAtA, i, uint64(size))
 	}
-	if len(m.InterestUnpaidCollaterals) > 0 {
-		for iNdEx := len(m.InterestUnpaidCollaterals) - 1; iNdEx >= 0; iNdEx-- {
-			{
-				size := m.InterestUnpaidCollaterals[iNdEx].Size()
-				i -= size
-				if _, err := m.InterestUnpaidCollaterals[iNdEx].MarshalTo(dAtA[i:]); err != nil {
-					return 0, err
-				}
-				i = encodeVarintTypes(dAtA, i, uint64(size))
-			}
-			i--
-			dAtA[i] = 0x3a
-		}
-	}
-	if len(m.InterestPaidCustodys) > 0 {
-		for iNdEx := len(m.InterestPaidCustodys) - 1; iNdEx >= 0; iNdEx-- {
-			{
-				size := m.InterestPaidCustodys[iNdEx].Size()
-				i -= size
-				if _, err := m.InterestPaidCustodys[iNdEx].MarshalTo(dAtA[i:]); err != nil {
-					return 0, err
-				}
-				i = encodeVarintTypes(dAtA, i, uint64(size))
-			}
-			i--
-			dAtA[i] = 0x32
-		}
-	}
-	if len(m.InterestPaidCollaterals) > 0 {
-		for iNdEx := len(m.InterestPaidCollaterals) - 1; iNdEx >= 0; iNdEx-- {
-			{
-				size := m.InterestPaidCollaterals[iNdEx].Size()
-				i -= size
-				if _, err := m.InterestPaidCollaterals[iNdEx].MarshalTo(dAtA[i:]); err != nil {
-					return 0, err
-				}
-				i = encodeVarintTypes(dAtA, i, uint64(size))
-			}
-			i--
-			dAtA[i] = 0x2a
-		}
-	}
+	i--
+	dAtA[i] = 0x22
 	{
 		size := m.Liabilities.Size()
 		i -= size
@@ -391,30 +260,17 @@ func (m *MTP) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i = encodeVarintTypes(dAtA, i, uint64(size))
 	}
 	i--
-	dAtA[i] = 0x22
-	if len(m.CollateralAmounts) > 0 {
-		for iNdEx := len(m.CollateralAmounts) - 1; iNdEx >= 0; iNdEx-- {
-			{
-				size := m.CollateralAmounts[iNdEx].Size()
-				i -= size
-				if _, err := m.CollateralAmounts[iNdEx].MarshalTo(dAtA[i:]); err != nil {
-					return 0, err
-				}
-				i = encodeVarintTypes(dAtA, i, uint64(size))
-			}
-			i--
-			dAtA[i] = 0x1a
+	dAtA[i] = 0x1a
+	{
+		size, err := m.Collateral.MarshalToSizedBuffer(dAtA[:i])
+		if err != nil {
+			return 0, err
 		}
+		i -= size
+		i = encodeVarintTypes(dAtA, i, uint64(size))
 	}
-	if len(m.CollateralAssets) > 0 {
-		for iNdEx := len(m.CollateralAssets) - 1; iNdEx >= 0; iNdEx-- {
-			i -= len(m.CollateralAssets[iNdEx])
-			copy(dAtA[i:], m.CollateralAssets[iNdEx])
-			i = encodeVarintTypes(dAtA, i, uint64(len(m.CollateralAssets[iNdEx])))
-			i--
-			dAtA[i] = 0x12
-		}
-	}
+	i--
+	dAtA[i] = 0x12
 	if len(m.Address) > 0 {
 		i -= len(m.Address)
 		copy(dAtA[i:], m.Address)
@@ -478,71 +334,24 @@ func (m *MTP) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovTypes(uint64(l))
 	}
-	if len(m.CollateralAssets) > 0 {
-		for _, s := range m.CollateralAssets {
-			l = len(s)
-			n += 1 + l + sovTypes(uint64(l))
-		}
-	}
-	if len(m.CollateralAmounts) > 0 {
-		for _, e := range m.CollateralAmounts {
-			l = e.Size()
-			n += 1 + l + sovTypes(uint64(l))
-		}
-	}
+	l = m.Collateral.Size()
+	n += 1 + l + sovTypes(uint64(l))
 	l = m.Liabilities.Size()
 	n += 1 + l + sovTypes(uint64(l))
-	if len(m.InterestPaidCollaterals) > 0 {
-		for _, e := range m.InterestPaidCollaterals {
-			l = e.Size()
-			n += 1 + l + sovTypes(uint64(l))
-		}
-	}
-	if len(m.InterestPaidCustodys) > 0 {
-		for _, e := range m.InterestPaidCustodys {
-			l = e.Size()
-			n += 1 + l + sovTypes(uint64(l))
-		}
-	}
-	if len(m.InterestUnpaidCollaterals) > 0 {
-		for _, e := range m.InterestUnpaidCollaterals {
-			l = e.Size()
-			n += 1 + l + sovTypes(uint64(l))
-		}
-	}
-	if len(m.CustodyAssets) > 0 {
-		for _, s := range m.CustodyAssets {
-			l = len(s)
-			n += 1 + l + sovTypes(uint64(l))
-		}
-	}
-	if len(m.CustodyAmounts) > 0 {
-		for _, e := range m.CustodyAmounts {
-			l = e.Size()
-			n += 1 + l + sovTypes(uint64(l))
-		}
-	}
-	if len(m.Leverages) > 0 {
-		for _, e := range m.Leverages {
-			l = e.Size()
-			n += 1 + l + sovTypes(uint64(l))
-		}
-	}
+	l = m.InterestPaid.Size()
+	n += 1 + l + sovTypes(uint64(l))
+	l = m.Leverage.Size()
+	n += 1 + l + sovTypes(uint64(l))
+	l = m.LeveragedLpAmount.Size()
+	n += 1 + l + sovTypes(uint64(l))
 	l = m.MtpHealth.Size()
 	n += 1 + l + sovTypes(uint64(l))
-	if m.Position != 0 {
-		n += 1 + sovTypes(uint64(m.Position))
-	}
 	if m.Id != 0 {
 		n += 1 + sovTypes(uint64(m.Id))
 	}
 	if m.AmmPoolId != 0 {
 		n += 1 + sovTypes(uint64(m.AmmPoolId))
 	}
-	l = m.ConsolidateLeverage.Size()
-	n += 1 + l + sovTypes(uint64(l))
-	l = m.SumCollateral.Size()
-	n += 2 + l + sovTypes(uint64(l))
 	return n
 }
 
@@ -630,9 +439,9 @@ func (m *MTP) Unmarshal(dAtA []byte) error {
 			iNdEx = postIndex
 		case 2:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field CollateralAssets", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Collateral", wireType)
 			}
-			var stringLen uint64
+			var msglen int
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowTypes
@@ -642,61 +451,26 @@ func (m *MTP) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
+				msglen |= int(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
+			if msglen < 0 {
 				return ErrInvalidLengthTypes
 			}
-			postIndex := iNdEx + intStringLen
+			postIndex := iNdEx + msglen
 			if postIndex < 0 {
 				return ErrInvalidLengthTypes
 			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.CollateralAssets = append(m.CollateralAssets, string(dAtA[iNdEx:postIndex]))
-			iNdEx = postIndex
-		case 3:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field CollateralAmounts", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTypes
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthTypes
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthTypes
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			var v github_com_cosmos_cosmos_sdk_types.Int
-			m.CollateralAmounts = append(m.CollateralAmounts, v)
-			if err := m.CollateralAmounts[len(m.CollateralAmounts)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+			if err := m.Collateral.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
-		case 4:
+		case 3:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Liabilities", wireType)
 			}
@@ -730,9 +504,9 @@ func (m *MTP) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			iNdEx = postIndex
-		case 5:
+		case 4:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field InterestPaidCollaterals", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field InterestPaid", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -760,15 +534,47 @@ func (m *MTP) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			var v github_com_cosmos_cosmos_sdk_types.Int
-			m.InterestPaidCollaterals = append(m.InterestPaidCollaterals, v)
-			if err := m.InterestPaidCollaterals[len(m.InterestPaidCollaterals)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+			if err := m.InterestPaid.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 5:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Leverage", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTypes
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTypes
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTypes
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.Leverage.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
 		case 6:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field InterestPaidCustodys", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field LeveragedLpAmount", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -796,153 +602,11 @@ func (m *MTP) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			var v github_com_cosmos_cosmos_sdk_types.Int
-			m.InterestPaidCustodys = append(m.InterestPaidCustodys, v)
-			if err := m.InterestPaidCustodys[len(m.InterestPaidCustodys)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+			if err := m.LeveragedLpAmount.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
 		case 7:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field InterestUnpaidCollaterals", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTypes
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthTypes
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthTypes
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			var v github_com_cosmos_cosmos_sdk_types.Int
-			m.InterestUnpaidCollaterals = append(m.InterestUnpaidCollaterals, v)
-			if err := m.InterestUnpaidCollaterals[len(m.InterestUnpaidCollaterals)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		case 8:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field CustodyAssets", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTypes
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthTypes
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthTypes
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.CustodyAssets = append(m.CustodyAssets, string(dAtA[iNdEx:postIndex]))
-			iNdEx = postIndex
-		case 9:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field CustodyAmounts", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTypes
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthTypes
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthTypes
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			var v github_com_cosmos_cosmos_sdk_types.Int
-			m.CustodyAmounts = append(m.CustodyAmounts, v)
-			if err := m.CustodyAmounts[len(m.CustodyAmounts)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		case 10:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Leverages", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTypes
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthTypes
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthTypes
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			var v github_com_cosmos_cosmos_sdk_types.Dec
-			m.Leverages = append(m.Leverages, v)
-			if err := m.Leverages[len(m.Leverages)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		case 11:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field MtpHealth", wireType)
 			}
@@ -976,26 +640,7 @@ func (m *MTP) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			iNdEx = postIndex
-		case 12:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Position", wireType)
-			}
-			m.Position = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTypes
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.Position |= Position(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		case 13:
+		case 8:
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
 			}
@@ -1014,7 +659,7 @@ func (m *MTP) Unmarshal(dAtA []byte) error {
 					break
 				}
 			}
-		case 14:
+		case 9:
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field AmmPoolId", wireType)
 			}
@@ -1033,74 +678,6 @@ func (m *MTP) Unmarshal(dAtA []byte) error {
 					break
 				}
 			}
-		case 15:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field ConsolidateLeverage", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTypes
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthTypes
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthTypes
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if err := m.ConsolidateLeverage.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		case 16:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field SumCollateral", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTypes
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthTypes
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthTypes
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if err := m.SumCollateral.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipTypes(dAtA[iNdEx:])

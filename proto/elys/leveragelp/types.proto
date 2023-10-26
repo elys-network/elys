@@ -5,59 +5,33 @@ package elys.leveragelp;
 option go_package = "github.com/elys-network/elys/x/leveragelp/types";
 
 import "gogoproto/gogo.proto";
-
-enum Position {
-  UNSPECIFIED = 0;
-  LONG = 1;
-}
+import "cosmos/base/v1beta1/coin.proto";
 
 message MTP {
   string address = 1;
-  repeated string collateral_assets = 2;
-  repeated string collateral_amounts = 3 [
+  cosmos.base.v1beta1.Coin collateral = 2 [(gogoproto.nullable) = false];
+  string liabilities = 3 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ]; // For recording
+  string interest_paid = 4 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ]; // For recording
+  string leverage = 5 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ]; // For recording
+  string leveraged_lp_amount = 6 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
     (gogoproto.nullable) = false
   ];
-  string liabilities = 4 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
-    (gogoproto.nullable) = false
-  ];
-  repeated string interest_paid_collaterals = 5 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
-    (gogoproto.nullable) = false
-  ];
-  repeated string interest_paid_custodys = 6 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
-    (gogoproto.nullable) = false
-  ];
-  repeated string interest_unpaid_collaterals = 7 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
-    (gogoproto.nullable) = false
-  ];
-  repeated string custody_assets = 8;
-  repeated string custody_amounts = 9 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
-    (gogoproto.nullable) = false
-  ];
-  repeated string leverages = 10 [
+  string mtp_health = 7 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
-  string mtp_health = 11 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
-    (gogoproto.nullable) = false
-  ];
-  Position position = 12;
-  uint64 id = 13;
-  uint64 amm_pool_id = 14;
-  string consolidate_leverage = 15 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
-    (gogoproto.nullable) = false
-  ];
-  string sum_collateral = 16 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
-    (gogoproto.nullable) = false
-  ];
+  uint64 id = 8;
+  uint64 amm_pool_id = 9;
 }
 
 message WhiteList { repeated string validator_list = 1; }

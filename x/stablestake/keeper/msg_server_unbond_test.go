@@ -59,6 +59,10 @@ func (suite *KeeperTestSuite) TestMsgServerUnbond() {
 			err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, sender, tc.senderInitBalance)
 			suite.Require().NoError(err)
 
+			params := suite.app.StablestakeKeeper.GetParams(suite.ctx)
+			params.TotalValue = sdk.NewInt(1000_000_000)
+			suite.app.StablestakeKeeper.SetParams(suite.ctx, params)
+
 			msgServer := keeper.NewMsgServerImpl(suite.app.StablestakeKeeper)
 			_, err = msgServer.Unbond(
 				sdk.WrapSDKContext(suite.ctx),
