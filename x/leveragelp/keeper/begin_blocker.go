@@ -29,7 +29,7 @@ func (k Keeper) BeginBlocker(ctx sdk.Context) {
 			if k.IsPoolEnabled(ctx, pool.AmmPoolId) {
 				mtps, _, _ := k.GetMTPsForPool(ctx, pool.AmmPoolId, nil)
 				for _, mtp := range mtps {
-					BeginBlockerProcessMTP(ctx, k, mtp, pool, ammPool)
+					LiquidatePositionIfUnhealthy(ctx, k, mtp, pool, ammPool)
 				}
 			}
 			k.SetPool(ctx, pool)
@@ -38,7 +38,7 @@ func (k Keeper) BeginBlocker(ctx sdk.Context) {
 
 }
 
-func BeginBlockerProcessMTP(ctx sdk.Context, k Keeper, mtp *types.MTP, pool types.Pool, ammPool ammtypes.Pool) {
+func LiquidatePositionIfUnhealthy(ctx sdk.Context, k Keeper, mtp *types.MTP, pool types.Pool, ammPool ammtypes.Pool) {
 	defer func() {
 		if r := recover(); r != nil {
 			if msg, ok := r.(string); ok {

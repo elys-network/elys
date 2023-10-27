@@ -1,6 +1,8 @@
 package keeper_test
 
 import (
+	"time"
+
 	"cosmossdk.io/math"
 	"github.com/cometbft/cometbft/crypto/ed25519"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -104,4 +106,21 @@ func (suite KeeperTestSuite) TestForceCloseLong() {
 	repayAmountOut, err := k.ForceCloseLong(suite.ctx, *mtp, pool)
 	suite.Require().Error(err)
 	suite.Require().Equal(repayAmount.String(), repayAmountOut.String())
+}
+
+func (suite KeeperTestSuite) TestHealthDecreaseForInterest() {
+	k := suite.app.LeveragelpKeeper
+	addr := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
+	mtp, _ := suite.OpenPosition(addr)
+	ammPool, found := suite.app.AmmKeeper.GetPool(suite.ctx, mtp.AmmPoolId)
+	suite.Require().True(found)
+	health, err := k.GetMTPHealth(suite.ctx, *mtp, ammPool)
+	suite.Require().NoError(err)
+	suite.Require().Equal(health.String(), "1.235121261387674542")
+
+	suite.ctx = suite.ctx.WithBlockTime(suite.ctx.BlockTime().Add(time.Hour * 24 * 365))
+	suite.app.StablestakeKeeper.BeginBlocker(suite.ctx)
+	health, err = k.GetMTPHealth(suite.ctx, *mtp, ammPool)
+	suite.Require().NoError(err)
+	suite.Require().Equal(health.String(), "0.617560630693837271")
 }
