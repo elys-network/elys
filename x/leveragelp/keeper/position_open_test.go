@@ -22,6 +22,12 @@ func (suite KeeperTestSuite) TestOpenLong() {
 		Closed:    false,
 	}
 	poolInit := sdk.Coins{sdk.NewInt64Coin("uusdc", 100000), sdk.NewInt64Coin("uusdt", 100000)}
+
+	err := suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, poolInit)
+	suite.Require().NoError(err)
+	err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, poolAddr, poolInit)
+	suite.Require().NoError(err)
+
 	suite.app.AmmKeeper.SetPool(suite.ctx, ammtypes.Pool{
 		PoolId:            1,
 		Address:           poolAddr.String(),
@@ -29,7 +35,7 @@ func (suite KeeperTestSuite) TestOpenLong() {
 		PoolParams: ammtypes.PoolParams{
 			SwapFee:                     sdk.ZeroDec(),
 			ExitFee:                     sdk.ZeroDec(),
-			UseOracle:                   false,
+			UseOracle:                   true,
 			WeightBreakingFeeMultiplier: sdk.ZeroDec(),
 			ExternalLiquidityRatio:      sdk.NewDec(1),
 			LpFeePortion:                sdk.ZeroDec(),
@@ -52,9 +58,17 @@ func (suite KeeperTestSuite) TestOpenLong() {
 		TotalWeight: sdk.NewInt(20),
 	})
 	k.SetPool(suite.ctx, pool)
+	suite.app.AmmKeeper.SetDenomLiquidity(suite.ctx, ammtypes.DenomLiquidity{
+		Denom:     "uusdc",
+		Liquidity: sdk.NewInt(100000),
+	})
+	suite.app.AmmKeeper.SetDenomLiquidity(suite.ctx, ammtypes.DenomLiquidity{
+		Denom:     "uusdt",
+		Liquidity: sdk.NewInt(100000),
+	})
 
 	usdcToken := sdk.NewInt64Coin("uusdc", 100000)
-	err := suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, sdk.Coins{usdcToken})
+	err = suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, sdk.Coins{usdcToken})
 	suite.Require().NoError(err)
 	err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, addr, sdk.Coins{usdcToken})
 	suite.Require().NoError(err)
@@ -80,8 +94,8 @@ func (suite KeeperTestSuite) TestOpenLong() {
 	suite.Require().Equal(mtp.Liabilities.String(), "4000")
 	suite.Require().Equal(mtp.InterestPaid.String(), "0")
 	suite.Require().Equal(mtp.Leverage.String(), "5.000000000000000000")
-	suite.Require().Equal(mtp.LeveragedLpAmount.String(), "49390153191919676")
-	suite.Require().Equal(mtp.MtpHealth.String(), "1.234753829797991900")
+	suite.Require().Equal(mtp.LeveragedLpAmount.String(), "49390000000000000")
+	suite.Require().Equal(mtp.MtpHealth.String(), "1.221000000000000000")
 	suite.Require().Equal(mtp.Id, uint64(1))
 	suite.Require().Equal(mtp.AmmPoolId, uint64(1))
 
@@ -101,8 +115,8 @@ func (suite KeeperTestSuite) TestOpenLong() {
 	suite.Require().Equal(mtp2.Liabilities.String(), "8000")
 	suite.Require().Equal(mtp2.InterestPaid.String(), "0")
 	suite.Require().Equal(mtp2.Leverage.String(), "5.000000000000000000")
-	suite.Require().Equal(mtp2.LeveragedLpAmount.String(), "97617696340303092")
-	suite.Require().Equal(mtp2.MtpHealth.String(), "1.220584311300734832")
+	suite.Require().Equal(mtp2.LeveragedLpAmount.String(), "98805291560975610")
+	suite.Require().Equal(mtp2.MtpHealth.String(), "1.210375000000000000")
 	suite.Require().Equal(mtp2.Id, uint64(1))
 	suite.Require().Equal(mtp2.AmmPoolId, uint64(1))
 }

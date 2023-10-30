@@ -29,7 +29,7 @@ func (k Keeper) BeginBlocker(ctx sdk.Context) {
 			if k.IsPoolEnabled(ctx, pool.AmmPoolId) {
 				mtps, _, _ := k.GetMTPsForPool(ctx, pool.AmmPoolId, nil)
 				for _, mtp := range mtps {
-					LiquidatePositionIfUnhealthy(ctx, k, mtp, pool, ammPool)
+					k.LiquidatePositionIfUnhealthy(ctx, mtp, pool, ammPool)
 				}
 			}
 			k.SetPool(ctx, pool)
@@ -38,7 +38,7 @@ func (k Keeper) BeginBlocker(ctx sdk.Context) {
 
 }
 
-func LiquidatePositionIfUnhealthy(ctx sdk.Context, k Keeper, mtp *types.MTP, pool types.Pool, ammPool ammtypes.Pool) {
+func (k Keeper) LiquidatePositionIfUnhealthy(ctx sdk.Context, mtp *types.MTP, pool types.Pool, ammPool ammtypes.Pool) {
 	defer func() {
 		if r := recover(); r != nil {
 			if msg, ok := r.(string); ok {
@@ -55,7 +55,7 @@ func LiquidatePositionIfUnhealthy(ctx sdk.Context, k Keeper, mtp *types.MTP, poo
 	k.SetMTP(ctx, mtp)
 
 	params := k.GetParams(ctx)
-	if mtp.MtpHealth.LT(params.SafetyFactor) {
+	if mtp.MtpHealth.GT(params.SafetyFactor) {
 		return
 	}
 
@@ -70,7 +70,7 @@ func LiquidatePositionIfUnhealthy(ctx sdk.Context, k Keeper, mtp *types.MTP, poo
 			sdk.NewAttribute("liabilities", mtp.Liabilities.String()),
 			sdk.NewAttribute("health", mtp.MtpHealth.String()),
 		))
-	} else if err != types.ErrMTPUnhealthy {
+	} else {
 		ctx.Logger().Error(errors.Wrap(err, "error executing force close").Error())
 	}
 }

@@ -19,11 +19,20 @@ func (suite KeeperTestSuite) OpenPosition(addr sdk.AccAddress) (*types.MTP, type
 	poolAddr := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
 	treasuryAddr := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
 	pool := types.Pool{
-		AmmPoolId: 1,
-		Enabled:   true,
-		Closed:    false,
+		AmmPoolId:         1,
+		Enabled:           true,
+		Closed:            false,
+		Health:            sdk.ZeroDec(),
+		LeveragedLpAmount: sdk.ZeroInt(),
+		LeverageMax:       sdk.ZeroDec(),
 	}
 	poolInit := sdk.Coins{sdk.NewInt64Coin("uusdc", 100000), sdk.NewInt64Coin("uusdt", 100000)}
+
+	err := suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, poolInit)
+	suite.Require().NoError(err)
+	err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, poolAddr, poolInit)
+	suite.Require().NoError(err)
+
 	suite.app.AmmKeeper.SetPool(suite.ctx, ammtypes.Pool{
 		PoolId:            1,
 		Address:           poolAddr.String(),
@@ -31,7 +40,7 @@ func (suite KeeperTestSuite) OpenPosition(addr sdk.AccAddress) (*types.MTP, type
 		PoolParams: ammtypes.PoolParams{
 			SwapFee:                     sdk.ZeroDec(),
 			ExitFee:                     sdk.ZeroDec(),
-			UseOracle:                   false,
+			UseOracle:                   true,
 			WeightBreakingFeeMultiplier: sdk.ZeroDec(),
 			ExternalLiquidityRatio:      sdk.NewDec(1),
 			LpFeePortion:                sdk.ZeroDec(),
@@ -54,9 +63,17 @@ func (suite KeeperTestSuite) OpenPosition(addr sdk.AccAddress) (*types.MTP, type
 		TotalWeight: sdk.NewInt(20),
 	})
 	k.SetPool(suite.ctx, pool)
+	suite.app.AmmKeeper.SetDenomLiquidity(suite.ctx, ammtypes.DenomLiquidity{
+		Denom:     "uusdc",
+		Liquidity: sdk.NewInt(100000),
+	})
+	suite.app.AmmKeeper.SetDenomLiquidity(suite.ctx, ammtypes.DenomLiquidity{
+		Denom:     "uusdt",
+		Liquidity: sdk.NewInt(100000),
+	})
 
 	usdcToken := sdk.NewInt64Coin("uusdc", 100000)
-	err := suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, sdk.Coins{usdcToken})
+	err = suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, sdk.Coins{usdcToken})
 	suite.Require().NoError(err)
 	err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, addr, sdk.Coins{usdcToken})
 	suite.Require().NoError(err)
@@ -101,10 +118,10 @@ func (suite KeeperTestSuite) TestForceCloseLong() {
 	k := suite.app.LeveragelpKeeper
 	addr := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
 	mtp, pool := suite.OpenPosition(addr)
-	repayAmount := math.NewInt(0)
+	repayAmount := math.NewInt(4000)
 
 	repayAmountOut, err := k.ForceCloseLong(suite.ctx, *mtp, pool)
-	suite.Require().Error(err)
+	suite.Require().NoError(err)
 	suite.Require().Equal(repayAmount.String(), repayAmountOut.String())
 }
 
@@ -116,11 +133,11 @@ func (suite KeeperTestSuite) TestHealthDecreaseForInterest() {
 	suite.Require().True(found)
 	health, err := k.GetMTPHealth(suite.ctx, *mtp, ammPool)
 	suite.Require().NoError(err)
-	suite.Require().Equal(health.String(), "1.235121261387674542")
+	suite.Require().Equal(health.String(), "1.221000000000000000")
 
 	suite.ctx = suite.ctx.WithBlockTime(suite.ctx.BlockTime().Add(time.Hour * 24 * 365))
 	suite.app.StablestakeKeeper.BeginBlocker(suite.ctx)
 	health, err = k.GetMTPHealth(suite.ctx, *mtp, ammPool)
 	suite.Require().NoError(err)
-	suite.Require().Equal(health.String(), "0.617560630693837271")
+	suite.Require().Equal(health.String(), "0.610500000000000000")
 }

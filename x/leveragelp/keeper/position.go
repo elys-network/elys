@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"math"
 
-	sdkmath "cosmossdk.io/math"
-
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
@@ -211,15 +209,14 @@ func (k Keeper) GetMTPHealth(ctx sdk.Context, mtp types.MTP, ammPool ammtypes.Po
 	}
 
 	mtpVal := sdk.ZeroDec()
+	params := k.stableKeeper.GetParams(ctx)
 	for _, commitment := range commitments.CommittedTokens {
-		ammPoolTvl, err := ammPool.TVL(ctx, k.oracleKeeper)
+		cacheCtx, _ := ctx.CacheContext()
+		exitCoins, err := k.amm.ExitPool(cacheCtx, mtp.GetMTPAddress(), ammPool.PoolId, commitment.Amount, sdk.Coins{}, params.DepositDenom)
 		if err != nil {
 			return sdk.ZeroDec(), err
 		}
-		mtpVal = mtpVal.Add(
-			ammPoolTvl.
-				Mul(sdkmath.LegacyNewDecFromInt(commitment.Amount)).
-				Quo(sdkmath.LegacyNewDecFromInt(ammPool.TotalShares.Amount)))
+		mtpVal = mtpVal.Add(sdk.NewDecFromInt(exitCoins.AmountOf(params.DepositDenom)))
 	}
 
 	lr := mtpVal.Quo(sdk.NewDecFromBigInt(xl.BigInt()))
