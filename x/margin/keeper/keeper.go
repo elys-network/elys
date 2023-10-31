@@ -169,7 +169,15 @@ func (k Keeper) Borrow(ctx sdk.Context, collateralAsset string, custodyAsset str
 
 	mtp.Collaterals[collateralIndex].Amount = mtp.Collaterals[collateralIndex].Amount.Add(collateralAmount)
 	mtp.Liabilities = mtp.Liabilities.Add(sdk.NewIntFromBigInt(liabilitiesDec.TruncateInt().BigInt()))
+
+	// we divide liabilities by take profit price to get take profit liabilities in base currency
+	mtp.TakeProfitLiabilities = mtp.Liabilities.Quo(sdk.NewIntFromBigInt(mtp.TakeProfitPrice.TruncateInt().BigInt()))
+
 	mtp.Custodies[custodyIndex].Amount = mtp.Custodies[custodyIndex].Amount.Add(custodyAmount)
+
+	// we divide custody amount by take profit price to get take profit custody amount in base currency
+	mtp.TakeProfitCustodies[custodyIndex].Amount = mtp.Custodies[custodyIndex].Amount.Quo(sdk.NewIntFromBigInt(mtp.TakeProfitPrice.TruncateInt().BigInt()))
+
 	mtp.Leverages = append(mtp.Leverages, eta.Add(sdk.OneDec()))
 
 	// print mtp.CustodyAmount

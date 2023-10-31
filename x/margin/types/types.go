@@ -17,7 +17,7 @@ func GetPositionFromString(s string) Position {
 	}
 }
 
-func NewMTP(signer string, collateralAsset string, borrowAsset string, position Position, leverage sdk.Dec, poolId uint64) *MTP {
+func NewMTP(signer string, collateralAsset string, borrowAsset string, position Position, leverage sdk.Dec, takeProfitPrice sdk.Dec, poolId uint64) *MTP {
 	return &MTP{
 		Address:                   signer,
 		Collaterals:               []sdk.Coin{sdk.NewCoin(collateralAsset, sdk.ZeroInt())},
@@ -32,6 +32,7 @@ func NewMTP(signer string, collateralAsset string, borrowAsset string, position 
 		AmmPoolId:                 poolId,
 		ConsolidateLeverage:       leverage,
 		SumCollateral:             sdk.ZeroInt(),
+		TakeProfitPrice:           takeProfitPrice,
 	}
 }
 
