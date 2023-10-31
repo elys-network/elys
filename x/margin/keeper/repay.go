@@ -10,7 +10,7 @@ import (
 func (k Keeper) Repay(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, ammPool ammtypes.Pool, repayAmount sdk.Int, takeFundPayment bool, collateralAsset string) error {
 	collateralIndex, _ := k.GetMTPAssetIndex(mtp, collateralAsset, "")
 	// nolint:staticcheck,ineffassign
-	returnAmount, debtP, debtI := sdk.ZeroInt(), sdk.ZeroInt(), sdk.ZeroInt()
+	returnAmount := sdk.ZeroInt()
 	Liabilities := mtp.Liabilities
 	InterestUnpaidCollateral := mtp.InterestUnpaidCollaterals[collateralIndex]
 
@@ -37,18 +37,12 @@ func (k Keeper) Repay(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, ammPool
 	if have.LT(Liabilities) {
 		//can't afford principle liability
 		returnAmount = sdk.ZeroInt()
-		debtP = Liabilities.Sub(have)
-		debtI = InterestUnpaidCollateral.Amount
 	} else if have.LT(owe) {
 		// v principle liability; x excess liability
 		returnAmount = sdk.ZeroInt()
-		debtP = sdk.ZeroInt()
-		debtI = Liabilities.Add(InterestUnpaidCollateral.Amount).Sub(have)
 	} else {
 		// can afford both
 		returnAmount = have.Sub(Liabilities).Sub(InterestUnpaidCollateral.Amount)
-		debtP = sdk.ZeroInt()
-		debtI = sdk.ZeroInt()
 	}
 
 	if !returnAmount.IsZero() {
@@ -120,18 +114,6 @@ func (k Keeper) Repay(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, ammPool
 
 	// long position
 	err = pool.UpdateLiabilities(ctx, ptypes.BaseCurrency, mtp.Liabilities, false)
-	if err != nil {
-		return err
-	}
-
-	// long position
-	err = pool.UpdateUnsettledLiabilities(ctx, ptypes.BaseCurrency, debtI, true)
-	if err != nil {
-		return err
-	}
-
-	// long position
-	err = pool.UpdateUnsettledLiabilities(ctx, ptypes.BaseCurrency, debtP, true)
 	if err != nil {
 		return err
 	}

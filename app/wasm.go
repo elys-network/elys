@@ -12,6 +12,8 @@ import (
 	query "github.com/cosmos/cosmos-sdk/types/query"
 	ammkeeper "github.com/elys-network/elys/x/amm/keeper"
 	ammtype "github.com/elys-network/elys/x/amm/types"
+	marginkeeper "github.com/elys-network/elys/x/margin/keeper"
+	margintypes "github.com/elys-network/elys/x/margin/types"
 	oraclekeeper "github.com/elys-network/elys/x/oracle/keeper"
 	oracletypes "github.com/elys-network/elys/x/oracle/types"
 )
@@ -48,6 +50,7 @@ func NewQueryPlugin(
 func RegisterCustomPlugins(
 	amm *ammkeeper.Keeper,
 	oracle *oraclekeeper.Keeper,
+	margin *marginkeeper.Keeper,
 ) []wasmkeeper.Option {
 	wasmQueryPlugin := NewQueryPlugin(amm, oracle)
 
@@ -56,7 +59,7 @@ func RegisterCustomPlugins(
 	})
 
 	messengerDecoratorOpt := wasmkeeper.WithMessageHandlerDecorator(
-		CustomMessageDecorator(amm),
+		CustomMessageDecorator(amm, margin),
 	)
 	return []wasm.Option{
 		queryPluginOpt,
@@ -174,11 +177,12 @@ type AssetInfoType struct {
 	Decimal    uint64 `protobuf:"varint,5,opt,name=decimal,proto3" json:"decimal,omitempty"`
 }
 
-func CustomMessageDecorator(amm *ammkeeper.Keeper) func(wasmkeeper.Messenger) wasmkeeper.Messenger {
+func CustomMessageDecorator(amm *ammkeeper.Keeper, margin *marginkeeper.Keeper) func(wasmkeeper.Messenger) wasmkeeper.Messenger {
 	return func(old wasmkeeper.Messenger) wasmkeeper.Messenger {
 		return &CustomMessenger{
 			wrapped: old,
 			amm:     amm,
+			margin:  margin,
 		}
 	}
 }
@@ -186,6 +190,7 @@ func CustomMessageDecorator(amm *ammkeeper.Keeper) func(wasmkeeper.Messenger) wa
 type CustomMessenger struct {
 	wrapped wasmkeeper.Messenger
 	amm     *ammkeeper.Keeper
+	margin  *marginkeeper.Keeper
 }
 
 var _ wasmkeeper.Messenger = (*CustomMessenger)(nil)
@@ -200,6 +205,12 @@ func (m *CustomMessenger) DispatchMsg(ctx sdk.Context, contractAddr sdk.AccAddre
 		}
 		if contractMsg.MsgSwapExactAmountIn != nil {
 			return m.msgSwapExactAmountIn(ctx, contractAddr, contractMsg.MsgSwapExactAmountIn)
+		}
+		if contractMsg.MsgClose != nil {
+			return m.msgClose(ctx, contractAddr, contractMsg.MsgClose)
+		}
+		if contractMsg.MsgOpen != nil {
+			return m.msgOpen(ctx, contractAddr, contractMsg.MsgOpen)
 		}
 	}
 	return m.wrapped.DispatchMsg(ctx, contractAddr, contractIBCPortID, msg)
@@ -251,15 +262,97 @@ func PerformMsgSwapExactAmountIn(f *ammkeeper.Keeper, ctx sdk.Context, contractA
 		return nil, errorsmod.Wrap(err, "swap msg")
 	}
 
-  var resp = &MsgSwapExactAmountInResponse{
+	var resp = &MsgSwapExactAmountInResponse{
 		TokenOutAmount: swapResp.TokenOutAmount,
 		MetaData:       msgSwapExactAmountIn.MetaData,
 	}
 	return resp, nil
 }
 
+func (m *CustomMessenger) msgOpen(ctx sdk.Context, contractAddr sdk.AccAddress, msgOpen *MsgOpen) ([]sdk.Event, [][]byte, error) {
+	res, err := PerformMsgOpen(m.margin, ctx, contractAddr, msgOpen)
+	if err != nil {
+		return nil, nil, errorsmod.Wrap(err, "perform open")
+	}
+
+	responseBytes, err := json.Marshal(*res)
+	if err != nil {
+		return nil, nil, errorsmod.Wrap(err, "failed to serialize open response")
+	}
+
+	resp := [][]byte{responseBytes}
+
+	return nil, resp, nil
+}
+
+func PerformMsgOpen(f *marginkeeper.Keeper, ctx sdk.Context, contractAddr sdk.AccAddress, msgOpen *MsgOpen) (*MsgOpenResponse, error) {
+	if msgOpen == nil {
+		return nil, wasmvmtypes.InvalidRequest{Err: "margin open null margin open"}
+	}
+	msgServer := marginkeeper.NewMsgServerImpl(*f)
+
+	msgMsgOpen := margintypes.NewMsgOpen(msgOpen.Creator, msgOpen.CollateralAsset, cosmos_sdk_math.Int(msgOpen.CollateralAmount), msgOpen.BorrowAsset, msgOpen.Position, msgOpen.Leverage, msgOpen.TakeProfitPrice)
+
+	if err := msgMsgOpen.ValidateBasic(); err != nil {
+		return nil, errorsmod.Wrap(err, "failed validating msgMsgOpen")
+	}
+
+	_, err := msgServer.Open(ctx, msgMsgOpen) // Discard the response because it's empty
+
+	if err != nil {
+		return nil, errorsmod.Wrap(err, "margin open msg")
+	}
+
+	var resp = &MsgOpenResponse{
+		MetaData: msgOpen.MetaData,
+	}
+	return resp, nil
+}
+
+func (m *CustomMessenger) msgClose(ctx sdk.Context, contractAddr sdk.AccAddress, msgClose *MsgClose) ([]sdk.Event, [][]byte, error) {
+	res, err := PerformMsgClose(m.margin, ctx, contractAddr, msgClose)
+	if err != nil {
+		return nil, nil, errorsmod.Wrap(err, "perform close")
+	}
+
+	responseBytes, err := json.Marshal(*res)
+	if err != nil {
+		return nil, nil, errorsmod.Wrap(err, "failed to serialize close response")
+	}
+
+	resp := [][]byte{responseBytes}
+
+	return nil, resp, nil
+}
+
+func PerformMsgClose(f *marginkeeper.Keeper, ctx sdk.Context, contractAddr sdk.AccAddress, msgClose *MsgClose) (*MsgCloseResponse, error) {
+	if msgClose == nil {
+		return nil, wasmvmtypes.InvalidRequest{Err: "margin close null margin close"}
+	}
+	msgServer := marginkeeper.NewMsgServerImpl(*f)
+
+	msgMsgClose := margintypes.NewMsgClose(msgClose.Creator, uint64(msgClose.Id))
+
+	if err := msgMsgClose.ValidateBasic(); err != nil {
+		return nil, errorsmod.Wrap(err, "failed validating msgMsgClose")
+	}
+
+	_, err := msgServer.Close(ctx, msgMsgClose) // Discard the response because it's empty
+
+	if err != nil {
+		return nil, errorsmod.Wrap(err, "margin close msg")
+	}
+
+	var resp = &MsgCloseResponse{
+		MetaData: msgClose.MetaData,
+	}
+	return resp, nil
+}
+
 type ElysMsg struct {
 	MsgSwapExactAmountIn *MsgSwapExactAmountIn `json:"msg_swap_exact_amount_in,omitempty"`
+	MsgOpen              *MsgOpen              `json:"msg_open,omitempty"`
+	MsgClose             *MsgClose             `json:"msg_close,omitempty"`
 }
 
 type MsgSwapExactAmountIn struct {
@@ -273,4 +366,28 @@ type MsgSwapExactAmountIn struct {
 type MsgSwapExactAmountInResponse struct {
 	TokenOutAmount cosmos_sdk_math.Int `protobuf:"bytes,1,opt,name=tokenOutAmount,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"token_out_amount,omitempty"`
 	MetaData       *[]byte             `protobuf:"bytes,2,opt,name=tokenData,proto3" json:"meta_data,omitempty"`
+}
+
+type MsgOpen struct {
+	Creator          string               `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
+	CollateralAsset  string               `protobuf:"bytes,2,opt,name=collateralAsset,proto3" json:"collateral_asset,omitempty"`
+	CollateralAmount sdk.Uint             `protobuf:"bytes,3,opt,name=collateralAmount,proto3" json:"collateral_amount,omitempty"`
+	BorrowAsset      string               `protobuf:"bytes,4,opt,name=borrowAsset,proto3" json:"borrow_asset,omitempty"`
+	Position         margintypes.Position `protobuf:"bytes,5,opt,name=position,proto3" json:"position,omitempty"`
+	Leverage         sdk.Dec              `protobuf:"bytes,6,opt,name=leverage,proto3" json:"leverage,omitempty"`
+	TakeProfitPrice  sdk.Dec              `protobuf:"bytes,7,opt,name=takeProfitPrice,proto3" json:"take_profit_price,omitempty"`
+	MetaData         *[]byte              `protobuf:"bytes,8,opt,name=tokenData,proto3" json:"meta_data,omitempty"`
+}
+
+type MsgClose struct {
+	Creator  string  `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
+	Id       int64   `protobuf:"bytes,2,opt,name=id,proto3" json:"id,omitempty"`
+	MetaData *[]byte `protobuf:"bytes,3,opt,name=tokenData,proto3" json:"meta_data,omitempty"`
+}
+
+type MsgOpenResponse struct {
+	MetaData *[]byte `protobuf:"bytes,1,opt,name=tokenData,proto3" json:"meta_data,omitempty"`
+}
+type MsgCloseResponse struct {
+	MetaData *[]byte `protobuf:"bytes,1,opt,name=tokenData,proto3" json:"meta_data,omitempty"`
 }
