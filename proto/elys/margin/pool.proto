@@ -19,15 +19,11 @@ message PoolAsset {
     (gogoproto.nullable) = false,
     (gogoproto.moretags) = "yaml:\"asset_balance\""
   ];
-  string unsettled_liabilities = 4 [
+  string block_interest = 4 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
     (gogoproto.nullable) = false
   ];
-  string block_interest = 5 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
-    (gogoproto.nullable) = false
-  ];
-  string asset_denom =  6;
+  string asset_denom =  5;
 }
 
 message Pool {

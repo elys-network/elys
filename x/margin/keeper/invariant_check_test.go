@@ -100,6 +100,7 @@ func TestCheckBalanceInvariant_InvalidBalance(t *testing.T) {
 		ptypes.ATOM,
 		margintypes.Position_LONG,
 		sdk.NewDec(5),
+		sdk.MustNewDecFromStr(margintypes.TakeProfitPriceDefault),
 	)
 
 	_, err = mk.Open(ctx, msg2)
