@@ -10,12 +10,18 @@ import (
 	wasmvmtypes "github.com/CosmWasm/wasmvm/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	query "github.com/cosmos/cosmos-sdk/types/query"
+	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
+	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
+	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	ammkeeper "github.com/elys-network/elys/x/amm/keeper"
 	ammtype "github.com/elys-network/elys/x/amm/types"
+	commitmentkeeper "github.com/elys-network/elys/x/commitment/keeper"
+	commitmenttypes "github.com/elys-network/elys/x/commitment/types"
 	marginkeeper "github.com/elys-network/elys/x/margin/keeper"
 	margintypes "github.com/elys-network/elys/x/margin/types"
 	oraclekeeper "github.com/elys-network/elys/x/oracle/keeper"
 	oracletypes "github.com/elys-network/elys/x/oracle/types"
+	paramtypes "github.com/elys-network/elys/x/parameter/types"
 )
 
 // AllCapabilities returns all capabilities available with the current wasmvm
@@ -32,18 +38,30 @@ func AllCapabilities() []string {
 }
 
 type QueryPlugin struct {
-	ammKeeper    *ammkeeper.Keeper
-	oracleKeeper *oraclekeeper.Keeper
+	ammKeeper        *ammkeeper.Keeper
+	oracleKeeper     *oraclekeeper.Keeper
+	bankKeeper       *bankkeeper.BaseKeeper
+	stakingKeeper    *stakingkeeper.Keeper
+	commitmentKeeper *commitmentkeeper.Keeper
+	marginKeeper     *marginkeeper.Keeper
 }
 
 // NewQueryPlugin returns a reference to a new QueryPlugin.
 func NewQueryPlugin(
 	amm *ammkeeper.Keeper,
 	oracle *oraclekeeper.Keeper,
+	bank *bankkeeper.BaseKeeper,
+	staking *stakingkeeper.Keeper,
+	commitment *commitmentkeeper.Keeper,
+	margin *marginkeeper.Keeper,
 ) *QueryPlugin {
 	return &QueryPlugin{
-		ammKeeper:    amm,
-		oracleKeeper: oracle,
+		ammKeeper:        amm,
+		oracleKeeper:     oracle,
+		bankKeeper:       bank,
+		stakingKeeper:    staking,
+		commitmentKeeper: commitment,
+		marginKeeper:     margin,
 	}
 }
 
@@ -51,15 +69,18 @@ func RegisterCustomPlugins(
 	amm *ammkeeper.Keeper,
 	oracle *oraclekeeper.Keeper,
 	margin *marginkeeper.Keeper,
+	bank *bankkeeper.BaseKeeper,
+	staking *stakingkeeper.Keeper,
+	commitment *commitmentkeeper.Keeper,
 ) []wasmkeeper.Option {
-	wasmQueryPlugin := NewQueryPlugin(amm, oracle)
+	wasmQueryPlugin := NewQueryPlugin(amm, oracle, bank, staking, commitment, margin)
 
 	queryPluginOpt := wasmkeeper.WithQueryPlugins(&wasmkeeper.QueryPlugins{
 		Custom: CustomQuerier(wasmQueryPlugin),
 	})
 
 	messengerDecoratorOpt := wasmkeeper.WithMessageHandlerDecorator(
-		CustomMessageDecorator(amm, margin),
+		CustomMessageDecorator(amm, margin, staking, commitment),
 	)
 	return []wasm.Option{
 		queryPluginOpt,
@@ -129,7 +150,37 @@ func CustomQuerier(qp *QueryPlugin) func(ctx sdk.Context, request json.RawMessag
 				return nil, errorsmod.Wrap(err, "failed to serialize asset info response")
 			}
 			return responseBytes, nil
+		case contractQuery.BalanceOfDenom != nil:
+			denom := contractQuery.BalanceOfDenom.Denom
+			addr := contractQuery.BalanceOfDenom.Address
+			address, err := sdk.AccAddressFromBech32(contractQuery.BalanceOfDenom.Address)
+			if err != nil {
+				return nil, errorsmod.Wrap(err, "invalid address")
+			}
+			balance := qp.bankKeeper.GetBalance(ctx, address, denom)
+			if denom != paramtypes.Elys {
+				commitment, found := qp.commitmentKeeper.GetCommitments(ctx, addr)
+				if !found {
+					balance = sdk.NewCoin(denom, sdk.ZeroInt())
+				} else {
+					uncommittedToken, found := commitment.GetUncommittedTokensForDenom(denom)
+					if !found {
+						return nil, errorsmod.Wrap(nil, "invalid denom")
+					}
 
+					balance = sdk.NewCoin(denom, uncommittedToken.Amount)
+				}
+			}
+
+			res := QueryBalanceResponse{
+				Balance: balance,
+			}
+
+			responseBytes, err := json.Marshal(res)
+			if err != nil {
+				return nil, errorsmod.Wrap(err, "failed to get balance response")
+			}
+			return responseBytes, nil
 		default:
 			return nil, wasmvmtypes.UnsupportedRequest{Kind: "unknown elys query variant"}
 		}
@@ -140,6 +191,7 @@ type ElysQuery struct {
 	PriceAll            *PriceAll                   `json:"price_all,omitempty"`
 	QuerySwapEstimation *QuerySwapEstimationRequest `json:"query_swap_estimation,omitempty"`
 	AssetInfo           *AssetInfo                  `json:"asset_info,omitempty"`
+	BalanceOfDenom      *QueryBalanceRequest        `json:"balance_of_denom,omitempty"`
 }
 
 type PriceAll struct {
@@ -177,20 +229,33 @@ type AssetInfoType struct {
 	Decimal    uint64 `protobuf:"varint,5,opt,name=decimal,proto3" json:"decimal,omitempty"`
 }
 
-func CustomMessageDecorator(amm *ammkeeper.Keeper, margin *marginkeeper.Keeper) func(wasmkeeper.Messenger) wasmkeeper.Messenger {
+type QueryBalanceRequest struct {
+	Address string `protobuf:"bytes,1,opt,name=address,proto3" json:"address,omitempty"`
+	Denom   string `protobuf:"bytes,2,opt,name=denom,proto3" json:"denom,omitempty"`
+}
+
+type QueryBalanceResponse struct {
+	Balance sdk.Coin `protobuf:"bytes,1,opt,name=balance,proto3" json:"balance,omitempty"`
+}
+
+func CustomMessageDecorator(amm *ammkeeper.Keeper, margin *marginkeeper.Keeper, staking *stakingkeeper.Keeper, commitment *commitmentkeeper.Keeper) func(wasmkeeper.Messenger) wasmkeeper.Messenger {
 	return func(old wasmkeeper.Messenger) wasmkeeper.Messenger {
 		return &CustomMessenger{
-			wrapped: old,
-			amm:     amm,
-			margin:  margin,
+			wrapped:    old,
+			amm:        amm,
+			margin:     margin,
+			staking:    staking,
+			commitment: commitment,
 		}
 	}
 }
 
 type CustomMessenger struct {
-	wrapped wasmkeeper.Messenger
-	amm     *ammkeeper.Keeper
-	margin  *marginkeeper.Keeper
+	wrapped    wasmkeeper.Messenger
+	amm        *ammkeeper.Keeper
+	margin     *marginkeeper.Keeper
+	staking    *stakingkeeper.Keeper
+	commitment *commitmentkeeper.Keeper
 }
 
 var _ wasmkeeper.Messenger = (*CustomMessenger)(nil)
@@ -211,6 +276,12 @@ func (m *CustomMessenger) DispatchMsg(ctx sdk.Context, contractAddr sdk.AccAddre
 		}
 		if contractMsg.MsgOpen != nil {
 			return m.msgOpen(ctx, contractAddr, contractMsg.MsgOpen)
+		}
+		if contractMsg.MsgStake != nil {
+			return m.msgStake(ctx, contractAddr, contractMsg.MsgStake)
+		}
+		if contractMsg.MsgUnstake != nil {
+			return m.msgUnstake(ctx, contractAddr, contractMsg.MsgUnstake)
 		}
 	}
 	return m.wrapped.DispatchMsg(ctx, contractAddr, contractIBCPortID, msg)
@@ -349,10 +420,180 @@ func PerformMsgClose(f *marginkeeper.Keeper, ctx sdk.Context, contractAddr sdk.A
 	return resp, nil
 }
 
+func (m *CustomMessenger) msgStake(ctx sdk.Context, contractAddr sdk.AccAddress, msgStake *MsgStake) ([]sdk.Event, [][]byte, error) {
+	var res *RequestResponse
+	var err error
+	if msgStake.Asset == paramtypes.Elys {
+		res, err = PerformMsgStakeElys(m.staking, ctx, contractAddr, msgStake)
+		if err != nil {
+			return nil, nil, errorsmod.Wrap(err, "perform elys stake")
+		}
+	} else {
+		res, err = PerformMsgCommit(m.commitment, ctx, contractAddr, msgStake)
+		if err != nil {
+			return nil, nil, errorsmod.Wrap(err, "perform elys stake")
+		}
+	}
+
+	responseBytes, err := json.Marshal(*res)
+	if err != nil {
+		return nil, nil, errorsmod.Wrap(err, "failed to serialize stake")
+	}
+
+	resp := [][]byte{responseBytes}
+
+	return nil, resp, nil
+}
+
+func PerformMsgStakeElys(f *stakingkeeper.Keeper, ctx sdk.Context, contractAddr sdk.AccAddress, msgStake *MsgStake) (*RequestResponse, error) {
+	if msgStake == nil {
+		return nil, wasmvmtypes.InvalidRequest{Err: "Invalid staking parameter"}
+	}
+
+	msgServer := stakingkeeper.NewMsgServerImpl(f)
+	address, err := sdk.AccAddressFromBech32(msgStake.Address)
+	if err != nil {
+		return nil, errorsmod.Wrap(err, "invalid address")
+	}
+
+	validator_address, err := sdk.ValAddressFromBech32(msgStake.ValidatorAddress)
+	if err != nil {
+		return nil, errorsmod.Wrap(err, "invalid address")
+	}
+
+	amount := sdk.NewCoin(msgStake.Asset, msgStake.Amount)
+	msgMsgDelegate := stakingtypes.NewMsgDelegate(address, validator_address, amount)
+
+	if err := msgMsgDelegate.ValidateBasic(); err != nil {
+		return nil, errorsmod.Wrap(err, "failed validating msgMsgDelegate")
+	}
+
+	_, err = msgServer.Delegate(ctx, msgMsgDelegate) // Discard the response because it's empty
+	if err != nil {
+		return nil, errorsmod.Wrap(err, "elys stake msg")
+	}
+
+	var resp = &RequestResponse{
+		Code:   paramtypes.RES_OK,
+		Result: "Staking succeed",
+	}
+
+	return resp, nil
+}
+
+func PerformMsgCommit(f *commitmentkeeper.Keeper, ctx sdk.Context, contractAddr sdk.AccAddress, msgStake *MsgStake) (*RequestResponse, error) {
+	if msgStake == nil {
+		return nil, wasmvmtypes.InvalidRequest{Err: "Invalid staking parameter"}
+	}
+	msgServer := commitmentkeeper.NewMsgServerImpl(*f)
+	msgMsgCommit := commitmenttypes.NewMsgCommitTokens(msgStake.Address, msgStake.Amount, msgStake.Asset)
+
+	if err := msgMsgCommit.ValidateBasic(); err != nil {
+		return nil, errorsmod.Wrap(err, "failed validating msgMsgCommit")
+	}
+
+	_, err := msgServer.CommitTokens(ctx, msgMsgCommit) // Discard the response because it's empty
+	if err != nil {
+		return nil, errorsmod.Wrap(err, "commit msg")
+	}
+
+	var resp = &RequestResponse{
+		Code:   paramtypes.RES_OK,
+		Result: "Staking succeed",
+	}
+	return resp, nil
+}
+
+func (m *CustomMessenger) msgUnstake(ctx sdk.Context, contractAddr sdk.AccAddress, msgUnstake *MsgUnstake) ([]sdk.Event, [][]byte, error) {
+	var res *RequestResponse
+	var err error
+	if msgUnstake.Asset == paramtypes.Elys {
+		res, err = PerformMsgUnstakeElys(m.staking, ctx, contractAddr, msgUnstake)
+		if err != nil {
+			return nil, nil, errorsmod.Wrap(err, "perform elys stake")
+		}
+	} else {
+		res, err = PerformMsgUncommit(m.commitment, ctx, contractAddr, msgUnstake)
+		if err != nil {
+			return nil, nil, errorsmod.Wrap(err, "perform elys stake")
+		}
+	}
+
+	responseBytes, err := json.Marshal(*res)
+	if err != nil {
+		return nil, nil, errorsmod.Wrap(err, "failed to serialize stake")
+	}
+
+	resp := [][]byte{responseBytes}
+
+	return nil, resp, nil
+}
+
+func PerformMsgUnstakeElys(f *stakingkeeper.Keeper, ctx sdk.Context, contractAddr sdk.AccAddress, msgUnstake *MsgUnstake) (*RequestResponse, error) {
+	if msgUnstake == nil {
+		return nil, wasmvmtypes.InvalidRequest{Err: "Invalid unstaking parameter"}
+	}
+
+	msgServer := stakingkeeper.NewMsgServerImpl(f)
+	address, err := sdk.AccAddressFromBech32(msgUnstake.Address)
+	if err != nil {
+		return nil, errorsmod.Wrap(err, "invalid address")
+	}
+
+	validator_address, err := sdk.ValAddressFromBech32(msgUnstake.ValidatorAddress)
+	if err != nil {
+		return nil, errorsmod.Wrap(err, "invalid address")
+	}
+
+	amount := sdk.NewCoin(msgUnstake.Asset, msgUnstake.Amount)
+	msgMsgUndelegate := stakingtypes.NewMsgUndelegate(address, validator_address, amount)
+
+	if err := msgMsgUndelegate.ValidateBasic(); err != nil {
+		return nil, errorsmod.Wrap(err, "failed validating msgMsgDelegate")
+	}
+
+	_, err = msgServer.Undelegate(ctx, msgMsgUndelegate) // Discard the response because it's empty
+	if err != nil {
+		return nil, errorsmod.Wrap(err, "elys unstake msg")
+	}
+
+	var resp = &RequestResponse{
+		Code:   paramtypes.RES_OK,
+		Result: "Unstaking succeed",
+	}
+
+	return resp, nil
+}
+
+func PerformMsgUncommit(f *commitmentkeeper.Keeper, ctx sdk.Context, contractAddr sdk.AccAddress, msgUnstake *MsgUnstake) (*RequestResponse, error) {
+	if msgUnstake == nil {
+		return nil, wasmvmtypes.InvalidRequest{Err: "Invalid staking parameter"}
+	}
+	msgServer := commitmentkeeper.NewMsgServerImpl(*f)
+	msgMsgUncommit := commitmenttypes.NewMsgUncommitTokens(msgUnstake.Address, msgUnstake.Amount, msgUnstake.Asset)
+
+	if err := msgMsgUncommit.ValidateBasic(); err != nil {
+		return nil, errorsmod.Wrap(err, "failed validating msgMsgCommit")
+	}
+
+	_, err := msgServer.UncommitTokens(ctx, msgMsgUncommit) // Discard the response because it's empty
+	if err != nil {
+		return nil, errorsmod.Wrap(err, "commit msg")
+	}
+
+	var resp = &RequestResponse{
+		Code:   paramtypes.RES_OK,
+		Result: "Unstaking succeed",
+	}
+	return resp, nil
+}
+
 type ElysMsg struct {
 	MsgSwapExactAmountIn *MsgSwapExactAmountIn `json:"msg_swap_exact_amount_in,omitempty"`
 	MsgOpen              *MsgOpen              `json:"msg_open,omitempty"`
 	MsgClose             *MsgClose             `json:"msg_close,omitempty"`
+	MsgStake             *MsgStake             `json:"msg_stake,omitempty"`
+	MsgUnstake           *MsgUnstake           `json:"msg_unstake,omitempty"`
 }
 
 type MsgSwapExactAmountIn struct {
@@ -390,4 +631,23 @@ type MsgOpenResponse struct {
 }
 type MsgCloseResponse struct {
 	MetaData *[]byte `protobuf:"bytes,1,opt,name=tokenData,proto3" json:"meta_data,omitempty"`
+}
+
+type MsgStake struct {
+	Address          string              `protobuf:"bytes,1,opt,name=address,proto3" json:"address,omitempty"`
+	Amount           cosmos_sdk_math.Int `protobuf:"bytes,2,opt,name=amount,proto3" json:"amount,omitempty"`
+	Asset            string              `protobuf:"bytes,3,opt,name=asset,proto3" json:"asset,omitempty"`
+	ValidatorAddress string              `protobuf:"bytes,4,opt,name=validator_address,proto3" json:"validator_address,omitempty"`
+}
+
+type MsgUnstake struct {
+	Address          string              `protobuf:"bytes,1,opt,name=address,proto3" json:"address,omitempty"`
+	Amount           cosmos_sdk_math.Int `protobuf:"bytes,2,opt,name=amount,proto3" json:"amount,omitempty"`
+	Asset            string              `protobuf:"bytes,3,opt,name=asset,proto3" json:"asset,omitempty"`
+	ValidatorAddress string              `protobuf:"bytes,4,opt,name=validator_address,proto3" json:"validator_address,omitempty"`
+}
+
+type RequestResponse struct {
+	Code   uint64 `protobuf:"bytes,1,opt,name=code,proto3" json:"code,omitempty"`
+	Result string `protobuf:"bytes,2,opt,name=result,proto3" json:"result,omitempty"`
 }
