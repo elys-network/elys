@@ -261,7 +261,7 @@ func TestOpenLong_ErrorsDuringOperations(t *testing.T) {
 	mockChecker.On("EstimateSwap", ctx, leveragedAmtTokenIn, msg.BorrowAsset, ammtypes.Pool{}).Return(custodyAmount, nil)
 	mockChecker.On("HasSufficientPoolBalance", ctx, ammtypes.Pool{}, msg.BorrowAsset, custodyAmount).Return(true)
 
-	mtp := types.NewMTP(msg.Creator, msg.CollateralAsset, msg.BorrowAsset, msg.Position, msg.Leverage, poolId)
+	mtp := types.NewMTP(msg.Creator, msg.CollateralAsset, msg.BorrowAsset, msg.Position, msg.Leverage, sdk.MustNewDecFromStr(types.TakeProfitPriceDefault), poolId)
 
 	borrowError := errors.New("borrow error")
 	mockChecker.On("Borrow", ctx, msg.CollateralAsset, msg.BorrowAsset, msg.CollateralAmount, custodyAmount, mtp, &ammtypes.Pool{}, &types.Pool{}, eta).Return(borrowError)
@@ -318,7 +318,7 @@ func TestOpenLong_LeverageRatioLessThanSafetyFactor(t *testing.T) {
 	mockChecker.On("EstimateSwap", ctx, leveragedAmtTokenIn, msg.BorrowAsset, ammtypes.Pool{}).Return(custodyAmount, nil)
 	mockChecker.On("HasSufficientPoolBalance", ctx, ammtypes.Pool{}, msg.BorrowAsset, custodyAmount).Return(true)
 
-	mtp := types.NewMTP(msg.Creator, msg.CollateralAsset, msg.BorrowAsset, msg.Position, msg.Leverage, poolId)
+	mtp := types.NewMTP(msg.Creator, msg.CollateralAsset, msg.BorrowAsset, msg.Position, msg.Leverage, sdk.MustNewDecFromStr(types.TakeProfitPriceDefault), poolId)
 
 	mockChecker.On("Borrow", ctx, msg.CollateralAsset, msg.BorrowAsset, msg.CollateralAmount, custodyAmount, mtp, &ammtypes.Pool{}, &types.Pool{}, eta).Return(nil)
 	mockChecker.On("UpdatePoolHealth", ctx, &types.Pool{}).Return(nil)
@@ -381,7 +381,7 @@ func TestOpenLong_Success(t *testing.T) {
 	mockChecker.On("EstimateSwap", ctx, leveragedAmtTokenIn, msg.BorrowAsset, ammtypes.Pool{}).Return(custodyAmount, nil)
 	mockChecker.On("HasSufficientPoolBalance", ctx, ammtypes.Pool{}, msg.BorrowAsset, custodyAmount).Return(true)
 
-	mtp := types.NewMTP(msg.Creator, msg.CollateralAsset, msg.BorrowAsset, msg.Position, msg.Leverage, poolId)
+	mtp := types.NewMTP(msg.Creator, msg.CollateralAsset, msg.BorrowAsset, msg.Position, msg.Leverage, sdk.MustNewDecFromStr(types.TakeProfitPriceDefault), poolId)
 
 	mockChecker.On("Borrow", ctx, msg.CollateralAsset, msg.BorrowAsset, msg.CollateralAmount, custodyAmount, mtp, &ammtypes.Pool{}, &types.Pool{}, eta).Return(nil)
 	mockChecker.On("UpdatePoolHealth", ctx, &types.Pool{}).Return(nil)
