@@ -20,8 +20,8 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen) (*types.MsgOpenRespons
 	}
 
 	// Check if it is the same direction position for the same trader.
-	if mtp := k.CheckSamePosition(ctx, msg); mtp != nil {
-		return k.OpenConsolidate(ctx, mtp, msg)
+	if position := k.CheckSamePosition(ctx, msg); position != nil {
+		return k.OpenConsolidate(ctx, position, msg)
 	}
 
 	if err := k.CheckMaxOpenPositions(ctx); err != nil {
@@ -32,18 +32,18 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen) (*types.MsgOpenRespons
 		return nil, err
 	}
 
-	mtp, err := k.OpenLong(ctx, msg)
+	position, err := k.OpenLong(ctx, msg)
 	if err != nil {
 		return nil, err
 	}
 
 	event := sdk.NewEvent(types.EventOpen,
-		sdk.NewAttribute("id", strconv.FormatInt(int64(mtp.Id), 10)),
-		sdk.NewAttribute("address", mtp.Address),
-		sdk.NewAttribute("collateral", mtp.Collateral.String()),
-		sdk.NewAttribute("leverage", mtp.Leverage.String()),
-		sdk.NewAttribute("liabilities", mtp.Liabilities.String()),
-		sdk.NewAttribute("health", mtp.MtpHealth.String()),
+		sdk.NewAttribute("id", strconv.FormatInt(int64(position.Id), 10)),
+		sdk.NewAttribute("address", position.Address),
+		sdk.NewAttribute("collateral", position.Collateral.String()),
+		sdk.NewAttribute("leverage", position.Leverage.String()),
+		sdk.NewAttribute("liabilities", position.Liabilities.String()),
+		sdk.NewAttribute("health", position.PositionHealth.String()),
 	)
 	ctx.EventManager().EmitEvent(event)
 

@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"math"
 
-	sdkmath "cosmossdk.io/math"
-
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
@@ -15,69 +13,69 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-func (k Keeper) GetMTP(ctx sdk.Context, mtpAddress string, id uint64) (types.MTP, error) {
-	var mtp types.MTP
-	key := types.GetMTPKey(mtpAddress, id)
+func (k Keeper) GetPosition(ctx sdk.Context, positionAddress string, id uint64) (types.Position, error) {
+	var position types.Position
+	key := types.GetPositionKey(positionAddress, id)
 	store := ctx.KVStore(k.storeKey)
 	if !store.Has(key) {
-		return mtp, types.ErrMTPDoesNotExist
+		return position, types.ErrPositionDoesNotExist
 	}
 	bz := store.Get(key)
-	k.cdc.MustUnmarshal(bz, &mtp)
-	return mtp, nil
+	k.cdc.MustUnmarshal(bz, &position)
+	return position, nil
 }
 
-func (k Keeper) SetMTP(ctx sdk.Context, mtp *types.MTP) {
+func (k Keeper) SetPosition(ctx sdk.Context, position *types.Position) {
 	store := ctx.KVStore(k.storeKey)
-	count := k.GetMTPCount(ctx)
-	openCount := k.GetOpenMTPCount(ctx)
+	count := k.GetPositionCount(ctx)
+	openCount := k.GetOpenPositionCount(ctx)
 
-	if mtp.Id == 0 {
+	if position.Id == 0 {
 		// increment global id count
 		count++
-		mtp.Id = count
-		k.SetMTPCount(ctx, count)
-		// increment open mtp count
+		position.Id = count
+		k.SetPositionCount(ctx, count)
+		// increment open position count
 		openCount++
-		k.SetOpenMTPCount(ctx, openCount)
+		k.SetOpenPositionCount(ctx, openCount)
 	}
 
-	key := types.GetMTPKey(mtp.Address, mtp.Id)
-	store.Set(key, k.cdc.MustMarshal(mtp))
+	key := types.GetPositionKey(position.Address, position.Id)
+	store.Set(key, k.cdc.MustMarshal(position))
 }
 
-func (k Keeper) DestroyMTP(ctx sdk.Context, mtpAddress string, id uint64) error {
-	key := types.GetMTPKey(mtpAddress, id)
+func (k Keeper) DestroyPosition(ctx sdk.Context, positionAddress string, id uint64) error {
+	key := types.GetPositionKey(positionAddress, id)
 	store := ctx.KVStore(k.storeKey)
 	if !store.Has(key) {
-		return types.ErrMTPDoesNotExist
+		return types.ErrPositionDoesNotExist
 	}
 	store.Delete(key)
-	// decrement open mtp count
-	openCount := k.GetOpenMTPCount(ctx)
+	// decrement open position count
+	openCount := k.GetOpenPositionCount(ctx)
 	openCount--
 
-	// Set open MTP count
-	k.SetOpenMTPCount(ctx, openCount)
+	// Set open Position count
+	k.SetOpenPositionCount(ctx, openCount)
 
 	return nil
 }
 
-// Set Open MTP count
-func (k Keeper) SetOpenMTPCount(ctx sdk.Context, count uint64) {
+// Set Open Position count
+func (k Keeper) SetOpenPositionCount(ctx sdk.Context, count uint64) {
 	store := ctx.KVStore(k.storeKey)
-	store.Set(types.OpenMTPCountPrefix, types.GetUint64Bytes(count))
+	store.Set(types.OpenPositionCountPrefix, types.GetUint64Bytes(count))
 }
 
-// Set MTP count
-func (k Keeper) SetMTPCount(ctx sdk.Context, count uint64) {
+// Set Position count
+func (k Keeper) SetPositionCount(ctx sdk.Context, count uint64) {
 	store := ctx.KVStore(k.storeKey)
-	store.Set(types.MTPCountPrefix, types.GetUint64Bytes(count))
+	store.Set(types.PositionCountPrefix, types.GetUint64Bytes(count))
 }
 
-func (k Keeper) GetMTPCount(ctx sdk.Context) uint64 {
+func (k Keeper) GetPositionCount(ctx sdk.Context) uint64 {
 	var count uint64
-	countBz := ctx.KVStore(k.storeKey).Get(types.MTPCountPrefix)
+	countBz := ctx.KVStore(k.storeKey).Get(types.PositionCountPrefix)
 	if countBz == nil {
 		count = 0
 	} else {
@@ -86,9 +84,9 @@ func (k Keeper) GetMTPCount(ctx sdk.Context) uint64 {
 	return count
 }
 
-func (k Keeper) GetOpenMTPCount(ctx sdk.Context) uint64 {
+func (k Keeper) GetOpenPositionCount(ctx sdk.Context) uint64 {
 	var count uint64
-	countBz := ctx.KVStore(k.storeKey).Get(types.OpenMTPCountPrefix)
+	countBz := ctx.KVStore(k.storeKey).Get(types.OpenPositionCountPrefix)
 	if countBz == nil {
 		count = 0
 	} else {
@@ -97,14 +95,14 @@ func (k Keeper) GetOpenMTPCount(ctx sdk.Context) uint64 {
 	return count
 }
 
-func (k Keeper) GetMTPIterator(ctx sdk.Context) sdk.Iterator {
+func (k Keeper) GetPositionIterator(ctx sdk.Context) sdk.Iterator {
 	store := ctx.KVStore(k.storeKey)
-	return sdk.KVStorePrefixIterator(store, types.MTPPrefix)
+	return sdk.KVStorePrefixIterator(store, types.PositionPrefix)
 }
 
-func (k Keeper) GetAllMTPs(ctx sdk.Context) []types.MTP {
-	var mtpList []types.MTP
-	iterator := k.GetMTPIterator(ctx)
+func (k Keeper) GetAllPositions(ctx sdk.Context) []types.Position {
+	var positionList []types.Position
+	iterator := k.GetPositionIterator(ctx)
 	defer func(iterator sdk.Iterator) {
 		err := iterator.Close()
 		if err != nil {
@@ -113,18 +111,18 @@ func (k Keeper) GetAllMTPs(ctx sdk.Context) []types.MTP {
 	}(iterator)
 
 	for ; iterator.Valid(); iterator.Next() {
-		var mtp types.MTP
+		var position types.Position
 		bytesValue := iterator.Value()
-		k.cdc.MustUnmarshal(bytesValue, &mtp)
-		mtpList = append(mtpList, mtp)
+		k.cdc.MustUnmarshal(bytesValue, &position)
+		positionList = append(positionList, position)
 	}
-	return mtpList
+	return positionList
 }
 
-func (k Keeper) GetMTPs(ctx sdk.Context, pagination *query.PageRequest) ([]*types.MTP, *query.PageResponse, error) {
-	var mtpList []*types.MTP
+func (k Keeper) GetPositions(ctx sdk.Context, pagination *query.PageRequest) ([]*types.Position, *query.PageResponse, error) {
+	var positionList []*types.Position
 	store := ctx.KVStore(k.storeKey)
-	mtpStore := prefix.NewStore(store, types.MTPPrefix)
+	positionStore := prefix.NewStore(store, types.PositionPrefix)
 
 	if pagination == nil {
 		pagination = &query.PageRequest{
@@ -132,21 +130,21 @@ func (k Keeper) GetMTPs(ctx sdk.Context, pagination *query.PageRequest) ([]*type
 		}
 	}
 
-	pageRes, err := query.Paginate(mtpStore, pagination, func(key []byte, value []byte) error {
-		var mtp types.MTP
-		k.cdc.MustUnmarshal(value, &mtp)
-		mtpList = append(mtpList, &mtp)
+	pageRes, err := query.Paginate(positionStore, pagination, func(key []byte, value []byte) error {
+		var position types.Position
+		k.cdc.MustUnmarshal(value, &position)
+		positionList = append(positionList, &position)
 		return nil
 	})
 
-	return mtpList, pageRes, err
+	return positionList, pageRes, err
 }
 
-func (k Keeper) GetMTPsForPool(ctx sdk.Context, ammPoolId uint64, pagination *query.PageRequest) ([]*types.MTP, *query.PageResponse, error) {
-	var mtps []*types.MTP
+func (k Keeper) GetPositionsForPool(ctx sdk.Context, ammPoolId uint64, pagination *query.PageRequest) ([]*types.Position, *query.PageResponse, error) {
+	var positions []*types.Position
 
 	store := ctx.KVStore(k.storeKey)
-	mtpStore := prefix.NewStore(store, types.MTPPrefix)
+	positionStore := prefix.NewStore(store, types.PositionPrefix)
 
 	if pagination == nil {
 		pagination = &query.PageRequest{
@@ -154,25 +152,25 @@ func (k Keeper) GetMTPsForPool(ctx sdk.Context, ammPoolId uint64, pagination *qu
 		}
 	}
 
-	pageRes, err := query.FilteredPaginate(mtpStore, pagination, func(key []byte, value []byte, accumulate bool) (bool, error) {
-		var mtp types.MTP
-		k.cdc.MustUnmarshal(value, &mtp)
-		if accumulate && mtp.AmmPoolId == ammPoolId {
-			mtps = append(mtps, &mtp)
+	pageRes, err := query.FilteredPaginate(positionStore, pagination, func(key []byte, value []byte, accumulate bool) (bool, error) {
+		var position types.Position
+		k.cdc.MustUnmarshal(value, &position)
+		if accumulate && position.AmmPoolId == ammPoolId {
+			positions = append(positions, &position)
 			return true, nil
 		}
 
 		return false, nil
 	})
 
-	return mtps, pageRes, err
+	return positions, pageRes, err
 }
 
-func (k Keeper) GetMTPsForAddress(ctx sdk.Context, mtpAddress sdk.Address, pagination *query.PageRequest) ([]*types.MTP, *query.PageResponse, error) {
-	var mtps []*types.MTP
+func (k Keeper) GetPositionsForAddress(ctx sdk.Context, positionAddress sdk.Address, pagination *query.PageRequest) ([]*types.Position, *query.PageResponse, error) {
+	var positions []*types.Position
 
 	store := ctx.KVStore(k.storeKey)
-	mtpStore := prefix.NewStore(store, types.GetMTPPrefixForAddress(mtpAddress.String()))
+	positionStore := prefix.NewStore(store, types.GetPositionPrefixForAddress(positionAddress.String()))
 
 	if pagination == nil {
 		pagination = &query.PageRequest{
@@ -184,51 +182,43 @@ func (k Keeper) GetMTPsForAddress(ctx sdk.Context, mtpAddress sdk.Address, pagin
 		return nil, nil, status.Error(codes.InvalidArgument, fmt.Sprintf("page size greater than max %d", types.MaxPageLimit))
 	}
 
-	pageRes, err := query.Paginate(mtpStore, pagination, func(key []byte, value []byte) error {
-		var mtp types.MTP
-		k.cdc.MustUnmarshal(value, &mtp)
-		mtps = append(mtps, &mtp)
+	pageRes, err := query.Paginate(positionStore, pagination, func(key []byte, value []byte) error {
+		var position types.Position
+		k.cdc.MustUnmarshal(value, &position)
+		positions = append(positions, &position)
 		return nil
 	})
 	if err != nil {
 		return nil, nil, err
 	}
 
-	return mtps, pageRes, nil
+	return positions, pageRes, nil
 }
 
-func (k Keeper) GetMTPHealth(ctx sdk.Context, mtp types.MTP, ammPool ammtypes.Pool) (sdk.Dec, error) {
-	debt := k.stableKeeper.GetDebt(ctx, mtp.GetMTPAddress())
+func (k Keeper) GetPositionHealth(ctx sdk.Context, position types.Position, ammPool ammtypes.Pool) (sdk.Dec, error) {
+	debt := k.stableKeeper.GetDebt(ctx, position.GetPositionAddress())
 	xl := debt.Borrowed.Add(debt.InterestStacked).Sub(debt.InterestPaid)
 
 	if xl.IsZero() {
 		return sdk.ZeroDec(), nil
 	}
 
-	commitments, found := k.commKeeper.GetCommitments(ctx, mtp.GetMTPAddress().String())
+	commitments, found := k.commKeeper.GetCommitments(ctx, position.GetPositionAddress().String())
 	if !found {
 		return sdk.ZeroDec(), nil
 	}
 
-	fmt.Println("commitments", commitments)
-	fmt.Println("xl", xl.String())
-
-	mtpVal := sdk.ZeroDec()
+	positionVal := sdk.ZeroDec()
+	params := k.stableKeeper.GetParams(ctx)
 	for _, commitment := range commitments.CommittedTokens {
-		ammPoolTvl, err := ammPool.TVL(ctx, k.oracleKeeper)
+		cacheCtx, _ := ctx.CacheContext()
+		exitCoins, err := k.amm.ExitPool(cacheCtx, position.GetPositionAddress(), ammPool.PoolId, commitment.Amount, sdk.Coins{}, params.DepositDenom)
 		if err != nil {
 			return sdk.ZeroDec(), err
 		}
-		mtpVal = mtpVal.Add(
-			ammPoolTvl.
-				Mul(sdkmath.LegacyNewDecFromInt(commitment.Amount)).
-				Quo(sdkmath.LegacyNewDecFromInt(ammPool.TotalShares.Amount)))
-
-		fmt.Println("ammPoolTvl", ammPoolTvl.String())
-		fmt.Println("commitment.Amount", commitment.Amount.String())
-		fmt.Println("ammPool.TotalShares", ammPool.TotalShares.String())
+		positionVal = positionVal.Add(sdk.NewDecFromInt(exitCoins.AmountOf(params.DepositDenom)))
 	}
 
-	lr := mtpVal.Quo(sdk.NewDecFromBigInt(xl.BigInt()))
+	lr := positionVal.Quo(sdk.NewDecFromBigInt(xl.BigInt()))
 	return lr, nil
 }

@@ -15,7 +15,7 @@ var _ = strconv.Itoa(0)
 
 func CmdClose() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:     "close [mtp-id] [flags]",
+		Use:     "close [position-id] [flags]",
 		Short:   "Close leveragelp position",
 		Example: `elysd tx leveragelp close 1 --from=treasury --keyring-backend=test --chain-id=elystestnet-1 --yes --gas=1000000`,
 		Args:    cobra.ExactArgs(1),
@@ -29,14 +29,14 @@ func CmdClose() *cobra.Command {
 				return errors.New("signer address is missing")
 			}
 
-			argMtpId, ok := strconv.ParseUint(args[0], 10, 64)
+			argPositionId, ok := strconv.ParseUint(args[0], 10, 64)
 			if ok != nil {
-				return errors.New("invalid mtp id")
+				return errors.New("invalid position id")
 			}
 
 			msg := types.NewMsgClose(
 				signer.String(),
-				argMtpId,
+				argPositionId,
 			)
 			if err := msg.ValidateBasic(); err != nil {
 				return err

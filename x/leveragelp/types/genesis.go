@@ -11,7 +11,7 @@ const DefaultIndex uint64 = 1
 func DefaultGenesis() *GenesisState {
 	return &GenesisState{
 		PoolList:         []Pool{},
-		MtpList:          []MTP{},
+		PositionList:     []Position{},
 		AddressWhitelist: []string{},
 		// this line is used by starport scaffolding # genesis/types/default
 		Params: DefaultParams(),
@@ -31,23 +31,23 @@ func (gs GenesisState) Validate() error {
 		}
 		poolIndexMap[index] = struct{}{}
 	}
-	// Check for duplicated index in mtp
-	mtpIndexMap := make(map[string]struct{})
+	// Check for duplicated index in position
+	positionIndexMap := make(map[string]struct{})
 
-	for _, elem := range gs.MtpList {
-		key := GetMTPKey(elem.Address, elem.Id)
+	for _, elem := range gs.PositionList {
+		key := GetPositionKey(elem.Address, elem.Id)
 		index := string(key)
-		if _, ok := mtpIndexMap[index]; ok {
+		if _, ok := positionIndexMap[index]; ok {
 			return fmt.Errorf("duplicated index for pool")
 		}
-		mtpIndexMap[index] = struct{}{}
+		positionIndexMap[index] = struct{}{}
 	}
 
-	// Check for duplicated index in mtp
+	// Check for duplicated index in position
 	whitelistMap := make(map[string]struct{})
 	for _, elem := range gs.AddressWhitelist {
 		index := elem
-		if _, ok := mtpIndexMap[index]; ok {
+		if _, ok := positionIndexMap[index]; ok {
 			return fmt.Errorf("duplicated index for pool")
 		}
 		whitelistMap[index] = struct{}{}

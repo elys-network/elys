@@ -27,9 +27,9 @@ func (k Keeper) BeginBlocker(ctx sdk.Context) {
 				continue
 			}
 			if k.IsPoolEnabled(ctx, pool.AmmPoolId) {
-				mtps, _, _ := k.GetMTPsForPool(ctx, pool.AmmPoolId, nil)
-				for _, mtp := range mtps {
-					BeginBlockerProcessMTP(ctx, k, mtp, pool, ammPool)
+				positions, _, _ := k.GetPositionsForPool(ctx, pool.AmmPoolId, nil)
+				for _, position := range positions {
+					k.LiquidatePositionIfUnhealthy(ctx, position, pool, ammPool)
 				}
 			}
 			k.SetPool(ctx, pool)
@@ -38,7 +38,7 @@ func (k Keeper) BeginBlocker(ctx sdk.Context) {
 
 }
 
-func BeginBlockerProcessMTP(ctx sdk.Context, k Keeper, mtp *types.MTP, pool types.Pool, ammPool ammtypes.Pool) {
+func (k Keeper) LiquidatePositionIfUnhealthy(ctx sdk.Context, position *types.Position, pool types.Pool, ammPool ammtypes.Pool) {
 	defer func() {
 		if r := recover(); r != nil {
 			if msg, ok := r.(string); ok {
@@ -46,31 +46,31 @@ func BeginBlockerProcessMTP(ctx sdk.Context, k Keeper, mtp *types.MTP, pool type
 			}
 		}
 	}()
-	h, err := k.GetMTPHealth(ctx, *mtp, ammPool)
+	h, err := k.GetPositionHealth(ctx, *position, ammPool)
 	if err != nil {
-		ctx.Logger().Error(errors.Wrap(err, fmt.Sprintf("error updating mtp health: %s", mtp.String())).Error())
+		ctx.Logger().Error(errors.Wrap(err, fmt.Sprintf("error updating position health: %s", position.String())).Error())
 		return
 	}
-	mtp.MtpHealth = h
-	k.SetMTP(ctx, mtp)
+	position.PositionHealth = h
+	k.SetPosition(ctx, position)
 
 	params := k.GetParams(ctx)
-	if mtp.MtpHealth.LT(params.SafetyFactor) {
+	if position.PositionHealth.GT(params.SafetyFactor) {
 		return
 	}
 
-	repayAmount, err := k.ForceCloseLong(ctx, *mtp, pool)
+	repayAmount, err := k.ForceCloseLong(ctx, *position, pool)
 	if err == nil {
 		ctx.EventManager().EmitEvent(sdk.NewEvent(types.EventClose,
-			sdk.NewAttribute("id", strconv.FormatInt(int64(mtp.Id), 10)),
-			sdk.NewAttribute("address", mtp.Address),
-			sdk.NewAttribute("collateral", mtp.Collateral.String()),
+			sdk.NewAttribute("id", strconv.FormatInt(int64(position.Id), 10)),
+			sdk.NewAttribute("address", position.Address),
+			sdk.NewAttribute("collateral", position.Collateral.String()),
 			sdk.NewAttribute("repay_amount", repayAmount.String()),
-			sdk.NewAttribute("leverage", mtp.Leverage.String()),
-			sdk.NewAttribute("liabilities", mtp.Liabilities.String()),
-			sdk.NewAttribute("health", mtp.MtpHealth.String()),
+			sdk.NewAttribute("leverage", position.Leverage.String()),
+			sdk.NewAttribute("liabilities", position.Liabilities.String()),
+			sdk.NewAttribute("health", position.PositionHealth.String()),
 		))
-	} else if err != types.ErrMTPUnhealthy {
+	} else {
 		ctx.Logger().Error(errors.Wrap(err, "error executing force close").Error())
 	}
 }

@@ -815,8 +815,8 @@ func NewElysApp(
 	// The last arguments can contain custom message handlers, and custom query handlers,
 	// if we want to allow any custom callbacks
 	availableCapabilities := strings.Join(AllCapabilities(), ",")
-
-	wasmOpts = append(RegisterCustomPlugins(&app.AmmKeeper, &app.OracleKeeper, &app.MarginKeeper), wasmOpts...)
+	bankKeeper := app.BankKeeper.(bankkeeper.BaseKeeper)
+	wasmOpts = append(RegisterCustomPlugins(&app.AmmKeeper, &app.OracleKeeper, &app.MarginKeeper, &bankKeeper, app.StakingKeeper, &app.CommitmentKeeper), wasmOpts...)
 
 	app.WasmKeeper = wasmmodule.NewKeeper(
 		appCodec,

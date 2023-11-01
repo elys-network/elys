@@ -16,11 +16,11 @@ func (k Keeper) CheckUserAuthorization(ctx sdk.Context, msg *types.MsgOpen) erro
 	return nil
 }
 
-func (k Keeper) CheckSamePosition(ctx sdk.Context, msg *types.MsgOpen) *types.MTP {
-	mtps := k.GetAllMTPs(ctx)
-	for _, mtp := range mtps {
-		if mtp.Address == msg.Creator {
-			return &mtp
+func (k Keeper) CheckSamePosition(ctx sdk.Context, msg *types.MsgOpen) *types.Position {
+	positions := k.GetAllPositions(ctx)
+	for _, position := range positions {
+		if position.Address == msg.Creator {
+			return &position
 		}
 	}
 
@@ -34,7 +34,7 @@ func (k Keeper) CheckPoolHealth(ctx sdk.Context, poolId uint64) error {
 	}
 
 	if !k.IsPoolEnabled(ctx, poolId) || k.IsPoolClosed(ctx, poolId) {
-		return sdkerrors.Wrap(types.ErrMTPDisabled, "pool is disabled or closed")
+		return sdkerrors.Wrap(types.ErrPositionDisabled, "pool is disabled or closed")
 	}
 
 	if !pool.Health.IsNil() && pool.Health.LTE(k.GetPoolOpenThreshold(ctx)) {
@@ -44,7 +44,7 @@ func (k Keeper) CheckPoolHealth(ctx sdk.Context, poolId uint64) error {
 }
 
 func (k Keeper) CheckMaxOpenPositions(ctx sdk.Context) error {
-	if k.GetOpenMTPCount(ctx) >= k.GetMaxOpenPositions(ctx) {
+	if k.GetOpenPositionCount(ctx) >= k.GetMaxOpenPositions(ctx) {
 		return sdkerrors.Wrap(types.ErrMaxOpenPositions, "cannot open new positions")
 	}
 	return nil
