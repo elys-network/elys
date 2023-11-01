@@ -6,38 +6,38 @@ import (
 	"github.com/elys-network/elys/x/leveragelp/types"
 )
 
-func (k Keeper) ForceCloseLong(ctx sdk.Context, mtp types.MTP, pool types.Pool) (sdk.Int, error) {
+func (k Keeper) ForceCloseLong(ctx sdk.Context, position types.Position, pool types.Pool) (sdk.Int, error) {
 	// Exit liquidity with collateral token
-	exitCoins, err := k.amm.ExitPool(ctx, mtp.GetMTPAddress(), mtp.AmmPoolId, mtp.LeveragedLpAmount, sdk.Coins{}, mtp.Collateral.Denom)
+	exitCoins, err := k.amm.ExitPool(ctx, position.GetPositionAddress(), position.AmmPoolId, position.LeveragedLpAmount, sdk.Coins{}, position.Collateral.Denom)
 	if err != nil {
 		return sdk.ZeroInt(), err
 	}
 
 	// Repay with interest
-	debt := k.stableKeeper.UpdateInterestStackedByAddress(ctx, mtp.GetMTPAddress())
+	debt := k.stableKeeper.UpdateInterestStackedByAddress(ctx, position.GetPositionAddress())
 	repayAmount := debt.Borrowed.Add(debt.InterestStacked).Sub(debt.InterestPaid)
 	if err != nil {
 		return sdk.ZeroInt(), err
 	}
 
-	err = k.stableKeeper.Repay(ctx, mtp.GetMTPAddress(), sdk.NewCoin(mtp.Collateral.Denom, repayAmount))
+	err = k.stableKeeper.Repay(ctx, position.GetPositionAddress(), sdk.NewCoin(position.Collateral.Denom, repayAmount))
 	if err != nil {
 		return sdk.ZeroInt(), err
 	}
 
 	userAmount := exitCoins[0].Amount.Sub(repayAmount)
-	mtpOwner := sdk.MustAccAddressFromBech32(mtp.Address)
-	err = k.bankKeeper.SendCoins(ctx, mtpOwner, mtp.GetMTPAddress(), sdk.Coins{sdk.NewCoin(mtp.Collateral.Denom, userAmount)})
+	positionOwner := sdk.MustAccAddressFromBech32(position.Address)
+	err = k.bankKeeper.SendCoins(ctx, positionOwner, position.GetPositionAddress(), sdk.Coins{sdk.NewCoin(position.Collateral.Denom, userAmount)})
 	if err != nil {
 		return sdk.ZeroInt(), err
 	}
 
-	err = k.DestroyMTP(ctx, mtp.Address, mtp.Id)
+	err = k.DestroyPosition(ctx, position.Address, position.Id)
 	if err != nil {
 		return sdk.ZeroInt(), err
 	}
 
-	pool.LeveragedLpAmount = pool.LeveragedLpAmount.Sub(mtp.LeveragedLpAmount)
+	pool.LeveragedLpAmount = pool.LeveragedLpAmount.Sub(position.LeveragedLpAmount)
 	k.SetPool(ctx, pool)
 
 	// Hooks after leveragelp position closed
@@ -47,19 +47,19 @@ func (k Keeper) ForceCloseLong(ctx sdk.Context, mtp types.MTP, pool types.Pool) 
 	return repayAmount, nil
 }
 
-func (k Keeper) CloseLong(ctx sdk.Context, msg *types.MsgClose) (*types.MTP, sdk.Int, error) {
-	// Retrieve MTP
-	mtp, err := k.GetMTP(ctx, msg.Creator, msg.Id)
+func (k Keeper) CloseLong(ctx sdk.Context, msg *types.MsgClose) (*types.Position, sdk.Int, error) {
+	// Retrieve Position
+	position, err := k.GetPosition(ctx, msg.Creator, msg.Id)
 	if err != nil {
 		return nil, sdk.ZeroInt(), err
 	}
 
 	// Retrieve Pool
-	pool, found := k.GetPool(ctx, mtp.AmmPoolId)
+	pool, found := k.GetPool(ctx, position.AmmPoolId)
 	if !found {
 		return nil, sdk.ZeroInt(), sdkerrors.Wrap(types.ErrInvalidBorrowingAsset, "invalid pool id")
 	}
 
-	repayAmount, err := k.ForceCloseLong(ctx, mtp, pool)
-	return &mtp, repayAmount, err
+	repayAmount, err := k.ForceCloseLong(ctx, position, pool)
+	return &position, repayAmount, err
 }

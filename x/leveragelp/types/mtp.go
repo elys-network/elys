@@ -7,7 +7,7 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 )
 
-// Get MTP address
-func (p *MTP) GetMTPAddress() sdk.AccAddress {
+// Get Position address
+func (p *Position) GetPositionAddress() sdk.AccAddress {
 	return authtypes.NewModuleAddress(fmt.Sprintf("leveragelp/%d", p.Id))
 }

@@ -33,7 +33,7 @@ func CmdGetPositionsByPool() *cobra.Command {
 				AmmPoolId: id,
 			}
 
-			res, err := queryClient.GetPositionsByPool(cmd.Context(), params)
+			res, err := queryClient.QueryPositionsByPool(cmd.Context(), params)
 			if err != nil {
 				return err
 			}

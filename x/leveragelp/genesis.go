@@ -14,14 +14,14 @@ func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) 
 	}
 
 	// Set all the pool
-	for _, elem := range genState.MtpList {
-		k.SetMTP(ctx, &elem)
+	for _, elem := range genState.PositionList {
+		k.SetPosition(ctx, &elem)
 	}
 
-	// Set genesis MTP count
-	k.SetMTPCount(ctx, (uint64)(len(genState.MtpList)))
-	// Set genesis open MTP count
-	k.SetOpenMTPCount(ctx, (uint64)(len(genState.MtpList)))
+	// Set genesis Position count
+	k.SetPositionCount(ctx, (uint64)(len(genState.PositionList)))
+	// Set genesis open Position count
+	k.SetOpenPositionCount(ctx, (uint64)(len(genState.PositionList)))
 
 	// Set all the whitelisted
 	for _, elem := range genState.AddressWhitelist {
@@ -38,7 +38,7 @@ func ExportGenesis(ctx sdk.Context, k keeper.Keeper) *types.GenesisState {
 	genesis.Params = k.GetParams(ctx)
 
 	genesis.PoolList = k.GetAllPools(ctx)
-	genesis.MtpList = k.GetAllMTPs(ctx)
+	genesis.PositionList = k.GetAllPositions(ctx)
 	genesis.AddressWhitelist = k.GetAllWhitelistedAddress(ctx)
 
 	return genesis

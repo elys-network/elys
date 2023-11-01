@@ -9,19 +9,19 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-func (k Keeper) GetPositionsByPool(goCtx context.Context, req *types.PositionsByPoolRequest) (*types.PositionsByPoolResponse, error) {
+func (k Keeper) QueryPositionsByPool(goCtx context.Context, req *types.PositionsByPoolRequest) (*types.PositionsByPoolResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	mtps, pageRes, err := k.GetMTPsForPool(ctx, req.AmmPoolId, req.Pagination)
+	positions, pageRes, err := k.GetPositionsForPool(ctx, req.AmmPoolId, req.Pagination)
 	if err != nil {
 		return nil, err
 	}
 
 	return &types.PositionsByPoolResponse{
-		Mtps:       mtps,
+		Positions:  positions,
 		Pagination: pageRes,
 	}, nil
 }

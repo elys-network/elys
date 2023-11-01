@@ -81,7 +81,7 @@ func (suite KeeperTestSuite) TestOpenLong() {
 	suite.Require().NoError(err)
 
 	// open a position
-	mtp, err := k.OpenLong(suite.ctx, &types.MsgOpen{
+	position, err := k.OpenLong(suite.ctx, &types.MsgOpen{
 		Creator:          addr.String(),
 		CollateralAsset:  "uusdc",
 		CollateralAmount: sdk.NewInt(1000),
@@ -89,18 +89,18 @@ func (suite KeeperTestSuite) TestOpenLong() {
 		Leverage:         sdk.NewDec(5),
 	})
 	suite.Require().NoError(err)
-	suite.Require().Equal(mtp.Address, addr.String())
-	suite.Require().Equal(mtp.Collateral.String(), "1000uusdc")
-	suite.Require().Equal(mtp.Liabilities.String(), "4000")
-	suite.Require().Equal(mtp.InterestPaid.String(), "0")
-	suite.Require().Equal(mtp.Leverage.String(), "5.000000000000000000")
-	suite.Require().Equal(mtp.LeveragedLpAmount.String(), "49390000000000000")
-	suite.Require().Equal(mtp.MtpHealth.String(), "1.221000000000000000")
-	suite.Require().Equal(mtp.Id, uint64(1))
-	suite.Require().Equal(mtp.AmmPoolId, uint64(1))
+	suite.Require().Equal(position.Address, addr.String())
+	suite.Require().Equal(position.Collateral.String(), "1000uusdc")
+	suite.Require().Equal(position.Liabilities.String(), "4000")
+	suite.Require().Equal(position.InterestPaid.String(), "0")
+	suite.Require().Equal(position.Leverage.String(), "5.000000000000000000")
+	suite.Require().Equal(position.LeveragedLpAmount.String(), "49390000000000000")
+	suite.Require().Equal(position.PositionHealth.String(), "1.221000000000000000")
+	suite.Require().Equal(position.Id, uint64(1))
+	suite.Require().Equal(position.AmmPoolId, uint64(1))
 
 	// add more to an existing position
-	_, err = k.OpenConsolidate(suite.ctx, mtp, &types.MsgOpen{
+	_, err = k.OpenConsolidate(suite.ctx, position, &types.MsgOpen{
 		Creator:          addr.String(),
 		CollateralAsset:  "uusdc",
 		CollateralAmount: sdk.NewInt(1000),
@@ -108,15 +108,15 @@ func (suite KeeperTestSuite) TestOpenLong() {
 		Leverage:         sdk.NewDec(5),
 	})
 	suite.Require().NoError(err)
-	mtp2, err := k.GetMTP(suite.ctx, mtp.Address, mtp.Id)
+	position2, err := k.GetPosition(suite.ctx, position.Address, position.Id)
 	suite.Require().NoError(err)
-	suite.Require().Equal(mtp2.Address, addr.String())
-	suite.Require().Equal(mtp2.Collateral.String(), "2000uusdc")
-	suite.Require().Equal(mtp2.Liabilities.String(), "8000")
-	suite.Require().Equal(mtp2.InterestPaid.String(), "0")
-	suite.Require().Equal(mtp2.Leverage.String(), "5.000000000000000000")
-	suite.Require().Equal(mtp2.LeveragedLpAmount.String(), "98805291560975610")
-	suite.Require().Equal(mtp2.MtpHealth.String(), "1.210375000000000000")
-	suite.Require().Equal(mtp2.Id, uint64(1))
-	suite.Require().Equal(mtp2.AmmPoolId, uint64(1))
+	suite.Require().Equal(position2.Address, addr.String())
+	suite.Require().Equal(position2.Collateral.String(), "2000uusdc")
+	suite.Require().Equal(position2.Liabilities.String(), "8000")
+	suite.Require().Equal(position2.InterestPaid.String(), "0")
+	suite.Require().Equal(position2.Leverage.String(), "5.000000000000000000")
+	suite.Require().Equal(position2.LeveragedLpAmount.String(), "98805291560975610")
+	suite.Require().Equal(position2.PositionHealth.String(), "1.210375000000000000")
+	suite.Require().Equal(position2.Id, uint64(1))
+	suite.Require().Equal(position2.AmmPoolId, uint64(1))
 }

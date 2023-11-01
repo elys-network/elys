@@ -35,8 +35,8 @@ func (suite KeeperTestSuite) TestCheckSameAssets() {
 	app := suite.app
 	k := app.LeveragelpKeeper
 
-	mtp := types.NewMTP("creator", sdk.NewInt64Coin(ptypes.BaseCurrency, 0), sdk.NewDec(5), 1)
-	k.SetMTP(suite.ctx, mtp)
+	position := types.NewPosition("creator", sdk.NewInt64Coin(ptypes.BaseCurrency, 0), sdk.NewDec(5), 1)
+	k.SetPosition(suite.ctx, position)
 
 	msg := &types.MsgOpen{
 		Creator:          "creator",
@@ -47,8 +47,8 @@ func (suite KeeperTestSuite) TestCheckSameAssets() {
 	}
 
 	// Expect no error
-	mtp = k.CheckSamePosition(suite.ctx, msg)
-	suite.Require().NotNil(mtp)
+	position = k.CheckSamePosition(suite.ctx, msg)
+	suite.Require().NotNil(position)
 }
 
 func (suite KeeperTestSuite) TestCheckPoolHealth() {
@@ -95,17 +95,17 @@ func (suite KeeperTestSuite) TestCheckMaxOpenPositions() {
 	k.SetParams(suite.ctx, &params)
 
 	// OpenPositionsBelowMax
-	k.SetOpenMTPCount(suite.ctx, 0)
+	k.SetOpenPositionCount(suite.ctx, 0)
 	err := k.CheckMaxOpenPositions(suite.ctx)
 	suite.Require().NoError(err)
 
 	//  Expect an error about max open positions
-	k.SetOpenMTPCount(suite.ctx, 10)
+	k.SetOpenPositionCount(suite.ctx, 10)
 	err = k.CheckMaxOpenPositions(suite.ctx)
 	suite.Require().Error(types.ErrMaxOpenPositions)
 
 	// OpenPositionsExceedMax
-	k.SetOpenMTPCount(suite.ctx, 11)
+	k.SetOpenPositionCount(suite.ctx, 11)
 	err = k.CheckMaxOpenPositions(suite.ctx)
 	suite.Require().Error(types.ErrMaxOpenPositions)
 }

@@ -11,7 +11,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestSetGetMTP(t *testing.T) {
+func TestSetGetPosition(t *testing.T) {
 	app := simapp.InitElysTestApp(true)
 	ctx := app.BaseApp.NewContext(true, tmproto.Header{})
 
@@ -21,19 +21,19 @@ func TestSetGetMTP(t *testing.T) {
 	addr := simapp.AddTestAddrs(app, ctx, 2, sdk.NewInt(1000000))
 
 	for i := 0; i < 2; i++ {
-		mtp := types.MTP{
-			Address:      addr[i].String(),
-			Collateral:   sdk.NewCoin(paramtypes.BaseCurrency, sdk.NewInt(0)),
-			Liabilities:  sdk.NewInt(0),
-			InterestPaid: sdk.NewInt(0),
-			AmmPoolId:    1,
-			Leverage:     sdk.NewDec(0),
-			MtpHealth:    sdk.NewDec(0),
-			Id:           0,
+		position := types.Position{
+			Address:        addr[i].String(),
+			Collateral:     sdk.NewCoin(paramtypes.BaseCurrency, sdk.NewInt(0)),
+			Liabilities:    sdk.NewInt(0),
+			InterestPaid:   sdk.NewInt(0),
+			AmmPoolId:      1,
+			Leverage:       sdk.NewDec(0),
+			PositionHealth: sdk.NewDec(0),
+			Id:             0,
 		}
-		leveragelp.SetMTP(ctx, &mtp)
+		leveragelp.SetPosition(ctx, &position)
 	}
 
-	mtpCount := leveragelp.GetMTPCount(ctx)
-	require.Equal(t, mtpCount, (uint64)(2))
+	positionCount := leveragelp.GetPositionCount(ctx)
+	require.Equal(t, positionCount, (uint64)(2))
 }
