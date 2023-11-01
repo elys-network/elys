@@ -20,16 +20,16 @@ service Query {
   }
 
   // Queries a list of GetPositions items.
-  rpc GetPositions(PositionsRequest) returns (PositionsResponse) {
+  rpc QueryPositions(PositionsRequest) returns (PositionsResponse) {
     option (google.api.http).get =
         "/elys-network/elys/leveragelp/positions/{pagination.key}";
   }
 
   // Queries a list of GetPositionsByPool items.
-  rpc GetPositionsByPool(PositionsByPoolRequest)
+  rpc QueryPositionsByPool(PositionsByPoolRequest)
       returns (PositionsByPoolResponse) {
     option (google.api.http).get =
-        "/elys-network/elys/leveragelp/mtps-by-pool/{amm_pool_id}/{pagination.key}";
+        "/elys-network/elys/leveragelp/positions-by-pool/{amm_pool_id}/{pagination.key}";
   }
 
   // Queries a list of GetStatus items.
@@ -38,10 +38,10 @@ service Query {
   }
 
   // Queries a list of GetPositionsForAddress items.
-  rpc GetPositionsForAddress(PositionsForAddressRequest)
+  rpc QueryPositionsForAddress(PositionsForAddressRequest)
       returns (PositionsForAddressResponse) {
     option (google.api.http).get =
-        "/elys-network/elys/leveragelp/mtps-for-address/{address}/{pagination.key}";
+        "/elys-network/elys/leveragelp/positions-for-address/{address}/{pagination.key}";
   }
 
   // Queries a list of GetWhitelist items.
@@ -64,10 +64,10 @@ service Query {
         "/elys-network/elys/leveragelp/pool/{pagination.key}";
   }
 
-  // Queries a list of MTP items.
-  rpc MTP(MTPRequest) returns (MTPResponse) {
+  // Queries a list of Position items.
+  rpc Position(PositionRequest) returns (PositionResponse) {
     option (google.api.http).get =
-        "/elys-network/elys/leveragelp/mtp/{address}/{id}";
+        "/elys-network/elys/leveragelp/position/{address}/{id}";
   }
 }
 // ParamsRequest is request type for the Query/Params RPC method.
@@ -85,7 +85,7 @@ message PositionsRequest {
 }
 
 message PositionsResponse {
-  repeated MTP mtps = 1;
+  repeated Position positions = 1;
   cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
@@ -95,15 +95,15 @@ message PositionsByPoolRequest {
 }
 
 message PositionsByPoolResponse {
-  repeated MTP mtps = 1;
+  repeated Position positions = 1;
   cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
 message StatusRequest {}
 
 message StatusResponse {
-  uint64 open_mtp_count = 1;
-  uint64 lifetime_mtp_count = 2;
+  uint64 open_position_count = 1;
+  uint64 lifetime_position_count = 2;
 }
 
 message PositionsForAddressRequest {
@@ -112,7 +112,7 @@ message PositionsForAddressRequest {
 }
 
 message PositionsForAddressResponse {
-  repeated MTP mtps = 1;
+  repeated Position positions = 1;
   cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
@@ -145,9 +145,9 @@ message QueryAllPoolResponse {
   cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
-message MTPRequest {
+message PositionRequest {
   string address = 1;
   uint64 id = 2;
 }
 
-message MTPResponse { MTP mtp = 1; }
+message PositionResponse { Position position = 1; }

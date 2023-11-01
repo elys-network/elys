@@ -33,7 +33,7 @@ func CmdGetPositions() *cobra.Command {
 				Pagination: pageReq,
 			}
 
-			res, err := queryClient.GetPositions(cmd.Context(), params)
+			res, err := queryClient.QueryPositions(cmd.Context(), params)
 			if err != nil {
 				return err
 			}

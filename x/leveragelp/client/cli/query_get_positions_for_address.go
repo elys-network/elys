@@ -31,7 +31,7 @@ func CmdGetPositionsForAddress() *cobra.Command {
 				Address: reqAddress,
 			}
 
-			res, err := queryClient.GetPositionsForAddress(cmd.Context(), params)
+			res, err := queryClient.QueryPositionsForAddress(cmd.Context(), params)
 			if err != nil {
 				return err
 			}

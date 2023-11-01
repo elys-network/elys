@@ -10,16 +10,16 @@ import (
 func (suite KeeperTestSuite) TestBeginBlocker() {
 	k := suite.app.LeveragelpKeeper
 	addr := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
-	mtp, _ := suite.OpenPosition(addr)
-	ammPool, found := suite.app.AmmKeeper.GetPool(suite.ctx, mtp.AmmPoolId)
+	position, _ := suite.OpenPosition(addr)
+	ammPool, found := suite.app.AmmKeeper.GetPool(suite.ctx, position.AmmPoolId)
 	suite.Require().True(found)
-	health, err := k.GetMTPHealth(suite.ctx, *mtp, ammPool)
+	health, err := k.GetPositionHealth(suite.ctx, *position, ammPool)
 	suite.Require().NoError(err)
 	suite.Require().Equal(health.String(), "1.221000000000000000")
 
 	suite.ctx = suite.ctx.WithBlockTime(suite.ctx.BlockTime().Add(time.Hour * 24 * 70))
 	suite.app.StablestakeKeeper.BeginBlocker(suite.ctx)
-	health, err = k.GetMTPHealth(suite.ctx, *mtp, ammPool)
+	health, err = k.GetPositionHealth(suite.ctx, *position, ammPool)
 	suite.Require().NoError(err)
 	suite.Require().Equal(health.String(), "1.024543738200125865")
 
@@ -27,30 +27,30 @@ func (suite KeeperTestSuite) TestBeginBlocker() {
 	params.SafetyFactor = sdk.NewDecWithPrec(11, 1)
 	k.SetParams(suite.ctx, &params)
 	k.BeginBlocker(suite.ctx)
-	_, err = k.GetMTP(suite.ctx, mtp.Address, mtp.Id)
+	_, err = k.GetPosition(suite.ctx, position.Address, position.Id)
 	suite.Require().Error(err)
 }
 
 func (suite KeeperTestSuite) TestLiquidatePositionIfUnhealthy() {
 	k := suite.app.LeveragelpKeeper
 	addr := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
-	mtp, pool := suite.OpenPosition(addr)
-	ammPool, found := suite.app.AmmKeeper.GetPool(suite.ctx, mtp.AmmPoolId)
+	position, pool := suite.OpenPosition(addr)
+	ammPool, found := suite.app.AmmKeeper.GetPool(suite.ctx, position.AmmPoolId)
 	suite.Require().True(found)
-	health, err := k.GetMTPHealth(suite.ctx, *mtp, ammPool)
+	health, err := k.GetPositionHealth(suite.ctx, *position, ammPool)
 	suite.Require().NoError(err)
 	suite.Require().Equal(health.String(), "1.221000000000000000")
 
 	suite.ctx = suite.ctx.WithBlockTime(suite.ctx.BlockTime().Add(time.Hour * 24 * 70))
 	suite.app.StablestakeKeeper.BeginBlocker(suite.ctx)
-	health, err = k.GetMTPHealth(suite.ctx, *mtp, ammPool)
+	health, err = k.GetPositionHealth(suite.ctx, *position, ammPool)
 	suite.Require().NoError(err)
 	suite.Require().Equal(health.String(), "1.024543738200125865")
 
 	params := k.GetParams(suite.ctx)
 	params.SafetyFactor = sdk.NewDecWithPrec(11, 1)
 	k.SetParams(suite.ctx, &params)
-	k.LiquidatePositionIfUnhealthy(suite.ctx, mtp, pool, ammPool)
-	_, err = k.GetMTP(suite.ctx, mtp.Address, mtp.Id)
+	k.LiquidatePositionIfUnhealthy(suite.ctx, position, pool, ammPool)
+	_, err = k.GetPosition(suite.ctx, position.Address, position.Id)
 	suite.Require().Error(err)
 }

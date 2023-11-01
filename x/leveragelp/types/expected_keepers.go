@@ -17,7 +17,7 @@ type AuthorizationChecker interface {
 
 //go:generate mockery --srcpkg . --name PositionChecker --structname PositionChecker --filename position_checker.go --with-expecter
 type PositionChecker interface {
-	GetOpenMTPCount(ctx sdk.Context) uint64
+	GetOpenPositionCount(ctx sdk.Context) uint64
 	GetMaxOpenPositions(ctx sdk.Context) uint64
 }
 
@@ -34,11 +34,11 @@ type OpenChecker interface {
 	CheckUserAuthorization(ctx sdk.Context, msg *MsgOpen) error
 	CheckMaxOpenPositions(ctx sdk.Context) error
 	CheckPoolHealth(ctx sdk.Context, poolId uint64) error
-	OpenLong(ctx sdk.Context, poolId uint64, msg *MsgOpen) (*MTP, error)
-	EmitOpenEvent(ctx sdk.Context, mtp *MTP)
-	SetMTP(ctx sdk.Context, mtp *MTP) error
-	CheckSamePosition(ctx sdk.Context, msg *MsgOpen) *MTP
-	GetOpenMTPCount(ctx sdk.Context) uint64
+	OpenLong(ctx sdk.Context, poolId uint64, msg *MsgOpen) (*Position, error)
+	EmitOpenEvent(ctx sdk.Context, position *Position)
+	SetPosition(ctx sdk.Context, position *Position) error
+	CheckSamePosition(ctx sdk.Context, msg *MsgOpen) *Position
+	GetOpenPositionCount(ctx sdk.Context) uint64
 	GetMaxOpenPositions(ctx sdk.Context) uint64
 }
 
@@ -52,25 +52,25 @@ type OpenLongChecker interface {
 	CheckMinLiabilities(ctx sdk.Context, collateralTokenAmt sdk.Coin, eta sdk.Dec, pool Pool, ammPool ammtypes.Pool, borrowAsset string) error
 	EstimateSwapGivenOut(ctx sdk.Context, tokenOutAmount sdk.Coin, tokenInDenom string, ammPool ammtypes.Pool) (sdk.Int, error)
 	UpdatePoolHealth(ctx sdk.Context, pool *Pool) error
-	UpdateMTPHealth(ctx sdk.Context, mtp MTP, ammPool ammtypes.Pool) (sdk.Dec, error)
+	UpdatePositionHealth(ctx sdk.Context, position Position, ammPool ammtypes.Pool) (sdk.Dec, error)
 	GetSafetyFactor(ctx sdk.Context) sdk.Dec
 	SetPool(ctx sdk.Context, pool Pool)
 	GetAmmPoolBalance(ctx sdk.Context, ammPool ammtypes.Pool, assetDenom string) (sdk.Int, error)
-	CheckSamePosition(ctx sdk.Context, msg *MsgOpen) *MTP
-	SetMTP(ctx sdk.Context, mtp *MTP) error
+	CheckSamePosition(ctx sdk.Context, msg *MsgOpen) *Position
+	SetPosition(ctx sdk.Context, position *Position) error
 }
 
 //go:generate mockery --srcpkg . --name CloseLongChecker --structname CloseLongChecker --filename close_long_checker.go --with-expecter
 type CloseLongChecker interface {
-	GetMTP(ctx sdk.Context, mtpAddress string, id uint64) (MTP, error)
+	GetPosition(ctx sdk.Context, positionAddress string, id uint64) (Position, error)
 	GetPool(
 		ctx sdk.Context,
 		poolId uint64,
 
 	) (val Pool, found bool)
 	GetAmmPool(ctx sdk.Context, poolId uint64, tradingAsset string) (ammtypes.Pool, error)
-	HandleInterest(ctx sdk.Context, mtp *MTP, pool *Pool, ammPool ammtypes.Pool, collateralAsset string, custodyAsset string) error
-	EstimateAndRepay(ctx sdk.Context, mtp MTP, pool Pool, ammPool ammtypes.Pool, collateralAsset string, custodyAsset string) (sdk.Int, error)
+	HandleInterest(ctx sdk.Context, position *Position, pool *Pool, ammPool ammtypes.Pool, collateralAsset string, custodyAsset string) error
+	EstimateAndRepay(ctx sdk.Context, position Position, pool Pool, ammPool ammtypes.Pool, collateralAsset string, custodyAsset string) (sdk.Int, error)
 }
 
 // AccountKeeper defines the expected account keeper used for simulations (noalias)

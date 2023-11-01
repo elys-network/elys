@@ -22,11 +22,11 @@ const (
 const MaxPageLimit = 100
 
 var (
-	MTPPrefix          = []byte{0x01}
-	MTPCountPrefix     = []byte{0x02}
-	OpenMTPCountPrefix = []byte{0x04}
-	WhitelistPrefix    = []byte{0x05}
-	SQBeginBlockPrefix = []byte{0x06}
+	PositionPrefix          = []byte{0x01}
+	PositionCountPrefix     = []byte{0x02}
+	OpenPositionCountPrefix = []byte{0x04}
+	WhitelistPrefix         = []byte{0x05}
+	SQBeginBlockPrefix      = []byte{0x06}
 )
 
 func KeyPrefix(p string) []byte {
@@ -49,10 +49,10 @@ func GetWhitelistKey(address string) []byte {
 	return append(WhitelistPrefix, []byte(address)...)
 }
 
-func GetMTPKey(address string, id uint64) []byte {
-	return append(MTPPrefix, append([]byte(address), GetUint64Bytes(id)...)...)
+func GetPositionKey(address string, id uint64) []byte {
+	return append(PositionPrefix, append([]byte(address), GetUint64Bytes(id)...)...)
 }
 
-func GetMTPPrefixForAddress(address string) []byte {
-	return append(MTPPrefix, []byte(address)...)
+func GetPositionPrefixForAddress(address string) []byte {
+	return append(PositionPrefix, []byte(address)...)
 }
