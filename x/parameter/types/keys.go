@@ -48,6 +48,9 @@ const (
 
 	// 8760 hours
 	HoursPerYear = 8760
+
+	// Return ok
+	RES_OK = uint64(200)
 )
 
 var _ binary.ByteOrder

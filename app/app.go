@@ -816,7 +816,7 @@ func NewElysApp(
 	// if we want to allow any custom callbacks
 	availableCapabilities := strings.Join(AllCapabilities(), ",")
 
-	wasmOpts = append(RegisterCustomPlugins(&app.AmmKeeper, &app.OracleKeeper, &app.MarginKeeper), wasmOpts...)
+	wasmOpts = append(RegisterCustomPlugins(&app.AmmKeeper, &app.OracleKeeper, &app.MarginKeeper, app.BankKeeper.(*bankkeeper.BaseKeeper), app.StakingKeeper, &app.CommitmentKeeper), wasmOpts...)
 
 	app.WasmKeeper = wasmmodule.NewKeeper(
 		appCodec,
