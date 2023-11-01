@@ -9,7 +9,7 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-func (k Keeper) GetPositionsForAddress(goCtx context.Context, req *types.PositionsForAddressRequest) (*types.PositionsForAddressResponse, error) {
+func (k Keeper) QueryPositionsForAddress(goCtx context.Context, req *types.PositionsForAddressRequest) (*types.PositionsForAddressResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
@@ -19,10 +19,10 @@ func (k Keeper) GetPositionsForAddress(goCtx context.Context, req *types.Positio
 		return nil, err
 	}
 
-	mtps, pageRes, err := k.GetMTPsForAddress(sdk.UnwrapSDKContext(goCtx), addr, req.Pagination)
+	positions, pageRes, err := k.GetPositionsForAddress(sdk.UnwrapSDKContext(goCtx), addr, req.Pagination)
 	if err != nil {
 		return nil, err
 	}
 
-	return &types.PositionsForAddressResponse{Mtps: mtps, Pagination: pageRes}, nil
+	return &types.PositionsForAddressResponse{Positions: positions, Pagination: pageRes}, nil
 }

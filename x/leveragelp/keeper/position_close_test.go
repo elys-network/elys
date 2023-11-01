@@ -13,7 +13,7 @@ import (
 	stablestaketypes "github.com/elys-network/elys/x/stablestake/types"
 )
 
-func (suite KeeperTestSuite) OpenPosition(addr sdk.AccAddress) (*types.MTP, types.Pool) {
+func (suite KeeperTestSuite) OpenPosition(addr sdk.AccAddress) (*types.Position, types.Pool) {
 	k := suite.app.LeveragelpKeeper
 	SetupStableCoinPrices(suite.ctx, suite.app.OracleKeeper)
 	poolAddr := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
@@ -86,7 +86,7 @@ func (suite KeeperTestSuite) OpenPosition(addr sdk.AccAddress) (*types.MTP, type
 	suite.Require().NoError(err)
 
 	// open a position
-	mtp, err := k.OpenLong(suite.ctx, &types.MsgOpen{
+	position, err := k.OpenLong(suite.ctx, &types.MsgOpen{
 		Creator:          addr.String(),
 		CollateralAsset:  "uusdc",
 		CollateralAmount: sdk.NewInt(1000),
@@ -94,7 +94,7 @@ func (suite KeeperTestSuite) OpenPosition(addr sdk.AccAddress) (*types.MTP, type
 		Leverage:         sdk.NewDec(5),
 	})
 	suite.Require().NoError(err)
-	return mtp, pool
+	return position, pool
 }
 
 func (suite KeeperTestSuite) TestCloseLong() {
@@ -117,10 +117,10 @@ func (suite KeeperTestSuite) TestCloseLong() {
 func (suite KeeperTestSuite) TestForceCloseLong() {
 	k := suite.app.LeveragelpKeeper
 	addr := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
-	mtp, pool := suite.OpenPosition(addr)
+	position, pool := suite.OpenPosition(addr)
 	repayAmount := math.NewInt(4000)
 
-	repayAmountOut, err := k.ForceCloseLong(suite.ctx, *mtp, pool)
+	repayAmountOut, err := k.ForceCloseLong(suite.ctx, *position, pool)
 	suite.Require().NoError(err)
 	suite.Require().Equal(repayAmount.String(), repayAmountOut.String())
 }
@@ -128,16 +128,16 @@ func (suite KeeperTestSuite) TestForceCloseLong() {
 func (suite KeeperTestSuite) TestHealthDecreaseForInterest() {
 	k := suite.app.LeveragelpKeeper
 	addr := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
-	mtp, _ := suite.OpenPosition(addr)
-	ammPool, found := suite.app.AmmKeeper.GetPool(suite.ctx, mtp.AmmPoolId)
+	position, _ := suite.OpenPosition(addr)
+	ammPool, found := suite.app.AmmKeeper.GetPool(suite.ctx, position.AmmPoolId)
 	suite.Require().True(found)
-	health, err := k.GetMTPHealth(suite.ctx, *mtp, ammPool)
+	health, err := k.GetPositionHealth(suite.ctx, *position, ammPool)
 	suite.Require().NoError(err)
 	suite.Require().Equal(health.String(), "1.221000000000000000")
 
 	suite.ctx = suite.ctx.WithBlockTime(suite.ctx.BlockTime().Add(time.Hour * 24 * 365))
 	suite.app.StablestakeKeeper.BeginBlocker(suite.ctx)
-	health, err = k.GetMTPHealth(suite.ctx, *mtp, ammPool)
+	health, err = k.GetPositionHealth(suite.ctx, *position, ammPool)
 	suite.Require().NoError(err)
 	suite.Require().Equal(health.String(), "0.610500000000000000")
 }

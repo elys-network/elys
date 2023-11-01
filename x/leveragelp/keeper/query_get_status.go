@@ -16,7 +16,7 @@ func (k Keeper) GetStatus(goCtx context.Context, req *types.StatusRequest) (*typ
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	return &types.StatusResponse{
-		OpenMtpCount:     k.GetOpenMTPCount(ctx),
-		LifetimeMtpCount: k.GetMTPCount(ctx),
+		OpenPositionCount:     k.GetOpenPositionCount(ctx),
+		LifetimePositionCount: k.GetPositionCount(ctx),
 	}, nil
 }
