@@ -14,16 +14,24 @@ message PoolAsset {
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
     (gogoproto.nullable) = false
   ];
-  string asset_balance = 3 [
+  string take_profit_liabilities = 3 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+  string take_profit_custody = 4 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+  string asset_balance = 5 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
     (gogoproto.nullable) = false,
     (gogoproto.moretags) = "yaml:\"asset_balance\""
   ];
-  string block_interest = 4 [
+  string block_interest = 6 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
     (gogoproto.nullable) = false
   ];
-  string asset_denom =  5;
+  string asset_denom =  7;
 }
 
 message Pool {

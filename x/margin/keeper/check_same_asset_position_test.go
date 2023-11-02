@@ -17,7 +17,7 @@ func TestCheckSameAssets_NewPosition(t *testing.T) {
 
 	k := app.MarginKeeper
 
-	mtp := types.NewMTP("creator", ptypes.BaseCurrency, ptypes.ATOM, types.Position_LONG, sdk.NewDec(5), 1)
+	mtp := types.NewMTP("creator", ptypes.BaseCurrency, ptypes.ATOM, types.Position_LONG, sdk.NewDec(5), sdk.MustNewDecFromStr(types.TakeProfitPriceDefault), 1)
 	k.SetMTP(ctx, mtp)
 
 	msg := &types.MsgOpen{

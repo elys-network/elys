@@ -17,7 +17,7 @@ func (k Keeper) OpenLong(ctx sdk.Context, poolId uint64, msg *types.MsgOpen) (*t
 	collateralAmountDec := sdk.NewDecFromBigInt(msg.CollateralAmount.BigInt())
 
 	// Initialize a new Margin Trading Position (MTP).
-	mtp := types.NewMTP(msg.Creator, msg.CollateralAsset, msg.BorrowAsset, msg.Position, leverage, poolId)
+	mtp := types.NewMTP(msg.Creator, msg.CollateralAsset, msg.BorrowAsset, msg.Position, leverage, msg.TakeProfitPrice, poolId)
 
 	// Call the function to process the open long logic.
 	return k.ProcessOpenLong(ctx, mtp, leverage, eta, collateralAmountDec, poolId, msg)

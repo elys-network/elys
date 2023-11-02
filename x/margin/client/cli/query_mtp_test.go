@@ -43,6 +43,8 @@ func networkWithMTPObjects(t *testing.T, n int) (*network.Network, []*types.MTP)
 			InterestPaidCustodies:     []sdk.Coin{sdk.NewCoin("ATOM", sdk.NewInt(0))},
 			InterestUnpaidCollaterals: []sdk.Coin{sdk.NewCoin(paramtypes.BaseCurrency, sdk.NewInt(0))},
 			Custodies:                 []sdk.Coin{sdk.NewCoin("ATOM", sdk.NewInt(0))},
+			TakeProfitLiabilities:     sdk.NewInt(0),
+			TakeProfitCustodies:       []sdk.Coin{sdk.NewCoin("ATOM", sdk.NewInt(0))},
 			Leverages:                 []sdk.Dec{sdk.NewDec(0)},
 			MtpHealth:                 sdk.NewDec(0),
 			Position:                  types.Position_LONG,
@@ -50,6 +52,7 @@ func networkWithMTPObjects(t *testing.T, n int) (*network.Network, []*types.MTP)
 			AmmPoolId:                 (uint64)(i + 1),
 			ConsolidateLeverage:       sdk.ZeroDec(),
 			SumCollateral:             sdk.ZeroInt(),
+			TakeProfitPrice:           sdk.MustNewDecFromStr(types.TakeProfitPriceDefault),
 		}
 
 		mtps = append(mtps, &mtp)

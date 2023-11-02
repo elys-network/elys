@@ -250,6 +250,7 @@ func TestOpenShort_ErrorsDuringOperations(t *testing.T) {
 			CollateralAsset:  ptypes.BaseCurrency,
 			BorrowAsset:      "uatom",
 			Position:         types.Position_SHORT,
+			TakeProfitPrice:  sdk.MustNewDecFromStr(types.TakeProfitPriceDefault),
 		}
 		poolId = uint64(42)
 	)
@@ -280,7 +281,7 @@ func TestOpenShort_ErrorsDuringOperations(t *testing.T) {
 	mockChecker.On("EstimateSwap", ctx, leveragedAmtTokenIn, ptypes.BaseCurrency, ammtypes.Pool{}).Return(custodyAmount, nil)
 	mockChecker.On("HasSufficientPoolBalance", ctx, ammtypes.Pool{}, ptypes.BaseCurrency, custodyAmount).Return(true)
 
-	mtp := types.NewMTP(msg.Creator, msg.CollateralAsset, ptypes.BaseCurrency, msg.Position, msg.Leverage, poolId)
+	mtp := types.NewMTP(msg.Creator, msg.CollateralAsset, ptypes.BaseCurrency, msg.Position, msg.Leverage, sdk.MustNewDecFromStr(types.TakeProfitPriceDefault), poolId)
 
 	borrowError := errors.New("borrow error")
 	mockChecker.On("Borrow", ctx, msg.CollateralAsset, ptypes.BaseCurrency, msg.CollateralAmount, custodyAmount, mtp, &ammtypes.Pool{}, &types.Pool{}, eta).Return(borrowError)
@@ -310,6 +311,7 @@ func TestOpenShort_LeverageRatioLessThanSafetyFactor(t *testing.T) {
 			CollateralAsset:  ptypes.BaseCurrency,
 			BorrowAsset:      "uatom",
 			Position:         types.Position_SHORT,
+			TakeProfitPrice:  sdk.MustNewDecFromStr(types.TakeProfitPriceDefault),
 		}
 		poolId = uint64(42)
 	)
@@ -340,7 +342,7 @@ func TestOpenShort_LeverageRatioLessThanSafetyFactor(t *testing.T) {
 	mockChecker.On("EstimateSwap", ctx, leveragedAmtTokenIn, ptypes.BaseCurrency, ammtypes.Pool{}).Return(custodyAmount, nil)
 	mockChecker.On("HasSufficientPoolBalance", ctx, ammtypes.Pool{}, ptypes.BaseCurrency, custodyAmount).Return(true)
 
-	mtp := types.NewMTP(msg.Creator, msg.CollateralAsset, ptypes.BaseCurrency, msg.Position, msg.Leverage, poolId)
+	mtp := types.NewMTP(msg.Creator, msg.CollateralAsset, ptypes.BaseCurrency, msg.Position, msg.Leverage, sdk.MustNewDecFromStr(types.TakeProfitPriceDefault), poolId)
 
 	mockChecker.On("Borrow", ctx, msg.CollateralAsset, ptypes.BaseCurrency, msg.CollateralAmount, custodyAmount, mtp, &ammtypes.Pool{}, &types.Pool{}, eta).Return(nil)
 	mockChecker.On("UpdatePoolHealth", ctx, &types.Pool{}).Return(nil)
@@ -376,6 +378,7 @@ func TestOpenShort_Success(t *testing.T) {
 			CollateralAsset:  ptypes.BaseCurrency,
 			BorrowAsset:      "uatom",
 			Position:         types.Position_SHORT,
+			TakeProfitPrice:  sdk.MustNewDecFromStr(types.TakeProfitPriceDefault),
 		}
 		poolId = uint64(42)
 	)
@@ -406,7 +409,7 @@ func TestOpenShort_Success(t *testing.T) {
 	mockChecker.On("EstimateSwap", ctx, leveragedAmtTokenIn, ptypes.BaseCurrency, ammtypes.Pool{}).Return(custodyAmount, nil)
 	mockChecker.On("HasSufficientPoolBalance", ctx, ammtypes.Pool{}, ptypes.BaseCurrency, custodyAmount).Return(true)
 
-	mtp := types.NewMTP(msg.Creator, msg.CollateralAsset, ptypes.BaseCurrency, msg.Position, msg.Leverage, poolId)
+	mtp := types.NewMTP(msg.Creator, msg.CollateralAsset, ptypes.BaseCurrency, msg.Position, msg.Leverage, sdk.MustNewDecFromStr(types.TakeProfitPriceDefault), poolId)
 
 	mockChecker.On("Borrow", ctx, msg.CollateralAsset, ptypes.BaseCurrency, msg.CollateralAmount, custodyAmount, mtp, &ammtypes.Pool{}, &types.Pool{}, eta).Return(nil)
 	mockChecker.On("UpdatePoolHealth", ctx, &types.Pool{}).Return(nil)
