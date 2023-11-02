@@ -234,6 +234,7 @@ func TestOpenLong_ErrorsDuringOperations(t *testing.T) {
 			CollateralAsset:  ptypes.BaseCurrency,
 			BorrowAsset:      "uatom",
 			Position:         types.Position_LONG,
+			TakeProfitPrice:  sdk.MustNewDecFromStr(types.TakeProfitPriceDefault),
 		}
 		poolId = uint64(42)
 	)
@@ -291,6 +292,7 @@ func TestOpenLong_LeverageRatioLessThanSafetyFactor(t *testing.T) {
 			CollateralAsset:  ptypes.BaseCurrency,
 			BorrowAsset:      "uatom",
 			Position:         types.Position_LONG,
+			TakeProfitPrice:  sdk.MustNewDecFromStr(types.TakeProfitPriceDefault),
 		}
 		poolId = uint64(42)
 	)
@@ -354,6 +356,7 @@ func TestOpenLong_Success(t *testing.T) {
 			CollateralAsset:  ptypes.BaseCurrency,
 			BorrowAsset:      "uatom",
 			Position:         types.Position_LONG,
+			TakeProfitPrice:  sdk.MustNewDecFromStr(types.TakeProfitPriceDefault),
 		}
 		poolId = uint64(42)
 	)

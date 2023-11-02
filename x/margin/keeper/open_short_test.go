@@ -250,6 +250,7 @@ func TestOpenShort_ErrorsDuringOperations(t *testing.T) {
 			CollateralAsset:  ptypes.BaseCurrency,
 			BorrowAsset:      "uatom",
 			Position:         types.Position_SHORT,
+			TakeProfitPrice:  sdk.MustNewDecFromStr(types.TakeProfitPriceDefault),
 		}
 		poolId = uint64(42)
 	)
@@ -310,6 +311,7 @@ func TestOpenShort_LeverageRatioLessThanSafetyFactor(t *testing.T) {
 			CollateralAsset:  ptypes.BaseCurrency,
 			BorrowAsset:      "uatom",
 			Position:         types.Position_SHORT,
+			TakeProfitPrice:  sdk.MustNewDecFromStr(types.TakeProfitPriceDefault),
 		}
 		poolId = uint64(42)
 	)
@@ -376,6 +378,7 @@ func TestOpenShort_Success(t *testing.T) {
 			CollateralAsset:  ptypes.BaseCurrency,
 			BorrowAsset:      "uatom",
 			Position:         types.Position_SHORT,
+			TakeProfitPrice:  sdk.MustNewDecFromStr(types.TakeProfitPriceDefault),
 		}
 		poolId = uint64(42)
 	)

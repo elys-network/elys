@@ -69,6 +69,7 @@ func (k Keeper) ProcessOpenShort(ctx sdk.Context, mtp *types.MTP, leverage sdk.D
 	if mtp.Position == types.Position_SHORT {
 		mtp.Custodies = []sdk.Coin{sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(0))}
 		mtp.InterestPaidCustodies = []sdk.Coin{sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(0))}
+		mtp.TakeProfitCustodies = []sdk.Coin{sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(0))}
 	}
 
 	// Borrow the asset the user wants to short.
