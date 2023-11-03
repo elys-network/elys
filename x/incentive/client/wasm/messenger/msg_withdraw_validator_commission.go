@@ -47,7 +47,7 @@ func performMsgWithdrawValidatorCommissions(f *incentivekeeper.Keeper, ctx sdk.C
 	}
 
 	msgServer := incentivekeeper.NewMsgServerImpl(*f)
-	msgMsgWithdrawValidatorCommissions := incentivetypes.NewMsgWithdrawValidatorCommission(address, valAddr)
+	msgMsgWithdrawValidatorCommissions := incentivetypes.NewMsgWithdrawValidatorCommission(address, valAddr, msgWithdrawValidatorCommission.Denom)
 
 	if err := msgMsgWithdrawValidatorCommissions.ValidateBasic(); err != nil {
 		return nil, errorsmod.Wrap(err, "failed validating msgWithdrawValidatorCommission")
