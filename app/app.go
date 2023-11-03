@@ -118,6 +118,8 @@ import (
 	ibckeeper "github.com/cosmos/ibc-go/v7/modules/core/keeper"
 	solomachine "github.com/cosmos/ibc-go/v7/modules/light-clients/06-solomachine"
 	ibctm "github.com/cosmos/ibc-go/v7/modules/light-clients/07-tendermint"
+	wasmbindingsclient "github.com/elys-network/elys/wasmbindings/client"
+	wasmbindingstypes "github.com/elys-network/elys/wasmbindings/types"
 	assetprofilemodule "github.com/elys-network/elys/x/assetprofile"
 	assetprofilemodulekeeper "github.com/elys-network/elys/x/assetprofile/keeper"
 	assetprofilemoduletypes "github.com/elys-network/elys/x/assetprofile/types"
@@ -814,9 +816,31 @@ func NewElysApp(
 
 	// The last arguments can contain custom message handlers, and custom query handlers,
 	// if we want to allow any custom callbacks
-	availableCapabilities := strings.Join(AllCapabilities(), ",")
+	availableCapabilities := strings.Join(wasmbindingstypes.AllCapabilities(), ",")
 	bankKeeper := app.BankKeeper.(bankkeeper.BaseKeeper)
-	wasmOpts = append(RegisterCustomPlugins(&app.AmmKeeper, &app.OracleKeeper, &app.MarginKeeper, &bankKeeper, app.StakingKeeper, &app.CommitmentKeeper, &app.IncentiveKeeper), wasmOpts...)
+	wasmOpts = append(
+		wasmbindingsclient.RegisterCustomPlugins(
+			&bankKeeper,
+			&app.AccountedPoolKeeper,
+			&app.AmmKeeper,
+			&app.AssetprofileKeeper,
+			&app.BurnerKeeper,
+			&app.ClockKeeper,
+			&app.CommitmentKeeper,
+			&app.EpochsKeeper,
+			&app.IncentiveKeeper,
+			&app.LeveragelpKeeper,
+			&app.LiquidityproviderKeeper,
+			&app.MarginKeeper,
+			&app.OracleKeeper,
+			&app.ParameterKeeper,
+			&app.StablestakeKeeper,
+			app.StakingKeeper,
+			&app.TokenomicsKeeper,
+			&app.TransferhookKeeper,
+		),
+		wasmOpts...,
+	)
 
 	app.WasmKeeper = wasmmodule.NewKeeper(
 		appCodec,
