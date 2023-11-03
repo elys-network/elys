@@ -28,6 +28,7 @@ import (
 	margintypes "github.com/elys-network/elys/x/margin/types"
 	oracletypes "github.com/elys-network/elys/x/oracle/types"
 	parametertypes "github.com/elys-network/elys/x/parameter/types"
+	stablestaketypes "github.com/elys-network/elys/x/stablestake/types"
 	tokenomicstypes "github.com/elys-network/elys/x/tokenomics/types"
 	transferhooktypes "github.com/elys-network/elys/x/transferhook/types"
 )
@@ -89,6 +90,8 @@ func setUpgradeHandler(app *ElysApp) {
 			keyTable = clocktypes.ParamKeyTable() //nolint:staticcheck
 		case transferhooktypes.ModuleName:
 			keyTable = transferhooktypes.ParamKeyTable() //nolint:staticcheck
+		case stablestaketypes.ModuleName:
+			keyTable = stablestaketypes.ParamKeyTable() //nolint:staticcheck
 		}
 
 		if !subspace.HasKeyTable() {
@@ -122,6 +125,7 @@ func loadUpgradeStore(app *ElysApp) {
 		storeUpgrades := storetypes.StoreUpgrades{
 			Added: []string{
 				leveragelptypes.StoreKey,
+				stablestaketypes.StoreKey,
 			},
 		}
 		// Use upgrade store loader for the initial loading of all stores when app starts,
