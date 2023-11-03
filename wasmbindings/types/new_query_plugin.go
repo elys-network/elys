@@ -5,6 +5,7 @@ import (
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
 	ammkeeper "github.com/elys-network/elys/x/amm/keeper"
 	commitmentkeeper "github.com/elys-network/elys/x/commitment/keeper"
+	incentivekeeper "github.com/elys-network/elys/x/incentive/keeper"
 	marginkeeper "github.com/elys-network/elys/x/margin/keeper"
 	oraclekeeper "github.com/elys-network/elys/x/oracle/keeper"
 )
@@ -18,6 +19,7 @@ func NewQueryPlugin(
 	staking *stakingkeeper.Keeper,
 	commitment *commitmentkeeper.Keeper,
 	margin *marginkeeper.Keeper,
+	incentive *incentivekeeper.Keeper,
 ) *QueryPlugin {
 	return &QueryPlugin{
 		moduleQueriers:   moduleQueriers,
@@ -27,5 +29,6 @@ func NewQueryPlugin(
 		stakingKeeper:    staking,
 		commitmentKeeper: commitment,
 		marginKeeper:     margin,
+		incentiveKeeper:  incentive,
 	}
 }

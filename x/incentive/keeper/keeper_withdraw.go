@@ -83,7 +83,7 @@ func (k Keeper) GiveCommissionToValidators(ctx sdk.Context, delegator string, to
 
 // withdraw rewards
 // Eden, EdenBoost and Elys to USDC
-func (k Keeper) ProcessWithdrawRewards(ctx sdk.Context, delegator string) error {
+func (k Keeper) ProcessWithdrawRewards(ctx sdk.Context, delegator string, denom string) error {
 	_, err := sdk.AccAddressFromBech32(delegator)
 	if err != nil {
 		return err
@@ -96,10 +96,17 @@ func (k Keeper) ProcessWithdrawRewards(ctx sdk.Context, delegator string) error 
 	}
 
 	// Eden
-	uncommittedEden, bfound := commitments.GetUncommittedTokensForDenom(ptypes.Eden)
-	if bfound {
-		// Withdraw Eden
-		err = k.cmk.ProcessWithdrawTokens(ctx, delegator, ptypes.Eden, uncommittedEden.Amount)
+	if denom == ptypes.Eden {
+		uncommittedEden, bfound := commitments.GetUncommittedTokensForDenom(ptypes.Eden)
+		if bfound {
+			// Withdraw Eden
+			return k.cmk.ProcessWithdrawTokens(ctx, delegator, ptypes.Eden, uncommittedEden.Amount)
+		}
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, "balance not available")
+	}
+
+	if denom == ptypes.EdenB {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, "balance not available")
 	}
 
 	// USDC
@@ -119,6 +126,7 @@ func (k Keeper) ProcessWithdrawRewards(ctx sdk.Context, delegator string) error 
 		// All dex rewards are only paid in USDC
 		// TODO:
 		// USDC denom is still dummy until we have real USDC in our chain.
+		// This function call will deduct the accounting in commitment module only.
 		err = k.cmk.ProcessWithdrawUSDC(ctx, delegator, ptypes.BaseCurrency, uncommittedUsdc.Amount)
 		if err != nil {
 			return sdkerrors.Wrapf(types.ErrIntOverflowTx, "Internal error with amount: %d", uncommittedUsdc.Amount)
@@ -134,11 +142,13 @@ func (k Keeper) ProcessWithdrawRewards(ctx sdk.Context, delegator string) error 
 		// TODO
 		// USDC denom is still dummy
 		revenue := sdk.NewCoin(ptypes.BaseCurrency, uncommittedUsdc.Amount)
-		// Transfer revenue to a single wallet of DEX revenue wallet.
+		// Transfer revenue from a single wallet of DEX revenue wallet to user.
 		err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, k.dexRevCollectorName, addr, sdk.NewCoins(revenue))
 		if err != nil {
 			panic(err)
 		}
+	} else {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, "balance not available")
 	}
 
 	return err
@@ -146,7 +156,7 @@ func (k Keeper) ProcessWithdrawRewards(ctx sdk.Context, delegator string) error 
 
 // Withdraw validator commission
 // Eden, EdenBoost and USDC
-func (k Keeper) ProcessWithdrawValidatorCommission(ctx sdk.Context, delegator string, validator string) error {
+func (k Keeper) ProcessWithdrawValidatorCommission(ctx sdk.Context, delegator string, validator string, denom string) error {
 	_, err := sdk.AccAddressFromBech32(delegator)
 	if err != nil {
 		return err
@@ -165,10 +175,17 @@ func (k Keeper) ProcessWithdrawValidatorCommission(ctx sdk.Context, delegator st
 	}
 
 	// Eden
-	uncommittedEden, bfound := commitments.GetUncommittedTokensForDenom(ptypes.Eden)
-	if bfound {
-		// Withdraw Eden
-		err = k.cmk.ProcessWithdrawValidatorCommission(ctx, delegator, validator, ptypes.Eden, uncommittedEden.Amount)
+	if denom == ptypes.Eden {
+		uncommittedEden, bfound := commitments.GetUncommittedTokensForDenom(ptypes.Eden)
+		if bfound {
+			// Withdraw Eden
+			return k.cmk.ProcessWithdrawValidatorCommission(ctx, delegator, validator, ptypes.Eden, uncommittedEden.Amount)
+		}
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, "balance not available")
+	}
+
+	if denom == ptypes.EdenB {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, "balance not available")
 	}
 
 	// USDC
@@ -187,6 +204,7 @@ func (k Keeper) ProcessWithdrawValidatorCommission(ctx sdk.Context, delegator st
 
 		// TODO:
 		// USDC denom is still dummy until we have real USDC in our chain.
+		// This function call will deduct the accounting in commitment module only.
 		err = k.cmk.ProcessWithdrawUSDC(ctx, validator, ptypes.BaseCurrency, uncommittedUsdc.Amount)
 		if err != nil {
 			return sdkerrors.Wrapf(types.ErrIntOverflowTx, "Internal error with amount: %d", uncommittedUsdc.Amount)
@@ -202,11 +220,13 @@ func (k Keeper) ProcessWithdrawValidatorCommission(ctx sdk.Context, delegator st
 		// TODO
 		// USDC denom is still dummy
 		revenue := sdk.NewCoin(ptypes.BaseCurrency, uncommittedUsdc.Amount)
-		// Transfer revenue to a single wallet of DEX revenue wallet.
+		// Transfer revenue from a single wallet of DEX revenue wallet to user's wallet.
 		err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, k.dexRevCollectorName, addr, sdk.NewCoins(revenue))
 		if err != nil {
 			panic(err)
 		}
+	} else {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, "balance not available")
 	}
 
 	return err

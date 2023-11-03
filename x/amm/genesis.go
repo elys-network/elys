@@ -16,6 +16,9 @@ func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) 
 	for _, elem := range genState.DenomLiquidityList {
 		k.SetDenomLiquidity(ctx, elem)
 	}
+	for _, track := range genState.SlippageTracks {
+		k.SetSlippageTrack(ctx, track)
+	}
 	// this line is used by starport scaffolding # genesis/module/init
 	k.SetParams(ctx, genState.Params)
 }
@@ -27,6 +30,7 @@ func ExportGenesis(ctx sdk.Context, k keeper.Keeper) *types.GenesisState {
 
 	genesis.PoolList = k.GetAllPool(ctx)
 	genesis.DenomLiquidityList = k.GetAllDenomLiquidity(ctx)
+	genesis.SlippageTracks = k.AllSlippageTracks(ctx)
 	// this line is used by starport scaffolding # genesis/module/export
 
 	return genesis

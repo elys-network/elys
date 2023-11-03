@@ -31,23 +31,29 @@ service Query {
   }
   rpc PoolAll (QueryAllPoolRequest) returns (QueryAllPoolResponse) {
     option (google.api.http).get = "/elys-network/elys/amm/pool";
-  
   }
   
   // Queries a list of DenomLiquidity items.
   rpc DenomLiquidity    (QueryGetDenomLiquidityRequest) returns (QueryGetDenomLiquidityResponse) {
     option (google.api.http).get = "/elys-network/elys/amm/denom_liquidity/{denom}";
-  
   }
   rpc DenomLiquidityAll (QueryAllDenomLiquidityRequest) returns (QueryAllDenomLiquidityResponse) {
     option (google.api.http).get = "/elys-network/elys/amm/denom_liquidity";
-  
   }
 
   // Queries a list of SwapEstimation items.
   rpc SwapEstimation (QuerySwapEstimationRequest) returns (QuerySwapEstimationResponse) {
     option (google.api.http).get = "/elys-network/elys/amm/swap_estimation";
-  
+  }
+
+  // Queries slippage track for a week.
+  rpc SlippageTrack (QuerySlippageTrackRequest) returns (QuerySlippageTrackResponse) {
+    option (google.api.http).get = "/elys-network/elys/amm/slippage_track/{poolId}";
+  }
+
+  // Queries all slippage tracks for a week.
+  rpc SlippageTrackAll (QuerySlippageTrackAllRequest) returns (QuerySlippageTrackAllResponse) {
+    option (google.api.http).get = "/elys-network/elys/amm/slippage_tracks";
   }
 }
 // QueryParamsRequest is request type for the Query/Params RPC method.
@@ -107,3 +113,16 @@ message QuerySwapEstimationResponse {
   cosmos.base.v1beta1.Coin tokenOut  = 2 [(gogoproto.nullable) = false];
 }
 
+message QuerySlippageTrackRequest {
+  uint64 poolId = 1;
+}
+
+message QuerySlippageTrackResponse {
+  OraclePoolSlippageTrack track = 1 [ (gogoproto.nullable) = false ];
+}
+
+message QuerySlippageTrackAllRequest {}
+
+message QuerySlippageTrackAllResponse {
+  repeated OraclePoolSlippageTrack tracks = 1 [ (gogoproto.nullable) = false ];
+}

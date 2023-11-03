@@ -10,6 +10,11 @@ import (
 func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) {
 	// this line is used by starport scaffolding # genesis/module/init
 	k.SetParams(ctx, genState.Params)
+
+	// Set all the assetInfo
+	for _, commitment := range genState.Commitments {
+		k.SetCommitments(ctx, *commitment)
+	}
 }
 
 // ExportGenesis returns the module's exported genesis

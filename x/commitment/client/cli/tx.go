@@ -33,7 +33,6 @@ func GetTxCmd() *cobra.Command {
 	cmd.AddCommand(CmdCommitTokens())
 	cmd.AddCommand(CmdCommitLiquidTokens())
 	cmd.AddCommand(CmdUncommitTokens())
-	cmd.AddCommand(CmdWithdrawTokens())
 	cmd.AddCommand(CmdVest())
 	cmd.AddCommand(CmdCancelVest())
 	cmd.AddCommand(CmdVestNow())

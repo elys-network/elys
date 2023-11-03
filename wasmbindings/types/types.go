@@ -12,6 +12,8 @@ import (
 	ammkeeper "github.com/elys-network/elys/x/amm/keeper"
 	ammtype "github.com/elys-network/elys/x/amm/types"
 	commitmentkeeper "github.com/elys-network/elys/x/commitment/keeper"
+	incentiveclientwasmtypes "github.com/elys-network/elys/x/incentive/client/wasm/types"
+	incentivekeeper "github.com/elys-network/elys/x/incentive/keeper"
 	marginkeeper "github.com/elys-network/elys/x/margin/keeper"
 	margintypes "github.com/elys-network/elys/x/margin/types"
 	oraclekeeper "github.com/elys-network/elys/x/oracle/keeper"
@@ -44,6 +46,7 @@ type QueryPlugin struct {
 	stakingKeeper    *stakingkeeper.Keeper
 	commitmentKeeper *commitmentkeeper.Keeper
 	marginKeeper     *marginkeeper.Keeper
+	incentiveKeeper  *incentivekeeper.Keeper
 }
 
 // AllCapabilities returns all capabilities available with the current wasmvm
@@ -117,14 +120,21 @@ type CustomMessenger struct {
 	margin           *marginkeeper.Keeper
 	staking          *stakingkeeper.Keeper
 	commitment       *commitmentkeeper.Keeper
+	incentive        *incentivekeeper.Keeper
 }
 
 type ElysMsg struct {
-	MsgSwapExactAmountIn *MsgSwapExactAmountIn `json:"msg_swap_exact_amount_in,omitempty"`
-	MsgOpen              *MsgOpen              `json:"msg_open,omitempty"`
-	MsgClose             *MsgClose             `json:"msg_close,omitempty"`
-	MsgStake             *MsgStake             `json:"msg_stake,omitempty"`
-	MsgUnstake           *MsgUnstake           `json:"msg_unstake,omitempty"`
+	MsgSwapExactAmountIn           *MsgSwapExactAmountIn                                    `json:"msg_swap_exact_amount_in,omitempty"`
+	MsgOpen                        *MsgOpen                                                 `json:"msg_open,omitempty"`
+	MsgClose                       *MsgClose                                                `json:"msg_close,omitempty"`
+	MsgStake                       *MsgStake                                                `json:"msg_stake,omitempty"`
+	MsgUnstake                     *MsgUnstake                                              `json:"msg_unstake,omitempty"`
+	MsgBeginRedelegate             *incentiveclientwasmtypes.MsgBeginRedelegate             `json:"msg_begin_redelegate,omitempty"`
+	MsgCancelUnbondingDelegation   *incentiveclientwasmtypes.MsgCancelUnbondingDelegation   `json:"msg_cancel_unbonding_delegation"`
+	MsgVest                        *incentiveclientwasmtypes.MsgVest                        `json:"msg_vest"`
+	MsgCancelVest                  *incentiveclientwasmtypes.MsgCancelVest                  `json:"msg_cancel_vest"`
+	MsgWithdrawRewards             *incentiveclientwasmtypes.MsgWithdrawRewards             `json:"msg_withdraw_rewards"`
+	MsgWithdrawValidatorCommission *incentiveclientwasmtypes.MsgWithdrawValidatorCommission `json:"msg_withdraw_validator_commission"`
 }
 
 type MsgSwapExactAmountIn struct {

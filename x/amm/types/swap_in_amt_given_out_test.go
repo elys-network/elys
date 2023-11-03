@@ -189,7 +189,7 @@ func (suite *TestSuite) TestSwapInAmtGivenOut() {
 				PoolAssets:  tc.poolAssets,
 				TotalWeight: sdk.ZeroInt(),
 			}
-			tokenOut, weightBonus, err := pool.SwapInAmtGivenOut(suite.ctx, suite.app.OracleKeeper, &pool, sdk.Coins{tc.tokenOut}, tc.inTokenDenom, tc.swapFee, suite.app.AccountedPoolKeeper)
+			tokenOut, _, weightBonus, err := pool.SwapInAmtGivenOut(suite.ctx, suite.app.OracleKeeper, &pool, sdk.Coins{tc.tokenOut}, tc.inTokenDenom, tc.swapFee, suite.app.AccountedPoolKeeper)
 			if tc.expErr {
 				suite.Require().Error(err)
 			} else {
