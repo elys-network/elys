@@ -163,6 +163,15 @@ func (k Keeper) ExecuteSwapRequests(ctx sdk.Context) []sdk.Msg {
 	return requests
 }
 
+func (k Keeper) ClearOutdatedSlippageTrack(ctx sdk.Context) {
+	tracks := k.AllSlippageTracks(ctx)
+	for _, track := range tracks {
+		if track.Timestamp+86400*7 < uint64(ctx.BlockTime().Unix()) {
+			k.DeleteSlippageTrack(ctx, track)
+		}
+	}
+}
+
 // EndBlocker of amm module
 func (k Keeper) EndBlocker(ctx sdk.Context) {
 	defer telemetry.ModuleMeasureSince(types.ModuleName, time.Now(), telemetry.MetricKeyBeginBlocker)
@@ -172,4 +181,6 @@ func (k Keeper) EndBlocker(ctx sdk.Context) {
 		bz, _ := json.Marshal(msgs)
 		k.Logger(ctx).Info("Executed swap requests: " + string(bz))
 	}
+
+	k.ClearOutdatedSlippageTrack(ctx)
 }

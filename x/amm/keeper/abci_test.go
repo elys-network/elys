@@ -2,6 +2,7 @@ package keeper_test
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/cometbft/cometbft/crypto/ed25519"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -299,4 +300,34 @@ func (suite *KeeperTestSuite) TestExecuteSwapRequests() {
 			}
 		})
 	}
+}
+
+// TODO: test ClearOutdatedSlippageTrack
+func (suite *KeeperTestSuite) TestClearOutdatedSlippageTrack() {
+	now := time.Now()
+	tracks := []types.OraclePoolSlippageTrack{
+		{
+			PoolId:    1,
+			Timestamp: uint64(now.Unix() - 86400*8),
+			Tracked:   sdk.Coins{sdk.NewInt64Coin("uelys", 1000)},
+		},
+		{
+			PoolId:    1,
+			Timestamp: uint64(now.Unix() - 86400),
+			Tracked:   sdk.Coins{sdk.NewInt64Coin("uelys", 2000)},
+		},
+		{
+			PoolId:    2,
+			Timestamp: uint64(now.Unix()),
+			Tracked:   sdk.Coins{sdk.NewInt64Coin("uelys", 1000)},
+		},
+	}
+	for _, track := range tracks {
+		suite.app.AmmKeeper.SetSlippageTrack(suite.ctx, track)
+	}
+
+	suite.ctx = suite.ctx.WithBlockTime(now)
+	suite.app.AmmKeeper.ClearOutdatedSlippageTrack(suite.ctx)
+	tracksStored := suite.app.AmmKeeper.AllSlippageTracks(suite.ctx)
+	suite.Require().Len(tracksStored, 2)
 }

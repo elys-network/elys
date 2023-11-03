@@ -21,3 +21,11 @@ message Pool {
   string rebalanceTreasury = 7;
 }
 
+message OraclePoolSlippageTrack {
+  uint64 poolId = 1;
+  uint64 timestamp = 2;
+  repeated cosmos.base.v1beta1.Coin tracked = 3 [
+    (gogoproto.nullable) = false,
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
+  ];
+}
