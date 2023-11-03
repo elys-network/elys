@@ -510,12 +510,12 @@ func (m *CustomMessenger) msgUnstake(ctx sdk.Context, contractAddr sdk.AccAddres
 	if msgUnstake.Asset == paramtypes.Elys {
 		res, err = PerformMsgUnstakeElys(m.staking, ctx, contractAddr, msgUnstake)
 		if err != nil {
-			return nil, nil, errorsmod.Wrap(err, "perform elys stake")
+			return nil, nil, errorsmod.Wrap(err, "perform elys unstake")
 		}
 	} else {
 		res, err = PerformMsgUncommit(m.commitment, ctx, contractAddr, msgUnstake)
 		if err != nil {
-			return nil, nil, errorsmod.Wrap(err, "perform elys stake")
+			return nil, nil, errorsmod.Wrap(err, "perform elys uncommit")
 		}
 	}
 

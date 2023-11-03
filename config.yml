@@ -220,6 +220,29 @@ genesis:
             num_epochs: "10"
             vest_now_factor: "90"
             num_max_vestings: "10"
+      commitments:
+        - creator: elys135ayha0sr682mnsm469mur5n9ycaxf3905qe6l
+          committed_tokens:
+            - amount: "10000"
+              denom: uusdc
+            - amount: "10000"
+              denom: ueden
+            - amount: "10000"
+              denom: uedenb
+          uncommitted_tokens:
+            - amount: "10000"
+              denom: uusdc
+            - amount: "10000"
+              denom: ueden
+            - amount: "10000"
+              denom: uedenb
+          vesting_tokens:
+            - denom: ueden
+              total_amount: "10000"
+              unvested_amount: "10000"
+              epoch_identifier: "day"
+              num_epochs: 100
+              current_epoch: 5
     incentive:
       params:
         lp_incentives:
