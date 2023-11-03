@@ -40326,6 +40326,25 @@ paths:
                         custom method
 
                         signatures required by gogoproto.
+                  take_profit_liabilities:
+                    type: string
+                  take_profit_custodies:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        denom:
+                          type: string
+                        amount:
+                          type: string
+                      description: >-
+                        Coin defines a token with a denomination and an amount.
+
+
+                        NOTE: The amount field is an Int which implements the
+                        custom method
+
+                        signatures required by gogoproto.
                   leverages:
                     type: array
                     items:
@@ -40348,6 +40367,8 @@ paths:
                   consolidate_leverage:
                     type: string
                   sum_collateral:
+                    type: string
+                  take_profit_price:
                     type: string
         default:
           description: An unexpected error response.
@@ -40488,6 +40509,26 @@ paths:
                           custom method
 
                           signatures required by gogoproto.
+                    take_profit_liabilities:
+                      type: string
+                    take_profit_custodies:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          denom:
+                            type: string
+                          amount:
+                            type: string
+                        description: >-
+                          Coin defines a token with a denomination and an
+                          amount.
+
+
+                          NOTE: The amount field is an Int which implements the
+                          custom method
+
+                          signatures required by gogoproto.
                     leverages:
                       type: array
                       items:
@@ -40510,6 +40551,8 @@ paths:
                     consolidate_leverage:
                       type: string
                     sum_collateral:
+                      type: string
+                    take_profit_price:
                       type: string
               pagination:
                 type: object
@@ -40730,6 +40773,26 @@ paths:
                           custom method
 
                           signatures required by gogoproto.
+                    take_profit_liabilities:
+                      type: string
+                    take_profit_custodies:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          denom:
+                            type: string
+                          amount:
+                            type: string
+                        description: >-
+                          Coin defines a token with a denomination and an
+                          amount.
+
+
+                          NOTE: The amount field is an Int which implements the
+                          custom method
+
+                          signatures required by gogoproto.
                     leverages:
                       type: array
                       items:
@@ -40752,6 +40815,8 @@ paths:
                     consolidate_leverage:
                       type: string
                     sum_collateral:
+                      type: string
+                    take_profit_price:
                       type: string
               pagination:
                 type: object
@@ -40970,6 +41035,10 @@ paths:
                           type: string
                         custody:
                           type: string
+                        take_profit_liabilities:
+                          type: string
+                        take_profit_custody:
+                          type: string
                         asset_balance:
                           type: string
                         block_interest:
@@ -41038,6 +41107,10 @@ paths:
                           liabilities:
                             type: string
                           custody:
+                            type: string
+                          take_profit_liabilities:
+                            type: string
+                          take_profit_custody:
                             type: string
                           asset_balance:
                             type: string
@@ -41262,6 +41335,26 @@ paths:
                           custom method
 
                           signatures required by gogoproto.
+                    take_profit_liabilities:
+                      type: string
+                    take_profit_custodies:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          denom:
+                            type: string
+                          amount:
+                            type: string
+                        description: >-
+                          Coin defines a token with a denomination and an
+                          amount.
+
+
+                          NOTE: The amount field is an Int which implements the
+                          custom method
+
+                          signatures required by gogoproto.
                     leverages:
                       type: array
                       items:
@@ -41284,6 +41377,8 @@ paths:
                     consolidate_leverage:
                       type: string
                     sum_collateral:
+                      type: string
+                    take_profit_price:
                       type: string
               pagination:
                 type: object
@@ -83822,6 +83917,22 @@ definitions:
 
             NOTE: The amount field is an Int which implements the custom method
             signatures required by gogoproto.
+      take_profit_liabilities:
+        type: string
+      take_profit_custodies:
+        type: array
+        items:
+          type: object
+          properties:
+            denom:
+              type: string
+            amount:
+              type: string
+          description: |-
+            Coin defines a token with a denomination and an amount.
+
+            NOTE: The amount field is an Int which implements the custom method
+            signatures required by gogoproto.
       leverages:
         type: array
         items:
@@ -83844,6 +83955,8 @@ definitions:
       consolidate_leverage:
         type: string
       sum_collateral:
+        type: string
+      take_profit_price:
         type: string
   elys.margin.MTPResponse:
     type: object
@@ -83940,6 +84053,25 @@ definitions:
                 method
 
                 signatures required by gogoproto.
+          take_profit_liabilities:
+            type: string
+          take_profit_custodies:
+            type: array
+            items:
+              type: object
+              properties:
+                denom:
+                  type: string
+                amount:
+                  type: string
+              description: >-
+                Coin defines a token with a denomination and an amount.
+
+
+                NOTE: The amount field is an Int which implements the custom
+                method
+
+                signatures required by gogoproto.
           leverages:
             type: array
             items:
@@ -83962,6 +84094,8 @@ definitions:
           consolidate_leverage:
             type: string
           sum_collateral:
+            type: string
+          take_profit_price:
             type: string
   elys.margin.MsgCloseResponse:
     type: object
@@ -84090,6 +84224,10 @@ definitions:
               type: string
             custody:
               type: string
+            take_profit_liabilities:
+              type: string
+            take_profit_custody:
+              type: string
             asset_balance:
               type: string
             block_interest:
@@ -84105,6 +84243,10 @@ definitions:
       liabilities:
         type: string
       custody:
+        type: string
+      take_profit_liabilities:
+        type: string
+      take_profit_custody:
         type: string
       asset_balance:
         type: string
@@ -84216,6 +84358,25 @@ definitions:
                   method
 
                   signatures required by gogoproto.
+            take_profit_liabilities:
+              type: string
+            take_profit_custodies:
+              type: array
+              items:
+                type: object
+                properties:
+                  denom:
+                    type: string
+                  amount:
+                    type: string
+                description: >-
+                  Coin defines a token with a denomination and an amount.
+
+
+                  NOTE: The amount field is an Int which implements the custom
+                  method
+
+                  signatures required by gogoproto.
             leverages:
               type: array
               items:
@@ -84238,6 +84399,8 @@ definitions:
             consolidate_leverage:
               type: string
             sum_collateral:
+              type: string
+            take_profit_price:
               type: string
       pagination:
         type: object
@@ -84362,6 +84525,25 @@ definitions:
                   method
 
                   signatures required by gogoproto.
+            take_profit_liabilities:
+              type: string
+            take_profit_custodies:
+              type: array
+              items:
+                type: object
+                properties:
+                  denom:
+                    type: string
+                  amount:
+                    type: string
+                description: >-
+                  Coin defines a token with a denomination and an amount.
+
+
+                  NOTE: The amount field is an Int which implements the custom
+                  method
+
+                  signatures required by gogoproto.
             leverages:
               type: array
               items:
@@ -84384,6 +84566,8 @@ definitions:
             consolidate_leverage:
               type: string
             sum_collateral:
+              type: string
+            take_profit_price:
               type: string
       pagination:
         type: object
@@ -84508,6 +84692,25 @@ definitions:
                   method
 
                   signatures required by gogoproto.
+            take_profit_liabilities:
+              type: string
+            take_profit_custodies:
+              type: array
+              items:
+                type: object
+                properties:
+                  denom:
+                    type: string
+                  amount:
+                    type: string
+                description: >-
+                  Coin defines a token with a denomination and an amount.
+
+
+                  NOTE: The amount field is an Int which implements the custom
+                  method
+
+                  signatures required by gogoproto.
             leverages:
               type: array
               items:
@@ -84530,6 +84733,8 @@ definitions:
             consolidate_leverage:
               type: string
             sum_collateral:
+              type: string
+            take_profit_price:
               type: string
       pagination:
         type: object
@@ -84584,6 +84789,10 @@ definitions:
                   liabilities:
                     type: string
                   custody:
+                    type: string
+                  take_profit_liabilities:
+                    type: string
+                  take_profit_custody:
                     type: string
                   asset_balance:
                     type: string
@@ -84645,6 +84854,10 @@ definitions:
                 liabilities:
                   type: string
                 custody:
+                  type: string
+                take_profit_liabilities:
+                  type: string
+                take_profit_custody:
                   type: string
                 asset_balance:
                   type: string
