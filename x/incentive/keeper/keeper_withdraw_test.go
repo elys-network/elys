@@ -93,11 +93,15 @@ func TestProcessWithdrawRewards(t *testing.T) {
 	require.NoError(t, err)
 
 	// Withdraw rewards
-	err = ik.ProcessWithdrawRewards(ctx, addr[0].String())
+	err = ik.ProcessWithdrawRewards(ctx, addr[0].String(), ptypes.Eden)
 	require.NoError(t, err)
 
 	edenCoin := app.BankKeeper.GetBalance(ctx, addr[0], ptypes.Eden)
 	require.Equal(t, sdk.Coins{edenCoin}, uedenToken)
+
+	// Withdraw rewards
+	err = ik.ProcessWithdrawRewards(ctx, addr[0].String(), ptypes.BaseCurrency)
+	require.NoError(t, err)
 
 	usdcCoin := app.BankKeeper.GetBalance(ctx, addr[0], ptypes.BaseCurrency)
 	require.Equal(t, sdk.Coins{usdcCoin}, usdcToken)
@@ -161,7 +165,7 @@ func TestProcessWithdrawValidatorCommission(t *testing.T) {
 	}
 
 	require.True(t, found)
-	err = ik.ProcessWithdrawValidatorCommission(ctx, delegator, valAddress.String())
+	err = ik.ProcessWithdrawValidatorCommission(ctx, delegator, valAddress.String(), ptypes.Eden)
 	require.NoError(t, err)
 
 	edenCoin := app.BankKeeper.GetBalance(ctx, genAccount, ptypes.Eden)

@@ -30,7 +30,7 @@ func (k msgServer) WithdrawRewards(goCtx context.Context, msg *types.MsgWithdraw
 	}
 
 	// Withdraw rewards
-	err = k.ProcessWithdrawRewards(ctx, msg.DelegatorAddress)
+	err = k.ProcessWithdrawRewards(ctx, msg.DelegatorAddress, msg.Denom)
 
 	ctx.EventManager().EmitEvent(
 		sdk.NewEvent(
@@ -75,7 +75,7 @@ func (k msgServer) WithdrawValidatorCommission(goCtx context.Context, msg *types
 	}
 
 	// Withdraw validator commission
-	err = k.ProcessWithdrawValidatorCommission(ctx, msg.DelegatorAddress, msg.ValidatorAddress)
+	err = k.ProcessWithdrawValidatorCommission(ctx, msg.DelegatorAddress, msg.ValidatorAddress, msg.Denom)
 	if err != nil {
 		return &types.MsgWithdrawValidatorCommissionResponse{}, err
 	}
