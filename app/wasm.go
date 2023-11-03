@@ -17,6 +17,8 @@ import (
 	ammtype "github.com/elys-network/elys/x/amm/types"
 	commitmentkeeper "github.com/elys-network/elys/x/commitment/keeper"
 	commitmenttypes "github.com/elys-network/elys/x/commitment/types"
+	incentivekeeper "github.com/elys-network/elys/x/incentive/keeper"
+	incentivetypes "github.com/elys-network/elys/x/incentive/types"
 	marginkeeper "github.com/elys-network/elys/x/margin/keeper"
 	margintypes "github.com/elys-network/elys/x/margin/types"
 	oraclekeeper "github.com/elys-network/elys/x/oracle/keeper"
@@ -44,6 +46,7 @@ type QueryPlugin struct {
 	stakingKeeper    *stakingkeeper.Keeper
 	commitmentKeeper *commitmentkeeper.Keeper
 	marginKeeper     *marginkeeper.Keeper
+	incentivekeeper  *incentivekeeper.Keeper
 }
 
 // NewQueryPlugin returns a reference to a new QueryPlugin.
@@ -54,6 +57,7 @@ func NewQueryPlugin(
 	staking *stakingkeeper.Keeper,
 	commitment *commitmentkeeper.Keeper,
 	margin *marginkeeper.Keeper,
+	incentive *incentivekeeper.Keeper,
 ) *QueryPlugin {
 	return &QueryPlugin{
 		ammKeeper:        amm,
@@ -62,6 +66,7 @@ func NewQueryPlugin(
 		stakingKeeper:    staking,
 		commitmentKeeper: commitment,
 		marginKeeper:     margin,
+		incentivekeeper:  incentive,
 	}
 }
 
@@ -72,8 +77,9 @@ func RegisterCustomPlugins(
 	bank *bankkeeper.BaseKeeper,
 	staking *stakingkeeper.Keeper,
 	commitment *commitmentkeeper.Keeper,
+	incentive *incentivekeeper.Keeper,
 ) []wasmkeeper.Option {
-	wasmQueryPlugin := NewQueryPlugin(amm, oracle, bank, staking, commitment, margin)
+	wasmQueryPlugin := NewQueryPlugin(amm, oracle, bank, staking, commitment, margin, incentive)
 
 	queryPluginOpt := wasmkeeper.WithQueryPlugins(&wasmkeeper.QueryPlugins{
 		Custom: CustomQuerier(wasmQueryPlugin),
@@ -256,6 +262,7 @@ type CustomMessenger struct {
 	margin     *marginkeeper.Keeper
 	staking    *stakingkeeper.Keeper
 	commitment *commitmentkeeper.Keeper
+	incentive  *incentivekeeper.Keeper
 }
 
 var _ wasmkeeper.Messenger = (*CustomMessenger)(nil)
@@ -283,7 +290,26 @@ func (m *CustomMessenger) DispatchMsg(ctx sdk.Context, contractAddr sdk.AccAddre
 		if contractMsg.MsgUnstake != nil {
 			return m.msgUnstake(ctx, contractAddr, contractMsg.MsgUnstake)
 		}
+		if contractMsg.MsgBeginRedelegate != nil {
+			return m.msgBeginRedelegate(ctx, contractAddr, contractMsg.MsgBeginRedelegate)
+		}
+		if contractMsg.MsgCancelUnbondingDelegation != nil {
+			return m.msgCancelUnbondingDelegation(ctx, contractAddr, contractMsg.MsgCancelUnbondingDelegation)
+		}
+		if contractMsg.MsgVest != nil {
+			return m.msgVest(ctx, contractAddr, contractMsg.MsgVest)
+		}
+		if contractMsg.MsgCancelVest != nil {
+			return m.msgCancelVest(ctx, contractAddr, contractMsg.MsgCancelVest)
+		}
+		if contractMsg.MsgWithdrawRewards != nil {
+			return m.msgWithdrawRewards(ctx, contractAddr, contractMsg.MsgWithdrawRewards)
+		}
+		if contractMsg.MsgWithdrawValidatorCommission != nil {
+			return m.msgWithdrawValidatorCommission(ctx, contractAddr, contractMsg.MsgWithdrawValidatorCommission)
+		}
 	}
+
 	return m.wrapped.DispatchMsg(ctx, contractAddr, contractIBCPortID, msg)
 }
 
@@ -588,12 +614,335 @@ func PerformMsgUncommit(f *commitmentkeeper.Keeper, ctx sdk.Context, contractAdd
 	return resp, nil
 }
 
+func (m *CustomMessenger) msgBeginRedelegate(ctx sdk.Context, contractAddr sdk.AccAddress, msgRedelegate *MsgBeginRedelegate) ([]sdk.Event, [][]byte, error) {
+	var res *RequestResponse
+	var err error
+	if msgRedelegate.Amount.Denom != paramtypes.Elys {
+		return nil, nil, errorsmod.Wrap(err, "invalid asset!")
+	}
+
+	res, err = PerformMsgRedelegateElys(m.staking, ctx, contractAddr, msgRedelegate)
+	if err != nil {
+		return nil, nil, errorsmod.Wrap(err, "perform elys redelegate")
+	}
+
+	responseBytes, err := json.Marshal(*res)
+	if err != nil {
+		return nil, nil, errorsmod.Wrap(err, "failed to serialize stake")
+	}
+
+	resp := [][]byte{responseBytes}
+
+	return nil, resp, nil
+}
+
+func PerformMsgRedelegateElys(f *stakingkeeper.Keeper, ctx sdk.Context, contractAddr sdk.AccAddress, msgRedelegate *MsgBeginRedelegate) (*RequestResponse, error) {
+	if msgRedelegate == nil {
+		return nil, wasmvmtypes.InvalidRequest{Err: "Invalid redelegate parameter"}
+	}
+
+	msgServer := stakingkeeper.NewMsgServerImpl(f)
+	address, err := sdk.AccAddressFromBech32(msgRedelegate.DelegatorAddress)
+	if err != nil {
+		return nil, errorsmod.Wrap(err, "invalid address")
+	}
+
+	valSrcAddr, err := sdk.ValAddressFromBech32(msgRedelegate.ValidatorSrcAddress)
+	if err != nil {
+		return nil, errorsmod.Wrap(err, "invalid address")
+	}
+
+	valDstAddr, err := sdk.ValAddressFromBech32(msgRedelegate.ValidatorDstAddress)
+	if err != nil {
+		return nil, errorsmod.Wrap(err, "invalid address")
+	}
+
+	msgMsgRedelegate := stakingtypes.NewMsgBeginRedelegate(address, valSrcAddr, valDstAddr, msgRedelegate.Amount)
+
+	if err := msgMsgRedelegate.ValidateBasic(); err != nil {
+		return nil, errorsmod.Wrap(err, "failed validating msgMsgDelegate")
+	}
+
+	_, err = msgServer.BeginRedelegate(ctx, msgMsgRedelegate) // Discard the response because it's empty
+	if err != nil {
+		return nil, errorsmod.Wrap(err, "elys redelegation msg")
+	}
+
+	var resp = &RequestResponse{
+		Code:   paramtypes.RES_OK,
+		Result: "Redelegation succeed!",
+	}
+
+	return resp, nil
+}
+
+func (m *CustomMessenger) msgCancelUnbondingDelegation(ctx sdk.Context, contractAddr sdk.AccAddress, msgCancelUnbonding *MsgCancelUnbondingDelegation) ([]sdk.Event, [][]byte, error) {
+	var res *RequestResponse
+	var err error
+	if msgCancelUnbonding.Amount.Denom == paramtypes.Elys {
+		return nil, nil, errorsmod.Wrap(err, "invalid asset!")
+	}
+
+	res, err = PerformMsgCancelUnbondingElys(m.staking, ctx, contractAddr, msgCancelUnbonding)
+	if err != nil {
+		return nil, nil, errorsmod.Wrap(err, "perform cancel elys unbonding")
+	}
+
+	responseBytes, err := json.Marshal(*res)
+	if err != nil {
+		return nil, nil, errorsmod.Wrap(err, "failed to serialize stake")
+	}
+
+	resp := [][]byte{responseBytes}
+
+	return nil, resp, nil
+}
+
+func PerformMsgCancelUnbondingElys(f *stakingkeeper.Keeper, ctx sdk.Context, contractAddr sdk.AccAddress, msgCancelUnbonding *MsgCancelUnbondingDelegation) (*RequestResponse, error) {
+	if msgCancelUnbonding == nil {
+		return nil, wasmvmtypes.InvalidRequest{Err: "Invalid cancel unbonding parameter"}
+	}
+
+	msgServer := stakingkeeper.NewMsgServerImpl(f)
+	address, err := sdk.AccAddressFromBech32(msgCancelUnbonding.DelegatorAddress)
+	if err != nil {
+		return nil, errorsmod.Wrap(err, "invalid address")
+	}
+
+	valAddr, err := sdk.ValAddressFromBech32(msgCancelUnbonding.ValidatorAddress)
+	if err != nil {
+		return nil, errorsmod.Wrap(err, "invalid address")
+	}
+
+	msgMsgCancelUnbonding := stakingtypes.NewMsgCancelUnbondingDelegation(address, valAddr, msgCancelUnbonding.CreationHeight, msgCancelUnbonding.Amount)
+
+	if err := msgMsgCancelUnbonding.ValidateBasic(); err != nil {
+		return nil, errorsmod.Wrap(err, "failed validating msgCancelUnbonding")
+	}
+
+	_, err = msgServer.CancelUnbondingDelegation(ctx, msgMsgCancelUnbonding) // Discard the response because it's empty
+	if err != nil {
+		return nil, errorsmod.Wrap(err, "elys cancel bonding msg")
+	}
+
+	var resp = &RequestResponse{
+		Code:   paramtypes.RES_OK,
+		Result: "Cancel unbonding succeed!",
+	}
+
+	return resp, nil
+}
+
+func (m *CustomMessenger) msgVest(ctx sdk.Context, contractAddr sdk.AccAddress, msgVest *MsgVest) ([]sdk.Event, [][]byte, error) {
+	var res *RequestResponse
+	var err error
+	if msgVest.Denom == paramtypes.Eden {
+		return nil, nil, errorsmod.Wrap(err, "invalid asset!")
+	}
+
+	res, err = PerformMsgVestEden(m.commitment, ctx, contractAddr, msgVest)
+	if err != nil {
+		return nil, nil, errorsmod.Wrap(err, "perform eden vest")
+	}
+
+	responseBytes, err := json.Marshal(*res)
+	if err != nil {
+		return nil, nil, errorsmod.Wrap(err, "failed to serialize stake")
+	}
+
+	resp := [][]byte{responseBytes}
+
+	return nil, resp, nil
+}
+
+func PerformMsgVestEden(f *commitmentkeeper.Keeper, ctx sdk.Context, contractAddr sdk.AccAddress, msgVest *MsgVest) (*RequestResponse, error) {
+	if msgVest == nil {
+		return nil, wasmvmtypes.InvalidRequest{Err: "Invalid vesting parameter"}
+	}
+
+	msgServer := commitmentkeeper.NewMsgServerImpl(*f)
+	msgMsgCancelUnbonding := commitmenttypes.NewMsgVest(msgVest.Creator, msgVest.Amount, msgVest.Denom)
+
+	if err := msgMsgCancelUnbonding.ValidateBasic(); err != nil {
+		return nil, errorsmod.Wrap(err, "failed validating msgCancelUnbonding")
+	}
+
+	_, err := msgServer.Vest(ctx, msgMsgCancelUnbonding) // Discard the response because it's empty
+	if err != nil {
+		return nil, errorsmod.Wrap(err, "eden vesting msg")
+	}
+
+	var resp = &RequestResponse{
+		Code:   paramtypes.RES_OK,
+		Result: "Eden Vesting succeed!",
+	}
+
+	return resp, nil
+}
+
+func (m *CustomMessenger) msgCancelVest(ctx sdk.Context, contractAddr sdk.AccAddress, msgCancelVest *MsgCancelVest) ([]sdk.Event, [][]byte, error) {
+	var res *RequestResponse
+	var err error
+	if msgCancelVest.Denom == paramtypes.Eden {
+		return nil, nil, errorsmod.Wrap(err, "invalid asset!")
+	}
+
+	res, err = PerformMsgCancelVestEden(m.commitment, ctx, contractAddr, msgCancelVest)
+	if err != nil {
+		return nil, nil, errorsmod.Wrap(err, "perform eden cancel vest")
+	}
+
+	responseBytes, err := json.Marshal(*res)
+	if err != nil {
+		return nil, nil, errorsmod.Wrap(err, "failed to serialize cancel vesting")
+	}
+
+	resp := [][]byte{responseBytes}
+
+	return nil, resp, nil
+}
+
+func PerformMsgCancelVestEden(f *commitmentkeeper.Keeper, ctx sdk.Context, contractAddr sdk.AccAddress, msgCancelVest *MsgCancelVest) (*RequestResponse, error) {
+	if msgCancelVest == nil {
+		return nil, wasmvmtypes.InvalidRequest{Err: "Invalid cancel vesting parameter"}
+	}
+
+	msgServer := commitmentkeeper.NewMsgServerImpl(*f)
+	msgMsgCancelVest := commitmenttypes.NewMsgCancelVest(msgCancelVest.Creator, msgCancelVest.Amount, msgCancelVest.Denom)
+
+	if err := msgMsgCancelVest.ValidateBasic(); err != nil {
+		return nil, errorsmod.Wrap(err, "failed validating msgMsgCancelVest")
+	}
+
+	_, err := msgServer.CancelVest(ctx, msgMsgCancelVest) // Discard the response because it's empty
+	if err != nil {
+		return nil, errorsmod.Wrap(err, "eden vesting msg")
+	}
+
+	var resp = &RequestResponse{
+		Code:   paramtypes.RES_OK,
+		Result: "Eden vesting cancel succeed!",
+	}
+
+	return resp, nil
+}
+
+func (m *CustomMessenger) msgWithdrawRewards(ctx sdk.Context, contractAddr sdk.AccAddress, msgWithdrawRewards *MsgWithdrawRewards) ([]sdk.Event, [][]byte, error) {
+	var res *RequestResponse
+	var err error
+
+	res, err = PerformMsgWidthdrawRewards(m.incentive, ctx, contractAddr, msgWithdrawRewards)
+	if err != nil {
+		return nil, nil, errorsmod.Wrap(err, "perform withdraw rewards")
+	}
+
+	responseBytes, err := json.Marshal(*res)
+	if err != nil {
+		return nil, nil, errorsmod.Wrap(err, "failed to serialize withdraw rewards")
+	}
+
+	resp := [][]byte{responseBytes}
+
+	return nil, resp, nil
+}
+
+func PerformMsgWidthdrawRewards(f *incentivekeeper.Keeper, ctx sdk.Context, contractAddr sdk.AccAddress, msgWithdrawRewards *MsgWithdrawRewards) (*RequestResponse, error) {
+	if msgWithdrawRewards == nil {
+		return nil, wasmvmtypes.InvalidRequest{Err: "Invalid withdraw rewards parameter"}
+	}
+
+	address, err := sdk.AccAddressFromBech32(msgWithdrawRewards.DelegatorAddress)
+	if err != nil {
+		return nil, errorsmod.Wrap(err, "invalid address")
+	}
+
+	msgServer := incentivekeeper.NewMsgServerImpl(*f)
+	msgMsgWithdrawRewards := incentivetypes.NewMsgWithdrawRewards(address, msgWithdrawRewards.Denom)
+
+	if err := msgMsgWithdrawRewards.ValidateBasic(); err != nil {
+		return nil, errorsmod.Wrap(err, "failed validating msgMsgCancelVest")
+	}
+
+	_, err = msgServer.WithdrawRewards(ctx, msgMsgWithdrawRewards) // Discard the response because it's empty
+	if err != nil {
+		return nil, errorsmod.Wrap(err, "eden vesting msg")
+	}
+
+	var resp = &RequestResponse{
+		Code:   paramtypes.RES_OK,
+		Result: "Withdraw rewards succeed!",
+	}
+
+	return resp, nil
+}
+
+func (m *CustomMessenger) msgWithdrawValidatorCommission(ctx sdk.Context, contractAddr sdk.AccAddress, msgWithdrawValidatorCommission *MsgWithdrawValidatorCommission) ([]sdk.Event, [][]byte, error) {
+	var res *RequestResponse
+	var err error
+
+	res, err = PerformMsgWidthdrawValidatorCommissions(m.incentive, ctx, contractAddr, msgWithdrawValidatorCommission)
+	if err != nil {
+		return nil, nil, errorsmod.Wrap(err, "perform withdraw validator commission")
+	}
+
+	responseBytes, err := json.Marshal(*res)
+	if err != nil {
+		return nil, nil, errorsmod.Wrap(err, "failed to serialize withdraw validator commission")
+	}
+
+	resp := [][]byte{responseBytes}
+
+	return nil, resp, nil
+}
+
+func PerformMsgWidthdrawValidatorCommissions(f *incentivekeeper.Keeper, ctx sdk.Context, contractAddr sdk.AccAddress, msgWithdrawValidatorCommission *MsgWithdrawValidatorCommission) (*RequestResponse, error) {
+	if msgWithdrawValidatorCommission == nil {
+		return nil, wasmvmtypes.InvalidRequest{Err: "Invalid withdraw validator commission parameter"}
+	}
+
+	address, err := sdk.AccAddressFromBech32(msgWithdrawValidatorCommission.DelegatorAddress)
+	if err != nil {
+		return nil, errorsmod.Wrap(err, "invalid address")
+	}
+
+	valAddr, err := sdk.ValAddressFromBech32(msgWithdrawValidatorCommission.ValidatorAddress)
+
+	if err != nil {
+		return nil, errorsmod.Wrap(err, "invalid address")
+	}
+
+	msgServer := incentivekeeper.NewMsgServerImpl(*f)
+	msgMsgWithdrawValidatorCommissions := incentivetypes.NewMsgWithdrawValidatorCommission(address, valAddr, msgWithdrawValidatorCommission.Denom)
+
+	if err := msgMsgWithdrawValidatorCommissions.ValidateBasic(); err != nil {
+		return nil, errorsmod.Wrap(err, "failed validating msgMsgCancelVest")
+	}
+
+	_, err = msgServer.WithdrawValidatorCommission(ctx, msgMsgWithdrawValidatorCommissions) // Discard the response because it's empty
+	if err != nil {
+		return nil, errorsmod.Wrap(err, "eden vesting msg")
+	}
+
+	var resp = &RequestResponse{
+		Code:   paramtypes.RES_OK,
+		Result: "Withdraw validator commissions succeed!",
+	}
+
+	return resp, nil
+}
+
 type ElysMsg struct {
-	MsgSwapExactAmountIn *MsgSwapExactAmountIn `json:"msg_swap_exact_amount_in,omitempty"`
-	MsgOpen              *MsgOpen              `json:"msg_open,omitempty"`
-	MsgClose             *MsgClose             `json:"msg_close,omitempty"`
-	MsgStake             *MsgStake             `json:"msg_stake,omitempty"`
-	MsgUnstake           *MsgUnstake           `json:"msg_unstake,omitempty"`
+	MsgSwapExactAmountIn           *MsgSwapExactAmountIn           `json:"msg_swap_exact_amount_in,omitempty"`
+	MsgOpen                        *MsgOpen                        `json:"msg_open,omitempty"`
+	MsgClose                       *MsgClose                       `json:"msg_close,omitempty"`
+	MsgStake                       *MsgStake                       `json:"msg_stake,omitempty"`
+	MsgUnstake                     *MsgUnstake                     `json:"msg_unstake,omitempty"`
+	MsgBeginRedelegate             *MsgBeginRedelegate             `json:"msg_begin_redelegate,omitempty"`
+	MsgCancelUnbondingDelegation   *MsgCancelUnbondingDelegation   `json:"msg_cancel_unbonding_delegation"`
+	MsgVest                        *MsgVest                        `json:"msg_vest"`
+	MsgCancelVest                  *MsgCancelVest                  `json:"msg_cancel_vest"`
+	MsgWithdrawRewards             *MsgWithdrawRewards             `json:"msg_withdraw_rewards"`
+	MsgWithdrawValidatorCommission *MsgWithdrawValidatorCommission `json:"msg_withdraw_validator_commission"`
 }
 
 type MsgSwapExactAmountIn struct {
@@ -645,6 +994,51 @@ type MsgUnstake struct {
 	Amount           cosmos_sdk_math.Int `protobuf:"bytes,2,opt,name=amount,proto3" json:"amount,omitempty"`
 	Asset            string              `protobuf:"bytes,3,opt,name=asset,proto3" json:"asset,omitempty"`
 	ValidatorAddress string              `protobuf:"bytes,4,opt,name=validator_address,proto3" json:"validator_address,omitempty"`
+}
+
+type MsgBeginRedelegate struct {
+	DelegatorAddress    string   `protobuf:"bytes,1,opt,name=delegator_address,json=delegatorAddress,proto3" json:"delegator_address,omitempty"`
+	ValidatorSrcAddress string   `protobuf:"bytes,2,opt,name=validator_src_address,json=validatorSrcAddress,proto3" json:"validator_src_address,omitempty"`
+	ValidatorDstAddress string   `protobuf:"bytes,3,opt,name=validator_dst_address,json=validatorDstAddress,proto3" json:"validator_dst_address,omitempty"`
+	Amount              sdk.Coin `protobuf:"bytes,4,opt,name=amount,proto3" json:"amount"`
+}
+
+type MsgCancelUnbondingDelegation struct {
+	DelegatorAddress string `protobuf:"bytes,1,opt,name=delegator_address,json=delegatorAddress,proto3" json:"delegator_address,omitempty"`
+	ValidatorAddress string `protobuf:"bytes,2,opt,name=validator_address,json=validatorAddress,proto3" json:"validator_address,omitempty"`
+	// amount is always less than or equal to unbonding delegation entry balance
+	Amount sdk.Coin `protobuf:"bytes,3,opt,name=amount,proto3" json:"amount"`
+	// creation_height is the height which the unbonding took place.
+	CreationHeight int64 `protobuf:"varint,4,opt,name=creation_height,json=creationHeight,proto3" json:"creation_height,omitempty"`
+}
+
+type MsgVest struct {
+	Creator string              `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
+	Amount  cosmos_sdk_math.Int `protobuf:"bytes,2,opt,name=amount,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"amount"`
+	Denom   string              `protobuf:"bytes,3,opt,name=denom,proto3" json:"denom,omitempty"`
+}
+
+type MsgCancelVest struct {
+	Creator string              `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
+	Amount  cosmos_sdk_math.Int `protobuf:"bytes,2,opt,name=amount,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"amount"`
+	Denom   string              `protobuf:"bytes,3,opt,name=denom,proto3" json:"denom,omitempty"`
+}
+
+type MsgWithdrawTokens struct {
+	Creator string              `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
+	Amount  cosmos_sdk_math.Int `protobuf:"bytes,2,opt,name=amount,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"amount"`
+	Denom   string              `protobuf:"bytes,3,opt,name=denom,proto3" json:"denom,omitempty"`
+}
+
+type MsgWithdrawRewards struct {
+	DelegatorAddress string `protobuf:"bytes,1,opt,name=delegator_address,json=delegatorAddress,proto3" json:"delegator_address,omitempty"`
+	Denom            string `protobuf:"bytes,2,opt,name=denom,proto3" json:"denom,omitempty"`
+}
+
+type MsgWithdrawValidatorCommission struct {
+	DelegatorAddress string `protobuf:"bytes,1,opt,name=delegator_address,json=delegatorAddress,proto3" json:"delegator_address,omitempty"`
+	ValidatorAddress string `protobuf:"bytes,2,opt,name=validator_address,json=validatorAddress,proto3" json:"validator_address,omitempty"`
+	Denom            string `protobuf:"bytes,3,opt,name=denom,proto3" json:"denom,omitempty"`
 }
 
 type RequestResponse struct {
