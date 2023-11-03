@@ -15,27 +15,27 @@ func (k msgServer) Close(goCtx context.Context, msg *types.MsgClose) (*types.Msg
 }
 
 func (k Keeper) Close(ctx sdk.Context, msg *types.MsgClose) (*types.MsgCloseResponse, error) {
-	mtp, err := k.GetMTP(ctx, msg.Creator, msg.Id)
+	position, err := k.GetPosition(ctx, msg.Creator, msg.Id)
 	if err != nil {
 		return nil, err
 	}
 
-	var closedMtp *types.MTP
+	var closedPosition *types.Position
 	var repayAmount sdk.Int
-	closedMtp, repayAmount, err = k.CloseLong(ctx, msg)
+	closedPosition, repayAmount, err = k.CloseLong(ctx, msg)
 	if err != nil {
 		return nil, err
 	}
 
 	ctx.EventManager().EmitEvent(sdk.NewEvent(types.EventClose,
-		sdk.NewAttribute("id", strconv.FormatInt(int64(closedMtp.Id), 10)),
-		sdk.NewAttribute("address", closedMtp.Address),
-		sdk.NewAttribute("collateral", closedMtp.Collateral.String()),
+		sdk.NewAttribute("id", strconv.FormatInt(int64(closedPosition.Id), 10)),
+		sdk.NewAttribute("address", closedPosition.Address),
+		sdk.NewAttribute("collateral", closedPosition.Collateral.String()),
 		sdk.NewAttribute("repay_amount", repayAmount.String()),
-		sdk.NewAttribute("leverage", closedMtp.Leverage.String()),
-		sdk.NewAttribute("liabilities", closedMtp.Liabilities.String()),
-		sdk.NewAttribute("interest_paid", mtp.InterestPaid.String()),
-		sdk.NewAttribute("health", closedMtp.MtpHealth.String()),
+		sdk.NewAttribute("leverage", closedPosition.Leverage.String()),
+		sdk.NewAttribute("liabilities", closedPosition.Liabilities.String()),
+		sdk.NewAttribute("interest_paid", position.InterestPaid.String()),
+		sdk.NewAttribute("health", closedPosition.PositionHealth.String()),
 	))
 
 	return &types.MsgCloseResponse{}, nil

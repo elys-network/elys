@@ -7,7 +7,7 @@ option go_package = "github.com/elys-network/elys/x/leveragelp/types";
 import "gogoproto/gogo.proto";
 import "cosmos/base/v1beta1/coin.proto";
 
-message MTP {
+message Position {
   string address = 1;
   cosmos.base.v1beta1.Coin collateral = 2 [(gogoproto.nullable) = false];
   string liabilities = 3 [
@@ -26,7 +26,7 @@ message MTP {
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
     (gogoproto.nullable) = false
   ];
-  string mtp_health = 7 [
+  string position_health = 7 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];

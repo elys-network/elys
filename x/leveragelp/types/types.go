@@ -6,25 +6,25 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
-func NewMTP(signer string, collateral sdk.Coin, leverage sdk.Dec, poolId uint64) *MTP {
-	return &MTP{
+func NewPosition(signer string, collateral sdk.Coin, leverage sdk.Dec, poolId uint64) *Position {
+	return &Position{
 		Address:           signer,
 		Collateral:        collateral,
 		Liabilities:       sdk.ZeroInt(),
 		InterestPaid:      sdk.ZeroInt(),
 		Leverage:          leverage,
-		MtpHealth:         sdk.ZeroDec(),
+		PositionHealth:    sdk.ZeroDec(),
 		AmmPoolId:         poolId,
 		LeveragedLpAmount: sdk.ZeroInt(),
 	}
 }
 
-func (mtp MTP) Validate() error {
-	if mtp.Address == "" {
-		return sdkerrors.Wrap(ErrMTPInvalid, "no address specified")
+func (position Position) Validate() error {
+	if position.Address == "" {
+		return sdkerrors.Wrap(ErrPositionInvalid, "no address specified")
 	}
-	if mtp.Id == 0 {
-		return sdkerrors.Wrap(ErrMTPInvalid, "no id specified")
+	if position.Id == 0 {
+		return sdkerrors.Wrap(ErrPositionInvalid, "no id specified")
 	}
 
 	return nil

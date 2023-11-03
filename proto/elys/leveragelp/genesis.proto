@@ -13,6 +13,6 @@ option go_package = "github.com/elys-network/elys/x/leveragelp/types";
 message GenesisState {
   Params params = 1 [ (gogoproto.nullable) = false ];
   repeated Pool pool_list = 2 [ (gogoproto.nullable) = false ];
-  repeated MTP mtp_list = 3 [ (gogoproto.nullable) = false ];
+  repeated Position position_list = 3 [ (gogoproto.nullable) = false ];
   repeated string address_whitelist = 4;
 }

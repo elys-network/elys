@@ -9,17 +9,17 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-func (k Keeper) MTP(goCtx context.Context, req *types.MTPRequest) (*types.MTPResponse, error) {
+func (k Keeper) Position(goCtx context.Context, req *types.PositionRequest) (*types.PositionResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	mtp, err := k.GetMTP(ctx, req.Address, req.Id)
+	position, err := k.GetPosition(ctx, req.Address, req.Id)
 	if err != nil {
-		return &types.MTPResponse{}, nil
+		return &types.PositionResponse{}, nil
 	}
 
-	return &types.MTPResponse{Mtp: &mtp}, nil
+	return &types.PositionResponse{Position: &position}, nil
 }

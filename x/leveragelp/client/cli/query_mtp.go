@@ -12,10 +12,10 @@ import (
 
 var _ = strconv.Itoa(0)
 
-func CmdMtp() *cobra.Command {
+func CmdPosition() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "get-mtp [address] [id]",
-		Short: "Query mtp",
+		Use:   "get-position [address] [id]",
+		Short: "Query position",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			reqAddress := args[0]
@@ -37,12 +37,12 @@ func CmdMtp() *cobra.Command {
 
 			queryClient := types.NewQueryClient(clientCtx)
 
-			params := &types.MTPRequest{
+			params := &types.PositionRequest{
 				Address: reqAddress,
 				Id:      id,
 			}
 
-			res, err := queryClient.MTP(cmd.Context(), params)
+			res, err := queryClient.Position(cmd.Context(), params)
 			if err != nil {
 				return err
 			}
