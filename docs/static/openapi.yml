@@ -38022,6 +38022,127 @@ paths:
           format: uint64
       tags:
         - Query
+  /elys-network/elys/amm/slippage_track/{poolId}:
+    get:
+      summary: Queries slippage track for a week.
+      operationId: ElysAmmSlippageTrack
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              track:
+                type: object
+                properties:
+                  poolId:
+                    type: string
+                    format: uint64
+                  timestamp:
+                    type: string
+                    format: uint64
+                  tracked:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        denom:
+                          type: string
+                        amount:
+                          type: string
+                      description: >-
+                        Coin defines a token with a denomination and an amount.
+
+
+                        NOTE: The amount field is an Int which implements the
+                        custom method
+
+                        signatures required by gogoproto.
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: poolId
+          in: path
+          required: true
+          type: string
+          format: uint64
+      tags:
+        - Query
+  /elys-network/elys/amm/slippage_tracks:
+    get:
+      summary: Queries all slippage tracks for a week.
+      operationId: ElysAmmSlippageTrackAll
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              tracks:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    poolId:
+                      type: string
+                      format: uint64
+                    timestamp:
+                      type: string
+                      format: uint64
+                    tracked:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          denom:
+                            type: string
+                          amount:
+                            type: string
+                        description: >-
+                          Coin defines a token with a denomination and an
+                          amount.
+
+
+                          NOTE: The amount field is an Int which implements the
+                          custom method
+
+                          signatures required by gogoproto.
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      tags:
+        - Query
   /elys-network/elys/amm/swap_estimation:
     get:
       summary: Queries a list of SwapEstimation items.
@@ -39236,6 +39357,8 @@ paths:
                   amm_pool_id:
                     type: string
                     format: uint64
+                  take_profit_price:
+                    type: string
         default:
           description: An unexpected error response.
           schema:
@@ -39317,6 +39440,8 @@ paths:
                     amm_pool_id:
                       type: string
                       format: uint64
+                    take_profit_price:
+                      type: string
               pagination:
                 type: object
                 properties:
@@ -39478,6 +39603,8 @@ paths:
                     amm_pool_id:
                       type: string
                       format: uint64
+                    take_profit_price:
+                      type: string
               pagination:
                 type: object
                 properties:
@@ -39881,6 +40008,8 @@ paths:
                     amm_pool_id:
                       type: string
                       format: uint64
+                    take_profit_price:
+                      type: string
               pagination:
                 type: object
                 properties:
@@ -81961,6 +82090,29 @@ definitions:
     properties:
       tokenInAmount:
         type: string
+  elys.amm.OraclePoolSlippageTrack:
+    type: object
+    properties:
+      poolId:
+        type: string
+        format: uint64
+      timestamp:
+        type: string
+        format: uint64
+      tracked:
+        type: array
+        items:
+          type: object
+          properties:
+            denom:
+              type: string
+            amount:
+              type: string
+          description: |-
+            Coin defines a token with a denomination and an amount.
+
+            NOTE: The amount field is an Int which implements the custom method
+            signatures required by gogoproto.
   elys.amm.Params:
     type: object
     properties:
@@ -82301,6 +82453,66 @@ definitions:
             type: string
             format: uint64
     description: QueryParamsResponse is response type for the Query/Params RPC method.
+  elys.amm.QuerySlippageTrackAllResponse:
+    type: object
+    properties:
+      tracks:
+        type: array
+        items:
+          type: object
+          properties:
+            poolId:
+              type: string
+              format: uint64
+            timestamp:
+              type: string
+              format: uint64
+            tracked:
+              type: array
+              items:
+                type: object
+                properties:
+                  denom:
+                    type: string
+                  amount:
+                    type: string
+                description: >-
+                  Coin defines a token with a denomination and an amount.
+
+
+                  NOTE: The amount field is an Int which implements the custom
+                  method
+
+                  signatures required by gogoproto.
+  elys.amm.QuerySlippageTrackResponse:
+    type: object
+    properties:
+      track:
+        type: object
+        properties:
+          poolId:
+            type: string
+            format: uint64
+          timestamp:
+            type: string
+            format: uint64
+          tracked:
+            type: array
+            items:
+              type: object
+              properties:
+                denom:
+                  type: string
+                amount:
+                  type: string
+              description: >-
+                Coin defines a token with a denomination and an amount.
+
+
+                NOTE: The amount field is an Int which implements the custom
+                method
+
+                signatures required by gogoproto.
   elys.amm.QuerySwapEstimationResponse:
     type: object
     properties:
@@ -83262,6 +83474,8 @@ definitions:
       amm_pool_id:
         type: string
         format: uint64
+      take_profit_price:
+        type: string
   elys.leveragelp.MTPResponse:
     type: object
     properties:
@@ -83304,6 +83518,8 @@ definitions:
           amm_pool_id:
             type: string
             format: uint64
+          take_profit_price:
+            type: string
   elys.leveragelp.MsgCloseResponse:
     type: object
   elys.leveragelp.MsgDewhitelistResponse:
@@ -83436,6 +83652,8 @@ definitions:
             amm_pool_id:
               type: string
               format: uint64
+            take_profit_price:
+              type: string
       pagination:
         type: object
         properties:
@@ -83506,6 +83724,8 @@ definitions:
             amm_pool_id:
               type: string
               format: uint64
+            take_profit_price:
+              type: string
       pagination:
         type: object
         properties:
@@ -83576,6 +83796,8 @@ definitions:
             amm_pool_id:
               type: string
               format: uint64
+            take_profit_price:
+              type: string
       pagination:
         type: object
         properties:

@@ -103,7 +103,7 @@ type AmmKeeper interface {
 		tokensIn sdk.Coins,
 		tokenOutDenom string,
 		swapFee sdk.Dec,
-	) (tokenOut sdk.Coin, weightBalanceBonus sdk.Dec, err error)
+	) (tokenOut sdk.Coin, slippageAmount sdk.Dec, weightBalanceBonus sdk.Dec, err error)
 }
 
 // OracleKeeper defines the expected interface needed to retrieve price info

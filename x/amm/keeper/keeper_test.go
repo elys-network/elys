@@ -50,6 +50,11 @@ func (suite *KeeperTestSuite) SetupStableCoinPrices() {
 		Display: "USDT",
 		Decimal: 6,
 	})
+	suite.app.OracleKeeper.SetAssetInfo(suite.ctx, oracletypes.AssetInfo{
+		Denom:   "uusda",
+		Display: "USDA",
+		Decimal: 6,
+	})
 	suite.app.OracleKeeper.SetPrice(suite.ctx, oracletypes.Price{
 		Asset:     "USDC",
 		Price:     sdk.NewDec(1),
@@ -59,6 +64,13 @@ func (suite *KeeperTestSuite) SetupStableCoinPrices() {
 	})
 	suite.app.OracleKeeper.SetPrice(suite.ctx, oracletypes.Price{
 		Asset:     "USDT",
+		Price:     sdk.NewDec(1),
+		Source:    "elys",
+		Provider:  provider.String(),
+		Timestamp: uint64(suite.ctx.BlockTime().Unix()),
+	})
+	suite.app.OracleKeeper.SetPrice(suite.ctx, oracletypes.Price{
+		Asset:     "USDA",
 		Price:     sdk.NewDec(1),
 		Source:    "elys",
 		Provider:  provider.String(),
