@@ -7,11 +7,11 @@ This document is an extension to [CONTRIBUTING](./CONTRIBUTING.md) and provides 
 - Code must be well structured:
   - packages must have a limited responsibility (different concerns can go to different packages),
   - types must be easy to compose,
-  - think about maintainbility and testability.
+  - think about maintainability and testability.
 - "Depend upon abstractions, [not] concretions".
 - Try to limit the number of methods you are exposing. It's easier to expose something later than to hide it.
 - Take advantage of `internal` package concept.
-- Follow agreed-upon design patterns and [naming conventions](https://medium.com/@kdnotes/golang-naming-rules-and-conventions-8efeecd23b68). The package, function and variable names should reflect its meaning correctly while avoding too long and too short names. And variable name should not include hardcoded numbers like 35% or etc. and in case hard code is needed, the constant variable should be put on top of file or somewhere where all the constants are stored.
+- Follow agreed-upon design patterns and [naming conventions](https://medium.com/@kdnotes/golang-naming-rules-and-conventions-8efeecd23b68). The package, function and variable names should reflect its meaning correctly while avoiding too long and too short names. And variable name should not include hardcoded numbers like 35% or etc. and in case hard code is needed, the constant variable should be put on top of file or somewhere where all the constants are stored.
 - publicly-exposed functions are named logically, have forward-thinking arguments and return types.
 - Avoid global variables and global configurators.
 - Favor composable and extensible designs.
@@ -67,4 +67,4 @@ for tcIndex, tc := range cases {
 ```
 
 Example table driven test can be found [here] on the repo.(https://github.com/elys-network/elys/blob/main/x/amm/keeper/update_pool_for_swap_test.go#L10)
-To avoid too much time managing mocked keepers, we recommend to use [simapp based testing](https://github.com/elys-network/elys/blob/main/x/amm/keeper/keeper_test.go#L27), for keeper unit tests that requires interacting with multiple module keepers.
+To avoid too much time managing mocked keepers, we recommend to use [simapp based testing](https://github.com/elys-network/elys/blob/main/x/amm/keeper/keeper_test.go#L27), for keeper unit tests that require interacting with multiple module keepers.
