@@ -81,7 +81,7 @@ elysd tx staking create-validator \
   --from=<key_name>
 ```
 
-**Note:** `comission-max-rate` is a permanent parameter and cannot be changed in a future validator edit. The example above shows a maximum validator comission of 50%
+**Note:** `commission-max-rate` is a permanent parameter and cannot be changed in a future validator edit. The example above shows a maximum validator commission of 50%
 
 ### Commission Parameters
 
