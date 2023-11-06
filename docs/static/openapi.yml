@@ -39600,7 +39600,7 @@ paths:
                   amm_pool_id:
                     type: string
                     format: uint64
-                  take_profit_price:
+                  stop_loss_price:
                     type: string
         default:
           description: An unexpected error response.
@@ -39683,7 +39683,7 @@ paths:
                     amm_pool_id:
                       type: string
                       format: uint64
-                    take_profit_price:
+                    stop_loss_price:
                       type: string
               pagination:
                 type: object
@@ -39846,7 +39846,7 @@ paths:
                     amm_pool_id:
                       type: string
                       format: uint64
-                    take_profit_price:
+                    stop_loss_price:
                       type: string
               pagination:
                 type: object
@@ -40008,7 +40008,7 @@ paths:
                     amm_pool_id:
                       type: string
                       format: uint64
-                    take_profit_price:
+                    stop_loss_price:
                       type: string
               pagination:
                 type: object
@@ -83657,7 +83657,7 @@ definitions:
       amm_pool_id:
         type: string
         format: uint64
-      take_profit_price:
+      stop_loss_price:
         type: string
   elys.leveragelp.PositionResponse:
     type: object
@@ -83701,7 +83701,7 @@ definitions:
           amm_pool_id:
             type: string
             format: uint64
-          take_profit_price:
+          stop_loss_price:
             type: string
   elys.leveragelp.PositionsByPoolResponse:
     type: object
@@ -83747,7 +83747,7 @@ definitions:
             amm_pool_id:
               type: string
               format: uint64
-            take_profit_price:
+            stop_loss_price:
               type: string
       pagination:
         type: object
@@ -83819,7 +83819,7 @@ definitions:
             amm_pool_id:
               type: string
               format: uint64
-            take_profit_price:
+            stop_loss_price:
               type: string
       pagination:
         type: object
@@ -83891,7 +83891,7 @@ definitions:
             amm_pool_id:
               type: string
               format: uint64
-            take_profit_price:
+            stop_loss_price:
               type: string
       pagination:
         type: object

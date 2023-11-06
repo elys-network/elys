@@ -32,7 +32,7 @@ message Position {
   ];
   uint64 id = 8;
   uint64 amm_pool_id = 9;
-  string take_profit_price = 10 [
+  string stop_loss_price = 10 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];

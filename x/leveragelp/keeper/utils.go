@@ -3,6 +3,7 @@ package keeper
 import (
 	"fmt"
 
+	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
@@ -56,4 +57,13 @@ func (k Keeper) GetAmmPool(ctx sdk.Context, poolId uint64) (ammtypes.Pool, error
 		return ammPool, sdkerrors.Wrap(types.ErrPoolDoesNotExist, fmt.Sprintf("poolId: %d", poolId))
 	}
 	return ammPool, nil
+}
+
+func (k Keeper) GetLpTokenPrice(ctx sdk.Context, ammPool *ammtypes.Pool) (sdk.Dec, error) {
+	ammPoolTvl, err := ammPool.TVL(ctx, k.oracleKeeper)
+	if err != nil {
+		return sdk.ZeroDec(), err
+	}
+	lpTokenPrice := ammPoolTvl.Quo(sdkmath.LegacyNewDecFromInt(ammPool.TotalShares.Amount))
+	return lpTokenPrice, nil
 }
