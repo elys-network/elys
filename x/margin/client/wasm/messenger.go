@@ -19,7 +19,7 @@ func (m *Messenger) HandleMsg(ctx sdk.Context, contractAddr sdk.AccAddress, cont
 	switch {
 	case msg.MsgOpen != nil:
 		return m.msgOpen(ctx, contractAddr, msg.MsgOpen)
-	case msg.MsgOpen != nil:
+	case msg.MsgClose != nil:
 		return m.msgClose(ctx, contractAddr, msg.MsgClose)
 	default:
 		// This handler cannot handle the message

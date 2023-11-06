@@ -26,23 +26,24 @@ func (k msgServer) CancelVest(goCtx context.Context, msg *types.MsgCancelVest) (
 
 	remainingToCancel := msg.Amount
 
-	for i := 0; i < len(commitments.VestingTokens) && !remainingToCancel.IsZero(); i++ {
-		vesting := commitments.VestingTokens[i]
+	newVestingTokens := make([]*types.VestingTokens, 0, len(commitments.VestingTokens))
 
-		if vesting.Denom == msg.Denom {
-			cancelAmount := sdk.MinInt(remainingToCancel, vesting.UnvestedAmount)
+	for _, vesting := range commitments.VestingTokens {
+		cancelAmount := sdk.MinInt(remainingToCancel, vesting.UnvestedAmount)
+		vesting.TotalAmount = vesting.TotalAmount.Sub(cancelAmount)
+		vesting.UnvestedAmount = vesting.UnvestedAmount.Sub(cancelAmount)
 
-			vesting.TotalAmount = vesting.TotalAmount.Sub(cancelAmount)
-			vesting.UnvestedAmount = vesting.UnvestedAmount.Sub(cancelAmount)
+		if !vesting.TotalAmount.IsZero() {
+			newVestingTokens = append(newVestingTokens, vesting)
+		}
 
-			if vesting.TotalAmount.IsZero() {
-				commitments.VestingTokens = append(commitments.VestingTokens[:i], commitments.VestingTokens[i+1:]...)
-				i--
-			}
-
-			remainingToCancel = remainingToCancel.Sub(cancelAmount)
+		remainingToCancel = remainingToCancel.Sub(cancelAmount)
+		if remainingToCancel.IsZero() {
+			break
 		}
 	}
+
+	commitments.VestingTokens = newVestingTokens
 
 	if !remainingToCancel.IsZero() {
 		return nil, sdkerrors.Wrapf(types.ErrInsufficientVestingTokens, "denom: %s, amount: %s", msg.Denom, msg.Amount)

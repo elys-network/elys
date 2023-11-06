@@ -22,9 +22,9 @@ func NewMessenger(keeper *keeper.Keeper, stakingKeeper *stakingkeeper.Keeper) *M
 
 func (m *Messenger) HandleMsg(ctx sdk.Context, contractAddr sdk.AccAddress, contractIBCPortID string, msg wasmbindingstypes.ElysMsg) ([]sdk.Event, [][]byte, error) {
 	switch {
-	case msg.MsgOpen != nil:
+	case msg.MsgStake != nil:
 		return m.msgStake(ctx, contractAddr, msg.MsgStake)
-	case msg.MsgOpen != nil:
+	case msg.MsgUnstake != nil:
 		return m.msgUnstake(ctx, contractAddr, msg.MsgUnstake)
 	default:
 		// This handler cannot handle the message
