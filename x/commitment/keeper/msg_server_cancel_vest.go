@@ -29,19 +29,17 @@ func (k msgServer) CancelVest(goCtx context.Context, msg *types.MsgCancelVest) (
 	for i := 0; i < len(commitments.VestingTokens) && !remainingToCancel.IsZero(); i++ {
 		vesting := commitments.VestingTokens[i]
 
-		if vesting.Denom == msg.Denom {
-			cancelAmount := sdk.MinInt(remainingToCancel, vesting.UnvestedAmount)
+		cancelAmount := sdk.MinInt(remainingToCancel, vesting.UnvestedAmount)
 
-			vesting.TotalAmount = vesting.TotalAmount.Sub(cancelAmount)
-			vesting.UnvestedAmount = vesting.UnvestedAmount.Sub(cancelAmount)
+		vesting.TotalAmount = vesting.TotalAmount.Sub(cancelAmount)
+		vesting.UnvestedAmount = vesting.UnvestedAmount.Sub(cancelAmount)
 
-			if vesting.TotalAmount.IsZero() {
-				commitments.VestingTokens = append(commitments.VestingTokens[:i], commitments.VestingTokens[i+1:]...)
-				i--
-			}
-
-			remainingToCancel = remainingToCancel.Sub(cancelAmount)
+		if vesting.TotalAmount.IsZero() {
+			commitments.VestingTokens = append(commitments.VestingTokens[:i], commitments.VestingTokens[i+1:]...)
+			i--
 		}
+
+		remainingToCancel = remainingToCancel.Sub(cancelAmount)
 	}
 
 	if !remainingToCancel.IsZero() {
