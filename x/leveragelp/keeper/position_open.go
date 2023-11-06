@@ -21,6 +21,7 @@ func (k Keeper) OpenLong(ctx sdk.Context, msg *types.MsgOpen) (*types.Position, 
 	// Initialize a new Leveragelp Trading Position (Position).
 	position := types.NewPosition(msg.Creator, sdk.NewCoin(msg.CollateralAsset, msg.CollateralAmount), leverage, msg.AmmPoolId)
 	position.Id = k.GetPositionCount(ctx) + 1
+	position.StopLossPrice = msg.StopLossPrice
 	k.SetPositionCount(ctx, position.Id)
 
 	// Call the function to process the open long logic.
@@ -48,6 +49,7 @@ func (k Keeper) OpenConsolidate(ctx sdk.Context, position *types.Position, msg *
 	maxLeverage := k.GetMaxLeverageParam(ctx)
 	leverage := sdk.MinDec(msg.Leverage, maxLeverage)
 	position.Leverage = leverage
+	position.StopLossPrice = msg.StopLossPrice
 
 	position, err = k.ProcessOpenLong(ctx, position, leverage, collateralAmountDec, poolId, msg)
 	if err != nil {

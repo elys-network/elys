@@ -17,8 +17,6 @@ func (k Keeper) BeginBlocker(ctx sdk.Context) {
 	epochPosition := k.GetEpochPosition(ctx, epochLength)
 
 	if epochPosition == 0 { // if epoch has passed
-		currentHeight := ctx.BlockHeight()
-		_ = currentHeight
 		pools := k.GetAllPools(ctx)
 		for _, pool := range pools {
 			ammPool, err := k.GetAmmPool(ctx, pool.AmmPoolId)
@@ -35,7 +33,6 @@ func (k Keeper) BeginBlocker(ctx sdk.Context) {
 			k.SetPool(ctx, pool)
 		}
 	}
-
 }
 
 func (k Keeper) LiquidatePositionIfUnhealthy(ctx sdk.Context, position *types.Position, pool types.Pool, ammPool ammtypes.Pool) {
@@ -54,8 +51,13 @@ func (k Keeper) LiquidatePositionIfUnhealthy(ctx sdk.Context, position *types.Po
 	position.PositionHealth = h
 	k.SetPosition(ctx, position)
 
+	lpTokenPrice, err := k.GetLpTokenPrice(ctx, &ammPool)
+	if err != nil {
+		return
+	}
+
 	params := k.GetParams(ctx)
-	if position.PositionHealth.GT(params.SafetyFactor) {
+	if position.PositionHealth.GT(params.SafetyFactor) && lpTokenPrice.GT(position.StopLossPrice) {
 		return
 	}
 
