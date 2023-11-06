@@ -69,7 +69,7 @@ curl https://get.ignite.com/elys-network/elys@latest! | sudo bash
 
 ## Development
 
-You can use `ignite-cli` to get you started with your development enviroment. To install `ignite-cli`, execute the following command on your machine:
+You can use `ignite-cli` to get you started with your development environment. To install `ignite-cli`, execute the following command on your machine:
 
 ```
 curl https://get.ignite.com/ignite/ignite-cli@latest! | sudo bash
