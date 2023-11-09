@@ -7,26 +7,21 @@ import (
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
 	"github.com/elys-network/elys/wasmbindings/types"
 	accountedpoolkeeper "github.com/elys-network/elys/x/accountedpool/keeper"
-	ammclientwasmmessenger "github.com/elys-network/elys/x/amm/client/wasm/messenger"
-	ammclientwasmquerier "github.com/elys-network/elys/x/amm/client/wasm/querier"
+	ammclientwasm "github.com/elys-network/elys/x/amm/client/wasm"
 	ammkeeper "github.com/elys-network/elys/x/amm/keeper"
 	assetprofilekeeper "github.com/elys-network/elys/x/assetprofile/keeper"
 	burnerkeeper "github.com/elys-network/elys/x/burner/keeper"
 	clockkeeper "github.com/elys-network/elys/x/clock/keeper"
-	commitmentclientwasmmessenger "github.com/elys-network/elys/x/commitment/client/wasm/messenger"
-	commitmentclientwasmquerier "github.com/elys-network/elys/x/commitment/client/wasm/querier"
+	commitmentclientwasm "github.com/elys-network/elys/x/commitment/client/wasm"
 	commitmentkeeper "github.com/elys-network/elys/x/commitment/keeper"
 	epochskeeper "github.com/elys-network/elys/x/epochs/keeper"
-	incentiveclientwasmmessenger "github.com/elys-network/elys/x/incentive/client/wasm/messenger"
-	incentiveclientwasmquerier "github.com/elys-network/elys/x/incentive/client/wasm/querier"
+	incentiveclientwasm "github.com/elys-network/elys/x/incentive/client/wasm"
 	incentivekeeper "github.com/elys-network/elys/x/incentive/keeper"
 	leveragelpkeeper "github.com/elys-network/elys/x/leveragelp/keeper"
 	liquidityproviderkeeper "github.com/elys-network/elys/x/liquidityprovider/keeper"
-	marginclientwasmmessenger "github.com/elys-network/elys/x/margin/client/wasm/messenger"
-	marginclientwasmquerier "github.com/elys-network/elys/x/margin/client/wasm/querier"
+	marginclientwasm "github.com/elys-network/elys/x/margin/client/wasm"
 	marginkeeper "github.com/elys-network/elys/x/margin/keeper"
-	oracleclientwasmmessenger "github.com/elys-network/elys/x/oracle/client/wasm/messenger"
-	oracleclientwasmquerier "github.com/elys-network/elys/x/oracle/client/wasm/querier"
+	oracleclientwasm "github.com/elys-network/elys/x/oracle/client/wasm"
 	oraclekeeper "github.com/elys-network/elys/x/oracle/keeper"
 	parameterkeeper "github.com/elys-network/elys/x/parameter/keeper"
 	stablestakekeeper "github.com/elys-network/elys/x/stablestake/keeper"
@@ -54,20 +49,20 @@ func RegisterCustomPlugins(
 	tokenomics *tokenomicskeeper.Keeper,
 	transferhook *transferhookkeeper.Keeper,
 ) []wasmkeeper.Option {
-	ammQuerier := ammclientwasmquerier.NewQuerier(amm, bank, commitment)
-	ammMessenger := ammclientwasmmessenger.NewMessenger(amm)
+	ammQuerier := ammclientwasm.NewQuerier(amm, bank, commitment)
+	ammMessenger := ammclientwasm.NewMessenger(amm)
 
-	commitmentQuerier := commitmentclientwasmquerier.NewQuerier(commitment)
-	commitmentMessenger := commitmentclientwasmmessenger.NewMessenger(commitment, staking)
+	commitmentQuerier := commitmentclientwasm.NewQuerier(commitment)
+	commitmentMessenger := commitmentclientwasm.NewMessenger(commitment, staking)
 
-	incentiveQuerier := incentiveclientwasmquerier.NewQuerier(incentive)
-	incentiveMessenger := incentiveclientwasmmessenger.NewMessenger(incentive, staking, commitment)
+	incentiveQuerier := incentiveclientwasm.NewQuerier(incentive)
+	incentiveMessenger := incentiveclientwasm.NewMessenger(incentive, staking, commitment)
 
-	marginQuerier := marginclientwasmquerier.NewQuerier(margin)
-	marginMessenger := marginclientwasmmessenger.NewMessenger(margin)
+	marginQuerier := marginclientwasm.NewQuerier(margin)
+	marginMessenger := marginclientwasm.NewMessenger(margin)
 
-	oracleQuerier := oracleclientwasmquerier.NewQuerier(oracle)
-	oracleMessenger := oracleclientwasmmessenger.NewMessenger(oracle)
+	oracleQuerier := oracleclientwasm.NewQuerier(oracle)
+	oracleMessenger := oracleclientwasm.NewMessenger(oracle)
 
 	moduleQueriers := []types.ModuleQuerier{
 		ammQuerier,
