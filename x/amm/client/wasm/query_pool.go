@@ -8,15 +8,15 @@ import (
 	"github.com/elys-network/elys/x/amm/types"
 )
 
-func (oq *Querier) queryParams(ctx sdk.Context, params *types.QueryParamsRequest) ([]byte, error) {
-	res, err := oq.keeper.Params(ctx, params)
+func (oq *Querier) queryPool(ctx sdk.Context, pool *types.QueryGetPoolRequest) ([]byte, error) {
+	res, err := oq.keeper.Pool(ctx, pool)
 	if err != nil {
-		return nil, errorsmod.Wrap(err, "failed to get params")
+		return nil, errorsmod.Wrap(err, "failed to get pool")
 	}
 
 	responseBytes, err := json.Marshal(res)
 	if err != nil {
-		return nil, errorsmod.Wrap(err, "failed to serialize params response")
+		return nil, errorsmod.Wrap(err, "failed to serialize pool response")
 	}
 	return responseBytes, nil
 }

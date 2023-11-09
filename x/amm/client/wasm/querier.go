@@ -1,13 +1,10 @@
 package wasm
 
 import (
-	"encoding/json"
-
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 	wasmbindingstypes "github.com/elys-network/elys/wasmbindings/types"
 	"github.com/elys-network/elys/x/amm/keeper"
-	"github.com/elys-network/elys/x/amm/types"
 	commitmentkeeper "github.com/elys-network/elys/x/commitment/keeper"
 )
 
@@ -50,34 +47,4 @@ func (oq *Querier) HandleQuery(ctx sdk.Context, query wasmbindingstypes.ElysQuer
 		// This handler cannot handle the query
 		return nil, wasmbindingstypes.ErrCannotHandleQuery
 	}
-}
-
-func (oq *Querier) queryPool(ctx sdk.Context, pool *types.QueryGetPoolRequest) ([]byte, error) {
-	// Your logic here
-	return json.Marshal(&types.QueryGetPoolResponse{})
-}
-
-func (oq *Querier) queryPoolAll(ctx sdk.Context, poolAll *types.QueryAllPoolRequest) ([]byte, error) {
-	// Your logic here
-	return json.Marshal(&types.QueryAllPoolResponse{})
-}
-
-func (oq *Querier) queryDenomLiquidity(ctx sdk.Context, denomLiquidity *types.QueryGetDenomLiquidityRequest) ([]byte, error) {
-	// Your logic here
-	return json.Marshal(&types.QueryGetDenomLiquidityResponse{})
-}
-
-func (oq *Querier) queryDenomLiquidityAll(ctx sdk.Context, denomLiquidityAll *types.QueryAllDenomLiquidityRequest) ([]byte, error) {
-	// Your logic here
-	return json.Marshal(&types.QueryAllDenomLiquidityResponse{})
-}
-
-func (oq *Querier) querySlippageTrack(ctx sdk.Context, slippageTrack *types.QuerySlippageTrackRequest) ([]byte, error) {
-	// Your logic here
-	return json.Marshal(&types.QuerySlippageTrackResponse{})
-}
-
-func (oq *Querier) querySlippageTrackAll(ctx sdk.Context, slippageTrackAll *types.QuerySlippageTrackAllRequest) ([]byte, error) {
-	// Your logic here
-	return json.Marshal(&types.QuerySlippageTrackAllResponse{})
 }
