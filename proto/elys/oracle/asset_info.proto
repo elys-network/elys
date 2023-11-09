@@ -9,8 +9,8 @@ message AssetInfo {
   string denom = 1;
   string display = 2;
   string bandTicker = 3 [    
-		(gogoproto.jsontag) = "bank_ticker,omitempty",
-		(gogoproto.moretags) = "yaml:\"bank_ticker\""
+		(gogoproto.jsontag) = "band_ticker,omitempty",
+		(gogoproto.moretags) = "yaml:\"band_ticker\""
 	  ];
   string elysTicker = 4 [    
 		(gogoproto.jsontag) = "elys_ticker,omitempty",
