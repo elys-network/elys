@@ -37517,6 +37517,60 @@ paths:
                   additionalProperties: {}
       tags:
         - Query
+  /elys-network/elys/amm/balance/{address}/{denom}:
+    get:
+      summary: Queries a list of Balance items.
+      operationId: ElysAmmBalance
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              balance:
+                type: object
+                properties:
+                  denom:
+                    type: string
+                  amount:
+                    type: string
+                description: >-
+                  Coin defines a token with a denomination and an amount.
+
+
+                  NOTE: The amount field is an Int which implements the custom
+                  method
+
+                  signatures required by gogoproto.
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: address
+          in: path
+          required: true
+          type: string
+        - name: denom
+          in: path
+          required: true
+          type: string
+      tags:
+        - Query
   /elys-network/elys/amm/denom_liquidity:
     get:
       operationId: ElysAmmDenomLiquidityAll
@@ -82461,6 +82515,21 @@ definitions:
                    repeated Bar results = 1;
                    PageResponse page = 2;
            }
+  elys.amm.QueryBalanceResponse:
+    type: object
+    properties:
+      balance:
+        type: object
+        properties:
+          denom:
+            type: string
+          amount:
+            type: string
+        description: |-
+          Coin defines a token with a denomination and an amount.
+
+          NOTE: The amount field is an Int which implements the custom method
+          signatures required by gogoproto.
   elys.amm.QueryGetDenomLiquidityResponse:
     type: object
     properties:
@@ -83045,8 +83114,24 @@ definitions:
     type: object
   elys.commitment.MsgCommitUnclaimedRewardsResponse:
     type: object
+  elys.commitment.MsgStakeResponse:
+    type: object
+    properties:
+      code:
+        type: string
+        format: uint64
+      result:
+        type: string
   elys.commitment.MsgUncommitTokensResponse:
     type: object
+  elys.commitment.MsgUnstakeResponse:
+    type: object
+    properties:
+      code:
+        type: string
+        format: uint64
+      result:
+        type: string
   elys.commitment.MsgUpdateVestingInfoResponse:
     type: object
   elys.commitment.MsgVestLiquidResponse:

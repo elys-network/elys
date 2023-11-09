@@ -8,12 +8,12 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
-	"github.com/elys-network/elys/x/incentive/client/wasm/types"
+	wasmbindingstypes "github.com/elys-network/elys/wasmbindings/types"
 	paramtypes "github.com/elys-network/elys/x/parameter/types"
 )
 
-func (m *Messenger) msgBeginRedelegate(ctx sdk.Context, contractAddr sdk.AccAddress, msgRedelegate *types.MsgBeginRedelegate) ([]sdk.Event, [][]byte, error) {
-	var res *types.RequestResponse
+func (m *Messenger) msgBeginRedelegate(ctx sdk.Context, contractAddr sdk.AccAddress, msgRedelegate *stakingtypes.MsgBeginRedelegate) ([]sdk.Event, [][]byte, error) {
+	var res *wasmbindingstypes.RequestResponse
 	var err error
 	if msgRedelegate.Amount.Denom != paramtypes.Elys {
 		return nil, nil, errorsmod.Wrap(err, "invalid asset!")
@@ -34,7 +34,7 @@ func (m *Messenger) msgBeginRedelegate(ctx sdk.Context, contractAddr sdk.AccAddr
 	return nil, resp, nil
 }
 
-func performMsgRedelegateElys(f *stakingkeeper.Keeper, ctx sdk.Context, contractAddr sdk.AccAddress, msgRedelegate *types.MsgBeginRedelegate) (*types.RequestResponse, error) {
+func performMsgRedelegateElys(f *stakingkeeper.Keeper, ctx sdk.Context, contractAddr sdk.AccAddress, msgRedelegate *stakingtypes.MsgBeginRedelegate) (*wasmbindingstypes.RequestResponse, error) {
 	if msgRedelegate == nil {
 		return nil, wasmvmtypes.InvalidRequest{Err: "Invalid redelegate parameter"}
 	}
@@ -66,7 +66,7 @@ func performMsgRedelegateElys(f *stakingkeeper.Keeper, ctx sdk.Context, contract
 		return nil, errorsmod.Wrap(err, "elys redelegation msg")
 	}
 
-	var resp = &types.RequestResponse{
+	var resp = &wasmbindingstypes.RequestResponse{
 		Code:   paramtypes.RES_OK,
 		Result: "Redelegation succeed!",
 	}

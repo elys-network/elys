@@ -6,7 +6,6 @@ import (
 	wasmbindingstypes "github.com/elys-network/elys/wasmbindings/types"
 	commitmentkeeper "github.com/elys-network/elys/x/commitment/keeper"
 	"github.com/elys-network/elys/x/incentive/keeper"
-	incentivekeeper "github.com/elys-network/elys/x/incentive/keeper"
 )
 
 // Messenger handles messages for the Incentive module.
@@ -14,15 +13,13 @@ type Messenger struct {
 	keeper           *keeper.Keeper
 	stakingKeeper    *stakingkeeper.Keeper
 	commitmentKeeper *commitmentkeeper.Keeper
-	incentiveKeeper  *incentivekeeper.Keeper
 }
 
-func NewMessenger(keeper *keeper.Keeper, stakingKeeper *stakingkeeper.Keeper, commitmentKeeper *commitmentkeeper.Keeper, incentiveKeeper *incentivekeeper.Keeper) *Messenger {
+func NewMessenger(keeper *keeper.Keeper, stakingKeeper *stakingkeeper.Keeper, commitmentKeeper *commitmentkeeper.Keeper) *Messenger {
 	return &Messenger{
 		keeper:           keeper,
 		stakingKeeper:    stakingKeeper,
 		commitmentKeeper: commitmentKeeper,
-		incentiveKeeper:  incentiveKeeper,
 	}
 }
 
@@ -32,10 +29,6 @@ func (m *Messenger) HandleMsg(ctx sdk.Context, contractAddr sdk.AccAddress, cont
 		return m.msgBeginRedelegate(ctx, contractAddr, msg.MsgBeginRedelegate)
 	case msg.MsgCancelUnbondingDelegation != nil:
 		return m.msgCancelUnbondingDelegation(ctx, contractAddr, msg.MsgCancelUnbondingDelegation)
-	case msg.MsgVest != nil:
-		return m.msgVest(ctx, contractAddr, msg.MsgVest)
-	case msg.MsgCancelVest != nil:
-		return m.msgCancelVest(ctx, contractAddr, msg.MsgCancelVest)
 	case msg.MsgWithdrawRewards != nil:
 		return m.msgWithdrawRewards(ctx, contractAddr, msg.MsgWithdrawRewards)
 	case msg.MsgWithdrawValidatorCommission != nil:

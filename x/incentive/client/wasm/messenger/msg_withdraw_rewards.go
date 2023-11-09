@@ -6,17 +6,17 @@ import (
 	errorsmod "cosmossdk.io/errors"
 	wasmvmtypes "github.com/CosmWasm/wasmvm/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/x/incentive/client/wasm/types"
+	wasmbindingstypes "github.com/elys-network/elys/wasmbindings/types"
 	incentivekeeper "github.com/elys-network/elys/x/incentive/keeper"
 	incentivetypes "github.com/elys-network/elys/x/incentive/types"
 	paramtypes "github.com/elys-network/elys/x/parameter/types"
 )
 
-func (m *Messenger) msgWithdrawRewards(ctx sdk.Context, contractAddr sdk.AccAddress, msgWithdrawRewards *types.MsgWithdrawRewards) ([]sdk.Event, [][]byte, error) {
-	var res *types.RequestResponse
+func (m *Messenger) msgWithdrawRewards(ctx sdk.Context, contractAddr sdk.AccAddress, msgWithdrawRewards *incentivetypes.MsgWithdrawRewards) ([]sdk.Event, [][]byte, error) {
+	var res *wasmbindingstypes.RequestResponse
 	var err error
 
-	res, err = performMsgWithdrawRewards(m.incentiveKeeper, ctx, contractAddr, msgWithdrawRewards)
+	res, err = performMsgWithdrawRewards(m.keeper, ctx, contractAddr, msgWithdrawRewards)
 	if err != nil {
 		return nil, nil, errorsmod.Wrap(err, "perform withdraw rewards")
 	}
@@ -31,7 +31,7 @@ func (m *Messenger) msgWithdrawRewards(ctx sdk.Context, contractAddr sdk.AccAddr
 	return nil, resp, nil
 }
 
-func performMsgWithdrawRewards(f *incentivekeeper.Keeper, ctx sdk.Context, contractAddr sdk.AccAddress, msgWithdrawRewards *types.MsgWithdrawRewards) (*types.RequestResponse, error) {
+func performMsgWithdrawRewards(f *incentivekeeper.Keeper, ctx sdk.Context, contractAddr sdk.AccAddress, msgWithdrawRewards *incentivetypes.MsgWithdrawRewards) (*wasmbindingstypes.RequestResponse, error) {
 	if msgWithdrawRewards == nil {
 		return nil, wasmvmtypes.InvalidRequest{Err: "Invalid withdraw rewards parameter"}
 	}
@@ -53,7 +53,7 @@ func performMsgWithdrawRewards(f *incentivekeeper.Keeper, ctx sdk.Context, contr
 		return nil, errorsmod.Wrap(err, "withdraw rewards msg")
 	}
 
-	var resp = &types.RequestResponse{
+	var resp = &wasmbindingstypes.RequestResponse{
 		Code:   paramtypes.RES_OK,
 		Result: "Withdraw rewards succeed!",
 	}

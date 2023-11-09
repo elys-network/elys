@@ -1,4 +1,4 @@
-package wasm
+package messenger
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -26,6 +26,10 @@ func (m *Messenger) HandleMsg(ctx sdk.Context, contractAddr sdk.AccAddress, cont
 		return m.msgStake(ctx, contractAddr, msg.MsgStake)
 	case msg.MsgUnstake != nil:
 		return m.msgUnstake(ctx, contractAddr, msg.MsgUnstake)
+	case msg.MsgVest != nil:
+		return m.msgVest(ctx, contractAddr, msg.MsgVest)
+	case msg.MsgCancelVest != nil:
+		return m.msgCancelVest(ctx, contractAddr, msg.MsgCancelVest)
 	default:
 		// This handler cannot handle the message
 		return nil, nil, wasmbindingstypes.ErrCannotHandleMsg

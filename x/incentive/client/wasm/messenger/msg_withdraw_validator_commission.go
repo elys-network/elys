@@ -6,17 +6,17 @@ import (
 	errorsmod "cosmossdk.io/errors"
 	wasmvmtypes "github.com/CosmWasm/wasmvm/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/x/incentive/client/wasm/types"
+	wasmbindingstypes "github.com/elys-network/elys/wasmbindings/types"
 	incentivekeeper "github.com/elys-network/elys/x/incentive/keeper"
 	incentivetypes "github.com/elys-network/elys/x/incentive/types"
 	paramtypes "github.com/elys-network/elys/x/parameter/types"
 )
 
-func (m *Messenger) msgWithdrawValidatorCommission(ctx sdk.Context, contractAddr sdk.AccAddress, msgWithdrawValidatorCommission *types.MsgWithdrawValidatorCommission) ([]sdk.Event, [][]byte, error) {
-	var res *types.RequestResponse
+func (m *Messenger) msgWithdrawValidatorCommission(ctx sdk.Context, contractAddr sdk.AccAddress, msgWithdrawValidatorCommission *incentivetypes.MsgWithdrawValidatorCommission) ([]sdk.Event, [][]byte, error) {
+	var res *wasmbindingstypes.RequestResponse
 	var err error
 
-	res, err = performMsgWithdrawValidatorCommissions(m.incentiveKeeper, ctx, contractAddr, msgWithdrawValidatorCommission)
+	res, err = performMsgWithdrawValidatorCommissions(m.keeper, ctx, contractAddr, msgWithdrawValidatorCommission)
 	if err != nil {
 		return nil, nil, errorsmod.Wrap(err, "perform withdraw validator commission")
 	}
@@ -31,7 +31,7 @@ func (m *Messenger) msgWithdrawValidatorCommission(ctx sdk.Context, contractAddr
 	return nil, resp, nil
 }
 
-func performMsgWithdrawValidatorCommissions(f *incentivekeeper.Keeper, ctx sdk.Context, contractAddr sdk.AccAddress, msgWithdrawValidatorCommission *types.MsgWithdrawValidatorCommission) (*types.RequestResponse, error) {
+func performMsgWithdrawValidatorCommissions(f *incentivekeeper.Keeper, ctx sdk.Context, contractAddr sdk.AccAddress, msgWithdrawValidatorCommission *incentivetypes.MsgWithdrawValidatorCommission) (*wasmbindingstypes.RequestResponse, error) {
 	if msgWithdrawValidatorCommission == nil {
 		return nil, wasmvmtypes.InvalidRequest{Err: "Invalid withdraw validator commission parameter"}
 	}
@@ -58,7 +58,7 @@ func performMsgWithdrawValidatorCommissions(f *incentivekeeper.Keeper, ctx sdk.C
 		return nil, errorsmod.Wrap(err, "withdraw validator commission msg")
 	}
 
-	var resp = &types.RequestResponse{
+	var resp = &wasmbindingstypes.RequestResponse{
 		Code:   paramtypes.RES_OK,
 		Result: "Withdraw validator commissions succeed!",
 	}

@@ -22,6 +22,8 @@ import (
 	incentivekeeper "github.com/elys-network/elys/x/incentive/keeper"
 	leveragelpkeeper "github.com/elys-network/elys/x/leveragelp/keeper"
 	liquidityproviderkeeper "github.com/elys-network/elys/x/liquidityprovider/keeper"
+	marginclientwasmmessenger "github.com/elys-network/elys/x/margin/client/wasm/messenger"
+	marginclientwasmquerier "github.com/elys-network/elys/x/margin/client/wasm/querier"
 	marginkeeper "github.com/elys-network/elys/x/margin/keeper"
 	oracleclientwasmmessenger "github.com/elys-network/elys/x/oracle/client/wasm/messenger"
 	oracleclientwasmquerier "github.com/elys-network/elys/x/oracle/client/wasm/querier"
@@ -52,9 +54,6 @@ func RegisterCustomPlugins(
 	tokenomics *tokenomicskeeper.Keeper,
 	transferhook *transferhookkeeper.Keeper,
 ) []wasmkeeper.Option {
-	oracleQuerier := oracleclientwasmquerier.NewQuerier(oracle)
-	oracleMessenger := oracleclientwasmmessenger.NewMessenger(oracle)
-
 	ammQuerier := ammclientwasmquerier.NewQuerier(amm, bank, commitment)
 	ammMessenger := ammclientwasmmessenger.NewMessenger(amm)
 
@@ -62,13 +61,20 @@ func RegisterCustomPlugins(
 	commitmentMessenger := commitmentclientwasmmessenger.NewMessenger(commitment, staking)
 
 	incentiveQuerier := incentiveclientwasmquerier.NewQuerier(incentive)
-	incentiveMessenger := incentiveclientwasmmessenger.NewMessenger(incentive, staking, commitment, incentive)
+	incentiveMessenger := incentiveclientwasmmessenger.NewMessenger(incentive, staking, commitment)
+
+	marginQuerier := marginclientwasmquerier.NewQuerier(margin)
+	marginMessenger := marginclientwasmmessenger.NewMessenger(margin)
+
+	oracleQuerier := oracleclientwasmquerier.NewQuerier(oracle)
+	oracleMessenger := oracleclientwasmmessenger.NewMessenger(oracle)
 
 	moduleQueriers := []types.ModuleQuerier{
-		oracleQuerier,
 		ammQuerier,
 		commitmentQuerier,
 		incentiveQuerier,
+		marginQuerier,
+		oracleQuerier,
 	}
 
 	wasmQueryPlugin := types.NewQueryPlugin(moduleQueriers, amm, oracle, bank, staking, commitment, margin, incentive)
@@ -78,10 +84,11 @@ func RegisterCustomPlugins(
 	})
 
 	moduleMessengers := []types.ModuleMessenger{
-		oracleMessenger,
 		ammMessenger,
 		commitmentMessenger,
 		incentiveMessenger,
+		marginMessenger,
+		oracleMessenger,
 	}
 
 	messengerDecoratorOpt := wasmkeeper.WithMessageHandlerDecorator(

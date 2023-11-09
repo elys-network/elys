@@ -6,20 +6,20 @@ import (
 	errorsmod "cosmossdk.io/errors"
 	wasmvmtypes "github.com/CosmWasm/wasmvm/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	wasmbindingstypes "github.com/elys-network/elys/wasmbindings/types"
 	commitmentkeeper "github.com/elys-network/elys/x/commitment/keeper"
 	commitmenttypes "github.com/elys-network/elys/x/commitment/types"
-	"github.com/elys-network/elys/x/incentive/client/wasm/types"
 	paramtypes "github.com/elys-network/elys/x/parameter/types"
 )
 
-func (m *Messenger) msgVest(ctx sdk.Context, contractAddr sdk.AccAddress, msgVest *types.MsgVest) ([]sdk.Event, [][]byte, error) {
-	var res *types.RequestResponse
+func (m *Messenger) msgVest(ctx sdk.Context, contractAddr sdk.AccAddress, msgVest *commitmenttypes.MsgVest) ([]sdk.Event, [][]byte, error) {
+	var res *wasmbindingstypes.RequestResponse
 	var err error
 	if msgVest.Denom != paramtypes.Eden {
 		return nil, nil, errorsmod.Wrap(err, "invalid asset!")
 	}
 
-	res, err = performMsgVestEden(m.commitmentKeeper, ctx, contractAddr, msgVest)
+	res, err = performMsgVestEden(m.keeper, ctx, contractAddr, msgVest)
 	if err != nil {
 		return nil, nil, errorsmod.Wrap(err, "perform eden vest")
 	}
@@ -34,7 +34,7 @@ func (m *Messenger) msgVest(ctx sdk.Context, contractAddr sdk.AccAddress, msgVes
 	return nil, resp, nil
 }
 
-func performMsgVestEden(f *commitmentkeeper.Keeper, ctx sdk.Context, contractAddr sdk.AccAddress, msgVest *types.MsgVest) (*types.RequestResponse, error) {
+func performMsgVestEden(f *commitmentkeeper.Keeper, ctx sdk.Context, contractAddr sdk.AccAddress, msgVest *commitmenttypes.MsgVest) (*wasmbindingstypes.RequestResponse, error) {
 	if msgVest == nil {
 		return nil, wasmvmtypes.InvalidRequest{Err: "Invalid vesting parameter"}
 	}
@@ -51,7 +51,7 @@ func performMsgVestEden(f *commitmentkeeper.Keeper, ctx sdk.Context, contractAdd
 		return nil, errorsmod.Wrap(err, "eden vesting msg")
 	}
 
-	var resp = &types.RequestResponse{
+	var resp = &wasmbindingstypes.RequestResponse{
 		Code:   paramtypes.RES_OK,
 		Result: "Eden Vesting succeed!",
 	}

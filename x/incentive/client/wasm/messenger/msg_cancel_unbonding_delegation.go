@@ -8,12 +8,12 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
-	"github.com/elys-network/elys/x/incentive/client/wasm/types"
+	wasmbindingstypes "github.com/elys-network/elys/wasmbindings/types"
 	paramtypes "github.com/elys-network/elys/x/parameter/types"
 )
 
-func (m *Messenger) msgCancelUnbondingDelegation(ctx sdk.Context, contractAddr sdk.AccAddress, msgCancelUnbonding *types.MsgCancelUnbondingDelegation) ([]sdk.Event, [][]byte, error) {
-	var res *types.RequestResponse
+func (m *Messenger) msgCancelUnbondingDelegation(ctx sdk.Context, contractAddr sdk.AccAddress, msgCancelUnbonding *stakingtypes.MsgCancelUnbondingDelegation) ([]sdk.Event, [][]byte, error) {
+	var res *wasmbindingstypes.RequestResponse
 	var err error
 	if msgCancelUnbonding.Amount.Denom != paramtypes.Elys {
 		return nil, nil, errorsmod.Wrap(err, "invalid asset!")
@@ -34,7 +34,7 @@ func (m *Messenger) msgCancelUnbondingDelegation(ctx sdk.Context, contractAddr s
 	return nil, resp, nil
 }
 
-func performMsgCancelUnbondingElys(f *stakingkeeper.Keeper, ctx sdk.Context, contractAddr sdk.AccAddress, msgCancelUnbonding *types.MsgCancelUnbondingDelegation) (*types.RequestResponse, error) {
+func performMsgCancelUnbondingElys(f *stakingkeeper.Keeper, ctx sdk.Context, contractAddr sdk.AccAddress, msgCancelUnbonding *stakingtypes.MsgCancelUnbondingDelegation) (*wasmbindingstypes.RequestResponse, error) {
 	if msgCancelUnbonding == nil {
 		return nil, wasmvmtypes.InvalidRequest{Err: "Invalid cancel unbonding parameter"}
 	}
@@ -61,7 +61,7 @@ func performMsgCancelUnbondingElys(f *stakingkeeper.Keeper, ctx sdk.Context, con
 		return nil, errorsmod.Wrap(err, "elys cancel bonding msg")
 	}
 
-	var resp = &types.RequestResponse{
+	var resp = &wasmbindingstypes.RequestResponse{
 		Code:   paramtypes.RES_OK,
 		Result: "Cancel unbonding succeed!",
 	}

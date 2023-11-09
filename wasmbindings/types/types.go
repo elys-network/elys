@@ -7,16 +7,17 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
-	ammclientwasmtypes "github.com/elys-network/elys/x/amm/client/wasm/types"
+	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	ammkeeper "github.com/elys-network/elys/x/amm/keeper"
-	commitmentclientwasmtypes "github.com/elys-network/elys/x/commitment/client/wasm/types"
+	ammtypes "github.com/elys-network/elys/x/amm/types"
 	commitmentkeeper "github.com/elys-network/elys/x/commitment/keeper"
-	incentiveclientwasmtypes "github.com/elys-network/elys/x/incentive/client/wasm/types"
+	commitmenttypes "github.com/elys-network/elys/x/commitment/types"
 	incentivekeeper "github.com/elys-network/elys/x/incentive/keeper"
-	marginclientwasmtypes "github.com/elys-network/elys/x/margin/client/wasm/types"
+	incentivetypes "github.com/elys-network/elys/x/incentive/types"
 	marginkeeper "github.com/elys-network/elys/x/margin/keeper"
-	oracleclientwasmtypes "github.com/elys-network/elys/x/oracle/client/wasm/types"
+	margintypes "github.com/elys-network/elys/x/margin/types"
 	oraclekeeper "github.com/elys-network/elys/x/oracle/keeper"
+	oracletypes "github.com/elys-network/elys/x/oracle/types"
 )
 
 // ModuleQuerier is an interface that all module queriers should implement.
@@ -62,10 +63,17 @@ func AllCapabilities() []string {
 }
 
 type ElysQuery struct {
-	PriceAll            *oracleclientwasmtypes.PriceAll                `json:"price_all,omitempty"`
-	QuerySwapEstimation *ammclientwasmtypes.QuerySwapEstimationRequest `json:"query_swap_estimation,omitempty"`
-	AssetInfo           *oracleclientwasmtypes.AssetInfo               `json:"asset_info,omitempty"`
-	BalanceOfDenom      *ammclientwasmtypes.QueryBalanceRequest        `json:"balance_of_denom,omitempty"`
+	PriceAll          *oracletypes.QueryAllPriceRequest       `json:"price_all,omitempty"`
+	SwapEstimation    *ammtypes.QuerySwapEstimationRequest    `json:"query_swap_estimation,omitempty"`
+	AssetInfo         *oracletypes.QueryGetAssetInfoRequest   `json:"asset_info,omitempty"`
+	BalanceOfDenom    *ammtypes.QueryBalanceRequest           `json:"balance_of_denom,omitempty"`
+	Params            *ammtypes.QueryParamsRequest            `json:"params,omitempty"`
+	Pool              *ammtypes.QueryGetPoolRequest           `json:"pool,omitempty"`
+	PoolAll           *ammtypes.QueryAllPoolRequest           `json:"pool_all,omitempty"`
+	DenomLiquidity    *ammtypes.QueryGetDenomLiquidityRequest `json:"denom_liquidity,omitempty"`
+	DenomLiquidityAll *ammtypes.QueryAllDenomLiquidityRequest `json:"denom_liquidity_all,omitempty"`
+	SlippageTrack     *ammtypes.QuerySlippageTrackRequest     `json:"slippage_track,omitempty"`
+	SlippageTrackAll  *ammtypes.QuerySlippageTrackAllRequest  `json:"slippage_track_all,omitempty"`
 }
 
 type CustomMessenger struct {
@@ -79,15 +87,20 @@ type CustomMessenger struct {
 }
 
 type ElysMsg struct {
-	MsgSwapExactAmountIn           *ammclientwasmtypes.MsgSwapExactAmountIn                 `json:"msg_swap_exact_amount_in,omitempty"`
-	MsgOpen                        *marginclientwasmtypes.MsgOpen                           `json:"msg_open,omitempty"`
-	MsgClose                       *marginclientwasmtypes.MsgClose                          `json:"msg_close,omitempty"`
-	MsgStake                       *commitmentclientwasmtypes.MsgStake                      `json:"msg_stake,omitempty"`
-	MsgUnstake                     *commitmentclientwasmtypes.MsgUnstake                    `json:"msg_unstake,omitempty"`
-	MsgBeginRedelegate             *incentiveclientwasmtypes.MsgBeginRedelegate             `json:"msg_begin_redelegate,omitempty"`
-	MsgCancelUnbondingDelegation   *incentiveclientwasmtypes.MsgCancelUnbondingDelegation   `json:"msg_cancel_unbonding_delegation"`
-	MsgVest                        *incentiveclientwasmtypes.MsgVest                        `json:"msg_vest"`
-	MsgCancelVest                  *incentiveclientwasmtypes.MsgCancelVest                  `json:"msg_cancel_vest"`
-	MsgWithdrawRewards             *incentiveclientwasmtypes.MsgWithdrawRewards             `json:"msg_withdraw_rewards"`
-	MsgWithdrawValidatorCommission *incentiveclientwasmtypes.MsgWithdrawValidatorCommission `json:"msg_withdraw_validator_commission"`
+	MsgSwapExactAmountIn           *ammtypes.MsgSwapExactAmountIn                 `json:"msg_swap_exact_amount_in,omitempty"`
+	MsgOpen                        *margintypes.MsgOpen                           `json:"msg_open,omitempty"`
+	MsgClose                       *margintypes.MsgClose                          `json:"msg_close,omitempty"`
+	MsgStake                       *commitmenttypes.MsgStake                      `json:"msg_stake,omitempty"`
+	MsgUnstake                     *commitmenttypes.MsgUnstake                    `json:"msg_unstake,omitempty"`
+	MsgBeginRedelegate             *stakingtypes.MsgBeginRedelegate               `json:"msg_begin_redelegate,omitempty"`
+	MsgCancelUnbondingDelegation   *stakingtypes.MsgCancelUnbondingDelegation     `json:"msg_cancel_unbonding_delegation"`
+	MsgVest                        *commitmenttypes.MsgVest                       `json:"msg_vest"`
+	MsgCancelVest                  *commitmenttypes.MsgCancelVest                 `json:"msg_cancel_vest"`
+	MsgWithdrawRewards             *incentivetypes.MsgWithdrawRewards             `json:"msg_withdraw_rewards"`
+	MsgWithdrawValidatorCommission *incentivetypes.MsgWithdrawValidatorCommission `json:"msg_withdraw_validator_commission"`
+}
+
+type RequestResponse struct {
+	Code   uint64 `protobuf:"bytes,1,opt,name=code,proto3" json:"code,omitempty"`
+	Result string `protobuf:"bytes,2,opt,name=result,proto3" json:"result,omitempty"`
 }

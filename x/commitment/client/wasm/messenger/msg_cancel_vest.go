@@ -6,20 +6,20 @@ import (
 	errorsmod "cosmossdk.io/errors"
 	wasmvmtypes "github.com/CosmWasm/wasmvm/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	wasmbindingstypes "github.com/elys-network/elys/wasmbindings/types"
 	commitmentkeeper "github.com/elys-network/elys/x/commitment/keeper"
 	commitmenttypes "github.com/elys-network/elys/x/commitment/types"
-	"github.com/elys-network/elys/x/incentive/client/wasm/types"
 	paramtypes "github.com/elys-network/elys/x/parameter/types"
 )
 
-func (m *Messenger) msgCancelVest(ctx sdk.Context, contractAddr sdk.AccAddress, msgCancelVest *types.MsgCancelVest) ([]sdk.Event, [][]byte, error) {
-	var res *types.RequestResponse
+func (m *Messenger) msgCancelVest(ctx sdk.Context, contractAddr sdk.AccAddress, msgCancelVest *commitmenttypes.MsgCancelVest) ([]sdk.Event, [][]byte, error) {
+	var res *wasmbindingstypes.RequestResponse
 	var err error
 	if msgCancelVest.Denom != paramtypes.Eden {
 		return nil, nil, errorsmod.Wrap(err, "invalid asset!")
 	}
 
-	res, err = performMsgCancelVestEden(m.commitmentKeeper, ctx, contractAddr, msgCancelVest)
+	res, err = performMsgCancelVestEden(m.keeper, ctx, contractAddr, msgCancelVest)
 	if err != nil {
 		return nil, nil, errorsmod.Wrap(err, "perform eden cancel vest")
 	}
@@ -34,7 +34,7 @@ func (m *Messenger) msgCancelVest(ctx sdk.Context, contractAddr sdk.AccAddress, 
 	return nil, resp, nil
 }
 
-func performMsgCancelVestEden(f *commitmentkeeper.Keeper, ctx sdk.Context, contractAddr sdk.AccAddress, msgCancelVest *types.MsgCancelVest) (*types.RequestResponse, error) {
+func performMsgCancelVestEden(f *commitmentkeeper.Keeper, ctx sdk.Context, contractAddr sdk.AccAddress, msgCancelVest *commitmenttypes.MsgCancelVest) (*wasmbindingstypes.RequestResponse, error) {
 	if msgCancelVest == nil {
 		return nil, wasmvmtypes.InvalidRequest{Err: "Invalid cancel vesting parameter"}
 	}
@@ -51,7 +51,7 @@ func performMsgCancelVestEden(f *commitmentkeeper.Keeper, ctx sdk.Context, contr
 		return nil, errorsmod.Wrap(err, "eden vesting msg")
 	}
 
-	var resp = &types.RequestResponse{
+	var resp = &wasmbindingstypes.RequestResponse{
 		Code:   paramtypes.RES_OK,
 		Result: "Eden vesting cancel succeed!",
 	}

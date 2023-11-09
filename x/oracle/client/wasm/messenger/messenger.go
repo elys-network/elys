@@ -1,4 +1,4 @@
-package wasm
+package messenger
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -17,9 +17,6 @@ func NewMessenger(keeper *keeper.Keeper) *Messenger {
 
 func (m *Messenger) HandleMsg(ctx sdk.Context, contractAddr sdk.AccAddress, contractIBCPortID string, msg wasmbindingstypes.ElysMsg) ([]sdk.Event, [][]byte, error) {
 	switch {
-	// case *MsgPriceFeed:
-	//     // Handle the MsgPriceFeed message
-	//     // ...
 	default:
 		// This handler cannot handle the message
 		return nil, nil, wasmbindingstypes.ErrCannotHandleMsg
