@@ -10,6 +10,7 @@ import (
 	"github.com/elys-network/elys/x/commitment/types"
 )
 
+// CommitLiquidTokens commit the tokens from user's balance
 func (k msgServer) CommitLiquidTokens(goCtx context.Context, msg *types.MsgCommitLiquidTokens) (*types.MsgCommitLiquidTokensResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
@@ -44,27 +45,14 @@ func (k msgServer) CommitLiquidTokens(goCtx context.Context, msg *types.MsgCommi
 	commitments, found := k.GetCommitments(ctx, msg.Creator)
 	if !found {
 		commitments = types.Commitments{
-			Creator:           msg.Creator,
-			CommittedTokens:   []*types.CommittedTokens{},
-			UncommittedTokens: []*types.UncommittedTokens{},
+			Creator:          msg.Creator,
+			CommittedTokens:  []*types.CommittedTokens{},
+			RewardsUnclaimed: []*types.RewardsUnclaimed{},
 		}
 	}
-	// Get the committed tokens for the creator
-	committedToken, found := commitments.GetCommittedTokensForDenom(msg.Denom)
-	if !found {
-		committedTokens := commitments.GetCommittedTokens()
-		committedToken = &types.CommittedTokens{
-			Denom:  msg.Denom,
-			Amount: sdk.ZeroInt(),
-		}
-		committedTokens = append(committedTokens, committedToken)
-		commitments.CommittedTokens = committedTokens
-	}
-
-	// Update the committed tokens amount
-	committedToken.Amount = committedToken.Amount.Add(msg.Amount)
 
 	// Update the commitments
+	commitments.AddCommitedTokens(msg.Denom, msg.Amount, uint64(ctx.BlockTime().Unix())+msg.MinLock)
 	k.SetCommitments(ctx, commitments)
 
 	// Emit Hook commitment changed

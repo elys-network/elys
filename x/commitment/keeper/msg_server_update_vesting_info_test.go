@@ -73,7 +73,7 @@ func TestUpdateVestingInfo(t *testing.T) {
 	vestingInfo, _ = keeper.GetVestingInfo(ctx, "test_denom")
 	assert.Equal(t, vestingInfo.BaseDenom, "test_denom", "Incorrect denom")
 
-	// Call the UncommitTokens function
+	// Call the UpdateVestingInfo function
 	msg := types.MsgUpdateVestingInfo{
 		Authority:       signer,
 		BaseDenom:       "test_denom",

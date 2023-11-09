@@ -12,17 +12,14 @@ option go_package = "github.com/elys-network/elys/x/commitment/types";
 
 // Query defines the gRPC querier service.
 service Query {
-  
   // Parameters queries the parameters of the module.
   rpc Params (QueryParamsRequest) returns (QueryParamsResponse) {
     option (google.api.http).get = "/elys-network/elys/commitment/params";
-  
   }
   
   // Queries a list of ShowCommitments items.
   rpc ShowCommitments (QueryShowCommitmentsRequest) returns (QueryShowCommitmentsResponse) {
     option (google.api.http).get = "/elys-network/elys/commitment/show_commitments/{creator}";
-  
   }
 }
 // QueryParamsRequest is request type for the Query/Params RPC method.
@@ -30,7 +27,6 @@ message QueryParamsRequest {}
 
 // QueryParamsResponse is response type for the Query/Params RPC method.
 message QueryParamsResponse {
-  
   // params holds all the parameters of this module.
   Params params = 1 [(gogoproto.nullable) = false];
 }
@@ -42,4 +38,3 @@ message QueryShowCommitmentsRequest {
 message QueryShowCommitmentsResponse {
   Commitments commitments = 1;
 }
-

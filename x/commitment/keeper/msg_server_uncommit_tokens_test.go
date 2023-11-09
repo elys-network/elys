@@ -29,14 +29,14 @@ func TestUncommitTokens(t *testing.T) {
 	// Define the test data
 	creator := addr[0].String()
 	denom := "test_denom"
-	initialUncommitted := sdk.NewInt(400)
+	initialUnclaimed := sdk.NewInt(400)
 	initialCommitted := sdk.NewInt(100)
 	uncommitAmount := sdk.NewInt(100)
 
-	// Set up initial commitments object with sufficient uncommitted & committed tokens
-	uncommittedTokens := types.UncommittedTokens{
+	// Set up initial commitments object with sufficient unclaimed & committed tokens
+	rewardsUnclaimed := types.RewardsUnclaimed{
 		Denom:  denom,
-		Amount: initialUncommitted,
+		Amount: initialUnclaimed,
 	}
 
 	committedTokens := types.CommittedTokens{
@@ -45,9 +45,9 @@ func TestUncommitTokens(t *testing.T) {
 	}
 
 	initialCommitments := types.Commitments{
-		Creator:           creator,
-		UncommittedTokens: []*types.UncommittedTokens{&uncommittedTokens},
-		CommittedTokens:   []*types.CommittedTokens{&committedTokens},
+		Creator:          creator,
+		RewardsUnclaimed: []*types.RewardsUnclaimed{&rewardsUnclaimed},
+		CommittedTokens:  []*types.CommittedTokens{&committedTokens},
 	}
 
 	keeper.SetCommitments(ctx, initialCommitments)
@@ -74,8 +74,8 @@ func TestUncommitTokens(t *testing.T) {
 	assert.Equal(t, denom, commitments.CommittedTokens[0].Denom, "Incorrect denom")
 	assert.Equal(t, sdk.ZeroInt(), commitments.CommittedTokens[0].Amount, "Incorrect amount")
 
-	uncommittedToken := sdk.NewCoins(sdk.NewCoin(denom, uncommitAmount))
+	rewardUnclaimed := sdk.NewCoins(sdk.NewCoin(denom, uncommitAmount))
 
 	edenCoin := app.BankKeeper.GetBalance(ctx, addr[0], denom)
-	require.Equal(t, sdk.Coins{edenCoin}, uncommittedToken)
+	require.Equal(t, sdk.Coins{edenCoin}, rewardUnclaimed)
 }

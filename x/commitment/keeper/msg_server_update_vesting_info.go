@@ -9,6 +9,7 @@ import (
 	"github.com/elys-network/elys/x/commitment/types"
 )
 
+// UpdateVestingInfo add/update specific vesting info by denom on Params
 func (k msgServer) UpdateVestingInfo(goCtx context.Context, msg *types.MsgUpdateVestingInfo) (*types.MsgUpdateVestingInfoResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 

@@ -14,7 +14,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestCommitTokens(t *testing.T) {
+func TestCommitUnclaimedRewards(t *testing.T) {
 	// Create a test context and keeper
 	app := app.InitElysTestApp(true)
 
@@ -26,18 +26,18 @@ func TestCommitTokens(t *testing.T) {
 	// Define the test data
 	creator := "test_creator"
 	denom := "test_denom"
-	initialUncommitted := sdk.NewInt(500)
+	initialUnclaimed := sdk.NewInt(500)
 	commitAmount := sdk.NewInt(100)
 
-	// Set up initial commitments object with sufficient uncommitted tokens
-	uncommittedTokens := types.UncommittedTokens{
+	// Set up initial commitments object with sufficient unclaimed tokens
+	rewardsUnclaimed := types.RewardsUnclaimed{
 		Denom:  denom,
-		Amount: initialUncommitted,
+		Amount: initialUnclaimed,
 	}
 
 	initialCommitments := types.Commitments{
-		Creator:           creator,
-		UncommittedTokens: []*types.UncommittedTokens{&uncommittedTokens},
+		Creator:          creator,
+		RewardsUnclaimed: []*types.RewardsUnclaimed{&rewardsUnclaimed},
 	}
 
 	keeper.SetCommitments(ctx, initialCommitments)
@@ -45,13 +45,13 @@ func TestCommitTokens(t *testing.T) {
 	// Set assetprofile entry for denom
 	app.AssetprofileKeeper.SetEntry(ctx, aptypes.Entry{BaseDenom: denom, CommitEnabled: true})
 
-	// Call the CommitTokens function
-	msg := types.MsgCommitTokens{
+	// Call the CommitUnclaimedRewards function
+	msg := types.MsgCommitUnclaimedRewards{
 		Creator: creator,
 		Amount:  commitAmount,
 		Denom:   denom,
 	}
-	_, err := msgServer.CommitTokens(ctx, &msg)
+	_, err := msgServer.CommitUnclaimedRewards(ctx, &msg)
 	require.NoError(t, err)
 
 	// Check if the committed tokens have been added to the store

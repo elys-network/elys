@@ -35,10 +35,10 @@ func (k Keeper) BurnEdenBFromElysUnstaking(ctx sdk.Context, delegator sdk.AccAdd
 
 	//Total EdenB amount
 	edenBCommitted := commitments.GetCommittedAmountForDenom(ptypes.EdenB)
-	edenBUncommitted := commitments.GetUncommittedAmountForDenom(ptypes.EdenB)
+	edenBUnclaimed := commitments.GetUnclaimedAmountForDenom(ptypes.EdenB)
 
 	// Total EdenB amount
-	totalEdenB := edenBCommitted.Add(edenBUncommitted)
+	totalEdenB := edenBCommitted.Add(edenBUnclaimed)
 
 	// Unstaked
 	unstakedElys := prevElysStaked.Amount.Sub(delegatedAmt)
@@ -55,8 +55,8 @@ func (k Keeper) BurnEdenBFromElysUnstaking(ctx sdk.Context, delegator sdk.AccAdd
 	return err
 }
 
-// Burn EdenBoost from Eden uncommitted
-func (k Keeper) BurnEdenBFromEdenUncommitted(ctx sdk.Context, delegator string, uncommittedAmt sdk.Int) error {
+// Burn EdenBoost from Eden unclaimed
+func (k Keeper) BurnEdenBFromEdenUnclaimed(ctx sdk.Context, delegator string, unclaimedAmt sdk.Int) error {
 	// Get elys staked amount
 	elysStaked, found := k.GetElysStaked(ctx, delegator)
 	if !found {
@@ -73,16 +73,16 @@ func (k Keeper) BurnEdenBFromEdenUncommitted(ctx sdk.Context, delegator string, 
 
 	//Total EdenB amount
 	edenBCommitted := commitments.GetCommittedAmountForDenom(ptypes.EdenB)
-	edenBUncommitted := commitments.GetUncommittedAmountForDenom(ptypes.EdenB)
+	edenBUnclaimed := commitments.GetUnclaimedAmountForDenom(ptypes.EdenB)
 
 	// Total EdenB amount
-	totalEdenB := edenBCommitted.Add(edenBUncommitted)
+	totalEdenB := edenBCommitted.Add(edenBUnclaimed)
 
-	uncommittedAmtDec := sdk.NewDecFromInt(uncommittedAmt)
+	unclaimedAmtDec := sdk.NewDecFromInt(unclaimedAmt)
 	edenCommittedAndElysStakedDec := sdk.NewDecFromInt(edenCommitted.Add(elysStaked.Amount))
 	totalEdenBDec := sdk.NewDecFromInt(totalEdenB)
 
-	edenBToBurn := uncommittedAmtDec.Quo(edenCommittedAndElysStakedDec).Mul(totalEdenBDec)
+	edenBToBurn := unclaimedAmtDec.Quo(edenCommittedAndElysStakedDec).Mul(totalEdenBDec)
 
 	// Burn EdenB ( Deduction EdenB in commitment module)
 	commitment, err := k.cmk.DeductCommitments(ctx, delegator, ptypes.EdenB, edenBToBurn.TruncateInt())

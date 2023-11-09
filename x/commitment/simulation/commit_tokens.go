@@ -10,7 +10,7 @@ import (
 	"github.com/elys-network/elys/x/commitment/types"
 )
 
-func SimulateMsgCommitTokens(
+func SimulateMsgCommitUnclaimedRewards(
 	ak types.AccountKeeper,
 	bk types.BankKeeper,
 	k keeper.Keeper,
@@ -18,12 +18,12 @@ func SimulateMsgCommitTokens(
 	return func(r *rand.Rand, app *baseapp.BaseApp, ctx sdk.Context, accs []simtypes.Account, chainID string,
 	) (simtypes.OperationMsg, []simtypes.FutureOperation, error) {
 		simAccount, _ := simtypes.RandomAcc(r, accs)
-		msg := &types.MsgCommitTokens{
+		msg := &types.MsgCommitUnclaimedRewards{
 			Creator: simAccount.Address.String(),
 		}
 
-		// TODO: Handling the CommitTokens simulation
+		// TODO: Handling the CommitUnclaimedRewards simulation
 
-		return simtypes.NoOpMsg(types.ModuleName, msg.Type(), "CommitTokens simulation not implemented"), nil, nil
+		return simtypes.NoOpMsg(types.ModuleName, msg.Type(), "CommitUnclaimedRewards simulation not implemented"), nil, nil
 	}
 }

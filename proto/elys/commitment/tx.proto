@@ -8,23 +8,35 @@ option go_package = "github.com/elys-network/elys/x/commitment/types";
 
 // Msg defines the Msg service.
 service Msg {
-  rpc CommitTokens       (MsgCommitTokens      ) returns (MsgCommitTokensResponse      );
-  rpc UncommitTokens     (MsgUncommitTokens    ) returns (MsgUncommitTokensResponse    );
-  rpc WithdrawTokens     (MsgWithdrawTokens    ) returns (MsgWithdrawTokensResponse    );
-  rpc CommitLiquidTokens (MsgCommitLiquidTokens) returns (MsgCommitLiquidTokensResponse);
-  rpc Vest               (MsgVest              ) returns (MsgVestResponse              );
-  rpc CancelVest         (MsgCancelVest        ) returns (MsgCancelVestResponse        );
-  rpc VestNow            (MsgVestNow           ) returns (MsgVestNowResponse           );
-  rpc UpdateVestingInfo  (MsgUpdateVestingInfo ) returns (MsgUpdateVestingInfoResponse );
-  rpc VestLiquid         (MsgVestLiquid        ) returns (MsgVestLiquidResponse        );
+  // CommitLiquidTokens commit the tokens from user's balance
+  rpc CommitLiquidTokens(MsgCommitLiquidTokens) returns (MsgCommitLiquidTokensResponse);
+  // CommitUnclaimedRewards commit the tokens on unclaimed store to committed
+  rpc CommitUnclaimedRewards(MsgCommitUnclaimedRewards) returns (MsgCommitUnclaimedRewardsResponse);
+  // UncommitTokens uncommits the tokens from committed store and make it liquid immediately
+  rpc UncommitTokens(MsgUncommitTokens) returns (MsgUncommitTokensResponse    );
+  // WithdrawTokens withdraw first from unclaimed and if it requires more, withdraw from committed store
+  rpc WithdrawTokens(MsgWithdrawTokens) returns (MsgWithdrawTokensResponse);
+  // Vest converts user's commitment to vesting - start with unclaimed rewards and if it's not enough deduct from committed bucket
+  // mainly utilized for Eden
+  rpc Vest(MsgVest) returns (MsgVestResponse);
+  // VestNow provides functionality to get the token immediately but lower amount than original
+  // e.g. user can burn 1000 ueden and get 800 uelys when the ratio is 80%
+  rpc VestNow(MsgVestNow) returns (MsgVestNowResponse);
+  // VestLiquid converts user's balance to vesting to be utilized for normal tokens vesting like ATOM vesting
+  rpc VestLiquid(MsgVestLiquid) returns (MsgVestLiquidResponse);
+  // CancelVest cancel the user's vesting and the user reject to get vested tokens
+  rpc CancelVest(MsgCancelVest) returns (MsgCancelVestResponse);
+  // UpdateVestingInfo add/update specific vesting info by denom on Params
+  rpc UpdateVestingInfo(MsgUpdateVestingInfo) returns (MsgUpdateVestingInfoResponse );
 }
-message MsgCommitTokens {
+
+message MsgCommitUnclaimedRewards {
   string creator = 1;
   string amount  = 2 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false];
   string denom   = 3;
 }
 
-message MsgCommitTokensResponse {}
+message MsgCommitUnclaimedRewardsResponse {}
 
 message MsgUncommitTokens {
   string creator = 1;
@@ -46,6 +58,7 @@ message MsgCommitLiquidTokens {
   string creator = 1;
   string amount  = 2 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false];
   string denom   = 3;
+  uint64 minLock = 4; // minimum lock duration to wait until it is claimable
 }
 
 message MsgCommitLiquidTokensResponse {}

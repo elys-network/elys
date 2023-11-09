@@ -5,27 +5,27 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
-const TypeMsgCommitTokens = "commit_tokens"
+const TypeMsgCommitUnclaimedRewards = "commit_tokens"
 
-var _ sdk.Msg = &MsgCommitTokens{}
+var _ sdk.Msg = &MsgCommitUnclaimedRewards{}
 
-func NewMsgCommitTokens(creator string, amount sdk.Int, denom string) *MsgCommitTokens {
-	return &MsgCommitTokens{
+func NewMsgCommitUnclaimedRewards(creator string, amount sdk.Int, denom string) *MsgCommitUnclaimedRewards {
+	return &MsgCommitUnclaimedRewards{
 		Creator: creator,
 		Amount:  amount,
 		Denom:   denom,
 	}
 }
 
-func (msg *MsgCommitTokens) Route() string {
+func (msg *MsgCommitUnclaimedRewards) Route() string {
 	return RouterKey
 }
 
-func (msg *MsgCommitTokens) Type() string {
-	return TypeMsgCommitTokens
+func (msg *MsgCommitUnclaimedRewards) Type() string {
+	return TypeMsgCommitUnclaimedRewards
 }
 
-func (msg *MsgCommitTokens) GetSigners() []sdk.AccAddress {
+func (msg *MsgCommitUnclaimedRewards) GetSigners() []sdk.AccAddress {
 	creator, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
 		panic(err)
@@ -33,12 +33,12 @@ func (msg *MsgCommitTokens) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{creator}
 }
 
-func (msg *MsgCommitTokens) GetSignBytes() []byte {
+func (msg *MsgCommitUnclaimedRewards) GetSignBytes() []byte {
 	bz := ModuleCdc.MustMarshalJSON(msg)
 	return sdk.MustSortJSON(bz)
 }
 
-func (msg *MsgCommitTokens) ValidateBasic() error {
+func (msg *MsgCommitUnclaimedRewards) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid creator address: %v", err)

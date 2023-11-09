@@ -20,8 +20,8 @@ func (k Keeper) AfterEpochEnd(ctx sdk.Context, epochIdentifier string, _ int64) 
 		return
 	}
 
-	// Update uncommitted token amount
-	k.UpdateUncommittedTokens(ctx, epochIdentifier, stakeIncentive, lpIncentive)
+	// Update unclaimed token amount
+	k.UpdateRewardsUnclaimed(ctx, epochIdentifier, stakeIncentive, lpIncentive)
 }
 
 // ___________________________________________________________________________________________________

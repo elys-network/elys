@@ -8,7 +8,7 @@ import (
 )
 
 func RegisterCodec(cdc *codec.LegacyAmino) {
-	cdc.RegisterConcrete(&MsgCommitTokens{}, "commitment/CommitTokens", nil)
+	cdc.RegisterConcrete(&MsgCommitUnclaimedRewards{}, "commitment/CommitUnclaimedRewards", nil)
 	cdc.RegisterConcrete(&MsgUncommitTokens{}, "commitment/UncommitTokens", nil)
 	cdc.RegisterConcrete(&MsgWithdrawTokens{}, "commitment/WithdrawTokens", nil)
 	cdc.RegisterConcrete(&MsgCommitLiquidTokens{}, "commitment/CommitLiquidTokens", nil)
@@ -22,7 +22,7 @@ func RegisterCodec(cdc *codec.LegacyAmino) {
 
 func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 	registry.RegisterImplementations((*sdk.Msg)(nil),
-		&MsgCommitTokens{},
+		&MsgCommitUnclaimedRewards{},
 	)
 	registry.RegisterImplementations((*sdk.Msg)(nil),
 		&MsgUncommitTokens{},

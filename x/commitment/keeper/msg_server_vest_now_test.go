@@ -18,6 +18,9 @@ import (
 func TestVestNow(t *testing.T) {
 	app := app.InitElysTestApp(true)
 
+	// Enable VestNow for test
+	commitmentkeeper.VestNowEnabled = true
+
 	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
 	// Create a test context and keeper
 	keeper := app.CommitmentKeeper
@@ -28,7 +31,7 @@ func TestVestNow(t *testing.T) {
 	// Define the test data
 	creator := creatorAddr.String()
 	denom := ptypes.Eden
-	initialUncommitted := sdk.NewInt(5000)
+	initialUnclaimed := sdk.NewInt(5000)
 	initialCommitted := sdk.NewInt(10000)
 
 	vestingInfos := []*types.VestingInfo{
@@ -48,10 +51,10 @@ func TestVestNow(t *testing.T) {
 
 	keeper.SetParams(ctx, params)
 
-	// Set up initial commitments object with sufficient uncommitted & committed tokens
-	uncommittedTokens := types.UncommittedTokens{
+	// Set up initial commitments object with sufficient unclaimed & committed tokens
+	rewardsUnclaimed := types.RewardsUnclaimed{
 		Denom:  denom,
-		Amount: initialUncommitted,
+		Amount: initialUnclaimed,
 	}
 
 	committedTokens := types.CommittedTokens{
@@ -60,14 +63,14 @@ func TestVestNow(t *testing.T) {
 	}
 
 	initialCommitments := types.Commitments{
-		Creator:           creator,
-		UncommittedTokens: []*types.UncommittedTokens{&uncommittedTokens},
-		CommittedTokens:   []*types.CommittedTokens{&committedTokens},
+		Creator:          creator,
+		RewardsUnclaimed: []*types.RewardsUnclaimed{&rewardsUnclaimed},
+		CommittedTokens:  []*types.CommittedTokens{&committedTokens},
 	}
 
 	keeper.SetCommitments(ctx, initialCommitments)
 
-	// Test scenario 1: Withdraw within uncommitted balance
+	// Test scenario 1: Withdraw within unclaimed balance
 	msg := &types.MsgVestNow{
 		Creator: creator,
 		Amount:  sdk.NewInt(3000),
@@ -80,13 +83,13 @@ func TestVestNow(t *testing.T) {
 	updatedCommitments, found := keeper.GetCommitments(ctx, creator)
 	require.True(t, found)
 
-	uncommittedBalance := updatedCommitments.GetUncommittedAmountForDenom(denom)
-	assert.Equal(t, sdk.NewInt(2000), uncommittedBalance)
+	unclaimedBalance := updatedCommitments.GetUnclaimedAmountForDenom(denom)
+	assert.Equal(t, sdk.NewInt(2000), unclaimedBalance)
 	// Check if the vested tokens were received
 	creatorBalance := app.BankKeeper.GetBalance(ctx, creatorAddr, vestingInfos[0].VestingDenom)
 	require.Equal(t, sdk.NewInt(33), creatorBalance.Amount, "tokens were not vested correctly")
 
-	// Test scenario 2: Withdraw more than uncommitted balance but within total balance
+	// Test scenario 2: Withdraw more than unclaimed balance but within total balance
 	msg = &types.MsgVestNow{
 		Creator: creator,
 		Amount:  sdk.NewInt(7000),
@@ -99,8 +102,8 @@ func TestVestNow(t *testing.T) {
 	updatedCommitments, found = keeper.GetCommitments(ctx, creator)
 	require.True(t, found)
 
-	uncommittedBalance = updatedCommitments.GetUncommittedAmountForDenom(denom)
-	assert.Equal(t, sdk.NewInt(0), uncommittedBalance)
+	unclaimedBalance = updatedCommitments.GetUnclaimedAmountForDenom(denom)
+	assert.Equal(t, sdk.NewInt(0), unclaimedBalance)
 
 	committedBalance := updatedCommitments.GetCommittedAmountForDenom(denom)
 	assert.Equal(t, sdk.NewInt(5000), committedBalance)

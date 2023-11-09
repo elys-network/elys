@@ -79,32 +79,28 @@ func (k Keeper) DeductCommitments(ctx sdk.Context, creator string, denom string,
 		return commitments, nil
 	}
 
-	// Get user's uncommitted balance
-	uncommittedToken, found := commitments.GetUncommittedTokensForDenom(denom)
+	// Get user's unclaimed reward
+	rewardUnclaimed, found := commitments.GetRewardsUnclaimedForDenom(denom)
 	if !found {
-		uncommittedToken = &types.UncommittedTokens{Denom: denom, Amount: sdk.ZeroInt()}
+		rewardUnclaimed = &types.RewardsUnclaimed{Denom: denom, Amount: sdk.ZeroInt()}
 	}
 
-	requestedAmount := amount
+	unclaimedRemovalAmount := amount
 
-	// Check if there are enough uncommitted tokens to withdraw
-	if uncommittedToken.Amount.LT(requestedAmount) {
-		// Calculate the difference between the requested amount and the available uncommitted balance
-		difference := requestedAmount.Sub(uncommittedToken.Amount)
+	// Check if there are enough unclaimed rewards to withdraw
+	if rewardUnclaimed.Amount.LT(unclaimedRemovalAmount) {
+		// Calculate the difference between the requested amount and the available unclaimed balance
+		difference := unclaimedRemovalAmount.Sub(rewardUnclaimed.Amount)
 
-		committedToken, found := commitments.GetCommittedTokensForDenom(denom)
-		if found {
-			if committedToken.Amount.GTE(difference) {
-				// Uncommit the required committed tokens
-				committedToken.Amount = committedToken.Amount.Sub(difference)
-				requestedAmount = requestedAmount.Sub(difference)
-			} else {
-				return types.Commitments{}, sdkerrors.Wrap(sdkerrors.ErrInsufficientFunds, "not enough tokens to withdraw")
-			}
+		err := commitments.DeductFromCommitted(denom, difference, uint64(ctx.BlockTime().Unix()))
+		if err != nil {
+			return types.Commitments{}, err
 		}
+
+		unclaimedRemovalAmount = rewardUnclaimed.Amount
 	}
 
-	// Subtract the withdrawn amount from the uncommitted balance
-	uncommittedToken.Amount = uncommittedToken.Amount.Sub(requestedAmount)
+	// Subtract the withdrawn amount from the unclaimed balance
+	rewardUnclaimed.Amount = rewardUnclaimed.Amount.Sub(unclaimedRemovalAmount)
 	return commitments, nil
 }

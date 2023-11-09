@@ -30,13 +30,13 @@ func TestWithdrawTokens(t *testing.T) {
 	// Define the test data
 	creator := creatorAddr.String()
 	denom := ptypes.Eden
-	initialUncommitted := sdk.NewInt(50)
+	initialUnclaimed := sdk.NewInt(50)
 	initialCommitted := sdk.NewInt(100)
 
-	// Set up initial commitments object with sufficient uncommitted & committed tokens
-	uncommittedTokens := types.UncommittedTokens{
+	// Set up initial commitments object with sufficient unclaimed & committed tokens
+	rewardsUnclaimed := types.RewardsUnclaimed{
 		Denom:  denom,
-		Amount: initialUncommitted,
+		Amount: initialUnclaimed,
 	}
 
 	committedTokens := types.CommittedTokens{
@@ -45,9 +45,9 @@ func TestWithdrawTokens(t *testing.T) {
 	}
 
 	initialCommitments := types.Commitments{
-		Creator:           creator,
-		UncommittedTokens: []*types.UncommittedTokens{&uncommittedTokens},
-		CommittedTokens:   []*types.CommittedTokens{&committedTokens},
+		Creator:          creator,
+		RewardsUnclaimed: []*types.RewardsUnclaimed{&rewardsUnclaimed},
+		CommittedTokens:  []*types.CommittedTokens{&committedTokens},
 	}
 
 	keeper.SetCommitments(ctx, initialCommitments)
@@ -55,7 +55,7 @@ func TestWithdrawTokens(t *testing.T) {
 	// Set assetprofile entry for denom
 	app.AssetprofileKeeper.SetEntry(ctx, aptypes.Entry{BaseDenom: denom, WithdrawEnabled: true})
 
-	// Test scenario 1: Withdraw within uncommitted balance
+	// Test scenario 1: Withdraw within unclaimed balance
 	msg := &types.MsgWithdrawTokens{
 		Creator: creator,
 		Amount:  sdk.NewInt(30),
@@ -68,14 +68,14 @@ func TestWithdrawTokens(t *testing.T) {
 	updatedCommitments, found := keeper.GetCommitments(ctx, creator)
 	require.True(t, found)
 
-	uncommittedBalance := updatedCommitments.GetUncommittedAmountForDenom(denom)
-	assert.Equal(t, sdk.NewInt(20), uncommittedBalance)
+	unclaimedBalance := updatedCommitments.GetUnclaimedAmountForDenom(denom)
+	assert.Equal(t, sdk.NewInt(20), unclaimedBalance)
 
 	// Check if the withdrawn tokens were received
 	creatorBalance := app.BankKeeper.GetBalance(ctx, creatorAddr, denom)
 	require.Equal(t, sdk.NewInt(30), creatorBalance.Amount, "tokens were not withdrawn correctly")
 
-	// Test scenario 2: Withdraw more than uncommitted balance but within total balance
+	// Test scenario 2: Withdraw more than unclaimed balance but within total balance
 	msg = &types.MsgWithdrawTokens{
 		Creator: creator,
 		Amount:  sdk.NewInt(70),
@@ -88,8 +88,8 @@ func TestWithdrawTokens(t *testing.T) {
 	updatedCommitments, found = keeper.GetCommitments(ctx, creator)
 	require.True(t, found)
 
-	uncommittedBalance = updatedCommitments.GetUncommittedAmountForDenom(denom)
-	assert.Equal(t, sdk.NewInt(0), uncommittedBalance)
+	unclaimedBalance = updatedCommitments.GetUnclaimedAmountForDenom(denom)
+	assert.Equal(t, sdk.NewInt(0), unclaimedBalance)
 
 	committedBalance := updatedCommitments.GetCommittedAmountForDenom(denom)
 	assert.Equal(t, sdk.NewInt(50), committedBalance)

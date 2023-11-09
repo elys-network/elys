@@ -38850,7 +38850,17 @@ paths:
                           type: string
                         amount:
                           type: string
-                  uncommitted_tokens:
+                        lockups:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              amount:
+                                type: string
+                              unlock_timestamp:
+                                type: string
+                                format: uint64
+                  rewards_unclaimed:
                     type: array
                     items:
                       type: object
@@ -82965,7 +82975,17 @@ definitions:
               type: string
             amount:
               type: string
-      uncommitted_tokens:
+            lockups:
+              type: array
+              items:
+                type: object
+                properties:
+                  amount:
+                    type: string
+                  unlock_timestamp:
+                    type: string
+                    format: uint64
+      rewards_unclaimed:
         type: array
         items:
           type: object
@@ -83001,11 +83021,29 @@ definitions:
         type: string
       amount:
         type: string
+      lockups:
+        type: array
+        items:
+          type: object
+          properties:
+            amount:
+              type: string
+            unlock_timestamp:
+              type: string
+              format: uint64
+  elys.commitment.Lockup:
+    type: object
+    properties:
+      amount:
+        type: string
+      unlock_timestamp:
+        type: string
+        format: uint64
   elys.commitment.MsgCancelVestResponse:
     type: object
   elys.commitment.MsgCommitLiquidTokensResponse:
     type: object
-  elys.commitment.MsgCommitTokensResponse:
+  elys.commitment.MsgCommitUnclaimedRewardsResponse:
     type: object
   elys.commitment.MsgUncommitTokensResponse:
     type: object
@@ -83086,7 +83124,17 @@ definitions:
                   type: string
                 amount:
                   type: string
-          uncommitted_tokens:
+                lockups:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      amount:
+                        type: string
+                      unlock_timestamp:
+                        type: string
+                        format: uint64
+          rewards_unclaimed:
             type: array
             items:
               type: object
@@ -83115,7 +83163,7 @@ definitions:
                   type: string
                   format: int64
         description: GenesisState defines the commitment module's genesis state.
-  elys.commitment.UncommittedTokens:
+  elys.commitment.RewardsUnclaimed:
     type: object
     properties:
       denom:

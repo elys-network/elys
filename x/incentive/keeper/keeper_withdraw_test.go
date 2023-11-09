@@ -28,10 +28,10 @@ func TestGiveCommissionToValidators(t *testing.T) {
 	delegator := genAccount.String()
 	// Calculate delegated amount per delegator
 	delegatedAmt := ik.CalculateDelegatedAmount(ctx, delegator)
-	newUncommittedEdenTokens := sdk.NewInt(10000)
+	newUnclaimedEdenTokens := sdk.NewInt(10000)
 	dexRewardsByStakers := sdk.NewDec(1000)
 	// Give commission to validators ( Eden from stakers and Dex rewards from stakers. )
-	edenCommissionGiven, dexRewardsCommissionGiven := ik.GiveCommissionToValidators(ctx, delegator, delegatedAmt, newUncommittedEdenTokens, dexRewardsByStakers)
+	edenCommissionGiven, dexRewardsCommissionGiven := ik.GiveCommissionToValidators(ctx, delegator, delegatedAmt, newUnclaimedEdenTokens, dexRewardsByStakers)
 
 	require.Equal(t, edenCommissionGiven, sdk.NewInt(500))
 	require.Equal(t, dexRewardsCommissionGiven, sdk.NewInt(50))
@@ -47,18 +47,18 @@ func TestProcessWithdrawRewards(t *testing.T) {
 	addr := simapp.AddTestAddrs(app, ctx, 2, sdk.NewInt(10000))
 
 	var committed []sdk.Coins
-	var uncommitted []sdk.Coins
+	var unclaimed []sdk.Coins
 
-	// Prepare uncommitted tokens
+	// Prepare unclaimed tokens
 	uedenToken := sdk.NewCoins(sdk.NewCoin(ptypes.Eden, sdk.NewInt(2000)))
 	uedenBToken := sdk.NewCoins(sdk.NewCoin(ptypes.EdenB, sdk.NewInt(2000)))
 	lpToken := sdk.NewCoins(sdk.NewCoin("lp-elys-usdc", sdk.NewInt(500)))
 	usdcToken := sdk.NewCoins(sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(500)))
 
-	uncommitted = append(uncommitted, uedenToken)
-	uncommitted = append(uncommitted, uedenBToken)
-	uncommitted = append(uncommitted, lpToken)
-	uncommitted = append(uncommitted, usdcToken)
+	unclaimed = append(unclaimed, uedenToken)
+	unclaimed = append(unclaimed, uedenBToken)
+	unclaimed = append(unclaimed, lpToken)
+	unclaimed = append(unclaimed, usdcToken)
 
 	// Set assetprofile entry for denom
 	app.AssetprofileKeeper.SetEntry(ctx, aptypes.Entry{BaseDenom: ptypes.BaseCurrency, CommitEnabled: false, WithdrawEnabled: true})
@@ -73,8 +73,8 @@ func TestProcessWithdrawRewards(t *testing.T) {
 	committed = append(committed, uedenBTokenC)
 
 	// Add testing commitment
-	simapp.AddTestCommitment(app, ctx, addr[0], committed, uncommitted)
-	simapp.AddTestCommitment(app, ctx, addr[1], committed, uncommitted)
+	simapp.AddTestCommitment(app, ctx, addr[0], committed, unclaimed)
+	simapp.AddTestCommitment(app, ctx, addr[1], committed, unclaimed)
 	_, found := app.CommitmentKeeper.GetCommitments(ctx, addr[0].String())
 	require.True(t, found)
 
@@ -127,7 +127,7 @@ func TestProcessWithdrawValidatorCommission(t *testing.T) {
 	delegator := genAccount.String()
 	// Calculate delegated amount per delegator
 	delegatedAmt := ik.CalculateDelegatedAmount(ctx, delegator)
-	newUncommittedEdenTokens := sdk.NewInt(10000)
+	newUnclaimedEdenTokens := sdk.NewInt(10000)
 	dexRewardsByStakers := sdk.NewDec(1000)
 
 	// Create an entity in commitment module for validator
@@ -139,7 +139,7 @@ func TestProcessWithdrawValidatorCommission(t *testing.T) {
 	app.AssetprofileKeeper.SetEntry(ctx, aptypes.Entry{BaseDenom: ptypes.EdenB, CommitEnabled: true, WithdrawEnabled: true})
 
 	// Give commission to validators ( Eden from stakers and Dex rewards from stakers. )
-	edenCommissionGiven, dexRewardsCommissionGiven := ik.GiveCommissionToValidators(ctx, delegator, delegatedAmt, newUncommittedEdenTokens, dexRewardsByStakers)
+	edenCommissionGiven, dexRewardsCommissionGiven := ik.GiveCommissionToValidators(ctx, delegator, delegatedAmt, newUnclaimedEdenTokens, dexRewardsByStakers)
 
 	_, found := app.CommitmentKeeper.GetCommitments(ctx, valAddress.String())
 	require.True(t, found)

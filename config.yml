@@ -229,7 +229,7 @@ genesis:
               denom: ueden
             - amount: "10000"
               denom: uedenb
-          uncommitted_tokens:
+          rewards_unclaimed:
             - amount: "10000"
               denom: uusdc
             - amount: "10000"

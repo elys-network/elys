@@ -29,24 +29,24 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
-type MsgCommitTokens struct {
+type MsgCommitUnclaimedRewards struct {
 	Creator string                                 `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
 	Amount  github_com_cosmos_cosmos_sdk_types.Int `protobuf:"bytes,2,opt,name=amount,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"amount"`
 	Denom   string                                 `protobuf:"bytes,3,opt,name=denom,proto3" json:"denom,omitempty"`
 }
 
-func (m *MsgCommitTokens) Reset()         { *m = MsgCommitTokens{} }
-func (m *MsgCommitTokens) String() string { return proto.CompactTextString(m) }
-func (*MsgCommitTokens) ProtoMessage()    {}
-func (*MsgCommitTokens) Descriptor() ([]byte, []int) {
+func (m *MsgCommitUnclaimedRewards) Reset()         { *m = MsgCommitUnclaimedRewards{} }
+func (m *MsgCommitUnclaimedRewards) String() string { return proto.CompactTextString(m) }
+func (*MsgCommitUnclaimedRewards) ProtoMessage()    {}
+func (*MsgCommitUnclaimedRewards) Descriptor() ([]byte, []int) {
 	return fileDescriptor_eda78aafe7eb119c, []int{0}
 }
-func (m *MsgCommitTokens) XXX_Unmarshal(b []byte) error {
+func (m *MsgCommitUnclaimedRewards) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgCommitTokens) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgCommitUnclaimedRewards) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgCommitTokens.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgCommitUnclaimedRewards.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -56,47 +56,47 @@ func (m *MsgCommitTokens) XXX_Marshal(b []byte, deterministic bool) ([]byte, err
 		return b[:n], nil
 	}
 }
-func (m *MsgCommitTokens) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgCommitTokens.Merge(m, src)
+func (m *MsgCommitUnclaimedRewards) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgCommitUnclaimedRewards.Merge(m, src)
 }
-func (m *MsgCommitTokens) XXX_Size() int {
+func (m *MsgCommitUnclaimedRewards) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgCommitTokens) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgCommitTokens.DiscardUnknown(m)
+func (m *MsgCommitUnclaimedRewards) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgCommitUnclaimedRewards.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgCommitTokens proto.InternalMessageInfo
+var xxx_messageInfo_MsgCommitUnclaimedRewards proto.InternalMessageInfo
 
-func (m *MsgCommitTokens) GetCreator() string {
+func (m *MsgCommitUnclaimedRewards) GetCreator() string {
 	if m != nil {
 		return m.Creator
 	}
 	return ""
 }
 
-func (m *MsgCommitTokens) GetDenom() string {
+func (m *MsgCommitUnclaimedRewards) GetDenom() string {
 	if m != nil {
 		return m.Denom
 	}
 	return ""
 }
 
-type MsgCommitTokensResponse struct {
+type MsgCommitUnclaimedRewardsResponse struct {
 }
 
-func (m *MsgCommitTokensResponse) Reset()         { *m = MsgCommitTokensResponse{} }
-func (m *MsgCommitTokensResponse) String() string { return proto.CompactTextString(m) }
-func (*MsgCommitTokensResponse) ProtoMessage()    {}
-func (*MsgCommitTokensResponse) Descriptor() ([]byte, []int) {
+func (m *MsgCommitUnclaimedRewardsResponse) Reset()         { *m = MsgCommitUnclaimedRewardsResponse{} }
+func (m *MsgCommitUnclaimedRewardsResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgCommitUnclaimedRewardsResponse) ProtoMessage()    {}
+func (*MsgCommitUnclaimedRewardsResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_eda78aafe7eb119c, []int{1}
 }
-func (m *MsgCommitTokensResponse) XXX_Unmarshal(b []byte) error {
+func (m *MsgCommitUnclaimedRewardsResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgCommitTokensResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgCommitUnclaimedRewardsResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgCommitTokensResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgCommitUnclaimedRewardsResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -106,17 +106,17 @@ func (m *MsgCommitTokensResponse) XXX_Marshal(b []byte, deterministic bool) ([]b
 		return b[:n], nil
 	}
 }
-func (m *MsgCommitTokensResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgCommitTokensResponse.Merge(m, src)
+func (m *MsgCommitUnclaimedRewardsResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgCommitUnclaimedRewardsResponse.Merge(m, src)
 }
-func (m *MsgCommitTokensResponse) XXX_Size() int {
+func (m *MsgCommitUnclaimedRewardsResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgCommitTokensResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgCommitTokensResponse.DiscardUnknown(m)
+func (m *MsgCommitUnclaimedRewardsResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgCommitUnclaimedRewardsResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgCommitTokensResponse proto.InternalMessageInfo
+var xxx_messageInfo_MsgCommitUnclaimedRewardsResponse proto.InternalMessageInfo
 
 type MsgUncommitTokens struct {
 	Creator string                                 `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
@@ -300,6 +300,7 @@ type MsgCommitLiquidTokens struct {
 	Creator string                                 `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
 	Amount  github_com_cosmos_cosmos_sdk_types.Int `protobuf:"bytes,2,opt,name=amount,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"amount"`
 	Denom   string                                 `protobuf:"bytes,3,opt,name=denom,proto3" json:"denom,omitempty"`
+	MinLock uint64                                 `protobuf:"varint,4,opt,name=minLock,proto3" json:"minLock,omitempty"`
 }
 
 func (m *MsgCommitLiquidTokens) Reset()         { *m = MsgCommitLiquidTokens{} }
@@ -347,6 +348,13 @@ func (m *MsgCommitLiquidTokens) GetDenom() string {
 		return m.Denom
 	}
 	return ""
+}
+
+func (m *MsgCommitLiquidTokens) GetMinLock() uint64 {
+	if m != nil {
+		return m.MinLock
+	}
+	return 0
 }
 
 type MsgCommitLiquidTokensResponse struct {
@@ -870,8 +878,8 @@ func (m *MsgVestLiquidResponse) XXX_DiscardUnknown() {
 var xxx_messageInfo_MsgVestLiquidResponse proto.InternalMessageInfo
 
 func init() {
-	proto.RegisterType((*MsgCommitTokens)(nil), "elys.commitment.MsgCommitTokens")
-	proto.RegisterType((*MsgCommitTokensResponse)(nil), "elys.commitment.MsgCommitTokensResponse")
+	proto.RegisterType((*MsgCommitUnclaimedRewards)(nil), "elys.commitment.MsgCommitUnclaimedRewards")
+	proto.RegisterType((*MsgCommitUnclaimedRewardsResponse)(nil), "elys.commitment.MsgCommitUnclaimedRewardsResponse")
 	proto.RegisterType((*MsgUncommitTokens)(nil), "elys.commitment.MsgUncommitTokens")
 	proto.RegisterType((*MsgUncommitTokensResponse)(nil), "elys.commitment.MsgUncommitTokensResponse")
 	proto.RegisterType((*MsgWithdrawTokens)(nil), "elys.commitment.MsgWithdrawTokens")
@@ -893,49 +901,51 @@ func init() {
 func init() { proto.RegisterFile("elys/commitment/tx.proto", fileDescriptor_eda78aafe7eb119c) }
 
 var fileDescriptor_eda78aafe7eb119c = []byte{
-	// 665 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xcc, 0x96, 0xcd, 0x4e, 0xdb, 0x40,
-	0x10, 0xc7, 0xb3, 0x7c, 0x24, 0x62, 0xc4, 0x87, 0x58, 0xa5, 0xc2, 0x18, 0x6a, 0xa2, 0xb4, 0x8d,
-	0xa2, 0x4a, 0xd8, 0x52, 0xfb, 0x06, 0x94, 0x22, 0x45, 0x6d, 0x38, 0x44, 0xb4, 0x95, 0x38, 0xd5,
-	0xd8, 0x8b, 0x63, 0x81, 0x77, 0x53, 0xef, 0x9a, 0xc0, 0xb1, 0x52, 0xa5, 0xaa, 0x6a, 0xa5, 0xf6,
-	0x7d, 0xfa, 0x02, 0x1c, 0x39, 0x56, 0x3d, 0xa0, 0x0a, 0x5e, 0xa4, 0x5a, 0x3b, 0xd9, 0xd8, 0xc6,
-	0x01, 0x6e, 0xe1, 0x94, 0x78, 0xfe, 0x7f, 0xcf, 0xfc, 0x3c, 0xf6, 0x8c, 0x0d, 0x1a, 0x39, 0x3e,
-	0xe3, 0x96, 0xc3, 0x82, 0xc0, 0x17, 0x01, 0xa1, 0xc2, 0x12, 0xa7, 0x66, 0x2f, 0x64, 0x82, 0xe1,
-	0x25, 0xa9, 0x98, 0x23, 0x45, 0xaf, 0x7a, 0xcc, 0x63, 0xb1, 0x66, 0xc9, 0x7f, 0x89, 0xad, 0xfe,
-	0x0d, 0xc1, 0x52, 0x9b, 0x7b, 0xaf, 0x62, 0xdf, 0x1e, 0x3b, 0x22, 0x94, 0x63, 0x0d, 0x2a, 0x4e,
-	0x48, 0x6c, 0xc1, 0x42, 0x0d, 0xd5, 0x50, 0x73, 0xae, 0x33, 0x3c, 0xc4, 0x3b, 0x50, 0xb6, 0x03,
-	0x16, 0x51, 0xa1, 0x4d, 0x49, 0x61, 0xcb, 0x3c, 0xbf, 0xdc, 0x28, 0xfd, 0xbd, 0xdc, 0x68, 0x78,
-	0xbe, 0xe8, 0x46, 0x07, 0xb2, 0x9c, 0xe5, 0x30, 0x1e, 0x30, 0x3e, 0xf8, 0xd9, 0xe4, 0xee, 0x91,
-	0x25, 0xce, 0x7a, 0x84, 0x9b, 0x2d, 0x2a, 0x3a, 0x83, 0xb3, 0x71, 0x15, 0x66, 0x5d, 0x42, 0x59,
-	0xa0, 0x4d, 0xc7, 0xf9, 0x93, 0x83, 0xfa, 0x2a, 0xac, 0xe4, 0x50, 0x3a, 0x84, 0xf7, 0x18, 0xe5,
-	0xa4, 0xfe, 0x1d, 0xc1, 0x72, 0x9b, 0x7b, 0xef, 0xa8, 0xf3, 0x10, 0x40, 0xd7, 0x60, 0xf5, 0x06,
-	0x4c, 0x1e, 0xf5, 0x83, 0x2f, 0xba, 0x6e, 0x68, 0xf7, 0x1f, 0x04, 0x6a, 0x16, 0x46, 0xa1, 0xfe,
-	0x44, 0xf0, 0x48, 0x75, 0xfc, 0xad, 0xff, 0x29, 0xf2, 0xdd, 0x09, 0xe3, 0x6e, 0xc0, 0xe3, 0x42,
-	0x20, 0x85, 0xfc, 0x19, 0x41, 0xa5, 0xcd, 0xbd, 0xf7, 0x84, 0x8b, 0x89, 0x41, 0x2e, 0xc7, 0x23,
-	0x23, 0x11, 0x14, 0xd6, 0x57, 0x04, 0x0b, 0x12, 0xdc, 0xa6, 0x0e, 0x39, 0x9e, 0x28, 0xdc, 0x4a,
-	0x72, 0x4b, 0x15, 0x88, 0x42, 0xfc, 0x82, 0x00, 0x06, 0xd8, 0xbb, 0xac, 0x3f, 0x31, 0xbe, 0x2a,
-	0xe0, 0x11, 0x85, 0x82, 0xfb, 0x31, 0x05, 0x55, 0x39, 0x52, 0x3d, 0xd7, 0x16, 0x44, 0x8a, 0x3e,
-	0xf5, 0x5a, 0xf4, 0x90, 0xe1, 0x75, 0x98, 0xb3, 0x23, 0xd1, 0x65, 0xa1, 0x2f, 0xce, 0x06, 0xa0,
-	0xa3, 0x80, 0x54, 0x0f, 0x6c, 0x4e, 0xb6, 0xe3, 0x32, 0x53, 0x89, 0xaa, 0x02, 0xb8, 0x0e, 0xf3,
-	0x27, 0x49, 0xaa, 0xed, 0x14, 0x47, 0x26, 0x86, 0x9b, 0xb0, 0x44, 0x7a, 0xcc, 0xe9, 0xb6, 0x5c,
-	0x42, 0x85, 0x7f, 0xe8, 0x93, 0x50, 0x9b, 0x89, 0x6d, 0xf9, 0xb0, 0xac, 0x45, 0xa3, 0xe0, 0xb5,
-	0x8c, 0x72, 0x6d, 0xb6, 0x86, 0x9a, 0xd3, 0x9d, 0x51, 0x00, 0x3f, 0x85, 0x85, 0x93, 0xe4, 0x9a,
-	0x76, 0x6c, 0x47, 0x36, 0xb5, 0x1c, 0x3b, 0xb2, 0x41, 0xdc, 0x80, 0x45, 0x1a, 0x05, 0x6d, 0xfb,
-	0x74, 0x70, 0x89, 0x5c, 0xab, 0xc4, 0xb6, 0x5c, 0xb4, 0x6e, 0xc0, 0x7a, 0x51, 0x37, 0xf2, 0x8f,
-	0x9b, 0x94, 0x92, 0x29, 0x99, 0xf0, 0xe3, 0x36, 0x02, 0x19, 0x22, 0xbe, 0xf8, 0x5d, 0x86, 0xe9,
-	0x36, 0xf7, 0xf0, 0x3e, 0xcc, 0x67, 0x5e, 0x2e, 0x35, 0x33, 0xf7, 0x62, 0x32, 0x73, 0x3b, 0x5f,
-	0x6f, 0xde, 0xe5, 0x18, 0xd6, 0xc0, 0x1f, 0x61, 0x31, 0xf7, 0x46, 0xa8, 0x17, 0x9d, 0x9b, 0xf5,
-	0xe8, 0xcf, 0xef, 0xf6, 0xa4, 0x2b, 0xe4, 0x16, 0x79, 0x61, 0x85, 0xac, 0xa7, 0xb8, 0x42, 0xf1,
-	0x0e, 0xc6, 0xc7, 0x80, 0x0b, 0xf6, 0x6f, 0x63, 0x7c, 0x0f, 0xd2, 0x3e, 0xdd, 0xbc, 0x9f, 0x4f,
-	0x55, 0xdb, 0x82, 0x99, 0x64, 0x3b, 0x15, 0x9d, 0x27, 0x15, 0xbd, 0x36, 0x4e, 0x51, 0x39, 0xf6,
-	0x00, 0x52, 0x7b, 0xce, 0x28, 0x24, 0x50, 0xba, 0xde, 0xb8, 0x5d, 0x57, 0x59, 0xdf, 0x40, 0x65,
-	0xb8, 0x9a, 0xd6, 0xc6, 0x21, 0xec, 0xb2, 0xbe, 0xfe, 0xe4, 0x16, 0x51, 0x25, 0xf3, 0x61, 0xf9,
-	0xe6, 0x2a, 0x79, 0x56, 0x78, 0xdf, 0xf3, 0x36, 0x7d, 0xf3, 0x5e, 0xb6, 0x74, 0x37, 0x52, 0x63,
-	0x68, 0x8c, 0xa3, 0x4b, 0xf4, 0xe2, 0x6e, 0xdc, 0x9c, 0x9e, 0xad, 0xd6, 0xf9, 0x95, 0x81, 0x2e,
-	0xae, 0x0c, 0xf4, 0xef, 0xca, 0x40, 0xbf, 0xae, 0x8d, 0xd2, 0xc5, 0xb5, 0x51, 0xfa, 0x73, 0x6d,
-	0x94, 0xf6, 0xad, 0xd4, 0xd8, 0xca, 0x5c, 0x9b, 0x94, 0x88, 0x3e, 0x0b, 0x8f, 0xe2, 0x03, 0xeb,
-	0x34, 0xf3, 0x2d, 0x28, 0x67, 0xf8, 0xa0, 0x1c, 0x7f, 0xe8, 0xbd, 0xfc, 0x1f, 0x00, 0x00, 0xff,
-	0xff, 0x1a, 0xe4, 0xe1, 0x03, 0x2b, 0x0a, 0x00, 0x00,
+	// 699 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xcc, 0x96, 0xcf, 0x6e, 0xd3, 0x4a,
+	0x14, 0xc6, 0x33, 0xfd, 0x93, 0xa8, 0x47, 0xb7, 0xad, 0x3a, 0xca, 0x05, 0xe3, 0x16, 0x37, 0xb8,
+	0x10, 0x45, 0x95, 0x6a, 0x4b, 0xe5, 0x0d, 0x4a, 0xa9, 0x14, 0xd1, 0x74, 0x61, 0xb5, 0x20, 0xb1,
+	0xc2, 0xb5, 0xa7, 0x8e, 0x95, 0x78, 0x26, 0x78, 0x26, 0x4d, 0xba, 0x44, 0x42, 0x62, 0x01, 0x0b,
+	0x24, 0x9e, 0x82, 0x37, 0xe9, 0xb2, 0x4b, 0x60, 0x51, 0xa1, 0xf6, 0x45, 0xd0, 0xd8, 0x89, 0x13,
+	0xbb, 0x4e, 0xc9, 0x2e, 0xac, 0x92, 0x39, 0xdf, 0xe7, 0x73, 0x7e, 0x33, 0x9e, 0x39, 0x63, 0x50,
+	0x48, 0xfb, 0x82, 0x9b, 0x0e, 0x0b, 0x02, 0x5f, 0x04, 0x84, 0x0a, 0x53, 0xf4, 0x8d, 0x4e, 0xc8,
+	0x04, 0xc3, 0xab, 0x52, 0x31, 0x46, 0x8a, 0x5a, 0xf6, 0x98, 0xc7, 0x22, 0xcd, 0x94, 0xff, 0x62,
+	0x9b, 0xfe, 0x0d, 0xc1, 0xa3, 0x06, 0xf7, 0x5e, 0x44, 0xbe, 0x13, 0xea, 0xb4, 0x6d, 0x3f, 0x20,
+	0xae, 0x45, 0x7a, 0x76, 0xe8, 0x72, 0xac, 0x40, 0xc9, 0x09, 0x89, 0x2d, 0x58, 0xa8, 0xa0, 0x0a,
+	0xaa, 0x2d, 0x59, 0xc3, 0x21, 0x3e, 0x80, 0xa2, 0x1d, 0xb0, 0x2e, 0x15, 0xca, 0x9c, 0x14, 0xf6,
+	0x8c, 0xcb, 0xeb, 0xcd, 0xc2, 0xaf, 0xeb, 0xcd, 0xaa, 0xe7, 0x8b, 0x66, 0xf7, 0x54, 0x16, 0x36,
+	0x1d, 0xc6, 0x03, 0xc6, 0x07, 0x3f, 0x3b, 0xdc, 0x6d, 0x99, 0xe2, 0xa2, 0x43, 0xb8, 0x51, 0xa7,
+	0xc2, 0x1a, 0x3c, 0x8d, 0xcb, 0xb0, 0xe8, 0x12, 0xca, 0x02, 0x65, 0x3e, 0xca, 0x1f, 0x0f, 0xf4,
+	0x2d, 0x78, 0x32, 0x11, 0xca, 0x22, 0xbc, 0xc3, 0x28, 0x27, 0xfa, 0x67, 0x04, 0x6b, 0x0d, 0xee,
+	0x9d, 0xd0, 0x78, 0x92, 0xc7, 0xac, 0x45, 0xe8, 0xec, 0x90, 0xd7, 0xa3, 0x75, 0x4c, 0xc3, 0x64,
+	0x51, 0xdf, 0xf8, 0xa2, 0xe9, 0x86, 0x76, 0xef, 0x9f, 0x40, 0x4d, 0xc3, 0x24, 0xa8, 0xdf, 0x11,
+	0xfc, 0x9f, 0xac, 0xfd, 0xa1, 0xff, 0xbe, 0xeb, 0xbb, 0xb3, 0xc5, 0x95, 0x75, 0x03, 0x9f, 0x1e,
+	0x32, 0xa7, 0xa5, 0x2c, 0x54, 0x50, 0x6d, 0xc1, 0x1a, 0x0e, 0xf5, 0x4d, 0x78, 0x9c, 0x8b, 0x9a,
+	0x4c, 0xe6, 0x03, 0x82, 0x52, 0x83, 0x7b, 0xaf, 0x09, 0x17, 0x33, 0x5b, 0xed, 0x35, 0x58, 0x1d,
+	0x20, 0x24, 0x58, 0x9f, 0x10, 0x2c, 0x4b, 0x70, 0x9b, 0x3a, 0xa4, 0x3d, 0x53, 0xb8, 0x87, 0xf1,
+	0xcb, 0x4e, 0x40, 0x12, 0xc4, 0x8f, 0x08, 0x60, 0x80, 0x7d, 0xc4, 0x7a, 0x33, 0xe3, 0x2b, 0x03,
+	0x1e, 0x51, 0x24, 0x70, 0x5f, 0xe6, 0xa0, 0x2c, 0x0f, 0x5b, 0xc7, 0xb5, 0x05, 0x91, 0xa2, 0x4f,
+	0xbd, 0x3a, 0x3d, 0x63, 0x78, 0x03, 0x96, 0xec, 0xae, 0x68, 0xb2, 0xd0, 0x17, 0x17, 0x03, 0xd0,
+	0x51, 0x40, 0xaa, 0xa7, 0x36, 0x27, 0xfb, 0x51, 0x99, 0xb9, 0x58, 0x4d, 0x02, 0x58, 0x87, 0xff,
+	0xce, 0xe3, 0x54, 0xfb, 0x63, 0x1c, 0xa9, 0x18, 0xae, 0xc1, 0x2a, 0xe9, 0x30, 0xa7, 0x59, 0x77,
+	0x09, 0x15, 0xfe, 0x99, 0x4f, 0xc2, 0x68, 0x4b, 0x2e, 0x59, 0xd9, 0xb0, 0xac, 0x45, 0xbb, 0xc1,
+	0x4b, 0x19, 0xe5, 0xca, 0x62, 0x05, 0xd5, 0xe6, 0xad, 0x51, 0x00, 0x3f, 0x85, 0xe5, 0xf3, 0x78,
+	0x4e, 0x07, 0xb6, 0x23, 0x17, 0xb5, 0x18, 0x39, 0xd2, 0x41, 0x5c, 0x85, 0x15, 0xda, 0x0d, 0x1a,
+	0x76, 0x7f, 0x30, 0x45, 0xae, 0x94, 0x22, 0x5b, 0x26, 0xaa, 0x6b, 0xb0, 0x91, 0xb7, 0x1a, 0xd9,
+	0xed, 0x26, 0xa5, 0xf8, 0x94, 0xcc, 0x78, 0xbb, 0x8d, 0x40, 0x86, 0x88, 0xbb, 0x3f, 0x8b, 0x30,
+	0xdf, 0xe0, 0x1e, 0x6e, 0x03, 0xce, 0xe9, 0x3c, 0x55, 0x23, 0x73, 0x99, 0x19, 0xb9, 0xc7, 0x5e,
+	0x35, 0xa6, 0xf3, 0x0d, 0xab, 0xe2, 0x3e, 0x3c, 0x98, 0x70, 0xf1, 0x6d, 0x4f, 0xce, 0x94, 0xf5,
+	0xaa, 0xbb, 0xd3, 0x7b, 0x93, 0xca, 0xef, 0x60, 0x25, 0x73, 0x6f, 0xe9, 0x79, 0x59, 0xd2, 0x1e,
+	0x75, 0xfb, 0xef, 0x9e, 0xf1, 0x0a, 0x99, 0xeb, 0x26, 0xb7, 0x42, 0xda, 0x93, 0x5f, 0x21, 0xff,
+	0xa6, 0xc0, 0x7b, 0xb0, 0x10, 0xf7, 0xae, 0xbc, 0x67, 0xa4, 0xa2, 0x56, 0x26, 0x29, 0x49, 0x8e,
+	0x57, 0x50, 0x1a, 0xb6, 0x98, 0xf5, 0x49, 0xe6, 0x23, 0xd6, 0x53, 0xb7, 0xee, 0x11, 0x93, 0x64,
+	0xc7, 0x00, 0x63, 0x7b, 0x5c, 0x9b, 0xf4, 0x48, 0xac, 0xab, 0xd5, 0xfb, 0xf5, 0xf1, 0xac, 0x63,
+	0x8d, 0x3a, 0x37, 0xeb, 0x48, 0xcf, 0xcf, 0x7a, 0xb7, 0xbf, 0x62, 0x1f, 0xd6, 0xee, 0xb6, 0xaf,
+	0x67, 0xb9, 0xef, 0x37, 0x6b, 0x53, 0x77, 0xa6, 0xb2, 0x0d, 0x4b, 0xed, 0xd5, 0x2f, 0x6f, 0x34,
+	0x74, 0x75, 0xa3, 0xa1, 0xdf, 0x37, 0x1a, 0xfa, 0x7a, 0xab, 0x15, 0xae, 0x6e, 0xb5, 0xc2, 0x8f,
+	0x5b, 0xad, 0xf0, 0xd6, 0x1c, 0x3b, 0xd4, 0x32, 0xe5, 0x0e, 0x25, 0xa2, 0xc7, 0xc2, 0x56, 0x34,
+	0x30, 0xfb, 0xa9, 0xef, 0x4a, 0x79, 0xc2, 0x4f, 0x8b, 0xd1, 0x47, 0xe3, 0xf3, 0x3f, 0x01, 0x00,
+	0x00, 0xff, 0xff, 0x7d, 0x0e, 0xde, 0x91, 0x77, 0x0a, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -950,15 +960,26 @@ const _ = grpc.SupportPackageIsVersion4
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type MsgClient interface {
-	CommitTokens(ctx context.Context, in *MsgCommitTokens, opts ...grpc.CallOption) (*MsgCommitTokensResponse, error)
-	UncommitTokens(ctx context.Context, in *MsgUncommitTokens, opts ...grpc.CallOption) (*MsgUncommitTokensResponse, error)
-	WithdrawTokens(ctx context.Context, in *MsgWithdrawTokens, opts ...grpc.CallOption) (*MsgWithdrawTokensResponse, error)
+	// CommitLiquidTokens commit the tokens from user's balance
 	CommitLiquidTokens(ctx context.Context, in *MsgCommitLiquidTokens, opts ...grpc.CallOption) (*MsgCommitLiquidTokensResponse, error)
+	// CommitUnclaimedRewards commit the tokens on unclaimed store to committed
+	CommitUnclaimedRewards(ctx context.Context, in *MsgCommitUnclaimedRewards, opts ...grpc.CallOption) (*MsgCommitUnclaimedRewardsResponse, error)
+	// UncommitTokens uncommits the tokens from committed store and make it liquid immediately
+	UncommitTokens(ctx context.Context, in *MsgUncommitTokens, opts ...grpc.CallOption) (*MsgUncommitTokensResponse, error)
+	// WithdrawTokens withdraw first from unclaimed and if it requires more, withdraw from committed store
+	WithdrawTokens(ctx context.Context, in *MsgWithdrawTokens, opts ...grpc.CallOption) (*MsgWithdrawTokensResponse, error)
+	// Vest converts user's commitment to vesting - start with unclaimed rewards and if it's not enough deduct from committed bucket
+	// mainly utilized for Eden
 	Vest(ctx context.Context, in *MsgVest, opts ...grpc.CallOption) (*MsgVestResponse, error)
-	CancelVest(ctx context.Context, in *MsgCancelVest, opts ...grpc.CallOption) (*MsgCancelVestResponse, error)
+	// VestNow provides functionality to get the token immediately but lower amount than original
+	// e.g. user can burn 1000 ueden and get 800 uelys when the ratio is 80%
 	VestNow(ctx context.Context, in *MsgVestNow, opts ...grpc.CallOption) (*MsgVestNowResponse, error)
-	UpdateVestingInfo(ctx context.Context, in *MsgUpdateVestingInfo, opts ...grpc.CallOption) (*MsgUpdateVestingInfoResponse, error)
+	// VestLiquid converts user's balance to vesting to be utilized for normal tokens vesting like ATOM vesting
 	VestLiquid(ctx context.Context, in *MsgVestLiquid, opts ...grpc.CallOption) (*MsgVestLiquidResponse, error)
+	// CancelVest cancel the user's vesting and the user reject to get vested tokens
+	CancelVest(ctx context.Context, in *MsgCancelVest, opts ...grpc.CallOption) (*MsgCancelVestResponse, error)
+	// UpdateVestingInfo add/update specific vesting info by denom on Params
+	UpdateVestingInfo(ctx context.Context, in *MsgUpdateVestingInfo, opts ...grpc.CallOption) (*MsgUpdateVestingInfoResponse, error)
 }
 
 type msgClient struct {
@@ -969,9 +990,18 @@ func NewMsgClient(cc grpc1.ClientConn) MsgClient {
 	return &msgClient{cc}
 }
 
-func (c *msgClient) CommitTokens(ctx context.Context, in *MsgCommitTokens, opts ...grpc.CallOption) (*MsgCommitTokensResponse, error) {
-	out := new(MsgCommitTokensResponse)
-	err := c.cc.Invoke(ctx, "/elys.commitment.Msg/CommitTokens", in, out, opts...)
+func (c *msgClient) CommitLiquidTokens(ctx context.Context, in *MsgCommitLiquidTokens, opts ...grpc.CallOption) (*MsgCommitLiquidTokensResponse, error) {
+	out := new(MsgCommitLiquidTokensResponse)
+	err := c.cc.Invoke(ctx, "/elys.commitment.Msg/CommitLiquidTokens", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) CommitUnclaimedRewards(ctx context.Context, in *MsgCommitUnclaimedRewards, opts ...grpc.CallOption) (*MsgCommitUnclaimedRewardsResponse, error) {
+	out := new(MsgCommitUnclaimedRewardsResponse)
+	err := c.cc.Invoke(ctx, "/elys.commitment.Msg/CommitUnclaimedRewards", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -996,27 +1026,9 @@ func (c *msgClient) WithdrawTokens(ctx context.Context, in *MsgWithdrawTokens, o
 	return out, nil
 }
 
-func (c *msgClient) CommitLiquidTokens(ctx context.Context, in *MsgCommitLiquidTokens, opts ...grpc.CallOption) (*MsgCommitLiquidTokensResponse, error) {
-	out := new(MsgCommitLiquidTokensResponse)
-	err := c.cc.Invoke(ctx, "/elys.commitment.Msg/CommitLiquidTokens", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 func (c *msgClient) Vest(ctx context.Context, in *MsgVest, opts ...grpc.CallOption) (*MsgVestResponse, error) {
 	out := new(MsgVestResponse)
 	err := c.cc.Invoke(ctx, "/elys.commitment.Msg/Vest", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *msgClient) CancelVest(ctx context.Context, in *MsgCancelVest, opts ...grpc.CallOption) (*MsgCancelVestResponse, error) {
-	out := new(MsgCancelVestResponse)
-	err := c.cc.Invoke(ctx, "/elys.commitment.Msg/CancelVest", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1032,15 +1044,6 @@ func (c *msgClient) VestNow(ctx context.Context, in *MsgVestNow, opts ...grpc.Ca
 	return out, nil
 }
 
-func (c *msgClient) UpdateVestingInfo(ctx context.Context, in *MsgUpdateVestingInfo, opts ...grpc.CallOption) (*MsgUpdateVestingInfoResponse, error) {
-	out := new(MsgUpdateVestingInfoResponse)
-	err := c.cc.Invoke(ctx, "/elys.commitment.Msg/UpdateVestingInfo", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 func (c *msgClient) VestLiquid(ctx context.Context, in *MsgVestLiquid, opts ...grpc.CallOption) (*MsgVestLiquidResponse, error) {
 	out := new(MsgVestLiquidResponse)
 	err := c.cc.Invoke(ctx, "/elys.commitment.Msg/VestLiquid", in, out, opts...)
@@ -1050,25 +1053,57 @@ func (c *msgClient) VestLiquid(ctx context.Context, in *MsgVestLiquid, opts ...g
 	return out, nil
 }
 
+func (c *msgClient) CancelVest(ctx context.Context, in *MsgCancelVest, opts ...grpc.CallOption) (*MsgCancelVestResponse, error) {
+	out := new(MsgCancelVestResponse)
+	err := c.cc.Invoke(ctx, "/elys.commitment.Msg/CancelVest", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) UpdateVestingInfo(ctx context.Context, in *MsgUpdateVestingInfo, opts ...grpc.CallOption) (*MsgUpdateVestingInfoResponse, error) {
+	out := new(MsgUpdateVestingInfoResponse)
+	err := c.cc.Invoke(ctx, "/elys.commitment.Msg/UpdateVestingInfo", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // MsgServer is the server API for Msg service.
 type MsgServer interface {
-	CommitTokens(context.Context, *MsgCommitTokens) (*MsgCommitTokensResponse, error)
-	UncommitTokens(context.Context, *MsgUncommitTokens) (*MsgUncommitTokensResponse, error)
-	WithdrawTokens(context.Context, *MsgWithdrawTokens) (*MsgWithdrawTokensResponse, error)
+	// CommitLiquidTokens commit the tokens from user's balance
 	CommitLiquidTokens(context.Context, *MsgCommitLiquidTokens) (*MsgCommitLiquidTokensResponse, error)
+	// CommitUnclaimedRewards commit the tokens on unclaimed store to committed
+	CommitUnclaimedRewards(context.Context, *MsgCommitUnclaimedRewards) (*MsgCommitUnclaimedRewardsResponse, error)
+	// UncommitTokens uncommits the tokens from committed store and make it liquid immediately
+	UncommitTokens(context.Context, *MsgUncommitTokens) (*MsgUncommitTokensResponse, error)
+	// WithdrawTokens withdraw first from unclaimed and if it requires more, withdraw from committed store
+	WithdrawTokens(context.Context, *MsgWithdrawTokens) (*MsgWithdrawTokensResponse, error)
+	// Vest converts user's commitment to vesting - start with unclaimed rewards and if it's not enough deduct from committed bucket
+	// mainly utilized for Eden
 	Vest(context.Context, *MsgVest) (*MsgVestResponse, error)
-	CancelVest(context.Context, *MsgCancelVest) (*MsgCancelVestResponse, error)
+	// VestNow provides functionality to get the token immediately but lower amount than original
+	// e.g. user can burn 1000 ueden and get 800 uelys when the ratio is 80%
 	VestNow(context.Context, *MsgVestNow) (*MsgVestNowResponse, error)
-	UpdateVestingInfo(context.Context, *MsgUpdateVestingInfo) (*MsgUpdateVestingInfoResponse, error)
+	// VestLiquid converts user's balance to vesting to be utilized for normal tokens vesting like ATOM vesting
 	VestLiquid(context.Context, *MsgVestLiquid) (*MsgVestLiquidResponse, error)
+	// CancelVest cancel the user's vesting and the user reject to get vested tokens
+	CancelVest(context.Context, *MsgCancelVest) (*MsgCancelVestResponse, error)
+	// UpdateVestingInfo add/update specific vesting info by denom on Params
+	UpdateVestingInfo(context.Context, *MsgUpdateVestingInfo) (*MsgUpdateVestingInfoResponse, error)
 }
 
 // UnimplementedMsgServer can be embedded to have forward compatible implementations.
 type UnimplementedMsgServer struct {
 }
 
-func (*UnimplementedMsgServer) CommitTokens(ctx context.Context, req *MsgCommitTokens) (*MsgCommitTokensResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CommitTokens not implemented")
+func (*UnimplementedMsgServer) CommitLiquidTokens(ctx context.Context, req *MsgCommitLiquidTokens) (*MsgCommitLiquidTokensResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CommitLiquidTokens not implemented")
+}
+func (*UnimplementedMsgServer) CommitUnclaimedRewards(ctx context.Context, req *MsgCommitUnclaimedRewards) (*MsgCommitUnclaimedRewardsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CommitUnclaimedRewards not implemented")
 }
 func (*UnimplementedMsgServer) UncommitTokens(ctx context.Context, req *MsgUncommitTokens) (*MsgUncommitTokensResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UncommitTokens not implemented")
@@ -1076,43 +1111,58 @@ func (*UnimplementedMsgServer) UncommitTokens(ctx context.Context, req *MsgUncom
 func (*UnimplementedMsgServer) WithdrawTokens(ctx context.Context, req *MsgWithdrawTokens) (*MsgWithdrawTokensResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method WithdrawTokens not implemented")
 }
-func (*UnimplementedMsgServer) CommitLiquidTokens(ctx context.Context, req *MsgCommitLiquidTokens) (*MsgCommitLiquidTokensResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CommitLiquidTokens not implemented")
-}
 func (*UnimplementedMsgServer) Vest(ctx context.Context, req *MsgVest) (*MsgVestResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Vest not implemented")
-}
-func (*UnimplementedMsgServer) CancelVest(ctx context.Context, req *MsgCancelVest) (*MsgCancelVestResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CancelVest not implemented")
 }
 func (*UnimplementedMsgServer) VestNow(ctx context.Context, req *MsgVestNow) (*MsgVestNowResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method VestNow not implemented")
 }
-func (*UnimplementedMsgServer) UpdateVestingInfo(ctx context.Context, req *MsgUpdateVestingInfo) (*MsgUpdateVestingInfoResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UpdateVestingInfo not implemented")
-}
 func (*UnimplementedMsgServer) VestLiquid(ctx context.Context, req *MsgVestLiquid) (*MsgVestLiquidResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method VestLiquid not implemented")
+}
+func (*UnimplementedMsgServer) CancelVest(ctx context.Context, req *MsgCancelVest) (*MsgCancelVestResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CancelVest not implemented")
+}
+func (*UnimplementedMsgServer) UpdateVestingInfo(ctx context.Context, req *MsgUpdateVestingInfo) (*MsgUpdateVestingInfoResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateVestingInfo not implemented")
 }
 
 func RegisterMsgServer(s grpc1.Server, srv MsgServer) {
 	s.RegisterService(&_Msg_serviceDesc, srv)
 }
 
-func _Msg_CommitTokens_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgCommitTokens)
+func _Msg_CommitLiquidTokens_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgCommitLiquidTokens)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MsgServer).CommitTokens(ctx, in)
+		return srv.(MsgServer).CommitLiquidTokens(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/elys.commitment.Msg/CommitTokens",
+		FullMethod: "/elys.commitment.Msg/CommitLiquidTokens",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).CommitTokens(ctx, req.(*MsgCommitTokens))
+		return srv.(MsgServer).CommitLiquidTokens(ctx, req.(*MsgCommitLiquidTokens))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_CommitUnclaimedRewards_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgCommitUnclaimedRewards)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).CommitUnclaimedRewards(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/elys.commitment.Msg/CommitUnclaimedRewards",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).CommitUnclaimedRewards(ctx, req.(*MsgCommitUnclaimedRewards))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1153,24 +1203,6 @@ func _Msg_WithdrawTokens_Handler(srv interface{}, ctx context.Context, dec func(
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Msg_CommitLiquidTokens_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgCommitLiquidTokens)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(MsgServer).CommitLiquidTokens(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/elys.commitment.Msg/CommitLiquidTokens",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).CommitLiquidTokens(ctx, req.(*MsgCommitLiquidTokens))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 func _Msg_Vest_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(MsgVest)
 	if err := dec(in); err != nil {
@@ -1185,24 +1217,6 @@ func _Msg_Vest_Handler(srv interface{}, ctx context.Context, dec func(interface{
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(MsgServer).Vest(ctx, req.(*MsgVest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Msg_CancelVest_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgCancelVest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(MsgServer).CancelVest(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/elys.commitment.Msg/CancelVest",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).CancelVest(ctx, req.(*MsgCancelVest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1225,24 +1239,6 @@ func _Msg_VestNow_Handler(srv interface{}, ctx context.Context, dec func(interfa
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Msg_UpdateVestingInfo_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgUpdateVestingInfo)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(MsgServer).UpdateVestingInfo(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/elys.commitment.Msg/UpdateVestingInfo",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).UpdateVestingInfo(ctx, req.(*MsgUpdateVestingInfo))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 func _Msg_VestLiquid_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(MsgVestLiquid)
 	if err := dec(in); err != nil {
@@ -1261,13 +1257,53 @@ func _Msg_VestLiquid_Handler(srv interface{}, ctx context.Context, dec func(inte
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Msg_CancelVest_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgCancelVest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).CancelVest(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/elys.commitment.Msg/CancelVest",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).CancelVest(ctx, req.(*MsgCancelVest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_UpdateVestingInfo_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgUpdateVestingInfo)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).UpdateVestingInfo(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/elys.commitment.Msg/UpdateVestingInfo",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).UpdateVestingInfo(ctx, req.(*MsgUpdateVestingInfo))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var _Msg_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "elys.commitment.Msg",
 	HandlerType: (*MsgServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "CommitTokens",
-			Handler:    _Msg_CommitTokens_Handler,
+			MethodName: "CommitLiquidTokens",
+			Handler:    _Msg_CommitLiquidTokens_Handler,
+		},
+		{
+			MethodName: "CommitUnclaimedRewards",
+			Handler:    _Msg_CommitUnclaimedRewards_Handler,
 		},
 		{
 			MethodName: "UncommitTokens",
@@ -1278,35 +1314,31 @@ var _Msg_serviceDesc = grpc.ServiceDesc{
 			Handler:    _Msg_WithdrawTokens_Handler,
 		},
 		{
-			MethodName: "CommitLiquidTokens",
-			Handler:    _Msg_CommitLiquidTokens_Handler,
-		},
-		{
 			MethodName: "Vest",
 			Handler:    _Msg_Vest_Handler,
-		},
-		{
-			MethodName: "CancelVest",
-			Handler:    _Msg_CancelVest_Handler,
 		},
 		{
 			MethodName: "VestNow",
 			Handler:    _Msg_VestNow_Handler,
 		},
 		{
-			MethodName: "UpdateVestingInfo",
-			Handler:    _Msg_UpdateVestingInfo_Handler,
-		},
-		{
 			MethodName: "VestLiquid",
 			Handler:    _Msg_VestLiquid_Handler,
+		},
+		{
+			MethodName: "CancelVest",
+			Handler:    _Msg_CancelVest_Handler,
+		},
+		{
+			MethodName: "UpdateVestingInfo",
+			Handler:    _Msg_UpdateVestingInfo_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
 	Metadata: "elys/commitment/tx.proto",
 }
 
-func (m *MsgCommitTokens) Marshal() (dAtA []byte, err error) {
+func (m *MsgCommitUnclaimedRewards) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -1316,12 +1348,12 @@ func (m *MsgCommitTokens) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgCommitTokens) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgCommitUnclaimedRewards) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgCommitTokens) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgCommitUnclaimedRewards) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -1353,7 +1385,7 @@ func (m *MsgCommitTokens) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *MsgCommitTokensResponse) Marshal() (dAtA []byte, err error) {
+func (m *MsgCommitUnclaimedRewardsResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -1363,12 +1395,12 @@ func (m *MsgCommitTokensResponse) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgCommitTokensResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgCommitUnclaimedRewardsResponse) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgCommitTokensResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgCommitUnclaimedRewardsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -1536,6 +1568,11 @@ func (m *MsgCommitLiquidTokens) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
+	if m.MinLock != 0 {
+		i = encodeVarintTx(dAtA, i, uint64(m.MinLock))
+		i--
+		dAtA[i] = 0x20
+	}
 	if len(m.Denom) > 0 {
 		i -= len(m.Denom)
 		copy(dAtA[i:], m.Denom)
@@ -1966,7 +2003,7 @@ func encodeVarintTx(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
-func (m *MsgCommitTokens) Size() (n int) {
+func (m *MsgCommitUnclaimedRewards) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -1985,7 +2022,7 @@ func (m *MsgCommitTokens) Size() (n int) {
 	return n
 }
 
-func (m *MsgCommitTokensResponse) Size() (n int) {
+func (m *MsgCommitUnclaimedRewardsResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -2065,6 +2102,9 @@ func (m *MsgCommitLiquidTokens) Size() (n int) {
 	l = len(m.Denom)
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
+	}
+	if m.MinLock != 0 {
+		n += 1 + sovTx(uint64(m.MinLock))
 	}
 	return n
 }
@@ -2239,7 +2279,7 @@ func sovTx(x uint64) (n int) {
 func sozTx(x uint64) (n int) {
 	return sovTx(uint64((x << 1) ^ uint64((int64(x) >> 63))))
 }
-func (m *MsgCommitTokens) Unmarshal(dAtA []byte) error {
+func (m *MsgCommitUnclaimedRewards) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -2262,10 +2302,10 @@ func (m *MsgCommitTokens) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgCommitTokens: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgCommitUnclaimedRewards: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgCommitTokens: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgCommitUnclaimedRewards: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -2387,7 +2427,7 @@ func (m *MsgCommitTokens) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *MsgCommitTokensResponse) Unmarshal(dAtA []byte) error {
+func (m *MsgCommitUnclaimedRewardsResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -2410,10 +2450,10 @@ func (m *MsgCommitTokensResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgCommitTokensResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgCommitUnclaimedRewardsResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgCommitTokensResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgCommitUnclaimedRewardsResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		default:
@@ -2960,6 +3000,25 @@ func (m *MsgCommitLiquidTokens) Unmarshal(dAtA []byte) error {
 			}
 			m.Denom = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
+		case 4:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field MinLock", wireType)
+			}
+			m.MinLock = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.MinLock |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
 		default:
 			iNdEx = preIndex
 			skippy, err := skipTx(dAtA[iNdEx:])

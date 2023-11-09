@@ -9,7 +9,8 @@ import (
 	"github.com/elys-network/elys/x/commitment/types"
 )
 
-func (k msgServer) CommitTokens(goCtx context.Context, msg *types.MsgCommitTokens) (*types.MsgCommitTokensResponse, error) {
+// CommitUnclaimedRewards commit the tokens on unclaimed store to committed
+func (k msgServer) CommitUnclaimedRewards(goCtx context.Context, msg *types.MsgCommitUnclaimedRewards) (*types.MsgCommitUnclaimedRewardsResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	assetProfile, found := k.apKeeper.GetEntry(ctx, msg.Denom)
@@ -27,18 +28,18 @@ func (k msgServer) CommitTokens(goCtx context.Context, msg *types.MsgCommitToken
 		return nil, sdkerrors.Wrapf(types.ErrCommitmentsNotFound, "creator: %s", msg.Creator)
 	}
 
-	// Check if the uncommitted tokens have enough amount to be committed
-	uncommittedToken, found := commitments.GetUncommittedTokensForDenom(msg.Denom)
+	// Check if the unclaimed tokens have enough amount to be committed
+	rewardUnclaimed, found := commitments.GetRewardsUnclaimedForDenom(msg.Denom)
 	if !found {
-		return nil, sdkerrors.Wrapf(types.ErrInsufficientUncommittedTokens, "creator: %s", msg.Creator)
+		return nil, sdkerrors.Wrapf(types.ErrInsufficientRewardsUnclaimed, "creator: %s", msg.Creator)
 	}
 
-	if uncommittedToken.Amount.LT(msg.Amount) {
-		return nil, sdkerrors.Wrapf(types.ErrInsufficientUncommittedTokens, "creator: %s, denom: %s", msg.Creator, msg.Denom)
+	if rewardUnclaimed.Amount.LT(msg.Amount) {
+		return nil, sdkerrors.Wrapf(types.ErrInsufficientRewardsUnclaimed, "creator: %s, denom: %s", msg.Creator, msg.Denom)
 	}
 
-	// Update the uncommitted tokens amount
-	uncommittedToken.Amount = uncommittedToken.Amount.Sub(msg.Amount)
+	// Update the unclaimed tokens amount
+	rewardUnclaimed.Amount = rewardUnclaimed.Amount.Sub(msg.Amount)
 
 	// Update the committed tokens amount
 	committedToken, found := commitments.GetCommittedTokensForDenom(msg.Denom)
@@ -69,5 +70,5 @@ func (k msgServer) CommitTokens(goCtx context.Context, msg *types.MsgCommitToken
 		),
 	)
 
-	return &types.MsgCommitTokensResponse{}, nil
+	return &types.MsgCommitUnclaimedRewardsResponse{}, nil
 }

@@ -68,7 +68,7 @@ func TestLiquidVestWithExceed(t *testing.T) {
 				Amount: sdk.NewInt(50),
 			},
 		},
-		UncommittedTokens: []*types.UncommittedTokens{
+		RewardsUnclaimed: []*types.RewardsUnclaimed{
 			{
 				Denom:  ptypes.Eden,
 				Amount: sdk.NewInt(150),
@@ -89,9 +89,9 @@ func TestLiquidVestWithExceed(t *testing.T) {
 	require.True(t, found, "commitments not found")
 	require.Len(t, newCommitments.VestingTokens, 1, "vesting tokens were not added")
 
-	// Check if the uncommitted tokens were updated correctly
-	uncommittedToken := newCommitments.GetUncommittedAmountForDenom(vestMsg.Denom)
-	require.Equal(t, sdk.NewInt(150), uncommittedToken, "uncommitted tokens were not updated correctly")
+	// Check if the unclaimed tokens were updated correctly
+	rewardUnclaimed := newCommitments.GetUnclaimedAmountForDenom(vestMsg.Denom)
+	require.Equal(t, sdk.NewInt(150), rewardUnclaimed, "unclaimed tokens were not updated correctly")
 
 	// Check if the committed tokens were updated correctly
 	committedToken := newCommitments.GetCommittedAmountForDenom(vestMsg.Denom)
