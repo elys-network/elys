@@ -129,9 +129,6 @@ import (
 	epochsmodule "github.com/elys-network/elys/x/epochs"
 	epochsmodulekeeper "github.com/elys-network/elys/x/epochs/keeper"
 	epochsmoduletypes "github.com/elys-network/elys/x/epochs/types"
-	liquidityprovidermodule "github.com/elys-network/elys/x/liquidityprovider"
-	liquidityprovidermodulekeeper "github.com/elys-network/elys/x/liquidityprovider/keeper"
-	liquidityprovidermoduletypes "github.com/elys-network/elys/x/liquidityprovider/types"
 	oraclemodule "github.com/elys-network/elys/x/oracle"
 	oraclekeeper "github.com/elys-network/elys/x/oracle/keeper"
 	oracletypes "github.com/elys-network/elys/x/oracle/types"
@@ -275,7 +272,6 @@ var (
 		wasmmodule.AppModuleBasic{},
 		epochsmodule.AppModuleBasic{},
 		assetprofilemodule.AppModuleBasic{},
-		liquidityprovidermodule.AppModuleBasic{},
 		oraclemodule.AppModuleBasic{},
 		commitmentmodule.AppModuleBasic{},
 		tokenomicsmodule.AppModuleBasic{},
@@ -373,21 +369,20 @@ type ElysApp struct {
 	ScopedICAHostKeeper  capabilitykeeper.ScopedKeeper
 	ScopedWasmKeeper     capabilitykeeper.ScopedKeeper
 
-	EpochsKeeper            epochsmodulekeeper.Keeper
-	AssetprofileKeeper      assetprofilemodulekeeper.Keeper
-	LiquidityproviderKeeper liquidityprovidermodulekeeper.Keeper
-	ScopedOracleKeeper      capabilitykeeper.ScopedKeeper
-	OracleKeeper            oraclekeeper.Keeper
-	CommitmentKeeper        commitmentmodulekeeper.Keeper
-	TokenomicsKeeper        tokenomicsmodulekeeper.Keeper
-	IncentiveKeeper         incentivemodulekeeper.Keeper
-	BurnerKeeper            burnermodulekeeper.Keeper
-	AmmKeeper               ammmodulekeeper.Keeper
-	ParameterKeeper         parametermodulekeeper.Keeper
-	MarginKeeper            marginmodulekeeper.Keeper
-	TransferhookKeeper      transferhookkeeper.Keeper
-	ContractKeeper          *wasmmodulekeeper.PermissionedKeeper
-	ClockKeeper             clockmodulekeeper.Keeper
+	EpochsKeeper       epochsmodulekeeper.Keeper
+	AssetprofileKeeper assetprofilemodulekeeper.Keeper
+	ScopedOracleKeeper capabilitykeeper.ScopedKeeper
+	OracleKeeper       oraclekeeper.Keeper
+	CommitmentKeeper   commitmentmodulekeeper.Keeper
+	TokenomicsKeeper   tokenomicsmodulekeeper.Keeper
+	IncentiveKeeper    incentivemodulekeeper.Keeper
+	BurnerKeeper       burnermodulekeeper.Keeper
+	AmmKeeper          ammmodulekeeper.Keeper
+	ParameterKeeper    parametermodulekeeper.Keeper
+	MarginKeeper       marginmodulekeeper.Keeper
+	TransferhookKeeper transferhookkeeper.Keeper
+	ContractKeeper     *wasmmodulekeeper.PermissionedKeeper
+	ClockKeeper        clockmodulekeeper.Keeper
 
 	AccountedPoolKeeper accountedpoolmodulekeeper.Keeper
 
@@ -456,7 +451,6 @@ func NewElysApp(
 		consensusparamtypes.StoreKey,
 		epochsmoduletypes.StoreKey,
 		assetprofilemoduletypes.StoreKey,
-		liquidityprovidermoduletypes.StoreKey,
 		oracletypes.StoreKey,
 		commitmentmoduletypes.StoreKey,
 		tokenomicsmoduletypes.StoreKey,
@@ -767,14 +761,6 @@ func NewElysApp(
 
 	commitmentModule := commitmentmodule.NewAppModule(appCodec, app.CommitmentKeeper, app.AccountKeeper, app.BankKeeper)
 
-	app.LiquidityproviderKeeper = *liquidityprovidermodulekeeper.NewKeeper(
-		appCodec,
-		keys[liquidityprovidermoduletypes.StoreKey],
-		keys[liquidityprovidermoduletypes.MemStoreKey],
-		app.GetSubspace(liquidityprovidermoduletypes.ModuleName),
-	)
-	liquidityproviderModule := liquidityprovidermodule.NewAppModule(appCodec, app.LiquidityproviderKeeper, app.AccountKeeper, app.BankKeeper)
-
 	app.TokenomicsKeeper = *tokenomicsmodulekeeper.NewKeeper(
 		appCodec,
 		keys[tokenomicsmoduletypes.StoreKey],
@@ -830,7 +816,6 @@ func NewElysApp(
 			&app.EpochsKeeper,
 			&app.IncentiveKeeper,
 			&app.LeveragelpKeeper,
-			&app.LiquidityproviderKeeper,
 			&app.MarginKeeper,
 			&app.OracleKeeper,
 			&app.ParameterKeeper,
@@ -1060,7 +1045,6 @@ func NewElysApp(
 		icaModule,
 		epochsModule,
 		assetprofileModule,
-		liquidityproviderModule,
 		oracleModule,
 		commitmentModule,
 		tokenomicsModule,
@@ -1107,7 +1091,6 @@ func NewElysApp(
 		vestingtypes.ModuleName,
 		consensusparamtypes.ModuleName,
 		assetprofilemoduletypes.ModuleName,
-		liquidityprovidermoduletypes.ModuleName,
 		oracletypes.ModuleName,
 		commitmentmoduletypes.ModuleName,
 		tokenomicsmoduletypes.ModuleName,
@@ -1149,7 +1132,6 @@ func NewElysApp(
 		vestingtypes.ModuleName,
 		consensusparamtypes.ModuleName,
 		assetprofilemoduletypes.ModuleName,
-		liquidityprovidermoduletypes.ModuleName,
 		oracletypes.ModuleName,
 		commitmentmoduletypes.ModuleName,
 		tokenomicsmoduletypes.ModuleName,
@@ -1195,7 +1177,6 @@ func NewElysApp(
 		consensusparamtypes.ModuleName,
 		epochsmoduletypes.ModuleName,
 		assetprofilemoduletypes.ModuleName,
-		liquidityprovidermoduletypes.ModuleName,
 		oracletypes.ModuleName,
 		commitmentmoduletypes.ModuleName,
 		tokenomicsmoduletypes.ModuleName,
@@ -1495,7 +1476,6 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(icacontrollertypes.SubModuleName)
 	paramsKeeper.Subspace(icahosttypes.SubModuleName)
 	paramsKeeper.Subspace(assetprofilemoduletypes.ModuleName)
-	paramsKeeper.Subspace(liquidityprovidermoduletypes.ModuleName)
 	paramsKeeper.Subspace(oracletypes.ModuleName)
 	paramsKeeper.Subspace(commitmentmoduletypes.ModuleName)
 	paramsKeeper.Subspace(tokenomicsmoduletypes.ModuleName)

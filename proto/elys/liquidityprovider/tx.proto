@@ -1,7 +1,0 @@
-syntax = "proto3";
-package elys.liquidityprovider;
-
-option go_package = "github.com/elys-network/elys/x/liquidityprovider/types";
-
-// Msg defines the Msg service.
-service Msg {}

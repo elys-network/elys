@@ -18,7 +18,6 @@ import (
 	incentiveclientwasm "github.com/elys-network/elys/x/incentive/client/wasm"
 	incentivekeeper "github.com/elys-network/elys/x/incentive/keeper"
 	leveragelpkeeper "github.com/elys-network/elys/x/leveragelp/keeper"
-	liquidityproviderkeeper "github.com/elys-network/elys/x/liquidityprovider/keeper"
 	marginclientwasm "github.com/elys-network/elys/x/margin/client/wasm"
 	marginkeeper "github.com/elys-network/elys/x/margin/keeper"
 	oracleclientwasm "github.com/elys-network/elys/x/oracle/client/wasm"
@@ -40,7 +39,6 @@ func RegisterCustomPlugins(
 	epochs *epochskeeper.Keeper,
 	incentive *incentivekeeper.Keeper,
 	leveragelp *leveragelpkeeper.Keeper,
-	liquidityprovider *liquidityproviderkeeper.Keeper,
 	margin *marginkeeper.Keeper,
 	oracle *oraclekeeper.Keeper,
 	parameter *parameterkeeper.Keeper,
