@@ -7,12 +7,14 @@ import (
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
 	"github.com/elys-network/elys/wasmbindings/types"
 	accountedpoolkeeper "github.com/elys-network/elys/x/accountedpool/keeper"
-	ammclientwasm "github.com/elys-network/elys/x/amm/client/wasm"
+	ammclientwasmmessenger "github.com/elys-network/elys/x/amm/client/wasm/messenger"
+	ammclientwasmquerier "github.com/elys-network/elys/x/amm/client/wasm/querier"
 	ammkeeper "github.com/elys-network/elys/x/amm/keeper"
 	assetprofilekeeper "github.com/elys-network/elys/x/assetprofile/keeper"
 	burnerkeeper "github.com/elys-network/elys/x/burner/keeper"
 	clockkeeper "github.com/elys-network/elys/x/clock/keeper"
-	commitmentclientwasm "github.com/elys-network/elys/x/commitment/client/wasm"
+	commitmentclientwasmmessenger "github.com/elys-network/elys/x/commitment/client/wasm/messenger"
+	commitmentclientwasmquerier "github.com/elys-network/elys/x/commitment/client/wasm/querier"
 	commitmentkeeper "github.com/elys-network/elys/x/commitment/keeper"
 	epochskeeper "github.com/elys-network/elys/x/epochs/keeper"
 	incentiveclientwasmmessenger "github.com/elys-network/elys/x/incentive/client/wasm/messenger"
@@ -21,7 +23,8 @@ import (
 	leveragelpkeeper "github.com/elys-network/elys/x/leveragelp/keeper"
 	liquidityproviderkeeper "github.com/elys-network/elys/x/liquidityprovider/keeper"
 	marginkeeper "github.com/elys-network/elys/x/margin/keeper"
-	oracleclientwasm "github.com/elys-network/elys/x/oracle/client/wasm"
+	oracleclientwasmmessenger "github.com/elys-network/elys/x/oracle/client/wasm/messenger"
+	oracleclientwasmquerier "github.com/elys-network/elys/x/oracle/client/wasm/querier"
 	oraclekeeper "github.com/elys-network/elys/x/oracle/keeper"
 	parameterkeeper "github.com/elys-network/elys/x/parameter/keeper"
 	stablestakekeeper "github.com/elys-network/elys/x/stablestake/keeper"
@@ -49,14 +52,14 @@ func RegisterCustomPlugins(
 	tokenomics *tokenomicskeeper.Keeper,
 	transferhook *transferhookkeeper.Keeper,
 ) []wasmkeeper.Option {
-	oracleQuerier := oracleclientwasm.NewQuerier(oracle)
-	oracleMessenger := oracleclientwasm.NewMessenger(oracle)
+	oracleQuerier := oracleclientwasmquerier.NewQuerier(oracle)
+	oracleMessenger := oracleclientwasmmessenger.NewMessenger(oracle)
 
-	ammQuerier := ammclientwasm.NewQuerier(amm, bank, commitment)
-	ammMessenger := ammclientwasm.NewMessenger(amm)
+	ammQuerier := ammclientwasmquerier.NewQuerier(amm, bank, commitment)
+	ammMessenger := ammclientwasmmessenger.NewMessenger(amm)
 
-	commitmentQuerier := commitmentclientwasm.NewQuerier(commitment)
-	commitmentMessenger := commitmentclientwasm.NewMessenger(commitment, staking)
+	commitmentQuerier := commitmentclientwasmquerier.NewQuerier(commitment)
+	commitmentMessenger := commitmentclientwasmmessenger.NewMessenger(commitment, staking)
 
 	incentiveQuerier := incentiveclientwasmquerier.NewQuerier(incentive)
 	incentiveMessenger := incentiveclientwasmmessenger.NewMessenger(incentive, staking, commitment, incentive)

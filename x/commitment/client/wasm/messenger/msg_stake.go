@@ -8,14 +8,14 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
-	wasmbindingstypes "github.com/elys-network/elys/wasmbindings/types"
+	"github.com/elys-network/elys/x/commitment/client/wasm/types"
 	commitmentkeeper "github.com/elys-network/elys/x/commitment/keeper"
 	commitmenttypes "github.com/elys-network/elys/x/commitment/types"
 	paramtypes "github.com/elys-network/elys/x/parameter/types"
 )
 
-func (m *Messenger) msgStake(ctx sdk.Context, contractAddr sdk.AccAddress, msgStake *wasmbindingstypes.MsgStake) ([]sdk.Event, [][]byte, error) {
-	var res *wasmbindingstypes.RequestResponse
+func (m *Messenger) msgStake(ctx sdk.Context, contractAddr sdk.AccAddress, msgStake *types.MsgStake) ([]sdk.Event, [][]byte, error) {
+	var res *types.RequestResponse
 	var err error
 	if msgStake.Asset == paramtypes.Elys {
 		res, err = performMsgStakeElys(m.stakingKeeper, ctx, contractAddr, msgStake)
@@ -39,7 +39,7 @@ func (m *Messenger) msgStake(ctx sdk.Context, contractAddr sdk.AccAddress, msgSt
 	return nil, resp, nil
 }
 
-func performMsgStakeElys(f *stakingkeeper.Keeper, ctx sdk.Context, contractAddr sdk.AccAddress, msgStake *wasmbindingstypes.MsgStake) (*wasmbindingstypes.RequestResponse, error) {
+func performMsgStakeElys(f *stakingkeeper.Keeper, ctx sdk.Context, contractAddr sdk.AccAddress, msgStake *types.MsgStake) (*types.RequestResponse, error) {
 	if msgStake == nil {
 		return nil, wasmvmtypes.InvalidRequest{Err: "Invalid staking parameter"}
 	}
@@ -67,7 +67,7 @@ func performMsgStakeElys(f *stakingkeeper.Keeper, ctx sdk.Context, contractAddr 
 		return nil, errorsmod.Wrap(err, "elys stake msg")
 	}
 
-	var resp = &wasmbindingstypes.RequestResponse{
+	var resp = &types.RequestResponse{
 		Code:   paramtypes.RES_OK,
 		Result: "Staking succeed",
 	}
@@ -75,7 +75,7 @@ func performMsgStakeElys(f *stakingkeeper.Keeper, ctx sdk.Context, contractAddr 
 	return resp, nil
 }
 
-func performMsgCommit(f *commitmentkeeper.Keeper, ctx sdk.Context, contractAddr sdk.AccAddress, msgStake *wasmbindingstypes.MsgStake) (*wasmbindingstypes.RequestResponse, error) {
+func performMsgCommit(f *commitmentkeeper.Keeper, ctx sdk.Context, contractAddr sdk.AccAddress, msgStake *types.MsgStake) (*types.RequestResponse, error) {
 	if msgStake == nil {
 		return nil, wasmvmtypes.InvalidRequest{Err: "Invalid staking parameter"}
 	}
@@ -91,7 +91,7 @@ func performMsgCommit(f *commitmentkeeper.Keeper, ctx sdk.Context, contractAddr 
 		return nil, errorsmod.Wrap(err, "commit msg")
 	}
 
-	var resp = &wasmbindingstypes.RequestResponse{
+	var resp = &types.RequestResponse{
 		Code:   paramtypes.RES_OK,
 		Result: "Staking succeed",
 	}

@@ -6,12 +6,12 @@ import (
 	errorsmod "cosmossdk.io/errors"
 	wasmvmtypes "github.com/CosmWasm/wasmvm/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	wasmbindingstypes "github.com/elys-network/elys/wasmbindings/types"
+	"github.com/elys-network/elys/x/amm/client/wasm/types"
 	ammkeeper "github.com/elys-network/elys/x/amm/keeper"
 	ammtype "github.com/elys-network/elys/x/amm/types"
 )
 
-func (m *Messenger) msgSwapExactAmountIn(ctx sdk.Context, contractAddr sdk.AccAddress, msgSwapExactAmountIn *wasmbindingstypes.MsgSwapExactAmountIn) ([]sdk.Event, [][]byte, error) {
+func (m *Messenger) msgSwapExactAmountIn(ctx sdk.Context, contractAddr sdk.AccAddress, msgSwapExactAmountIn *types.MsgSwapExactAmountIn) ([]sdk.Event, [][]byte, error) {
 	res, err := performMsgSwapExactAmountIn(m.keeper, ctx, contractAddr, msgSwapExactAmountIn)
 	if err != nil {
 		return nil, nil, errorsmod.Wrap(err, "perform swap")
@@ -27,7 +27,7 @@ func (m *Messenger) msgSwapExactAmountIn(ctx sdk.Context, contractAddr sdk.AccAd
 	return nil, resp, nil
 }
 
-func performMsgSwapExactAmountIn(f *ammkeeper.Keeper, ctx sdk.Context, contractAddr sdk.AccAddress, msgSwapExactAmountIn *wasmbindingstypes.MsgSwapExactAmountIn) (*wasmbindingstypes.MsgSwapExactAmountInResponse, error) {
+func performMsgSwapExactAmountIn(f *ammkeeper.Keeper, ctx sdk.Context, contractAddr sdk.AccAddress, msgSwapExactAmountIn *types.MsgSwapExactAmountIn) (*types.MsgSwapExactAmountInResponse, error) {
 	if msgSwapExactAmountIn == nil {
 		return nil, wasmvmtypes.InvalidRequest{Err: "swap null swap"}
 	}
@@ -57,7 +57,7 @@ func performMsgSwapExactAmountIn(f *ammkeeper.Keeper, ctx sdk.Context, contractA
 		return nil, errorsmod.Wrap(err, "swap msg")
 	}
 
-	var resp = &wasmbindingstypes.MsgSwapExactAmountInResponse{
+	var resp = &types.MsgSwapExactAmountInResponse{
 		TokenOutAmount: swapResp.TokenOutAmount,
 		MetaData:       msgSwapExactAmountIn.MetaData,
 	}

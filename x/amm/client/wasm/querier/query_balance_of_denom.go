@@ -5,11 +5,11 @@ import (
 
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	wasmbindingstypes "github.com/elys-network/elys/wasmbindings/types"
+	"github.com/elys-network/elys/x/amm/client/wasm/types"
 	paramtypes "github.com/elys-network/elys/x/parameter/types"
 )
 
-func (oq *Querier) queryBalanceOfDenom(ctx sdk.Context, query *wasmbindingstypes.QueryBalanceRequest) ([]byte, error) {
+func (oq *Querier) queryBalanceOfDenom(ctx sdk.Context, query *types.QueryBalanceRequest) ([]byte, error) {
 	denom := query.Denom
 	addr := query.Address
 	address, err := sdk.AccAddressFromBech32(query.Address)
@@ -31,7 +31,7 @@ func (oq *Querier) queryBalanceOfDenom(ctx sdk.Context, query *wasmbindingstypes
 		}
 	}
 
-	res := wasmbindingstypes.QueryBalanceResponse{
+	res := types.QueryBalanceResponse{
 		Balance: balance,
 	}
 

@@ -7,12 +7,12 @@ import (
 	cosmos_sdk_math "cosmossdk.io/math"
 	wasmvmtypes "github.com/CosmWasm/wasmvm/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	wasmbindingstypes "github.com/elys-network/elys/wasmbindings/types"
+	"github.com/elys-network/elys/x/margin/client/wasm/types"
 	marginkeeper "github.com/elys-network/elys/x/margin/keeper"
 	margintypes "github.com/elys-network/elys/x/margin/types"
 )
 
-func (m *Messenger) msgOpen(ctx sdk.Context, contractAddr sdk.AccAddress, msgOpen *wasmbindingstypes.MsgOpen) ([]sdk.Event, [][]byte, error) {
+func (m *Messenger) msgOpen(ctx sdk.Context, contractAddr sdk.AccAddress, msgOpen *types.MsgOpen) ([]sdk.Event, [][]byte, error) {
 	res, err := PerformMsgOpen(m.keeper, ctx, contractAddr, msgOpen)
 	if err != nil {
 		return nil, nil, errorsmod.Wrap(err, "perform open")
@@ -28,7 +28,7 @@ func (m *Messenger) msgOpen(ctx sdk.Context, contractAddr sdk.AccAddress, msgOpe
 	return nil, resp, nil
 }
 
-func PerformMsgOpen(f *marginkeeper.Keeper, ctx sdk.Context, contractAddr sdk.AccAddress, msgOpen *wasmbindingstypes.MsgOpen) (*wasmbindingstypes.MsgOpenResponse, error) {
+func PerformMsgOpen(f *marginkeeper.Keeper, ctx sdk.Context, contractAddr sdk.AccAddress, msgOpen *types.MsgOpen) (*types.MsgOpenResponse, error) {
 	if msgOpen == nil {
 		return nil, wasmvmtypes.InvalidRequest{Err: "margin open null margin open"}
 	}
@@ -46,7 +46,7 @@ func PerformMsgOpen(f *marginkeeper.Keeper, ctx sdk.Context, contractAddr sdk.Ac
 		return nil, errorsmod.Wrap(err, "margin open msg")
 	}
 
-	var resp = &wasmbindingstypes.MsgOpenResponse{
+	var resp = &types.MsgOpenResponse{
 		MetaData: msgOpen.MetaData,
 	}
 	return resp, nil

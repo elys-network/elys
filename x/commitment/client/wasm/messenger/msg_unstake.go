@@ -8,14 +8,14 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
-	wasmbindingstypes "github.com/elys-network/elys/wasmbindings/types"
+	"github.com/elys-network/elys/x/commitment/client/wasm/types"
 	commitmentkeeper "github.com/elys-network/elys/x/commitment/keeper"
 	commitmenttypes "github.com/elys-network/elys/x/commitment/types"
 	paramtypes "github.com/elys-network/elys/x/parameter/types"
 )
 
-func (m *Messenger) msgUnstake(ctx sdk.Context, contractAddr sdk.AccAddress, msgUnstake *wasmbindingstypes.MsgUnstake) ([]sdk.Event, [][]byte, error) {
-	var res *wasmbindingstypes.RequestResponse
+func (m *Messenger) msgUnstake(ctx sdk.Context, contractAddr sdk.AccAddress, msgUnstake *types.MsgUnstake) ([]sdk.Event, [][]byte, error) {
+	var res *types.RequestResponse
 	var err error
 	if msgUnstake.Asset == paramtypes.Elys {
 		res, err = performMsgUnstakeElys(m.stakingKeeper, ctx, contractAddr, msgUnstake)
@@ -39,7 +39,7 @@ func (m *Messenger) msgUnstake(ctx sdk.Context, contractAddr sdk.AccAddress, msg
 	return nil, resp, nil
 }
 
-func performMsgUnstakeElys(f *stakingkeeper.Keeper, ctx sdk.Context, contractAddr sdk.AccAddress, msgUnstake *wasmbindingstypes.MsgUnstake) (*wasmbindingstypes.RequestResponse, error) {
+func performMsgUnstakeElys(f *stakingkeeper.Keeper, ctx sdk.Context, contractAddr sdk.AccAddress, msgUnstake *types.MsgUnstake) (*types.RequestResponse, error) {
 	if msgUnstake == nil {
 		return nil, wasmvmtypes.InvalidRequest{Err: "Invalid unstaking parameter"}
 	}
@@ -67,7 +67,7 @@ func performMsgUnstakeElys(f *stakingkeeper.Keeper, ctx sdk.Context, contractAdd
 		return nil, errorsmod.Wrap(err, "elys unstake msg")
 	}
 
-	var resp = &wasmbindingstypes.RequestResponse{
+	var resp = &types.RequestResponse{
 		Code:   paramtypes.RES_OK,
 		Result: "Unstaking succeed",
 	}
@@ -75,7 +75,7 @@ func performMsgUnstakeElys(f *stakingkeeper.Keeper, ctx sdk.Context, contractAdd
 	return resp, nil
 }
 
-func performMsgUncommit(f *commitmentkeeper.Keeper, ctx sdk.Context, contractAddr sdk.AccAddress, msgUnstake *wasmbindingstypes.MsgUnstake) (*wasmbindingstypes.RequestResponse, error) {
+func performMsgUncommit(f *commitmentkeeper.Keeper, ctx sdk.Context, contractAddr sdk.AccAddress, msgUnstake *types.MsgUnstake) (*types.RequestResponse, error) {
 	if msgUnstake == nil {
 		return nil, wasmvmtypes.InvalidRequest{Err: "Invalid staking parameter"}
 	}
@@ -91,7 +91,7 @@ func performMsgUncommit(f *commitmentkeeper.Keeper, ctx sdk.Context, contractAdd
 		return nil, errorsmod.Wrap(err, "commit msg")
 	}
 
-	var resp = &wasmbindingstypes.RequestResponse{
+	var resp = &types.RequestResponse{
 		Code:   paramtypes.RES_OK,
 		Result: "Unstaking succeed",
 	}
