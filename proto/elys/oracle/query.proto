@@ -80,7 +80,11 @@ message QueryGetAssetInfoRequest {
 }
 
 message QueryGetAssetInfoResponse {
-	AssetInfo assetInfo = 1 [(gogoproto.nullable) = false];
+	AssetInfo assetInfo = 1 [    
+		(gogoproto.nullable) = false,
+		(gogoproto.jsontag) = "asset_info,omitempty",
+		(gogoproto.moretags) = "yaml:\"asset_info\""
+	  ];
 }
 
 message QueryAllAssetInfoRequest {
@@ -88,7 +92,11 @@ message QueryAllAssetInfoRequest {
 }
 
 message QueryAllAssetInfoResponse {
-	repeated AssetInfo assetInfo = 1 [(gogoproto.nullable) = false];
+	repeated AssetInfo assetInfo = 1 [    
+		(gogoproto.nullable) = false,
+		(gogoproto.jsontag) = "asset_info,omitempty",
+		(gogoproto.moretags) = "yaml:\"asset_info\""
+	  ];
 	cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
