@@ -27,7 +27,14 @@ func (k Keeper) OnCollectFee(ctx sdk.Context, pool types.Pool, fee sdk.Coins) er
 	if err != nil {
 		return nil
 	}
-	return k.SwapFeesToRevenueToken(ctx, pool, revenueAmount)
+
+	// handling the case, pool does not enough liquidity to swap fees to revenue token when liquidity is being fully removed
+	cacheCtx, write := ctx.CacheContext()
+	err = k.SwapFeesToRevenueToken(cacheCtx, pool, revenueAmount)
+	if err == nil {
+		write()
+	}
+	return nil
 }
 
 // No fee management required when doing swap from fees to revenue token

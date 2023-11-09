@@ -1,6 +1,8 @@
 package keeper
 
 import (
+	"time"
+
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/amm/types"
@@ -64,14 +66,20 @@ func (k Keeper) MintPoolShareToAccount(ctx sdk.Context, pool types.Pool, addr sd
 	// Commit LP token minted
 	msgServer := commitmentkeeper.NewMsgServerImpl(*k.commitmentKeeper)
 
-	// Create a commit LP token liquidated message
+	minLock := uint64(ctx.BlockTime().Unix())
+	if pool.PoolParams.UseOracle {
+		minLock += uint64(time.Hour.Seconds())
+	}
+
+	// Create a commit LP token message
 	msgLiquidCommitLPToken := &ctypes.MsgCommitLiquidTokens{
 		Creator: addr.String(),
 		Denom:   poolShareDenom,
 		Amount:  amount,
+		MinLock: minLock,
 	}
 
-	// Commit LP token liquidated
+	// Commit LP token
 	_, err = msgServer.CommitLiquidTokens(sdk.WrapSDKContext(ctx), msgLiquidCommitLPToken)
 	if err != nil {
 		return err

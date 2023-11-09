@@ -9,8 +9,8 @@ import (
 	"github.com/elys-network/elys/x/commitment/types"
 )
 
-// accounting the liquid token as a uncommitted token in commitment module.
-func (k Keeper) DepositLiquidTokensUncommitted(ctx sdk.Context, denom string, amount sdk.Int, creator string) error {
+// accounting the liquid token as a unclaimed token in commitment module.
+func (k Keeper) DepositLiquidTokensUnclaimed(ctx sdk.Context, denom string, amount sdk.Int, creator string) error {
 	assetProfile, found := k.apKeeper.GetEntry(ctx, denom)
 	if !found {
 		return sdkerrors.Wrapf(aptypes.ErrAssetProfileNotFound, "denom: %s", denom)
@@ -42,25 +42,25 @@ func (k Keeper) DepositLiquidTokensUncommitted(ctx sdk.Context, denom string, am
 	commitments, found := k.GetCommitments(ctx, creator)
 	if !found {
 		commitments = types.Commitments{
-			Creator:           creator,
-			CommittedTokens:   []*types.CommittedTokens{},
-			UncommittedTokens: []*types.UncommittedTokens{},
+			Creator:          creator,
+			CommittedTokens:  []*types.CommittedTokens{},
+			RewardsUnclaimed: []*types.RewardsUnclaimed{},
 		}
 	}
-	// Get the uncommitted tokens for the creator
-	uncommittedToken, found := commitments.GetUncommittedTokensForDenom(denom)
+	// Get the unclaimed rewards for the creator
+	rewardUnclaimed, found := commitments.GetRewardsUnclaimedForDenom(denom)
 	if !found {
-		uncommittedTokens := commitments.GetUncommittedTokens()
-		uncommittedToken = &types.UncommittedTokens{
+		rewardsUnclaimed := commitments.GetRewardsUnclaimed()
+		rewardUnclaimed = &types.RewardsUnclaimed{
 			Denom:  denom,
 			Amount: sdk.ZeroInt(),
 		}
-		uncommittedTokens = append(uncommittedTokens, uncommittedToken)
-		commitments.UncommittedTokens = uncommittedTokens
+		rewardsUnclaimed = append(rewardsUnclaimed, rewardUnclaimed)
+		commitments.RewardsUnclaimed = rewardsUnclaimed
 	}
 
-	// Update the uncommitted tokens amount
-	uncommittedToken.Amount = uncommittedToken.Amount.Add(amount)
+	// Update the unclaimed rewards amount
+	rewardUnclaimed.Amount = rewardUnclaimed.Amount.Add(amount)
 
 	// Update the commitments
 	k.SetCommitments(ctx, commitments)

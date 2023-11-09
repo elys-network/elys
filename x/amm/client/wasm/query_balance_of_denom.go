@@ -22,12 +22,12 @@ func (oq *Querier) queryBalanceOfDenom(ctx sdk.Context, query *wasmbindingstypes
 		if !found {
 			balance = sdk.NewCoin(denom, sdk.ZeroInt())
 		} else {
-			uncommittedToken, found := commitment.GetUncommittedTokensForDenom(denom)
+			rewardUnclaimed, found := commitment.GetRewardsUnclaimedForDenom(denom)
 			if !found {
 				return nil, errorsmod.Wrap(nil, "invalid denom")
 			}
 
-			balance = sdk.NewCoin(denom, uncommittedToken.Amount)
+			balance = sdk.NewCoin(denom, rewardUnclaimed.Amount)
 		}
 	}
 

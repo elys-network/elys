@@ -22,9 +22,9 @@ var (
 )
 
 const (
-	opWeightMsgCommitTokens = "op_weight_msg_commit_tokens"
+	opWeightMsgCommitUnclaimedRewards = "op_weight_msg_commit_tokens"
 	// TODO: Determine the simulation weight value
-	defaultWeightMsgCommitTokens int = 100
+	defaultWeightMsgCommitUnclaimedRewards int = 100
 
 	opWeightMsgUncommitTokens = "op_weight_msg_uncommit_tokens"
 	// TODO: Determine the simulation weight value
@@ -86,15 +86,15 @@ func (am AppModule) RegisterStoreDecoder(_ sdk.StoreDecoderRegistry) {}
 func (am AppModule) WeightedOperations(simState module.SimulationState) []simtypes.WeightedOperation {
 	operations := make([]simtypes.WeightedOperation, 0)
 
-	var weightMsgCommitTokens int
-	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgCommitTokens, &weightMsgCommitTokens, nil,
+	var weightMsgCommitUnclaimedRewards int
+	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgCommitUnclaimedRewards, &weightMsgCommitUnclaimedRewards, nil,
 		func(_ *rand.Rand) {
-			weightMsgCommitTokens = defaultWeightMsgCommitTokens
+			weightMsgCommitUnclaimedRewards = defaultWeightMsgCommitUnclaimedRewards
 		},
 	)
 	operations = append(operations, simulation.NewWeightedOperation(
-		weightMsgCommitTokens,
-		commitmentsimulation.SimulateMsgCommitTokens(am.accountKeeper, am.bankKeeper, am.keeper),
+		weightMsgCommitUnclaimedRewards,
+		commitmentsimulation.SimulateMsgCommitUnclaimedRewards(am.accountKeeper, am.bankKeeper, am.keeper),
 	))
 
 	var weightMsgUncommitTokens int

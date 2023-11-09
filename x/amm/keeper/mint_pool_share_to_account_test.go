@@ -72,13 +72,11 @@ func TestCommitMintedLPTokenToCommitmentModule(t *testing.T) {
 	poolId, err := amm.CreatePool(ctx, msg)
 	require.NoError(t, err)
 	require.Equal(t, poolId, uint64(1))
-	//
 
 	_, found := amm.GetPool(ctx, poolId)
 	require.True(t, found)
 
 	lpTokenDenom := types.GetPoolShareDenom(poolId)
 	lpTokenBalance := bk.GetBalance(ctx, addr[0], lpTokenDenom)
-	fmt.Println("lpTokenBalance")
-	fmt.Println(lpTokenBalance)
+	fmt.Println("lpTokenBalance", lpTokenBalance.String())
 }

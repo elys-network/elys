@@ -8,11 +8,19 @@ import (
 	"github.com/elys-network/elys/x/commitment/types"
 )
 
+// VestNow is not enabled at this stage
+var VestNowEnabled = false
+
+// VestNow provides functionality to get the token immediately but lower amount than original
+// e.g. user can burn 1000 ueden and get 800 uelys when the ratio is 80%
 func (k msgServer) VestNow(goCtx context.Context, msg *types.MsgVestNow) (*types.MsgVestNowResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	vestingInfo, _ := k.GetVestingInfo(ctx, msg.Denom)
+	if !VestNowEnabled {
+		return nil, types.ErrVestNowIsNotEnabled
+	}
 
+	vestingInfo, _ := k.GetVestingInfo(ctx, msg.Denom)
 	if vestingInfo == nil {
 		return nil, sdkerrors.Wrapf(types.ErrInvalidDenom, "denom: %s", msg.Denom)
 	}
@@ -23,7 +31,6 @@ func (k msgServer) VestNow(goCtx context.Context, msg *types.MsgVestNow) (*types
 	}
 
 	vestAmount := msg.Amount.Quo(vestingInfo.VestNowFactor)
-
 	withdrawCoins := sdk.NewCoins(sdk.NewCoin(vestingInfo.VestingDenom, vestAmount))
 
 	// Mint the vested tokens to the module account

@@ -10,7 +10,7 @@ import (
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
 
-// uncommit the committed one and make it liquid immediately.
+// UncommitTokens uncommits the tokens from committed store and make it liquid immediately.
 func (k msgServer) UncommitTokens(goCtx context.Context, msg *types.MsgUncommitTokens) (*types.MsgUncommitTokensResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
@@ -29,22 +29,17 @@ func (k msgServer) UncommitTokens(goCtx context.Context, msg *types.MsgUncommitT
 		return nil, sdkerrors.Wrapf(types.ErrCommitmentsNotFound, "creator: %s", msg.Creator)
 	}
 
-	// Check if the committed tokens have enough amount to be uncommitted
-	committedToken, _ := commitments.GetCommittedTokensForDenom(msg.Denom)
-	if committedToken.Amount.LT(msg.Amount) {
-		return nil, sdkerrors.Wrapf(types.ErrInsufficientCommittedTokens, "creator: %s, denom: %s", msg.Creator, msg.Denom)
+	// Deduct from committed tokens
+	err := commitments.DeductFromCommitted(msg.Denom, msg.Amount, uint64(ctx.BlockTime().Unix()))
+	if err != nil {
+		return nil, err
 	}
-
-	// Update the committed tokens amount
-	committedToken.Amount = committedToken.Amount.Sub(msg.Amount)
-
-	// Update the commitments
 	k.SetCommitments(ctx, commitments)
 
 	liquidCoins := sdk.NewCoins(sdk.NewCoin(msg.Denom, msg.Amount))
 
 	// Mint the withdrawn tokens to the module account
-	err := k.bankKeeper.MintCoins(ctx, types.ModuleName, liquidCoins)
+	err = k.bankKeeper.MintCoins(ctx, types.ModuleName, liquidCoins)
 	if err != nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrInsufficientFunds, "unable to mint liquid tokens")
 	}

@@ -128,21 +128,21 @@ func (k Keeper) StandardStakingToken(ctx sdk.Context, delegator string, validato
 	commitments, found := k.GetCommitments(ctx, delegator)
 	if !found {
 		commitments = types.Commitments{
-			Creator:           delegator,
-			CommittedTokens:   []*types.CommittedTokens{},
-			UncommittedTokens: []*types.UncommittedTokens{},
+			Creator:          delegator,
+			CommittedTokens:  []*types.CommittedTokens{},
+			RewardsUnclaimed: []*types.RewardsUnclaimed{},
 		}
 	}
-	// Get the uncommitted tokens for the delegator
-	uncommittedToken, _ := commitments.GetUncommittedTokensForDenom(denom)
+	// Get the unclaimed tokens for the delegator
+	rewardUnclaimed, _ := commitments.GetRewardsUnclaimedForDenom(denom)
 	if !found {
-		uncommittedTokens := commitments.GetUncommittedTokens()
-		uncommittedToken = &types.UncommittedTokens{
+		rewardsUnclaimed := commitments.GetRewardsUnclaimed()
+		rewardUnclaimed = &types.RewardsUnclaimed{
 			Denom:  denom,
 			Amount: sdk.ZeroInt(),
 		}
-		uncommittedTokens = append(uncommittedTokens, uncommittedToken)
-		commitments.UncommittedTokens = uncommittedTokens
+		rewardsUnclaimed = append(rewardsUnclaimed, rewardUnclaimed)
+		commitments.RewardsUnclaimed = rewardsUnclaimed
 	}
 
 	// Update the commitments
@@ -164,21 +164,21 @@ func (k Keeper) StandardStakingToken(ctx sdk.Context, delegator string, validato
 	commitments, found = k.GetCommitments(ctx, validator)
 	if !found {
 		commitments = types.Commitments{
-			Creator:           validator,
-			CommittedTokens:   []*types.CommittedTokens{},
-			UncommittedTokens: []*types.UncommittedTokens{},
+			Creator:          validator,
+			CommittedTokens:  []*types.CommittedTokens{},
+			RewardsUnclaimed: []*types.RewardsUnclaimed{},
 		}
 	}
-	// Get the uncommitted tokens for the validator
-	uncommittedToken, _ = commitments.GetUncommittedTokensForDenom(denom)
+	// Get the unclaimed tokens for the validator
+	rewardUnclaimed, _ = commitments.GetRewardsUnclaimedForDenom(denom)
 	if !found {
-		uncommittedTokens := commitments.GetUncommittedTokens()
-		uncommittedToken = &types.UncommittedTokens{
+		rewardsUnclaimed := commitments.GetRewardsUnclaimed()
+		rewardUnclaimed = &types.RewardsUnclaimed{
 			Denom:  denom,
 			Amount: sdk.ZeroInt(),
 		}
-		uncommittedTokens = append(uncommittedTokens, uncommittedToken)
-		commitments.UncommittedTokens = uncommittedTokens
+		rewardsUnclaimed = append(rewardsUnclaimed, rewardUnclaimed)
+		commitments.RewardsUnclaimed = rewardsUnclaimed
 	}
 
 	// Update the commitments
@@ -351,7 +351,7 @@ func (k Keeper) ProcessWithdrawUSDC(ctx sdk.Context, creator string, denom strin
 
 // Vesting token
 // Check if vesting entity count is not exceeding the maximum and if it is fine, creates a new vesting entity
-// Deduct from uncommitted bucket. If it is insufficent, deduct from committed bucket as well.
+// Deduct from unclaimed bucket. If it is insufficent, deduct from committed bucket as well.
 func (k Keeper) ProcessTokenVesting(ctx sdk.Context, denom string, amount sdk.Int, creator string) error {
 	vestingInfo, _ := k.GetVestingInfo(ctx, denom)
 

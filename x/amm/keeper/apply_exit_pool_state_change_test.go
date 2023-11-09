@@ -1,82 +1,78 @@
 package keeper_test
 
 import (
-	"fmt"
-	"testing"
-
-	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	simapp "github.com/elys-network/elys/app"
 	"github.com/elys-network/elys/x/amm/types"
 	atypes "github.com/elys-network/elys/x/amm/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
-	"github.com/stretchr/testify/require"
 )
 
-func TestWithdrawCommitedLPTokenFromCommitmentModule(t *testing.T) {
-	app := simapp.InitElysTestApp(initChain)
-	ctx := app.BaseApp.NewContext(initChain, tmproto.Header{})
-	amm, bk := app.AmmKeeper, app.BankKeeper
+func (suite *KeeperTestSuite) TestApplyExitPoolStateChange_WithdrawFromCommitmentModule() {
+	suite.SetupStableCoinPrices()
 
-	// Create Pool
+	app := suite.app
+	amm, bk := app.AmmKeeper, app.BankKeeper
+	ctx := suite.ctx
 
 	// Generate 1 random account with 1000stake balanced
-	addr := simapp.AddTestAddrs(app, ctx, 1, sdk.NewInt(1000000))
-	transferAmt := sdk.NewCoin(ptypes.Elys, sdk.NewInt(100))
+	addrs := simapp.AddTestAddrs(app, ctx, 1, sdk.NewInt(1000000))
 
-	// Deposit 100elys to FeeCollectorName wallet
-	err := bk.SendCoinsFromAccountToModule(ctx, addr[0], authtypes.FeeCollectorName, sdk.NewCoins(transferAmt))
-	require.NoError(t, err)
-
-	// Create a pool
-	// Mint 100000USDC
-	usdcToken := sdk.NewCoins(sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(100000)))
-
-	err = app.BankKeeper.MintCoins(ctx, types.ModuleName, usdcToken)
-	require.NoError(t, err)
-	err = app.BankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, addr[0], usdcToken)
-	require.NoError(t, err)
+	// Mint 100000USDC+100000USDT
+	coins := sdk.NewCoins(sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(100000)), sdk.NewCoin("uusdt", sdk.NewInt(100000)))
+	err := app.BankKeeper.MintCoins(ctx, types.ModuleName, coins)
+	suite.Require().NoError(err)
+	err = app.BankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, addrs[0], coins)
+	suite.Require().NoError(err)
 
 	poolAssets := []atypes.PoolAsset{
 		{
 			Weight: sdk.NewInt(50),
-			Token:  sdk.NewCoin(ptypes.Elys, sdk.NewInt(100000)),
+			Token:  sdk.NewCoin("uusdt", sdk.NewInt(100000)),
 		},
 		{
 			Weight: sdk.NewInt(50),
-			Token:  sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(10000)),
+			Token:  sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(100000)),
 		},
 	}
 
-	argSwapFee, err := sdk.NewDecFromStr("0.1")
-	require.NoError(t, err)
+	swapFee, err := sdk.NewDecFromStr("0.1")
+	suite.Require().NoError(err)
 
-	argExitFee, err := sdk.NewDecFromStr("0.1")
-	require.NoError(t, err)
+	exitFee, err := sdk.NewDecFromStr("0.1")
+	suite.Require().NoError(err)
 
 	poolParams := &atypes.PoolParams{
-		SwapFee: argSwapFee,
-		ExitFee: argExitFee,
+		SwapFee:                     swapFee,
+		ExitFee:                     exitFee,
+		UseOracle:                   true,
+		WeightBreakingFeeMultiplier: sdk.ZeroDec(),
+		ExternalLiquidityRatio:      sdk.NewDec(1),
+		LpFeePortion:                sdk.ZeroDec(),
+		StakingFeePortion:           sdk.ZeroDec(),
+		WeightRecoveryFeePortion:    sdk.ZeroDec(),
+		ThresholdWeightDifference:   sdk.ZeroDec(),
+		FeeDenom:                    ptypes.BaseCurrency,
 	}
 
 	msg := types.NewMsgCreatePool(
-		addr[0].String(),
+		addrs[0].String(),
 		poolParams,
 		poolAssets,
 	)
 
-	// Create a Elys+USDC pool
+	// Create a USDT+USDC pool
 	poolId, err := amm.CreatePool(ctx, msg)
-	require.NoError(t, err)
-	require.Equal(t, poolId, uint64(1))
-	//
+	suite.Require().NoError(err)
+	suite.Require().Equal(poolId, uint64(1))
 
-	_, found := amm.GetPool(ctx, poolId)
-	require.True(t, found)
+	pool, found := amm.GetPool(ctx, poolId)
+	suite.Require().True(found)
 
 	lpTokenDenom := types.GetPoolShareDenom(poolId)
-	lpTokenBalance := bk.GetBalance(ctx, addr[0], lpTokenDenom)
-	fmt.Println("lpTokenBalance")
-	fmt.Println(lpTokenBalance)
+	lpTokenBalance := bk.GetBalance(ctx, addrs[0], lpTokenDenom)
+	suite.Require().True(lpTokenBalance.Amount.Equal(sdk.ZeroInt()))
+
+	err = app.AmmKeeper.ApplyExitPoolStateChange(ctx, pool, addrs[0], pool.TotalShares.Amount, coins)
+	suite.Require().NoError(err)
 }

@@ -18,13 +18,13 @@ func TestABCI_EndBlocker(t *testing.T) {
 	ik := app.IncentiveKeeper
 
 	var committed []sdk.Coins
-	var uncommitted []sdk.Coins
+	var unclaimed []sdk.Coins
 
-	// Prepare uncommitted tokens
+	// Prepare unclaimed tokens
 	uedenToken := sdk.NewCoins(sdk.NewCoin(ptypes.Eden, sdk.NewInt(2000)))
 	uedenBToken := sdk.NewCoins(sdk.NewCoin(ptypes.EdenB, sdk.NewInt(2000)))
-	uncommitted = append(uncommitted, uedenToken)
-	uncommitted = append(uncommitted, uedenBToken)
+	unclaimed = append(unclaimed, uedenToken)
+	unclaimed = append(unclaimed, uedenBToken)
 
 	// Eden
 	err := app.BankKeeper.MintCoins(ctx, ctypes.ModuleName, uedenToken)
@@ -39,7 +39,7 @@ func TestABCI_EndBlocker(t *testing.T) {
 	require.NoError(t, err)
 
 	// Add testing commitment
-	simapp.AddTestCommitment(app, ctx, genAccount, committed, uncommitted)
+	simapp.AddTestCommitment(app, ctx, genAccount, committed, unclaimed)
 	// Update Elys staked amount
 	ik.EndBlocker(ctx)
 

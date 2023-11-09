@@ -51,7 +51,7 @@ func TestCommitLiquidTokens(t *testing.T) {
 	_, err = msgServer.CommitLiquidTokens(ctx, commitMsg)
 	require.NoError(t, err)
 
-	// Check if the tokens were deposited and uncommitted balance was updated
+	// Check if the tokens were deposited and unclaimed balance was updated
 	commitments, found := keeper.GetCommitments(ctx, commitMsg.Creator)
 	require.True(t, found, "commitments not found")
 

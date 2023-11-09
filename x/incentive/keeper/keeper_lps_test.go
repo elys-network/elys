@@ -83,11 +83,11 @@ func TestCalculateRewardsForLPs(t *testing.T) {
 	addr := simapp.AddTestAddrs(app, ctx, 1, sdk.NewInt(100010))
 
 	var committed []sdk.Coins
-	var uncommitted []sdk.Coins
+	var unclaimed []sdk.Coins
 
-	// Prepare uncommitted tokens
+	// Prepare unclaimed tokens
 	uedenToken := sdk.NewCoins(sdk.NewCoin(ptypes.Eden, sdk.NewInt(2000)))
-	uncommitted = append(uncommitted, uedenToken)
+	unclaimed = append(unclaimed, uedenToken)
 
 	err := app.BankKeeper.MintCoins(ctx, ctypes.ModuleName, uedenToken)
 	require.NoError(t, err)
@@ -117,7 +117,7 @@ func TestCalculateRewardsForLPs(t *testing.T) {
 	err = app.BankKeeper.SendCoinsFromModuleToAccount(ctx, ctypes.ModuleName, addr[0], lpToken2)
 	require.NoError(t, err)
 
-	simapp.AddTestCommitment(app, ctx, addr[0], committed, uncommitted)
+	simapp.AddTestCommitment(app, ctx, addr[0], committed, unclaimed)
 
 	// Create a pool
 	// Mint 100000USDC
@@ -193,8 +193,8 @@ func TestCalculateRewardsForLPs(t *testing.T) {
 
 	gasFeesLPsAmt := sdk.NewDec(1000)
 	// Calculate rewards for LPs
-	newUncommittedEdenTokensLp, dexRewardsLp := ik.CalculateRewardsForLPs(ctx, totalProxyTVL, commitments, edenAmountPerEpochLp, gasFeesLPsAmt)
+	newUnclaimedEdenTokensLp, dexRewardsLp := ik.CalculateRewardsForLPs(ctx, totalProxyTVL, commitments, edenAmountPerEpochLp, gasFeesLPsAmt)
 
-	require.Equal(t, newUncommittedEdenTokensLp, sdk.NewInt(1000000))
+	require.Equal(t, newUnclaimedEdenTokensLp, sdk.NewInt(1000000))
 	require.Equal(t, dexRewardsLp, sdk.NewInt(1000))
 }

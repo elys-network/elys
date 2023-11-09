@@ -6,7 +6,7 @@ import (
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
 
-// Calculate new Eden token amounts based on the given conditions and user's current uncommitted token balance
+// Calculate new Eden token amounts based on the given conditions and user's current unclaimed token balance
 func (k Keeper) CalculateRewardsForStakersByElysStaked(ctx sdk.Context, delegatedAmt sdk.Int, edenAmountPerEpoch sdk.Int, dexRevenueAmtForStakers sdk.Dec) (sdk.Int, sdk.Int, sdk.Dec) {
 	// -----------Eden calculation ---------------------
 	// --------------------------------------------------------------
@@ -35,7 +35,7 @@ func (k Keeper) CalculateRewardsForStakersByElysStaked(ctx sdk.Context, delegate
 	return newEdenAllocated.TruncateInt(), dexRewards, dexRewardsByStakeOnly
 }
 
-// Calculate new Eden token amounts based on the given conditions and user's current uncommitted token balance
+// Calculate new Eden token amounts based on the given conditions and user's current unclaimed token balance
 func (k Keeper) CalculateRewardsForStakersByCommitted(ctx sdk.Context, amt sdk.Int, edenAmountPerEpoch sdk.Int, dexRevenueAmtForStakers sdk.Dec) (sdk.Int, sdk.Int) {
 	// -----------Eden calculation ---------------------
 	// --------------------------------------------------------------
@@ -60,7 +60,7 @@ func (k Keeper) CalculateRewardsForStakersByCommitted(ctx sdk.Context, amt sdk.I
 	return newEdenAllocated.TruncateInt(), dexRewards
 }
 
-// Calculate new Eden-Boost token amounts based on the given conditions and user's current uncommitted token balance
+// Calculate new Eden-Boost token amounts based on the given conditions and user's current unclaimed token balance
 func (k Keeper) CalculateEdenBoostRewards(ctx sdk.Context, delegatedAmt sdk.Int, commitments ctypes.Commitments, epochIdentifier string, edenBoostAPR int64) sdk.Int {
 	// Get eden commitments
 	edenCommitted := commitments.GetCommittedAmountForDenom(ptypes.Eden)

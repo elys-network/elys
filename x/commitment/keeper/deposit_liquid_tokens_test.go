@@ -44,7 +44,7 @@ func TestDepositLiquidTokens(t *testing.T) {
 				Amount: sdk.NewInt(50),
 			},
 		},
-		UncommittedTokens: []*types.UncommittedTokens{
+		RewardsUnclaimed: []*types.RewardsUnclaimed{
 			{
 				Denom:  ptypes.Eden,
 				Amount: sdk.NewInt(150),
@@ -53,16 +53,16 @@ func TestDepositLiquidTokens(t *testing.T) {
 	}
 	keeper.SetCommitments(ctx, commitments)
 
-	// Deposit liquid eden to become uncommitted state
-	keeper.DepositLiquidTokensUncommitted(ctx, ptypes.Eden, sdk.NewInt(100), creator.String())
+	// Deposit liquid eden to become unclaimed state
+	keeper.DepositLiquidTokensUnclaimed(ctx, ptypes.Eden, sdk.NewInt(100), creator.String())
 
 	// Check if the deposit tokens were added to commitments
 	newCommitments, found := keeper.GetCommitments(ctx, creator.String())
 	require.True(t, found, "commitments not found")
 
-	// Check if the uncommitted tokens were updated correctly
-	uncommittedToken := newCommitments.GetUncommittedAmountForDenom(ptypes.Eden)
-	require.Equal(t, sdk.NewInt(250), uncommittedToken, "uncommitted tokens were not updated correctly")
+	// Check if the unclaimed tokens were updated correctly
+	rewardUnclaimed := newCommitments.GetUnclaimedAmountForDenom(ptypes.Eden)
+	require.Equal(t, sdk.NewInt(250), rewardUnclaimed, "unclaimed tokens were not updated correctly")
 
 	// Check if the committed tokens were updated correctly
 	committedToken := newCommitments.GetCommittedAmountForDenom(ptypes.Eden)

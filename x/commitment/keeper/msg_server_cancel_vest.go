@@ -9,11 +9,11 @@ import (
 	"github.com/elys-network/elys/x/commitment/types"
 )
 
+// CancelVest cancel the user's vesting and the user reject to get vested tokens
 func (k msgServer) CancelVest(goCtx context.Context, msg *types.MsgCancelVest) (*types.MsgCancelVestResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	vestingInfo, _ := k.GetVestingInfo(ctx, msg.Denom)
-
 	if vestingInfo == nil {
 		return nil, sdkerrors.Wrapf(types.ErrInvalidDenom, "denom: %s", msg.Denom)
 	}
@@ -49,18 +49,18 @@ func (k msgServer) CancelVest(goCtx context.Context, msg *types.MsgCancelVest) (
 		return nil, sdkerrors.Wrapf(types.ErrInsufficientVestingTokens, "denom: %s, amount: %s", msg.Denom, msg.Amount)
 	}
 
-	// Update the uncommitted tokens amount
-	uncommittedToken, found := commitments.GetUncommittedTokensForDenom(msg.Denom)
+	// Update the unclaimed tokens amount
+	rewardUnclaimed, found := commitments.GetRewardsUnclaimedForDenom(msg.Denom)
 
 	if found {
-		uncommittedToken.Amount = uncommittedToken.Amount.Add(msg.Amount)
+		rewardUnclaimed.Amount = rewardUnclaimed.Amount.Add(msg.Amount)
 	} else {
-		uncommittedTokens := commitments.GetUncommittedTokens()
-		uncommittedTokens = append(uncommittedTokens, &types.UncommittedTokens{
+		rewardsUnclaimed := commitments.GetRewardsUnclaimed()
+		rewardsUnclaimed = append(rewardsUnclaimed, &types.RewardsUnclaimed{
 			Denom:  msg.Denom,
 			Amount: msg.Amount,
 		})
-		commitments.UncommittedTokens = uncommittedTokens
+		commitments.RewardsUnclaimed = rewardsUnclaimed
 	}
 
 	k.SetCommitments(ctx, commitments)

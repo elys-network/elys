@@ -239,39 +239,39 @@ func initAccountWithCoins(app *ElysApp, ctx sdk.Context, addr sdk.AccAddress, co
 }
 
 // Add testing commitments
-func AddTestCommitment(app *ElysApp, ctx sdk.Context, address sdk.AccAddress, committed []sdk.Coins, uncommitted []sdk.Coins) {
+func AddTestCommitment(app *ElysApp, ctx sdk.Context, address sdk.AccAddress, committed []sdk.Coins, rewardsUnclaimed []sdk.Coins) {
 	commitment, found := app.CommitmentKeeper.GetCommitments(ctx, address.String())
 	if !found {
 		commitment = ctypes.Commitments{
-			Creator:           address.String(),
-			CommittedTokens:   []*types.CommittedTokens{},
-			UncommittedTokens: []*types.UncommittedTokens{},
+			Creator:          address.String(),
+			CommittedTokens:  []*types.CommittedTokens{},
+			RewardsUnclaimed: []*types.RewardsUnclaimed{},
 		}
 	}
 
-	// Loop uncommitted tokens
-	for _, uc := range uncommitted {
+	// Loop unclaimed rewards
+	for _, uc := range rewardsUnclaimed {
 		Denom := uc.GetDenomByIndex(0)
 
-		// Get the uncommitted tokens for the creator
-		uncommittedToken, _ := commitment.GetUncommittedTokensForDenom(Denom)
+		// Get the unclaimed rewards for the creator
+		rewardUnclaimed, _ := commitment.GetRewardsUnclaimedForDenom(Denom)
 		if !found {
-			uncommittedTokens := commitment.GetUncommittedTokens()
-			uncommittedToken = &types.UncommittedTokens{
+			rewardsUnclaimed := commitment.GetRewardsUnclaimed()
+			rewardUnclaimed = &types.RewardsUnclaimed{
 				Denom:  Denom,
 				Amount: sdk.ZeroInt(),
 			}
-			uncommittedTokens = append(uncommittedTokens, uncommittedToken)
-			commitment.UncommittedTokens = uncommittedTokens
+			rewardsUnclaimed = append(rewardsUnclaimed, rewardUnclaimed)
+			commitment.RewardsUnclaimed = rewardsUnclaimed
 		}
-		// Update the uncommitted tokens amount
-		uncommittedToken.Amount = uncommittedToken.Amount.Add(uc.AmountOf(Denom))
+		// Update the unclaimed tokens amount
+		rewardUnclaimed.Amount = rewardUnclaimed.Amount.Add(uc.AmountOf(Denom))
 	}
 
 	for _, c := range committed {
 		Denom := c.GetDenomByIndex(0)
 
-		// Get the uncommitted tokens for the creator
+		// Get the committed tokens for the creator
 		committedToken, _ := commitment.GetCommittedTokensForDenom(Denom)
 		if !found {
 			committedTokens := commitment.GetCommittedTokens()
@@ -282,7 +282,7 @@ func AddTestCommitment(app *ElysApp, ctx sdk.Context, address sdk.AccAddress, co
 			committedTokens = append(committedTokens, committedToken)
 			commitment.CommittedTokens = committedTokens
 		}
-		// Update the uncommitted tokens amount
+		// Update the committed tokens amount
 		committedToken.Amount = committedToken.Amount.Add(c.AmountOf(Denom))
 	}
 

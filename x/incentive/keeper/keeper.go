@@ -74,9 +74,9 @@ func (k Keeper) Logger(ctx sdk.Context) log.Logger {
 	return ctx.Logger().With("module", fmt.Sprintf("x/%s", types.ModuleName))
 }
 
-// Update uncommitted token amount
+// Update unclaimed token amount
 // Called back through epoch hook
-func (k Keeper) UpdateUncommittedTokens(ctx sdk.Context, epochIdentifier string, stakeIncentive types.IncentiveInfo, lpIncentive types.IncentiveInfo) {
+func (k Keeper) UpdateRewardsUnclaimed(ctx sdk.Context, epochIdentifier string, stakeIncentive types.IncentiveInfo, lpIncentive types.IncentiveInfo) {
 	// Recalculate total committed info
 	k.UpdateTotalCommitmentInfo(ctx)
 
@@ -138,49 +138,49 @@ func (k Keeper) UpdateUncommittedTokens(ctx sdk.Context, epochIdentifier string,
 			// Calculate delegated amount per delegator
 			delegatedAmt := k.CalculateDelegatedAmount(ctx, creator)
 
-			// Calculate new uncommitted Eden tokens from Eden & Eden boost committed, Dex rewards distribution
+			// Calculate new unclaimed Eden tokens from Eden & Eden boost committed, Dex rewards distribution
 			// Distribute gas fees to stakers
 
-			// Calculate new uncommitted Eden tokens from Elys staked
-			newUncommittedEdenTokens, dexRewards, dexRewardsByStakers := k.CalculateRewardsForStakersByElysStaked(ctx, delegatedAmt, edenAmountPerEpochStakers, dexRevenueStakersAmt)
-			totalEdenGiven = totalEdenGiven.Add(newUncommittedEdenTokens)
+			// Calculate new unclaimed Eden tokens from Elys staked
+			newUnclaimedEdenTokens, dexRewards, dexRewardsByStakers := k.CalculateRewardsForStakersByElysStaked(ctx, delegatedAmt, edenAmountPerEpochStakers, dexRevenueStakersAmt)
+			totalEdenGiven = totalEdenGiven.Add(newUnclaimedEdenTokens)
 			totalRewardsGiven = totalRewardsGiven.Add(dexRewards)
 
-			// Calculate new uncommitted Eden tokens from Eden committed
+			// Calculate new unclaimed Eden tokens from Eden committed
 			edenCommitted := commitments.GetCommittedAmountForDenom(ptypes.Eden)
-			newUncommittedEdenTokens, dexRewards = k.CalculateRewardsForStakersByCommitted(ctx, edenCommitted, edenAmountPerEpochStakers, dexRevenueStakersAmt)
-			totalEdenGiven = totalEdenGiven.Add(newUncommittedEdenTokens)
+			newUnclaimedEdenTokens, dexRewards = k.CalculateRewardsForStakersByCommitted(ctx, edenCommitted, edenAmountPerEpochStakers, dexRevenueStakersAmt)
+			totalEdenGiven = totalEdenGiven.Add(newUnclaimedEdenTokens)
 			totalRewardsGiven = totalRewardsGiven.Add(dexRewards)
 
-			// Calculate new uncommitted Eden tokens from Eden Boost committed
+			// Calculate new unclaimed Eden tokens from Eden Boost committed
 			edenBoostCommitted := commitments.GetCommittedAmountForDenom(ptypes.EdenB)
-			newUncommittedEdenTokens, dexRewards = k.CalculateRewardsForStakersByCommitted(ctx, edenBoostCommitted, edenAmountPerEpochStakers, dexRevenueStakersAmt)
-			totalEdenGiven = totalEdenGiven.Add(newUncommittedEdenTokens)
+			newUnclaimedEdenTokens, dexRewards = k.CalculateRewardsForStakersByCommitted(ctx, edenBoostCommitted, edenAmountPerEpochStakers, dexRevenueStakersAmt)
+			totalEdenGiven = totalEdenGiven.Add(newUnclaimedEdenTokens)
 			totalRewardsGiven = totalRewardsGiven.Add(dexRewards)
 
-			// Calculate new uncommitted Eden tokens from LpTokens committed, Dex rewards distribution
+			// Calculate new unclaimed Eden tokens from LpTokens committed, Dex rewards distribution
 			// Distribute gas fees to LPs
-			newUncommittedEdenTokensLp, dexRewardsLp := k.CalculateRewardsForLPs(ctx, totalProxyTVL, commitments, edenAmountPerEpochLPs, gasFeesLPsAmt)
-			totalEdenGivenLP = totalEdenGivenLP.Add(newUncommittedEdenTokensLp)
+			newUnclaimedEdenTokensLp, dexRewardsLp := k.CalculateRewardsForLPs(ctx, totalProxyTVL, commitments, edenAmountPerEpochLPs, gasFeesLPsAmt)
+			totalEdenGivenLP = totalEdenGivenLP.Add(newUnclaimedEdenTokensLp)
 			totalRewardsGivenLP = totalRewardsGivenLP.Add(dexRewardsLp)
 
-			// Calculate the total Eden uncommitted amount
-			newUncommittedEdenTokens = newUncommittedEdenTokens.Add(newUncommittedEdenTokensLp)
+			// Calculate the total Eden unclaimed amount
+			newUnclaimedEdenTokens = newUnclaimedEdenTokens.Add(newUnclaimedEdenTokensLp)
 
 			// Give commission to validators ( Eden from stakers and Dex rewards from stakers. )
-			edenCommissionGiven, dexRewardsCommissionGiven := k.GiveCommissionToValidators(ctx, creator, delegatedAmt, newUncommittedEdenTokens, dexRewardsByStakers)
+			edenCommissionGiven, dexRewardsCommissionGiven := k.GiveCommissionToValidators(ctx, creator, delegatedAmt, newUnclaimedEdenTokens, dexRewardsByStakers)
 
 			// Minus the given amount and increase with the remains only
-			newUncommittedEdenTokens = newUncommittedEdenTokens.Sub(edenCommissionGiven)
+			newUnclaimedEdenTokens = newUnclaimedEdenTokens.Sub(edenCommissionGiven)
 
 			// Plus LpDexRewards and minus commission given
 			dexRewards = dexRewards.Add(dexRewardsLp).Sub(dexRewardsCommissionGiven)
 
-			// Calculate new uncommitted Eden-Boost tokens for staker and Eden token holders
-			newUncommittedEdenBoostTokens := k.CalculateEdenBoostRewards(ctx, delegatedAmt, commitments, epochIdentifier, edenBoostAPR)
+			// Calculate new unclaimed Eden-Boost tokens for staker and Eden token holders
+			newUnclaimedEdenBoostTokens := k.CalculateEdenBoostRewards(ctx, delegatedAmt, commitments, epochIdentifier, edenBoostAPR)
 
-			// Update Commitments with new uncommitted token amounts
-			k.UpdateCommitments(ctx, creator, &commitments, newUncommittedEdenTokens, newUncommittedEdenBoostTokens, dexRewards)
+			// Update Commitments with new unclaimed token amounts
+			k.UpdateCommitments(ctx, creator, &commitments, newUnclaimedEdenTokens, newUnclaimedEdenBoostTokens, dexRewards)
 
 			return false
 		},
@@ -206,11 +206,11 @@ func (k Keeper) UpdateUncommittedTokens(ctx sdk.Context, epochIdentifier string,
 	// ----------------------------------
 }
 
-func (k Keeper) UpdateCommitments(ctx sdk.Context, creator string, commitments *ctypes.Commitments, newUncommittedEdenTokens sdk.Int, newUncommittedEdenBoostTokens sdk.Int, dexRewards sdk.Int) {
-	// Update uncommitted Eden balances in the Commitments structure
-	k.UpdateTokensCommitment(commitments, newUncommittedEdenTokens, ptypes.Eden)
-	// Update uncommitted Eden-Boost token balances in the Commitments structure
-	k.UpdateTokensCommitment(commitments, newUncommittedEdenBoostTokens, ptypes.EdenB)
+func (k Keeper) UpdateCommitments(ctx sdk.Context, creator string, commitments *ctypes.Commitments, newUnclaimedEdenTokens sdk.Int, newUnclaimedEdenBoostTokens sdk.Int, dexRewards sdk.Int) {
+	// Update unclaimed Eden balances in the Commitments structure
+	k.UpdateTokensCommitment(commitments, newUnclaimedEdenTokens, ptypes.Eden)
+	// Update unclaimed Eden-Boost token balances in the Commitments structure
+	k.UpdateTokensCommitment(commitments, newUnclaimedEdenBoostTokens, ptypes.EdenB)
 
 	// All dex revenue are collected to incentive module in USDC
 	// Gas fees (Elys) are also converted into USDC and collected into total dex revenue wallet of incentive module.
@@ -224,18 +224,18 @@ func (k Keeper) UpdateCommitments(ctx sdk.Context, creator string, commitments *
 	k.cmk.SetCommitments(ctx, *commitments)
 }
 
-// Update the uncommitted Eden token balance
-func (k Keeper) UpdateTokensCommitment(commitments *ctypes.Commitments, new_uncommitted_eden_tokens sdk.Int, denom string) {
-	uncommittedEden, found := commitments.GetUncommittedTokensForDenom(denom)
+// Update the unclaimed Eden token balance
+func (k Keeper) UpdateTokensCommitment(commitments *ctypes.Commitments, newUnclaimedEdenTokens sdk.Int, denom string) {
+	unclaimedEden, found := commitments.GetRewardsUnclaimedForDenom(denom)
 	if !found {
-		uncommittedTokens := commitments.GetUncommittedTokens()
-		uncommittedTokens = append(uncommittedTokens, &ctypes.UncommittedTokens{
+		rewardsUnclaimed := commitments.GetRewardsUnclaimed()
+		rewardsUnclaimed = append(rewardsUnclaimed, &ctypes.RewardsUnclaimed{
 			Denom:  denom,
-			Amount: new_uncommitted_eden_tokens,
+			Amount: newUnclaimedEdenTokens,
 		})
-		commitments.UncommittedTokens = uncommittedTokens
+		commitments.RewardsUnclaimed = rewardsUnclaimed
 	} else {
-		uncommittedEden.Amount = uncommittedEden.Amount.Add(new_uncommitted_eden_tokens)
+		unclaimedEden.Amount = unclaimedEden.Amount.Add(newUnclaimedEdenTokens)
 	}
 }
 

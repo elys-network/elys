@@ -15,9 +15,9 @@ import (
 
 var _ = strconv.Itoa(0)
 
-func CmdCommitTokens() *cobra.Command {
+func CmdCommitUnclaimedRewards() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "commit-tokens [amount] [denom]",
+		Use:   "commit-unclaimed-rewards [amount] [denom]",
 		Short: "Broadcast message commit-tokens",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
@@ -32,7 +32,7 @@ func CmdCommitTokens() *cobra.Command {
 				return err
 			}
 
-			msg := types.NewMsgCommitTokens(
+			msg := types.NewMsgCommitUnclaimedRewards(
 				clientCtx.GetFromAddress().String(),
 				argAmount,
 				argDenom,

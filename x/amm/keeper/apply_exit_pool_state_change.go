@@ -7,21 +7,21 @@ import (
 	ctypes "github.com/elys-network/elys/x/commitment/types"
 )
 
-func (k Keeper) applyExitPoolStateChange(ctx sdk.Context, pool types.Pool, exiter sdk.AccAddress, numShares sdk.Int, exitCoins sdk.Coins) error {
+func (k Keeper) ApplyExitPoolStateChange(ctx sdk.Context, pool types.Pool, exiter sdk.AccAddress, numShares sdk.Int, exitCoins sdk.Coins) error {
 	// Withdraw exit amount of token from commitment module to exiter's wallet.
 	msgServer := commitmentkeeper.NewMsgServerImpl(*k.commitmentKeeper)
 
 	poolShareDenom := types.GetPoolShareDenom(pool.GetPoolId())
 
 	// Withdraw token message
-	msgWithdrawToken := &ctypes.MsgWithdrawTokens{
+	msgWithdrawTokens := &ctypes.MsgWithdrawTokens{
 		Creator: exiter.String(),
 		Amount:  numShares,
 		Denom:   poolShareDenom,
 	}
 
-	// Withdraw committed LP token
-	_, err := msgServer.WithdrawTokens(sdk.WrapSDKContext(ctx), msgWithdrawToken)
+	// Withdraw committed LP tokens
+	_, err := msgServer.WithdrawTokens(sdk.WrapSDKContext(ctx), msgWithdrawTokens)
 	if err != nil {
 		return err
 	}

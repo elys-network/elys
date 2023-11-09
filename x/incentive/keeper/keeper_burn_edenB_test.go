@@ -20,13 +20,13 @@ func TestBurnEdenBFromElysUnstaked(t *testing.T) {
 	ik, sk := app.IncentiveKeeper, app.StakingKeeper
 
 	var committed []sdk.Coins
-	var uncommitted []sdk.Coins
+	var unclaimed []sdk.Coins
 
-	// Prepare uncommitted tokens
+	// Prepare unclaimed tokens
 	uedenToken := sdk.NewCoins(sdk.NewCoin(ptypes.Eden, sdk.NewInt(2000)))
 	uedenBToken := sdk.NewCoins(sdk.NewCoin(ptypes.EdenB, sdk.NewInt(20000)))
-	uncommitted = append(uncommitted, uedenToken)
-	uncommitted = append(uncommitted, uedenBToken)
+	unclaimed = append(unclaimed, uedenToken)
+	unclaimed = append(unclaimed, uedenBToken)
 
 	// Eden
 	err := app.BankKeeper.MintCoins(ctx, ctypes.ModuleName, uedenToken)
@@ -59,12 +59,12 @@ func TestBurnEdenBFromElysUnstaked(t *testing.T) {
 	require.NoError(t, err)
 
 	// Add testing commitment
-	simapp.AddTestCommitment(app, ctx, genAccount, committed, uncommitted)
+	simapp.AddTestCommitment(app, ctx, genAccount, committed, unclaimed)
 
 	commitment, found := app.CommitmentKeeper.GetCommitments(ctx, genAccount.String())
 	require.True(t, found)
-	require.Equal(t, commitment.UncommittedTokens[1].Denom, ptypes.EdenB)
-	require.Equal(t, commitment.UncommittedTokens[1].Amount, sdk.NewInt(20000))
+	require.Equal(t, commitment.RewardsUnclaimed[1].Denom, ptypes.EdenB)
+	require.Equal(t, commitment.RewardsUnclaimed[1].Amount, sdk.NewInt(20000))
 
 	// Track Elys staked amount
 	ik.EndBlocker(ctx)
@@ -76,24 +76,24 @@ func TestBurnEdenBFromElysUnstaked(t *testing.T) {
 	commitment, found = app.CommitmentKeeper.GetCommitments(ctx, genAccount.String())
 	require.True(t, found)
 
-	require.Equal(t, commitment.UncommittedTokens[1].Denom, ptypes.EdenB)
-	require.Equal(t, commitment.UncommittedTokens[1].Amount, sdk.NewInt(17525))
+	require.Equal(t, commitment.RewardsUnclaimed[1].Denom, ptypes.EdenB)
+	require.Equal(t, commitment.RewardsUnclaimed[1].Amount, sdk.NewInt(17525))
 }
 
-func TestBurnEdenBFromEdenUncommitted(t *testing.T) {
+func TestBurnEdenBFromEdenUnclaimed(t *testing.T) {
 	app, genAccount, _ := simapp.InitElysTestAppWithGenAccount()
 	ctx := app.BaseApp.NewContext(initChain, tmproto.Header{})
 
 	ik, cmk := app.IncentiveKeeper, app.CommitmentKeeper
 
 	var committed []sdk.Coins
-	var uncommitted []sdk.Coins
+	var unclaimed []sdk.Coins
 
-	// Prepare uncommitted tokens
+	// Prepare unclaimed tokens
 	uedenToken := sdk.NewCoins(sdk.NewCoin(ptypes.Eden, sdk.NewInt(2000)))
 	uedenBToken := sdk.NewCoins(sdk.NewCoin(ptypes.EdenB, sdk.NewInt(20000)))
-	uncommitted = append(uncommitted, uedenToken)
-	uncommitted = append(uncommitted, uedenBToken)
+	unclaimed = append(unclaimed, uedenToken)
+	unclaimed = append(unclaimed, uedenBToken)
 
 	// Eden
 	err := app.BankKeeper.MintCoins(ctx, ctypes.ModuleName, uedenToken)
@@ -126,12 +126,12 @@ func TestBurnEdenBFromEdenUncommitted(t *testing.T) {
 	require.NoError(t, err)
 
 	// Add testing commitment
-	simapp.AddTestCommitment(app, ctx, genAccount, committed, uncommitted)
+	simapp.AddTestCommitment(app, ctx, genAccount, committed, unclaimed)
 
 	commitment, found := app.CommitmentKeeper.GetCommitments(ctx, genAccount.String())
 	require.True(t, found)
-	require.Equal(t, commitment.UncommittedTokens[1].Denom, ptypes.EdenB)
-	require.Equal(t, commitment.UncommittedTokens[1].Amount, sdk.NewInt(20000))
+	require.Equal(t, commitment.RewardsUnclaimed[1].Denom, ptypes.EdenB)
+	require.Equal(t, commitment.RewardsUnclaimed[1].Amount, sdk.NewInt(20000))
 
 	// Track Elys staked amount
 	ik.EndBlocker(ctx)
@@ -149,10 +149,10 @@ func TestBurnEdenBFromEdenUncommitted(t *testing.T) {
 	_, err = msgServer.UncommitTokens(sdk.WrapSDKContext(ctx), msg)
 	require.NoError(t, err)
 
-	// burn amount = 1000 (uncommitted amt) / (1000000 (elys staked) + 10000 (Eden committed)) * (20000 EdenB + 5000 EdenB committed)
+	// burn amount = 1000 (unclaimed amt) / (1000000 (elys staked) + 10000 (Eden committed)) * (20000 EdenB + 5000 EdenB committed)
 	commitment, found = app.CommitmentKeeper.GetCommitments(ctx, genAccount.String())
 	require.True(t, found)
 
-	require.Equal(t, commitment.UncommittedTokens[1].Denom, ptypes.EdenB)
-	require.Equal(t, commitment.UncommittedTokens[1].Amount, sdk.NewInt(19976))
+	require.Equal(t, commitment.RewardsUnclaimed[1].Denom, ptypes.EdenB)
+	require.Equal(t, commitment.RewardsUnclaimed[1].Amount, sdk.NewInt(19976))
 }
