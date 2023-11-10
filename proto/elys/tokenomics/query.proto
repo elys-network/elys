@@ -40,7 +40,7 @@ service Query {
   
   // Queries a list of TimeBasedInflation items.
   rpc TimeBasedInflation    (QueryGetTimeBasedInflationRequest) returns (QueryGetTimeBasedInflationResponse) {
-    option (google.api.http).get = "/elys-network/elys/tokenomics/time_based_inflation/{startBlockHeight}/{endBlockHeight}";
+    option (google.api.http).get = "/elys-network/elys/tokenomics/time_based_inflation/{start_block_height}/{end_block_height}";
   
   }
   rpc TimeBasedInflationAll (QueryAllTimeBasedInflationRequest) returns (QueryAllTimeBasedInflationResponse) {
@@ -78,16 +78,16 @@ message QueryAllAirdropResponse {
 message QueryGetGenesisInflationRequest {}
 
 message QueryGetGenesisInflationResponse {
-  GenesisInflation GenesisInflation = 1 [(gogoproto.nullable) = false];
+  GenesisInflation genesis_inflation = 1 [(gogoproto.nullable) = false];
 }
 
 message QueryGetTimeBasedInflationRequest {
-  uint64 startBlockHeight = 1;
-  uint64 endBlockHeight   = 2;
+  uint64 start_block_height = 1;
+  uint64 end_block_height   = 2;
 }
 
 message QueryGetTimeBasedInflationResponse {
-  TimeBasedInflation timeBasedInflation = 1 [(gogoproto.nullable) = false];
+  TimeBasedInflation time_based_inflation = 1 [(gogoproto.nullable) = false];
 }
 
 message QueryAllTimeBasedInflationRequest {
@@ -95,7 +95,7 @@ message QueryAllTimeBasedInflationRequest {
 }
 
 message QueryAllTimeBasedInflationResponse {
-  repeated TimeBasedInflation                     timeBasedInflation = 1 [(gogoproto.nullable) = false];
+  repeated TimeBasedInflation                     time_based_inflation = 1 [(gogoproto.nullable) = false];
            cosmos.base.query.v1beta1.PageResponse pagination         = 2;
 }
 

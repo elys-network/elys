@@ -62,15 +62,15 @@ func request_Query_Entry_0(ctx context.Context, marshaler runtime.Marshaler, cli
 		_   = err
 	)
 
-	val, ok = pathParams["baseDenom"]
+	val, ok = pathParams["base_denom"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "baseDenom")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "base_denom")
 	}
 
 	protoReq.BaseDenom, err = runtime.String(val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "baseDenom", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "base_denom", err)
 	}
 
 	msg, err := client.Entry(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
@@ -89,15 +89,15 @@ func local_request_Query_Entry_0(ctx context.Context, marshaler runtime.Marshale
 		_   = err
 	)
 
-	val, ok = pathParams["baseDenom"]
+	val, ok = pathParams["base_denom"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "baseDenom")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "base_denom")
 	}
 
 	protoReq.BaseDenom, err = runtime.String(val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "baseDenom", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "base_denom", err)
 	}
 
 	msg, err := server.Entry(ctx, &protoReq)
@@ -323,7 +323,7 @@ func RegisterQueryHandlerClient(ctx context.Context, mux *runtime.ServeMux, clie
 var (
 	pattern_Query_Params_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"elys-network", "elys", "assetprofile", "params"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_Entry_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"elys-network", "elys", "assetprofile", "entry", "baseDenom"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Query_Entry_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"elys-network", "elys", "assetprofile", "entry", "base_denom"}, "", runtime.AssumeColonVerbOpt(true)))
 
 	pattern_Query_EntryAll_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"elys-network", "elys", "assetprofile", "entry"}, "", runtime.AssumeColonVerbOpt(true)))
 )

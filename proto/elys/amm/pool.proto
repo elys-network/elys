@@ -9,20 +9,20 @@ import "cosmos/base/v1beta1/coin.proto";
 import "cosmos_proto/cosmos.proto";
 
 message Pool {
-  uint64 poolId = 1; 
+  uint64 pool_id = 1; 
   string address = 2; 
-  PoolParams poolParams = 3 [(gogoproto.nullable) = false]; 
-  cosmos.base.v1beta1.Coin totalShares = 4 [(gogoproto.nullable) = false]; 
-  repeated PoolAsset poolAssets = 5 [(gogoproto.nullable) = false]; 
-  string totalWeight = 6 [
+  PoolParams pool_params = 3 [(gogoproto.nullable) = false]; 
+  cosmos.base.v1beta1.Coin total_shares = 4 [(gogoproto.nullable) = false]; 
+  repeated PoolAsset pool_assets = 5 [(gogoproto.nullable) = false]; 
+  string total_weight = 6 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
     (gogoproto.nullable) = false
   ];
-  string rebalanceTreasury = 7;
+  string rebalance_treasury = 7;
 }
 
 message OraclePoolSlippageTrack {
-  uint64 poolId = 1;
+  uint64 pool_id = 1;
   uint64 timestamp = 2;
   repeated cosmos.base.v1beta1.Coin tracked = 3 [
     (gogoproto.nullable) = false,

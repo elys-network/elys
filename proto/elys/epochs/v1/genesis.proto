@@ -18,8 +18,7 @@ message EpochInfo {
   // duration of the epoch
   google.protobuf.Duration duration = 3 [
     (gogoproto.nullable) = false,
-    (gogoproto.stdduration) = true,
-    (gogoproto.jsontag) = "duration,omitempty"
+    (gogoproto.stdduration) = true
   ];
   // current_epoch is the integer identifier of the epoch
   int64 current_epoch = 4;

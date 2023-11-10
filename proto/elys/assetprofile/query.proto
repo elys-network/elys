@@ -21,7 +21,7 @@ service Query {
   
   // Queries a list of Entry items.
   rpc Entry    (QueryGetEntryRequest) returns (QueryGetEntryResponse) {
-    option (google.api.http).get = "/elys-network/elys/assetprofile/entry/{baseDenom}";
+    option (google.api.http).get = "/elys-network/elys/assetprofile/entry/{base_denom}";
   
   }
   rpc EntryAll (QueryAllEntryRequest) returns (QueryAllEntryResponse) {
@@ -40,7 +40,7 @@ message QueryParamsResponse {
 }
 
 message QueryGetEntryRequest {
-  string baseDenom = 1;
+  string base_denom = 1;
 }
 
 message QueryGetEntryResponse {

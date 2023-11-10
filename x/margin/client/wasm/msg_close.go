@@ -6,12 +6,11 @@ import (
 	errorsmod "cosmossdk.io/errors"
 	wasmvmtypes "github.com/CosmWasm/wasmvm/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	wasmbindingstypes "github.com/elys-network/elys/wasmbindings/types"
 	marginkeeper "github.com/elys-network/elys/x/margin/keeper"
 	margintypes "github.com/elys-network/elys/x/margin/types"
 )
 
-func (m *Messenger) msgClose(ctx sdk.Context, contractAddr sdk.AccAddress, msgClose *wasmbindingstypes.MsgClose) ([]sdk.Event, [][]byte, error) {
+func (m *Messenger) msgClose(ctx sdk.Context, contractAddr sdk.AccAddress, msgClose *margintypes.MsgClose) ([]sdk.Event, [][]byte, error) {
 	res, err := PerformMsgClose(m.keeper, ctx, contractAddr, msgClose)
 	if err != nil {
 		return nil, nil, errorsmod.Wrap(err, "perform close")
@@ -27,7 +26,7 @@ func (m *Messenger) msgClose(ctx sdk.Context, contractAddr sdk.AccAddress, msgCl
 	return nil, resp, nil
 }
 
-func PerformMsgClose(f *marginkeeper.Keeper, ctx sdk.Context, contractAddr sdk.AccAddress, msgClose *wasmbindingstypes.MsgClose) (*wasmbindingstypes.MsgCloseResponse, error) {
+func PerformMsgClose(f *marginkeeper.Keeper, ctx sdk.Context, contractAddr sdk.AccAddress, msgClose *margintypes.MsgClose) (*margintypes.MsgCloseResponse, error) {
 	if msgClose == nil {
 		return nil, wasmvmtypes.InvalidRequest{Err: "margin close null margin close"}
 	}
@@ -45,8 +44,6 @@ func PerformMsgClose(f *marginkeeper.Keeper, ctx sdk.Context, contractAddr sdk.A
 		return nil, errorsmod.Wrap(err, "margin close msg")
 	}
 
-	var resp = &wasmbindingstypes.MsgCloseResponse{
-		MetaData: msgClose.MetaData,
-	}
+	var resp = &margintypes.MsgCloseResponse{}
 	return resp, nil
 }

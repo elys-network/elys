@@ -6,8 +6,8 @@ import "elys/tokenomics/inflation_entry.proto";
 option go_package = "github.com/elys-network/elys/x/tokenomics/types";
 
 message TimeBasedInflation {
-  uint64 startBlockHeight = 1; 
-  uint64 endBlockHeight = 2; 
+  uint64 start_block_height = 1; 
+  uint64 end_block_height = 2; 
   string description = 3; 
   InflationEntry inflation = 4; 
   string authority = 5;

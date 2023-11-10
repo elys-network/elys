@@ -11,6 +11,6 @@ option go_package = "github.com/elys-network/elys/x/burner/types";
 // GenesisState defines the burner module's genesis state.
 message GenesisState {
            Params  params      = 1 [(gogoproto.nullable) = false];
-  repeated History historyList = 2 [(gogoproto.nullable) = false];
+  repeated History history_list = 2 [(gogoproto.nullable) = false];
 }
 

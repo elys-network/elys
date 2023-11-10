@@ -3,21 +3,41 @@ package types
 import (
 	"errors"
 
-	cosmos_sdk_math "cosmossdk.io/math"
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	query "github.com/cosmos/cosmos-sdk/types/query"
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
+	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
+	accountedpoolkeeper "github.com/elys-network/elys/x/accountedpool/keeper"
+	accountedpooltypes "github.com/elys-network/elys/x/accountedpool/types"
 	ammkeeper "github.com/elys-network/elys/x/amm/keeper"
-	ammtype "github.com/elys-network/elys/x/amm/types"
+	ammtypes "github.com/elys-network/elys/x/amm/types"
+	assetprofilekeeper "github.com/elys-network/elys/x/assetprofile/keeper"
+	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
+	burnerkeeper "github.com/elys-network/elys/x/burner/keeper"
+	burnertypes "github.com/elys-network/elys/x/burner/types"
+	clockkeeper "github.com/elys-network/elys/x/clock/keeper"
+	clocktypes "github.com/elys-network/elys/x/clock/types"
 	commitmentkeeper "github.com/elys-network/elys/x/commitment/keeper"
-	incentiveclientwasmtypes "github.com/elys-network/elys/x/incentive/client/wasm/types"
+	commitmenttypes "github.com/elys-network/elys/x/commitment/types"
+	epochskeeper "github.com/elys-network/elys/x/epochs/keeper"
+	epochstypes "github.com/elys-network/elys/x/epochs/types"
 	incentivekeeper "github.com/elys-network/elys/x/incentive/keeper"
+	incentivetypes "github.com/elys-network/elys/x/incentive/types"
+	leveragelpkeeper "github.com/elys-network/elys/x/leveragelp/keeper"
+	leveragelptypes "github.com/elys-network/elys/x/leveragelp/types"
 	marginkeeper "github.com/elys-network/elys/x/margin/keeper"
 	margintypes "github.com/elys-network/elys/x/margin/types"
 	oraclekeeper "github.com/elys-network/elys/x/oracle/keeper"
 	oracletypes "github.com/elys-network/elys/x/oracle/types"
+	parameterkeeper "github.com/elys-network/elys/x/parameter/keeper"
+	parametertypes "github.com/elys-network/elys/x/parameter/types"
+	stablestakekeeper "github.com/elys-network/elys/x/stablestake/keeper"
+	stablestaketypes "github.com/elys-network/elys/x/stablestake/types"
+	tokenomicskeeper "github.com/elys-network/elys/x/tokenomics/keeper"
+	tokenomicstypes "github.com/elys-network/elys/x/tokenomics/types"
+	transferhookkeeper "github.com/elys-network/elys/x/transferhook/keeper"
+	transferhooktypes "github.com/elys-network/elys/x/transferhook/types"
 )
 
 // ModuleQuerier is an interface that all module queriers should implement.
@@ -39,14 +59,24 @@ var ErrCannotHandleQuery = errors.New("cannot handle query")
 var ErrCannotHandleMsg = errors.New("cannot handle message")
 
 type QueryPlugin struct {
-	moduleQueriers   []ModuleQuerier
-	ammKeeper        *ammkeeper.Keeper
-	oracleKeeper     *oraclekeeper.Keeper
-	bankKeeper       *bankkeeper.BaseKeeper
-	stakingKeeper    *stakingkeeper.Keeper
-	commitmentKeeper *commitmentkeeper.Keeper
-	marginKeeper     *marginkeeper.Keeper
-	incentiveKeeper  *incentivekeeper.Keeper
+	moduleQueriers      []ModuleQuerier
+	accountedpoolKeeper *accountedpoolkeeper.Keeper
+	ammKeeper           *ammkeeper.Keeper
+	assetprofileKeeper  *assetprofilekeeper.Keeper
+	bankKeeper          *bankkeeper.BaseKeeper
+	burnerKeeper        *burnerkeeper.Keeper
+	clockKeeper         *clockkeeper.Keeper
+	commitmentKeeper    *commitmentkeeper.Keeper
+	epochsKeeper        *epochskeeper.Keeper
+	incentiveKeeper     *incentivekeeper.Keeper
+	leveragelpKeeper    *leveragelpkeeper.Keeper
+	marginKeeper        *marginkeeper.Keeper
+	oracleKeeper        *oraclekeeper.Keeper
+	parameterKeeper     *parameterkeeper.Keeper
+	stablestakeKeeper   *stablestakekeeper.Keeper
+	stakingKeeper       *stakingkeeper.Keeper
+	tokenomicsKeeper    *tokenomicskeeper.Keeper
+	transferhookKeeper  *transferhookkeeper.Keeper
 }
 
 // AllCapabilities returns all capabilities available with the current wasmvm
@@ -63,129 +93,205 @@ func AllCapabilities() []string {
 }
 
 type ElysQuery struct {
-	PriceAll            *PriceAll                   `json:"price_all,omitempty"`
-	QuerySwapEstimation *QuerySwapEstimationRequest `json:"query_swap_estimation,omitempty"`
-	AssetInfo           *AssetInfo                  `json:"asset_info,omitempty"`
-	BalanceOfDenom      *QueryBalanceRequest        `json:"balance_of_denom,omitempty"`
-}
+	// accountedpool queriers
+	AccountedPoolParams           *accountedpooltypes.QueryParamsRequest           `json:"accounted_pool_params,omitempty"`
+	AccountedPoolAccountedPool    *accountedpooltypes.QueryGetAccountedPoolRequest `json:"accounted_pool_accounted_pool,omitempty"`
+	AccountedPoolAccountedPoolAll *accountedpooltypes.QueryAllAccountedPoolRequest `json:"accounted_pool_accounted_pool_all,omitempty"`
 
-type PriceAll struct {
-	Pagination *query.PageRequest `protobuf:"bytes,1,opt,name=pagination,proto3" json:"pagination,omitempty"`
-}
+	// amm queriers
+	AmmParams            *ammtypes.QueryParamsRequest            `json:"amm_params,omitempty"`
+	AmmPool              *ammtypes.QueryGetPoolRequest           `json:"amm_pool,omitempty"`
+	AmmPoolAll           *ammtypes.QueryAllPoolRequest           `json:"amm_pool_all,omitempty"`
+	AmmDenomLiquidity    *ammtypes.QueryGetDenomLiquidityRequest `json:"amm_denom_liquidity,omitempty"`
+	AmmDenomLiquidityAll *ammtypes.QueryAllDenomLiquidityRequest `json:"amm_denom_liquidity_all,omitempty"`
+	AmmSwapEstimation    *ammtypes.QuerySwapEstimationRequest    `json:"amm_swap_estimation,omitempty"`
+	AmmSlippageTrack     *ammtypes.QuerySlippageTrackRequest     `json:"amm_slippage_track,omitempty"`
+	AmmSlippageTrackAll  *ammtypes.QuerySlippageTrackAllRequest  `json:"amm_slippage_track_all,omitempty"`
+	AmmBalance           *ammtypes.QueryBalanceRequest           `json:"amm_balance,omitempty"`
 
-type AllPriceResponse struct {
-	Price      []oracletypes.Price `protobuf:"bytes,1,rep,name=price,proto3" json:"price"`
-	Pagination *query.PageResponse `protobuf:"bytes,2,opt,name=pagination,proto3" json:"pagination,omitempty"`
-}
+	// assetprofile queriers
+	AssetProfileParams   *assetprofiletypes.QueryParamsRequest   `json:"asset_profile_params,omitempty"`
+	AssetProfileEntry    *assetprofiletypes.QueryGetEntryRequest `json:"asset_profile_entry,omitempty"`
+	AssetProfileEntryAll *assetprofiletypes.QueryAllEntryRequest `json:"asset_profile_entry_all,omitempty"`
 
-type QuerySwapEstimationRequest struct {
-	TokenIn sdk.Coin                    `protobuf:"bytes,2,opt,name=tokenIn,proto3" json:"token_in,omitempty"`
-	Routes  []ammtype.SwapAmountInRoute `protobuf:"bytes,1,rep,name=routes,proto3" json:"routes,omitempty"`
-}
+	// burner queriers
+	BurnerParams     *burnertypes.QueryParamsRequest     `json:"burner_params,omitempty"`
+	BurnerHistory    *burnertypes.QueryGetHistoryRequest `json:"burner_history,omitempty"`
+	BurnerHistoryAll *burnertypes.QueryAllHistoryRequest `json:"burner_history_all,omitempty"`
 
-type QuerySwapEstimationResponse struct {
-	SpotPrice sdk.Dec  `protobuf:"bytes,1,opt,name=SpotPrice,proto3" json:"spot_price,omitempty"`
-	TokenOut  sdk.Coin `protobuf:"bytes,2,opt,name=tokenOut,proto3" json:"token_out,omitempty"`
-}
+	// clock queriers
+	ClockClockContracts *clocktypes.QueryClockContracts `json:"clock_clock_contracts,omitempty"`
+	ClockParams         *clocktypes.QueryParamsRequest  `json:"clock_params,omitempty"`
 
-type AssetInfo struct {
-	Denom string `protobuf:"bytes,1,opt,name=Denom,proto3" json:"Denom,omitempty"`
-}
+	// commitment queriers
+	CommitmentParams          *commitmenttypes.QueryParamsRequest          `json:"commitment_params,omitempty"`
+	CommitmentShowCommitments *commitmenttypes.QueryShowCommitmentsRequest `json:"commitment_show_commitments,omitempty"`
 
-type AssetInfoResponse struct {
-	AssetInfo *AssetInfoType `protobuf:"bytes,1,opt,name=AssetInfo,proto3" json:"asset_info,omitempty"`
-}
+	// epochs queriers
+	EpochsEpochInfos   *epochstypes.QueryEpochsInfoRequest   `json:"epochs_epoch_infos,omitempty"`
+	EpochsCurrentEpoch *epochstypes.QueryCurrentEpochRequest `json:"epochs_current_epoch,omitempty"`
 
-type AssetInfoType struct {
-	Denom      string `protobuf:"bytes,1,opt,name=denom,proto3" json:"denom,omitempty"`
-	Display    string `protobuf:"bytes,2,opt,name=display,proto3" json:"display,omitempty"`
-	BandTicker string `protobuf:"bytes,3,opt,name=bandTicker,proto3" json:"band_ticker,omitempty"`
-	ElysTicker string `protobuf:"bytes,4,opt,name=elysTicker,proto3" json:"elys_ticker,omitempty"`
-	Decimal    uint64 `protobuf:"varint,5,opt,name=decimal,proto3" json:"decimal,omitempty"`
-}
+	// incentive queriers
+	IncentiveParams        *incentivetypes.QueryParamsRequest        `json:"incentive_params,omitempty"`
+	IncentiveCommunityPool *incentivetypes.QueryCommunityPoolRequest `json:"incentive_community_pool,omitempty"`
 
-type QueryBalanceRequest struct {
-	Address string `protobuf:"bytes,1,opt,name=address,proto3" json:"address,omitempty"`
-	Denom   string `protobuf:"bytes,2,opt,name=denom,proto3" json:"denom,omitempty"`
-}
+	// leveragelp queriers
+	LeveragelpParams                   *leveragelptypes.ParamsRequest              `json:"leveragelp_params,omitempty"`
+	LeveragelpQueryPositions           *leveragelptypes.PositionsRequest           `json:"leveragelp_query_positions,omitempty"`
+	LeveragelpQueryPositionsByPool     *leveragelptypes.PositionsByPoolRequest     `json:"leveragelp_query_positions_by_pool,omitempty"`
+	LeveragelpGetStatus                *leveragelptypes.StatusRequest              `json:"leveragelp_get_status,omitempty"`
+	LeveragelpQueryPositionsForAddress *leveragelptypes.PositionsForAddressRequest `json:"leveragelp_query_positions_for_address,omitempty"`
+	LeveragelpGetWhitelist             *leveragelptypes.WhitelistRequest           `json:"leveragelp_get_whitelist,omitempty"`
+	LeveragelpIsWhitelisted            *leveragelptypes.IsWhitelistedRequest       `json:"leveragelp_is_whitelisted,omitempty"`
+	LeveragelpPool                     *leveragelptypes.QueryGetPoolRequest        `json:"leveragelp_pool,omitempty"`
+	LeveragelpPools                    *leveragelptypes.QueryAllPoolRequest        `json:"leveragelp_pools,omitempty"`
+	LeveragelpPosition                 *leveragelptypes.PositionRequest            `json:"leveragelp_position,omitempty"`
 
-type QueryBalanceResponse struct {
-	Balance sdk.Coin `protobuf:"bytes,1,opt,name=balance,proto3" json:"balance,omitempty"`
+	// margin queriers
+	MarginParams                 *margintypes.ParamsRequest              `json:"margin_params,omitempty"`
+	MarginQueryPositions         *margintypes.PositionsRequest           `json:"margin_query_positions,omitempty"`
+	MarginQueryPositionsByPool   *margintypes.PositionsByPoolRequest     `json:"margin_query_positions_by_pool,omitempty"`
+	MarginGetStatus              *margintypes.StatusRequest              `json:"margin_get_status,omitempty"`
+	MarginGetPositionsForAddress *margintypes.PositionsForAddressRequest `json:"margin_get_positions_for_address,omitempty"`
+	MarginGetWhitelist           *margintypes.WhitelistRequest           `json:"margin_get_whitelist,omitempty"`
+	MarginIsWhitelisted          *margintypes.IsWhitelistedRequest       `json:"margin_is_whitelisted,omitempty"`
+	MarginPool                   *margintypes.QueryGetPoolRequest        `json:"margin_pool,omitempty"`
+	MarginPools                  *margintypes.QueryAllPoolRequest        `json:"margin_pools,omitempty"`
+	MarginMTP                    *margintypes.MTPRequest                 `json:"margin_mtp,omitempty"`
+
+	// oracle queriers
+	OracleParams            *oracletypes.QueryParamsRequest            `json:"oracle_params,omitempty"`
+	OracleBandPriceResult   *oracletypes.QueryBandPriceRequest         `json:"oracle_band_price_result,omitempty"`
+	OracleLastBandRequestId *oracletypes.QueryLastBandRequestIdRequest `json:"oracle_last_band_request_id,omitempty"`
+	OracleAssetInfo         *oracletypes.QueryGetAssetInfoRequest      `json:"oracle_asset_info,omitempty"`
+	OracleAssetInfoAll      *oracletypes.QueryAllAssetInfoRequest      `json:"oracle_asset_info_all,omitempty"`
+	OraclePrice             *oracletypes.QueryGetPriceRequest          `json:"oracle_price,omitempty"`
+	OraclePriceAll          *oracletypes.QueryAllPriceRequest          `json:"oracle_price_all,omitempty"`
+	OraclePriceFeeder       *oracletypes.QueryGetPriceFeederRequest    `json:"oracle_price_feeder,omitempty"`
+	OraclePriceFeederAll    *oracletypes.QueryAllPriceFeederRequest    `json:"oracle_price_feeder_all,omitempty"`
+
+	// parameter queriers
+	ParameterParams              *parametertypes.QueryParamsRequest              `json:"parameter_params,omitempty"`
+	ParameterAnteHandlerParamAll *parametertypes.QueryAllAnteHandlerParamRequest `json:"parameter_ante_handler_param_all,omitempty"`
+
+	// stablestake queriers
+	StableStakeParams *stablestaketypes.QueryParamsRequest `json:"stable_stake_params,omitempty"`
+
+	// tokenomics queriers
+	TokenomicsParams                *tokenomicstypes.QueryParamsRequest                `json:"tokenomics_params,omitempty"`
+	TokenomicsAirdrop               *tokenomicstypes.QueryGetAirdropRequest            `json:"tokenomics_airdrop,omitempty"`
+	TokenomicsAirdropAll            *tokenomicstypes.QueryAllAirdropRequest            `json:"tokenomics_airdrop_all,omitempty"`
+	TokenomicsGenesisInflation      *tokenomicstypes.QueryGetGenesisInflationRequest   `json:"tokenomics_genesis_inflation,omitempty"`
+	TokenomicsTimeBasedInflation    *tokenomicstypes.QueryGetTimeBasedInflationRequest `json:"tokenomics_time_based_inflation,omitempty"`
+	TokenomicsTimeBasedInflationAll *tokenomicstypes.QueryAllTimeBasedInflationRequest `json:"tokenomics_time_based_inflation_all,omitempty"`
+
+	// transferhook queriers
+	TransferHookParams *transferhooktypes.QueryParamsRequest `json:"transfer_hook_params,omitempty"`
 }
 
 type CustomMessenger struct {
 	wrapped          wasmkeeper.Messenger
 	moduleMessengers []ModuleMessenger
+	accountedpool    *accountedpoolkeeper.Keeper
 	amm              *ammkeeper.Keeper
-	margin           *marginkeeper.Keeper
-	staking          *stakingkeeper.Keeper
+	assetprofile     *assetprofilekeeper.Keeper
+	bank             *bankkeeper.BaseKeeper
+	burner           *burnerkeeper.Keeper
+	clock            *clockkeeper.Keeper
 	commitment       *commitmentkeeper.Keeper
+	epochs           *epochskeeper.Keeper
 	incentive        *incentivekeeper.Keeper
+	leveragelp       *leveragelpkeeper.Keeper
+	margin           *marginkeeper.Keeper
+	oracle           *oraclekeeper.Keeper
+	parameter        *parameterkeeper.Keeper
+	stablestake      *stablestakekeeper.Keeper
+	staking          *stakingkeeper.Keeper
+	tokenomics       *tokenomicskeeper.Keeper
+	transferhook     *transferhookkeeper.Keeper
 }
 
 type ElysMsg struct {
-	MsgSwapExactAmountIn           *MsgSwapExactAmountIn                                    `json:"msg_swap_exact_amount_in,omitempty"`
-	MsgOpen                        *MsgOpen                                                 `json:"msg_open,omitempty"`
-	MsgClose                       *MsgClose                                                `json:"msg_close,omitempty"`
-	MsgStake                       *MsgStake                                                `json:"msg_stake,omitempty"`
-	MsgUnstake                     *MsgUnstake                                              `json:"msg_unstake,omitempty"`
-	MsgBeginRedelegate             *incentiveclientwasmtypes.MsgBeginRedelegate             `json:"msg_begin_redelegate,omitempty"`
-	MsgCancelUnbondingDelegation   *incentiveclientwasmtypes.MsgCancelUnbondingDelegation   `json:"msg_cancel_unbonding_delegation"`
-	MsgVest                        *incentiveclientwasmtypes.MsgVest                        `json:"msg_vest"`
-	MsgCancelVest                  *incentiveclientwasmtypes.MsgCancelVest                  `json:"msg_cancel_vest"`
-	MsgWithdrawRewards             *incentiveclientwasmtypes.MsgWithdrawRewards             `json:"msg_withdraw_rewards"`
-	MsgWithdrawValidatorCommission *incentiveclientwasmtypes.MsgWithdrawValidatorCommission `json:"msg_withdraw_validator_commission"`
-}
+	// accountedpool messages
 
-type MsgSwapExactAmountIn struct {
-	Sender            string                      `protobuf:"bytes,1,opt,name=sender,proto3" json:"sender,omitempty"`
-	Routes            []ammtype.SwapAmountInRoute `protobuf:"bytes,2,rep,name=routes,proto3" json:"routes,omitempty"`
-	TokenIn           sdk.Coin                    `protobuf:"bytes,3,opt,name=tokenIn,proto3" json:"token_in,omitempty"`
-	TokenOutMinAmount cosmos_sdk_math.Int         `protobuf:"bytes,4,opt,name=tokenOutMinAmount,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"token_out_min_amount,omitempty"`
-	MetaData          *[]byte                     `protobuf:"bytes,5,opt,name=tokenData,proto3" json:"meta_data,omitempty"`
-}
+	// amm messages
+	AmmCreatePool                    *ammtypes.MsgCreatePool                    `json:"amm_create_pool,omitempty"`
+	AmmJoinPool                      *ammtypes.MsgJoinPool                      `json:"amm_join_pool,omitempty"`
+	AmmExitPool                      *ammtypes.MsgExitPool                      `json:"amm_exit_pool,omitempty"`
+	AmmSwapExactAmountIn             *ammtypes.MsgSwapExactAmountIn             `json:"amm_swap_exact_amount_in,omitempty"`
+	AmmSwapExactAmountOut            *ammtypes.MsgSwapExactAmountOut            `json:"amm_swap_exact_amount_out,omitempty"`
+	AmmFeedMultipleExternalLiquidity *ammtypes.MsgFeedMultipleExternalLiquidity `json:"amm_feed_multiple_external_liquidity,omitempty"`
 
-type MsgSwapExactAmountInResponse struct {
-	TokenOutAmount cosmos_sdk_math.Int `protobuf:"bytes,1,opt,name=tokenOutAmount,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"token_out_amount,omitempty"`
-	MetaData       *[]byte             `protobuf:"bytes,2,opt,name=tokenData,proto3" json:"meta_data,omitempty"`
-}
+	// assetprofile messages
+	AssetProfileCreateEntry *assetprofiletypes.MsgCreateEntry `json:"asset_profile_create_entry,omitempty"`
+	AssetProfileUpdateEntry *assetprofiletypes.MsgUpdateEntry `json:"asset_profile_update_entry,omitempty"`
+	AssetProfileDeleteEntry *assetprofiletypes.MsgDeleteEntry `json:"asset_profile_delete_entry,omitempty"`
 
-type MsgOpen struct {
-	Creator          string               `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
-	CollateralAsset  string               `protobuf:"bytes,2,opt,name=collateralAsset,proto3" json:"collateral_asset,omitempty"`
-	CollateralAmount sdk.Uint             `protobuf:"bytes,3,opt,name=collateralAmount,proto3" json:"collateral_amount,omitempty"`
-	BorrowAsset      string               `protobuf:"bytes,4,opt,name=borrowAsset,proto3" json:"borrow_asset,omitempty"`
-	Position         margintypes.Position `protobuf:"bytes,5,opt,name=position,proto3" json:"position,omitempty"`
-	Leverage         sdk.Dec              `protobuf:"bytes,6,opt,name=leverage,proto3" json:"leverage,omitempty"`
-	TakeProfitPrice  sdk.Dec              `protobuf:"bytes,7,opt,name=takeProfitPrice,proto3" json:"take_profit_price,omitempty"`
-	MetaData         *[]byte              `protobuf:"bytes,8,opt,name=tokenData,proto3" json:"meta_data,omitempty"`
-}
+	// burner messages
 
-type MsgClose struct {
-	Creator  string  `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
-	Id       int64   `protobuf:"bytes,2,opt,name=id,proto3" json:"id,omitempty"`
-	MetaData *[]byte `protobuf:"bytes,3,opt,name=tokenData,proto3" json:"meta_data,omitempty"`
-}
+	// clock messages
+	ClockUpdateParams *clocktypes.MsgUpdateParams `json:"clock_update_params,omitempty"`
 
-type MsgOpenResponse struct {
-	MetaData *[]byte `protobuf:"bytes,1,opt,name=tokenData,proto3" json:"meta_data,omitempty"`
-}
-type MsgCloseResponse struct {
-	MetaData *[]byte `protobuf:"bytes,1,opt,name=tokenData,proto3" json:"meta_data,omitempty"`
-}
+	// commitment messages
+	CommitmentCommitLiquidTokens     *commitmenttypes.MsgCommitLiquidTokens     `json:"commitment_commit_liquid_tokens,omitempty"`
+	CommitmentCommitUnclaimedRewards *commitmenttypes.MsgCommitUnclaimedRewards `json:"commitment_commit_unclaimed_rewards,omitempty"`
+	CommitmentUncommitTokens         *commitmenttypes.MsgUncommitTokens         `json:"commitment_uncommit_tokens,omitempty"`
+	CommitmentWithdrawTokens         *commitmenttypes.MsgWithdrawTokens         `json:"commitment_withdraw_tokens,omitempty"`
+	CommitmentVest                   *commitmenttypes.MsgVest                   `json:"commitment_vest"`
+	CommitmentVestNow                *commitmenttypes.MsgVestNow                `json:"commitment_vest_now"`
+	CommitmentVestLiquid             *commitmenttypes.MsgVestLiquid             `json:"commitment_vest_liquid"`
+	CommitmentCancelVest             *commitmenttypes.MsgCancelVest             `json:"commitment_cancel_vest"`
+	CommitmentUpdateVestingInfo      *commitmenttypes.MsgUpdateVestingInfo      `json:"commitment_update_vesting_info"`
+	CommitmentStake                  *commitmenttypes.MsgStake                  `json:"commitment_stake,omitempty"`
+	CommitmentUnstake                *commitmenttypes.MsgUnstake                `json:"commitment_unstake,omitempty"`
 
-type MsgStake struct {
-	Address          string              `protobuf:"bytes,1,opt,name=address,proto3" json:"address,omitempty"`
-	Amount           cosmos_sdk_math.Int `protobuf:"bytes,2,opt,name=amount,proto3" json:"amount,omitempty"`
-	Asset            string              `protobuf:"bytes,3,opt,name=asset,proto3" json:"asset,omitempty"`
-	ValidatorAddress string              `protobuf:"bytes,4,opt,name=validator_address,proto3" json:"validator_address,omitempty"`
-}
+	// epochs messages
 
-type MsgUnstake struct {
-	Address          string              `protobuf:"bytes,1,opt,name=address,proto3" json:"address,omitempty"`
-	Amount           cosmos_sdk_math.Int `protobuf:"bytes,2,opt,name=amount,proto3" json:"amount,omitempty"`
-	Asset            string              `protobuf:"bytes,3,opt,name=asset,proto3" json:"asset,omitempty"`
-	ValidatorAddress string              `protobuf:"bytes,4,opt,name=validator_address,proto3" json:"validator_address,omitempty"`
+	// incentive messages
+	IncentiveBeginRedelegate             *stakingtypes.MsgBeginRedelegate               `json:"incentive_begin_redelegate,omitempty"`
+	IncentiveCancelUnbondingDelegation   *stakingtypes.MsgCancelUnbondingDelegation     `json:"incentive_cancel_unbonding_delegation"`
+	IncentiveWithdrawRewards             *incentivetypes.MsgWithdrawRewards             `json:"incentive_withdraw_rewards"`
+	IncentiveWithdrawValidatorCommission *incentivetypes.MsgWithdrawValidatorCommission `json:"incentive_withdraw_validator_commission"`
+
+	// leveragelp messages
+	LeveragelpOpen         *leveragelptypes.MsgOpen         `json:"leveragelp_open,omitempty"`
+	LeveragelpClose        *leveragelptypes.MsgClose        `json:"leveragelp_close,omitempty"`
+	LeveragelpUpdateParams *leveragelptypes.MsgUpdateParams `json:"leveragelp_update_params,omitempty"`
+	LeveragelpUpdatePools  *leveragelptypes.MsgUpdatePools  `json:"leveragelp_update_pools,omitempty"`
+	LeveragelpWhitelist    *leveragelptypes.MsgWhitelist    `json:"leveragelp_whitelist,omitempty"`
+	LeveragelpDewhitelist  *leveragelptypes.MsgDewhitelist  `json:"leveragelp_dewhitelist,omitempty"`
+
+	// margin messages
+	MarginOpen         *margintypes.MsgOpen         `json:"margin_open,omitempty"`
+	MarginClose        *margintypes.MsgClose        `json:"margin_close,omitempty"`
+	MarginUpdateParams *margintypes.MsgUpdateParams `json:"margin_update_params,omitempty"`
+	MarginUpdatePools  *margintypes.MsgUpdatePools  `json:"margin_update_pools,omitempty"`
+	MarginWhitelist    *margintypes.MsgWhitelist    `json:"margin_whitelist,omitempty"`
+	MarginDewhitelist  *margintypes.MsgDewhitelist  `json:"margin_dewhitelist,omitempty"`
+
+	// oracle messages
+	OracleFeedPrice          *oracletypes.MsgFeedPrice          `json:"oracle_feed_price,omitempty"`
+	OracleFeedMultiplePrices *oracletypes.MsgFeedMultiplePrices `json:"oracle_feed_multiple_price,omitempty"`
+	OracleRequestBandPrice   *oracletypes.MsgRequestBandPrice   `json:"oracle_request_band_price,omitempty"`
+	OracleSetPriceFeeder     *oracletypes.MsgSetPriceFeeder     `json:"oracle_set_price_feeder,omitempty"`
+	OracleDeletePriceFeeder  *oracletypes.MsgDeletePriceFeeder  `json:"oracle_delete_price_feeder,omitempty"`
+
+	// parameter messages
+
+	// stablestake messages
+	StakestakeBond   *stablestaketypes.MsgBond   `json:"stablestake_bond,omitempty"`
+	StakestakeUnbond *stablestaketypes.MsgUnbond `json:"stablestake_unbond,omitempty"`
+
+	// tokenomics messages
+	TokenomicsCreateAirdrop            *tokenomicstypes.MsgCreateAirdrop            `json:"tokenomics_create_airdrop,omitempty"`
+	TokenomicsUpdateAirdrop            *tokenomicstypes.MsgUpdateAirdrop            `json:"tokenomics_update_airdrop,omitempty"`
+	TokenomicsDeleteAirdrop            *tokenomicstypes.MsgDeleteAirdrop            `json:"tokenomics_delete_airdrop,omitempty"`
+	TokenomicsUpdateGenesisInflation   *tokenomicstypes.MsgUpdateGenesisInflation   `json:"tokenomics_update_genesis_inflation,omitempty"`
+	TokenomicsCreateTimeBasedInflation *tokenomicstypes.MsgCreateTimeBasedInflation `json:"tokenomics_create_time_based_inflation,omitempty"`
+	TokenomicsUpdateTimeBasedInflation *tokenomicstypes.MsgUpdateTimeBasedInflation `json:"tokenomics_update_time_based_inflation,omitempty"`
+	TokenomicsDeleteTimeBasedInflation *tokenomicstypes.MsgDeleteTimeBasedInflation `json:"tokenomics_delete_time_based_inflation,omitempty"`
+
+	// transferhook messages
 }
 
 type RequestResponse struct {

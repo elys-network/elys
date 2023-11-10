@@ -1,6 +1,5 @@
 # Architecture Guide
 
-
 This section contains documentation on the architecture of the Elys chain, including the current design and components of the system.
 
 <details>
@@ -8,7 +7,7 @@ This section contains documentation on the architecture of the Elys chain, inclu
 
 ## Boilerplate Generation
 
-The boilerplate was generated using `ignite CLI`, which provides a convenient way to generate new chains, modules, messages, and more. The initial modules that are part of the repository include `AssetProfile` and `LiquidityProvider`, both of which were generated using the `ignite CLI`.
+The boilerplate was generated using `ignite CLI`, which provides a convenient way to generate new chains, modules, messages, and more. The initial modules that are part of the repository include `AssetProfile` and few others, both of which were generated using the `ignite CLI`.
 
 `AssetProfile` requires all changes to go through governance proposals (i.e., adding, updating, or deleting an asset profile entry). Similarly, any modules that expose parameters must require governance proposals to update the module parameters.
 

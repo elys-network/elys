@@ -10,8 +10,5 @@ option go_package = 	"github.com/elys-network/elys/x/clock/types";
 // GenesisState - initial state of module
 message GenesisState {
   // Params of this module
-  Params params = 1 [
-    (gogoproto.nullable) = false,
-    (gogoproto.jsontag) = "params,omitempty"
-  ];
+  Params params = 1 [ (gogoproto.nullable) = false ];
 }

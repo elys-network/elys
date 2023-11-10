@@ -8,10 +8,10 @@ import "cosmos/base/v1beta1/coin.proto";
 import "cosmos_proto/cosmos.proto";
 
 message AccountedPool {
-  uint64 poolId = 1; 
-  cosmos.base.v1beta1.Coin totalShares = 2 [(gogoproto.nullable) = false]; 
-  repeated elys.amm.PoolAsset poolAssets = 3 [(gogoproto.nullable) = false]; 
-  string totalWeight = 4 [
+  uint64 pool_id = 1; 
+  cosmos.base.v1beta1.Coin total_shares = 2 [(gogoproto.nullable) = false]; 
+  repeated elys.amm.PoolAsset pool_assets = 3 [(gogoproto.nullable) = false]; 
+  string total_weight = 4 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
     (gogoproto.nullable) = false
   ];

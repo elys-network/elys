@@ -13,8 +13,8 @@ option go_package = "github.com/elys-network/elys/x/tokenomics/types";
 // GenesisState defines the tokenomics module's genesis state.
 message GenesisState {
            Params             params                 = 1 [(gogoproto.nullable) = false];
-  repeated Airdrop            airdropList            = 2 [(gogoproto.nullable) = false];
-           GenesisInflation   genesisInflation       = 3;
-  repeated TimeBasedInflation timeBasedInflationList = 4 [(gogoproto.nullable) = false];
+  repeated Airdrop            airdrop_list            = 2 [(gogoproto.nullable) = false];
+           GenesisInflation   genesis_inflation       = 3;
+  repeated TimeBasedInflation time_based_inflation_list = 4 [(gogoproto.nullable) = false];
 }
 

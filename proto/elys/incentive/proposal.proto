@@ -8,7 +8,7 @@ import "cosmos_proto/cosmos.proto";
 option go_package = "github.com/elys-network/elys/x/incentive/types";
 
 message PoolMultipliers {
-  uint64 poolId = 1;
+  uint64 pool_id = 1;
   string multiplier = 2 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
@@ -18,5 +18,5 @@ message PoolMultipliers {
 message ProposalUpdatePoolMultipliers {
   string title = 1;
   string description = 2;
-  repeated PoolMultipliers poolMultipliers = 3 [ (gogoproto.nullable) = false ];
+  repeated PoolMultipliers pool_multipliers = 3 [ (gogoproto.nullable) = false ];
 }

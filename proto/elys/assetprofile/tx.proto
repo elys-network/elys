@@ -14,51 +14,51 @@ service Msg {
 }
 message MsgCreateEntry {
            string authority                =  1;
-           string baseDenom                =  2;
+           string base_denom                =  2;
            uint64 decimals                 =  3;
            string denom                    =  4;
            string path                     =  5;
-           string ibcChannelId             =  6;
-           string ibcCounterpartyChannelId =  7;
-           string displayName              =  8;
-           string displaySymbol            =  9;
+           string ibc_channel_id             =  6;
+           string ibc_counterparty_channel_id =  7;
+           string display_name              =  8;
+           string display_symbol            =  9;
            string network                  = 10;
            string address                  = 11;
-           string externalSymbol           = 12;
-           string transferLimit            = 13;
+           string external_symbol           = 12;
+           string transfer_limit            = 13;
   repeated string permissions              = 14;
-           string unitDenom                = 15;
-           string ibcCounterpartyDenom     = 16;
-           string ibcCounterpartyChainId   = 17;
+           string unit_denom                = 15;
+           string ibc_counterparty_denom     = 16;
+           string ibc_counterparty_chain_id   = 17;
 }
 
 message MsgCreateEntryResponse {}
 
 message MsgUpdateEntry {
            string authority                =  1;
-           string baseDenom                =  2;
+           string base_denom                =  2;
            uint64 decimals                 =  3;
            string denom                    =  4;
            string path                     =  5;
-           string ibcChannelId             =  6;
-           string ibcCounterpartyChannelId =  7;
-           string displayName              =  8;
-           string displaySymbol            =  9;
+           string ibc_channel_id             =  6;
+           string ibc_counterparty_channel_id =  7;
+           string display_name              =  8;
+           string display_symbol            =  9;
            string network                  = 10;
            string address                  = 11;
-           string externalSymbol           = 12;
-           string transferLimit            = 13;
+           string external_symbol           = 12;
+           string transfer_limit            = 13;
   repeated string permissions              = 14;
-           string unitDenom                = 15;
-           string ibcCounterpartyDenom     = 16;
-           string ibcCounterpartyChainId   = 17;
+           string unit_denom                = 15;
+           string ibc_counterparty_denom     = 16;
+           string ibc_counterparty_chain_id   = 17;
 }
 
 message MsgUpdateEntryResponse {}
 
 message MsgDeleteEntry {
   string authority = 1;
-  string baseDenom = 2;
+  string base_denom = 2;
 }
 
 message MsgDeleteEntryResponse {}
