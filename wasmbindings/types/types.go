@@ -270,11 +270,11 @@ type ElysMsg struct {
 	MarginDewhitelist  *margintypes.MsgDewhitelist  `json:"margin_dewhitelist,omitempty"`
 
 	// oracle messages
-	OracleFeedPrice          *oracletypes.MsgFeedPrice         `json:"oracle_feed_price,omitempty"`
-	OracleFeedMultiplePrices *oracletypes.MsgFeedPrice         `json:"oracle_feed_multiple_price,omitempty"`
-	OracleRequestBandPrice   *oracletypes.MsgRequestBandPrice  `json:"oracle_request_band_price,omitempty"`
-	OracleSetPriceFeeder     *oracletypes.MsgSetPriceFeeder    `json:"oracle_set_price_feeder,omitempty"`
-	OracleDeletePriceFeeder  *oracletypes.MsgDeletePriceFeeder `json:"oracle_delete_price_feeder,omitempty"`
+	OracleFeedPrice          *oracletypes.MsgFeedPrice          `json:"oracle_feed_price,omitempty"`
+	OracleFeedMultiplePrices *oracletypes.MsgFeedMultiplePrices `json:"oracle_feed_multiple_price,omitempty"`
+	OracleRequestBandPrice   *oracletypes.MsgRequestBandPrice   `json:"oracle_request_band_price,omitempty"`
+	OracleSetPriceFeeder     *oracletypes.MsgSetPriceFeeder     `json:"oracle_set_price_feeder,omitempty"`
+	OracleDeletePriceFeeder  *oracletypes.MsgDeletePriceFeeder  `json:"oracle_delete_price_feeder,omitempty"`
 
 	// parameter messages
 

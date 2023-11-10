@@ -25,14 +25,14 @@ func NewMessenger(keeper *keeper.Keeper, stakingKeeper *stakingkeeper.Keeper, co
 
 func (m *Messenger) HandleMsg(ctx sdk.Context, contractAddr sdk.AccAddress, contractIBCPortID string, msg wasmbindingstypes.ElysMsg) ([]sdk.Event, [][]byte, error) {
 	switch {
-	case msg.MsgBeginRedelegate != nil:
-		return m.msgBeginRedelegate(ctx, contractAddr, msg.MsgBeginRedelegate)
-	case msg.MsgCancelUnbondingDelegation != nil:
-		return m.msgCancelUnbondingDelegation(ctx, contractAddr, msg.MsgCancelUnbondingDelegation)
-	case msg.MsgWithdrawRewards != nil:
-		return m.msgWithdrawRewards(ctx, contractAddr, msg.MsgWithdrawRewards)
-	case msg.MsgWithdrawValidatorCommission != nil:
-		return m.msgWithdrawValidatorCommission(ctx, contractAddr, msg.MsgWithdrawValidatorCommission)
+	case msg.IncentiveBeginRedelegate != nil:
+		return m.msgBeginRedelegate(ctx, contractAddr, msg.IncentiveBeginRedelegate)
+	case msg.IncentiveCancelUnbondingDelegation != nil:
+		return m.msgCancelUnbondingDelegation(ctx, contractAddr, msg.IncentiveCancelUnbondingDelegation)
+	case msg.IncentiveWithdrawRewards != nil:
+		return m.msgWithdrawRewards(ctx, contractAddr, msg.IncentiveWithdrawRewards)
+	case msg.IncentiveWithdrawValidatorCommission != nil:
+		return m.msgWithdrawValidatorCommission(ctx, contractAddr, msg.IncentiveWithdrawValidatorCommission)
 	default:
 		// This handler cannot handle the message
 		return nil, nil, wasmbindingstypes.ErrCannotHandleMsg
