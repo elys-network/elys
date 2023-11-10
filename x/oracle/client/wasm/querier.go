@@ -17,10 +17,22 @@ func NewQuerier(keeper *keeper.Keeper) *Querier {
 
 func (oq *Querier) HandleQuery(ctx sdk.Context, query wasmbindingstypes.ElysQuery) ([]byte, error) {
 	switch {
-	case query.PriceAll != nil:
-		return oq.queryPriceAll(ctx, query.PriceAll)
-	case query.AssetInfo != nil:
-		return oq.queryAssetInfo(ctx, query.AssetInfo)
+	case query.OracleParams != nil:
+		return oq.queryParams(ctx, query.OracleParams)
+	case query.OracleBandPriceResult != nil:
+		return oq.queryBandPriceResult(ctx, query.OracleBandPriceResult)
+	case query.OracleLastBandRequestId != nil:
+		return oq.queryLastBandRequestId(ctx, query.OracleLastBandRequestId)
+	case query.OracleAssetInfo != nil:
+		return oq.queryAssetInfo(ctx, query.OracleAssetInfo)
+	case query.OracleAssetInfoAll != nil:
+		return oq.queryAssetInfoAll(ctx, query.OracleAssetInfoAll)
+	case query.OraclePriceAll != nil:
+		return oq.queryPriceAll(ctx, query.OraclePriceAll)
+	case query.OraclePriceFeeder != nil:
+		return oq.queryPriceFeeder(ctx, query.OraclePriceFeeder)
+	case query.OraclePriceFeederAll != nil:
+		return oq.queryPriceFeederAll(ctx, query.OraclePriceFeederAll)
 	default:
 		// This handler cannot handle the query
 		return nil, wasmbindingstypes.ErrCannotHandleQuery

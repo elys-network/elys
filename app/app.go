@@ -806,10 +806,10 @@ func NewElysApp(
 	bankKeeper := app.BankKeeper.(bankkeeper.BaseKeeper)
 	wasmOpts = append(
 		wasmbindingsclient.RegisterCustomPlugins(
-			&bankKeeper,
 			&app.AccountedPoolKeeper,
 			&app.AmmKeeper,
 			&app.AssetprofileKeeper,
+			&bankKeeper,
 			&app.BurnerKeeper,
 			&app.ClockKeeper,
 			&app.CommitmentKeeper,
