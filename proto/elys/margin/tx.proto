@@ -19,12 +19,12 @@ service Msg {
 }
 message MsgOpen {
   string   creator          = 1;
-  string   collateralAsset  = 2;
-  string   collateralAmount = 3 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false];
-  string   borrowAsset      = 4;
+  string   collateral_asset  = 2;
+  string   collateral_amount = 3 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false];
+  string   borrow_asset      = 4;
   Position position         = 5;
   string   leverage         = 6 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
-  string  takeProfitPrice  = 7 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+  string  take_profit_price  = 7 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
 }
 
 message MsgOpenResponse {}
@@ -50,21 +50,21 @@ message MsgUpdateParamsResponse {}
 message MsgUpdatePools {
   string authority            = 1;
   repeated string pools       = 2;
-  repeated string closedPools = 3;
+  repeated string closed_pools = 3;
 }
 
 message MsgUpdatePoolsResponse {}
 
 message MsgWhitelist {
   string authority          = 1;
-  string whitelistedAddress = 2;
+  string whitelisted_address = 2;
 }
 
 message MsgWhitelistResponse {}
 
 message MsgDewhitelist {
   string authority          = 1;
-  string whitelistedAddress = 2;
+  string whitelisted_address = 2;
 }
 
 message MsgDewhitelistResponse {}

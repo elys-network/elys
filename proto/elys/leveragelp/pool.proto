@@ -6,7 +6,7 @@ import "gogoproto/gogo.proto";
 option go_package = "github.com/elys-network/elys/x/leveragelp/types";
 
 message Pool {
-  uint64 ammPoolId = 1;
+  uint64 amm_pool_id = 1;
   string health = 2 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false

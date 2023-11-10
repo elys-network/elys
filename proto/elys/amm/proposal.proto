@@ -13,16 +13,13 @@ option go_package = "github.com/elys-network/elys/x/amm/types";
 message ProposalCreateBalancerPool {
   string title = 1;
   string description = 2;
-  PoolParams poolParams = 3;
-  repeated PoolAsset poolAssets = 4 [ (gogoproto.nullable) = false ];
+  PoolParams pool_params = 3;
+  repeated PoolAsset pool_assets = 4 [ (gogoproto.nullable) = false ];
 }
 
 message ProposalUpdatePoolParams {
   string title = 1;
   string description = 2;
-  uint64 poolId = 3 [ (gogoproto.moretags) = "yaml:\"pool_id\"" ];
-  PoolParams poolParams = 4 [
-    (gogoproto.moretags) = "yaml:\"balancer_pool_params\"",
-    (gogoproto.nullable) = false
-  ];
+  uint64 pool_id = 3;
+  PoolParams pool_params = 4 [ (gogoproto.nullable) = false ];
 }

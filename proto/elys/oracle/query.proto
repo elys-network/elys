@@ -80,11 +80,7 @@ message QueryGetAssetInfoRequest {
 }
 
 message QueryGetAssetInfoResponse {
-	AssetInfo assetInfo = 1 [    
-		(gogoproto.nullable) = false,
-		(gogoproto.jsontag) = "asset_info,omitempty",
-		(gogoproto.moretags) = "yaml:\"asset_info\""
-	  ];
+	AssetInfo asset_info = 1 [ (gogoproto.nullable) = false ];
 }
 
 message QueryAllAssetInfoRequest {
@@ -92,11 +88,7 @@ message QueryAllAssetInfoRequest {
 }
 
 message QueryAllAssetInfoResponse {
-	repeated AssetInfo assetInfo = 1 [    
-		(gogoproto.nullable) = false,
-		(gogoproto.jsontag) = "asset_info,omitempty",
-		(gogoproto.moretags) = "yaml:\"asset_info\""
-	  ];
+	repeated AssetInfo asset_info = 1 [ (gogoproto.nullable) = false ];
 	cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
@@ -124,7 +116,7 @@ message QueryGetPriceFeederRequest {
 }
 
 message QueryGetPriceFeederResponse {
-	PriceFeeder priceFeeder = 1 [(gogoproto.nullable) = false];
+	PriceFeeder price_feeder = 1 [(gogoproto.nullable) = false];
 }
 
 message QueryAllPriceFeederRequest {
@@ -132,7 +124,7 @@ message QueryAllPriceFeederRequest {
 }
 
 message QueryAllPriceFeederResponse {
-	repeated PriceFeeder priceFeeder = 1 [(gogoproto.nullable) = false];
+	repeated PriceFeeder price_feeder = 1 [(gogoproto.nullable) = false];
 	cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 

@@ -39,7 +39,7 @@ message QueryAllAnteHandlerParamRequest {
 }
 
 message QueryAllAnteHandlerParamResponse {
-  repeated AnteHandlerParam                       anteHandlerParam = 1 [(gogoproto.nullable) = false];
+  repeated AnteHandlerParam                       ante_handler_param = 1 [(gogoproto.nullable) = false];
            cosmos.base.query.v1beta1.PageResponse pagination       = 2;
 }
 

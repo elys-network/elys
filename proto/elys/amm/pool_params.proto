@@ -7,38 +7,38 @@ import "cosmos_proto/cosmos.proto";
 option go_package = "github.com/elys-network/elys/x/amm/types";
 
 message PoolParams {
-  string swapFee = 1 [
+  string swap_fee = 1 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
-  string exitFee = 2 [
+  string exit_fee = 2 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
-  bool useOracle = 3;
-  string weightBreakingFeeMultiplier = 4 [
+  bool use_oracle = 3;
+  string weight_breaking_fee_multiplier = 4 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
-  string externalLiquidityRatio = 5 [
+  string external_liquidity_ratio = 5 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
-  string lpFeePortion = 6 [
+  string lp_fee_portion = 6 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
-  string stakingFeePortion = 7 [
+  string staking_fee_portion = 7 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
-  string weightRecoveryFeePortion = 8 [
+  string weight_recovery_fee_portion = 8 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
-  string thresholdWeightDifference = 9 [
+  string threshold_weight_difference = 9 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
-  string feeDenom = 10; // denom for fee collection
+  string fee_denom = 10; // denom for fee collection
 }

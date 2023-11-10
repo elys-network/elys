@@ -8,13 +8,7 @@ option go_package = "github.com/elys-network/elys/x/oracle/types";
 message AssetInfo {
   string denom = 1;
   string display = 2;
-  string bandTicker = 3 [    
-		(gogoproto.jsontag) = "band_ticker,omitempty",
-		(gogoproto.moretags) = "yaml:\"band_ticker\""
-	  ];
-  string elysTicker = 4 [    
-		(gogoproto.jsontag) = "elys_ticker,omitempty",
-		(gogoproto.moretags) = "yaml:\"elys_ticker\""
-	  ];
+  string band_ticker = 3;
+  string elys_ticker = 4;
   uint64 decimal = 5;
 }

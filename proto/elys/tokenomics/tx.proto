@@ -45,8 +45,8 @@ message MsgDeleteAirdropResponse {}
 message MsgUpdateGenesisInflation {
   string         authority             = 1;
   InflationEntry inflation             = 3;
-  uint64         seedVesting           = 4;
-  uint64         strategicSalesVesting = 5;
+  uint64         seed_vesting           = 4;
+  uint64         strategic_sales_vesting = 5;
 }
 
 message MsgUpdateGenesisInflationResponse {}
@@ -57,8 +57,8 @@ message MsgDeleteGenesisInflation {
 
 message MsgCreateTimeBasedInflation {
   string         authority        = 1;
-  uint64         startBlockHeight = 2;
-  uint64         endBlockHeight   = 3;
+  uint64         start_block_height = 2;
+  uint64         end_block_height   = 3;
   string         description      = 4;
   InflationEntry inflation        = 5;
 }
@@ -67,8 +67,8 @@ message MsgCreateTimeBasedInflationResponse {}
 
 message MsgUpdateTimeBasedInflation {
   string         authority        = 1;
-  uint64         startBlockHeight = 2;
-  uint64         endBlockHeight   = 3;
+  uint64         start_block_height = 2;
+  uint64         end_block_height   = 3;
   string         description      = 4;
   InflationEntry inflation        = 5;
 }
@@ -77,8 +77,8 @@ message MsgUpdateTimeBasedInflationResponse {}
 
 message MsgDeleteTimeBasedInflation {
   string authority        = 1;
-  uint64 startBlockHeight = 2;
-  uint64 endBlockHeight   = 3;
+  uint64 start_block_height = 2;
+  uint64 end_block_height   = 3;
 }
 
 message MsgDeleteTimeBasedInflationResponse {}

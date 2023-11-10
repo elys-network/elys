@@ -12,9 +12,9 @@ option go_package = "github.com/elys-network/elys/x/amm/types";
 // GenesisState defines the amm module's genesis state.
 message GenesisState {
            Params         params             = 1 [(gogoproto.nullable) = false];
-  repeated Pool           poolList           = 2 [(gogoproto.nullable) = false];
-  repeated DenomLiquidity denomLiquidityList = 3 [(gogoproto.nullable) = false];
-  repeated OraclePoolSlippageTrack slippageTracks = 4
+  repeated Pool           pool_list           = 2 [(gogoproto.nullable) = false];
+  repeated DenomLiquidity denom_liquidity_list = 3 [(gogoproto.nullable) = false];
+  repeated OraclePoolSlippageTrack slippage_tracks = 4
       [ (gogoproto.nullable) = false ];
 }
 

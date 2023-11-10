@@ -27,10 +27,7 @@ message QueryClockContracts {}
 
 // QueryClockContractsResponse is the response type for the Query/ClockContracts RPC method.
 message QueryClockContractsResponse {
-  repeated string contract_addresses = 1 [    
-    (gogoproto.jsontag) = "contract_addresses,omitempty",
-    (gogoproto.moretags) = "yaml:\"contract_addresses\""
-  ];
+  repeated string contract_addresses = 1;
 }
 
 // QueryParams is the request type to get all module params.
@@ -38,5 +35,5 @@ message QueryParamsRequest {}
 
 // QueryClockContractsResponse is the response type for the Query/ClockContracts RPC method.
 message QueryParamsResponse {
-  Params params = 1 [(gogoproto.jsontag) = "params", (gogoproto.moretags) = "yaml:\"params\""];
+  Params params = 1;
 }
