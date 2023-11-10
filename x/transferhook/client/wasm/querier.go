@@ -19,8 +19,8 @@ func NewQuerier(keeper *keeper.Keeper) *Querier {
 
 func (oq *Querier) HandleQuery(ctx sdk.Context, query wasmbindingstypes.ElysQuery) ([]byte, error) {
 	switch {
-	case query.BalanceOfDenom != nil:
-		return oq.queryDummy(ctx, query.BalanceOfDenom)
+	case query.TransferHookParams != nil:
+		return oq.queryParams(ctx, query.TransferHookParams)
 	default:
 		// This handler cannot handle the query
 		return nil, wasmbindingstypes.ErrCannotHandleQuery

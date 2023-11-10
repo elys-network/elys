@@ -27,6 +27,8 @@ func (oq *Querier) HandleQuery(ctx sdk.Context, query wasmbindingstypes.ElysQuer
 		return oq.queryAssetInfo(ctx, query.OracleAssetInfo)
 	case query.OracleAssetInfoAll != nil:
 		return oq.queryAssetInfoAll(ctx, query.OracleAssetInfoAll)
+	case query.OraclePrice != nil:
+		return oq.queryPrice(ctx, query.OraclePrice)
 	case query.OraclePriceAll != nil:
 		return oq.queryPriceAll(ctx, query.OraclePriceAll)
 	case query.OraclePriceFeeder != nil:

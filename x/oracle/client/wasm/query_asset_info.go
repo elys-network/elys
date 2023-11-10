@@ -8,10 +8,8 @@ import (
 	oracletypes "github.com/elys-network/elys/x/oracle/types"
 )
 
-func (oq *Querier) queryAssetInfo(ctx sdk.Context, assetInfo *oracletypes.QueryGetAssetInfoRequest) ([]byte, error) {
-	denom := assetInfo.Denom
-
-	res, err := oq.keeper.AssetInfo(ctx, &oracletypes.QueryGetAssetInfoRequest{Denom: denom})
+func (oq *Querier) queryAssetInfo(ctx sdk.Context, req *oracletypes.QueryGetAssetInfoRequest) ([]byte, error) {
+	res, err := oq.keeper.AssetInfo(ctx, req)
 	if err != nil {
 		return nil, errorsmod.Wrap(err, "failed to query asset info")
 	}

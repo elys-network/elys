@@ -19,8 +19,12 @@ func NewQuerier(keeper *keeper.Keeper) *Querier {
 
 func (oq *Querier) HandleQuery(ctx sdk.Context, query wasmbindingstypes.ElysQuery) ([]byte, error) {
 	switch {
-	case query.BalanceOfDenom != nil:
-		return oq.queryDummy(ctx, query.BalanceOfDenom)
+	case query.AssetProfileParams != nil:
+		return oq.queryParams(ctx, query.AssetProfileParams)
+	case query.AssetProfileEntry != nil:
+		return oq.queryEntry(ctx, query.AssetProfileEntry)
+	case query.AssetProfileEntryAll != nil:
+		return oq.queryEntryAll(ctx, query.AssetProfileEntryAll)
 	default:
 		// This handler cannot handle the query
 		return nil, wasmbindingstypes.ErrCannotHandleQuery

@@ -19,6 +19,10 @@ func NewQuerier(keeper *keeper.Keeper) *Querier {
 
 func (oq *Querier) HandleQuery(ctx sdk.Context, query wasmbindingstypes.ElysQuery) ([]byte, error) {
 	switch {
+	case query.IncentiveParams != nil:
+		return oq.queryParams(ctx, query.IncentiveParams)
+	case query.IncentiveCommunityPool != nil:
+		return oq.queryCommunityPool(ctx, query.IncentiveCommunityPool)
 	default:
 		// This handler cannot handle the query
 		return nil, wasmbindingstypes.ErrCannotHandleQuery
