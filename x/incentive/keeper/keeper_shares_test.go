@@ -20,60 +20,38 @@ func TestCalculateTotalShareOfStaking(t *testing.T) {
 	// Generate 2 random accounts with 1000000uelys balanced
 	addr := simapp.AddTestAddrs(app, ctx, 2, sdk.NewInt(1000))
 
-	var committed []sdk.Coins
-	var unclaimed []sdk.Coins
+	var committed sdk.Coins
+	var unclaimed sdk.Coins
 
 	// Prepare unclaimed tokens
-	uedenToken := sdk.NewCoins(sdk.NewCoin(ptypes.Eden, sdk.NewInt(1000)))
-	uedenBToken := sdk.NewCoins(sdk.NewCoin(ptypes.EdenB, sdk.NewInt(1000)))
-	unclaimed = append(unclaimed, uedenToken)
-	unclaimed = append(unclaimed, uedenBToken)
+	uedenToken := sdk.NewCoin(ptypes.Eden, sdk.NewInt(1000))
+	uedenBToken := sdk.NewCoin(ptypes.EdenB, sdk.NewInt(1000))
+	unclaimed = unclaimed.Add(uedenToken, uedenBToken)
 
-	// Eden
-	err := app.BankKeeper.MintCoins(ctx, ctypes.ModuleName, uedenToken)
+	// Mint coins
+	err := app.BankKeeper.MintCoins(ctx, ctypes.ModuleName, unclaimed)
 	require.NoError(t, err)
-	err = app.BankKeeper.SendCoinsFromModuleToAccount(ctx, ctypes.ModuleName, addr[0], uedenToken)
-	require.NoError(t, err)
-
-	err = app.BankKeeper.MintCoins(ctx, ctypes.ModuleName, uedenToken)
-	require.NoError(t, err)
-	err = app.BankKeeper.SendCoinsFromModuleToAccount(ctx, ctypes.ModuleName, addr[1], uedenToken)
+	err = app.BankKeeper.SendCoinsFromModuleToAccount(ctx, ctypes.ModuleName, addr[0], unclaimed)
 	require.NoError(t, err)
 
-	// EdenB
-	err = app.BankKeeper.MintCoins(ctx, ctypes.ModuleName, uedenBToken)
+	err = app.BankKeeper.MintCoins(ctx, ctypes.ModuleName, unclaimed)
 	require.NoError(t, err)
-	err = app.BankKeeper.SendCoinsFromModuleToAccount(ctx, ctypes.ModuleName, addr[0], uedenBToken)
-	require.NoError(t, err)
-
-	err = app.BankKeeper.MintCoins(ctx, ctypes.ModuleName, uedenBToken)
-	require.NoError(t, err)
-	err = app.BankKeeper.SendCoinsFromModuleToAccount(ctx, ctypes.ModuleName, addr[1], uedenBToken)
+	err = app.BankKeeper.SendCoinsFromModuleToAccount(ctx, ctypes.ModuleName, addr[1], unclaimed)
 	require.NoError(t, err)
 
 	// Prepare committed tokens
-	uedenToken = sdk.NewCoins(sdk.NewCoin(ptypes.Eden, sdk.NewInt(1000)))
-	uedenBToken = sdk.NewCoins(sdk.NewCoin(ptypes.EdenB, sdk.NewInt(1000)))
-	committed = append(committed, uedenToken)
-	committed = append(committed, uedenBToken)
+	uedenToken = sdk.NewCoin(ptypes.Eden, sdk.NewInt(1000))
+	uedenBToken = sdk.NewCoin(ptypes.EdenB, sdk.NewInt(1000))
+	committed = committed.Add(uedenToken, uedenBToken)
 
 	// Eden
-	err = app.BankKeeper.MintCoins(ctx, ctypes.ModuleName, uedenToken)
+	err = app.BankKeeper.MintCoins(ctx, ctypes.ModuleName, committed)
 	require.NoError(t, err)
-	err = app.BankKeeper.SendCoinsFromModuleToAccount(ctx, ctypes.ModuleName, addr[0], uedenToken)
+	err = app.BankKeeper.SendCoinsFromModuleToAccount(ctx, ctypes.ModuleName, addr[0], committed)
 
-	err = app.BankKeeper.MintCoins(ctx, ctypes.ModuleName, uedenToken)
+	err = app.BankKeeper.MintCoins(ctx, ctypes.ModuleName, committed)
 	require.NoError(t, err)
-	err = app.BankKeeper.SendCoinsFromModuleToAccount(ctx, ctypes.ModuleName, addr[1], uedenToken)
-
-	// EdenB
-	err = app.BankKeeper.MintCoins(ctx, ctypes.ModuleName, uedenBToken)
-	require.NoError(t, err)
-	err = app.BankKeeper.SendCoinsFromModuleToAccount(ctx, ctypes.ModuleName, addr[0], uedenBToken)
-
-	err = app.BankKeeper.MintCoins(ctx, ctypes.ModuleName, uedenBToken)
-	require.NoError(t, err)
-	err = app.BankKeeper.SendCoinsFromModuleToAccount(ctx, ctypes.ModuleName, addr[1], uedenBToken)
+	err = app.BankKeeper.SendCoinsFromModuleToAccount(ctx, ctypes.ModuleName, addr[1], committed)
 
 	// Add testing commitment
 	simapp.AddTestCommitment(app, ctx, addr[0], committed, unclaimed)

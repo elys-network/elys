@@ -47,12 +47,12 @@ func (k msgServer) CommitLiquidTokens(goCtx context.Context, msg *types.MsgCommi
 		commitments = types.Commitments{
 			Creator:          msg.Creator,
 			CommittedTokens:  []*types.CommittedTokens{},
-			RewardsUnclaimed: []*types.RewardsUnclaimed{},
+			RewardsUnclaimed: sdk.Coins{},
 		}
 	}
 
 	// Update the commitments
-	commitments.AddCommitedTokens(msg.Denom, msg.Amount, uint64(ctx.BlockTime().Unix())+msg.MinLock)
+	commitments.AddCommittedTokens(msg.Denom, msg.Amount, uint64(ctx.BlockTime().Unix())+msg.MinLock)
 	k.SetCommitments(ctx, commitments)
 
 	// Emit Hook commitment changed

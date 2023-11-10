@@ -52,7 +52,7 @@ func TestVestNow(t *testing.T) {
 	keeper.SetParams(ctx, params)
 
 	// Set up initial commitments object with sufficient unclaimed & committed tokens
-	rewardsUnclaimed := types.RewardsUnclaimed{
+	rewardsUnclaimed := sdk.Coin{
 		Denom:  denom,
 		Amount: initialUnclaimed,
 	}
@@ -64,7 +64,7 @@ func TestVestNow(t *testing.T) {
 
 	initialCommitments := types.Commitments{
 		Creator:          creator,
-		RewardsUnclaimed: []*types.RewardsUnclaimed{&rewardsUnclaimed},
+		RewardsUnclaimed: sdk.Coins{rewardsUnclaimed},
 		CommittedTokens:  []*types.CommittedTokens{&committedTokens},
 	}
 

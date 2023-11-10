@@ -130,23 +130,10 @@ func (k Keeper) StandardStakingToken(ctx sdk.Context, delegator string, validato
 		commitments = types.Commitments{
 			Creator:          delegator,
 			CommittedTokens:  []*types.CommittedTokens{},
-			RewardsUnclaimed: []*types.RewardsUnclaimed{},
+			RewardsUnclaimed: sdk.Coins{},
 		}
+		k.SetCommitments(ctx, commitments)
 	}
-	// Get the unclaimed tokens for the delegator
-	rewardUnclaimed, _ := commitments.GetRewardsUnclaimedForDenom(denom)
-	if !found {
-		rewardsUnclaimed := commitments.GetRewardsUnclaimed()
-		rewardUnclaimed = &types.RewardsUnclaimed{
-			Denom:  denom,
-			Amount: sdk.ZeroInt(),
-		}
-		rewardsUnclaimed = append(rewardsUnclaimed, rewardUnclaimed)
-		commitments.RewardsUnclaimed = rewardsUnclaimed
-	}
-
-	// Update the commitments
-	k.SetCommitments(ctx, commitments)
 
 	// Emit blockchain event
 	ctx.EventManager().EmitEvent(
@@ -166,23 +153,10 @@ func (k Keeper) StandardStakingToken(ctx sdk.Context, delegator string, validato
 		commitments = types.Commitments{
 			Creator:          validator,
 			CommittedTokens:  []*types.CommittedTokens{},
-			RewardsUnclaimed: []*types.RewardsUnclaimed{},
+			RewardsUnclaimed: sdk.Coins{},
 		}
+		k.SetCommitments(ctx, commitments)
 	}
-	// Get the unclaimed tokens for the validator
-	rewardUnclaimed, _ = commitments.GetRewardsUnclaimedForDenom(denom)
-	if !found {
-		rewardsUnclaimed := commitments.GetRewardsUnclaimed()
-		rewardUnclaimed = &types.RewardsUnclaimed{
-			Denom:  denom,
-			Amount: sdk.ZeroInt(),
-		}
-		rewardsUnclaimed = append(rewardsUnclaimed, rewardUnclaimed)
-		commitments.RewardsUnclaimed = rewardsUnclaimed
-	}
-
-	// Update the commitments
-	k.SetCommitments(ctx, commitments)
 
 	// Emit Hook commitment changed
 	k.AfterCommitmentChange(ctx, delegator, sdk.NewCoin(denom, sdk.ZeroInt()))

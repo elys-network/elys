@@ -9,22 +9,22 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestMsgCommitUnclaimedRewards_ValidateBasic(t *testing.T) {
+func TestMsgCommitClaimedRewards_ValidateBasic(t *testing.T) {
 	tests := []struct {
 		name string
-		msg  MsgCommitUnclaimedRewards
+		msg  MsgCommitClaimedRewards
 		err  error
 	}{
 		{
 			name: "invalid address",
-			msg: MsgCommitUnclaimedRewards{
+			msg: MsgCommitClaimedRewards{
 				Creator: "invalid_address",
 				Amount:  sdk.ZeroInt(),
 			},
 			err: sdkerrors.ErrInvalidAddress,
 		}, {
 			name: "valid address",
-			msg: MsgCommitUnclaimedRewards{
+			msg: MsgCommitClaimedRewards{
 				Creator: sample.AccAddress(),
 				Amount:  sdk.ZeroInt(),
 			},

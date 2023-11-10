@@ -44,25 +44,12 @@ func (k Keeper) DepositLiquidTokensUnclaimed(ctx sdk.Context, denom string, amou
 		commitments = types.Commitments{
 			Creator:          creator,
 			CommittedTokens:  []*types.CommittedTokens{},
-			RewardsUnclaimed: []*types.RewardsUnclaimed{},
+			RewardsUnclaimed: sdk.Coins{},
 		}
-	}
-	// Get the unclaimed rewards for the creator
-	rewardUnclaimed, found := commitments.GetRewardsUnclaimedForDenom(denom)
-	if !found {
-		rewardsUnclaimed := commitments.GetRewardsUnclaimed()
-		rewardUnclaimed = &types.RewardsUnclaimed{
-			Denom:  denom,
-			Amount: sdk.ZeroInt(),
-		}
-		rewardsUnclaimed = append(rewardsUnclaimed, rewardUnclaimed)
-		commitments.RewardsUnclaimed = rewardsUnclaimed
 	}
 
 	// Update the unclaimed rewards amount
-	rewardUnclaimed.Amount = rewardUnclaimed.Amount.Add(amount)
-
-	// Update the commitments
+	commitments.AddRewardsUnclaimed(sdk.NewCoin(denom, amount))
 	k.SetCommitments(ctx, commitments)
 
 	return nil

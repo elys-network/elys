@@ -34,7 +34,7 @@ func TestWithdrawTokens(t *testing.T) {
 	initialCommitted := sdk.NewInt(100)
 
 	// Set up initial commitments object with sufficient unclaimed & committed tokens
-	rewardsUnclaimed := types.RewardsUnclaimed{
+	rewardsUnclaimed := sdk.Coin{
 		Denom:  denom,
 		Amount: initialUnclaimed,
 	}
@@ -46,7 +46,7 @@ func TestWithdrawTokens(t *testing.T) {
 
 	initialCommitments := types.Commitments{
 		Creator:          creator,
-		RewardsUnclaimed: []*types.RewardsUnclaimed{&rewardsUnclaimed},
+		RewardsUnclaimed: sdk.Coins{rewardsUnclaimed},
 		CommittedTokens:  []*types.CommittedTokens{&committedTokens},
 	}
 

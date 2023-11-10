@@ -4,13 +4,25 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-func (c *Commitments) GetRewardsUnclaimedForDenom(denom string) (*RewardsUnclaimed, bool) {
+func (c *Commitments) GetRewardsUnclaimedForDenom(denom string) (sdk.Coin, bool) {
 	for _, token := range c.RewardsUnclaimed {
 		if token.Denom == denom {
 			return token, true
 		}
 	}
-	return &RewardsUnclaimed{}, false
+	return sdk.Coin{}, false
+}
+
+func (c *Commitments) AddRewardsUnclaimed(amount sdk.Coin) {
+	c.RewardsUnclaimed = c.RewardsUnclaimed.Add(amount)
+}
+
+func (c *Commitments) SubRewardsUnclaimed(amount sdk.Coin) error {
+	if c.RewardsUnclaimed.AmountOf(amount.Denom).LT(amount.Amount) {
+		return ErrInsufficientRewardsUnclaimed
+	}
+	c.RewardsUnclaimed = c.RewardsUnclaimed.Sub(amount)
+	return nil
 }
 
 func (c *Commitments) GetCommittedTokensForDenom(denom string) (*CommittedTokens, bool) {
@@ -40,7 +52,7 @@ func (c *Commitments) GetCommittedAmountForDenom(denom string) sdk.Int {
 	return sdk.NewInt(0)
 }
 
-func (c *Commitments) AddCommitedTokens(denom string, amount sdk.Int, unlockTime uint64) {
+func (c *Commitments) AddCommittedTokens(denom string, amount sdk.Int, unlockTime uint64) {
 	for i, token := range c.CommittedTokens {
 		if token.Denom == denom {
 			c.CommittedTokens[i].Amount = token.Amount.Add(amount)

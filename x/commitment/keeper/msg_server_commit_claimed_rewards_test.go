@@ -14,7 +14,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestCommitUnclaimedRewards(t *testing.T) {
+func TestCommitClaimedRewards(t *testing.T) {
 	// Create a test context and keeper
 	app := app.InitElysTestApp(true)
 
@@ -30,14 +30,10 @@ func TestCommitUnclaimedRewards(t *testing.T) {
 	commitAmount := sdk.NewInt(100)
 
 	// Set up initial commitments object with sufficient unclaimed tokens
-	rewardsUnclaimed := types.RewardsUnclaimed{
-		Denom:  denom,
-		Amount: initialUnclaimed,
-	}
-
+	rewardsUnclaimed := sdk.NewCoin(denom, initialUnclaimed)
 	initialCommitments := types.Commitments{
 		Creator:          creator,
-		RewardsUnclaimed: []*types.RewardsUnclaimed{&rewardsUnclaimed},
+		RewardsUnclaimed: sdk.Coins{rewardsUnclaimed},
 	}
 
 	keeper.SetCommitments(ctx, initialCommitments)
@@ -45,13 +41,13 @@ func TestCommitUnclaimedRewards(t *testing.T) {
 	// Set assetprofile entry for denom
 	app.AssetprofileKeeper.SetEntry(ctx, aptypes.Entry{BaseDenom: denom, CommitEnabled: true})
 
-	// Call the CommitUnclaimedRewards function
-	msg := types.MsgCommitUnclaimedRewards{
+	// Call the CommitClaimedRewards function
+	msg := types.MsgCommitClaimedRewards{
 		Creator: creator,
 		Amount:  commitAmount,
 		Denom:   denom,
 	}
-	_, err := msgServer.CommitUnclaimedRewards(ctx, &msg)
+	_, err := msgServer.CommitClaimedRewards(ctx, &msg)
 	require.NoError(t, err)
 
 	// Check if the committed tokens have been added to the store

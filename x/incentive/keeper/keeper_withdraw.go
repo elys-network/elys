@@ -16,10 +16,10 @@ func (k Keeper) UpdateTokensForValidator(ctx sdk.Context, validator string, newU
 	}
 
 	// Update Eden amount
-	k.UpdateTokensCommitment(&commitments, newUnclaimedEdenTokens, ptypes.Eden)
+	commitments.AddRewardsUnclaimed(sdk.NewCoin(ptypes.Eden, newUnclaimedEdenTokens))
 
 	// Update USDC amount
-	k.UpdateTokensCommitment(&commitments, dexRewards.TruncateInt(), ptypes.BaseCurrency)
+	commitments.AddRewardsUnclaimed(sdk.NewCoin(ptypes.BaseCurrency, dexRewards.TruncateInt()))
 
 	// Update commmitment
 	k.cmk.SetCommitments(ctx, commitments)

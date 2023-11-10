@@ -9,8 +9,8 @@ import (
 	"github.com/elys-network/elys/x/commitment/types"
 )
 
-// CommitUnclaimedRewards commit the tokens on unclaimed store to committed
-func (k msgServer) CommitUnclaimedRewards(goCtx context.Context, msg *types.MsgCommitUnclaimedRewards) (*types.MsgCommitUnclaimedRewardsResponse, error) {
+// CommitClaimedRewards commit the tokens on unclaimed store to committed
+func (k msgServer) CommitClaimedRewards(goCtx context.Context, msg *types.MsgCommitClaimedRewards) (*types.MsgCommitClaimedRewardsResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	assetProfile, found := k.apKeeper.GetEntry(ctx, msg.Denom)
@@ -28,31 +28,14 @@ func (k msgServer) CommitUnclaimedRewards(goCtx context.Context, msg *types.MsgC
 		return nil, sdkerrors.Wrapf(types.ErrCommitmentsNotFound, "creator: %s", msg.Creator)
 	}
 
-	// Check if the unclaimed tokens have enough amount to be committed
-	rewardUnclaimed, found := commitments.GetRewardsUnclaimedForDenom(msg.Denom)
-	if !found {
-		return nil, sdkerrors.Wrapf(types.ErrInsufficientRewardsUnclaimed, "creator: %s", msg.Creator)
+	// Decrease unclaimed tokens amount
+	err := commitments.SubRewardsUnclaimed(sdk.NewCoin(msg.Denom, msg.Amount))
+	if err != nil {
+		return nil, err
 	}
 
-	if rewardUnclaimed.Amount.LT(msg.Amount) {
-		return nil, sdkerrors.Wrapf(types.ErrInsufficientRewardsUnclaimed, "creator: %s, denom: %s", msg.Creator, msg.Denom)
-	}
-
-	// Update the unclaimed tokens amount
-	rewardUnclaimed.Amount = rewardUnclaimed.Amount.Sub(msg.Amount)
-
-	// Update the committed tokens amount
-	committedToken, found := commitments.GetCommittedTokensForDenom(msg.Denom)
-	if found {
-		committedToken.Amount = committedToken.Amount.Add(msg.Amount)
-	} else {
-		committedTokens := commitments.GetCommittedTokens()
-		committedTokens = append(committedTokens, &types.CommittedTokens{
-			Denom:  msg.Denom,
-			Amount: msg.Amount,
-		})
-		commitments.CommittedTokens = committedTokens
-	}
+	// Increase committed tokens
+	commitments.AddCommittedTokens(msg.Denom, msg.Amount, uint64(ctx.BlockTime().Unix()))
 
 	// Update the commitments
 	k.SetCommitments(ctx, commitments)
@@ -70,5 +53,5 @@ func (k msgServer) CommitUnclaimedRewards(goCtx context.Context, msg *types.MsgC
 		),
 	)
 
-	return &types.MsgCommitUnclaimedRewardsResponse{}, nil
+	return &types.MsgCommitClaimedRewardsResponse{}, nil
 }

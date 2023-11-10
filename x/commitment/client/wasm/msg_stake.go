@@ -80,13 +80,13 @@ func performMsgCommit(f *commitmentkeeper.Keeper, ctx sdk.Context, contractAddr 
 		return nil, wasmvmtypes.InvalidRequest{Err: "Invalid staking parameter"}
 	}
 	msgServer := commitmentkeeper.NewMsgServerImpl(*f)
-	msgMsgCommit := commitmenttypes.NewMsgCommitUnclaimedRewards(msgStake.Address, msgStake.Amount, msgStake.Asset)
+	msgMsgCommit := commitmenttypes.NewMsgCommitClaimedRewards(msgStake.Address, msgStake.Amount, msgStake.Asset)
 
 	if err := msgMsgCommit.ValidateBasic(); err != nil {
 		return nil, errorsmod.Wrap(err, "failed validating msgMsgCommit")
 	}
 
-	_, err := msgServer.CommitUnclaimedRewards(ctx, msgMsgCommit) // Discard the response because it's empty
+	_, err := msgServer.CommitClaimedRewards(ctx, msgMsgCommit) // Discard the response because it's empty
 	if err != nil {
 		return nil, errorsmod.Wrap(err, "commit msg")
 	}

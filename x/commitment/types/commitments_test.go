@@ -8,18 +8,18 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestCommitments_AddCommitedTokens(t *testing.T) {
+func TestCommitments_AddCommittedTokens(t *testing.T) {
 	commitments := types.Commitments{
 		Creator:          "",
 		CommittedTokens:  []*types.CommittedTokens{},
-		RewardsUnclaimed: []*types.RewardsUnclaimed{},
+		RewardsUnclaimed: sdk.Coins{},
 		VestingTokens:    []*types.VestingTokens{},
 	}
 
-	commitments.AddCommitedTokens("lp/1", sdk.NewInt(100), 100)
-	commitments.AddCommitedTokens("lp/1", sdk.NewInt(100), 150)
-	commitments.AddCommitedTokens("lp/1", sdk.NewInt(100), 200)
-	commitments.AddCommitedTokens("lp/2", sdk.NewInt(100), 100)
+	commitments.AddCommittedTokens("lp/1", sdk.NewInt(100), 100)
+	commitments.AddCommittedTokens("lp/1", sdk.NewInt(100), 150)
+	commitments.AddCommittedTokens("lp/1", sdk.NewInt(100), 200)
+	commitments.AddCommittedTokens("lp/2", sdk.NewInt(100), 100)
 
 	require.Len(t, commitments.CommittedTokens, 2)
 	require.Len(t, commitments.CommittedTokens[0].Lockups, 3)
@@ -31,14 +31,14 @@ func TestCommitments_WithdrawCommitedTokens(t *testing.T) {
 	commitments := types.Commitments{
 		Creator:          "",
 		CommittedTokens:  []*types.CommittedTokens{},
-		RewardsUnclaimed: []*types.RewardsUnclaimed{},
+		RewardsUnclaimed: sdk.Coins{},
 		VestingTokens:    []*types.VestingTokens{},
 	}
 
-	commitments.AddCommitedTokens("lp/1", sdk.NewInt(100), 100)
-	commitments.AddCommitedTokens("lp/1", sdk.NewInt(100), 150)
-	commitments.AddCommitedTokens("lp/1", sdk.NewInt(100), 200)
-	commitments.AddCommitedTokens("lp/2", sdk.NewInt(100), 100)
+	commitments.AddCommittedTokens("lp/1", sdk.NewInt(100), 100)
+	commitments.AddCommittedTokens("lp/1", sdk.NewInt(100), 150)
+	commitments.AddCommittedTokens("lp/1", sdk.NewInt(100), 200)
+	commitments.AddCommittedTokens("lp/2", sdk.NewInt(100), 100)
 
 	err := commitments.DeductFromCommitted("lp/1", sdk.NewInt(100), 100)
 	require.NoError(t, err)

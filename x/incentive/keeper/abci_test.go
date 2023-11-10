@@ -17,25 +17,18 @@ func TestABCI_EndBlocker(t *testing.T) {
 
 	ik := app.IncentiveKeeper
 
-	var committed []sdk.Coins
-	var unclaimed []sdk.Coins
+	var committed sdk.Coins
+	var unclaimed sdk.Coins
 
 	// Prepare unclaimed tokens
-	uedenToken := sdk.NewCoins(sdk.NewCoin(ptypes.Eden, sdk.NewInt(2000)))
-	uedenBToken := sdk.NewCoins(sdk.NewCoin(ptypes.EdenB, sdk.NewInt(2000)))
-	unclaimed = append(unclaimed, uedenToken)
-	unclaimed = append(unclaimed, uedenBToken)
+	uedenToken := sdk.NewCoin(ptypes.Eden, sdk.NewInt(2000))
+	uedenBToken := sdk.NewCoin(ptypes.EdenB, sdk.NewInt(2000))
+	unclaimed = unclaimed.Add(uedenToken, uedenBToken)
 
-	// Eden
-	err := app.BankKeeper.MintCoins(ctx, ctypes.ModuleName, uedenToken)
+	// Mint coins
+	err := app.BankKeeper.MintCoins(ctx, ctypes.ModuleName, unclaimed)
 	require.NoError(t, err)
-	err = app.BankKeeper.SendCoinsFromModuleToAccount(ctx, ctypes.ModuleName, genAccount, uedenToken)
-	require.NoError(t, err)
-
-	// EdenB
-	err = app.BankKeeper.MintCoins(ctx, ctypes.ModuleName, uedenBToken)
-	require.NoError(t, err)
-	err = app.BankKeeper.SendCoinsFromModuleToAccount(ctx, ctypes.ModuleName, genAccount, uedenBToken)
+	err = app.BankKeeper.SendCoinsFromModuleToAccount(ctx, ctypes.ModuleName, genAccount, unclaimed)
 	require.NoError(t, err)
 
 	// Add testing commitment

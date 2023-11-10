@@ -38869,6 +38869,31 @@ paths:
                           type: string
                         amount:
                           type: string
+                      description: >-
+                        Coin defines a token with a denomination and an amount.
+
+
+                        NOTE: The amount field is an Int which implements the
+                        custom method
+
+                        signatures required by gogoproto.
+                  claimed:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        denom:
+                          type: string
+                        amount:
+                          type: string
+                      description: >-
+                        Coin defines a token with a denomination and an amount.
+
+
+                        NOTE: The amount field is an Int which implements the
+                        custom method
+
+                        signatures required by gogoproto.
                   vesting_tokens:
                     type: array
                     items:
@@ -82994,6 +83019,25 @@ definitions:
               type: string
             amount:
               type: string
+          description: |-
+            Coin defines a token with a denomination and an amount.
+
+            NOTE: The amount field is an Int which implements the custom method
+            signatures required by gogoproto.
+      claimed:
+        type: array
+        items:
+          type: object
+          properties:
+            denom:
+              type: string
+            amount:
+              type: string
+          description: |-
+            Coin defines a token with a denomination and an amount.
+
+            NOTE: The amount field is an Int which implements the custom method
+            signatures required by gogoproto.
       vesting_tokens:
         type: array
         items:
@@ -83041,9 +83085,9 @@ definitions:
         format: uint64
   elys.commitment.MsgCancelVestResponse:
     type: object
-  elys.commitment.MsgCommitLiquidTokensResponse:
+  elys.commitment.MsgCommitClaimedRewardsResponse:
     type: object
-  elys.commitment.MsgCommitUnclaimedRewardsResponse:
+  elys.commitment.MsgCommitLiquidTokensResponse:
     type: object
   elys.commitment.MsgUncommitTokensResponse:
     type: object
@@ -83143,6 +83187,31 @@ definitions:
                   type: string
                 amount:
                   type: string
+              description: >-
+                Coin defines a token with a denomination and an amount.
+
+
+                NOTE: The amount field is an Int which implements the custom
+                method
+
+                signatures required by gogoproto.
+          claimed:
+            type: array
+            items:
+              type: object
+              properties:
+                denom:
+                  type: string
+                amount:
+                  type: string
+              description: >-
+                Coin defines a token with a denomination and an amount.
+
+
+                NOTE: The amount field is an Int which implements the custom
+                method
+
+                signatures required by gogoproto.
           vesting_tokens:
             type: array
             items:
@@ -83163,13 +83232,6 @@ definitions:
                   type: string
                   format: int64
         description: GenesisState defines the commitment module's genesis state.
-  elys.commitment.RewardsUnclaimed:
-    type: object
-    properties:
-      denom:
-        type: string
-      amount:
-        type: string
   elys.commitment.VestingInfo:
     type: object
     properties:

@@ -46,19 +46,15 @@ func TestProcessWithdrawRewards(t *testing.T) {
 	// Generate 2 random accounts with 10000uelys balanced
 	addr := simapp.AddTestAddrs(app, ctx, 2, sdk.NewInt(10000))
 
-	var committed []sdk.Coins
-	var unclaimed []sdk.Coins
+	var committed sdk.Coins
+	var unclaimed sdk.Coins
 
 	// Prepare unclaimed tokens
-	uedenToken := sdk.NewCoins(sdk.NewCoin(ptypes.Eden, sdk.NewInt(2000)))
-	uedenBToken := sdk.NewCoins(sdk.NewCoin(ptypes.EdenB, sdk.NewInt(2000)))
-	lpToken := sdk.NewCoins(sdk.NewCoin("lp-elys-usdc", sdk.NewInt(500)))
-	usdcToken := sdk.NewCoins(sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(500)))
-
-	unclaimed = append(unclaimed, uedenToken)
-	unclaimed = append(unclaimed, uedenBToken)
-	unclaimed = append(unclaimed, lpToken)
-	unclaimed = append(unclaimed, usdcToken)
+	uedenToken := sdk.NewCoin(ptypes.Eden, sdk.NewInt(2000))
+	uedenBToken := sdk.NewCoin(ptypes.EdenB, sdk.NewInt(2000))
+	lpToken := sdk.NewCoin("lp-elys-usdc", sdk.NewInt(500))
+	usdcToken := sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(500))
+	unclaimed = unclaimed.Add(lpToken, uedenToken, uedenBToken, usdcToken)
 
 	// Set assetprofile entry for denom
 	app.AssetprofileKeeper.SetEntry(ctx, aptypes.Entry{BaseDenom: ptypes.BaseCurrency, CommitEnabled: false, WithdrawEnabled: true})
@@ -67,10 +63,9 @@ func TestProcessWithdrawRewards(t *testing.T) {
 	app.AssetprofileKeeper.SetEntry(ctx, aptypes.Entry{BaseDenom: "lp-elys-usdc", CommitEnabled: true, WithdrawEnabled: false})
 
 	// Prepare committed tokens
-	uedenTokenC := sdk.NewCoins(sdk.NewCoin(ptypes.Eden, sdk.NewInt(1500)))
-	uedenBTokenC := sdk.NewCoins(sdk.NewCoin(ptypes.EdenB, sdk.NewInt(500)))
-	committed = append(committed, uedenTokenC)
-	committed = append(committed, uedenBTokenC)
+	uedenTokenC := sdk.NewCoin(ptypes.Eden, sdk.NewInt(1500))
+	uedenBTokenC := sdk.NewCoin(ptypes.EdenB, sdk.NewInt(500))
+	committed = committed.Add(uedenTokenC, uedenBTokenC)
 
 	// Add testing commitment
 	simapp.AddTestCommitment(app, ctx, addr[0], committed, unclaimed)
@@ -97,14 +92,14 @@ func TestProcessWithdrawRewards(t *testing.T) {
 	require.NoError(t, err)
 
 	edenCoin := app.BankKeeper.GetBalance(ctx, addr[0], ptypes.Eden)
-	require.Equal(t, sdk.Coins{edenCoin}, uedenToken)
+	require.Equal(t, edenCoin, uedenToken)
 
 	// Withdraw rewards
 	err = ik.ProcessWithdrawRewards(ctx, addr[0].String(), ptypes.BaseCurrency)
 	require.NoError(t, err)
 
 	usdcCoin := app.BankKeeper.GetBalance(ctx, addr[0], ptypes.BaseCurrency)
-	require.Equal(t, sdk.Coins{usdcCoin}, usdcToken)
+	require.Equal(t, usdcCoin, usdcToken)
 }
 
 func TestProcessWithdrawValidatorCommission(t *testing.T) {

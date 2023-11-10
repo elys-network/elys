@@ -50,19 +50,7 @@ func (k msgServer) CancelVest(goCtx context.Context, msg *types.MsgCancelVest) (
 	}
 
 	// Update the unclaimed tokens amount
-	rewardUnclaimed, found := commitments.GetRewardsUnclaimedForDenom(msg.Denom)
-
-	if found {
-		rewardUnclaimed.Amount = rewardUnclaimed.Amount.Add(msg.Amount)
-	} else {
-		rewardsUnclaimed := commitments.GetRewardsUnclaimed()
-		rewardsUnclaimed = append(rewardsUnclaimed, &types.RewardsUnclaimed{
-			Denom:  msg.Denom,
-			Amount: msg.Amount,
-		})
-		commitments.RewardsUnclaimed = rewardsUnclaimed
-	}
-
+	commitments.AddRewardsUnclaimed(sdk.NewCoin(msg.Denom, msg.Amount))
 	k.SetCommitments(ctx, commitments)
 
 	// Emit Hook commitment changed
