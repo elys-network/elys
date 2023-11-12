@@ -13,11 +13,11 @@ import (
 )
 
 func (oq *Querier) queryDelegations(ctx sdk.Context, query *wasmbindingstypes.QueryDelegatorDelegationsRequest) ([]byte, error) {
-	if query.DelegatorAddr == "" {
+	if query.DelegatorAddress == "" {
 		return nil, status.Error(codes.InvalidArgument, "delegator address cannot be empty")
 	}
 
-	delAddr, err := sdk.AccAddressFromBech32(query.DelegatorAddr)
+	delAddr, err := sdk.AccAddressFromBech32(query.DelegatorAddress)
 	if err != nil {
 		return nil, err
 	}

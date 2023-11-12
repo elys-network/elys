@@ -6,24 +6,26 @@ import (
 
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	wasmbindingstypes "github.com/elys-network/elys/wasmbindings/types"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
 
 func (oq *Querier) queryUnbondingDelegations(ctx sdk.Context, query *wasmbindingstypes.QueryDelegatorUnbondingDelegationsRequest) ([]byte, error) {
-	if query.DelegatorAddr == "" {
+	if query.DelegatorAddress == "" {
 		return nil, status.Error(codes.InvalidArgument, "delegator address cannot be empty")
 	}
 
-	delAddr, err := sdk.AccAddressFromBech32(query.DelegatorAddr)
+	delAddr, err := sdk.AccAddressFromBech32(query.DelegatorAddress)
 	if err != nil {
 		return nil, err
 	}
 
 	unbonding_delegations := oq.stakingKeeper.GetUnbondingDelegations(ctx, delAddr, math.MaxInt16)
+	unbonding_delegations_cw := BuildUnbondingDelegationResponseCW(unbonding_delegations)
 	res := wasmbindingstypes.QueryDelegatorUnbondingDelegationsResponse{
-		UnbondingResponses: unbonding_delegations,
+		UnbondingResponses: unbonding_delegations_cw,
 	}
 
 	responseBytes, err := json.Marshal(res)
@@ -32,4 +34,34 @@ func (oq *Querier) queryUnbondingDelegations(ctx sdk.Context, query *wasmbinding
 	}
 
 	return responseBytes, nil
+}
+
+func BuildUnbondingDelegationResponseCW(unbondingDelegations []stakingtypes.UnbondingDelegation) []wasmbindingstypes.UnbondingDelegation {
+	var unbondingDelegationsCW []wasmbindingstypes.UnbondingDelegation
+	for _, unbondingDelegation := range unbondingDelegations {
+		var unbondingDelegationCW wasmbindingstypes.UnbondingDelegation
+		unbondingDelegationCW.DelegatorAddress = unbondingDelegation.DelegatorAddress
+		unbondingDelegationCW.ValidatorAddress = unbondingDelegation.ValidatorAddress
+
+		for _, entity := range unbondingDelegation.Entries {
+			newEntity := wasmbindingstypes.UnbondingDelegationEntry{
+				// creation_height is the height which the unbonding took place.
+				CreationHeight: entity.CreationHeight,
+				// completion_time is the unix time for unbonding completion.
+				CompletionTime: entity.CompletionTime.Unix(),
+				// initial_balance defines the tokens initially scheduled to receive at completion.
+				InitialBalance: entity.InitialBalance,
+				// balance defines the tokens to receive at completion.
+				Balance: entity.Balance,
+				// Incrementing id that uniquely identifies this entry
+				UnbondingId: entity.UnbondingId,
+			}
+
+			unbondingDelegationCW.Entries = append(unbondingDelegationCW.Entries, newEntity)
+		}
+
+		unbondingDelegationsCW = append(unbondingDelegationsCW, unbondingDelegationCW)
+	}
+
+	return unbondingDelegationsCW
 }
