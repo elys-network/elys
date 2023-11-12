@@ -11,7 +11,7 @@ type QueryBorrowAmountRequest struct {
 
 type QueryDelegatorDelegationsRequest struct {
 	// delegator_addr defines the delegator address to query for.
-	DelegatorAddress string `protobuf:"bytes,1,opt,name=delegator_address,json=delegator_address,proto3" json:"delegator_addr,omitempty"`
+	DelegatorAddress string `protobuf:"bytes,1,opt,name=delegator_address,json=delegator_address,proto3" json:"delegator_address,omitempty"`
 }
 
 // QueryDelegatorDelegationsResponse is response type for the
@@ -38,7 +38,7 @@ type UnbondingDelegationEntry struct {
 // QueryDelegatorUnbondingDelegationsRequest is request type for the
 type QueryDelegatorUnbondingDelegationsRequest struct {
 	// delegator_addr defines the delegator address to query for.
-	DelegatorAddress string `protobuf:"bytes,1,opt,name=delegator_address,json=delegator_address,proto3" json:"delegator_addr,omitempty"`
+	DelegatorAddress string `protobuf:"bytes,1,opt,name=delegator_address,json=delegator_address,proto3" json:"delegator_address,omitempty"`
 }
 
 type UnbondingDelegation struct {
