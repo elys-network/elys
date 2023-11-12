@@ -20,17 +20,17 @@ service Msg {
 }
 message MsgOpen {
   string creator = 1;
-  string collateralAsset = 2;
-  string collateralAmount = 3 [
+  string collateral_asset = 2;
+  string collateral_amount = 3 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
     (gogoproto.nullable) = false
   ];
-  uint64 ammPoolId = 4;
+  uint64 amm_pool_id = 4;
   string leverage = 5 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
-  string stopLossPrice = 6 [
+  string stop_loss_price = 6 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
@@ -66,14 +66,14 @@ message MsgUpdatePoolsResponse {}
 
 message MsgWhitelist {
   string authority = 1;
-  string whitelistedAddress = 2;
+  string whitelisted_address = 2;
 }
 
 message MsgWhitelistResponse {}
 
 message MsgDewhitelist {
   string authority = 1;
-  string whitelistedAddress = 2;
+  string whitelisted_address = 2;
 }
 
 message MsgDewhitelistResponse {}

@@ -17,9 +17,16 @@ func NewMessenger(keeper *keeper.Keeper) *Messenger {
 
 func (m *Messenger) HandleMsg(ctx sdk.Context, contractAddr sdk.AccAddress, contractIBCPortID string, msg wasmbindingstypes.ElysMsg) ([]sdk.Event, [][]byte, error) {
 	switch {
-	// case *MsgPriceFeed:
-	//     // Handle the MsgPriceFeed message
-	//     // ...
+	case msg.OracleFeedPrice != nil:
+		return m.msgFeedPrice(ctx, contractAddr, msg.OracleFeedPrice)
+	case msg.OracleFeedMultiplePrices != nil:
+		return m.msgFeedMultiplePrices(ctx, contractAddr, msg.OracleFeedMultiplePrices)
+	case msg.OracleRequestBandPrice != nil:
+		return m.msgRequestBandPrice(ctx, contractAddr, msg.OracleRequestBandPrice)
+	case msg.OracleSetPriceFeeder != nil:
+		return m.msgSetPriceFeeder(ctx, contractAddr, msg.OracleSetPriceFeeder)
+	case msg.OracleDeletePriceFeeder != nil:
+		return m.msgDeletePriceFeeder(ctx, contractAddr, msg.OracleDeletePriceFeeder)
 	default:
 		// This handler cannot handle the message
 		return nil, nil, wasmbindingstypes.ErrCannotHandleMsg

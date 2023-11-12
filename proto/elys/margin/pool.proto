@@ -24,8 +24,7 @@ message PoolAsset {
   ];
   string asset_balance = 5 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
-    (gogoproto.nullable) = false,
-    (gogoproto.moretags) = "yaml:\"asset_balance\""
+    (gogoproto.nullable) = false
   ];
   string block_interest = 6 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
@@ -35,7 +34,7 @@ message PoolAsset {
 }
 
 message Pool {
-  uint64 ammPoolId = 1; 
+  uint64 amm_pool_id = 1; 
   string health = 2 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
@@ -46,7 +45,7 @@ message Pool {
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
-  repeated PoolAsset poolAssets = 6 [(gogoproto.nullable) = false]; 
-  int64 lastHeightInterestRateComputed = 7;
+  repeated PoolAsset pool_assets = 6 [(gogoproto.nullable) = false]; 
+  int64 last_height_interest_rate_computed = 7;
 }
 

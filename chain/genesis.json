@@ -14,9 +14,7 @@
       "max_bytes": "1048576"
     },
     "validator": {
-      "pub_key_types": [
-        "ed25519"
-      ]
+      "pub_key_types": ["ed25519"]
     },
     "version": {}
   },
@@ -257,16 +255,12 @@
             {
               "denom": "uelys",
               "exponent": 0,
-              "aliases": [
-                "microelys"
-              ]
+              "aliases": ["microelys"]
             },
             {
               "denom": "melys",
               "exponent": 3,
-              "aliases": [
-                "millielys"
-              ]
+              "aliases": ["millielys"]
             },
             {
               "denom": "elys",
@@ -287,16 +281,12 @@
             {
               "denom": "ueden",
               "exponent": 0,
-              "aliases": [
-                "microeden"
-              ]
+              "aliases": ["microeden"]
             },
             {
               "denom": "meden",
               "exponent": 3,
-              "aliases": [
-                "millieden"
-              ]
+              "aliases": ["millieden"]
             },
             {
               "denom": "eden",
@@ -703,10 +693,7 @@
         "create_localhost": false,
         "next_client_sequence": "0",
         "params": {
-          "allowed_clients": [
-            "06-solomachine",
-            "07-tendermint"
-          ]
+          "allowed_clients": ["06-solomachine", "07-tendermint"]
         }
       },
       "connection_genesis": {
@@ -731,16 +718,11 @@
         "active_channels": [],
         "interchain_accounts": [],
         "params": {
-          "allow_messages": [
-            "*"
-          ],
+          "allow_messages": ["*"],
           "host_enabled": true
         },
         "port": "icahost"
       }
-    },
-    "liquidityprovider": {
-      "params": {}
     },
     "mint": {
       "minter": {
@@ -899,6 +881,19 @@
       "port_id": "transfer"
     },
     "upgrade": {},
-    "vesting": {}
-  ,"monitoringp":{"params":{"consumerUnbondingPeriod":1814400,"consumerRevisionHeight":342442,"consumerChainID":"spn-1","lastBlockHeight":1,"consumerConsensusState":{"timestamp":"2023-04-10T18:42:00.127873353Z","nextValidatorsHash":"6C4F396575BACAFA414FC2FF164DDE5EDDFEF81926C60315D3CE1DECF21A0F26","root":{"hash":"hyT/XmcfP/nXMLZa+/oiDCTJ78pABleHqDpvnII+fU8="}}}}}
+    "vesting": {},
+    "monitoringp": {
+      "params": {
+        "consumerUnbondingPeriod": 1814400,
+        "consumerRevisionHeight": 342442,
+        "consumerChainID": "spn-1",
+        "lastBlockHeight": 1,
+        "consumerConsensusState": {
+          "timestamp": "2023-04-10T18:42:00.127873353Z",
+          "nextValidatorsHash": "6C4F396575BACAFA414FC2FF164DDE5EDDFEF81926C60315D3CE1DECF21A0F26",
+          "root": { "hash": "hyT/XmcfP/nXMLZa+/oiDCTJ78pABleHqDpvnII+fU8=" }
+        }
+      }
+    }
+  }
 }

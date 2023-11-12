@@ -26,34 +26,46 @@ service Query {
   
   // Queries a list of Pool items.
   rpc Pool    (QueryGetPoolRequest) returns (QueryGetPoolResponse) {
-    option (google.api.http).get = "/elys-network/elys/amm/pool/{poolId}";
+    option (google.api.http).get = "/elys-network/elys/amm/pool/{pool_id}";
   
   }
   rpc PoolAll (QueryAllPoolRequest) returns (QueryAllPoolResponse) {
     option (google.api.http).get = "/elys-network/elys/amm/pool";
+  
   }
   
   // Queries a list of DenomLiquidity items.
   rpc DenomLiquidity    (QueryGetDenomLiquidityRequest) returns (QueryGetDenomLiquidityResponse) {
     option (google.api.http).get = "/elys-network/elys/amm/denom_liquidity/{denom}";
+  
   }
   rpc DenomLiquidityAll (QueryAllDenomLiquidityRequest) returns (QueryAllDenomLiquidityResponse) {
     option (google.api.http).get = "/elys-network/elys/amm/denom_liquidity";
+  
   }
-
+  
   // Queries a list of SwapEstimation items.
   rpc SwapEstimation (QuerySwapEstimationRequest) returns (QuerySwapEstimationResponse) {
     option (google.api.http).get = "/elys-network/elys/amm/swap_estimation";
+  
   }
-
+  
   // Queries slippage track for a week.
   rpc SlippageTrack (QuerySlippageTrackRequest) returns (QuerySlippageTrackResponse) {
-    option (google.api.http).get = "/elys-network/elys/amm/slippage_track/{poolId}";
+    option (google.api.http).get = "/elys-network/elys/amm/slippage_track/{pool_id}";
+  
   }
-
+  
   // Queries all slippage tracks for a week.
   rpc SlippageTrackAll (QuerySlippageTrackAllRequest) returns (QuerySlippageTrackAllResponse) {
     option (google.api.http).get = "/elys-network/elys/amm/slippage_tracks";
+  
+  }
+  
+  // Queries a list of Balance items.
+  rpc Balance (QueryBalanceRequest) returns (QueryBalanceResponse) {
+    option (google.api.http).get = "/elys-network/elys/amm/balance/{address}/{denom}";
+  
   }
 }
 // QueryParamsRequest is request type for the Query/Params RPC method.
@@ -67,7 +79,7 @@ message QueryParamsResponse {
 }
 
 message QueryGetPoolRequest {
-  uint64 poolId = 1;
+  uint64 pool_id = 1;
 }
 
 message QueryGetPoolResponse {
@@ -88,7 +100,7 @@ message QueryGetDenomLiquidityRequest {
 }
 
 message QueryGetDenomLiquidityResponse {
-  DenomLiquidity denomLiquidity = 1 [(gogoproto.nullable) = false];
+  DenomLiquidity denom_liquidity = 1 [(gogoproto.nullable) = false];
 }
 
 message QueryAllDenomLiquidityRequest {
@@ -96,33 +108,40 @@ message QueryAllDenomLiquidityRequest {
 }
 
 message QueryAllDenomLiquidityResponse {
-  repeated DenomLiquidity                         denomLiquidity = 1 [(gogoproto.nullable) = false];
+  repeated DenomLiquidity                         denom_liquidity = 1 [(gogoproto.nullable) = false];
            cosmos.base.query.v1beta1.PageResponse pagination     = 2;
 }
 
 message QuerySwapEstimationRequest {
   repeated SwapAmountInRoute        routes  = 1;
-           cosmos.base.v1beta1.Coin tokenIn = 2 [(gogoproto.nullable) = false];
+           cosmos.base.v1beta1.Coin token_in = 2 [(gogoproto.nullable) = false];
 }
 
 message QuerySwapEstimationResponse {
-  string                   spotPrice = 1 [
-        (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
-        (gogoproto.nullable) = false
-  ];
-  cosmos.base.v1beta1.Coin tokenOut  = 2 [(gogoproto.nullable) = false];
+  string                   spot_price = 1 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin token_out  = 2 [(gogoproto.nullable)   = false                                   ] ;
 }
 
 message QuerySlippageTrackRequest {
-  uint64 poolId = 1;
+  uint64 pool_id = 1;
 }
 
 message QuerySlippageTrackResponse {
-  OraclePoolSlippageTrack track = 1 [ (gogoproto.nullable) = false ];
+  OraclePoolSlippageTrack track = 1 [(gogoproto.nullable) = false];
 }
 
 message QuerySlippageTrackAllRequest {}
 
 message QuerySlippageTrackAllResponse {
-  repeated OraclePoolSlippageTrack tracks = 1 [ (gogoproto.nullable) = false ];
+  repeated OraclePoolSlippageTrack tracks = 1 [(gogoproto.nullable) = false];
 }
+
+message QueryBalanceRequest {
+  string address = 1;
+  string denom   = 2;
+}
+
+message QueryBalanceResponse {
+  cosmos.base.v1beta1.Coin balance = 1 [(gogoproto.nullable) = false];
+}
+

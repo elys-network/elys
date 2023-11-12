@@ -6,27 +6,26 @@ import (
 	errorsmod "cosmossdk.io/errors"
 	wasmvmtypes "github.com/CosmWasm/wasmvm/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
-	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
-	wasmbindingstypes "github.com/elys-network/elys/wasmbindings/types"
 	commitmentkeeper "github.com/elys-network/elys/x/commitment/keeper"
 	commitmenttypes "github.com/elys-network/elys/x/commitment/types"
 	paramtypes "github.com/elys-network/elys/x/parameter/types"
 )
 
-func (m *Messenger) msgStake(ctx sdk.Context, contractAddr sdk.AccAddress, msgStake *wasmbindingstypes.MsgStake) ([]sdk.Event, [][]byte, error) {
-	var res *wasmbindingstypes.RequestResponse
-	var err error
-	if msgStake.Asset == paramtypes.Elys {
-		res, err = performMsgStakeElys(m.stakingKeeper, ctx, contractAddr, msgStake)
-		if err != nil {
-			return nil, nil, errorsmod.Wrap(err, "perform elys stake")
-		}
-	} else {
-		res, err = performMsgCommit(m.keeper, ctx, contractAddr, msgStake)
-		if err != nil {
-			return nil, nil, errorsmod.Wrap(err, "perform elys stake")
-		}
+func (m *Messenger) msgStake(ctx sdk.Context, contractAddr sdk.AccAddress, msgStake *commitmenttypes.MsgStake) ([]sdk.Event, [][]byte, error) {
+	if msgStake == nil {
+		return nil, nil, wasmvmtypes.InvalidRequest{Err: "Invalid staking parameter"}
+	}
+
+	msgServer := commitmentkeeper.NewMsgServerImpl(*m.keeper)
+	msgMsgStake := commitmenttypes.NewMsgStake(msgStake.Creator, msgStake.Amount, msgStake.Asset, msgStake.ValidatorAddress)
+
+	if err := msgMsgStake.ValidateBasic(); err != nil {
+		return nil, nil, errorsmod.Wrap(err, "failed validating msgMsgStake")
+	}
+
+	res, err := msgServer.Stake(ctx, msgMsgStake)
+	if err != nil { // Discard the response because it's empty
+		return nil, nil, errorsmod.Wrap(err, "elys staking msg")
 	}
 
 	responseBytes, err := json.Marshal(*res)

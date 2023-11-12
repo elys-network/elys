@@ -12,9 +12,9 @@ service Msg {
   // CommitLiquidTokens commit the tokens from user's balance
   rpc CommitLiquidTokens (MsgCommitLiquidTokens) returns (MsgCommitLiquidTokensResponse);
   
-  // CommitClaimedRewards commit the tokens on unclaimed store to committed
+  // CommitClaimedRewards commit the tokens on claimed store to committed
   rpc CommitClaimedRewards (MsgCommitClaimedRewards) returns (MsgCommitClaimedRewardsResponse);
-  
+
   // UncommitTokens uncommits the tokens from committed store and make it liquid immediately
   rpc UncommitTokens (MsgUncommitTokens) returns (MsgUncommitTokensResponse);
   
@@ -40,7 +40,11 @@ service Msg {
   
   // ClaimRewards claim rewards from rewards-unclaimed and move to claimed state for Eden and send rewards to user's wallet
   rpc ClaimRewards (MsgClaimRewards) returns (MsgClaimRewardsResponse);
+
+  rpc Stake             (MsgStake            ) returns (MsgStakeResponse            );
+  rpc Unstake           (MsgUnstake          ) returns (MsgUnstakeResponse          );
 }
+
 message MsgCommitClaimedRewards {
   string creator = 1;
   string amount  = 2 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false];
@@ -69,7 +73,7 @@ message MsgCommitLiquidTokens {
   string creator = 1;
   string amount  = 2 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false];
   string denom   = 3;
-  uint64 minLock = 4; // minimum lock duration to wait until it is claimable
+  uint64 min_lock = 4; // minimum lock duration to wait until it is claimable
 }
 
 message MsgCommitLiquidTokensResponse {}
@@ -100,12 +104,12 @@ message MsgVestNowResponse {}
 
 message MsgUpdateVestingInfo {
   string authority       = 1;
-  string baseDenom       = 2;
-  string vestingDenom    = 3;
-  string epochIdentifier = 4;
-  int64  numEpochs       = 5;
-  int64  vestNowFactor   = 6;
-  int64  numMaxVestings  = 7;
+  string base_denom       = 2;
+  string vesting_denom    = 3;
+  string epoch_identifier = 4;
+  int64  num_epochs       = 5;
+  int64  vest_now_factor   = 6;
+  int64  num_max_vestings  = 7;
 }
 
 message MsgUpdateVestingInfoResponse {}
@@ -123,4 +127,28 @@ message MsgClaimRewards {
 }
 
 message MsgClaimRewardsResponse {}
+
+message MsgStake {
+  string creator          = 1;
+  string amount           = 2 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false];
+  string asset            = 3;
+  string validator_address = 4;
+}
+
+message MsgStakeResponse {
+  uint64 code   = 1;
+  string result = 2;
+}
+
+message MsgUnstake {
+  string creator          = 1;
+  string amount           = 2 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false];
+  string asset            = 3;
+  string validator_address = 4;
+}
+
+message MsgUnstakeResponse {
+  uint64 code   = 1;
+  string result = 2;
+}
 

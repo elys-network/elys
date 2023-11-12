@@ -21,7 +21,7 @@ service Query {
   
   // Queries a list of AccountedPool items.
   rpc AccountedPool    (QueryGetAccountedPoolRequest) returns (QueryGetAccountedPoolResponse) {
-    option (google.api.http).get = "/elys-network/elys/accountedpool/accounted_pool/{poolId}";
+    option (google.api.http).get = "/elys-network/elys/accountedpool/accounted_pool/{pool_id}";
   
   }
   rpc AccountedPoolAll (QueryAllAccountedPoolRequest) returns (QueryAllAccountedPoolResponse) {
@@ -40,11 +40,11 @@ message QueryParamsResponse {
 }
 
 message QueryGetAccountedPoolRequest {
-  uint64 poolId = 1;
+  uint64 pool_id = 1;
 }
 
 message QueryGetAccountedPoolResponse {
-  AccountedPool accountedPool = 1 [(gogoproto.nullable) = false];
+  AccountedPool accounted_pool = 1 [(gogoproto.nullable) = false];
 }
 
 message QueryAllAccountedPoolRequest {
@@ -52,7 +52,7 @@ message QueryAllAccountedPoolRequest {
 }
 
 message QueryAllAccountedPoolResponse {
-  repeated AccountedPool                          accountedPool = 1 [(gogoproto.nullable) = false];
+  repeated AccountedPool                          accounted_pool = 1 [(gogoproto.nullable) = false];
            cosmos.base.query.v1beta1.PageResponse pagination    = 2;
 }
 

@@ -25,10 +25,24 @@ func NewQuerier(keeper *keeper.Keeper, bankKeeper *bankkeeper.BaseKeeper, commit
 
 func (oq *Querier) HandleQuery(ctx sdk.Context, query wasmbindingstypes.ElysQuery) ([]byte, error) {
 	switch {
-	case query.PriceAll != nil:
-		return oq.querySwapEstimation(ctx, query.QuerySwapEstimation)
-	case query.BalanceOfDenom != nil:
-		return oq.queryBalanceOfDenom(ctx, query.BalanceOfDenom)
+	case query.AmmParams != nil:
+		return oq.queryParams(ctx, query.AmmParams)
+	case query.AmmPool != nil:
+		return oq.queryPool(ctx, query.AmmPool)
+	case query.AmmPoolAll != nil:
+		return oq.queryPoolAll(ctx, query.AmmPoolAll)
+	case query.AmmDenomLiquidity != nil:
+		return oq.queryDenomLiquidity(ctx, query.AmmDenomLiquidity)
+	case query.AmmDenomLiquidityAll != nil:
+		return oq.queryDenomLiquidityAll(ctx, query.AmmDenomLiquidityAll)
+	case query.AmmSwapEstimation != nil:
+		return oq.querySwapEstimation(ctx, query.AmmSwapEstimation)
+	case query.AmmSlippageTrack != nil:
+		return oq.querySlippageTrack(ctx, query.AmmSlippageTrack)
+	case query.AmmSlippageTrackAll != nil:
+		return oq.querySlippageTrackAll(ctx, query.AmmSlippageTrackAll)
+	case query.AmmBalance != nil:
+		return oq.queryBalance(ctx, query.AmmBalance)
 	default:
 		// This handler cannot handle the query
 		return nil, wasmbindingstypes.ErrCannotHandleQuery

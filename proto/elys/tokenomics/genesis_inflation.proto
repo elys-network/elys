@@ -7,7 +7,7 @@ option go_package = "github.com/elys-network/elys/x/tokenomics/types";
 
 message GenesisInflation {
   InflationEntry inflation = 1; 
-  uint64 seedVesting = 2; 
-  uint64 strategicSalesVesting = 3; 
+  uint64 seed_vesting = 2; 
+  uint64 strategic_sales_vesting = 3; 
   string authority = 4;
 }

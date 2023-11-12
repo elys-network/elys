@@ -9,8 +9,5 @@ option go_package = "github.com/elys-network/elys/x/transferhook/types";
 // GenesisState defines the module's genesis state.
 message GenesisState {
   // params defines all the parameters of the module.
-  Params params = 1 [
-    (gogoproto.moretags) = "yaml:\"params\"",
-    (gogoproto.nullable) = false
-  ];
+  Params params = 1 [ (gogoproto.nullable) = false ];
 }

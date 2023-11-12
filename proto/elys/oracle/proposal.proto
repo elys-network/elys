@@ -8,8 +8,8 @@ message ProposalAddAssetInfo {
   string description = 2;
   string denom = 3;
   string display = 4;
-  string bandTicker = 5;
-  string elysTicker = 6;
+  string band_ticker = 5;
+  string elys_ticker = 6;
   uint64 decimal = 7;
 }
 

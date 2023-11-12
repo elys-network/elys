@@ -2,15 +2,10 @@ package cli
 
 import (
 	"fmt"
-	// "strings"
-
-	"github.com/spf13/cobra"
 
 	"github.com/cosmos/cosmos-sdk/client"
-	// "github.com/cosmos/cosmos-sdk/client/flags"
-	// sdk "github.com/cosmos/cosmos-sdk/types"
-
 	"github.com/elys-network/elys/x/amm/types"
+	"github.com/spf13/cobra"
 )
 
 // GetQueryCmd returns the cli query commands for this module
@@ -30,6 +25,7 @@ func GetQueryCmd(queryRoute string) *cobra.Command {
 	cmd.AddCommand(CmdListDenomLiquidity())
 	cmd.AddCommand(CmdShowDenomLiquidity())
 	cmd.AddCommand(CmdSwapEstimation())
+	cmd.AddCommand(CmdBalance())
 
 	// this line is used by starport scaffolding # 1
 

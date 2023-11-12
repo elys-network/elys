@@ -1,11 +1,22 @@
 package wasm
 
 import (
-	wasmvmtypes "github.com/CosmWasm/wasmvm/types"
+	"encoding/json"
+
+	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	wasmbindingstypes "github.com/elys-network/elys/wasmbindings/types"
+	ammtypes "github.com/elys-network/elys/x/amm/types"
 )
 
-func (oq *Querier) querySwapEstimation(ctx sdk.Context, query *wasmbindingstypes.QuerySwapEstimationRequest) ([]byte, error) {
-	return nil, wasmvmtypes.UnsupportedRequest{Kind: "QuerySwapEstimation, not implemented yet"}
+func (oq *Querier) querySwapEstimation(ctx sdk.Context, query *ammtypes.QuerySwapEstimationRequest) ([]byte, error) {
+	res, err := oq.keeper.SwapEstimation(ctx, query)
+	if err != nil {
+		return nil, errorsmod.Wrap(err, "failed to get swap estimation")
+	}
+
+	responseBytes, err := json.Marshal(res)
+	if err != nil {
+		return nil, errorsmod.Wrap(err, "failed to serialize swap estimation response")
+	}
+	return responseBytes, nil
 }

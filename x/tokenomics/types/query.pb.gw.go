@@ -170,26 +170,26 @@ func request_Query_TimeBasedInflation_0(ctx context.Context, marshaler runtime.M
 		_   = err
 	)
 
-	val, ok = pathParams["startBlockHeight"]
+	val, ok = pathParams["start_block_height"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "startBlockHeight")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "start_block_height")
 	}
 
 	protoReq.StartBlockHeight, err = runtime.Uint64(val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "startBlockHeight", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "start_block_height", err)
 	}
 
-	val, ok = pathParams["endBlockHeight"]
+	val, ok = pathParams["end_block_height"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "endBlockHeight")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "end_block_height")
 	}
 
 	protoReq.EndBlockHeight, err = runtime.Uint64(val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "endBlockHeight", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "end_block_height", err)
 	}
 
 	msg, err := client.TimeBasedInflation(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
@@ -208,26 +208,26 @@ func local_request_Query_TimeBasedInflation_0(ctx context.Context, marshaler run
 		_   = err
 	)
 
-	val, ok = pathParams["startBlockHeight"]
+	val, ok = pathParams["start_block_height"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "startBlockHeight")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "start_block_height")
 	}
 
 	protoReq.StartBlockHeight, err = runtime.Uint64(val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "startBlockHeight", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "start_block_height", err)
 	}
 
-	val, ok = pathParams["endBlockHeight"]
+	val, ok = pathParams["end_block_height"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "endBlockHeight")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "end_block_height")
 	}
 
 	protoReq.EndBlockHeight, err = runtime.Uint64(val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "endBlockHeight", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "end_block_height", err)
 	}
 
 	msg, err := server.TimeBasedInflation(ctx, &protoReq)
@@ -588,7 +588,7 @@ var (
 
 	pattern_Query_GenesisInflation_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"elys-network", "elys", "tokenomics", "genesis_inflation"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_TimeBasedInflation_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4, 1, 0, 4, 1, 5, 5}, []string{"elys-network", "elys", "tokenomics", "time_based_inflation", "startBlockHeight", "endBlockHeight"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Query_TimeBasedInflation_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4, 1, 0, 4, 1, 5, 5}, []string{"elys-network", "elys", "tokenomics", "time_based_inflation", "start_block_height", "end_block_height"}, "", runtime.AssumeColonVerbOpt(true)))
 
 	pattern_Query_TimeBasedInflationAll_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"elys-network", "elys", "tokenomics", "time_based_inflation"}, "", runtime.AssumeColonVerbOpt(true)))
 )

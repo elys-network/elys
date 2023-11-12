@@ -19,6 +19,10 @@ func NewQuerier(keeper *keeper.Keeper) *Querier {
 
 func (oq *Querier) HandleQuery(ctx sdk.Context, query wasmbindingstypes.ElysQuery) ([]byte, error) {
 	switch {
+	case query.CommitmentParams != nil:
+		return oq.queryParams(ctx, query.CommitmentParams)
+	case query.CommitmentShowCommitments != nil:
+		return oq.queryShowCommitments(ctx, query.CommitmentShowCommitments)
 	default:
 		// This handler cannot handle the query
 		return nil, wasmbindingstypes.ErrCannotHandleQuery

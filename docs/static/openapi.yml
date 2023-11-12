@@ -37246,15 +37246,15 @@ paths:
           schema:
             type: object
             properties:
-              accountedPool:
+              accounted_pool:
                 type: array
                 items:
                   type: object
                   properties:
-                    poolId:
+                    pool_id:
                       type: string
                       format: uint64
-                    totalShares:
+                    total_shares:
                       type: object
                       properties:
                         denom:
@@ -37269,7 +37269,7 @@ paths:
                         custom method
 
                         signatures required by gogoproto.
-                    poolAssets:
+                    pool_assets:
                       type: array
                       items:
                         type: object
@@ -37292,7 +37292,7 @@ paths:
                               signatures required by gogoproto.
                           weight:
                             type: string
-                    totalWeight:
+                    total_weight:
                       type: string
               pagination:
                 type: object
@@ -37399,7 +37399,7 @@ paths:
           type: boolean
       tags:
         - Query
-  /elys-network/elys/accountedpool/accounted_pool/{poolId}:
+  /elys-network/elys/accountedpool/accounted_pool/{pool_id}:
     get:
       summary: Queries a list of AccountedPool items.
       operationId: ElysAccountedpoolAccountedPool
@@ -37409,13 +37409,13 @@ paths:
           schema:
             type: object
             properties:
-              accountedPool:
+              accounted_pool:
                 type: object
                 properties:
-                  poolId:
+                  pool_id:
                     type: string
                     format: uint64
-                  totalShares:
+                  total_shares:
                     type: object
                     properties:
                       denom:
@@ -37430,7 +37430,7 @@ paths:
                       custom method
 
                       signatures required by gogoproto.
-                  poolAssets:
+                  pool_assets:
                     type: array
                     items:
                       type: object
@@ -37453,7 +37453,7 @@ paths:
                             signatures required by gogoproto.
                         weight:
                           type: string
-                  totalWeight:
+                  total_weight:
                     type: string
         default:
           description: An unexpected error response.
@@ -37474,7 +37474,7 @@ paths:
                       type: string
                   additionalProperties: {}
       parameters:
-        - name: poolId
+        - name: pool_id
           in: path
           required: true
           type: string
@@ -37517,6 +37517,60 @@ paths:
                   additionalProperties: {}
       tags:
         - Query
+  /elys-network/elys/amm/balance/{address}/{denom}:
+    get:
+      summary: Queries a list of Balance items.
+      operationId: ElysAmmBalance
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              balance:
+                type: object
+                properties:
+                  denom:
+                    type: string
+                  amount:
+                    type: string
+                description: >-
+                  Coin defines a token with a denomination and an amount.
+
+
+                  NOTE: The amount field is an Int which implements the custom
+                  method
+
+                  signatures required by gogoproto.
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: address
+          in: path
+          required: true
+          type: string
+        - name: denom
+          in: path
+          required: true
+          type: string
+      tags:
+        - Query
   /elys-network/elys/amm/denom_liquidity:
     get:
       operationId: ElysAmmDenomLiquidityAll
@@ -37526,7 +37580,7 @@ paths:
           schema:
             type: object
             properties:
-              denomLiquidity:
+              denom_liquidity:
                 type: array
                 items:
                   type: object
@@ -37650,7 +37704,7 @@ paths:
           schema:
             type: object
             properties:
-              denomLiquidity:
+              denom_liquidity:
                 type: object
                 properties:
                   denom:
@@ -37696,7 +37750,7 @@ paths:
                 description: params holds all the parameters of this module.
                 type: object
                 properties:
-                  poolCreationFee:
+                  pool_creation_fee:
                     type: string
                     format: uint64
             description: >-
@@ -37736,36 +37790,36 @@ paths:
                 items:
                   type: object
                   properties:
-                    poolId:
+                    pool_id:
                       type: string
                       format: uint64
                     address:
                       type: string
-                    poolParams:
+                    pool_params:
                       type: object
                       properties:
-                        swapFee:
+                        swap_fee:
                           type: string
-                        exitFee:
+                        exit_fee:
                           type: string
-                        useOracle:
+                        use_oracle:
                           type: boolean
-                        weightBreakingFeeMultiplier:
+                        weight_breaking_fee_multiplier:
                           type: string
-                        externalLiquidityRatio:
+                        external_liquidity_ratio:
                           type: string
-                        lpFeePortion:
+                        lp_fee_portion:
                           type: string
-                        stakingFeePortion:
+                        staking_fee_portion:
                           type: string
-                        weightRecoveryFeePortion:
+                        weight_recovery_fee_portion:
                           type: string
-                        thresholdWeightDifference:
+                        threshold_weight_difference:
                           type: string
-                        feeDenom:
+                        fee_denom:
                           type: string
                           title: denom for fee collection
-                    totalShares:
+                    total_shares:
                       type: object
                       properties:
                         denom:
@@ -37780,7 +37834,7 @@ paths:
                         custom method
 
                         signatures required by gogoproto.
-                    poolAssets:
+                    pool_assets:
                       type: array
                       items:
                         type: object
@@ -37803,9 +37857,9 @@ paths:
                               signatures required by gogoproto.
                           weight:
                             type: string
-                    totalWeight:
+                    total_weight:
                       type: string
-                    rebalanceTreasury:
+                    rebalance_treasury:
                       type: string
               pagination:
                 type: object
@@ -37912,7 +37966,7 @@ paths:
           type: boolean
       tags:
         - Query
-  /elys-network/elys/amm/pool/{poolId}:
+  /elys-network/elys/amm/pool/{pool_id}:
     get:
       summary: Queries a list of Pool items.
       operationId: ElysAmmPool
@@ -37925,36 +37979,36 @@ paths:
               pool:
                 type: object
                 properties:
-                  poolId:
+                  pool_id:
                     type: string
                     format: uint64
                   address:
                     type: string
-                  poolParams:
+                  pool_params:
                     type: object
                     properties:
-                      swapFee:
+                      swap_fee:
                         type: string
-                      exitFee:
+                      exit_fee:
                         type: string
-                      useOracle:
+                      use_oracle:
                         type: boolean
-                      weightBreakingFeeMultiplier:
+                      weight_breaking_fee_multiplier:
                         type: string
-                      externalLiquidityRatio:
+                      external_liquidity_ratio:
                         type: string
-                      lpFeePortion:
+                      lp_fee_portion:
                         type: string
-                      stakingFeePortion:
+                      staking_fee_portion:
                         type: string
-                      weightRecoveryFeePortion:
+                      weight_recovery_fee_portion:
                         type: string
-                      thresholdWeightDifference:
+                      threshold_weight_difference:
                         type: string
-                      feeDenom:
+                      fee_denom:
                         type: string
                         title: denom for fee collection
-                  totalShares:
+                  total_shares:
                     type: object
                     properties:
                       denom:
@@ -37969,7 +38023,7 @@ paths:
                       custom method
 
                       signatures required by gogoproto.
-                  poolAssets:
+                  pool_assets:
                     type: array
                     items:
                       type: object
@@ -37992,9 +38046,9 @@ paths:
                             signatures required by gogoproto.
                         weight:
                           type: string
-                  totalWeight:
+                  total_weight:
                     type: string
-                  rebalanceTreasury:
+                  rebalance_treasury:
                     type: string
         default:
           description: An unexpected error response.
@@ -38015,14 +38069,14 @@ paths:
                       type: string
                   additionalProperties: {}
       parameters:
-        - name: poolId
+        - name: pool_id
           in: path
           required: true
           type: string
           format: uint64
       tags:
         - Query
-  /elys-network/elys/amm/slippage_track/{poolId}:
+  /elys-network/elys/amm/slippage_track/{pool_id}:
     get:
       summary: Queries slippage track for a week.
       operationId: ElysAmmSlippageTrack
@@ -38035,7 +38089,7 @@ paths:
               track:
                 type: object
                 properties:
-                  poolId:
+                  pool_id:
                     type: string
                     format: uint64
                   timestamp:
@@ -38077,7 +38131,7 @@ paths:
                       type: string
                   additionalProperties: {}
       parameters:
-        - name: poolId
+        - name: pool_id
           in: path
           required: true
           type: string
@@ -38099,7 +38153,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    poolId:
+                    pool_id:
                       type: string
                       format: uint64
                     timestamp:
@@ -38153,9 +38207,9 @@ paths:
           schema:
             type: object
             properties:
-              spotPrice:
+              spot_price:
                 type: string
-              tokenOut:
+              token_out:
                 type: object
                 properties:
                   denom:
@@ -38189,11 +38243,11 @@ paths:
                       type: string
                   additionalProperties: {}
       parameters:
-        - name: tokenIn.denom
+        - name: token_in.denom
           in: query
           required: false
           type: string
-        - name: tokenIn.amount
+        - name: token_in.amount
           in: query
           required: false
           type: string
@@ -38213,7 +38267,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    baseDenom:
+                    base_denom:
                       type: string
                     decimals:
                       type: string
@@ -38222,31 +38276,31 @@ paths:
                       type: string
                     path:
                       type: string
-                    ibcChannelId:
+                    ibc_channel_id:
                       type: string
-                    ibcCounterpartyChannelId:
+                    ibc_counterparty_channel_id:
                       type: string
-                    displayName:
+                    display_name:
                       type: string
-                    displaySymbol:
+                    display_symbol:
                       type: string
                     network:
                       type: string
                     address:
                       type: string
-                    externalSymbol:
+                    external_symbol:
                       type: string
-                    transferLimit:
+                    transfer_limit:
                       type: string
                     permissions:
                       type: array
                       items:
                         type: string
-                    unitDenom:
+                    unit_denom:
                       type: string
-                    ibcCounterpartyDenom:
+                    ibc_counterparty_denom:
                       type: string
-                    ibcCounterpartyChainId:
+                    ibc_counterparty_chain_id:
                       type: string
                     authority:
                       type: string
@@ -38359,7 +38413,7 @@ paths:
           type: boolean
       tags:
         - Query
-  /elys-network/elys/assetprofile/entry/{baseDenom}:
+  /elys-network/elys/assetprofile/entry/{base_denom}:
     get:
       summary: Queries a list of Entry items.
       operationId: ElysAssetprofileEntry
@@ -38372,7 +38426,7 @@ paths:
               entry:
                 type: object
                 properties:
-                  baseDenom:
+                  base_denom:
                     type: string
                   decimals:
                     type: string
@@ -38381,31 +38435,31 @@ paths:
                     type: string
                   path:
                     type: string
-                  ibcChannelId:
+                  ibc_channel_id:
                     type: string
-                  ibcCounterpartyChannelId:
+                  ibc_counterparty_channel_id:
                     type: string
-                  displayName:
+                  display_name:
                     type: string
-                  displaySymbol:
+                  display_symbol:
                     type: string
                   network:
                     type: string
                   address:
                     type: string
-                  externalSymbol:
+                  external_symbol:
                     type: string
-                  transferLimit:
+                  transfer_limit:
                     type: string
                   permissions:
                     type: array
                     items:
                       type: string
-                  unitDenom:
+                  unit_denom:
                     type: string
-                  ibcCounterpartyDenom:
+                  ibc_counterparty_denom:
                     type: string
-                  ibcCounterpartyChainId:
+                  ibc_counterparty_chain_id:
                     type: string
                   authority:
                     type: string
@@ -38432,7 +38486,7 @@ paths:
                       type: string
                   additionalProperties: {}
       parameters:
-        - name: baseDenom
+        - name: base_denom
           in: path
           required: true
           type: string
@@ -38661,7 +38715,7 @@ paths:
                 description: params holds all the parameters of this module.
                 type: object
                 properties:
-                  epochIdentifier:
+                  epoch_identifier:
                     type: string
             description: >-
               QueryParamsResponse is response type for the Query/Params RPC
@@ -39415,7 +39469,7 @@ paths:
               pool:
                 type: object
                 properties:
-                  ammPoolId:
+                  amm_pool_id:
                     type: string
                     format: uint64
                   health:
@@ -39468,7 +39522,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    ammPoolId:
+                    amm_pool_id:
                       type: string
                       format: uint64
                     health:
@@ -40305,42 +40359,6 @@ paths:
           type: boolean
       tags:
         - Query
-  /elys-network/elys/liquidityprovider/params:
-    get:
-      summary: Parameters queries the parameters of the module.
-      operationId: ElysLiquidityproviderParams
-      responses:
-        '200':
-          description: A successful response.
-          schema:
-            type: object
-            properties:
-              params:
-                description: params holds all the parameters of this module.
-                type: object
-            description: >-
-              QueryParamsResponse is response type for the Query/Params RPC
-              method.
-        default:
-          description: An unexpected error response.
-          schema:
-            type: object
-            properties:
-              code:
-                type: integer
-                format: int32
-              message:
-                type: string
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    '@type':
-                      type: string
-                  additionalProperties: {}
-      tags:
-        - Query
   /elys-network/elys/margin/is-whitelisted:
     get:
       summary: Queries a list of IsWhitelisted items.
@@ -41171,7 +41189,7 @@ paths:
               pool:
                 type: object
                 properties:
-                  ammPoolId:
+                  amm_pool_id:
                     type: string
                     format: uint64
                   health:
@@ -41182,7 +41200,7 @@ paths:
                     type: boolean
                   interest_rate:
                     type: string
-                  poolAssets:
+                  pool_assets:
                     type: array
                     items:
                       type: object
@@ -41201,7 +41219,7 @@ paths:
                           type: string
                         asset_denom:
                           type: string
-                  lastHeightInterestRateComputed:
+                  last_height_interest_rate_computed:
                     type: string
                     format: int64
         default:
@@ -41244,7 +41262,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    ammPoolId:
+                    amm_pool_id:
                       type: string
                       format: uint64
                     health:
@@ -41255,7 +41273,7 @@ paths:
                       type: boolean
                     interest_rate:
                       type: string
-                    poolAssets:
+                    pool_assets:
                       type: array
                       items:
                         type: object
@@ -41274,7 +41292,7 @@ paths:
                             type: string
                           asset_denom:
                             type: string
-                    lastHeightInterestRateComputed:
+                    last_height_interest_rate_computed:
                       type: string
                       format: int64
               pagination:
@@ -41806,7 +41824,7 @@ paths:
           schema:
             type: object
             properties:
-              assetInfo:
+              asset_info:
                 type: array
                 items:
                   type: object
@@ -41815,9 +41833,9 @@ paths:
                       type: string
                     display:
                       type: string
-                    bandTicker:
+                    band_ticker:
                       type: string
-                    elysTicker:
+                    elys_ticker:
                       type: string
                     decimal:
                       type: string
@@ -41937,16 +41955,16 @@ paths:
           schema:
             type: object
             properties:
-              assetInfo:
+              asset_info:
                 type: object
                 properties:
                   denom:
                     type: string
                   display:
                     type: string
-                  bandTicker:
+                  band_ticker:
                     type: string
-                  elysTicker:
+                  elys_ticker:
                     type: string
                   decimal:
                     type: string
@@ -42198,7 +42216,7 @@ paths:
           schema:
             type: object
             properties:
-              priceFeeder:
+              price_feeder:
                 type: array
                 items:
                   type: object
@@ -42322,7 +42340,7 @@ paths:
           schema:
             type: object
             properties:
-              priceFeeder:
+              price_feeder:
                 type: object
                 properties:
                   feeder:
@@ -42440,16 +42458,16 @@ paths:
           schema:
             type: object
             properties:
-              anteHandlerParam:
+              ante_handler_param:
                 type: array
                 items:
                   type: object
                   properties:
-                    minCommissionRate:
+                    min_commission_rate:
                       type: string
-                    maxVotingPower:
+                    max_voting_power:
                       type: string
-                    minSelfDelegation:
+                    min_self_delegation:
                       type: string
               pagination:
                 type: object
@@ -42831,31 +42849,31 @@ paths:
           schema:
             type: object
             properties:
-              GenesisInflation:
+              genesis_inflation:
                 type: object
                 properties:
                   inflation:
                     type: object
                     properties:
-                      lmRewards:
+                      lm_rewards:
                         type: string
                         format: uint64
-                      icsStakingRewards:
+                      ics_staking_rewards:
                         type: string
                         format: uint64
-                      communityFund:
+                      community_fund:
                         type: string
                         format: uint64
-                      strategicReserve:
+                      strategic_reserve:
                         type: string
                         format: uint64
-                      teamTokensVested:
+                      team_tokens_vested:
                         type: string
                         format: uint64
-                  seedVesting:
+                  seed_vesting:
                     type: string
                     format: uint64
-                  strategicSalesVesting:
+                  strategic_sales_vesting:
                     type: string
                     format: uint64
                   authority:
@@ -42925,15 +42943,15 @@ paths:
           schema:
             type: object
             properties:
-              timeBasedInflation:
+              time_based_inflation:
                 type: array
                 items:
                   type: object
                   properties:
-                    startBlockHeight:
+                    start_block_height:
                       type: string
                       format: uint64
-                    endBlockHeight:
+                    end_block_height:
                       type: string
                       format: uint64
                     description:
@@ -42941,19 +42959,19 @@ paths:
                     inflation:
                       type: object
                       properties:
-                        lmRewards:
+                        lm_rewards:
                           type: string
                           format: uint64
-                        icsStakingRewards:
+                        ics_staking_rewards:
                           type: string
                           format: uint64
-                        communityFund:
+                        community_fund:
                           type: string
                           format: uint64
-                        strategicReserve:
+                        strategic_reserve:
                           type: string
                           format: uint64
-                        teamTokensVested:
+                        team_tokens_vested:
                           type: string
                           format: uint64
                     authority:
@@ -43063,7 +43081,7 @@ paths:
           type: boolean
       tags:
         - Query
-  /elys-network/elys/tokenomics/time_based_inflation/{startBlockHeight}/{endBlockHeight}:
+  /elys-network/elys/tokenomics/time_based_inflation/{start_block_height}/{end_block_height}:
     get:
       summary: Queries a list of TimeBasedInflation items.
       operationId: ElysTokenomicsTimeBasedInflation
@@ -43073,13 +43091,13 @@ paths:
           schema:
             type: object
             properties:
-              timeBasedInflation:
+              time_based_inflation:
                 type: object
                 properties:
-                  startBlockHeight:
+                  start_block_height:
                     type: string
                     format: uint64
-                  endBlockHeight:
+                  end_block_height:
                     type: string
                     format: uint64
                   description:
@@ -43087,19 +43105,19 @@ paths:
                   inflation:
                     type: object
                     properties:
-                      lmRewards:
+                      lm_rewards:
                         type: string
                         format: uint64
-                      icsStakingRewards:
+                      ics_staking_rewards:
                         type: string
                         format: uint64
-                      communityFund:
+                      community_fund:
                         type: string
                         format: uint64
-                      strategicReserve:
+                      strategic_reserve:
                         type: string
                         format: uint64
-                      teamTokensVested:
+                      team_tokens_vested:
                         type: string
                         format: uint64
                   authority:
@@ -43123,12 +43141,12 @@ paths:
                       type: string
                   additionalProperties: {}
       parameters:
-        - name: startBlockHeight
+        - name: start_block_height
           in: path
           required: true
           type: string
           format: uint64
-        - name: endBlockHeight
+        - name: end_block_height
           in: path
           required: true
           type: string
@@ -81940,10 +81958,10 @@ definitions:
   elys.accountedpool.AccountedPool:
     type: object
     properties:
-      poolId:
+      pool_id:
         type: string
         format: uint64
-      totalShares:
+      total_shares:
         type: object
         properties:
           denom:
@@ -81955,7 +81973,7 @@ definitions:
 
           NOTE: The amount field is an Int which implements the custom method
           signatures required by gogoproto.
-      poolAssets:
+      pool_assets:
         type: array
         items:
           type: object
@@ -81977,7 +81995,7 @@ definitions:
                 signatures required by gogoproto.
             weight:
               type: string
-      totalWeight:
+      total_weight:
         type: string
   elys.accountedpool.Params:
     type: object
@@ -81985,15 +82003,15 @@ definitions:
   elys.accountedpool.QueryAllAccountedPoolResponse:
     type: object
     properties:
-      accountedPool:
+      accounted_pool:
         type: array
         items:
           type: object
           properties:
-            poolId:
+            pool_id:
               type: string
               format: uint64
-            totalShares:
+            total_shares:
               type: object
               properties:
                 denom:
@@ -82008,7 +82026,7 @@ definitions:
                 method
 
                 signatures required by gogoproto.
-            poolAssets:
+            pool_assets:
               type: array
               items:
                 type: object
@@ -82030,7 +82048,7 @@ definitions:
                       signatures required by gogoproto.
                   weight:
                     type: string
-            totalWeight:
+            total_weight:
               type: string
       pagination:
         type: object
@@ -82061,13 +82079,13 @@ definitions:
   elys.accountedpool.QueryGetAccountedPoolResponse:
     type: object
     properties:
-      accountedPool:
+      accounted_pool:
         type: object
         properties:
-          poolId:
+          pool_id:
             type: string
             format: uint64
-          totalShares:
+          total_shares:
             type: object
             properties:
               denom:
@@ -82082,7 +82100,7 @@ definitions:
               method
 
               signatures required by gogoproto.
-          poolAssets:
+          pool_assets:
             type: array
             items:
               type: object
@@ -82104,7 +82122,7 @@ definitions:
                     signatures required by gogoproto.
                 weight:
                   type: string
-          totalWeight:
+          total_weight:
             type: string
   elys.accountedpool.QueryParamsResponse:
     type: object
@@ -82149,10 +82167,10 @@ definitions:
   elys.amm.ExternalLiquidity:
     type: object
     properties:
-      poolId:
+      pool_id:
         type: string
         format: uint64
-      amountDepthInfo:
+      amount_depth_info:
         type: array
         items:
           type: object
@@ -82175,7 +82193,7 @@ definitions:
   elys.amm.MsgExitPoolResponse:
     type: object
     properties:
-      tokenOut:
+      token_out:
         type: array
         items:
           type: object
@@ -82194,9 +82212,9 @@ definitions:
   elys.amm.MsgJoinPoolResponse:
     type: object
     properties:
-      shareAmountOut:
+      share_amount_out:
         type: string
-      tokenIn:
+      token_in:
         type: array
         items:
           type: object
@@ -82213,17 +82231,17 @@ definitions:
   elys.amm.MsgSwapExactAmountInResponse:
     type: object
     properties:
-      tokenOutAmount:
+      token_out_amount:
         type: string
   elys.amm.MsgSwapExactAmountOutResponse:
     type: object
     properties:
-      tokenInAmount:
+      token_in_amount:
         type: string
   elys.amm.OraclePoolSlippageTrack:
     type: object
     properties:
-      poolId:
+      pool_id:
         type: string
         format: uint64
       timestamp:
@@ -82246,43 +82264,43 @@ definitions:
   elys.amm.Params:
     type: object
     properties:
-      poolCreationFee:
+      pool_creation_fee:
         type: string
         format: uint64
     description: Params defines the parameters for the module.
   elys.amm.Pool:
     type: object
     properties:
-      poolId:
+      pool_id:
         type: string
         format: uint64
       address:
         type: string
-      poolParams:
+      pool_params:
         type: object
         properties:
-          swapFee:
+          swap_fee:
             type: string
-          exitFee:
+          exit_fee:
             type: string
-          useOracle:
+          use_oracle:
             type: boolean
-          weightBreakingFeeMultiplier:
+          weight_breaking_fee_multiplier:
             type: string
-          externalLiquidityRatio:
+          external_liquidity_ratio:
             type: string
-          lpFeePortion:
+          lp_fee_portion:
             type: string
-          stakingFeePortion:
+          staking_fee_portion:
             type: string
-          weightRecoveryFeePortion:
+          weight_recovery_fee_portion:
             type: string
-          thresholdWeightDifference:
+          threshold_weight_difference:
             type: string
-          feeDenom:
+          fee_denom:
             type: string
             title: denom for fee collection
-      totalShares:
+      total_shares:
         type: object
         properties:
           denom:
@@ -82294,7 +82312,7 @@ definitions:
 
           NOTE: The amount field is an Int which implements the custom method
           signatures required by gogoproto.
-      poolAssets:
+      pool_assets:
         type: array
         items:
           type: object
@@ -82316,38 +82334,38 @@ definitions:
                 signatures required by gogoproto.
             weight:
               type: string
-      totalWeight:
+      total_weight:
         type: string
-      rebalanceTreasury:
+      rebalance_treasury:
         type: string
   elys.amm.PoolParams:
     type: object
     properties:
-      swapFee:
+      swap_fee:
         type: string
-      exitFee:
+      exit_fee:
         type: string
-      useOracle:
+      use_oracle:
         type: boolean
-      weightBreakingFeeMultiplier:
+      weight_breaking_fee_multiplier:
         type: string
-      externalLiquidityRatio:
+      external_liquidity_ratio:
         type: string
-      lpFeePortion:
+      lp_fee_portion:
         type: string
-      stakingFeePortion:
+      staking_fee_portion:
         type: string
-      weightRecoveryFeePortion:
+      weight_recovery_fee_portion:
         type: string
-      thresholdWeightDifference:
+      threshold_weight_difference:
         type: string
-      feeDenom:
+      fee_denom:
         type: string
         title: denom for fee collection
   elys.amm.QueryAllDenomLiquidityResponse:
     type: object
     properties:
-      denomLiquidity:
+      denom_liquidity:
         type: array
         items:
           type: object
@@ -82390,36 +82408,36 @@ definitions:
         items:
           type: object
           properties:
-            poolId:
+            pool_id:
               type: string
               format: uint64
             address:
               type: string
-            poolParams:
+            pool_params:
               type: object
               properties:
-                swapFee:
+                swap_fee:
                   type: string
-                exitFee:
+                exit_fee:
                   type: string
-                useOracle:
+                use_oracle:
                   type: boolean
-                weightBreakingFeeMultiplier:
+                weight_breaking_fee_multiplier:
                   type: string
-                externalLiquidityRatio:
+                external_liquidity_ratio:
                   type: string
-                lpFeePortion:
+                lp_fee_portion:
                   type: string
-                stakingFeePortion:
+                staking_fee_portion:
                   type: string
-                weightRecoveryFeePortion:
+                weight_recovery_fee_portion:
                   type: string
-                thresholdWeightDifference:
+                threshold_weight_difference:
                   type: string
-                feeDenom:
+                fee_denom:
                   type: string
                   title: denom for fee collection
-            totalShares:
+            total_shares:
               type: object
               properties:
                 denom:
@@ -82434,7 +82452,7 @@ definitions:
                 method
 
                 signatures required by gogoproto.
-            poolAssets:
+            pool_assets:
               type: array
               items:
                 type: object
@@ -82456,9 +82474,9 @@ definitions:
                       signatures required by gogoproto.
                   weight:
                     type: string
-            totalWeight:
+            total_weight:
               type: string
-            rebalanceTreasury:
+            rebalance_treasury:
               type: string
       pagination:
         type: object
@@ -82486,10 +82504,25 @@ definitions:
                    repeated Bar results = 1;
                    PageResponse page = 2;
            }
+  elys.amm.QueryBalanceResponse:
+    type: object
+    properties:
+      balance:
+        type: object
+        properties:
+          denom:
+            type: string
+          amount:
+            type: string
+        description: |-
+          Coin defines a token with a denomination and an amount.
+
+          NOTE: The amount field is an Int which implements the custom method
+          signatures required by gogoproto.
   elys.amm.QueryGetDenomLiquidityResponse:
     type: object
     properties:
-      denomLiquidity:
+      denom_liquidity:
         type: object
         properties:
           denom:
@@ -82502,36 +82535,36 @@ definitions:
       pool:
         type: object
         properties:
-          poolId:
+          pool_id:
             type: string
             format: uint64
           address:
             type: string
-          poolParams:
+          pool_params:
             type: object
             properties:
-              swapFee:
+              swap_fee:
                 type: string
-              exitFee:
+              exit_fee:
                 type: string
-              useOracle:
+              use_oracle:
                 type: boolean
-              weightBreakingFeeMultiplier:
+              weight_breaking_fee_multiplier:
                 type: string
-              externalLiquidityRatio:
+              external_liquidity_ratio:
                 type: string
-              lpFeePortion:
+              lp_fee_portion:
                 type: string
-              stakingFeePortion:
+              staking_fee_portion:
                 type: string
-              weightRecoveryFeePortion:
+              weight_recovery_fee_portion:
                 type: string
-              thresholdWeightDifference:
+              threshold_weight_difference:
                 type: string
-              feeDenom:
+              fee_denom:
                 type: string
                 title: denom for fee collection
-          totalShares:
+          total_shares:
             type: object
             properties:
               denom:
@@ -82546,7 +82579,7 @@ definitions:
               method
 
               signatures required by gogoproto.
-          poolAssets:
+          pool_assets:
             type: array
             items:
               type: object
@@ -82568,9 +82601,9 @@ definitions:
                     signatures required by gogoproto.
                 weight:
                   type: string
-          totalWeight:
+          total_weight:
             type: string
-          rebalanceTreasury:
+          rebalance_treasury:
             type: string
   elys.amm.QueryParamsResponse:
     type: object
@@ -82579,7 +82612,7 @@ definitions:
         description: params holds all the parameters of this module.
         type: object
         properties:
-          poolCreationFee:
+          pool_creation_fee:
             type: string
             format: uint64
     description: QueryParamsResponse is response type for the Query/Params RPC method.
@@ -82591,7 +82624,7 @@ definitions:
         items:
           type: object
           properties:
-            poolId:
+            pool_id:
               type: string
               format: uint64
             timestamp:
@@ -82620,7 +82653,7 @@ definitions:
       track:
         type: object
         properties:
-          poolId:
+          pool_id:
             type: string
             format: uint64
           timestamp:
@@ -82646,9 +82679,9 @@ definitions:
   elys.amm.QuerySwapEstimationResponse:
     type: object
     properties:
-      spotPrice:
+      spot_price:
         type: string
-      tokenOut:
+      token_out:
         type: object
         properties:
           denom:
@@ -82679,7 +82712,7 @@ definitions:
   elys.assetprofile.Entry:
     type: object
     properties:
-      baseDenom:
+      base_denom:
         type: string
       decimals:
         type: string
@@ -82688,31 +82721,31 @@ definitions:
         type: string
       path:
         type: string
-      ibcChannelId:
+      ibc_channel_id:
         type: string
-      ibcCounterpartyChannelId:
+      ibc_counterparty_channel_id:
         type: string
-      displayName:
+      display_name:
         type: string
-      displaySymbol:
+      display_symbol:
         type: string
       network:
         type: string
       address:
         type: string
-      externalSymbol:
+      external_symbol:
         type: string
-      transferLimit:
+      transfer_limit:
         type: string
       permissions:
         type: array
         items:
           type: string
-      unitDenom:
+      unit_denom:
         type: string
-      ibcCounterpartyDenom:
+      ibc_counterparty_denom:
         type: string
-      ibcCounterpartyChainId:
+      ibc_counterparty_chain_id:
         type: string
       authority:
         type: string
@@ -82737,7 +82770,7 @@ definitions:
         items:
           type: object
           properties:
-            baseDenom:
+            base_denom:
               type: string
             decimals:
               type: string
@@ -82746,31 +82779,31 @@ definitions:
               type: string
             path:
               type: string
-            ibcChannelId:
+            ibc_channel_id:
               type: string
-            ibcCounterpartyChannelId:
+            ibc_counterparty_channel_id:
               type: string
-            displayName:
+            display_name:
               type: string
-            displaySymbol:
+            display_symbol:
               type: string
             network:
               type: string
             address:
               type: string
-            externalSymbol:
+            external_symbol:
               type: string
-            transferLimit:
+            transfer_limit:
               type: string
             permissions:
               type: array
               items:
                 type: string
-            unitDenom:
+            unit_denom:
               type: string
-            ibcCounterpartyDenom:
+            ibc_counterparty_denom:
               type: string
-            ibcCounterpartyChainId:
+            ibc_counterparty_chain_id:
               type: string
             authority:
               type: string
@@ -82810,7 +82843,7 @@ definitions:
       entry:
         type: object
         properties:
-          baseDenom:
+          base_denom:
             type: string
           decimals:
             type: string
@@ -82819,31 +82852,31 @@ definitions:
             type: string
           path:
             type: string
-          ibcChannelId:
+          ibc_channel_id:
             type: string
-          ibcCounterpartyChannelId:
+          ibc_counterparty_channel_id:
             type: string
-          displayName:
+          display_name:
             type: string
-          displaySymbol:
+          display_symbol:
             type: string
           network:
             type: string
           address:
             type: string
-          externalSymbol:
+          external_symbol:
             type: string
-          transferLimit:
+          transfer_limit:
             type: string
           permissions:
             type: array
             items:
               type: string
-          unitDenom:
+          unit_denom:
             type: string
-          ibcCounterpartyDenom:
+          ibc_counterparty_denom:
             type: string
-          ibcCounterpartyChainId:
+          ibc_counterparty_chain_id:
             type: string
           authority:
             type: string
@@ -82870,7 +82903,7 @@ definitions:
   elys.burner.Params:
     type: object
     properties:
-      epochIdentifier:
+      epoch_identifier:
         type: string
     description: Params defines the parameters for the module.
   elys.burner.QueryAllHistoryResponse:
@@ -82932,7 +82965,7 @@ definitions:
         description: params holds all the parameters of this module.
         type: object
         properties:
-          epochIdentifier:
+          epoch_identifier:
             type: string
     description: QueryParamsResponse is response type for the Query/Params RPC method.
   elys.clock.v1.MsgUpdateParamsResponse:
@@ -83091,8 +83124,24 @@ definitions:
     type: object
   elys.commitment.MsgCommitLiquidTokensResponse:
     type: object
+  elys.commitment.MsgStakeResponse:
+    type: object
+    properties:
+      code:
+        type: string
+        format: uint64
+      result:
+        type: string
   elys.commitment.MsgUncommitTokensResponse:
     type: object
+  elys.commitment.MsgUnstakeResponse:
+    type: object
+    properties:
+      code:
+        type: string
+        format: uint64
+      result:
+        type: string
   elys.commitment.MsgUpdateVestingInfoResponse:
     type: object
   elys.commitment.MsgVestLiquidResponse:
@@ -83720,7 +83769,7 @@ definitions:
   elys.leveragelp.Pool:
     type: object
     properties:
-      ammPoolId:
+      amm_pool_id:
         type: string
         format: uint64
       health:
@@ -84039,7 +84088,7 @@ definitions:
         items:
           type: object
           properties:
-            ammPoolId:
+            amm_pool_id:
               type: string
               format: uint64
             health:
@@ -84084,7 +84133,7 @@ definitions:
       pool:
         type: object
         properties:
-          ammPoolId:
+          amm_pool_id:
             type: string
             format: uint64
           health:
@@ -84139,16 +84188,6 @@ definitions:
                    repeated Bar results = 1;
                    PageResponse page = 2;
            }
-  elys.liquidityprovider.Params:
-    type: object
-    description: Params defines the parameters for the module.
-  elys.liquidityprovider.QueryParamsResponse:
-    type: object
-    properties:
-      params:
-        description: params holds all the parameters of this module.
-        type: object
-    description: QueryParamsResponse is response type for the Query/Params RPC method.
   elys.margin.IsWhitelistedResponse:
     type: object
     properties:
@@ -84520,7 +84559,7 @@ definitions:
   elys.margin.Pool:
     type: object
     properties:
-      ammPoolId:
+      amm_pool_id:
         type: string
         format: uint64
       health:
@@ -84531,7 +84570,7 @@ definitions:
         type: boolean
       interest_rate:
         type: string
-      poolAssets:
+      pool_assets:
         type: array
         items:
           type: object
@@ -84550,7 +84589,7 @@ definitions:
               type: string
             asset_denom:
               type: string
-      lastHeightInterestRateComputed:
+      last_height_interest_rate_computed:
         type: string
         format: int64
   elys.margin.PoolAsset:
@@ -85086,7 +85125,7 @@ definitions:
         items:
           type: object
           properties:
-            ammPoolId:
+            amm_pool_id:
               type: string
               format: uint64
             health:
@@ -85097,7 +85136,7 @@ definitions:
               type: boolean
             interest_rate:
               type: string
-            poolAssets:
+            pool_assets:
               type: array
               items:
                 type: object
@@ -85116,7 +85155,7 @@ definitions:
                     type: string
                   asset_denom:
                     type: string
-            lastHeightInterestRateComputed:
+            last_height_interest_rate_computed:
               type: string
               format: int64
       pagination:
@@ -85151,7 +85190,7 @@ definitions:
       pool:
         type: object
         properties:
-          ammPoolId:
+          amm_pool_id:
             type: string
             format: uint64
           health:
@@ -85162,7 +85201,7 @@ definitions:
             type: boolean
           interest_rate:
             type: string
-          poolAssets:
+          pool_assets:
             type: array
             items:
               type: object
@@ -85181,7 +85220,7 @@ definitions:
                   type: string
                 asset_denom:
                   type: string
-          lastHeightInterestRateComputed:
+          last_height_interest_rate_computed:
             type: string
             format: int64
   elys.margin.StatusResponse:
@@ -85233,9 +85272,9 @@ definitions:
         type: string
       display:
         type: string
-      bandTicker:
+      band_ticker:
         type: string
-      elysTicker:
+      elys_ticker:
         type: string
       decimal:
         type: string
@@ -85337,7 +85376,7 @@ definitions:
   elys.oracle.QueryAllAssetInfoResponse:
     type: object
     properties:
-      assetInfo:
+      asset_info:
         type: array
         items:
           type: object
@@ -85346,9 +85385,9 @@ definitions:
               type: string
             display:
               type: string
-            bandTicker:
+            band_ticker:
               type: string
-            elysTicker:
+            elys_ticker:
               type: string
             decimal:
               type: string
@@ -85382,7 +85421,7 @@ definitions:
   elys.oracle.QueryAllPriceFeederResponse:
     type: object
     properties:
-      priceFeeder:
+      price_feeder:
         type: array
         items:
           type: object
@@ -85476,16 +85515,16 @@ definitions:
   elys.oracle.QueryGetAssetInfoResponse:
     type: object
     properties:
-      assetInfo:
+      asset_info:
         type: object
         properties:
           denom:
             type: string
           display:
             type: string
-          bandTicker:
+          band_ticker:
             type: string
-          elysTicker:
+          elys_ticker:
             type: string
           decimal:
             type: string
@@ -85493,7 +85532,7 @@ definitions:
   elys.oracle.QueryGetPriceFeederResponse:
     type: object
     properties:
-      priceFeeder:
+      price_feeder:
         type: object
         properties:
           feeder:
@@ -85578,11 +85617,11 @@ definitions:
   elys.parameter.AnteHandlerParam:
     type: object
     properties:
-      minCommissionRate:
+      min_commission_rate:
         type: string
-      maxVotingPower:
+      max_voting_power:
         type: string
-      minSelfDelegation:
+      min_self_delegation:
         type: string
   elys.parameter.Params:
     type: object
@@ -85590,16 +85629,16 @@ definitions:
   elys.parameter.QueryAllAnteHandlerParamResponse:
     type: object
     properties:
-      anteHandlerParam:
+      ante_handler_param:
         type: array
         items:
           type: object
           properties:
-            minCommissionRate:
+            min_commission_rate:
               type: string
-            maxVotingPower:
+            max_voting_power:
               type: string
-            minSelfDelegation:
+            min_self_delegation:
               type: string
       pagination:
         type: object
@@ -85708,25 +85747,25 @@ definitions:
       inflation:
         type: object
         properties:
-          lmRewards:
+          lm_rewards:
             type: string
             format: uint64
-          icsStakingRewards:
+          ics_staking_rewards:
             type: string
             format: uint64
-          communityFund:
+          community_fund:
             type: string
             format: uint64
-          strategicReserve:
+          strategic_reserve:
             type: string
             format: uint64
-          teamTokensVested:
+          team_tokens_vested:
             type: string
             format: uint64
-      seedVesting:
+      seed_vesting:
         type: string
         format: uint64
-      strategicSalesVesting:
+      strategic_sales_vesting:
         type: string
         format: uint64
       authority:
@@ -85734,19 +85773,19 @@ definitions:
   elys.tokenomics.InflationEntry:
     type: object
     properties:
-      lmRewards:
+      lm_rewards:
         type: string
         format: uint64
-      icsStakingRewards:
+      ics_staking_rewards:
         type: string
         format: uint64
-      communityFund:
+      community_fund:
         type: string
         format: uint64
-      strategicReserve:
+      strategic_reserve:
         type: string
         format: uint64
-      teamTokensVested:
+      team_tokens_vested:
         type: string
         format: uint64
   elys.tokenomics.MsgCreateAirdropResponse:
@@ -85810,15 +85849,15 @@ definitions:
   elys.tokenomics.QueryAllTimeBasedInflationResponse:
     type: object
     properties:
-      timeBasedInflation:
+      time_based_inflation:
         type: array
         items:
           type: object
           properties:
-            startBlockHeight:
+            start_block_height:
               type: string
               format: uint64
-            endBlockHeight:
+            end_block_height:
               type: string
               format: uint64
             description:
@@ -85826,19 +85865,19 @@ definitions:
             inflation:
               type: object
               properties:
-                lmRewards:
+                lm_rewards:
                   type: string
                   format: uint64
-                icsStakingRewards:
+                ics_staking_rewards:
                   type: string
                   format: uint64
-                communityFund:
+                community_fund:
                   type: string
                   format: uint64
-                strategicReserve:
+                strategic_reserve:
                   type: string
                   format: uint64
-                teamTokensVested:
+                team_tokens_vested:
                   type: string
                   format: uint64
             authority:
@@ -85885,31 +85924,31 @@ definitions:
   elys.tokenomics.QueryGetGenesisInflationResponse:
     type: object
     properties:
-      GenesisInflation:
+      genesis_inflation:
         type: object
         properties:
           inflation:
             type: object
             properties:
-              lmRewards:
+              lm_rewards:
                 type: string
                 format: uint64
-              icsStakingRewards:
+              ics_staking_rewards:
                 type: string
                 format: uint64
-              communityFund:
+              community_fund:
                 type: string
                 format: uint64
-              strategicReserve:
+              strategic_reserve:
                 type: string
                 format: uint64
-              teamTokensVested:
+              team_tokens_vested:
                 type: string
                 format: uint64
-          seedVesting:
+          seed_vesting:
             type: string
             format: uint64
-          strategicSalesVesting:
+          strategic_sales_vesting:
             type: string
             format: uint64
           authority:
@@ -85917,13 +85956,13 @@ definitions:
   elys.tokenomics.QueryGetTimeBasedInflationResponse:
     type: object
     properties:
-      timeBasedInflation:
+      time_based_inflation:
         type: object
         properties:
-          startBlockHeight:
+          start_block_height:
             type: string
             format: uint64
-          endBlockHeight:
+          end_block_height:
             type: string
             format: uint64
           description:
@@ -85931,19 +85970,19 @@ definitions:
           inflation:
             type: object
             properties:
-              lmRewards:
+              lm_rewards:
                 type: string
                 format: uint64
-              icsStakingRewards:
+              ics_staking_rewards:
                 type: string
                 format: uint64
-              communityFund:
+              community_fund:
                 type: string
                 format: uint64
-              strategicReserve:
+              strategic_reserve:
                 type: string
                 format: uint64
-              teamTokensVested:
+              team_tokens_vested:
                 type: string
                 format: uint64
           authority:
@@ -85958,10 +85997,10 @@ definitions:
   elys.tokenomics.TimeBasedInflation:
     type: object
     properties:
-      startBlockHeight:
+      start_block_height:
         type: string
         format: uint64
-      endBlockHeight:
+      end_block_height:
         type: string
         format: uint64
       description:
@@ -85969,19 +86008,19 @@ definitions:
       inflation:
         type: object
         properties:
-          lmRewards:
+          lm_rewards:
             type: string
             format: uint64
-          icsStakingRewards:
+          ics_staking_rewards:
             type: string
             format: uint64
-          communityFund:
+          community_fund:
             type: string
             format: uint64
-          strategicReserve:
+          strategic_reserve:
             type: string
             format: uint64
-          teamTokensVested:
+          team_tokens_vested:
             type: string
             format: uint64
       authority:
