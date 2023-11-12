@@ -245,11 +245,18 @@ type QueryDelegatorUnbondingDelegationsResponse struct {
 // QueryValidatorsRequest is request type for Query/Validators RPC method.
 type QueryValidatorsRequest struct {
 	// status enables to query for validators matching a given status.
-	Status string `protobuf:"bytes,1,opt,name=status,proto3" json:"status,omitempty"`
+	Status string `protobuf:"bytes,2,opt,name=status,proto3" json:"status,omitempty"`
 }
 
 type QueryShowCommitmentsResponse struct {
 	Commitments *commitmenttypes.Commitments `protobuf:"bytes,1,opt,name=commitments,proto3" json:"commitments,omitempty"`
+}
+
+// QueryDelegatorValidatorsResponse is response type for the
+// Query/DelegatorValidators RPC method.
+type QueryDelegatorValidatorsResponse struct {
+	// validators defines the validators' info of a delegator.
+	Validators []stakingtypes.Validator `protobuf:"bytes,1,rep,name=validators,proto3" json:"validators"`
 }
 
 type CustomMessenger struct {
