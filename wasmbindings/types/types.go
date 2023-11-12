@@ -214,7 +214,7 @@ type QueryCommitmentsRequest struct {
 	Address string `protobuf:"bytes,1,opt,name=address,proto3" json:"address,omitempty"`
 }
 
-type QueryBorrowRequest struct {
+type QueryBorrowAmountRequest struct {
 	Address string `protobuf:"bytes,1,opt,name=address,proto3" json:"address,omitempty"`
 }
 
