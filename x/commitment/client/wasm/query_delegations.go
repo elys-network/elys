@@ -7,12 +7,13 @@ import (
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
-	wasmbindingstypes "github.com/elys-network/elys/wasmbindings/types"
+	"github.com/elys-network/elys/x/commitment/types"
+
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
 
-func (oq *Querier) queryDelegations(ctx sdk.Context, query *wasmbindingstypes.QueryDelegatorDelegationsRequest) ([]byte, error) {
+func (oq *Querier) queryDelegations(ctx sdk.Context, query *types.QueryDelegatorDelegationsRequest) ([]byte, error) {
 	if query.DelegatorAddress == "" {
 		return nil, status.Error(codes.InvalidArgument, "delegator address cannot be empty")
 	}
@@ -25,7 +26,7 @@ func (oq *Querier) queryDelegations(ctx sdk.Context, query *wasmbindingstypes.Qu
 	delegations := oq.stakingKeeper.GetDelegatorDelegations(ctx, delAddr, math.MaxInt16)
 	delegationResps, err := stakingkeeper.DelegationsToDelegationResponses(ctx, oq.stakingKeeper, delegations)
 
-	res := wasmbindingstypes.QueryDelegatorDelegationsResponse{
+	res := types.QueryDelegatorDelegationsResponse{
 		DelegationResponses: delegationResps,
 	}
 

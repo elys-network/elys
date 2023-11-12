@@ -5,11 +5,11 @@ import (
 
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	wasmbindingstypes "github.com/elys-network/elys/wasmbindings/types"
+	ammtypes "github.com/elys-network/elys/x/amm/types"
 	paramtypes "github.com/elys-network/elys/x/parameter/types"
 )
 
-func (oq *Querier) queryRewardBalanceOfDenom(ctx sdk.Context, query *wasmbindingstypes.QueryBalanceRequest) ([]byte, error) {
+func (oq *Querier) queryRewardBalanceOfDenom(ctx sdk.Context, query *ammtypes.QueryBalanceRequest) ([]byte, error) {
 	denom := query.Denom
 	addr := query.Address
 	if denom == paramtypes.Elys {
@@ -21,7 +21,7 @@ func (oq *Querier) queryRewardBalanceOfDenom(ctx sdk.Context, query *wasmbinding
 	if !found {
 		balance = sdk.NewCoin(denom, sdk.ZeroInt())
 	} else {
-		uncommittedToken, found := commitment.GetUncommittedTokensForDenom(denom)
+		uncommittedToken, found := commitment.GetRewardsUnclaimedForDenom(denom)
 		if !found {
 			return nil, errorsmod.Wrap(nil, "invalid denom")
 		}
@@ -29,7 +29,7 @@ func (oq *Querier) queryRewardBalanceOfDenom(ctx sdk.Context, query *wasmbinding
 		balance = sdk.NewCoin(denom, uncommittedToken.Amount)
 	}
 
-	res := wasmbindingstypes.QueryBalanceResponse{
+	res := ammtypes.QueryBalanceResponse{
 		Balance: balance,
 	}
 

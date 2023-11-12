@@ -7,12 +7,12 @@ import (
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
-	wasmbindingstypes "github.com/elys-network/elys/wasmbindings/types"
+	"github.com/elys-network/elys/x/commitment/types"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
 
-func (oq *Querier) queryUnbondingDelegations(ctx sdk.Context, query *wasmbindingstypes.QueryDelegatorUnbondingDelegationsRequest) ([]byte, error) {
+func (oq *Querier) queryUnbondingDelegations(ctx sdk.Context, query *types.QueryDelegatorUnbondingDelegationsRequest) ([]byte, error) {
 	if query.DelegatorAddress == "" {
 		return nil, status.Error(codes.InvalidArgument, "delegator address cannot be empty")
 	}
@@ -24,7 +24,7 @@ func (oq *Querier) queryUnbondingDelegations(ctx sdk.Context, query *wasmbinding
 
 	unbonding_delegations := oq.stakingKeeper.GetUnbondingDelegations(ctx, delAddr, math.MaxInt16)
 	unbonding_delegations_cw := BuildUnbondingDelegationResponseCW(unbonding_delegations)
-	res := wasmbindingstypes.QueryDelegatorUnbondingDelegationsResponse{
+	res := types.QueryDelegatorUnbondingDelegationsResponse{
 		UnbondingResponses: unbonding_delegations_cw,
 	}
 
@@ -36,15 +36,15 @@ func (oq *Querier) queryUnbondingDelegations(ctx sdk.Context, query *wasmbinding
 	return responseBytes, nil
 }
 
-func BuildUnbondingDelegationResponseCW(unbondingDelegations []stakingtypes.UnbondingDelegation) []wasmbindingstypes.UnbondingDelegation {
-	var unbondingDelegationsCW []wasmbindingstypes.UnbondingDelegation
+func BuildUnbondingDelegationResponseCW(unbondingDelegations []stakingtypes.UnbondingDelegation) []types.UnbondingDelegation {
+	var unbondingDelegationsCW []types.UnbondingDelegation
 	for _, unbondingDelegation := range unbondingDelegations {
-		var unbondingDelegationCW wasmbindingstypes.UnbondingDelegation
+		var unbondingDelegationCW types.UnbondingDelegation
 		unbondingDelegationCW.DelegatorAddress = unbondingDelegation.DelegatorAddress
 		unbondingDelegationCW.ValidatorAddress = unbondingDelegation.ValidatorAddress
 
 		for _, entity := range unbondingDelegation.Entries {
-			newEntity := wasmbindingstypes.UnbondingDelegationEntry{
+			newEntity := types.UnbondingDelegationEntry{
 				// creation_height is the height which the unbonding took place.
 				CreationHeight: entity.CreationHeight,
 				// completion_time is the unix time for unbonding completion.

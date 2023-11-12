@@ -7,10 +7,10 @@ import (
 	cosmos_sdk_math "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
-	wasmbindingstypes "github.com/elys-network/elys/wasmbindings/types"
+	"github.com/elys-network/elys/x/incentive/types"
 )
 
-func (oq *Querier) queryDelegatorValidators(ctx sdk.Context, query *wasmbindingstypes.QueryValidatorsRequest) ([]byte, error) {
+func (oq *Querier) queryDelegatorValidators(ctx sdk.Context, query *types.QueryValidatorsRequest) ([]byte, error) {
 	totalBonded := oq.stakingKeeper.TotalBondedTokens(ctx)
 	delegatorAddr, err := sdk.AccAddressFromBech32(query.DelegatorAddress)
 	if err != nil {
@@ -18,10 +18,10 @@ func (oq *Querier) queryDelegatorValidators(ctx sdk.Context, query *wasmbindings
 	}
 
 	validators := make([]stakingtypes.Validator, 0)
-	validators = oq.stakingKeeper.GetDelegatorValidators(ctx, delegatorAddr, wasmbindingstypes.MAX_RETRY_VALIDATORS)
+	validators = oq.stakingKeeper.GetDelegatorValidators(ctx, delegatorAddr, types.MAX_RETRY_VALIDATORS)
 
 	validatorsCW := oq.BuildDelegatorValidatorsResponseCW(ctx, validators, totalBonded, query.DelegatorAddress)
-	res := wasmbindingstypes.QueryDelegatorValidatorsResponse{
+	res := types.QueryDelegatorValidatorsResponse{
 		Validators: validatorsCW,
 	}
 
@@ -33,10 +33,10 @@ func (oq *Querier) queryDelegatorValidators(ctx sdk.Context, query *wasmbindings
 	return responseBytes, nil
 }
 
-func (oq *Querier) BuildDelegatorValidatorsResponseCW(ctx sdk.Context, validators []stakingtypes.Validator, totalBonded cosmos_sdk_math.Int, delegatorAddress string) []wasmbindingstypes.ValidatorDetail {
-	var validatorsCW []wasmbindingstypes.ValidatorDetail
+func (oq *Querier) BuildDelegatorValidatorsResponseCW(ctx sdk.Context, validators []stakingtypes.Validator, totalBonded cosmos_sdk_math.Int, delegatorAddress string) []types.ValidatorDetail {
+	var validatorsCW []types.ValidatorDetail
 	for _, validator := range validators {
-		var validatorCW wasmbindingstypes.ValidatorDetail
+		var validatorCW types.ValidatorDetail
 		validatorCW.Address = validator.OperatorAddress
 		validatorCW.Name = validator.Description.Moniker
 		validatorCW.Commission = validator.GetCommission()
@@ -58,7 +58,7 @@ func (oq *Querier) BuildDelegatorValidatorsResponseCW(ctx sdk.Context, validator
 		tokens := val.TokensFromSharesTruncated(shares)
 		delegatedAmt := tokens.TruncateInt()
 
-		validatorCW.Staked = wasmbindingstypes.BalanceAvailable{
+		validatorCW.Staked = types.BalanceAvailable{
 			Amount:    delegatedAmt.Uint64(),
 			UsdAmount: tokens,
 		}
