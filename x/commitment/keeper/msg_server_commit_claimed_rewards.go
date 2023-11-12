@@ -29,7 +29,7 @@ func (k msgServer) CommitClaimedRewards(goCtx context.Context, msg *types.MsgCom
 	}
 
 	// Decrease unclaimed tokens amount
-	err := commitments.SubRewardsUnclaimed(sdk.NewCoin(msg.Denom, msg.Amount))
+	err := commitments.SubClaimed(sdk.NewCoin(msg.Denom, msg.Amount))
 	if err != nil {
 		return nil, err
 	}
@@ -41,7 +41,7 @@ func (k msgServer) CommitClaimedRewards(goCtx context.Context, msg *types.MsgCom
 	k.SetCommitments(ctx, commitments)
 
 	// Emit Hook commitment changed
-	k.AfterCommitmentChange(ctx, msg.Creator, sdk.NewCoin(msg.Denom, msg.Amount))
+	k.AfterCommitmentChange(ctx, msg.Creator, sdk.Coins{sdk.NewCoin(msg.Denom, msg.Amount)})
 
 	// Emit blockchain event
 	ctx.EventManager().EmitEvent(

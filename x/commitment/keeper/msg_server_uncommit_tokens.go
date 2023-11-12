@@ -56,7 +56,7 @@ func (k msgServer) UncommitTokens(goCtx context.Context, msg *types.MsgUncommitT
 	}
 
 	// Emit Hook commitment changed
-	k.AfterCommitmentChange(ctx, msg.Creator, sdk.NewCoin(msg.Denom, msg.Amount))
+	k.AfterCommitmentChange(ctx, msg.Creator, sdk.Coins{sdk.NewCoin(msg.Denom, msg.Amount)})
 
 	// Emit Hook if Eden is uncommitted
 	if msg.Denom == ptypes.Eden {

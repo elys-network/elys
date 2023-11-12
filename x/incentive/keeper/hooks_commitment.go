@@ -6,7 +6,7 @@ import (
 )
 
 // Process commitmentChanged hook
-func (k Keeper) CommitmentChanged(ctx sdk.Context, creator string, amount sdk.Coin) {
+func (k Keeper) CommitmentChanged(ctx sdk.Context, creator string, amount sdk.Coins) {
 }
 
 // Process eden uncommitted hook
@@ -29,7 +29,7 @@ func (k Keeper) CommitmentHooks() CommitmentHooks {
 }
 
 // CommitmentChanged implements CommentmentHook
-func (h CommitmentHooks) CommitmentChanged(ctx sdk.Context, creator string, amount sdk.Coin) {
+func (h CommitmentHooks) CommitmentChanged(ctx sdk.Context, creator string, amount sdk.Coins) {
 	h.k.CommitmentChanged(ctx, creator, amount)
 }
 

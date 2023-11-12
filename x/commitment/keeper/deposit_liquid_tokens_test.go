@@ -56,7 +56,7 @@ func TestDepositLiquidTokens(t *testing.T) {
 	require.True(t, found, "commitments not found")
 
 	// Check if the unclaimed tokens were updated correctly
-	rewardUnclaimed := newCommitments.GetUnclaimedAmountForDenom(ptypes.Eden)
+	rewardUnclaimed := newCommitments.GetRewardUnclaimedForDenom(ptypes.Eden)
 	require.Equal(t, sdk.NewInt(250), rewardUnclaimed, "unclaimed tokens were not updated correctly")
 
 	// Check if the committed tokens were updated correctly

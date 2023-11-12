@@ -68,7 +68,7 @@ func TestWithdrawTokens(t *testing.T) {
 	updatedCommitments, found := keeper.GetCommitments(ctx, creator)
 	require.True(t, found)
 
-	unclaimedBalance := updatedCommitments.GetUnclaimedAmountForDenom(denom)
+	unclaimedBalance := updatedCommitments.GetRewardUnclaimedForDenom(denom)
 	assert.Equal(t, sdk.NewInt(20), unclaimedBalance)
 
 	// Check if the withdrawn tokens were received
@@ -88,7 +88,7 @@ func TestWithdrawTokens(t *testing.T) {
 	updatedCommitments, found = keeper.GetCommitments(ctx, creator)
 	require.True(t, found)
 
-	unclaimedBalance = updatedCommitments.GetUnclaimedAmountForDenom(denom)
+	unclaimedBalance = updatedCommitments.GetRewardUnclaimedForDenom(denom)
 	assert.Equal(t, sdk.NewInt(0), unclaimedBalance)
 
 	committedBalance := updatedCommitments.GetCommittedAmountForDenom(denom)

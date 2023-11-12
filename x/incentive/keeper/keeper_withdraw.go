@@ -97,12 +97,12 @@ func (k Keeper) ProcessWithdrawRewards(ctx sdk.Context, delegator string, denom 
 
 	// Eden
 	if denom == ptypes.Eden {
-		unclaimedEden, bfound := commitments.GetRewardsUnclaimedForDenom(ptypes.Eden)
-		if bfound {
-			// Withdraw Eden
-			return k.cmk.ProcessWithdrawTokens(ctx, delegator, ptypes.Eden, unclaimedEden.Amount)
+		unclaimedEden := commitments.GetRewardUnclaimedForDenom(ptypes.Eden)
+		if unclaimedEden.IsZero() {
+			return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, "balance not available")
 		}
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, "balance not available")
+		// Withdraw Eden
+		return k.cmk.ProcessWithdrawTokens(ctx, delegator, ptypes.Eden, unclaimedEden)
 	}
 
 	if denom == ptypes.EdenB {
@@ -110,45 +110,45 @@ func (k Keeper) ProcessWithdrawRewards(ctx sdk.Context, delegator string, denom 
 	}
 
 	// USDC
-	unclaimedUsdc, bfound := commitments.GetRewardsUnclaimedForDenom(ptypes.BaseCurrency)
-	if bfound {
-		// Get dex revenue wallet
-		revenueCollector := k.authKeeper.GetModuleAccount(ctx, k.dexRevCollectorName)
+	unclaimedUsdc := commitments.GetRewardUnclaimedForDenom(ptypes.BaseCurrency)
+	if unclaimedUsdc.IsZero() {
 
-		// Revenue wallet usdc balance
-		usdcBalance := k.bankKeeper.GetBalance(ctx, revenueCollector.GetAddress(), ptypes.BaseCurrency)
-
-		// Balance check
-		if unclaimedUsdc.Amount.GT(usdcBalance.Amount) {
-			return sdkerrors.Wrapf(types.ErrIntOverflowTx, "Amount excceed: %d", unclaimedUsdc.Amount)
-		}
-
-		// All dex rewards are only paid in USDC
-		// TODO:
-		// USDC denom is still dummy until we have real USDC in our chain.
-		// This function call will deduct the accounting in commitment module only.
-		err = k.cmk.ProcessWithdrawUSDC(ctx, delegator, ptypes.BaseCurrency, unclaimedUsdc.Amount)
-		if err != nil {
-			return sdkerrors.Wrapf(types.ErrIntOverflowTx, "Internal error with amount: %d", unclaimedUsdc.Amount)
-		}
-
-		// Get Bech32 address for creator
-		addr, err := sdk.AccAddressFromBech32(commitments.Creator)
-		if err != nil {
-			return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "unable to convert address from bech32")
-		}
-
-		// Set withdraw usdc amount
-		// TODO
-		// USDC denom is still dummy
-		revenue := sdk.NewCoin(ptypes.BaseCurrency, unclaimedUsdc.Amount)
-		// Transfer revenue from a single wallet of DEX revenue wallet to user.
-		err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, k.dexRevCollectorName, addr, sdk.NewCoins(revenue))
-		if err != nil {
-			panic(err)
-		}
-	} else {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, "balance not available")
+	}
+	// Get dex revenue wallet
+	revenueCollector := k.authKeeper.GetModuleAccount(ctx, k.dexRevCollectorName)
+
+	// Revenue wallet usdc balance
+	usdcBalance := k.bankKeeper.GetBalance(ctx, revenueCollector.GetAddress(), ptypes.BaseCurrency)
+
+	// Balance check
+	if unclaimedUsdc.GT(usdcBalance.Amount) {
+		return sdkerrors.Wrapf(types.ErrIntOverflowTx, "Amount excceed: %d", unclaimedUsdc)
+	}
+
+	// All dex rewards are only paid in USDC
+	// TODO:
+	// USDC denom is still dummy until we have real USDC in our chain.
+	// This function call will deduct the accounting in commitment module only.
+	err = k.cmk.ProcessWithdrawUSDC(ctx, delegator, ptypes.BaseCurrency, unclaimedUsdc)
+	if err != nil {
+		return sdkerrors.Wrapf(types.ErrIntOverflowTx, "Internal error with amount: %d", unclaimedUsdc)
+	}
+
+	// Get Bech32 address for creator
+	addr, err := sdk.AccAddressFromBech32(commitments.Creator)
+	if err != nil {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "unable to convert address from bech32")
+	}
+
+	// Set withdraw usdc amount
+	// TODO
+	// USDC denom is still dummy
+	revenue := sdk.NewCoin(ptypes.BaseCurrency, unclaimedUsdc)
+	// Transfer revenue from a single wallet of DEX revenue wallet to user.
+	err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, k.dexRevCollectorName, addr, sdk.NewCoins(revenue))
+	if err != nil {
+		panic(err)
 	}
 
 	return err
@@ -176,12 +176,12 @@ func (k Keeper) ProcessWithdrawValidatorCommission(ctx sdk.Context, delegator st
 
 	// Eden
 	if denom == ptypes.Eden {
-		unclaimedEden, bfound := commitments.GetRewardsUnclaimedForDenom(ptypes.Eden)
-		if bfound {
-			// Withdraw Eden
-			return k.cmk.ProcessWithdrawValidatorCommission(ctx, delegator, validator, ptypes.Eden, unclaimedEden.Amount)
+		unclaimedEden := commitments.GetRewardUnclaimedForDenom(ptypes.Eden)
+		if unclaimedEden.IsZero() {
+			return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, "balance not available")
 		}
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, "balance not available")
+		// Withdraw Eden
+		return k.cmk.ProcessWithdrawValidatorCommission(ctx, delegator, validator, ptypes.Eden, unclaimedEden)
 	}
 
 	if denom == ptypes.EdenB {
@@ -189,44 +189,44 @@ func (k Keeper) ProcessWithdrawValidatorCommission(ctx sdk.Context, delegator st
 	}
 
 	// USDC
-	unclaimedUsdc, bfound := commitments.GetRewardsUnclaimedForDenom(ptypes.BaseCurrency)
-	if bfound {
-		// Get dex revenue wallet
-		revenueCollector := k.authKeeper.GetModuleAccount(ctx, k.dexRevCollectorName)
+	unclaimedUsdc := commitments.GetRewardUnclaimedForDenom(ptypes.BaseCurrency)
+	if unclaimedUsdc.IsZero() {
 
-		// Revenue wallet usdc balance
-		usdcBalance := k.bankKeeper.GetBalance(ctx, revenueCollector.GetAddress(), ptypes.BaseCurrency)
-
-		// Balance check
-		if unclaimedUsdc.Amount.GT(usdcBalance.Amount) {
-			return sdkerrors.Wrapf(types.ErrIntOverflowTx, "Amount excceed: %d", unclaimedUsdc.Amount)
-		}
-
-		// TODO:
-		// USDC denom is still dummy until we have real USDC in our chain.
-		// This function call will deduct the accounting in commitment module only.
-		err = k.cmk.ProcessWithdrawUSDC(ctx, validator, ptypes.BaseCurrency, unclaimedUsdc.Amount)
-		if err != nil {
-			return sdkerrors.Wrapf(types.ErrIntOverflowTx, "Internal error with amount: %d", unclaimedUsdc.Amount)
-		}
-
-		// Get Bech32 address for delegator
-		addr, err := sdk.AccAddressFromBech32(delegator)
-		if err != nil {
-			return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "unable to convert address from bech32")
-		}
-
-		// Set withdraw usdc amount
-		// TODO
-		// USDC denom is still dummy
-		revenue := sdk.NewCoin(ptypes.BaseCurrency, unclaimedUsdc.Amount)
-		// Transfer revenue from a single wallet of DEX revenue wallet to user's wallet.
-		err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, k.dexRevCollectorName, addr, sdk.NewCoins(revenue))
-		if err != nil {
-			panic(err)
-		}
-	} else {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, "balance not available")
+	}
+	// Get dex revenue wallet
+	revenueCollector := k.authKeeper.GetModuleAccount(ctx, k.dexRevCollectorName)
+
+	// Revenue wallet usdc balance
+	usdcBalance := k.bankKeeper.GetBalance(ctx, revenueCollector.GetAddress(), ptypes.BaseCurrency)
+
+	// Balance check
+	if unclaimedUsdc.GT(usdcBalance.Amount) {
+		return sdkerrors.Wrapf(types.ErrIntOverflowTx, "Amount excceed: %d", unclaimedUsdc)
+	}
+
+	// TODO:
+	// USDC denom is still dummy until we have real USDC in our chain.
+	// This function call will deduct the accounting in commitment module only.
+	err = k.cmk.ProcessWithdrawUSDC(ctx, validator, ptypes.BaseCurrency, unclaimedUsdc)
+	if err != nil {
+		return sdkerrors.Wrapf(types.ErrIntOverflowTx, "Internal error with amount: %d", unclaimedUsdc)
+	}
+
+	// Get Bech32 address for delegator
+	addr, err := sdk.AccAddressFromBech32(delegator)
+	if err != nil {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "unable to convert address from bech32")
+	}
+
+	// Set withdraw usdc amount
+	// TODO
+	// USDC denom is still dummy
+	revenue := sdk.NewCoin(ptypes.BaseCurrency, unclaimedUsdc)
+	// Transfer revenue from a single wallet of DEX revenue wallet to user's wallet.
+	err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, k.dexRevCollectorName, addr, sdk.NewCoins(revenue))
+	if err != nil {
+		panic(err)
 	}
 
 	return err

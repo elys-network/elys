@@ -83,7 +83,7 @@ func TestVestNow(t *testing.T) {
 	updatedCommitments, found := keeper.GetCommitments(ctx, creator)
 	require.True(t, found)
 
-	unclaimedBalance := updatedCommitments.GetUnclaimedAmountForDenom(denom)
+	unclaimedBalance := updatedCommitments.GetRewardUnclaimedForDenom(denom)
 	assert.Equal(t, sdk.NewInt(2000), unclaimedBalance)
 	// Check if the vested tokens were received
 	creatorBalance := app.BankKeeper.GetBalance(ctx, creatorAddr, vestingInfos[0].VestingDenom)
@@ -102,7 +102,7 @@ func TestVestNow(t *testing.T) {
 	updatedCommitments, found = keeper.GetCommitments(ctx, creator)
 	require.True(t, found)
 
-	unclaimedBalance = updatedCommitments.GetUnclaimedAmountForDenom(denom)
+	unclaimedBalance = updatedCommitments.GetRewardUnclaimedForDenom(denom)
 	assert.Equal(t, sdk.NewInt(0), unclaimedBalance)
 
 	committedBalance := updatedCommitments.GetCommittedAmountForDenom(denom)

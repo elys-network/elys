@@ -83085,6 +83085,8 @@ definitions:
         format: uint64
   elys.commitment.MsgCancelVestResponse:
     type: object
+  elys.commitment.MsgClaimRewardsResponse:
+    type: object
   elys.commitment.MsgCommitClaimedRewardsResponse:
     type: object
   elys.commitment.MsgCommitLiquidTokensResponse:

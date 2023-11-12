@@ -80,24 +80,21 @@ func (k Keeper) DeductCommitments(ctx sdk.Context, creator string, denom string,
 	}
 
 	// Get user's unclaimed reward
-	rewardUnclaimed, found := commitments.GetRewardsUnclaimedForDenom(denom)
-	if !found {
-		rewardUnclaimed = sdk.Coin{Denom: denom, Amount: sdk.ZeroInt()}
-	}
+	rewardUnclaimed := commitments.GetRewardUnclaimedForDenom(denom)
 
 	unclaimedRemovalAmount := amount
 
 	// Check if there are enough unclaimed rewards to withdraw
-	if rewardUnclaimed.Amount.LT(unclaimedRemovalAmount) {
+	if rewardUnclaimed.LT(unclaimedRemovalAmount) {
 		// Calculate the difference between the requested amount and the available unclaimed balance
-		difference := unclaimedRemovalAmount.Sub(rewardUnclaimed.Amount)
+		difference := unclaimedRemovalAmount.Sub(rewardUnclaimed)
 
 		err := commitments.DeductFromCommitted(denom, difference, uint64(ctx.BlockTime().Unix()))
 		if err != nil {
 			return types.Commitments{}, err
 		}
 
-		unclaimedRemovalAmount = rewardUnclaimed.Amount
+		unclaimedRemovalAmount = rewardUnclaimed
 	}
 
 	// Subtract the withdrawn amount from the unclaimed balance

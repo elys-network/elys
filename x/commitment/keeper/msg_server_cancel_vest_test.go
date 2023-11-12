@@ -81,7 +81,7 @@ func TestCancelVest(t *testing.T) {
 	require.Equal(t, sdk.NewInt(75), newCommitments.VestingTokens[0].TotalAmount, "total amount was not updated correctly")
 	require.Equal(t, sdk.NewInt(75), newCommitments.VestingTokens[0].UnvestedAmount, "unvested amount was not updated correctly")
 	// check if the unclaimed tokens were updated correctly
-	require.Equal(t, sdk.NewInt(25), newCommitments.GetUnclaimedAmountForDenom(ptypes.Eden))
+	require.Equal(t, sdk.NewInt(25), newCommitments.GetRewardUnclaimedForDenom(ptypes.Eden))
 
 	// Try to cancel an amount that exceeds the unvested amount
 	cancelVestMsg.Amount = sdk.NewInt(101)

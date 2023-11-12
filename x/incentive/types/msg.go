@@ -17,7 +17,7 @@ var _, _ sdk.Msg = &MsgWithdrawRewards{}, &MsgWithdrawValidatorCommission{}
 func NewMsgWithdrawRewards(delAddr sdk.AccAddress, denom string) *MsgWithdrawRewards {
 	return &MsgWithdrawRewards{
 		DelegatorAddress: delAddr.String(),
-		Denom: denom,
+		Denom:            denom,
 	}
 }
 

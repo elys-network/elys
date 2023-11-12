@@ -4,45 +4,6 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-func (c *Commitments) GetRewardsUnclaimedForDenom(denom string) (sdk.Coin, bool) {
-	for _, token := range c.RewardsUnclaimed {
-		if token.Denom == denom {
-			return token, true
-		}
-	}
-	return sdk.Coin{}, false
-}
-
-func (c *Commitments) AddRewardsUnclaimed(amount sdk.Coin) {
-	c.RewardsUnclaimed = c.RewardsUnclaimed.Add(amount)
-}
-
-func (c *Commitments) SubRewardsUnclaimed(amount sdk.Coin) error {
-	if c.RewardsUnclaimed.AmountOf(amount.Denom).LT(amount.Amount) {
-		return ErrInsufficientRewardsUnclaimed
-	}
-	c.RewardsUnclaimed = c.RewardsUnclaimed.Sub(amount)
-	return nil
-}
-
-func (c *Commitments) GetCommittedTokensForDenom(denom string) (*CommittedTokens, bool) {
-	for _, token := range c.CommittedTokens {
-		if token.Denom == denom {
-			return token, true
-		}
-	}
-	return &CommittedTokens{}, false
-}
-
-func (c *Commitments) GetUnclaimedAmountForDenom(denom string) sdk.Int {
-	for _, token := range c.RewardsUnclaimed {
-		if token.Denom == denom {
-			return token.Amount
-		}
-	}
-	return sdk.NewInt(0)
-}
-
 func (c *Commitments) GetCommittedAmountForDenom(denom string) sdk.Int {
 	for _, token := range c.CommittedTokens {
 		if token.Denom == denom {
@@ -128,4 +89,37 @@ func (c *Commitments) DeductFromCommitted(denom string, amount sdk.Int, currTime
 		}
 	}
 	return ErrInsufficientCommittedTokens
+}
+
+func (c *Commitments) GetRewardUnclaimedForDenom(denom string) sdk.Int {
+	for _, token := range c.RewardsUnclaimed {
+		if token.Denom == denom {
+			return token.Amount
+		}
+	}
+	return sdk.ZeroInt()
+}
+
+func (c *Commitments) AddRewardsUnclaimed(amount sdk.Coin) {
+	c.RewardsUnclaimed = c.RewardsUnclaimed.Add(amount)
+}
+
+func (c *Commitments) SubRewardsUnclaimed(amount sdk.Coin) error {
+	if c.RewardsUnclaimed.AmountOf(amount.Denom).LT(amount.Amount) {
+		return ErrInsufficientRewardsUnclaimed
+	}
+	c.RewardsUnclaimed = c.RewardsUnclaimed.Sub(amount)
+	return nil
+}
+
+func (c *Commitments) AddClaimed(amount sdk.Coin) {
+	c.Claimed = c.Claimed.Add(amount)
+}
+
+func (c *Commitments) SubClaimed(amount sdk.Coin) error {
+	if c.Claimed.AmountOf(amount.Denom).LT(amount.Amount) {
+		return ErrInsufficientClaimed
+	}
+	c.Claimed = c.Claimed.Sub(amount)
+	return nil
 }

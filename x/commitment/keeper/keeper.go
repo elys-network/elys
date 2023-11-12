@@ -159,7 +159,7 @@ func (k Keeper) StandardStakingToken(ctx sdk.Context, delegator string, validato
 	}
 
 	// Emit Hook commitment changed
-	k.AfterCommitmentChange(ctx, delegator, sdk.NewCoin(denom, sdk.ZeroInt()))
+	k.AfterCommitmentChange(ctx, delegator, sdk.Coins{sdk.NewCoin(denom, sdk.ZeroInt())})
 
 	// Emit blockchain event
 	ctx.EventManager().EmitEvent(
@@ -213,7 +213,7 @@ func (k Keeper) ProcessWithdrawTokens(ctx sdk.Context, creator string, denom str
 	}
 
 	// Emit Hook commitment changed
-	k.AfterCommitmentChange(ctx, creator, sdk.NewCoin(denom, amount))
+	k.AfterCommitmentChange(ctx, creator, sdk.Coins{sdk.NewCoin(denom, amount)})
 
 	// Emit blockchain event
 	ctx.EventManager().EmitEvent(
@@ -268,7 +268,7 @@ func (k Keeper) ProcessWithdrawValidatorCommission(ctx sdk.Context, delegator st
 	}
 
 	// Emit Hook commitment changed
-	k.AfterCommitmentChange(ctx, creator, sdk.NewCoin(denom, amount))
+	k.AfterCommitmentChange(ctx, creator, sdk.Coins{sdk.NewCoin(denom, amount)})
 
 	// Emit blockchain event
 	ctx.EventManager().EmitEvent(
@@ -308,7 +308,7 @@ func (k Keeper) ProcessWithdrawUSDC(ctx sdk.Context, creator string, denom strin
 	k.SetCommitments(ctx, commitments)
 
 	// Emit Hook commitment changed
-	k.AfterCommitmentChange(ctx, creator, sdk.NewCoin(denom, amount))
+	k.AfterCommitmentChange(ctx, creator, sdk.Coins{sdk.NewCoin(denom, amount)})
 
 	// Emit blockchain event
 	ctx.EventManager().EmitEvent(
@@ -363,7 +363,7 @@ func (k Keeper) ProcessTokenVesting(ctx sdk.Context, denom string, amount sdk.In
 	k.SetCommitments(ctx, commitments)
 
 	// Emit Hook commitment changed
-	k.AfterCommitmentChange(ctx, creator, sdk.NewCoin(denom, amount))
+	k.AfterCommitmentChange(ctx, creator, sdk.Coins{sdk.NewCoin(denom, amount)})
 
 	// Emit blockchain event
 	ctx.EventManager().EmitEvent(

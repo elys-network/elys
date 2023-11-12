@@ -35,7 +35,7 @@ func (k Keeper) BurnEdenBFromElysUnstaking(ctx sdk.Context, delegator sdk.AccAdd
 
 	//Total EdenB amount
 	edenBCommitted := commitments.GetCommittedAmountForDenom(ptypes.EdenB)
-	edenBUnclaimed := commitments.GetUnclaimedAmountForDenom(ptypes.EdenB)
+	edenBUnclaimed := commitments.GetRewardUnclaimedForDenom(ptypes.EdenB)
 
 	// Total EdenB amount
 	totalEdenB := edenBCommitted.Add(edenBUnclaimed)
@@ -73,7 +73,7 @@ func (k Keeper) BurnEdenBFromEdenUnclaimed(ctx sdk.Context, delegator string, un
 
 	//Total EdenB amount
 	edenBCommitted := commitments.GetCommittedAmountForDenom(ptypes.EdenB)
-	edenBUnclaimed := commitments.GetUnclaimedAmountForDenom(ptypes.EdenB)
+	edenBUnclaimed := commitments.GetRewardUnclaimedForDenom(ptypes.EdenB)
 
 	// Total EdenB amount
 	totalEdenB := edenBCommitted.Add(edenBUnclaimed)

@@ -83,7 +83,7 @@ func TestVest(t *testing.T) {
 	require.Len(t, newCommitments.VestingTokens, 1, "vesting tokens were not added")
 
 	// Check if the unclaimed tokens were updated correctly
-	rewardUnclaimed := newCommitments.GetUnclaimedAmountForDenom(vestMsg.Denom)
+	rewardUnclaimed := newCommitments.GetRewardUnclaimedForDenom(vestMsg.Denom)
 	require.Equal(t, sdk.NewInt(50), rewardUnclaimed, "unclaimed tokens were not updated correctly")
 
 	// Check if the committed tokens were updated correctly
@@ -99,7 +99,7 @@ func TestVest(t *testing.T) {
 	require.Len(t, newCommitments.VestingTokens, 2, "vesting tokens were not added")
 
 	// Check if the unclaimed tokens were updated correctly
-	rewardUnclaimed = newCommitments.GetUnclaimedAmountForDenom(vestMsg.Denom)
+	rewardUnclaimed = newCommitments.GetRewardUnclaimedForDenom(vestMsg.Denom)
 	require.Equal(t, sdk.NewInt(0), rewardUnclaimed, "unclaimed tokens were not updated correctly")
 
 	// Check if the committed tokens were updated correctly
@@ -176,7 +176,7 @@ func TestExceedVesting(t *testing.T) {
 	require.Len(t, newCommitments.VestingTokens, 1, "vesting tokens were not added")
 
 	// Check if the unclaimed tokens were updated correctly
-	rewardUnclaimed := newCommitments.GetUnclaimedAmountForDenom(vestMsg.Denom)
+	rewardUnclaimed := newCommitments.GetRewardUnclaimedForDenom(vestMsg.Denom)
 	require.Equal(t, sdk.NewInt(50), rewardUnclaimed, "unclaimed tokens were not updated correctly")
 
 	// Check if the committed tokens were updated correctly
