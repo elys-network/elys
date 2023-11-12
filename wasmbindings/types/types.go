@@ -204,8 +204,8 @@ type ElysQuery struct {
 	StakedBalanceOfDenom  *ammtypes.QueryBalanceRequest                              `json:"staked_balance_of_denom,omitempty"`
 	RewardsBalanceOfDenom *ammtypes.QueryBalanceRequest                              `json:"rewards_balance_of_denom,omitempty"`
 	BalanceOfBorrow       *commitmenttypes.QueryBorrowAmountRequest                  `json:"balance_of_borrow,omitempty"`
-	AllValidators         *incentivetypes.QueryValidatorsRequest                    `json:"all_validators,omitempty"`
-	DelegatorValidators   *incentivetypes.QueryValidatorsRequest                    `json:"delegator_validators,omitempty"`
+	AllValidators         *incentivetypes.QueryValidatorsRequest                     `json:"all_validators,omitempty"`
+	DelegatorValidators   *incentivetypes.QueryValidatorsRequest                     `json:"delegator_validators,omitempty"`
 }
 
 type CustomMessenger struct {
