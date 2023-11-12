@@ -55,7 +55,3 @@ type UnbondingDelegation struct {
 type QueryDelegatorUnbondingDelegationsResponse struct {
 	UnbondingResponses []UnbondingDelegation `protobuf:"bytes,1,rep,name=unbonding_responses,json=unbondingResponses,proto3" json:"unbonding_responses"`
 }
-
-const (
-	MAX_RETRY_VALIDATORS = uint32(200)
-)
