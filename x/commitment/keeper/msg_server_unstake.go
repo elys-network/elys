@@ -32,12 +32,12 @@ func (k msgServer) Unstake(goCtx context.Context, msg *types.MsgUnstake) (*types
 }
 
 func (k msgServer) performUnstakeElys(ctx sdk.Context, msg *types.MsgUnstake) error {
-	stakingKeeper, ok := k.stakingKeeper.(stakingkeeper.Keeper)
+	stakingKeeper, ok := k.stakingKeeper.(*stakingkeeper.Keeper)
 	if !ok {
 		return errorsmod.Wrap(errorsmod.Error{}, "staking keeper")
 	}
 
-	msgServer := stakingkeeper.NewMsgServerImpl(&stakingKeeper)
+	msgServer := stakingkeeper.NewMsgServerImpl(stakingKeeper)
 
 	address, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
