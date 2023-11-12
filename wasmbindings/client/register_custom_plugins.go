@@ -78,7 +78,7 @@ func RegisterCustomPlugins(
 	epochsQuerier := epochsclientwasm.NewQuerier(epochs)
 	epochsMessenger := epochsclientwasm.NewMessenger(epochs)
 
-	incentiveQuerier := incentiveclientwasm.NewQuerier(incentive)
+	incentiveQuerier := incentiveclientwasm.NewQuerier(incentive, staking)
 	incentiveMessenger := incentiveclientwasm.NewMessenger(incentive, staking, commitment)
 
 	leveragelpQuerier := leveragelpclientwasm.NewQuerier(leveragelp)
