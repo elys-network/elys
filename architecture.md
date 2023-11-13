@@ -213,7 +213,7 @@ elysd tx gov vote 1 yes --from walletname --yes
 
 ### CLI to Query the Genesis Inflation parameters
 
-To query the gensis inflation parameters in the tokenomics module, use the following command:
+To query the genesis inflation parameters in the tokenomics module, use the following command:
 
 ```
 elysd q tokenomics show-genesis-inflation
