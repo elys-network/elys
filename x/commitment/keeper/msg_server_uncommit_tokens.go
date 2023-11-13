@@ -43,14 +43,10 @@ func (k msgServer) UncommitTokens(goCtx context.Context, msg *types.MsgUncommitT
 		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "unable to convert address from bech32")
 	}
 
-	// Send the coins to the user's account
-	err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, addr, liquidCoins)
+	err = k.HandleWithdrawFromCommitment(ctx, &commitments, addr, liquidCoins)
 	if err != nil {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrInsufficientFunds, "unable to send liquid tokens")
+		return nil, err
 	}
-
-	// Emit Hook commitment changed
-	k.AfterCommitmentChange(ctx, msg.Creator, sdk.Coins{sdk.NewCoin(msg.Denom, msg.Amount)})
 
 	// Emit Hook if Eden is uncommitted
 	if msg.Denom == ptypes.Eden {

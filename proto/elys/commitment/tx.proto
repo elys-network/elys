@@ -18,9 +18,12 @@ service Msg {
   // UncommitTokens uncommits the tokens from committed store and make it liquid immediately
   rpc UncommitTokens (MsgUncommitTokens) returns (MsgUncommitTokensResponse);
   
-  // WithdrawTokens withdraw first from unclaimed and if it requires more, withdraw from committed store
-  rpc WithdrawTokens (MsgWithdrawTokens) returns (MsgWithdrawTokensResponse);
-  
+  // ClaimReward claim specific amount from unclaimed reward
+  rpc ClaimReward (MsgClaimReward) returns (MsgClaimRewardResponse);
+   
+  // ClaimRewards claim rewards from rewards-unclaimed and move to claimed state for Eden and send rewards to user's wallet
+  rpc ClaimRewards (MsgClaimRewards) returns (MsgClaimRewardsResponse);
+
   // Vest converts user's commitment to vesting - start with unclaimed rewards and if it's not enough deduct from committed bucket
   // mainly utilized for Eden
   rpc Vest (MsgVest) returns (MsgVestResponse);
@@ -37,10 +40,7 @@ service Msg {
   
   // UpdateVestingInfo add/update specific vesting info by denom on Params
   rpc UpdateVestingInfo (MsgUpdateVestingInfo) returns (MsgUpdateVestingInfoResponse);
-  
-  // ClaimRewards claim rewards from rewards-unclaimed and move to claimed state for Eden and send rewards to user's wallet
-  rpc ClaimRewards (MsgClaimRewards) returns (MsgClaimRewardsResponse);
-
+ 
   rpc Stake             (MsgStake            ) returns (MsgStakeResponse            );
   rpc Unstake           (MsgUnstake          ) returns (MsgUnstakeResponse          );
 }
@@ -61,13 +61,13 @@ message MsgUncommitTokens {
 
 message MsgUncommitTokensResponse {}
 
-message MsgWithdrawTokens {
+message MsgClaimReward {
   string creator = 1;
   string amount  = 2 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false];
   string denom   = 3;
 }
 
-message MsgWithdrawTokensResponse {}
+message MsgClaimRewardResponse {}
 
 message MsgCommitLiquidTokens {
   string creator = 1;

@@ -6,7 +6,6 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/elys-network/elys/x/commitment/types"
-	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
 
 func (k msgServer) ClaimRewards(goCtx context.Context, msg *types.MsgClaimRewards) (*types.MsgClaimRewardsResponse, error) {
@@ -21,25 +20,15 @@ func (k msgServer) ClaimRewards(goCtx context.Context, msg *types.MsgClaimReward
 	unclaimed := commitments.RewardsUnclaimed
 	commitments.RewardsUnclaimed = sdk.Coins{}
 
-	edenAmount := unclaimed.AmountOf(ptypes.Eden)
-	commitments.AddClaimed(sdk.NewCoin(ptypes.Eden, edenAmount))
-	k.SetCommitments(ctx, commitments)
-
-	withdrawCoins := unclaimed.Sub(sdk.NewCoin(ptypes.Eden, edenAmount))
-
 	addr, err := sdk.AccAddressFromBech32(commitments.Creator)
 	if err != nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "unable to convert address from bech32")
 	}
 
-	// Send the coins to the user's account
-	err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, addr, withdrawCoins)
+	err = k.HandleWithdrawFromCommitment(ctx, &commitments, addr, unclaimed)
 	if err != nil {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrInsufficientFunds, "unable to send withdrawn tokens")
+		return nil, err
 	}
-
-	// Emit Hook commitment changed
-	k.AfterCommitmentChange(ctx, msg.Creator, withdrawCoins)
 
 	return &types.MsgClaimRewardsResponse{}, nil
 }

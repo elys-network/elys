@@ -20,7 +20,7 @@ type CommitmentKeeper interface {
 	// Get commitment
 	GetCommitments(sdk.Context, string) (ctypes.Commitments, bool)
 	// Withdraw tokens
-	ProcessWithdrawTokens(sdk.Context, string, string, sdk.Int) error
+	ProcessClaimReward(sdk.Context, string, string, sdk.Int) error
 	// Withdraw validator commission
 	ProcessWithdrawValidatorCommission(sdk.Context, string, string, string, sdk.Int) error
 	// Withdraw tokens - only USDC

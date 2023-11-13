@@ -16,7 +16,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestWithdrawTokens(t *testing.T) {
+func TestClaimReward(t *testing.T) {
 	app := app.InitElysTestApp(true)
 
 	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
@@ -56,13 +56,13 @@ func TestWithdrawTokens(t *testing.T) {
 	app.AssetprofileKeeper.SetEntry(ctx, aptypes.Entry{BaseDenom: denom, WithdrawEnabled: true})
 
 	// Test scenario 1: Withdraw within unclaimed balance
-	msg := &types.MsgWithdrawTokens{
+	msg := &types.MsgClaimReward{
 		Creator: creator,
 		Amount:  sdk.NewInt(30),
 		Denom:   denom,
 	}
 
-	_, err := msgServer.WithdrawTokens(ctx, msg)
+	_, err := msgServer.ClaimReward(ctx, msg)
 	require.NoError(t, err)
 
 	updatedCommitments, found := keeper.GetCommitments(ctx, creator)
@@ -72,39 +72,15 @@ func TestWithdrawTokens(t *testing.T) {
 	assert.Equal(t, sdk.NewInt(20), unclaimedBalance)
 
 	// Check if the withdrawn tokens were received
-	creatorBalance := app.BankKeeper.GetBalance(ctx, creatorAddr, denom)
-	require.Equal(t, sdk.NewInt(30), creatorBalance.Amount, "tokens were not withdrawn correctly")
+	require.Equal(t, "30ueden", updatedCommitments.Claimed.String(), "tokens were not claimed correctly")
 
-	// Test scenario 2: Withdraw more than unclaimed balance but within total balance
-	msg = &types.MsgWithdrawTokens{
+	// Test scenario 2: Withdraw more than unclaimed reward
+	msg = &types.MsgClaimReward{
 		Creator: creator,
 		Amount:  sdk.NewInt(70),
 		Denom:   denom,
 	}
 
-	_, err = msgServer.WithdrawTokens(ctx, msg)
-	require.NoError(t, err)
-
-	updatedCommitments, found = keeper.GetCommitments(ctx, creator)
-	require.True(t, found)
-
-	unclaimedBalance = updatedCommitments.GetRewardUnclaimedForDenom(denom)
-	assert.Equal(t, sdk.NewInt(0), unclaimedBalance)
-
-	committedBalance := updatedCommitments.GetCommittedAmountForDenom(denom)
-	assert.Equal(t, sdk.NewInt(50), committedBalance)
-
-	// Check if the withdrawn tokens were received
-	creatorBalance = app.BankKeeper.GetBalance(ctx, creatorAddr, denom)
-	require.Equal(t, sdk.NewInt(100), creatorBalance.Amount, "tokens were not withdrawn correctly")
-
-	// Test scenario 3: Withdraw more than total balance
-	msg = &types.MsgWithdrawTokens{
-		Creator: creator,
-		Amount:  sdk.NewInt(100),
-		Denom:   denom,
-	}
-
-	_, err = msgServer.WithdrawTokens(ctx, msg)
+	_, err = msgServer.ClaimReward(ctx, msg)
 	require.Error(t, err)
 }

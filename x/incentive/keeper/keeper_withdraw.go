@@ -102,7 +102,7 @@ func (k Keeper) ProcessWithdrawRewards(ctx sdk.Context, delegator string, denom 
 			return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, "balance not available")
 		}
 		// Withdraw Eden
-		return k.cmk.ProcessWithdrawTokens(ctx, delegator, ptypes.Eden, unclaimedEden)
+		return k.cmk.ProcessClaimReward(ctx, delegator, ptypes.Eden, unclaimedEden)
 	}
 
 	if denom == ptypes.EdenB {

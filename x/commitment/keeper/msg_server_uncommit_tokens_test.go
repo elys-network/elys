@@ -55,13 +55,17 @@ func TestUncommitTokens(t *testing.T) {
 	// Set assetprofile entry for denom
 	app.AssetprofileKeeper.SetEntry(ctx, aptypes.Entry{BaseDenom: denom, CommitEnabled: true})
 
+	// Add coins on commitment module
+	err := app.BankKeeper.MintCoins(ctx, types.ModuleName, sdk.Coins{sdk.NewCoin(denom, initialCommitted)})
+	require.NoError(t, err)
+
 	// Call the UncommitTokens function
 	msg := types.MsgUncommitTokens{
 		Creator: creator,
 		Amount:  uncommitAmount,
 		Denom:   denom,
 	}
-	_, err := msgServer.UncommitTokens(ctx, &msg)
+	_, err = msgServer.UncommitTokens(ctx, &msg)
 	require.NoError(t, err)
 
 	// Check if the committed tokens have been added to the store

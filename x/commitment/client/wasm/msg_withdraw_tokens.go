@@ -10,34 +10,34 @@ import (
 	types "github.com/elys-network/elys/x/commitment/types"
 )
 
-func (m *Messenger) msgWithdrawTokens(ctx sdk.Context, contractAddr sdk.AccAddress, msg *types.MsgWithdrawTokens) ([]sdk.Event, [][]byte, error) {
+func (m *Messenger) msgClaimReward(ctx sdk.Context, contractAddr sdk.AccAddress, msg *types.MsgClaimReward) ([]sdk.Event, [][]byte, error) {
 	if msg == nil {
-		return nil, nil, wasmvmtypes.InvalidRequest{Err: "WithdrawTokens null msg"}
+		return nil, nil, wasmvmtypes.InvalidRequest{Err: "ClaimReward null msg"}
 	}
 
 	msgServer := keeper.NewMsgServerImpl(*m.keeper)
 
-	msgWithdrawTokens := types.NewMsgWithdrawTokens(
+	msgClaimReward := types.NewMsgClaimReward(
 		msg.Creator,
 		msg.Amount,
 		msg.Denom,
 	)
 
-	if err := msgWithdrawTokens.ValidateBasic(); err != nil {
-		return nil, nil, errorsmod.Wrap(err, "failed validating msgWithdrawTokens")
+	if err := msgClaimReward.ValidateBasic(); err != nil {
+		return nil, nil, errorsmod.Wrap(err, "failed validating msgClaimReward")
 	}
 
-	res, err := msgServer.WithdrawTokens(
+	res, err := msgServer.ClaimReward(
 		sdk.WrapSDKContext(ctx),
-		msgWithdrawTokens,
+		msgClaimReward,
 	)
 	if err != nil {
-		return nil, nil, errorsmod.Wrap(err, "WithdrawTokens msg")
+		return nil, nil, errorsmod.Wrap(err, "ClaimReward msg")
 	}
 
 	responseBytes, err := json.Marshal(*res)
 	if err != nil {
-		return nil, nil, errorsmod.Wrap(err, "failed to serialize WithdrawTokens response")
+		return nil, nil, errorsmod.Wrap(err, "failed to serialize ClaimReward response")
 	}
 
 	resp := [][]byte{responseBytes}

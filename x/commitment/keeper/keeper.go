@@ -32,7 +32,7 @@ type CommitmentKeeperI interface {
 
 	// Withdraw tokens
 	// context, creator, denom, amount
-	ProcessWithdrawTokens(sdk.Context, string, string, sdk.Int) error
+	ProcessClaimReward(sdk.Context, string, string, sdk.Int) error
 
 	// Withdraw validator commission
 	// context, delegator, validator, denom, amount
@@ -175,7 +175,7 @@ func (k Keeper) StandardStakingToken(ctx sdk.Context, delegator string, validato
 }
 
 // Withdraw Token
-func (k Keeper) ProcessWithdrawTokens(ctx sdk.Context, creator string, denom string, amount sdk.Int) error {
+func (k Keeper) ProcessClaimReward(ctx sdk.Context, creator string, denom string, amount sdk.Int) error {
 	assetProfile, found := k.apKeeper.GetEntry(ctx, denom)
 	if !found {
 		return sdkerrors.Wrapf(aptypes.ErrAssetProfileNotFound, "denom: %s", denom)
@@ -185,7 +185,14 @@ func (k Keeper) ProcessWithdrawTokens(ctx sdk.Context, creator string, denom str
 		return sdkerrors.Wrapf(types.ErrWithdrawDisabled, "denom: %s", denom)
 	}
 
-	commitments, err := k.DeductCommitments(ctx, creator, denom, amount)
+	// Get the Commitments for the creator
+	commitments, found := k.GetCommitments(ctx, creator)
+	if !found {
+		return sdkerrors.Wrapf(types.ErrCommitmentsNotFound, "creator: %s", creator)
+	}
+
+	// Subtract the withdrawn amount from the unclaimed balance
+	err := commitments.SubRewardsUnclaimed(sdk.NewCoin(denom, amount))
 	if err != nil {
 		return err
 	}
@@ -200,15 +207,10 @@ func (k Keeper) ProcessWithdrawTokens(ctx sdk.Context, creator string, denom str
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "unable to convert address from bech32")
 	}
 
-	// Send the coins to the user's account
-	err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, addr, withdrawCoins)
+	err = k.HandleWithdrawFromCommitment(ctx, &commitments, addr, withdrawCoins)
 	if err != nil {
-		return sdkerrors.Wrap(sdkerrors.ErrInsufficientFunds, "unable to send withdrawn tokens")
+		return err
 	}
-
-	// Emit Hook commitment changed
-	k.AfterCommitmentChange(ctx, creator, sdk.Coins{sdk.NewCoin(denom, amount)})
-
 	// Emit blockchain event
 	ctx.EventManager().EmitEvent(
 		sdk.NewEvent(
@@ -220,6 +222,28 @@ func (k Keeper) ProcessWithdrawTokens(ctx sdk.Context, creator string, denom str
 	)
 
 	return nil
+}
+
+func (k Keeper) HandleWithdrawFromCommitment(ctx sdk.Context, commitments *types.Commitments, addr sdk.AccAddress, amount sdk.Coins) error {
+	fmt.Println("HandleWithdrawFromCommitment", commitments, addr.String(), amount.String())
+
+	edenAmount := amount.AmountOf(ptypes.Eden)
+	edenBAmount := amount.AmountOf(ptypes.EdenB)
+	commitments.AddClaimed(sdk.NewCoin(ptypes.Eden, edenAmount))
+	commitments.AddClaimed(sdk.NewCoin(ptypes.EdenB, edenBAmount))
+	k.SetCommitments(ctx, *commitments)
+	fmt.Println("HandleWithdrawFromCommitment1", commitments.Claimed.String())
+
+	withdrawCoins := amount.
+		Sub(sdk.NewCoin(ptypes.Eden, edenAmount)).
+		Sub(sdk.NewCoin(ptypes.EdenB, edenBAmount))
+
+	// Emit Hook commitment changed
+	k.AfterCommitmentChange(ctx, addr.String(), withdrawCoins)
+
+	// Send the coins to the user's account
+	err := k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, addr, withdrawCoins)
+	return err
 }
 
 // Withdraw validator's commission to self delegator
@@ -249,14 +273,11 @@ func (k Keeper) ProcessWithdrawValidatorCommission(ctx sdk.Context, delegator st
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "unable to convert address from bech32")
 	}
 
-	// Send the minted coins to the user's account
-	err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, addr, withdrawCoins)
+	commitments, _ = k.GetCommitments(ctx, delegator)
+	err = k.HandleWithdrawFromCommitment(ctx, &commitments, addr, withdrawCoins)
 	if err != nil {
-		return sdkerrors.Wrap(sdkerrors.ErrInsufficientFunds, "unable to send withdrawn tokens")
+		return err
 	}
-
-	// Emit Hook commitment changed
-	k.AfterCommitmentChange(ctx, creator, sdk.Coins{sdk.NewCoin(denom, amount)})
 
 	// Emit blockchain event
 	ctx.EventManager().EmitEvent(

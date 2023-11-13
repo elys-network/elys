@@ -9,22 +9,22 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestMsgWithdrawTokens_ValidateBasic(t *testing.T) {
+func TestMsgClaimReward_ValidateBasic(t *testing.T) {
 	tests := []struct {
 		name string
-		msg  MsgWithdrawTokens
+		msg  MsgClaimReward
 		err  error
 	}{
 		{
 			name: "invalid address",
-			msg: MsgWithdrawTokens{
+			msg: MsgClaimReward{
 				Creator: "invalid_address",
 				Amount:  sdk.ZeroInt(),
 			},
 			err: sdkerrors.ErrInvalidAddress,
 		}, {
 			name: "valid address",
-			msg: MsgWithdrawTokens{
+			msg: MsgClaimReward{
 				Creator: sample.AccAddress(),
 				Amount:  sdk.ZeroInt(),
 			},

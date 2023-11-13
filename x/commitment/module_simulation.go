@@ -30,9 +30,9 @@ const (
 	// TODO: Determine the simulation weight value
 	defaultWeightMsgUncommitTokens int = 100
 
-	opWeightMsgWithdrawTokens = "op_weight_msg_withdraw_tokens"
+	opWeightMsgClaimReward = "op_weight_msg_withdraw_tokens"
 	// TODO: Determine the simulation weight value
-	defaultWeightMsgWithdrawTokens int = 100
+	defaultWeightMsgClaimReward int = 100
 
 	opWeightMsgCommitLiquidTokens = "op_weight_msg_commit_liquid_tokens"
 	// TODO: Determine the simulation weight value
@@ -120,15 +120,15 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 		commitmentsimulation.SimulateMsgUncommitTokens(am.accountKeeper, am.bankKeeper, am.keeper),
 	))
 
-	var weightMsgWithdrawTokens int
-	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgWithdrawTokens, &weightMsgWithdrawTokens, nil,
+	var weightMsgClaimReward int
+	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgClaimReward, &weightMsgClaimReward, nil,
 		func(_ *rand.Rand) {
-			weightMsgWithdrawTokens = defaultWeightMsgWithdrawTokens
+			weightMsgClaimReward = defaultWeightMsgClaimReward
 		},
 	)
 	operations = append(operations, simulation.NewWeightedOperation(
-		weightMsgWithdrawTokens,
-		commitmentsimulation.SimulateMsgWithdrawTokens(am.accountKeeper, am.bankKeeper, am.keeper),
+		weightMsgClaimReward,
+		commitmentsimulation.SimulateMsgClaimReward(am.accountKeeper, am.bankKeeper, am.keeper),
 	))
 
 	var weightMsgCommitLiquidTokens int

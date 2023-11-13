@@ -61,8 +61,4 @@ func TestCommitLiquidTokens(t *testing.T) {
 	// Check if the deposited tokens were deducted from creator balance
 	remainingCoins := app.BankKeeper.GetBalance(ctx, creator, commitMsg.Denom)
 	require.Equal(t, sdk.NewInt(100), remainingCoins.Amount, "tokens were not deducted correctly")
-
-	// Check if the deposited tokens were burned
-	remainingCoins = app.BankKeeper.GetBalance(ctx, app.AccountKeeper.GetModuleAddress(types.ModuleName), commitMsg.Denom)
-	require.Equal(t, sdk.NewInt(0), remainingCoins.Amount, "tokens were not burned correctly")
 }

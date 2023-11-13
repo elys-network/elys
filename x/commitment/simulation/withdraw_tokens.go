@@ -10,7 +10,7 @@ import (
 	"github.com/elys-network/elys/x/commitment/types"
 )
 
-func SimulateMsgWithdrawTokens(
+func SimulateMsgClaimReward(
 	ak types.AccountKeeper,
 	bk types.BankKeeper,
 	k keeper.Keeper,
@@ -18,12 +18,12 @@ func SimulateMsgWithdrawTokens(
 	return func(r *rand.Rand, app *baseapp.BaseApp, ctx sdk.Context, accs []simtypes.Account, chainID string,
 	) (simtypes.OperationMsg, []simtypes.FutureOperation, error) {
 		simAccount, _ := simtypes.RandomAcc(r, accs)
-		msg := &types.MsgWithdrawTokens{
+		msg := &types.MsgClaimReward{
 			Creator: simAccount.Address.String(),
 		}
 
-		// TODO: Handling the WithdrawTokens simulation
+		// TODO: Handling the ClaimReward simulation
 
-		return simtypes.NoOpMsg(types.ModuleName, msg.Type(), "WithdrawTokens simulation not implemented"), nil, nil
+		return simtypes.NoOpMsg(types.ModuleName, msg.Type(), "ClaimReward simulation not implemented"), nil, nil
 	}
 }

@@ -6,6 +6,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/elys-network/elys/x/commitment/types"
+	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
 
 // VestNow is not enabled at this stage
@@ -36,6 +37,16 @@ func (k msgServer) VestNow(goCtx context.Context, msg *types.MsgVestNow) (*types
 	addr, err := sdk.AccAddressFromBech32(commitments.Creator)
 	if err != nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "unable to convert address from bech32")
+	}
+
+	// mint coins if vesting token is ELYS
+	if vestingInfo.VestingDenom == ptypes.Elys {
+		err := k.bankKeeper.MintCoins(ctx, types.ModuleName, withdrawCoins)
+		if err != nil {
+			ctx.Logger().Debug(
+				"unable to mint vested tokens for ELYS token",
+			)
+		}
 	}
 
 	// Send the minted coins to the user's account

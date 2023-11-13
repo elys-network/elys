@@ -83118,6 +83118,8 @@ definitions:
         format: uint64
   elys.commitment.MsgCancelVestResponse:
     type: object
+  elys.commitment.MsgClaimRewardResponse:
+    type: object
   elys.commitment.MsgClaimRewardsResponse:
     type: object
   elys.commitment.MsgCommitClaimedRewardsResponse:
@@ -83149,8 +83151,6 @@ definitions:
   elys.commitment.MsgVestNowResponse:
     type: object
   elys.commitment.MsgVestResponse:
-    type: object
-  elys.commitment.MsgWithdrawTokensResponse:
     type: object
   elys.commitment.Params:
     type: object
