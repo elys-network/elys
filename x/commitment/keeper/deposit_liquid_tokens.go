@@ -32,11 +32,6 @@ func (k Keeper) DepositLiquidTokensUnclaimed(ctx sdk.Context, denom string, amou
 	if err != nil {
 		return sdkerrors.Wrap(sdkerrors.ErrInsufficientFunds, fmt.Sprintf("unable to send deposit tokens: %v", depositCoins))
 	}
-	// burn the deposited coins
-	err = k.bankKeeper.BurnCoins(ctx, types.ModuleName, depositCoins)
-	if err != nil {
-		return sdkerrors.Wrap(sdkerrors.ErrInsufficientFunds, "unable to burn deposit tokens")
-	}
 
 	// Get the Commitments for the creator
 	commitments, found := k.GetCommitments(ctx, creator)

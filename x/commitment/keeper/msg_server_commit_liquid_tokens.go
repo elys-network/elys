@@ -35,11 +35,6 @@ func (k msgServer) CommitLiquidTokens(goCtx context.Context, msg *types.MsgCommi
 	if err != nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrInsufficientFunds, fmt.Sprintf("unable to send deposit tokens: %v", depositCoins))
 	}
-	// burn the deposited coins
-	err = k.bankKeeper.BurnCoins(ctx, types.ModuleName, depositCoins)
-	if err != nil {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrInsufficientFunds, "unable to burn deposit tokens")
-	}
 
 	// Get the Commitments for the creator
 	commitments, found := k.GetCommitments(ctx, msg.Creator)

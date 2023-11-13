@@ -9,7 +9,7 @@ import (
 )
 
 func (oq *Querier) queryPool(ctx sdk.Context, pool *types.QueryGetPoolRequest) ([]byte, error) {
-	res, err := oq.keeper.Pool(ctx, pool)
+	res, err := oq.keeper.Pool(sdk.WrapSDKContext(ctx), pool)
 	if err != nil {
 		return nil, errorsmod.Wrap(err, "failed to get pool")
 	}

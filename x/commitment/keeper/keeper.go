@@ -195,18 +195,12 @@ func (k Keeper) ProcessWithdrawTokens(ctx sdk.Context, creator string, denom str
 
 	withdrawCoins := sdk.NewCoins(sdk.NewCoin(denom, amount))
 
-	// Mint the withdrawn tokens to the module account
-	err = k.bankKeeper.MintCoins(ctx, types.ModuleName, withdrawCoins)
-	if err != nil {
-		return sdkerrors.Wrap(sdkerrors.ErrInsufficientFunds, "unable to mint withdrawn tokens")
-	}
-
 	addr, err := sdk.AccAddressFromBech32(commitments.Creator)
 	if err != nil {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "unable to convert address from bech32")
 	}
 
-	// Send the minted coins to the user's account
+	// Send the coins to the user's account
 	err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, addr, withdrawCoins)
 	if err != nil {
 		return sdkerrors.Wrap(sdkerrors.ErrInsufficientFunds, "unable to send withdrawn tokens")
@@ -248,12 +242,6 @@ func (k Keeper) ProcessWithdrawValidatorCommission(ctx sdk.Context, delegator st
 	k.SetCommitments(ctx, commitments)
 
 	withdrawCoins := sdk.NewCoins(sdk.NewCoin(denom, amount))
-
-	// Mint the withdrawn tokens to the module account
-	err = k.bankKeeper.MintCoins(ctx, types.ModuleName, withdrawCoins)
-	if err != nil {
-		return sdkerrors.Wrap(sdkerrors.ErrInsufficientFunds, "unable to mint withdrawn tokens")
-	}
 
 	// Withdraw to the delegated wallet
 	addr, err := sdk.AccAddressFromBech32(delegator)

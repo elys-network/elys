@@ -56,7 +56,7 @@ func (k msgServer) performUnstakeElys(ctx sdk.Context, msg *types.MsgUnstake) er
 		return errorsmod.Wrap(err, "failed validating msgMsgUndelegate")
 	}
 
-	if _, err := msgServer.Undelegate(ctx, msgMsgUndelegate); err != nil { // Discard the response because it's empty
+	if _, err := msgServer.Undelegate(sdk.WrapSDKContext(ctx), msgMsgUndelegate); err != nil { // Discard the response because it's empty
 		return errorsmod.Wrap(err, "elys unstake msg")
 	}
 
@@ -70,7 +70,7 @@ func (k msgServer) performUncommit(ctx sdk.Context, msg *types.MsgUnstake) error
 		return errorsmod.Wrap(err, "failed validating msgMsgUncommit")
 	}
 
-	_, err := k.UncommitTokens(ctx, msgMsgUncommit) // Discard the response because it's empty
+	_, err := k.UncommitTokens(sdk.WrapSDKContext(ctx), msgMsgUncommit) // Discard the response because it's empty
 	if err != nil {
 		return errorsmod.Wrap(err, "uncommit msg")
 	}

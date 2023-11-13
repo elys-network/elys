@@ -6,8 +6,12 @@ import (
 	errorsmod "cosmossdk.io/errors"
 	wasmvmtypes "github.com/CosmWasm/wasmvm/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
+	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
+	wasmbindingstypes "github.com/elys-network/elys/wasmbindings/types"
 	commitmentkeeper "github.com/elys-network/elys/x/commitment/keeper"
 	commitmenttypes "github.com/elys-network/elys/x/commitment/types"
+	types "github.com/elys-network/elys/x/commitment/types"
 	paramtypes "github.com/elys-network/elys/x/parameter/types"
 )
 
@@ -38,13 +42,13 @@ func (m *Messenger) msgStake(ctx sdk.Context, contractAddr sdk.AccAddress, msgSt
 	return nil, resp, nil
 }
 
-func performMsgStakeElys(f *stakingkeeper.Keeper, ctx sdk.Context, contractAddr sdk.AccAddress, msgStake *wasmbindingstypes.MsgStake) (*wasmbindingstypes.RequestResponse, error) {
+func performMsgStakeElys(f *stakingkeeper.Keeper, ctx sdk.Context, contractAddr sdk.AccAddress, msgStake *types.MsgStake) (*wasmbindingstypes.RequestResponse, error) {
 	if msgStake == nil {
 		return nil, wasmvmtypes.InvalidRequest{Err: "Invalid staking parameter"}
 	}
 
 	msgServer := stakingkeeper.NewMsgServerImpl(f)
-	address, err := sdk.AccAddressFromBech32(msgStake.Address)
+	address, err := sdk.AccAddressFromBech32(msgStake.Creator)
 	if err != nil {
 		return nil, errorsmod.Wrap(err, "invalid address")
 	}
@@ -74,12 +78,12 @@ func performMsgStakeElys(f *stakingkeeper.Keeper, ctx sdk.Context, contractAddr 
 	return resp, nil
 }
 
-func performMsgCommit(f *commitmentkeeper.Keeper, ctx sdk.Context, contractAddr sdk.AccAddress, msgStake *wasmbindingstypes.MsgStake) (*wasmbindingstypes.RequestResponse, error) {
+func performMsgCommit(f *commitmentkeeper.Keeper, ctx sdk.Context, contractAddr sdk.AccAddress, msgStake *types.MsgStake) (*wasmbindingstypes.RequestResponse, error) {
 	if msgStake == nil {
 		return nil, wasmvmtypes.InvalidRequest{Err: "Invalid staking parameter"}
 	}
 	msgServer := commitmentkeeper.NewMsgServerImpl(*f)
-	msgMsgCommit := commitmenttypes.NewMsgCommitClaimedRewards(msgStake.Address, msgStake.Amount, msgStake.Asset)
+	msgMsgCommit := commitmenttypes.NewMsgCommitClaimedRewards(msgStake.Creator, msgStake.Amount, msgStake.Asset)
 
 	if err := msgMsgCommit.ValidateBasic(); err != nil {
 		return nil, errorsmod.Wrap(err, "failed validating msgMsgCommit")

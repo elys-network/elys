@@ -27,18 +27,12 @@ func (k msgServer) ClaimRewards(goCtx context.Context, msg *types.MsgClaimReward
 
 	withdrawCoins := unclaimed.Sub(sdk.NewCoin(ptypes.Eden, edenAmount))
 
-	// Mint the withdrawn tokens to the module account
-	err := k.bankKeeper.MintCoins(ctx, types.ModuleName, withdrawCoins)
-	if err != nil {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrInsufficientFunds, "unable to mint withdrawn tokens")
-	}
-
 	addr, err := sdk.AccAddressFromBech32(commitments.Creator)
 	if err != nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "unable to convert address from bech32")
 	}
 
-	// Send the minted coins to the user's account
+	// Send the coins to the user's account
 	err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, addr, withdrawCoins)
 	if err != nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrInsufficientFunds, "unable to send withdrawn tokens")

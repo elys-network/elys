@@ -9,7 +9,7 @@ import (
 )
 
 func (oq *Querier) queryDenomLiquidityAll(ctx sdk.Context, denomLiquidityAll *types.QueryAllDenomLiquidityRequest) ([]byte, error) {
-	res, err := oq.keeper.DenomLiquidityAll(ctx, denomLiquidityAll)
+	res, err := oq.keeper.DenomLiquidityAll(sdk.WrapSDKContext(ctx), denomLiquidityAll)
 	if err != nil {
 		return nil, errorsmod.Wrap(err, "failed to get all denom liquidity")
 	}

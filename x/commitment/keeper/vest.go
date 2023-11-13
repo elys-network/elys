@@ -19,17 +19,8 @@ func (k Keeper) VestTokens(ctx sdk.Context, epochIdentifier string) error {
 
 			withdrawCoins := sdk.NewCoins(sdk.NewCoin(vesting.Denom, epochAmount))
 
-			// Mint the vested tokens to the module account
-			err := k.bankKeeper.MintCoins(ctx, types.ModuleName, withdrawCoins)
-			if err != nil {
-				logger.Debug(
-					"unable to mint vested tokens",
-					"vestingtokens", vesting, commitments.Creator,
-				)
-			}
-
-			// Send the minted coins to the user's account
-			err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, sdk.MustAccAddressFromBech32(commitments.Creator), withdrawCoins)
+			// Send the coins to the user's account
+			err := k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, sdk.MustAccAddressFromBech32(commitments.Creator), withdrawCoins)
 			if err != nil {
 				logger.Debug(
 					"unable to send vested tokens",
