@@ -6,6 +6,7 @@ import (
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
+	incentivetypes "github.com/elys-network/elys/x/incentive/types"
 	paramtypes "github.com/elys-network/elys/x/parameter/types"
 )
 
@@ -33,8 +34,9 @@ func (oq *Querier) queryStakedBalanceOfDenom(ctx sdk.Context, query *ammtypes.Qu
 		}
 	}
 
-	res := ammtypes.QueryBalanceResponse{
-		Balance: balance,
+	res := incentivetypes.BalanceAvailable{
+		Amount:    balance.Amount.Uint64(),
+		UsdAmount: sdk.NewDecFromInt(balance.Amount),
 	}
 
 	responseBytes, err := json.Marshal(res)

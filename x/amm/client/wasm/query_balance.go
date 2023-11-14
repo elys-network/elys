@@ -6,6 +6,7 @@ import (
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
+	incentivetypes "github.com/elys-network/elys/x/incentive/types"
 )
 
 func (oq *Querier) queryBalance(ctx sdk.Context, query *ammtypes.QueryBalanceRequest) ([]byte, error) {
@@ -14,7 +15,13 @@ func (oq *Querier) queryBalance(ctx sdk.Context, query *ammtypes.QueryBalanceReq
 		return nil, errorsmod.Wrap(err, "failed to get balance")
 	}
 
-	responseBytes, err := json.Marshal(res)
+	balance := res.Balance
+	resp := incentivetypes.BalanceAvailable{
+		Amount:    balance.Amount.Uint64(),
+		UsdAmount: sdk.NewDecFromInt(balance.Amount),
+	}
+
+	responseBytes, err := json.Marshal(resp)
 	if err != nil {
 		return nil, errorsmod.Wrap(err, "failed to serialize balance response")
 	}
