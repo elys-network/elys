@@ -11,22 +11,22 @@ import (
 
 // CommitmentKeeper
 type CommitmentKeeper interface {
+	// Initiate commitment according to standard staking
+	BeforeDelegationCreated(sdk.Context, string, string) error
 	// Iterate all commitment
 	IterateCommitments(sdk.Context, func(ctypes.Commitments) (stop bool))
-	// Initiate commitment according to standard staking
-	StandardStakingToken(sdk.Context, string, string, string) error
 	// Update commitment
 	SetCommitments(sdk.Context, ctypes.Commitments)
 	// Get commitment
-	GetCommitments(sdk.Context, string) (ctypes.Commitments, bool)
-	// Withdraw tokens
-	ProcessWithdrawTokens(sdk.Context, string, string, sdk.Int) error
-	// Withdraw validator commission
-	ProcessWithdrawValidatorCommission(sdk.Context, string, string, string, sdk.Int) error
-	// Withdraw tokens - only USDC
-	ProcessWithdrawUSDC(ctx sdk.Context, creator string, denom string, amount sdk.Int) error
-	// Deduct commitments
-	DeductCommitments(ctx sdk.Context, creator string, denom string, amount sdk.Int) (ctypes.Commitments, error)
+	GetCommitments(sdk.Context, string) ctypes.Commitments
+	// Update commitments for claim reward operation
+	RecordClaimReward(sdk.Context, string, string, sdk.Int) error
+	// Update commitments for validator commission
+	RecordWithdrawValidatorCommission(sdk.Context, string, string, string, sdk.Int) error
+	// Update commitments for withdraw tokens - only USDC
+	RecordWithdrawUSDC(ctx sdk.Context, creator string, denom string, amount sdk.Int) error
+	// Burn eden boost
+	BurnEdenBoost(ctx sdk.Context, creator string, denom string, amount sdk.Int) (ctypes.Commitments, error)
 }
 
 // Staking keeper

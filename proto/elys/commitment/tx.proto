@@ -12,14 +12,11 @@ service Msg {
   // CommitLiquidTokens commit the tokens from user's balance
   rpc CommitLiquidTokens (MsgCommitLiquidTokens) returns (MsgCommitLiquidTokensResponse);
   
-  // CommitUnclaimedRewards commit the tokens on unclaimed store to committed
-  rpc CommitUnclaimedRewards (MsgCommitUnclaimedRewards) returns (MsgCommitUnclaimedRewardsResponse);
-  
+  // CommitClaimedRewards commit the tokens on claimed store to committed
+  rpc CommitClaimedRewards (MsgCommitClaimedRewards) returns (MsgCommitClaimedRewardsResponse);
+
   // UncommitTokens uncommits the tokens from committed store and make it liquid immediately
   rpc UncommitTokens (MsgUncommitTokens) returns (MsgUncommitTokensResponse);
-  
-  // WithdrawTokens withdraw first from unclaimed and if it requires more, withdraw from committed store
-  rpc WithdrawTokens (MsgWithdrawTokens) returns (MsgWithdrawTokensResponse);
   
   // Vest converts user's commitment to vesting - start with unclaimed rewards and if it's not enough deduct from committed bucket
   // mainly utilized for Eden
@@ -37,16 +34,18 @@ service Msg {
   
   // UpdateVestingInfo add/update specific vesting info by denom on Params
   rpc UpdateVestingInfo (MsgUpdateVestingInfo) returns (MsgUpdateVestingInfoResponse);
+ 
   rpc Stake             (MsgStake            ) returns (MsgStakeResponse            );
   rpc Unstake           (MsgUnstake          ) returns (MsgUnstakeResponse          );
 }
-message MsgCommitUnclaimedRewards {
+
+message MsgCommitClaimedRewards {
   string creator = 1;
   string amount  = 2 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false];
   string denom   = 3;
 }
 
-message MsgCommitUnclaimedRewardsResponse {}
+message MsgCommitClaimedRewardsResponse {}
 
 message MsgUncommitTokens {
   string creator = 1;
@@ -56,13 +55,13 @@ message MsgUncommitTokens {
 
 message MsgUncommitTokensResponse {}
 
-message MsgWithdrawTokens {
+message MsgClaimReward {
   string creator = 1;
   string amount  = 2 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false];
   string denom   = 3;
 }
 
-message MsgWithdrawTokensResponse {}
+message MsgClaimRewardResponse {}
 
 message MsgCommitLiquidTokens {
   string creator = 1;
@@ -116,6 +115,12 @@ message MsgVestLiquid {
 }
 
 message MsgVestLiquidResponse {}
+
+message MsgClaimRewards {
+  string creator = 1;
+}
+
+message MsgClaimRewardsResponse {}
 
 message MsgStake {
   string creator          = 1;

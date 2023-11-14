@@ -4,54 +4,47 @@ import (
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	aptypes "github.com/elys-network/elys/x/assetprofile/types"
 	"github.com/elys-network/elys/x/commitment/types"
+	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
 
 // SetCommitments set a specific commitments in the store from its index
 func (k Keeper) SetCommitments(ctx sdk.Context, commitments types.Commitments) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.CommitmentsKeyPrefix))
 	b := k.cdc.MustMarshal(&commitments)
-	store.Set(types.CommitmentsKey(
-		commitments.Creator,
-	), b)
+	store.Set(types.CommitmentsKey(commitments.Creator), b)
 }
 
 // GetCommitments returns a commitments from its index
-func (k Keeper) GetCommitments(
-	ctx sdk.Context,
-	creator string,
-
-) (val types.Commitments, found bool) {
+func (k Keeper) GetCommitments(ctx sdk.Context, creator string) types.Commitments {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.CommitmentsKeyPrefix))
 
-	b := store.Get(types.CommitmentsKey(
-		creator,
-	))
+	b := store.Get(types.CommitmentsKey(creator))
 	if b == nil {
-		return val, false
+		return types.Commitments{
+			Creator:          creator,
+			CommittedTokens:  []*types.CommittedTokens{},
+			RewardsUnclaimed: sdk.Coins{},
+			Claimed:          sdk.Coins{},
+			VestingTokens:    []*types.VestingTokens{},
+		}
 	}
 
+	val := types.Commitments{}
 	k.cdc.MustUnmarshal(b, &val)
-	return val, true
+	return val
 }
 
 // RemoveCommitments removes a commitments from the store
-func (k Keeper) RemoveCommitments(
-	ctx sdk.Context,
-	creator string,
-
-) {
+func (k Keeper) RemoveCommitments(ctx sdk.Context, creator string) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.CommitmentsKeyPrefix))
-	store.Delete(types.CommitmentsKey(
-		creator,
-	))
+	store.Delete(types.CommitmentsKey(creator))
 }
 
 // IterateCommitments iterates over all Commitments and performs a
 // callback.
-func (k Keeper) IterateCommitments(
-	ctx sdk.Context, handlerFn func(commitments types.Commitments) (stop bool),
-) {
+func (k Keeper) IterateCommitments(ctx sdk.Context, handlerFn func(commitments types.Commitments) (stop bool)) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.CommitmentsKeyPrefix))
 
 	iterator := sdk.KVStorePrefixIterator(store, []byte{})
@@ -67,40 +60,237 @@ func (k Keeper) IterateCommitments(
 	}
 }
 
-func (k Keeper) DeductCommitments(ctx sdk.Context, creator string, denom string, amount sdk.Int) (types.Commitments, error) {
+func (k Keeper) DeductClaimed(ctx sdk.Context, creator string, denom string, amount sdk.Int) (types.Commitments, error) {
 	// Get the Commitments for the creator
-	commitments, found := k.GetCommitments(ctx, creator)
-	if !found {
-		return types.Commitments{}, sdkerrors.Wrapf(types.ErrCommitmentsNotFound, "creator: %s", creator)
+	commitments := k.GetCommitments(ctx, creator)
+
+	// Subtract the amount from the claimed balance
+	err := commitments.SubClaimed(sdk.NewCoin(denom, amount))
+	if err != nil {
+		return types.Commitments{}, err
 	}
+	return commitments, nil
+}
+
+func (k Keeper) DeductUnclaimed(ctx sdk.Context, creator string, denom string, amount sdk.Int) (types.Commitments, error) {
+	// Get the Commitments for the creator
+	commitments := k.GetCommitments(ctx, creator)
 
 	// if deduction amount is zero
 	if amount.Equal(sdk.ZeroInt()) {
 		return commitments, nil
 	}
 
-	// Get user's unclaimed reward
-	rewardUnclaimed, found := commitments.GetRewardsUnclaimedForDenom(denom)
-	if !found {
-		rewardUnclaimed = &types.RewardsUnclaimed{Denom: denom, Amount: sdk.ZeroInt()}
-	}
-
-	unclaimedRemovalAmount := amount
-
-	// Check if there are enough unclaimed rewards to withdraw
-	if rewardUnclaimed.Amount.LT(unclaimedRemovalAmount) {
-		// Calculate the difference between the requested amount and the available unclaimed balance
-		difference := unclaimedRemovalAmount.Sub(rewardUnclaimed.Amount)
-
-		err := commitments.DeductFromCommitted(denom, difference, uint64(ctx.BlockTime().Unix()))
-		if err != nil {
-			return types.Commitments{}, err
-		}
-
-		unclaimedRemovalAmount = rewardUnclaimed.Amount
-	}
-
 	// Subtract the withdrawn amount from the unclaimed balance
-	rewardUnclaimed.Amount = rewardUnclaimed.Amount.Sub(unclaimedRemovalAmount)
+	err := commitments.SubRewardsUnclaimed(sdk.NewCoin(denom, amount))
+	if err != nil {
+		return types.Commitments{}, err
+	}
 	return commitments, nil
+}
+
+func (k Keeper) BurnEdenBoost(ctx sdk.Context, creator string, denom string, amount sdk.Int) (types.Commitments, error) {
+	// Get the Commitments for the creator
+	commitments := k.GetCommitments(ctx, creator)
+
+	// if deduction amount is zero
+	if amount.Equal(sdk.ZeroInt()) {
+		return commitments, nil
+	}
+
+	// Subtract the amount from the unclaimed balance
+	rewardUnclaimed := commitments.GetRewardUnclaimedForDenom(denom)
+	unclaimedRemovalAmount := rewardUnclaimed
+	if amount.LT(rewardUnclaimed) {
+		unclaimedRemovalAmount = amount
+	}
+	err := commitments.SubRewardsUnclaimed(sdk.NewCoin(denom, unclaimedRemovalAmount))
+	if err != nil {
+		return types.Commitments{}, err
+	}
+
+	amount = amount.Sub(unclaimedRemovalAmount)
+	if amount.Equal(sdk.ZeroInt()) {
+		return commitments, nil
+	}
+
+	// Subtract the amount from the claimed balance
+	claimed := commitments.GetClaimedForDenom(denom)
+	claimedRemovalAmount := claimed
+	if amount.LT(claimed) {
+		claimedRemovalAmount = amount
+	}
+	err = commitments.SubClaimed(sdk.NewCoin(denom, claimedRemovalAmount))
+	if err != nil {
+		return types.Commitments{}, err
+	}
+
+	amount = amount.Sub(claimedRemovalAmount)
+	if amount.Equal(sdk.ZeroInt()) {
+		return commitments, nil
+	}
+
+	err = commitments.DeductFromCommitted(denom, amount, uint64(ctx.BlockTime().Unix()))
+	if err != nil {
+		return types.Commitments{}, err
+	}
+	return commitments, nil
+}
+
+func (k Keeper) HandleWithdrawFromCommitment(ctx sdk.Context, commitments *types.Commitments, addr sdk.AccAddress, amount sdk.Coins, sendCoins bool) error {
+	edenAmount := amount.AmountOf(ptypes.Eden)
+	edenBAmount := amount.AmountOf(ptypes.EdenB)
+	commitments.AddClaimed(sdk.NewCoin(ptypes.Eden, edenAmount))
+	commitments.AddClaimed(sdk.NewCoin(ptypes.EdenB, edenBAmount))
+	k.SetCommitments(ctx, *commitments)
+
+	withdrawCoins := amount.
+		Sub(sdk.NewCoin(ptypes.Eden, edenAmount)).
+		Sub(sdk.NewCoin(ptypes.EdenB, edenBAmount))
+
+	// Emit Hook commitment changed
+	k.AfterCommitmentChange(ctx, addr.String(), withdrawCoins)
+
+	if sendCoins {
+		return k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, addr, withdrawCoins)
+	}
+	return nil
+}
+
+// Update commitments for validator's commission withdrawal to self delegator
+func (k Keeper) RecordWithdrawValidatorCommission(ctx sdk.Context, delegator string, creator string, denom string, amount sdk.Int) error {
+	assetProfile, found := k.apKeeper.GetEntry(ctx, denom)
+	if !found {
+		return sdkerrors.Wrapf(aptypes.ErrAssetProfileNotFound, "denom: %s", denom)
+	}
+
+	if !assetProfile.WithdrawEnabled {
+		return sdkerrors.Wrapf(types.ErrWithdrawDisabled, "denom: %s", denom)
+	}
+
+	commitments, err := k.DeductUnclaimed(ctx, creator, denom, amount)
+	if err != nil {
+		return err
+	}
+
+	// Update the commitments
+	k.SetCommitments(ctx, commitments)
+
+	withdrawCoins := sdk.NewCoins(sdk.NewCoin(denom, amount))
+
+	// Withdraw to the delegated wallet
+	addr, err := sdk.AccAddressFromBech32(delegator)
+	if err != nil {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "unable to convert address from bech32")
+	}
+
+	commitments = k.GetCommitments(ctx, delegator)
+	err = k.HandleWithdrawFromCommitment(ctx, &commitments, addr, withdrawCoins, false)
+	if err != nil {
+		return err
+	}
+
+	// Emit blockchain event
+	ctx.EventManager().EmitEvent(
+		sdk.NewEvent(
+			types.EventTypeCommitmentChanged,
+			sdk.NewAttribute(types.AttributeCreator, creator),
+			sdk.NewAttribute(types.AttributeAmount, amount.String()),
+			sdk.NewAttribute(types.AttributeDenom, denom),
+		),
+	)
+
+	return nil
+}
+
+// Update commitments for Withdraw Token - USDC
+func (k Keeper) RecordWithdrawUSDC(ctx sdk.Context, creator string, denom string, amount sdk.Int) error {
+	if denom != ptypes.BaseCurrency {
+		return sdkerrors.Wrapf(types.ErrWithdrawDisabled, "denom: %s", denom)
+	}
+
+	assetProfile, found := k.apKeeper.GetEntry(ctx, denom)
+	if !found {
+		return sdkerrors.Wrapf(aptypes.ErrAssetProfileNotFound, "denom: %s", denom)
+	}
+
+	if !assetProfile.WithdrawEnabled {
+		return sdkerrors.Wrapf(types.ErrWithdrawDisabled, "denom: %s", denom)
+	}
+
+	commitments, err := k.DeductUnclaimed(ctx, creator, denom, amount)
+	if err != nil {
+		return err
+	}
+
+	// Update the commitments
+	k.SetCommitments(ctx, commitments)
+
+	// Emit Hook commitment changed
+	k.AfterCommitmentChange(ctx, creator, sdk.Coins{sdk.NewCoin(denom, amount)})
+
+	// Emit blockchain event
+	ctx.EventManager().EmitEvent(
+		sdk.NewEvent(
+			types.EventTypeCommitmentChanged,
+			sdk.NewAttribute(types.AttributeCreator, creator),
+			sdk.NewAttribute(types.AttributeAmount, amount.String()),
+			sdk.NewAttribute(types.AttributeDenom, denom),
+		),
+	)
+
+	return nil
+}
+
+// Process delegation hook - create commitment entities for delegator and validator
+func (k Keeper) BeforeDelegationCreated(ctx sdk.Context, delegator string, validator string) error {
+	_, err := sdk.AccAddressFromBech32(delegator)
+	if err != nil {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "unable to convert address from bech32")
+	}
+
+	_, err = sdk.ValAddressFromBech32(validator)
+	if err != nil {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "unable to convert validator address from bech32")
+	}
+
+	/***********************************************************/
+	////////////////// Delegator entity //////////////////////////
+	/***********************************************************/
+	// Get the Commitments for the delegator
+	commitments := k.GetCommitments(ctx, delegator)
+	if !commitments.IsEmpty() {
+		k.SetCommitments(ctx, commitments)
+
+		// Emit Hook commitment changed
+		k.AfterCommitmentChange(ctx, delegator, sdk.Coins{})
+
+		// Emit blockchain event
+		ctx.EventManager().EmitEvent(
+			sdk.NewEvent(
+				types.EventTypeCommitmentChanged,
+				sdk.NewAttribute(types.AttributeCreator, delegator),
+				sdk.NewAttribute(types.AttributeAmount, sdk.ZeroInt().String()),
+			),
+		)
+	}
+
+	/***************************************************************/
+	////////////////////// Validator entity /////////////////////////
+	// Get the Commitments for the validator
+	commitments = k.GetCommitments(ctx, validator)
+	if commitments.IsEmpty() {
+		k.SetCommitments(ctx, commitments)
+
+		// Emit blockchain event
+		ctx.EventManager().EmitEvent(
+			sdk.NewEvent(
+				types.EventTypeCommitmentChanged,
+				sdk.NewAttribute(types.AttributeCreator, validator),
+				sdk.NewAttribute(types.AttributeAmount, sdk.ZeroInt().String()),
+			),
+		)
+	}
+
+	return nil
 }

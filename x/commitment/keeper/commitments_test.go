@@ -8,7 +8,6 @@ import (
 	keepertest "github.com/elys-network/elys/testutil/keeper"
 	"github.com/elys-network/elys/x/commitment/types"
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 )
 
 func TestKeeper_SetGetRemoveCommitments(t *testing.T) {
@@ -23,14 +22,13 @@ func TestKeeper_SetGetRemoveCommitments(t *testing.T) {
 	keeper.SetCommitments(ctx, commitments)
 
 	// Test GetCommitments
-	retrievedCommitments, found := keeper.GetCommitments(ctx, addr.String())
-	require.True(t, found)
+	retrievedCommitments := keeper.GetCommitments(ctx, addr.String())
 	assert.Equal(t, commitments, retrievedCommitments)
 
 	// Test RemoveCommitments
 	keeper.RemoveCommitments(ctx, addr.String())
 
 	// Test that commitments are removed
-	_, found = keeper.GetCommitments(ctx, addr.String())
-	assert.False(t, found)
+	commitments = keeper.GetCommitments(ctx, addr.String())
+	assert.True(t, commitments.IsEmpty())
 }

@@ -175,7 +175,8 @@ type ElysQuery struct {
 	ParameterAnteHandlerParamAll *parametertypes.QueryAllAnteHandlerParamRequest `json:"parameter_ante_handler_param_all,omitempty"`
 
 	// stablestake queriers
-	StableStakeParams *stablestaketypes.QueryParamsRequest `json:"stable_stake_params,omitempty"`
+	StableStakeParams      *stablestaketypes.QueryParamsRequest      `json:"stable_stake_params,omitempty"`
+	StableStakeBorrowRatio *stablestaketypes.QueryBorrowRatioRequest `json:"stable_stake_borrow_ratio,omitempty"`
 
 	// tokenomics queriers
 	TokenomicsParams                *tokenomicstypes.QueryParamsRequest                `json:"tokenomics_params,omitempty"`
@@ -233,17 +234,16 @@ type ElysMsg struct {
 	ClockUpdateParams *clocktypes.MsgUpdateParams `json:"clock_update_params,omitempty"`
 
 	// commitment messages
-	CommitmentCommitLiquidTokens     *commitmenttypes.MsgCommitLiquidTokens     `json:"commitment_commit_liquid_tokens,omitempty"`
-	CommitmentCommitUnclaimedRewards *commitmenttypes.MsgCommitUnclaimedRewards `json:"commitment_commit_unclaimed_rewards,omitempty"`
-	CommitmentUncommitTokens         *commitmenttypes.MsgUncommitTokens         `json:"commitment_uncommit_tokens,omitempty"`
-	CommitmentWithdrawTokens         *commitmenttypes.MsgWithdrawTokens         `json:"commitment_withdraw_tokens,omitempty"`
-	CommitmentVest                   *commitmenttypes.MsgVest                   `json:"commitment_vest"`
-	CommitmentVestNow                *commitmenttypes.MsgVestNow                `json:"commitment_vest_now"`
-	CommitmentVestLiquid             *commitmenttypes.MsgVestLiquid             `json:"commitment_vest_liquid"`
-	CommitmentCancelVest             *commitmenttypes.MsgCancelVest             `json:"commitment_cancel_vest"`
-	CommitmentUpdateVestingInfo      *commitmenttypes.MsgUpdateVestingInfo      `json:"commitment_update_vesting_info"`
-	CommitmentStake                  *commitmenttypes.MsgStake                  `json:"commitment_stake,omitempty"`
-	CommitmentUnstake                *commitmenttypes.MsgUnstake                `json:"commitment_unstake,omitempty"`
+	CommitmentCommitLiquidTokens     *commitmenttypes.MsgCommitLiquidTokens   `json:"commitment_commit_liquid_tokens,omitempty"`
+	CommitmentCommitUnclaimedRewards *commitmenttypes.MsgCommitClaimedRewards `json:"commitment_commit_unclaimed_rewards,omitempty"`
+	CommitmentUncommitTokens         *commitmenttypes.MsgUncommitTokens       `json:"commitment_uncommit_tokens,omitempty"`
+	CommitmentVest                   *commitmenttypes.MsgVest                 `json:"commitment_vest"`
+	CommitmentVestNow                *commitmenttypes.MsgVestNow              `json:"commitment_vest_now"`
+	CommitmentVestLiquid             *commitmenttypes.MsgVestLiquid           `json:"commitment_vest_liquid"`
+	CommitmentCancelVest             *commitmenttypes.MsgCancelVest           `json:"commitment_cancel_vest"`
+	CommitmentUpdateVestingInfo      *commitmenttypes.MsgUpdateVestingInfo    `json:"commitment_update_vesting_info"`
+	CommitmentStake                  *commitmenttypes.MsgStake                `json:"commitment_stake,omitempty"`
+	CommitmentUnstake                *commitmenttypes.MsgUnstake              `json:"commitment_unstake,omitempty"`
 
 	// epochs messages
 

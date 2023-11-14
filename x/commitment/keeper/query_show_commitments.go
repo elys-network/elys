@@ -15,14 +15,6 @@ func (k Keeper) ShowCommitments(goCtx context.Context, req *types.QueryShowCommi
 	}
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
-
-	val, found := k.GetCommitments(
-		ctx,
-		req.Creator,
-	)
-	if !found {
-		return nil, status.Error(codes.NotFound, "not found")
-	}
-
+	val := k.GetCommitments(ctx, req.Creator)
 	return &types.QueryShowCommitmentsResponse{Commitments: &val}, nil
 }

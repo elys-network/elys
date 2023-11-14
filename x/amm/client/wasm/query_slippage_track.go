@@ -9,7 +9,7 @@ import (
 )
 
 func (oq *Querier) querySlippageTrack(ctx sdk.Context, slippageTrack *types.QuerySlippageTrackRequest) ([]byte, error) {
-	res, err := oq.keeper.SlippageTrack(ctx, slippageTrack)
+	res, err := oq.keeper.SlippageTrack(sdk.WrapSDKContext(ctx), slippageTrack)
 	if err != nil {
 		return nil, errorsmod.Wrap(err, "failed to get slippage track")
 	}

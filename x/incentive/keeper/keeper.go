@@ -208,9 +208,9 @@ func (k Keeper) UpdateRewardsUnclaimed(ctx sdk.Context, epochIdentifier string, 
 
 func (k Keeper) UpdateCommitments(ctx sdk.Context, creator string, commitments *ctypes.Commitments, newUnclaimedEdenTokens sdk.Int, newUnclaimedEdenBoostTokens sdk.Int, dexRewards sdk.Int) {
 	// Update unclaimed Eden balances in the Commitments structure
-	k.UpdateTokensCommitment(commitments, newUnclaimedEdenTokens, ptypes.Eden)
+	commitments.AddRewardsUnclaimed(sdk.NewCoin(ptypes.Eden, newUnclaimedEdenTokens))
 	// Update unclaimed Eden-Boost token balances in the Commitments structure
-	k.UpdateTokensCommitment(commitments, newUnclaimedEdenBoostTokens, ptypes.EdenB)
+	commitments.AddRewardsUnclaimed(sdk.NewCoin(ptypes.EdenB, newUnclaimedEdenBoostTokens))
 
 	// All dex revenue are collected to incentive module in USDC
 	// Gas fees (Elys) are also converted into USDC and collected into total dex revenue wallet of incentive module.
@@ -218,25 +218,10 @@ func (k Keeper) UpdateCommitments(ctx sdk.Context, creator string, commitments *
 	// TODO:
 	// USDC token denom is dummy one for now until we have real usdc brought through bridge.
 	// These are the rewards from each pool, margin, gas fee.
-	k.UpdateTokensCommitment(commitments, dexRewards, ptypes.BaseCurrency)
+	commitments.AddRewardsUnclaimed(sdk.NewCoin(ptypes.BaseCurrency, dexRewards))
 
 	// Save the updated Commitments
 	k.cmk.SetCommitments(ctx, *commitments)
-}
-
-// Update the unclaimed Eden token balance
-func (k Keeper) UpdateTokensCommitment(commitments *ctypes.Commitments, newUnclaimedEdenTokens sdk.Int, denom string) {
-	unclaimedEden, found := commitments.GetRewardsUnclaimedForDenom(denom)
-	if !found {
-		rewardsUnclaimed := commitments.GetRewardsUnclaimed()
-		rewardsUnclaimed = append(rewardsUnclaimed, &ctypes.RewardsUnclaimed{
-			Denom:  denom,
-			Amount: newUnclaimedEdenTokens,
-		})
-		commitments.RewardsUnclaimed = rewardsUnclaimed
-	} else {
-		unclaimedEden.Amount = unclaimedEden.Amount.Add(newUnclaimedEdenTokens)
-	}
 }
 
 // Calculate Proxy TVL

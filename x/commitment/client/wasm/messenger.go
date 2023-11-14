@@ -25,11 +25,9 @@ func (m *Messenger) HandleMsg(ctx sdk.Context, contractAddr sdk.AccAddress, cont
 	case msg.CommitmentCommitLiquidTokens != nil:
 		return m.msgCommitLiquidTokens(ctx, contractAddr, msg.CommitmentCommitLiquidTokens)
 	case msg.CommitmentCommitUnclaimedRewards != nil:
-		return m.msgCommitUnclaimedRewards(ctx, contractAddr, msg.CommitmentCommitUnclaimedRewards)
+		return m.msgCommitClaimedRewards(ctx, contractAddr, msg.CommitmentCommitUnclaimedRewards)
 	case msg.CommitmentUncommitTokens != nil:
 		return m.msgUncommitTokens(ctx, contractAddr, msg.CommitmentUncommitTokens)
-	case msg.CommitmentWithdrawTokens != nil:
-		return m.msgWithdrawTokens(ctx, contractAddr, msg.CommitmentWithdrawTokens)
 	case msg.CommitmentVest != nil:
 		return m.msgVest(ctx, contractAddr, msg.CommitmentVest)
 	case msg.CommitmentVestNow != nil:

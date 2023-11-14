@@ -6,6 +6,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/elys-network/elys/x/commitment/types"
+	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
 
 // VestNow is not enabled at this stage
@@ -25,7 +26,7 @@ func (k msgServer) VestNow(goCtx context.Context, msg *types.MsgVestNow) (*types
 		return nil, sdkerrors.Wrapf(types.ErrInvalidDenom, "denom: %s", msg.Denom)
 	}
 
-	commitments, err := k.DeductCommitments(ctx, msg.Creator, msg.Denom, msg.Amount)
+	commitments, err := k.DeductClaimed(ctx, msg.Creator, msg.Denom, msg.Amount)
 	if err != nil {
 		return nil, err
 	}
@@ -33,15 +34,19 @@ func (k msgServer) VestNow(goCtx context.Context, msg *types.MsgVestNow) (*types
 	vestAmount := msg.Amount.Quo(vestingInfo.VestNowFactor)
 	withdrawCoins := sdk.NewCoins(sdk.NewCoin(vestingInfo.VestingDenom, vestAmount))
 
-	// Mint the vested tokens to the module account
-	err = k.bankKeeper.MintCoins(ctx, types.ModuleName, withdrawCoins)
-	if err != nil {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrInsufficientFunds, "unable to mint withdrawn tokens")
-	}
-
 	addr, err := sdk.AccAddressFromBech32(commitments.Creator)
 	if err != nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "unable to convert address from bech32")
+	}
+
+	// mint coins if vesting token is ELYS
+	if vestingInfo.VestingDenom == ptypes.Elys {
+		err := k.bankKeeper.MintCoins(ctx, types.ModuleName, withdrawCoins)
+		if err != nil {
+			ctx.Logger().Debug(
+				"unable to mint vested tokens for ELYS token",
+			)
+		}
 	}
 
 	// Send the minted coins to the user's account
@@ -54,7 +59,7 @@ func (k msgServer) VestNow(goCtx context.Context, msg *types.MsgVestNow) (*types
 	k.SetCommitments(ctx, commitments)
 
 	// Emit Hook commitment changed
-	k.AfterCommitmentChange(ctx, msg.Creator, sdk.NewCoin(msg.Denom, msg.Amount))
+	k.AfterCommitmentChange(ctx, msg.Creator, sdk.Coins{sdk.NewCoin(msg.Denom, msg.Amount)})
 
 	// Emit blockchain event
 	ctx.EventManager().EmitEvent(

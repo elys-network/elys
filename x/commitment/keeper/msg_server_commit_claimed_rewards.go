@@ -2,7 +2,6 @@ package keeper
 
 import (
 	"context"
-	"fmt"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
@@ -10,8 +9,8 @@ import (
 	"github.com/elys-network/elys/x/commitment/types"
 )
 
-// CommitLiquidTokens commit the tokens from user's balance
-func (k msgServer) CommitLiquidTokens(goCtx context.Context, msg *types.MsgCommitLiquidTokens) (*types.MsgCommitLiquidTokensResponse, error) {
+// CommitClaimedRewards commit the tokens on unclaimed store to committed
+func (k msgServer) CommitClaimedRewards(goCtx context.Context, msg *types.MsgCommitClaimedRewards) (*types.MsgCommitClaimedRewardsResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	assetProfile, found := k.apKeeper.GetEntry(ctx, msg.Denom)
@@ -23,24 +22,19 @@ func (k msgServer) CommitLiquidTokens(goCtx context.Context, msg *types.MsgCommi
 		return nil, sdkerrors.Wrapf(types.ErrCommitDisabled, "denom: %s", msg.Denom)
 	}
 
-	depositCoins := sdk.NewCoins(sdk.NewCoin(msg.Denom, msg.Amount))
-
-	addr, err := sdk.AccAddressFromBech32(msg.Creator)
-	if err != nil {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "unable to convert address from bech32")
-	}
-
-	// send the deposited coins to the module
-	err = k.bankKeeper.SendCoinsFromAccountToModule(ctx, addr, types.ModuleName, depositCoins)
-	if err != nil {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrInsufficientFunds, fmt.Sprintf("unable to send deposit tokens: %v", depositCoins))
-	}
-
 	// Get the Commitments for the creator
 	commitments := k.GetCommitments(ctx, msg.Creator)
 
+	// Decrease unclaimed tokens amount
+	err := commitments.SubClaimed(sdk.NewCoin(msg.Denom, msg.Amount))
+	if err != nil {
+		return nil, err
+	}
+
+	// Increase committed tokens
+	commitments.AddCommittedTokens(msg.Denom, msg.Amount, uint64(ctx.BlockTime().Unix()))
+
 	// Update the commitments
-	commitments.AddCommittedTokens(msg.Denom, msg.Amount, uint64(ctx.BlockTime().Unix())+msg.MinLock)
 	k.SetCommitments(ctx, commitments)
 
 	// Emit Hook commitment changed
@@ -56,5 +50,5 @@ func (k msgServer) CommitLiquidTokens(goCtx context.Context, msg *types.MsgCommi
 		),
 	)
 
-	return &types.MsgCommitLiquidTokensResponse{}, nil
+	return &types.MsgCommitClaimedRewardsResponse{}, nil
 }

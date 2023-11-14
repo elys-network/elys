@@ -56,7 +56,7 @@ func (k msgServer) performStakeElys(ctx sdk.Context, msg *types.MsgStake) error 
 		return errorsmod.Wrap(err, "failed validating msgMsgDelegate")
 	}
 
-	if _, err := msgServer.Delegate(ctx, msgMsgDelegate); err != nil { // Discard the response because it's empty
+	if _, err := msgServer.Delegate(sdk.WrapSDKContext(ctx), msgMsgDelegate); err != nil { // Discard the response because it's empty
 		return errorsmod.Wrap(err, "elys stake msg")
 	}
 
@@ -64,13 +64,13 @@ func (k msgServer) performStakeElys(ctx sdk.Context, msg *types.MsgStake) error 
 }
 
 func (k msgServer) performCommit(ctx sdk.Context, msg *types.MsgStake) error {
-	msgMsgCommit := types.NewMsgCommitUnclaimedRewards(msg.Creator, msg.Amount, msg.Asset)
+	msgMsgCommit := types.NewMsgCommitClaimedRewards(msg.Creator, msg.Amount, msg.Asset)
 
 	if err := msgMsgCommit.ValidateBasic(); err != nil {
 		return errorsmod.Wrap(err, "failed validating msgMsgCommit")
 	}
 
-	_, err := k.CommitUnclaimedRewards(ctx, msgMsgCommit) // Discard the response because it's empty
+	_, err := k.CommitClaimedRewards(sdk.WrapSDKContext(ctx), msgMsgCommit) // Discard the response because it's empty
 	if err != nil {
 		return errorsmod.Wrap(err, "commit msg")
 	}

@@ -52,8 +52,7 @@ func TestCommitLiquidTokens(t *testing.T) {
 	require.NoError(t, err)
 
 	// Check if the tokens were deposited and unclaimed balance was updated
-	commitments, found := keeper.GetCommitments(ctx, commitMsg.Creator)
-	require.True(t, found, "commitments not found")
+	commitments := keeper.GetCommitments(ctx, commitMsg.Creator)
 
 	committedBalance := commitments.GetCommittedAmountForDenom(commitMsg.Denom)
 	require.Equal(t, commitMsg.Amount, committedBalance, "committed balance did not update correctly")
@@ -61,8 +60,4 @@ func TestCommitLiquidTokens(t *testing.T) {
 	// Check if the deposited tokens were deducted from creator balance
 	remainingCoins := app.BankKeeper.GetBalance(ctx, creator, commitMsg.Denom)
 	require.Equal(t, sdk.NewInt(100), remainingCoins.Amount, "tokens were not deducted correctly")
-
-	// Check if the deposited tokens were burned
-	remainingCoins = app.BankKeeper.GetBalance(ctx, app.AccountKeeper.GetModuleAddress(types.ModuleName), commitMsg.Denom)
-	require.Equal(t, sdk.NewInt(0), remainingCoins.Amount, "tokens were not burned correctly")
 }

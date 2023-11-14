@@ -9,7 +9,7 @@ import (
 )
 
 func (oq *Querier) queryPoolAll(ctx sdk.Context, poolAll *types.QueryAllPoolRequest) ([]byte, error) {
-	res, err := oq.keeper.PoolAll(ctx, poolAll)
+	res, err := oq.keeper.PoolAll(sdk.WrapSDKContext(ctx), poolAll)
 	if err != nil {
 		return nil, errorsmod.Wrap(err, "failed to get pool all")
 	}

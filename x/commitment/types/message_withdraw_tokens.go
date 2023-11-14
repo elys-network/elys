@@ -5,27 +5,27 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
-const TypeMsgWithdrawTokens = "withdraw_tokens"
+const TypeMsgClaimReward = "withdraw_tokens"
 
-var _ sdk.Msg = &MsgWithdrawTokens{}
+var _ sdk.Msg = &MsgClaimReward{}
 
-func NewMsgWithdrawTokens(creator string, amount sdk.Int, denom string) *MsgWithdrawTokens {
-	return &MsgWithdrawTokens{
+func NewMsgClaimReward(creator string, amount sdk.Int, denom string) *MsgClaimReward {
+	return &MsgClaimReward{
 		Creator: creator,
 		Amount:  amount,
 		Denom:   denom,
 	}
 }
 
-func (msg *MsgWithdrawTokens) Route() string {
+func (msg *MsgClaimReward) Route() string {
 	return RouterKey
 }
 
-func (msg *MsgWithdrawTokens) Type() string {
-	return TypeMsgWithdrawTokens
+func (msg *MsgClaimReward) Type() string {
+	return TypeMsgClaimReward
 }
 
-func (msg *MsgWithdrawTokens) GetSigners() []sdk.AccAddress {
+func (msg *MsgClaimReward) GetSigners() []sdk.AccAddress {
 	creator, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
 		panic(err)
@@ -33,12 +33,12 @@ func (msg *MsgWithdrawTokens) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{creator}
 }
 
-func (msg *MsgWithdrawTokens) GetSignBytes() []byte {
+func (msg *MsgClaimReward) GetSignBytes() []byte {
 	bz := ModuleCdc.MustMarshalJSON(msg)
 	return sdk.MustSortJSON(bz)
 }
 
-func (msg *MsgWithdrawTokens) ValidateBasic() error {
+func (msg *MsgClaimReward) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid creator address: %v", err)

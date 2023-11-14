@@ -38923,6 +38923,31 @@ paths:
                           type: string
                         amount:
                           type: string
+                      description: >-
+                        Coin defines a token with a denomination and an amount.
+
+
+                        NOTE: The amount field is an Int which implements the
+                        custom method
+
+                        signatures required by gogoproto.
+                  claimed:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        denom:
+                          type: string
+                        amount:
+                          type: string
+                      description: >-
+                        Coin defines a token with a denomination and an amount.
+
+
+                        NOTE: The amount field is an Int which implements the
+                        custom method
+
+                        signatures required by gogoproto.
                   vesting_tokens:
                     type: array
                     items:
@@ -42565,6 +42590,45 @@ paths:
             description: >-
               QueryParamsResponse is response type for the Query/Params RPC
               method.
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      tags:
+        - Query
+  /elys-network/elys/stablestake/borrow-ratio:
+    get:
+      summary: BorrowRatio queries the borrow ratio compared to total deposit
+      operationId: ElysStablestakeBorrowRatio
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              total_deposit:
+                type: string
+              total_borrow:
+                type: string
+              borrow_ratio:
+                type: string
+            description: >-
+              QueryBorrowRatioResponse is response type for the
+              Query/BorrowRatio RPC method.
         default:
           description: An unexpected error response.
           schema:
@@ -83027,6 +83091,25 @@ definitions:
               type: string
             amount:
               type: string
+          description: |-
+            Coin defines a token with a denomination and an amount.
+
+            NOTE: The amount field is an Int which implements the custom method
+            signatures required by gogoproto.
+      claimed:
+        type: array
+        items:
+          type: object
+          properties:
+            denom:
+              type: string
+            amount:
+              type: string
+          description: |-
+            Coin defines a token with a denomination and an amount.
+
+            NOTE: The amount field is an Int which implements the custom method
+            signatures required by gogoproto.
       vesting_tokens:
         type: array
         items:
@@ -83074,9 +83157,9 @@ definitions:
         format: uint64
   elys.commitment.MsgCancelVestResponse:
     type: object
-  elys.commitment.MsgCommitLiquidTokensResponse:
+  elys.commitment.MsgCommitClaimedRewardsResponse:
     type: object
-  elys.commitment.MsgCommitUnclaimedRewardsResponse:
+  elys.commitment.MsgCommitLiquidTokensResponse:
     type: object
   elys.commitment.MsgStakeResponse:
     type: object
@@ -83103,8 +83186,6 @@ definitions:
   elys.commitment.MsgVestNowResponse:
     type: object
   elys.commitment.MsgVestResponse:
-    type: object
-  elys.commitment.MsgWithdrawTokensResponse:
     type: object
   elys.commitment.Params:
     type: object
@@ -83192,6 +83273,31 @@ definitions:
                   type: string
                 amount:
                   type: string
+              description: >-
+                Coin defines a token with a denomination and an amount.
+
+
+                NOTE: The amount field is an Int which implements the custom
+                method
+
+                signatures required by gogoproto.
+          claimed:
+            type: array
+            items:
+              type: object
+              properties:
+                denom:
+                  type: string
+                amount:
+                  type: string
+              description: >-
+                Coin defines a token with a denomination and an amount.
+
+
+                NOTE: The amount field is an Int which implements the custom
+                method
+
+                signatures required by gogoproto.
           vesting_tokens:
             type: array
             items:
@@ -83212,13 +83318,6 @@ definitions:
                   type: string
                   format: int64
         description: GenesisState defines the commitment module's genesis state.
-  elys.commitment.RewardsUnclaimed:
-    type: object
-    properties:
-      denom:
-        type: string
-      amount:
-        type: string
   elys.commitment.VestingInfo:
     type: object
     properties:
@@ -85638,6 +85737,18 @@ definitions:
       total_value:
         type: string
     description: Params defines the parameters for the module.
+  elys.stablestake.QueryBorrowRatioResponse:
+    type: object
+    properties:
+      total_deposit:
+        type: string
+      total_borrow:
+        type: string
+      borrow_ratio:
+        type: string
+    description: >-
+      QueryBorrowRatioResponse is response type for the Query/BorrowRatio RPC
+      method.
   elys.stablestake.QueryParamsResponse:
     type: object
     properties:

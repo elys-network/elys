@@ -203,11 +203,7 @@ func (k Keeper) GetPositionHealth(ctx sdk.Context, position types.Position, ammP
 		return sdk.ZeroDec(), nil
 	}
 
-	commitments, found := k.commKeeper.GetCommitments(ctx, position.GetPositionAddress().String())
-	if !found {
-		return sdk.ZeroDec(), nil
-	}
-
+	commitments := k.commKeeper.GetCommitments(ctx, position.GetPositionAddress().String())
 	positionVal := sdk.ZeroDec()
 	params := k.stableKeeper.GetParams(ctx)
 	for _, commitment := range commitments.CommittedTokens {

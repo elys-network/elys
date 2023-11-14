@@ -15,7 +15,7 @@ func NewMultiEpochHooks(hooks ...types.CommitmentHooks) MultiCommitmentHooks {
 }
 
 // Committed is called when staker committed his token
-func (mh MultiCommitmentHooks) CommitmentChanged(ctx sdk.Context, creator string, amount sdk.Coin) {
+func (mh MultiCommitmentHooks) CommitmentChanged(ctx sdk.Context, creator string, amount sdk.Coins) {
 	for i := range mh {
 		mh[i].CommitmentChanged(ctx, creator, amount)
 	}
@@ -29,7 +29,7 @@ func (mh MultiCommitmentHooks) EdenUncommitted(ctx sdk.Context, creator string, 
 }
 
 // Committed executes the indicated for committed hook
-func (k Keeper) AfterCommitmentChange(ctx sdk.Context, creator string, amount sdk.Coin) {
+func (k Keeper) AfterCommitmentChange(ctx sdk.Context, creator string, amount sdk.Coins) {
 	if k.hooks == nil {
 		return
 	}

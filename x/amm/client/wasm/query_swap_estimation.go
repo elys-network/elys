@@ -9,7 +9,7 @@ import (
 )
 
 func (oq *Querier) querySwapEstimation(ctx sdk.Context, query *ammtypes.QuerySwapEstimationRequest) ([]byte, error) {
-	res, err := oq.keeper.SwapEstimation(ctx, query)
+	res, err := oq.keeper.SwapEstimation(sdk.WrapSDKContext(ctx), query)
 	if err != nil {
 		return nil, errorsmod.Wrap(err, "failed to get swap estimation")
 	}

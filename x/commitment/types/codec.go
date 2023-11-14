@@ -8,15 +8,16 @@ import (
 )
 
 func RegisterCodec(cdc *codec.LegacyAmino) {
-	cdc.RegisterConcrete(&MsgCommitUnclaimedRewards{}, "commitment/CommitUnclaimedRewards", nil)
+	cdc.RegisterConcrete(&MsgCommitClaimedRewards{}, "commitment/CommitClaimedRewards", nil)
 	cdc.RegisterConcrete(&MsgUncommitTokens{}, "commitment/UncommitTokens", nil)
-	cdc.RegisterConcrete(&MsgWithdrawTokens{}, "commitment/WithdrawTokens", nil)
+	cdc.RegisterConcrete(&MsgClaimReward{}, "commitment/ClaimReward", nil)
 	cdc.RegisterConcrete(&MsgCommitLiquidTokens{}, "commitment/CommitLiquidTokens", nil)
 	cdc.RegisterConcrete(&MsgVest{}, "commitment/Vest", nil)
 	cdc.RegisterConcrete(&MsgCancelVest{}, "commitment/CancelVest", nil)
 	cdc.RegisterConcrete(&MsgVestNow{}, "commitment/VestNow", nil)
 	cdc.RegisterConcrete(&MsgUpdateVestingInfo{}, "commitment/UpdateVestingInfo", nil)
 	cdc.RegisterConcrete(&MsgVestLiquid{}, "commitment/VestLiquid", nil)
+	cdc.RegisterConcrete(&MsgClaimRewards{}, "commitment/ClaimRewards", nil)
 	cdc.RegisterConcrete(&MsgStake{}, "commitment/Stake", nil)
 	cdc.RegisterConcrete(&MsgUnstake{}, "commitment/Unstake", nil)
 	// this line is used by starport scaffolding # 2
@@ -24,13 +25,13 @@ func RegisterCodec(cdc *codec.LegacyAmino) {
 
 func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 	registry.RegisterImplementations((*sdk.Msg)(nil),
-		&MsgCommitUnclaimedRewards{},
+		&MsgCommitClaimedRewards{},
 	)
 	registry.RegisterImplementations((*sdk.Msg)(nil),
 		&MsgUncommitTokens{},
 	)
 	registry.RegisterImplementations((*sdk.Msg)(nil),
-		&MsgWithdrawTokens{},
+		&MsgClaimReward{},
 	)
 	registry.RegisterImplementations((*sdk.Msg)(nil),
 		&MsgCommitLiquidTokens{},
@@ -51,6 +52,7 @@ func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 		&MsgVestLiquid{},
 	)
 	registry.RegisterImplementations((*sdk.Msg)(nil),
+		&MsgClaimRewards{},
 		&MsgStake{},
 	)
 	registry.RegisterImplementations((*sdk.Msg)(nil),

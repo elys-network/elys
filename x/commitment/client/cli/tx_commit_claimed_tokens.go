@@ -15,10 +15,10 @@ import (
 
 var _ = strconv.Itoa(0)
 
-func CmdCommitUnclaimedRewards() *cobra.Command {
+func CmdCommitClaimedRewards() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "commit-unclaimed-rewards [amount] [denom]",
-		Short: "Broadcast message commit-tokens",
+		Use:   "commit-claimed-rewards [amount] [denom]",
+		Short: "Broadcast message commit-claimed-rewards",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			argAmount, found := sdk.NewIntFromString(args[0])
@@ -32,7 +32,7 @@ func CmdCommitUnclaimedRewards() *cobra.Command {
 				return err
 			}
 
-			msg := types.NewMsgCommitUnclaimedRewards(
+			msg := types.NewMsgCommitClaimedRewards(
 				clientCtx.GetFromAddress().String(),
 				argAmount,
 				argDenom,

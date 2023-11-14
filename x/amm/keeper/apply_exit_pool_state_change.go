@@ -13,15 +13,12 @@ func (k Keeper) ApplyExitPoolStateChange(ctx sdk.Context, pool types.Pool, exite
 
 	poolShareDenom := types.GetPoolShareDenom(pool.GetPoolId())
 
-	// Withdraw token message
-	msgWithdrawTokens := &ctypes.MsgWithdrawTokens{
+	// Withdraw committed LP tokens
+	_, err := msgServer.UncommitTokens(sdk.WrapSDKContext(ctx), &ctypes.MsgUncommitTokens{
 		Creator: exiter.String(),
 		Amount:  numShares,
 		Denom:   poolShareDenom,
-	}
-
-	// Withdraw committed LP tokens
-	_, err := msgServer.WithdrawTokens(sdk.WrapSDKContext(ctx), msgWithdrawTokens)
+	})
 	if err != nil {
 		return err
 	}

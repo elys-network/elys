@@ -19,10 +19,7 @@ func (k msgServer) CancelVest(goCtx context.Context, msg *types.MsgCancelVest) (
 	}
 
 	// Get the Commitments for the creator
-	commitments, found := k.GetCommitments(ctx, msg.Creator)
-	if !found {
-		return nil, sdkerrors.Wrapf(types.ErrCommitmentsNotFound, "creator: %s", msg.Creator)
-	}
+	commitments := k.GetCommitments(ctx, msg.Creator)
 
 	remainingToCancel := msg.Amount
 
@@ -50,23 +47,11 @@ func (k msgServer) CancelVest(goCtx context.Context, msg *types.MsgCancelVest) (
 	}
 
 	// Update the unclaimed tokens amount
-	rewardUnclaimed, found := commitments.GetRewardsUnclaimedForDenom(msg.Denom)
-
-	if found {
-		rewardUnclaimed.Amount = rewardUnclaimed.Amount.Add(msg.Amount)
-	} else {
-		rewardsUnclaimed := commitments.GetRewardsUnclaimed()
-		rewardsUnclaimed = append(rewardsUnclaimed, &types.RewardsUnclaimed{
-			Denom:  msg.Denom,
-			Amount: msg.Amount,
-		})
-		commitments.RewardsUnclaimed = rewardsUnclaimed
-	}
-
+	commitments.AddRewardsUnclaimed(sdk.NewCoin(msg.Denom, msg.Amount))
 	k.SetCommitments(ctx, commitments)
 
 	// Emit Hook commitment changed
-	k.AfterCommitmentChange(ctx, msg.Creator, sdk.NewCoin(msg.Denom, msg.Amount))
+	k.AfterCommitmentChange(ctx, msg.Creator, sdk.Coins{sdk.NewCoin(msg.Denom, msg.Amount)})
 
 	// Emit blockchain event
 	ctx.EventManager().EmitEvent(

@@ -24,10 +24,7 @@ func (k msgServer) UncommitTokens(goCtx context.Context, msg *types.MsgUncommitT
 	}
 
 	// Get the Commitments for the creator
-	commitments, found := k.GetCommitments(ctx, msg.Creator)
-	if !found {
-		return nil, sdkerrors.Wrapf(types.ErrCommitmentsNotFound, "creator: %s", msg.Creator)
-	}
+	commitments := k.GetCommitments(ctx, msg.Creator)
 
 	// Deduct from committed tokens
 	err := commitments.DeductFromCommitted(msg.Denom, msg.Amount, uint64(ctx.BlockTime().Unix()))
@@ -38,25 +35,15 @@ func (k msgServer) UncommitTokens(goCtx context.Context, msg *types.MsgUncommitT
 
 	liquidCoins := sdk.NewCoins(sdk.NewCoin(msg.Denom, msg.Amount))
 
-	// Mint the withdrawn tokens to the module account
-	err = k.bankKeeper.MintCoins(ctx, types.ModuleName, liquidCoins)
-	if err != nil {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrInsufficientFunds, "unable to mint liquid tokens")
-	}
-
 	addr, err := sdk.AccAddressFromBech32(commitments.Creator)
 	if err != nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "unable to convert address from bech32")
 	}
 
-	// Send the minted coins to the user's account
-	err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, addr, liquidCoins)
+	err = k.HandleWithdrawFromCommitment(ctx, &commitments, addr, liquidCoins, true)
 	if err != nil {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrInsufficientFunds, "unable to send liquid tokens")
+		return nil, err
 	}
-
-	// Emit Hook commitment changed
-	k.AfterCommitmentChange(ctx, msg.Creator, sdk.NewCoin(msg.Denom, msg.Amount))
 
 	// Emit Hook if Eden is uncommitted
 	if msg.Denom == ptypes.Eden {

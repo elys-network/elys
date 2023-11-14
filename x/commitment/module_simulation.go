@@ -22,17 +22,17 @@ var (
 )
 
 const (
-	opWeightMsgCommitUnclaimedRewards = "op_weight_msg_commit_tokens"
+	opWeightMsgCommitClaimedRewards = "op_weight_msg_commit_tokens"
 	// TODO: Determine the simulation weight value
-	defaultWeightMsgCommitUnclaimedRewards int = 100
+	defaultWeightMsgCommitClaimedRewards int = 100
 
 	opWeightMsgUncommitTokens = "op_weight_msg_uncommit_tokens"
 	// TODO: Determine the simulation weight value
 	defaultWeightMsgUncommitTokens int = 100
 
-	opWeightMsgWithdrawTokens = "op_weight_msg_withdraw_tokens"
+	opWeightMsgClaimReward = "op_weight_msg_withdraw_tokens"
 	// TODO: Determine the simulation weight value
-	defaultWeightMsgWithdrawTokens int = 100
+	defaultWeightMsgClaimReward int = 100
 
 	opWeightMsgCommitLiquidTokens = "op_weight_msg_commit_liquid_tokens"
 	// TODO: Determine the simulation weight value
@@ -57,6 +57,10 @@ const (
 	opWeightMsgVestLiquid = "op_weight_msg_vest_liquid"
 	// TODO: Determine the simulation weight value
 	defaultWeightMsgVestLiquid int = 100
+
+	opWeightMsgClaimRewards = "op_weight_msg_claim_rewards"
+	// TODO: Determine the simulation weight value
+	defaultWeightMsgClaimRewards int = 100
 
 	opWeightMsgStake = "op_weight_msg_stake"
 	// TODO: Determine the simulation weight value
@@ -94,15 +98,15 @@ func (am AppModule) RegisterStoreDecoder(_ sdk.StoreDecoderRegistry) {}
 func (am AppModule) WeightedOperations(simState module.SimulationState) []simtypes.WeightedOperation {
 	operations := make([]simtypes.WeightedOperation, 0)
 
-	var weightMsgCommitUnclaimedRewards int
-	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgCommitUnclaimedRewards, &weightMsgCommitUnclaimedRewards, nil,
+	var weightMsgCommitClaimedRewards int
+	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgCommitClaimedRewards, &weightMsgCommitClaimedRewards, nil,
 		func(_ *rand.Rand) {
-			weightMsgCommitUnclaimedRewards = defaultWeightMsgCommitUnclaimedRewards
+			weightMsgCommitClaimedRewards = defaultWeightMsgCommitClaimedRewards
 		},
 	)
 	operations = append(operations, simulation.NewWeightedOperation(
-		weightMsgCommitUnclaimedRewards,
-		commitmentsimulation.SimulateMsgCommitUnclaimedRewards(am.accountKeeper, am.bankKeeper, am.keeper),
+		weightMsgCommitClaimedRewards,
+		commitmentsimulation.SimulateMsgCommitClaimedRewards(am.accountKeeper, am.bankKeeper, am.keeper),
 	))
 
 	var weightMsgUncommitTokens int
@@ -116,15 +120,15 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 		commitmentsimulation.SimulateMsgUncommitTokens(am.accountKeeper, am.bankKeeper, am.keeper),
 	))
 
-	var weightMsgWithdrawTokens int
-	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgWithdrawTokens, &weightMsgWithdrawTokens, nil,
+	var weightMsgClaimReward int
+	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgClaimReward, &weightMsgClaimReward, nil,
 		func(_ *rand.Rand) {
-			weightMsgWithdrawTokens = defaultWeightMsgWithdrawTokens
+			weightMsgClaimReward = defaultWeightMsgClaimReward
 		},
 	)
 	operations = append(operations, simulation.NewWeightedOperation(
-		weightMsgWithdrawTokens,
-		commitmentsimulation.SimulateMsgWithdrawTokens(am.accountKeeper, am.bankKeeper, am.keeper),
+		weightMsgClaimReward,
+		commitmentsimulation.SimulateMsgClaimReward(am.accountKeeper, am.bankKeeper, am.keeper),
 	))
 
 	var weightMsgCommitLiquidTokens int
@@ -191,6 +195,17 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 	operations = append(operations, simulation.NewWeightedOperation(
 		weightMsgVestLiquid,
 		commitmentsimulation.SimulateMsgVestLiquid(am.accountKeeper, am.bankKeeper, am.keeper),
+	))
+
+	var weightMsgClaimRewards int
+	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgClaimRewards, &weightMsgClaimRewards, nil,
+		func(_ *rand.Rand) {
+			weightMsgClaimRewards = defaultWeightMsgClaimRewards
+		},
+	)
+	operations = append(operations, simulation.NewWeightedOperation(
+		weightMsgClaimRewards,
+		commitmentsimulation.SimulateMsgClaimRewards(am.accountKeeper, am.bankKeeper, am.keeper),
 	))
 
 	var weightMsgStake int

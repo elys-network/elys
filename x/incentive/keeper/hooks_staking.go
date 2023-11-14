@@ -3,7 +3,6 @@ package keeper
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
-	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
 
 // Creating a commitment object for a delegator if one does not exist:
@@ -14,8 +13,7 @@ func (k Keeper) BeforeDelegationCreated(ctx sdk.Context, delAddr sdk.AccAddress,
 	}
 
 	// Create an entity in commitment module
-	k.cmk.StandardStakingToken(ctx, delAddr.String(), valAddr.String(), ptypes.Eden)
-	k.cmk.StandardStakingToken(ctx, delAddr.String(), valAddr.String(), ptypes.BaseCurrency)
+	k.cmk.BeforeDelegationCreated(ctx, delAddr.String(), valAddr.String())
 
 	return nil
 }

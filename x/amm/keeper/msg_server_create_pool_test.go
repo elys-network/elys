@@ -153,8 +153,7 @@ func (suite *KeeperTestSuite) TestMsgServerCreatePool() {
 				suite.Require().Equal(balances.String(), tc.expSenderBalance.String())
 
 				// check lp token commitment
-				commitments, found := suite.app.CommitmentKeeper.GetCommitments(suite.ctx, sender.String())
-				suite.Require().True(found)
+				commitments := suite.app.CommitmentKeeper.GetCommitments(suite.ctx, sender.String())
 				suite.Require().Len(commitments.CommittedTokens, 1)
 				suite.Require().Equal(commitments.CommittedTokens[0].Denom, tc.expLpCommitment.Denom)
 				suite.Require().Equal(commitments.CommittedTokens[0].Amount.String(), tc.expLpCommitment.Amount.String())

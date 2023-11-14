@@ -29,24 +29,24 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
-type MsgCommitUnclaimedRewards struct {
+type MsgCommitClaimedRewards struct {
 	Creator string                                 `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
 	Amount  github_com_cosmos_cosmos_sdk_types.Int `protobuf:"bytes,2,opt,name=amount,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"amount"`
 	Denom   string                                 `protobuf:"bytes,3,opt,name=denom,proto3" json:"denom,omitempty"`
 }
 
-func (m *MsgCommitUnclaimedRewards) Reset()         { *m = MsgCommitUnclaimedRewards{} }
-func (m *MsgCommitUnclaimedRewards) String() string { return proto.CompactTextString(m) }
-func (*MsgCommitUnclaimedRewards) ProtoMessage()    {}
-func (*MsgCommitUnclaimedRewards) Descriptor() ([]byte, []int) {
+func (m *MsgCommitClaimedRewards) Reset()         { *m = MsgCommitClaimedRewards{} }
+func (m *MsgCommitClaimedRewards) String() string { return proto.CompactTextString(m) }
+func (*MsgCommitClaimedRewards) ProtoMessage()    {}
+func (*MsgCommitClaimedRewards) Descriptor() ([]byte, []int) {
 	return fileDescriptor_eda78aafe7eb119c, []int{0}
 }
-func (m *MsgCommitUnclaimedRewards) XXX_Unmarshal(b []byte) error {
+func (m *MsgCommitClaimedRewards) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgCommitUnclaimedRewards) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgCommitClaimedRewards) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgCommitUnclaimedRewards.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgCommitClaimedRewards.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -56,47 +56,47 @@ func (m *MsgCommitUnclaimedRewards) XXX_Marshal(b []byte, deterministic bool) ([
 		return b[:n], nil
 	}
 }
-func (m *MsgCommitUnclaimedRewards) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgCommitUnclaimedRewards.Merge(m, src)
+func (m *MsgCommitClaimedRewards) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgCommitClaimedRewards.Merge(m, src)
 }
-func (m *MsgCommitUnclaimedRewards) XXX_Size() int {
+func (m *MsgCommitClaimedRewards) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgCommitUnclaimedRewards) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgCommitUnclaimedRewards.DiscardUnknown(m)
+func (m *MsgCommitClaimedRewards) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgCommitClaimedRewards.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgCommitUnclaimedRewards proto.InternalMessageInfo
+var xxx_messageInfo_MsgCommitClaimedRewards proto.InternalMessageInfo
 
-func (m *MsgCommitUnclaimedRewards) GetCreator() string {
+func (m *MsgCommitClaimedRewards) GetCreator() string {
 	if m != nil {
 		return m.Creator
 	}
 	return ""
 }
 
-func (m *MsgCommitUnclaimedRewards) GetDenom() string {
+func (m *MsgCommitClaimedRewards) GetDenom() string {
 	if m != nil {
 		return m.Denom
 	}
 	return ""
 }
 
-type MsgCommitUnclaimedRewardsResponse struct {
+type MsgCommitClaimedRewardsResponse struct {
 }
 
-func (m *MsgCommitUnclaimedRewardsResponse) Reset()         { *m = MsgCommitUnclaimedRewardsResponse{} }
-func (m *MsgCommitUnclaimedRewardsResponse) String() string { return proto.CompactTextString(m) }
-func (*MsgCommitUnclaimedRewardsResponse) ProtoMessage()    {}
-func (*MsgCommitUnclaimedRewardsResponse) Descriptor() ([]byte, []int) {
+func (m *MsgCommitClaimedRewardsResponse) Reset()         { *m = MsgCommitClaimedRewardsResponse{} }
+func (m *MsgCommitClaimedRewardsResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgCommitClaimedRewardsResponse) ProtoMessage()    {}
+func (*MsgCommitClaimedRewardsResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_eda78aafe7eb119c, []int{1}
 }
-func (m *MsgCommitUnclaimedRewardsResponse) XXX_Unmarshal(b []byte) error {
+func (m *MsgCommitClaimedRewardsResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgCommitUnclaimedRewardsResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgCommitClaimedRewardsResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgCommitUnclaimedRewardsResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgCommitClaimedRewardsResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -106,17 +106,17 @@ func (m *MsgCommitUnclaimedRewardsResponse) XXX_Marshal(b []byte, deterministic 
 		return b[:n], nil
 	}
 }
-func (m *MsgCommitUnclaimedRewardsResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgCommitUnclaimedRewardsResponse.Merge(m, src)
+func (m *MsgCommitClaimedRewardsResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgCommitClaimedRewardsResponse.Merge(m, src)
 }
-func (m *MsgCommitUnclaimedRewardsResponse) XXX_Size() int {
+func (m *MsgCommitClaimedRewardsResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgCommitUnclaimedRewardsResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgCommitUnclaimedRewardsResponse.DiscardUnknown(m)
+func (m *MsgCommitClaimedRewardsResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgCommitClaimedRewardsResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgCommitUnclaimedRewardsResponse proto.InternalMessageInfo
+var xxx_messageInfo_MsgCommitClaimedRewardsResponse proto.InternalMessageInfo
 
 type MsgUncommitTokens struct {
 	Creator string                                 `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
@@ -207,24 +207,24 @@ func (m *MsgUncommitTokensResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgUncommitTokensResponse proto.InternalMessageInfo
 
-type MsgWithdrawTokens struct {
+type MsgClaimReward struct {
 	Creator string                                 `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
 	Amount  github_com_cosmos_cosmos_sdk_types.Int `protobuf:"bytes,2,opt,name=amount,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"amount"`
 	Denom   string                                 `protobuf:"bytes,3,opt,name=denom,proto3" json:"denom,omitempty"`
 }
 
-func (m *MsgWithdrawTokens) Reset()         { *m = MsgWithdrawTokens{} }
-func (m *MsgWithdrawTokens) String() string { return proto.CompactTextString(m) }
-func (*MsgWithdrawTokens) ProtoMessage()    {}
-func (*MsgWithdrawTokens) Descriptor() ([]byte, []int) {
+func (m *MsgClaimReward) Reset()         { *m = MsgClaimReward{} }
+func (m *MsgClaimReward) String() string { return proto.CompactTextString(m) }
+func (*MsgClaimReward) ProtoMessage()    {}
+func (*MsgClaimReward) Descriptor() ([]byte, []int) {
 	return fileDescriptor_eda78aafe7eb119c, []int{4}
 }
-func (m *MsgWithdrawTokens) XXX_Unmarshal(b []byte) error {
+func (m *MsgClaimReward) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgWithdrawTokens) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgClaimReward) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgWithdrawTokens.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgClaimReward.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -234,47 +234,47 @@ func (m *MsgWithdrawTokens) XXX_Marshal(b []byte, deterministic bool) ([]byte, e
 		return b[:n], nil
 	}
 }
-func (m *MsgWithdrawTokens) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgWithdrawTokens.Merge(m, src)
+func (m *MsgClaimReward) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgClaimReward.Merge(m, src)
 }
-func (m *MsgWithdrawTokens) XXX_Size() int {
+func (m *MsgClaimReward) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgWithdrawTokens) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgWithdrawTokens.DiscardUnknown(m)
+func (m *MsgClaimReward) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgClaimReward.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgWithdrawTokens proto.InternalMessageInfo
+var xxx_messageInfo_MsgClaimReward proto.InternalMessageInfo
 
-func (m *MsgWithdrawTokens) GetCreator() string {
+func (m *MsgClaimReward) GetCreator() string {
 	if m != nil {
 		return m.Creator
 	}
 	return ""
 }
 
-func (m *MsgWithdrawTokens) GetDenom() string {
+func (m *MsgClaimReward) GetDenom() string {
 	if m != nil {
 		return m.Denom
 	}
 	return ""
 }
 
-type MsgWithdrawTokensResponse struct {
+type MsgClaimRewardResponse struct {
 }
 
-func (m *MsgWithdrawTokensResponse) Reset()         { *m = MsgWithdrawTokensResponse{} }
-func (m *MsgWithdrawTokensResponse) String() string { return proto.CompactTextString(m) }
-func (*MsgWithdrawTokensResponse) ProtoMessage()    {}
-func (*MsgWithdrawTokensResponse) Descriptor() ([]byte, []int) {
+func (m *MsgClaimRewardResponse) Reset()         { *m = MsgClaimRewardResponse{} }
+func (m *MsgClaimRewardResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgClaimRewardResponse) ProtoMessage()    {}
+func (*MsgClaimRewardResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_eda78aafe7eb119c, []int{5}
 }
-func (m *MsgWithdrawTokensResponse) XXX_Unmarshal(b []byte) error {
+func (m *MsgClaimRewardResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgWithdrawTokensResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgClaimRewardResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgWithdrawTokensResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgClaimRewardResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -284,17 +284,17 @@ func (m *MsgWithdrawTokensResponse) XXX_Marshal(b []byte, deterministic bool) ([
 		return b[:n], nil
 	}
 }
-func (m *MsgWithdrawTokensResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgWithdrawTokensResponse.Merge(m, src)
+func (m *MsgClaimRewardResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgClaimRewardResponse.Merge(m, src)
 }
-func (m *MsgWithdrawTokensResponse) XXX_Size() int {
+func (m *MsgClaimRewardResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgWithdrawTokensResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgWithdrawTokensResponse.DiscardUnknown(m)
+func (m *MsgClaimRewardResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgClaimRewardResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgWithdrawTokensResponse proto.InternalMessageInfo
+var xxx_messageInfo_MsgClaimRewardResponse proto.InternalMessageInfo
 
 type MsgCommitLiquidTokens struct {
 	Creator string                                 `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
@@ -877,6 +877,86 @@ func (m *MsgVestLiquidResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgVestLiquidResponse proto.InternalMessageInfo
 
+type MsgClaimRewards struct {
+	Creator string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
+}
+
+func (m *MsgClaimRewards) Reset()         { *m = MsgClaimRewards{} }
+func (m *MsgClaimRewards) String() string { return proto.CompactTextString(m) }
+func (*MsgClaimRewards) ProtoMessage()    {}
+func (*MsgClaimRewards) Descriptor() ([]byte, []int) {
+	return fileDescriptor_eda78aafe7eb119c, []int{18}
+}
+func (m *MsgClaimRewards) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgClaimRewards) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgClaimRewards.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgClaimRewards) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgClaimRewards.Merge(m, src)
+}
+func (m *MsgClaimRewards) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgClaimRewards) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgClaimRewards.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgClaimRewards proto.InternalMessageInfo
+
+func (m *MsgClaimRewards) GetCreator() string {
+	if m != nil {
+		return m.Creator
+	}
+	return ""
+}
+
+type MsgClaimRewardsResponse struct {
+}
+
+func (m *MsgClaimRewardsResponse) Reset()         { *m = MsgClaimRewardsResponse{} }
+func (m *MsgClaimRewardsResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgClaimRewardsResponse) ProtoMessage()    {}
+func (*MsgClaimRewardsResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_eda78aafe7eb119c, []int{19}
+}
+func (m *MsgClaimRewardsResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgClaimRewardsResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgClaimRewardsResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgClaimRewardsResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgClaimRewardsResponse.Merge(m, src)
+}
+func (m *MsgClaimRewardsResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgClaimRewardsResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgClaimRewardsResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgClaimRewardsResponse proto.InternalMessageInfo
+
 type MsgStake struct {
 	Creator          string                                 `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
 	Amount           github_com_cosmos_cosmos_sdk_types.Int `protobuf:"bytes,2,opt,name=amount,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"amount"`
@@ -888,7 +968,7 @@ func (m *MsgStake) Reset()         { *m = MsgStake{} }
 func (m *MsgStake) String() string { return proto.CompactTextString(m) }
 func (*MsgStake) ProtoMessage()    {}
 func (*MsgStake) Descriptor() ([]byte, []int) {
-	return fileDescriptor_eda78aafe7eb119c, []int{18}
+	return fileDescriptor_eda78aafe7eb119c, []int{20}
 }
 func (m *MsgStake) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -947,7 +1027,7 @@ func (m *MsgStakeResponse) Reset()         { *m = MsgStakeResponse{} }
 func (m *MsgStakeResponse) String() string { return proto.CompactTextString(m) }
 func (*MsgStakeResponse) ProtoMessage()    {}
 func (*MsgStakeResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_eda78aafe7eb119c, []int{19}
+	return fileDescriptor_eda78aafe7eb119c, []int{21}
 }
 func (m *MsgStakeResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -1001,7 +1081,7 @@ func (m *MsgUnstake) Reset()         { *m = MsgUnstake{} }
 func (m *MsgUnstake) String() string { return proto.CompactTextString(m) }
 func (*MsgUnstake) ProtoMessage()    {}
 func (*MsgUnstake) Descriptor() ([]byte, []int) {
-	return fileDescriptor_eda78aafe7eb119c, []int{20}
+	return fileDescriptor_eda78aafe7eb119c, []int{22}
 }
 func (m *MsgUnstake) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -1060,7 +1140,7 @@ func (m *MsgUnstakeResponse) Reset()         { *m = MsgUnstakeResponse{} }
 func (m *MsgUnstakeResponse) String() string { return proto.CompactTextString(m) }
 func (*MsgUnstakeResponse) ProtoMessage()    {}
 func (*MsgUnstakeResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_eda78aafe7eb119c, []int{21}
+	return fileDescriptor_eda78aafe7eb119c, []int{23}
 }
 func (m *MsgUnstakeResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -1104,12 +1184,12 @@ func (m *MsgUnstakeResponse) GetResult() string {
 }
 
 func init() {
-	proto.RegisterType((*MsgCommitUnclaimedRewards)(nil), "elys.commitment.MsgCommitUnclaimedRewards")
-	proto.RegisterType((*MsgCommitUnclaimedRewardsResponse)(nil), "elys.commitment.MsgCommitUnclaimedRewardsResponse")
+	proto.RegisterType((*MsgCommitClaimedRewards)(nil), "elys.commitment.MsgCommitClaimedRewards")
+	proto.RegisterType((*MsgCommitClaimedRewardsResponse)(nil), "elys.commitment.MsgCommitClaimedRewardsResponse")
 	proto.RegisterType((*MsgUncommitTokens)(nil), "elys.commitment.MsgUncommitTokens")
 	proto.RegisterType((*MsgUncommitTokensResponse)(nil), "elys.commitment.MsgUncommitTokensResponse")
-	proto.RegisterType((*MsgWithdrawTokens)(nil), "elys.commitment.MsgWithdrawTokens")
-	proto.RegisterType((*MsgWithdrawTokensResponse)(nil), "elys.commitment.MsgWithdrawTokensResponse")
+	proto.RegisterType((*MsgClaimReward)(nil), "elys.commitment.MsgClaimReward")
+	proto.RegisterType((*MsgClaimRewardResponse)(nil), "elys.commitment.MsgClaimRewardResponse")
 	proto.RegisterType((*MsgCommitLiquidTokens)(nil), "elys.commitment.MsgCommitLiquidTokens")
 	proto.RegisterType((*MsgCommitLiquidTokensResponse)(nil), "elys.commitment.MsgCommitLiquidTokensResponse")
 	proto.RegisterType((*MsgVest)(nil), "elys.commitment.MsgVest")
@@ -1122,6 +1202,8 @@ func init() {
 	proto.RegisterType((*MsgUpdateVestingInfoResponse)(nil), "elys.commitment.MsgUpdateVestingInfoResponse")
 	proto.RegisterType((*MsgVestLiquid)(nil), "elys.commitment.MsgVestLiquid")
 	proto.RegisterType((*MsgVestLiquidResponse)(nil), "elys.commitment.MsgVestLiquidResponse")
+	proto.RegisterType((*MsgClaimRewards)(nil), "elys.commitment.MsgClaimRewards")
+	proto.RegisterType((*MsgClaimRewardsResponse)(nil), "elys.commitment.MsgClaimRewardsResponse")
 	proto.RegisterType((*MsgStake)(nil), "elys.commitment.MsgStake")
 	proto.RegisterType((*MsgStakeResponse)(nil), "elys.commitment.MsgStakeResponse")
 	proto.RegisterType((*MsgUnstake)(nil), "elys.commitment.MsgUnstake")
@@ -1131,61 +1213,62 @@ func init() {
 func init() { proto.RegisterFile("elys/commitment/tx.proto", fileDescriptor_eda78aafe7eb119c) }
 
 var fileDescriptor_eda78aafe7eb119c = []byte{
-	// 863 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xd4, 0x97, 0xcf, 0x8f, 0xdb, 0x44,
-	0x14, 0xc7, 0xd7, 0xbb, 0xd9, 0xa4, 0x79, 0xa2, 0x4d, 0x32, 0x0a, 0xc5, 0xeb, 0x6d, 0xbd, 0xa9,
-	0x57, 0x44, 0xa1, 0x68, 0x13, 0xa9, 0xdc, 0x11, 0x2c, 0xb4, 0x52, 0x44, 0xb3, 0x07, 0xd3, 0x05,
-	0x89, 0x8b, 0x99, 0xb5, 0x67, 0x1d, 0x2b, 0xf1, 0x4c, 0xf0, 0x8c, 0x9b, 0xec, 0x11, 0x09, 0x89,
-	0x03, 0x17, 0x24, 0xf8, 0x2b, 0xb8, 0x20, 0xfe, 0x8b, 0x1e, 0x7b, 0x44, 0x1c, 0x2a, 0xb4, 0x7b,
-	0xe6, 0x7f, 0x40, 0x33, 0x76, 0x9c, 0xc4, 0x75, 0x96, 0x15, 0x07, 0x42, 0x4f, 0xc9, 0xbc, 0xef,
-	0x9b, 0xf7, 0x3e, 0xf3, 0xeb, 0xcd, 0x18, 0x74, 0x32, 0xbe, 0xe0, 0x3d, 0x97, 0x85, 0x61, 0x20,
-	0x42, 0x42, 0x45, 0x4f, 0xcc, 0xba, 0x93, 0x88, 0x09, 0x86, 0x6a, 0x52, 0xe9, 0x2e, 0x14, 0xa3,
-	0xe9, 0x33, 0x9f, 0x29, 0xad, 0x27, 0xff, 0x25, 0x6e, 0xd6, 0x4f, 0x1a, 0xec, 0x0d, 0xb8, 0xff,
-	0x89, 0xf2, 0x3b, 0xa5, 0xee, 0x18, 0x07, 0x21, 0xf1, 0x6c, 0x32, 0xc5, 0x91, 0xc7, 0x91, 0x0e,
-	0x15, 0x37, 0x22, 0x58, 0xb0, 0x48, 0xd7, 0x5a, 0x5a, 0xa7, 0x6a, 0xcf, 0x9b, 0xe8, 0x09, 0x94,
-	0x71, 0xc8, 0x62, 0x2a, 0xf4, 0x6d, 0x29, 0x1c, 0x77, 0x5f, 0xbc, 0x3a, 0xd8, 0xfa, 0xe3, 0xd5,
-	0x41, 0xdb, 0x0f, 0xc4, 0x30, 0x3e, 0x93, 0x89, 0x7b, 0x2e, 0xe3, 0x21, 0xe3, 0xe9, 0xcf, 0x11,
-	0xf7, 0x46, 0x3d, 0x71, 0x31, 0x21, 0xbc, 0xdb, 0xa7, 0xc2, 0x4e, 0x7b, 0xa3, 0x26, 0xec, 0x7a,
-	0x84, 0xb2, 0x50, 0xdf, 0x51, 0xf1, 0x93, 0x86, 0x75, 0x08, 0x0f, 0xd6, 0x42, 0xd9, 0x84, 0x4f,
-	0x18, 0xe5, 0xc4, 0xfa, 0x41, 0x83, 0xc6, 0x80, 0xfb, 0xa7, 0x34, 0x19, 0xe4, 0x33, 0x36, 0x22,
-	0x74, 0x73, 0xc8, 0xfb, 0x6a, 0x1e, 0x57, 0x61, 0xf2, 0xa8, 0x5f, 0x06, 0x62, 0xe8, 0x45, 0x78,
-	0xfa, 0xbf, 0x40, 0x5d, 0x85, 0xc9, 0x50, 0x7f, 0xd1, 0xe0, 0xed, 0x6c, 0xee, 0x9f, 0x06, 0xdf,
-	0xc4, 0x81, 0xb7, 0x59, 0x5c, 0xb4, 0x07, 0xb7, 0xc2, 0x80, 0x3a, 0x63, 0xe6, 0x8e, 0xf4, 0x52,
-	0x4b, 0xeb, 0x94, 0xec, 0x4a, 0x18, 0xd0, 0xa7, 0xcc, 0x1d, 0x59, 0x07, 0x70, 0xbf, 0x90, 0x35,
-	0x1b, 0xcd, 0xb7, 0x1a, 0x54, 0x06, 0xdc, 0xff, 0x82, 0x70, 0xb1, 0xb1, 0xe9, 0x6e, 0x40, 0x2d,
-	0x45, 0xc8, 0xb0, 0xbe, 0xd7, 0xe0, 0xb6, 0x04, 0xc7, 0xd4, 0x25, 0xe3, 0x8d, 0xc2, 0xbd, 0x93,
-	0xac, 0x76, 0x06, 0x92, 0x21, 0x7e, 0xa7, 0x01, 0xa4, 0xd8, 0x27, 0x6c, 0xba, 0x31, 0xbe, 0x26,
-	0xa0, 0x05, 0x45, 0x06, 0xf7, 0xf3, 0x36, 0x34, 0xe5, 0x69, 0x9b, 0x78, 0x58, 0x10, 0x29, 0x06,
-	0xd4, 0xef, 0xd3, 0x73, 0x86, 0xee, 0x41, 0x15, 0xc7, 0x62, 0xc8, 0xa2, 0x40, 0x5c, 0xa4, 0xa0,
-	0x0b, 0x03, 0xba, 0x0f, 0x70, 0x86, 0x39, 0x71, 0x92, 0x3c, 0xdb, 0x89, 0x2c, 0x2d, 0x9f, 0xaa,
-	0x8d, 0x76, 0x08, 0xb7, 0x9f, 0x27, 0xb1, 0x9c, 0x65, 0x92, 0xb7, 0x52, 0x63, 0xe2, 0xf4, 0x1e,
-	0xd4, 0xc9, 0x84, 0xb9, 0x43, 0x27, 0xf0, 0x08, 0x15, 0xc1, 0x79, 0x40, 0x22, 0xb5, 0x2b, 0xab,
-	0x76, 0x4d, 0xd9, 0xfb, 0x99, 0x59, 0xa6, 0xa3, 0x71, 0xe8, 0x28, 0x33, 0xd7, 0x77, 0x5b, 0x5a,
-	0x67, 0xc7, 0xae, 0xd2, 0x38, 0x7c, 0xac, 0x0c, 0xa8, 0x0d, 0x35, 0x19, 0xd9, 0xa1, 0x6c, 0xea,
-	0x9c, 0x63, 0x57, 0x4e, 0x6d, 0x59, 0xf9, 0x28, 0x8a, 0x13, 0x36, 0x7d, 0xa2, 0x8c, 0xa8, 0x03,
-	0x75, 0x19, 0x26, 0xc4, 0x33, 0x27, 0x25, 0xe1, 0x7a, 0x45, 0x39, 0xde, 0xa1, 0x71, 0x38, 0xc0,
-	0xb3, 0x74, 0x02, 0xb8, 0x65, 0xc2, 0xbd, 0xa2, 0x59, 0xc9, 0x6f, 0x3b, 0x29, 0x25, 0xa7, 0x65,
-	0xc3, 0xdb, 0x6e, 0x01, 0x92, 0x21, 0xfe, 0xaa, 0xc1, 0xad, 0x01, 0xf7, 0x3f, 0x17, 0x78, 0x44,
-	0xfe, 0x1b, 0x3a, 0xcc, 0x39, 0x11, 0x73, 0x3a, 0xd5, 0x40, 0xef, 0x43, 0xe3, 0x39, 0x1e, 0x07,
-	0x9e, 0x4c, 0xe5, 0x60, 0xcf, 0x8b, 0x08, 0xe7, 0xe9, 0x22, 0xd7, 0x33, 0xe1, 0xe3, 0xc4, 0x6e,
-	0x7d, 0x08, 0xf5, 0x39, 0xf0, 0x7c, 0x14, 0x08, 0x41, 0xc9, 0x65, 0x1e, 0x51, 0xd4, 0x25, 0x5b,
-	0xfd, 0x47, 0x77, 0xa1, 0x1c, 0x11, 0x1e, 0x8f, 0x53, 0x64, 0x3b, 0x6d, 0x59, 0xbf, 0x25, 0x07,
-	0xed, 0x94, 0xf2, 0x37, 0x67, 0xcc, 0x1f, 0xa9, 0x53, 0x99, 0x22, 0xff, 0x9b, 0x51, 0x3f, 0xfa,
-	0xab, 0x02, 0x3b, 0x03, 0xee, 0xa3, 0x31, 0xa0, 0x82, 0xab, 0xa6, 0xdd, 0xcd, 0xbd, 0x5e, 0xba,
-	0x85, 0x65, 0xde, 0xe8, 0xde, 0xcc, 0x2f, 0x23, 0x9c, 0xc1, 0xdd, 0x35, 0x2f, 0x9d, 0x87, 0xeb,
-	0x23, 0xe5, 0x7d, 0x8d, 0x47, 0x37, 0xf7, 0xcd, 0x32, 0x7f, 0x0d, 0x77, 0x72, 0x0f, 0x15, 0xab,
-	0x28, 0xca, 0xaa, 0x8f, 0xf1, 0xf0, 0x9f, 0x7d, 0x96, 0x33, 0xe4, 0xde, 0x17, 0x85, 0x19, 0x56,
-	0x7d, 0x8a, 0x33, 0x14, 0x3f, 0x0d, 0xd0, 0x31, 0x94, 0x92, 0xbb, 0xaa, 0xa8, 0x8f, 0x54, 0x8c,
-	0xd6, 0x3a, 0x25, 0x8b, 0xf1, 0x19, 0x54, 0xe6, 0x57, 0xca, 0xfe, 0x3a, 0xe7, 0x13, 0x36, 0x35,
-	0x0e, 0xaf, 0x11, 0xb3, 0x60, 0xcf, 0x00, 0x96, 0x6a, 0x99, 0xb9, 0xae, 0x4b, 0xa2, 0x1b, 0xed,
-	0xeb, 0xf5, 0xe5, 0xa8, 0x4b, 0x17, 0x73, 0x61, 0xd4, 0x85, 0x5e, 0x1c, 0xf5, 0xf5, 0xfb, 0x14,
-	0x05, 0xd0, 0x78, 0xfd, 0xba, 0x7a, 0xb7, 0x70, 0x7d, 0xf3, 0x6e, 0xc6, 0xd1, 0x8d, 0xdc, 0xb2,
-	0x54, 0x8f, 0x61, 0x37, 0xa9, 0x9f, 0x7b, 0x45, 0xfd, 0x94, 0x64, 0x3c, 0x58, 0x2b, 0x2d, 0x2f,
-	0xd5, 0xbc, 0x28, 0xed, 0x17, 0xef, 0x43, 0x25, 0x16, 0x2f, 0x55, 0xae, 0x36, 0x1c, 0xf7, 0x5f,
-	0x5c, 0x9a, 0xda, 0xcb, 0x4b, 0x53, 0xfb, 0xf3, 0xd2, 0xd4, 0x7e, 0xbc, 0x32, 0xb7, 0x5e, 0x5e,
-	0x99, 0x5b, 0xbf, 0x5f, 0x99, 0x5b, 0x5f, 0xf5, 0x96, 0xca, 0x97, 0x0c, 0x74, 0x44, 0x89, 0x98,
-	0xb2, 0x68, 0xa4, 0x1a, 0xbd, 0xd9, 0xca, 0xc7, 0x8d, 0xac, 0x65, 0x67, 0x65, 0xf5, 0xe5, 0xf2,
-	0xc1, 0xdf, 0x01, 0x00, 0x00, 0xff, 0xff, 0x8d, 0xcb, 0xa4, 0xdb, 0xfc, 0x0c, 0x00, 0x00,
+	// 869 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xd4, 0x97, 0xcf, 0x6f, 0xe3, 0x44,
+	0x14, 0xc7, 0xeb, 0x36, 0x6d, 0xb6, 0x4f, 0x6c, 0x7f, 0x8c, 0xc2, 0xae, 0xe3, 0xee, 0x3a, 0x59,
+	0xaf, 0x88, 0x02, 0xab, 0x26, 0x08, 0xee, 0x08, 0xba, 0xec, 0x4a, 0x11, 0x9b, 0x1e, 0xcc, 0x2e,
+	0x07, 0x2e, 0xc6, 0xb5, 0xa7, 0xae, 0x95, 0x78, 0x26, 0x78, 0xc6, 0x9b, 0xf4, 0x88, 0x04, 0x02,
+	0x89, 0x0b, 0x48, 0xfc, 0x15, 0x5c, 0x10, 0xff, 0xc5, 0x1e, 0xf7, 0x88, 0x38, 0xac, 0x50, 0xfb,
+	0x8f, 0xa0, 0x99, 0x71, 0x26, 0x4e, 0xea, 0x94, 0x8a, 0x03, 0x11, 0xa7, 0x64, 0xde, 0xf7, 0xcd,
+	0x9b, 0xcf, 0x1b, 0xcf, 0xbc, 0x67, 0x83, 0x89, 0x87, 0xe7, 0xac, 0x1b, 0xd0, 0x24, 0x89, 0x79,
+	0x82, 0x09, 0xef, 0xf2, 0x49, 0x67, 0x94, 0x52, 0x4e, 0xd1, 0xae, 0x50, 0x3a, 0x33, 0xc5, 0xaa,
+	0x45, 0x34, 0xa2, 0x52, 0xeb, 0x8a, 0x7f, 0xca, 0xcd, 0xf9, 0xd9, 0x80, 0xbb, 0x7d, 0x16, 0x3d,
+	0x96, 0x7e, 0x8f, 0x87, 0x7e, 0x9c, 0xe0, 0xd0, 0xc5, 0x63, 0x3f, 0x0d, 0x19, 0x32, 0xa1, 0x1a,
+	0xa4, 0xd8, 0xe7, 0x34, 0x35, 0x8d, 0xa6, 0xd1, 0xde, 0x76, 0xa7, 0x43, 0xf4, 0x14, 0xb6, 0xfc,
+	0x84, 0x66, 0x84, 0x9b, 0xeb, 0x42, 0x38, 0xea, 0xbc, 0x7a, 0xd3, 0x58, 0xfb, 0xf3, 0x4d, 0xa3,
+	0x15, 0xc5, 0xfc, 0x2c, 0x3b, 0x11, 0xcb, 0x76, 0x03, 0xca, 0x12, 0xca, 0xf2, 0x9f, 0x43, 0x16,
+	0x0e, 0xba, 0xfc, 0x7c, 0x84, 0x59, 0xa7, 0x47, 0xb8, 0x9b, 0xcf, 0x46, 0x35, 0xd8, 0x0c, 0x31,
+	0xa1, 0x89, 0xb9, 0x21, 0xe3, 0xab, 0x81, 0xf3, 0x00, 0x1a, 0x4b, 0x90, 0x5c, 0xcc, 0x46, 0x94,
+	0x30, 0xec, 0xfc, 0x68, 0xc0, 0x7e, 0x9f, 0x45, 0x2f, 0x88, 0x4a, 0xf0, 0x39, 0x1d, 0x60, 0xb2,
+	0x3a, 0xe0, 0x03, 0xa8, 0x5f, 0x81, 0xd1, 0xa8, 0x3f, 0x18, 0xb0, 0x23, 0xd2, 0x11, 0x89, 0xa8,
+	0x34, 0x56, 0xc6, 0x69, 0xc2, 0x9d, 0x79, 0x12, 0x0d, 0xf9, 0xab, 0x01, 0x6f, 0xeb, 0x3d, 0x7f,
+	0x16, 0x7f, 0x9d, 0xc5, 0xe1, 0x6a, 0xf7, 0x14, 0xd5, 0xe1, 0x56, 0x12, 0x13, 0x6f, 0x48, 0x83,
+	0x81, 0x59, 0x69, 0x1a, 0xed, 0x8a, 0x5b, 0x4d, 0x62, 0xf2, 0x8c, 0x06, 0x03, 0xa7, 0x01, 0xf7,
+	0x4b, 0x59, 0x75, 0x36, 0xdf, 0x18, 0x50, 0xed, 0xb3, 0xe8, 0x0b, 0xcc, 0xf8, 0xca, 0xf6, 0x7a,
+	0x1f, 0x76, 0x73, 0x04, 0x8d, 0xf5, 0xbd, 0x01, 0xb7, 0x05, 0xb8, 0x4f, 0x02, 0x3c, 0x5c, 0x29,
+	0xdc, 0x5d, 0xf5, 0xb4, 0x35, 0x88, 0x46, 0xfc, 0xd6, 0x00, 0xc8, 0xb1, 0x8f, 0xe9, 0x78, 0x65,
+	0x7c, 0x35, 0x40, 0x33, 0x0a, 0x0d, 0xf7, 0xcb, 0x3a, 0xd4, 0xc4, 0x3d, 0x1b, 0x85, 0x3e, 0xc7,
+	0x42, 0x8c, 0x49, 0xd4, 0x23, 0xa7, 0x14, 0xdd, 0x83, 0x6d, 0x3f, 0xe3, 0x67, 0x34, 0x8d, 0xf9,
+	0x79, 0x0e, 0x3a, 0x33, 0xa0, 0xfb, 0x00, 0x27, 0x3e, 0xc3, 0x9e, 0x5a, 0x67, 0x5d, 0xc9, 0xc2,
+	0xf2, 0xa9, 0x3c, 0x68, 0x0f, 0xe1, 0xf6, 0x4b, 0x15, 0xcb, 0x2b, 0x92, 0xbc, 0x95, 0x1b, 0x95,
+	0xd3, 0xbb, 0xb0, 0x87, 0x47, 0x34, 0x38, 0xf3, 0xe2, 0x10, 0x13, 0x1e, 0x9f, 0xc6, 0x38, 0x95,
+	0xa7, 0x72, 0xdb, 0xdd, 0x95, 0xf6, 0x9e, 0x36, 0x8b, 0xe5, 0x48, 0x96, 0x78, 0xd2, 0xcc, 0xcc,
+	0xcd, 0xa6, 0xd1, 0xde, 0x70, 0xb7, 0x49, 0x96, 0x3c, 0x91, 0x06, 0xd4, 0x82, 0x5d, 0x11, 0xd9,
+	0x23, 0x74, 0xec, 0x9d, 0xfa, 0x81, 0xd8, 0xda, 0x2d, 0xe9, 0x23, 0x29, 0x8e, 0xe9, 0xf8, 0xa9,
+	0x34, 0xa2, 0x36, 0xec, 0x89, 0x30, 0x89, 0x3f, 0xf1, 0x72, 0x12, 0x66, 0x56, 0xa5, 0xe3, 0x0e,
+	0xc9, 0x92, 0xbe, 0x3f, 0xc9, 0x37, 0x80, 0x39, 0x36, 0xdc, 0x2b, 0xdb, 0x95, 0xc5, 0x63, 0x27,
+	0x24, 0x75, 0x5b, 0x56, 0x7c, 0xec, 0x66, 0x20, 0x1a, 0xf1, 0x91, 0xbc, 0x2c, 0x85, 0xc2, 0x74,
+	0x4d, 0xdd, 0x71, 0xea, 0xaa, 0x63, 0x15, 0x9c, 0x75, 0x9c, 0xdf, 0x0c, 0xb8, 0xd5, 0x67, 0xd1,
+	0xe7, 0xdc, 0x1f, 0xe0, 0xff, 0x26, 0x4b, 0x9f, 0x31, 0xcc, 0xa7, 0x59, 0xca, 0x01, 0x7a, 0x04,
+	0xfb, 0x2f, 0xfd, 0x61, 0x1c, 0x8a, 0xa5, 0x3c, 0x3f, 0x0c, 0x53, 0xcc, 0x58, 0x7e, 0x58, 0xf6,
+	0xb4, 0xf0, 0x89, 0xb2, 0x3b, 0x1f, 0xc1, 0xde, 0x14, 0x78, 0x9a, 0x05, 0x42, 0x50, 0x09, 0x68,
+	0x88, 0x25, 0x75, 0xc5, 0x95, 0xff, 0xd1, 0x1d, 0xd8, 0x4a, 0x31, 0xcb, 0x86, 0x39, 0xb2, 0x9b,
+	0x8f, 0x9c, 0xdf, 0xd5, 0x85, 0x7d, 0x41, 0xd8, 0xff, 0x27, 0xe7, 0x8f, 0xe5, 0xed, 0xce, 0x91,
+	0xff, 0x4d, 0xd6, 0x1f, 0x7c, 0x57, 0x85, 0x8d, 0x3e, 0x8b, 0xd0, 0x10, 0x50, 0x49, 0xcb, 0x6a,
+	0x75, 0x16, 0xde, 0x7d, 0x3a, 0xa5, 0xed, 0xc2, 0xea, 0xdc, 0xcc, 0x4f, 0x13, 0xa6, 0x50, 0x2b,
+	0x7d, 0x4f, 0x6a, 0x2f, 0x8f, 0x33, 0xef, 0x69, 0xbd, 0x7f, 0x53, 0x4f, 0xbd, 0xe6, 0x57, 0xb0,
+	0xb3, 0xf0, 0x92, 0xe3, 0x94, 0xc5, 0x98, 0xf7, 0xb1, 0xde, 0xfb, 0x67, 0x1f, 0xbd, 0xc2, 0x11,
+	0x54, 0x54, 0x2f, 0x2a, 0x9b, 0x23, 0x14, 0xab, 0xb9, 0x4c, 0xd1, 0x31, 0x3e, 0x83, 0xea, 0xb4,
+	0x65, 0x1c, 0x2c, 0x73, 0x3e, 0xa6, 0x63, 0xeb, 0xe1, 0x35, 0xa2, 0x0e, 0xf6, 0x1c, 0xa0, 0x50,
+	0xab, 0xec, 0x65, 0x53, 0x94, 0x6e, 0xb5, 0xae, 0xd7, 0x8b, 0x51, 0x0b, 0x8d, 0xb7, 0x34, 0xea,
+	0x4c, 0x2f, 0x8f, 0x7a, 0xb5, 0x5f, 0xa2, 0x18, 0xf6, 0xaf, 0xb6, 0xa3, 0x77, 0x4a, 0x77, 0x7f,
+	0xd1, 0xcd, 0x3a, 0xbc, 0x91, 0x9b, 0x5e, 0xea, 0x09, 0x6c, 0xaa, 0xba, 0x56, 0x2f, 0x9b, 0x27,
+	0x25, 0xeb, 0xc1, 0x52, 0xa9, 0xf8, 0xa8, 0xa6, 0xc5, 0xe2, 0xa0, 0xfc, 0x94, 0x48, 0xb1, 0xfc,
+	0x51, 0x2d, 0xdc, 0xd9, 0xa3, 0xde, 0xab, 0x0b, 0xdb, 0x78, 0x7d, 0x61, 0x1b, 0x7f, 0x5d, 0xd8,
+	0xc6, 0x4f, 0x97, 0xf6, 0xda, 0xeb, 0x4b, 0x7b, 0xed, 0x8f, 0x4b, 0x7b, 0xed, 0xcb, 0x6e, 0xa1,
+	0xac, 0x88, 0x40, 0x87, 0x04, 0xf3, 0x31, 0x4d, 0x07, 0x72, 0xd0, 0x9d, 0xcc, 0x7d, 0xb2, 0x88,
+	0x1a, 0x73, 0xb2, 0x25, 0xbf, 0x47, 0x3e, 0xfc, 0x3b, 0x00, 0x00, 0xff, 0xff, 0xb6, 0xa8, 0x49,
+	0x36, 0xd2, 0x0c, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -1202,12 +1285,10 @@ const _ = grpc.SupportPackageIsVersion4
 type MsgClient interface {
 	// CommitLiquidTokens commit the tokens from user's balance
 	CommitLiquidTokens(ctx context.Context, in *MsgCommitLiquidTokens, opts ...grpc.CallOption) (*MsgCommitLiquidTokensResponse, error)
-	// CommitUnclaimedRewards commit the tokens on unclaimed store to committed
-	CommitUnclaimedRewards(ctx context.Context, in *MsgCommitUnclaimedRewards, opts ...grpc.CallOption) (*MsgCommitUnclaimedRewardsResponse, error)
+	// CommitClaimedRewards commit the tokens on claimed store to committed
+	CommitClaimedRewards(ctx context.Context, in *MsgCommitClaimedRewards, opts ...grpc.CallOption) (*MsgCommitClaimedRewardsResponse, error)
 	// UncommitTokens uncommits the tokens from committed store and make it liquid immediately
 	UncommitTokens(ctx context.Context, in *MsgUncommitTokens, opts ...grpc.CallOption) (*MsgUncommitTokensResponse, error)
-	// WithdrawTokens withdraw first from unclaimed and if it requires more, withdraw from committed store
-	WithdrawTokens(ctx context.Context, in *MsgWithdrawTokens, opts ...grpc.CallOption) (*MsgWithdrawTokensResponse, error)
 	// Vest converts user's commitment to vesting - start with unclaimed rewards and if it's not enough deduct from committed bucket
 	// mainly utilized for Eden
 	Vest(ctx context.Context, in *MsgVest, opts ...grpc.CallOption) (*MsgVestResponse, error)
@@ -1241,9 +1322,9 @@ func (c *msgClient) CommitLiquidTokens(ctx context.Context, in *MsgCommitLiquidT
 	return out, nil
 }
 
-func (c *msgClient) CommitUnclaimedRewards(ctx context.Context, in *MsgCommitUnclaimedRewards, opts ...grpc.CallOption) (*MsgCommitUnclaimedRewardsResponse, error) {
-	out := new(MsgCommitUnclaimedRewardsResponse)
-	err := c.cc.Invoke(ctx, "/elys.commitment.Msg/CommitUnclaimedRewards", in, out, opts...)
+func (c *msgClient) CommitClaimedRewards(ctx context.Context, in *MsgCommitClaimedRewards, opts ...grpc.CallOption) (*MsgCommitClaimedRewardsResponse, error) {
+	out := new(MsgCommitClaimedRewardsResponse)
+	err := c.cc.Invoke(ctx, "/elys.commitment.Msg/CommitClaimedRewards", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1253,15 +1334,6 @@ func (c *msgClient) CommitUnclaimedRewards(ctx context.Context, in *MsgCommitUnc
 func (c *msgClient) UncommitTokens(ctx context.Context, in *MsgUncommitTokens, opts ...grpc.CallOption) (*MsgUncommitTokensResponse, error) {
 	out := new(MsgUncommitTokensResponse)
 	err := c.cc.Invoke(ctx, "/elys.commitment.Msg/UncommitTokens", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *msgClient) WithdrawTokens(ctx context.Context, in *MsgWithdrawTokens, opts ...grpc.CallOption) (*MsgWithdrawTokensResponse, error) {
-	out := new(MsgWithdrawTokensResponse)
-	err := c.cc.Invoke(ctx, "/elys.commitment.Msg/WithdrawTokens", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1335,12 +1407,10 @@ func (c *msgClient) Unstake(ctx context.Context, in *MsgUnstake, opts ...grpc.Ca
 type MsgServer interface {
 	// CommitLiquidTokens commit the tokens from user's balance
 	CommitLiquidTokens(context.Context, *MsgCommitLiquidTokens) (*MsgCommitLiquidTokensResponse, error)
-	// CommitUnclaimedRewards commit the tokens on unclaimed store to committed
-	CommitUnclaimedRewards(context.Context, *MsgCommitUnclaimedRewards) (*MsgCommitUnclaimedRewardsResponse, error)
+	// CommitClaimedRewards commit the tokens on claimed store to committed
+	CommitClaimedRewards(context.Context, *MsgCommitClaimedRewards) (*MsgCommitClaimedRewardsResponse, error)
 	// UncommitTokens uncommits the tokens from committed store and make it liquid immediately
 	UncommitTokens(context.Context, *MsgUncommitTokens) (*MsgUncommitTokensResponse, error)
-	// WithdrawTokens withdraw first from unclaimed and if it requires more, withdraw from committed store
-	WithdrawTokens(context.Context, *MsgWithdrawTokens) (*MsgWithdrawTokensResponse, error)
 	// Vest converts user's commitment to vesting - start with unclaimed rewards and if it's not enough deduct from committed bucket
 	// mainly utilized for Eden
 	Vest(context.Context, *MsgVest) (*MsgVestResponse, error)
@@ -1364,14 +1434,11 @@ type UnimplementedMsgServer struct {
 func (*UnimplementedMsgServer) CommitLiquidTokens(ctx context.Context, req *MsgCommitLiquidTokens) (*MsgCommitLiquidTokensResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CommitLiquidTokens not implemented")
 }
-func (*UnimplementedMsgServer) CommitUnclaimedRewards(ctx context.Context, req *MsgCommitUnclaimedRewards) (*MsgCommitUnclaimedRewardsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CommitUnclaimedRewards not implemented")
+func (*UnimplementedMsgServer) CommitClaimedRewards(ctx context.Context, req *MsgCommitClaimedRewards) (*MsgCommitClaimedRewardsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CommitClaimedRewards not implemented")
 }
 func (*UnimplementedMsgServer) UncommitTokens(ctx context.Context, req *MsgUncommitTokens) (*MsgUncommitTokensResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UncommitTokens not implemented")
-}
-func (*UnimplementedMsgServer) WithdrawTokens(ctx context.Context, req *MsgWithdrawTokens) (*MsgWithdrawTokensResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method WithdrawTokens not implemented")
 }
 func (*UnimplementedMsgServer) Vest(ctx context.Context, req *MsgVest) (*MsgVestResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Vest not implemented")
@@ -1417,20 +1484,20 @@ func _Msg_CommitLiquidTokens_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Msg_CommitUnclaimedRewards_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgCommitUnclaimedRewards)
+func _Msg_CommitClaimedRewards_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgCommitClaimedRewards)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MsgServer).CommitUnclaimedRewards(ctx, in)
+		return srv.(MsgServer).CommitClaimedRewards(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/elys.commitment.Msg/CommitUnclaimedRewards",
+		FullMethod: "/elys.commitment.Msg/CommitClaimedRewards",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).CommitUnclaimedRewards(ctx, req.(*MsgCommitUnclaimedRewards))
+		return srv.(MsgServer).CommitClaimedRewards(ctx, req.(*MsgCommitClaimedRewards))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1449,24 +1516,6 @@ func _Msg_UncommitTokens_Handler(srv interface{}, ctx context.Context, dec func(
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(MsgServer).UncommitTokens(ctx, req.(*MsgUncommitTokens))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Msg_WithdrawTokens_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgWithdrawTokens)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(MsgServer).WithdrawTokens(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/elys.commitment.Msg/WithdrawTokens",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).WithdrawTokens(ctx, req.(*MsgWithdrawTokens))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1606,16 +1655,12 @@ var _Msg_serviceDesc = grpc.ServiceDesc{
 			Handler:    _Msg_CommitLiquidTokens_Handler,
 		},
 		{
-			MethodName: "CommitUnclaimedRewards",
-			Handler:    _Msg_CommitUnclaimedRewards_Handler,
+			MethodName: "CommitClaimedRewards",
+			Handler:    _Msg_CommitClaimedRewards_Handler,
 		},
 		{
 			MethodName: "UncommitTokens",
 			Handler:    _Msg_UncommitTokens_Handler,
-		},
-		{
-			MethodName: "WithdrawTokens",
-			Handler:    _Msg_WithdrawTokens_Handler,
 		},
 		{
 			MethodName: "Vest",
@@ -1650,7 +1695,7 @@ var _Msg_serviceDesc = grpc.ServiceDesc{
 	Metadata: "elys/commitment/tx.proto",
 }
 
-func (m *MsgCommitUnclaimedRewards) Marshal() (dAtA []byte, err error) {
+func (m *MsgCommitClaimedRewards) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -1660,12 +1705,12 @@ func (m *MsgCommitUnclaimedRewards) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgCommitUnclaimedRewards) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgCommitClaimedRewards) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgCommitUnclaimedRewards) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgCommitClaimedRewards) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -1697,7 +1742,7 @@ func (m *MsgCommitUnclaimedRewards) MarshalToSizedBuffer(dAtA []byte) (int, erro
 	return len(dAtA) - i, nil
 }
 
-func (m *MsgCommitUnclaimedRewardsResponse) Marshal() (dAtA []byte, err error) {
+func (m *MsgCommitClaimedRewardsResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -1707,12 +1752,12 @@ func (m *MsgCommitUnclaimedRewardsResponse) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgCommitUnclaimedRewardsResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgCommitClaimedRewardsResponse) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgCommitUnclaimedRewardsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgCommitClaimedRewardsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -1790,7 +1835,7 @@ func (m *MsgUncommitTokensResponse) MarshalToSizedBuffer(dAtA []byte) (int, erro
 	return len(dAtA) - i, nil
 }
 
-func (m *MsgWithdrawTokens) Marshal() (dAtA []byte, err error) {
+func (m *MsgClaimReward) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -1800,12 +1845,12 @@ func (m *MsgWithdrawTokens) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgWithdrawTokens) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgClaimReward) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgWithdrawTokens) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgClaimReward) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -1837,7 +1882,7 @@ func (m *MsgWithdrawTokens) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *MsgWithdrawTokensResponse) Marshal() (dAtA []byte, err error) {
+func (m *MsgClaimRewardResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -1847,12 +1892,12 @@ func (m *MsgWithdrawTokensResponse) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgWithdrawTokensResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgClaimRewardResponse) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgWithdrawTokensResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgClaimRewardResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -2304,6 +2349,59 @@ func (m *MsgVestLiquidResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
+func (m *MsgClaimRewards) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgClaimRewards) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgClaimRewards) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Creator) > 0 {
+		i -= len(m.Creator)
+		copy(dAtA[i:], m.Creator)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Creator)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgClaimRewardsResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgClaimRewardsResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgClaimRewardsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	return len(dAtA) - i, nil
+}
+
 func (m *MsgStake) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
@@ -2493,7 +2591,7 @@ func encodeVarintTx(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
-func (m *MsgCommitUnclaimedRewards) Size() (n int) {
+func (m *MsgCommitClaimedRewards) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -2512,7 +2610,7 @@ func (m *MsgCommitUnclaimedRewards) Size() (n int) {
 	return n
 }
 
-func (m *MsgCommitUnclaimedRewardsResponse) Size() (n int) {
+func (m *MsgCommitClaimedRewardsResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -2549,7 +2647,7 @@ func (m *MsgUncommitTokensResponse) Size() (n int) {
 	return n
 }
 
-func (m *MsgWithdrawTokens) Size() (n int) {
+func (m *MsgClaimReward) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -2568,7 +2666,7 @@ func (m *MsgWithdrawTokens) Size() (n int) {
 	return n
 }
 
-func (m *MsgWithdrawTokensResponse) Size() (n int) {
+func (m *MsgClaimRewardResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -2763,6 +2861,28 @@ func (m *MsgVestLiquidResponse) Size() (n int) {
 	return n
 }
 
+func (m *MsgClaimRewards) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Creator)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	return n
+}
+
+func (m *MsgClaimRewardsResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	return n
+}
+
 func (m *MsgStake) Size() (n int) {
 	if m == nil {
 		return 0
@@ -2847,7 +2967,7 @@ func sovTx(x uint64) (n int) {
 func sozTx(x uint64) (n int) {
 	return sovTx(uint64((x << 1) ^ uint64((int64(x) >> 63))))
 }
-func (m *MsgCommitUnclaimedRewards) Unmarshal(dAtA []byte) error {
+func (m *MsgCommitClaimedRewards) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -2870,10 +2990,10 @@ func (m *MsgCommitUnclaimedRewards) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgCommitUnclaimedRewards: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgCommitClaimedRewards: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgCommitUnclaimedRewards: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgCommitClaimedRewards: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -2995,7 +3115,7 @@ func (m *MsgCommitUnclaimedRewards) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *MsgCommitUnclaimedRewardsResponse) Unmarshal(dAtA []byte) error {
+func (m *MsgCommitClaimedRewardsResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -3018,10 +3138,10 @@ func (m *MsgCommitUnclaimedRewardsResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgCommitUnclaimedRewardsResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgCommitClaimedRewardsResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgCommitUnclaimedRewardsResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgCommitClaimedRewardsResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		default:
@@ -3243,7 +3363,7 @@ func (m *MsgUncommitTokensResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *MsgWithdrawTokens) Unmarshal(dAtA []byte) error {
+func (m *MsgClaimReward) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -3266,10 +3386,10 @@ func (m *MsgWithdrawTokens) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgWithdrawTokens: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgClaimReward: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgWithdrawTokens: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgClaimReward: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -3391,7 +3511,7 @@ func (m *MsgWithdrawTokens) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *MsgWithdrawTokensResponse) Unmarshal(dAtA []byte) error {
+func (m *MsgClaimRewardResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -3414,10 +3534,10 @@ func (m *MsgWithdrawTokensResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgWithdrawTokensResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgClaimRewardResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgWithdrawTokensResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgClaimRewardResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		default:
@@ -4712,6 +4832,138 @@ func (m *MsgVestLiquidResponse) Unmarshal(dAtA []byte) error {
 		}
 		if fieldNum <= 0 {
 			return fmt.Errorf("proto: MsgVestLiquidResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgClaimRewards) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgClaimRewards: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgClaimRewards: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Creator", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Creator = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgClaimRewardsResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgClaimRewardsResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgClaimRewardsResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		default:

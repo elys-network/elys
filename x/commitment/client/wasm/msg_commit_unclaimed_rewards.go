@@ -10,26 +10,26 @@ import (
 	types "github.com/elys-network/elys/x/commitment/types"
 )
 
-func (m *Messenger) msgCommitUnclaimedRewards(ctx sdk.Context, contractAddr sdk.AccAddress, msg *types.MsgCommitUnclaimedRewards) ([]sdk.Event, [][]byte, error) {
+func (m *Messenger) msgCommitClaimedRewards(ctx sdk.Context, contractAddr sdk.AccAddress, msg *types.MsgCommitClaimedRewards) ([]sdk.Event, [][]byte, error) {
 	if msg == nil {
 		return nil, nil, wasmvmtypes.InvalidRequest{Err: "CommitUnclaimedRewards null msg"}
 	}
 
 	msgServer := keeper.NewMsgServerImpl(*m.keeper)
 
-	msgCommitUnclaimedRewards := types.NewMsgCommitUnclaimedRewards(
+	msgCommitClaimedRewards := types.NewMsgCommitClaimedRewards(
 		msg.Creator,
 		msg.Amount,
 		msg.Denom,
 	)
 
-	if err := msgCommitUnclaimedRewards.ValidateBasic(); err != nil {
-		return nil, nil, errorsmod.Wrap(err, "failed validating msgCommitUnclaimedRewards")
+	if err := msgCommitClaimedRewards.ValidateBasic(); err != nil {
+		return nil, nil, errorsmod.Wrap(err, "failed validating msgCommitClaimedRewards")
 	}
 
-	res, err := msgServer.CommitUnclaimedRewards(
+	res, err := msgServer.CommitClaimedRewards(
 		sdk.WrapSDKContext(ctx),
-		msgCommitUnclaimedRewards,
+		msgCommitClaimedRewards,
 	)
 	if err != nil {
 		return nil, nil, errorsmod.Wrap(err, "CommitUnclaimedRewards msg")

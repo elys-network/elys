@@ -34,7 +34,7 @@ func TestUncommitTokens(t *testing.T) {
 	uncommitAmount := sdk.NewInt(100)
 
 	// Set up initial commitments object with sufficient unclaimed & committed tokens
-	rewardsUnclaimed := types.RewardsUnclaimed{
+	rewardsUnclaimed := sdk.Coin{
 		Denom:  denom,
 		Amount: initialUnclaimed,
 	}
@@ -46,7 +46,7 @@ func TestUncommitTokens(t *testing.T) {
 
 	initialCommitments := types.Commitments{
 		Creator:          creator,
-		RewardsUnclaimed: []*types.RewardsUnclaimed{&rewardsUnclaimed},
+		RewardsUnclaimed: sdk.Coins{rewardsUnclaimed},
 		CommittedTokens:  []*types.CommittedTokens{&committedTokens},
 	}
 
@@ -55,18 +55,21 @@ func TestUncommitTokens(t *testing.T) {
 	// Set assetprofile entry for denom
 	app.AssetprofileKeeper.SetEntry(ctx, aptypes.Entry{BaseDenom: denom, CommitEnabled: true})
 
+	// Add coins on commitment module
+	err := app.BankKeeper.MintCoins(ctx, types.ModuleName, sdk.Coins{sdk.NewCoin(denom, initialCommitted)})
+	require.NoError(t, err)
+
 	// Call the UncommitTokens function
 	msg := types.MsgUncommitTokens{
 		Creator: creator,
 		Amount:  uncommitAmount,
 		Denom:   denom,
 	}
-	_, err := msgServer.UncommitTokens(ctx, &msg)
+	_, err = msgServer.UncommitTokens(ctx, &msg)
 	require.NoError(t, err)
 
 	// Check if the committed tokens have been added to the store
-	commitments, found := keeper.GetCommitments(ctx, creator)
-	assert.True(t, found, "Commitments not found in the store")
+	commitments := keeper.GetCommitments(ctx, creator)
 
 	// Check if the committed tokens have the expected values
 	assert.Equal(t, creator, commitments.Creator, "Incorrect creator")

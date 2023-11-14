@@ -82,39 +82,27 @@ func TestCalculateRewardsForLPs(t *testing.T) {
 	// Generate 1 random account with 1000stake balanced
 	addr := simapp.AddTestAddrs(app, ctx, 1, sdk.NewInt(100010))
 
-	var committed []sdk.Coins
-	var unclaimed []sdk.Coins
+	var committed sdk.Coins
+	var unclaimed sdk.Coins
 
 	// Prepare unclaimed tokens
-	uedenToken := sdk.NewCoins(sdk.NewCoin(ptypes.Eden, sdk.NewInt(2000)))
+	uedenToken := sdk.NewCoin(ptypes.Eden, sdk.NewInt(2000))
 	unclaimed = append(unclaimed, uedenToken)
 
-	err := app.BankKeeper.MintCoins(ctx, ctypes.ModuleName, uedenToken)
+	err := app.BankKeeper.MintCoins(ctx, ctypes.ModuleName, unclaimed)
 	require.NoError(t, err)
-	err = app.BankKeeper.SendCoinsFromModuleToAccount(ctx, ctypes.ModuleName, addr[0], uedenToken)
+	err = app.BankKeeper.SendCoinsFromModuleToAccount(ctx, ctypes.ModuleName, addr[0], unclaimed)
 	require.NoError(t, err)
 
 	// Prepare committed tokens
-	uedenToken = sdk.NewCoins(sdk.NewCoin(ptypes.Eden, sdk.NewInt(500)))
-	lpToken1 := sdk.NewCoins(sdk.NewCoin("lp-elys-usdc", sdk.NewInt(500)))
-	lpToken2 := sdk.NewCoins(sdk.NewCoin("lp-ueden-usdc", sdk.NewInt(2000)))
-	committed = append(committed, uedenToken)
-	committed = append(committed, lpToken1)
-	committed = append(committed, lpToken2)
+	uedenToken = sdk.NewCoin(ptypes.Eden, sdk.NewInt(500))
+	lpToken1 := sdk.NewCoin("lp-elys-usdc", sdk.NewInt(500))
+	lpToken2 := sdk.NewCoin("lp-ueden-usdc", sdk.NewInt(2000))
+	committed = committed.Add(lpToken1, lpToken2, uedenToken)
 
-	err = app.BankKeeper.MintCoins(ctx, ctypes.ModuleName, uedenToken)
+	err = app.BankKeeper.MintCoins(ctx, ctypes.ModuleName, committed)
 	require.NoError(t, err)
-	err = app.BankKeeper.SendCoinsFromModuleToAccount(ctx, ctypes.ModuleName, addr[0], uedenToken)
-	require.NoError(t, err)
-
-	err = app.BankKeeper.MintCoins(ctx, ctypes.ModuleName, lpToken1)
-	require.NoError(t, err)
-	err = app.BankKeeper.SendCoinsFromModuleToAccount(ctx, ctypes.ModuleName, addr[0], lpToken1)
-	require.NoError(t, err)
-
-	err = app.BankKeeper.MintCoins(ctx, ctypes.ModuleName, lpToken2)
-	require.NoError(t, err)
-	err = app.BankKeeper.SendCoinsFromModuleToAccount(ctx, ctypes.ModuleName, addr[0], lpToken2)
+	err = app.BankKeeper.SendCoinsFromModuleToAccount(ctx, ctypes.ModuleName, addr[0], committed)
 	require.NoError(t, err)
 
 	simapp.AddTestCommitment(app, ctx, addr[0], committed, unclaimed)
@@ -177,8 +165,7 @@ func TestCalculateRewardsForLPs(t *testing.T) {
 	require.Equal(t, balances, sdk.NewCoin("amm/pool/1", sdk.NewInt(0)))
 
 	// check lp token commitment
-	commitments, found := ck.GetCommitments(ctx, addr[0].String())
-	require.True(t, found)
+	commitments := ck.GetCommitments(ctx, addr[0].String())
 	require.Len(t, commitments.CommittedTokens, 4)
 	require.Equal(t, commitments.CommittedTokens[3].Denom, "amm/pool/1")
 	require.Equal(t, commitments.CommittedTokens[3].Amount.String(), "100100000000000000000")
