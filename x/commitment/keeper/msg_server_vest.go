@@ -38,7 +38,7 @@ func (k Keeper) ProcessTokenVesting(ctx sdk.Context, denom string, amount sdk.In
 		return sdkerrors.Wrapf(types.ErrExceedMaxVestings, "creator: %s", creator)
 	}
 
-	commitments, err := k.DeductCommitments(ctx, creator, denom, amount)
+	commitments, err := k.DeductClaimed(ctx, creator, denom, amount)
 	if err != nil {
 		return err
 	}

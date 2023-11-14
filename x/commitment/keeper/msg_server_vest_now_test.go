@@ -31,7 +31,7 @@ func TestVestNow(t *testing.T) {
 	// Define the test data
 	creator := creatorAddr.String()
 	denom := ptypes.Eden
-	initialUnclaimed := sdk.NewInt(5000)
+	initialClaimed := sdk.NewInt(5000)
 	initialCommitted := sdk.NewInt(10000)
 
 	vestingInfos := []*types.VestingInfo{
@@ -51,11 +51,7 @@ func TestVestNow(t *testing.T) {
 
 	keeper.SetParams(ctx, params)
 
-	// Set up initial commitments object with sufficient unclaimed & committed tokens
-	rewardsUnclaimed := sdk.Coin{
-		Denom:  denom,
-		Amount: initialUnclaimed,
-	}
+	// Set up initial commitments object with sufficient claimed & committed tokens
 
 	committedTokens := types.CommittedTokens{
 		Denom:  denom,
@@ -64,13 +60,19 @@ func TestVestNow(t *testing.T) {
 
 	initialCommitments := types.Commitments{
 		Creator:          creator,
-		RewardsUnclaimed: sdk.Coins{rewardsUnclaimed},
-		CommittedTokens:  []*types.CommittedTokens{&committedTokens},
+		RewardsUnclaimed: sdk.Coins{},
+		Claimed: sdk.Coins{
+			{
+				Denom:  denom,
+				Amount: initialClaimed,
+			},
+		},
+		CommittedTokens: []*types.CommittedTokens{&committedTokens},
 	}
 
 	keeper.SetCommitments(ctx, initialCommitments)
 
-	// Test scenario 1: Withdraw within unclaimed balance
+	// Test scenario 1: Withdraw within claimed balance
 	msg := &types.MsgVestNow{
 		Creator: creator,
 		Amount:  sdk.NewInt(3000),
@@ -82,39 +84,17 @@ func TestVestNow(t *testing.T) {
 
 	updatedCommitments := keeper.GetCommitments(ctx, creator)
 
-	unclaimedBalance := updatedCommitments.GetRewardUnclaimedForDenom(denom)
-	assert.Equal(t, sdk.NewInt(2000), unclaimedBalance)
+	claimedBalance := updatedCommitments.GetClaimedForDenom(denom)
+	assert.Equal(t, sdk.NewInt(2000), claimedBalance)
+
 	// Check if the vested tokens were received
 	creatorBalance := app.BankKeeper.GetBalance(ctx, creatorAddr, vestingInfos[0].VestingDenom)
 	require.Equal(t, sdk.NewInt(33), creatorBalance.Amount, "tokens were not vested correctly")
 
-	// Test scenario 2: Withdraw more than unclaimed balance but within total balance
+	// Test scenario 2: Withdraw more than claimed balance but within total balance
 	msg = &types.MsgVestNow{
 		Creator: creator,
 		Amount:  sdk.NewInt(7000),
-		Denom:   denom,
-	}
-
-	_, err = msgServer.VestNow(ctx, msg)
-	require.NoError(t, err)
-
-	updatedCommitments = keeper.GetCommitments(ctx, creator)
-
-	unclaimedBalance = updatedCommitments.GetRewardUnclaimedForDenom(denom)
-	assert.Equal(t, sdk.NewInt(0), unclaimedBalance)
-
-	committedBalance := updatedCommitments.GetCommittedAmountForDenom(denom)
-	assert.Equal(t, sdk.NewInt(5000), committedBalance)
-
-	// Check if the vested tokens were received
-	creatorBalance = app.BankKeeper.GetBalance(ctx, creatorAddr, vestingInfos[0].VestingDenom)
-
-	require.Equal(t, sdk.NewInt(110), creatorBalance.Amount, "tokens were not vested correctly")
-
-	// Test scenario 3: Withdraw more than total balance
-	msg = &types.MsgVestNow{
-		Creator: creator,
-		Amount:  sdk.NewInt(10000),
 		Denom:   denom,
 	}
 

@@ -128,6 +128,15 @@ func (c *Commitments) SubRewardsUnclaimed(amount sdk.Coin) error {
 	return nil
 }
 
+func (c *Commitments) GetClaimedForDenom(denom string) sdk.Int {
+	for _, token := range c.Claimed {
+		if token.Denom == denom {
+			return token.Amount
+		}
+	}
+	return sdk.ZeroInt()
+}
+
 func (c *Commitments) AddClaimed(amount sdk.Coin) {
 	c.Claimed = c.Claimed.Add(amount)
 }

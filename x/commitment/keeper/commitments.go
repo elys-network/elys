@@ -1,6 +1,8 @@
 package keeper
 
 import (
+	"fmt"
+
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
@@ -58,6 +60,19 @@ func (k Keeper) IterateCommitments(ctx sdk.Context, handlerFn func(commitments t
 			break
 		}
 	}
+}
+
+func (k Keeper) DeductClaimed(ctx sdk.Context, creator string, denom string, amount sdk.Int) (types.Commitments, error) {
+	// Get the Commitments for the creator
+	commitments := k.GetCommitments(ctx, creator)
+
+	fmt.Println("commitments", commitments.Claimed.String(), denom, amount.String())
+	// Subtract the amount from the claimed balance
+	err := commitments.SubClaimed(sdk.NewCoin(denom, amount))
+	if err != nil {
+		return types.Commitments{}, err
+	}
+	return commitments, nil
 }
 
 func (k Keeper) DeductCommitments(ctx sdk.Context, creator string, denom string, amount sdk.Int) (types.Commitments, error) {

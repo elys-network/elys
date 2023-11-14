@@ -9,8 +9,8 @@ import (
 	"github.com/elys-network/elys/x/commitment/types"
 )
 
-// accounting the liquid token as a unclaimed token in commitment module.
-func (k Keeper) DepositLiquidTokensUnclaimed(ctx sdk.Context, denom string, amount sdk.Int, creator string) error {
+// accounting the liquid token as a claimed token in commitment module.
+func (k Keeper) DepositLiquidTokensClaimed(ctx sdk.Context, denom string, amount sdk.Int, creator string) error {
 	assetProfile, found := k.apKeeper.GetEntry(ctx, denom)
 	if !found {
 		return sdkerrors.Wrapf(aptypes.ErrAssetProfileNotFound, "denom: %s", denom)
@@ -36,8 +36,8 @@ func (k Keeper) DepositLiquidTokensUnclaimed(ctx sdk.Context, denom string, amou
 	// Get the Commitments for the creator
 	commitments := k.GetCommitments(ctx, creator)
 
-	// Update the unclaimed rewards amount
-	commitments.AddRewardsUnclaimed(sdk.NewCoin(denom, amount))
+	// Update the claimed amount
+	commitments.AddClaimed(sdk.NewCoin(denom, amount))
 	k.SetCommitments(ctx, commitments)
 
 	return nil
