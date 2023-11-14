@@ -175,7 +175,8 @@ type ElysQuery struct {
 	ParameterAnteHandlerParamAll *parametertypes.QueryAllAnteHandlerParamRequest `json:"parameter_ante_handler_param_all,omitempty"`
 
 	// stablestake queriers
-	StableStakeParams *stablestaketypes.QueryParamsRequest `json:"stable_stake_params,omitempty"`
+	StableStakeParams      *stablestaketypes.QueryParamsRequest      `json:"stable_stake_params,omitempty"`
+	StableStakeBorrowRatio *stablestaketypes.QueryBorrowRatioRequest `json:"stable_stake_borrow_ratio,omitempty"`
 
 	// tokenomics queriers
 	TokenomicsParams                *tokenomicstypes.QueryParamsRequest                `json:"tokenomics_params,omitempty"`

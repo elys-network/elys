@@ -14,6 +14,10 @@ service Query {
   rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
     option (google.api.http).get = "/elys-network/elys/stablestake/params";
   }
+  // BorrowRatio queries the borrow ratio compared to total deposit
+  rpc BorrowRatio(QueryBorrowRatioRequest) returns (QueryBorrowRatioResponse) {
+    option (google.api.http).get = "/elys-network/elys/stablestake/borrow-ratio";
+  }
 }
 
 // QueryParamsRequest is request type for the Query/Params RPC method.
@@ -23,4 +27,23 @@ message QueryParamsRequest {}
 message QueryParamsResponse {
   // params holds all the parameters of this module.
   Params params = 1 [(gogoproto.nullable) = false];
+}
+
+// QueryBorrowRatioRequest is request type for the Query/BorrowRatio RPC method.
+message QueryBorrowRatioRequest {}
+
+// QueryBorrowRatioResponse is response type for the Query/BorrowRatio RPC method.
+message QueryBorrowRatioResponse {
+  string total_deposit = 1 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+  string total_borrow = 2 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+  string borrow_ratio = 3 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
 }

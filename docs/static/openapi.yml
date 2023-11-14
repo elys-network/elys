@@ -42610,6 +42610,45 @@ paths:
                   additionalProperties: {}
       tags:
         - Query
+  /elys-network/elys/stablestake/borrow-ratio:
+    get:
+      summary: BorrowRatio queries the borrow ratio compared to total deposit
+      operationId: ElysStablestakeBorrowRatio
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              total_deposit:
+                type: string
+              total_borrow:
+                type: string
+              borrow_ratio:
+                type: string
+            description: >-
+              QueryBorrowRatioResponse is response type for the
+              Query/BorrowRatio RPC method.
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      tags:
+        - Query
   /elys-network/elys/stablestake/params:
     get:
       summary: Parameters queries the parameters of the module.
@@ -85702,6 +85741,18 @@ definitions:
       total_value:
         type: string
     description: Params defines the parameters for the module.
+  elys.stablestake.QueryBorrowRatioResponse:
+    type: object
+    properties:
+      total_deposit:
+        type: string
+      total_borrow:
+        type: string
+      borrow_ratio:
+        type: string
+    description: >-
+      QueryBorrowRatioResponse is response type for the Query/BorrowRatio RPC
+      method.
   elys.stablestake.QueryParamsResponse:
     type: object
     properties:

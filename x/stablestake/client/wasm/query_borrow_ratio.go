@@ -8,8 +8,8 @@ import (
 	"github.com/elys-network/elys/x/stablestake/types"
 )
 
-func (oq *Querier) queryParams(ctx sdk.Context, query *types.QueryParamsRequest) ([]byte, error) {
-	res, err := oq.keeper.Params(sdk.WrapSDKContext(ctx), query)
+func (oq *Querier) queryBorrowRatio(ctx sdk.Context, query *types.QueryBorrowRatioRequest) ([]byte, error) {
+	res, err := oq.keeper.BorrowRatio(sdk.WrapSDKContext(ctx), query)
 	if err != nil {
 		return nil, errorsmod.Wrap(err, "failed to get params")
 	}
