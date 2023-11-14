@@ -6,7 +6,7 @@ import (
 
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
+	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	"github.com/elys-network/elys/x/commitment/types"
 
 	"google.golang.org/grpc/codes"
@@ -24,7 +24,7 @@ func (oq *Querier) queryDelegations(ctx sdk.Context, query *types.QueryDelegator
 	}
 
 	delegations := oq.stakingKeeper.GetDelegatorDelegations(ctx, delAddr, math.MaxInt16)
-	delegationResps, err := stakingkeeper.DelegationsToDelegationResponses(ctx, oq.stakingKeeper, delegations)
+	delegationResps, err := oq.DelegationsToDelegationResponses(ctx, delegations)
 
 	res := types.QueryDelegatorDelegationsResponse{
 		DelegationResponses: delegationResps,
@@ -36,4 +36,40 @@ func (oq *Querier) queryDelegations(ctx sdk.Context, query *types.QueryDelegator
 	}
 
 	return responseBytes, nil
+}
+
+func (oq *Querier) DelegationsToDelegationResponses(ctx sdk.Context, delegations stakingtypes.Delegations) ([]types.DelegationResponse, error) {
+	resp := make([]types.DelegationResponse, len(delegations))
+
+	for i, del := range delegations {
+		delResp, err := oq.DelegationToDelegationResponse(ctx, del)
+		if err != nil {
+			return nil, err
+		}
+
+		resp[i] = delResp
+	}
+
+	return resp, nil
+}
+
+func (oq *Querier) DelegationToDelegationResponse(ctx sdk.Context, del stakingtypes.Delegation) (types.DelegationResponse, error) {
+	val, found := oq.stakingKeeper.GetValidator(ctx, del.GetValidatorAddr())
+	if !found {
+		return types.DelegationResponse{}, stakingtypes.ErrNoValidatorFound
+	}
+
+	delegatorAddress, err := sdk.AccAddressFromBech32(del.DelegatorAddress)
+	if err != nil {
+		return types.DelegationResponse{}, err
+	}
+
+	return types.DelegationResponse{
+		Delegation: types.Delegation{
+			DelegatorAddress: delegatorAddress.String(),
+			ValidatorAddress: del.GetValidatorAddr().String(),
+			Shares:           del.Shares,
+		},
+		Balance: sdk.NewCoin(oq.stakingKeeper.BondDenom(ctx), val.TokensFromShares(del.Shares).TruncateInt()),
+	}, nil
 }
