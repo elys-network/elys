@@ -26,14 +26,18 @@ func (oq *Querier) HandleQuery(ctx sdk.Context, query wasmbindingstypes.ElysQuer
 		return oq.queryParams(ctx, query.CommitmentParams)
 	case query.CommitmentShowCommitments != nil:
 		return oq.queryShowCommitments(ctx, query.CommitmentShowCommitments)
-	case query.Delegations != nil:
-		return oq.queryDelegations(ctx, query.Delegations)
-	case query.UnbondingDelegations != nil:
-		return oq.queryUnbondingDelegations(ctx, query.UnbondingDelegations)
-	case query.StakedBalanceOfDenom != nil:
-		return oq.queryStakedBalanceOfDenom(ctx, query.StakedBalanceOfDenom)
-	case query.RewardsBalanceOfDenom != nil:
-		return oq.queryRewardBalanceOfDenom(ctx, query.RewardsBalanceOfDenom)
+	case query.CommitmentDelegations != nil:
+		return oq.queryDelegations(ctx, query.CommitmentDelegations)
+	case query.CommitmentUnbondingDelegations != nil:
+		return oq.queryUnbondingDelegations(ctx, query.CommitmentUnbondingDelegations)
+	case query.CommitmentStakedBalanceOfDenom != nil:
+		return oq.queryStakedBalanceOfDenom(ctx, query.CommitmentStakedBalanceOfDenom)
+	case query.CommitmentRewardsBalanceOfDenom != nil:
+		return oq.queryRewardBalanceOfDenom(ctx, query.CommitmentRewardsBalanceOfDenom)
+	case query.CommitmentAllValidators != nil:
+		return oq.queryAllValidators(ctx, query.CommitmentAllValidators)
+	case query.CommitmentDelegatorValidators != nil:
+		return oq.queryDelegatorValidators(ctx, query.CommitmentDelegatorValidators)
 	default:
 		// This handler cannot handle the query
 		return nil, wasmbindingstypes.ErrCannotHandleQuery
