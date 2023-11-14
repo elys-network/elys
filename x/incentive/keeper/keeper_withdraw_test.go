@@ -125,9 +125,6 @@ func TestProcessWithdrawValidatorCommission(t *testing.T) {
 	newUnclaimedEdenTokens := sdk.NewInt(10000)
 	dexRewardsByStakers := sdk.NewDec(1000)
 
-	// Create an entity in commitment module for validator
-	app.CommitmentKeeper.StandardStakingToken(ctx, delegator, valAddress.String(), ptypes.Eden)
-
 	// Set assetprofile entry for denom
 	app.AssetprofileKeeper.SetEntry(ctx, aptypes.Entry{BaseDenom: ptypes.BaseCurrency, CommitEnabled: false, WithdrawEnabled: true})
 	app.AssetprofileKeeper.SetEntry(ctx, aptypes.Entry{BaseDenom: ptypes.Eden, CommitEnabled: true, WithdrawEnabled: true})
