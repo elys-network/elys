@@ -130,8 +130,10 @@ type ElysQuery struct {
 	CommitmentUnbondingDelegations  *commitmenttypes.QueryDelegatorUnbondingDelegationsRequest `json:"commitment_unbonding_delegations,omitempty"`
 	CommitmentStakedBalanceOfDenom  *ammtypes.QueryBalanceRequest                              `json:"commitment_staked_balance_of_denom,omitempty"`
 	CommitmentRewardsBalanceOfDenom *ammtypes.QueryBalanceRequest                              `json:"commitment_rewards_balance_of_denom,omitempty"`
-	CommitmentAllValidators         *incentivetypes.QueryValidatorsRequest                     `json:"commitment_all_validators,omitempty"`
-	CommitmentDelegatorValidators   *incentivetypes.QueryValidatorsRequest                     `json:"commitment_delegator_validators,omitempty"`
+	CommitmentAllValidators         *commitmenttypes.QueryValidatorsRequest                    `json:"commitment_all_validators,omitempty"`
+	CommitmentDelegatorValidators   *commitmenttypes.QueryValidatorsRequest                    `json:"commitment_delegator_validators,omitempty"`
+	CommitmentStakedPositions       *commitmenttypes.QueryValidatorsRequest                    `json:"commitment_staked_positions,omitempty"`
+	CommitmentUnStakedPositions     *commitmenttypes.QueryValidatorsRequest                    `json:"commitment_un_staked_positions,omitempty"`
 
 	// epochs queriers
 	EpochsEpochInfos   *epochstypes.QueryEpochsInfoRequest   `json:"epochs_epoch_infos,omitempty"`

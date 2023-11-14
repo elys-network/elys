@@ -6,7 +6,7 @@ import (
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
-	incentivetypes "github.com/elys-network/elys/x/incentive/types"
+	commitmenttypes "github.com/elys-network/elys/x/commitment/types"
 	paramtypes "github.com/elys-network/elys/x/parameter/types"
 )
 
@@ -30,7 +30,7 @@ func (oq *Querier) queryRewardBalanceOfDenom(ctx sdk.Context, query *ammtypes.Qu
 		balance = sdk.NewCoin(denom, uncommittedToken.Amount)
 	}
 
-	res := incentivetypes.BalanceAvailable{
+	res := commitmenttypes.BalanceAvailable{
 		Amount:    balance.Amount.Uint64(),
 		UsdAmount: sdk.NewDecFromInt(balance.Amount),
 	}

@@ -6,7 +6,7 @@ import (
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
-	incentivetypes "github.com/elys-network/elys/x/incentive/types"
+	commitmenttypes "github.com/elys-network/elys/x/commitment/types"
 )
 
 func (oq *Querier) queryBalance(ctx sdk.Context, query *ammtypes.QueryBalanceRequest) ([]byte, error) {
@@ -16,7 +16,7 @@ func (oq *Querier) queryBalance(ctx sdk.Context, query *ammtypes.QueryBalanceReq
 	}
 
 	balance := res.Balance
-	resp := incentivetypes.BalanceAvailable{
+	resp := commitmenttypes.BalanceAvailable{
 		Amount:    balance.Amount.Uint64(),
 		UsdAmount: sdk.NewDecFromInt(balance.Amount),
 	}
