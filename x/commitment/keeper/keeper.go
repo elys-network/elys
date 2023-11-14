@@ -28,7 +28,7 @@ type CommitmentKeeperI interface {
 	SetCommitments(ctx sdk.Context, commitments types.Commitments)
 
 	// Get commitment
-	GetCommitments(sdk.Context, string) (types.Commitments, bool)
+	GetCommitments(sdk.Context, string) types.Commitments
 
 	// Withdraw tokens
 	// context, creator, denom, amount
@@ -121,20 +121,6 @@ func (k Keeper) StandardStakingToken(ctx sdk.Context, delegator string, validato
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "unable to convert validator address from bech32")
 	}
 
-	/***********************************************************/
-	////////////////// Delegator entity //////////////////////////
-	/***********************************************************/
-	// Get the Commitments for the delegator
-	commitments, found := k.GetCommitments(ctx, delegator)
-	if !found {
-		commitments = types.Commitments{
-			Creator:          delegator,
-			CommittedTokens:  []*types.CommittedTokens{},
-			RewardsUnclaimed: sdk.Coins{},
-		}
-		k.SetCommitments(ctx, commitments)
-	}
-
 	// Emit blockchain event
 	ctx.EventManager().EmitEvent(
 		sdk.NewEvent(
@@ -144,19 +130,6 @@ func (k Keeper) StandardStakingToken(ctx sdk.Context, delegator string, validato
 			sdk.NewAttribute(types.AttributeDenom, denom),
 		),
 	)
-
-	/***************************************************************/
-	////////////////////// Validator entity /////////////////////////
-	// Get the Commitments for the validator
-	commitments, found = k.GetCommitments(ctx, validator)
-	if !found {
-		commitments = types.Commitments{
-			Creator:          validator,
-			CommittedTokens:  []*types.CommittedTokens{},
-			RewardsUnclaimed: sdk.Coins{},
-		}
-		k.SetCommitments(ctx, commitments)
-	}
 
 	// Emit Hook commitment changed
 	k.AfterCommitmentChange(ctx, delegator, sdk.Coins{sdk.NewCoin(denom, sdk.ZeroInt())})
@@ -186,7 +159,7 @@ func (k Keeper) ProcessClaimReward(ctx sdk.Context, creator string, denom string
 	}
 
 	// Get the Commitments for the creator
-	commitments, found := k.GetCommitments(ctx, creator)
+	commitments := k.GetCommitments(ctx, creator)
 	if !found {
 		return sdkerrors.Wrapf(types.ErrCommitmentsNotFound, "creator: %s", creator)
 	}
@@ -273,7 +246,7 @@ func (k Keeper) ProcessWithdrawValidatorCommission(ctx sdk.Context, delegator st
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "unable to convert address from bech32")
 	}
 
-	commitments, _ = k.GetCommitments(ctx, delegator)
+	commitments = k.GetCommitments(ctx, delegator)
 	err = k.HandleWithdrawFromCommitment(ctx, &commitments, addr, withdrawCoins)
 	if err != nil {
 		return err
@@ -342,10 +315,7 @@ func (k Keeper) ProcessTokenVesting(ctx sdk.Context, denom string, amount sdk.In
 		return sdkerrors.Wrapf(types.ErrInvalidDenom, "denom: %s", denom)
 	}
 
-	commitments, found := k.GetCommitments(ctx, creator)
-	if !found {
-		return sdkerrors.Wrapf(types.ErrCommitmentsNotFound, "creator: %s", creator)
-	}
+	commitments := k.GetCommitments(ctx, creator)
 
 	// Create vesting tokens entry and add to commitments
 	vestingTokens := commitments.GetVestingTokens()

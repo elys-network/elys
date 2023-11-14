@@ -166,8 +166,7 @@ func (suite *KeeperTestSuite) TestMsgServerExitPool() {
 				suite.Require().Equal(balances.String(), tc.expSenderBalance.String())
 
 				// check lp token commitment
-				commitments, found := suite.app.CommitmentKeeper.GetCommitments(suite.ctx, sender.String())
-				suite.Require().True(found)
+				commitments := suite.app.CommitmentKeeper.GetCommitments(suite.ctx, sender.String())
 				suite.Require().Len(commitments.CommittedTokens, 1)
 				suite.Require().Equal(commitments.CommittedTokens[0].Denom, "amm/pool/1")
 				suite.Require().Equal(commitments.CommittedTokens[0].Amount.String(), pool.TotalShares.Amount.Sub(tc.shareInAmount).String())

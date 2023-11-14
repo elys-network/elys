@@ -75,8 +75,7 @@ func TestCancelVest(t *testing.T) {
 	require.NoError(t, err)
 
 	// Check if the vesting tokens were updated correctly
-	newCommitments, found := keeper.GetCommitments(ctx, cancelVestMsg.Creator)
-	require.True(t, found, "commitments not found")
+	newCommitments := keeper.GetCommitments(ctx, cancelVestMsg.Creator)
 	require.Len(t, newCommitments.VestingTokens, 1, "vesting tokens were not updated correctly")
 	require.Equal(t, sdk.NewInt(75), newCommitments.VestingTokens[0].TotalAmount, "total amount was not updated correctly")
 	require.Equal(t, sdk.NewInt(75), newCommitments.VestingTokens[0].UnvestedAmount, "unvested amount was not updated correctly")

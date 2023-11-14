@@ -3,7 +3,6 @@ package keeper
 import (
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/elys-network/elys/x/commitment/types"
 )
 
@@ -20,19 +19,23 @@ func (k Keeper) SetCommitments(ctx sdk.Context, commitments types.Commitments) {
 func (k Keeper) GetCommitments(
 	ctx sdk.Context,
 	creator string,
-
-) (val types.Commitments, found bool) {
+) types.Commitments {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.CommitmentsKeyPrefix))
 
-	b := store.Get(types.CommitmentsKey(
-		creator,
-	))
+	b := store.Get(types.CommitmentsKey(creator))
 	if b == nil {
-		return val, false
+		return types.Commitments{
+			Creator:          creator,
+			CommittedTokens:  []*types.CommittedTokens{},
+			RewardsUnclaimed: sdk.Coins{},
+			Claimed:          sdk.Coins{},
+			VestingTokens:    []*types.VestingTokens{},
+		}
 	}
 
+	val := types.Commitments{}
 	k.cdc.MustUnmarshal(b, &val)
-	return val, true
+	return val
 }
 
 // RemoveCommitments removes a commitments from the store
@@ -69,10 +72,7 @@ func (k Keeper) IterateCommitments(
 
 func (k Keeper) DeductCommitments(ctx sdk.Context, creator string, denom string, amount sdk.Int) (types.Commitments, error) {
 	// Get the Commitments for the creator
-	commitments, found := k.GetCommitments(ctx, creator)
-	if !found {
-		return types.Commitments{}, sdkerrors.Wrapf(types.ErrCommitmentsNotFound, "creator: %s", creator)
-	}
+	commitments := k.GetCommitments(ctx, creator)
 
 	// if deduction amount is zero
 	if amount.Equal(sdk.ZeroInt()) {

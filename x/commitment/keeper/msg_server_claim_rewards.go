@@ -12,10 +12,7 @@ func (k msgServer) ClaimRewards(goCtx context.Context, msg *types.MsgClaimReward
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	// Get the Commitments for the creator
-	commitments, found := k.GetCommitments(ctx, msg.Creator)
-	if !found {
-		return nil, sdkerrors.Wrapf(types.ErrCommitmentsNotFound, "creator: %s", msg.Creator)
-	}
+	commitments := k.GetCommitments(ctx, msg.Creator)
 
 	unclaimed := commitments.RewardsUnclaimed
 	commitments.RewardsUnclaimed = sdk.Coins{}

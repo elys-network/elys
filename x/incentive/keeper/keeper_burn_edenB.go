@@ -9,11 +9,7 @@ import (
 func (k Keeper) BurnEdenBFromElysUnstaking(ctx sdk.Context, delegator sdk.AccAddress) error {
 	delAddr := delegator.String()
 	// Get commitments
-	commitments, found := k.cmk.GetCommitments(ctx, delAddr)
-	// should return nil otherwise it will break staking module
-	if !found {
-		return nil
-	}
+	commitments := k.cmk.GetCommitments(ctx, delAddr)
 
 	// Get previous amount
 	prevElysStaked, found := k.GetElysStaked(ctx, delAddr)
@@ -63,12 +59,7 @@ func (k Keeper) BurnEdenBFromEdenUnclaimed(ctx sdk.Context, delegator string, un
 		return nil
 	}
 
-	commitments, found := k.cmk.GetCommitments(ctx, delegator)
-	// should return nil otherwise it will break commitment module
-	if !found {
-		return nil
-	}
-
+	commitments := k.cmk.GetCommitments(ctx, delegator)
 	edenCommitted := commitments.GetCommittedAmountForDenom(ptypes.Eden)
 
 	//Total EdenB amount

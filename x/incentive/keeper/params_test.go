@@ -95,8 +95,7 @@ func TestUpdatePoolMultiplierInfo(t *testing.T) {
 	require.Equal(t, balances, sdk.NewCoin("amm/pool/1", sdk.NewInt(0)))
 
 	// check lp token commitment
-	commitments, found := ck.GetCommitments(ctx, addr[0].String())
-	require.True(t, found)
+	commitments := ck.GetCommitments(ctx, addr[0].String())
 	require.Len(t, commitments.CommittedTokens, 1)
 	require.Equal(t, commitments.CommittedTokens[0].Denom, "amm/pool/1")
 	require.Equal(t, commitments.CommittedTokens[0].Amount.String(), "100100000000000000000")

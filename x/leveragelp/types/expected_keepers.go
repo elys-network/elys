@@ -129,5 +129,5 @@ type StableStakeKeeper interface {
 }
 
 type CommitmentKeeper interface {
-	GetCommitments(ctx sdk.Context, creator string) (val commitmenttypes.Commitments, found bool)
+	GetCommitments(ctx sdk.Context, creator string) commitmenttypes.Commitments
 }

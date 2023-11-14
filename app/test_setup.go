@@ -27,8 +27,6 @@ import (
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
 	simtestutil "github.com/cosmos/cosmos-sdk/testutil/sims"
 	simcli "github.com/cosmos/cosmos-sdk/x/simulation/client/cli"
-	"github.com/elys-network/elys/x/commitment/types"
-	ctypes "github.com/elys-network/elys/x/commitment/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
 
@@ -240,14 +238,7 @@ func initAccountWithCoins(app *ElysApp, ctx sdk.Context, addr sdk.AccAddress, co
 
 // Add testing commitments
 func AddTestCommitment(app *ElysApp, ctx sdk.Context, address sdk.AccAddress, committed sdk.Coins, rewardsUnclaimed sdk.Coins) {
-	commitment, found := app.CommitmentKeeper.GetCommitments(ctx, address.String())
-	if !found {
-		commitment = ctypes.Commitments{
-			Creator:          address.String(),
-			CommittedTokens:  []*types.CommittedTokens{},
-			RewardsUnclaimed: sdk.Coins{},
-		}
-	}
+	commitment := app.CommitmentKeeper.GetCommitments(ctx, address.String())
 
 	// Loop unclaimed rewards
 	for _, uc := range rewardsUnclaimed {

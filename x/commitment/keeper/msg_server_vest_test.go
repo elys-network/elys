@@ -78,8 +78,7 @@ func TestVest(t *testing.T) {
 	require.NoError(t, err)
 
 	// Check if the vesting tokens were added to commitments
-	newCommitments, found := keeper.GetCommitments(ctx, vestMsg.Creator)
-	require.True(t, found, "commitments not found")
+	newCommitments := keeper.GetCommitments(ctx, vestMsg.Creator)
 	require.Len(t, newCommitments.VestingTokens, 1, "vesting tokens were not added")
 
 	// Check if the unclaimed tokens were updated correctly
@@ -94,8 +93,7 @@ func TestVest(t *testing.T) {
 	require.NoError(t, err)
 
 	// Check if the vesting tokens were added to commitments
-	newCommitments, found = keeper.GetCommitments(ctx, vestMsg.Creator)
-	require.True(t, found, "commitments not found")
+	newCommitments = keeper.GetCommitments(ctx, vestMsg.Creator)
 	require.Len(t, newCommitments.VestingTokens, 2, "vesting tokens were not added")
 
 	// Check if the unclaimed tokens were updated correctly
@@ -171,8 +169,7 @@ func TestExceedVesting(t *testing.T) {
 	require.NoError(t, err)
 
 	// Check if the vesting tokens were added to commitments
-	newCommitments, found := keeper.GetCommitments(ctx, vestMsg.Creator)
-	require.True(t, found, "commitments not found")
+	newCommitments := keeper.GetCommitments(ctx, vestMsg.Creator)
 	require.Len(t, newCommitments.VestingTokens, 1, "vesting tokens were not added")
 
 	// Check if the unclaimed tokens were updated correctly

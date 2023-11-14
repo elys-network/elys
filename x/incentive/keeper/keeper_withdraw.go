@@ -10,10 +10,7 @@ import (
 
 // Increase unclaimed token amount for the corresponding validator
 func (k Keeper) UpdateTokensForValidator(ctx sdk.Context, validator string, newUnclaimedEdenTokens sdk.Int, dexRewards sdk.Dec) {
-	commitments, bfound := k.cmk.GetCommitments(ctx, validator)
-	if !bfound {
-		return
-	}
+	commitments := k.cmk.GetCommitments(ctx, validator)
 
 	// Update Eden amount
 	commitments.AddRewardsUnclaimed(sdk.NewCoin(ptypes.Eden, newUnclaimedEdenTokens))
@@ -90,10 +87,7 @@ func (k Keeper) ProcessWithdrawRewards(ctx sdk.Context, delegator string, denom 
 	}
 
 	// Get commitments
-	commitments, bfound := k.cmk.GetCommitments(ctx, delegator)
-	if !bfound {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "unable to find commitment")
-	}
+	commitments := k.cmk.GetCommitments(ctx, delegator)
 
 	// Eden
 	if denom == ptypes.Eden {
@@ -169,10 +163,7 @@ func (k Keeper) ProcessWithdrawValidatorCommission(ctx sdk.Context, delegator st
 	}
 
 	// Get commitments
-	commitments, bfound := k.cmk.GetCommitments(ctx, validator)
-	if !bfound {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "unable to find commitment")
-	}
+	commitments := k.cmk.GetCommitments(ctx, validator)
 
 	// Eden
 	if denom == ptypes.Eden {

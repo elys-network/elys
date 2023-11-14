@@ -65,8 +65,7 @@ func TestClaimReward(t *testing.T) {
 	_, err := msgServer.ClaimReward(ctx, msg)
 	require.NoError(t, err)
 
-	updatedCommitments, found := keeper.GetCommitments(ctx, creator)
-	require.True(t, found)
+	updatedCommitments := keeper.GetCommitments(ctx, creator)
 
 	unclaimedBalance := updatedCommitments.GetRewardUnclaimedForDenom(denom)
 	assert.Equal(t, sdk.NewInt(20), unclaimedBalance)

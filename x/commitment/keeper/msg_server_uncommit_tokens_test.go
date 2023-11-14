@@ -69,8 +69,7 @@ func TestUncommitTokens(t *testing.T) {
 	require.NoError(t, err)
 
 	// Check if the committed tokens have been added to the store
-	commitments, found := keeper.GetCommitments(ctx, creator)
-	assert.True(t, found, "Commitments not found in the store")
+	commitments := keeper.GetCommitments(ctx, creator)
 
 	// Check if the committed tokens have the expected values
 	assert.Equal(t, creator, commitments.Creator, "Incorrect creator")

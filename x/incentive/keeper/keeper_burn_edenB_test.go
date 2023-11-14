@@ -47,8 +47,7 @@ func TestBurnEdenBFromElysUnstaked(t *testing.T) {
 	// Add testing commitment
 	simapp.AddTestCommitment(app, ctx, genAccount, committed, unclaimed)
 
-	commitment, found := app.CommitmentKeeper.GetCommitments(ctx, genAccount.String())
-	require.True(t, found)
+	commitment := app.CommitmentKeeper.GetCommitments(ctx, genAccount.String())
 	require.Equal(t, commitment.RewardsUnclaimed[1].Denom, ptypes.EdenB)
 	require.Equal(t, commitment.RewardsUnclaimed[1].Amount, sdk.NewInt(20000))
 
@@ -59,9 +58,7 @@ func TestBurnEdenBFromElysUnstaked(t *testing.T) {
 	unbondAmt, err := sk.Unbond(ctx, genAccount, valAddr, sdk.NewDecWithPrec(10, 2))
 	require.Equal(t, unbondAmt, sdk.NewInt(100000))
 
-	commitment, found = app.CommitmentKeeper.GetCommitments(ctx, genAccount.String())
-	require.True(t, found)
-
+	commitment = app.CommitmentKeeper.GetCommitments(ctx, genAccount.String())
 	require.Equal(t, commitment.RewardsUnclaimed[1].Denom, ptypes.EdenB)
 	require.Equal(t, commitment.RewardsUnclaimed[1].Amount, sdk.NewInt(17525))
 }
@@ -100,8 +97,7 @@ func TestBurnEdenBFromEdenUnclaimed(t *testing.T) {
 	// Add testing commitment
 	simapp.AddTestCommitment(app, ctx, genAccount, committed, unclaimed)
 
-	commitment, found := app.CommitmentKeeper.GetCommitments(ctx, genAccount.String())
-	require.True(t, found)
+	commitment := app.CommitmentKeeper.GetCommitments(ctx, genAccount.String())
 	require.Equal(t, commitment.RewardsUnclaimed[1].Denom, ptypes.EdenB)
 	require.Equal(t, commitment.RewardsUnclaimed[1].Amount, sdk.NewInt(20000))
 
@@ -122,9 +118,7 @@ func TestBurnEdenBFromEdenUnclaimed(t *testing.T) {
 	require.NoError(t, err)
 
 	// burn amount = 1000 (unclaimed amt) / (1000000 (elys staked) + 10000 (Eden committed)) * (20000 EdenB + 5000 EdenB committed)
-	commitment, found = app.CommitmentKeeper.GetCommitments(ctx, genAccount.String())
-	require.True(t, found)
-
+	commitment = app.CommitmentKeeper.GetCommitments(ctx, genAccount.String())
 	require.Equal(t, commitment.RewardsUnclaimed[1].Denom, ptypes.EdenB)
 	require.Equal(t, commitment.RewardsUnclaimed[1].Amount, sdk.NewInt(19976))
 }

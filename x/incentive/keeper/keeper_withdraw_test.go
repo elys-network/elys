@@ -70,11 +70,11 @@ func TestProcessWithdrawRewards(t *testing.T) {
 	// Add testing commitment
 	simapp.AddTestCommitment(app, ctx, addr[0], committed, unclaimed)
 	simapp.AddTestCommitment(app, ctx, addr[1], committed, unclaimed)
-	_, found := app.CommitmentKeeper.GetCommitments(ctx, addr[0].String())
-	require.True(t, found)
+	commitments := app.CommitmentKeeper.GetCommitments(ctx, addr[0].String())
+	require.False(t, commitments.IsEmpty())
 
-	_, found = app.CommitmentKeeper.GetCommitments(ctx, addr[1].String())
-	require.True(t, found)
+	commitments = app.CommitmentKeeper.GetCommitments(ctx, addr[1].String())
+	require.False(t, commitments.IsEmpty())
 
 	// Get dex revenue wallet
 	dexRewardUSDC := sdk.NewCoins(sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(5000)))
@@ -91,7 +91,7 @@ func TestProcessWithdrawRewards(t *testing.T) {
 	err = ik.ProcessWithdrawRewards(ctx, addr[0].String(), ptypes.Eden)
 	require.NoError(t, err)
 
-	commitments, _ := app.CommitmentKeeper.GetCommitments(ctx, addr[0].String())
+	commitments = app.CommitmentKeeper.GetCommitments(ctx, addr[0].String())
 	require.Equal(t, commitments.Claimed.String(), uedenToken.String())
 
 	// Withdraw rewards
@@ -136,8 +136,7 @@ func TestProcessWithdrawValidatorCommission(t *testing.T) {
 	// Give commission to validators ( Eden from stakers and Dex rewards from stakers. )
 	edenCommissionGiven, dexRewardsCommissionGiven := ik.GiveCommissionToValidators(ctx, delegator, delegatedAmt, newUnclaimedEdenTokens, dexRewardsByStakers)
 
-	_, found := app.CommitmentKeeper.GetCommitments(ctx, valAddress.String())
-	require.True(t, found)
+	commitments := app.CommitmentKeeper.GetCommitments(ctx, valAddress.String())
 
 	require.Equal(t, edenCommissionGiven, sdk.NewInt(500))
 	require.Equal(t, dexRewardsCommissionGiven, sdk.NewInt(50))
@@ -145,7 +144,7 @@ func TestProcessWithdrawValidatorCommission(t *testing.T) {
 	delAddr, err := sdk.AccAddressFromBech32(delegator)
 	require.NoError(t, err)
 
-	found = false
+	found := false
 	// Get all delegations
 	delegations := app.StakingKeeper.GetDelegatorDelegations(ctx, delAddr, math.MaxUint16)
 	for _, del := range delegations {
@@ -163,6 +162,6 @@ func TestProcessWithdrawValidatorCommission(t *testing.T) {
 	err = ik.ProcessWithdrawValidatorCommission(ctx, delegator, valAddress.String(), ptypes.Eden)
 	require.NoError(t, err)
 
-	commitments, _ := app.CommitmentKeeper.GetCommitments(ctx, delegator)
+	commitments = app.CommitmentKeeper.GetCommitments(ctx, delegator)
 	require.Equal(t, commitments.Claimed.String(), sdk.NewCoin(ptypes.Eden, edenCommissionGiven).String())
 }

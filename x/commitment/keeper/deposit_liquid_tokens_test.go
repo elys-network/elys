@@ -52,8 +52,7 @@ func TestDepositLiquidTokens(t *testing.T) {
 	keeper.DepositLiquidTokensUnclaimed(ctx, ptypes.Eden, sdk.NewInt(100), creator.String())
 
 	// Check if the deposit tokens were added to commitments
-	newCommitments, found := keeper.GetCommitments(ctx, creator.String())
-	require.True(t, found, "commitments not found")
+	newCommitments := keeper.GetCommitments(ctx, creator.String())
 
 	// Check if the unclaimed tokens were updated correctly
 	rewardUnclaimed := newCommitments.GetRewardUnclaimedForDenom(ptypes.Eden)

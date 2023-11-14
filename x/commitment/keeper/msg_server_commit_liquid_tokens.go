@@ -37,14 +37,7 @@ func (k msgServer) CommitLiquidTokens(goCtx context.Context, msg *types.MsgCommi
 	}
 
 	// Get the Commitments for the creator
-	commitments, found := k.GetCommitments(ctx, msg.Creator)
-	if !found {
-		commitments = types.Commitments{
-			Creator:          msg.Creator,
-			CommittedTokens:  []*types.CommittedTokens{},
-			RewardsUnclaimed: sdk.Coins{},
-		}
-	}
+	commitments := k.GetCommitments(ctx, msg.Creator)
 
 	// Update the commitments
 	commitments.AddCommittedTokens(msg.Denom, msg.Amount, uint64(ctx.BlockTime().Unix())+msg.MinLock)

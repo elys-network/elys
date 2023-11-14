@@ -59,9 +59,8 @@ func TestCalculateRewardsForStakers(t *testing.T) {
 	simapp.AddTestCommitment(app, ctx, addr[0], committed, unclaimed)
 	simapp.AddTestCommitment(app, ctx, addr[1], committed, unclaimed)
 
-	commitment, found := app.CommitmentKeeper.GetCommitments(ctx, addr[0].String())
+	commitment := app.CommitmentKeeper.GetCommitments(ctx, addr[0].String())
 
-	require.True(t, found)
 	require.Equal(t, commitment.RewardsUnclaimed[0].Denom, ptypes.Eden)
 	require.Equal(t, commitment.RewardsUnclaimed[0].Amount, sdk.NewInt(2000))
 

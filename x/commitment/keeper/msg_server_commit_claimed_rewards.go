@@ -23,10 +23,7 @@ func (k msgServer) CommitClaimedRewards(goCtx context.Context, msg *types.MsgCom
 	}
 
 	// Get the Commitments for the creator
-	commitments, found := k.GetCommitments(ctx, msg.Creator)
-	if !found {
-		return nil, sdkerrors.Wrapf(types.ErrCommitmentsNotFound, "creator: %s", msg.Creator)
-	}
+	commitments := k.GetCommitments(ctx, msg.Creator)
 
 	// Decrease unclaimed tokens amount
 	err := commitments.SubClaimed(sdk.NewCoin(msg.Denom, msg.Amount))

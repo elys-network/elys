@@ -80,8 +80,7 @@ func TestVestNow(t *testing.T) {
 	_, err := msgServer.VestNow(ctx, msg)
 	require.NoError(t, err)
 
-	updatedCommitments, found := keeper.GetCommitments(ctx, creator)
-	require.True(t, found)
+	updatedCommitments := keeper.GetCommitments(ctx, creator)
 
 	unclaimedBalance := updatedCommitments.GetRewardUnclaimedForDenom(denom)
 	assert.Equal(t, sdk.NewInt(2000), unclaimedBalance)
@@ -99,8 +98,7 @@ func TestVestNow(t *testing.T) {
 	_, err = msgServer.VestNow(ctx, msg)
 	require.NoError(t, err)
 
-	updatedCommitments, found = keeper.GetCommitments(ctx, creator)
-	require.True(t, found)
+	updatedCommitments = keeper.GetCommitments(ctx, creator)
 
 	unclaimedBalance = updatedCommitments.GetRewardUnclaimedForDenom(denom)
 	assert.Equal(t, sdk.NewInt(0), unclaimedBalance)

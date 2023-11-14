@@ -24,10 +24,7 @@ func (k msgServer) UncommitTokens(goCtx context.Context, msg *types.MsgUncommitT
 	}
 
 	// Get the Commitments for the creator
-	commitments, found := k.GetCommitments(ctx, msg.Creator)
-	if !found {
-		return nil, sdkerrors.Wrapf(types.ErrCommitmentsNotFound, "creator: %s", msg.Creator)
-	}
+	commitments := k.GetCommitments(ctx, msg.Creator)
 
 	// Deduct from committed tokens
 	err := commitments.DeductFromCommitted(msg.Denom, msg.Amount, uint64(ctx.BlockTime().Unix()))

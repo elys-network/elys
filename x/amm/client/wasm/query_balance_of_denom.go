@@ -18,13 +18,9 @@ func (oq *Querier) queryBalanceOfDenom(ctx sdk.Context, query *types.QueryBalanc
 	}
 	balance := oq.bankKeeper.GetBalance(ctx, address, denom)
 	if denom != paramtypes.Elys {
-		commitment, found := oq.commitmentKeeper.GetCommitments(ctx, addr)
-		if !found {
-			balance = sdk.NewCoin(denom, sdk.ZeroInt())
-		} else {
-			rewardUnclaimed := commitment.GetRewardUnclaimedForDenom(denom)
-			balance = sdk.NewCoin(denom, rewardUnclaimed)
-		}
+		commitment := oq.commitmentKeeper.GetCommitments(ctx, addr)
+		rewardUnclaimed := commitment.GetRewardUnclaimedForDenom(denom)
+		balance = sdk.NewCoin(denom, rewardUnclaimed)
 	}
 
 	res := types.QueryBalanceResponse{

@@ -27,13 +27,9 @@ func (k Keeper) Balance(goCtx context.Context, req *types.QueryBalanceRequest) (
 
 	balance := k.bankKeeper.GetBalance(ctx, address, denom)
 	if denom != paramtypes.Elys {
-		commitment, found := k.commitmentKeeper.GetCommitments(ctx, addr)
-		if !found {
-			balance = sdk.NewCoin(denom, sdk.ZeroInt())
-		} else {
-			rewardUnclaimed := commitment.GetRewardUnclaimedForDenom(denom)
-			balance = sdk.NewCoin(denom, rewardUnclaimed)
-		}
+		commitment := k.commitmentKeeper.GetCommitments(ctx, addr)
+		rewardUnclaimed := commitment.GetRewardUnclaimedForDenom(denom)
+		balance = sdk.NewCoin(denom, rewardUnclaimed)
 	}
 
 	return &types.QueryBalanceResponse{

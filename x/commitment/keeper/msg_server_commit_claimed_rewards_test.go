@@ -52,10 +52,7 @@ func TestCommitClaimedRewards(t *testing.T) {
 	require.NoError(t, err)
 
 	// Check if the committed tokens have been added to the store
-	commitments, found := keeper.GetCommitments(ctx, creator)
-	assert.True(t, found, "Commitments not found in the store")
-
-	// Check if the committed tokens have the expected values
+	commitments := keeper.GetCommitments(ctx, creator)
 	assert.Equal(t, creator, commitments.Creator, "Incorrect creator")
 	assert.Len(t, commitments.CommittedTokens, 1, "Incorrect number of committed tokens")
 	assert.Equal(t, denom, commitments.CommittedTokens[0].Denom, "Incorrect denom")

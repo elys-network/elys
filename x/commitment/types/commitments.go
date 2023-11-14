@@ -4,6 +4,22 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
+func (c Commitments) IsEmpty() bool {
+	if len(c.CommittedTokens) > 0 {
+		return false
+	}
+	if len(c.RewardsUnclaimed) > 0 {
+		return false
+	}
+	if len(c.Claimed) > 0 {
+		return false
+	}
+	if len(c.VestingTokens) > 0 {
+		return false
+	}
+	return true
+}
+
 func (c *Commitments) GetCommittedAmountForDenom(denom string) sdk.Int {
 	for _, token := range c.CommittedTokens {
 		if token.Denom == denom {

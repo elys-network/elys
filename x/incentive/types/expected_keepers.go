@@ -18,7 +18,7 @@ type CommitmentKeeper interface {
 	// Update commitment
 	SetCommitments(sdk.Context, ctypes.Commitments)
 	// Get commitment
-	GetCommitments(sdk.Context, string) (ctypes.Commitments, bool)
+	GetCommitments(sdk.Context, string) ctypes.Commitments
 	// Withdraw tokens
 	ProcessClaimReward(sdk.Context, string, string, sdk.Int) error
 	// Withdraw validator commission
