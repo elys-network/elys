@@ -106,7 +106,6 @@ func (k Keeper) ProcessWithdrawRewards(ctx sdk.Context, delegator string, denom 
 	// USDC
 	unclaimedUsdc := commitments.GetRewardUnclaimedForDenom(ptypes.BaseCurrency)
 	if unclaimedUsdc.IsZero() {
-
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, "balance not available")
 	}
 	// Get dex revenue wallet

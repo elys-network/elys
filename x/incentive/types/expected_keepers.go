@@ -11,6 +11,8 @@ import (
 
 // CommitmentKeeper
 type CommitmentKeeper interface {
+	// Initiate commitment according to standard staking
+	BeforeDelegationCreated(sdk.Context, string, string) error
 	// Iterate all commitment
 	IterateCommitments(sdk.Context, func(ctypes.Commitments) (stop bool))
 	// Update commitment

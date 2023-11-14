@@ -1,8 +1,6 @@
 package keeper
 
 import (
-	"fmt"
-
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
@@ -66,7 +64,6 @@ func (k Keeper) DeductClaimed(ctx sdk.Context, creator string, denom string, amo
 	// Get the Commitments for the creator
 	commitments := k.GetCommitments(ctx, creator)
 
-	fmt.Println("commitments", commitments.Claimed.String(), denom, amount.String())
 	// Subtract the amount from the claimed balance
 	err := commitments.SubClaimed(sdk.NewCoin(denom, amount))
 	if err != nil {
@@ -211,6 +208,59 @@ func (k Keeper) ProcessWithdrawUSDC(ctx sdk.Context, creator string, denom strin
 			sdk.NewAttribute(types.AttributeDenom, denom),
 		),
 	)
+
+	return nil
+}
+
+// Process delegation hook - create commitment entities for delegator and validator
+func (k Keeper) BeforeDelegationCreated(ctx sdk.Context, delegator string, validator string) error {
+	_, err := sdk.AccAddressFromBech32(delegator)
+	if err != nil {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "unable to convert address from bech32")
+	}
+
+	_, err = sdk.ValAddressFromBech32(validator)
+	if err != nil {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "unable to convert validator address from bech32")
+	}
+
+	/***********************************************************/
+	////////////////// Delegator entity //////////////////////////
+	/***********************************************************/
+	// Get the Commitments for the delegator
+	commitments := k.GetCommitments(ctx, delegator)
+	if !commitments.IsEmpty() {
+		k.SetCommitments(ctx, commitments)
+
+		// Emit Hook commitment changed
+		k.AfterCommitmentChange(ctx, delegator, sdk.Coins{})
+
+		// Emit blockchain event
+		ctx.EventManager().EmitEvent(
+			sdk.NewEvent(
+				types.EventTypeCommitmentChanged,
+				sdk.NewAttribute(types.AttributeCreator, delegator),
+				sdk.NewAttribute(types.AttributeAmount, sdk.ZeroInt().String()),
+			),
+		)
+	}
+
+	/***************************************************************/
+	////////////////////// Validator entity /////////////////////////
+	// Get the Commitments for the validator
+	commitments = k.GetCommitments(ctx, validator)
+	if commitments.IsEmpty() {
+		k.SetCommitments(ctx, commitments)
+
+		// Emit blockchain event
+		ctx.EventManager().EmitEvent(
+			sdk.NewEvent(
+				types.EventTypeCommitmentChanged,
+				sdk.NewAttribute(types.AttributeCreator, validator),
+				sdk.NewAttribute(types.AttributeAmount, sdk.ZeroInt().String()),
+			),
+		)
+	}
 
 	return nil
 }
