@@ -18,17 +18,9 @@ func (oq *Querier) queryRewardBalanceOfDenom(ctx sdk.Context, query *ammtypes.Qu
 	}
 
 	var balance sdk.Coin
-	commitment, found := oq.keeper.GetCommitments(ctx, addr)
-	if !found {
-		balance = sdk.NewCoin(denom, sdk.ZeroInt())
-	} else {
-		uncommittedToken, found := commitment.GetRewardsUnclaimedForDenom(denom)
-		if !found {
-			return nil, errorsmod.Wrap(nil, "invalid denom")
-		}
-
-		balance = sdk.NewCoin(denom, uncommittedToken.Amount)
-	}
+	commitment := oq.keeper.GetCommitments(ctx, addr)
+	uncommittedToken := commitment.GetRewardUnclaimedForDenom(denom)
+	balance = sdk.NewCoin(denom, uncommittedToken)
 
 	res := commitmenttypes.BalanceAvailable{
 		Amount:    balance.Amount.Uint64(),

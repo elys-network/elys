@@ -21,17 +21,10 @@ func (oq *Querier) queryStakedBalanceOfDenom(ctx sdk.Context, query *ammtypes.Qu
 	bondedAmt := oq.stakingKeeper.GetDelegatorBonded(ctx, address)
 	balance := sdk.NewCoin(denom, bondedAmt)
 	if denom != paramtypes.Elys {
-		commitment, found := oq.keeper.GetCommitments(ctx, addr)
-		if !found {
-			balance = sdk.NewCoin(denom, sdk.ZeroInt())
-		} else {
-			committedToken, found := commitment.GetCommittedTokensForDenom(denom)
-			if !found {
-				return nil, errorsmod.Wrap(nil, "invalid denom")
-			}
+		commitment := oq.keeper.GetCommitments(ctx, addr)
+		committedToken := commitment.GetCommittedAmountForDenom(denom)
 
-			balance = sdk.NewCoin(denom, committedToken.Amount)
-		}
+		balance = sdk.NewCoin(denom, committedToken)
 	}
 
 	res := commitmenttypes.BalanceAvailable{
