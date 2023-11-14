@@ -11,6 +11,10 @@ accounts:
   - name: seed
     coins:
       - 9000000000000000uelys
+  - name: cw
+    coins:
+      - 9000000000000000uelys
+    mnemonic: wool diet nasty illness balcony life grunt truck verify later raise carpet describe victory snack sand struggle better smart purse miss bicycle copy orphan
 build:
   main: cmd/elysd
 client:
@@ -106,6 +110,17 @@ genesis:
           symbol: eden
           description: Eden token definition
           display: eden
+      balances:
+        - address: elys1w9uac4zrf9z7qd604qxk2y4n74568lfl8vutz4
+          coins: 
+            - amount: "1000000000"
+              denom: uatom
+            - amount: "1000000000"
+              denom: ueden
+            - amount: "1000000000"
+              denom: uelys
+            - amount: "1000000000"
+              denom: uusdc
     assetprofile:
       entryList:
         - address: ""
@@ -129,9 +144,9 @@ genesis:
           withdrawEnabled: true
         - address: ""
           authority: elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3
-          baseDenom: cusdc
+          baseDenom: uusdc
           decimals: "6"
-          denom: cusdc
+          denom: uusdc
           displayName: USDC
           displaySymbol: ""
           externalSymbol: ""
@@ -221,7 +236,7 @@ genesis:
             vest_now_factor: "90"
             num_max_vestings: "10"
       commitments:
-        - creator: elys135ayha0sr682mnsm469mur5n9ycaxf3905qe6l
+        - creator: elys1v30pe777dj9mgsnlv0j2c5wh05m0ya0nlhuv7t
           committed_tokens:
             - amount: "10000"
               denom: uusdc
