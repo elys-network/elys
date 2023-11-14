@@ -72,13 +72,13 @@ func RegisterCustomPlugins(
 	clockQuerier := clockclientwasm.NewQuerier(clock)
 	clockMessenger := clockclientwasm.NewMessenger(clock)
 
-	commitmentQuerier := commitmentclientwasm.NewQuerier(commitment)
+	commitmentQuerier := commitmentclientwasm.NewQuerier(commitment, staking)
 	commitmentMessenger := commitmentclientwasm.NewMessenger(commitment, staking)
 
 	epochsQuerier := epochsclientwasm.NewQuerier(epochs)
 	epochsMessenger := epochsclientwasm.NewMessenger(epochs)
 
-	incentiveQuerier := incentiveclientwasm.NewQuerier(incentive)
+	incentiveQuerier := incentiveclientwasm.NewQuerier(incentive, staking)
 	incentiveMessenger := incentiveclientwasm.NewMessenger(incentive, staking, commitment)
 
 	leveragelpQuerier := leveragelpclientwasm.NewQuerier(leveragelp)

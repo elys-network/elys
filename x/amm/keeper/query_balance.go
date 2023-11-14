@@ -29,7 +29,16 @@ func (k Keeper) Balance(goCtx context.Context, req *types.QueryBalanceRequest) (
 	if denom != paramtypes.Elys {
 		commitment := k.commitmentKeeper.GetCommitments(ctx, addr)
 		claimed := commitment.GetClaimedForDenom(denom)
-		balance = sdk.NewCoin(denom, claimed)
+		commitBalance := sdk.NewCoin(denom, claimed)
+
+		// If it is USDC, we should add bank module balance as well.
+		// TODO: For now we add bank balance for Eden as well as we don't have claimed state
+		// available in commitment module. So in the following statement, Eden has to be removed.
+		if denom == paramtypes.BaseCurrency || denom == paramtypes.Eden {
+			balance = balance.Add(commitBalance)
+		} else {
+			balance = commitBalance
+		}
 	}
 
 	return &types.QueryBalanceResponse{

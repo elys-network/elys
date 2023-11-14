@@ -124,8 +124,16 @@ type ElysQuery struct {
 	ClockParams         *clocktypes.QueryParamsRequest  `json:"clock_params,omitempty"`
 
 	// commitment queriers
-	CommitmentParams          *commitmenttypes.QueryParamsRequest          `json:"commitment_params,omitempty"`
-	CommitmentShowCommitments *commitmenttypes.QueryShowCommitmentsRequest `json:"commitment_show_commitments,omitempty"`
+	CommitmentParams                *commitmenttypes.QueryParamsRequest                        `json:"commitment_params,omitempty"`
+	CommitmentShowCommitments       *commitmenttypes.QueryShowCommitmentsRequest               `json:"commitment_show_commitments,omitempty"`
+	CommitmentDelegations           *commitmenttypes.QueryDelegatorDelegationsRequest          `json:"commitment_delegations,omitempty"`
+	CommitmentUnbondingDelegations  *commitmenttypes.QueryDelegatorUnbondingDelegationsRequest `json:"commitment_unbonding_delegations,omitempty"`
+	CommitmentStakedBalanceOfDenom  *ammtypes.QueryBalanceRequest                              `json:"commitment_staked_balance_of_denom,omitempty"`
+	CommitmentRewardsBalanceOfDenom *ammtypes.QueryBalanceRequest                              `json:"commitment_rewards_balance_of_denom,omitempty"`
+	CommitmentAllValidators         *commitmenttypes.QueryValidatorsRequest                    `json:"commitment_all_validators,omitempty"`
+	CommitmentDelegatorValidators   *commitmenttypes.QueryValidatorsRequest                    `json:"commitment_delegator_validators,omitempty"`
+	CommitmentStakedPositions       *commitmenttypes.QueryValidatorsRequest                    `json:"commitment_staked_positions,omitempty"`
+	CommitmentUnStakedPositions     *commitmenttypes.QueryValidatorsRequest                    `json:"commitment_un_staked_positions,omitempty"`
 
 	// epochs queriers
 	EpochsEpochInfos   *epochstypes.QueryEpochsInfoRequest   `json:"epochs_epoch_infos,omitempty"`
@@ -175,8 +183,9 @@ type ElysQuery struct {
 	ParameterAnteHandlerParamAll *parametertypes.QueryAllAnteHandlerParamRequest `json:"parameter_ante_handler_param_all,omitempty"`
 
 	// stablestake queriers
-	StableStakeParams      *stablestaketypes.QueryParamsRequest      `json:"stable_stake_params,omitempty"`
-	StableStakeBorrowRatio *stablestaketypes.QueryBorrowRatioRequest `json:"stable_stake_borrow_ratio,omitempty"`
+	StableStakeParams          *stablestaketypes.QueryParamsRequest      `json:"stable_stake_params,omitempty"`
+	StableStakeBorrowRatio     *stablestaketypes.QueryBorrowRatioRequest `json:"stable_stake_borrow_ratio,omitempty"`
+	StableStakeBalanceOfBorrow *commitmenttypes.QueryBorrowAmountRequest `json:"stable_stake_balance_of_borrow,omitempty"`
 
 	// tokenomics queriers
 	TokenomicsParams                *tokenomicstypes.QueryParamsRequest                `json:"tokenomics_params,omitempty"`

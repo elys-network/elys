@@ -90,17 +90,13 @@ func (k Keeper) ProcessWithdrawRewards(ctx sdk.Context, delegator string, denom 
 	commitments := k.cmk.GetCommitments(ctx, delegator)
 
 	// Eden
-	if denom == ptypes.Eden {
-		unclaimedEden := commitments.GetRewardUnclaimedForDenom(ptypes.Eden)
-		if unclaimedEden.IsZero() {
+	if denom == ptypes.Eden || denom == ptypes.EdenB {
+		unclaimed := commitments.GetRewardUnclaimedForDenom(denom)
+		if unclaimed.IsZero() {
 			return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, "balance not available")
 		}
-		// Claim Eden from Unclaimed state
-		return k.cmk.RecordClaimReward(ctx, delegator, ptypes.Eden, unclaimedEden)
-	}
-
-	if denom == ptypes.EdenB {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, "balance not available")
+		// Claim Eden pr Eden boost from Unclaimed state
+		return k.cmk.RecordClaimReward(ctx, delegator, denom, unclaimed)
 	}
 
 	// USDC
@@ -165,17 +161,13 @@ func (k Keeper) RecordWithdrawValidatorCommission(ctx sdk.Context, delegator str
 	commitments := k.cmk.GetCommitments(ctx, validator)
 
 	// Eden
-	if denom == ptypes.Eden {
-		unclaimedEden := commitments.GetRewardUnclaimedForDenom(ptypes.Eden)
-		if unclaimedEden.IsZero() {
+	if denom == ptypes.Eden || denom == ptypes.EdenB {
+		unclaimed := commitments.GetRewardUnclaimedForDenom(denom)
+		if unclaimed.IsZero() {
 			return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, "balance not available")
 		}
-		// Withdraw Eden
-		return k.cmk.RecordWithdrawValidatorCommission(ctx, delegator, validator, ptypes.Eden, unclaimedEden)
-	}
-
-	if denom == ptypes.EdenB {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, "balance not available")
+		// Withdraw Eden or EdenB
+		return k.cmk.RecordWithdrawValidatorCommission(ctx, delegator, validator, denom, unclaimed)
 	}
 
 	// USDC
