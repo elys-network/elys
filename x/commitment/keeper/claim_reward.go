@@ -1,25 +1,14 @@
 package keeper
 
 import (
-	"context"
-
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	aptypes "github.com/elys-network/elys/x/assetprofile/types"
 	"github.com/elys-network/elys/x/commitment/types"
 )
 
-// ClaimReward withdraw specific amount of coin from unclaimed reward
-func (k msgServer) ClaimReward(goCtx context.Context, msg *types.MsgClaimReward) (*types.MsgClaimRewardResponse, error) {
-	ctx := sdk.UnwrapSDKContext(goCtx)
-	// Withdraw tokens
-	err := k.ProcessClaimReward(ctx, msg.Creator, msg.Denom, msg.Amount)
-
-	return &types.MsgClaimRewardResponse{}, err
-}
-
-// Withdraw Token
-func (k Keeper) ProcessClaimReward(ctx sdk.Context, creator string, denom string, amount sdk.Int) error {
+// Update commitments for claim reward operation
+func (k Keeper) RecordClaimReward(ctx sdk.Context, creator string, denom string, amount sdk.Int) error {
 	assetProfile, found := k.apKeeper.GetEntry(ctx, denom)
 	if !found {
 		return sdkerrors.Wrapf(aptypes.ErrAssetProfileNotFound, "denom: %s", denom)
@@ -51,10 +40,11 @@ func (k Keeper) ProcessClaimReward(ctx sdk.Context, creator string, denom string
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "unable to convert address from bech32")
 	}
 
-	err = k.HandleWithdrawFromCommitment(ctx, &commitments, addr, withdrawCoins)
+	err = k.HandleWithdrawFromCommitment(ctx, &commitments, addr, withdrawCoins, false)
 	if err != nil {
 		return err
 	}
+
 	// Emit blockchain event
 	ctx.EventManager().EmitEvent(
 		sdk.NewEvent(

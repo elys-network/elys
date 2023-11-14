@@ -102,7 +102,7 @@ func TestProcessWithdrawRewards(t *testing.T) {
 	require.Equal(t, usdcCoin, usdcToken)
 }
 
-func TestProcessWithdrawValidatorCommission(t *testing.T) {
+func TestRecordWithdrawValidatorCommission(t *testing.T) {
 	app, genAccount, valAddress := simapp.InitElysTestAppWithGenAccount()
 	ctx := app.BaseApp.NewContext(initChain, tmproto.Header{})
 
@@ -159,7 +159,7 @@ func TestProcessWithdrawValidatorCommission(t *testing.T) {
 	}
 
 	require.True(t, found)
-	err = ik.ProcessWithdrawValidatorCommission(ctx, delegator, valAddress.String(), ptypes.Eden)
+	err = ik.RecordWithdrawValidatorCommission(ctx, delegator, valAddress.String(), ptypes.Eden)
 	require.NoError(t, err)
 
 	commitments = app.CommitmentKeeper.GetCommitments(ctx, delegator)

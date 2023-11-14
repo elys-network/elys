@@ -9,7 +9,6 @@ import (
 	"github.com/elys-network/elys/app"
 
 	aptypes "github.com/elys-network/elys/x/assetprofile/types"
-	commitmentkeeper "github.com/elys-network/elys/x/commitment/keeper"
 	"github.com/elys-network/elys/x/commitment/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 	"github.com/stretchr/testify/assert"
@@ -22,8 +21,6 @@ func TestClaimReward(t *testing.T) {
 	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
 	// Create a test context and keeper
 	keeper := app.CommitmentKeeper
-
-	msgServer := commitmentkeeper.NewMsgServerImpl(keeper)
 
 	creatorAddr, _ := sdk.AccAddressFromBech32("cosmos1xv9tklw7d82sezh9haa573wufgy59vmwe6xxe5")
 
@@ -56,13 +53,7 @@ func TestClaimReward(t *testing.T) {
 	app.AssetprofileKeeper.SetEntry(ctx, aptypes.Entry{BaseDenom: denom, WithdrawEnabled: true})
 
 	// Test scenario 1: Withdraw within unclaimed balance
-	msg := &types.MsgClaimReward{
-		Creator: creator,
-		Amount:  sdk.NewInt(30),
-		Denom:   denom,
-	}
-
-	_, err := msgServer.ClaimReward(ctx, msg)
+	err := app.CommitmentKeeper.RecordClaimReward(ctx, creator, denom, sdk.NewInt(30))
 	require.NoError(t, err)
 
 	updatedCommitments := keeper.GetCommitments(ctx, creator)
@@ -74,12 +65,6 @@ func TestClaimReward(t *testing.T) {
 	require.Equal(t, "30ueden", updatedCommitments.Claimed.String(), "tokens were not claimed correctly")
 
 	// Test scenario 2: Withdraw more than unclaimed reward
-	msg = &types.MsgClaimReward{
-		Creator: creator,
-		Amount:  sdk.NewInt(70),
-		Denom:   denom,
-	}
-
-	_, err = msgServer.ClaimReward(ctx, msg)
+	err = app.CommitmentKeeper.RecordClaimReward(ctx, creator, denom, sdk.NewInt(70))
 	require.Error(t, err)
 }

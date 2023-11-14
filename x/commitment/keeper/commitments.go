@@ -72,7 +72,7 @@ func (k Keeper) DeductClaimed(ctx sdk.Context, creator string, denom string, amo
 	return commitments, nil
 }
 
-func (k Keeper) DeductCommitments(ctx sdk.Context, creator string, denom string, amount sdk.Int) (types.Commitments, error) {
+func (k Keeper) DeductUnclaimed(ctx sdk.Context, creator string, denom string, amount sdk.Int) (types.Commitments, error) {
 	// Get the Commitments for the creator
 	commitments := k.GetCommitments(ctx, creator)
 
@@ -81,33 +81,63 @@ func (k Keeper) DeductCommitments(ctx sdk.Context, creator string, denom string,
 		return commitments, nil
 	}
 
-	// Get user's unclaimed reward
-	rewardUnclaimed := commitments.GetRewardUnclaimedForDenom(denom)
-
-	unclaimedRemovalAmount := amount
-
-	// Check if there are enough unclaimed rewards to withdraw
-	if rewardUnclaimed.LT(unclaimedRemovalAmount) {
-		// Calculate the difference between the requested amount and the available unclaimed balance
-		difference := unclaimedRemovalAmount.Sub(rewardUnclaimed)
-
-		err := commitments.DeductFromCommitted(denom, difference, uint64(ctx.BlockTime().Unix()))
-		if err != nil {
-			return types.Commitments{}, err
-		}
-
-		unclaimedRemovalAmount = rewardUnclaimed
-	}
-
 	// Subtract the withdrawn amount from the unclaimed balance
-	err := commitments.SubRewardsUnclaimed(sdk.NewCoin(denom, unclaimedRemovalAmount))
+	err := commitments.SubRewardsUnclaimed(sdk.NewCoin(denom, amount))
 	if err != nil {
 		return types.Commitments{}, err
 	}
 	return commitments, nil
 }
 
-func (k Keeper) HandleWithdrawFromCommitment(ctx sdk.Context, commitments *types.Commitments, addr sdk.AccAddress, amount sdk.Coins) error {
+func (k Keeper) BurnEdenBoost(ctx sdk.Context, creator string, denom string, amount sdk.Int) (types.Commitments, error) {
+	// Get the Commitments for the creator
+	commitments := k.GetCommitments(ctx, creator)
+
+	// if deduction amount is zero
+	if amount.Equal(sdk.ZeroInt()) {
+		return commitments, nil
+	}
+
+	// Subtract the amount from the unclaimed balance
+	rewardUnclaimed := commitments.GetRewardUnclaimedForDenom(denom)
+	unclaimedRemovalAmount := rewardUnclaimed
+	if amount.LT(rewardUnclaimed) {
+		unclaimedRemovalAmount = amount
+	}
+	err := commitments.SubRewardsUnclaimed(sdk.NewCoin(denom, unclaimedRemovalAmount))
+	if err != nil {
+		return types.Commitments{}, err
+	}
+
+	amount = amount.Sub(unclaimedRemovalAmount)
+	if amount.Equal(sdk.ZeroInt()) {
+		return commitments, nil
+	}
+
+	// Subtract the amount from the claimed balance
+	claimed := commitments.GetClaimedForDenom(denom)
+	claimedRemovalAmount := claimed
+	if amount.LT(claimed) {
+		claimedRemovalAmount = amount
+	}
+	err = commitments.SubClaimed(sdk.NewCoin(denom, claimedRemovalAmount))
+	if err != nil {
+		return types.Commitments{}, err
+	}
+
+	amount = amount.Sub(claimedRemovalAmount)
+	if amount.Equal(sdk.ZeroInt()) {
+		return commitments, nil
+	}
+
+	err = commitments.DeductFromCommitted(denom, amount, uint64(ctx.BlockTime().Unix()))
+	if err != nil {
+		return types.Commitments{}, err
+	}
+	return commitments, nil
+}
+
+func (k Keeper) HandleWithdrawFromCommitment(ctx sdk.Context, commitments *types.Commitments, addr sdk.AccAddress, amount sdk.Coins, sendCoins bool) error {
 	edenAmount := amount.AmountOf(ptypes.Eden)
 	edenBAmount := amount.AmountOf(ptypes.EdenB)
 	commitments.AddClaimed(sdk.NewCoin(ptypes.Eden, edenAmount))
@@ -121,13 +151,14 @@ func (k Keeper) HandleWithdrawFromCommitment(ctx sdk.Context, commitments *types
 	// Emit Hook commitment changed
 	k.AfterCommitmentChange(ctx, addr.String(), withdrawCoins)
 
-	// Send the coins to the user's account
-	err := k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, addr, withdrawCoins)
-	return err
+	if sendCoins {
+		return k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, addr, withdrawCoins)
+	}
+	return nil
 }
 
-// Withdraw validator's commission to self delegator
-func (k Keeper) ProcessWithdrawValidatorCommission(ctx sdk.Context, delegator string, creator string, denom string, amount sdk.Int) error {
+// Update commitments for validator's commission withdrawal to self delegator
+func (k Keeper) RecordWithdrawValidatorCommission(ctx sdk.Context, delegator string, creator string, denom string, amount sdk.Int) error {
 	assetProfile, found := k.apKeeper.GetEntry(ctx, denom)
 	if !found {
 		return sdkerrors.Wrapf(aptypes.ErrAssetProfileNotFound, "denom: %s", denom)
@@ -137,7 +168,7 @@ func (k Keeper) ProcessWithdrawValidatorCommission(ctx sdk.Context, delegator st
 		return sdkerrors.Wrapf(types.ErrWithdrawDisabled, "denom: %s", denom)
 	}
 
-	commitments, err := k.DeductCommitments(ctx, creator, denom, amount)
+	commitments, err := k.DeductUnclaimed(ctx, creator, denom, amount)
 	if err != nil {
 		return err
 	}
@@ -154,7 +185,7 @@ func (k Keeper) ProcessWithdrawValidatorCommission(ctx sdk.Context, delegator st
 	}
 
 	commitments = k.GetCommitments(ctx, delegator)
-	err = k.HandleWithdrawFromCommitment(ctx, &commitments, addr, withdrawCoins)
+	err = k.HandleWithdrawFromCommitment(ctx, &commitments, addr, withdrawCoins, false)
 	if err != nil {
 		return err
 	}
@@ -172,9 +203,8 @@ func (k Keeper) ProcessWithdrawValidatorCommission(ctx sdk.Context, delegator st
 	return nil
 }
 
-// Withdraw Token - USDC
-// Only withraw USDC from dexRevenue wallet
-func (k Keeper) ProcessWithdrawUSDC(ctx sdk.Context, creator string, denom string, amount sdk.Int) error {
+// Update commitments for Withdraw Token - USDC
+func (k Keeper) RecordWithdrawUSDC(ctx sdk.Context, creator string, denom string, amount sdk.Int) error {
 	if denom != ptypes.BaseCurrency {
 		return sdkerrors.Wrapf(types.ErrWithdrawDisabled, "denom: %s", denom)
 	}
@@ -188,7 +218,7 @@ func (k Keeper) ProcessWithdrawUSDC(ctx sdk.Context, creator string, denom strin
 		return sdkerrors.Wrapf(types.ErrWithdrawDisabled, "denom: %s", denom)
 	}
 
-	commitments, err := k.DeductCommitments(ctx, creator, denom, amount)
+	commitments, err := k.DeductUnclaimed(ctx, creator, denom, amount)
 	if err != nil {
 		return err
 	}

@@ -95,8 +95,8 @@ func (k Keeper) ProcessWithdrawRewards(ctx sdk.Context, delegator string, denom 
 		if unclaimedEden.IsZero() {
 			return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, "balance not available")
 		}
-		// Withdraw Eden
-		return k.cmk.ProcessClaimReward(ctx, delegator, ptypes.Eden, unclaimedEden)
+		// Claim Eden from Unclaimed state
+		return k.cmk.RecordClaimReward(ctx, delegator, ptypes.Eden, unclaimedEden)
 	}
 
 	if denom == ptypes.EdenB {
@@ -123,7 +123,7 @@ func (k Keeper) ProcessWithdrawRewards(ctx sdk.Context, delegator string, denom 
 	// TODO:
 	// USDC denom is still dummy until we have real USDC in our chain.
 	// This function call will deduct the accounting in commitment module only.
-	err = k.cmk.ProcessWithdrawUSDC(ctx, delegator, ptypes.BaseCurrency, unclaimedUsdc)
+	err = k.cmk.RecordWithdrawUSDC(ctx, delegator, ptypes.BaseCurrency, unclaimedUsdc)
 	if err != nil {
 		return sdkerrors.Wrapf(types.ErrIntOverflowTx, "Internal error with amount: %d", unclaimedUsdc)
 	}
@@ -147,9 +147,9 @@ func (k Keeper) ProcessWithdrawRewards(ctx sdk.Context, delegator string, denom 
 	return err
 }
 
-// Withdraw validator commission
+// Update commitments for validator commission
 // Eden, EdenBoost and USDC
-func (k Keeper) ProcessWithdrawValidatorCommission(ctx sdk.Context, delegator string, validator string, denom string) error {
+func (k Keeper) RecordWithdrawValidatorCommission(ctx sdk.Context, delegator string, validator string, denom string) error {
 	_, err := sdk.AccAddressFromBech32(delegator)
 	if err != nil {
 		return err
@@ -171,7 +171,7 @@ func (k Keeper) ProcessWithdrawValidatorCommission(ctx sdk.Context, delegator st
 			return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, "balance not available")
 		}
 		// Withdraw Eden
-		return k.cmk.ProcessWithdrawValidatorCommission(ctx, delegator, validator, ptypes.Eden, unclaimedEden)
+		return k.cmk.RecordWithdrawValidatorCommission(ctx, delegator, validator, ptypes.Eden, unclaimedEden)
 	}
 
 	if denom == ptypes.EdenB {
@@ -198,7 +198,7 @@ func (k Keeper) ProcessWithdrawValidatorCommission(ctx sdk.Context, delegator st
 	// TODO:
 	// USDC denom is still dummy until we have real USDC in our chain.
 	// This function call will deduct the accounting in commitment module only.
-	err = k.cmk.ProcessWithdrawUSDC(ctx, validator, ptypes.BaseCurrency, unclaimedUsdc)
+	err = k.cmk.RecordWithdrawUSDC(ctx, validator, ptypes.BaseCurrency, unclaimedUsdc)
 	if err != nil {
 		return sdkerrors.Wrapf(types.ErrIntOverflowTx, "Internal error with amount: %d", unclaimedUsdc)
 	}

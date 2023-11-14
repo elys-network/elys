@@ -63,7 +63,7 @@ func TestBurnEdenBFromElysUnstaked(t *testing.T) {
 	require.Equal(t, commitment.RewardsUnclaimed[1].Amount, sdk.NewInt(17525))
 }
 
-func TestBurnEdenBFromEdenUnclaimed(t *testing.T) {
+func TestBurnEdenBFromEdenUncommitted(t *testing.T) {
 	app, genAccount, _ := simapp.InitElysTestAppWithGenAccount()
 	ctx := app.BaseApp.NewContext(initChain, tmproto.Header{})
 

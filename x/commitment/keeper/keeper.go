@@ -23,17 +23,14 @@ type CommitmentKeeperI interface {
 	// Get commitment
 	GetCommitments(sdk.Context, string) types.Commitments
 
-	// Withdraw tokens
-	// context, creator, denom, amount
-	ProcessClaimReward(sdk.Context, string, string, sdk.Int) error
+	// Update commitments for claim reward operation
+	RecordClaimReward(sdk.Context, string, string, sdk.Int) error
 
-	// Withdraw validator commission
-	// context, delegator, validator, denom, amount
-	ProcessWithdrawValidatorCommission(sdk.Context, string, string, string, sdk.Int) error
+	// Update commitments for validator's commission withdrawal to self delegator
+	RecordWithdrawValidatorCommission(sdk.Context, string, string, string, sdk.Int) error
 
-	// Withdraw tokens - only USDC
-	// context, creator, denom, amount
-	ProcessWithdrawUSDC(ctx sdk.Context, creator string, denom string, amount sdk.Int) error
+	// Update commitments for Withdraw tokens - only USDC
+	RecordWithdrawUSDC(ctx sdk.Context, creator string, denom string, amount sdk.Int) error
 }
 
 var _ CommitmentKeeperI = Keeper{}

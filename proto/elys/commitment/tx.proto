@@ -18,12 +18,6 @@ service Msg {
   // UncommitTokens uncommits the tokens from committed store and make it liquid immediately
   rpc UncommitTokens (MsgUncommitTokens) returns (MsgUncommitTokensResponse);
   
-  // ClaimReward claim specific amount from unclaimed reward
-  rpc ClaimReward (MsgClaimReward) returns (MsgClaimRewardResponse);
-   
-  // ClaimRewards claim rewards from rewards-unclaimed and move to claimed state for Eden and send rewards to user's wallet
-  rpc ClaimRewards (MsgClaimRewards) returns (MsgClaimRewardsResponse);
-
   // Vest converts user's commitment to vesting - start with unclaimed rewards and if it's not enough deduct from committed bucket
   // mainly utilized for Eden
   rpc Vest (MsgVest) returns (MsgVestResponse);

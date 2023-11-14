@@ -75,7 +75,7 @@ func (k msgServer) WithdrawValidatorCommission(goCtx context.Context, msg *types
 	}
 
 	// Withdraw validator commission
-	err = k.ProcessWithdrawValidatorCommission(ctx, msg.DelegatorAddress, msg.ValidatorAddress, msg.Denom)
+	err = k.RecordWithdrawValidatorCommission(ctx, msg.DelegatorAddress, msg.ValidatorAddress, msg.Denom)
 	if err != nil {
 		return &types.MsgWithdrawValidatorCommissionResponse{}, err
 	}
