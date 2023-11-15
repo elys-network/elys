@@ -184,8 +184,7 @@ type ElysQuery struct {
 
 	// stablestake queriers
 	StableStakeParams          *stablestaketypes.QueryParamsRequest      `json:"stable_stake_params,omitempty"`
-	StableStakeBorrowRatio     *stablestaketypes.QueryBorrowRatioRequest `json:"stable_stake_borrow_ratio,omitempty"`
-	StableStakeBalanceOfBorrow *commitmenttypes.QueryBorrowAmountRequest `json:"stable_stake_balance_of_borrow,omitempty"`
+	StableStakeBalanceOfBorrow *stablestaketypes.QueryBorrowRatioRequest `json:"stable_stake_balance_of_borrow,omitempty"`
 
 	// tokenomics queriers
 	TokenomicsParams                *tokenomicstypes.QueryParamsRequest                `json:"tokenomics_params,omitempty"`
