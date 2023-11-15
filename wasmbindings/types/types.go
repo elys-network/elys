@@ -97,6 +97,17 @@ type ElysQuery struct {
 	AccountedPoolParams           *accountedpooltypes.QueryParamsRequest           `json:"accounted_pool_params,omitempty"`
 	AccountedPoolAccountedPool    *accountedpooltypes.QueryGetAccountedPoolRequest `json:"accounted_pool_accounted_pool,omitempty"`
 	AccountedPoolAccountedPoolAll *accountedpooltypes.QueryAllAccountedPoolRequest `json:"accounted_pool_accounted_pool_all,omitempty"`
+	PriceAll                      *PriceAll                                        `json:"price_all,omitempty"`
+	QuerySwapEstimation           *QuerySwapEstimationRequest                      `json:"query_swap_estimation,omitempty"`
+	AssetInfo                     *AssetInfo                                       `json:"asset_info,omitempty"`
+	BalanceOfDenom                *QueryBalanceRequest                             `json:"balance_of_denom,omitempty"`
+	Delegations                   *QueryDelegatorDelegationsRequest                `json:"delegations,omitempty"`
+	UnbondingDelegations          *QueryDelegatorUnbondingDelegationsRequest       `json:"unbonding_delegations,omitempty"`
+	StakedBalanceOfDenom          *QueryBalanceRequest                             `json:"staked_balance_of_denom,omitempty"`
+	RewardsBalanceOfDenom         *QueryBalanceRequest                             `json:"rewards_balance_of_denom,omitempty"`
+	ShowCommitments               *QueryCommitmentsRequest                         `json:"show_commitments,omitempty"`
+	BalanceOfBorrow               *QueryBorrowRequest                              `json:"balance_of_borrow,omitempty"`
+	Validators                    *QueryValidatorsRequest                          `json:"validators,omitempty"`
 
 	// amm queriers
 	AmmParams            *ammtypes.QueryParamsRequest            `json:"amm_params,omitempty"`
@@ -197,6 +208,48 @@ type ElysQuery struct {
 
 	// transferhook queriers
 	TransferHookParams *transferhooktypes.QueryParamsRequest `json:"transfer_hook_params,omitempty"`
+}
+
+type QueryCommitmentsRequest struct {
+	Address string `protobuf:"bytes,1,opt,name=address,proto3" json:"address,omitempty"`
+}
+
+type QueryBorrowRequest struct {
+	Address string `protobuf:"bytes,1,opt,name=address,proto3" json:"address,omitempty"`
+}
+
+type QueryDelegatorDelegationsRequest struct {
+	// delegator_addr defines the delegator address to query for.
+	DelegatorAddr string `protobuf:"bytes,1,opt,name=delegator_addr,json=delegatorAddr,proto3" json:"delegator_addr,omitempty"`
+}
+
+// QueryDelegatorDelegationsResponse is response type for the
+// Query/DelegatorDelegations RPC method.
+type QueryDelegatorDelegationsResponse struct {
+	// delegation_responses defines all the delegations' info of a delegator.
+	DelegationResponses []stakingtypes.DelegationResponse `protobuf:"bytes,1,rep,name=delegation_responses,json=delegationResponses,proto3" json:"delegation_responses"`
+}
+
+// QueryDelegatorUnbondingDelegationsRequest is request type for the
+type QueryDelegatorUnbondingDelegationsRequest struct {
+	// delegator_addr defines the delegator address to query for.
+	DelegatorAddr string `protobuf:"bytes,1,opt,name=delegator_addr,json=delegatorAddr,proto3" json:"delegator_addr,omitempty"`
+}
+
+// QueryUnbondingDelegatorDelegationsResponse is response type for the
+// Query/UnbondingDelegatorDelegations RPC method.
+type QueryDelegatorUnbondingDelegationsResponse struct {
+	UnbondingResponses []stakingtypes.UnbondingDelegation `protobuf:"bytes,1,rep,name=unbonding_responses,json=unbondingResponses,proto3" json:"unbonding_responses"`
+}
+
+// QueryValidatorsRequest is request type for Query/Validators RPC method.
+type QueryValidatorsRequest struct {
+	// status enables to query for validators matching a given status.
+	Status string `protobuf:"bytes,1,opt,name=status,proto3" json:"status,omitempty"`
+}
+
+type QueryShowCommitmentsResponse struct {
+	Commitments *commitmenttypes.Commitments `protobuf:"bytes,1,opt,name=commitments,proto3" json:"commitments,omitempty"`
 }
 
 type CustomMessenger struct {
