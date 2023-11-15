@@ -11,7 +11,7 @@ import (
 func (oq *Querier) queryBorrowRatio(ctx sdk.Context, query *types.QueryBorrowRatioRequest) ([]byte, error) {
 	res, err := oq.keeper.BorrowRatio(sdk.WrapSDKContext(ctx), query)
 	if err != nil {
-		return nil, errorsmod.Wrap(err, "failed to get params")
+		return nil, errorsmod.Wrap(err, "failed to get borrow ratio")
 	}
 
 	responseBytes, err := json.Marshal(res)

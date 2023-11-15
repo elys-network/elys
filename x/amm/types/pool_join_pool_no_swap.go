@@ -27,88 +27,91 @@ func (p *Pool) CalcJoinValueWithoutSlippage(ctx sdk.Context, oracleKeeper Oracle
 		v := tokenPrice.Mul(sdk.NewDecFromInt(asset.Amount))
 		joinValue = joinValue.Add(v)
 	}
+	return joinValue, nil
 
-	// weights := NormalizedWeights(p.PoolAssets)
-	weights, err := OraclePoolNormalizedWeights(ctx, oracleKeeper, p.PoolAssets)
-	if err != nil {
-		return sdk.ZeroDec(), err
-	}
+	// Note: Disable slippage handling for oracle pool due to 1 hour lockup on oracle lp
+	// // weights := NormalizedWeights(p.PoolAssets)
+	// weights, err := OraclePoolNormalizedWeights(ctx, oracleKeeper, p.PoolAssets)
+	// if err != nil {
+	// 	return sdk.ZeroDec(), err
+	// }
 
-	inAmounts := []PoolAssetUSDValue{}
-	outAmounts := []PoolAssetUSDValue{}
+	// inAmounts := []PoolAssetUSDValue{}
+	// outAmounts := []PoolAssetUSDValue{}
 
-	for _, weight := range weights {
-		targetAmount := joinValue.Mul(weight.Weight)
-		tokenPrice := oracleKeeper.GetAssetPriceFromDenom(ctx, weight.Asset)
-		if tokenPrice.IsZero() {
-			return sdk.ZeroDec(), fmt.Errorf("token price not set: %s", weight.Asset)
-		}
-		inAmount := tokenPrice.Mul(sdk.NewDecFromInt(tokensIn.AmountOf(weight.Asset)))
-		if targetAmount.GT(inAmount) {
-			outAmounts = append(outAmounts, PoolAssetUSDValue{
-				Asset: weight.Asset,
-				Value: targetAmount.Sub(inAmount),
-			})
-		}
+	// for _, weight := range weights {
+	// 	targetAmount := joinValue.Mul(weight.Weight)
+	// 	tokenPrice := oracleKeeper.GetAssetPriceFromDenom(ctx, weight.Asset)
+	// 	if tokenPrice.IsZero() {
+	// 		return sdk.ZeroDec(), fmt.Errorf("token price not set: %s", weight.Asset)
+	// 	}
+	// 	inAmount := tokenPrice.Mul(sdk.NewDecFromInt(tokensIn.AmountOf(weight.Asset)))
+	// 	if targetAmount.GT(inAmount) {
+	// 		outAmounts = append(outAmounts, PoolAssetUSDValue{
+	// 			Asset: weight.Asset,
+	// 			Value: targetAmount.Sub(inAmount),
+	// 		})
+	// 	}
 
-		if targetAmount.LT(inAmount) {
-			inAmounts = append(inAmounts, PoolAssetUSDValue{
-				Asset: weight.Asset,
-				Value: inAmount.Sub(targetAmount),
-			})
-		}
-	}
+	// 	if targetAmount.LT(inAmount) {
+	// 		inAmounts = append(inAmounts, PoolAssetUSDValue{
+	// 			Asset: weight.Asset,
+	// 			Value: inAmount.Sub(targetAmount),
+	// 		})
+	// 	}
+	// }
 
-	internalSwapRequests := []InternalSwapRequest{}
-	for i, j := 0, 0; i < len(inAmounts) && j < len(outAmounts); {
-		inTokenPrice := oracleKeeper.GetAssetPriceFromDenom(ctx, inAmounts[i].Asset)
-		if inTokenPrice.IsZero() {
-			return sdk.ZeroDec(), fmt.Errorf("token price not set: %s", inAmounts[i].Asset)
-		}
-		inAsset := inAmounts[i].Asset
-		outAsset := outAmounts[j].Asset
-		inAmount := sdk.ZeroInt()
-		if inAmounts[i].Value.GT(outAmounts[j].Value) {
-			inAmount = outAmounts[j].Value.Quo(inTokenPrice).RoundInt()
-			j++
-		} else if inAmounts[i].Value.LT(outAmounts[j].Value) {
-			inAmount = inAmounts[i].Value.Quo(inTokenPrice).RoundInt()
-			i++
-		} else {
-			inAmount = inAmounts[i].Value.Quo(inTokenPrice).RoundInt()
-			i++
-			j++
-		}
-		internalSwapRequests = append(internalSwapRequests, InternalSwapRequest{
-			InAmount: sdk.NewCoin(inAsset, inAmount),
-			OutToken: outAsset,
-		})
-	}
+	// internalSwapRequests := []InternalSwapRequest{}
+	// for i, j := 0, 0; i < len(inAmounts) && j < len(outAmounts); {
+	// 	inTokenPrice := oracleKeeper.GetAssetPriceFromDenom(ctx, inAmounts[i].Asset)
+	// 	if inTokenPrice.IsZero() {
+	// 		return sdk.ZeroDec(), fmt.Errorf("token price not set: %s", inAmounts[i].Asset)
+	// 	}
+	// 	inAsset := inAmounts[i].Asset
+	// 	outAsset := outAmounts[j].Asset
+	// 	inAmount := sdk.ZeroInt()
+	// 	if inAmounts[i].Value.GT(outAmounts[j].Value) {
+	// 		inAmount = outAmounts[j].Value.Quo(inTokenPrice).RoundInt()
+	// 		j++
+	// 	} else if inAmounts[i].Value.LT(outAmounts[j].Value) {
+	// 		inAmount = inAmounts[i].Value.Quo(inTokenPrice).RoundInt()
+	// 		i++
+	// 	} else {
+	// 		inAmount = inAmounts[i].Value.Quo(inTokenPrice).RoundInt()
+	// 		i++
+	// 		j++
+	// 	}
+	// 	internalSwapRequests = append(internalSwapRequests, InternalSwapRequest{
+	// 		InAmount: sdk.NewCoin(inAsset, inAmount),
+	// 		OutToken: outAsset,
+	// 	})
+	// }
 
-	slippageValue := sdk.ZeroDec()
-	for _, req := range internalSwapRequests {
-		inTokenPrice := oracleKeeper.GetAssetPriceFromDenom(ctx, req.InAmount.Denom)
-		if inTokenPrice.IsZero() {
-			return sdk.ZeroDec(), fmt.Errorf("token price not set: %s", req.InAmount.Denom)
-		}
-		resizedAmount := sdk.NewDecFromInt(req.InAmount.Amount).
-			Quo(p.PoolParams.ExternalLiquidityRatio).RoundInt()
-		slippageAmount, err := p.CalcGivenInSlippage(
-			ctx,
-			oracleKeeper,
-			p,
-			sdk.Coins{sdk.NewCoin(req.InAmount.Denom, resizedAmount)},
-			req.OutToken,
-			accountedPoolKeeper,
-		)
-		if err != nil {
-			return sdk.ZeroDec(), err
-		}
+	// slippageValue := sdk.ZeroDec()
+	// for _, req := range internalSwapRequests {
+	// 	inTokenPrice := oracleKeeper.GetAssetPriceFromDenom(ctx, req.InAmount.Denom)
+	// 	if inTokenPrice.IsZero() {
+	// 		return sdk.ZeroDec(), fmt.Errorf("token price not set: %s", req.InAmount.Denom)
+	// 	}
+	// 	resizedAmount := sdk.NewDecFromInt(req.InAmount.Amount).
+	// 		Quo(p.PoolParams.ExternalLiquidityRatio).RoundInt()
+	// 	slippageAmount, err := p.CalcGivenInSlippage(
+	// 		ctx,
+	// 		oracleKeeper,
+	// 		p,
+	// 		sdk.Coins{sdk.NewCoin(req.InAmount.Denom, resizedAmount)},
+	// 		req.OutToken,
+	// 		accountedPoolKeeper,
+	// 	)
+	// 	if err != nil {
+	// 		return sdk.ZeroDec(), err
+	// 	}
 
-		slippageValue = slippageValue.Add(slippageAmount.Mul(inTokenPrice))
-	}
-	joinValueWithoutSlippage := joinValue.Sub(slippageValue)
-	return joinValueWithoutSlippage, nil
+	// 	slippageValue = slippageValue.Add(slippageAmount.Mul(inTokenPrice))
+	// }
+	// joinValueWithoutSlippage := joinValue.Sub(slippageValue)
+
+	// return joinValueWithoutSlippage, nil
 }
 
 // JoinPool calculates the number of shares needed for an all-asset join given tokensIn with swapFee applied.
