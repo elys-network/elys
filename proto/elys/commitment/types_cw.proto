@@ -6,6 +6,7 @@ import "gogoproto/gogo.proto";
 import "cosmos_proto/cosmos.proto";
 import "cosmos/base/v1beta1/coin.proto";
 import "amino/amino.proto";
+import "elys/commitment/params.proto";
 
 option go_package = "github.com/elys-network/elys/x/commitment/types";
 
@@ -191,7 +192,7 @@ message QueryUnstakedPositionResponse {
 message QuerySubBucketBalanceRequest {
     string address = 1;
     string denom   = 2;
-    int64  program = 3;
+    elys.commitment.EarnType program = 3;
 }
 
 message QueryVestingInfoRequest {

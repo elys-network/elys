@@ -20,13 +20,13 @@ func (oq *Querier) queryRewardSubBucketBalanceOfDenom(ctx sdk.Context, query *co
 	commitment := oq.keeper.GetCommitments(ctx, addr)
 	uncommittedToken := commitment.GetRewardUnclaimedForDenom(denom)
 	switch query.Program {
-	case int64(commitmenttypes.EarnType_USDC_PROGRAM):
+	case commitmenttypes.EarnType_USDC_PROGRAM:
 		uncommittedToken = commitment.GetUsdcSubBucketRewardUnclaimedForDenom(denom)
-	case int64(commitmenttypes.EarnType_ELYS_PROGRAM):
+	case commitmenttypes.EarnType_ELYS_PROGRAM:
 		uncommittedToken = commitment.GetElysSubBucketRewardUnclaimedForDenom(denom)
-	case int64(commitmenttypes.EarnType_EDEN_PROGRAM):
+	case commitmenttypes.EarnType_EDEN_PROGRAM:
 		uncommittedToken = commitment.GetEdenSubBucketRewardUnclaimedForDenom(denom)
-	case int64(commitmenttypes.EarnType_EDENB_PROGRAM):
+	case commitmenttypes.EarnType_EDENB_PROGRAM:
 		uncommittedToken = commitment.GetEdenBSubBucketRewardUnclaimedForDenom(denom)
 	}
 
