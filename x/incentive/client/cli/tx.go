@@ -17,6 +17,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/version"
 	"github.com/cosmos/cosmos-sdk/x/gov/client/cli"
 	"github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
+	commitmenttypes "github.com/elys-network/elys/x/commitment/types"
 	"github.com/elys-network/elys/x/incentive/types"
 )
 
@@ -24,7 +25,7 @@ var (
 	FlagCommission                        = "commission"
 	FlagValidatorAddress                  = "validator-address"
 	FlagMaxMessagesPerTx                  = "max-msgs"
-	FlagWithdrawType                      = "withdraw-type"
+	FlagEarnType                          = "earn-type"
 	DefaultRelativePacketTimeoutTimestamp = uint64((time.Duration(10) * time.Minute).Nanoseconds())
 )
 
@@ -108,12 +109,12 @@ $ %s tx incentive withdraw-rewards --from mykey --commission --validator-address
 
 			argDenom := args[0]
 			delAddr := clientCtx.GetFromAddress()
-			withdrawType, err := cmd.Flags().GetInt64(FlagWithdrawType)
+			earnType, err := cmd.Flags().GetInt64(FlagEarnType)
 			if err != nil {
-				withdrawType = int64(0)
+				earnType = int64(commitmenttypes.EarnType_ALL_PROGRAM)
 			}
 
-			msgs := []sdk.Msg{types.NewMsgWithdrawRewards(delAddr, argDenom, withdrawType)}
+			msgs := []sdk.Msg{types.NewMsgWithdrawRewards(delAddr, argDenom, commitmenttypes.EarnType(earnType))}
 
 			if commission, _ := cmd.Flags().GetBool(FlagCommission); commission {
 				if validatorAddr, _ := cmd.Flags().GetString(FlagValidatorAddress); len(validatorAddr) > 0 {
@@ -131,7 +132,7 @@ $ %s tx incentive withdraw-rewards --from mykey --commission --validator-address
 
 	cmd.Flags().Bool(FlagCommission, false, "Withdraw the validator's commission in addition to the rewards")
 	cmd.Flags().String(FlagValidatorAddress, "", "Validator's operator address to withdraw commission from")
-	cmd.Flags().Int64(FlagWithdrawType, 0, "Withdraw type - 0: withdraw all, 1: withdraw usdc program, 2: withdraw elys program, 3: withdraw eden program, 4: withdraw eden boost program.")
+	cmd.Flags().Int64(FlagEarnType, 0, "Earn type - 0: all earn, 1: usdc program, 2: elys program, 3: eden program, 4: eden boost program.")
 
 	flags.AddTxFlagsToCmd(cmd)
 

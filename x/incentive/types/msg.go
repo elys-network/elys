@@ -3,6 +3,7 @@ package types
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	commitmenttypes "github.com/elys-network/elys/x/commitment/types"
 )
 
 // distribution message types
@@ -14,11 +15,11 @@ const (
 // Verify interface at compile time
 var _, _ sdk.Msg = &MsgWithdrawRewards{}, &MsgWithdrawValidatorCommission{}
 
-func NewMsgWithdrawRewards(delAddr sdk.AccAddress, denom string, withdrawType int64) *MsgWithdrawRewards {
+func NewMsgWithdrawRewards(delAddr sdk.AccAddress, denom string, earnType commitmenttypes.EarnType) *MsgWithdrawRewards {
 	return &MsgWithdrawRewards{
 		DelegatorAddress: delAddr.String(),
 		Denom:            denom,
-		WithdrawType:     withdrawType,
+		WithdrawType:     earnType,
 	}
 }
 

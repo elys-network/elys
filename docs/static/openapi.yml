@@ -83670,6 +83670,15 @@ definitions:
 
       NOTE: The amount field is an Dec which implements the custom method
       signatures required by gogoproto.
+  elys.commitment.EarnType:
+    type: string
+    enum:
+      - ALL_PROGRAM
+      - USDC_PROGRAM
+      - ELYS_PROGRAM
+      - EDEN_PROGRAM
+      - EDENB_PROGRAM
+    default: ALL_PROGRAM
   elys.incentive.IncentiveInfo:
     type: object
     properties:

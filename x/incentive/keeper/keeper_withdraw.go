@@ -81,7 +81,7 @@ func (k Keeper) GiveCommissionToValidators(ctx sdk.Context, delegator string, to
 
 // withdraw rewards
 // Eden, EdenBoost and Elys to USDC
-func (k Keeper) ProcessWithdrawRewards(ctx sdk.Context, delegator string, denom string, withdrawType int64) error {
+func (k Keeper) ProcessWithdrawRewards(ctx sdk.Context, delegator string, denom string, withdrawType commitmenttypes.EarnType) error {
 	_, err := sdk.AccAddressFromBech32(delegator)
 	if err != nil {
 		return err
@@ -94,13 +94,13 @@ func (k Keeper) ProcessWithdrawRewards(ctx sdk.Context, delegator string, denom 
 	if denom == ptypes.Eden || denom == ptypes.EdenB {
 		unclaimed := sdk.ZeroInt()
 		switch withdrawType {
-		case int64(commitmenttypes.EarnType_ELYS_PROGRAM):
+		case commitmenttypes.EarnType_ELYS_PROGRAM:
 			unclaimed = commitments.GetElysSubBucketRewardUnclaimedForDenom(denom)
-		case int64(commitmenttypes.EarnType_EDEN_PROGRAM):
+		case commitmenttypes.EarnType_EDEN_PROGRAM:
 			unclaimed = commitments.GetEdenSubBucketRewardUnclaimedForDenom(denom)
-		case int64(commitmenttypes.EarnType_EDENB_PROGRAM):
+		case commitmenttypes.EarnType_EDENB_PROGRAM:
 			unclaimed = commitments.GetEdenBSubBucketRewardUnclaimedForDenom(denom)
-		case int64(commitmenttypes.EarnType_USDC_PROGRAM):
+		case commitmenttypes.EarnType_USDC_PROGRAM:
 			unclaimed = commitments.GetUsdcSubBucketRewardUnclaimedForDenom(denom)
 		default:
 			unclaimed = commitments.GetRewardUnclaimedForDenom(denom)
