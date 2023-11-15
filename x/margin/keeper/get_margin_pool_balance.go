@@ -18,13 +18,13 @@ func (k Keeper) GetMarginPoolBalancesByPosition(marginPool types.Pool, denom str
 }
 
 // Get Margin Pool Balance
-func (k Keeper) GetMarginPoolBalances(marginPool types.Pool, denom string) (assetBalance sdk.Int, liabilities sdk.Int, custody sdk.Int) {
+func (k Keeper) GetMarginPoolBalances(marginPool types.Pool, denom string) (sdk.Int, sdk.Int, sdk.Int) {
 	assetBalanceLong, liabilitiesLong, custodyLong := k.GetMarginPoolBalancesByPosition(marginPool, denom, types.Position_LONG)
 	assetBalanceShort, liabilitiesShort, custodyShort := k.GetMarginPoolBalancesByPosition(marginPool, denom, types.Position_SHORT)
 
-	assetBalance = assetBalanceLong.Add(assetBalanceShort)
-	liabilities = liabilitiesLong.Add(liabilitiesShort)
-	custody = custodyLong.Add(custodyShort)
+	assetBalance := assetBalanceLong.Add(assetBalanceShort)
+	liabilities := liabilitiesLong.Add(liabilitiesShort)
+	custody := custodyLong.Add(custodyShort)
 
 	return assetBalance, liabilities, custody
 }
