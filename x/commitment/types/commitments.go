@@ -120,6 +120,22 @@ func (c *Commitments) AddRewardsUnclaimed(amount sdk.Coin) {
 	c.RewardsUnclaimed = c.RewardsUnclaimed.Add(amount)
 }
 
+func (c *Commitments) AddSubBucketRewardsByElysUnclaimed(amount sdk.Coins) {
+	c.RewardsByElysUnclaimed = c.RewardsByElysUnclaimed.Add(amount...)
+}
+
+func (c *Commitments) AddSubBucketRewardsByEdenUnclaimed(amount sdk.Coins) {
+	c.RewardsByEdenUnclaimed = c.RewardsByEdenUnclaimed.Add(amount...)
+}
+
+func (c *Commitments) AddSubBucketRewardsByEdenBUnclaimed(amount sdk.Coins) {
+	c.RewardsByEdenbUnclaimed = c.RewardsByEdenbUnclaimed.Add(amount...)
+}
+
+func (c *Commitments) AddSubBucketRewardsByUsdcUnclaimed(amount sdk.Coins) {
+	c.RewardsByUsdcUnclaimed = c.RewardsByUsdcUnclaimed.Add(amount...)
+}
+
 func (c *Commitments) SubRewardsUnclaimed(amount sdk.Coin) error {
 	if c.RewardsUnclaimed.AmountOf(amount.Denom).LT(amount.Amount) {
 		return ErrInsufficientRewardsUnclaimed

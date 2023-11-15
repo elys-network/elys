@@ -23,6 +23,26 @@ message Commitments {
       (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
     ];
     repeated VestingTokens vesting_tokens = 5;
+
+    repeated cosmos.base.v1beta1.Coin rewards_by_elys_unclaimed = 6 [
+      (gogoproto.nullable) = false,
+      (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
+    ];
+
+    repeated cosmos.base.v1beta1.Coin rewards_by_eden_unclaimed = 7 [
+      (gogoproto.nullable) = false,
+      (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
+    ];
+    
+    repeated cosmos.base.v1beta1.Coin rewards_by_edenb_unclaimed = 8 [
+      (gogoproto.nullable) = false,
+      (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
+    ];
+
+    repeated cosmos.base.v1beta1.Coin rewards_by_usdc_unclaimed = 9 [
+      (gogoproto.nullable) = false,
+      (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
+    ];
 }
 
 message Lockup {
