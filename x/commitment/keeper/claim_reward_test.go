@@ -53,7 +53,7 @@ func TestClaimReward(t *testing.T) {
 	app.AssetprofileKeeper.SetEntry(ctx, aptypes.Entry{BaseDenom: denom, WithdrawEnabled: true})
 
 	// Test scenario 1: Withdraw within unclaimed balance
-	err := app.CommitmentKeeper.RecordClaimReward(ctx, creator, denom, sdk.NewInt(30), types.ALL_PROGRAM)
+	err := app.CommitmentKeeper.RecordClaimReward(ctx, creator, denom, sdk.NewInt(30), int64(types.EarnType_ALL_PROGRAM))
 	require.NoError(t, err)
 
 	updatedCommitments := keeper.GetCommitments(ctx, creator)
@@ -65,6 +65,6 @@ func TestClaimReward(t *testing.T) {
 	require.Equal(t, "30ueden", updatedCommitments.Claimed.String(), "tokens were not claimed correctly")
 
 	// Test scenario 2: Withdraw more than unclaimed reward
-	err = app.CommitmentKeeper.RecordClaimReward(ctx, creator, denom, sdk.NewInt(70), types.ALL_PROGRAM)
+	err = app.CommitmentKeeper.RecordClaimReward(ctx, creator, denom, sdk.NewInt(70), int64(types.EarnType_ALL_PROGRAM))
 	require.Error(t, err)
 }

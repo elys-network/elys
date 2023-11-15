@@ -26,31 +26,31 @@ func (k Keeper) RecordClaimReward(ctx sdk.Context, creator string, denom string,
 
 	// Withdraw reward not depending on program type
 	switch withdrawMode {
-	case types.ALL_PROGRAM:
+	case int64(types.EarnType_ALL_PROGRAM):
 		// Subtract the withdrawn amount from the unclaimed balance
 		err := commitments.SubRewardsUnclaimed(sdk.NewCoin(denom, amount))
 		if err != nil {
 			return err
 		}
-	case types.USDC_PROGRAM:
+	case int64(types.EarnType_USDC_PROGRAM):
 		// Subtract the withdrawn amount from the unclaimed balance
 		err := commitments.SubRewardsUnclaimedForUSDCDeposit(sdk.NewCoin(denom, amount))
 		if err != nil {
 			return err
 		}
-	case types.ELYS_PROGRAM:
+	case int64(types.EarnType_ELYS_PROGRAM):
 		// Subtract the withdrawn amount from the unclaimed balance
 		err := commitments.SubRewardsUnclaimedForElysStaking(sdk.NewCoin(denom, amount))
 		if err != nil {
 			return err
 		}
-	case types.EDEN_PROGRAM:
+	case int64(types.EarnType_EDEN_PROGRAM):
 		// Subtract the withdrawn amount from the unclaimed balance
 		err := commitments.SubRewardsUnclaimedForEdenCommitted(sdk.NewCoin(denom, amount))
 		if err != nil {
 			return err
 		}
-	case types.EDENB_PROGRAM:
+	case int64(types.EarnType_EDENB_PROGRAM):
 		// Subtract the withdrawn amount from the unclaimed balance
 		err := commitments.SubRewardsUnclaimedForEdenBCommitted(sdk.NewCoin(denom, amount))
 		if err != nil {

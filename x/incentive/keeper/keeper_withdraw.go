@@ -94,13 +94,13 @@ func (k Keeper) ProcessWithdrawRewards(ctx sdk.Context, delegator string, denom 
 	if denom == ptypes.Eden || denom == ptypes.EdenB {
 		unclaimed := sdk.ZeroInt()
 		switch withdrawType {
-		case commitmenttypes.ELYS_PROGRAM:
+		case int64(commitmenttypes.EarnType_ELYS_PROGRAM):
 			unclaimed = commitments.GetElysSubBucketRewardUnclaimedForDenom(denom)
-		case commitmenttypes.EDEN_PROGRAM:
+		case int64(commitmenttypes.EarnType_EDEN_PROGRAM):
 			unclaimed = commitments.GetEdenSubBucketRewardUnclaimedForDenom(denom)
-		case commitmenttypes.EDENB_PROGRAM:
+		case int64(commitmenttypes.EarnType_EDENB_PROGRAM):
 			unclaimed = commitments.GetEdenBSubBucketRewardUnclaimedForDenom(denom)
-		case commitmenttypes.USDC_PROGRAM:
+		case int64(commitmenttypes.EarnType_USDC_PROGRAM):
 			unclaimed = commitments.GetUsdcSubBucketRewardUnclaimedForDenom(denom)
 		default:
 			unclaimed = commitments.GetRewardUnclaimedForDenom(denom)
