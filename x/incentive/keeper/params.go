@@ -7,6 +7,7 @@ import (
 	etypes "github.com/elys-network/elys/x/epochs/types"
 	"github.com/elys-network/elys/x/incentive/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
+	stabletypes "github.com/elys-network/elys/x/stablestake/types"
 )
 
 // GetParams get all parameters as types.Params
@@ -212,6 +213,16 @@ func (k Keeper) UpdateTotalCommitmentInfo(ctx sdk.Context) {
 			}
 			return false
 		})
+
+		// handle stable stake pool lp token
+		lpStableStakeDenom := stabletypes.GetShareDenom()
+		committedLpToken := commitments.GetCommittedAmountForDenom(lpStableStakeDenom)
+		amt, ok := k.tci.TotalLpTokensCommitted[lpStableStakeDenom]
+		if !ok {
+			k.tci.TotalLpTokensCommitted[lpStableStakeDenom] = committedLpToken
+		} else {
+			k.tci.TotalLpTokensCommitted[lpStableStakeDenom] = amt.Add(committedLpToken)
+		}
 		return false
 	})
 }

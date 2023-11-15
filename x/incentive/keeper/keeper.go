@@ -13,6 +13,7 @@ import (
 	ctypes "github.com/elys-network/elys/x/commitment/types"
 	"github.com/elys-network/elys/x/incentive/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
+	stabletypes "github.com/elys-network/elys/x/stablestake/types"
 )
 
 type (
@@ -160,6 +161,7 @@ func (k Keeper) UpdateRewardsUnclaimed(ctx sdk.Context, epochIdentifier string, 
 			totalEdenGiven = totalEdenGiven.Add(newUnclaimedEdenTokens)
 			totalRewardsGiven = totalRewardsGiven.Add(dexRewards)
 
+			// Sub bucket
 			rewardsByEdenCommitted = rewardsByEdenCommitted.Add(sdk.NewCoin(ptypes.Eden, newUnclaimedEdenTokens))
 			rewardsByEdenCommitted = rewardsByEdenCommitted.Add(sdk.NewCoin(ptypes.BaseCurrency, dexRewards))
 
@@ -169,6 +171,7 @@ func (k Keeper) UpdateRewardsUnclaimed(ctx sdk.Context, epochIdentifier string, 
 			totalEdenGiven = totalEdenGiven.Add(newUnclaimedEdenTokens)
 			totalRewardsGiven = totalRewardsGiven.Add(dexRewards)
 
+			// Sub bucket
 			rewardsByEdenBCommitted = rewardsByEdenBCommitted.Add(sdk.NewCoin(ptypes.Eden, newUnclaimedEdenTokens))
 			rewardsByEdenBCommitted = rewardsByEdenBCommitted.Add(sdk.NewCoin(ptypes.BaseCurrency, dexRewards))
 
@@ -177,6 +180,16 @@ func (k Keeper) UpdateRewardsUnclaimed(ctx sdk.Context, epochIdentifier string, 
 			newUnclaimedEdenTokensLp, dexRewardsLp := k.CalculateRewardsForLPs(ctx, totalProxyTVL, commitments, edenAmountPerEpochLPs, gasFeesLPsAmt)
 			totalEdenGivenLP = totalEdenGivenLP.Add(newUnclaimedEdenTokensLp)
 			totalRewardsGivenLP = totalRewardsGivenLP.Add(dexRewardsLp)
+
+			// Calculate new unclaimed Eden tokens from stable stake LpTokens committed, Dex rewards distribution
+			// Distribute gas fees to LPs
+			newUnclaimedEdenTokensStableLp, dexRewardsStableLp := k.CalculateRewardsForLPs(ctx, totalProxyTVL, commitments, edenAmountPerEpochLPs, gasFeesLPsAmt)
+			totalEdenGivenLP = totalEdenGivenLP.Add(newUnclaimedEdenTokensStableLp)
+			totalRewardsGivenLP = totalRewardsGivenLP.Add(dexRewardsStableLp)
+
+			// Sub bucket
+			rewardsByUSDCDeposit = rewardsByUSDCDeposit.Add(sdk.NewCoin(ptypes.Eden, newUnclaimedEdenTokensStableLp))
+			rewardsByUSDCDeposit = rewardsByUSDCDeposit.Add(sdk.NewCoin(ptypes.BaseCurrency, dexRewardsStableLp))
 
 			// Calculate the total Eden unclaimed amount
 			newUnclaimedEdenTokens = newUnclaimedEdenTokens.Add(newUnclaimedEdenTokensLp)
@@ -199,7 +212,9 @@ func (k Keeper) UpdateRewardsUnclaimed(ctx sdk.Context, epochIdentifier string, 
 			rewardsByElysStaking = rewardsByElysStaking.Add(sdk.NewCoin(ptypes.BaseCurrency, newDexRewardFromElysStaking))
 
 			// Calculate new unclaimed Eden-Boost tokens for staker and Eden token holders
-			newUnclaimedEdenBoostTokens := k.CalculateEdenBoostRewards(ctx, delegatedAmt, commitments, epochIdentifier, edenBoostAPR)
+			newUnclaimedEdenBoostTokens, newUnclaimedEdenBoostFromElysStaking, newUnclaimedEdenBoostFromEdenCommited := k.CalculateEdenBoostRewards(ctx, delegatedAmt, commitments, epochIdentifier, edenBoostAPR)
+			rewardsByElysStaking = rewardsByElysStaking.Add(sdk.NewCoin(ptypes.EdenB, newUnclaimedEdenBoostFromElysStaking))
+			rewardsByEdenCommitted = rewardsByEdenCommitted.Add(sdk.NewCoin(ptypes.EdenB, newUnclaimedEdenBoostFromEdenCommited))
 
 			// Update Commitments with new unclaimed token amounts
 			k.UpdateCommitments(ctx, creator, &commitments, newUnclaimedEdenTokens, newUnclaimedEdenBoostTokens, dexRewards)
@@ -286,6 +301,20 @@ func (k Keeper) CalculateProxyTVL(ctx sdk.Context) sdk.Dec {
 
 		return false
 	})
+
+	//-----------------------------------
+	// Handle stable stake pool
+	stableStakePoolId := uint64(stabletypes.PoolId)
+
+	// Get pool info from incentive param
+	poolInfo, found := k.GetPoolInfo(ctx, stableStakePoolId)
+	if !found {
+		k.InitPoolMultiplier(ctx, stableStakePoolId)
+		poolInfo, _ = k.GetPoolInfo(ctx, stableStakePoolId)
+	}
+	tvl := stabletypes.TVL(ctx, k.authKeeper, k.bankKeeper)
+	proxyTVL := sdk.NewDecFromInt(tvl).Mul(poolInfo.Multiplier)
+	multipliedShareSum = multipliedShareSum.Add(proxyTVL)
 
 	// return total sum of TVL share using multiplier of all pools
 	return multipliedShareSum
