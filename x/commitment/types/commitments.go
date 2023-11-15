@@ -116,6 +116,46 @@ func (c *Commitments) GetRewardUnclaimedForDenom(denom string) sdk.Int {
 	return sdk.ZeroInt()
 }
 
+// Sub bucket rewards query - Elys
+func (c *Commitments) GetElysSubBucketRewardUnclaimedForDenom(denom string) sdk.Int {
+	for _, token := range c.RewardsByElysUnclaimed {
+		if token.Denom == denom {
+			return token.Amount
+		}
+	}
+	return sdk.ZeroInt()
+}
+
+// Sub bucket rewards query - Eden
+func (c *Commitments) GetEdenSubBucketRewardUnclaimedForDenom(denom string) sdk.Int {
+	for _, token := range c.RewardsByEdenUnclaimed {
+		if token.Denom == denom {
+			return token.Amount
+		}
+	}
+	return sdk.ZeroInt()
+}
+
+// Sub bucket rewards query - EdenB
+func (c *Commitments) GetEdenBSubBucketRewardUnclaimedForDenom(denom string) sdk.Int {
+	for _, token := range c.RewardsByEdenbUnclaimed {
+		if token.Denom == denom {
+			return token.Amount
+		}
+	}
+	return sdk.ZeroInt()
+}
+
+// Sub bucket rewards query - Usdc
+func (c *Commitments) GetUsdcSubBucketRewardUnclaimedForDenom(denom string) sdk.Int {
+	for _, token := range c.RewardsByUsdcUnclaimed {
+		if token.Denom == denom {
+			return token.Amount
+		}
+	}
+	return sdk.ZeroInt()
+}
+
 func (c *Commitments) AddRewardsUnclaimed(amount sdk.Coin) {
 	c.RewardsUnclaimed = c.RewardsUnclaimed.Add(amount)
 }
@@ -141,7 +181,137 @@ func (c *Commitments) SubRewardsUnclaimed(amount sdk.Coin) error {
 		return ErrInsufficientRewardsUnclaimed
 	}
 	c.RewardsUnclaimed = c.RewardsUnclaimed.Sub(amount)
+
+	// First deduct from elys staking bucket
+	allDeducted, remainedAmount := c.DeductSubBucketRewardsByElysUnclaimed(amount)
+	if allDeducted {
+		return nil
+	}
+
+	// If there is still remaining amount, deduct from eden commited bucket
+	allDeducted, remainedAmount = c.DeductSubBucketRewardsByEdenUnclaimed(remainedAmount)
+	if allDeducted {
+		return nil
+	}
+
+	// If there is still remaining amount, deduct from edenb commited bucket
+	allDeducted, remainedAmount = c.DeductSubBucketRewardsByEdenBUnclaimed(remainedAmount)
+	if allDeducted {
+		return nil
+	}
+
+	// If there is still remaining amount, deduct from usdc deposit bucket
+	c.DeductSubBucketRewardsByUsdcUnclaimed(remainedAmount)
+
 	return nil
+}
+
+// This is the function used when we withdraw the reward by program
+func (c *Commitments) SubRewardsUnclaimedForElysStaking(amount sdk.Coin) error {
+	if c.RewardsUnclaimed.AmountOf(amount.Denom).LT(amount.Amount) {
+		return ErrInsufficientRewardsUnclaimed
+	}
+	c.RewardsUnclaimed = c.RewardsUnclaimed.Sub(amount)
+
+	c.DeductSubBucketRewardsByElysUnclaimed(amount)
+	return nil
+}
+
+// This is the function used when we withdraw the reward by program
+func (c *Commitments) SubRewardsUnclaimedForEdenCommitted(amount sdk.Coin) error {
+	if c.RewardsUnclaimed.AmountOf(amount.Denom).LT(amount.Amount) {
+		return ErrInsufficientRewardsUnclaimed
+	}
+	c.RewardsUnclaimed = c.RewardsUnclaimed.Sub(amount)
+
+	c.DeductSubBucketRewardsByEdenUnclaimed(amount)
+	return nil
+}
+
+// This is the function used when we withdraw the reward by program
+func (c *Commitments) SubRewardsUnclaimedForEdenBCommitted(amount sdk.Coin) error {
+	if c.RewardsUnclaimed.AmountOf(amount.Denom).LT(amount.Amount) {
+		return ErrInsufficientRewardsUnclaimed
+	}
+	c.RewardsUnclaimed = c.RewardsUnclaimed.Sub(amount)
+
+	c.DeductSubBucketRewardsByEdenBUnclaimed(amount)
+	return nil
+}
+
+// This is the function used when we withdraw the reward by program
+func (c *Commitments) SubRewardsUnclaimedForUSDCDeposit(amount sdk.Coin) error {
+	if c.RewardsUnclaimed.AmountOf(amount.Denom).LT(amount.Amount) {
+		return ErrInsufficientRewardsUnclaimed
+	}
+	c.RewardsUnclaimed = c.RewardsUnclaimed.Sub(amount)
+
+	c.DeductSubBucketRewardsByUsdcUnclaimed(amount)
+	return nil
+}
+
+func (c *Commitments) DeductSubBucketRewardsByElysUnclaimed(amount sdk.Coin) (bool, sdk.Coin) {
+	amountToDeduct := amount
+	availableToDeduct := c.RewardsByElysUnclaimed.AmountOf(amount.Denom)
+	if availableToDeduct.LT(amountToDeduct.Amount) {
+		amountToDeduct = sdk.NewCoin(amount.Denom, availableToDeduct)
+	}
+
+	c.RewardsByElysUnclaimed = c.RewardsByElysUnclaimed.Sub(amountToDeduct)
+	remainedAmount := amount.Sub(amountToDeduct)
+	if remainedAmount.Amount.LTE(sdk.ZeroInt()) {
+		return true, remainedAmount
+	}
+
+	return false, remainedAmount
+}
+
+func (c *Commitments) DeductSubBucketRewardsByEdenUnclaimed(amount sdk.Coin) (bool, sdk.Coin) {
+	amountToDeduct := amount
+	availableToDeduct := c.RewardsByEdenUnclaimed.AmountOf(amount.Denom)
+	if availableToDeduct.LT(amountToDeduct.Amount) {
+		amountToDeduct = sdk.NewCoin(amount.Denom, availableToDeduct)
+	}
+
+	c.RewardsByEdenUnclaimed = c.RewardsByEdenUnclaimed.Sub(amountToDeduct)
+	remainedAmount := amount.Sub(amountToDeduct)
+	if remainedAmount.Amount.LTE(sdk.ZeroInt()) {
+		return true, remainedAmount
+	}
+
+	return false, remainedAmount
+}
+
+func (c *Commitments) DeductSubBucketRewardsByEdenBUnclaimed(amount sdk.Coin) (bool, sdk.Coin) {
+	amountToDeduct := amount
+	availableToDeduct := c.RewardsByEdenbUnclaimed.AmountOf(amount.Denom)
+	if availableToDeduct.LT(amountToDeduct.Amount) {
+		amountToDeduct = sdk.NewCoin(amount.Denom, availableToDeduct)
+	}
+
+	c.RewardsByEdenbUnclaimed = c.RewardsByEdenbUnclaimed.Sub(amountToDeduct)
+	remainedAmount := amount.Sub(amountToDeduct)
+	if remainedAmount.Amount.LTE(sdk.ZeroInt()) {
+		return true, remainedAmount
+	}
+
+	return false, remainedAmount
+}
+
+func (c *Commitments) DeductSubBucketRewardsByUsdcUnclaimed(amount sdk.Coin) (bool, sdk.Coin) {
+	amountToDeduct := amount
+	availableToDeduct := c.RewardsByUsdcUnclaimed.AmountOf(amount.Denom)
+	if availableToDeduct.LT(amountToDeduct.Amount) {
+		amountToDeduct = sdk.NewCoin(amount.Denom, availableToDeduct)
+	}
+
+	c.RewardsByUsdcUnclaimed = c.RewardsByUsdcUnclaimed.Sub(amountToDeduct)
+	remainedAmount := amount.Sub(amountToDeduct)
+	if remainedAmount.Amount.LTE(sdk.ZeroInt()) {
+		return true, remainedAmount
+	}
+
+	return false, remainedAmount
 }
 
 func (c *Commitments) GetClaimedForDenom(denom string) sdk.Int {

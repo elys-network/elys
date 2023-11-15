@@ -20,7 +20,7 @@ type CommitmentKeeper interface {
 	// Get commitment
 	GetCommitments(sdk.Context, string) ctypes.Commitments
 	// Update commitments for claim reward operation
-	RecordClaimReward(sdk.Context, string, string, sdk.Int) error
+	RecordClaimReward(sdk.Context, string, string, sdk.Int, int64) error
 	// Update commitments for validator commission
 	RecordWithdrawValidatorCommission(sdk.Context, string, string, string, sdk.Int) error
 	// Update commitments for withdraw tokens - only USDC

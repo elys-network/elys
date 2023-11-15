@@ -8,7 +8,7 @@ import (
 )
 
 // Update commitments for claim reward operation
-func (k Keeper) RecordClaimReward(ctx sdk.Context, creator string, denom string, amount sdk.Int) error {
+func (k Keeper) RecordClaimReward(ctx sdk.Context, creator string, denom string, amount sdk.Int, withdrawMode int64) error {
 	assetProfile, found := k.apKeeper.GetEntry(ctx, denom)
 	if !found {
 		return sdkerrors.Wrapf(aptypes.ErrAssetProfileNotFound, "denom: %s", denom)
@@ -24,10 +24,34 @@ func (k Keeper) RecordClaimReward(ctx sdk.Context, creator string, denom string,
 		return sdkerrors.Wrapf(types.ErrCommitmentsNotFound, "creator: %s", creator)
 	}
 
-	// Subtract the withdrawn amount from the unclaimed balance
-	err := commitments.SubRewardsUnclaimed(sdk.NewCoin(denom, amount))
-	if err != nil {
-		return err
+	// Withdraw reward not depending on program type
+	switch withdrawMode {
+	case types.WITHDRAW_MODE_ALL:
+		// Subtract the withdrawn amount from the unclaimed balance
+		err := commitments.SubRewardsUnclaimed(sdk.NewCoin(denom, amount))
+		if err != nil {
+			return err
+		}
+	case types.WITHDRAW_MODE_USDC_PROGRAM:
+		// Subtract the withdrawn amount from the unclaimed balance
+		err := commitments.SubRewardsUnclaimedForUSDCDeposit(sdk.NewCoin(denom, amount))
+		if err != nil {
+			return err
+		}
+	case types.WITHDRAW_MODE_EDEN_PROGRAM:
+		// Subtract the withdrawn amount from the unclaimed balance
+		err := commitments.SubRewardsUnclaimedForEdenCommitted(sdk.NewCoin(denom, amount))
+		if err != nil {
+			return err
+		}
+	case types.WITHDRAW_MODE_EDENB_PROGRAM:
+		// Subtract the withdrawn amount from the unclaimed balance
+		err := commitments.SubRewardsUnclaimedForEdenBCommitted(sdk.NewCoin(denom, amount))
+		if err != nil {
+			return err
+		}
+	default:
+		return sdkerrors.Wrapf(types.ErrUnsupportedWithdrawMode, "creator: %s", creator)
 	}
 
 	// Update the commitments
