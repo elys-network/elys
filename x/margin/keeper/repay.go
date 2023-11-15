@@ -107,13 +107,13 @@ func (k Keeper) Repay(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, ammPool
 		returnAmount = C
 	}
 
-	err = pool.UpdateBalance(ctx, mtp.Collaterals[collateralIndex].Denom, returnAmount, false)
+	err = pool.UpdateBalance(ctx, mtp.Collaterals[collateralIndex].Denom, returnAmount, false, mtp.Position)
 	if err != nil {
 		return err
 	}
 
 	// long position
-	err = pool.UpdateLiabilities(ctx, ptypes.BaseCurrency, mtp.Liabilities, false)
+	err = pool.UpdateLiabilities(ctx, ptypes.BaseCurrency, mtp.Liabilities, false, mtp.Position)
 	if err != nil {
 		return err
 	}

@@ -8,23 +8,34 @@ import (
 
 func NewPool(poolId uint64) Pool {
 	return Pool{
-		AmmPoolId:    poolId,
-		Health:       sdk.NewDec(100),
-		Enabled:      true,
-		Closed:       false,
-		InterestRate: sdk.NewDecFromIntWithPrec(sdk.NewInt(1), 1),
-		PoolAssets:   []PoolAsset{},
+		AmmPoolId:       poolId,
+		Health:          sdk.NewDec(100),
+		Enabled:         true,
+		Closed:          false,
+		InterestRate:    sdk.NewDecFromIntWithPrec(sdk.NewInt(1), 1),
+		PoolAssetsLong:  []PoolAsset{},
+		PoolAssetsShort: []PoolAsset{},
+	}
+}
+
+// Get relevant pool asset array based on position direction
+func (p *Pool) GetPoolAssets(position Position) *[]PoolAsset {
+	if position == Position_LONG {
+		return &p.PoolAssetsLong
+	} else {
+		return &p.PoolAssetsShort
 	}
 }
 
 // Update the asset balance
-func (p *Pool) UpdateBalance(ctx sdk.Context, assetDenom string, amount sdk.Int, isIncrease bool) error {
-	for i, asset := range p.PoolAssets {
+func (p *Pool) UpdateBalance(ctx sdk.Context, assetDenom string, amount sdk.Int, isIncrease bool, position Position) error {
+	poolAssets := p.GetPoolAssets(position)
+	for i, asset := range *poolAssets {
 		if asset.AssetDenom == assetDenom {
 			if isIncrease {
-				p.PoolAssets[i].AssetBalance = asset.AssetBalance.Add(amount)
+				(*poolAssets)[i].AssetBalance = asset.AssetBalance.Add(amount)
 			} else {
-				p.PoolAssets[i].AssetBalance = asset.AssetBalance.Sub(amount)
+				(*poolAssets)[i].AssetBalance = asset.AssetBalance.Sub(amount)
 			}
 
 			return nil
@@ -35,13 +46,14 @@ func (p *Pool) UpdateBalance(ctx sdk.Context, assetDenom string, amount sdk.Int,
 }
 
 // Update the asset liabilities
-func (p *Pool) UpdateLiabilities(ctx sdk.Context, assetDenom string, amount sdk.Int, isIncrease bool) error {
-	for i, asset := range p.PoolAssets {
+func (p *Pool) UpdateLiabilities(ctx sdk.Context, assetDenom string, amount sdk.Int, isIncrease bool, position Position) error {
+	poolAssets := p.GetPoolAssets(position)
+	for i, asset := range *poolAssets {
 		if asset.AssetDenom == assetDenom {
 			if isIncrease {
-				p.PoolAssets[i].Liabilities = asset.Liabilities.Add(amount)
+				(*poolAssets)[i].Liabilities = asset.Liabilities.Add(amount)
 			} else {
-				p.PoolAssets[i].Liabilities = asset.Liabilities.Sub(amount)
+				(*poolAssets)[i].Liabilities = asset.Liabilities.Sub(amount)
 			}
 
 			return nil
@@ -52,13 +64,14 @@ func (p *Pool) UpdateLiabilities(ctx sdk.Context, assetDenom string, amount sdk.
 }
 
 // Update the asset custody
-func (p *Pool) UpdateCustody(ctx sdk.Context, assetDenom string, amount sdk.Int, isIncrease bool) error {
-	for i, asset := range p.PoolAssets {
+func (p *Pool) UpdateCustody(ctx sdk.Context, assetDenom string, amount sdk.Int, isIncrease bool, position Position) error {
+	poolAssets := p.GetPoolAssets(position)
+	for i, asset := range *poolAssets {
 		if asset.AssetDenom == assetDenom {
 			if isIncrease {
-				p.PoolAssets[i].Custody = asset.Custody.Add(amount)
+				(*poolAssets)[i].Custody = asset.Custody.Add(amount)
 			} else {
-				p.PoolAssets[i].Custody = asset.Custody.Sub(amount)
+				(*poolAssets)[i].Custody = asset.Custody.Sub(amount)
 			}
 			return nil
 		}
@@ -68,13 +81,14 @@ func (p *Pool) UpdateCustody(ctx sdk.Context, assetDenom string, amount sdk.Int,
 }
 
 // Update the unsettled liabilities balance
-func (p *Pool) UpdateBlockInterest(ctx sdk.Context, assetDenom string, amount sdk.Int, isIncrease bool) error {
-	for i, asset := range p.PoolAssets {
+func (p *Pool) UpdateBlockInterest(ctx sdk.Context, assetDenom string, amount sdk.Int, isIncrease bool, position Position) error {
+	poolAssets := p.GetPoolAssets(position)
+	for i, asset := range *poolAssets {
 		if asset.AssetDenom == assetDenom {
 			if isIncrease {
-				p.PoolAssets[i].BlockInterest = asset.BlockInterest.Add(amount)
+				(*poolAssets)[i].BlockInterest = asset.BlockInterest.Add(amount)
 			} else {
-				p.PoolAssets[i].BlockInterest = asset.BlockInterest.Sub(amount)
+				(*poolAssets)[i].BlockInterest = asset.BlockInterest.Sub(amount)
 			}
 
 			return nil
@@ -102,7 +116,8 @@ func (p *Pool) InitiatePool(ctx sdk.Context, ammPool *ammtypes.Pool) error {
 			AssetDenom:    asset.Token.Denom,
 		}
 
-		p.PoolAssets = append(p.PoolAssets, poolAsset)
+		p.PoolAssetsLong = append(p.PoolAssetsLong, poolAsset)
+		p.PoolAssetsShort = append(p.PoolAssetsShort, poolAsset)
 	}
 
 	return nil

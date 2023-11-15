@@ -56,7 +56,23 @@ func TestAccountedPoolUpdate(t *testing.T) {
 		Enabled:      true,
 		Closed:       false,
 		InterestRate: sdk.NewDec(1),
-		PoolAssets: []margintypes.PoolAsset{
+		PoolAssetsLong: []margintypes.PoolAsset{
+			{
+				Liabilities:   sdk.NewInt(400),
+				Custody:       sdk.NewInt(0),
+				AssetBalance:  sdk.NewInt(100),
+				BlockInterest: sdk.NewInt(0),
+				AssetDenom:    ptypes.BaseCurrency,
+			},
+			{
+				Liabilities:   sdk.NewInt(0),
+				Custody:       sdk.NewInt(50),
+				AssetBalance:  sdk.NewInt(0),
+				BlockInterest: sdk.NewInt(0),
+				AssetDenom:    ptypes.ATOM,
+			},
+		},
+		PoolAssetsShort: []margintypes.PoolAsset{
 			{
 				Liabilities:   sdk.NewInt(400),
 				Custody:       sdk.NewInt(0),

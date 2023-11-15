@@ -20,14 +20,24 @@ func (k Keeper) GetAmmPoolBalance(ammPool ammtypes.Pool, denom string) sdk.Int {
 }
 
 // Get Margin Pool Balance
-func (k Keeper) GetMarginPoolBalances(marginPool margintypes.Pool, denom string) (sdk.Int, sdk.Int, sdk.Int) {
-	for _, asset := range marginPool.PoolAssets {
+func (k Keeper) GetMarginPoolBalances(marginPool margintypes.Pool, denom string) (assetBalance sdk.Int, liabilities sdk.Int, custody sdk.Int) {
+	for _, asset := range marginPool.PoolAssetsLong {
 		if asset.AssetDenom == denom {
-			return asset.AssetBalance, asset.Liabilities, asset.Custody
+			assetBalance.Add(asset.AssetBalance)
+			liabilities.Add(asset.Liabilities)
+			custody.Add(asset.Custody)
+			break
 		}
 	}
-
-	return sdk.ZeroInt(), sdk.ZeroInt(), sdk.ZeroInt()
+	for _, asset := range marginPool.PoolAssetsShort {
+		if asset.AssetDenom == denom {
+			assetBalance.Add(asset.AssetBalance)
+			liabilities.Add(asset.Liabilities)
+			custody.Add(asset.Custody)
+			break
+		}
+	}
+	return assetBalance, liabilities, custody
 }
 
 func (k Keeper) UpdateAccountedPool(ctx sdk.Context, ammPool ammtypes.Pool, marginPool margintypes.Pool) error {
