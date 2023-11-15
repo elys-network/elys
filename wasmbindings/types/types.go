@@ -97,18 +97,6 @@ type ElysQuery struct {
 	AccountedPoolParams           *accountedpooltypes.QueryParamsRequest           `json:"accounted_pool_params,omitempty"`
 	AccountedPoolAccountedPool    *accountedpooltypes.QueryGetAccountedPoolRequest `json:"accounted_pool_accounted_pool,omitempty"`
 	AccountedPoolAccountedPoolAll *accountedpooltypes.QueryAllAccountedPoolRequest `json:"accounted_pool_accounted_pool_all,omitempty"`
-	PriceAll                      *PriceAll                                        `json:"price_all,omitempty"`
-	QuerySwapEstimation           *QuerySwapEstimationRequest                      `json:"query_swap_estimation,omitempty"`
-	AssetInfo                     *AssetInfo                                       `json:"asset_info,omitempty"`
-	BalanceOfDenom                *QueryBalanceRequest                             `json:"balance_of_denom,omitempty"`
-	Delegations                   *QueryDelegatorDelegationsRequest                `json:"delegations,omitempty"`
-	UnbondingDelegations          *QueryDelegatorUnbondingDelegationsRequest       `json:"unbonding_delegations,omitempty"`
-	StakedBalanceOfDenom          *QueryBalanceRequest                             `json:"staked_balance_of_denom,omitempty"`
-	RewardsBalanceOfDenom         *QueryBalanceRequest                             `json:"rewards_balance_of_denom,omitempty"`
-	ShowCommitments               *QueryCommitmentsRequest                         `json:"show_commitments,omitempty"`
-	BalanceOfBorrow               *QueryBorrowRequest                              `json:"balance_of_borrow,omitempty"`
-	AllValidators                 *QueryValidatorsRequest                          `json:"all_validators,omitempty"`
-	DelegatorValidators           *QueryValidatorsRequest                          `json:"delegator_validators,omitempty"`
 
 	// amm queriers
 	AmmParams            *ammtypes.QueryParamsRequest            `json:"amm_params,omitempty"`
@@ -209,114 +197,16 @@ type ElysQuery struct {
 
 	// transferhook queriers
 	TransferHookParams *transferhooktypes.QueryParamsRequest `json:"transfer_hook_params,omitempty"`
-}
 
-type QueryCommitmentsRequest struct {
-	Address string `protobuf:"bytes,1,opt,name=address,proto3" json:"address,omitempty"`
+	// earn program queries
+	Delegations           *commitmenttypes.QueryDelegatorDelegationsRequest          `json:"delegations,omitempty"`
+	UnbondingDelegations  *commitmenttypes.QueryDelegatorUnbondingDelegationsRequest `json:"unbonding_delegations,omitempty"`
+	StakedBalanceOfDenom  *ammtypes.QueryBalanceRequest                              `json:"staked_balance_of_denom,omitempty"`
+	RewardsBalanceOfDenom *ammtypes.QueryBalanceRequest                              `json:"rewards_balance_of_denom,omitempty"`
+	BalanceOfBorrow       *commitmenttypes.QueryBorrowAmountRequest                  `json:"balance_of_borrow,omitempty"`
+	AllValidators         *incentivetypes.QueryValidatorsRequest                    `json:"all_validators,omitempty"`
+	DelegatorValidators   *incentivetypes.QueryValidatorsRequest                    `json:"delegator_validators,omitempty"`
 }
-
-type QueryBorrowAmountRequest struct {
-	Address string `protobuf:"bytes,1,opt,name=address,proto3" json:"address,omitempty"`
-}
-
-type QueryDelegatorDelegationsRequest struct {
-	// delegator_addr defines the delegator address to query for.
-	DelegatorAddress string `protobuf:"bytes,1,opt,name=delegator_address,json=delegator_address,proto3" json:"delegator_addr,omitempty"`
-}
-
-// QueryDelegatorDelegationsResponse is response type for the
-// Query/DelegatorDelegations RPC method.
-type QueryDelegatorDelegationsResponse struct {
-	// delegation_responses defines all the delegations' info of a delegator.
-	DelegationResponses []stakingtypes.DelegationResponse `protobuf:"bytes,1,rep,name=delegation_responses,json=delegationResponses,proto3" json:"delegation_responses"`
-}
-
-// UnbondingDelegationEntry defines an unbonding object with relevant metadata.
-type UnbondingDelegationEntry struct {
-	// creation_height is the height which the unbonding took place.
-	CreationHeight int64 `protobuf:"varint,1,opt,name=creation_height,json=creationHeight,proto3" json:"creation_height,omitempty"`
-	// completion_time is the unix time for unbonding completion.
-	CompletionTime int64 `protobuf:"bytes,2,opt,name=completion_time,json=completionTime,proto3,stdtime" json:"completion_time"`
-	// initial_balance defines the tokens initially scheduled to receive at completion.
-	InitialBalance cosmos_sdk_math.Int `protobuf:"bytes,3,opt,name=initial_balance,json=initialBalance,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"initial_balance"`
-	// balance defines the tokens to receive at completion.
-	Balance cosmos_sdk_math.Int `protobuf:"bytes,4,opt,name=balance,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"balance"`
-	// Incrementing id that uniquely identifies this entry
-	UnbondingId uint64 `protobuf:"varint,5,opt,name=unbonding_id,json=unbondingId,proto3" json:"unbonding_id,omitempty"`
-}
-
-// QueryDelegatorUnbondingDelegationsRequest is request type for the
-type QueryDelegatorUnbondingDelegationsRequest struct {
-	// delegator_addr defines the delegator address to query for.
-	DelegatorAddress string `protobuf:"bytes,1,opt,name=delegator_address,json=delegator_address,proto3" json:"delegator_addr,omitempty"`
-}
-
-type UnbondingDelegation struct {
-	// delegator_address is the bech32-encoded address of the delegator.
-	DelegatorAddress string `protobuf:"bytes,1,opt,name=delegator_address,json=delegatorAddress,proto3" json:"delegator_address,omitempty"`
-	// validator_address is the bech32-encoded address of the validator.
-	ValidatorAddress string `protobuf:"bytes,2,opt,name=validator_address,json=validatorAddress,proto3" json:"validator_address,omitempty"`
-	// entries are the unbonding delegation entries.
-	Entries []UnbondingDelegationEntry `protobuf:"bytes,3,rep,name=entries,proto3" json:"entries"`
-}
-
-// QueryUnbondingDelegatorDelegationsResponse is response type for the
-// Query/UnbondingDelegatorDelegations RPC method.
-type QueryDelegatorUnbondingDelegationsResponse struct {
-	UnbondingResponses []UnbondingDelegation `protobuf:"bytes,1,rep,name=unbonding_responses,json=unbondingResponses,proto3" json:"unbonding_responses"`
-}
-
-// QueryValidatorsRequest is request type for Query/Validators RPC method.
-type QueryValidatorsRequest struct {
-	// status enables to query for validators matching a given status.
-	DelegatorAddress string `protobuf:"bytes,1,opt,name=delegator_address,proto3" json:"delegator_address,omitempty"`
-}
-
-type QueryShowCommitmentsResponse struct {
-	Commitments *commitmenttypes.Commitments `protobuf:"bytes,1,opt,name=commitments,proto3" json:"commitments,omitempty"`
-}
-
-// QueryDelegatorValidatorsResponse is response type for the
-// Query/DelegatorValidators RPC method.
-type QueryDelegatorValidatorsResponse struct {
-	// validators defines the validators' info of a delegator.
-	Validators []ValidatorDetail `protobuf:"bytes,1,rep,name=validators,proto3" json:"validators"`
-}
-
-type BalanceAvailable struct {
-	Amount    uint64  `protobuf:"bytes,1,rep,name=amount,proto3" json:"amount"`
-	UsdAmount sdk.Dec `protobuf:"bytes,2,rep,name=usd_amount,proto3" json:"usd_amount"`
-}
-
-type CommissionRates struct {
-	// rate is the commission rate charged to delegators, as a fraction.
-	Rate sdk.Dec
-	// max_rate defines the maximum commission rate which validator can ever charge, as a fraction.
-	MaxRate sdk.Dec
-	// max_change_rate defines the maximum daily increase of the validator commission, as a fraction.
-	MaxChangeRate sdk.Dec
-}
-
-type ValidatorDetail struct {
-	// The validator address.
-	Address string `protobuf:"bytes,2,rep,name=address,proto3" json:"address"`
-	// The validator name.
-	Name string `protobuf:"bytes,3,rep,name=name,proto3" json:"name"`
-	// Voting power percentage for this validator.
-	VotingPower sdk.Dec `protobuf:"bytes,4,rep,name=voting_power,proto3" json:"voting_power"`
-	// Comission percentage for the validator.
-	Commission sdk.Dec `protobuf:"bytes,5,rep,name=commission,proto3" json:"commission"`
-	// The url of the validator profile picture
-	ProfilePictureSrc string `protobuf:"bytes,6,rep,name=profile_picture_src,proto3" json:"profile_picture_src"`
-	// The staked amount the user has w/ this validator
-	// Only available if there's some and if address.
-	// is sent in request object.
-	Staked BalanceAvailable `protobuf:"bytes,7,rep,name=staked,proto3" json:"staked"`
-}
-
-const (
-	MAX_RETRY_VALIDATORS = uint32(200)
-)
 
 type CustomMessenger struct {
 	wrapped          wasmkeeper.Messenger

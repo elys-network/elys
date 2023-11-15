@@ -5,12 +5,13 @@ import (
 
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	wasmbindingstypes "github.com/elys-network/elys/wasmbindings/types"
+	ammtypes "github.com/elys-network/elys/x/amm/types"
+	commitmenttypes "github.com/elys-network/elys/x/commitment/types"
 	paramtypes "github.com/elys-network/elys/x/parameter/types"
 )
 
-func (oq *Querier) queryBorrowedAmount(ctx sdk.Context, query *wasmbindingstypes.QueryBorrowAmountRequest) ([]byte, error) {
-	res := wasmbindingstypes.QueryBalanceResponse{
+func (oq *Querier) queryBorrowedAmount(ctx sdk.Context, query *commitmenttypes.QueryBorrowAmountRequest) ([]byte, error) {
+	res := ammtypes.QueryBalanceResponse{
 		Balance: sdk.NewCoin(paramtypes.BaseCurrency, sdk.NewInt(0)),
 	}
 
