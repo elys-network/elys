@@ -14,10 +14,11 @@ const (
 // Verify interface at compile time
 var _, _ sdk.Msg = &MsgWithdrawRewards{}, &MsgWithdrawValidatorCommission{}
 
-func NewMsgWithdrawRewards(delAddr sdk.AccAddress, denom string) *MsgWithdrawRewards {
+func NewMsgWithdrawRewards(delAddr sdk.AccAddress, denom string, withdrawType int64) *MsgWithdrawRewards {
 	return &MsgWithdrawRewards{
 		DelegatorAddress: delAddr.String(),
 		Denom:            denom,
+		WithdrawType:     withdrawType,
 	}
 }
 

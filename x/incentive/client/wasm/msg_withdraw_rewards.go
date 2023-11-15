@@ -7,6 +7,7 @@ import (
 	wasmvmtypes "github.com/CosmWasm/wasmvm/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	wasmbindingstypes "github.com/elys-network/elys/wasmbindings/types"
+	commitmenttypes "github.com/elys-network/elys/x/commitment/types"
 	incentivekeeper "github.com/elys-network/elys/x/incentive/keeper"
 	incentivetypes "github.com/elys-network/elys/x/incentive/types"
 	paramtypes "github.com/elys-network/elys/x/parameter/types"
@@ -42,7 +43,7 @@ func performMsgWithdrawRewards(f *incentivekeeper.Keeper, ctx sdk.Context, contr
 	}
 
 	msgServer := incentivekeeper.NewMsgServerImpl(*f)
-	msgMsgWithdrawRewards := incentivetypes.NewMsgWithdrawRewards(address, msgWithdrawRewards.Denom)
+	msgMsgWithdrawRewards := incentivetypes.NewMsgWithdrawRewards(address, msgWithdrawRewards.Denom, commitmenttypes.WITHDRAW_MODE_ALL)
 
 	if err := msgMsgWithdrawRewards.ValidateBasic(); err != nil {
 		return nil, errorsmod.Wrap(err, "failed validating msgMsgWithdrawRewards")
