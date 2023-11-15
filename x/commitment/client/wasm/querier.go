@@ -42,6 +42,8 @@ func (oq *Querier) HandleQuery(ctx sdk.Context, query wasmbindingstypes.ElysQuer
 		return oq.queryStakedPositions(ctx, query.CommitmentStakedPositions)
 	case query.CommitmentUnStakedPositions != nil:
 		return oq.queryUnStakedPositions(ctx, query.CommitmentUnStakedPositions)
+	case query.CommitmentRewardsSubBucketBalanceOfDenom != nil:
+		return oq.queryRewardSubBucketBalanceOfDenom(ctx, query.CommitmentRewardsSubBucketBalanceOfDenom)
 	default:
 		// This handler cannot handle the query
 		return nil, wasmbindingstypes.ErrCannotHandleQuery

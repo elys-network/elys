@@ -43,7 +43,7 @@ func performMsgWithdrawRewards(f *incentivekeeper.Keeper, ctx sdk.Context, contr
 	}
 
 	msgServer := incentivekeeper.NewMsgServerImpl(*f)
-	msgMsgWithdrawRewards := incentivetypes.NewMsgWithdrawRewards(address, msgWithdrawRewards.Denom, commitmenttypes.WITHDRAW_MODE_ALL)
+	msgMsgWithdrawRewards := incentivetypes.NewMsgWithdrawRewards(address, msgWithdrawRewards.Denom, commitmenttypes.ALL_PROGRAM)
 
 	if err := msgMsgWithdrawRewards.ValidateBasic(); err != nil {
 		return nil, errorsmod.Wrap(err, "failed validating msgMsgWithdrawRewards")
