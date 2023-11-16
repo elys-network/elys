@@ -4,12 +4,10 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
-	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
 	"github.com/elys-network/elys/x/margin/types"
-	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
 
-func (k Keeper) HandleInterestPayment(ctx sdk.Context, collateralAsset string, custodyAsset string, interestPayment sdk.Int, mtp *types.MTP, pool *types.Pool, ammPool ammtypes.Pool) sdk.Int {
+func (k Keeper) HandleInterestPayment(ctx sdk.Context, collateralAsset string, custodyAsset string, interestPayment sdk.Int, mtp *types.MTP, pool *types.Pool, ammPool ammtypes.Pool, baseCurrency string) sdk.Int {
 	incrementalInterestPaymentEnabled := k.GetIncrementalInterestPaymentEnabled(ctx)
 	// if incremental payment on, pay interest
 	if incrementalInterestPaymentEnabled {
@@ -24,13 +22,6 @@ func (k Keeper) HandleInterestPayment(ctx sdk.Context, collateralAsset string, c
 		if collateralIndex < 0 {
 			return sdk.ZeroInt()
 		}
-
-		entry, found := k.apKeeper.GetEntry(ctx, ptypes.BaseCurrency)
-		if !found {
-			ctx.Logger().Error(sdkerrors.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency).Error())
-			return sdk.ZeroInt()
-		}
-		baseCurrency := entry.Denom
 
 		// collateralAsset is in base currency
 		if mtp.Collaterals[collateralIndex].Denom == baseCurrency {
