@@ -14,7 +14,12 @@ func (oq *Querier) queryBorrowRatio(ctx sdk.Context, query *types.QueryBorrowRat
 		return nil, errorsmod.Wrap(err, "failed to get borrow ratio")
 	}
 
-	responseBytes, err := json.Marshal(res)
+	resp := types.BalanceBorrowed{
+		UsdAmount:  sdk.NewDecFromInt(res.TotalBorrow),
+		Percentage: res.BorrowRatio,
+	}
+
+	responseBytes, err := json.Marshal(resp)
 	if err != nil {
 		return nil, errorsmod.Wrap(err, "failed to serialize params response")
 	}

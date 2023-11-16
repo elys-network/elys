@@ -17,6 +17,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/version"
 	"github.com/cosmos/cosmos-sdk/x/gov/client/cli"
 	"github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
+	commitmenttypes "github.com/elys-network/elys/x/commitment/types"
 	"github.com/elys-network/elys/x/incentive/types"
 )
 
@@ -24,6 +25,7 @@ var (
 	FlagCommission                        = "commission"
 	FlagValidatorAddress                  = "validator-address"
 	FlagMaxMessagesPerTx                  = "max-msgs"
+	FlagEarnType                          = "earn-type"
 	DefaultRelativePacketTimeoutTimestamp = uint64((time.Duration(10) * time.Minute).Nanoseconds())
 )
 
@@ -92,7 +94,7 @@ func CmdWithdrawRewardsCmd() *cobra.Command {
 and optionally withdraw validator commission if the delegation address given is a validator operator.
 
 Example:
-$ %s tx incentive withdraw-rewards --from mykey
+$ %s tx incentive withdraw-rewards --from mykey --withdraw-type [0: withdraw all, 1: withdraw usdc program, 2: withdraw elys program, 3: withdraw eden program, 4: withdraw eden boost program.]
 $ %s tx incentive withdraw-rewards --from mykey --commission --validator-address %s1gghjut3ccd8ay0zduzj64hwre2fxs9ldmqhffj
 `,
 				version.AppName, bech32PrefixValAddr, bech32PrefixValAddr,
@@ -107,7 +109,12 @@ $ %s tx incentive withdraw-rewards --from mykey --commission --validator-address
 
 			argDenom := args[0]
 			delAddr := clientCtx.GetFromAddress()
-			msgs := []sdk.Msg{types.NewMsgWithdrawRewards(delAddr, argDenom)}
+			earnType, err := cmd.Flags().GetInt64(FlagEarnType)
+			if err != nil {
+				earnType = int64(commitmenttypes.EarnType_ALL_PROGRAM)
+			}
+
+			msgs := []sdk.Msg{types.NewMsgWithdrawRewards(delAddr, argDenom, commitmenttypes.EarnType(earnType))}
 
 			if commission, _ := cmd.Flags().GetBool(FlagCommission); commission {
 				if validatorAddr, _ := cmd.Flags().GetString(FlagValidatorAddress); len(validatorAddr) > 0 {
@@ -125,6 +132,8 @@ $ %s tx incentive withdraw-rewards --from mykey --commission --validator-address
 
 	cmd.Flags().Bool(FlagCommission, false, "Withdraw the validator's commission in addition to the rewards")
 	cmd.Flags().String(FlagValidatorAddress, "", "Validator's operator address to withdraw commission from")
+	cmd.Flags().Int64(FlagEarnType, 0, "Earn type - 0: all earn, 1: usdc program, 2: elys program, 3: eden program, 4: eden boost program.")
+
 	flags.AddTxFlagsToCmd(cmd)
 
 	return cmd
