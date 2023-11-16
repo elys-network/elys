@@ -24,13 +24,13 @@ func (_m *OpenChecker) EXPECT() *OpenChecker_Expecter {
 	return &OpenChecker_Expecter{mock: &_m.Mock}
 }
 
-// CheckLongAssets provides a mock function with given fields: ctx, collateralAsset, borrowAsset
-func (_m *OpenChecker) CheckLongAssets(ctx types.Context, collateralAsset string, borrowAsset string) error {
-	ret := _m.Called(ctx, collateralAsset, borrowAsset)
+// CheckLongAssets provides a mock function with given fields: ctx, collateralAsset, borrowAsset, baseCurrency
+func (_m *OpenChecker) CheckLongAssets(ctx types.Context, collateralAsset string, borrowAsset string, baseCurrency string) error {
+	ret := _m.Called(ctx, collateralAsset, borrowAsset, baseCurrency)
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(types.Context, string, string) error); ok {
-		r0 = rf(ctx, collateralAsset, borrowAsset)
+	if rf, ok := ret.Get(0).(func(types.Context, string, string, string) error); ok {
+		r0 = rf(ctx, collateralAsset, borrowAsset, baseCurrency)
 	} else {
 		r0 = ret.Error(0)
 	}
@@ -47,13 +47,14 @@ type OpenChecker_CheckLongAssets_Call struct {
 //   - ctx types.Context
 //   - collateralAsset string
 //   - borrowAsset string
-func (_e *OpenChecker_Expecter) CheckLongAssets(ctx interface{}, collateralAsset interface{}, borrowAsset interface{}) *OpenChecker_CheckLongAssets_Call {
-	return &OpenChecker_CheckLongAssets_Call{Call: _e.mock.On("CheckLongAssets", ctx, collateralAsset, borrowAsset)}
+//   - baseCurrency string
+func (_e *OpenChecker_Expecter) CheckLongAssets(ctx interface{}, collateralAsset interface{}, borrowAsset interface{}, baseCurrency interface{}) *OpenChecker_CheckLongAssets_Call {
+	return &OpenChecker_CheckLongAssets_Call{Call: _e.mock.On("CheckLongAssets", ctx, collateralAsset, borrowAsset, baseCurrency)}
 }
 
-func (_c *OpenChecker_CheckLongAssets_Call) Run(run func(ctx types.Context, collateralAsset string, borrowAsset string)) *OpenChecker_CheckLongAssets_Call {
+func (_c *OpenChecker_CheckLongAssets_Call) Run(run func(ctx types.Context, collateralAsset string, borrowAsset string, baseCurrency string)) *OpenChecker_CheckLongAssets_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(types.Context), args[1].(string), args[2].(string))
+		run(args[0].(types.Context), args[1].(string), args[2].(string), args[3].(string))
 	})
 	return _c
 }
@@ -63,7 +64,7 @@ func (_c *OpenChecker_CheckLongAssets_Call) Return(_a0 error) *OpenChecker_Check
 	return _c
 }
 
-func (_c *OpenChecker_CheckLongAssets_Call) RunAndReturn(run func(types.Context, string, string) error) *OpenChecker_CheckLongAssets_Call {
+func (_c *OpenChecker_CheckLongAssets_Call) RunAndReturn(run func(types.Context, string, string, string) error) *OpenChecker_CheckLongAssets_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -198,13 +199,13 @@ func (_c *OpenChecker_CheckSamePosition_Call) RunAndReturn(run func(types.Contex
 	return _c
 }
 
-// CheckShortAssets provides a mock function with given fields: ctx, collateralAsset, borrowAsset
-func (_m *OpenChecker) CheckShortAssets(ctx types.Context, collateralAsset string, borrowAsset string) error {
-	ret := _m.Called(ctx, collateralAsset, borrowAsset)
+// CheckShortAssets provides a mock function with given fields: ctx, collateralAsset, borrowAsset, baseCurrency
+func (_m *OpenChecker) CheckShortAssets(ctx types.Context, collateralAsset string, borrowAsset string, baseCurrency string) error {
+	ret := _m.Called(ctx, collateralAsset, borrowAsset, baseCurrency)
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(types.Context, string, string) error); ok {
-		r0 = rf(ctx, collateralAsset, borrowAsset)
+	if rf, ok := ret.Get(0).(func(types.Context, string, string, string) error); ok {
+		r0 = rf(ctx, collateralAsset, borrowAsset, baseCurrency)
 	} else {
 		r0 = ret.Error(0)
 	}
@@ -221,13 +222,14 @@ type OpenChecker_CheckShortAssets_Call struct {
 //   - ctx types.Context
 //   - collateralAsset string
 //   - borrowAsset string
-func (_e *OpenChecker_Expecter) CheckShortAssets(ctx interface{}, collateralAsset interface{}, borrowAsset interface{}) *OpenChecker_CheckShortAssets_Call {
-	return &OpenChecker_CheckShortAssets_Call{Call: _e.mock.On("CheckShortAssets", ctx, collateralAsset, borrowAsset)}
+//   - baseCurrency string
+func (_e *OpenChecker_Expecter) CheckShortAssets(ctx interface{}, collateralAsset interface{}, borrowAsset interface{}, baseCurrency interface{}) *OpenChecker_CheckShortAssets_Call {
+	return &OpenChecker_CheckShortAssets_Call{Call: _e.mock.On("CheckShortAssets", ctx, collateralAsset, borrowAsset, baseCurrency)}
 }
 
-func (_c *OpenChecker_CheckShortAssets_Call) Run(run func(ctx types.Context, collateralAsset string, borrowAsset string)) *OpenChecker_CheckShortAssets_Call {
+func (_c *OpenChecker_CheckShortAssets_Call) Run(run func(ctx types.Context, collateralAsset string, borrowAsset string, baseCurrency string)) *OpenChecker_CheckShortAssets_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(types.Context), args[1].(string), args[2].(string))
+		run(args[0].(types.Context), args[1].(string), args[2].(string), args[3].(string))
 	})
 	return _c
 }
@@ -237,7 +239,7 @@ func (_c *OpenChecker_CheckShortAssets_Call) Return(_a0 error) *OpenChecker_Chec
 	return _c
 }
 
-func (_c *OpenChecker_CheckShortAssets_Call) RunAndReturn(run func(types.Context, string, string) error) *OpenChecker_CheckShortAssets_Call {
+func (_c *OpenChecker_CheckShortAssets_Call) RunAndReturn(run func(types.Context, string, string, string) error) *OpenChecker_CheckShortAssets_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -447,25 +449,25 @@ func (_c *OpenChecker_GetTradingAsset_Call) RunAndReturn(run func(string, string
 	return _c
 }
 
-// OpenLong provides a mock function with given fields: ctx, poolId, msg
-func (_m *OpenChecker) OpenLong(ctx types.Context, poolId uint64, msg *margintypes.MsgOpen) (*margintypes.MTP, error) {
-	ret := _m.Called(ctx, poolId, msg)
+// OpenLong provides a mock function with given fields: ctx, poolId, msg, baseCurrency
+func (_m *OpenChecker) OpenLong(ctx types.Context, poolId uint64, msg *margintypes.MsgOpen, baseCurrency string) (*margintypes.MTP, error) {
+	ret := _m.Called(ctx, poolId, msg, baseCurrency)
 
 	var r0 *margintypes.MTP
 	var r1 error
-	if rf, ok := ret.Get(0).(func(types.Context, uint64, *margintypes.MsgOpen) (*margintypes.MTP, error)); ok {
-		return rf(ctx, poolId, msg)
+	if rf, ok := ret.Get(0).(func(types.Context, uint64, *margintypes.MsgOpen, string) (*margintypes.MTP, error)); ok {
+		return rf(ctx, poolId, msg, baseCurrency)
 	}
-	if rf, ok := ret.Get(0).(func(types.Context, uint64, *margintypes.MsgOpen) *margintypes.MTP); ok {
-		r0 = rf(ctx, poolId, msg)
+	if rf, ok := ret.Get(0).(func(types.Context, uint64, *margintypes.MsgOpen, string) *margintypes.MTP); ok {
+		r0 = rf(ctx, poolId, msg, baseCurrency)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(*margintypes.MTP)
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(types.Context, uint64, *margintypes.MsgOpen) error); ok {
-		r1 = rf(ctx, poolId, msg)
+	if rf, ok := ret.Get(1).(func(types.Context, uint64, *margintypes.MsgOpen, string) error); ok {
+		r1 = rf(ctx, poolId, msg, baseCurrency)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -482,13 +484,14 @@ type OpenChecker_OpenLong_Call struct {
 //   - ctx types.Context
 //   - poolId uint64
 //   - msg *margintypes.MsgOpen
-func (_e *OpenChecker_Expecter) OpenLong(ctx interface{}, poolId interface{}, msg interface{}) *OpenChecker_OpenLong_Call {
-	return &OpenChecker_OpenLong_Call{Call: _e.mock.On("OpenLong", ctx, poolId, msg)}
+//   - baseCurrency string
+func (_e *OpenChecker_Expecter) OpenLong(ctx interface{}, poolId interface{}, msg interface{}, baseCurrency interface{}) *OpenChecker_OpenLong_Call {
+	return &OpenChecker_OpenLong_Call{Call: _e.mock.On("OpenLong", ctx, poolId, msg, baseCurrency)}
 }
 
-func (_c *OpenChecker_OpenLong_Call) Run(run func(ctx types.Context, poolId uint64, msg *margintypes.MsgOpen)) *OpenChecker_OpenLong_Call {
+func (_c *OpenChecker_OpenLong_Call) Run(run func(ctx types.Context, poolId uint64, msg *margintypes.MsgOpen, baseCurrency string)) *OpenChecker_OpenLong_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(types.Context), args[1].(uint64), args[2].(*margintypes.MsgOpen))
+		run(args[0].(types.Context), args[1].(uint64), args[2].(*margintypes.MsgOpen), args[3].(string))
 	})
 	return _c
 }
@@ -498,30 +501,30 @@ func (_c *OpenChecker_OpenLong_Call) Return(_a0 *margintypes.MTP, _a1 error) *Op
 	return _c
 }
 
-func (_c *OpenChecker_OpenLong_Call) RunAndReturn(run func(types.Context, uint64, *margintypes.MsgOpen) (*margintypes.MTP, error)) *OpenChecker_OpenLong_Call {
+func (_c *OpenChecker_OpenLong_Call) RunAndReturn(run func(types.Context, uint64, *margintypes.MsgOpen, string) (*margintypes.MTP, error)) *OpenChecker_OpenLong_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
-// OpenShort provides a mock function with given fields: ctx, poolId, msg
-func (_m *OpenChecker) OpenShort(ctx types.Context, poolId uint64, msg *margintypes.MsgOpen) (*margintypes.MTP, error) {
-	ret := _m.Called(ctx, poolId, msg)
+// OpenShort provides a mock function with given fields: ctx, poolId, msg, baseCurrency
+func (_m *OpenChecker) OpenShort(ctx types.Context, poolId uint64, msg *margintypes.MsgOpen, baseCurrency string) (*margintypes.MTP, error) {
+	ret := _m.Called(ctx, poolId, msg, baseCurrency)
 
 	var r0 *margintypes.MTP
 	var r1 error
-	if rf, ok := ret.Get(0).(func(types.Context, uint64, *margintypes.MsgOpen) (*margintypes.MTP, error)); ok {
-		return rf(ctx, poolId, msg)
+	if rf, ok := ret.Get(0).(func(types.Context, uint64, *margintypes.MsgOpen, string) (*margintypes.MTP, error)); ok {
+		return rf(ctx, poolId, msg, baseCurrency)
 	}
-	if rf, ok := ret.Get(0).(func(types.Context, uint64, *margintypes.MsgOpen) *margintypes.MTP); ok {
-		r0 = rf(ctx, poolId, msg)
+	if rf, ok := ret.Get(0).(func(types.Context, uint64, *margintypes.MsgOpen, string) *margintypes.MTP); ok {
+		r0 = rf(ctx, poolId, msg, baseCurrency)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(*margintypes.MTP)
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(types.Context, uint64, *margintypes.MsgOpen) error); ok {
-		r1 = rf(ctx, poolId, msg)
+	if rf, ok := ret.Get(1).(func(types.Context, uint64, *margintypes.MsgOpen, string) error); ok {
+		r1 = rf(ctx, poolId, msg, baseCurrency)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -538,13 +541,14 @@ type OpenChecker_OpenShort_Call struct {
 //   - ctx types.Context
 //   - poolId uint64
 //   - msg *margintypes.MsgOpen
-func (_e *OpenChecker_Expecter) OpenShort(ctx interface{}, poolId interface{}, msg interface{}) *OpenChecker_OpenShort_Call {
-	return &OpenChecker_OpenShort_Call{Call: _e.mock.On("OpenShort", ctx, poolId, msg)}
+//   - baseCurrency string
+func (_e *OpenChecker_Expecter) OpenShort(ctx interface{}, poolId interface{}, msg interface{}, baseCurrency interface{}) *OpenChecker_OpenShort_Call {
+	return &OpenChecker_OpenShort_Call{Call: _e.mock.On("OpenShort", ctx, poolId, msg, baseCurrency)}
 }
 
-func (_c *OpenChecker_OpenShort_Call) Run(run func(ctx types.Context, poolId uint64, msg *margintypes.MsgOpen)) *OpenChecker_OpenShort_Call {
+func (_c *OpenChecker_OpenShort_Call) Run(run func(ctx types.Context, poolId uint64, msg *margintypes.MsgOpen, baseCurrency string)) *OpenChecker_OpenShort_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(types.Context), args[1].(uint64), args[2].(*margintypes.MsgOpen))
+		run(args[0].(types.Context), args[1].(uint64), args[2].(*margintypes.MsgOpen), args[3].(string))
 	})
 	return _c
 }
@@ -554,7 +558,7 @@ func (_c *OpenChecker_OpenShort_Call) Return(_a0 *margintypes.MTP, _a1 error) *O
 	return _c
 }
 
-func (_c *OpenChecker_OpenShort_Call) RunAndReturn(run func(types.Context, uint64, *margintypes.MsgOpen) (*margintypes.MTP, error)) *OpenChecker_OpenShort_Call {
+func (_c *OpenChecker_OpenShort_Call) RunAndReturn(run func(types.Context, uint64, *margintypes.MsgOpen, string) (*margintypes.MTP, error)) *OpenChecker_OpenShort_Call {
 	_c.Call.Return(run)
 	return _c
 }

@@ -26,13 +26,13 @@ func (_m *OpenLongChecker) EXPECT() *OpenLongChecker_Expecter {
 	return &OpenLongChecker_Expecter{mock: &_m.Mock}
 }
 
-// Borrow provides a mock function with given fields: ctx, collateralAsset, custodyAsset, collateralAmount, custodyAmount, mtp, ammPool, pool, eta
-func (_m *OpenLongChecker) Borrow(ctx types.Context, collateralAsset string, custodyAsset string, collateralAmount math.Int, custodyAmount math.Int, mtp *margintypes.MTP, ammPool *ammtypes.Pool, pool *margintypes.Pool, eta math.LegacyDec) error {
-	ret := _m.Called(ctx, collateralAsset, custodyAsset, collateralAmount, custodyAmount, mtp, ammPool, pool, eta)
+// Borrow provides a mock function with given fields: ctx, collateralAsset, custodyAsset, collateralAmount, custodyAmount, mtp, ammPool, pool, eta, baseCurrency
+func (_m *OpenLongChecker) Borrow(ctx types.Context, collateralAsset string, custodyAsset string, collateralAmount math.Int, custodyAmount math.Int, mtp *margintypes.MTP, ammPool *ammtypes.Pool, pool *margintypes.Pool, eta math.LegacyDec, baseCurrency string) error {
+	ret := _m.Called(ctx, collateralAsset, custodyAsset, collateralAmount, custodyAmount, mtp, ammPool, pool, eta, baseCurrency)
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(types.Context, string, string, math.Int, math.Int, *margintypes.MTP, *ammtypes.Pool, *margintypes.Pool, math.LegacyDec) error); ok {
-		r0 = rf(ctx, collateralAsset, custodyAsset, collateralAmount, custodyAmount, mtp, ammPool, pool, eta)
+	if rf, ok := ret.Get(0).(func(types.Context, string, string, math.Int, math.Int, *margintypes.MTP, *ammtypes.Pool, *margintypes.Pool, math.LegacyDec, string) error); ok {
+		r0 = rf(ctx, collateralAsset, custodyAsset, collateralAmount, custodyAmount, mtp, ammPool, pool, eta, baseCurrency)
 	} else {
 		r0 = ret.Error(0)
 	}
@@ -55,13 +55,14 @@ type OpenLongChecker_Borrow_Call struct {
 //   - ammPool *ammtypes.Pool
 //   - pool *margintypes.Pool
 //   - eta math.LegacyDec
-func (_e *OpenLongChecker_Expecter) Borrow(ctx interface{}, collateralAsset interface{}, custodyAsset interface{}, collateralAmount interface{}, custodyAmount interface{}, mtp interface{}, ammPool interface{}, pool interface{}, eta interface{}) *OpenLongChecker_Borrow_Call {
-	return &OpenLongChecker_Borrow_Call{Call: _e.mock.On("Borrow", ctx, collateralAsset, custodyAsset, collateralAmount, custodyAmount, mtp, ammPool, pool, eta)}
+//   - baseCurrency string
+func (_e *OpenLongChecker_Expecter) Borrow(ctx interface{}, collateralAsset interface{}, custodyAsset interface{}, collateralAmount interface{}, custodyAmount interface{}, mtp interface{}, ammPool interface{}, pool interface{}, eta interface{}, baseCurrency interface{}) *OpenLongChecker_Borrow_Call {
+	return &OpenLongChecker_Borrow_Call{Call: _e.mock.On("Borrow", ctx, collateralAsset, custodyAsset, collateralAmount, custodyAmount, mtp, ammPool, pool, eta, baseCurrency)}
 }
 
-func (_c *OpenLongChecker_Borrow_Call) Run(run func(ctx types.Context, collateralAsset string, custodyAsset string, collateralAmount math.Int, custodyAmount math.Int, mtp *margintypes.MTP, ammPool *ammtypes.Pool, pool *margintypes.Pool, eta math.LegacyDec)) *OpenLongChecker_Borrow_Call {
+func (_c *OpenLongChecker_Borrow_Call) Run(run func(ctx types.Context, collateralAsset string, custodyAsset string, collateralAmount math.Int, custodyAmount math.Int, mtp *margintypes.MTP, ammPool *ammtypes.Pool, pool *margintypes.Pool, eta math.LegacyDec, baseCurrency string)) *OpenLongChecker_Borrow_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(types.Context), args[1].(string), args[2].(string), args[3].(math.Int), args[4].(math.Int), args[5].(*margintypes.MTP), args[6].(*ammtypes.Pool), args[7].(*margintypes.Pool), args[8].(math.LegacyDec))
+		run(args[0].(types.Context), args[1].(string), args[2].(string), args[3].(math.Int), args[4].(math.Int), args[5].(*margintypes.MTP), args[6].(*ammtypes.Pool), args[7].(*margintypes.Pool), args[8].(math.LegacyDec), args[9].(string))
 	})
 	return _c
 }
@@ -71,18 +72,18 @@ func (_c *OpenLongChecker_Borrow_Call) Return(_a0 error) *OpenLongChecker_Borrow
 	return _c
 }
 
-func (_c *OpenLongChecker_Borrow_Call) RunAndReturn(run func(types.Context, string, string, math.Int, math.Int, *margintypes.MTP, *ammtypes.Pool, *margintypes.Pool, math.LegacyDec) error) *OpenLongChecker_Borrow_Call {
+func (_c *OpenLongChecker_Borrow_Call) RunAndReturn(run func(types.Context, string, string, math.Int, math.Int, *margintypes.MTP, *ammtypes.Pool, *margintypes.Pool, math.LegacyDec, string) error) *OpenLongChecker_Borrow_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
-// CalcMTPConsolidateCollateral provides a mock function with given fields: ctx, mtp
-func (_m *OpenLongChecker) CalcMTPConsolidateCollateral(ctx types.Context, mtp *margintypes.MTP) error {
-	ret := _m.Called(ctx, mtp)
+// CalcMTPConsolidateCollateral provides a mock function with given fields: ctx, mtp, baseCurrency
+func (_m *OpenLongChecker) CalcMTPConsolidateCollateral(ctx types.Context, mtp *margintypes.MTP, baseCurrency string) error {
+	ret := _m.Called(ctx, mtp, baseCurrency)
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(types.Context, *margintypes.MTP) error); ok {
-		r0 = rf(ctx, mtp)
+	if rf, ok := ret.Get(0).(func(types.Context, *margintypes.MTP, string) error); ok {
+		r0 = rf(ctx, mtp, baseCurrency)
 	} else {
 		r0 = ret.Error(0)
 	}
@@ -98,13 +99,14 @@ type OpenLongChecker_CalcMTPConsolidateCollateral_Call struct {
 // CalcMTPConsolidateCollateral is a helper method to define mock.On call
 //   - ctx types.Context
 //   - mtp *margintypes.MTP
-func (_e *OpenLongChecker_Expecter) CalcMTPConsolidateCollateral(ctx interface{}, mtp interface{}) *OpenLongChecker_CalcMTPConsolidateCollateral_Call {
-	return &OpenLongChecker_CalcMTPConsolidateCollateral_Call{Call: _e.mock.On("CalcMTPConsolidateCollateral", ctx, mtp)}
+//   - baseCurrency string
+func (_e *OpenLongChecker_Expecter) CalcMTPConsolidateCollateral(ctx interface{}, mtp interface{}, baseCurrency interface{}) *OpenLongChecker_CalcMTPConsolidateCollateral_Call {
+	return &OpenLongChecker_CalcMTPConsolidateCollateral_Call{Call: _e.mock.On("CalcMTPConsolidateCollateral", ctx, mtp, baseCurrency)}
 }
 
-func (_c *OpenLongChecker_CalcMTPConsolidateCollateral_Call) Run(run func(ctx types.Context, mtp *margintypes.MTP)) *OpenLongChecker_CalcMTPConsolidateCollateral_Call {
+func (_c *OpenLongChecker_CalcMTPConsolidateCollateral_Call) Run(run func(ctx types.Context, mtp *margintypes.MTP, baseCurrency string)) *OpenLongChecker_CalcMTPConsolidateCollateral_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(types.Context), args[1].(*margintypes.MTP))
+		run(args[0].(types.Context), args[1].(*margintypes.MTP), args[2].(string))
 	})
 	return _c
 }
@@ -114,7 +116,7 @@ func (_c *OpenLongChecker_CalcMTPConsolidateCollateral_Call) Return(_a0 error) *
 	return _c
 }
 
-func (_c *OpenLongChecker_CalcMTPConsolidateCollateral_Call) RunAndReturn(run func(types.Context, *margintypes.MTP) error) *OpenLongChecker_CalcMTPConsolidateCollateral_Call {
+func (_c *OpenLongChecker_CalcMTPConsolidateCollateral_Call) RunAndReturn(run func(types.Context, *margintypes.MTP, string) error) *OpenLongChecker_CalcMTPConsolidateCollateral_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -153,13 +155,13 @@ func (_c *OpenLongChecker_CalcMTPConsolidateLiability_Call) RunAndReturn(run fun
 	return _c
 }
 
-// CheckLongAssets provides a mock function with given fields: ctx, collateralAsset, borrowAsset
-func (_m *OpenLongChecker) CheckLongAssets(ctx types.Context, collateralAsset string, borrowAsset string) error {
-	ret := _m.Called(ctx, collateralAsset, borrowAsset)
+// CheckLongAssets provides a mock function with given fields: ctx, collateralAsset, borrowAsset, baseCurrency
+func (_m *OpenLongChecker) CheckLongAssets(ctx types.Context, collateralAsset string, borrowAsset string, baseCurrency string) error {
+	ret := _m.Called(ctx, collateralAsset, borrowAsset, baseCurrency)
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(types.Context, string, string) error); ok {
-		r0 = rf(ctx, collateralAsset, borrowAsset)
+	if rf, ok := ret.Get(0).(func(types.Context, string, string, string) error); ok {
+		r0 = rf(ctx, collateralAsset, borrowAsset, baseCurrency)
 	} else {
 		r0 = ret.Error(0)
 	}
@@ -176,13 +178,14 @@ type OpenLongChecker_CheckLongAssets_Call struct {
 //   - ctx types.Context
 //   - collateralAsset string
 //   - borrowAsset string
-func (_e *OpenLongChecker_Expecter) CheckLongAssets(ctx interface{}, collateralAsset interface{}, borrowAsset interface{}) *OpenLongChecker_CheckLongAssets_Call {
-	return &OpenLongChecker_CheckLongAssets_Call{Call: _e.mock.On("CheckLongAssets", ctx, collateralAsset, borrowAsset)}
+//   - baseCurrency string
+func (_e *OpenLongChecker_Expecter) CheckLongAssets(ctx interface{}, collateralAsset interface{}, borrowAsset interface{}, baseCurrency interface{}) *OpenLongChecker_CheckLongAssets_Call {
+	return &OpenLongChecker_CheckLongAssets_Call{Call: _e.mock.On("CheckLongAssets", ctx, collateralAsset, borrowAsset, baseCurrency)}
 }
 
-func (_c *OpenLongChecker_CheckLongAssets_Call) Run(run func(ctx types.Context, collateralAsset string, borrowAsset string)) *OpenLongChecker_CheckLongAssets_Call {
+func (_c *OpenLongChecker_CheckLongAssets_Call) Run(run func(ctx types.Context, collateralAsset string, borrowAsset string, baseCurrency string)) *OpenLongChecker_CheckLongAssets_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(types.Context), args[1].(string), args[2].(string))
+		run(args[0].(types.Context), args[1].(string), args[2].(string), args[3].(string))
 	})
 	return _c
 }
@@ -192,7 +195,7 @@ func (_c *OpenLongChecker_CheckLongAssets_Call) Return(_a0 error) *OpenLongCheck
 	return _c
 }
 
-func (_c *OpenLongChecker_CheckLongAssets_Call) RunAndReturn(run func(types.Context, string, string) error) *OpenLongChecker_CheckLongAssets_Call {
+func (_c *OpenLongChecker_CheckLongAssets_Call) RunAndReturn(run func(types.Context, string, string, string) error) *OpenLongChecker_CheckLongAssets_Call {
 	_c.Call.Return(run)
 	return _c
 }

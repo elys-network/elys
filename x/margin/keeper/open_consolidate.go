@@ -6,9 +6,9 @@ import (
 	"github.com/elys-network/elys/x/margin/types"
 )
 
-func (k Keeper) OpenConsolidate(ctx sdk.Context, mtp *types.MTP, msg *types.MsgOpen) (*types.MsgOpenResponse, error) {
+func (k Keeper) OpenConsolidate(ctx sdk.Context, mtp *types.MTP, msg *types.MsgOpen, baseCurrency string) (*types.MsgOpenResponse, error) {
 	// Get token asset other than base currency
-	tradingAsset := k.OpenLongChecker.GetTradingAsset(msg.CollateralAsset, msg.BorrowAsset)
+	tradingAsset := k.OpenLongChecker.GetTradingAsset(msg.CollateralAsset, msg.BorrowAsset, baseCurrency)
 
 	poolId := mtp.AmmPoolId
 	pool, found := k.OpenLongChecker.GetPool(ctx, poolId)
@@ -27,12 +27,12 @@ func (k Keeper) OpenConsolidate(ctx sdk.Context, mtp *types.MTP, msg *types.MsgO
 
 	switch msg.Position {
 	case types.Position_LONG:
-		mtp, err = k.OpenConsolidateLong(ctx, poolId, mtp, msg)
+		mtp, err = k.OpenConsolidateLong(ctx, poolId, mtp, msg, baseCurrency)
 		if err != nil {
 			return nil, err
 		}
 	case types.Position_SHORT:
-		mtp, err = k.OpenConsolidateShort(ctx, poolId, mtp, msg)
+		mtp, err = k.OpenConsolidateShort(ctx, poolId, mtp, msg, baseCurrency)
 		if err != nil {
 			return nil, err
 		}

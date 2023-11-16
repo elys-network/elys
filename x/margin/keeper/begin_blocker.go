@@ -6,6 +6,9 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/errors"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
+	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
 
 func (k Keeper) BeginBlocker(ctx sdk.Context) {
@@ -14,6 +17,12 @@ func (k Keeper) BeginBlocker(ctx sdk.Context) {
 	epochPosition := k.GetEpochPosition(ctx, epochLength)
 
 	if epochPosition == 0 { // if epoch has passed
+		entry, found := k.apKeeper.GetEntry(ctx, ptypes.BaseCurrency)
+		if !found {
+			ctx.Logger().Error(sdkerrors.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency).Error())
+		}
+		baseCurrency := entry.Denom
+
 		currentHeight := ctx.BlockHeight()
 		pools := k.GetAllPools(ctx)
 		for _, pool := range pools {
@@ -38,7 +47,7 @@ func (k Keeper) BeginBlocker(ctx sdk.Context) {
 				// k.TrackSQBeginBlock(ctx, pool)
 				mtps, _, _ := k.GetMTPsForPool(ctx, pool.AmmPoolId, nil)
 				for _, mtp := range mtps {
-					BeginBlockerProcessMTP(ctx, k, mtp, pool, ammPool)
+					BeginBlockerProcessMTP(ctx, k, mtp, pool, ammPool, baseCurrency)
 				}
 			}
 			k.SetPool(ctx, pool)
