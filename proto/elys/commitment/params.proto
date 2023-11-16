@@ -22,3 +22,11 @@ message VestingInfo {
   ];
   int64 num_max_vestings = 6;
 }
+
+enum EarnType {
+	ALL_PROGRAM = 0;
+	USDC_PROGRAM = 1;
+	ELYS_PROGRAM = 2;
+	EDEN_PROGRAM = 3;
+	EDENB_PROGRAM = 4;
+}

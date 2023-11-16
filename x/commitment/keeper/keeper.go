@@ -24,7 +24,7 @@ type CommitmentKeeperI interface {
 	GetCommitments(sdk.Context, string) types.Commitments
 
 	// Update commitments for claim reward operation
-	RecordClaimReward(sdk.Context, string, string, sdk.Int) error
+	RecordClaimReward(sdk.Context, string, string, sdk.Int, types.EarnType) error
 
 	// Update commitments for validator's commission withdrawal to self delegator
 	RecordWithdrawValidatorCommission(sdk.Context, string, string, string, sdk.Int) error

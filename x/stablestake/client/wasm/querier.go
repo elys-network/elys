@@ -21,10 +21,8 @@ func (oq *Querier) HandleQuery(ctx sdk.Context, query wasmbindingstypes.ElysQuer
 	switch {
 	case query.StableStakeParams != nil:
 		return oq.queryParams(ctx, query.StableStakeParams)
-	case query.StableStakeBorrowRatio != nil:
-		return oq.queryBorrowRatio(ctx, query.StableStakeBorrowRatio)
 	case query.StableStakeBalanceOfBorrow != nil:
-		return oq.queryBorrowedAmount(ctx, query.StableStakeBalanceOfBorrow)
+		return oq.queryBorrowRatio(ctx, query.StableStakeBalanceOfBorrow)
 	default:
 		// This handler cannot handle the query
 		return nil, wasmbindingstypes.ErrCannotHandleQuery

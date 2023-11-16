@@ -61,7 +61,7 @@ func (k Keeper) CalculateRewardsForStakersByCommitted(ctx sdk.Context, amt sdk.I
 }
 
 // Calculate new Eden-Boost token amounts based on the given conditions and user's current unclaimed token balance
-func (k Keeper) CalculateEdenBoostRewards(ctx sdk.Context, delegatedAmt sdk.Int, commitments ctypes.Commitments, epochIdentifier string, edenBoostAPR int64) sdk.Int {
+func (k Keeper) CalculateEdenBoostRewards(ctx sdk.Context, delegatedAmt sdk.Int, commitments ctypes.Commitments, epochIdentifier string, edenBoostAPR int64) (sdk.Int, sdk.Int, sdk.Int) {
 	// Get eden commitments
 	edenCommitted := commitments.GetCommittedAmountForDenom(ptypes.Eden)
 
@@ -71,5 +71,11 @@ func (k Keeper) CalculateEdenBoostRewards(ctx sdk.Context, delegatedAmt sdk.Int,
 	// Calculate edenBoostAPR % APR for eden boost
 	epochNumsPerYear := k.CalculateEpochCountsPerYear(epochIdentifier)
 
-	return totalEden.Quo(sdk.NewInt(epochNumsPerYear)).Quo(sdk.NewInt(100)).Mul(sdk.NewInt(edenBoostAPR))
+	newEdenBoost := totalEden.Quo(sdk.NewInt(epochNumsPerYear)).Quo(sdk.NewInt(100)).Mul(sdk.NewInt(edenBoostAPR))
+
+	// Calculate the portion of each program contribution
+	newEdenBoostByElysStaked := sdk.NewDecFromInt(delegatedAmt).QuoInt(totalEden).MulInt(newEdenBoost).TruncateInt()
+	newEdenBoostByEdenCommitted := newEdenBoost.Sub(newEdenBoostByElysStaked)
+
+	return newEdenBoost, newEdenBoostByElysStaked, newEdenBoostByEdenCommitted
 }

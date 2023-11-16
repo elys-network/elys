@@ -23,11 +23,15 @@ func (k Keeper) GetCommitments(ctx sdk.Context, creator string) types.Commitment
 	b := store.Get(types.CommitmentsKey(creator))
 	if b == nil {
 		return types.Commitments{
-			Creator:          creator,
-			CommittedTokens:  []*types.CommittedTokens{},
-			RewardsUnclaimed: sdk.Coins{},
-			Claimed:          sdk.Coins{},
-			VestingTokens:    []*types.VestingTokens{},
+			Creator:                 creator,
+			CommittedTokens:         []*types.CommittedTokens{},
+			RewardsUnclaimed:        sdk.Coins{},
+			Claimed:                 sdk.Coins{},
+			VestingTokens:           []*types.VestingTokens{},
+			RewardsByElysUnclaimed:  sdk.Coins{},
+			RewardsByEdenUnclaimed:  sdk.Coins{},
+			RewardsByEdenbUnclaimed: sdk.Coins{},
+			RewardsByUsdcUnclaimed:  sdk.Coins{},
 		}
 	}
 

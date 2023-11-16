@@ -88,14 +88,14 @@ func TestProcessWithdrawRewards(t *testing.T) {
 	require.NoError(t, err)
 
 	// Withdraw rewards
-	err = ik.ProcessWithdrawRewards(ctx, addr[0].String(), ptypes.Eden)
+	err = ik.ProcessWithdrawRewards(ctx, addr[0].String(), ptypes.Eden, ctypes.EarnType_ALL_PROGRAM)
 	require.NoError(t, err)
 
 	commitments = app.CommitmentKeeper.GetCommitments(ctx, addr[0].String())
 	require.Equal(t, commitments.Claimed.String(), uedenToken.String())
 
 	// Withdraw rewards
-	err = ik.ProcessWithdrawRewards(ctx, addr[0].String(), ptypes.BaseCurrency)
+	err = ik.ProcessWithdrawRewards(ctx, addr[0].String(), ptypes.BaseCurrency, ctypes.EarnType_ALL_PROGRAM)
 	require.NoError(t, err)
 
 	usdcCoin := app.BankKeeper.GetBalance(ctx, addr[0], ptypes.BaseCurrency)

@@ -258,6 +258,26 @@ genesis:
               epoch_identifier: "day"
               num_epochs: 100
               current_epoch: 5
+          rewards_by_usdc_unclaimed:
+            - denom: ueden
+              amount: "2000"
+            - denom: uusdc
+              amount: "2000"
+          rewards_by_elys_unclaimed:
+            - denom: ueden
+              amount: "3000"
+            - denom: uusdc
+              amount: "3000"
+          rewards_by_eden_unclaimed:
+            - denom: ueden
+              amount: "3000"
+            - denom: uusdc
+              amount: "3000"
+          rewards_by_edenb_unclaimed:
+            - denom: ueden
+              amount: "2000"
+          - denom: uusdc
+              amount: "200"
     incentive:
       params:
         lp_incentives:
