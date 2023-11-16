@@ -72,6 +72,7 @@ func NewKeeper(
 		bankKeeper:          bk,
 		amm:                 amm,
 		oracleKeeper:        ok,
+		apKeeper:            ap,
 	}
 }
 
