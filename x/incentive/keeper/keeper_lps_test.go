@@ -173,10 +173,10 @@ func TestCalculateRewardsForLPs(t *testing.T) {
 	require.Equal(t, ik.CalculateTVL(ctx), sdk.NewDecWithPrec(1001, 1))
 
 	edenAmountPerEpochLp := sdk.NewInt(1000000)
-	totalProxyTVL := ik.CalculateProxyTVL(ctx)
+	totalProxyTVL := ik.CalculateProxyTVL(ctx, ptypes.BaseCurrency)
 
 	// Recalculate total committed info
-	ik.UpdateTotalCommitmentInfo(ctx)
+	ik.UpdateTotalCommitmentInfo(ctx, ptypes.BaseCurrency)
 
 	gasFeesLPsAmt := sdk.NewDec(1000)
 	// Calculate rewards for LPs

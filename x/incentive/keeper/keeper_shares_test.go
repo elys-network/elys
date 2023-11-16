@@ -72,7 +72,7 @@ func TestCalculateTotalShareOfStaking(t *testing.T) {
 	require.Equal(t, commitment.CommittedTokens[1].Amount, sdk.NewInt(1000))
 
 	// Recalculate total committed info
-	ik.UpdateTotalCommitmentInfo(ctx)
+	ik.UpdateTotalCommitmentInfo(ctx, ptypes.BaseCurrency)
 
 	share1 := ik.CalculateTotalShareOfStaking(sdk.ZeroInt())
 	require.Equal(t, share1, sdk.ZeroDec())

@@ -100,7 +100,7 @@ func TestCollectDEXRevenueToIncentiveModule(t *testing.T) {
 	ik, bk, amm, oracle := app.IncentiveKeeper, app.BankKeeper, app.AmmKeeper, app.OracleKeeper
 
 	// Recalculate total committed info
-	ik.UpdateTotalCommitmentInfo(ctx)
+	ik.UpdateTotalCommitmentInfo(ctx, ptypes.BaseCurrency)
 
 	// Setup coin prices
 	SetupStableCoinPrices(ctx, oracle)

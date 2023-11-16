@@ -74,7 +74,7 @@ func TestCalculateRewardsForStakers(t *testing.T) {
 	require.Equal(t, commitment.CommittedTokens[1].Amount, sdk.NewInt(500))
 
 	// Recalculate total committed info
-	ik.UpdateTotalCommitmentInfo(ctx)
+	ik.UpdateTotalCommitmentInfo(ctx, ptypes.BaseCurrency)
 
 	totalEdenGiven := sdk.ZeroInt()
 	totalRewardsGiven := sdk.ZeroInt()

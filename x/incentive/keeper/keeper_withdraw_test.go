@@ -31,7 +31,7 @@ func TestGiveCommissionToValidators(t *testing.T) {
 	newUnclaimedEdenTokens := sdk.NewInt(10000)
 	dexRewardsByStakers := sdk.NewDec(1000)
 	// Give commission to validators ( Eden from stakers and Dex rewards from stakers. )
-	edenCommissionGiven, dexRewardsCommissionGiven := ik.GiveCommissionToValidators(ctx, delegator, delegatedAmt, newUnclaimedEdenTokens, dexRewardsByStakers)
+	edenCommissionGiven, dexRewardsCommissionGiven := ik.GiveCommissionToValidators(ctx, delegator, delegatedAmt, newUnclaimedEdenTokens, dexRewardsByStakers, ptypes.BaseCurrency)
 
 	require.Equal(t, edenCommissionGiven, sdk.NewInt(500))
 	require.Equal(t, dexRewardsCommissionGiven, sdk.NewInt(50))
@@ -134,7 +134,7 @@ func TestRecordWithdrawValidatorCommission(t *testing.T) {
 	app.AssetprofileKeeper.SetEntry(ctx, aptypes.Entry{BaseDenom: ptypes.EdenB, CommitEnabled: true, WithdrawEnabled: true})
 
 	// Give commission to validators ( Eden from stakers and Dex rewards from stakers. )
-	edenCommissionGiven, dexRewardsCommissionGiven := ik.GiveCommissionToValidators(ctx, delegator, delegatedAmt, newUnclaimedEdenTokens, dexRewardsByStakers)
+	edenCommissionGiven, dexRewardsCommissionGiven := ik.GiveCommissionToValidators(ctx, delegator, delegatedAmt, newUnclaimedEdenTokens, dexRewardsByStakers, ptypes.BaseCurrency)
 
 	commitments := app.CommitmentKeeper.GetCommitments(ctx, valAddress.String())
 
