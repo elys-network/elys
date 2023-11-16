@@ -43,7 +43,7 @@ func TestOpenLong_PoolNotFound(t *testing.T) {
 	mockChecker.On("GetTradingAsset", msg.CollateralAsset, msg.BorrowAsset).Return(msg.CollateralAsset)
 	mockChecker.On("GetPool", ctx, poolId).Return(types.Pool{}, false)
 
-	_, err := k.OpenLong(ctx, poolId, msg)
+	_, err := k.OpenLong(ctx, poolId, msg, ptypes.BaseCurrency)
 
 	// Expect an error about the pool not existing
 	assert.True(t, errors.Is(err, types.ErrPoolDoesNotExist))
@@ -76,7 +76,7 @@ func TestOpenLong_PoolDisabled(t *testing.T) {
 	mockChecker.On("GetPool", ctx, poolId).Return(types.Pool{}, true)
 	mockChecker.On("IsPoolEnabled", ctx, poolId).Return(false)
 
-	_, err := k.OpenLong(ctx, poolId, msg)
+	_, err := k.OpenLong(ctx, poolId, msg, ptypes.BaseCurrency)
 
 	// Expect an error about the pool being disabled
 	assert.True(t, errors.Is(err, types.ErrMTPDisabled))
@@ -115,7 +115,7 @@ func TestOpenLong_InsufficientAmmPoolBalanceForLeveragedAmount(t *testing.T) {
 	// Mock the behavior where HasSufficientPoolBalance returns false
 	mockChecker.On("HasSufficientPoolBalance", ctx, ammtypes.Pool{}, msg.CollateralAsset, sdk.NewInt(2000)).Return(false) // Example value for sdk.NewInt(100)
 
-	_, err := k.OpenLong(ctx, poolId, msg)
+	_, err := k.OpenLong(ctx, poolId, msg, ptypes.BaseCurrency)
 
 	// Expect an error about the borrow amount being too high
 	assert.True(t, errors.Is(err, types.ErrBorrowTooHigh))
@@ -158,7 +158,7 @@ func TestOpenLong_InsufficientLiabilities(t *testing.T) {
 
 	mockChecker.On("CheckMinLiabilities", ctx, collateralTokenAmt, sdk.NewDec(1), types.Pool{}, ammtypes.Pool{}, msg.BorrowAsset).Return(liabilityError)
 
-	_, err := k.OpenLong(ctx, poolId, msg)
+	_, err := k.OpenLong(ctx, poolId, msg, ptypes.BaseCurrency)
 
 	// Expect the custom error indicating insufficient liabilities
 	assert.True(t, errors.Is(err, liabilityError))
@@ -209,7 +209,7 @@ func TestOpenLong_InsufficientAmmPoolBalanceForCustody(t *testing.T) {
 	mockChecker.On("EstimateSwap", ctx, leveragedAmtTokenIn, msg.BorrowAsset, ammtypes.Pool{}).Return(custodyAmount, nil)
 	mockChecker.On("HasSufficientPoolBalance", ctx, ammtypes.Pool{}, msg.BorrowAsset, custodyAmount).Return(false)
 
-	_, err := k.OpenLong(ctx, poolId, msg)
+	_, err := k.OpenLong(ctx, poolId, msg, ptypes.BaseCurrency)
 
 	// Expect an error about custody amount being too high
 	assert.True(t, errors.Is(err, types.ErrCustodyTooHigh))
@@ -267,7 +267,7 @@ func TestOpenLong_ErrorsDuringOperations(t *testing.T) {
 	borrowError := errors.New("borrow error")
 	mockChecker.On("Borrow", ctx, msg.CollateralAsset, msg.BorrowAsset, msg.CollateralAmount, custodyAmount, mtp, &ammtypes.Pool{}, &types.Pool{}, eta).Return(borrowError)
 
-	_, err := k.OpenLong(ctx, poolId, msg)
+	_, err := k.OpenLong(ctx, poolId, msg, ptypes.BaseCurrency)
 
 	// Expect the borrow error
 	assert.True(t, errors.Is(err, borrowError))
@@ -331,7 +331,7 @@ func TestOpenLong_LeverageRatioLessThanSafetyFactor(t *testing.T) {
 	mockChecker.On("UpdateMTPHealth", ctx, *mtp, ammtypes.Pool{}).Return(lr, nil)
 	mockChecker.On("GetSafetyFactor", ctx).Return(sdk.NewDec(100))
 
-	_, err := k.OpenLong(ctx, poolId, msg)
+	_, err := k.OpenLong(ctx, poolId, msg, ptypes.BaseCurrency)
 
 	// Expect an error indicating MTP is unhealthy
 	assert.True(t, errors.Is(err, types.ErrMTPUnhealthy))
@@ -402,7 +402,7 @@ func TestOpenLong_Success(t *testing.T) {
 	mockChecker.On("CalcMTPConsolidateLiability", ctx, mtp).Return()
 	mockChecker.On("SetMTP", ctx, mtp).Return(nil)
 
-	_, err := k.OpenLong(ctx, poolId, msg)
+	_, err := k.OpenLong(ctx, poolId, msg, ptypes.BaseCurrency)
 	// Expect no error
 	assert.Nil(t, err)
 	mockChecker.AssertExpectations(t)
