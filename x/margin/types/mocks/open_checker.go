@@ -403,13 +403,13 @@ func (_c *OpenChecker_GetOpenMTPCount_Call) RunAndReturn(run func(types.Context)
 	return _c
 }
 
-// GetTradingAsset provides a mock function with given fields: collateralAsset, borrowAsset
-func (_m *OpenChecker) GetTradingAsset(collateralAsset string, borrowAsset string) string {
-	ret := _m.Called(collateralAsset, borrowAsset)
+// GetTradingAsset provides a mock function with given fields: collateralAsset, borrowAsset, baseCurrency
+func (_m *OpenChecker) GetTradingAsset(collateralAsset string, borrowAsset string, baseCurrency string) string {
+	ret := _m.Called(collateralAsset, borrowAsset, baseCurrency)
 
 	var r0 string
-	if rf, ok := ret.Get(0).(func(string, string) string); ok {
-		r0 = rf(collateralAsset, borrowAsset)
+	if rf, ok := ret.Get(0).(func(string, string, string) string); ok {
+		r0 = rf(collateralAsset, borrowAsset, baseCurrency)
 	} else {
 		r0 = ret.Get(0).(string)
 	}
@@ -425,13 +425,14 @@ type OpenChecker_GetTradingAsset_Call struct {
 // GetTradingAsset is a helper method to define mock.On call
 //   - collateralAsset string
 //   - borrowAsset string
-func (_e *OpenChecker_Expecter) GetTradingAsset(collateralAsset interface{}, borrowAsset interface{}) *OpenChecker_GetTradingAsset_Call {
-	return &OpenChecker_GetTradingAsset_Call{Call: _e.mock.On("GetTradingAsset", collateralAsset, borrowAsset)}
+//   - baseCurrency string
+func (_e *OpenChecker_Expecter) GetTradingAsset(collateralAsset interface{}, borrowAsset interface{}, baseCurrency interface{}) *OpenChecker_GetTradingAsset_Call {
+	return &OpenChecker_GetTradingAsset_Call{Call: _e.mock.On("GetTradingAsset", collateralAsset, borrowAsset, baseCurrency)}
 }
 
-func (_c *OpenChecker_GetTradingAsset_Call) Run(run func(collateralAsset string, borrowAsset string)) *OpenChecker_GetTradingAsset_Call {
+func (_c *OpenChecker_GetTradingAsset_Call) Run(run func(collateralAsset string, borrowAsset string, baseCurrency string)) *OpenChecker_GetTradingAsset_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(string), args[1].(string))
+		run(args[0].(string), args[1].(string), args[2].(string))
 	})
 	return _c
 }
@@ -441,7 +442,7 @@ func (_c *OpenChecker_GetTradingAsset_Call) Return(_a0 string) *OpenChecker_GetT
 	return _c
 }
 
-func (_c *OpenChecker_GetTradingAsset_Call) RunAndReturn(run func(string, string) string) *OpenChecker_GetTradingAsset_Call {
+func (_c *OpenChecker_GetTradingAsset_Call) RunAndReturn(run func(string, string, string) string) *OpenChecker_GetTradingAsset_Call {
 	_c.Call.Return(run)
 	return _c
 }

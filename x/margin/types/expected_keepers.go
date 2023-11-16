@@ -33,7 +33,7 @@ type OpenChecker interface {
 	CheckShortAssets(ctx sdk.Context, collateralAsset string, borrowAsset string) error
 	CheckUserAuthorization(ctx sdk.Context, msg *MsgOpen) error
 	CheckMaxOpenPositions(ctx sdk.Context) error
-	GetTradingAsset(collateralAsset string, borrowAsset string) string
+	GetTradingAsset(collateralAsset string, borrowAsset string, baseCurrency string) string
 	PreparePools(ctx sdk.Context, tradingAsset string) (poolId uint64, ammPool ammtypes.Pool, pool Pool, err error)
 	CheckPoolHealth(ctx sdk.Context, poolId uint64) error
 	OpenLong(ctx sdk.Context, poolId uint64, msg *MsgOpen) (*MTP, error)
@@ -48,7 +48,7 @@ type OpenChecker interface {
 //go:generate mockery --srcpkg . --name OpenLongChecker --structname OpenLongChecker --filename open_long_checker.go --with-expecter
 type OpenLongChecker interface {
 	GetMaxLeverageParam(ctx sdk.Context) sdk.Dec
-	GetTradingAsset(collateralAsset string, borrowAsset string) string
+	GetTradingAsset(collateralAsset string, borrowAsset string, baseCurrency string) string
 	GetPool(ctx sdk.Context, poolId uint64) (Pool, bool)
 	IsPoolEnabled(ctx sdk.Context, poolId uint64) bool
 	GetAmmPool(ctx sdk.Context, poolId uint64, tradingAsset string) (ammtypes.Pool, error)
@@ -59,7 +59,7 @@ type OpenLongChecker interface {
 	Borrow(ctx sdk.Context, collateralAsset string, custodyAsset string, collateralAmount sdk.Int, custodyAmount sdk.Int, mtp *MTP, ammPool *ammtypes.Pool, pool *Pool, eta sdk.Dec) error
 	UpdatePoolHealth(ctx sdk.Context, pool *Pool) error
 	TakeInCustody(ctx sdk.Context, mtp MTP, pool *Pool) error
-	UpdateMTPHealth(ctx sdk.Context, mtp MTP, ammPool ammtypes.Pool) (sdk.Dec, error)
+	UpdateMTPHealth(ctx sdk.Context, mtp MTP, ammPool ammtypes.Pool, baseCurrency string) (sdk.Dec, error)
 	GetSafetyFactor(ctx sdk.Context) sdk.Dec
 	SetPool(ctx sdk.Context, pool Pool)
 	GetAmmPoolBalance(ctx sdk.Context, ammPool ammtypes.Pool, assetDenom string) (sdk.Int, error)
@@ -73,7 +73,7 @@ type OpenLongChecker interface {
 //go:generate mockery --srcpkg . --name OpenShortChecker --structname OpenShortChecker --filename open_short_checker.go --with-expecter
 type OpenShortChecker interface {
 	GetMaxLeverageParam(ctx sdk.Context) sdk.Dec
-	GetTradingAsset(collateralAsset string, borrowAsset string) string
+	GetTradingAsset(collateralAsset string, borrowAsset string, baseCurrency string) string
 	GetPool(ctx sdk.Context, poolId uint64) (Pool, bool)
 	IsPoolEnabled(ctx sdk.Context, poolId uint64) bool
 	GetAmmPool(ctx sdk.Context, poolId uint64, tradingAsset string) (ammtypes.Pool, error)
@@ -84,7 +84,7 @@ type OpenShortChecker interface {
 	Borrow(ctx sdk.Context, collateralAsset string, custodyAsset string, collateralAmount sdk.Int, custodyAmount sdk.Int, mtp *MTP, ammPool *ammtypes.Pool, pool *Pool, eta sdk.Dec) error
 	UpdatePoolHealth(ctx sdk.Context, pool *Pool) error
 	TakeInCustody(ctx sdk.Context, mtp MTP, pool *Pool) error
-	UpdateMTPHealth(ctx sdk.Context, mtp MTP, ammPool ammtypes.Pool) (sdk.Dec, error)
+	UpdateMTPHealth(ctx sdk.Context, mtp MTP, ammPool ammtypes.Pool, baseCurrency string) (sdk.Dec, error)
 	GetSafetyFactor(ctx sdk.Context) sdk.Dec
 	SetPool(ctx sdk.Context, pool Pool)
 	GetAmmPoolBalance(ctx sdk.Context, ammPool ammtypes.Pool, assetDenom string) (sdk.Int, error)

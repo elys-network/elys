@@ -644,13 +644,13 @@ func (_c *OpenLongChecker_GetSafetyFactor_Call) RunAndReturn(run func(types.Cont
 	return _c
 }
 
-// GetTradingAsset provides a mock function with given fields: collateralAsset, borrowAsset
-func (_m *OpenLongChecker) GetTradingAsset(collateralAsset string, borrowAsset string) string {
-	ret := _m.Called(collateralAsset, borrowAsset)
+// GetTradingAsset provides a mock function with given fields: collateralAsset, borrowAsset, baseCurrency
+func (_m *OpenLongChecker) GetTradingAsset(collateralAsset string, borrowAsset string, baseCurrency string) string {
+	ret := _m.Called(collateralAsset, borrowAsset, baseCurrency)
 
 	var r0 string
-	if rf, ok := ret.Get(0).(func(string, string) string); ok {
-		r0 = rf(collateralAsset, borrowAsset)
+	if rf, ok := ret.Get(0).(func(string, string, string) string); ok {
+		r0 = rf(collateralAsset, borrowAsset, baseCurrency)
 	} else {
 		r0 = ret.Get(0).(string)
 	}
@@ -666,13 +666,14 @@ type OpenLongChecker_GetTradingAsset_Call struct {
 // GetTradingAsset is a helper method to define mock.On call
 //   - collateralAsset string
 //   - borrowAsset string
-func (_e *OpenLongChecker_Expecter) GetTradingAsset(collateralAsset interface{}, borrowAsset interface{}) *OpenLongChecker_GetTradingAsset_Call {
-	return &OpenLongChecker_GetTradingAsset_Call{Call: _e.mock.On("GetTradingAsset", collateralAsset, borrowAsset)}
+//   - baseCurrency string
+func (_e *OpenLongChecker_Expecter) GetTradingAsset(collateralAsset interface{}, borrowAsset interface{}, baseCurrency interface{}) *OpenLongChecker_GetTradingAsset_Call {
+	return &OpenLongChecker_GetTradingAsset_Call{Call: _e.mock.On("GetTradingAsset", collateralAsset, borrowAsset, baseCurrency)}
 }
 
-func (_c *OpenLongChecker_GetTradingAsset_Call) Run(run func(collateralAsset string, borrowAsset string)) *OpenLongChecker_GetTradingAsset_Call {
+func (_c *OpenLongChecker_GetTradingAsset_Call) Run(run func(collateralAsset string, borrowAsset string, baseCurrency string)) *OpenLongChecker_GetTradingAsset_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(string), args[1].(string))
+		run(args[0].(string), args[1].(string), args[2].(string))
 	})
 	return _c
 }
@@ -682,7 +683,7 @@ func (_c *OpenLongChecker_GetTradingAsset_Call) Return(_a0 string) *OpenLongChec
 	return _c
 }
 
-func (_c *OpenLongChecker_GetTradingAsset_Call) RunAndReturn(run func(string, string) string) *OpenLongChecker_GetTradingAsset_Call {
+func (_c *OpenLongChecker_GetTradingAsset_Call) RunAndReturn(run func(string, string, string) string) *OpenLongChecker_GetTradingAsset_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -896,23 +897,23 @@ func (_c *OpenLongChecker_TakeInCustody_Call) RunAndReturn(run func(types.Contex
 	return _c
 }
 
-// UpdateMTPHealth provides a mock function with given fields: ctx, mtp, ammPool
-func (_m *OpenLongChecker) UpdateMTPHealth(ctx types.Context, mtp margintypes.MTP, ammPool ammtypes.Pool) (math.LegacyDec, error) {
-	ret := _m.Called(ctx, mtp, ammPool)
+// UpdateMTPHealth provides a mock function with given fields: ctx, mtp, ammPool, baseCurrency
+func (_m *OpenLongChecker) UpdateMTPHealth(ctx types.Context, mtp margintypes.MTP, ammPool ammtypes.Pool, baseCurrency string) (math.LegacyDec, error) {
+	ret := _m.Called(ctx, mtp, ammPool, baseCurrency)
 
 	var r0 math.LegacyDec
 	var r1 error
-	if rf, ok := ret.Get(0).(func(types.Context, margintypes.MTP, ammtypes.Pool) (math.LegacyDec, error)); ok {
-		return rf(ctx, mtp, ammPool)
+	if rf, ok := ret.Get(0).(func(types.Context, margintypes.MTP, ammtypes.Pool, string) (math.LegacyDec, error)); ok {
+		return rf(ctx, mtp, ammPool, baseCurrency)
 	}
-	if rf, ok := ret.Get(0).(func(types.Context, margintypes.MTP, ammtypes.Pool) math.LegacyDec); ok {
-		r0 = rf(ctx, mtp, ammPool)
+	if rf, ok := ret.Get(0).(func(types.Context, margintypes.MTP, ammtypes.Pool, string) math.LegacyDec); ok {
+		r0 = rf(ctx, mtp, ammPool, baseCurrency)
 	} else {
 		r0 = ret.Get(0).(math.LegacyDec)
 	}
 
-	if rf, ok := ret.Get(1).(func(types.Context, margintypes.MTP, ammtypes.Pool) error); ok {
-		r1 = rf(ctx, mtp, ammPool)
+	if rf, ok := ret.Get(1).(func(types.Context, margintypes.MTP, ammtypes.Pool, string) error); ok {
+		r1 = rf(ctx, mtp, ammPool, baseCurrency)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -929,13 +930,14 @@ type OpenLongChecker_UpdateMTPHealth_Call struct {
 //   - ctx types.Context
 //   - mtp margintypes.MTP
 //   - ammPool ammtypes.Pool
-func (_e *OpenLongChecker_Expecter) UpdateMTPHealth(ctx interface{}, mtp interface{}, ammPool interface{}) *OpenLongChecker_UpdateMTPHealth_Call {
-	return &OpenLongChecker_UpdateMTPHealth_Call{Call: _e.mock.On("UpdateMTPHealth", ctx, mtp, ammPool)}
+//   - baseCurrency string
+func (_e *OpenLongChecker_Expecter) UpdateMTPHealth(ctx interface{}, mtp interface{}, ammPool interface{}, baseCurrency interface{}) *OpenLongChecker_UpdateMTPHealth_Call {
+	return &OpenLongChecker_UpdateMTPHealth_Call{Call: _e.mock.On("UpdateMTPHealth", ctx, mtp, ammPool, baseCurrency)}
 }
 
-func (_c *OpenLongChecker_UpdateMTPHealth_Call) Run(run func(ctx types.Context, mtp margintypes.MTP, ammPool ammtypes.Pool)) *OpenLongChecker_UpdateMTPHealth_Call {
+func (_c *OpenLongChecker_UpdateMTPHealth_Call) Run(run func(ctx types.Context, mtp margintypes.MTP, ammPool ammtypes.Pool, baseCurrency string)) *OpenLongChecker_UpdateMTPHealth_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(types.Context), args[1].(margintypes.MTP), args[2].(ammtypes.Pool))
+		run(args[0].(types.Context), args[1].(margintypes.MTP), args[2].(ammtypes.Pool), args[3].(string))
 	})
 	return _c
 }
@@ -945,7 +947,7 @@ func (_c *OpenLongChecker_UpdateMTPHealth_Call) Return(_a0 math.LegacyDec, _a1 e
 	return _c
 }
 
-func (_c *OpenLongChecker_UpdateMTPHealth_Call) RunAndReturn(run func(types.Context, margintypes.MTP, ammtypes.Pool) (math.LegacyDec, error)) *OpenLongChecker_UpdateMTPHealth_Call {
+func (_c *OpenLongChecker_UpdateMTPHealth_Call) RunAndReturn(run func(types.Context, margintypes.MTP, ammtypes.Pool, string) (math.LegacyDec, error)) *OpenLongChecker_UpdateMTPHealth_Call {
 	_c.Call.Return(run)
 	return _c
 }
