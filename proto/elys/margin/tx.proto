@@ -24,7 +24,8 @@ message MsgOpen {
   string   borrow_asset      = 4;
   Position position         = 5;
   string   leverage         = 6 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
-  string  take_profit_price  = 7 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+  string   take_profit_price  = 7 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+  string   owner = 8;
 }
 
 message MsgOpenResponse {}

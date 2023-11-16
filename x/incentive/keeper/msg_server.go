@@ -30,7 +30,7 @@ func (k msgServer) WithdrawRewards(goCtx context.Context, msg *types.MsgWithdraw
 	}
 
 	// Withdraw rewards
-	err = k.ProcessWithdrawRewards(ctx, msg.DelegatorAddress, msg.Denom)
+	err = k.ProcessWithdrawRewards(ctx, msg.DelegatorAddress, msg.Denom, msg.WithdrawType)
 
 	ctx.EventManager().EmitEvent(
 		sdk.NewEvent(

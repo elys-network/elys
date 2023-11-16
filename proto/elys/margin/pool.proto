@@ -45,7 +45,8 @@ message Pool {
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
-  repeated PoolAsset pool_assets = 6 [(gogoproto.nullable) = false]; 
-  int64 last_height_interest_rate_computed = 7;
+  repeated PoolAsset pool_assets_long = 6 [(gogoproto.nullable) = false]; 
+  repeated PoolAsset pool_assets_short = 7 [(gogoproto.nullable) = false]; 
+  int64 last_height_interest_rate_computed = 8;
 }
 

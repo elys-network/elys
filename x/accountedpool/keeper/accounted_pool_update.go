@@ -19,15 +19,28 @@ func (k Keeper) GetAmmPoolBalance(ammPool ammtypes.Pool, denom string) sdk.Int {
 	return sdk.ZeroInt()
 }
 
-// Get Margin Pool Balance
-func (k Keeper) GetMarginPoolBalances(marginPool margintypes.Pool, denom string) (sdk.Int, sdk.Int, sdk.Int) {
-	for _, asset := range marginPool.PoolAssets {
+func (k Keeper) GetMarginPoolBalancesByPosition(marginPool margintypes.Pool, denom string, position margintypes.Position) (sdk.Int, sdk.Int, sdk.Int) {
+	poolAssets := marginPool.GetPoolAssets(position)
+
+	for _, asset := range *poolAssets {
 		if asset.AssetDenom == denom {
 			return asset.AssetBalance, asset.Liabilities, asset.Custody
 		}
 	}
 
 	return sdk.ZeroInt(), sdk.ZeroInt(), sdk.ZeroInt()
+}
+
+// Get Margin Pool Balance
+func (k Keeper) GetMarginPoolBalances(marginPool margintypes.Pool, denom string) (sdk.Int, sdk.Int, sdk.Int) {
+	assetBalanceLong, liabilitiesLong, custodyLong := k.GetMarginPoolBalancesByPosition(marginPool, denom, margintypes.Position_LONG)
+	assetBalanceShort, liabilitiesShort, custodyShort := k.GetMarginPoolBalancesByPosition(marginPool, denom, margintypes.Position_SHORT)
+
+	assetBalance := assetBalanceLong.Add(assetBalanceShort)
+	liabilities := liabilitiesLong.Add(liabilitiesShort)
+	custody := custodyLong.Add(custodyShort)
+
+	return assetBalance, liabilities, custody
 }
 
 func (k Keeper) UpdateAccountedPool(ctx sdk.Context, ammPool ammtypes.Pool, marginPool margintypes.Pool) error {

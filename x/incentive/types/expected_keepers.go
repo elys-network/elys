@@ -20,7 +20,7 @@ type CommitmentKeeper interface {
 	// Get commitment
 	GetCommitments(sdk.Context, string) ctypes.Commitments
 	// Update commitments for claim reward operation
-	RecordClaimReward(sdk.Context, string, string, sdk.Int) error
+	RecordClaimReward(sdk.Context, string, string, sdk.Int, ctypes.EarnType) error
 	// Update commitments for validator commission
 	RecordWithdrawValidatorCommission(sdk.Context, string, string, string, sdk.Int) error
 	// Update commitments for withdraw tokens - only USDC
@@ -69,6 +69,8 @@ type BankKeeper interface {
 	SendCoinsFromAccountToModule(ctx sdk.Context, senderAddr sdk.AccAddress, recipientModule string, amt sdk.Coins) error
 
 	BlockedAddr(addr sdk.AccAddress) bool
+	BurnCoins(ctx sdk.Context, name string, amt sdk.Coins) error
+	MintCoins(ctx sdk.Context, moduleName string, amt sdk.Coins) error
 }
 
 // AmmKeeper defines the expected interface needed to swap tokens

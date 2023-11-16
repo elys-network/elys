@@ -20,4 +20,5 @@ var (
 	ErrExceedMaxVestings              = sdkerrors.Register(ModuleName, 1010, "exceed maximum allowed vestings")
 	ErrInsufficientWithdrawableTokens = sdkerrors.Register(ModuleName, 1011, "insufficient withdrawable tokens")
 	ErrVestNowIsNotEnabled            = sdkerrors.Register(ModuleName, 1012, "instant vesting is not enabled at this stage")
+	ErrUnsupportedWithdrawMode        = sdkerrors.Register(ModuleName, 1013, "unsupported withdraw mode")
 )

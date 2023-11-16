@@ -5,6 +5,7 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/cosmos/cosmos-sdk/x/distribution/types"
 	stypes "github.com/cosmos/cosmos-sdk/x/staking/types"
+	commitmenttypes "github.com/elys-network/elys/x/commitment/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
 
@@ -80,7 +81,7 @@ func (k Keeper) GiveCommissionToValidators(ctx sdk.Context, delegator string, to
 
 // withdraw rewards
 // Eden, EdenBoost and Elys to USDC
-func (k Keeper) ProcessWithdrawRewards(ctx sdk.Context, delegator string, denom string) error {
+func (k Keeper) ProcessWithdrawRewards(ctx sdk.Context, delegator string, denom string, withdrawType commitmenttypes.EarnType) error {
 	_, err := sdk.AccAddressFromBech32(delegator)
 	if err != nil {
 		return err
@@ -91,12 +92,25 @@ func (k Keeper) ProcessWithdrawRewards(ctx sdk.Context, delegator string, denom 
 
 	// Eden
 	if denom == ptypes.Eden || denom == ptypes.EdenB {
-		unclaimed := commitments.GetRewardUnclaimedForDenom(denom)
+		unclaimed := sdk.ZeroInt()
+		switch withdrawType {
+		case commitmenttypes.EarnType_ELYS_PROGRAM:
+			unclaimed = commitments.GetElysSubBucketRewardUnclaimedForDenom(denom)
+		case commitmenttypes.EarnType_EDEN_PROGRAM:
+			unclaimed = commitments.GetEdenSubBucketRewardUnclaimedForDenom(denom)
+		case commitmenttypes.EarnType_EDENB_PROGRAM:
+			unclaimed = commitments.GetEdenBSubBucketRewardUnclaimedForDenom(denom)
+		case commitmenttypes.EarnType_USDC_PROGRAM:
+			unclaimed = commitments.GetUsdcSubBucketRewardUnclaimedForDenom(denom)
+		default:
+			unclaimed = commitments.GetRewardUnclaimedForDenom(denom)
+		}
+
 		if unclaimed.IsZero() {
 			return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, "balance not available")
 		}
 		// Claim Eden pr Eden boost from Unclaimed state
-		return k.cmk.RecordClaimReward(ctx, delegator, denom, unclaimed)
+		return k.cmk.RecordClaimReward(ctx, delegator, denom, unclaimed, withdrawType)
 	}
 
 	// USDC

@@ -17,7 +17,7 @@ func (k Keeper) HandleInterest(ctx sdk.Context, mtp *types.MTP, pool *types.Pool
 	finalInterestPayment := k.HandleInterestPayment(ctx, collateralAsset, custodyAsset, interestPayment, mtp, pool, ammPool)
 
 	// finalInterestPayment is in custodyAsset
-	if err := pool.UpdateBlockInterest(ctx, custodyAsset, finalInterestPayment, true); err != nil {
+	if err := pool.UpdateBlockInterest(ctx, custodyAsset, finalInterestPayment, true, mtp.Position); err != nil {
 		return err
 	}
 

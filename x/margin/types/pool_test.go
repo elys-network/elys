@@ -16,7 +16,7 @@ func TestPool_UpdateBalanceValid(t *testing.T) {
 
 	// Define the margin pool with assets
 	pool := types.NewPool(1)
-	pool.PoolAssets = []types.PoolAsset{
+	pool.PoolAssetsLong = []types.PoolAsset{
 		{
 			Liabilities:   sdk.NewInt(0),
 			Custody:       sdk.NewInt(0),
@@ -28,16 +28,16 @@ func TestPool_UpdateBalanceValid(t *testing.T) {
 
 	// Test scenario, increase 100 and decrease 50.
 	denom := "testAsset"
-	err := pool.UpdateBalance(ctx, denom, sdk.NewInt(100), true)
+	err := pool.UpdateBalance(ctx, denom, sdk.NewInt(100), true, types.Position_LONG)
 	// Expect that there is no error
 	assert.Nil(t, err)
 	// Expect that there is 100 balance
-	assert.Equal(t, pool.PoolAssets[0].AssetBalance, sdk.NewInt(100))
-	err = pool.UpdateBalance(ctx, denom, sdk.NewInt(50), false)
+	assert.Equal(t, pool.PoolAssetsLong[0].AssetBalance, sdk.NewInt(100))
+	err = pool.UpdateBalance(ctx, denom, sdk.NewInt(50), false, types.Position_LONG)
 	// Expect that there is no error
 	assert.Nil(t, err)
 	// Expect that there is 100 balance
-	assert.Equal(t, pool.PoolAssets[0].AssetBalance, sdk.NewInt(50))
+	assert.Equal(t, pool.PoolAssetsLong[0].AssetBalance, sdk.NewInt(50))
 }
 
 func TestPool_UpdateBalanceInvalid(t *testing.T) {
@@ -45,7 +45,7 @@ func TestPool_UpdateBalanceInvalid(t *testing.T) {
 
 	// Define the margin pool with assets
 	pool := types.NewPool(1)
-	pool.PoolAssets = []types.PoolAsset{
+	pool.PoolAssetsLong = []types.PoolAsset{
 		{
 			Liabilities:   sdk.NewInt(0),
 			Custody:       sdk.NewInt(0),
@@ -57,12 +57,12 @@ func TestPool_UpdateBalanceInvalid(t *testing.T) {
 
 	// Test scenario, increase 100 and decrease 50.
 	denom := "testAsset2"
-	err := pool.UpdateBalance(ctx, denom, sdk.NewInt(100), true)
+	err := pool.UpdateBalance(ctx, denom, sdk.NewInt(100), true, types.Position_LONG)
 	// Expect that there is invalid asset denom error.
 	assert.True(t, errors.Is(err, sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, "invalid asset denom")))
 
 	// Expect that there is still 0 balance
-	assert.Equal(t, pool.PoolAssets[0].AssetBalance, sdk.NewInt(0))
+	assert.Equal(t, pool.PoolAssetsLong[0].AssetBalance, sdk.NewInt(0))
 }
 
 func TestPool_UpdateLiabilitiesValid(t *testing.T) {
@@ -70,7 +70,7 @@ func TestPool_UpdateLiabilitiesValid(t *testing.T) {
 
 	// Define the margin pool with assets
 	pool := types.NewPool(1)
-	pool.PoolAssets = []types.PoolAsset{
+	pool.PoolAssetsLong = []types.PoolAsset{
 		{
 			Liabilities:   sdk.NewInt(0),
 			Custody:       sdk.NewInt(0),
@@ -82,16 +82,16 @@ func TestPool_UpdateLiabilitiesValid(t *testing.T) {
 
 	// Test scenario, increase 100 and decrease 150.
 	denom := "testAsset"
-	err := pool.UpdateLiabilities(ctx, denom, sdk.NewInt(100), true)
+	err := pool.UpdateLiabilities(ctx, denom, sdk.NewInt(100), true, types.Position_LONG)
 	// Expect that there is no error
 	assert.Nil(t, err)
 	// Expect that there is 100 liabilities
-	assert.Equal(t, pool.PoolAssets[0].Liabilities, sdk.NewInt(100))
-	err = pool.UpdateLiabilities(ctx, denom, sdk.NewInt(150), false)
+	assert.Equal(t, pool.PoolAssetsLong[0].Liabilities, sdk.NewInt(100))
+	err = pool.UpdateLiabilities(ctx, denom, sdk.NewInt(150), false, types.Position_LONG)
 	// Expect that there is no error
 	assert.Nil(t, err)
 	// Expect that there is -50 liabilities
-	assert.Equal(t, pool.PoolAssets[0].Liabilities, sdk.NewInt(-50))
+	assert.Equal(t, pool.PoolAssetsLong[0].Liabilities, sdk.NewInt(-50))
 }
 
 func TestPool_UpdateLiabilitiesInvalid(t *testing.T) {
@@ -99,7 +99,7 @@ func TestPool_UpdateLiabilitiesInvalid(t *testing.T) {
 
 	// Define the margin pool with assets
 	pool := types.NewPool(1)
-	pool.PoolAssets = []types.PoolAsset{
+	pool.PoolAssetsLong = []types.PoolAsset{
 		{
 			Liabilities:   sdk.NewInt(0),
 			Custody:       sdk.NewInt(0),
@@ -111,12 +111,12 @@ func TestPool_UpdateLiabilitiesInvalid(t *testing.T) {
 
 	// Test scenario, increase 100 and decrease 50.
 	denom := "testAsset2"
-	err := pool.UpdateLiabilities(ctx, denom, sdk.NewInt(100), true)
+	err := pool.UpdateLiabilities(ctx, denom, sdk.NewInt(100), true, types.Position_LONG)
 	// Expect that there is invalid asset denom error.
 	assert.True(t, errors.Is(err, sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, "invalid asset denom")))
 
 	// Expect that there is still 0 liabilities
-	assert.Equal(t, pool.PoolAssets[0].Liabilities, sdk.NewInt(0))
+	assert.Equal(t, pool.PoolAssetsLong[0].Liabilities, sdk.NewInt(0))
 }
 
 func TestPool_UpdateCustodyValid(t *testing.T) {
@@ -124,7 +124,7 @@ func TestPool_UpdateCustodyValid(t *testing.T) {
 
 	// Define the margin pool with assets
 	pool := types.NewPool(1)
-	pool.PoolAssets = []types.PoolAsset{
+	pool.PoolAssetsLong = []types.PoolAsset{
 		{
 			Liabilities:   sdk.NewInt(0),
 			Custody:       sdk.NewInt(0),
@@ -136,16 +136,16 @@ func TestPool_UpdateCustodyValid(t *testing.T) {
 
 	// Test scenario, increase 100 and decrease 150.
 	denom := "testAsset"
-	err := pool.UpdateCustody(ctx, denom, sdk.NewInt(100), true)
+	err := pool.UpdateCustody(ctx, denom, sdk.NewInt(100), true, types.Position_LONG)
 	// Expect that there is no error
 	assert.Nil(t, err)
 	// Expect that there is 100 custody
-	assert.Equal(t, pool.PoolAssets[0].Custody, sdk.NewInt(100))
-	err = pool.UpdateCustody(ctx, denom, sdk.NewInt(150), false)
+	assert.Equal(t, pool.PoolAssetsLong[0].Custody, sdk.NewInt(100))
+	err = pool.UpdateCustody(ctx, denom, sdk.NewInt(150), false, types.Position_LONG)
 	// Expect that there is no error
 	assert.Nil(t, err)
 	// Expect that there is -50 custody
-	assert.Equal(t, pool.PoolAssets[0].Custody, sdk.NewInt(-50))
+	assert.Equal(t, pool.PoolAssetsLong[0].Custody, sdk.NewInt(-50))
 }
 
 func TestPool_UpdateCustodyInvalid(t *testing.T) {
@@ -153,7 +153,7 @@ func TestPool_UpdateCustodyInvalid(t *testing.T) {
 
 	// Define the margin pool with assets
 	pool := types.NewPool(1)
-	pool.PoolAssets = []types.PoolAsset{
+	pool.PoolAssetsLong = []types.PoolAsset{
 		{
 			Liabilities:   sdk.NewInt(0),
 			Custody:       sdk.NewInt(0),
@@ -165,12 +165,12 @@ func TestPool_UpdateCustodyInvalid(t *testing.T) {
 
 	// Test scenario, increase 100
 	denom := "testAsset2"
-	err := pool.UpdateCustody(ctx, denom, sdk.NewInt(100), true)
+	err := pool.UpdateCustody(ctx, denom, sdk.NewInt(100), true, types.Position_LONG)
 	// Expect that there is invalid asset denom error.
 	assert.True(t, errors.Is(err, sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, "invalid asset denom")))
 
 	// Expect that there is still 0 custody
-	assert.Equal(t, pool.PoolAssets[0].Custody, sdk.NewInt(0))
+	assert.Equal(t, pool.PoolAssetsLong[0].Custody, sdk.NewInt(0))
 }
 
 func TestPool_UpdateBlockInterestValid(t *testing.T) {
@@ -178,7 +178,7 @@ func TestPool_UpdateBlockInterestValid(t *testing.T) {
 
 	// Define the margin pool with assets
 	pool := types.NewPool(1)
-	pool.PoolAssets = []types.PoolAsset{
+	pool.PoolAssetsLong = []types.PoolAsset{
 		{
 			Liabilities:   sdk.NewInt(0),
 			Custody:       sdk.NewInt(0),
@@ -190,16 +190,16 @@ func TestPool_UpdateBlockInterestValid(t *testing.T) {
 
 	// Test scenario, increase 100 and decrease 150.
 	denom := "testAsset"
-	err := pool.UpdateBlockInterest(ctx, denom, sdk.NewInt(100), true)
+	err := pool.UpdateBlockInterest(ctx, denom, sdk.NewInt(100), true, types.Position_LONG)
 	// Expect that there is no error
 	assert.Nil(t, err)
 	// Expect that there is 100 BlockInterest
-	assert.Equal(t, pool.PoolAssets[0].BlockInterest, sdk.NewInt(100))
-	err = pool.UpdateBlockInterest(ctx, denom, sdk.NewInt(150), false)
+	assert.Equal(t, pool.PoolAssetsLong[0].BlockInterest, sdk.NewInt(100))
+	err = pool.UpdateBlockInterest(ctx, denom, sdk.NewInt(150), false, types.Position_LONG)
 	// Expect that there is no error
 	assert.Nil(t, err)
 	// Expect that there is -50 BlockInterest
-	assert.Equal(t, pool.PoolAssets[0].BlockInterest, sdk.NewInt(-50))
+	assert.Equal(t, pool.PoolAssetsLong[0].BlockInterest, sdk.NewInt(-50))
 }
 
 func TestPool_UpdateBlockInterestInvalid(t *testing.T) {
@@ -207,7 +207,7 @@ func TestPool_UpdateBlockInterestInvalid(t *testing.T) {
 
 	// Define the margin pool with assets
 	pool := types.NewPool(1)
-	pool.PoolAssets = []types.PoolAsset{
+	pool.PoolAssetsLong = []types.PoolAsset{
 		{
 			Liabilities:   sdk.NewInt(0),
 			Custody:       sdk.NewInt(0),
@@ -219,12 +219,12 @@ func TestPool_UpdateBlockInterestInvalid(t *testing.T) {
 
 	// Test scenario, increase 100
 	denom := "testAsset2"
-	err := pool.UpdateBlockInterest(ctx, denom, sdk.NewInt(100), true)
+	err := pool.UpdateBlockInterest(ctx, denom, sdk.NewInt(100), true, types.Position_LONG)
 	// Expect that there is invalid asset denom error.
 	assert.True(t, errors.Is(err, sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, "invalid asset denom")))
 
 	// Expect that there is still 0 BlockInterest
-	assert.Equal(t, pool.PoolAssets[0].BlockInterest, sdk.NewInt(0))
+	assert.Equal(t, pool.PoolAssetsLong[0].BlockInterest, sdk.NewInt(0))
 }
 
 func TestPool_InitiatePoolValid(t *testing.T) {
@@ -251,8 +251,9 @@ func TestPool_InitiatePoolValid(t *testing.T) {
 
 	denom := "testAsset"
 	assert.Equal(t, pool.AmmPoolId, (uint64)(1))
-	assert.Equal(t, len(pool.PoolAssets), 1)
-	assert.Equal(t, pool.PoolAssets[0].AssetDenom, denom)
+	assert.Equal(t, len(pool.PoolAssetsLong), 1)
+	assert.Equal(t, len(pool.PoolAssetsShort), 1)
+	assert.Equal(t, pool.PoolAssetsLong[0].AssetDenom, denom)
 }
 
 func TestPool_InitiatePoolInvalid(t *testing.T) {
