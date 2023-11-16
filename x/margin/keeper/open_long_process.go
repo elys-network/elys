@@ -3,6 +3,7 @@ package keeper
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
 	"github.com/elys-network/elys/x/margin/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
@@ -31,14 +32,20 @@ func (k Keeper) ProcessOpenLong(ctx sdk.Context, mtp *types.MTP, leverage sdk.De
 	// Calculate the leveraged amount based on the collateral provided and the leverage.
 	leveragedAmount := sdk.NewInt(collateralAmountDec.Mul(leverage).TruncateInt().Int64())
 
+	entry, found := k.apKeeper.GetEntry(ctx, ptypes.BaseCurrency)
+	if !found {
+		return nil, sdkerrors.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency)
+	}
+	baseCurrency := entry.Denom
+
 	// If collateral is not base currency, calculate the borrowing amount in base currency and check the balance
-	if msg.CollateralAsset != ptypes.BaseCurrency {
+	if msg.CollateralAsset != baseCurrency {
 		custodyAmtToken := sdk.NewCoin(msg.CollateralAsset, leveragedAmount)
-		borrowingAmount, err := k.OpenLongChecker.EstimateSwapGivenOut(ctx, custodyAmtToken, ptypes.BaseCurrency, ammPool)
+		borrowingAmount, err := k.OpenLongChecker.EstimateSwapGivenOut(ctx, custodyAmtToken, baseCurrency, ammPool)
 		if err != nil {
 			return nil, err
 		}
-		if !k.OpenLongChecker.HasSufficientPoolBalance(ctx, ammPool, ptypes.BaseCurrency, borrowingAmount) {
+		if !k.OpenLongChecker.HasSufficientPoolBalance(ctx, ammPool, baseCurrency, borrowingAmount) {
 			return nil, sdkerrors.Wrap(types.ErrBorrowTooHigh, borrowingAmount.String())
 		}
 	} else {
@@ -62,7 +69,7 @@ func (k Keeper) ProcessOpenLong(ctx sdk.Context, mtp *types.MTP, leverage sdk.De
 	}
 
 	// If the collateral asset is not base currency, custody amount equals to leverage amount
-	if msg.CollateralAsset != ptypes.BaseCurrency {
+	if msg.CollateralAsset != baseCurrency {
 		custodyAmount = leveragedAmount
 	}
 

@@ -13,15 +13,15 @@ func TestGetTradingAsset_WhenCollateralIsBaseCurrency(t *testing.T) {
 	k := keeper.Keeper{}
 
 	// Test case: collateral is base currency and borrow is ATOM
-	result := k.GetTradingAsset(ptypes.BaseCurrency, ptypes.ATOM)
+	result := k.GetTradingAsset(ptypes.BaseCurrency, ptypes.ATOM, ptypes.BaseCurrency)
 	assert.Equal(t, ptypes.ATOM, result)
 
 	// Test case: both collateral and borrow are base currency
-	result = k.GetTradingAsset(ptypes.BaseCurrency, ptypes.BaseCurrency)
+	result = k.GetTradingAsset(ptypes.BaseCurrency, ptypes.BaseCurrency, ptypes.BaseCurrency)
 	assert.Equal(t, ptypes.BaseCurrency, result)
 
 	// Test case: collateral is base currency and borrow is some other asset (e.g., BTC)
-	result = k.GetTradingAsset(ptypes.BaseCurrency, "BTC")
+	result = k.GetTradingAsset(ptypes.BaseCurrency, "BTC", ptypes.BaseCurrency)
 	assert.Equal(t, "BTC", result)
 }
 
@@ -30,14 +30,14 @@ func TestGetTradingAsset_WhenCollateralIsNotBaseCurrency(t *testing.T) {
 	k := keeper.Keeper{}
 
 	// Test case: collateral is ATOM and borrow is base currency
-	result := k.GetTradingAsset(ptypes.ATOM, ptypes.BaseCurrency)
+	result := k.GetTradingAsset(ptypes.ATOM, ptypes.BaseCurrency, ptypes.BaseCurrency)
 	assert.Equal(t, ptypes.ATOM, result)
 
 	// Test case: both collateral and borrow are ATOM
-	result = k.GetTradingAsset(ptypes.ATOM, ptypes.ATOM)
+	result = k.GetTradingAsset(ptypes.ATOM, ptypes.ATOM, ptypes.BaseCurrency)
 	assert.Equal(t, ptypes.ATOM, result)
 
 	// Test case: collateral is some other asset (e.g., BTC) and borrow is base currency
-	result = k.GetTradingAsset("BTC", ptypes.BaseCurrency)
+	result = k.GetTradingAsset("BTC", ptypes.BaseCurrency, ptypes.BaseCurrency)
 	assert.Equal(t, "BTC", result)
 }

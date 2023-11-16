@@ -2,7 +2,9 @@ package keeper
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
+	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
 	"github.com/elys-network/elys/x/margin/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
@@ -14,10 +16,16 @@ func (k Keeper) Repay(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, ammPool
 	Liabilities := mtp.Liabilities
 	InterestUnpaidCollateral := mtp.InterestUnpaidCollaterals[collateralIndex]
 
-	if collateralAsset != ptypes.BaseCurrency {
+	entry, found := k.apKeeper.GetEntry(ctx, ptypes.BaseCurrency)
+	if !found {
+		return sdkerrors.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency)
+	}
+	baseCurrency := entry.Denom
+
+	if collateralAsset != baseCurrency {
 		// swap to base currency
 		unpaidCollateralIn := sdk.NewCoin(mtp.Collaterals[collateralIndex].Denom, mtp.InterestUnpaidCollaterals[collateralIndex].Amount)
-		C, err := k.EstimateSwapGivenOut(ctx, unpaidCollateralIn, ptypes.BaseCurrency, ammPool)
+		C, err := k.EstimateSwapGivenOut(ctx, unpaidCollateralIn, baseCurrency, ammPool)
 		if err != nil {
 			return err
 		}
@@ -51,21 +59,21 @@ func (k Keeper) Repay(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, ammPool
 			takePercentage := k.GetForceCloseFundPercentage(ctx)
 
 			fundAddr := k.GetForceCloseFundAddress(ctx)
-			takeAmount, err := k.TakeFundPayment(ctx, returnAmount, ptypes.BaseCurrency, takePercentage, fundAddr, &ammPool)
+			takeAmount, err := k.TakeFundPayment(ctx, returnAmount, baseCurrency, takePercentage, fundAddr, &ammPool)
 			if err != nil {
 				return err
 			}
 			actualReturnAmount = returnAmount.Sub(takeAmount)
 			if !takeAmount.IsZero() {
-				k.EmitFundPayment(ctx, mtp, takeAmount, ptypes.BaseCurrency, types.EventRepayFund)
+				k.EmitFundPayment(ctx, mtp, takeAmount, baseCurrency, types.EventRepayFund)
 			}
 		}
 
 		// actualReturnAmount is so far in base currency, now should convert it to collateralAsset in order to return
 		if !actualReturnAmount.IsZero() {
-			if collateralAsset != ptypes.BaseCurrency {
+			if collateralAsset != baseCurrency {
 				// swap to base currency
-				amtTokenIn := sdk.NewCoin(ptypes.BaseCurrency, actualReturnAmount)
+				amtTokenIn := sdk.NewCoin(baseCurrency, actualReturnAmount)
 				C, err := k.EstimateSwapGivenOut(ctx, amtTokenIn, collateralAsset, ammPool)
 				if err != nil {
 					return err
@@ -96,9 +104,9 @@ func (k Keeper) Repay(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, ammPool
 
 	// before updating collateral asset balance, we should convert returnAmount to collateralAsset
 	// because so far returnAmount is in base currency.
-	if collateralAsset != ptypes.BaseCurrency {
+	if collateralAsset != baseCurrency {
 		// swap to base currency
-		amtTokenIn := sdk.NewCoin(ptypes.BaseCurrency, returnAmount)
+		amtTokenIn := sdk.NewCoin(baseCurrency, returnAmount)
 		C, err := k.EstimateSwapGivenOut(ctx, amtTokenIn, collateralAsset, ammPool)
 		if err != nil {
 			return err
@@ -113,7 +121,7 @@ func (k Keeper) Repay(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, ammPool
 	}
 
 	// long position
-	err = pool.UpdateLiabilities(ctx, ptypes.BaseCurrency, mtp.Liabilities, false, mtp.Position)
+	err = pool.UpdateLiabilities(ctx, baseCurrency, mtp.Liabilities, false, mtp.Position)
 	if err != nil {
 		return err
 	}

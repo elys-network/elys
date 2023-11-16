@@ -906,6 +906,7 @@ func NewElysApp(
 		app.AmmKeeper,
 		app.BankKeeper,
 		app.OracleKeeper,
+		app.AssetprofileKeeper,
 	)
 	marginModule := marginmodule.NewAppModule(appCodec, app.MarginKeeper, app.AccountKeeper, app.BankKeeper)
 
