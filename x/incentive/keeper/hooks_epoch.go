@@ -21,7 +21,11 @@ func (k Keeper) AfterEpochEnd(ctx sdk.Context, epochIdentifier string, _ int64) 
 	}
 
 	// Update unclaimed token amount
-	k.UpdateRewardsUnclaimed(ctx, epochIdentifier, stakeIncentive, lpIncentive)
+	err := k.UpdateRewardsUnclaimed(ctx, epochIdentifier, stakeIncentive, lpIncentive)
+	if err != nil {
+		ctx.Logger().Error("Failed to update rewards unclaimed", "error", err)
+		return
+	}
 }
 
 // ___________________________________________________________________________________________________

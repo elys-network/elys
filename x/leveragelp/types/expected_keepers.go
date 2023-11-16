@@ -5,6 +5,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
+	aptypes "github.com/elys-network/elys/x/assetprofile/types"
 	commitmenttypes "github.com/elys-network/elys/x/commitment/types"
 	stablestaketypes "github.com/elys-network/elys/x/stablestake/types"
 )
@@ -130,4 +131,9 @@ type StableStakeKeeper interface {
 
 type CommitmentKeeper interface {
 	GetCommitments(ctx sdk.Context, creator string) commitmenttypes.Commitments
+}
+
+// AssetProfileKeeper defines the expected interface needed to retrieve denom info
+type AssetProfileKeeper interface {
+	GetEntry(ctx sdk.Context, baseDenom string) (val aptypes.Entry, found bool)
 }

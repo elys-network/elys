@@ -23,7 +23,7 @@ func TestCollectGasFeesToIncentiveModule(t *testing.T) {
 	SetupStableCoinPrices(ctx, oracle)
 
 	// Collect gas fees
-	collectedAmt := ik.CollectGasFeesToIncentiveModule(ctx)
+	collectedAmt := ik.CollectGasFeesToIncentiveModule(ctx, ptypes.BaseCurrency)
 
 	// rewards should be zero
 	require.True(t, collectedAmt.IsZero())
@@ -84,7 +84,7 @@ func TestCollectGasFeesToIncentiveModule(t *testing.T) {
 	require.Equal(t, int64(0), ctx.BlockHeight())
 
 	// Collect gas fees again
-	collectedAmt = ik.CollectGasFeesToIncentiveModule(ctx)
+	collectedAmt = ik.CollectGasFeesToIncentiveModule(ctx, ptypes.BaseCurrency)
 
 	// check block height
 	require.Equal(t, int64(0), ctx.BlockHeight())

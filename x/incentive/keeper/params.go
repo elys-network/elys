@@ -176,7 +176,7 @@ func (k Keeper) CalculateEpochCountsPerYear(epochIdentifier string) int64 {
 }
 
 // Update total commitment info
-func (k Keeper) UpdateTotalCommitmentInfo(ctx sdk.Context) {
+func (k Keeper) UpdateTotalCommitmentInfo(ctx sdk.Context, baseCurrency string) {
 	// Fetch total staked Elys amount again
 	k.tci.TotalElysBonded = k.stk.TotalBondedTokens(ctx)
 	// Initialize with amount zero
@@ -189,7 +189,8 @@ func (k Keeper) UpdateTotalCommitmentInfo(ctx sdk.Context) {
 	k.tci.PoolRevenueTrack = make(map[string]sdk.Dec)
 
 	// Collect gas fees collected
-	fees := k.CollectGasFeesToIncentiveModule(ctx)
+	fees := k.CollectGasFeesToIncentiveModule(ctx, baseCurrency)
+
 	// Calculate total fees - Gas fees collected
 	k.tci.TotalFeesCollected = k.tci.TotalFeesCollected.Add(fees...)
 
