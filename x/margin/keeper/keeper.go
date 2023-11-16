@@ -40,7 +40,7 @@ type (
 		amm          types.AmmKeeper
 		bankKeeper   types.BankKeeper
 		oracleKeeper ammtypes.OracleKeeper
-		apKeeper     ammtypes.AssetProfileKeeper
+		apKeeper     types.AssetProfileKeeper
 
 		hooks types.MarginHooks
 	}
@@ -54,7 +54,7 @@ func NewKeeper(
 	amm types.AmmKeeper,
 	bk types.BankKeeper,
 	oracleKeeper ammtypes.OracleKeeper,
-	apKeeper ammtypes.AssetProfileKeeper,
+	apKeeper types.AssetProfileKeeper,
 ) *Keeper {
 	// ensure that authority is a valid AccAddress
 	if _, err := sdk.AccAddressFromBech32(authority); err != nil {

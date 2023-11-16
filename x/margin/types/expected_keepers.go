@@ -5,6 +5,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
+	atypes "github.com/elys-network/elys/x/assetprofile/types"
 )
 
 //go:generate mockery --srcpkg . --name AuthorizationChecker --structname AuthorizationChecker --filename authorization_checker.go --with-expecter
@@ -165,4 +166,12 @@ type BankKeeper interface {
 
 	BlockedAddr(addr sdk.AccAddress) bool
 	HasBalance(ctx sdk.Context, addr sdk.AccAddress, amt sdk.Coin) bool
+}
+
+// AssetProfileKeeper defines the expected interfaces
+//
+//go:generate mockery --srcpkg . --name AssetProfileKeeper --structname AssetProfileKeeper --filename asset_profile_keeper.go --with-expecter
+type AssetProfileKeeper interface {
+	// GetEntry returns a entry from its index
+	GetEntry(ctx sdk.Context, baseDenom string) (val atypes.Entry, found bool)
 }
