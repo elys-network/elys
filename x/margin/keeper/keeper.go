@@ -201,13 +201,13 @@ func (k Keeper) Borrow(ctx sdk.Context, collateralAsset string, custodyAsset str
 		return err
 	}
 
-	err = pool.UpdateBalance(ctx, collateralAsset, collateralAmount, true)
+	err = pool.UpdateBalance(ctx, collateralAsset, collateralAmount, true, mtp.Position)
 	if err != nil {
 		return err
 	}
 
 	// All liability has to be in base currency
-	err = pool.UpdateLiabilities(ctx, ptypes.BaseCurrency, mtp.Liabilities, true)
+	err = pool.UpdateLiabilities(ctx, ptypes.BaseCurrency, mtp.Liabilities, true, mtp.Position)
 	if err != nil {
 		return err
 	}
@@ -224,14 +224,10 @@ func (k Keeper) UpdatePoolHealth(ctx sdk.Context, pool *types.Pool) error {
 	return nil
 }
 
-func (k Keeper) CalculatePoolHealth(ctx sdk.Context, pool *types.Pool) sdk.Dec {
-	ammPool, found := k.amm.GetPool(ctx, pool.AmmPoolId)
-	if !found {
-		return sdk.ZeroDec()
-	}
-
+func (k Keeper) CalculatePoolHealthByPosition(ctx sdk.Context, pool *types.Pool, ammPool ammtypes.Pool, position types.Position) sdk.Dec {
+	poolAssets := pool.GetPoolAssets(position)
 	H := sdk.NewDec(1)
-	for _, asset := range pool.PoolAssets {
+	for _, asset := range *poolAssets {
 		ammBalance, err := k.GetAmmPoolBalance(ctx, ammPool, asset.AssetDenom)
 		if err != nil {
 			return sdk.ZeroDec()
@@ -247,17 +243,28 @@ func (k Keeper) CalculatePoolHealth(ctx sdk.Context, pool *types.Pool) sdk.Dec {
 		mul := balance.Quo(balance.Add(liabilities))
 		H = H.Mul(mul)
 	}
+	return H
+}
+
+func (k Keeper) CalculatePoolHealth(ctx sdk.Context, pool *types.Pool) sdk.Dec {
+	ammPool, found := k.amm.GetPool(ctx, pool.AmmPoolId)
+	if !found {
+		return sdk.ZeroDec()
+	}
+
+	H := k.CalculatePoolHealthByPosition(ctx, pool, ammPool, types.Position_LONG)
+	H = H.Mul(k.CalculatePoolHealthByPosition(ctx, pool, ammPool, types.Position_SHORT))
 
 	return H
 }
 
 func (k Keeper) TakeInCustody(ctx sdk.Context, mtp types.MTP, pool *types.Pool) error {
 	for i := range mtp.Custodies {
-		err := pool.UpdateBalance(ctx, mtp.Custodies[i].Denom, mtp.Custodies[i].Amount, false)
+		err := pool.UpdateBalance(ctx, mtp.Custodies[i].Denom, mtp.Custodies[i].Amount, false, mtp.Position)
 		if err != nil {
 			return nil
 		}
-		err = pool.UpdateCustody(ctx, mtp.Custodies[i].Denom, mtp.Custodies[i].Amount, true)
+		err = pool.UpdateCustody(ctx, mtp.Custodies[i].Denom, mtp.Custodies[i].Amount, true, mtp.Position)
 		if err != nil {
 			return nil
 		}
@@ -341,12 +348,12 @@ func (k Keeper) IncrementalInterestPayment(ctx sdk.Context, collateralAsset stri
 		k.EmitFundPayment(ctx, mtp, takeAmount, mtp.Custodies[custodyIndex].Denom, types.EventIncrementalPayFund)
 	}
 
-	err = pool.UpdateCustody(ctx, mtp.Custodies[custodyIndex].Denom, interestPaymentCustody, false)
+	err = pool.UpdateCustody(ctx, mtp.Custodies[custodyIndex].Denom, interestPaymentCustody, false, mtp.Position)
 	if err != nil {
 		return sdk.ZeroInt(), err
 	}
 
-	err = pool.UpdateBalance(ctx, mtp.Custodies[custodyIndex].Denom, actualInterestPaymentCustody, true)
+	err = pool.UpdateBalance(ctx, mtp.Custodies[custodyIndex].Denom, actualInterestPaymentCustody, true, mtp.Position)
 	if err != nil {
 		return sdk.ZeroInt(), err
 	}
@@ -359,6 +366,28 @@ func (k Keeper) IncrementalInterestPayment(ctx sdk.Context, collateralAsset stri
 	k.SetPool(ctx, *pool)
 
 	return actualInterestPaymentCustody, nil
+}
+
+func (k Keeper) InterestRateComputationByPosition(ctx sdk.Context, pool types.Pool, ammPool ammtypes.Pool, position types.Position) (sdk.Dec, error) {
+	poolAssets := pool.GetPoolAssets(position)
+	targetInterestRate := sdk.OneDec()
+	for _, asset := range *poolAssets {
+		ammBalance, err := k.GetAmmPoolBalance(ctx, ammPool, asset.AssetDenom)
+		if err != nil {
+			return sdk.ZeroDec(), err
+		}
+
+		balance := sdk.NewDecFromInt(asset.AssetBalance.Add(ammBalance))
+		liabilities := sdk.NewDecFromInt(asset.Liabilities)
+
+		if balance.Add(liabilities).IsZero() {
+			return sdk.ZeroDec(), err
+		}
+
+		mul := balance.Add(liabilities).Quo(balance)
+		targetInterestRate = targetInterestRate.Mul(mul)
+	}
+	return targetInterestRate, nil
 }
 
 func (k Keeper) InterestRateComputation(ctx sdk.Context, pool types.Pool, ammPool ammtypes.Pool) (sdk.Dec, error) {
@@ -376,22 +405,16 @@ func (k Keeper) InterestRateComputation(ctx sdk.Context, pool types.Pool, ammPoo
 	prevInterestRate := pool.InterestRate
 
 	targetInterestRate := healthGainFactor
-	for _, asset := range pool.PoolAssets {
-		ammBalance, err := k.GetAmmPoolBalance(ctx, ammPool, asset.AssetDenom)
-		if err != nil {
-			return sdk.ZeroDec(), err
-		}
-
-		balance := sdk.NewDecFromInt(asset.AssetBalance.Add(ammBalance))
-		liabilities := sdk.NewDecFromInt(asset.Liabilities)
-
-		if balance.Add(liabilities).IsZero() {
-			return sdk.ZeroDec(), err
-		}
-
-		mul := balance.Add(liabilities).Quo(balance)
-		targetInterestRate = targetInterestRate.Mul(mul)
+	targetInterestRateLong, err := k.InterestRateComputationByPosition(ctx, pool, ammPool, types.Position_LONG)
+	if err != nil {
+		return sdk.ZeroDec(), err
 	}
+	targetInterestRateShort, err := k.InterestRateComputationByPosition(ctx, pool, ammPool, types.Position_SHORT)
+	if err != nil {
+		return sdk.ZeroDec(), err
+	}
+	targetInterestRate = targetInterestRate.Mul(targetInterestRateLong)
+	targetInterestRate = targetInterestRate.Mul(targetInterestRateShort)
 
 	interestRateChange := targetInterestRate.Sub(prevInterestRate)
 	interestRate := prevInterestRate
