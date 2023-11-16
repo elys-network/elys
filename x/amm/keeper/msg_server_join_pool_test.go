@@ -79,7 +79,8 @@ func (suite *KeeperTestSuite) TestMsgServerJoinPool() {
 				ThresholdWeightDifference:   sdk.NewDecWithPrec(2, 1), // 20%
 				FeeDenom:                    ptypes.BaseCurrency,
 			},
-			shareOutAmount:   sdk.NewInt(694444166666666666), // weight breaking fee
+			// shareOutAmount:   sdk.NewInt(694444166666666666), // weight breaking fee - slippage enable
+			shareOutAmount:   sdk.NewInt(833333333333333333), // weight breaking fee - slippage disable
 			expSenderBalance: sdk.Coins{},
 			expTokenIn:       sdk.Coins{sdk.NewInt64Coin("uusdt", 1000000)},
 			expPass:          true,
@@ -100,7 +101,8 @@ func (suite *KeeperTestSuite) TestMsgServerJoinPool() {
 				ThresholdWeightDifference:   sdk.NewDecWithPrec(2, 1), // 20%
 				FeeDenom:                    ptypes.BaseCurrency,
 			},
-			shareOutAmount:   sdk.NewInt(805987500000000000), // weight recovery direction
+			// shareOutAmount:   sdk.NewInt(805987500000000000), // weight recovery direction - slippage enable
+			shareOutAmount:   sdk.NewInt(1250000000000000000), // weight recovery direction - slippage disable
 			expSenderBalance: sdk.Coins{},
 			expTokenIn:       sdk.Coins{sdk.NewInt64Coin("uusdt", 1000000)},
 			expPass:          true,

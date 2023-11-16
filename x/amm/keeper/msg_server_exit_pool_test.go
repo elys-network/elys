@@ -78,10 +78,11 @@ func (suite *KeeperTestSuite) TestMsgServerExitPool() {
 				ThresholdWeightDifference:   sdk.NewDecWithPrec(2, 1), // 20%
 				FeeDenom:                    ptypes.BaseCurrency,
 			},
-			shareInAmount:    types.OneShare.Quo(sdk.NewInt(10)),
-			tokenOutDenom:    "uusdt",
-			minAmountsOut:    sdk.Coins{sdk.NewInt64Coin("uusdt", 95114)},
-			expSenderBalance: sdk.Coins{sdk.NewInt64Coin("uusdt", 95114)},
+			shareInAmount: types.OneShare.Quo(sdk.NewInt(10)),
+			tokenOutDenom: "uusdt",
+			minAmountsOut: sdk.Coins{sdk.NewInt64Coin("uusdt", 97368)},
+			// expSenderBalance: sdk.Coins{sdk.NewInt64Coin("uusdt", 95114)}, // slippage enabled
+			expSenderBalance: sdk.Coins{sdk.NewInt64Coin("uusdt", 97368)}, // slippage disabled
 			expPass:          true,
 		},
 		{
@@ -99,10 +100,11 @@ func (suite *KeeperTestSuite) TestMsgServerExitPool() {
 				ThresholdWeightDifference:   sdk.NewDecWithPrec(2, 1), // 20%
 				FeeDenom:                    ptypes.BaseCurrency,
 			},
-			shareInAmount:    types.OneShare.Quo(sdk.NewInt(10)),
-			tokenOutDenom:    ptypes.BaseCurrency,
-			minAmountsOut:    sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 99197)},
-			expSenderBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 99197)},
+			shareInAmount: types.OneShare.Quo(sdk.NewInt(10)),
+			tokenOutDenom: ptypes.BaseCurrency,
+			minAmountsOut: sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 100000)},
+			// expSenderBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 99197)}, // slippage enabled
+			expSenderBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 100000)}, // slippage disabled
 			expPass:          true,
 		},
 	} {
