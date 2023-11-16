@@ -186,6 +186,9 @@ func TestOpen_ErrorInvalidPosition(t *testing.T) {
 		}
 	)
 
+	// Mock behavior
+	mockAssetProfile.On("GetEntry", ctx, ptypes.BaseCurrency).Return(assetprofiletypes.Entry{BaseDenom: ptypes.BaseCurrency, Denom: ptypes.BaseCurrency}, true)
+
 	_, err := k.Open(ctx, msg)
 
 	assert.True(t, errors.Is(err, types.ErrInvalidPosition))
