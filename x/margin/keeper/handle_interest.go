@@ -22,10 +22,7 @@ func (k Keeper) HandleInterest(ctx sdk.Context, mtp *types.MTP, pool *types.Pool
 	}
 	baseCurrency := entry.Denom
 
-	interestPayment, err := k.CalcMTPInterestLiabilities(ctx, mtp, pool.InterestRate, epochPosition, epochLength, ammPool, collateralAsset, baseCurrency)
-	if err != nil {
-		return err
-	}
+	interestPayment := k.CalcMTPInterestLiabilities(ctx, mtp, pool.InterestRate, epochPosition, epochLength, ammPool, collateralAsset, baseCurrency)
 	finalInterestPayment := k.HandleInterestPayment(ctx, collateralAsset, custodyAsset, interestPayment, mtp, pool, ammPool, baseCurrency)
 
 	// finalInterestPayment is in custodyAsset
@@ -33,6 +30,6 @@ func (k Keeper) HandleInterest(ctx sdk.Context, mtp *types.MTP, pool *types.Pool
 		return err
 	}
 
-	_, err = k.UpdateMTPHealth(ctx, *mtp, ammPool, baseCurrency)
+	_, err := k.UpdateMTPHealth(ctx, *mtp, ammPool, baseCurrency)
 	return err
 }

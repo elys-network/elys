@@ -8,7 +8,7 @@ import (
 	"github.com/elys-network/elys/x/margin/types"
 )
 
-func (k Keeper) CalcMTPInterestLiabilities(ctx sdk.Context, mtp *types.MTP, interestRate sdk.Dec, epochPosition, epochLength int64, ammPool ammtypes.Pool, collateralAsset string, baseCurrency string) (sdk.Int, error) {
+func (k Keeper) CalcMTPInterestLiabilities(ctx sdk.Context, mtp *types.MTP, interestRate sdk.Dec, epochPosition, epochLength int64, ammPool ammtypes.Pool, collateralAsset string, baseCurrency string) sdk.Int {
 	var interestRational, liabilitiesRational, rate, epochPositionRational, epochLengthRational big.Rat
 
 	rate.SetFloat64(interestRate.MustFloat64())
@@ -23,7 +23,7 @@ func (k Keeper) CalcMTPInterestLiabilities(ctx sdk.Context, mtp *types.MTP, inte
 		unpaidCollateralIn := sdk.NewCoin(mtp.Collaterals[collateralIndex].Denom, mtp.InterestUnpaidCollaterals[collateralIndex].Amount)
 		C, err := k.EstimateSwapGivenOut(ctx, unpaidCollateralIn, baseCurrency, ammPool)
 		if err != nil {
-			return sdk.ZeroInt(), err
+			return sdk.ZeroInt()
 		}
 
 		unpaidCollaterals = unpaidCollaterals.Add(C)
@@ -47,5 +47,5 @@ func (k Keeper) CalcMTPInterestLiabilities(ctx sdk.Context, mtp *types.MTP, inte
 		interestNewInt = sdk.NewInt(1)
 	}
 
-	return interestNewInt, nil
+	return interestNewInt
 }
