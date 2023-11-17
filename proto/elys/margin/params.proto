@@ -63,4 +63,5 @@ message Params {
   bool incremental_interest_payment_enabled = 17;
   bool whitelisting_enabled = 18;
   string invariant_check_epoch = 19;
+  string broker_address = 20;
 }

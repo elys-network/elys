@@ -14,15 +14,15 @@ import (
 
 var _ = strconv.Itoa(0)
 
-func CmdOpen() *cobra.Command {
+func CmdBrokerOpen() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "open [position] [leverage] [collateral-asset] [collateral-amount] [borrow-asset] [flags]",
-		Short: "Open margin position",
+		Use:   "broker-open [position] [leverage] [collateral-asset] [collateral-amount] [borrow-asset] [flags]",
+		Short: "Open margin position as a broker",
 		Example: `Infinte profitability:
-elysd tx margin open long 5 uusdc 100000000 uatom --from=treasury --keyring-backend=test --chain-id=elystestnet-1 --yes --gas=1000000
+elysd tx margin broker-open long 5 uusdc 100000000 uatom sif123 --from=treasury --keyring-backend=test --chain-id=elystestnet-1 --yes --gas=1000000
 Finite profitability:
-elysd tx margin open short 5 uusdc 100000000 uatom --take-profit 100 --from=treasury --keyring-backend=test --chain-id=elystestnet-1 --yes --gas=1000000`,
-		Args: cobra.ExactArgs(5),
+elysd tx margin broker-open short 5 uusdc 100000000 uatom sif123 --take-profit 100 --from=treasury --keyring-backend=test --chain-id=elystestnet-1 --yes --gas=1000000`,
+		Args: cobra.ExactArgs(6),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
@@ -50,6 +50,11 @@ elysd tx margin open short 5 uusdc 100000000 uatom --take-profit 100 --from=trea
 
 			argBorrowAsset := args[4]
 
+			argMtpOwner := args[5]
+			if argMtpOwner == "" {
+				return errors.New("invalid mtp owner address")
+			}
+
 			takeProfitPriceStr, err := cmd.Flags().GetString(flagTakeProfitPrice)
 			if err != nil {
 				return err
@@ -68,7 +73,7 @@ elysd tx margin open short 5 uusdc 100000000 uatom --take-profit 100 --from=trea
 				}
 			}
 
-			msg := types.NewMsgOpen(
+			msg := types.NewMsgBrokerOpen(
 				signer.String(),
 				argCollateralAsset,
 				argCollateralAmount,
@@ -76,6 +81,7 @@ elysd tx margin open short 5 uusdc 100000000 uatom --take-profit 100 --from=trea
 				argPosition,
 				argLeverage,
 				takeProfitPrice,
+				argMtpOwner,
 			)
 
 			if err := msg.ValidateBasic(); err != nil {
