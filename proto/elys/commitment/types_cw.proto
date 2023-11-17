@@ -137,7 +137,7 @@ message ValidatorDetail {
         (gogoproto.nullable)   = false
     ];
 	// The url of the validator profile picture
-	string profile_picture_src = 5;
+	string profile_picture_src = 5 [(amino.dont_omitempty) = true];
 	// The staked amount the user has w/ this validator
 	// Only available if there's some and if address.
 	// is sent in request object.

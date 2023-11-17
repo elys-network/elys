@@ -58,7 +58,7 @@ func (c *Commitments) AddCommittedTokens(denom string, amount sdk.Int, unlockTim
 			return
 		}
 	}
-	c.CommittedTokens = append(c.CommittedTokens, &CommittedTokens{
+	c.CommittedTokens = append(c.CommittedTokens, CommittedTokens{
 		Denom:  denom,
 		Amount: amount,
 		Lockups: []Lockup{

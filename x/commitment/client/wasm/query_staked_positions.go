@@ -56,6 +56,12 @@ func (oq *Querier) BuildStakedPositionResponseCW(ctx sdk.Context, validators []s
 		tokens := validator.TokensFromSharesTruncated(shares)
 		delegatedAmt := tokens.TruncateInt()
 		votingPower := sdk.NewDecFromInt(validator.Tokens).QuoInt(totalBonded).MulInt(sdk.NewInt(100))
+
+		website := validator.Description.Website
+		if len(website) < 1 {
+			website = " "
+		}
+
 		stakedPosition.Validator = commitmenttypes.StakingValidator{
 			// The validator address.
 			Address: validator.OperatorAddress,
@@ -66,7 +72,7 @@ func (oq *Querier) BuildStakedPositionResponseCW(ctx sdk.Context, validators []s
 			// Comission percentage for the validator.
 			Commission: validator.GetCommission(),
 			// The url of the validator profile picture
-			ProfilePictureSrc: validator.Description.Website,
+			ProfilePictureSrc: website,
 		}
 		stakedPosition.Staked = commitmenttypes.BalanceAvailable{
 			Amount:    delegatedAmt,

@@ -277,7 +277,7 @@ genesis:
             - denom: ueden
               amount: "2000"
             - denom: uusdc
-              amount: "200"
+              amount: "2000"
     incentive:
       params:
         lp_incentives:
