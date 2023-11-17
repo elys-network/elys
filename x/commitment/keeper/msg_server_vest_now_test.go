@@ -67,7 +67,7 @@ func TestVestNow(t *testing.T) {
 				Amount: initialClaimed,
 			},
 		},
-		CommittedTokens: []*types.CommittedTokens{&committedTokens},
+		CommittedTokens: []types.CommittedTokens{committedTokens},
 	}
 
 	keeper.SetCommitments(ctx, initialCommitments)

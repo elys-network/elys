@@ -47,7 +47,7 @@ func TestUncommitTokens(t *testing.T) {
 	initialCommitments := types.Commitments{
 		Creator:          creator,
 		RewardsUnclaimed: sdk.Coins{rewardsUnclaimed},
-		CommittedTokens:  []*types.CommittedTokens{&committedTokens},
+		CommittedTokens:  []types.CommittedTokens{committedTokens},
 	}
 
 	keeper.SetCommitments(ctx, initialCommitments)

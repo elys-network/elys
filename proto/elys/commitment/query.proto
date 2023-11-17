@@ -7,6 +7,7 @@ import "google/api/annotations.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
 import "elys/commitment/params.proto";
 import "elys/commitment/commitments.proto";
+import "amino/amino.proto";
 
 option go_package = "github.com/elys-network/elys/x/commitment/types";
 
@@ -36,5 +37,5 @@ message QueryShowCommitmentsRequest {
 }
 
 message QueryShowCommitmentsResponse {
-  Commitments commitments = 1;
+  Commitments commitments = 1 [(gogoproto.nullable) = false, (amino.dont_omitempty) = true];
 }

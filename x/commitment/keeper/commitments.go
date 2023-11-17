@@ -25,10 +25,10 @@ func (k Keeper) GetCommitments(ctx sdk.Context, creator string) types.Commitment
 	if b == nil {
 		return types.Commitments{
 			Creator:                 creator,
-			CommittedTokens:         []*types.CommittedTokens{},
+			CommittedTokens:         []types.CommittedTokens{},
 			RewardsUnclaimed:        sdk.Coins{},
 			Claimed:                 sdk.Coins{},
-			VestingTokens:           []*types.VestingTokens{},
+			VestingTokens:           []types.VestingTokens{},
 			RewardsByElysUnclaimed:  sdk.Coins{},
 			RewardsByEdenUnclaimed:  sdk.Coins{},
 			RewardsByEdenbUnclaimed: sdk.Coins{},
