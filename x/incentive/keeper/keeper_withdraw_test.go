@@ -57,10 +57,10 @@ func TestProcessWithdrawRewards(t *testing.T) {
 	unclaimed = unclaimed.Add(lpToken, uedenToken, uedenBToken, usdcToken)
 
 	// Set assetprofile entry for denom
-	app.AssetprofileKeeper.SetEntry(ctx, aptypes.Entry{BaseDenom: ptypes.BaseCurrency, CommitEnabled: false, WithdrawEnabled: true})
-	app.AssetprofileKeeper.SetEntry(ctx, aptypes.Entry{BaseDenom: ptypes.Eden, CommitEnabled: true, WithdrawEnabled: true})
-	app.AssetprofileKeeper.SetEntry(ctx, aptypes.Entry{BaseDenom: ptypes.EdenB, CommitEnabled: true, WithdrawEnabled: true})
-	app.AssetprofileKeeper.SetEntry(ctx, aptypes.Entry{BaseDenom: "lp-elys-usdc", CommitEnabled: true, WithdrawEnabled: false})
+	app.AssetprofileKeeper.SetEntry(ctx, aptypes.Entry{BaseDenom: ptypes.BaseCurrency, CommitEnabled: false, WithdrawEnabled: true, Denom: ptypes.BaseCurrency})
+	app.AssetprofileKeeper.SetEntry(ctx, aptypes.Entry{BaseDenom: ptypes.Eden, CommitEnabled: true, WithdrawEnabled: true, Denom: ptypes.Eden})
+	app.AssetprofileKeeper.SetEntry(ctx, aptypes.Entry{BaseDenom: ptypes.EdenB, CommitEnabled: true, WithdrawEnabled: true, Denom: ptypes.EdenB})
+	app.AssetprofileKeeper.SetEntry(ctx, aptypes.Entry{BaseDenom: "lp-elys-usdc", CommitEnabled: true, WithdrawEnabled: false, Denom: "lp-elys-usdc"})
 
 	// Prepare committed tokens
 	uedenTokenC := sdk.NewCoin(ptypes.Eden, sdk.NewInt(1500))
