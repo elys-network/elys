@@ -3,8 +3,10 @@ package client
 import (
 	"github.com/CosmWasm/wasmd/x/wasm"
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
+	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
+	externalsauth "github.com/elys-network/elys/wasmbindings/externals/auth"
 	"github.com/elys-network/elys/wasmbindings/types"
 	accountedpoolclientwasm "github.com/elys-network/elys/x/accountedpool/client/wasm"
 	accountedpoolkeeper "github.com/elys-network/elys/x/accountedpool/keeper"
@@ -42,6 +44,7 @@ func RegisterCustomPlugins(
 	accountedpool *accountedpoolkeeper.Keeper,
 	amm *ammkeeper.Keeper,
 	assetprofile *assetprofilekeeper.Keeper,
+	auth *authkeeper.AccountKeeper,
 	bank *bankkeeper.BaseKeeper,
 	burner *burnerkeeper.Keeper,
 	clock *clockkeeper.Keeper,
@@ -65,6 +68,9 @@ func RegisterCustomPlugins(
 
 	assetprofileQuerier := assetprofileclientwasm.NewQuerier(assetprofile)
 	assetprofileMessenger := assetprofileclientwasm.NewMessenger(assetprofile)
+
+	authQuerier := externalsauth.NewQuerier(auth)
+	authMessenger := externalsauth.NewMessenger(auth)
 
 	burnerQuerier := burnerclientwasm.NewQuerier(burner)
 	burnerMessenger := burnerclientwasm.NewMessenger(burner)
@@ -106,6 +112,7 @@ func RegisterCustomPlugins(
 		accountedpoolQuerier,
 		ammQuerier,
 		assetprofileQuerier,
+		authQuerier,
 		burnerQuerier,
 		clockQuerier,
 		commitmentQuerier,
@@ -125,6 +132,7 @@ func RegisterCustomPlugins(
 		accountedpool,
 		amm,
 		assetprofile,
+		auth,
 		bank,
 		burner,
 		clock,
@@ -149,6 +157,7 @@ func RegisterCustomPlugins(
 		accountedpoolMessenger,
 		ammMessenger,
 		assetprofileMessenger,
+		authMessenger,
 		burnerMessenger,
 		clockMessenger,
 		commitmentMessenger,
@@ -169,6 +178,7 @@ func RegisterCustomPlugins(
 			accountedpool,
 			amm,
 			assetprofile,
+			auth,
 			bank,
 			burner,
 			clock,
