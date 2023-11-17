@@ -3,6 +3,7 @@ package types
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth/types"
+	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
 )
 
 // AccountKeeper defines the expected account keeper used for simulations (noalias)
@@ -18,4 +19,12 @@ type BankKeeper interface {
 	BurnCoins(ctx sdk.Context, name string, amt sdk.Coins) error
 	SendCoinsFromModuleToAccount(ctx sdk.Context, senderModule string, recipientAddr sdk.AccAddress, amt sdk.Coins) error
 	SendCoinsFromAccountToModule(ctx sdk.Context, senderAddr sdk.AccAddress, recipientModule string, amt sdk.Coins) error
+}
+
+// AssetProfileKeeper defines the expected interfaces
+type AssetProfileKeeper interface {
+	// SetEntry set a specific entry in the store from its index
+	SetEntry(ctx sdk.Context, entry assetprofiletypes.Entry)
+	// GetEntry returns a entry from its index
+	GetEntry(ctx sdk.Context, baseDenom string) (val assetprofiletypes.Entry, found bool)
 }

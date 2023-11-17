@@ -15,13 +15,15 @@ func (suite *KeeperTestSuite) TestMsgServerBond() {
 		senderInitBalance sdk.Coins
 		bondAmount        sdk.Int
 		expSenderBalance  sdk.Coins
+		expSenderCommit   sdk.Coin
 		expPass           bool
 	}{
 		{
 			desc:              "successful bonding process",
 			senderInitBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)},
 			bondAmount:        sdk.NewInt(10000),
-			expSenderBalance:  sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 990000), sdk.NewInt64Coin(types.GetShareDenom(), 10000)}.Sort(),
+			expSenderBalance:  sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 990000)}.Sort(),
+			expSenderCommit:   sdk.NewInt64Coin(types.GetShareDenom(), 10000),
 			expPass:           true,
 		},
 		{
@@ -29,6 +31,7 @@ func (suite *KeeperTestSuite) TestMsgServerBond() {
 			senderInitBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)},
 			bondAmount:        sdk.NewInt(10000000000000),
 			expSenderBalance:  sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)},
+			expSenderCommit:   sdk.Coin{},
 			expPass:           false,
 		},
 	} {
@@ -59,6 +62,13 @@ func (suite *KeeperTestSuite) TestMsgServerBond() {
 				// check balance change on sender
 				balances := suite.app.BankKeeper.GetAllBalances(suite.ctx, sender)
 				suite.Require().Equal(balances.String(), tc.expSenderBalance.String())
+
+				// check committed tokens
+				commitments := suite.app.CommitmentKeeper.GetCommitments(suite.ctx, sender.String())
+				suite.Require().Len(commitments.CommittedTokens, 1)
+				suite.Require().Equal(commitments.CommittedTokens[0].Amount.String(), tc.expSenderCommit.Amount.String())
+				suite.Require().Equal(commitments.CommittedTokens[0].Denom, tc.expSenderCommit.Denom)
+
 			}
 		})
 	}

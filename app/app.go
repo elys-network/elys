@@ -926,6 +926,8 @@ func NewElysApp(
 		keys[stablestaketypes.MemStoreKey],
 		app.GetSubspace(stablestaketypes.ModuleName),
 		app.BankKeeper,
+		&app.CommitmentKeeper,
+		app.AssetprofileKeeper,
 	)
 	stablestake := stablestake.NewAppModule(appCodec, app.StablestakeKeeper, app.AccountKeeper, app.BankKeeper)
 
@@ -990,6 +992,7 @@ func NewElysApp(
 			// insert amm hooks receivers here
 			app.IncentiveKeeper.AmmHooks(),
 			app.MarginKeeper.AmmHooks(),
+			app.LeveragelpKeeper.AmmHooks(),
 		),
 	)
 

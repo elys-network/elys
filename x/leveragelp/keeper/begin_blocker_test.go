@@ -15,13 +15,15 @@ func (suite KeeperTestSuite) TestBeginBlocker() {
 	suite.Require().True(found)
 	health, err := k.GetPositionHealth(suite.ctx, *position, ammPool)
 	suite.Require().NoError(err)
-	suite.Require().Equal(health.String(), "1.221000000000000000")
+	// suite.Require().Equal(health.String(), "1.221000000000000000") // slippage enabled on amm
+	suite.Require().Equal(health.String(), "1.250000000000000000") // slippage disabled on amm
 
 	suite.ctx = suite.ctx.WithBlockTime(suite.ctx.BlockTime().Add(time.Hour * 24 * 70))
 	suite.app.StablestakeKeeper.BeginBlocker(suite.ctx)
 	health, err = k.GetPositionHealth(suite.ctx, *position, ammPool)
 	suite.Require().NoError(err)
-	suite.Require().Equal(health.String(), "1.024543738200125865")
+	// suite.Require().Equal(health.String(), "1.024543738200125865") // slippage enabled on amm
+	suite.Require().Equal(health.String(), "1.048877700860079715") // slippage disabled on amm
 
 	params := k.GetParams(suite.ctx)
 	params.SafetyFactor = sdk.NewDecWithPrec(11, 1)
@@ -39,13 +41,15 @@ func (suite KeeperTestSuite) TestLiquidatePositionIfUnhealthy() {
 	suite.Require().True(found)
 	health, err := k.GetPositionHealth(suite.ctx, *position, ammPool)
 	suite.Require().NoError(err)
-	suite.Require().Equal(health.String(), "1.221000000000000000")
+	// suite.Require().Equal(health.String(), "1.221000000000000000") // slippage enabled on amm
+	suite.Require().Equal(health.String(), "1.250000000000000000") // slippage disabled on amm
 
 	suite.ctx = suite.ctx.WithBlockTime(suite.ctx.BlockTime().Add(time.Hour * 24 * 70))
 	suite.app.StablestakeKeeper.BeginBlocker(suite.ctx)
 	health, err = k.GetPositionHealth(suite.ctx, *position, ammPool)
 	suite.Require().NoError(err)
-	suite.Require().Equal(health.String(), "1.024543738200125865")
+	// suite.Require().Equal(health.String(), "1.024543738200125865") // slippage enabled on amm
+	suite.Require().Equal(health.String(), "1.048877700860079715") // slippage disabled on amm
 
 	params := k.GetParams(suite.ctx)
 	params.SafetyFactor = sdk.NewDecWithPrec(11, 1)

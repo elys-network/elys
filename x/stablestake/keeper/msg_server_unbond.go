@@ -4,6 +4,8 @@ import (
 	"context"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	commitmentkeeper "github.com/elys-network/elys/x/commitment/keeper"
+	ctypes "github.com/elys-network/elys/x/commitment/types"
 	"github.com/elys-network/elys/x/stablestake/types"
 )
 
@@ -14,9 +16,21 @@ func (k msgServer) Unbond(goCtx context.Context, msg *types.MsgUnbond) (*types.M
 	sender := sdk.MustAccAddressFromBech32(msg.Creator)
 
 	shareDenom := types.GetShareDenom()
+
+	// Withdraw committed LP tokens
+	msgServer := commitmentkeeper.NewMsgServerImpl(*k.commitmentKeeper)
+	_, err := msgServer.UncommitTokens(sdk.WrapSDKContext(ctx), &ctypes.MsgUncommitTokens{
+		Creator: sender.String(),
+		Amount:  msg.Amount,
+		Denom:   shareDenom,
+	})
+	if err != nil {
+		return nil, err
+	}
+
 	shareCoin := sdk.NewCoin(shareDenom, msg.Amount)
 	shareCoins := sdk.NewCoins(shareCoin)
-	err := k.bk.SendCoinsFromAccountToModule(ctx, sender, types.ModuleName, shareCoins)
+	err = k.bk.SendCoinsFromAccountToModule(ctx, sender, types.ModuleName, shareCoins)
 	if err != nil {
 		return nil, err
 	}

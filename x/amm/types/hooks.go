@@ -10,10 +10,10 @@ type AmmHooks interface {
 	AfterJoinPool(ctx sdk.Context, sender sdk.AccAddress, pool Pool, enterCoins sdk.Coins, shareOutAmount sdk.Int)
 
 	// AfterExitPool is called after ExitPool, ExitSwapShareAmountIn, and ExitSwapExternAmountOut
-	AfterExitPool(ctx sdk.Context, sender sdk.AccAddress, pool Pool, shareInAmount sdk.Int, exitCoins sdk.Coins)
+	AfterExitPool(ctx sdk.Context, sender sdk.AccAddress, pool Pool, shareInAmount sdk.Int, exitCoins sdk.Coins) error
 
 	// AfterSwap is called after SwapExactAmountIn and SwapExactAmountOut
-	AfterSwap(ctx sdk.Context, sender sdk.AccAddress, pool Pool, input sdk.Coins, output sdk.Coins)
+	AfterSwap(ctx sdk.Context, sender sdk.AccAddress, pool Pool, input sdk.Coins, output sdk.Coins) error
 }
 
 var _ AmmHooks = MultiAmmHooks{}
@@ -38,14 +38,22 @@ func (h MultiAmmHooks) AfterJoinPool(ctx sdk.Context, sender sdk.AccAddress, poo
 	}
 }
 
-func (h MultiAmmHooks) AfterExitPool(ctx sdk.Context, sender sdk.AccAddress, pool Pool, shareInAmount sdk.Int, exitCoins sdk.Coins) {
+func (h MultiAmmHooks) AfterExitPool(ctx sdk.Context, sender sdk.AccAddress, pool Pool, shareInAmount sdk.Int, exitCoins sdk.Coins) error {
 	for i := range h {
-		h[i].AfterExitPool(ctx, sender, pool, shareInAmount, exitCoins)
+		err := h[i].AfterExitPool(ctx, sender, pool, shareInAmount, exitCoins)
+		if err != nil {
+			return err
+		}
 	}
+	return nil
 }
 
-func (h MultiAmmHooks) AfterSwap(ctx sdk.Context, sender sdk.AccAddress, pool Pool, input sdk.Coins, output sdk.Coins) {
+func (h MultiAmmHooks) AfterSwap(ctx sdk.Context, sender sdk.AccAddress, pool Pool, input sdk.Coins, output sdk.Coins) error {
 	for i := range h {
-		h[i].AfterSwap(ctx, sender, pool, input, output)
+		err := h[i].AfterSwap(ctx, sender, pool, input, output)
+		if err != nil {
+			return err
+		}
 	}
+	return nil
 }
