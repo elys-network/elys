@@ -283,6 +283,8 @@ type ElysMsg struct {
 	// margin messages
 	MarginOpen         *margintypes.MsgOpen         `json:"margin_open,omitempty"`
 	MarginClose        *margintypes.MsgClose        `json:"margin_close,omitempty"`
+	MarginBrokerOpen   *margintypes.MsgBrokerOpen   `json:"margin_broker_open,omitempty"`
+	MarginBrokerClose  *margintypes.MsgBrokerClose  `json:"margin_broker_close,omitempty"`
 	MarginUpdateParams *margintypes.MsgUpdateParams `json:"margin_update_params,omitempty"`
 	MarginUpdatePools  *margintypes.MsgUpdatePools  `json:"margin_update_pools,omitempty"`
 	MarginWhitelist    *margintypes.MsgWhitelist    `json:"margin_whitelist,omitempty"`

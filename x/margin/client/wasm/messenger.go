@@ -21,6 +21,10 @@ func (m *Messenger) HandleMsg(ctx sdk.Context, contractAddr sdk.AccAddress, cont
 		return m.msgOpen(ctx, contractAddr, msg.MarginOpen)
 	case msg.MarginClose != nil:
 		return m.msgClose(ctx, contractAddr, msg.MarginClose)
+	case msg.MarginBrokerOpen != nil:
+		return m.msgBrokerOpen(ctx, contractAddr, msg.MarginBrokerOpen)
+	case msg.MarginBrokerClose != nil:
+		return m.msgBrokerClose(ctx, contractAddr, msg.MarginBrokerClose)
 	case msg.MarginUpdateParams != nil:
 		return m.msgUpdateParams(ctx, contractAddr, msg.MarginUpdateParams)
 	case msg.MarginUpdatePools != nil:

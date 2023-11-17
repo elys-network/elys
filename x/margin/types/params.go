@@ -31,6 +31,7 @@ var (
 	KeyIncrementalInterestPaymentEnabled        = []byte("IncrementalInterestPaymentEnabled")
 	KeyWhitelistingEnabled                      = []byte("WhitelistingEnabled")
 	KeyInvariantCheckEpoch                      = []byte("InvariantCheckEpoch")
+	KeyBrokerAddress                            = []byte("BrokerAddress")
 )
 
 // ParamKeyTable the param key table for launch module
@@ -60,6 +61,7 @@ func NewParams() Params {
 		IncrementalInterestPaymentEnabled:        true,
 		WhitelistingEnabled:                      false,
 		InvariantCheckEpoch:                      epochtypes.DayEpochID,
+		BrokerAddress:                            "",
 	}
 }
 
@@ -90,6 +92,7 @@ func (p *Params) ParamSetPairs() paramtypes.ParamSetPairs {
 		paramtypes.NewParamSetPair(KeyIncrementalInterestPaymentEnabled, &p.IncrementalInterestPaymentEnabled, validateIncrementalInterestPaymentEnabled),
 		paramtypes.NewParamSetPair(KeyWhitelistingEnabled, &p.WhitelistingEnabled, validateWhitelistingEnabled),
 		paramtypes.NewParamSetPair(KeyInvariantCheckEpoch, &p.InvariantCheckEpoch, validateInvariantCheckEpoch),
+		paramtypes.NewParamSetPair(KeyBrokerAddress, &p.BrokerAddress, validateBrokerAddress),
 	}
 }
 
@@ -150,6 +153,9 @@ func (p Params) Validate() error {
 		return err
 	}
 	if err := validateInvariantCheckEpoch(p.InvariantCheckEpoch); err != nil {
+		return err
+	}
+	if err := validateBrokerAddress(p.BrokerAddress); err != nil {
 		return err
 	}
 	return nil
@@ -417,6 +423,15 @@ func validateInvariantCheckEpoch(i interface{}) error {
 	}
 
 	if epoch != epochtypes.DayEpochID && epoch != epochtypes.WeekEpochID && epoch != epochtypes.HourEpochID {
+		return fmt.Errorf("invalid parameter type: %T", i)
+	}
+
+	return nil
+}
+
+func validateBrokerAddress(i interface{}) error {
+	_, ok := i.(string)
+	if !ok {
 		return fmt.Errorf("invalid parameter type: %T", i)
 	}
 

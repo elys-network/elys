@@ -142,3 +142,12 @@ func (k Keeper) GetSqModifier(ctx sdk.Context) sdk.Dec {
 func (k Keeper) IsWhitelistingEnabled(ctx sdk.Context) bool {
 	return k.GetParams(ctx).WhitelistingEnabled
 }
+
+func (k Keeper) GetBrokerAddress(ctx sdk.Context) sdk.AccAddress {
+	addr, err := sdk.AccAddressFromBech32(k.GetParams(ctx).BrokerAddress)
+	if err != nil {
+		panic(err)
+	}
+
+	return addr
+}

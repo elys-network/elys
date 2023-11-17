@@ -8,6 +8,8 @@ import (
 const (
 	TypeMsgOpen         = "open"
 	TypeMsgClose        = "close"
+	TypeMsgBrokerOpen   = "broker_open"
+	TypeMsgBrokerClose  = "broker_close"
 	TypeMsgUpdateParams = "update_params"
 	TypeMsgWhitelist    = "whitelist"
 	TypeMsgUpdatePools  = "update_pools"
@@ -17,6 +19,8 @@ const (
 var (
 	_ sdk.Msg = &MsgClose{}
 	_ sdk.Msg = &MsgOpen{}
+	_ sdk.Msg = &MsgBrokerClose{}
+	_ sdk.Msg = &MsgBrokerOpen{}
 	_ sdk.Msg = &MsgUpdateParams{}
 	_ sdk.Msg = &MsgWhitelist{}
 	_ sdk.Msg = &MsgUpdatePools{}
@@ -96,6 +100,93 @@ func (msg *MsgOpen) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
+	}
+	return nil
+}
+
+func NewMsgBrokerClose(creator string, id uint64, owner string) *MsgBrokerClose {
+	return &MsgBrokerClose{
+		Creator: creator,
+		Id:      id,
+		Owner:   owner,
+	}
+}
+
+func (msg *MsgBrokerClose) Route() string {
+	return RouterKey
+}
+
+func (msg *MsgBrokerClose) Type() string {
+	return TypeMsgBrokerClose
+}
+
+func (msg *MsgBrokerClose) GetSigners() []sdk.AccAddress {
+	creator, err := sdk.AccAddressFromBech32(msg.Creator)
+	if err != nil {
+		panic(err)
+	}
+	return []sdk.AccAddress{creator}
+}
+
+func (msg *MsgBrokerClose) GetSignBytes() []byte {
+	bz := ModuleCdc.MustMarshalJSON(msg)
+	return sdk.MustSortJSON(bz)
+}
+
+func (msg *MsgBrokerClose) ValidateBasic() error {
+	_, err := sdk.AccAddressFromBech32(msg.Creator)
+	if err != nil {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
+	}
+	_, err = sdk.AccAddressFromBech32(msg.Owner)
+	if err != nil {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid owner address (%s)", err)
+	}
+	return nil
+}
+
+func NewMsgBrokerOpen(creator string, collateralAsset string, collateralAmount sdk.Int, borrowAsset string, position Position, leverage sdk.Dec, takeProfitPrice sdk.Dec, owner string) *MsgBrokerOpen {
+	return &MsgBrokerOpen{
+		Creator:          creator,
+		CollateralAsset:  collateralAsset,
+		CollateralAmount: collateralAmount,
+		BorrowAsset:      borrowAsset,
+		Position:         position,
+		Leverage:         leverage,
+		TakeProfitPrice:  takeProfitPrice,
+		Owner:            owner,
+	}
+}
+
+func (msg *MsgBrokerOpen) Route() string {
+	return RouterKey
+}
+
+func (msg *MsgBrokerOpen) Type() string {
+	return TypeMsgBrokerOpen
+}
+
+func (msg *MsgBrokerOpen) GetSigners() []sdk.AccAddress {
+	creator, err := sdk.AccAddressFromBech32(msg.Creator)
+	if err != nil {
+		panic(err)
+	}
+	return []sdk.AccAddress{creator}
+}
+
+func (msg *MsgBrokerOpen) GetSignBytes() []byte {
+	bz := ModuleCdc.MustMarshalJSON(msg)
+	return sdk.MustSortJSON(bz)
+}
+
+func (msg *MsgBrokerOpen) ValidateBasic() error {
+	_, err := sdk.AccAddressFromBech32(msg.Creator)
+	if err != nil {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
+	}
+	_, err = sdk.AccAddressFromBech32(msg.Owner)
+	if err != nil {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid owner address (%s)", err)
 	}
 	return nil
 }
