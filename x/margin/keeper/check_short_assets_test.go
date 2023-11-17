@@ -26,13 +26,13 @@ func TestCheckShortAssets_InvalidAssets(t *testing.T) {
 	ctx := sdk.Context{} // mock or setup a context
 
 	// Test invalid cases for short positions
-	err := k.CheckShortAssets(ctx, ptypes.ATOM, ptypes.BaseCurrency)
+	err := k.CheckShortAssets(ctx, ptypes.ATOM, ptypes.BaseCurrency, ptypes.BaseCurrency)
 	assert.True(t, errors.Is(err, sdkerrors.Wrap(types.ErrInvalidBorrowingAsset, "cannot short the base currency")))
 
-	err = k.CheckShortAssets(ctx, ptypes.ATOM, ptypes.ATOM)
+	err = k.CheckShortAssets(ctx, ptypes.ATOM, ptypes.ATOM, ptypes.BaseCurrency)
 	assert.True(t, errors.Is(err, sdkerrors.Wrap(types.ErrInvalidCollateralAsset, "collateral asset cannot be the same as the borrowed asset in a short position")))
 
-	err = k.CheckShortAssets(ctx, ptypes.ATOM, "btc")
+	err = k.CheckShortAssets(ctx, ptypes.ATOM, "btc", ptypes.BaseCurrency)
 	assert.True(t, errors.Is(err, sdkerrors.Wrap(types.ErrInvalidCollateralAsset, "collateral asset for a short position must be the base currency")))
 
 	// Expect no error
@@ -51,7 +51,7 @@ func TestCheckShortAssets_ValidAssets(t *testing.T) {
 	ctx := sdk.Context{} // mock or setup a context
 
 	// Test valid case for short position
-	err := k.CheckShortAssets(ctx, ptypes.BaseCurrency, ptypes.ATOM)
+	err := k.CheckShortAssets(ctx, ptypes.BaseCurrency, ptypes.ATOM, ptypes.BaseCurrency)
 	assert.Nil(t, err)
 
 	// Expect no error

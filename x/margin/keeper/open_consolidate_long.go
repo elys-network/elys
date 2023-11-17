@@ -5,7 +5,7 @@ import (
 	"github.com/elys-network/elys/x/margin/types"
 )
 
-func (k Keeper) OpenConsolidateLong(ctx sdk.Context, poolId uint64, mtp *types.MTP, msg *types.MsgOpen) (*types.MTP, error) {
+func (k Keeper) OpenConsolidateLong(ctx sdk.Context, poolId uint64, mtp *types.MTP, msg *types.MsgOpen, baseCurrency string) (*types.MTP, error) {
 	maxLeverage := k.OpenLongChecker.GetMaxLeverageParam(ctx)
 	leverage := sdk.MinDec(msg.Leverage, maxLeverage)
 	eta := leverage.Sub(sdk.OneDec())
@@ -15,5 +15,5 @@ func (k Keeper) OpenConsolidateLong(ctx sdk.Context, poolId uint64, mtp *types.M
 	mtp.Collaterals = types.AddOrAppendCoin(mtp.Collaterals, sdk.NewCoin(msg.CollateralAsset, sdk.NewInt(0)))
 	mtp.Custodies = types.AddOrAppendCoin(mtp.Custodies, sdk.NewCoin(msg.BorrowAsset, sdk.NewInt(0)))
 
-	return k.ProcessOpenLong(ctx, mtp, leverage, eta, collateralAmountDec, poolId, msg)
+	return k.ProcessOpenLong(ctx, mtp, leverage, eta, collateralAmountDec, poolId, msg, baseCurrency)
 }

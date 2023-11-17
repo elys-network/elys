@@ -6,6 +6,7 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
 	"github.com/elys-network/elys/x/leveragelp/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
@@ -91,7 +92,13 @@ func (k Keeper) ProcessOpenLong(ctx sdk.Context, position *types.Position, lever
 		return nil, err
 	}
 
-	if msg.CollateralAsset != ptypes.BaseCurrency {
+	entry, found := k.apKeeper.GetEntry(ctx, ptypes.BaseCurrency)
+	if !found {
+		return nil, sdkerrors.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency)
+	}
+	baseCurrency := entry.Denom
+
+	if msg.CollateralAsset != baseCurrency {
 		return nil, types.ErrOnlyBaseCurrencyAllowed
 	}
 

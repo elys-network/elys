@@ -11,7 +11,7 @@ import (
 	"github.com/elys-network/elys/x/margin/types"
 )
 
-func BeginBlockerProcessMTP(ctx sdk.Context, k Keeper, mtp *types.MTP, pool types.Pool, ammPool ammtypes.Pool) {
+func BeginBlockerProcessMTP(ctx sdk.Context, k Keeper, mtp *types.MTP, pool types.Pool, ammPool ammtypes.Pool, baseCurrency string) {
 	defer func() {
 		if r := recover(); r != nil {
 			if msg, ok := r.(string); ok {
@@ -19,7 +19,7 @@ func BeginBlockerProcessMTP(ctx sdk.Context, k Keeper, mtp *types.MTP, pool type
 			}
 		}
 	}()
-	h, err := k.UpdateMTPHealth(ctx, *mtp, ammPool)
+	h, err := k.UpdateMTPHealth(ctx, *mtp, ammPool, baseCurrency)
 	if err != nil {
 		ctx.Logger().Error(errors.Wrap(err, fmt.Sprintf("error updating mtp health: %s", mtp.String())).Error())
 		return

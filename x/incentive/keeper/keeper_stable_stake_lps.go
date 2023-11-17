@@ -8,7 +8,7 @@ import (
 )
 
 // Calculate new Eden token amounts based on LpElys committed and MElys committed
-func (k Keeper) CalculateRewardsForStableStakeLPs(ctx sdk.Context, totalProxyTVL sdk.Dec, commitments ctypes.Commitments, edenAmountPerEpochLp sdk.Int, gasFeesForLPs sdk.Dec) (sdk.Int, sdk.Int) {
+func (k Keeper) CalculateRewardsForStableStakeLPs(ctx sdk.Context, totalProxyTVL sdk.Dec, commitments ctypes.Commitments, edenAmountPerEpochLp sdk.Int, gasFeesForLPs sdk.Dec, baseCurrency string) (sdk.Int, sdk.Int) {
 	// Method 2 - Using Proxy TVL
 	totalDexRewardsAllocated := sdk.ZeroDec()
 
@@ -17,7 +17,7 @@ func (k Keeper) CalculateRewardsForStableStakeLPs(ctx sdk.Context, totalProxyTVL
 	// newEdenAllocated = 80 / ( 80 + 90 + 200 + 0) * 100
 	// Pool share = 80
 	// edenAmountPerEpochLp = 100
-	tvl := stabletypes.TVL(ctx, k.authKeeper, k.bankKeeper)
+	tvl := stabletypes.TVL(ctx, k.authKeeper, k.bankKeeper, baseCurrency)
 
 	// Get pool Id
 	poolId := uint64(stabletypes.PoolId)
