@@ -140,7 +140,7 @@ type ElysQuery struct {
 	CommitmentDelegatorValidators            *commitmenttypes.QueryValidatorsRequest                    `json:"commitment_delegator_validators,omitempty"`
 	CommitmentStakedPositions                *commitmenttypes.QueryValidatorsRequest                    `json:"commitment_staked_positions,omitempty"`
 	CommitmentUnStakedPositions              *commitmenttypes.QueryValidatorsRequest                    `json:"commitment_un_staked_positions,omitempty"`
-	CommitmentRewardsSubBucketBalanceOfDenom *commitmenttypes.QuerySubBucketBalanceRequest              `json:"commitment_rewards_sub_buckets_balance_of_denom,omitempty"`
+	CommitmentRewardsSubBucketBalanceOfDenom *commitmenttypes.QuerySubBucketBalanceRequest              `json:"commitment_rewards_sub_bucket_balance_of_denom,omitempty"`
 	CommitmentVestingInfo                    *commitmenttypes.QueryVestingInfoRequest                   `json:"commitment_vesting_info,omitempty"`
 
 	// epochs queriers
