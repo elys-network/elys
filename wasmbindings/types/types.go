@@ -5,6 +5,8 @@ import (
 
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
@@ -63,6 +65,7 @@ type QueryPlugin struct {
 	accountedpoolKeeper *accountedpoolkeeper.Keeper
 	ammKeeper           *ammkeeper.Keeper
 	assetprofileKeeper  *assetprofilekeeper.Keeper
+	authKeeper          *authkeeper.AccountKeeper
 	bankKeeper          *bankkeeper.BaseKeeper
 	burnerKeeper        *burnerkeeper.Keeper
 	clockKeeper         *clockkeeper.Keeper
@@ -113,6 +116,9 @@ type ElysQuery struct {
 	AssetProfileParams   *assetprofiletypes.QueryParamsRequest   `json:"asset_profile_params,omitempty"`
 	AssetProfileEntry    *assetprofiletypes.QueryGetEntryRequest `json:"asset_profile_entry,omitempty"`
 	AssetProfileEntryAll *assetprofiletypes.QueryAllEntryRequest `json:"asset_profile_entry_all,omitempty"`
+
+	// auth queriers
+	AuthAccounts *authtypes.QueryAccountsRequest `json:"auth_accounts,omitempty"`
 
 	// burner queriers
 	BurnerParams     *burnertypes.QueryParamsRequest     `json:"burner_params,omitempty"`
@@ -206,6 +212,7 @@ type CustomMessenger struct {
 	accountedpool    *accountedpoolkeeper.Keeper
 	amm              *ammkeeper.Keeper
 	assetprofile     *assetprofilekeeper.Keeper
+	auth             *authkeeper.AccountKeeper
 	bank             *bankkeeper.BaseKeeper
 	burner           *burnerkeeper.Keeper
 	clock            *clockkeeper.Keeper
@@ -237,6 +244,8 @@ type ElysMsg struct {
 	AssetProfileCreateEntry *assetprofiletypes.MsgCreateEntry `json:"asset_profile_create_entry,omitempty"`
 	AssetProfileUpdateEntry *assetprofiletypes.MsgUpdateEntry `json:"asset_profile_update_entry,omitempty"`
 	AssetProfileDeleteEntry *assetprofiletypes.MsgDeleteEntry `json:"asset_profile_delete_entry,omitempty"`
+
+	// auth messages
 
 	// burner messages
 

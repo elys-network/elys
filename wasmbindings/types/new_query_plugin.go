@@ -1,6 +1,7 @@
 package types
 
 import (
+	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
 	accountedpoolkeeper "github.com/elys-network/elys/x/accountedpool/keeper"
@@ -26,6 +27,7 @@ func NewQueryPlugin(
 	accountedpool *accountedpoolkeeper.Keeper,
 	amm *ammkeeper.Keeper,
 	assetprofile *assetprofilekeeper.Keeper,
+	auth *authkeeper.AccountKeeper,
 	bank *bankkeeper.BaseKeeper,
 	burner *burnerkeeper.Keeper,
 	clock *clockkeeper.Keeper,
@@ -46,6 +48,7 @@ func NewQueryPlugin(
 		accountedpoolKeeper: accountedpool,
 		ammKeeper:           amm,
 		assetprofileKeeper:  assetprofile,
+		authKeeper:          auth,
 		bankKeeper:          bank,
 		burnerKeeper:        burner,
 		clockKeeper:         clock,

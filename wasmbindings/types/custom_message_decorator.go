@@ -2,6 +2,7 @@ package types
 
 import (
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
+	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
 	accountedpoolkeeper "github.com/elys-network/elys/x/accountedpool/keeper"
@@ -26,6 +27,7 @@ func CustomMessageDecorator(
 	accountedpool *accountedpoolkeeper.Keeper,
 	amm *ammkeeper.Keeper,
 	assetprofile *assetprofilekeeper.Keeper,
+	auth *authkeeper.AccountKeeper,
 	bank *bankkeeper.BaseKeeper,
 	burner *burnerkeeper.Keeper,
 	clock *clockkeeper.Keeper,
@@ -48,6 +50,7 @@ func CustomMessageDecorator(
 			accountedpool:    accountedpool,
 			amm:              amm,
 			assetprofile:     assetprofile,
+			auth:             auth,
 			bank:             bank,
 			burner:           burner,
 			clock:            clock,

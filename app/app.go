@@ -810,6 +810,7 @@ func NewElysApp(
 			&app.AccountedPoolKeeper,
 			&app.AmmKeeper,
 			&app.AssetprofileKeeper,
+			&app.AccountKeeper,
 			&bankKeeper,
 			&app.BurnerKeeper,
 			&app.ClockKeeper,
