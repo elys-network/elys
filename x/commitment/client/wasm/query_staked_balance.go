@@ -28,7 +28,7 @@ func (oq *Querier) queryStakedBalanceOfDenom(ctx sdk.Context, query *ammtypes.Qu
 	}
 
 	res := commitmenttypes.BalanceAvailable{
-		Amount:    balance.Amount.Uint64(),
+		Amount:    balance.Amount,
 		UsdAmount: sdk.NewDecFromInt(balance.Amount),
 	}
 

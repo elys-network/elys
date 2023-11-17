@@ -23,7 +23,7 @@ func (oq *Querier) queryRewardBalanceOfDenom(ctx sdk.Context, query *ammtypes.Qu
 	balance = sdk.NewCoin(denom, uncommittedToken)
 
 	res := commitmenttypes.BalanceAvailable{
-		Amount:    balance.Amount.Uint64(),
+		Amount:    balance.Amount,
 		UsdAmount: sdk.NewDecFromInt(balance.Amount),
 	}
 

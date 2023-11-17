@@ -33,7 +33,7 @@ func (oq *Querier) queryRewardSubBucketBalanceOfDenom(ctx sdk.Context, query *co
 	balance = sdk.NewCoin(denom, uncommittedToken)
 
 	res := commitmenttypes.BalanceAvailable{
-		Amount:    balance.Amount.Uint64(),
+		Amount:    balance.Amount,
 		UsdAmount: sdk.NewDecFromInt(balance.Amount),
 	}
 

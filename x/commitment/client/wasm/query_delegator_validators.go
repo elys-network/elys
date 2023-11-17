@@ -57,7 +57,7 @@ func (oq *Querier) BuildDelegatorValidatorsResponseCW(ctx sdk.Context, validator
 		delegatedAmt := tokens.TruncateInt()
 
 		validatorCW.Staked = commitmenttypes.BalanceAvailable{
-			Amount:    delegatedAmt.Uint64(),
+			Amount:    delegatedAmt,
 			UsdAmount: tokens,
 		}
 

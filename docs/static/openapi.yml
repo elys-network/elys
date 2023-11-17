@@ -40500,7 +40500,7 @@ paths:
                         signatures required by gogoproto.
                   liabilities:
                     type: string
-                  interest_paid_collaterals:
+                  borrow_interest_paid_collaterals:
                     type: array
                     items:
                       type: object
@@ -40517,7 +40517,7 @@ paths:
                         custom method
 
                         signatures required by gogoproto.
-                  interest_paid_custodies:
+                  borrow_interest_paid_custodies:
                     type: array
                     items:
                       type: object
@@ -40534,7 +40534,7 @@ paths:
                         custom method
 
                         signatures required by gogoproto.
-                  interest_unpaid_collaterals:
+                  borrow_interest_unpaid_collaterals:
                     type: array
                     items:
                       type: object
@@ -40679,7 +40679,7 @@ paths:
                           signatures required by gogoproto.
                     liabilities:
                       type: string
-                    interest_paid_collaterals:
+                    borrow_interest_paid_collaterals:
                       type: array
                       items:
                         type: object
@@ -40697,7 +40697,7 @@ paths:
                           custom method
 
                           signatures required by gogoproto.
-                    interest_paid_custodies:
+                    borrow_interest_paid_custodies:
                       type: array
                       items:
                         type: object
@@ -40715,7 +40715,7 @@ paths:
                           custom method
 
                           signatures required by gogoproto.
-                    interest_unpaid_collaterals:
+                    borrow_interest_unpaid_collaterals:
                       type: array
                       items:
                         type: object
@@ -40943,7 +40943,7 @@ paths:
                           signatures required by gogoproto.
                     liabilities:
                       type: string
-                    interest_paid_collaterals:
+                    borrow_interest_paid_collaterals:
                       type: array
                       items:
                         type: object
@@ -40961,7 +40961,7 @@ paths:
                           custom method
 
                           signatures required by gogoproto.
-                    interest_paid_custodies:
+                    borrow_interest_paid_custodies:
                       type: array
                       items:
                         type: object
@@ -40979,7 +40979,7 @@ paths:
                           custom method
 
                           signatures required by gogoproto.
-                    interest_unpaid_collaterals:
+                    borrow_interest_unpaid_collaterals:
                       type: array
                       items:
                         type: object
@@ -41185,13 +41185,13 @@ paths:
                 properties:
                   leverage_max:
                     type: string
-                  interest_rate_max:
+                  borrow_interest_rate_max:
                     type: string
-                  interest_rate_min:
+                  borrow_interest_rate_min:
                     type: string
-                  interest_rate_increase:
+                  borrow_interest_rate_increase:
                     type: string
-                  interest_rate_decrease:
+                  borrow_interest_rate_decrease:
                     type: string
                   health_gain_factor:
                     type: string
@@ -41209,19 +41209,21 @@ paths:
                     type: string
                   force_close_fund_address:
                     type: string
-                  incremental_interest_payment_fund_percentage:
+                  incremental_borrow_interest_payment_fund_percentage:
                     type: string
-                  incremental_interest_payment_fund_address:
+                  incremental_borrow_interest_payment_fund_address:
                     type: string
                   sq_modifier:
                     type: string
                   safety_factor:
                     type: string
-                  incremental_interest_payment_enabled:
+                  incremental_borrow_interest_payment_enabled:
                     type: boolean
                   whitelisting_enabled:
                     type: boolean
                   invariant_check_epoch:
+                    type: string
+                  broker_address:
                     type: string
             description: ParamsResponse is response type for the Query/Params RPC method.
         default:
@@ -41266,9 +41268,9 @@ paths:
                     type: boolean
                   closed:
                     type: boolean
-                  interest_rate:
+                  borrow_interest_rate:
                     type: string
-                  pool_assets:
+                  pool_assets_long:
                     type: array
                     items:
                       type: object
@@ -41283,11 +41285,30 @@ paths:
                           type: string
                         asset_balance:
                           type: string
-                        block_interest:
+                        block_borrow_interest:
                           type: string
                         asset_denom:
                           type: string
-                  last_height_interest_rate_computed:
+                  pool_assets_short:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        liabilities:
+                          type: string
+                        custody:
+                          type: string
+                        take_profit_liabilities:
+                          type: string
+                        take_profit_custody:
+                          type: string
+                        asset_balance:
+                          type: string
+                        block_borrow_interest:
+                          type: string
+                        asset_denom:
+                          type: string
+                  last_height_borrow_interest_rate_computed:
                     type: string
                     format: int64
         default:
@@ -41339,9 +41360,9 @@ paths:
                       type: boolean
                     closed:
                       type: boolean
-                    interest_rate:
+                    borrow_interest_rate:
                       type: string
-                    pool_assets:
+                    pool_assets_long:
                       type: array
                       items:
                         type: object
@@ -41356,11 +41377,30 @@ paths:
                             type: string
                           asset_balance:
                             type: string
-                          block_interest:
+                          block_borrow_interest:
                             type: string
                           asset_denom:
                             type: string
-                    last_height_interest_rate_computed:
+                    pool_assets_short:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          liabilities:
+                            type: string
+                          custody:
+                            type: string
+                          take_profit_liabilities:
+                            type: string
+                          take_profit_custody:
+                            type: string
+                          asset_balance:
+                            type: string
+                          block_borrow_interest:
+                            type: string
+                          asset_denom:
+                            type: string
+                    last_height_borrow_interest_rate_computed:
                       type: string
                       format: int64
               pagination:
@@ -41505,7 +41545,7 @@ paths:
                           signatures required by gogoproto.
                     liabilities:
                       type: string
-                    interest_paid_collaterals:
+                    borrow_interest_paid_collaterals:
                       type: array
                       items:
                         type: object
@@ -41523,7 +41563,7 @@ paths:
                           custom method
 
                           signatures required by gogoproto.
-                    interest_paid_custodies:
+                    borrow_interest_paid_custodies:
                       type: array
                       items:
                         type: object
@@ -41541,7 +41581,7 @@ paths:
                           custom method
 
                           signatures required by gogoproto.
-                    interest_unpaid_collaterals:
+                    borrow_interest_unpaid_collaterals:
                       type: array
                       items:
                         type: object
@@ -84452,7 +84492,7 @@ definitions:
             signatures required by gogoproto.
       liabilities:
         type: string
-      interest_paid_collaterals:
+      borrow_interest_paid_collaterals:
         type: array
         items:
           type: object
@@ -84466,7 +84506,7 @@ definitions:
 
             NOTE: The amount field is an Int which implements the custom method
             signatures required by gogoproto.
-      interest_paid_custodies:
+      borrow_interest_paid_custodies:
         type: array
         items:
           type: object
@@ -84480,7 +84520,7 @@ definitions:
 
             NOTE: The amount field is an Int which implements the custom method
             signatures required by gogoproto.
-      interest_unpaid_collaterals:
+      borrow_interest_unpaid_collaterals:
         type: array
         items:
           type: object
@@ -84576,7 +84616,7 @@ definitions:
                 signatures required by gogoproto.
           liabilities:
             type: string
-          interest_paid_collaterals:
+          borrow_interest_paid_collaterals:
             type: array
             items:
               type: object
@@ -84593,7 +84633,7 @@ definitions:
                 method
 
                 signatures required by gogoproto.
-          interest_paid_custodies:
+          borrow_interest_paid_custodies:
             type: array
             items:
               type: object
@@ -84610,7 +84650,7 @@ definitions:
                 method
 
                 signatures required by gogoproto.
-          interest_unpaid_collaterals:
+          borrow_interest_unpaid_collaterals:
             type: array
             items:
               type: object
@@ -84688,12 +84728,32 @@ definitions:
             type: string
           take_profit_price:
             type: string
+  elys.margin.MsgBrokerCloseResponse:
+    type: object
+    properties:
+      id:
+        type: string
+        format: uint64
+  elys.margin.MsgBrokerOpenResponse:
+    type: object
+    properties:
+      id:
+        type: string
+        format: uint64
   elys.margin.MsgCloseResponse:
     type: object
+    properties:
+      id:
+        type: string
+        format: uint64
   elys.margin.MsgDewhitelistResponse:
     type: object
   elys.margin.MsgOpenResponse:
     type: object
+    properties:
+      id:
+        type: string
+        format: uint64
   elys.margin.MsgUpdateParamsResponse:
     type: object
   elys.margin.MsgUpdatePoolsResponse:
@@ -84705,13 +84765,13 @@ definitions:
     properties:
       leverage_max:
         type: string
-      interest_rate_max:
+      borrow_interest_rate_max:
         type: string
-      interest_rate_min:
+      borrow_interest_rate_min:
         type: string
-      interest_rate_increase:
+      borrow_interest_rate_increase:
         type: string
-      interest_rate_decrease:
+      borrow_interest_rate_decrease:
         type: string
       health_gain_factor:
         type: string
@@ -84729,19 +84789,21 @@ definitions:
         type: string
       force_close_fund_address:
         type: string
-      incremental_interest_payment_fund_percentage:
+      incremental_borrow_interest_payment_fund_percentage:
         type: string
-      incremental_interest_payment_fund_address:
+      incremental_borrow_interest_payment_fund_address:
         type: string
       sq_modifier:
         type: string
       safety_factor:
         type: string
-      incremental_interest_payment_enabled:
+      incremental_borrow_interest_payment_enabled:
         type: boolean
       whitelisting_enabled:
         type: boolean
       invariant_check_epoch:
+        type: string
+      broker_address:
         type: string
     description: Params defines the parameters for the module.
   elys.margin.ParamsResponse:
@@ -84753,13 +84815,13 @@ definitions:
         properties:
           leverage_max:
             type: string
-          interest_rate_max:
+          borrow_interest_rate_max:
             type: string
-          interest_rate_min:
+          borrow_interest_rate_min:
             type: string
-          interest_rate_increase:
+          borrow_interest_rate_increase:
             type: string
-          interest_rate_decrease:
+          borrow_interest_rate_decrease:
             type: string
           health_gain_factor:
             type: string
@@ -84777,19 +84839,21 @@ definitions:
             type: string
           force_close_fund_address:
             type: string
-          incremental_interest_payment_fund_percentage:
+          incremental_borrow_interest_payment_fund_percentage:
             type: string
-          incremental_interest_payment_fund_address:
+          incremental_borrow_interest_payment_fund_address:
             type: string
           sq_modifier:
             type: string
           safety_factor:
             type: string
-          incremental_interest_payment_enabled:
+          incremental_borrow_interest_payment_enabled:
             type: boolean
           whitelisting_enabled:
             type: boolean
           invariant_check_epoch:
+            type: string
+          broker_address:
             type: string
     description: ParamsResponse is response type for the Query/Params RPC method.
   elys.margin.Pool:
@@ -84804,9 +84868,9 @@ definitions:
         type: boolean
       closed:
         type: boolean
-      interest_rate:
+      borrow_interest_rate:
         type: string
-      pool_assets:
+      pool_assets_long:
         type: array
         items:
           type: object
@@ -84821,11 +84885,30 @@ definitions:
               type: string
             asset_balance:
               type: string
-            block_interest:
+            block_borrow_interest:
               type: string
             asset_denom:
               type: string
-      last_height_interest_rate_computed:
+      pool_assets_short:
+        type: array
+        items:
+          type: object
+          properties:
+            liabilities:
+              type: string
+            custody:
+              type: string
+            take_profit_liabilities:
+              type: string
+            take_profit_custody:
+              type: string
+            asset_balance:
+              type: string
+            block_borrow_interest:
+              type: string
+            asset_denom:
+              type: string
+      last_height_borrow_interest_rate_computed:
         type: string
         format: int64
   elys.margin.PoolAsset:
@@ -84841,7 +84924,7 @@ definitions:
         type: string
       asset_balance:
         type: string
-      block_interest:
+      block_borrow_interest:
         type: string
       asset_denom:
         type: string
@@ -84881,7 +84964,7 @@ definitions:
                   signatures required by gogoproto.
             liabilities:
               type: string
-            interest_paid_collaterals:
+            borrow_interest_paid_collaterals:
               type: array
               items:
                 type: object
@@ -84898,7 +84981,7 @@ definitions:
                   method
 
                   signatures required by gogoproto.
-            interest_paid_custodies:
+            borrow_interest_paid_custodies:
               type: array
               items:
                 type: object
@@ -84915,7 +84998,7 @@ definitions:
                   method
 
                   signatures required by gogoproto.
-            interest_unpaid_collaterals:
+            borrow_interest_unpaid_collaterals:
               type: array
               items:
                 type: object
@@ -85048,7 +85131,7 @@ definitions:
                   signatures required by gogoproto.
             liabilities:
               type: string
-            interest_paid_collaterals:
+            borrow_interest_paid_collaterals:
               type: array
               items:
                 type: object
@@ -85065,7 +85148,7 @@ definitions:
                   method
 
                   signatures required by gogoproto.
-            interest_paid_custodies:
+            borrow_interest_paid_custodies:
               type: array
               items:
                 type: object
@@ -85082,7 +85165,7 @@ definitions:
                   method
 
                   signatures required by gogoproto.
-            interest_unpaid_collaterals:
+            borrow_interest_unpaid_collaterals:
               type: array
               items:
                 type: object
@@ -85215,7 +85298,7 @@ definitions:
                   signatures required by gogoproto.
             liabilities:
               type: string
-            interest_paid_collaterals:
+            borrow_interest_paid_collaterals:
               type: array
               items:
                 type: object
@@ -85232,7 +85315,7 @@ definitions:
                   method
 
                   signatures required by gogoproto.
-            interest_paid_custodies:
+            borrow_interest_paid_custodies:
               type: array
               items:
                 type: object
@@ -85249,7 +85332,7 @@ definitions:
                   method
 
                   signatures required by gogoproto.
-            interest_unpaid_collaterals:
+            borrow_interest_unpaid_collaterals:
               type: array
               items:
                 type: object
@@ -85370,9 +85453,9 @@ definitions:
               type: boolean
             closed:
               type: boolean
-            interest_rate:
+            borrow_interest_rate:
               type: string
-            pool_assets:
+            pool_assets_long:
               type: array
               items:
                 type: object
@@ -85387,11 +85470,30 @@ definitions:
                     type: string
                   asset_balance:
                     type: string
-                  block_interest:
+                  block_borrow_interest:
                     type: string
                   asset_denom:
                     type: string
-            last_height_interest_rate_computed:
+            pool_assets_short:
+              type: array
+              items:
+                type: object
+                properties:
+                  liabilities:
+                    type: string
+                  custody:
+                    type: string
+                  take_profit_liabilities:
+                    type: string
+                  take_profit_custody:
+                    type: string
+                  asset_balance:
+                    type: string
+                  block_borrow_interest:
+                    type: string
+                  asset_denom:
+                    type: string
+            last_height_borrow_interest_rate_computed:
               type: string
               format: int64
       pagination:
@@ -85435,9 +85537,9 @@ definitions:
             type: boolean
           closed:
             type: boolean
-          interest_rate:
+          borrow_interest_rate:
             type: string
-          pool_assets:
+          pool_assets_long:
             type: array
             items:
               type: object
@@ -85452,11 +85554,30 @@ definitions:
                   type: string
                 asset_balance:
                   type: string
-                block_interest:
+                block_borrow_interest:
                   type: string
                 asset_denom:
                   type: string
-          last_height_interest_rate_computed:
+          pool_assets_short:
+            type: array
+            items:
+              type: object
+              properties:
+                liabilities:
+                  type: string
+                custody:
+                  type: string
+                take_profit_liabilities:
+                  type: string
+                take_profit_custody:
+                  type: string
+                asset_balance:
+                  type: string
+                block_borrow_interest:
+                  type: string
+                asset_denom:
+                  type: string
+          last_height_borrow_interest_rate_computed:
             type: string
             format: int64
   elys.margin.StatusResponse:

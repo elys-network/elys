@@ -17,7 +17,7 @@ func (oq *Querier) queryVestingInfo(ctx sdk.Context, query *commitmenttypes.Quer
 	commitment := oq.keeper.GetCommitments(ctx, addr)
 	vestingTokens := commitment.GetVestingTokens()
 
-	totalVesting := uint64(0)
+	totalVesting := sdk.ZeroInt()
 	vestingDetails := make([]commitmenttypes.VestingDetail, 0)
 	for i, vesting := range vestingTokens {
 		// we only support Eden vesting, so manually put the denom here.
@@ -30,17 +30,17 @@ func (oq *Querier) queryVestingInfo(ctx sdk.Context, query *commitmenttypes.Quer
 			Id: fmt.Sprintf("%d", i),
 			// The total vest for the current vest
 			TotalVest: commitmenttypes.BalanceAvailable{
-				Amount:    vesting.TotalAmount.Uint64(),
+				Amount:    vesting.TotalAmount,
 				UsdAmount: sdk.NewDecFromInt(vesting.TotalAmount),
 			},
 			// The balance that's already vested
 			BalanceVested: commitmenttypes.BalanceAvailable{
-				Amount:    vested.Uint64(),
+				Amount:    vested,
 				UsdAmount: sdk.NewDecFromInt(vested),
 			},
 			// The remaining amount to vest
 			RemainingVest: commitmenttypes.BalanceAvailable{
-				Amount:    vesting.UnvestedAmount.Uint64(),
+				Amount:    vesting.UnvestedAmount,
 				UsdAmount: sdk.NewDecFromInt(vesting.UnvestedAmount),
 			},
 			// Remaining time to vest. Javascript timestamp.
@@ -49,13 +49,13 @@ func (oq *Querier) queryVestingInfo(ctx sdk.Context, query *commitmenttypes.Quer
 		}
 
 		vestingDetails = append(vestingDetails, vestingDetail)
-		totalVesting = totalVesting + vesting.TotalAmount.Uint64()
+		totalVesting = totalVesting.Add(vesting.TotalAmount)
 	}
 
 	res := commitmenttypes.QueryVestingInfoResponse{
 		Vesting: commitmenttypes.BalanceAvailable{
 			Amount:    totalVesting,
-			UsdAmount: sdk.NewDecFromInt(sdk.NewIntFromUint64(totalVesting)),
+			UsdAmount: sdk.NewDecFromInt(totalVesting),
 		},
 		VestingDetails: vestingDetails,
 	}

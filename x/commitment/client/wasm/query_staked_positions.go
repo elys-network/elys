@@ -69,7 +69,7 @@ func (oq *Querier) BuildStakedPositionResponseCW(ctx sdk.Context, validators []s
 			ProfilePictureSrc: validator.Description.Website,
 		}
 		stakedPosition.Staked = commitmenttypes.BalanceAvailable{
-			Amount:    delegatedAmt.Uint64(),
+			Amount:    delegatedAmt,
 			UsdAmount: tokens,
 		}
 

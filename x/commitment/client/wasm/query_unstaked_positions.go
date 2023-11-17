@@ -64,7 +64,7 @@ func (oq *Querier) BuildUnStakedPositionResponseCW(ctx sdk.Context, unbondingDel
 			}
 			unstakedPosition.RemainingTime = uint64(entity.CompletionTime.Unix())
 			unstakedPosition.Unstaked = commitmenttypes.BalanceAvailable{
-				Amount:    entity.Balance.Uint64(),
+				Amount:    entity.Balance,
 				UsdAmount: sdk.NewDecFromInt(entity.Balance),
 			}
 
