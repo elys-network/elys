@@ -106,7 +106,7 @@ func TestCloseLong_AmmPoolNotFound(t *testing.T) {
 	mockChecker.AssertExpectations(t)
 }
 
-func TestCloseLong_ErrorHandleInterest(t *testing.T) {
+func TestCloseLong_ErrorHandleBorrowInterest(t *testing.T) {
 	// Setup the mock checker
 	mockChecker := new(mocks.CloseLongChecker)
 
@@ -127,7 +127,7 @@ func TestCloseLong_ErrorHandleInterest(t *testing.T) {
 			Custodies:   []sdk.Coin{sdk.NewCoin("uatom", sdk.NewInt(0))},
 		}
 		pool = types.Pool{
-			InterestRate: math.LegacyNewDec(2),
+			BorrowInterestRate: math.LegacyNewDec(2),
 		}
 		ammPool = ammtypes.Pool{}
 	)
@@ -136,12 +136,12 @@ func TestCloseLong_ErrorHandleInterest(t *testing.T) {
 	mockChecker.On("GetMTP", ctx, msg.Creator, msg.Id).Return(mtp, nil)
 	mockChecker.On("GetPool", ctx, mtp.AmmPoolId).Return(pool, true)
 	mockChecker.On("GetAmmPool", ctx, mtp.AmmPoolId, mtp.Custodies[0].Denom).Return(ammPool, nil)
-	mockChecker.On("HandleInterest", ctx, &mtp, &pool, ammPool, mtp.Collaterals[0].Denom, mtp.Custodies[0].Denom).Return(errors.New("error executing handle interest"))
+	mockChecker.On("HandleBorrowInterest", ctx, &mtp, &pool, ammPool, mtp.Collaterals[0].Denom, mtp.Custodies[0].Denom).Return(errors.New("error executing handle borrow interest"))
 
 	_, _, err := k.CloseLong(ctx, msg)
 
-	// Expect an error about handle interest
-	assert.Equal(t, errors.New("error executing handle interest"), err)
+	// Expect an error about handle borrow interest
+	assert.Equal(t, errors.New("error executing handle borrow interest"), err)
 	mockChecker.AssertExpectations(t)
 }
 
@@ -166,7 +166,7 @@ func TestCloseLong_ErrorTakeOutCustody(t *testing.T) {
 			Custodies:   []sdk.Coin{sdk.NewCoin("uatom", sdk.NewInt(0))},
 		}
 		pool = types.Pool{
-			InterestRate: math.LegacyNewDec(2),
+			BorrowInterestRate: math.LegacyNewDec(2),
 		}
 		ammPool = ammtypes.Pool{}
 	)
@@ -175,7 +175,7 @@ func TestCloseLong_ErrorTakeOutCustody(t *testing.T) {
 	mockChecker.On("GetMTP", ctx, msg.Creator, msg.Id).Return(mtp, nil)
 	mockChecker.On("GetPool", ctx, mtp.AmmPoolId).Return(pool, true)
 	mockChecker.On("GetAmmPool", ctx, mtp.AmmPoolId, mtp.Custodies[0].Denom).Return(ammPool, nil)
-	mockChecker.On("HandleInterest", ctx, &mtp, &pool, ammPool, mtp.Collaterals[0].Denom, mtp.Custodies[0].Denom).Return(nil)
+	mockChecker.On("HandleBorrowInterest", ctx, &mtp, &pool, ammPool, mtp.Collaterals[0].Denom, mtp.Custodies[0].Denom).Return(nil)
 	mockChecker.On("TakeOutCustody", ctx, mtp, &pool, mtp.Custodies[0].Denom).Return(errors.New("error executing take out custody"))
 
 	_, _, err := k.CloseLong(ctx, msg)
@@ -206,7 +206,7 @@ func TestCloseLong_ErrorEstimateAndRepay(t *testing.T) {
 			Custodies:   []sdk.Coin{sdk.NewCoin("uatom", sdk.NewInt(0))},
 		}
 		pool = types.Pool{
-			InterestRate: math.LegacyNewDec(2),
+			BorrowInterestRate: math.LegacyNewDec(2),
 		}
 		ammPool = ammtypes.Pool{}
 	)
@@ -215,7 +215,7 @@ func TestCloseLong_ErrorEstimateAndRepay(t *testing.T) {
 	mockChecker.On("GetMTP", ctx, msg.Creator, msg.Id).Return(mtp, nil)
 	mockChecker.On("GetPool", ctx, mtp.AmmPoolId).Return(pool, true)
 	mockChecker.On("GetAmmPool", ctx, mtp.AmmPoolId, mtp.Custodies[0].Denom).Return(ammPool, nil)
-	mockChecker.On("HandleInterest", ctx, &mtp, &pool, ammPool, mtp.Collaterals[0].Denom, mtp.Custodies[0].Denom).Return(nil)
+	mockChecker.On("HandleBorrowInterest", ctx, &mtp, &pool, ammPool, mtp.Collaterals[0].Denom, mtp.Custodies[0].Denom).Return(nil)
 	mockChecker.On("TakeOutCustody", ctx, mtp, &pool, mtp.Custodies[0].Denom).Return(nil)
 	mockChecker.On("EstimateAndRepay", ctx, mtp, pool, ammPool, mtp.Collaterals[0].Denom, mtp.Custodies[0].Denom).Return(sdk.Int{}, errors.New("error executing estimate and repay"))
 
@@ -247,7 +247,7 @@ func TestCloseLong_SuccessfulClosingLongPosition(t *testing.T) {
 			Custodies:   []sdk.Coin{sdk.NewCoin("uatom", sdk.NewInt(0))},
 		}
 		pool = types.Pool{
-			InterestRate: math.LegacyNewDec(2),
+			BorrowInterestRate: math.LegacyNewDec(2),
 		}
 		ammPool     = ammtypes.Pool{}
 		repayAmount = math.NewInt(100)
@@ -257,7 +257,7 @@ func TestCloseLong_SuccessfulClosingLongPosition(t *testing.T) {
 	mockChecker.On("GetMTP", ctx, msg.Creator, msg.Id).Return(mtp, nil)
 	mockChecker.On("GetPool", ctx, mtp.AmmPoolId).Return(pool, true)
 	mockChecker.On("GetAmmPool", ctx, mtp.AmmPoolId, mtp.Custodies[0].Denom).Return(ammPool, nil)
-	mockChecker.On("HandleInterest", ctx, &mtp, &pool, ammPool, mtp.Collaterals[0].Denom, mtp.Custodies[0].Denom).Return(nil)
+	mockChecker.On("HandleBorrowInterest", ctx, &mtp, &pool, ammPool, mtp.Collaterals[0].Denom, mtp.Custodies[0].Denom).Return(nil)
 	mockChecker.On("TakeOutCustody", ctx, mtp, &pool, mtp.Custodies[0].Denom).Return(nil)
 	mockChecker.On("EstimateAndRepay", ctx, mtp, pool, ammPool, mtp.Collaterals[0].Denom, mtp.Custodies[0].Denom).Return(repayAmount, nil)
 

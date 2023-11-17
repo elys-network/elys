@@ -22,13 +22,13 @@ message MTP {
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
     (gogoproto.nullable) = false
   ];
-  repeated cosmos.base.v1beta1.Coin interest_paid_collaterals = 4 [
+  repeated cosmos.base.v1beta1.Coin borrow_interest_paid_collaterals = 4 [
     (gogoproto.nullable) = false
   ];
-  repeated cosmos.base.v1beta1.Coin interest_paid_custodies = 5 [
+  repeated cosmos.base.v1beta1.Coin borrow_interest_paid_custodies = 5 [
     (gogoproto.nullable) = false
   ];
-  repeated cosmos.base.v1beta1.Coin interest_unpaid_collaterals = 6 [
+  repeated cosmos.base.v1beta1.Coin borrow_interest_unpaid_collaterals = 6 [
     (gogoproto.nullable) = false
   ];
   repeated cosmos.base.v1beta1.Coin custodies   = 7 [

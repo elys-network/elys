@@ -26,22 +26,19 @@ func (k Keeper) BeginBlocker(ctx sdk.Context) {
 		currentHeight := ctx.BlockHeight()
 		pools := k.GetAllPools(ctx)
 		for _, pool := range pools {
-			// TODO: fields missing
-			// pool.BlockInterestExternal = sdk.ZeroUint()
-			// pool.BlockInterestNative = sdk.ZeroUint()
 			ammPool, err := k.GetAmmPool(ctx, pool.AmmPoolId, "")
 			if err != nil {
 				ctx.Logger().Error(errors.Wrap(err, fmt.Sprintf("error getting amm pool: %d", pool.AmmPoolId)).Error())
 				continue // ?
 			}
 			if k.IsPoolEnabled(ctx, pool.AmmPoolId) {
-				rate, err := k.InterestRateComputation(ctx, pool, ammPool)
+				rate, err := k.BorrowInterestRateComputation(ctx, pool, ammPool)
 				if err != nil {
 					ctx.Logger().Error(err.Error())
 					continue // ?
 				}
-				pool.InterestRate = rate
-				pool.LastHeightInterestRateComputed = currentHeight
+				pool.BorrowInterestRate = rate
+				pool.LastHeightBorrowInterestRateComputed = currentHeight
 				_ = k.UpdatePoolHealth(ctx, &pool)
 				// TODO: function missing
 				// k.TrackSQBeginBlock(ctx, pool)

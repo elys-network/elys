@@ -244,8 +244,8 @@ func (_c *CloseShortChecker_GetPool_Call) RunAndReturn(run func(types.Context, u
 	return _c
 }
 
-// HandleInterest provides a mock function with given fields: ctx, mtp, pool, ammPool, collateralAsset, custodyAsset
-func (_m *CloseShortChecker) HandleInterest(ctx types.Context, mtp *margintypes.MTP, pool *margintypes.Pool, ammPool ammtypes.Pool, collateralAsset string, custodyAsset string) error {
+// HandleBorrowInterest provides a mock function with given fields: ctx, mtp, pool, ammPool, collateralAsset, custodyAsset
+func (_m *CloseShortChecker) HandleBorrowInterest(ctx types.Context, mtp *margintypes.MTP, pool *margintypes.Pool, ammPool ammtypes.Pool, collateralAsset string, custodyAsset string) error {
 	ret := _m.Called(ctx, mtp, pool, ammPool, collateralAsset, custodyAsset)
 
 	var r0 error
@@ -258,35 +258,35 @@ func (_m *CloseShortChecker) HandleInterest(ctx types.Context, mtp *margintypes.
 	return r0
 }
 
-// CloseShortChecker_HandleInterest_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'HandleInterest'
-type CloseShortChecker_HandleInterest_Call struct {
+// CloseShortChecker_HandleBorrowInterest_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'HandleBorrowInterest'
+type CloseShortChecker_HandleBorrowInterest_Call struct {
 	*mock.Call
 }
 
-// HandleInterest is a helper method to define mock.On call
+// HandleBorrowInterest is a helper method to define mock.On call
 //   - ctx types.Context
 //   - mtp *margintypes.MTP
 //   - pool *margintypes.Pool
 //   - ammPool ammtypes.Pool
 //   - collateralAsset string
 //   - custodyAsset string
-func (_e *CloseShortChecker_Expecter) HandleInterest(ctx interface{}, mtp interface{}, pool interface{}, ammPool interface{}, collateralAsset interface{}, custodyAsset interface{}) *CloseShortChecker_HandleInterest_Call {
-	return &CloseShortChecker_HandleInterest_Call{Call: _e.mock.On("HandleInterest", ctx, mtp, pool, ammPool, collateralAsset, custodyAsset)}
+func (_e *CloseShortChecker_Expecter) HandleBorrowInterest(ctx interface{}, mtp interface{}, pool interface{}, ammPool interface{}, collateralAsset interface{}, custodyAsset interface{}) *CloseShortChecker_HandleBorrowInterest_Call {
+	return &CloseShortChecker_HandleBorrowInterest_Call{Call: _e.mock.On("HandleBorrowInterest", ctx, mtp, pool, ammPool, collateralAsset, custodyAsset)}
 }
 
-func (_c *CloseShortChecker_HandleInterest_Call) Run(run func(ctx types.Context, mtp *margintypes.MTP, pool *margintypes.Pool, ammPool ammtypes.Pool, collateralAsset string, custodyAsset string)) *CloseShortChecker_HandleInterest_Call {
+func (_c *CloseShortChecker_HandleBorrowInterest_Call) Run(run func(ctx types.Context, mtp *margintypes.MTP, pool *margintypes.Pool, ammPool ammtypes.Pool, collateralAsset string, custodyAsset string)) *CloseShortChecker_HandleBorrowInterest_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		run(args[0].(types.Context), args[1].(*margintypes.MTP), args[2].(*margintypes.Pool), args[3].(ammtypes.Pool), args[4].(string), args[5].(string))
 	})
 	return _c
 }
 
-func (_c *CloseShortChecker_HandleInterest_Call) Return(_a0 error) *CloseShortChecker_HandleInterest_Call {
+func (_c *CloseShortChecker_HandleBorrowInterest_Call) Return(_a0 error) *CloseShortChecker_HandleBorrowInterest_Call {
 	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *CloseShortChecker_HandleInterest_Call) RunAndReturn(run func(types.Context, *margintypes.MTP, *margintypes.Pool, ammtypes.Pool, string, string) error) *CloseShortChecker_HandleInterest_Call {
+func (_c *CloseShortChecker_HandleBorrowInterest_Call) RunAndReturn(run func(types.Context, *margintypes.MTP, *margintypes.Pool, ammtypes.Pool, string, string) error) *CloseShortChecker_HandleBorrowInterest_Call {
 	_c.Call.Return(run)
 	return _c
 }

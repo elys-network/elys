@@ -26,7 +26,7 @@ message PoolAsset {
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
     (gogoproto.nullable) = false
   ];
-  string block_interest = 6 [
+  string block_borrow_interest = 6 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
     (gogoproto.nullable) = false
   ];
@@ -41,12 +41,12 @@ message Pool {
   ];
   bool enabled = 3; 
   bool closed = 4; 
-  string interest_rate = 5 [
+  string borrow_interest_rate = 5 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
   repeated PoolAsset pool_assets_long = 6 [(gogoproto.nullable) = false]; 
   repeated PoolAsset pool_assets_short = 7 [(gogoproto.nullable) = false]; 
-  int64 last_height_interest_rate_computed = 8;
+  int64 last_height_borrow_interest_rate_computed = 8;
 }
 

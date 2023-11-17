@@ -30,8 +30,8 @@ func (k Keeper) CloseShort(ctx sdk.Context, msg *types.MsgClose) (*types.MTP, sd
 
 		for _, collateral := range mtp.Collaterals {
 			collateralAsset := collateral.Denom
-			// Handle Interest if within epoch position
-			if err := k.CloseShortChecker.HandleInterest(ctx, &mtp, &pool, ammPool, collateralAsset, custodyAsset); err != nil {
+			// Handle Borrow Interest if within epoch position
+			if err := k.CloseShortChecker.HandleBorrowInterest(ctx, &mtp, &pool, ammPool, collateralAsset, custodyAsset); err != nil {
 				return nil, sdk.ZeroInt(), err
 			}
 		}

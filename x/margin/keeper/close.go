@@ -44,9 +44,9 @@ func (k Keeper) Close(ctx sdk.Context, msg *types.MsgClose) (*types.MsgCloseResp
 		sdk.NewAttribute("repay_amount", repayAmount.String()),
 		sdk.NewAttribute("leverage", closedMtp.Leverages[mtpPosIndex].String()),
 		sdk.NewAttribute("liabilities", closedMtp.Liabilities.String()),
-		sdk.NewAttribute("interest_paid_collateral", mtp.InterestPaidCollaterals[collateralIndex].String()),
-		sdk.NewAttribute("interest_paid_custody", mtp.InterestPaidCustodies[custodyIndex].String()),
-		sdk.NewAttribute("interest_unpaid_collateral", closedMtp.InterestUnpaidCollaterals[collateralIndex].String()),
+		sdk.NewAttribute("borrow_interest_paid_collateral", mtp.BorrowInterestPaidCollaterals[collateralIndex].String()),
+		sdk.NewAttribute("borrow_interest_paid_custody", mtp.BorrowInterestPaidCustodies[custodyIndex].String()),
+		sdk.NewAttribute("borrow_interest_unpaid_collateral", closedMtp.BorrowInterestUnpaidCollaterals[collateralIndex].String()),
 		sdk.NewAttribute("health", closedMtp.MtpHealth.String()),
 	))
 

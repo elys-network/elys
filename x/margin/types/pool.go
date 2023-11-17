@@ -8,13 +8,13 @@ import (
 
 func NewPool(poolId uint64) Pool {
 	return Pool{
-		AmmPoolId:       poolId,
-		Health:          sdk.NewDec(100),
-		Enabled:         true,
-		Closed:          false,
-		InterestRate:    sdk.NewDecFromIntWithPrec(sdk.NewInt(1), 1),
-		PoolAssetsLong:  []PoolAsset{},
-		PoolAssetsShort: []PoolAsset{},
+		AmmPoolId:          poolId,
+		Health:             sdk.NewDec(100),
+		Enabled:            true,
+		Closed:             false,
+		BorrowInterestRate: sdk.NewDecFromIntWithPrec(sdk.NewInt(1), 1),
+		PoolAssetsLong:     []PoolAsset{},
+		PoolAssetsShort:    []PoolAsset{},
 	}
 }
 
@@ -81,14 +81,14 @@ func (p *Pool) UpdateCustody(ctx sdk.Context, assetDenom string, amount sdk.Int,
 }
 
 // Update the unsettled liabilities balance
-func (p *Pool) UpdateBlockInterest(ctx sdk.Context, assetDenom string, amount sdk.Int, isIncrease bool, position Position) error {
+func (p *Pool) UpdateBlockBorrowInterest(ctx sdk.Context, assetDenom string, amount sdk.Int, isIncrease bool, position Position) error {
 	poolAssets := p.GetPoolAssets(position)
 	for i, asset := range *poolAssets {
 		if asset.AssetDenom == assetDenom {
 			if isIncrease {
-				(*poolAssets)[i].BlockInterest = asset.BlockInterest.Add(amount)
+				(*poolAssets)[i].BlockBorrowInterest = asset.BlockBorrowInterest.Add(amount)
 			} else {
-				(*poolAssets)[i].BlockInterest = asset.BlockInterest.Sub(amount)
+				(*poolAssets)[i].BlockBorrowInterest = asset.BlockBorrowInterest.Sub(amount)
 			}
 
 			return nil
@@ -109,11 +109,11 @@ func (p *Pool) InitiatePool(ctx sdk.Context, ammPool *ammtypes.Pool) error {
 
 	for _, asset := range ammPool.PoolAssets {
 		poolAsset := PoolAsset{
-			Liabilities:   sdk.ZeroInt(),
-			Custody:       sdk.ZeroInt(),
-			AssetBalance:  sdk.ZeroInt(),
-			BlockInterest: sdk.ZeroInt(),
-			AssetDenom:    asset.Token.Denom,
+			Liabilities:         sdk.ZeroInt(),
+			Custody:             sdk.ZeroInt(),
+			AssetBalance:        sdk.ZeroInt(),
+			BlockBorrowInterest: sdk.ZeroInt(),
+			AssetDenom:          asset.Token.Denom,
 		}
 
 		p.PoolAssetsLong = append(p.PoolAssetsLong, poolAsset)

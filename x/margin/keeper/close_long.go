@@ -30,8 +30,8 @@ func (k Keeper) CloseLong(ctx sdk.Context, msg *types.MsgClose) (*types.MTP, sdk
 
 		for _, collateral := range mtp.Collaterals {
 			collateralAsset := collateral.Denom
-			// Handle Interest if within epoch position
-			if err := k.CloseLongChecker.HandleInterest(ctx, &mtp, &pool, ammPool, collateralAsset, custodyAsset); err != nil {
+			// Handle Borrow Interest if within epoch position
+			if err := k.CloseLongChecker.HandleBorrowInterest(ctx, &mtp, &pool, ammPool, collateralAsset, custodyAsset); err != nil {
 				return nil, sdk.ZeroInt(), err
 			}
 		}

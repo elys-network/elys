@@ -427,10 +427,10 @@ genesis:
     margin:
       params:
         leverage_max: "10"
-        interest_rate_max: "0.00000027"
-        interest_rate_min: "0.00000003"
-        interest_rate_increase: "0.000000000333333333"
-        interest_rate_decrease: "0.000000000333333333"
+        borrow_interest_rate_max: "0.00000027"
+        borrow_interest_rate_min: "0.00000003"
+        borrow_interest_rate_increase: "0.000000000333333333"
+        borrow_interest_rate_decrease: "0.000000000333333333"
         health_gain_factor: "0.000000022"
         epoch_length: 1
         removal_queue_threshold: "0.35"
@@ -438,11 +438,11 @@ genesis:
         pool_open_threshold: "0.65"
         force_close_fund_percentage: "1.0"
         force_close_fund_address: "elys1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqnrec2l"
-        incremental_interest_payment_fund_percentage: "0.35"
-        incremental_interest_payment_fund_address: "elys1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqnrec2l"
+        incremental_borrow_interest_payment_fund_percentage: "0.35"
+        incremental_borrow_interest_payment_fund_address: "elys1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqnrec2l"
         sq_modifier: "10000000000000000000000000"
         safety_factor: "1.05"
-        incremental_interest_payment_enabled: true
+        incremental_borrow_interest_payment_enabled: true
         whitelisting_enabled: false
         invariant_check_epoch: day
     stablestake:
