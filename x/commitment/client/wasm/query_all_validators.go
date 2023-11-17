@@ -49,8 +49,8 @@ func (oq *Querier) BuildAllValidatorsResponseCW(ctx sdk.Context, allValidators [
 		validatorCW.Address = validator.OperatorAddress
 		validatorCW.Name = validator.Description.Moniker
 		validatorCW.Staked = commitmenttypes.BalanceAvailable{
-			Amount:    0,
-			UsdAmount: sdk.NewDec(0),
+			Amount:    sdk.ZeroInt(),
+			UsdAmount: sdk.ZeroDec(),
 		}
 		validatorCW.Commission = validator.GetCommission()
 
@@ -70,7 +70,7 @@ func (oq *Querier) BuildAllValidatorsResponseCW(ctx sdk.Context, allValidators [
 			tokens := validator.TokensFromSharesTruncated(shares)
 			delegatedAmt := tokens.TruncateInt()
 
-			validatorCW.Staked.Amount = delegatedAmt.Uint64()
+			validatorCW.Staked.Amount = delegatedAmt
 			validatorCW.Staked.UsdAmount = tokens
 		}
 

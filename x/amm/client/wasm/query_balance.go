@@ -17,7 +17,7 @@ func (oq *Querier) queryBalance(ctx sdk.Context, query *ammtypes.QueryBalanceReq
 
 	balance := res.Balance
 	resp := commitmenttypes.BalanceAvailable{
-		Amount:    balance.Amount.Uint64(),
+		Amount:    balance.Amount,
 		UsdAmount: sdk.NewDecFromInt(balance.Amount),
 	}
 

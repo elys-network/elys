@@ -107,7 +107,11 @@ message QueryDelegatorValidatorsResponse {
 }
 
 message BalanceAvailable {
-    uint64 amount = 1;
+    string amount = 1 [
+        (cosmos_proto.scalar)  = "cosmos.Int",
+        (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+        (gogoproto.nullable)   = false
+    ];
     string usd_amount = 2 [
         (cosmos_proto.scalar)  = "cosmos.Dec",
         (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
