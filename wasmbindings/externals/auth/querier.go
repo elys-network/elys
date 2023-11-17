@@ -6,7 +6,7 @@ import (
 	wasmbindingstypes "github.com/elys-network/elys/wasmbindings/types"
 )
 
-// Querier handles queries for the Accounted Pool module.
+// Querier handles queries for the Auth module.
 type Querier struct {
 	keeper *keeper.AccountKeeper
 }

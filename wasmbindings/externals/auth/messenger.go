@@ -6,7 +6,7 @@ import (
 	wasmbindingstypes "github.com/elys-network/elys/wasmbindings/types"
 )
 
-// Messenger handles messages for the Accounted Pool module.
+// Messenger handles messages for the Auth module.
 type Messenger struct {
 	keeper *keeper.AccountKeeper
 }
