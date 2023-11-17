@@ -989,6 +989,7 @@ func NewElysApp(
 			// insert amm hooks receivers here
 			app.IncentiveKeeper.AmmHooks(),
 			app.MarginKeeper.AmmHooks(),
+			app.LeveragelpKeeper.AmmHooks(),
 		),
 	)
 

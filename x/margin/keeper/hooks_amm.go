@@ -25,26 +25,28 @@ func (k Keeper) AfterJoinPool(ctx sdk.Context, sender sdk.AccAddress, ammPool am
 }
 
 // AfterExitPool is called after ExitPool, ExitSwapShareAmountIn, and ExitSwapExternAmountOut
-func (k Keeper) AfterExitPool(ctx sdk.Context, sender sdk.AccAddress, ammPool ammtypes.Pool, shareInAmount sdk.Int, exitCoins sdk.Coins) {
+func (k Keeper) AfterExitPool(ctx sdk.Context, sender sdk.AccAddress, ammPool ammtypes.Pool, shareInAmount sdk.Int, exitCoins sdk.Coins) error {
 	marginPool, found := k.GetPool(ctx, ammPool.PoolId)
 	if !found {
-		return
+		return nil
 	}
 
 	if k.hooks != nil {
 		k.hooks.AfterAmmExitPool(ctx, ammPool, marginPool)
 	}
+	return nil
 }
 
 // AfterSwap is called after SwapExactAmountIn and SwapExactAmountOut
-func (k Keeper) AfterSwap(ctx sdk.Context, sender sdk.AccAddress, ammPool ammtypes.Pool, input sdk.Coins, output sdk.Coins) {
+func (k Keeper) AfterSwap(ctx sdk.Context, sender sdk.AccAddress, ammPool ammtypes.Pool, input sdk.Coins, output sdk.Coins) error {
 	marginPool, found := k.GetPool(ctx, ammPool.PoolId)
 	if !found {
-		return
+		return nil
 	}
 	if k.hooks != nil {
 		k.hooks.AfterAmmSwap(ctx, ammPool, marginPool)
 	}
+	return nil
 }
 
 // Hooks wrapper struct for tvl keeper
@@ -70,11 +72,11 @@ func (h AmmHooks) AfterJoinPool(ctx sdk.Context, sender sdk.AccAddress, pool amm
 }
 
 // AfterExitPool is called after ExitPool, ExitSwapShareAmountIn, and ExitSwapExternAmountOut
-func (h AmmHooks) AfterExitPool(ctx sdk.Context, sender sdk.AccAddress, pool ammtypes.Pool, shareInAmount sdk.Int, exitCoins sdk.Coins) {
-	h.k.AfterExitPool(ctx, sender, pool, shareInAmount, exitCoins)
+func (h AmmHooks) AfterExitPool(ctx sdk.Context, sender sdk.AccAddress, pool ammtypes.Pool, shareInAmount sdk.Int, exitCoins sdk.Coins) error {
+	return h.k.AfterExitPool(ctx, sender, pool, shareInAmount, exitCoins)
 }
 
 // AfterSwap is called after SwapExactAmountIn and SwapExactAmountOut
-func (h AmmHooks) AfterSwap(ctx sdk.Context, sender sdk.AccAddress, pool ammtypes.Pool, input sdk.Coins, output sdk.Coins) {
-	h.k.AfterSwap(ctx, sender, pool, input, output)
+func (h AmmHooks) AfterSwap(ctx sdk.Context, sender sdk.AccAddress, pool ammtypes.Pool, input sdk.Coins, output sdk.Coins) error {
+	return h.k.AfterSwap(ctx, sender, pool, input, output)
 }

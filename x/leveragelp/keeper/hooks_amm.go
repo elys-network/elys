@@ -3,7 +3,33 @@ package keeper
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
+	"github.com/elys-network/elys/x/leveragelp/types"
 )
+
+func (k Keeper) CheckAmmPoolUsdcBalance(ctx sdk.Context, ammPool ammtypes.Pool) error {
+	leveragelpPool, found := k.GetPool(ctx, ammPool.PoolId)
+	if !found {
+		return nil
+	}
+
+	tvl, err := ammPool.TVL(ctx, k.oracleKeeper)
+	if err != nil {
+		return err
+	}
+	leverageLpTvl := tvl.
+		Mul(sdk.NewDecFromInt(leveragelpPool.LeveragedLpAmount)).
+		Quo(sdk.NewDecFromInt(ammPool.TotalShares.Amount))
+
+	params := k.stableKeeper.GetParams(ctx)
+	for _, asset := range ammPool.PoolAssets {
+		if asset.Token.Denom == params.DepositDenom {
+			if asset.Token.Amount.LT(leverageLpTvl.RoundInt()) {
+				return types.ErrInsufficientUsdcAfterOp
+			}
+		}
+	}
+	return nil
+}
 
 // AfterPoolCreated is called after CreatePool
 func (k Keeper) AfterPoolCreated(ctx sdk.Context, sender sdk.AccAddress, ammPool ammtypes.Pool) {
@@ -25,26 +51,13 @@ func (k Keeper) AfterJoinPool(ctx sdk.Context, sender sdk.AccAddress, ammPool am
 }
 
 // AfterExitPool is called after ExitPool, ExitSwapShareAmountIn, and ExitSwapExternAmountOut
-func (k Keeper) AfterExitPool(ctx sdk.Context, sender sdk.AccAddress, ammPool ammtypes.Pool, shareInAmount sdk.Int, exitCoins sdk.Coins) {
-	leveragelpPool, found := k.GetPool(ctx, ammPool.PoolId)
-	if !found {
-		return
-	}
-
-	if k.hooks != nil {
-		k.hooks.AfterAmmExitPool(ctx, ammPool, leveragelpPool)
-	}
+func (k Keeper) AfterExitPool(ctx sdk.Context, sender sdk.AccAddress, ammPool ammtypes.Pool, shareInAmount sdk.Int, exitCoins sdk.Coins) error {
+	return k.CheckAmmPoolUsdcBalance(ctx, ammPool)
 }
 
 // AfterSwap is called after SwapExactAmountIn and SwapExactAmountOut
-func (k Keeper) AfterSwap(ctx sdk.Context, sender sdk.AccAddress, ammPool ammtypes.Pool, input sdk.Coins, output sdk.Coins) {
-	leveragelpPool, found := k.GetPool(ctx, ammPool.PoolId)
-	if !found {
-		return
-	}
-	if k.hooks != nil {
-		k.hooks.AfterAmmSwap(ctx, ammPool, leveragelpPool)
-	}
+func (k Keeper) AfterSwap(ctx sdk.Context, sender sdk.AccAddress, ammPool ammtypes.Pool, input sdk.Coins, output sdk.Coins) error {
+	return k.CheckAmmPoolUsdcBalance(ctx, ammPool)
 }
 
 // Hooks wrapper struct for tvl keeper
@@ -70,11 +83,11 @@ func (h AmmHooks) AfterJoinPool(ctx sdk.Context, sender sdk.AccAddress, pool amm
 }
 
 // AfterExitPool is called after ExitPool, ExitSwapShareAmountIn, and ExitSwapExternAmountOut
-func (h AmmHooks) AfterExitPool(ctx sdk.Context, sender sdk.AccAddress, pool ammtypes.Pool, shareInAmount sdk.Int, exitCoins sdk.Coins) {
-	h.k.AfterExitPool(ctx, sender, pool, shareInAmount, exitCoins)
+func (h AmmHooks) AfterExitPool(ctx sdk.Context, sender sdk.AccAddress, pool ammtypes.Pool, shareInAmount sdk.Int, exitCoins sdk.Coins) error {
+	return h.k.AfterExitPool(ctx, sender, pool, shareInAmount, exitCoins)
 }
 
 // AfterSwap is called after SwapExactAmountIn and SwapExactAmountOut
-func (h AmmHooks) AfterSwap(ctx sdk.Context, sender sdk.AccAddress, pool ammtypes.Pool, input sdk.Coins, output sdk.Coins) {
-	h.k.AfterSwap(ctx, sender, pool, input, output)
+func (h AmmHooks) AfterSwap(ctx sdk.Context, sender sdk.AccAddress, pool ammtypes.Pool, input sdk.Coins, output sdk.Coins) error {
+	return h.k.AfterSwap(ctx, sender, pool, input, output)
 }

@@ -16,13 +16,13 @@ func (k Keeper) AfterJoinPool(ctx sdk.Context, sender sdk.AccAddress, poolId uin
 }
 
 // AfterExitPool is called after ExitPool, ExitSwapShareAmountIn, and ExitSwapExternAmountOut
-func (k Keeper) AfterExitPool(ctx sdk.Context, sender sdk.AccAddress, poolId uint64, shareInAmount sdk.Int, exitCoins sdk.Coins) {
-
+func (k Keeper) AfterExitPool(ctx sdk.Context, sender sdk.AccAddress, poolId uint64, shareInAmount sdk.Int, exitCoins sdk.Coins) error {
+	return nil
 }
 
 // AfterSwap is called after SwapExactAmountIn and SwapExactAmountOut
-func (k Keeper) AfterSwap(ctx sdk.Context, sender sdk.AccAddress, poolId uint64, input sdk.Coins, output sdk.Coins) {
-
+func (k Keeper) AfterSwap(ctx sdk.Context, sender sdk.AccAddress, poolId uint64, input sdk.Coins, output sdk.Coins) error {
+	return nil
 }
 
 // Hooks wrapper struct for incentive keeper
@@ -48,11 +48,11 @@ func (h AmmHooks) AfterJoinPool(ctx sdk.Context, sender sdk.AccAddress, pool amm
 }
 
 // AfterExitPool is called after ExitPool, ExitSwapShareAmountIn, and ExitSwapExternAmountOut
-func (h AmmHooks) AfterExitPool(ctx sdk.Context, sender sdk.AccAddress, pool ammtypes.Pool, shareInAmount sdk.Int, exitCoins sdk.Coins) {
-	h.k.AfterExitPool(ctx, sender, pool.PoolId, shareInAmount, exitCoins)
+func (h AmmHooks) AfterExitPool(ctx sdk.Context, sender sdk.AccAddress, pool ammtypes.Pool, shareInAmount sdk.Int, exitCoins sdk.Coins) error {
+	return h.k.AfterExitPool(ctx, sender, pool.PoolId, shareInAmount, exitCoins)
 }
 
 // AfterSwap is called after SwapExactAmountIn and SwapExactAmountOut
-func (h AmmHooks) AfterSwap(ctx sdk.Context, sender sdk.AccAddress, pool ammtypes.Pool, input sdk.Coins, output sdk.Coins) {
-	h.k.AfterSwap(ctx, sender, pool.PoolId, input, output)
+func (h AmmHooks) AfterSwap(ctx sdk.Context, sender sdk.AccAddress, pool ammtypes.Pool, input sdk.Coins, output sdk.Coins) error {
+	return h.k.AfterSwap(ctx, sender, pool.PoolId, input, output)
 }

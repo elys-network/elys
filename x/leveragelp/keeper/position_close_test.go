@@ -133,11 +133,13 @@ func (suite KeeperTestSuite) TestHealthDecreaseForInterest() {
 	suite.Require().True(found)
 	health, err := k.GetPositionHealth(suite.ctx, *position, ammPool)
 	suite.Require().NoError(err)
-	suite.Require().Equal(health.String(), "1.221000000000000000")
+	// suite.Require().Equal(health.String(), "1.221000000000000000") // slippage enabled on amm
+	suite.Require().Equal(health.String(), "1.250000000000000000") // slippage disabled on amm
 
 	suite.ctx = suite.ctx.WithBlockTime(suite.ctx.BlockTime().Add(time.Hour * 24 * 365))
 	suite.app.StablestakeKeeper.BeginBlocker(suite.ctx)
 	health, err = k.GetPositionHealth(suite.ctx, *position, ammPool)
 	suite.Require().NoError(err)
-	suite.Require().Equal(health.String(), "0.610500000000000000")
+	// suite.Require().Equal(health.String(), "0.610500000000000000") // slippage enabled on amm
+	suite.Require().Equal(health.String(), "0.625000000000000000") // slippage disabled on amm
 }
