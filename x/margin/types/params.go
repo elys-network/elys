@@ -12,26 +12,26 @@ import (
 var _ paramtypes.ParamSet = (*Params)(nil)
 
 var (
-	KeyLeverageMax                              = []byte("LeverageMax")
-	KeyInterestRateMax                          = []byte("InterestRateMax")
-	KeyInterestRateMin                          = []byte("InterestRateMin")
-	KeyInterestRateIncrease                     = []byte("InterestRateIncrease")
-	KeyInterestRateDecrease                     = []byte("InterestRateDecrease")
-	KeyHealthGainFactor                         = []byte("HealthGainFactor")
-	KeyEpochLength                              = []byte("EpochLength")
-	KeyRemovalQueueThreshold                    = []byte("RemovalQueueThreshold")
-	KeyMaxOpenPositions                         = []byte("MaxOpenPositions")
-	KeyPoolOpenThreshold                        = []byte("PoolOpenThreshold")
-	KeyForceCloseFundPercentage                 = []byte("ForceCloseFundPercentage")
-	KeyForceCloseFundAddress                    = []byte("ForceCloseFundAddress")
-	KeyIncrementalInterestPaymentFundPercentage = []byte("IncrementalInterestPaymentFundPercentage")
-	KeyIncrementalInterestPaymentFundAddress    = []byte("IncrementalInterestPaymentFundAddress")
-	KeySqModifier                               = []byte("SqModifier")
-	KeySafetyFactor                             = []byte("SafetyFactor")
-	KeyIncrementalInterestPaymentEnabled        = []byte("IncrementalInterestPaymentEnabled")
-	KeyWhitelistingEnabled                      = []byte("WhitelistingEnabled")
-	KeyInvariantCheckEpoch                      = []byte("InvariantCheckEpoch")
-	KeyBrokerAddress                            = []byte("BrokerAddress")
+	KeyLeverageMax                                    = []byte("LeverageMax")
+	KeyBorrowInterestRateMax                          = []byte("BorrowInterestRateMax")
+	KeyBorrowInterestRateMin                          = []byte("BorrowInterestRateMin")
+	KeyBorrowInterestRateIncrease                     = []byte("BorrowInterestRateIncrease")
+	KeyBorrowInterestRateDecrease                     = []byte("BorrowInterestRateDecrease")
+	KeyHealthGainFactor                               = []byte("HealthGainFactor")
+	KeyEpochLength                                    = []byte("EpochLength")
+	KeyRemovalQueueThreshold                          = []byte("RemovalQueueThreshold")
+	KeyMaxOpenPositions                               = []byte("MaxOpenPositions")
+	KeyPoolOpenThreshold                              = []byte("PoolOpenThreshold")
+	KeyForceCloseFundPercentage                       = []byte("ForceCloseFundPercentage")
+	KeyForceCloseFundAddress                          = []byte("ForceCloseFundAddress")
+	KeyIncrementalBorrowInterestPaymentFundPercentage = []byte("IncrementalBorrowInterestPaymentFundPercentage")
+	KeyIncrementalBorrowInterestPaymentFundAddress    = []byte("IncrementalBorrowInterestPaymentFundAddress")
+	KeySqModifier                                     = []byte("SqModifier")
+	KeySafetyFactor                                   = []byte("SafetyFactor")
+	KeyIncrementalBorrowInterestPaymentEnabled        = []byte("IncrementalBorrowInterestPaymentEnabled")
+	KeyWhitelistingEnabled                            = []byte("WhitelistingEnabled")
+	KeyInvariantCheckEpoch                            = []byte("InvariantCheckEpoch")
+	KeyBrokerAddress                                  = []byte("BrokerAddress")
 )
 
 // ParamKeyTable the param key table for launch module
@@ -42,26 +42,26 @@ func ParamKeyTable() paramtypes.KeyTable {
 // NewParams creates a new Params instance
 func NewParams() Params {
 	return Params{
-		LeverageMax:                              sdk.NewDec(10),
-		InterestRateMax:                          sdk.NewDec(1),
-		InterestRateMin:                          sdk.NewDec(1),
-		InterestRateIncrease:                     sdk.NewDec(1),
-		InterestRateDecrease:                     sdk.NewDec(1),
-		HealthGainFactor:                         sdk.NewDec(1),
-		EpochLength:                              (int64)(1),
-		RemovalQueueThreshold:                    sdk.NewDec(1),
-		MaxOpenPositions:                         (int64)(9999),
-		PoolOpenThreshold:                        sdk.NewDec(1),
-		ForceCloseFundPercentage:                 sdk.NewDec(1),
-		ForceCloseFundAddress:                    "",
-		IncrementalInterestPaymentFundPercentage: sdk.NewDec(1),
-		IncrementalInterestPaymentFundAddress:    "",
-		SqModifier:                               sdk.NewDec(1),
-		SafetyFactor:                             sdk.NewDec(1),
-		IncrementalInterestPaymentEnabled:        true,
-		WhitelistingEnabled:                      false,
-		InvariantCheckEpoch:                      epochtypes.DayEpochID,
-		BrokerAddress:                            "",
+		LeverageMax:                                    sdk.NewDec(10),
+		BorrowInterestRateMax:                          sdk.NewDec(1),
+		BorrowInterestRateMin:                          sdk.NewDec(1),
+		BorrowInterestRateIncrease:                     sdk.NewDec(1),
+		BorrowInterestRateDecrease:                     sdk.NewDec(1),
+		HealthGainFactor:                               sdk.NewDec(1),
+		EpochLength:                                    (int64)(1),
+		RemovalQueueThreshold:                          sdk.NewDec(1),
+		MaxOpenPositions:                               (int64)(9999),
+		PoolOpenThreshold:                              sdk.NewDec(1),
+		ForceCloseFundPercentage:                       sdk.NewDec(1),
+		ForceCloseFundAddress:                          "",
+		IncrementalBorrowInterestPaymentFundPercentage: sdk.NewDec(1),
+		IncrementalBorrowInterestPaymentFundAddress:    "",
+		SqModifier:                                     sdk.NewDec(1),
+		SafetyFactor:                                   sdk.NewDec(1),
+		IncrementalBorrowInterestPaymentEnabled:        true,
+		WhitelistingEnabled:                            false,
+		InvariantCheckEpoch:                            epochtypes.DayEpochID,
+		BrokerAddress:                                  "",
 	}
 }
 
@@ -74,10 +74,10 @@ func DefaultParams() Params {
 func (p *Params) ParamSetPairs() paramtypes.ParamSetPairs {
 	return paramtypes.ParamSetPairs{
 		paramtypes.NewParamSetPair(KeyLeverageMax, &p.LeverageMax, validateLeverageMax),
-		paramtypes.NewParamSetPair(KeyInterestRateMax, &p.InterestRateMax, validateInterestRateMax),
-		paramtypes.NewParamSetPair(KeyInterestRateMin, &p.InterestRateMin, validateInterestRateMin),
-		paramtypes.NewParamSetPair(KeyInterestRateIncrease, &p.InterestRateIncrease, validateInterestRateIncrease),
-		paramtypes.NewParamSetPair(KeyInterestRateDecrease, &p.InterestRateDecrease, validateInterestRateDecrease),
+		paramtypes.NewParamSetPair(KeyBorrowInterestRateMax, &p.BorrowInterestRateMax, validateBorrowInterestRateMax),
+		paramtypes.NewParamSetPair(KeyBorrowInterestRateMin, &p.BorrowInterestRateMin, validateBorrowInterestRateMin),
+		paramtypes.NewParamSetPair(KeyBorrowInterestRateIncrease, &p.BorrowInterestRateIncrease, validateBorrowInterestRateIncrease),
+		paramtypes.NewParamSetPair(KeyBorrowInterestRateDecrease, &p.BorrowInterestRateDecrease, validateBorrowInterestRateDecrease),
 		paramtypes.NewParamSetPair(KeyHealthGainFactor, &p.HealthGainFactor, validateHealthGainFactor),
 		paramtypes.NewParamSetPair(KeyEpochLength, &p.EpochLength, validateEpochLength),
 		paramtypes.NewParamSetPair(KeyRemovalQueueThreshold, &p.RemovalQueueThreshold, validateRemovalQueueThreshold),
@@ -85,11 +85,11 @@ func (p *Params) ParamSetPairs() paramtypes.ParamSetPairs {
 		paramtypes.NewParamSetPair(KeyPoolOpenThreshold, &p.PoolOpenThreshold, validatePoolOpenThreshold),
 		paramtypes.NewParamSetPair(KeyForceCloseFundPercentage, &p.ForceCloseFundPercentage, validateForceCloseFundPercentage),
 		paramtypes.NewParamSetPair(KeyForceCloseFundAddress, &p.ForceCloseFundAddress, validateForceCloseFundAddress),
-		paramtypes.NewParamSetPair(KeyIncrementalInterestPaymentFundPercentage, &p.IncrementalInterestPaymentFundPercentage, validateIncrementalInterestPaymentFundPercentage),
-		paramtypes.NewParamSetPair(KeyIncrementalInterestPaymentFundAddress, &p.IncrementalInterestPaymentFundAddress, validateIncrementalInterestPaymentFundAddress),
+		paramtypes.NewParamSetPair(KeyIncrementalBorrowInterestPaymentFundPercentage, &p.IncrementalBorrowInterestPaymentFundPercentage, validateIncrementalBorrowInterestPaymentFundPercentage),
+		paramtypes.NewParamSetPair(KeyIncrementalBorrowInterestPaymentFundAddress, &p.IncrementalBorrowInterestPaymentFundAddress, validateIncrementalBorrowInterestPaymentFundAddress),
 		paramtypes.NewParamSetPair(KeySqModifier, &p.SqModifier, validateSqModifier),
 		paramtypes.NewParamSetPair(KeySafetyFactor, &p.SafetyFactor, validateSafetyFactor),
-		paramtypes.NewParamSetPair(KeyIncrementalInterestPaymentEnabled, &p.IncrementalInterestPaymentEnabled, validateIncrementalInterestPaymentEnabled),
+		paramtypes.NewParamSetPair(KeyIncrementalBorrowInterestPaymentEnabled, &p.IncrementalBorrowInterestPaymentEnabled, validateIncrementalBorrowInterestPaymentEnabled),
 		paramtypes.NewParamSetPair(KeyWhitelistingEnabled, &p.WhitelistingEnabled, validateWhitelistingEnabled),
 		paramtypes.NewParamSetPair(KeyInvariantCheckEpoch, &p.InvariantCheckEpoch, validateInvariantCheckEpoch),
 		paramtypes.NewParamSetPair(KeyBrokerAddress, &p.BrokerAddress, validateBrokerAddress),
@@ -101,16 +101,16 @@ func (p Params) Validate() error {
 	if err := validateLeverageMax(p.LeverageMax); err != nil {
 		return err
 	}
-	if err := validateInterestRateMax(p.InterestRateMax); err != nil {
+	if err := validateBorrowInterestRateMax(p.BorrowInterestRateMax); err != nil {
 		return err
 	}
-	if err := validateInterestRateMin(p.InterestRateMin); err != nil {
+	if err := validateBorrowInterestRateMin(p.BorrowInterestRateMin); err != nil {
 		return err
 	}
-	if err := validateInterestRateIncrease(p.InterestRateIncrease); err != nil {
+	if err := validateBorrowInterestRateIncrease(p.BorrowInterestRateIncrease); err != nil {
 		return err
 	}
-	if err := validateInterestRateDecrease(p.InterestRateDecrease); err != nil {
+	if err := validateBorrowInterestRateDecrease(p.BorrowInterestRateDecrease); err != nil {
 		return err
 	}
 	if err := validateHealthGainFactor(p.HealthGainFactor); err != nil {
@@ -134,10 +134,10 @@ func (p Params) Validate() error {
 	if err := validateForceCloseFundAddress(p.ForceCloseFundAddress); err != nil {
 		return err
 	}
-	if err := validateIncrementalInterestPaymentFundPercentage(p.IncrementalInterestPaymentFundPercentage); err != nil {
+	if err := validateIncrementalBorrowInterestPaymentFundPercentage(p.IncrementalBorrowInterestPaymentFundPercentage); err != nil {
 		return err
 	}
-	if err := validateIncrementalInterestPaymentFundAddress(p.IncrementalInterestPaymentFundAddress); err != nil {
+	if err := validateIncrementalBorrowInterestPaymentFundAddress(p.IncrementalBorrowInterestPaymentFundAddress); err != nil {
 		return err
 	}
 	if err := validateSqModifier(p.SqModifier); err != nil {
@@ -146,7 +146,7 @@ func (p Params) Validate() error {
 	if err := validateSafetyFactor(p.SafetyFactor); err != nil {
 		return err
 	}
-	if err := validateIncrementalInterestPaymentEnabled(p.IncrementalInterestPaymentEnabled); err != nil {
+	if err := validateIncrementalBorrowInterestPaymentEnabled(p.IncrementalBorrowInterestPaymentEnabled); err != nil {
 		return err
 	}
 	if err := validateWhitelistingEnabled(p.WhitelistingEnabled); err != nil {
@@ -186,65 +186,65 @@ func validateLeverageMax(i interface{}) error {
 	return nil
 }
 
-func validateInterestRateMax(i interface{}) error {
+func validateBorrowInterestRateMax(i interface{}) error {
 	v, ok := i.(sdk.Dec)
 	if !ok {
 		return fmt.Errorf("invalid parameter type: %T", i)
 	}
 
 	if v.IsNil() {
-		return fmt.Errorf("interest max must be not nil")
+		return fmt.Errorf("borrow interest max must be not nil")
 	}
 	if v.IsNegative() {
-		return fmt.Errorf("interest max must be positive: %s", v)
+		return fmt.Errorf("borrow interest max must be positive: %s", v)
 	}
 
 	return nil
 }
 
-func validateInterestRateMin(i interface{}) error {
+func validateBorrowInterestRateMin(i interface{}) error {
 	v, ok := i.(sdk.Dec)
 	if !ok {
 		return fmt.Errorf("invalid parameter type: %T", i)
 	}
 
 	if v.IsNil() {
-		return fmt.Errorf("interest min must be not nil")
+		return fmt.Errorf("borrow interest min must be not nil")
 	}
 	if v.IsNegative() {
-		return fmt.Errorf("interest min must be positive: %s", v)
+		return fmt.Errorf("borrow interest min must be positive: %s", v)
 	}
 
 	return nil
 }
 
-func validateInterestRateIncrease(i interface{}) error {
+func validateBorrowInterestRateIncrease(i interface{}) error {
 	v, ok := i.(sdk.Dec)
 	if !ok {
 		return fmt.Errorf("invalid parameter type: %T", i)
 	}
 
 	if v.IsNil() {
-		return fmt.Errorf("interest rate increase must be not nil")
+		return fmt.Errorf("borrow interest rate increase must be not nil")
 	}
 	if v.IsNegative() {
-		return fmt.Errorf("interest rate increase must be positive: %s", v)
+		return fmt.Errorf("borrow interest rate increase must be positive: %s", v)
 	}
 
 	return nil
 }
 
-func validateInterestRateDecrease(i interface{}) error {
+func validateBorrowInterestRateDecrease(i interface{}) error {
 	v, ok := i.(sdk.Dec)
 	if !ok {
 		return fmt.Errorf("invalid parameter type: %T", i)
 	}
 
 	if v.IsNil() {
-		return fmt.Errorf("interest rate decrease must be not nil")
+		return fmt.Errorf("borrow interest rate decrease must be not nil")
 	}
 	if v.IsNegative() {
-		return fmt.Errorf("interest rate decrease must be positive: %s", v)
+		return fmt.Errorf("borrow interest rate decrease must be positive: %s", v)
 	}
 
 	return nil
@@ -325,23 +325,23 @@ func validateForceCloseFundAddress(i interface{}) error {
 	return nil
 }
 
-func validateIncrementalInterestPaymentFundPercentage(i interface{}) error {
+func validateIncrementalBorrowInterestPaymentFundPercentage(i interface{}) error {
 	v, ok := i.(sdk.Dec)
 	if !ok {
 		return fmt.Errorf("invalid parameter type: %T", i)
 	}
 
 	if v.IsNil() {
-		return fmt.Errorf("incremental interest payment fund percentage must be not nil")
+		return fmt.Errorf("incremental borrow interest payment fund percentage must be not nil")
 	}
 	if v.IsNegative() {
-		return fmt.Errorf("incremental interest payment fund percentage must be positive: %s", v)
+		return fmt.Errorf("incremental borrow interest payment fund percentage must be positive: %s", v)
 	}
 
 	return nil
 }
 
-func validateIncrementalInterestPaymentFundAddress(i interface{}) error {
+func validateIncrementalBorrowInterestPaymentFundAddress(i interface{}) error {
 	_, ok := i.(string)
 	if !ok {
 		return fmt.Errorf("invalid parameter type: %T", i)
@@ -382,7 +382,7 @@ func validateSafetyFactor(i interface{}) error {
 	return nil
 }
 
-func validateIncrementalInterestPaymentEnabled(i interface{}) error {
+func validateIncrementalBorrowInterestPaymentEnabled(i interface{}) error {
 	_, ok := i.(bool)
 	if !ok {
 		return fmt.Errorf("invalid parameter type: %T", i)

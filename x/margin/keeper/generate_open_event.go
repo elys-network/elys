@@ -20,9 +20,9 @@ func (k Keeper) GenerateOpenEvent(mtp *types.MTP) sdk.Event {
 		sdk.NewAttribute("custody", mtp.Custodies[custodyIndex].String()),
 		sdk.NewAttribute("leverage", mtp.Leverages[mtpPosIndex].String()),
 		sdk.NewAttribute("liabilities", mtp.Liabilities.String()),
-		sdk.NewAttribute("interest_paid_collateral", mtp.InterestPaidCollaterals[collateralIndex].String()),
-		sdk.NewAttribute("interest_paid_custody", mtp.InterestPaidCustodies[custodyIndex].String()),
-		sdk.NewAttribute("interest_unpaid_collateral", mtp.InterestUnpaidCollaterals[collateralIndex].String()),
+		sdk.NewAttribute("borrow_interest_paid_collateral", mtp.BorrowInterestPaidCollaterals[collateralIndex].String()),
+		sdk.NewAttribute("borrow_interest_paid_custody", mtp.BorrowInterestPaidCustodies[custodyIndex].String()),
+		sdk.NewAttribute("borrow_interest_unpaid_collateral", mtp.BorrowInterestUnpaidCollaterals[collateralIndex].String()),
 		sdk.NewAttribute("health", mtp.MtpHealth.String()),
 	)
 }

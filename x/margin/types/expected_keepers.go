@@ -105,7 +105,7 @@ type CloseLongChecker interface {
 
 	) (val Pool, found bool)
 	GetAmmPool(ctx sdk.Context, poolId uint64, tradingAsset string) (ammtypes.Pool, error)
-	HandleInterest(ctx sdk.Context, mtp *MTP, pool *Pool, ammPool ammtypes.Pool, collateralAsset string, custodyAsset string) error
+	HandleBorrowInterest(ctx sdk.Context, mtp *MTP, pool *Pool, ammPool ammtypes.Pool, collateralAsset string, custodyAsset string) error
 	TakeOutCustody(ctx sdk.Context, mtp MTP, pool *Pool, custodyAsset string) error
 	EstimateAndRepay(ctx sdk.Context, mtp MTP, pool Pool, ammPool ammtypes.Pool, collateralAsset string, custodyAsset string) (sdk.Int, error)
 }
@@ -119,7 +119,7 @@ type CloseShortChecker interface {
 
 	) (val Pool, found bool)
 	GetAmmPool(ctx sdk.Context, poolId uint64, tradingAsset string) (ammtypes.Pool, error)
-	HandleInterest(ctx sdk.Context, mtp *MTP, pool *Pool, ammPool ammtypes.Pool, collateralAsset string, custodyAsset string) error
+	HandleBorrowInterest(ctx sdk.Context, mtp *MTP, pool *Pool, ammPool ammtypes.Pool, collateralAsset string, custodyAsset string) error
 	TakeOutCustody(ctx sdk.Context, mtp MTP, pool *Pool, custodyAsset string) error
 	EstimateAndRepay(ctx sdk.Context, mtp MTP, pool Pool, ammPool ammtypes.Pool, collateralAsset string, custodyAsset string) (sdk.Int, error)
 }

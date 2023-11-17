@@ -27,19 +27,19 @@ func TestSetGetMTP(t *testing.T) {
 
 	for i := 0; i < 2; i++ {
 		mtp := types.MTP{
-			Address:                   addr[i].String(),
-			Collaterals:               []sdk.Coin{sdk.NewCoin(paramtypes.BaseCurrency, sdk.NewInt(0))},
-			Liabilities:               sdk.NewInt(0),
-			InterestPaidCollaterals:   []sdk.Coin{sdk.NewCoin(paramtypes.BaseCurrency, sdk.NewInt(0))},
-			InterestPaidCustodies:     []sdk.Coin{sdk.NewCoin("ATOM", sdk.NewInt(0))},
-			InterestUnpaidCollaterals: []sdk.Coin{sdk.NewCoin(paramtypes.BaseCurrency, sdk.NewInt(0))},
-			Custodies:                 []sdk.Coin{sdk.NewCoin("ATOM", sdk.NewInt(0))},
-			Leverages:                 []sdk.Dec{sdk.NewDec(0)},
-			MtpHealth:                 sdk.NewDec(0),
-			Position:                  types.Position_LONG,
-			Id:                        0,
-			ConsolidateLeverage:       sdk.ZeroDec(),
-			SumCollateral:             sdk.ZeroInt(),
+			Address:                         addr[i].String(),
+			Collaterals:                     []sdk.Coin{sdk.NewCoin(paramtypes.BaseCurrency, sdk.NewInt(0))},
+			Liabilities:                     sdk.NewInt(0),
+			BorrowInterestPaidCollaterals:   []sdk.Coin{sdk.NewCoin(paramtypes.BaseCurrency, sdk.NewInt(0))},
+			BorrowInterestPaidCustodies:     []sdk.Coin{sdk.NewCoin("ATOM", sdk.NewInt(0))},
+			BorrowInterestUnpaidCollaterals: []sdk.Coin{sdk.NewCoin(paramtypes.BaseCurrency, sdk.NewInt(0))},
+			Custodies:                       []sdk.Coin{sdk.NewCoin("ATOM", sdk.NewInt(0))},
+			Leverages:                       []sdk.Dec{sdk.NewDec(0)},
+			MtpHealth:                       sdk.NewDec(0),
+			Position:                        types.Position_LONG,
+			Id:                              0,
+			ConsolidateLeverage:             sdk.ZeroDec(),
+			SumCollateral:                   sdk.ZeroInt(),
 		}
 		err := margin.SetMTP(ctx, &mtp)
 		require.NoError(t, err)

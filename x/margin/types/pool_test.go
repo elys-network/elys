@@ -18,11 +18,11 @@ func TestPool_UpdateBalanceValid(t *testing.T) {
 	pool := types.NewPool(1)
 	pool.PoolAssetsLong = []types.PoolAsset{
 		{
-			Liabilities:   sdk.NewInt(0),
-			Custody:       sdk.NewInt(0),
-			AssetBalance:  sdk.NewInt(0),
-			BlockInterest: sdk.NewInt(0),
-			AssetDenom:    "testAsset",
+			Liabilities:         sdk.NewInt(0),
+			Custody:             sdk.NewInt(0),
+			AssetBalance:        sdk.NewInt(0),
+			BlockBorrowInterest: sdk.NewInt(0),
+			AssetDenom:          "testAsset",
 		},
 	}
 
@@ -47,11 +47,11 @@ func TestPool_UpdateBalanceInvalid(t *testing.T) {
 	pool := types.NewPool(1)
 	pool.PoolAssetsLong = []types.PoolAsset{
 		{
-			Liabilities:   sdk.NewInt(0),
-			Custody:       sdk.NewInt(0),
-			AssetBalance:  sdk.NewInt(0),
-			BlockInterest: sdk.NewInt(0),
-			AssetDenom:    "testAsset",
+			Liabilities:         sdk.NewInt(0),
+			Custody:             sdk.NewInt(0),
+			AssetBalance:        sdk.NewInt(0),
+			BlockBorrowInterest: sdk.NewInt(0),
+			AssetDenom:          "testAsset",
 		},
 	}
 
@@ -72,11 +72,11 @@ func TestPool_UpdateLiabilitiesValid(t *testing.T) {
 	pool := types.NewPool(1)
 	pool.PoolAssetsLong = []types.PoolAsset{
 		{
-			Liabilities:   sdk.NewInt(0),
-			Custody:       sdk.NewInt(0),
-			AssetBalance:  sdk.NewInt(0),
-			BlockInterest: sdk.NewInt(0),
-			AssetDenom:    "testAsset",
+			Liabilities:         sdk.NewInt(0),
+			Custody:             sdk.NewInt(0),
+			AssetBalance:        sdk.NewInt(0),
+			BlockBorrowInterest: sdk.NewInt(0),
+			AssetDenom:          "testAsset",
 		},
 	}
 
@@ -101,11 +101,11 @@ func TestPool_UpdateLiabilitiesInvalid(t *testing.T) {
 	pool := types.NewPool(1)
 	pool.PoolAssetsLong = []types.PoolAsset{
 		{
-			Liabilities:   sdk.NewInt(0),
-			Custody:       sdk.NewInt(0),
-			AssetBalance:  sdk.NewInt(0),
-			BlockInterest: sdk.NewInt(0),
-			AssetDenom:    "testAsset",
+			Liabilities:         sdk.NewInt(0),
+			Custody:             sdk.NewInt(0),
+			AssetBalance:        sdk.NewInt(0),
+			BlockBorrowInterest: sdk.NewInt(0),
+			AssetDenom:          "testAsset",
 		},
 	}
 
@@ -126,11 +126,11 @@ func TestPool_UpdateCustodyValid(t *testing.T) {
 	pool := types.NewPool(1)
 	pool.PoolAssetsLong = []types.PoolAsset{
 		{
-			Liabilities:   sdk.NewInt(0),
-			Custody:       sdk.NewInt(0),
-			AssetBalance:  sdk.NewInt(0),
-			BlockInterest: sdk.NewInt(0),
-			AssetDenom:    "testAsset",
+			Liabilities:         sdk.NewInt(0),
+			Custody:             sdk.NewInt(0),
+			AssetBalance:        sdk.NewInt(0),
+			BlockBorrowInterest: sdk.NewInt(0),
+			AssetDenom:          "testAsset",
 		},
 	}
 
@@ -155,11 +155,11 @@ func TestPool_UpdateCustodyInvalid(t *testing.T) {
 	pool := types.NewPool(1)
 	pool.PoolAssetsLong = []types.PoolAsset{
 		{
-			Liabilities:   sdk.NewInt(0),
-			Custody:       sdk.NewInt(0),
-			AssetBalance:  sdk.NewInt(0),
-			BlockInterest: sdk.NewInt(0),
-			AssetDenom:    "testAsset",
+			Liabilities:         sdk.NewInt(0),
+			Custody:             sdk.NewInt(0),
+			AssetBalance:        sdk.NewInt(0),
+			BlockBorrowInterest: sdk.NewInt(0),
+			AssetDenom:          "testAsset",
 		},
 	}
 
@@ -173,58 +173,58 @@ func TestPool_UpdateCustodyInvalid(t *testing.T) {
 	assert.Equal(t, pool.PoolAssetsLong[0].Custody, sdk.NewInt(0))
 }
 
-func TestPool_UpdateBlockInterestValid(t *testing.T) {
+func TestPool_UpdateBlockBorrowInterestValid(t *testing.T) {
 	ctx := sdk.Context{} // mock or setup a context
 
 	// Define the margin pool with assets
 	pool := types.NewPool(1)
 	pool.PoolAssetsLong = []types.PoolAsset{
 		{
-			Liabilities:   sdk.NewInt(0),
-			Custody:       sdk.NewInt(0),
-			AssetBalance:  sdk.NewInt(0),
-			BlockInterest: sdk.NewInt(0),
-			AssetDenom:    "testAsset",
+			Liabilities:         sdk.NewInt(0),
+			Custody:             sdk.NewInt(0),
+			AssetBalance:        sdk.NewInt(0),
+			BlockBorrowInterest: sdk.NewInt(0),
+			AssetDenom:          "testAsset",
 		},
 	}
 
 	// Test scenario, increase 100 and decrease 150.
 	denom := "testAsset"
-	err := pool.UpdateBlockInterest(ctx, denom, sdk.NewInt(100), true, types.Position_LONG)
+	err := pool.UpdateBlockBorrowInterest(ctx, denom, sdk.NewInt(100), true, types.Position_LONG)
 	// Expect that there is no error
 	assert.Nil(t, err)
-	// Expect that there is 100 BlockInterest
-	assert.Equal(t, pool.PoolAssetsLong[0].BlockInterest, sdk.NewInt(100))
-	err = pool.UpdateBlockInterest(ctx, denom, sdk.NewInt(150), false, types.Position_LONG)
+	// Expect that there is 100 BlockBorrowInterest
+	assert.Equal(t, pool.PoolAssetsLong[0].BlockBorrowInterest, sdk.NewInt(100))
+	err = pool.UpdateBlockBorrowInterest(ctx, denom, sdk.NewInt(150), false, types.Position_LONG)
 	// Expect that there is no error
 	assert.Nil(t, err)
-	// Expect that there is -50 BlockInterest
-	assert.Equal(t, pool.PoolAssetsLong[0].BlockInterest, sdk.NewInt(-50))
+	// Expect that there is -50 BlockBorrowInterest
+	assert.Equal(t, pool.PoolAssetsLong[0].BlockBorrowInterest, sdk.NewInt(-50))
 }
 
-func TestPool_UpdateBlockInterestInvalid(t *testing.T) {
+func TestPool_UpdateBlockBorrowInterestInvalid(t *testing.T) {
 	ctx := sdk.Context{} // mock or setup a context
 
 	// Define the margin pool with assets
 	pool := types.NewPool(1)
 	pool.PoolAssetsLong = []types.PoolAsset{
 		{
-			Liabilities:   sdk.NewInt(0),
-			Custody:       sdk.NewInt(0),
-			AssetBalance:  sdk.NewInt(0),
-			BlockInterest: sdk.NewInt(0),
-			AssetDenom:    "testAsset",
+			Liabilities:         sdk.NewInt(0),
+			Custody:             sdk.NewInt(0),
+			AssetBalance:        sdk.NewInt(0),
+			BlockBorrowInterest: sdk.NewInt(0),
+			AssetDenom:          "testAsset",
 		},
 	}
 
 	// Test scenario, increase 100
 	denom := "testAsset2"
-	err := pool.UpdateBlockInterest(ctx, denom, sdk.NewInt(100), true, types.Position_LONG)
+	err := pool.UpdateBlockBorrowInterest(ctx, denom, sdk.NewInt(100), true, types.Position_LONG)
 	// Expect that there is invalid asset denom error.
 	assert.True(t, errors.Is(err, sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, "invalid asset denom")))
 
-	// Expect that there is still 0 BlockInterest
-	assert.Equal(t, pool.PoolAssetsLong[0].BlockInterest, sdk.NewInt(0))
+	// Expect that there is still 0 BlockBorrowInterest
+	assert.Equal(t, pool.PoolAssetsLong[0].BlockBorrowInterest, sdk.NewInt(0))
 }
 
 func TestPool_InitiatePoolValid(t *testing.T) {

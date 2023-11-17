@@ -26,8 +26,8 @@ func (k Keeper) ForceCloseLong(ctx sdk.Context, mtp *types.MTP, pool *types.Pool
 
 			for _, collateral := range mtp.Collaterals {
 				collateralAsset := collateral.Denom
-				// Handle Interest if within epoch position
-				if err := k.HandleInterest(ctx, mtp, pool, ammPool, collateralAsset, custodyAsset); err != nil {
+				// Handle Borrow Interest if within epoch position
+				if err := k.HandleBorrowInterest(ctx, mtp, pool, ammPool, collateralAsset, custodyAsset); err != nil {
 					return math.ZeroInt(), err
 				}
 			}

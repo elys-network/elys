@@ -25,7 +25,7 @@ func BeginBlockerProcessMTP(ctx sdk.Context, k Keeper, mtp *types.MTP, pool type
 		return
 	}
 	mtp.MtpHealth = h
-	// compute interest
+	// compute borrow interest
 	// TODO: missing fields
 	for _, custody := range mtp.Custodies {
 		custodyAsset := custody.Denom
@@ -38,9 +38,9 @@ func BeginBlockerProcessMTP(ctx sdk.Context, k Keeper, mtp *types.MTP, pool type
 
 		for _, collateral := range mtp.Collaterals {
 			collateralAsset := collateral.Denom
-			// Handle Interest if within epoch position
-			if err := k.CloseLongChecker.HandleInterest(ctx, mtp, &pool, ammPool, collateralAsset, custodyAsset); err != nil {
-				ctx.Logger().Error(errors.Wrap(err, fmt.Sprintf("error handling interest payment: %s", collateralAsset)).Error())
+			// Handle Borrow Interest if within epoch position
+			if err := k.CloseLongChecker.HandleBorrowInterest(ctx, mtp, &pool, ammPool, collateralAsset, custodyAsset); err != nil {
+				ctx.Logger().Error(errors.Wrap(err, fmt.Sprintf("error handling borrow interest payment: %s", collateralAsset)).Error())
 				return
 			}
 		}

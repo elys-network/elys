@@ -48,22 +48,22 @@ func CmdUpdateParams() *cobra.Command {
 				return err
 			}
 
-			interest_rate_max, err := cmd.Flags().GetString("interest-rate-max")
+			borrow_interest_rate_max, err := cmd.Flags().GetString("borrow-interest-rate-max")
 			if err != nil {
 				return err
 			}
 
-			interest_rate_min, err := cmd.Flags().GetString("interest-rate-min")
+			borrow_interest_rate_min, err := cmd.Flags().GetString("borrow-interest-rate-min")
 			if err != nil {
 				return err
 			}
 
-			interest_rate_increase, err := cmd.Flags().GetString("interest-rate-increase")
+			borrow_interest_rate_increase, err := cmd.Flags().GetString("borrow-interest-rate-increase")
 			if err != nil {
 				return err
 			}
 
-			interest_rate_decrease, err := cmd.Flags().GetString("interest-rate-decrease")
+			borrow_interest_rate_decrease, err := cmd.Flags().GetString("borrow-interest-rate-decrease")
 			if err != nil {
 				return err
 			}
@@ -103,12 +103,12 @@ func CmdUpdateParams() *cobra.Command {
 				return err
 			}
 
-			incrementalInterestPaymentFundPercentage, err := cmd.Flags().GetString("incremental-interest-payment-fund-percentage")
+			incrementalBorrowInterestPaymentFundPercentage, err := cmd.Flags().GetString("incremental-borrow-interest-payment-fund-percentage")
 			if err != nil {
 				return err
 			}
 
-			incrementalInterestPaymentFundAddress, err := cmd.Flags().GetString("incremental-interest-payment-fund-address")
+			incrementalBorrowInterestPaymentFundAddress, err := cmd.Flags().GetString("incremental-borrow-interest-payment-fund-address")
 			if err != nil {
 				return err
 			}
@@ -123,7 +123,7 @@ func CmdUpdateParams() *cobra.Command {
 				return err
 			}
 
-			incrementalInterestPaymentEnabled, err := cmd.Flags().GetBool("incremental-interest-payment-enabled")
+			incrementalBorrowInterestPaymentEnabled, err := cmd.Flags().GetBool("incremental-borrow-interest-payment-enabled")
 			if err != nil {
 				return err
 			}
@@ -134,24 +134,24 @@ func CmdUpdateParams() *cobra.Command {
 			}
 
 			params := &types.Params{
-				LeverageMax:                              sdk.MustNewDecFromStr(leverage_max),
-				InterestRateMax:                          sdk.MustNewDecFromStr(interest_rate_max),
-				InterestRateMin:                          sdk.MustNewDecFromStr(interest_rate_min),
-				InterestRateIncrease:                     sdk.MustNewDecFromStr(interest_rate_increase),
-				InterestRateDecrease:                     sdk.MustNewDecFromStr(interest_rate_decrease),
-				HealthGainFactor:                         sdk.MustNewDecFromStr(health_gain_factor),
-				EpochLength:                              epoch_length,
-				RemovalQueueThreshold:                    sdk.MustNewDecFromStr(removal_queue_threshold),
-				MaxOpenPositions:                         maxOpenPositions,
-				PoolOpenThreshold:                        sdk.MustNewDecFromStr(poolOpenThreshold),
-				ForceCloseFundPercentage:                 sdk.MustNewDecFromStr(forceCloseFundPercentage),
-				ForceCloseFundAddress:                    forceCloseFundAddress,
-				IncrementalInterestPaymentFundPercentage: sdk.MustNewDecFromStr(incrementalInterestPaymentFundPercentage),
-				IncrementalInterestPaymentFundAddress:    incrementalInterestPaymentFundAddress,
-				SqModifier:                               sdk.MustNewDecFromStr(sqModifier),
-				SafetyFactor:                             sdk.MustNewDecFromStr(safetyFactor),
-				IncrementalInterestPaymentEnabled:        incrementalInterestPaymentEnabled,
-				WhitelistingEnabled:                      whitelistingEnabled,
+				LeverageMax:                                    sdk.MustNewDecFromStr(leverage_max),
+				BorrowInterestRateMax:                          sdk.MustNewDecFromStr(borrow_interest_rate_max),
+				BorrowInterestRateMin:                          sdk.MustNewDecFromStr(borrow_interest_rate_min),
+				BorrowInterestRateIncrease:                     sdk.MustNewDecFromStr(borrow_interest_rate_increase),
+				BorrowInterestRateDecrease:                     sdk.MustNewDecFromStr(borrow_interest_rate_decrease),
+				HealthGainFactor:                               sdk.MustNewDecFromStr(health_gain_factor),
+				EpochLength:                                    epoch_length,
+				RemovalQueueThreshold:                          sdk.MustNewDecFromStr(removal_queue_threshold),
+				MaxOpenPositions:                               maxOpenPositions,
+				PoolOpenThreshold:                              sdk.MustNewDecFromStr(poolOpenThreshold),
+				ForceCloseFundPercentage:                       sdk.MustNewDecFromStr(forceCloseFundPercentage),
+				ForceCloseFundAddress:                          forceCloseFundAddress,
+				IncrementalBorrowInterestPaymentFundPercentage: sdk.MustNewDecFromStr(incrementalBorrowInterestPaymentFundPercentage),
+				IncrementalBorrowInterestPaymentFundAddress:    incrementalBorrowInterestPaymentFundAddress,
+				SqModifier:                                     sdk.MustNewDecFromStr(sqModifier),
+				SafetyFactor:                                   sdk.MustNewDecFromStr(safetyFactor),
+				IncrementalBorrowInterestPaymentEnabled:        incrementalBorrowInterestPaymentEnabled,
+				WhitelistingEnabled:                            whitelistingEnabled,
 			}
 
 			signer := clientCtx.GetFromAddress()
@@ -188,10 +188,10 @@ func CmdUpdateParams() *cobra.Command {
 	}
 
 	cmd.Flags().String("leverage-max", "", "max leverage (integer)")
-	cmd.Flags().String("interest-rate-max", "", "max interest rate (decimal)")
-	cmd.Flags().String("interest-rate-min", "", "min interest rate (decimal)")
-	cmd.Flags().String("interest-rate-increase", "", "interest rate increase (decimal)")
-	cmd.Flags().String("interest-rate-decrease", "", "interest rate decrease (decimal)")
+	cmd.Flags().String("borrow-interest-rate-max", "", "max borrow interest rate (decimal)")
+	cmd.Flags().String("borrow-interest-rate-min", "", "min borrow interest rate (decimal)")
+	cmd.Flags().String("borrow-interest-rate-increase", "", "borrow interest rate increase (decimal)")
+	cmd.Flags().String("borrow-interest-rate-decrease", "", "borrow interest rate decrease (decimal)")
 	cmd.Flags().String("health-gain-factor", "", "health gain factor (decimal)")
 	cmd.Flags().Int64("epoch-length", 1, "epoch length in blocks (integer)")
 	cmd.Flags().Int64("max-open-positions", 10000, "max open positions")
@@ -199,9 +199,9 @@ func CmdUpdateParams() *cobra.Command {
 	cmd.Flags().String("pool-open-threshold", "", "threshold to prevent new positions (decimal range 0-1)")
 	cmd.Flags().String("force-close-fund-percentage", "", "percentage of force close proceeds for fund (decimal range 0-1)")
 	cmd.Flags().String("force-close-fund-address", "", "address of fund wallet for force close")
-	cmd.Flags().Bool("incremental-interest-payment-enabled", true, "enable incremental interest payment")
-	cmd.Flags().String("incremental-interest-payment-fund-percentage", "", "percentage of incremental interest payment proceeds for fund (decimal range 0-1)")
-	cmd.Flags().String("incremental-interest-payment-fund-address", "", "address of fund wallet for incremental interest payment")
+	cmd.Flags().Bool("incremental-borrow-interest-payment-enabled", true, "enable incremental borrow interest payment")
+	cmd.Flags().String("incremental-borrow-interest-payment-fund-percentage", "", "percentage of incremental borrow interest payment proceeds for fund (decimal range 0-1)")
+	cmd.Flags().String("incremental-borrow-interest-payment-fund-address", "", "address of fund wallet for incremental borrow interest payment")
 	cmd.Flags().String("sq-modifier", "", "the modifier value for the removal queue's sq formula")
 	cmd.Flags().String("safety-factor", "", "the safety factor used in liquidation ratio")
 	cmd.Flags().Bool("whitelisting-enabled", false, "Enable whitelisting")
@@ -210,19 +210,19 @@ func CmdUpdateParams() *cobra.Command {
 	cmd.Flags().String(cli.FlagMetadata, "", "metadata of proposal")
 	cmd.Flags().String(cli.FlagDeposit, "", "deposit of proposal")
 	_ = cmd.MarkFlagRequired("leverage-max")
-	_ = cmd.MarkFlagRequired("interest-rate-max")
-	_ = cmd.MarkFlagRequired("interest-rate-min")
-	_ = cmd.MarkFlagRequired("interest-rate-increase")
-	_ = cmd.MarkFlagRequired("interest-rate-decrease")
+	_ = cmd.MarkFlagRequired("borrow-interest-rate-max")
+	_ = cmd.MarkFlagRequired("borrow-interest-rate-min")
+	_ = cmd.MarkFlagRequired("borrow-interest-rate-increase")
+	_ = cmd.MarkFlagRequired("borrow-interest-rate-decrease")
 	_ = cmd.MarkFlagRequired("health-gain-factor")
 	_ = cmd.MarkFlagRequired("removal-queue-threshold")
 	_ = cmd.MarkFlagRequired("max-open-positions")
 	_ = cmd.MarkFlagRequired("pool-open-threshold")
 	_ = cmd.MarkFlagRequired("force-close-fund-percentage")
 	_ = cmd.MarkFlagRequired("force-close-fund-address")
-	_ = cmd.MarkFlagRequired("incremental-interest-payment-enabled")
-	_ = cmd.MarkFlagRequired("incremental-interest-payment-fund-percentage")
-	_ = cmd.MarkFlagRequired("incremental-interest-payment-fund-address")
+	_ = cmd.MarkFlagRequired("incremental-borrow-interest-payment-enabled")
+	_ = cmd.MarkFlagRequired("incremental-borrow-interest-payment-fund-percentage")
+	_ = cmd.MarkFlagRequired("incremental-borrow-interest-payment-fund-address")
 	_ = cmd.MarkFlagRequired("sq-modifier")
 	_ = cmd.MarkFlagRequired("safety-factor")
 	_ = cmd.MarkFlagRequired("whitelisting-enabled")
