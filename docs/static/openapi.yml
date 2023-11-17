@@ -39495,6 +39495,27 @@ paths:
                   elys_stake_tracking_rate:
                     type: string
                     format: int64
+                  apr_eden_elys:
+                    type: object
+                    properties:
+                      uusdc:
+                        type: string
+                      ueden:
+                        type: string
+                      uedenb:
+                        type: string
+                  apr_usdc:
+                    type: object
+                    properties:
+                      uusdc:
+                        type: string
+                      ueden:
+                        type: string
+                  apr_eden_b:
+                    type: object
+                    properties:
+                      uedenb:
+                        type: string
             description: >-
               QueryParamsResponse is response type for the Query/Params RPC
               method.
@@ -84151,6 +84172,27 @@ definitions:
       - EDEN_PROGRAM
       - EDENB_PROGRAM
     default: ALL_PROGRAM
+  elys.incentive.AprEdenB:
+    type: object
+    properties:
+      uedenb:
+        type: string
+  elys.incentive.AprEdenElys:
+    type: object
+    properties:
+      uusdc:
+        type: string
+      ueden:
+        type: string
+      uedenb:
+        type: string
+  elys.incentive.AprUsdc:
+    type: object
+    properties:
+      uusdc:
+        type: string
+      ueden:
+        type: string
   elys.incentive.IncentiveInfo:
     type: object
     properties:
@@ -84271,6 +84313,27 @@ definitions:
       elys_stake_tracking_rate:
         type: string
         format: int64
+      apr_eden_elys:
+        type: object
+        properties:
+          uusdc:
+            type: string
+          ueden:
+            type: string
+          uedenb:
+            type: string
+      apr_usdc:
+        type: object
+        properties:
+          uusdc:
+            type: string
+          ueden:
+            type: string
+      apr_eden_b:
+        type: object
+        properties:
+          uedenb:
+            type: string
     description: Params defines the parameters for the module.
   elys.incentive.PoolInfo:
     type: object
@@ -84394,6 +84457,27 @@ definitions:
           elys_stake_tracking_rate:
             type: string
             format: int64
+          apr_eden_elys:
+            type: object
+            properties:
+              uusdc:
+                type: string
+              ueden:
+                type: string
+              uedenb:
+                type: string
+          apr_usdc:
+            type: object
+            properties:
+              uusdc:
+                type: string
+              ueden:
+                type: string
+          apr_eden_b:
+            type: object
+            properties:
+              uedenb:
+                type: string
     description: QueryParamsResponse is response type for the Query/Params RPC method.
   elys.leveragelp.IsWhitelistedResponse:
     type: object

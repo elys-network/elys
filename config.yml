@@ -198,7 +198,7 @@ genesis:
           transferLimit: ""
           unitDenom: ""
           commitEnabled: true
-          withdrawEnabled: false
+          withdrawEnabled: true
     epochs:
       epochs:
         - identifier: week
@@ -239,59 +239,65 @@ genesis:
         - creator: elys1v30pe777dj9mgsnlv0j2c5wh05m0ya0nlhuv7t
           committed_tokens:
             - amount: "10000"
-              denom: uusdc
-            - amount: "10000"
               denom: ueden
             - amount: "10000"
               denom: uedenb
           rewards_unclaimed:
-            - amount: "10000"
+            - amount: "1000000"
               denom: uusdc
-            - amount: "10000"
+            - amount: "1000000"
               denom: ueden
-            - amount: "10000"
+            - amount: "1000000"
               denom: uedenb
           vesting_tokens:
             - denom: ueden
-              total_amount: "10000"
+              total_amount: "1000000"
               unvested_amount: "10000"
               epoch_identifier: "day"
               num_epochs: 100
               current_epoch: 5
           rewards_by_usdc_unclaimed:
             - denom: ueden
-              amount: "2000"
+              amount: "200000"
             - denom: uusdc
-              amount: "2000"
+              amount: "200000"
+            - denom: uedenb
+              amount: "200000"
           rewards_by_elys_unclaimed:
             - denom: ueden
-              amount: "3000"
+              amount: "300000"
             - denom: uusdc
-              amount: "3000"
+              amount: "300000"
+            - denom: uedenb
+              amount: "200000"
           rewards_by_eden_unclaimed:
             - denom: ueden
-              amount: "3000"
+              amount: "300000"
             - denom: uusdc
-              amount: "3000"
+              amount: "300000"
+            - denom: uedenb
+              amount: "200000"
           rewards_by_edenb_unclaimed:
             - denom: ueden
-              amount: "2000"
+              amount: "200000"
             - denom: uusdc
-              amount: "2000"
+              amount: "200000"
+            - denom: uedenb
+              amount: "200000"
     incentive:
       params:
         lp_incentives:
           - amount: "10000000"
-            epoch_identifier: week
+            epoch_identifier: tenseconds
             start_time: "2023-04-20T12:34:56.789Z"
-            num_epochs: "50"
+            num_epochs: "500"
             current_epoch: "0"
             eden_boost_apr: "100"
         stake_incentives:
           - amount: "10000000"
-            epoch_identifier: week
+            epoch_identifier: tenseconds
             start_time: "2023-04-20T12:34:56.789Z"
-            num_epochs: "50"
+            num_epochs: "500"
             current_epoch: "0"
             eden_boost_apr: "100"
         community_tax: "0.02"
@@ -299,10 +305,19 @@ genesis:
         reward_portion_for_lps: "0.65"
         pool_infos: []
         elys_stake_tracking_rate: "10"
+        apr_eden_elys:
+          uusdc: "70"
+          ueden: "60"
+          uedenb: "100"
+        apr_usdc:
+          uusdc: "70"
+          ueden: "60"
+        apr_eden_b:
+          uedenb: "100"
       fee_pool:
         community_pool:
-          - amount: "0"
-            denom: uelys
+          amount: "0"
+          denom: uelys
     tokenomics:
       airdropList:
         - intent: AtomStakers
