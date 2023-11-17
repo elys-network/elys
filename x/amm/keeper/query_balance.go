@@ -6,6 +6,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/elys-network/elys/x/amm/types"
+	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
 	paramtypes "github.com/elys-network/elys/x/parameter/types"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -31,10 +32,16 @@ func (k Keeper) Balance(goCtx context.Context, req *types.QueryBalanceRequest) (
 		claimed := commitment.GetClaimedForDenom(denom)
 		commitBalance := sdk.NewCoin(denom, claimed)
 
+		entry, found := k.apKeeper.GetEntry(ctx, paramtypes.BaseCurrency)
+		if !found {
+			return nil, sdkerrors.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", paramtypes.BaseCurrency)
+		}
+		baseCurrency := entry.Denom
+
 		// If it is USDC, we should add bank module balance as well.
 		// TODO: For now we add bank balance for Eden as well as we don't have claimed state
 		// available in commitment module. So in the following statement, Eden has to be removed.
-		if denom == paramtypes.BaseCurrency || denom == paramtypes.Eden {
+		if denom == baseCurrency || denom == paramtypes.Eden {
 			balance = balance.Add(commitBalance)
 		} else {
 			balance = commitBalance

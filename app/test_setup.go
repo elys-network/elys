@@ -27,6 +27,7 @@ import (
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
 	simtestutil "github.com/cosmos/cosmos-sdk/testutil/sims"
 	simcli "github.com/cosmos/cosmos-sdk/x/simulation/client/cli"
+	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
 
@@ -133,6 +134,14 @@ func GenesisStateWithValSet(app *ElysApp) (GenesisState, *tmtypes.ValidatorSet, 
 	//////////////////////
 	balances := []banktypes.Balance{balance}
 	genesisState := NewDefaultGenesisState(app.AppCodec())
+	genAP := assetprofiletypes.DefaultGenesis()
+	genAP.EntryList = []assetprofiletypes.Entry{
+		{
+			BaseDenom: ptypes.BaseCurrency,
+			Denom:     ptypes.BaseCurrency,
+		},
+	}
+	genesisState[assetprofiletypes.ModuleName] = app.AppCodec().MustMarshalJSON(genAP)
 	genAccs := []authtypes.GenesisAccount{acc}
 	authGenesis := authtypes.NewGenesisState(authtypes.DefaultParams(), genAccs)
 	genesisState[authtypes.ModuleName] = app.AppCodec().MustMarshalJSON(authGenesis)

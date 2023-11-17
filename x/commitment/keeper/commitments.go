@@ -5,6 +5,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	aptypes "github.com/elys-network/elys/x/assetprofile/types"
+	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
 	"github.com/elys-network/elys/x/commitment/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
@@ -209,7 +210,13 @@ func (k Keeper) RecordWithdrawValidatorCommission(ctx sdk.Context, delegator str
 
 // Update commitments for Withdraw Token - USDC
 func (k Keeper) RecordWithdrawUSDC(ctx sdk.Context, creator string, denom string, amount sdk.Int) error {
-	if denom != ptypes.BaseCurrency {
+	entry, found := k.apKeeper.GetEntry(ctx, ptypes.BaseCurrency)
+	if !found {
+		return sdkerrors.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency)
+	}
+	baseCurrency := entry.Denom
+
+	if denom != baseCurrency {
 		return sdkerrors.Wrapf(types.ErrWithdrawDisabled, "denom: %s", denom)
 	}
 

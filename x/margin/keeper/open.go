@@ -3,18 +3,26 @@ package keeper
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
 	"github.com/elys-network/elys/x/margin/types"
+	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
 
 func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen) (*types.MsgOpenResponse, error) {
+	entry, found := k.apKeeper.GetEntry(ctx, ptypes.BaseCurrency)
+	if !found {
+		return nil, sdkerrors.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency)
+	}
+	baseCurrency := entry.Denom
+
 	// Determine the type of position (long or short) and validate assets accordingly.
 	switch msg.Position {
 	case types.Position_LONG:
-		if err := k.OpenChecker.CheckLongAssets(ctx, msg.CollateralAsset, msg.BorrowAsset); err != nil {
+		if err := k.OpenChecker.CheckLongAssets(ctx, msg.CollateralAsset, msg.BorrowAsset, baseCurrency); err != nil {
 			return nil, err
 		}
 	case types.Position_SHORT:
-		if err := k.OpenChecker.CheckShortAssets(ctx, msg.CollateralAsset, msg.BorrowAsset); err != nil {
+		if err := k.OpenChecker.CheckShortAssets(ctx, msg.CollateralAsset, msg.BorrowAsset, baseCurrency); err != nil {
 			return nil, err
 		}
 	default:
@@ -27,7 +35,7 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen) (*types.MsgOpenRespons
 
 	// Check if it is the same direction position for the same trader.
 	if mtp := k.OpenChecker.CheckSamePosition(ctx, msg); mtp != nil {
-		return k.OpenConsolidate(ctx, mtp, msg)
+		return k.OpenConsolidate(ctx, mtp, msg, baseCurrency)
 	}
 
 	if err := k.OpenChecker.CheckMaxOpenPositions(ctx); err != nil {
@@ -35,7 +43,7 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen) (*types.MsgOpenRespons
 	}
 
 	// Get token asset other than base currency
-	tradingAsset := k.OpenChecker.GetTradingAsset(msg.CollateralAsset, msg.BorrowAsset)
+	tradingAsset := k.OpenChecker.GetTradingAsset(msg.CollateralAsset, msg.BorrowAsset, baseCurrency)
 
 	// Get pool id, amm pool, and margin pool
 	poolId, ammPool, pool, err := k.OpenChecker.PreparePools(ctx, tradingAsset)
@@ -50,12 +58,12 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen) (*types.MsgOpenRespons
 	var mtp *types.MTP
 	switch msg.Position {
 	case types.Position_LONG:
-		mtp, err = k.OpenChecker.OpenLong(ctx, poolId, msg)
+		mtp, err = k.OpenChecker.OpenLong(ctx, poolId, msg, baseCurrency)
 		if err != nil {
 			return nil, err
 		}
 	case types.Position_SHORT:
-		mtp, err = k.OpenChecker.OpenShort(ctx, poolId, msg)
+		mtp, err = k.OpenChecker.OpenShort(ctx, poolId, msg, baseCurrency)
 		if err != nil {
 			return nil, err
 		}

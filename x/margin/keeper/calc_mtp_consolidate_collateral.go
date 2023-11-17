@@ -3,13 +3,12 @@ package keeper
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/margin/types"
-	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
 
-func (k Keeper) CalcMTPConsolidateCollateral(ctx sdk.Context, mtp *types.MTP) error {
+func (k Keeper) CalcMTPConsolidateCollateral(ctx sdk.Context, mtp *types.MTP, baseCurrency string) error {
 	consolidateCollateral := sdk.ZeroInt()
 	for _, asset := range mtp.Collaterals {
-		if asset.Denom == ptypes.BaseCurrency {
+		if asset.Denom == baseCurrency {
 			consolidateCollateral = consolidateCollateral.Add(asset.Amount)
 		} else {
 			// swap into base currency
@@ -19,7 +18,7 @@ func (k Keeper) CalcMTPConsolidateCollateral(ctx sdk.Context, mtp *types.MTP) er
 			}
 
 			collateralAmtIn := sdk.NewCoin(asset.Denom, asset.Amount)
-			C, err := k.EstimateSwapGivenOut(ctx, collateralAmtIn, ptypes.BaseCurrency, ammPool)
+			C, err := k.EstimateSwapGivenOut(ctx, collateralAmtIn, baseCurrency, ammPool)
 			if err != nil {
 				return err
 			}

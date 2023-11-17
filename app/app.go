@@ -748,6 +748,7 @@ func NewElysApp(
 		app.BankKeeper,
 		app.AmmKeeper,
 		app.OracleKeeper,
+		app.AssetprofileKeeper,
 		authtypes.FeeCollectorName,
 		DexRevenueCollectorName,
 	)
@@ -906,6 +907,7 @@ func NewElysApp(
 		app.AmmKeeper,
 		app.BankKeeper,
 		app.OracleKeeper,
+		app.AssetprofileKeeper,
 	)
 	marginModule := marginmodule.NewAppModule(appCodec, app.MarginKeeper, app.AccountKeeper, app.BankKeeper)
 
@@ -939,6 +941,7 @@ func NewElysApp(
 		app.OracleKeeper,
 		app.StablestakeKeeper,
 		app.CommitmentKeeper,
+		app.AssetprofileKeeper,
 	)
 	leveragelpModule := leveragelpmodule.NewAppModule(appCodec, app.LeveragelpKeeper, app.AccountKeeper, app.BankKeeper)
 

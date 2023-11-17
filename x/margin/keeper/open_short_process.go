@@ -4,12 +4,11 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/elys-network/elys/x/margin/types"
-	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
 
-func (k Keeper) ProcessOpenShort(ctx sdk.Context, mtp *types.MTP, leverage sdk.Dec, eta sdk.Dec, collateralAmountDec sdk.Dec, poolId uint64, msg *types.MsgOpen) (*types.MTP, error) {
+func (k Keeper) ProcessOpenShort(ctx sdk.Context, mtp *types.MTP, leverage sdk.Dec, eta sdk.Dec, collateralAmountDec sdk.Dec, poolId uint64, msg *types.MsgOpen, baseCurrency string) (*types.MTP, error) {
 	// Determine the trading asset.
-	tradingAsset := k.OpenShortChecker.GetTradingAsset(msg.CollateralAsset, msg.BorrowAsset)
+	tradingAsset := k.OpenShortChecker.GetTradingAsset(msg.CollateralAsset, msg.BorrowAsset, baseCurrency)
 
 	// Fetch the pool associated with the given pool ID.
 	pool, found := k.OpenShortChecker.GetPool(ctx, poolId)
@@ -31,18 +30,18 @@ func (k Keeper) ProcessOpenShort(ctx sdk.Context, mtp *types.MTP, leverage sdk.D
 	// Calculate the leveraged amount based on the collateral provided and the leverage.
 	leveragedAmount := sdk.NewInt(collateralAmountDec.Mul(leverage).TruncateInt().Int64())
 
-	if msg.CollateralAsset != ptypes.BaseCurrency {
+	if msg.CollateralAsset != baseCurrency {
 		return nil, sdkerrors.Wrap(types.ErrInvalidBorrowingAsset, "collateral must be base currency")
 	}
 
-	custodyAmtToken := sdk.NewCoin(ptypes.BaseCurrency, leveragedAmount)
+	custodyAmtToken := sdk.NewCoin(baseCurrency, leveragedAmount)
 	borrowingAmount, err := k.OpenShortChecker.EstimateSwapGivenOut(ctx, custodyAmtToken, msg.BorrowAsset, ammPool)
 	if err != nil {
 		return nil, err
 	}
 
 	// check the balance
-	if !k.OpenShortChecker.HasSufficientPoolBalance(ctx, ammPool, ptypes.BaseCurrency, borrowingAmount) {
+	if !k.OpenShortChecker.HasSufficientPoolBalance(ctx, ammPool, baseCurrency, borrowingAmount) {
 		return nil, sdkerrors.Wrap(types.ErrBorrowTooHigh, borrowingAmount.String())
 	}
 
@@ -55,25 +54,25 @@ func (k Keeper) ProcessOpenShort(ctx sdk.Context, mtp *types.MTP, leverage sdk.D
 
 	// Calculate custody amount.
 	leveragedAmtTokenIn := sdk.NewCoin(msg.BorrowAsset, borrowingAmount)
-	custodyAmount, err := k.OpenShortChecker.EstimateSwap(ctx, leveragedAmtTokenIn, ptypes.BaseCurrency, ammPool)
+	custodyAmount, err := k.OpenShortChecker.EstimateSwap(ctx, leveragedAmtTokenIn, baseCurrency, ammPool)
 	if err != nil {
 		return nil, err
 	}
 
 	// Ensure the AMM pool has enough balance.
-	if !k.OpenShortChecker.HasSufficientPoolBalance(ctx, ammPool, ptypes.BaseCurrency, custodyAmount) {
+	if !k.OpenShortChecker.HasSufficientPoolBalance(ctx, ammPool, baseCurrency, custodyAmount) {
 		return nil, sdkerrors.Wrap(types.ErrCustodyTooHigh, custodyAmount.String())
 	}
 
 	// if position is short then override the custody asset to the base currency
 	if mtp.Position == types.Position_SHORT {
-		mtp.Custodies = []sdk.Coin{sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(0))}
-		mtp.InterestPaidCustodies = []sdk.Coin{sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(0))}
-		mtp.TakeProfitCustodies = []sdk.Coin{sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(0))}
+		mtp.Custodies = []sdk.Coin{sdk.NewCoin(baseCurrency, sdk.NewInt(0))}
+		mtp.InterestPaidCustodies = []sdk.Coin{sdk.NewCoin(baseCurrency, sdk.NewInt(0))}
+		mtp.TakeProfitCustodies = []sdk.Coin{sdk.NewCoin(baseCurrency, sdk.NewInt(0))}
 	}
 
 	// Borrow the asset the user wants to short.
-	err = k.OpenShortChecker.Borrow(ctx, msg.CollateralAsset, ptypes.BaseCurrency, msg.CollateralAmount, custodyAmount, mtp, &ammPool, &pool, eta)
+	err = k.OpenShortChecker.Borrow(ctx, msg.CollateralAsset, baseCurrency, msg.CollateralAmount, custodyAmount, mtp, &ammPool, &pool, eta, baseCurrency)
 	if err != nil {
 		return nil, err
 	}
@@ -89,7 +88,7 @@ func (k Keeper) ProcessOpenShort(ctx sdk.Context, mtp *types.MTP, leverage sdk.D
 	}
 
 	// Update the MTP health.
-	lr, err := k.OpenShortChecker.UpdateMTPHealth(ctx, *mtp, ammPool)
+	lr, err := k.OpenShortChecker.UpdateMTPHealth(ctx, *mtp, ammPool, baseCurrency)
 	if err != nil {
 		return nil, err
 	}
@@ -101,7 +100,7 @@ func (k Keeper) ProcessOpenShort(ctx sdk.Context, mtp *types.MTP, leverage sdk.D
 	}
 
 	// Update consolidated collateral amount
-	k.OpenShortChecker.CalcMTPConsolidateCollateral(ctx, mtp)
+	k.OpenShortChecker.CalcMTPConsolidateCollateral(ctx, mtp, baseCurrency)
 
 	// Calculate consolidate liabiltiy
 	k.OpenShortChecker.CalcMTPConsolidateLiability(ctx, mtp)

@@ -5,26 +5,27 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/cosmos/cosmos-sdk/x/distribution/types"
 	stypes "github.com/cosmos/cosmos-sdk/x/staking/types"
+	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
 	commitmenttypes "github.com/elys-network/elys/x/commitment/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
 
 // Increase unclaimed token amount for the corresponding validator
-func (k Keeper) UpdateTokensForValidator(ctx sdk.Context, validator string, newUnclaimedEdenTokens sdk.Int, dexRewards sdk.Dec) {
+func (k Keeper) UpdateTokensForValidator(ctx sdk.Context, validator string, newUnclaimedEdenTokens sdk.Int, dexRewards sdk.Dec, baseCurrency string) {
 	commitments := k.cmk.GetCommitments(ctx, validator)
 
 	// Update Eden amount
 	commitments.AddRewardsUnclaimed(sdk.NewCoin(ptypes.Eden, newUnclaimedEdenTokens))
 
 	// Update USDC amount
-	commitments.AddRewardsUnclaimed(sdk.NewCoin(ptypes.BaseCurrency, dexRewards.TruncateInt()))
+	commitments.AddRewardsUnclaimed(sdk.NewCoin(baseCurrency, dexRewards.TruncateInt()))
 
 	// Update commmitment
 	k.cmk.SetCommitments(ctx, commitments)
 }
 
 // Give commissions to validators
-func (k Keeper) GiveCommissionToValidators(ctx sdk.Context, delegator string, totalDelegationAmt sdk.Int, newUnclaimedAmt sdk.Int, dexRewards sdk.Dec) (sdk.Int, sdk.Int) {
+func (k Keeper) GiveCommissionToValidators(ctx sdk.Context, delegator string, totalDelegationAmt sdk.Int, newUnclaimedAmt sdk.Int, dexRewards sdk.Dec, baseCurrency string) (sdk.Int, sdk.Int) {
 	delAdr, err := sdk.AccAddressFromBech32(delegator)
 	if err != nil {
 		return sdk.ZeroInt(), sdk.ZeroInt()
@@ -71,7 +72,7 @@ func (k Keeper) GiveCommissionToValidators(ctx sdk.Context, delegator string, to
 		//-----------------------------
 
 		// increase uncomitted token amount of validator's commitment
-		k.UpdateTokensForValidator(ctx, valAddr.String(), edenCommission.TruncateInt(), dexRewardsCommission)
+		k.UpdateTokensForValidator(ctx, valAddr.String(), edenCommission.TruncateInt(), dexRewardsCommission, baseCurrency)
 
 		return false
 	})
@@ -113,8 +114,14 @@ func (k Keeper) ProcessWithdrawRewards(ctx sdk.Context, delegator string, denom 
 		return k.cmk.RecordClaimReward(ctx, delegator, denom, unclaimed, withdrawType)
 	}
 
+	entry, found := k.apKeeper.GetEntry(ctx, ptypes.BaseCurrency)
+	if !found {
+		return sdkerrors.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency)
+	}
+	baseCurrency := entry.Denom
+
 	// USDC
-	unclaimedUsdc := commitments.GetRewardUnclaimedForDenom(ptypes.BaseCurrency)
+	unclaimedUsdc := commitments.GetRewardUnclaimedForDenom(baseCurrency)
 	if unclaimedUsdc.IsZero() {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, "balance not available")
 	}
@@ -122,7 +129,7 @@ func (k Keeper) ProcessWithdrawRewards(ctx sdk.Context, delegator string, denom 
 	revenueCollector := k.authKeeper.GetModuleAccount(ctx, k.dexRevCollectorName)
 
 	// Revenue wallet usdc balance
-	usdcBalance := k.bankKeeper.GetBalance(ctx, revenueCollector.GetAddress(), ptypes.BaseCurrency)
+	usdcBalance := k.bankKeeper.GetBalance(ctx, revenueCollector.GetAddress(), baseCurrency)
 
 	// Balance check
 	if unclaimedUsdc.GT(usdcBalance.Amount) {
@@ -133,7 +140,7 @@ func (k Keeper) ProcessWithdrawRewards(ctx sdk.Context, delegator string, denom 
 	// TODO:
 	// USDC denom is still dummy until we have real USDC in our chain.
 	// This function call will deduct the accounting in commitment module only.
-	err = k.cmk.RecordWithdrawUSDC(ctx, delegator, ptypes.BaseCurrency, unclaimedUsdc)
+	err = k.cmk.RecordWithdrawUSDC(ctx, delegator, baseCurrency, unclaimedUsdc)
 	if err != nil {
 		return sdkerrors.Wrapf(types.ErrIntOverflowTx, "Internal error with amount: %d", unclaimedUsdc)
 	}
@@ -147,7 +154,7 @@ func (k Keeper) ProcessWithdrawRewards(ctx sdk.Context, delegator string, denom 
 	// Set withdraw usdc amount
 	// TODO
 	// USDC denom is still dummy
-	revenue := sdk.NewCoin(ptypes.BaseCurrency, unclaimedUsdc)
+	revenue := sdk.NewCoin(baseCurrency, unclaimedUsdc)
 	// Transfer revenue from a single wallet of DEX revenue wallet to user.
 	err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, k.dexRevCollectorName, addr, sdk.NewCoins(revenue))
 	if err != nil {
@@ -184,8 +191,14 @@ func (k Keeper) RecordWithdrawValidatorCommission(ctx sdk.Context, delegator str
 		return k.cmk.RecordWithdrawValidatorCommission(ctx, delegator, validator, denom, unclaimed)
 	}
 
+	entry, found := k.apKeeper.GetEntry(ctx, ptypes.BaseCurrency)
+	if !found {
+		return sdkerrors.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency)
+	}
+	baseCurrency := entry.Denom
+
 	// USDC
-	unclaimedUsdc := commitments.GetRewardUnclaimedForDenom(ptypes.BaseCurrency)
+	unclaimedUsdc := commitments.GetRewardUnclaimedForDenom(baseCurrency)
 	if unclaimedUsdc.IsZero() {
 
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, "balance not available")
@@ -194,7 +207,7 @@ func (k Keeper) RecordWithdrawValidatorCommission(ctx sdk.Context, delegator str
 	revenueCollector := k.authKeeper.GetModuleAccount(ctx, k.dexRevCollectorName)
 
 	// Revenue wallet usdc balance
-	usdcBalance := k.bankKeeper.GetBalance(ctx, revenueCollector.GetAddress(), ptypes.BaseCurrency)
+	usdcBalance := k.bankKeeper.GetBalance(ctx, revenueCollector.GetAddress(), baseCurrency)
 
 	// Balance check
 	if unclaimedUsdc.GT(usdcBalance.Amount) {
@@ -204,7 +217,7 @@ func (k Keeper) RecordWithdrawValidatorCommission(ctx sdk.Context, delegator str
 	// TODO:
 	// USDC denom is still dummy until we have real USDC in our chain.
 	// This function call will deduct the accounting in commitment module only.
-	err = k.cmk.RecordWithdrawUSDC(ctx, validator, ptypes.BaseCurrency, unclaimedUsdc)
+	err = k.cmk.RecordWithdrawUSDC(ctx, validator, baseCurrency, unclaimedUsdc)
 	if err != nil {
 		return sdkerrors.Wrapf(types.ErrIntOverflowTx, "Internal error with amount: %d", unclaimedUsdc)
 	}
@@ -218,7 +231,7 @@ func (k Keeper) RecordWithdrawValidatorCommission(ctx sdk.Context, delegator str
 	// Set withdraw usdc amount
 	// TODO
 	// USDC denom is still dummy
-	revenue := sdk.NewCoin(ptypes.BaseCurrency, unclaimedUsdc)
+	revenue := sdk.NewCoin(baseCurrency, unclaimedUsdc)
 	// Transfer revenue from a single wallet of DEX revenue wallet to user's wallet.
 	err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, k.dexRevCollectorName, addr, sdk.NewCoins(revenue))
 	if err != nil {
