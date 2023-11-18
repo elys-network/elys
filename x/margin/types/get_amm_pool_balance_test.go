@@ -1,4 +1,4 @@
-package keeper_test
+package types_test
 
 import (
 	"errors"
@@ -7,17 +7,11 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	ammtype "github.com/elys-network/elys/x/amm/types"
-	"github.com/elys-network/elys/x/margin/keeper"
 	"github.com/elys-network/elys/x/margin/types"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestGetAmmPoolBalance_GetAmmPoolBalanceAvailable(t *testing.T) {
-	// Setup the keeper
-	k := keeper.Keeper{}
-
-	ctx := sdk.Context{} // mock or setup a context
-
 	// Define the ammPool with assets
 	ammPool := ammtype.Pool{
 		PoolAssets: []ammtype.PoolAsset{
@@ -33,7 +27,7 @@ func TestGetAmmPoolBalance_GetAmmPoolBalanceAvailable(t *testing.T) {
 	borrowAsset := "testAsset"
 
 	// Run the function
-	balance, err := k.GetAmmPoolBalance(ctx, ammPool, borrowAsset)
+	balance, err := types.GetAmmPoolBalance(ammPool, borrowAsset)
 
 	// Expect that there is no error
 	assert.Nil(t, err)
@@ -42,11 +36,6 @@ func TestGetAmmPoolBalance_GetAmmPoolBalanceAvailable(t *testing.T) {
 }
 
 func TestGetAmmPoolBalance_GetAmmPoolBalanceUnavailable(t *testing.T) {
-	// Setup the keeper
-	k := keeper.Keeper{}
-
-	ctx := sdk.Context{} // mock or setup a context
-
 	// Define the ammPool with assets
 	ammPool := ammtype.Pool{
 		PoolAssets: []ammtype.PoolAsset{
@@ -62,7 +51,7 @@ func TestGetAmmPoolBalance_GetAmmPoolBalanceUnavailable(t *testing.T) {
 	borrowAsset := "testAsset2"
 
 	// Run the function
-	balance, err := k.GetAmmPoolBalance(ctx, ammPool, borrowAsset)
+	balance, err := types.GetAmmPoolBalance(ammPool, borrowAsset)
 
 	// Expect that there is an insufficient balance
 	assert.True(t, errors.Is(err, sdkerrors.Wrap(types.ErrBalanceNotAvailable, "Balance not available")))

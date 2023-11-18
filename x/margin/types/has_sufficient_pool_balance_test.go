@@ -1,23 +1,18 @@
-package keeper_test
+package types_test
 
 import (
 	"testing"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/x/amm/types"
-	"github.com/elys-network/elys/x/margin/keeper"
+	ammtypes "github.com/elys-network/elys/x/amm/types"
+	"github.com/elys-network/elys/x/margin/types"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestHasSufficientPoolBalance_SufficientBalance(t *testing.T) {
-	// Setup the keeper
-	k := keeper.Keeper{}
-
-	ctx := sdk.Context{} // mock or setup a context
-
 	// Define the ammPool with assets
-	ammPool := types.Pool{
-		PoolAssets: []types.PoolAsset{
+	ammPool := ammtypes.Pool{
+		PoolAssets: []ammtypes.PoolAsset{
 			{
 				Token: sdk.Coin{
 					Denom:  "testAsset",
@@ -31,21 +26,16 @@ func TestHasSufficientPoolBalance_SufficientBalance(t *testing.T) {
 	requiredAmount := sdk.NewInt(50)
 
 	// Run the function
-	hasBalance := k.HasSufficientPoolBalance(ctx, ammPool, borrowAsset, requiredAmount)
+	hasBalance := types.HasSufficientPoolBalance(ammPool, borrowAsset, requiredAmount)
 
 	// Expect that there is a sufficient balance
 	assert.True(t, hasBalance)
 }
 
 func TestHasSufficientPoolBalance_InsufficientBalance(t *testing.T) {
-	// Setup the keeper
-	k := keeper.Keeper{}
-
-	ctx := sdk.Context{} // mock or setup a context
-
 	// Define the ammPool with assets
-	ammPool := types.Pool{
-		PoolAssets: []types.PoolAsset{
+	ammPool := ammtypes.Pool{
+		PoolAssets: []ammtypes.PoolAsset{
 			{
 				Token: sdk.Coin{
 					Denom:  "testAsset",
@@ -59,7 +49,7 @@ func TestHasSufficientPoolBalance_InsufficientBalance(t *testing.T) {
 	requiredAmount := sdk.NewInt(150)
 
 	// Run the function
-	hasBalance := k.HasSufficientPoolBalance(ctx, ammPool, borrowAsset, requiredAmount)
+	hasBalance := types.HasSufficientPoolBalance(ammPool, borrowAsset, requiredAmount)
 
 	// Expect that there is an insufficient balance
 	assert.False(t, hasBalance)

@@ -15,33 +15,6 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestOpen_ErrorCheckLongAssets(t *testing.T) {
-	// Setup the mock checker
-	mockChecker := new(mocks.OpenChecker)
-	mockAssetProfile := new(mocks.AssetProfileKeeper)
-
-	k := keeper.NewKeeper(nil, nil, nil, "cosmos1ysxv266l8w76lq0vy44ktzajdr9u9yhlxzlvga", nil, nil, nil, mockAssetProfile)
-	k.OpenChecker = mockChecker
-
-	var (
-		ctx = sdk.Context{} // Mock or setup a context
-		msg = &types.MsgOpen{
-			CollateralAsset: "aaa",
-			BorrowAsset:     "bbb",
-			Position:        types.Position_LONG,
-		}
-	)
-
-	// Mock behavior
-	mockAssetProfile.On("GetEntry", ctx, ptypes.BaseCurrency).Return(assetprofiletypes.Entry{BaseDenom: ptypes.BaseCurrency, Denom: ptypes.BaseCurrency}, true)
-	mockChecker.On("CheckLongAssets", ctx, msg.CollateralAsset, msg.BorrowAsset, ptypes.BaseCurrency).Return(sdkerrors.Wrap(types.ErrInvalidBorrowingAsset, "invalid borrowing asset"))
-
-	_, err := k.Open(ctx, msg)
-
-	assert.True(t, errors.Is(err, types.ErrInvalidBorrowingAsset))
-	mockChecker.AssertExpectations(t)
-}
-
 func TestOpen_ErrorCheckUserAuthorization(t *testing.T) {
 	// Setup the mock checker
 	mockChecker := new(mocks.OpenChecker)
@@ -61,7 +34,6 @@ func TestOpen_ErrorCheckUserAuthorization(t *testing.T) {
 
 	// Mock behavior
 	mockAssetProfile.On("GetEntry", ctx, ptypes.BaseCurrency).Return(assetprofiletypes.Entry{BaseDenom: ptypes.BaseCurrency, Denom: ptypes.BaseCurrency}, true)
-	mockChecker.On("CheckLongAssets", ctx, msg.CollateralAsset, msg.BorrowAsset, ptypes.BaseCurrency).Return(nil)
 	mockChecker.On("CheckUserAuthorization", ctx, msg).Return(sdkerrors.Wrap(types.ErrUnauthorised, "unauthorised"))
 
 	_, err := k.Open(ctx, msg)
@@ -91,9 +63,8 @@ func TestOpen_ErrorCheckMaxOpenPositions(t *testing.T) {
 
 	// Mock behavior
 	mockAssetProfile.On("GetEntry", ctx, ptypes.BaseCurrency).Return(assetprofiletypes.Entry{BaseDenom: ptypes.BaseCurrency, Denom: ptypes.BaseCurrency}, true)
-	mockChecker.On("CheckLongAssets", ctx, msg.CollateralAsset, msg.BorrowAsset, ptypes.BaseCurrency).Return(nil)
 	mockChecker.On("CheckUserAuthorization", ctx, msg).Return(nil)
-	mockChecker.On("CheckSamePosition", ctx, msg).Return(nil)
+	mockChecker.On("CheckSameAssetPosition", ctx, msg).Return(nil)
 	mockChecker.On("CheckMaxOpenPositions", ctx).Return(sdkerrors.Wrap(types.ErrMaxOpenPositions, "cannot open new positions"))
 
 	_, err := k.Open(ctx, msg)
@@ -123,11 +94,9 @@ func TestOpen_ErrorPreparePools(t *testing.T) {
 
 	// Mock behavior
 	mockAssetProfile.On("GetEntry", ctx, ptypes.BaseCurrency).Return(assetprofiletypes.Entry{BaseDenom: ptypes.BaseCurrency, Denom: ptypes.BaseCurrency}, true)
-	mockChecker.On("CheckLongAssets", ctx, msg.CollateralAsset, msg.BorrowAsset, ptypes.BaseCurrency).Return(nil)
 	mockChecker.On("CheckUserAuthorization", ctx, msg).Return(nil)
-	mockChecker.On("CheckSamePosition", ctx, msg).Return(nil)
+	mockChecker.On("CheckSameAssetPosition", ctx, msg).Return(nil)
 	mockChecker.On("CheckMaxOpenPositions", ctx).Return(nil)
-	mockChecker.On("GetTradingAsset", msg.CollateralAsset, msg.BorrowAsset, ptypes.BaseCurrency).Return(msg.BorrowAsset)
 	mockChecker.On("PreparePools", ctx, msg.BorrowAsset).Return(uint64(0), ammtypes.Pool{}, types.Pool{}, errors.New("error executing prepare pools"))
 
 	_, err := k.Open(ctx, msg)
@@ -156,11 +125,9 @@ func TestOpen_ErrorCheckPoolHealth(t *testing.T) {
 
 	// Mock behavior
 	mockAssetProfile.On("GetEntry", ctx, ptypes.BaseCurrency).Return(assetprofiletypes.Entry{BaseDenom: ptypes.BaseCurrency, Denom: ptypes.BaseCurrency}, true)
-	mockChecker.On("CheckLongAssets", ctx, msg.CollateralAsset, msg.BorrowAsset, ptypes.BaseCurrency).Return(nil)
 	mockChecker.On("CheckUserAuthorization", ctx, msg).Return(nil)
-	mockChecker.On("CheckSamePosition", ctx, msg).Return(nil)
+	mockChecker.On("CheckSameAssetPosition", ctx, msg).Return(nil)
 	mockChecker.On("CheckMaxOpenPositions", ctx).Return(nil)
-	mockChecker.On("GetTradingAsset", msg.CollateralAsset, msg.BorrowAsset, ptypes.BaseCurrency).Return(msg.BorrowAsset)
 	mockChecker.On("PreparePools", ctx, msg.BorrowAsset).Return(poolId, ammtypes.Pool{}, types.Pool{}, nil)
 	mockChecker.On("CheckPoolHealth", ctx, poolId).Return(sdkerrors.Wrap(types.ErrInvalidBorrowingAsset, "invalid collateral asset"))
 
@@ -215,11 +182,9 @@ func TestOpen_ErrorOpenLong(t *testing.T) {
 
 	// Mock behavior
 	mockAssetProfile.On("GetEntry", ctx, ptypes.BaseCurrency).Return(assetprofiletypes.Entry{BaseDenom: ptypes.BaseCurrency, Denom: ptypes.BaseCurrency}, true)
-	mockChecker.On("CheckLongAssets", ctx, msg.CollateralAsset, msg.BorrowAsset, ptypes.BaseCurrency).Return(nil)
 	mockChecker.On("CheckUserAuthorization", ctx, msg).Return(nil)
-	mockChecker.On("CheckSamePosition", ctx, msg).Return(nil)
+	mockChecker.On("CheckSameAssetPosition", ctx, msg).Return(nil)
 	mockChecker.On("CheckMaxOpenPositions", ctx).Return(nil)
-	mockChecker.On("GetTradingAsset", msg.CollateralAsset, msg.BorrowAsset, ptypes.BaseCurrency).Return(msg.BorrowAsset)
 	mockChecker.On("PreparePools", ctx, msg.BorrowAsset).Return(poolId, ammtypes.Pool{}, types.Pool{}, nil)
 	mockChecker.On("CheckPoolHealth", ctx, poolId).Return(nil)
 	mockChecker.On("OpenLong", ctx, poolId, msg, ptypes.BaseCurrency).Return(&types.MTP{}, errors.New("error executing open long"))
@@ -250,11 +215,9 @@ func TestOpen_ErrorOpenShort(t *testing.T) {
 
 	// Mock behavior
 	mockAssetProfile.On("GetEntry", ctx, ptypes.BaseCurrency).Return(assetprofiletypes.Entry{BaseDenom: ptypes.BaseCurrency, Denom: ptypes.BaseCurrency}, true)
-	mockChecker.On("CheckShortAssets", ctx, msg.CollateralAsset, msg.BorrowAsset, ptypes.BaseCurrency).Return(nil)
 	mockChecker.On("CheckUserAuthorization", ctx, msg).Return(nil)
-	mockChecker.On("CheckSamePosition", ctx, msg).Return(nil)
+	mockChecker.On("CheckSameAssetPosition", ctx, msg).Return(nil)
 	mockChecker.On("CheckMaxOpenPositions", ctx).Return(nil)
-	mockChecker.On("GetTradingAsset", msg.CollateralAsset, msg.BorrowAsset, ptypes.BaseCurrency).Return(msg.BorrowAsset)
 	mockChecker.On("PreparePools", ctx, msg.BorrowAsset).Return(poolId, ammtypes.Pool{}, types.Pool{}, nil)
 	mockChecker.On("CheckPoolHealth", ctx, poolId).Return(nil)
 	mockChecker.On("OpenShort", ctx, poolId, msg, ptypes.BaseCurrency).Return(&types.MTP{}, errors.New("error executing open short"))
@@ -286,11 +249,9 @@ func TestOpen_Successful(t *testing.T) {
 
 	// Mock behavior
 	mockAssetProfile.On("GetEntry", ctx, ptypes.BaseCurrency).Return(assetprofiletypes.Entry{BaseDenom: ptypes.BaseCurrency, Denom: ptypes.BaseCurrency}, true)
-	mockChecker.On("CheckShortAssets", ctx, msg.CollateralAsset, msg.BorrowAsset, ptypes.BaseCurrency).Return(nil)
 	mockChecker.On("CheckUserAuthorization", ctx, msg).Return(nil)
-	mockChecker.On("CheckSamePosition", ctx, msg).Return(nil)
+	mockChecker.On("CheckSameAssetPosition", ctx, msg).Return(nil)
 	mockChecker.On("CheckMaxOpenPositions", ctx).Return(nil)
-	mockChecker.On("GetTradingAsset", msg.CollateralAsset, msg.BorrowAsset, ptypes.BaseCurrency).Return(msg.BorrowAsset)
 	mockChecker.On("PreparePools", ctx, msg.BorrowAsset).Return(poolId, ammtypes.Pool{}, types.Pool{}, nil)
 	mockChecker.On("CheckPoolHealth", ctx, poolId).Return(nil)
 	mockChecker.On("OpenShort", ctx, poolId, msg, ptypes.BaseCurrency).Return(mtp, nil)

@@ -8,7 +8,7 @@ import (
 
 func (k Keeper) ProcessOpenShort(ctx sdk.Context, mtp *types.MTP, leverage sdk.Dec, eta sdk.Dec, collateralAmountDec sdk.Dec, poolId uint64, msg *types.MsgOpen, baseCurrency string) (*types.MTP, error) {
 	// Determine the trading asset.
-	tradingAsset := k.OpenShortChecker.GetTradingAsset(msg.CollateralAsset, msg.BorrowAsset, baseCurrency)
+	tradingAsset := types.GetTradingAsset(msg.CollateralAsset, msg.BorrowAsset, baseCurrency)
 
 	// Fetch the pool associated with the given pool ID.
 	pool, found := k.OpenShortChecker.GetPool(ctx, poolId)
@@ -41,7 +41,7 @@ func (k Keeper) ProcessOpenShort(ctx sdk.Context, mtp *types.MTP, leverage sdk.D
 	}
 
 	// check the balance
-	if !k.OpenShortChecker.HasSufficientPoolBalance(ctx, ammPool, baseCurrency, borrowingAmount) {
+	if !types.HasSufficientPoolBalance(ammPool, baseCurrency, borrowingAmount) {
 		return nil, sdkerrors.Wrap(types.ErrBorrowTooHigh, borrowingAmount.String())
 	}
 
@@ -60,7 +60,7 @@ func (k Keeper) ProcessOpenShort(ctx sdk.Context, mtp *types.MTP, leverage sdk.D
 	}
 
 	// Ensure the AMM pool has enough balance.
-	if !k.OpenShortChecker.HasSufficientPoolBalance(ctx, ammPool, baseCurrency, custodyAmount) {
+	if !types.HasSufficientPoolBalance(ammPool, baseCurrency, custodyAmount) {
 		return nil, sdkerrors.Wrap(types.ErrCustodyTooHigh, custodyAmount.String())
 	}
 
@@ -103,7 +103,7 @@ func (k Keeper) ProcessOpenShort(ctx sdk.Context, mtp *types.MTP, leverage sdk.D
 	k.OpenShortChecker.CalcMTPConsolidateCollateral(ctx, mtp, baseCurrency)
 
 	// Calculate consolidate liabiltiy
-	k.OpenShortChecker.CalcMTPConsolidateLiability(ctx, mtp)
+	types.CalcMTPConsolidateLiability(mtp)
 
 	// Set MTP
 	k.OpenShortChecker.SetMTP(ctx, mtp)

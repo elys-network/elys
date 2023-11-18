@@ -30,18 +30,15 @@ type PoolChecker interface {
 
 //go:generate mockery --srcpkg . --name OpenChecker --structname OpenChecker --filename open_checker.go --with-expecter
 type OpenChecker interface {
-	CheckLongAssets(ctx sdk.Context, collateralAsset string, borrowAsset string, baseCurrency string) error
-	CheckShortAssets(ctx sdk.Context, collateralAsset string, borrowAsset string, baseCurrency string) error
 	CheckUserAuthorization(ctx sdk.Context, msg *MsgOpen) error
 	CheckMaxOpenPositions(ctx sdk.Context) error
-	GetTradingAsset(collateralAsset string, borrowAsset string, baseCurrency string) string
 	PreparePools(ctx sdk.Context, tradingAsset string) (poolId uint64, ammPool ammtypes.Pool, pool Pool, err error)
 	CheckPoolHealth(ctx sdk.Context, poolId uint64) error
 	OpenLong(ctx sdk.Context, poolId uint64, msg *MsgOpen, baseCurrency string) (*MTP, error)
 	OpenShort(ctx sdk.Context, poolId uint64, msg *MsgOpen, baseCurrency string) (*MTP, error)
 	EmitOpenEvent(ctx sdk.Context, mtp *MTP)
 	SetMTP(ctx sdk.Context, mtp *MTP) error
-	CheckSamePosition(ctx sdk.Context, msg *MsgOpen) *MTP
+	CheckSameAssetPosition(ctx sdk.Context, msg *MsgOpen) *MTP
 	GetOpenMTPCount(ctx sdk.Context) uint64
 	GetMaxOpenPositions(ctx sdk.Context) uint64
 }
@@ -49,11 +46,9 @@ type OpenChecker interface {
 //go:generate mockery --srcpkg . --name OpenLongChecker --structname OpenLongChecker --filename open_long_checker.go --with-expecter
 type OpenLongChecker interface {
 	GetMaxLeverageParam(ctx sdk.Context) sdk.Dec
-	GetTradingAsset(collateralAsset string, borrowAsset string, baseCurrency string) string
 	GetPool(ctx sdk.Context, poolId uint64) (Pool, bool)
 	IsPoolEnabled(ctx sdk.Context, poolId uint64) bool
 	GetAmmPool(ctx sdk.Context, poolId uint64, tradingAsset string) (ammtypes.Pool, error)
-	HasSufficientPoolBalance(ctx sdk.Context, ammPool ammtypes.Pool, assetDenom string, requiredAmount sdk.Int) bool
 	CheckMinLiabilities(ctx sdk.Context, collateralTokenAmt sdk.Coin, eta sdk.Dec, pool Pool, ammPool ammtypes.Pool, borrowAsset string) error
 	EstimateSwap(ctx sdk.Context, leveragedAmtTokenIn sdk.Coin, borrowAsset string, ammPool ammtypes.Pool) (sdk.Int, error)
 	EstimateSwapGivenOut(ctx sdk.Context, tokenOutAmount sdk.Coin, tokenInDenom string, ammPool ammtypes.Pool) (sdk.Int, error)
@@ -63,22 +58,17 @@ type OpenLongChecker interface {
 	UpdateMTPHealth(ctx sdk.Context, mtp MTP, ammPool ammtypes.Pool, baseCurrency string) (sdk.Dec, error)
 	GetSafetyFactor(ctx sdk.Context) sdk.Dec
 	SetPool(ctx sdk.Context, pool Pool)
-	GetAmmPoolBalance(ctx sdk.Context, ammPool ammtypes.Pool, assetDenom string) (sdk.Int, error)
-	CheckLongAssets(ctx sdk.Context, collateralAsset string, borrowAsset string, baseCurrency string) error
-	CheckSamePosition(ctx sdk.Context, msg *MsgOpen) *MTP
+	CheckSameAssetPosition(ctx sdk.Context, msg *MsgOpen) *MTP
 	SetMTP(ctx sdk.Context, mtp *MTP) error
 	CalcMTPConsolidateCollateral(ctx sdk.Context, mtp *MTP, baseCurrency string) error
-	CalcMTPConsolidateLiability(ctx sdk.Context, mtp *MTP)
 }
 
 //go:generate mockery --srcpkg . --name OpenShortChecker --structname OpenShortChecker --filename open_short_checker.go --with-expecter
 type OpenShortChecker interface {
 	GetMaxLeverageParam(ctx sdk.Context) sdk.Dec
-	GetTradingAsset(collateralAsset string, borrowAsset string, baseCurrency string) string
 	GetPool(ctx sdk.Context, poolId uint64) (Pool, bool)
 	IsPoolEnabled(ctx sdk.Context, poolId uint64) bool
 	GetAmmPool(ctx sdk.Context, poolId uint64, tradingAsset string) (ammtypes.Pool, error)
-	HasSufficientPoolBalance(ctx sdk.Context, ammPool ammtypes.Pool, assetDenom string, requiredAmount sdk.Int) bool
 	CheckMinLiabilities(ctx sdk.Context, collateralTokenAmt sdk.Coin, eta sdk.Dec, pool Pool, ammPool ammtypes.Pool, borrowAsset string) error
 	EstimateSwap(ctx sdk.Context, leveragedAmtTokenIn sdk.Coin, borrowAsset string, ammPool ammtypes.Pool) (sdk.Int, error)
 	EstimateSwapGivenOut(ctx sdk.Context, tokenOutAmount sdk.Coin, tokenInDenom string, ammPool ammtypes.Pool) (sdk.Int, error)
@@ -88,12 +78,9 @@ type OpenShortChecker interface {
 	UpdateMTPHealth(ctx sdk.Context, mtp MTP, ammPool ammtypes.Pool, baseCurrency string) (sdk.Dec, error)
 	GetSafetyFactor(ctx sdk.Context) sdk.Dec
 	SetPool(ctx sdk.Context, pool Pool)
-	GetAmmPoolBalance(ctx sdk.Context, ammPool ammtypes.Pool, assetDenom string) (sdk.Int, error)
-	CheckShortAssets(ctx sdk.Context, collateralAsset string, borrowAsset string, baseCurrency string) error
-	CheckSamePosition(ctx sdk.Context, msg *MsgOpen) *MTP
+	CheckSameAssetPosition(ctx sdk.Context, msg *MsgOpen) *MTP
 	SetMTP(ctx sdk.Context, mtp *MTP) error
 	CalcMTPConsolidateCollateral(ctx sdk.Context, mtp *MTP, baseCurrency string) error
-	CalcMTPConsolidateLiability(ctx sdk.Context, mtp *MTP)
 }
 
 //go:generate mockery --srcpkg . --name CloseLongChecker --structname CloseLongChecker --filename close_long_checker.go --with-expecter

@@ -18,7 +18,7 @@ func (k Keeper) HandleBorrowInterestPayment(ctx sdk.Context, collateralAsset str
 			return finalBorrowInterestPayment
 		}
 	} else { // else update unpaid mtp interest
-		collateralIndex, _ := k.GetMTPAssetIndex(mtp, collateralAsset, "")
+		collateralIndex, _ := types.GetMTPAssetIndex(mtp, collateralAsset, "")
 		if collateralIndex < 0 {
 			return sdk.ZeroInt()
 		}

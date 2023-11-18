@@ -6,7 +6,7 @@ import (
 )
 
 func (k Keeper) TakeOutCustody(ctx sdk.Context, mtp types.MTP, pool *types.Pool, custodyAsset string) error {
-	_, custodyIndex := k.GetMTPAssetIndex(&mtp, "", custodyAsset)
+	_, custodyIndex := types.GetMTPAssetIndex(&mtp, "", custodyAsset)
 	err := pool.UpdateBalance(ctx, mtp.Custodies[custodyIndex].Denom, mtp.Custodies[custodyIndex].Amount, true, mtp.Position)
 	if err != nil {
 		return err

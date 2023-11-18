@@ -18,11 +18,11 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen) (*types.MsgOpenRespons
 	// Determine the type of position (long or short) and validate assets accordingly.
 	switch msg.Position {
 	case types.Position_LONG:
-		if err := k.OpenChecker.CheckLongAssets(ctx, msg.CollateralAsset, msg.BorrowAsset, baseCurrency); err != nil {
+		if err := types.CheckLongAssets(msg.CollateralAsset, msg.BorrowAsset, baseCurrency); err != nil {
 			return nil, err
 		}
 	case types.Position_SHORT:
-		if err := k.OpenChecker.CheckShortAssets(ctx, msg.CollateralAsset, msg.BorrowAsset, baseCurrency); err != nil {
+		if err := types.CheckShortAssets(msg.CollateralAsset, msg.BorrowAsset, baseCurrency); err != nil {
 			return nil, err
 		}
 	default:
@@ -34,7 +34,7 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen) (*types.MsgOpenRespons
 	}
 
 	// Check if it is the same direction position for the same trader.
-	if mtp := k.OpenChecker.CheckSamePosition(ctx, msg); mtp != nil {
+	if mtp := k.OpenChecker.CheckSameAssetPosition(ctx, msg); mtp != nil {
 		return k.OpenConsolidate(ctx, mtp, msg, baseCurrency)
 	}
 
@@ -43,7 +43,7 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen) (*types.MsgOpenRespons
 	}
 
 	// Get token asset other than base currency
-	tradingAsset := k.OpenChecker.GetTradingAsset(msg.CollateralAsset, msg.BorrowAsset, baseCurrency)
+	tradingAsset := types.GetTradingAsset(msg.CollateralAsset, msg.BorrowAsset, baseCurrency)
 
 	// Get pool id, amm pool, and margin pool
 	poolId, ammPool, pool, err := k.OpenChecker.PreparePools(ctx, tradingAsset)

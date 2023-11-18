@@ -1,11 +1,10 @@
-package keeper
+package types
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/x/margin/types"
 )
 
-func (k Keeper) CalcMTPConsolidateLiability(ctx sdk.Context, mtp *types.MTP) {
+func CalcMTPConsolidateLiability(mtp *MTP) {
 	if mtp.SumCollateral.IsZero() {
 		return
 	}
