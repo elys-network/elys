@@ -101,29 +101,44 @@ func TestOpenShort_InsufficientLiabilities(t *testing.T) {
 			BorrowAsset:      "uatom",
 			Position:         types.Position_SHORT,
 		}
-		poolId = uint64(42)
+		ammPool = ammtypes.Pool{
+			PoolId: uint64(42),
+			PoolAssets: []ammtypes.PoolAsset{
+				{
+					Token:  sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(10000)),
+					Weight: sdk.NewInt(50),
+				},
+				{
+					Token:  sdk.NewCoin("uatom", sdk.NewInt(10000)),
+					Weight: sdk.NewInt(50),
+				},
+			},
+		}
+		pool = types.Pool{
+			AmmPoolId: ammPool.PoolId,
+		}
 	)
 
 	// Mock the behaviors to get to the CheckMinLiabilities check
 	mockChecker.On("GetMaxLeverageParam", ctx).Return(msg.Leverage)
-	mockChecker.On("GetPool", ctx, poolId).Return(types.Pool{}, true)
-	mockChecker.On("IsPoolEnabled", ctx, poolId).Return(true)
-	mockChecker.On("GetAmmPool", ctx, poolId, msg.BorrowAsset).Return(ammtypes.Pool{}, nil) // Assuming a valid pool is returned
+	mockChecker.On("GetPool", ctx, ammPool.PoolId).Return(pool, true)
+	mockChecker.On("IsPoolEnabled", ctx, ammPool.PoolId).Return(true)
+	mockChecker.On("GetAmmPool", ctx, ammPool.PoolId, msg.BorrowAsset).Return(ammPool, nil) // Assuming a valid pool is returned
 
 	collateralAmountDec := sdk.NewDecFromBigInt(msg.CollateralAmount.BigInt())
 	leveragedAmount := sdk.NewInt(collateralAmountDec.Mul(msg.Leverage).TruncateInt().Int64())
 	custodyAmtToken := sdk.NewCoin(ptypes.BaseCurrency, leveragedAmount)
 	borrowingAmount := sdk.NewInt(99)
 
-	mockChecker.On("EstimateSwapGivenOut", ctx, custodyAmtToken, msg.BorrowAsset, ammtypes.Pool{}).Return(borrowingAmount, nil)
+	mockChecker.On("EstimateSwapGivenOut", ctx, custodyAmtToken, msg.BorrowAsset, ammPool).Return(borrowingAmount, nil)
 
 	// Mock the behavior where CheckMinLiabilities returns an error indicating insufficient liabilities
 	liabilityError := errors.New("insufficient liabilities")
 	collateralTokenAmt := sdk.NewCoin(msg.CollateralAsset, msg.CollateralAmount)
 
-	mockChecker.On("CheckMinLiabilities", ctx, collateralTokenAmt, sdk.NewDec(1), types.Pool{}, ammtypes.Pool{}, msg.BorrowAsset).Return(liabilityError)
+	mockChecker.On("CheckMinLiabilities", ctx, collateralTokenAmt, sdk.NewDec(1), pool, ammPool, msg.BorrowAsset).Return(liabilityError)
 
-	_, err := k.OpenShort(ctx, poolId, msg, ptypes.BaseCurrency)
+	_, err := k.OpenShort(ctx, ammPool.PoolId, msg, ptypes.BaseCurrency)
 
 	// Expect the custom error indicating insufficient liabilities
 	assert.True(t, errors.Is(err, liabilityError))
@@ -149,32 +164,47 @@ func TestOpenShort_InsufficientAmmPoolBalanceForCustody(t *testing.T) {
 			BorrowAsset:      "uatom",
 			Position:         types.Position_SHORT,
 		}
-		poolId = uint64(42)
+		ammPool = ammtypes.Pool{
+			PoolId: uint64(42),
+			PoolAssets: []ammtypes.PoolAsset{
+				{
+					Token:  sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(10)),
+					Weight: sdk.NewInt(50),
+				},
+				{
+					Token:  sdk.NewCoin("uatom", sdk.NewInt(10000)),
+					Weight: sdk.NewInt(50),
+				},
+			},
+		}
+		pool = types.Pool{
+			AmmPoolId: ammPool.PoolId,
+		}
 	)
 	// Mock behaviors
 	mockChecker.On("GetMaxLeverageParam", ctx).Return(msg.Leverage)
-	mockChecker.On("GetPool", ctx, poolId).Return(types.Pool{}, true)
-	mockChecker.On("IsPoolEnabled", ctx, poolId).Return(true)
-	mockChecker.On("GetAmmPool", ctx, poolId, msg.BorrowAsset).Return(ammtypes.Pool{}, nil)
+	mockChecker.On("GetPool", ctx, ammPool.PoolId).Return(pool, true)
+	mockChecker.On("IsPoolEnabled", ctx, ammPool.PoolId).Return(true)
+	mockChecker.On("GetAmmPool", ctx, ammPool.PoolId, msg.BorrowAsset).Return(ammPool, nil)
 
 	collateralAmountDec := sdk.NewDecFromBigInt(msg.CollateralAmount.BigInt())
 	leveragedAmount := sdk.NewInt(collateralAmountDec.Mul(msg.Leverage).TruncateInt().Int64())
 	custodyAmtToken := sdk.NewCoin(ptypes.BaseCurrency, leveragedAmount)
 	borrowingAmount := sdk.NewInt(99)
 
-	mockChecker.On("EstimateSwapGivenOut", ctx, custodyAmtToken, msg.BorrowAsset, ammtypes.Pool{}).Return(borrowingAmount, nil)
+	mockChecker.On("EstimateSwapGivenOut", ctx, custodyAmtToken, msg.BorrowAsset, ammPool).Return(borrowingAmount, nil)
 
 	collateralTokenAmt := sdk.NewCoin(msg.CollateralAsset, msg.CollateralAmount)
 	eta := math.LegacyNewDec(9)
 
-	mockChecker.On("CheckMinLiabilities", ctx, collateralTokenAmt, eta, types.Pool{}, ammtypes.Pool{}, msg.BorrowAsset).Return(nil)
+	mockChecker.On("CheckMinLiabilities", ctx, collateralTokenAmt, eta, pool, ammPool, msg.BorrowAsset).Return(nil)
 
 	leveragedAmtTokenIn := sdk.NewCoin(msg.BorrowAsset, borrowingAmount)
 	custodyAmount := math.NewInt(199)
 
-	mockChecker.On("EstimateSwap", ctx, leveragedAmtTokenIn, ptypes.BaseCurrency, ammtypes.Pool{}).Return(custodyAmount, nil)
+	mockChecker.On("EstimateSwap", ctx, leveragedAmtTokenIn, ptypes.BaseCurrency, ammPool).Return(custodyAmount, nil)
 
-	_, err := k.OpenShort(ctx, poolId, msg, ptypes.BaseCurrency)
+	_, err := k.OpenShort(ctx, ammPool.PoolId, msg, ptypes.BaseCurrency)
 
 	// Expect an error about custody amount being too high
 	assert.True(t, errors.Is(err, types.ErrCustodyTooHigh))
@@ -201,38 +231,53 @@ func TestOpenShort_ErrorsDuringOperations(t *testing.T) {
 			Position:         types.Position_SHORT,
 			TakeProfitPrice:  sdk.MustNewDecFromStr(types.TakeProfitPriceDefault),
 		}
-		poolId = uint64(42)
+		ammPool = ammtypes.Pool{
+			PoolId: uint64(42),
+			PoolAssets: []ammtypes.PoolAsset{
+				{
+					Token:  sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(10000)),
+					Weight: sdk.NewInt(50),
+				},
+				{
+					Token:  sdk.NewCoin("uatom", sdk.NewInt(10000)),
+					Weight: sdk.NewInt(50),
+				},
+			},
+		}
+		pool = types.Pool{
+			AmmPoolId: ammPool.PoolId,
+		}
 	)
 
 	// Mock behaviors
 	mockChecker.On("GetMaxLeverageParam", ctx).Return(msg.Leverage)
-	mockChecker.On("GetPool", ctx, poolId).Return(types.Pool{}, true)
-	mockChecker.On("IsPoolEnabled", ctx, poolId).Return(true)
-	mockChecker.On("GetAmmPool", ctx, poolId, msg.BorrowAsset).Return(ammtypes.Pool{}, nil)
+	mockChecker.On("GetPool", ctx, ammPool.PoolId).Return(pool, true)
+	mockChecker.On("IsPoolEnabled", ctx, ammPool.PoolId).Return(true)
+	mockChecker.On("GetAmmPool", ctx, ammPool.PoolId, msg.BorrowAsset).Return(ammPool, nil)
 
 	collateralAmountDec := sdk.NewDecFromBigInt(msg.CollateralAmount.BigInt())
 	leveragedAmount := sdk.NewInt(collateralAmountDec.Mul(msg.Leverage).TruncateInt().Int64())
 	custodyAmtToken := sdk.NewCoin(ptypes.BaseCurrency, leveragedAmount)
 	borrowingAmount := sdk.NewInt(99)
 
-	mockChecker.On("EstimateSwapGivenOut", ctx, custodyAmtToken, msg.BorrowAsset, ammtypes.Pool{}).Return(borrowingAmount, nil)
+	mockChecker.On("EstimateSwapGivenOut", ctx, custodyAmtToken, msg.BorrowAsset, ammPool).Return(borrowingAmount, nil)
 
 	collateralTokenAmt := sdk.NewCoin(msg.CollateralAsset, msg.CollateralAmount)
 	eta := math.LegacyNewDec(9)
 
-	mockChecker.On("CheckMinLiabilities", ctx, collateralTokenAmt, eta, types.Pool{}, ammtypes.Pool{}, msg.BorrowAsset).Return(nil)
+	mockChecker.On("CheckMinLiabilities", ctx, collateralTokenAmt, eta, pool, ammPool, msg.BorrowAsset).Return(nil)
 
 	leveragedAmtTokenIn := sdk.NewCoin(msg.BorrowAsset, borrowingAmount)
 	custodyAmount := math.NewInt(199)
 
-	mockChecker.On("EstimateSwap", ctx, leveragedAmtTokenIn, ptypes.BaseCurrency, ammtypes.Pool{}).Return(custodyAmount, nil)
+	mockChecker.On("EstimateSwap", ctx, leveragedAmtTokenIn, ptypes.BaseCurrency, ammPool).Return(custodyAmount, nil)
 
-	mtp := types.NewMTP(msg.Creator, msg.CollateralAsset, ptypes.BaseCurrency, msg.Position, msg.Leverage, sdk.MustNewDecFromStr(types.TakeProfitPriceDefault), poolId)
+	mtp := types.NewMTP(msg.Creator, msg.CollateralAsset, ptypes.BaseCurrency, msg.Position, msg.Leverage, sdk.MustNewDecFromStr(types.TakeProfitPriceDefault), ammPool.PoolId)
 
 	borrowError := errors.New("borrow error")
-	mockChecker.On("Borrow", ctx, msg.CollateralAsset, ptypes.BaseCurrency, msg.CollateralAmount, custodyAmount, mtp, &ammtypes.Pool{}, &types.Pool{}, eta, ptypes.BaseCurrency).Return(borrowError)
+	mockChecker.On("Borrow", ctx, msg.CollateralAsset, ptypes.BaseCurrency, msg.CollateralAmount, custodyAmount, mtp, &ammPool, &pool, eta, ptypes.BaseCurrency).Return(borrowError)
 
-	_, err := k.OpenShort(ctx, poolId, msg, ptypes.BaseCurrency)
+	_, err := k.OpenShort(ctx, ammPool.PoolId, msg, ptypes.BaseCurrency)
 
 	// Expect the borrow error
 	assert.True(t, errors.Is(err, borrowError))
@@ -259,44 +304,59 @@ func TestOpenShort_LeverageRatioLessThanSafetyFactor(t *testing.T) {
 			Position:         types.Position_SHORT,
 			TakeProfitPrice:  sdk.MustNewDecFromStr(types.TakeProfitPriceDefault),
 		}
-		poolId = uint64(42)
+		ammPool = ammtypes.Pool{
+			PoolId: uint64(42),
+			PoolAssets: []ammtypes.PoolAsset{
+				{
+					Token:  sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(10000)),
+					Weight: sdk.NewInt(50),
+				},
+				{
+					Token:  sdk.NewCoin("uatom", sdk.NewInt(10000)),
+					Weight: sdk.NewInt(50),
+				},
+			},
+		}
+		pool = types.Pool{
+			AmmPoolId: ammPool.PoolId,
+		}
 	)
 
 	// Mock behaviors
 	mockChecker.On("GetMaxLeverageParam", ctx).Return(msg.Leverage)
-	mockChecker.On("GetPool", ctx, poolId).Return(types.Pool{}, true)
-	mockChecker.On("IsPoolEnabled", ctx, poolId).Return(true)
-	mockChecker.On("GetAmmPool", ctx, poolId, msg.BorrowAsset).Return(ammtypes.Pool{}, nil)
+	mockChecker.On("GetPool", ctx, ammPool.PoolId).Return(pool, true)
+	mockChecker.On("IsPoolEnabled", ctx, ammPool.PoolId).Return(true)
+	mockChecker.On("GetAmmPool", ctx, ammPool.PoolId, msg.BorrowAsset).Return(ammPool, nil)
 
 	collateralAmountDec := sdk.NewDecFromBigInt(msg.CollateralAmount.BigInt())
 	leveragedAmount := sdk.NewInt(collateralAmountDec.Mul(msg.Leverage).TruncateInt().Int64())
 	custodyAmtToken := sdk.NewCoin(ptypes.BaseCurrency, leveragedAmount)
 	borrowingAmount := sdk.NewInt(99)
 
-	mockChecker.On("EstimateSwapGivenOut", ctx, custodyAmtToken, msg.BorrowAsset, ammtypes.Pool{}).Return(borrowingAmount, nil)
+	mockChecker.On("EstimateSwapGivenOut", ctx, custodyAmtToken, msg.BorrowAsset, ammPool).Return(borrowingAmount, nil)
 
 	collateralTokenAmt := sdk.NewCoin(msg.CollateralAsset, msg.CollateralAmount)
 	eta := math.LegacyNewDec(9)
 
-	mockChecker.On("CheckMinLiabilities", ctx, collateralTokenAmt, eta, types.Pool{}, ammtypes.Pool{}, msg.BorrowAsset).Return(nil)
+	mockChecker.On("CheckMinLiabilities", ctx, collateralTokenAmt, eta, pool, ammPool, msg.BorrowAsset).Return(nil)
 
 	leveragedAmtTokenIn := sdk.NewCoin(msg.BorrowAsset, borrowingAmount)
 	custodyAmount := math.NewInt(199)
 
-	mockChecker.On("EstimateSwap", ctx, leveragedAmtTokenIn, ptypes.BaseCurrency, ammtypes.Pool{}).Return(custodyAmount, nil)
+	mockChecker.On("EstimateSwap", ctx, leveragedAmtTokenIn, ptypes.BaseCurrency, ammPool).Return(custodyAmount, nil)
 
-	mtp := types.NewMTP(msg.Creator, msg.CollateralAsset, ptypes.BaseCurrency, msg.Position, msg.Leverage, sdk.MustNewDecFromStr(types.TakeProfitPriceDefault), poolId)
+	mtp := types.NewMTP(msg.Creator, msg.CollateralAsset, ptypes.BaseCurrency, msg.Position, msg.Leverage, sdk.MustNewDecFromStr(types.TakeProfitPriceDefault), ammPool.PoolId)
 
-	mockChecker.On("Borrow", ctx, msg.CollateralAsset, ptypes.BaseCurrency, msg.CollateralAmount, custodyAmount, mtp, &ammtypes.Pool{}, &types.Pool{}, eta, ptypes.BaseCurrency).Return(nil)
-	mockChecker.On("UpdatePoolHealth", ctx, &types.Pool{}).Return(nil)
-	mockChecker.On("TakeInCustody", ctx, *mtp, &types.Pool{}).Return(nil)
+	mockChecker.On("Borrow", ctx, msg.CollateralAsset, ptypes.BaseCurrency, msg.CollateralAmount, custodyAmount, mtp, &ammPool, &pool, eta, ptypes.BaseCurrency).Return(nil)
+	mockChecker.On("UpdatePoolHealth", ctx, &pool).Return(nil)
+	mockChecker.On("TakeInCustody", ctx, *mtp, &pool).Return(nil)
 
 	lr := math.LegacyNewDec(50)
 
-	mockChecker.On("UpdateMTPHealth", ctx, *mtp, ammtypes.Pool{}, ptypes.BaseCurrency).Return(lr, nil)
+	mockChecker.On("UpdateMTPHealth", ctx, *mtp, ammPool, ptypes.BaseCurrency).Return(lr, nil)
 	mockChecker.On("GetSafetyFactor", ctx).Return(sdk.NewDec(100))
 
-	_, err := k.OpenShort(ctx, poolId, msg, ptypes.BaseCurrency)
+	_, err := k.OpenShort(ctx, ammPool.PoolId, msg, ptypes.BaseCurrency)
 
 	// Expect an error indicating MTP is unhealthy
 	assert.True(t, errors.Is(err, types.ErrMTPUnhealthy))
@@ -323,41 +383,56 @@ func TestOpenShort_Success(t *testing.T) {
 			Position:         types.Position_SHORT,
 			TakeProfitPrice:  sdk.MustNewDecFromStr(types.TakeProfitPriceDefault),
 		}
-		poolId = uint64(42)
+		ammPool = ammtypes.Pool{
+			PoolId: uint64(42),
+			PoolAssets: []ammtypes.PoolAsset{
+				{
+					Token:  sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(10000)),
+					Weight: sdk.NewInt(50),
+				},
+				{
+					Token:  sdk.NewCoin("uatom", sdk.NewInt(10000)),
+					Weight: sdk.NewInt(50),
+				},
+			},
+		}
+		pool = types.Pool{
+			AmmPoolId: ammPool.PoolId,
+		}
 	)
 
 	// Mock behaviors
 	mockChecker.On("GetMaxLeverageParam", ctx).Return(msg.Leverage)
-	mockChecker.On("GetPool", ctx, poolId).Return(types.Pool{}, true)
-	mockChecker.On("IsPoolEnabled", ctx, poolId).Return(true)
-	mockChecker.On("GetAmmPool", ctx, poolId, msg.BorrowAsset).Return(ammtypes.Pool{}, nil)
+	mockChecker.On("GetPool", ctx, ammPool.PoolId).Return(pool, true)
+	mockChecker.On("IsPoolEnabled", ctx, ammPool.PoolId).Return(true)
+	mockChecker.On("GetAmmPool", ctx, ammPool.PoolId, msg.BorrowAsset).Return(ammPool, nil)
 
 	collateralAmountDec := sdk.NewDecFromBigInt(msg.CollateralAmount.BigInt())
 	leveragedAmount := sdk.NewInt(collateralAmountDec.Mul(msg.Leverage).TruncateInt().Int64())
 	custodyAmtToken := sdk.NewCoin(ptypes.BaseCurrency, leveragedAmount)
 	borrowingAmount := sdk.NewInt(99)
 
-	mockChecker.On("EstimateSwapGivenOut", ctx, custodyAmtToken, msg.BorrowAsset, ammtypes.Pool{}).Return(borrowingAmount, nil)
+	mockChecker.On("EstimateSwapGivenOut", ctx, custodyAmtToken, msg.BorrowAsset, ammPool).Return(borrowingAmount, nil)
 
 	collateralTokenAmt := sdk.NewCoin(msg.CollateralAsset, msg.CollateralAmount)
 	eta := math.LegacyNewDec(9)
 
-	mockChecker.On("CheckMinLiabilities", ctx, collateralTokenAmt, eta, types.Pool{}, ammtypes.Pool{}, msg.BorrowAsset).Return(nil)
+	mockChecker.On("CheckMinLiabilities", ctx, collateralTokenAmt, eta, pool, ammPool, msg.BorrowAsset).Return(nil)
 
 	leveragedAmtTokenIn := sdk.NewCoin(msg.BorrowAsset, borrowingAmount)
 	custodyAmount := math.NewInt(199)
 
-	mockChecker.On("EstimateSwap", ctx, leveragedAmtTokenIn, ptypes.BaseCurrency, ammtypes.Pool{}).Return(custodyAmount, nil)
+	mockChecker.On("EstimateSwap", ctx, leveragedAmtTokenIn, ptypes.BaseCurrency, ammPool).Return(custodyAmount, nil)
 
-	mtp := types.NewMTP(msg.Creator, msg.CollateralAsset, ptypes.BaseCurrency, msg.Position, msg.Leverage, sdk.MustNewDecFromStr(types.TakeProfitPriceDefault), poolId)
+	mtp := types.NewMTP(msg.Creator, msg.CollateralAsset, ptypes.BaseCurrency, msg.Position, msg.Leverage, sdk.MustNewDecFromStr(types.TakeProfitPriceDefault), ammPool.PoolId)
 
-	mockChecker.On("Borrow", ctx, msg.CollateralAsset, ptypes.BaseCurrency, msg.CollateralAmount, custodyAmount, mtp, &ammtypes.Pool{}, &types.Pool{}, eta, ptypes.BaseCurrency).Return(nil)
-	mockChecker.On("UpdatePoolHealth", ctx, &types.Pool{}).Return(nil)
-	mockChecker.On("TakeInCustody", ctx, *mtp, &types.Pool{}).Return(nil)
+	mockChecker.On("Borrow", ctx, msg.CollateralAsset, ptypes.BaseCurrency, msg.CollateralAmount, custodyAmount, mtp, &ammPool, &pool, eta, ptypes.BaseCurrency).Return(nil)
+	mockChecker.On("UpdatePoolHealth", ctx, &pool).Return(nil)
+	mockChecker.On("TakeInCustody", ctx, *mtp, &pool).Return(nil)
 
 	lr := math.LegacyNewDec(50)
 
-	mockChecker.On("UpdateMTPHealth", ctx, *mtp, ammtypes.Pool{}, ptypes.BaseCurrency).Return(lr, nil)
+	mockChecker.On("UpdateMTPHealth", ctx, *mtp, ammPool, ptypes.BaseCurrency).Return(lr, nil)
 
 	safetyFactor := math.LegacyNewDec(10)
 
@@ -366,7 +441,7 @@ func TestOpenShort_Success(t *testing.T) {
 	mockChecker.On("CalcMTPConsolidateCollateral", ctx, mtp, ptypes.BaseCurrency).Return(nil)
 	mockChecker.On("SetMTP", ctx, mtp).Return(nil)
 
-	_, err := k.OpenShort(ctx, poolId, msg, ptypes.BaseCurrency)
+	_, err := k.OpenShort(ctx, ammPool.PoolId, msg, ptypes.BaseCurrency)
 	// Expect no error
 	assert.Nil(t, err)
 	mockChecker.AssertExpectations(t)
