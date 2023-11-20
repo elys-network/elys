@@ -7,17 +7,19 @@ import (
 
 func (k Keeper) CalcMTPTakeProfitLiability(ctx sdk.Context, mtp *types.MTP, baseCurrency string) (sdk.Int, error) {
 	takeProfitLiabilities := sdk.ZeroInt()
-
-	for custodyIndex, custody := range mtp.Custodies {
-		custodyAsset := custody.Denom
+	if types.IsTakeProfitPriceInifite(mtp) {
+		return takeProfitLiabilities, nil
+	}
+	for _, takeProfitCustody := range mtp.TakeProfitCustodies {
+		takeProfitCustodyAsset := takeProfitCustody.Denom
 		// Retrieve AmmPool
-		ammPool, err := k.GetAmmPool(ctx, mtp.AmmPoolId, custodyAsset)
+		ammPool, err := k.GetAmmPool(ctx, mtp.AmmPoolId, takeProfitCustodyAsset)
 		if err != nil {
 			return sdk.ZeroInt(), err
 		}
 
 		// convert custody amount to base currency
-		C, err := k.EstimateSwapGivenOut(ctx, mtp.TakeProfitCustodies[custodyIndex], baseCurrency, ammPool)
+		C, err := k.EstimateSwapGivenOut(ctx, takeProfitCustody, baseCurrency, ammPool)
 		if err != nil {
 			return sdk.ZeroInt(), err
 		}
