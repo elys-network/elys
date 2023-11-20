@@ -6,7 +6,7 @@ import (
 
 func CalcMTPConsolidateLiability(mtp *MTP) sdk.Dec {
 	if mtp.SumCollateral.IsZero() {
-		return sdk.ZeroDec()
+		return mtp.ConsolidateLeverage
 	}
 
 	leverage := mtp.Liabilities.Quo(mtp.SumCollateral)
