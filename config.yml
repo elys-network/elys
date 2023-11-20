@@ -244,45 +244,45 @@ genesis:
               denom: uedenb
           rewards_unclaimed:
             - amount: "1000000"
-              denom: uusdc
-            - amount: "1000000"
               denom: ueden
             - amount: "1000000"
               denom: uedenb
+            - amount: "1000000"
+              denom: uusdc
           vesting_tokens:
             - denom: ueden
               total_amount: "1000000"
-              unvested_amount: "10000"
-              epoch_identifier: "day"
+              unvested_amount: "1000000"
+              epoch_identifier: "tenseconds"
               num_epochs: 100
-              current_epoch: 5
+              current_epoch: 0
           rewards_by_usdc_unclaimed:
             - denom: ueden
               amount: "200000"
-            - denom: uusdc
-              amount: "200000"
             - denom: uedenb
+              amount: "200000"
+            - denom: uusdc
               amount: "200000"
           rewards_by_elys_unclaimed:
             - denom: ueden
               amount: "300000"
-            - denom: uusdc
-              amount: "300000"
             - denom: uedenb
               amount: "200000"
+            - denom: uusdc
+              amount: "300000"
           rewards_by_eden_unclaimed:
             - denom: ueden
               amount: "300000"
-            - denom: uusdc
-              amount: "300000"
             - denom: uedenb
               amount: "200000"
+            - denom: uusdc
+              amount: "300000"
           rewards_by_edenb_unclaimed:
             - denom: ueden
               amount: "200000"
-            - denom: uusdc
-              amount: "200000"
             - denom: uedenb
+              amount: "200000"
+            - denom: uusdc
               amount: "200000"
     incentive:
       params:

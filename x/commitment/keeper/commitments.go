@@ -104,8 +104,8 @@ func (k Keeper) BurnEdenBoost(ctx sdk.Context, creator string, denom string, amo
 	}
 
 	// Subtract the amount from the unclaimed balance
-	rewardUnclaimed := commitments.GetRewardUnclaimedForDenom(denom)
 	unclaimedRemovalAmount := amount
+	rewardUnclaimed := commitments.GetRewardUnclaimedForDenom(denom)
 	if rewardUnclaimed.LT(unclaimedRemovalAmount) {
 		unclaimedRemovalAmount = rewardUnclaimed
 	}
