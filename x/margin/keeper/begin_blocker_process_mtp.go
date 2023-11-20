@@ -27,6 +27,12 @@ func BeginBlockerProcessMTP(ctx sdk.Context, k Keeper, mtp *types.MTP, pool type
 		ctx.Logger().Error(errors.Wrap(err, fmt.Sprintf("error calculating mtp take profit liabilities: %s", mtp.String())).Error())
 		return
 	}
+	// calculate and update take profit borrow rate
+	mtp.TakeProfitBorrowRate, err = k.CalcMTPTakeProfitBorrowRate(ctx, mtp)
+	if err != nil {
+		ctx.Logger().Error(errors.Wrap(err, fmt.Sprintf("error calculating mtp take profit borrow rate: %s", mtp.String())).Error())
+		return
+	}
 	h, err := k.UpdateMTPHealth(ctx, *mtp, ammPool, baseCurrency)
 	if err != nil {
 		ctx.Logger().Error(errors.Wrap(err, fmt.Sprintf("error updating mtp health: %s", mtp.String())).Error())

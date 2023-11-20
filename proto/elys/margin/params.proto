@@ -64,4 +64,8 @@ message Params {
   bool whitelisting_enabled = 18;
   string invariant_check_epoch = 19;
   string broker_address = 20;
+  string take_profit_borrow_interest_rate_min = 21 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
 }
