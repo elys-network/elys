@@ -87,6 +87,7 @@ func (suite KeeperTestSuite) TestOpenLong() {
 		CollateralAmount: sdk.NewInt(1000),
 		AmmPoolId:        1,
 		Leverage:         sdk.NewDec(5),
+		StopLossPrice:    sdk.ZeroDec(),
 	})
 	suite.Require().NoError(err)
 	suite.Require().Equal(position.Address, addr.String())
@@ -108,6 +109,7 @@ func (suite KeeperTestSuite) TestOpenLong() {
 		CollateralAmount: sdk.NewInt(1000),
 		AmmPoolId:        1,
 		Leverage:         sdk.NewDec(5),
+		StopLossPrice:    sdk.ZeroDec(),
 	})
 	suite.Require().NoError(err)
 	position2, err := k.GetPosition(suite.ctx, position.Address, position.Id)

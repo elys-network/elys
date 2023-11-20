@@ -45,12 +45,15 @@ func (k Keeper) OpenConsolidate(ctx sdk.Context, position *types.Position, msg *
 		return nil, err
 	}
 
-	collateralAmountDec := sdk.NewDecFromBigInt(msg.CollateralAmount.BigInt())
+	collateralAmountDec := sdk.NewDecFromInt(msg.CollateralAmount)
+	originCollateral := sdk.NewDecFromInt(position.Collateral.Amount)
 	position.Collateral = position.Collateral.Add(sdk.NewCoin(msg.CollateralAsset, msg.CollateralAmount))
 	maxLeverage := k.GetMaxLeverageParam(ctx)
 	leverage := sdk.MinDec(msg.Leverage, maxLeverage)
 	position.Leverage = leverage
-	position.StopLossPrice = msg.StopLossPrice
+	position.StopLossPrice = collateralAmountDec.Mul(msg.StopLossPrice).
+		Add(originCollateral.Mul(position.StopLossPrice)).
+		Quo(originCollateral.Add(collateralAmountDec))
 
 	position, err = k.ProcessOpenLong(ctx, position, leverage, collateralAmountDec, poolId, msg)
 	if err != nil {
