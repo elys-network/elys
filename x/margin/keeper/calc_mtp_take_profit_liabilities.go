@@ -16,7 +16,7 @@ func (k Keeper) CalcMTPTakeProfitLiability(ctx sdk.Context, mtp *types.MTP, base
 			return sdk.ZeroInt(), err
 		}
 
-		// update mtp take profit liabilities
+		// convert custody amount to base currency
 		C, err := k.EstimateSwapGivenOut(ctx, mtp.TakeProfitCustodies[custodyIndex], baseCurrency, ammPool)
 		if err != nil {
 			return sdk.ZeroInt(), err
