@@ -24,8 +24,6 @@ type CommitmentKeeper interface {
 	RecordClaimReward(sdk.Context, string, string, sdk.Int, ctypes.EarnType) error
 	// Update commitments for validator commission
 	RecordWithdrawValidatorCommission(sdk.Context, string, string, string, sdk.Int) error
-	// Update commitments for withdraw tokens - only USDC
-	RecordWithdrawUSDC(ctx sdk.Context, creator string, denom string, amount sdk.Int) error
 	// Burn eden boost
 	BurnEdenBoost(ctx sdk.Context, creator string, denom string, amount sdk.Int) (ctypes.Commitments, error)
 }

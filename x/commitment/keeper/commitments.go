@@ -5,7 +5,6 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	aptypes "github.com/elys-network/elys/x/assetprofile/types"
-	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
 	"github.com/elys-network/elys/x/commitment/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
@@ -199,51 +198,6 @@ func (k Keeper) RecordWithdrawValidatorCommission(ctx sdk.Context, delegator str
 	if err != nil {
 		return err
 	}
-
-	// Emit blockchain event
-	ctx.EventManager().EmitEvent(
-		sdk.NewEvent(
-			types.EventTypeCommitmentChanged,
-			sdk.NewAttribute(types.AttributeCreator, creator),
-			sdk.NewAttribute(types.AttributeAmount, amount.String()),
-			sdk.NewAttribute(types.AttributeDenom, denom),
-		),
-	)
-
-	return nil
-}
-
-// Update commitments for Withdraw Token - USDC
-func (k Keeper) RecordWithdrawUSDC(ctx sdk.Context, creator string, denom string, amount sdk.Int) error {
-	entry, found := k.apKeeper.GetEntry(ctx, ptypes.BaseCurrency)
-	if !found {
-		return sdkerrors.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency)
-	}
-	baseCurrency := entry.Denom
-
-	if denom != baseCurrency {
-		return sdkerrors.Wrapf(types.ErrWithdrawDisabled, "denom: %s", denom)
-	}
-
-	assetProfile, found := k.apKeeper.GetEntry(ctx, denom)
-	if !found {
-		return sdkerrors.Wrapf(aptypes.ErrAssetProfileNotFound, "denom: %s", denom)
-	}
-
-	if !assetProfile.WithdrawEnabled {
-		return sdkerrors.Wrapf(types.ErrWithdrawDisabled, "denom: %s", denom)
-	}
-
-	commitments, err := k.DeductUnclaimed(ctx, creator, denom, amount)
-	if err != nil {
-		return err
-	}
-
-	// Update the commitments
-	k.SetCommitments(ctx, commitments)
-
-	// Emit Hook commitment changed
-	k.AfterCommitmentChange(ctx, creator, sdk.Coins{sdk.NewCoin(denom, amount)})
 
 	// Emit blockchain event
 	ctx.EventManager().EmitEvent(

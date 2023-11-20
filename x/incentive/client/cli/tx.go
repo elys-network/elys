@@ -100,21 +100,20 @@ $ %s tx incentive withdraw-rewards --from mykey --commission --validator-address
 				version.AppName, bech32PrefixValAddr, bech32PrefixValAddr,
 			),
 		),
-		Args: cobra.ExactArgs(1),
+		Args: cobra.ExactArgs(0),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
 				return err
 			}
 
-			argDenom := args[0]
 			delAddr := clientCtx.GetFromAddress()
 			earnType, err := cmd.Flags().GetInt64(FlagEarnType)
 			if err != nil {
 				earnType = int64(commitmenttypes.EarnType_ALL_PROGRAM)
 			}
 
-			msgs := []sdk.Msg{types.NewMsgWithdrawRewards(delAddr, argDenom, commitmenttypes.EarnType(earnType))}
+			msgs := []sdk.Msg{types.NewMsgWithdrawRewards(delAddr, commitmenttypes.EarnType(earnType))}
 
 			if commission, _ := cmd.Flags().GetBool(FlagCommission); commission {
 				if validatorAddr, _ := cmd.Flags().GetString(FlagValidatorAddress); len(validatorAddr) > 0 {
@@ -122,7 +121,7 @@ $ %s tx incentive withdraw-rewards --from mykey --commission --validator-address
 					if err != nil {
 						return err
 					}
-					msgs = append(msgs, types.NewMsgWithdrawValidatorCommission(delAddr, valAddr, argDenom))
+					msgs = append(msgs, types.NewMsgWithdrawValidatorCommission(delAddr, valAddr))
 				}
 			}
 

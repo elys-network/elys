@@ -15,10 +15,9 @@ const (
 // Verify interface at compile time
 var _, _ sdk.Msg = &MsgWithdrawRewards{}, &MsgWithdrawValidatorCommission{}
 
-func NewMsgWithdrawRewards(delAddr sdk.AccAddress, denom string, earnType commitmenttypes.EarnType) *MsgWithdrawRewards {
+func NewMsgWithdrawRewards(delAddr sdk.AccAddress, earnType commitmenttypes.EarnType) *MsgWithdrawRewards {
 	return &MsgWithdrawRewards{
 		DelegatorAddress: delAddr.String(),
-		Denom:            denom,
 		WithdrawType:     earnType,
 	}
 }
@@ -46,11 +45,10 @@ func (msg MsgWithdrawRewards) ValidateBasic() error {
 	return nil
 }
 
-func NewMsgWithdrawValidatorCommission(delAddr sdk.AccAddress, valAddr sdk.ValAddress, denom string) *MsgWithdrawValidatorCommission {
+func NewMsgWithdrawValidatorCommission(delAddr sdk.AccAddress, valAddr sdk.ValAddress) *MsgWithdrawValidatorCommission {
 	return &MsgWithdrawValidatorCommission{
 		DelegatorAddress: delAddr.String(),
 		ValidatorAddress: valAddr.String(),
-		Denom:            denom,
 	}
 }
 
