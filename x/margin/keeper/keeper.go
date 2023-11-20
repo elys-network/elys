@@ -179,7 +179,7 @@ func (k Keeper) Borrow(ctx sdk.Context, collateralAsset string, custodyAsset str
 	mtp.TakeProfitCustodies[custodyIndex].Amount = types.CalcMTPTakeProfitCustody(mtp)
 
 	// calculate mtp take profit liablities, delta x_tp_l = delta y_tp_c * current price (take profit liabilities = take profit custody * current price)
-	mtp.TakeProfitLiabilities, err = k.CalcMTPTakeProfitLiability(ctx, mtp, custodyIndex, collateralAsset, *ammPool)
+	mtp.TakeProfitLiabilities, err = k.CalcMTPTakeProfitLiability(ctx, mtp, baseCurrency)
 	if err != nil {
 		return err
 	}
