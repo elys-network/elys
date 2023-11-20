@@ -173,14 +173,16 @@ func (k Keeper) Borrow(ctx sdk.Context, collateralAsset string, custodyAsset str
 
 	mtp.Collaterals[collateralIndex].Amount = mtp.Collaterals[collateralIndex].Amount.Add(collateralAmount)
 	mtp.Liabilities = mtp.Liabilities.Add(sdk.NewIntFromBigInt(liabilitiesDec.TruncateInt().BigInt()))
-
-	// we divide liabilities by take profit price to get take profit liabilities in base currency
-	mtp.TakeProfitLiabilities = mtp.Liabilities.Quo(sdk.NewIntFromBigInt(mtp.TakeProfitPrice.TruncateInt().BigInt()))
-
 	mtp.Custodies[custodyIndex].Amount = mtp.Custodies[custodyIndex].Amount.Add(custodyAmount)
 
-	// we divide custody amount by take profit price to get take profit custody amount in base currency
-	mtp.TakeProfitCustodies[custodyIndex].Amount = mtp.Custodies[custodyIndex].Amount.Quo(sdk.NewIntFromBigInt(mtp.TakeProfitPrice.TruncateInt().BigInt()))
+	// calculate mtp take profit custody, delta y_tp_c = delta x_l / take profit price (take profit custody = liabilities / take profit price)
+	mtp.TakeProfitCustodies = types.CalcMTPTakeProfitCustodies(mtp)
+
+	// calculate mtp take profit liablities, delta x_tp_l = delta y_tp_c * current price (take profit liabilities = take profit custody * current price)
+	mtp.TakeProfitLiabilities, err = k.CalcMTPTakeProfitLiability(ctx, mtp, baseCurrency)
+	if err != nil {
+		return err
+	}
 
 	mtp.Leverages = append(mtp.Leverages, eta.Add(sdk.OneDec()))
 
@@ -216,6 +218,18 @@ func (k Keeper) Borrow(ctx sdk.Context, collateralAsset string, custodyAsset str
 		return err
 	}
 
+	// All take profit liability has to be in base currency
+	err = pool.UpdateTakeProfitLiabilities(ctx, baseCurrency, mtp.TakeProfitLiabilities, true, mtp.Position)
+	if err != nil {
+		return err
+	}
+
+	// All take profit custody has to be in base currency
+	err = pool.UpdateTakeProfitCustody(ctx, baseCurrency, mtp.TakeProfitCustodies[custodyIndex].Amount, true, mtp.Position)
+	if err != nil {
+		return err
+	}
+
 	k.SetPool(ctx, *pool)
 
 	return k.SetMTP(ctx, mtp)
@@ -238,7 +252,9 @@ func (k Keeper) CalculatePoolHealthByPosition(ctx sdk.Context, pool *types.Pool,
 		}
 
 		balance := sdk.NewDecFromInt(asset.AssetBalance.Add(ammBalance))
-		liabilities := sdk.NewDecFromInt(asset.Liabilities)
+
+		// X_L = X_P_L - X_TP_L (pool liabilities = pool synthetic liabilities - pool take profit liabilities)
+		liabilities := sdk.NewDecFromInt(asset.Liabilities.Sub(asset.TakeProfitLiabilities))
 
 		if balance.Add(liabilities).IsZero() {
 			return sdk.ZeroDec()
@@ -311,7 +327,7 @@ func (k Keeper) IncrementalBorrowInterestPayment(ctx sdk.Context, collateralAsse
 		return sdk.ZeroInt(), err
 	}
 
-	// If collateralAset is not in base currency, convert it to original asset format
+	// If collateralAsset is not in base currency, convert it to original asset format
 	if collateralAsset != baseCurrency {
 		// swap custody amount to collateral for updating borrow interest unpaid
 		amtTokenIn := sdk.NewCoin(baseCurrency, borrowInterestPayment)

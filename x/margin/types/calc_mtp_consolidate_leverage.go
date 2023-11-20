@@ -4,11 +4,11 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-func CalcMTPConsolidateLiability(mtp *MTP) {
+func CalcMTPConsolidateLiability(mtp *MTP) sdk.Dec {
 	if mtp.SumCollateral.IsZero() {
-		return
+		return mtp.ConsolidateLeverage
 	}
 
 	leverage := mtp.Liabilities.Quo(mtp.SumCollateral)
-	mtp.ConsolidateLeverage = sdk.NewDecFromInt(leverage)
+	return sdk.NewDecFromInt(leverage)
 }

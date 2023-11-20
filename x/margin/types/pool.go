@@ -63,6 +63,42 @@ func (p *Pool) UpdateLiabilities(ctx sdk.Context, assetDenom string, amount sdk.
 	return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, "invalid asset denom")
 }
 
+// Update the asset take profit liabilities
+func (p *Pool) UpdateTakeProfitLiabilities(ctx sdk.Context, assetDenom string, amount sdk.Int, isIncrease bool, position Position) error {
+	poolAssets := p.GetPoolAssets(position)
+	for i, asset := range *poolAssets {
+		if asset.AssetDenom == assetDenom {
+			if isIncrease {
+				(*poolAssets)[i].TakeProfitLiabilities = asset.TakeProfitLiabilities.Add(amount)
+			} else {
+				(*poolAssets)[i].TakeProfitLiabilities = asset.TakeProfitLiabilities.Sub(amount)
+			}
+
+			return nil
+		}
+	}
+
+	return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, "invalid asset denom")
+}
+
+// Update the asset take profit custody
+func (p *Pool) UpdateTakeProfitCustody(ctx sdk.Context, assetDenom string, amount sdk.Int, isIncrease bool, position Position) error {
+	poolAssets := p.GetPoolAssets(position)
+	for i, asset := range *poolAssets {
+		if asset.AssetDenom == assetDenom {
+			if isIncrease {
+				(*poolAssets)[i].TakeProfitCustody = asset.TakeProfitCustody.Add(amount)
+			} else {
+				(*poolAssets)[i].TakeProfitCustody = asset.TakeProfitCustody.Sub(amount)
+			}
+
+			return nil
+		}
+	}
+
+	return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, "invalid asset denom")
+}
+
 // Update the asset custody
 func (p *Pool) UpdateCustody(ctx sdk.Context, assetDenom string, amount sdk.Int, isIncrease bool, position Position) error {
 	poolAssets := p.GetPoolAssets(position)

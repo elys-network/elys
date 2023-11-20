@@ -126,6 +126,16 @@ func (k Keeper) Repay(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, ammPool
 		return err
 	}
 
+	err = pool.UpdateTakeProfitLiabilities(ctx, baseCurrency, mtp.TakeProfitLiabilities, false, mtp.Position)
+	if err != nil {
+		return err
+	}
+
+	err = pool.UpdateTakeProfitCustody(ctx, baseCurrency, mtp.TakeProfitCustodies[collateralIndex].Amount, false, mtp.Position)
+	if err != nil {
+		return err
+	}
+
 	err = k.DestroyMTP(ctx, mtp.Address, mtp.Id)
 	if err != nil {
 		return err
