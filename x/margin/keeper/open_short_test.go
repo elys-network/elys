@@ -168,7 +168,7 @@ func TestOpenShort_InsufficientAmmPoolBalanceForCustody(t *testing.T) {
 			PoolId: uint64(42),
 			PoolAssets: []ammtypes.PoolAsset{
 				{
-					Token:  sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(10)),
+					Token:  sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(10000)),
 					Weight: sdk.NewInt(50),
 				},
 				{
@@ -200,7 +200,7 @@ func TestOpenShort_InsufficientAmmPoolBalanceForCustody(t *testing.T) {
 	mockChecker.On("CheckMinLiabilities", ctx, collateralTokenAmt, eta, pool, ammPool, msg.BorrowAsset).Return(nil)
 
 	leveragedAmtTokenIn := sdk.NewCoin(msg.BorrowAsset, borrowingAmount)
-	custodyAmount := math.NewInt(199)
+	custodyAmount := math.NewInt(100000)
 
 	mockChecker.On("EstimateSwap", ctx, leveragedAmtTokenIn, ptypes.BaseCurrency, ammPool).Return(custodyAmount, nil)
 
