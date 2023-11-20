@@ -77,7 +77,10 @@ func (k Keeper) CalculateEdenBoostRewards(ctx sdk.Context, delegatedAmt sdk.Int,
 	newEdenBoost := totalEden.Quo(sdk.NewInt(epochNumsPerYear)).Quo(sdk.NewInt(100)).Mul(sdk.NewInt(edenBoostAPR))
 
 	// Calculate the portion of each program contribution
-	newEdenBoostByElysStaked := sdk.NewDecFromInt(delegatedAmt).QuoInt(totalEden).MulInt(newEdenBoost).TruncateInt()
+	newEdenBoostByElysStaked := sdk.ZeroInt()
+	if !totalEden.IsZero() {
+		newEdenBoostByElysStaked = sdk.NewDecFromInt(delegatedAmt).QuoInt(totalEden).MulInt(newEdenBoost).TruncateInt()
+	}
 	newEdenBoostByEdenCommitted := newEdenBoost.Sub(newEdenBoostByElysStaked)
 
 	return newEdenBoost, newEdenBoostByElysStaked, newEdenBoostByEdenCommitted

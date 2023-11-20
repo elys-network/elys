@@ -8,6 +8,7 @@ import (
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	commitmenttypes "github.com/elys-network/elys/x/commitment/types"
 	paramtypes "github.com/elys-network/elys/x/parameter/types"
+	stabletypes "github.com/elys-network/elys/x/stablestake/types"
 )
 
 func (oq *Querier) queryStakedBalanceOfDenom(ctx sdk.Context, query *ammtypes.QueryBalanceRequest) ([]byte, error) {
@@ -22,8 +23,10 @@ func (oq *Querier) queryStakedBalanceOfDenom(ctx sdk.Context, query *ammtypes.Qu
 	balance := sdk.NewCoin(denom, bondedAmt)
 	if denom != paramtypes.Elys {
 		commitment := oq.keeper.GetCommitments(ctx, addr)
+		if denom == paramtypes.BaseCurrency {
+			denom = stabletypes.GetShareDenom()
+		}
 		committedToken := commitment.GetCommittedAmountForDenom(denom)
-
 		balance = sdk.NewCoin(denom, committedToken)
 	}
 
