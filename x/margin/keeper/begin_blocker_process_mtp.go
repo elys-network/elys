@@ -19,6 +19,14 @@ func BeginBlockerProcessMTP(ctx sdk.Context, k Keeper, mtp *types.MTP, pool type
 			}
 		}
 	}()
+	var err error
+	// update mtp take profit liabilities
+	// calculate mtp take profit liablities, delta x_tp_l = delta y_tp_c * current price (take profit liabilities = take profit custody * current price)
+	mtp.TakeProfitLiabilities, err = k.CalcMTPTakeProfitLiability(ctx, mtp, baseCurrency)
+	if err != nil {
+		ctx.Logger().Error(errors.Wrap(err, fmt.Sprintf("error calculating mtp take profit liabilities: %s", mtp.String())).Error())
+		return
+	}
 	h, err := k.UpdateMTPHealth(ctx, *mtp, ammPool, baseCurrency)
 	if err != nil {
 		ctx.Logger().Error(errors.Wrap(err, fmt.Sprintf("error updating mtp health: %s", mtp.String())).Error())
