@@ -113,8 +113,6 @@ func (k Keeper) UpdateRewardsUnclaimed(ctx sdk.Context, epochIdentifier string, 
 	// Fund community pool based on the communtiy tax
 	dexRevenueRemainedForStakers := k.UpdateCommunityPool(ctx, dexRevenueForStakers)
 
-	// TODO:
-	// Dummy denom for USDC
 	// USDC amount in sdk.Dec type
 	dexRevenueLPsAmt := dexRevenueForLps.AmountOf(baseCurrency)
 	dexRevenueStakersAmt := dexRevenueRemainedForStakers.AmountOf(baseCurrency)
@@ -152,6 +150,10 @@ func (k Keeper) UpdateRewardsUnclaimed(ctx sdk.Context, epochIdentifier string, 
 			rewardsByEdenBCommitted := sdk.NewCoins()
 			rewardsByUSDCDeposit := sdk.NewCoins()
 
+			newSumEdenRewardsUnClaimed := sdk.ZeroInt()
+			newSumEdenBRewardsUnClaimed := sdk.ZeroInt()
+			newSumDexRewardsUnClaimed := sdk.ZeroInt()
+
 			// Calculate delegated amount per delegator
 			delegatedAmt := k.CalculateDelegatedAmount(ctx, creator)
 
@@ -159,76 +161,134 @@ func (k Keeper) UpdateRewardsUnclaimed(ctx sdk.Context, epochIdentifier string, 
 			// Distribute gas fees to stakers
 
 			// Calculate new unclaimed Eden tokens from Elys staked
+			// ----------------------------------------------------------
 			newUnclaimedEdenTokens, dexRewards, dexRewardsByStakers := k.CalculateRewardsForStakersByElysStaked(ctx, delegatedAmt, edenAmountPerEpochStakers, dexRevenueStakersAmt)
+			// Total
 			totalEdenGiven = totalEdenGiven.Add(newUnclaimedEdenTokens)
 			totalRewardsGiven = totalRewardsGiven.Add(dexRewards)
 
+			// Sum for each loop
+			newSumEdenRewardsUnClaimed = newSumEdenRewardsUnClaimed.Add(newUnclaimedEdenTokens)
+			newSumDexRewardsUnClaimed = newSumDexRewardsUnClaimed.Add(dexRewards)
+
+			// Store Eden rewards by Elys staking
 			newEdenFromElysStaking := newUnclaimedEdenTokens
-			newDexRewardFromElysStaking := dexRewardsByStakers.TruncateInt()
+			newDexRewardFromElysStaking := dexRewards
+			// ----------------------------------------------------------
 
 			// Calculate new unclaimed Eden tokens from Eden committed
+			// ----------------------------------------------------------
+			// ----------------------------------------------------------
 			edenCommitted := commitments.GetCommittedAmountForDenom(ptypes.Eden)
 			newUnclaimedEdenTokens, dexRewards = k.CalculateRewardsForStakersByCommitted(ctx, edenCommitted, edenAmountPerEpochStakers, dexRevenueStakersAmt)
+
+			// Total
 			totalEdenGiven = totalEdenGiven.Add(newUnclaimedEdenTokens)
 			totalRewardsGiven = totalRewardsGiven.Add(dexRewards)
+
+			// Sum for each loop
+			newSumEdenRewardsUnClaimed = newSumEdenRewardsUnClaimed.Add(newUnclaimedEdenTokens)
+			newSumDexRewardsUnClaimed = newSumDexRewardsUnClaimed.Add(dexRewards)
 
 			// Sub bucket
 			rewardsByEdenCommitted = rewardsByEdenCommitted.Add(sdk.NewCoin(ptypes.Eden, newUnclaimedEdenTokens))
 			rewardsByEdenCommitted = rewardsByEdenCommitted.Add(sdk.NewCoin(baseCurrency, dexRewards))
+			// ----------------------------------------------------------
+			// ----------------------------------------------------------
 
 			// Calculate new unclaimed Eden tokens from Eden Boost committed
+			// ----------------------------------------------------------
+			// ----------------------------------------------------------
 			edenBoostCommitted := commitments.GetCommittedAmountForDenom(ptypes.EdenB)
 			newUnclaimedEdenTokens, dexRewards = k.CalculateRewardsForStakersByCommitted(ctx, edenBoostCommitted, edenAmountPerEpochStakers, dexRevenueStakersAmt)
+
+			// Total
 			totalEdenGiven = totalEdenGiven.Add(newUnclaimedEdenTokens)
 			totalRewardsGiven = totalRewardsGiven.Add(dexRewards)
+
+			// Sum for each loop
+			newSumEdenRewardsUnClaimed = newSumEdenRewardsUnClaimed.Add(newUnclaimedEdenTokens)
+			newSumDexRewardsUnClaimed = newSumDexRewardsUnClaimed.Add(dexRewards)
 
 			// Sub bucket
 			rewardsByEdenBCommitted = rewardsByEdenBCommitted.Add(sdk.NewCoin(ptypes.Eden, newUnclaimedEdenTokens))
 			rewardsByEdenBCommitted = rewardsByEdenBCommitted.Add(sdk.NewCoin(baseCurrency, dexRewards))
+			// ----------------------------------------------------------
+			// ----------------------------------------------------------
 
 			// Calculate new unclaimed Eden tokens from LpTokens committed, Dex rewards distribution
 			// Distribute gas fees to LPs
+			// ----------------------------------------------------------
+			// ----------------------------------------------------------
 			newUnclaimedEdenTokensLp, dexRewardsLp := k.CalculateRewardsForLPs(ctx, totalProxyTVL, commitments, edenAmountPerEpochLPs, gasFeesLPsAmt)
+			// Total
 			totalEdenGivenLP = totalEdenGivenLP.Add(newUnclaimedEdenTokensLp)
 			totalRewardsGivenLP = totalRewardsGivenLP.Add(dexRewardsLp)
 
+			// Sum for each loop
+			newSumEdenRewardsUnClaimed = newSumEdenRewardsUnClaimed.Add(newUnclaimedEdenTokensLp)
+			newSumDexRewardsUnClaimed = newSumDexRewardsUnClaimed.Add(dexRewardsLp)
+			// ----------------------------------------------------------
+			// ----------------------------------------------------------
+
 			// Calculate new unclaimed Eden tokens from stable stake LpTokens committed, Dex rewards distribution
 			// Distribute gas fees to LPs
-			newUnclaimedEdenTokensStableLp, dexRewardsStableLp := k.CalculateRewardsForLPs(ctx, totalProxyTVL, commitments, edenAmountPerEpochLPs, gasFeesLPsAmt)
+			// ----------------------------------------------------------
+			// ----------------------------------------------------------
+			newUnclaimedEdenTokensStableLp, dexRewardsStableLp := k.CalculateRewardsForStableStakeLPs(ctx, totalProxyTVL, commitments, edenAmountPerEpochLPs, gasFeesLPsAmt, baseCurrency)
+
+			// Total
 			totalEdenGivenLP = totalEdenGivenLP.Add(newUnclaimedEdenTokensStableLp)
 			totalRewardsGivenLP = totalRewardsGivenLP.Add(dexRewardsStableLp)
+
+			// Sum for each loop
+			newSumEdenRewardsUnClaimed = newSumEdenRewardsUnClaimed.Add(newUnclaimedEdenTokensStableLp)
+			newSumDexRewardsUnClaimed = newSumDexRewardsUnClaimed.Add(dexRewardsStableLp)
 
 			// Sub bucket
 			rewardsByUSDCDeposit = rewardsByUSDCDeposit.Add(sdk.NewCoin(ptypes.Eden, newUnclaimedEdenTokensStableLp))
 			rewardsByUSDCDeposit = rewardsByUSDCDeposit.Add(sdk.NewCoin(baseCurrency, dexRewardsStableLp))
-
-			// Calculate the total Eden unclaimed amount
-			newUnclaimedEdenTokens = newUnclaimedEdenTokens.Add(newUnclaimedEdenTokensLp)
+			// ----------------------------------------------------------
+			// ----------------------------------------------------------
 
 			// Give commission to validators ( Eden from stakers and Dex rewards from stakers. )
-			edenCommissionGiven, dexRewardsCommissionGiven := k.GiveCommissionToValidators(ctx, creator, delegatedAmt, newUnclaimedEdenTokens, dexRewardsByStakers, baseCurrency)
+			// ----------------------------------------------------------
+			// ----------------------------------------------------------
+			edenCommissionGiven, dexRewardsCommissionGiven := k.GiveCommissionToValidators(ctx, creator, delegatedAmt, newEdenFromElysStaking, dexRewardsByStakers, baseCurrency)
 
-			// Minus the given amount and increase with the remains only
-			newUnclaimedEdenTokens = newUnclaimedEdenTokens.Sub(edenCommissionGiven)
+			// Minus the commission amount given
+			newSumEdenRewardsUnClaimed = newSumEdenRewardsUnClaimed.Sub(edenCommissionGiven)
 
-			// Plus LpDexRewards and minus commission given
-			dexRewards = dexRewards.Add(dexRewardsLp).Sub(dexRewardsCommissionGiven)
+			// Minus the commission amount given
+			newSumDexRewardsUnClaimed = newSumDexRewardsUnClaimed.Sub(dexRewardsCommissionGiven)
+			// ----------------------------------------------------------
+			// ----------------------------------------------------------
 
 			// We should deduct validator commissions from "reward by elys staking sub bucket"
+			// ----------------------------------------------------------
+			// ----------------------------------------------------------
 			newEdenFromElysStaking = newEdenFromElysStaking.Sub(edenCommissionGiven)
 			newDexRewardFromElysStaking = newDexRewardFromElysStaking.Sub(dexRewardsCommissionGiven)
 
 			// Add Eden rewards from Elys staking
 			rewardsByElysStaking = rewardsByElysStaking.Add(sdk.NewCoin(ptypes.Eden, newEdenFromElysStaking))
 			rewardsByElysStaking = rewardsByElysStaking.Add(sdk.NewCoin(baseCurrency, newDexRewardFromElysStaking))
+			// ----------------------------------------------------------
+			// ----------------------------------------------------------
 
 			// Calculate new unclaimed Eden-Boost tokens for staker and Eden token holders
+			// ----------------------------------------------------------
+			// ----------------------------------------------------------
 			newUnclaimedEdenBoostTokens, newUnclaimedEdenBoostFromElysStaking, newUnclaimedEdenBoostFromEdenCommited := k.CalculateEdenBoostRewards(ctx, delegatedAmt, commitments, epochIdentifier, edenBoostAPR)
 			rewardsByElysStaking = rewardsByElysStaking.Add(sdk.NewCoin(ptypes.EdenB, newUnclaimedEdenBoostFromElysStaking))
 			rewardsByEdenCommitted = rewardsByEdenCommitted.Add(sdk.NewCoin(ptypes.EdenB, newUnclaimedEdenBoostFromEdenCommited))
 
+			newSumEdenBRewardsUnClaimed = newSumEdenBRewardsUnClaimed.Add(newUnclaimedEdenBoostTokens)
+			// ----------------------------------------------------------
+			// ----------------------------------------------------------
+
 			// Update Commitments with new unclaimed token amounts
-			k.UpdateCommitments(ctx, creator, &commitments, newUnclaimedEdenTokens, newUnclaimedEdenBoostTokens, dexRewards, baseCurrency)
+			k.UpdateCommitments(ctx, creator, &commitments, newSumEdenRewardsUnClaimed, newSumEdenBRewardsUnClaimed, newSumDexRewardsUnClaimed, baseCurrency)
 
 			// Update sub buckets commitment with new unclaimed token amounts
 			k.UpdateCommitmentsSubBuckets(ctx, creator, &commitments, rewardsByElysStaking, rewardsByEdenCommitted, rewardsByEdenBCommitted, rewardsByUSDCDeposit)
@@ -245,8 +305,6 @@ func (k Keeper) UpdateRewardsUnclaimed(ctx sdk.Context, epochIdentifier string, 
 	// Fund community the remain coins
 	// ----------------------------------
 	edenRemainedCoin := sdk.NewDecCoin(ptypes.Eden, edenRemained.Add(edenRemainedLP))
-	// TODO:
-	// Dummy denom for USDC
 	dexRewardsRemainedCoin := sdk.NewDecCoinFromDec(baseCurrency, dexRewardsRemained.Add(dexRewardsRemainedLP))
 
 	feePool := k.GetFeePool(ctx)
@@ -268,8 +326,6 @@ func (k Keeper) UpdateCommitments(ctx sdk.Context, creator string, commitments *
 	// All dex revenue are collected to incentive module in USDC
 	// Gas fees (Elys) are also converted into USDC and collected into total dex revenue wallet of incentive module.
 	// Update USDC balances in the Commitments structure.
-	// TODO:
-	// USDC token denom is dummy one for now until we have real usdc brought through bridge.
 	// These are the rewards from each pool, margin, gas fee.
 	commitments.AddRewardsUnclaimed(sdk.NewCoin(baseCurrency, dexRewards))
 
@@ -322,7 +378,7 @@ func (k Keeper) CalculateProxyTVL(ctx sdk.Context, baseCurrency string) sdk.Dec 
 	// Get pool info from incentive param
 	poolInfo, found := k.GetPoolInfo(ctx, stableStakePoolId)
 	if !found {
-		k.InitPoolMultiplier(ctx, stableStakePoolId)
+		k.InitStableStakePoolMultiplier(ctx, stableStakePoolId)
 		poolInfo, _ = k.GetPoolInfo(ctx, stableStakePoolId)
 	}
 	tvl := stabletypes.TVL(ctx, k.authKeeper, k.bankKeeper, baseCurrency)

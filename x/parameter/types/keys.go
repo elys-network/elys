@@ -49,6 +49,12 @@ const (
 	// 8760 hours
 	HoursPerYear = 8760
 
+	// 2102666 * 15s = 3.154e+7 (seconds per year)
+	CountsOf15sPerYear = 2102666
+
+	// 3154000 * 10s = 3.154e+7 (seconds per year)
+	CountsOf10sPerYear = 3154000
+
 	// Return ok
 	RES_OK = uint64(200)
 )

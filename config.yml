@@ -13,7 +13,10 @@ accounts:
       - 9000000000000000uelys
   - name: cw
     coins:
+      - 1000000000000uatom
       - 9000000000000000uelys
+      - 1000000000000uusdc
+      - 1000000000000uusdt
     mnemonic: wool diet nasty illness balcony life grunt truck verify later raise carpet describe victory snack sand struggle better smart purse miss bicycle copy orphan
 build:
   main: cmd/elysd
@@ -112,16 +115,6 @@ genesis:
           display: eden
       balances:
         - address: elys1w9uac4zrf9z7qd604qxk2y4n74568lfl8vutz4
-          coins:
-            - amount: "1000000000"
-              denom: uatom
-            - amount: "1000000000"
-              denom: ueden
-            - amount: "1000000000"
-              denom: uelys
-            - amount: "1000000000"
-              denom: uusdc
-        - address: elys1v30pe777dj9mgsnlv0j2c5wh05m0ya0nlhuv7t
           coins:
             - amount: "1000000000"
               denom: uatom
@@ -297,14 +290,14 @@ genesis:
     incentive:
       params:
         lp_incentives:
-          - amount: "10000000"
+          - amount: "100000000000"
             epoch_identifier: tenseconds
             start_time: "2023-04-20T12:34:56.789Z"
             num_epochs: "500"
             current_epoch: "0"
             eden_boost_apr: "100"
         stake_incentives:
-          - amount: "10000000"
+          - amount: "100000000000"
             epoch_identifier: tenseconds
             start_time: "2023-04-20T12:34:56.789Z"
             num_epochs: "500"

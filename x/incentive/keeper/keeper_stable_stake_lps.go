@@ -33,6 +33,9 @@ func (k Keeper) CalculateRewardsForStableStakeLPs(ctx sdk.Context, totalProxyTVL
 
 	// Calculate Proxy TVL share considering multiplier
 	proxyTVL := sdk.NewDecFromInt(tvl).Mul(poolInfo.Multiplier)
+	if totalProxyTVL.Equal(sdk.ZeroDec()) {
+		return sdk.ZeroInt(), sdk.ZeroInt()
+	}
 	poolShare := proxyTVL.Quo(totalProxyTVL)
 
 	// Calculate new Eden for this pool

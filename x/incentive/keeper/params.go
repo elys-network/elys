@@ -85,6 +85,35 @@ func (k Keeper) InitPoolMultiplier(ctx sdk.Context, poolId uint64) bool {
 	return true
 }
 
+// InitStableStakePoolMultiplier: create a stable stake pool information responding to the pool creation.
+func (k Keeper) InitStableStakePoolMultiplier(ctx sdk.Context, poolId uint64) bool {
+	// Fetch incentive params
+	params := k.GetParams(ctx)
+	poolInfos := params.PoolInfos
+
+	for _, ps := range poolInfos {
+		if ps.PoolId == poolId {
+			return true
+		}
+	}
+
+	// Initiate a new pool info
+	poolInfo := types.PoolInfo{
+		// reward amount
+		PoolId: poolId,
+		// reward wallet address
+		RewardWallet: stabletypes.PoolAddress().String(),
+		// multiplier for lp rewards
+		Multiplier: sdk.NewDec(1),
+	}
+
+	// Update pool information
+	params.PoolInfos = append(params.PoolInfos, poolInfo)
+	k.SetParams(ctx, params)
+
+	return true
+}
+
 // UpdatePoolMultipliers updates pool multipliers through gov proposal
 func (k Keeper) UpdatePoolMultipliers(ctx sdk.Context, poolMultipliers []types.PoolMultipliers) bool {
 	if len(poolMultipliers) < 1 {
@@ -125,7 +154,6 @@ func (k Keeper) GetProperIncentiveParam(ctx sdk.Context, epochIdentifier string)
 
 	// Current block timestamp
 	timestamp := ctx.BlockTime().Unix()
-	foundIncentive := false
 
 	// Incentive params initialize
 	stakeIncentive := params.StakeIncentives[0]
@@ -158,7 +186,7 @@ func (k Keeper) GetProperIncentiveParam(ctx sdk.Context, epochIdentifier string)
 	}
 
 	// return found, stake, lp incentive params
-	return foundIncentive, stakeIncentive, lpIncentive
+	return true, stakeIncentive, lpIncentive
 }
 
 // Calculate epoch counts per year to be used in APR calculation
@@ -170,6 +198,10 @@ func (k Keeper) CalculateEpochCountsPerYear(epochIdentifier string) int64 {
 		return ptypes.DaysPerYear
 	case etypes.HourEpochID:
 		return ptypes.HoursPerYear
+	case etypes.BandEpochID:
+		return ptypes.CountsOf15sPerYear
+	case etypes.TenSecondsEpochID:
+		return ptypes.CountsOf10sPerYear
 	}
 
 	return 0
