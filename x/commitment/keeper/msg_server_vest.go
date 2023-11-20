@@ -43,7 +43,7 @@ func (k Keeper) ProcessTokenVesting(ctx sdk.Context, denom string, amount sdk.In
 		return err
 	}
 
-	vestingTokens = append(vestingTokens, types.VestingTokens{
+	vestingTokens = append(vestingTokens, &types.VestingTokens{
 		Denom:           vestingInfo.VestingDenom,
 		TotalAmount:     amount,
 		UnvestedAmount:  amount,

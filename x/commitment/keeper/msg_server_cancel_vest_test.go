@@ -57,7 +57,7 @@ func TestCancelVest(t *testing.T) {
 	// Set up the commitments for the creator
 	commitments := types.Commitments{
 		Creator: creator.String(),
-		VestingTokens: []types.VestingTokens{
+		VestingTokens: []*types.VestingTokens{
 			{
 				Denom:           ptypes.Eden,
 				TotalAmount:     sdk.NewInt(100),

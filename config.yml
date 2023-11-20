@@ -316,8 +316,8 @@ genesis:
           uedenb: "100"
       fee_pool:
         community_pool:
-          amount: "0"
-          denom: uelys
+          - amount: "0"
+            denom: uelys
     tokenomics:
       airdropList:
         - intent: AtomStakers

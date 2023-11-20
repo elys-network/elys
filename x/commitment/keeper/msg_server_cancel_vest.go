@@ -23,7 +23,7 @@ func (k msgServer) CancelVest(goCtx context.Context, msg *types.MsgCancelVest) (
 
 	remainingToCancel := msg.Amount
 
-	newVestingTokens := make([]types.VestingTokens, 0, len(commitments.VestingTokens))
+	newVestingTokens := make([]*types.VestingTokens, 0, len(commitments.VestingTokens))
 
 	for _, vesting := range commitments.VestingTokens {
 		cancelAmount := sdk.MinInt(remainingToCancel, vesting.UnvestedAmount)

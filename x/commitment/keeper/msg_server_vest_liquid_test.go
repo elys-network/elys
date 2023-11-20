@@ -62,7 +62,7 @@ func TestLiquidVestWithExceed(t *testing.T) {
 	// Set up the commitments for the creator
 	commitments := types.Commitments{
 		Creator: creator.String(),
-		CommittedTokens: []types.CommittedTokens{
+		CommittedTokens: []*types.CommittedTokens{
 			{
 				Denom:  ptypes.Eden,
 				Amount: sdk.NewInt(50),

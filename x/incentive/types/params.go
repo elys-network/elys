@@ -114,11 +114,11 @@ func (p Params) Validate() error {
 		return err
 	}
 
-	if err := validateAprUsdc(p.AprEdenElys); err != nil {
+	if err := validateAprUsdc(p.AprUsdc); err != nil {
 		return err
 	}
 
-	if err := validateAprEdenB(p.AprEdenElys); err != nil {
+	if err := validateAprEdenB(p.AprEdenB); err != nil {
 		return err
 	}
 
@@ -205,7 +205,9 @@ func validateLPIncentives(i interface{}) error {
 
 		if vv.EpochIdentifier != etypes.WeekEpochID &&
 			vv.EpochIdentifier != etypes.DayEpochID &&
-			vv.EpochIdentifier != etypes.HourEpochID {
+			vv.EpochIdentifier != etypes.HourEpochID &&
+			vv.EpochIdentifier != etypes.BandEpochID &&
+			vv.EpochIdentifier != etypes.TenSecondsEpochID {
 			return fmt.Errorf("invalid epoch: %v", vv)
 		}
 
@@ -241,7 +243,9 @@ func validateStakeIncentives(i interface{}) error {
 
 		if vv.EpochIdentifier != etypes.WeekEpochID &&
 			vv.EpochIdentifier != etypes.DayEpochID &&
-			vv.EpochIdentifier != etypes.HourEpochID {
+			vv.EpochIdentifier != etypes.HourEpochID &&
+			vv.EpochIdentifier != etypes.BandEpochID &&
+			vv.EpochIdentifier != etypes.TenSecondsEpochID {
 			return fmt.Errorf("invalid epoch: %v", vv)
 		}
 

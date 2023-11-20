@@ -25,10 +25,10 @@ func (k Keeper) GetCommitments(ctx sdk.Context, creator string) types.Commitment
 	if b == nil {
 		return types.Commitments{
 			Creator:                 creator,
-			CommittedTokens:         []types.CommittedTokens{},
+			CommittedTokens:         []*types.CommittedTokens{},
 			RewardsUnclaimed:        sdk.Coins{},
 			Claimed:                 sdk.Coins{},
-			VestingTokens:           []types.VestingTokens{},
+			VestingTokens:           []*types.VestingTokens{},
 			RewardsByElysUnclaimed:  sdk.Coins{},
 			RewardsByEdenUnclaimed:  sdk.Coins{},
 			RewardsByEdenbUnclaimed: sdk.Coins{},
@@ -105,9 +105,9 @@ func (k Keeper) BurnEdenBoost(ctx sdk.Context, creator string, denom string, amo
 
 	// Subtract the amount from the unclaimed balance
 	rewardUnclaimed := commitments.GetRewardUnclaimedForDenom(denom)
-	unclaimedRemovalAmount := rewardUnclaimed
-	if amount.LT(rewardUnclaimed) {
-		unclaimedRemovalAmount = amount
+	unclaimedRemovalAmount := amount
+	if rewardUnclaimed.LT(unclaimedRemovalAmount) {
+		unclaimedRemovalAmount = rewardUnclaimed
 	}
 	err := commitments.SubRewardsUnclaimed(sdk.NewCoin(denom, unclaimedRemovalAmount))
 	if err != nil {
@@ -121,9 +121,9 @@ func (k Keeper) BurnEdenBoost(ctx sdk.Context, creator string, denom string, amo
 
 	// Subtract the amount from the claimed balance
 	claimed := commitments.GetClaimedForDenom(denom)
-	claimedRemovalAmount := claimed
-	if amount.LT(claimed) {
-		claimedRemovalAmount = amount
+	claimedRemovalAmount := amount
+	if claimed.LT(claimedRemovalAmount) {
+		claimedRemovalAmount = claimed
 	}
 	err = commitments.SubClaimed(sdk.NewCoin(denom, claimedRemovalAmount))
 	if err != nil {
@@ -133,6 +133,11 @@ func (k Keeper) BurnEdenBoost(ctx sdk.Context, creator string, denom string, amo
 	amount = amount.Sub(claimedRemovalAmount)
 	if amount.Equal(sdk.ZeroInt()) {
 		return commitments, nil
+	}
+
+	committedAmount := commitments.GetCommittedAmountForDenom(denom)
+	if committedAmount.LT(amount) {
+		amount = committedAmount
 	}
 
 	err = commitments.DeductFromCommitted(denom, amount, uint64(ctx.BlockTime().Unix()))
