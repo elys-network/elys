@@ -26,8 +26,8 @@ func TestOpen_ErrorCheckUserAuthorization(t *testing.T) {
 	var (
 		ctx = sdk.Context{} // Mock or setup a context
 		msg = &types.MsgOpen{
-			CollateralAsset: "aaa",
-			BorrowAsset:     "bbb",
+			CollateralAsset: ptypes.BaseCurrency,
+			BorrowAsset:     "uatom",
 			Position:        types.Position_LONG,
 		}
 	)
@@ -39,6 +39,7 @@ func TestOpen_ErrorCheckUserAuthorization(t *testing.T) {
 	_, err := k.Open(ctx, msg)
 
 	assert.True(t, errors.Is(err, types.ErrUnauthorised))
+	mockAssetProfile.AssertExpectations(t)
 	mockChecker.AssertExpectations(t)
 }
 
@@ -54,8 +55,8 @@ func TestOpen_ErrorCheckMaxOpenPositions(t *testing.T) {
 		ctx = sdk.Context{} // Mock or setup a context
 		msg = &types.MsgOpen{
 			Creator:         "creator",
-			CollateralAsset: "aaa",
-			BorrowAsset:     "bbb",
+			CollateralAsset: ptypes.BaseCurrency,
+			BorrowAsset:     "uatom",
 			Position:        types.Position_LONG,
 			Leverage:        sdk.NewDec(10),
 		}
@@ -70,6 +71,7 @@ func TestOpen_ErrorCheckMaxOpenPositions(t *testing.T) {
 	_, err := k.Open(ctx, msg)
 
 	assert.True(t, errors.Is(err, types.ErrMaxOpenPositions))
+	mockAssetProfile.AssertExpectations(t)
 	mockChecker.AssertExpectations(t)
 }
 
@@ -85,8 +87,8 @@ func TestOpen_ErrorPreparePools(t *testing.T) {
 		ctx = sdk.Context{} // Mock or setup a context
 		msg = &types.MsgOpen{
 			Creator:         "creator",
-			CollateralAsset: "aaa",
-			BorrowAsset:     "bbb",
+			CollateralAsset: ptypes.BaseCurrency,
+			BorrowAsset:     "uatom",
 			Position:        types.Position_LONG,
 			Leverage:        sdk.NewDec(10),
 		}
@@ -102,6 +104,7 @@ func TestOpen_ErrorPreparePools(t *testing.T) {
 	_, err := k.Open(ctx, msg)
 
 	assert.Equal(t, errors.New("error executing prepare pools"), err)
+	mockAssetProfile.AssertExpectations(t)
 	mockChecker.AssertExpectations(t)
 }
 
@@ -116,8 +119,8 @@ func TestOpen_ErrorCheckPoolHealth(t *testing.T) {
 	var (
 		ctx = sdk.Context{} // Mock or setup a context
 		msg = &types.MsgOpen{
-			CollateralAsset: "aaa",
-			BorrowAsset:     "bbb",
+			CollateralAsset: ptypes.BaseCurrency,
+			BorrowAsset:     "uatom",
 			Position:        types.Position_LONG,
 		}
 		poolId = uint64(1)
@@ -134,6 +137,7 @@ func TestOpen_ErrorCheckPoolHealth(t *testing.T) {
 	_, err := k.Open(ctx, msg)
 
 	assert.True(t, errors.Is(err, types.ErrInvalidBorrowingAsset))
+	mockAssetProfile.AssertExpectations(t)
 	mockChecker.AssertExpectations(t)
 }
 
@@ -148,8 +152,8 @@ func TestOpen_ErrorInvalidPosition(t *testing.T) {
 	var (
 		ctx = sdk.Context{} // Mock or setup a context
 		msg = &types.MsgOpen{
-			CollateralAsset: "aaa",
-			BorrowAsset:     "bbb",
+			CollateralAsset: ptypes.BaseCurrency,
+			BorrowAsset:     "uatom",
 		}
 	)
 
@@ -159,6 +163,7 @@ func TestOpen_ErrorInvalidPosition(t *testing.T) {
 	_, err := k.Open(ctx, msg)
 
 	assert.True(t, errors.Is(err, types.ErrInvalidPosition))
+	mockAssetProfile.AssertExpectations(t)
 	mockChecker.AssertExpectations(t)
 }
 
@@ -173,8 +178,8 @@ func TestOpen_ErrorOpenLong(t *testing.T) {
 	var (
 		ctx = sdk.Context{} // Mock or setup a context
 		msg = &types.MsgOpen{
-			CollateralAsset: "aaa",
-			BorrowAsset:     "bbb",
+			CollateralAsset: ptypes.BaseCurrency,
+			BorrowAsset:     "uatom",
 			Position:        types.Position_LONG,
 		}
 		poolId = uint64(1)
@@ -192,6 +197,7 @@ func TestOpen_ErrorOpenLong(t *testing.T) {
 	_, err := k.Open(ctx, msg)
 
 	assert.Equal(t, errors.New("error executing open long"), err)
+	mockAssetProfile.AssertExpectations(t)
 	mockChecker.AssertExpectations(t)
 }
 
@@ -206,8 +212,8 @@ func TestOpen_ErrorOpenShort(t *testing.T) {
 	var (
 		ctx = sdk.Context{} // Mock or setup a context
 		msg = &types.MsgOpen{
-			CollateralAsset: "aaa",
-			BorrowAsset:     "bbb",
+			CollateralAsset: ptypes.BaseCurrency,
+			BorrowAsset:     "uatom",
 			Position:        types.Position_SHORT,
 		}
 		poolId = uint64(1)
@@ -225,6 +231,7 @@ func TestOpen_ErrorOpenShort(t *testing.T) {
 	_, err := k.Open(ctx, msg)
 
 	assert.Equal(t, errors.New("error executing open short"), err)
+	mockAssetProfile.AssertExpectations(t)
 	mockChecker.AssertExpectations(t)
 }
 
@@ -239,8 +246,8 @@ func TestOpen_Successful(t *testing.T) {
 	var (
 		ctx = sdk.Context{} // Mock or setup a context
 		msg = &types.MsgOpen{
-			CollateralAsset: "aaa",
-			BorrowAsset:     "bbb",
+			CollateralAsset: ptypes.BaseCurrency,
+			BorrowAsset:     "uatom",
 			Position:        types.Position_SHORT,
 		}
 		poolId = uint64(1)
@@ -260,5 +267,6 @@ func TestOpen_Successful(t *testing.T) {
 	_, err := k.Open(ctx, msg)
 
 	assert.Nil(t, err)
+	mockAssetProfile.AssertExpectations(t)
 	mockChecker.AssertExpectations(t)
 }
