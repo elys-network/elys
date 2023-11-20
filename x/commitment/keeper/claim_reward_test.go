@@ -50,7 +50,7 @@ func TestClaimReward(t *testing.T) {
 	keeper.SetCommitments(ctx, initialCommitments)
 
 	// Set assetprofile entry for denom
-	app.AssetprofileKeeper.SetEntry(ctx, aptypes.Entry{BaseDenom: denom, WithdrawEnabled: true})
+	app.AssetprofileKeeper.SetEntry(ctx, aptypes.Entry{Denom: denom, BaseDenom: denom, WithdrawEnabled: true})
 
 	// Test scenario 1: Withdraw within unclaimed balance
 	err := app.CommitmentKeeper.RecordClaimReward(ctx, creator, denom, sdk.NewInt(30), types.EarnType_ALL_PROGRAM)

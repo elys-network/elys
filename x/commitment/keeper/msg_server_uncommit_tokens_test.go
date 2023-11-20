@@ -53,7 +53,7 @@ func TestUncommitTokens(t *testing.T) {
 	keeper.SetCommitments(ctx, initialCommitments)
 
 	// Set assetprofile entry for denom
-	app.AssetprofileKeeper.SetEntry(ctx, aptypes.Entry{BaseDenom: denom, CommitEnabled: true})
+	app.AssetprofileKeeper.SetEntry(ctx, aptypes.Entry{BaseDenom: denom, CommitEnabled: true, WithdrawEnabled: true})
 
 	// Add coins on commitment module
 	err := app.BankKeeper.MintCoins(ctx, types.ModuleName, sdk.Coins{sdk.NewCoin(denom, initialCommitted)})
