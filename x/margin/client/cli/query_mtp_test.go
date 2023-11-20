@@ -53,6 +53,7 @@ func networkWithMTPObjects(t *testing.T, n int) (*network.Network, []*types.MTP)
 			ConsolidateLeverage:             sdk.ZeroDec(),
 			SumCollateral:                   sdk.ZeroInt(),
 			TakeProfitPrice:                 sdk.MustNewDecFromStr(types.TakeProfitPriceDefault),
+			TakeProfitBorrowRate:            sdk.OneDec(),
 		}
 
 		mtps = append(mtps, &mtp)

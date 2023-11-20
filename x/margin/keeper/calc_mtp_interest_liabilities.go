@@ -47,5 +47,8 @@ func (k Keeper) CalcMTPBorrowInterestLiabilities(ctx sdk.Context, mtp *types.MTP
 		borrowInterestNewInt = sdk.NewInt(1)
 	}
 
+	// apply take profit borrow rate to borrow interest
+	borrowInterestNewInt = sdk.NewDecFromInt(borrowInterestNewInt).Mul(mtp.TakeProfitBorrowRate).TruncateInt()
+
 	return borrowInterestNewInt
 }

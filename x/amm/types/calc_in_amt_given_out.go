@@ -1,8 +1,6 @@
 package types
 
 import (
-	"fmt"
-
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
@@ -20,15 +18,6 @@ func (p Pool) CalcInAmtGivenOut(
 	if err != nil {
 		return sdk.Coin{}, err
 	}
-
-	// print tokensOut
-	fmt.Println("tokensOut: ", tokensOut)
-	// print tokenOut
-	fmt.Println("tokenOut: ", tokenOut)
-	// print poolAssetOut
-	fmt.Println("poolAssetOut: ", poolAssetOut)
-	// print poolAssetIn
-	fmt.Println("poolAssetIn: ", poolAssetIn)
 
 	outWeight := sdk.NewDecFromInt(poolAssetOut.Weight)
 	inWeight := sdk.NewDecFromInt(poolAssetIn.Weight)
@@ -66,8 +55,6 @@ func (p Pool) CalcInAmtGivenOut(
 		inWeight,
 	).Neg()
 
-	fmt.Println("tokenAmountIn: ", tokenAmountIn)
-
 	// We deduct a swap fee on the input asset. The swap happens by following the invariant curve on the input * (1 - swap fee)
 	// and then the swap fee is added to the pool.
 	// Thus in order to give X amount out, we solve the invariant for the invariant input. However invariant input = (1 - swapfee) * trade input.
@@ -77,9 +64,6 @@ func (p Pool) CalcInAmtGivenOut(
 	// We round up tokenInAmt, as this is whats charged for the swap, for the precise amount out.
 	// Otherwise, the pool would under-charge by this rounding error.
 	tokenInAmt := tokenAmountInBeforeFee.Ceil().TruncateInt()
-
-	// print tokenInAmt
-	fmt.Println("tokenInAmt: ", tokenInAmt)
 
 	if !tokenInAmt.IsPositive() {
 		return sdk.Coin{}, sdkerrors.Wrapf(ErrInvalidMathApprox, "token amount must be positive")

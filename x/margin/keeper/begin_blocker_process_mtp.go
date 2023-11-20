@@ -27,6 +27,12 @@ func BeginBlockerProcessMTP(ctx sdk.Context, k Keeper, mtp *types.MTP, pool type
 		ctx.Logger().Error(errors.Wrap(err, fmt.Sprintf("error calculating mtp take profit liabilities: %s", mtp.String())).Error())
 		return
 	}
+	// calculate and update take profit borrow rate
+	mtp.TakeProfitBorrowRate, err = k.CalcMTPTakeProfitBorrowRate(ctx, mtp)
+	if err != nil {
+		ctx.Logger().Error(errors.Wrap(err, fmt.Sprintf("error calculating mtp take profit borrow rate: %s", mtp.String())).Error())
+		return
+	}
 	h, err := k.UpdateMTPHealth(ctx, *mtp, ammPool, baseCurrency)
 	if err != nil {
 		ctx.Logger().Error(errors.Wrap(err, fmt.Sprintf("error updating mtp health: %s", mtp.String())).Error())
@@ -56,6 +62,27 @@ func BeginBlockerProcessMTP(ctx sdk.Context, k Keeper, mtp *types.MTP, pool type
 
 	_ = k.SetMTP(ctx, mtp)
 
+	for _, custody := range mtp.Custodies {
+		assetPrice, err := k.EstimateSwapGivenOut(ctx, sdk.NewCoin(custody.Denom, sdk.NewInt(1)), baseCurrency, ammPool)
+		if err != nil {
+			ctx.Logger().Error(errors.Wrap(err, fmt.Sprintf("error estimating swap given out: %s", custody.Denom)).Error())
+			return
+		}
+		if mtp.TakeProfitPrice.GT(sdk.NewDecFromInt(assetPrice)) {
+			break
+		}
+		ctx.Logger().Error(fmt.Sprintf("error executing force close on position %s because take profit price %s is less than asset price %s", mtp.String(), mtp.TakeProfitPrice.String(), sdk.NewDecFromInt(assetPrice).String()))
+		return
+	}
+
+	// check MTP health against threshold
+	safetyFactor := k.GetSafetyFactor(ctx)
+
+	if mtp.MtpHealth.GT(safetyFactor) {
+		ctx.Logger().Error(errors.Wrap(types.ErrMTPHealthy, "error executing force close because mtp is healthy").Error())
+		return
+	}
+
 	var repayAmount sdk.Int
 	switch mtp.Position {
 	case types.Position_LONG:
@@ -69,7 +96,7 @@ func BeginBlockerProcessMTP(ctx sdk.Context, k Keeper, mtp *types.MTP, pool type
 	if err == nil {
 		// Emit event if position was closed
 		k.EmitForceClose(ctx, mtp, repayAmount, "")
-	} else if err != types.ErrMTPHealthy {
+	} else {
 		ctx.Logger().Error(errors.Wrap(err, "error executing force close").Error())
 	}
 

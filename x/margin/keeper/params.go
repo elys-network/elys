@@ -151,3 +151,7 @@ func (k Keeper) GetBrokerAddress(ctx sdk.Context) sdk.AccAddress {
 
 	return addr
 }
+
+func (k Keeper) GetTakeProfitBorrowInterestRateMin(ctx sdk.Context) sdk.Dec {
+	return k.GetParams(ctx).TakeProfitBorrowInterestRateMin
+}

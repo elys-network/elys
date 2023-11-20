@@ -35,6 +35,7 @@ func NewMTP(signer string, collateralAsset string, borrowAsset string, position 
 		ConsolidateLeverage:             leverage,
 		SumCollateral:                   sdk.ZeroInt(),
 		TakeProfitPrice:                 takeProfitPrice,
+		TakeProfitBorrowRate:            sdk.OneDec(),
 	}
 }
 

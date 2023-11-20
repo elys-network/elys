@@ -25,13 +25,13 @@ func TestCheckBalanceInvariant_InvalidBalance(t *testing.T) {
 	SetupStableCoinPrices(ctx, oracle)
 
 	// Generate 1 random account with 1000stake balanced
-	addr := simapp.AddTestAddrs(app, ctx, 1, sdk.NewInt(1000000))
+	addr := simapp.AddTestAddrs(app, ctx, 1, sdk.NewInt(1000000000000))
 
 	// Create a pool
 	// Mint 100000USDC
-	usdcToken := []sdk.Coin{sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(100000))}
+	usdcToken := []sdk.Coin{sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(100000000000))}
 	// Mint 100000ATOM
-	atomToken := []sdk.Coin{sdk.NewCoin(ptypes.ATOM, sdk.NewInt(100000))}
+	atomToken := []sdk.Coin{sdk.NewCoin(ptypes.ATOM, sdk.NewInt(100000000000))}
 
 	err := app.BankKeeper.MintCoins(ctx, types.ModuleName, usdcToken)
 	require.NoError(t, err)
@@ -46,11 +46,11 @@ func TestCheckBalanceInvariant_InvalidBalance(t *testing.T) {
 	poolAssets := []ammtypes.PoolAsset{
 		{
 			Weight: sdk.NewInt(50),
-			Token:  sdk.NewCoin(ptypes.ATOM, sdk.NewInt(1000)),
+			Token:  sdk.NewCoin(ptypes.ATOM, sdk.NewInt(1000000000)),
 		},
 		{
 			Weight: sdk.NewInt(50),
-			Token:  sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(10000)),
+			Token:  sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(10000000000)),
 		},
 	}
 
@@ -89,14 +89,14 @@ func TestCheckBalanceInvariant_InvalidBalance(t *testing.T) {
 
 	// Balance check before create a margin position
 	balances := app.BankKeeper.GetAllBalances(ctx, poolAddress)
-	require.Equal(t, balances.AmountOf(ptypes.BaseCurrency), sdk.NewInt(10000))
-	require.Equal(t, balances.AmountOf(ptypes.ATOM), sdk.NewInt(1000))
+	require.Equal(t, balances.AmountOf(ptypes.BaseCurrency), sdk.NewInt(10000000000))
+	require.Equal(t, balances.AmountOf(ptypes.ATOM), sdk.NewInt(1000000000))
 
 	// Create a margin position open msg
 	msg2 := margintypes.NewMsgOpen(
 		addr[0].String(),
 		ptypes.BaseCurrency,
-		sdk.NewInt(100),
+		sdk.NewInt(100000000),
 		ptypes.ATOM,
 		margintypes.Position_LONG,
 		sdk.NewDec(5),
@@ -110,8 +110,8 @@ func TestCheckBalanceInvariant_InvalidBalance(t *testing.T) {
 	require.Equal(t, len(mtps), 1)
 
 	balances = app.BankKeeper.GetAllBalances(ctx, poolAddress)
-	require.Equal(t, balances.AmountOf(ptypes.BaseCurrency), sdk.NewInt(10100))
-	require.Equal(t, balances.AmountOf(ptypes.ATOM), sdk.NewInt(1000))
+	require.Equal(t, balances.AmountOf(ptypes.BaseCurrency), sdk.NewInt(10100000000))
+	require.Equal(t, balances.AmountOf(ptypes.ATOM), sdk.NewInt(1000000000))
 
 	// Check balance invariant check
 	err = mk.InvariantCheck(ctx)
@@ -128,8 +128,8 @@ func TestCheckBalanceInvariant_InvalidBalance(t *testing.T) {
 	require.NoError(t, err)
 
 	balances = app.BankKeeper.GetAllBalances(ctx, poolAddress)
-	require.Equal(t, balances.AmountOf(ptypes.BaseCurrency), sdk.NewInt(10052))
-	require.Equal(t, balances.AmountOf(ptypes.ATOM), sdk.NewInt(1000))
+	require.Equal(t, balances.AmountOf(ptypes.BaseCurrency), sdk.NewInt(10045454552))
+	require.Equal(t, balances.AmountOf(ptypes.ATOM), sdk.NewInt(1000000000))
 
 	// Check balance invariant check
 	err = mk.InvariantCheck(ctx)

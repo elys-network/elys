@@ -32,6 +32,7 @@ var (
 	KeyWhitelistingEnabled                            = []byte("WhitelistingEnabled")
 	KeyInvariantCheckEpoch                            = []byte("InvariantCheckEpoch")
 	KeyBrokerAddress                                  = []byte("BrokerAddress")
+	KeyTakeProfitBorrowInterestRateMin                = []byte("TakeProfitBorrowInterestRateMin")
 )
 
 // ParamKeyTable the param key table for launch module
@@ -42,26 +43,27 @@ func ParamKeyTable() paramtypes.KeyTable {
 // NewParams creates a new Params instance
 func NewParams() Params {
 	return Params{
-		LeverageMax:                                    sdk.NewDec(10),
-		BorrowInterestRateMax:                          sdk.NewDec(1),
-		BorrowInterestRateMin:                          sdk.NewDec(1),
-		BorrowInterestRateIncrease:                     sdk.NewDec(1),
-		BorrowInterestRateDecrease:                     sdk.NewDec(1),
-		HealthGainFactor:                               sdk.NewDec(1),
+		TakeProfitBorrowInterestRateMin:                sdk.OneDec(),
+		BorrowInterestRateDecrease:                     sdk.MustNewDecFromStr("0.000000000333333333"),
+		BorrowInterestRateIncrease:                     sdk.MustNewDecFromStr("0.000000000333333333"),
+		BorrowInterestRateMax:                          sdk.MustNewDecFromStr("0.000000270000000000"),
+		BorrowInterestRateMin:                          sdk.MustNewDecFromStr("0.000000030000000000"),
+		BrokerAddress:                                  "elys1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqnrec2l",
 		EpochLength:                                    (int64)(1),
-		RemovalQueueThreshold:                          sdk.NewDec(1),
-		MaxOpenPositions:                               (int64)(9999),
-		PoolOpenThreshold:                              sdk.NewDec(1),
-		ForceCloseFundPercentage:                       sdk.NewDec(1),
-		ForceCloseFundAddress:                          "",
-		IncrementalBorrowInterestPaymentFundPercentage: sdk.NewDec(1),
-		IncrementalBorrowInterestPaymentFundAddress:    "",
-		SqModifier:                                     sdk.NewDec(1),
-		SafetyFactor:                                   sdk.NewDec(1),
+		ForceCloseFundAddress:                          "elys1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqnrec2l",
+		ForceCloseFundPercentage:                       sdk.OneDec(),
+		HealthGainFactor:                               sdk.MustNewDecFromStr("0.000000022000000000"),
 		IncrementalBorrowInterestPaymentEnabled:        true,
-		WhitelistingEnabled:                            false,
+		IncrementalBorrowInterestPaymentFundAddress:    "elys1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqnrec2l",
+		IncrementalBorrowInterestPaymentFundPercentage: sdk.MustNewDecFromStr("0.350000000000000000"),
 		InvariantCheckEpoch:                            epochtypes.DayEpochID,
-		BrokerAddress:                                  "",
+		LeverageMax:                                    sdk.NewDec(10),
+		MaxOpenPositions:                               (int64)(9999),
+		PoolOpenThreshold:                              sdk.OneDec(),
+		RemovalQueueThreshold:                          sdk.MustNewDecFromStr("0.350000000000000000"),
+		SafetyFactor:                                   sdk.MustNewDecFromStr("1.050000000000000000"),
+		SqModifier:                                     sdk.MustNewDecFromStr("10000000000000000000000000.000000000000000000"),
+		WhitelistingEnabled:                            false,
 	}
 }
 
@@ -93,6 +95,7 @@ func (p *Params) ParamSetPairs() paramtypes.ParamSetPairs {
 		paramtypes.NewParamSetPair(KeyWhitelistingEnabled, &p.WhitelistingEnabled, validateWhitelistingEnabled),
 		paramtypes.NewParamSetPair(KeyInvariantCheckEpoch, &p.InvariantCheckEpoch, validateInvariantCheckEpoch),
 		paramtypes.NewParamSetPair(KeyBrokerAddress, &p.BrokerAddress, validateBrokerAddress),
+		paramtypes.NewParamSetPair(KeyTakeProfitBorrowInterestRateMin, &p.TakeProfitBorrowInterestRateMin, validateTakeProfitBorrowInterestRateMin),
 	}
 }
 
@@ -156,6 +159,9 @@ func (p Params) Validate() error {
 		return err
 	}
 	if err := validateBrokerAddress(p.BrokerAddress); err != nil {
+		return err
+	}
+	if err := validateTakeProfitBorrowInterestRateMin(p.TakeProfitBorrowInterestRateMin); err != nil {
 		return err
 	}
 	return nil
@@ -433,6 +439,21 @@ func validateBrokerAddress(i interface{}) error {
 	_, ok := i.(string)
 	if !ok {
 		return fmt.Errorf("invalid parameter type: %T", i)
+	}
+
+	return nil
+}
+
+func validateTakeProfitBorrowInterestRateMin(i interface{}) error {
+	v, ok := i.(sdk.Dec)
+	if !ok {
+		return fmt.Errorf("invalid parameter type: %T", i)
+	}
+	if v.IsNil() {
+		return fmt.Errorf("take profit borrow interest rate min must be not nil")
+	}
+	if v.IsNegative() {
+		return fmt.Errorf("take profit borrow interest rate min must be positive: %s", v)
 	}
 
 	return nil
