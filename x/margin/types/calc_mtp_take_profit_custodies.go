@@ -6,10 +6,11 @@ import (
 
 func CalcMTPTakeProfitCustodies(mtp *MTP) sdk.Coins {
 	takeProfitCustodies := mtp.TakeProfitCustodies
-	if IsTakeProfitPriceInifite(mtp) {
-		return takeProfitCustodies
-	}
-	for custodyIndex := range mtp.Custodies {
+	for custodyIndex, custody := range mtp.Custodies {
+		if IsTakeProfitPriceInifite(mtp) {
+			takeProfitCustodies[custodyIndex].Amount = custody.Amount
+			continue
+		}
 		takeProfitCustodies[custodyIndex].Amount = sdk.NewDecFromInt(mtp.Liabilities).Quo(mtp.TakeProfitPrice).TruncateInt()
 	}
 	return takeProfitCustodies

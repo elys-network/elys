@@ -480,7 +480,7 @@ func (k Keeper) CheckMinLiabilities(ctx sdk.Context, collateralAmount sdk.Coin, 
 	}
 	baseCurrency := entry.Denom
 
-	// In Long position, liabilty has to be always in base currency
+	// liabilty has to be always in base currency
 	if collateralAmount.Denom != baseCurrency {
 		outAmt := liabilitiesDec.TruncateInt()
 		outAmtToken := sdk.NewCoin(collateralAmount.Denom, outAmt)

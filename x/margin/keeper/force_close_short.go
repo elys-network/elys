@@ -7,59 +7,36 @@ import (
 )
 
 func (k Keeper) ForceCloseShort(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, takeFundPayment bool) (sdk.Int, error) {
-
-	// check MTP health against threshold
-	safetyFactor := k.GetSafetyFactor(ctx)
-
-	epochLength := k.GetEpochLength(ctx)
-	epochPosition := k.GetEpochPosition(ctx, epochLength)
-
-	if epochPosition > 0 {
-		repayAmount := sdk.ZeroInt()
-		for _, custody := range mtp.Custodies {
-			custodyAsset := custody.Denom
-			// Retrieve AmmPool
-			ammPool, err := k.GetAmmPool(ctx, mtp.AmmPoolId, custodyAsset)
-			if err != nil {
-				return math.ZeroInt(), err
-			}
-
-			for _, collateral := range mtp.Collaterals {
-				collateralAsset := collateral.Denom
-				// Handle Borrow Interest if within epoch position
-				if err := k.HandleBorrowInterest(ctx, mtp, pool, ammPool, collateralAsset, custodyAsset); err != nil {
-					return math.ZeroInt(), err
-				}
-			}
-
-			if mtp.MtpHealth.GT(safetyFactor) {
-				return math.ZeroInt(), types.ErrMTPHealthy
-			}
-
-			err = k.TakeOutCustody(ctx, *mtp, pool, custodyAsset)
-			if err != nil {
-				return math.ZeroInt(), err
-			}
-
-			for _, collateral := range mtp.Collaterals {
-				collateralAsset := collateral.Denom
-				// Estimate swap and repay
-				repayAmt, err := k.EstimateAndRepay(ctx, *mtp, *pool, ammPool, collateralAsset, custodyAsset)
-				if err != nil {
-					return math.ZeroInt(), err
-				}
-
-				repayAmount = repayAmount.Add(repayAmt)
-			}
-
-			// Hooks after margin position closed
-			if k.hooks != nil {
-				k.hooks.AfterMarginPositionClosed(ctx, ammPool, *pool)
-			}
+	repayAmount := sdk.ZeroInt()
+	for _, custody := range mtp.Custodies {
+		custodyAsset := custody.Denom
+		// Retrieve AmmPool
+		ammPool, err := k.GetAmmPool(ctx, mtp.AmmPoolId, custodyAsset)
+		if err != nil {
+			return math.ZeroInt(), err
 		}
 
-		return repayAmount, nil
+		err = k.TakeOutCustody(ctx, *mtp, pool, custodyAsset)
+		if err != nil {
+			return math.ZeroInt(), err
+		}
+
+		for _, collateral := range mtp.Collaterals {
+			collateralAsset := collateral.Denom
+			// Estimate swap and repay
+			repayAmt, err := k.EstimateAndRepay(ctx, *mtp, *pool, ammPool, collateralAsset, custodyAsset)
+			if err != nil {
+				return math.ZeroInt(), err
+			}
+
+			repayAmount = repayAmount.Add(repayAmt)
+		}
+
+		// Hooks after margin position closed
+		if k.hooks != nil {
+			k.hooks.AfterMarginPositionClosed(ctx, ammPool, *pool)
+		}
 	}
 
-	return math.ZeroInt(), nil
+	return repayAmount, nil
 }

@@ -7,9 +7,6 @@ import (
 
 func (k Keeper) CalcMTPTakeProfitLiability(ctx sdk.Context, mtp *types.MTP, baseCurrency string) (sdk.Int, error) {
 	takeProfitLiabilities := sdk.ZeroInt()
-	if types.IsTakeProfitPriceInifite(mtp) {
-		return takeProfitLiabilities, nil
-	}
 	for _, takeProfitCustody := range mtp.TakeProfitCustodies {
 		takeProfitCustodyAsset := takeProfitCustody.Denom
 		// Retrieve AmmPool
