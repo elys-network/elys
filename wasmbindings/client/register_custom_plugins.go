@@ -79,7 +79,7 @@ func RegisterCustomPlugins(
 	clockMessenger := clockclientwasm.NewMessenger(clock)
 
 	commitmentQuerier := commitmentclientwasm.NewQuerier(commitment, staking)
-	commitmentMessenger := commitmentclientwasm.NewMessenger(commitment, staking)
+	commitmentMessenger := commitmentclientwasm.NewMessenger(commitment, staking, assetprofile, stablestake)
 
 	epochsQuerier := epochsclientwasm.NewQuerier(epochs)
 	epochsMessenger := epochsclientwasm.NewMessenger(epochs)

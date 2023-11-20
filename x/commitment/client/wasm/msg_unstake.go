@@ -8,6 +8,9 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	commitmentkeeper "github.com/elys-network/elys/x/commitment/keeper"
 	commitmenttypes "github.com/elys-network/elys/x/commitment/types"
+	ptypes "github.com/elys-network/elys/x/parameter/types"
+	stablekeeper "github.com/elys-network/elys/x/stablestake/keeper"
+	stabletypes "github.com/elys-network/elys/x/stablestake/types"
 )
 
 func (m *Messenger) msgUnstake(ctx sdk.Context, contractAddr sdk.AccAddress, msgUnstake *commitmenttypes.MsgUnstake) ([]sdk.Event, [][]byte, error) {
@@ -15,18 +18,44 @@ func (m *Messenger) msgUnstake(ctx sdk.Context, contractAddr sdk.AccAddress, msg
 		return nil, nil, wasmvmtypes.InvalidRequest{Err: "Invalid unstaking parameter"}
 	}
 
-	msgServer := commitmentkeeper.NewMsgServerImpl(*m.keeper)
-	msgMsgUnstake := commitmenttypes.NewMsgUnstake(msgUnstake.Creator, msgUnstake.Amount, msgUnstake.Asset, msgUnstake.ValidatorAddress)
-
-	if err := msgMsgUnstake.ValidateBasic(); err != nil {
-		return nil, nil, errorsmod.Wrap(err, "failed validating msgMsgUnstake")
+	entry, found := m.apKeeper.GetEntry(ctx, ptypes.BaseCurrency)
+	if !found {
+		return nil, nil, wasmvmtypes.InvalidRequest{Err: "Invalid usdc denom"}
 	}
+	baseCurrency := entry.Denom
 
-	res, err := msgServer.Unstake(ctx, msgMsgUnstake)
-	if err != nil { // Discard the response because it's empty
-		return nil, nil, errorsmod.Wrap(err, "elys unstaking msg")
+	var res *commitmenttypes.MsgUnstakeResponse
+	var err error
+	// USDC
+	if msgUnstake.Asset == baseCurrency {
+		msgServer := stablekeeper.NewMsgServerImpl(*m.stableKeeper)
+		msgMsgUnBond := stabletypes.NewMsgUnbond(msgUnstake.Creator, msgUnstake.Amount)
+
+		if err = msgMsgUnBond.ValidateBasic(); err != nil {
+			return nil, nil, errorsmod.Wrap(err, "failed validating msgMsgBond")
+		}
+
+		_, err = msgServer.Unbond(ctx, msgMsgUnBond)
+		if err != nil { // Discard the response because it's empty
+			return nil, nil, errorsmod.Wrap(err, "usdc unstaking msg")
+		}
+		res = &commitmenttypes.MsgUnstakeResponse{
+			Code:   ptypes.RES_OK,
+			Result: "usdc unstaking msg succeed",
+		}
+	} else {
+		msgServer := commitmentkeeper.NewMsgServerImpl(*m.keeper)
+		msgMsgUnstake := commitmenttypes.NewMsgUnstake(msgUnstake.Creator, msgUnstake.Amount, msgUnstake.Asset, msgUnstake.ValidatorAddress)
+
+		if err = msgMsgUnstake.ValidateBasic(); err != nil {
+			return nil, nil, errorsmod.Wrap(err, "failed validating msgMsgUnstake")
+		}
+
+		res, err = msgServer.Unstake(ctx, msgMsgUnstake)
+		if err != nil { // Discard the response because it's empty
+			return nil, nil, errorsmod.Wrap(err, "elys unstaking msg")
+		}
 	}
-
 	responseBytes, err := json.Marshal(*res)
 	if err != nil {
 		return nil, nil, errorsmod.Wrap(err, "failed to serialize unstake")
