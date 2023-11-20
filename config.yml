@@ -121,6 +121,16 @@ genesis:
               denom: uelys
             - amount: "1000000000"
               denom: uusdc
+        - address: elys1v30pe777dj9mgsnlv0j2c5wh05m0ya0nlhuv7t
+          coins:
+            - amount: "1000000000"
+              denom: uatom
+            - amount: "1000000000"
+              denom: ueden
+            - amount: "1000000000"
+              denom: uelys
+            - amount: "1000000000"
+              denom: uusdc
     assetprofile:
       entryList:
         - address: ""
