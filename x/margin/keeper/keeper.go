@@ -166,7 +166,7 @@ func (k Keeper) Borrow(ctx sdk.Context, collateralAsset string, custodyAsset str
 		liabilitiesDec = sdk.NewDecFromInt(liabilityAmt)
 	}
 
-	collateralIndex, custodyIndex := k.GetMTPAssetIndex(mtp, collateralAsset, custodyAsset)
+	collateralIndex, custodyIndex := types.GetMTPAssetIndex(mtp, collateralAsset, custodyAsset)
 	if collateralIndex < 0 || custodyIndex < 0 {
 		return sdkerrors.Wrap(types.ErrBalanceNotAvailable, "MTP collateral or custody invalid!")
 	}
@@ -232,7 +232,7 @@ func (k Keeper) CalculatePoolHealthByPosition(ctx sdk.Context, pool *types.Pool,
 	poolAssets := pool.GetPoolAssets(position)
 	H := sdk.NewDec(1)
 	for _, asset := range *poolAssets {
-		ammBalance, err := k.GetAmmPoolBalance(ctx, ammPool, asset.AssetDenom)
+		ammBalance, err := types.GetAmmPoolBalance(ammPool, asset.AssetDenom)
 		if err != nil {
 			return sdk.ZeroDec()
 		}
@@ -280,7 +280,7 @@ func (k Keeper) TakeInCustody(ctx sdk.Context, mtp types.MTP, pool *types.Pool) 
 }
 
 func (k Keeper) IncrementalBorrowInterestPayment(ctx sdk.Context, collateralAsset string, custodyAsset string, borrowInterestPayment sdk.Int, mtp *types.MTP, pool *types.Pool, ammPool ammtypes.Pool) (sdk.Int, error) {
-	collateralIndex, custodyIndex := k.GetMTPAssetIndex(mtp, collateralAsset, custodyAsset)
+	collateralIndex, custodyIndex := types.GetMTPAssetIndex(mtp, collateralAsset, custodyAsset)
 
 	entry, found := k.apKeeper.GetEntry(ctx, ptypes.BaseCurrency)
 	if !found {
@@ -383,7 +383,7 @@ func (k Keeper) BorrowInterestRateComputationByPosition(ctx sdk.Context, pool ty
 	poolAssets := pool.GetPoolAssets(position)
 	targetBorrowInterestRate := sdk.OneDec()
 	for _, asset := range *poolAssets {
-		ammBalance, err := k.GetAmmPoolBalance(ctx, ammPool, asset.AssetDenom)
+		ammBalance, err := types.GetAmmPoolBalance(ammPool, asset.AssetDenom)
 		if err != nil {
 			return sdk.ZeroDec(), err
 		}

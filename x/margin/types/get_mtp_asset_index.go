@@ -1,11 +1,7 @@
-package keeper
-
-import (
-	"github.com/elys-network/elys/x/margin/types"
-)
+package types
 
 // Get Assets Index
-func (k Keeper) GetMTPAssetIndex(mtp *types.MTP, collateralAsset string, borrowAsset string) (int, int) {
+func GetMTPAssetIndex(mtp *MTP, collateralAsset string, borrowAsset string) (int, int) {
 	collateralIndex := -1
 	borrowIndex := -1
 	for i, asset := range mtp.Collaterals {

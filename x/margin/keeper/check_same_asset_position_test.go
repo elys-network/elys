@@ -11,7 +11,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestCheckSameAssets_NewPosition(t *testing.T) {
+func TestCheckSameAssetPosition_NewPosition(t *testing.T) {
 	app := simapp.InitElysTestApp(true)
 	ctx := app.BaseApp.NewContext(true, tmproto.Header{})
 
@@ -29,7 +29,7 @@ func TestCheckSameAssets_NewPosition(t *testing.T) {
 		Leverage:         sdk.NewDec(1),
 	}
 
-	mtp = k.CheckSamePosition(ctx, msg)
+	mtp = k.CheckSameAssetPosition(ctx, msg)
 
 	// Expect no error
 	assert.Nil(t, mtp)

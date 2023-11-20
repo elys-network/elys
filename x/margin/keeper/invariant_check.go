@@ -4,6 +4,7 @@ import (
 	"errors"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/elys-network/elys/x/margin/types"
 )
 
 func (k Keeper) AmmPoolBalanceCheck(ctx sdk.Context, poolId uint64) error {
@@ -41,7 +42,7 @@ func (k Keeper) AmmPoolBalanceCheck(ctx sdk.Context, poolId uint64) error {
 	// AMM pool balance differs bank module balance
 	balances := k.bankKeeper.GetAllBalances(ctx, address)
 	for _, balance := range balances {
-		ammBalance, _ := k.GetAmmPoolBalance(ctx, ammPool, balance.Denom)
+		ammBalance, _ := types.GetAmmPoolBalance(ammPool, balance.Denom)
 		collateralAmt := mtpCollateralBalances.AmountOf(balance.Denom)
 
 		diff := ammBalance.Add(collateralAmt).Sub(balance.Amount)

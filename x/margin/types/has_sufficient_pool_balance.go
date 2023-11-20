@@ -1,4 +1,4 @@
-package keeper
+package types
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -6,8 +6,8 @@ import (
 )
 
 // Check if amm pool has sufficcient balance
-func (k Keeper) HasSufficientPoolBalance(ctx sdk.Context, ammPool ammtypes.Pool, assetDenom string, requiredAmount sdk.Int) bool {
-	balance, err := k.GetAmmPoolBalance(ctx, ammPool, assetDenom)
+func HasSufficientPoolBalance(ammPool ammtypes.Pool, assetDenom string, requiredAmount sdk.Int) bool {
+	balance, err := GetAmmPoolBalance(ammPool, assetDenom)
 	if err != nil {
 		return false
 	}

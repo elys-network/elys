@@ -8,7 +8,7 @@ import (
 
 func (k Keeper) ProcessOpenLong(ctx sdk.Context, mtp *types.MTP, leverage sdk.Dec, eta sdk.Dec, collateralAmountDec sdk.Dec, poolId uint64, msg *types.MsgOpen, baseCurrency string) (*types.MTP, error) {
 	// Determine the trading asset.
-	tradingAsset := k.OpenLongChecker.GetTradingAsset(msg.CollateralAsset, msg.BorrowAsset, baseCurrency)
+	tradingAsset := types.GetTradingAsset(msg.CollateralAsset, msg.BorrowAsset, baseCurrency)
 
 	// Fetch the pool associated with the given pool ID.
 	pool, found := k.OpenLongChecker.GetPool(ctx, poolId)
@@ -37,11 +37,11 @@ func (k Keeper) ProcessOpenLong(ctx sdk.Context, mtp *types.MTP, leverage sdk.De
 		if err != nil {
 			return nil, err
 		}
-		if !k.OpenLongChecker.HasSufficientPoolBalance(ctx, ammPool, baseCurrency, borrowingAmount) {
+		if !types.HasSufficientPoolBalance(ammPool, baseCurrency, borrowingAmount) {
 			return nil, sdkerrors.Wrap(types.ErrBorrowTooHigh, borrowingAmount.String())
 		}
 	} else {
-		if !k.OpenLongChecker.HasSufficientPoolBalance(ctx, ammPool, msg.CollateralAsset, leveragedAmount) {
+		if !types.HasSufficientPoolBalance(ammPool, msg.CollateralAsset, leveragedAmount) {
 			return nil, sdkerrors.Wrap(types.ErrBorrowTooHigh, leveragedAmount.String())
 		}
 	}
@@ -66,7 +66,7 @@ func (k Keeper) ProcessOpenLong(ctx sdk.Context, mtp *types.MTP, leverage sdk.De
 	}
 
 	// Ensure the AMM pool has enough balance.
-	if !k.OpenLongChecker.HasSufficientPoolBalance(ctx, ammPool, msg.BorrowAsset, custodyAmount) {
+	if !types.HasSufficientPoolBalance(ammPool, msg.BorrowAsset, custodyAmount) {
 		return nil, sdkerrors.Wrap(types.ErrCustodyTooHigh, custodyAmount.String())
 	}
 
@@ -102,7 +102,7 @@ func (k Keeper) ProcessOpenLong(ctx sdk.Context, mtp *types.MTP, leverage sdk.De
 	k.OpenLongChecker.CalcMTPConsolidateCollateral(ctx, mtp, baseCurrency)
 
 	// Calculate consolidate liabiltiy
-	k.OpenLongChecker.CalcMTPConsolidateLiability(ctx, mtp)
+	types.CalcMTPConsolidateLiability(mtp)
 
 	// Set MTP
 	k.OpenLongChecker.SetMTP(ctx, mtp)

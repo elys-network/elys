@@ -13,7 +13,7 @@ func (k Keeper) CalcMTPBorrowInterestLiabilities(ctx sdk.Context, mtp *types.MTP
 
 	rate.SetFloat64(borrowInterestRate.MustFloat64())
 
-	collateralIndex, _ := k.GetMTPAssetIndex(mtp, collateralAsset, "")
+	collateralIndex, _ := types.GetMTPAssetIndex(mtp, collateralAsset, "")
 	unpaidCollaterals := sdk.ZeroInt()
 	// Calculate collateral borrow interests in base currency
 	if mtp.Collaterals[collateralIndex].Denom == baseCurrency {
