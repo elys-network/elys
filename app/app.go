@@ -702,6 +702,11 @@ func NewElysApp(
 	)
 	assetprofileModule := assetprofilemodule.NewAppModule(appCodec, app.AssetprofileKeeper, app.AccountKeeper, app.BankKeeper)
 
+	app.EpochsKeeper = *epochsmodulekeeper.NewKeeper(
+		appCodec,
+		keys[epochsmoduletypes.StoreKey],
+	)
+
 	commitmentKeeper := *commitmentmodulekeeper.NewKeeper(
 		appCodec,
 		keys[commitmentmoduletypes.StoreKey],
@@ -782,11 +787,6 @@ func NewElysApp(
 		app.BankKeeper,
 	)
 	burnerModule := burnermodule.NewAppModule(appCodec, app.BurnerKeeper, app.AccountKeeper, app.BankKeeper)
-
-	app.EpochsKeeper = *epochsmodulekeeper.NewKeeper(
-		appCodec,
-		keys[epochsmoduletypes.StoreKey],
-	)
 
 	app.ParameterKeeper = *parametermodulekeeper.NewKeeper(
 		appCodec,
