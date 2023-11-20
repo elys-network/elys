@@ -69,7 +69,7 @@ func (k Keeper) CalculateEdenBoostRewards(ctx sdk.Context, delegatedAmt sdk.Int,
 	totalEden := delegatedAmt.Add(edenCommitted)
 
 	// Calculate edenBoostAPR % APR for eden boost
-	epochNumsPerYear := k.CalculateEpochCountsPerYear(epochIdentifier)
+	epochNumsPerYear := k.CalculateEpochCountsPerYear(ctx, epochIdentifier)
 	if epochNumsPerYear == int64(0) {
 		return sdk.ZeroInt(), sdk.ZeroInt(), sdk.ZeroInt()
 	}

@@ -4,7 +4,6 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	ctypes "github.com/elys-network/elys/x/commitment/types"
-	etypes "github.com/elys-network/elys/x/epochs/types"
 	"github.com/elys-network/elys/x/incentive/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 	stabletypes "github.com/elys-network/elys/x/stablestake/types"
@@ -190,21 +189,20 @@ func (k Keeper) GetProperIncentiveParam(ctx sdk.Context, epochIdentifier string)
 }
 
 // Calculate epoch counts per year to be used in APR calculation
-func (k Keeper) CalculateEpochCountsPerYear(epochIdentifier string) int64 {
-	switch epochIdentifier {
-	case etypes.WeekEpochID:
-		return ptypes.WeeksPerYear
-	case etypes.DayEpochID:
-		return ptypes.DaysPerYear
-	case etypes.HourEpochID:
-		return ptypes.HoursPerYear
-	case etypes.BandEpochID:
-		return ptypes.CountsOf15sPerYear
-	case etypes.TenSecondsEpochID:
-		return ptypes.CountsOf10sPerYear
+func (k Keeper) CalculateEpochCountsPerYear(ctx sdk.Context, epochIdentifier string) int64 {
+	epochsInfo, found := k.epochsKeeper.GetEpochInfo(ctx, epochIdentifier)
+	if !found || epochsInfo.Duration.Seconds() == 0 {
+		return 0
 	}
 
-	return 0
+	epochDuration := epochsInfo.Duration.Seconds()
+	// epoch min & max check
+	if epochsInfo.Duration.Seconds() == 0 || epochDuration > ptypes.SecondsPerYear {
+		return 0
+	}
+
+	// returns num of epochs
+	return (int64)(ptypes.SecondsPerYear / epochDuration)
 }
 
 // Update total commitment info

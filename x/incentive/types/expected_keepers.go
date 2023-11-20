@@ -7,6 +7,7 @@ import (
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	aptypes "github.com/elys-network/elys/x/assetprofile/types"
 	ctypes "github.com/elys-network/elys/x/commitment/types"
+	epochstypes "github.com/elys-network/elys/x/epochs/types"
 	oracletypes "github.com/elys-network/elys/x/oracle/types"
 )
 
@@ -122,4 +123,9 @@ type AccountedPoolKeeper interface {
 // AssetProfileKeeper defines the expected interface needed to retrieve denom info
 type AssetProfileKeeper interface {
 	GetEntry(ctx sdk.Context, baseDenom string) (val aptypes.Entry, found bool)
+}
+
+// EpochsKeeper defines the expected epochs keeper used for simulations (noalias)
+type EpochsKeeper interface {
+	GetEpochInfo(ctx sdk.Context, identifier string) (epochstypes.EpochInfo, bool)
 }

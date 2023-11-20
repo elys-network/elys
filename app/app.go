@@ -749,6 +749,7 @@ func NewElysApp(
 		app.AmmKeeper,
 		app.OracleKeeper,
 		app.AssetprofileKeeper,
+		app.EpochsKeeper,
 		authtypes.FeeCollectorName,
 		DexRevenueCollectorName,
 	)
