@@ -69,10 +69,12 @@ func (k Keeper) CalculateApr(ctx sdk.Context, query *types.QueryAprRequest) (sdk
 			edenAmountPerStableStakePerDay := sdk.NewDecFromInt(edenAmountPerDay).Mul(poolShare)
 
 			// Calc Eden price in usdc
-			edenPrice := k.EstimatePrice(ctx, sdk.NewCoin(ptypes.Eden, sdk.NewInt(1)), baseCurrency)
+			// We put Elys as denom as Eden won't be avaialble in amm pool and has the same value as Elys
+			edenPrice := k.EstimatePrice(ctx, sdk.NewCoin(ptypes.Elys, sdk.NewInt(10)), baseCurrency)
 
 			// Eden Apr for usdc earn program = {(Eden allocated for stable stake pool per day*365*price{eden/usdc}/(total usdc deposit)}*100
-			apr := edenAmountPerStableStakePerDay.MulInt(sdk.NewInt(100)).MulInt(sdk.NewInt(ptypes.DaysPerYear)).MulInt(edenPrice).QuoInt(totalUSDCDeposit.Amount)
+			// we multiply 10 as we have use 10elys as input in the price estimation
+			apr := edenAmountPerStableStakePerDay.MulInt(sdk.NewInt(10)).MulInt(sdk.NewInt(ptypes.DaysPerYear)).MulInt(edenPrice).QuoInt(totalUSDCDeposit.Amount)
 			return apr.TruncateInt(), nil
 		} else {
 			// Elys staking, Eden committed, EdenB committed.
