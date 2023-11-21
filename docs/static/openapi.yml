@@ -39498,6 +39498,14 @@ paths:
                   elys_stake_tracking_rate:
                     type: string
                     format: int64
+                  dex_rewards_stakers:
+                    title: Tracking dex rewards given to stakers
+                    type: object
+                    properties:
+                      epoch_identifier:
+                        type: string
+                      amount:
+                        type: string
             description: >-
               QueryParamsResponse is response type for the Query/Params RPC
               method.
@@ -83925,6 +83933,14 @@ definitions:
       - EDEN_PROGRAM
       - EDENB_PROGRAM
     default: ALL_PROGRAM
+  elys.incentive.DexRewardsStakers:
+    type: object
+    properties:
+      epoch_identifier:
+        type: string
+      amount:
+        type: string
+    title: Track DexRewardsStakers
   elys.incentive.IncentiveInfo:
     type: object
     properties:
@@ -84045,6 +84061,14 @@ definitions:
       elys_stake_tracking_rate:
         type: string
         format: int64
+      dex_rewards_stakers:
+        title: Tracking dex rewards given to stakers
+        type: object
+        properties:
+          epoch_identifier:
+            type: string
+          amount:
+            type: string
     description: Params defines the parameters for the module.
   elys.incentive.PoolInfo:
     type: object
@@ -84168,6 +84192,14 @@ definitions:
           elys_stake_tracking_rate:
             type: string
             format: int64
+          dex_rewards_stakers:
+            title: Tracking dex rewards given to stakers
+            type: object
+            properties:
+              epoch_identifier:
+                type: string
+              amount:
+                type: string
     description: QueryParamsResponse is response type for the Query/Params RPC method.
   elys.leveragelp.IsWhitelistedResponse:
     type: object

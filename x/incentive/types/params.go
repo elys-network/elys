@@ -20,6 +20,7 @@ var (
 	ParamStoreKeyStkIncentives         = []byte("stkincentives")
 	ParamStoreKeyPoolInfos             = []byte("poolinfos")
 	ParamStoreKeyElysStakeTrackingRate = []byte("elysstaketrackingrate")
+	ParamStoreKeyDexRewardsStakers     = []byte("dexrewardsstakers")
 )
 
 // ParamKeyTable the param key table for launch module
@@ -37,6 +38,10 @@ func NewParams() Params {
 		RewardPortionForLps:   sdk.NewDecWithPrec(65, 2),
 		PoolInfos:             []PoolInfo(nil),
 		ElysStakeTrackingRate: 10,
+		DexRewardsStakers: DexRewardsStakers{
+			EpochIdentifier: etypes.DayEpochID,
+			Amount:          sdk.ZeroDec(),
+		},
 	}
 }
 
@@ -55,6 +60,7 @@ func (p *Params) ParamSetPairs() paramtypes.ParamSetPairs {
 		paramtypes.NewParamSetPair(ParamStoreKeyStkIncentives, &p.StakeIncentives, validateStakeIncentives),
 		paramtypes.NewParamSetPair(ParamStoreKeyPoolInfos, &p.PoolInfos, validatePoolInfos),
 		paramtypes.NewParamSetPair(ParamStoreKeyElysStakeTrackingRate, &p.ElysStakeTrackingRate, validateElysStakeTrakcingRate),
+		paramtypes.NewParamSetPair(ParamStoreKeyDexRewardsStakers, &p.DexRewardsStakers, validateDexRewardsStakers),
 	}
 }
 
@@ -89,6 +95,10 @@ func (p Params) Validate() error {
 	}
 
 	if err := validateElysStakeTrakcingRate(p.ElysStakeTrackingRate); err != nil {
+		return err
+	}
+
+	if err := validateDexRewardsStakers(p.DexRewardsStakers); err != nil {
 		return err
 	}
 
@@ -246,6 +256,15 @@ func validatePoolInfos(i interface{}) error {
 
 func validateElysStakeTrakcingRate(i interface{}) error {
 	_, ok := i.(int64)
+	if !ok {
+		return fmt.Errorf("invalid parameter type: %T", i)
+	}
+
+	return nil
+}
+
+func validateDexRewardsStakers(i interface{}) error {
+	_, ok := i.(DexRewardsStakers)
 	if !ok {
 		return fmt.Errorf("invalid parameter type: %T", i)
 	}

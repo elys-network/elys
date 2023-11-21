@@ -129,6 +129,12 @@ func (k Keeper) UpdateRewardsUnclaimed(ctx sdk.Context, epochIdentifier string, 
 	edenAmountPerEpochLPs := lpIncentive.Amount.Quo(sdk.NewInt(lpIncentive.NumEpochs))
 	edenBoostAPR := stakeIncentive.EdenBoostApr
 
+	// Track the DEX rewards distribution for stakers
+	params := k.GetParams(ctx)
+	params.DexRewardsStakers.EpochIdentifier = stakeIncentive.EpochIdentifier
+	params.DexRewardsStakers.Amount = dexRevenueStakersAmt
+	k.SetParams(ctx, params)
+
 	// Proxy TVL
 	// Multiplier on each liquidity pool
 	// We have 3 pools of 20, 30, 40 TVL

@@ -158,9 +158,11 @@ func (k Keeper) GetProperIncentiveParam(ctx sdk.Context, epochIdentifier string)
 	stakeIncentive := params.StakeIncentives[0]
 	lpIncentive := params.LpIncentives[0]
 
-	// Consider epochIdentifier and start time
-	// Consider epochNumber as well
-	if stakeIncentive.EpochIdentifier != epochIdentifier || timestamp < stakeIncentive.StartTime.Unix() {
+	// TODO:
+	// In V2 refactoring, have to make it available to calculate rewards for stakers and Lps at different epoch.
+	// Now rewards calculation is taking in one place (in a single loop) so it is now being triggered by any of the matching epoch (LPs, stakers),
+	// so should update this later.
+	if stakeIncentive.EpochIdentifier != lpIncentive.EpochIdentifier || stakeIncentive.EpochIdentifier != epochIdentifier || timestamp < stakeIncentive.StartTime.Unix() {
 		return false, types.IncentiveInfo{}, types.IncentiveInfo{}
 	}
 

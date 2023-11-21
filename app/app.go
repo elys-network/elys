@@ -1081,6 +1081,7 @@ func NewElysApp(
 		// Note: epochs' begin should be "real" start of epochs, we keep epochs beginblock at the beginning
 		epochsmoduletypes.ModuleName,
 		minttypes.ModuleName,
+		stablestaketypes.ModuleName,
 		incentivemoduletypes.ModuleName,
 		slashingtypes.ModuleName,
 		evidencetypes.ModuleName,
@@ -1111,7 +1112,6 @@ func NewElysApp(
 		accountedpoolmoduletypes.ModuleName,
 		transferhooktypes.ModuleName,
 		clockmoduletypes.ModuleName,
-		stablestaketypes.ModuleName,
 		leveragelpmoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/beginBlockers
 	)
@@ -1128,6 +1128,7 @@ func NewElysApp(
 		capabilitytypes.ModuleName,
 		authtypes.ModuleName,
 		banktypes.ModuleName,
+		stablestaketypes.ModuleName,
 		incentivemoduletypes.ModuleName,
 		slashingtypes.ModuleName,
 		minttypes.ModuleName,
@@ -1152,7 +1153,6 @@ func NewElysApp(
 		accountedpoolmoduletypes.ModuleName,
 		transferhooktypes.ModuleName,
 		clockmoduletypes.ModuleName,
-		stablestaketypes.ModuleName,
 		leveragelpmoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/endBlockers
 	)
@@ -1166,6 +1166,8 @@ func NewElysApp(
 		capabilitytypes.ModuleName,
 		authtypes.ModuleName,
 		banktypes.ModuleName,
+		epochsmoduletypes.ModuleName,
+		stablestaketypes.ModuleName,
 		incentivemoduletypes.ModuleName,
 		stakingtypes.ModuleName,
 		slashingtypes.ModuleName,
@@ -1184,7 +1186,6 @@ func NewElysApp(
 		upgradetypes.ModuleName,
 		vestingtypes.ModuleName,
 		consensusparamtypes.ModuleName,
-		epochsmoduletypes.ModuleName,
 		assetprofilemoduletypes.ModuleName,
 		oracletypes.ModuleName,
 		commitmentmoduletypes.ModuleName,
@@ -1197,7 +1198,6 @@ func NewElysApp(
 		accountedpoolmoduletypes.ModuleName,
 		transferhooktypes.ModuleName,
 		clockmoduletypes.ModuleName,
-		stablestaketypes.ModuleName,
 		leveragelpmoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/initGenesis
 	}

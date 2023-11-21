@@ -104,8 +104,36 @@ func (k Keeper) CalculateApr(ctx sdk.Context, query *types.QueryAprRequest) (sdk
 			return apr.TruncateInt(), nil
 		} else {
 			// Elys staking, Eden committed, EdenB committed.
+			params := k.GetParams(ctx)
+			amt := params.DexRewardsStakers.Amount
+			if amt.IsZero() {
+				return sdk.ZeroInt(), nil
+			}
 
-			return sdk.ZeroInt(), nil
+			epoch, found := k.epochsKeeper.GetEpochInfo(ctx, params.DexRewardsStakers.EpochIdentifier)
+			if !found {
+				return sdk.ZeroInt(), sdkerrors.Wrap(types.ErrNoNonInflationaryParams, "no inflationary params available")
+			}
+
+			// Epoch duration
+			epochDuration := int64(epoch.Duration.Seconds())
+
+			// DexReward amount per day = amount distributed / duration(in seconds) * total seconds per day.
+			amtDexRewardPerDay := amt.MulInt(sdk.NewInt(ptypes.SecondsPerDay)).QuoInt(sdk.NewInt(epochDuration))
+
+			// Calc Eden price in usdc
+			// We put Elys as denom as Eden won't be avaialble in amm pool and has the same value as Elys
+			edenPrice := k.EstimatePrice(ctx, sdk.NewCoin(ptypes.Elys, sdk.NewInt(10)), baseCurrency)
+
+			// Update total committed states
+			k.UpdateTotalCommitmentInfo(ctx, baseCurrency)
+			totalStakedSnapshot := k.tci.TotalElysBonded.Add(k.tci.TotalEdenEdenBoostCommitted)
+
+			// Usdc apr for elys staking = (24 hour dex rewards in USDC generated for stakers) * 365*100/ {price ( elys/usdc)*( sum of (elys staked, Eden committed, Eden boost committed))}
+			// we multiply 10 as we have use 10elys as input in the price estimation
+			apr := amtDexRewardPerDay.MulInt(sdk.NewInt(ptypes.DaysPerYear)).MulInt(sdk.NewInt(10)).QuoInt(edenPrice).QuoInt(totalStakedSnapshot)
+
+			return apr.TruncateInt(), nil
 		}
 	} else if query.Denom == ptypes.EdenB {
 		apr := sdk.NewInt(lpIncentive.EdenBoostApr)
