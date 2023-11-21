@@ -67,6 +67,18 @@ service Query {
     option (google.api.http).get = "/elys-network/elys/amm/balance/{address}/{denom}";
   
   }
+  
+  // Queries a list of InRouteByDenom items.
+  rpc InRouteByDenom (QueryInRouteByDenomRequest) returns (QueryInRouteByDenomResponse) {
+    option (google.api.http).get = "/elys-network/elys/amm/in_route_by_denom/{denom_in}/{denom_out}";
+  
+  }
+  
+  // Queries a list of OutRouteByDenom items.
+  rpc OutRouteByDenom (QueryOutRouteByDenomRequest) returns (QueryOutRouteByDenomResponse) {
+    option (google.api.http).get = "/elys-network/elys/amm/out_route_by_denom/{denom_out}/{denom_in}";
+  
+  }
 }
 // QueryParamsRequest is request type for the Query/Params RPC method.
 message QueryParamsRequest {}
@@ -109,11 +121,11 @@ message QueryAllDenomLiquidityRequest {
 
 message QueryAllDenomLiquidityResponse {
   repeated DenomLiquidity                         denom_liquidity = 1 [(gogoproto.nullable) = false];
-           cosmos.base.query.v1beta1.PageResponse pagination     = 2;
+           cosmos.base.query.v1beta1.PageResponse pagination      = 2;
 }
 
 message QuerySwapEstimationRequest {
-  repeated SwapAmountInRoute        routes  = 1;
+  repeated SwapAmountInRoute        routes   = 1;
            cosmos.base.v1beta1.Coin token_in = 2 [(gogoproto.nullable) = false];
 }
 
@@ -143,5 +155,23 @@ message QueryBalanceRequest {
 
 message QueryBalanceResponse {
   cosmos.base.v1beta1.Coin balance = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryInRouteByDenomRequest {
+  string denom_in  = 1;
+  string denom_out = 2;
+}
+
+message QueryInRouteByDenomResponse {
+  repeated SwapAmountInRoute in_route = 1;
+}
+
+message QueryOutRouteByDenomRequest {
+  string denom_out = 1;
+  string denom_in  = 2;
+}
+
+message QueryOutRouteByDenomResponse {
+  repeated SwapAmountOutRoute out_route = 1;
 }
 

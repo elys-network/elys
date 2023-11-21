@@ -37736,6 +37736,98 @@ paths:
           type: string
       tags:
         - Query
+  /elys-network/elys/amm/in_route_by_denom/{denom_in}/{denom_out}:
+    get:
+      summary: Queries a list of InRouteByDenom items.
+      operationId: ElysAmmInRouteByDenom
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              in_route_ids:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    pool_id:
+                      type: string
+                      format: uint64
+                    token_out_denom:
+                      type: string
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: denom_in
+          in: path
+          required: true
+          type: string
+        - name: denom_out
+          in: path
+          required: true
+          type: string
+      tags:
+        - Query
+  /elys-network/elys/amm/out_route_by_denom/{denomOut}/{denomIn}:
+    get:
+      summary: Queries a list of OutRouteByDenom items.
+      operationId: ElysAmmOutRouteByDenom
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              outRouteIds:
+                type: array
+                items:
+                  type: string
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: denomOut
+          in: path
+          required: true
+          type: string
+        - name: denomIn
+          in: path
+          required: true
+          type: string
+      tags:
+        - Query
   /elys-network/elys/amm/params:
     get:
       summary: Parameters queries the parameters of the module.
@@ -82752,6 +82844,26 @@ definitions:
             type: string
           rebalance_treasury:
             type: string
+  elys.amm.QueryInRouteByDenomResponse:
+    type: object
+    properties:
+      in_route_ids:
+        type: array
+        items:
+          type: object
+          properties:
+            pool_id:
+              type: string
+              format: uint64
+            token_out_denom:
+              type: string
+  elys.amm.QueryOutRouteByDenomResponse:
+    type: object
+    properties:
+      outRouteIds:
+        type: array
+        items:
+          type: string
   elys.amm.QueryParamsResponse:
     type: object
     properties:
