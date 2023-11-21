@@ -33,6 +33,7 @@ type (
 		oracleKeeper types.OracleKeeper
 		apKeeper     types.AssetProfileKeeper
 		epochsKeeper types.EpochsKeeper
+		stableKeeper types.StableStakeKeeper
 
 		feeCollectorName    string // name of the FeeCollector ModuleAccount
 		dexRevCollectorName string // name of the Dex Revenue ModuleAccount
@@ -52,6 +53,7 @@ func NewKeeper(
 	ok types.OracleKeeper,
 	ap types.AssetProfileKeeper,
 	epochsKeeper types.EpochsKeeper,
+	stableKeeper types.StableStakeKeeper,
 	feeCollectorName string,
 	dexRevCollectorName string,
 ) *Keeper {
@@ -76,6 +78,7 @@ func NewKeeper(
 		oracleKeeper:        ok,
 		apKeeper:            ap,
 		epochsKeeper:        epochsKeeper,
+		stableKeeper:        stableKeeper,
 	}
 }
 

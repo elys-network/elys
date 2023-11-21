@@ -20,9 +20,6 @@ var (
 	ParamStoreKeyStkIncentives         = []byte("stkincentives")
 	ParamStoreKeyPoolInfos             = []byte("poolinfos")
 	ParamStoreKeyElysStakeTrackingRate = []byte("elysstaketrackingrate")
-	ParamStoreKeyAprEdenElys           = []byte("apredenelys")
-	ParamStoreKeyAprUsdc               = []byte("aprusdc")
-	ParamStoreKeyAprEdenB              = []byte("apredenb")
 )
 
 // ParamKeyTable the param key table for launch module
@@ -40,18 +37,6 @@ func NewParams() Params {
 		RewardPortionForLps:   sdk.NewDecWithPrec(65, 2),
 		PoolInfos:             []PoolInfo(nil),
 		ElysStakeTrackingRate: 10,
-		AprEdenElys: AprEdenElys{
-			Uusdc:  sdk.ZeroInt(),
-			Ueden:  sdk.ZeroInt(),
-			Uedenb: sdk.NewInt(100),
-		},
-		AprUsdc: AprUsdc{
-			Uusdc: sdk.ZeroInt(),
-			Ueden: sdk.ZeroInt(),
-		},
-		AprEdenB: AprEdenB{
-			Uedenb: sdk.NewInt(100),
-		},
 	}
 }
 
@@ -70,9 +55,6 @@ func (p *Params) ParamSetPairs() paramtypes.ParamSetPairs {
 		paramtypes.NewParamSetPair(ParamStoreKeyStkIncentives, &p.StakeIncentives, validateStakeIncentives),
 		paramtypes.NewParamSetPair(ParamStoreKeyPoolInfos, &p.PoolInfos, validatePoolInfos),
 		paramtypes.NewParamSetPair(ParamStoreKeyElysStakeTrackingRate, &p.ElysStakeTrackingRate, validateElysStakeTrakcingRate),
-		paramtypes.NewParamSetPair(ParamStoreKeyAprEdenElys, &p.AprEdenElys, validateAprEdenElys),
-		paramtypes.NewParamSetPair(ParamStoreKeyAprUsdc, &p.AprUsdc, validateAprUsdc),
-		paramtypes.NewParamSetPair(ParamStoreKeyAprEdenB, &p.AprEdenB, validateAprEdenB),
 	}
 }
 
@@ -107,18 +89,6 @@ func (p Params) Validate() error {
 	}
 
 	if err := validateElysStakeTrakcingRate(p.ElysStakeTrackingRate); err != nil {
-		return err
-	}
-
-	if err := validateAprEdenElys(p.AprEdenElys); err != nil {
-		return err
-	}
-
-	if err := validateAprUsdc(p.AprUsdc); err != nil {
-		return err
-	}
-
-	if err := validateAprEdenB(p.AprEdenB); err != nil {
 		return err
 	}
 
@@ -276,33 +246,6 @@ func validatePoolInfos(i interface{}) error {
 
 func validateElysStakeTrakcingRate(i interface{}) error {
 	_, ok := i.(int64)
-	if !ok {
-		return fmt.Errorf("invalid parameter type: %T", i)
-	}
-
-	return nil
-}
-
-func validateAprEdenElys(i interface{}) error {
-	_, ok := i.(AprEdenElys)
-	if !ok {
-		return fmt.Errorf("invalid parameter type: %T", i)
-	}
-
-	return nil
-}
-
-func validateAprUsdc(i interface{}) error {
-	_, ok := i.(AprUsdc)
-	if !ok {
-		return fmt.Errorf("invalid parameter type: %T", i)
-	}
-
-	return nil
-}
-
-func validateAprEdenB(i interface{}) error {
-	_, ok := i.(AprEdenB)
 	if !ok {
 		return fmt.Errorf("invalid parameter type: %T", i)
 	}

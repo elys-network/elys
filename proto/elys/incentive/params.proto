@@ -4,7 +4,6 @@ package elys.incentive;
 import "gogoproto/gogo.proto";
 import "elys/incentive/incentive.proto";
 import "elys/incentive/pool.proto";
-import "elys/incentive/apr.proto";
 
 option go_package = "github.com/elys-network/elys/x/incentive/types";
 
@@ -31,8 +30,4 @@ message Params {
 	repeated PoolInfo pool_infos = 6 [(gogoproto.nullable) = false];
 
 	int64 elys_stake_tracking_rate = 7;
-
-  AprEdenElys apr_eden_elys = 8 [(gogoproto.nullable) = false];
-  AprUsdc apr_usdc = 9 [(gogoproto.nullable) = false];
-  AprEdenB apr_eden_b = 10 [(gogoproto.nullable) = false];
 }

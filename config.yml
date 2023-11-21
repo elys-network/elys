@@ -302,15 +302,6 @@ genesis:
         reward_portion_for_lps: "0.65"
         pool_infos: []
         elys_stake_tracking_rate: "10"
-        apr_eden_elys:
-          uusdc: "70"
-          ueden: "60"
-          uedenb: "100"
-        apr_usdc:
-          uusdc: "70"
-          ueden: "60"
-        apr_eden_b:
-          uedenb: "100"
       fee_pool:
         community_pool:
           - amount: "0"

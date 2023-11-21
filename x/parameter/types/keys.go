@@ -43,6 +43,12 @@ const (
 	// 3.154e+7 per year
 	SecondsPerYear = 3.154e+7
 
+	// One day seconds
+	SecondsPerDay = 86400
+
+	// Days per year
+	DaysPerYear = 365
+
 	// Return ok
 	RES_OK = uint64(200)
 )

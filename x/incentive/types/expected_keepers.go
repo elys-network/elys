@@ -9,6 +9,7 @@ import (
 	ctypes "github.com/elys-network/elys/x/commitment/types"
 	epochstypes "github.com/elys-network/elys/x/epochs/types"
 	oracletypes "github.com/elys-network/elys/x/oracle/types"
+	stabletypes "github.com/elys-network/elys/x/stablestake/types"
 )
 
 // CommitmentKeeper
@@ -106,6 +107,7 @@ type AmmKeeper interface {
 		tokenOutDenom string,
 		swapFee sdk.Dec,
 	) (tokenOut sdk.Coin, slippageAmount sdk.Dec, weightBalanceBonus sdk.Dec, err error)
+	CalcOutAmtGivenIn(ctx sdk.Context, poolId uint64, oracle ammtypes.OracleKeeper, snapshot *ammtypes.Pool, tokensIn sdk.Coins, tokenOutDenom string, swapFee sdk.Dec) (sdk.Coin, error)
 }
 
 // OracleKeeper defines the expected interface needed to retrieve price info
@@ -128,4 +130,9 @@ type AssetProfileKeeper interface {
 // EpochsKeeper defines the expected epochs keeper used for simulations (noalias)
 type EpochsKeeper interface {
 	GetEpochInfo(ctx sdk.Context, identifier string) (epochstypes.EpochInfo, bool)
+}
+
+// StableStakeKeeper defines the expected epochs keeper used for simulations (noalias)
+type StableStakeKeeper interface {
+	GetParams(ctx sdk.Context) (params stabletypes.Params)
 }
