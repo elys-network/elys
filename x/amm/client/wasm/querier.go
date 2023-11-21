@@ -43,6 +43,10 @@ func (oq *Querier) HandleQuery(ctx sdk.Context, query wasmbindingstypes.ElysQuer
 		return oq.querySlippageTrackAll(ctx, query.AmmSlippageTrackAll)
 	case query.AmmBalance != nil:
 		return oq.queryBalance(ctx, query.AmmBalance)
+	case query.AmmInRouteByDenom != nil:
+		return oq.queryInRouteByDenom(ctx, query.AmmInRouteByDenom)
+	case query.AmmOutRouteByDenom != nil:
+		return oq.queryOutRouteByDenom(ctx, query.AmmOutRouteByDenom)
 	default:
 		// This handler cannot handle the query
 		return nil, wasmbindingstypes.ErrCannotHandleQuery
