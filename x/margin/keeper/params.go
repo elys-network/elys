@@ -155,3 +155,24 @@ func (k Keeper) GetBrokerAddress(ctx sdk.Context) sdk.AccAddress {
 func (k Keeper) GetTakeProfitBorrowInterestRateMin(ctx sdk.Context) sdk.Dec {
 	return k.GetParams(ctx).TakeProfitBorrowInterestRateMin
 }
+
+func (k Keeper) GetFundingFeeBaseRate(ctx sdk.Context) sdk.Dec {
+	return k.GetParams(ctx).FundingFeeBaseRate
+}
+
+func (k Keeper) GetFundingFeeMaxRate(ctx sdk.Context) sdk.Dec {
+	return k.GetParams(ctx).FundingFeeMaxRate
+}
+
+func (k Keeper) GetFundingFeeMinRate(ctx sdk.Context) sdk.Dec {
+	return k.GetParams(ctx).FundingFeeMinRate
+}
+
+func (k Keeper) GetFundingFeeCollectionAddress(ctx sdk.Context) sdk.AccAddress {
+	addr, err := sdk.AccAddressFromBech32(k.GetParams(ctx).FundingFeeCollectionAddress)
+	if err != nil {
+		panic(err)
+	}
+
+	return addr
+}

@@ -11,6 +11,10 @@ import (
 
 var _ paramtypes.ParamSet = (*Params)(nil)
 
+const (
+	ZeroAddress = "elys1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqnrec2l"
+)
+
 var (
 	KeyLeverageMax                                    = []byte("LeverageMax")
 	KeyBorrowInterestRateMax                          = []byte("BorrowInterestRateMax")
@@ -33,6 +37,10 @@ var (
 	KeyInvariantCheckEpoch                            = []byte("InvariantCheckEpoch")
 	KeyBrokerAddress                                  = []byte("BrokerAddress")
 	KeyTakeProfitBorrowInterestRateMin                = []byte("TakeProfitBorrowInterestRateMin")
+	KeyFundingFeeBaseRate                             = []byte("FundingFeeBaseRate")
+	KeyFundingFeeMinRate                              = []byte("FundingFeeMinRate")
+	KeyFundingFeeMaxRate                              = []byte("FundingFeeMaxRate")
+	KeyFundingFeeCollectionAddress                    = []byte("FundingFeeCollectionAddress")
 )
 
 // ParamKeyTable the param key table for launch module
@@ -43,26 +51,30 @@ func ParamKeyTable() paramtypes.KeyTable {
 // NewParams creates a new Params instance
 func NewParams() Params {
 	return Params{
+		FundingFeeCollectionAddress:                    ZeroAddress,
+		FundingFeeMinRate:                              sdk.NewDecWithPrec(-1, 3), // -0.1%
+		FundingFeeMaxRate:                              sdk.NewDecWithPrec(1, 3),  // 0.1%
+		FundingFeeBaseRate:                             sdk.NewDecWithPrec(3, 4),  // 0.03%
 		TakeProfitBorrowInterestRateMin:                sdk.OneDec(),
-		BorrowInterestRateDecrease:                     sdk.MustNewDecFromStr("0.000000000333333333"),
-		BorrowInterestRateIncrease:                     sdk.MustNewDecFromStr("0.000000000333333333"),
-		BorrowInterestRateMax:                          sdk.MustNewDecFromStr("0.000000270000000000"),
-		BorrowInterestRateMin:                          sdk.MustNewDecFromStr("0.000000030000000000"),
-		BrokerAddress:                                  "elys1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqnrec2l",
+		BorrowInterestRateDecrease:                     sdk.NewDecWithPrec(33, 10),
+		BorrowInterestRateIncrease:                     sdk.NewDecWithPrec(33, 10),
+		BorrowInterestRateMax:                          sdk.NewDecWithPrec(27, 7),
+		BorrowInterestRateMin:                          sdk.NewDecWithPrec(3, 8),
+		BrokerAddress:                                  ZeroAddress,
 		EpochLength:                                    (int64)(1),
-		ForceCloseFundAddress:                          "elys1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqnrec2l",
+		ForceCloseFundAddress:                          ZeroAddress,
 		ForceCloseFundPercentage:                       sdk.OneDec(),
-		HealthGainFactor:                               sdk.MustNewDecFromStr("0.000000022000000000"),
+		HealthGainFactor:                               sdk.NewDecWithPrec(22, 8),
 		IncrementalBorrowInterestPaymentEnabled:        true,
-		IncrementalBorrowInterestPaymentFundAddress:    "elys1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqnrec2l",
-		IncrementalBorrowInterestPaymentFundPercentage: sdk.MustNewDecFromStr("0.350000000000000000"),
+		IncrementalBorrowInterestPaymentFundAddress:    ZeroAddress,
+		IncrementalBorrowInterestPaymentFundPercentage: sdk.NewDecWithPrec(35, 1), // 35%
 		InvariantCheckEpoch:                            epochtypes.DayEpochID,
 		LeverageMax:                                    sdk.NewDec(10),
 		MaxOpenPositions:                               (int64)(9999),
 		PoolOpenThreshold:                              sdk.OneDec(),
-		RemovalQueueThreshold:                          sdk.MustNewDecFromStr("0.350000000000000000"),
-		SafetyFactor:                                   sdk.MustNewDecFromStr("1.050000000000000000"),
-		SqModifier:                                     sdk.MustNewDecFromStr("10000000000000000000000000.000000000000000000"),
+		RemovalQueueThreshold:                          sdk.NewDecWithPrec(35, 1),                     // 35%
+		SafetyFactor:                                   sdk.MustNewDecFromStr("1.050000000000000000"), // 5%
+		SqModifier:                                     sdk.MustNewDecFromStr("10000000000000000000000000"),
 		WhitelistingEnabled:                            false,
 	}
 }
@@ -96,6 +108,10 @@ func (p *Params) ParamSetPairs() paramtypes.ParamSetPairs {
 		paramtypes.NewParamSetPair(KeyInvariantCheckEpoch, &p.InvariantCheckEpoch, validateInvariantCheckEpoch),
 		paramtypes.NewParamSetPair(KeyBrokerAddress, &p.BrokerAddress, validateBrokerAddress),
 		paramtypes.NewParamSetPair(KeyTakeProfitBorrowInterestRateMin, &p.TakeProfitBorrowInterestRateMin, validateTakeProfitBorrowInterestRateMin),
+		paramtypes.NewParamSetPair(KeyFundingFeeBaseRate, &p.FundingFeeBaseRate, validateBorrowInterestRateMax),
+		paramtypes.NewParamSetPair(KeyFundingFeeMinRate, &p.FundingFeeMinRate, validateBorrowInterestRateMax),
+		paramtypes.NewParamSetPair(KeyFundingFeeMaxRate, &p.FundingFeeMaxRate, validateBorrowInterestRateMax),
+		paramtypes.NewParamSetPair(KeyFundingFeeCollectionAddress, &p.FundingFeeCollectionAddress, validateFundingFeeCollectionAddress),
 	}
 }
 
@@ -162,6 +178,18 @@ func (p Params) Validate() error {
 		return err
 	}
 	if err := validateTakeProfitBorrowInterestRateMin(p.TakeProfitBorrowInterestRateMin); err != nil {
+		return err
+	}
+	if err := validateFundingFeeBaseRate(p.FundingFeeBaseRate); err != nil {
+		return err
+	}
+	if err := validateFundingFeeMinRate(p.FundingFeeMinRate); err != nil {
+		return err
+	}
+	if err := validateFundingFeeMaxRate(p.FundingFeeMaxRate); err != nil {
+		return err
+	}
+	if err := validateFundingFeeCollectionAddress(p.FundingFeeCollectionAddress); err != nil {
 		return err
 	}
 	return nil
@@ -454,6 +482,60 @@ func validateTakeProfitBorrowInterestRateMin(i interface{}) error {
 	}
 	if v.IsNegative() {
 		return fmt.Errorf("take profit borrow interest rate min must be positive: %s", v)
+	}
+
+	return nil
+}
+
+func validateFundingFeeBaseRate(i interface{}) error {
+	v, ok := i.(sdk.Dec)
+	if !ok {
+		return fmt.Errorf("invalid parameter type: %T", i)
+	}
+	if v.IsNil() {
+		return fmt.Errorf("funding fee base rate must be not nil")
+	}
+	if v.IsNegative() {
+		return fmt.Errorf("funding fee base rate must be positive: %s", v)
+	}
+
+	return nil
+}
+
+func validateFundingFeeMinRate(i interface{}) error {
+	v, ok := i.(sdk.Dec)
+	if !ok {
+		return fmt.Errorf("invalid parameter type: %T", i)
+	}
+	if v.IsNil() {
+		return fmt.Errorf("funding fee min rate must be not nil")
+	}
+	if v.IsPositive() {
+		return fmt.Errorf("funding fee min rate must be negative: %s", v)
+	}
+
+	return nil
+}
+
+func validateFundingFeeMaxRate(i interface{}) error {
+	v, ok := i.(sdk.Dec)
+	if !ok {
+		return fmt.Errorf("invalid parameter type: %T", i)
+	}
+	if v.IsNil() {
+		return fmt.Errorf("funding fee max rate must be not nil")
+	}
+	if v.IsNegative() {
+		return fmt.Errorf("funding fee max rate must be positive: %s", v)
+	}
+
+	return nil
+}
+
+func validateFundingFeeCollectionAddress(i interface{}) error {
+	_, ok := i.(string)
+	if !ok {
+		return fmt.Errorf("invalid parameter type: %T", i)
 	}
 
 	return nil

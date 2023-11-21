@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	"fmt"
 	"strconv"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -20,16 +21,22 @@ func (k Keeper) EmitForceClose(ctx sdk.Context, mtp *types.MTP, repayAmount sdk.
 		sdk.NewAttribute("id", strconv.FormatInt(int64(mtp.Id), 10)),
 		sdk.NewAttribute("position", mtp.Position.String()),
 		sdk.NewAttribute("address", mtp.Address),
-		// sdk.NewAttribute("collateral_asset", mtp.CollateralAsset),
-		// sdk.NewAttribute("collateral_amount", mtp.CollateralAmount.String()),
-		// sdk.NewAttribute("custody_asset", mtp.CustodyAsset),
-		// sdk.NewAttribute("custody_amount", mtp.CustodyAmount.String()),
+		sdk.NewAttribute("collaterals", fmt.Sprintf("%s", mtp.Collaterals)),
+		sdk.NewAttribute("custodies", fmt.Sprintf("%s", mtp.Custodies)),
 		sdk.NewAttribute("repay_amount", repayAmount.String()),
-		// sdk.NewAttribute("leverage", mtp.Leverage.String()),
+		sdk.NewAttribute("leverage", fmt.Sprintf("%s", mtp.Leverages)),
 		sdk.NewAttribute("liabilities", mtp.Liabilities.String()),
-		// sdk.NewAttribute("borrow_interest_paid_collateral", mtp.BorrowInterestPaidCollateral.String()),
-		// sdk.NewAttribute("borrow_interest_paid_custody", mtp.BorrowInterestPaidCustody.String()),
+		sdk.NewAttribute("borrow_interest_paid_collaterals", fmt.Sprintf("%s", mtp.BorrowInterestPaidCollaterals)),
+		sdk.NewAttribute("borrow_interest_paid_custodies", fmt.Sprintf("%s", mtp.BorrowInterestPaidCustodies)),
 		sdk.NewAttribute("health", mtp.MtpHealth.String()),
 		sdk.NewAttribute("closer", closer),
+	))
+}
+
+func (k Keeper) EmitFundingFeePayment(ctx sdk.Context, mtp *types.MTP, takeAmount sdk.Int, takeAsset string, paymentType string) {
+	ctx.EventManager().EmitEvent(sdk.NewEvent(paymentType,
+		sdk.NewAttribute("id", strconv.FormatInt(int64(mtp.Id), 10)),
+		sdk.NewAttribute("payment_amount", takeAmount.String()),
+		sdk.NewAttribute("payment_asset", takeAsset),
 	))
 }

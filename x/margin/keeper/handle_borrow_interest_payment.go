@@ -11,7 +11,7 @@ func (k Keeper) HandleBorrowInterestPayment(ctx sdk.Context, collateralAsset str
 	incrementalBorrowInterestPaymentEnabled := k.GetIncrementalBorrowInterestPaymentEnabled(ctx)
 	// if incremental payment on, pay interest
 	if incrementalBorrowInterestPaymentEnabled {
-		finalBorrowInterestPayment, err := k.IncrementalBorrowInterestPayment(ctx, collateralAsset, custodyAsset, borrowInterestPayment, mtp, pool, ammPool)
+		finalBorrowInterestPayment, err := k.IncrementalBorrowInterestPayment(ctx, collateralAsset, custodyAsset, borrowInterestPayment, mtp, pool, ammPool, baseCurrency)
 		if err != nil {
 			ctx.Logger().Error(sdkerrors.Wrap(err, "error executing incremental borrow interest payment").Error())
 		} else {

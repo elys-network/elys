@@ -36,6 +36,10 @@ func NewMTP(signer string, collateralAsset string, borrowAsset string, position 
 		SumCollateral:                   sdk.ZeroInt(),
 		TakeProfitPrice:                 takeProfitPrice,
 		TakeProfitBorrowRate:            sdk.OneDec(),
+		FundingFeePaidCollaterals:       []sdk.Coin{sdk.NewCoin(collateralAsset, sdk.ZeroInt())},
+		FundingFeePaidCustodies:         []sdk.Coin{sdk.NewCoin(borrowAsset, sdk.ZeroInt())},
+		FundingFeeReceivedCollaterals:   []sdk.Coin{sdk.NewCoin(collateralAsset, sdk.ZeroInt())},
+		FundingFeeReceivedCustodies:     []sdk.Coin{sdk.NewCoin(borrowAsset, sdk.ZeroInt())},
 	}
 }
 

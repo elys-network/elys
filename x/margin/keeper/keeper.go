@@ -295,14 +295,8 @@ func (k Keeper) TakeInCustody(ctx sdk.Context, mtp types.MTP, pool *types.Pool) 
 	return nil
 }
 
-func (k Keeper) IncrementalBorrowInterestPayment(ctx sdk.Context, collateralAsset string, custodyAsset string, borrowInterestPayment sdk.Int, mtp *types.MTP, pool *types.Pool, ammPool ammtypes.Pool) (sdk.Int, error) {
+func (k Keeper) IncrementalBorrowInterestPayment(ctx sdk.Context, collateralAsset string, custodyAsset string, borrowInterestPayment sdk.Int, mtp *types.MTP, pool *types.Pool, ammPool ammtypes.Pool, baseCurrency string) (sdk.Int, error) {
 	collateralIndex, custodyIndex := types.GetMTPAssetIndex(mtp, collateralAsset, custodyAsset)
-
-	entry, found := k.apKeeper.GetEntry(ctx, ptypes.BaseCurrency)
-	if !found {
-		return sdk.ZeroInt(), sdkerrors.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency)
-	}
-	baseCurrency := entry.Denom
 
 	// if mtp has unpaid borrow interest, add to payment
 	// convert it into base currency
