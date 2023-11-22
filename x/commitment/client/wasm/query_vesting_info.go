@@ -45,7 +45,7 @@ func (oq *Querier) queryVestingInfo(ctx sdk.Context, query *commitmenttypes.Quer
 		}
 
 		vestingDetails = append(vestingDetails, vestingDetail)
-		totalVesting = totalVesting.Add(vesting.TotalAmount)
+		totalVesting = totalVesting.Add(vesting.UnvestedAmount)
 	}
 
 	res := commitmenttypes.QueryVestingInfoResponse{

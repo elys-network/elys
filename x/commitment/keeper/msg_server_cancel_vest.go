@@ -29,8 +29,18 @@ func (k msgServer) CancelVest(goCtx context.Context, msg *types.MsgCancelVest) (
 	for i := len(commitments.VestingTokens) - 1; i >= 0; i-- {
 		vesting := commitments.VestingTokens[i]
 		cancelAmount := sdk.MinInt(remainingToCancel, vesting.UnvestedAmount)
+		if vesting.NumEpochs == 0 || vesting.TotalAmount.IsZero() {
+			continue
+		}
+		amtPerEpoch := vesting.TotalAmount.Quo(sdk.NewInt(vesting.NumEpochs))
 		vesting.TotalAmount = vesting.TotalAmount.Sub(cancelAmount)
 		vesting.UnvestedAmount = vesting.UnvestedAmount.Sub(cancelAmount)
+
+		if amtPerEpoch.IsZero() {
+			continue
+		}
+		// Update the num epochs for the reduced amount
+		vesting.NumEpochs = vesting.TotalAmount.Quo(amtPerEpoch).Int64()
 
 		if !vesting.TotalAmount.IsZero() {
 			remainVestingTokens = append(remainVestingTokens, vesting)
