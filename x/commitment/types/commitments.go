@@ -29,6 +29,15 @@ func (c *Commitments) GetCommittedAmountForDenom(denom string) sdk.Int {
 	return sdk.NewInt(0)
 }
 
+func (c *Commitments) GetCommittedLockUpsForDenom(denom string) []Lockup {
+	for _, token := range c.CommittedTokens {
+		if token.Denom == denom {
+			return token.Lockups
+		}
+	}
+	return nil
+}
+
 func (c *Commitments) AddCommittedTokens(denom string, amount sdk.Int, unlockTime uint64) {
 	for i, token := range c.CommittedTokens {
 		if token.Denom == denom {

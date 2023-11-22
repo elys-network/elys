@@ -50,7 +50,7 @@ func (k Keeper) ProcessTokenVesting(ctx sdk.Context, denom string, amount sdk.In
 		EpochIdentifier:      vestingInfo.EpochIdentifier,
 		NumEpochs:            vestingInfo.NumEpochs,
 		CurrentEpoch:         0,
-		VestStartedTimestamp: ctx.BlockTime().UnixMilli(),
+		VestStartedTimestamp: ctx.BlockTime().Unix(),
 	})
 	commitments.VestingTokens = vestingTokens
 
