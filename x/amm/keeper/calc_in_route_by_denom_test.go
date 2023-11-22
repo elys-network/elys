@@ -3,18 +3,15 @@ package keeper_test
 import (
 	"testing"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	keepertest "github.com/elys-network/elys/testutil/keeper"
-	"github.com/elys-network/elys/x/amm/keeper"
-	"github.com/elys-network/elys/x/amm/types"
 	"github.com/stretchr/testify/require"
 )
 
 func TestCalcInRouteByDenom(t *testing.T) {
-	k, ctx := keepertest.AmmKeeper(t)
+	k, ctx, _, _ := keepertest.AmmKeeper(t)
 
 	// Setup mock pools and assets
-	setupMockPools(k, ctx)
+	SetupMockPools(k, ctx)
 
 	// Test direct pool route
 	route, err := k.CalcInRouteByDenom(ctx, "denom1", "denom2", "baseCurrency")
@@ -36,35 +33,4 @@ func TestCalcInRouteByDenom(t *testing.T) {
 	// Test same input and output denomination
 	_, err = k.CalcInRouteByDenom(ctx, "denom1", "denom1", "baseCurrency")
 	require.Error(t, err)
-}
-
-func setupMockPools(k *keeper.Keeper, ctx sdk.Context) {
-	// Create and set mock pools
-	pools := []types.Pool{
-		{
-			PoolId: 1,
-			PoolAssets: []types.PoolAsset{
-				{Token: sdk.Coin{Denom: "denom1", Amount: sdk.NewInt(1000)}},
-				{Token: sdk.Coin{Denom: "denom2", Amount: sdk.NewInt(1000)}},
-			},
-		},
-		{
-			PoolId: 2,
-			PoolAssets: []types.PoolAsset{
-				{Token: sdk.Coin{Denom: "denom1", Amount: sdk.NewInt(1000)}},
-				{Token: sdk.Coin{Denom: "baseCurrency", Amount: sdk.NewInt(1000)}},
-			},
-		},
-		{
-			PoolId: 3,
-			PoolAssets: []types.PoolAsset{
-				{Token: sdk.Coin{Denom: "baseCurrency", Amount: sdk.NewInt(1000)}},
-				{Token: sdk.Coin{Denom: "denom3", Amount: sdk.NewInt(1000)}},
-			},
-		},
-	}
-
-	for _, pool := range pools {
-		k.SetPool(ctx, pool)
-	}
 }

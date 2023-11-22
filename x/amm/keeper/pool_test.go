@@ -40,7 +40,7 @@ func createNPool(keeper *keeper.Keeper, ctx sdk.Context, n int) []types.Pool {
 }
 
 func TestPoolGet(t *testing.T) {
-	keeper, ctx := keepertest.AmmKeeper(t)
+	keeper, ctx, _, _ := keepertest.AmmKeeper(t)
 	items := createNPool(keeper, ctx, 10)
 	for _, item := range items {
 		rst, found := keeper.GetPool(ctx,
@@ -54,7 +54,7 @@ func TestPoolGet(t *testing.T) {
 	}
 }
 func TestPoolRemove(t *testing.T) {
-	keeper, ctx := keepertest.AmmKeeper(t)
+	keeper, ctx, _, _ := keepertest.AmmKeeper(t)
 	items := createNPool(keeper, ctx, 10)
 	for _, item := range items {
 		keeper.RemovePool(ctx,
@@ -68,7 +68,7 @@ func TestPoolRemove(t *testing.T) {
 }
 
 func TestPoolGetAll(t *testing.T) {
-	keeper, ctx := keepertest.AmmKeeper(t)
+	keeper, ctx, _, _ := keepertest.AmmKeeper(t)
 	items := createNPool(keeper, ctx, 10)
 	require.ElementsMatch(t,
 		nullify.Fill(items),
@@ -77,7 +77,7 @@ func TestPoolGetAll(t *testing.T) {
 }
 
 func TestGetPoolIdWithAllDenoms(t *testing.T) {
-	keeper, ctx := keepertest.AmmKeeper(t)
+	keeper, ctx, _, _ := keepertest.AmmKeeper(t)
 	items := createNPool(keeper, ctx, 10)
 
 	// Add assets to some pools for testing

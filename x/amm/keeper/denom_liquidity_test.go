@@ -27,7 +27,7 @@ func createNDenomLiquidity(keeper *keeper.Keeper, ctx sdk.Context, n int) []type
 }
 
 func TestDenomLiquidityGet(t *testing.T) {
-	keeper, ctx := keepertest.AmmKeeper(t)
+	keeper, ctx, _, _ := keepertest.AmmKeeper(t)
 	items := createNDenomLiquidity(keeper, ctx, 10)
 	for _, item := range items {
 		rst, found := keeper.GetDenomLiquidity(ctx,
@@ -41,7 +41,7 @@ func TestDenomLiquidityGet(t *testing.T) {
 	}
 }
 func TestDenomLiquidityRemove(t *testing.T) {
-	keeper, ctx := keepertest.AmmKeeper(t)
+	keeper, ctx, _, _ := keepertest.AmmKeeper(t)
 	items := createNDenomLiquidity(keeper, ctx, 10)
 	for _, item := range items {
 		keeper.RemoveDenomLiquidity(ctx,
@@ -55,7 +55,7 @@ func TestDenomLiquidityRemove(t *testing.T) {
 }
 
 func TestDenomLiquidityGetAll(t *testing.T) {
-	keeper, ctx := keepertest.AmmKeeper(t)
+	keeper, ctx, _, _ := keepertest.AmmKeeper(t)
 	items := createNDenomLiquidity(keeper, ctx, 10)
 	require.ElementsMatch(t,
 		nullify.Fill(items),

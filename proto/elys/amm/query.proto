@@ -79,6 +79,12 @@ service Query {
     option (google.api.http).get = "/elys-network/elys/amm/out_route_by_denom/{denom_out}/{denom_in}";
   
   }
+  
+  // Queries a list of SwapEstimationByDenom items.
+  rpc SwapEstimationByDenom (QuerySwapEstimationByDenomRequest) returns (QuerySwapEstimationByDenomResponse) {
+    option (google.api.http).get = "/elys-network/elys/amm/swap_estimation_by_denom";
+  
+  }
 }
 // QueryParamsRequest is request type for the Query/Params RPC method.
 message QueryParamsRequest {}
@@ -173,5 +179,18 @@ message QueryOutRouteByDenomRequest {
 
 message QueryOutRouteByDenomResponse {
   repeated SwapAmountOutRoute out_route = 1;
+}
+
+message QuerySwapEstimationByDenomRequest {
+  cosmos.base.v1beta1.Coin amount   = 1 [(gogoproto.nullable) = false];
+  string                   denom_in  = 2;
+  string                   denom_out = 3;
+}
+
+message QuerySwapEstimationByDenomResponse {
+  repeated SwapAmountInRoute        in_route   = 1;
+  repeated SwapAmountOutRoute       out_route  = 2;
+           string                   spot_price = 3 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+           cosmos.base.v1beta1.Coin amount    = 4 [(gogoproto.nullable) = false];
 }
 

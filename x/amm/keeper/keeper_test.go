@@ -8,6 +8,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	simapp "github.com/elys-network/elys/app"
+	"github.com/elys-network/elys/x/amm/keeper"
+	"github.com/elys-network/elys/x/amm/types"
 	oracletypes "github.com/elys-network/elys/x/oracle/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 	"github.com/stretchr/testify/suite"
@@ -76,4 +78,47 @@ func (suite *KeeperTestSuite) SetupStableCoinPrices() {
 		Provider:  provider.String(),
 		Timestamp: uint64(suite.ctx.BlockTime().Unix()),
 	})
+}
+
+func SetupMockPools(k *keeper.Keeper, ctx sdk.Context) {
+	// Create and set mock pools
+	pools := []types.Pool{
+		{
+			PoolId: 1,
+			PoolAssets: []types.PoolAsset{
+				{Token: sdk.NewCoin("denom1", sdk.NewInt(1000)), Weight: sdk.OneInt()},
+				{Token: sdk.NewCoin("denom2", sdk.NewInt(1000)), Weight: sdk.OneInt()},
+			},
+			TotalWeight: sdk.NewInt(2),
+			PoolParams: types.PoolParams{
+				UseOracle: false,
+			},
+		},
+		{
+			PoolId: 2,
+			PoolAssets: []types.PoolAsset{
+				{Token: sdk.NewCoin("denom1", sdk.NewInt(1000)), Weight: sdk.OneInt()},
+				{Token: sdk.NewCoin("baseCurrency", sdk.NewInt(1000)), Weight: sdk.OneInt()},
+			},
+			TotalWeight: sdk.NewInt(2),
+			PoolParams: types.PoolParams{
+				UseOracle: false,
+			},
+		},
+		{
+			PoolId: 3,
+			PoolAssets: []types.PoolAsset{
+				{Token: sdk.NewCoin("baseCurrency", sdk.NewInt(1000)), Weight: sdk.OneInt()},
+				{Token: sdk.NewCoin("denom3", sdk.NewInt(1000)), Weight: sdk.OneInt()},
+			},
+			TotalWeight: sdk.NewInt(2),
+			PoolParams: types.PoolParams{
+				UseOracle: false,
+			},
+		},
+	}
+
+	for _, pool := range pools {
+		k.SetPool(ctx, pool)
+	}
 }
