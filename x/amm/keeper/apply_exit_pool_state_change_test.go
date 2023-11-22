@@ -1,6 +1,8 @@
 package keeper_test
 
 import (
+	"time"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	simapp "github.com/elys-network/elys/app"
 	"github.com/elys-network/elys/x/amm/types"
@@ -73,6 +75,7 @@ func (suite *KeeperTestSuite) TestApplyExitPoolStateChange_WithdrawFromCommitmen
 	lpTokenBalance := bk.GetBalance(ctx, addrs[0], lpTokenDenom)
 	suite.Require().True(lpTokenBalance.Amount.Equal(sdk.ZeroInt()))
 
+	ctx = ctx.WithBlockTime(ctx.BlockTime().Add(time.Hour))
 	err = app.AmmKeeper.ApplyExitPoolStateChange(ctx, pool, addrs[0], pool.TotalShares.Amount, coins)
 	suite.Require().NoError(err)
 }

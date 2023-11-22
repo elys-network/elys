@@ -1,6 +1,8 @@
 package keeper_test
 
 import (
+	"time"
+
 	"github.com/cometbft/cometbft/crypto/ed25519"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
@@ -142,6 +144,7 @@ func (suite *KeeperTestSuite) TestMsgServerExitPool() {
 				})
 			suite.Require().NoError(err)
 			pool := suite.app.AmmKeeper.GetAllPool(suite.ctx)[0]
+			suite.ctx = suite.ctx.WithBlockTime(suite.ctx.BlockTime().Add(time.Hour))
 			resp, err := msgServer.ExitPool(
 				sdk.WrapSDKContext(suite.ctx),
 				&types.MsgExitPool{

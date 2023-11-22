@@ -40,7 +40,7 @@ func (k msgServer) CommitLiquidTokens(goCtx context.Context, msg *types.MsgCommi
 	commitments := k.GetCommitments(ctx, msg.Creator)
 
 	// Update the commitments
-	commitments.AddCommittedTokens(msg.Denom, msg.Amount, uint64(ctx.BlockTime().Unix())+msg.MinLock)
+	commitments.AddCommittedTokens(msg.Denom, msg.Amount, msg.MinLock)
 	k.SetCommitments(ctx, commitments)
 
 	// Emit Hook commitment changed

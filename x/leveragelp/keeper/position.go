@@ -3,6 +3,7 @@ package keeper
 import (
 	"fmt"
 	"math"
+	"time"
 
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -208,6 +209,7 @@ func (k Keeper) GetPositionHealth(ctx sdk.Context, position types.Position, ammP
 	params := k.stableKeeper.GetParams(ctx)
 	for _, commitment := range commitments.CommittedTokens {
 		cacheCtx, _ := ctx.CacheContext()
+		cacheCtx = cacheCtx.WithBlockTime(cacheCtx.BlockTime().Add(time.Hour))
 		exitCoins, err := k.amm.ExitPool(cacheCtx, position.GetPositionAddress(), ammPool.PoolId, commitment.Amount, sdk.Coins{}, params.DepositDenom)
 		if err != nil {
 			return sdk.ZeroDec(), err
