@@ -104,6 +104,45 @@ func (k Keeper) GetAllPoolIdsWithDenom(ctx sdk.Context, denom string) (list []ui
 	return list
 }
 
+// GetPoolIdWithAllDenoms returns the first pool id that contains all specified denominations
+func (k Keeper) GetPoolIdWithAllDenoms(ctx sdk.Context, denoms []string) (poolId uint64, found bool) {
+	// Get all pools
+	pools := k.GetAllPool(ctx)
+
+	for _, p := range pools {
+		// If the number of assets in the pool is less than the number of denoms, skip
+		if len(p.PoolAssets) < len(denoms) {
+			continue
+		}
+
+		allDenomsFound := true
+
+		// Check that all denoms are in the pool's assets
+		for _, denom := range denoms {
+			denomFound := false
+			for _, asset := range p.PoolAssets {
+				if denom == asset.Token.Denom {
+					denomFound = true
+					break
+				}
+			}
+
+			// If any denom is not found, mark allDenomsFound as false and break
+			if !denomFound {
+				allDenomsFound = false
+				break
+			}
+		}
+
+		// If all denoms are found in this pool, return the pool id
+		if allDenomsFound {
+			return p.PoolId, true
+		}
+	}
+
+	return 0, false
+}
+
 // IterateLiquidty iterates over all LiquidityPools and performs a
 // callback.
 func (k Keeper) IterateLiquidityPools(ctx sdk.Context, handlerFn func(pool types.Pool) (stop bool),

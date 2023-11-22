@@ -24,6 +24,8 @@ var (
 
 	ErrInvalidPoolId      = sdkerrors.Register(ModuleName, 91, "invalid pool id")
 	ErrInvalidSwapMsgType = sdkerrors.Register(ModuleName, 92, "unexpected swap message type")
+
+	ErrSameDenom = sdkerrors.Register(ModuleName, 101, "denom in and denom out are the same")
 )
 
 const (
