@@ -8,13 +8,15 @@ import (
 
 func NewPool(poolId uint64) Pool {
 	return Pool{
-		AmmPoolId:          poolId,
-		Health:             sdk.NewDec(100),
-		Enabled:            true,
-		Closed:             false,
-		BorrowInterestRate: sdk.NewDecFromIntWithPrec(sdk.NewInt(1), 1),
-		PoolAssetsLong:     []PoolAsset{},
-		PoolAssetsShort:    []PoolAsset{},
+		AmmPoolId:                            poolId,
+		Health:                               sdk.NewDec(100),
+		Enabled:                              true,
+		Closed:                               false,
+		BorrowInterestRate:                   sdk.NewDecFromIntWithPrec(sdk.NewInt(1), 1),
+		PoolAssetsLong:                       []PoolAsset{},
+		PoolAssetsShort:                      []PoolAsset{},
+		LastHeightBorrowInterestRateComputed: 0,
+		FundingRate:                          sdk.ZeroDec(),
 	}
 }
 
