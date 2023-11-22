@@ -252,13 +252,7 @@ genesis:
               denom: uedenb
             - amount: "1000000"
               denom: uusdc
-          vesting_tokens:
-            - denom: ueden
-              total_amount: "1000000"
-              unvested_amount: "1000000"
-              epoch_identifier: "tenseconds"
-              num_epochs: 100
-              current_epoch: 0
+          vesting_tokens: []
           rewards_by_usdc_unclaimed:
             - denom: ueden
               amount: "200000"

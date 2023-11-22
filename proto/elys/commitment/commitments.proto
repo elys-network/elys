@@ -84,4 +84,5 @@ message VestingTokens {
   string epoch_identifier = 4;
   int64 num_epochs = 5;
   int64 current_epoch = 6;
+  int64 vest_started_timestamp = 7;
 }

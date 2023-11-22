@@ -19,6 +19,11 @@ func (oq *Querier) queryVestingInfo(ctx sdk.Context, query *commitmenttypes.Quer
 	vestingDetails := make([]commitmenttypes.VestingDetail, 0)
 	for i, vesting := range vestingTokens {
 		vested := vesting.TotalAmount.Sub(vesting.UnvestedAmount)
+		epochInfo, found := oq.epochKeeper.GetEpochInfo(ctx, vesting.EpochIdentifier)
+		if !found {
+			continue
+		}
+
 		vestingDetail := commitmenttypes.VestingDetail{
 			Id: fmt.Sprintf("%d", i),
 			// The total vest for the current vest
@@ -36,9 +41,7 @@ func (oq *Querier) queryVestingInfo(ctx sdk.Context, query *commitmenttypes.Quer
 				Amount:    vesting.UnvestedAmount,
 				UsdAmount: sdk.NewDecFromInt(vesting.UnvestedAmount),
 			},
-			// Remaining time to vest. Javascript timestamp.
-			// ToDo: should convert this into proper javascript timestamp
-			RemainingTime: vesting.CurrentEpoch + 1,
+			RemainingTime: vesting.VestStartedTimestamp + vesting.NumEpochs*epochInfo.Duration.Milliseconds(),
 		}
 
 		vestingDetails = append(vestingDetails, vestingDetail)
