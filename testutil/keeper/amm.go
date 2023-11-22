@@ -14,10 +14,11 @@ import (
 	typesparams "github.com/cosmos/cosmos-sdk/x/params/types"
 	"github.com/elys-network/elys/x/amm/keeper"
 	"github.com/elys-network/elys/x/amm/types"
+	"github.com/elys-network/elys/x/amm/types/mocks"
 	"github.com/stretchr/testify/require"
 )
 
-func AmmKeeper(t testing.TB) (*keeper.Keeper, sdk.Context) {
+func AmmKeeper(t testing.TB) (*keeper.Keeper, sdk.Context, *mocks.AccountedPoolKeeper, *mocks.OracleKeeper) {
 	storeKey := sdk.NewKVStoreKey(types.StoreKey)
 	transientStoreKey := storetypes.NewTransientStoreKey(types.TStoreKey)
 
@@ -36,6 +37,10 @@ func AmmKeeper(t testing.TB) (*keeper.Keeper, sdk.Context) {
 		transientStoreKey,
 		"AmmParams",
 	)
+
+	accountedPoolKeeper := mocks.NewAccountedPoolKeeper(t)
+	oracleKeeper := mocks.NewOracleKeeper(t)
+
 	k := keeper.NewKeeper(
 		cdc,
 		storeKey,
@@ -43,10 +48,10 @@ func AmmKeeper(t testing.TB) (*keeper.Keeper, sdk.Context) {
 		paramsSubspace,
 		nil,
 		nil,
+		oracleKeeper,
 		nil,
 		nil,
-		nil,
-		nil,
+		accountedPoolKeeper,
 	)
 
 	ctx := sdk.NewContext(stateStore, tmproto.Header{}, false, log.NewNopLogger())
@@ -54,5 +59,5 @@ func AmmKeeper(t testing.TB) (*keeper.Keeper, sdk.Context) {
 	// Initialize params
 	k.SetParams(ctx, types.DefaultParams())
 
-	return k, ctx
+	return k, ctx, accountedPoolKeeper, oracleKeeper
 }

@@ -33,7 +33,7 @@ func TestGenesis(t *testing.T) {
 		// this line is used by starport scaffolding # genesis/test/state
 	}
 
-	k, ctx := keepertest.AmmKeeper(t)
+	k, ctx, _, _ := keepertest.AmmKeeper(t)
 	amm.InitGenesis(ctx, *k, genesisState)
 	got := amm.ExportGenesis(ctx, *k)
 	require.NotNil(t, got)

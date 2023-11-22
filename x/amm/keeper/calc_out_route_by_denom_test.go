@@ -8,10 +8,10 @@ import (
 )
 
 func TestCalcOutRouteByDenom(t *testing.T) {
-	k, ctx := keepertest.AmmKeeper(t)
+	k, ctx, _, _ := keepertest.AmmKeeper(t)
 
 	// Setup mock pools and assets
-	setupMockPools(k, ctx)
+	SetupMockPools(k, ctx)
 
 	// Test direct pool route
 	route, err := k.CalcOutRouteByDenom(ctx, "denom2", "denom1", "baseCurrency")

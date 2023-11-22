@@ -102,17 +102,18 @@ type ElysQuery struct {
 	AccountedPoolAccountedPoolAll *accountedpooltypes.QueryAllAccountedPoolRequest `json:"accounted_pool_accounted_pool_all,omitempty"`
 
 	// amm queriers
-	AmmParams            *ammtypes.QueryParamsRequest            `json:"amm_params,omitempty"`
-	AmmPool              *ammtypes.QueryGetPoolRequest           `json:"amm_pool,omitempty"`
-	AmmPoolAll           *ammtypes.QueryAllPoolRequest           `json:"amm_pool_all,omitempty"`
-	AmmDenomLiquidity    *ammtypes.QueryGetDenomLiquidityRequest `json:"amm_denom_liquidity,omitempty"`
-	AmmDenomLiquidityAll *ammtypes.QueryAllDenomLiquidityRequest `json:"amm_denom_liquidity_all,omitempty"`
-	AmmSwapEstimation    *ammtypes.QuerySwapEstimationRequest    `json:"amm_swap_estimation,omitempty"`
-	AmmSlippageTrack     *ammtypes.QuerySlippageTrackRequest     `json:"amm_slippage_track,omitempty"`
-	AmmSlippageTrackAll  *ammtypes.QuerySlippageTrackAllRequest  `json:"amm_slippage_track_all,omitempty"`
-	AmmBalance           *ammtypes.QueryBalanceRequest           `json:"amm_balance,omitempty"`
-	AmmInRouteByDenom    *ammtypes.QueryInRouteByDenomRequest    `json:"amm_in_route_by_denom,omitempty"`
-	AmmOutRouteByDenom   *ammtypes.QueryOutRouteByDenomRequest   `json:"amm_out_route_by_denom,omitempty"`
+	AmmParams                *ammtypes.QueryParamsRequest                `json:"amm_params,omitempty"`
+	AmmPool                  *ammtypes.QueryGetPoolRequest               `json:"amm_pool,omitempty"`
+	AmmPoolAll               *ammtypes.QueryAllPoolRequest               `json:"amm_pool_all,omitempty"`
+	AmmDenomLiquidity        *ammtypes.QueryGetDenomLiquidityRequest     `json:"amm_denom_liquidity,omitempty"`
+	AmmDenomLiquidityAll     *ammtypes.QueryAllDenomLiquidityRequest     `json:"amm_denom_liquidity_all,omitempty"`
+	AmmSwapEstimation        *ammtypes.QuerySwapEstimationRequest        `json:"amm_swap_estimation,omitempty"`
+	AmmSwapEstimationByDenom *ammtypes.QuerySwapEstimationByDenomRequest `json:"amm_swap_estimation_by_denom,omitempty"`
+	AmmSlippageTrack         *ammtypes.QuerySlippageTrackRequest         `json:"amm_slippage_track,omitempty"`
+	AmmSlippageTrackAll      *ammtypes.QuerySlippageTrackAllRequest      `json:"amm_slippage_track_all,omitempty"`
+	AmmBalance               *ammtypes.QueryBalanceRequest               `json:"amm_balance,omitempty"`
+	AmmInRouteByDenom        *ammtypes.QueryInRouteByDenomRequest        `json:"amm_in_route_by_denom,omitempty"`
+	AmmOutRouteByDenom       *ammtypes.QueryOutRouteByDenomRequest       `json:"amm_out_route_by_denom,omitempty"`
 
 	// assetprofile queriers
 	AssetProfileParams   *assetprofiletypes.QueryParamsRequest   `json:"asset_profile_params,omitempty"`
