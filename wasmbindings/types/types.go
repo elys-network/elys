@@ -114,6 +114,7 @@ type ElysQuery struct {
 	AmmBalance               *ammtypes.QueryBalanceRequest               `json:"amm_balance,omitempty"`
 	AmmInRouteByDenom        *ammtypes.QueryInRouteByDenomRequest        `json:"amm_in_route_by_denom,omitempty"`
 	AmmOutRouteByDenom       *ammtypes.QueryOutRouteByDenomRequest       `json:"amm_out_route_by_denom,omitempty"`
+	AmmPriceByDenom          *ammtypes.QueryPriceRequest                 `json:"amm_price_by_denom,omitempty"`
 
 	// assetprofile queriers
 	AssetProfileParams   *assetprofiletypes.QueryParamsRequest   `json:"asset_profile_params,omitempty"`
