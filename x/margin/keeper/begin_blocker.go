@@ -45,12 +45,14 @@ func (k Keeper) BeginBlocker(ctx sdk.Context) {
 			pool.BorrowInterestRate = rate
 			pool.LastHeightBorrowInterestRateComputed = currentHeight
 			_ = k.UpdatePoolHealth(ctx, &pool)
+			_ = k.UpdateFundingRate(ctx, &pool)
 			// TODO: function missing
 			// k.TrackSQBeginBlock(ctx, pool)
 			mtps, _, _ := k.GetMTPsForPool(ctx, pool.AmmPoolId, nil)
 			for _, mtp := range mtps {
 				BeginBlockerProcessMTP(ctx, k, mtp, pool, ammPool, baseCurrency)
 			}
+			_ = k.HandleFundingFeeDistribution(ctx, mtps, &pool, ammPool, baseCurrency)
 		}
 		k.SetPool(ctx, pool)
 	}

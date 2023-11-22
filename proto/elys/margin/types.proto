@@ -68,6 +68,20 @@ message MTP {
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
+  // funding fee paid
+  repeated cosmos.base.v1beta1.Coin funding_fee_paid_collaterals = 19 [
+    (gogoproto.nullable) = false
+  ];
+  repeated cosmos.base.v1beta1.Coin funding_fee_paid_custodies = 20 [
+    (gogoproto.nullable) = false
+  ];
+  // funding fee received
+  repeated cosmos.base.v1beta1.Coin funding_fee_received_collaterals = 21 [
+    (gogoproto.nullable) = false
+  ];
+  repeated cosmos.base.v1beta1.Coin funding_fee_received_custodies = 22 [
+    (gogoproto.nullable) = false
+  ];
 }
 
 message WhiteList { 
