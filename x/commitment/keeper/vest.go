@@ -51,7 +51,7 @@ func (k Keeper) VestTokens(ctx sdk.Context, epochIdentifier string) error {
 		// Remove completed vesting items.
 		for index := 0; index < len(commitments.VestingTokens); index++ {
 			vesting := commitments.VestingTokens[index]
-			if vesting.CurrentEpoch >= vesting.NumEpochs {
+			if vesting.CurrentEpoch >= vesting.NumEpochs || vesting.UnvestedAmount.IsZero() {
 				continue
 			}
 
