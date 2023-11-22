@@ -30,6 +30,8 @@ type BankKeeper interface {
 }
 
 // OracleKeeper defines the expected interface needed to retrieve price info
+//
+//go:generate mockery --srcpkg . --name OracleKeeper --structname OracleKeeper --filename oracle_keeper.go --with-expecter
 type OracleKeeper interface {
 	GetAssetPrice(ctx sdk.Context, asset string) (oracletypes.Price, bool)
 	GetAssetPriceFromDenom(ctx sdk.Context, denom string) sdk.Dec
@@ -45,6 +47,8 @@ type AssetProfileKeeper interface {
 }
 
 // AccountedPoolKeeper defines the expected interfaces
+//
+//go:generate mockery --srcpkg . --name AccountedPoolKeeper --structname AccountedPoolKeeper --filename accounted_pool_keeper.go --with-expecter
 type AccountedPoolKeeper interface {
 	GetAccountedBalance(sdk.Context, uint64, string) sdk.Int
 }

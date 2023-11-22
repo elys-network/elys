@@ -19,7 +19,7 @@ import (
 var _ = strconv.IntSize
 
 func TestDenomLiquidityQuerySingle(t *testing.T) {
-	keeper, ctx := keepertest.AmmKeeper(t)
+	keeper, ctx, _, _ := keepertest.AmmKeeper(t)
 	wctx := sdk.WrapSDKContext(ctx)
 	msgs := createNDenomLiquidity(keeper, ctx, 2)
 	for _, tc := range []struct {
@@ -70,7 +70,7 @@ func TestDenomLiquidityQuerySingle(t *testing.T) {
 }
 
 func TestDenomLiquidityQueryPaginated(t *testing.T) {
-	keeper, ctx := keepertest.AmmKeeper(t)
+	keeper, ctx, _, _ := keepertest.AmmKeeper(t)
 	wctx := sdk.WrapSDKContext(ctx)
 	msgs := createNDenomLiquidity(keeper, ctx, 5)
 

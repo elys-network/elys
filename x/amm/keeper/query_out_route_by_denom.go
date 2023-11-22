@@ -4,7 +4,10 @@ import (
 	"context"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/elys-network/elys/x/amm/types"
+	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
+	ptypes "github.com/elys-network/elys/x/parameter/types"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -16,8 +19,18 @@ func (k Keeper) OutRouteByDenom(goCtx context.Context, req *types.QueryOutRouteB
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	// TODO: Process the query
-	_ = ctx
+	entry, found := k.apKeeper.GetEntry(ctx, ptypes.BaseCurrency)
+	if !found {
+		return nil, sdkerrors.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency)
+	}
+	baseCurrency := entry.Denom
 
-	return &types.QueryOutRouteByDenomResponse{}, nil
+	outRoute, err := k.CalcOutRouteByDenom(ctx, req.DenomOut, req.DenomIn, baseCurrency)
+	if err != nil {
+		return nil, err
+	}
+
+	return &types.QueryOutRouteByDenomResponse{
+		OutRoute: outRoute,
+	}, nil
 }

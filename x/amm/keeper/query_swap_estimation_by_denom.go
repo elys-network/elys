@@ -12,7 +12,7 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-func (k Keeper) InRouteByDenom(goCtx context.Context, req *types.QueryInRouteByDenomRequest) (*types.QueryInRouteByDenomResponse, error) {
+func (k Keeper) SwapEstimationByDenom(goCtx context.Context, req *types.QuerySwapEstimationByDenomRequest) (*types.QuerySwapEstimationByDenomResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
@@ -25,12 +25,17 @@ func (k Keeper) InRouteByDenom(goCtx context.Context, req *types.QueryInRouteByD
 	}
 	baseCurrency := entry.Denom
 
-	inRoute, err := k.CalcInRouteByDenom(ctx, req.DenomIn, req.DenomOut, baseCurrency)
+	_ = baseCurrency
+
+	inRoute, outRoute, amount, spotPrice, err := k.CalcSwapEstimationByDenom(ctx, req.Amount, req.DenomIn, req.DenomOut, baseCurrency)
 	if err != nil {
 		return nil, err
 	}
 
-	return &types.QueryInRouteByDenomResponse{
-		InRoute: inRoute,
+	return &types.QuerySwapEstimationByDenomResponse{
+		InRoute:   inRoute,
+		OutRoute:  outRoute,
+		Amount:    amount,
+		SpotPrice: spotPrice,
 	}, nil
 }
