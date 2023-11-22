@@ -12,29 +12,15 @@ message Params {
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
-  string removal_queue_threshold = 2 [
+  int64 max_open_positions = 2;
+  string pool_open_threshold = 3 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
-  int64 max_open_positions = 3;
-  string pool_open_threshold = 4 [
+  string safety_factor = 4 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
-  string force_close_fund_percentage = 5 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
-    (gogoproto.nullable) = false
-  ];
-  string force_close_fund_address = 6;
-  string sq_modifier = 7 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
-    (gogoproto.nullable) = false
-  ];
-  string safety_factor = 8 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
-    (gogoproto.nullable) = false
-  ];
-  bool whitelisting_enabled = 9;
-  string invariant_check_epoch = 10;
-  int64 epoch_length = 11;
+  bool whitelisting_enabled = 5;
+  int64 epoch_length = 6;
 }

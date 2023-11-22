@@ -1,7 +1,6 @@
 package types
 
 import (
-	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
@@ -10,81 +9,13 @@ import (
 	stablestaketypes "github.com/elys-network/elys/x/stablestake/types"
 )
 
-//go:generate mockery --srcpkg . --name AuthorizationChecker --structname AuthorizationChecker --filename authorization_checker.go --with-expecter
-type AuthorizationChecker interface {
-	IsWhitelistingEnabled(ctx sdk.Context) bool
-	CheckIfWhitelisted(ctx sdk.Context, creator string) bool
-}
-
-//go:generate mockery --srcpkg . --name PositionChecker --structname PositionChecker --filename position_checker.go --with-expecter
-type PositionChecker interface {
-	GetOpenPositionCount(ctx sdk.Context) uint64
-	GetMaxOpenPositions(ctx sdk.Context) uint64
-}
-
-//go:generate mockery --srcpkg . --name PoolChecker --structname PoolChecker --filename pool_checker.go --with-expecter
-type PoolChecker interface {
-	GetPool(ctx sdk.Context, poolId uint64) (Pool, bool)
-	IsPoolEnabled(ctx sdk.Context, poolId uint64) bool
-	IsPoolClosed(ctx sdk.Context, poolId uint64) bool
-	GetPoolOpenThreshold(ctx sdk.Context) math.LegacyDec
-}
-
-//go:generate mockery --srcpkg . --name OpenChecker --structname OpenChecker --filename open_checker.go --with-expecter
-type OpenChecker interface {
-	CheckUserAuthorization(ctx sdk.Context, msg *MsgOpen) error
-	CheckMaxOpenPositions(ctx sdk.Context) error
-	CheckPoolHealth(ctx sdk.Context, poolId uint64) error
-	OpenLong(ctx sdk.Context, poolId uint64, msg *MsgOpen) (*Position, error)
-	EmitOpenEvent(ctx sdk.Context, position *Position)
-	SetPosition(ctx sdk.Context, position *Position) error
-	CheckSamePosition(ctx sdk.Context, msg *MsgOpen) *Position
-	GetOpenPositionCount(ctx sdk.Context) uint64
-	GetMaxOpenPositions(ctx sdk.Context) uint64
-}
-
-//go:generate mockery --srcpkg . --name OpenLongChecker --structname OpenLongChecker --filename open_long_checker.go --with-expecter
-type OpenLongChecker interface {
-	GetMaxLeverageParam(ctx sdk.Context) sdk.Dec
-	GetPool(ctx sdk.Context, poolId uint64) (Pool, bool)
-	IsPoolEnabled(ctx sdk.Context, poolId uint64) bool
-	GetAmmPool(ctx sdk.Context, poolId uint64) (ammtypes.Pool, error)
-	HasSufficientPoolBalance(ctx sdk.Context, ammPool ammtypes.Pool, assetDenom string, requiredAmount sdk.Int) bool
-	CheckMinLiabilities(ctx sdk.Context, collateralTokenAmt sdk.Coin, eta sdk.Dec, pool Pool, ammPool ammtypes.Pool, borrowAsset string) error
-	EstimateSwapGivenOut(ctx sdk.Context, tokenOutAmount sdk.Coin, tokenInDenom string, ammPool ammtypes.Pool) (sdk.Int, error)
-	UpdatePoolHealth(ctx sdk.Context, pool *Pool) error
-	UpdatePositionHealth(ctx sdk.Context, position Position, ammPool ammtypes.Pool) (sdk.Dec, error)
-	GetSafetyFactor(ctx sdk.Context) sdk.Dec
-	SetPool(ctx sdk.Context, pool Pool)
-	GetAmmPoolBalance(ctx sdk.Context, ammPool ammtypes.Pool, assetDenom string) (sdk.Int, error)
-	CheckSamePosition(ctx sdk.Context, msg *MsgOpen) *Position
-	SetPosition(ctx sdk.Context, position *Position) error
-}
-
-//go:generate mockery --srcpkg . --name CloseLongChecker --structname CloseLongChecker --filename close_long_checker.go --with-expecter
-type CloseLongChecker interface {
-	GetPosition(ctx sdk.Context, positionAddress string, id uint64) (Position, error)
-	GetPool(
-		ctx sdk.Context,
-		poolId uint64,
-
-	) (val Pool, found bool)
-	GetAmmPool(ctx sdk.Context, poolId uint64, tradingAsset string) (ammtypes.Pool, error)
-	HandleInterest(ctx sdk.Context, position *Position, pool *Pool, ammPool ammtypes.Pool, collateralAsset string, custodyAsset string) error
-	EstimateAndRepay(ctx sdk.Context, position Position, pool Pool, ammPool ammtypes.Pool, collateralAsset string, custodyAsset string) (sdk.Int, error)
-}
-
 // AccountKeeper defines the expected account keeper used for simulations (noalias)
-//
-//go:generate mockery --srcpkg . --name AccountKeeper --structname AccountKeeper --filename account_keeper.go --with-expecter
 type AccountKeeper interface {
 	GetAccount(ctx sdk.Context, addr sdk.AccAddress) authtypes.AccountI
 	// Methods imported from account should be defined here
 }
 
 // AmmKeeper defines the expected interface needed to swap tokens
-//
-//go:generate mockery --srcpkg . --name AmmKeeper --structname AmmKeeper --filename amm_keeper.go --with-expecter
 type AmmKeeper interface {
 	// Get pool Ids that contains the denom in pool assets
 	GetAllPoolIdsWithDenom(sdk.Context, string) []uint64

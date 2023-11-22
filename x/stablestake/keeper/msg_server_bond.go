@@ -67,10 +67,10 @@ func (k msgServer) Bond(goCtx context.Context, msg *types.MsgBond) (*types.MsgBo
 
 	// Create a commit LP token message
 	msgLiquidCommitLPToken := &ctypes.MsgCommitLiquidTokens{
-		Creator: sender.String(),
-		Denom:   shareDenom,
-		Amount:  shareAmount,
-		MinLock: uint64(ctx.BlockTime().Unix()),
+		Creator:   sender.String(),
+		Denom:     shareDenom,
+		Amount:    shareAmount,
+		LockUntil: uint64(ctx.BlockTime().Unix()),
 	}
 
 	// Commit LP token

@@ -5,7 +5,6 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
-	epochtypes "github.com/elys-network/elys/x/epochs/types"
 	"gopkg.in/yaml.v2"
 )
 
@@ -33,17 +32,12 @@ func ParamKeyTable() paramtypes.KeyTable {
 // NewParams creates a new Params instance
 func NewParams() Params {
 	return Params{
-		LeverageMax:              sdk.NewDec(10),
-		EpochLength:              (int64)(1),
-		RemovalQueueThreshold:    sdk.NewDec(1),
-		MaxOpenPositions:         (int64)(9999),
-		PoolOpenThreshold:        sdk.NewDec(1),
-		ForceCloseFundPercentage: sdk.NewDec(1),
-		ForceCloseFundAddress:    "",
-		SqModifier:               sdk.NewDec(1),
-		SafetyFactor:             sdk.NewDec(1),
-		WhitelistingEnabled:      false,
-		InvariantCheckEpoch:      epochtypes.DayEpochID,
+		LeverageMax:         sdk.NewDec(10),
+		EpochLength:         (int64)(1),
+		MaxOpenPositions:    (int64)(9999),
+		PoolOpenThreshold:   sdk.NewDec(1),
+		SafetyFactor:        sdk.NewDec(1),
+		WhitelistingEnabled: false,
 	}
 }
 
@@ -57,15 +51,10 @@ func (p *Params) ParamSetPairs() paramtypes.ParamSetPairs {
 	return paramtypes.ParamSetPairs{
 		paramtypes.NewParamSetPair(KeyLeverageMax, &p.LeverageMax, validateLeverageMax),
 		paramtypes.NewParamSetPair(KeyEpochLength, &p.EpochLength, validateEpochLength),
-		paramtypes.NewParamSetPair(KeyRemovalQueueThreshold, &p.RemovalQueueThreshold, validateRemovalQueueThreshold),
 		paramtypes.NewParamSetPair(KeyMaxOpenPositions, &p.MaxOpenPositions, validateMaxOpenPositions),
 		paramtypes.NewParamSetPair(KeyPoolOpenThreshold, &p.PoolOpenThreshold, validatePoolOpenThreshold),
-		paramtypes.NewParamSetPair(KeyForceCloseFundPercentage, &p.ForceCloseFundPercentage, validateForceCloseFundPercentage),
-		paramtypes.NewParamSetPair(KeyForceCloseFundAddress, &p.ForceCloseFundAddress, validateForceCloseFundAddress),
-		paramtypes.NewParamSetPair(KeySqModifier, &p.SqModifier, validateSqModifier),
 		paramtypes.NewParamSetPair(KeySafetyFactor, &p.SafetyFactor, validateSafetyFactor),
 		paramtypes.NewParamSetPair(KeyWhitelistingEnabled, &p.WhitelistingEnabled, validateWhitelistingEnabled),
-		paramtypes.NewParamSetPair(KeyInvariantCheckEpoch, &p.InvariantCheckEpoch, validateInvariantCheckEpoch),
 	}
 }
 
@@ -77,31 +66,16 @@ func (p Params) Validate() error {
 	if err := validateEpochLength(p.EpochLength); err != nil {
 		return err
 	}
-	if err := validateRemovalQueueThreshold(p.RemovalQueueThreshold); err != nil {
-		return err
-	}
 	if err := validateMaxOpenPositions(p.MaxOpenPositions); err != nil {
 		return err
 	}
 	if err := validatePoolOpenThreshold(p.PoolOpenThreshold); err != nil {
 		return err
 	}
-	if err := validateForceCloseFundPercentage(p.ForceCloseFundPercentage); err != nil {
-		return err
-	}
-	if err := validateForceCloseFundAddress(p.ForceCloseFundAddress); err != nil {
-		return err
-	}
-	if err := validateSqModifier(p.SqModifier); err != nil {
-		return err
-	}
 	if err := validateSafetyFactor(p.SafetyFactor); err != nil {
 		return err
 	}
 	if err := validateWhitelistingEnabled(p.WhitelistingEnabled); err != nil {
-		return err
-	}
-	if err := validateInvariantCheckEpoch(p.InvariantCheckEpoch); err != nil {
 		return err
 	}
 	return nil
@@ -141,76 +115,10 @@ func validateEpochLength(i interface{}) error {
 	return nil
 }
 
-func validateRemovalQueueThreshold(i interface{}) error {
-	v, ok := i.(sdk.Dec)
-	if !ok {
-		return fmt.Errorf("invalid parameter type: %T", i)
-	}
-
-	if v.IsNil() {
-		return fmt.Errorf("removal queue threashold must be not nil")
-	}
-	if v.IsNegative() {
-		return fmt.Errorf("removal queue threashold must be positive: %s", v)
-	}
-
-	return nil
-}
-
 func validateMaxOpenPositions(i interface{}) error {
 	_, ok := i.(int64)
 	if !ok {
 		return fmt.Errorf("invalid parameter type: %T", i)
-	}
-
-	return nil
-}
-
-func validateForceCloseFundPercentage(i interface{}) error {
-	v, ok := i.(sdk.Dec)
-	if !ok {
-		return fmt.Errorf("invalid parameter type: %T", i)
-	}
-
-	if v.IsNil() {
-		return fmt.Errorf("force close fund percentage must be not nil")
-	}
-	if v.IsNegative() {
-		return fmt.Errorf("force close fund percentage must be positive: %s", v)
-	}
-
-	return nil
-}
-
-func validateForceCloseFundAddress(i interface{}) error {
-	_, ok := i.(string)
-	if !ok {
-		return fmt.Errorf("invalid parameter type: %T", i)
-	}
-
-	return nil
-}
-
-func validateIncrementalInterestPaymentFundAddress(i interface{}) error {
-	_, ok := i.(string)
-	if !ok {
-		return fmt.Errorf("invalid parameter type: %T", i)
-	}
-
-	return nil
-}
-
-func validateSqModifier(i interface{}) error {
-	v, ok := i.(sdk.Dec)
-	if !ok {
-		return fmt.Errorf("invalid parameter type: %T", i)
-	}
-
-	if v.IsNil() {
-		return fmt.Errorf("sq modifier must be not nil")
-	}
-	if v.IsNegative() {
-		return fmt.Errorf("sq modifier must be positive: %s", v)
 	}
 
 	return nil
@@ -261,19 +169,6 @@ func validatePoolOpenThreshold(i interface{}) error {
 	}
 	if v.IsNegative() {
 		return fmt.Errorf("pool open threshold must be positive: %s", v)
-	}
-
-	return nil
-}
-
-func validateInvariantCheckEpoch(i interface{}) error {
-	epoch, ok := i.(string)
-	if !ok {
-		return fmt.Errorf("invalid parameter type: %T", i)
-	}
-
-	if epoch != epochtypes.DayEpochID && epoch != epochtypes.WeekEpochID && epoch != epochtypes.HourEpochID {
-		return fmt.Errorf("invalid parameter type: %T", i)
 	}
 
 	return nil

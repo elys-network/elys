@@ -26,17 +26,12 @@ const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
 // Params defines the parameters for the module.
 type Params struct {
-	LeverageMax              github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,1,opt,name=leverage_max,json=leverageMax,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"leverage_max"`
-	RemovalQueueThreshold    github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,2,opt,name=removal_queue_threshold,json=removalQueueThreshold,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"removal_queue_threshold"`
-	MaxOpenPositions         int64                                  `protobuf:"varint,3,opt,name=max_open_positions,json=maxOpenPositions,proto3" json:"max_open_positions,omitempty"`
-	PoolOpenThreshold        github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,4,opt,name=pool_open_threshold,json=poolOpenThreshold,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"pool_open_threshold"`
-	ForceCloseFundPercentage github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,5,opt,name=force_close_fund_percentage,json=forceCloseFundPercentage,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"force_close_fund_percentage"`
-	ForceCloseFundAddress    string                                 `protobuf:"bytes,6,opt,name=force_close_fund_address,json=forceCloseFundAddress,proto3" json:"force_close_fund_address,omitempty"`
-	SqModifier               github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,7,opt,name=sq_modifier,json=sqModifier,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"sq_modifier"`
-	SafetyFactor             github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,8,opt,name=safety_factor,json=safetyFactor,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"safety_factor"`
-	WhitelistingEnabled      bool                                   `protobuf:"varint,9,opt,name=whitelisting_enabled,json=whitelistingEnabled,proto3" json:"whitelisting_enabled,omitempty"`
-	InvariantCheckEpoch      string                                 `protobuf:"bytes,10,opt,name=invariant_check_epoch,json=invariantCheckEpoch,proto3" json:"invariant_check_epoch,omitempty"`
-	EpochLength              int64                                  `protobuf:"varint,11,opt,name=epoch_length,json=epochLength,proto3" json:"epoch_length,omitempty"`
+	LeverageMax         github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,1,opt,name=leverage_max,json=leverageMax,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"leverage_max"`
+	MaxOpenPositions    int64                                  `protobuf:"varint,2,opt,name=max_open_positions,json=maxOpenPositions,proto3" json:"max_open_positions,omitempty"`
+	PoolOpenThreshold   github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,3,opt,name=pool_open_threshold,json=poolOpenThreshold,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"pool_open_threshold"`
+	SafetyFactor        github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,4,opt,name=safety_factor,json=safetyFactor,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"safety_factor"`
+	WhitelistingEnabled bool                                   `protobuf:"varint,5,opt,name=whitelisting_enabled,json=whitelistingEnabled,proto3" json:"whitelisting_enabled,omitempty"`
+	EpochLength         int64                                  `protobuf:"varint,6,opt,name=epoch_length,json=epochLength,proto3" json:"epoch_length,omitempty"`
 }
 
 func (m *Params) Reset()      { *m = Params{} }
@@ -78,25 +73,11 @@ func (m *Params) GetMaxOpenPositions() int64 {
 	return 0
 }
 
-func (m *Params) GetForceCloseFundAddress() string {
-	if m != nil {
-		return m.ForceCloseFundAddress
-	}
-	return ""
-}
-
 func (m *Params) GetWhitelistingEnabled() bool {
 	if m != nil {
 		return m.WhitelistingEnabled
 	}
 	return false
-}
-
-func (m *Params) GetInvariantCheckEpoch() string {
-	if m != nil {
-		return m.InvariantCheckEpoch
-	}
-	return ""
 }
 
 func (m *Params) GetEpochLength() int64 {
@@ -113,39 +94,30 @@ func init() {
 func init() { proto.RegisterFile("elys/leveragelp/params.proto", fileDescriptor_36c27f46b597fbee) }
 
 var fileDescriptor_36c27f46b597fbee = []byte{
-	// 501 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x9c, 0x93, 0xcd, 0x6e, 0xd3, 0x40,
-	0x10, 0x80, 0x63, 0x5a, 0x42, 0xbb, 0x29, 0x02, 0x36, 0x8d, 0x58, 0x01, 0x72, 0x02, 0x07, 0x94,
-	0x03, 0x8d, 0x05, 0x1c, 0x90, 0xb8, 0xd1, 0xd2, 0x4a, 0x48, 0x54, 0x4d, 0x03, 0x27, 0x0e, 0xac,
-	0x36, 0xf6, 0xf8, 0x47, 0xb1, 0x77, 0x9c, 0xdd, 0x4d, 0x9a, 0xbc, 0x05, 0x47, 0x8e, 0xbc, 0x01,
-	0xaf, 0xd1, 0x63, 0x8f, 0x88, 0x43, 0x85, 0x92, 0x17, 0x41, 0xde, 0x24, 0x4d, 0x10, 0x37, 0x9f,
-	0x6c, 0xcf, 0x37, 0xfb, 0xcd, 0x8c, 0xb5, 0x43, 0x9e, 0x40, 0x3a, 0xd5, 0x5e, 0x0a, 0x63, 0x50,
-	0x22, 0x82, 0x34, 0xf7, 0x72, 0xa1, 0x44, 0xa6, 0x3b, 0xb9, 0x42, 0x83, 0xf4, 0x5e, 0x41, 0x3b,
-	0x6b, 0xfa, 0x68, 0x3f, 0xc2, 0x08, 0x2d, 0xf3, 0x8a, 0xb7, 0x45, 0xda, 0xb3, 0x9f, 0x55, 0x52,
-	0xed, 0xda, 0x73, 0xf4, 0x9c, 0xec, 0xad, 0xd2, 0x79, 0x26, 0x26, 0xcc, 0x69, 0x39, 0xed, 0xdd,
-	0xc3, 0xce, 0xe5, 0x75, 0xb3, 0xf2, 0xfb, 0xba, 0xf9, 0x3c, 0x4a, 0x4c, 0x3c, 0xea, 0x77, 0x7c,
-	0xcc, 0x3c, 0x1f, 0x75, 0x86, 0x7a, 0xf9, 0x38, 0xd0, 0xc1, 0xc0, 0x33, 0xd3, 0x1c, 0x74, 0xe7,
-	0x3d, 0xf8, 0xbd, 0xda, 0xca, 0x71, 0x2a, 0x26, 0x34, 0x24, 0x0f, 0x15, 0x64, 0x38, 0x16, 0x29,
-	0x1f, 0x8e, 0x60, 0x04, 0xdc, 0xc4, 0x0a, 0x74, 0x8c, 0x69, 0xc0, 0x6e, 0x95, 0xb2, 0x37, 0x96,
-	0xba, 0xf3, 0xc2, 0xf6, 0x79, 0x25, 0xa3, 0x2f, 0x08, 0xcd, 0xc4, 0x84, 0x63, 0x0e, 0x92, 0xe7,
-	0xa8, 0x13, 0x93, 0xa0, 0xd4, 0x6c, 0xab, 0xe5, 0xb4, 0xb7, 0x7a, 0xf7, 0x33, 0x31, 0x39, 0xcb,
-	0x41, 0x76, 0x57, 0x71, 0xfa, 0x95, 0xd4, 0x73, 0xc4, 0x74, 0x91, 0xbe, 0xee, 0x68, 0xbb, 0x54,
-	0x47, 0x0f, 0x0a, 0x55, 0xe1, 0x5f, 0x77, 0x93, 0x91, 0xc7, 0x21, 0x2a, 0x1f, 0xb8, 0x9f, 0xa2,
-	0x06, 0x1e, 0x8e, 0x64, 0xc0, 0x73, 0x50, 0x3e, 0x48, 0x23, 0x22, 0x60, 0xb7, 0x4b, 0xd5, 0x61,
-	0x56, 0x79, 0x54, 0x18, 0x4f, 0x46, 0x32, 0xe8, 0xde, 0xf8, 0xe8, 0x1b, 0xc2, 0xfe, 0x2b, 0x27,
-	0x82, 0x40, 0x81, 0xd6, 0xac, 0x5a, 0xd4, 0xea, 0x35, 0xfe, 0x3d, 0xfb, 0x6e, 0x01, 0xe9, 0x19,
-	0xa9, 0xe9, 0x21, 0xcf, 0x30, 0x48, 0xc2, 0x04, 0x14, 0xbb, 0x53, 0xaa, 0x2f, 0xa2, 0x87, 0xa7,
-	0x4b, 0x03, 0xfd, 0x44, 0xee, 0x6a, 0x11, 0x82, 0x99, 0xf2, 0x50, 0xf8, 0x06, 0x15, 0xdb, 0x29,
-	0xa5, 0xdc, 0x5b, 0x48, 0x4e, 0xac, 0x83, 0xbe, 0x24, 0xfb, 0x17, 0x71, 0x62, 0x20, 0x4d, 0xb4,
-	0x49, 0x64, 0xc4, 0x41, 0x8a, 0x7e, 0x0a, 0x01, 0xdb, 0x6d, 0x39, 0xed, 0x9d, 0x5e, 0x7d, 0x93,
-	0x1d, 0x2f, 0x10, 0x7d, 0x45, 0x1a, 0x89, 0x1c, 0x0b, 0x95, 0x08, 0x69, 0xb8, 0x1f, 0x83, 0x3f,
-	0xe0, 0x90, 0xa3, 0x1f, 0x33, 0x62, 0x7f, 0x47, 0xfd, 0x06, 0x1e, 0x15, 0xec, 0xb8, 0x40, 0xf4,
-	0x29, 0xd9, 0xb3, 0x39, 0x3c, 0x05, 0x19, 0x99, 0x98, 0xd5, 0xec, 0xe5, 0xa9, 0xd9, 0xd8, 0x47,
-	0x1b, 0x7a, 0xbb, 0xfd, 0xfd, 0x47, 0xb3, 0x72, 0xf8, 0xe1, 0x72, 0xe6, 0x3a, 0x57, 0x33, 0xd7,
-	0xf9, 0x33, 0x73, 0x9d, 0x6f, 0x73, 0xb7, 0x72, 0x35, 0x77, 0x2b, 0xbf, 0xe6, 0x6e, 0xe5, 0x8b,
-	0xb7, 0x31, 0x5f, 0xb1, 0x7d, 0x07, 0x12, 0xcc, 0x05, 0xaa, 0x81, 0xfd, 0xf0, 0x26, 0x9b, 0xab,
-	0x6a, 0x87, 0xed, 0x57, 0xed, 0x0e, 0xbe, 0xfe, 0x1b, 0x00, 0x00, 0xff, 0xff, 0xef, 0x62, 0x12,
-	0x18, 0xca, 0x03, 0x00, 0x00,
+	// 366 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x9c, 0x92, 0x31, 0x4f, 0xdb, 0x40,
+	0x1c, 0xc5, 0xed, 0x26, 0x8d, 0xda, 0x4b, 0xaa, 0xb6, 0x97, 0x0c, 0x56, 0x55, 0x39, 0x69, 0x87,
+	0x2a, 0x43, 0x63, 0x0b, 0xb1, 0x31, 0x46, 0x80, 0x84, 0x04, 0x22, 0x04, 0x26, 0x06, 0xac, 0x8b,
+	0xf3, 0x8f, 0x6d, 0xe5, 0xec, 0xff, 0xc9, 0x77, 0x10, 0xe7, 0x5b, 0x30, 0x22, 0x26, 0x3e, 0x4e,
+	0xc6, 0x8c, 0x88, 0x21, 0x42, 0xc9, 0x17, 0x41, 0x3e, 0x63, 0x91, 0x39, 0xd3, 0xdd, 0xbd, 0xf7,
+	0xee, 0xa7, 0xa7, 0xfb, 0x1f, 0xf9, 0x0d, 0x7c, 0x2e, 0x5d, 0x0e, 0x77, 0x90, 0xb2, 0x00, 0xb8,
+	0x70, 0x05, 0x4b, 0x59, 0x2c, 0x1d, 0x91, 0xa2, 0x42, 0xfa, 0x3d, 0x77, 0x9d, 0x0f, 0xf7, 0x57,
+	0x2b, 0xc0, 0x00, 0xb5, 0xe7, 0xe6, 0xbb, 0x22, 0xf6, 0xf7, 0xb1, 0x42, 0x6a, 0x03, 0x7d, 0x8f,
+	0x5e, 0x90, 0x46, 0x19, 0xf7, 0x62, 0x96, 0x59, 0x66, 0xc7, 0xec, 0x7e, 0xed, 0x3b, 0x8b, 0x55,
+	0xdb, 0x78, 0x59, 0xb5, 0xff, 0x05, 0x91, 0x0a, 0x6f, 0x47, 0x8e, 0x8f, 0xb1, 0xeb, 0xa3, 0x8c,
+	0x51, 0xbe, 0x2f, 0x3d, 0x39, 0x9e, 0xba, 0x6a, 0x2e, 0x40, 0x3a, 0x87, 0xe0, 0x0f, 0xeb, 0x25,
+	0xe3, 0x8c, 0x65, 0xf4, 0x3f, 0xa1, 0x31, 0xcb, 0x3c, 0x14, 0x90, 0x78, 0x02, 0x65, 0xa4, 0x22,
+	0x4c, 0xa4, 0xf5, 0xa9, 0x63, 0x76, 0x2b, 0xc3, 0x1f, 0x31, 0xcb, 0xce, 0x05, 0x24, 0x83, 0x52,
+	0xa7, 0x37, 0xa4, 0x29, 0x10, 0x79, 0x11, 0x57, 0x61, 0x0a, 0x32, 0x44, 0x3e, 0xb6, 0x2a, 0x3b,
+	0xf5, 0xf8, 0x99, 0xa3, 0x72, 0xfe, 0x55, 0x09, 0xa2, 0x97, 0xe4, 0x9b, 0x64, 0x13, 0x50, 0x73,
+	0x6f, 0xc2, 0x7c, 0x85, 0xa9, 0x55, 0xdd, 0x89, 0xdc, 0x28, 0x20, 0xc7, 0x9a, 0x41, 0xf7, 0x48,
+	0x6b, 0x16, 0x46, 0x0a, 0x78, 0x24, 0x55, 0x94, 0x04, 0x1e, 0x24, 0x6c, 0xc4, 0x61, 0x6c, 0x7d,
+	0xee, 0x98, 0xdd, 0x2f, 0xc3, 0xe6, 0xb6, 0x77, 0x54, 0x58, 0xf4, 0x0f, 0x69, 0x80, 0x40, 0x3f,
+	0xf4, 0x38, 0x24, 0x81, 0x0a, 0xad, 0x9a, 0x7e, 0x8f, 0xba, 0xd6, 0x4e, 0xb5, 0x74, 0x50, 0x7d,
+	0x78, 0x6a, 0x1b, 0xfd, 0x93, 0xc5, 0xda, 0x36, 0x97, 0x6b, 0xdb, 0x7c, 0x5d, 0xdb, 0xe6, 0xfd,
+	0xc6, 0x36, 0x96, 0x1b, 0xdb, 0x78, 0xde, 0xd8, 0xc6, 0xb5, 0xbb, 0xd5, 0x35, 0x1f, 0x74, 0x2f,
+	0x01, 0x35, 0xc3, 0x74, 0xaa, 0x0f, 0x6e, 0xb6, 0xfd, 0x2b, 0x74, 0xf1, 0x51, 0x4d, 0x8f, 0x7b,
+	0xff, 0x2d, 0x00, 0x00, 0xff, 0xff, 0xac, 0x33, 0x6d, 0xfe, 0x35, 0x02, 0x00, 0x00,
 }
 
 func (m *Params) Marshal() (dAtA []byte, err error) {
@@ -171,14 +143,7 @@ func (m *Params) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	if m.EpochLength != 0 {
 		i = encodeVarintParams(dAtA, i, uint64(m.EpochLength))
 		i--
-		dAtA[i] = 0x58
-	}
-	if len(m.InvariantCheckEpoch) > 0 {
-		i -= len(m.InvariantCheckEpoch)
-		copy(dAtA[i:], m.InvariantCheckEpoch)
-		i = encodeVarintParams(dAtA, i, uint64(len(m.InvariantCheckEpoch)))
-		i--
-		dAtA[i] = 0x52
+		dAtA[i] = 0x30
 	}
 	if m.WhitelistingEnabled {
 		i--
@@ -188,7 +153,7 @@ func (m *Params) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 			dAtA[i] = 0
 		}
 		i--
-		dAtA[i] = 0x48
+		dAtA[i] = 0x28
 	}
 	{
 		size := m.SafetyFactor.Size()
@@ -199,34 +164,7 @@ func (m *Params) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i = encodeVarintParams(dAtA, i, uint64(size))
 	}
 	i--
-	dAtA[i] = 0x42
-	{
-		size := m.SqModifier.Size()
-		i -= size
-		if _, err := m.SqModifier.MarshalTo(dAtA[i:]); err != nil {
-			return 0, err
-		}
-		i = encodeVarintParams(dAtA, i, uint64(size))
-	}
-	i--
-	dAtA[i] = 0x3a
-	if len(m.ForceCloseFundAddress) > 0 {
-		i -= len(m.ForceCloseFundAddress)
-		copy(dAtA[i:], m.ForceCloseFundAddress)
-		i = encodeVarintParams(dAtA, i, uint64(len(m.ForceCloseFundAddress)))
-		i--
-		dAtA[i] = 0x32
-	}
-	{
-		size := m.ForceCloseFundPercentage.Size()
-		i -= size
-		if _, err := m.ForceCloseFundPercentage.MarshalTo(dAtA[i:]); err != nil {
-			return 0, err
-		}
-		i = encodeVarintParams(dAtA, i, uint64(size))
-	}
-	i--
-	dAtA[i] = 0x2a
+	dAtA[i] = 0x22
 	{
 		size := m.PoolOpenThreshold.Size()
 		i -= size
@@ -236,22 +174,12 @@ func (m *Params) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i = encodeVarintParams(dAtA, i, uint64(size))
 	}
 	i--
-	dAtA[i] = 0x22
+	dAtA[i] = 0x1a
 	if m.MaxOpenPositions != 0 {
 		i = encodeVarintParams(dAtA, i, uint64(m.MaxOpenPositions))
 		i--
-		dAtA[i] = 0x18
+		dAtA[i] = 0x10
 	}
-	{
-		size := m.RemovalQueueThreshold.Size()
-		i -= size
-		if _, err := m.RemovalQueueThreshold.MarshalTo(dAtA[i:]); err != nil {
-			return 0, err
-		}
-		i = encodeVarintParams(dAtA, i, uint64(size))
-	}
-	i--
-	dAtA[i] = 0x12
 	{
 		size := m.LeverageMax.Size()
 		i -= size
@@ -284,29 +212,15 @@ func (m *Params) Size() (n int) {
 	_ = l
 	l = m.LeverageMax.Size()
 	n += 1 + l + sovParams(uint64(l))
-	l = m.RemovalQueueThreshold.Size()
-	n += 1 + l + sovParams(uint64(l))
 	if m.MaxOpenPositions != 0 {
 		n += 1 + sovParams(uint64(m.MaxOpenPositions))
 	}
 	l = m.PoolOpenThreshold.Size()
 	n += 1 + l + sovParams(uint64(l))
-	l = m.ForceCloseFundPercentage.Size()
-	n += 1 + l + sovParams(uint64(l))
-	l = len(m.ForceCloseFundAddress)
-	if l > 0 {
-		n += 1 + l + sovParams(uint64(l))
-	}
-	l = m.SqModifier.Size()
-	n += 1 + l + sovParams(uint64(l))
 	l = m.SafetyFactor.Size()
 	n += 1 + l + sovParams(uint64(l))
 	if m.WhitelistingEnabled {
 		n += 2
-	}
-	l = len(m.InvariantCheckEpoch)
-	if l > 0 {
-		n += 1 + l + sovParams(uint64(l))
 	}
 	if m.EpochLength != 0 {
 		n += 1 + sovParams(uint64(m.EpochLength))
@@ -384,40 +298,6 @@ func (m *Params) Unmarshal(dAtA []byte) error {
 			}
 			iNdEx = postIndex
 		case 2:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field RemovalQueueThreshold", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowParams
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthParams
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthParams
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if err := m.RemovalQueueThreshold.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		case 3:
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field MaxOpenPositions", wireType)
 			}
@@ -436,7 +316,7 @@ func (m *Params) Unmarshal(dAtA []byte) error {
 					break
 				}
 			}
-		case 4:
+		case 3:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field PoolOpenThreshold", wireType)
 			}
@@ -470,107 +350,7 @@ func (m *Params) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			iNdEx = postIndex
-		case 5:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field ForceCloseFundPercentage", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowParams
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthParams
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthParams
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if err := m.ForceCloseFundPercentage.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		case 6:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field ForceCloseFundAddress", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowParams
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthParams
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthParams
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.ForceCloseFundAddress = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 7:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field SqModifier", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowParams
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthParams
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthParams
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if err := m.SqModifier.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		case 8:
+		case 4:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field SafetyFactor", wireType)
 			}
@@ -604,7 +384,7 @@ func (m *Params) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			iNdEx = postIndex
-		case 9:
+		case 5:
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field WhitelistingEnabled", wireType)
 			}
@@ -624,39 +404,7 @@ func (m *Params) Unmarshal(dAtA []byte) error {
 				}
 			}
 			m.WhitelistingEnabled = bool(v != 0)
-		case 10:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field InvariantCheckEpoch", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowParams
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthParams
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthParams
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.InvariantCheckEpoch = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 11:
+		case 6:
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field EpochLength", wireType)
 			}

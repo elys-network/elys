@@ -66,17 +66,17 @@ func (k Keeper) MintPoolShareToAccount(ctx sdk.Context, pool types.Pool, addr sd
 	// Commit LP token minted
 	msgServer := commitmentkeeper.NewMsgServerImpl(*k.commitmentKeeper)
 
-	minLock := uint64(ctx.BlockTime().Unix())
+	lockUntil := uint64(ctx.BlockTime().Unix())
 	if pool.PoolParams.UseOracle {
-		minLock += uint64(time.Hour.Seconds())
+		lockUntil += uint64(time.Hour.Seconds())
 	}
 
 	// Create a commit LP token message
 	msgLiquidCommitLPToken := &ctypes.MsgCommitLiquidTokens{
-		Creator: addr.String(),
-		Denom:   poolShareDenom,
-		Amount:  amount,
-		MinLock: minLock,
+		Creator:   addr.String(),
+		Denom:     poolShareDenom,
+		Amount:    amount,
+		LockUntil: lockUntil,
 	}
 
 	// Commit LP token

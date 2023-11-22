@@ -79,10 +79,10 @@ func (suite *KeeperTestSuite) TestMsgServerUnbond() {
 
 			// Create a commit LP token message
 			msgLiquidCommitLPToken := &ctypes.MsgCommitLiquidTokens{
-				Creator: sender.String(),
-				Denom:   tc.senderInitBalance[0].Denom,
-				Amount:  tc.senderInitBalance[0].Amount,
-				MinLock: uint64(suite.ctx.BlockTime().Unix()),
+				Creator:   sender.String(),
+				Denom:     tc.senderInitBalance[0].Denom,
+				Amount:    tc.senderInitBalance[0].Amount,
+				LockUntil: uint64(suite.ctx.BlockTime().Unix()),
 			}
 
 			// Commit LP token

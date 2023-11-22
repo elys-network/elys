@@ -39584,25 +39584,15 @@ paths:
                 properties:
                   leverage_max:
                     type: string
-                  removal_queue_threshold:
-                    type: string
                   max_open_positions:
                     type: string
                     format: int64
                   pool_open_threshold:
                     type: string
-                  force_close_fund_percentage:
-                    type: string
-                  force_close_fund_address:
-                    type: string
-                  sq_modifier:
-                    type: string
                   safety_factor:
                     type: string
                   whitelisting_enabled:
                     type: boolean
-                  invariant_check_epoch:
-                    type: string
                   epoch_length:
                     type: string
                     format: int64
@@ -84225,25 +84215,15 @@ definitions:
     properties:
       leverage_max:
         type: string
-      removal_queue_threshold:
-        type: string
       max_open_positions:
         type: string
         format: int64
       pool_open_threshold:
         type: string
-      force_close_fund_percentage:
-        type: string
-      force_close_fund_address:
-        type: string
-      sq_modifier:
-        type: string
       safety_factor:
         type: string
       whitelisting_enabled:
         type: boolean
-      invariant_check_epoch:
-        type: string
       epoch_length:
         type: string
         format: int64
@@ -84257,25 +84237,15 @@ definitions:
         properties:
           leverage_max:
             type: string
-          removal_queue_threshold:
-            type: string
           max_open_positions:
             type: string
             format: int64
           pool_open_threshold:
             type: string
-          force_close_fund_percentage:
-            type: string
-          force_close_fund_address:
-            type: string
-          sq_modifier:
-            type: string
           safety_factor:
             type: string
           whitelisting_enabled:
             type: boolean
-          invariant_check_epoch:
-            type: string
           epoch_length:
             type: string
             format: int64

@@ -383,6 +383,11 @@ genesis:
           bandTicker: "USDT"
           elysTicker: "USDT"
           decimal: 6
+        - denom: "uusdc"
+          display: "USDC"
+          bandTicker: "USDC"
+          elysTicker: "USDC"
+          decimal: 6
       params:
         ask_count: "4"
         band_channel_source: "channel-0"

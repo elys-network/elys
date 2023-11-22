@@ -130,11 +130,9 @@ func (k Keeper) ProcessOpenLong(ctx sdk.Context, position *types.Position, lever
 
 	// Update the pool health.
 	pool.LeveragedLpAmount = pool.LeveragedLpAmount.Add(shares)
-	if err = k.UpdatePoolHealth(ctx, &pool); err != nil {
-		return nil, err
-	}
+	k.UpdatePoolHealth(ctx, &pool)
 
-	// Update the Position health.
+	// Get the Position health.
 	lr, err := k.GetPositionHealth(ctx, *position, ammPool)
 	if err != nil {
 		return nil, err
