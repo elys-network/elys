@@ -289,15 +289,15 @@ genesis:
             start_time: "2023-04-20T12:34:56.789Z"
             num_epochs: "3154000"
             current_epoch: "0"
-            eden_boost_apr: "100"
+            eden_boost_apr: "1"
         stake_incentives:
           - amount: "100000000000"
             epoch_identifier: tenseconds
             start_time: "2023-04-20T12:34:56.789Z"
             num_epochs: "3154000"
             current_epoch: "0"
-            eden_boost_apr: "100"
-        community_tax: "0.02"
+            eden_boost_apr: "1"
+        community_tax: "0.00"
         withdraw_addr_enabled: true
         reward_portion_for_lps: "0.65"
         pool_infos: []

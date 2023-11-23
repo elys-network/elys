@@ -5,7 +5,6 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
-	etypes "github.com/elys-network/elys/x/epochs/types"
 	"gopkg.in/yaml.v2"
 )
 
@@ -21,6 +20,7 @@ var (
 	ParamStoreKeyPoolInfos             = []byte("poolinfos")
 	ParamStoreKeyElysStakeTrackingRate = []byte("elysstaketrackingrate")
 	ParamStoreKeyDexRewardsStakers     = []byte("dexrewardsstakers")
+	ParamStoreKeyDexRewardsLps         = []byte("dexrewardslps")
 )
 
 // ParamKeyTable the param key table for launch module
@@ -38,9 +38,13 @@ func NewParams() Params {
 		RewardPortionForLps:   sdk.NewDecWithPrec(65, 2),
 		PoolInfos:             []PoolInfo(nil),
 		ElysStakeTrackingRate: 10,
-		DexRewardsStakers: DexRewardsStakers{
-			EpochIdentifier: etypes.DayEpochID,
-			Amount:          sdk.ZeroDec(),
+		DexRewardsStakers: DexRewardsTracker{
+			NumBlocks: sdk.ZeroInt(),
+			Amount:    sdk.ZeroDec(),
+		},
+		DexRewardsLps: DexRewardsTracker{
+			NumBlocks: sdk.ZeroInt(),
+			Amount:    sdk.ZeroDec(),
 		},
 	}
 }
@@ -61,6 +65,7 @@ func (p *Params) ParamSetPairs() paramtypes.ParamSetPairs {
 		paramtypes.NewParamSetPair(ParamStoreKeyPoolInfos, &p.PoolInfos, validatePoolInfos),
 		paramtypes.NewParamSetPair(ParamStoreKeyElysStakeTrackingRate, &p.ElysStakeTrackingRate, validateElysStakeTrakcingRate),
 		paramtypes.NewParamSetPair(ParamStoreKeyDexRewardsStakers, &p.DexRewardsStakers, validateDexRewardsStakers),
+		paramtypes.NewParamSetPair(ParamStoreKeyDexRewardsLps, &p.DexRewardsLps, validateDexRewardsLps),
 	}
 }
 
@@ -99,6 +104,10 @@ func (p Params) Validate() error {
 	}
 
 	if err := validateDexRewardsStakers(p.DexRewardsStakers); err != nil {
+		return err
+	}
+
+	if err := validateDexRewardsLps(p.DexRewardsLps); err != nil {
 		return err
 	}
 
@@ -179,27 +188,31 @@ func validateLPIncentives(i interface{}) error {
 	}
 
 	for _, vv := range v {
-		if vv.Amount.LTE(sdk.ZeroInt()) {
-			return fmt.Errorf("invalid amount: %v", vv)
+		if vv.EdenAmountPerYear.LTE(sdk.ZeroInt()) {
+			return fmt.Errorf("invalid eden amount per year: %v", vv)
 		}
 
-		if vv.EpochIdentifier != etypes.WeekEpochID &&
-			vv.EpochIdentifier != etypes.DayEpochID &&
-			vv.EpochIdentifier != etypes.HourEpochID &&
-			vv.EpochIdentifier != etypes.BandEpochID &&
-			vv.EpochIdentifier != etypes.TenSecondsEpochID {
-			return fmt.Errorf("invalid epoch: %v", vv)
+		if vv.TotalBlocksPerYear.LT(sdk.NewInt(1)) {
+			return fmt.Errorf("invalid total blocks per year: %v", vv)
 		}
 
-		if vv.NumEpochs < 1 {
-			return fmt.Errorf("invalid num epoch: %v", vv)
+		if vv.AllocationEpochInBlocks.LT(sdk.NewInt(0)) {
+			return fmt.Errorf("invalid allocation epoch in blocks: %v", vv)
 		}
 
-		if vv.CurrentEpoch < 0 {
+		if vv.DistributionEpochInBlocks.LT(sdk.NewInt(0)) {
+			return fmt.Errorf("invalid distribution epoch in blocks: %v", vv)
+		}
+
+		if vv.CurrentEpochInBlocks.LT(sdk.NewInt(0)) {
 			return fmt.Errorf("invalid current epoch: %v", vv)
 		}
 
-		if vv.EdenBoostApr < 1 {
+		if vv.DistributionStartBlock.LT(sdk.NewInt(0)) {
+			return fmt.Errorf("invalid distribution epoch: %v", vv)
+		}
+
+		if vv.EdenBoostApr.GT(sdk.NewDec(1)) || vv.EdenBoostApr.LT(sdk.ZeroDec()) {
 			return fmt.Errorf("invalid eden boot apr: %v", vv)
 		}
 	}
@@ -217,27 +230,31 @@ func validateStakeIncentives(i interface{}) error {
 	}
 
 	for _, vv := range v {
-		if vv.Amount.LTE(sdk.ZeroInt()) {
-			return fmt.Errorf("invalid amount: %v", vv)
+		if vv.EdenAmountPerYear.LTE(sdk.ZeroInt()) {
+			return fmt.Errorf("invalid eden amount per year: %v", vv)
 		}
 
-		if vv.EpochIdentifier != etypes.WeekEpochID &&
-			vv.EpochIdentifier != etypes.DayEpochID &&
-			vv.EpochIdentifier != etypes.HourEpochID &&
-			vv.EpochIdentifier != etypes.BandEpochID &&
-			vv.EpochIdentifier != etypes.TenSecondsEpochID {
-			return fmt.Errorf("invalid epoch: %v", vv)
+		if vv.TotalBlocksPerYear.LT(sdk.NewInt(1)) {
+			return fmt.Errorf("invalid total blocks per year: %v", vv)
 		}
 
-		if vv.NumEpochs < 1 {
-			return fmt.Errorf("invalid num epoch: %v", vv)
+		if vv.AllocationEpochInBlocks.LT(sdk.NewInt(0)) {
+			return fmt.Errorf("invalid allocation epoch in blocks: %v", vv)
 		}
 
-		if vv.CurrentEpoch < 0 {
+		if vv.DistributionEpochInBlocks.LT(sdk.NewInt(0)) {
+			return fmt.Errorf("invalid distribution epoch in blocks: %v", vv)
+		}
+
+		if vv.CurrentEpochInBlocks.LT(sdk.NewInt(0)) {
 			return fmt.Errorf("invalid current epoch: %v", vv)
 		}
 
-		if vv.EdenBoostApr < 1 {
+		if vv.DistributionStartBlock.LT(sdk.NewInt(0)) {
+			return fmt.Errorf("invalid distribution epoch: %v", vv)
+		}
+
+		if vv.EdenBoostApr.GT(sdk.NewDec(1)) || vv.EdenBoostApr.LT(sdk.ZeroDec()) {
 			return fmt.Errorf("invalid eden boot apr: %v", vv)
 		}
 	}
@@ -264,7 +281,16 @@ func validateElysStakeTrakcingRate(i interface{}) error {
 }
 
 func validateDexRewardsStakers(i interface{}) error {
-	_, ok := i.(DexRewardsStakers)
+	_, ok := i.(DexRewardsTracker)
+	if !ok {
+		return fmt.Errorf("invalid parameter type: %T", i)
+	}
+
+	return nil
+}
+
+func validateDexRewardsLps(i interface{}) error {
+	_, ok := i.(DexRewardsTracker)
 	if !ok {
 		return fmt.Errorf("invalid parameter type: %T", i)
 	}

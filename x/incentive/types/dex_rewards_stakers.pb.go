@@ -24,24 +24,25 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
-// Track DexRewardsStakers
-type DexRewardsStakers struct {
-	EpochIdentifier string                                 `protobuf:"bytes,1,opt,name=epoch_identifier,json=epochIdentifier,proto3" json:"epoch_identifier,omitempty"`
-	Amount          github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,2,opt,name=amount,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"amount"`
+// DexRewardsTracker
+type DexRewardsTracker struct {
+	NumBlocks                     github_com_cosmos_cosmos_sdk_types.Int `protobuf:"bytes,1,opt,name=num_blocks,json=numBlocks,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"num_blocks"`
+	Amount                        github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,2,opt,name=amount,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"amount"`
+	AmountCollectedByOtherTracker github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,3,opt,name=amount_collected_by_other_tracker,json=amountCollectedByOtherTracker,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"amount_collected_by_other_tracker"`
 }
 
-func (m *DexRewardsStakers) Reset()         { *m = DexRewardsStakers{} }
-func (m *DexRewardsStakers) String() string { return proto.CompactTextString(m) }
-func (*DexRewardsStakers) ProtoMessage()    {}
-func (*DexRewardsStakers) Descriptor() ([]byte, []int) {
+func (m *DexRewardsTracker) Reset()         { *m = DexRewardsTracker{} }
+func (m *DexRewardsTracker) String() string { return proto.CompactTextString(m) }
+func (*DexRewardsTracker) ProtoMessage()    {}
+func (*DexRewardsTracker) Descriptor() ([]byte, []int) {
 	return fileDescriptor_aa61911f53a3bf12, []int{0}
 }
-func (m *DexRewardsStakers) XXX_Unmarshal(b []byte) error {
+func (m *DexRewardsTracker) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *DexRewardsStakers) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *DexRewardsTracker) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_DexRewardsStakers.Marshal(b, m, deterministic)
+		return xxx_messageInfo_DexRewardsTracker.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -51,27 +52,20 @@ func (m *DexRewardsStakers) XXX_Marshal(b []byte, deterministic bool) ([]byte, e
 		return b[:n], nil
 	}
 }
-func (m *DexRewardsStakers) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_DexRewardsStakers.Merge(m, src)
+func (m *DexRewardsTracker) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_DexRewardsTracker.Merge(m, src)
 }
-func (m *DexRewardsStakers) XXX_Size() int {
+func (m *DexRewardsTracker) XXX_Size() int {
 	return m.Size()
 }
-func (m *DexRewardsStakers) XXX_DiscardUnknown() {
-	xxx_messageInfo_DexRewardsStakers.DiscardUnknown(m)
+func (m *DexRewardsTracker) XXX_DiscardUnknown() {
+	xxx_messageInfo_DexRewardsTracker.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_DexRewardsStakers proto.InternalMessageInfo
-
-func (m *DexRewardsStakers) GetEpochIdentifier() string {
-	if m != nil {
-		return m.EpochIdentifier
-	}
-	return ""
-}
+var xxx_messageInfo_DexRewardsTracker proto.InternalMessageInfo
 
 func init() {
-	proto.RegisterType((*DexRewardsStakers)(nil), "elys.incentive.DexRewardsStakers")
+	proto.RegisterType((*DexRewardsTracker)(nil), "elys.incentive.DexRewardsTracker")
 }
 
 func init() {
@@ -79,33 +73,36 @@ func init() {
 }
 
 var fileDescriptor_aa61911f53a3bf12 = []byte{
-	// 251 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0xd2, 0x48, 0xcd, 0xa9, 0x2c,
-	0xd6, 0xcf, 0xcc, 0x4b, 0x4e, 0xcd, 0x2b, 0xc9, 0x2c, 0x4b, 0xd5, 0x4f, 0x49, 0xad, 0x88, 0x2f,
-	0x4a, 0x2d, 0x4f, 0x2c, 0x4a, 0x29, 0x8e, 0x2f, 0x2e, 0x49, 0xcc, 0x4e, 0x2d, 0x2a, 0xd6, 0x2b,
-	0x28, 0xca, 0x2f, 0xc9, 0x17, 0xe2, 0x03, 0xa9, 0xd4, 0x83, 0xab, 0x94, 0x12, 0x49, 0xcf, 0x4f,
-	0xcf, 0x07, 0x4b, 0xe9, 0x83, 0x58, 0x10, 0x55, 0x4a, 0x6d, 0x8c, 0x5c, 0x82, 0x2e, 0xa9, 0x15,
-	0x41, 0x10, 0x23, 0x82, 0x21, 0x26, 0x08, 0x69, 0x72, 0x09, 0xa4, 0x16, 0xe4, 0x27, 0x67, 0xc4,
-	0x67, 0xa6, 0x80, 0x74, 0xa7, 0x65, 0xa6, 0x16, 0x49, 0x30, 0x2a, 0x30, 0x6a, 0x70, 0x06, 0xf1,
-	0x83, 0xc5, 0x3d, 0xe1, 0xc2, 0x42, 0x6e, 0x5c, 0x6c, 0x89, 0xb9, 0xf9, 0xa5, 0x79, 0x25, 0x12,
-	0x4c, 0x20, 0x05, 0x4e, 0x7a, 0x27, 0xee, 0xc9, 0x33, 0xdc, 0xba, 0x27, 0xaf, 0x96, 0x9e, 0x59,
-	0x92, 0x51, 0x9a, 0xa4, 0x97, 0x9c, 0x9f, 0xab, 0x9f, 0x9c, 0x5f, 0x9c, 0x9b, 0x5f, 0x0c, 0xa5,
-	0x74, 0x8b, 0x53, 0xb2, 0xf5, 0x4b, 0x2a, 0x0b, 0x52, 0x8b, 0xf5, 0x5c, 0x52, 0x93, 0x83, 0xa0,
-	0xba, 0x9d, 0x7c, 0x56, 0x3c, 0x92, 0x63, 0x3c, 0xf1, 0x48, 0x8e, 0xf1, 0xc2, 0x23, 0x39, 0xc6,
-	0x07, 0x8f, 0xe4, 0x18, 0x27, 0x3c, 0x96, 0x63, 0xb8, 0xf0, 0x58, 0x8e, 0xe1, 0xc6, 0x63, 0x39,
-	0x86, 0x28, 0x3d, 0x24, 0xd3, 0x40, 0xfe, 0xd2, 0xcd, 0x4b, 0x2d, 0x29, 0xcf, 0x2f, 0xca, 0x06,
-	0x73, 0xf4, 0x2b, 0x90, 0x02, 0x04, 0x6c, 0x72, 0x12, 0x1b, 0xd8, 0x77, 0xc6, 0x80, 0x00, 0x00,
-	0x00, 0xff, 0xff, 0xf5, 0xdb, 0xf0, 0x57, 0x2f, 0x01, 0x00, 0x00,
+	// 302 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x9c, 0x91, 0xcf, 0x4a, 0x33, 0x31,
+	0x14, 0xc5, 0x27, 0xfd, 0xa0, 0xd0, 0x2c, 0x3e, 0x70, 0x70, 0x51, 0x04, 0x53, 0x75, 0x21, 0xdd,
+	0x34, 0x59, 0xf8, 0x06, 0x63, 0x11, 0x04, 0x45, 0x28, 0xae, 0xdc, 0x84, 0x99, 0xcc, 0xa5, 0x2d,
+	0x33, 0x93, 0x5b, 0x92, 0x8c, 0x9d, 0x79, 0x0b, 0x1f, 0xc2, 0x85, 0x8f, 0xd2, 0x65, 0x97, 0xe2,
+	0xa2, 0xc8, 0xf4, 0x45, 0x64, 0xfe, 0x28, 0xdd, 0xea, 0x2a, 0x27, 0xe4, 0xe4, 0x77, 0x2e, 0xe7,
+	0xd2, 0x31, 0xa4, 0xa5, 0x15, 0x4b, 0xad, 0x40, 0xbb, 0xe5, 0x33, 0x88, 0x18, 0x0a, 0x69, 0x60,
+	0x1d, 0x9a, 0xd8, 0x4a, 0xeb, 0xc2, 0x04, 0x8c, 0xe5, 0x2b, 0x83, 0x0e, 0xfd, 0xff, 0xb5, 0x93,
+	0xff, 0x38, 0x4f, 0x8e, 0xe7, 0x38, 0xc7, 0xe6, 0x49, 0xd4, 0xaa, 0x75, 0x5d, 0xbc, 0xf6, 0xe8,
+	0xd1, 0x14, 0x8a, 0x59, 0x8b, 0x78, 0x34, 0xa1, 0x4a, 0xc0, 0xf8, 0xf7, 0x94, 0xea, 0x3c, 0x93,
+	0x51, 0x8a, 0x2a, 0xb1, 0x43, 0x72, 0x46, 0xc6, 0x83, 0x80, 0x6f, 0x76, 0x23, 0xef, 0x63, 0x37,
+	0xba, 0x9c, 0x2f, 0xdd, 0x22, 0x8f, 0xb8, 0xc2, 0x4c, 0x28, 0xb4, 0x19, 0xda, 0xee, 0x98, 0xd8,
+	0x38, 0x11, 0xae, 0x5c, 0x81, 0xe5, 0xb7, 0xda, 0xcd, 0x06, 0x3a, 0xcf, 0x82, 0x06, 0xe0, 0xdf,
+	0xd0, 0x7e, 0x98, 0x61, 0xae, 0xdd, 0xb0, 0xf7, 0x6b, 0xd4, 0x14, 0xd4, 0xac, 0xfb, 0xed, 0x17,
+	0xf4, 0xbc, 0x55, 0x52, 0x61, 0x9a, 0x82, 0x72, 0x10, 0xcb, 0xa8, 0x94, 0xe8, 0x16, 0x60, 0xa4,
+	0x6b, 0x67, 0x1f, 0xfe, 0xfb, 0x53, 0xc4, 0x69, 0x0b, 0xbe, 0xfe, 0xe6, 0x06, 0xe5, 0x43, 0x4d,
+	0xed, 0x0a, 0x09, 0xee, 0xde, 0x2a, 0x46, 0x36, 0x15, 0x23, 0xdb, 0x8a, 0x91, 0xcf, 0x8a, 0x91,
+	0x97, 0x3d, 0xf3, 0xb6, 0x7b, 0xe6, 0xbd, 0xef, 0x99, 0xf7, 0xc4, 0x0f, 0x42, 0xea, 0xd6, 0x27,
+	0x1a, 0xdc, 0x1a, 0x4d, 0xd2, 0x5c, 0x44, 0x71, 0xb0, 0xae, 0x26, 0x30, 0xea, 0x37, 0xdd, 0x5f,
+	0x7d, 0x05, 0x00, 0x00, 0xff, 0xff, 0x81, 0x07, 0xd5, 0x3f, 0xcd, 0x01, 0x00, 0x00,
 }
 
-func (this *DexRewardsStakers) Equal(that interface{}) bool {
+func (this *DexRewardsTracker) Equal(that interface{}) bool {
 	if that == nil {
 		return this == nil
 	}
 
-	that1, ok := that.(*DexRewardsStakers)
+	that1, ok := that.(*DexRewardsTracker)
 	if !ok {
-		that2, ok := that.(DexRewardsStakers)
+		that2, ok := that.(DexRewardsTracker)
 		if ok {
 			that1 = &that2
 		} else {
@@ -117,15 +114,18 @@ func (this *DexRewardsStakers) Equal(that interface{}) bool {
 	} else if this == nil {
 		return false
 	}
-	if this.EpochIdentifier != that1.EpochIdentifier {
+	if !this.NumBlocks.Equal(that1.NumBlocks) {
 		return false
 	}
 	if !this.Amount.Equal(that1.Amount) {
 		return false
 	}
+	if !this.AmountCollectedByOtherTracker.Equal(that1.AmountCollectedByOtherTracker) {
+		return false
+	}
 	return true
 }
-func (m *DexRewardsStakers) Marshal() (dAtA []byte, err error) {
+func (m *DexRewardsTracker) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -135,16 +135,26 @@ func (m *DexRewardsStakers) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *DexRewardsStakers) MarshalTo(dAtA []byte) (int, error) {
+func (m *DexRewardsTracker) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *DexRewardsStakers) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *DexRewardsTracker) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
+	{
+		size := m.AmountCollectedByOtherTracker.Size()
+		i -= size
+		if _, err := m.AmountCollectedByOtherTracker.MarshalTo(dAtA[i:]); err != nil {
+			return 0, err
+		}
+		i = encodeVarintDexRewardsStakers(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0x1a
 	{
 		size := m.Amount.Size()
 		i -= size
@@ -155,13 +165,16 @@ func (m *DexRewardsStakers) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	}
 	i--
 	dAtA[i] = 0x12
-	if len(m.EpochIdentifier) > 0 {
-		i -= len(m.EpochIdentifier)
-		copy(dAtA[i:], m.EpochIdentifier)
-		i = encodeVarintDexRewardsStakers(dAtA, i, uint64(len(m.EpochIdentifier)))
-		i--
-		dAtA[i] = 0xa
+	{
+		size := m.NumBlocks.Size()
+		i -= size
+		if _, err := m.NumBlocks.MarshalTo(dAtA[i:]); err != nil {
+			return 0, err
+		}
+		i = encodeVarintDexRewardsStakers(dAtA, i, uint64(size))
 	}
+	i--
+	dAtA[i] = 0xa
 	return len(dAtA) - i, nil
 }
 
@@ -176,17 +189,17 @@ func encodeVarintDexRewardsStakers(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
-func (m *DexRewardsStakers) Size() (n int) {
+func (m *DexRewardsTracker) Size() (n int) {
 	if m == nil {
 		return 0
 	}
 	var l int
 	_ = l
-	l = len(m.EpochIdentifier)
-	if l > 0 {
-		n += 1 + l + sovDexRewardsStakers(uint64(l))
-	}
+	l = m.NumBlocks.Size()
+	n += 1 + l + sovDexRewardsStakers(uint64(l))
 	l = m.Amount.Size()
+	n += 1 + l + sovDexRewardsStakers(uint64(l))
+	l = m.AmountCollectedByOtherTracker.Size()
 	n += 1 + l + sovDexRewardsStakers(uint64(l))
 	return n
 }
@@ -197,7 +210,7 @@ func sovDexRewardsStakers(x uint64) (n int) {
 func sozDexRewardsStakers(x uint64) (n int) {
 	return sovDexRewardsStakers(uint64((x << 1) ^ uint64((int64(x) >> 63))))
 }
-func (m *DexRewardsStakers) Unmarshal(dAtA []byte) error {
+func (m *DexRewardsTracker) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -220,15 +233,15 @@ func (m *DexRewardsStakers) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: DexRewardsStakers: wiretype end group for non-group")
+			return fmt.Errorf("proto: DexRewardsTracker: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: DexRewardsStakers: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: DexRewardsTracker: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field EpochIdentifier", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field NumBlocks", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -256,7 +269,9 @@ func (m *DexRewardsStakers) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.EpochIdentifier = string(dAtA[iNdEx:postIndex])
+			if err := m.NumBlocks.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
 			iNdEx = postIndex
 		case 2:
 			if wireType != 2 {
@@ -289,6 +304,40 @@ func (m *DexRewardsStakers) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			if err := m.Amount.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field AmountCollectedByOtherTracker", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowDexRewardsStakers
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthDexRewardsStakers
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthDexRewardsStakers
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.AmountCollectedByOtherTracker.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex

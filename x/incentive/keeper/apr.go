@@ -31,23 +31,12 @@ func (k Keeper) CalculateApr(ctx sdk.Context, query *types.QueryAprRequest) (sdk
 	lpIncentive := params.LpIncentives[0]
 	stkIncentive := params.StakeIncentives[0]
 
-	if lpIncentive.NumEpochs < 1 || stkIncentive.NumEpochs < 1 {
+	if lpIncentive.TotalBlocksPerYear.IsZero() || stkIncentive.TotalBlocksPerYear.IsZero() {
 		return sdk.ZeroInt(), sdkerrors.Wrap(types.ErrNoNonInflationaryParams, "invalid inflationary params")
 	}
 
-	// Eden amount for LPs at a single epoch.
-	edenAmountPerEpochLPs := lpIncentive.Amount.Quo(sdk.NewInt(lpIncentive.NumEpochs))
-
-	// Eden amount for Stakers at a single epoch.
-	edenAmountPerEpochStakers := stkIncentive.Amount.Quo(sdk.NewInt(stkIncentive.NumEpochs))
-
 	if query.Denom == ptypes.Eden {
 		if query.WithdrawType == commitmenttypes.EarnType_USDC_PROGRAM {
-			epoch, found := k.epochsKeeper.GetEpochInfo(ctx, lpIncentive.EpochIdentifier)
-			if !found {
-				return sdk.ZeroInt(), sdkerrors.Wrap(types.ErrNoNonInflationaryParams, "no inflationary params available")
-			}
-
 			totalUSDCDeposit := k.bankKeeper.GetBalance(ctx, stabletypes.PoolAddress(), baseCurrency)
 			if totalUSDCDeposit.Amount.IsZero() {
 				return sdk.ZeroInt(), nil
@@ -59,42 +48,29 @@ func (k Keeper) CalculateApr(ctx sdk.Context, query *types.QueryAprRequest) (sdk
 			// Calculate stable stake pool share.
 			poolShare := k.CalculatePoolShareForStableStakeLPs(ctx, totalProxyTVL, baseCurrency)
 
-			// Epoch count in 24 hrs.
-			epochDuration := int64(epoch.Duration.Seconds())
-
-			// Eden amount for LP in 24hrs = Eden amount per a single epoch for LPs * number of epochs in a day
-			edenAmountPerDay := edenAmountPerEpochLPs.Mul(sdk.NewInt(ptypes.SecondsPerDay)).Quo(sdk.NewInt(epochDuration))
+			// Eden amount for LP in 24hrs = AllocationEpochInBlocks is the number of block for 24 hrs
+			edenAmountPerDay := lpIncentive.EdenAmountPerYear.Quo(lpIncentive.AllocationEpochInBlocks)
 
 			// Eden amount for stable stake LP in 24hrs
 			edenAmountPerStableStakePerDay := sdk.NewDecFromInt(edenAmountPerDay).Mul(poolShare)
 
 			// Calc Eden price in usdc
 			// We put Elys as denom as Eden won't be avaialble in amm pool and has the same value as Elys
-			edenPrice := k.EstimatePrice(ctx, sdk.NewCoin(ptypes.Elys, sdk.NewInt(10)), baseCurrency)
+			edenPrice := k.EstimatePrice(ctx, sdk.NewCoin(ptypes.Elys, sdk.NewInt(100000)), baseCurrency)
 
 			// Eden Apr for usdc earn program = {(Eden allocated for stable stake pool per day*365*price{eden/usdc}/(total usdc deposit)}*100
-			// we multiply 10 as we have use 10elys as input in the price estimation
-			apr := edenAmountPerStableStakePerDay.MulInt(sdk.NewInt(10)).MulInt(sdk.NewInt(ptypes.DaysPerYear)).MulInt(edenPrice).QuoInt(totalUSDCDeposit.Amount)
+			// we divide 100000 as we have use 100000elys as input in the price estimation
+			apr := edenAmountPerStableStakePerDay.MulInt(sdk.NewInt(ptypes.DaysPerYear)).MulInt(edenPrice).QuoInt(totalUSDCDeposit.Amount).QuoInt(sdk.NewInt(100000))
 			return apr.TruncateInt(), nil
 		} else {
 			// Elys staking, Eden committed, EdenB committed.
-			epoch, found := k.epochsKeeper.GetEpochInfo(ctx, stkIncentive.EpochIdentifier)
-			if !found {
-				return sdk.ZeroInt(), sdkerrors.Wrap(types.ErrNoNonInflationaryParams, "no inflationary params available")
-			}
-
-			// Epoch count in 24 hrs.
-			epochDuration := int64(epoch.Duration.Seconds())
-
-			// Eden amount for LP in 24hrs = Eden amount per a single epoch for LPs * number of epochs in a day
-			edenAmountPerDay := edenAmountPerEpochStakers.Mul(sdk.NewInt(ptypes.SecondsPerDay)).Quo(sdk.NewInt(epochDuration))
 
 			// Update total committed states
 			k.UpdateTotalCommitmentInfo(ctx, baseCurrency)
 			totalStakedSnapshot := k.tci.TotalElysBonded.Add(k.tci.TotalEdenEdenBoostCommitted)
 
 			// For Eden reward Apr for elys staking = {(amount of Eden allocated for staking per day)*365/( total elys staked + total Eden committed + total Eden boost committed)}*100
-			apr := edenAmountPerDay.Mul(sdk.NewInt(100)).Mul(sdk.NewInt(ptypes.DaysPerYear)).Quo(totalStakedSnapshot)
+			apr := stkIncentive.EdenAmountPerYear.Mul(sdk.NewInt(100)).Quo(totalStakedSnapshot)
 			return apr, nil
 		}
 	} else if query.Denom == ptypes.BaseCurrency {
@@ -110,16 +86,9 @@ func (k Keeper) CalculateApr(ctx sdk.Context, query *types.QueryAprRequest) (sdk
 				return sdk.ZeroInt(), nil
 			}
 
-			epoch, found := k.epochsKeeper.GetEpochInfo(ctx, params.DexRewardsStakers.EpochIdentifier)
-			if !found {
-				return sdk.ZeroInt(), sdkerrors.Wrap(types.ErrNoNonInflationaryParams, "no inflationary params available")
-			}
-
-			// Epoch duration
-			epochDuration := int64(epoch.Duration.Seconds())
-
 			// DexReward amount per day = amount distributed / duration(in seconds) * total seconds per day.
-			amtDexRewardPerDay := amt.MulInt(sdk.NewInt(ptypes.SecondsPerDay)).QuoInt(sdk.NewInt(epochDuration))
+			// AllocationEpochInBlocks is the number of the block per day
+			amtDexRewardPerDay := amt.MulInt(stkIncentive.AllocationEpochInBlocks).QuoInt(params.DexRewardsStakers.NumBlocks)
 
 			// Calc Eden price in usdc
 			// We put Elys as denom as Eden won't be avaialble in amm pool and has the same value as Elys
@@ -136,7 +105,7 @@ func (k Keeper) CalculateApr(ctx sdk.Context, query *types.QueryAprRequest) (sdk
 			return apr.TruncateInt(), nil
 		}
 	} else if query.Denom == ptypes.EdenB {
-		apr := sdk.NewInt(lpIncentive.EdenBoostApr)
+		apr := lpIncentive.EdenBoostApr.MulInt(sdk.NewInt(100)).TruncateInt()
 		return apr, nil
 	}
 

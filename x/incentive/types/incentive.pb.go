@@ -8,19 +8,16 @@ import (
 	github_com_cosmos_cosmos_sdk_types "github.com/cosmos/cosmos-sdk/types"
 	_ "github.com/cosmos/gogoproto/gogoproto"
 	proto "github.com/cosmos/gogoproto/proto"
-	github_com_cosmos_gogoproto_types "github.com/cosmos/gogoproto/types"
 	_ "google.golang.org/protobuf/types/known/timestamppb"
 	io "io"
 	math "math"
 	math_bits "math/bits"
-	time "time"
 )
 
 // Reference imports to suppress errors if they are not otherwise used.
 var _ = proto.Marshal
 var _ = fmt.Errorf
 var _ = math.Inf
-var _ = time.Kitchen
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the proto package it is being compiled against.
@@ -30,16 +27,22 @@ const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
 // Incentive Info
 type IncentiveInfo struct {
-	// reward amount
-	Amount github_com_cosmos_cosmos_sdk_types.Int `protobuf:"bytes,1,opt,name=amount,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"amount"`
-	// epoch identifier
-	EpochIdentifier string `protobuf:"bytes,2,opt,name=epoch_identifier,json=epochIdentifier,proto3" json:"epoch_identifier,omitempty"`
-	// start_time of the distribution
-	StartTime time.Time `protobuf:"bytes,3,opt,name=start_time,json=startTime,proto3,stdtime" json:"start_time"`
-	// distribution duration
-	NumEpochs    int64 `protobuf:"varint,4,opt,name=num_epochs,json=numEpochs,proto3" json:"num_epochs,omitempty"`
-	CurrentEpoch int64 `protobuf:"varint,5,opt,name=current_epoch,json=currentEpoch,proto3" json:"current_epoch,omitempty"`
-	EdenBoostApr int64 `protobuf:"varint,6,opt,name=eden_boost_apr,json=edenBoostApr,proto3" json:"eden_boost_apr,omitempty"`
+	// reward amount in eden for 1 year
+	EdenAmountPerYear github_com_cosmos_cosmos_sdk_types.Int `protobuf:"bytes,1,opt,name=eden_amount_per_year,json=edenAmountPerYear,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"eden_amount_per_year"`
+	// starting block height of the distribution
+	DistributionStartBlock github_com_cosmos_cosmos_sdk_types.Int `protobuf:"bytes,2,opt,name=distribution_start_block,json=distributionStartBlock,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"distribution_start_block"`
+	// distribution duration - block number per year
+	TotalBlocksPerYear github_com_cosmos_cosmos_sdk_types.Int `protobuf:"bytes,3,opt,name=total_blocks_per_year,json=totalBlocksPerYear,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"total_blocks_per_year"`
+	// we set block numbers in 24 hrs
+	AllocationEpochInBlocks github_com_cosmos_cosmos_sdk_types.Int `protobuf:"bytes,4,opt,name=allocation_epoch_in_blocks,json=allocationEpochInBlocks,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"allocation_epoch_in_blocks"`
+	// maximum eden allocation per day that won't exceed 30% apr
+	MaxEdenPerAllocation github_com_cosmos_cosmos_sdk_types.Int `protobuf:"bytes,5,opt,name=max_eden_per_allocation,json=maxEdenPerAllocation,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"max_eden_per_allocation"`
+	// number of block intervals that distribute rewards.
+	DistributionEpochInBlocks github_com_cosmos_cosmos_sdk_types.Int `protobuf:"bytes,6,opt,name=distribution_epoch_in_blocks,json=distributionEpochInBlocks,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"distribution_epoch_in_blocks"`
+	// current epoch in block number
+	CurrentEpochInBlocks github_com_cosmos_cosmos_sdk_types.Int `protobuf:"bytes,7,opt,name=current_epoch_in_blocks,json=currentEpochInBlocks,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"current_epoch_in_blocks"`
+	// eden boost apr (0-1) range
+	EdenBoostApr github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,8,opt,name=eden_boost_apr,json=edenBoostApr,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"eden_boost_apr"`
 }
 
 func (m *IncentiveInfo) Reset()         { *m = IncentiveInfo{} }
@@ -75,41 +78,6 @@ func (m *IncentiveInfo) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_IncentiveInfo proto.InternalMessageInfo
 
-func (m *IncentiveInfo) GetEpochIdentifier() string {
-	if m != nil {
-		return m.EpochIdentifier
-	}
-	return ""
-}
-
-func (m *IncentiveInfo) GetStartTime() time.Time {
-	if m != nil {
-		return m.StartTime
-	}
-	return time.Time{}
-}
-
-func (m *IncentiveInfo) GetNumEpochs() int64 {
-	if m != nil {
-		return m.NumEpochs
-	}
-	return 0
-}
-
-func (m *IncentiveInfo) GetCurrentEpoch() int64 {
-	if m != nil {
-		return m.CurrentEpoch
-	}
-	return 0
-}
-
-func (m *IncentiveInfo) GetEdenBoostApr() int64 {
-	if m != nil {
-		return m.EdenBoostApr
-	}
-	return 0
-}
-
 func init() {
 	proto.RegisterType((*IncentiveInfo)(nil), "elys.incentive.IncentiveInfo")
 }
@@ -117,30 +85,34 @@ func init() {
 func init() { proto.RegisterFile("elys/incentive/incentive.proto", fileDescriptor_ed0e67c7f36f3313) }
 
 var fileDescriptor_ed0e67c7f36f3313 = []byte{
-	// 358 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x4c, 0x91, 0xc1, 0x4e, 0xfa, 0x40,
-	0x10, 0xc6, 0xbb, 0xf0, 0xff, 0x13, 0x59, 0x05, 0x4d, 0xe3, 0xa1, 0x21, 0xb1, 0x25, 0x6a, 0x0c,
-	0x1e, 0xd8, 0x26, 0xfa, 0x04, 0xd6, 0x68, 0xec, 0xb5, 0xf1, 0xe4, 0xa5, 0x69, 0xcb, 0x52, 0x1a,
-	0xe8, 0x4e, 0xb3, 0xbb, 0x55, 0x79, 0x0b, 0x5e, 0xc5, 0xb7, 0xe0, 0xc8, 0xd1, 0x78, 0x40, 0x03,
-	0x2f, 0x62, 0x76, 0x0b, 0xc8, 0xa9, 0x3b, 0xbf, 0xf9, 0xe6, 0xcb, 0xd7, 0x19, 0x6c, 0xd3, 0xc9,
-	0x54, 0xb8, 0x19, 0x4b, 0x28, 0x93, 0xd9, 0x2b, 0xfd, 0x7b, 0x91, 0x82, 0x83, 0x04, 0xb3, 0xad,
-	0xfa, 0x64, 0x47, 0x3b, 0xa7, 0x29, 0xa4, 0xa0, 0x5b, 0xae, 0x7a, 0x55, 0xaa, 0x8e, 0x93, 0x02,
-	0xa4, 0x13, 0xea, 0xea, 0x2a, 0x2e, 0x87, 0xae, 0xcc, 0x72, 0x2a, 0x64, 0x94, 0x17, 0x95, 0xe0,
-	0xfc, 0xa3, 0x86, 0x5b, 0xfe, 0xd6, 0xc4, 0x67, 0x43, 0x30, 0x1f, 0x71, 0x23, 0xca, 0xa1, 0x64,
-	0xd2, 0x42, 0x5d, 0xd4, 0x6b, 0x7a, 0x64, 0xbe, 0x74, 0x8c, 0xaf, 0xa5, 0x73, 0x95, 0x66, 0x72,
-	0x54, 0xc6, 0x24, 0x81, 0xdc, 0x4d, 0x40, 0xe4, 0x20, 0x36, 0x9f, 0xbe, 0x18, 0x8c, 0x5d, 0x39,
-	0x2d, 0xa8, 0x20, 0x3e, 0x93, 0xc1, 0x66, 0xda, 0xbc, 0xc6, 0x27, 0xb4, 0x80, 0x64, 0x14, 0x66,
-	0x03, 0xe5, 0x3e, 0xcc, 0x28, 0xb7, 0x6a, 0xca, 0x31, 0x38, 0xd6, 0xdc, 0xdf, 0x61, 0xf3, 0x1e,
-	0x63, 0x21, 0x23, 0x2e, 0x43, 0x95, 0xce, 0xaa, 0x77, 0x51, 0xef, 0xf0, 0xa6, 0x43, 0xaa, 0xe8,
-	0x64, 0x1b, 0x9d, 0x3c, 0x6f, 0xa3, 0x7b, 0x07, 0x2a, 0xd2, 0xec, 0xdb, 0x41, 0x41, 0x53, 0xcf,
-	0xa9, 0x8e, 0x79, 0x86, 0x31, 0x2b, 0xf3, 0x50, 0x7b, 0x0b, 0xeb, 0x5f, 0x17, 0xf5, 0xea, 0x41,
-	0x93, 0x95, 0xf9, 0x83, 0x06, 0xe6, 0x05, 0x6e, 0x25, 0x25, 0xe7, 0x94, 0xc9, 0x4a, 0x62, 0xfd,
-	0xd7, 0x8a, 0xa3, 0x0d, 0xd4, 0x2a, 0xf3, 0x12, 0xb7, 0xe9, 0x80, 0xb2, 0x30, 0x06, 0x10, 0x32,
-	0x8c, 0x0a, 0x6e, 0x35, 0x2a, 0x95, 0xa2, 0x9e, 0x82, 0x77, 0x05, 0xf7, 0x9e, 0xe6, 0x2b, 0x1b,
-	0x2d, 0x56, 0x36, 0xfa, 0x59, 0xd9, 0x68, 0xb6, 0xb6, 0x8d, 0xc5, 0xda, 0x36, 0x3e, 0xd7, 0xb6,
-	0xf1, 0x42, 0xf6, 0x76, 0xa4, 0xee, 0xd3, 0x67, 0x54, 0xbe, 0x01, 0x1f, 0xeb, 0xc2, 0x7d, 0xdf,
-	0x3b, 0xa7, 0xde, 0x57, 0xdc, 0xd0, 0x3f, 0x77, 0xfb, 0x1b, 0x00, 0x00, 0xff, 0xff, 0x38, 0x7a,
-	0xa7, 0xd2, 0xed, 0x01, 0x00, 0x00,
+	// 426 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x9c, 0xd3, 0x4f, 0x6f, 0xd3, 0x30,
+	0x18, 0x06, 0xf0, 0x86, 0x3f, 0x05, 0x2c, 0x98, 0x44, 0x54, 0x58, 0xa8, 0x50, 0x8a, 0x38, 0x20,
+	0x2e, 0x4b, 0x0e, 0x7c, 0x82, 0x56, 0x4c, 0xa2, 0xb7, 0x69, 0x70, 0x81, 0x8b, 0xe5, 0xb8, 0xef,
+	0x52, 0xab, 0x89, 0xdf, 0xc8, 0x7e, 0x03, 0xed, 0xb7, 0xe0, 0x1b, 0x71, 0xdd, 0x71, 0x47, 0xc4,
+	0x61, 0x42, 0xed, 0x17, 0x41, 0x76, 0xba, 0x25, 0x63, 0xa7, 0xe5, 0x54, 0xbb, 0xb6, 0x7e, 0x8f,
+	0x9e, 0x58, 0x2f, 0x8b, 0xa1, 0xd8, 0xd8, 0x54, 0x69, 0x09, 0x9a, 0xd4, 0x77, 0x68, 0x57, 0x49,
+	0x65, 0x90, 0x30, 0x3c, 0x70, 0xe7, 0xc9, 0xf5, 0xbf, 0xe3, 0x51, 0x8e, 0x39, 0xfa, 0xa3, 0xd4,
+	0xad, 0x9a, 0x5b, 0xe3, 0x49, 0x8e, 0x98, 0x17, 0x90, 0xfa, 0x5d, 0x56, 0x9f, 0xa5, 0xa4, 0x4a,
+	0xb0, 0x24, 0xca, 0xaa, 0xb9, 0xf0, 0xf6, 0xd7, 0x90, 0x3d, 0x9b, 0x5f, 0x21, 0x73, 0x7d, 0x86,
+	0x21, 0x67, 0x23, 0x58, 0x80, 0xe6, 0xa2, 0xc4, 0x5a, 0x13, 0xaf, 0xc0, 0xf0, 0x0d, 0x08, 0x13,
+	0x05, 0x6f, 0x82, 0xf7, 0x4f, 0x66, 0xc9, 0xf9, 0xe5, 0x64, 0xf0, 0xe7, 0x72, 0xf2, 0x2e, 0x57,
+	0xb4, 0xac, 0xb3, 0x44, 0x62, 0x99, 0x4a, 0xb4, 0x25, 0xda, 0xfd, 0xcf, 0x91, 0x5d, 0xac, 0x52,
+	0xda, 0x54, 0x60, 0x93, 0xb9, 0xa6, 0xd3, 0xe7, 0xce, 0x9a, 0x7a, 0xea, 0x04, 0xcc, 0x57, 0x10,
+	0x26, 0x5c, 0xb2, 0x68, 0xa1, 0x2c, 0x19, 0x95, 0xd5, 0xa4, 0x50, 0x73, 0x4b, 0xc2, 0x10, 0xcf,
+	0x0a, 0x94, 0xab, 0xe8, 0x5e, 0xaf, 0x90, 0x97, 0x5d, 0xef, 0xb3, 0xe3, 0x66, 0x4e, 0x0b, 0x05,
+	0x7b, 0x41, 0x48, 0xa2, 0x68, 0x70, 0xdb, 0x76, 0xb9, 0xdf, 0x2b, 0x26, 0xf4, 0x98, 0xa7, 0xed,
+	0x55, 0x99, 0x15, 0x1b, 0x8b, 0xa2, 0x40, 0x29, 0x7c, 0x15, 0xa8, 0x50, 0x2e, 0xb9, 0xd2, 0xfb,
+	0xc0, 0xe8, 0x41, 0xaf, 0x9c, 0xc3, 0x56, 0x3c, 0x76, 0xe0, 0x5c, 0x37, 0x99, 0x21, 0xb0, 0xc3,
+	0x52, 0xac, 0xb9, 0x7f, 0x1e, 0xd7, 0xa5, 0xbd, 0x17, 0x3d, 0xec, 0x95, 0x34, 0x2a, 0xc5, 0xfa,
+	0x78, 0x01, 0xfa, 0x04, 0xcc, 0xf4, 0xda, 0x0a, 0x91, 0xbd, 0xbe, 0xf1, 0x40, 0xff, 0xb7, 0x1a,
+	0xf6, 0xca, 0x7a, 0xd5, 0x35, 0x6f, 0xf5, 0x92, 0xb5, 0x31, 0xa0, 0xe9, 0x56, 0xd6, 0xa3, 0x7e,
+	0xbd, 0xf6, 0xdc, 0xcd, 0x98, 0x2f, 0xec, 0xc0, 0x7f, 0xba, 0x0c, 0xd1, 0x12, 0x17, 0x95, 0x89,
+	0x1e, 0xdf, 0x59, 0xff, 0x08, 0xf2, 0xf4, 0xa9, 0x53, 0x66, 0x0e, 0x99, 0x56, 0x66, 0xf6, 0xe9,
+	0x7c, 0x1b, 0x07, 0x17, 0xdb, 0x38, 0xf8, 0xbb, 0x8d, 0x83, 0x9f, 0xbb, 0x78, 0x70, 0xb1, 0x8b,
+	0x07, 0xbf, 0x77, 0xf1, 0xe0, 0x5b, 0xd2, 0xf1, 0xdc, 0xb4, 0x1e, 0x69, 0xa0, 0x1f, 0x68, 0x56,
+	0x7e, 0x93, 0xae, 0x3b, 0xc3, 0xed, 0xed, 0x6c, 0xe8, 0x47, 0xf2, 0xc3, 0xbf, 0x00, 0x00, 0x00,
+	0xff, 0xff, 0x62, 0xa6, 0xae, 0x62, 0xfb, 0x03, 0x00, 0x00,
 }
 
 func (m *IncentiveInfo) Marshal() (dAtA []byte, err error) {
@@ -163,40 +135,80 @@ func (m *IncentiveInfo) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if m.EdenBoostApr != 0 {
-		i = encodeVarintIncentive(dAtA, i, uint64(m.EdenBoostApr))
-		i--
-		dAtA[i] = 0x30
+	{
+		size := m.EdenBoostApr.Size()
+		i -= size
+		if _, err := m.EdenBoostApr.MarshalTo(dAtA[i:]); err != nil {
+			return 0, err
+		}
+		i = encodeVarintIncentive(dAtA, i, uint64(size))
 	}
-	if m.CurrentEpoch != 0 {
-		i = encodeVarintIncentive(dAtA, i, uint64(m.CurrentEpoch))
-		i--
-		dAtA[i] = 0x28
+	i--
+	dAtA[i] = 0x42
+	{
+		size := m.CurrentEpochInBlocks.Size()
+		i -= size
+		if _, err := m.CurrentEpochInBlocks.MarshalTo(dAtA[i:]); err != nil {
+			return 0, err
+		}
+		i = encodeVarintIncentive(dAtA, i, uint64(size))
 	}
-	if m.NumEpochs != 0 {
-		i = encodeVarintIncentive(dAtA, i, uint64(m.NumEpochs))
-		i--
-		dAtA[i] = 0x20
+	i--
+	dAtA[i] = 0x3a
+	{
+		size := m.DistributionEpochInBlocks.Size()
+		i -= size
+		if _, err := m.DistributionEpochInBlocks.MarshalTo(dAtA[i:]); err != nil {
+			return 0, err
+		}
+		i = encodeVarintIncentive(dAtA, i, uint64(size))
 	}
-	n1, err1 := github_com_cosmos_gogoproto_types.StdTimeMarshalTo(m.StartTime, dAtA[i-github_com_cosmos_gogoproto_types.SizeOfStdTime(m.StartTime):])
-	if err1 != nil {
-		return 0, err1
+	i--
+	dAtA[i] = 0x32
+	{
+		size := m.MaxEdenPerAllocation.Size()
+		i -= size
+		if _, err := m.MaxEdenPerAllocation.MarshalTo(dAtA[i:]); err != nil {
+			return 0, err
+		}
+		i = encodeVarintIncentive(dAtA, i, uint64(size))
 	}
-	i -= n1
-	i = encodeVarintIncentive(dAtA, i, uint64(n1))
+	i--
+	dAtA[i] = 0x2a
+	{
+		size := m.AllocationEpochInBlocks.Size()
+		i -= size
+		if _, err := m.AllocationEpochInBlocks.MarshalTo(dAtA[i:]); err != nil {
+			return 0, err
+		}
+		i = encodeVarintIncentive(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0x22
+	{
+		size := m.TotalBlocksPerYear.Size()
+		i -= size
+		if _, err := m.TotalBlocksPerYear.MarshalTo(dAtA[i:]); err != nil {
+			return 0, err
+		}
+		i = encodeVarintIncentive(dAtA, i, uint64(size))
+	}
 	i--
 	dAtA[i] = 0x1a
-	if len(m.EpochIdentifier) > 0 {
-		i -= len(m.EpochIdentifier)
-		copy(dAtA[i:], m.EpochIdentifier)
-		i = encodeVarintIncentive(dAtA, i, uint64(len(m.EpochIdentifier)))
-		i--
-		dAtA[i] = 0x12
-	}
 	{
-		size := m.Amount.Size()
+		size := m.DistributionStartBlock.Size()
 		i -= size
-		if _, err := m.Amount.MarshalTo(dAtA[i:]); err != nil {
+		if _, err := m.DistributionStartBlock.MarshalTo(dAtA[i:]); err != nil {
+			return 0, err
+		}
+		i = encodeVarintIncentive(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0x12
+	{
+		size := m.EdenAmountPerYear.Size()
+		i -= size
+		if _, err := m.EdenAmountPerYear.MarshalTo(dAtA[i:]); err != nil {
 			return 0, err
 		}
 		i = encodeVarintIncentive(dAtA, i, uint64(size))
@@ -223,23 +235,22 @@ func (m *IncentiveInfo) Size() (n int) {
 	}
 	var l int
 	_ = l
-	l = m.Amount.Size()
+	l = m.EdenAmountPerYear.Size()
 	n += 1 + l + sovIncentive(uint64(l))
-	l = len(m.EpochIdentifier)
-	if l > 0 {
-		n += 1 + l + sovIncentive(uint64(l))
-	}
-	l = github_com_cosmos_gogoproto_types.SizeOfStdTime(m.StartTime)
+	l = m.DistributionStartBlock.Size()
 	n += 1 + l + sovIncentive(uint64(l))
-	if m.NumEpochs != 0 {
-		n += 1 + sovIncentive(uint64(m.NumEpochs))
-	}
-	if m.CurrentEpoch != 0 {
-		n += 1 + sovIncentive(uint64(m.CurrentEpoch))
-	}
-	if m.EdenBoostApr != 0 {
-		n += 1 + sovIncentive(uint64(m.EdenBoostApr))
-	}
+	l = m.TotalBlocksPerYear.Size()
+	n += 1 + l + sovIncentive(uint64(l))
+	l = m.AllocationEpochInBlocks.Size()
+	n += 1 + l + sovIncentive(uint64(l))
+	l = m.MaxEdenPerAllocation.Size()
+	n += 1 + l + sovIncentive(uint64(l))
+	l = m.DistributionEpochInBlocks.Size()
+	n += 1 + l + sovIncentive(uint64(l))
+	l = m.CurrentEpochInBlocks.Size()
+	n += 1 + l + sovIncentive(uint64(l))
+	l = m.EdenBoostApr.Size()
+	n += 1 + l + sovIncentive(uint64(l))
 	return n
 }
 
@@ -280,7 +291,7 @@ func (m *IncentiveInfo) Unmarshal(dAtA []byte) error {
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Amount", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field EdenAmountPerYear", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -308,13 +319,13 @@ func (m *IncentiveInfo) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if err := m.Amount.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+			if err := m.EdenAmountPerYear.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
 		case 2:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field EpochIdentifier", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field DistributionStartBlock", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -342,13 +353,15 @@ func (m *IncentiveInfo) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.EpochIdentifier = string(dAtA[iNdEx:postIndex])
+			if err := m.DistributionStartBlock.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
 			iNdEx = postIndex
 		case 3:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field StartTime", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field TotalBlocksPerYear", wireType)
 			}
-			var msglen int
+			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowIncentive
@@ -358,30 +371,31 @@ func (m *IncentiveInfo) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				msglen |= int(b&0x7F) << shift
+				stringLen |= uint64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
-			if msglen < 0 {
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
 				return ErrInvalidLengthIncentive
 			}
-			postIndex := iNdEx + msglen
+			postIndex := iNdEx + intStringLen
 			if postIndex < 0 {
 				return ErrInvalidLengthIncentive
 			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if err := github_com_cosmos_gogoproto_types.StdTimeUnmarshal(&m.StartTime, dAtA[iNdEx:postIndex]); err != nil {
+			if err := m.TotalBlocksPerYear.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
 		case 4:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field NumEpochs", wireType)
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field AllocationEpochInBlocks", wireType)
 			}
-			m.NumEpochs = 0
+			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowIncentive
@@ -391,16 +405,31 @@ func (m *IncentiveInfo) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.NumEpochs |= int64(b&0x7F) << shift
+				stringLen |= uint64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthIncentive
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthIncentive
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.AllocationEpochInBlocks.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
 		case 5:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field CurrentEpoch", wireType)
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field MaxEdenPerAllocation", wireType)
 			}
-			m.CurrentEpoch = 0
+			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowIncentive
@@ -410,16 +439,99 @@ func (m *IncentiveInfo) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.CurrentEpoch |= int64(b&0x7F) << shift
+				stringLen |= uint64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthIncentive
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthIncentive
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.MaxEdenPerAllocation.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
 		case 6:
-			if wireType != 0 {
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DistributionEpochInBlocks", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowIncentive
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthIncentive
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthIncentive
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.DistributionEpochInBlocks.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 7:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field CurrentEpochInBlocks", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowIncentive
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthIncentive
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthIncentive
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.CurrentEpochInBlocks.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 8:
+			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field EdenBoostApr", wireType)
 			}
-			m.EdenBoostApr = 0
+			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowIncentive
@@ -429,11 +541,26 @@ func (m *IncentiveInfo) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.EdenBoostApr |= int64(b&0x7F) << shift
+				stringLen |= uint64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthIncentive
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthIncentive
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.EdenBoostApr.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipIncentive(dAtA[iNdEx:])
