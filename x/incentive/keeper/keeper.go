@@ -133,10 +133,10 @@ func (k Keeper) UpdateStakersRewardsUnclaimed(ctx sdk.Context, stakeIncentive ty
 
 	// Maximum eden based per distribution epoch on maximum APR - 30% by default
 	// Allocated for staking per day = (0.3/365)* ( total elys staked + total Eden committed + total Eden boost committed)
-	maxEdenAmountPerStakers := params.MaxEdenRewardApr.Quo(sdk.NewInt(100)).Mul(k.tci.TotalElysBonded.Add(k.tci.TotalEdenEdenBoostCommitted)).Quo(stakeIncentive.TotalBlocksPerYear).Mul(stakeIncentive.DistributionEpochInBlocks)
+	maxEdenAmountPerStakers := params.MaxEdenRewardApr.MulInt(k.tci.TotalElysBonded.Add(k.tci.TotalEdenEdenBoostCommitted)).MulInt(stakeIncentive.DistributionEpochInBlocks).QuoInt(stakeIncentive.TotalBlocksPerYear)
 
 	// Use min amount (eden allocation from tokenomics and max apr based eden amount)
-	edenAmountPerEpochStakers = sdk.MinInt(edenAmountPerEpochStakers, maxEdenAmountPerStakers)
+	edenAmountPerEpochStakers = sdk.MinInt(edenAmountPerEpochStakers, maxEdenAmountPerStakers.TruncateInt())
 
 	// Track the DEX rewards distribution for stakers
 	// Add dexRevenue amount that was tracked by Lp tracker

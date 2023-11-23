@@ -114,7 +114,7 @@ func (k Keeper) IsStakerRewardsDistributionEpoch(ctx sdk.Context) (bool, types.I
 	}
 
 	curBlockHeight := sdk.NewInt(ctx.BlockHeight())
-	if stakeIncentive.DistributionStartBlock.LT(curBlockHeight) {
+	if stakeIncentive.DistributionStartBlock.GT(curBlockHeight) {
 		return false, types.IncentiveInfo{}
 	}
 
@@ -154,7 +154,7 @@ func (k Keeper) IsLPRewardsDistributionEpoch(ctx sdk.Context) (bool, types.Incen
 	}
 
 	curBlockHeight := sdk.NewInt(ctx.BlockHeight())
-	if lpIncentive.DistributionStartBlock.LT(curBlockHeight) {
+	if lpIncentive.DistributionStartBlock.GT(curBlockHeight) {
 		return false, types.IncentiveInfo{}
 	}
 

@@ -47,7 +47,7 @@ func NewParams() Params {
 			NumBlocks: sdk.ZeroInt(),
 			Amount:    sdk.ZeroDec(),
 		},
-		MaxEdenRewardApr: sdk.NewInt(30),
+		MaxEdenRewardApr: sdk.NewDecWithPrec(3, 1),
 	}
 }
 
@@ -302,16 +302,12 @@ func validateDexRewardsLps(i interface{}) error {
 }
 
 func validateEdenRewardApr(i interface{}) error {
-	v, ok := i.(sdk.Int)
+	v, ok := i.(sdk.Dec)
 	if !ok {
 		return fmt.Errorf("invalid parameter type: %T", i)
 	}
 
 	if v.IsNegative() {
-		return fmt.Errorf("invalid parameter type: %T", i)
-	}
-
-	if v.LT(sdk.ZeroInt()) {
 		return fmt.Errorf("invalid parameter type: %T", i)
 	}
 

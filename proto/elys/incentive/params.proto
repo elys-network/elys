@@ -40,7 +40,7 @@ message Params {
 
   // Maximum eden reward apr
   string max_eden_reward_apr = 10 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
 }
