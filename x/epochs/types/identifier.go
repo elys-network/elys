@@ -28,6 +28,10 @@ const (
 	DayEpochID = "day"
 	// HourEpochID defines the identifier for hourly epochs
 	HourEpochID = "hour"
+	// BandEpochID defines the identifier for band epochs
+	BandEpochID = "band_epoch"
+	// TenSecondsEpochID defines the identifier for 10 seconds
+	TenSecondsEpochID = "tenseconds"
 )
 
 // ValidateEpochIdentifierInterface performs a stateless

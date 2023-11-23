@@ -28,9 +28,6 @@ type CommitmentKeeperI interface {
 
 	// Update commitments for validator's commission withdrawal to self delegator
 	RecordWithdrawValidatorCommission(sdk.Context, string, string, string, sdk.Int) error
-
-	// Update commitments for Withdraw tokens - only USDC
-	RecordWithdrawUSDC(ctx sdk.Context, creator string, denom string, amount sdk.Int) error
 }
 
 var _ CommitmentKeeperI = Keeper{}

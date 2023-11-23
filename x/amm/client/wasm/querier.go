@@ -5,6 +5,7 @@ import (
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 	wasmbindingstypes "github.com/elys-network/elys/wasmbindings/types"
 	"github.com/elys-network/elys/x/amm/keeper"
+	apkeeper "github.com/elys-network/elys/x/assetprofile/keeper"
 	commitmentkeeper "github.com/elys-network/elys/x/commitment/keeper"
 )
 
@@ -13,13 +14,15 @@ type Querier struct {
 	keeper           *keeper.Keeper
 	bankKeeper       *bankkeeper.BaseKeeper
 	commitmentKeeper *commitmentkeeper.Keeper
+	apKeeper         *apkeeper.Keeper
 }
 
-func NewQuerier(keeper *keeper.Keeper, bankKeeper *bankkeeper.BaseKeeper, commitmentKeeper *commitmentkeeper.Keeper) *Querier {
+func NewQuerier(keeper *keeper.Keeper, bankKeeper *bankkeeper.BaseKeeper, commitmentKeeper *commitmentkeeper.Keeper, apKeeper *apkeeper.Keeper) *Querier {
 	return &Querier{
 		keeper:           keeper,
 		bankKeeper:       bankKeeper,
 		commitmentKeeper: commitmentKeeper,
+		apKeeper:         apKeeper,
 	}
 }
 
@@ -49,6 +52,8 @@ func (oq *Querier) HandleQuery(ctx sdk.Context, query wasmbindingstypes.ElysQuer
 		return oq.queryInRouteByDenom(ctx, query.AmmInRouteByDenom)
 	case query.AmmOutRouteByDenom != nil:
 		return oq.queryOutRouteByDenom(ctx, query.AmmOutRouteByDenom)
+	case query.AmmPriceByDenom != nil:
+		return oq.queryAmmPriceByDenom(ctx, query.AmmPriceByDenom)
 	default:
 		// This handler cannot handle the query
 		return nil, wasmbindingstypes.ErrCannotHandleQuery

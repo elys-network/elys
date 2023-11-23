@@ -43,8 +43,10 @@ func (k Keeper) BurnEdenBFromElysUnstaking(ctx sdk.Context, delegator sdk.AccAdd
 	unstakedElysDec := sdk.NewDecFromInt(unstakedElys)
 	edenCommittedAndElysStakedDec := sdk.NewDecFromInt(edenCommitted.Add(prevElysStaked.Amount))
 	totalEdenBDec := sdk.NewDecFromInt(totalEdenB)
-	edenBToBurn := unstakedElysDec.Quo(edenCommittedAndElysStakedDec).Mul(totalEdenBDec)
-
+	edenBToBurn := sdk.ZeroDec()
+	if edenCommittedAndElysStakedDec.GT(sdk.ZeroDec()) {
+		edenBToBurn = unstakedElysDec.Quo(edenCommittedAndElysStakedDec).Mul(totalEdenBDec)
+	}
 	// Burn EdenB ( Deduction EdenB in commitment module)
 	commitment, err := k.cmk.BurnEdenBoost(ctx, delAddr, ptypes.EdenB, edenBToBurn.TruncateInt())
 	k.cmk.SetCommitments(ctx, commitment)
@@ -72,10 +74,15 @@ func (k Keeper) BurnEdenBFromEdenUncommitted(ctx sdk.Context, delegator string, 
 	totalEdenB := edenBCommitted.Add(edenBUnclaimed).Add(edenBClaimed)
 
 	unclaimedAmtDec := sdk.NewDecFromInt(uncommitAmt)
-	edenCommittedAndElysStakedDec := sdk.NewDecFromInt(edenCommitted.Add(elysStaked.Amount))
+	// This formula shud be applied before eden uncommitted or elys staked is removed from eden committed amount and elys staked amount respectively
+	// So add uncommitted amount to committed eden bucket in calculation.
+	edenCommittedAndElysStakedDec := sdk.NewDecFromInt(edenCommitted.Add(elysStaked.Amount).Add(uncommitAmt))
 	totalEdenBDec := sdk.NewDecFromInt(totalEdenB)
 
-	edenBToBurn := unclaimedAmtDec.Quo(edenCommittedAndElysStakedDec).Mul(totalEdenBDec)
+	edenBToBurn := sdk.ZeroDec()
+	if edenCommittedAndElysStakedDec.GT(sdk.ZeroDec()) {
+		edenBToBurn = unclaimedAmtDec.Quo(edenCommittedAndElysStakedDec).Mul(totalEdenBDec)
+	}
 
 	// Burn EdenB ( Deduction EdenB in commitment module)
 	commitment, err := k.cmk.BurnEdenBoost(ctx, delegator, ptypes.EdenB, edenBToBurn.TruncateInt())

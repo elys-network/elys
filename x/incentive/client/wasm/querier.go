@@ -26,6 +26,8 @@ func (oq *Querier) HandleQuery(ctx sdk.Context, query wasmbindingstypes.ElysQuer
 		return oq.queryParams(ctx, query.IncentiveParams)
 	case query.IncentiveCommunityPool != nil:
 		return oq.queryCommunityPool(ctx, query.IncentiveCommunityPool)
+	case query.IncentiveApr != nil:
+		return oq.queryApr(ctx, query.IncentiveApr)
 	default:
 		// This handler cannot handle the query
 		return nil, wasmbindingstypes.ErrCannotHandleQuery

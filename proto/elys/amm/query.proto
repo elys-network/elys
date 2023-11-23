@@ -194,3 +194,6 @@ message QuerySwapEstimationByDenomResponse {
            cosmos.base.v1beta1.Coin amount    = 4 [(gogoproto.nullable) = false];
 }
 
+message QueryAMMPriceRequest {
+  cosmos.base.v1beta1.Coin token_in = 1 [(gogoproto.nullable) = false];
+}

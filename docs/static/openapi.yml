@@ -37746,7 +37746,7 @@ paths:
           schema:
             type: object
             properties:
-              in_route_ids:
+              in_route:
                 type: array
                 items:
                   type: object
@@ -37785,7 +37785,7 @@ paths:
           type: string
       tags:
         - Query
-  /elys-network/elys/amm/out_route_by_denom/{denomOut}/{denomIn}:
+  /elys-network/elys/amm/out_route_by_denom/{denom_out}/{denom_in}:
     get:
       summary: Queries a list of OutRouteByDenom items.
       operationId: ElysAmmOutRouteByDenom
@@ -37795,10 +37795,16 @@ paths:
           schema:
             type: object
             properties:
-              outRouteIds:
+              out_route:
                 type: array
                 items:
-                  type: string
+                  type: object
+                  properties:
+                    pool_id:
+                      type: string
+                      format: uint64
+                    token_in_denom:
+                      type: string
         default:
           description: An unexpected error response.
           schema:
@@ -37818,11 +37824,11 @@ paths:
                       type: string
                   additionalProperties: {}
       parameters:
-        - name: denomOut
+        - name: denom_out
           in: path
           required: true
           type: string
-        - name: denomIn
+        - name: denom_in
           in: path
           required: true
           type: string
@@ -38340,6 +38346,90 @@ paths:
           required: false
           type: string
         - name: token_in.amount
+          in: query
+          required: false
+          type: string
+      tags:
+        - Query
+  /elys-network/elys/amm/swap_estimation_by_denom:
+    get:
+      summary: Queries a list of SwapEstimationByDenom items.
+      operationId: ElysAmmSwapEstimationByDenom
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              in_route:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    pool_id:
+                      type: string
+                      format: uint64
+                    token_out_denom:
+                      type: string
+              out_route:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    pool_id:
+                      type: string
+                      format: uint64
+                    token_in_denom:
+                      type: string
+              spot_price:
+                type: string
+              amount:
+                type: object
+                properties:
+                  denom:
+                    type: string
+                  amount:
+                    type: string
+                description: >-
+                  Coin defines a token with a denomination and an amount.
+
+
+                  NOTE: The amount field is an Int which implements the custom
+                  method
+
+                  signatures required by gogoproto.
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: amount.denom
+          in: query
+          required: false
+          type: string
+        - name: amount.amount
+          in: query
+          required: false
+          type: string
+        - name: denom_in
+          in: query
+          required: false
+          type: string
+        - name: denom_out
           in: query
           required: false
           type: string
@@ -39059,6 +39149,9 @@ paths:
                         current_epoch:
                           type: string
                           format: int64
+                        vest_started_timestamp:
+                          type: string
+                          format: int64
                   rewards_by_elys_unclaimed:
                     type: array
                     items:
@@ -39495,6 +39588,14 @@ paths:
                   elys_stake_tracking_rate:
                     type: string
                     format: int64
+                  dex_rewards_stakers:
+                    title: Tracking dex rewards given to stakers
+                    type: object
+                    properties:
+                      epoch_identifier:
+                        type: string
+                      amount:
+                        type: string
             description: >-
               QueryParamsResponse is response type for the Query/Params RPC
               method.
@@ -39573,25 +39674,15 @@ paths:
                 properties:
                   leverage_max:
                     type: string
-                  removal_queue_threshold:
-                    type: string
                   max_open_positions:
                     type: string
                     format: int64
                   pool_open_threshold:
                     type: string
-                  force_close_fund_percentage:
-                    type: string
-                  force_close_fund_address:
-                    type: string
-                  sq_modifier:
-                    type: string
                   safety_factor:
                     type: string
                   whitelisting_enabled:
                     type: boolean
-                  invariant_check_epoch:
-                    type: string
                   epoch_length:
                     type: string
                     format: int64
@@ -83167,7 +83258,7 @@ definitions:
   elys.amm.QueryInRouteByDenomResponse:
     type: object
     properties:
-      in_route_ids:
+      in_route:
         type: array
         items:
           type: object
@@ -83180,10 +83271,16 @@ definitions:
   elys.amm.QueryOutRouteByDenomResponse:
     type: object
     properties:
-      outRouteIds:
+      out_route:
         type: array
         items:
-          type: string
+          type: object
+          properties:
+            pool_id:
+              type: string
+              format: uint64
+            token_in_denom:
+              type: string
   elys.amm.QueryParamsResponse:
     type: object
     properties:
@@ -83255,6 +83352,43 @@ definitions:
                 method
 
                 signatures required by gogoproto.
+  elys.amm.QuerySwapEstimationByDenomResponse:
+    type: object
+    properties:
+      in_route:
+        type: array
+        items:
+          type: object
+          properties:
+            pool_id:
+              type: string
+              format: uint64
+            token_out_denom:
+              type: string
+      out_route:
+        type: array
+        items:
+          type: object
+          properties:
+            pool_id:
+              type: string
+              format: uint64
+            token_in_denom:
+              type: string
+      spot_price:
+        type: string
+      amount:
+        type: object
+        properties:
+          denom:
+            type: string
+          amount:
+            type: string
+        description: |-
+          Coin defines a token with a denomination and an amount.
+
+          NOTE: The amount field is an Int which implements the custom method
+          signatures required by gogoproto.
   elys.amm.QuerySwapEstimationResponse:
     type: object
     properties:
@@ -83669,6 +83803,9 @@ definitions:
             current_epoch:
               type: string
               format: int64
+            vest_started_timestamp:
+              type: string
+              format: int64
       rewards_by_elys_unclaimed:
         type: array
         items:
@@ -83913,6 +84050,9 @@ definitions:
                 current_epoch:
                   type: string
                   format: int64
+                vest_started_timestamp:
+                  type: string
+                  format: int64
           rewards_by_elys_unclaimed:
             type: array
             items:
@@ -84014,6 +84154,9 @@ definitions:
         type: string
         format: int64
       current_epoch:
+        type: string
+        format: int64
+      vest_started_timestamp:
         type: string
         format: int64
   elys.epochs.v1.EpochInfo:
@@ -84151,6 +84294,14 @@ definitions:
       - EDEN_PROGRAM
       - EDENB_PROGRAM
     default: ALL_PROGRAM
+  elys.incentive.DexRewardsStakers:
+    type: object
+    properties:
+      epoch_identifier:
+        type: string
+      amount:
+        type: string
+    title: Track DexRewardsStakers
   elys.incentive.IncentiveInfo:
     type: object
     properties:
@@ -84271,6 +84422,14 @@ definitions:
       elys_stake_tracking_rate:
         type: string
         format: int64
+      dex_rewards_stakers:
+        title: Tracking dex rewards given to stakers
+        type: object
+        properties:
+          epoch_identifier:
+            type: string
+          amount:
+            type: string
     description: Params defines the parameters for the module.
   elys.incentive.PoolInfo:
     type: object
@@ -84394,6 +84553,14 @@ definitions:
           elys_stake_tracking_rate:
             type: string
             format: int64
+          dex_rewards_stakers:
+            title: Tracking dex rewards given to stakers
+            type: object
+            properties:
+              epoch_identifier:
+                type: string
+              amount:
+                type: string
     description: QueryParamsResponse is response type for the Query/Params RPC method.
   elys.leveragelp.IsWhitelistedResponse:
     type: object
@@ -84419,25 +84586,15 @@ definitions:
     properties:
       leverage_max:
         type: string
-      removal_queue_threshold:
-        type: string
       max_open_positions:
         type: string
         format: int64
       pool_open_threshold:
         type: string
-      force_close_fund_percentage:
-        type: string
-      force_close_fund_address:
-        type: string
-      sq_modifier:
-        type: string
       safety_factor:
         type: string
       whitelisting_enabled:
         type: boolean
-      invariant_check_epoch:
-        type: string
       epoch_length:
         type: string
         format: int64
@@ -84451,25 +84608,15 @@ definitions:
         properties:
           leverage_max:
             type: string
-          removal_queue_threshold:
-            type: string
           max_open_positions:
             type: string
             format: int64
           pool_open_threshold:
             type: string
-          force_close_fund_percentage:
-            type: string
-          force_close_fund_address:
-            type: string
-          sq_modifier:
-            type: string
           safety_factor:
             type: string
           whitelisting_enabled:
             type: boolean
-          invariant_check_epoch:
-            type: string
           epoch_length:
             type: string
             format: int64

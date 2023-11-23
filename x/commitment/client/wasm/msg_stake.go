@@ -8,6 +8,9 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	commitmentkeeper "github.com/elys-network/elys/x/commitment/keeper"
 	commitmenttypes "github.com/elys-network/elys/x/commitment/types"
+	ptypes "github.com/elys-network/elys/x/parameter/types"
+	stablekeeper "github.com/elys-network/elys/x/stablestake/keeper"
+	stabletypes "github.com/elys-network/elys/x/stablestake/types"
 )
 
 func (m *Messenger) msgStake(ctx sdk.Context, contractAddr sdk.AccAddress, msgStake *commitmenttypes.MsgStake) ([]sdk.Event, [][]byte, error) {
@@ -15,16 +18,44 @@ func (m *Messenger) msgStake(ctx sdk.Context, contractAddr sdk.AccAddress, msgSt
 		return nil, nil, wasmvmtypes.InvalidRequest{Err: "Invalid staking parameter"}
 	}
 
-	msgServer := commitmentkeeper.NewMsgServerImpl(*m.keeper)
-	msgMsgStake := commitmenttypes.NewMsgStake(msgStake.Creator, msgStake.Amount, msgStake.Asset, msgStake.ValidatorAddress)
-
-	if err := msgMsgStake.ValidateBasic(); err != nil {
-		return nil, nil, errorsmod.Wrap(err, "failed validating msgMsgStake")
+	entry, found := m.apKeeper.GetEntry(ctx, ptypes.BaseCurrency)
+	if !found {
+		return nil, nil, wasmvmtypes.InvalidRequest{Err: "Invalid usdc denom"}
 	}
+	baseCurrency := entry.Denom
 
-	res, err := msgServer.Stake(ctx, msgMsgStake)
-	if err != nil { // Discard the response because it's empty
-		return nil, nil, errorsmod.Wrap(err, "elys staking msg")
+	var res *commitmenttypes.MsgStakeResponse
+	var err error
+	// USDC
+	if msgStake.Asset == baseCurrency {
+		msgServer := stablekeeper.NewMsgServerImpl(*m.stableKeeper)
+		msgMsgBond := stabletypes.NewMsgBond(msgStake.Creator, msgStake.Amount)
+
+		if err = msgMsgBond.ValidateBasic(); err != nil {
+			return nil, nil, errorsmod.Wrap(err, "failed validating msgMsgBond")
+		}
+
+		_, err = msgServer.Bond(ctx, msgMsgBond)
+		if err != nil { // Discard the response because it's empty
+			return nil, nil, errorsmod.Wrap(err, "usdc staking msg")
+		}
+		res = &commitmenttypes.MsgStakeResponse{
+			Code:   ptypes.RES_OK,
+			Result: "usdc staking msg succeed",
+		}
+	} else {
+		// Elys, Eden, Eden Boost
+		msgServer := commitmentkeeper.NewMsgServerImpl(*m.keeper)
+		msgMsgStake := commitmenttypes.NewMsgStake(msgStake.Creator, msgStake.Amount, msgStake.Asset, msgStake.ValidatorAddress)
+
+		if err = msgMsgStake.ValidateBasic(); err != nil {
+			return nil, nil, errorsmod.Wrap(err, "failed validating msgMsgStake")
+		}
+
+		res, err = msgServer.Stake(ctx, msgMsgStake)
+		if err != nil { // Discard the response because it's empty
+			return nil, nil, errorsmod.Wrap(err, "elys staking msg")
+		}
 	}
 
 	responseBytes, err := json.Marshal(*res)

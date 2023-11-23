@@ -23,21 +23,40 @@ func (k msgServer) CancelVest(goCtx context.Context, msg *types.MsgCancelVest) (
 
 	remainingToCancel := msg.Amount
 
+	remainVestingTokens := make([]*types.VestingTokens, 0, len(commitments.VestingTokens))
 	newVestingTokens := make([]*types.VestingTokens, 0, len(commitments.VestingTokens))
 
-	for _, vesting := range commitments.VestingTokens {
+	for i := len(commitments.VestingTokens) - 1; i >= 0; i-- {
+		vesting := commitments.VestingTokens[i]
 		cancelAmount := sdk.MinInt(remainingToCancel, vesting.UnvestedAmount)
+		if vesting.NumEpochs == 0 || vesting.TotalAmount.IsZero() {
+			continue
+		}
+		amtPerEpoch := vesting.TotalAmount.Quo(sdk.NewInt(vesting.NumEpochs))
 		vesting.TotalAmount = vesting.TotalAmount.Sub(cancelAmount)
 		vesting.UnvestedAmount = vesting.UnvestedAmount.Sub(cancelAmount)
 
+		if amtPerEpoch.IsZero() {
+			continue
+		}
+		// Update the num epochs for the reduced amount
+		vesting.NumEpochs = vesting.TotalAmount.Quo(amtPerEpoch).Int64()
+
 		if !vesting.TotalAmount.IsZero() {
-			newVestingTokens = append(newVestingTokens, vesting)
+			remainVestingTokens = append(remainVestingTokens, vesting)
 		}
 
 		remainingToCancel = remainingToCancel.Sub(cancelAmount)
 		if remainingToCancel.IsZero() {
+			newVestingTokens = append(newVestingTokens, commitments.VestingTokens[:i]...)
+
 			break
 		}
+	}
+
+	// Add the remaining vesting in reverse order.
+	for i := len(remainVestingTokens) - 1; i >= 0; i-- {
+		newVestingTokens = append(newVestingTokens, remainVestingTokens[i])
 	}
 
 	commitments.VestingTokens = newVestingTokens
@@ -47,7 +66,7 @@ func (k msgServer) CancelVest(goCtx context.Context, msg *types.MsgCancelVest) (
 	}
 
 	// Update the unclaimed tokens amount
-	commitments.AddRewardsUnclaimed(sdk.NewCoin(msg.Denom, msg.Amount))
+	commitments.AddClaimed(sdk.NewCoin(msg.Denom, msg.Amount))
 	k.SetCommitments(ctx, commitments)
 
 	// Emit Hook commitment changed

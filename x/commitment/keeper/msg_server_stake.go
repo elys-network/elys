@@ -19,7 +19,6 @@ func (k msgServer) Stake(goCtx context.Context, msg *types.MsgStake) (*types.Msg
 			return nil, errorsmod.Wrap(err, "perform elys stake")
 		}
 	} else {
-
 		if err := k.performCommit(ctx, msg); err != nil {
 			return nil, errorsmod.Wrap(err, "perform elys commit")
 		}

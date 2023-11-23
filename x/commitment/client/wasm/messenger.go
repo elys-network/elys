@@ -4,19 +4,25 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
 	wasmbindingstypes "github.com/elys-network/elys/wasmbindings/types"
+	apKeeper "github.com/elys-network/elys/x/assetprofile/keeper"
 	"github.com/elys-network/elys/x/commitment/keeper"
+	stableKeeper "github.com/elys-network/elys/x/stablestake/keeper"
 )
 
 // Messenger handles messages for the Commitment module.
 type Messenger struct {
 	keeper        *keeper.Keeper
 	stakingKeeper *stakingkeeper.Keeper
+	apKeeper      *apKeeper.Keeper
+	stableKeeper  *stableKeeper.Keeper
 }
 
-func NewMessenger(keeper *keeper.Keeper, stakingKeeper *stakingkeeper.Keeper) *Messenger {
+func NewMessenger(keeper *keeper.Keeper, stakingKeeper *stakingkeeper.Keeper, apKeeper *apKeeper.Keeper, stableKeeper *stableKeeper.Keeper) *Messenger {
 	return &Messenger{
 		keeper:        keeper,
 		stakingKeeper: stakingKeeper,
+		apKeeper:      apKeeper,
+		stableKeeper:  stableKeeper,
 	}
 }
 

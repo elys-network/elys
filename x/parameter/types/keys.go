@@ -40,14 +40,14 @@ const (
 	// BaseDecimal
 	BASE_DECIMAL = 6
 
-	// 52.1429 weeks
-	WeeksPerYear = 52
+	// 3.154e+7 per year
+	SecondsPerYear = 3.154e+7
 
-	// 365 days
+	// One day seconds
+	SecondsPerDay = 86400
+
+	// Days per year
 	DaysPerYear = 365
-
-	// 8760 hours
-	HoursPerYear = 8760
 
 	// Return ok
 	RES_OK = uint64(200)

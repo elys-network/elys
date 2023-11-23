@@ -105,7 +105,7 @@ func TestBurnEdenBFromEdenUncommitted(t *testing.T) {
 	ik.EndBlocker(ctx)
 
 	// Set assetprofile entry for denom
-	app.AssetprofileKeeper.SetEntry(ctx, aptypes.Entry{BaseDenom: ptypes.Eden, CommitEnabled: true})
+	app.AssetprofileKeeper.SetEntry(ctx, aptypes.Entry{BaseDenom: ptypes.Eden, CommitEnabled: true, WithdrawEnabled: true})
 
 	msg := &ctypes.MsgUncommitTokens{
 		Creator: genAccount.String(),

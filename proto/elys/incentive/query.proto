@@ -8,6 +8,7 @@ import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
 import "cosmos/base/v1beta1/coin.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
+import "elys/commitment/params.proto";
 
 option go_package = "github.com/elys-network/elys/x/incentive/types";
 
@@ -44,3 +45,14 @@ message QueryCommunityPoolResponse {
   repeated cosmos.base.v1beta1.DecCoin pool = 1 [(gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.DecCoins", (gogoproto.nullable) = false];
 }
 
+message QueryAprRequest {
+  elys.commitment.EarnType withdraw_type = 1;
+  string denom = 2;
+}
+
+message QueryAprResponse {
+  string apr = 1 [
+      (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+      (gogoproto.nullable) = false
+  ]; 
+}

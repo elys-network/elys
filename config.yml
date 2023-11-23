@@ -13,7 +13,10 @@ accounts:
       - 9000000000000000uelys
   - name: cw
     coins:
+      - 1000000000000uatom
       - 9000000000000000uelys
+      - 1000000000000uusdc
+      - 1000000000000uusdt
     mnemonic: wool diet nasty illness balcony life grunt truck verify later raise carpet describe victory snack sand struggle better smart purse miss bicycle copy orphan
 build:
   main: cmd/elysd
@@ -198,7 +201,7 @@ genesis:
           transferLimit: ""
           unitDenom: ""
           commitEnabled: true
-          withdrawEnabled: false
+          withdrawEnabled: true
     epochs:
       epochs:
         - identifier: week
@@ -232,66 +235,66 @@ genesis:
           - base_denom: ueden
             vesting_denom: uelys
             epoch_identifier: tenseconds
-            num_epochs: "10"
+            num_epochs: "100"
             vest_now_factor: "90"
             num_max_vestings: "10"
       commitments:
         - creator: elys1v30pe777dj9mgsnlv0j2c5wh05m0ya0nlhuv7t
           committed_tokens:
             - amount: "10000"
-              denom: uusdc
-            - amount: "10000"
               denom: ueden
             - amount: "10000"
               denom: uedenb
           rewards_unclaimed:
-            - amount: "10000"
-              denom: uusdc
-            - amount: "10000"
+            - amount: "1000000"
               denom: ueden
-            - amount: "10000"
+            - amount: "1000000"
               denom: uedenb
-          vesting_tokens:
-            - denom: ueden
-              total_amount: "10000"
-              unvested_amount: "10000"
-              epoch_identifier: "day"
-              num_epochs: 100
-              current_epoch: 5
+            - amount: "1000000"
+              denom: uusdc
+          vesting_tokens: []
           rewards_by_usdc_unclaimed:
             - denom: ueden
-              amount: "2000"
+              amount: "200000"
+            - denom: uedenb
+              amount: "200000"
             - denom: uusdc
-              amount: "2000"
+              amount: "200000"
           rewards_by_elys_unclaimed:
             - denom: ueden
-              amount: "3000"
+              amount: "300000"
+            - denom: uedenb
+              amount: "200000"
             - denom: uusdc
-              amount: "3000"
+              amount: "300000"
           rewards_by_eden_unclaimed:
             - denom: ueden
-              amount: "3000"
+              amount: "300000"
+            - denom: uedenb
+              amount: "200000"
             - denom: uusdc
-              amount: "3000"
+              amount: "300000"
           rewards_by_edenb_unclaimed:
             - denom: ueden
-              amount: "2000"
+              amount: "200000"
+            - denom: uedenb
+              amount: "200000"
             - denom: uusdc
-              amount: "200"
+              amount: "200000"
     incentive:
       params:
         lp_incentives:
-          - amount: "10000000"
-            epoch_identifier: week
+          - amount: "100000000000"
+            epoch_identifier: tenseconds
             start_time: "2023-04-20T12:34:56.789Z"
-            num_epochs: "50"
+            num_epochs: "3154000"
             current_epoch: "0"
             eden_boost_apr: "100"
         stake_incentives:
-          - amount: "10000000"
-            epoch_identifier: week
+          - amount: "100000000000"
+            epoch_identifier: tenseconds
             start_time: "2023-04-20T12:34:56.789Z"
-            num_epochs: "50"
+            num_epochs: "3154000"
             current_epoch: "0"
             eden_boost_apr: "100"
         community_tax: "0.02"
@@ -379,6 +382,11 @@ genesis:
           display: "USDT"
           bandTicker: "USDT"
           elysTicker: "USDT"
+          decimal: 6
+        - denom: "uusdc"
+          display: "USDC"
+          bandTicker: "USDC"
+          elysTicker: "USDC"
           decimal: 6
       params:
         ask_count: "4"

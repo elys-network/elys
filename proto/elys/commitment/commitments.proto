@@ -7,6 +7,7 @@ import "cosmos_proto/cosmos.proto";
 import "cosmos/base/v1beta1/coin.proto";
 import "gogoproto/gogo.proto";
 import "elys/commitment/params.proto";
+import "amino/amino.proto";
 
 option go_package = "github.com/elys-network/elys/x/commitment/types";
 
@@ -83,4 +84,5 @@ message VestingTokens {
   string epoch_identifier = 4;
   int64 num_epochs = 5;
   int64 current_epoch = 6;
+  int64 vest_started_timestamp = 7;
 }

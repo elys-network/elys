@@ -19,7 +19,7 @@ func (k msgServer) UncommitTokens(goCtx context.Context, msg *types.MsgUncommitT
 		return nil, sdkerrors.Wrapf(aptypes.ErrAssetProfileNotFound, "denom: %s", msg.Denom)
 	}
 
-	if !assetProfile.CommitEnabled {
+	if !assetProfile.WithdrawEnabled {
 		return nil, sdkerrors.Wrapf(types.ErrCommitDisabled, "denom: %s", msg.Denom)
 	}
 

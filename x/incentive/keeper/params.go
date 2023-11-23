@@ -4,7 +4,6 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	ctypes "github.com/elys-network/elys/x/commitment/types"
-	etypes "github.com/elys-network/elys/x/epochs/types"
 	"github.com/elys-network/elys/x/incentive/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 	stabletypes "github.com/elys-network/elys/x/stablestake/types"
@@ -85,6 +84,35 @@ func (k Keeper) InitPoolMultiplier(ctx sdk.Context, poolId uint64) bool {
 	return true
 }
 
+// InitStableStakePoolMultiplier: create a stable stake pool information responding to the pool creation.
+func (k Keeper) InitStableStakePoolMultiplier(ctx sdk.Context, poolId uint64) bool {
+	// Fetch incentive params
+	params := k.GetParams(ctx)
+	poolInfos := params.PoolInfos
+
+	for _, ps := range poolInfos {
+		if ps.PoolId == poolId {
+			return true
+		}
+	}
+
+	// Initiate a new pool info
+	poolInfo := types.PoolInfo{
+		// reward amount
+		PoolId: poolId,
+		// reward wallet address
+		RewardWallet: stabletypes.PoolAddress().String(),
+		// multiplier for lp rewards
+		Multiplier: sdk.NewDec(1),
+	}
+
+	// Update pool information
+	params.PoolInfos = append(params.PoolInfos, poolInfo)
+	k.SetParams(ctx, params)
+
+	return true
+}
+
 // UpdatePoolMultipliers updates pool multipliers through gov proposal
 func (k Keeper) UpdatePoolMultipliers(ctx sdk.Context, poolMultipliers []types.PoolMultipliers) bool {
 	if len(poolMultipliers) < 1 {
@@ -125,15 +153,16 @@ func (k Keeper) GetProperIncentiveParam(ctx sdk.Context, epochIdentifier string)
 
 	// Current block timestamp
 	timestamp := ctx.BlockTime().Unix()
-	foundIncentive := false
 
 	// Incentive params initialize
 	stakeIncentive := params.StakeIncentives[0]
 	lpIncentive := params.LpIncentives[0]
 
-	// Consider epochIdentifier and start time
-	// Consider epochNumber as well
-	if stakeIncentive.EpochIdentifier != epochIdentifier || timestamp < stakeIncentive.StartTime.Unix() {
+	// TODO:
+	// In V2 refactoring, have to make it available to calculate rewards for stakers and Lps at different epoch.
+	// Now rewards calculation is taking in one place (in a single loop) so it is now being triggered by any of the matching epoch (LPs, stakers),
+	// so should update this later.
+	if stakeIncentive.EpochIdentifier != lpIncentive.EpochIdentifier || stakeIncentive.EpochIdentifier != epochIdentifier || timestamp < stakeIncentive.StartTime.Unix() {
 		return false, types.IncentiveInfo{}, types.IncentiveInfo{}
 	}
 
@@ -158,21 +187,24 @@ func (k Keeper) GetProperIncentiveParam(ctx sdk.Context, epochIdentifier string)
 	}
 
 	// return found, stake, lp incentive params
-	return foundIncentive, stakeIncentive, lpIncentive
+	return true, stakeIncentive, lpIncentive
 }
 
 // Calculate epoch counts per year to be used in APR calculation
-func (k Keeper) CalculateEpochCountsPerYear(epochIdentifier string) int64 {
-	switch epochIdentifier {
-	case etypes.WeekEpochID:
-		return ptypes.WeeksPerYear
-	case etypes.DayEpochID:
-		return ptypes.DaysPerYear
-	case etypes.HourEpochID:
-		return ptypes.HoursPerYear
+func (k Keeper) CalculateEpochCountsPerYear(ctx sdk.Context, epochIdentifier string) int64 {
+	epochsInfo, found := k.epochsKeeper.GetEpochInfo(ctx, epochIdentifier)
+	if !found || epochsInfo.Duration.Seconds() == 0 {
+		return 0
 	}
 
-	return 0
+	epochDuration := epochsInfo.Duration.Seconds()
+	// epoch min & max check
+	if epochsInfo.Duration.Seconds() == 0 || epochDuration > ptypes.SecondsPerYear {
+		return 0
+	}
+
+	// returns num of epochs
+	return (int64)(ptypes.SecondsPerYear / epochDuration)
 }
 
 // Update total commitment info

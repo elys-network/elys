@@ -5,18 +5,21 @@ import (
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
 	wasmbindingstypes "github.com/elys-network/elys/wasmbindings/types"
 	"github.com/elys-network/elys/x/commitment/keeper"
+	epochKeeper "github.com/elys-network/elys/x/epochs/keeper"
 )
 
 // Querier handles queries for the Commitment module.
 type Querier struct {
 	keeper        *keeper.Keeper
 	stakingKeeper *stakingkeeper.Keeper
+	epochKeeper   *epochKeeper.Keeper
 }
 
-func NewQuerier(keeper *keeper.Keeper, stakingKeeper *stakingkeeper.Keeper) *Querier {
+func NewQuerier(keeper *keeper.Keeper, stakingKeeper *stakingkeeper.Keeper, epochKeeper *epochKeeper.Keeper) *Querier {
 	return &Querier{
 		keeper:        keeper,
 		stakingKeeper: stakingKeeper,
+		epochKeeper:   epochKeeper,
 	}
 }
 

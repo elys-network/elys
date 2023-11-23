@@ -12,9 +12,14 @@ func (k Keeper) VestTokens(ctx sdk.Context, epochIdentifier string) error {
 	k.IterateCommitments(ctx, func(commitments types.Commitments) (stop bool) {
 		logger := k.Logger(ctx)
 
+		newVestingTokens := make([]*types.VestingTokens, 0, len(commitments.VestingTokens))
+
 		for index := len(commitments.VestingTokens) - 1; index >= 0; index-- {
 			vesting := commitments.VestingTokens[index]
 			vesting.CurrentEpoch = vesting.CurrentEpoch + 1
+			if vesting.CurrentEpoch > vesting.NumEpochs || vesting.UnvestedAmount.IsZero() {
+				continue
+			}
 
 			epochAmount := vesting.TotalAmount.Quo(sdk.NewInt(vesting.NumEpochs))
 
@@ -41,15 +46,21 @@ func (k Keeper) VestTokens(ctx sdk.Context, epochIdentifier string) error {
 			}
 
 			vesting.UnvestedAmount = vesting.UnvestedAmount.Sub(epochAmount)
-
-			if vesting.CurrentEpoch == vesting.NumEpochs {
-				commitments.VestingTokens = append(commitments.VestingTokens[:index], commitments.VestingTokens[index+1:]...)
-			}
-
-			// update commitments
-			k.SetCommitments(ctx, commitments)
 		}
 
+		// Remove completed vesting items.
+		for index := 0; index < len(commitments.VestingTokens); index++ {
+			vesting := commitments.VestingTokens[index]
+			if vesting.CurrentEpoch >= vesting.NumEpochs || vesting.UnvestedAmount.IsZero() {
+				continue
+			}
+
+			newVestingTokens = append(newVestingTokens, vesting)
+		}
+
+		commitments.VestingTokens = newVestingTokens
+		// update commitments
+		k.SetCommitments(ctx, commitments)
 		return false
 	})
 

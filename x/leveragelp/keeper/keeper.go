@@ -108,11 +108,9 @@ func (k Keeper) EstimateSwapGivenOut(ctx sdk.Context, tokenOutAmount sdk.Coin, t
 	return swapResult.Amount, nil
 }
 
-func (k Keeper) UpdatePoolHealth(ctx sdk.Context, pool *types.Pool) error {
+func (k Keeper) UpdatePoolHealth(ctx sdk.Context, pool *types.Pool) {
 	pool.Health = k.CalculatePoolHealth(ctx, pool)
 	k.SetPool(ctx, *pool)
-
-	return nil
 }
 
 func (k Keeper) CalculatePoolHealth(ctx sdk.Context, pool *types.Pool) sdk.Dec {

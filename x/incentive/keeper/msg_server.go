@@ -30,7 +30,7 @@ func (k msgServer) WithdrawRewards(goCtx context.Context, msg *types.MsgWithdraw
 	}
 
 	// Withdraw rewards
-	err = k.ProcessWithdrawRewards(ctx, msg.DelegatorAddress, msg.Denom, msg.WithdrawType)
+	err = k.ProcessWithdrawRewards(ctx, msg.DelegatorAddress, msg.WithdrawType)
 
 	ctx.EventManager().EmitEvent(
 		sdk.NewEvent(
@@ -75,7 +75,9 @@ func (k msgServer) WithdrawValidatorCommission(goCtx context.Context, msg *types
 	}
 
 	// Withdraw validator commission
-	err = k.RecordWithdrawValidatorCommission(ctx, msg.DelegatorAddress, msg.ValidatorAddress, msg.Denom)
+	// Validator will receive commissions from Elys staking only, so the program type is only Rewards_Elys_Program
+	// And don't need to input program type
+	err = k.RecordWithdrawValidatorCommission(ctx, msg.DelegatorAddress, msg.ValidatorAddress)
 	if err != nil {
 		return &types.MsgWithdrawValidatorCommissionResponse{}, err
 	}

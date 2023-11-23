@@ -7,11 +7,8 @@ import (
 	stabletypes "github.com/elys-network/elys/x/stablestake/types"
 )
 
-// Calculate new Eden token amounts based on LpElys committed and MElys committed
-func (k Keeper) CalculateRewardsForStableStakeLPs(ctx sdk.Context, totalProxyTVL sdk.Dec, commitments ctypes.Commitments, edenAmountPerEpochLp sdk.Int, gasFeesForLPs sdk.Dec, baseCurrency string) (sdk.Int, sdk.Int) {
-	// Method 2 - Using Proxy TVL
-	totalDexRewardsAllocated := sdk.ZeroDec()
-
+// Calculate pool share for stable stake pool
+func (k Keeper) CalculatePoolShareForStableStakeLPs(ctx sdk.Context, totalProxyTVL sdk.Dec, baseCurrency string) sdk.Dec {
 	// ------------ New Eden calculation -------------------
 	// -----------------------------------------------------
 	// newEdenAllocated = 80 / ( 80 + 90 + 200 + 0) * 100
@@ -22,21 +19,35 @@ func (k Keeper) CalculateRewardsForStableStakeLPs(ctx sdk.Context, totalProxyTVL
 	// Get pool Id
 	poolId := uint64(stabletypes.PoolId)
 
-	// Get pool share denom - stable stake lp token
-	lpToken := stabletypes.GetShareDenom()
-
 	// Get pool info from incentive param
 	poolInfo, found := k.GetPoolInfo(ctx, poolId)
 	if !found {
-		return sdk.ZeroInt(), sdk.ZeroInt()
+		return sdk.ZeroDec()
 	}
 
 	// Calculate Proxy TVL share considering multiplier
 	proxyTVL := sdk.NewDecFromInt(tvl).Mul(poolInfo.Multiplier)
+	if totalProxyTVL.Equal(sdk.ZeroDec()) {
+		return sdk.ZeroDec()
+	}
 	poolShare := proxyTVL.Quo(totalProxyTVL)
+
+	return poolShare
+}
+
+// Calculate new Eden token amounts based on LpElys committed and MElys committed
+func (k Keeper) CalculateRewardsForStableStakeLPs(ctx sdk.Context, totalProxyTVL sdk.Dec, commitments ctypes.Commitments, edenAmountPerEpochLp sdk.Int, gasFeesForLPs sdk.Dec, baseCurrency string) (sdk.Int, sdk.Int) {
+	// Method 2 - Using Proxy TVL
+	totalDexRewardsAllocated := sdk.ZeroDec()
+
+	// Calculate pool share for stable stake pool
+	poolShare := k.CalculatePoolShareForStableStakeLPs(ctx, totalProxyTVL, baseCurrency)
 
 	// Calculate new Eden for this pool
 	newEdenAllocatedForPool := poolShare.MulInt(edenAmountPerEpochLp)
+
+	// Get pool share denom - stable stake lp token
+	lpToken := stabletypes.GetShareDenom()
 
 	// this lp token committed
 	commmittedLpToken := commitments.GetCommittedAmountForDenom(lpToken)
@@ -62,6 +73,8 @@ func (k Keeper) CalculateRewardsForStableStakeLPs(ctx sdk.Context, totalProxyTVL
 	// ------------------- DEX rewards calculation -------------------
 	// ---------------------------------------------------------------
 	// Get dex rewards per pool
+	// Get pool Id
+	poolId := uint64(stabletypes.PoolId)
 	// Get track key
 	trackKey := types.GetPoolRevenueTrackKey(poolId)
 	// Get tracked amount for Lps per pool

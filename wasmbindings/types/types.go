@@ -114,6 +114,7 @@ type ElysQuery struct {
 	AmmBalance               *ammtypes.QueryBalanceRequest               `json:"amm_balance,omitempty"`
 	AmmInRouteByDenom        *ammtypes.QueryInRouteByDenomRequest        `json:"amm_in_route_by_denom,omitempty"`
 	AmmOutRouteByDenom       *ammtypes.QueryOutRouteByDenomRequest       `json:"amm_out_route_by_denom,omitempty"`
+	AmmPriceByDenom          *ammtypes.QueryAMMPriceRequest              `json:"amm_price_by_denom,omitempty"`
 
 	// assetprofile queriers
 	AssetProfileParams   *assetprofiletypes.QueryParamsRequest   `json:"asset_profile_params,omitempty"`
@@ -143,7 +144,7 @@ type ElysQuery struct {
 	CommitmentDelegatorValidators            *commitmenttypes.QueryValidatorsRequest                    `json:"commitment_delegator_validators,omitempty"`
 	CommitmentStakedPositions                *commitmenttypes.QueryValidatorsRequest                    `json:"commitment_staked_positions,omitempty"`
 	CommitmentUnStakedPositions              *commitmenttypes.QueryValidatorsRequest                    `json:"commitment_un_staked_positions,omitempty"`
-	CommitmentRewardsSubBucketBalanceOfDenom *commitmenttypes.QuerySubBucketBalanceRequest              `json:"commitment_rewards_sub_buckets_balance_of_denom,omitempty"`
+	CommitmentRewardsSubBucketBalanceOfDenom *commitmenttypes.QuerySubBucketBalanceRequest              `json:"commitment_rewards_sub_bucket_balance_of_denom,omitempty"`
 	CommitmentVestingInfo                    *commitmenttypes.QueryVestingInfoRequest                   `json:"commitment_vesting_info,omitempty"`
 
 	// epochs queriers
@@ -153,6 +154,7 @@ type ElysQuery struct {
 	// incentive queriers
 	IncentiveParams        *incentivetypes.QueryParamsRequest        `json:"incentive_params,omitempty"`
 	IncentiveCommunityPool *incentivetypes.QueryCommunityPoolRequest `json:"incentive_community_pool,omitempty"`
+	IncentiveApr           *incentivetypes.QueryAprRequest           `json:"incentive_apr"`
 
 	// leveragelp queriers
 	LeveragelpParams                   *leveragelptypes.ParamsRequest              `json:"leveragelp_params,omitempty"`

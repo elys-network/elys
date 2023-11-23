@@ -43,17 +43,12 @@ func CmdUpdateParams() *cobra.Command {
 				return err
 			}
 
-			leverage_max, err := cmd.Flags().GetString("leverage-max")
+			leverageMax, err := cmd.Flags().GetString("leverage-max")
 			if err != nil {
 				return err
 			}
 
 			epoch_length, err := cmd.Flags().GetInt64("epoch-length")
-			if err != nil {
-				return err
-			}
-
-			removal_queue_threshold, err := cmd.Flags().GetString("removal-queue-threshold")
 			if err != nil {
 				return err
 			}
@@ -64,21 +59,6 @@ func CmdUpdateParams() *cobra.Command {
 			}
 
 			poolOpenThreshold, err := cmd.Flags().GetString("pool-open-threshold")
-			if err != nil {
-				return err
-			}
-
-			forceCloseFundPercentage, err := cmd.Flags().GetString("force-close-fund-percentage")
-			if err != nil {
-				return err
-			}
-
-			forceCloseFundAddress, err := cmd.Flags().GetString("force-close-fund-address")
-			if err != nil {
-				return err
-			}
-
-			sqModifier, err := cmd.Flags().GetString("sq-modifier")
 			if err != nil {
 				return err
 			}
@@ -94,16 +74,12 @@ func CmdUpdateParams() *cobra.Command {
 			}
 
 			params := &types.Params{
-				LeverageMax:              sdk.MustNewDecFromStr(leverage_max),
-				EpochLength:              epoch_length,
-				RemovalQueueThreshold:    sdk.MustNewDecFromStr(removal_queue_threshold),
-				MaxOpenPositions:         maxOpenPositions,
-				PoolOpenThreshold:        sdk.MustNewDecFromStr(poolOpenThreshold),
-				ForceCloseFundPercentage: sdk.MustNewDecFromStr(forceCloseFundPercentage),
-				ForceCloseFundAddress:    forceCloseFundAddress,
-				SqModifier:               sdk.MustNewDecFromStr(sqModifier),
-				SafetyFactor:             sdk.MustNewDecFromStr(safetyFactor),
-				WhitelistingEnabled:      whitelistingEnabled,
+				LeverageMax:         sdk.MustNewDecFromStr(leverageMax),
+				EpochLength:         epoch_length,
+				MaxOpenPositions:    maxOpenPositions,
+				PoolOpenThreshold:   sdk.MustNewDecFromStr(poolOpenThreshold),
+				SafetyFactor:        sdk.MustNewDecFromStr(safetyFactor),
+				WhitelistingEnabled: whitelistingEnabled,
 			}
 
 			signer := clientCtx.GetFromAddress()
@@ -142,11 +118,7 @@ func CmdUpdateParams() *cobra.Command {
 	cmd.Flags().String("leverage-max", "", "max leverage (integer)")
 	cmd.Flags().Int64("epoch-length", 1, "epoch length in blocks (integer)")
 	cmd.Flags().Int64("max-open-positions", 10000, "max open positions")
-	cmd.Flags().String("removal-queue-threshold", "", "removal queue threshold (decimal range 0-1)")
 	cmd.Flags().String("pool-open-threshold", "", "threshold to prevent new positions (decimal range 0-1)")
-	cmd.Flags().String("force-close-fund-percentage", "", "percentage of force close proceeds for fund (decimal range 0-1)")
-	cmd.Flags().String("force-close-fund-address", "", "address of fund wallet for force close")
-	cmd.Flags().String("sq-modifier", "", "the modifier value for the removal queue's sq formula")
 	cmd.Flags().String("safety-factor", "", "the safety factor used in liquidation ratio")
 	cmd.Flags().Bool("whitelisting-enabled", false, "Enable whitelisting")
 	cmd.Flags().String(cli.FlagTitle, "", "title of proposal")
@@ -154,12 +126,8 @@ func CmdUpdateParams() *cobra.Command {
 	cmd.Flags().String(cli.FlagMetadata, "", "metadata of proposal")
 	cmd.Flags().String(cli.FlagDeposit, "", "deposit of proposal")
 	_ = cmd.MarkFlagRequired("leverage-max")
-	_ = cmd.MarkFlagRequired("removal-queue-threshold")
 	_ = cmd.MarkFlagRequired("max-open-positions")
 	_ = cmd.MarkFlagRequired("pool-open-threshold")
-	_ = cmd.MarkFlagRequired("force-close-fund-percentage")
-	_ = cmd.MarkFlagRequired("force-close-fund-address")
-	_ = cmd.MarkFlagRequired("sq-modifier")
 	_ = cmd.MarkFlagRequired("safety-factor")
 	_ = cmd.MarkFlagRequired("whitelisting-enabled")
 	_ = cmd.MarkFlagRequired(cli.FlagTitle)

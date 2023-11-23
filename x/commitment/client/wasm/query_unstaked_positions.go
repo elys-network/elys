@@ -50,6 +50,12 @@ func (oq *Querier) BuildUnStakedPositionResponseCW(ctx sdk.Context, unbondingDel
 			// Get validator
 			val := oq.stakingKeeper.Validator(ctx, valAddress).(stakingtypes.Validator)
 			votingPower := sdk.NewDecFromInt(val.GetBondedTokens()).QuoInt(totalBonded).MulInt(sdk.NewInt(100))
+
+			website := val.Description.Website
+			if len(website) < 1 {
+				website = " "
+			}
+
 			unstakedPosition.Validator = commitmenttypes.StakingValidator{
 				// The validator address.
 				Address: val.OperatorAddress,
@@ -60,7 +66,7 @@ func (oq *Querier) BuildUnStakedPositionResponseCW(ctx sdk.Context, unbondingDel
 				// Comission percentage for the validator.
 				Commission: val.GetCommission(),
 				// The url of the validator profile picture
-				ProfilePictureSrc: val.Description.Website,
+				ProfilePictureSrc: website,
 			}
 			unstakedPosition.RemainingTime = uint64(entity.CompletionTime.Unix())
 			unstakedPosition.Unstaked = commitmenttypes.BalanceAvailable{

@@ -7,7 +7,9 @@ import (
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	aptypes "github.com/elys-network/elys/x/assetprofile/types"
 	ctypes "github.com/elys-network/elys/x/commitment/types"
+	epochstypes "github.com/elys-network/elys/x/epochs/types"
 	oracletypes "github.com/elys-network/elys/x/oracle/types"
+	stabletypes "github.com/elys-network/elys/x/stablestake/types"
 )
 
 // CommitmentKeeper
@@ -24,8 +26,6 @@ type CommitmentKeeper interface {
 	RecordClaimReward(sdk.Context, string, string, sdk.Int, ctypes.EarnType) error
 	// Update commitments for validator commission
 	RecordWithdrawValidatorCommission(sdk.Context, string, string, string, sdk.Int) error
-	// Update commitments for withdraw tokens - only USDC
-	RecordWithdrawUSDC(ctx sdk.Context, creator string, denom string, amount sdk.Int) error
 	// Burn eden boost
 	BurnEdenBoost(ctx sdk.Context, creator string, denom string, amount sdk.Int) (ctypes.Commitments, error)
 }
@@ -107,6 +107,7 @@ type AmmKeeper interface {
 		tokenOutDenom string,
 		swapFee sdk.Dec,
 	) (tokenOut sdk.Coin, slippageAmount sdk.Dec, weightBalanceBonus sdk.Dec, err error)
+	CalcOutAmtGivenIn(ctx sdk.Context, poolId uint64, oracle ammtypes.OracleKeeper, snapshot *ammtypes.Pool, tokensIn sdk.Coins, tokenOutDenom string, swapFee sdk.Dec) (sdk.Coin, error)
 }
 
 // OracleKeeper defines the expected interface needed to retrieve price info
@@ -124,4 +125,14 @@ type AccountedPoolKeeper interface {
 // AssetProfileKeeper defines the expected interface needed to retrieve denom info
 type AssetProfileKeeper interface {
 	GetEntry(ctx sdk.Context, baseDenom string) (val aptypes.Entry, found bool)
+}
+
+// EpochsKeeper defines the expected epochs keeper used for simulations (noalias)
+type EpochsKeeper interface {
+	GetEpochInfo(ctx sdk.Context, identifier string) (epochstypes.EpochInfo, bool)
+}
+
+// StableStakeKeeper defines the expected epochs keeper used for simulations (noalias)
+type StableStakeKeeper interface {
+	GetParams(ctx sdk.Context) (params stabletypes.Params)
 }

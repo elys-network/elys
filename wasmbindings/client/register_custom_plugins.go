@@ -63,7 +63,7 @@ func RegisterCustomPlugins(
 	accountedpoolQuerier := accountedpoolclientwasm.NewQuerier(accountedpool)
 	accountedpoolMessenger := accountedpoolclientwasm.NewMessenger(accountedpool)
 
-	ammQuerier := ammclientwasm.NewQuerier(amm, bank, commitment)
+	ammQuerier := ammclientwasm.NewQuerier(amm, bank, commitment, assetprofile)
 	ammMessenger := ammclientwasm.NewMessenger(amm)
 
 	assetprofileQuerier := assetprofileclientwasm.NewQuerier(assetprofile)
@@ -78,8 +78,8 @@ func RegisterCustomPlugins(
 	clockQuerier := clockclientwasm.NewQuerier(clock)
 	clockMessenger := clockclientwasm.NewMessenger(clock)
 
-	commitmentQuerier := commitmentclientwasm.NewQuerier(commitment, staking)
-	commitmentMessenger := commitmentclientwasm.NewMessenger(commitment, staking)
+	commitmentQuerier := commitmentclientwasm.NewQuerier(commitment, staking, epochs)
+	commitmentMessenger := commitmentclientwasm.NewMessenger(commitment, staking, assetprofile, stablestake)
 
 	epochsQuerier := epochsclientwasm.NewQuerier(epochs)
 	epochsMessenger := epochsclientwasm.NewMessenger(epochs)

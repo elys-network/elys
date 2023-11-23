@@ -18,6 +18,9 @@ func (k Keeper) RecordClaimReward(ctx sdk.Context, creator string, denom string,
 		return sdkerrors.Wrapf(types.ErrWithdrawDisabled, "denom: %s", denom)
 	}
 
+	// uses asset profile denom
+	denom = assetProfile.Denom
+
 	// Get the Commitments for the creator
 	commitments := k.GetCommitments(ctx, creator)
 	if !found {

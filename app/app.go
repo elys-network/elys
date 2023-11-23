@@ -702,6 +702,11 @@ func NewElysApp(
 	)
 	assetprofileModule := assetprofilemodule.NewAppModule(appCodec, app.AssetprofileKeeper, app.AccountKeeper, app.BankKeeper)
 
+	app.EpochsKeeper = *epochsmodulekeeper.NewKeeper(
+		appCodec,
+		keys[epochsmoduletypes.StoreKey],
+	)
+
 	commitmentKeeper := *commitmentmodulekeeper.NewKeeper(
 		appCodec,
 		keys[commitmentmoduletypes.StoreKey],
@@ -737,6 +742,17 @@ func NewElysApp(
 	)
 	ammModule := ammmodule.NewAppModule(appCodec, app.AmmKeeper, app.AccountKeeper, app.BankKeeper)
 
+	app.StablestakeKeeper = *stablestakekeeper.NewKeeper(
+		appCodec,
+		keys[stablestaketypes.StoreKey],
+		keys[stablestaketypes.MemStoreKey],
+		app.GetSubspace(stablestaketypes.ModuleName),
+		app.BankKeeper,
+		&app.CommitmentKeeper,
+		app.AssetprofileKeeper,
+	)
+	stablestake := stablestake.NewAppModule(appCodec, app.StablestakeKeeper, app.AccountKeeper, app.BankKeeper)
+
 	app.IncentiveKeeper = *incentivemodulekeeper.NewKeeper(
 		appCodec,
 		keys[incentivemoduletypes.StoreKey],
@@ -749,6 +765,8 @@ func NewElysApp(
 		app.AmmKeeper,
 		app.OracleKeeper,
 		app.AssetprofileKeeper,
+		app.EpochsKeeper,
+		app.StablestakeKeeper,
 		authtypes.FeeCollectorName,
 		DexRevenueCollectorName,
 	)
@@ -781,11 +799,6 @@ func NewElysApp(
 		app.BankKeeper,
 	)
 	burnerModule := burnermodule.NewAppModule(appCodec, app.BurnerKeeper, app.AccountKeeper, app.BankKeeper)
-
-	app.EpochsKeeper = *epochsmodulekeeper.NewKeeper(
-		appCodec,
-		keys[epochsmoduletypes.StoreKey],
-	)
 
 	app.ParameterKeeper = *parametermodulekeeper.NewKeeper(
 		appCodec,
@@ -920,17 +933,6 @@ func NewElysApp(
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 	clockModule := clockmodule.NewAppModule(appCodec, app.ClockKeeper)
-
-	app.StablestakeKeeper = *stablestakekeeper.NewKeeper(
-		appCodec,
-		keys[stablestaketypes.StoreKey],
-		keys[stablestaketypes.MemStoreKey],
-		app.GetSubspace(stablestaketypes.ModuleName),
-		app.BankKeeper,
-		&app.CommitmentKeeper,
-		app.AssetprofileKeeper,
-	)
-	stablestake := stablestake.NewAppModule(appCodec, app.StablestakeKeeper, app.AccountKeeper, app.BankKeeper)
 
 	app.LeveragelpKeeper = *leveragelpmodulekeeper.NewKeeper(
 		appCodec,
@@ -1079,6 +1081,7 @@ func NewElysApp(
 		// Note: epochs' begin should be "real" start of epochs, we keep epochs beginblock at the beginning
 		epochsmoduletypes.ModuleName,
 		minttypes.ModuleName,
+		stablestaketypes.ModuleName,
 		incentivemoduletypes.ModuleName,
 		slashingtypes.ModuleName,
 		evidencetypes.ModuleName,
@@ -1109,7 +1112,6 @@ func NewElysApp(
 		accountedpoolmoduletypes.ModuleName,
 		transferhooktypes.ModuleName,
 		clockmoduletypes.ModuleName,
-		stablestaketypes.ModuleName,
 		leveragelpmoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/beginBlockers
 	)
@@ -1126,6 +1128,7 @@ func NewElysApp(
 		capabilitytypes.ModuleName,
 		authtypes.ModuleName,
 		banktypes.ModuleName,
+		stablestaketypes.ModuleName,
 		incentivemoduletypes.ModuleName,
 		slashingtypes.ModuleName,
 		minttypes.ModuleName,
@@ -1150,7 +1153,6 @@ func NewElysApp(
 		accountedpoolmoduletypes.ModuleName,
 		transferhooktypes.ModuleName,
 		clockmoduletypes.ModuleName,
-		stablestaketypes.ModuleName,
 		leveragelpmoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/endBlockers
 	)
@@ -1164,6 +1166,8 @@ func NewElysApp(
 		capabilitytypes.ModuleName,
 		authtypes.ModuleName,
 		banktypes.ModuleName,
+		epochsmoduletypes.ModuleName,
+		stablestaketypes.ModuleName,
 		incentivemoduletypes.ModuleName,
 		stakingtypes.ModuleName,
 		slashingtypes.ModuleName,
@@ -1182,7 +1186,6 @@ func NewElysApp(
 		upgradetypes.ModuleName,
 		vestingtypes.ModuleName,
 		consensusparamtypes.ModuleName,
-		epochsmoduletypes.ModuleName,
 		assetprofilemoduletypes.ModuleName,
 		oracletypes.ModuleName,
 		commitmentmoduletypes.ModuleName,
@@ -1195,7 +1198,6 @@ func NewElysApp(
 		accountedpoolmoduletypes.ModuleName,
 		transferhooktypes.ModuleName,
 		clockmoduletypes.ModuleName,
-		stablestaketypes.ModuleName,
 		leveragelpmoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/initGenesis
 	}
