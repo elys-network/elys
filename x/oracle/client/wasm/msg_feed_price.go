@@ -17,20 +17,13 @@ func (m *Messenger) msgFeedPrice(ctx sdk.Context, contractAddr sdk.AccAddress, m
 
 	msgServer := keeper.NewMsgServerImpl(*m.keeper)
 
-	msgFeedPrice := types.NewMsgFeedPrice(
-		msg.Provider,
-		msg.Asset,
-		msg.Price,
-		msg.Source,
-	)
-
-	if err := msgFeedPrice.ValidateBasic(); err != nil {
-		return nil, nil, errorsmod.Wrap(err, "failed validating msgFeedPrice")
+	if err := msg.ValidateBasic(); err != nil {
+		return nil, nil, errorsmod.Wrap(err, "failed validating msg")
 	}
 
 	res, err := msgServer.FeedPrice(
 		sdk.WrapSDKContext(ctx),
-		msgFeedPrice,
+		msg,
 	)
 	if err != nil {
 		return nil, nil, errorsmod.Wrap(err, "FeedPrice msg")

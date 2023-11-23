@@ -17,17 +17,13 @@ func (m *Messenger) msgDeletePriceFeeder(ctx sdk.Context, contractAddr sdk.AccAd
 
 	msgServer := keeper.NewMsgServerImpl(*m.keeper)
 
-	msgDeletePriceFeeder := types.NewMsgDeletePriceFeeder(
-		msg.Feeder,
-	)
-
-	if err := msgDeletePriceFeeder.ValidateBasic(); err != nil {
-		return nil, nil, errorsmod.Wrap(err, "failed validating msgDeletePriceFeeder")
+	if err := msg.ValidateBasic(); err != nil {
+		return nil, nil, errorsmod.Wrap(err, "failed validating msg")
 	}
 
 	res, err := msgServer.DeletePriceFeeder(
 		sdk.WrapSDKContext(ctx),
-		msgDeletePriceFeeder,
+		msg,
 	)
 	if err != nil {
 		return nil, nil, errorsmod.Wrap(err, "DeletePriceFeeder msg")

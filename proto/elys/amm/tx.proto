@@ -4,25 +4,26 @@ package elys.amm;
 
 import "gogoproto/gogo.proto";
 import "cosmos/base/v1beta1/coin.proto";
-import "elys/amm/swap_route.proto"; 
-import "elys/amm/pool_params.proto"; 
-import "elys/amm/pool_asset.proto"; 
+import "elys/amm/swap_route.proto";
+import "elys/amm/pool_params.proto";
+import "elys/amm/pool_asset.proto";
 
 option go_package = "github.com/elys-network/elys/x/amm/types";
 
 // Msg defines the Msg service.
 service Msg {
-  rpc CreatePool         (MsgCreatePool        ) returns (MsgCreatePoolResponse        );
-  rpc JoinPool           (MsgJoinPool          ) returns (MsgJoinPoolResponse          );
-  rpc ExitPool           (MsgExitPool          ) returns (MsgExitPoolResponse          );
-  rpc SwapExactAmountIn  (MsgSwapExactAmountIn ) returns (MsgSwapExactAmountInResponse );
-  rpc SwapExactAmountOut (MsgSwapExactAmountOut) returns (MsgSwapExactAmountOutResponse);
-  rpc FeedMultipleExternalLiquidity(MsgFeedMultipleExternalLiquidity) returns (MsgFeedMultipleExternalLiquidityResponse);
+  rpc CreatePool                    (MsgCreatePool                   ) returns (MsgCreatePoolResponse                   );
+  rpc JoinPool                      (MsgJoinPool                     ) returns (MsgJoinPoolResponse                     );
+  rpc ExitPool                      (MsgExitPool                     ) returns (MsgExitPoolResponse                     );
+  rpc SwapExactAmountIn             (MsgSwapExactAmountIn            ) returns (MsgSwapExactAmountInResponse            );
+  rpc SwapExactAmountOut            (MsgSwapExactAmountOut           ) returns (MsgSwapExactAmountOutResponse           );
+  rpc FeedMultipleExternalLiquidity (MsgFeedMultipleExternalLiquidity) returns (MsgFeedMultipleExternalLiquidityResponse);
+  rpc SwapByDenom                   (MsgSwapByDenom                  ) returns (MsgSwapByDenomResponse                  );
 }
 message MsgCreatePool {
-           string                   sender         = 1;
-           PoolParams               pool_params     = 2;
-  repeated PoolAsset                pool_assets     = 3 [(gogoproto.nullable)   = false                                   ] ;
+           string     sender      = 1;
+           PoolParams pool_params = 2;
+  repeated PoolAsset  pool_assets = 3 [(gogoproto.nullable) = false];
 }
 
 message MsgCreatePoolResponse {
@@ -30,22 +31,22 @@ message MsgCreatePoolResponse {
 }
 
 message MsgJoinPool {
-           string                   sender        = 1;
-           uint64                   pool_id         = 2;
-  repeated cosmos.base.v1beta1.Coin max_amounts_in   = 3 [(gogoproto.nullable) = false];
+           string                   sender           = 1;
+           uint64                   pool_id          = 2;
+  repeated cosmos.base.v1beta1.Coin max_amounts_in   = 3 [(gogoproto.nullable)   = false                                   ] ;
            string                   share_amount_out = 4 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false];
-           bool                     no_remaining    = 5;
+           bool                     no_remaining     = 5;
 }
 
 message MsgJoinPoolResponse {
            string                   share_amount_out = 1 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false];
-  repeated cosmos.base.v1beta1.Coin token_in = 2 [(gogoproto.nullable) = false];
+  repeated cosmos.base.v1beta1.Coin token_in         = 2 [(gogoproto.nullable)   = false                                   ] ;
 }
 
 message MsgExitPool {
-           string                   sender       = 1;
-           uint64                   pool_id        = 2;
-  repeated cosmos.base.v1beta1.Coin min_amounts_out = 3 [(gogoproto.nullable) = false];
+           string                   sender          = 1;
+           uint64                   pool_id         = 2;
+  repeated cosmos.base.v1beta1.Coin min_amounts_out = 3 [(gogoproto.nullable)   = false                                   ] ;
            string                   share_amount_in = 4 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false];
            string                   token_out_denom = 5;
 }
@@ -55,49 +56,60 @@ message MsgExitPoolResponse {
 }
 
 message MsgSwapExactAmountIn {
-           string                   sender           = 1;
-           repeated SwapAmountInRoute routes = 2 [ (gogoproto.nullable) = false ];
-           cosmos.base.v1beta1.Coin token_in           = 3 [(gogoproto.nullable)   = false                                    ] ;
+           string                   sender               = 1;
+  repeated SwapAmountInRoute        routes               = 2 [(gogoproto.nullable)   = false                                   ] ;
+           cosmos.base.v1beta1.Coin token_in             = 3 [(gogoproto.nullable)   = false                                   ] ;
            string                   token_out_min_amount = 4 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false];
 }
 
 message MsgSwapExactAmountInResponse {
-           string                   token_out_amount = 1 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false];
+  string token_out_amount = 1 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false];
 }
 
 message MsgSwapExactAmountOut {
-           string                   sender           = 1;
-           repeated SwapAmountOutRoute routes = 2 [ (gogoproto.nullable) = false ];
-           cosmos.base.v1beta1.Coin token_out          = 3 [(gogoproto.nullable) = false];
+           string                   sender              = 1;
+  repeated SwapAmountOutRoute       routes              = 2 [(gogoproto.nullable)   = false                                   ] ;
+           cosmos.base.v1beta1.Coin token_out           = 3 [(gogoproto.nullable)   = false                                   ] ;
            string                   token_in_max_amount = 4 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false];
 }
 
 message MsgSwapExactAmountOutResponse {
-           string                   token_in_amount = 1 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false];
-  }
+  string token_in_amount = 1 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false];
+}
 
 message MsgFeedMultipleExternalLiquidity {
-  string sender = 1;
+           string            sender    = 1;
   repeated ExternalLiquidity liquidity = 2 [(gogoproto.nullable) = false];
 }
+
 message MsgFeedMultipleExternalLiquidityResponse {}
 
 message AssetAmountDepth {
-  string asset = 1;
-  string amount = 2 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
-    (gogoproto.nullable) = false
-  ];
-  string depth = 3 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
-    (gogoproto.nullable) = false
-  ];
+  string asset  = 1;
+  string amount = 2 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+  string depth  = 3 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
 }
 
 // ExternalLiquidity defines price, volume, and time information for an exchange rate.
 message ExternalLiquidity {
-  uint64 pool_id = 1;
-  repeated AssetAmountDepth amount_depth_info = 2 [
-    (gogoproto.nullable) = false
-  ];
+           uint64           pool_id           = 1;
+  repeated AssetAmountDepth amount_depth_info = 2 [(gogoproto.nullable) = false];
 }
+
+message MsgSwapByDenom {
+  string                   sender    = 1;
+  cosmos.base.v1beta1.Coin amount    = 2 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin min_amount = 3 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin max_amount = 4 [(gogoproto.nullable) = false];
+  string                   denom_in   = 5;
+  string                   denom_out  = 6;
+  string                   discount  = 7 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+}
+
+message MsgSwapByDenomResponse {
+           cosmos.base.v1beta1.Coin amount   = 1 [(gogoproto.nullable) = false];
+  repeated SwapAmountInRoute        in_route = 2;
+  repeated SwapAmountInRoute        out_route = 3;
+           string                   discount = 4 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+}
+

@@ -17,17 +17,13 @@ func (m *Messenger) msgFeedMultiplePrices(ctx sdk.Context, contractAddr sdk.AccA
 
 	msgServer := keeper.NewMsgServerImpl(*m.keeper)
 
-	msgFeedMultiplePrices := types.NewMsgFeedMultiplePrices(
-		msg.Creator,
-	)
-
-	if err := msgFeedMultiplePrices.ValidateBasic(); err != nil {
-		return nil, nil, errorsmod.Wrap(err, "failed validating msgFeedMultiplePrices")
+	if err := msg.ValidateBasic(); err != nil {
+		return nil, nil, errorsmod.Wrap(err, "failed validating msg")
 	}
 
 	res, err := msgServer.FeedMultiplePrices(
 		sdk.WrapSDKContext(ctx),
-		msgFeedMultiplePrices,
+		msg,
 	)
 	if err != nil {
 		return nil, nil, errorsmod.Wrap(err, "FeedMultiplePrices msg")

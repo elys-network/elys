@@ -17,18 +17,13 @@ func (m *Messenger) msgUpdateParams(ctx sdk.Context, contractAddr sdk.AccAddress
 
 	msgServer := keeper.NewMsgServerImpl(*m.keeper)
 
-	msgUpdateParams := types.NewMsgUpdateParams(
-		msg.Authority,
-		msg.Params,
-	)
-
-	if err := msgUpdateParams.ValidateBasic(); err != nil {
-		return nil, nil, errorsmod.Wrap(err, "failed validating msgUpdateParams")
+	if err := msg.ValidateBasic(); err != nil {
+		return nil, nil, errorsmod.Wrap(err, "failed validating msg")
 	}
 
 	res, err := msgServer.UpdateParams(
 		sdk.WrapSDKContext(ctx),
-		msgUpdateParams,
+		msg,
 	)
 	if err != nil {
 		return nil, nil, errorsmod.Wrap(err, "UpdateParams msg")

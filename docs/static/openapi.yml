@@ -82905,6 +82905,27 @@ definitions:
 
             NOTE: The amount field is an Int which implements the custom method
             signatures required by gogoproto.
+  elys.amm.MsgSwapByDenomResponse:
+    type: object
+    properties:
+      amount:
+        type: object
+        properties:
+          denom:
+            type: string
+          amount:
+            type: string
+        description: |-
+          Coin defines a token with a denomination and an amount.
+
+          NOTE: The amount field is an Int which implements the custom method
+          signatures required by gogoproto.
+      route:
+        type: array
+        items:
+          type: string
+      discount:
+        type: string
   elys.amm.MsgSwapExactAmountInResponse:
     type: object
     properties:

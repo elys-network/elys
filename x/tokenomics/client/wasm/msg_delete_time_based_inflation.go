@@ -17,19 +17,13 @@ func (m *Messenger) msgDeleteTimeBasedInflation(ctx sdk.Context, contractAddr sd
 
 	msgServer := keeper.NewMsgServerImpl(*m.keeper)
 
-	msgDeleteTimeBasedInflation := types.NewMsgDeleteTimeBasedInflation(
-		msg.Authority,
-		msg.StartBlockHeight,
-		msg.EndBlockHeight,
-	)
-
-	if err := msgDeleteTimeBasedInflation.ValidateBasic(); err != nil {
-		return nil, nil, errorsmod.Wrap(err, "failed validating msgDeleteTimeBasedInflation")
+	if err := msg.ValidateBasic(); err != nil {
+		return nil, nil, errorsmod.Wrap(err, "failed validating msg")
 	}
 
 	res, err := msgServer.DeleteTimeBasedInflation(
 		sdk.WrapSDKContext(ctx),
-		msgDeleteTimeBasedInflation,
+		msg,
 	)
 	if err != nil {
 		return nil, nil, errorsmod.Wrap(err, "DeleteTimeBasedInflation msg")

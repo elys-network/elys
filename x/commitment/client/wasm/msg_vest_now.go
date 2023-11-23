@@ -17,19 +17,13 @@ func (m *Messenger) msgVestNow(ctx sdk.Context, contractAddr sdk.AccAddress, msg
 
 	msgServer := keeper.NewMsgServerImpl(*m.keeper)
 
-	msgVestNow := types.NewMsgVestNow(
-		msg.Creator,
-		msg.Amount,
-		msg.Denom,
-	)
-
-	if err := msgVestNow.ValidateBasic(); err != nil {
-		return nil, nil, errorsmod.Wrap(err, "failed validating msgVestNow")
+	if err := msg.ValidateBasic(); err != nil {
+		return nil, nil, errorsmod.Wrap(err, "failed validating msg")
 	}
 
 	res, err := msgServer.VestNow(
 		sdk.WrapSDKContext(ctx),
-		msgVestNow,
+		msg,
 	)
 	if err != nil {
 		return nil, nil, errorsmod.Wrap(err, "VestNow msg")

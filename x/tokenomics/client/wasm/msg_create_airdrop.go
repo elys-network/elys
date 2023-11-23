@@ -17,19 +17,13 @@ func (m *Messenger) msgCreateAirdrop(ctx sdk.Context, contractAddr sdk.AccAddres
 
 	msgServer := keeper.NewMsgServerImpl(*m.keeper)
 
-	msgCreateAirdrop := types.NewMsgCreateAirdrop(
-		msg.Authority,
-		msg.Intent,
-		msg.Amount,
-	)
-
-	if err := msgCreateAirdrop.ValidateBasic(); err != nil {
-		return nil, nil, errorsmod.Wrap(err, "failed validating msgCreateAirdrop")
+	if err := msg.ValidateBasic(); err != nil {
+		return nil, nil, errorsmod.Wrap(err, "failed validating msg")
 	}
 
 	res, err := msgServer.CreateAirdrop(
 		sdk.WrapSDKContext(ctx),
-		msgCreateAirdrop,
+		msg,
 	)
 	if err != nil {
 		return nil, nil, errorsmod.Wrap(err, "CreateAirdrop msg")

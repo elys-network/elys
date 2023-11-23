@@ -10,28 +10,28 @@ import (
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 )
 
-func (m *Messenger) msgCreatePool(ctx sdk.Context, contractAddr sdk.AccAddress, msg *ammtypes.MsgCreatePool) ([]sdk.Event, [][]byte, error) {
+func (m *Messenger) msgSwapByDenom(ctx sdk.Context, contractAddr sdk.AccAddress, msg *ammtypes.MsgSwapByDenom) ([]sdk.Event, [][]byte, error) {
 	if msg == nil {
-		return nil, nil, wasmvmtypes.InvalidRequest{Err: "create pool null msg"}
+		return nil, nil, wasmvmtypes.InvalidRequest{Err: "swap by denom null msg"}
 	}
 
 	msgServer := ammkeeper.NewMsgServerImpl(*m.keeper)
 
 	if err := msg.ValidateBasic(); err != nil {
-		return nil, nil, errorsmod.Wrap(err, "failed validating msg")
+		return nil, nil, errorsmod.Wrap(err, "failed validating swap by denom msg")
 	}
 
-	res, err := msgServer.CreatePool(
+	res, err := msgServer.SwapByDenom(
 		sdk.WrapSDKContext(ctx),
 		msg,
 	)
 	if err != nil {
-		return nil, nil, errorsmod.Wrap(err, "create pool msg")
+		return nil, nil, errorsmod.Wrap(err, "swap by denom msg")
 	}
 
 	responseBytes, err := json.Marshal(*res)
 	if err != nil {
-		return nil, nil, errorsmod.Wrap(err, "failed to serialize create pool response")
+		return nil, nil, errorsmod.Wrap(err, "failed to serialize swap by denom response")
 	}
 
 	resp := [][]byte{responseBytes}

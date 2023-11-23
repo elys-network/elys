@@ -17,15 +17,13 @@ func (m *Messenger) msgFeedMultipleExternalLiquidity(ctx sdk.Context, contractAd
 
 	msgServer := ammkeeper.NewMsgServerImpl(*m.keeper)
 
-	msgFeedMultipleExternalLiquidity := ammtypes.NewMsgFeedMultipleExternalLiquidity(msg.Sender)
-
-	if err := msgFeedMultipleExternalLiquidity.ValidateBasic(); err != nil {
-		return nil, nil, errorsmod.Wrap(err, "failed validating msgFeedMultipleExternalLiquidity")
+	if err := msg.ValidateBasic(); err != nil {
+		return nil, nil, errorsmod.Wrap(err, "failed validating msg")
 	}
 
 	res, err := msgServer.FeedMultipleExternalLiquidity(
 		sdk.WrapSDKContext(ctx),
-		msgFeedMultipleExternalLiquidity,
+		msg,
 	)
 	if err != nil {
 		return nil, nil, errorsmod.Wrap(err, "FeedMultipleExternalLiquidity msg")
