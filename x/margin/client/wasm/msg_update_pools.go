@@ -17,19 +17,13 @@ func (m *Messenger) msgUpdatePools(ctx sdk.Context, contractAddr sdk.AccAddress,
 
 	msgServer := keeper.NewMsgServerImpl(*m.keeper)
 
-	msgUpdatePools := types.NewMsgUpdatePools(
-		msg.Authority,
-		msg.Pools,
-		msg.ClosedPools,
-	)
-
-	if err := msgUpdatePools.ValidateBasic(); err != nil {
-		return nil, nil, errorsmod.Wrap(err, "failed validating msgUpdatePools")
+	if err := msg.ValidateBasic(); err != nil {
+		return nil, nil, errorsmod.Wrap(err, "failed validating msg")
 	}
 
 	res, err := msgServer.UpdatePools(
 		sdk.WrapSDKContext(ctx),
-		msgUpdatePools,
+		msg,
 	)
 	if err != nil {
 		return nil, nil, errorsmod.Wrap(err, "UpdatePools msg")

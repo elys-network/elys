@@ -42,6 +42,10 @@ const (
 	// TODO: Determine the simulation weight value
 	defaultWeightMsgSwapExactAmountOut int = 100
 
+	opWeightMsgSwapByDenom = "op_weight_msg_swap_by_denom"
+	// TODO: Determine the simulation weight value
+	defaultWeightMsgSwapByDenom int = 100
+
 	// this line is used by starport scaffolding # simapp/module/const
 )
 
@@ -123,6 +127,17 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 	operations = append(operations, simulation.NewWeightedOperation(
 		weightMsgSwapExactAmountOut,
 		ammsimulation.SimulateMsgSwapExactAmountOut(am.accountKeeper, am.bankKeeper, am.keeper),
+	))
+
+	var weightMsgSwapByDenom int
+	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgSwapByDenom, &weightMsgSwapByDenom, nil,
+		func(_ *rand.Rand) {
+			weightMsgSwapByDenom = defaultWeightMsgSwapByDenom
+		},
+	)
+	operations = append(operations, simulation.NewWeightedOperation(
+		weightMsgSwapByDenom,
+		ammsimulation.SimulateMsgSwapByDenom(am.accountKeeper, am.bankKeeper, am.keeper),
 	))
 
 	// this line is used by starport scaffolding # simapp/module/operation

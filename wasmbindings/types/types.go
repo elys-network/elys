@@ -243,6 +243,7 @@ type ElysMsg struct {
 	AmmExitPool                      *ammtypes.MsgExitPool                      `json:"amm_exit_pool,omitempty"`
 	AmmSwapExactAmountIn             *ammtypes.MsgSwapExactAmountIn             `json:"amm_swap_exact_amount_in,omitempty"`
 	AmmSwapExactAmountOut            *ammtypes.MsgSwapExactAmountOut            `json:"amm_swap_exact_amount_out,omitempty"`
+	AmmSwapByDenom                   *ammtypes.MsgSwapByDenom                   `json:"amm_swap_by_denom,omitempty"`
 	AmmFeedMultipleExternalLiquidity *ammtypes.MsgFeedMultipleExternalLiquidity `json:"amm_feed_multiple_external_liquidity,omitempty"`
 
 	// assetprofile messages

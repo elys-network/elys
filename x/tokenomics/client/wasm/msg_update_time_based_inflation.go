@@ -17,21 +17,13 @@ func (m *Messenger) msgUpdateTimeBasedInflation(ctx sdk.Context, contractAddr sd
 
 	msgServer := keeper.NewMsgServerImpl(*m.keeper)
 
-	msgUpdateTimeBasedInflation := types.NewMsgUpdateTimeBasedInflation(
-		msg.Authority,
-		msg.StartBlockHeight,
-		msg.EndBlockHeight,
-		msg.Description,
-		msg.Inflation,
-	)
-
-	if err := msgUpdateTimeBasedInflation.ValidateBasic(); err != nil {
-		return nil, nil, errorsmod.Wrap(err, "failed validating msgUpdateTimeBasedInflation")
+	if err := msg.ValidateBasic(); err != nil {
+		return nil, nil, errorsmod.Wrap(err, "failed validating msg")
 	}
 
 	res, err := msgServer.UpdateTimeBasedInflation(
 		sdk.WrapSDKContext(ctx),
-		msgUpdateTimeBasedInflation,
+		msg,
 	)
 	if err != nil {
 		return nil, nil, errorsmod.Wrap(err, "UpdateTimeBasedInflation msg")

@@ -17,25 +17,13 @@ func (m *Messenger) msgRequestBandPrice(ctx sdk.Context, contractAddr sdk.AccAdd
 
 	msgServer := keeper.NewMsgServerImpl(*m.keeper)
 
-	msgRequestBandPrice := types.NewMsgRequestBandPrice(
-		msg.Creator,
-		types.OracleScriptID(msg.OracleScriptID),
-		msg.SourceChannel,
-		msg.Calldata,
-		msg.AskCount,
-		msg.MinCount,
-		msg.FeeLimit,
-		msg.PrepareGas,
-		msg.ExecuteGas,
-	)
-
-	if err := msgRequestBandPrice.ValidateBasic(); err != nil {
-		return nil, nil, errorsmod.Wrap(err, "failed validating msgRequestBandPrice")
+	if err := msg.ValidateBasic(); err != nil {
+		return nil, nil, errorsmod.Wrap(err, "failed validating msg")
 	}
 
 	res, err := msgServer.RequestBandPrice(
 		sdk.WrapSDKContext(ctx),
-		msgRequestBandPrice,
+		msg,
 	)
 	if err != nil {
 		return nil, nil, errorsmod.Wrap(err, "RequestBandPrice msg")

@@ -17,18 +17,13 @@ func (m *Messenger) msgWhitelist(ctx sdk.Context, contractAddr sdk.AccAddress, m
 
 	msgServer := keeper.NewMsgServerImpl(*m.keeper)
 
-	msgWhitelist := types.NewMsgWhitelist(
-		msg.Authority,
-		msg.WhitelistedAddress,
-	)
-
-	if err := msgWhitelist.ValidateBasic(); err != nil {
-		return nil, nil, errorsmod.Wrap(err, "failed validating msgWhitelist")
+	if err := msg.ValidateBasic(); err != nil {
+		return nil, nil, errorsmod.Wrap(err, "failed validating msg")
 	}
 
 	res, err := msgServer.Whitelist(
 		sdk.WrapSDKContext(ctx),
-		msgWhitelist,
+		msg,
 	)
 	if err != nil {
 		return nil, nil, errorsmod.Wrap(err, "Whitelist msg")

@@ -17,33 +17,13 @@ func (m *Messenger) msgUpdateEntry(ctx sdk.Context, contractAddr sdk.AccAddress,
 
 	msgServer := keeper.NewMsgServerImpl(*m.keeper)
 
-	msgUpdateEntry := types.NewMsgUpdateEntry(
-		msg.Authority,
-		msg.BaseDenom,
-		msg.Decimals,
-		msg.Denom,
-		msg.Path,
-		msg.IbcChannelId,
-		msg.IbcCounterpartyChannelId,
-		msg.DisplayName,
-		msg.DisplaySymbol,
-		msg.Network,
-		msg.Address,
-		msg.ExternalSymbol,
-		msg.TransferLimit,
-		msg.Permissions,
-		msg.UnitDenom,
-		msg.IbcCounterpartyDenom,
-		msg.IbcCounterpartyChainId,
-	)
-
-	if err := msgUpdateEntry.ValidateBasic(); err != nil {
-		return nil, nil, errorsmod.Wrap(err, "failed validating msgUpdateEntry")
+	if err := msg.ValidateBasic(); err != nil {
+		return nil, nil, errorsmod.Wrap(err, "failed validating msg")
 	}
 
 	res, err := msgServer.UpdateEntry(
 		sdk.WrapSDKContext(ctx),
-		msgUpdateEntry,
+		msg,
 	)
 	if err != nil {
 		return nil, nil, errorsmod.Wrap(err, "UpdateEntry msg")
