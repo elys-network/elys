@@ -71,6 +71,9 @@ func (k Keeper) CalculateApr(ctx sdk.Context, query *types.QueryAprRequest) (sdk
 
 			// For Eden reward Apr for elys staking = {(amount of Eden allocated for staking per day)*365/( total elys staked + total Eden committed + total Eden boost committed)}*100
 			apr := stkIncentive.EdenAmountPerYear.Mul(sdk.NewInt(100)).Quo(totalStakedSnapshot)
+			params := k.GetParams(ctx)
+			apr = sdk.MinInt(apr, params.MaxEdenRewardApr)
+
 			return apr, nil
 		}
 	} else if query.Denom == ptypes.BaseCurrency {

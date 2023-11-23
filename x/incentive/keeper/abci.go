@@ -82,7 +82,7 @@ func (k Keeper) ProcessRewardsDistribution(ctx sdk.Context) {
 		}
 	}
 
-	lpsEpoch, lpIncentive := k.IsStakerRewardsDistributionEpoch(ctx)
+	lpsEpoch, lpIncentive := k.IsLPRewardsDistributionEpoch(ctx)
 	if lpsEpoch {
 		err := k.UpdateLPRewardsUnclaimed(ctx, lpIncentive)
 		if err != nil {
@@ -128,7 +128,7 @@ func (k Keeper) IsStakerRewardsDistributionEpoch(ctx sdk.Context) (bool, types.I
 		}
 	}
 
-	// return found, stake, lp incentive params
+	// return found, stake incentive params
 	return true, stakeIncentive
 }
 
@@ -168,6 +168,6 @@ func (k Keeper) IsLPRewardsDistributionEpoch(ctx sdk.Context) (bool, types.Incen
 		}
 	}
 
-	// return found, stake, lp incentive params
+	// return found, lp incentive params
 	return true, lpIncentive
 }

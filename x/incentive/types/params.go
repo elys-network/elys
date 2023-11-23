@@ -21,6 +21,7 @@ var (
 	ParamStoreKeyElysStakeTrackingRate = []byte("elysstaketrackingrate")
 	ParamStoreKeyDexRewardsStakers     = []byte("dexrewardsstakers")
 	ParamStoreKeyDexRewardsLps         = []byte("dexrewardslps")
+	ParamStoreKeyMaxEdenRewardApr      = []byte("maxedenrewardapr")
 )
 
 // ParamKeyTable the param key table for launch module
@@ -46,6 +47,7 @@ func NewParams() Params {
 			NumBlocks: sdk.ZeroInt(),
 			Amount:    sdk.ZeroDec(),
 		},
+		MaxEdenRewardApr: sdk.NewInt(30),
 	}
 }
 
@@ -66,6 +68,7 @@ func (p *Params) ParamSetPairs() paramtypes.ParamSetPairs {
 		paramtypes.NewParamSetPair(ParamStoreKeyElysStakeTrackingRate, &p.ElysStakeTrackingRate, validateElysStakeTrakcingRate),
 		paramtypes.NewParamSetPair(ParamStoreKeyDexRewardsStakers, &p.DexRewardsStakers, validateDexRewardsStakers),
 		paramtypes.NewParamSetPair(ParamStoreKeyDexRewardsLps, &p.DexRewardsLps, validateDexRewardsLps),
+		paramtypes.NewParamSetPair(ParamStoreKeyMaxEdenRewardApr, &p.MaxEdenRewardApr, validateEdenRewardApr),
 	}
 }
 
@@ -292,6 +295,23 @@ func validateDexRewardsStakers(i interface{}) error {
 func validateDexRewardsLps(i interface{}) error {
 	_, ok := i.(DexRewardsTracker)
 	if !ok {
+		return fmt.Errorf("invalid parameter type: %T", i)
+	}
+
+	return nil
+}
+
+func validateEdenRewardApr(i interface{}) error {
+	v, ok := i.(sdk.Int)
+	if !ok {
+		return fmt.Errorf("invalid parameter type: %T", i)
+	}
+
+	if v.IsNegative() {
+		return fmt.Errorf("invalid parameter type: %T", i)
+	}
+
+	if v.LT(sdk.ZeroInt()) {
 		return fmt.Errorf("invalid parameter type: %T", i)
 	}
 

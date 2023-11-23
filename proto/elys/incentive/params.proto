@@ -37,4 +37,10 @@ message Params {
   
   // Tracking dex rewards given to LPs
   DexRewardsTracker dex_rewards_lps = 9 [(gogoproto.nullable) = false];
+
+  // Maximum eden reward apr
+  string max_eden_reward_apr = 10 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
 }

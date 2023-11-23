@@ -39620,6 +39620,9 @@ paths:
                         type: string
                       amount_collected_by_other_tracker:
                         type: string
+                  max_eden_reward_apr:
+                    type: string
+                    title: Maximum eden reward apr
             description: >-
               QueryParamsResponse is response type for the Query/Params RPC
               method.
@@ -84480,6 +84483,9 @@ definitions:
             type: string
           amount_collected_by_other_tracker:
             type: string
+      max_eden_reward_apr:
+        type: string
+        title: Maximum eden reward apr
     description: Params defines the parameters for the module.
   elys.incentive.PoolInfo:
     type: object
@@ -84631,6 +84637,9 @@ definitions:
                 type: string
               amount_collected_by_other_tracker:
                 type: string
+          max_eden_reward_apr:
+            type: string
+            title: Maximum eden reward apr
     description: QueryParamsResponse is response type for the Query/Params RPC method.
   elys.leveragelp.IsWhitelistedResponse:
     type: object
