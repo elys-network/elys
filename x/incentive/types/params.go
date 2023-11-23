@@ -40,12 +40,14 @@ func NewParams() Params {
 		PoolInfos:             []PoolInfo(nil),
 		ElysStakeTrackingRate: 10,
 		DexRewardsStakers: DexRewardsTracker{
-			NumBlocks: sdk.ZeroInt(),
-			Amount:    sdk.ZeroDec(),
+			NumBlocks:                     sdk.ZeroInt(),
+			Amount:                        sdk.ZeroDec(),
+			AmountCollectedByOtherTracker: sdk.ZeroDec(),
 		},
 		DexRewardsLps: DexRewardsTracker{
-			NumBlocks: sdk.ZeroInt(),
-			Amount:    sdk.ZeroDec(),
+			NumBlocks:                     sdk.ZeroInt(),
+			Amount:                        sdk.ZeroDec(),
+			AmountCollectedByOtherTracker: sdk.ZeroDec(),
 		},
 		MaxEdenRewardApr: sdk.NewDecWithPrec(3, 1),
 	}
