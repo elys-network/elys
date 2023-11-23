@@ -922,7 +922,6 @@ func NewElysApp(
 		app.OracleKeeper,
 		app.AssetprofileKeeper,
 	)
-	marginModule := marginmodule.NewAppModule(appCodec, app.MarginKeeper, app.AccountKeeper, app.BankKeeper)
 
 	app.ClockKeeper = *clockmodulekeeper.NewKeeper(
 		keys[clockmoduletypes.StoreKey],
@@ -1017,6 +1016,7 @@ func NewElysApp(
 			app.AccountedPoolKeeper.MarginHooks(),
 		),
 	)
+	marginModule := marginmodule.NewAppModule(appCodec, app.MarginKeeper, app.AccountKeeper, app.BankKeeper)
 
 	/**** Module Options ****/
 
