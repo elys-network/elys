@@ -138,58 +138,6 @@ func (k Keeper) UpdatePoolMultipliers(ctx sdk.Context, poolMultipliers []types.P
 	return true
 }
 
-// Find out active incentive params
-func (k Keeper) GetProperIncentiveParam(ctx sdk.Context, epochIdentifier string) (bool, types.IncentiveInfo, types.IncentiveInfo) {
-	// Fetch incentive params
-	params := k.GetParams(ctx)
-
-	// Update params
-	defer k.SetParams(ctx, params)
-
-	// If we don't have enough params
-	if len(params.StakeIncentives) < 1 || len(params.LpIncentives) < 1 {
-		return false, types.IncentiveInfo{}, types.IncentiveInfo{}
-	}
-
-	// Current block timestamp
-	timestamp := ctx.BlockTime().Unix()
-
-	// Incentive params initialize
-	stakeIncentive := params.StakeIncentives[0]
-	lpIncentive := params.LpIncentives[0]
-
-	// TODO:
-	// In V2 refactoring, have to make it available to calculate rewards for stakers and Lps at different epoch.
-	// Now rewards calculation is taking in one place (in a single loop) so it is now being triggered by any of the matching epoch (LPs, stakers),
-	// so should update this later.
-	if stakeIncentive.EpochIdentifier != lpIncentive.EpochIdentifier || stakeIncentive.EpochIdentifier != epochIdentifier || timestamp < stakeIncentive.StartTime.Unix() {
-		return false, types.IncentiveInfo{}, types.IncentiveInfo{}
-	}
-
-	// Increase current epoch of Stake incentive param
-	stakeIncentive.CurrentEpoch = stakeIncentive.CurrentEpoch + 1
-	if stakeIncentive.CurrentEpoch == stakeIncentive.NumEpochs {
-		if len(params.StakeIncentives) > 1 {
-			params.StakeIncentives = params.StakeIncentives[1:]
-		} else {
-			return false, types.IncentiveInfo{}, types.IncentiveInfo{}
-		}
-	}
-
-	// Increase current epoch of Lp incentive param
-	lpIncentive.CurrentEpoch = lpIncentive.CurrentEpoch + 1
-	if lpIncentive.CurrentEpoch == lpIncentive.NumEpochs {
-		if len(params.LpIncentives) > 1 {
-			params.LpIncentives = params.LpIncentives[1:]
-		} else {
-			return false, types.IncentiveInfo{}, types.IncentiveInfo{}
-		}
-	}
-
-	// return found, stake, lp incentive params
-	return true, stakeIncentive, lpIncentive
-}
-
 // Calculate epoch counts per year to be used in APR calculation
 func (k Keeper) CalculateEpochCountsPerYear(ctx sdk.Context, epochIdentifier string) int64 {
 	epochsInfo, found := k.epochsKeeper.GetEpochInfo(ctx, epochIdentifier)

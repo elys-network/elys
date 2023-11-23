@@ -284,24 +284,37 @@ genesis:
     incentive:
       params:
         lp_incentives:
-          - amount: "100000000000"
-            epoch_identifier: tenseconds
-            start_time: "2023-04-20T12:34:56.789Z"
-            num_epochs: "3154000"
-            current_epoch: "0"
-            eden_boost_apr: "100"
+          - eden_amount_per_year: "10000000000000"
+            distribution_start_block: "1"
+            total_blocks_per_year: "10512000"
+            allocation_epoch_in_blocks: "28800"
+            max_eden_per_allocation: "27397238400"
+            distribution_epoch_in_blocks: "10"
+            current_epoch_in_blocks: "0"
+            eden_boost_apr: "1"
         stake_incentives:
-          - amount: "100000000000"
-            epoch_identifier: tenseconds
-            start_time: "2023-04-20T12:34:56.789Z"
-            num_epochs: "3154000"
-            current_epoch: "0"
-            eden_boost_apr: "100"
-        community_tax: "0.02"
+          - eden_amount_per_year: "10000000000000"
+            distribution_start_block: "1"
+            total_blocks_per_year: "10512000"
+            allocation_epoch_in_blocks: "28800"
+            max_eden_per_allocation: "27397238400"
+            distribution_epoch_in_blocks: "20"
+            current_epoch_in_blocks: "0"
+            eden_boost_apr: "1"
+        community_tax: "0.00"
         withdraw_addr_enabled: true
         reward_portion_for_lps: "0.65"
         pool_infos: []
         elys_stake_tracking_rate: "10"
+        dex_rewards_stakers:
+          num_blocks: "0"
+          amount: "0"
+          amount_collected_by_other_tracker: "0"
+        dex_rewards_lps:
+          num_blocks: "0"
+          amount: "0"
+          amount_collected_by_other_tracker: "0"
+        max_eden_reward_apr: "0.30"
       fee_pool:
         community_pool:
           - amount: "0"

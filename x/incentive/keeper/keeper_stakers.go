@@ -3,6 +3,7 @@ package keeper
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	ctypes "github.com/elys-network/elys/x/commitment/types"
+	"github.com/elys-network/elys/x/incentive/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
 
@@ -61,7 +62,7 @@ func (k Keeper) CalculateRewardsForStakersByCommitted(ctx sdk.Context, amt sdk.I
 }
 
 // Calculate new Eden-Boost token amounts based on the given conditions and user's current unclaimed token balance
-func (k Keeper) CalculateEdenBoostRewards(ctx sdk.Context, delegatedAmt sdk.Int, commitments ctypes.Commitments, epochIdentifier string, edenBoostAPR int64) (sdk.Int, sdk.Int, sdk.Int) {
+func (k Keeper) CalculateEdenBoostRewards(ctx sdk.Context, delegatedAmt sdk.Int, commitments ctypes.Commitments, incentiveInfo types.IncentiveInfo, edenBoostAPR sdk.Dec) (sdk.Int, sdk.Int, sdk.Int) {
 	// Get eden commitments
 	edenCommitted := commitments.GetCommittedAmountForDenom(ptypes.Eden)
 
@@ -69,12 +70,13 @@ func (k Keeper) CalculateEdenBoostRewards(ctx sdk.Context, delegatedAmt sdk.Int,
 	totalEden := delegatedAmt.Add(edenCommitted)
 
 	// Calculate edenBoostAPR % APR for eden boost
-	epochNumsPerYear := k.CalculateEpochCountsPerYear(ctx, epochIdentifier)
-	if epochNumsPerYear == int64(0) {
+	epochNumsPerYear := incentiveInfo.TotalBlocksPerYear.Quo(incentiveInfo.DistributionEpochInBlocks)
+	if epochNumsPerYear.IsZero() {
 		return sdk.ZeroInt(), sdk.ZeroInt(), sdk.ZeroInt()
 	}
 
-	newEdenBoost := totalEden.Quo(sdk.NewInt(epochNumsPerYear)).Quo(sdk.NewInt(100)).Mul(sdk.NewInt(edenBoostAPR))
+	apr := edenBoostAPR.TruncateInt()
+	newEdenBoost := totalEden.Quo(epochNumsPerYear).Mul(apr)
 
 	// Calculate the portion of each program contribution
 	newEdenBoostByElysStaked := sdk.ZeroInt()

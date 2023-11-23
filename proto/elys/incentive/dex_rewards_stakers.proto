@@ -6,10 +6,17 @@ option (gogoproto.equal_all) = true;
 
 import "gogoproto/gogo.proto";
 
-// Track DexRewardsStakers
-message DexRewardsStakers {
-    string epoch_identifier = 1;
+// DexRewardsTracker
+message DexRewardsTracker {
+    string num_blocks = 1 [
+        (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+        (gogoproto.nullable) = false
+    ]; 
     string amount = 2 [
+        (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+        (gogoproto.nullable) = false
+    ]; 
+    string amount_collected_by_other_tracker = 3 [
         (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
         (gogoproto.nullable) = false
     ]; 

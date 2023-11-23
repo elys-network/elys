@@ -7,16 +7,28 @@ option go_package = "github.com/elys-network/elys/x/incentive/types";
 
 // Incentive Info
 message IncentiveInfo {
-    // reward amount
-	string amount = 1 
+    // reward amount in eden for 1 year
+	string eden_amount_per_year = 1 
         [ (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false];
-    // epoch identifier
-	string epoch_identifier = 2;
-    // start_time of the distribution
-    google.protobuf.Timestamp start_time = 3 
-        [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
-    // distribution duration
-	int64 num_epochs = 4;
-    int64 current_epoch = 5;
-    int64 eden_boost_apr = 6;
+    // starting block height of the distribution
+    string distribution_start_block = 2
+        [ (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false];
+    // distribution duration - block number per year
+	string total_blocks_per_year = 3
+        [ (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false];
+    // we set block numbers in 24 hrs
+    string allocation_epoch_in_blocks = 4
+        [ (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false];
+    // maximum eden allocation per day that won't exceed 30% apr
+    string max_eden_per_allocation = 5 
+        [ (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false];
+    // number of block intervals that distribute rewards.
+    string distribution_epoch_in_blocks = 6
+        [ (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false];
+    // current epoch in block number
+    string current_epoch_in_blocks = 7
+        [ (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false];
+    // eden boost apr (0-1) range
+	string eden_boost_apr = 8 
+        [ (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
 }
