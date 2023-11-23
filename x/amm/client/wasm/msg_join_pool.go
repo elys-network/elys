@@ -17,15 +17,13 @@ func (m *Messenger) msgJoinPool(ctx sdk.Context, contractAddr sdk.AccAddress, ms
 
 	msgServer := ammkeeper.NewMsgServerImpl(*m.keeper)
 
-	msgJoinPool := ammtypes.NewMsgJoinPool(msg.Sender, msg.PoolId, msg.MaxAmountsIn, msg.ShareAmountOut, msg.NoRemaining)
-
-	if err := msgJoinPool.ValidateBasic(); err != nil {
-		return nil, nil, errorsmod.Wrap(err, "failed validating msgJoinPool")
+	if err := msg.ValidateBasic(); err != nil {
+		return nil, nil, errorsmod.Wrap(err, "failed validating msg")
 	}
 
 	res, err := msgServer.JoinPool(
 		sdk.WrapSDKContext(ctx),
-		msgJoinPool,
+		msg,
 	)
 	if err != nil {
 		return nil, nil, errorsmod.Wrap(err, "join pool msg")

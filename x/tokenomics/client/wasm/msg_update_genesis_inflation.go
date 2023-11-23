@@ -17,20 +17,13 @@ func (m *Messenger) msgUpdateGenesisInflation(ctx sdk.Context, contractAddr sdk.
 
 	msgServer := keeper.NewMsgServerImpl(*m.keeper)
 
-	msgUpdateGenesisInflation := types.NewMsgUpdateGenesisInflation(
-		msg.Authority,
-		*msg.Inflation,
-		msg.SeedVesting,
-		msg.StrategicSalesVesting,
-	)
-
-	if err := msgUpdateGenesisInflation.ValidateBasic(); err != nil {
-		return nil, nil, errorsmod.Wrap(err, "failed validating msgUpdateGenesisInflation")
+	if err := msg.ValidateBasic(); err != nil {
+		return nil, nil, errorsmod.Wrap(err, "failed validating msg")
 	}
 
 	res, err := msgServer.UpdateGenesisInflation(
 		sdk.WrapSDKContext(ctx),
-		msgUpdateGenesisInflation,
+		msg,
 	)
 	if err != nil {
 		return nil, nil, errorsmod.Wrap(err, "UpdateGenesisInflation msg")

@@ -17,19 +17,13 @@ func (m *Messenger) msgCommitClaimedRewards(ctx sdk.Context, contractAddr sdk.Ac
 
 	msgServer := keeper.NewMsgServerImpl(*m.keeper)
 
-	msgCommitClaimedRewards := types.NewMsgCommitClaimedRewards(
-		msg.Creator,
-		msg.Amount,
-		msg.Denom,
-	)
-
-	if err := msgCommitClaimedRewards.ValidateBasic(); err != nil {
-		return nil, nil, errorsmod.Wrap(err, "failed validating msgCommitClaimedRewards")
+	if err := msg.ValidateBasic(); err != nil {
+		return nil, nil, errorsmod.Wrap(err, "failed validating msg")
 	}
 
 	res, err := msgServer.CommitClaimedRewards(
 		sdk.WrapSDKContext(ctx),
-		msgCommitClaimedRewards,
+		msg,
 	)
 	if err != nil {
 		return nil, nil, errorsmod.Wrap(err, "CommitUnclaimedRewards msg")

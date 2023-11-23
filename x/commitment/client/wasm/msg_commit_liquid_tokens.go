@@ -17,19 +17,13 @@ func (m *Messenger) msgCommitLiquidTokens(ctx sdk.Context, contractAddr sdk.AccA
 
 	msgServer := keeper.NewMsgServerImpl(*m.keeper)
 
-	msgCommitLiquidTokens := types.NewMsgCommitLiquidTokens(
-		msg.Creator,
-		msg.Amount,
-		msg.Denom,
-	)
-
-	if err := msgCommitLiquidTokens.ValidateBasic(); err != nil {
-		return nil, nil, errorsmod.Wrap(err, "failed validating msgCommitLiquidTokens")
+	if err := msg.ValidateBasic(); err != nil {
+		return nil, nil, errorsmod.Wrap(err, "failed validating msg")
 	}
 
 	res, err := msgServer.CommitLiquidTokens(
 		sdk.WrapSDKContext(ctx),
-		msgCommitLiquidTokens,
+		msg,
 	)
 	if err != nil {
 		return nil, nil, errorsmod.Wrap(err, "CommitLiquidTokens msg")

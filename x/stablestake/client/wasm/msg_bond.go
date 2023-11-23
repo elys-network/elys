@@ -17,18 +17,13 @@ func (m *Messenger) msgBond(ctx sdk.Context, contractAddr sdk.AccAddress, msg *t
 
 	msgServer := keeper.NewMsgServerImpl(*m.keeper)
 
-	msgBond := types.NewMsgBond(
-		msg.Creator,
-		msg.Amount,
-	)
-
-	if err := msgBond.ValidateBasic(); err != nil {
-		return nil, nil, errorsmod.Wrap(err, "failed validating msgBond")
+	if err := msg.ValidateBasic(); err != nil {
+		return nil, nil, errorsmod.Wrap(err, "failed validating msg")
 	}
 
 	res, err := msgServer.Bond(
 		sdk.WrapSDKContext(ctx),
-		msgBond,
+		msg,
 	)
 	if err != nil {
 		return nil, nil, errorsmod.Wrap(err, "Bond msg")

@@ -17,18 +17,13 @@ func (m *Messenger) msgUnbond(ctx sdk.Context, contractAddr sdk.AccAddress, msg 
 
 	msgServer := keeper.NewMsgServerImpl(*m.keeper)
 
-	msgUnbond := types.NewMsgUnbond(
-		msg.Creator,
-		msg.Amount,
-	)
-
-	if err := msgUnbond.ValidateBasic(); err != nil {
-		return nil, nil, errorsmod.Wrap(err, "failed validating msgUnbond")
+	if err := msg.ValidateBasic(); err != nil {
+		return nil, nil, errorsmod.Wrap(err, "failed validating msg")
 	}
 
 	res, err := msgServer.Unbond(
 		sdk.WrapSDKContext(ctx),
-		msgUnbond,
+		msg,
 	)
 	if err != nil {
 		return nil, nil, errorsmod.Wrap(err, "Unbond msg")

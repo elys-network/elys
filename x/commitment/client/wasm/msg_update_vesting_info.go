@@ -17,23 +17,13 @@ func (m *Messenger) msgUpdateVestingInfo(ctx sdk.Context, contractAddr sdk.AccAd
 
 	msgServer := keeper.NewMsgServerImpl(*m.keeper)
 
-	msgUpdateVestingInfo := types.NewMsgUpdateVestingInfo(
-		msg.Authority,
-		msg.BaseDenom,
-		msg.VestingDenom,
-		msg.EpochIdentifier,
-		msg.NumEpochs,
-		msg.VestNowFactor,
-		msg.NumMaxVestings,
-	)
-
-	if err := msgUpdateVestingInfo.ValidateBasic(); err != nil {
-		return nil, nil, errorsmod.Wrap(err, "failed validating msgUpdateVestingInfo")
+	if err := msg.ValidateBasic(); err != nil {
+		return nil, nil, errorsmod.Wrap(err, "failed validating msg")
 	}
 
 	res, err := msgServer.UpdateVestingInfo(
 		sdk.WrapSDKContext(ctx),
-		msgUpdateVestingInfo,
+		msg,
 	)
 	if err != nil {
 		return nil, nil, errorsmod.Wrap(err, "UpdateVestingInfo msg")

@@ -17,19 +17,13 @@ func (m *Messenger) msgUncommitTokens(ctx sdk.Context, contractAddr sdk.AccAddre
 
 	msgServer := keeper.NewMsgServerImpl(*m.keeper)
 
-	msgUncommitTokens := types.NewMsgUncommitTokens(
-		msg.Creator,
-		msg.Amount,
-		msg.Denom,
-	)
-
-	if err := msgUncommitTokens.ValidateBasic(); err != nil {
-		return nil, nil, errorsmod.Wrap(err, "failed validating msgUncommitTokens")
+	if err := msg.ValidateBasic(); err != nil {
+		return nil, nil, errorsmod.Wrap(err, "failed validating msg")
 	}
 
 	res, err := msgServer.UncommitTokens(
 		sdk.WrapSDKContext(ctx),
-		msgUncommitTokens,
+		msg,
 	)
 	if err != nil {
 		return nil, nil, errorsmod.Wrap(err, "UncommitTokens msg")

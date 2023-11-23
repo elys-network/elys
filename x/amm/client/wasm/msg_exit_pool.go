@@ -17,15 +17,13 @@ func (m *Messenger) msgExitPool(ctx sdk.Context, contractAddr sdk.AccAddress, ms
 
 	msgServer := ammkeeper.NewMsgServerImpl(*m.keeper)
 
-	msgExitPool := ammtypes.NewMsgExitPool(msg.Sender, msg.PoolId, msg.MinAmountsOut, msg.ShareAmountIn)
-
-	if err := msgExitPool.ValidateBasic(); err != nil {
-		return nil, nil, errorsmod.Wrap(err, "failed validating msgExitPool")
+	if err := msg.ValidateBasic(); err != nil {
+		return nil, nil, errorsmod.Wrap(err, "failed validating msg")
 	}
 
 	res, err := msgServer.ExitPool(
 		sdk.WrapSDKContext(ctx),
-		msgExitPool,
+		msg,
 	)
 	if err != nil {
 		return nil, nil, errorsmod.Wrap(err, "exit pool msg")

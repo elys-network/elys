@@ -29,7 +29,7 @@ const (
 
 func CmdCreatePool() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:     "create-pool [weights] [initial-deposit] [swap-fee] [exit-fee]",
+		Use:     "create-pool [weights] [initial-deposit]",
 		Short:   "create a new pool and provide the liquidity to it",
 		Example: `elysd tx amm create-pool 100uatom,100uusdc 100000000000uatom,100000000000uusdc --swap-fee=0.00 --exit-fee=0.00 --use-oracle=false  --from=treasury --keyring-backend=test --chain-id=elystestnet-1 --yes --gas=1000000`,
 		Args:    cobra.ExactArgs(2),

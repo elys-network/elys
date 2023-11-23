@@ -17,18 +17,13 @@ func (m *Messenger) msgDeleteEntry(ctx sdk.Context, contractAddr sdk.AccAddress,
 
 	msgServer := keeper.NewMsgServerImpl(*m.keeper)
 
-	msgDeleteEntry := types.NewMsgDeleteEntry(
-		msg.Authority,
-		msg.BaseDenom,
-	)
-
-	if err := msgDeleteEntry.ValidateBasic(); err != nil {
-		return nil, nil, errorsmod.Wrap(err, "failed validating msgDeleteEntry")
+	if err := msg.ValidateBasic(); err != nil {
+		return nil, nil, errorsmod.Wrap(err, "failed validating msg")
 	}
 
 	res, err := msgServer.DeleteEntry(
 		sdk.WrapSDKContext(ctx),
-		msgDeleteEntry,
+		msg,
 	)
 	if err != nil {
 		return nil, nil, errorsmod.Wrap(err, "DeleteEntry msg")
