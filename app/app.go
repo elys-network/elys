@@ -740,7 +740,6 @@ func NewElysApp(
 		app.AssetprofileKeeper,
 		app.AccountedPoolKeeper,
 	)
-	ammModule := ammmodule.NewAppModule(appCodec, app.AmmKeeper, app.AccountKeeper, app.BankKeeper)
 
 	app.StablestakeKeeper = *stablestakekeeper.NewKeeper(
 		appCodec,
@@ -990,7 +989,7 @@ func NewElysApp(
 		),
 	)
 
-	app.AmmKeeper.SetHooks(
+	app.AmmKeeper = *app.AmmKeeper.SetHooks(
 		ammmoduletypes.NewMultiAmmHooks(
 			// insert amm hooks receivers here
 			app.IncentiveKeeper.AmmHooks(),
@@ -998,6 +997,7 @@ func NewElysApp(
 			app.LeveragelpKeeper.AmmHooks(),
 		),
 	)
+	ammModule := ammmodule.NewAppModule(appCodec, app.AmmKeeper, app.AccountKeeper, app.BankKeeper)
 
 	app.EpochsKeeper = *app.EpochsKeeper.SetHooks(
 		epochsmodulekeeper.NewMultiEpochHooks(
@@ -1011,7 +1011,7 @@ func NewElysApp(
 	)
 	epochsModule := epochsmodule.NewAppModule(appCodec, app.EpochsKeeper)
 
-	app.MarginKeeper.SetHooks(
+	app.MarginKeeper = *app.MarginKeeper.SetHooks(
 		marginmoduletypes.NewMultiMarginHooks(
 			// insert margin hooks receivers here
 			app.AccountedPoolKeeper.MarginHooks(),
