@@ -37851,6 +37851,8 @@ paths:
                   pool_creation_fee:
                     type: string
                     format: uint64
+                  broker_address:
+                    type: string
             description: >-
               QueryParamsResponse is response type for the Query/Params RPC
               method.
@@ -82920,10 +82922,28 @@ definitions:
 
           NOTE: The amount field is an Int which implements the custom method
           signatures required by gogoproto.
-      route:
+      in_route:
         type: array
         items:
-          type: string
+          type: object
+          properties:
+            pool_id:
+              type: string
+              format: uint64
+            token_out_denom:
+              type: string
+      out_route:
+        type: array
+        items:
+          type: object
+          properties:
+            pool_id:
+              type: string
+              format: uint64
+            token_in_denom:
+              type: string
+      spot_price:
+        type: string
       discount:
         type: string
   elys.amm.MsgSwapExactAmountInResponse:
@@ -82965,6 +82985,8 @@ definitions:
       pool_creation_fee:
         type: string
         format: uint64
+      broker_address:
+        type: string
     description: Params defines the parameters for the module.
   elys.amm.Pool:
     type: object
@@ -83339,6 +83361,8 @@ definitions:
           pool_creation_fee:
             type: string
             format: uint64
+          broker_address:
+            type: string
     description: QueryParamsResponse is response type for the Query/Params RPC method.
   elys.amm.QuerySlippageTrackAllResponse:
     type: object

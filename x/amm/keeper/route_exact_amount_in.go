@@ -15,6 +15,7 @@ func (k Keeper) RouteExactAmountIn(
 	routes []types.SwapAmountInRoute,
 	tokenIn sdk.Coin,
 	tokenOutMinAmount math.Int,
+	discount sdk.Dec,
 ) (tokenOutAmount math.Int, err error) {
 	var (
 		isMultiHopRouted bool
@@ -70,6 +71,12 @@ func (k Keeper) RouteExactAmountIn(
 		// we modify the swap fee accordingly.
 		if isMultiHopRouted && sumOfSwapFees.IsPositive() {
 			swapFee = routeSwapFee.Mul((swapFee.Quo(sumOfSwapFees)))
+		}
+
+		// Apply discount to swap fee if applicable
+		swapFee, discount, err = k.ApplyDiscount(ctx, swapFee, discount, sender.String())
+		if err != nil {
+			return math.Int{}, err
 		}
 
 		tokenOutAmount, err = k.SwapExactAmountIn(ctx, sender, pool, tokenIn, route.TokenOutDenom, _outMinAmount, swapFee)

@@ -56,6 +56,7 @@ func (k Keeper) SwapExactAmountIn(ctx sdk.Context, addr sdk.AccAddress, tokenIn 
 		Routes:            routes,
 		TokenIn:           tokenIn,
 		TokenOutMinAmount: sdk.OneInt(),
+		Discount:          sdk.ZeroDec(),
 	}
 	if err := msg.ValidateBasic(); err != nil {
 		return err
