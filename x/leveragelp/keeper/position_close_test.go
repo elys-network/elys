@@ -103,8 +103,9 @@ func (suite KeeperTestSuite) TestCloseLong() {
 
 	var (
 		msg = &types.MsgClose{
-			Creator: addr.String(),
-			Id:      1,
+			Creator:  addr.String(),
+			Id:       1,
+			LpAmount: sdk.ZeroInt(),
 		}
 		repayAmount = math.NewInt(0)
 	)
@@ -121,9 +122,22 @@ func (suite KeeperTestSuite) TestForceCloseLong() {
 	repayAmount := math.NewInt(4000)
 
 	suite.ctx = suite.ctx.WithBlockTime(suite.ctx.BlockTime().Add(time.Hour))
-	repayAmountOut, err := k.ForceCloseLong(suite.ctx, *position, pool)
+	repayAmountOut, err := k.ForceCloseLong(suite.ctx, *position, pool, position.LeveragedLpAmount)
 	suite.Require().NoError(err)
 	suite.Require().Equal(repayAmount.String(), repayAmountOut.String())
+}
+
+func (suite KeeperTestSuite) TestForceCloseLongPartial() {
+	k := suite.app.LeveragelpKeeper
+	addr := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
+	position, pool := suite.OpenPosition(addr)
+	repayAmount := math.NewInt(4000)
+
+	suite.ctx = suite.ctx.WithBlockTime(suite.ctx.BlockTime().Add(time.Hour))
+	// close 50%
+	repayAmountOut, err := k.ForceCloseLong(suite.ctx, *position, pool, position.LeveragedLpAmount.Quo(sdk.NewInt(2)))
+	suite.Require().NoError(err)
+	suite.Require().Equal(repayAmount.Quo(sdk.NewInt(2)).String(), repayAmountOut.String())
 }
 
 func (suite KeeperTestSuite) TestHealthDecreaseForInterest() {

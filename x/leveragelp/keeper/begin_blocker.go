@@ -61,7 +61,7 @@ func (k Keeper) LiquidatePositionIfUnhealthy(ctx sdk.Context, position *types.Po
 		return
 	}
 
-	repayAmount, err := k.ForceCloseLong(ctx, *position, pool)
+	repayAmount, err := k.ForceCloseLong(ctx, *position, pool, position.LeveragedLpAmount)
 	if err == nil {
 		ctx.EventManager().EmitEvent(sdk.NewEvent(types.EventClose,
 			sdk.NewAttribute("id", strconv.FormatInt(int64(position.Id), 10)),
