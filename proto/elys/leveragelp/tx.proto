@@ -41,6 +41,10 @@ message MsgOpenResponse {}
 message MsgClose {
   string creator = 1;
   uint64 id = 2;
+  string lp_amount = 3 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
 }
 
 message MsgCloseResponse {}

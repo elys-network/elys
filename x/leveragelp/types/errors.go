@@ -27,4 +27,5 @@ var (
 	ErrAmmPoolNotFound         = sdkerrors.Register(ModuleName, 34, "amm pool not found")
 	ErrOnlyBaseCurrencyAllowed = sdkerrors.Register(ModuleName, 35, "only base currency is allowed for leverage lp")
 	ErrInsufficientUsdcAfterOp = sdkerrors.Register(ModuleName, 36, "insufficient amount of usdc after the operation for leveragelp withdrawal")
+	ErrInvalidCloseSize        = sdkerrors.Register(ModuleName, 37, "invalid close size")
 )

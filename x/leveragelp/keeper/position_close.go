@@ -6,16 +6,20 @@ import (
 	"github.com/elys-network/elys/x/leveragelp/types"
 )
 
-func (k Keeper) ForceCloseLong(ctx sdk.Context, position types.Position, pool types.Pool) (sdk.Int, error) {
+func (k Keeper) ForceCloseLong(ctx sdk.Context, position types.Position, pool types.Pool, lpAmount sdk.Int) (sdk.Int, error) {
+	if lpAmount.GT(position.LeveragedLpAmount) || lpAmount.IsNegative() {
+		return sdk.ZeroInt(), types.ErrInvalidCloseSize
+	}
+
 	// Exit liquidity with collateral token
-	exitCoins, err := k.amm.ExitPool(ctx, position.GetPositionAddress(), position.AmmPoolId, position.LeveragedLpAmount, sdk.Coins{}, position.Collateral.Denom)
+	exitCoins, err := k.amm.ExitPool(ctx, position.GetPositionAddress(), position.AmmPoolId, lpAmount, sdk.Coins{}, position.Collateral.Denom)
 	if err != nil {
 		return sdk.ZeroInt(), err
 	}
 
 	// Repay with interest
 	debt := k.stableKeeper.UpdateInterestStackedByAddress(ctx, position.GetPositionAddress())
-	repayAmount := debt.Borrowed.Add(debt.InterestStacked).Sub(debt.InterestPaid)
+	repayAmount := debt.Borrowed.Add(debt.InterestStacked).Sub(debt.InterestPaid).Mul(lpAmount).Quo(position.LeveragedLpAmount)
 	if err != nil {
 		return sdk.ZeroInt(), err
 	}
@@ -32,12 +36,17 @@ func (k Keeper) ForceCloseLong(ctx sdk.Context, position types.Position, pool ty
 		return sdk.ZeroInt(), err
 	}
 
-	err = k.DestroyPosition(ctx, position.Address, position.Id)
-	if err != nil {
-		return sdk.ZeroInt(), err
+	position.LeveragedLpAmount = position.LeveragedLpAmount.Sub(lpAmount)
+	if position.LeveragedLpAmount.IsZero() {
+		err = k.DestroyPosition(ctx, position.Address, position.Id)
+		if err != nil {
+			return sdk.ZeroInt(), err
+		}
+	} else {
+		k.SetPosition(ctx, &position)
 	}
 
-	pool.LeveragedLpAmount = pool.LeveragedLpAmount.Sub(position.LeveragedLpAmount)
+	pool.LeveragedLpAmount = pool.LeveragedLpAmount.Sub(lpAmount)
 	k.UpdatePoolHealth(ctx, &pool)
 
 	// Hooks after leveragelp position closed
@@ -60,6 +69,12 @@ func (k Keeper) CloseLong(ctx sdk.Context, msg *types.MsgClose) (*types.Position
 		return nil, sdk.ZeroInt(), sdkerrors.Wrap(types.ErrInvalidBorrowingAsset, "invalid pool id")
 	}
 
-	repayAmount, err := k.ForceCloseLong(ctx, position, pool)
+	// If lpAmount is lower than zero, close full amount
+	lpAmount := msg.LpAmount
+	if lpAmount.LTE(sdk.ZeroInt()) {
+		lpAmount = position.LeveragedLpAmount
+	}
+
+	repayAmount, err := k.ForceCloseLong(ctx, position, pool, lpAmount)
 	return &position, repayAmount, err
 }

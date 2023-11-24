@@ -121,7 +121,7 @@ func (suite KeeperTestSuite) TestForceCloseLong() {
 	repayAmount := math.NewInt(4000)
 
 	suite.ctx = suite.ctx.WithBlockTime(suite.ctx.BlockTime().Add(time.Hour))
-	repayAmountOut, err := k.ForceCloseLong(suite.ctx, *position, pool)
+	repayAmountOut, err := k.ForceCloseLong(suite.ctx, *position, pool, position.LeveragedLpAmount)
 	suite.Require().NoError(err)
 	suite.Require().Equal(repayAmount.String(), repayAmountOut.String())
 }
