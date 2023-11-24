@@ -11,8 +11,10 @@ var _ paramtypes.ParamSet = (*Params)(nil)
 
 var (
 	KeyPoolCreationFee = []byte("PoolCreationFee")
+	KeyBrokerAddress   = []byte("BrokerAddress")
 	// TODO: Determine the default value
 	DefaultPoolCreationFee uint64 = 0
+	DefaultBrokerAddress   string = ""
 )
 
 // ParamKeyTable the param key table for launch module
@@ -23,9 +25,11 @@ func ParamKeyTable() paramtypes.KeyTable {
 // NewParams creates a new Params instance
 func NewParams(
 	poolCreationFee uint64,
+	brokerAddress string,
 ) Params {
 	return Params{
 		PoolCreationFee: poolCreationFee,
+		BrokerAddress:   brokerAddress,
 	}
 }
 
@@ -33,6 +37,7 @@ func NewParams(
 func DefaultParams() Params {
 	return NewParams(
 		DefaultPoolCreationFee,
+		DefaultBrokerAddress,
 	)
 }
 
@@ -40,12 +45,16 @@ func DefaultParams() Params {
 func (p *Params) ParamSetPairs() paramtypes.ParamSetPairs {
 	return paramtypes.ParamSetPairs{
 		paramtypes.NewParamSetPair(KeyPoolCreationFee, &p.PoolCreationFee, validatePoolCreationFee),
+		paramtypes.NewParamSetPair(KeyBrokerAddress, &p.BrokerAddress, validateBrokerAddress),
 	}
 }
 
 // Validate validates the set of params
 func (p Params) Validate() error {
 	if err := validatePoolCreationFee(p.PoolCreationFee); err != nil {
+		return err
+	}
+	if err := validateBrokerAddress(p.BrokerAddress); err != nil {
 		return err
 	}
 
@@ -67,6 +76,19 @@ func validatePoolCreationFee(v interface{}) error {
 
 	// TODO implement validation
 	_ = poolCreationFee
+
+	return nil
+}
+
+// validateBrokerAddress validates the BrokerAddress param
+func validateBrokerAddress(v interface{}) error {
+	brokerAddress, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("invalid parameter type: %T", v)
+	}
+
+	// TODO implement validation
+	_ = brokerAddress
 
 	return nil
 }

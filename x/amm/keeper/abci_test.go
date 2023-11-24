@@ -34,6 +34,7 @@ func (suite *KeeperTestSuite) TestExecuteSwapRequests() {
 					},
 					TokenIn:           sdk.NewInt64Coin(ptypes.Elys, 10000),
 					TokenOutMinAmount: sdk.ZeroInt(),
+					Discount:          sdk.ZeroDec(),
 				},
 			},
 			expSwapOrder: []uint64{0},
@@ -52,6 +53,7 @@ func (suite *KeeperTestSuite) TestExecuteSwapRequests() {
 					},
 					TokenIn:           sdk.NewInt64Coin(ptypes.Elys, 10000),
 					TokenOutMinAmount: sdk.ZeroInt(),
+					Discount:          sdk.ZeroDec(),
 				},
 				&types.MsgSwapExactAmountIn{
 					Sender: sender.String(),
@@ -63,6 +65,7 @@ func (suite *KeeperTestSuite) TestExecuteSwapRequests() {
 					},
 					TokenIn:           sdk.NewInt64Coin(ptypes.BaseCurrency, 8000),
 					TokenOutMinAmount: sdk.ZeroInt(),
+					Discount:          sdk.ZeroDec(),
 				},
 			},
 			expSwapOrder: []uint64{1, 0},
@@ -81,6 +84,7 @@ func (suite *KeeperTestSuite) TestExecuteSwapRequests() {
 					},
 					TokenIn:           sdk.NewInt64Coin(ptypes.Elys, 11000),
 					TokenOutMinAmount: sdk.ZeroInt(),
+					Discount:          sdk.ZeroDec(),
 				},
 				&types.MsgSwapExactAmountIn{
 					Sender: sender.String(),
@@ -92,6 +96,7 @@ func (suite *KeeperTestSuite) TestExecuteSwapRequests() {
 					},
 					TokenIn:           sdk.NewInt64Coin(ptypes.BaseCurrency, 8000),
 					TokenOutMinAmount: sdk.ZeroInt(),
+					Discount:          sdk.ZeroDec(),
 				},
 				&types.MsgSwapExactAmountIn{
 					Sender: sender.String(),
@@ -103,6 +108,7 @@ func (suite *KeeperTestSuite) TestExecuteSwapRequests() {
 					},
 					TokenIn:           sdk.NewInt64Coin(ptypes.BaseCurrency, 1000),
 					TokenOutMinAmount: sdk.ZeroInt(),
+					Discount:          sdk.ZeroDec(),
 				},
 			},
 			expSwapOrder: []uint64{1, 0, 2},
@@ -121,6 +127,7 @@ func (suite *KeeperTestSuite) TestExecuteSwapRequests() {
 					},
 					TokenIn:           sdk.NewInt64Coin(ptypes.Elys, 11000),
 					TokenOutMinAmount: sdk.ZeroInt(),
+					Discount:          sdk.ZeroDec(),
 				},
 				&types.MsgSwapExactAmountOut{
 					Sender: sender.String(),
@@ -132,6 +139,7 @@ func (suite *KeeperTestSuite) TestExecuteSwapRequests() {
 					},
 					TokenOut:         sdk.NewInt64Coin(ptypes.Elys, 8000),
 					TokenInMaxAmount: sdk.NewInt(1000000),
+					Discount:         sdk.ZeroDec(),
 				},
 				&types.MsgSwapExactAmountIn{
 					Sender: sender.String(),
@@ -143,6 +151,7 @@ func (suite *KeeperTestSuite) TestExecuteSwapRequests() {
 					},
 					TokenIn:           sdk.NewInt64Coin(ptypes.BaseCurrency, 1000),
 					TokenOutMinAmount: sdk.ZeroInt(),
+					Discount:          sdk.ZeroDec(),
 				},
 			},
 			expSwapOrder: []uint64{2, 1, 0},
@@ -161,6 +170,7 @@ func (suite *KeeperTestSuite) TestExecuteSwapRequests() {
 					},
 					TokenIn:           sdk.NewInt64Coin(ptypes.Elys, 11000),
 					TokenOutMinAmount: sdk.ZeroInt(),
+					Discount:          sdk.ZeroDec(),
 				},
 				&types.MsgSwapExactAmountOut{
 					Sender: sender.String(),
@@ -172,6 +182,7 @@ func (suite *KeeperTestSuite) TestExecuteSwapRequests() {
 					},
 					TokenOut:         sdk.NewInt64Coin(ptypes.Elys, 8000),
 					TokenInMaxAmount: sdk.NewInt(1000000),
+					Discount:         sdk.ZeroDec(),
 				},
 				&types.MsgSwapExactAmountIn{
 					Sender: sender.String(),
@@ -187,6 +198,7 @@ func (suite *KeeperTestSuite) TestExecuteSwapRequests() {
 					},
 					TokenIn:           sdk.NewInt64Coin(ptypes.BaseCurrency, 1000),
 					TokenOutMinAmount: sdk.ZeroInt(),
+					Discount:          sdk.ZeroDec(),
 				},
 			},
 			expSwapOrder: []uint64{2, 1, 0},

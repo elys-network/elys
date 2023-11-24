@@ -186,7 +186,9 @@ func (suite *KeeperTestSuite) TestRouteExactAmountIn() {
 						TokenOutDenom: tc.tokenOut.Denom,
 					},
 				},
-				tc.tokenIn, tc.tokenOutMin)
+				tc.tokenIn, tc.tokenOutMin,
+				sdk.ZeroDec(),
+			)
 			if !tc.expPass {
 				suite.Require().Error(err)
 			} else {
