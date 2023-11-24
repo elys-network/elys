@@ -185,6 +185,7 @@ func (suite *KeeperTestSuite) TestMsgServerSwapExactAmountIn() {
 					Routes:            tc.swapRoute,
 					TokenIn:           tc.tokenIn,
 					TokenOutMinAmount: tc.tokenOutMin,
+					Discount:          sdk.ZeroDec(),
 				})
 			if !tc.expPass {
 				suite.Require().Error(err)
@@ -278,6 +279,7 @@ func (suite *KeeperTestSuite) TestMsgServerSlippageDifferenceWhenSplit() {
 			Routes:            swapRoute,
 			TokenIn:           tokenIn,
 			TokenOutMinAmount: tokenOutMin,
+			Discount:          sdk.ZeroDec(),
 		})
 	suite.Require().NoError(err)
 	suite.Require().Equal(resp.TokenOutAmount.String(), tokenOut.Amount.String())
@@ -297,6 +299,7 @@ func (suite *KeeperTestSuite) TestMsgServerSlippageDifferenceWhenSplit() {
 				Routes:            swapRoute,
 				TokenIn:           sdk.Coin{Denom: tokenIn.Denom, Amount: tokenIn.Amount.Quo(sdk.NewInt(100))},
 				TokenOutMinAmount: tokenOutMin,
+				Discount:          sdk.ZeroDec(),
 			})
 		suite.Require().NoError(err)
 		fmt.Printf("outAmount%d: %s\n", i, resp.TokenOutAmount.String())

@@ -182,7 +182,9 @@ func (suite *KeeperTestSuite) TestRouteExactAmountOut() {
 						PoolId:       pool.PoolId,
 						TokenInDenom: tc.tokenIn.Denom,
 					},
-				}, tc.tokenInMax, tc.tokenOut)
+				}, tc.tokenInMax, tc.tokenOut,
+				sdk.ZeroDec(),
+			)
 			if !tc.expPass {
 				suite.Require().Error(err)
 			} else {

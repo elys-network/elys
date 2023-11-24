@@ -10,4 +10,5 @@ message Params {
   option (gogoproto.goproto_stringer) = false;
   
   uint64 pool_creation_fee = 1;
+  string broker_address = 2;
 }

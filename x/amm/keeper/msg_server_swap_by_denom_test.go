@@ -9,15 +9,14 @@ import (
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
 
-func (suite *KeeperTestSuite) TestMsgServerSwapExactAmountOut() {
+func (suite *KeeperTestSuite) TestMsgServerSwapByDenom() {
 	for _, tc := range []struct {
 		desc              string
 		senderInitBalance sdk.Coins
 		swapFee           sdk.Dec
 		tokenIn           sdk.Coin
-		tokenInMax        sdk.Int
+		tokenOutMin       sdk.Int
 		tokenOut          sdk.Coin
-		swapRoutes        []types.SwapAmountOutRoute
 		expSenderBalance  sdk.Coins
 		expPass           bool
 	}{
@@ -25,69 +24,31 @@ func (suite *KeeperTestSuite) TestMsgServerSwapExactAmountOut() {
 			desc:              "successful execution with positive swap fee",
 			senderInitBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 1000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)},
 			swapFee:           sdk.NewDecWithPrec(1, 2), // 1%
-			tokenIn:           sdk.NewInt64Coin(ptypes.Elys, 10204),
-			tokenInMax:        sdk.NewInt(10000000),
-			tokenOut:          sdk.NewInt64Coin(ptypes.BaseCurrency, 10000),
-			swapRoutes: []types.SwapAmountOutRoute{
-				{
-					PoolId:       1,
-					TokenInDenom: ptypes.Elys,
-				},
-			},
-			expSenderBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 989796), sdk.NewInt64Coin(ptypes.BaseCurrency, 1010000)},
-			expPass:          true,
+			tokenIn:           sdk.NewInt64Coin(ptypes.Elys, 10000),
+			tokenOutMin:       sdk.ZeroInt(),
+			tokenOut:          sdk.NewInt64Coin(ptypes.BaseCurrency, 9704),
+			expSenderBalance:  sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 990000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1009704)},
+			expPass:           true,
 		},
 		{
 			desc:              "successful execution with zero swap fee",
 			senderInitBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 1000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)},
 			swapFee:           sdk.ZeroDec(),
-			tokenIn:           sdk.NewInt64Coin(ptypes.Elys, 10102),
-			tokenInMax:        sdk.NewInt(10000000),
-			tokenOut:          sdk.NewInt64Coin(ptypes.BaseCurrency, 10000),
-			swapRoutes: []types.SwapAmountOutRoute{
-				{
-					PoolId:       1,
-					TokenInDenom: ptypes.Elys,
-				},
-			},
-			expSenderBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 989898), sdk.NewInt64Coin(ptypes.BaseCurrency, 1010000)},
-			expPass:          true,
-		},
-		{
-			desc:              "not available pool as route",
-			senderInitBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 1000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)},
-			swapFee:           sdk.ZeroDec(),
-			tokenIn:           sdk.NewInt64Coin(ptypes.Elys, 10102),
-			tokenInMax:        sdk.NewInt(10000000),
-			tokenOut:          sdk.NewInt64Coin(ptypes.BaseCurrency, 10000),
-			swapRoutes: []types.SwapAmountOutRoute{
-				{
-					PoolId:       3,
-					TokenInDenom: ptypes.Elys,
-				},
-			},
-			expSenderBalance: sdk.Coins{},
-			expPass:          false,
+			tokenIn:           sdk.NewInt64Coin(ptypes.Elys, 10000),
+			tokenOutMin:       sdk.ZeroInt(),
+			tokenOut:          sdk.NewInt64Coin(ptypes.BaseCurrency, 9900),
+			expSenderBalance:  sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 990000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1009900)},
+			expPass:           true,
 		},
 		{
 			desc:              "multiple routes",
 			senderInitBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 1000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)},
 			swapFee:           sdk.ZeroDec(),
-			tokenIn:           sdk.NewInt64Coin(ptypes.BaseCurrency, 10206),
-			tokenInMax:        sdk.NewInt(10000000),
-			tokenOut:          sdk.NewInt64Coin("uusdt", 10000),
-			swapRoutes: []types.SwapAmountOutRoute{
-				{
-					PoolId:       1,
-					TokenInDenom: ptypes.BaseCurrency,
-				},
-				{
-					PoolId:       2,
-					TokenInDenom: ptypes.Elys,
-				},
-			},
-			expSenderBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 1000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 989794), sdk.NewInt64Coin("uusdt", 10000)},
-			expPass:          true,
+			tokenIn:           sdk.NewInt64Coin(ptypes.BaseCurrency, 10000),
+			tokenOutMin:       sdk.ZeroInt(),
+			tokenOut:          sdk.NewInt64Coin("uusdt", 9802),
+			expSenderBalance:  sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 1000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 990000), sdk.NewInt64Coin("uusdt", 9802)},
+			expPass:           false,
 		},
 	} {
 		suite.Run(tc.desc, func() {
@@ -156,7 +117,8 @@ func (suite *KeeperTestSuite) TestMsgServerSwapExactAmountOut() {
 				Address:           poolAddr2.String(),
 				RebalanceTreasury: treasuryAddr2.String(),
 				PoolParams: types.PoolParams{
-					SwapFee: tc.swapFee,
+					SwapFee:  tc.swapFee,
+					FeeDenom: ptypes.BaseCurrency,
 				},
 				TotalShares: sdk.Coin{},
 				PoolAssets: []types.PoolAsset{
@@ -175,20 +137,22 @@ func (suite *KeeperTestSuite) TestMsgServerSwapExactAmountOut() {
 			suite.app.AmmKeeper.SetPool(suite.ctx, pool2)
 
 			msgServer := keeper.NewMsgServerImpl(suite.app.AmmKeeper)
-			resp, err := msgServer.SwapExactAmountOut(
+			resp, err := msgServer.SwapByDenom(
 				sdk.WrapSDKContext(suite.ctx),
-				&types.MsgSwapExactAmountOut{
-					Sender:           sender.String(),
-					Routes:           tc.swapRoutes,
-					TokenOut:         tc.tokenOut,
-					TokenInMaxAmount: tc.tokenInMax,
-					Discount:         sdk.ZeroDec(),
+				&types.MsgSwapByDenom{
+					Sender:    sender.String(),
+					Amount:    tc.tokenIn,
+					MinAmount: sdk.NewCoin(tc.tokenOut.Denom, tc.tokenOutMin),
+					MaxAmount: sdk.Coin{},
+					DenomIn:   tc.tokenIn.Denom,
+					DenomOut:  tc.tokenOut.Denom,
+					Discount:  sdk.ZeroDec(),
 				})
 			if !tc.expPass {
 				suite.Require().Error(err)
 			} else {
 				suite.Require().NoError(err)
-				suite.Require().Equal(resp.TokenInAmount.String(), tc.tokenIn.Amount.String())
+				suite.Require().Equal(resp.Amount.String(), tc.tokenOut.String())
 				suite.app.AmmKeeper.EndBlocker(suite.ctx)
 
 				// check balance change on sender

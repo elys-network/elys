@@ -16,7 +16,6 @@ var _ = strconv.Itoa(0)
 const (
 	FlagMinAmount = "min-amount"
 	FlagMaxAmount = "max-amount"
-	FlagDiscount  = "discount"
 )
 
 func CmdSwapByDenom() *cobra.Command {

@@ -38,11 +38,11 @@ func (k Keeper) CalcSwapEstimationByDenom(
 		if err != nil {
 			return nil, nil, sdk.Coin{}, sdk.ZeroDec(), err
 		}
-		spotPrice, tokenOut, err := k.CalcOutRouteSpotPrice(ctx, amount, outRoute)
+		spotPrice, tokenIn, err := k.CalcOutRouteSpotPrice(ctx, amount, outRoute)
 		if err != nil {
 			return nil, nil, sdk.Coin{}, sdk.ZeroDec(), err
 		}
-		return nil, outRoute, tokenOut, spotPrice, nil
+		return nil, outRoute, tokenIn, spotPrice, nil
 	}
 
 	// if amount denom is neither equal to denomIn nor denomOut, return error
