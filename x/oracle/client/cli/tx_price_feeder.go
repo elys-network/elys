@@ -21,7 +21,7 @@ func CmdSetPriceFeeder() *cobra.Command {
 				return err
 			}
 
-			isActive, err := strconv.ParseBool(args[1])
+			isActive, err := strconv.ParseBool(args[0])
 			if err != nil {
 				return err
 			}

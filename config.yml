@@ -419,6 +419,8 @@ genesis:
       priceFeeders:
         - feeder: "elys12tzylat4udvjj56uuhu3vj2n4vgp7cf9fwna9w"
           is_active: true
+        - feeder: "elys1v30pe777dj9mgsnlv0j2c5wh05m0ya0nlhuv7t"
+          is_active: true
       prices:
         - asset: USDT
           price: "1.00"

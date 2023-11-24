@@ -17,6 +17,15 @@ func (oq *Querier) queryAmmPriceByDenom(ctx sdk.Context, query *ammtypes.QueryAM
 		return nil, errorsmod.Wrapf(aptypes.ErrAssetProfileNotFound, "denom: %s", denom)
 	}
 
+	// If amount is zero
+	if query.TokenIn.Amount.IsZero() {
+		responseBytes, err := json.Marshal(sdk.ZeroDec())
+		if err != nil {
+			return nil, errorsmod.Wrap(err, "failed to serialize in route by denom response")
+		}
+		return responseBytes, nil
+	}
+
 	// uses asset profile denom
 	usdcDenom := assetProfile.Denom
 
