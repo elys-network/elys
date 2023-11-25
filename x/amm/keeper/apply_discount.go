@@ -8,6 +8,12 @@ import (
 
 // ApplyDiscount applies discount to swap fee if applicable
 func (k Keeper) ApplyDiscount(ctx sdk.Context, swapFee sdk.Dec, discount sdk.Dec, sender string) (sdk.Dec, sdk.Dec, error) {
+	// if discount is nil, return swap fee and zero discount
+	if discount.IsNil() {
+		return swapFee, sdk.ZeroDec(), nil
+	}
+
+	// if discount is zero, return swap fee and zero discount
 	if discount.IsZero() {
 		return swapFee, sdk.ZeroDec(), nil
 	}
