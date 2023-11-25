@@ -15,6 +15,10 @@ func (m *Messenger) msgDeleteEntry(ctx sdk.Context, contractAddr sdk.AccAddress,
 		return nil, nil, wasmvmtypes.InvalidRequest{Err: "DeleteEntry null msg"}
 	}
 
+	if msg.Authority != contractAddr.String() {
+		return nil, nil, wasmvmtypes.InvalidRequest{Err: "delete entry wrong sender"}
+	}
+
 	msgServer := keeper.NewMsgServerImpl(*m.keeper)
 
 	if err := msg.ValidateBasic(); err != nil {

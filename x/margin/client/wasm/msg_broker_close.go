@@ -11,6 +11,14 @@ import (
 )
 
 func (m *Messenger) msgBrokerClose(ctx sdk.Context, contractAddr sdk.AccAddress, msgBrokerClose *margintypes.MsgBrokerClose) ([]sdk.Event, [][]byte, error) {
+	if msgBrokerClose == nil {
+		return nil, nil, wasmvmtypes.InvalidRequest{Err: "Broker Close null msg"}
+	}
+
+	if msgBrokerClose.Creator != contractAddr.String() {
+		return nil, nil, wasmvmtypes.InvalidRequest{Err: "broker close wrong sender"}
+	}
+
 	res, err := PerformMsgBrokerClose(m.keeper, ctx, contractAddr, msgBrokerClose)
 	if err != nil {
 		return nil, nil, errorsmod.Wrap(err, "perform broker close")

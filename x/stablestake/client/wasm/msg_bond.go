@@ -15,6 +15,10 @@ func (m *Messenger) msgBond(ctx sdk.Context, contractAddr sdk.AccAddress, msg *t
 		return nil, nil, wasmvmtypes.InvalidRequest{Err: "Bond null msg"}
 	}
 
+	if msg.Creator != contractAddr.String() {
+		return nil, nil, wasmvmtypes.InvalidRequest{Err: "bond wrong sender"}
+	}
+
 	msgServer := keeper.NewMsgServerImpl(*m.keeper)
 
 	if err := msg.ValidateBasic(); err != nil {

@@ -15,6 +15,10 @@ func (m *Messenger) msgRequestBandPrice(ctx sdk.Context, contractAddr sdk.AccAdd
 		return nil, nil, wasmvmtypes.InvalidRequest{Err: "RequestBandPrice null msg"}
 	}
 
+	if msg.Creator != contractAddr.String() {
+		return nil, nil, wasmvmtypes.InvalidRequest{Err: "request band price wrong sender"}
+	}
+
 	msgServer := keeper.NewMsgServerImpl(*m.keeper)
 
 	if err := msg.ValidateBasic(); err != nil {

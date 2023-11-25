@@ -15,6 +15,10 @@ func (m *Messenger) msgCommitClaimedRewards(ctx sdk.Context, contractAddr sdk.Ac
 		return nil, nil, wasmvmtypes.InvalidRequest{Err: "CommitUnclaimedRewards null msg"}
 	}
 
+	if msg.Creator != contractAddr.String() {
+		return nil, nil, wasmvmtypes.InvalidRequest{Err: "commit unclaimed rewards wrong sender"}
+	}
+
 	msgServer := keeper.NewMsgServerImpl(*m.keeper)
 
 	if err := msg.ValidateBasic(); err != nil {

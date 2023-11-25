@@ -15,6 +15,10 @@ func (m *Messenger) msgFeedMultipleExternalLiquidity(ctx sdk.Context, contractAd
 		return nil, nil, wasmvmtypes.InvalidRequest{Err: "FeedMultipleExternalLiquidity null msg"}
 	}
 
+	if msg.Sender != contractAddr.String() {
+		return nil, nil, wasmvmtypes.InvalidRequest{Err: "FeedMultipleExternalLiquidity wrong sender"}
+	}
+
 	msgServer := ammkeeper.NewMsgServerImpl(*m.keeper)
 
 	if err := msg.ValidateBasic(); err != nil {

@@ -15,6 +15,10 @@ func (m *Messenger) msgSwapByDenom(ctx sdk.Context, contractAddr sdk.AccAddress,
 		return nil, nil, wasmvmtypes.InvalidRequest{Err: "swap by denom null msg"}
 	}
 
+	if msg.Sender != contractAddr.String() {
+		return nil, nil, wasmvmtypes.InvalidRequest{Err: "swap by denom wrong sender"}
+	}
+
 	msgServer := ammkeeper.NewMsgServerImpl(*m.keeper)
 
 	if err := msg.ValidateBasic(); err != nil {

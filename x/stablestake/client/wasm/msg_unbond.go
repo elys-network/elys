@@ -15,6 +15,10 @@ func (m *Messenger) msgUnbond(ctx sdk.Context, contractAddr sdk.AccAddress, msg 
 		return nil, nil, wasmvmtypes.InvalidRequest{Err: "Unbond null msg"}
 	}
 
+	if msg.Creator != contractAddr.String() {
+		return nil, nil, wasmvmtypes.InvalidRequest{Err: "unbond wrong sender"}
+	}
+
 	msgServer := keeper.NewMsgServerImpl(*m.keeper)
 
 	if err := msg.ValidateBasic(); err != nil {

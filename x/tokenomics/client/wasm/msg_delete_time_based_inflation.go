@@ -15,6 +15,10 @@ func (m *Messenger) msgDeleteTimeBasedInflation(ctx sdk.Context, contractAddr sd
 		return nil, nil, wasmvmtypes.InvalidRequest{Err: "DeleteTimeBasedInflation null msg"}
 	}
 
+	if msg.Authority != contractAddr.String() {
+		return nil, nil, wasmvmtypes.InvalidRequest{Err: "delete time based inflation wrong sender"}
+	}
+
 	msgServer := keeper.NewMsgServerImpl(*m.keeper)
 
 	if err := msg.ValidateBasic(); err != nil {

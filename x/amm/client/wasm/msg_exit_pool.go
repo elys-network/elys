@@ -15,6 +15,10 @@ func (m *Messenger) msgExitPool(ctx sdk.Context, contractAddr sdk.AccAddress, ms
 		return nil, nil, wasmvmtypes.InvalidRequest{Err: "exit pool null msg"}
 	}
 
+	if msg.Sender != contractAddr.String() {
+		return nil, nil, wasmvmtypes.InvalidRequest{Err: "exit pool wrong sender"}
+	}
+
 	msgServer := ammkeeper.NewMsgServerImpl(*m.keeper)
 
 	if err := msg.ValidateBasic(); err != nil {

@@ -11,6 +11,14 @@ import (
 )
 
 func (m *Messenger) msgClose(ctx sdk.Context, contractAddr sdk.AccAddress, msgClose *margintypes.MsgClose) ([]sdk.Event, [][]byte, error) {
+	if msgClose == nil {
+		return nil, nil, wasmvmtypes.InvalidRequest{Err: "Close null msg"}
+	}
+
+	if msgClose.Creator != contractAddr.String() {
+		return nil, nil, wasmvmtypes.InvalidRequest{Err: "close wrong sender"}
+	}
+
 	res, err := PerformMsgClose(m.keeper, ctx, contractAddr, msgClose)
 	if err != nil {
 		return nil, nil, errorsmod.Wrap(err, "perform close")

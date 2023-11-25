@@ -15,6 +15,10 @@ func (m *Messenger) msgCreateEntry(ctx sdk.Context, contractAddr sdk.AccAddress,
 		return nil, nil, wasmvmtypes.InvalidRequest{Err: "CreateEntry null msg"}
 	}
 
+	if msg.Authority != contractAddr.String() {
+		return nil, nil, wasmvmtypes.InvalidRequest{Err: "create entry wrong sender"}
+	}
+
 	msgServer := keeper.NewMsgServerImpl(*m.keeper)
 
 	if err := msg.ValidateBasic(); err != nil {

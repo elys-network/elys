@@ -13,6 +13,14 @@ import (
 )
 
 func (m *Messenger) msgCancelVest(ctx sdk.Context, contractAddr sdk.AccAddress, msgCancelVest *commitmenttypes.MsgCancelVest) ([]sdk.Event, [][]byte, error) {
+	if msgCancelVest == nil {
+		return nil, nil, wasmvmtypes.InvalidRequest{Err: "cancel vest null msg"}
+	}
+
+	if msgCancelVest.Creator != contractAddr.String() {
+		return nil, nil, wasmvmtypes.InvalidRequest{Err: "cancel vest wrong sender"}
+	}
+
 	var res *wasmbindingstypes.RequestResponse
 	var err error
 	if msgCancelVest.Denom != paramtypes.Eden {

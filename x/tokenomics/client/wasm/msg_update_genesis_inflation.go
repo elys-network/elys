@@ -15,6 +15,10 @@ func (m *Messenger) msgUpdateGenesisInflation(ctx sdk.Context, contractAddr sdk.
 		return nil, nil, wasmvmtypes.InvalidRequest{Err: "UpdateGenesisInflation null msg"}
 	}
 
+	if msg.Authority != contractAddr.String() {
+		return nil, nil, wasmvmtypes.InvalidRequest{Err: "update genesis inflation wrong sender"}
+	}
+
 	msgServer := keeper.NewMsgServerImpl(*m.keeper)
 
 	if err := msg.ValidateBasic(); err != nil {

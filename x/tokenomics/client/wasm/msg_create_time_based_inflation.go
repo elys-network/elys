@@ -15,6 +15,10 @@ func (m *Messenger) msgCreateTimeBasedInflation(ctx sdk.Context, contractAddr sd
 		return nil, nil, wasmvmtypes.InvalidRequest{Err: "CreateTimeBasedInflation null msg"}
 	}
 
+	if msg.Authority != contractAddr.String() {
+		return nil, nil, wasmvmtypes.InvalidRequest{Err: "create time based inflation wrong sender"}
+	}
+
 	msgServer := keeper.NewMsgServerImpl(*m.keeper)
 
 	if err := msg.ValidateBasic(); err != nil {
