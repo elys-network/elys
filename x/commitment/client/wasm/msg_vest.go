@@ -13,6 +13,14 @@ import (
 )
 
 func (m *Messenger) msgVest(ctx sdk.Context, contractAddr sdk.AccAddress, msgVest *commitmenttypes.MsgVest) ([]sdk.Event, [][]byte, error) {
+	if msgVest == nil {
+		return nil, nil, wasmvmtypes.InvalidRequest{Err: "Vest null msg"}
+	}
+
+	if msgVest.Creator != contractAddr.String() {
+		return nil, nil, wasmvmtypes.InvalidRequest{Err: "vest wrong sender"}
+	}
+
 	var res *wasmbindingstypes.RequestResponse
 	var err error
 	if msgVest.Denom != paramtypes.Eden {

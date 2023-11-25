@@ -15,6 +15,10 @@ func (m *Messenger) msgUpdatePools(ctx sdk.Context, contractAddr sdk.AccAddress,
 		return nil, nil, wasmvmtypes.InvalidRequest{Err: "UpdatePools null msg"}
 	}
 
+	if msg.Authority != contractAddr.String() {
+		return nil, nil, wasmvmtypes.InvalidRequest{Err: "update pools wrong sender"}
+	}
+
 	msgServer := keeper.NewMsgServerImpl(*m.keeper)
 
 	if err := msg.ValidateBasic(); err != nil {

@@ -12,6 +12,14 @@ import (
 )
 
 func (m *Messenger) msgOpen(ctx sdk.Context, contractAddr sdk.AccAddress, msgOpen *leveragelptypes.MsgOpen) ([]sdk.Event, [][]byte, error) {
+	if msgOpen == nil {
+		return nil, nil, wasmvmtypes.InvalidRequest{Err: "Open null msg"}
+	}
+
+	if msgOpen.Creator != contractAddr.String() {
+		return nil, nil, wasmvmtypes.InvalidRequest{Err: "open wrong sender"}
+	}
+
 	res, err := PerformMsgOpen(m.keeper, ctx, contractAddr, msgOpen)
 	if err != nil {
 		return nil, nil, errorsmod.Wrap(err, "perform open")

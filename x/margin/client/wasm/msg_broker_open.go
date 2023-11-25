@@ -12,6 +12,14 @@ import (
 )
 
 func (m *Messenger) msgBrokerOpen(ctx sdk.Context, contractAddr sdk.AccAddress, msgBrokerOpen *margintypes.MsgBrokerOpen) ([]sdk.Event, [][]byte, error) {
+	if msgBrokerOpen == nil {
+		return nil, nil, wasmvmtypes.InvalidRequest{Err: "Broker Open null msg"}
+	}
+
+	if msgBrokerOpen.Creator != contractAddr.String() {
+		return nil, nil, wasmvmtypes.InvalidRequest{Err: "broker open wrong sender"}
+	}
+
 	res, err := PerformMsgBrokerOpen(m.keeper, ctx, contractAddr, msgBrokerOpen)
 	if err != nil {
 		return nil, nil, errorsmod.Wrap(err, "perform broker open")

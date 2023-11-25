@@ -15,6 +15,10 @@ func (m *Messenger) msgUpdateVestingInfo(ctx sdk.Context, contractAddr sdk.AccAd
 		return nil, nil, wasmvmtypes.InvalidRequest{Err: "UpdateVestingInfo null msg"}
 	}
 
+	if msg.Authority != contractAddr.String() {
+		return nil, nil, wasmvmtypes.InvalidRequest{Err: "update vesting info wrong sender"}
+	}
+
 	msgServer := keeper.NewMsgServerImpl(*m.keeper)
 
 	if err := msg.ValidateBasic(); err != nil {

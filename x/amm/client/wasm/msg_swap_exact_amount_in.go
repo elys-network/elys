@@ -15,6 +15,10 @@ func (m *Messenger) msgSwapExactAmountIn(ctx sdk.Context, contractAddr sdk.AccAd
 		return nil, nil, wasmvmtypes.InvalidRequest{Err: "swap exact amount in null msg"}
 	}
 
+	if msg.Sender != contractAddr.String() {
+		return nil, nil, wasmvmtypes.InvalidRequest{Err: "swap exact amount in wrong sender"}
+	}
+
 	msgServer := ammkeeper.NewMsgServerImpl(*m.keeper)
 
 	if err := msg.ValidateBasic(); err != nil {

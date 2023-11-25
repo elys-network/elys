@@ -15,6 +15,10 @@ func (m *Messenger) msgCreatePool(ctx sdk.Context, contractAddr sdk.AccAddress, 
 		return nil, nil, wasmvmtypes.InvalidRequest{Err: "create pool null msg"}
 	}
 
+	if msg.Sender != contractAddr.String() {
+		return nil, nil, wasmvmtypes.InvalidRequest{Err: "create pool wrong sender"}
+	}
+
 	msgServer := ammkeeper.NewMsgServerImpl(*m.keeper)
 
 	if err := msg.ValidateBasic(); err != nil {

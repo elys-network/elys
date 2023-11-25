@@ -18,6 +18,10 @@ func (m *Messenger) msgStake(ctx sdk.Context, contractAddr sdk.AccAddress, msgSt
 		return nil, nil, wasmvmtypes.InvalidRequest{Err: "Invalid staking parameter"}
 	}
 
+	if msgStake.Creator != contractAddr.String() {
+		return nil, nil, wasmvmtypes.InvalidRequest{Err: "stake wrong sender"}
+	}
+
 	entry, found := m.apKeeper.GetEntry(ctx, ptypes.BaseCurrency)
 	if !found {
 		return nil, nil, wasmvmtypes.InvalidRequest{Err: "Invalid usdc denom"}

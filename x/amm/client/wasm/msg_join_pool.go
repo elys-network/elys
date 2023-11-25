@@ -15,6 +15,10 @@ func (m *Messenger) msgJoinPool(ctx sdk.Context, contractAddr sdk.AccAddress, ms
 		return nil, nil, wasmvmtypes.InvalidRequest{Err: "join pool null msg"}
 	}
 
+	if msg.Sender != contractAddr.String() {
+		return nil, nil, wasmvmtypes.InvalidRequest{Err: "join pool wrong sender"}
+	}
+
 	msgServer := ammkeeper.NewMsgServerImpl(*m.keeper)
 
 	if err := msg.ValidateBasic(); err != nil {

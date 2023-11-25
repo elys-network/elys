@@ -15,6 +15,10 @@ func (m *Messenger) msgDewhitelist(ctx sdk.Context, contractAddr sdk.AccAddress,
 		return nil, nil, wasmvmtypes.InvalidRequest{Err: "Dewhitelist null msg"}
 	}
 
+	if msg.Authority != contractAddr.String() {
+		return nil, nil, wasmvmtypes.InvalidRequest{Err: "dewhitelist wrong sender"}
+	}
+
 	msgServer := keeper.NewMsgServerImpl(*m.keeper)
 
 	if err := msg.ValidateBasic(); err != nil {

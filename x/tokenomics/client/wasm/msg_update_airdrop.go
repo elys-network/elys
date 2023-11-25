@@ -15,6 +15,10 @@ func (m *Messenger) msgUpdateAirdrop(ctx sdk.Context, contractAddr sdk.AccAddres
 		return nil, nil, wasmvmtypes.InvalidRequest{Err: "UpdateAirdrop null msg"}
 	}
 
+	if msg.Authority != contractAddr.String() {
+		return nil, nil, wasmvmtypes.InvalidRequest{Err: "update airdrop wrong sender"}
+	}
+
 	msgServer := keeper.NewMsgServerImpl(*m.keeper)
 
 	if err := msg.ValidateBasic(); err != nil {

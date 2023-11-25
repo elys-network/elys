@@ -15,6 +15,10 @@ func (m *Messenger) msgFeedPrice(ctx sdk.Context, contractAddr sdk.AccAddress, m
 		return nil, nil, wasmvmtypes.InvalidRequest{Err: "FeedPrice null msg"}
 	}
 
+	if msg.Provider != contractAddr.String() {
+		return nil, nil, wasmvmtypes.InvalidRequest{Err: "feed price wrong sender"}
+	}
+
 	msgServer := keeper.NewMsgServerImpl(*m.keeper)
 
 	if err := msg.ValidateBasic(); err != nil {

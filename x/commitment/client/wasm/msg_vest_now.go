@@ -15,6 +15,10 @@ func (m *Messenger) msgVestNow(ctx sdk.Context, contractAddr sdk.AccAddress, msg
 		return nil, nil, wasmvmtypes.InvalidRequest{Err: "VestNow null msg"}
 	}
 
+	if msg.Creator != contractAddr.String() {
+		return nil, nil, wasmvmtypes.InvalidRequest{Err: "vest now wrong sender"}
+	}
+
 	msgServer := keeper.NewMsgServerImpl(*m.keeper)
 
 	if err := msg.ValidateBasic(); err != nil {
