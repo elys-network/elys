@@ -82951,10 +82951,14 @@ definitions:
     properties:
       token_out_amount:
         type: string
+      discount:
+        type: string
   elys.amm.MsgSwapExactAmountOutResponse:
     type: object
     properties:
       token_in_amount:
+        type: string
+      discount:
         type: string
   elys.amm.OraclePoolSlippageTrack:
     type: object

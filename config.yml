@@ -32,6 +32,10 @@ validators:
     bonded: 100000000uelys
 genesis:
   app_state:
+    clock:
+      params:
+        contract_addresses:
+          ["elys14hj2tavq8fpesdwxxcu44rty3hh90vhujrvcmstl4zr3txmfvw9s3fsthx"]
     crisis:
       constant_fee:
         denom: uelys
