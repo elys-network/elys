@@ -39,7 +39,10 @@ func (k Keeper) CalculateRewardsForLPs(ctx sdk.Context, totalProxyTVL sdk.Dec, c
 
 		// Calculate Proxy TVL share considering multiplier
 		proxyTVL := tvl.Mul(poolInfo.Multiplier)
-		poolShare := proxyTVL.Quo(totalProxyTVL)
+		poolShare := sdk.ZeroDec()
+		if totalProxyTVL.IsPositive() {
+			poolShare = proxyTVL.Quo(totalProxyTVL)
+		}
 
 		// Calculate new Eden for this pool
 		newEdenAllocatedForPool := poolShare.MulInt(edenAmountPerEpochLp)
