@@ -64,6 +64,7 @@ func (k msgServer) SwapByDenom(goCtx context.Context, msg *types.MsgSwapByDenom)
 			SpotPrice: spotPrice,
 			SwapFee:   res.SwapFee,
 			Discount:  res.Discount,
+			Recipient: res.Recipient,
 		}, nil
 	}
 
@@ -101,6 +102,7 @@ func (k msgServer) SwapByDenom(goCtx context.Context, msg *types.MsgSwapByDenom)
 			SpotPrice: spotPrice,
 			SwapFee:   res.SwapFee,
 			Discount:  res.Discount,
+			Recipient: res.Recipient,
 		}, nil
 	}
 

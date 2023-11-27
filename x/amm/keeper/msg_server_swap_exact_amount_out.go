@@ -42,5 +42,6 @@ func (k msgServer) SwapExactAmountOut(goCtx context.Context, msg *types.MsgSwapE
 		TokenInAmount: tokenInAmount,
 		SwapFee:       swapFee,
 		Discount:      discount,
+		Recipient:     recipient.String(),
 	}, nil
 }
