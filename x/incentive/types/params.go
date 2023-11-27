@@ -339,7 +339,7 @@ func validateDistributionEpochLps(i interface{}) error {
 		return fmt.Errorf("invalid parameter type: %T", i)
 	}
 
-	if v < 1 {
+	if v == 0 {
 		return fmt.Errorf("invalid parameter type: %T", i)
 	}
 
@@ -352,7 +352,7 @@ func validateDistributionEpochStakers(i interface{}) error {
 		return fmt.Errorf("invalid parameter type: %T", i)
 	}
 
-	if v < 1 {
+	if v == 0 {
 		return fmt.Errorf("invalid parameter type: %T", i)
 	}
 

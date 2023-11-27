@@ -114,7 +114,7 @@ func (k Keeper) ProcessUpdateIncentiveParams(ctx sdk.Context) bool {
 
 		totalBlocksPerYear := sdk.NewInt(int64(inflation.EndBlockHeight - inflation.StartBlockHeight + 1))
 		allocationEpochInblocks := totalBlocksPerYear.Quo(sdk.NewInt(ptypes.DaysPerYear))
-		if len(params.LpIncentives) < 1 {
+		if len(params.LpIncentives) == 0 {
 			totalDistributionEpochPerYear := totalBlocksPerYear.Quo(sdk.NewInt(params.DistributionEpochForLpsInBlocks))
 			currentEpochInBlocks := sdk.NewInt(ctx.BlockHeight() - int64(inflation.StartBlockHeight)).Mul(totalDistributionEpochPerYear).Quo(totalBlocksPerYear)
 			maxEdenPerAllocation := sdk.NewInt(int64(inflation.Inflation.LmRewards)).Mul(allocationEpochInblocks).Quo(totalBlocksPerYear)
@@ -138,7 +138,7 @@ func (k Keeper) ProcessUpdateIncentiveParams(ctx sdk.Context) bool {
 			})
 		}
 
-		if len(params.StakeIncentives) < 1 {
+		if len(params.StakeIncentives) == 0 {
 			totalDistributionEpochPerYear := totalBlocksPerYear.Quo(sdk.NewInt(params.DistributionEpochForStakersInBlocks))
 			currentEpochInBlocks := sdk.NewInt(ctx.BlockHeight() - int64(inflation.StartBlockHeight)).Mul(totalDistributionEpochPerYear).Quo(totalBlocksPerYear)
 			maxEdenPerAllocation := sdk.NewInt(int64(inflation.Inflation.IcsStakingRewards)).Mul(allocationEpochInblocks).Quo(totalBlocksPerYear)

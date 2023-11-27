@@ -31,6 +31,13 @@ func networkWithTimeBasedInflationObjects(t *testing.T, n int) (*network.Network
 		timeBasedInflation := types.TimeBasedInflation{
 			StartBlockHeight: uint64(i),
 			EndBlockHeight:   uint64(i),
+			Inflation: &types.InflationEntry{
+				LmRewards:         9999999,
+				IcsStakingRewards: 9999999,
+				CommunityFund:     9999999,
+				StrategicReserve:  9999999,
+				TeamTokensVested:  9999999,
+			},
 		}
 		nullify.Fill(&timeBasedInflation)
 		state.TimeBasedInflationList = append(state.TimeBasedInflationList, timeBasedInflation)
