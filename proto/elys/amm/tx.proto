@@ -63,12 +63,12 @@ message MsgSwapExactAmountIn {
            cosmos.base.v1beta1.Coin token_in             = 3 [(gogoproto.nullable)   = false                                   ] ;
            string                   token_out_min_amount = 4 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false];
            string                   discount   = 5 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
-
+           string                   recipient  = 6;
 }
 
 message MsgSwapExactAmountInResponse {
   string token_out_amount = 1 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false];
-  string                   discount   = 2 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+  string discount   = 2 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
 }
 
 message MsgSwapExactAmountOut {
@@ -77,11 +77,12 @@ message MsgSwapExactAmountOut {
            cosmos.base.v1beta1.Coin token_out           = 3 [(gogoproto.nullable)   = false                                   ] ;
            string                   token_in_max_amount = 4 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false];
            string                   discount   = 5 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+           string                   recipient  = 6;
 }
 
 message MsgSwapExactAmountOutResponse {
   string token_in_amount = 1 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false];
-  string                   discount   = 2 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+  string discount   = 2 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
 }
 
 message MsgFeedMultipleExternalLiquidity {

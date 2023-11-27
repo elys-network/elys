@@ -20,10 +20,10 @@ var _ = strconv.Itoa(0)
 
 func CmdSwapExactAmountIn() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:     "swap-exact-amount-in [token-in] [token-out-min-amount] [swap-route-pool-ids] [swap-route-denoms]",
+		Use:     "swap-exact-amount-in [token-in] [token-out-min-amount] [swap-route-pool-ids] [swap-route-denoms] [recipient]",
 		Short:   "Swap an exact amount of tokens for a minimum of another token, similar to swapping a token on the trade screen GUI.",
 		Example: `elysd tx amm swap-exact-amount-in 100000uusdc 10000 0 uatom --from=treasury --keyring-backend=test --chain-id=elystestnet-1 --yes --gas=1000000`,
-		Args:    cobra.ExactArgs(4),
+		Args:    cobra.ExactArgs(5),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			argTokenIn, err := sdk.ParseCoinNormalized(args[0])
 			if err != nil {
@@ -53,6 +53,8 @@ func CmdSwapExactAmountIn() *cobra.Command {
 				return err
 			}
 
+			argRecipient := args[4]
+
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
 				return err
@@ -60,6 +62,7 @@ func CmdSwapExactAmountIn() *cobra.Command {
 
 			msg := types.NewMsgSwapExactAmountIn(
 				clientCtx.GetFromAddress().String(),
+				argRecipient,
 				argTokenIn,
 				argTokenOutMinAmount,
 				argSwapRoutePoolIds,

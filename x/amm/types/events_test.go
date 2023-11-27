@@ -15,11 +15,12 @@ func TestEvents(t *testing.T) {
 	input := sdk.NewCoins(sdk.NewInt64Coin("token1", 100))
 	output := sdk.NewCoins(sdk.NewInt64Coin("token2", 50))
 
-	swapEvent := types.NewSwapEvent(sender, poolID, input, output)
+	swapEvent := types.NewSwapEvent(sender, sender, poolID, input, output)
 	expectedSwapEvent := sdk.NewEvent(
 		types.TypeEvtTokenSwapped,
 		sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
 		sdk.NewAttribute(sdk.AttributeKeySender, sender.String()),
+		sdk.NewAttribute(types.AttributeKeyRecipient, sender.String()),
 		sdk.NewAttribute(types.AttributeKeyPoolId, strconv.FormatUint(poolID, 10)),
 		sdk.NewAttribute(types.AttributeKeyTokensIn, input.String()),
 		sdk.NewAttribute(types.AttributeKeyTokensOut, output.String()),

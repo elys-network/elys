@@ -10,7 +10,7 @@ const TypeMsgSwapExactAmountOut = "swap_exact_amount_out"
 
 var _ sdk.Msg = &MsgSwapExactAmountOut{}
 
-func NewMsgSwapExactAmountOut(sender string, tokenOut sdk.Coin, tokenInMaxAmount math.Int, swapRoutePoolIds []uint64, swapRouteDenoms []string, discount sdk.Dec) *MsgSwapExactAmountOut {
+func NewMsgSwapExactAmountOut(sender, recipient string, tokenOut sdk.Coin, tokenInMaxAmount math.Int, swapRoutePoolIds []uint64, swapRouteDenoms []string, discount sdk.Dec) *MsgSwapExactAmountOut {
 	if len(swapRoutePoolIds) != len(swapRouteDenoms) {
 		return nil // or raise an error as the input lists should have the same length
 	}
@@ -26,6 +26,7 @@ func NewMsgSwapExactAmountOut(sender string, tokenOut sdk.Coin, tokenInMaxAmount
 
 	return &MsgSwapExactAmountOut{
 		Sender:           sender,
+		Recipient:        recipient,
 		Routes:           routes,
 		TokenOut:         tokenOut,
 		TokenInMaxAmount: tokenInMaxAmount,

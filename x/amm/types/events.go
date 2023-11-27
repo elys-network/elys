@@ -16,11 +16,12 @@ const (
 	AttributeKeyPoolId     = "pool_id"
 	AttributeKeyTokensIn   = "tokens_in"
 	AttributeKeyTokensOut  = "tokens_out"
+	AttributeKeyRecipient  = "recipient"
 )
 
-func EmitSwapEvent(ctx sdk.Context, sender sdk.AccAddress, poolId uint64, input sdk.Coins, output sdk.Coins) {
+func EmitSwapEvent(ctx sdk.Context, sender, recipient sdk.AccAddress, poolId uint64, input sdk.Coins, output sdk.Coins) {
 	ctx.EventManager().EmitEvents(sdk.Events{
-		NewSwapEvent(sender, poolId, input, output),
+		NewSwapEvent(sender, recipient, poolId, input, output),
 	})
 }
 
@@ -36,11 +37,12 @@ func EmitRemoveLiquidityEvent(ctx sdk.Context, sender sdk.AccAddress, poolId uin
 	})
 }
 
-func NewSwapEvent(sender sdk.AccAddress, poolId uint64, input sdk.Coins, output sdk.Coins) sdk.Event {
+func NewSwapEvent(sender, recipient sdk.AccAddress, poolId uint64, input sdk.Coins, output sdk.Coins) sdk.Event {
 	return sdk.NewEvent(
 		TypeEvtTokenSwapped,
 		sdk.NewAttribute(sdk.AttributeKeyModule, AttributeValueCategory),
 		sdk.NewAttribute(sdk.AttributeKeySender, sender.String()),
+		sdk.NewAttribute(AttributeKeyRecipient, recipient.String()),
 		sdk.NewAttribute(AttributeKeyPoolId, strconv.FormatUint(poolId, 10)),
 		sdk.NewAttribute(AttributeKeyTokensIn, input.String()),
 		sdk.NewAttribute(AttributeKeyTokensOut, output.String()),

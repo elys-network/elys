@@ -205,7 +205,7 @@ func (suite *KeeperTestSuite) TestSwapExactAmountIn() {
 				TotalWeight: sdk.ZeroInt(),
 			}
 
-			tokenOut, err := suite.app.AmmKeeper.SwapExactAmountIn(suite.ctx, sender, pool, tc.tokenIn, tc.tokenOut.Denom, tc.tokenOutMin, tc.swapFeeIn)
+			tokenOut, err := suite.app.AmmKeeper.SwapExactAmountIn(suite.ctx, sender, sender, pool, tc.tokenIn, tc.tokenOut.Denom, tc.tokenOutMin, tc.swapFeeIn)
 			if !tc.expPass {
 				suite.Require().Error(err)
 			} else {
