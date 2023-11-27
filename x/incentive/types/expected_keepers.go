@@ -10,6 +10,7 @@ import (
 	epochstypes "github.com/elys-network/elys/x/epochs/types"
 	oracletypes "github.com/elys-network/elys/x/oracle/types"
 	stabletypes "github.com/elys-network/elys/x/stablestake/types"
+	tokenomictypes "github.com/elys-network/elys/x/tokenomics/types"
 )
 
 // CommitmentKeeper
@@ -135,4 +136,9 @@ type EpochsKeeper interface {
 // StableStakeKeeper defines the expected epochs keeper used for simulations (noalias)
 type StableStakeKeeper interface {
 	GetParams(ctx sdk.Context) (params stabletypes.Params)
+}
+
+// TokenomicsKeeper defines the expected tokenomics keeper used for simulations (noalias)
+type TokenomicsKeeper interface {
+	GetAllTimeBasedInflation(ctx sdk.Context) (list []tokenomictypes.TimeBasedInflation)
 }

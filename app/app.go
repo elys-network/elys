@@ -752,6 +752,15 @@ func NewElysApp(
 	)
 	stablestake := stablestake.NewAppModule(appCodec, app.StablestakeKeeper, app.AccountKeeper, app.BankKeeper)
 
+	app.TokenomicsKeeper = *tokenomicsmodulekeeper.NewKeeper(
+		appCodec,
+		keys[tokenomicsmoduletypes.StoreKey],
+		keys[tokenomicsmoduletypes.MemStoreKey],
+		app.GetSubspace(tokenomicsmoduletypes.ModuleName),
+		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+	)
+	tokenomicsModule := tokenomicsmodule.NewAppModule(appCodec, app.TokenomicsKeeper, app.AccountKeeper, app.BankKeeper)
+
 	app.IncentiveKeeper = *incentivemodulekeeper.NewKeeper(
 		appCodec,
 		keys[incentivemoduletypes.StoreKey],
@@ -766,6 +775,7 @@ func NewElysApp(
 		app.AssetprofileKeeper,
 		app.EpochsKeeper,
 		app.StablestakeKeeper,
+		app.TokenomicsKeeper,
 		authtypes.FeeCollectorName,
 		DexRevenueCollectorName,
 	)
@@ -778,15 +788,6 @@ func NewElysApp(
 	)
 
 	commitmentModule := commitmentmodule.NewAppModule(appCodec, app.CommitmentKeeper, app.AccountKeeper, app.BankKeeper)
-
-	app.TokenomicsKeeper = *tokenomicsmodulekeeper.NewKeeper(
-		appCodec,
-		keys[tokenomicsmoduletypes.StoreKey],
-		keys[tokenomicsmoduletypes.MemStoreKey],
-		app.GetSubspace(tokenomicsmoduletypes.ModuleName),
-		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
-	)
-	tokenomicsModule := tokenomicsmodule.NewAppModule(appCodec, app.TokenomicsKeeper, app.AccountKeeper, app.BankKeeper)
 
 	app.BurnerKeeper = *burnermodulekeeper.NewKeeper(
 		appCodec,

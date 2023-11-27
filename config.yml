@@ -287,24 +287,8 @@ genesis:
               amount: "200000"
     incentive:
       params:
-        lp_incentives:
-          - eden_amount_per_year: "10000000000000"
-            distribution_start_block: "1"
-            total_blocks_per_year: "10512000"
-            allocation_epoch_in_blocks: "28800"
-            max_eden_per_allocation: "27397238400"
-            distribution_epoch_in_blocks: "10"
-            current_epoch_in_blocks: "0"
-            eden_boost_apr: "1"
-        stake_incentives:
-          - eden_amount_per_year: "10000000000000"
-            distribution_start_block: "1"
-            total_blocks_per_year: "10512000"
-            allocation_epoch_in_blocks: "28800"
-            max_eden_per_allocation: "27397238400"
-            distribution_epoch_in_blocks: "20"
-            current_epoch_in_blocks: "0"
-            eden_boost_apr: "1"
+        lp_incentives: []
+        stake_incentives: []
         community_tax: "0.00"
         withdraw_addr_enabled: true
         reward_portion_for_lps: "0.65"

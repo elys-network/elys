@@ -12,16 +12,18 @@ var _ paramtypes.ParamSet = (*Params)(nil)
 
 // Parameter keys
 var (
-	ParamStoreKeyCommunityTax          = []byte("communitytax")
-	ParamStoreKeyWithdrawAddrEnabled   = []byte("withdrawaddrenabled")
-	ParamStoreKeyRewardPortionForLps   = []byte("rewardportionforlps")
-	ParamStoreKeyLPIncentives          = []byte("lpincentives")
-	ParamStoreKeyStkIncentives         = []byte("stkincentives")
-	ParamStoreKeyPoolInfos             = []byte("poolinfos")
-	ParamStoreKeyElysStakeTrackingRate = []byte("elysstaketrackingrate")
-	ParamStoreKeyDexRewardsStakers     = []byte("dexrewardsstakers")
-	ParamStoreKeyDexRewardsLps         = []byte("dexrewardslps")
-	ParamStoreKeyMaxEdenRewardApr      = []byte("maxedenrewardapr")
+	ParamStoreKeyCommunityTax             = []byte("communitytax")
+	ParamStoreKeyWithdrawAddrEnabled      = []byte("withdrawaddrenabled")
+	ParamStoreKeyRewardPortionForLps      = []byte("rewardportionforlps")
+	ParamStoreKeyLPIncentives             = []byte("lpincentives")
+	ParamStoreKeyStkIncentives            = []byte("stkincentives")
+	ParamStoreKeyPoolInfos                = []byte("poolinfos")
+	ParamStoreKeyElysStakeTrackingRate    = []byte("elysstaketrackingrate")
+	ParamStoreKeyDexRewardsStakers        = []byte("dexrewardsstakers")
+	ParamStoreKeyDexRewardsLps            = []byte("dexrewardslps")
+	ParamStoreKeyMaxEdenRewardApr         = []byte("maxedenrewardapr")
+	ParamStoreKeyDistributionEpochLPs     = []byte("distributionepochlps")
+	ParamStoreKeyDistributionEpochStakers = []byte("distributionepochstakers")
 )
 
 // ParamKeyTable the param key table for launch module
@@ -49,7 +51,9 @@ func NewParams() Params {
 			Amount:                        sdk.ZeroDec(),
 			AmountCollectedByOtherTracker: sdk.ZeroDec(),
 		},
-		MaxEdenRewardApr: sdk.NewDecWithPrec(3, 1),
+		MaxEdenRewardApr:                    sdk.NewDecWithPrec(3, 1),
+		DistributionEpochForLpsInBlocks:     10,
+		DistributionEpochForStakersInBlocks: 10,
 	}
 }
 
@@ -71,6 +75,8 @@ func (p *Params) ParamSetPairs() paramtypes.ParamSetPairs {
 		paramtypes.NewParamSetPair(ParamStoreKeyDexRewardsStakers, &p.DexRewardsStakers, validateDexRewardsStakers),
 		paramtypes.NewParamSetPair(ParamStoreKeyDexRewardsLps, &p.DexRewardsLps, validateDexRewardsLps),
 		paramtypes.NewParamSetPair(ParamStoreKeyMaxEdenRewardApr, &p.MaxEdenRewardApr, validateEdenRewardApr),
+		paramtypes.NewParamSetPair(ParamStoreKeyDistributionEpochLPs, &p.DistributionEpochForLpsInBlocks, validateDistributionEpochLps),
+		paramtypes.NewParamSetPair(ParamStoreKeyDistributionEpochStakers, &p.DistributionEpochForStakersInBlocks, validateDistributionEpochStakers),
 	}
 }
 
@@ -116,6 +122,14 @@ func (p Params) Validate() error {
 		return err
 	}
 
+	if err := validateDistributionEpochLps(p.DistributionEpochForLpsInBlocks); err != nil {
+		return err
+	}
+	
+	if err := validateDistributionEpochStakers(p.DistributionEpochForStakersInBlocks); err != nil {
+		return err
+	}
+	
 	return nil
 }
 
@@ -310,6 +324,32 @@ func validateEdenRewardApr(i interface{}) error {
 	}
 
 	if v.IsNegative() {
+		return fmt.Errorf("invalid parameter type: %T", i)
+	}
+
+	return nil
+}
+
+func validateDistributionEpochLps(i interface{}) error {
+	v, ok := i.(int64)
+	if !ok {
+		return fmt.Errorf("invalid parameter type: %T", i)
+	}
+
+	if v < 1 {
+		return fmt.Errorf("invalid parameter type: %T", i)
+	}
+
+	return nil
+}
+
+func validateDistributionEpochStakers(i interface{}) error {
+	v, ok := i.(int64)
+	if !ok {
+		return fmt.Errorf("invalid parameter type: %T", i)
+	}
+
+	if v < 1 {
 		return fmt.Errorf("invalid parameter type: %T", i)
 	}
 

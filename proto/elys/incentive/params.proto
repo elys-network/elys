@@ -43,4 +43,9 @@ message Params {
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
+
+  // Distribution epochs for LPs in blocks
+	int64 distribution_epoch_for_lps_in_blocks = 11;
+  // Distribution epochs for stakers in blocks
+	int64 distribution_epoch_for_stakers_in_blocks = 12;
 }

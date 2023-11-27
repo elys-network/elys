@@ -20,20 +20,21 @@ import (
 
 type (
 	Keeper struct {
-		cdc          codec.BinaryCodec
-		storeKey     storetypes.StoreKey
-		memKey       storetypes.StoreKey
-		paramstore   paramtypes.Subspace
-		cmk          types.CommitmentKeeper
-		stk          types.StakingKeeper
-		tci          *types.TotalCommitmentInfo
-		authKeeper   types.AccountKeeper
-		bankKeeper   types.BankKeeper
-		amm          types.AmmKeeper
-		oracleKeeper types.OracleKeeper
-		apKeeper     types.AssetProfileKeeper
-		epochsKeeper types.EpochsKeeper
-		stableKeeper types.StableStakeKeeper
+		cdc              codec.BinaryCodec
+		storeKey         storetypes.StoreKey
+		memKey           storetypes.StoreKey
+		paramstore       paramtypes.Subspace
+		cmk              types.CommitmentKeeper
+		stk              types.StakingKeeper
+		tci              *types.TotalCommitmentInfo
+		authKeeper       types.AccountKeeper
+		bankKeeper       types.BankKeeper
+		amm              types.AmmKeeper
+		oracleKeeper     types.OracleKeeper
+		apKeeper         types.AssetProfileKeeper
+		epochsKeeper     types.EpochsKeeper
+		stableKeeper     types.StableStakeKeeper
+		tokenomicsKeeper types.TokenomicsKeeper
 
 		feeCollectorName    string // name of the FeeCollector ModuleAccount
 		dexRevCollectorName string // name of the Dex Revenue ModuleAccount
@@ -54,6 +55,7 @@ func NewKeeper(
 	ap types.AssetProfileKeeper,
 	epochsKeeper types.EpochsKeeper,
 	stableKeeper types.StableStakeKeeper,
+	tokenomicsKeeper types.TokenomicsKeeper,
 	feeCollectorName string,
 	dexRevCollectorName string,
 ) *Keeper {
@@ -79,6 +81,7 @@ func NewKeeper(
 		apKeeper:            ap,
 		epochsKeeper:        epochsKeeper,
 		stableKeeper:        stableKeeper,
+		tokenomicsKeeper:    tokenomicsKeeper,
 	}
 }
 

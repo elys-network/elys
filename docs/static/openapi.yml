@@ -39625,6 +39625,14 @@ paths:
                   max_eden_reward_apr:
                     type: string
                     title: Maximum eden reward apr
+                  distribution_epoch_for_lps_in_blocks:
+                    type: string
+                    format: int64
+                    title: Distribution epochs for LPs in blocks
+                  distribution_epoch_for_stakers_in_blocks:
+                    type: string
+                    format: int64
+                    title: Distribution epochs for stakers in blocks
             description: >-
               QueryParamsResponse is response type for the Query/Params RPC
               method.
@@ -84535,6 +84543,14 @@ definitions:
       max_eden_reward_apr:
         type: string
         title: Maximum eden reward apr
+      distribution_epoch_for_lps_in_blocks:
+        type: string
+        format: int64
+        title: Distribution epochs for LPs in blocks
+      distribution_epoch_for_stakers_in_blocks:
+        type: string
+        format: int64
+        title: Distribution epochs for stakers in blocks
     description: Params defines the parameters for the module.
   elys.incentive.PoolInfo:
     type: object
@@ -84689,6 +84705,14 @@ definitions:
           max_eden_reward_apr:
             type: string
             title: Maximum eden reward apr
+          distribution_epoch_for_lps_in_blocks:
+            type: string
+            format: int64
+            title: Distribution epochs for LPs in blocks
+          distribution_epoch_for_stakers_in_blocks:
+            type: string
+            format: int64
+            title: Distribution epochs for stakers in blocks
     description: QueryParamsResponse is response type for the Query/Params RPC method.
   elys.leveragelp.IsWhitelistedResponse:
     type: object
