@@ -112,6 +112,7 @@ message MsgSwapByDenom {
   string                   denom_in   = 5;
   string                   denom_out  = 6;
   string                   discount   = 7 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+  string                   recipient = 8;
 }
 
 message MsgSwapByDenomResponse {
