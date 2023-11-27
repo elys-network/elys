@@ -20,7 +20,9 @@ func (suite *KeeperTestSuite) TestSwapExactAmountOut() {
 		tokenOut            sdk.Coin
 		weightBalanceBonus  sdk.Dec
 		isOraclePool        bool
+		useNewRecipient     bool
 		expSenderBalance    sdk.Coins
+		expRecipientBalance sdk.Coins
 		expPoolBalance      sdk.Coins
 		expTreasuryBalance  sdk.Coins
 		expPass             bool
@@ -36,7 +38,9 @@ func (suite *KeeperTestSuite) TestSwapExactAmountOut() {
 			tokenOut:            sdk.NewInt64Coin(ptypes.BaseCurrency, 10000),
 			weightBalanceBonus:  sdk.ZeroDec(),
 			isOraclePool:        false,
+			useNewRecipient:     false,
 			expSenderBalance:    sdk.Coins{},
+			expRecipientBalance: sdk.Coins{},
 			expPoolBalance:      sdk.Coins{},
 			expTreasuryBalance:  sdk.Coins{},
 			expPass:             false,
@@ -52,7 +56,9 @@ func (suite *KeeperTestSuite) TestSwapExactAmountOut() {
 			tokenOut:            sdk.NewInt64Coin(ptypes.BaseCurrency, 10000),
 			weightBalanceBonus:  sdk.ZeroDec(),
 			isOraclePool:        false,
+			useNewRecipient:     false,
 			expSenderBalance:    sdk.Coins{},
+			expRecipientBalance: sdk.Coins{},
 			expPoolBalance:      sdk.Coins{},
 			expTreasuryBalance:  sdk.Coins{},
 			expPass:             false,
@@ -68,7 +74,9 @@ func (suite *KeeperTestSuite) TestSwapExactAmountOut() {
 			tokenOut:            sdk.NewInt64Coin(ptypes.BaseCurrency, 10000),
 			weightBalanceBonus:  sdk.ZeroDec(),
 			isOraclePool:        false,
+			useNewRecipient:     false,
 			expSenderBalance:    sdk.Coins{sdk.NewInt64Coin("uusda", 989796), sdk.NewInt64Coin(ptypes.BaseCurrency, 1010000)},
+			expRecipientBalance: sdk.Coins{},
 			expPoolBalance:      sdk.Coins{sdk.NewInt64Coin("uusda", 1010194), sdk.NewInt64Coin(ptypes.BaseCurrency, 989910)},
 			expTreasuryBalance:  sdk.Coins{sdk.NewInt64Coin("uusda", 1000010), sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)},
 			expPass:             true,
@@ -84,7 +92,9 @@ func (suite *KeeperTestSuite) TestSwapExactAmountOut() {
 			tokenOut:            sdk.NewInt64Coin(ptypes.BaseCurrency, 10000),
 			weightBalanceBonus:  sdk.ZeroDec(),
 			isOraclePool:        false,
+			useNewRecipient:     false,
 			expSenderBalance:    sdk.Coins{sdk.NewInt64Coin("uusda", 989898), sdk.NewInt64Coin(ptypes.BaseCurrency, 1010000)},
+			expRecipientBalance: sdk.Coins{},
 			expPoolBalance:      sdk.Coins{sdk.NewInt64Coin("uusda", 1010102), sdk.NewInt64Coin(ptypes.BaseCurrency, 990000)},
 			expTreasuryBalance:  sdk.Coins{sdk.NewInt64Coin("uusda", 1000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)},
 			expPass:             true,
@@ -100,7 +110,9 @@ func (suite *KeeperTestSuite) TestSwapExactAmountOut() {
 			tokenOut:            sdk.NewInt64Coin(ptypes.BaseCurrency, 200000),
 			weightBalanceBonus:  sdk.ZeroDec(),
 			isOraclePool:        true,
+			useNewRecipient:     false,
 			expSenderBalance:    sdk.Coins{sdk.NewInt64Coin("uusda", 788888), sdk.NewInt64Coin(ptypes.BaseCurrency, 1200000)},
+			expRecipientBalance: sdk.Coins{},
 			expPoolBalance:      sdk.Coins{sdk.NewInt64Coin("uusda", 1211112), sdk.NewInt64Coin(ptypes.BaseCurrency, 800000)},
 			expTreasuryBalance:  sdk.Coins{sdk.NewInt64Coin("uusda", 1000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)},
 			expPass:             true,
@@ -115,8 +127,10 @@ func (suite *KeeperTestSuite) TestSwapExactAmountOut() {
 			tokenInMax:          sdk.NewInt(10000000),
 			tokenOut:            sdk.NewInt64Coin(ptypes.BaseCurrency, 10000),
 			isOraclePool:        false,
+			useNewRecipient:     false,
 			weightBalanceBonus:  sdk.NewDecWithPrec(3, 1), // 30% bonus
 			expSenderBalance:    sdk.Coins{sdk.NewInt64Coin("uusda", 989898), sdk.NewInt64Coin(ptypes.BaseCurrency, 1010000)},
+			expRecipientBalance: sdk.Coins{},
 			expPoolBalance:      sdk.Coins{sdk.NewInt64Coin("uusda", 1010102), sdk.NewInt64Coin(ptypes.BaseCurrency, 990000)},
 			expTreasuryBalance:  sdk.Coins{sdk.NewInt64Coin("uusda", 1000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)},
 			expPass:             true,
@@ -132,7 +146,27 @@ func (suite *KeeperTestSuite) TestSwapExactAmountOut() {
 			tokenOut:            sdk.NewInt64Coin(ptypes.BaseCurrency, 10000),
 			weightBalanceBonus:  sdk.NewDecWithPrec(3, 1), // 30% bonus
 			isOraclePool:        false,
+			useNewRecipient:     false,
 			expSenderBalance:    sdk.Coins{sdk.NewInt64Coin("uusda", 989898), sdk.NewInt64Coin(ptypes.BaseCurrency, 1010000)},
+			expRecipientBalance: sdk.Coins{},
+			expPoolBalance:      sdk.Coins{sdk.NewInt64Coin("uusda", 1010102), sdk.NewInt64Coin(ptypes.BaseCurrency, 990000)},
+			expTreasuryBalance:  sdk.Coins{sdk.NewInt64Coin("uusda", 1000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 100)},
+			expPass:             true,
+		},
+		{
+			desc:                "new recipient address",
+			senderInitBalance:   sdk.Coins{sdk.NewInt64Coin("uusda", 1000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)},
+			poolInitBalance:     sdk.Coins{sdk.NewInt64Coin("uusda", 1000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)},
+			treasuryInitBalance: sdk.Coins{sdk.NewInt64Coin("uusda", 1000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 100)},
+			swapFeeOut:          sdk.ZeroDec(),
+			tokenIn:             sdk.NewInt64Coin("uusda", 10102),
+			tokenInMax:          sdk.NewInt(10000000),
+			tokenOut:            sdk.NewInt64Coin(ptypes.BaseCurrency, 10000),
+			weightBalanceBonus:  sdk.NewDecWithPrec(3, 1), // 30% bonus
+			isOraclePool:        false,
+			useNewRecipient:     true,
+			expSenderBalance:    sdk.Coins{sdk.NewInt64Coin("uusda", 989898), sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)},
+			expRecipientBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 10000)},
 			expPoolBalance:      sdk.Coins{sdk.NewInt64Coin("uusda", 1010102), sdk.NewInt64Coin(ptypes.BaseCurrency, 990000)},
 			expTreasuryBalance:  sdk.Coins{sdk.NewInt64Coin("uusda", 1000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 100)},
 			expPass:             true,
@@ -144,8 +178,12 @@ func (suite *KeeperTestSuite) TestSwapExactAmountOut() {
 
 			// bootstrap accounts
 			sender := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
+			recipient := sender
 			poolAddr := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
 			treasuryAddr := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
+			if tc.useNewRecipient {
+				recipient = sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
+			}
 
 			// bootstrap balances
 			err := suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, tc.senderInitBalance)
@@ -197,7 +235,7 @@ func (suite *KeeperTestSuite) TestSwapExactAmountOut() {
 				TotalWeight: sdk.ZeroInt(),
 			}
 
-			tokenInAmount, err := suite.app.AmmKeeper.SwapExactAmountOut(suite.ctx, sender, pool, tc.tokenIn.Denom, tc.tokenInMax, tc.tokenOut, tc.swapFeeOut)
+			tokenInAmount, err := suite.app.AmmKeeper.SwapExactAmountOut(suite.ctx, sender, recipient, pool, tc.tokenIn.Denom, tc.tokenInMax, tc.tokenOut, tc.swapFeeOut)
 			if !tc.expPass {
 				suite.Require().Error(err)
 			} else {
@@ -211,6 +249,12 @@ func (suite *KeeperTestSuite) TestSwapExactAmountOut() {
 				// check balance change on sender
 				balances = suite.app.BankKeeper.GetAllBalances(suite.ctx, sender)
 				suite.Require().Equal(balances.String(), tc.expSenderBalance.String())
+
+				if tc.useNewRecipient {
+					// check balance change on recipient
+					balances = suite.app.BankKeeper.GetAllBalances(suite.ctx, recipient)
+					suite.Require().Equal(balances.String(), tc.expRecipientBalance.String())
+				}
 
 				// check balance change on treasury
 				balances = suite.app.BankKeeper.GetAllBalances(suite.ctx, treasuryAddr)

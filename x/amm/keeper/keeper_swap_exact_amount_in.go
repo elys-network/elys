@@ -19,6 +19,7 @@ import (
 func (k Keeper) SwapExactAmountIn(
 	ctx sdk.Context,
 	sender sdk.AccAddress,
+	recipient sdk.AccAddress,
 	pool types.Pool,
 	tokenIn sdk.Coin,
 	tokenOutDenom string,
@@ -61,7 +62,7 @@ func (k Keeper) SwapExactAmountIn(
 
 	// Settles balances between the tx sender and the pool to match the swap that was executed earlier.
 	// Also emits a swap event and updates related liquidity metrics.
-	err, swapOutFee := k.UpdatePoolForSwap(ctx, pool, sender, tokenIn, tokenOutCoin, sdk.ZeroDec(), swapFee, weightBalanceBonus)
+	err, swapOutFee := k.UpdatePoolForSwap(ctx, pool, sender, recipient, tokenIn, tokenOutCoin, sdk.ZeroDec(), swapFee, weightBalanceBonus)
 	if err != nil {
 		return math.Int{}, err
 	}

@@ -28,7 +28,11 @@ func (k Keeper) ApplySwapRequest(ctx sdk.Context, msg sdk.Msg) error {
 		if err != nil {
 			return err
 		}
-		_, err = k.RouteExactAmountIn(ctx, sender, msg.Routes, msg.TokenIn, math.Int(msg.TokenOutMinAmount), msg.Discount)
+		recipient, err := sdk.AccAddressFromBech32(msg.Recipient)
+		if err != nil {
+			recipient = sender
+		}
+		_, err = k.RouteExactAmountIn(ctx, sender, recipient, msg.Routes, msg.TokenIn, math.Int(msg.TokenOutMinAmount), msg.Discount)
 		if err != nil {
 			return err
 		}
@@ -38,7 +42,11 @@ func (k Keeper) ApplySwapRequest(ctx sdk.Context, msg sdk.Msg) error {
 		if err != nil {
 			return err
 		}
-		_, err = k.RouteExactAmountOut(ctx, sender, msg.Routes, msg.TokenInMaxAmount, msg.TokenOut, msg.Discount)
+		recipient, err := sdk.AccAddressFromBech32(msg.Recipient)
+		if err != nil {
+			recipient = sender
+		}
+		_, err = k.RouteExactAmountOut(ctx, sender, recipient, msg.Routes, msg.TokenInMaxAmount, msg.TokenOut, msg.Discount)
 		if err != nil {
 			return err
 		}

@@ -180,6 +180,7 @@ func (suite *KeeperTestSuite) TestRouteExactAmountIn() {
 			tokenOut, err := suite.app.AmmKeeper.RouteExactAmountIn(
 				suite.ctx,
 				sender,
+				sender,
 				[]types.SwapAmountInRoute{
 					{
 						PoolId:        1,

@@ -12,6 +12,7 @@ import (
 func (k Keeper) RouteExactAmountIn(
 	ctx sdk.Context,
 	sender sdk.AccAddress,
+	recipient sdk.AccAddress,
 	routes []types.SwapAmountInRoute,
 	tokenIn sdk.Coin,
 	tokenOutMinAmount math.Int,
@@ -79,7 +80,7 @@ func (k Keeper) RouteExactAmountIn(
 			return math.Int{}, err
 		}
 
-		tokenOutAmount, err = k.SwapExactAmountIn(ctx, sender, pool, tokenIn, route.TokenOutDenom, _outMinAmount, swapFee)
+		tokenOutAmount, err = k.SwapExactAmountIn(ctx, sender, recipient, pool, tokenIn, route.TokenOutDenom, _outMinAmount, swapFee)
 		if err != nil {
 			ctx.Logger().Error(err.Error())
 			return math.Int{}, err

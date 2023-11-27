@@ -53,6 +53,11 @@ func CmdSwapExactAmountOut() *cobra.Command {
 				return err
 			}
 
+			recipient, err := cmd.Flags().GetString(FlagRecipient)
+			if err != nil {
+				return err
+			}
+
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
 				return err
@@ -60,6 +65,7 @@ func CmdSwapExactAmountOut() *cobra.Command {
 
 			msg := types.NewMsgSwapExactAmountOut(
 				clientCtx.GetFromAddress().String(),
+				recipient,
 				argTokenOut,
 				argTokenOutMaxAmount,
 				argSwapRoutePoolIds,
@@ -76,6 +82,7 @@ func CmdSwapExactAmountOut() *cobra.Command {
 	flags.AddTxFlagsToCmd(cmd)
 
 	cmd.Flags().String(FlagDiscount, "0.0", "discount to apply to the swap fee (only smart contract broker can apply the discount)")
+	cmd.Flags().String(FlagRecipient, "", "optional recipient field for the tokens swapped to be sent to")
 
 	return cmd
 }
