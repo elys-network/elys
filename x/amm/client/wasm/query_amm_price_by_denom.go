@@ -36,8 +36,9 @@ func (oq *Querier) queryAmmPriceByDenom(ctx sdk.Context, query *ammtypes.QueryAM
 
 	routes := resp.InRoute
 	tokenIn := query.TokenIn
+	discount := query.Discount
 
-	spotPrice, _, err := oq.keeper.CalcInRouteSpotPrice(ctx, tokenIn, routes)
+	spotPrice, _, _, _, _, err := oq.keeper.CalcInRouteSpotPrice(ctx, tokenIn, routes, discount)
 	if err != nil {
 		return nil, errorsmod.Wrap(err, "failed to get in route by denom")
 	}

@@ -18,11 +18,11 @@ func (k Keeper) RouteExactAmountOut(ctx sdk.Context,
 	tokenInMaxAmount math.Int,
 	tokenOut sdk.Coin,
 	discount sdk.Dec,
-) (tokenInAmount math.Int, err error) {
+) (tokenInAmount math.Int, totalDiscountedSwapFee sdk.Dec, discountOut sdk.Dec, err error) {
 	isMultiHopRouted, routeSwapFee, sumOfSwapFees := false, sdk.Dec{}, sdk.Dec{}
 	route := types.SwapAmountOutRoutes(routes)
 	if err := route.Validate(); err != nil {
-		return math.Int{}, err
+		return math.Int{}, sdk.ZeroDec(), sdk.ZeroDec(), err
 	}
 
 	defer func() {
@@ -44,9 +44,12 @@ func (k Keeper) RouteExactAmountOut(ctx sdk.Context,
 		isMultiHopRouted = true
 		routeSwapFee, sumOfSwapFees, err = k.getElysRoutedMultihopTotalSwapFee(ctx, route)
 		if err != nil {
-			return math.Int{}, err
+			return math.Int{}, sdk.ZeroDec(), sdk.ZeroDec(), err
 		}
 	}
+
+	// Initialize the total discounted swap fee
+	totalDiscountedSwapFee = sdk.ZeroDec()
 
 	// Determine what the estimated input would be for each pool along the multi-hop route
 	// if we determined the route is an osmo multi-hop and both routes are incentivized,
@@ -58,10 +61,10 @@ func (k Keeper) RouteExactAmountOut(ctx sdk.Context,
 		insExpected, err = k.createMultihopExpectedSwapOuts(ctx, routes, tokenOut)
 	}
 	if err != nil {
-		return math.Int{}, err
+		return math.Int{}, sdk.ZeroDec(), sdk.ZeroDec(), err
 	}
 	if len(insExpected) == 0 {
-		return math.Int{}, nil
+		return math.Int{}, sdk.ZeroDec(), sdk.ZeroDec(), nil
 	}
 
 	insExpected[0] = tokenInMaxAmount
@@ -81,7 +84,7 @@ func (k Keeper) RouteExactAmountOut(ctx sdk.Context,
 		// Execute the expected swap on the current routed pool
 		pool, poolExists := k.GetPool(ctx, route.PoolId)
 		if !poolExists {
-			return math.Int{}, types.ErrInvalidPoolId
+			return math.Int{}, sdk.ZeroDec(), sdk.ZeroDec(), types.ErrInvalidPoolId
 		}
 
 		// // check if pool is active, if not error
@@ -97,12 +100,15 @@ func (k Keeper) RouteExactAmountOut(ctx sdk.Context,
 		// Apply discount to swap fee if applicable
 		swapFee, discount, err = k.ApplyDiscount(ctx, swapFee, discount, sender.String())
 		if err != nil {
-			return math.Int{}, err
+			return math.Int{}, sdk.ZeroDec(), sdk.ZeroDec(), err
 		}
+
+		// Calculate the total discounted swap fee
+		totalDiscountedSwapFee = totalDiscountedSwapFee.Add(swapFee)
 
 		_tokenInAmount, swapErr := k.SwapExactAmountOut(ctx, sender, pool, route.TokenInDenom, insExpected[i], _tokenOut, swapFee)
 		if swapErr != nil {
-			return math.Int{}, swapErr
+			return math.Int{}, sdk.ZeroDec(), sdk.ZeroDec(), swapErr
 		}
 
 		// Sets the final amount of tokens that need to be input into the first pool. Even though this is the final return value for the
@@ -113,5 +119,5 @@ func (k Keeper) RouteExactAmountOut(ctx sdk.Context,
 		}
 	}
 
-	return tokenInAmount, nil
+	return tokenInAmount, totalDiscountedSwapFee, discount, nil
 }
