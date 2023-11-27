@@ -9,9 +9,10 @@ const TypeMsgSwapByDenom = "swap_by_denom"
 
 var _ sdk.Msg = &MsgSwapByDenom{}
 
-func NewMsgSwapByDenom(sender string, amount sdk.Coin, minAmount sdk.Coin, maxAmount sdk.Coin, denomIn string, denomOut string, discount sdk.Dec) *MsgSwapByDenom {
+func NewMsgSwapByDenom(sender, recipient string, amount sdk.Coin, minAmount sdk.Coin, maxAmount sdk.Coin, denomIn string, denomOut string, discount sdk.Dec) *MsgSwapByDenom {
 	return &MsgSwapByDenom{
 		Sender:    sender,
+		Recipient: recipient,
 		Amount:    amount,
 		MinAmount: minAmount,
 		MaxAmount: maxAmount,

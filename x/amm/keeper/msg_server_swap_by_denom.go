@@ -43,9 +43,10 @@ func (k msgServer) SwapByDenom(goCtx context.Context, msg *types.MsgSwapByDenom)
 		}
 
 		res, err := k.SwapExactAmountIn(
-			ctx,
+			sdk.WrapSDKContext(ctx),
 			&types.MsgSwapExactAmountIn{
 				Sender:            msg.Sender,
+				Recipient:         msg.Recipient,
 				Routes:            route,
 				TokenIn:           msg.Amount,
 				TokenOutMinAmount: msg.MinAmount.Amount,
@@ -80,7 +81,7 @@ func (k msgServer) SwapByDenom(goCtx context.Context, msg *types.MsgSwapByDenom)
 		}
 
 		res, err := k.SwapExactAmountOut(
-			ctx,
+			sdk.WrapSDKContext(ctx),
 			&types.MsgSwapExactAmountOut{
 				Sender:           msg.Sender,
 				Routes:           route,

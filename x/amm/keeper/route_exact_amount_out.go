@@ -14,6 +14,7 @@ import (
 // Transaction succeeds if the calculated tokenInAmount of the first pool is less than the defined tokenInMaxAmount defined.
 func (k Keeper) RouteExactAmountOut(ctx sdk.Context,
 	sender sdk.AccAddress,
+	recipient sdk.AccAddress,
 	routes []types.SwapAmountOutRoute,
 	tokenInMaxAmount math.Int,
 	tokenOut sdk.Coin,
@@ -106,7 +107,7 @@ func (k Keeper) RouteExactAmountOut(ctx sdk.Context,
 		// Calculate the total discounted swap fee
 		totalDiscountedSwapFee = totalDiscountedSwapFee.Add(swapFee)
 
-		_tokenInAmount, swapErr := k.SwapExactAmountOut(ctx, sender, pool, route.TokenInDenom, insExpected[i], _tokenOut, swapFee)
+		_tokenInAmount, swapErr := k.SwapExactAmountOut(ctx, sender, recipient, pool, route.TokenInDenom, insExpected[i], _tokenOut, swapFee)
 		if swapErr != nil {
 			return math.Int{}, sdk.ZeroDec(), sdk.ZeroDec(), swapErr
 		}

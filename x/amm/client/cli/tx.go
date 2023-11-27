@@ -17,6 +17,7 @@ var (
 
 const (
 	FlagDiscount               = "discount"
+	FlagRecipient              = "recipient"
 	flagPacketTimeoutTimestamp = "packet-timeout-timestamp"
 	listSeparator              = ","
 )

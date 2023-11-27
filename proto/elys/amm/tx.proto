@@ -63,7 +63,7 @@ message MsgSwapExactAmountIn {
            cosmos.base.v1beta1.Coin token_in             = 3 [(gogoproto.nullable)   = false                                   ] ;
            string                   token_out_min_amount = 4 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false];
            string                   discount   = 5 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
-
+           string                   recipient  = 6;
 }
 
 message MsgSwapExactAmountInResponse {
@@ -78,6 +78,7 @@ message MsgSwapExactAmountOut {
            cosmos.base.v1beta1.Coin token_out           = 3 [(gogoproto.nullable)   = false                                   ] ;
            string                   token_in_max_amount = 4 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false];
            string                   discount   = 5 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+           string                   recipient  = 6;
 }
 
 message MsgSwapExactAmountOutResponse {
@@ -113,6 +114,7 @@ message MsgSwapByDenom {
   string                   denom_in   = 5;
   string                   denom_out  = 6;
   string                   discount   = 7 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+  string                   recipient = 8;
 }
 
 message MsgSwapByDenomResponse {
