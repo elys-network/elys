@@ -12,18 +12,19 @@ var _ paramtypes.ParamSet = (*Params)(nil)
 
 // Parameter keys
 var (
-	ParamStoreKeyCommunityTax             = []byte("communitytax")
-	ParamStoreKeyWithdrawAddrEnabled      = []byte("withdrawaddrenabled")
-	ParamStoreKeyRewardPortionForLps      = []byte("rewardportionforlps")
-	ParamStoreKeyLPIncentives             = []byte("lpincentives")
-	ParamStoreKeyStkIncentives            = []byte("stkincentives")
-	ParamStoreKeyPoolInfos                = []byte("poolinfos")
-	ParamStoreKeyElysStakeTrackingRate    = []byte("elysstaketrackingrate")
-	ParamStoreKeyDexRewardsStakers        = []byte("dexrewardsstakers")
-	ParamStoreKeyDexRewardsLps            = []byte("dexrewardslps")
-	ParamStoreKeyMaxEdenRewardApr         = []byte("maxedenrewardapr")
-	ParamStoreKeyDistributionEpochLPs     = []byte("distributionepochlps")
-	ParamStoreKeyDistributionEpochStakers = []byte("distributionepochstakers")
+	ParamStoreKeyCommunityTax               = []byte("communitytax")
+	ParamStoreKeyWithdrawAddrEnabled        = []byte("withdrawaddrenabled")
+	ParamStoreKeyRewardPortionForLps        = []byte("rewardportionforlps")
+	ParamStoreKeyLPIncentives               = []byte("lpincentives")
+	ParamStoreKeyStkIncentives              = []byte("stkincentives")
+	ParamStoreKeyPoolInfos                  = []byte("poolinfos")
+	ParamStoreKeyElysStakeTrackingRate      = []byte("elysstaketrackingrate")
+	ParamStoreKeyDexRewardsStakers          = []byte("dexrewardsstakers")
+	ParamStoreKeyDexRewardsLps              = []byte("dexrewardslps")
+	ParamStoreKeyMaxEdenRewardAprForStakers = []byte("maxedenrewardaprstakers")
+	ParamStoreKeyMaxEdenRewardAprForLPs     = []byte("maxedenrewardaprlps")
+	ParamStoreKeyDistributionEpochLPs       = []byte("distributionepochlps")
+	ParamStoreKeyDistributionEpochStakers   = []byte("distributionepochstakers")
 )
 
 // ParamKeyTable the param key table for launch module
@@ -51,9 +52,10 @@ func NewParams() Params {
 			Amount:                        sdk.ZeroDec(),
 			AmountCollectedByOtherTracker: sdk.ZeroDec(),
 		},
-		MaxEdenRewardApr:                    sdk.NewDecWithPrec(3, 1),
-		DistributionEpochForLpsInBlocks:     10,
+		MaxEdenRewardAprStakers:             sdk.NewDecWithPrec(3, 1),
+		MaxEdenRewardAprLps:                 sdk.NewDecWithPrec(3, 1),
 		DistributionEpochForStakersInBlocks: 10,
+		DistributionEpochForLpsInBlocks:     10,
 	}
 }
 
@@ -74,7 +76,8 @@ func (p *Params) ParamSetPairs() paramtypes.ParamSetPairs {
 		paramtypes.NewParamSetPair(ParamStoreKeyElysStakeTrackingRate, &p.ElysStakeTrackingRate, validateElysStakeTrakcingRate),
 		paramtypes.NewParamSetPair(ParamStoreKeyDexRewardsStakers, &p.DexRewardsStakers, validateDexRewardsStakers),
 		paramtypes.NewParamSetPair(ParamStoreKeyDexRewardsLps, &p.DexRewardsLps, validateDexRewardsLps),
-		paramtypes.NewParamSetPair(ParamStoreKeyMaxEdenRewardApr, &p.MaxEdenRewardApr, validateEdenRewardApr),
+		paramtypes.NewParamSetPair(ParamStoreKeyMaxEdenRewardAprForStakers, &p.MaxEdenRewardAprStakers, validateEdenRewardApr),
+		paramtypes.NewParamSetPair(ParamStoreKeyMaxEdenRewardAprForLPs, &p.MaxEdenRewardAprLps, validateEdenRewardApr),
 		paramtypes.NewParamSetPair(ParamStoreKeyDistributionEpochLPs, &p.DistributionEpochForLpsInBlocks, validateDistributionEpochLps),
 		paramtypes.NewParamSetPair(ParamStoreKeyDistributionEpochStakers, &p.DistributionEpochForStakersInBlocks, validateDistributionEpochStakers),
 	}
@@ -125,11 +128,11 @@ func (p Params) Validate() error {
 	if err := validateDistributionEpochLps(p.DistributionEpochForLpsInBlocks); err != nil {
 		return err
 	}
-	
+
 	if err := validateDistributionEpochStakers(p.DistributionEpochForStakersInBlocks); err != nil {
 		return err
 	}
-	
+
 	return nil
 }
 

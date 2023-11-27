@@ -132,14 +132,17 @@ func (k Keeper) UpdateStakersRewardsUnclaimed(ctx sdk.Context, stakeIncentive ty
 	params := k.GetParams(ctx)
 
 	// Calculate
-	edenAmountPerEpochStakers := stakeIncentive.EdenAmountPerYear.Quo(stakeIncentive.TotalBlocksPerYear).Mul(stakeIncentive.DistributionEpochInBlocks)
+	edenAmountPerEpochStakersPerDay := stakeIncentive.EdenAmountPerYear.Mul(stakeIncentive.AllocationEpochInBlocks).Quo(stakeIncentive.TotalBlocksPerYear)
 
 	// Maximum eden based per distribution epoch on maximum APR - 30% by default
 	// Allocated for staking per day = (0.3/365)* ( total elys staked + total Eden committed + total Eden boost committed)
-	maxEdenAmountPerStakers := params.MaxEdenRewardApr.MulInt(k.tci.TotalElysBonded.Add(k.tci.TotalEdenEdenBoostCommitted)).MulInt(stakeIncentive.DistributionEpochInBlocks).QuoInt(stakeIncentive.TotalBlocksPerYear)
+	maxEdenAmountPerStakers := params.MaxEdenRewardAprStakers.MulInt(k.tci.TotalElysBonded.Add(k.tci.TotalEdenEdenBoostCommitted)).MulInt(stakeIncentive.AllocationEpochInBlocks).QuoInt(stakeIncentive.TotalBlocksPerYear)
 
 	// Use min amount (eden allocation from tokenomics and max apr based eden amount)
-	edenAmountPerEpochStakers = sdk.MinInt(edenAmountPerEpochStakers, maxEdenAmountPerStakers.TruncateInt())
+	edenAmountPerEpochStakersPerDay = sdk.MinInt(edenAmountPerEpochStakersPerDay, maxEdenAmountPerStakers.TruncateInt())
+
+	// Calculate eden amount per distribution epoch
+	edenAmountPerEpochStakers := edenAmountPerEpochStakersPerDay.Mul(stakeIncentive.DistributionEpochInBlocks).Quo(stakeIncentive.AllocationEpochInBlocks)
 
 	// Track the DEX rewards distribution for stakers
 	// Add dexRevenue amount that was tracked by Lp tracker
@@ -340,11 +343,29 @@ func (k Keeper) UpdateLPRewardsUnclaimed(ctx sdk.Context, lpIncentive types.Ince
 	dexRevenueStakersAmt := dexRevenueRemainedForStakers.AmountOf(baseCurrency)
 	gasFeesLPsAmt := gasFeesForLps.AmountOf(baseCurrency)
 
+	// Proxy TVL
+	// Multiplier on each liquidity pool
+	// We have 3 pools of 20, 30, 40 TVL
+	// We have mulitplier of 0.3, 0.5, 1.0
+	// Proxy TVL = 20*0.3+30*0.5+40*1.0
+	totalProxyTVL := k.CalculateProxyTVL(ctx, baseCurrency)
+
 	// Calculate eden amount per epoch
-	edenAmountPerEpochLPs := lpIncentive.EdenAmountPerYear.Quo(lpIncentive.TotalBlocksPerYear).Mul(lpIncentive.DistributionEpochInBlocks)
+	edenAmountPerEpochLPsPerDay := lpIncentive.EdenAmountPerYear.Mul(lpIncentive.AllocationEpochInBlocks).Quo(lpIncentive.TotalBlocksPerYear)
 
 	// Track the DEX rewards distribution for stakers
 	params := k.GetParams(ctx)
+
+	// Maximum eden based per distribution epoch on maximum APR - 30% by default
+	// Allocated for staking per day = (0.3/365)* (total weighted proxy TVL)
+	maxEdenAmountPerLps := params.MaxEdenRewardAprLps.Mul(totalProxyTVL).MulInt(lpIncentive.AllocationEpochInBlocks).QuoInt(lpIncentive.TotalBlocksPerYear)
+
+	// Use min amount (eden allocation from tokenomics and max apr based eden amount)
+	edenAmountPerEpochLPsPerDay = sdk.MinInt(edenAmountPerEpochLPsPerDay, maxEdenAmountPerLps.TruncateInt())
+
+	// Calculate Eden amount per distribution epoch
+	edenAmountPerEpochLPs := edenAmountPerEpochLPsPerDay.Mul(lpIncentive.DistributionEpochInBlocks).Quo(lpIncentive.AllocationEpochInBlocks)
+
 	// Add dexRevenue amount that was tracked by Lp tracker
 	dexRevenueLPsAmt = dexRevenueLPsAmt.Add(params.DexRewardsLps.AmountCollectedByOtherTracker)
 	// Increase block number
@@ -356,13 +377,6 @@ func (k Keeper) UpdateLPRewardsUnclaimed(ctx sdk.Context, lpIncentive types.Ince
 	// Don't increase Lps rewards blocks, it will be increased whenever LP distribution epoch happens.
 	params.DexRewardsStakers.AmountCollectedByOtherTracker = params.DexRewardsStakers.AmountCollectedByOtherTracker.Add(dexRevenueStakersAmt)
 	k.SetParams(ctx, params)
-
-	// Proxy TVL
-	// Multiplier on each liquidity pool
-	// We have 3 pools of 20, 30, 40 TVL
-	// We have mulitplier of 0.3, 0.5, 1.0
-	// Proxy TVL = 20*0.3+30*0.5+40*1.0
-	totalProxyTVL := k.CalculateProxyTVL(ctx, baseCurrency)
 
 	totalEdenGivenLP := sdk.ZeroInt()
 	totalRewardsGivenLP := sdk.ZeroInt()
