@@ -19,7 +19,7 @@ var _ = strconv.Itoa(0)
 
 func CmdUpdateIncentiveParams() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "update-incentive-params [community-tax] [withdraw-addr-enabled] [reward-portion-for-lps] [elys-stake-tracking-rate] [max-eden-reward-apr-stakers] [max-eden-reward-par-lps] [distribution-epoch-for-stakers] [distribution-epoch-for-lps]",
+		Use:   "update-incentive-params [community-tax] [withdraw-addr-enabled] [reward-portion-for-lps] [elys-stake-tracking-rate] [max-eden-reward-apr-stakers] [max-eden-reward-apr-lps] [distribution-epoch-for-stakers] [distribution-epoch-for-lps]",
 		Short: "Broadcast message update-incentive-params",
 		Args:  cobra.ExactArgs(8),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
