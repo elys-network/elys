@@ -84419,6 +84419,8 @@ definitions:
         type: string
         title: eden boost apr (0-1) range
     title: Incentive Info
+  elys.incentive.MsgUpdateIncentiveParamsResponse:
+    type: object
   elys.incentive.MsgWithdrawRewardsResponse:
     type: object
     description: >-

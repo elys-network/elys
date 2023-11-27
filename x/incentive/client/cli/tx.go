@@ -49,6 +49,7 @@ func GetTxCmd() *cobra.Command {
 		CmdUpdatePoolInfoProposal(),
 	)
 
+	cmd.AddCommand(CmdUpdateIncentiveParams())
 	// this line is used by starport scaffolding # 1
 
 	return cmd

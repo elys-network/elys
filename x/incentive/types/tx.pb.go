@@ -7,6 +7,7 @@ import (
 	context "context"
 	fmt "fmt"
 	_ "github.com/cosmos/cosmos-proto"
+	github_com_cosmos_cosmos_sdk_types "github.com/cosmos/cosmos-sdk/types"
 	_ "github.com/cosmos/gogoproto/gogoproto"
 	grpc1 "github.com/cosmos/gogoproto/grpc"
 	proto "github.com/cosmos/gogoproto/proto"
@@ -186,43 +187,176 @@ func (m *MsgWithdrawValidatorCommissionResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgWithdrawValidatorCommissionResponse proto.InternalMessageInfo
 
+type MsgUpdateIncentiveParams struct {
+	Authority                   string                                 `protobuf:"bytes,1,opt,name=authority,proto3" json:"authority,omitempty"`
+	CommunityTax                github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,2,opt,name=communityTax,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"communityTax"`
+	WithdrawAddrEnabled         bool                                   `protobuf:"varint,3,opt,name=withdrawAddrEnabled,proto3" json:"withdrawAddrEnabled,omitempty"`
+	RewardPortionForLps         github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,4,opt,name=rewardPortionForLps,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"rewardPortionForLps"`
+	ElysStakeTrackingRate       int64                                  `protobuf:"varint,5,opt,name=elysStakeTrackingRate,proto3" json:"elysStakeTrackingRate,omitempty"`
+	MaxEdenRewardAprStakers     github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,6,opt,name=maxEdenRewardAprStakers,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"maxEdenRewardAprStakers"`
+	MaxEdenRewardAprLps         github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,7,opt,name=maxEdenRewardAprLps,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"maxEdenRewardAprLps"`
+	DistributionEpochForStakers int64                                  `protobuf:"varint,8,opt,name=distributionEpochForStakers,proto3" json:"distributionEpochForStakers,omitempty"`
+	DistributionEpochForLps     int64                                  `protobuf:"varint,9,opt,name=distributionEpochForLps,proto3" json:"distributionEpochForLps,omitempty"`
+}
+
+func (m *MsgUpdateIncentiveParams) Reset()         { *m = MsgUpdateIncentiveParams{} }
+func (m *MsgUpdateIncentiveParams) String() string { return proto.CompactTextString(m) }
+func (*MsgUpdateIncentiveParams) ProtoMessage()    {}
+func (*MsgUpdateIncentiveParams) Descriptor() ([]byte, []int) {
+	return fileDescriptor_59dc3bedfb1cce84, []int{4}
+}
+func (m *MsgUpdateIncentiveParams) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgUpdateIncentiveParams) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgUpdateIncentiveParams.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgUpdateIncentiveParams) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgUpdateIncentiveParams.Merge(m, src)
+}
+func (m *MsgUpdateIncentiveParams) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgUpdateIncentiveParams) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgUpdateIncentiveParams.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgUpdateIncentiveParams proto.InternalMessageInfo
+
+func (m *MsgUpdateIncentiveParams) GetAuthority() string {
+	if m != nil {
+		return m.Authority
+	}
+	return ""
+}
+
+func (m *MsgUpdateIncentiveParams) GetWithdrawAddrEnabled() bool {
+	if m != nil {
+		return m.WithdrawAddrEnabled
+	}
+	return false
+}
+
+func (m *MsgUpdateIncentiveParams) GetElysStakeTrackingRate() int64 {
+	if m != nil {
+		return m.ElysStakeTrackingRate
+	}
+	return 0
+}
+
+func (m *MsgUpdateIncentiveParams) GetDistributionEpochForStakers() int64 {
+	if m != nil {
+		return m.DistributionEpochForStakers
+	}
+	return 0
+}
+
+func (m *MsgUpdateIncentiveParams) GetDistributionEpochForLps() int64 {
+	if m != nil {
+		return m.DistributionEpochForLps
+	}
+	return 0
+}
+
+type MsgUpdateIncentiveParamsResponse struct {
+}
+
+func (m *MsgUpdateIncentiveParamsResponse) Reset()         { *m = MsgUpdateIncentiveParamsResponse{} }
+func (m *MsgUpdateIncentiveParamsResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgUpdateIncentiveParamsResponse) ProtoMessage()    {}
+func (*MsgUpdateIncentiveParamsResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_59dc3bedfb1cce84, []int{5}
+}
+func (m *MsgUpdateIncentiveParamsResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgUpdateIncentiveParamsResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgUpdateIncentiveParamsResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgUpdateIncentiveParamsResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgUpdateIncentiveParamsResponse.Merge(m, src)
+}
+func (m *MsgUpdateIncentiveParamsResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgUpdateIncentiveParamsResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgUpdateIncentiveParamsResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgUpdateIncentiveParamsResponse proto.InternalMessageInfo
+
 func init() {
 	proto.RegisterType((*MsgWithdrawRewards)(nil), "elys.incentive.MsgWithdrawRewards")
 	proto.RegisterType((*MsgWithdrawRewardsResponse)(nil), "elys.incentive.MsgWithdrawRewardsResponse")
 	proto.RegisterType((*MsgWithdrawValidatorCommission)(nil), "elys.incentive.MsgWithdrawValidatorCommission")
 	proto.RegisterType((*MsgWithdrawValidatorCommissionResponse)(nil), "elys.incentive.MsgWithdrawValidatorCommissionResponse")
+	proto.RegisterType((*MsgUpdateIncentiveParams)(nil), "elys.incentive.MsgUpdateIncentiveParams")
+	proto.RegisterType((*MsgUpdateIncentiveParamsResponse)(nil), "elys.incentive.MsgUpdateIncentiveParamsResponse")
 }
 
 func init() { proto.RegisterFile("elys/incentive/tx.proto", fileDescriptor_59dc3bedfb1cce84) }
 
 var fileDescriptor_59dc3bedfb1cce84 = []byte{
-	// 407 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x12, 0x4f, 0xcd, 0xa9, 0x2c,
-	0xd6, 0xcf, 0xcc, 0x4b, 0x4e, 0xcd, 0x2b, 0xc9, 0x2c, 0x4b, 0xd5, 0x2f, 0xa9, 0xd0, 0x2b, 0x28,
-	0xca, 0x2f, 0xc9, 0x17, 0xe2, 0x03, 0x49, 0xe8, 0xc1, 0x25, 0xa4, 0x44, 0xd2, 0xf3, 0xd3, 0xf3,
-	0xc1, 0x52, 0xfa, 0x20, 0x16, 0x44, 0x95, 0x94, 0x64, 0x72, 0x7e, 0x71, 0x6e, 0x7e, 0x71, 0x3c,
-	0x44, 0x02, 0xc2, 0x81, 0x4a, 0xc9, 0x80, 0x4d, 0x4e, 0xce, 0xcf, 0xcd, 0xcd, 0x2c, 0xc9, 0x4d,
-	0xcd, 0x2b, 0xd1, 0x2f, 0x48, 0x2c, 0x4a, 0xcc, 0x85, 0xca, 0x2a, 0x2d, 0x65, 0xe4, 0x12, 0xf2,
-	0x2d, 0x4e, 0x0f, 0xcf, 0x2c, 0xc9, 0x48, 0x29, 0x4a, 0x2c, 0x0f, 0x4a, 0x2d, 0x4f, 0x2c, 0x4a,
-	0x29, 0x16, 0x72, 0xe5, 0x12, 0x4c, 0x49, 0xcd, 0x49, 0x4d, 0x4f, 0x2c, 0xc9, 0x2f, 0x8a, 0x4f,
-	0x4c, 0x49, 0x29, 0x4a, 0x2d, 0x2e, 0x96, 0x60, 0x54, 0x60, 0xd4, 0xe0, 0x74, 0x92, 0xb8, 0xb4,
-	0x45, 0x57, 0x04, 0x6a, 0x83, 0x23, 0x44, 0x26, 0xb8, 0xa4, 0x28, 0x33, 0x2f, 0x3d, 0x48, 0x00,
-	0xae, 0x05, 0x2a, 0x2e, 0x64, 0xc7, 0xc5, 0x5b, 0x0e, 0x35, 0x39, 0xbe, 0xa4, 0xb2, 0x20, 0x55,
-	0x82, 0x49, 0x81, 0x51, 0x83, 0xcf, 0x48, 0x52, 0x0f, 0xec, 0x29, 0x84, 0x9b, 0xf4, 0x5c, 0x13,
-	0x8b, 0xf2, 0x42, 0x2a, 0x0b, 0x52, 0x83, 0x78, 0x60, 0xea, 0x41, 0x3c, 0x2b, 0x8e, 0x8e, 0x05,
-	0xf2, 0x0c, 0x2f, 0x16, 0xc8, 0x33, 0x28, 0xc9, 0x70, 0x49, 0x61, 0x3a, 0x33, 0x28, 0xb5, 0xb8,
-	0x20, 0x3f, 0xaf, 0x38, 0x55, 0x69, 0x07, 0x23, 0x97, 0x1c, 0x92, 0x74, 0x58, 0x62, 0x4e, 0x66,
-	0x0a, 0xc8, 0x1d, 0xce, 0x20, 0x1b, 0x8a, 0x8b, 0x33, 0xf3, 0xf3, 0xa8, 0xe5, 0x23, 0x57, 0x2e,
-	0xc1, 0x32, 0x98, 0xe9, 0x70, 0x63, 0x98, 0x08, 0x19, 0x03, 0xd7, 0x02, 0x15, 0x47, 0xf2, 0x98,
-	0x06, 0x97, 0x1a, 0x7e, 0x97, 0xc3, 0x3c, 0x69, 0xf4, 0x81, 0x91, 0x8b, 0xd9, 0xb7, 0x38, 0x5d,
-	0x28, 0x91, 0x8b, 0x1f, 0x3d, 0xba, 0x94, 0xf4, 0x50, 0x53, 0x89, 0x1e, 0x66, 0x58, 0x49, 0x69,
-	0x11, 0x56, 0x03, 0xb3, 0x4a, 0xa8, 0x95, 0x91, 0x4b, 0x1a, 0x5f, 0x60, 0xea, 0xe1, 0x31, 0x0b,
-	0x8b, 0x7a, 0x29, 0x33, 0xd2, 0xd4, 0xc3, 0xdc, 0xe1, 0xe4, 0x71, 0xe2, 0x91, 0x1c, 0xe3, 0x85,
-	0x47, 0x72, 0x8c, 0x0f, 0x1e, 0xc9, 0x31, 0x4e, 0x78, 0x2c, 0xc7, 0x70, 0xe1, 0xb1, 0x1c, 0xc3,
-	0x8d, 0xc7, 0x72, 0x0c, 0x51, 0x7a, 0xe9, 0x99, 0x25, 0x19, 0xa5, 0x49, 0xa0, 0x34, 0xa4, 0x0f,
-	0x32, 0x5b, 0x37, 0x2f, 0xb5, 0xa4, 0x3c, 0xbf, 0x28, 0x1b, 0xcc, 0xd1, 0xaf, 0x40, 0xce, 0x49,
-	0x95, 0x05, 0xa9, 0xc5, 0x49, 0x6c, 0xe0, 0xe4, 0x6e, 0x0c, 0x08, 0x00, 0x00, 0xff, 0xff, 0xa5,
-	0x7b, 0xff, 0x7c, 0x68, 0x03, 0x00, 0x00,
+	// 656 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xac, 0x55, 0xcf, 0x4e, 0x13, 0x41,
+	0x1c, 0xee, 0x82, 0x20, 0x4c, 0x10, 0x65, 0x80, 0xb0, 0x14, 0xb2, 0x6d, 0x7a, 0x20, 0x1b, 0x13,
+	0x76, 0x09, 0x1a, 0x63, 0x3c, 0x18, 0x41, 0x97, 0x68, 0x22, 0x09, 0x59, 0x50, 0x13, 0x2f, 0x38,
+	0xdd, 0x9d, 0x6c, 0x27, 0xed, 0xce, 0x6c, 0x66, 0xa6, 0xb4, 0x7d, 0x00, 0x13, 0x8f, 0x3e, 0x81,
+	0xe1, 0xe2, 0x1b, 0x78, 0xf0, 0x11, 0x38, 0x12, 0x4f, 0xc6, 0x03, 0x31, 0x10, 0x13, 0x1f, 0xc3,
+	0xcc, 0xfe, 0xa3, 0xc0, 0x52, 0x94, 0x78, 0x6a, 0x67, 0xbe, 0x6f, 0xbe, 0xdf, 0xf7, 0xfb, 0xb3,
+	0x33, 0x60, 0x0e, 0xb7, 0x7a, 0xc2, 0x26, 0xd4, 0xc3, 0x54, 0x92, 0x3d, 0x6c, 0xcb, 0xae, 0x15,
+	0x71, 0x26, 0x19, 0x9c, 0x54, 0x80, 0x95, 0x03, 0xe5, 0x99, 0x80, 0x05, 0x2c, 0x86, 0x6c, 0xf5,
+	0x2f, 0x61, 0x95, 0xe7, 0x3d, 0x26, 0x42, 0x26, 0x76, 0x13, 0x20, 0x59, 0xa4, 0xd0, 0x62, 0xac,
+	0xec, 0xb1, 0x30, 0x24, 0x32, 0xc4, 0x54, 0xda, 0x11, 0xe2, 0x28, 0x4c, 0xd1, 0xda, 0x67, 0x0d,
+	0xc0, 0x4d, 0x11, 0xbc, 0x21, 0xb2, 0xe1, 0x73, 0xd4, 0x71, 0x71, 0x07, 0x71, 0x5f, 0x40, 0x07,
+	0x4c, 0xf9, 0xb8, 0x85, 0x03, 0x24, 0x19, 0xdf, 0x45, 0xbe, 0xcf, 0xb1, 0x10, 0xba, 0x56, 0xd5,
+	0xcc, 0xf1, 0x75, 0xfd, 0xdb, 0x97, 0xe5, 0x99, 0x34, 0xc2, 0x5a, 0x82, 0x6c, 0x4b, 0x4e, 0x68,
+	0xe0, 0xde, 0xc9, 0x8f, 0xa4, 0xfb, 0xf0, 0x31, 0xb8, 0xd5, 0x49, 0x95, 0x77, 0x65, 0x2f, 0xc2,
+	0xfa, 0x50, 0x55, 0x33, 0x27, 0x57, 0xe7, 0xad, 0x38, 0xa9, 0x53, 0x4f, 0x96, 0x83, 0x38, 0xdd,
+	0xe9, 0x45, 0xd8, 0x9d, 0xc8, 0xf8, 0x6a, 0xf5, 0x68, 0xec, 0xc3, 0x7e, 0xa5, 0xf4, 0x7b, 0xbf,
+	0x52, 0xaa, 0x2d, 0x82, 0xf2, 0x45, 0x9b, 0x2e, 0x16, 0x11, 0xa3, 0x02, 0xd7, 0xbe, 0x6a, 0xc0,
+	0xe8, 0x83, 0x5f, 0xa3, 0x16, 0xf1, 0x95, 0x8f, 0xa7, 0x2a, 0x82, 0x10, 0x84, 0xd1, 0xff, 0x95,
+	0x91, 0x03, 0xa6, 0xf6, 0x32, 0xf5, 0x5c, 0x66, 0xe8, 0x2a, 0x99, 0xfc, 0x48, 0xba, 0xdf, 0x97,
+	0x98, 0x09, 0x96, 0x06, 0x3b, 0xcf, 0x93, 0xfc, 0x34, 0x02, 0xf4, 0x4d, 0x11, 0xbc, 0x8a, 0x7c,
+	0x24, 0xf1, 0x8b, 0x6c, 0x20, 0xb6, 0xe2, 0x6e, 0xc2, 0x45, 0x30, 0x8e, 0xda, 0xb2, 0xc1, 0x38,
+	0x91, 0xbd, 0x24, 0x2d, 0xf7, 0x74, 0x03, 0xba, 0x60, 0x42, 0x15, 0xbb, 0x4d, 0x89, 0xec, 0xed,
+	0xa0, 0x6e, 0x6a, 0xd8, 0x3a, 0x38, 0xaa, 0x94, 0x7e, 0x1c, 0x55, 0x96, 0x02, 0x22, 0x1b, 0xed,
+	0xba, 0xea, 0x47, 0x3a, 0x3a, 0xe9, 0xcf, 0xb2, 0xf0, 0x9b, 0xb6, 0xea, 0x9b, 0xb0, 0x9e, 0x61,
+	0xcf, 0x3d, 0xa3, 0x01, 0x57, 0xc0, 0x74, 0xd6, 0x2b, 0x95, 0x95, 0x43, 0x51, 0xbd, 0x85, 0x7d,
+	0x7d, 0xb8, 0xaa, 0x99, 0x63, 0x6e, 0x11, 0x04, 0xdf, 0x81, 0x69, 0x1e, 0x37, 0x6e, 0x8b, 0x71,
+	0x49, 0x18, 0xdd, 0x60, 0xfc, 0x65, 0x24, 0xf4, 0x1b, 0xd7, 0x32, 0x53, 0x24, 0x05, 0xef, 0x83,
+	0x59, 0x35, 0x59, 0xdb, 0x12, 0x35, 0xf1, 0x0e, 0x47, 0x5e, 0x53, 0x55, 0x1f, 0x49, 0xac, 0x8f,
+	0x54, 0x35, 0x73, 0xd8, 0x2d, 0x06, 0x61, 0x03, 0xcc, 0x85, 0xa8, 0xeb, 0xf8, 0x98, 0x26, 0x73,
+	0xb5, 0x16, 0xf1, 0x98, 0xc4, 0x85, 0x3e, 0x7a, 0x2d, 0x6f, 0x97, 0xc9, 0xa9, 0x0a, 0x9c, 0x87,
+	0x54, 0x05, 0x6e, 0x5e, 0xaf, 0x02, 0x05, 0x52, 0xf0, 0x09, 0x58, 0xf0, 0x89, 0x90, 0x9c, 0xd4,
+	0xdb, 0xaa, 0x2e, 0x4e, 0xc4, 0xbc, 0xc6, 0x06, 0xcb, 0xf3, 0x19, 0x8b, 0xeb, 0x30, 0x88, 0x02,
+	0x1f, 0x82, 0xb9, 0x22, 0x58, 0xf9, 0x1c, 0x8f, 0x4f, 0x5f, 0x06, 0xd7, 0x6a, 0xa0, 0x7a, 0xd9,
+	0x7c, 0x66, 0x43, 0xbc, 0xfa, 0x6b, 0x08, 0x0c, 0x6f, 0x8a, 0x00, 0x22, 0x70, 0xfb, 0xfc, 0x9d,
+	0x53, 0xb3, 0xce, 0x5e, 0x75, 0xd6, 0xc5, 0x0f, 0xbe, 0x7c, 0xf7, 0x6a, 0x4e, 0x16, 0x0a, 0xbe,
+	0xd7, 0xc0, 0xc2, 0xa0, 0x1b, 0xc1, 0x1a, 0xa0, 0x55, 0xc0, 0x2f, 0x3f, 0xf8, 0x37, 0x7e, 0xee,
+	0x43, 0x80, 0xd9, 0xe2, 0x6f, 0xd6, 0x2c, 0x10, 0x2c, 0x64, 0x96, 0x57, 0xfe, 0x96, 0x99, 0x05,
+	0x5d, 0x7f, 0x7e, 0x70, 0x6c, 0x68, 0x87, 0xc7, 0x86, 0xf6, 0xf3, 0xd8, 0xd0, 0x3e, 0x9e, 0x18,
+	0xa5, 0xc3, 0x13, 0xa3, 0xf4, 0xfd, 0xc4, 0x28, 0xbd, 0xb5, 0xfa, 0xc6, 0x4b, 0xa9, 0x2e, 0x53,
+	0x2c, 0x3b, 0x8c, 0x37, 0xe3, 0x85, 0xdd, 0xed, 0x7f, 0x83, 0xd4, 0xa8, 0xd5, 0x47, 0xe3, 0x87,
+	0xe2, 0xde, 0x9f, 0x00, 0x00, 0x00, 0xff, 0xff, 0x7b, 0xf1, 0x05, 0x2c, 0xa2, 0x06, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -243,6 +377,7 @@ type MsgClient interface {
 	// WithdrawValidatorCommission defines a method to withdraw the
 	// full commission to the validator address.
 	WithdrawValidatorCommission(ctx context.Context, in *MsgWithdrawValidatorCommission, opts ...grpc.CallOption) (*MsgWithdrawValidatorCommissionResponse, error)
+	UpdateIncentiveParams(ctx context.Context, in *MsgUpdateIncentiveParams, opts ...grpc.CallOption) (*MsgUpdateIncentiveParamsResponse, error)
 }
 
 type msgClient struct {
@@ -271,6 +406,15 @@ func (c *msgClient) WithdrawValidatorCommission(ctx context.Context, in *MsgWith
 	return out, nil
 }
 
+func (c *msgClient) UpdateIncentiveParams(ctx context.Context, in *MsgUpdateIncentiveParams, opts ...grpc.CallOption) (*MsgUpdateIncentiveParamsResponse, error) {
+	out := new(MsgUpdateIncentiveParamsResponse)
+	err := c.cc.Invoke(ctx, "/elys.incentive.Msg/UpdateIncentiveParams", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // MsgServer is the server API for Msg service.
 type MsgServer interface {
 	// WithdrawDelegatorReward defines a method to withdraw rewards of delegator
@@ -279,6 +423,7 @@ type MsgServer interface {
 	// WithdrawValidatorCommission defines a method to withdraw the
 	// full commission to the validator address.
 	WithdrawValidatorCommission(context.Context, *MsgWithdrawValidatorCommission) (*MsgWithdrawValidatorCommissionResponse, error)
+	UpdateIncentiveParams(context.Context, *MsgUpdateIncentiveParams) (*MsgUpdateIncentiveParamsResponse, error)
 }
 
 // UnimplementedMsgServer can be embedded to have forward compatible implementations.
@@ -290,6 +435,9 @@ func (*UnimplementedMsgServer) WithdrawRewards(ctx context.Context, req *MsgWith
 }
 func (*UnimplementedMsgServer) WithdrawValidatorCommission(ctx context.Context, req *MsgWithdrawValidatorCommission) (*MsgWithdrawValidatorCommissionResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method WithdrawValidatorCommission not implemented")
+}
+func (*UnimplementedMsgServer) UpdateIncentiveParams(ctx context.Context, req *MsgUpdateIncentiveParams) (*MsgUpdateIncentiveParamsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateIncentiveParams not implemented")
 }
 
 func RegisterMsgServer(s grpc1.Server, srv MsgServer) {
@@ -332,6 +480,24 @@ func _Msg_WithdrawValidatorCommission_Handler(srv interface{}, ctx context.Conte
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Msg_UpdateIncentiveParams_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgUpdateIncentiveParams)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).UpdateIncentiveParams(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/elys.incentive.Msg/UpdateIncentiveParams",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).UpdateIncentiveParams(ctx, req.(*MsgUpdateIncentiveParams))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var _Msg_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "elys.incentive.Msg",
 	HandlerType: (*MsgServer)(nil),
@@ -343,6 +509,10 @@ var _Msg_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "WithdrawValidatorCommission",
 			Handler:    _Msg_WithdrawValidatorCommission_Handler,
+		},
+		{
+			MethodName: "UpdateIncentiveParams",
+			Handler:    _Msg_UpdateIncentiveParams_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
@@ -467,6 +637,124 @@ func (m *MsgWithdrawValidatorCommissionResponse) MarshalToSizedBuffer(dAtA []byt
 	return len(dAtA) - i, nil
 }
 
+func (m *MsgUpdateIncentiveParams) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgUpdateIncentiveParams) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgUpdateIncentiveParams) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.DistributionEpochForLps != 0 {
+		i = encodeVarintTx(dAtA, i, uint64(m.DistributionEpochForLps))
+		i--
+		dAtA[i] = 0x48
+	}
+	if m.DistributionEpochForStakers != 0 {
+		i = encodeVarintTx(dAtA, i, uint64(m.DistributionEpochForStakers))
+		i--
+		dAtA[i] = 0x40
+	}
+	{
+		size := m.MaxEdenRewardAprLps.Size()
+		i -= size
+		if _, err := m.MaxEdenRewardAprLps.MarshalTo(dAtA[i:]); err != nil {
+			return 0, err
+		}
+		i = encodeVarintTx(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0x3a
+	{
+		size := m.MaxEdenRewardAprStakers.Size()
+		i -= size
+		if _, err := m.MaxEdenRewardAprStakers.MarshalTo(dAtA[i:]); err != nil {
+			return 0, err
+		}
+		i = encodeVarintTx(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0x32
+	if m.ElysStakeTrackingRate != 0 {
+		i = encodeVarintTx(dAtA, i, uint64(m.ElysStakeTrackingRate))
+		i--
+		dAtA[i] = 0x28
+	}
+	{
+		size := m.RewardPortionForLps.Size()
+		i -= size
+		if _, err := m.RewardPortionForLps.MarshalTo(dAtA[i:]); err != nil {
+			return 0, err
+		}
+		i = encodeVarintTx(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0x22
+	if m.WithdrawAddrEnabled {
+		i--
+		if m.WithdrawAddrEnabled {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i--
+		dAtA[i] = 0x18
+	}
+	{
+		size := m.CommunityTax.Size()
+		i -= size
+		if _, err := m.CommunityTax.MarshalTo(dAtA[i:]); err != nil {
+			return 0, err
+		}
+		i = encodeVarintTx(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0x12
+	if len(m.Authority) > 0 {
+		i -= len(m.Authority)
+		copy(dAtA[i:], m.Authority)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Authority)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgUpdateIncentiveParamsResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgUpdateIncentiveParamsResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgUpdateIncentiveParamsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	return len(dAtA) - i, nil
+}
+
 func encodeVarintTx(dAtA []byte, offset int, v uint64) int {
 	offset -= sovTx(v)
 	base := offset
@@ -521,6 +809,48 @@ func (m *MsgWithdrawValidatorCommission) Size() (n int) {
 }
 
 func (m *MsgWithdrawValidatorCommissionResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	return n
+}
+
+func (m *MsgUpdateIncentiveParams) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Authority)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = m.CommunityTax.Size()
+	n += 1 + l + sovTx(uint64(l))
+	if m.WithdrawAddrEnabled {
+		n += 2
+	}
+	l = m.RewardPortionForLps.Size()
+	n += 1 + l + sovTx(uint64(l))
+	if m.ElysStakeTrackingRate != 0 {
+		n += 1 + sovTx(uint64(m.ElysStakeTrackingRate))
+	}
+	l = m.MaxEdenRewardAprStakers.Size()
+	n += 1 + l + sovTx(uint64(l))
+	l = m.MaxEdenRewardAprLps.Size()
+	n += 1 + l + sovTx(uint64(l))
+	if m.DistributionEpochForStakers != 0 {
+		n += 1 + sovTx(uint64(m.DistributionEpochForStakers))
+	}
+	if m.DistributionEpochForLps != 0 {
+		n += 1 + sovTx(uint64(m.DistributionEpochForLps))
+	}
+	return n
+}
+
+func (m *MsgUpdateIncentiveParamsResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -827,6 +1157,351 @@ func (m *MsgWithdrawValidatorCommissionResponse) Unmarshal(dAtA []byte) error {
 		}
 		if fieldNum <= 0 {
 			return fmt.Errorf("proto: MsgWithdrawValidatorCommissionResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgUpdateIncentiveParams) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgUpdateIncentiveParams: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgUpdateIncentiveParams: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Authority", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Authority = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field CommunityTax", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.CommunityTax.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 3:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field WithdrawAddrEnabled", wireType)
+			}
+			var v int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				v |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			m.WithdrawAddrEnabled = bool(v != 0)
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field RewardPortionForLps", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.RewardPortionForLps.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 5:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ElysStakeTrackingRate", wireType)
+			}
+			m.ElysStakeTrackingRate = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.ElysStakeTrackingRate |= int64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 6:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field MaxEdenRewardAprStakers", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.MaxEdenRewardAprStakers.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 7:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field MaxEdenRewardAprLps", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.MaxEdenRewardAprLps.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 8:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DistributionEpochForStakers", wireType)
+			}
+			m.DistributionEpochForStakers = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.DistributionEpochForStakers |= int64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 9:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DistributionEpochForLps", wireType)
+			}
+			m.DistributionEpochForLps = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.DistributionEpochForLps |= int64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgUpdateIncentiveParamsResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgUpdateIncentiveParamsResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgUpdateIncentiveParamsResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		default:

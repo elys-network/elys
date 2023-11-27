@@ -778,6 +778,7 @@ func NewElysApp(
 		app.TokenomicsKeeper,
 		authtypes.FeeCollectorName,
 		DexRevenueCollectorName,
+		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 	incentiveModule := incentivemodule.NewAppModule(appCodec, app.IncentiveKeeper)
 

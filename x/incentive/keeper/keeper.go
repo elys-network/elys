@@ -38,6 +38,7 @@ type (
 
 		feeCollectorName    string // name of the FeeCollector ModuleAccount
 		dexRevCollectorName string // name of the Dex Revenue ModuleAccount
+		authority           string // gov module addresss
 	}
 )
 
@@ -58,6 +59,7 @@ func NewKeeper(
 	tokenomicsKeeper types.TokenomicsKeeper,
 	feeCollectorName string,
 	dexRevCollectorName string,
+	authority string,
 ) *Keeper {
 	// set KeyTable if it has not already been set
 	if !ps.HasKeyTable() {
@@ -82,6 +84,7 @@ func NewKeeper(
 		epochsKeeper:        epochsKeeper,
 		stableKeeper:        stableKeeper,
 		tokenomicsKeeper:    tokenomicsKeeper,
+		authority:           authority,
 	}
 }
 
