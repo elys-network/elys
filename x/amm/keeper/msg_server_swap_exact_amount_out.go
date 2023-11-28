@@ -20,7 +20,7 @@ func (k msgServer) SwapExactAmountOut(goCtx context.Context, msg *types.MsgSwapE
 	}
 	// Try executing the tx on cached context environment, to filter invalid transactions out
 	cacheCtx, _ := ctx.CacheContext()
-	tokenInAmount, err := k.RouteExactAmountOut(cacheCtx, sender, recipient, msg.Routes, msg.TokenInMaxAmount, msg.TokenOut, msg.Discount)
+	tokenInAmount, swapFee, discount, err := k.RouteExactAmountOut(cacheCtx, sender, recipient, msg.Routes, msg.TokenInMaxAmount, msg.TokenOut, msg.Discount)
 	if err != nil {
 		return nil, err
 	}
@@ -38,5 +38,10 @@ func (k msgServer) SwapExactAmountOut(goCtx context.Context, msg *types.MsgSwapE
 		),
 	})
 
-	return &types.MsgSwapExactAmountOutResponse{TokenInAmount: tokenInAmount}, nil
+	return &types.MsgSwapExactAmountOutResponse{
+		TokenInAmount: tokenInAmount,
+		SwapFee:       swapFee,
+		Discount:      discount,
+		Recipient:     recipient.String(),
+	}, nil
 }

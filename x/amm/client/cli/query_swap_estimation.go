@@ -40,6 +40,15 @@ func CmdSwapEstimation() *cobra.Command {
 				})
 			}
 
+			discountStr, err := cmd.Flags().GetString(FlagDiscount)
+			if err != nil {
+				return err
+			}
+			discount, err := sdk.NewDecFromStr(discountStr)
+			if err != nil {
+				return err
+			}
+
 			clientCtx, err := client.GetClientQueryContext(cmd)
 			if err != nil {
 				return err
@@ -48,8 +57,9 @@ func CmdSwapEstimation() *cobra.Command {
 			queryClient := types.NewQueryClient(clientCtx)
 
 			params := &types.QuerySwapEstimationRequest{
-				Routes:  reqRoutes,
-				TokenIn: reqTokenIn,
+				Routes:   reqRoutes,
+				TokenIn:  reqTokenIn,
+				Discount: discount,
 			}
 
 			res, err := queryClient.SwapEstimation(cmd.Context(), params)
@@ -62,6 +72,8 @@ func CmdSwapEstimation() *cobra.Command {
 	}
 
 	flags.AddQueryFlagsToCmd(cmd)
+
+	cmd.Flags().String(FlagDiscount, "0.0", "discount to apply to the swap fee")
 
 	return cmd
 }

@@ -24,7 +24,7 @@ func (k msgServer) SwapByDenom(goCtx context.Context, msg *types.MsgSwapByDenom)
 	}
 	baseCurrency := entry.Denom
 
-	inRoute, outRoute, _, spotPrice, err := k.CalcSwapEstimationByDenom(ctx, msg.Amount, msg.DenomIn, msg.DenomOut, baseCurrency)
+	inRoute, outRoute, _, spotPrice, _, _, _, err := k.CalcSwapEstimationByDenom(ctx, msg.Amount, msg.DenomIn, msg.DenomOut, baseCurrency, msg.Discount)
 	if err != nil {
 		return nil, err
 	}
@@ -62,7 +62,9 @@ func (k msgServer) SwapByDenom(goCtx context.Context, msg *types.MsgSwapByDenom)
 			InRoute:   inRoute,
 			OutRoute:  nil,
 			SpotPrice: spotPrice,
-			Discount:  msg.Discount,
+			SwapFee:   res.SwapFee,
+			Discount:  res.Discount,
+			Recipient: res.Recipient,
 		}, nil
 	}
 
@@ -98,7 +100,9 @@ func (k msgServer) SwapByDenom(goCtx context.Context, msg *types.MsgSwapByDenom)
 			InRoute:   nil,
 			OutRoute:  outRoute,
 			SpotPrice: spotPrice,
-			Discount:  msg.Discount,
+			SwapFee:   res.SwapFee,
+			Discount:  res.Discount,
+			Recipient: res.Recipient,
 		}, nil
 	}
 

@@ -32,6 +32,12 @@ func TestPool_GetPoolAssetAndIndex(t *testing.T) {
 	require.Equal(t, 0, index)
 	require.Equal(t, poolAssets[0], poolAsset)
 
+	// Test case 1b: Existing PoolAsset
+	index, poolAsset, err = pool.GetPoolAssetAndIndex("token2")
+	require.NoError(t, err)
+	require.Equal(t, 1, index)
+	require.Equal(t, poolAssets[1], poolAsset)
+
 	// Test case 2: Non-existing PoolAsset
 	nonExistingDenom := "nonExistingToken"
 	_, _, err = pool.GetPoolAssetAndIndex(nonExistingDenom)
