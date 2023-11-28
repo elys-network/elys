@@ -3,9 +3,8 @@ package keeper_test
 import (
 	"time"
 
+	"github.com/cometbft/cometbft/crypto/ed25519"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 	"github.com/elys-network/elys/x/amm/keeper"
 	"github.com/elys-network/elys/x/amm/types"
@@ -116,9 +115,7 @@ func (suite *KeeperTestSuite) TestMsgServerExitPool() {
 			suite.SetupStableCoinPrices()
 
 			// bootstrap accounts
-			// sender := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
-			// use gov address as sender
-			sender := authtypes.NewModuleAddress(govtypes.ModuleName)
+			sender := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
 
 			// bootstrap balances
 			err := suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, tc.poolInitBalance)
