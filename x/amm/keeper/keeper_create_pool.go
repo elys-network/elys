@@ -4,8 +4,11 @@ import (
 	"fmt"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/elys-network/elys/x/amm/types"
 	"github.com/elys-network/elys/x/amm/utils"
+	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
+	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
 
 // CreatePool attempts to create a pool returning the newly created pool ID or
@@ -25,6 +28,17 @@ func (k Keeper) CreatePool(ctx sdk.Context, msg *types.MsgCreatePool) (uint64, e
 	// if err := k.communityPoolKeeper.FundCommunityPool(ctx, params.PoolCreationFee, sender); err != nil {
 	// 	return 0, err
 	// }
+
+	entry, found := k.apKeeper.GetEntry(ctx, ptypes.BaseCurrency)
+	if !found {
+		return 0, sdkerrors.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency)
+	}
+	baseCurrency := entry.Denom
+
+	// If the fee denom is empty, set it to the base currency
+	if msg.PoolParams.FeeDenom == "" {
+		msg.PoolParams.FeeDenom = baseCurrency
+	}
 
 	// Get the next pool ID and increment the pool ID counter
 	// Create the pool with the given pool ID

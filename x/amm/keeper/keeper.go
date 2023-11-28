@@ -19,6 +19,7 @@ type (
 		storeKey          storetypes.StoreKey
 		transientStoreKey storetypes.StoreKey
 		paramstore        paramtypes.Subspace
+		authority         string
 		hooks             types.AmmHooks
 
 		bankKeeper          types.BankKeeper
@@ -35,6 +36,7 @@ func NewKeeper(
 	storeKey,
 	transientStoreKey storetypes.StoreKey,
 	ps paramtypes.Subspace,
+	authority string,
 
 	bankKeeper types.BankKeeper,
 	accountKeeper types.AccountKeeper,
@@ -53,6 +55,7 @@ func NewKeeper(
 		storeKey:          storeKey,
 		transientStoreKey: transientStoreKey,
 		paramstore:        ps,
+		authority:         authority,
 
 		bankKeeper:          bankKeeper,
 		accountKeeper:       accountKeeper,
