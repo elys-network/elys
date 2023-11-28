@@ -39622,9 +39622,20 @@ paths:
                         type: string
                       amount_collected_by_other_tracker:
                         type: string
-                  max_eden_reward_apr:
+                  max_eden_reward_apr_stakers:
                     type: string
-                    title: Maximum eden reward apr
+                    title: Maximum eden reward apr for stakers
+                  max_eden_reward_apr_lps:
+                    type: string
+                    title: Maximum eden reward apr for lps
+                  distribution_epoch_for_stakers_in_blocks:
+                    type: string
+                    format: int64
+                    title: Distribution epochs for stakers in blocks
+                  distribution_epoch_for_lps_in_blocks:
+                    type: string
+                    format: int64
+                    title: Distribution epochs for LPs in blocks
             description: >-
               QueryParamsResponse is response type for the Query/Params RPC
               method.
@@ -84408,6 +84419,8 @@ definitions:
         type: string
         title: eden boost apr (0-1) range
     title: Incentive Info
+  elys.incentive.MsgUpdateIncentiveParamsResponse:
+    type: object
   elys.incentive.MsgWithdrawRewardsResponse:
     type: object
     description: >-
@@ -84532,9 +84545,20 @@ definitions:
             type: string
           amount_collected_by_other_tracker:
             type: string
-      max_eden_reward_apr:
+      max_eden_reward_apr_stakers:
         type: string
-        title: Maximum eden reward apr
+        title: Maximum eden reward apr for stakers
+      max_eden_reward_apr_lps:
+        type: string
+        title: Maximum eden reward apr for lps
+      distribution_epoch_for_stakers_in_blocks:
+        type: string
+        format: int64
+        title: Distribution epochs for stakers in blocks
+      distribution_epoch_for_lps_in_blocks:
+        type: string
+        format: int64
+        title: Distribution epochs for LPs in blocks
     description: Params defines the parameters for the module.
   elys.incentive.PoolInfo:
     type: object
@@ -84686,9 +84710,20 @@ definitions:
                 type: string
               amount_collected_by_other_tracker:
                 type: string
-          max_eden_reward_apr:
+          max_eden_reward_apr_stakers:
             type: string
-            title: Maximum eden reward apr
+            title: Maximum eden reward apr for stakers
+          max_eden_reward_apr_lps:
+            type: string
+            title: Maximum eden reward apr for lps
+          distribution_epoch_for_stakers_in_blocks:
+            type: string
+            format: int64
+            title: Distribution epochs for stakers in blocks
+          distribution_epoch_for_lps_in_blocks:
+            type: string
+            format: int64
+            title: Distribution epochs for LPs in blocks
     description: QueryParamsResponse is response type for the Query/Params RPC method.
   elys.leveragelp.IsWhitelistedResponse:
     type: object
