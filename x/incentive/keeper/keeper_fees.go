@@ -86,7 +86,7 @@ func (k Keeper) CollectGasFeesToIncentiveModule(ctx sdk.Context, baseCurrency st
 
 		// Settles balances between the tx sender and the pool to match the swap that was executed earlier.
 		// Also emits a swap event and updates related liquidity metrics.
-		err, _ = k.amm.UpdatePoolForSwap(ctx, pool, feeCollector.GetAddress(), tokenIn, tokenOutCoin, sdk.ZeroDec(), sdk.ZeroDec(), sdk.ZeroDec())
+		err, _ = k.amm.UpdatePoolForSwap(ctx, pool, feeCollector.GetAddress(), feeCollector.GetAddress(), tokenIn, tokenOutCoin, sdk.ZeroDec(), sdk.ZeroDec(), sdk.ZeroDec())
 		if err != nil {
 			continue
 		}

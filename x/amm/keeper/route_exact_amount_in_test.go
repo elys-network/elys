@@ -177,8 +177,9 @@ func (suite *KeeperTestSuite) TestRouteExactAmountIn() {
 			// TODO: add multiple route case
 			// TODO: add invalid route case
 			// TODO: add Elys token involved route case
-			tokenOut, err := suite.app.AmmKeeper.RouteExactAmountIn(
+			tokenOut, _, _, err := suite.app.AmmKeeper.RouteExactAmountIn(
 				suite.ctx,
+				sender,
 				sender,
 				[]types.SwapAmountInRoute{
 					{

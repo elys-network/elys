@@ -20,7 +20,7 @@ func TestCalcInRouteSpotPrice(t *testing.T) {
 	accountedPoolKeeper.On("GetAccountedBalance", ctx, uint64(1), "denom1").Return(sdk.NewInt(1000))
 	accountedPoolKeeper.On("GetAccountedBalance", ctx, uint64(1), "denom2").Return(sdk.NewInt(1000))
 	routes := []*types.SwapAmountInRoute{{PoolId: 1, TokenOutDenom: "denom2"}}
-	spotPrice, _, err := k.CalcInRouteSpotPrice(ctx, tokenIn, routes)
+	spotPrice, _, _, _, _, err := k.CalcInRouteSpotPrice(ctx, tokenIn, routes, sdk.ZeroDec())
 	require.NoError(t, err)
 	require.NotZero(t, spotPrice)
 	accountedPoolKeeper.AssertExpectations(t)
@@ -34,17 +34,17 @@ func TestCalcInRouteSpotPrice(t *testing.T) {
 		{PoolId: 2, TokenOutDenom: "baseCurrency"},
 		{PoolId: 3, TokenOutDenom: "denom3"},
 	}
-	spotPrice, _, err = k.CalcInRouteSpotPrice(ctx, tokenIn, routes)
+	spotPrice, _, _, _, _, err = k.CalcInRouteSpotPrice(ctx, tokenIn, routes, sdk.ZeroDec())
 	require.NoError(t, err)
 	require.NotZero(t, spotPrice)
 	accountedPoolKeeper.AssertExpectations(t)
 
 	// Test no routes
-	_, _, err = k.CalcInRouteSpotPrice(ctx, tokenIn, nil)
+	_, _, _, _, _, err = k.CalcInRouteSpotPrice(ctx, tokenIn, nil, sdk.ZeroDec())
 	require.Error(t, err)
 
 	// Test invalid pool
 	routes = []*types.SwapAmountInRoute{{PoolId: 9999, TokenOutDenom: "denom2"}}
-	_, _, err = k.CalcInRouteSpotPrice(ctx, tokenIn, routes)
+	_, _, _, _, _, err = k.CalcInRouteSpotPrice(ctx, tokenIn, routes, sdk.ZeroDec())
 	require.Error(t, err)
 }

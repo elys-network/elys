@@ -17,9 +17,13 @@ func (k msgServer) SwapExactAmountIn(goCtx context.Context, msg *types.MsgSwapEx
 		return nil, err
 	}
 
+	recipient, err := sdk.AccAddressFromBech32(msg.Recipient)
+	if err != nil {
+		recipient = sender
+	}
 	// Try executing the tx on cached context environment, to filter invalid transactions out
 	cacheCtx, _ := ctx.CacheContext()
-	tokenOutAmount, err := k.RouteExactAmountIn(cacheCtx, sender, msg.Routes, msg.TokenIn, math.Int(msg.TokenOutMinAmount), msg.Discount)
+	tokenOutAmount, swapFee, discount, err := k.RouteExactAmountIn(cacheCtx, sender, recipient, msg.Routes, msg.TokenIn, math.Int(msg.TokenOutMinAmount), msg.Discount)
 	if err != nil {
 		return nil, err
 	}
@@ -37,5 +41,10 @@ func (k msgServer) SwapExactAmountIn(goCtx context.Context, msg *types.MsgSwapEx
 		),
 	})
 
-	return &types.MsgSwapExactAmountInResponse{TokenOutAmount: tokenOutAmount}, nil
+	return &types.MsgSwapExactAmountInResponse{
+		TokenOutAmount: tokenOutAmount,
+		SwapFee:        swapFee,
+		Discount:       discount,
+		Recipient:      recipient.String(),
+	}, nil
 }

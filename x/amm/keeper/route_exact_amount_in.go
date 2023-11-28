@@ -12,20 +12,16 @@ import (
 func (k Keeper) RouteExactAmountIn(
 	ctx sdk.Context,
 	sender sdk.AccAddress,
+	recipient sdk.AccAddress,
 	routes []types.SwapAmountInRoute,
 	tokenIn sdk.Coin,
 	tokenOutMinAmount math.Int,
 	discount sdk.Dec,
-) (tokenOutAmount math.Int, err error) {
-	var (
-		isMultiHopRouted bool
-		routeSwapFee     sdk.Dec
-		sumOfSwapFees    sdk.Dec
-	)
-
+) (tokenOutAmount math.Int, totalDiscountedSwapFee sdk.Dec, discountOut sdk.Dec, err error) {
+	isMultiHopRouted, routeSwapFee, sumOfSwapFees := false, sdk.Dec{}, sdk.Dec{}
 	route := types.SwapAmountInRoutes(routes)
 	if err := route.Validate(); err != nil {
-		return math.Int{}, err
+		return math.Int{}, sdk.ZeroDec(), sdk.ZeroDec(), err
 	}
 
 	// In this loop, we check if:
@@ -42,9 +38,12 @@ func (k Keeper) RouteExactAmountIn(
 		isMultiHopRouted = true
 		routeSwapFee, sumOfSwapFees, err = k.getElysRoutedMultihopTotalSwapFee(ctx, route)
 		if err != nil {
-			return math.Int{}, err
+			return math.Int{}, sdk.ZeroDec(), sdk.ZeroDec(), err
 		}
 	}
+
+	// Initialize the total discounted swap fee
+	totalDiscountedSwapFee = sdk.ZeroDec()
 
 	for i, route := range routes {
 		// To prevent the multihop swap from being interrupted prematurely, we keep
@@ -57,7 +56,7 @@ func (k Keeper) RouteExactAmountIn(
 		// Execute the expected swap on the current routed pool
 		pool, poolExists := k.GetPool(ctx, route.PoolId)
 		if !poolExists {
-			return math.Int{}, types.ErrInvalidPoolId
+			return math.Int{}, sdk.ZeroDec(), sdk.ZeroDec(), types.ErrInvalidPoolId
 		}
 
 		// // check if pool is active, if not error
@@ -74,19 +73,23 @@ func (k Keeper) RouteExactAmountIn(
 		}
 
 		// Apply discount to swap fee if applicable
-		swapFee, discount, err = k.ApplyDiscount(ctx, swapFee, discount, sender.String())
+		swapFee, _, err = k.ApplyDiscount(ctx, swapFee, discount, sender.String())
 		if err != nil {
-			return math.Int{}, err
+			return math.Int{}, sdk.ZeroDec(), sdk.ZeroDec(), err
 		}
 
-		tokenOutAmount, err = k.SwapExactAmountIn(ctx, sender, pool, tokenIn, route.TokenOutDenom, _outMinAmount, swapFee)
+		// Calculate the total discounted swap fee
+		totalDiscountedSwapFee = totalDiscountedSwapFee.Add(swapFee)
+
+		tokenOutAmount, err = k.SwapExactAmountIn(ctx, sender, recipient, pool, tokenIn, route.TokenOutDenom, _outMinAmount, swapFee)
 		if err != nil {
 			ctx.Logger().Error(err.Error())
-			return math.Int{}, err
+			return math.Int{}, sdk.ZeroDec(), sdk.ZeroDec(), err
 		}
 
 		// Chain output of current pool as the input for the next routed pool
 		tokenIn = sdk.NewCoin(route.TokenOutDenom, tokenOutAmount)
 	}
-	return tokenOutAmount, nil
+
+	return tokenOutAmount, totalDiscountedSwapFee, discount, nil
 }

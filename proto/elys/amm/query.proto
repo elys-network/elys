@@ -133,11 +133,15 @@ message QueryAllDenomLiquidityResponse {
 message QuerySwapEstimationRequest {
   repeated SwapAmountInRoute        routes   = 1;
            cosmos.base.v1beta1.Coin token_in = 2 [(gogoproto.nullable) = false];
+           string                   discount   = 3 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
 }
 
 message QuerySwapEstimationResponse {
   string                   spot_price = 1 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
   cosmos.base.v1beta1.Coin token_out  = 2 [(gogoproto.nullable)   = false                                   ] ;
+  string                   swapFee   = 3 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+  string                   discount   = 4 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin available_liquidity  = 5 [(gogoproto.nullable)   = false                                   ] ;
 }
 
 message QuerySlippageTrackRequest {
@@ -185,6 +189,7 @@ message QuerySwapEstimationByDenomRequest {
   cosmos.base.v1beta1.Coin amount   = 1 [(gogoproto.nullable) = false];
   string                   denom_in  = 2;
   string                   denom_out = 3;
+  string                   discount   = 4 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
 }
 
 message QuerySwapEstimationByDenomResponse {
@@ -192,8 +197,12 @@ message QuerySwapEstimationByDenomResponse {
   repeated SwapAmountOutRoute       out_route  = 2;
            string                   spot_price = 3 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
            cosmos.base.v1beta1.Coin amount    = 4 [(gogoproto.nullable) = false];
+           string                   swapFee   = 5 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+           string                   discount   = 6 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+           cosmos.base.v1beta1.Coin available_liquidity  = 7 [(gogoproto.nullable)   = false                                   ] ;
 }
 
 message QueryAMMPriceRequest {
   cosmos.base.v1beta1.Coin token_in = 1 [(gogoproto.nullable) = false];
+  string                   discount   = 2 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
 }

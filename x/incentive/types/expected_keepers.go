@@ -84,6 +84,7 @@ type AmmKeeper interface {
 		ctx sdk.Context,
 		pool ammtypes.Pool,
 		sender sdk.AccAddress,
+		recipient sdk.AccAddress,
 		tokenIn sdk.Coin,
 		tokenOut sdk.Coin,
 		swapFeeIn sdk.Dec,

@@ -61,7 +61,7 @@ func (k Keeper) SwapFeesToRevenueToken(ctx sdk.Context, pool types.Pool, fee sdk
 
 		// Settles balances between the tx sender and the pool to match the swap that was executed earlier.
 		// Also emits a swap event and updates related liquidity metrics.
-		err, _ = k.UpdatePoolForSwap(ctx, pool, poolRevenueAddress, tokenIn, tokenOutCoin, sdk.ZeroDec(), sdk.ZeroDec(), sdk.ZeroDec())
+		err, _ = k.UpdatePoolForSwap(ctx, pool, poolRevenueAddress, poolRevenueAddress, tokenIn, tokenOutCoin, sdk.ZeroDec(), sdk.ZeroDec(), sdk.ZeroDec())
 		if err != nil {
 			return err
 		}

@@ -63,12 +63,14 @@ message MsgSwapExactAmountIn {
            cosmos.base.v1beta1.Coin token_in             = 3 [(gogoproto.nullable)   = false                                   ] ;
            string                   token_out_min_amount = 4 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false];
            string                   discount   = 5 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
-
+           string                   recipient  = 6;
 }
 
 message MsgSwapExactAmountInResponse {
   string token_out_amount = 1 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false];
-  string                   discount   = 2 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+  string                   swap_fee   = 2 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+  string                   discount   = 3 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+  string                   recipient = 4;
 }
 
 message MsgSwapExactAmountOut {
@@ -77,11 +79,14 @@ message MsgSwapExactAmountOut {
            cosmos.base.v1beta1.Coin token_out           = 3 [(gogoproto.nullable)   = false                                   ] ;
            string                   token_in_max_amount = 4 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false];
            string                   discount   = 5 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+           string                   recipient  = 6;
 }
 
 message MsgSwapExactAmountOutResponse {
   string token_in_amount = 1 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false];
-  string                   discount   = 2 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+  string                   swap_fee   = 2 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+  string                   discount   = 3 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+  string                   recipient = 4;
 }
 
 message MsgFeedMultipleExternalLiquidity {
@@ -111,6 +116,7 @@ message MsgSwapByDenom {
   string                   denom_in   = 5;
   string                   denom_out  = 6;
   string                   discount   = 7 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+  string                   recipient = 8;
 }
 
 message MsgSwapByDenomResponse {
@@ -118,5 +124,7 @@ message MsgSwapByDenomResponse {
   repeated SwapAmountInRoute        in_route   = 2;
   repeated SwapAmountOutRoute       out_route  = 3;
            string                   spot_price = 4 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
-           string                   discount   = 5 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+           string                   swap_fee   = 5 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+           string                   discount   = 6 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+           string                   recipient = 7;
 }
