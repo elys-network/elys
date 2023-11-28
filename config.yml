@@ -302,7 +302,8 @@ genesis:
           num_blocks: "0"
           amount: "0"
           amount_collected_by_other_tracker: "0"
-        max_eden_reward_apr: "0.30"
+        max_eden_reward_apr_stakers: "0.30"
+        max_eden_reward_apr_lps: "0.30"
       fee_pool:
         community_pool:
           - amount: "0"

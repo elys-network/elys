@@ -15,6 +15,7 @@ func RegisterCodec(cdc *codec.LegacyAmino) {
 	cdc.RegisterConcrete(&MsgSwapExactAmountOut{}, "amm/SwapExactAmountOut", nil)
 	cdc.RegisterConcrete(&MsgSwapByDenom{}, "amm/SwapByDenom", nil)
 	cdc.RegisterConcrete(&MsgFeedMultipleExternalLiquidity{}, "amm/FeedMultipleExternalLiquidity", nil)
+	cdc.RegisterConcrete(&MsgUpdatePoolParams{}, "amm/UpdatePoolParams", nil)
 	// this line is used by starport scaffolding # 2
 }
 
@@ -27,6 +28,7 @@ func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 		&MsgSwapExactAmountOut{},
 		&MsgSwapByDenom{},
 		&MsgFeedMultipleExternalLiquidity{},
+		&MsgUpdatePoolParams{},
 	)
 	// this line is used by starport scaffolding # 3
 

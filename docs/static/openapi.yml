@@ -38324,6 +38324,25 @@ paths:
                   method
 
                   signatures required by gogoproto.
+              swapFee:
+                type: string
+              discount:
+                type: string
+              available_liquidity:
+                type: object
+                properties:
+                  denom:
+                    type: string
+                  amount:
+                    type: string
+                description: >-
+                  Coin defines a token with a denomination and an amount.
+
+
+                  NOTE: The amount field is an Int which implements the custom
+                  method
+
+                  signatures required by gogoproto.
         default:
           description: An unexpected error response.
           schema:
@@ -38348,6 +38367,10 @@ paths:
           required: false
           type: string
         - name: token_in.amount
+          in: query
+          required: false
+          type: string
+        - name: discount
           in: query
           required: false
           type: string
@@ -38400,6 +38423,25 @@ paths:
                   method
 
                   signatures required by gogoproto.
+              swapFee:
+                type: string
+              discount:
+                type: string
+              available_liquidity:
+                type: object
+                properties:
+                  denom:
+                    type: string
+                  amount:
+                    type: string
+                description: >-
+                  Coin defines a token with a denomination and an amount.
+
+
+                  NOTE: The amount field is an Int which implements the custom
+                  method
+
+                  signatures required by gogoproto.
         default:
           description: An unexpected error response.
           schema:
@@ -38432,6 +38474,10 @@ paths:
           required: false
           type: string
         - name: denom_out
+          in: query
+          required: false
+          type: string
+        - name: discount
           in: query
           required: false
           type: string
@@ -82955,22 +83001,64 @@ definitions:
               type: string
       spot_price:
         type: string
+      swap_fee:
+        type: string
       discount:
+        type: string
+      recipient:
         type: string
   elys.amm.MsgSwapExactAmountInResponse:
     type: object
     properties:
       token_out_amount:
         type: string
+      swap_fee:
+        type: string
       discount:
+        type: string
+      recipient:
         type: string
   elys.amm.MsgSwapExactAmountOutResponse:
     type: object
     properties:
       token_in_amount:
         type: string
+      swap_fee:
+        type: string
       discount:
         type: string
+      recipient:
+        type: string
+  elys.amm.MsgUpdatePoolParamsResponse:
+    type: object
+    properties:
+      pool_id:
+        type: string
+        format: uint64
+      pool_params:
+        type: object
+        properties:
+          swap_fee:
+            type: string
+          exit_fee:
+            type: string
+          use_oracle:
+            type: boolean
+          weight_breaking_fee_multiplier:
+            type: string
+          external_liquidity_ratio:
+            type: string
+          lp_fee_portion:
+            type: string
+          staking_fee_portion:
+            type: string
+          weight_recovery_fee_portion:
+            type: string
+          threshold_weight_difference:
+            type: string
+          fee_denom:
+            type: string
+            title: denom for fee collection
   elys.amm.OraclePoolSlippageTrack:
     type: object
     properties:
@@ -83476,12 +83564,44 @@ definitions:
 
           NOTE: The amount field is an Int which implements the custom method
           signatures required by gogoproto.
+      swapFee:
+        type: string
+      discount:
+        type: string
+      available_liquidity:
+        type: object
+        properties:
+          denom:
+            type: string
+          amount:
+            type: string
+        description: |-
+          Coin defines a token with a denomination and an amount.
+
+          NOTE: The amount field is an Int which implements the custom method
+          signatures required by gogoproto.
   elys.amm.QuerySwapEstimationResponse:
     type: object
     properties:
       spot_price:
         type: string
       token_out:
+        type: object
+        properties:
+          denom:
+            type: string
+          amount:
+            type: string
+        description: |-
+          Coin defines a token with a denomination and an amount.
+
+          NOTE: The amount field is an Int which implements the custom method
+          signatures required by gogoproto.
+      swapFee:
+        type: string
+      discount:
+        type: string
+      available_liquidity:
         type: object
         properties:
           denom:

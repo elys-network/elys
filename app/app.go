@@ -733,6 +733,7 @@ func NewElysApp(
 		keys[ammmoduletypes.StoreKey],
 		tkeys[ammmoduletypes.TStoreKey],
 		app.GetSubspace(ammmoduletypes.ModuleName),
+		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 		app.BankKeeper,
 		app.AccountKeeper,
 		app.OracleKeeper,
