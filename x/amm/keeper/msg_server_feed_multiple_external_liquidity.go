@@ -68,8 +68,22 @@ func (k msgServer) FeedMultipleExternalLiquidity(goCtx context.Context, msg *typ
 			return nil, err
 		}
 
+		// Ensure tvl is not zero to avoid division by zero
+		if tvl.IsZero() {
+			return nil, types.ErrAmountTooLow
+		}
+
 		elRatio := elValue.Quo(tvl)
-		elRatio = elRatio.Quo(LiquidityRatioFromPriceDepth(elDepth))
+
+		// calculate liquidity ratio
+		liquidityRatio := LiquidityRatioFromPriceDepth(elDepth)
+
+		// Ensure tvl is not zero to avoid division by zero
+		if liquidityRatio.IsZero() {
+			return nil, types.ErrAmountTooLow
+		}
+
+		elRatio = elRatio.Quo(liquidityRatio)
 		if elRatio.LT(sdk.OneDec()) {
 			elRatio = sdk.OneDec()
 		}

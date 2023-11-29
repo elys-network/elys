@@ -18,9 +18,19 @@ func solveConstantFunctionInvariant(
 	tokenWeightFixed,
 	tokenBalanceUnknownBefore,
 	tokenWeightUnknown sdk.Dec,
-) sdk.Dec {
+) (sdk.Dec, error) {
+	// Ensure tokenWeightUnknown is not zero to avoid division by zero
+	if tokenWeightUnknown.IsZero() {
+		return sdk.ZeroDec(), ErrAmountTooLow
+	}
+
 	// weightRatio = (weightX/weightY)
 	weightRatio := tokenWeightFixed.Quo(tokenWeightUnknown)
+
+	// Ensure tokenBalanceFixedAfter is not zero to avoid division by zero
+	if tokenBalanceFixedAfter.IsZero() {
+		return sdk.ZeroDec(), ErrAmountTooLow
+	}
 
 	// y = balanceXBefore/balanceXAfter
 	y := tokenBalanceFixedBefore.Quo(tokenBalanceFixedAfter)
@@ -29,7 +39,7 @@ func solveConstantFunctionInvariant(
 	yToWeightRatio := Pow(y, weightRatio)
 	paranthetical := sdk.OneDec().Sub(yToWeightRatio)
 	amountY := tokenBalanceUnknownBefore.Mul(paranthetical)
-	return amountY
+	return amountY, nil
 }
 
 // feeRatio returns the fee ratio that is defined as follows:
@@ -46,7 +56,7 @@ func calcPoolSharesOutGivenSingleAssetIn(
 	poolShares,
 	tokenAmountIn,
 	spreadFactor sdk.Dec,
-) sdk.Dec {
+) (sdk.Dec, error) {
 	// deduct spread factor on the in asset.
 	// We don't charge spread factor on the token amount that we imagine as unswapped (the normalized weight).
 	// So effective_swapfee = spread factor * (1 - normalized_token_weight)
@@ -61,11 +71,15 @@ func calcPoolSharesOutGivenSingleAssetIn(
 	// The number of new shares we need to make is then `old_shares * ((k'/k) - 1)`
 	// Whats very cool, is that this turns out to be the exact same `solveConstantFunctionInvariant` code
 	// with the answer's sign reversed.
-	poolAmountOut := solveConstantFunctionInvariant(
+	poolAmountOut, err := solveConstantFunctionInvariant(
 		tokenBalanceIn.Add(tokenAmountInAfterFee),
 		tokenBalanceIn,
 		normalizedTokenWeightIn,
 		poolShares,
-		sdk.OneDec()).Neg()
-	return poolAmountOut
+		sdk.OneDec())
+	if err != nil {
+		return sdk.Dec{}, err
+	}
+	poolAmountOut = poolAmountOut.Neg()
+	return poolAmountOut, nil
 }

@@ -19,6 +19,12 @@ func (k Keeper) ForceCloseLong(ctx sdk.Context, position types.Position, pool ty
 
 	// Repay with interest
 	debt := k.stableKeeper.UpdateInterestStackedByAddress(ctx, position.GetPositionAddress())
+
+	// Ensure position.LeveragedLpAmount is not zero to avoid division by zero
+	if position.LeveragedLpAmount.IsZero() {
+		return sdk.ZeroInt(), types.ErrAmountTooLow
+	}
+
 	repayAmount := debt.Borrowed.Add(debt.InterestStacked).Sub(debt.InterestPaid).Mul(lpAmount).Quo(position.LeveragedLpAmount)
 	if err != nil {
 		return sdk.ZeroInt(), err

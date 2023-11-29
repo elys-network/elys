@@ -13,6 +13,11 @@ func (k Keeper) CalcMTPTakeProfitBorrowRate(ctx sdk.Context, mtp *types.MTP) (sd
 
 	var totalTakeProfitBorrowRate sdk.Dec = sdk.ZeroDec()
 	for takeProfitCustodyIndex, takeProfitCustody := range mtp.TakeProfitCustodies {
+		// Ensure mtp.Custodies[takeProfitCustodyIndex].Amount is not zero to avoid division by zero
+		if mtp.Custodies[takeProfitCustodyIndex].Amount.IsZero() {
+			return sdk.ZeroDec(), types.ErrAmountTooLow
+		}
+
 		// Calculate the borrow rate for this takeProfitCustody
 		takeProfitBorrowRateInt := takeProfitCustody.Amount.Quo(mtp.Custodies[takeProfitCustodyIndex].Amount)
 

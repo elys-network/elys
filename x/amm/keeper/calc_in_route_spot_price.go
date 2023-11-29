@@ -67,6 +67,11 @@ func (k Keeper) CalcInRouteSpotPrice(ctx sdk.Context, tokenIn sdk.Coin, routes [
 		availableLiquidity = poolAsset.Token
 	}
 
+	// Ensure tokenIn.Amount is not zero to avoid division by zero
+	if tokenIn.IsZero() {
+		return sdk.ZeroDec(), sdk.Coin{}, sdk.ZeroDec(), sdk.ZeroDec(), sdk.Coin{}, types.ErrAmountTooLow
+	}
+
 	// Calculate the spot price given the initial token in and the final token out
 	spotPrice := sdk.NewDecFromInt(tokensIn[0].Amount).Quo(sdk.NewDecFromInt(tokenIn.Amount))
 

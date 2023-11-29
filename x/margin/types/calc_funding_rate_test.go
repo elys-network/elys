@@ -44,6 +44,18 @@ func TestCalculateFundingRate(t *testing.T) {
 			shortAmount:  sdk.NewInt(500000),
 			expectedRate: "0.001000000000000000", // Capped at maxRate
 		},
+		{
+			name:         "Zero Short Amount",
+			longAmount:   sdk.NewInt(1000000),
+			shortAmount:  sdk.NewInt(0),
+			expectedRate: "0.001000000000000000", // maxRate when short amount is zero
+		},
+		{
+			name:         "Zero Long Amount",
+			longAmount:   sdk.NewInt(0),
+			shortAmount:  sdk.NewInt(1000000),
+			expectedRate: "0.001000000000000000", // maxRate when long amount is zero
+		},
 	}
 
 	for _, tt := range tests {

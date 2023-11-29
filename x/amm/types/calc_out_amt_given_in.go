@@ -52,13 +52,16 @@ func (p Pool) CalcOutAmtGivenIn(
 
 	// deduct swapfee on the tokensIn
 	// delta balanceOut is positive(tokens inside the pool decreases)
-	tokenAmountOut := solveConstantFunctionInvariant(
+	tokenAmountOut, err := solveConstantFunctionInvariant(
 		poolTokenInBalance,
 		poolPostSwapInBalance,
 		inWeight,
 		poolTokenOutBalance,
 		outWeight,
 	)
+	if err != nil {
+		return sdk.Coin{}, err
+	}
 
 	// We ignore the decimal component, as we round down the token amount out.
 	tokenAmountOutInt := tokenAmountOut.TruncateInt()

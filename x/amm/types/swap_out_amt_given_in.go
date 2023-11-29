@@ -74,6 +74,10 @@ func (p Pool) StackedRatioFromSnapshot(ctx sdk.Context, oracleKeeper OracleKeepe
 	stackedRatio := sdk.ZeroDec()
 	for index, asset := range snapshot.PoolAssets {
 		assetDiff := sdk.NewDecFromInt(p.PoolAssets[index].Token.Amount.Sub(asset.Token.Amount).Abs())
+		// Ensure asset.Token is not zero to avoid division by zero
+		if asset.Token.IsZero() {
+			asset.Token.Amount = sdk.OneInt()
+		}
 		assetStacked := assetDiff.Quo(sdk.NewDecFromInt(asset.Token.Amount))
 		stackedRatio = stackedRatio.Add(assetStacked)
 	}
@@ -92,6 +96,10 @@ func (p Pool) WeightDistanceFromTarget(ctx sdk.Context, oracleKeeper OracleKeepe
 	for i := range poolAssets {
 		distance := targetWeights[i].Weight.Sub(oracleWeights[i].Weight).Abs()
 		distanceSum = distanceSum.Add(distance)
+	}
+	// Ensure len(p.PoolAssets) is not zero to avoid division by zero
+	if len(p.PoolAssets) == 0 {
+		return sdk.ZeroDec()
 	}
 	return distanceSum.Quo(sdk.NewDec(int64(len(p.PoolAssets))))
 }
@@ -179,6 +187,12 @@ func (p *Pool) SwapOutAmtGivenIn(
 	// resizedAmount = tokenIn / externalLiquidityRatio
 	// actualSlippageAmount = balancer slippage(resizedAmount)
 	oracleOutAmount := sdk.NewDecFromInt(tokenIn.Amount).Mul(inTokenPrice).Quo(outTokenPrice)
+
+	// Ensure p.PoolParams.ExternalLiquidityRatio is not zero to avoid division by zero
+	if p.PoolParams.ExternalLiquidityRatio.IsZero() {
+		return sdk.Coin{}, sdk.ZeroDec(), sdk.ZeroDec(), ErrAmountTooLow
+	}
+
 	resizedAmount := sdk.NewDecFromInt(tokenIn.Amount).Quo(p.PoolParams.ExternalLiquidityRatio).RoundInt()
 	slippageAmount, err = p.CalcGivenInSlippage(
 		ctx,

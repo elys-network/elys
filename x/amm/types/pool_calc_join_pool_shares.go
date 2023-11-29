@@ -13,13 +13,17 @@ func (p *Pool) calcSingleAssetJoin(tokenIn sdk.Coin, spreadFactor sdk.Dec, token
 		return sdk.ZeroInt(), errors.New("pool misconfigured, total weight = 0")
 	}
 	normalizedWeight := sdk.NewDecFromInt(tokenInPoolAsset.Weight).Quo(sdk.NewDecFromInt(totalWeight))
-	return calcPoolSharesOutGivenSingleAssetIn(
+	poolShares, err := calcPoolSharesOutGivenSingleAssetIn(
 		sdk.NewDecFromInt(tokenInPoolAsset.Token.Amount),
 		normalizedWeight,
 		sdk.NewDecFromInt(totalShares),
 		sdk.NewDecFromInt(tokenIn.Amount),
 		spreadFactor,
-	).TruncateInt(), nil
+	)
+	if err != nil {
+		return sdk.ZeroInt(), err
+	}
+	return poolShares.TruncateInt(), nil
 }
 
 // CalcJoinPoolShares calculates the number of shares created to join pool with the provided amount of `tokenIn`.

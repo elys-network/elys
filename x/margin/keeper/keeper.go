@@ -401,8 +401,12 @@ func (k Keeper) BorrowInterestRateComputationByPosition(ctx sdk.Context, pool ty
 		balance := sdk.NewDecFromInt(asset.AssetBalance.Add(ammBalance))
 		liabilities := sdk.NewDecFromInt(asset.Liabilities)
 
+		// Ensure balance is not zero to avoid division by zero
+		if balance.IsZero() {
+			return sdk.ZeroDec(), nil
+		}
 		if balance.Add(liabilities).IsZero() {
-			return sdk.ZeroDec(), err
+			return sdk.ZeroDec(), nil
 		}
 
 		mul := balance.Add(liabilities).Quo(balance)
@@ -463,6 +467,11 @@ func (k Keeper) BorrowInterestRateComputation(ctx sdk.Context, pool types.Pool, 
 func (k Keeper) CheckMinLiabilities(ctx sdk.Context, collateralAmount sdk.Coin, eta sdk.Dec, pool types.Pool, ammPool ammtypes.Pool, custodyAsset string) error {
 	var borrowInterestRational, liabilitiesRational, rate big.Rat
 	minBorrowInterestRate := k.GetBorrowInterestRateMin(ctx)
+
+	// Ensure minBorrowInterestRate is not zero to avoid division by zero
+	if minBorrowInterestRate.IsZero() {
+		return types.ErrAmountTooLow
+	}
 
 	collateralAmountDec := sdk.NewDecFromInt(collateralAmount.Amount)
 	liabilitiesDec := collateralAmountDec.Mul(eta)

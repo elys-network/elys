@@ -148,6 +148,10 @@ func (p *Pool) JoinPool(ctx sdk.Context, oracleKeeper OracleKeeper, accountedPoo
 	if err != nil {
 		return sdk.ZeroInt(), err
 	}
+	// Ensure tvl is not zero to avoid division by zero
+	if tvl.IsZero() {
+		return sdk.ZeroInt(), ErrAmountTooLow
+	}
 
 	newAssetPools, err := p.NewPoolAssetsAfterSwap(
 		tokensIn,

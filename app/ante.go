@@ -78,6 +78,11 @@ func (min MinCommissionDecorator) CalculateValidatorProjectedVotingPower(ctx sdk
 	projectedTotalDelegatedTokens := totalDelegatedTokens.Add(delegateAmount)
 	projectedValidatorTokens := delegateAmount
 
+	// Ensure projectedTotalDelegatedTokens is not zero to avoid division by zero
+	if projectedTotalDelegatedTokens.IsZero() {
+		return sdk.ZeroDec()
+	}
+
 	return projectedValidatorTokens.Quo(projectedTotalDelegatedTokens).Mul(sdk.NewDec(100))
 }
 
@@ -89,6 +94,11 @@ func (min MinCommissionDecorator) CalculateDelegateProjectedVotingPower(ctx sdk.
 	projectedTotalDelegatedTokens := totalDelegatedTokens.Add(delegateAmount)
 	projectedValidatorTokens := validatorTokens.Add(delegateAmount)
 
+	// Ensure projectedTotalDelegatedTokens is not zero to avoid division by zero
+	if projectedTotalDelegatedTokens.IsZero() {
+		return sdk.ZeroDec()
+	}
+
 	return projectedValidatorTokens.Quo(projectedTotalDelegatedTokens).Mul(sdk.NewDec(100))
 }
 
@@ -98,6 +108,11 @@ func (min MinCommissionDecorator) CalculateRedelegateProjectedVotingPower(ctx sd
 	projectedTotalDelegatedTokens := sdk.NewDecFromInt(min.getTotalDelegatedTokens(ctx)) // no additional delegated tokens
 
 	projectedValidatorTokens := validatorTokens.Add(delegateAmount)
+
+	// Ensure projectedTotalDelegatedTokens is not zero to avoid division by zero
+	if projectedTotalDelegatedTokens.IsZero() {
+		return sdk.ZeroDec()
+	}
 
 	return projectedValidatorTokens.Quo(projectedTotalDelegatedTokens).Mul(sdk.NewDec(100))
 }

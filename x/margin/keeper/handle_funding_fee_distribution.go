@@ -54,9 +54,17 @@ func (k Keeper) HandleFundingFeeDistribution(ctx sdk.Context, mtps []*types.MTP,
 		// calc funding fee share
 		fundingFeeShare := sdk.ZeroDec()
 		if fundingRate.IsNegative() && mtp.Position == types.Position_LONG {
+			// Ensure liabilitiesLong is not zero to avoid division by zero
+			if liabilitiesLong.IsZero() {
+				return types.ErrAmountTooLow
+			}
 			fundingFeeShare = sdk.NewDecFromInt(mtp.Liabilities).Quo(sdk.NewDecFromInt(liabilitiesLong))
 		}
 		if fundingRate.IsPositive() && mtp.Position == types.Position_SHORT {
+			// Ensure liabilitiesShort is not zero to avoid division by zero
+			if liabilitiesShort.IsZero() {
+				return types.ErrAmountTooLow
+			}
 			fundingFeeShare = sdk.NewDecFromInt(mtp.Liabilities).Quo(sdk.NewDecFromInt(liabilitiesShort))
 		}
 

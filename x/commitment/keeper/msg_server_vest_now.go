@@ -31,6 +31,11 @@ func (k msgServer) VestNow(goCtx context.Context, msg *types.MsgVestNow) (*types
 		return nil, err
 	}
 
+	// Ensure vestingInfo.VestNowFactor is not zero to avoid division by zero
+	if vestingInfo.VestNowFactor.IsZero() {
+		return nil, types.ErrInvalidAmount
+	}
+
 	vestAmount := msg.Amount.Quo(vestingInfo.VestNowFactor)
 	withdrawCoins := sdk.NewCoins(sdk.NewCoin(vestingInfo.VestingDenom, vestAmount))
 

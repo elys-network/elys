@@ -24,6 +24,9 @@ func (k msgServer) Bond(goCtx context.Context, msg *types.MsgBond) (*types.MsgBo
 	}
 
 	shareDenom := types.GetShareDenom()
+	if params.RedemptionRate.IsZero() {
+		return nil, types.ErrRedemptionRateIsZero
+	}
 	shareAmount := sdk.NewDecFromInt(depositCoin.Amount).Quo(params.RedemptionRate).RoundInt()
 	shareCoins := sdk.NewCoins(sdk.NewCoin(shareDenom, shareAmount))
 

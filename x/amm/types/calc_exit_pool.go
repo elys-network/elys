@@ -17,6 +17,12 @@ func CalcExitValueWithoutSlippage(ctx sdk.Context, oracleKeeper OracleKeeper, ac
 	totalShares := pool.GetTotalShares()
 	var refundedShares sdk.Dec
 	refundedShares = sdk.NewDecFromInt(exitingShares)
+
+	// Ensure totalShares is not zero to avoid division by zero
+	if totalShares.IsZero() {
+		return sdk.ZeroDec(), ErrAmountTooLow
+	}
+
 	exitValue := tvl.Mul(refundedShares).Quo(sdk.NewDecFromInt(totalShares.Amount))
 
 	if exitingShares.GTE(totalShares.Amount) {
@@ -95,6 +101,11 @@ func CalcExitPool(ctx sdk.Context, oracleKeeper OracleKeeper, pool Pool, account
 		exitValueWithoutSlippage, err := CalcExitValueWithoutSlippage(ctx, oracleKeeper, accountedPoolKeeper, pool, exitingShares, tokenOutDenom)
 		if err != nil {
 			return sdk.Coins{}, err
+		}
+
+		// Ensure tokenPrice is not zero to avoid division by zero
+		if tokenPrice.IsZero() {
+			return sdk.Coins{}, ErrAmountTooLow
 		}
 
 		oracleOutAmount := exitValueWithoutSlippage.Quo(tokenPrice)

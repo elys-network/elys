@@ -74,6 +74,11 @@ func (k Keeper) CalculateApr(ctx sdk.Context, query *types.QueryAprRequest) (sdk
 			k.UpdateTotalCommitmentInfo(ctx, baseCurrency)
 			totalStakedSnapshot := k.tci.TotalElysBonded.Add(k.tci.TotalEdenEdenBoostCommitted)
 
+			// Ensure totalStakedSnapshot is not zero to avoid division by zero
+			if totalStakedSnapshot.IsZero() {
+				return sdk.ZeroInt(), nil
+			}
+
 			// Calculate
 			edenAmountPerEpochStakersPerDay := stkIncentive.EdenAmountPerYear.Mul(stkIncentive.AllocationEpochInBlocks).Quo(stkIncentive.TotalBlocksPerYear)
 
@@ -118,6 +123,11 @@ func (k Keeper) CalculateApr(ctx sdk.Context, query *types.QueryAprRequest) (sdk
 			// Update total committed states
 			k.UpdateTotalCommitmentInfo(ctx, baseCurrency)
 			totalStakedSnapshot := k.tci.TotalElysBonded.Add(k.tci.TotalEdenEdenBoostCommitted)
+
+			// Ensure totalStakedSnapshot is not zero to avoid division by zero
+			if totalStakedSnapshot.IsZero() {
+				return sdk.ZeroInt(), nil
+			}
 
 			// Usdc apr for elys staking = (24 hour dex rewards in USDC generated for stakers) * 365*100/ {price ( elys/usdc)*( sum of (elys staked, Eden committed, Eden boost committed))}
 			// we multiply 10 as we have use 10elys as input in the price estimation
