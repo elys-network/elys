@@ -48,12 +48,21 @@ func (p Pool) CalcInAmtGivenOut(
 
 	poolPostSwapOutBalance := poolTokenOutBalance.Sub(sdk.NewDecFromInt(tokenOut.Amount))
 	// (x_0)(y_0) = (x_0 + in)(y_0 - out)
-	tokenAmountIn := solveConstantFunctionInvariant(
+	tokenAmountIn, err := solveConstantFunctionInvariant(
 		poolTokenOutBalance, poolPostSwapOutBalance,
 		outWeight,
 		poolTokenInBalance,
 		inWeight,
-	).Neg()
+	)
+	if err != nil {
+		return sdk.Coin{}, err
+	}
+	tokenAmountIn = tokenAmountIn.Neg()
+
+	// Ensure (1 - swapfee) is not zero to avoid division by zero
+	if sdk.OneDec().Sub(swapFee).IsZero() {
+		return sdk.Coin{}, ErrAmountTooLow
+	}
 
 	// We deduct a swap fee on the input asset. The swap happens by following the invariant curve on the input * (1 - swap fee)
 	// and then the swap fee is added to the pool.

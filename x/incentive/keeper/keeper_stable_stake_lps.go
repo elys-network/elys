@@ -27,7 +27,7 @@ func (k Keeper) CalculatePoolShareForStableStakeLPs(ctx sdk.Context, totalProxyT
 
 	// Calculate Proxy TVL share considering multiplier
 	proxyTVL := sdk.NewDecFromInt(tvl).Mul(poolInfo.Multiplier)
-	if totalProxyTVL.Equal(sdk.ZeroDec()) {
+	if totalProxyTVL.IsZero() {
 		return sdk.ZeroDec()
 	}
 	poolShare := proxyTVL.Quo(totalProxyTVL)

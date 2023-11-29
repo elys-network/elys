@@ -17,7 +17,7 @@ func (k Keeper) VestTokens(ctx sdk.Context, epochIdentifier string) error {
 		for index := len(commitments.VestingTokens) - 1; index >= 0; index-- {
 			vesting := commitments.VestingTokens[index]
 			vesting.CurrentEpoch = vesting.CurrentEpoch + 1
-			if vesting.CurrentEpoch > vesting.NumEpochs || vesting.UnvestedAmount.IsZero() {
+			if vesting.NumEpochs == 0 || vesting.CurrentEpoch > vesting.NumEpochs || vesting.UnvestedAmount.IsZero() {
 				continue
 			}
 

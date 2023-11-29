@@ -134,6 +134,11 @@ func (k Keeper) UpdateStakersRewardsUnclaimed(ctx sdk.Context, stakeIncentive ty
 	// Calculate eden amount per epoch
 	params := k.GetParams(ctx)
 
+	// Ensure stakeIncentive.TotalBlocksPerYear or stakeIncentive.AllocationEpochInBlocks are not zero to avoid division by zero
+	if stakeIncentive.TotalBlocksPerYear.IsZero() || stakeIncentive.AllocationEpochInBlocks.IsZero() {
+		return sdkerrors.Wrap(types.ErrNoNonInflationaryParams, "invalid inflationary params")
+	}
+
 	// Calculate
 	edenAmountPerEpochStakersPerDay := stakeIncentive.EdenAmountPerYear.Mul(stakeIncentive.AllocationEpochInBlocks).Quo(stakeIncentive.TotalBlocksPerYear)
 
@@ -352,6 +357,11 @@ func (k Keeper) UpdateLPRewardsUnclaimed(ctx sdk.Context, lpIncentive types.Ince
 	// We have mulitplier of 0.3, 0.5, 1.0
 	// Proxy TVL = 20*0.3+30*0.5+40*1.0
 	totalProxyTVL := k.CalculateProxyTVL(ctx, baseCurrency)
+
+	// Ensure lpIncentive.TotalBlocksPerYear or lpIncentive.AllocationEpochInBlocks are not zero to avoid division by zero
+	if lpIncentive.TotalBlocksPerYear.IsZero() || lpIncentive.AllocationEpochInBlocks.IsZero() {
+		return sdkerrors.Wrap(types.ErrNoNonInflationaryParams, "invalid inflationary params")
+	}
 
 	// Calculate eden amount per epoch
 	edenAmountPerEpochLPsPerDay := lpIncentive.EdenAmountPerYear.Mul(lpIncentive.AllocationEpochInBlocks).Quo(lpIncentive.TotalBlocksPerYear)

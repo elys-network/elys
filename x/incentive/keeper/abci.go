@@ -107,15 +107,26 @@ func (k Keeper) ProcessUpdateIncentiveParams(ctx sdk.Context) bool {
 
 	params := k.GetParams(ctx)
 
+	// Ensure distribution epoch is not zero to avoid division by zero
+	if params.DistributionEpochForLpsInBlocks == 0 || params.DistributionEpochForStakersInBlocks == 0 {
+		return false
+	}
+
 	for _, inflation := range listTimeBasedInflations {
 		if inflation.StartBlockHeight > uint64(ctx.BlockHeight()) || inflation.EndBlockHeight < uint64(ctx.BlockHeight()) {
 			continue
 		}
 
 		totalBlocksPerYear := sdk.NewInt(int64(inflation.EndBlockHeight - inflation.StartBlockHeight + 1))
+
+		// ptypes.DaysPerYear is guaranteed to be positive as it is defined as a constant
 		allocationEpochInblocks := totalBlocksPerYear.Quo(sdk.NewInt(ptypes.DaysPerYear))
 		if len(params.LpIncentives) == 0 {
 			totalDistributionEpochPerYear := totalBlocksPerYear.Quo(sdk.NewInt(params.DistributionEpochForLpsInBlocks))
+			// If totalDistributionEpochPerYear is zero, we skip this inflation to avoid division by zero
+			if totalBlocksPerYear == sdk.ZeroInt() {
+				continue
+			}
 			currentEpochInBlocks := sdk.NewInt(ctx.BlockHeight() - int64(inflation.StartBlockHeight)).Mul(totalDistributionEpochPerYear).Quo(totalBlocksPerYear)
 			maxEdenPerAllocation := sdk.NewInt(int64(inflation.Inflation.LmRewards)).Mul(allocationEpochInblocks).Quo(totalBlocksPerYear)
 			params.LpIncentives = append(params.LpIncentives, types.IncentiveInfo{
@@ -140,6 +151,10 @@ func (k Keeper) ProcessUpdateIncentiveParams(ctx sdk.Context) bool {
 
 		if len(params.StakeIncentives) == 0 {
 			totalDistributionEpochPerYear := totalBlocksPerYear.Quo(sdk.NewInt(params.DistributionEpochForStakersInBlocks))
+			// If totalDistributionEpochPerYear is zero, we skip this inflation to avoid division by zero
+			if totalBlocksPerYear == sdk.ZeroInt() {
+				continue
+			}
 			currentEpochInBlocks := sdk.NewInt(ctx.BlockHeight() - int64(inflation.StartBlockHeight)).Mul(totalDistributionEpochPerYear).Quo(totalBlocksPerYear)
 			maxEdenPerAllocation := sdk.NewInt(int64(inflation.Inflation.IcsStakingRewards)).Mul(allocationEpochInblocks).Quo(totalBlocksPerYear)
 			params.StakeIncentives = append(params.StakeIncentives, types.IncentiveInfo{

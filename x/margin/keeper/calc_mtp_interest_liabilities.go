@@ -8,7 +8,12 @@ import (
 	"github.com/elys-network/elys/x/margin/types"
 )
 
-func (k Keeper) CalcMTPBorrowInterestLiabilities(ctx sdk.Context, mtp *types.MTP, borrowInterestRate sdk.Dec, epochPosition, epochLength int64, ammPool ammtypes.Pool, collateralAsset string, baseCurrency string) sdk.Int {
+func (k Keeper) CalcMTPBorrowInterestLiabilities(ctx sdk.Context, mtp *types.MTP, borrowInterestRate sdk.Dec, epochPosition, epochLength int64, ammPool ammtypes.Pool, collateralAsset string, baseCurrency string) (sdk.Int, error) {
+	// Ensure borrow interest rate or liabilities are not zero to avoid division by zero
+	if borrowInterestRate.IsZero() || mtp.Liabilities.IsZero() {
+		return sdk.ZeroInt(), types.ErrAmountTooLow
+	}
+
 	var borrowInterestRational, liabilitiesRational, rate, epochPositionRational, epochLengthRational big.Rat
 
 	rate.SetFloat64(borrowInterestRate.MustFloat64())
@@ -23,7 +28,7 @@ func (k Keeper) CalcMTPBorrowInterestLiabilities(ctx sdk.Context, mtp *types.MTP
 		unpaidCollateralIn := sdk.NewCoin(mtp.Collaterals[collateralIndex].Denom, mtp.BorrowInterestUnpaidCollaterals[collateralIndex].Amount)
 		C, err := k.EstimateSwapGivenOut(ctx, unpaidCollateralIn, baseCurrency, ammPool)
 		if err != nil {
-			return sdk.ZeroInt()
+			return sdk.ZeroInt(), err
 		}
 
 		unpaidCollaterals = unpaidCollaterals.Add(C)
@@ -50,5 +55,5 @@ func (k Keeper) CalcMTPBorrowInterestLiabilities(ctx sdk.Context, mtp *types.MTP
 	// apply take profit borrow rate to borrow interest
 	borrowInterestNewInt = sdk.NewDecFromInt(borrowInterestNewInt).Mul(mtp.TakeProfitBorrowRate).TruncateInt()
 
-	return borrowInterestNewInt
+	return borrowInterestNewInt, nil
 }

@@ -7,7 +7,7 @@ import (
 func CalcMTPTakeProfitCustodies(mtp *MTP) sdk.Coins {
 	takeProfitCustodies := mtp.TakeProfitCustodies
 	for custodyIndex, custody := range mtp.Custodies {
-		if IsTakeProfitPriceInifite(mtp) {
+		if IsTakeProfitPriceInifite(mtp) || mtp.TakeProfitPrice.IsZero() {
 			takeProfitCustodies[custodyIndex].Amount = custody.Amount
 			continue
 		}

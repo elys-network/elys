@@ -69,6 +69,11 @@ func (k Keeper) CalculateEdenBoostRewards(ctx sdk.Context, delegatedAmt sdk.Int,
 	// Compute eden reward based on above and param factors for each
 	totalEden := delegatedAmt.Add(edenCommitted)
 
+	// Ensure incentiveInfo.DistributionEpochInBlocks is not zero to avoid division by zero
+	if incentiveInfo.DistributionEpochInBlocks.IsZero() {
+		return sdk.ZeroInt(), sdk.ZeroInt(), sdk.ZeroInt()
+	}
+
 	// Calculate edenBoostAPR % APR for eden boost
 	epochNumsPerYear := incentiveInfo.TotalBlocksPerYear.Quo(incentiveInfo.DistributionEpochInBlocks)
 	if epochNumsPerYear.IsZero() {

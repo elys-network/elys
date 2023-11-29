@@ -64,6 +64,10 @@ func (k Keeper) GetLpTokenPrice(ctx sdk.Context, ammPool *ammtypes.Pool) (sdk.De
 	if err != nil {
 		return sdk.ZeroDec(), err
 	}
+	// Ensure ammPool.TotalShares is not zero to avoid division by zero
+	if ammPool.TotalShares.IsZero() {
+		return sdk.ZeroDec(), types.ErrAmountTooLow
+	}
 	lpTokenPrice := ammPoolTvl.Quo(sdkmath.LegacyNewDecFromInt(ammPool.TotalShares.Amount))
 	return lpTokenPrice, nil
 }
