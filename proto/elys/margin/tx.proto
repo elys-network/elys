@@ -5,6 +5,7 @@ package elys.margin;
 option go_package = "github.com/elys-network/elys/x/margin/types";
 
 import "gogoproto/gogo.proto";
+import "cosmos/base/v1beta1/coin.proto";
 import "elys/margin/params.proto";
 import "elys/margin/types.proto";
 
@@ -36,10 +37,16 @@ message MsgOpenResponse {
 message MsgClose {
   string creator = 1;
   uint64 id      = 2;
+  cosmos.base.v1beta1.Coin amount = 3 [
+    (gogoproto.nullable) = false
+  ];
 }
 
 message MsgCloseResponse {
   uint64 id = 1;
+  cosmos.base.v1beta1.Coin amount = 2 [
+    (gogoproto.nullable) = false
+  ];
 }
 
 message MsgBrokerOpen {
@@ -61,10 +68,16 @@ message MsgBrokerClose {
   string creator = 1;
   uint64 id      = 2;
   string owner = 3;
+  cosmos.base.v1beta1.Coin amount = 4 [
+    (gogoproto.nullable) = false
+  ];
 }
 
 message MsgBrokerCloseResponse {
   uint64 id = 1;
+  cosmos.base.v1beta1.Coin amount = 3 [
+    (gogoproto.nullable) = false
+  ];
 }
 
 message MsgUpdateParams {

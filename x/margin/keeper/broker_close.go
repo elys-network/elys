@@ -6,7 +6,7 @@ import (
 )
 
 func (k Keeper) BrokerClose(ctx sdk.Context, msg *types.MsgBrokerClose) (*types.MsgBrokerCloseResponse, error) {
-	msgClose := types.NewMsgClose(msg.Owner, msg.Id)
+	msgClose := types.NewMsgClose(msg.Owner, msg.Id, msg.Amount)
 
 	res, err := k.Close(ctx, msgClose)
 	if err != nil {

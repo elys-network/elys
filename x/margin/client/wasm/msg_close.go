@@ -40,7 +40,7 @@ func PerformMsgClose(f *marginkeeper.Keeper, ctx sdk.Context, contractAddr sdk.A
 	}
 	msgServer := marginkeeper.NewMsgServerImpl(*f)
 
-	msgMsgClose := margintypes.NewMsgClose(msgClose.Creator, uint64(msgClose.Id))
+	msgMsgClose := margintypes.NewMsgClose(msgClose.Creator, uint64(msgClose.Id), msgClose.Amount)
 
 	if err := msgMsgClose.ValidateBasic(); err != nil {
 		return nil, errorsmod.Wrap(err, "failed validating msgMsgClose")

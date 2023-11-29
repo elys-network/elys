@@ -7,6 +7,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/margin/types"
 	"github.com/spf13/cobra"
 )
@@ -15,10 +16,10 @@ var _ = strconv.Itoa(0)
 
 func CmdClose() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:     "close [mtp-id] [flags]",
+		Use:     "close [mtp-id] [amount] [flags]",
 		Short:   "Close margin position",
-		Example: `elysd tx margin close 1 --from=treasury --keyring-backend=test --chain-id=elystestnet-1 --yes --gas=1000000`,
-		Args:    cobra.ExactArgs(1),
+		Example: `elysd tx margin close 1 10000000 --from=treasury --keyring-backend=test --chain-id=elystestnet-1 --yes --gas=1000000`,
+		Args:    cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
@@ -29,14 +30,20 @@ func CmdClose() *cobra.Command {
 				return errors.New("signer address is missing")
 			}
 
-			argMtpId, ok := strconv.ParseUint(args[0], 10, 64)
-			if ok != nil {
+			argMtpId, err := strconv.ParseUint(args[0], 10, 64)
+			if err != nil {
 				return errors.New("invalid mtp id")
+			}
+
+			argAmount, err := sdk.ParseCoinNormalized(args[1])
+			if err != nil {
+				return errors.New("invalid amount")
 			}
 
 			msg := types.NewMsgClose(
 				signer.String(),
 				argMtpId,
+				argAmount,
 			)
 			if err := msg.ValidateBasic(); err != nil {
 				return err
