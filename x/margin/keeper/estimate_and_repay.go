@@ -7,9 +7,11 @@ import (
 )
 
 func (k Keeper) EstimateAndRepay(ctx sdk.Context, mtp types.MTP, pool types.Pool, ammPool ammtypes.Pool, collateralAsset string, custodyAsset string) (sdk.Int, error) {
-	collateralIndex, custodyIndex := types.GetMTPAssetIndex(&mtp, collateralAsset, custodyAsset)
-	cutodyAmtTokenIn := sdk.NewCoin(mtp.Custodies[custodyIndex].Denom, mtp.Custodies[custodyIndex].Amount)
-	repayAmount, err := k.EstimateSwap(ctx, cutodyAmtTokenIn, mtp.Collaterals[collateralIndex].Denom, ammPool)
+	ok, custodyAmtTokemIn := mtp.Custodies.Find(custodyAsset)
+	if !ok {
+		return sdk.ZeroInt(), types.ErrDenomNotFound
+	}
+	repayAmount, err := k.EstimateSwap(ctx, custodyAmtTokemIn, collateralAsset, ammPool)
 	if err != nil {
 		return sdk.ZeroInt(), err
 	}

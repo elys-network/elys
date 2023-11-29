@@ -10,11 +10,13 @@ import (
 )
 
 func (k Keeper) Repay(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, ammPool ammtypes.Pool, repayAmount sdk.Int, takeFundPayment bool, collateralAsset string) error {
-	collateralIndex, _ := types.GetMTPAssetIndex(mtp, collateralAsset, "")
 	// nolint:staticcheck,ineffassign
 	returnAmount := sdk.ZeroInt()
 	Liabilities := mtp.Liabilities
-	BorrowInterestUnpaidCollateral := mtp.BorrowInterestUnpaidCollaterals[collateralIndex]
+	ok, BorrowInterestUnpaidCollateral := mtp.BorrowInterestUnpaidCollaterals.Find(collateralAsset)
+	if !ok {
+		return types.ErrDenomNotFound
+	}
 
 	entry, found := k.apKeeper.GetEntry(ctx, ptypes.BaseCurrency)
 	if !found {
@@ -24,7 +26,7 @@ func (k Keeper) Repay(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, ammPool
 
 	if collateralAsset != baseCurrency {
 		// swap to base currency
-		unpaidCollateralIn := sdk.NewCoin(mtp.Collaterals[collateralIndex].Denom, mtp.BorrowInterestUnpaidCollaterals[collateralIndex].Amount)
+		unpaidCollateralIn := sdk.NewCoin(collateralAsset, mtp.BorrowInterestUnpaidCollaterals.AmountOf(collateralAsset))
 		C, err := k.EstimateSwapGivenOut(ctx, unpaidCollateralIn, baseCurrency, ammPool)
 		if err != nil {
 			return err
@@ -115,7 +117,7 @@ func (k Keeper) Repay(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, ammPool
 		returnAmount = C
 	}
 
-	err = pool.UpdateBalance(ctx, mtp.Collaterals[collateralIndex].Denom, returnAmount, false, mtp.Position)
+	err = pool.UpdateBalance(ctx, collateralAsset, returnAmount, false, mtp.Position)
 	if err != nil {
 		return err
 	}
@@ -131,7 +133,7 @@ func (k Keeper) Repay(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, ammPool
 		return err
 	}
 
-	err = pool.UpdateTakeProfitCustody(ctx, baseCurrency, mtp.TakeProfitCustodies[collateralIndex].Amount, false, mtp.Position)
+	err = pool.UpdateTakeProfitCustody(ctx, baseCurrency, mtp.TakeProfitCustodies.AmountOf(collateralAsset), false, mtp.Position)
 	if err != nil {
 		return err
 	}

@@ -26,4 +26,5 @@ var (
 	ErrBalanceNotAvailable    = sdkerrors.Register(ModuleName, 18, "user does not have enough balance of the required coin")
 	ErrAmountTooLow           = sdkerrors.Register(ModuleName, 32, "Tx amount is too low")
 	ErrMarginDisabled         = sdkerrors.Register(ModuleName, 33, "margin disabled pool")
+	ErrDenomNotFound          = sdkerrors.Register(ModuleName, 34, "denom not found")
 )

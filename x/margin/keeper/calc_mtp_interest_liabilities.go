@@ -18,14 +18,13 @@ func (k Keeper) CalcMTPBorrowInterestLiabilities(ctx sdk.Context, mtp *types.MTP
 
 	rate.SetFloat64(borrowInterestRate.MustFloat64())
 
-	collateralIndex, _ := types.GetMTPAssetIndex(mtp, collateralAsset, "")
 	unpaidCollaterals := sdk.ZeroInt()
 	// Calculate collateral borrow interests in base currency
-	if mtp.Collaterals[collateralIndex].Denom == baseCurrency {
-		unpaidCollaterals = unpaidCollaterals.Add(mtp.BorrowInterestUnpaidCollaterals[collateralIndex].Amount)
+	if collateralAsset == baseCurrency {
+		unpaidCollaterals = unpaidCollaterals.Add(mtp.BorrowInterestUnpaidCollaterals.AmountOf(collateralAsset))
 	} else {
 		// Liability is in base currency, so convert it to base currency
-		unpaidCollateralIn := sdk.NewCoin(mtp.Collaterals[collateralIndex].Denom, mtp.BorrowInterestUnpaidCollaterals[collateralIndex].Amount)
+		unpaidCollateralIn := sdk.NewCoin(collateralAsset, mtp.BorrowInterestUnpaidCollaterals.AmountOf(collateralAsset))
 		C, err := k.EstimateSwapGivenOut(ctx, unpaidCollateralIn, baseCurrency, ammPool)
 		if err != nil {
 			return sdk.ZeroInt(), err

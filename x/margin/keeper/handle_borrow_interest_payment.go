@@ -18,24 +18,22 @@ func (k Keeper) HandleBorrowInterestPayment(ctx sdk.Context, collateralAsset str
 			return finalBorrowInterestPayment
 		}
 	} else { // else update unpaid mtp interest
-		collateralIndex, _ := types.GetMTPAssetIndex(mtp, collateralAsset, "")
-		if collateralIndex < 0 {
-			return sdk.ZeroInt()
-		}
-
-		// collateralAsset is in base currency
-		if mtp.Collaterals[collateralIndex].Denom == baseCurrency {
-			mtp.BorrowInterestUnpaidCollaterals[collateralIndex].Amount = borrowInterestPayment
-		} else {
+		// collateralAsset is not in base currency
+		if collateralAsset != baseCurrency {
 			// swap
 			amtTokenIn := sdk.NewCoin(baseCurrency, borrowInterestPayment)
-			borrowInterestPayment, err := k.EstimateSwap(ctx, amtTokenIn, collateralAsset, ammPool) // may need spot price here to not deduct fee
+			var err error
+			borrowInterestPayment, err = k.EstimateSwap(ctx, amtTokenIn, collateralAsset, ammPool) // may need spot price here to not deduct fee
 			if err != nil {
 				return sdk.ZeroInt()
 			}
-
-			mtp.BorrowInterestUnpaidCollaterals[collateralIndex].Amount = borrowInterestPayment
 		}
+
+		mtp.BorrowInterestUnpaidCollaterals = mtp.BorrowInterestUnpaidCollaterals.Sub(
+			sdk.NewCoin(collateralAsset, mtp.BorrowInterestUnpaidCollaterals.AmountOf(collateralAsset)),
+		).Add(
+			sdk.NewCoin(collateralAsset, borrowInterestPayment),
+		)
 	}
 	return sdk.ZeroInt()
 }

@@ -21,11 +21,14 @@ func (k Keeper) HandleFundingFeeCollection(ctx sdk.Context, mtp *types.MTP, pool
 		return nil
 	}
 
-	// get indexes
-	collateralIndex, custodyIndex := types.GetMTPAssetIndex(mtp, collateralAsset, custodyAsset)
+	// get custody coin
+	ok, custodyAmt := mtp.Custodies.Find(custodyAsset)
+	if !ok {
+		return types.ErrDenomNotFound
+	}
 
 	// Calculate the take amount in custody asset
-	takeAmountCustody := types.CalcTakeAmount(mtp.Custodies[custodyIndex], custodyAsset, fundingRate)
+	takeAmountCustody := types.CalcTakeAmount(custodyAmt, custodyAsset, fundingRate)
 
 	// Swap the take amount to collateral asset
 	takeAmountCollateralAmount, err := k.EstimateSwap(ctx, takeAmountCustody, collateralAsset, ammPool)
@@ -46,13 +49,13 @@ func (k Keeper) HandleFundingFeeCollection(ctx sdk.Context, mtp *types.MTP, pool
 	}
 
 	// update mtp custody
-	mtp.Custodies[custodyIndex] = mtp.Custodies[custodyIndex].Sub(takeAmountCustody)
+	mtp.Custodies = mtp.Custodies.Sub(takeAmountCustody)
 
 	// add payment to total funding fee paid in collateral asset
-	mtp.FundingFeePaidCollaterals[collateralIndex] = mtp.FundingFeePaidCollaterals[collateralIndex].Add(takeAmountCollateral)
+	mtp.FundingFeePaidCollaterals = mtp.FundingFeePaidCollaterals.Add(takeAmountCollateral)
 
 	// add payment to total funding fee paid in custody asset
-	mtp.FundingFeePaidCustodies[custodyIndex] = mtp.FundingFeePaidCustodies[custodyIndex].Add(takeAmountCustody)
+	mtp.FundingFeePaidCustodies = mtp.FundingFeePaidCustodies.Add(takeAmountCustody)
 
 	// emit event
 	if !takeAmountCollateral.IsZero() {

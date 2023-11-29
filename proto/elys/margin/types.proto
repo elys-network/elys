@@ -16,30 +16,36 @@ enum Position {
 message MTP {
   string address = 1;
   repeated cosmos.base.v1beta1.Coin collaterals   = 2 [
-    (gogoproto.nullable) = false
+    (gogoproto.nullable) = false,
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
   ];
   string liabilities = 3 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
     (gogoproto.nullable) = false
   ];
   repeated cosmos.base.v1beta1.Coin borrow_interest_paid_collaterals = 4 [
-    (gogoproto.nullable) = false
+    (gogoproto.nullable) = false,
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
   ];
   repeated cosmos.base.v1beta1.Coin borrow_interest_paid_custodies = 5 [
-    (gogoproto.nullable) = false
+    (gogoproto.nullable) = false,
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
   ];
   repeated cosmos.base.v1beta1.Coin borrow_interest_unpaid_collaterals = 6 [
-    (gogoproto.nullable) = false
+    (gogoproto.nullable) = false,
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
   ];
   repeated cosmos.base.v1beta1.Coin custodies   = 7 [
-    (gogoproto.nullable) = false
+    (gogoproto.nullable) = false,
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
   ];
   string take_profit_liabilities = 8 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
     (gogoproto.nullable) = false
   ];
   repeated cosmos.base.v1beta1.Coin take_profit_custodies = 9 [
-    (gogoproto.nullable) = false
+    (gogoproto.nullable) = false,
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
   ];
   repeated string leverages = 10 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
@@ -70,17 +76,21 @@ message MTP {
   ];
   // funding fee paid
   repeated cosmos.base.v1beta1.Coin funding_fee_paid_collaterals = 19 [
-    (gogoproto.nullable) = false
+    (gogoproto.nullable) = false,
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
   ];
   repeated cosmos.base.v1beta1.Coin funding_fee_paid_custodies = 20 [
-    (gogoproto.nullable) = false
+    (gogoproto.nullable) = false,
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
   ];
   // funding fee received
   repeated cosmos.base.v1beta1.Coin funding_fee_received_collaterals = 21 [
-    (gogoproto.nullable) = false
+    (gogoproto.nullable) = false,
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
   ];
   repeated cosmos.base.v1beta1.Coin funding_fee_received_custodies = 22 [
-    (gogoproto.nullable) = false
+    (gogoproto.nullable) = false,
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
   ];
 }
 
