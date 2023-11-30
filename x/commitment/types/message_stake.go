@@ -9,9 +9,10 @@ const TypeMsgStake = "stake"
 
 var _ sdk.Msg = &MsgStake{}
 
-func NewMsgStake(creator string, amount sdk.Int, asset string, validatorAddress string) *MsgStake {
+func NewMsgStake(address string, amount sdk.Int, asset string, validatorAddress string) *MsgStake {
 	return &MsgStake{
-		Creator:          creator,
+		Creator:          address,
+		Address:          address,
 		Amount:           amount,
 		Asset:            asset,
 		ValidatorAddress: validatorAddress,
