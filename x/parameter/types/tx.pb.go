@@ -9,7 +9,11 @@ import (
 	grpc1 "github.com/cosmos/gogoproto/grpc"
 	proto "github.com/cosmos/gogoproto/proto"
 	grpc "google.golang.org/grpc"
+	codes "google.golang.org/grpc/codes"
+	status "google.golang.org/grpc/status"
+	io "io"
 	math "math"
+	math_bits "math/bits"
 )
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -23,18 +27,306 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
+type MsgUpdateMinCommission struct {
+	Creator       string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
+	MinCommission string `protobuf:"bytes,2,opt,name=min_commission,json=minCommission,proto3" json:"min_commission,omitempty"`
+}
+
+func (m *MsgUpdateMinCommission) Reset()         { *m = MsgUpdateMinCommission{} }
+func (m *MsgUpdateMinCommission) String() string { return proto.CompactTextString(m) }
+func (*MsgUpdateMinCommission) ProtoMessage()    {}
+func (*MsgUpdateMinCommission) Descriptor() ([]byte, []int) {
+	return fileDescriptor_9d997b2afb1f3cab, []int{0}
+}
+func (m *MsgUpdateMinCommission) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgUpdateMinCommission) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgUpdateMinCommission.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgUpdateMinCommission) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgUpdateMinCommission.Merge(m, src)
+}
+func (m *MsgUpdateMinCommission) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgUpdateMinCommission) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgUpdateMinCommission.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgUpdateMinCommission proto.InternalMessageInfo
+
+func (m *MsgUpdateMinCommission) GetCreator() string {
+	if m != nil {
+		return m.Creator
+	}
+	return ""
+}
+
+func (m *MsgUpdateMinCommission) GetMinCommission() string {
+	if m != nil {
+		return m.MinCommission
+	}
+	return ""
+}
+
+type MsgUpdateMinCommissionResponse struct {
+}
+
+func (m *MsgUpdateMinCommissionResponse) Reset()         { *m = MsgUpdateMinCommissionResponse{} }
+func (m *MsgUpdateMinCommissionResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgUpdateMinCommissionResponse) ProtoMessage()    {}
+func (*MsgUpdateMinCommissionResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_9d997b2afb1f3cab, []int{1}
+}
+func (m *MsgUpdateMinCommissionResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgUpdateMinCommissionResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgUpdateMinCommissionResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgUpdateMinCommissionResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgUpdateMinCommissionResponse.Merge(m, src)
+}
+func (m *MsgUpdateMinCommissionResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgUpdateMinCommissionResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgUpdateMinCommissionResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgUpdateMinCommissionResponse proto.InternalMessageInfo
+
+type MsgUpdateMaxVotingPower struct {
+	Creator        string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
+	MaxVotingPower string `protobuf:"bytes,3,opt,name=max_voting_power,json=maxVotingPower,proto3" json:"max_voting_power,omitempty"`
+}
+
+func (m *MsgUpdateMaxVotingPower) Reset()         { *m = MsgUpdateMaxVotingPower{} }
+func (m *MsgUpdateMaxVotingPower) String() string { return proto.CompactTextString(m) }
+func (*MsgUpdateMaxVotingPower) ProtoMessage()    {}
+func (*MsgUpdateMaxVotingPower) Descriptor() ([]byte, []int) {
+	return fileDescriptor_9d997b2afb1f3cab, []int{2}
+}
+func (m *MsgUpdateMaxVotingPower) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgUpdateMaxVotingPower) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgUpdateMaxVotingPower.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgUpdateMaxVotingPower) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgUpdateMaxVotingPower.Merge(m, src)
+}
+func (m *MsgUpdateMaxVotingPower) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgUpdateMaxVotingPower) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgUpdateMaxVotingPower.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgUpdateMaxVotingPower proto.InternalMessageInfo
+
+func (m *MsgUpdateMaxVotingPower) GetCreator() string {
+	if m != nil {
+		return m.Creator
+	}
+	return ""
+}
+
+func (m *MsgUpdateMaxVotingPower) GetMaxVotingPower() string {
+	if m != nil {
+		return m.MaxVotingPower
+	}
+	return ""
+}
+
+type MsgUpdateMaxVotingPowerResponse struct {
+}
+
+func (m *MsgUpdateMaxVotingPowerResponse) Reset()         { *m = MsgUpdateMaxVotingPowerResponse{} }
+func (m *MsgUpdateMaxVotingPowerResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgUpdateMaxVotingPowerResponse) ProtoMessage()    {}
+func (*MsgUpdateMaxVotingPowerResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_9d997b2afb1f3cab, []int{3}
+}
+func (m *MsgUpdateMaxVotingPowerResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgUpdateMaxVotingPowerResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgUpdateMaxVotingPowerResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgUpdateMaxVotingPowerResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgUpdateMaxVotingPowerResponse.Merge(m, src)
+}
+func (m *MsgUpdateMaxVotingPowerResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgUpdateMaxVotingPowerResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgUpdateMaxVotingPowerResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgUpdateMaxVotingPowerResponse proto.InternalMessageInfo
+
+type MsgUpdateMinSelfDelegation struct {
+	Creator           string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
+	MinSelfDelegation string `protobuf:"bytes,3,opt,name=min_self_delegation,json=minSelfDelegation,proto3" json:"min_self_delegation,omitempty"`
+}
+
+func (m *MsgUpdateMinSelfDelegation) Reset()         { *m = MsgUpdateMinSelfDelegation{} }
+func (m *MsgUpdateMinSelfDelegation) String() string { return proto.CompactTextString(m) }
+func (*MsgUpdateMinSelfDelegation) ProtoMessage()    {}
+func (*MsgUpdateMinSelfDelegation) Descriptor() ([]byte, []int) {
+	return fileDescriptor_9d997b2afb1f3cab, []int{4}
+}
+func (m *MsgUpdateMinSelfDelegation) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgUpdateMinSelfDelegation) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgUpdateMinSelfDelegation.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgUpdateMinSelfDelegation) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgUpdateMinSelfDelegation.Merge(m, src)
+}
+func (m *MsgUpdateMinSelfDelegation) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgUpdateMinSelfDelegation) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgUpdateMinSelfDelegation.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgUpdateMinSelfDelegation proto.InternalMessageInfo
+
+func (m *MsgUpdateMinSelfDelegation) GetCreator() string {
+	if m != nil {
+		return m.Creator
+	}
+	return ""
+}
+
+func (m *MsgUpdateMinSelfDelegation) GetMinSelfDelegation() string {
+	if m != nil {
+		return m.MinSelfDelegation
+	}
+	return ""
+}
+
+type MsgUpdateMinSelfDelegationResponse struct {
+}
+
+func (m *MsgUpdateMinSelfDelegationResponse) Reset()         { *m = MsgUpdateMinSelfDelegationResponse{} }
+func (m *MsgUpdateMinSelfDelegationResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgUpdateMinSelfDelegationResponse) ProtoMessage()    {}
+func (*MsgUpdateMinSelfDelegationResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_9d997b2afb1f3cab, []int{5}
+}
+func (m *MsgUpdateMinSelfDelegationResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgUpdateMinSelfDelegationResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgUpdateMinSelfDelegationResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgUpdateMinSelfDelegationResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgUpdateMinSelfDelegationResponse.Merge(m, src)
+}
+func (m *MsgUpdateMinSelfDelegationResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgUpdateMinSelfDelegationResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgUpdateMinSelfDelegationResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgUpdateMinSelfDelegationResponse proto.InternalMessageInfo
+
+func init() {
+	proto.RegisterType((*MsgUpdateMinCommission)(nil), "elys.parameter.MsgUpdateMinCommission")
+	proto.RegisterType((*MsgUpdateMinCommissionResponse)(nil), "elys.parameter.MsgUpdateMinCommissionResponse")
+	proto.RegisterType((*MsgUpdateMaxVotingPower)(nil), "elys.parameter.MsgUpdateMaxVotingPower")
+	proto.RegisterType((*MsgUpdateMaxVotingPowerResponse)(nil), "elys.parameter.MsgUpdateMaxVotingPowerResponse")
+	proto.RegisterType((*MsgUpdateMinSelfDelegation)(nil), "elys.parameter.MsgUpdateMinSelfDelegation")
+	proto.RegisterType((*MsgUpdateMinSelfDelegationResponse)(nil), "elys.parameter.MsgUpdateMinSelfDelegationResponse")
+}
+
 func init() { proto.RegisterFile("elys/parameter/tx.proto", fileDescriptor_9d997b2afb1f3cab) }
 
 var fileDescriptor_9d997b2afb1f3cab = []byte{
-	// 128 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x12, 0x4f, 0xcd, 0xa9, 0x2c,
-	0xd6, 0x2f, 0x48, 0x2c, 0x4a, 0xcc, 0x4d, 0x2d, 0x49, 0x2d, 0xd2, 0x2f, 0xa9, 0xd0, 0x2b, 0x28,
-	0xca, 0x2f, 0xc9, 0x17, 0xe2, 0x03, 0x49, 0xe8, 0xc1, 0x25, 0x8c, 0x58, 0xb9, 0x98, 0x7d, 0x8b,
-	0xd3, 0x9d, 0x3c, 0x4e, 0x3c, 0x92, 0x63, 0xbc, 0xf0, 0x48, 0x8e, 0xf1, 0xc1, 0x23, 0x39, 0xc6,
-	0x09, 0x8f, 0xe5, 0x18, 0x2e, 0x3c, 0x96, 0x63, 0xb8, 0xf1, 0x58, 0x8e, 0x21, 0x4a, 0x2f, 0x3d,
-	0xb3, 0x24, 0xa3, 0x34, 0x49, 0x2f, 0x39, 0x3f, 0x57, 0x1f, 0xa4, 0x57, 0x37, 0x2f, 0xb5, 0xa4,
-	0x3c, 0xbf, 0x28, 0x1b, 0xcc, 0xd1, 0xaf, 0x40, 0xb6, 0xa3, 0xb2, 0x20, 0xb5, 0x38, 0x89, 0x0d,
-	0x6c, 0x8f, 0x31, 0x20, 0x00, 0x00, 0xff, 0xff, 0xbe, 0x9a, 0x90, 0x0f, 0x82, 0x00, 0x00, 0x00,
+	// 361 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x8c, 0x93, 0xcf, 0x4a, 0xeb, 0x40,
+	0x14, 0xc6, 0x9b, 0x16, 0xee, 0xe5, 0x1e, 0xb8, 0xe5, 0xde, 0x54, 0x6c, 0xc8, 0x22, 0xd6, 0xe0,
+	0x9f, 0x22, 0x38, 0x81, 0xfa, 0x06, 0xea, 0xc2, 0x4d, 0x41, 0x2a, 0x0a, 0x0a, 0x12, 0xd2, 0xf6,
+	0x34, 0x06, 0x33, 0x99, 0x61, 0x66, 0xb4, 0xe9, 0x5b, 0xf8, 0x58, 0x2e, 0xbb, 0x74, 0xa9, 0xed,
+	0x8b, 0x48, 0x82, 0x89, 0x8d, 0x24, 0xa5, 0xcb, 0xe1, 0xfc, 0xe6, 0xfb, 0x3e, 0xbe, 0xc3, 0x81,
+	0x36, 0x86, 0x33, 0xe9, 0x70, 0x4f, 0x78, 0x14, 0x15, 0x0a, 0x47, 0xc5, 0x84, 0x0b, 0xa6, 0x98,
+	0xde, 0x4c, 0x06, 0x24, 0x1f, 0xd8, 0xb7, 0xb0, 0xdd, 0x97, 0xfe, 0x35, 0x1f, 0x7b, 0x0a, 0xfb,
+	0x41, 0x74, 0xc6, 0x28, 0x0d, 0xa4, 0x0c, 0x58, 0xa4, 0x1b, 0xf0, 0x7b, 0x24, 0xd0, 0x53, 0x4c,
+	0x18, 0x5a, 0x47, 0xeb, 0xfe, 0x19, 0x64, 0x4f, 0x7d, 0x1f, 0x9a, 0x34, 0x88, 0xdc, 0x51, 0xce,
+	0x1a, 0xf5, 0x14, 0xf8, 0x4b, 0x57, 0x05, 0xec, 0x0e, 0x58, 0xe5, 0xd2, 0x03, 0x94, 0x9c, 0x45,
+	0x12, 0xed, 0x7b, 0x68, 0x7f, 0x13, 0x5e, 0x7c, 0xc3, 0x54, 0x10, 0xf9, 0x97, 0x6c, 0x8a, 0x62,
+	0x8d, 0x7b, 0x17, 0xfe, 0x51, 0x2f, 0x76, 0x9f, 0x53, 0xd8, 0xe5, 0x09, 0x6d, 0x34, 0x52, 0xa4,
+	0x49, 0x0b, 0x1a, 0xf6, 0x2e, 0xec, 0x54, 0xc8, 0xe7, 0x09, 0x26, 0x60, 0xae, 0x66, 0xbc, 0xc2,
+	0x70, 0x72, 0x8e, 0x21, 0xfa, 0x9e, 0x5a, 0x5f, 0x01, 0x81, 0x56, 0x52, 0x81, 0xc4, 0x70, 0xe2,
+	0x8e, 0xf3, 0x0f, 0x5f, 0x39, 0xfe, 0xd3, 0x9f, 0x4a, 0xf6, 0x1e, 0xd8, 0xd5, 0x3e, 0x59, 0x9a,
+	0xde, 0x47, 0x1d, 0x1a, 0x7d, 0xe9, 0xeb, 0x14, 0x5a, 0x65, 0x1b, 0x39, 0x20, 0xc5, 0xe5, 0x91,
+	0xf2, 0x7a, 0x4d, 0xb2, 0x19, 0x97, 0xd9, 0xea, 0x1c, 0xb6, 0x4a, 0x77, 0x70, 0x58, 0xad, 0x53,
+	0x00, 0x4d, 0x67, 0x43, 0x30, 0x77, 0x9c, 0x41, 0xbb, 0xaa, 0xf3, 0xa3, 0x75, 0xe1, 0x8b, 0xac,
+	0xd9, 0xdb, 0x9c, 0xcd, 0xac, 0x4f, 0x2f, 0x5e, 0x17, 0x96, 0x36, 0x5f, 0x58, 0xda, 0xfb, 0xc2,
+	0xd2, 0x5e, 0x96, 0x56, 0x6d, 0xbe, 0xb4, 0x6a, 0x6f, 0x4b, 0xab, 0x76, 0x47, 0xfc, 0x40, 0x3d,
+	0x3c, 0x0d, 0xc9, 0x88, 0x51, 0x27, 0xd1, 0x3d, 0x8e, 0x50, 0x4d, 0x99, 0x78, 0x4c, 0x1f, 0x4e,
+	0xbc, 0x7a, 0x4d, 0x33, 0x8e, 0x72, 0xf8, 0x2b, 0xbd, 0xa8, 0x93, 0xcf, 0x00, 0x00, 0x00, 0xff,
+	0xff, 0xee, 0x5b, 0xd7, 0xcc, 0x6c, 0x03, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -49,6 +341,9 @@ const _ = grpc.SupportPackageIsVersion4
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type MsgClient interface {
+	UpdateMinCommission(ctx context.Context, in *MsgUpdateMinCommission, opts ...grpc.CallOption) (*MsgUpdateMinCommissionResponse, error)
+	UpdateMaxVotingPower(ctx context.Context, in *MsgUpdateMaxVotingPower, opts ...grpc.CallOption) (*MsgUpdateMaxVotingPowerResponse, error)
+	UpdateMinSelfDelegation(ctx context.Context, in *MsgUpdateMinSelfDelegation, opts ...grpc.CallOption) (*MsgUpdateMinSelfDelegationResponse, error)
 }
 
 type msgClient struct {
@@ -59,22 +354,981 @@ func NewMsgClient(cc grpc1.ClientConn) MsgClient {
 	return &msgClient{cc}
 }
 
+func (c *msgClient) UpdateMinCommission(ctx context.Context, in *MsgUpdateMinCommission, opts ...grpc.CallOption) (*MsgUpdateMinCommissionResponse, error) {
+	out := new(MsgUpdateMinCommissionResponse)
+	err := c.cc.Invoke(ctx, "/elys.parameter.Msg/UpdateMinCommission", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) UpdateMaxVotingPower(ctx context.Context, in *MsgUpdateMaxVotingPower, opts ...grpc.CallOption) (*MsgUpdateMaxVotingPowerResponse, error) {
+	out := new(MsgUpdateMaxVotingPowerResponse)
+	err := c.cc.Invoke(ctx, "/elys.parameter.Msg/UpdateMaxVotingPower", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) UpdateMinSelfDelegation(ctx context.Context, in *MsgUpdateMinSelfDelegation, opts ...grpc.CallOption) (*MsgUpdateMinSelfDelegationResponse, error) {
+	out := new(MsgUpdateMinSelfDelegationResponse)
+	err := c.cc.Invoke(ctx, "/elys.parameter.Msg/UpdateMinSelfDelegation", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // MsgServer is the server API for Msg service.
 type MsgServer interface {
+	UpdateMinCommission(context.Context, *MsgUpdateMinCommission) (*MsgUpdateMinCommissionResponse, error)
+	UpdateMaxVotingPower(context.Context, *MsgUpdateMaxVotingPower) (*MsgUpdateMaxVotingPowerResponse, error)
+	UpdateMinSelfDelegation(context.Context, *MsgUpdateMinSelfDelegation) (*MsgUpdateMinSelfDelegationResponse, error)
 }
 
 // UnimplementedMsgServer can be embedded to have forward compatible implementations.
 type UnimplementedMsgServer struct {
 }
 
+func (*UnimplementedMsgServer) UpdateMinCommission(ctx context.Context, req *MsgUpdateMinCommission) (*MsgUpdateMinCommissionResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateMinCommission not implemented")
+}
+func (*UnimplementedMsgServer) UpdateMaxVotingPower(ctx context.Context, req *MsgUpdateMaxVotingPower) (*MsgUpdateMaxVotingPowerResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateMaxVotingPower not implemented")
+}
+func (*UnimplementedMsgServer) UpdateMinSelfDelegation(ctx context.Context, req *MsgUpdateMinSelfDelegation) (*MsgUpdateMinSelfDelegationResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateMinSelfDelegation not implemented")
+}
+
 func RegisterMsgServer(s grpc1.Server, srv MsgServer) {
 	s.RegisterService(&_Msg_serviceDesc, srv)
+}
+
+func _Msg_UpdateMinCommission_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgUpdateMinCommission)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).UpdateMinCommission(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/elys.parameter.Msg/UpdateMinCommission",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).UpdateMinCommission(ctx, req.(*MsgUpdateMinCommission))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_UpdateMaxVotingPower_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgUpdateMaxVotingPower)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).UpdateMaxVotingPower(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/elys.parameter.Msg/UpdateMaxVotingPower",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).UpdateMaxVotingPower(ctx, req.(*MsgUpdateMaxVotingPower))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_UpdateMinSelfDelegation_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgUpdateMinSelfDelegation)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).UpdateMinSelfDelegation(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/elys.parameter.Msg/UpdateMinSelfDelegation",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).UpdateMinSelfDelegation(ctx, req.(*MsgUpdateMinSelfDelegation))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 var _Msg_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "elys.parameter.Msg",
 	HandlerType: (*MsgServer)(nil),
-	Methods:     []grpc.MethodDesc{},
-	Streams:     []grpc.StreamDesc{},
-	Metadata:    "elys/parameter/tx.proto",
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "UpdateMinCommission",
+			Handler:    _Msg_UpdateMinCommission_Handler,
+		},
+		{
+			MethodName: "UpdateMaxVotingPower",
+			Handler:    _Msg_UpdateMaxVotingPower_Handler,
+		},
+		{
+			MethodName: "UpdateMinSelfDelegation",
+			Handler:    _Msg_UpdateMinSelfDelegation_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "elys/parameter/tx.proto",
 }
+
+func (m *MsgUpdateMinCommission) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgUpdateMinCommission) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgUpdateMinCommission) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.MinCommission) > 0 {
+		i -= len(m.MinCommission)
+		copy(dAtA[i:], m.MinCommission)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.MinCommission)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Creator) > 0 {
+		i -= len(m.Creator)
+		copy(dAtA[i:], m.Creator)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Creator)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgUpdateMinCommissionResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgUpdateMinCommissionResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgUpdateMinCommissionResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgUpdateMaxVotingPower) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgUpdateMaxVotingPower) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgUpdateMaxVotingPower) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.MaxVotingPower) > 0 {
+		i -= len(m.MaxVotingPower)
+		copy(dAtA[i:], m.MaxVotingPower)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.MaxVotingPower)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.Creator) > 0 {
+		i -= len(m.Creator)
+		copy(dAtA[i:], m.Creator)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Creator)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgUpdateMaxVotingPowerResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgUpdateMaxVotingPowerResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgUpdateMaxVotingPowerResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgUpdateMinSelfDelegation) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgUpdateMinSelfDelegation) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgUpdateMinSelfDelegation) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.MinSelfDelegation) > 0 {
+		i -= len(m.MinSelfDelegation)
+		copy(dAtA[i:], m.MinSelfDelegation)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.MinSelfDelegation)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.Creator) > 0 {
+		i -= len(m.Creator)
+		copy(dAtA[i:], m.Creator)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Creator)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgUpdateMinSelfDelegationResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgUpdateMinSelfDelegationResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgUpdateMinSelfDelegationResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	return len(dAtA) - i, nil
+}
+
+func encodeVarintTx(dAtA []byte, offset int, v uint64) int {
+	offset -= sovTx(v)
+	base := offset
+	for v >= 1<<7 {
+		dAtA[offset] = uint8(v&0x7f | 0x80)
+		v >>= 7
+		offset++
+	}
+	dAtA[offset] = uint8(v)
+	return base
+}
+func (m *MsgUpdateMinCommission) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Creator)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.MinCommission)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	return n
+}
+
+func (m *MsgUpdateMinCommissionResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	return n
+}
+
+func (m *MsgUpdateMaxVotingPower) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Creator)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.MaxVotingPower)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	return n
+}
+
+func (m *MsgUpdateMaxVotingPowerResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	return n
+}
+
+func (m *MsgUpdateMinSelfDelegation) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Creator)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.MinSelfDelegation)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	return n
+}
+
+func (m *MsgUpdateMinSelfDelegationResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	return n
+}
+
+func sovTx(x uint64) (n int) {
+	return (math_bits.Len64(x|1) + 6) / 7
+}
+func sozTx(x uint64) (n int) {
+	return sovTx(uint64((x << 1) ^ uint64((int64(x) >> 63))))
+}
+func (m *MsgUpdateMinCommission) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgUpdateMinCommission: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgUpdateMinCommission: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Creator", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Creator = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field MinCommission", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.MinCommission = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgUpdateMinCommissionResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgUpdateMinCommissionResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgUpdateMinCommissionResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgUpdateMaxVotingPower) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgUpdateMaxVotingPower: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgUpdateMaxVotingPower: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Creator", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Creator = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field MaxVotingPower", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.MaxVotingPower = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgUpdateMaxVotingPowerResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgUpdateMaxVotingPowerResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgUpdateMaxVotingPowerResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgUpdateMinSelfDelegation) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgUpdateMinSelfDelegation: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgUpdateMinSelfDelegation: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Creator", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Creator = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field MinSelfDelegation", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.MinSelfDelegation = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgUpdateMinSelfDelegationResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgUpdateMinSelfDelegationResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgUpdateMinSelfDelegationResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func skipTx(dAtA []byte) (n int, err error) {
+	l := len(dAtA)
+	iNdEx := 0
+	depth := 0
+	for iNdEx < l {
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return 0, ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return 0, io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= (uint64(b) & 0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		wireType := int(wire & 0x7)
+		switch wireType {
+		case 0:
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return 0, ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return 0, io.ErrUnexpectedEOF
+				}
+				iNdEx++
+				if dAtA[iNdEx-1] < 0x80 {
+					break
+				}
+			}
+		case 1:
+			iNdEx += 8
+		case 2:
+			var length int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return 0, ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return 0, io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				length |= (int(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if length < 0 {
+				return 0, ErrInvalidLengthTx
+			}
+			iNdEx += length
+		case 3:
+			depth++
+		case 4:
+			if depth == 0 {
+				return 0, ErrUnexpectedEndOfGroupTx
+			}
+			depth--
+		case 5:
+			iNdEx += 4
+		default:
+			return 0, fmt.Errorf("proto: illegal wireType %d", wireType)
+		}
+		if iNdEx < 0 {
+			return 0, ErrInvalidLengthTx
+		}
+		if depth == 0 {
+			return iNdEx, nil
+		}
+	}
+	return 0, io.ErrUnexpectedEOF
+}
+
+var (
+	ErrInvalidLengthTx        = fmt.Errorf("proto: negative length found during unmarshaling")
+	ErrIntOverflowTx          = fmt.Errorf("proto: integer overflow")
+	ErrUnexpectedEndOfGroupTx = fmt.Errorf("proto: unexpected end of group")
+)

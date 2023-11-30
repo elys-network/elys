@@ -4,4 +4,26 @@ package elys.parameter;
 option go_package = "github.com/elys-network/elys/x/parameter/types";
 
 // Msg defines the Msg service.
-service Msg {}
+service Msg {
+  rpc UpdateMinCommission(MsgUpdateMinCommission) returns (MsgUpdateMinCommissionResponse);
+  rpc UpdateMaxVotingPower(MsgUpdateMaxVotingPower) returns (MsgUpdateMaxVotingPowerResponse);
+  rpc UpdateMinSelfDelegation(MsgUpdateMinSelfDelegation) returns (MsgUpdateMinSelfDelegationResponse);
+}
+
+message MsgUpdateMinCommission {
+  string creator = 1;
+  string min_commission = 2;
+}
+message MsgUpdateMinCommissionResponse {}
+
+message MsgUpdateMaxVotingPower {
+  string creator = 1;
+  string max_voting_power = 3;
+}
+message MsgUpdateMaxVotingPowerResponse {}
+
+message MsgUpdateMinSelfDelegation {
+  string creator = 1;
+  string min_self_delegation = 3;
+}
+message MsgUpdateMinSelfDelegationResponse {}

@@ -1,16 +1,17 @@
 package keeper_test
 
 import (
-	"testing"
-
+	"github.com/cometbft/cometbft/crypto/ed25519"
 	"github.com/cosmos/cosmos-sdk/types"
-	keepertest "github.com/elys-network/elys/testutil/keeper"
-	"github.com/stretchr/testify/require"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-func TestApplyDiscount(t *testing.T) {
-	// Mock context and keeper
-	k, ctx, _, _ := keepertest.AmmKeeper(t)
+func (suite *KeeperTestSuite) TestApplyDiscount() {
+	k, ctx := suite.app.AmmKeeper, suite.ctx
+	brokerAddress := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address()).String()
+	params := suite.app.ParameterKeeper.GetParams(ctx)
+	params.BrokerAddress = brokerAddress
+	suite.app.ParameterKeeper.SetParams(ctx, params)
 
 	// Define test cases
 	tests := []struct {
@@ -32,7 +33,7 @@ func TestApplyDiscount(t *testing.T) {
 			name:     "Positive discount with valid broker address",
 			swapFee:  types.NewDecWithPrec(100, 2),
 			discount: types.NewDecWithPrec(10, 2), // 0.10 (10%)
-			sender:   k.BrokerAddress(ctx),
+			sender:   brokerAddress,
 			wantFee:  types.NewDecWithPrec(90, 2), // 0.90 after discount
 		},
 		{
@@ -46,14 +47,14 @@ func TestApplyDiscount(t *testing.T) {
 			name:     "Boundary value for discount",
 			swapFee:  types.NewDecWithPrec(100, 2),
 			discount: types.NewDecWithPrec(9999, 4), // 0.9999 (99.99%)
-			sender:   k.BrokerAddress(ctx),
+			sender:   brokerAddress,
 			wantFee:  types.NewDecWithPrec(1, 4), // 0.01 after discount
 		},
 		{
 			name:     "Discount greater than swap fee",
 			swapFee:  types.NewDecWithPrec(50, 2), // 0.50
 			discount: types.NewDecWithPrec(75, 2), // 0.75
-			sender:   k.BrokerAddress(ctx),
+			sender:   brokerAddress,
 			wantFee:  types.NewDecWithPrec(125, 3),
 		},
 		{
@@ -67,14 +68,14 @@ func TestApplyDiscount(t *testing.T) {
 			name:     "Zero swap fee with valid discount",
 			swapFee:  types.ZeroDec(),
 			discount: types.NewDecWithPrec(10, 2),
-			sender:   k.BrokerAddress(ctx),
+			sender:   brokerAddress,
 			wantFee:  types.ZeroDec(),
 		},
 		{
 			name:     "Large discount with valid broker address",
 			swapFee:  types.NewDecWithPrec(100, 2),
 			discount: types.NewDecWithPrec(9000, 4), // 0.90 (90%)
-			sender:   k.BrokerAddress(ctx),
+			sender:   brokerAddress,
 			wantFee:  types.NewDecWithPrec(10, 2), // 0.10 after discount
 		},
 		{
@@ -87,15 +88,15 @@ func TestApplyDiscount(t *testing.T) {
 	}
 
 	for _, tc := range tests {
-		t.Run(tc.name, func(t *testing.T) {
+		suite.Run(tc.name, func() {
 			fee, discount, err := k.ApplyDiscount(ctx, tc.swapFee, tc.discount, tc.sender)
 
 			if tc.wantError {
-				require.Error(t, err)
+				suite.Require().Error(err)
 			} else {
-				require.NoError(t, err)
-				require.Equal(t, tc.wantFee, fee)
-				require.Equal(t, tc.discount, discount)
+				suite.Require().NoError(err)
+				suite.Require().Equal(tc.wantFee, fee)
+				suite.Require().Equal(tc.discount, discount)
 			}
 		})
 	}

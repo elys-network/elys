@@ -20,7 +20,7 @@ func TestOpen_ErrorCheckUserAuthorization(t *testing.T) {
 	mockChecker := new(mocks.OpenChecker)
 	mockAssetProfile := new(mocks.AssetProfileKeeper)
 
-	k := keeper.NewKeeper(nil, nil, nil, "cosmos1ysxv266l8w76lq0vy44ktzajdr9u9yhlxzlvga", nil, nil, nil, mockAssetProfile)
+	k := keeper.NewKeeper(nil, nil, nil, "cosmos1ysxv266l8w76lq0vy44ktzajdr9u9yhlxzlvga", nil, nil, nil, mockAssetProfile, nil)
 	k.OpenChecker = mockChecker
 
 	var (
@@ -48,7 +48,7 @@ func TestOpen_ErrorCheckMaxOpenPositions(t *testing.T) {
 	mockChecker := new(mocks.OpenChecker)
 	mockAssetProfile := new(mocks.AssetProfileKeeper)
 
-	k := keeper.NewKeeper(nil, nil, nil, "cosmos1ysxv266l8w76lq0vy44ktzajdr9u9yhlxzlvga", nil, nil, nil, mockAssetProfile)
+	k := keeper.NewKeeper(nil, nil, nil, "cosmos1ysxv266l8w76lq0vy44ktzajdr9u9yhlxzlvga", nil, nil, nil, mockAssetProfile, nil)
 	k.OpenChecker = mockChecker
 
 	var (
@@ -80,7 +80,7 @@ func TestOpen_ErrorPreparePools(t *testing.T) {
 	mockChecker := new(mocks.OpenChecker)
 	mockAssetProfile := new(mocks.AssetProfileKeeper)
 
-	k := keeper.NewKeeper(nil, nil, nil, "cosmos1ysxv266l8w76lq0vy44ktzajdr9u9yhlxzlvga", nil, nil, nil, mockAssetProfile)
+	k := keeper.NewKeeper(nil, nil, nil, "cosmos1ysxv266l8w76lq0vy44ktzajdr9u9yhlxzlvga", nil, nil, nil, mockAssetProfile, nil)
 	k.OpenChecker = mockChecker
 
 	var (
@@ -113,7 +113,7 @@ func TestOpen_ErrorCheckPoolHealth(t *testing.T) {
 	mockChecker := new(mocks.OpenChecker)
 	mockAssetProfile := new(mocks.AssetProfileKeeper)
 
-	k := keeper.NewKeeper(nil, nil, nil, "cosmos1ysxv266l8w76lq0vy44ktzajdr9u9yhlxzlvga", nil, nil, nil, mockAssetProfile)
+	k := keeper.NewKeeper(nil, nil, nil, "cosmos1ysxv266l8w76lq0vy44ktzajdr9u9yhlxzlvga", nil, nil, nil, mockAssetProfile, nil)
 	k.OpenChecker = mockChecker
 
 	var (
@@ -146,7 +146,7 @@ func TestOpen_ErrorInvalidPosition(t *testing.T) {
 	mockChecker := new(mocks.OpenChecker)
 	mockAssetProfile := new(mocks.AssetProfileKeeper)
 
-	k := keeper.NewKeeper(nil, nil, nil, "cosmos1ysxv266l8w76lq0vy44ktzajdr9u9yhlxzlvga", nil, nil, nil, mockAssetProfile)
+	k := keeper.NewKeeper(nil, nil, nil, "cosmos1ysxv266l8w76lq0vy44ktzajdr9u9yhlxzlvga", nil, nil, nil, mockAssetProfile, nil)
 	k.OpenChecker = mockChecker
 
 	var (
@@ -172,7 +172,7 @@ func TestOpen_ErrorOpenLong(t *testing.T) {
 	mockChecker := new(mocks.OpenChecker)
 	mockAssetProfile := new(mocks.AssetProfileKeeper)
 
-	k := keeper.NewKeeper(nil, nil, nil, "cosmos1ysxv266l8w76lq0vy44ktzajdr9u9yhlxzlvga", nil, nil, nil, mockAssetProfile)
+	k := keeper.NewKeeper(nil, nil, nil, "cosmos1ysxv266l8w76lq0vy44ktzajdr9u9yhlxzlvga", nil, nil, nil, mockAssetProfile, nil)
 	k.OpenChecker = mockChecker
 
 	var (
@@ -206,7 +206,7 @@ func TestOpen_ErrorOpenShort(t *testing.T) {
 	mockChecker := new(mocks.OpenChecker)
 	mockAssetProfile := new(mocks.AssetProfileKeeper)
 
-	k := keeper.NewKeeper(nil, nil, nil, "cosmos1ysxv266l8w76lq0vy44ktzajdr9u9yhlxzlvga", nil, nil, nil, mockAssetProfile)
+	k := keeper.NewKeeper(nil, nil, nil, "cosmos1ysxv266l8w76lq0vy44ktzajdr9u9yhlxzlvga", nil, nil, nil, mockAssetProfile, nil)
 	k.OpenChecker = mockChecker
 
 	var (
@@ -240,7 +240,7 @@ func TestOpen_Successful(t *testing.T) {
 	mockChecker := new(mocks.OpenChecker)
 	mockAssetProfile := new(mocks.AssetProfileKeeper)
 
-	k := keeper.NewKeeper(nil, nil, nil, "cosmos1ysxv266l8w76lq0vy44ktzajdr9u9yhlxzlvga", nil, nil, nil, mockAssetProfile)
+	k := keeper.NewKeeper(nil, nil, nil, "cosmos1ysxv266l8w76lq0vy44ktzajdr9u9yhlxzlvga", nil, nil, nil, mockAssetProfile, nil)
 	k.OpenChecker = mockChecker
 
 	var (

@@ -21,8 +21,6 @@ func (oq *Querier) HandleQuery(ctx sdk.Context, query wasmbindingstypes.ElysQuer
 	switch {
 	case query.ParameterParams != nil:
 		return oq.queryParams(ctx, query.ParameterParams)
-	case query.ParameterAnteHandlerParamAll != nil:
-		return oq.queryAnteHandlerParamAll(ctx, query.ParameterAnteHandlerParamAll)
 	default:
 		// This handler cannot handle the query
 		return nil, wasmbindingstypes.ErrCannotHandleQuery

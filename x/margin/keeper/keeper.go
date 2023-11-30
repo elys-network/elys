@@ -19,6 +19,7 @@ import (
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
 	"github.com/elys-network/elys/x/margin/types"
+	pkeeper "github.com/elys-network/elys/x/parameter/keeper"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
 
@@ -33,14 +34,15 @@ type (
 		types.CloseLongChecker
 		types.CloseShortChecker
 
-		cdc          codec.BinaryCodec
-		storeKey     storetypes.StoreKey
-		memKey       storetypes.StoreKey
-		authority    string
-		amm          types.AmmKeeper
-		bankKeeper   types.BankKeeper
-		oracleKeeper ammtypes.OracleKeeper
-		apKeeper     types.AssetProfileKeeper
+		cdc             codec.BinaryCodec
+		storeKey        storetypes.StoreKey
+		memKey          storetypes.StoreKey
+		authority       string
+		parameterKeeper *pkeeper.Keeper
+		amm             types.AmmKeeper
+		bankKeeper      types.BankKeeper
+		oracleKeeper    ammtypes.OracleKeeper
+		apKeeper        types.AssetProfileKeeper
 
 		hooks types.MarginHooks
 	}
@@ -55,6 +57,7 @@ func NewKeeper(
 	bk types.BankKeeper,
 	oracleKeeper ammtypes.OracleKeeper,
 	apKeeper types.AssetProfileKeeper,
+	parameterKeeper *pkeeper.Keeper,
 ) *Keeper {
 	// ensure that authority is a valid AccAddress
 	if _, err := sdk.AccAddressFromBech32(authority); err != nil {
@@ -62,14 +65,15 @@ func NewKeeper(
 	}
 
 	keeper := &Keeper{
-		cdc:          cdc,
-		storeKey:     storeKey,
-		memKey:       memKey,
-		authority:    authority,
-		amm:          amm,
-		bankKeeper:   bk,
-		oracleKeeper: oracleKeeper,
-		apKeeper:     apKeeper,
+		cdc:             cdc,
+		storeKey:        storeKey,
+		memKey:          memKey,
+		authority:       authority,
+		amm:             amm,
+		bankKeeper:      bk,
+		oracleKeeper:    oracleKeeper,
+		apKeeper:        apKeeper,
+		parameterKeeper: parameterKeeper,
 	}
 
 	keeper.AuthorizationChecker = keeper

@@ -36,7 +36,8 @@ func (k Keeper) CalcOutRouteSpotPrice(ctx sdk.Context, tokenOut sdk.Coin, routes
 		swapFee := pool.GetPoolParams().SwapFee
 
 		// Apply discount to swap fee if applicable
-		swapFee, _, err := k.ApplyDiscount(ctx, swapFee, discount, k.BrokerAddress(ctx))
+		brokerAddress := k.parameterKeeper.GetParams(ctx).BrokerAddress
+		swapFee, _, err := k.ApplyDiscount(ctx, swapFee, discount, brokerAddress)
 		if err != nil {
 			return sdk.ZeroDec(), sdk.Coin{}, sdk.ZeroDec(), sdk.ZeroDec(), sdk.Coin{}, err
 		}

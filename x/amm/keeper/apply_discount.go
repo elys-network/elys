@@ -19,8 +19,9 @@ func (k Keeper) ApplyDiscount(ctx sdk.Context, swapFee sdk.Dec, discount sdk.Dec
 	}
 
 	// check if discount is positive and signer address is broker address otherwise throw an error
-	if discount.IsPositive() && sender != k.BrokerAddress(ctx) {
-		return sdk.ZeroDec(), sdk.ZeroDec(), sdkerrors.Wrapf(types.ErrInvalidDiscount, "discount %s is positive and signer address %s is not broker address %s", discount, sender, k.BrokerAddress(ctx))
+	brokerAddress := k.parameterKeeper.GetParams(ctx).BrokerAddress
+	if discount.IsPositive() && sender != brokerAddress {
+		return sdk.ZeroDec(), sdk.ZeroDec(), sdkerrors.Wrapf(types.ErrInvalidDiscount, "discount %s is positive and signer address %s is not broker address %s", discount, sender, brokerAddress)
 	}
 
 	// apply discount percentage to swap fee

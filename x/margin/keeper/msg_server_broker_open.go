@@ -13,7 +13,7 @@ func (k msgServer) BrokerOpen(goCtx context.Context, msg *types.MsgBrokerOpen) (
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	// get broker address
-	brokerAddress := k.GetBrokerAddress(ctx).String()
+	brokerAddress := k.parameterKeeper.GetParams(ctx).BrokerAddress
 
 	// check if broker is allowed
 	if brokerAddress != msg.Creator {

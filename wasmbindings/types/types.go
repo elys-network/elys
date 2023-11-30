@@ -192,8 +192,7 @@ type ElysQuery struct {
 	OraclePriceFeederAll    *oracletypes.QueryAllPriceFeederRequest    `json:"oracle_price_feeder_all,omitempty"`
 
 	// parameter queriers
-	ParameterParams              *parametertypes.QueryParamsRequest              `json:"parameter_params,omitempty"`
-	ParameterAnteHandlerParamAll *parametertypes.QueryAllAnteHandlerParamRequest `json:"parameter_ante_handler_param_all,omitempty"`
+	ParameterParams *parametertypes.QueryParamsRequest `json:"parameter_params,omitempty"`
 
 	// stablestake queriers
 	StableStakeParams          *stablestaketypes.QueryParamsRequest      `json:"stable_stake_params,omitempty"`
