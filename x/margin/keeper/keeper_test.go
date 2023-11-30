@@ -7,7 +7,6 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	simapp "github.com/elys-network/elys/app"
 	"github.com/elys-network/elys/x/margin/types"
-	paramtypes "github.com/elys-network/elys/x/parameter/types"
 	"github.com/stretchr/testify/require"
 
 	"github.com/cometbft/cometbft/crypto/ed25519"
@@ -27,19 +26,21 @@ func TestSetGetMTP(t *testing.T) {
 
 	for i := 0; i < 2; i++ {
 		mtp := types.MTP{
-			Address:                         addr[i].String(),
-			Collaterals:                     []sdk.Coin{sdk.NewCoin(paramtypes.BaseCurrency, sdk.NewInt(0))},
-			Liabilities:                     sdk.NewInt(0),
-			BorrowInterestPaidCollaterals:   []sdk.Coin{sdk.NewCoin(paramtypes.BaseCurrency, sdk.NewInt(0))},
-			BorrowInterestPaidCustodies:     []sdk.Coin{sdk.NewCoin("ATOM", sdk.NewInt(0))},
-			BorrowInterestUnpaidCollaterals: []sdk.Coin{sdk.NewCoin(paramtypes.BaseCurrency, sdk.NewInt(0))},
-			Custodies:                       []sdk.Coin{sdk.NewCoin("ATOM", sdk.NewInt(0))},
-			Leverages:                       []sdk.Dec{sdk.NewDec(0)},
-			MtpHealth:                       sdk.NewDec(0),
-			Position:                        types.Position_LONG,
-			Id:                              0,
-			ConsolidateLeverage:             sdk.ZeroDec(),
-			SumCollateral:                   sdk.ZeroInt(),
+			Address:                        addr[i].String(),
+			CollateralAsset:                ptypes.BaseCurrency,
+			CustodyAsset:                   "ATOM",
+			Collateral:                     sdk.NewInt(0),
+			Liabilities:                    sdk.NewInt(0),
+			BorrowInterestPaidCollateral:   sdk.NewInt(0),
+			BorrowInterestPaidCustody:      sdk.NewInt(0),
+			BorrowInterestUnpaidCollateral: sdk.NewInt(0),
+			Custody:                        sdk.NewInt(0),
+			Leverage:                       sdk.NewDec(0),
+			MtpHealth:                      sdk.NewDec(0),
+			Position:                       types.Position_LONG,
+			Id:                             0,
+			ConsolidateLeverage:            sdk.ZeroDec(),
+			SumCollateral:                  sdk.ZeroInt(),
 		}
 		err := margin.SetMTP(ctx, &mtp)
 		require.NoError(t, err)

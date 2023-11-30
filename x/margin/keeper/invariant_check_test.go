@@ -122,7 +122,7 @@ func TestCheckBalanceInvariant_InvalidBalance(t *testing.T) {
 	msg3 := margintypes.NewMsgClose(
 		addr[0].String(),
 		mtpId,
-		sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(100000000)),
+		sdk.NewInt(100000000),
 	)
 
 	_, err = mk.Close(ctx, msg3)

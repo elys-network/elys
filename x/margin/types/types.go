@@ -17,41 +17,42 @@ func GetPositionFromString(s string) Position {
 	}
 }
 
-func NewMTP(signer string, collateralAsset string, borrowAsset string, position Position, leverage sdk.Dec, takeProfitPrice sdk.Dec, poolId uint64) *MTP {
+func NewMTP(signer, collateralAsset, tradingAsset, liabilitiesAsset, custodyAsset string, position Position, leverage, takeProfitPrice sdk.Dec, poolId uint64) *MTP {
 	return &MTP{
-		Address:                         signer,
-		Collaterals:                     []sdk.Coin{sdk.NewCoin(collateralAsset, sdk.ZeroInt())},
-		Liabilities:                     sdk.ZeroInt(),
-		BorrowInterestPaidCollaterals:   []sdk.Coin{sdk.NewCoin(collateralAsset, sdk.ZeroInt())},
-		BorrowInterestPaidCustodies:     []sdk.Coin{sdk.NewCoin(borrowAsset, sdk.ZeroInt())},
-		BorrowInterestUnpaidCollaterals: []sdk.Coin{sdk.NewCoin(collateralAsset, sdk.ZeroInt())},
-		Custodies:                       []sdk.Coin{sdk.NewCoin(borrowAsset, sdk.ZeroInt())},
-		TakeProfitLiabilities:           sdk.ZeroInt(),
-		TakeProfitCustodies:             []sdk.Coin{sdk.NewCoin(borrowAsset, sdk.ZeroInt())},
-		Leverages:                       []sdk.Dec{leverage},
-		MtpHealth:                       sdk.ZeroDec(),
-		Position:                        position,
-		AmmPoolId:                       poolId,
-		ConsolidateLeverage:             leverage,
-		SumCollateral:                   sdk.ZeroInt(),
-		TakeProfitPrice:                 takeProfitPrice,
-		TakeProfitBorrowRate:            sdk.OneDec(),
-		FundingFeePaidCollaterals:       []sdk.Coin{sdk.NewCoin(collateralAsset, sdk.ZeroInt())},
-		FundingFeePaidCustodies:         []sdk.Coin{sdk.NewCoin(borrowAsset, sdk.ZeroInt())},
-		FundingFeeReceivedCollaterals:   []sdk.Coin{sdk.NewCoin(collateralAsset, sdk.ZeroInt())},
-		FundingFeeReceivedCustodies:     []sdk.Coin{sdk.NewCoin(borrowAsset, sdk.ZeroInt())},
+		Address:                        signer,
+		CollateralAsset:                collateralAsset,
+		TradingAsset:                   tradingAsset,
+		LiabilitiesAsset:               liabilitiesAsset,
+		CustodyAsset:                   custodyAsset,
+		Collateral:                     sdk.ZeroInt(),
+		Liabilities:                    sdk.ZeroInt(),
+		BorrowInterestPaidCollateral:   sdk.ZeroInt(),
+		BorrowInterestPaidCustody:      sdk.ZeroInt(),
+		BorrowInterestUnpaidCollateral: sdk.ZeroInt(),
+		Custody:                        sdk.ZeroInt(),
+		TakeProfitLiabilities:          sdk.ZeroInt(),
+		TakeProfitCustody:              sdk.ZeroInt(),
+		Leverage:                       leverage,
+		MtpHealth:                      sdk.ZeroDec(),
+		Position:                       position,
+		AmmPoolId:                      poolId,
+		ConsolidateLeverage:            leverage,
+		SumCollateral:                  sdk.ZeroInt(),
+		TakeProfitPrice:                takeProfitPrice,
+		TakeProfitBorrowRate:           sdk.OneDec(),
+		FundingFeePaidCollateral:       sdk.ZeroInt(),
+		FundingFeePaidCustody:          sdk.ZeroInt(),
+		FundingFeeReceivedCollateral:   sdk.ZeroInt(),
+		FundingFeeReceivedCustody:      sdk.ZeroInt(),
 	}
 }
 
 func (mtp MTP) Validate() error {
-	if len(mtp.Collaterals) < 1 {
-		return sdkerrors.Wrap(ErrMTPInvalid, "no asset specified")
+	if mtp.CollateralAsset == "" {
+		return sdkerrors.Wrap(ErrMTPInvalid, "no collateral asset specified")
 	}
-	for _, collateral := range mtp.Collaterals {
-		asset := collateral.Denom
-		if asset == "" {
-			return sdkerrors.Wrap(ErrMTPInvalid, "no asset specified")
-		}
+	if mtp.CustodyAsset == "" {
+		return sdkerrors.Wrap(ErrMTPInvalid, "no custody asset specified")
 	}
 	if mtp.Address == "" {
 		return sdkerrors.Wrap(ErrMTPInvalid, "no address specified")
@@ -74,6 +75,6 @@ func NewMarginCollateralAddress(positionId uint64) sdk.AccAddress {
 
 // Generate a new margin custody wallet per position
 func NewMarginCustodyAddress(positionId uint64) sdk.AccAddress {
-	key := append([]byte("margin_collateral"), sdk.Uint64ToBigEndian(positionId)...)
+	key := append([]byte("margin_custody"), sdk.Uint64ToBigEndian(positionId)...)
 	return address.Module(ModuleName, key)
 }

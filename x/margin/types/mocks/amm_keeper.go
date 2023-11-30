@@ -283,6 +283,59 @@ func (_c *AmmKeeper_GetPool_Call) RunAndReturn(run func(types.Context, uint64) (
 	return _c
 }
 
+// GetPoolIdWithAllDenoms provides a mock function with given fields: ctx, denoms
+func (_m *AmmKeeper) GetPoolIdWithAllDenoms(ctx types.Context, denoms []string) (uint64, bool) {
+	ret := _m.Called(ctx, denoms)
+
+	var r0 uint64
+	var r1 bool
+	if rf, ok := ret.Get(0).(func(types.Context, []string) (uint64, bool)); ok {
+		return rf(ctx, denoms)
+	}
+	if rf, ok := ret.Get(0).(func(types.Context, []string) uint64); ok {
+		r0 = rf(ctx, denoms)
+	} else {
+		r0 = ret.Get(0).(uint64)
+	}
+
+	if rf, ok := ret.Get(1).(func(types.Context, []string) bool); ok {
+		r1 = rf(ctx, denoms)
+	} else {
+		r1 = ret.Get(1).(bool)
+	}
+
+	return r0, r1
+}
+
+// AmmKeeper_GetPoolIdWithAllDenoms_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetPoolIdWithAllDenoms'
+type AmmKeeper_GetPoolIdWithAllDenoms_Call struct {
+	*mock.Call
+}
+
+// GetPoolIdWithAllDenoms is a helper method to define mock.On call
+//   - ctx types.Context
+//   - denoms []string
+func (_e *AmmKeeper_Expecter) GetPoolIdWithAllDenoms(ctx interface{}, denoms interface{}) *AmmKeeper_GetPoolIdWithAllDenoms_Call {
+	return &AmmKeeper_GetPoolIdWithAllDenoms_Call{Call: _e.mock.On("GetPoolIdWithAllDenoms", ctx, denoms)}
+}
+
+func (_c *AmmKeeper_GetPoolIdWithAllDenoms_Call) Run(run func(ctx types.Context, denoms []string)) *AmmKeeper_GetPoolIdWithAllDenoms_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(types.Context), args[1].([]string))
+	})
+	return _c
+}
+
+func (_c *AmmKeeper_GetPoolIdWithAllDenoms_Call) Return(poolId uint64, found bool) *AmmKeeper_GetPoolIdWithAllDenoms_Call {
+	_c.Call.Return(poolId, found)
+	return _c
+}
+
+func (_c *AmmKeeper_GetPoolIdWithAllDenoms_Call) RunAndReturn(run func(types.Context, []string) (uint64, bool)) *AmmKeeper_GetPoolIdWithAllDenoms_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // GetPoolSnapshotOrSet provides a mock function with given fields: ctx, pool
 func (_m *AmmKeeper) GetPoolSnapshotOrSet(ctx types.Context, pool ammtypes.Pool) ammtypes.Pool {
 	ret := _m.Called(ctx, pool)

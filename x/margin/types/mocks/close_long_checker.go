@@ -26,23 +26,23 @@ func (_m *CloseLongChecker) EXPECT() *CloseLongChecker_Expecter {
 	return &CloseLongChecker_Expecter{mock: &_m.Mock}
 }
 
-// EstimateAndRepay provides a mock function with given fields: ctx, mtp, pool, ammPool, collateralAsset, custodyAsset
-func (_m *CloseLongChecker) EstimateAndRepay(ctx types.Context, mtp margintypes.MTP, pool margintypes.Pool, ammPool ammtypes.Pool, collateralAsset string, custodyAsset string) (math.Int, error) {
-	ret := _m.Called(ctx, mtp, pool, ammPool, collateralAsset, custodyAsset)
+// EstimateAndRepay provides a mock function with given fields: ctx, mtp, pool, ammPool, amount, baseCurrency
+func (_m *CloseLongChecker) EstimateAndRepay(ctx types.Context, mtp margintypes.MTP, pool margintypes.Pool, ammPool ammtypes.Pool, amount math.Int, baseCurrency string) (math.Int, error) {
+	ret := _m.Called(ctx, mtp, pool, ammPool, amount, baseCurrency)
 
 	var r0 math.Int
 	var r1 error
-	if rf, ok := ret.Get(0).(func(types.Context, margintypes.MTP, margintypes.Pool, ammtypes.Pool, string, string) (math.Int, error)); ok {
-		return rf(ctx, mtp, pool, ammPool, collateralAsset, custodyAsset)
+	if rf, ok := ret.Get(0).(func(types.Context, margintypes.MTP, margintypes.Pool, ammtypes.Pool, math.Int, string) (math.Int, error)); ok {
+		return rf(ctx, mtp, pool, ammPool, amount, baseCurrency)
 	}
-	if rf, ok := ret.Get(0).(func(types.Context, margintypes.MTP, margintypes.Pool, ammtypes.Pool, string, string) math.Int); ok {
-		r0 = rf(ctx, mtp, pool, ammPool, collateralAsset, custodyAsset)
+	if rf, ok := ret.Get(0).(func(types.Context, margintypes.MTP, margintypes.Pool, ammtypes.Pool, math.Int, string) math.Int); ok {
+		r0 = rf(ctx, mtp, pool, ammPool, amount, baseCurrency)
 	} else {
 		r0 = ret.Get(0).(math.Int)
 	}
 
-	if rf, ok := ret.Get(1).(func(types.Context, margintypes.MTP, margintypes.Pool, ammtypes.Pool, string, string) error); ok {
-		r1 = rf(ctx, mtp, pool, ammPool, collateralAsset, custodyAsset)
+	if rf, ok := ret.Get(1).(func(types.Context, margintypes.MTP, margintypes.Pool, ammtypes.Pool, math.Int, string) error); ok {
+		r1 = rf(ctx, mtp, pool, ammPool, amount, baseCurrency)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -60,15 +60,15 @@ type CloseLongChecker_EstimateAndRepay_Call struct {
 //   - mtp margintypes.MTP
 //   - pool margintypes.Pool
 //   - ammPool ammtypes.Pool
-//   - collateralAsset string
-//   - custodyAsset string
-func (_e *CloseLongChecker_Expecter) EstimateAndRepay(ctx interface{}, mtp interface{}, pool interface{}, ammPool interface{}, collateralAsset interface{}, custodyAsset interface{}) *CloseLongChecker_EstimateAndRepay_Call {
-	return &CloseLongChecker_EstimateAndRepay_Call{Call: _e.mock.On("EstimateAndRepay", ctx, mtp, pool, ammPool, collateralAsset, custodyAsset)}
+//   - amount math.Int
+//   - baseCurrency string
+func (_e *CloseLongChecker_Expecter) EstimateAndRepay(ctx interface{}, mtp interface{}, pool interface{}, ammPool interface{}, amount interface{}, baseCurrency interface{}) *CloseLongChecker_EstimateAndRepay_Call {
+	return &CloseLongChecker_EstimateAndRepay_Call{Call: _e.mock.On("EstimateAndRepay", ctx, mtp, pool, ammPool, amount, baseCurrency)}
 }
 
-func (_c *CloseLongChecker_EstimateAndRepay_Call) Run(run func(ctx types.Context, mtp margintypes.MTP, pool margintypes.Pool, ammPool ammtypes.Pool, collateralAsset string, custodyAsset string)) *CloseLongChecker_EstimateAndRepay_Call {
+func (_c *CloseLongChecker_EstimateAndRepay_Call) Run(run func(ctx types.Context, mtp margintypes.MTP, pool margintypes.Pool, ammPool ammtypes.Pool, amount math.Int, baseCurrency string)) *CloseLongChecker_EstimateAndRepay_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(types.Context), args[1].(margintypes.MTP), args[2].(margintypes.Pool), args[3].(ammtypes.Pool), args[4].(string), args[5].(string))
+		run(args[0].(types.Context), args[1].(margintypes.MTP), args[2].(margintypes.Pool), args[3].(ammtypes.Pool), args[4].(math.Int), args[5].(string))
 	})
 	return _c
 }
@@ -78,7 +78,7 @@ func (_c *CloseLongChecker_EstimateAndRepay_Call) Return(_a0 math.Int, _a1 error
 	return _c
 }
 
-func (_c *CloseLongChecker_EstimateAndRepay_Call) RunAndReturn(run func(types.Context, margintypes.MTP, margintypes.Pool, ammtypes.Pool, string, string) (math.Int, error)) *CloseLongChecker_EstimateAndRepay_Call {
+func (_c *CloseLongChecker_EstimateAndRepay_Call) RunAndReturn(run func(types.Context, margintypes.MTP, margintypes.Pool, ammtypes.Pool, math.Int, string) (math.Int, error)) *CloseLongChecker_EstimateAndRepay_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -244,13 +244,13 @@ func (_c *CloseLongChecker_GetPool_Call) RunAndReturn(run func(types.Context, ui
 	return _c
 }
 
-// HandleBorrowInterest provides a mock function with given fields: ctx, mtp, pool, ammPool, collateralAsset, custodyAsset
-func (_m *CloseLongChecker) HandleBorrowInterest(ctx types.Context, mtp *margintypes.MTP, pool *margintypes.Pool, ammPool ammtypes.Pool, collateralAsset string, custodyAsset string) error {
-	ret := _m.Called(ctx, mtp, pool, ammPool, collateralAsset, custodyAsset)
+// HandleBorrowInterest provides a mock function with given fields: ctx, mtp, pool, ammPool
+func (_m *CloseLongChecker) HandleBorrowInterest(ctx types.Context, mtp *margintypes.MTP, pool *margintypes.Pool, ammPool ammtypes.Pool) error {
+	ret := _m.Called(ctx, mtp, pool, ammPool)
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(types.Context, *margintypes.MTP, *margintypes.Pool, ammtypes.Pool, string, string) error); ok {
-		r0 = rf(ctx, mtp, pool, ammPool, collateralAsset, custodyAsset)
+	if rf, ok := ret.Get(0).(func(types.Context, *margintypes.MTP, *margintypes.Pool, ammtypes.Pool) error); ok {
+		r0 = rf(ctx, mtp, pool, ammPool)
 	} else {
 		r0 = ret.Error(0)
 	}
@@ -268,15 +268,13 @@ type CloseLongChecker_HandleBorrowInterest_Call struct {
 //   - mtp *margintypes.MTP
 //   - pool *margintypes.Pool
 //   - ammPool ammtypes.Pool
-//   - collateralAsset string
-//   - custodyAsset string
-func (_e *CloseLongChecker_Expecter) HandleBorrowInterest(ctx interface{}, mtp interface{}, pool interface{}, ammPool interface{}, collateralAsset interface{}, custodyAsset interface{}) *CloseLongChecker_HandleBorrowInterest_Call {
-	return &CloseLongChecker_HandleBorrowInterest_Call{Call: _e.mock.On("HandleBorrowInterest", ctx, mtp, pool, ammPool, collateralAsset, custodyAsset)}
+func (_e *CloseLongChecker_Expecter) HandleBorrowInterest(ctx interface{}, mtp interface{}, pool interface{}, ammPool interface{}) *CloseLongChecker_HandleBorrowInterest_Call {
+	return &CloseLongChecker_HandleBorrowInterest_Call{Call: _e.mock.On("HandleBorrowInterest", ctx, mtp, pool, ammPool)}
 }
 
-func (_c *CloseLongChecker_HandleBorrowInterest_Call) Run(run func(ctx types.Context, mtp *margintypes.MTP, pool *margintypes.Pool, ammPool ammtypes.Pool, collateralAsset string, custodyAsset string)) *CloseLongChecker_HandleBorrowInterest_Call {
+func (_c *CloseLongChecker_HandleBorrowInterest_Call) Run(run func(ctx types.Context, mtp *margintypes.MTP, pool *margintypes.Pool, ammPool ammtypes.Pool)) *CloseLongChecker_HandleBorrowInterest_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(types.Context), args[1].(*margintypes.MTP), args[2].(*margintypes.Pool), args[3].(ammtypes.Pool), args[4].(string), args[5].(string))
+		run(args[0].(types.Context), args[1].(*margintypes.MTP), args[2].(*margintypes.Pool), args[3].(ammtypes.Pool))
 	})
 	return _c
 }
@@ -286,18 +284,18 @@ func (_c *CloseLongChecker_HandleBorrowInterest_Call) Return(_a0 error) *CloseLo
 	return _c
 }
 
-func (_c *CloseLongChecker_HandleBorrowInterest_Call) RunAndReturn(run func(types.Context, *margintypes.MTP, *margintypes.Pool, ammtypes.Pool, string, string) error) *CloseLongChecker_HandleBorrowInterest_Call {
+func (_c *CloseLongChecker_HandleBorrowInterest_Call) RunAndReturn(run func(types.Context, *margintypes.MTP, *margintypes.Pool, ammtypes.Pool) error) *CloseLongChecker_HandleBorrowInterest_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
-// TakeOutCustody provides a mock function with given fields: ctx, mtp, pool, custodyAsset
-func (_m *CloseLongChecker) TakeOutCustody(ctx types.Context, mtp margintypes.MTP, pool *margintypes.Pool, custodyAsset string) error {
-	ret := _m.Called(ctx, mtp, pool, custodyAsset)
+// TakeOutCustody provides a mock function with given fields: ctx, mtp, pool, amount
+func (_m *CloseLongChecker) TakeOutCustody(ctx types.Context, mtp margintypes.MTP, pool *margintypes.Pool, amount math.Int) error {
+	ret := _m.Called(ctx, mtp, pool, amount)
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(types.Context, margintypes.MTP, *margintypes.Pool, string) error); ok {
-		r0 = rf(ctx, mtp, pool, custodyAsset)
+	if rf, ok := ret.Get(0).(func(types.Context, margintypes.MTP, *margintypes.Pool, math.Int) error); ok {
+		r0 = rf(ctx, mtp, pool, amount)
 	} else {
 		r0 = ret.Error(0)
 	}
@@ -314,14 +312,14 @@ type CloseLongChecker_TakeOutCustody_Call struct {
 //   - ctx types.Context
 //   - mtp margintypes.MTP
 //   - pool *margintypes.Pool
-//   - custodyAsset string
-func (_e *CloseLongChecker_Expecter) TakeOutCustody(ctx interface{}, mtp interface{}, pool interface{}, custodyAsset interface{}) *CloseLongChecker_TakeOutCustody_Call {
-	return &CloseLongChecker_TakeOutCustody_Call{Call: _e.mock.On("TakeOutCustody", ctx, mtp, pool, custodyAsset)}
+//   - amount math.Int
+func (_e *CloseLongChecker_Expecter) TakeOutCustody(ctx interface{}, mtp interface{}, pool interface{}, amount interface{}) *CloseLongChecker_TakeOutCustody_Call {
+	return &CloseLongChecker_TakeOutCustody_Call{Call: _e.mock.On("TakeOutCustody", ctx, mtp, pool, amount)}
 }
 
-func (_c *CloseLongChecker_TakeOutCustody_Call) Run(run func(ctx types.Context, mtp margintypes.MTP, pool *margintypes.Pool, custodyAsset string)) *CloseLongChecker_TakeOutCustody_Call {
+func (_c *CloseLongChecker_TakeOutCustody_Call) Run(run func(ctx types.Context, mtp margintypes.MTP, pool *margintypes.Pool, amount math.Int)) *CloseLongChecker_TakeOutCustody_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(types.Context), args[1].(margintypes.MTP), args[2].(*margintypes.Pool), args[3].(string))
+		run(args[0].(types.Context), args[1].(margintypes.MTP), args[2].(*margintypes.Pool), args[3].(math.Int))
 	})
 	return _c
 }
@@ -331,7 +329,7 @@ func (_c *CloseLongChecker_TakeOutCustody_Call) Return(_a0 error) *CloseLongChec
 	return _c
 }
 
-func (_c *CloseLongChecker_TakeOutCustody_Call) RunAndReturn(run func(types.Context, margintypes.MTP, *margintypes.Pool, string) error) *CloseLongChecker_TakeOutCustody_Call {
+func (_c *CloseLongChecker_TakeOutCustody_Call) RunAndReturn(run func(types.Context, margintypes.MTP, *margintypes.Pool, math.Int) error) *CloseLongChecker_TakeOutCustody_Call {
 	_c.Call.Return(run)
 	return _c
 }

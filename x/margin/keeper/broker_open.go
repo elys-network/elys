@@ -6,7 +6,7 @@ import (
 )
 
 func (k Keeper) BrokerOpen(ctx sdk.Context, msg *types.MsgBrokerOpen) (*types.MsgBrokerOpenResponse, error) {
-	msgOpen := types.NewMsgOpen(msg.Owner, msg.CollateralAsset, msg.CollateralAmount, msg.BorrowAsset, msg.Position, msg.Leverage, msg.TakeProfitPrice)
+	msgOpen := types.NewMsgOpen(msg.Owner, msg.Position, msg.Leverage, msg.TradingAsset, msg.Collateral, msg.TakeProfitPrice)
 
 	res, err := k.Open(ctx, msgOpen)
 	if err != nil {

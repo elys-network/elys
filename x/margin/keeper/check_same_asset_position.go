@@ -8,7 +8,7 @@ import (
 func (k Keeper) CheckSameAssetPosition(ctx sdk.Context, msg *types.MsgOpen) *types.MTP {
 	mtps := k.GetAllMTPs(ctx)
 	for _, mtp := range mtps {
-		if mtp.Address == msg.Creator && mtp.Position == msg.Position {
+		if mtp.Address == msg.Creator && mtp.Position == msg.Position && mtp.CollateralAsset == msg.Collateral.Denom && mtp.CustodyAsset == msg.TradingAsset {
 			return &mtp
 		}
 	}

@@ -1,15 +1,18 @@
 package keeper
 
 import (
+	"fmt"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/elys-network/elys/x/margin/types"
 )
 
-func (k Keeper) GetFirstValidPool(ctx sdk.Context, borrowAsset string) (uint64, error) {
-	poolIds := k.amm.GetAllPoolIdsWithDenom(ctx, borrowAsset)
-	if len(poolIds) < 1 {
-		return 0, sdkerrors.Wrap(types.ErrInvalidBorrowingAsset, "invalid collateral asset")
+func (k Keeper) GetFirstValidPool(ctx sdk.Context, collateralAsset string, borrowAsset string) (uint64, error) {
+	denoms := []string{collateralAsset, borrowAsset}
+	poolId, found := k.amm.GetPoolIdWithAllDenoms(ctx, denoms)
+	if !found {
+		return 0, sdkerrors.Wrap(types.ErrPoolDoesNotExist, fmt.Sprintf("%s", denoms))
 	}
-	return poolIds[0], nil
+	return poolId, nil
 }

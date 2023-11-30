@@ -5,15 +5,8 @@ import (
 )
 
 func GetMarginPoolBalancesByPosition(marginPool Pool, denom string, position Position) (sdk.Int, sdk.Int, sdk.Int) {
-	poolAssets := marginPool.GetPoolAssets(position)
-
-	for _, asset := range *poolAssets {
-		if asset.AssetDenom == denom {
-			return asset.AssetBalance, asset.Liabilities, asset.Custody
-		}
-	}
-
-	return sdk.ZeroInt(), sdk.ZeroInt(), sdk.ZeroInt()
+	poolAsset := marginPool.GetPoolAsset(position, denom)
+	return poolAsset.AssetBalance, poolAsset.Liabilities, poolAsset.Custody
 }
 
 // Get Margin Pool Balance

@@ -16,13 +16,13 @@ var _ = strconv.Itoa(0)
 
 func CmdBrokerOpen() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "broker-open [position] [leverage] [collateral-asset] [collateral-amount] [borrow-asset] [flags]",
+		Use:   "broker-open [position] [leverage] [trading-asset] [collateral] [owner] [flags]",
 		Short: "Open margin position as a broker",
 		Example: `Infinte profitability:
-elysd tx margin broker-open long 5 uusdc 100000000 uatom sif123 --from=treasury --keyring-backend=test --chain-id=elystestnet-1 --yes --gas=1000000
+elysd tx margin broker-open long 5 uatom 100000000uusdc sif123 --from=treasury --keyring-backend=test --chain-id=elystestnet-1 --yes --gas=1000000
 Finite profitability:
-elysd tx margin broker-open short 5 uusdc 100000000 uatom sif123 --take-profit 100 --from=treasury --keyring-backend=test --chain-id=elystestnet-1 --yes --gas=1000000`,
-		Args: cobra.ExactArgs(6),
+elysd tx margin broker-open short 5 uatom 100000000uusdc sif123 --take-profit 100 --from=treasury --keyring-backend=test --chain-id=elystestnet-1 --yes --gas=1000000`,
+		Args: cobra.ExactArgs(5),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
@@ -41,14 +41,12 @@ elysd tx margin broker-open short 5 uusdc 100000000 uatom sif123 --take-profit 1
 				return err
 			}
 
-			argCollateralAsset := args[2]
+			argTradingAsset := args[2]
 
-			argCollateralAmount, ok := sdk.NewIntFromString(args[3])
-			if !ok {
-				return errors.New("invalid collateral amount")
+			argCollateral, err := sdk.ParseCoinNormalized(args[3])
+			if err != nil {
+				return err
 			}
-
-			argBorrowAsset := args[4]
 
 			argMtpOwner := args[5]
 			if argMtpOwner == "" {
@@ -75,11 +73,10 @@ elysd tx margin broker-open short 5 uusdc 100000000 uatom sif123 --take-profit 1
 
 			msg := types.NewMsgBrokerOpen(
 				signer.String(),
-				argCollateralAsset,
-				argCollateralAmount,
-				argBorrowAsset,
 				argPosition,
 				argLeverage,
+				argTradingAsset,
+				argCollateral,
 				takeProfitPrice,
 				argMtpOwner,
 			)

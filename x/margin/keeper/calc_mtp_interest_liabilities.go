@@ -8,7 +8,7 @@ import (
 	"github.com/elys-network/elys/x/margin/types"
 )
 
-func (k Keeper) CalcMTPBorrowInterestLiabilities(ctx sdk.Context, mtp *types.MTP, borrowInterestRate sdk.Dec, epochPosition, epochLength int64, ammPool ammtypes.Pool, collateralAsset string, baseCurrency string) (sdk.Int, error) {
+func (k Keeper) CalcMTPBorrowInterestLiabilities(ctx sdk.Context, mtp *types.MTP, borrowInterestRate sdk.Dec, epochPosition, epochLength int64, ammPool ammtypes.Pool, baseCurrency string) (sdk.Int, error) {
 	// Ensure borrow interest rate or liabilities are not zero to avoid division by zero
 	if borrowInterestRate.IsZero() || mtp.Liabilities.IsZero() {
 		return sdk.ZeroInt(), types.ErrAmountTooLow
@@ -18,22 +18,22 @@ func (k Keeper) CalcMTPBorrowInterestLiabilities(ctx sdk.Context, mtp *types.MTP
 
 	rate.SetFloat64(borrowInterestRate.MustFloat64())
 
-	unpaidCollaterals := sdk.ZeroInt()
+	unpaidCollateral := sdk.ZeroInt()
 	// Calculate collateral borrow interests in base currency
-	if collateralAsset == baseCurrency {
-		unpaidCollaterals = unpaidCollaterals.Add(mtp.BorrowInterestUnpaidCollaterals.AmountOf(collateralAsset))
+	if mtp.CollateralAsset == baseCurrency {
+		unpaidCollateral = unpaidCollateral.Add(mtp.BorrowInterestUnpaidCollateral)
 	} else {
 		// Liability is in base currency, so convert it to base currency
-		unpaidCollateralIn := sdk.NewCoin(collateralAsset, mtp.BorrowInterestUnpaidCollaterals.AmountOf(collateralAsset))
+		unpaidCollateralIn := sdk.NewCoin(mtp.CollateralAsset, mtp.BorrowInterestUnpaidCollateral)
 		C, err := k.EstimateSwapGivenOut(ctx, unpaidCollateralIn, baseCurrency, ammPool)
 		if err != nil {
 			return sdk.ZeroInt(), err
 		}
 
-		unpaidCollaterals = unpaidCollaterals.Add(C)
+		unpaidCollateral = unpaidCollateral.Add(C)
 	}
 
-	liabilitiesRational.SetInt(mtp.Liabilities.BigInt().Add(mtp.Liabilities.BigInt(), unpaidCollaterals.BigInt()))
+	liabilitiesRational.SetInt(mtp.Liabilities.BigInt().Add(mtp.Liabilities.BigInt(), unpaidCollateral.BigInt()))
 	borrowInterestRational.Mul(&rate, &liabilitiesRational)
 
 	if epochPosition > 0 { // prorate borrow interest if within epoch
@@ -45,7 +45,7 @@ func (k Keeper) CalcMTPBorrowInterestLiabilities(ctx sdk.Context, mtp *types.MTP
 
 	borrowInterestNew := borrowInterestRational.Num().Quo(borrowInterestRational.Num(), borrowInterestRational.Denom())
 
-	borrowInterestNewInt := sdk.NewIntFromBigInt(borrowInterestNew.Add(borrowInterestNew, unpaidCollaterals.BigInt()))
+	borrowInterestNewInt := sdk.NewIntFromBigInt(borrowInterestNew.Add(borrowInterestNew, unpaidCollateral.BigInt()))
 	// round up to lowest digit if borrow interest too low and rate not 0
 	if borrowInterestNewInt.IsZero() && !borrowInterestRate.IsZero() {
 		borrowInterestNewInt = sdk.NewInt(1)

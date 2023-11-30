@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 
 	errorsmod "cosmossdk.io/errors"
-	cosmos_sdk_math "cosmossdk.io/math"
 	wasmvmtypes "github.com/CosmWasm/wasmvm/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	marginkeeper "github.com/elys-network/elys/x/margin/keeper"
@@ -41,7 +40,15 @@ func PerformMsgBrokerOpen(f *marginkeeper.Keeper, ctx sdk.Context, contractAddr 
 	}
 	msgServer := marginkeeper.NewMsgServerImpl(*f)
 
-	msgMsgBrokerOpen := margintypes.NewMsgBrokerOpen(msgBrokerOpen.Creator, msgBrokerOpen.CollateralAsset, cosmos_sdk_math.Int(msgBrokerOpen.CollateralAmount), msgBrokerOpen.BorrowAsset, msgBrokerOpen.Position, msgBrokerOpen.Leverage, msgBrokerOpen.TakeProfitPrice, msgBrokerOpen.Owner)
+	msgMsgBrokerOpen := margintypes.NewMsgBrokerOpen(
+		msgBrokerOpen.Creator,
+		msgBrokerOpen.Position,
+		msgBrokerOpen.Leverage,
+		msgBrokerOpen.TradingAsset,
+		msgBrokerOpen.Collateral,
+		msgBrokerOpen.TakeProfitPrice,
+		msgBrokerOpen.Owner,
+	)
 
 	if err := msgMsgBrokerOpen.ValidateBasic(); err != nil {
 		return nil, errorsmod.Wrap(err, "failed validating msgMsgBrokerOpen")

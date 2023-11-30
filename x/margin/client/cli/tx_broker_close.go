@@ -18,7 +18,7 @@ func CmdBrokerClose() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:     "broker-close [mtp-id] [mtp-owner] [flags]",
 		Short:   "Close margin position as a broker",
-		Example: `elysd tx margin broker-close 1 sif123 --from=treasury --keyring-backend=test --chain-id=elystestnet-1 --yes --gas=1000000`,
+		Example: `elysd tx margin broker-close 1 sif123 10000000 --from=treasury --keyring-backend=test --chain-id=elystestnet-1 --yes --gas=1000000`,
 		Args:    cobra.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			clientCtx, err := client.GetClientTxContext(cmd)
@@ -40,8 +40,8 @@ func CmdBrokerClose() *cobra.Command {
 				return errors.New("invalid mtp owner address")
 			}
 
-			argAmount, err := sdk.ParseCoinNormalized(args[2])
-			if err != nil {
+			argAmount, ok := sdk.NewIntFromString(args[2])
+			if !ok {
 				return errors.New("invalid amount")
 			}
 

@@ -5,13 +5,13 @@ import (
 	"github.com/elys-network/elys/x/margin/types"
 )
 
-func (k Keeper) TakeOutCustody(ctx sdk.Context, mtp types.MTP, pool *types.Pool, custodyAsset string) error {
-	err := pool.UpdateBalance(ctx, custodyAsset, mtp.Custodies.AmountOf(custodyAsset), true, mtp.Position)
+func (k Keeper) TakeOutCustody(ctx sdk.Context, mtp types.MTP, pool *types.Pool, amount sdk.Int) error {
+	err := pool.UpdateBalance(ctx, mtp.CustodyAsset, amount, true, mtp.Position)
 	if err != nil {
 		return err
 	}
 
-	err = pool.UpdateCustody(ctx, custodyAsset, mtp.Custodies.AmountOf(custodyAsset), false, mtp.Position)
+	err = pool.UpdateCustody(ctx, mtp.CustodyAsset, amount, false, mtp.Position)
 	if err != nil {
 		return err
 	}

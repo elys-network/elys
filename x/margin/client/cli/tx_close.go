@@ -35,8 +35,8 @@ func CmdClose() *cobra.Command {
 				return errors.New("invalid mtp id")
 			}
 
-			argAmount, err := sdk.ParseCoinNormalized(args[1])
-			if err != nil {
+			argAmount, ok := sdk.NewIntFromString(args[1])
+			if !ok {
 				return errors.New("invalid amount")
 			}
 
