@@ -139,7 +139,7 @@ message QuerySwapEstimationRequest {
 message QuerySwapEstimationResponse {
   string                   spot_price = 1 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
   cosmos.base.v1beta1.Coin token_out  = 2 [(gogoproto.nullable)   = false                                   ] ;
-  string                   swapFee   = 3 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+  string                   swap_fee   = 3 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
   string                   discount   = 4 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
   cosmos.base.v1beta1.Coin available_liquidity  = 5 [(gogoproto.nullable)   = false                                   ] ;
 }
@@ -197,7 +197,7 @@ message QuerySwapEstimationByDenomResponse {
   repeated SwapAmountOutRoute       out_route  = 2;
            string                   spot_price = 3 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
            cosmos.base.v1beta1.Coin amount    = 4 [(gogoproto.nullable) = false];
-           string                   swapFee   = 5 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+           string                   swap_fee   = 5 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
            string                   discount   = 6 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
            cosmos.base.v1beta1.Coin available_liquidity  = 7 [(gogoproto.nullable)   = false                                   ] ;
 }
