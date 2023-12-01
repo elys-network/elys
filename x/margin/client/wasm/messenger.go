@@ -33,14 +33,6 @@ func (m *Messenger) HandleMsg(ctx sdk.Context, contractAddr sdk.AccAddress, cont
 		return m.msgBrokerOpen(ctx, contractAddr, msg.MarginBrokerOpen)
 	case msg.MarginBrokerClose != nil:
 		return m.msgBrokerClose(ctx, contractAddr, msg.MarginBrokerClose)
-	case msg.MarginUpdateParams != nil:
-		return m.msgUpdateParams(ctx, contractAddr, msg.MarginUpdateParams)
-	case msg.MarginUpdatePools != nil:
-		return m.msgUpdatePools(ctx, contractAddr, msg.MarginUpdatePools)
-	case msg.MarginWhitelist != nil:
-		return m.msgWhitelist(ctx, contractAddr, msg.MarginWhitelist)
-	case msg.MarginDewhitelist != nil:
-		return m.msgDewhitelist(ctx, contractAddr, msg.MarginDewhitelist)
 	default:
 		// This handler cannot handle the message
 		return nil, nil, wasmbindingstypes.ErrCannotHandleMsg

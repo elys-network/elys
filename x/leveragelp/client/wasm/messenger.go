@@ -29,14 +29,6 @@ func (m *Messenger) HandleMsg(ctx sdk.Context, contractAddr sdk.AccAddress, cont
 		return m.msgOpen(ctx, contractAddr, msg.LeveragelpOpen)
 	case msg.LeveragelpClose != nil:
 		return m.msgClose(ctx, contractAddr, msg.LeveragelpClose)
-	case msg.LeveragelpUpdateParams != nil:
-		return m.msgUpdateParams(ctx, contractAddr, msg.LeveragelpUpdateParams)
-	case msg.LeveragelpUpdatePools != nil:
-		return m.msgUpdatePools(ctx, contractAddr, msg.LeveragelpUpdatePools)
-	case msg.LeveragelpWhitelist != nil:
-		return m.msgWhitelist(ctx, contractAddr, msg.LeveragelpWhitelist)
-	case msg.LeveragelpDewhitelist != nil:
-		return m.msgDewhitelist(ctx, contractAddr, msg.LeveragelpDewhitelist)
 	default:
 		// This handler cannot handle the message
 		return nil, nil, wasmbindingstypes.ErrCannotHandleMsg

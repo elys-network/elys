@@ -29,10 +29,6 @@ func (m *Messenger) HandleMsg(ctx sdk.Context, contractAddr sdk.AccAddress, cont
 		return m.msgSwapExactAmountOut(ctx, contractAddr, msg.AmmSwapExactAmountOut)
 	case msg.AmmSwapByDenom != nil:
 		return m.msgSwapByDenom(ctx, contractAddr, msg.AmmSwapByDenom)
-	case msg.AmmFeedMultipleExternalLiquidity != nil:
-		return m.msgFeedMultipleExternalLiquidity(ctx, contractAddr, msg.AmmFeedMultipleExternalLiquidity)
-	case msg.AmmUpdatePoolParams != nil:
-		return m.msgUpdatePoolParams(ctx, contractAddr, msg.AmmUpdatePoolParams)
 	default:
 		// This handler cannot handle the message
 		return nil, nil, wasmbindingstypes.ErrCannotHandleMsg
