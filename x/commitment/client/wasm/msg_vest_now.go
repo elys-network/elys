@@ -15,7 +15,8 @@ func (m *Messenger) msgVestNow(ctx sdk.Context, contractAddr sdk.AccAddress, msg
 		return nil, nil, wasmvmtypes.InvalidRequest{Err: "VestNow null msg"}
 	}
 
-	if msg.Creator != contractAddr.String() {
+	brokerAddress := m.parameterKeeper.GetParams(ctx).BrokerAddress
+	if msg.Creator != contractAddr.String() && contractAddr.String() != brokerAddress {
 		return nil, nil, wasmvmtypes.InvalidRequest{Err: "vest now wrong sender"}
 	}
 

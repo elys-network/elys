@@ -9,7 +9,7 @@ import (
 )
 
 func (oq *Querier) queryGetWhitelist(ctx sdk.Context, query *types.WhitelistRequest) ([]byte, error) {
-	res, err := oq.keeper.GetWhitelist(ctx, query)
+	res, err := oq.keeper.GetWhitelist(sdk.WrapSDKContext(ctx), query)
 	if err != nil {
 		return nil, errorsmod.Wrap(err, "failed to get whitelist")
 	}

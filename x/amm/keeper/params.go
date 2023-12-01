@@ -9,7 +9,6 @@ import (
 func (k Keeper) GetParams(ctx sdk.Context) types.Params {
 	return types.NewParams(
 		k.PoolCreationFee(ctx),
-		k.BrokerAddress(ctx),
 	)
 }
 
@@ -21,11 +20,5 @@ func (k Keeper) SetParams(ctx sdk.Context, params types.Params) {
 // PoolCreationFee returns the PoolCreationFee param
 func (k Keeper) PoolCreationFee(ctx sdk.Context) (res uint64) {
 	k.paramstore.Get(ctx, types.KeyPoolCreationFee, &res)
-	return
-}
-
-// BrokerAddress returns the BrokerAddress param
-func (k Keeper) BrokerAddress(ctx sdk.Context) (res string) {
-	k.paramstore.Get(ctx, types.KeyBrokerAddress, &res)
 	return
 }

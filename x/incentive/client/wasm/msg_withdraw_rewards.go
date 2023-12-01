@@ -16,6 +16,11 @@ func (m *Messenger) msgWithdrawRewards(ctx sdk.Context, contractAddr sdk.AccAddr
 	var res *wasmbindingstypes.RequestResponse
 	var err error
 
+	brokerAddress := m.parameterKeeper.GetParams(ctx).BrokerAddress
+	if msgWithdrawRewards.DelegatorAddress != contractAddr.String() && contractAddr.String() != brokerAddress {
+		return nil, nil, wasmvmtypes.InvalidRequest{Err: "wrong sender"}
+	}
+
 	res, err = performMsgWithdrawRewards(m.keeper, ctx, contractAddr, msgWithdrawRewards)
 	if err != nil {
 		return nil, nil, errorsmod.Wrap(err, "perform withdraw rewards")
@@ -48,7 +53,7 @@ func performMsgWithdrawRewards(f *incentivekeeper.Keeper, ctx sdk.Context, contr
 		return nil, errorsmod.Wrap(err, "failed validating msgMsgWithdrawRewards")
 	}
 
-	_, err = msgServer.WithdrawRewards(ctx, msgMsgWithdrawRewards) // Discard the response because it's empty
+	_, err = msgServer.WithdrawRewards(sdk.WrapSDKContext(ctx), msgMsgWithdrawRewards) // Discard the response because it's empty
 	if err != nil {
 		return nil, errorsmod.Wrap(err, "withdraw rewards msg")
 	}

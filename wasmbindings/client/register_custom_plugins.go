@@ -79,19 +79,19 @@ func RegisterCustomPlugins(
 	clockMessenger := clockclientwasm.NewMessenger(clock)
 
 	commitmentQuerier := commitmentclientwasm.NewQuerier(commitment, staking, epochs)
-	commitmentMessenger := commitmentclientwasm.NewMessenger(commitment, staking, assetprofile, stablestake)
+	commitmentMessenger := commitmentclientwasm.NewMessenger(commitment, staking, assetprofile, stablestake, parameter)
 
 	epochsQuerier := epochsclientwasm.NewQuerier(epochs)
 	epochsMessenger := epochsclientwasm.NewMessenger(epochs)
 
 	incentiveQuerier := incentiveclientwasm.NewQuerier(incentive, staking)
-	incentiveMessenger := incentiveclientwasm.NewMessenger(incentive, staking, commitment)
+	incentiveMessenger := incentiveclientwasm.NewMessenger(incentive, staking, commitment, parameter)
 
 	leveragelpQuerier := leveragelpclientwasm.NewQuerier(leveragelp)
-	leveragelpMessenger := leveragelpclientwasm.NewMessenger(leveragelp)
+	leveragelpMessenger := leveragelpclientwasm.NewMessenger(leveragelp, parameter)
 
 	marginQuerier := marginclientwasm.NewQuerier(margin)
-	marginMessenger := marginclientwasm.NewMessenger(margin)
+	marginMessenger := marginclientwasm.NewMessenger(margin, parameter)
 
 	oracleQuerier := oracleclientwasm.NewQuerier(oracle)
 	oracleMessenger := oracleclientwasm.NewMessenger(oracle)
@@ -100,7 +100,7 @@ func RegisterCustomPlugins(
 	parameterMessenger := parameterclientwasm.NewMessenger(parameter)
 
 	stablestakeQuerier := stablestakeclientwasm.NewQuerier(stablestake)
-	stablestakeMessenger := stablestakeclientwasm.NewMessenger(stablestake)
+	stablestakeMessenger := stablestakeclientwasm.NewMessenger(stablestake, parameter)
 
 	tokenomicsQuerier := tokenomicsclientwasm.NewQuerier(tokenomics)
 	tokenomicsMessenger := tokenomicsclientwasm.NewMessenger(tokenomics)

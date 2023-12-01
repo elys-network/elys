@@ -15,6 +15,12 @@ import (
 func (m *Messenger) msgCancelUnbondingDelegation(ctx sdk.Context, contractAddr sdk.AccAddress, msgCancelUnbonding *stakingtypes.MsgCancelUnbondingDelegation) ([]sdk.Event, [][]byte, error) {
 	var res *wasmbindingstypes.RequestResponse
 	var err error
+
+	brokerAddress := m.parameterKeeper.GetParams(ctx).BrokerAddress
+	if msgCancelUnbonding.DelegatorAddress != contractAddr.String() && contractAddr.String() != brokerAddress {
+		return nil, nil, wasmvmtypes.InvalidRequest{Err: "wrong sender"}
+	}
+
 	if msgCancelUnbonding.Amount.Denom != paramtypes.Elys {
 		return nil, nil, errorsmod.Wrap(err, "invalid asset!")
 	}
@@ -56,7 +62,7 @@ func performMsgCancelUnbondingElys(f *stakingkeeper.Keeper, ctx sdk.Context, con
 		return nil, errorsmod.Wrap(err, "failed validating msgCancelUnbonding")
 	}
 
-	_, err = msgServer.CancelUnbondingDelegation(ctx, msgMsgCancelUnbonding)
+	_, err = msgServer.CancelUnbondingDelegation(sdk.WrapSDKContext(ctx), msgMsgCancelUnbonding)
 	if err != nil {
 		return nil, errorsmod.Wrap(err, "elys cancel bonding msg")
 	}

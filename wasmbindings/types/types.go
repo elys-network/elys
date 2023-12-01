@@ -192,8 +192,7 @@ type ElysQuery struct {
 	OraclePriceFeederAll    *oracletypes.QueryAllPriceFeederRequest    `json:"oracle_price_feeder_all,omitempty"`
 
 	// parameter queriers
-	ParameterParams              *parametertypes.QueryParamsRequest              `json:"parameter_params,omitempty"`
-	ParameterAnteHandlerParamAll *parametertypes.QueryAllAnteHandlerParamRequest `json:"parameter_ante_handler_param_all,omitempty"`
+	ParameterParams *parametertypes.QueryParamsRequest `json:"parameter_params,omitempty"`
 
 	// stablestake queriers
 	StableStakeParams          *stablestaketypes.QueryParamsRequest      `json:"stable_stake_params,omitempty"`
@@ -238,26 +237,17 @@ type ElysMsg struct {
 	// accountedpool messages
 
 	// amm messages
-	AmmCreatePool                    *ammtypes.MsgCreatePool                    `json:"amm_create_pool,omitempty"`
-	AmmJoinPool                      *ammtypes.MsgJoinPool                      `json:"amm_join_pool,omitempty"`
-	AmmExitPool                      *ammtypes.MsgExitPool                      `json:"amm_exit_pool,omitempty"`
-	AmmSwapExactAmountIn             *ammtypes.MsgSwapExactAmountIn             `json:"amm_swap_exact_amount_in,omitempty"`
-	AmmSwapExactAmountOut            *ammtypes.MsgSwapExactAmountOut            `json:"amm_swap_exact_amount_out,omitempty"`
-	AmmSwapByDenom                   *ammtypes.MsgSwapByDenom                   `json:"amm_swap_by_denom,omitempty"`
-	AmmFeedMultipleExternalLiquidity *ammtypes.MsgFeedMultipleExternalLiquidity `json:"amm_feed_multiple_external_liquidity,omitempty"`
-	AmmUpdatePoolParams              *ammtypes.MsgUpdatePoolParams              `json:"amm_update_pool_params,omitempty"`
+	AmmCreatePool         *ammtypes.MsgCreatePool         `json:"amm_create_pool,omitempty"`
+	AmmJoinPool           *ammtypes.MsgJoinPool           `json:"amm_join_pool,omitempty"`
+	AmmExitPool           *ammtypes.MsgExitPool           `json:"amm_exit_pool,omitempty"`
+	AmmSwapExactAmountIn  *ammtypes.MsgSwapExactAmountIn  `json:"amm_swap_exact_amount_in,omitempty"`
+	AmmSwapExactAmountOut *ammtypes.MsgSwapExactAmountOut `json:"amm_swap_exact_amount_out,omitempty"`
+	AmmSwapByDenom        *ammtypes.MsgSwapByDenom        `json:"amm_swap_by_denom,omitempty"`
 
 	// assetprofile messages
-	AssetProfileCreateEntry *assetprofiletypes.MsgCreateEntry `json:"asset_profile_create_entry,omitempty"`
-	AssetProfileUpdateEntry *assetprofiletypes.MsgUpdateEntry `json:"asset_profile_update_entry,omitempty"`
-	AssetProfileDeleteEntry *assetprofiletypes.MsgDeleteEntry `json:"asset_profile_delete_entry,omitempty"`
-
 	// auth messages
-
 	// burner messages
-
 	// clock messages
-	ClockUpdateParams *clocktypes.MsgUpdateParams `json:"clock_update_params,omitempty"`
 
 	// commitment messages
 	CommitmentCommitLiquidTokens     *commitmenttypes.MsgCommitLiquidTokens   `json:"commitment_commit_liquid_tokens,omitempty"`
@@ -280,30 +270,14 @@ type ElysMsg struct {
 	IncentiveWithdrawValidatorCommission *incentivetypes.MsgWithdrawValidatorCommission `json:"incentive_withdraw_validator_commission"`
 
 	// leveragelp messages
-	LeveragelpOpen         *leveragelptypes.MsgOpen         `json:"leveragelp_open,omitempty"`
-	LeveragelpClose        *leveragelptypes.MsgClose        `json:"leveragelp_close,omitempty"`
-	LeveragelpUpdateParams *leveragelptypes.MsgUpdateParams `json:"leveragelp_update_params,omitempty"`
-	LeveragelpUpdatePools  *leveragelptypes.MsgUpdatePools  `json:"leveragelp_update_pools,omitempty"`
-	LeveragelpWhitelist    *leveragelptypes.MsgWhitelist    `json:"leveragelp_whitelist,omitempty"`
-	LeveragelpDewhitelist  *leveragelptypes.MsgDewhitelist  `json:"leveragelp_dewhitelist,omitempty"`
+	LeveragelpOpen  *leveragelptypes.MsgOpen  `json:"leveragelp_open,omitempty"`
+	LeveragelpClose *leveragelptypes.MsgClose `json:"leveragelp_close,omitempty"`
 
 	// margin messages
-	MarginOpen         *margintypes.MsgOpen         `json:"margin_open,omitempty"`
-	MarginClose        *margintypes.MsgClose        `json:"margin_close,omitempty"`
-	MarginBrokerOpen   *margintypes.MsgBrokerOpen   `json:"margin_broker_open,omitempty"`
-	MarginBrokerClose  *margintypes.MsgBrokerClose  `json:"margin_broker_close,omitempty"`
-	MarginUpdateParams *margintypes.MsgUpdateParams `json:"margin_update_params,omitempty"`
-	MarginUpdatePools  *margintypes.MsgUpdatePools  `json:"margin_update_pools,omitempty"`
-	MarginWhitelist    *margintypes.MsgWhitelist    `json:"margin_whitelist,omitempty"`
-	MarginDewhitelist  *margintypes.MsgDewhitelist  `json:"margin_dewhitelist,omitempty"`
+	MarginOpen  *margintypes.MsgOpen  `json:"margin_open,omitempty"`
+	MarginClose *margintypes.MsgClose `json:"margin_close,omitempty"`
 
 	// oracle messages
-	OracleFeedPrice          *oracletypes.MsgFeedPrice          `json:"oracle_feed_price,omitempty"`
-	OracleFeedMultiplePrices *oracletypes.MsgFeedMultiplePrices `json:"oracle_feed_multiple_price,omitempty"`
-	OracleRequestBandPrice   *oracletypes.MsgRequestBandPrice   `json:"oracle_request_band_price,omitempty"`
-	OracleSetPriceFeeder     *oracletypes.MsgSetPriceFeeder     `json:"oracle_set_price_feeder,omitempty"`
-	OracleDeletePriceFeeder  *oracletypes.MsgDeletePriceFeeder  `json:"oracle_delete_price_feeder,omitempty"`
-
 	// parameter messages
 
 	// stablestake messages
@@ -311,14 +285,6 @@ type ElysMsg struct {
 	StakestakeUnbond *stablestaketypes.MsgUnbond `json:"stablestake_unbond,omitempty"`
 
 	// tokenomics messages
-	TokenomicsCreateAirdrop            *tokenomicstypes.MsgCreateAirdrop            `json:"tokenomics_create_airdrop,omitempty"`
-	TokenomicsUpdateAirdrop            *tokenomicstypes.MsgUpdateAirdrop            `json:"tokenomics_update_airdrop,omitempty"`
-	TokenomicsDeleteAirdrop            *tokenomicstypes.MsgDeleteAirdrop            `json:"tokenomics_delete_airdrop,omitempty"`
-	TokenomicsUpdateGenesisInflation   *tokenomicstypes.MsgUpdateGenesisInflation   `json:"tokenomics_update_genesis_inflation,omitempty"`
-	TokenomicsCreateTimeBasedInflation *tokenomicstypes.MsgCreateTimeBasedInflation `json:"tokenomics_create_time_based_inflation,omitempty"`
-	TokenomicsUpdateTimeBasedInflation *tokenomicstypes.MsgUpdateTimeBasedInflation `json:"tokenomics_update_time_based_inflation,omitempty"`
-	TokenomicsDeleteTimeBasedInflation *tokenomicstypes.MsgDeleteTimeBasedInflation `json:"tokenomics_delete_time_based_inflation,omitempty"`
-
 	// transferhook messages
 }
 

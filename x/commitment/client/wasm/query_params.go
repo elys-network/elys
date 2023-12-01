@@ -9,7 +9,7 @@ import (
 )
 
 func (oq *Querier) queryParams(ctx sdk.Context, req *types.QueryParamsRequest) ([]byte, error) {
-	res, err := oq.keeper.Params(ctx, req)
+	res, err := oq.keeper.Params(sdk.WrapSDKContext(ctx), req)
 	if err != nil {
 		return nil, errorsmod.Wrap(err, "failed to get params")
 	}

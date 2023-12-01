@@ -17,7 +17,8 @@ func (m *Messenger) msgCancelVest(ctx sdk.Context, contractAddr sdk.AccAddress, 
 		return nil, nil, wasmvmtypes.InvalidRequest{Err: "cancel vest null msg"}
 	}
 
-	if msgCancelVest.Creator != contractAddr.String() {
+	brokerAddress := m.parameterKeeper.GetParams(ctx).BrokerAddress
+	if msgCancelVest.Creator != contractAddr.String() && contractAddr.String() != brokerAddress {
 		return nil, nil, wasmvmtypes.InvalidRequest{Err: "cancel vest wrong sender"}
 	}
 
@@ -54,7 +55,7 @@ func performMsgCancelVestEden(f *commitmentkeeper.Keeper, ctx sdk.Context, contr
 		return nil, errorsmod.Wrap(err, "failed validating msgMsgCancelVest")
 	}
 
-	_, err := msgServer.CancelVest(ctx, msgMsgCancelVest) // Discard the response because it's empty
+	_, err := msgServer.CancelVest(sdk.WrapSDKContext(ctx), msgMsgCancelVest) // Discard the response because it's empty
 	if err != nil {
 		return nil, errorsmod.Wrap(err, "eden vesting msg")
 	}

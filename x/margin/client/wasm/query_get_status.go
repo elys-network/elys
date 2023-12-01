@@ -9,7 +9,7 @@ import (
 )
 
 func (oq *Querier) queryGetStatus(ctx sdk.Context, query *types.StatusRequest) ([]byte, error) {
-	res, err := oq.keeper.GetStatus(ctx, query)
+	res, err := oq.keeper.GetStatus(sdk.WrapSDKContext(ctx), query)
 	if err != nil {
 		return nil, errorsmod.Wrap(err, "failed to get status")
 	}

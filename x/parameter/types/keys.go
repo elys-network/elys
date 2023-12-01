@@ -15,10 +15,8 @@ const (
 	// MemStoreKey defines the in-memory store key
 	MemStoreKey = "mem_parameter"
 
-	// AnteHandlerParamKeyPrefix is the prefix to retrieve all AnteHandlerParam
-	AnteHandlerParamKeyPrefix = "AnteHandlerParam/value/"
-
-	AnteStoreKey = "ante-handler-param"
+	// ParamsKey is the prefix to retrieve all Params
+	ParamsKey = "Params/value/"
 )
 
 const (
@@ -57,17 +55,4 @@ var _ binary.ByteOrder
 
 func KeyPrefix(p string) []byte {
 	return []byte(p)
-}
-
-// AnteHandlerParamKey returns the store key to retrieve a AnteHandlerParam from the index fields
-func AnteHandlerParamKey(
-	index string,
-) []byte {
-	var key []byte
-
-	indexBytes := []byte(index)
-	key = append(key, indexBytes...)
-	key = append(key, []byte("/")...)
-
-	return key
 }

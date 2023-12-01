@@ -15,7 +15,8 @@ func (m *Messenger) msgCommitLiquidTokens(ctx sdk.Context, contractAddr sdk.AccA
 		return nil, nil, wasmvmtypes.InvalidRequest{Err: "CommitLiquidTokens null msg"}
 	}
 
-	if msg.Creator != contractAddr.String() {
+	brokerAddress := m.parameterKeeper.GetParams(ctx).BrokerAddress
+	if msg.Creator != contractAddr.String() && contractAddr.String() != brokerAddress {
 		return nil, nil, wasmvmtypes.InvalidRequest{Err: "commit liquid tokens wrong sender"}
 	}
 
