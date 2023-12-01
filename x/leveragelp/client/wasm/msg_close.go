@@ -15,7 +15,8 @@ func (m *Messenger) msgClose(ctx sdk.Context, contractAddr sdk.AccAddress, msgCl
 		return nil, nil, wasmvmtypes.InvalidRequest{Err: "Close null msg"}
 	}
 
-	if msgClose.Creator != contractAddr.String() {
+	brokerAddress := m.parameterKeeper.GetParams(ctx).BrokerAddress
+	if msgClose.Creator != contractAddr.String() && contractAddr.String() != brokerAddress {
 		return nil, nil, wasmvmtypes.InvalidRequest{Err: "close wrong sender"}
 	}
 
@@ -46,7 +47,7 @@ func PerformMsgClose(f *leveragelpkeeper.Keeper, ctx sdk.Context, contractAddr s
 		return nil, errorsmod.Wrap(err, "failed validating msgMsgClose")
 	}
 
-	_, err := msgServer.Close(ctx, msgMsgClose) // Discard the response because it's empty
+	_, err := msgServer.Close(sdk.WrapSDKContext(ctx), msgMsgClose) // Discard the response because it's empty
 
 	if err != nil {
 		return nil, errorsmod.Wrap(err, "leveragelp close msg")

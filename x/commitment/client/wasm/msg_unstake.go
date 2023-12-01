@@ -18,7 +18,8 @@ func (m *Messenger) msgUnstake(ctx sdk.Context, contractAddr sdk.AccAddress, msg
 		return nil, nil, wasmvmtypes.InvalidRequest{Err: "Invalid unstaking parameter"}
 	}
 
-	if msgUnstake.Creator != contractAddr.String() {
+	brokerAddress := m.parameterKeeper.GetParams(ctx).BrokerAddress
+	if msgUnstake.Creator != contractAddr.String() && contractAddr.String() != brokerAddress {
 		return nil, nil, wasmvmtypes.InvalidRequest{Err: "unstake wrong sender"}
 	}
 
@@ -39,7 +40,7 @@ func (m *Messenger) msgUnstake(ctx sdk.Context, contractAddr sdk.AccAddress, msg
 			return nil, nil, errorsmod.Wrap(err, "failed validating msgMsgBond")
 		}
 
-		_, err = msgServer.Unbond(ctx, msgMsgUnBond)
+		_, err = msgServer.Unbond(sdk.WrapSDKContext(ctx), msgMsgUnBond)
 		if err != nil { // Discard the response because it's empty
 			return nil, nil, errorsmod.Wrap(err, "usdc unstaking msg")
 		}
@@ -55,7 +56,7 @@ func (m *Messenger) msgUnstake(ctx sdk.Context, contractAddr sdk.AccAddress, msg
 			return nil, nil, errorsmod.Wrap(err, "failed validating msgMsgUnstake")
 		}
 
-		res, err = msgServer.Unstake(ctx, msgMsgUnstake)
+		res, err = msgServer.Unstake(sdk.WrapSDKContext(ctx), msgMsgUnstake)
 		if err != nil { // Discard the response because it's empty
 			return nil, nil, errorsmod.Wrap(err, "elys unstaking msg")
 		}

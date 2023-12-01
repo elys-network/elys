@@ -15,7 +15,8 @@ func (m *Messenger) msgUncommitTokens(ctx sdk.Context, contractAddr sdk.AccAddre
 		return nil, nil, wasmvmtypes.InvalidRequest{Err: "UncommitTokens null msg"}
 	}
 
-	if msg.Creator != contractAddr.String() {
+	brokerAddress := m.parameterKeeper.GetParams(ctx).BrokerAddress
+	if msg.Creator != contractAddr.String() && contractAddr.String() != brokerAddress {
 		return nil, nil, wasmvmtypes.InvalidRequest{Err: "uncommit tokens wrong sender"}
 	}
 

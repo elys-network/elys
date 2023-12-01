@@ -14,8 +14,8 @@ func (m *Messenger) msgBond(ctx sdk.Context, contractAddr sdk.AccAddress, msg *t
 	if msg == nil {
 		return nil, nil, wasmvmtypes.InvalidRequest{Err: "Bond null msg"}
 	}
-
-	if msg.Creator != contractAddr.String() {
+	brokerAddress := m.parameterKeeper.GetParams(ctx).BrokerAddress
+	if msg.Creator != contractAddr.String() && contractAddr.String() != brokerAddress {
 		return nil, nil, wasmvmtypes.InvalidRequest{Err: "bond wrong sender"}
 	}
 

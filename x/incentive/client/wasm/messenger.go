@@ -6,6 +6,7 @@ import (
 	wasmbindingstypes "github.com/elys-network/elys/wasmbindings/types"
 	commitmentkeeper "github.com/elys-network/elys/x/commitment/keeper"
 	"github.com/elys-network/elys/x/incentive/keeper"
+	parameterkeeper "github.com/elys-network/elys/x/parameter/keeper"
 )
 
 // Messenger handles messages for the Incentive module.
@@ -13,9 +14,15 @@ type Messenger struct {
 	keeper           *keeper.Keeper
 	stakingKeeper    *stakingkeeper.Keeper
 	commitmentKeeper *commitmentkeeper.Keeper
+	parameterKeeper  *parameterkeeper.Keeper
 }
 
-func NewMessenger(keeper *keeper.Keeper, stakingKeeper *stakingkeeper.Keeper, commitmentKeeper *commitmentkeeper.Keeper) *Messenger {
+func NewMessenger(
+	keeper *keeper.Keeper,
+	stakingKeeper *stakingkeeper.Keeper,
+	commitmentKeeper *commitmentkeeper.Keeper,
+	parameterKeeper *parameterkeeper.Keeper,
+) *Messenger {
 	return &Messenger{
 		keeper:           keeper,
 		stakingKeeper:    stakingKeeper,

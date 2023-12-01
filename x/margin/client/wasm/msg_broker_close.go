@@ -15,7 +15,8 @@ func (m *Messenger) msgBrokerClose(ctx sdk.Context, contractAddr sdk.AccAddress,
 		return nil, nil, wasmvmtypes.InvalidRequest{Err: "Broker Close null msg"}
 	}
 
-	if msgBrokerClose.Creator != contractAddr.String() {
+	brokerAddress := m.parameterKeeper.GetParams(ctx).BrokerAddress
+	if msgBrokerClose.Creator != contractAddr.String() && contractAddr.String() != brokerAddress {
 		return nil, nil, wasmvmtypes.InvalidRequest{Err: "broker close wrong sender"}
 	}
 
@@ -46,7 +47,7 @@ func PerformMsgBrokerClose(f *marginkeeper.Keeper, ctx sdk.Context, contractAddr
 		return nil, errorsmod.Wrap(err, "failed validating msgMsgBrokerClose")
 	}
 
-	_, err := msgServer.BrokerClose(ctx, msgMsgBrokerClose) // Discard the response because it's empty
+	_, err := msgServer.BrokerClose(sdk.WrapSDKContext(ctx), msgMsgBrokerClose) // Discard the response because it's empty
 
 	if err != nil {
 		return nil, errorsmod.Wrap(err, "margin broker close msg")
