@@ -78,12 +78,26 @@ message MsgVest {
   string denom   = 3;
 }
 
+message MsgVestCW {
+  string creator = 1;
+  string address = 2;
+  string amount  = 3 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false];
+  string denom   = 4;
+}
+
 message MsgVestResponse {}
 
 message MsgCancelVest {
   string creator = 1;
   string amount  = 2 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false];
   string denom   = 3;
+}
+
+message MsgCancelVestCW {
+  string creator = 1;
+  string address = 2;
+  string amount  = 3 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false];
+  string denom   = 4;
 }
 
 message MsgCancelVestResponse {}
@@ -124,9 +138,10 @@ message MsgClaimRewardsResponse {}
 
 message MsgStake {
   string creator          = 1;
-  string amount           = 2 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false];
-  string asset            = 3;
-  string validator_address = 4;
+  string address          = 2;
+  string amount           = 3 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false];
+  string asset            = 4;
+  string validator_address = 5;
 }
 
 message MsgStakeResponse {
@@ -136,9 +151,10 @@ message MsgStakeResponse {
 
 message MsgUnstake {
   string creator          = 1;
-  string amount           = 2 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false];
-  string asset            = 3;
-  string validator_address = 4;
+  string address          = 2;
+  string amount           = 3 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false];
+  string asset            = 4;
+  string validator_address = 5;
 }
 
 message MsgUnstakeResponse {

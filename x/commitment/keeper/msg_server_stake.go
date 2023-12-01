@@ -38,7 +38,7 @@ func (k msgServer) performStakeElys(ctx sdk.Context, msg *types.MsgStake) error 
 
 	msgServer := stakingkeeper.NewMsgServerImpl(stakingKeeper)
 
-	address, err := sdk.AccAddressFromBech32(msg.Creator)
+	address, err := sdk.AccAddressFromBech32(msg.Address)
 	if err != nil {
 		return errorsmod.Wrap(err, "invalid address")
 	}
@@ -63,7 +63,7 @@ func (k msgServer) performStakeElys(ctx sdk.Context, msg *types.MsgStake) error 
 }
 
 func (k msgServer) performCommit(ctx sdk.Context, msg *types.MsgStake) error {
-	msgMsgCommit := types.NewMsgCommitClaimedRewards(msg.Creator, msg.Amount, msg.Asset)
+	msgMsgCommit := types.NewMsgCommitClaimedRewards(msg.Address, msg.Amount, msg.Asset)
 
 	if err := msgMsgCommit.ValidateBasic(); err != nil {
 		return errorsmod.Wrap(err, "failed validating msgMsgCommit")

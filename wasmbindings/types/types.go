@@ -9,7 +9,6 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
-	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	accountedpoolkeeper "github.com/elys-network/elys/x/accountedpool/keeper"
 	accountedpooltypes "github.com/elys-network/elys/x/accountedpool/types"
 	ammkeeper "github.com/elys-network/elys/x/amm/keeper"
@@ -253,10 +252,10 @@ type ElysMsg struct {
 	CommitmentCommitLiquidTokens     *commitmenttypes.MsgCommitLiquidTokens   `json:"commitment_commit_liquid_tokens,omitempty"`
 	CommitmentCommitUnclaimedRewards *commitmenttypes.MsgCommitClaimedRewards `json:"commitment_commit_unclaimed_rewards,omitempty"`
 	CommitmentUncommitTokens         *commitmenttypes.MsgUncommitTokens       `json:"commitment_uncommit_tokens,omitempty"`
-	CommitmentVest                   *commitmenttypes.MsgVest                 `json:"commitment_vest"`
+	CommitmentVest                   *commitmenttypes.MsgVestCW               `json:"commitment_vest"`
 	CommitmentVestNow                *commitmenttypes.MsgVestNow              `json:"commitment_vest_now"`
 	CommitmentVestLiquid             *commitmenttypes.MsgVestLiquid           `json:"commitment_vest_liquid"`
-	CommitmentCancelVest             *commitmenttypes.MsgCancelVest           `json:"commitment_cancel_vest"`
+	CommitmentCancelVest             *commitmenttypes.MsgCancelVestCW         `json:"commitment_cancel_vest"`
 	CommitmentUpdateVestingInfo      *commitmenttypes.MsgUpdateVestingInfo    `json:"commitment_update_vesting_info"`
 	CommitmentStake                  *commitmenttypes.MsgStake                `json:"commitment_stake,omitempty"`
 	CommitmentUnstake                *commitmenttypes.MsgUnstake              `json:"commitment_unstake,omitempty"`
@@ -264,8 +263,8 @@ type ElysMsg struct {
 	// epochs messages
 
 	// incentive messages
-	IncentiveBeginRedelegate             *stakingtypes.MsgBeginRedelegate               `json:"incentive_begin_redelegate,omitempty"`
-	IncentiveCancelUnbondingDelegation   *stakingtypes.MsgCancelUnbondingDelegation     `json:"incentive_cancel_unbonding_delegation"`
+	IncentiveBeginRedelegate             *incentivetypes.MsgBeginRedelegate             `json:"incentive_begin_redelegate,omitempty"`
+	IncentiveCancelUnbondingDelegation   *incentivetypes.MsgCancelUnbondingDelegation   `json:"incentive_cancel_unbonding_delegation"`
 	IncentiveWithdrawRewards             *incentivetypes.MsgWithdrawRewards             `json:"incentive_withdraw_rewards"`
 	IncentiveWithdrawValidatorCommission *incentivetypes.MsgWithdrawValidatorCommission `json:"incentive_withdraw_validator_commission"`
 

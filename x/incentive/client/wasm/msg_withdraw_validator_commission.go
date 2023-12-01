@@ -17,7 +17,7 @@ func (m *Messenger) msgWithdrawValidatorCommission(ctx sdk.Context, contractAddr
 	var err error
 
 	brokerAddress := m.parameterKeeper.GetParams(ctx).BrokerAddress
-	if msgWithdrawValidatorCommission.DelegatorAddress != contractAddr.String() && contractAddr.String() != brokerAddress {
+	if msgWithdrawValidatorCommission.Creator != contractAddr.String() && contractAddr.String() != brokerAddress {
 		return nil, nil, wasmvmtypes.InvalidRequest{Err: "wrong sender"}
 	}
 
