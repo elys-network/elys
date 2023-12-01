@@ -11,6 +11,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/store"
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	"github.com/elys-network/elys/x/parameter/keeper"
 	"github.com/elys-network/elys/x/parameter/types"
 	"github.com/stretchr/testify/require"
@@ -33,6 +35,7 @@ func ParameterKeeper(t testing.TB) (*keeper.Keeper, sdk.Context) {
 		cdc,
 		storeKey,
 		memStoreKey,
+		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 
 	ctx := sdk.NewContext(stateStore, tmproto.Header{}, false, log.NewNopLogger())

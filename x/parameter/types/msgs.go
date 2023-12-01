@@ -79,3 +79,28 @@ func (msg *MsgUpdateMinSelfDelegation) ValidateBasic() error {
 	}
 	return nil
 }
+
+var _ sdk.Msg = &MsgUpdateBrokerAddress{}
+
+func NewMsgUpdateBrokerAddress(creator string, brokerAddress string) *MsgUpdateBrokerAddress {
+	return &MsgUpdateBrokerAddress{
+		Creator:       creator,
+		BrokerAddress: brokerAddress,
+	}
+}
+
+func (msg *MsgUpdateBrokerAddress) GetSigners() []sdk.AccAddress {
+	sender, err := sdk.AccAddressFromBech32(msg.Creator)
+	if err != nil {
+		panic(err)
+	}
+	return []sdk.AccAddress{sender}
+}
+
+func (msg *MsgUpdateBrokerAddress) ValidateBasic() error {
+	_, err := sdk.AccAddressFromBech32(msg.Creator)
+	if err != nil {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid sender address (%s)", err)
+	}
+	return nil
+}

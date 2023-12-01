@@ -5,6 +5,7 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	"github.com/elys-network/elys/x/parameter/types"
 )
 
@@ -23,6 +24,10 @@ var _ types.MsgServer = msgServer{}
 func (k msgServer) UpdateMinCommission(goCtx context.Context, msg *types.MsgUpdateMinCommission) (*types.MsgUpdateMinCommissionResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
+	if k.authority != msg.Creator {
+		return nil, sdkerrors.Wrapf(govtypes.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.authority, msg.Creator)
+	}
+
 	minComission, err := sdk.NewDecFromStr(msg.MinCommission)
 	if err != nil {
 		return nil, err
@@ -36,6 +41,10 @@ func (k msgServer) UpdateMinCommission(goCtx context.Context, msg *types.MsgUpda
 
 func (k msgServer) UpdateMaxVotingPower(goCtx context.Context, msg *types.MsgUpdateMaxVotingPower) (*types.MsgUpdateMaxVotingPowerResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	if k.authority != msg.Creator {
+		return nil, sdkerrors.Wrapf(govtypes.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.authority, msg.Creator)
+	}
 
 	maxVotingPower, err := sdk.NewDecFromStr(msg.MaxVotingPower)
 	if err != nil {
@@ -51,6 +60,10 @@ func (k msgServer) UpdateMaxVotingPower(goCtx context.Context, msg *types.MsgUpd
 func (k msgServer) UpdateMinSelfDelegation(goCtx context.Context, msg *types.MsgUpdateMinSelfDelegation) (*types.MsgUpdateMinSelfDelegationResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
+	if k.authority != msg.Creator {
+		return nil, sdkerrors.Wrapf(govtypes.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.authority, msg.Creator)
+	}
+
 	minSelfDelegation, ok := sdk.NewIntFromString(msg.MinSelfDelegation)
 	if !ok {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "minimum self delegation must be a positive integer")
@@ -60,4 +73,17 @@ func (k msgServer) UpdateMinSelfDelegation(goCtx context.Context, msg *types.Msg
 	params.MinSelfDelegation = minSelfDelegation
 	k.SetParams(ctx, params)
 	return &types.MsgUpdateMinSelfDelegationResponse{}, nil
+}
+
+func (k msgServer) UpdateBrokerAddress(goCtx context.Context, msg *types.MsgUpdateBrokerAddress) (*types.MsgUpdateBrokerAddressResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	if k.authority != msg.Creator {
+		return nil, sdkerrors.Wrapf(govtypes.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.authority, msg.Creator)
+	}
+
+	params := k.GetParams(ctx)
+	params.BrokerAddress = msg.BrokerAddress
+	k.SetParams(ctx, params)
+	return &types.MsgUpdateBrokerAddressResponse{}, nil
 }

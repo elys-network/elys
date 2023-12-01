@@ -12,8 +12,9 @@ import (
 func RegisterCodec(cdc *codec.LegacyAmino) {
 	// this line is used by starport scaffolding # 2
 	cdc.RegisterConcrete(&MsgUpdateMinCommission{}, "parameter/MsgUpdateMinCommission", nil)
-	cdc.RegisterConcrete(&MsgUpdateMaxVotingPower{}, "amm/MsgUpdateMaxVotingPower", nil)
-	cdc.RegisterConcrete(&MsgUpdateMinSelfDelegation{}, "amm/MsgUpdateMinSelfDelegation", nil)
+	cdc.RegisterConcrete(&MsgUpdateMaxVotingPower{}, "parameter/MsgUpdateMaxVotingPower", nil)
+	cdc.RegisterConcrete(&MsgUpdateMinSelfDelegation{}, "parameter/MsgUpdateMinSelfDelegation", nil)
+	cdc.RegisterConcrete(&MsgUpdateBrokerAddress{}, "parameter/MsgUpdateBrokerAddress", nil)
 	// this line is used by starport scaffolding # 2
 }
 
@@ -22,6 +23,7 @@ func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 		&MsgUpdateMinCommission{},
 		&MsgUpdateMaxVotingPower{},
 		&MsgUpdateMinSelfDelegation{},
+		&MsgUpdateBrokerAddress{},
 	)
 	// this line is used by starport scaffolding # 3
 

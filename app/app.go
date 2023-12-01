@@ -504,6 +504,7 @@ func NewElysApp(
 		appCodec,
 		keys[parametermoduletypes.StoreKey],
 		keys[parametermoduletypes.MemStoreKey],
+		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 
 	// add capability keeper and ScopeToModule for ibc module

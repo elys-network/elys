@@ -8,6 +8,7 @@ service Msg {
   rpc UpdateMinCommission(MsgUpdateMinCommission) returns (MsgUpdateMinCommissionResponse);
   rpc UpdateMaxVotingPower(MsgUpdateMaxVotingPower) returns (MsgUpdateMaxVotingPowerResponse);
   rpc UpdateMinSelfDelegation(MsgUpdateMinSelfDelegation) returns (MsgUpdateMinSelfDelegationResponse);
+  rpc UpdateBrokerAddress(MsgUpdateBrokerAddress) returns (MsgUpdateBrokerAddressResponse);
 }
 
 message MsgUpdateMinCommission {
@@ -27,3 +28,9 @@ message MsgUpdateMinSelfDelegation {
   string min_self_delegation = 3;
 }
 message MsgUpdateMinSelfDelegationResponse {}
+
+message MsgUpdateBrokerAddress {
+  string creator = 1;
+  string broker_address = 3;
+}
+message MsgUpdateBrokerAddressResponse {}

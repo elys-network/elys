@@ -87112,6 +87112,8 @@ definitions:
             type: string
             format: uint64
     description: QueryParamsResponse is response type for the Query/Params RPC method.
+  elys.parameter.MsgUpdateBrokerAddressResponse:
+    type: object
   elys.parameter.MsgUpdateMaxVotingPowerResponse:
     type: object
   elys.parameter.MsgUpdateMinCommissionResponse:
