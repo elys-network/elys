@@ -17,16 +17,15 @@ func TestCheckSameAssetPosition_NewPosition(t *testing.T) {
 
 	k := app.MarginKeeper
 
-	mtp := types.NewMTP("creator", ptypes.BaseCurrency, ptypes.ATOM, types.Position_LONG, sdk.NewDec(5), sdk.MustNewDecFromStr(types.TakeProfitPriceDefault), 1)
+	mtp := types.NewMTP("creator", ptypes.BaseCurrency, ptypes.ATOM, ptypes.BaseCurrency, ptypes.ATOM, types.Position_LONG, sdk.NewDec(5), sdk.MustNewDecFromStr(types.TakeProfitPriceDefault), 1)
 	k.SetMTP(ctx, mtp)
 
 	msg := &types.MsgOpen{
-		Creator:          "creator",
-		CollateralAsset:  ptypes.ATOM,
-		CollateralAmount: sdk.NewInt(100),
-		BorrowAsset:      ptypes.ATOM,
-		Position:         types.Position_SHORT,
-		Leverage:         sdk.NewDec(1),
+		Creator:      "creator",
+		Position:     types.Position_SHORT,
+		Leverage:     sdk.NewDec(1),
+		TradingAsset: ptypes.ATOM,
+		Collateral:   sdk.NewCoin(ptypes.ATOM, sdk.NewInt(100)),
 	}
 
 	mtp = k.CheckSameAssetPosition(ctx, msg)

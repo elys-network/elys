@@ -41,6 +41,7 @@ var (
 	KeyFundingFeeMinRate                              = []byte("FundingFeeMinRate")
 	KeyFundingFeeMaxRate                              = []byte("FundingFeeMaxRate")
 	KeyFundingFeeCollectionAddress                    = []byte("FundingFeeCollectionAddress")
+	KeySwapFee                                        = []byte("SwapFee")
 )
 
 // ParamKeyTable the param key table for launch module
@@ -51,6 +52,7 @@ func ParamKeyTable() paramtypes.KeyTable {
 // NewParams creates a new Params instance
 func NewParams() Params {
 	return Params{
+		SwapFee:                                        sdk.NewDecWithPrec(1, 3), // 0.1%
 		FundingFeeCollectionAddress:                    ZeroAddress,
 		FundingFeeMinRate:                              sdk.NewDecWithPrec(-1, 3), // -0.1%
 		FundingFeeMaxRate:                              sdk.NewDecWithPrec(1, 3),  // 0.1%
@@ -112,6 +114,7 @@ func (p *Params) ParamSetPairs() paramtypes.ParamSetPairs {
 		paramtypes.NewParamSetPair(KeyFundingFeeMinRate, &p.FundingFeeMinRate, validateBorrowInterestRateMax),
 		paramtypes.NewParamSetPair(KeyFundingFeeMaxRate, &p.FundingFeeMaxRate, validateBorrowInterestRateMax),
 		paramtypes.NewParamSetPair(KeyFundingFeeCollectionAddress, &p.FundingFeeCollectionAddress, validateFundingFeeCollectionAddress),
+		paramtypes.NewParamSetPair(KeySwapFee, &p.SwapFee, validateSwapFee),
 	}
 }
 
@@ -190,6 +193,9 @@ func (p Params) Validate() error {
 		return err
 	}
 	if err := validateFundingFeeCollectionAddress(p.FundingFeeCollectionAddress); err != nil {
+		return err
+	}
+	if err := validateSwapFee(p.SwapFee); err != nil {
 		return err
 	}
 	return nil
@@ -536,6 +542,21 @@ func validateFundingFeeCollectionAddress(i interface{}) error {
 	_, ok := i.(string)
 	if !ok {
 		return fmt.Errorf("invalid parameter type: %T", i)
+	}
+
+	return nil
+}
+
+func validateSwapFee(i interface{}) error {
+	v, ok := i.(sdk.Dec)
+	if !ok {
+		return fmt.Errorf("invalid parameter type: %T", i)
+	}
+	if v.IsNil() {
+		return fmt.Errorf("swap fee must be not nil")
+	}
+	if v.IsNegative() {
+		return fmt.Errorf("swap fee must be positive: %s", v)
 	}
 
 	return nil

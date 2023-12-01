@@ -8,6 +8,7 @@ import "cosmos/base/query/v1beta1/pagination.proto";
 import "elys/margin/params.proto";
 import "elys/margin/types.proto";
 import "elys/margin/pool.proto";
+import "cosmos/base/v1beta1/coin.proto";
 
 option go_package = "github.com/elys-network/elys/x/margin/types";
 
@@ -37,7 +38,7 @@ service Query {
     option (google.api.http).get = "/elys-network/elys/margin/status";
   
   }
-    
+  
   // Queries a list of GetPositionsForAddress items.
   rpc GetPositionsForAddress (PositionsForAddressRequest) returns (PositionsForAddressResponse) {
     option (google.api.http).get = "/elys-network/elys/margin/mtps-for-address/{address}/{pagination.key}";
@@ -69,6 +70,12 @@ service Query {
   // Queries a list of MTP items.
   rpc MTP (MTPRequest) returns (MTPResponse) {
     option (google.api.http).get = "/elys-network/elys/margin/mtp/{address}/{id}";
+  
+  }
+  
+  // Queries a list of MinCollateral items.
+  rpc MinCollateral (QueryMinCollateralRequest) returns (QueryMinCollateralResponse) {
+    option (google.api.http).get = "/elys-network/elys/margin/min_collateral";
   
   }
 }
@@ -162,3 +169,19 @@ message MTPResponse {
   MTP mtp = 1;
 }
 
+message QueryMinCollateralRequest {
+  Position position         = 1;
+  string   leverage         = 2 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+  string trading_asset    = 3;
+  string collateral_asset = 4;
+  string discount   = 5 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+}
+
+message QueryMinCollateralResponse {
+  Position position         = 1;
+  string   leverage         = 2 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+  string   trading_asset      = 3;
+  cosmos.base.v1beta1.DecCoin min_collateral     = 4 [(gogoproto.nullable)   = false                                   ] ;
+  string   swap_fee         = 5 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+  string discount   = 6 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+}

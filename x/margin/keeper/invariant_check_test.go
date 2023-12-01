@@ -95,11 +95,10 @@ func TestCheckBalanceInvariant_InvalidBalance(t *testing.T) {
 	// Create a margin position open msg
 	msg2 := margintypes.NewMsgOpen(
 		addr[0].String(),
-		ptypes.BaseCurrency,
-		sdk.NewInt(100000000),
-		ptypes.ATOM,
 		margintypes.Position_LONG,
 		sdk.NewDec(5),
+		ptypes.ATOM,
+		sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(100000000)),
 		sdk.MustNewDecFromStr(margintypes.TakeProfitPriceDefault),
 	)
 
@@ -122,7 +121,7 @@ func TestCheckBalanceInvariant_InvalidBalance(t *testing.T) {
 	msg3 := margintypes.NewMsgClose(
 		addr[0].String(),
 		mtpId,
-		sdk.NewInt(100000000),
+		mtps[0].Custody,
 	)
 
 	_, err = mk.Close(ctx, msg3)

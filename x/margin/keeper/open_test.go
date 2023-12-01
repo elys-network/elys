@@ -26,9 +26,9 @@ func TestOpen_ErrorCheckUserAuthorization(t *testing.T) {
 	var (
 		ctx = sdk.Context{} // Mock or setup a context
 		msg = &types.MsgOpen{
-			CollateralAsset: ptypes.BaseCurrency,
-			BorrowAsset:     "uatom",
-			Position:        types.Position_LONG,
+			Position:     types.Position_LONG,
+			TradingAsset: "uatom",
+			Collateral:   sdk.NewCoin(ptypes.BaseCurrency, sdk.OneInt()),
 		}
 	)
 
@@ -54,11 +54,10 @@ func TestOpen_ErrorCheckMaxOpenPositions(t *testing.T) {
 	var (
 		ctx = sdk.Context{} // Mock or setup a context
 		msg = &types.MsgOpen{
-			Creator:         "creator",
-			CollateralAsset: ptypes.BaseCurrency,
-			BorrowAsset:     "uatom",
-			Position:        types.Position_LONG,
-			Leverage:        sdk.NewDec(10),
+			Position:     types.Position_LONG,
+			Leverage:     sdk.NewDec(10),
+			TradingAsset: "uatom",
+			Collateral:   sdk.NewCoin(ptypes.BaseCurrency, sdk.OneInt()),
 		}
 	)
 
@@ -86,11 +85,11 @@ func TestOpen_ErrorPreparePools(t *testing.T) {
 	var (
 		ctx = sdk.Context{} // Mock or setup a context
 		msg = &types.MsgOpen{
-			Creator:         "creator",
-			CollateralAsset: ptypes.BaseCurrency,
-			BorrowAsset:     "uatom",
-			Position:        types.Position_LONG,
-			Leverage:        sdk.NewDec(10),
+			Creator:      "creator",
+			Position:     types.Position_LONG,
+			Leverage:     sdk.NewDec(10),
+			TradingAsset: "uatom",
+			Collateral:   sdk.NewCoin(ptypes.BaseCurrency, sdk.OneInt()),
 		}
 	)
 
@@ -99,7 +98,7 @@ func TestOpen_ErrorPreparePools(t *testing.T) {
 	mockChecker.On("CheckUserAuthorization", ctx, msg).Return(nil)
 	mockChecker.On("CheckSameAssetPosition", ctx, msg).Return(nil)
 	mockChecker.On("CheckMaxOpenPositions", ctx).Return(nil)
-	mockChecker.On("PreparePools", ctx, msg.BorrowAsset).Return(uint64(0), ammtypes.Pool{}, types.Pool{}, errors.New("error executing prepare pools"))
+	mockChecker.On("PreparePools", ctx, msg.Collateral.Denom, msg.TradingAsset).Return(uint64(0), ammtypes.Pool{}, types.Pool{}, errors.New("error executing prepare pools"))
 
 	_, err := k.Open(ctx, msg)
 
@@ -119,9 +118,9 @@ func TestOpen_ErrorCheckPoolHealth(t *testing.T) {
 	var (
 		ctx = sdk.Context{} // Mock or setup a context
 		msg = &types.MsgOpen{
-			CollateralAsset: ptypes.BaseCurrency,
-			BorrowAsset:     "uatom",
-			Position:        types.Position_LONG,
+			Position:     types.Position_LONG,
+			TradingAsset: "uatom",
+			Collateral:   sdk.NewCoin(ptypes.BaseCurrency, sdk.OneInt()),
 		}
 		poolId = uint64(1)
 	)
@@ -131,7 +130,7 @@ func TestOpen_ErrorCheckPoolHealth(t *testing.T) {
 	mockChecker.On("CheckUserAuthorization", ctx, msg).Return(nil)
 	mockChecker.On("CheckSameAssetPosition", ctx, msg).Return(nil)
 	mockChecker.On("CheckMaxOpenPositions", ctx).Return(nil)
-	mockChecker.On("PreparePools", ctx, msg.BorrowAsset).Return(poolId, ammtypes.Pool{}, types.Pool{}, nil)
+	mockChecker.On("PreparePools", ctx, msg.Collateral.Denom, msg.TradingAsset).Return(poolId, ammtypes.Pool{}, types.Pool{}, nil)
 	mockChecker.On("CheckPoolHealth", ctx, poolId).Return(sdkerrors.Wrap(types.ErrInvalidBorrowingAsset, "invalid collateral asset"))
 
 	_, err := k.Open(ctx, msg)
@@ -152,8 +151,8 @@ func TestOpen_ErrorInvalidPosition(t *testing.T) {
 	var (
 		ctx = sdk.Context{} // Mock or setup a context
 		msg = &types.MsgOpen{
-			CollateralAsset: ptypes.BaseCurrency,
-			BorrowAsset:     "uatom",
+			TradingAsset: "uatom",
+			Collateral:   sdk.NewCoin(ptypes.BaseCurrency, sdk.OneInt()),
 		}
 	)
 
@@ -178,9 +177,9 @@ func TestOpen_ErrorOpenLong(t *testing.T) {
 	var (
 		ctx = sdk.Context{} // Mock or setup a context
 		msg = &types.MsgOpen{
-			CollateralAsset: ptypes.BaseCurrency,
-			BorrowAsset:     "uatom",
-			Position:        types.Position_LONG,
+			Position:     types.Position_LONG,
+			TradingAsset: "uatom",
+			Collateral:   sdk.NewCoin(ptypes.BaseCurrency, sdk.OneInt()),
 		}
 		poolId = uint64(1)
 	)
@@ -190,7 +189,7 @@ func TestOpen_ErrorOpenLong(t *testing.T) {
 	mockChecker.On("CheckUserAuthorization", ctx, msg).Return(nil)
 	mockChecker.On("CheckSameAssetPosition", ctx, msg).Return(nil)
 	mockChecker.On("CheckMaxOpenPositions", ctx).Return(nil)
-	mockChecker.On("PreparePools", ctx, msg.BorrowAsset).Return(poolId, ammtypes.Pool{}, types.Pool{}, nil)
+	mockChecker.On("PreparePools", ctx, msg.Collateral.Denom, msg.TradingAsset).Return(poolId, ammtypes.Pool{}, types.Pool{}, nil)
 	mockChecker.On("CheckPoolHealth", ctx, poolId).Return(nil)
 	mockChecker.On("OpenLong", ctx, poolId, msg, ptypes.BaseCurrency).Return(&types.MTP{}, errors.New("error executing open long"))
 
@@ -212,9 +211,9 @@ func TestOpen_ErrorOpenShort(t *testing.T) {
 	var (
 		ctx = sdk.Context{} // Mock or setup a context
 		msg = &types.MsgOpen{
-			CollateralAsset: ptypes.BaseCurrency,
-			BorrowAsset:     "uatom",
-			Position:        types.Position_SHORT,
+			Position:     types.Position_SHORT,
+			TradingAsset: "uatom",
+			Collateral:   sdk.NewCoin(ptypes.BaseCurrency, sdk.OneInt()),
 		}
 		poolId = uint64(1)
 	)
@@ -224,7 +223,7 @@ func TestOpen_ErrorOpenShort(t *testing.T) {
 	mockChecker.On("CheckUserAuthorization", ctx, msg).Return(nil)
 	mockChecker.On("CheckSameAssetPosition", ctx, msg).Return(nil)
 	mockChecker.On("CheckMaxOpenPositions", ctx).Return(nil)
-	mockChecker.On("PreparePools", ctx, msg.BorrowAsset).Return(poolId, ammtypes.Pool{}, types.Pool{}, nil)
+	mockChecker.On("PreparePools", ctx, msg.Collateral.Denom, msg.TradingAsset).Return(poolId, ammtypes.Pool{}, types.Pool{}, nil)
 	mockChecker.On("CheckPoolHealth", ctx, poolId).Return(nil)
 	mockChecker.On("OpenShort", ctx, poolId, msg, ptypes.BaseCurrency).Return(&types.MTP{}, errors.New("error executing open short"))
 
@@ -246,9 +245,9 @@ func TestOpen_Successful(t *testing.T) {
 	var (
 		ctx = sdk.Context{} // Mock or setup a context
 		msg = &types.MsgOpen{
-			CollateralAsset: ptypes.BaseCurrency,
-			BorrowAsset:     "uatom",
-			Position:        types.Position_SHORT,
+			Position:     types.Position_SHORT,
+			TradingAsset: "uatom",
+			Collateral:   sdk.NewCoin(ptypes.BaseCurrency, sdk.OneInt()),
 		}
 		poolId = uint64(1)
 		mtp    = &types.MTP{}
@@ -259,7 +258,7 @@ func TestOpen_Successful(t *testing.T) {
 	mockChecker.On("CheckUserAuthorization", ctx, msg).Return(nil)
 	mockChecker.On("CheckSameAssetPosition", ctx, msg).Return(nil)
 	mockChecker.On("CheckMaxOpenPositions", ctx).Return(nil)
-	mockChecker.On("PreparePools", ctx, msg.BorrowAsset).Return(poolId, ammtypes.Pool{}, types.Pool{}, nil)
+	mockChecker.On("PreparePools", ctx, msg.Collateral.Denom, msg.TradingAsset).Return(poolId, ammtypes.Pool{}, types.Pool{}, nil)
 	mockChecker.On("CheckPoolHealth", ctx, poolId).Return(nil)
 	mockChecker.On("OpenShort", ctx, poolId, msg, ptypes.BaseCurrency).Return(mtp, nil)
 	mockChecker.On("EmitOpenEvent", ctx, mtp).Return()

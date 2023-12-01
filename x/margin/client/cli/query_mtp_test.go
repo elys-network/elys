@@ -38,6 +38,8 @@ func networkWithMTPObjects(t *testing.T, n int) (*network.Network, []*types.MTP)
 		mtp := types.MTP{
 			Address:                        addr[i].String(),
 			CollateralAsset:                ptypes.BaseCurrency,
+			TradingAsset:                   "ATOM",
+			LiabilitiesAsset:               ptypes.BaseCurrency,
 			CustodyAsset:                   "ATOM",
 			Collateral:                     sdk.NewInt(0),
 			Liabilities:                    sdk.NewInt(0),
@@ -60,6 +62,7 @@ func networkWithMTPObjects(t *testing.T, n int) (*network.Network, []*types.MTP)
 			FundingFeePaidCustody:          sdk.NewInt(0),
 			FundingFeeReceivedCollateral:   sdk.NewInt(0),
 			FundingFeeReceivedCustody:      sdk.NewInt(0),
+			OpenPrice:                      sdk.NewDec(0),
 		}
 
 		mtps = append(mtps, &mtp)

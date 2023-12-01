@@ -7,10 +7,6 @@ import (
 )
 
 func (k Keeper) EstimateAndRepay(ctx sdk.Context, mtp types.MTP, pool types.Pool, ammPool ammtypes.Pool, amount sdk.Int, baseCurrency string) (sdk.Int, error) {
-	if amount.GT(mtp.Custody) || amount.IsNegative() {
-		return sdk.ZeroInt(), types.ErrInvalidCloseSize
-	}
-
 	// init repay amount
 	repayAmount := sdk.ZeroInt()
 

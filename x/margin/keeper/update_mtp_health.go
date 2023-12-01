@@ -13,8 +13,22 @@ func (k Keeper) UpdateMTPHealth(ctx sdk.Context, mtp types.MTP, ammPool ammtypes
 		return sdk.ZeroDec(), nil
 	}
 
+	// if short position, convert liabilities to base currency
+	if mtp.Position == types.Position_SHORT {
+		liabilities := sdk.NewCoin(mtp.LiabilitiesAsset, xl)
+		var err error
+		xl, err = k.EstimateSwapGivenOut(ctx, liabilities, baseCurrency, ammPool)
+		if err != nil {
+			return sdk.ZeroDec(), err
+		}
+
+		if xl.IsZero() {
+			return sdk.ZeroDec(), nil
+		}
+	}
+
 	// include unpaid borrow interest in debt (from disabled incremental pay)
-	if mtp.BorrowInterestUnpaidCollateral.GT(sdk.ZeroInt()) {
+	if mtp.BorrowInterestUnpaidCollateral.IsPositive() {
 		unpaidCollateral := sdk.NewCoin(mtp.CollateralAsset, mtp.BorrowInterestUnpaidCollateral)
 
 		if mtp.CollateralAsset == baseCurrency {
@@ -29,11 +43,16 @@ func (k Keeper) UpdateMTPHealth(ctx sdk.Context, mtp types.MTP, ammPool ammtypes
 		}
 	}
 
-	custodyAmt := sdk.NewCoin(mtp.CustodyAsset, mtp.Custody)
-	// All liabilty is in base currency
-	custodyAmtInBaseCurrency, err := k.EstimateSwapGivenOut(ctx, custodyAmt, baseCurrency, ammPool)
-	if err != nil {
-		return sdk.ZeroDec(), err
+	// if short position, custody asset is already in base currency
+	custodyAmtInBaseCurrency := mtp.Custody
+
+	if mtp.Position == types.Position_LONG {
+		custodyAmt := sdk.NewCoin(mtp.CustodyAsset, mtp.Custody)
+		var err error
+		custodyAmtInBaseCurrency, err = k.EstimateSwapGivenOut(ctx, custodyAmt, baseCurrency, ammPool)
+		if err != nil {
+			return sdk.ZeroDec(), err
+		}
 	}
 
 	lr := sdk.NewDecFromBigInt(custodyAmtInBaseCurrency.BigInt()).Quo(sdk.NewDecFromBigInt(xl.BigInt()))

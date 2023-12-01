@@ -10,16 +10,16 @@ func (k Keeper) ProcessOpenLong(ctx sdk.Context, mtp *types.MTP, leverage sdk.De
 	// Fetch the pool associated with the given pool ID.
 	pool, found := k.OpenLongChecker.GetPool(ctx, poolId)
 	if !found {
-		return nil, sdkerrors.Wrap(types.ErrPoolDoesNotExist, mtp.CustodyAsset)
+		return nil, sdkerrors.Wrap(types.ErrPoolDoesNotExist, mtp.TradingAsset)
 	}
 
 	// Check if the pool is enabled.
 	if !k.OpenLongChecker.IsPoolEnabled(ctx, poolId) {
-		return nil, sdkerrors.Wrap(types.ErrMTPDisabled, mtp.CustodyAsset)
+		return nil, sdkerrors.Wrap(types.ErrMTPDisabled, mtp.TradingAsset)
 	}
 
 	// Fetch the corresponding AMM (Automated Market Maker) pool.
-	ammPool, err := k.OpenLongChecker.GetAmmPool(ctx, poolId, mtp.CustodyAsset)
+	ammPool, err := k.OpenLongChecker.GetAmmPool(ctx, poolId, mtp.TradingAsset)
 	if err != nil {
 		return nil, err
 	}

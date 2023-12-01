@@ -33,9 +33,8 @@ func TestOpenPosition(t *testing.T) {
 	args := []string{
 		"open",
 		"1.5",
-		ptypes.BaseCurrency,
-		"1000",
 		"uatom",
+		"1000" + ptypes.BaseCurrency,
 		"--from=" + val.Address.String(),
 		"-y",
 	}

@@ -38324,7 +38324,7 @@ paths:
                   method
 
                   signatures required by gogoproto.
-              swapFee:
+              swap_fee:
                 type: string
               discount:
                 type: string
@@ -38423,7 +38423,7 @@ paths:
                   method
 
                   signatures required by gogoproto.
-              swapFee:
+              swap_fee:
                 type: string
               discount:
                 type: string
@@ -40735,6 +40735,93 @@ paths:
           type: string
       tags:
         - Query
+  /elys-network/elys/margin/min_collateral:
+    get:
+      summary: Queries a list of MinCollateral items.
+      operationId: ElysMarginMinCollateral
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              position:
+                type: string
+                enum:
+                  - UNSPECIFIED
+                  - LONG
+                  - SHORT
+                default: UNSPECIFIED
+              leverage:
+                type: string
+              trading_asset:
+                type: string
+              min_collateral:
+                type: object
+                properties:
+                  denom:
+                    type: string
+                  amount:
+                    type: string
+                description: >-
+                  DecCoin defines a token with a denomination and a decimal
+                  amount.
+
+
+                  NOTE: The amount field is an Dec which implements the custom
+                  method
+
+                  signatures required by gogoproto.
+              swap_fee:
+                type: string
+              discount:
+                type: string
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: position
+          in: query
+          required: false
+          type: string
+          enum:
+            - UNSPECIFIED
+            - LONG
+            - SHORT
+          default: UNSPECIFIED
+        - name: leverage
+          in: query
+          required: false
+          type: string
+        - name: trading_asset
+          in: query
+          required: false
+          type: string
+        - name: collateral_asset
+          in: query
+          required: false
+          type: string
+        - name: discount
+          in: query
+          required: false
+          type: string
+      tags:
+        - Query
   /elys-network/elys/margin/mtp/{address}/{id}:
     get:
       summary: Queries a list of MTP items.
@@ -40750,116 +40837,32 @@ paths:
                 properties:
                   address:
                     type: string
-                  collaterals:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        denom:
-                          type: string
-                        amount:
-                          type: string
-                      description: >-
-                        Coin defines a token with a denomination and an amount.
-
-
-                        NOTE: The amount field is an Int which implements the
-                        custom method
-
-                        signatures required by gogoproto.
+                  collateral_asset:
+                    type: string
+                  trading_asset:
+                    type: string
+                  liabilities_asset:
+                    type: string
+                  custody_asset:
+                    type: string
+                  collateral:
+                    type: string
                   liabilities:
                     type: string
-                  borrow_interest_paid_collaterals:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        denom:
-                          type: string
-                        amount:
-                          type: string
-                      description: >-
-                        Coin defines a token with a denomination and an amount.
-
-
-                        NOTE: The amount field is an Int which implements the
-                        custom method
-
-                        signatures required by gogoproto.
-                  borrow_interest_paid_custodies:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        denom:
-                          type: string
-                        amount:
-                          type: string
-                      description: >-
-                        Coin defines a token with a denomination and an amount.
-
-
-                        NOTE: The amount field is an Int which implements the
-                        custom method
-
-                        signatures required by gogoproto.
-                  borrow_interest_unpaid_collaterals:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        denom:
-                          type: string
-                        amount:
-                          type: string
-                      description: >-
-                        Coin defines a token with a denomination and an amount.
-
-
-                        NOTE: The amount field is an Int which implements the
-                        custom method
-
-                        signatures required by gogoproto.
-                  custodies:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        denom:
-                          type: string
-                        amount:
-                          type: string
-                      description: >-
-                        Coin defines a token with a denomination and an amount.
-
-
-                        NOTE: The amount field is an Int which implements the
-                        custom method
-
-                        signatures required by gogoproto.
+                  borrow_interest_paid_collateral:
+                    type: string
+                  borrow_interest_paid_custody:
+                    type: string
+                  borrow_interest_unpaid_collateral:
+                    type: string
+                  custody:
+                    type: string
                   take_profit_liabilities:
                     type: string
-                  take_profit_custodies:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        denom:
-                          type: string
-                        amount:
-                          type: string
-                      description: >-
-                        Coin defines a token with a denomination and an amount.
-
-
-                        NOTE: The amount field is an Int which implements the
-                        custom method
-
-                        signatures required by gogoproto.
-                  leverages:
-                    type: array
-                    items:
-                      type: string
+                  take_profit_custody:
+                    type: string
+                  leverage:
+                    type: string
                   mtp_health:
                     type: string
                   position:
@@ -40883,76 +40886,18 @@ paths:
                     type: string
                   take_profit_borrow_rate:
                     type: string
-                  funding_fee_paid_collaterals:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        denom:
-                          type: string
-                        amount:
-                          type: string
-                      description: >-
-                        Coin defines a token with a denomination and an amount.
-
-
-                        NOTE: The amount field is an Int which implements the
-                        custom method
-
-                        signatures required by gogoproto.
+                  funding_fee_paid_collateral:
+                    type: string
                     title: funding fee paid
-                  funding_fee_paid_custodies:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        denom:
-                          type: string
-                        amount:
-                          type: string
-                      description: >-
-                        Coin defines a token with a denomination and an amount.
-
-
-                        NOTE: The amount field is an Int which implements the
-                        custom method
-
-                        signatures required by gogoproto.
-                  funding_fee_received_collaterals:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        denom:
-                          type: string
-                        amount:
-                          type: string
-                      description: >-
-                        Coin defines a token with a denomination and an amount.
-
-
-                        NOTE: The amount field is an Int which implements the
-                        custom method
-
-                        signatures required by gogoproto.
+                  funding_fee_paid_custody:
+                    type: string
+                  funding_fee_received_collateral:
+                    type: string
                     title: funding fee received
-                  funding_fee_received_custodies:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        denom:
-                          type: string
-                        amount:
-                          type: string
-                      description: >-
-                        Coin defines a token with a denomination and an amount.
-
-
-                        NOTE: The amount field is an Int which implements the
-                        custom method
-
-                        signatures required by gogoproto.
+                  funding_fee_received_custody:
+                    type: string
+                  open_price:
+                    type: string
         default:
           description: An unexpected error response.
           schema:
@@ -41000,122 +40945,32 @@ paths:
                   properties:
                     address:
                       type: string
-                    collaterals:
-                      type: array
-                      items:
-                        type: object
-                        properties:
-                          denom:
-                            type: string
-                          amount:
-                            type: string
-                        description: >-
-                          Coin defines a token with a denomination and an
-                          amount.
-
-
-                          NOTE: The amount field is an Int which implements the
-                          custom method
-
-                          signatures required by gogoproto.
+                    collateral_asset:
+                      type: string
+                    trading_asset:
+                      type: string
+                    liabilities_asset:
+                      type: string
+                    custody_asset:
+                      type: string
+                    collateral:
+                      type: string
                     liabilities:
                       type: string
-                    borrow_interest_paid_collaterals:
-                      type: array
-                      items:
-                        type: object
-                        properties:
-                          denom:
-                            type: string
-                          amount:
-                            type: string
-                        description: >-
-                          Coin defines a token with a denomination and an
-                          amount.
-
-
-                          NOTE: The amount field is an Int which implements the
-                          custom method
-
-                          signatures required by gogoproto.
-                    borrow_interest_paid_custodies:
-                      type: array
-                      items:
-                        type: object
-                        properties:
-                          denom:
-                            type: string
-                          amount:
-                            type: string
-                        description: >-
-                          Coin defines a token with a denomination and an
-                          amount.
-
-
-                          NOTE: The amount field is an Int which implements the
-                          custom method
-
-                          signatures required by gogoproto.
-                    borrow_interest_unpaid_collaterals:
-                      type: array
-                      items:
-                        type: object
-                        properties:
-                          denom:
-                            type: string
-                          amount:
-                            type: string
-                        description: >-
-                          Coin defines a token with a denomination and an
-                          amount.
-
-
-                          NOTE: The amount field is an Int which implements the
-                          custom method
-
-                          signatures required by gogoproto.
-                    custodies:
-                      type: array
-                      items:
-                        type: object
-                        properties:
-                          denom:
-                            type: string
-                          amount:
-                            type: string
-                        description: >-
-                          Coin defines a token with a denomination and an
-                          amount.
-
-
-                          NOTE: The amount field is an Int which implements the
-                          custom method
-
-                          signatures required by gogoproto.
+                    borrow_interest_paid_collateral:
+                      type: string
+                    borrow_interest_paid_custody:
+                      type: string
+                    borrow_interest_unpaid_collateral:
+                      type: string
+                    custody:
+                      type: string
                     take_profit_liabilities:
                       type: string
-                    take_profit_custodies:
-                      type: array
-                      items:
-                        type: object
-                        properties:
-                          denom:
-                            type: string
-                          amount:
-                            type: string
-                        description: >-
-                          Coin defines a token with a denomination and an
-                          amount.
-
-
-                          NOTE: The amount field is an Int which implements the
-                          custom method
-
-                          signatures required by gogoproto.
-                    leverages:
-                      type: array
-                      items:
-                        type: string
+                    take_profit_custody:
+                      type: string
+                    leverage:
+                      type: string
                     mtp_health:
                       type: string
                     position:
@@ -41139,80 +40994,18 @@ paths:
                       type: string
                     take_profit_borrow_rate:
                       type: string
-                    funding_fee_paid_collaterals:
-                      type: array
-                      items:
-                        type: object
-                        properties:
-                          denom:
-                            type: string
-                          amount:
-                            type: string
-                        description: >-
-                          Coin defines a token with a denomination and an
-                          amount.
-
-
-                          NOTE: The amount field is an Int which implements the
-                          custom method
-
-                          signatures required by gogoproto.
+                    funding_fee_paid_collateral:
+                      type: string
                       title: funding fee paid
-                    funding_fee_paid_custodies:
-                      type: array
-                      items:
-                        type: object
-                        properties:
-                          denom:
-                            type: string
-                          amount:
-                            type: string
-                        description: >-
-                          Coin defines a token with a denomination and an
-                          amount.
-
-
-                          NOTE: The amount field is an Int which implements the
-                          custom method
-
-                          signatures required by gogoproto.
-                    funding_fee_received_collaterals:
-                      type: array
-                      items:
-                        type: object
-                        properties:
-                          denom:
-                            type: string
-                          amount:
-                            type: string
-                        description: >-
-                          Coin defines a token with a denomination and an
-                          amount.
-
-
-                          NOTE: The amount field is an Int which implements the
-                          custom method
-
-                          signatures required by gogoproto.
+                    funding_fee_paid_custody:
+                      type: string
+                    funding_fee_received_collateral:
+                      type: string
                       title: funding fee received
-                    funding_fee_received_custodies:
-                      type: array
-                      items:
-                        type: object
-                        properties:
-                          denom:
-                            type: string
-                          amount:
-                            type: string
-                        description: >-
-                          Coin defines a token with a denomination and an
-                          amount.
-
-
-                          NOTE: The amount field is an Int which implements the
-                          custom method
-
-                          signatures required by gogoproto.
+                    funding_fee_received_custody:
+                      type: string
+                    open_price:
+                      type: string
               pagination:
                 type: object
                 properties:
@@ -41340,122 +41133,32 @@ paths:
                   properties:
                     address:
                       type: string
-                    collaterals:
-                      type: array
-                      items:
-                        type: object
-                        properties:
-                          denom:
-                            type: string
-                          amount:
-                            type: string
-                        description: >-
-                          Coin defines a token with a denomination and an
-                          amount.
-
-
-                          NOTE: The amount field is an Int which implements the
-                          custom method
-
-                          signatures required by gogoproto.
+                    collateral_asset:
+                      type: string
+                    trading_asset:
+                      type: string
+                    liabilities_asset:
+                      type: string
+                    custody_asset:
+                      type: string
+                    collateral:
+                      type: string
                     liabilities:
                       type: string
-                    borrow_interest_paid_collaterals:
-                      type: array
-                      items:
-                        type: object
-                        properties:
-                          denom:
-                            type: string
-                          amount:
-                            type: string
-                        description: >-
-                          Coin defines a token with a denomination and an
-                          amount.
-
-
-                          NOTE: The amount field is an Int which implements the
-                          custom method
-
-                          signatures required by gogoproto.
-                    borrow_interest_paid_custodies:
-                      type: array
-                      items:
-                        type: object
-                        properties:
-                          denom:
-                            type: string
-                          amount:
-                            type: string
-                        description: >-
-                          Coin defines a token with a denomination and an
-                          amount.
-
-
-                          NOTE: The amount field is an Int which implements the
-                          custom method
-
-                          signatures required by gogoproto.
-                    borrow_interest_unpaid_collaterals:
-                      type: array
-                      items:
-                        type: object
-                        properties:
-                          denom:
-                            type: string
-                          amount:
-                            type: string
-                        description: >-
-                          Coin defines a token with a denomination and an
-                          amount.
-
-
-                          NOTE: The amount field is an Int which implements the
-                          custom method
-
-                          signatures required by gogoproto.
-                    custodies:
-                      type: array
-                      items:
-                        type: object
-                        properties:
-                          denom:
-                            type: string
-                          amount:
-                            type: string
-                        description: >-
-                          Coin defines a token with a denomination and an
-                          amount.
-
-
-                          NOTE: The amount field is an Int which implements the
-                          custom method
-
-                          signatures required by gogoproto.
+                    borrow_interest_paid_collateral:
+                      type: string
+                    borrow_interest_paid_custody:
+                      type: string
+                    borrow_interest_unpaid_collateral:
+                      type: string
+                    custody:
+                      type: string
                     take_profit_liabilities:
                       type: string
-                    take_profit_custodies:
-                      type: array
-                      items:
-                        type: object
-                        properties:
-                          denom:
-                            type: string
-                          amount:
-                            type: string
-                        description: >-
-                          Coin defines a token with a denomination and an
-                          amount.
-
-
-                          NOTE: The amount field is an Int which implements the
-                          custom method
-
-                          signatures required by gogoproto.
-                    leverages:
-                      type: array
-                      items:
-                        type: string
+                    take_profit_custody:
+                      type: string
+                    leverage:
+                      type: string
                     mtp_health:
                       type: string
                     position:
@@ -41479,80 +41182,18 @@ paths:
                       type: string
                     take_profit_borrow_rate:
                       type: string
-                    funding_fee_paid_collaterals:
-                      type: array
-                      items:
-                        type: object
-                        properties:
-                          denom:
-                            type: string
-                          amount:
-                            type: string
-                        description: >-
-                          Coin defines a token with a denomination and an
-                          amount.
-
-
-                          NOTE: The amount field is an Int which implements the
-                          custom method
-
-                          signatures required by gogoproto.
+                    funding_fee_paid_collateral:
+                      type: string
                       title: funding fee paid
-                    funding_fee_paid_custodies:
-                      type: array
-                      items:
-                        type: object
-                        properties:
-                          denom:
-                            type: string
-                          amount:
-                            type: string
-                        description: >-
-                          Coin defines a token with a denomination and an
-                          amount.
-
-
-                          NOTE: The amount field is an Int which implements the
-                          custom method
-
-                          signatures required by gogoproto.
-                    funding_fee_received_collaterals:
-                      type: array
-                      items:
-                        type: object
-                        properties:
-                          denom:
-                            type: string
-                          amount:
-                            type: string
-                        description: >-
-                          Coin defines a token with a denomination and an
-                          amount.
-
-
-                          NOTE: The amount field is an Int which implements the
-                          custom method
-
-                          signatures required by gogoproto.
+                    funding_fee_paid_custody:
+                      type: string
+                    funding_fee_received_collateral:
+                      type: string
                       title: funding fee received
-                    funding_fee_received_custodies:
-                      type: array
-                      items:
-                        type: object
-                        properties:
-                          denom:
-                            type: string
-                          amount:
-                            type: string
-                        description: >-
-                          Coin defines a token with a denomination and an
-                          amount.
-
-
-                          NOTE: The amount field is an Int which implements the
-                          custom method
-
-                          signatures required by gogoproto.
+                    funding_fee_received_custody:
+                      type: string
+                    open_price:
+                      type: string
               pagination:
                 type: object
                 properties:
@@ -41727,6 +41368,8 @@ paths:
                   funding_fee_min_rate:
                     type: string
                   funding_fee_collection_address:
+                    type: string
+                  swap_fee:
                     type: string
             description: ParamsResponse is response type for the Query/Params RPC method.
         default:
@@ -42038,122 +41681,32 @@ paths:
                   properties:
                     address:
                       type: string
-                    collaterals:
-                      type: array
-                      items:
-                        type: object
-                        properties:
-                          denom:
-                            type: string
-                          amount:
-                            type: string
-                        description: >-
-                          Coin defines a token with a denomination and an
-                          amount.
-
-
-                          NOTE: The amount field is an Int which implements the
-                          custom method
-
-                          signatures required by gogoproto.
+                    collateral_asset:
+                      type: string
+                    trading_asset:
+                      type: string
+                    liabilities_asset:
+                      type: string
+                    custody_asset:
+                      type: string
+                    collateral:
+                      type: string
                     liabilities:
                       type: string
-                    borrow_interest_paid_collaterals:
-                      type: array
-                      items:
-                        type: object
-                        properties:
-                          denom:
-                            type: string
-                          amount:
-                            type: string
-                        description: >-
-                          Coin defines a token with a denomination and an
-                          amount.
-
-
-                          NOTE: The amount field is an Int which implements the
-                          custom method
-
-                          signatures required by gogoproto.
-                    borrow_interest_paid_custodies:
-                      type: array
-                      items:
-                        type: object
-                        properties:
-                          denom:
-                            type: string
-                          amount:
-                            type: string
-                        description: >-
-                          Coin defines a token with a denomination and an
-                          amount.
-
-
-                          NOTE: The amount field is an Int which implements the
-                          custom method
-
-                          signatures required by gogoproto.
-                    borrow_interest_unpaid_collaterals:
-                      type: array
-                      items:
-                        type: object
-                        properties:
-                          denom:
-                            type: string
-                          amount:
-                            type: string
-                        description: >-
-                          Coin defines a token with a denomination and an
-                          amount.
-
-
-                          NOTE: The amount field is an Int which implements the
-                          custom method
-
-                          signatures required by gogoproto.
-                    custodies:
-                      type: array
-                      items:
-                        type: object
-                        properties:
-                          denom:
-                            type: string
-                          amount:
-                            type: string
-                        description: >-
-                          Coin defines a token with a denomination and an
-                          amount.
-
-
-                          NOTE: The amount field is an Int which implements the
-                          custom method
-
-                          signatures required by gogoproto.
+                    borrow_interest_paid_collateral:
+                      type: string
+                    borrow_interest_paid_custody:
+                      type: string
+                    borrow_interest_unpaid_collateral:
+                      type: string
+                    custody:
+                      type: string
                     take_profit_liabilities:
                       type: string
-                    take_profit_custodies:
-                      type: array
-                      items:
-                        type: object
-                        properties:
-                          denom:
-                            type: string
-                          amount:
-                            type: string
-                        description: >-
-                          Coin defines a token with a denomination and an
-                          amount.
-
-
-                          NOTE: The amount field is an Int which implements the
-                          custom method
-
-                          signatures required by gogoproto.
-                    leverages:
-                      type: array
-                      items:
-                        type: string
+                    take_profit_custody:
+                      type: string
+                    leverage:
+                      type: string
                     mtp_health:
                       type: string
                     position:
@@ -42177,80 +41730,18 @@ paths:
                       type: string
                     take_profit_borrow_rate:
                       type: string
-                    funding_fee_paid_collaterals:
-                      type: array
-                      items:
-                        type: object
-                        properties:
-                          denom:
-                            type: string
-                          amount:
-                            type: string
-                        description: >-
-                          Coin defines a token with a denomination and an
-                          amount.
-
-
-                          NOTE: The amount field is an Int which implements the
-                          custom method
-
-                          signatures required by gogoproto.
+                    funding_fee_paid_collateral:
+                      type: string
                       title: funding fee paid
-                    funding_fee_paid_custodies:
-                      type: array
-                      items:
-                        type: object
-                        properties:
-                          denom:
-                            type: string
-                          amount:
-                            type: string
-                        description: >-
-                          Coin defines a token with a denomination and an
-                          amount.
-
-
-                          NOTE: The amount field is an Int which implements the
-                          custom method
-
-                          signatures required by gogoproto.
-                    funding_fee_received_collaterals:
-                      type: array
-                      items:
-                        type: object
-                        properties:
-                          denom:
-                            type: string
-                          amount:
-                            type: string
-                        description: >-
-                          Coin defines a token with a denomination and an
-                          amount.
-
-
-                          NOTE: The amount field is an Int which implements the
-                          custom method
-
-                          signatures required by gogoproto.
+                    funding_fee_paid_custody:
+                      type: string
+                    funding_fee_received_collateral:
+                      type: string
                       title: funding fee received
-                    funding_fee_received_custodies:
-                      type: array
-                      items:
-                        type: object
-                        properties:
-                          denom:
-                            type: string
-                          amount:
-                            type: string
-                        description: >-
-                          Coin defines a token with a denomination and an
-                          amount.
-
-
-                          NOTE: The amount field is an Int which implements the
-                          custom method
-
-                          signatures required by gogoproto.
+                    funding_fee_received_custody:
+                      type: string
+                    open_price:
+                      type: string
               pagination:
                 type: object
                 properties:
@@ -83564,7 +83055,7 @@ definitions:
 
           NOTE: The amount field is an Int which implements the custom method
           signatures required by gogoproto.
-      swapFee:
+      swap_fee:
         type: string
       discount:
         type: string
@@ -83597,7 +83088,7 @@ definitions:
 
           NOTE: The amount field is an Int which implements the custom method
           signatures required by gogoproto.
-      swapFee:
+      swap_fee:
         type: string
       discount:
         type: string
@@ -85338,98 +84829,32 @@ definitions:
     properties:
       address:
         type: string
-      collaterals:
-        type: array
-        items:
-          type: object
-          properties:
-            denom:
-              type: string
-            amount:
-              type: string
-          description: |-
-            Coin defines a token with a denomination and an amount.
-
-            NOTE: The amount field is an Int which implements the custom method
-            signatures required by gogoproto.
+      collateral_asset:
+        type: string
+      trading_asset:
+        type: string
+      liabilities_asset:
+        type: string
+      custody_asset:
+        type: string
+      collateral:
+        type: string
       liabilities:
         type: string
-      borrow_interest_paid_collaterals:
-        type: array
-        items:
-          type: object
-          properties:
-            denom:
-              type: string
-            amount:
-              type: string
-          description: |-
-            Coin defines a token with a denomination and an amount.
-
-            NOTE: The amount field is an Int which implements the custom method
-            signatures required by gogoproto.
-      borrow_interest_paid_custodies:
-        type: array
-        items:
-          type: object
-          properties:
-            denom:
-              type: string
-            amount:
-              type: string
-          description: |-
-            Coin defines a token with a denomination and an amount.
-
-            NOTE: The amount field is an Int which implements the custom method
-            signatures required by gogoproto.
-      borrow_interest_unpaid_collaterals:
-        type: array
-        items:
-          type: object
-          properties:
-            denom:
-              type: string
-            amount:
-              type: string
-          description: |-
-            Coin defines a token with a denomination and an amount.
-
-            NOTE: The amount field is an Int which implements the custom method
-            signatures required by gogoproto.
-      custodies:
-        type: array
-        items:
-          type: object
-          properties:
-            denom:
-              type: string
-            amount:
-              type: string
-          description: |-
-            Coin defines a token with a denomination and an amount.
-
-            NOTE: The amount field is an Int which implements the custom method
-            signatures required by gogoproto.
+      borrow_interest_paid_collateral:
+        type: string
+      borrow_interest_paid_custody:
+        type: string
+      borrow_interest_unpaid_collateral:
+        type: string
+      custody:
+        type: string
       take_profit_liabilities:
         type: string
-      take_profit_custodies:
-        type: array
-        items:
-          type: object
-          properties:
-            denom:
-              type: string
-            amount:
-              type: string
-          description: |-
-            Coin defines a token with a denomination and an amount.
-
-            NOTE: The amount field is an Int which implements the custom method
-            signatures required by gogoproto.
-      leverages:
-        type: array
-        items:
-          type: string
+      take_profit_custody:
+        type: string
+      leverage:
+        type: string
       mtp_health:
         type: string
       position:
@@ -85453,64 +84878,18 @@ definitions:
         type: string
       take_profit_borrow_rate:
         type: string
-      funding_fee_paid_collaterals:
-        type: array
-        items:
-          type: object
-          properties:
-            denom:
-              type: string
-            amount:
-              type: string
-          description: |-
-            Coin defines a token with a denomination and an amount.
-
-            NOTE: The amount field is an Int which implements the custom method
-            signatures required by gogoproto.
+      funding_fee_paid_collateral:
+        type: string
         title: funding fee paid
-      funding_fee_paid_custodies:
-        type: array
-        items:
-          type: object
-          properties:
-            denom:
-              type: string
-            amount:
-              type: string
-          description: |-
-            Coin defines a token with a denomination and an amount.
-
-            NOTE: The amount field is an Int which implements the custom method
-            signatures required by gogoproto.
-      funding_fee_received_collaterals:
-        type: array
-        items:
-          type: object
-          properties:
-            denom:
-              type: string
-            amount:
-              type: string
-          description: |-
-            Coin defines a token with a denomination and an amount.
-
-            NOTE: The amount field is an Int which implements the custom method
-            signatures required by gogoproto.
+      funding_fee_paid_custody:
+        type: string
+      funding_fee_received_collateral:
+        type: string
         title: funding fee received
-      funding_fee_received_custodies:
-        type: array
-        items:
-          type: object
-          properties:
-            denom:
-              type: string
-            amount:
-              type: string
-          description: |-
-            Coin defines a token with a denomination and an amount.
-
-            NOTE: The amount field is an Int which implements the custom method
-            signatures required by gogoproto.
+      funding_fee_received_custody:
+        type: string
+      open_price:
+        type: string
   elys.margin.MTPResponse:
     type: object
     properties:
@@ -85519,116 +84898,32 @@ definitions:
         properties:
           address:
             type: string
-          collaterals:
-            type: array
-            items:
-              type: object
-              properties:
-                denom:
-                  type: string
-                amount:
-                  type: string
-              description: >-
-                Coin defines a token with a denomination and an amount.
-
-
-                NOTE: The amount field is an Int which implements the custom
-                method
-
-                signatures required by gogoproto.
+          collateral_asset:
+            type: string
+          trading_asset:
+            type: string
+          liabilities_asset:
+            type: string
+          custody_asset:
+            type: string
+          collateral:
+            type: string
           liabilities:
             type: string
-          borrow_interest_paid_collaterals:
-            type: array
-            items:
-              type: object
-              properties:
-                denom:
-                  type: string
-                amount:
-                  type: string
-              description: >-
-                Coin defines a token with a denomination and an amount.
-
-
-                NOTE: The amount field is an Int which implements the custom
-                method
-
-                signatures required by gogoproto.
-          borrow_interest_paid_custodies:
-            type: array
-            items:
-              type: object
-              properties:
-                denom:
-                  type: string
-                amount:
-                  type: string
-              description: >-
-                Coin defines a token with a denomination and an amount.
-
-
-                NOTE: The amount field is an Int which implements the custom
-                method
-
-                signatures required by gogoproto.
-          borrow_interest_unpaid_collaterals:
-            type: array
-            items:
-              type: object
-              properties:
-                denom:
-                  type: string
-                amount:
-                  type: string
-              description: >-
-                Coin defines a token with a denomination and an amount.
-
-
-                NOTE: The amount field is an Int which implements the custom
-                method
-
-                signatures required by gogoproto.
-          custodies:
-            type: array
-            items:
-              type: object
-              properties:
-                denom:
-                  type: string
-                amount:
-                  type: string
-              description: >-
-                Coin defines a token with a denomination and an amount.
-
-
-                NOTE: The amount field is an Int which implements the custom
-                method
-
-                signatures required by gogoproto.
+          borrow_interest_paid_collateral:
+            type: string
+          borrow_interest_paid_custody:
+            type: string
+          borrow_interest_unpaid_collateral:
+            type: string
+          custody:
+            type: string
           take_profit_liabilities:
             type: string
-          take_profit_custodies:
-            type: array
-            items:
-              type: object
-              properties:
-                denom:
-                  type: string
-                amount:
-                  type: string
-              description: >-
-                Coin defines a token with a denomination and an amount.
-
-
-                NOTE: The amount field is an Int which implements the custom
-                method
-
-                signatures required by gogoproto.
-          leverages:
-            type: array
-            items:
-              type: string
+          take_profit_custody:
+            type: string
+          leverage:
+            type: string
           mtp_health:
             type: string
           position:
@@ -85652,76 +84947,18 @@ definitions:
             type: string
           take_profit_borrow_rate:
             type: string
-          funding_fee_paid_collaterals:
-            type: array
-            items:
-              type: object
-              properties:
-                denom:
-                  type: string
-                amount:
-                  type: string
-              description: >-
-                Coin defines a token with a denomination and an amount.
-
-
-                NOTE: The amount field is an Int which implements the custom
-                method
-
-                signatures required by gogoproto.
+          funding_fee_paid_collateral:
+            type: string
             title: funding fee paid
-          funding_fee_paid_custodies:
-            type: array
-            items:
-              type: object
-              properties:
-                denom:
-                  type: string
-                amount:
-                  type: string
-              description: >-
-                Coin defines a token with a denomination and an amount.
-
-
-                NOTE: The amount field is an Int which implements the custom
-                method
-
-                signatures required by gogoproto.
-          funding_fee_received_collaterals:
-            type: array
-            items:
-              type: object
-              properties:
-                denom:
-                  type: string
-                amount:
-                  type: string
-              description: >-
-                Coin defines a token with a denomination and an amount.
-
-
-                NOTE: The amount field is an Int which implements the custom
-                method
-
-                signatures required by gogoproto.
+          funding_fee_paid_custody:
+            type: string
+          funding_fee_received_collateral:
+            type: string
             title: funding fee received
-          funding_fee_received_custodies:
-            type: array
-            items:
-              type: object
-              properties:
-                denom:
-                  type: string
-                amount:
-                  type: string
-              description: >-
-                Coin defines a token with a denomination and an amount.
-
-
-                NOTE: The amount field is an Int which implements the custom
-                method
-
-                signatures required by gogoproto.
+          funding_fee_received_custody:
+            type: string
+          open_price:
+            type: string
   elys.margin.MsgBrokerCloseResponse:
     type: object
     properties:
@@ -85729,17 +84966,7 @@ definitions:
         type: string
         format: uint64
       amount:
-        type: object
-        properties:
-          denom:
-            type: string
-          amount:
-            type: string
-        description: |-
-          Coin defines a token with a denomination and an amount.
-
-          NOTE: The amount field is an Int which implements the custom method
-          signatures required by gogoproto.
+        type: string
   elys.margin.MsgBrokerOpenResponse:
     type: object
     properties:
@@ -85753,17 +84980,7 @@ definitions:
         type: string
         format: uint64
       amount:
-        type: object
-        properties:
-          denom:
-            type: string
-          amount:
-            type: string
-        description: |-
-          Coin defines a token with a denomination and an amount.
-
-          NOTE: The amount field is an Int which implements the custom method
-          signatures required by gogoproto.
+        type: string
   elys.margin.MsgDewhitelistResponse:
     type: object
   elys.margin.MsgOpenResponse:
@@ -85833,6 +85050,8 @@ definitions:
         type: string
       funding_fee_collection_address:
         type: string
+      swap_fee:
+        type: string
     description: Params defines the parameters for the module.
   elys.margin.ParamsResponse:
     type: object
@@ -85892,6 +85111,8 @@ definitions:
           funding_fee_min_rate:
             type: string
           funding_fee_collection_address:
+            type: string
+          swap_fee:
             type: string
     description: ParamsResponse is response type for the Query/Params RPC method.
   elys.margin.Pool:
@@ -85988,116 +85209,32 @@ definitions:
           properties:
             address:
               type: string
-            collaterals:
-              type: array
-              items:
-                type: object
-                properties:
-                  denom:
-                    type: string
-                  amount:
-                    type: string
-                description: >-
-                  Coin defines a token with a denomination and an amount.
-
-
-                  NOTE: The amount field is an Int which implements the custom
-                  method
-
-                  signatures required by gogoproto.
+            collateral_asset:
+              type: string
+            trading_asset:
+              type: string
+            liabilities_asset:
+              type: string
+            custody_asset:
+              type: string
+            collateral:
+              type: string
             liabilities:
               type: string
-            borrow_interest_paid_collaterals:
-              type: array
-              items:
-                type: object
-                properties:
-                  denom:
-                    type: string
-                  amount:
-                    type: string
-                description: >-
-                  Coin defines a token with a denomination and an amount.
-
-
-                  NOTE: The amount field is an Int which implements the custom
-                  method
-
-                  signatures required by gogoproto.
-            borrow_interest_paid_custodies:
-              type: array
-              items:
-                type: object
-                properties:
-                  denom:
-                    type: string
-                  amount:
-                    type: string
-                description: >-
-                  Coin defines a token with a denomination and an amount.
-
-
-                  NOTE: The amount field is an Int which implements the custom
-                  method
-
-                  signatures required by gogoproto.
-            borrow_interest_unpaid_collaterals:
-              type: array
-              items:
-                type: object
-                properties:
-                  denom:
-                    type: string
-                  amount:
-                    type: string
-                description: >-
-                  Coin defines a token with a denomination and an amount.
-
-
-                  NOTE: The amount field is an Int which implements the custom
-                  method
-
-                  signatures required by gogoproto.
-            custodies:
-              type: array
-              items:
-                type: object
-                properties:
-                  denom:
-                    type: string
-                  amount:
-                    type: string
-                description: >-
-                  Coin defines a token with a denomination and an amount.
-
-
-                  NOTE: The amount field is an Int which implements the custom
-                  method
-
-                  signatures required by gogoproto.
+            borrow_interest_paid_collateral:
+              type: string
+            borrow_interest_paid_custody:
+              type: string
+            borrow_interest_unpaid_collateral:
+              type: string
+            custody:
+              type: string
             take_profit_liabilities:
               type: string
-            take_profit_custodies:
-              type: array
-              items:
-                type: object
-                properties:
-                  denom:
-                    type: string
-                  amount:
-                    type: string
-                description: >-
-                  Coin defines a token with a denomination and an amount.
-
-
-                  NOTE: The amount field is an Int which implements the custom
-                  method
-
-                  signatures required by gogoproto.
-            leverages:
-              type: array
-              items:
-                type: string
+            take_profit_custody:
+              type: string
+            leverage:
+              type: string
             mtp_health:
               type: string
             position:
@@ -86121,76 +85258,18 @@ definitions:
               type: string
             take_profit_borrow_rate:
               type: string
-            funding_fee_paid_collaterals:
-              type: array
-              items:
-                type: object
-                properties:
-                  denom:
-                    type: string
-                  amount:
-                    type: string
-                description: >-
-                  Coin defines a token with a denomination and an amount.
-
-
-                  NOTE: The amount field is an Int which implements the custom
-                  method
-
-                  signatures required by gogoproto.
+            funding_fee_paid_collateral:
+              type: string
               title: funding fee paid
-            funding_fee_paid_custodies:
-              type: array
-              items:
-                type: object
-                properties:
-                  denom:
-                    type: string
-                  amount:
-                    type: string
-                description: >-
-                  Coin defines a token with a denomination and an amount.
-
-
-                  NOTE: The amount field is an Int which implements the custom
-                  method
-
-                  signatures required by gogoproto.
-            funding_fee_received_collaterals:
-              type: array
-              items:
-                type: object
-                properties:
-                  denom:
-                    type: string
-                  amount:
-                    type: string
-                description: >-
-                  Coin defines a token with a denomination and an amount.
-
-
-                  NOTE: The amount field is an Int which implements the custom
-                  method
-
-                  signatures required by gogoproto.
+            funding_fee_paid_custody:
+              type: string
+            funding_fee_received_collateral:
+              type: string
               title: funding fee received
-            funding_fee_received_custodies:
-              type: array
-              items:
-                type: object
-                properties:
-                  denom:
-                    type: string
-                  amount:
-                    type: string
-                description: >-
-                  Coin defines a token with a denomination and an amount.
-
-
-                  NOTE: The amount field is an Int which implements the custom
-                  method
-
-                  signatures required by gogoproto.
+            funding_fee_received_custody:
+              type: string
+            open_price:
+              type: string
       pagination:
         type: object
         properties:
@@ -86227,116 +85306,32 @@ definitions:
           properties:
             address:
               type: string
-            collaterals:
-              type: array
-              items:
-                type: object
-                properties:
-                  denom:
-                    type: string
-                  amount:
-                    type: string
-                description: >-
-                  Coin defines a token with a denomination and an amount.
-
-
-                  NOTE: The amount field is an Int which implements the custom
-                  method
-
-                  signatures required by gogoproto.
+            collateral_asset:
+              type: string
+            trading_asset:
+              type: string
+            liabilities_asset:
+              type: string
+            custody_asset:
+              type: string
+            collateral:
+              type: string
             liabilities:
               type: string
-            borrow_interest_paid_collaterals:
-              type: array
-              items:
-                type: object
-                properties:
-                  denom:
-                    type: string
-                  amount:
-                    type: string
-                description: >-
-                  Coin defines a token with a denomination and an amount.
-
-
-                  NOTE: The amount field is an Int which implements the custom
-                  method
-
-                  signatures required by gogoproto.
-            borrow_interest_paid_custodies:
-              type: array
-              items:
-                type: object
-                properties:
-                  denom:
-                    type: string
-                  amount:
-                    type: string
-                description: >-
-                  Coin defines a token with a denomination and an amount.
-
-
-                  NOTE: The amount field is an Int which implements the custom
-                  method
-
-                  signatures required by gogoproto.
-            borrow_interest_unpaid_collaterals:
-              type: array
-              items:
-                type: object
-                properties:
-                  denom:
-                    type: string
-                  amount:
-                    type: string
-                description: >-
-                  Coin defines a token with a denomination and an amount.
-
-
-                  NOTE: The amount field is an Int which implements the custom
-                  method
-
-                  signatures required by gogoproto.
-            custodies:
-              type: array
-              items:
-                type: object
-                properties:
-                  denom:
-                    type: string
-                  amount:
-                    type: string
-                description: >-
-                  Coin defines a token with a denomination and an amount.
-
-
-                  NOTE: The amount field is an Int which implements the custom
-                  method
-
-                  signatures required by gogoproto.
+            borrow_interest_paid_collateral:
+              type: string
+            borrow_interest_paid_custody:
+              type: string
+            borrow_interest_unpaid_collateral:
+              type: string
+            custody:
+              type: string
             take_profit_liabilities:
               type: string
-            take_profit_custodies:
-              type: array
-              items:
-                type: object
-                properties:
-                  denom:
-                    type: string
-                  amount:
-                    type: string
-                description: >-
-                  Coin defines a token with a denomination and an amount.
-
-
-                  NOTE: The amount field is an Int which implements the custom
-                  method
-
-                  signatures required by gogoproto.
-            leverages:
-              type: array
-              items:
-                type: string
+            take_profit_custody:
+              type: string
+            leverage:
+              type: string
             mtp_health:
               type: string
             position:
@@ -86360,76 +85355,18 @@ definitions:
               type: string
             take_profit_borrow_rate:
               type: string
-            funding_fee_paid_collaterals:
-              type: array
-              items:
-                type: object
-                properties:
-                  denom:
-                    type: string
-                  amount:
-                    type: string
-                description: >-
-                  Coin defines a token with a denomination and an amount.
-
-
-                  NOTE: The amount field is an Int which implements the custom
-                  method
-
-                  signatures required by gogoproto.
+            funding_fee_paid_collateral:
+              type: string
               title: funding fee paid
-            funding_fee_paid_custodies:
-              type: array
-              items:
-                type: object
-                properties:
-                  denom:
-                    type: string
-                  amount:
-                    type: string
-                description: >-
-                  Coin defines a token with a denomination and an amount.
-
-
-                  NOTE: The amount field is an Int which implements the custom
-                  method
-
-                  signatures required by gogoproto.
-            funding_fee_received_collaterals:
-              type: array
-              items:
-                type: object
-                properties:
-                  denom:
-                    type: string
-                  amount:
-                    type: string
-                description: >-
-                  Coin defines a token with a denomination and an amount.
-
-
-                  NOTE: The amount field is an Int which implements the custom
-                  method
-
-                  signatures required by gogoproto.
+            funding_fee_paid_custody:
+              type: string
+            funding_fee_received_collateral:
+              type: string
               title: funding fee received
-            funding_fee_received_custodies:
-              type: array
-              items:
-                type: object
-                properties:
-                  denom:
-                    type: string
-                  amount:
-                    type: string
-                description: >-
-                  Coin defines a token with a denomination and an amount.
-
-
-                  NOTE: The amount field is an Int which implements the custom
-                  method
-
-                  signatures required by gogoproto.
+            funding_fee_received_custody:
+              type: string
+            open_price:
+              type: string
       pagination:
         type: object
         properties:
@@ -86466,116 +85403,32 @@ definitions:
           properties:
             address:
               type: string
-            collaterals:
-              type: array
-              items:
-                type: object
-                properties:
-                  denom:
-                    type: string
-                  amount:
-                    type: string
-                description: >-
-                  Coin defines a token with a denomination and an amount.
-
-
-                  NOTE: The amount field is an Int which implements the custom
-                  method
-
-                  signatures required by gogoproto.
+            collateral_asset:
+              type: string
+            trading_asset:
+              type: string
+            liabilities_asset:
+              type: string
+            custody_asset:
+              type: string
+            collateral:
+              type: string
             liabilities:
               type: string
-            borrow_interest_paid_collaterals:
-              type: array
-              items:
-                type: object
-                properties:
-                  denom:
-                    type: string
-                  amount:
-                    type: string
-                description: >-
-                  Coin defines a token with a denomination and an amount.
-
-
-                  NOTE: The amount field is an Int which implements the custom
-                  method
-
-                  signatures required by gogoproto.
-            borrow_interest_paid_custodies:
-              type: array
-              items:
-                type: object
-                properties:
-                  denom:
-                    type: string
-                  amount:
-                    type: string
-                description: >-
-                  Coin defines a token with a denomination and an amount.
-
-
-                  NOTE: The amount field is an Int which implements the custom
-                  method
-
-                  signatures required by gogoproto.
-            borrow_interest_unpaid_collaterals:
-              type: array
-              items:
-                type: object
-                properties:
-                  denom:
-                    type: string
-                  amount:
-                    type: string
-                description: >-
-                  Coin defines a token with a denomination and an amount.
-
-
-                  NOTE: The amount field is an Int which implements the custom
-                  method
-
-                  signatures required by gogoproto.
-            custodies:
-              type: array
-              items:
-                type: object
-                properties:
-                  denom:
-                    type: string
-                  amount:
-                    type: string
-                description: >-
-                  Coin defines a token with a denomination and an amount.
-
-
-                  NOTE: The amount field is an Int which implements the custom
-                  method
-
-                  signatures required by gogoproto.
+            borrow_interest_paid_collateral:
+              type: string
+            borrow_interest_paid_custody:
+              type: string
+            borrow_interest_unpaid_collateral:
+              type: string
+            custody:
+              type: string
             take_profit_liabilities:
               type: string
-            take_profit_custodies:
-              type: array
-              items:
-                type: object
-                properties:
-                  denom:
-                    type: string
-                  amount:
-                    type: string
-                description: >-
-                  Coin defines a token with a denomination and an amount.
-
-
-                  NOTE: The amount field is an Int which implements the custom
-                  method
-
-                  signatures required by gogoproto.
-            leverages:
-              type: array
-              items:
-                type: string
+            take_profit_custody:
+              type: string
+            leverage:
+              type: string
             mtp_health:
               type: string
             position:
@@ -86599,76 +85452,18 @@ definitions:
               type: string
             take_profit_borrow_rate:
               type: string
-            funding_fee_paid_collaterals:
-              type: array
-              items:
-                type: object
-                properties:
-                  denom:
-                    type: string
-                  amount:
-                    type: string
-                description: >-
-                  Coin defines a token with a denomination and an amount.
-
-
-                  NOTE: The amount field is an Int which implements the custom
-                  method
-
-                  signatures required by gogoproto.
+            funding_fee_paid_collateral:
+              type: string
               title: funding fee paid
-            funding_fee_paid_custodies:
-              type: array
-              items:
-                type: object
-                properties:
-                  denom:
-                    type: string
-                  amount:
-                    type: string
-                description: >-
-                  Coin defines a token with a denomination and an amount.
-
-
-                  NOTE: The amount field is an Int which implements the custom
-                  method
-
-                  signatures required by gogoproto.
-            funding_fee_received_collaterals:
-              type: array
-              items:
-                type: object
-                properties:
-                  denom:
-                    type: string
-                  amount:
-                    type: string
-                description: >-
-                  Coin defines a token with a denomination and an amount.
-
-
-                  NOTE: The amount field is an Int which implements the custom
-                  method
-
-                  signatures required by gogoproto.
+            funding_fee_paid_custody:
+              type: string
+            funding_fee_received_collateral:
+              type: string
               title: funding fee received
-            funding_fee_received_custodies:
-              type: array
-              items:
-                type: object
-                properties:
-                  denom:
-                    type: string
-                  amount:
-                    type: string
-                description: >-
-                  Coin defines a token with a denomination and an amount.
-
-
-                  NOTE: The amount field is an Int which implements the custom
-                  method
-
-                  signatures required by gogoproto.
+            funding_fee_received_custody:
+              type: string
+            open_price:
+              type: string
       pagination:
         type: object
         properties:
@@ -86849,6 +85644,36 @@ definitions:
             title: >-
               funding rate, if positive longs pay shorts, if negative shorts pay
               longs
+  elys.margin.QueryMinCollateralResponse:
+    type: object
+    properties:
+      position:
+        type: string
+        enum:
+          - UNSPECIFIED
+          - LONG
+          - SHORT
+        default: UNSPECIFIED
+      leverage:
+        type: string
+      trading_asset:
+        type: string
+      min_collateral:
+        type: object
+        properties:
+          denom:
+            type: string
+          amount:
+            type: string
+        description: |-
+          DecCoin defines a token with a denomination and a decimal amount.
+
+          NOTE: The amount field is an Dec which implements the custom method
+          signatures required by gogoproto.
+      swap_fee:
+        type: string
+      discount:
+        type: string
   elys.margin.StatusResponse:
     type: object
     properties:

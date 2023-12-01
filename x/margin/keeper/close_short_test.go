@@ -11,6 +11,7 @@ import (
 	"github.com/elys-network/elys/x/margin/keeper"
 	"github.com/elys-network/elys/x/margin/types"
 	"github.com/elys-network/elys/x/margin/types/mocks"
+	ptypes "github.com/elys-network/elys/x/parameter/types"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -28,16 +29,49 @@ func TestCloseShort_MtpNotFound(t *testing.T) {
 		msg = &types.MsgClose{
 			Creator: "creator",
 			Id:      1,
+			Amount:  sdk.NewInt(100),
 		}
 	)
 
 	// Mock behavior
 	mockChecker.On("GetMTP", ctx, msg.Creator, msg.Id).Return(types.MTP{}, types.ErrMTPDoesNotExist)
 
-	_, _, err := k.CloseShort(ctx, msg)
+	_, _, err := k.CloseShort(ctx, msg, ptypes.BaseCurrency)
 
 	// Expect an error about the mtp not existing
 	assert.True(t, errors.Is(err, types.ErrMTPDoesNotExist))
+	mockChecker.AssertExpectations(t)
+}
+
+func TestCloseShort_InvalidCloseSize(t *testing.T) {
+	// Setup the mock checker
+	mockChecker := new(mocks.CloseShortChecker)
+
+	// Create an instance of Keeper with the mock checker
+	k := keeper.Keeper{
+		CloseShortChecker: mockChecker,
+	}
+
+	var (
+		ctx = sdk.Context{} // Mock or setup a context
+		msg = &types.MsgClose{
+			Creator: "creator",
+			Id:      1,
+			Amount:  sdk.NewInt(100),
+		}
+		mtp = types.MTP{
+			AmmPoolId: 2,
+			Custody:   sdk.NewInt(0),
+		}
+	)
+
+	// Mock behavior
+	mockChecker.On("GetMTP", ctx, msg.Creator, msg.Id).Return(mtp, nil)
+
+	_, _, err := k.CloseShort(ctx, msg, ptypes.BaseCurrency)
+
+	// Expect an error about the pool not existing
+	assert.True(t, errors.Is(err, types.ErrInvalidCloseSize))
 	mockChecker.AssertExpectations(t)
 }
 
@@ -55,9 +89,11 @@ func TestCloseShort_PoolNotFound(t *testing.T) {
 		msg = &types.MsgClose{
 			Creator: "creator",
 			Id:      1,
+			Amount:  sdk.NewInt(100),
 		}
 		mtp = types.MTP{
 			AmmPoolId: 2,
+			Custody:   sdk.NewInt(100),
 		}
 	)
 
@@ -65,7 +101,7 @@ func TestCloseShort_PoolNotFound(t *testing.T) {
 	mockChecker.On("GetMTP", ctx, msg.Creator, msg.Id).Return(mtp, nil)
 	mockChecker.On("GetPool", ctx, mtp.AmmPoolId).Return(types.Pool{}, false)
 
-	_, _, err := k.CloseShort(ctx, msg)
+	_, _, err := k.CloseShort(ctx, msg, ptypes.BaseCurrency)
 
 	// Expect an error about the pool not existing
 	assert.True(t, errors.Is(err, types.ErrInvalidBorrowingAsset))
@@ -86,10 +122,11 @@ func TestCloseShort_AmmPoolNotFound(t *testing.T) {
 		msg = &types.MsgClose{
 			Creator: "creator",
 			Id:      1,
+			Amount:  sdk.NewInt(100),
 		}
 		mtp = types.MTP{
 			AmmPoolId: 2,
-			Custody:   sdk.NewInt(0),
+			Custody:   sdk.NewInt(100),
 		}
 	)
 
@@ -98,7 +135,7 @@ func TestCloseShort_AmmPoolNotFound(t *testing.T) {
 	mockChecker.On("GetPool", ctx, mtp.AmmPoolId).Return(types.Pool{}, true)
 	mockChecker.On("GetAmmPool", ctx, mtp.AmmPoolId, mtp.CustodyAsset).Return(ammtypes.Pool{}, sdkerrors.Wrap(types.ErrPoolDoesNotExist, mtp.CustodyAsset))
 
-	_, _, err := k.CloseShort(ctx, msg)
+	_, _, err := k.CloseShort(ctx, msg, ptypes.BaseCurrency)
 
 	// Expect an error about the pool not existing
 	assert.True(t, errors.Is(err, types.ErrPoolDoesNotExist))
@@ -119,10 +156,11 @@ func TestCloseShort_ErrorHandleBorrowInterest(t *testing.T) {
 		msg = &types.MsgClose{
 			Creator: "creator",
 			Id:      1,
+			Amount:  sdk.NewInt(100),
 		}
 		mtp = types.MTP{
 			AmmPoolId:  2,
-			Custody:    sdk.NewInt(0),
+			Custody:    sdk.NewInt(100),
 			Collateral: sdk.NewInt(0),
 		}
 		pool = types.Pool{
@@ -137,7 +175,7 @@ func TestCloseShort_ErrorHandleBorrowInterest(t *testing.T) {
 	mockChecker.On("GetAmmPool", ctx, mtp.AmmPoolId, mtp.CustodyAsset).Return(ammPool, nil)
 	mockChecker.On("HandleBorrowInterest", ctx, &mtp, &pool, ammPool).Return(errors.New("error executing handle borrow interest"))
 
-	_, _, err := k.CloseShort(ctx, msg)
+	_, _, err := k.CloseShort(ctx, msg, ptypes.BaseCurrency)
 
 	// Expect an error about handle borrow interest
 	assert.Equal(t, errors.New("error executing handle borrow interest"), err)
@@ -158,10 +196,11 @@ func TestCloseShort_ErrorTakeOutCustody(t *testing.T) {
 		msg = &types.MsgClose{
 			Creator: "creator",
 			Id:      1,
+			Amount:  sdk.NewInt(100),
 		}
 		mtp = types.MTP{
 			AmmPoolId:  2,
-			Custody:    sdk.NewInt(0),
+			Custody:    sdk.NewInt(100),
 			Collateral: sdk.NewInt(0),
 		}
 		pool = types.Pool{
@@ -175,9 +214,9 @@ func TestCloseShort_ErrorTakeOutCustody(t *testing.T) {
 	mockChecker.On("GetPool", ctx, mtp.AmmPoolId).Return(pool, true)
 	mockChecker.On("GetAmmPool", ctx, mtp.AmmPoolId, mtp.CustodyAsset).Return(ammPool, nil)
 	mockChecker.On("HandleBorrowInterest", ctx, &mtp, &pool, ammPool).Return(nil)
-	mockChecker.On("TakeOutCustody", ctx, mtp, &pool, mtp.CustodyAsset).Return(errors.New("error executing take out custody"))
+	mockChecker.On("TakeOutCustody", ctx, mtp, &pool, msg.Amount).Return(errors.New("error executing take out custody"))
 
-	_, _, err := k.CloseShort(ctx, msg)
+	_, _, err := k.CloseShort(ctx, msg, ptypes.BaseCurrency)
 
 	// Expect an error about take out custody
 	assert.Equal(t, errors.New("error executing take out custody"), err)
@@ -198,10 +237,11 @@ func TestCloseShort_ErrorEstimateAndRepay(t *testing.T) {
 		msg = &types.MsgClose{
 			Creator: "creator",
 			Id:      1,
+			Amount:  sdk.NewInt(100),
 		}
 		mtp = types.MTP{
 			AmmPoolId:  2,
-			Custody:    sdk.NewInt(0),
+			Custody:    sdk.NewInt(100),
 			Collateral: sdk.NewInt(0),
 		}
 		pool = types.Pool{
@@ -215,10 +255,10 @@ func TestCloseShort_ErrorEstimateAndRepay(t *testing.T) {
 	mockChecker.On("GetPool", ctx, mtp.AmmPoolId).Return(pool, true)
 	mockChecker.On("GetAmmPool", ctx, mtp.AmmPoolId, mtp.CustodyAsset).Return(ammPool, nil)
 	mockChecker.On("HandleBorrowInterest", ctx, &mtp, &pool, ammPool).Return(nil)
-	mockChecker.On("TakeOutCustody", ctx, mtp, &pool, mtp.CustodyAsset).Return(nil)
-	mockChecker.On("EstimateAndRepay", ctx, mtp, pool, ammPool).Return(sdk.Int{}, errors.New("error executing estimate and repay"))
+	mockChecker.On("TakeOutCustody", ctx, mtp, &pool, msg.Amount).Return(nil)
+	mockChecker.On("EstimateAndRepay", ctx, mtp, pool, ammPool, msg.Amount, ptypes.BaseCurrency).Return(sdk.Int{}, errors.New("error executing estimate and repay"))
 
-	_, _, err := k.CloseShort(ctx, msg)
+	_, _, err := k.CloseShort(ctx, msg, ptypes.BaseCurrency)
 
 	// Expect an error about estimate and repay
 	assert.Equal(t, errors.New("error executing estimate and repay"), err)
@@ -239,10 +279,11 @@ func TestCloseShort_SuccessfulClosingLongPosition(t *testing.T) {
 		msg = &types.MsgClose{
 			Creator: "creator",
 			Id:      1,
+			Amount:  sdk.NewInt(100),
 		}
 		mtp = types.MTP{
 			AmmPoolId:  2,
-			Custody:    sdk.NewInt(0),
+			Custody:    sdk.NewInt(100),
 			Collateral: sdk.NewInt(0),
 		}
 		pool = types.Pool{
@@ -257,10 +298,10 @@ func TestCloseShort_SuccessfulClosingLongPosition(t *testing.T) {
 	mockChecker.On("GetPool", ctx, mtp.AmmPoolId).Return(pool, true)
 	mockChecker.On("GetAmmPool", ctx, mtp.AmmPoolId, mtp.CustodyAsset).Return(ammPool, nil)
 	mockChecker.On("HandleBorrowInterest", ctx, &mtp, &pool, ammPool).Return(nil)
-	mockChecker.On("TakeOutCustody", ctx, mtp, &pool, mtp.CustodyAsset).Return(nil)
-	mockChecker.On("EstimateAndRepay", ctx, mtp, pool, ammPool).Return(repayAmount, nil)
+	mockChecker.On("TakeOutCustody", ctx, mtp, &pool, msg.Amount).Return(nil)
+	mockChecker.On("EstimateAndRepay", ctx, mtp, pool, ammPool, msg.Amount, ptypes.BaseCurrency).Return(repayAmount, nil)
 
-	mtpOut, repayAmountOut, err := k.CloseShort(ctx, msg)
+	mtpOut, repayAmountOut, err := k.CloseShort(ctx, msg, ptypes.BaseCurrency)
 
 	// Expect no error
 	assert.Nil(t, err)

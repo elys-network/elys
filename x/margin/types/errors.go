@@ -29,4 +29,5 @@ var (
 	ErrDenomNotFound          = sdkerrors.Register(ModuleName, 34, "denom not found")
 	ErrInvalidLeverage        = sdkerrors.Register(ModuleName, 35, "invalid leverage")
 	ErrInvalidCloseSize       = sdkerrors.Register(ModuleName, 36, "invalid close size")
+	ErrCalcMinCollateral      = sdkerrors.Register(ModuleName, 37, "error calculating min collateral")
 )

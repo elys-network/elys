@@ -176,3 +176,7 @@ func (k Keeper) GetFundingFeeCollectionAddress(ctx sdk.Context) sdk.AccAddress {
 
 	return addr
 }
+
+func (k Keeper) GetSwapFee(ctx sdk.Context) sdk.Dec {
+	return k.GetParams(ctx).SwapFee
+}

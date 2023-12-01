@@ -13,6 +13,10 @@ func (k Keeper) CloseLong(ctx sdk.Context, msg *types.MsgClose, baseCurrency str
 		return nil, sdk.ZeroInt(), err
 	}
 
+	if msg.Amount.GT(mtp.Custody) || msg.Amount.IsNegative() {
+		return nil, sdk.ZeroInt(), types.ErrInvalidCloseSize
+	}
+
 	// Retrieve Pool
 	pool, found := k.CloseLongChecker.GetPool(ctx, mtp.AmmPoolId)
 	if !found {
