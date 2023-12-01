@@ -33,8 +33,6 @@ func GetTxCmd() *cobra.Command {
 
 	cmd.AddCommand(CmdOpen())
 	cmd.AddCommand(CmdClose())
-	cmd.AddCommand(CmdBrokerOpen())
-	cmd.AddCommand(CmdBrokerClose())
 	cmd.AddCommand(CmdUpdateParams())
 	cmd.AddCommand(CmdUpdatePools())
 	cmd.AddCommand(CmdWhitelist())

@@ -9,7 +9,7 @@ import (
 )
 
 func (oq *Querier) queryMtp(ctx sdk.Context, query *types.MTPRequest) ([]byte, error) {
-	res, err := oq.keeper.MTP(ctx, query)
+	res, err := oq.keeper.MTP(sdk.WrapSDKContext(ctx), query)
 	if err != nil {
 		return nil, errorsmod.Wrap(err, "failed to get mtp")
 	}

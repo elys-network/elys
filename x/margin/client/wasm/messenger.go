@@ -29,10 +29,6 @@ func (m *Messenger) HandleMsg(ctx sdk.Context, contractAddr sdk.AccAddress, cont
 		return m.msgOpen(ctx, contractAddr, msg.MarginOpen)
 	case msg.MarginClose != nil:
 		return m.msgClose(ctx, contractAddr, msg.MarginClose)
-	case msg.MarginBrokerOpen != nil:
-		return m.msgBrokerOpen(ctx, contractAddr, msg.MarginBrokerOpen)
-	case msg.MarginBrokerClose != nil:
-		return m.msgBrokerClose(ctx, contractAddr, msg.MarginBrokerClose)
 	default:
 		// This handler cannot handle the message
 		return nil, nil, wasmbindingstypes.ErrCannotHandleMsg

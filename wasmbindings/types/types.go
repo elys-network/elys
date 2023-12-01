@@ -274,10 +274,8 @@ type ElysMsg struct {
 	LeveragelpClose *leveragelptypes.MsgClose `json:"leveragelp_close,omitempty"`
 
 	// margin messages
-	MarginOpen        *margintypes.MsgOpen        `json:"margin_open,omitempty"`
-	MarginClose       *margintypes.MsgClose       `json:"margin_close,omitempty"`
-	MarginBrokerOpen  *margintypes.MsgBrokerOpen  `json:"margin_broker_open,omitempty"`
-	MarginBrokerClose *margintypes.MsgBrokerClose `json:"margin_broker_close,omitempty"`
+	MarginOpen  *margintypes.MsgOpen  `json:"margin_open,omitempty"`
+	MarginClose *margintypes.MsgClose `json:"margin_close,omitempty"`
 
 	// oracle messages
 	// parameter messages
