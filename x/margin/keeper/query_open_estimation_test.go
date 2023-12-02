@@ -77,11 +77,6 @@ func TestOpenEstimation_Long5XAtom100Usdc(t *testing.T) {
 	// check length of pools
 	require.Equal(t, len(pools), 1)
 
-	// update broker address
-	params := types.DefaultParams()
-	params.BrokerAddress = addr[0].String()
-	mk.SetParams(ctx, &params)
-
 	// call min collateral query
 	res, err := mk.OpenEstimation(ctx, &types.QueryOpenEstimationRequest{
 		Position:        types.Position_LONG,
