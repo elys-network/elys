@@ -17,7 +17,7 @@ import (
 	"github.com/elys-network/elys/testutil/network"
 	"github.com/elys-network/elys/x/margin/client/cli"
 	"github.com/elys-network/elys/x/margin/types"
-	paramtypes "github.com/elys-network/elys/x/parameter/types"
+	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
 
 // Prevent strconv unused error
@@ -36,28 +36,33 @@ func networkWithMTPObjects(t *testing.T, n int) (*network.Network, []*types.MTP)
 	cfg := network.DefaultConfig()
 	for i := 0; i < n; i++ {
 		mtp := types.MTP{
-			Address:                         addr[i].String(),
-			Collaterals:                     []sdk.Coin{sdk.NewCoin(paramtypes.BaseCurrency, sdk.NewInt(0))},
-			Liabilities:                     sdk.NewInt(0),
-			BorrowInterestPaidCollaterals:   []sdk.Coin{sdk.NewCoin(paramtypes.BaseCurrency, sdk.NewInt(0))},
-			BorrowInterestPaidCustodies:     []sdk.Coin{sdk.NewCoin("ATOM", sdk.NewInt(0))},
-			BorrowInterestUnpaidCollaterals: []sdk.Coin{sdk.NewCoin(paramtypes.BaseCurrency, sdk.NewInt(0))},
-			Custodies:                       []sdk.Coin{sdk.NewCoin("ATOM", sdk.NewInt(0))},
-			TakeProfitLiabilities:           sdk.NewInt(0),
-			TakeProfitCustodies:             []sdk.Coin{sdk.NewCoin("ATOM", sdk.NewInt(0))},
-			Leverages:                       []sdk.Dec{sdk.NewDec(0)},
-			MtpHealth:                       sdk.NewDec(0),
-			Position:                        types.Position_LONG,
-			Id:                              (uint64)(i + 1),
-			AmmPoolId:                       (uint64)(i + 1),
-			ConsolidateLeverage:             sdk.ZeroDec(),
-			SumCollateral:                   sdk.ZeroInt(),
-			TakeProfitPrice:                 sdk.MustNewDecFromStr(types.TakeProfitPriceDefault),
-			TakeProfitBorrowRate:            sdk.OneDec(),
-			FundingFeePaidCollaterals:       []sdk.Coin{sdk.NewCoin(paramtypes.BaseCurrency, sdk.NewInt(0))},
-			FundingFeePaidCustodies:         []sdk.Coin{sdk.NewCoin("ATOM", sdk.NewInt(0))},
-			FundingFeeReceivedCollaterals:   []sdk.Coin{sdk.NewCoin(paramtypes.BaseCurrency, sdk.NewInt(0))},
-			FundingFeeReceivedCustodies:     []sdk.Coin{sdk.NewCoin("ATOM", sdk.NewInt(0))},
+			Address:                        addr[i].String(),
+			CollateralAsset:                ptypes.BaseCurrency,
+			TradingAsset:                   "ATOM",
+			LiabilitiesAsset:               ptypes.BaseCurrency,
+			CustodyAsset:                   "ATOM",
+			Collateral:                     sdk.NewInt(0),
+			Liabilities:                    sdk.NewInt(0),
+			BorrowInterestPaidCollateral:   sdk.NewInt(0),
+			BorrowInterestPaidCustody:      sdk.NewInt(0),
+			BorrowInterestUnpaidCollateral: sdk.NewInt(0),
+			Custody:                        sdk.NewInt(0),
+			TakeProfitLiabilities:          sdk.NewInt(0),
+			TakeProfitCustody:              sdk.NewInt(0),
+			Leverage:                       sdk.NewDec(0),
+			MtpHealth:                      sdk.NewDec(0),
+			Position:                       types.Position_LONG,
+			Id:                             (uint64)(i + 1),
+			AmmPoolId:                      (uint64)(i + 1),
+			ConsolidateLeverage:            sdk.ZeroDec(),
+			SumCollateral:                  sdk.ZeroInt(),
+			TakeProfitPrice:                sdk.MustNewDecFromStr(types.TakeProfitPriceDefault),
+			TakeProfitBorrowRate:           sdk.OneDec(),
+			FundingFeePaidCollateral:       sdk.NewInt(0),
+			FundingFeePaidCustody:          sdk.NewInt(0),
+			FundingFeeReceivedCollateral:   sdk.NewInt(0),
+			FundingFeeReceivedCustody:      sdk.NewInt(0),
+			OpenPrice:                      sdk.NewDec(0),
 		}
 
 		mtps = append(mtps, &mtp)

@@ -35,14 +35,14 @@ func (p Pool) CalcInAmtGivenOut(
 	poolTokenOutBalance := sdk.NewDecFromInt(poolAssetOut.Token.Amount)
 	// accounted pool balance
 	acountedPoolAssetOutAmt := accountedPool.GetAccountedBalance(ctx, p.PoolId, poolAssetOut.Token.Denom)
-	if acountedPoolAssetOutAmt.GT(sdk.ZeroInt()) {
+	if acountedPoolAssetOutAmt.IsPositive() {
 		poolTokenOutBalance = sdk.NewDecFromInt(acountedPoolAssetOutAmt)
 	}
 
 	poolTokenInBalance := sdk.NewDecFromInt(poolAssetIn.Token.Amount)
 	// accounted pool balance
 	acountedPoolAssetInAmt := accountedPool.GetAccountedBalance(ctx, p.PoolId, poolAssetIn.Token.Denom)
-	if acountedPoolAssetInAmt.GT(sdk.ZeroInt()) {
+	if acountedPoolAssetInAmt.IsPositive() {
 		poolTokenInBalance = sdk.NewDecFromInt(acountedPoolAssetInAmt)
 	}
 

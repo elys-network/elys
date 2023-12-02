@@ -20,12 +20,11 @@ service Msg {
 }
 message MsgOpen {
   string   creator          = 1;
-  string   collateral_asset  = 2;
-  string   collateral_amount = 3 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false];
-  string   borrow_asset      = 4;
-  Position position         = 5;
-  string   leverage         = 6 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
-  string   take_profit_price  = 7 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+  Position position         = 2;
+  string   leverage         = 3 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+  string   trading_asset      = 4;
+  cosmos.base.v1beta1.Coin collateral     = 5 [(gogoproto.nullable)   = false                                   ] ;
+  string   take_profit_price  = 6 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
 }
 
 message MsgOpenResponse {
@@ -35,14 +34,16 @@ message MsgOpenResponse {
 message MsgClose {
   string creator = 1;
   uint64 id      = 2;
-  cosmos.base.v1beta1.Coin amount = 3 [
+  string amount = 3 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
     (gogoproto.nullable) = false
   ];
 }
 
 message MsgCloseResponse {
   uint64 id = 1;
-  cosmos.base.v1beta1.Coin amount = 2 [
+  string amount = 2 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
     (gogoproto.nullable) = false
   ];
 }

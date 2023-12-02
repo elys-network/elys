@@ -6,11 +6,15 @@ import (
 	"github.com/elys-network/elys/x/margin/types"
 )
 
-func (k Keeper) CloseShort(ctx sdk.Context, msg *types.MsgClose) (*types.MTP, sdk.Int, error) {
+func (k Keeper) CloseShort(ctx sdk.Context, msg *types.MsgClose, baseCurrency string) (*types.MTP, sdk.Int, error) {
 	// Retrieve MTP
 	mtp, err := k.CloseShortChecker.GetMTP(ctx, msg.Creator, msg.Id)
 	if err != nil {
 		return nil, sdk.ZeroInt(), err
+	}
+
+	if msg.Amount.GT(mtp.Custody) || msg.Amount.IsNegative() {
+		return nil, sdk.ZeroInt(), types.ErrInvalidCloseSize
 	}
 
 	// Retrieve Pool
@@ -19,44 +23,33 @@ func (k Keeper) CloseShort(ctx sdk.Context, msg *types.MsgClose) (*types.MTP, sd
 		return nil, sdk.ZeroInt(), sdkerrors.Wrap(types.ErrInvalidBorrowingAsset, "invalid pool id")
 	}
 
-	repayAmount := sdk.ZeroInt()
-	for _, custody := range mtp.Custodies {
-		custodyAsset := custody.Denom
-		// Retrieve AmmPool
-		ammPool, err := k.CloseShortChecker.GetAmmPool(ctx, mtp.AmmPoolId, custodyAsset)
-		if err != nil {
-			return nil, sdk.ZeroInt(), err
-		}
-
-		for _, collateral := range mtp.Collaterals {
-			collateralAsset := collateral.Denom
-			// Handle Borrow Interest if within epoch position
-			if err := k.CloseShortChecker.HandleBorrowInterest(ctx, &mtp, &pool, ammPool, collateralAsset, custodyAsset); err != nil {
-				return nil, sdk.ZeroInt(), err
-			}
-		}
-
-		// Take out custody
-		err = k.CloseShortChecker.TakeOutCustody(ctx, mtp, &pool, custodyAsset)
-		if err != nil {
-			return nil, sdk.ZeroInt(), err
-		}
-
-		for _, collateral := range mtp.Collaterals {
-			collateralAsset := collateral.Denom
-			// Estimate swap and repay
-			repayAmt, err := k.CloseShortChecker.EstimateAndRepay(ctx, mtp, pool, ammPool, collateralAsset, custodyAsset)
-			if err != nil {
-				return nil, sdk.ZeroInt(), err
-			}
-			repayAmount = repayAmount.Add(repayAmt)
-		}
-
-		// Hooks after margin position closed
-		if k.hooks != nil {
-			k.hooks.AfterMarginPositionClosed(ctx, ammPool, pool)
-		}
+	// Retrieve AmmPool
+	ammPool, err := k.CloseShortChecker.GetAmmPool(ctx, mtp.AmmPoolId, mtp.CustodyAsset)
+	if err != nil {
+		return nil, sdk.ZeroInt(), err
 	}
 
-	return &mtp, repayAmount, nil
+	// Handle Borrow Interest if within epoch position
+	if err := k.CloseShortChecker.HandleBorrowInterest(ctx, &mtp, &pool, ammPool); err != nil {
+		return nil, sdk.ZeroInt(), err
+	}
+
+	// Take out custody
+	err = k.CloseShortChecker.TakeOutCustody(ctx, mtp, &pool, msg.Amount)
+	if err != nil {
+		return nil, sdk.ZeroInt(), err
+	}
+
+	// Estimate swap and repay
+	repayAmt, err := k.CloseShortChecker.EstimateAndRepay(ctx, mtp, pool, ammPool, msg.Amount, baseCurrency)
+	if err != nil {
+		return nil, sdk.ZeroInt(), err
+	}
+
+	// Hooks after margin position closed
+	if k.hooks != nil {
+		k.hooks.AfterMarginPositionClosed(ctx, ammPool, pool)
+	}
+
+	return &mtp, repayAmt, nil
 }

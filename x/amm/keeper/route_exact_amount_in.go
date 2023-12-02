@@ -81,7 +81,7 @@ func (k Keeper) RouteExactAmountIn(
 		if discount.IsPositive() && sender.String() != brokerAddress {
 			return math.Int{}, sdk.ZeroDec(), sdk.ZeroDec(), sdkerrors.Wrapf(types.ErrInvalidDiscount, "discount %s is positive and signer address %s is not broker address %s", discount, sender, brokerAddress)
 		}
-		swapFee = ApplyDiscount(swapFee, discount)
+		swapFee = types.ApplyDiscount(swapFee, discount)
 
 		// Calculate the total discounted swap fee
 		totalDiscountedSwapFee = totalDiscountedSwapFee.Add(swapFee)

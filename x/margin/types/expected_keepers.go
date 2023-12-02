@@ -32,7 +32,7 @@ type PoolChecker interface {
 type OpenChecker interface {
 	CheckUserAuthorization(ctx sdk.Context, msg *MsgOpen) error
 	CheckMaxOpenPositions(ctx sdk.Context) error
-	PreparePools(ctx sdk.Context, tradingAsset string) (poolId uint64, ammPool ammtypes.Pool, pool Pool, err error)
+	PreparePools(ctx sdk.Context, collateralAsset, tradingAsset string) (poolId uint64, ammPool ammtypes.Pool, pool Pool, err error)
 	CheckPoolHealth(ctx sdk.Context, poolId uint64) error
 	OpenLong(ctx sdk.Context, poolId uint64, msg *MsgOpen, baseCurrency string) (*MTP, error)
 	OpenShort(ctx sdk.Context, poolId uint64, msg *MsgOpen, baseCurrency string) (*MTP, error)
@@ -49,10 +49,10 @@ type OpenLongChecker interface {
 	GetPool(ctx sdk.Context, poolId uint64) (Pool, bool)
 	IsPoolEnabled(ctx sdk.Context, poolId uint64) bool
 	GetAmmPool(ctx sdk.Context, poolId uint64, tradingAsset string) (ammtypes.Pool, error)
-	CheckMinLiabilities(ctx sdk.Context, collateralTokenAmt sdk.Coin, eta sdk.Dec, pool Pool, ammPool ammtypes.Pool, borrowAsset string) error
+	CheckMinLiabilities(ctx sdk.Context, collateralTokenAmt sdk.Coin, eta sdk.Dec, ammPool ammtypes.Pool, borrowAsset string, baseCurrency string) error
 	EstimateSwap(ctx sdk.Context, leveragedAmtTokenIn sdk.Coin, borrowAsset string, ammPool ammtypes.Pool) (sdk.Int, error)
 	EstimateSwapGivenOut(ctx sdk.Context, tokenOutAmount sdk.Coin, tokenInDenom string, ammPool ammtypes.Pool) (sdk.Int, error)
-	Borrow(ctx sdk.Context, collateralAsset string, custodyAsset string, collateralAmount sdk.Int, custodyAmount sdk.Int, mtp *MTP, ammPool *ammtypes.Pool, pool *Pool, eta sdk.Dec, baseCurrency string) error
+	Borrow(ctx sdk.Context, collateralAmount sdk.Int, custodyAmount sdk.Int, mtp *MTP, ammPool *ammtypes.Pool, pool *Pool, eta sdk.Dec, baseCurrency string) error
 	UpdatePoolHealth(ctx sdk.Context, pool *Pool) error
 	TakeInCustody(ctx sdk.Context, mtp MTP, pool *Pool) error
 	UpdateMTPHealth(ctx sdk.Context, mtp MTP, ammPool ammtypes.Pool, baseCurrency string) (sdk.Dec, error)
@@ -69,10 +69,10 @@ type OpenShortChecker interface {
 	GetPool(ctx sdk.Context, poolId uint64) (Pool, bool)
 	IsPoolEnabled(ctx sdk.Context, poolId uint64) bool
 	GetAmmPool(ctx sdk.Context, poolId uint64, tradingAsset string) (ammtypes.Pool, error)
-	CheckMinLiabilities(ctx sdk.Context, collateralTokenAmt sdk.Coin, eta sdk.Dec, pool Pool, ammPool ammtypes.Pool, borrowAsset string) error
+	CheckMinLiabilities(ctx sdk.Context, collateralTokenAmt sdk.Coin, eta sdk.Dec, ammPool ammtypes.Pool, borrowAsset string, baseCurrency string) error
 	EstimateSwap(ctx sdk.Context, leveragedAmtTokenIn sdk.Coin, borrowAsset string, ammPool ammtypes.Pool) (sdk.Int, error)
 	EstimateSwapGivenOut(ctx sdk.Context, tokenOutAmount sdk.Coin, tokenInDenom string, ammPool ammtypes.Pool) (sdk.Int, error)
-	Borrow(ctx sdk.Context, collateralAsset string, custodyAsset string, collateralAmount sdk.Int, custodyAmount sdk.Int, mtp *MTP, ammPool *ammtypes.Pool, pool *Pool, eta sdk.Dec, baseCurrency string) error
+	Borrow(ctx sdk.Context, collateralAmount sdk.Int, custodyAmount sdk.Int, mtp *MTP, ammPool *ammtypes.Pool, pool *Pool, eta sdk.Dec, baseCurrency string) error
 	UpdatePoolHealth(ctx sdk.Context, pool *Pool) error
 	TakeInCustody(ctx sdk.Context, mtp MTP, pool *Pool) error
 	UpdateMTPHealth(ctx sdk.Context, mtp MTP, ammPool ammtypes.Pool, baseCurrency string) (sdk.Dec, error)
@@ -92,9 +92,9 @@ type CloseLongChecker interface {
 
 	) (val Pool, found bool)
 	GetAmmPool(ctx sdk.Context, poolId uint64, tradingAsset string) (ammtypes.Pool, error)
-	HandleBorrowInterest(ctx sdk.Context, mtp *MTP, pool *Pool, ammPool ammtypes.Pool, collateralAsset string, custodyAsset string) error
-	TakeOutCustody(ctx sdk.Context, mtp MTP, pool *Pool, custodyAsset string) error
-	EstimateAndRepay(ctx sdk.Context, mtp MTP, pool Pool, ammPool ammtypes.Pool, collateralAsset string, custodyAsset string) (sdk.Int, error)
+	HandleBorrowInterest(ctx sdk.Context, mtp *MTP, pool *Pool, ammPool ammtypes.Pool) error
+	TakeOutCustody(ctx sdk.Context, mtp MTP, pool *Pool, amount sdk.Int) error
+	EstimateAndRepay(ctx sdk.Context, mtp MTP, pool Pool, ammPool ammtypes.Pool, amount sdk.Int, baseCurrency string) (sdk.Int, error)
 }
 
 //go:generate mockery --srcpkg . --name CloseShortChecker --structname CloseShortChecker --filename close_short_checker.go --with-expecter
@@ -106,9 +106,9 @@ type CloseShortChecker interface {
 
 	) (val Pool, found bool)
 	GetAmmPool(ctx sdk.Context, poolId uint64, tradingAsset string) (ammtypes.Pool, error)
-	HandleBorrowInterest(ctx sdk.Context, mtp *MTP, pool *Pool, ammPool ammtypes.Pool, collateralAsset string, custodyAsset string) error
-	TakeOutCustody(ctx sdk.Context, mtp MTP, pool *Pool, custodyAsset string) error
-	EstimateAndRepay(ctx sdk.Context, mtp MTP, pool Pool, ammPool ammtypes.Pool, collateralAsset string, custodyAsset string) (sdk.Int, error)
+	HandleBorrowInterest(ctx sdk.Context, mtp *MTP, pool *Pool, ammPool ammtypes.Pool) error
+	TakeOutCustody(ctx sdk.Context, mtp MTP, pool *Pool, amount sdk.Int) error
+	EstimateAndRepay(ctx sdk.Context, mtp MTP, pool Pool, ammPool ammtypes.Pool, amount sdk.Int, baseCurrency string) (sdk.Int, error)
 }
 
 // AccountKeeper defines the expected account keeper used for simulations (noalias)
@@ -125,6 +125,8 @@ type AccountKeeper interface {
 type AmmKeeper interface {
 	// Get pool Ids that contains the denom in pool assets
 	GetAllPoolIdsWithDenom(sdk.Context, string) []uint64
+	// Get first pool id that contains all denoms in pool assets
+	GetPoolIdWithAllDenoms(ctx sdk.Context, denoms []string) (poolId uint64, found bool)
 	// GetPool returns a pool from its index
 	GetPool(sdk.Context, uint64) (ammtypes.Pool, bool)
 	// Get all pools
@@ -135,6 +137,25 @@ type AmmKeeper interface {
 
 	CalcOutAmtGivenIn(ctx sdk.Context, poolId uint64, oracle ammtypes.OracleKeeper, snapshot *ammtypes.Pool, tokensIn sdk.Coins, tokenOutDenom string, swapFee sdk.Dec) (sdk.Coin, error)
 	CalcInAmtGivenOut(ctx sdk.Context, poolId uint64, oracle ammtypes.OracleKeeper, snapshot *ammtypes.Pool, tokensOut sdk.Coins, tokenInDenom string, swapFee sdk.Dec) (tokenIn sdk.Coin, err error)
+
+	CalcSwapEstimationByDenom(
+		ctx sdk.Context,
+		amount sdk.Coin,
+		denomIn string,
+		denomOut string,
+		baseCurrency string,
+		discount sdk.Dec,
+		overrideSwapFee sdk.Dec,
+	) (
+		inRoute []*ammtypes.SwapAmountInRoute,
+		outRoute []*ammtypes.SwapAmountOutRoute,
+		outAmount sdk.Coin,
+		spotPrice sdk.Dec,
+		swapFee sdk.Dec,
+		discountOut sdk.Dec,
+		availableLiquidity sdk.Coin,
+		err error,
+	)
 }
 
 // BankKeeper defines the expected interface needed to retrieve account balances.

@@ -5,14 +5,11 @@ import (
 )
 
 // CalcTakeAmount calculates the take amount in the custody asset based on the funding rate
-func CalcTakeAmount(custodyAmount sdk.Coin, custodyAsset string, fundingRate sdk.Dec) sdk.Coin {
+func CalcTakeAmount(custodyAmount sdk.Int, custodyAsset string, fundingRate sdk.Dec) sdk.Int {
 	absoluteFundingRate := fundingRate.Abs()
 
 	// Calculate the take amount
-	takeAmountValue := sdk.NewDecFromInt(custodyAmount.Amount).Mul(absoluteFundingRate).TruncateInt()
+	takeAmountValue := sdk.NewDecFromInt(custodyAmount).Mul(absoluteFundingRate).TruncateInt()
 
-	// Create the take amount coin
-	takeAmount := sdk.NewCoin(custodyAsset, takeAmountValue)
-
-	return takeAmount
+	return takeAmountValue
 }

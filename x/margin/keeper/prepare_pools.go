@@ -6,8 +6,8 @@ import (
 	"github.com/elys-network/elys/x/margin/types"
 )
 
-func (k Keeper) PreparePools(ctx sdk.Context, tradingAsset string) (poolId uint64, ammPool ammtypes.Pool, pool types.Pool, err error) {
-	poolId, err = k.GetFirstValidPool(ctx, tradingAsset)
+func (k Keeper) PreparePools(ctx sdk.Context, collateralAsset, tradingAsset string) (poolId uint64, ammPool ammtypes.Pool, pool types.Pool, err error) {
+	poolId, err = k.GetFirstValidPool(ctx, collateralAsset, tradingAsset)
 	if err != nil {
 		return
 	}

@@ -6,7 +6,7 @@ import (
 )
 
 // CalcOutRouteSpotPrice calculates the spot price of the given token and out route
-func (k Keeper) CalcOutRouteSpotPrice(ctx sdk.Context, tokenOut sdk.Coin, routes []*types.SwapAmountOutRoute, discount sdk.Dec) (sdk.Dec, sdk.Coin, sdk.Dec, sdk.Dec, sdk.Coin, error) {
+func (k Keeper) CalcOutRouteSpotPrice(ctx sdk.Context, tokenOut sdk.Coin, routes []*types.SwapAmountOutRoute, discount sdk.Dec, overrideSwapFee sdk.Dec) (sdk.Dec, sdk.Coin, sdk.Dec, sdk.Dec, sdk.Coin, error) {
 	if routes == nil || len(routes) == 0 {
 		return sdk.ZeroDec(), sdk.Coin{}, sdk.ZeroDec(), sdk.ZeroDec(), sdk.Coin{}, types.ErrEmptyRoutes
 	}
@@ -35,8 +35,13 @@ func (k Keeper) CalcOutRouteSpotPrice(ctx sdk.Context, tokenOut sdk.Coin, routes
 		// Get Pool swap fee
 		swapFee := pool.GetPoolParams().SwapFee
 
+		// Override swap fee if applicable
+		if overrideSwapFee.IsPositive() {
+			swapFee = overrideSwapFee
+		}
+
 		// Apply discount
-		swapFee = ApplyDiscount(swapFee, discount)
+		swapFee = types.ApplyDiscount(swapFee, discount)
 
 		// Calculate the total discounted swap fee
 		totalDiscountedSwapFee = totalDiscountedSwapFee.Add(swapFee)

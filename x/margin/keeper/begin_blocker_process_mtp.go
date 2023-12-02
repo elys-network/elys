@@ -11,7 +11,7 @@ import (
 	"github.com/elys-network/elys/x/margin/types"
 )
 
-func BeginBlockerProcessMTP(ctx sdk.Context, k Keeper, mtp *types.MTP, pool types.Pool, ammPool ammtypes.Pool, baseCurrency string) {
+func BeginBlockerProcessMTP(ctx sdk.Context, k Keeper, mtp *types.MTP, pool types.Pool, ammPool ammtypes.Pool, baseCurrency string) error {
 	defer func() {
 		if r := recover(); r != nil {
 			if msg, ok := r.(string); ok {
@@ -24,93 +24,74 @@ func BeginBlockerProcessMTP(ctx sdk.Context, k Keeper, mtp *types.MTP, pool type
 	// calculate mtp take profit liablities, delta x_tp_l = delta y_tp_c * current price (take profit liabilities = take profit custody * current price)
 	mtp.TakeProfitLiabilities, err = k.CalcMTPTakeProfitLiability(ctx, mtp, baseCurrency)
 	if err != nil {
-		ctx.Logger().Error(errors.Wrap(err, fmt.Sprintf("error calculating mtp take profit liabilities: %s", mtp.String())).Error())
-		return
+		return errors.Wrap(err, fmt.Sprintf("error calculating mtp take profit liabilities: %s", mtp.String()))
 	}
 	// calculate and update take profit borrow rate
 	mtp.TakeProfitBorrowRate, err = k.CalcMTPTakeProfitBorrowRate(ctx, mtp)
 	if err != nil {
-		ctx.Logger().Error(errors.Wrap(err, fmt.Sprintf("error calculating mtp take profit borrow rate: %s", mtp.String())).Error())
-		return
+		return errors.Wrap(err, fmt.Sprintf("error calculating mtp take profit borrow rate: %s", mtp.String()))
 	}
 	h, err := k.UpdateMTPHealth(ctx, *mtp, ammPool, baseCurrency)
 	if err != nil {
-		ctx.Logger().Error(errors.Wrap(err, fmt.Sprintf("error updating mtp health: %s", mtp.String())).Error())
-		return
+		return errors.Wrap(err, fmt.Sprintf("error updating mtp health: %s", mtp.String()))
 	}
 	mtp.MtpHealth = h
 	// compute borrow interest
 	// TODO: missing fields
-	for _, custody := range mtp.Custodies {
-		custodyAsset := custody.Denom
-		// Retrieve AmmPool
-		ammPool, err := k.GetAmmPool(ctx, mtp.AmmPoolId, custodyAsset)
-		if err != nil {
-			ctx.Logger().Error(errors.Wrap(err, fmt.Sprintf("error retrieving amm pool: %d", mtp.AmmPoolId)).Error())
-			return
-		}
 
-		for _, collateral := range mtp.Collaterals {
-			collateralAsset := collateral.Denom
-			// Handle Borrow Interest if within epoch position
-			if err := k.HandleBorrowInterest(ctx, mtp, &pool, ammPool, collateralAsset, custodyAsset); err != nil {
-				ctx.Logger().Error(errors.Wrap(err, fmt.Sprintf("error handling borrow interest payment: %s", collateralAsset)).Error())
-				return
-			}
-			if err := k.HandleFundingFeeCollection(ctx, mtp, &pool, ammPool, collateralAsset, custodyAsset); err != nil {
-				ctx.Logger().Error(errors.Wrap(err, fmt.Sprintf("error handling funding fee collection: %s", collateralAsset)).Error())
-				return
-			}
-		}
+	// Handle Borrow Interest if within epoch position
+	if err := k.HandleBorrowInterest(ctx, mtp, &pool, ammPool); err != nil {
+		return errors.Wrap(err, fmt.Sprintf("error handling borrow interest payment: %s", mtp.CollateralAsset))
+	}
+	if err := k.HandleFundingFeeCollection(ctx, mtp, &pool, ammPool, baseCurrency); err != nil {
+		return errors.Wrap(err, fmt.Sprintf("error handling funding fee collection: %s", mtp.CollateralAsset))
 	}
 
 	_ = k.SetMTP(ctx, mtp)
 
-	var mustForceClose bool = false
-	for _, custody := range mtp.Custodies {
-		assetPrice, err := k.EstimateSwap(ctx, sdk.NewCoin(custody.Denom, sdk.OneInt()), baseCurrency, ammPool)
-		if err != nil {
-			ctx.Logger().Error(errors.Wrap(err, fmt.Sprintf("error estimating swap: %s", custody.Denom)).Error())
-			continue
-		}
-		if mtp.TakeProfitPrice.GT(sdk.NewDecFromInt(assetPrice)) {
-			// flag position as must force close
-			mustForceClose = true
-			break
-		}
-		ctx.Logger().Error(fmt.Sprintf("skipping force close on position %s because take profit price %s is less than asset price %s", mtp.String(), mtp.TakeProfitPrice.String(), sdk.NewDecFromInt(assetPrice).String()))
-	}
-
 	// check MTP health against threshold
 	safetyFactor := k.GetSafetyFactor(ctx)
+	var mustForceClose bool = false
 
-	if mtp.MtpHealth.GT(safetyFactor) {
-		ctx.Logger().Error(errors.Wrap(types.ErrMTPHealthy, "skipping executing force close because mtp is healthy").Error())
-	} else {
+	if mtp.MtpHealth.LTE(safetyFactor) {
 		// flag position as must force close
 		mustForceClose = true
+	} else {
+		ctx.Logger().Error(errors.Wrap(types.ErrMTPHealthy, "skipping executing force close because mtp is healthy").Error())
+	}
+
+	assetPrice, err := k.EstimateSwap(ctx, sdk.NewCoin(mtp.CustodyAsset, sdk.OneInt()), baseCurrency, ammPool)
+	if err != nil {
+		return errors.Wrap(err, fmt.Sprintf("error estimating swap: %s", mtp.CustodyAsset))
+	}
+	if types.ReachedTakeProfitPrice(mtp, assetPrice) {
+		// flag position as must force close
+		mustForceClose = true
+	} else {
+		ctx.Logger().Error(fmt.Sprintf("skipping force close on position %s because take profit price %s <> %s", mtp.String(), mtp.TakeProfitPrice.String(), assetPrice.String()))
 	}
 
 	// if flag is false, then skip force close
 	if !mustForceClose {
-		return
+		return nil
 	}
 
 	var repayAmount sdk.Int
 	switch mtp.Position {
 	case types.Position_LONG:
-		repayAmount, err = k.ForceCloseLong(ctx, mtp, &pool, true)
+		repayAmount, err = k.ForceCloseLong(ctx, mtp, &pool, true, baseCurrency)
 	case types.Position_SHORT:
-		repayAmount, err = k.ForceCloseShort(ctx, mtp, &pool, true)
+		repayAmount, err = k.ForceCloseShort(ctx, mtp, &pool, true, baseCurrency)
 	default:
-		ctx.Logger().Error(errors.Wrap(types.ErrInvalidPosition, fmt.Sprintf("invalid position type: %s", mtp.Position)).Error())
+		return errors.Wrap(types.ErrInvalidPosition, fmt.Sprintf("invalid position type: %s", mtp.Position))
 	}
 
 	if err == nil {
 		// Emit event if position was closed
 		k.EmitForceClose(ctx, mtp, repayAmount, "")
 	} else {
-		ctx.Logger().Error(errors.Wrap(err, "error executing force close").Error())
+		return errors.Wrap(err, "error executing force close")
 	}
 
+	return nil
 }

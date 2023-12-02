@@ -7,20 +7,17 @@ import (
 )
 
 func (k Keeper) OpenConsolidate(ctx sdk.Context, mtp *types.MTP, msg *types.MsgOpen, baseCurrency string) (*types.MsgOpenResponse, error) {
-	// Get token asset other than base currency
-	tradingAsset := types.GetTradingAsset(msg.CollateralAsset, msg.BorrowAsset, baseCurrency)
-
 	poolId := mtp.AmmPoolId
 	pool, found := k.OpenLongChecker.GetPool(ctx, poolId)
 	if !found {
-		return nil, sdkerrors.Wrap(types.ErrPoolDoesNotExist, tradingAsset)
+		return nil, sdkerrors.Wrap(types.ErrPoolDoesNotExist, mtp.CustodyAsset)
 	}
 
 	if !k.OpenLongChecker.IsPoolEnabled(ctx, poolId) {
-		return nil, sdkerrors.Wrap(types.ErrMTPDisabled, tradingAsset)
+		return nil, sdkerrors.Wrap(types.ErrMTPDisabled, mtp.CustodyAsset)
 	}
 
-	ammPool, err := k.OpenLongChecker.GetAmmPool(ctx, poolId, tradingAsset)
+	ammPool, err := k.OpenLongChecker.GetAmmPool(ctx, poolId, mtp.CustodyAsset)
 	if err != nil {
 		return nil, err
 	}
@@ -40,7 +37,7 @@ func (k Keeper) OpenConsolidate(ctx sdk.Context, mtp *types.MTP, msg *types.MsgO
 		return nil, sdkerrors.Wrap(types.ErrInvalidPosition, msg.Position.String())
 	}
 
-	ctx.EventManager().EmitEvent(k.GenerateOpenEvent(mtp))
+	ctx.EventManager().EmitEvent(types.GenerateOpenEvent(mtp))
 
 	if k.hooks != nil {
 		k.hooks.AfterMarginPositionModified(ctx, ammPool, pool)

@@ -178,6 +178,7 @@ type ElysQuery struct {
 	MarginPool                   *margintypes.QueryGetPoolRequest        `json:"margin_pool,omitempty"`
 	MarginPools                  *margintypes.QueryAllPoolRequest        `json:"margin_pools,omitempty"`
 	MarginMTP                    *margintypes.MTPRequest                 `json:"margin_mtp,omitempty"`
+	MarginOpenEstimation         *margintypes.QueryOpenEstimationRequest `json:"margin_open_estimation,omitempty"`
 
 	// oracle queriers
 	OracleParams            *oracletypes.QueryParamsRequest            `json:"oracle_params,omitempty"`

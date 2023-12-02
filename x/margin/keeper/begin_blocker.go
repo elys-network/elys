@@ -50,7 +50,11 @@ func (k Keeper) BeginBlocker(ctx sdk.Context) {
 			// k.TrackSQBeginBlock(ctx, pool)
 			mtps, _, _ := k.GetMTPsForPool(ctx, pool.AmmPoolId, nil)
 			for _, mtp := range mtps {
-				BeginBlockerProcessMTP(ctx, k, mtp, pool, ammPool, baseCurrency)
+				err := BeginBlockerProcessMTP(ctx, k, mtp, pool, ammPool, baseCurrency)
+				if err != nil {
+					ctx.Logger().Error(err.Error())
+					continue // ?
+				}
 			}
 			_ = k.HandleFundingFeeDistribution(ctx, mtps, &pool, ammPool, baseCurrency)
 		}

@@ -26,4 +26,8 @@ var (
 	ErrBalanceNotAvailable    = sdkerrors.Register(ModuleName, 18, "user does not have enough balance of the required coin")
 	ErrAmountTooLow           = sdkerrors.Register(ModuleName, 32, "Tx amount is too low")
 	ErrMarginDisabled         = sdkerrors.Register(ModuleName, 33, "margin disabled pool")
+	ErrDenomNotFound          = sdkerrors.Register(ModuleName, 34, "denom not found")
+	ErrInvalidLeverage        = sdkerrors.Register(ModuleName, 35, "invalid leverage")
+	ErrInvalidCloseSize       = sdkerrors.Register(ModuleName, 36, "invalid close size")
+	ErrCalcMinCollateral      = sdkerrors.Register(ModuleName, 37, "error calculating min collateral")
 )

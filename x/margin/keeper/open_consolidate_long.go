@@ -6,14 +6,14 @@ import (
 )
 
 func (k Keeper) OpenConsolidateLong(ctx sdk.Context, poolId uint64, mtp *types.MTP, msg *types.MsgOpen, baseCurrency string) (*types.MTP, error) {
-	maxLeverage := k.OpenLongChecker.GetMaxLeverageParam(ctx)
-	leverage := sdk.MinDec(msg.Leverage, maxLeverage)
-	eta := leverage.Sub(sdk.OneDec())
-	collateralAmountDec := sdk.NewDecFromBigInt(msg.CollateralAmount.BigInt())
-	mtp.Leverages = append(mtp.Leverages, leverage)
+	if mtp.Leverage != msg.Leverage {
+		return nil, types.ErrInvalidLeverage
+	}
 
-	mtp.Collaterals = types.AddOrAppendCoin(mtp.Collaterals, sdk.NewCoin(msg.CollateralAsset, sdk.NewInt(0)))
-	mtp.Custodies = types.AddOrAppendCoin(mtp.Custodies, sdk.NewCoin(msg.BorrowAsset, sdk.NewInt(0)))
+	maxLeverage := k.OpenLongChecker.GetMaxLeverageParam(ctx)
+	leverage := sdk.MinDec(mtp.Leverage, maxLeverage)
+	eta := leverage.Sub(sdk.OneDec())
+	collateralAmountDec := sdk.NewDecFromBigInt(msg.Collateral.Amount.BigInt())
 
 	return k.ProcessOpenLong(ctx, mtp, leverage, eta, collateralAmountDec, poolId, msg, baseCurrency)
 }

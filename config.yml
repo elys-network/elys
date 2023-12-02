@@ -458,6 +458,12 @@ genesis:
         incremental_borrow_interest_payment_enabled: true
         whitelisting_enabled: false
         invariant_check_epoch: day
+        take_profit_borrow_interest_rate_min: "0.00000003"
+        funding_fee_base_rate: "0.0003"
+        funding_fee_max_rate: "0.001"
+        funding_fee_min_rate: "-0.001"
+        funding_fee_collection_address: "elys1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqnrec2l"
+        swap_fee: "0.001"
     stablestake:
       params:
         deposit_denom: "uusdc"

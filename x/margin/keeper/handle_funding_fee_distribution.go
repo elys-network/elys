@@ -82,24 +82,17 @@ func (k Keeper) HandleFundingFeeDistribution(ctx sdk.Context, mtps []*types.MTP,
 		}
 
 		// update received funding fee accounting buckets
-		for custodyIndex, _ := range mtp.Custodies {
-			for collateralIndex, collateral := range mtp.Collaterals {
-				// Swap the take amount to collateral asset
-				fundingFeeCollateralAmount, err := k.EstimateSwap(ctx, fundingFeeAmount, collateral.Denom, ammPool)
-				if err != nil {
-					return err
-				}
-
-				// Create the take amount coin
-				fundingFeeCollateral := sdk.NewCoin(collateral.Denom, fundingFeeCollateralAmount)
-
-				// add payment to total funding fee paid in collateral asset
-				mtp.FundingFeeReceivedCollaterals[collateralIndex] = mtp.FundingFeePaidCollaterals[collateralIndex].Add(fundingFeeCollateral)
-
-				// add payment to total funding fee paid in custody asset
-				mtp.FundingFeeReceivedCustodies[custodyIndex] = mtp.FundingFeePaidCustodies[custodyIndex].Add(fundingFeeAmount)
-			}
+		// Swap the take amount to collateral asset
+		fundingFeeCollateralAmount, err := k.EstimateSwap(ctx, fundingFeeAmount, mtp.CollateralAsset, ammPool)
+		if err != nil {
+			return err
 		}
+
+		// add payment to total funding fee paid in collateral asset
+		mtp.FundingFeeReceivedCollateral = mtp.FundingFeeReceivedCollateral.Add(fundingFeeCollateralAmount)
+
+		// add payment to total funding fee paid in custody asset
+		mtp.FundingFeeReceivedCustody = mtp.FundingFeeReceivedCustody.Add(fundingFeeAmount.Amount)
 	}
 
 	return nil
