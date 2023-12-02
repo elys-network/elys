@@ -34,7 +34,7 @@ func (m *Messenger) msgStake(ctx sdk.Context, contractAddr sdk.AccAddress, msgSt
 	// USDC
 	if msgStake.Asset == baseCurrency {
 		msgServer := stablekeeper.NewMsgServerImpl(*m.stableKeeper)
-		msgMsgBond := stabletypes.NewMsgBond(msgStake.Creator, msgStake.Amount)
+		msgMsgBond := stabletypes.NewMsgBond(msgStake.Address, msgStake.Amount)
 
 		if err = msgMsgBond.ValidateBasic(); err != nil {
 			return nil, nil, errorsmod.Wrap(err, "failed validating msgMsgBond")
@@ -51,7 +51,7 @@ func (m *Messenger) msgStake(ctx sdk.Context, contractAddr sdk.AccAddress, msgSt
 	} else {
 		// Elys, Eden, Eden Boost
 		msgServer := commitmentkeeper.NewMsgServerImpl(*m.keeper)
-		msgMsgStake := commitmenttypes.NewMsgStake(msgStake.Creator, msgStake.Amount, msgStake.Asset, msgStake.ValidatorAddress)
+		msgMsgStake := commitmenttypes.NewMsgStake(msgStake.Address, msgStake.Amount, msgStake.Asset, msgStake.ValidatorAddress)
 
 		if err = msgMsgStake.ValidateBasic(); err != nil {
 			return nil, nil, errorsmod.Wrap(err, "failed validating msgMsgStake")

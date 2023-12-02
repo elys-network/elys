@@ -118,7 +118,10 @@ func (k Keeper) CalculateApr(ctx sdk.Context, query *types.QueryAprRequest) (sdk
 
 			// Calc Eden price in usdc
 			// We put Elys as denom as Eden won't be avaialble in amm pool and has the same value as Elys
-			edenPrice := k.EstimatePrice(ctx, sdk.NewCoin(ptypes.Elys, sdk.NewInt(10)), baseCurrency)
+			edenPrice := k.EstimatePrice(ctx, sdk.NewCoin(ptypes.Elys, sdk.NewInt(1000000)), baseCurrency)
+			if edenPrice.IsZero() {
+				return sdk.ZeroInt(), nil
+			}
 
 			// Update total committed states
 			k.UpdateTotalCommitmentInfo(ctx, baseCurrency)
@@ -131,7 +134,7 @@ func (k Keeper) CalculateApr(ctx sdk.Context, query *types.QueryAprRequest) (sdk
 
 			// Usdc apr for elys staking = (24 hour dex rewards in USDC generated for stakers) * 365*100/ {price ( elys/usdc)*( sum of (elys staked, Eden committed, Eden boost committed))}
 			// we multiply 10 as we have use 10elys as input in the price estimation
-			apr := amtDexRewardPerDay.MulInt(sdk.NewInt(ptypes.DaysPerYear)).MulInt(sdk.NewInt(100)).MulInt(sdk.NewInt(10)).QuoInt(edenPrice).QuoInt(totalStakedSnapshot)
+			apr := amtDexRewardPerDay.MulInt(sdk.NewInt(ptypes.DaysPerYear)).MulInt(sdk.NewInt(100)).MulInt(sdk.NewInt(1000000)).QuoInt(edenPrice).QuoInt(totalStakedSnapshot)
 
 			return apr.TruncateInt(), nil
 		}

@@ -17,7 +17,7 @@ func (m *Messenger) msgWithdrawRewards(ctx sdk.Context, contractAddr sdk.AccAddr
 	var err error
 
 	brokerAddress := m.parameterKeeper.GetParams(ctx).BrokerAddress
-	if msgWithdrawRewards.DelegatorAddress != contractAddr.String() && contractAddr.String() != brokerAddress {
+	if msgWithdrawRewards.Creator != contractAddr.String() && contractAddr.String() != brokerAddress {
 		return nil, nil, wasmvmtypes.InvalidRequest{Err: "wrong sender"}
 	}
 

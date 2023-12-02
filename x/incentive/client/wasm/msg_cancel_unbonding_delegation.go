@@ -9,15 +9,16 @@ import (
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	wasmbindingstypes "github.com/elys-network/elys/wasmbindings/types"
+	"github.com/elys-network/elys/x/incentive/types"
 	paramtypes "github.com/elys-network/elys/x/parameter/types"
 )
 
-func (m *Messenger) msgCancelUnbondingDelegation(ctx sdk.Context, contractAddr sdk.AccAddress, msgCancelUnbonding *stakingtypes.MsgCancelUnbondingDelegation) ([]sdk.Event, [][]byte, error) {
+func (m *Messenger) msgCancelUnbondingDelegation(ctx sdk.Context, contractAddr sdk.AccAddress, msgCancelUnbonding *types.MsgCancelUnbondingDelegation) ([]sdk.Event, [][]byte, error) {
 	var res *wasmbindingstypes.RequestResponse
 	var err error
 
 	brokerAddress := m.parameterKeeper.GetParams(ctx).BrokerAddress
-	if msgCancelUnbonding.DelegatorAddress != contractAddr.String() && contractAddr.String() != brokerAddress {
+	if msgCancelUnbonding.Creator != contractAddr.String() && contractAddr.String() != brokerAddress {
 		return nil, nil, wasmvmtypes.InvalidRequest{Err: "wrong sender"}
 	}
 
@@ -40,7 +41,7 @@ func (m *Messenger) msgCancelUnbondingDelegation(ctx sdk.Context, contractAddr s
 	return nil, resp, nil
 }
 
-func performMsgCancelUnbondingElys(f *stakingkeeper.Keeper, ctx sdk.Context, contractAddr sdk.AccAddress, msgCancelUnbonding *stakingtypes.MsgCancelUnbondingDelegation) (*wasmbindingstypes.RequestResponse, error) {
+func performMsgCancelUnbondingElys(f *stakingkeeper.Keeper, ctx sdk.Context, contractAddr sdk.AccAddress, msgCancelUnbonding *types.MsgCancelUnbondingDelegation) (*wasmbindingstypes.RequestResponse, error) {
 	if msgCancelUnbonding == nil {
 		return nil, wasmvmtypes.InvalidRequest{Err: "Invalid cancel unbonding parameter"}
 	}

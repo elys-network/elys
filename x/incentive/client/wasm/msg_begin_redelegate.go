@@ -9,15 +9,16 @@ import (
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	wasmbindingstypes "github.com/elys-network/elys/wasmbindings/types"
+	"github.com/elys-network/elys/x/incentive/types"
 	paramtypes "github.com/elys-network/elys/x/parameter/types"
 )
 
-func (m *Messenger) msgBeginRedelegate(ctx sdk.Context, contractAddr sdk.AccAddress, msgRedelegate *stakingtypes.MsgBeginRedelegate) ([]sdk.Event, [][]byte, error) {
+func (m *Messenger) msgBeginRedelegate(ctx sdk.Context, contractAddr sdk.AccAddress, msgRedelegate *types.MsgBeginRedelegate) ([]sdk.Event, [][]byte, error) {
 	var res *wasmbindingstypes.RequestResponse
 	var err error
 
 	brokerAddress := m.parameterKeeper.GetParams(ctx).BrokerAddress
-	if msgRedelegate.DelegatorAddress != contractAddr.String() && contractAddr.String() != brokerAddress {
+	if msgRedelegate.Creator != contractAddr.String() && contractAddr.String() != brokerAddress {
 		return nil, nil, wasmvmtypes.InvalidRequest{Err: "wrong sender"}
 	}
 
@@ -40,7 +41,7 @@ func (m *Messenger) msgBeginRedelegate(ctx sdk.Context, contractAddr sdk.AccAddr
 	return nil, resp, nil
 }
 
-func performMsgRedelegateElys(f *stakingkeeper.Keeper, ctx sdk.Context, contractAddr sdk.AccAddress, msgRedelegate *stakingtypes.MsgBeginRedelegate) (*wasmbindingstypes.RequestResponse, error) {
+func performMsgRedelegateElys(f *stakingkeeper.Keeper, ctx sdk.Context, contractAddr sdk.AccAddress, msgRedelegate *types.MsgBeginRedelegate) (*wasmbindingstypes.RequestResponse, error) {
 	if msgRedelegate == nil {
 		return nil, wasmvmtypes.InvalidRequest{Err: "Invalid redelegate parameter"}
 	}
