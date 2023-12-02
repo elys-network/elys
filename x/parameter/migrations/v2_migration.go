@@ -6,12 +6,14 @@ import (
 )
 
 func (m Migrator) V2Migration(ctx sdk.Context) error {
+	// reset params
 	params := types.NewParams(
-		sdk.NewDecWithPrec(5, 2),  // min commission 0.05
-		sdk.NewDecWithPrec(66, 1), // max voting power
-		sdk.NewInt(1),             // min self delegation
-		"elys1mx32w9tnfxv0z5j000750h8ver7qf3xpj09w3uzvsr3hq68f4hxqte4gam", // broker address
+		sdk.NewDecWithPrec(5, 2),                      // min commission 0.05
+		sdk.NewDecWithPrec(66, 1),                     // max voting power
+		sdk.NewInt(1),                                 // min self delegation
+		"elys1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqnrec2l", // broker address
 	)
 	m.keeper.SetParams(ctx, params)
+
 	return nil
 }
