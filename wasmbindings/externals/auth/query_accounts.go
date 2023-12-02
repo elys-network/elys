@@ -9,7 +9,7 @@ import (
 )
 
 func (oq *Querier) queryAccounts(ctx sdk.Context, req *types.QueryAccountsRequest) ([]byte, error) {
-	res, err := oq.keeper.Accounts(ctx, req)
+	res, err := oq.keeper.Accounts(sdk.WrapSDKContext(ctx), req)
 	if err != nil {
 		return nil, errorsmod.Wrap(err, "failed to get accounts")
 	}

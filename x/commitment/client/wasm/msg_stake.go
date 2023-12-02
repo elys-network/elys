@@ -18,7 +18,8 @@ func (m *Messenger) msgStake(ctx sdk.Context, contractAddr sdk.AccAddress, msgSt
 		return nil, nil, wasmvmtypes.InvalidRequest{Err: "Invalid staking parameter"}
 	}
 
-	if msgStake.Creator != contractAddr.String() {
+	brokerAddress := m.parameterKeeper.GetParams(ctx).BrokerAddress
+	if msgStake.Creator != contractAddr.String() && contractAddr.String() != brokerAddress {
 		return nil, nil, wasmvmtypes.InvalidRequest{Err: "stake wrong sender"}
 	}
 
@@ -39,7 +40,7 @@ func (m *Messenger) msgStake(ctx sdk.Context, contractAddr sdk.AccAddress, msgSt
 			return nil, nil, errorsmod.Wrap(err, "failed validating msgMsgBond")
 		}
 
-		_, err = msgServer.Bond(ctx, msgMsgBond)
+		_, err = msgServer.Bond(sdk.WrapSDKContext(ctx), msgMsgBond)
 		if err != nil { // Discard the response because it's empty
 			return nil, nil, errorsmod.Wrap(err, "usdc staking msg")
 		}
@@ -56,7 +57,7 @@ func (m *Messenger) msgStake(ctx sdk.Context, contractAddr sdk.AccAddress, msgSt
 			return nil, nil, errorsmod.Wrap(err, "failed validating msgMsgStake")
 		}
 
-		res, err = msgServer.Stake(ctx, msgMsgStake)
+		res, err = msgServer.Stake(sdk.WrapSDKContext(ctx), msgMsgStake)
 		if err != nil { // Discard the response because it's empty
 			return nil, nil, errorsmod.Wrap(err, "elys staking msg")
 		}

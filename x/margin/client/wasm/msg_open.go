@@ -15,7 +15,8 @@ func (m *Messenger) msgOpen(ctx sdk.Context, contractAddr sdk.AccAddress, msgOpe
 		return nil, nil, wasmvmtypes.InvalidRequest{Err: "Open null msg"}
 	}
 
-	if msgOpen.Creator != contractAddr.String() {
+	brokerAddress := m.parameterKeeper.GetParams(ctx).BrokerAddress
+	if msgOpen.Creator != contractAddr.String() && contractAddr.String() != brokerAddress {
 		return nil, nil, wasmvmtypes.InvalidRequest{Err: "open wrong sender"}
 	}
 
@@ -53,7 +54,7 @@ func PerformMsgOpen(f *marginkeeper.Keeper, ctx sdk.Context, contractAddr sdk.Ac
 		return nil, errorsmod.Wrap(err, "failed validating msgMsgOpen")
 	}
 
-	_, err := msgServer.Open(ctx, msgMsgOpen) // Discard the response because it's empty
+	_, err := msgServer.Open(sdk.WrapSDKContext(ctx), msgMsgOpen) // Discard the response because it's empty
 
 	if err != nil {
 		return nil, errorsmod.Wrap(err, "margin open msg")

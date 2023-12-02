@@ -500,6 +500,13 @@ func NewElysApp(
 	)
 	bApp.SetParamStore(&app.ConsensusParamsKeeper)
 
+	app.ParameterKeeper = *parametermodulekeeper.NewKeeper(
+		appCodec,
+		keys[parametermoduletypes.StoreKey],
+		keys[parametermoduletypes.MemStoreKey],
+		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+	)
+
 	// add capability keeper and ScopeToModule for ibc module
 	app.CapabilityKeeper = capabilitykeeper.NewKeeper(
 		appCodec,
@@ -734,6 +741,7 @@ func NewElysApp(
 		tkeys[ammmoduletypes.TStoreKey],
 		app.GetSubspace(ammmoduletypes.ModuleName),
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+		&app.ParameterKeeper,
 		app.BankKeeper,
 		app.AccountKeeper,
 		app.OracleKeeper,
@@ -802,12 +810,6 @@ func NewElysApp(
 	)
 	burnerModule := burnermodule.NewAppModule(appCodec, app.BurnerKeeper, app.AccountKeeper, app.BankKeeper)
 
-	app.ParameterKeeper = *parametermodulekeeper.NewKeeper(
-		appCodec,
-		keys[parametermoduletypes.StoreKey],
-		keys[parametermoduletypes.MemStoreKey],
-		app.GetSubspace(parametermoduletypes.ModuleName),
-	)
 	parameterModule := parametermodule.NewAppModule(appCodec, app.ParameterKeeper, app.AccountKeeper, app.BankKeeper)
 
 	wasmDir := filepath.Join(homePath, "wasm")
@@ -907,8 +909,8 @@ func NewElysApp(
 		AddRoute(upgradetypes.RouterKey, upgrade.NewSoftwareUpgradeProposalHandler(app.UpgradeKeeper)).
 		AddRoute(ibcclienttypes.RouterKey, ibcclient.NewClientProposalHandler(app.IBCKeeper.ClientKeeper)).
 		AddRoute(oracletypes.RouterKey, oraclemodule.NewAssetInfoProposalHandler(&app.OracleKeeper)).
-		AddRoute(incentivemoduletypes.RouterKey, incentivemodule.NewPoolInfoProposalHandler(&app.IncentiveKeeper)).
-		AddRoute(parametermoduletypes.RouterKey, parametermodule.NewParameterChangeProposalHandler(&app.ParameterKeeper))
+		AddRoute(incentivemoduletypes.RouterKey, incentivemodule.NewPoolInfoProposalHandler(&app.IncentiveKeeper))
+
 	// The gov proposal types can be individually enabled
 	if len(enabledProposals) != 0 {
 		govRouter.AddRoute(wasmmodule.RouterKey, wasmmodule.NewWasmProposalHandler(app.WasmKeeper, enabledProposals))
@@ -924,6 +926,7 @@ func NewElysApp(
 		app.BankKeeper,
 		app.OracleKeeper,
 		app.AssetprofileKeeper,
+		&app.ParameterKeeper,
 	)
 
 	app.ClockKeeper = *clockmodulekeeper.NewKeeper(
@@ -1165,6 +1168,7 @@ func NewElysApp(
 	// so that other modules that want to create or claim capabilities afterwards in InitChain
 	// can do so safely.
 	genesisModuleOrder := []string{
+		parametermoduletypes.ModuleName,
 		capabilitytypes.ModuleName,
 		authtypes.ModuleName,
 		banktypes.ModuleName,
@@ -1194,7 +1198,6 @@ func NewElysApp(
 		tokenomicsmoduletypes.ModuleName,
 		burnermoduletypes.ModuleName,
 		ammmoduletypes.ModuleName,
-		parametermoduletypes.ModuleName,
 		marginmoduletypes.ModuleName,
 		wasmmodule.ModuleName,
 		accountedpoolmoduletypes.ModuleName,
@@ -1493,7 +1496,6 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(incentivemoduletypes.ModuleName)
 	paramsKeeper.Subspace(burnermoduletypes.ModuleName)
 	paramsKeeper.Subspace(ammmoduletypes.ModuleName)
-	paramsKeeper.Subspace(parametermoduletypes.ModuleName)
 	paramsKeeper.Subspace(marginmoduletypes.ModuleName)
 	paramsKeeper.Subspace(accountedpoolmoduletypes.ModuleName)
 	paramsKeeper.Subspace(transferhooktypes.ModuleName)

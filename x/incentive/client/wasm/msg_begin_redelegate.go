@@ -15,6 +15,12 @@ import (
 func (m *Messenger) msgBeginRedelegate(ctx sdk.Context, contractAddr sdk.AccAddress, msgRedelegate *stakingtypes.MsgBeginRedelegate) ([]sdk.Event, [][]byte, error) {
 	var res *wasmbindingstypes.RequestResponse
 	var err error
+
+	brokerAddress := m.parameterKeeper.GetParams(ctx).BrokerAddress
+	if msgRedelegate.DelegatorAddress != contractAddr.String() && contractAddr.String() != brokerAddress {
+		return nil, nil, wasmvmtypes.InvalidRequest{Err: "wrong sender"}
+	}
+
 	if msgRedelegate.Amount.Denom != paramtypes.Elys {
 		return nil, nil, errorsmod.Wrap(err, "invalid asset!")
 	}
@@ -61,7 +67,7 @@ func performMsgRedelegateElys(f *stakingkeeper.Keeper, ctx sdk.Context, contract
 		return nil, errorsmod.Wrap(err, "failed validating msgMsgDelegate")
 	}
 
-	_, err = msgServer.BeginRedelegate(ctx, msgMsgRedelegate) // Discard the response because it's empty
+	_, err = msgServer.BeginRedelegate(sdk.WrapSDKContext(ctx), msgMsgRedelegate) // Discard the response because it's empty
 	if err != nil {
 		return nil, errorsmod.Wrap(err, "elys redelegation msg")
 	}

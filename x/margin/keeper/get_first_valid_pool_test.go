@@ -14,7 +14,7 @@ import (
 
 func TestGetFirstValidPool_NoPoolID(t *testing.T) {
 	mockAmm := new(mocks.AmmKeeper)
-	k := keeper.NewKeeper(nil, nil, nil, "cosmos1ysxv266l8w76lq0vy44ktzajdr9u9yhlxzlvga", mockAmm, nil, nil, nil)
+	k := keeper.NewKeeper(nil, nil, nil, "cosmos1ysxv266l8w76lq0vy44ktzajdr9u9yhlxzlvga", mockAmm, nil, nil, nil, nil)
 
 	ctx := sdk.Context{} // mock or setup a context
 	collateralAsset := ptypes.BaseCurrency
@@ -33,7 +33,7 @@ func TestGetFirstValidPool_NoPoolID(t *testing.T) {
 
 func TestGetFirstValidPool_ValidPoolID(t *testing.T) {
 	mockAmm := new(mocks.AmmKeeper)
-	k := keeper.NewKeeper(nil, nil, nil, "cosmos1ysxv266l8w76lq0vy44ktzajdr9u9yhlxzlvga", mockAmm, nil, nil, nil)
+	k := keeper.NewKeeper(nil, nil, nil, "cosmos1ysxv266l8w76lq0vy44ktzajdr9u9yhlxzlvga", mockAmm, nil, nil, nil, nil)
 
 	ctx := sdk.Context{} // mock or setup a context
 	collateralAsset := ptypes.BaseCurrency

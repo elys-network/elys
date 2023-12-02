@@ -9,7 +9,7 @@ import (
 )
 
 func (oq *Querier) queryPositions(ctx sdk.Context, query *types.PositionsRequest) ([]byte, error) {
-	res, err := oq.keeper.GetPositions(ctx, query)
+	res, err := oq.keeper.GetPositions(sdk.WrapSDKContext(ctx), query)
 	if err != nil {
 		return nil, errorsmod.Wrap(err, "failed to get positions")
 	}

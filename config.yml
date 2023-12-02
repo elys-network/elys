@@ -432,10 +432,11 @@ genesis:
           denom: "ueden"
           amount: "1000000"
     parameter:
-      anteHandlerParam:
-        minCommissionRate: "0.05"
-        maxVotingPower: "0.66"
-        minSelfDelegation: "1"
+      params:
+        min_commission_rate: "0.05"
+        max_voting_power: "0.66"
+        min_self_delegation: "1"
+        broker_address: ""
     margin:
       params:
         leverage_max: "10"
@@ -457,7 +458,6 @@ genesis:
         incremental_borrow_interest_payment_enabled: true
         whitelisting_enabled: false
         invariant_check_epoch: day
-        broker_address: "elys1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqnrec2l"
         take_profit_borrow_interest_rate_min: "0.00000003"
         funding_fee_base_rate: "0.0003"
         funding_fee_max_rate: "0.001"

@@ -3,23 +3,27 @@ package types
 import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	cdctypes "github.com/cosmos/cosmos-sdk/codec/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	// this line is used by starport scaffolding # 1
 	"github.com/cosmos/cosmos-sdk/types/msgservice"
-	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
 )
 
 func RegisterCodec(cdc *codec.LegacyAmino) {
 	// this line is used by starport scaffolding # 2
+	cdc.RegisterConcrete(&MsgUpdateMinCommission{}, "parameter/MsgUpdateMinCommission", nil)
+	cdc.RegisterConcrete(&MsgUpdateMaxVotingPower{}, "parameter/MsgUpdateMaxVotingPower", nil)
+	cdc.RegisterConcrete(&MsgUpdateMinSelfDelegation{}, "parameter/MsgUpdateMinSelfDelegation", nil)
+	cdc.RegisterConcrete(&MsgUpdateBrokerAddress{}, "parameter/MsgUpdateBrokerAddress", nil)
+	// this line is used by starport scaffolding # 2
 }
 
 func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
-
-	registry.RegisterImplementations(
-		(*govtypes.Content)(nil),
-		&ProposalUpdateMinCommission{},
-		&ProposalUpdateMaxVotingPower{},
-		&ProposalUpdateMinSelfDelegation{},
+	registry.RegisterImplementations((*sdk.Msg)(nil),
+		&MsgUpdateMinCommission{},
+		&MsgUpdateMaxVotingPower{},
+		&MsgUpdateMinSelfDelegation{},
+		&MsgUpdateBrokerAddress{},
 	)
 	// this line is used by starport scaffolding # 3
 

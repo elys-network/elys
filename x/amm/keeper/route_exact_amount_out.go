@@ -5,6 +5,7 @@ import (
 
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/elys-network/elys/x/amm/types"
 )
 
@@ -99,10 +100,14 @@ func (k Keeper) RouteExactAmountOut(ctx sdk.Context,
 		}
 
 		// Apply discount to swap fee if applicable
-		swapFee, discount, err = k.ApplyDiscount(ctx, swapFee, discount, sender.String())
-		if err != nil {
-			return math.Int{}, sdk.ZeroDec(), sdk.ZeroDec(), err
+		brokerAddress := k.parameterKeeper.GetParams(ctx).BrokerAddress
+		if discount.IsNil() {
+			discount = sdk.ZeroDec()
 		}
+		if discount.IsPositive() && sender.String() != brokerAddress {
+			return math.Int{}, sdk.ZeroDec(), sdk.ZeroDec(), sdkerrors.Wrapf(types.ErrInvalidDiscount, "discount %s is positive and signer address %s is not broker address %s", discount, sender, brokerAddress)
+		}
+		swapFee = types.ApplyDiscount(swapFee, discount)
 
 		// Calculate the total discounted swap fee
 		totalDiscountedSwapFee = totalDiscountedSwapFee.Add(swapFee)

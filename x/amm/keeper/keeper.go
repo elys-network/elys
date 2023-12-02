@@ -11,6 +11,7 @@ import (
 
 	"github.com/elys-network/elys/x/amm/types"
 	commitmentkeeper "github.com/elys-network/elys/x/commitment/keeper"
+	pkeeper "github.com/elys-network/elys/x/parameter/keeper"
 )
 
 type (
@@ -22,6 +23,7 @@ type (
 		authority         string
 		hooks             types.AmmHooks
 
+		parameterKeeper     *pkeeper.Keeper
 		bankKeeper          types.BankKeeper
 		accountKeeper       types.AccountKeeper
 		oracleKeeper        types.OracleKeeper
@@ -38,6 +40,7 @@ func NewKeeper(
 	ps paramtypes.Subspace,
 	authority string,
 
+	parameterKeeper *pkeeper.Keeper,
 	bankKeeper types.BankKeeper,
 	accountKeeper types.AccountKeeper,
 	oracleKeeper types.OracleKeeper,
@@ -57,6 +60,7 @@ func NewKeeper(
 		paramstore:        ps,
 		authority:         authority,
 
+		parameterKeeper:     parameterKeeper,
 		bankKeeper:          bankKeeper,
 		accountKeeper:       accountKeeper,
 		oracleKeeper:        oracleKeeper,

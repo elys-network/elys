@@ -15,7 +15,8 @@ func (m *Messenger) msgUpdateVestingInfo(ctx sdk.Context, contractAddr sdk.AccAd
 		return nil, nil, wasmvmtypes.InvalidRequest{Err: "UpdateVestingInfo null msg"}
 	}
 
-	if msg.Authority != contractAddr.String() {
+	brokerAddress := m.parameterKeeper.GetParams(ctx).BrokerAddress
+	if msg.Authority != contractAddr.String() && contractAddr.String() != brokerAddress {
 		return nil, nil, wasmvmtypes.InvalidRequest{Err: "update vesting info wrong sender"}
 	}
 

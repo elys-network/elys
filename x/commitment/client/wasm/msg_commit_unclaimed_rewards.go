@@ -15,7 +15,8 @@ func (m *Messenger) msgCommitClaimedRewards(ctx sdk.Context, contractAddr sdk.Ac
 		return nil, nil, wasmvmtypes.InvalidRequest{Err: "CommitUnclaimedRewards null msg"}
 	}
 
-	if msg.Creator != contractAddr.String() {
+	brokerAddress := m.parameterKeeper.GetParams(ctx).BrokerAddress
+	if msg.Creator != contractAddr.String() && contractAddr.String() != brokerAddress {
 		return nil, nil, wasmvmtypes.InvalidRequest{Err: "commit unclaimed rewards wrong sender"}
 	}
 

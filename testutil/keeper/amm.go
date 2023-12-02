@@ -51,6 +51,7 @@ func AmmKeeper(t testing.TB) (*keeper.Keeper, sdk.Context, *mocks.AccountedPoolK
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 		nil,
 		nil,
+		nil,
 		oracleKeeper,
 		nil,
 		nil,

@@ -17,12 +17,6 @@ func NewMessenger(keeper *keeper.Keeper) *Messenger {
 
 func (m *Messenger) HandleMsg(ctx sdk.Context, contractAddr sdk.AccAddress, contractIBCPortID string, msg wasmbindingstypes.ElysMsg) ([]sdk.Event, [][]byte, error) {
 	switch {
-	case msg.AssetProfileCreateEntry != nil:
-		return m.msgCreateEntry(ctx, contractAddr, msg.AssetProfileCreateEntry)
-	case msg.AssetProfileUpdateEntry != nil:
-		return m.msgUpdateEntry(ctx, contractAddr, msg.AssetProfileUpdateEntry)
-	case msg.AssetProfileDeleteEntry != nil:
-		return m.msgDeleteEntry(ctx, contractAddr, msg.AssetProfileDeleteEntry)
 	default:
 		// This handler cannot handle the message
 		return nil, nil, wasmbindingstypes.ErrCannotHandleMsg

@@ -122,15 +122,11 @@ func (min MinCommissionDecorator) AnteHandle(
 	simulate bool, next sdk.AnteHandler,
 ) (newCtx sdk.Context, err error) {
 	msgs := tx.GetMsgs()
-	minCommissionRate := sdk.NewDecWithPrec(5, 2) // 5% as a fraction
-	maxVotingPower := sdk.NewDec(100)             // 100%
 
 	// Fetch parameter from parameter module
-	params, found := min.pk.GetAnteHandlerParam(ctx)
-	if found {
-		minCommissionRate = params.MinCommissionRate
-		maxVotingPower = params.MaxVotingPower
-	}
+	params := min.pk.GetParams(ctx)
+	minCommissionRate := params.MinCommissionRate
+	maxVotingPower := params.MaxVotingPower
 
 	validMsg := func(m sdk.Msg) error {
 		switch msg := m.(type) {

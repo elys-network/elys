@@ -62,7 +62,6 @@ func NewParams() Params {
 		BorrowInterestRateIncrease:                     sdk.NewDecWithPrec(33, 10),
 		BorrowInterestRateMax:                          sdk.NewDecWithPrec(27, 7),
 		BorrowInterestRateMin:                          sdk.NewDecWithPrec(3, 8),
-		BrokerAddress:                                  ZeroAddress,
 		EpochLength:                                    (int64)(1),
 		ForceCloseFundAddress:                          ZeroAddress,
 		ForceCloseFundPercentage:                       sdk.OneDec(),
@@ -108,7 +107,6 @@ func (p *Params) ParamSetPairs() paramtypes.ParamSetPairs {
 		paramtypes.NewParamSetPair(KeyIncrementalBorrowInterestPaymentEnabled, &p.IncrementalBorrowInterestPaymentEnabled, validateIncrementalBorrowInterestPaymentEnabled),
 		paramtypes.NewParamSetPair(KeyWhitelistingEnabled, &p.WhitelistingEnabled, validateWhitelistingEnabled),
 		paramtypes.NewParamSetPair(KeyInvariantCheckEpoch, &p.InvariantCheckEpoch, validateInvariantCheckEpoch),
-		paramtypes.NewParamSetPair(KeyBrokerAddress, &p.BrokerAddress, validateBrokerAddress),
 		paramtypes.NewParamSetPair(KeyTakeProfitBorrowInterestRateMin, &p.TakeProfitBorrowInterestRateMin, validateTakeProfitBorrowInterestRateMin),
 		paramtypes.NewParamSetPair(KeyFundingFeeBaseRate, &p.FundingFeeBaseRate, validateBorrowInterestRateMax),
 		paramtypes.NewParamSetPair(KeyFundingFeeMinRate, &p.FundingFeeMinRate, validateBorrowInterestRateMax),
@@ -175,9 +173,6 @@ func (p Params) Validate() error {
 		return err
 	}
 	if err := validateInvariantCheckEpoch(p.InvariantCheckEpoch); err != nil {
-		return err
-	}
-	if err := validateBrokerAddress(p.BrokerAddress); err != nil {
 		return err
 	}
 	if err := validateTakeProfitBorrowInterestRateMin(p.TakeProfitBorrowInterestRateMin); err != nil {
@@ -463,15 +458,6 @@ func validateInvariantCheckEpoch(i interface{}) error {
 	}
 
 	if epoch != epochtypes.DayEpochID && epoch != epochtypes.WeekEpochID && epoch != epochtypes.HourEpochID {
-		return fmt.Errorf("invalid parameter type: %T", i)
-	}
-
-	return nil
-}
-
-func validateBrokerAddress(i interface{}) error {
-	_, ok := i.(string)
-	if !ok {
 		return fmt.Errorf("invalid parameter type: %T", i)
 	}
 
