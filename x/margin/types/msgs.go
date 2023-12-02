@@ -23,7 +23,7 @@ var (
 	_ sdk.Msg = &MsgDewhitelist{}
 )
 
-func NewMsgClose(creator string, id uint64, amount sdk.Coin) *MsgClose {
+func NewMsgClose(creator string, id uint64, amount sdk.Int) *MsgClose {
 	return &MsgClose{
 		Creator: creator,
 		Id:      id,
@@ -60,15 +60,14 @@ func (msg *MsgClose) ValidateBasic() error {
 	return nil
 }
 
-func NewMsgOpen(creator string, collateralAsset string, collateralAmount sdk.Int, borrowAsset string, position Position, leverage sdk.Dec, takeProfitPrice sdk.Dec) *MsgOpen {
+func NewMsgOpen(creator string, position Position, leverage sdk.Dec, tradingAsset string, collateral sdk.Coin, takeProfitPrice sdk.Dec) *MsgOpen {
 	return &MsgOpen{
-		Creator:          creator,
-		CollateralAsset:  collateralAsset,
-		CollateralAmount: collateralAmount,
-		BorrowAsset:      borrowAsset,
-		Position:         position,
-		Leverage:         leverage,
-		TakeProfitPrice:  takeProfitPrice,
+		Creator:         creator,
+		Position:        position,
+		Leverage:        leverage,
+		TradingAsset:    tradingAsset,
+		Collateral:      collateral,
+		TakeProfitPrice: takeProfitPrice,
 	}
 }
 

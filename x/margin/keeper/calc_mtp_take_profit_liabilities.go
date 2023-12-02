@@ -6,21 +6,19 @@ import (
 )
 
 func (k Keeper) CalcMTPTakeProfitLiability(ctx sdk.Context, mtp *types.MTP, baseCurrency string) (sdk.Int, error) {
-	takeProfitLiabilities := sdk.ZeroInt()
-	for _, takeProfitCustody := range mtp.TakeProfitCustodies {
-		takeProfitCustodyAsset := takeProfitCustody.Denom
-		// Retrieve AmmPool
-		ammPool, err := k.GetAmmPool(ctx, mtp.AmmPoolId, takeProfitCustodyAsset)
-		if err != nil {
-			return sdk.ZeroInt(), err
-		}
+	// Retrieve AmmPool
+	ammPool, err := k.GetAmmPool(ctx, mtp.AmmPoolId, mtp.CustodyAsset)
+	if err != nil {
+		return sdk.ZeroInt(), err
+	}
 
-		// convert custody amount to base currency
-		C, err := k.EstimateSwap(ctx, takeProfitCustody, baseCurrency, ammPool)
-		if err != nil {
-			return sdk.ZeroInt(), err
-		}
-		takeProfitLiabilities = takeProfitLiabilities.Add(C)
+	// build take profit custody coin
+	takeProfitCustody := sdk.NewCoin(mtp.CustodyAsset, mtp.TakeProfitCustody)
+
+	// convert custody amount to base currency
+	takeProfitLiabilities, err := k.EstimateSwap(ctx, takeProfitCustody, baseCurrency, ammPool)
+	if err != nil {
+		return sdk.ZeroInt(), err
 	}
 
 	return takeProfitLiabilities, nil

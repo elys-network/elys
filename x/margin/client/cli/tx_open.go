@@ -16,13 +16,13 @@ var _ = strconv.Itoa(0)
 
 func CmdOpen() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "open [position] [leverage] [collateral-asset] [collateral-amount] [borrow-asset] [flags]",
+		Use:   "open [position] [leverage] [trading-asset] [collateral] [flags]",
 		Short: "Open margin position",
 		Example: `Infinte profitability:
-elysd tx margin open long 5 uusdc 100000000 uatom --from=treasury --keyring-backend=test --chain-id=elystestnet-1 --yes --gas=1000000
+elysd tx margin open long 5 uatom 100000000uusdc --from=treasury --keyring-backend=test --chain-id=elystestnet-1 --yes --gas=1000000
 Finite profitability:
-elysd tx margin open short 5 uusdc 100000000 uatom --take-profit 100 --from=treasury --keyring-backend=test --chain-id=elystestnet-1 --yes --gas=1000000`,
-		Args: cobra.ExactArgs(5),
+elysd tx margin open short 5 uatom 100000000uusdc --take-profit 100 --from=treasury --keyring-backend=test --chain-id=elystestnet-1 --yes --gas=1000000`,
+		Args: cobra.ExactArgs(4),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
@@ -41,14 +41,12 @@ elysd tx margin open short 5 uusdc 100000000 uatom --take-profit 100 --from=trea
 				return err
 			}
 
-			argCollateralAsset := args[2]
+			argTradingAsset := args[2]
 
-			argCollateralAmount, ok := sdk.NewIntFromString(args[3])
-			if !ok {
-				return errors.New("invalid collateral amount")
+			argCollateral, err := sdk.ParseCoinNormalized(args[3])
+			if err != nil {
+				return err
 			}
-
-			argBorrowAsset := args[4]
 
 			takeProfitPriceStr, err := cmd.Flags().GetString(flagTakeProfitPrice)
 			if err != nil {
@@ -70,11 +68,10 @@ elysd tx margin open short 5 uusdc 100000000 uatom --take-profit 100 --from=trea
 
 			msg := types.NewMsgOpen(
 				signer.String(),
-				argCollateralAsset,
-				argCollateralAmount,
-				argBorrowAsset,
 				argPosition,
 				argLeverage,
+				argTradingAsset,
+				argCollateral,
 				takeProfitPrice,
 			)
 

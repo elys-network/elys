@@ -18,11 +18,11 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen) (*types.MsgOpenRespons
 	// Determine the type of position (long or short) and validate assets accordingly.
 	switch msg.Position {
 	case types.Position_LONG:
-		if err := types.CheckLongAssets(msg.CollateralAsset, msg.BorrowAsset, baseCurrency); err != nil {
+		if err := types.CheckLongAssets(msg.Collateral.Denom, msg.TradingAsset, baseCurrency); err != nil {
 			return nil, err
 		}
 	case types.Position_SHORT:
-		if err := types.CheckShortAssets(msg.CollateralAsset, msg.BorrowAsset, baseCurrency); err != nil {
+		if err := types.CheckShortAssets(msg.Collateral.Denom, msg.TradingAsset, baseCurrency); err != nil {
 			return nil, err
 		}
 	default:
@@ -42,11 +42,8 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen) (*types.MsgOpenRespons
 		return nil, err
 	}
 
-	// Get token asset other than base currency
-	tradingAsset := types.GetTradingAsset(msg.CollateralAsset, msg.BorrowAsset, baseCurrency)
-
 	// Get pool id, amm pool, and margin pool
-	poolId, ammPool, pool, err := k.OpenChecker.PreparePools(ctx, tradingAsset)
+	poolId, ammPool, pool, err := k.OpenChecker.PreparePools(ctx, msg.Collateral.Denom, msg.TradingAsset)
 	if err != nil {
 		return nil, err
 	}

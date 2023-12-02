@@ -80,4 +80,8 @@ message Params {
     (gogoproto.nullable) = false
   ];
   string funding_fee_collection_address = 24;
+  string swap_fee = 25 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
 }

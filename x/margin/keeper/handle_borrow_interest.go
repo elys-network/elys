@@ -9,7 +9,7 @@ import (
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
 
-func (k Keeper) HandleBorrowInterest(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, ammPool ammtypes.Pool, collateralAsset string, custodyAsset string) error {
+func (k Keeper) HandleBorrowInterest(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, ammPool ammtypes.Pool) error {
 	epochLength := k.GetEpochLength(ctx)
 	epochPosition := k.GetEpochPosition(ctx, epochLength)
 	if epochPosition <= 0 {
@@ -22,14 +22,14 @@ func (k Keeper) HandleBorrowInterest(ctx sdk.Context, mtp *types.MTP, pool *type
 	}
 	baseCurrency := entry.Denom
 
-	borrowInterestPayment, err := k.CalcMTPBorrowInterestLiabilities(ctx, mtp, pool.BorrowInterestRate, epochPosition, epochLength, ammPool, collateralAsset, baseCurrency)
+	borrowInterestPayment, err := k.CalcMTPBorrowInterestLiabilities(ctx, mtp, pool.BorrowInterestRate, epochPosition, epochLength, ammPool, baseCurrency)
 	if err != nil {
 		return err
 	}
-	finalBorrowInterestPayment := k.HandleBorrowInterestPayment(ctx, collateralAsset, custodyAsset, borrowInterestPayment, mtp, pool, ammPool, baseCurrency)
+	finalBorrowInterestPayment := k.HandleBorrowInterestPayment(ctx, borrowInterestPayment, mtp, pool, ammPool, baseCurrency)
 
 	// finalInterestPayment is in custodyAsset
-	if err := pool.UpdateBlockBorrowInterest(ctx, custodyAsset, finalBorrowInterestPayment, true, mtp.Position); err != nil {
+	if err := pool.UpdateBlockBorrowInterest(ctx, mtp.CustodyAsset, finalBorrowInterestPayment, true, mtp.Position); err != nil {
 		return err
 	}
 

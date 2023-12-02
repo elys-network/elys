@@ -6,15 +6,31 @@ import (
 	"github.com/elys-network/elys/x/margin/types"
 )
 
-func (k Keeper) EstimateAndRepay(ctx sdk.Context, mtp types.MTP, pool types.Pool, ammPool ammtypes.Pool, collateralAsset string, custodyAsset string) (sdk.Int, error) {
-	collateralIndex, custodyIndex := types.GetMTPAssetIndex(&mtp, collateralAsset, custodyAsset)
-	cutodyAmtTokenIn := sdk.NewCoin(mtp.Custodies[custodyIndex].Denom, mtp.Custodies[custodyIndex].Amount)
-	repayAmount, err := k.EstimateSwap(ctx, cutodyAmtTokenIn, mtp.Collaterals[collateralIndex].Denom, ammPool)
-	if err != nil {
-		return sdk.ZeroInt(), err
+func (k Keeper) EstimateAndRepay(ctx sdk.Context, mtp types.MTP, pool types.Pool, ammPool ammtypes.Pool, amount sdk.Int, baseCurrency string) (sdk.Int, error) {
+	// init repay amount
+	repayAmount := sdk.ZeroInt()
+
+	// if position is long, repay in collateral asset
+	if mtp.Position == types.Position_LONG {
+		custodyAmtTokenIn := sdk.NewCoin(mtp.CustodyAsset, amount)
+		var err error
+		repayAmount, err = k.EstimateSwap(ctx, custodyAmtTokenIn, mtp.CollateralAsset, ammPool)
+		if err != nil {
+			return sdk.ZeroInt(), err
+		}
+	} else if mtp.Position == types.Position_SHORT {
+		// if position is short, repay in trading asset
+		custodyAmtTokenIn := sdk.NewCoin(mtp.CustodyAsset, amount)
+		var err error
+		repayAmount, err = k.EstimateSwap(ctx, custodyAmtTokenIn, mtp.TradingAsset, ammPool)
+		if err != nil {
+			return sdk.ZeroInt(), err
+		}
+	} else {
+		return sdk.ZeroInt(), types.ErrInvalidPosition
 	}
 
-	if err := k.Repay(ctx, &mtp, &pool, ammPool, repayAmount, false, collateralAsset); err != nil {
+	if err := k.Repay(ctx, &mtp, &pool, ammPool, repayAmount, false, amount, baseCurrency); err != nil {
 		return sdk.ZeroInt(), err
 	}
 

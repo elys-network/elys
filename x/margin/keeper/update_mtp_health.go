@@ -13,33 +13,46 @@ func (k Keeper) UpdateMTPHealth(ctx sdk.Context, mtp types.MTP, ammPool ammtypes
 		return sdk.ZeroDec(), nil
 	}
 
-	// include unpaid borrow interest in debt (from disabled incremental pay)
-	for i := range mtp.Collaterals {
-		if mtp.BorrowInterestUnpaidCollaterals[i].Amount.GT(sdk.ZeroInt()) {
-			unpaidCollaterals := sdk.NewCoin(mtp.Collaterals[i].Denom, mtp.BorrowInterestUnpaidCollaterals[i].Amount)
-
-			if mtp.Collaterals[i].Denom == baseCurrency {
-				xl = xl.Add(mtp.BorrowInterestUnpaidCollaterals[i].Amount)
-			} else {
-				C, err := k.EstimateSwapGivenOut(ctx, unpaidCollaterals, baseCurrency, ammPool)
-				if err != nil {
-					return sdk.ZeroDec(), err
-				}
-
-				xl = xl.Add(C)
-			}
-		}
-	}
-
-	custodyAmtInBaseCurrency := sdk.ZeroInt()
-	for i := range mtp.Custodies {
-		custodyTokenIn := sdk.NewCoin(mtp.Custodies[i].Denom, mtp.Custodies[i].Amount)
-		// All liabilty is in base currency
-		C, err := k.EstimateSwapGivenOut(ctx, custodyTokenIn, baseCurrency, ammPool)
+	// if short position, convert liabilities to base currency
+	if mtp.Position == types.Position_SHORT {
+		liabilities := sdk.NewCoin(mtp.LiabilitiesAsset, xl)
+		var err error
+		xl, err = k.EstimateSwapGivenOut(ctx, liabilities, baseCurrency, ammPool)
 		if err != nil {
 			return sdk.ZeroDec(), err
 		}
-		custodyAmtInBaseCurrency = custodyAmtInBaseCurrency.Add(C)
+
+		if xl.IsZero() {
+			return sdk.ZeroDec(), nil
+		}
+	}
+
+	// include unpaid borrow interest in debt (from disabled incremental pay)
+	if mtp.BorrowInterestUnpaidCollateral.IsPositive() {
+		unpaidCollateral := sdk.NewCoin(mtp.CollateralAsset, mtp.BorrowInterestUnpaidCollateral)
+
+		if mtp.CollateralAsset == baseCurrency {
+			xl = xl.Add(mtp.BorrowInterestUnpaidCollateral)
+		} else {
+			C, err := k.EstimateSwapGivenOut(ctx, unpaidCollateral, baseCurrency, ammPool)
+			if err != nil {
+				return sdk.ZeroDec(), err
+			}
+
+			xl = xl.Add(C)
+		}
+	}
+
+	// if short position, custody asset is already in base currency
+	custodyAmtInBaseCurrency := mtp.Custody
+
+	if mtp.Position == types.Position_LONG {
+		custodyAmt := sdk.NewCoin(mtp.CustodyAsset, mtp.Custody)
+		var err error
+		custodyAmtInBaseCurrency, err = k.EstimateSwapGivenOut(ctx, custodyAmt, baseCurrency, ammPool)
+		if err != nil {
+			return sdk.ZeroDec(), err
+		}
 	}
 
 	lr := sdk.NewDecFromBigInt(custodyAmtInBaseCurrency.BigInt()).Quo(sdk.NewDecFromBigInt(xl.BigInt()))

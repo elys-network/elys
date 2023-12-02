@@ -6,5 +6,5 @@ import (
 )
 
 func (k Keeper) EmitOpenEvent(ctx sdk.Context, mtp *types.MTP) {
-	ctx.EventManager().EmitEvent(k.GenerateOpenEvent(mtp))
+	ctx.EventManager().EmitEvent(types.GenerateOpenEvent(mtp))
 }

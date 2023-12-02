@@ -1,11 +1,14 @@
 package keeper
 
 import (
+	"fmt"
 	"strconv"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
 	"github.com/elys-network/elys/x/margin/types"
+	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
 
 func (k Keeper) Close(ctx sdk.Context, msg *types.MsgClose) (*types.MsgCloseResponse, error) {
@@ -14,16 +17,22 @@ func (k Keeper) Close(ctx sdk.Context, msg *types.MsgClose) (*types.MsgCloseResp
 		return nil, err
 	}
 
+	entry, found := k.apKeeper.GetEntry(ctx, ptypes.BaseCurrency)
+	if !found {
+		return nil, sdkerrors.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency)
+	}
+	baseCurrency := entry.Denom
+
 	var closedMtp *types.MTP
 	var repayAmount sdk.Int
 	switch mtp.Position {
 	case types.Position_LONG:
-		closedMtp, repayAmount, err = k.CloseLong(ctx, msg)
+		closedMtp, repayAmount, err = k.CloseLong(ctx, msg, baseCurrency)
 		if err != nil {
 			return nil, err
 		}
 	case types.Position_SHORT:
-		closedMtp, repayAmount, err = k.CloseShort(ctx, msg)
+		closedMtp, repayAmount, err = k.CloseShort(ctx, msg, baseCurrency)
 		if err != nil {
 			return nil, err
 		}
@@ -31,22 +40,18 @@ func (k Keeper) Close(ctx sdk.Context, msg *types.MsgClose) (*types.MsgCloseResp
 		return nil, sdkerrors.Wrap(types.ErrInvalidPosition, mtp.Position.String())
 	}
 
-	collateralIndex := len(mtp.Collaterals) - 1
-	custodyIndex := len(mtp.Custodies) - 1
-	mtpPosIndex := len(mtp.Leverages) - 1
-
 	ctx.EventManager().EmitEvent(sdk.NewEvent(types.EventClose,
 		sdk.NewAttribute("id", strconv.FormatInt(int64(closedMtp.Id), 10)),
 		sdk.NewAttribute("position", closedMtp.Position.String()),
 		sdk.NewAttribute("address", closedMtp.Address),
-		sdk.NewAttribute("collateral", closedMtp.Collaterals[collateralIndex].String()),
-		sdk.NewAttribute("custody", closedMtp.Custodies[custodyIndex].String()),
+		sdk.NewAttribute("collateral", closedMtp.Collateral.String()),
+		sdk.NewAttribute("custody", closedMtp.Custody.String()),
 		sdk.NewAttribute("repay_amount", repayAmount.String()),
-		sdk.NewAttribute("leverage", closedMtp.Leverages[mtpPosIndex].String()),
+		sdk.NewAttribute("leverage", fmt.Sprintf("%s", closedMtp.Leverage)),
 		sdk.NewAttribute("liabilities", closedMtp.Liabilities.String()),
-		sdk.NewAttribute("borrow_interest_paid_collateral", mtp.BorrowInterestPaidCollaterals[collateralIndex].String()),
-		sdk.NewAttribute("borrow_interest_paid_custody", mtp.BorrowInterestPaidCustodies[custodyIndex].String()),
-		sdk.NewAttribute("borrow_interest_unpaid_collateral", closedMtp.BorrowInterestUnpaidCollaterals[collateralIndex].String()),
+		sdk.NewAttribute("borrow_interest_paid_collateral", mtp.BorrowInterestPaidCollateral.String()),
+		sdk.NewAttribute("borrow_interest_paid_custody", mtp.BorrowInterestPaidCustody.String()),
+		sdk.NewAttribute("borrow_interest_unpaid_collateral", closedMtp.BorrowInterestUnpaidCollateral.String()),
 		sdk.NewAttribute("health", closedMtp.MtpHealth.String()),
 	))
 
