@@ -125,7 +125,7 @@ func TestOpenShort_InsufficientLiabilities(t *testing.T) {
 	// Mock the behavior where CheckMinLiabilities returns an error indicating insufficient liabilities
 	liabilityError := errors.New("insufficient liabilities")
 
-	mockChecker.On("CheckMinLiabilities", ctx, msg.Collateral, sdk.NewDec(1), pool, ammPool, ptypes.BaseCurrency, ptypes.BaseCurrency).Return(liabilityError)
+	mockChecker.On("CheckMinLiabilities", ctx, msg.Collateral, sdk.NewDec(1), ammPool, ptypes.BaseCurrency, ptypes.BaseCurrency).Return(liabilityError)
 
 	_, err := k.OpenShort(ctx, ammPool.PoolId, msg, ptypes.BaseCurrency)
 
@@ -177,7 +177,7 @@ func TestOpenShort_InsufficientAmmPoolBalanceForCustody(t *testing.T) {
 
 	eta := math.LegacyNewDec(9)
 
-	mockChecker.On("CheckMinLiabilities", ctx, msg.Collateral, eta, pool, ammPool, ptypes.BaseCurrency, ptypes.BaseCurrency).Return(nil)
+	mockChecker.On("CheckMinLiabilities", ctx, msg.Collateral, eta, ammPool, ptypes.BaseCurrency, ptypes.BaseCurrency).Return(nil)
 
 	_, err := k.OpenShort(ctx, ammPool.PoolId, msg, ptypes.BaseCurrency)
 
@@ -231,7 +231,7 @@ func TestOpenShort_ErrorsDuringOperations(t *testing.T) {
 
 	eta := math.LegacyNewDec(9)
 
-	mockChecker.On("CheckMinLiabilities", ctx, msg.Collateral, eta, pool, ammPool, ptypes.BaseCurrency, ptypes.BaseCurrency).Return(nil)
+	mockChecker.On("CheckMinLiabilities", ctx, msg.Collateral, eta, ammPool, ptypes.BaseCurrency, ptypes.BaseCurrency).Return(nil)
 
 	custodyAmount := sdk.NewDecFromBigInt(msg.Collateral.Amount.BigInt()).Mul(msg.Leverage).TruncateInt()
 
@@ -292,7 +292,7 @@ func TestOpenShort_LeverageRatioLessThanSafetyFactor(t *testing.T) {
 
 	eta := math.LegacyNewDec(9)
 
-	mockChecker.On("CheckMinLiabilities", ctx, msg.Collateral, eta, pool, ammPool, ptypes.BaseCurrency, ptypes.BaseCurrency).Return(nil)
+	mockChecker.On("CheckMinLiabilities", ctx, msg.Collateral, eta, ammPool, ptypes.BaseCurrency, ptypes.BaseCurrency).Return(nil)
 
 	custodyAmount := sdk.NewDecFromBigInt(msg.Collateral.Amount.BigInt()).Mul(msg.Leverage).TruncateInt()
 
@@ -359,7 +359,7 @@ func TestOpenShort_Success(t *testing.T) {
 
 	eta := math.LegacyNewDec(9)
 
-	mockChecker.On("CheckMinLiabilities", ctx, msg.Collateral, eta, pool, ammPool, ptypes.BaseCurrency, ptypes.BaseCurrency).Return(nil)
+	mockChecker.On("CheckMinLiabilities", ctx, msg.Collateral, eta, ammPool, ptypes.BaseCurrency, ptypes.BaseCurrency).Return(nil)
 
 	custodyAmount := sdk.NewDecFromBigInt(msg.Collateral.Amount.BigInt()).Mul(msg.Leverage).TruncateInt()
 

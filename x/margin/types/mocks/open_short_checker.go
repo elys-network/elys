@@ -119,13 +119,13 @@ func (_c *OpenShortChecker_CalcMTPConsolidateCollateral_Call) RunAndReturn(run f
 	return _c
 }
 
-// CheckMinLiabilities provides a mock function with given fields: ctx, collateralTokenAmt, eta, pool, ammPool, borrowAsset, baseCurrency
-func (_m *OpenShortChecker) CheckMinLiabilities(ctx types.Context, collateralTokenAmt types.Coin, eta math.LegacyDec, pool margintypes.Pool, ammPool ammtypes.Pool, borrowAsset string, baseCurrency string) error {
-	ret := _m.Called(ctx, collateralTokenAmt, eta, pool, ammPool, borrowAsset, baseCurrency)
+// CheckMinLiabilities provides a mock function with given fields: ctx, collateralTokenAmt, eta, ammPool, borrowAsset, baseCurrency
+func (_m *OpenShortChecker) CheckMinLiabilities(ctx types.Context, collateralTokenAmt types.Coin, eta math.LegacyDec, ammPool ammtypes.Pool, borrowAsset string, baseCurrency string) error {
+	ret := _m.Called(ctx, collateralTokenAmt, eta, ammPool, borrowAsset, baseCurrency)
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(types.Context, types.Coin, math.LegacyDec, margintypes.Pool, ammtypes.Pool, string, string) error); ok {
-		r0 = rf(ctx, collateralTokenAmt, eta, pool, ammPool, borrowAsset, baseCurrency)
+	if rf, ok := ret.Get(0).(func(types.Context, types.Coin, math.LegacyDec, ammtypes.Pool, string, string) error); ok {
+		r0 = rf(ctx, collateralTokenAmt, eta, ammPool, borrowAsset, baseCurrency)
 	} else {
 		r0 = ret.Error(0)
 	}
@@ -142,17 +142,16 @@ type OpenShortChecker_CheckMinLiabilities_Call struct {
 //   - ctx types.Context
 //   - collateralTokenAmt types.Coin
 //   - eta math.LegacyDec
-//   - pool margintypes.Pool
 //   - ammPool ammtypes.Pool
 //   - borrowAsset string
 //   - baseCurrency string
-func (_e *OpenShortChecker_Expecter) CheckMinLiabilities(ctx interface{}, collateralTokenAmt interface{}, eta interface{}, pool interface{}, ammPool interface{}, borrowAsset interface{}, baseCurrency interface{}) *OpenShortChecker_CheckMinLiabilities_Call {
-	return &OpenShortChecker_CheckMinLiabilities_Call{Call: _e.mock.On("CheckMinLiabilities", ctx, collateralTokenAmt, eta, pool, ammPool, borrowAsset, baseCurrency)}
+func (_e *OpenShortChecker_Expecter) CheckMinLiabilities(ctx interface{}, collateralTokenAmt interface{}, eta interface{}, ammPool interface{}, borrowAsset interface{}, baseCurrency interface{}) *OpenShortChecker_CheckMinLiabilities_Call {
+	return &OpenShortChecker_CheckMinLiabilities_Call{Call: _e.mock.On("CheckMinLiabilities", ctx, collateralTokenAmt, eta, ammPool, borrowAsset, baseCurrency)}
 }
 
-func (_c *OpenShortChecker_CheckMinLiabilities_Call) Run(run func(ctx types.Context, collateralTokenAmt types.Coin, eta math.LegacyDec, pool margintypes.Pool, ammPool ammtypes.Pool, borrowAsset string, baseCurrency string)) *OpenShortChecker_CheckMinLiabilities_Call {
+func (_c *OpenShortChecker_CheckMinLiabilities_Call) Run(run func(ctx types.Context, collateralTokenAmt types.Coin, eta math.LegacyDec, ammPool ammtypes.Pool, borrowAsset string, baseCurrency string)) *OpenShortChecker_CheckMinLiabilities_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(types.Context), args[1].(types.Coin), args[2].(math.LegacyDec), args[3].(margintypes.Pool), args[4].(ammtypes.Pool), args[5].(string), args[6].(string))
+		run(args[0].(types.Context), args[1].(types.Coin), args[2].(math.LegacyDec), args[3].(ammtypes.Pool), args[4].(string), args[5].(string))
 	})
 	return _c
 }
@@ -162,7 +161,7 @@ func (_c *OpenShortChecker_CheckMinLiabilities_Call) Return(_a0 error) *OpenShor
 	return _c
 }
 
-func (_c *OpenShortChecker_CheckMinLiabilities_Call) RunAndReturn(run func(types.Context, types.Coin, math.LegacyDec, margintypes.Pool, ammtypes.Pool, string, string) error) *OpenShortChecker_CheckMinLiabilities_Call {
+func (_c *OpenShortChecker_CheckMinLiabilities_Call) RunAndReturn(run func(types.Context, types.Coin, math.LegacyDec, ammtypes.Pool, string, string) error) *OpenShortChecker_CheckMinLiabilities_Call {
 	_c.Call.Return(run)
 	return _c
 }

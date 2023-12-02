@@ -461,7 +461,7 @@ func (k Keeper) BorrowInterestRateComputation(ctx sdk.Context, pool types.Pool, 
 	return newBorrowInterestRate, nil
 }
 
-func (k Keeper) CheckMinLiabilities(ctx sdk.Context, collateralAmount sdk.Coin, eta sdk.Dec, pool types.Pool, ammPool ammtypes.Pool, custodyAsset string, baseCurrency string) error {
+func (k Keeper) CheckMinLiabilities(ctx sdk.Context, collateralAmount sdk.Coin, eta sdk.Dec, ammPool ammtypes.Pool, custodyAsset string, baseCurrency string) error {
 	var borrowInterestRational, liabilitiesRational, rate big.Rat
 	minBorrowInterestRate := k.GetBorrowInterestRateMin(ctx)
 
@@ -478,6 +478,7 @@ func (k Keeper) CheckMinLiabilities(ctx sdk.Context, collateralAmount sdk.Coin, 
 	if collateralAmount.Denom != baseCurrency {
 		outAmt := liabilitiesDec.TruncateInt()
 		outAmtToken := sdk.NewCoin(collateralAmount.Denom, outAmt)
+
 		inAmt, err := k.OpenLongChecker.EstimateSwapGivenOut(ctx, outAmtToken, baseCurrency, ammPool)
 		if err != nil {
 			return types.ErrBorrowTooLow
@@ -490,7 +491,6 @@ func (k Keeper) CheckMinLiabilities(ctx sdk.Context, collateralAmount sdk.Coin, 
 
 	borrowInterestNew := borrowInterestRational.Num().Quo(borrowInterestRational.Num(), borrowInterestRational.Denom())
 	samplePayment := sdk.NewInt(borrowInterestNew.Int64())
-
 	if samplePayment.IsZero() && !minBorrowInterestRate.IsZero() {
 		return types.ErrBorrowTooLow
 	}
@@ -508,6 +508,7 @@ func (k Keeper) CheckMinLiabilities(ctx sdk.Context, collateralAmount sdk.Coin, 
 	}
 
 	samplePaymentTokenIn := sdk.NewCoin(collateralAmount.Denom, samplePayment)
+
 	// swap borrow interest payment to custody asset
 	_, err := k.EstimateSwap(ctx, samplePaymentTokenIn, custodyAsset, ammPool)
 	if err != nil {

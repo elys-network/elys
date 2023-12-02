@@ -1,6 +1,7 @@
 package cli
 
 import (
+	"errors"
 	"strconv"
 
 	"github.com/cosmos/cosmos-sdk/client"
@@ -12,11 +13,11 @@ import (
 
 var _ = strconv.Itoa(0)
 
-func CmdMinCollateral() *cobra.Command {
+func CmdOpenEstimation() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:     "min-collateral [position] [leverage] [trading-asset] [collateral-asset]",
-		Short:   "Query min-collateral",
-		Example: "elysd q margin min-collateral long 5 uatom uusdc",
+		Use:     "open-estimation [position] [leverage] [trading-asset] [collateral]",
+		Short:   "Query open-estimation",
+		Example: "elysd q margin open-estimation long 5 uatom 100000000uusdc",
 		Args:    cobra.ExactArgs(4),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			reqPosition := types.GetPositionFromString(args[0])
@@ -27,7 +28,11 @@ func CmdMinCollateral() *cobra.Command {
 			}
 
 			reqTradingAsset := args[2]
-			reqCollateralAsset := args[3]
+
+			reqCollateral, err := sdk.ParseCoinNormalized(args[3])
+			if err != nil {
+				return err
+			}
 
 			discountStr, err := cmd.Flags().GetString(FlagDiscount)
 			if err != nil {
@@ -38,6 +43,24 @@ func CmdMinCollateral() *cobra.Command {
 				return err
 			}
 
+			takeProfitPriceStr, err := cmd.Flags().GetString(flagTakeProfitPrice)
+			if err != nil {
+				return err
+			}
+
+			var takeProfitPrice sdk.Dec
+			if takeProfitPriceStr != types.InfinitePriceString {
+				takeProfitPrice, err = sdk.NewDecFromStr(takeProfitPriceStr)
+				if err != nil {
+					return errors.New("invalid take profit price")
+				}
+			} else {
+				takeProfitPrice, err = sdk.NewDecFromStr(types.TakeProfitPriceDefault)
+				if err != nil {
+					return errors.New("failed to set default take profit price")
+				}
+			}
+
 			clientCtx, err := client.GetClientQueryContext(cmd)
 			if err != nil {
 				return err
@@ -45,15 +68,16 @@ func CmdMinCollateral() *cobra.Command {
 
 			queryClient := types.NewQueryClient(clientCtx)
 
-			params := &types.QueryMinCollateralRequest{
+			params := &types.QueryOpenEstimationRequest{
 				Position:        reqPosition,
 				Leverage:        reqLeverage,
 				TradingAsset:    reqTradingAsset,
-				CollateralAsset: reqCollateralAsset,
+				Collateral:      reqCollateral,
 				Discount:        discount,
+				TakeProfitPrice: takeProfitPrice,
 			}
 
-			res, err := queryClient.MinCollateral(cmd.Context(), params)
+			res, err := queryClient.OpenEstimation(cmd.Context(), params)
 			if err != nil {
 				return err
 			}
@@ -65,6 +89,7 @@ func CmdMinCollateral() *cobra.Command {
 	flags.AddQueryFlagsToCmd(cmd)
 
 	cmd.Flags().String(FlagDiscount, "0.0", "discount to apply to the swap fee")
+	cmd.Flags().String(flagTakeProfitPrice, types.InfinitePriceString, "Optional take profit price")
 
 	return cmd
 }

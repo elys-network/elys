@@ -44,7 +44,7 @@ func (k Keeper) ProcessOpenLong(ctx sdk.Context, mtp *types.MTP, leverage sdk.De
 	}
 
 	// Check minimum liabilities.
-	err = k.OpenLongChecker.CheckMinLiabilities(ctx, msg.Collateral, eta, pool, ammPool, mtp.CustodyAsset, baseCurrency)
+	err = k.OpenLongChecker.CheckMinLiabilities(ctx, msg.Collateral, eta, ammPool, mtp.CustodyAsset, baseCurrency)
 	if err != nil {
 		return nil, err
 	}

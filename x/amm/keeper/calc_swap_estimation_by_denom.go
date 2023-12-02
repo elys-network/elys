@@ -13,12 +13,13 @@ func (k Keeper) CalcSwapEstimationByDenom(
 	denomOut string,
 	baseCurrency string,
 	discount sdk.Dec,
+	overrideSwapFee sdk.Dec,
 ) (
 	inRoute []*types.SwapAmountInRoute,
 	outRoute []*types.SwapAmountOutRoute,
 	outAmount sdk.Coin,
 	spotPrice sdk.Dec,
-	swapFee sdk.Dec,
+	swapFeeOut sdk.Dec,
 	discountOut sdk.Dec,
 	availableLiquidity sdk.Coin,
 	err error,
@@ -29,11 +30,11 @@ func (k Keeper) CalcSwapEstimationByDenom(
 		if err != nil {
 			return nil, nil, sdk.Coin{}, sdk.ZeroDec(), sdk.ZeroDec(), sdk.ZeroDec(), sdk.Coin{}, err
 		}
-		spotPrice, tokenOut, swapFee, _, availableLiquidity, err := k.CalcInRouteSpotPrice(ctx, amount, inRoute, discount)
+		spotPrice, tokenOut, swapFeeOut, _, availableLiquidity, err := k.CalcInRouteSpotPrice(ctx, amount, inRoute, discount, overrideSwapFee)
 		if err != nil {
 			return nil, nil, sdk.Coin{}, sdk.ZeroDec(), sdk.ZeroDec(), sdk.ZeroDec(), sdk.Coin{}, err
 		}
-		return inRoute, nil, tokenOut, spotPrice, swapFee, discount, availableLiquidity, nil
+		return inRoute, nil, tokenOut, spotPrice, swapFeeOut, discount, availableLiquidity, nil
 	}
 
 	// if amount denom is equal to denomOut, calculate swap estimation by denomOut
@@ -42,11 +43,11 @@ func (k Keeper) CalcSwapEstimationByDenom(
 		if err != nil {
 			return nil, nil, sdk.Coin{}, sdk.ZeroDec(), sdk.ZeroDec(), sdk.ZeroDec(), sdk.Coin{}, err
 		}
-		spotPrice, tokenIn, swapFee, _, availableLiquidity, err := k.CalcOutRouteSpotPrice(ctx, amount, outRoute, discount)
+		spotPrice, tokenIn, swapFeeOut, _, availableLiquidity, err := k.CalcOutRouteSpotPrice(ctx, amount, outRoute, discount, overrideSwapFee)
 		if err != nil {
 			return nil, nil, sdk.Coin{}, sdk.ZeroDec(), sdk.ZeroDec(), sdk.ZeroDec(), sdk.Coin{}, err
 		}
-		return nil, outRoute, tokenIn, spotPrice, swapFee, discount, availableLiquidity, nil
+		return nil, outRoute, tokenIn, spotPrice, swapFeeOut, discount, availableLiquidity, nil
 	}
 
 	// if amount denom is neither equal to denomIn nor denomOut, return error

@@ -49,7 +49,7 @@ type OpenLongChecker interface {
 	GetPool(ctx sdk.Context, poolId uint64) (Pool, bool)
 	IsPoolEnabled(ctx sdk.Context, poolId uint64) bool
 	GetAmmPool(ctx sdk.Context, poolId uint64, tradingAsset string) (ammtypes.Pool, error)
-	CheckMinLiabilities(ctx sdk.Context, collateralTokenAmt sdk.Coin, eta sdk.Dec, pool Pool, ammPool ammtypes.Pool, borrowAsset string, baseCurrency string) error
+	CheckMinLiabilities(ctx sdk.Context, collateralTokenAmt sdk.Coin, eta sdk.Dec, ammPool ammtypes.Pool, borrowAsset string, baseCurrency string) error
 	EstimateSwap(ctx sdk.Context, leveragedAmtTokenIn sdk.Coin, borrowAsset string, ammPool ammtypes.Pool) (sdk.Int, error)
 	EstimateSwapGivenOut(ctx sdk.Context, tokenOutAmount sdk.Coin, tokenInDenom string, ammPool ammtypes.Pool) (sdk.Int, error)
 	Borrow(ctx sdk.Context, collateralAmount sdk.Int, custodyAmount sdk.Int, mtp *MTP, ammPool *ammtypes.Pool, pool *Pool, eta sdk.Dec, baseCurrency string) error
@@ -69,7 +69,7 @@ type OpenShortChecker interface {
 	GetPool(ctx sdk.Context, poolId uint64) (Pool, bool)
 	IsPoolEnabled(ctx sdk.Context, poolId uint64) bool
 	GetAmmPool(ctx sdk.Context, poolId uint64, tradingAsset string) (ammtypes.Pool, error)
-	CheckMinLiabilities(ctx sdk.Context, collateralTokenAmt sdk.Coin, eta sdk.Dec, pool Pool, ammPool ammtypes.Pool, borrowAsset string, baseCurrency string) error
+	CheckMinLiabilities(ctx sdk.Context, collateralTokenAmt sdk.Coin, eta sdk.Dec, ammPool ammtypes.Pool, borrowAsset string, baseCurrency string) error
 	EstimateSwap(ctx sdk.Context, leveragedAmtTokenIn sdk.Coin, borrowAsset string, ammPool ammtypes.Pool) (sdk.Int, error)
 	EstimateSwapGivenOut(ctx sdk.Context, tokenOutAmount sdk.Coin, tokenInDenom string, ammPool ammtypes.Pool) (sdk.Int, error)
 	Borrow(ctx sdk.Context, collateralAmount sdk.Int, custodyAmount sdk.Int, mtp *MTP, ammPool *ammtypes.Pool, pool *Pool, eta sdk.Dec, baseCurrency string) error
@@ -137,6 +137,25 @@ type AmmKeeper interface {
 
 	CalcOutAmtGivenIn(ctx sdk.Context, poolId uint64, oracle ammtypes.OracleKeeper, snapshot *ammtypes.Pool, tokensIn sdk.Coins, tokenOutDenom string, swapFee sdk.Dec) (sdk.Coin, error)
 	CalcInAmtGivenOut(ctx sdk.Context, poolId uint64, oracle ammtypes.OracleKeeper, snapshot *ammtypes.Pool, tokensOut sdk.Coins, tokenInDenom string, swapFee sdk.Dec) (tokenIn sdk.Coin, err error)
+
+	CalcSwapEstimationByDenom(
+		ctx sdk.Context,
+		amount sdk.Coin,
+		denomIn string,
+		denomOut string,
+		baseCurrency string,
+		discount sdk.Dec,
+		overrideSwapFee sdk.Dec,
+	) (
+		inRoute []*ammtypes.SwapAmountInRoute,
+		outRoute []*ammtypes.SwapAmountOutRoute,
+		outAmount sdk.Coin,
+		spotPrice sdk.Dec,
+		swapFee sdk.Dec,
+		discountOut sdk.Dec,
+		availableLiquidity sdk.Coin,
+		err error,
+	)
 }
 
 // BankKeeper defines the expected interface needed to retrieve account balances.

@@ -8,8 +8,8 @@ import (
 	"github.com/elys-network/elys/x/margin/types"
 )
 
-func (k Keeper) GetFirstValidPool(ctx sdk.Context, collateralAsset string, borrowAsset string) (uint64, error) {
-	denoms := []string{collateralAsset, borrowAsset}
+func (k Keeper) GetFirstValidPool(ctx sdk.Context, collateralAsset string, tradingAsset string) (uint64, error) {
+	denoms := []string{collateralAsset, tradingAsset}
 	poolId, found := k.amm.GetPoolIdWithAllDenoms(ctx, denoms)
 	if !found {
 		return 0, sdkerrors.Wrap(types.ErrPoolDoesNotExist, fmt.Sprintf("%s", denoms))

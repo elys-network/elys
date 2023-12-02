@@ -39,8 +39,8 @@ func (oq *Querier) HandleQuery(ctx sdk.Context, query wasmbindingstypes.ElysQuer
 		return oq.queryPools(ctx, query.MarginPools)
 	case query.MarginMTP != nil:
 		return oq.queryMtp(ctx, query.MarginMTP)
-	case query.MarginMinCollateral != nil:
-		return oq.queryMinCollateral(ctx, query.MarginMinCollateral)
+	case query.MarginOpenEstimation != nil:
+		return oq.queryOpenEstimation(ctx, query.MarginOpenEstimation)
 	default:
 		// This handler cannot handle the query
 		return nil, wasmbindingstypes.ErrCannotHandleQuery

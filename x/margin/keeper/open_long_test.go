@@ -124,7 +124,7 @@ func TestOpenLong_InsufficientLiabilities(t *testing.T) {
 	// Mock the behavior where CheckMinLiabilities returns an error indicating insufficient liabilities
 	liabilityError := errors.New("insufficient liabilities")
 
-	mockChecker.On("CheckMinLiabilities", ctx, msg.Collateral, sdk.NewDec(1), pool, ammPool, msg.TradingAsset, ptypes.BaseCurrency).Return(liabilityError)
+	mockChecker.On("CheckMinLiabilities", ctx, msg.Collateral, sdk.NewDec(1), ammPool, msg.TradingAsset, ptypes.BaseCurrency).Return(liabilityError)
 
 	_, err := k.OpenLong(ctx, ammPool.PoolId, msg, ptypes.BaseCurrency)
 
@@ -176,7 +176,7 @@ func TestOpenLong_InsufficientAmmPoolBalanceForCustody(t *testing.T) {
 
 	eta := math.LegacyNewDec(9)
 
-	mockChecker.On("CheckMinLiabilities", ctx, msg.Collateral, eta, pool, ammPool, msg.TradingAsset, ptypes.BaseCurrency).Return(nil)
+	mockChecker.On("CheckMinLiabilities", ctx, msg.Collateral, eta, ammPool, msg.TradingAsset, ptypes.BaseCurrency).Return(nil)
 
 	leveragedAmtTokenIn := sdk.NewCoin(msg.Collateral.Denom, math.NewInt(10000))
 	custodyAmount := math.NewInt(99)
@@ -235,7 +235,7 @@ func TestOpenLong_ErrorsDuringOperations(t *testing.T) {
 
 	eta := math.LegacyNewDec(9)
 
-	mockChecker.On("CheckMinLiabilities", ctx, msg.Collateral, eta, pool, ammPool, msg.TradingAsset, ptypes.BaseCurrency).Return(nil)
+	mockChecker.On("CheckMinLiabilities", ctx, msg.Collateral, eta, ammPool, msg.TradingAsset, ptypes.BaseCurrency).Return(nil)
 
 	leveragedAmtTokenIn := sdk.NewCoin(msg.Collateral.Denom, math.NewInt(10000))
 	custodyAmount := math.NewInt(99)
@@ -299,7 +299,7 @@ func TestOpenLong_LeverageRatioLessThanSafetyFactor(t *testing.T) {
 
 	eta := math.LegacyNewDec(9)
 
-	mockChecker.On("CheckMinLiabilities", ctx, msg.Collateral, eta, pool, ammPool, msg.TradingAsset, ptypes.BaseCurrency).Return(nil)
+	mockChecker.On("CheckMinLiabilities", ctx, msg.Collateral, eta, ammPool, msg.TradingAsset, ptypes.BaseCurrency).Return(nil)
 
 	leveragedAmtTokenIn := sdk.NewCoin(msg.Collateral.Denom, math.NewInt(10000))
 	custodyAmount := math.NewInt(99)
@@ -369,7 +369,7 @@ func TestOpenLong_Success(t *testing.T) {
 
 	eta := math.LegacyNewDec(9)
 
-	mockChecker.On("CheckMinLiabilities", ctx, msg.Collateral, eta, pool, ammPool, msg.TradingAsset, ptypes.BaseCurrency).Return(nil)
+	mockChecker.On("CheckMinLiabilities", ctx, msg.Collateral, eta, ammPool, msg.TradingAsset, ptypes.BaseCurrency).Return(nil)
 
 	leveragedAmtTokenIn := sdk.NewCoin(msg.Collateral.Denom, math.NewInt(10000))
 	custodyAmount := math.NewInt(99)
