@@ -26,6 +26,7 @@ import (
 	leveragelptypes "github.com/elys-network/elys/x/leveragelp/types"
 	margintypes "github.com/elys-network/elys/x/margin/types"
 	oracletypes "github.com/elys-network/elys/x/oracle/types"
+	parametertypes "github.com/elys-network/elys/x/parameter/types"
 	stablestaketypes "github.com/elys-network/elys/x/stablestake/types"
 	tokenomicstypes "github.com/elys-network/elys/x/tokenomics/types"
 	transferhooktypes "github.com/elys-network/elys/x/transferhook/types"
@@ -86,6 +87,8 @@ func setUpgradeHandler(app *ElysApp) {
 			keyTable = transferhooktypes.ParamKeyTable() //nolint:staticcheck
 		case stablestaketypes.ModuleName:
 			keyTable = stablestaketypes.ParamKeyTable() //nolint:staticcheck
+		case parametertypes.ModuleName:
+			keyTable = parametertypes.ParamKeyTable() //nolint:staticcheck
 		}
 
 		if !subspace.HasKeyTable() {

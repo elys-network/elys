@@ -8,5 +8,8 @@ import (
 
 // x/parameter module sentinel errors
 var (
-	ErrSample = sdkerrors.Register(ModuleName, 1100, "sample error")
+	ErrInvalidMinCommissionRate = sdkerrors.Register(ModuleName, 1101, "invalid min commission rate")
+	ErrInvalidMaxVotingPower    = sdkerrors.Register(ModuleName, 1102, "invalid max voting power")
+	ErrInvalidMinSelfDelegation = sdkerrors.Register(ModuleName, 1103, "invalid min self delegation")
+	ErrInvalidBrokerAddress     = sdkerrors.Register(ModuleName, 1104, "invalid broker address")
 )
