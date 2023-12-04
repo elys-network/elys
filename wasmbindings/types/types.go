@@ -253,10 +253,10 @@ type ElysMsg struct {
 	CommitmentCommitLiquidTokens     *commitmenttypes.MsgCommitLiquidTokens   `json:"commitment_commit_liquid_tokens,omitempty"`
 	CommitmentCommitUnclaimedRewards *commitmenttypes.MsgCommitClaimedRewards `json:"commitment_commit_unclaimed_rewards,omitempty"`
 	CommitmentUncommitTokens         *commitmenttypes.MsgUncommitTokens       `json:"commitment_uncommit_tokens,omitempty"`
-	CommitmentVest                   *commitmenttypes.MsgVestCW               `json:"commitment_vest"`
+	CommitmentVest                   *commitmenttypes.MsgVest                 `json:"commitment_vest"`
 	CommitmentVestNow                *commitmenttypes.MsgVestNow              `json:"commitment_vest_now"`
 	CommitmentVestLiquid             *commitmenttypes.MsgVestLiquid           `json:"commitment_vest_liquid"`
-	CommitmentCancelVest             *commitmenttypes.MsgCancelVestCW         `json:"commitment_cancel_vest"`
+	CommitmentCancelVest             *commitmenttypes.MsgCancelVest           `json:"commitment_cancel_vest"`
 	CommitmentUpdateVestingInfo      *commitmenttypes.MsgUpdateVestingInfo    `json:"commitment_update_vesting_info"`
 	CommitmentStake                  *commitmenttypes.MsgStake                `json:"commitment_stake,omitempty"`
 	CommitmentUnstake                *commitmenttypes.MsgUnstake              `json:"commitment_unstake,omitempty"`
