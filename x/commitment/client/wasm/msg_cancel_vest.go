@@ -12,7 +12,7 @@ import (
 	paramtypes "github.com/elys-network/elys/x/parameter/types"
 )
 
-func (m *Messenger) msgCancelVest(ctx sdk.Context, contractAddr sdk.AccAddress, msgCancelVest *commitmenttypes.MsgCancelVestCW) ([]sdk.Event, [][]byte, error) {
+func (m *Messenger) msgCancelVest(ctx sdk.Context, contractAddr sdk.AccAddress, msgCancelVest *commitmenttypes.MsgCancelVest) ([]sdk.Event, [][]byte, error) {
 	if msgCancelVest == nil {
 		return nil, nil, wasmvmtypes.InvalidRequest{Err: "cancel vest null msg"}
 	}
@@ -43,13 +43,13 @@ func (m *Messenger) msgCancelVest(ctx sdk.Context, contractAddr sdk.AccAddress, 
 	return nil, resp, nil
 }
 
-func performMsgCancelVestEden(f *commitmentkeeper.Keeper, ctx sdk.Context, contractAddr sdk.AccAddress, msgCancelVest *commitmenttypes.MsgCancelVestCW) (*wasmbindingstypes.RequestResponse, error) {
+func performMsgCancelVestEden(f *commitmentkeeper.Keeper, ctx sdk.Context, contractAddr sdk.AccAddress, msgCancelVest *commitmenttypes.MsgCancelVest) (*wasmbindingstypes.RequestResponse, error) {
 	if msgCancelVest == nil {
 		return nil, wasmvmtypes.InvalidRequest{Err: "Invalid cancel vesting parameter"}
 	}
 
 	msgServer := commitmentkeeper.NewMsgServerImpl(*f)
-	msgMsgCancelVest := commitmenttypes.NewMsgCancelVest(msgCancelVest.Address, msgCancelVest.Amount, msgCancelVest.Denom)
+	msgMsgCancelVest := commitmenttypes.NewMsgCancelVest(msgCancelVest.Creator, msgCancelVest.Amount, msgCancelVest.Denom)
 
 	if err := msgMsgCancelVest.ValidateBasic(); err != nil {
 		return nil, errorsmod.Wrap(err, "failed validating msgMsgCancelVest")

@@ -18,7 +18,7 @@ func (m *Messenger) msgBeginRedelegate(ctx sdk.Context, contractAddr sdk.AccAddr
 	var err error
 
 	brokerAddress := m.parameterKeeper.GetParams(ctx).BrokerAddress
-	if msgRedelegate.Creator != contractAddr.String() && contractAddr.String() != brokerAddress {
+	if msgRedelegate.DelegatorAddress != contractAddr.String() && contractAddr.String() != brokerAddress {
 		return nil, nil, wasmvmtypes.InvalidRequest{Err: "wrong sender"}
 	}
 

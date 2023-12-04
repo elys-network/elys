@@ -39,7 +39,7 @@ func (k msgServer) performUnstakeElys(ctx sdk.Context, msg *types.MsgUnstake) er
 
 	msgServer := stakingkeeper.NewMsgServerImpl(stakingKeeper)
 
-	address, err := sdk.AccAddressFromBech32(msg.Address)
+	address, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
 		return errorsmod.Wrap(err, "invalid address")
 	}
@@ -64,7 +64,7 @@ func (k msgServer) performUnstakeElys(ctx sdk.Context, msg *types.MsgUnstake) er
 }
 
 func (k msgServer) performUncommit(ctx sdk.Context, msg *types.MsgUnstake) error {
-	msgMsgUncommit := types.NewMsgUncommitTokens(msg.Address, msg.Amount, msg.Asset)
+	msgMsgUncommit := types.NewMsgUncommitTokens(msg.Creator, msg.Amount, msg.Asset)
 
 	if err := msgMsgUncommit.ValidateBasic(); err != nil {
 		return errorsmod.Wrap(err, "failed validating msgMsgUncommit")

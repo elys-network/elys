@@ -40,6 +40,12 @@ func (k Keeper) GetDEXRewardPortionForLPs(ctx sdk.Context) (percent sdk.Dec) {
 	return percent
 }
 
+// GetDEXRewardPortionForStakers returns the dex revenue percent for Stakers
+func (k Keeper) GetDEXRewardPortionForStakers(ctx sdk.Context) (percent sdk.Dec) {
+	k.paramstore.Get(ctx, types.ParamStoreKeyRewardPortionForStakers, &percent)
+	return percent
+}
+
 // GetPoolInfo
 func (k Keeper) GetPoolInfo(ctx sdk.Context, poolId uint64) (types.PoolInfo, bool) {
 	// Fetch incentive params
@@ -55,8 +61,26 @@ func (k Keeper) GetPoolInfo(ctx sdk.Context, poolId uint64) (types.PoolInfo, boo
 	return types.PoolInfo{}, false
 }
 
+// SetPoolInfo
+func (k Keeper) SetPoolInfo(ctx sdk.Context, poolId uint64, poolInfo types.PoolInfo) bool {
+	// Fetch incentive params
+	params := k.GetParams(ctx)
+
+	poolInfos := params.PoolInfos
+	for i, ps := range poolInfos {
+		if ps.PoolId == poolId {
+			params.PoolInfos[i] = poolInfo
+			k.SetParams(ctx, params)
+
+			return true
+		}
+	}
+
+	return false
+}
+
 // InitPoolMultiplier: create a pool information responding to the pool creation.
-func (k Keeper) InitPoolMultiplier(ctx sdk.Context, poolId uint64) bool {
+func (k Keeper) InitPoolParams(ctx sdk.Context, poolId uint64) bool {
 	// Fetch incentive params
 	params := k.GetParams(ctx)
 	poolInfos := params.PoolInfos
@@ -75,6 +99,12 @@ func (k Keeper) InitPoolMultiplier(ctx sdk.Context, poolId uint64) bool {
 		RewardWallet: ammtypes.NewPoolRevenueAddress(poolId).String(),
 		// multiplier for lp rewards
 		Multiplier: sdk.NewDec(1),
+		// Number of blocks since creation
+		NumBlocks: sdk.NewInt(1),
+		// Total dex rewards given since creation
+		DexRewardAmountGiven: sdk.ZeroDec(),
+		// Total eden rewards given since creation
+		EdenRewardAmountGiven: sdk.ZeroInt(),
 	}
 
 	// Update pool information
@@ -85,7 +115,7 @@ func (k Keeper) InitPoolMultiplier(ctx sdk.Context, poolId uint64) bool {
 }
 
 // InitStableStakePoolMultiplier: create a stable stake pool information responding to the pool creation.
-func (k Keeper) InitStableStakePoolMultiplier(ctx sdk.Context, poolId uint64) bool {
+func (k Keeper) InitStableStakePoolParams(ctx sdk.Context, poolId uint64) bool {
 	// Fetch incentive params
 	params := k.GetParams(ctx)
 	poolInfos := params.PoolInfos
@@ -104,6 +134,12 @@ func (k Keeper) InitStableStakePoolMultiplier(ctx sdk.Context, poolId uint64) bo
 		RewardWallet: stabletypes.PoolAddress().String(),
 		// multiplier for lp rewards
 		Multiplier: sdk.NewDec(1),
+		// Number of blocks since creation
+		NumBlocks: sdk.NewInt(1),
+		// Total dex rewards given since creation
+		DexRewardAmountGiven: sdk.ZeroDec(),
+		// Total eden rewards given since creation
+		EdenRewardAmountGiven: sdk.ZeroInt(),
 	}
 
 	// Update pool information

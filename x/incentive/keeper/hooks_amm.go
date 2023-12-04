@@ -7,7 +7,7 @@ import (
 
 // AfterPoolCreated is called after CreatePool
 func (k Keeper) AfterPoolCreated(ctx sdk.Context, sender sdk.AccAddress, poolId uint64) {
-	k.InitPoolMultiplier(ctx, poolId)
+	k.InitPoolParams(ctx, poolId)
 }
 
 // AfterJoinPool is called after JoinPool, JoinSwapExternAmountIn, and JoinSwapShareAmountOut

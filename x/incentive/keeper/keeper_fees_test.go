@@ -214,7 +214,7 @@ func TestCollectDEXRevenueToIncentiveModule(t *testing.T) {
 	require.NoError(t, err)
 
 	// Collect revenue
-	collectedAmt, rewardForLpsAmt := ik.CollectDEXRevenue(ctx)
+	collectedAmt, rewardForLpsAmt, _ := ik.CollectDEXRevenue(ctx)
 
 	// check block height
 	require.Equal(t, int64(0), ctx.BlockHeight())
@@ -222,5 +222,5 @@ func TestCollectDEXRevenueToIncentiveModule(t *testing.T) {
 	// It should be 3000=1000+2000 usdc
 	require.Equal(t, collectedAmt, sdk.Coins{sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(3000))})
 	// It should be 1950=3000*0.65 usdc
-	require.Equal(t, rewardForLpsAmt, sdk.DecCoins{sdk.NewDecCoin(ptypes.BaseCurrency, sdk.NewInt(1950))})
+	require.Equal(t, rewardForLpsAmt, sdk.DecCoins{sdk.NewDecCoin(ptypes.BaseCurrency, sdk.NewInt(1800))})
 }

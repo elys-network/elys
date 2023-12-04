@@ -8,13 +8,13 @@ import (
 )
 
 // Calculate new Eden token amounts based on the given conditions and user's current unclaimed token balance
-func (k Keeper) CalculateRewardsForStakersByElysStaked(ctx sdk.Context, delegatedAmt sdk.Int, edenAmountPerEpoch sdk.Int, dexRevenueAmtForStakers sdk.Dec) (sdk.Int, sdk.Int, sdk.Dec) {
+func (k Keeper) CalculateRewardsForStakersByElysStaked(ctx sdk.Context, delegatedAmt sdk.Int, edenAmountPerDistribution sdk.Int, dexRevenueAmtForStakersPerDistribution sdk.Dec) (sdk.Int, sdk.Int, sdk.Dec) {
 	// -----------Eden calculation ---------------------
 	// --------------------------------------------------------------
 	stakeShare := k.CalculateTotalShareOfStaking(delegatedAmt)
 
 	// Calculate newly creating eden amount by its share
-	newEdenAllocated := stakeShare.MulInt(edenAmountPerEpoch)
+	newEdenAllocated := stakeShare.MulInt(edenAmountPerDistribution)
 
 	// -----------------Fund community Eden token----------------------
 	// ----------------------------------------------------------------
@@ -27,11 +27,11 @@ func (k Keeper) CalculateRewardsForStakersByElysStaked(ctx sdk.Context, delegate
 	// --------------------DEX rewards calculation --------------------
 	// ----------------------------------------------------------------
 	// Calculate dex rewards
-	dexRewards := stakeShare.Mul(dexRevenueAmtForStakers).TruncateInt()
+	dexRewards := stakeShare.Mul(dexRevenueAmtForStakersPerDistribution).TruncateInt()
 
 	// Calculate only elys staking share
 	stakeShareByStakeOnly := k.CalculateTotalShareOfStaking(delegatedAmt)
-	dexRewardsByStakeOnly := stakeShareByStakeOnly.Mul(dexRevenueAmtForStakers)
+	dexRewardsByStakeOnly := stakeShareByStakeOnly.Mul(dexRevenueAmtForStakersPerDistribution)
 
 	return newEdenAllocated.TruncateInt(), dexRewards, dexRewardsByStakeOnly
 }

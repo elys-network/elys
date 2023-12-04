@@ -12,7 +12,7 @@ import (
 	paramtypes "github.com/elys-network/elys/x/parameter/types"
 )
 
-func (m *Messenger) msgVest(ctx sdk.Context, contractAddr sdk.AccAddress, msgVest *commitmenttypes.MsgVestCW) ([]sdk.Event, [][]byte, error) {
+func (m *Messenger) msgVest(ctx sdk.Context, contractAddr sdk.AccAddress, msgVest *commitmenttypes.MsgVest) ([]sdk.Event, [][]byte, error) {
 	if msgVest == nil {
 		return nil, nil, wasmvmtypes.InvalidRequest{Err: "Vest null msg"}
 	}
@@ -43,13 +43,13 @@ func (m *Messenger) msgVest(ctx sdk.Context, contractAddr sdk.AccAddress, msgVes
 	return nil, resp, nil
 }
 
-func performMsgVestEden(f *commitmentkeeper.Keeper, ctx sdk.Context, contractAddr sdk.AccAddress, msgVest *commitmenttypes.MsgVestCW) (*wasmbindingstypes.RequestResponse, error) {
+func performMsgVestEden(f *commitmentkeeper.Keeper, ctx sdk.Context, contractAddr sdk.AccAddress, msgVest *commitmenttypes.MsgVest) (*wasmbindingstypes.RequestResponse, error) {
 	if msgVest == nil {
 		return nil, wasmvmtypes.InvalidRequest{Err: "Invalid vesting parameter"}
 	}
 
 	msgServer := commitmentkeeper.NewMsgServerImpl(*f)
-	msgMsgVest := commitmenttypes.NewMsgVest(msgVest.Address, msgVest.Amount, msgVest.Denom)
+	msgMsgVest := commitmenttypes.NewMsgVest(msgVest.Creator, msgVest.Amount, msgVest.Denom)
 
 	if err := msgMsgVest.ValidateBasic(); err != nil {
 		return nil, errorsmod.Wrap(err, "failed validating msgVest")

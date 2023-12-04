@@ -1,6 +1,7 @@
 package types
 
 import (
+	"errors"
 	fmt "fmt"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -15,6 +16,7 @@ var (
 	ParamStoreKeyCommunityTax               = []byte("communitytax")
 	ParamStoreKeyWithdrawAddrEnabled        = []byte("withdrawaddrenabled")
 	ParamStoreKeyRewardPortionForLps        = []byte("rewardportionforlps")
+	ParamStoreKeyRewardPortionForStakers    = []byte("rewardportionforstakers")
 	ParamStoreKeyLPIncentives               = []byte("lpincentives")
 	ParamStoreKeyStkIncentives              = []byte("stkincentives")
 	ParamStoreKeyPoolInfos                  = []byte("poolinfos")
@@ -35,20 +37,21 @@ func ParamKeyTable() paramtypes.KeyTable {
 // NewParams creates a new Params instance
 func NewParams() Params {
 	return Params{
-		LpIncentives:          []IncentiveInfo(nil),
-		StakeIncentives:       []IncentiveInfo(nil),
-		CommunityTax:          sdk.NewDecWithPrec(2, 2), // 2%
-		WithdrawAddrEnabled:   true,
-		RewardPortionForLps:   sdk.NewDecWithPrec(65, 2),
-		PoolInfos:             []PoolInfo(nil),
-		ElysStakeTrackingRate: 10,
+		LpIncentives:            []IncentiveInfo(nil),
+		StakeIncentives:         []IncentiveInfo(nil),
+		CommunityTax:            sdk.NewDecWithPrec(2, 2), // 2%
+		WithdrawAddrEnabled:     true,
+		RewardPortionForLps:     sdk.NewDecWithPrec(60, 2),
+		RewardPortionForStakers: sdk.NewDecWithPrec(30, 2),
+		PoolInfos:               []PoolInfo(nil),
+		ElysStakeTrackingRate:   10,
 		DexRewardsStakers: DexRewardsTracker{
-			NumBlocks:                     sdk.ZeroInt(),
+			NumBlocks:                     sdk.NewInt(1),
 			Amount:                        sdk.ZeroDec(),
 			AmountCollectedByOtherTracker: sdk.ZeroDec(),
 		},
 		DexRewardsLps: DexRewardsTracker{
-			NumBlocks:                     sdk.ZeroInt(),
+			NumBlocks:                     sdk.NewInt(1),
 			Amount:                        sdk.ZeroDec(),
 			AmountCollectedByOtherTracker: sdk.ZeroDec(),
 		},
@@ -70,6 +73,7 @@ func (p *Params) ParamSetPairs() paramtypes.ParamSetPairs {
 		paramtypes.NewParamSetPair(ParamStoreKeyCommunityTax, &p.CommunityTax, validateCommunityTax),
 		paramtypes.NewParamSetPair(ParamStoreKeyWithdrawAddrEnabled, &p.WithdrawAddrEnabled, validateWithdrawAddrEnabled),
 		paramtypes.NewParamSetPair(ParamStoreKeyRewardPortionForLps, &p.RewardPortionForLps, validateRewardPortionForLps),
+		paramtypes.NewParamSetPair(ParamStoreKeyRewardPortionForStakers, &p.RewardPortionForStakers, validateRewardPortionForStakers),
 		paramtypes.NewParamSetPair(ParamStoreKeyLPIncentives, &p.LpIncentives, validateLPIncentives),
 		paramtypes.NewParamSetPair(ParamStoreKeyStkIncentives, &p.StakeIncentives, validateStakeIncentives),
 		paramtypes.NewParamSetPair(ParamStoreKeyPoolInfos, &p.PoolInfos, validatePoolInfos),
@@ -98,6 +102,10 @@ func (p Params) Validate() error {
 	}
 
 	if err := validateRewardPortionForLps(p.RewardPortionForLps); err != nil {
+		return err
+	}
+
+	if err := validateRewardPortionForStakers(p.RewardPortionForStakers); err != nil {
 		return err
 	}
 
@@ -131,6 +139,10 @@ func (p Params) Validate() error {
 
 	if err := validateDistributionEpochStakers(p.DistributionEpochForStakersInBlocks); err != nil {
 		return err
+	}
+
+	if p.RewardPortionForLps.Add(p.RewardPortionForStakers).GT(sdk.NewDec(1)) {
+		return errors.New("invalid rewards portion parameter")
 	}
 
 	return nil
@@ -182,6 +194,25 @@ func validateWithdrawAddrEnabled(i interface{}) error {
 }
 
 func validateRewardPortionForLps(i interface{}) error {
+	v, ok := i.(sdk.Dec)
+	if !ok {
+		return fmt.Errorf("invalid parameter type: %T", i)
+	}
+
+	if v.IsNil() {
+		return fmt.Errorf("reward percent for lp must be not nil")
+	}
+	if v.IsNegative() {
+		return fmt.Errorf("reward percent for lp must be positive: %s", v)
+	}
+	if v.GT(sdk.OneDec()) {
+		return fmt.Errorf("reward percent for lp too large: %s", v)
+	}
+
+	return nil
+}
+
+func validateRewardPortionForStakers(i interface{}) error {
 	v, ok := i.(sdk.Dec)
 	if !ok {
 		return fmt.Errorf("invalid parameter type: %T", i)

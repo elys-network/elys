@@ -9,10 +9,9 @@ const TypeMsgUnstake = "unstake"
 
 var _ sdk.Msg = &MsgUnstake{}
 
-func NewMsgUnstake(address string, amount sdk.Int, asset string, validatorAddress string) *MsgUnstake {
+func NewMsgUnstake(creator string, amount sdk.Int, asset string, validatorAddress string) *MsgUnstake {
 	return &MsgUnstake{
-		Creator:          address,
-		Address:          address,
+		Creator:          creator,
 		Amount:           amount,
 		Asset:            asset,
 		ValidatorAddress: validatorAddress,

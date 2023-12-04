@@ -18,7 +18,7 @@ func (m *Messenger) msgCancelUnbondingDelegation(ctx sdk.Context, contractAddr s
 	var err error
 
 	brokerAddress := m.parameterKeeper.GetParams(ctx).BrokerAddress
-	if msgCancelUnbonding.Creator != contractAddr.String() && contractAddr.String() != brokerAddress {
+	if msgCancelUnbonding.DelegatorAddress != contractAddr.String() && contractAddr.String() != brokerAddress {
 		return nil, nil, wasmvmtypes.InvalidRequest{Err: "wrong sender"}
 	}
 

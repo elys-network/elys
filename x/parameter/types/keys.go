@@ -47,6 +47,12 @@ const (
 	// Days per year
 	DaysPerYear = 365
 
+	// Weeks per year
+	WeeksPerYear = 52
+
+	// Days per week
+	DaysPerWeek = 7
+
 	// Return ok
 	RES_OK = uint64(200)
 )
