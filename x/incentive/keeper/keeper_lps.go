@@ -98,6 +98,12 @@ func (k Keeper) CalculateRewardsForLPs(ctx sdk.Context, totalProxyTVL sdk.Dec, c
 		totalDexRewardsAllocatedPerDistribution = totalDexRewardsAllocatedPerDistribution.Add(gasRewardsForLP)
 
 		//----------------------------------------------------------------
+
+		poolInfo.EdenRewardAmountGiven = poolInfo.EdenRewardAmountGiven.Add(totalNewEdenAllocatedPerDistribution)
+		poolInfo.DexRewardAmountGiven = poolInfo.DexRewardAmountGiven.Add(totalDexRewardsAllocatedPerDistribution)
+		// Update Pool Info
+		k.SetPoolInfo(ctx, poolId, poolInfo)
+
 		return false
 	})
 

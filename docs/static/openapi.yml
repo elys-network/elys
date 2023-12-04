@@ -39646,10 +39646,25 @@ paths:
                         multiplier:
                           type: string
                           title: multiplier for lp rewards
+                        num_blocks:
+                          type: string
+                          title: Block number since creation
+                        dex_reward_amount_given:
+                          type: string
+                          title: Total dex rewards given
+                        eden_reward_amount_given:
+                          type: string
+                          title: Total eden rewards given
+                        eden_apr:
+                          type: string
+                          title: Eden APR
+                        dex_apr:
+                          type: string
+                          title: Dex APR
                       title: Pool Info
                     title: |-
                       Pool information
-                      poolId, reward wallet, mulitplier
+                      poolId, reward wallet, mulitplier, dex rewards given
                   elys_stake_tracking_rate:
                     type: string
                     format: int64
@@ -84080,10 +84095,25 @@ definitions:
             multiplier:
               type: string
               title: multiplier for lp rewards
+            num_blocks:
+              type: string
+              title: Block number since creation
+            dex_reward_amount_given:
+              type: string
+              title: Total dex rewards given
+            eden_reward_amount_given:
+              type: string
+              title: Total eden rewards given
+            eden_apr:
+              type: string
+              title: Eden APR
+            dex_apr:
+              type: string
+              title: Dex APR
           title: Pool Info
         title: |-
           Pool information
-          poolId, reward wallet, mulitplier
+          poolId, reward wallet, mulitplier, dex rewards given
       elys_stake_tracking_rate:
         type: string
         format: int64
@@ -84135,6 +84165,21 @@ definitions:
       multiplier:
         type: string
         title: multiplier for lp rewards
+      num_blocks:
+        type: string
+        title: Block number since creation
+      dex_reward_amount_given:
+        type: string
+        title: Total dex rewards given
+      eden_reward_amount_given:
+        type: string
+        title: Total eden rewards given
+      eden_apr:
+        type: string
+        title: Eden APR
+      dex_apr:
+        type: string
+        title: Dex APR
     title: Pool Info
   elys.incentive.QueryCommunityPoolResponse:
     type: object
@@ -84250,10 +84295,25 @@ definitions:
                 multiplier:
                   type: string
                   title: multiplier for lp rewards
+                num_blocks:
+                  type: string
+                  title: Block number since creation
+                dex_reward_amount_given:
+                  type: string
+                  title: Total dex rewards given
+                eden_reward_amount_given:
+                  type: string
+                  title: Total eden rewards given
+                eden_apr:
+                  type: string
+                  title: Eden APR
+                dex_apr:
+                  type: string
+                  title: Dex APR
               title: Pool Info
             title: |-
               Pool information
-              poolId, reward wallet, mulitplier
+              poolId, reward wallet, mulitplier, dex rewards given
           elys_stake_tracking_rate:
             type: string
             format: int64

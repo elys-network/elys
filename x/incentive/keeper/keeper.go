@@ -466,6 +466,9 @@ func (k Keeper) UpdateLPRewardsUnclaimed(ctx sdk.Context, lpIncentive types.Ince
 	k.SetFeePool(ctx, feePool)
 	// ----------------------------------
 
+	// Update APR for amm pools
+	k.UpdateAmmPoolAPR(ctx, lpIncentive)
+
 	return nil
 }
 
@@ -531,7 +534,7 @@ func (k Keeper) CalculateProxyTVL(ctx sdk.Context, baseCurrency string) sdk.Dec 
 	// Get pool info from incentive param
 	poolInfo, found := k.GetPoolInfo(ctx, stableStakePoolId)
 	if !found {
-		k.InitStableStakePoolMultiplier(ctx, stableStakePoolId)
+		k.InitStableStakePoolParams(ctx, stableStakePoolId)
 		poolInfo, _ = k.GetPoolInfo(ctx, stableStakePoolId)
 	}
 	tvl := stabletypes.TVL(ctx, k.authKeeper, k.bankKeeper, baseCurrency)
@@ -556,4 +559,50 @@ func (k Keeper) CalculateTVL(ctx sdk.Context) sdk.Dec {
 	})
 
 	return TVL
+}
+
+// Update APR for AMM pool
+func (k Keeper) UpdateAmmPoolAPR(ctx sdk.Context, lpIncentive types.IncentiveInfo, totalProxyTVL sdk.Dec) {
+	// Iterate to calculate total Eden from LpElys, MElys committed
+	k.amm.IterateLiquidityPools(ctx, func(p ammtypes.Pool) bool {
+		tvl, err := p.TVL(ctx, k.oracleKeeper)
+		if err != nil {
+			return false
+		}
+
+		// Get pool Id
+		poolId := p.GetPoolId()
+
+		// Get pool info from incentive param
+		poolInfo, found := k.GetPoolInfo(ctx, poolId)
+		if !found {
+			return false
+		}
+
+		poolInfo.NumBlocks = poolInfo.NumBlocks.Add(lpIncentive.DistributionEpochInBlocks)
+		// Invalid block number
+		if poolInfo.NumBlocks.IsZero() {
+			return false
+		}
+
+		// Calculate Proxy TVL share considering multiplier
+		proxyTVL := tvl.Mul(poolInfo.Multiplier)
+		poolShare := sdk.ZeroDec()
+		if totalProxyTVL.IsPositive() {
+			poolShare = proxyTVL.Quo(totalProxyTVL)
+		}
+
+		// Dex reward Apr per pool = (total LM Dex reward allocated per day*((tvl of pool * multiplier)/total proxy TVL) ) * 365 / TVL of pool
+		totalLMDexRewardsAllocatedPerDay := poolInfo.DexRewardAmountGiven.MulInt(lpIncentive.AllocationEpochInBlocks).QuoInt(poolInfo.NumBlocks)
+		poolInfo.DexApr = totalLMDexRewardsAllocatedPerDay.Mul(poolShare).MulInt(sdk.NewInt(ptypes.DaysPerYear)).Quo(tvl)
+
+		// Eden reward Apr per pool = (total LM Eden reward allocated per day*((tvl of pool * multiplier)/total proxy TVL) ) * 365 / TVL of pool
+		totalLMEdenRewardsAllocatedPerDay := poolInfo.EdenRewardAmountGiven.Mul(lpIncentive.AllocationEpochInBlocks).Quo(poolInfo.NumBlocks)
+		poolInfo.EdenApr = sdk.NewDecFromInt(totalLMEdenRewardsAllocatedPerDay).Mul(poolShare).MulInt(sdk.NewInt(ptypes.DaysPerYear)).Quo(tvl)
+
+		// Update Pool Info
+		k.SetPoolInfo(ctx, poolId, poolInfo)
+
+		return false
+	})
 }

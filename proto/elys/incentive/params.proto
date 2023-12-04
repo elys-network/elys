@@ -4,7 +4,7 @@ package elys.incentive;
 import "gogoproto/gogo.proto";
 import "elys/incentive/incentive.proto";
 import "elys/incentive/pool.proto";
-import "elys/incentive/dex_rewards_stakers.proto";
+import "elys/incentive/dex_rewards_traker.proto";
 
 option go_package = "github.com/elys-network/elys/x/incentive/types";
 
@@ -33,7 +33,7 @@ message Params {
   ];
 
   // Pool information
-  // poolId, reward wallet, mulitplier
+  // poolId, reward wallet, mulitplier, dex rewards given
 	repeated PoolInfo pool_infos = 7 [(gogoproto.nullable) = false];
 
 	int64 elys_stake_tracking_rate = 8;
