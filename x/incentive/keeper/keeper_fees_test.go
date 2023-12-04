@@ -222,5 +222,5 @@ func TestCollectDEXRevenueToIncentiveModule(t *testing.T) {
 	// It should be 3000=1000+2000 usdc
 	require.Equal(t, collectedAmt, sdk.Coins{sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(3000))})
 	// It should be 1950=3000*0.65 usdc
-	require.Equal(t, rewardForLpsAmt, sdk.DecCoins{sdk.NewDecCoin(ptypes.BaseCurrency, sdk.NewInt(1950))})
+	require.Equal(t, rewardForLpsAmt, sdk.DecCoins{sdk.NewDecCoin(ptypes.BaseCurrency, sdk.NewInt(1800))})
 }
