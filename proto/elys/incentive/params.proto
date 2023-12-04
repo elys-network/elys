@@ -20,39 +20,45 @@ message Params {
   ];
 
   bool withdraw_addr_enabled = 4;
-  // Dex revenue percent for lps, 100 - reward_portion_for_lps = revenue percent for stakers.
+  // Dex revenue percent for lps, 100 - reward_portion_for_lps - reward_portion_for_stakers = revenue percent for protocol.
   string reward_portion_for_lps = 5 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
-  
+
+  // Dex revenue percent for lps, 100 - reward_portion_for_lps - reward_portion_for_stakers = revenue percent for protocol.
+  string reward_portion_for_stakers = 6 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+
   // Pool information
   // poolId, reward wallet, mulitplier
-	repeated PoolInfo pool_infos = 6 [(gogoproto.nullable) = false];
+	repeated PoolInfo pool_infos = 7 [(gogoproto.nullable) = false];
 
-	int64 elys_stake_tracking_rate = 7;
+	int64 elys_stake_tracking_rate = 8;
 
   // Tracking dex rewards given to stakers
-  DexRewardsTracker dex_rewards_stakers = 8 [(gogoproto.nullable) = false];
+  DexRewardsTracker dex_rewards_stakers = 9 [(gogoproto.nullable) = false];
   
   // Tracking dex rewards given to LPs
-  DexRewardsTracker dex_rewards_lps = 9 [(gogoproto.nullable) = false];
+  DexRewardsTracker dex_rewards_lps = 10 [(gogoproto.nullable) = false];
 
   // Maximum eden reward apr for stakers
-  string max_eden_reward_apr_stakers = 10 [
+  string max_eden_reward_apr_stakers = 11 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
 
   // Maximum eden reward apr for lps
-  string max_eden_reward_apr_lps = 11 [
+  string max_eden_reward_apr_lps = 12 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
 
   // Distribution epochs for stakers in blocks
-	int64 distribution_epoch_for_stakers_in_blocks = 12;
+	int64 distribution_epoch_for_stakers_in_blocks = 13;
   
   // Distribution epochs for LPs in blocks
-	int64 distribution_epoch_for_lps_in_blocks = 13;
+	int64 distribution_epoch_for_lps_in_blocks = 14;
 }

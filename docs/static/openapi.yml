@@ -39623,7 +39623,14 @@ paths:
                     type: string
                     description: >-
                       Dex revenue percent for lps, 100 - reward_portion_for_lps
-                      = revenue percent for stakers.
+                      - reward_portion_for_stakers = revenue percent for
+                      protocol.
+                  reward_portion_for_stakers:
+                    type: string
+                    description: >-
+                      Dex revenue percent for lps, 100 - reward_portion_for_lps
+                      - reward_portion_for_stakers = revenue percent for
+                      protocol.
                   pool_infos:
                     type: array
                     items:
@@ -84051,8 +84058,13 @@ definitions:
       reward_portion_for_lps:
         type: string
         description: >-
-          Dex revenue percent for lps, 100 - reward_portion_for_lps = revenue
-          percent for stakers.
+          Dex revenue percent for lps, 100 - reward_portion_for_lps -
+          reward_portion_for_stakers = revenue percent for protocol.
+      reward_portion_for_stakers:
+        type: string
+        description: >-
+          Dex revenue percent for lps, 100 - reward_portion_for_lps -
+          reward_portion_for_stakers = revenue percent for protocol.
       pool_infos:
         type: array
         items:
@@ -84216,8 +84228,13 @@ definitions:
           reward_portion_for_lps:
             type: string
             description: >-
-              Dex revenue percent for lps, 100 - reward_portion_for_lps =
-              revenue percent for stakers.
+              Dex revenue percent for lps, 100 - reward_portion_for_lps -
+              reward_portion_for_stakers = revenue percent for protocol.
+          reward_portion_for_stakers:
+            type: string
+            description: >-
+              Dex revenue percent for lps, 100 - reward_portion_for_lps -
+              reward_portion_for_stakers = revenue percent for protocol.
           pool_infos:
             type: array
             items:

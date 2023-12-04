@@ -214,7 +214,7 @@ func TestCollectDEXRevenueToIncentiveModule(t *testing.T) {
 	require.NoError(t, err)
 
 	// Collect revenue
-	collectedAmt, rewardForLpsAmt := ik.CollectDEXRevenue(ctx)
+	collectedAmt, rewardForLpsAmt, _ := ik.CollectDEXRevenue(ctx)
 
 	// check block height
 	require.Equal(t, int64(0), ctx.BlockHeight())

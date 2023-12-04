@@ -59,8 +59,16 @@ func (k Keeper) CollectGasFeesToIncentiveModule(ctx sdk.Context, baseCurrency st
 	totalSwappedCoins := sdk.Coins{}
 
 	for _, tokenIn := range feesCollectedInt {
-		// skip for fee denom - usdc
+		// if it is base currency - usdc, we don't need convert. We just need to collect it to fee wallet.
 		if tokenIn.Denom == baseCurrency {
+			// Transfer converted USDC fees to the Dex revenue module account
+			err := k.bankKeeper.SendCoinsFromModuleToModule(ctx, k.feeCollectorName, k.dexRevCollectorName, sdk.Coins{tokenIn})
+			if err != nil {
+				panic(err)
+			}
+
+			// Sum total swapped
+			totalSwappedCoins = totalSwappedCoins.Add(tokenIn)
 			continue
 		}
 
@@ -79,7 +87,6 @@ func (k Keeper) CollectGasFeesToIncentiveModule(ctx sdk.Context, baseCurrency st
 		}
 
 		tokenOutAmount := tokenOutCoin.Amount
-
 		if !tokenOutAmount.IsPositive() {
 			continue
 		}
@@ -114,10 +121,11 @@ func (k Keeper) CollectGasFeesToIncentiveModule(ctx sdk.Context, baseCurrency st
 // Assume this is already in USDC.
 // TODO:
 // + Collect revenue from margin, lend module
-func (k Keeper) CollectDEXRevenue(ctx sdk.Context) (sdk.Coins, sdk.DecCoins) {
+func (k Keeper) CollectDEXRevenue(ctx sdk.Context) (sdk.Coins, sdk.DecCoins, sdk.DecCoins) {
 	// Total colllected revenue amount
 	amountTotalCollected := sdk.Coins{}
 	amountLPsCollected := sdk.DecCoins{}
+	amountStakersCollected := sdk.DecCoins{}
 
 	// Iterate to calculate total Eden from LpElys, MElys committed
 	k.amm.IterateLiquidityPools(ctx, func(p ammtypes.Pool) bool {
@@ -143,12 +151,15 @@ func (k Keeper) CollectDEXRevenue(ctx sdk.Context) (sdk.Coins, sdk.DecCoins) {
 
 		// LPs Portion param
 		rewardPortionForLps := k.GetDEXRewardPortionForLPs(ctx)
+		// Stakers Portion param
+		rewardPortionForStakers := k.GetDEXRewardPortionForStakers(ctx)
 
 		// Calculate revenue portion for LPs
 		revenueDec := sdk.NewDecCoinsFromCoins(revenue...)
 
 		// LPs portion of pool revenue
 		revenuePortionForLPs := revenueDec.MulDecTruncate(rewardPortionForLps)
+		revenuePortionForStakers := revenueDec.MulDecTruncate(rewardPortionForStakers)
 
 		// Get track key
 		trackKey := types.GetPoolRevenueTrackKey(poolId)
@@ -161,9 +172,10 @@ func (k Keeper) CollectDEXRevenue(ctx sdk.Context) (sdk.Coins, sdk.DecCoins) {
 
 		// Sum total amount for LPs
 		amountLPsCollected = amountLPsCollected.Add(revenuePortionForLPs...)
+		amountStakersCollected = amountStakersCollected.Add(revenuePortionForStakers...)
 
 		return false
 	})
 
-	return amountTotalCollected, amountLPsCollected
+	return amountTotalCollected, amountLPsCollected, amountStakersCollected
 }

@@ -40,6 +40,12 @@ func (k Keeper) GetDEXRewardPortionForLPs(ctx sdk.Context) (percent sdk.Dec) {
 	return percent
 }
 
+// GetDEXRewardPortionForStakers returns the dex revenue percent for Stakers
+func (k Keeper) GetDEXRewardPortionForStakers(ctx sdk.Context) (percent sdk.Dec) {
+	k.paramstore.Get(ctx, types.ParamStoreKeyRewardPortionForStakers, &percent)
+	return percent
+}
+
 // GetPoolInfo
 func (k Keeper) GetPoolInfo(ctx sdk.Context, poolId uint64) (types.PoolInfo, bool) {
 	// Fetch incentive params
