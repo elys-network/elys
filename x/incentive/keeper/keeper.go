@@ -592,6 +592,10 @@ func (k Keeper) UpdateAmmPoolAPR(ctx sdk.Context, lpIncentive types.IncentiveInf
 			poolShare = proxyTVL.Quo(totalProxyTVL)
 		}
 
+		if tvl.IsZero() {
+			return false
+		}
+
 		// Dex reward Apr per pool =  total accumulated usdc rewards for 7 day * 52/ tvl of pool
 		totalLMDexRewardsAllocatedPerWeek := poolInfo.DexRewardAmountGiven.MulInt(lpIncentive.AllocationEpochInBlocks).MulInt(sdk.NewInt(ptypes.DaysPerWeek)).QuoInt(poolInfo.NumBlocks)
 		poolInfo.DexApr = totalLMDexRewardsAllocatedPerWeek.MulInt(sdk.NewInt(ptypes.WeeksPerYear)).Quo(tvl)
