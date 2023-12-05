@@ -39,9 +39,7 @@ func (k Keeper) Balance(goCtx context.Context, req *types.QueryBalanceRequest) (
 		baseCurrency := entry.Denom
 
 		// If it is USDC, we should add bank module balance as well.
-		// TODO: For now we add bank balance for Eden as well as we don't have claimed state
-		// available in commitment module. So in the following statement, Eden has to be removed.
-		if denom == baseCurrency || denom == paramtypes.Eden {
+		if denom == baseCurrency {
 			balance = balance.Add(commitBalance)
 		} else {
 			balance = commitBalance
