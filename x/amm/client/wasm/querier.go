@@ -38,14 +38,15 @@ func NewQuerier(
 	leveragelpKeeper *leveragelpkeeper.Keeper,
 	accountedpoolKeeper *accountedpoolkeeper.Keeper) *Querier {
 	return &Querier{
-		keeper:           keeper,
-		bankKeeper:       bankKeeper,
-		commitmentKeeper: commitmentKeeper,
-		apKeeper:         apKeeper,
-		marginKeeper:     marginKeeper,
-		incentiveKeeper:  incentiveKeeper,
-		oraclekeeper:     oraclekeeper,
-		leveragelpKeeper: leveragelpKeeper,
+		keeper:              keeper,
+		bankKeeper:          bankKeeper,
+		commitmentKeeper:    commitmentKeeper,
+		apKeeper:            apKeeper,
+		marginKeeper:        marginKeeper,
+		incentiveKeeper:     incentiveKeeper,
+		oraclekeeper:        oraclekeeper,
+		leveragelpKeeper:    leveragelpKeeper,
+		accountedpoolKeeper: accountedpoolKeeper,
 	}
 }
 
