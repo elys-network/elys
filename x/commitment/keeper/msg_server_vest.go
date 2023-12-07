@@ -13,7 +13,8 @@ import (
 // mainly utilized for Eden
 func (k msgServer) Vest(goCtx context.Context, msg *types.MsgVest) (*types.MsgVestResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	if err := k.ProcessTokenVesting(ctx, msg.Denom, msg.Amount, msg.Creator); err != nil {
+	err := k.ProcessTokenVesting(ctx, msg.Denom, msg.Amount, msg.Creator)
+	if err != nil {
 		return &types.MsgVestResponse{}, err
 	}
 

@@ -45,10 +45,7 @@ func (k Keeper) Entry(goCtx context.Context, req *types.QueryGetEntryRequest) (*
 	}
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	val, found := k.GetEntry(
-		ctx,
-		req.BaseDenom,
-	)
+	val, found := k.GetEntry(ctx, req.BaseDenom)
 	if !found {
 		return nil, status.Error(codes.NotFound, "not found")
 	}

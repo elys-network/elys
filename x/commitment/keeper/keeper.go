@@ -40,10 +40,10 @@ type (
 		paramstore paramtypes.Subspace
 		hooks      types.CommitmentHooks
 
-		bankKeeper    types.BankKeeper
-		stakingKeeper types.StakingKeeper
-		apKeeper      types.AssetProfileKeeper
-		authority     string
+		bankKeeper         types.BankKeeper
+		stakingKeeper      types.StakingKeeper
+		assetProfileKeeper types.AssetProfileKeeper
+		authority          string
 	}
 )
 
@@ -55,7 +55,7 @@ func NewKeeper(
 
 	bankKeeper types.BankKeeper,
 	stakingKeeper types.StakingKeeper,
-	apKeeper types.AssetProfileKeeper,
+	assetProfileKeeper types.AssetProfileKeeper,
 	authority string,
 ) *Keeper {
 	// set KeyTable if it has not already been set
@@ -69,10 +69,10 @@ func NewKeeper(
 		memKey:     memKey,
 		paramstore: ps,
 
-		bankKeeper:    bankKeeper,
-		stakingKeeper: stakingKeeper,
-		apKeeper:      apKeeper,
-		authority:     authority,
+		bankKeeper:         bankKeeper,
+		stakingKeeper:      stakingKeeper,
+		assetProfileKeeper: assetProfileKeeper,
+		authority:          authority,
 	}
 }
 

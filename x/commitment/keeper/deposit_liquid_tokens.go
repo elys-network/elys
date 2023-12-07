@@ -10,8 +10,8 @@ import (
 )
 
 // accounting the liquid token as a claimed token in commitment module.
-func (k Keeper) DepositLiquidTokensClaimed(ctx sdk.Context, denom string, amount sdk.Int, creator string) error {
-	assetProfile, found := k.apKeeper.GetEntry(ctx, denom)
+func (k Keeper) DepositLiquidTokensClaimed(ctx sdk.Context, denom string, amount sdk.Int, sender string) error {
+	assetProfile, found := k.assetProfileKeeper.GetEntry(ctx, denom)
 	if !found {
 		return sdkerrors.Wrapf(aptypes.ErrAssetProfileNotFound, "denom: %s", denom)
 	}
@@ -22,7 +22,7 @@ func (k Keeper) DepositLiquidTokensClaimed(ctx sdk.Context, denom string, amount
 
 	depositCoins := sdk.NewCoins(sdk.NewCoin(denom, amount))
 
-	addr, err := sdk.AccAddressFromBech32(creator)
+	addr, err := sdk.AccAddressFromBech32(sender)
 	if err != nil {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "unable to convert address from bech32")
 	}
@@ -33,10 +33,8 @@ func (k Keeper) DepositLiquidTokensClaimed(ctx sdk.Context, denom string, amount
 		return sdkerrors.Wrap(sdkerrors.ErrInsufficientFunds, fmt.Sprintf("unable to send deposit tokens: %v", depositCoins))
 	}
 
-	// Get the Commitments for the creator
-	commitments := k.GetCommitments(ctx, creator)
-
-	// Update the claimed amount
+	// Increase claimed amount
+	commitments := k.GetCommitments(ctx, sender)
 	commitments.AddClaimed(sdk.NewCoin(denom, amount))
 	k.SetCommitments(ctx, commitments)
 

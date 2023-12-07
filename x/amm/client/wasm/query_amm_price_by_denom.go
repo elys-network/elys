@@ -12,7 +12,7 @@ import (
 
 func (oq *Querier) queryAmmPriceByDenom(ctx sdk.Context, query *ammtypes.QueryAMMPriceRequest) ([]byte, error) {
 	denom := ptypes.BaseCurrency
-	assetProfile, found := oq.apKeeper.GetEntry(ctx, ptypes.BaseCurrency)
+	assetProfile, found := oq.assetProfileKeeper.GetEntry(ctx, ptypes.BaseCurrency)
 	if !found {
 		return nil, errorsmod.Wrapf(aptypes.ErrAssetProfileNotFound, "denom: %s", denom)
 	}

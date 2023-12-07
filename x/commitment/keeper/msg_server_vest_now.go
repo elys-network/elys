@@ -48,9 +48,8 @@ func (k msgServer) VestNow(goCtx context.Context, msg *types.MsgVestNow) (*types
 	if vestingInfo.VestingDenom == ptypes.Elys {
 		err := k.bankKeeper.MintCoins(ctx, types.ModuleName, withdrawCoins)
 		if err != nil {
-			ctx.Logger().Debug(
-				"unable to mint vested tokens for ELYS token",
-			)
+			ctx.Logger().Debug("unable to mint vested tokens for ELYS token")
+			return nil, err
 		}
 	}
 

@@ -17,13 +17,10 @@ func (k msgServer) CreateEntry(goCtx context.Context, msg *types.MsgCreateEntry)
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	// Check if the value already exists
-	_, isFound := k.GetEntry(
-		ctx,
-		msg.BaseDenom,
-	)
+	// Check if the entry already exists
+	_, isFound := k.GetEntry(ctx, msg.BaseDenom)
 	if isFound {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "index already set")
+		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "entry already set")
 	}
 
 	var entry = types.Entry{
@@ -46,10 +43,7 @@ func (k msgServer) CreateEntry(goCtx context.Context, msg *types.MsgCreateEntry)
 		IbcCounterpartyChainId:   msg.IbcCounterpartyChainId,
 	}
 
-	k.SetEntry(
-		ctx,
-		entry,
-	)
+	k.SetEntry(ctx, entry)
 	return &types.MsgCreateEntryResponse{}, nil
 }
 
@@ -61,20 +55,17 @@ func (k msgServer) UpdateEntry(goCtx context.Context, msg *types.MsgUpdateEntry)
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	// Check if the value exists
-	valFound, isFound := k.GetEntry(
-		ctx,
-		msg.BaseDenom,
-	)
+	entry, isFound := k.GetEntry(ctx, msg.BaseDenom)
 	if !isFound {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, "index not set")
+		return nil, sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, "entry not set")
 	}
 
 	// Checks if the the msg authority is the same as the current owner
-	if msg.Authority != valFound.Authority {
+	if msg.Authority != entry.Authority {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "incorrect owner")
 	}
 
-	var entry = types.Entry{
+	entry = types.Entry{
 		Authority:                msg.Authority,
 		BaseDenom:                msg.BaseDenom,
 		Decimals:                 msg.Decimals,
@@ -107,23 +98,17 @@ func (k msgServer) DeleteEntry(goCtx context.Context, msg *types.MsgDeleteEntry)
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	// Check if the value exists
-	valFound, isFound := k.GetEntry(
-		ctx,
-		msg.BaseDenom,
-	)
+	entry, isFound := k.GetEntry(ctx, msg.BaseDenom)
 	if !isFound {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, "index not set")
+		return nil, sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, "entry not set")
 	}
 
 	// Checks if the the msg authority is the same as the current owner
-	if msg.Authority != valFound.Authority {
+	if msg.Authority != entry.Authority {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "incorrect owner")
 	}
 
-	k.RemoveEntry(
-		ctx,
-		msg.BaseDenom,
-	)
+	k.RemoveEntry(ctx, msg.BaseDenom)
 
 	return &types.MsgDeleteEntryResponse{}, nil
 }

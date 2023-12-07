@@ -19,16 +19,16 @@ import (
 
 type (
 	Keeper struct {
-		cdc          codec.BinaryCodec
-		storeKey     storetypes.StoreKey
-		memKey       storetypes.StoreKey
-		authority    string
-		amm          types.AmmKeeper
-		bankKeeper   types.BankKeeper
-		oracleKeeper ammtypes.OracleKeeper
-		stableKeeper types.StableStakeKeeper
-		commKeeper   types.CommitmentKeeper
-		apKeeper     types.AssetProfileKeeper
+		cdc                codec.BinaryCodec
+		storeKey           storetypes.StoreKey
+		memKey             storetypes.StoreKey
+		authority          string
+		amm                types.AmmKeeper
+		bankKeeper         types.BankKeeper
+		oracleKeeper       ammtypes.OracleKeeper
+		stableKeeper       types.StableStakeKeeper
+		commKeeper         types.CommitmentKeeper
+		assetProfileKeeper types.AssetProfileKeeper
 
 		hooks types.LeveragelpHooks
 	}
@@ -44,7 +44,7 @@ func NewKeeper(
 	oracleKeeper ammtypes.OracleKeeper,
 	stableKeeper types.StableStakeKeeper,
 	commitmentKeeper types.CommitmentKeeper,
-	apKeeper types.AssetProfileKeeper,
+	assetProfileKeeper types.AssetProfileKeeper,
 ) *Keeper {
 	// ensure that authority is a valid AccAddress
 	if _, err := sdk.AccAddressFromBech32(authority); err != nil {
@@ -52,16 +52,16 @@ func NewKeeper(
 	}
 
 	keeper := &Keeper{
-		cdc:          cdc,
-		storeKey:     storeKey,
-		memKey:       memKey,
-		authority:    authority,
-		amm:          amm,
-		bankKeeper:   bk,
-		oracleKeeper: oracleKeeper,
-		stableKeeper: stableKeeper,
-		commKeeper:   commitmentKeeper,
-		apKeeper:     apKeeper,
+		cdc:                cdc,
+		storeKey:           storeKey,
+		memKey:             memKey,
+		authority:          authority,
+		amm:                amm,
+		bankKeeper:         bk,
+		oracleKeeper:       oracleKeeper,
+		stableKeeper:       stableKeeper,
+		commKeeper:         commitmentKeeper,
+		assetProfileKeeper: assetProfileKeeper,
 	}
 
 	return keeper

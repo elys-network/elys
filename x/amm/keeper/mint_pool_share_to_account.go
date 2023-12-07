@@ -35,7 +35,7 @@ func (k Keeper) MintPoolShareToAccount(ctx sdk.Context, pool types.Pool, addr sd
 	// Before commit LP token to commitment module, we should first register the new denom
 	// to assetProfile module.
 
-	entry, found := k.apKeeper.GetEntry(ctx, poolShareDenom)
+	entry, found := k.assetProfileKeeper.GetEntry(ctx, poolShareDenom)
 	if !found {
 		// Set an entity to assetprofile
 		entry = atypes.Entry{
@@ -60,7 +60,7 @@ func (k Keeper) MintPoolShareToAccount(ctx sdk.Context, pool types.Pool, addr sd
 			WithdrawEnabled:          true,
 		}
 
-		k.apKeeper.SetEntry(ctx, entry)
+		k.assetProfileKeeper.SetEntry(ctx, entry)
 	}
 
 	// Commit LP token minted

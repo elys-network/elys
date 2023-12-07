@@ -23,7 +23,7 @@ func (m *Messenger) msgStake(ctx sdk.Context, contractAddr sdk.AccAddress, msgSt
 		return nil, nil, wasmvmtypes.InvalidRequest{Err: "stake wrong sender"}
 	}
 
-	entry, found := m.apKeeper.GetEntry(ctx, ptypes.BaseCurrency)
+	entry, found := m.assetProfileKeeper.GetEntry(ctx, ptypes.BaseCurrency)
 	if !found {
 		return nil, nil, wasmvmtypes.InvalidRequest{Err: "Invalid usdc denom"}
 	}

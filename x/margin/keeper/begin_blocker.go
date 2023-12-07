@@ -22,7 +22,7 @@ func (k Keeper) BeginBlocker(ctx sdk.Context) {
 	}
 
 	// if epoch has passed
-	entry, found := k.apKeeper.GetEntry(ctx, ptypes.BaseCurrency)
+	entry, found := k.assetProfileKeeper.GetEntry(ctx, ptypes.BaseCurrency)
 	if !found {
 		ctx.Logger().Error(sdkerrors.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency).Error())
 	}

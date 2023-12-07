@@ -19,7 +19,6 @@ func (k msgServer) Unstake(goCtx context.Context, msg *types.MsgUnstake) (*types
 			return nil, errorsmod.Wrap(err, "perform elys unstake")
 		}
 	} else {
-
 		if err := k.performUncommit(ctx, msg); err != nil {
 			return nil, errorsmod.Wrap(err, "perform elys uncommit")
 		}
@@ -51,7 +50,6 @@ func (k msgServer) performUnstakeElys(ctx sdk.Context, msg *types.MsgUnstake) er
 
 	amount := sdk.NewCoin(msg.Asset, msg.Amount)
 	msgMsgUndelegate := stakingtypes.NewMsgUndelegate(address, validator_address, amount)
-
 	if err := msgMsgUndelegate.ValidateBasic(); err != nil {
 		return errorsmod.Wrap(err, "failed validating msgMsgUndelegate")
 	}
