@@ -610,3 +610,20 @@ func (k Keeper) UpdateAmmPoolAPR(ctx sdk.Context, lpIncentive types.IncentiveInf
 		return false
 	})
 }
+
+// Get total dex rewards amount from the specified pool
+func (k Keeper) GetDexRewardsAmountForPool(ctx sdk.Context, poolId uint64) sdk.Dec {
+	if _, found := k.amm.GetPool(ctx, poolId); !found {
+		return sdk.ZeroDec()
+	}
+
+	lpPortionPercent := k.GetDEXRewardPortionForLPs(ctx)
+	if lpPortionPercent.IsZero() {
+		return sdk.ZeroDec()
+	}
+
+	// reward tracking key
+	trackKey := types.GetPoolRevenueTrackKey(poolId)
+	// calculate total dex rewards
+	return k.tci.PoolRevenueTrack[trackKey].Quo(lpPortionPercent)
+}

@@ -4,25 +4,48 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 	wasmbindingstypes "github.com/elys-network/elys/wasmbindings/types"
+	accountedpoolkeeper "github.com/elys-network/elys/x/accountedpool/keeper"
 	"github.com/elys-network/elys/x/amm/keeper"
 	apkeeper "github.com/elys-network/elys/x/assetprofile/keeper"
 	commitmentkeeper "github.com/elys-network/elys/x/commitment/keeper"
+	incentivekeeper "github.com/elys-network/elys/x/incentive/keeper"
+	leveragelpkeeper "github.com/elys-network/elys/x/leveragelp/keeper"
+	marginkeeper "github.com/elys-network/elys/x/margin/keeper"
+	oraclekeeper "github.com/elys-network/elys/x/oracle/keeper"
 )
 
 // Querier handles queries for the AMM module.
 type Querier struct {
-	keeper           *keeper.Keeper
-	bankKeeper       *bankkeeper.BaseKeeper
-	commitmentKeeper *commitmentkeeper.Keeper
-	apKeeper         *apkeeper.Keeper
+	keeper              *keeper.Keeper
+	bankKeeper          *bankkeeper.BaseKeeper
+	commitmentKeeper    *commitmentkeeper.Keeper
+	apKeeper            *apkeeper.Keeper
+	marginKeeper        *marginkeeper.Keeper
+	incentiveKeeper     *incentivekeeper.Keeper
+	oraclekeeper        *oraclekeeper.Keeper
+	leveragelpKeeper    *leveragelpkeeper.Keeper
+	accountedpoolKeeper *accountedpoolkeeper.Keeper
 }
 
-func NewQuerier(keeper *keeper.Keeper, bankKeeper *bankkeeper.BaseKeeper, commitmentKeeper *commitmentkeeper.Keeper, apKeeper *apkeeper.Keeper) *Querier {
+func NewQuerier(
+	keeper *keeper.Keeper,
+	bankKeeper *bankkeeper.BaseKeeper,
+	commitmentKeeper *commitmentkeeper.Keeper,
+	apKeeper *apkeeper.Keeper,
+	marginKeeper *marginkeeper.Keeper,
+	incentiveKeeper *incentivekeeper.Keeper,
+	oraclekeeper *oraclekeeper.Keeper,
+	leveragelpKeeper *leveragelpkeeper.Keeper,
+	accountedpoolKeeper *accountedpoolkeeper.Keeper) *Querier {
 	return &Querier{
 		keeper:           keeper,
 		bankKeeper:       bankKeeper,
 		commitmentKeeper: commitmentKeeper,
 		apKeeper:         apKeeper,
+		marginKeeper:     marginKeeper,
+		incentiveKeeper:  incentiveKeeper,
+		oraclekeeper:     oraclekeeper,
+		leveragelpKeeper: leveragelpKeeper,
 	}
 }
 
@@ -54,6 +77,8 @@ func (oq *Querier) HandleQuery(ctx sdk.Context, query wasmbindingstypes.ElysQuer
 		return oq.queryOutRouteByDenom(ctx, query.AmmOutRouteByDenom)
 	case query.AmmPriceByDenom != nil:
 		return oq.queryAmmPriceByDenom(ctx, query.AmmPriceByDenom)
+	case query.AmmEarnMiningPoolAll != nil:
+		return oq.queryEarnMiningPoolAll(ctx, query.AmmEarnMiningPoolAll)
 	default:
 		// This handler cannot handle the query
 		return nil, wasmbindingstypes.ErrCannotHandleQuery
