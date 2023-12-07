@@ -22,7 +22,7 @@ func (k Keeper) CalculateApr(ctx sdk.Context, query *types.QueryAprRequest) (sdk
 		return sdk.ZeroInt(), sdkerrors.Wrap(types.ErrNoNonInflationaryParams, "no inflationary params available")
 	}
 
-	entry, found := k.apKeeper.GetEntry(ctx, ptypes.BaseCurrency)
+	entry, found := k.assetProfileKeeper.GetEntry(ctx, ptypes.BaseCurrency)
 	if !found {
 		return sdk.ZeroInt(), sdkerrors.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency)
 	}

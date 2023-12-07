@@ -53,7 +53,7 @@ func (k Keeper) CalculateDelegatedAmount(ctx sdk.Context, delegator string) sdk.
 
 // Calculate the amm pool share using pool multiplier
 func (k Keeper) CalculatePoolShare(ctx sdk.Context, pool *ammtypes.Pool) (sdk.Dec, error) {
-	entry, found := k.apKeeper.GetEntry(ctx, ptypes.BaseCurrency)
+	entry, found := k.assetProfileKeeper.GetEntry(ctx, ptypes.BaseCurrency)
 	if !found {
 		return sdk.ZeroDec(), sdkerrors.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency)
 	}

@@ -29,7 +29,7 @@ func (k Keeper) CreatePool(ctx sdk.Context, msg *types.MsgCreatePool) (uint64, e
 	// 	return 0, err
 	// }
 
-	entry, found := k.apKeeper.GetEntry(ctx, ptypes.BaseCurrency)
+	entry, found := k.assetProfileKeeper.GetEntry(ctx, ptypes.BaseCurrency)
 	if !found {
 		return 0, sdkerrors.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency)
 	}

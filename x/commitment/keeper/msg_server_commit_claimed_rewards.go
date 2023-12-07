@@ -13,7 +13,7 @@ import (
 func (k msgServer) CommitClaimedRewards(goCtx context.Context, msg *types.MsgCommitClaimedRewards) (*types.MsgCommitClaimedRewardsResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	assetProfile, found := k.apKeeper.GetEntry(ctx, msg.Denom)
+	assetProfile, found := k.assetProfileKeeper.GetEntry(ctx, msg.Denom)
 	if !found {
 		return nil, sdkerrors.Wrapf(aptypes.ErrAssetProfileNotFound, "denom: %s", msg.Denom)
 	}

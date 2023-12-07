@@ -28,7 +28,7 @@ type (
 		accountKeeper       types.AccountKeeper
 		oracleKeeper        types.OracleKeeper
 		commitmentKeeper    *commitmentkeeper.Keeper
-		apKeeper            types.AssetProfileKeeper
+		assetProfileKeeper  types.AssetProfileKeeper
 		accountedPoolKeeper types.AccountedPoolKeeper
 	}
 )
@@ -45,7 +45,7 @@ func NewKeeper(
 	accountKeeper types.AccountKeeper,
 	oracleKeeper types.OracleKeeper,
 	commitmentKeeper *commitmentkeeper.Keeper,
-	apKeeper types.AssetProfileKeeper,
+	assetProfileKeeper types.AssetProfileKeeper,
 	accountedPoolKeeper types.AccountedPoolKeeper,
 ) *Keeper {
 	// set KeyTable if it has not already been set
@@ -65,7 +65,7 @@ func NewKeeper(
 		accountKeeper:       accountKeeper,
 		oracleKeeper:        oracleKeeper,
 		commitmentKeeper:    commitmentKeeper,
-		apKeeper:            apKeeper,
+		assetProfileKeeper:  assetProfileKeeper,
 		accountedPoolKeeper: accountedPoolKeeper,
 	}
 }

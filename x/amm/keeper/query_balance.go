@@ -32,7 +32,7 @@ func (k Keeper) Balance(goCtx context.Context, req *types.QueryBalanceRequest) (
 		claimed := commitment.GetClaimedForDenom(denom)
 		commitBalance := sdk.NewCoin(denom, claimed)
 
-		entry, found := k.apKeeper.GetEntry(ctx, paramtypes.BaseCurrency)
+		entry, found := k.assetProfileKeeper.GetEntry(ctx, paramtypes.BaseCurrency)
 		if !found {
 			return nil, sdkerrors.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", paramtypes.BaseCurrency)
 		}

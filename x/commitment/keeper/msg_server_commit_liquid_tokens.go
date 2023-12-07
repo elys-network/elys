@@ -14,7 +14,7 @@ import (
 func (k msgServer) CommitLiquidTokens(goCtx context.Context, msg *types.MsgCommitLiquidTokens) (*types.MsgCommitLiquidTokensResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	assetProfile, found := k.apKeeper.GetEntry(ctx, msg.Denom)
+	assetProfile, found := k.assetProfileKeeper.GetEntry(ctx, msg.Denom)
 	if !found {
 		return nil, sdkerrors.Wrapf(aptypes.ErrAssetProfileNotFound, "denom: %s", msg.Denom)
 	}

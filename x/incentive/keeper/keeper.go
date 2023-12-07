@@ -20,21 +20,21 @@ import (
 
 type (
 	Keeper struct {
-		cdc              codec.BinaryCodec
-		storeKey         storetypes.StoreKey
-		memKey           storetypes.StoreKey
-		paramstore       paramtypes.Subspace
-		cmk              types.CommitmentKeeper
-		stk              types.StakingKeeper
-		tci              *types.TotalCommitmentInfo
-		authKeeper       types.AccountKeeper
-		bankKeeper       types.BankKeeper
-		amm              types.AmmKeeper
-		oracleKeeper     types.OracleKeeper
-		apKeeper         types.AssetProfileKeeper
-		epochsKeeper     types.EpochsKeeper
-		stableKeeper     types.StableStakeKeeper
-		tokenomicsKeeper types.TokenomicsKeeper
+		cdc                codec.BinaryCodec
+		storeKey           storetypes.StoreKey
+		memKey             storetypes.StoreKey
+		paramstore         paramtypes.Subspace
+		cmk                types.CommitmentKeeper
+		stk                types.StakingKeeper
+		tci                *types.TotalCommitmentInfo
+		authKeeper         types.AccountKeeper
+		bankKeeper         types.BankKeeper
+		amm                types.AmmKeeper
+		oracleKeeper       types.OracleKeeper
+		assetProfileKeeper types.AssetProfileKeeper
+		epochsKeeper       types.EpochsKeeper
+		stableKeeper       types.StableStakeKeeper
+		tokenomicsKeeper   types.TokenomicsKeeper
 
 		feeCollectorName    string // name of the FeeCollector ModuleAccount
 		dexRevCollectorName string // name of the Dex Revenue ModuleAccount
@@ -80,7 +80,7 @@ func NewKeeper(
 		bankKeeper:          bk,
 		amm:                 amm,
 		oracleKeeper:        ok,
-		apKeeper:            ap,
+		assetProfileKeeper:  ap,
 		epochsKeeper:        epochsKeeper,
 		stableKeeper:        stableKeeper,
 		tokenomicsKeeper:    tokenomicsKeeper,
@@ -95,7 +95,7 @@ func (k Keeper) Logger(ctx sdk.Context) log.Logger {
 // Update unclaimed token amount
 // Called back through epoch hook
 func (k Keeper) UpdateStakersRewardsUnclaimed(ctx sdk.Context, stakeIncentive types.IncentiveInfo) error {
-	entry, found := k.apKeeper.GetEntry(ctx, ptypes.BaseCurrency)
+	entry, found := k.assetProfileKeeper.GetEntry(ctx, ptypes.BaseCurrency)
 	if !found {
 		return sdkerrors.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency)
 	}
@@ -313,7 +313,7 @@ func (k Keeper) UpdateStakersRewardsUnclaimed(ctx sdk.Context, stakeIncentive ty
 // Update unclaimed token amount
 // Called back through epoch hook
 func (k Keeper) UpdateLPRewardsUnclaimed(ctx sdk.Context, lpIncentive types.IncentiveInfo) error {
-	entry, found := k.apKeeper.GetEntry(ctx, ptypes.BaseCurrency)
+	entry, found := k.assetProfileKeeper.GetEntry(ctx, ptypes.BaseCurrency)
 	if !found {
 		return sdkerrors.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency)
 	}

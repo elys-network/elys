@@ -1,10 +1,10 @@
 package cli
 
 const (
-	BaseDenom       = "base-denom"
-	VestingDenom    = "vesting-denom"
-	EpochIdentifier = "epoch-identifier"
-	NumEpochs       = "num-epochs"
-	VestNowFactor   = "vest-now-factor"
-	NumMaxVestings  = "num-max-vestings"
+	FlagBaseDenom       = "base-denom"
+	FlagVestingDenom    = "vesting-denom"
+	FlagEpochIdentifier = "epoch-identifier"
+	FlagNumEpochs       = "num-epochs"
+	FlagVestNowFactor   = "vest-now-factor"
+	FlagNumMaxVestings  = "num-max-vestings"
 )

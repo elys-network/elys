@@ -15,7 +15,7 @@ func (k Keeper) UpdatePoolParams(ctx sdk.Context, poolId uint64, poolParams type
 		return 0, types.PoolParams{}, types.ErrPoolNotFound
 	}
 
-	entry, found := k.apKeeper.GetEntry(ctx, ptypes.BaseCurrency)
+	entry, found := k.assetProfileKeeper.GetEntry(ctx, ptypes.BaseCurrency)
 	if !found {
 		return 0, types.PoolParams{}, sdkerrors.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency)
 	}

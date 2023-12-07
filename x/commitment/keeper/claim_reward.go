@@ -9,7 +9,7 @@ import (
 
 // Update commitments for claim reward operation
 func (k Keeper) RecordClaimReward(ctx sdk.Context, creator string, denom string, amount sdk.Int, withdrawMode types.EarnType) error {
-	assetProfile, found := k.apKeeper.GetEntry(ctx, denom)
+	assetProfile, found := k.assetProfileKeeper.GetEntry(ctx, denom)
 	if !found {
 		return sdkerrors.Wrapf(aptypes.ErrAssetProfileNotFound, "denom: %s", denom)
 	}

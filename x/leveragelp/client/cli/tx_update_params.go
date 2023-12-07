@@ -2,7 +2,6 @@ package cli
 
 import (
 	"errors"
-	"strconv"
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
@@ -15,7 +14,14 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var _ = strconv.Itoa(0)
+const (
+	FlagLeverageMax         = "leverage-max"
+	FlagMaxOpenPositions    = "max-open-positions"
+	FlagPoolOpenThreshold   = "pool-open-threshold"
+	FlagSafetyFactor        = "safety-factor"
+	FlagWhitelistingEnabled = "whitelisting-enabled"
+	FlagEpochLength         = "epoch-length"
+)
 
 // Governance command
 func CmdUpdateParams() *cobra.Command {
@@ -43,32 +49,32 @@ func CmdUpdateParams() *cobra.Command {
 				return err
 			}
 
-			leverageMax, err := cmd.Flags().GetString("leverage-max")
+			leverageMax, err := cmd.Flags().GetString(FlagLeverageMax)
 			if err != nil {
 				return err
 			}
 
-			epoch_length, err := cmd.Flags().GetInt64("epoch-length")
+			epoch_length, err := cmd.Flags().GetInt64(FlagEpochLength)
 			if err != nil {
 				return err
 			}
 
-			maxOpenPositions, err := cmd.Flags().GetInt64("max-open-positions")
+			maxOpenPositions, err := cmd.Flags().GetInt64(FlagMaxOpenPositions)
 			if err != nil {
 				return err
 			}
 
-			poolOpenThreshold, err := cmd.Flags().GetString("pool-open-threshold")
+			poolOpenThreshold, err := cmd.Flags().GetString(FlagPoolOpenThreshold)
 			if err != nil {
 				return err
 			}
 
-			safetyFactor, err := cmd.Flags().GetString("safety-factor")
+			safetyFactor, err := cmd.Flags().GetString(FlagSafetyFactor)
 			if err != nil {
 				return err
 			}
 
-			whitelistingEnabled, err := cmd.Flags().GetBool("whitelisting-enabled")
+			whitelistingEnabled, err := cmd.Flags().GetBool(FlagWhitelistingEnabled)
 			if err != nil {
 				return err
 			}
@@ -115,21 +121,21 @@ func CmdUpdateParams() *cobra.Command {
 		},
 	}
 
-	cmd.Flags().String("leverage-max", "", "max leverage (integer)")
-	cmd.Flags().Int64("epoch-length", 1, "epoch length in blocks (integer)")
-	cmd.Flags().Int64("max-open-positions", 10000, "max open positions")
-	cmd.Flags().String("pool-open-threshold", "", "threshold to prevent new positions (decimal range 0-1)")
-	cmd.Flags().String("safety-factor", "", "the safety factor used in liquidation ratio")
-	cmd.Flags().Bool("whitelisting-enabled", false, "Enable whitelisting")
+	cmd.Flags().String(FlagLeverageMax, "", "max leverage (integer)")
+	cmd.Flags().Int64(FlagEpochLength, 1, "epoch length in blocks (integer)")
+	cmd.Flags().Int64(FlagMaxOpenPositions, 10000, "max open positions")
+	cmd.Flags().String(FlagPoolOpenThreshold, "", "threshold to prevent new positions (decimal range 0-1)")
+	cmd.Flags().String(FlagSafetyFactor, "", "the safety factor used in liquidation ratio")
+	cmd.Flags().Bool(FlagWhitelistingEnabled, false, "Enable whitelisting")
 	cmd.Flags().String(cli.FlagTitle, "", "title of proposal")
 	cmd.Flags().String(cli.FlagSummary, "", "summary of proposal")
 	cmd.Flags().String(cli.FlagMetadata, "", "metadata of proposal")
 	cmd.Flags().String(cli.FlagDeposit, "", "deposit of proposal")
-	_ = cmd.MarkFlagRequired("leverage-max")
-	_ = cmd.MarkFlagRequired("max-open-positions")
-	_ = cmd.MarkFlagRequired("pool-open-threshold")
-	_ = cmd.MarkFlagRequired("safety-factor")
-	_ = cmd.MarkFlagRequired("whitelisting-enabled")
+	_ = cmd.MarkFlagRequired(FlagLeverageMax)
+	_ = cmd.MarkFlagRequired(FlagMaxOpenPositions)
+	_ = cmd.MarkFlagRequired(FlagPoolOpenThreshold)
+	_ = cmd.MarkFlagRequired(FlagSafetyFactor)
+	_ = cmd.MarkFlagRequired(FlagWhitelistingEnabled)
 	_ = cmd.MarkFlagRequired(cli.FlagTitle)
 	_ = cmd.MarkFlagRequired(cli.FlagSummary)
 	_ = cmd.MarkFlagRequired(cli.FlagMetadata)

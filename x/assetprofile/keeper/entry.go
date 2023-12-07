@@ -10,22 +10,13 @@ import (
 func (k Keeper) SetEntry(ctx sdk.Context, entry types.Entry) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.EntryKeyPrefix))
 	b := k.cdc.MustMarshal(&entry)
-	store.Set(types.EntryKey(
-		entry.BaseDenom,
-	), b)
+	store.Set(types.EntryKey(entry.BaseDenom), b)
 }
 
 // GetEntry returns a entry from its index
-func (k Keeper) GetEntry(
-	ctx sdk.Context,
-	baseDenom string,
-
-) (val types.Entry, found bool) {
+func (k Keeper) GetEntry(ctx sdk.Context, baseDenom string) (val types.Entry, found bool) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.EntryKeyPrefix))
-
-	b := store.Get(types.EntryKey(
-		baseDenom,
-	))
+	b := store.Get(types.EntryKey(baseDenom))
 	if b == nil {
 		return val, false
 	}
@@ -35,15 +26,9 @@ func (k Keeper) GetEntry(
 }
 
 // RemoveEntry removes a entry from the store
-func (k Keeper) RemoveEntry(
-	ctx sdk.Context,
-	baseDenom string,
-
-) {
+func (k Keeper) RemoveEntry(ctx sdk.Context, baseDenom string) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.EntryKeyPrefix))
-	store.Delete(types.EntryKey(
-		baseDenom,
-	))
+	store.Delete(types.EntryKey(baseDenom))
 }
 
 // GetAllEntry returns all entry

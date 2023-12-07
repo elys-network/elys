@@ -17,20 +17,15 @@ func CmdShowCommitments() *cobra.Command {
 		Short: "Query show-commitments",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
-			reqCreator := args[0]
-
 			clientCtx, err := client.GetClientQueryContext(cmd)
 			if err != nil {
 				return err
 			}
 
 			queryClient := types.NewQueryClient(clientCtx)
-
 			params := &types.QueryShowCommitmentsRequest{
-
-				Creator: reqCreator,
+				Creator: args[0],
 			}
-
 			res, err := queryClient.ShowCommitments(cmd.Context(), params)
 			if err != nil {
 				return err

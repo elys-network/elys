@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"errors"
 	"io/ioutil"
-	"strconv"
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
@@ -18,7 +17,9 @@ import (
 	"github.com/spf13/viper"
 )
 
-var _ = strconv.Itoa(0)
+const (
+	FlagClosedPools = "closed-pools"
+)
 
 // Governance command
 // TODO
@@ -60,7 +61,7 @@ func CmdUpdatePools() *cobra.Command {
 				return err
 			}
 
-			closedPools, err := readPoolsJSON(viper.GetString("closed-pools"))
+			closedPools, err := readPoolsJSON(viper.GetString(FlagClosedPools))
 			if err != nil {
 				return err
 			}
@@ -94,12 +95,12 @@ func CmdUpdatePools() *cobra.Command {
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), govMsg)
 		},
 	}
-	cmd.Flags().String("closed-pools", "", "pools that new positions cannot be opened on")
+	cmd.Flags().String(FlagClosedPools, "", "pools that new positions cannot be opened on")
 	cmd.Flags().String(cli.FlagTitle, "", "title of proposal")
 	cmd.Flags().String(cli.FlagSummary, "", "summary of proposal")
 	cmd.Flags().String(cli.FlagMetadata, "", "metadata of proposal")
 	cmd.Flags().String(cli.FlagDeposit, "", "deposit of proposal")
-	_ = cmd.MarkFlagRequired("closed-pools")
+	_ = cmd.MarkFlagRequired(FlagClosedPools)
 	_ = cmd.MarkFlagRequired(cli.FlagTitle)
 	_ = cmd.MarkFlagRequired(cli.FlagSummary)
 	_ = cmd.MarkFlagRequired(cli.FlagMetadata)

@@ -32,15 +32,15 @@ type (
 		types.CloseLongChecker
 		types.CloseShortChecker
 
-		cdc             codec.BinaryCodec
-		storeKey        storetypes.StoreKey
-		memKey          storetypes.StoreKey
-		authority       string
-		parameterKeeper *pkeeper.Keeper
-		amm             types.AmmKeeper
-		bankKeeper      types.BankKeeper
-		oracleKeeper    ammtypes.OracleKeeper
-		apKeeper        types.AssetProfileKeeper
+		cdc                codec.BinaryCodec
+		storeKey           storetypes.StoreKey
+		memKey             storetypes.StoreKey
+		authority          string
+		parameterKeeper    *pkeeper.Keeper
+		amm                types.AmmKeeper
+		bankKeeper         types.BankKeeper
+		oracleKeeper       ammtypes.OracleKeeper
+		assetProfileKeeper types.AssetProfileKeeper
 
 		hooks types.MarginHooks
 	}
@@ -54,7 +54,7 @@ func NewKeeper(
 	amm types.AmmKeeper,
 	bk types.BankKeeper,
 	oracleKeeper ammtypes.OracleKeeper,
-	apKeeper types.AssetProfileKeeper,
+	assetProfileKeeper types.AssetProfileKeeper,
 	parameterKeeper *pkeeper.Keeper,
 ) *Keeper {
 	// ensure that authority is a valid AccAddress
@@ -63,15 +63,15 @@ func NewKeeper(
 	}
 
 	keeper := &Keeper{
-		cdc:             cdc,
-		storeKey:        storeKey,
-		memKey:          memKey,
-		authority:       authority,
-		amm:             amm,
-		bankKeeper:      bk,
-		oracleKeeper:    oracleKeeper,
-		apKeeper:        apKeeper,
-		parameterKeeper: parameterKeeper,
+		cdc:                cdc,
+		storeKey:           storeKey,
+		memKey:             memKey,
+		authority:          authority,
+		amm:                amm,
+		bankKeeper:         bk,
+		oracleKeeper:       oracleKeeper,
+		assetProfileKeeper: assetProfileKeeper,
+		parameterKeeper:    parameterKeeper,
 	}
 
 	keeper.AuthorizationChecker = keeper

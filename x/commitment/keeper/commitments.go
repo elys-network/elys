@@ -168,7 +168,7 @@ func (k Keeper) HandleWithdrawFromCommitment(ctx sdk.Context, commitments *types
 
 // Update commitments for validator's commission withdrawal to self delegator
 func (k Keeper) RecordWithdrawValidatorCommission(ctx sdk.Context, delegator string, creator string, denom string, amount sdk.Int) error {
-	assetProfile, found := k.apKeeper.GetEntry(ctx, denom)
+	assetProfile, found := k.assetProfileKeeper.GetEntry(ctx, denom)
 	if !found {
 		return sdkerrors.Wrapf(aptypes.ErrAssetProfileNotFound, "denom: %s", denom)
 	}
