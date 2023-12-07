@@ -622,8 +622,13 @@ func (k Keeper) GetDexRewardsAmountForPool(ctx sdk.Context, poolId uint64) sdk.D
 		return sdk.ZeroDec()
 	}
 
+	if k.tci == nil || k.tci.PoolRevenueTrack == nil || len(k.tci.PoolRevenueTrack) < 1 {
+		return sdk.ZeroDec()
+	}
+
 	// reward tracking key
 	trackKey := types.GetPoolRevenueTrackKey(poolId)
+	revenue := k.tci.PoolRevenueTrack[trackKey]
 	// calculate total dex rewards
-	return k.tci.PoolRevenueTrack[trackKey].Quo(lpPortionPercent)
+	return revenue.Quo(lpPortionPercent)
 }

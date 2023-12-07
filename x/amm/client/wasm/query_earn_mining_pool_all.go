@@ -8,6 +8,7 @@ import (
 	"github.com/elys-network/elys/x/amm/types"
 )
 
+// Check pool type
 func (oq *Querier) checkFilterType(ctx sdk.Context, ammPool *types.Pool, filterType types.FilterType) bool {
 	switch filterType {
 	case types.FilterType_FilterAll:
@@ -28,6 +29,9 @@ func (oq *Querier) checkFilterType(ctx sdk.Context, ammPool *types.Pool, filterT
 func (oq *Querier) generateEarnPool(ctx sdk.Context, ammPool *types.Pool) types.EarnPool {
 	dexApr := sdk.ZeroDec()
 	edenApr := sdk.ZeroDec()
+	leverageLpPercent := sdk.ZeroDec()
+	perpetualPercent := sdk.ZeroDec()
+
 	poolInfo, found := oq.incentiveKeeper.GetPoolInfo(ctx, ammPool.PoolId)
 	if found {
 		dexApr = poolInfo.DexApr
@@ -42,8 +46,15 @@ func (oq *Querier) generateEarnPool(ctx sdk.Context, ammPool *types.Pool) types.
 	// Get pool share
 	poolShare, _ := oq.incentiveKeeper.CalculatePoolShare(ctx, ammPool)
 
-	leverageLpPercent := sdk.ZeroDec()
-	perpetualPercent := sdk.ZeroDec()
+	leverageLpPool, found := oq.leveragelpKeeper.GetPool(ctx, ammPool.PoolId)
+	if found {
+		leverageLpPercent = leverageLpPool.Health
+	}
+
+	marginPool, found := oq.marginKeeper.GetPool(ctx, ammPool.PoolId)
+	if found {
+		perpetualPercent = marginPool.Health
+	}
 
 	return types.EarnPool{
 		Assets:     ammPool.PoolAssets,
@@ -55,6 +66,15 @@ func (oq *Querier) generateEarnPool(ctx sdk.Context, ammPool *types.Pool) types.
 		Tvl:        tvl,
 		Rewards:    rewards,
 	}
+}
+
+// Reverse pools
+func (oq *Querier) reversePools(earnPools []types.EarnPool) []types.EarnPool {
+	for i, j := 0, len(earnPools)-1; i < j; i, j = i+1, j-1 {
+		earnPools[i], earnPools[j] = earnPools[j], earnPools[i]
+	}
+
+	return earnPools
 }
 
 func (oq *Querier) queryEarnMiningPoolAll(ctx sdk.Context, poolRequest *types.QueryEarnPoolRequest) ([]byte, error) {
@@ -113,6 +133,11 @@ func (oq *Querier) queryEarnMiningPoolAll(ctx sdk.Context, poolRequest *types.Qu
 
 			return false
 		})
+	}
+
+	// If reverse is set true.
+	if poolRequest.Pagination != nil && poolRequest.Pagination.Reverse {
+		pools = oq.reversePools(pools)
 	}
 
 	res := types.QueryEarnPoolResponse{
