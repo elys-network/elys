@@ -48,30 +48,12 @@ func (k Keeper) CalculateDelegatedAmount(ctx sdk.Context, delegator string) sdk.
 	return delegatedAmt.TruncateInt()
 }
 
-<<<<<<< HEAD
-// Calculate the amm pool share using pool multiplier
-func (k Keeper) CalculatePoolShare(ctx sdk.Context, pool *ammtypes.Pool) (sdk.Dec, error) {
-	entry, found := k.assetProfileKeeper.GetEntry(ctx, ptypes.BaseCurrency)
-	if !found {
-		return sdk.ZeroDec(), sdkerrors.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency)
-	}
-	baseCurrency := entry.Denom
-
-	// Calculate total proxy tvl
-	totalProxyTVL := k.CalculateProxyTVL(ctx, baseCurrency)
-
-	// Calculate the tvl of the pool
-	tvl, err := pool.TVL(ctx, k.oracleKeeper)
-	if err != nil {
-		return sdk.ZeroDec(), errors.New("pool tvl is invalid")
-=======
 // Calculate the amm pool ratio
 func (k Keeper) CalculatePoolRatio(ctx sdk.Context, pool *ammtypes.Pool) string {
 	weightString := ""
 	totalWeight := sdk.ZeroInt()
 	for _, asset := range pool.PoolAssets {
 		totalWeight = totalWeight.Add(asset.Weight)
->>>>>>> 924d0fa (chore: add leverage type and fix pool ratio)
 	}
 
 	if totalWeight.IsZero() {
