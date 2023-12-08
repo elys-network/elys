@@ -12,6 +12,7 @@ import (
 	leveragelpkeeper "github.com/elys-network/elys/x/leveragelp/keeper"
 	marginkeeper "github.com/elys-network/elys/x/margin/keeper"
 	oraclekeeper "github.com/elys-network/elys/x/oracle/keeper"
+	stablestakekeeper "github.com/elys-network/elys/x/stablestake/keeper"
 )
 
 // Querier handles queries for the AMM module.
@@ -25,6 +26,7 @@ type Querier struct {
 	oraclekeeper        *oraclekeeper.Keeper
 	leveragelpKeeper    *leveragelpkeeper.Keeper
 	accountedpoolKeeper *accountedpoolkeeper.Keeper
+	stablestakeKeeper   *stablestakekeeper.Keeper
 }
 
 func NewQuerier(
@@ -36,7 +38,8 @@ func NewQuerier(
 	incentiveKeeper *incentivekeeper.Keeper,
 	oraclekeeper *oraclekeeper.Keeper,
 	leveragelpKeeper *leveragelpkeeper.Keeper,
-	accountedpoolKeeper *accountedpoolkeeper.Keeper) *Querier {
+	accountedpoolKeeper *accountedpoolkeeper.Keeper,
+	stablestakeKeeper *stablestakekeeper.Keeper) *Querier {
 	return &Querier{
 		keeper:              keeper,
 		bankKeeper:          bankKeeper,
@@ -47,6 +50,7 @@ func NewQuerier(
 		oraclekeeper:        oraclekeeper,
 		leveragelpKeeper:    leveragelpKeeper,
 		accountedpoolKeeper: accountedpoolKeeper,
+		stablestakeKeeper:   stablestakeKeeper,
 	}
 }
 

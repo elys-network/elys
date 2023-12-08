@@ -12,6 +12,7 @@ enum FilterType {
     FilterPerpetual     = 1;
     FilterFixedWeight   = 2;
     FilterDynamicWeight = 3;
+	FilterLeverage      = 4;
 }
   
 message QueryEarnPoolRequest {
@@ -22,9 +23,9 @@ message QueryEarnPoolRequest {
   
 message EarnPool {
     repeated PoolAsset assets = 1 [(gogoproto.nullable) = false];
-    string pool_ratio         = 2 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
-    string dex_apr            = 3 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
-    string eden_apr           = 4 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+    string pool_ratio         = 2;
+    string rewards_apr        = 3 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+    string borrow_apr         = 4 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
     string leverage_lp        = 5 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
     string perpetual          = 6 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
     string tvl                = 7 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];

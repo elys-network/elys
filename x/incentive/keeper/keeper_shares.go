@@ -1,14 +1,11 @@
 package keeper
 
 import (
-	"errors"
+	"fmt"
 	"math"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
-	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
-	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
 
 // Calculate total share of staking
@@ -51,36 +48,28 @@ func (k Keeper) CalculateDelegatedAmount(ctx sdk.Context, delegator string) sdk.
 	return delegatedAmt.TruncateInt()
 }
 
-// Calculate the amm pool share using pool multiplier
-func (k Keeper) CalculatePoolShare(ctx sdk.Context, pool *ammtypes.Pool) (sdk.Dec, error) {
-	entry, found := k.assetProfileKeeper.GetEntry(ctx, ptypes.BaseCurrency)
-	if !found {
-		return sdk.ZeroDec(), sdkerrors.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency)
-	}
-	baseCurrency := entry.Denom
-
-	// Calculate total proxy tvl
-	totalProxyTVL := k.CalculateProxyTVL(ctx, baseCurrency)
-
-	// Calculate the tvl of the pool
-	tvl, err := pool.TVL(ctx, k.oracleKeeper)
-	if err != nil {
-		return sdk.ZeroDec(), errors.New("pool tvl is invalid")
+// Calculate the amm pool ratio
+func (k Keeper) CalculatePoolRatio(ctx sdk.Context, pool *ammtypes.Pool) string {
+	weightString := ""
+	totalWeight := sdk.ZeroInt()
+	for _, asset := range pool.PoolAssets {
+		totalWeight = totalWeight.Add(asset.Weight)
 	}
 
-	// Get pool info from incentive param
-	poolInfo, found := k.GetPoolInfo(ctx, pool.PoolId)
-	if !found {
-		return sdk.ZeroDec(), errors.New("pool info doesn't exist")
+	if totalWeight.IsZero() {
+		return weightString
 	}
 
-	// Calculate Proxy TVL share considering multiplier
-	proxyTVL := tvl.Mul(poolInfo.Multiplier)
-	poolShare := sdk.ZeroDec()
-	if totalProxyTVL.IsPositive() {
-		poolShare = proxyTVL.Quo(totalProxyTVL)
+	for _, asset := range pool.PoolAssets {
+		weight := sdk.NewDecFromInt(asset.Weight).QuoInt(totalWeight).MulInt(sdk.NewInt(100)).TruncateInt64()
+		weightString = fmt.Sprintf("%s : %d", weightString, weight)
 	}
 
-	// returns pool share
-	return poolShare, nil
+	// remove prefix " : " 3 characters
+	if len(weightString) > 1 {
+		weightString = weightString[3:]
+	}
+
+	// returns pool weight string
+	return weightString
 }

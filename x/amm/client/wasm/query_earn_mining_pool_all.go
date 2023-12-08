@@ -20,31 +20,37 @@ func (oq *Querier) checkFilterType(ctx sdk.Context, ammPool *types.Pool, filterT
 		return ammPool.PoolParams.UseOracle
 	case types.FilterType_FilterDynamicWeight:
 		return !ammPool.PoolParams.UseOracle
+	case types.FilterType_FilterLeverage:
+		_, found := oq.leveragelpKeeper.GetPool(ctx, ammPool.PoolId)
+		return found
 	}
 
 	return false
 }
 
 // Generate earn pool struct
-func (oq *Querier) generateEarnPool(ctx sdk.Context, ammPool *types.Pool) types.EarnPool {
+func (oq *Querier) generateEarnPool(ctx sdk.Context, ammPool *types.Pool, filterType types.FilterType) types.EarnPool {
 	dexApr := sdk.ZeroDec()
-	edenApr := sdk.ZeroDec()
+	borrowApr := sdk.ZeroDec()
 	leverageLpPercent := sdk.ZeroDec()
 	perpetualPercent := sdk.ZeroDec()
 
 	poolInfo, found := oq.incentiveKeeper.GetPoolInfo(ctx, ammPool.PoolId)
 	if found {
 		dexApr = poolInfo.DexApr
-		edenApr = poolInfo.EdenApr
 	}
 
+	if filterType == types.FilterType_FilterLeverage {
+		prams := oq.stablestakeKeeper.GetParams(ctx)
+		borrowApr = prams.InterestRate
+	}
 	tvl, _ := ammPool.TVL(ctx, oq.oraclekeeper)
 
 	// Get rewards amount
 	rewards := oq.incentiveKeeper.GetDexRewardsAmountForPool(ctx, ammPool.PoolId)
 
-	// Get pool share
-	poolShare, _ := oq.incentiveKeeper.CalculatePoolShare(ctx, ammPool)
+	// Get pool ratio
+	poolRatio := oq.incentiveKeeper.CalculatePoolRatio(ctx, ammPool)
 
 	leverageLpPool, found := oq.leveragelpKeeper.GetPool(ctx, ammPool.PoolId)
 	if found {
@@ -58,9 +64,9 @@ func (oq *Querier) generateEarnPool(ctx sdk.Context, ammPool *types.Pool) types.
 
 	return types.EarnPool{
 		Assets:     ammPool.PoolAssets,
-		PoolRatio:  poolShare,
-		DexApr:     dexApr,
-		EdenApr:    edenApr,
+		PoolRatio:  poolRatio,
+		RewardsApr: dexApr,
+		BorrowApr:  borrowApr,
 		LeverageLp: leverageLpPercent,
 		Perpetual:  perpetualPercent,
 		Tvl:        tvl,
@@ -106,7 +112,7 @@ func (oq *Querier) queryEarnMiningPoolAll(ctx sdk.Context, poolRequest *types.Qu
 			}
 
 			// Construct earn pool
-			earnPool := oq.generateEarnPool(ctx, &pool)
+			earnPool := oq.generateEarnPool(ctx, &pool, poolRequest.FilterType)
 			pools = append(pools, earnPool)
 		}
 	} else {
@@ -128,7 +134,7 @@ func (oq *Querier) queryEarnMiningPoolAll(ctx sdk.Context, poolRequest *types.Qu
 			}
 
 			// Construct earn pool
-			earnPool := oq.generateEarnPool(ctx, &p)
+			earnPool := oq.generateEarnPool(ctx, &p, poolRequest.FilterType)
 			pools = append(pools, earnPool)
 
 			return false
