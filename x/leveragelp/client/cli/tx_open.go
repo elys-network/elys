@@ -12,8 +12,6 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var _ = strconv.Itoa(0)
-
 func CmdOpen() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:     "open [leverage] [collateral-asset] [collateral-amount] [amm-pool-id] [flags]",

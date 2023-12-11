@@ -23,7 +23,7 @@ func (k msgServer) CreateEntry(goCtx context.Context, msg *types.MsgCreateEntry)
 		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "entry already set")
 	}
 
-	var entry = types.Entry{
+	entry := types.Entry{
 		Authority:                msg.Authority,
 		BaseDenom:                msg.BaseDenom,
 		Decimals:                 msg.Decimals,

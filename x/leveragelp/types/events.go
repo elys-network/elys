@@ -1,6 +1,8 @@
 package types
 
-const EventOpen = "leveragelp/position_open"
-const EventClose = "leveragelp/position_close"
-const EventIncrementalPayFund = "leveragelp/incremental_pay_fund"
-const EventRepayFund = "leveragelp/repay_fund"
+const (
+	EventOpen               = "leveragelp/position_open"
+	EventClose              = "leveragelp/position_close"
+	EventIncrementalPayFund = "leveragelp/incremental_pay_fund"
+	EventRepayFund          = "leveragelp/repay_fund"
+)

@@ -20,9 +20,7 @@ func KeyPrefix(p string) []byte {
 	return []byte(p)
 }
 
-var (
-	FeePoolKey = []byte{0x00} // key for global distribution state
-)
+var FeePoolKey = []byte{0x00} // key for global distribution state
 
 // ElysStakedKey returns the store key to retrieve a ElysStaked from the address fields
 func ElysStakedKey(

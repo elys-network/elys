@@ -31,7 +31,6 @@ func (k Keeper) EntryAll(goCtx context.Context, req *types.QueryAllEntryRequest)
 		entrys = append(entrys, entry)
 		return nil
 	})
-
 	if err != nil {
 		return nil, status.Error(codes.Internal, err.Error())
 	}

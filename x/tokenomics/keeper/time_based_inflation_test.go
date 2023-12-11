@@ -41,6 +41,7 @@ func TestTimeBasedInflationGet(t *testing.T) {
 		)
 	}
 }
+
 func TestTimeBasedInflationRemove(t *testing.T) {
 	keeper, ctx := keepertest.TokenomicsKeeper(t)
 	items := createNTimeBasedInflation(keeper, ctx, 10)

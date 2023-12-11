@@ -49,11 +49,10 @@ func PerformMsgOpen(f *leveragelpkeeper.Keeper, ctx sdk.Context, contractAddr sd
 	}
 
 	_, err := msgServer.Open(sdk.WrapSDKContext(ctx), msgMsgOpen) // Discard the response because it's empty
-
 	if err != nil {
 		return nil, errorsmod.Wrap(err, "leveragelp open msg")
 	}
 
-	var resp = &leveragelptypes.MsgOpenResponse{}
+	resp := &leveragelptypes.MsgOpenResponse{}
 	return resp, nil
 }

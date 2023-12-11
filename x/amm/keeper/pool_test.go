@@ -53,6 +53,7 @@ func TestPoolGet(t *testing.T) {
 		)
 	}
 }
+
 func TestPoolRemove(t *testing.T) {
 	keeper, ctx, _, _ := keepertest.AmmKeeper(t)
 	items := createNPool(keeper, ctx, 10)

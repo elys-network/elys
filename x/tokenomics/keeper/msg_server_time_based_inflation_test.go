@@ -24,7 +24,8 @@ func TestTimeBasedInflationMsgServerCreate(t *testing.T) {
 	wctx := sdk.WrapSDKContext(ctx)
 	authority := authtypes.NewModuleAddress(govtypes.ModuleName).String()
 	for i := 0; i < 5; i++ {
-		expected := &types.MsgCreateTimeBasedInflation{Authority: authority,
+		expected := &types.MsgCreateTimeBasedInflation{
+			Authority:        authority,
 			StartBlockHeight: uint64(i),
 			EndBlockHeight:   uint64(i),
 		}
@@ -49,14 +50,16 @@ func TestTimeBasedInflationMsgServerUpdate(t *testing.T) {
 	}{
 		{
 			desc: "Completed",
-			request: &types.MsgUpdateTimeBasedInflation{Authority: authority,
+			request: &types.MsgUpdateTimeBasedInflation{
+				Authority:        authority,
 				StartBlockHeight: 0,
 				EndBlockHeight:   0,
 			},
 		},
 		{
 			desc: "InvalidSigner",
-			request: &types.MsgUpdateTimeBasedInflation{Authority: "B",
+			request: &types.MsgUpdateTimeBasedInflation{
+				Authority:        "B",
 				StartBlockHeight: 0,
 				EndBlockHeight:   0,
 			},
@@ -64,7 +67,8 @@ func TestTimeBasedInflationMsgServerUpdate(t *testing.T) {
 		},
 		{
 			desc: "KeyNotFound",
-			request: &types.MsgUpdateTimeBasedInflation{Authority: authority,
+			request: &types.MsgUpdateTimeBasedInflation{
+				Authority:        authority,
 				StartBlockHeight: 100000,
 				EndBlockHeight:   100000,
 			},
@@ -75,7 +79,8 @@ func TestTimeBasedInflationMsgServerUpdate(t *testing.T) {
 			k, ctx := keepertest.TokenomicsKeeper(t)
 			srv := keeper.NewMsgServerImpl(*k)
 			wctx := sdk.WrapSDKContext(ctx)
-			expected := &types.MsgCreateTimeBasedInflation{Authority: authority,
+			expected := &types.MsgCreateTimeBasedInflation{
+				Authority:        authority,
 				StartBlockHeight: 0,
 				EndBlockHeight:   0,
 			}
@@ -108,14 +113,16 @@ func TestTimeBasedInflationMsgServerDelete(t *testing.T) {
 	}{
 		{
 			desc: "Completed",
-			request: &types.MsgDeleteTimeBasedInflation{Authority: authority,
+			request: &types.MsgDeleteTimeBasedInflation{
+				Authority:        authority,
 				StartBlockHeight: 0,
 				EndBlockHeight:   0,
 			},
 		},
 		{
 			desc: "InvalidSigner",
-			request: &types.MsgDeleteTimeBasedInflation{Authority: "B",
+			request: &types.MsgDeleteTimeBasedInflation{
+				Authority:        "B",
 				StartBlockHeight: 0,
 				EndBlockHeight:   0,
 			},
@@ -123,7 +130,8 @@ func TestTimeBasedInflationMsgServerDelete(t *testing.T) {
 		},
 		{
 			desc: "KeyNotFound",
-			request: &types.MsgDeleteTimeBasedInflation{Authority: authority,
+			request: &types.MsgDeleteTimeBasedInflation{
+				Authority:        authority,
 				StartBlockHeight: 100000,
 				EndBlockHeight:   100000,
 			},
@@ -135,7 +143,8 @@ func TestTimeBasedInflationMsgServerDelete(t *testing.T) {
 			srv := keeper.NewMsgServerImpl(*k)
 			wctx := sdk.WrapSDKContext(ctx)
 
-			_, err := srv.CreateTimeBasedInflation(wctx, &types.MsgCreateTimeBasedInflation{Authority: authority,
+			_, err := srv.CreateTimeBasedInflation(wctx, &types.MsgCreateTimeBasedInflation{
+				Authority:        authority,
 				StartBlockHeight: 0,
 				EndBlockHeight:   0,
 			})

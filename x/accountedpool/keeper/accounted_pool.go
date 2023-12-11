@@ -19,7 +19,6 @@ func (k Keeper) SetAccountedPool(ctx sdk.Context, accountedPool types.AccountedP
 func (k Keeper) GetAccountedPool(
 	ctx sdk.Context,
 	PoolId uint64,
-
 ) (val types.AccountedPool, found bool) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.AccountedPoolKeyPrefix))
 
@@ -39,7 +38,6 @@ func (k Keeper) GetAccountedPool(
 func (k Keeper) RemoveAccountedPool(
 	ctx sdk.Context,
 	poolId uint64,
-
 ) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.AccountedPoolKeyPrefix))
 	store.Delete(types.AccountedPoolKey(

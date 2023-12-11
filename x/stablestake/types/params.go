@@ -59,16 +59,16 @@ func NewParams(
 // DefaultParams returns a default set of parameters
 func DefaultParams() Params {
 	return NewParams(
-		"uusdc",
-		sdk.OneDec(),
-		1,
-		sdk.NewDec(1),
-		sdk.NewDec(1),
-		sdk.NewDec(1),
-		sdk.NewDec(1),
-		sdk.NewDec(1),
-		sdk.NewDec(1),
-		sdk.NewInt(1),
+		"uusdc",                   // deposit denom
+		sdk.OneDec(),              // default redemption rate
+		1,                         // epoch length
+		sdk.NewDecWithPrec(15, 2), // 15% - default interest
+		sdk.NewDecWithPrec(17, 2), // 17% - max
+		sdk.NewDecWithPrec(12, 2), // 12% - min
+		sdk.NewDecWithPrec(1, 2),  // 1% - interest rate increase
+		sdk.NewDecWithPrec(1, 2),  // 1% - interest rate decrease
+		sdk.NewDec(1),             // health gain factor
+		sdk.NewInt(0),             // total value - 0
 	)
 }
 

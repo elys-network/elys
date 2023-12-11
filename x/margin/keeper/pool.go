@@ -10,7 +10,6 @@ import (
 func (k Keeper) RemovePool(
 	ctx sdk.Context,
 	index uint64,
-
 ) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.PoolKeyPrefix))
 	store.Delete(types.PoolKey(

@@ -40,6 +40,5 @@ func (m *Messenger) msgUnbond(ctx sdk.Context, contractAddr sdk.AccAddress, msg 
 	}
 
 	resp := [][]byte{responseBytes}
-
 	return nil, resp, nil
 }

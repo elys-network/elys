@@ -31,7 +31,6 @@ func (k Keeper) HistoryAll(goCtx context.Context, req *types.QueryAllHistoryRequ
 		historys = append(historys, history)
 		return nil
 	})
-
 	if err != nil {
 		return nil, status.Error(codes.Internal, err.Error())
 	}

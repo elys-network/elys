@@ -39,6 +39,7 @@ func (suite *KeeperTestSuite) TestPriceGet() {
 		)
 	}
 }
+
 func (suite *KeeperTestSuite) TestPriceRemove() {
 	k, ctx := suite.app.OracleKeeper, suite.ctx
 	items := createNPrice(&k, ctx, 10)

@@ -20,7 +20,6 @@ func CmdQueryBorrowRatio() *cobra.Command {
 			}
 
 			queryClient := types.NewQueryClient(clientCtx)
-
 			res, err := queryClient.BorrowRatio(cmd.Context(), &types.QueryBorrowRatioRequest{})
 			if err != nil {
 				return err

@@ -2,6 +2,7 @@ package cli
 
 import (
 	"fmt"
+
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/elys-network/elys/x/incentive/types"
 	"github.com/spf13/cobra"

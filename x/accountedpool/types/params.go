@@ -5,9 +5,7 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
-var (
-	_ paramtypes.ParamSet = (*Params)(nil)
-)
+var _ paramtypes.ParamSet = (*Params)(nil)
 
 // ParamKeyTable the param key table for launch module
 func ParamKeyTable() paramtypes.KeyTable {

@@ -39,6 +39,7 @@ func TestAirdropGet(t *testing.T) {
 		)
 	}
 }
+
 func TestAirdropRemove(t *testing.T) {
 	keeper, ctx := keepertest.TokenomicsKeeper(t)
 	items := createNAirdrop(keeper, ctx, 10)

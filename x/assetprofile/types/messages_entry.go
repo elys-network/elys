@@ -31,7 +31,6 @@ func NewMsgCreateEntry(
 	unitDenom string,
 	ibcCounterpartyDenom string,
 	ibcCounterpartyChainId string,
-
 ) *MsgCreateEntry {
 	return &MsgCreateEntry{
 		Authority:                authority,
@@ -103,7 +102,6 @@ func NewMsgUpdateEntry(
 	unitDenom string,
 	ibcCounterpartyDenom string,
 	ibcCounterpartyChainId string,
-
 ) *MsgUpdateEntry {
 	return &MsgUpdateEntry{
 		Authority:                authority,
@@ -160,13 +158,13 @@ var _ sdk.Msg = &MsgDeleteEntry{}
 func NewMsgDeleteEntry(
 	authority string,
 	baseDenom string,
-
 ) *MsgDeleteEntry {
 	return &MsgDeleteEntry{
 		Authority: authority,
 		BaseDenom: baseDenom,
 	}
 }
+
 func (msg *MsgDeleteEntry) Route() string {
 	return RouterKey
 }

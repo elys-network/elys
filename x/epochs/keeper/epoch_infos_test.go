@@ -13,7 +13,6 @@ import (
 )
 
 func createEpochInfos(keeper *keeper.Keeper, ctx sdk.Context) []types.EpochInfo {
-
 	items := make([]types.EpochInfo, 3)
 	items[0] = types.EpochInfo{
 		Identifier:            "daily",
@@ -59,6 +58,7 @@ func TestEpochInfoGet(t *testing.T) {
 		)
 	}
 }
+
 func TestEpochInfoRemove(t *testing.T) {
 	keeper, ctx := keepertest.EpochsKeeper(t)
 	items := createEpochInfos(keeper, ctx)

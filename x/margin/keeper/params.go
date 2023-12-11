@@ -86,6 +86,7 @@ func (k Keeper) GetMaxOpenPositions(ctx sdk.Context) uint64 {
 func (k Keeper) GetIncrementalBorrowInterestPaymentEnabled(ctx sdk.Context) bool {
 	return k.GetParams(ctx).IncrementalBorrowInterestPaymentEnabled
 }
+
 func (k Keeper) GetSafetyFactor(ctx sdk.Context) sdk.Dec {
 	return k.GetParams(ctx).SafetyFactor
 }

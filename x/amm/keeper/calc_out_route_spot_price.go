@@ -49,7 +49,6 @@ func (k Keeper) CalcOutRouteSpotPrice(ctx sdk.Context, tokenOut sdk.Coin, routes
 		// Estimate swap
 		snapshot := k.GetPoolSnapshotOrSet(ctx, pool)
 		swapResult, err := k.CalcInAmtGivenOut(ctx, pool.PoolId, k.oracleKeeper, &snapshot, tokensOut, tokenInDenom, swapFee)
-
 		if err != nil {
 			return sdk.ZeroDec(), sdk.Coin{}, sdk.ZeroDec(), sdk.ZeroDec(), sdk.Coin{}, err
 		}

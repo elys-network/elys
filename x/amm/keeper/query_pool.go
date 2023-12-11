@@ -31,7 +31,6 @@ func (k Keeper) PoolAll(goCtx context.Context, req *types.QueryAllPoolRequest) (
 		pools = append(pools, pool)
 		return nil
 	})
-
 	if err != nil {
 		return nil, status.Error(codes.Internal, err.Error())
 	}

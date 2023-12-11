@@ -10,8 +10,6 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var _ = strconv.Itoa(0)
-
 func CmdPosition() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "get-position [address] [id]",

@@ -89,7 +89,6 @@ type CloseLongChecker interface {
 	GetPool(
 		ctx sdk.Context,
 		poolId uint64,
-
 	) (val Pool, found bool)
 	GetAmmPool(ctx sdk.Context, poolId uint64, tradingAsset string) (ammtypes.Pool, error)
 	HandleBorrowInterest(ctx sdk.Context, mtp *MTP, pool *Pool, ammPool ammtypes.Pool) error
@@ -103,7 +102,6 @@ type CloseShortChecker interface {
 	GetPool(
 		ctx sdk.Context,
 		poolId uint64,
-
 	) (val Pool, found bool)
 	GetAmmPool(ctx sdk.Context, poolId uint64, tradingAsset string) (ammtypes.Pool, error)
 	HandleBorrowInterest(ctx sdk.Context, mtp *MTP, pool *Pool, ammPool ammtypes.Pool) error

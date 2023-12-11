@@ -19,7 +19,6 @@ func NewMsgCreateTimeBasedInflation(
 	endBlockHeight uint64,
 	description string,
 	inflation *InflationEntry,
-
 ) *MsgCreateTimeBasedInflation {
 	return &MsgCreateTimeBasedInflation{
 		Authority:        authority,
@@ -67,7 +66,6 @@ func NewMsgUpdateTimeBasedInflation(
 	endBlockHeight uint64,
 	description string,
 	inflation *InflationEntry,
-
 ) *MsgUpdateTimeBasedInflation {
 	return &MsgUpdateTimeBasedInflation{
 		Authority:        authority,
@@ -113,7 +111,6 @@ func NewMsgDeleteTimeBasedInflation(
 	authority string,
 	startBlockHeight uint64,
 	endBlockHeight uint64,
-
 ) *MsgDeleteTimeBasedInflation {
 	return &MsgDeleteTimeBasedInflation{
 		Authority:        authority,
@@ -121,6 +118,7 @@ func NewMsgDeleteTimeBasedInflation(
 		EndBlockHeight:   endBlockHeight,
 	}
 }
+
 func (msg *MsgDeleteTimeBasedInflation) Route() string {
 	return RouterKey
 }

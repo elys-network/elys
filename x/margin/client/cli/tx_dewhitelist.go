@@ -2,7 +2,6 @@ package cli
 
 import (
 	"errors"
-	"strconv"
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
@@ -14,8 +13,6 @@ import (
 	"github.com/elys-network/elys/x/margin/types"
 	"github.com/spf13/cobra"
 )
-
-var _ = strconv.Itoa(0)
 
 func CmdDewhitelist() *cobra.Command {
 	cmd := &cobra.Command{

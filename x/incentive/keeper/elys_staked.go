@@ -19,7 +19,6 @@ func (k Keeper) SetElysStaked(ctx sdk.Context, elysStaked types.ElysStaked) {
 func (k Keeper) GetElysStaked(
 	ctx sdk.Context,
 	address string,
-
 ) (val types.ElysStaked, found bool) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.ElysStakedKeyPrefix))
 
@@ -38,7 +37,6 @@ func (k Keeper) GetElysStaked(
 func (k Keeper) RemoveElysStaked(
 	ctx sdk.Context,
 	address string,
-
 ) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.ElysStakedKeyPrefix))
 	store.Delete(types.ElysStakedKey(

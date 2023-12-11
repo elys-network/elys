@@ -39,6 +39,7 @@ func TestEntryGet(t *testing.T) {
 		)
 	}
 }
+
 func TestEntryRemove(t *testing.T) {
 	keeper, ctx := keepertest.AssetprofileKeeper(t)
 	items := createNEntry(keeper, ctx, 10)

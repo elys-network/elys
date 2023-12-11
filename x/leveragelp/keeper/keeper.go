@@ -2,7 +2,6 @@ package keeper
 
 import (
 	"fmt"
-
 	"math"
 
 	"github.com/cometbft/cometbft/libs/log"
@@ -97,7 +96,6 @@ func (k Keeper) EstimateSwapGivenOut(ctx sdk.Context, tokenOutAmount sdk.Coin, t
 	// Estimate swap
 	snapshot := k.amm.GetPoolSnapshotOrSet(ctx, ammPool)
 	swapResult, err := k.amm.CalcInAmtGivenOut(ctx, ammPool.PoolId, k.oracleKeeper, &snapshot, tokensOut, tokenInDenom, sdk.ZeroDec())
-
 	if err != nil {
 		return sdk.ZeroInt(), err
 	}

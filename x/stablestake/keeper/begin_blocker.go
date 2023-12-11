@@ -20,5 +20,4 @@ func (k Keeper) BeginBlocker(ctx sdk.Context) {
 			k.UpdateInterestStacked(ctx, debt)
 		}
 	}
-
 }

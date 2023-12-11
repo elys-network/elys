@@ -60,7 +60,7 @@ func performMsgCancelVestEden(f *commitmentkeeper.Keeper, ctx sdk.Context, contr
 		return nil, errorsmod.Wrap(err, "eden vesting msg")
 	}
 
-	var resp = &wasmbindingstypes.RequestResponse{
+	resp := &wasmbindingstypes.RequestResponse{
 		Code:   paramtypes.RES_OK,
 		Result: "Eden vesting cancel succeed!",
 	}

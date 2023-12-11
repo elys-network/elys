@@ -68,7 +68,7 @@ func performMsgCancelUnbondingElys(f *stakingkeeper.Keeper, ctx sdk.Context, con
 		return nil, errorsmod.Wrap(err, "elys cancel bonding msg")
 	}
 
-	var resp = &wasmbindingstypes.RequestResponse{
+	resp := &wasmbindingstypes.RequestResponse{
 		Code:   paramtypes.RES_OK,
 		Result: "Cancel unbonding succeed!",
 	}

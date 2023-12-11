@@ -21,7 +21,6 @@ func (k Keeper) GetHistory(
 	ctx sdk.Context,
 	timestamp string,
 	denom string,
-
 ) (val types.History, found bool) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.HistoryKeyPrefix))
 
@@ -42,7 +41,6 @@ func (k Keeper) RemoveHistory(
 	ctx sdk.Context,
 	timestamp string,
 	denom string,
-
 ) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.HistoryKeyPrefix))
 	store.Delete(types.HistoryKey(
