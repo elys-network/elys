@@ -56,7 +56,7 @@ func NewParams() Params {
 			AmountCollectedByOtherTracker: sdk.ZeroDec(),
 		},
 		MaxEdenRewardAprStakers:             sdk.NewDecWithPrec(3, 1),
-		MaxEdenRewardAprLps:                 sdk.NewDecWithPrec(3, 1),
+		MaxEdenRewardAprLps:                 sdk.NewDecWithPrec(5, 1),
 		DistributionEpochForStakersInBlocks: 10,
 		DistributionEpochForLpsInBlocks:     10,
 	}
