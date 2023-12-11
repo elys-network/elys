@@ -5,7 +5,7 @@ import (
 	"github.com/elys-network/elys/x/incentive/types"
 )
 
-func (m Migrator) V8Migration(ctx sdk.Context) error {
+func (m Migrator) V9Migration(ctx sdk.Context) error {
 	m.keeper.SetParams(ctx, types.DefaultParams())
 	return nil
 }

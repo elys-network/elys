@@ -56,17 +56,21 @@ message MsgUpdateIncentiveParams {
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
-  int64 elysStakeTrackingRate       = 5;
-  string maxEdenRewardAprStakers    = 6 [
+  string rewardPortionForStakers     = 5 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
-  string maxEdenRewardAprLps         = 7 [
+  int64 elysStakeTrackingRate       = 6;
+  string maxEdenRewardAprStakers    = 7 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
-  int64 distributionEpochForStakers = 8;
-  int64 distributionEpochForLps     = 9;
+  string maxEdenRewardAprLps         = 8 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  int64 distributionEpochForStakers = 9;
+  int64 distributionEpochForLps     = 10;
 }
 
 message MsgUpdateIncentiveParamsResponse {}

@@ -35,36 +35,66 @@ func ParamKeyTable() paramtypes.KeyTable {
 }
 
 // NewParams creates a new Params instance
-func NewParams() Params {
+func NewParams(
+	lpIncentives []IncentiveInfo,
+	stkIncentives []IncentiveInfo,
+	communityTax sdk.Dec,
+	withdrawAddrEnabled bool,
+	rewardPortionForLps sdk.Dec,
+	rewardPortionForStakers sdk.Dec,
+	poolInfos []PoolInfo,
+	elysStakeTrackingRate int64,
+	dexRewardsStakers DexRewardsTracker,
+	dexRewardsLps DexRewardsTracker,
+	maxEdenRewardAprStakers sdk.Dec,
+	maxEdenRewardAprLps sdk.Dec,
+	distributionEpochForStakersInBlocks int64,
+	distributionEpochForLPsInBlocks int64,
+) Params {
 	return Params{
-		LpIncentives:            []IncentiveInfo(nil),
-		StakeIncentives:         []IncentiveInfo(nil),
-		CommunityTax:            sdk.NewDecWithPrec(2, 2), // 2%
-		WithdrawAddrEnabled:     true,
-		RewardPortionForLps:     sdk.NewDecWithPrec(60, 2),
-		RewardPortionForStakers: sdk.NewDecWithPrec(30, 2),
-		PoolInfos:               []PoolInfo(nil),
-		ElysStakeTrackingRate:   10,
-		DexRewardsStakers: DexRewardsTracker{
-			NumBlocks:                     sdk.NewInt(1),
-			Amount:                        sdk.ZeroDec(),
-			AmountCollectedByOtherTracker: sdk.ZeroDec(),
-		},
-		DexRewardsLps: DexRewardsTracker{
-			NumBlocks:                     sdk.NewInt(1),
-			Amount:                        sdk.ZeroDec(),
-			AmountCollectedByOtherTracker: sdk.ZeroDec(),
-		},
-		MaxEdenRewardAprStakers:             sdk.NewDecWithPrec(3, 1),
-		MaxEdenRewardAprLps:                 sdk.NewDecWithPrec(3, 1),
-		DistributionEpochForStakersInBlocks: 10,
-		DistributionEpochForLpsInBlocks:     10,
+		LpIncentives:                        lpIncentives,
+		StakeIncentives:                     stkIncentives,
+		CommunityTax:                        communityTax,
+		WithdrawAddrEnabled:                 withdrawAddrEnabled,
+		RewardPortionForLps:                 rewardPortionForLps,
+		RewardPortionForStakers:             rewardPortionForStakers,
+		PoolInfos:                           poolInfos,
+		ElysStakeTrackingRate:               elysStakeTrackingRate,
+		DexRewardsStakers:                   dexRewardsStakers,
+		DexRewardsLps:                       dexRewardsLps,
+		MaxEdenRewardAprStakers:             maxEdenRewardAprStakers,
+		MaxEdenRewardAprLps:                 maxEdenRewardAprLps,
+		DistributionEpochForStakersInBlocks: distributionEpochForStakersInBlocks,
+		DistributionEpochForLpsInBlocks:     distributionEpochForLPsInBlocks,
 	}
 }
 
 // DefaultParams returns a default set of parameters
 func DefaultParams() Params {
-	return NewParams()
+	return NewParams(
+		[]IncentiveInfo(nil),
+		[]IncentiveInfo(nil),
+		sdk.NewDecWithPrec(2, 2), // 2%
+		true,
+		sdk.NewDecWithPrec(60, 2),
+		sdk.NewDecWithPrec(30, 2),
+		[]PoolInfo(nil),
+		10,
+		DexRewardsTracker{
+			NumBlocks:                     sdk.NewInt(1),
+			Amount:                        sdk.ZeroDec(),
+			AmountCollectedByOtherTracker: sdk.ZeroDec(),
+		},
+		DexRewardsTracker{
+			NumBlocks:                     sdk.NewInt(1),
+			Amount:                        sdk.ZeroDec(),
+			AmountCollectedByOtherTracker: sdk.ZeroDec(),
+		},
+		sdk.NewDecWithPrec(3, 1),
+		sdk.NewDecWithPrec(5, 1),
+		10,
+		10,
+	)
 }
 
 // ParamSetPairs get the params.ParamSet

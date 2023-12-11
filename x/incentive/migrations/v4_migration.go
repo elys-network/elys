@@ -6,6 +6,6 @@ import (
 )
 
 func (m Migrator) V4Migration(ctx sdk.Context) error {
-	m.keeper.SetParams(ctx, types.NewParams())
+	m.keeper.SetParams(ctx, types.DefaultParams())
 	return nil
 }

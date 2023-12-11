@@ -11,12 +11,13 @@ const TypeMsgUpdateIncentiveParams = "update_incentive_params"
 
 var _ sdk.Msg = &MsgUpdateIncentiveParams{}
 
-func NewMsgUpdateIncentiveParams(creator string, communityTax sdk.Dec, withdrawAddrEnabled bool, rewardPortionForLps sdk.Dec, elysStakeTrackingRate int64, maxEdenRewardAprStakers sdk.Dec, maxEdenRewardParLps sdk.Dec, distributionEpochForStakers int64, distributionEpochForLps int64) *MsgUpdateIncentiveParams {
+func NewMsgUpdateIncentiveParams(creator string, communityTax sdk.Dec, withdrawAddrEnabled bool, rewardPortionForLps sdk.Dec, rewardPortionForStakers sdk.Dec, elysStakeTrackingRate int64, maxEdenRewardAprStakers sdk.Dec, maxEdenRewardParLps sdk.Dec, distributionEpochForStakers int64, distributionEpochForLps int64) *MsgUpdateIncentiveParams {
 	return &MsgUpdateIncentiveParams{
 		Authority:                   creator,
 		CommunityTax:                communityTax,
 		WithdrawAddrEnabled:         withdrawAddrEnabled,
 		RewardPortionForLps:         rewardPortionForLps,
+		RewardPortionForStakers:     rewardPortionForStakers,
 		ElysStakeTrackingRate:       elysStakeTrackingRate,
 		MaxEdenRewardAprStakers:     maxEdenRewardAprStakers,
 		MaxEdenRewardAprLps:         maxEdenRewardParLps,
@@ -53,6 +54,12 @@ func (msg *MsgUpdateIncentiveParams) ValidateBasic() error {
 	}
 	if msg.RewardPortionForLps.GT(sdk.NewDec(1)) {
 		return sdkerrors.Wrapf(sdkerrors.ErrNotSupported, "invalid rewards portion for LPs (%s)", errors.New("Invalid LP portion"))
+	}
+	if msg.RewardPortionForStakers.GT(sdk.NewDec(1)) {
+		return sdkerrors.Wrapf(sdkerrors.ErrNotSupported, "invalid rewards portion for Stakers (%s)", errors.New("Invalid Staker portion"))
+	}
+	if msg.RewardPortionForLps.Add(msg.RewardPortionForStakers).GT(sdk.NewDec(1)) {
+		return sdkerrors.Wrapf(sdkerrors.ErrNotSupported, "invalid rewards portion for Stakers and LPs (%s)", errors.New("Invalid Staker and LP portion"))
 	}
 	if msg.MaxEdenRewardAprStakers.LT(sdk.ZeroDec()) {
 		return sdkerrors.Wrapf(sdkerrors.ErrNotSupported, "invalid max eden rewards apr for stakers (%s)", errors.New("Invalid Rewards APR"))

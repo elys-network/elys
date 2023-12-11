@@ -19,7 +19,8 @@ func TestMsgUpdateIncentiveParams_ValidateBasic(t *testing.T) {
 			name: "invalid address",
 			msg: MsgUpdateIncentiveParams{
 				Authority:                   "invalid_address",
-				RewardPortionForLps:         sdk.NewDecWithPrec(65, 2),
+				RewardPortionForLps:         sdk.NewDecWithPrec(60, 2),
+				RewardPortionForStakers:     sdk.NewDecWithPrec(30, 2),
 				MaxEdenRewardAprStakers:     sdk.NewDecWithPrec(3, 1),
 				MaxEdenRewardAprLps:         sdk.NewDecWithPrec(3, 1),
 				DistributionEpochForStakers: 10,
@@ -31,7 +32,8 @@ func TestMsgUpdateIncentiveParams_ValidateBasic(t *testing.T) {
 			name: "valid address",
 			msg: MsgUpdateIncentiveParams{
 				Authority:                   sample.AccAddress(),
-				RewardPortionForLps:         sdk.NewDecWithPrec(65, 2),
+				RewardPortionForLps:         sdk.NewDecWithPrec(60, 2),
+				RewardPortionForStakers:     sdk.NewDecWithPrec(30, 2),
 				MaxEdenRewardAprStakers:     sdk.NewDecWithPrec(3, 1),
 				MaxEdenRewardAprLps:         sdk.NewDecWithPrec(3, 1),
 				DistributionEpochForStakers: 10,
