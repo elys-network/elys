@@ -33,7 +33,8 @@ func TestGovUpdateIncentiveParams(t *testing.T) {
 	args := []string{
 		"0.00",
 		"true",
-		"0.65",
+		"0.60",
+		"0.30",
 		"10",
 		"0.30",
 		"0.30",
