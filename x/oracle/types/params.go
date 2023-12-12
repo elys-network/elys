@@ -93,7 +93,6 @@ func (p *Params) ParamSetPairs() paramtypes.ParamSetPairs {
 
 // Validate validates the set of params
 func (p Params) Validate() error {
-
 	if err := validateBandEpoch(p.BandEpoch); err != nil {
 		return err
 	}

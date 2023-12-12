@@ -15,8 +15,6 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var _ = strconv.Itoa(0)
-
 func CmdUpdateIncentiveParams() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "update-incentive-params [community-tax] [withdraw-addr-enabled] [reward-portion-for-lps] [reward-portion-for-stakers] [elys-stake-tracking-rate] [max-eden-reward-apr-stakers] [max-eden-reward-apr-lps] [distribution-epoch-for-stakers] [distribution-epoch-for-lps]",

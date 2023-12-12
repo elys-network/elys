@@ -63,7 +63,7 @@ func performMsgWithdrawValidatorCommissions(f *incentivekeeper.Keeper, ctx sdk.C
 		return nil, errorsmod.Wrap(err, "withdraw validator commission msg")
 	}
 
-	var resp = &wasmbindingstypes.RequestResponse{
+	resp := &wasmbindingstypes.RequestResponse{
 		Code:   paramtypes.RES_OK,
 		Result: "Withdraw validator commissions succeed!",
 	}

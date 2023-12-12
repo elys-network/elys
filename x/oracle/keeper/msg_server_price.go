@@ -19,7 +19,7 @@ func (k msgServer) FeedPrice(goCtx context.Context, msg *types.MsgFeedPrice) (*t
 		return nil, types.ErrPriceFeederNotActive
 	}
 
-	var price = types.Price{
+	price := types.Price{
 		Provider:  msg.Provider,
 		Asset:     msg.Asset,
 		Price:     msg.Price,

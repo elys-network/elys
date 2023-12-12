@@ -27,7 +27,7 @@ func (k msgServer) CreateTimeBasedInflation(goCtx context.Context, msg *types.Ms
 		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "index already set")
 	}
 
-	var timeBasedInflation = types.TimeBasedInflation{
+	timeBasedInflation := types.TimeBasedInflation{
 		Authority:        msg.Authority,
 		StartBlockHeight: msg.StartBlockHeight,
 		EndBlockHeight:   msg.EndBlockHeight,
@@ -64,7 +64,7 @@ func (k msgServer) UpdateTimeBasedInflation(goCtx context.Context, msg *types.Ms
 		return nil, sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "incorrect owner")
 	}
 
-	var timeBasedInflation = types.TimeBasedInflation{
+	timeBasedInflation := types.TimeBasedInflation{
 		Authority:        msg.Authority,
 		StartBlockHeight: msg.StartBlockHeight,
 		EndBlockHeight:   msg.EndBlockHeight,

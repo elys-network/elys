@@ -2,8 +2,6 @@ package cli
 
 import (
 	"errors"
-	"strconv"
-
 	"strings"
 
 	"cosmossdk.io/math"
@@ -15,8 +13,6 @@ import (
 	"github.com/spf13/cast"
 	"github.com/spf13/cobra"
 )
-
-var _ = strconv.Itoa(0)
 
 func CmdSwapExactAmountIn() *cobra.Command {
 	cmd := &cobra.Command{

@@ -34,7 +34,6 @@ func (k Keeper) GetPool(
 func (k Keeper) RemovePool(
 	ctx sdk.Context,
 	poolId uint64,
-
 ) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.PoolKeyPrefix))
 	store.Delete(types.PoolKey(

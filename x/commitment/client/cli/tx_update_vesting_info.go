@@ -17,8 +17,6 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var _ = strconv.Itoa(0)
-
 func CmdUpdateVestingInfo() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "update-vesting-info",

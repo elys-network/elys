@@ -27,6 +27,7 @@ func TestCommitments_AddCommittedTokens(t *testing.T) {
 	require.Equal(t, commitments.CommittedTokens[0].Lockups[0].UnlockTimestamp, uint64(100))
 	require.Len(t, commitments.CommittedTokens[1].Lockups, 1)
 }
+
 func TestCommitments_WithdrawCommitedTokens(t *testing.T) {
 	commitments := types.Commitments{
 		Creator:          "",

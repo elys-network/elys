@@ -21,7 +21,6 @@ func (k Keeper) GetTimeBasedInflation(
 	ctx sdk.Context,
 	startBlockHeight uint64,
 	endBlockHeight uint64,
-
 ) (val types.TimeBasedInflation, found bool) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.TimeBasedInflationKeyPrefix))
 
@@ -42,7 +41,6 @@ func (k Keeper) RemoveTimeBasedInflation(
 	ctx sdk.Context,
 	startBlockHeight uint64,
 	endBlockHeight uint64,
-
 ) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.TimeBasedInflationKeyPrefix))
 	store.Delete(types.TimeBasedInflationKey(

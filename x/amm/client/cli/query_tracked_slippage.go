@@ -16,7 +16,6 @@ func CmdTrackedSlippage() *cobra.Command {
 		Example: "elysd q amm tracked-slippage 1",
 		Args:    cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
-
 			clientCtx, err := client.GetClientQueryContext(cmd)
 			if err != nil {
 				return err
@@ -54,7 +53,6 @@ func CmdTrackedSlippageAll() *cobra.Command {
 		Example: "elysd q amm tracked-slippage-all",
 		Args:    cobra.ExactArgs(0),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
-
 			clientCtx, err := client.GetClientQueryContext(cmd)
 			if err != nil {
 				return err

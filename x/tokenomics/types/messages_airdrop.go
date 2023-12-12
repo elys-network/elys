@@ -17,7 +17,6 @@ func NewMsgCreateAirdrop(
 	authority string,
 	intent string,
 	amount uint64,
-
 ) *MsgCreateAirdrop {
 	return &MsgCreateAirdrop{
 		Authority: authority,
@@ -61,7 +60,6 @@ func NewMsgUpdateAirdrop(
 	authority string,
 	intent string,
 	amount uint64,
-
 ) *MsgUpdateAirdrop {
 	return &MsgUpdateAirdrop{
 		Authority: authority,
@@ -104,13 +102,13 @@ var _ sdk.Msg = &MsgDeleteAirdrop{}
 func NewMsgDeleteAirdrop(
 	authority string,
 	intent string,
-
 ) *MsgDeleteAirdrop {
 	return &MsgDeleteAirdrop{
 		Authority: authority,
 		Intent:    intent,
 	}
 }
+
 func (msg *MsgDeleteAirdrop) Route() string {
 	return RouterKey
 }

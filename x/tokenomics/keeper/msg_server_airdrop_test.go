@@ -24,8 +24,9 @@ func TestAirdropMsgServerCreate(t *testing.T) {
 	wctx := sdk.WrapSDKContext(ctx)
 	authority := authtypes.NewModuleAddress(govtypes.ModuleName).String()
 	for i := 0; i < 5; i++ {
-		expected := &types.MsgCreateAirdrop{Authority: authority,
-			Intent: strconv.Itoa(i),
+		expected := &types.MsgCreateAirdrop{
+			Authority: authority,
+			Intent:    strconv.Itoa(i),
 		}
 		_, err := srv.CreateAirdrop(wctx, expected)
 		require.NoError(t, err)
@@ -47,21 +48,24 @@ func TestAirdropMsgServerUpdate(t *testing.T) {
 	}{
 		{
 			desc: "Completed",
-			request: &types.MsgUpdateAirdrop{Authority: authority,
-				Intent: strconv.Itoa(0),
+			request: &types.MsgUpdateAirdrop{
+				Authority: authority,
+				Intent:    strconv.Itoa(0),
 			},
 		},
 		{
 			desc: "InvalidSigner",
-			request: &types.MsgUpdateAirdrop{Authority: "B",
-				Intent: strconv.Itoa(0),
+			request: &types.MsgUpdateAirdrop{
+				Authority: "B",
+				Intent:    strconv.Itoa(0),
 			},
 			err: govtypes.ErrInvalidSigner,
 		},
 		{
 			desc: "KeyNotFound",
-			request: &types.MsgUpdateAirdrop{Authority: authority,
-				Intent: strconv.Itoa(100000),
+			request: &types.MsgUpdateAirdrop{
+				Authority: authority,
+				Intent:    strconv.Itoa(100000),
 			},
 			err: sdkerrors.ErrKeyNotFound,
 		},
@@ -70,8 +74,9 @@ func TestAirdropMsgServerUpdate(t *testing.T) {
 			k, ctx := keepertest.TokenomicsKeeper(t)
 			srv := keeper.NewMsgServerImpl(*k)
 			wctx := sdk.WrapSDKContext(ctx)
-			expected := &types.MsgCreateAirdrop{Authority: authority,
-				Intent: strconv.Itoa(0),
+			expected := &types.MsgCreateAirdrop{
+				Authority: authority,
+				Intent:    strconv.Itoa(0),
 			}
 			_, err := srv.CreateAirdrop(wctx, expected)
 			require.NoError(t, err)
@@ -101,21 +106,24 @@ func TestAirdropMsgServerDelete(t *testing.T) {
 	}{
 		{
 			desc: "Completed",
-			request: &types.MsgDeleteAirdrop{Authority: authority,
-				Intent: strconv.Itoa(0),
+			request: &types.MsgDeleteAirdrop{
+				Authority: authority,
+				Intent:    strconv.Itoa(0),
 			},
 		},
 		{
 			desc: "InvalidSigner",
-			request: &types.MsgDeleteAirdrop{Authority: "B",
-				Intent: strconv.Itoa(0),
+			request: &types.MsgDeleteAirdrop{
+				Authority: "B",
+				Intent:    strconv.Itoa(0),
 			},
 			err: govtypes.ErrInvalidSigner,
 		},
 		{
 			desc: "KeyNotFound",
-			request: &types.MsgDeleteAirdrop{Authority: authority,
-				Intent: strconv.Itoa(100000),
+			request: &types.MsgDeleteAirdrop{
+				Authority: authority,
+				Intent:    strconv.Itoa(100000),
 			},
 			err: sdkerrors.ErrKeyNotFound,
 		},
@@ -125,8 +133,9 @@ func TestAirdropMsgServerDelete(t *testing.T) {
 			srv := keeper.NewMsgServerImpl(*k)
 			wctx := sdk.WrapSDKContext(ctx)
 
-			_, err := srv.CreateAirdrop(wctx, &types.MsgCreateAirdrop{Authority: authority,
-				Intent: strconv.Itoa(0),
+			_, err := srv.CreateAirdrop(wctx, &types.MsgCreateAirdrop{
+				Authority: authority,
+				Intent:    strconv.Itoa(0),
 			})
 			require.NoError(t, err)
 			_, err = srv.DeleteAirdrop(wctx, tc.request)

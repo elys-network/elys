@@ -40,6 +40,7 @@ func TestDenomLiquidityGet(t *testing.T) {
 		)
 	}
 }
+
 func TestDenomLiquidityRemove(t *testing.T) {
 	keeper, ctx, _, _ := keepertest.AmmKeeper(t)
 	items := createNDenomLiquidity(keeper, ctx, 10)

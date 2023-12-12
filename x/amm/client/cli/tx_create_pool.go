@@ -2,7 +2,6 @@ package cli
 
 import (
 	"errors"
-	"strconv"
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
@@ -11,8 +10,6 @@ import (
 	"github.com/elys-network/elys/x/amm/types"
 	"github.com/spf13/cobra"
 )
-
-var _ = strconv.Itoa(0)
 
 const (
 	FlagSwapFee                     = "swap-fee"

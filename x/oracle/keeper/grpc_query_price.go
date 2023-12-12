@@ -31,7 +31,6 @@ func (k Keeper) PriceAll(c context.Context, req *types.QueryAllPriceRequest) (*t
 		prices = append(prices, price)
 		return nil
 	})
-
 	if err != nil {
 		return nil, status.Error(codes.Internal, err.Error())
 	}

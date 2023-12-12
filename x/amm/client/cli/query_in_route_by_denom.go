@@ -1,15 +1,11 @@
 package cli
 
 import (
-	"strconv"
-
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/elys-network/elys/x/amm/types"
 	"github.com/spf13/cobra"
 )
-
-var _ = strconv.Itoa(0)
 
 func CmdInRouteByDenom() *cobra.Command {
 	cmd := &cobra.Command{

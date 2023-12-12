@@ -73,7 +73,7 @@ func performMsgRedelegateElys(f *stakingkeeper.Keeper, ctx sdk.Context, contract
 		return nil, errorsmod.Wrap(err, "elys redelegation msg")
 	}
 
-	var resp = &wasmbindingstypes.RequestResponse{
+	resp := &wasmbindingstypes.RequestResponse{
 		Code:   paramtypes.RES_OK,
 		Result: "Redelegation succeed!",
 	}

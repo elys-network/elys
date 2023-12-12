@@ -49,7 +49,8 @@ func TestABCI_EndBlocker(t *testing.T) {
 
 	srv := tokenomicskeeper.NewMsgServerImpl(app.TokenomicsKeeper)
 
-	expected := &tokenomicstypes.MsgCreateTimeBasedInflation{Authority: authority,
+	expected := &tokenomicstypes.MsgCreateTimeBasedInflation{
+		Authority:        authority,
 		StartBlockHeight: uint64(1),
 		EndBlockHeight:   uint64(6307200),
 		Inflation: &tokenomicstypes.InflationEntry{
@@ -65,7 +66,8 @@ func TestABCI_EndBlocker(t *testing.T) {
 	_, err = srv.CreateTimeBasedInflation(wctx, expected)
 	require.NoError(t, err)
 
-	expected = &tokenomicstypes.MsgCreateTimeBasedInflation{Authority: authority,
+	expected = &tokenomicstypes.MsgCreateTimeBasedInflation{
+		Authority:        authority,
 		StartBlockHeight: uint64(6307201),
 		EndBlockHeight:   uint64(12614401),
 		Inflation: &tokenomicstypes.InflationEntry{

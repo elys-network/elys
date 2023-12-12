@@ -1,15 +1,11 @@
 package cli
 
 import (
-	"strconv"
-
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/elys-network/elys/x/leveragelp/types"
 	"github.com/spf13/cobra"
 )
-
-var _ = strconv.Itoa(0)
 
 func CmdGetStatus() *cobra.Command {
 	cmd := &cobra.Command{
@@ -17,7 +13,6 @@ func CmdGetStatus() *cobra.Command {
 		Short: "Query get-status",
 		Args:  cobra.ExactArgs(0),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
-
 			clientCtx, err := client.GetClientQueryContext(cmd)
 			if err != nil {
 				return err

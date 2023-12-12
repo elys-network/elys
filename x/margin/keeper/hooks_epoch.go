@@ -7,7 +7,6 @@ import (
 
 // BeforeEpochStart performs a no-op
 func (k Keeper) BeforeEpochStart(ctx sdk.Context, epochIdentifier string, epochNumber int64) {
-
 }
 
 // AfterEpochEnd distributes vested tokens at the end of each epoch

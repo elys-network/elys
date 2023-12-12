@@ -12,8 +12,6 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var _ = strconv.Itoa(0)
-
 func CmdJoinPool() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:     "join-pool [pool-id] [max-amounts-in] [share-amount-out]",

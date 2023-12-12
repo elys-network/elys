@@ -24,7 +24,8 @@ func TestEntryMsgServerCreate(t *testing.T) {
 	wctx := sdk.WrapSDKContext(ctx)
 	authority := authtypes.NewModuleAddress(govtypes.ModuleName).String()
 	for i := 0; i < 5; i++ {
-		expected := &types.MsgCreateEntry{Authority: authority,
+		expected := &types.MsgCreateEntry{
+			Authority: authority,
 			BaseDenom: strconv.Itoa(i),
 		}
 		_, err := srv.CreateEntry(wctx, expected)
@@ -47,20 +48,23 @@ func TestEntryMsgServerUpdate(t *testing.T) {
 	}{
 		{
 			desc: "Completed",
-			request: &types.MsgUpdateEntry{Authority: authority,
+			request: &types.MsgUpdateEntry{
+				Authority: authority,
 				BaseDenom: strconv.Itoa(0),
 			},
 		},
 		{
 			desc: "InvalidSigner",
-			request: &types.MsgUpdateEntry{Authority: "B",
+			request: &types.MsgUpdateEntry{
+				Authority: "B",
 				BaseDenom: strconv.Itoa(0),
 			},
 			err: govtypes.ErrInvalidSigner,
 		},
 		{
 			desc: "KeyNotFound",
-			request: &types.MsgUpdateEntry{Authority: authority,
+			request: &types.MsgUpdateEntry{
+				Authority: authority,
 				BaseDenom: strconv.Itoa(100000),
 			},
 			err: sdkerrors.ErrKeyNotFound,
@@ -70,7 +74,8 @@ func TestEntryMsgServerUpdate(t *testing.T) {
 			k, ctx := keepertest.AssetprofileKeeper(t)
 			srv := keeper.NewMsgServerImpl(*k)
 			wctx := sdk.WrapSDKContext(ctx)
-			expected := &types.MsgCreateEntry{Authority: authority,
+			expected := &types.MsgCreateEntry{
+				Authority: authority,
 				BaseDenom: strconv.Itoa(0),
 			}
 			_, err := srv.CreateEntry(wctx, expected)
@@ -101,20 +106,23 @@ func TestEntryMsgServerDelete(t *testing.T) {
 	}{
 		{
 			desc: "Completed",
-			request: &types.MsgDeleteEntry{Authority: authority,
+			request: &types.MsgDeleteEntry{
+				Authority: authority,
 				BaseDenom: strconv.Itoa(0),
 			},
 		},
 		{
 			desc: "InvalidSigner",
-			request: &types.MsgDeleteEntry{Authority: "B",
+			request: &types.MsgDeleteEntry{
+				Authority: "B",
 				BaseDenom: strconv.Itoa(0),
 			},
 			err: govtypes.ErrInvalidSigner,
 		},
 		{
 			desc: "KeyNotFound",
-			request: &types.MsgDeleteEntry{Authority: authority,
+			request: &types.MsgDeleteEntry{
+				Authority: authority,
 				BaseDenom: strconv.Itoa(100000),
 			},
 			err: sdkerrors.ErrKeyNotFound,
@@ -125,7 +133,8 @@ func TestEntryMsgServerDelete(t *testing.T) {
 			srv := keeper.NewMsgServerImpl(*k)
 			wctx := sdk.WrapSDKContext(ctx)
 
-			_, err := srv.CreateEntry(wctx, &types.MsgCreateEntry{Authority: authority,
+			_, err := srv.CreateEntry(wctx, &types.MsgCreateEntry{
+				Authority: authority,
 				BaseDenom: strconv.Itoa(0),
 			})
 			require.NoError(t, err)

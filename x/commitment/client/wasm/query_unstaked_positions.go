@@ -77,7 +77,6 @@ func (oq *Querier) BuildUnStakedPositionResponseCW(ctx sdk.Context, unbondingDel
 			unstakedPositions = append(unstakedPositions, unstakedPosition)
 			i++
 		}
-
 	}
 
 	return unstakedPositions

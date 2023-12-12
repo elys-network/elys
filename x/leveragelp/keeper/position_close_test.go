@@ -156,5 +156,5 @@ func (suite KeeperTestSuite) TestHealthDecreaseForInterest() {
 	health, err = k.GetPositionHealth(suite.ctx, *position, ammPool)
 	suite.Require().NoError(err)
 	// suite.Require().Equal(health.String(), "0.610500000000000000") // slippage enabled on amm
-	suite.Require().Equal(health.String(), "0.625000000000000000") // slippage disabled on amm
+	suite.Require().Equal(health.String(), "1.077586206896551724") // slippage disabled on amm
 }

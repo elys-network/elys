@@ -16,7 +16,6 @@ func (k Keeper) EstimatePrice(ctx sdk.Context, tokenIn sdk.Coin, baseCurrency st
 	// does not actually transfer any tokens to or from the pool.
 	snapshot := k.amm.GetPoolSnapshotOrSet(ctx, pool)
 	swapResult, err := k.amm.CalcOutAmtGivenIn(ctx, pool.PoolId, k.oracleKeeper, &snapshot, sdk.Coins{tokenIn}, baseCurrency, sdk.ZeroDec())
-
 	if err != nil {
 		return sdk.ZeroInt()
 	}

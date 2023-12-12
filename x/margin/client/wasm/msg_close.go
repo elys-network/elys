@@ -48,11 +48,10 @@ func PerformMsgClose(f *marginkeeper.Keeper, ctx sdk.Context, contractAddr sdk.A
 	}
 
 	_, err := msgServer.Close(sdk.WrapSDKContext(ctx), msgMsgClose) // Discard the response because it's empty
-
 	if err != nil {
 		return nil, errorsmod.Wrap(err, "margin close msg")
 	}
 
-	var resp = &margintypes.MsgCloseResponse{}
+	resp := &margintypes.MsgCloseResponse{}
 	return resp, nil
 }

@@ -39,6 +39,7 @@ func TestPoolGet(t *testing.T) {
 		)
 	}
 }
+
 func TestPoolRemove(t *testing.T) {
 	keeper, ctx := keepertest.LeveragelpKeeper(t)
 	items := createNPool(keeper, ctx, 10)

@@ -31,7 +31,6 @@ func (k Keeper) TimeBasedInflationAll(goCtx context.Context, req *types.QueryAll
 		timeBasedInflations = append(timeBasedInflations, timeBasedInflation)
 		return nil
 	})
-
 	if err != nil {
 		return nil, status.Error(codes.Internal, err.Error())
 	}

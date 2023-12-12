@@ -60,6 +60,7 @@ func NewMsgDeletePriceFeeder(
 		Feeder: feeder,
 	}
 }
+
 func (msg *MsgDeletePriceFeeder) Route() string {
 	return RouterKey
 }

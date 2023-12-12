@@ -19,7 +19,6 @@ func (k Keeper) SetAirdrop(ctx sdk.Context, airdrop types.Airdrop) {
 func (k Keeper) GetAirdrop(
 	ctx sdk.Context,
 	intent string,
-
 ) (val types.Airdrop, found bool) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.AirdropKeyPrefix))
 
@@ -38,7 +37,6 @@ func (k Keeper) GetAirdrop(
 func (k Keeper) RemoveAirdrop(
 	ctx sdk.Context,
 	intent string,
-
 ) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.AirdropKeyPrefix))
 	store.Delete(types.AirdropKey(

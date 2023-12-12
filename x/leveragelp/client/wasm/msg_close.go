@@ -48,11 +48,10 @@ func PerformMsgClose(f *leveragelpkeeper.Keeper, ctx sdk.Context, contractAddr s
 	}
 
 	_, err := msgServer.Close(sdk.WrapSDKContext(ctx), msgMsgClose) // Discard the response because it's empty
-
 	if err != nil {
 		return nil, errorsmod.Wrap(err, "leveragelp close msg")
 	}
 
-	var resp = &leveragelptypes.MsgCloseResponse{}
+	resp := &leveragelptypes.MsgCloseResponse{}
 	return resp, nil
 }

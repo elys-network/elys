@@ -16,7 +16,7 @@ func (k msgServer) UpdateGenesisInflation(goCtx context.Context, msg *types.MsgU
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	var genesisInflation = types.GenesisInflation{
+	genesisInflation := types.GenesisInflation{
 		Authority:             msg.Authority,
 		Inflation:             msg.Inflation,
 		SeedVesting:           msg.SeedVesting,

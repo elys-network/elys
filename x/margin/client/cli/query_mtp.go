@@ -10,8 +10,6 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var _ = strconv.Itoa(0)
-
 func CmdMtp() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "get-mtp [address] [id]",

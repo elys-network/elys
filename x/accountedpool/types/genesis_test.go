@@ -21,7 +21,6 @@ func TestGenesisState_Validate(t *testing.T) {
 		{
 			desc: "valid genesis state",
 			genState: &types.GenesisState{
-
 				AccountedPoolList: []types.AccountedPool{
 					{
 						PoolId: (uint64)(0),

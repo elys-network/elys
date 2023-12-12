@@ -9,8 +9,6 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var _ = strconv.Itoa(0)
-
 func CmdGetPositionsByPool() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "get-positions-by-pool [amm_pool_id]",

@@ -12,7 +12,7 @@ import (
 
 func TestGenerateOpenEvent(t *testing.T) {
 	// Mock data for testing
-	var testMTP = types.MTP{
+	testMTP := types.MTP{
 		Address:                        "elys1x0jyazg9qzys8x9m2x8q3q3x0jyazg9qzys8x9",
 		Collateral:                     sdk.ZeroInt(),
 		Liabilities:                    sdk.ZeroInt(),

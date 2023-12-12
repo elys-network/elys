@@ -41,6 +41,7 @@ func TestHistoryGet(t *testing.T) {
 		)
 	}
 }
+
 func TestHistoryRemove(t *testing.T) {
 	keeper, ctx, _ := keepertest.BurnerKeeper(t)
 	items := createNHistory(keeper, ctx, 10)

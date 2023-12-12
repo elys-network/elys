@@ -9,9 +9,7 @@ import (
 
 var _ paramtypes.ParamSet = (*Params)(nil)
 
-var (
-	KeyVestingInfos = []byte("VestingInfos")
-)
+var KeyVestingInfos = []byte("VestingInfos")
 
 // ParamKeyTable the param key table for launch module
 func ParamKeyTable() paramtypes.KeyTable {

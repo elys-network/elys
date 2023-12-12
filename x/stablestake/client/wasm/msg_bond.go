@@ -25,10 +25,7 @@ func (m *Messenger) msgBond(ctx sdk.Context, contractAddr sdk.AccAddress, msg *t
 		return nil, nil, errorsmod.Wrap(err, "failed validating msg")
 	}
 
-	res, err := msgServer.Bond(
-		sdk.WrapSDKContext(ctx),
-		msg,
-	)
+	res, err := msgServer.Bond(sdk.WrapSDKContext(ctx), msg)
 	if err != nil {
 		return nil, nil, errorsmod.Wrap(err, "Bond msg")
 	}

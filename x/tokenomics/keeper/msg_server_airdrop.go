@@ -26,7 +26,7 @@ func (k msgServer) CreateAirdrop(goCtx context.Context, msg *types.MsgCreateAird
 		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "index already set")
 	}
 
-	var airdrop = types.Airdrop{
+	airdrop := types.Airdrop{
 		Authority: msg.Authority,
 		Intent:    msg.Intent,
 		Amount:    msg.Amount,
@@ -60,7 +60,7 @@ func (k msgServer) UpdateAirdrop(goCtx context.Context, msg *types.MsgUpdateAird
 		return nil, sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "incorrect owner")
 	}
 
-	var airdrop = types.Airdrop{
+	airdrop := types.Airdrop{
 		Authority: msg.Authority,
 		Intent:    msg.Intent,
 		Amount:    msg.Amount,

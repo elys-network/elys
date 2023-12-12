@@ -11,7 +11,6 @@ func (k Keeper) BeforeEpochStart(_ sdk.Context, _ string, _ int64) {}
 
 // AfterEpochEnd distributes vested tokens at the end of each epoch
 func (k Keeper) AfterEpochEnd(ctx sdk.Context, epochIdentifier string, _ int64) {
-
 	// Future Improvement: check all VestingInfos and get all VestingTokens by denom
 	// 	so we can iterate different denoms in different EpochIdentifiers
 	vestingInfo, _ := k.GetVestingInfo(ctx, ptypes.Eden)

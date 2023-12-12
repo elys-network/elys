@@ -42,6 +42,7 @@ func (suite *KeeperTestSuite) TestPriceFeederGet() {
 		)
 	}
 }
+
 func (suite *KeeperTestSuite) TestPriceFeederRemove() {
 	keeper, ctx := suite.app.OracleKeeper, suite.ctx
 	items := createNPriceFeeder(&keeper, ctx, 10)

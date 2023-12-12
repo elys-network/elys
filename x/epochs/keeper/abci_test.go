@@ -13,7 +13,6 @@ import (
 )
 
 func TestEpochInfoChangesBeginBlockerAndInitGenesis(t *testing.T) {
-
 	app := app.InitElysTestApp(true)
 	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
 
@@ -159,7 +158,6 @@ func TestEpochInfoChangesBeginBlockerAndInitGenesis(t *testing.T) {
 }
 
 func TestEpochStartingOneMonthAfterInitGenesis(t *testing.T) {
-
 	app := app.InitElysTestApp(true)
 	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
 

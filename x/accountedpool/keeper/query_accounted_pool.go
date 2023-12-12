@@ -31,7 +31,6 @@ func (k Keeper) AccountedPoolAll(goCtx context.Context, req *types.QueryAllAccou
 		accountedPools = append(accountedPools, accountedPool)
 		return nil
 	})
-
 	if err != nil {
 		return nil, status.Error(codes.Internal, err.Error())
 	}

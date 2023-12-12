@@ -43,6 +43,7 @@ func TestAccountedPoolGet(t *testing.T) {
 		)
 	}
 }
+
 func TestAccountedPoolRemove(t *testing.T) {
 	keeper, ctx := keepertest.AccountedPoolKeeper(t)
 	items := createNAccountedPool(keeper, ctx, 10)

@@ -38,9 +38,7 @@ type StakingHooks struct {
 	k Keeper
 }
 
-var (
-	_ stakingtypes.StakingHooks = StakingHooks{}
-)
+var _ stakingtypes.StakingHooks = StakingHooks{}
 
 // Return the wrapper struct
 func (k Keeper) StakingHooks() StakingHooks {

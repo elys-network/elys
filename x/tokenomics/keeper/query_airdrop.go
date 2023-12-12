@@ -31,7 +31,6 @@ func (k Keeper) AirdropAll(goCtx context.Context, req *types.QueryAllAirdropRequ
 		airdrops = append(airdrops, airdrop)
 		return nil
 	})
-
 	if err != nil {
 		return nil, status.Error(codes.Internal, err.Error())
 	}
