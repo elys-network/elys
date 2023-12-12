@@ -12,9 +12,6 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-// Prevent strconv unused error
-var _ = strconv.IntSize
-
 func createNEntry(keeper *keeper.Keeper, ctx sdk.Context, n int) []types.Entry {
 	items := make([]types.Entry, n)
 	for i := range items {

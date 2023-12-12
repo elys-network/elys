@@ -15,9 +15,6 @@ import (
 	"github.com/elys-network/elys/x/assetprofile/types"
 )
 
-// Prevent strconv unused error
-var _ = strconv.IntSize
-
 func TestEntryMsgServerCreate(t *testing.T) {
 	k, ctx := keepertest.AssetprofileKeeper(t)
 	srv := keeper.NewMsgServerImpl(*k)

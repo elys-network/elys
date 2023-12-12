@@ -45,7 +45,7 @@ elysd tx margin open short 5 uatom 100000000uusdc --take-profit 100 --from=treas
 				return err
 			}
 
-			takeProfitPriceStr, err := cmd.Flags().GetString(flagTakeProfitPrice)
+			takeProfitPriceStr, err := cmd.Flags().GetString(FlagTakeProfitPrice)
 			if err != nil {
 				return err
 			}
@@ -79,7 +79,7 @@ elysd tx margin open short 5 uatom 100000000uusdc --take-profit 100 --from=treas
 		},
 	}
 
-	cmd.Flags().String(flagTakeProfitPrice, types.InfinitePriceString, "Optional take profit price")
+	cmd.Flags().String(FlagTakeProfitPrice, types.InfinitePriceString, "Optional take profit price")
 
 	flags.AddTxFlagsToCmd(cmd)
 

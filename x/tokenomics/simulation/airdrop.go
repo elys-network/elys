@@ -13,9 +13,6 @@ import (
 	"github.com/elys-network/elys/x/tokenomics/types"
 )
 
-// Prevent strconv unused error
-var _ = strconv.IntSize
-
 func SimulateMsgCreateAirdrop(
 	ak types.AccountKeeper,
 	bk types.BankKeeper,

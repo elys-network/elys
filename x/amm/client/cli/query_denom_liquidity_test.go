@@ -19,9 +19,6 @@ import (
 	"github.com/elys-network/elys/x/amm/types"
 )
 
-// Prevent strconv unused error
-var _ = strconv.IntSize
-
 func networkWithDenomLiquidityObjects(t *testing.T, n int) (*network.Network, []types.DenomLiquidity) {
 	t.Helper()
 	cfg := network.DefaultConfig()

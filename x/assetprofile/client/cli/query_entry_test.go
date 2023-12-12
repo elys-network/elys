@@ -18,9 +18,6 @@ import (
 	"github.com/elys-network/elys/x/assetprofile/types"
 )
 
-// Prevent strconv unused error
-var _ = strconv.IntSize
-
 func networkWithEntryObjects(t *testing.T, n int) (*network.Network, []types.Entry) {
 	t.Helper()
 	cfg := network.DefaultConfig()

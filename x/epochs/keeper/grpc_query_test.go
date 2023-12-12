@@ -15,9 +15,6 @@ import (
 	"github.com/elys-network/elys/x/epochs/types"
 )
 
-// Prevent strconv unused error
-var _ = strconv.IntSize
-
 func TestEpochInfoQuerySingle(t *testing.T) {
 	keeper, ctx := keepertest.EpochsKeeper(t)
 	wctx := sdk.WrapSDKContext(ctx)

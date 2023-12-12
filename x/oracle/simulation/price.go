@@ -13,9 +13,6 @@ import (
 	"github.com/elys-network/elys/x/oracle/types"
 )
 
-// Prevent strconv unused error
-var _ = strconv.IntSize
-
 func SimulateMsgFeedPrice(
 	ak types.AccountKeeper,
 	bk types.BankKeeper,

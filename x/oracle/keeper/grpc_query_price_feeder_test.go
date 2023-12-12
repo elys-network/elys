@@ -12,9 +12,6 @@ import (
 	"github.com/elys-network/elys/x/oracle/types"
 )
 
-// Prevent strconv unused error
-var _ = strconv.IntSize
-
 func (suite *KeeperTestSuite) TestPriceFeederQuerySingle() {
 	keeper, ctx := suite.app.OracleKeeper, suite.ctx
 	wctx := sdk.WrapSDKContext(ctx)

@@ -18,9 +18,6 @@ import (
 	"github.com/elys-network/elys/x/burner/types"
 )
 
-// Prevent strconv unused error
-var _ = strconv.IntSize
-
 func networkWithHistoryObjects(t *testing.T, n int) (*network.Network, []types.History) {
 	t.Helper()
 	cfg := network.DefaultConfig()

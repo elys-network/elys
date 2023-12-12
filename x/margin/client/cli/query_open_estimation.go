@@ -40,7 +40,7 @@ func CmdOpenEstimation() *cobra.Command {
 				return err
 			}
 
-			takeProfitPriceStr, err := cmd.Flags().GetString(flagTakeProfitPrice)
+			takeProfitPriceStr, err := cmd.Flags().GetString(FlagTakeProfitPrice)
 			if err != nil {
 				return err
 			}
@@ -86,7 +86,7 @@ func CmdOpenEstimation() *cobra.Command {
 	flags.AddQueryFlagsToCmd(cmd)
 
 	cmd.Flags().String(FlagDiscount, "0.0", "discount to apply to the swap fee")
-	cmd.Flags().String(flagTakeProfitPrice, types.InfinitePriceString, "Optional take profit price")
+	cmd.Flags().String(FlagTakeProfitPrice, types.InfinitePriceString, "Optional take profit price")
 
 	return cmd
 }

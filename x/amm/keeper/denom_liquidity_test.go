@@ -12,9 +12,6 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-// Prevent strconv unused error
-var _ = strconv.IntSize
-
 func createNDenomLiquidity(keeper *keeper.Keeper, ctx sdk.Context, n int) []types.DenomLiquidity {
 	items := make([]types.DenomLiquidity, n)
 	for i := range items {

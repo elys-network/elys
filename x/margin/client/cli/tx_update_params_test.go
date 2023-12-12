@@ -1,7 +1,6 @@
 package cli_test
 
 import (
-	"strconv"
 	"testing"
 
 	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
@@ -12,9 +11,6 @@ import (
 	simapp "github.com/elys-network/elys/app"
 	"github.com/elys-network/elys/x/margin/client/cli"
 )
-
-// Prevent strconv unused error
-var _ = strconv.IntSize
 
 func TestGovUpdateParams(t *testing.T) {
 	net := setupNetwork(t)

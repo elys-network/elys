@@ -15,9 +15,6 @@ import (
 	"github.com/elys-network/elys/x/tokenomics/types"
 )
 
-// Prevent strconv unused error
-var _ = strconv.IntSize
-
 func TestAirdropQuerySingle(t *testing.T) {
 	keeper, ctx := keepertest.TokenomicsKeeper(t)
 	wctx := sdk.WrapSDKContext(ctx)

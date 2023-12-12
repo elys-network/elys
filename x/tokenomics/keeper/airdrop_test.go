@@ -12,9 +12,6 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-// Prevent strconv unused error
-var _ = strconv.IntSize
-
 func createNAirdrop(keeper *keeper.Keeper, ctx sdk.Context, n int) []types.Airdrop {
 	items := make([]types.Airdrop, n)
 	for i := range items {

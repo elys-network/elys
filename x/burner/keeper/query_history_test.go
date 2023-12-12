@@ -15,9 +15,6 @@ import (
 	"github.com/elys-network/elys/x/burner/types"
 )
 
-// Prevent strconv unused error
-var _ = strconv.IntSize
-
 func TestHistoryQuerySingle(t *testing.T) {
 	keeper, ctx, _ := keepertest.BurnerKeeper(t)
 	wctx := sdk.WrapSDKContext(ctx)
