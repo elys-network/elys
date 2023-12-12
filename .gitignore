@@ -18,3 +18,4 @@ scripts/csv/dist
 scripts/csv/node_modules
 scripts/csv/.env
 price-feeder
+*-skip

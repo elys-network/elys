@@ -16,6 +16,22 @@ func (k Keeper) SetCommitments(ctx sdk.Context, commitments types.Commitments) {
 	store.Set(types.CommitmentsKey(commitments.Creator), b)
 }
 
+// GetAllCommitments returns all commitments
+func (k Keeper) GetAllCommitments(ctx sdk.Context) (list []*types.Commitments) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.CommitmentsKeyPrefix))
+	iterator := sdk.KVStorePrefixIterator(store, []byte{})
+
+	defer iterator.Close()
+
+	for ; iterator.Valid(); iterator.Next() {
+		var val types.Commitments
+		k.cdc.MustUnmarshal(iterator.Value(), &val)
+		list = append(list, &val)
+	}
+
+	return
+}
+
 // GetCommitments returns a commitments from its index
 func (k Keeper) GetCommitments(ctx sdk.Context, creator string) types.Commitments {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.CommitmentsKeyPrefix))

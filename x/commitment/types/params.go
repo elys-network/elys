@@ -79,8 +79,8 @@ func validateVestingInfo(info *VestingInfo) error {
 		return fmt.Errorf("num_epochs must be greater than zero")
 	}
 
-	if info.NumMaxVestings <= 0 {
-		return fmt.Errorf("num_max_vestings must be greater than zero")
+	if info.NumMaxVestings < 0 {
+		return fmt.Errorf("num_max_vestings cannot be negative")
 	}
 
 	return nil
