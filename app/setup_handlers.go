@@ -107,6 +107,19 @@ func setUpgradeHandler(app *ElysApp) {
 			// dedicated x/consensus module.
 			baseapp.MigrateParams(ctx, baseAppLegacySS, &app.ConsensusParamsKeeper)
 
+			// FIXME: temporary code to fix usdc/elys pool weights
+			pool, found := app.AmmKeeper.GetPool(ctx, 3)
+			if found {
+				totalWeight := sdk.ZeroInt()
+				for i := range pool.PoolAssets {
+					pool.PoolAssets[i].Weight = sdk.NewInt(107374182400)
+					totalWeight = totalWeight.Add(pool.PoolAssets[i].Weight)
+				}
+				pool.TotalWeight = totalWeight
+				pool.PoolParams.FeeDenom = "ibc/2180E84E20F5679FCC760D8C165B60F42065DEF7F46A72B447CFF1B7DC6C0A65"
+				app.AmmKeeper.SetPool(ctx, pool)
+			}
+
 			return app.mm.RunMigrations(ctx, app.configurator, vm)
 		},
 	)
