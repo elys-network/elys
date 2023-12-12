@@ -6,7 +6,7 @@ import (
 	"github.com/elys-network/elys/app"
 )
 
-func initSDKConfig() {
+func InitSDKConfig() {
 	// Set prefixes
 	accountPubKeyPrefix := app.AccountAddressPrefix + "pub"
 	validatorAddressPrefix := app.AccountAddressPrefix + "valoper"
