@@ -1,7 +1,6 @@
 package keeper_test
 
 import (
-	"strconv"
 	"testing"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -14,9 +13,6 @@ import (
 	"github.com/elys-network/elys/testutil/nullify"
 	"github.com/elys-network/elys/x/amm/types"
 )
-
-// Prevent strconv unused error
-var _ = strconv.IntSize
 
 func TestPoolQuerySingle(t *testing.T) {
 	keeper, ctx, _, _ := keepertest.AmmKeeper(t)

@@ -1,7 +1,6 @@
 package keeper_test
 
 import (
-	"strconv"
 	"testing"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -11,9 +10,6 @@ import (
 	"github.com/elys-network/elys/x/tokenomics/types"
 	"github.com/stretchr/testify/require"
 )
-
-// Prevent strconv unused error
-var _ = strconv.IntSize
 
 func createNTimeBasedInflation(keeper *keeper.Keeper, ctx sdk.Context, n int) []types.TimeBasedInflation {
 	items := make([]types.TimeBasedInflation, n)

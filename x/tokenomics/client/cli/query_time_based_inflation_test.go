@@ -18,9 +18,6 @@ import (
 	"github.com/elys-network/elys/x/tokenomics/types"
 )
 
-// Prevent strconv unused error
-var _ = strconv.IntSize
-
 func networkWithTimeBasedInflationObjects(t *testing.T, n int) (*network.Network, []types.TimeBasedInflation) {
 	t.Helper()
 	cfg := network.DefaultConfig()

@@ -20,9 +20,6 @@ import (
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
 
-// Prevent strconv unused error
-var _ = strconv.IntSize
-
 func networkWithPoolObjects(t *testing.T, n int) (*network.Network, []types.Pool) {
 	t.Helper()
 	cfg := network.DefaultConfig()

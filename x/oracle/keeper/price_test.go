@@ -9,9 +9,6 @@ import (
 	"github.com/elys-network/elys/x/oracle/types"
 )
 
-// Prevent strconv unused error
-var _ = strconv.IntSize
-
 func createNPrice(keeper *keeper.Keeper, ctx sdk.Context, n int) []types.Price {
 	items := make([]types.Price, n)
 	for i := range items {

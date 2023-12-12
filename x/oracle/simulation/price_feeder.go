@@ -2,7 +2,6 @@ package simulation
 
 import (
 	"math/rand"
-	"strconv"
 
 	simappparams "cosmossdk.io/simapp/params"
 	"github.com/cosmos/cosmos-sdk/baseapp"
@@ -12,9 +11,6 @@ import (
 	"github.com/elys-network/elys/x/oracle/keeper"
 	"github.com/elys-network/elys/x/oracle/types"
 )
-
-// Prevent strconv unused error
-var _ = strconv.IntSize
 
 func SimulateMsgSetPriceFeeder(
 	ak types.AccountKeeper,

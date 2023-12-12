@@ -15,9 +15,6 @@ import (
 	"github.com/elys-network/elys/x/amm/types"
 )
 
-// Prevent strconv unused error
-var _ = strconv.IntSize
-
 func TestDenomLiquidityQuerySingle(t *testing.T) {
 	keeper, ctx, _, _ := keepertest.AmmKeeper(t)
 	wctx := sdk.WrapSDKContext(ctx)

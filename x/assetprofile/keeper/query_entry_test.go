@@ -15,9 +15,6 @@ import (
 	"github.com/elys-network/elys/x/assetprofile/types"
 )
 
-// Prevent strconv unused error
-var _ = strconv.IntSize
-
 func TestEntryQuerySingle(t *testing.T) {
 	keeper, ctx := keepertest.AssetprofileKeeper(t)
 	wctx := sdk.WrapSDKContext(ctx)

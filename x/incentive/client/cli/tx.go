@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"strconv"
 	"strings"
-	"time"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
@@ -22,17 +21,10 @@ import (
 )
 
 var (
-	FlagCommission                        = "commission"
-	FlagValidatorAddress                  = "validator-address"
-	FlagMaxMessagesPerTx                  = "max-msgs"
-	FlagEarnType                          = "earn-type"
-	DefaultRelativePacketTimeoutTimestamp = uint64((time.Duration(10) * time.Minute).Nanoseconds())
-)
-
-const (
-	flagPacketTimeoutTimestamp = "packet-timeout-timestamp"
-	MaxMessagesPerTxDefault    = 0
-	listSeparator              = ","
+	FlagCommission       = "commission"
+	FlagValidatorAddress = "validator-address"
+	FlagMaxMessagesPerTx = "max-msgs"
+	FlagEarnType         = "earn-type"
 )
 
 // GetTxCmd returns the transaction commands for this module

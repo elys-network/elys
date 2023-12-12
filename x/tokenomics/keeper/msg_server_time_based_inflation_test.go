@@ -1,7 +1,6 @@
 package keeper_test
 
 import (
-	"strconv"
 	"testing"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -14,9 +13,6 @@ import (
 	"github.com/elys-network/elys/x/tokenomics/keeper"
 	"github.com/elys-network/elys/x/tokenomics/types"
 )
-
-// Prevent strconv unused error
-var _ = strconv.IntSize
 
 func TestTimeBasedInflationMsgServerCreate(t *testing.T) {
 	k, ctx := keepertest.TokenomicsKeeper(t)

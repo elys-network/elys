@@ -2,7 +2,6 @@ package cli_test
 
 import (
 	"fmt"
-	"strconv"
 	"testing"
 
 	tmcli "github.com/cometbft/cometbft/libs/cli"
@@ -17,9 +16,6 @@ import (
 	"github.com/elys-network/elys/x/accountedpool/client/cli"
 	"github.com/elys-network/elys/x/accountedpool/types"
 )
-
-// Prevent strconv unused error
-var _ = strconv.IntSize
 
 func networkWithAccountedPoolObjects(t *testing.T, n int) (*network.Network, []types.AccountedPool) {
 	t.Helper()

@@ -13,9 +13,6 @@ import (
 	"github.com/elys-network/elys/x/assetprofile/types"
 )
 
-// Prevent strconv unused error
-var _ = strconv.IntSize
-
 func SimulateMsgCreateEntry(
 	ak types.AccountKeeper,
 	bk types.BankKeeper,

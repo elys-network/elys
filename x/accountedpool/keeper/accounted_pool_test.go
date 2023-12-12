@@ -1,7 +1,6 @@
 package keeper_test
 
 import (
-	"strconv"
 	"testing"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -12,9 +11,6 @@ import (
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	"github.com/stretchr/testify/require"
 )
-
-// Prevent strconv unused error
-var _ = strconv.IntSize
 
 func createNAccountedPool(keeper *keeper.Keeper, ctx sdk.Context, n int) []types.AccountedPool {
 	items := make([]types.AccountedPool, n)

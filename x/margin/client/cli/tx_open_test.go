@@ -1,7 +1,6 @@
 package cli_test
 
 import (
-	"strconv"
 	"testing"
 
 	clitestutil "github.com/cosmos/cosmos-sdk/testutil/cli"
@@ -11,9 +10,6 @@ import (
 	"github.com/elys-network/elys/x/margin/client/cli"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
-
-// Prevent strconv unused error
-var _ = strconv.IntSize
 
 func setupNetwork(t *testing.T) *network.Network {
 	t.Helper()

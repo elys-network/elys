@@ -9,9 +9,6 @@ import (
 	"github.com/elys-network/elys/x/oracle/types"
 )
 
-// Prevent strconv unused error
-var _ = strconv.IntSize
-
 func (suite *KeeperTestSuite) TestPriceMsgServerCreate() {
 	k, ctx := suite.app.OracleKeeper, suite.ctx
 	srv := keeper.NewMsgServerImpl(k)

@@ -2,7 +2,6 @@ package cli_test
 
 import (
 	"fmt"
-	"strconv"
 	"testing"
 
 	tmcli "github.com/cometbft/cometbft/libs/cli"
@@ -14,9 +13,6 @@ import (
 	"github.com/elys-network/elys/x/margin/client/cli"
 	"github.com/elys-network/elys/x/margin/types"
 )
-
-// Prevent strconv unused error
-var _ = strconv.IntSize
 
 func TestShowMTPByAddress(t *testing.T) {
 	net, objs := networkWithMTPObjects(t, 2)

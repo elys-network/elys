@@ -9,9 +9,6 @@ import (
 	"github.com/elys-network/elys/x/oracle/types"
 )
 
-// Prevent strconv unused error
-var _ = strconv.IntSize
-
 func createNPriceFeeder(keeper *keeper.Keeper, ctx sdk.Context, n int) []types.PriceFeeder {
 	// Clear existing price feeders
 	// Current it does have one price feeder from genesis.json

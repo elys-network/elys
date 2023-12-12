@@ -15,9 +15,6 @@ import (
 	"github.com/elys-network/elys/x/tokenomics/types"
 )
 
-// Prevent strconv unused error
-var _ = strconv.IntSize
-
 func TestAirdropMsgServerCreate(t *testing.T) {
 	k, ctx := keepertest.TokenomicsKeeper(t)
 	srv := keeper.NewMsgServerImpl(*k)

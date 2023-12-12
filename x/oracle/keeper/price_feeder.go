@@ -27,10 +27,7 @@ func (k Keeper) GetPriceFeeder(ctx sdk.Context, feeder string) (val types.PriceF
 }
 
 // RemovePriceFeeder removes a priceFeeder from the store
-func (k Keeper) RemovePriceFeeder(
-	ctx sdk.Context,
-	feeder string,
-) {
+func (k Keeper) RemovePriceFeeder(ctx sdk.Context, feeder string) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.PriceFeederKeyPrefix))
 	store.Delete(types.PriceFeederKey(feeder))
 }
