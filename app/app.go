@@ -730,7 +730,6 @@ func NewElysApp(
 		appCodec,
 		keys[accountedpoolmoduletypes.StoreKey],
 		keys[accountedpoolmoduletypes.MemStoreKey],
-		app.GetSubspace(accountedpoolmoduletypes.ModuleName),
 		app.BankKeeper,
 	)
 	accountedPoolModule := accountedpoolmodule.NewAppModule(appCodec, app.AccountedPoolKeeper, app.AccountKeeper, app.BankKeeper)
@@ -1497,7 +1496,6 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(burnermoduletypes.ModuleName)
 	paramsKeeper.Subspace(ammmoduletypes.ModuleName)
 	paramsKeeper.Subspace(marginmoduletypes.ModuleName)
-	paramsKeeper.Subspace(accountedpoolmoduletypes.ModuleName)
 	paramsKeeper.Subspace(transferhooktypes.ModuleName)
 	paramsKeeper.Subspace(clockmoduletypes.ModuleName)
 	paramsKeeper.Subspace(stablestaketypes.ModuleName)

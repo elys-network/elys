@@ -19,8 +19,6 @@ func NewQuerier(keeper *keeper.Keeper) *Querier {
 
 func (oq *Querier) HandleQuery(ctx sdk.Context, query wasmbindingstypes.ElysQuery) ([]byte, error) {
 	switch {
-	case query.AccountedPoolParams != nil:
-		return oq.queryParams(ctx, query.AccountedPoolParams)
 	case query.AccountedPoolAccountedPool != nil:
 		return oq.queryAccountedPool(ctx, query.AccountedPoolAccountedPool)
 	case query.AccountedPoolAccountedPoolAll != nil:

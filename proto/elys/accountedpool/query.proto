@@ -5,38 +5,19 @@ package elys.accountedpool;
 import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
-import "elys/accountedpool/params.proto";
 import "elys/accountedpool/accounted_pool.proto";
 
 option go_package = "github.com/elys-network/elys/x/accountedpool/types";
 
 // Query defines the gRPC querier service.
 service Query {
-  
-  // Parameters queries the parameters of the module.
-  rpc Params (QueryParamsRequest) returns (QueryParamsResponse) {
-    option (google.api.http).get = "/elys-network/elys/accountedpool/params";
-  
-  }
-  
   // Queries a list of AccountedPool items.
   rpc AccountedPool    (QueryGetAccountedPoolRequest) returns (QueryGetAccountedPoolResponse) {
     option (google.api.http).get = "/elys-network/elys/accountedpool/accounted_pool/{pool_id}";
-  
   }
   rpc AccountedPoolAll (QueryAllAccountedPoolRequest) returns (QueryAllAccountedPoolResponse) {
     option (google.api.http).get = "/elys-network/elys/accountedpool/accounted_pool";
-  
   }
-}
-// QueryParamsRequest is request type for the Query/Params RPC method.
-message QueryParamsRequest {}
-
-// QueryParamsResponse is response type for the Query/Params RPC method.
-message QueryParamsResponse {
-  
-  // params holds all the parameters of this module.
-  Params params = 1 [(gogoproto.nullable) = false];
 }
 
 message QueryGetAccountedPoolRequest {

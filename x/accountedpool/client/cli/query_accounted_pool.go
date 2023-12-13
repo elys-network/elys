@@ -13,7 +13,7 @@ import (
 func CmdListAccountedPool() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "list-accounted-pool",
-		Short: "list all accounted-pool",
+		Short: "list all accounted pools",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientQueryContext(cmd)
 			if err != nil {
@@ -59,8 +59,7 @@ func CmdShowAccountedPool() *cobra.Command {
 
 			queryClient := types.NewQueryClient(clientCtx)
 
-			argIndex := args[0]
-			poolId, err := strconv.ParseUint(argIndex, 10, 64)
+			poolId, err := strconv.ParseUint(args[0], 10, 64)
 			if err != nil {
 				return err
 			}

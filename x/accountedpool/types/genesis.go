@@ -1,9 +1,5 @@
 package types
 
-import (
-	"fmt"
-)
-
 // DefaultIndex is the default global index
 const DefaultIndex uint64 = 1
 
@@ -12,7 +8,6 @@ func DefaultGenesis() *GenesisState {
 	return &GenesisState{
 		AccountedPoolList: []AccountedPool{},
 		// this line is used by starport scaffolding # genesis/types/default
-		Params: DefaultParams(),
 	}
 }
 
@@ -25,11 +20,11 @@ func (gs GenesisState) Validate() error {
 	for _, elem := range gs.AccountedPoolList {
 		index := string(AccountedPoolKey(elem.PoolId))
 		if _, ok := accountedPoolIndexMap[index]; ok {
-			return fmt.Errorf("duplicated index for accountedPool")
+			return ErrDuplicatedAccountedPoolId
 		}
 		accountedPoolIndexMap[index] = struct{}{}
 	}
 	// this line is used by starport scaffolding # genesis/types/validate
 
-	return gs.Params.Validate()
+	return nil
 }

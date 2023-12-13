@@ -10,9 +10,7 @@ const (
 )
 
 // AccountedPoolKey returns the store key to retrieve a AccountedPool from the index fields
-func AccountedPoolKey(
-	poolId uint64,
-) []byte {
+func AccountedPoolKey(poolId uint64) []byte {
 	var key []byte
 
 	poolIdBytes := make([]byte, 8)

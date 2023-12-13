@@ -44,10 +44,7 @@ func (k Keeper) AccountedPool(goCtx context.Context, req *types.QueryGetAccounte
 	}
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	val, found := k.GetAccountedPool(
-		ctx,
-		req.PoolId,
-	)
+	val, found := k.GetAccountedPool(ctx, req.PoolId)
 	if !found {
 		return nil, status.Error(codes.NotFound, "not found")
 	}

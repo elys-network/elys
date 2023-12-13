@@ -16,7 +16,6 @@ import (
 	slashingtypes "github.com/cosmos/cosmos-sdk/x/slashing/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
-	accountedpooltypes "github.com/elys-network/elys/x/accountedpool/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
 	burnertypes "github.com/elys-network/elys/x/burner/types"
@@ -79,8 +78,6 @@ func setUpgradeHandler(app *ElysApp) {
 			keyTable = oracletypes.ParamKeyTable() //nolint:staticcheck
 		case tokenomicstypes.ModuleName:
 			keyTable = tokenomicstypes.ParamKeyTable() //nolint:staticcheck
-		case accountedpooltypes.ModuleName:
-			keyTable = accountedpooltypes.ParamKeyTable() //nolint:staticcheck
 		case clocktypes.ModuleName:
 			keyTable = clocktypes.ParamKeyTable() //nolint:staticcheck
 		case transferhooktypes.ModuleName:
