@@ -1,9 +1,8 @@
 package keeper
 
 import (
-	"errors"
-
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/elys-network/elys/x/accountedpool/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	margintypes "github.com/elys-network/elys/x/margin/types"
 )
@@ -13,13 +12,13 @@ func (k Keeper) UpdateAccountedPool(ctx sdk.Context, ammPool ammtypes.Pool, marg
 	// Check if already exists
 	exists := k.PoolExists(ctx, poolId)
 	if !exists {
-		return errors.New("pool doesn't exist!")
+		return types.ErrPoolDoesNotExist
 	}
 
 	// Get accounted pool
 	accountedPool, found := k.GetAccountedPool(ctx, poolId)
 	if !found {
-		return errors.New("pool doesn't exist!")
+		return types.ErrPoolDoesNotExist
 	}
 
 	// Accounted Pool balance =

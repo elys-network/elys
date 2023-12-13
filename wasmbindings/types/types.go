@@ -96,7 +96,6 @@ func AllCapabilities() []string {
 
 type ElysQuery struct {
 	// accountedpool queriers
-	AccountedPoolParams           *accountedpooltypes.QueryParamsRequest           `json:"accounted_pool_params,omitempty"`
 	AccountedPoolAccountedPool    *accountedpooltypes.QueryGetAccountedPoolRequest `json:"accounted_pool_accounted_pool,omitempty"`
 	AccountedPoolAccountedPoolAll *accountedpooltypes.QueryAllAccountedPoolRequest `json:"accounted_pool_accounted_pool_all,omitempty"`
 

@@ -6,7 +6,8 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
-// x/tvl module sentinel errors
+// x/accountedpool module sentinel errors
 var (
-	ErrSample = sdkerrors.Register(ModuleName, 1100, "sample error")
+	ErrPoolDoesNotExist          = sdkerrors.Register(ModuleName, 1, "pool does not exist")
+	ErrDuplicatedAccountedPoolId = sdkerrors.Register(ModuleName, 2, "duplicated poolId for accountedPool")
 )

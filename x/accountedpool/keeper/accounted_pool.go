@@ -10,22 +10,14 @@ import (
 func (k Keeper) SetAccountedPool(ctx sdk.Context, accountedPool types.AccountedPool) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.AccountedPoolKeyPrefix))
 	b := k.cdc.MustMarshal(&accountedPool)
-	store.Set(types.AccountedPoolKey(
-		accountedPool.PoolId,
-	), b)
+	store.Set(types.AccountedPoolKey(accountedPool.PoolId), b)
 }
 
 // GetAccountedPool returns a accountedPool from its index
-func (k Keeper) GetAccountedPool(
-	ctx sdk.Context,
-	PoolId uint64,
-) (val types.AccountedPool, found bool) {
+func (k Keeper) GetAccountedPool(ctx sdk.Context, PoolId uint64) (val types.AccountedPool, found bool) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.AccountedPoolKeyPrefix))
 
-	b := store.Get(types.AccountedPoolKey(
-		PoolId,
-	))
-
+	b := store.Get(types.AccountedPoolKey(PoolId))
 	if b == nil {
 		return val, false
 	}
@@ -35,14 +27,9 @@ func (k Keeper) GetAccountedPool(
 }
 
 // RemoveAccountedPool removes a accountedPool from the store
-func (k Keeper) RemoveAccountedPool(
-	ctx sdk.Context,
-	poolId uint64,
-) {
+func (k Keeper) RemoveAccountedPool(ctx sdk.Context, poolId uint64) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.AccountedPoolKeyPrefix))
-	store.Delete(types.AccountedPoolKey(
-		poolId,
-	))
+	store.Delete(types.AccountedPoolKey(poolId))
 }
 
 // GetAllAccountedPool returns all accountedPool

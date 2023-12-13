@@ -1,8 +1,6 @@
 package keeper
 
 import (
-	"errors"
-
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/accountedpool/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
@@ -13,7 +11,7 @@ func (k Keeper) InitiateAccountedPool(ctx sdk.Context, ammPool ammtypes.Pool) er
 	// Check if already exists
 	exists := k.PoolExists(ctx, poolId)
 	if exists {
-		return errors.New("already existed pool!")
+		return types.ErrPoolDoesNotExist
 	}
 
 	// Initiate pool

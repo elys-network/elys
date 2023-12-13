@@ -3,14 +3,12 @@ syntax = "proto3";
 package elys.accountedpool;
 
 import "gogoproto/gogo.proto";
-import "elys/accountedpool/params.proto";
 import "elys/accountedpool/accounted_pool.proto";
 
 option go_package = "github.com/elys-network/elys/x/accountedpool/types";
 
 // GenesisState defines the tvl module's genesis state.
 message GenesisState {
-           Params        params            = 1 [(gogoproto.nullable) = false];
-  repeated AccountedPool accounted_pool_list = 2 [(gogoproto.nullable) = false];
+  repeated AccountedPool accounted_pool_list = 1 [(gogoproto.nullable) = false];
 }
 
