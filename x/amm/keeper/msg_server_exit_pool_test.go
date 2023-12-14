@@ -31,6 +31,7 @@ func (suite *KeeperTestSuite) TestMsgServerExitPool() {
 				ExitFee:                     sdk.ZeroDec(),
 				UseOracle:                   false,
 				WeightBreakingFeeMultiplier: sdk.ZeroDec(),
+				WeightBreakingFeeExponent:   sdk.NewDecWithPrec(25, 1), // 2.5
 				ExternalLiquidityRatio:      sdk.NewDec(1),
 				LpFeePortion:                sdk.ZeroDec(),
 				StakingFeePortion:           sdk.ZeroDec(),
@@ -52,6 +53,7 @@ func (suite *KeeperTestSuite) TestMsgServerExitPool() {
 				ExitFee:                     sdk.ZeroDec(),
 				UseOracle:                   false,
 				WeightBreakingFeeMultiplier: sdk.ZeroDec(),
+				WeightBreakingFeeExponent:   sdk.NewDecWithPrec(25, 1), // 2.5
 				ExternalLiquidityRatio:      sdk.NewDec(1),
 				LpFeePortion:                sdk.ZeroDec(),
 				StakingFeePortion:           sdk.ZeroDec(),
@@ -72,7 +74,8 @@ func (suite *KeeperTestSuite) TestMsgServerExitPool() {
 				SwapFee:                     sdk.ZeroDec(),
 				ExitFee:                     sdk.ZeroDec(),
 				UseOracle:                   true,
-				WeightBreakingFeeMultiplier: sdk.NewDecWithPrec(1, 0), // 1.00
+				WeightBreakingFeeMultiplier: sdk.NewDecWithPrec(1, 0),  // 1.00
+				WeightBreakingFeeExponent:   sdk.NewDecWithPrec(25, 1), // 2.5
 				ExternalLiquidityRatio:      sdk.NewDec(1),
 				LpFeePortion:                sdk.ZeroDec(),
 				StakingFeePortion:           sdk.ZeroDec(),
@@ -94,7 +97,8 @@ func (suite *KeeperTestSuite) TestMsgServerExitPool() {
 				SwapFee:                     sdk.ZeroDec(),
 				ExitFee:                     sdk.ZeroDec(),
 				UseOracle:                   true,
-				WeightBreakingFeeMultiplier: sdk.NewDecWithPrec(1, 0), // 1.00
+				WeightBreakingFeeMultiplier: sdk.NewDecWithPrec(1, 0),  // 1.00
+				WeightBreakingFeeExponent:   sdk.NewDecWithPrec(25, 1), // 2.5
 				ExternalLiquidityRatio:      sdk.NewDec(1),
 				LpFeePortion:                sdk.ZeroDec(),
 				StakingFeePortion:           sdk.ZeroDec(),

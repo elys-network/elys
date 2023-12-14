@@ -49,6 +49,7 @@ func (suite *KeeperTestSuite) TestApplyExitPoolStateChange_WithdrawFromCommitmen
 		ExitFee:                     exitFee,
 		UseOracle:                   true,
 		WeightBreakingFeeMultiplier: sdk.ZeroDec(),
+		WeightBreakingFeeExponent:   sdk.NewDecWithPrec(25, 1), // 2.5
 		ExternalLiquidityRatio:      sdk.NewDec(1),
 		LpFeePortion:                sdk.ZeroDec(),
 		StakingFeePortion:           sdk.ZeroDec(),

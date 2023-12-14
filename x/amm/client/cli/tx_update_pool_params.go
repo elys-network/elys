@@ -42,6 +42,11 @@ func CmdUpdatePoolParams() *cobra.Command {
 				return err
 			}
 
+			weightBreakingFeeExponentStr, err := cmd.Flags().GetString(FlagWeightBreakingFeeExponent)
+			if err != nil {
+				return err
+			}
+
 			externalLiquidityRatioStr, err := cmd.Flags().GetString(FlagExternalLiquidityRatio)
 			if err != nil {
 				return err
@@ -77,6 +82,7 @@ func CmdUpdatePoolParams() *cobra.Command {
 				ExitFee:                     sdk.MustNewDecFromStr(exitFeeStr),
 				UseOracle:                   useOracle,
 				WeightBreakingFeeMultiplier: sdk.MustNewDecFromStr(weightBreakingFeeMultiplierStr),
+				WeightBreakingFeeExponent:   sdk.MustNewDecFromStr(weightBreakingFeeExponentStr),
 				ExternalLiquidityRatio:      sdk.MustNewDecFromStr(externalLiquidityRatioStr),
 				LpFeePortion:                sdk.MustNewDecFromStr(lpFeePortionStr),
 				StakingFeePortion:           sdk.MustNewDecFromStr(stakingFeePortionStr),

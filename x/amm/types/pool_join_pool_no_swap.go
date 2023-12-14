@@ -166,6 +166,7 @@ func (p *Pool) JoinPool(ctx sdk.Context, oracleKeeper OracleKeeper, accountedPoo
 	weightBreakingFee := sdk.ZeroDec()
 	if distanceDiff.IsPositive() {
 		weightBreakingFee = p.PoolParams.WeightBreakingFeeMultiplier.Mul(distanceDiff)
+		// TODO: weight breaking fee might need to be changed for exit pool
 	}
 	weightBalanceBonus := sdk.ZeroDec()
 	if initialWeightDistance.GT(p.PoolParams.ThresholdWeightDifference) && distanceDiff.IsNegative() {

@@ -214,6 +214,7 @@ func (suite *KeeperTestSuite) TestSwapExactAmountOut() {
 					UseOracle:                   tc.isOraclePool,
 					ExternalLiquidityRatio:      sdk.NewDec(2),
 					WeightBreakingFeeMultiplier: sdk.ZeroDec(),
+					WeightBreakingFeeExponent:   sdk.NewDecWithPrec(25, 1), // 2.5
 					LpFeePortion:                sdk.ZeroDec(),
 					StakingFeePortion:           sdk.ZeroDec(),
 					WeightRecoveryFeePortion:    sdk.ZeroDec(),

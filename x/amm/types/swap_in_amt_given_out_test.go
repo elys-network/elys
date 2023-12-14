@@ -184,6 +184,7 @@ func (suite *TestSuite) TestSwapInAmtGivenOut() {
 					ExternalLiquidityRatio:      tc.externalLiquidityRatio,
 					ThresholdWeightDifference:   tc.thresholdWeightDiff,
 					WeightBreakingFeeMultiplier: sdk.OneDec(),
+					WeightBreakingFeeExponent:   sdk.NewDecWithPrec(25, 1), // 2.5
 				},
 				TotalShares: sdk.Coin{},
 				PoolAssets:  tc.poolAssets,

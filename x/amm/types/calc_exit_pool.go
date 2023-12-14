@@ -128,6 +128,7 @@ func CalcExitPool(ctx sdk.Context, oracleKeeper OracleKeeper, pool Pool, account
 		weightBreakingFee := sdk.ZeroDec()
 		if distanceDiff.IsPositive() {
 			weightBreakingFee = pool.PoolParams.WeightBreakingFeeMultiplier.Mul(distanceDiff)
+			// TODO: weight breaking fee might need to be changed for exit pool
 		}
 
 		tokenOutAmount := oracleOutAmount.Mul(sdk.OneDec().Sub(weightBreakingFee)).RoundInt()
