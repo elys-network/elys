@@ -27,6 +27,7 @@ func NewMessenger(
 		keeper:           keeper,
 		stakingKeeper:    stakingKeeper,
 		commitmentKeeper: commitmentKeeper,
+		parameterKeeper:  parameterKeeper,
 	}
 }
 
