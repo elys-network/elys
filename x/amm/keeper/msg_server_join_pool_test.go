@@ -73,7 +73,7 @@ func (suite *KeeperTestSuite) TestMsgServerJoinPool() {
 				SwapFee:                     sdk.ZeroDec(),
 				ExitFee:                     sdk.ZeroDec(),
 				UseOracle:                   true,
-				WeightBreakingFeeMultiplier: sdk.NewDecWithPrec(1, 0),  // 1.00
+				WeightBreakingFeeMultiplier: sdk.NewDecWithPrec(1, 2),  // 0.01
 				WeightBreakingFeeExponent:   sdk.NewDecWithPrec(25, 1), // 2.5
 				ExternalLiquidityRatio:      sdk.NewDec(1),
 				LpFeePortion:                sdk.ZeroDec(),
@@ -83,7 +83,7 @@ func (suite *KeeperTestSuite) TestMsgServerJoinPool() {
 				FeeDenom:                    ptypes.BaseCurrency,
 			},
 			// shareOutAmount:   sdk.NewInt(694444166666666666), // weight breaking fee - slippage enable
-			shareOutAmount:   sdk.NewInt(833333333333333333), // weight breaking fee - slippage disable
+			shareOutAmount:   sdk.NewInt(943431457505076198), // weight breaking fee - slippage disable
 			expSenderBalance: sdk.Coins{},
 			expTokenIn:       sdk.Coins{sdk.NewInt64Coin("uusdt", 1000000)},
 			expPass:          true,
@@ -96,7 +96,7 @@ func (suite *KeeperTestSuite) TestMsgServerJoinPool() {
 				SwapFee:                     sdk.ZeroDec(),
 				ExitFee:                     sdk.ZeroDec(),
 				UseOracle:                   true,
-				WeightBreakingFeeMultiplier: sdk.NewDecWithPrec(1, 0),  // 1.00
+				WeightBreakingFeeMultiplier: sdk.NewDecWithPrec(1, 2),  // 0.01
 				WeightBreakingFeeExponent:   sdk.NewDecWithPrec(25, 1), // 2.5
 				ExternalLiquidityRatio:      sdk.NewDec(1),
 				LpFeePortion:                sdk.ZeroDec(),
@@ -106,7 +106,7 @@ func (suite *KeeperTestSuite) TestMsgServerJoinPool() {
 				FeeDenom:                    ptypes.BaseCurrency,
 			},
 			// shareOutAmount:   sdk.NewInt(805987500000000000), // weight recovery direction - slippage enable
-			shareOutAmount:   sdk.NewInt(1250000000000000000), // weight recovery direction - slippage disable
+			shareOutAmount:   sdk.NewInt(1002500000000000000), // weight recovery direction - slippage disable
 			expSenderBalance: sdk.Coins{},
 			expTokenIn:       sdk.Coins{sdk.NewInt64Coin("uusdt", 1000000)},
 			expPass:          true,
@@ -119,7 +119,7 @@ func (suite *KeeperTestSuite) TestMsgServerJoinPool() {
 				SwapFee:                     sdk.ZeroDec(),
 				ExitFee:                     sdk.ZeroDec(),
 				UseOracle:                   true,
-				WeightBreakingFeeMultiplier: sdk.NewDecWithPrec(1, 0),  // 1.00
+				WeightBreakingFeeMultiplier: sdk.NewDecWithPrec(1, 2),  // 0.01
 				WeightBreakingFeeExponent:   sdk.NewDecWithPrec(25, 1), // 2.5
 				ExternalLiquidityRatio:      sdk.NewDec(1),
 				LpFeePortion:                sdk.ZeroDec(),

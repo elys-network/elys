@@ -124,11 +124,11 @@ func (p *Pool) SwapInAmtGivenOut(
 		// weightBreakingFee = p.PoolParams.WeightBreakingFeeMultiplier.Mul(distanceDiff)
 
 		// target weight
-		targetWeightIn := NormalizedWeight(ctx, p.PoolAssets, tokenIn.Denom)
+		targetWeightIn := NormalizedWeight(ctx, p.PoolAssets, tokenInDenom)
 		targetWeightOut := NormalizedWeight(ctx, p.PoolAssets, tokenOut.Denom)
 
 		// weight breaking fee as in Plasma pool
-		weightIn := OracleAssetWeight(ctx, oracleKeeper, newAssetPools, tokenIn.Denom)
+		weightIn := OracleAssetWeight(ctx, oracleKeeper, newAssetPools, tokenInDenom)
 		weightOut := OracleAssetWeight(ctx, oracleKeeper, newAssetPools, tokenOut.Denom)
 
 		// (45/55*60/40) ^ 2.5

@@ -37,7 +37,7 @@ func (k Keeper) OpenEstimation(goCtx context.Context, req *types.QueryOpenEstima
 	leveragedAmount := sdk.NewDecFromBigInt(req.Collateral.Amount.BigInt()).Mul(req.Leverage).TruncateInt()
 	leveragedCoin := sdk.NewCoin(req.Collateral.Denom, leveragedAmount)
 
-	_, _, positionSize, openPrice, swapFee, discount, availableLiquidity, err := k.amm.CalcSwapEstimationByDenom(ctx, leveragedCoin, req.Collateral.Denom, req.TradingAsset, baseCurrency, req.Discount, swapFee)
+	_, _, positionSize, openPrice, swapFee, discount, availableLiquidity, _, err := k.amm.CalcSwapEstimationByDenom(ctx, leveragedCoin, req.Collateral.Denom, req.TradingAsset, baseCurrency, req.Discount, swapFee)
 	if err != nil {
 		return nil, err
 	}
