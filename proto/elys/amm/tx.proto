@@ -37,7 +37,6 @@ message MsgJoinPool {
            uint64                   pool_id          = 2;
   repeated cosmos.base.v1beta1.Coin max_amounts_in   = 3 [(gogoproto.nullable)   = false                                   ] ;
            string                   share_amount_out = 4 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false];
-           bool                     no_remaining     = 5;
 }
 
 message MsgJoinPoolResponse {

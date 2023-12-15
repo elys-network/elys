@@ -81,9 +81,6 @@ func (p *Pool) SwapInAmtGivenOut(
 
 	initialWeightDistance := p.WeightDistanceFromTarget(ctx, oracleKeeper, p.PoolAssets)
 
-	startWeightIn := OracleAssetWeight(ctx, oracleKeeper, p.PoolAssets, tokenIn.Denom)
-	startWeightOut := OracleAssetWeight(ctx, oracleKeeper, p.PoolAssets, tokenOut.Denom)
-
 	// in amount is calculated in this formula
 	// balancer slippage amount = Max(oracleOutAmount-balancerOutAmount, 0)
 	// resizedAmount = tokenIn / externalLiquidityRatio
@@ -126,17 +123,21 @@ func (p *Pool) SwapInAmtGivenOut(
 		// old weight breaking fee implementation
 		// weightBreakingFee = p.PoolParams.WeightBreakingFeeMultiplier.Mul(distanceDiff)
 
+		// target weight
+		targetWeightIn := NormalizedWeight(ctx, p.PoolAssets, tokenIn.Denom)
+		targetWeightOut := NormalizedWeight(ctx, p.PoolAssets, tokenOut.Denom)
+
 		// weight breaking fee as in Plasma pool
 		weightIn := OracleAssetWeight(ctx, oracleKeeper, newAssetPools, tokenIn.Denom)
 		weightOut := OracleAssetWeight(ctx, oracleKeeper, newAssetPools, tokenOut.Denom)
 
 		// (45/55*60/40) ^ 2.5
 		weightBreakingFee = p.PoolParams.WeightBreakingFeeMultiplier.
-			Mul(Pow(weightIn.Mul(startWeightOut).Quo(weightOut).Quo(startWeightIn), p.PoolParams.WeightBreakingFeeExponent))
+			Mul(Pow(weightIn.Mul(targetWeightOut).Quo(weightOut).Quo(targetWeightIn), p.PoolParams.WeightBreakingFeeExponent))
 	}
 
 	// bonus is valid when distance is lower than original distance and when threshold weight reached
-	weightBalanceBonus = sdk.ZeroDec()
+	weightBalanceBonus = weightBreakingFee.Neg()
 	if initialWeightDistance.GT(p.PoolParams.ThresholdWeightDifference) && distanceDiff.IsNegative() {
 		weightBalanceBonus = p.PoolParams.WeightBreakingFeeMultiplier.Mul(distanceDiff).Abs()
 	}

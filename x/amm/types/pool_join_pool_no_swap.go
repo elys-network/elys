@@ -117,18 +117,20 @@ func (p *Pool) CalcJoinValueWithoutSlippage(ctx sdk.Context, oracleKeeper Oracle
 // JoinPool calculates the number of shares needed for an all-asset join given tokensIn with swapFee applied.
 // It updates the liquidity if the pool is joined successfully. If not, returns error.
 func (p *Pool) JoinPool(ctx sdk.Context, oracleKeeper OracleKeeper, accountedPoolKeeper AccountedPoolKeeper, tokensIn sdk.Coins) (numShares math.Int, err error) {
-	if !p.PoolParams.UseOracle {
-		if len(tokensIn) == 1 {
-			numShares, tokensJoined, err := p.CalcSingleAssetJoinPoolShares(tokensIn)
-			if err != nil {
-				return math.Int{}, err
-			}
-
-			// update pool with the calculated share and liquidity needed to join pool
-			p.IncreaseLiquidity(numShares, tokensJoined)
-			return numShares, nil
-		}
+	// if it's not single sided liquidity, add at pool ratio
+	if len(tokensIn) != 1 {
 		numShares, tokensJoined, err := p.CalcJoinPoolNoSwapShares(tokensIn)
+		if err != nil {
+			return math.Int{}, err
+		}
+
+		// update pool with the calculated share and liquidity needed to join pool
+		p.IncreaseLiquidity(numShares, tokensJoined)
+		return numShares, nil
+	}
+
+	if !p.PoolParams.UseOracle {
+		numShares, tokensJoined, err := p.CalcSingleAssetJoinPoolShares(tokensIn)
 		if err != nil {
 			return math.Int{}, err
 		}
@@ -148,15 +150,13 @@ func (p *Pool) JoinPool(ctx sdk.Context, oracleKeeper OracleKeeper, accountedPoo
 	if err != nil {
 		return sdk.ZeroInt(), err
 	}
+
 	// Ensure tvl is not zero to avoid division by zero
 	if tvl.IsZero() {
 		return sdk.ZeroInt(), ErrAmountTooLow
 	}
 
-	newAssetPools, err := p.NewPoolAssetsAfterSwap(
-		tokensIn,
-		sdk.Coins{},
-	)
+	newAssetPools, err := p.NewPoolAssetsAfterSwap(tokensIn, sdk.Coins{})
 	if err != nil {
 		return sdk.ZeroInt(), err
 	}
@@ -165,8 +165,22 @@ func (p *Pool) JoinPool(ctx sdk.Context, oracleKeeper OracleKeeper, accountedPoo
 	distanceDiff := weightDistance.Sub(initialWeightDistance)
 	weightBreakingFee := sdk.ZeroDec()
 	if distanceDiff.IsPositive() {
-		weightBreakingFee = p.PoolParams.WeightBreakingFeeMultiplier.Mul(distanceDiff)
-		// TODO: weight breaking fee might need to be changed for exit pool
+		// old weight breaking fee implementation
+		// weightBreakingFee = p.PoolParams.WeightBreakingFeeMultiplier.Mul(distanceDiff)
+
+		// we only allow
+		tokenInDenom := tokensIn[0].Denom
+		// target weight
+		targetWeightIn := NormalizedWeight(ctx, p.PoolAssets, tokenInDenom)
+		targetWeightOut := sdk.OneDec().Sub(targetWeightIn)
+
+		// weight breaking fee as in Plasma pool
+		weightIn := OracleAssetWeight(ctx, oracleKeeper, newAssetPools, tokenInDenom)
+		weightOut := sdk.OneDec().Sub(weightIn)
+
+		// (45/55*60/40) ^ 2.5
+		weightBreakingFee = p.PoolParams.WeightBreakingFeeMultiplier.
+			Mul(Pow(weightIn.Mul(targetWeightOut).Quo(weightOut).Quo(targetWeightIn), p.PoolParams.WeightBreakingFeeExponent))
 	}
 	weightBalanceBonus := sdk.ZeroDec()
 	if initialWeightDistance.GT(p.PoolParams.ThresholdWeightDifference) && distanceDiff.IsNegative() {

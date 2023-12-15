@@ -6,9 +6,9 @@ import (
 )
 
 // CalcInRouteSpotPrice calculates the spot price of the given token and in route
-func (k Keeper) CalcInRouteSpotPrice(ctx sdk.Context, tokenIn sdk.Coin, routes []*types.SwapAmountInRoute, discount sdk.Dec, overrideSwapFee sdk.Dec) (sdk.Dec, sdk.Coin, sdk.Dec, sdk.Dec, sdk.Coin, error) {
+func (k Keeper) CalcInRouteSpotPrice(ctx sdk.Context, tokenIn sdk.Coin, routes []*types.SwapAmountInRoute, discount sdk.Dec, overrideSwapFee sdk.Dec) (sdk.Dec, sdk.Coin, sdk.Dec, sdk.Dec, sdk.Coin, sdk.Dec, error) {
 	if routes == nil || len(routes) == 0 {
-		return sdk.ZeroDec(), sdk.Coin{}, sdk.ZeroDec(), sdk.ZeroDec(), sdk.Coin{}, types.ErrEmptyRoutes
+		return sdk.ZeroDec(), sdk.Coin{}, sdk.ZeroDec(), sdk.ZeroDec(), sdk.Coin{}, sdk.ZeroDec(), types.ErrEmptyRoutes
 	}
 
 	// Start with the initial token input
@@ -23,13 +23,15 @@ func (k Keeper) CalcInRouteSpotPrice(ctx sdk.Context, tokenIn sdk.Coin, routes [
 	// Track the total available liquidity in the pool for final token out denom
 	var availableLiquidity sdk.Coin
 
+	weightBalance := sdk.ZeroDec()
+
 	for _, route := range routes {
 		poolId := route.PoolId
 		tokenOutDenom = route.TokenOutDenom
 
 		pool, found := k.GetPool(ctx, poolId)
 		if !found {
-			return sdk.ZeroDec(), sdk.Coin{}, sdk.ZeroDec(), sdk.ZeroDec(), sdk.Coin{}, types.ErrPoolNotFound
+			return sdk.ZeroDec(), sdk.Coin{}, sdk.ZeroDec(), sdk.ZeroDec(), sdk.Coin{}, sdk.ZeroDec(), types.ErrPoolNotFound
 		}
 
 		// Get Pool swap fee
@@ -48,29 +50,32 @@ func (k Keeper) CalcInRouteSpotPrice(ctx sdk.Context, tokenIn sdk.Coin, routes [
 
 		// Estimate swap
 		snapshot := k.GetPoolSnapshotOrSet(ctx, pool)
-		swapResult, err := k.CalcOutAmtGivenIn(ctx, pool.PoolId, k.oracleKeeper, &snapshot, tokensIn, tokenOutDenom, swapFee)
+		cacheCtx, _ := ctx.CacheContext()
+		tokenOut, _, weightBalanceBonus, err := k.SwapOutAmtGivenIn(cacheCtx, pool.PoolId, k.oracleKeeper, &snapshot, tokensIn, tokenOutDenom, swapFee)
 		if err != nil {
-			return sdk.ZeroDec(), sdk.Coin{}, sdk.ZeroDec(), sdk.ZeroDec(), sdk.Coin{}, err
+			return sdk.ZeroDec(), sdk.Coin{}, sdk.ZeroDec(), sdk.ZeroDec(), sdk.Coin{}, sdk.ZeroDec(), err
 		}
 
-		if swapResult.IsZero() {
-			return sdk.ZeroDec(), sdk.Coin{}, sdk.ZeroDec(), sdk.ZeroDec(), sdk.Coin{}, types.ErrAmountTooLow
+		if tokenOut.IsZero() {
+			return sdk.ZeroDec(), sdk.Coin{}, sdk.ZeroDec(), sdk.ZeroDec(), sdk.Coin{}, sdk.ZeroDec(), types.ErrAmountTooLow
 		}
 
 		// Use the current swap result as the input for the next iteration
-		tokensIn = sdk.Coins{swapResult}
+		tokensIn = sdk.Coins{tokenOut}
 
 		// Get the available liquidity for the final token out denom
 		_, poolAsset, err := pool.GetPoolAssetAndIndex(tokenOutDenom)
 		if err != nil {
-			return sdk.ZeroDec(), sdk.Coin{}, sdk.ZeroDec(), sdk.ZeroDec(), sdk.Coin{}, err
+			return sdk.ZeroDec(), sdk.Coin{}, sdk.ZeroDec(), sdk.ZeroDec(), sdk.Coin{}, sdk.ZeroDec(), err
 		}
 		availableLiquidity = poolAsset.Token
+
+		weightBalance = weightBalanceBonus
 	}
 
 	// Ensure tokenIn.Amount is not zero to avoid division by zero
 	if tokenIn.IsZero() {
-		return sdk.ZeroDec(), sdk.Coin{}, sdk.ZeroDec(), sdk.ZeroDec(), sdk.Coin{}, types.ErrAmountTooLow
+		return sdk.ZeroDec(), sdk.Coin{}, sdk.ZeroDec(), sdk.ZeroDec(), sdk.Coin{}, sdk.ZeroDec(), types.ErrAmountTooLow
 	}
 
 	// Calculate the spot price given the initial token in and the final token out
@@ -82,5 +87,5 @@ func (k Keeper) CalcInRouteSpotPrice(ctx sdk.Context, tokenIn sdk.Coin, routes [
 	// Construct the token out coin
 	tokenOut := sdk.NewCoin(tokenOutDenom, tokenOutAmt.TruncateInt())
 
-	return spotPrice, tokenOut, totalDiscountedSwapFee, discount, availableLiquidity, nil
+	return spotPrice, tokenOut, totalDiscountedSwapFee, discount, availableLiquidity, weightBalance, nil
 }

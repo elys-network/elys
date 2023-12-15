@@ -16,7 +16,7 @@ func (k Keeper) SwapEstimation(goCtx context.Context, req *types.QuerySwapEstima
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	spotPrice, tokenOut, swapFee, discount, availableLiquidity, err := k.CalcInRouteSpotPrice(ctx, req.TokenIn, req.Routes, req.Discount, sdk.ZeroDec())
+	spotPrice, tokenOut, swapFee, discount, availableLiquidity, weightBonus, err := k.CalcInRouteSpotPrice(ctx, req.TokenIn, req.Routes, req.Discount, sdk.ZeroDec())
 	if err != nil {
 		return nil, err
 	}
@@ -27,5 +27,6 @@ func (k Keeper) SwapEstimation(goCtx context.Context, req *types.QuerySwapEstima
 		SwapFee:            swapFee,
 		Discount:           discount,
 		AvailableLiquidity: availableLiquidity,
+		WeightBalanceRatio: weightBonus,
 	}, nil
 }
