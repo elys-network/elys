@@ -245,7 +245,7 @@ func (k Keeper) BeforeDelegationCreated(ctx sdk.Context, delegator string, valid
 	/***********************************************************/
 	// Get the Commitments for the delegator
 	commitments := k.GetCommitments(ctx, delegator)
-	if !commitments.IsEmpty() {
+	if commitments.IsEmpty() {
 		k.SetCommitments(ctx, commitments)
 
 		// Emit Hook commitment changed
