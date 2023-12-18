@@ -339,6 +339,7 @@ genesis:
         - startBlockHeight: 1
           endBlockHeight: 6307200
           description: 1st Year Inflation
+          authority: elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3
           inflation:
             lmRewards: 9999999
             icsStakingRewards: 9999999
@@ -348,6 +349,7 @@ genesis:
         - startBlockHeight: 6307201
           endBlockHeight: 12614401
           description: 2nd Year Inflation
+          authority: elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3
           inflation:
             lmRewards: 9999999
             icsStakingRewards: 9999999
@@ -357,6 +359,7 @@ genesis:
         - startBlockHeight: 12614402
           endBlockHeight: 18921602
           description: 3rd Year Inflation
+          authority: elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3
           inflation:
             lmRewards: 9999999
             icsStakingRewards: 9999999

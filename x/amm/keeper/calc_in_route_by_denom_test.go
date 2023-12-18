@@ -31,6 +31,8 @@ func TestCalcInRouteByDenom(t *testing.T) {
 	require.Error(t, err)
 
 	// Test same input and output denomination
-	_, err = k.CalcInRouteByDenom(ctx, "denom1", "denom1", "baseCurrency")
-	require.Error(t, err)
+	route, err = k.CalcInRouteByDenom(ctx, "denom1", "denom1", "baseCurrency")
+	require.NoError(t, err)
+	require.Len(t, route, 1)
+	require.Equal(t, route[0].TokenOutDenom, "denom1")
 }
