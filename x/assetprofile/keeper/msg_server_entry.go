@@ -41,6 +41,8 @@ func (k msgServer) CreateEntry(goCtx context.Context, msg *types.MsgCreateEntry)
 		UnitDenom:                msg.UnitDenom,
 		IbcCounterpartyDenom:     msg.IbcCounterpartyDenom,
 		IbcCounterpartyChainId:   msg.IbcCounterpartyChainId,
+		CommitEnabled:            msg.CommitEnabled,
+		WithdrawEnabled:          msg.WithdrawEnabled,
 	}
 
 	k.SetEntry(ctx, entry)
@@ -83,6 +85,8 @@ func (k msgServer) UpdateEntry(goCtx context.Context, msg *types.MsgUpdateEntry)
 		UnitDenom:                msg.UnitDenom,
 		IbcCounterpartyDenom:     msg.IbcCounterpartyDenom,
 		IbcCounterpartyChainId:   msg.IbcCounterpartyChainId,
+		CommitEnabled:            msg.CommitEnabled,
+		WithdrawEnabled:          msg.WithdrawEnabled,
 	}
 
 	k.SetEntry(ctx, entry)
