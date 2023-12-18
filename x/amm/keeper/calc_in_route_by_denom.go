@@ -4,18 +4,12 @@ import (
 	"fmt"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/elys-network/elys/x/amm/types"
 )
 
 // CalcInRouteByDenom calculates the in route by denom
 func (k Keeper) CalcInRouteByDenom(ctx sdk.Context, denomIn string, denomOut string, baseCurrency string) ([]*types.SwapAmountInRoute, error) {
 	var route []*types.SwapAmountInRoute
-
-	// If the denoms are the same, throw an error
-	if denomIn == denomOut {
-		return nil, sdkerrors.Wrap(types.ErrSameDenom, "denom in and denom out are the same")
-	}
 
 	// Check for a direct pool between the denoms
 	if poolId, found := k.GetPoolIdWithAllDenoms(ctx, []string{denomIn, denomOut}); found {

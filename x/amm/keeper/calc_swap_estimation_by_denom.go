@@ -39,7 +39,7 @@ func (k Keeper) CalcSwapEstimationByDenom(
 
 	// if amount denom is equal to denomOut, calculate swap estimation by denomOut
 	if amount.Denom == denomOut {
-		outRoute, err := k.CalcOutRouteByDenom(ctx, denomIn, denomOut, baseCurrency)
+		outRoute, err := k.CalcOutRouteByDenom(ctx, denomOut, denomIn, baseCurrency)
 		if err != nil {
 			return nil, nil, sdk.Coin{}, sdk.ZeroDec(), sdk.ZeroDec(), sdk.ZeroDec(), sdk.Coin{}, err
 		}
