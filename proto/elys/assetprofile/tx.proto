@@ -30,6 +30,8 @@ message MsgCreateEntry {
            string unit_denom                = 15;
            string ibc_counterparty_denom     = 16;
            string ibc_counterparty_chain_id   = 17;
+           bool commit_enabled = 18;
+           bool withdraw_enabled = 19;
 }
 
 message MsgCreateEntryResponse {}
@@ -52,6 +54,8 @@ message MsgUpdateEntry {
            string unit_denom                = 15;
            string ibc_counterparty_denom     = 16;
            string ibc_counterparty_chain_id   = 17;
+           bool commit_enabled = 18;
+           bool withdraw_enabled = 19;
 }
 
 message MsgUpdateEntryResponse {}
