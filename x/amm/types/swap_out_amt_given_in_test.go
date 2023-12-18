@@ -463,8 +463,8 @@ func (suite *TestSuite) TestSwapOutAmtGivenIn() {
 			tokenIn:                sdk.NewInt64Coin("uusdt", 100_000_000), // 100 USDC
 			outTokenDenom:          ptypes.BaseCurrency,
 			swapFee:                sdk.ZeroDec(),
-			expRecoveryBonus:       sdk.ZeroDec(),
-			expTokenOut:            sdk.NewInt64Coin(ptypes.BaseCurrency, 94908660),
+			expRecoveryBonus:       sdk.MustNewDecFromStr("-0.000330206789333974"),
+			expTokenOut:            sdk.NewInt64Coin(ptypes.BaseCurrency, 99868002),
 			expErr:                 false,
 		},
 		// scenario2 - oracle based
@@ -497,8 +497,8 @@ func (suite *TestSuite) TestSwapOutAmtGivenIn() {
 			tokenIn:                sdk.NewInt64Coin("uusdt", 100_000_000), // 100 USDC
 			outTokenDenom:          ptypes.BaseCurrency,
 			swapFee:                sdk.ZeroDec(),
-			expRecoveryBonus:       sdk.ZeroDec(),
-			expTokenOut:            sdk.NewInt64Coin(ptypes.BaseCurrency, 94879993),
+			expRecoveryBonus:       sdk.MustNewDecFromStr("-0.006394728361554381"),
+			expTokenOut:            sdk.NewInt64Coin(ptypes.BaseCurrency, 99229503),
 			expErr:                 false,
 		},
 		// scenario3 - oracle based
@@ -531,7 +531,7 @@ func (suite *TestSuite) TestSwapOutAmtGivenIn() {
 			tokenIn:                sdk.NewInt64Coin(ptypes.BaseCurrency, 100_000_000), // 100 USDC
 			outTokenDenom:          "uusdt",
 			swapFee:                sdk.ZeroDec(),
-			expRecoveryBonus:       sdk.MustNewDecFromStr("0.049980307192773716"),
+			expRecoveryBonus:       sdk.MustNewDecFromStr("0.000009996061438555"),
 			expTokenOut:            sdk.NewInt64Coin("uusdt", 99868706),
 			expErr:                 false,
 		},
@@ -593,7 +593,7 @@ func (suite *TestSuite) TestSwapOutAmtGivenIn() {
 					UseOracle:                   tc.useOracle,
 					ExternalLiquidityRatio:      tc.externalLiquidityRatio,
 					ThresholdWeightDifference:   tc.thresholdWeightDiff,
-					WeightBreakingFeeMultiplier: sdk.OneDec(),
+					WeightBreakingFeeMultiplier: sdk.NewDecWithPrec(2, 4),  // 0.02%
 					WeightBreakingFeeExponent:   sdk.NewDecWithPrec(25, 1), // 2.5
 				},
 				TotalShares: sdk.Coin{},

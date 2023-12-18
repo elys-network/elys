@@ -181,6 +181,10 @@ func (p *Pool) JoinPool(ctx sdk.Context, oracleKeeper OracleKeeper, accountedPoo
 		// (45/55*60/40) ^ 2.5
 		weightBreakingFee = p.PoolParams.WeightBreakingFeeMultiplier.
 			Mul(Pow(weightIn.Mul(targetWeightOut).Quo(weightOut).Quo(targetWeightIn), p.PoolParams.WeightBreakingFeeExponent))
+
+		if weightBreakingFee.GT(sdk.NewDecWithPrec(99, 2)) {
+			weightBreakingFee = sdk.NewDecWithPrec(99, 2)
+		}
 	}
 	weightBalanceBonus := sdk.ZeroDec()
 	if initialWeightDistance.GT(p.PoolParams.ThresholdWeightDifference) && distanceDiff.IsNegative() {

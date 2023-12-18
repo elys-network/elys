@@ -141,6 +141,10 @@ func CalcExitPool(ctx sdk.Context, oracleKeeper OracleKeeper, pool Pool, account
 			// (45/55*60/40) ^ 2.5
 			weightBreakingFee = pool.PoolParams.WeightBreakingFeeMultiplier.
 				Mul(Pow(weightIn.Mul(targetWeightOut).Quo(weightOut).Quo(targetWeightIn), pool.PoolParams.WeightBreakingFeeExponent))
+
+			if weightBreakingFee.GT(sdk.NewDecWithPrec(99, 2)) {
+				weightBreakingFee = sdk.NewDecWithPrec(99, 2)
+			}
 		}
 
 		tokenOutAmount := oracleOutAmount.Mul(sdk.OneDec().Sub(weightBreakingFee)).RoundInt()

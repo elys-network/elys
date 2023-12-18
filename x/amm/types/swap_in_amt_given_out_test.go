@@ -53,8 +53,8 @@ func (suite *TestSuite) TestSwapInAmtGivenOut() {
 			tokenOut:               sdk.NewInt64Coin(ptypes.BaseCurrency, 100_000_000), // 100 USDC
 			inTokenDenom:           "uusdt",
 			swapFee:                sdk.ZeroDec(),
-			expRecoveryBonus:       sdk.ZeroDec(),
-			expTokenIn:             sdk.NewInt64Coin("uusdt", 105108336),
+			expRecoveryBonus:       sdk.MustNewDecFromStr("-0.000330373444662133"),
+			expTokenIn:             sdk.NewInt64Coin("uusdt", 100134081),
 			expErr:                 false,
 		},
 		// scenario2 - oracle based
@@ -87,8 +87,8 @@ func (suite *TestSuite) TestSwapInAmtGivenOut() {
 			tokenOut:               sdk.NewInt64Coin(ptypes.BaseCurrency, 100_000_000), // 100 USDC
 			inTokenDenom:           "uusdt",
 			swapFee:                sdk.ZeroDec(),
-			expRecoveryBonus:       sdk.ZeroDec(),
-			expTokenIn:             sdk.NewInt64Coin("uusdt", 105143571),
+			expRecoveryBonus:       sdk.MustNewDecFromStr("-0.006401354515992492"),
+			expTokenIn:             sdk.NewInt64Coin("uusdt", 100776445),
 			expErr:                 false,
 		},
 		// scenario3 - oracle based
@@ -121,7 +121,7 @@ func (suite *TestSuite) TestSwapInAmtGivenOut() {
 			tokenOut:               sdk.NewInt64Coin("uusdt", 100_000_000), // 100 USDC
 			inTokenDenom:           ptypes.BaseCurrency,
 			swapFee:                sdk.ZeroDec(),
-			expRecoveryBonus:       sdk.MustNewDecFromStr("0.050047187318866899"),
+			expRecoveryBonus:       sdk.MustNewDecFromStr("0.000010009437463773"),
 			expTokenIn:             sdk.NewInt64Coin(ptypes.BaseCurrency, 100134830),
 			expErr:                 false,
 		},
@@ -183,7 +183,7 @@ func (suite *TestSuite) TestSwapInAmtGivenOut() {
 					UseOracle:                   tc.useOracle,
 					ExternalLiquidityRatio:      tc.externalLiquidityRatio,
 					ThresholdWeightDifference:   tc.thresholdWeightDiff,
-					WeightBreakingFeeMultiplier: sdk.OneDec(),
+					WeightBreakingFeeMultiplier: sdk.NewDecWithPrec(2, 4),  // 0.02%
 					WeightBreakingFeeExponent:   sdk.NewDecWithPrec(25, 1), // 2.5
 				},
 				TotalShares: sdk.Coin{},
