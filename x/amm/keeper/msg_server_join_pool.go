@@ -27,7 +27,7 @@ func (k msgServer) JoinPool(goCtx context.Context, msg *types.MsgJoinPool) (*typ
 		return nil, err
 	}
 
-	neededLp, sharesOut, err := k.Keeper.JoinPoolNoSwap(ctx, sender, msg.PoolId, msg.ShareAmountOut, msg.MaxAmountsIn, msg.NoRemaining)
+	neededLp, sharesOut, err := k.Keeper.JoinPoolNoSwap(ctx, sender, msg.PoolId, msg.ShareAmountOut, msg.MaxAmountsIn)
 	if err != nil {
 		return nil, err
 	}

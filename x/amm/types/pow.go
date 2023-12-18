@@ -32,11 +32,6 @@ func Pow(base sdk.Dec, exp sdk.Dec) sdk.Dec {
 	if !base.IsPositive() {
 		panic(fmt.Errorf("base must be greater than 0"))
 	}
-	// TODO: Remove this if we want to generalize the function,
-	// we can adjust the algorithm in this setting.
-	if base.GTE(two) {
-		panic(fmt.Errorf("base must be lesser than two"))
-	}
 
 	// We will use an approximation algorithm to compute the power.
 	// Since computing an integer power is easy, we split up the exponent into

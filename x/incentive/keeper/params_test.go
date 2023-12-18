@@ -64,6 +64,7 @@ func TestUpdatePoolMultiplierInfo(t *testing.T) {
 		ExitFee:                     sdk.ZeroDec(),
 		UseOracle:                   false,
 		WeightBreakingFeeMultiplier: sdk.ZeroDec(),
+		WeightBreakingFeeExponent:   sdk.NewDecWithPrec(25, 1), // 2.5
 		ExternalLiquidityRatio:      sdk.OneDec(),
 		LpFeePortion:                sdk.ZeroDec(),
 		StakingFeePortion:           sdk.ZeroDec(),

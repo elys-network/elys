@@ -35,7 +35,7 @@ func (k Keeper) UpdatePoolForSwap(
 
 	// apply swap fee when weight balance bonus is not available
 	swapFeeInCoins := sdk.Coins{}
-	if weightBalanceBonus.IsZero() {
+	if !weightBalanceBonus.IsPositive() {
 		swapFeeInCoins = PortionCoins(tokensIn, swapFeeIn)
 	}
 
@@ -59,7 +59,7 @@ func (k Keeper) UpdatePoolForSwap(
 
 	// apply swap fee when weight balance bonus is not available
 	swapFeeOutCoins := sdk.Coins{}
-	if weightBalanceBonus.IsZero() {
+	if !weightBalanceBonus.IsPositive() {
 		swapFeeOutCoins = PortionCoins(tokensOut, swapFeeOut)
 	}
 	if swapFeeOutCoins.IsAllPositive() {

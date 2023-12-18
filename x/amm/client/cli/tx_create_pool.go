@@ -16,6 +16,7 @@ const (
 	FlagExitFee                     = "exit-fee"
 	FlagUseOracle                   = "use-oracle"
 	FlagWeightBreakingFeeMultiplier = "weight-breaking-fee-multiplier"
+	FlagWeightBreakingFeeExponent   = "weight-breaking-fee-exponent"
 	FlagExternalLiquidityRatio      = "extern-liquidity-ratio"
 	FlagLpFeePortion                = "lp-fee"
 	FlagStakingFeePortion           = "staking-fee"
@@ -81,6 +82,11 @@ func CmdCreatePool() *cobra.Command {
 				return err
 			}
 
+			weightBreakingFeeExponentStr, err := cmd.Flags().GetString(FlagWeightBreakingFeeExponent)
+			if err != nil {
+				return err
+			}
+
 			externalLiquidityRatioStr, err := cmd.Flags().GetString(FlagExternalLiquidityRatio)
 			if err != nil {
 				return err
@@ -116,6 +122,7 @@ func CmdCreatePool() *cobra.Command {
 				ExitFee:                     sdk.MustNewDecFromStr(exitFeeStr),
 				UseOracle:                   useOracle,
 				WeightBreakingFeeMultiplier: sdk.MustNewDecFromStr(weightBreakingFeeMultiplierStr),
+				WeightBreakingFeeExponent:   sdk.MustNewDecFromStr(weightBreakingFeeExponentStr),
 				ExternalLiquidityRatio:      sdk.MustNewDecFromStr(externalLiquidityRatioStr),
 				LpFeePortion:                sdk.MustNewDecFromStr(lpFeePortionStr),
 				StakingFeePortion:           sdk.MustNewDecFromStr(stakingFeePortionStr),
@@ -142,6 +149,7 @@ func CmdCreatePool() *cobra.Command {
 	cmd.Flags().String(FlagExitFee, "0.00", "exit fee")
 	cmd.Flags().Bool(FlagUseOracle, false, "flag to be an oracle pool or non-oracle pool")
 	cmd.Flags().String(FlagWeightBreakingFeeMultiplier, "0.00", "weight breaking fee multiplier")
+	cmd.Flags().String(FlagWeightBreakingFeeExponent, "2.50", "weight breaking fee exponent")
 	cmd.Flags().String(FlagExternalLiquidityRatio, "0.00", "external liquidity ratio - valid for oracle pools")
 	cmd.Flags().String(FlagLpFeePortion, "0.00", "lp fee portion")
 	cmd.Flags().String(FlagStakingFeePortion, "0.00", "staking fee portion")
