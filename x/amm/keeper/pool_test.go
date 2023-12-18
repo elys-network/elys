@@ -23,6 +23,7 @@ func createNPool(keeper *keeper.Keeper, ctx sdk.Context, n int) []types.Pool {
 			ExitFee:                     sdk.ZeroDec(),
 			UseOracle:                   false,
 			WeightBreakingFeeMultiplier: sdk.ZeroDec(),
+			WeightBreakingFeeExponent:   sdk.NewDecWithPrec(25, 1), // 2.5
 			ExternalLiquidityRatio:      sdk.ZeroDec(),
 			LpFeePortion:                sdk.ZeroDec(),
 			StakingFeePortion:           sdk.ZeroDec(),

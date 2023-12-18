@@ -25,10 +25,7 @@ func (m *Messenger) msgJoinPool(ctx sdk.Context, contractAddr sdk.AccAddress, ms
 		return nil, nil, errorsmod.Wrap(err, "failed validating msg")
 	}
 
-	res, err := msgServer.JoinPool(
-		sdk.WrapSDKContext(ctx),
-		msg,
-	)
+	res, err := msgServer.JoinPool(sdk.WrapSDKContext(ctx), msg)
 	if err != nil {
 		return nil, nil, errorsmod.Wrap(err, "join pool msg")
 	}

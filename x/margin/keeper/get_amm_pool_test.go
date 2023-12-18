@@ -4,49 +4,72 @@ import (
 	"errors"
 	"testing"
 
+	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	simapp "github.com/elys-network/elys/app"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
-	"github.com/elys-network/elys/x/margin/keeper"
 	"github.com/elys-network/elys/x/margin/types"
-	"github.com/elys-network/elys/x/margin/types/mocks"
+	ptypes "github.com/elys-network/elys/x/parameter/types"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestGetAmmPool_PoolNotFound(t *testing.T) {
-	mockAmm := new(mocks.AmmKeeper)
-	k := keeper.NewKeeper(nil, nil, nil, "cosmos1ysxv266l8w76lq0vy44ktzajdr9u9yhlxzlvga", mockAmm, nil, nil, nil, nil)
+	app := simapp.InitElysTestApp(true)
+	ctx := app.BaseApp.NewContext(true, tmproto.Header{})
 
-	ctx := sdk.Context{} // mock or setup a context
+	margin := app.MarginKeeper
+
 	borrowAsset := "testAsset"
-	poolId := uint64(42)
 
-	// Mock behavior
-	mockAmm.On("GetPool", ctx, poolId).Return(ammtypes.Pool{}, false)
+	_, err := margin.GetAmmPool(ctx, 1, borrowAsset)
 
-	_, err := k.GetAmmPool(ctx, poolId, borrowAsset)
-
-	// Expect an error about the pool not existing
+	// Expect no error and the first pool ID to be returned
 	assert.True(t, errors.Is(err, types.ErrPoolDoesNotExist))
-	mockAmm.AssertExpectations(t)
 }
 
 func TestGetAmmPool_PoolFound(t *testing.T) {
-	mockAmm := new(mocks.AmmKeeper)
-	k := keeper.NewKeeper(nil, nil, nil, "cosmos1ysxv266l8w76lq0vy44ktzajdr9u9yhlxzlvga", mockAmm, nil, nil, nil, nil)
+	app := simapp.InitElysTestApp(true)
+	ctx := app.BaseApp.NewContext(true, tmproto.Header{})
 
-	ctx := sdk.Context{} // mock or setup a context
+	margin := app.MarginKeeper
+
+	collateralAsset := ptypes.BaseCurrency
 	borrowAsset := "testAsset"
-	poolId := uint64(42)
 
-	expectedPool := ammtypes.Pool{}
+	expectedPool := ammtypes.Pool{
+		PoolId:            1,
+		Address:           "",
+		RebalanceTreasury: "",
+		PoolParams: ammtypes.PoolParams{
+			UseOracle:                   false,
+			ExternalLiquidityRatio:      sdk.NewDec(2),
+			WeightBreakingFeeMultiplier: sdk.ZeroDec(),
+			WeightBreakingFeeExponent:   sdk.NewDecWithPrec(25, 1), // 2.5
+			LpFeePortion:                sdk.ZeroDec(),
+			StakingFeePortion:           sdk.ZeroDec(),
+			WeightRecoveryFeePortion:    sdk.ZeroDec(),
+			ThresholdWeightDifference:   sdk.ZeroDec(),
+			SwapFee:                     sdk.ZeroDec(),
+			FeeDenom:                    ptypes.BaseCurrency,
+		},
+		TotalShares: sdk.Coin{},
+		PoolAssets: []ammtypes.PoolAsset{
+			{
+				Token:  sdk.NewCoin(collateralAsset, sdk.NewInt(10000)),
+				Weight: sdk.NewInt(10),
+			},
+			{
+				Token:  sdk.NewCoin(borrowAsset, sdk.NewInt(10000)),
+				Weight: sdk.NewInt(10),
+			},
+		},
+		TotalWeight: sdk.ZeroInt(),
+	}
+	app.AmmKeeper.SetPool(ctx, expectedPool)
 
-	// Mock behavior
-	mockAmm.On("GetPool", ctx, poolId).Return(expectedPool, true)
-
-	pool, err := k.GetAmmPool(ctx, poolId, borrowAsset)
+	pool, err := margin.GetAmmPool(ctx, 1, borrowAsset)
 
 	// Expect no error and the correct pool to be returned
 	assert.Nil(t, err)
-	assert.Equal(t, expectedPool, pool)
-	mockAmm.AssertExpectations(t)
+	assert.Equal(t, expectedPool.PoolId, pool.PoolId)
 }

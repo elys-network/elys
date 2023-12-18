@@ -21,7 +21,6 @@ func (k Keeper) JoinPoolNoSwap(
 	poolId uint64,
 	shareOutAmount sdk.Int,
 	tokenInMaxs sdk.Coins,
-	noRemaining bool,
 ) (tokenIn sdk.Coins, sharesOut sdk.Int, err error) {
 	// defer to catch panics, in case something internal overflows.
 	defer func() {
@@ -39,7 +38,7 @@ func (k Keeper) JoinPoolNoSwap(
 
 	if !pool.PoolParams.UseOracle {
 		tokensIn := tokenInMaxs
-		if !noRemaining {
+		if len(tokensIn) != 1 {
 			// we do an abstract calculation on the lp liquidity coins needed to have
 			// the designated amount of given shares of the pool without performing swap
 			neededLpLiquidity, err := types.GetMaximalNoSwapLPAmount(pool, shareOutAmount)

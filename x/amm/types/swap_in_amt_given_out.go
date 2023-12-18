@@ -120,11 +120,28 @@ func (p *Pool) SwapInAmtGivenOut(
 	// cut is valid when distance higher than original distance
 	weightBreakingFee := sdk.ZeroDec()
 	if distanceDiff.IsPositive() {
-		weightBreakingFee = p.PoolParams.WeightBreakingFeeMultiplier.Mul(distanceDiff)
+		// old weight breaking fee implementation
+		// weightBreakingFee = p.PoolParams.WeightBreakingFeeMultiplier.Mul(distanceDiff)
+
+		// target weight
+		targetWeightIn := NormalizedWeight(ctx, p.PoolAssets, tokenInDenom)
+		targetWeightOut := NormalizedWeight(ctx, p.PoolAssets, tokenOut.Denom)
+
+		// weight breaking fee as in Plasma pool
+		weightIn := OracleAssetWeight(ctx, oracleKeeper, newAssetPools, tokenInDenom)
+		weightOut := OracleAssetWeight(ctx, oracleKeeper, newAssetPools, tokenOut.Denom)
+
+		// (45/55*60/40) ^ 2.5
+		weightBreakingFee = p.PoolParams.WeightBreakingFeeMultiplier.
+			Mul(Pow(weightIn.Mul(targetWeightOut).Quo(weightOut).Quo(targetWeightIn), p.PoolParams.WeightBreakingFeeExponent))
+
+		if weightBreakingFee.GT(sdk.NewDecWithPrec(99, 2)) {
+			weightBreakingFee = sdk.NewDecWithPrec(99, 2)
+		}
 	}
 
 	// bonus is valid when distance is lower than original distance and when threshold weight reached
-	weightBalanceBonus = sdk.ZeroDec()
+	weightBalanceBonus = weightBreakingFee.Neg()
 	if initialWeightDistance.GT(p.PoolParams.ThresholdWeightDifference) && distanceDiff.IsNegative() {
 		weightBalanceBonus = p.PoolParams.WeightBreakingFeeMultiplier.Mul(distanceDiff).Abs()
 	}

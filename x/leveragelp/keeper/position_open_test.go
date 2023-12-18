@@ -37,6 +37,7 @@ func (suite KeeperTestSuite) TestOpenLong() {
 			ExitFee:                     sdk.ZeroDec(),
 			UseOracle:                   true,
 			WeightBreakingFeeMultiplier: sdk.ZeroDec(),
+			WeightBreakingFeeExponent:   sdk.NewDecWithPrec(25, 1), // 2.5
 			ExternalLiquidityRatio:      sdk.NewDec(1),
 			LpFeePortion:                sdk.ZeroDec(),
 			StakingFeePortion:           sdk.ZeroDec(),

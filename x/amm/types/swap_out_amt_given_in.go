@@ -104,6 +104,29 @@ func (p Pool) WeightDistanceFromTarget(ctx sdk.Context, oracleKeeper OracleKeepe
 	return distanceSum.Quo(sdk.NewDec(int64(len(p.PoolAssets))))
 }
 
+func OracleAssetWeight(ctx sdk.Context, oracleKeeper OracleKeeper, poolAssets []PoolAsset, denom string) sdk.Dec {
+	oracleWeights, err := OraclePoolNormalizedWeights(ctx, oracleKeeper, poolAssets)
+	if err != nil {
+		return sdk.ZeroDec()
+	}
+	for _, weight := range oracleWeights {
+		if weight.Asset == denom {
+			return weight.Weight
+		}
+	}
+	return sdk.ZeroDec()
+}
+
+func NormalizedWeight(ctx sdk.Context, poolAssets []PoolAsset, denom string) sdk.Dec {
+	targetWeights := NormalizedWeights(poolAssets)
+	for _, weight := range targetWeights {
+		if weight.Asset == denom {
+			return weight.Weight
+		}
+	}
+	return sdk.ZeroDec()
+}
+
 func (p Pool) CalcGivenInSlippage(
 	ctx sdk.Context,
 	oracleKeeper OracleKeeper,
@@ -263,11 +286,28 @@ func (p *Pool) SwapOutAmtGivenIn(
 	// cut is valid when distance higher than original distance
 	weightBreakingFee := sdk.ZeroDec()
 	if distanceDiff.IsPositive() {
-		weightBreakingFee = p.PoolParams.WeightBreakingFeeMultiplier.Mul(distanceDiff)
+		// old weight breaking fee implementation
+		// weightBreakingFee = p.PoolParams.WeightBreakingFeeMultiplier.Mul(distanceDiff)
+
+		// target weight
+		targetWeightIn := NormalizedWeight(ctx, p.PoolAssets, tokenIn.Denom)
+		targetWeightOut := NormalizedWeight(ctx, p.PoolAssets, tokenOutDenom)
+
+		// weight breaking fee as in Plasma pool
+		weightIn := OracleAssetWeight(ctx, oracleKeeper, newAssetPools, tokenIn.Denom)
+		weightOut := OracleAssetWeight(ctx, oracleKeeper, newAssetPools, tokenOutDenom)
+
+		// (45/55*60/40) ^ 2.5
+		weightBreakingFee = p.PoolParams.WeightBreakingFeeMultiplier.
+			Mul(Pow(weightIn.Mul(targetWeightOut).Quo(weightOut).Quo(targetWeightIn), p.PoolParams.WeightBreakingFeeExponent))
+
+		if weightBreakingFee.GT(sdk.NewDecWithPrec(99, 2)) {
+			weightBreakingFee = sdk.NewDecWithPrec(99, 2)
+		}
 	}
 
 	// bonus is valid when distance is lower than original distance and when threshold weight reached
-	weightBalanceBonus = sdk.ZeroDec()
+	weightBalanceBonus = weightBreakingFee.Neg()
 	if initialWeightDistance.GT(p.PoolParams.ThresholdWeightDifference) && distanceDiff.IsNegative() {
 		weightBalanceBonus = p.PoolParams.WeightBreakingFeeMultiplier.Mul(distanceDiff).Abs()
 	}

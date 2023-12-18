@@ -1,6 +1,8 @@
 package types
 
-import sdk "github.com/cosmos/cosmos-sdk/types"
+import (
+	sdk "github.com/cosmos/cosmos-sdk/types"
+)
 
 // solveConstantFunctionInvariant solves the constant function of an AMM
 // that determines the relationship between the differences of two sides

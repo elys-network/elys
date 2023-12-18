@@ -127,7 +127,24 @@ func CalcExitPool(ctx sdk.Context, oracleKeeper OracleKeeper, pool Pool, account
 		distanceDiff := weightDistance.Sub(initialWeightDistance)
 		weightBreakingFee := sdk.ZeroDec()
 		if distanceDiff.IsPositive() {
-			weightBreakingFee = pool.PoolParams.WeightBreakingFeeMultiplier.Mul(distanceDiff)
+			// old weight breaking fee implementation
+			// weightBreakingFee = pool.PoolParams.WeightBreakingFeeMultiplier.Mul(distanceDiff)
+
+			// target weight
+			targetWeightOut := NormalizedWeight(ctx, pool.PoolAssets, tokenOutDenom)
+			targetWeightIn := sdk.OneDec().Sub(targetWeightOut)
+
+			// weight breaking fee as in Plasma pool
+			weightOut := OracleAssetWeight(ctx, oracleKeeper, newAssetPools, tokenOutDenom)
+			weightIn := sdk.OneDec().Sub(weightOut)
+
+			// (45/55*60/40) ^ 2.5
+			weightBreakingFee = pool.PoolParams.WeightBreakingFeeMultiplier.
+				Mul(Pow(weightIn.Mul(targetWeightOut).Quo(weightOut).Quo(targetWeightIn), pool.PoolParams.WeightBreakingFeeExponent))
+
+			if weightBreakingFee.GT(sdk.NewDecWithPrec(99, 2)) {
+				weightBreakingFee = sdk.NewDecWithPrec(99, 2)
+			}
 		}
 
 		tokenOutAmount := oracleOutAmount.Mul(sdk.OneDec().Sub(weightBreakingFee)).RoundInt()
