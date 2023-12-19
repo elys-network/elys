@@ -4,7 +4,7 @@ import (
 	"errors"
 	"testing"
 
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	errorsmod "cosmossdk.io/errors"
 	"github.com/elys-network/elys/x/margin/types"
 	"github.com/stretchr/testify/assert"
 
@@ -13,10 +13,10 @@ import (
 
 func TestCheckLongAssets_InvalidAssets(t *testing.T) {
 	err := types.CheckLongAssets(ptypes.BaseCurrency, ptypes.BaseCurrency, ptypes.BaseCurrency)
-	assert.True(t, errors.Is(err, sdkerrors.Wrap(types.ErrInvalidBorrowingAsset, "invalid borrowing asset")))
+	assert.True(t, errors.Is(err, errorsmod.Wrap(types.ErrInvalidBorrowingAsset, "invalid borrowing asset")))
 
 	err = types.CheckLongAssets(ptypes.ATOM, ptypes.BaseCurrency, ptypes.BaseCurrency)
-	assert.True(t, errors.Is(err, sdkerrors.Wrap(types.ErrInvalidBorrowingAsset, "invalid borrowing asset")))
+	assert.True(t, errors.Is(err, errorsmod.Wrap(types.ErrInvalidBorrowingAsset, "invalid borrowing asset")))
 }
 
 func TestCheckLongAssets_ValidAssets(t *testing.T) {

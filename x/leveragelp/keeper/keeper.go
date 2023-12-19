@@ -10,7 +10,7 @@ import (
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	errorsmod "cosmossdk.io/errors"
 	"github.com/cosmos/cosmos-sdk/types/query"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	"github.com/elys-network/elys/x/leveragelp/types"
@@ -89,7 +89,7 @@ func (k Keeper) CheckIfWhitelisted(ctx sdk.Context, address string) bool {
 func (k Keeper) EstimateSwapGivenOut(ctx sdk.Context, tokenOutAmount sdk.Coin, tokenInDenom string, ammPool ammtypes.Pool) (sdk.Int, error) {
 	leveragelpEnabled := k.IsPoolEnabled(ctx, ammPool.PoolId)
 	if !leveragelpEnabled {
-		return sdk.ZeroInt(), sdkerrors.Wrap(types.ErrLeveragelpDisabled, "Leveragelp disabled pool")
+		return sdk.ZeroInt(), errorsmod.Wrap(types.ErrLeveragelpDisabled, "Leveragelp disabled pool")
 	}
 
 	tokensOut := sdk.Coins{tokenOutAmount}

@@ -4,8 +4,8 @@ import (
 	"errors"
 	"testing"
 
+	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
 	"github.com/elys-network/elys/x/margin/keeper"
@@ -34,7 +34,7 @@ func TestOpen_ErrorCheckUserAuthorization(t *testing.T) {
 
 	// Mock behavior
 	mockAssetProfile.On("GetEntry", ctx, ptypes.BaseCurrency).Return(assetprofiletypes.Entry{BaseDenom: ptypes.BaseCurrency, Denom: ptypes.BaseCurrency}, true)
-	mockChecker.On("CheckUserAuthorization", ctx, msg).Return(sdkerrors.Wrap(types.ErrUnauthorised, "unauthorised"))
+	mockChecker.On("CheckUserAuthorization", ctx, msg).Return(errorsmod.Wrap(types.ErrUnauthorised, "unauthorised"))
 
 	_, err := k.Open(ctx, msg)
 
@@ -65,7 +65,7 @@ func TestOpen_ErrorCheckMaxOpenPositions(t *testing.T) {
 	mockAssetProfile.On("GetEntry", ctx, ptypes.BaseCurrency).Return(assetprofiletypes.Entry{BaseDenom: ptypes.BaseCurrency, Denom: ptypes.BaseCurrency}, true)
 	mockChecker.On("CheckUserAuthorization", ctx, msg).Return(nil)
 	mockChecker.On("CheckSameAssetPosition", ctx, msg).Return(nil)
-	mockChecker.On("CheckMaxOpenPositions", ctx).Return(sdkerrors.Wrap(types.ErrMaxOpenPositions, "cannot open new positions"))
+	mockChecker.On("CheckMaxOpenPositions", ctx).Return(errorsmod.Wrap(types.ErrMaxOpenPositions, "cannot open new positions"))
 
 	_, err := k.Open(ctx, msg)
 
@@ -131,7 +131,7 @@ func TestOpen_ErrorCheckPoolHealth(t *testing.T) {
 	mockChecker.On("CheckSameAssetPosition", ctx, msg).Return(nil)
 	mockChecker.On("CheckMaxOpenPositions", ctx).Return(nil)
 	mockChecker.On("PreparePools", ctx, msg.Collateral.Denom, msg.TradingAsset).Return(poolId, ammtypes.Pool{}, types.Pool{}, nil)
-	mockChecker.On("CheckPoolHealth", ctx, poolId).Return(sdkerrors.Wrap(types.ErrInvalidBorrowingAsset, "invalid collateral asset"))
+	mockChecker.On("CheckPoolHealth", ctx, poolId).Return(errorsmod.Wrap(types.ErrInvalidBorrowingAsset, "invalid collateral asset"))
 
 	_, err := k.Open(ctx, msg)
 

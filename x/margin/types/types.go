@@ -1,9 +1,9 @@
 package types
 
 import (
+	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/address"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 func GetPositionFromString(s string) Position {
@@ -49,19 +49,19 @@ func NewMTP(signer, collateralAsset, tradingAsset, liabilitiesAsset, custodyAsse
 
 func (mtp MTP) Validate() error {
 	if mtp.CollateralAsset == "" {
-		return sdkerrors.Wrap(ErrMTPInvalid, "no collateral asset specified")
+		return errorsmod.Wrap(ErrMTPInvalid, "no collateral asset specified")
 	}
 	if mtp.CustodyAsset == "" {
-		return sdkerrors.Wrap(ErrMTPInvalid, "no custody asset specified")
+		return errorsmod.Wrap(ErrMTPInvalid, "no custody asset specified")
 	}
 	if mtp.Address == "" {
-		return sdkerrors.Wrap(ErrMTPInvalid, "no address specified")
+		return errorsmod.Wrap(ErrMTPInvalid, "no address specified")
 	}
 	if mtp.Position == Position_UNSPECIFIED {
-		return sdkerrors.Wrap(ErrMTPInvalid, "no position specified")
+		return errorsmod.Wrap(ErrMTPInvalid, "no position specified")
 	}
 	if mtp.Id == 0 {
-		return sdkerrors.Wrap(ErrMTPInvalid, "no id specified")
+		return errorsmod.Wrap(ErrMTPInvalid, "no id specified")
 	}
 
 	return nil

@@ -15,10 +15,7 @@ func (k Keeper) SetPool(ctx sdk.Context, pool types.Pool) error {
 }
 
 // GetPool returns a pool from its index
-func (k Keeper) GetPool(
-	ctx sdk.Context,
-	poolId uint64,
-) (val types.Pool, found bool) {
+func (k Keeper) GetPool(ctx sdk.Context, poolId uint64) (val types.Pool, found bool) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.PoolKeyPrefix))
 
 	b := store.Get(types.PoolKey(poolId))
@@ -31,14 +28,9 @@ func (k Keeper) GetPool(
 }
 
 // RemovePool removes a pool from the store
-func (k Keeper) RemovePool(
-	ctx sdk.Context,
-	poolId uint64,
-) {
+func (k Keeper) RemovePool(ctx sdk.Context, poolId uint64) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.PoolKeyPrefix))
-	store.Delete(types.PoolKey(
-		poolId,
-	))
+	store.Delete(types.PoolKey(poolId))
 }
 
 // GetAllPool returns all pool
@@ -144,8 +136,7 @@ func (k Keeper) GetPoolIdWithAllDenoms(ctx sdk.Context, denoms []string) (poolId
 
 // IterateLiquidty iterates over all LiquidityPools and performs a
 // callback.
-func (k Keeper) IterateLiquidityPools(ctx sdk.Context, handlerFn func(pool types.Pool) (stop bool),
-) {
+func (k Keeper) IterateLiquidityPools(ctx sdk.Context, handlerFn func(pool types.Pool) (stop bool)) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.PoolKeyPrefix))
 	iterator := sdk.KVStorePrefixIterator(store, []byte{})
 
@@ -164,10 +155,7 @@ func (k Keeper) IterateLiquidityPools(ctx sdk.Context, handlerFn func(pool types
 }
 
 // GetPoolSnapshotOrSet returns a pool snapshot or set the snapshot
-func (k Keeper) GetPoolSnapshotOrSet(
-	ctx sdk.Context,
-	pool types.Pool,
-) (val types.Pool) {
+func (k Keeper) GetPoolSnapshotOrSet(ctx sdk.Context, pool types.Pool) (val types.Pool) {
 	store := prefix.NewStore(ctx.KVStore(k.transientStoreKey), types.KeyPrefix(types.PoolKeyPrefix))
 
 	b := store.Get(types.PoolKey(pool.PoolId))

@@ -4,9 +4,9 @@ import (
 	"errors"
 	"testing"
 
+	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	"github.com/elys-network/elys/x/margin/keeper"
 	"github.com/elys-network/elys/x/margin/types"
@@ -133,7 +133,7 @@ func TestCloseShort_AmmPoolNotFound(t *testing.T) {
 	// Mock behavior
 	mockChecker.On("GetMTP", ctx, msg.Creator, msg.Id).Return(mtp, nil)
 	mockChecker.On("GetPool", ctx, mtp.AmmPoolId).Return(types.Pool{}, true)
-	mockChecker.On("GetAmmPool", ctx, mtp.AmmPoolId, mtp.CustodyAsset).Return(ammtypes.Pool{}, sdkerrors.Wrap(types.ErrPoolDoesNotExist, mtp.CustodyAsset))
+	mockChecker.On("GetAmmPool", ctx, mtp.AmmPoolId, mtp.CustodyAsset).Return(ammtypes.Pool{}, errorsmod.Wrap(types.ErrPoolDoesNotExist, mtp.CustodyAsset))
 
 	_, _, err := k.CloseShort(ctx, msg, ptypes.BaseCurrency)
 

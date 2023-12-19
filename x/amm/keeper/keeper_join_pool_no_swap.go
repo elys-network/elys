@@ -41,7 +41,7 @@ func (k Keeper) JoinPoolNoSwap(
 		if len(tokensIn) != 1 {
 			// we do an abstract calculation on the lp liquidity coins needed to have
 			// the designated amount of given shares of the pool without performing swap
-			neededLpLiquidity, err := types.GetMaximalNoSwapLPAmount(pool, shareOutAmount)
+			neededLpLiquidity, err := pool.GetMaximalNoSwapLPAmount(shareOutAmount)
 			if err != nil {
 				return nil, sdk.ZeroInt(), err
 			}

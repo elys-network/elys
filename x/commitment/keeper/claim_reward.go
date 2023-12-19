@@ -71,7 +71,7 @@ func (k Keeper) RecordClaimReward(ctx sdk.Context, creator string, denom string,
 
 	addr, err := sdk.AccAddressFromBech32(commitments.Creator)
 	if err != nil {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "unable to convert address from bech32")
+		return errorsmod.Wrap(sdkerrors.ErrInvalidAddress, "unable to convert address from bech32")
 	}
 
 	err = k.HandleWithdrawFromCommitment(ctx, &commitments, addr, withdrawCoins, false)

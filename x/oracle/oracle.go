@@ -28,7 +28,7 @@ func (im IBCModule) handleOraclePacket(
 		var BandPriceResult types.BandPriceResult
 		if err := obi.Decode(modulePacketData.Result, &BandPriceResult); err != nil {
 			ack = channeltypes.NewErrorAcknowledgement(err)
-			return ack, sdkerrors.Wrap(sdkerrors.ErrUnknownRequest, "cannot decode the BandPrice received packet")
+			return ack, errorsmod.Wrap(sdkerrors.ErrUnknownRequest, "cannot decode the BandPrice received packet")
 		}
 		reqID := types.OracleRequestID(modulePacketData.RequestID)
 		im.keeper.SetBandPriceResult(ctx, reqID, BandPriceResult)
@@ -36,11 +36,11 @@ func (im IBCModule) handleOraclePacket(
 		params := im.keeper.GetParams(ctx)
 		request, err := im.keeper.GetBandRequest(ctx, reqID)
 		if err != nil {
-			return ack, sdkerrors.Wrap(sdkerrors.ErrUnknownRequest, "historical request does not exist")
+			return ack, errorsmod.Wrap(sdkerrors.ErrUnknownRequest, "historical request does not exist")
 		}
 
 		if len(request.Symbols) != len(BandPriceResult.Rates) {
-			return ack, sdkerrors.Wrap(sdkerrors.ErrUnknownRequest, "request and result count does not match")
+			return ack, errorsmod.Wrap(sdkerrors.ErrUnknownRequest, "request and result count does not match")
 		}
 
 		for index, symbol := range request.Symbols {
@@ -93,7 +93,7 @@ func (im IBCModule) handleOracleAcknowledgment(
 		case types.BandPriceClientIDKey:
 			var RequestBandPrice types.BandPriceCallData
 			if err = obi.Decode(data.GetCalldata(), &RequestBandPrice); err != nil {
-				return nil, sdkerrors.Wrap(err, "cannot decode the BandPrice oracle acknowledgment packet")
+				return nil, errorsmod.Wrap(err, "cannot decode the BandPrice oracle acknowledgment packet")
 			}
 			im.keeper.SetLastBandRequestId(ctx, requestID)
 			im.keeper.SetBandRequest(ctx, requestID, RequestBandPrice)

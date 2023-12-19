@@ -13,7 +13,7 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	errorsmod "cosmossdk.io/errors"
 	"github.com/cosmos/cosmos-sdk/types/query"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	"github.com/elys-network/elys/x/margin/types"
@@ -120,7 +120,7 @@ func (k Keeper) CheckIfWhitelisted(ctx sdk.Context, address string) bool {
 func (k Keeper) EstimateSwapGivenOut(ctx sdk.Context, tokenOutAmount sdk.Coin, tokenInDenom string, ammPool ammtypes.Pool) (sdk.Int, error) {
 	marginEnabled := k.IsPoolEnabled(ctx, ammPool.PoolId)
 	if !marginEnabled {
-		return sdk.ZeroInt(), sdkerrors.Wrap(types.ErrMarginDisabled, "Margin disabled pool")
+		return sdk.ZeroInt(), errorsmod.Wrap(types.ErrMarginDisabled, "Margin disabled pool")
 	}
 
 	tokensOut := sdk.Coins{tokenOutAmount}
@@ -417,7 +417,7 @@ func (k Keeper) BorrowInterestRateComputationByPosition(ctx sdk.Context, pool ty
 func (k Keeper) BorrowInterestRateComputation(ctx sdk.Context, pool types.Pool, ammPool ammtypes.Pool) (sdk.Dec, error) {
 	ammPool, found := k.amm.GetPool(ctx, pool.AmmPoolId)
 	if !found {
-		return sdk.ZeroDec(), sdkerrors.Wrap(types.ErrBalanceNotAvailable, "Balance not available")
+		return sdk.ZeroDec(), errorsmod.Wrap(types.ErrBalanceNotAvailable, "Balance not available")
 	}
 
 	borrowInterestRateMax := k.GetBorrowInterestRateMax(ctx)

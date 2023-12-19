@@ -1,8 +1,8 @@
 package keeper
 
 import (
+	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/elys-network/elys/x/margin/types"
 )
 
@@ -20,7 +20,7 @@ func (k Keeper) CloseLong(ctx sdk.Context, msg *types.MsgClose, baseCurrency str
 	// Retrieve Pool
 	pool, found := k.CloseLongChecker.GetPool(ctx, mtp.AmmPoolId)
 	if !found {
-		return nil, sdk.ZeroInt(), sdkerrors.Wrap(types.ErrInvalidBorrowingAsset, "invalid pool id")
+		return nil, sdk.ZeroInt(), errorsmod.Wrap(types.ErrInvalidBorrowingAsset, "invalid pool id")
 	}
 
 	// Retrieve AmmPool

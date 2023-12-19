@@ -117,7 +117,7 @@ func (im IBCModule) OnChanCloseInit(
 	channelID string,
 ) error {
 	// Disallow user-initiated channel closing for channels
-	return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "user cannot close channel")
+	return errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "user cannot close channel")
 }
 
 // OnChanCloseConfirm implements the IBCModule interface
@@ -139,7 +139,7 @@ func (im IBCModule) OnRecvPacket(
 
 	oracleAck, err := im.handleOraclePacket(ctx, modulePacket)
 	if err != nil {
-		return channeltypes.NewErrorAcknowledgement(sdkerrors.Wrap(sdkerrors.ErrUnknownRequest, "cannot unmarshal packet data: "+err.Error()))
+		return channeltypes.NewErrorAcknowledgement(errorsmod.Wrap(sdkerrors.ErrUnknownRequest, "cannot unmarshal packet data: "+err.Error()))
 	} else if ack != oracleAck {
 		return oracleAck
 	}

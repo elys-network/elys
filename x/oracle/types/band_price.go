@@ -82,7 +82,7 @@ func (m *MsgRequestBandPrice) ValidateBasic() error {
 		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
 	}
 	if m.SourceChannel == "" {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "invalid source channel")
+		return errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "invalid source channel")
 	}
 	return nil
 }

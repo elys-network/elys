@@ -207,7 +207,7 @@ func (k Keeper) RecordWithdrawValidatorCommission(ctx sdk.Context, delegator str
 	// Withdraw to the delegated wallet
 	addr, err := sdk.AccAddressFromBech32(delegator)
 	if err != nil {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "unable to convert address from bech32")
+		return errorsmod.Wrap(sdkerrors.ErrInvalidAddress, "unable to convert address from bech32")
 	}
 
 	commitments = k.GetCommitments(ctx, delegator)
@@ -233,12 +233,12 @@ func (k Keeper) RecordWithdrawValidatorCommission(ctx sdk.Context, delegator str
 func (k Keeper) BeforeDelegationCreated(ctx sdk.Context, delegator string, validator string) error {
 	_, err := sdk.AccAddressFromBech32(delegator)
 	if err != nil {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "unable to convert address from bech32")
+		return errorsmod.Wrap(sdkerrors.ErrInvalidAddress, "unable to convert address from bech32")
 	}
 
 	_, err = sdk.ValAddressFromBech32(validator)
 	if err != nil {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "unable to convert validator address from bech32")
+		return errorsmod.Wrap(sdkerrors.ErrInvalidAddress, "unable to convert validator address from bech32")
 	}
 
 	/***********************************************************/

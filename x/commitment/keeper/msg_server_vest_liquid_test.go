@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"testing"
 
+	errorsmod "cosmossdk.io/errors"
 	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -101,5 +102,5 @@ func TestLiquidVestWithExceed(t *testing.T) {
 	require.Equal(t, edenCoin.Amount, sdk.ZeroInt())
 
 	_, err = msgServer.VestLiquid(ctx, vestMsg)
-	require.Equal(t, err.Error(), sdkerrors.Wrap(sdkerrors.ErrInsufficientFunds, fmt.Sprintf("unable to send deposit tokens: %v", edenToken)).Error())
+	require.Equal(t, err.Error(), errorsmod.Wrap(sdkerrors.ErrInsufficientFunds, fmt.Sprintf("unable to send deposit tokens: %v", edenToken)).Error())
 }

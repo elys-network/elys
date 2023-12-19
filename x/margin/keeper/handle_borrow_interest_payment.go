@@ -1,8 +1,8 @@
 package keeper
 
 import (
+	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	"github.com/elys-network/elys/x/margin/types"
 )
@@ -13,7 +13,7 @@ func (k Keeper) HandleBorrowInterestPayment(ctx sdk.Context, borrowInterestPayme
 	if incrementalBorrowInterestPaymentEnabled {
 		finalBorrowInterestPayment, err := k.IncrementalBorrowInterestPayment(ctx, borrowInterestPayment, mtp, pool, ammPool, baseCurrency)
 		if err != nil {
-			ctx.Logger().Error(sdkerrors.Wrap(err, "error executing incremental borrow interest payment").Error())
+			ctx.Logger().Error(errorsmod.Wrap(err, "error executing incremental borrow interest payment").Error())
 		} else {
 			return finalBorrowInterestPayment
 		}

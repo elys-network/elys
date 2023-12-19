@@ -4,10 +4,10 @@ import (
 	"context"
 	"time"
 
+	errorsmod "cosmossdk.io/errors"
 	"github.com/bandprotocol/bandchain-packet/obi"
 	"github.com/bandprotocol/bandchain-packet/packet"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	clienttypes "github.com/cosmos/ibc-go/v7/modules/core/02-client/types"
 	channeltypes "github.com/cosmos/ibc-go/v7/modules/core/04-channel/types"
 	host "github.com/cosmos/ibc-go/v7/modules/core/24-host"
@@ -22,7 +22,7 @@ func (k msgServer) RequestBandPrice(goCtx context.Context, msg *types.MsgRequest
 	sourcePort := types.PortID
 	channelCap, ok := k.scopedKeeper.GetCapability(ctx, host.ChannelCapabilityPath(sourcePort, msg.SourceChannel))
 	if !ok {
-		return nil, sdkerrors.Wrap(channeltypes.ErrChannelCapabilityNotFound,
+		return nil, errorsmod.Wrap(channeltypes.ErrChannelCapabilityNotFound,
 			"module does not own channel capability")
 	}
 

@@ -4,9 +4,9 @@ import (
 	"errors"
 	"testing"
 
+	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	"github.com/elys-network/elys/x/margin/keeper"
 	"github.com/elys-network/elys/x/margin/types"
@@ -578,7 +578,7 @@ func TestOpenShort_ATOM_Collateral(t *testing.T) {
 	)
 
 	_, err = mk.Open(ctx, msg2)
-	assert.True(t, errors.Is(err, sdkerrors.Wrap(types.ErrInvalidCollateralAsset, "collateral asset cannot be the same as the borrowed asset in a short position")))
+	assert.True(t, errors.Is(err, errorsmod.Wrap(types.ErrInvalidCollateralAsset, "collateral asset cannot be the same as the borrowed asset in a short position")))
 
 	mtps := mk.GetAllMTPs(ctx)
 	require.Equal(t, len(mtps), 0)

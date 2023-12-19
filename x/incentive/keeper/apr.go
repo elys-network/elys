@@ -3,7 +3,6 @@ package keeper
 import (
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
 	commitmenttypes "github.com/elys-network/elys/x/commitment/types"
 	"github.com/elys-network/elys/x/incentive/types"
@@ -20,7 +19,7 @@ func (k Keeper) CalculateApr(ctx sdk.Context, query *types.QueryAprRequest) (sdk
 
 	// If we don't have enough params
 	if len(params.StakeIncentives) < 1 || len(params.LpIncentives) < 1 {
-		return sdk.ZeroInt(), sdkerrors.Wrap(types.ErrNoNonInflationaryParams, "no inflationary params available")
+		return sdk.ZeroInt(), errorsmod.Wrap(types.ErrNoNonInflationaryParams, "no inflationary params available")
 	}
 
 	entry, found := k.assetProfileKeeper.GetEntry(ctx, ptypes.BaseCurrency)
@@ -33,7 +32,7 @@ func (k Keeper) CalculateApr(ctx sdk.Context, query *types.QueryAprRequest) (sdk
 	stkIncentive := params.StakeIncentives[0]
 
 	if lpIncentive.TotalBlocksPerYear.IsZero() || stkIncentive.TotalBlocksPerYear.IsZero() {
-		return sdk.ZeroInt(), sdkerrors.Wrap(types.ErrNoNonInflationaryParams, "invalid inflationary params")
+		return sdk.ZeroInt(), errorsmod.Wrap(types.ErrNoNonInflationaryParams, "invalid inflationary params")
 	}
 
 	if query.Denom == ptypes.Eden {

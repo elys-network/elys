@@ -7,6 +7,7 @@ import (
 	"github.com/elys-network/elys/x/commitment/types"
 	"github.com/spf13/cobra"
 
+	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
@@ -19,7 +20,7 @@ func CmdVest() *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			argAmount, found := sdk.NewIntFromString(args[0])
 			if !found {
-				return sdkerrors.Wrap(sdkerrors.ErrInvalidType, "cannot convert string to int")
+				return errorsmod.Wrap(sdkerrors.ErrInvalidType, "cannot convert string to int")
 			}
 			argDenom := args[1]
 

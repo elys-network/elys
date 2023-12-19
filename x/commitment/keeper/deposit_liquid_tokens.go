@@ -25,13 +25,13 @@ func (k Keeper) DepositLiquidTokensClaimed(ctx sdk.Context, denom string, amount
 
 	addr, err := sdk.AccAddressFromBech32(sender)
 	if err != nil {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "unable to convert address from bech32")
+		return errorsmod.Wrap(sdkerrors.ErrInvalidAddress, "unable to convert address from bech32")
 	}
 
 	// send the deposited coins to the module
 	err = k.bankKeeper.SendCoinsFromAccountToModule(ctx, addr, types.ModuleName, depositCoins)
 	if err != nil {
-		return sdkerrors.Wrap(sdkerrors.ErrInsufficientFunds, fmt.Sprintf("unable to send deposit tokens: %v", depositCoins))
+		return errorsmod.Wrap(sdkerrors.ErrInsufficientFunds, fmt.Sprintf("unable to send deposit tokens: %v", depositCoins))
 	}
 
 	// Increase claimed amount

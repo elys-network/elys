@@ -1,6 +1,7 @@
 package types_test
 
 import (
+	"encoding/binary"
 	"testing"
 
 	"github.com/cometbft/cometbft/crypto/ed25519"
@@ -9,6 +10,28 @@ import (
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 	"github.com/stretchr/testify/require"
 )
+
+func TestPoolKey(t *testing.T) {
+	poolID := uint64(1234567890)
+
+	expectedKey := make([]byte, 8)
+	binary.BigEndian.PutUint64(expectedKey, poolID)
+	expectedKey = append(expectedKey, []byte("/")...)
+
+	resultKey := types.PoolKey(poolID)
+
+	require.Equal(t, expectedKey, resultKey)
+}
+
+func TestDenomLiquidityKey(t *testing.T) {
+	denom := "liquidityToken"
+
+	expectedKey := []byte("liquidityToken/")
+
+	resultKey := types.DenomLiquidityKey(denom)
+
+	require.Equal(t, expectedKey, resultKey)
+}
 
 func TestTKeyPrefixSwapExactAmountIn(t *testing.T) {
 	expectedKey := []byte("uelys/1/uusdt")

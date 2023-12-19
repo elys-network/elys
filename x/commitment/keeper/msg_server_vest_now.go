@@ -42,7 +42,7 @@ func (k msgServer) VestNow(goCtx context.Context, msg *types.MsgVestNow) (*types
 
 	addr, err := sdk.AccAddressFromBech32(commitments.Creator)
 	if err != nil {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "unable to convert address from bech32")
+		return nil, errorsmod.Wrap(sdkerrors.ErrInvalidAddress, "unable to convert address from bech32")
 	}
 
 	// mint coins if vesting token is ELYS
@@ -57,7 +57,7 @@ func (k msgServer) VestNow(goCtx context.Context, msg *types.MsgVestNow) (*types
 	// Send the minted coins to the user's account
 	err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, addr, withdrawCoins)
 	if err != nil {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrInsufficientFunds, "unable to send withdrawn tokens")
+		return nil, errorsmod.Wrap(sdkerrors.ErrInsufficientFunds, "unable to send withdrawn tokens")
 	}
 
 	// Update the commitments

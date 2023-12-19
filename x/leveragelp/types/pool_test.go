@@ -4,6 +4,7 @@ import (
 	"errors"
 	"testing"
 
+	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/elys-network/elys/x/leveragelp/types"
@@ -15,5 +16,5 @@ func TestPool_InitiatePoolInvalid(t *testing.T) {
 
 	pool := types.NewPool(1)
 	err := pool.InitiatePool(ctx, nil)
-	assert.True(t, errors.Is(err, sdkerrors.Wrap(sdkerrors.ErrInvalidType, "invalid amm pool")))
+	assert.True(t, errors.Is(err, errorsmod.Wrap(sdkerrors.ErrInvalidType, "invalid amm pool")))
 }

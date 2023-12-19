@@ -10,7 +10,6 @@ import (
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
 
 	errorsmod "cosmossdk.io/errors"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
 	ctypes "github.com/elys-network/elys/x/commitment/types"
@@ -134,7 +133,7 @@ func (k Keeper) UpdateStakersRewardsUnclaimed(ctx sdk.Context, stakeIncentive ty
 
 	// Ensure stakeIncentive.TotalBlocksPerYear or stakeIncentive.AllocationEpochInBlocks are not zero to avoid division by zero
 	if stakeIncentive.TotalBlocksPerYear.IsZero() || stakeIncentive.AllocationEpochInBlocks.IsZero() {
-		return sdkerrors.Wrap(types.ErrNoNonInflationaryParams, "invalid inflationary params")
+		return errorsmod.Wrap(types.ErrNoNonInflationaryParams, "invalid inflationary params")
 	}
 
 	// Calculate
@@ -355,7 +354,7 @@ func (k Keeper) UpdateLPRewardsUnclaimed(ctx sdk.Context, lpIncentive types.Ince
 
 	// Ensure lpIncentive.TotalBlocksPerYear or lpIncentive.AllocationEpochInBlocks are not zero to avoid division by zero
 	if lpIncentive.TotalBlocksPerYear.IsZero() || lpIncentive.AllocationEpochInBlocks.IsZero() {
-		return sdkerrors.Wrap(types.ErrNoNonInflationaryParams, "invalid inflationary params")
+		return errorsmod.Wrap(types.ErrNoNonInflationaryParams, "invalid inflationary params")
 	}
 
 	// Calculate eden amount per epoch

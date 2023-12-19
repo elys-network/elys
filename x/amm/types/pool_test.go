@@ -1,15 +1,19 @@
 package types_test
 
 import (
+	fmt "fmt"
+	"testing"
 	"time"
 
+	errorsmod "cosmossdk.io/errors"
 	"github.com/cometbft/cometbft/crypto/ed25519"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/amm/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
+	"github.com/stretchr/testify/require"
 )
 
-func (suite *TestSuite) TestTVL() {
+func (suite *TestSuite) TestPoolTVL() {
 	for _, tc := range []struct {
 		desc       string
 		poolAssets []types.PoolAsset
@@ -116,5 +120,68 @@ func (suite *TestSuite) TestTVL() {
 				suite.Require().Equal(tvl.String(), tc.expTVL.String())
 			}
 		})
+	}
+}
+
+func TestPool_GetPoolAssetAndIndex(t *testing.T) {
+	poolAssets := []types.PoolAsset{
+		{
+			Token:  sdk.NewCoin("token1", sdk.NewInt(100)),
+			Weight: sdk.NewInt(10),
+		},
+		{
+			Token:  sdk.NewCoin("token2", sdk.NewInt(200)),
+			Weight: sdk.NewInt(20),
+		},
+	}
+
+	pool := types.Pool{
+		PoolAssets: poolAssets,
+	}
+
+	// Test case 1: Existing PoolAsset
+	index, poolAsset, err := pool.GetPoolAssetAndIndex("token1")
+	require.NoError(t, err)
+	require.Equal(t, 0, index)
+	require.Equal(t, poolAssets[0], poolAsset)
+
+	// Test case 1b: Existing PoolAsset
+	index, poolAsset, err = pool.GetPoolAssetAndIndex("token2")
+	require.NoError(t, err)
+	require.Equal(t, 1, index)
+	require.Equal(t, poolAssets[1], poolAsset)
+
+	// Test case 2: Non-existing PoolAsset
+	nonExistingDenom := "nonExistingToken"
+	_, _, err = pool.GetPoolAssetAndIndex(nonExistingDenom)
+	expectedErr := errorsmod.Wrapf(types.ErrDenomNotFoundInPool, fmt.Sprintf(types.FormatNoPoolAssetFoundErrFormat, nonExistingDenom))
+	require.EqualError(t, err, expectedErr.Error())
+
+	// Test case 3: Empty denom
+	_, _, err = pool.GetPoolAssetAndIndex("")
+	require.EqualError(t, err, "you tried to find the PoolAsset with empty denom")
+}
+
+func TestPool_GetAllPoolAssets(t *testing.T) {
+	poolAssets := []types.PoolAsset{
+		{
+			Token:  sdk.NewCoin("token1", sdk.NewInt(100)),
+			Weight: sdk.NewInt(10),
+		},
+		{
+			Token:  sdk.NewCoin("token2", sdk.NewInt(200)),
+			Weight: sdk.NewInt(20),
+		},
+	}
+
+	pool := types.Pool{
+		PoolAssets: poolAssets,
+	}
+
+	result := pool.GetAllPoolAssets()
+
+	require.Equal(t, len(poolAssets), len(result))
+	for i := 0; i < len(poolAssets); i++ {
+		require.Equal(t, poolAssets[i], result[i])
 	}
 }

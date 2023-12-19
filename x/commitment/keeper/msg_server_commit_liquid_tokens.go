@@ -34,7 +34,7 @@ func (k msgServer) CommitLiquidTokens(goCtx context.Context, msg *types.MsgCommi
 	// send the deposited coins to the module
 	err = k.bankKeeper.SendCoinsFromAccountToModule(ctx, addr, types.ModuleName, depositCoins)
 	if err != nil {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrInsufficientFunds, fmt.Sprintf("unable to send deposit tokens: %v", depositCoins))
+		return nil, errorsmod.Wrap(sdkerrors.ErrInsufficientFunds, fmt.Sprintf("unable to send deposit tokens: %v", depositCoins))
 	}
 
 	// Get the Commitments for the creator

@@ -67,7 +67,7 @@ func (k msgServer) UpdateMinSelfDelegation(goCtx context.Context, msg *types.Msg
 
 	minSelfDelegation, ok := sdk.NewIntFromString(msg.MinSelfDelegation)
 	if !ok {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "minimum self delegation must be a positive integer")
+		return nil, errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "minimum self delegation must be a positive integer")
 	}
 
 	params := k.GetParams(ctx)

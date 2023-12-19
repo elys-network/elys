@@ -233,7 +233,7 @@ func (k Keeper) RecordWithdrawValidatorCommission(ctx sdk.Context, delegator str
 	// Get Bech32 address for delegator
 	addr, err := sdk.AccAddressFromBech32(delegator)
 	if err != nil {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "unable to convert address from bech32")
+		return errorsmod.Wrap(sdkerrors.ErrInvalidAddress, "unable to convert address from bech32")
 	}
 
 	// Set withdraw usdc amount
