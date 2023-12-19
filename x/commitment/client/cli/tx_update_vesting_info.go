@@ -80,17 +80,17 @@ func CmdUpdateVestingInfo() *cobra.Command {
 
 			numEpochs, err := strconv.ParseInt(argNumEpochs, 10, 64)
 			if err != nil {
-				return errorsmod.Wrapf(govtypes.ErrInvalidProposalMsg, "invalid proposal; %d", argNumEpochs)
+				return errorsmod.Wrapf(govtypes.ErrInvalidProposalMsg, "invalid proposal; %s", argNumEpochs)
 			}
 
 			vestNowFactor, err := strconv.ParseInt(argVestNowFactor, 10, 64)
 			if err != nil {
-				return errorsmod.Wrapf(govtypes.ErrInvalidProposalMsg, "invalid proposal; %d", argVestNowFactor)
+				return errorsmod.Wrapf(govtypes.ErrInvalidProposalMsg, "invalid proposal; %s", argVestNowFactor)
 			}
 
 			maxVestings, err := strconv.ParseInt(argNumMaxVestings, 10, 64)
 			if err != nil {
-				return errorsmod.Wrapf(govtypes.ErrInvalidProposalMsg, "invalid proposal; %d", argNumMaxVestings)
+				return errorsmod.Wrapf(govtypes.ErrInvalidProposalMsg, "invalid proposal; %s", argNumMaxVestings)
 			}
 
 			govAddress := sdk.AccAddress(address.Module(govtypes.ModuleName))
