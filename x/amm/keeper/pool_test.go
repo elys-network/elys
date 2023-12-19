@@ -25,9 +25,7 @@ func createNPool(keeper *keeper.Keeper, ctx sdk.Context, n int) []types.Pool {
 			WeightBreakingFeeMultiplier: sdk.ZeroDec(),
 			WeightBreakingFeeExponent:   sdk.NewDecWithPrec(25, 1), // 2.5
 			ExternalLiquidityRatio:      sdk.ZeroDec(),
-			LpFeePortion:                sdk.ZeroDec(),
-			StakingFeePortion:           sdk.ZeroDec(),
-			WeightRecoveryFeePortion:    sdk.ZeroDec(),
+			WeightRecoveryFeePortion:    sdk.NewDecWithPrec(10, 2), // 10%
 			ThresholdWeightDifference:   sdk.ZeroDec(),
 			FeeDenom:                    ptypes.BaseCurrency,
 		}

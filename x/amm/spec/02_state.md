@@ -72,8 +72,6 @@ type PoolAsset struct {
 - `UseOracle` is set to true when the weights are dynamically calculated based on oracle.
 - `ExternalLiquidityRatio` is configured from external liquidity fetcher oracle
 - `WeightBreakingFeeMutliplier` is the parameter used to calculate weight breaking fee from weight break attribute.
-- `LpFeePortion` is the fee portion to be given to liquidity providers.
-- `StakingFeePortion` is the fee portion to be spent to stakeholders.
 - `WeightRecoveryFeePortion` is the fee portion to be spent on weight recovery.
 - `ThresholdWeightDiff` is the threshold weight difference from target weight when weight recovery treasury spending is enabled.
 
@@ -85,8 +83,6 @@ type PoolParams struct {
 	WeightBreakingFeeMutliplier sdk.Dec
     UseOracle                   bool
     ExternalLiquidityRatio      sdk.Dec
-    LpFeePortion                sdk.Dec
-    StakingFeePortion           sdk.Dec
     WeightRecoveryFeePortion    sdk.Dec
     ThresholdWeightDiff         sdk.Dec
 }

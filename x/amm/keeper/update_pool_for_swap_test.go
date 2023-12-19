@@ -65,8 +65,8 @@ func (suite *KeeperTestSuite) TestUpdatePoolForSwap() {
 			tokenOut:            sdk.NewInt64Coin(ptypes.BaseCurrency, 10000),
 			weightBalanceBonus:  sdk.ZeroDec(),
 			expSenderBalance:    sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 990000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1010000)},
-			expPoolBalance:      sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 1009990), sdk.NewInt64Coin(ptypes.BaseCurrency, 989911)},
-			expTreasuryBalance:  sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 1000010), sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)},
+			expPoolBalance:      sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 1010000), sdk.NewInt64Coin(ptypes.BaseCurrency, 989901)},
+			expTreasuryBalance:  sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 1000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)},
 			expPass:             true,
 		},
 		{
@@ -155,9 +155,7 @@ func (suite *KeeperTestSuite) TestUpdatePoolForSwap() {
 					WeightBreakingFeeMultiplier: sdk.ZeroDec(),
 					WeightBreakingFeeExponent:   sdk.NewDecWithPrec(25, 1), // 2.5
 					ExternalLiquidityRatio:      sdk.NewDec(1),
-					LpFeePortion:                sdk.ZeroDec(),
-					StakingFeePortion:           sdk.ZeroDec(),
-					WeightRecoveryFeePortion:    sdk.ZeroDec(),
+					WeightRecoveryFeePortion:    sdk.NewDecWithPrec(10, 2), // 10%
 					ThresholdWeightDifference:   sdk.ZeroDec(),
 					FeeDenom:                    ptypes.BaseCurrency,
 				},

@@ -36,7 +36,7 @@ func (suite *KeeperTestSuite) TestOnCollectFee() {
 			desc:              "multiple fees collected",
 			fee:               sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 1000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1000)},
 			poolInitBalance:   sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 1000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)},
-			expRevenueBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 1799)},
+			expRevenueBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 1999)},
 			expPass:           true,
 		},
 		{
@@ -50,7 +50,7 @@ func (suite *KeeperTestSuite) TestOnCollectFee() {
 			desc:              "base currency fee collected",
 			fee:               sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 1000)},
 			poolInitBalance:   sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 1000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)},
-			expRevenueBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 900)},
+			expRevenueBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 1000)},
 			expPass:           true,
 		},
 	} {
@@ -90,9 +90,7 @@ func (suite *KeeperTestSuite) TestOnCollectFee() {
 					WeightBreakingFeeMultiplier: sdk.ZeroDec(),
 					WeightBreakingFeeExponent:   sdk.NewDecWithPrec(25, 1), // 2.5
 					ExternalLiquidityRatio:      sdk.NewDec(1),
-					LpFeePortion:                sdk.ZeroDec(),
-					StakingFeePortion:           sdk.ZeroDec(),
-					WeightRecoveryFeePortion:    sdk.ZeroDec(),
+					WeightRecoveryFeePortion:    sdk.NewDecWithPrec(10, 2), // 10%
 					ThresholdWeightDifference:   sdk.ZeroDec(),
 					FeeDenom:                    ptypes.BaseCurrency,
 				},
@@ -189,9 +187,7 @@ func (suite *KeeperTestSuite) TestSwapFeesToRevenueToken() {
 					WeightBreakingFeeMultiplier: sdk.ZeroDec(),
 					WeightBreakingFeeExponent:   sdk.NewDecWithPrec(25, 1), // 2.5
 					ExternalLiquidityRatio:      sdk.NewDec(1),
-					LpFeePortion:                sdk.ZeroDec(),
-					StakingFeePortion:           sdk.ZeroDec(),
-					WeightRecoveryFeePortion:    sdk.ZeroDec(),
+					WeightRecoveryFeePortion:    sdk.NewDecWithPrec(10, 2), // 10%
 					ThresholdWeightDifference:   sdk.ZeroDec(),
 					FeeDenom:                    ptypes.BaseCurrency,
 				},

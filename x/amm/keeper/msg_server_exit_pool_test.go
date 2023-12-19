@@ -33,9 +33,7 @@ func (suite *KeeperTestSuite) TestMsgServerExitPool() {
 				WeightBreakingFeeMultiplier: sdk.ZeroDec(),
 				WeightBreakingFeeExponent:   sdk.NewDecWithPrec(25, 1), // 2.5
 				ExternalLiquidityRatio:      sdk.NewDec(1),
-				LpFeePortion:                sdk.ZeroDec(),
-				StakingFeePortion:           sdk.ZeroDec(),
-				WeightRecoveryFeePortion:    sdk.ZeroDec(),
+				WeightRecoveryFeePortion:    sdk.NewDecWithPrec(10, 2), // 10%
 				ThresholdWeightDifference:   sdk.ZeroDec(),
 				FeeDenom:                    ptypes.BaseCurrency,
 			},
@@ -55,9 +53,7 @@ func (suite *KeeperTestSuite) TestMsgServerExitPool() {
 				WeightBreakingFeeMultiplier: sdk.ZeroDec(),
 				WeightBreakingFeeExponent:   sdk.NewDecWithPrec(25, 1), // 2.5
 				ExternalLiquidityRatio:      sdk.NewDec(1),
-				LpFeePortion:                sdk.ZeroDec(),
-				StakingFeePortion:           sdk.ZeroDec(),
-				WeightRecoveryFeePortion:    sdk.ZeroDec(),
+				WeightRecoveryFeePortion:    sdk.NewDecWithPrec(10, 2), // 10%
 				ThresholdWeightDifference:   sdk.ZeroDec(),
 				FeeDenom:                    ptypes.BaseCurrency,
 			},
@@ -77,10 +73,8 @@ func (suite *KeeperTestSuite) TestMsgServerExitPool() {
 				WeightBreakingFeeMultiplier: sdk.NewDecWithPrec(1, 2),  // 0.01
 				WeightBreakingFeeExponent:   sdk.NewDecWithPrec(25, 1), // 2.5
 				ExternalLiquidityRatio:      sdk.NewDec(1),
-				LpFeePortion:                sdk.ZeroDec(),
-				StakingFeePortion:           sdk.ZeroDec(),
-				WeightRecoveryFeePortion:    sdk.ZeroDec(),
-				ThresholdWeightDifference:   sdk.NewDecWithPrec(2, 1), // 20%
+				WeightRecoveryFeePortion:    sdk.NewDecWithPrec(10, 2), // 10%
+				ThresholdWeightDifference:   sdk.NewDecWithPrec(2, 1),  // 20%
 				FeeDenom:                    ptypes.BaseCurrency,
 			},
 			shareInAmount: types.OneShare.Quo(sdk.NewInt(10)),
@@ -100,10 +94,8 @@ func (suite *KeeperTestSuite) TestMsgServerExitPool() {
 				WeightBreakingFeeMultiplier: sdk.NewDecWithPrec(1, 2),  // 0.01
 				WeightBreakingFeeExponent:   sdk.NewDecWithPrec(25, 1), // 2.5
 				ExternalLiquidityRatio:      sdk.NewDec(1),
-				LpFeePortion:                sdk.ZeroDec(),
-				StakingFeePortion:           sdk.ZeroDec(),
-				WeightRecoveryFeePortion:    sdk.ZeroDec(),
-				ThresholdWeightDifference:   sdk.NewDecWithPrec(2, 1), // 20%
+				WeightRecoveryFeePortion:    sdk.NewDecWithPrec(10, 2), // 10%
+				ThresholdWeightDifference:   sdk.NewDecWithPrec(2, 1),  // 20%
 				FeeDenom:                    ptypes.BaseCurrency,
 			},
 			shareInAmount: types.OneShare.Quo(sdk.NewInt(10)),
