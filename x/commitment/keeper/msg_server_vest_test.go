@@ -3,10 +3,10 @@ package keeper_test
 import (
 	"testing"
 
+	errorsmod "cosmossdk.io/errors"
 	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/elys-network/elys/app"
 	commitmentkeeper "github.com/elys-network/elys/x/commitment/keeper"
 	"github.com/elys-network/elys/x/commitment/types"
@@ -172,5 +172,5 @@ func TestExceedVesting(t *testing.T) {
 
 	// Execute the Vest again and it should endfunction
 	_, err = msgServer.Vest(ctx, vestMsg)
-	require.EqualError(t, err, sdkerrors.Wrapf(types.ErrExceedMaxVestings, "creator: %s", vestMsg.Creator).Error(), "exceed vesting not worked properly")
+	require.EqualError(t, err, errorsmod.Wrapf(types.ErrExceedMaxVestings, "creator: %s", vestMsg.Creator).Error(), "exceed vesting not worked properly")
 }

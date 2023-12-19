@@ -1,8 +1,8 @@
 package keeper
 
 import (
+	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/elys-network/elys/x/amm/types"
 )
 
@@ -58,7 +58,7 @@ func (k Keeper) SwapFeesToRevenueToken(ctx sdk.Context, pool types.Pool, fee sdk
 		tokenOutAmount := tokenOutCoin.Amount
 
 		if !tokenOutAmount.IsPositive() {
-			return sdkerrors.Wrapf(types.ErrInvalidMathApprox, "token amount must be positive")
+			return errorsmod.Wrapf(types.ErrInvalidMathApprox, "token amount must be positive")
 		}
 
 		// Settles balances between the tx sender and the pool to match the swap that was executed earlier.

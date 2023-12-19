@@ -1,8 +1,8 @@
 package types
 
 import (
+	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 // getMaximalNoSwapLPAmount returns the coins(lp liquidity) needed to get the specified amount of shares in the pool.
@@ -16,7 +16,7 @@ func GetMaximalNoSwapLPAmount(pool Pool, shareOutAmount sdk.Int) (neededLpLiquid
 	// shares currently in the pool. It is intended to be used in scenarios where you want
 	shareRatio := sdk.NewDecFromBigInt(shareOutAmount.BigInt()).QuoInt(totalSharesAmount.Amount)
 	if shareRatio.LTE(sdk.ZeroDec()) {
-		return sdk.Coins{}, sdkerrors.Wrapf(ErrInvalidMathApprox, "Too few shares out wanted. "+
+		return sdk.Coins{}, errorsmod.Wrapf(ErrInvalidMathApprox, "Too few shares out wanted. "+
 			"(debug: getMaximalNoSwapLPAmount share ratio is zero or negative)")
 	}
 
@@ -27,7 +27,7 @@ func GetMaximalNoSwapLPAmount(pool Pool, shareOutAmount sdk.Int) (neededLpLiquid
 		// (coin.Amt * shareRatio).Ceil()
 		neededAmt := sdk.NewDecFromBigInt(coin.Amount.BigInt()).Mul(shareRatio).Ceil().RoundInt()
 		if neededAmt.LTE(sdk.ZeroInt()) {
-			return sdk.Coins{}, sdkerrors.Wrapf(ErrInvalidMathApprox, "Too few shares out wanted")
+			return sdk.Coins{}, errorsmod.Wrapf(ErrInvalidMathApprox, "Too few shares out wanted")
 		}
 		neededCoin := sdk.Coin{Denom: coin.Denom, Amount: neededAmt}
 		neededLpLiquidity = neededLpLiquidity.Add(neededCoin)

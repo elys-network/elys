@@ -3,9 +3,9 @@ package keeper
 import (
 	"fmt"
 
+	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/elys-network/elys/x/amm/types"
 )
 
@@ -105,7 +105,7 @@ func (k Keeper) RouteExactAmountOut(ctx sdk.Context,
 			discount = sdk.ZeroDec()
 		}
 		if discount.IsPositive() && sender.String() != brokerAddress {
-			return math.Int{}, sdk.ZeroDec(), sdk.ZeroDec(), sdkerrors.Wrapf(types.ErrInvalidDiscount, "discount %s is positive and signer address %s is not broker address %s", discount, sender, brokerAddress)
+			return math.Int{}, sdk.ZeroDec(), sdk.ZeroDec(), errorsmod.Wrapf(types.ErrInvalidDiscount, "discount %s is positive and signer address %s is not broker address %s", discount, sender, brokerAddress)
 		}
 		swapFee = types.ApplyDiscount(swapFee, discount)
 

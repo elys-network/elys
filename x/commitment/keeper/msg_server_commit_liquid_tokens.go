@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 
+	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	aptypes "github.com/elys-network/elys/x/assetprofile/types"
@@ -16,18 +17,18 @@ func (k msgServer) CommitLiquidTokens(goCtx context.Context, msg *types.MsgCommi
 
 	assetProfile, found := k.assetProfileKeeper.GetEntry(ctx, msg.Denom)
 	if !found {
-		return nil, sdkerrors.Wrapf(aptypes.ErrAssetProfileNotFound, "denom: %s", msg.Denom)
+		return nil, errorsmod.Wrapf(aptypes.ErrAssetProfileNotFound, "denom: %s", msg.Denom)
 	}
 
 	if !assetProfile.CommitEnabled {
-		return nil, sdkerrors.Wrapf(types.ErrCommitDisabled, "denom: %s", msg.Denom)
+		return nil, errorsmod.Wrapf(types.ErrCommitDisabled, "denom: %s", msg.Denom)
 	}
 
 	depositCoins := sdk.NewCoins(sdk.NewCoin(msg.Denom, msg.Amount))
 
 	addr, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "unable to convert address from bech32")
+		return nil, errorsmod.Wrap(sdkerrors.ErrInvalidAddress, "unable to convert address from bech32")
 	}
 
 	// send the deposited coins to the module

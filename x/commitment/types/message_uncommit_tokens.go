@@ -1,6 +1,7 @@
 package types
 
 import (
+	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
@@ -41,11 +42,11 @@ func (msg *MsgUncommitTokens) GetSignBytes() []byte {
 func (msg MsgUncommitTokens) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid creator address: %v", err)
+		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid creator address: %v", err)
 	}
 
 	if msg.Amount.IsNegative() {
-		return sdkerrors.Wrapf(ErrInvalidAmount, "Amount cannot be negative")
+		return errorsmod.Wrapf(ErrInvalidAmount, "Amount cannot be negative")
 	}
 
 	return nil

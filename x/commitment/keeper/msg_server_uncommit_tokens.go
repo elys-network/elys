@@ -3,6 +3,7 @@ package keeper
 import (
 	"context"
 
+	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	aptypes "github.com/elys-network/elys/x/assetprofile/types"
@@ -16,11 +17,11 @@ func (k msgServer) UncommitTokens(goCtx context.Context, msg *types.MsgUncommitT
 
 	assetProfile, found := k.assetProfileKeeper.GetEntry(ctx, msg.Denom)
 	if !found {
-		return nil, sdkerrors.Wrapf(aptypes.ErrAssetProfileNotFound, "denom: %s", msg.Denom)
+		return nil, errorsmod.Wrapf(aptypes.ErrAssetProfileNotFound, "denom: %s", msg.Denom)
 	}
 
 	if !assetProfile.WithdrawEnabled {
-		return nil, sdkerrors.Wrapf(types.ErrCommitDisabled, "denom: %s", msg.Denom)
+		return nil, errorsmod.Wrapf(types.ErrCommitDisabled, "denom: %s", msg.Denom)
 	}
 
 	// Get the Commitments for the creator

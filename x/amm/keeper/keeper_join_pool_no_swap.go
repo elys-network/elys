@@ -3,8 +3,8 @@ package keeper
 import (
 	"fmt"
 
+	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/elys-network/elys/x/amm/types"
 )
 
@@ -50,14 +50,14 @@ func (k Keeper) JoinPoolNoSwap(
 			// if tokenInMaxs == 0, don't do this check.
 			if tokenInMaxs.Len() != 0 {
 				if !(neededLpLiquidity.DenomsSubsetOf(tokenInMaxs)) {
-					return nil, sdk.ZeroInt(), sdkerrors.Wrapf(types.ErrLimitMaxAmount, "TokenInMaxs does not include all the tokens that are part of the target pool,"+
+					return nil, sdk.ZeroInt(), errorsmod.Wrapf(types.ErrLimitMaxAmount, "TokenInMaxs does not include all the tokens that are part of the target pool,"+
 						" upperbound: %v, needed %v", tokenInMaxs, neededLpLiquidity)
 				} else if !(tokenInMaxs.DenomsSubsetOf(neededLpLiquidity)) {
-					return nil, sdk.ZeroInt(), sdkerrors.Wrapf(types.ErrDenomNotFoundInPool, "TokenInMaxs includes tokens that are not part of the target pool,"+
+					return nil, sdk.ZeroInt(), errorsmod.Wrapf(types.ErrDenomNotFoundInPool, "TokenInMaxs includes tokens that are not part of the target pool,"+
 						" input tokens: %v, pool tokens %v", tokenInMaxs, neededLpLiquidity)
 				}
 				if !(tokenInMaxs.IsAllGTE(neededLpLiquidity)) {
-					return nil, sdk.ZeroInt(), sdkerrors.Wrapf(types.ErrLimitMaxAmount, "TokenInMaxs is less than the needed LP liquidity to this JoinPoolNoSwap,"+
+					return nil, sdk.ZeroInt(), errorsmod.Wrapf(types.ErrLimitMaxAmount, "TokenInMaxs is less than the needed LP liquidity to this JoinPoolNoSwap,"+
 						" upperbound: %v, needed %v", tokenInMaxs, neededLpLiquidity)
 				}
 			}

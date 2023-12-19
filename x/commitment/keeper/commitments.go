@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	errorsmod "cosmossdk.io/errors"
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
@@ -186,11 +187,11 @@ func (k Keeper) HandleWithdrawFromCommitment(ctx sdk.Context, commitments *types
 func (k Keeper) RecordWithdrawValidatorCommission(ctx sdk.Context, delegator string, creator string, denom string, amount sdk.Int) error {
 	assetProfile, found := k.assetProfileKeeper.GetEntry(ctx, denom)
 	if !found {
-		return sdkerrors.Wrapf(aptypes.ErrAssetProfileNotFound, "denom: %s", denom)
+		return errorsmod.Wrapf(aptypes.ErrAssetProfileNotFound, "denom: %s", denom)
 	}
 
 	if !assetProfile.WithdrawEnabled {
-		return sdkerrors.Wrapf(types.ErrWithdrawDisabled, "denom: %s", denom)
+		return errorsmod.Wrapf(types.ErrWithdrawDisabled, "denom: %s", denom)
 	}
 
 	commitments, err := k.DeductUnclaimed(ctx, creator, denom, amount)

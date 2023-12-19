@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/cosmos/cosmos-sdk/x/distribution/types"
@@ -128,7 +129,7 @@ func (k Keeper) ProcessWithdrawRewards(ctx sdk.Context, delegator string, withdr
 	// ---------------------------------------------------
 	entry, found := k.assetProfileKeeper.GetEntry(ctx, ptypes.BaseCurrency)
 	if !found {
-		return sdkerrors.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency)
+		return errorsmod.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency)
 	}
 	baseCurrency := entry.Denom
 
@@ -145,20 +146,20 @@ func (k Keeper) ProcessWithdrawRewards(ctx sdk.Context, delegator string, withdr
 
 	// Balance check
 	if unclaimedUsdc.GT(usdcBalance.Amount) {
-		return sdkerrors.Wrapf(types.ErrIntOverflowTx, "Amount excceed: %d", unclaimedUsdc)
+		return errorsmod.Wrapf(types.ErrIntOverflowTx, "Amount excceed: %d", unclaimedUsdc)
 	}
 
 	// All dex rewards are only paid in USDC
 	// This function call will deduct the accounting in commitment module only.
 	err = k.cmk.RecordClaimReward(ctx, delegator, ptypes.BaseCurrency, unclaimedUsdc, withdrawType)
 	if err != nil {
-		return sdkerrors.Wrapf(types.ErrIntOverflowTx, "Internal error with amount: %d", unclaimedUsdc)
+		return errorsmod.Wrapf(types.ErrIntOverflowTx, "Internal error with amount: %d", unclaimedUsdc)
 	}
 
 	// Get Bech32 address for creator
 	addr, err := sdk.AccAddressFromBech32(commitments.Creator)
 	if err != nil {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "unable to convert address from bech32")
+		return errorsmod.Wrap(sdkerrors.ErrInvalidAddress, "unable to convert address from bech32")
 	}
 
 	// Set withdraw usdc amount
@@ -203,7 +204,7 @@ func (k Keeper) RecordWithdrawValidatorCommission(ctx sdk.Context, delegator str
 
 	entry, found := k.assetProfileKeeper.GetEntry(ctx, ptypes.BaseCurrency)
 	if !found {
-		return sdkerrors.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency)
+		return errorsmod.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency)
 	}
 	baseCurrency := entry.Denom
 
@@ -220,13 +221,13 @@ func (k Keeper) RecordWithdrawValidatorCommission(ctx sdk.Context, delegator str
 
 	// Balance check
 	if unclaimedUsdc.GT(usdcBalance.Amount) {
-		return sdkerrors.Wrapf(types.ErrIntOverflowTx, "Amount excceed: %d", unclaimedUsdc)
+		return errorsmod.Wrapf(types.ErrIntOverflowTx, "Amount excceed: %d", unclaimedUsdc)
 	}
 
 	// This function call will deduct the accounting in commitment module only.
 	err = k.cmk.RecordClaimReward(ctx, validator, baseCurrency, unclaimedUsdc, commitmenttypes.EarnType_ALL_PROGRAM)
 	if err != nil {
-		return sdkerrors.Wrapf(types.ErrIntOverflowTx, "Internal error with amount: %d", unclaimedUsdc)
+		return errorsmod.Wrapf(types.ErrIntOverflowTx, "Internal error with amount: %d", unclaimedUsdc)
 	}
 
 	// Get Bech32 address for delegator

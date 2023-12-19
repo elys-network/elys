@@ -3,6 +3,7 @@ package types
 import (
 	"errors"
 
+	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
@@ -50,31 +51,31 @@ func (msg *MsgUpdateIncentiveParams) GetSignBytes() []byte {
 func (msg *MsgUpdateIncentiveParams) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Authority)
 	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
+		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
 	}
 	if msg.RewardPortionForLps.GT(sdk.NewDec(1)) {
-		return sdkerrors.Wrapf(sdkerrors.ErrNotSupported, "invalid rewards portion for LPs (%s)", errors.New("Invalid LP portion"))
+		return errorsmod.Wrapf(sdkerrors.ErrNotSupported, "invalid rewards portion for LPs (%s)", errors.New("Invalid LP portion"))
 	}
 	if msg.RewardPortionForStakers.GT(sdk.NewDec(1)) {
-		return sdkerrors.Wrapf(sdkerrors.ErrNotSupported, "invalid rewards portion for Stakers (%s)", errors.New("Invalid Staker portion"))
+		return errorsmod.Wrapf(sdkerrors.ErrNotSupported, "invalid rewards portion for Stakers (%s)", errors.New("Invalid Staker portion"))
 	}
 	if msg.RewardPortionForLps.Add(msg.RewardPortionForStakers).GT(sdk.NewDec(1)) {
-		return sdkerrors.Wrapf(sdkerrors.ErrNotSupported, "invalid rewards portion for Stakers and LPs (%s)", errors.New("Invalid Staker and LP portion"))
+		return errorsmod.Wrapf(sdkerrors.ErrNotSupported, "invalid rewards portion for Stakers and LPs (%s)", errors.New("Invalid Staker and LP portion"))
 	}
 	if msg.MaxEdenRewardAprStakers.LT(sdk.ZeroDec()) {
-		return sdkerrors.Wrapf(sdkerrors.ErrNotSupported, "invalid max eden rewards apr for stakers (%s)", errors.New("Invalid Rewards APR"))
+		return errorsmod.Wrapf(sdkerrors.ErrNotSupported, "invalid max eden rewards apr for stakers (%s)", errors.New("Invalid Rewards APR"))
 	}
 	if msg.MaxEdenRewardAprLps.LT(sdk.ZeroDec()) {
-		return sdkerrors.Wrapf(sdkerrors.ErrNotSupported, "invalid max eden rewards apr for stakers (%s)", errors.New("Invalid Rewards APR"))
+		return errorsmod.Wrapf(sdkerrors.ErrNotSupported, "invalid max eden rewards apr for stakers (%s)", errors.New("Invalid Rewards APR"))
 	}
 	if msg.DistributionEpochForStakers < 1 {
-		return sdkerrors.Wrapf(sdkerrors.ErrNotSupported, "invalid distribution epoch (%s)", errors.New("Invalid epoch"))
+		return errorsmod.Wrapf(sdkerrors.ErrNotSupported, "invalid distribution epoch (%s)", errors.New("Invalid epoch"))
 	}
 	if msg.DistributionEpochForLps < 1 {
-		return sdkerrors.Wrapf(sdkerrors.ErrNotSupported, "invalid distribution epoch (%s)", errors.New("Invalid epoch"))
+		return errorsmod.Wrapf(sdkerrors.ErrNotSupported, "invalid distribution epoch (%s)", errors.New("Invalid epoch"))
 	}
 	if msg.ElysStakeTrackingRate < 1 {
-		return sdkerrors.Wrapf(sdkerrors.ErrNotSupported, "invalid elys staked tracking epoch (%s)", errors.New("Invalid elys staked tracking epoch"))
+		return errorsmod.Wrapf(sdkerrors.ErrNotSupported, "invalid elys staked tracking epoch (%s)", errors.New("Invalid elys staked tracking epoch"))
 	}
 	return nil
 }

@@ -3,8 +3,8 @@ package keeper
 import (
 	"context"
 
+	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/elys-network/elys/x/amm/types"
 	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
@@ -20,7 +20,7 @@ func (k msgServer) SwapByDenom(goCtx context.Context, msg *types.MsgSwapByDenom)
 
 	entry, found := k.assetProfileKeeper.GetEntry(ctx, ptypes.BaseCurrency)
 	if !found {
-		return nil, sdkerrors.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency)
+		return nil, errorsmod.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency)
 	}
 	baseCurrency := entry.Denom
 
@@ -33,7 +33,7 @@ func (k msgServer) SwapByDenom(goCtx context.Context, msg *types.MsgSwapByDenom)
 	if inRoute != nil {
 		// check min amount denom is equals to denom out
 		if msg.MinAmount.Denom != msg.DenomOut {
-			return nil, sdkerrors.Wrapf(types.ErrInvalidDenom, "min amount denom %s is not equals to denom out %s", msg.MinAmount.Denom, msg.DenomOut)
+			return nil, errorsmod.Wrapf(types.ErrInvalidDenom, "min amount denom %s is not equals to denom out %s", msg.MinAmount.Denom, msg.DenomOut)
 		}
 
 		// convert route []*types.SwapAmountInRoute to []types.SwapAmountInRoute
@@ -72,7 +72,7 @@ func (k msgServer) SwapByDenom(goCtx context.Context, msg *types.MsgSwapByDenom)
 	if outRoute != nil {
 		// check max amount denom is equals to denom out
 		if msg.MaxAmount.Denom != msg.DenomOut {
-			return nil, sdkerrors.Wrapf(types.ErrInvalidDenom, "max amount denom %s is not equals to denom out %s", msg.MaxAmount.Denom, msg.DenomOut)
+			return nil, errorsmod.Wrapf(types.ErrInvalidDenom, "max amount denom %s is not equals to denom out %s", msg.MaxAmount.Denom, msg.DenomOut)
 		}
 
 		// convert route []*types.SwapAmountOutRoute to []types.SwapAmountOutRoute
@@ -107,5 +107,5 @@ func (k msgServer) SwapByDenom(goCtx context.Context, msg *types.MsgSwapByDenom)
 	}
 
 	// otherwise throw an error
-	return nil, sdkerrors.Wrapf(types.ErrInvalidSwapMsgType, "neither inRoute nor outRoute are available")
+	return nil, errorsmod.Wrapf(types.ErrInvalidSwapMsgType, "neither inRoute nor outRoute are available")
 }

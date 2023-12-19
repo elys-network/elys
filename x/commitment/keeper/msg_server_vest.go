@@ -3,8 +3,8 @@ package keeper
 import (
 	"context"
 
+	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
 	"github.com/elys-network/elys/x/commitment/types"
 )
@@ -28,7 +28,7 @@ func (k Keeper) ProcessTokenVesting(ctx sdk.Context, denom string, amount sdk.In
 	vestingInfo, _ := k.GetVestingInfo(ctx, denom)
 
 	if vestingInfo == nil {
-		return sdkerrors.Wrapf(types.ErrInvalidDenom, "denom: %s", denom)
+		return errorsmod.Wrapf(types.ErrInvalidDenom, "denom: %s", denom)
 	}
 
 	commitments := k.GetCommitments(ctx, creator)
@@ -36,7 +36,7 @@ func (k Keeper) ProcessTokenVesting(ctx sdk.Context, denom string, amount sdk.In
 	// Create vesting tokens entry and add to commitments
 	vestingTokens := commitments.GetVestingTokens()
 	if vestingInfo.NumMaxVestings <= (int64)(len(vestingTokens)) {
-		return sdkerrors.Wrapf(types.ErrExceedMaxVestings, "creator: %s", creator)
+		return errorsmod.Wrapf(types.ErrExceedMaxVestings, "creator: %s", creator)
 	}
 
 	commitments, err := k.DeductClaimed(ctx, creator, denom, amount)

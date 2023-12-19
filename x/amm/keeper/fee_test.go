@@ -235,7 +235,7 @@ func (suite *KeeperTestSuite) TestSwapFeesToRevenueToken() {
 	// 		tokenOutAmount := tokenOutCoin.Amount
 
 	// 		if !tokenOutAmount.IsPositive() {
-	// 			return sdkerrors.Wrapf(types.ErrInvalidMathApprox, "token amount must be positive")
+	// 			return errorsmod.Wrapf(types.ErrInvalidMathApprox, "token amount must be positive")
 	// 		}
 
 	// 		// Settles balances between the tx sender and the pool to match the swap that was executed earlier.

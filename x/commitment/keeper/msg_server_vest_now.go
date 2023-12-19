@@ -3,6 +3,7 @@ package keeper
 import (
 	"context"
 
+	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/elys-network/elys/x/commitment/types"
@@ -23,7 +24,7 @@ func (k msgServer) VestNow(goCtx context.Context, msg *types.MsgVestNow) (*types
 
 	vestingInfo, _ := k.GetVestingInfo(ctx, msg.Denom)
 	if vestingInfo == nil {
-		return nil, sdkerrors.Wrapf(types.ErrInvalidDenom, "denom: %s", msg.Denom)
+		return nil, errorsmod.Wrapf(types.ErrInvalidDenom, "denom: %s", msg.Denom)
 	}
 
 	commitments, err := k.DeductClaimed(ctx, msg.Creator, msg.Denom, msg.Amount)
