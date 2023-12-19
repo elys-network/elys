@@ -2,8 +2,8 @@ package keeper
 
 import (
 	"context"
-	"errors"
 
+	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
@@ -21,7 +21,7 @@ func (k msgServer) Bond(goCtx context.Context, msg *types.MsgBond) (*types.MsgBo
 
 	entry, found := k.assetProfileKeeper.GetEntry(ctx, params.DepositDenom)
 	if !found {
-		return nil, errors.New("invalid denom")
+		return nil, errorsmod.Wrap(types.ErrInvalidDepositDenom, params.DepositDenom)
 	}
 
 	depositDenom := entry.Denom
