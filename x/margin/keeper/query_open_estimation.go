@@ -3,8 +3,8 @@ package keeper
 import (
 	"context"
 
+	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
 	"github.com/elys-network/elys/x/margin/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
@@ -22,7 +22,7 @@ func (k Keeper) OpenEstimation(goCtx context.Context, req *types.QueryOpenEstima
 	// calculate min collateral
 	minCollateral, err := k.CalcMinCollateral(ctx, req.Leverage)
 	if err != nil {
-		return nil, sdkerrors.Wrapf(types.ErrCalcMinCollateral, "error calculating min collateral: %s", err.Error())
+		return nil, errorsmod.Wrapf(types.ErrCalcMinCollateral, "error calculating min collateral: %s", err.Error())
 	}
 
 	// get swap fee param
@@ -30,7 +30,7 @@ func (k Keeper) OpenEstimation(goCtx context.Context, req *types.QueryOpenEstima
 
 	entry, found := k.assetProfileKeeper.GetEntry(ctx, ptypes.BaseCurrency)
 	if !found {
-		return nil, sdkerrors.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency)
+		return nil, errorsmod.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency)
 	}
 	baseCurrency := entry.Denom
 
@@ -47,7 +47,7 @@ func (k Keeper) OpenEstimation(goCtx context.Context, req *types.QueryOpenEstima
 	estimatedPnL := sdk.NewDecFromBigInt(leveragedAmount.BigInt()).Mul(req.TakeProfitPrice.Sub(openPrice)).TruncateInt()
 
 	if leveragedAmount.IsZero() {
-		return nil, sdkerrors.Wrapf(types.ErrAmountTooLow, "leveraged amount is zero")
+		return nil, errorsmod.Wrapf(types.ErrAmountTooLow, "leveraged amount is zero")
 	}
 
 	// calculate liquidation price

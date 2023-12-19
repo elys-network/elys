@@ -3,6 +3,7 @@ package keeper
 import (
 	"context"
 
+	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/elys-network/elys/x/amm/types"
@@ -34,7 +35,7 @@ func (k Keeper) Balance(goCtx context.Context, req *types.QueryBalanceRequest) (
 
 		entry, found := k.assetProfileKeeper.GetEntry(ctx, paramtypes.BaseCurrency)
 		if !found {
-			return nil, sdkerrors.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", paramtypes.BaseCurrency)
+			return nil, errorsmod.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", paramtypes.BaseCurrency)
 		}
 		baseCurrency := entry.Denom
 

@@ -136,9 +136,7 @@ func TestCalculateRewardsForLPs(t *testing.T) {
 		WeightBreakingFeeMultiplier: sdk.ZeroDec(),
 		WeightBreakingFeeExponent:   sdk.NewDecWithPrec(25, 1), // 2.5
 		ExternalLiquidityRatio:      sdk.OneDec(),
-		LpFeePortion:                sdk.ZeroDec(),
-		StakingFeePortion:           sdk.ZeroDec(),
-		WeightRecoveryFeePortion:    sdk.ZeroDec(),
+		WeightRecoveryFeePortion:    sdk.NewDecWithPrec(10, 2), // 10%
 		ThresholdWeightDifference:   sdk.ZeroDec(),
 		FeeDenom:                    "",
 	}

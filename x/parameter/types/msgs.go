@@ -1,6 +1,7 @@
 package types
 
 import (
+	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
@@ -25,7 +26,7 @@ func (msg *MsgUpdateMinCommission) GetSigners() []sdk.AccAddress {
 func (msg *MsgUpdateMinCommission) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid sender address (%s)", err)
+		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid sender address (%s)", err)
 	}
 	return nil
 }
@@ -50,7 +51,7 @@ func (msg *MsgUpdateMaxVotingPower) GetSigners() []sdk.AccAddress {
 func (msg *MsgUpdateMaxVotingPower) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid sender address (%s)", err)
+		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid sender address (%s)", err)
 	}
 	return nil
 }
@@ -75,7 +76,7 @@ func (msg *MsgUpdateMinSelfDelegation) GetSigners() []sdk.AccAddress {
 func (msg *MsgUpdateMinSelfDelegation) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid sender address (%s)", err)
+		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid sender address (%s)", err)
 	}
 	return nil
 }
@@ -100,7 +101,7 @@ func (msg *MsgUpdateBrokerAddress) GetSigners() []sdk.AccAddress {
 func (msg *MsgUpdateBrokerAddress) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid sender address (%s)", err)
+		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid sender address (%s)", err)
 	}
 	return nil
 }

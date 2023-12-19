@@ -1,8 +1,8 @@
 package keeper
 
 import (
+	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	"github.com/elys-network/elys/x/margin/types"
 )
@@ -11,7 +11,7 @@ import (
 func (k Keeper) EstimateSwap(ctx sdk.Context, tokenInAmount sdk.Coin, tokenOutDenom string, ammPool ammtypes.Pool) (sdk.Int, error) {
 	marginEnabled := k.IsPoolEnabled(ctx, ammPool.PoolId)
 	if !marginEnabled {
-		return sdk.ZeroInt(), sdkerrors.Wrap(types.ErrMarginDisabled, "Margin disabled pool")
+		return sdk.ZeroInt(), errorsmod.Wrap(types.ErrMarginDisabled, "Margin disabled pool")
 	}
 
 	tokensIn := sdk.Coins{tokenInAmount}

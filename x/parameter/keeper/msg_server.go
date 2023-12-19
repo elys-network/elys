@@ -3,6 +3,7 @@ package keeper
 import (
 	"context"
 
+	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
@@ -25,7 +26,7 @@ func (k msgServer) UpdateMinCommission(goCtx context.Context, msg *types.MsgUpda
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	if k.authority != msg.Creator {
-		return nil, sdkerrors.Wrapf(govtypes.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.authority, msg.Creator)
+		return nil, errorsmod.Wrapf(govtypes.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.authority, msg.Creator)
 	}
 
 	minComission, err := sdk.NewDecFromStr(msg.MinCommission)
@@ -43,7 +44,7 @@ func (k msgServer) UpdateMaxVotingPower(goCtx context.Context, msg *types.MsgUpd
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	if k.authority != msg.Creator {
-		return nil, sdkerrors.Wrapf(govtypes.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.authority, msg.Creator)
+		return nil, errorsmod.Wrapf(govtypes.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.authority, msg.Creator)
 	}
 
 	maxVotingPower, err := sdk.NewDecFromStr(msg.MaxVotingPower)
@@ -61,12 +62,12 @@ func (k msgServer) UpdateMinSelfDelegation(goCtx context.Context, msg *types.Msg
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	if k.authority != msg.Creator {
-		return nil, sdkerrors.Wrapf(govtypes.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.authority, msg.Creator)
+		return nil, errorsmod.Wrapf(govtypes.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.authority, msg.Creator)
 	}
 
 	minSelfDelegation, ok := sdk.NewIntFromString(msg.MinSelfDelegation)
 	if !ok {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "minimum self delegation must be a positive integer")
+		return nil, errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "minimum self delegation must be a positive integer")
 	}
 
 	params := k.GetParams(ctx)
@@ -79,7 +80,7 @@ func (k msgServer) UpdateBrokerAddress(goCtx context.Context, msg *types.MsgUpda
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	if k.authority != msg.Creator {
-		return nil, sdkerrors.Wrapf(govtypes.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.authority, msg.Creator)
+		return nil, errorsmod.Wrapf(govtypes.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.authority, msg.Creator)
 	}
 
 	params := k.GetParams(ctx)

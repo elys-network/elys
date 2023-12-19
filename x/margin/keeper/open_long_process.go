@@ -1,8 +1,8 @@
 package keeper
 
 import (
+	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/elys-network/elys/x/margin/types"
 )
 
@@ -10,12 +10,12 @@ func (k Keeper) ProcessOpenLong(ctx sdk.Context, mtp *types.MTP, leverage sdk.De
 	// Fetch the pool associated with the given pool ID.
 	pool, found := k.OpenLongChecker.GetPool(ctx, poolId)
 	if !found {
-		return nil, sdkerrors.Wrap(types.ErrPoolDoesNotExist, mtp.TradingAsset)
+		return nil, errorsmod.Wrap(types.ErrPoolDoesNotExist, mtp.TradingAsset)
 	}
 
 	// Check if the pool is enabled.
 	if !k.OpenLongChecker.IsPoolEnabled(ctx, poolId) {
-		return nil, sdkerrors.Wrap(types.ErrMTPDisabled, mtp.TradingAsset)
+		return nil, errorsmod.Wrap(types.ErrMTPDisabled, mtp.TradingAsset)
 	}
 
 	// Fetch the corresponding AMM (Automated Market Maker) pool.
@@ -35,11 +35,11 @@ func (k Keeper) ProcessOpenLong(ctx sdk.Context, mtp *types.MTP, leverage sdk.De
 			return nil, err
 		}
 		if !types.HasSufficientPoolBalance(ammPool, baseCurrency, borrowingAmount) {
-			return nil, sdkerrors.Wrap(types.ErrBorrowTooHigh, borrowingAmount.String())
+			return nil, errorsmod.Wrap(types.ErrBorrowTooHigh, borrowingAmount.String())
 		}
 	} else {
 		if !types.HasSufficientPoolBalance(ammPool, mtp.CollateralAsset, leveragedAmount) {
-			return nil, sdkerrors.Wrap(types.ErrBorrowTooHigh, leveragedAmount.String())
+			return nil, errorsmod.Wrap(types.ErrBorrowTooHigh, leveragedAmount.String())
 		}
 	}
 
@@ -62,7 +62,7 @@ func (k Keeper) ProcessOpenLong(ctx sdk.Context, mtp *types.MTP, leverage sdk.De
 
 	// Ensure the AMM pool has enough balance.
 	if !types.HasSufficientPoolBalance(ammPool, mtp.CustodyAsset, custodyAmount) {
-		return nil, sdkerrors.Wrap(types.ErrCustodyTooHigh, custodyAmount.String())
+		return nil, errorsmod.Wrap(types.ErrCustodyTooHigh, custodyAmount.String())
 	}
 
 	// Borrow the asset the user wants to long.

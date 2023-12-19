@@ -1,6 +1,7 @@
 package types
 
 import (
+	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
@@ -46,7 +47,7 @@ func (msg *MsgSetPriceFeeder) GetSignBytes() []byte {
 func (msg *MsgSetPriceFeeder) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Feeder)
 	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid feeder address (%s)", err)
+		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid feeder address (%s)", err)
 	}
 	return nil
 }
@@ -85,7 +86,7 @@ func (msg *MsgDeletePriceFeeder) GetSignBytes() []byte {
 func (msg *MsgDeletePriceFeeder) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Feeder)
 	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid feeder address (%s)", err)
+		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid feeder address (%s)", err)
 	}
 	return nil
 }

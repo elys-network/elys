@@ -3,6 +3,7 @@ package keeper
 import (
 	"context"
 
+	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/elys-network/elys/x/commitment/types"
@@ -23,7 +24,7 @@ func (k msgServer) VestNow(goCtx context.Context, msg *types.MsgVestNow) (*types
 
 	vestingInfo, _ := k.GetVestingInfo(ctx, msg.Denom)
 	if vestingInfo == nil {
-		return nil, sdkerrors.Wrapf(types.ErrInvalidDenom, "denom: %s", msg.Denom)
+		return nil, errorsmod.Wrapf(types.ErrInvalidDenom, "denom: %s", msg.Denom)
 	}
 
 	commitments, err := k.DeductClaimed(ctx, msg.Creator, msg.Denom, msg.Amount)
@@ -41,7 +42,7 @@ func (k msgServer) VestNow(goCtx context.Context, msg *types.MsgVestNow) (*types
 
 	addr, err := sdk.AccAddressFromBech32(commitments.Creator)
 	if err != nil {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "unable to convert address from bech32")
+		return nil, errorsmod.Wrap(sdkerrors.ErrInvalidAddress, "unable to convert address from bech32")
 	}
 
 	// mint coins if vesting token is ELYS
@@ -56,7 +57,7 @@ func (k msgServer) VestNow(goCtx context.Context, msg *types.MsgVestNow) (*types
 	// Send the minted coins to the user's account
 	err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, addr, withdrawCoins)
 	if err != nil {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrInsufficientFunds, "unable to send withdrawn tokens")
+		return nil, errorsmod.Wrap(sdkerrors.ErrInsufficientFunds, "unable to send withdrawn tokens")
 	}
 
 	// Update the commitments

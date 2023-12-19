@@ -4,9 +4,9 @@ import (
 	"errors"
 	"fmt"
 
+	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/elys-network/elys/x/amm/types"
 )
 
@@ -37,7 +37,7 @@ func (k Keeper) SwapExactAmountOut(
 
 	poolOutBal := pool.GetTotalPoolLiquidity().AmountOf(tokenOut.Denom)
 	if tokenOut.Amount.GTE(poolOutBal) {
-		return math.Int{}, sdkerrors.Wrapf(types.ErrTooManyTokensOut, "cannot get more tokens out than there are tokens in the pool")
+		return math.Int{}, errorsmod.Wrapf(types.ErrTooManyTokensOut, "cannot get more tokens out than there are tokens in the pool")
 	}
 
 	snapshot := k.GetPoolSnapshotOrSet(ctx, pool)
@@ -48,11 +48,11 @@ func (k Keeper) SwapExactAmountOut(
 	tokenInAmount = tokenIn.Amount
 
 	if tokenInAmount.LTE(sdk.ZeroInt()) {
-		return math.Int{}, sdkerrors.Wrapf(types.ErrInvalidMathApprox, "token amount is zero or negative")
+		return math.Int{}, errorsmod.Wrapf(types.ErrInvalidMathApprox, "token amount is zero or negative")
 	}
 
 	if tokenInAmount.GT(tokenInMaxAmount) {
-		return math.Int{}, sdkerrors.Wrapf(types.ErrLimitMaxAmount, "swap requires %s, which is greater than the amount %s", tokenIn, tokenInMaxAmount)
+		return math.Int{}, errorsmod.Wrapf(types.ErrLimitMaxAmount, "swap requires %s, which is greater than the amount %s", tokenIn, tokenInMaxAmount)
 	}
 
 	err, _ = k.UpdatePoolForSwap(ctx, pool, sender, recipient, tokenIn, tokenOut, swapFee, sdk.ZeroDec(), weightBalanceBonus)

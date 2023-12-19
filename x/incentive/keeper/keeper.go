@@ -9,7 +9,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
 
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	errorsmod "cosmossdk.io/errors"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
 	ctypes "github.com/elys-network/elys/x/commitment/types"
@@ -97,7 +97,7 @@ func (k Keeper) Logger(ctx sdk.Context) log.Logger {
 func (k Keeper) UpdateStakersRewardsUnclaimed(ctx sdk.Context, stakeIncentive types.IncentiveInfo) error {
 	entry, found := k.assetProfileKeeper.GetEntry(ctx, ptypes.BaseCurrency)
 	if !found {
-		return sdkerrors.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency)
+		return errorsmod.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency)
 	}
 	baseCurrency := entry.Denom
 
@@ -133,7 +133,7 @@ func (k Keeper) UpdateStakersRewardsUnclaimed(ctx sdk.Context, stakeIncentive ty
 
 	// Ensure stakeIncentive.TotalBlocksPerYear or stakeIncentive.AllocationEpochInBlocks are not zero to avoid division by zero
 	if stakeIncentive.TotalBlocksPerYear.IsZero() || stakeIncentive.AllocationEpochInBlocks.IsZero() {
-		return sdkerrors.Wrap(types.ErrNoNonInflationaryParams, "invalid inflationary params")
+		return errorsmod.Wrap(types.ErrNoNonInflationaryParams, "invalid inflationary params")
 	}
 
 	// Calculate
@@ -315,7 +315,7 @@ func (k Keeper) UpdateStakersRewardsUnclaimed(ctx sdk.Context, stakeIncentive ty
 func (k Keeper) UpdateLPRewardsUnclaimed(ctx sdk.Context, lpIncentive types.IncentiveInfo) error {
 	entry, found := k.assetProfileKeeper.GetEntry(ctx, ptypes.BaseCurrency)
 	if !found {
-		return sdkerrors.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency)
+		return errorsmod.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency)
 	}
 	baseCurrency := entry.Denom
 
@@ -354,7 +354,7 @@ func (k Keeper) UpdateLPRewardsUnclaimed(ctx sdk.Context, lpIncentive types.Ince
 
 	// Ensure lpIncentive.TotalBlocksPerYear or lpIncentive.AllocationEpochInBlocks are not zero to avoid division by zero
 	if lpIncentive.TotalBlocksPerYear.IsZero() || lpIncentive.AllocationEpochInBlocks.IsZero() {
-		return sdkerrors.Wrap(types.ErrNoNonInflationaryParams, "invalid inflationary params")
+		return errorsmod.Wrap(types.ErrNoNonInflationaryParams, "invalid inflationary params")
 	}
 
 	// Calculate eden amount per epoch

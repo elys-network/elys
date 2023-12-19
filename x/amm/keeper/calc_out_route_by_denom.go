@@ -3,8 +3,8 @@ package keeper
 import (
 	"fmt"
 
+	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/elys-network/elys/x/amm/types"
 )
 
@@ -14,7 +14,7 @@ func (k Keeper) CalcOutRouteByDenom(ctx sdk.Context, denomOut string, denomIn st
 
 	// If the denoms are the same, throw an error
 	if denomIn == denomOut {
-		return nil, sdkerrors.Wrap(types.ErrSameDenom, "denom in and denom out are the same")
+		return nil, errorsmod.Wrap(types.ErrSameDenom, "denom in and denom out are the same")
 	}
 
 	// Check for a direct pool between the denoms

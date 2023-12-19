@@ -37868,11 +37868,9 @@ paths:
                           type: boolean
                         weight_breaking_fee_multiplier:
                           type: string
+                        weight_breaking_fee_exponent:
+                          type: string
                         external_liquidity_ratio:
-                          type: string
-                        lp_fee_portion:
-                          type: string
-                        staking_fee_portion:
                           type: string
                         weight_recovery_fee_portion:
                           type: string
@@ -38057,11 +38055,9 @@ paths:
                         type: boolean
                       weight_breaking_fee_multiplier:
                         type: string
+                      weight_breaking_fee_exponent:
+                        type: string
                       external_liquidity_ratio:
-                        type: string
-                      lp_fee_portion:
-                        type: string
-                      staking_fee_portion:
                         type: string
                       weight_recovery_fee_portion:
                         type: string
@@ -38305,6 +38301,8 @@ paths:
                   method
 
                   signatures required by gogoproto.
+              weight_balance_ratio:
+                type: string
         default:
           description: An unexpected error response.
           schema:
@@ -38404,6 +38402,8 @@ paths:
                   method
 
                   signatures required by gogoproto.
+              weight_balance_ratio:
+                type: string
         default:
           description: An unexpected error response.
           schema:
@@ -82456,11 +82456,9 @@ definitions:
             type: boolean
           weight_breaking_fee_multiplier:
             type: string
+          weight_breaking_fee_exponent:
+            type: string
           external_liquidity_ratio:
-            type: string
-          lp_fee_portion:
-            type: string
-          staking_fee_portion:
             type: string
           weight_recovery_fee_portion:
             type: string
@@ -82518,11 +82516,9 @@ definitions:
             type: boolean
           weight_breaking_fee_multiplier:
             type: string
+          weight_breaking_fee_exponent:
+            type: string
           external_liquidity_ratio:
-            type: string
-          lp_fee_portion:
-            type: string
-          staking_fee_portion:
             type: string
           weight_recovery_fee_portion:
             type: string
@@ -82580,11 +82576,9 @@ definitions:
         type: boolean
       weight_breaking_fee_multiplier:
         type: string
+      weight_breaking_fee_exponent:
+        type: string
       external_liquidity_ratio:
-        type: string
-      lp_fee_portion:
-        type: string
-      staking_fee_portion:
         type: string
       weight_recovery_fee_portion:
         type: string
@@ -82655,11 +82649,9 @@ definitions:
                   type: boolean
                 weight_breaking_fee_multiplier:
                   type: string
+                weight_breaking_fee_exponent:
+                  type: string
                 external_liquidity_ratio:
-                  type: string
-                lp_fee_portion:
-                  type: string
-                staking_fee_portion:
                   type: string
                 weight_recovery_fee_portion:
                   type: string
@@ -82782,11 +82774,9 @@ definitions:
                 type: boolean
               weight_breaking_fee_multiplier:
                 type: string
+              weight_breaking_fee_exponent:
+                type: string
               external_liquidity_ratio:
-                type: string
-              lp_fee_portion:
-                type: string
-              staking_fee_portion:
                 type: string
               weight_recovery_fee_portion:
                 type: string
@@ -82986,6 +82976,8 @@ definitions:
 
           NOTE: The amount field is an Int which implements the custom method
           signatures required by gogoproto.
+      weight_balance_ratio:
+        type: string
   elys.amm.QuerySwapEstimationResponse:
     type: object
     properties:
@@ -83019,6 +83011,8 @@ definitions:
 
           NOTE: The amount field is an Int which implements the custom method
           signatures required by gogoproto.
+      weight_balance_ratio:
+        type: string
   elys.amm.SwapAmountInRoute:
     type: object
     properties:

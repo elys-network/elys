@@ -4,8 +4,8 @@ import (
 	"errors"
 	fmt "fmt"
 
+	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 func CalcExitValueWithoutSlippage(ctx sdk.Context, oracleKeeper OracleKeeper, accPoolKeeper AccountedPoolKeeper, pool Pool, exitingShares sdk.Int, tokenOutDenom string) (sdk.Dec, error) {
@@ -26,7 +26,7 @@ func CalcExitValueWithoutSlippage(ctx sdk.Context, oracleKeeper OracleKeeper, ac
 	exitValue := tvl.Mul(refundedShares).Quo(sdk.NewDecFromInt(totalShares.Amount))
 
 	if exitingShares.GTE(totalShares.Amount) {
-		return sdk.ZeroDec(), sdkerrors.Wrapf(ErrLimitMaxAmount, ErrMsgFormatSharesLargerThanMax, exitingShares, totalShares)
+		return sdk.ZeroDec(), errorsmod.Wrapf(ErrLimitMaxAmount, ErrMsgFormatSharesLargerThanMax, exitingShares, totalShares)
 	}
 
 	return exitValue, nil
@@ -82,7 +82,7 @@ func CalcExitValueWithoutSlippage(ctx sdk.Context, oracleKeeper OracleKeeper, ac
 func CalcExitPool(ctx sdk.Context, oracleKeeper OracleKeeper, pool Pool, accountedPoolKeeper AccountedPoolKeeper, exitingShares sdk.Int, tokenOutDenom string) (sdk.Coins, error) {
 	totalShares := pool.GetTotalShares()
 	if exitingShares.GTE(totalShares.Amount) {
-		return sdk.Coins{}, sdkerrors.Wrapf(ErrLimitMaxAmount, ErrMsgFormatSharesLargerThanMax, exitingShares, totalShares)
+		return sdk.Coins{}, errorsmod.Wrapf(ErrLimitMaxAmount, ErrMsgFormatSharesLargerThanMax, exitingShares, totalShares)
 	}
 
 	// refundedShares = exitingShares * (1 - exit fee)

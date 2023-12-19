@@ -8,6 +8,7 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 
+	errorsmod "cosmossdk.io/errors"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
@@ -160,19 +161,19 @@ func CmdUpdatePoolInfoProposal() *cobra.Command {
 			poolIds := strings.Split(argPoolIds, ",")
 			multipliers := strings.Split(argMultipliers, ",")
 			if len(poolIds) < 1 || len(poolIds) != len(multipliers) {
-				return sdkerrors.Wrapf(sdkerrors.ErrInvalidType, "invalid parameter")
+				return errorsmod.Wrapf(sdkerrors.ErrInvalidType, "invalid parameter")
 			}
 
 			poolMultipliers := make([]types.PoolMultipliers, 0)
 			for i := range poolIds {
 				poolId, err := strconv.ParseUint(poolIds[i], 10, 64)
 				if err != nil {
-					return sdkerrors.Wrapf(sdkerrors.ErrInvalidType, "invalid parameter")
+					return errorsmod.Wrapf(sdkerrors.ErrInvalidType, "invalid parameter")
 				}
 
 				multiplier, err := sdk.NewDecFromStr(multipliers[i])
 				if err != nil {
-					return sdkerrors.Wrapf(sdkerrors.ErrInvalidType, "invalid parameter")
+					return errorsmod.Wrapf(sdkerrors.ErrInvalidType, "invalid parameter")
 				}
 				poolMultiplier := types.PoolMultipliers{
 					PoolId:     poolId,

@@ -1,8 +1,8 @@
 package keeper
 
 import (
+	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
 	"github.com/elys-network/elys/x/margin/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
@@ -11,7 +11,7 @@ import (
 func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen) (*types.MsgOpenResponse, error) {
 	entry, found := k.assetProfileKeeper.GetEntry(ctx, ptypes.BaseCurrency)
 	if !found {
-		return nil, sdkerrors.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency)
+		return nil, errorsmod.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency)
 	}
 	baseCurrency := entry.Denom
 
@@ -26,7 +26,7 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen) (*types.MsgOpenRespons
 			return nil, err
 		}
 	default:
-		return nil, sdkerrors.Wrap(types.ErrInvalidPosition, msg.Position.String())
+		return nil, errorsmod.Wrap(types.ErrInvalidPosition, msg.Position.String())
 	}
 
 	if err := k.OpenChecker.CheckUserAuthorization(ctx, msg); err != nil {
@@ -65,7 +65,7 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen) (*types.MsgOpenRespons
 			return nil, err
 		}
 	default:
-		return nil, sdkerrors.Wrap(types.ErrInvalidPosition, msg.Position.String())
+		return nil, errorsmod.Wrap(types.ErrInvalidPosition, msg.Position.String())
 	}
 
 	k.OpenChecker.EmitOpenEvent(ctx, mtp)

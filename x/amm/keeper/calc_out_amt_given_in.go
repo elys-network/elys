@@ -1,8 +1,8 @@
 package keeper
 
 import (
+	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/elys-network/elys/x/amm/types"
 )
 
@@ -19,7 +19,7 @@ func (k Keeper) CalcOutAmtGivenIn(
 ) (sdk.Coin, error) {
 	p, found := k.GetPool(ctx, poolId)
 	if !found {
-		return sdk.Coin{}, sdkerrors.Wrapf(types.ErrInvalidPool, "invalid pool")
+		return sdk.Coin{}, errorsmod.Wrapf(types.ErrInvalidPool, "invalid pool")
 	}
 
 	return p.CalcOutAmtGivenIn(ctx, oracle, snapshot, tokensIn, tokenOutDenom, swapFee, k.accountedPoolKeeper)

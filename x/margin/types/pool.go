@@ -1,6 +1,7 @@
 package types
 
 import (
+	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
@@ -44,7 +45,7 @@ func (p *Pool) GetPoolAsset(position Position, assetDenom string) *PoolAsset {
 func (p *Pool) UpdateBalance(ctx sdk.Context, assetDenom string, amount sdk.Int, isIncrease bool, position Position) error {
 	poolAsset := p.GetPoolAsset(position, assetDenom)
 	if poolAsset == nil {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, "invalid asset denom")
+		return errorsmod.Wrap(sdkerrors.ErrInvalidCoins, "invalid asset denom")
 	}
 
 	if isIncrease {
@@ -60,7 +61,7 @@ func (p *Pool) UpdateBalance(ctx sdk.Context, assetDenom string, amount sdk.Int,
 func (p *Pool) UpdateLiabilities(ctx sdk.Context, assetDenom string, amount sdk.Int, isIncrease bool, position Position) error {
 	poolAsset := p.GetPoolAsset(position, assetDenom)
 	if poolAsset == nil {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, "invalid asset denom")
+		return errorsmod.Wrap(sdkerrors.ErrInvalidCoins, "invalid asset denom")
 	}
 
 	if isIncrease {
@@ -76,7 +77,7 @@ func (p *Pool) UpdateLiabilities(ctx sdk.Context, assetDenom string, amount sdk.
 func (p *Pool) UpdateTakeProfitLiabilities(ctx sdk.Context, assetDenom string, amount sdk.Int, isIncrease bool, position Position) error {
 	poolAsset := p.GetPoolAsset(position, assetDenom)
 	if poolAsset == nil {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, "invalid asset denom")
+		return errorsmod.Wrap(sdkerrors.ErrInvalidCoins, "invalid asset denom")
 	}
 
 	if isIncrease {
@@ -92,7 +93,7 @@ func (p *Pool) UpdateTakeProfitLiabilities(ctx sdk.Context, assetDenom string, a
 func (p *Pool) UpdateTakeProfitCustody(ctx sdk.Context, assetDenom string, amount sdk.Int, isIncrease bool, position Position) error {
 	poolAsset := p.GetPoolAsset(position, assetDenom)
 	if poolAsset == nil {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, "invalid asset denom")
+		return errorsmod.Wrap(sdkerrors.ErrInvalidCoins, "invalid asset denom")
 	}
 
 	if isIncrease {
@@ -108,7 +109,7 @@ func (p *Pool) UpdateTakeProfitCustody(ctx sdk.Context, assetDenom string, amoun
 func (p *Pool) UpdateCustody(ctx sdk.Context, assetDenom string, amount sdk.Int, isIncrease bool, position Position) error {
 	poolAsset := p.GetPoolAsset(position, assetDenom)
 	if poolAsset == nil {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, "invalid asset denom")
+		return errorsmod.Wrap(sdkerrors.ErrInvalidCoins, "invalid asset denom")
 	}
 
 	if isIncrease {
@@ -124,7 +125,7 @@ func (p *Pool) UpdateCustody(ctx sdk.Context, assetDenom string, amount sdk.Int,
 func (p *Pool) UpdateBlockBorrowInterest(ctx sdk.Context, assetDenom string, amount sdk.Int, isIncrease bool, position Position) error {
 	poolAsset := p.GetPoolAsset(position, assetDenom)
 	if poolAsset == nil {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, "invalid asset denom")
+		return errorsmod.Wrap(sdkerrors.ErrInvalidCoins, "invalid asset denom")
 	}
 
 	if isIncrease {
@@ -139,7 +140,7 @@ func (p *Pool) UpdateBlockBorrowInterest(ctx sdk.Context, assetDenom string, amo
 // Initialite pool asset according to its corresponding amm pool assets.
 func (p *Pool) InitiatePool(ctx sdk.Context, ammPool *ammtypes.Pool) error {
 	if ammPool == nil {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidType, "invalid amm pool")
+		return errorsmod.Wrap(sdkerrors.ErrInvalidType, "invalid amm pool")
 	}
 
 	// Set pool Id

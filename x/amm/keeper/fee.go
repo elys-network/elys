@@ -1,12 +1,10 @@
 package keeper
 
 import (
+	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/elys-network/elys/x/amm/types"
 )
-
-var WeightRecoveryPortion = sdk.NewDecWithPrec(10, 2) // 10%
 
 func PortionCoins(coins sdk.Coins, portion sdk.Dec) sdk.Coins {
 	portionCoins := sdk.Coins{}
@@ -21,8 +19,12 @@ func PortionCoins(coins sdk.Coins, portion sdk.Dec) sdk.Coins {
 
 func (k Keeper) OnCollectFee(ctx sdk.Context, pool types.Pool, fee sdk.Coins) error {
 	poolRevenueAddress := types.NewPoolRevenueAddress(pool.PoolId)
-	weightRecoveryFee := PortionCoins(fee, WeightRecoveryPortion)
-	revenueAmount := fee.Sub(weightRecoveryFee...)
+	revenueAmount := fee
+	if pool.PoolParams.UseOracle {
+		weightRecoveryFee := PortionCoins(fee, pool.PoolParams.WeightRecoveryFeePortion)
+		revenueAmount = fee.Sub(weightRecoveryFee...)
+	}
+
 	err := k.bankKeeper.SendCoins(ctx, sdk.MustAccAddressFromBech32(pool.RebalanceTreasury), poolRevenueAddress, revenueAmount)
 	if err != nil {
 		return nil
@@ -56,7 +58,7 @@ func (k Keeper) SwapFeesToRevenueToken(ctx sdk.Context, pool types.Pool, fee sdk
 		tokenOutAmount := tokenOutCoin.Amount
 
 		if !tokenOutAmount.IsPositive() {
-			return sdkerrors.Wrapf(types.ErrInvalidMathApprox, "token amount must be positive")
+			return errorsmod.Wrapf(types.ErrInvalidMathApprox, "token amount must be positive")
 		}
 
 		// Settles balances between the tx sender and the pool to match the swap that was executed earlier.

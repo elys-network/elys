@@ -82,7 +82,7 @@ func (suite *KeeperTestSuite) TestSwapExactAmountIn() {
 			expSenderBalance:    sdk.Coins{sdk.NewInt64Coin("uusda", 990000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1009704)},
 			expRecipientBalance: sdk.Coins{},
 			expPoolBalance:      sdk.Coins{sdk.NewInt64Coin("uusda", 1010000), sdk.NewInt64Coin(ptypes.BaseCurrency, 990198)},
-			expTreasuryBalance:  sdk.Coins{sdk.NewInt64Coin("uusda", 1000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1000010)},
+			expTreasuryBalance:  sdk.Coins{sdk.NewInt64Coin("uusda", 1000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)},
 			expPass:             true,
 		},
 		{
@@ -224,9 +224,7 @@ func (suite *KeeperTestSuite) TestSwapExactAmountIn() {
 					ExternalLiquidityRatio:      sdk.NewDec(2),
 					WeightBreakingFeeMultiplier: sdk.ZeroDec(),
 					WeightBreakingFeeExponent:   sdk.NewDecWithPrec(25, 1), // 2.5
-					LpFeePortion:                sdk.ZeroDec(),
-					StakingFeePortion:           sdk.ZeroDec(),
-					WeightRecoveryFeePortion:    sdk.ZeroDec(),
+					WeightRecoveryFeePortion:    sdk.NewDecWithPrec(10, 2), // 10%
 					ThresholdWeightDifference:   sdk.ZeroDec(),
 					SwapFee:                     tc.swapFeeIn,
 					FeeDenom:                    ptypes.BaseCurrency,

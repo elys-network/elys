@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	aptypes "github.com/elys-network/elys/x/assetprofile/types"
@@ -11,11 +12,11 @@ import (
 func (k Keeper) RecordClaimReward(ctx sdk.Context, creator string, denom string, amount sdk.Int, withdrawMode types.EarnType) error {
 	assetProfile, found := k.assetProfileKeeper.GetEntry(ctx, denom)
 	if !found {
-		return sdkerrors.Wrapf(aptypes.ErrAssetProfileNotFound, "denom: %s", denom)
+		return errorsmod.Wrapf(aptypes.ErrAssetProfileNotFound, "denom: %s", denom)
 	}
 
 	if !assetProfile.WithdrawEnabled {
-		return sdkerrors.Wrapf(types.ErrWithdrawDisabled, "denom: %s", denom)
+		return errorsmod.Wrapf(types.ErrWithdrawDisabled, "denom: %s", denom)
 	}
 
 	// uses asset profile denom
@@ -24,7 +25,7 @@ func (k Keeper) RecordClaimReward(ctx sdk.Context, creator string, denom string,
 	// Get the Commitments for the creator
 	commitments := k.GetCommitments(ctx, creator)
 	if !found {
-		return sdkerrors.Wrapf(types.ErrCommitmentsNotFound, "creator: %s", creator)
+		return errorsmod.Wrapf(types.ErrCommitmentsNotFound, "creator: %s", creator)
 	}
 
 	// Withdraw reward not depending on program type
@@ -60,7 +61,7 @@ func (k Keeper) RecordClaimReward(ctx sdk.Context, creator string, denom string,
 			return err
 		}
 	default:
-		return sdkerrors.Wrapf(types.ErrUnsupportedWithdrawMode, "creator: %s", creator)
+		return errorsmod.Wrapf(types.ErrUnsupportedWithdrawMode, "creator: %s", creator)
 	}
 
 	// Update the commitments
@@ -70,7 +71,7 @@ func (k Keeper) RecordClaimReward(ctx sdk.Context, creator string, denom string,
 
 	addr, err := sdk.AccAddressFromBech32(commitments.Creator)
 	if err != nil {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "unable to convert address from bech32")
+		return errorsmod.Wrap(sdkerrors.ErrInvalidAddress, "unable to convert address from bech32")
 	}
 
 	err = k.HandleWithdrawFromCommitment(ctx, &commitments, addr, withdrawCoins, false)

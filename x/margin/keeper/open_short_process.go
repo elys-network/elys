@@ -1,8 +1,8 @@
 package keeper
 
 import (
+	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/elys-network/elys/x/margin/types"
 )
 
@@ -10,12 +10,12 @@ func (k Keeper) ProcessOpenShort(ctx sdk.Context, mtp *types.MTP, leverage sdk.D
 	// Fetch the pool associated with the given pool ID.
 	pool, found := k.OpenShortChecker.GetPool(ctx, poolId)
 	if !found {
-		return nil, sdkerrors.Wrap(types.ErrPoolDoesNotExist, mtp.TradingAsset)
+		return nil, errorsmod.Wrap(types.ErrPoolDoesNotExist, mtp.TradingAsset)
 	}
 
 	// Check if the pool is enabled.
 	if !k.OpenShortChecker.IsPoolEnabled(ctx, poolId) {
-		return nil, sdkerrors.Wrap(types.ErrMTPDisabled, mtp.TradingAsset)
+		return nil, errorsmod.Wrap(types.ErrMTPDisabled, mtp.TradingAsset)
 	}
 
 	// Fetch the corresponding AMM (Automated Market Maker) pool.
@@ -28,7 +28,7 @@ func (k Keeper) ProcessOpenShort(ctx sdk.Context, mtp *types.MTP, leverage sdk.D
 	leveragedAmount := sdk.NewInt(collateralAmountDec.Mul(leverage).TruncateInt().Int64())
 
 	if mtp.CollateralAsset != baseCurrency {
-		return nil, sdkerrors.Wrap(types.ErrInvalidBorrowingAsset, "collateral must be base currency")
+		return nil, errorsmod.Wrap(types.ErrInvalidBorrowingAsset, "collateral must be base currency")
 	}
 
 	// Check minimum liabilities.
@@ -42,7 +42,7 @@ func (k Keeper) ProcessOpenShort(ctx sdk.Context, mtp *types.MTP, leverage sdk.D
 
 	// check the balance
 	if !types.HasSufficientPoolBalance(ammPool, mtp.CustodyAsset, custodyAmount) {
-		return nil, sdkerrors.Wrap(types.ErrBorrowTooHigh, custodyAmount.String())
+		return nil, errorsmod.Wrap(types.ErrBorrowTooHigh, custodyAmount.String())
 	}
 
 	// Borrow the asset the user wants to short.

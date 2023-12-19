@@ -23,7 +23,7 @@ func (k msgServer) CreateAirdrop(goCtx context.Context, msg *types.MsgCreateAird
 		msg.Intent,
 	)
 	if isFound {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "index already set")
+		return nil, errors.Wrap(sdkerrors.ErrInvalidRequest, "index already set")
 	}
 
 	airdrop := types.Airdrop{
@@ -52,12 +52,12 @@ func (k msgServer) UpdateAirdrop(goCtx context.Context, msg *types.MsgUpdateAird
 		msg.Intent,
 	)
 	if !isFound {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, "index not set")
+		return nil, errors.Wrap(sdkerrors.ErrKeyNotFound, "index not set")
 	}
 
 	// Checks if the the msg authority is the same as the current owner
 	if msg.Authority != valFound.Authority {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "incorrect owner")
+		return nil, errors.Wrap(sdkerrors.ErrUnauthorized, "incorrect owner")
 	}
 
 	airdrop := types.Airdrop{
@@ -84,12 +84,12 @@ func (k msgServer) DeleteAirdrop(goCtx context.Context, msg *types.MsgDeleteAird
 		msg.Intent,
 	)
 	if !isFound {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, "index not set")
+		return nil, errors.Wrap(sdkerrors.ErrKeyNotFound, "index not set")
 	}
 
 	// Checks if the the msg authority is the same as the current owner
 	if msg.Authority != valFound.Authority {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "incorrect owner")
+		return nil, errors.Wrap(sdkerrors.ErrUnauthorized, "incorrect owner")
 	}
 
 	k.RemoveAirdrop(

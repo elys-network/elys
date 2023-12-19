@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"cosmossdk.io/errors"
+	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
@@ -20,7 +21,7 @@ func (k msgServer) CreateEntry(goCtx context.Context, msg *types.MsgCreateEntry)
 	// Check if the entry already exists
 	_, isFound := k.GetEntry(ctx, msg.BaseDenom)
 	if isFound {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "entry already set")
+		return nil, errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "entry already set")
 	}
 
 	entry := types.Entry{
@@ -59,12 +60,12 @@ func (k msgServer) UpdateEntry(goCtx context.Context, msg *types.MsgUpdateEntry)
 	// Check if the value exists
 	entry, isFound := k.GetEntry(ctx, msg.BaseDenom)
 	if !isFound {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, "entry not set")
+		return nil, errorsmod.Wrap(sdkerrors.ErrKeyNotFound, "entry not set")
 	}
 
 	// Checks if the the msg authority is the same as the current owner
 	if msg.Authority != entry.Authority {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "incorrect owner")
+		return nil, errorsmod.Wrap(sdkerrors.ErrUnauthorized, "incorrect owner")
 	}
 
 	entry = types.Entry{
@@ -104,12 +105,12 @@ func (k msgServer) DeleteEntry(goCtx context.Context, msg *types.MsgDeleteEntry)
 	// Check if the value exists
 	entry, isFound := k.GetEntry(ctx, msg.BaseDenom)
 	if !isFound {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, "entry not set")
+		return nil, errorsmod.Wrap(sdkerrors.ErrKeyNotFound, "entry not set")
 	}
 
 	// Checks if the the msg authority is the same as the current owner
 	if msg.Authority != entry.Authority {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "incorrect owner")
+		return nil, errorsmod.Wrap(sdkerrors.ErrUnauthorized, "incorrect owner")
 	}
 
 	k.RemoveEntry(ctx, msg.BaseDenom)

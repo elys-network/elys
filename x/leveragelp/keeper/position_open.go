@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"strconv"
 
+	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
 	"github.com/elys-network/elys/x/leveragelp/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
@@ -33,11 +33,11 @@ func (k Keeper) OpenConsolidate(ctx sdk.Context, position *types.Position, msg *
 	poolId := position.AmmPoolId
 	pool, found := k.GetPool(ctx, poolId)
 	if !found {
-		return nil, sdkerrors.Wrap(types.ErrPoolDoesNotExist, fmt.Sprintf("poolId: %d", poolId))
+		return nil, errorsmod.Wrap(types.ErrPoolDoesNotExist, fmt.Sprintf("poolId: %d", poolId))
 	}
 
 	if !k.IsPoolEnabled(ctx, poolId) {
-		return nil, sdkerrors.Wrap(types.ErrPositionDisabled, fmt.Sprintf("poolId: %d", poolId))
+		return nil, errorsmod.Wrap(types.ErrPositionDisabled, fmt.Sprintf("poolId: %d", poolId))
 	}
 
 	ammPool, err := k.GetAmmPool(ctx, poolId)
@@ -81,12 +81,12 @@ func (k Keeper) ProcessOpenLong(ctx sdk.Context, position *types.Position, lever
 	// Fetch the pool associated with the given pool ID.
 	pool, found := k.GetPool(ctx, poolId)
 	if !found {
-		return nil, sdkerrors.Wrap(types.ErrPoolDoesNotExist, fmt.Sprintf("poolId: %d", poolId))
+		return nil, errorsmod.Wrap(types.ErrPoolDoesNotExist, fmt.Sprintf("poolId: %d", poolId))
 	}
 
 	// Check if the pool is enabled.
 	if !k.IsPoolEnabled(ctx, poolId) {
-		return nil, sdkerrors.Wrap(types.ErrPositionDisabled, fmt.Sprintf("poolId: %d", poolId))
+		return nil, errorsmod.Wrap(types.ErrPositionDisabled, fmt.Sprintf("poolId: %d", poolId))
 	}
 
 	// Fetch the corresponding AMM (Automated Market Maker) pool.
@@ -97,7 +97,7 @@ func (k Keeper) ProcessOpenLong(ctx sdk.Context, position *types.Position, lever
 
 	entry, found := k.assetProfileKeeper.GetEntry(ctx, ptypes.BaseCurrency)
 	if !found {
-		return nil, sdkerrors.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency)
+		return nil, errorsmod.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency)
 	}
 	baseCurrency := entry.Denom
 

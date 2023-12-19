@@ -18,8 +18,6 @@ const (
 	FlagWeightBreakingFeeMultiplier = "weight-breaking-fee-multiplier"
 	FlagWeightBreakingFeeExponent   = "weight-breaking-fee-exponent"
 	FlagExternalLiquidityRatio      = "extern-liquidity-ratio"
-	FlagLpFeePortion                = "lp-fee"
-	FlagStakingFeePortion           = "staking-fee"
 	FlagWeightRecoveryFeePortion    = "weight-recovery-fee"
 	FlagThresholdWeightDifference   = "threshold-weight-diff"
 	FlagFeeDenom                    = "fee-denom"
@@ -92,16 +90,6 @@ func CmdCreatePool() *cobra.Command {
 				return err
 			}
 
-			lpFeePortionStr, err := cmd.Flags().GetString(FlagLpFeePortion)
-			if err != nil {
-				return err
-			}
-
-			stakingFeePortionStr, err := cmd.Flags().GetString(FlagStakingFeePortion)
-			if err != nil {
-				return err
-			}
-
 			weightRecoveryFeePortionStr, err := cmd.Flags().GetString(FlagWeightRecoveryFeePortion)
 			if err != nil {
 				return err
@@ -124,8 +112,6 @@ func CmdCreatePool() *cobra.Command {
 				WeightBreakingFeeMultiplier: sdk.MustNewDecFromStr(weightBreakingFeeMultiplierStr),
 				WeightBreakingFeeExponent:   sdk.MustNewDecFromStr(weightBreakingFeeExponentStr),
 				ExternalLiquidityRatio:      sdk.MustNewDecFromStr(externalLiquidityRatioStr),
-				LpFeePortion:                sdk.MustNewDecFromStr(lpFeePortionStr),
-				StakingFeePortion:           sdk.MustNewDecFromStr(stakingFeePortionStr),
 				WeightRecoveryFeePortion:    sdk.MustNewDecFromStr(weightRecoveryFeePortionStr),
 				ThresholdWeightDifference:   sdk.MustNewDecFromStr(thresholdWeightDifferenceStr),
 				FeeDenom:                    feeDenom,
@@ -151,9 +137,7 @@ func CmdCreatePool() *cobra.Command {
 	cmd.Flags().String(FlagWeightBreakingFeeMultiplier, "0.00", "weight breaking fee multiplier")
 	cmd.Flags().String(FlagWeightBreakingFeeExponent, "2.50", "weight breaking fee exponent")
 	cmd.Flags().String(FlagExternalLiquidityRatio, "0.00", "external liquidity ratio - valid for oracle pools")
-	cmd.Flags().String(FlagLpFeePortion, "0.00", "lp fee portion")
-	cmd.Flags().String(FlagStakingFeePortion, "0.00", "staking fee portion")
-	cmd.Flags().String(FlagWeightRecoveryFeePortion, "0.00", "weight recovery fee portion")
+	cmd.Flags().String(FlagWeightRecoveryFeePortion, "0.10", "weight recovery fee portion")
 	cmd.Flags().String(FlagThresholdWeightDifference, "0.00", "threshold weight difference - valid for oracle pool")
 	cmd.Flags().String(FlagFeeDenom, "", "fee denom")
 

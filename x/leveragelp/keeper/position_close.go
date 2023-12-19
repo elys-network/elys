@@ -1,8 +1,8 @@
 package keeper
 
 import (
+	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/elys-network/elys/x/leveragelp/types"
 )
 
@@ -72,7 +72,7 @@ func (k Keeper) CloseLong(ctx sdk.Context, msg *types.MsgClose) (*types.Position
 	// Retrieve Pool
 	pool, found := k.GetPool(ctx, position.AmmPoolId)
 	if !found {
-		return nil, sdk.ZeroInt(), sdkerrors.Wrap(types.ErrInvalidBorrowingAsset, "invalid pool id")
+		return nil, sdk.ZeroInt(), errorsmod.Wrap(types.ErrInvalidBorrowingAsset, "invalid pool id")
 	}
 
 	// If lpAmount is lower than zero, close full amount

@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	errorsmod "cosmossdk.io/errors"
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
@@ -186,11 +187,11 @@ func (k Keeper) HandleWithdrawFromCommitment(ctx sdk.Context, commitments *types
 func (k Keeper) RecordWithdrawValidatorCommission(ctx sdk.Context, delegator string, creator string, denom string, amount sdk.Int) error {
 	assetProfile, found := k.assetProfileKeeper.GetEntry(ctx, denom)
 	if !found {
-		return sdkerrors.Wrapf(aptypes.ErrAssetProfileNotFound, "denom: %s", denom)
+		return errorsmod.Wrapf(aptypes.ErrAssetProfileNotFound, "denom: %s", denom)
 	}
 
 	if !assetProfile.WithdrawEnabled {
-		return sdkerrors.Wrapf(types.ErrWithdrawDisabled, "denom: %s", denom)
+		return errorsmod.Wrapf(types.ErrWithdrawDisabled, "denom: %s", denom)
 	}
 
 	commitments, err := k.DeductUnclaimed(ctx, creator, denom, amount)
@@ -206,7 +207,7 @@ func (k Keeper) RecordWithdrawValidatorCommission(ctx sdk.Context, delegator str
 	// Withdraw to the delegated wallet
 	addr, err := sdk.AccAddressFromBech32(delegator)
 	if err != nil {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "unable to convert address from bech32")
+		return errorsmod.Wrap(sdkerrors.ErrInvalidAddress, "unable to convert address from bech32")
 	}
 
 	commitments = k.GetCommitments(ctx, delegator)
@@ -232,12 +233,12 @@ func (k Keeper) RecordWithdrawValidatorCommission(ctx sdk.Context, delegator str
 func (k Keeper) BeforeDelegationCreated(ctx sdk.Context, delegator string, validator string) error {
 	_, err := sdk.AccAddressFromBech32(delegator)
 	if err != nil {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "unable to convert address from bech32")
+		return errorsmod.Wrap(sdkerrors.ErrInvalidAddress, "unable to convert address from bech32")
 	}
 
 	_, err = sdk.ValAddressFromBech32(validator)
 	if err != nil {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "unable to convert validator address from bech32")
+		return errorsmod.Wrap(sdkerrors.ErrInvalidAddress, "unable to convert validator address from bech32")
 	}
 
 	/***********************************************************/

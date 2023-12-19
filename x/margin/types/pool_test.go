@@ -4,6 +4,7 @@ import (
 	"errors"
 	"testing"
 
+	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
@@ -59,7 +60,7 @@ func TestPool_UpdateBalanceInvalid(t *testing.T) {
 	denom := "testAsset2"
 	err := pool.UpdateBalance(ctx, denom, sdk.NewInt(100), true, types.Position_LONG)
 	// Expect that there is invalid asset denom error.
-	assert.True(t, errors.Is(err, sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, "invalid asset denom")))
+	assert.True(t, errors.Is(err, errorsmod.Wrap(sdkerrors.ErrInvalidCoins, "invalid asset denom")))
 
 	// Expect that there is still 0 balance
 	assert.Equal(t, pool.PoolAssetsLong[0].AssetBalance, sdk.NewInt(0))
@@ -113,7 +114,7 @@ func TestPool_UpdateLiabilitiesInvalid(t *testing.T) {
 	denom := "testAsset2"
 	err := pool.UpdateLiabilities(ctx, denom, sdk.NewInt(100), true, types.Position_LONG)
 	// Expect that there is invalid asset denom error.
-	assert.True(t, errors.Is(err, sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, "invalid asset denom")))
+	assert.True(t, errors.Is(err, errorsmod.Wrap(sdkerrors.ErrInvalidCoins, "invalid asset denom")))
 
 	// Expect that there is still 0 liabilities
 	assert.Equal(t, pool.PoolAssetsLong[0].Liabilities, sdk.NewInt(0))
@@ -169,7 +170,7 @@ func TestPool_UpdateTakeProfitLiabilitiesInvalid(t *testing.T) {
 	denom := "testAsset2"
 	err := pool.UpdateTakeProfitLiabilities(ctx, denom, sdk.NewInt(100), true, types.Position_LONG)
 	// Expect that there is invalid asset denom error.
-	assert.True(t, errors.Is(err, sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, "invalid asset denom")))
+	assert.True(t, errors.Is(err, errorsmod.Wrap(sdkerrors.ErrInvalidCoins, "invalid asset denom")))
 
 	// Expect that there is still 0 liabilities
 	assert.Equal(t, pool.PoolAssetsLong[0].TakeProfitLiabilities, sdk.NewInt(0))
@@ -223,7 +224,7 @@ func TestPool_UpdateTakeProfitCustodyInvalid(t *testing.T) {
 	denom := "testAsset2"
 	err := pool.UpdateTakeProfitCustody(ctx, denom, sdk.NewInt(100), true, types.Position_LONG)
 	// Expect that there is invalid asset denom error.
-	assert.True(t, errors.Is(err, sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, "invalid asset denom")))
+	assert.True(t, errors.Is(err, errorsmod.Wrap(sdkerrors.ErrInvalidCoins, "invalid asset denom")))
 
 	// Expect that there is still 0 liabilities
 	assert.Equal(t, pool.PoolAssetsLong[0].TakeProfitCustody, sdk.NewInt(0))
@@ -277,7 +278,7 @@ func TestPool_UpdateCustodyInvalid(t *testing.T) {
 	denom := "testAsset2"
 	err := pool.UpdateCustody(ctx, denom, sdk.NewInt(100), true, types.Position_LONG)
 	// Expect that there is invalid asset denom error.
-	assert.True(t, errors.Is(err, sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, "invalid asset denom")))
+	assert.True(t, errors.Is(err, errorsmod.Wrap(sdkerrors.ErrInvalidCoins, "invalid asset denom")))
 
 	// Expect that there is still 0 custody
 	assert.Equal(t, pool.PoolAssetsLong[0].Custody, sdk.NewInt(0))
@@ -331,7 +332,7 @@ func TestPool_UpdateBlockBorrowInterestInvalid(t *testing.T) {
 	denom := "testAsset2"
 	err := pool.UpdateBlockBorrowInterest(ctx, denom, sdk.NewInt(100), true, types.Position_LONG)
 	// Expect that there is invalid asset denom error.
-	assert.True(t, errors.Is(err, sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, "invalid asset denom")))
+	assert.True(t, errors.Is(err, errorsmod.Wrap(sdkerrors.ErrInvalidCoins, "invalid asset denom")))
 
 	// Expect that there is still 0 BlockBorrowInterest
 	assert.Equal(t, pool.PoolAssetsLong[0].BlockBorrowInterest, sdk.NewInt(0))
@@ -371,5 +372,5 @@ func TestPool_InitiatePoolInvalid(t *testing.T) {
 
 	pool := types.NewPool(1)
 	err := pool.InitiatePool(ctx, nil)
-	assert.True(t, errors.Is(err, sdkerrors.Wrap(sdkerrors.ErrInvalidType, "invalid amm pool")))
+	assert.True(t, errors.Is(err, errorsmod.Wrap(sdkerrors.ErrInvalidType, "invalid amm pool")))
 }

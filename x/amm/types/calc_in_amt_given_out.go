@@ -1,8 +1,8 @@
 package types
 
 import (
+	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 // CalcInAmtGivenOut calculates token to be provided, fee added,
@@ -75,7 +75,7 @@ func (p Pool) CalcInAmtGivenOut(
 	tokenInAmt := tokenAmountInBeforeFee.Ceil().TruncateInt()
 
 	if !tokenInAmt.IsPositive() {
-		return sdk.Coin{}, sdkerrors.Wrapf(ErrInvalidMathApprox, "token amount must be positive")
+		return sdk.Coin{}, errorsmod.Wrapf(ErrInvalidMathApprox, "token amount must be positive")
 	}
 	return sdk.NewCoin(tokenInDenom, tokenInAmt), nil
 }

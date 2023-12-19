@@ -4,12 +4,12 @@ import (
 	"errors"
 	"strconv"
 
+	errorsmod "cosmossdk.io/errors"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/address"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/cosmos/cosmos-sdk/x/gov/client/cli"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	v1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1"
@@ -80,17 +80,17 @@ func CmdUpdateVestingInfo() *cobra.Command {
 
 			numEpochs, err := strconv.ParseInt(argNumEpochs, 10, 64)
 			if err != nil {
-				return sdkerrors.Wrapf(govtypes.ErrInvalidProposalMsg, "invalid proposal; %d", argNumEpochs)
+				return errorsmod.Wrapf(govtypes.ErrInvalidProposalMsg, "invalid proposal; %s", argNumEpochs)
 			}
 
 			vestNowFactor, err := strconv.ParseInt(argVestNowFactor, 10, 64)
 			if err != nil {
-				return sdkerrors.Wrapf(govtypes.ErrInvalidProposalMsg, "invalid proposal; %d", argVestNowFactor)
+				return errorsmod.Wrapf(govtypes.ErrInvalidProposalMsg, "invalid proposal; %s", argVestNowFactor)
 			}
 
 			maxVestings, err := strconv.ParseInt(argNumMaxVestings, 10, 64)
 			if err != nil {
-				return sdkerrors.Wrapf(govtypes.ErrInvalidProposalMsg, "invalid proposal; %d", argNumMaxVestings)
+				return errorsmod.Wrapf(govtypes.ErrInvalidProposalMsg, "invalid proposal; %s", argNumMaxVestings)
 			}
 
 			govAddress := sdk.AccAddress(address.Module(govtypes.ModuleName))

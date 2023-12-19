@@ -3,8 +3,8 @@ package keeper
 import (
 	"context"
 
+	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
 	"github.com/elys-network/elys/x/commitment/types"
 )
@@ -15,7 +15,7 @@ func (k msgServer) CancelVest(goCtx context.Context, msg *types.MsgCancelVest) (
 
 	vestingInfo, _ := k.GetVestingInfo(ctx, msg.Denom)
 	if vestingInfo == nil {
-		return nil, sdkerrors.Wrapf(types.ErrInvalidDenom, "denom: %s", msg.Denom)
+		return nil, errorsmod.Wrapf(types.ErrInvalidDenom, "denom: %s", msg.Denom)
 	}
 
 	// Get the Commitments for the creator
@@ -62,7 +62,7 @@ func (k msgServer) CancelVest(goCtx context.Context, msg *types.MsgCancelVest) (
 	commitments.VestingTokens = newVestingTokens
 
 	if !remainingToCancel.IsZero() {
-		return nil, sdkerrors.Wrapf(types.ErrInsufficientVestingTokens, "denom: %s, amount: %s", msg.Denom, msg.Amount)
+		return nil, errorsmod.Wrapf(types.ErrInsufficientVestingTokens, "denom: %s, amount: %s", msg.Denom, msg.Amount)
 	}
 
 	// Update the unclaimed tokens amount

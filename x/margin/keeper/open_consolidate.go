@@ -1,8 +1,8 @@
 package keeper
 
 import (
+	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/elys-network/elys/x/margin/types"
 )
 
@@ -10,11 +10,11 @@ func (k Keeper) OpenConsolidate(ctx sdk.Context, mtp *types.MTP, msg *types.MsgO
 	poolId := mtp.AmmPoolId
 	pool, found := k.OpenLongChecker.GetPool(ctx, poolId)
 	if !found {
-		return nil, sdkerrors.Wrap(types.ErrPoolDoesNotExist, mtp.CustodyAsset)
+		return nil, errorsmod.Wrap(types.ErrPoolDoesNotExist, mtp.CustodyAsset)
 	}
 
 	if !k.OpenLongChecker.IsPoolEnabled(ctx, poolId) {
-		return nil, sdkerrors.Wrap(types.ErrMTPDisabled, mtp.CustodyAsset)
+		return nil, errorsmod.Wrap(types.ErrMTPDisabled, mtp.CustodyAsset)
 	}
 
 	ammPool, err := k.OpenLongChecker.GetAmmPool(ctx, poolId, mtp.CustodyAsset)
@@ -34,7 +34,7 @@ func (k Keeper) OpenConsolidate(ctx sdk.Context, mtp *types.MTP, msg *types.MsgO
 			return nil, err
 		}
 	default:
-		return nil, sdkerrors.Wrap(types.ErrInvalidPosition, msg.Position.String())
+		return nil, errorsmod.Wrap(types.ErrInvalidPosition, msg.Position.String())
 	}
 
 	ctx.EventManager().EmitEvent(types.GenerateOpenEvent(mtp))

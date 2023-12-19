@@ -1,8 +1,8 @@
 package keeper
 
 import (
+	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/elys-network/elys/x/margin/types"
 )
 
@@ -10,7 +10,7 @@ import (
 func (k Keeper) CalcMinCollateral(ctx sdk.Context, leverage sdk.Dec) (sdk.Int, error) {
 	// leverage must be greater than 1
 	if leverage.LTE(sdk.NewDec(1)) {
-		return sdk.ZeroInt(), sdkerrors.Wrapf(types.ErrInvalidLeverage, "leverage must be greater than 1")
+		return sdk.ZeroInt(), errorsmod.Wrapf(types.ErrInvalidLeverage, "leverage must be greater than 1")
 	}
 
 	// get min borrow rate

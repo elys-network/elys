@@ -4,8 +4,8 @@ import (
 	"errors"
 	"testing"
 
+	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	ammtype "github.com/elys-network/elys/x/amm/types"
 	"github.com/elys-network/elys/x/margin/types"
 	"github.com/stretchr/testify/assert"
@@ -54,6 +54,6 @@ func TestGetAmmPoolBalance_GetAmmPoolBalanceUnavailable(t *testing.T) {
 	balance, err := types.GetAmmPoolBalance(ammPool, borrowAsset)
 
 	// Expect that there is an insufficient balance
-	assert.True(t, errors.Is(err, sdkerrors.Wrap(types.ErrBalanceNotAvailable, "Balance not available")))
+	assert.True(t, errors.Is(err, errorsmod.Wrap(types.ErrBalanceNotAvailable, "Balance not available")))
 	assert.Equal(t, balance, sdk.ZeroInt())
 }

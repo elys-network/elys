@@ -1,8 +1,8 @@
 package types
 
 import (
+	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 // CalcOutAmtGivenIn calculates tokens to be swapped out given the provided
@@ -66,7 +66,7 @@ func (p Pool) CalcOutAmtGivenIn(
 	// We ignore the decimal component, as we round down the token amount out.
 	tokenAmountOutInt := tokenAmountOut.TruncateInt()
 	if !tokenAmountOutInt.IsPositive() {
-		return sdk.Coin{}, sdkerrors.Wrapf(ErrInvalidMathApprox, "token amount must be positive")
+		return sdk.Coin{}, errorsmod.Wrapf(ErrInvalidMathApprox, "token amount must be positive")
 	}
 
 	return sdk.NewCoin(tokenOutDenom, tokenAmountOutInt), nil

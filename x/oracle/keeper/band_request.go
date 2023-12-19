@@ -1,8 +1,8 @@
 package keeper
 
 import (
+	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	gogotypes "github.com/cosmos/gogoproto/types"
 	"github.com/elys-network/elys/x/oracle/types"
 )
@@ -17,7 +17,7 @@ func (k Keeper) SetBandPriceResult(ctx sdk.Context, requestID types.OracleReques
 func (k Keeper) GetBandPriceResult(ctx sdk.Context, id types.OracleRequestID) (types.BandPriceResult, error) {
 	bz := ctx.KVStore(k.storeKey).Get(types.BandPriceResultStoreKey(id))
 	if bz == nil {
-		return types.BandPriceResult{}, sdkerrors.Wrapf(types.ErrNotAvailable, "Result for request ID %d is not available.", id)
+		return types.BandPriceResult{}, errorsmod.Wrapf(types.ErrNotAvailable, "Result for request ID %d is not available.", id)
 	}
 	var result types.BandPriceResult
 	k.cdc.MustUnmarshal(bz, &result)
@@ -49,7 +49,7 @@ func (k Keeper) SetBandRequest(ctx sdk.Context, requestID types.OracleRequestID,
 func (k Keeper) GetBandRequest(ctx sdk.Context, id types.OracleRequestID) (types.BandPriceCallData, error) {
 	bz := ctx.KVStore(k.storeKey).Get(types.BandRequestStoreKey(id))
 	if bz == nil {
-		return types.BandPriceCallData{}, sdkerrors.Wrapf(types.ErrNotAvailable, "BandPriceCallData for request ID %d is not available.", id)
+		return types.BandPriceCallData{}, errorsmod.Wrapf(types.ErrNotAvailable, "BandPriceCallData for request ID %d is not available.", id)
 	}
 	var result types.BandPriceCallData
 	k.cdc.MustUnmarshal(bz, &result)

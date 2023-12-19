@@ -1,6 +1,7 @@
 package cli
 
 import (
+	errorsmod "cosmossdk.io/errors"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
@@ -18,7 +19,7 @@ func CmdStake() *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			argAmount, found := sdk.NewIntFromString(args[0])
 			if !found {
-				return sdkerrors.Wrap(sdkerrors.ErrInvalidType, "cannot convert string to int")
+				return errorsmod.Wrap(sdkerrors.ErrInvalidType, "cannot convert string to int")
 			}
 			argAsset := args[1]
 			argValidatorAddress := args[2]

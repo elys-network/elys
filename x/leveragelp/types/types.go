@@ -1,9 +1,9 @@
 package types
 
 import (
+	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/address"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 func NewPosition(signer string, collateral sdk.Coin, leverage sdk.Dec, poolId uint64) *Position {
@@ -21,10 +21,10 @@ func NewPosition(signer string, collateral sdk.Coin, leverage sdk.Dec, poolId ui
 
 func (position Position) Validate() error {
 	if position.Address == "" {
-		return sdkerrors.Wrap(ErrPositionInvalid, "no address specified")
+		return errorsmod.Wrap(ErrPositionInvalid, "no address specified")
 	}
 	if position.Id == 0 {
-		return sdkerrors.Wrap(ErrPositionInvalid, "no id specified")
+		return errorsmod.Wrap(ErrPositionInvalid, "no id specified")
 	}
 
 	return nil
