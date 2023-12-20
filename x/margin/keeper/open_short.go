@@ -3,7 +3,6 @@ package keeper
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/margin/types"
-	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
 
 func (k Keeper) OpenShort(ctx sdk.Context, poolId uint64, msg *types.MsgOpen, baseCurrency string) (*types.MTP, error) {
@@ -19,7 +18,7 @@ func (k Keeper) OpenShort(ctx sdk.Context, poolId uint64, msg *types.MsgOpen, ba
 
 	// Define the assets
 	liabilitiesAsset := msg.TradingAsset
-	custodyAsset := ptypes.BaseCurrency
+	custodyAsset := baseCurrency
 
 	// Initialize a new Margin Trading Position (MTP).
 	mtp := types.NewMTP(msg.Creator, msg.Collateral.Denom, msg.TradingAsset, liabilitiesAsset, custodyAsset, msg.Position, leverage, msg.TakeProfitPrice, poolId)
