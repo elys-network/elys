@@ -5,6 +5,10 @@ import (
 	"github.com/elys-network/elys/x/amm/types"
 )
 
+const (
+	lowestAmountForInitialSpotPriceCalc = 10 // lowest amount to use for initial spot price calculation
+)
+
 // CalcSwapEstimationByDenom calculates the swap estimation by denom
 func (k Keeper) CalcSwapEstimationByDenom(
 	ctx sdk.Context,
@@ -32,7 +36,7 @@ func (k Keeper) CalcSwapEstimationByDenom(
 		if err != nil {
 			return nil, nil, sdk.Coin{}, sdk.ZeroDec(), sdk.ZeroDec(), sdk.ZeroDec(), sdk.Coin{}, sdk.ZeroDec(), sdk.ZeroDec(), err
 		}
-		initialSpotPrice, _, _, _, _, _, err := k.CalcInRouteSpotPrice(ctx, sdk.NewCoin(amount.Denom, sdk.ZeroInt()), inRoute, discount, overrideSwapFee)
+		initialSpotPrice, _, _, _, _, _, err := k.CalcInRouteSpotPrice(ctx, sdk.NewInt64Coin(amount.Denom, lowestAmountForInitialSpotPriceCalc), inRoute, discount, overrideSwapFee)
 		if err != nil {
 			return nil, nil, sdk.Coin{}, sdk.ZeroDec(), sdk.ZeroDec(), sdk.ZeroDec(), sdk.Coin{}, sdk.ZeroDec(), sdk.ZeroDec(), err
 		}
@@ -54,7 +58,7 @@ func (k Keeper) CalcSwapEstimationByDenom(
 		if err != nil {
 			return nil, nil, sdk.Coin{}, sdk.ZeroDec(), sdk.ZeroDec(), sdk.ZeroDec(), sdk.Coin{}, sdk.ZeroDec(), sdk.ZeroDec(), err
 		}
-		initialSpotPrice, _, _, _, _, _, err := k.CalcOutRouteSpotPrice(ctx, sdk.NewCoin(amount.Denom, sdk.ZeroInt()), outRoute, discount, overrideSwapFee)
+		initialSpotPrice, _, _, _, _, _, err := k.CalcOutRouteSpotPrice(ctx, sdk.NewInt64Coin(amount.Denom, lowestAmountForInitialSpotPriceCalc), outRoute, discount, overrideSwapFee)
 		if err != nil {
 			return nil, nil, sdk.Coin{}, sdk.ZeroDec(), sdk.ZeroDec(), sdk.ZeroDec(), sdk.Coin{}, sdk.ZeroDec(), sdk.ZeroDec(), err
 		}
