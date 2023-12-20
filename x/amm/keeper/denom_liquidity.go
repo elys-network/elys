@@ -78,3 +78,28 @@ func (k Keeper) DecreaseDenomLiquidity(ctx sdk.Context, denom string, amount mat
 	store.Set(types.DenomLiquidityKey(denom), newB)
 	return nil
 }
+
+func (k Keeper) RecordTotalLiquidityIncrease(ctx sdk.Context, coins sdk.Coins) {
+	for _, coin := range coins {
+		_, found := k.GetDenomLiquidity(ctx, coin.Denom)
+		if !found {
+			k.SetDenomLiquidity(ctx, types.DenomLiquidity{Denom: coin.Denom, Liquidity: sdk.ZeroInt()})
+		}
+
+		k.IncreaseDenomLiquidity(ctx, coin.Denom, coin.Amount)
+	}
+}
+
+func (k Keeper) RecordTotalLiquidityDecrease(ctx sdk.Context, coins sdk.Coins) {
+	for _, coin := range coins {
+		_, found := k.GetDenomLiquidity(ctx, coin.Denom)
+		if !found {
+			k.SetDenomLiquidity(ctx, types.DenomLiquidity{Denom: coin.Denom, Liquidity: sdk.ZeroInt()})
+		}
+		err := k.DecreaseDenomLiquidity(ctx, coin.Denom, coin.Amount)
+		if err != nil {
+			k.Logger(ctx).Error(err.Error())
+			panic(err)
+		}
+	}
+}

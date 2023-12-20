@@ -296,14 +296,8 @@ func (p *Pool) SwapOutAmtGivenIn(
 		// weight breaking fee as in Plasma pool
 		weightIn := OracleAssetWeight(ctx, oracleKeeper, newAssetPools, tokenIn.Denom)
 		weightOut := OracleAssetWeight(ctx, oracleKeeper, newAssetPools, tokenOutDenom)
+		weightBreakingFee = GetWeightBreakingFee(weightIn, weightOut, targetWeightIn, targetWeightOut, p.PoolParams)
 
-		// (45/55*60/40) ^ 2.5
-		weightBreakingFee = p.PoolParams.WeightBreakingFeeMultiplier.
-			Mul(Pow(weightIn.Mul(targetWeightOut).Quo(weightOut).Quo(targetWeightIn), p.PoolParams.WeightBreakingFeeExponent))
-
-		if weightBreakingFee.GT(sdk.NewDecWithPrec(99, 2)) {
-			weightBreakingFee = sdk.NewDecWithPrec(99, 2)
-		}
 	}
 
 	// bonus is valid when distance is lower than original distance and when threshold weight reached
@@ -311,6 +305,11 @@ func (p *Pool) SwapOutAmtGivenIn(
 	if initialWeightDistance.GT(p.PoolParams.ThresholdWeightDifference) && distanceDiff.IsNegative() {
 		weightBalanceBonus = p.PoolParams.WeightBreakingFeeMultiplier.Mul(distanceDiff).Abs()
 	}
+
+	if swapFee.GTE(sdk.OneDec()) {
+		return sdk.Coin{}, sdk.ZeroDec(), sdk.ZeroDec(), ErrTooMuchSwapFee
+	}
+
 	tokenAmountOutInt := outAmountAfterSlippage.
 		Mul(sdk.OneDec().Sub(weightBreakingFee)).
 		Mul(sdk.OneDec().Sub(swapFee)).TruncateInt()
