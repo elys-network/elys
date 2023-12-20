@@ -38404,6 +38404,8 @@ paths:
                   signatures required by gogoproto.
               weight_balance_ratio:
                 type: string
+              price_impact:
+                type: string
         default:
           description: An unexpected error response.
           schema:
@@ -82977,6 +82979,8 @@ definitions:
           NOTE: The amount field is an Int which implements the custom method
           signatures required by gogoproto.
       weight_balance_ratio:
+        type: string
+      price_impact:
         type: string
   elys.amm.QuerySwapEstimationResponse:
     type: object

@@ -25,11 +25,12 @@ var (
 	ErrInvalidPoolId      = sdkerrors.Register(ModuleName, 91, "invalid pool id")
 	ErrInvalidSwapMsgType = sdkerrors.Register(ModuleName, 92, "unexpected swap message type")
 
-	ErrSameDenom       = sdkerrors.Register(ModuleName, 101, "denom in and denom out are the same")
-	ErrPoolNotFound    = sdkerrors.Register(ModuleName, 102, "pool not found")
-	ErrAmountTooLow    = sdkerrors.Register(ModuleName, 103, "amount too low")
-	ErrInvalidDenom    = sdkerrors.Register(ModuleName, 104, "invalid denom")
-	ErrInvalidDiscount = sdkerrors.Register(ModuleName, 105, "invalid discount")
+	ErrSameDenom              = sdkerrors.Register(ModuleName, 101, "denom in and denom out are the same")
+	ErrPoolNotFound           = sdkerrors.Register(ModuleName, 102, "pool not found")
+	ErrAmountTooLow           = sdkerrors.Register(ModuleName, 103, "amount too low")
+	ErrInvalidDenom           = sdkerrors.Register(ModuleName, 104, "invalid denom")
+	ErrInvalidDiscount        = sdkerrors.Register(ModuleName, 105, "invalid discount")
+	ErrInitialSpotPriceIsZero = sdkerrors.Register(ModuleName, 106, "initial spot price is zero")
 )
 
 const (

@@ -183,6 +183,7 @@ message QuerySwapEstimationByDenomResponse {
            string                   discount   = 6 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
            cosmos.base.v1beta1.Coin available_liquidity  = 7 [(gogoproto.nullable)   = false ] ;
            string                   weight_balance_ratio = 8 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+           string price_impact = 9 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
 }
 
 message QueryAMMPriceRequest {
