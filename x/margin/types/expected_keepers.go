@@ -153,6 +153,7 @@ type AmmKeeper interface {
 		discountOut sdk.Dec,
 		availableLiquidity sdk.Coin,
 		weightBonus sdk.Dec,
+		priceImpact sdk.Dec,
 		err error,
 	)
 }

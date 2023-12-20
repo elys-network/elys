@@ -92,7 +92,7 @@ func (suite *KeeperTestSuite) TestCalcSwapEstimationByDenom() {
 	suite.app.AmmKeeper.SetPool(suite.ctx, pool2)
 
 	amount := sdk.NewCoin(ptypes.Elys, sdk.NewInt(100))
-	inRoute, outRoute, tokenOut, spotPrice, _, _, _, _, err := suite.app.AmmKeeper.CalcSwapEstimationByDenom(
+	inRoute, outRoute, tokenOut, spotPrice, _, _, _, _, _, err := suite.app.AmmKeeper.CalcSwapEstimationByDenom(
 		suite.ctx,
 		amount,
 		ptypes.Elys, "uusda", ptypes.BaseCurrency,
@@ -105,7 +105,7 @@ func (suite *KeeperTestSuite) TestCalcSwapEstimationByDenom() {
 	suite.Require().NotZero(spotPrice)
 
 	amount = sdk.NewCoin("uusda", sdk.NewInt(100))
-	inRoute, outRoute, tokenOut, spotPrice, _, _, _, _, err = suite.app.AmmKeeper.CalcSwapEstimationByDenom(
+	inRoute, outRoute, tokenOut, spotPrice, _, _, _, _, _, err = suite.app.AmmKeeper.CalcSwapEstimationByDenom(
 		suite.ctx,
 		amount,
 		ptypes.Elys, "uusda", ptypes.BaseCurrency,
@@ -119,7 +119,7 @@ func (suite *KeeperTestSuite) TestCalcSwapEstimationByDenom() {
 
 	// Test no routes
 	amount = sdk.NewCoin("invalid", sdk.NewInt(1000))
-	_, _, _, _, _, _, _, _, err = suite.app.AmmKeeper.CalcSwapEstimationByDenom(
+	_, _, _, _, _, _, _, _, _, err = suite.app.AmmKeeper.CalcSwapEstimationByDenom(
 		suite.ctx, amount,
 		ptypes.Elys, "uusda", ptypes.BaseCurrency,
 		sdk.ZeroDec(),
