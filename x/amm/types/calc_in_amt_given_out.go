@@ -60,8 +60,8 @@ func (p Pool) CalcInAmtGivenOut(
 	tokenAmountIn = tokenAmountIn.Neg()
 
 	// Ensure (1 - swapfee) is not zero to avoid division by zero
-	if sdk.OneDec().Sub(swapFee).IsZero() {
-		return sdk.Coin{}, ErrAmountTooLow
+	if swapFee.GTE(sdk.OneDec()) {
+		return sdk.Coin{}, ErrTooMuchSwapFee
 	}
 
 	// We deduct a swap fee on the input asset. The swap happens by following the invariant curve on the input * (1 - swap fee)
