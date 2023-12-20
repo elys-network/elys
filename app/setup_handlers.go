@@ -104,13 +104,6 @@ func setUpgradeHandler(app *ElysApp) {
 			// dedicated x/consensus module.
 			baseapp.MigrateParams(ctx, baseAppLegacySS, &app.ConsensusParamsKeeper)
 
-			// set authority value for all time based inflation
-			for _, item := range app.TokenomicsKeeper.GetAllTimeBasedInflation(ctx) {
-				// set the gov module address to the authority
-				item.Authority = authtypes.NewModuleAddress(govtypes.ModuleName).String()
-				app.TokenomicsKeeper.SetTimeBasedInflation(ctx, item)
-			}
-
 			return app.mm.RunMigrations(ctx, app.configurator, vm)
 		},
 	)
