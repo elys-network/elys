@@ -29,53 +29,65 @@ func (k Keeper) CalcSwapEstimationByDenom(
 	priceImpact sdk.Dec,
 	err error,
 ) {
-	// calculate the lowest amount to use for initial spot price calculation
-	lowestAmountForInitialSpotPriceCalc := int64(math.Pow10(int(decimals)))
+	var (
+		initialSpotPrice sdk.Dec
+	)
 
-	// if amount denom is equal to denomIn, calculate swap estimation by denomIn
+	// Initialize return variables
+	inRoute, outRoute = nil, nil
+	outAmount, availableLiquidity = sdk.Coin{}, sdk.Coin{}
+	spotPrice, swapFeeOut, discountOut, weightBonus, priceImpact = sdk.ZeroDec(), sdk.ZeroDec(), sdk.ZeroDec(), sdk.ZeroDec(), sdk.ZeroDec()
+
+	// Determine the correct route based on the amount's denom
 	if amount.Denom == denomIn {
-		inRoute, err := k.CalcInRouteByDenom(ctx, denomIn, denomOut, baseCurrency)
-		if err != nil {
-			return nil, nil, sdk.Coin{}, sdk.ZeroDec(), sdk.ZeroDec(), sdk.ZeroDec(), sdk.Coin{}, sdk.ZeroDec(), sdk.ZeroDec(), err
-		}
-		initialSpotPrice, _, _, _, _, _, err := k.CalcInRouteSpotPrice(ctx, sdk.NewInt64Coin(amount.Denom, lowestAmountForInitialSpotPriceCalc), inRoute, discount, overrideSwapFee)
-		if err != nil {
-			return nil, nil, sdk.Coin{}, sdk.ZeroDec(), sdk.ZeroDec(), sdk.ZeroDec(), sdk.Coin{}, sdk.ZeroDec(), sdk.ZeroDec(), err
-		}
-		// check if initialSpotPrice is zero to avoid division by zero
-		if initialSpotPrice.IsZero() {
-			return nil, nil, sdk.Coin{}, sdk.ZeroDec(), sdk.ZeroDec(), sdk.ZeroDec(), sdk.Coin{}, sdk.ZeroDec(), sdk.ZeroDec(), types.ErrInitialSpotPriceIsZero
-		}
-		spotPrice, tokenOut, swapFeeOut, _, availableLiquidity, weightBonus, err := k.CalcInRouteSpotPrice(ctx, amount, inRoute, discount, overrideSwapFee)
-		if err != nil {
-			return nil, nil, sdk.Coin{}, sdk.ZeroDec(), sdk.ZeroDec(), sdk.ZeroDec(), sdk.Coin{}, sdk.ZeroDec(), sdk.ZeroDec(), err
-		}
-		priceImpact := initialSpotPrice.Sub(spotPrice).Quo(initialSpotPrice)
-		return inRoute, nil, tokenOut, spotPrice, swapFeeOut, discount, availableLiquidity, weightBonus, priceImpact, nil
+		inRoute, err = k.CalcInRouteByDenom(ctx, denomIn, denomOut, baseCurrency)
+	} else if amount.Denom == denomOut {
+		outRoute, err = k.CalcOutRouteByDenom(ctx, denomOut, denomIn, baseCurrency)
+	} else {
+		err = types.ErrInvalidDenom
+		return
 	}
 
-	// if amount denom is equal to denomOut, calculate swap estimation by denomOut
-	if amount.Denom == denomOut {
-		outRoute, err := k.CalcOutRouteByDenom(ctx, denomOut, denomIn, baseCurrency)
-		if err != nil {
-			return nil, nil, sdk.Coin{}, sdk.ZeroDec(), sdk.ZeroDec(), sdk.ZeroDec(), sdk.Coin{}, sdk.ZeroDec(), sdk.ZeroDec(), err
-		}
-		initialSpotPrice, _, _, _, _, _, err := k.CalcOutRouteSpotPrice(ctx, sdk.NewInt64Coin(amount.Denom, lowestAmountForInitialSpotPriceCalc), outRoute, discount, overrideSwapFee)
-		if err != nil {
-			return nil, nil, sdk.Coin{}, sdk.ZeroDec(), sdk.ZeroDec(), sdk.ZeroDec(), sdk.Coin{}, sdk.ZeroDec(), sdk.ZeroDec(), err
-		}
-		// check if initialSpotPrice is zero to avoid division by zero
-		if initialSpotPrice.IsZero() {
-			return nil, nil, sdk.Coin{}, sdk.ZeroDec(), sdk.ZeroDec(), sdk.ZeroDec(), sdk.Coin{}, sdk.ZeroDec(), sdk.ZeroDec(), types.ErrInitialSpotPriceIsZero
-		}
-		spotPrice, tokenIn, swapFeeOut, _, availableLiquidity, weightBonus, err := k.CalcOutRouteSpotPrice(ctx, amount, outRoute, discount, overrideSwapFee)
-		if err != nil {
-			return nil, nil, sdk.Coin{}, sdk.ZeroDec(), sdk.ZeroDec(), sdk.ZeroDec(), sdk.Coin{}, sdk.ZeroDec(), sdk.ZeroDec(), err
-		}
-		priceImpact := initialSpotPrice.Sub(spotPrice).Quo(initialSpotPrice)
-		return nil, outRoute, tokenIn, spotPrice, swapFeeOut, discount, availableLiquidity, weightBonus, priceImpact, nil
+	if err != nil {
+		return
 	}
 
-	// if amount denom is neither equal to denomIn nor denomOut, return error
-	return nil, nil, sdk.Coin{}, sdk.ZeroDec(), sdk.ZeroDec(), sdk.ZeroDec(), sdk.Coin{}, sdk.ZeroDec(), sdk.ZeroDec(), types.ErrInvalidDenom
+	// Calculate initial spot price and price impact if decimals is not zero
+	if decimals != 0 {
+		lowestAmountForInitialSpotPriceCalc := int64(math.Pow10(int(decimals)))
+		initialCoin := sdk.NewInt64Coin(amount.Denom, lowestAmountForInitialSpotPriceCalc)
+
+		if amount.Denom == denomIn {
+			initialSpotPrice, _, _, _, _, _, err = k.CalcInRouteSpotPrice(ctx, initialCoin, inRoute, discount, overrideSwapFee)
+		} else {
+			initialSpotPrice, _, _, _, _, _, err = k.CalcOutRouteSpotPrice(ctx, initialCoin, outRoute, discount, overrideSwapFee)
+		}
+
+		if err != nil {
+			return
+		}
+		if initialSpotPrice.IsZero() {
+			err = types.ErrInitialSpotPriceIsZero
+			return
+		}
+	}
+
+	// Calculate final spot price and other outputs
+	if amount.Denom == denomIn {
+		spotPrice, outAmount, swapFeeOut, _, availableLiquidity, weightBonus, err = k.CalcInRouteSpotPrice(ctx, amount, inRoute, discount, overrideSwapFee)
+	} else {
+		spotPrice, outAmount, swapFeeOut, _, availableLiquidity, weightBonus, err = k.CalcOutRouteSpotPrice(ctx, amount, outRoute, discount, overrideSwapFee)
+	}
+
+	if err != nil {
+		return
+	}
+
+	// Calculate price impact if decimals is not zero
+	if decimals != 0 {
+		priceImpact = initialSpotPrice.Sub(spotPrice).Quo(initialSpotPrice)
+	}
+
+	// Return the calculated values
+	return
 }

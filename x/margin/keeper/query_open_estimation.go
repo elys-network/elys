@@ -35,17 +35,10 @@ func (k Keeper) OpenEstimation(goCtx context.Context, req *types.QueryOpenEstima
 	}
 	baseCurrency := entry.Denom
 
-	// retrieve denom in decimals
-	entry, found = k.assetProfileKeeper.GetEntryByDenom(ctx, req.Collateral.Denom)
-	if !found {
-		return nil, errorsmod.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", req.Collateral.Denom)
-	}
-	decimals := entry.Decimals
-
 	leveragedAmount := sdk.NewDecFromBigInt(req.Collateral.Amount.BigInt()).Mul(req.Leverage).TruncateInt()
 	leveragedCoin := sdk.NewCoin(req.Collateral.Denom, leveragedAmount)
 
-	_, _, positionSize, openPrice, swapFee, discount, availableLiquidity, _, _, err := k.amm.CalcSwapEstimationByDenom(ctx, leveragedCoin, req.Collateral.Denom, req.TradingAsset, baseCurrency, req.Discount, swapFee, decimals)
+	_, _, positionSize, openPrice, swapFee, discount, availableLiquidity, _, _, err := k.amm.CalcSwapEstimationByDenom(ctx, leveragedCoin, req.Collateral.Denom, req.TradingAsset, baseCurrency, req.Discount, swapFee, 0)
 	if err != nil {
 		return nil, err
 	}
