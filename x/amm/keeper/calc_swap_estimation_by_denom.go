@@ -1,12 +1,10 @@
 package keeper
 
 import (
+	"math"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/amm/types"
-)
-
-const (
-	lowestAmountForInitialSpotPriceCalc = 10 // lowest amount to use for initial spot price calculation
 )
 
 // CalcSwapEstimationByDenom calculates the swap estimation by denom
@@ -18,6 +16,7 @@ func (k Keeper) CalcSwapEstimationByDenom(
 	baseCurrency string,
 	discount sdk.Dec,
 	overrideSwapFee sdk.Dec,
+	decimals uint64,
 ) (
 	inRoute []*types.SwapAmountInRoute,
 	outRoute []*types.SwapAmountOutRoute,
@@ -30,6 +29,9 @@ func (k Keeper) CalcSwapEstimationByDenom(
 	priceImpact sdk.Dec,
 	err error,
 ) {
+	// calculate the lowest amount to use for initial spot price calculation
+	lowestAmountForInitialSpotPriceCalc := int64(math.Pow10(int(decimals)))
+
 	// if amount denom is equal to denomIn, calculate swap estimation by denomIn
 	if amount.Denom == denomIn {
 		inRoute, err := k.CalcInRouteByDenom(ctx, denomIn, denomOut, baseCurrency)

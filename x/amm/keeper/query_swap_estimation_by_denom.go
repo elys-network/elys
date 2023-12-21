@@ -19,15 +19,23 @@ func (k Keeper) SwapEstimationByDenom(goCtx context.Context, req *types.QuerySwa
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
+	// retrieve base currency denom
 	entry, found := k.assetProfileKeeper.GetEntry(ctx, ptypes.BaseCurrency)
 	if !found {
 		return nil, errorsmod.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency)
 	}
 	baseCurrency := entry.Denom
 
+	// retrieve denom in decimals
+	entry, found = k.assetProfileKeeper.GetEntryByDenom(ctx, req.DenomIn)
+	if !found {
+		return nil, errorsmod.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", req.DenomIn)
+	}
+	decimals := entry.Decimals
+
 	_ = baseCurrency
 
-	inRoute, outRoute, amount, spotPrice, swapFee, discount, availableLiquidity, weightBonus, priceImpact, err := k.CalcSwapEstimationByDenom(ctx, req.Amount, req.DenomIn, req.DenomOut, baseCurrency, req.Discount, sdk.ZeroDec())
+	inRoute, outRoute, amount, spotPrice, swapFee, discount, availableLiquidity, weightBonus, priceImpact, err := k.CalcSwapEstimationByDenom(ctx, req.Amount, req.DenomIn, req.DenomOut, baseCurrency, req.Discount, sdk.ZeroDec(), decimals)
 	if err != nil {
 		return nil, err
 	}
