@@ -25,6 +25,24 @@ func (k Keeper) GetEntry(ctx sdk.Context, baseDenom string) (val types.Entry, fo
 	return val, true
 }
 
+// GetEntryByDenom returns a entry from its denom value
+func (k Keeper) GetEntryByDenom(ctx sdk.Context, denom string) (val types.Entry, found bool) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.EntryKeyPrefix))
+	iterator := sdk.KVStorePrefixIterator(store, []byte{})
+
+	defer iterator.Close()
+
+	for ; iterator.Valid(); iterator.Next() {
+		var val types.Entry
+		k.cdc.MustUnmarshal(iterator.Value(), &val)
+		if val.Denom == denom {
+			return val, true
+		}
+	}
+
+	return types.Entry{}, false
+}
+
 // RemoveEntry removes a entry from the store
 func (k Keeper) RemoveEntry(ctx sdk.Context, baseDenom string) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.EntryKeyPrefix))

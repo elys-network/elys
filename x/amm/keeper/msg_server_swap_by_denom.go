@@ -18,13 +18,14 @@ func (k msgServer) SwapByDenom(goCtx context.Context, msg *types.MsgSwapByDenom)
 		return nil, err
 	}
 
+	// retrieve base currency denom
 	entry, found := k.assetProfileKeeper.GetEntry(ctx, ptypes.BaseCurrency)
 	if !found {
 		return nil, errorsmod.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency)
 	}
 	baseCurrency := entry.Denom
 
-	inRoute, outRoute, _, spotPrice, _, _, _, _, _, err := k.CalcSwapEstimationByDenom(ctx, msg.Amount, msg.DenomIn, msg.DenomOut, baseCurrency, msg.Discount, sdk.ZeroDec())
+	inRoute, outRoute, _, spotPrice, _, _, _, _, _, err := k.CalcSwapEstimationByDenom(ctx, msg.Amount, msg.DenomIn, msg.DenomOut, baseCurrency, msg.Discount, sdk.ZeroDec(), 0)
 	if err != nil {
 		return nil, err
 	}

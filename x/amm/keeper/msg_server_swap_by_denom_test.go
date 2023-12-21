@@ -6,6 +6,7 @@ import (
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 	"github.com/elys-network/elys/x/amm/keeper"
 	"github.com/elys-network/elys/x/amm/types"
+	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
 
@@ -53,6 +54,13 @@ func (suite *KeeperTestSuite) TestMsgServerSwapByDenom() {
 	} {
 		suite.Run(tc.desc, func() {
 			suite.SetupTest()
+
+			// set asset profile
+			suite.app.AssetprofileKeeper.SetEntry(suite.ctx, assetprofiletypes.Entry{
+				BaseDenom: ptypes.Elys,
+				Denom:     ptypes.Elys,
+				Decimals:  6,
+			})
 
 			// bootstrap accounts
 			sender := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
