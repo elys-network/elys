@@ -98,7 +98,7 @@ func (suite *KeeperTestSuite) TestCalcSwapEstimationByDenom() {
 		ptypes.Elys, "uusda", ptypes.BaseCurrency,
 		sdk.ZeroDec(),
 		sdk.ZeroDec(),
-		0,
+		1,
 	)
 	suite.Require().NoError(err)
 	suite.Require().NotNil(inRoute)
@@ -113,7 +113,7 @@ func (suite *KeeperTestSuite) TestCalcSwapEstimationByDenom() {
 		ptypes.Elys, "uusda", ptypes.BaseCurrency,
 		sdk.ZeroDec(),
 		sdk.ZeroDec(),
-		0,
+		1,
 	)
 	suite.Require().NoError(err)
 	suite.Require().Nil(inRoute)
@@ -128,7 +128,7 @@ func (suite *KeeperTestSuite) TestCalcSwapEstimationByDenom() {
 		ptypes.Elys, "uusda", ptypes.BaseCurrency,
 		sdk.ZeroDec(),
 		sdk.ZeroDec(),
-		0,
+		1,
 	)
 	suite.Require().Error(err)
 }
