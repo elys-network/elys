@@ -71,10 +71,8 @@ func (k Keeper) OpenEstimation(goCtx context.Context, req *types.QueryOpenEstima
 	if err != nil {
 		return nil, err
 	}
-	var (
-		borrowInterestRate sdk.Dec
-		fundingRate        sdk.Dec
-	)
+	borrowInterestRate := sdk.ZeroDec()
+	fundingRate := sdk.ZeroDec()
 	pool, found := k.GetPool(ctx, poolId)
 	if found {
 		borrowInterestRate = pool.BorrowInterestRate
