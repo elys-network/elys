@@ -31,6 +31,7 @@ var (
 	ErrInvalidDenom           = sdkerrors.Register(ModuleName, 104, "invalid denom")
 	ErrInvalidDiscount        = sdkerrors.Register(ModuleName, 105, "invalid discount")
 	ErrInitialSpotPriceIsZero = sdkerrors.Register(ModuleName, 106, "initial spot price is zero")
+	ErrSpotPriceIsZero        = sdkerrors.Register(ModuleName, 107, "spot price is zero")
 )
 
 const (

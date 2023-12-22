@@ -35,17 +35,26 @@ func (k Keeper) OpenEstimation(goCtx context.Context, req *types.QueryOpenEstima
 	}
 	baseCurrency := entry.Denom
 
+	// retrieve denom in decimals
+	entry, found = k.assetProfileKeeper.GetEntryByDenom(ctx, req.Collateral.Denom)
+	if !found {
+		return nil, errorsmod.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", req.Collateral.Denom)
+	}
+	decimals := entry.Decimals
+
 	leveragedAmount := sdk.NewDecFromBigInt(req.Collateral.Amount.BigInt()).Mul(req.Leverage).TruncateInt()
 	leveragedCoin := sdk.NewCoin(req.Collateral.Denom, leveragedAmount)
 
-	_, _, positionSize, openPrice, swapFee, discount, availableLiquidity, _, _, err := k.amm.CalcSwapEstimationByDenom(ctx, leveragedCoin, req.Collateral.Denom, req.TradingAsset, baseCurrency, req.Discount, swapFee, 0)
+	_, _, positionSize, openPrice, swapFee, discount, availableLiquidity, weightBonus, priceImpact, err := k.amm.CalcSwapEstimationByDenom(ctx, leveragedCoin, req.Collateral.Denom, req.TradingAsset, baseCurrency, req.Discount, swapFee, decimals)
 	if err != nil {
 		return nil, err
 	}
 
 	// calculate estimated pnl
-	// estimated_pnl = leveraged_amount * (open_price - take_profit_price)
-	estimatedPnL := sdk.NewDecFromBigInt(leveragedAmount.BigInt()).Mul(req.TakeProfitPrice.Sub(openPrice)).TruncateInt()
+	// estimated_pnl = leveraged_amount * (take_profit_price - open_price)
+	estimatedPnL := sdk.NewDecFromBigInt(leveragedAmount.BigInt())
+	estimatedPnL = estimatedPnL.Mul(req.TakeProfitPrice.Sub(openPrice))
+	estimatedPnLInt := estimatedPnL.TruncateInt()
 
 	if leveragedAmount.IsZero() {
 		return nil, errorsmod.Wrapf(types.ErrAmountTooLow, "leveraged amount is zero")
@@ -53,7 +62,22 @@ func (k Keeper) OpenEstimation(goCtx context.Context, req *types.QueryOpenEstima
 
 	// calculate liquidation price
 	// liquidation_price = -collateral_amount / leveraged_amount_value + open_price_value
-	liquidationPrice := sdk.NewDecFromBigInt(req.Collateral.Amount.Neg().BigInt()).Quo(sdk.NewDecFromBigInt(leveragedAmount.BigInt())).Add(openPrice)
+	liquidationPrice := sdk.NewDecFromBigInt(req.Collateral.Amount.Neg().BigInt())
+	liquidationPrice = liquidationPrice.Quo(sdk.NewDecFromBigInt(leveragedAmount.BigInt()))
+	liquidationPrice = liquidationPrice.Add(openPrice)
+
+	// get pool rates
+	poolId, err := k.GetFirstValidPool(ctx, req.Collateral.Denom, req.TradingAsset)
+	if err != nil {
+		return nil, err
+	}
+	borrowInterestRate := sdk.ZeroDec()
+	fundingRate := sdk.ZeroDec()
+	pool, found := k.GetPool(ctx, poolId)
+	if found {
+		borrowInterestRate = pool.BorrowInterestRate
+		fundingRate = pool.FundingRate
+	}
 
 	return &types.QueryOpenEstimationResponse{
 		Position:           req.Position,
@@ -68,7 +92,11 @@ func (k Keeper) OpenEstimation(goCtx context.Context, req *types.QueryOpenEstima
 		OpenPrice:          openPrice,
 		TakeProfitPrice:    req.TakeProfitPrice,
 		LiquidationPrice:   liquidationPrice,
-		EstimatedPnl:       estimatedPnL,
+		EstimatedPnl:       estimatedPnLInt,
 		AvailableLiquidity: availableLiquidity,
+		WeightBalanceRatio: weightBonus,
+		PriceImpact:        priceImpact,
+		BorrowInterestRate: borrowInterestRate,
+		FundingRate:        fundingRate,
 	}, nil
 }
