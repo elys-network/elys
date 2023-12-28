@@ -19,7 +19,6 @@ import (
 var (
 	FlagCommission       = "commission"
 	FlagValidatorAddress = "validator-address"
-	FlagMaxMessagesPerTx = "max-msgs"
 	FlagEarnType         = "earn-type"
 )
 
