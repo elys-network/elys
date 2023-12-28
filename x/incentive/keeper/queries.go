@@ -9,6 +9,8 @@ import (
 	"google.golang.org/grpc/status"
 )
 
+var _ types.QueryServer = Keeper{}
+
 func (k Keeper) CommunityPool(goCtx context.Context, req *types.QueryCommunityPoolRequest) (*types.QueryCommunityPoolResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
