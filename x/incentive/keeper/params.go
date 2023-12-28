@@ -150,7 +150,7 @@ func (k Keeper) InitStableStakePoolParams(ctx sdk.Context, poolId uint64) bool {
 }
 
 // UpdatePoolMultipliers updates pool multipliers through gov proposal
-func (k Keeper) UpdatePoolMultipliers(ctx sdk.Context, poolMultipliers []types.PoolMultipliers) bool {
+func (k Keeper) UpdatePoolMultipliers(ctx sdk.Context, poolMultipliers []types.PoolMultiplier) bool {
 	if len(poolMultipliers) < 1 {
 		return false
 	}
