@@ -1,7 +1,5 @@
 package keeper
 
-// rpc UpdatePoolMultipliers(MsgUpdatePoolMultipliers) returns (MsgUpdatePoolMultipliersResponse);
-
 import (
 	"context"
 
