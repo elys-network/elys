@@ -44,6 +44,8 @@ type AssetProfileKeeper interface {
 	SetEntry(ctx sdk.Context, entry atypes.Entry)
 	// GetEntry returns a entry from its index
 	GetEntry(ctx sdk.Context, baseDenom string) (val atypes.Entry, found bool)
+	// GetEntryByDenom returns a entry from its denom value
+	GetEntryByDenom(ctx sdk.Context, denom string) (val atypes.Entry, found bool)
 }
 
 // AccountedPoolKeeper defines the expected interfaces

@@ -141,9 +141,9 @@ func (_c *AmmKeeper_CalcOutAmtGivenIn_Call) RunAndReturn(run func(types.Context,
 	return _c
 }
 
-// CalcSwapEstimationByDenom provides a mock function with given fields: ctx, amount, denomIn, denomOut, baseCurrency, discount, overrideSwapFee
-func (_m *AmmKeeper) CalcSwapEstimationByDenom(ctx types.Context, amount types.Coin, denomIn string, denomOut string, baseCurrency string, discount math.LegacyDec, overrideSwapFee math.LegacyDec) ([]*ammtypes.SwapAmountInRoute, []*ammtypes.SwapAmountOutRoute, types.Coin, math.LegacyDec, math.LegacyDec, math.LegacyDec, types.Coin, math.LegacyDec, math.LegacyDec, error) {
-	ret := _m.Called(ctx, amount, denomIn, denomOut, baseCurrency, discount, overrideSwapFee)
+// CalcSwapEstimationByDenom provides a mock function with given fields: ctx, amount, denomIn, denomOut, baseCurrency, discount, overrideSwapFee, decimals
+func (_m *AmmKeeper) CalcSwapEstimationByDenom(ctx types.Context, amount types.Coin, denomIn string, denomOut string, baseCurrency string, discount math.LegacyDec, overrideSwapFee math.LegacyDec, decimals uint64) ([]*ammtypes.SwapAmountInRoute, []*ammtypes.SwapAmountOutRoute, types.Coin, math.LegacyDec, math.LegacyDec, math.LegacyDec, types.Coin, math.LegacyDec, math.LegacyDec, error) {
+	ret := _m.Called(ctx, amount, denomIn, denomOut, baseCurrency, discount, overrideSwapFee, decimals)
 
 	var r0 []*ammtypes.SwapAmountInRoute
 	var r1 []*ammtypes.SwapAmountOutRoute
@@ -155,69 +155,69 @@ func (_m *AmmKeeper) CalcSwapEstimationByDenom(ctx types.Context, amount types.C
 	var r7 math.LegacyDec
 	var r8 math.LegacyDec
 	var r9 error
-	if rf, ok := ret.Get(0).(func(types.Context, types.Coin, string, string, string, math.LegacyDec, math.LegacyDec) ([]*ammtypes.SwapAmountInRoute, []*ammtypes.SwapAmountOutRoute, types.Coin, math.LegacyDec, math.LegacyDec, math.LegacyDec, types.Coin, math.LegacyDec, math.LegacyDec, error)); ok {
-		return rf(ctx, amount, denomIn, denomOut, baseCurrency, discount, overrideSwapFee)
+	if rf, ok := ret.Get(0).(func(types.Context, types.Coin, string, string, string, math.LegacyDec, math.LegacyDec, uint64) ([]*ammtypes.SwapAmountInRoute, []*ammtypes.SwapAmountOutRoute, types.Coin, math.LegacyDec, math.LegacyDec, math.LegacyDec, types.Coin, math.LegacyDec, math.LegacyDec, error)); ok {
+		return rf(ctx, amount, denomIn, denomOut, baseCurrency, discount, overrideSwapFee, decimals)
 	}
-	if rf, ok := ret.Get(0).(func(types.Context, types.Coin, string, string, string, math.LegacyDec, math.LegacyDec) []*ammtypes.SwapAmountInRoute); ok {
-		r0 = rf(ctx, amount, denomIn, denomOut, baseCurrency, discount, overrideSwapFee)
+	if rf, ok := ret.Get(0).(func(types.Context, types.Coin, string, string, string, math.LegacyDec, math.LegacyDec, uint64) []*ammtypes.SwapAmountInRoute); ok {
+		r0 = rf(ctx, amount, denomIn, denomOut, baseCurrency, discount, overrideSwapFee, decimals)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).([]*ammtypes.SwapAmountInRoute)
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(types.Context, types.Coin, string, string, string, math.LegacyDec, math.LegacyDec) []*ammtypes.SwapAmountOutRoute); ok {
-		r1 = rf(ctx, amount, denomIn, denomOut, baseCurrency, discount, overrideSwapFee)
+	if rf, ok := ret.Get(1).(func(types.Context, types.Coin, string, string, string, math.LegacyDec, math.LegacyDec, uint64) []*ammtypes.SwapAmountOutRoute); ok {
+		r1 = rf(ctx, amount, denomIn, denomOut, baseCurrency, discount, overrideSwapFee, decimals)
 	} else {
 		if ret.Get(1) != nil {
 			r1 = ret.Get(1).([]*ammtypes.SwapAmountOutRoute)
 		}
 	}
 
-	if rf, ok := ret.Get(2).(func(types.Context, types.Coin, string, string, string, math.LegacyDec, math.LegacyDec) types.Coin); ok {
-		r2 = rf(ctx, amount, denomIn, denomOut, baseCurrency, discount, overrideSwapFee)
+	if rf, ok := ret.Get(2).(func(types.Context, types.Coin, string, string, string, math.LegacyDec, math.LegacyDec, uint64) types.Coin); ok {
+		r2 = rf(ctx, amount, denomIn, denomOut, baseCurrency, discount, overrideSwapFee, decimals)
 	} else {
 		r2 = ret.Get(2).(types.Coin)
 	}
 
-	if rf, ok := ret.Get(3).(func(types.Context, types.Coin, string, string, string, math.LegacyDec, math.LegacyDec) math.LegacyDec); ok {
-		r3 = rf(ctx, amount, denomIn, denomOut, baseCurrency, discount, overrideSwapFee)
+	if rf, ok := ret.Get(3).(func(types.Context, types.Coin, string, string, string, math.LegacyDec, math.LegacyDec, uint64) math.LegacyDec); ok {
+		r3 = rf(ctx, amount, denomIn, denomOut, baseCurrency, discount, overrideSwapFee, decimals)
 	} else {
 		r3 = ret.Get(3).(math.LegacyDec)
 	}
 
-	if rf, ok := ret.Get(4).(func(types.Context, types.Coin, string, string, string, math.LegacyDec, math.LegacyDec) math.LegacyDec); ok {
-		r4 = rf(ctx, amount, denomIn, denomOut, baseCurrency, discount, overrideSwapFee)
+	if rf, ok := ret.Get(4).(func(types.Context, types.Coin, string, string, string, math.LegacyDec, math.LegacyDec, uint64) math.LegacyDec); ok {
+		r4 = rf(ctx, amount, denomIn, denomOut, baseCurrency, discount, overrideSwapFee, decimals)
 	} else {
 		r4 = ret.Get(4).(math.LegacyDec)
 	}
 
-	if rf, ok := ret.Get(5).(func(types.Context, types.Coin, string, string, string, math.LegacyDec, math.LegacyDec) math.LegacyDec); ok {
-		r5 = rf(ctx, amount, denomIn, denomOut, baseCurrency, discount, overrideSwapFee)
+	if rf, ok := ret.Get(5).(func(types.Context, types.Coin, string, string, string, math.LegacyDec, math.LegacyDec, uint64) math.LegacyDec); ok {
+		r5 = rf(ctx, amount, denomIn, denomOut, baseCurrency, discount, overrideSwapFee, decimals)
 	} else {
 		r5 = ret.Get(5).(math.LegacyDec)
 	}
 
-	if rf, ok := ret.Get(6).(func(types.Context, types.Coin, string, string, string, math.LegacyDec, math.LegacyDec) types.Coin); ok {
-		r6 = rf(ctx, amount, denomIn, denomOut, baseCurrency, discount, overrideSwapFee)
+	if rf, ok := ret.Get(6).(func(types.Context, types.Coin, string, string, string, math.LegacyDec, math.LegacyDec, uint64) types.Coin); ok {
+		r6 = rf(ctx, amount, denomIn, denomOut, baseCurrency, discount, overrideSwapFee, decimals)
 	} else {
 		r6 = ret.Get(6).(types.Coin)
 	}
 
-	if rf, ok := ret.Get(7).(func(types.Context, types.Coin, string, string, string, math.LegacyDec, math.LegacyDec) math.LegacyDec); ok {
-		r7 = rf(ctx, amount, denomIn, denomOut, baseCurrency, discount, overrideSwapFee)
+	if rf, ok := ret.Get(7).(func(types.Context, types.Coin, string, string, string, math.LegacyDec, math.LegacyDec, uint64) math.LegacyDec); ok {
+		r7 = rf(ctx, amount, denomIn, denomOut, baseCurrency, discount, overrideSwapFee, decimals)
 	} else {
 		r7 = ret.Get(7).(math.LegacyDec)
 	}
 
-	if rf, ok := ret.Get(8).(func(types.Context, types.Coin, string, string, string, math.LegacyDec, math.LegacyDec) math.LegacyDec); ok {
-		r8 = rf(ctx, amount, denomIn, denomOut, baseCurrency, discount, overrideSwapFee)
+	if rf, ok := ret.Get(8).(func(types.Context, types.Coin, string, string, string, math.LegacyDec, math.LegacyDec, uint64) math.LegacyDec); ok {
+		r8 = rf(ctx, amount, denomIn, denomOut, baseCurrency, discount, overrideSwapFee, decimals)
 	} else {
 		r8 = ret.Get(8).(math.LegacyDec)
 	}
 
-	if rf, ok := ret.Get(9).(func(types.Context, types.Coin, string, string, string, math.LegacyDec, math.LegacyDec) error); ok {
-		r9 = rf(ctx, amount, denomIn, denomOut, baseCurrency, discount, overrideSwapFee)
+	if rf, ok := ret.Get(9).(func(types.Context, types.Coin, string, string, string, math.LegacyDec, math.LegacyDec, uint64) error); ok {
+		r9 = rf(ctx, amount, denomIn, denomOut, baseCurrency, discount, overrideSwapFee, decimals)
 	} else {
 		r9 = ret.Error(9)
 	}
@@ -238,13 +238,14 @@ type AmmKeeper_CalcSwapEstimationByDenom_Call struct {
 //   - baseCurrency string
 //   - discount math.LegacyDec
 //   - overrideSwapFee math.LegacyDec
-func (_e *AmmKeeper_Expecter) CalcSwapEstimationByDenom(ctx interface{}, amount interface{}, denomIn interface{}, denomOut interface{}, baseCurrency interface{}, discount interface{}, overrideSwapFee interface{}) *AmmKeeper_CalcSwapEstimationByDenom_Call {
-	return &AmmKeeper_CalcSwapEstimationByDenom_Call{Call: _e.mock.On("CalcSwapEstimationByDenom", ctx, amount, denomIn, denomOut, baseCurrency, discount, overrideSwapFee)}
+//   - decimals uint64
+func (_e *AmmKeeper_Expecter) CalcSwapEstimationByDenom(ctx interface{}, amount interface{}, denomIn interface{}, denomOut interface{}, baseCurrency interface{}, discount interface{}, overrideSwapFee interface{}, decimals interface{}) *AmmKeeper_CalcSwapEstimationByDenom_Call {
+	return &AmmKeeper_CalcSwapEstimationByDenom_Call{Call: _e.mock.On("CalcSwapEstimationByDenom", ctx, amount, denomIn, denomOut, baseCurrency, discount, overrideSwapFee, decimals)}
 }
 
-func (_c *AmmKeeper_CalcSwapEstimationByDenom_Call) Run(run func(ctx types.Context, amount types.Coin, denomIn string, denomOut string, baseCurrency string, discount math.LegacyDec, overrideSwapFee math.LegacyDec)) *AmmKeeper_CalcSwapEstimationByDenom_Call {
+func (_c *AmmKeeper_CalcSwapEstimationByDenom_Call) Run(run func(ctx types.Context, amount types.Coin, denomIn string, denomOut string, baseCurrency string, discount math.LegacyDec, overrideSwapFee math.LegacyDec, decimals uint64)) *AmmKeeper_CalcSwapEstimationByDenom_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(types.Context), args[1].(types.Coin), args[2].(string), args[3].(string), args[4].(string), args[5].(math.LegacyDec), args[6].(math.LegacyDec))
+		run(args[0].(types.Context), args[1].(types.Coin), args[2].(string), args[3].(string), args[4].(string), args[5].(math.LegacyDec), args[6].(math.LegacyDec), args[7].(uint64))
 	})
 	return _c
 }
@@ -254,7 +255,7 @@ func (_c *AmmKeeper_CalcSwapEstimationByDenom_Call) Return(inRoute []*ammtypes.S
 	return _c
 }
 
-func (_c *AmmKeeper_CalcSwapEstimationByDenom_Call) RunAndReturn(run func(types.Context, types.Coin, string, string, string, math.LegacyDec, math.LegacyDec) ([]*ammtypes.SwapAmountInRoute, []*ammtypes.SwapAmountOutRoute, types.Coin, math.LegacyDec, math.LegacyDec, math.LegacyDec, types.Coin, math.LegacyDec, math.LegacyDec, error)) *AmmKeeper_CalcSwapEstimationByDenom_Call {
+func (_c *AmmKeeper_CalcSwapEstimationByDenom_Call) RunAndReturn(run func(types.Context, types.Coin, string, string, string, math.LegacyDec, math.LegacyDec, uint64) ([]*ammtypes.SwapAmountInRoute, []*ammtypes.SwapAmountOutRoute, types.Coin, math.LegacyDec, math.LegacyDec, math.LegacyDec, types.Coin, math.LegacyDec, math.LegacyDec, error)) *AmmKeeper_CalcSwapEstimationByDenom_Call {
 	_c.Call.Return(run)
 	return _c
 }

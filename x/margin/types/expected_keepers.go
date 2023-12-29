@@ -144,6 +144,7 @@ type AmmKeeper interface {
 		baseCurrency string,
 		discount sdk.Dec,
 		overrideSwapFee sdk.Dec,
+		decimals uint64,
 	) (
 		inRoute []*ammtypes.SwapAmountInRoute,
 		outRoute []*ammtypes.SwapAmountOutRoute,
@@ -182,4 +183,6 @@ type BankKeeper interface {
 type AssetProfileKeeper interface {
 	// GetEntry returns a entry from its index
 	GetEntry(ctx sdk.Context, baseDenom string) (val atypes.Entry, found bool)
+	// GetEntryByDenom returns a entry from its denom value
+	GetEntryByDenom(ctx sdk.Context, denom string) (val atypes.Entry, found bool)
 }
