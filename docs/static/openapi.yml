@@ -41297,6 +41297,14 @@ paths:
                   method
 
                   signatures required by gogoproto.
+              weight_balance_ratio:
+                type: string
+              borrow_interest_rate:
+                type: string
+              funding_rate:
+                type: string
+              price_impact:
+                type: string
         default:
           description: An unexpected error response.
           schema:
@@ -85680,6 +85688,14 @@ definitions:
 
           NOTE: The amount field is an Int which implements the custom method
           signatures required by gogoproto.
+      weight_balance_ratio:
+        type: string
+      borrow_interest_rate:
+        type: string
+      funding_rate:
+        type: string
+      price_impact:
+        type: string
   elys.margin.StatusResponse:
     type: object
     properties:

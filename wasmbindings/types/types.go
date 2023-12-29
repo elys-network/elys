@@ -120,7 +120,7 @@ type ElysQuery struct {
 	AssetProfileEntryAll *assetprofiletypes.QueryAllEntryRequest `json:"asset_profile_entry_all,omitempty"`
 
 	// auth queriers
-	AuthAccounts *authtypes.QueryAccountsRequest `json:"auth_accounts,omitempty"`
+	AuthAddresses *authtypes.QueryAccountsRequest `json:"auth_addresses,omitempty"`
 
 	// burner queriers
 	BurnerParams     *burnertypes.QueryParamsRequest     `json:"burner_params,omitempty"`
