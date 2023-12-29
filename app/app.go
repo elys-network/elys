@@ -907,8 +907,7 @@ func NewElysApp(
 		AddRoute(paramproposal.RouterKey, params.NewParamChangeProposalHandler(app.ParamsKeeper)).
 		AddRoute(upgradetypes.RouterKey, upgrade.NewSoftwareUpgradeProposalHandler(app.UpgradeKeeper)).
 		AddRoute(ibcclienttypes.RouterKey, ibcclient.NewClientProposalHandler(app.IBCKeeper.ClientKeeper)).
-		AddRoute(oracletypes.RouterKey, oraclemodule.NewAssetInfoProposalHandler(&app.OracleKeeper)).
-		AddRoute(incentivemoduletypes.RouterKey, incentivemodule.NewPoolInfoProposalHandler(&app.IncentiveKeeper))
+		AddRoute(oracletypes.RouterKey, oraclemodule.NewAssetInfoProposalHandler(&app.OracleKeeper))
 
 	// The gov proposal types can be individually enabled
 	if len(enabledProposals) != 0 {

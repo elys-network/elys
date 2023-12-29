@@ -83945,6 +83945,8 @@ definitions:
     title: Incentive Info
   elys.incentive.MsgUpdateIncentiveParamsResponse:
     type: object
+  elys.incentive.MsgUpdatePoolMultipliersResponse:
+    type: object
   elys.incentive.MsgWithdrawRewardsResponse:
     type: object
     description: >-
@@ -84133,6 +84135,14 @@ definitions:
         type: string
         title: Dex APR
     title: Pool Info
+  elys.incentive.PoolMultiplier:
+    type: object
+    properties:
+      pool_id:
+        type: string
+        format: uint64
+      multiplier:
+        type: string
   elys.incentive.QueryCommunityPoolResponse:
     type: object
     properties:

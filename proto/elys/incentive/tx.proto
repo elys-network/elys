@@ -11,15 +11,15 @@ option go_package = "github.com/elys-network/elys/x/incentive/types";
 
 // Msg defines the Msg service.
 service Msg {
-  
   // WithdrawDelegatorReward defines a method to withdraw rewards of delegator
   // from a single validator.
   rpc WithdrawRewards (MsgWithdrawRewards) returns (MsgWithdrawRewardsResponse);
   
   // WithdrawValidatorCommission defines a method to withdraw the
   // full commission to the validator address.
-  rpc WithdrawValidatorCommission (MsgWithdrawValidatorCommission) returns (MsgWithdrawValidatorCommissionResponse);
-  rpc UpdateIncentiveParams       (MsgUpdateIncentiveParams      ) returns (MsgUpdateIncentiveParamsResponse      );
+  rpc WithdrawValidatorCommission(MsgWithdrawValidatorCommission) returns (MsgWithdrawValidatorCommissionResponse);
+  rpc UpdateIncentiveParams(MsgUpdateIncentiveParams) returns (MsgUpdateIncentiveParamsResponse);
+  rpc UpdatePoolMultipliers(MsgUpdatePoolMultipliers) returns (MsgUpdatePoolMultipliersResponse);
 }
 // MsgWithdrawDelegatorReward represents delegation withdrawal to a delegator
 // from a single validator.
@@ -96,3 +96,17 @@ message MsgCancelUnbondingDelegation{
   // creation_height is the height which the unbonding took place.
   int64 creation_height = 4;
 }
+
+message PoolMultiplier {
+  uint64 pool_id = 1;
+  string multiplier = 2 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message MsgUpdatePoolMultipliers {
+  string authority = 1;
+  repeated PoolMultiplier pool_multipliers = 2 [ (gogoproto.nullable) = false ];
+}
+message MsgUpdatePoolMultipliersResponse {}
