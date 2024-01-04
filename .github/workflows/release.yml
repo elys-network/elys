@@ -39,19 +39,19 @@ jobs:
           OPTIONS="--node $NODE --chain-id elystestnet-1 --keyring-backend=test -b=sync --fees=100000uelys --gas=300000 -y"
 
           # save private keys to files
-          echo ${{ secrets.PRIVATE_KEY_1 }} > /tmp/private_key_1.txt
-          echo ${{ secrets.PRIVATE_KEY_2 }} > /tmp/private_key_2.txt
-          echo ${{ secrets.PRIVATE_KEY_3 }} > /tmp/private_key_3.txt
-          echo ${{ secrets.PRIVATE_KEY_4 }} > /tmp/private_key_4.txt
+          echo "${{ secrets.PRIVATE_KEY_1 }}" > /tmp/private_key_1.txt
+          echo "${{ secrets.PRIVATE_KEY_2 }}" > /tmp/private_key_2.txt
+          echo "${{ secrets.PRIVATE_KEY_3 }}" > /tmp/private_key_3.txt
+          echo "${{ secrets.PRIVATE_KEY_4 }}" > /tmp/private_key_4.txt
 
           # recover keys
-          echo ${{ secrets.PASSPHRASE_1 }} | $ELYSD keys import key_1 --keyring-backend test /tmp/private_key_1.txt
-          echo ${{ secrets.PASSPHRASE_2 }} | $ELYSD keys import key_2 --keyring-backend test /tmp/private_key_2.txt
-          echo ${{ secrets.PASSPHRASE_3 }} | $ELYSD keys import key_3 --keyring-backend test /tmp/private_key_3.txt
-          echo ${{ secrets.PASSPHRASE_4 }} | $ELYSD keys import key_4 --keyring-backend test /tmp/private_key_4.txt
+          echo "${{ secrets.PASSPHRASE_1 }}" | $ELYSD keys import key_1 --keyring-backend test /tmp/private_key_1.txt
+          echo "${{ secrets.PASSPHRASE_2 }}" | $ELYSD keys import key_2 --keyring-backend test /tmp/private_key_2.txt
+          echo "${{ secrets.PASSPHRASE_3 }}" | $ELYSD keys import key_3 --keyring-backend test /tmp/private_key_3.txt
+          echo "${{ secrets.PASSPHRASE_4 }}" | $ELYSD keys import key_4 --keyring-backend test /tmp/private_key_4.txt
 
           # get checksum
-          checksum=$(cat dist/sha256sum.txt | awk '/elysd-${{ github.ref_name }}-linux-amd64.tar.gz/ {print $1}')
+          checksum=$(cat dist/sha256sum.txt | awk "/elysd-${{ github.ref_name }}-linux-amd64.tar.gz/ {print \$1}")
 
           # query and upgrade height
           height=$($ELYSD status --node $NODE | extract_and_calc_upgrade_height)
@@ -64,7 +64,7 @@ jobs:
               --upgrade-height=$height \
               --title="${{ github.ref_name }}" \
               --description="Elys Network ${{ github.ref_name }} released. Focuses on enhancements and codebase improvements." \
-              --upgrade-info='{"binaries":{"linux/amd64":"https://github.com/elys-network/elys/releases/download/${{ github.ref_name }}/elysd-${{ github.ref_name }}-linux-amd64.tar.gz?checksum=$checksum"}}' \
+              --upgrade-info="{\"binaries\":{\"linux/amd64\":\"https://github.com/elys-network/elys/releases/download/${{ github.ref_name }}/elysd-${{ github.ref_name }}-linux-amd64.tar.gz?checksum=$checksum\"}}" \
               --from=key_1 \
               $OPTIONS | extract_txhash
           )
