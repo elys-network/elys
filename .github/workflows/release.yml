@@ -34,14 +34,9 @@ jobs:
           extract_and_calc_upgrade_height() { awk -F'"latest_block_height":"' '{ split($2,a,"\""); print a[1]+2000; exit }'; }
 
           # environment variables
-          ELYSD=/tmp/elysd
+          ELYSD=dist/elysd-linux-amd64_linux_amd64_v1/elysd
           NODE=https://rpc.testnet.elys.network:443
-          URL=https://github.com/elys-network/elys/releases/download/${{ github.ref_name }}/elysd-${{ github.ref_name }}-linux-amd64
           OPTIONS="--node $NODE --chain-id elystestnet-1 --keyring-backend=test -b=sync --fees=100000uelys --gas=300000 -y"
-
-          # download elysd
-          wget $URL -O $ELYSD
-          chmod +x $ELYSD
 
           # save private keys to files
           echo ${{ secrets.PRIVATE_KEY_1 }} > /tmp/private_key_1.txt
@@ -56,7 +51,7 @@ jobs:
           echo ${{ secrets.PASSPHRASE_4 }} | $ELYSD keys import key_4 --keyring-backend test /tmp/private_key_4.txt
 
           # get checksum
-          checksum=$(wget -qO- "https://github.com/elys-network/elys/releases/download/${{ github.ref_name }}/sha256sum.txt" | awk '/elysd-${{ github.ref_name }}-linux-amd64.tar.gz/ {print $1}')
+          checksum=$(cat dist/sha256sum.txt | awk '/elysd-${{ github.ref_name }}-linux-amd64.tar.gz/ {print $1}')
 
           # query and upgrade height
           height=$($ELYSD status --node $NODE | extract_and_calc_upgrade_height)
