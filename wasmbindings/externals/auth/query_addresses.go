@@ -6,6 +6,7 @@ import (
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	wasmbindingstypes "github.com/elys-network/elys/wasmbindings/types"
 )
 
 func (oq *Querier) queryAddresses(ctx sdk.Context, req *authtypes.QueryAccountsRequest) ([]byte, error) {
@@ -23,7 +24,12 @@ func (oq *Querier) queryAddresses(ctx sdk.Context, req *authtypes.QueryAccountsR
 		addresses = append(addresses, iaccount.GetAddress().String())
 	}
 
-	responseBytes, err := json.Marshal(addresses)
+	authAddressesResponse := wasmbindingstypes.AuthAddressesResponse{
+		Addresses:  addresses,
+		Pagination: res.Pagination,
+	}
+
+	responseBytes, err := json.Marshal(authAddressesResponse)
 	if err != nil {
 		return nil, errorsmod.Wrap(err, "failed to serialize addresses response")
 	}
