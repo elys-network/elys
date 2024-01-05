@@ -32,6 +32,7 @@ jobs:
           extract_txhash() { awk -F 'txhash: ' '/txhash:/{print $2; exit}'; }
           extract_proposal_id() { awk -F 'key: proposal_id|value: ' '/key: proposal_id/ { getline; gsub(/"/, "", $2); print $2; exit }'; }
           extract_and_calc_upgrade_height() { awk -F'"latest_block_height":"' '{ split($2,a,"\""); print a[1]+2000; exit }'; }
+          extract_checksum() { awk "/elysd-${{ github.ref_name }}-linux-amd64.tar.gz/ {print \$1; exit}"; }
 
           # environment variables
           ELYSD=dist/elysd-linux-amd64_linux_amd64_v1/elysd
@@ -51,7 +52,7 @@ jobs:
           echo "${{ secrets.PASSPHRASE_4 }}" | $ELYSD keys import key_4 --keyring-backend test /tmp/private_key_4.txt
 
           # get checksum
-          checksum=$(cat dist/sha256sum.txt | awk "/elysd-${{ github.ref_name }}-linux-amd64.tar.gz/ {print \$1}")
+          checksum=$(cat dist/sha256sum.txt | extract_checksum)
 
           # query and upgrade height
           height=$($ELYSD status --node $NODE | extract_and_calc_upgrade_height)
