@@ -103,9 +103,9 @@ builds:
       - -mod=readonly
       - -trimpath
     ldflags:
-      - -X github.com/cosmos/cosmos-sdk/version.Name=elys 
-      - -X github.com/cosmos/cosmos-sdk/version.AppName=elysd 
-      - -X github.com/cosmos/cosmos-sdk/version.Version=v{{ .Version }} 
+      - -X github.com/cosmos/cosmos-sdk/version.Name=elys
+      - -X github.com/cosmos/cosmos-sdk/version.AppName=elysd
+      - -X github.com/cosmos/cosmos-sdk/version.Version=v{{ .Version }}
       - -X github.com/cosmos/cosmos-sdk/version.Commit={{ .Commit }}
       - -X github.com/cosmos/cosmos-sdk/version.BuildTags=netgo,ledger,muslc,osusergo
       - -w -s
@@ -160,7 +160,20 @@ release:
   header: |
     ## Description
 
-    < DESCRIPTION OF RELEASE >
+    Proposal: https://testnet.ping.pub/elys/gov/XXX
+
+    We're thrilled to announce the launch of Elys Network v{{ .Version }}! This update is primarily focused on enhancements and codebase improvements. Here’s a brief overview of what’s new:
+
+    ### Changes
+
+    * item 1
+    * item 2
+    * item 3
+    * ...
+
+    This release is part of our continuous effort to refine and optimize Elys Network. We appreciate the dedication and expertise of our contributors who help make Elys Network more robust and user-friendly.
+
+    Thank you for your ongoing support of Elys Network!
 
     ## ⚡️ Binaries
 
@@ -183,7 +196,6 @@ release:
   name_template: "v{{.Version}}"
   mode: replace
   draft: true
-
 # Docs: https://goreleaser.com/customization/announce/
 # We could automatically announce the release in
 # - discord
@@ -194,6 +206,6 @@ release:
 # - reddit
 #
 # announce:
-  # discord:
-  #   enabled: true
-  #   message_template: 'New {{.Tag}} is out!'
+# discord:
+#   enabled: true
+#   message_template: 'New {{.Tag}} is out!'
