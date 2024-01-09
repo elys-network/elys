@@ -172,7 +172,7 @@ func (suite *KeeperTestSuite) TestUpdatePoolForSwap() {
 				},
 				TotalWeight: sdk.ZeroInt(),
 			}
-			err, _ = suite.app.AmmKeeper.UpdatePoolForSwap(suite.ctx, pool, sender, sender, tc.tokenIn, tc.tokenOut, tc.swapFeeIn, tc.swapFeeOut, tc.weightBalanceBonus)
+			_, err = suite.app.AmmKeeper.UpdatePoolForSwap(suite.ctx, pool, sender, sender, tc.tokenIn, tc.tokenOut, tc.swapFeeIn, tc.swapFeeOut, tc.weightBalanceBonus)
 			if !tc.expPass {
 				suite.Require().Error(err)
 			} else {

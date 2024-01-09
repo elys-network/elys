@@ -297,7 +297,6 @@ func (p *Pool) SwapOutAmtGivenIn(
 		weightIn := OracleAssetWeight(ctx, oracleKeeper, newAssetPools, tokenIn.Denom)
 		weightOut := OracleAssetWeight(ctx, oracleKeeper, newAssetPools, tokenOutDenom)
 		weightBreakingFee = GetWeightBreakingFee(weightIn, weightOut, targetWeightIn, targetWeightOut, p.PoolParams)
-
 	}
 
 	// bonus is valid when distance is lower than original distance and when threshold weight reached

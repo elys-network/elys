@@ -38,8 +38,8 @@ const (
 	// BaseDecimal
 	BASE_DECIMAL = 6
 
-	// 3.154e+7 per year
-	SecondsPerYear = 3.154e+7
+	// 31540000s per year
+	SecondsPerYear = 31540000
 
 	// One day seconds
 	SecondsPerDay = 86400
