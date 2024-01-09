@@ -240,7 +240,7 @@ func (suite *KeeperTestSuite) TestSwapFeesToRevenueToken() {
 
 	// 		// Settles balances between the tx sender and the pool to match the swap that was executed earlier.
 	// 		// Also emits a swap event and updates related liquidity metrics.
-	// 		err, _ = k.UpdatePoolForSwap(ctx, pool, poolRevenueAddress, tokenIn, tokenOutCoin, sdk.ZeroDec(), sdk.ZeroDec(), sdk.ZeroDec())
+	// 		_, err = k.UpdatePoolForSwap(ctx, pool, poolRevenueAddress, tokenIn, tokenOutCoin, sdk.ZeroDec(), sdk.ZeroDec(), sdk.ZeroDec())
 	// 		if err != nil {
 	// 			return err
 	// 		}

@@ -20,6 +20,6 @@ var (
 	ErrEmptyProposalRecipient             = sdkerrors.Register(ModuleName, 11, "invalid community pool spend proposal recipient")
 	ErrNoValidatorExists                  = sdkerrors.Register(ModuleName, 12, "validator does not exist")
 	ErrNoDelegationExists                 = sdkerrors.Register(ModuleName, 13, "delegation does not exist")
-	ErrNoNonInflationaryParams            = sdkerrors.Register(ModuleName, 14, "no inflationary rewards params")
+	ErrNoInflationaryParams               = sdkerrors.Register(ModuleName, 14, "no inflationary rewards params")
 	ErrInvalidInflationaryEpochIdentifier = sdkerrors.Register(ModuleName, 15, "inflationary inflationary epoch identifier is invalid")
 )

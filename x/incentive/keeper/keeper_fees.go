@@ -10,10 +10,9 @@ import (
 // FindPool function gets a pool that can convert in_denom token to out_denom token
 // TODO:
 // Later on: add a logic to choose best pool
-func (k Keeper) FindPool(ctx sdk.Context, in_denom string, out_denom string) (ammtypes.Pool, bool) {
+func (k Keeper) FindPool(ctx sdk.Context, inDenom string, outDenom string) (ammtypes.Pool, bool) {
 	// Get pool ids that can convert tokenIn
-	poolIds := k.amm.GetAllPoolIdsWithDenom(ctx, in_denom)
-	poolId := uint64(9999999)
+	poolIds := k.amm.GetAllPoolIdsWithDenom(ctx, inDenom)
 
 	for _, pId := range poolIds {
 		// Get a pool with poolId
@@ -22,28 +21,15 @@ func (k Keeper) FindPool(ctx sdk.Context, in_denom string, out_denom string) (am
 			continue
 		}
 
-		// Loop pool assets to find out USDC pair
+		// Loop pool assets to find out pair
 		for _, asset := range pool.PoolAssets {
-			// if USDC available,
-			if asset.Token.Denom == out_denom {
-				poolId = pool.PoolId
-				break
+			if asset.Token.Denom == outDenom {
+				return pool, true
 			}
 		}
-
-		// If already found a pool matched, exit loop
-		if poolId != uint64(9999999) {
-			break
-		}
 	}
 
-	// If the pool is not availble,
-	if poolId == uint64(9999999) {
-		return ammtypes.Pool{}, false
-	}
-
-	// Return a pool found
-	return k.amm.GetPool(ctx, poolId)
+	return ammtypes.Pool{}, false
 }
 
 // Move gas fees collected to dex revenue wallet
@@ -53,12 +39,12 @@ func (k Keeper) CollectGasFeesToIncentiveModule(ctx sdk.Context, baseCurrency st
 	// called in BeginBlock, collected fees will be from the previous block
 	// (and distributed to the previous proposer)
 	feeCollector := k.authKeeper.GetModuleAccount(ctx, k.feeCollectorName)
-	feesCollectedInt := k.bankKeeper.GetAllBalances(ctx, feeCollector.GetAddress())
+	feesCollected := k.bankKeeper.GetAllBalances(ctx, feeCollector.GetAddress())
 
 	// Total Swapped coin
 	totalSwappedCoins := sdk.Coins{}
 
-	for _, tokenIn := range feesCollectedInt {
+	for _, tokenIn := range feesCollected {
 		// if it is base currency - usdc, we don't need convert. We just need to collect it to fee wallet.
 		if tokenIn.Denom == baseCurrency {
 			// Transfer converted USDC fees to the Dex revenue module account
@@ -93,19 +79,22 @@ func (k Keeper) CollectGasFeesToIncentiveModule(ctx sdk.Context, baseCurrency st
 
 		// Settles balances between the tx sender and the pool to match the swap that was executed earlier.
 		// Also emits a swap event and updates related liquidity metrics.
-		err, _ = k.amm.UpdatePoolForSwap(ctx, pool, feeCollector.GetAddress(), feeCollector.GetAddress(), tokenIn, tokenOutCoin, sdk.ZeroDec(), sdk.ZeroDec(), sdk.ZeroDec())
+		cacheCtx, write := ctx.CacheContext()
+		_, err = k.amm.UpdatePoolForSwap(cacheCtx, pool, feeCollector.GetAddress(), feeCollector.GetAddress(), tokenIn, tokenOutCoin, sdk.ZeroDec(), sdk.ZeroDec(), sdk.ZeroDec())
 		if err != nil {
 			continue
 		}
+		write()
 
 		// Swapped USDC coin
-		swappedCoin := sdk.NewCoin(baseCurrency, tokenOutAmount)
-		swappedCoins := sdk.NewCoins(swappedCoin)
+		swappedCoins := sdk.NewCoins(sdk.NewCoin(baseCurrency, tokenOutAmount))
 
 		// Transfer converted USDC fees to the Dex revenue module account
-		err = k.bankKeeper.SendCoinsFromModuleToModule(ctx, k.feeCollectorName, k.dexRevCollectorName, swappedCoins)
-		if err != nil {
-			panic(err)
+		if swappedCoins.IsAllPositive() {
+			err = k.bankKeeper.SendCoinsFromModuleToModule(ctx, k.feeCollectorName, k.dexRevCollectorName, swappedCoins)
+			if err != nil {
+				panic(err)
+			}
 		}
 
 		// Sum total swapped
@@ -135,18 +124,13 @@ func (k Keeper) CollectDEXRevenue(ctx sdk.Context) (sdk.Coins, sdk.DecCoins, sdk
 		// Get dex rewards per pool
 		revenueAddress := ammtypes.NewPoolRevenueAddress(poolId)
 
-		// Revenue amount
-		revenue := k.bankKeeper.GetAllBalances(ctx, revenueAddress)
-
-		denoms := revenue.Denoms()
-		if len(denoms) < 1 {
-			return false
-		}
-
 		// Transfer revenue to a single wallet of DEX revenue wallet.
-		err := k.bankKeeper.SendCoinsFromAccountToModule(ctx, revenueAddress, k.dexRevCollectorName, revenue)
-		if err != nil {
-			panic(err)
+		revenue := k.bankKeeper.GetAllBalances(ctx, revenueAddress)
+		if revenue.IsAllPositive() {
+			err := k.bankKeeper.SendCoinsFromAccountToModule(ctx, revenueAddress, k.dexRevCollectorName, revenue)
+			if err != nil {
+				panic(err)
+			}
 		}
 
 		// LPs Portion param

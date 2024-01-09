@@ -79,7 +79,7 @@ func (k Keeper) SetPoolInfo(ctx sdk.Context, poolId uint64, poolInfo types.PoolI
 	return false
 }
 
-// InitPoolMultiplier: create a pool information responding to the pool creation.
+// InitPoolParams: creates a poolInfo at the time of pool creation.
 func (k Keeper) InitPoolParams(ctx sdk.Context, poolId uint64) bool {
 	// Fetch incentive params
 	params := k.GetParams(ctx)
@@ -176,19 +176,19 @@ func (k Keeper) UpdatePoolMultipliers(ctx sdk.Context, poolMultipliers []types.P
 
 // Calculate epoch counts per year to be used in APR calculation
 func (k Keeper) CalculateEpochCountsPerYear(ctx sdk.Context, epochIdentifier string) int64 {
-	epochsInfo, found := k.epochsKeeper.GetEpochInfo(ctx, epochIdentifier)
-	if !found || epochsInfo.Duration.Seconds() == 0 {
+	epochInfo, found := k.epochsKeeper.GetEpochInfo(ctx, epochIdentifier)
+	epochSeconds := int64(epochInfo.Duration.Seconds())
+	if !found || epochSeconds == 0 {
 		return 0
 	}
 
-	epochDuration := epochsInfo.Duration.Seconds()
 	// epoch min & max check
-	if epochsInfo.Duration.Seconds() == 0 || epochDuration > ptypes.SecondsPerYear {
+	if epochSeconds == 0 || epochSeconds > ptypes.SecondsPerYear {
 		return 0
 	}
 
 	// returns num of epochs
-	return (int64)(ptypes.SecondsPerYear / epochDuration)
+	return ptypes.SecondsPerYear / epochSeconds
 }
 
 // Update total commitment info
@@ -201,7 +201,7 @@ func (k Keeper) UpdateTotalCommitmentInfo(ctx sdk.Context, baseCurrency string) 
 	k.tci.TotalFeesCollected = sdk.Coins{}
 	// Initialize Lp tokens amount
 	k.tci.TotalLpTokensCommitted = make(map[string]sdk.Int)
-	// ReInitialize Pool revenue tracker
+	// Reinitialize Pool revenue tracker
 	k.tci.PoolRevenueTrack = make(map[string]sdk.Dec)
 
 	// Collect gas fees collected

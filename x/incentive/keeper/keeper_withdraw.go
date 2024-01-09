@@ -165,12 +165,7 @@ func (k Keeper) ProcessWithdrawRewards(ctx sdk.Context, delegator string, withdr
 	// Set withdraw usdc amount
 	revenue := sdk.NewCoin(baseCurrency, unclaimedUsdc)
 	// Transfer revenue from a single wallet of DEX revenue wallet to user.
-	err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, k.dexRevCollectorName, addr, sdk.NewCoins(revenue))
-	if err != nil {
-		panic(err)
-	}
-
-	return err
+	return k.bankKeeper.SendCoinsFromModuleToAccount(ctx, k.dexRevCollectorName, addr, sdk.NewCoins(revenue))
 }
 
 // Update commitments for validator commission

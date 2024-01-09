@@ -19,7 +19,7 @@ func (k Keeper) CalculateApr(ctx sdk.Context, query *types.QueryAprRequest) (sdk
 
 	// If we don't have enough params
 	if len(params.StakeIncentives) < 1 || len(params.LpIncentives) < 1 {
-		return sdk.ZeroInt(), errorsmod.Wrap(types.ErrNoNonInflationaryParams, "no inflationary params available")
+		return sdk.ZeroInt(), errorsmod.Wrap(types.ErrNoInflationaryParams, "no inflationary params available")
 	}
 
 	entry, found := k.assetProfileKeeper.GetEntry(ctx, ptypes.BaseCurrency)
@@ -32,7 +32,7 @@ func (k Keeper) CalculateApr(ctx sdk.Context, query *types.QueryAprRequest) (sdk
 	stkIncentive := params.StakeIncentives[0]
 
 	if lpIncentive.TotalBlocksPerYear.IsZero() || stkIncentive.TotalBlocksPerYear.IsZero() {
-		return sdk.ZeroInt(), errorsmod.Wrap(types.ErrNoNonInflationaryParams, "invalid inflationary params")
+		return sdk.ZeroInt(), errorsmod.Wrap(types.ErrNoInflationaryParams, "invalid inflationary params")
 	}
 
 	if query.Denom == ptypes.Eden {
@@ -61,11 +61,17 @@ func (k Keeper) CalculateApr(ctx sdk.Context, query *types.QueryAprRequest) (sdk
 
 			// Calc Eden price in usdc
 			// We put Elys as denom as Eden won't be avaialble in amm pool and has the same value as Elys
+			// TODO: replace to use spot price
 			edenPrice := k.EstimatePrice(ctx, sdk.NewCoin(ptypes.Elys, sdk.NewInt(100000)), baseCurrency)
 
 			// Eden Apr for usdc earn program = {(Eden allocated for stable stake pool per day*365*price{eden/usdc}/(total usdc deposit)}*100
 			// we divide 100000 as we have use 100000elys as input in the price estimation
-			apr := edenAmountPerStableStakePerDay.MulInt(sdk.NewInt(ptypes.DaysPerYear)).MulInt(edenPrice).MulInt(sdk.NewInt(100)).QuoInt(totalUSDCDeposit.Amount).QuoInt(sdk.NewInt(100000))
+			apr := edenAmountPerStableStakePerDay.
+				MulInt(sdk.NewInt(ptypes.DaysPerYear)).
+				MulInt(edenPrice).
+				MulInt(sdk.NewInt(100)).
+				QuoInt(totalUSDCDeposit.Amount).
+				QuoInt(sdk.NewInt(100000))
 			return apr.TruncateInt(), nil
 		} else {
 			// Elys staking, Eden committed, EdenB committed.
@@ -80,17 +86,25 @@ func (k Keeper) CalculateApr(ctx sdk.Context, query *types.QueryAprRequest) (sdk
 			}
 
 			// Calculate
-			edenAmountPerEpochStakersPerDay := stkIncentive.EdenAmountPerYear.Mul(stkIncentive.AllocationEpochInBlocks).Quo(stkIncentive.TotalBlocksPerYear)
+			edenAmountPerEpochStakersPerDay := stkIncentive.EdenAmountPerYear.
+				Mul(stkIncentive.AllocationEpochInBlocks).
+				Quo(stkIncentive.TotalBlocksPerYear)
 
 			// Maximum eden based per distribution epoch on maximum APR - 30% by default
 			// Allocated for staking per day = (0.3/365)* ( total elys staked + total Eden committed + total Eden boost committed)
-			maxEdenAmountPerStakers := params.MaxEdenRewardAprStakers.MulInt(totalStakedSnapshot).MulInt(stkIncentive.AllocationEpochInBlocks).QuoInt(stkIncentive.TotalBlocksPerYear)
+			maxEdenAmountPerStakers := params.MaxEdenRewardAprStakers.
+				MulInt(totalStakedSnapshot).
+				MulInt(stkIncentive.AllocationEpochInBlocks).
+				QuoInt(stkIncentive.TotalBlocksPerYear)
 
 			// Use min amount (eden allocation from tokenomics and max apr based eden amount)
 			edenAmountPerEpochStakersPerDay = sdk.MinInt(edenAmountPerEpochStakersPerDay, maxEdenAmountPerStakers.TruncateInt())
 
 			// For Eden reward Apr for elys staking = {(amount of Eden allocated for staking per day)*365/( total elys staked + total Eden committed + total Eden boost committed)}*100
-			apr := edenAmountPerEpochStakersPerDay.Mul(sdk.NewInt(ptypes.DaysPerYear)).Mul(sdk.NewInt(100)).Quo(totalStakedSnapshot)
+			apr := edenAmountPerEpochStakersPerDay.
+				Mul(sdk.NewInt(ptypes.DaysPerYear)).
+				Mul(sdk.NewInt(100)).
+				Quo(totalStakedSnapshot)
 
 			return apr, nil
 		}
@@ -134,7 +148,12 @@ func (k Keeper) CalculateApr(ctx sdk.Context, query *types.QueryAprRequest) (sdk
 
 			// Usdc apr for elys staking = (24 hour dex rewards in USDC generated for stakers) * 365*100/ {price ( elys/usdc)*( sum of (elys staked, Eden committed, Eden boost committed))}
 			// we multiply 10 as we have use 10elys as input in the price estimation
-			apr := amtDexRewardPerDay.MulInt(sdk.NewInt(ptypes.DaysPerYear)).MulInt(sdk.NewInt(100)).MulInt(sdk.NewInt(1000000)).QuoInt(edenPrice).QuoInt(totalStakedSnapshot)
+			apr := amtDexRewardPerDay.
+				MulInt(sdk.NewInt(ptypes.DaysPerYear)).
+				MulInt(sdk.NewInt(100)).
+				MulInt(sdk.NewInt(1000000)).
+				QuoInt(edenPrice).
+				QuoInt(totalStakedSnapshot)
 
 			return apr.TruncateInt(), nil
 		}
