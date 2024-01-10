@@ -24,10 +24,7 @@ func (k Keeper) GetTimeBasedInflation(
 ) (val types.TimeBasedInflation, found bool) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.TimeBasedInflationKeyPrefix))
 
-	b := store.Get(types.TimeBasedInflationKey(
-		startBlockHeight,
-		endBlockHeight,
-	))
+	b := store.Get(types.TimeBasedInflationKey(startBlockHeight, endBlockHeight))
 	if b == nil {
 		return val, false
 	}
@@ -43,10 +40,7 @@ func (k Keeper) RemoveTimeBasedInflation(
 	endBlockHeight uint64,
 ) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.TimeBasedInflationKeyPrefix))
-	store.Delete(types.TimeBasedInflationKey(
-		startBlockHeight,
-		endBlockHeight,
-	))
+	store.Delete(types.TimeBasedInflationKey(startBlockHeight, endBlockHeight))
 }
 
 // GetAllTimeBasedInflation returns all timeBasedInflation

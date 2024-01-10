@@ -10,21 +10,14 @@ import (
 func (k Keeper) SetAirdrop(ctx sdk.Context, airdrop types.Airdrop) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.AirdropKeyPrefix))
 	b := k.cdc.MustMarshal(&airdrop)
-	store.Set(types.AirdropKey(
-		airdrop.Intent,
-	), b)
+	store.Set(types.AirdropKey(airdrop.Intent), b)
 }
 
 // GetAirdrop returns a airdrop from its index
-func (k Keeper) GetAirdrop(
-	ctx sdk.Context,
-	intent string,
-) (val types.Airdrop, found bool) {
+func (k Keeper) GetAirdrop(ctx sdk.Context, intent string) (val types.Airdrop, found bool) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.AirdropKeyPrefix))
 
-	b := store.Get(types.AirdropKey(
-		intent,
-	))
+	b := store.Get(types.AirdropKey(intent))
 	if b == nil {
 		return val, false
 	}
@@ -34,14 +27,9 @@ func (k Keeper) GetAirdrop(
 }
 
 // RemoveAirdrop removes a airdrop from the store
-func (k Keeper) RemoveAirdrop(
-	ctx sdk.Context,
-	intent string,
-) {
+func (k Keeper) RemoveAirdrop(ctx sdk.Context, intent string) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.AirdropKeyPrefix))
-	store.Delete(types.AirdropKey(
-		intent,
-	))
+	store.Delete(types.AirdropKey(intent))
 }
 
 // GetAllAirdrop returns all airdrop

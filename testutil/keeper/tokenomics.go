@@ -43,6 +43,7 @@ func TokenomicsKeeper(t testing.TB) (*keeper.Keeper, sdk.Context) {
 		storeKey,
 		memStoreKey,
 		paramsSubspace,
+		nil,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 

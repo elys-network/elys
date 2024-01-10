@@ -765,6 +765,7 @@ func NewElysApp(
 		keys[tokenomicsmoduletypes.StoreKey],
 		keys[tokenomicsmoduletypes.MemStoreKey],
 		app.GetSubspace(tokenomicsmoduletypes.ModuleName),
+		&app.CommitmentKeeper,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 	tokenomicsModule := tokenomicsmodule.NewAppModule(appCodec, app.TokenomicsKeeper, app.AccountKeeper, app.BankKeeper)

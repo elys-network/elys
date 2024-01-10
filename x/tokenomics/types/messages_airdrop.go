@@ -10,6 +10,7 @@ const (
 	TypeMsgCreateAirdrop = "create_airdrop"
 	TypeMsgUpdateAirdrop = "update_airdrop"
 	TypeMsgDeleteAirdrop = "delete_airdrop"
+	TypeMsgClaimAirdrop  = "claim_airdrop"
 )
 
 var _ sdk.Msg = &MsgCreateAirdrop{}
@@ -133,6 +134,45 @@ func (msg *MsgDeleteAirdrop) GetSignBytes() []byte {
 
 func (msg *MsgDeleteAirdrop) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Authority)
+	if err != nil {
+		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid authority address (%s)", err)
+	}
+	return nil
+}
+
+var _ sdk.Msg = &MsgClaimAirdrop{}
+
+func NewMsgClaimAirdrop(
+	sender string,
+) *MsgClaimAirdrop {
+	return &MsgClaimAirdrop{
+		Sender: sender,
+	}
+}
+
+func (msg *MsgClaimAirdrop) Route() string {
+	return RouterKey
+}
+
+func (msg *MsgClaimAirdrop) Type() string {
+	return TypeMsgClaimAirdrop
+}
+
+func (msg *MsgClaimAirdrop) GetSigners() []sdk.AccAddress {
+	authority, err := sdk.AccAddressFromBech32(msg.Sender)
+	if err != nil {
+		panic(err)
+	}
+	return []sdk.AccAddress{authority}
+}
+
+func (msg *MsgClaimAirdrop) GetSignBytes() []byte {
+	bz := ModuleCdc.MustMarshalJSON(msg)
+	return sdk.MustSortJSON(bz)
+}
+
+func (msg *MsgClaimAirdrop) ValidateBasic() error {
+	_, err := sdk.AccAddressFromBech32(msg.Sender)
 	if err != nil {
 		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid authority address (%s)", err)
 	}

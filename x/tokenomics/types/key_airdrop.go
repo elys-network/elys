@@ -10,9 +10,7 @@ const (
 )
 
 // AirdropKey returns the store key to retrieve a Airdrop from the index fields
-func AirdropKey(
-	intent string,
-) []byte {
+func AirdropKey(intent string) []byte {
 	var key []byte
 
 	intentBytes := []byte(intent)
