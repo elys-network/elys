@@ -8,7 +8,7 @@ require (
 	cosmossdk.io/math v1.0.1
 	cosmossdk.io/simapp v0.0.0-20230323161446-0af178d721ff
 	github.com/CosmWasm/wasmd v0.41.0
-	github.com/CosmWasm/wasmvm v1.3.0
+	github.com/CosmWasm/wasmvm v1.3.1
 	github.com/bandprotocol/bandchain-packet v0.0.2
 	github.com/cometbft/cometbft v0.37.2
 	github.com/cometbft/cometbft-db v0.8.0
