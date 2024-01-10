@@ -14,6 +14,7 @@ service Msg {
   rpc CreateAirdrop            (MsgCreateAirdrop           ) returns (MsgCreateAirdropResponse           );
   rpc UpdateAirdrop            (MsgUpdateAirdrop           ) returns (MsgUpdateAirdropResponse           );
   rpc DeleteAirdrop            (MsgDeleteAirdrop           ) returns (MsgDeleteAirdropResponse           );
+  rpc ClaimAirdrop             (MsgClaimAirdrop            ) returns (MsgClaimAirdropResponse            );
   rpc UpdateGenesisInflation   (MsgUpdateGenesisInflation  ) returns (MsgUpdateGenesisInflationResponse  );
   rpc CreateTimeBasedInflation (MsgCreateTimeBasedInflation) returns (MsgCreateTimeBasedInflationResponse);
   rpc UpdateTimeBasedInflation (MsgUpdateTimeBasedInflation) returns (MsgUpdateTimeBasedInflationResponse);
@@ -41,6 +42,11 @@ message MsgDeleteAirdrop {
 }
 
 message MsgDeleteAirdropResponse {}
+
+message MsgClaimAirdrop {
+  string sender = 1;
+}
+message MsgClaimAirdropResponse {}
 
 message MsgUpdateGenesisInflation {
   string         authority             = 1;

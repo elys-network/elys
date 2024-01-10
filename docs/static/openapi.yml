@@ -86250,6 +86250,8 @@ definitions:
       team_tokens_vested:
         type: string
         format: uint64
+  elys.tokenomics.MsgClaimAirdropResponse:
+    type: object
   elys.tokenomics.MsgCreateAirdropResponse:
     type: object
   elys.tokenomics.MsgCreateTimeBasedInflationResponse:

@@ -44,10 +44,7 @@ func (k Keeper) Airdrop(goCtx context.Context, req *types.QueryGetAirdropRequest
 	}
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	val, found := k.GetAirdrop(
-		ctx,
-		req.Intent,
-	)
+	val, found := k.GetAirdrop(ctx, req.Intent)
 	if !found {
 		return nil, status.Error(codes.NotFound, "not found")
 	}

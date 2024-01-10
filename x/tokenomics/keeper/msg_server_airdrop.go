@@ -7,6 +7,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
+	ptypes "github.com/elys-network/elys/x/parameter/types"
 	"github.com/elys-network/elys/x/tokenomics/types"
 )
 
@@ -18,11 +19,8 @@ func (k msgServer) CreateAirdrop(goCtx context.Context, msg *types.MsgCreateAird
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	// Check if the value already exists
-	_, isFound := k.GetAirdrop(
-		ctx,
-		msg.Intent,
-	)
-	if isFound {
+	_, found := k.GetAirdrop(ctx, msg.Intent)
+	if found {
 		return nil, errors.Wrap(sdkerrors.ErrInvalidRequest, "index already set")
 	}
 
@@ -32,10 +30,7 @@ func (k msgServer) CreateAirdrop(goCtx context.Context, msg *types.MsgCreateAird
 		Amount:    msg.Amount,
 	}
 
-	k.SetAirdrop(
-		ctx,
-		airdrop,
-	)
+	k.SetAirdrop(ctx, airdrop)
 	return &types.MsgCreateAirdropResponse{}, nil
 }
 
@@ -47,11 +42,8 @@ func (k msgServer) UpdateAirdrop(goCtx context.Context, msg *types.MsgUpdateAird
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	// Check if the value exists
-	valFound, isFound := k.GetAirdrop(
-		ctx,
-		msg.Intent,
-	)
-	if !isFound {
+	valFound, found := k.GetAirdrop(ctx, msg.Intent)
+	if !found {
 		return nil, errors.Wrap(sdkerrors.ErrKeyNotFound, "index not set")
 	}
 
@@ -67,7 +59,6 @@ func (k msgServer) UpdateAirdrop(goCtx context.Context, msg *types.MsgUpdateAird
 	}
 
 	k.SetAirdrop(ctx, airdrop)
-
 	return &types.MsgUpdateAirdropResponse{}, nil
 }
 
@@ -79,11 +70,8 @@ func (k msgServer) DeleteAirdrop(goCtx context.Context, msg *types.MsgDeleteAird
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	// Check if the value exists
-	valFound, isFound := k.GetAirdrop(
-		ctx,
-		msg.Intent,
-	)
-	if !isFound {
+	valFound, found := k.GetAirdrop(ctx, msg.Intent)
+	if !found {
 		return nil, errors.Wrap(sdkerrors.ErrKeyNotFound, "index not set")
 	}
 
@@ -92,10 +80,29 @@ func (k msgServer) DeleteAirdrop(goCtx context.Context, msg *types.MsgDeleteAird
 		return nil, errors.Wrap(sdkerrors.ErrUnauthorized, "incorrect owner")
 	}
 
-	k.RemoveAirdrop(
-		ctx,
-		msg.Intent,
-	)
-
+	k.RemoveAirdrop(ctx, msg.Intent)
 	return &types.MsgDeleteAirdropResponse{}, nil
+}
+
+func (k msgServer) ClaimAirdrop(goCtx context.Context, msg *types.MsgClaimAirdrop) (*types.MsgClaimAirdropResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	// Check if the value exists
+	airdrop, found := k.GetAirdrop(ctx, msg.Sender)
+	if !found {
+		return nil, errors.Wrap(sdkerrors.ErrKeyNotFound, "index not set")
+	}
+
+	// Checks if the the msg authority is the same as the current owner
+	if msg.Sender != airdrop.Authority {
+		return nil, errors.Wrap(sdkerrors.ErrUnauthorized, "incorrect owner")
+	}
+
+	// Add commitments
+	commitments := k.commitmentKeeper.GetCommitments(ctx, msg.Sender)
+	commitments.AddClaimed(sdk.NewCoin(ptypes.Eden, sdk.NewInt(int64(airdrop.Amount))))
+	k.commitmentKeeper.SetCommitments(ctx, commitments)
+
+	k.RemoveAirdrop(ctx, msg.Sender)
+	return &types.MsgClaimAirdropResponse{}, nil
 }

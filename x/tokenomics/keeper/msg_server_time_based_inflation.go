@@ -18,12 +18,8 @@ func (k msgServer) CreateTimeBasedInflation(goCtx context.Context, msg *types.Ms
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	// Check if the value already exists
-	_, isFound := k.GetTimeBasedInflation(
-		ctx,
-		msg.StartBlockHeight,
-		msg.EndBlockHeight,
-	)
-	if isFound {
+	_, found := k.GetTimeBasedInflation(ctx, msg.StartBlockHeight, msg.EndBlockHeight)
+	if found {
 		return nil, errors.Wrap(sdkerrors.ErrInvalidRequest, "index already set")
 	}
 
@@ -35,10 +31,7 @@ func (k msgServer) CreateTimeBasedInflation(goCtx context.Context, msg *types.Ms
 		Inflation:        msg.Inflation,
 	}
 
-	k.SetTimeBasedInflation(
-		ctx,
-		timeBasedInflation,
-	)
+	k.SetTimeBasedInflation(ctx, timeBasedInflation)
 	return &types.MsgCreateTimeBasedInflationResponse{}, nil
 }
 
@@ -50,12 +43,8 @@ func (k msgServer) UpdateTimeBasedInflation(goCtx context.Context, msg *types.Ms
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	// Check if the value exists
-	valFound, isFound := k.GetTimeBasedInflation(
-		ctx,
-		msg.StartBlockHeight,
-		msg.EndBlockHeight,
-	)
-	if !isFound {
+	valFound, found := k.GetTimeBasedInflation(ctx, msg.StartBlockHeight, msg.EndBlockHeight)
+	if !found {
 		return nil, errors.Wrap(sdkerrors.ErrKeyNotFound, "index not set")
 	}
 
@@ -85,12 +74,8 @@ func (k msgServer) DeleteTimeBasedInflation(goCtx context.Context, msg *types.Ms
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	// Check if the value exists
-	valFound, isFound := k.GetTimeBasedInflation(
-		ctx,
-		msg.StartBlockHeight,
-		msg.EndBlockHeight,
-	)
-	if !isFound {
+	valFound, found := k.GetTimeBasedInflation(ctx, msg.StartBlockHeight, msg.EndBlockHeight)
+	if !found {
 		return nil, errors.Wrap(sdkerrors.ErrKeyNotFound, "index not set")
 	}
 
@@ -99,11 +84,6 @@ func (k msgServer) DeleteTimeBasedInflation(goCtx context.Context, msg *types.Ms
 		return nil, errors.Wrap(sdkerrors.ErrUnauthorized, "incorrect owner")
 	}
 
-	k.RemoveTimeBasedInflation(
-		ctx,
-		msg.StartBlockHeight,
-		msg.EndBlockHeight,
-	)
-
+	k.RemoveTimeBasedInflation(ctx, msg.StartBlockHeight, msg.EndBlockHeight)
 	return &types.MsgDeleteTimeBasedInflationResponse{}, nil
 }

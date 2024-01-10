@@ -10,10 +10,7 @@ const (
 )
 
 // TimeBasedInflationKey returns the store key to retrieve a TimeBasedInflation from the index fields
-func TimeBasedInflationKey(
-	startBlockHeight uint64,
-	endBlockHeight uint64,
-) []byte {
+func TimeBasedInflationKey(startBlockHeight uint64, endBlockHeight uint64) []byte {
 	var key []byte
 
 	startBlockHeightBytes := make([]byte, 8)
