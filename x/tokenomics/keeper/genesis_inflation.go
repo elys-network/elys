@@ -1,23 +1,22 @@
 package keeper
 
 import (
-	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/tokenomics/types"
 )
 
 // SetGenesisInflation set genesisInflation in the store
 func (k Keeper) SetGenesisInflation(ctx sdk.Context, genesisInflation types.GenesisInflation) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.GenesisInflationKey))
+	store := ctx.KVStore(k.storeKey)
 	b := k.cdc.MustMarshal(&genesisInflation)
-	store.Set([]byte{0}, b)
+	store.Set([]byte(types.GenesisInflationKey), b)
 }
 
 // GetGenesisInflation returns genesisInflation
 func (k Keeper) GetGenesisInflation(ctx sdk.Context) (val types.GenesisInflation, found bool) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.GenesisInflationKey))
+	store := ctx.KVStore(k.storeKey)
 
-	b := store.Get([]byte{0})
+	b := store.Get([]byte(types.GenesisInflationKey))
 	if b == nil {
 		return val, false
 	}
@@ -28,6 +27,6 @@ func (k Keeper) GetGenesisInflation(ctx sdk.Context) (val types.GenesisInflation
 
 // RemoveGenesisInflation removes genesisInflation from the store
 func (k Keeper) RemoveGenesisInflation(ctx sdk.Context) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.GenesisInflationKey))
-	store.Delete([]byte{0})
+	store := ctx.KVStore(k.storeKey)
+	store.Delete([]byte(types.GenesisInflationKey))
 }
