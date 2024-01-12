@@ -19,11 +19,13 @@ func NewMsgCreateAirdrop(
 	authority string,
 	intent string,
 	amount uint64,
+	expiry uint64,
 ) *MsgCreateAirdrop {
 	return &MsgCreateAirdrop{
 		Authority: authority,
 		Intent:    intent,
 		Amount:    amount,
+		Expiry:    expiry,
 	}
 }
 
@@ -62,11 +64,13 @@ func NewMsgUpdateAirdrop(
 	authority string,
 	intent string,
 	amount uint64,
+	expiry uint64,
 ) *MsgUpdateAirdrop {
 	return &MsgUpdateAirdrop{
 		Authority: authority,
 		Intent:    intent,
 		Amount:    amount,
+		Expiry:    expiry,
 	}
 }
 

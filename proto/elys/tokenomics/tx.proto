@@ -24,6 +24,7 @@ message MsgCreateAirdrop {
   string authority = 1;
   string intent    = 2;
   uint64 amount    = 3;
+  uint64 expiry    = 4;
 }
 
 message MsgCreateAirdropResponse {}
@@ -32,6 +33,7 @@ message MsgUpdateAirdrop {
   string authority = 1;
   string intent    = 2;
   uint64 amount    = 3;
+  uint64 expiry    = 4;
 }
 
 message MsgUpdateAirdropResponse {}

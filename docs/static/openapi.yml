@@ -42855,6 +42855,9 @@ paths:
                       format: uint64
                     authority:
                       type: string
+                    expiry:
+                      type: string
+                      format: uint64
               pagination:
                 type: object
                 properties:
@@ -42980,6 +42983,9 @@ paths:
                     format: uint64
                   authority:
                     type: string
+                  expiry:
+                    type: string
+                    format: uint64
         default:
           description: An unexpected error response.
           schema:
@@ -86203,6 +86209,9 @@ definitions:
         format: uint64
       authority:
         type: string
+      expiry:
+        type: string
+        format: uint64
   elys.tokenomics.GenesisInflation:
     type: object
     properties:
@@ -86284,6 +86293,9 @@ definitions:
               format: uint64
             authority:
               type: string
+            expiry:
+              type: string
+              format: uint64
       pagination:
         type: object
         properties:
@@ -86385,6 +86397,9 @@ definitions:
             format: uint64
           authority:
             type: string
+          expiry:
+            type: string
+            format: uint64
   elys.tokenomics.QueryGetGenesisInflationResponse:
     type: object
     properties:

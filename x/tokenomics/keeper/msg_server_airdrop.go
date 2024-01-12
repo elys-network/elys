@@ -28,6 +28,7 @@ func (k msgServer) CreateAirdrop(goCtx context.Context, msg *types.MsgCreateAird
 		Authority: msg.Authority,
 		Intent:    msg.Intent,
 		Amount:    msg.Amount,
+		Expiry:    msg.Expiry,
 	}
 
 	k.SetAirdrop(ctx, airdrop)
@@ -56,6 +57,7 @@ func (k msgServer) UpdateAirdrop(goCtx context.Context, msg *types.MsgUpdateAird
 		Authority: msg.Authority,
 		Intent:    msg.Intent,
 		Amount:    msg.Amount,
+		Expiry:    msg.Expiry,
 	}
 
 	k.SetAirdrop(ctx, airdrop)
@@ -96,6 +98,10 @@ func (k msgServer) ClaimAirdrop(goCtx context.Context, msg *types.MsgClaimAirdro
 	// Checks if the the msg authority is the same as the current owner
 	if msg.Sender != airdrop.Authority {
 		return nil, errors.Wrap(sdkerrors.ErrUnauthorized, "incorrect owner")
+	}
+
+	if ctx.BlockTime().Unix() > int64(airdrop.Expiry) {
+		return nil, types.ErrAirdropExpired
 	}
 
 	// Add commitments

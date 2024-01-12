@@ -7,5 +7,6 @@ message Airdrop {
   string intent = 1; 
   uint64 amount = 2; 
   string authority = 3;
+  uint64 expiry = 4;
 }
 
