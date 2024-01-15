@@ -32,6 +32,10 @@ var (
 	ErrInvalidDiscount        = sdkerrors.Register(ModuleName, 105, "invalid discount")
 	ErrInitialSpotPriceIsZero = sdkerrors.Register(ModuleName, 106, "initial spot price is zero")
 	ErrSpotPriceIsZero        = sdkerrors.Register(ModuleName, 107, "spot price is zero")
+
+	ErrSwapFeeShouldNotExceedTwoPercent = sdkerrors.Register(ModuleName, 108, "swap fee should not exceed 2%")
+	ErrExitFeeShouldNotExceedTwoPercent = sdkerrors.Register(ModuleName, 109, "exit fee should not exceed 2%")
+	ErrFeeShouldNotBeNegative           = sdkerrors.Register(ModuleName, 110, "fee should not be negative")
 )
 
 const (
