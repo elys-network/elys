@@ -3,8 +3,6 @@ package keeper
 import (
 	"fmt"
 
-	"github.com/cosmos/cosmos-sdk/types/errors"
-
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
@@ -33,11 +31,11 @@ func (k Keeper) BeginBlocker(ctx sdk.Context) {
 	for _, pool := range pools {
 		ammPool, err := k.GetAmmPool(ctx, pool.AmmPoolId, "")
 		if err != nil {
-			ctx.Logger().Error(errors.Wrap(err, fmt.Sprintf("error getting amm pool: %d", pool.AmmPoolId)).Error())
+			ctx.Logger().Error(errorsmod.Wrap(err, fmt.Sprintf("error getting amm pool: %d", pool.AmmPoolId)).Error())
 			continue // ?
 		}
 		if k.IsPoolEnabled(ctx, pool.AmmPoolId) {
-			rate, err := k.BorrowInterestRateComputation(ctx, pool, ammPool)
+			rate, err := k.BorrowInterestRateComputation(ctx, pool)
 			if err != nil {
 				ctx.Logger().Error(err.Error())
 				continue // ?
