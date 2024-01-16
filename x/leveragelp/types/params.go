@@ -107,9 +107,13 @@ func validateLeverageMax(i interface{}) error {
 }
 
 func validateEpochLength(i interface{}) error {
-	_, ok := i.(int64)
+	v, ok := i.(int64)
 	if !ok {
 		return fmt.Errorf("invalid parameter type: %T", i)
+	}
+
+	if v <= 0 {
+		return fmt.Errorf("epoch length should be positive: %d", v)
 	}
 
 	return nil

@@ -414,7 +414,7 @@ func (k Keeper) BorrowInterestRateComputationByPosition(ctx sdk.Context, pool ty
 	return targetBorrowInterestRate, nil
 }
 
-func (k Keeper) BorrowInterestRateComputation(ctx sdk.Context, pool types.Pool, ammPool ammtypes.Pool) (sdk.Dec, error) {
+func (k Keeper) BorrowInterestRateComputation(ctx sdk.Context, pool types.Pool) (sdk.Dec, error) {
 	ammPool, found := k.amm.GetPool(ctx, pool.AmmPoolId)
 	if !found {
 		return sdk.ZeroDec(), errorsmod.Wrap(types.ErrBalanceNotAvailable, "Balance not available")
