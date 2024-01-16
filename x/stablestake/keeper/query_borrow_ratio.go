@@ -20,8 +20,11 @@ func (k Keeper) BorrowRatio(goCtx context.Context, req *types.QueryBorrowRatioRe
 	moduleAddr := authtypes.NewModuleAddress(types.ModuleName)
 	balance := k.bk.GetBalance(ctx, moduleAddr, params.DepositDenom)
 	borrowed := params.TotalValue.Sub(balance.Amount)
-	borrowRatio := sdk.NewDecFromInt(borrowed).
-		Quo(sdk.NewDecFromInt(params.TotalValue))
+	borrowRatio := sdk.ZeroDec()
+	if params.TotalValue.GT(sdk.ZeroInt()) {
+		borrowRatio = sdk.NewDecFromInt(borrowed).
+			Quo(sdk.NewDecFromInt(params.TotalValue))
+	}
 
 	return &types.QueryBorrowRatioResponse{
 		TotalDeposit: params.TotalValue,
