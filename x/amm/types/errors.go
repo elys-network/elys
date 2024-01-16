@@ -33,9 +33,10 @@ var (
 	ErrInitialSpotPriceIsZero = errors.Register(ModuleName, 106, "initial spot price is zero")
 	ErrSpotPriceIsZero        = errors.Register(ModuleName, 107, "spot price is zero")
 
-	ErrSwapFeeShouldNotExceedTwoPercent = errors.Register(ModuleName, 108, "swap fee should not exceed 2%")
-	ErrExitFeeShouldNotExceedTwoPercent = errors.Register(ModuleName, 109, "exit fee should not exceed 2%")
-	ErrFeeShouldNotBeNegative           = errors.Register(ModuleName, 110, "fee should not be negative")
+	ErrPoolParamsShouldNotBeNil         = errors.Register(ModuleName, 108, "pool params should not be nil")
+	ErrSwapFeeShouldNotExceedTwoPercent = errors.Register(ModuleName, 109, "swap fee should not exceed 2%")
+	ErrExitFeeShouldNotExceedTwoPercent = errors.Register(ModuleName, 110, "exit fee should not exceed 2%")
+	ErrFeeShouldNotBeNegative           = errors.Register(ModuleName, 111, "fee should not be negative")
 )
 
 const (

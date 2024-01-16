@@ -45,6 +45,10 @@ func (msg *MsgCreatePool) ValidateBasic() error {
 		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid sender address (%s)", err)
 	}
 
+	if msg.PoolParams == nil {
+		return ErrPoolParamsShouldNotBeNil
+	}
+
 	if msg.PoolParams.SwapFee.IsNegative() {
 		return ErrFeeShouldNotBeNegative
 	}
