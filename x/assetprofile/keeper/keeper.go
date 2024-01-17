@@ -9,15 +9,17 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
 
+	ibctransferkeeper "github.com/cosmos/ibc-go/v7/modules/apps/transfer/keeper"
 	"github.com/elys-network/elys/x/assetprofile/types"
 )
 
 type (
 	Keeper struct {
-		cdc        codec.BinaryCodec
-		storeKey   storetypes.StoreKey
-		memKey     storetypes.StoreKey
-		paramstore paramtypes.Subspace
+		cdc            codec.BinaryCodec
+		storeKey       storetypes.StoreKey
+		memKey         storetypes.StoreKey
+		paramstore     paramtypes.Subspace
+		transferKeeper *ibctransferkeeper.Keeper
 		// the address capable of executing a Msg* messages. Typically, this
 		// should be the x/gov module account.
 		authority string
@@ -29,6 +31,7 @@ func NewKeeper(
 	storeKey,
 	memKey storetypes.StoreKey,
 	ps paramtypes.Subspace,
+	transferKeeper *ibctransferkeeper.Keeper,
 	authority string,
 ) *Keeper {
 	// set KeyTable if it has not already been set
@@ -37,11 +40,12 @@ func NewKeeper(
 	}
 
 	return &Keeper{
-		cdc:        cdc,
-		storeKey:   storeKey,
-		memKey:     memKey,
-		paramstore: ps,
-		authority:  authority,
+		cdc:            cdc,
+		storeKey:       storeKey,
+		memKey:         memKey,
+		paramstore:     ps,
+		transferKeeper: transferKeeper,
+		authority:      authority,
 	}
 }
 

@@ -2,12 +2,14 @@ package keeper
 
 import (
 	"context"
+	"strings"
 
 	"cosmossdk.io/errors"
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
+	ibctransfertypes "github.com/cosmos/ibc-go/v7/modules/apps/transfer/types"
 	"github.com/elys-network/elys/x/assetprofile/types"
 )
 
@@ -22,6 +24,18 @@ func (k msgServer) CreateEntry(goCtx context.Context, msg *types.MsgCreateEntry)
 	_, isFound := k.GetEntry(ctx, msg.BaseDenom)
 	if isFound {
 		return nil, errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "entry already set")
+	}
+
+	// check the validity of ibc denom & channel
+	hash, err := ibctransfertypes.ParseHexHash(strings.TrimPrefix(msg.Denom, "ibc/"))
+	if err == nil && k.transferKeeper != nil {
+		denomTrace, ok := k.transferKeeper.GetDenomTrace(ctx, hash)
+		if !ok {
+			return nil, types.ErrNotValidIbcDenom
+		}
+		if !strings.Contains(denomTrace.Path, msg.IbcChannelId) {
+			return nil, types.ErrChannelIdAndDenomHashMismatch
+		}
 	}
 
 	entry := types.Entry{
@@ -66,6 +80,18 @@ func (k msgServer) UpdateEntry(goCtx context.Context, msg *types.MsgUpdateEntry)
 	// Checks if the the msg authority is the same as the current owner
 	if msg.Authority != entry.Authority {
 		return nil, errorsmod.Wrap(sdkerrors.ErrUnauthorized, "incorrect owner")
+	}
+
+	// check the validity of ibc denom & channel
+	hash, err := ibctransfertypes.ParseHexHash(strings.TrimPrefix(msg.Denom, "ibc/"))
+	if err == nil && k.transferKeeper != nil {
+		denomTrace, ok := k.transferKeeper.GetDenomTrace(ctx, hash)
+		if !ok {
+			return nil, types.ErrNotValidIbcDenom
+		}
+		if !strings.Contains(denomTrace.Path, msg.IbcChannelId) {
+			return nil, types.ErrChannelIdAndDenomHashMismatch
+		}
 	}
 
 	entry = types.Entry{
