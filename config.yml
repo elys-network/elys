@@ -2,21 +2,31 @@ version: 1
 accounts:
   - name: treasury
     coins:
-      - 1000000000000uatom
-      - 1000000000000uusdc
-      - 1000000000000uusdt
       - 9000000000000000uelys
       - 100000000ueden
+      - 21798000ibc/0E1517E2771CA7C03F2ED3F9BAECCAEADF0BFD79B89679E834933BC0F179AD98
+      - 5596164329445ibc/2180E84E20F5679FCC760D8C165B60F42065DEF7F46A72B447CFF1B7DC6C0A65
+      - 2704998ibc/27394FB092D2ECCD56123C74F36E4C1F926001CEADA9CA97EA622B25F41E5EB2
+      - 500000ibc/326A89923D85047E6418A671FBACCAFA2686B01A16ED4A0AD92954FCE1485910
+      - 49765000ibc/4DAE26570FD24ABA40E2BE4137E39D946C78B00B248D3F78B0919567C4371156
+      - 7000000ibc/977D5388D2FBE72D9A33FE2423BF8F4DADF3B591207CC98A295B9ACF81E4DE40
+      - 55292942ibc/E2D2F6ADCC68AA3384B2F5DFACCA437923D137C14E86FB8A10207CF3BED0C8D4
+      - 99799999999949000ibc/FB22E35236996F6B0B1C9D407E8A379A7B1F4083F1960907A1622F022AE450E1
     mnemonic: olympic slide park figure frost benefit deer reform fly pull price airport submit monitor silk insect uphold convince pupil project ignore roof warfare slight
   - name: seed
     coins:
       - 9000000000000000uelys
   - name: cw
     coins:
-      - 1000000000000uatom
+      - 21798000ibc/0E1517E2771CA7C03F2ED3F9BAECCAEADF0BFD79B89679E834933BC0F179AD98
+      - 5596164329445ibc/2180E84E20F5679FCC760D8C165B60F42065DEF7F46A72B447CFF1B7DC6C0A65
+      - 2704998ibc/27394FB092D2ECCD56123C74F36E4C1F926001CEADA9CA97EA622B25F41E5EB2
+      - 500000ibc/326A89923D85047E6418A671FBACCAFA2686B01A16ED4A0AD92954FCE1485910
+      - 49765000ibc/4DAE26570FD24ABA40E2BE4137E39D946C78B00B248D3F78B0919567C4371156
+      - 7000000ibc/977D5388D2FBE72D9A33FE2423BF8F4DADF3B591207CC98A295B9ACF81E4DE40
+      - 55292942ibc/E2D2F6ADCC68AA3384B2F5DFACCA437923D137C14E86FB8A10207CF3BED0C8D4
+      - 99799999999949000ibc/FB22E35236996F6B0B1C9D407E8A379A7B1F4083F1960907A1622F022AE450E1
       - 9000000000000000uelys
-      - 1000000000000uusdc
-      - 1000000000000uusdt
     mnemonic: wool diet nasty illness balcony life grunt truck verify later raise carpet describe victory snack sand struggle better smart purse miss bicycle copy orphan
 build:
   main: cmd/elysd
@@ -121,91 +131,243 @@ genesis:
         - address: elys1w9uac4zrf9z7qd604qxk2y4n74568lfl8vutz4
           coins:
             - amount: "1000000000"
-              denom: uatom
+              denom: ibc/2180E84E20F5679FCC760D8C165B60F42065DEF7F46A72B447CFF1B7DC6C0A65
+            - amount: "1000000000"
+              denom: ibc/E2D2F6ADCC68AA3384B2F5DFACCA437923D137C14E86FB8A10207CF3BED0C8D4
             - amount: "1000000000"
               denom: ueden
             - amount: "1000000000"
               denom: uelys
-            - amount: "1000000000"
-              denom: uusdc
     assetprofile:
       entryList:
         - address: ""
-          authority: elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3
-          baseDenom: uelys
+          authority: elys12857uh2f6fus3x3jh07cp5u7xfg2ypeec27dcp6864xhraa33mdscw660j
+          base_denom: amm/pool/1
+          commit_enabled: true
           decimals: "6"
-          denom: uelys
-          displayName: ELYS
-          displaySymbol: ""
-          externalSymbol: ""
-          ibcChannelId: ""
-          ibcCounterpartyChainId: ""
-          ibcCounterpartyChannelId: ""
-          ibcCounterpartyDenom: ""
+          denom: amm/pool/1
+          display_name: amm/pool/1
+          display_symbol: ""
+          external_symbol: ""
+          ibc_channel_id: ""
+          ibc_counterparty_chain_id: ""
+          ibc_counterparty_channel_id: ""
+          ibc_counterparty_denom: ""
           network: ""
           path: ""
           permissions: []
-          transferLimit: ""
-          unitDenom: ""
-          commitEnabled: false
-          withdrawEnabled: true
+          transfer_limit: ""
+          unit_denom: ""
+          withdraw_enabled: true
         - address: ""
-          authority: elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3
-          baseDenom: uusdc
+          authority: elys1t7z4shh8tzvjc2u9exu2fs8rmewlm6hza494x3dna0n7aumm05aq209wy9
+          base_denom: amm/pool/2
+          commit_enabled: true
           decimals: "6"
-          denom: uusdc
-          displayName: USDC
-          displaySymbol: ""
-          externalSymbol: ""
-          ibcChannelId: ""
-          ibcCounterpartyChainId: ""
-          ibcCounterpartyChannelId: ""
-          ibcCounterpartyDenom: ""
+          denom: amm/pool/2
+          display_name: amm/pool/2
+          display_symbol: ""
+          external_symbol: ""
+          ibc_channel_id: ""
+          ibc_counterparty_chain_id: ""
+          ibc_counterparty_channel_id: ""
+          ibc_counterparty_denom: ""
           network: ""
           path: ""
           permissions: []
-          transferLimit: ""
-          unitDenom: ""
-          commitEnabled: false
-          withdrawEnabled: true
+          transfer_limit: ""
+          unit_denom: ""
+          withdraw_enabled: true
+        - address: ""
+          authority: elys1gcgf6qeu8esglk47rrvvjr46nnpgjavm0e2qfkhsjz2pm49p9fwqdxcyt3
+          base_denom: amm/pool/3
+          commit_enabled: true
+          decimals: "6"
+          denom: amm/pool/3
+          display_name: amm/pool/3
+          display_symbol: ""
+          external_symbol: ""
+          ibc_channel_id: ""
+          ibc_counterparty_chain_id: ""
+          ibc_counterparty_channel_id: ""
+          ibc_counterparty_denom: ""
+          network: ""
+          path: ""
+          permissions: []
+          transfer_limit: ""
+          unit_denom: ""
+          withdraw_enabled: true
         - address: ""
           authority: elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3
-          baseDenom: ueden
+          base_denom: atevmos
+          commit_enabled: true
+          decimals: "6"
+          denom: ibc/771DC594DF52CCD99F95F8E5CD7ECF7CBE35595A94B172427FE7FBF97A846EDB
+          display_name: EVMOS
+          display_symbol: atEVMOS
+          external_symbol: atEVMOS
+          ibc_channel_id: channel-11
+          ibc_counterparty_chain_id: ""
+          ibc_counterparty_channel_id: channel-197
+          ibc_counterparty_denom: ""
+          network: ""
+          path: transfer/channel-11
+          permissions: []
+          transfer_limit: ""
+          unit_denom: atevmos
+          withdraw_enabled: true
+        - address: ""
+          authority: elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3
+          base_denom: uakt
+          commit_enabled: true
+          decimals: "6"
+          denom: ibc/4DAE26570FD24ABA40E2BE4137E39D946C78B00B248D3F78B0919567C4371156
+          display_name: AKASH
+          display_symbol: uAKT
+          external_symbol: uAKT
+          ibc_channel_id: channel-4
+          ibc_counterparty_chain_id: ""
+          ibc_counterparty_channel_id: channel-2
+          ibc_counterparty_denom: ""
+          network: ""
+          path: transfer/channel-4
+          permissions: []
+          transfer_limit: ""
+          unit_denom: uakt
+          withdraw_enabled: true
+        - address: ""
+          authority: elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3
+          base_denom: uatom
+          commit_enabled: true
+          decimals: "6"
+          denom: ibc/E2D2F6ADCC68AA3384B2F5DFACCA437923D137C14E86FB8A10207CF3BED0C8D4
+          display_name: ATOM
+          display_symbol: uATOM
+          external_symbol: uATOM
+          ibc_channel_id: channel-16
+          ibc_counterparty_chain_id: ""
+          ibc_counterparty_channel_id: channel-3302
+          ibc_counterparty_denom: ""
+          network: ""
+          path: transfer/channel-16
+          permissions: []
+          transfer_limit: ""
+          unit_denom: uatom
+          withdraw_enabled: true
+        - address: ""
+          authority: elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3
+          base_denom: uaxl
+          commit_enabled: true
+          decimals: "6"
+          denom: ibc/0E1517E2771CA7C03F2ED3F9BAECCAEADF0BFD79B89679E834933BC0F179AD98
+          display_name: AXELAR
+          display_symbol: uAXL
+          external_symbol: uAXL
+          ibc_channel_id: channel-1
+          ibc_counterparty_chain_id: ""
+          ibc_counterparty_channel_id: channel-303
+          ibc_counterparty_denom: ""
+          network: ""
+          path: transfer/channel-1
+          permissions: []
+          transfer_limit: ""
+          unit_denom: uaxl
+          withdraw_enabled: true
+        - address: ""
+          authority: elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3
+          base_denom: ueden
+          commit_enabled: true
           decimals: "6"
           denom: ueden
-          displayName: EDEN
-          displaySymbol: ""
-          externalSymbol: ""
-          ibcChannelId: ""
-          ibcCounterpartyChainId: ""
-          ibcCounterpartyChannelId: ""
-          ibcCounterpartyDenom: ""
+          display_name: EDEN
+          display_symbol: ""
+          external_symbol: ""
+          ibc_channel_id: ""
+          ibc_counterparty_chain_id: ""
+          ibc_counterparty_channel_id: ""
+          ibc_counterparty_denom: ""
           network: ""
           path: ""
           permissions: []
-          transferLimit: ""
-          unitDenom: ""
-          commitEnabled: true
-          withdrawEnabled: true
+          transfer_limit: ""
+          unit_denom: ""
+          withdraw_enabled: true
         - address: ""
           authority: elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3
-          baseDenom: uedenb
+          base_denom: uelys
+          commit_enabled: true
           decimals: "6"
-          denom: uedenb
-          displayName: EDEN-BOOST
-          displaySymbol: ""
-          externalSymbol: ""
-          ibcChannelId: ""
-          ibcCounterpartyChainId: ""
-          ibcCounterpartyChannelId: ""
-          ibcCounterpartyDenom: ""
+          denom: uelys
+          display_name: ELYS
+          display_symbol: ""
+          external_symbol: ""
+          ibc_channel_id: ""
+          ibc_counterparty_chain_id: ""
+          ibc_counterparty_channel_id: ""
+          ibc_counterparty_denom: ""
           network: ""
           path: ""
           permissions: []
-          transferLimit: ""
-          unitDenom: ""
-          commitEnabled: true
-          withdrawEnabled: true
+          transfer_limit: ""
+          unit_denom: ""
+          withdraw_enabled: true
+        - address: ""
+          authority: elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3
+          base_denom: ujunox
+          commit_enabled: true
+          decimals: "6"
+          denom: ibc/977D5388D2FBE72D9A33FE2423BF8F4DADF3B591207CC98A295B9ACF81E4DE40
+          display_name: JUNO
+          display_symbol: uJUNOX
+          external_symbol: uJUNOX
+          ibc_channel_id: channel-10
+          ibc_counterparty_chain_id: ""
+          ibc_counterparty_channel_id: channel-641
+          ibc_counterparty_denom: ""
+          network: ""
+          path: transfer/channel-10
+          permissions: []
+          transfer_limit: ""
+          unit_denom: ujunox
+          withdraw_enabled: true
+        - address: ""
+          authority: elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3
+          base_denom: uosmo
+          commit_enabled: true
+          decimals: "6"
+          denom: ibc/47BD209179859CDE4A2806763D7189B6E6FE13A17880FE2B42DE1E6C1E329E23
+          display_name: OSMO
+          display_symbol: uOSMO
+          external_symbol: uOSMO
+          ibc_channel_id: channel-3
+          ibc_counterparty_chain_id: ""
+          ibc_counterparty_channel_id: channel-1527
+          ibc_counterparty_denom: ""
+          network: ""
+          path: transfer/channel-3
+          permissions: []
+          transfer_limit: ""
+          unit_denom: uosmo
+          withdraw_enabled: true
+        - address: ""
+          authority: elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3
+          base_denom: uusdc
+          commit_enabled: true
+          decimals: "6"
+          denom: ibc/2180E84E20F5679FCC760D8C165B60F42065DEF7F46A72B447CFF1B7DC6C0A65
+          display_name: USDC
+          display_symbol: uUSDC
+          external_symbol: uUSDC
+          ibc_channel_id: channel-12
+          ibc_counterparty_chain_id: ""
+          ibc_counterparty_channel_id: channel-19
+          ibc_counterparty_denom: ""
+          network: ""
+          path: transfer/channel-12
+          permissions: []
+          transfer_limit: ""
+          unit_denom: uusdc
+          withdraw_enabled: true
     epochs:
       epochs:
         - identifier: week
@@ -251,39 +413,39 @@ genesis:
               denom: uedenb
           rewards_unclaimed:
             - amount: "1000000"
+              denom: ibc/2180E84E20F5679FCC760D8C165B60F42065DEF7F46A72B447CFF1B7DC6C0A65
+            - amount: "1000000"
               denom: ueden
             - amount: "1000000"
               denom: uedenb
-            - amount: "1000000"
-              denom: uusdc
           vesting_tokens: []
           rewards_by_usdc_unclaimed:
+            - denom: ibc/2180E84E20F5679FCC760D8C165B60F42065DEF7F46A72B447CFF1B7DC6C0A65
+              amount: "200000"
             - denom: ueden
               amount: "200000"
             - denom: uedenb
-              amount: "200000"
-            - denom: uusdc
               amount: "200000"
           rewards_by_elys_unclaimed:
+            - denom: ibc/2180E84E20F5679FCC760D8C165B60F42065DEF7F46A72B447CFF1B7DC6C0A65
+              amount: "300000"
             - denom: ueden
               amount: "300000"
             - denom: uedenb
               amount: "200000"
-            - denom: uusdc
-              amount: "300000"
           rewards_by_eden_unclaimed:
+            - denom: ibc/2180E84E20F5679FCC760D8C165B60F42065DEF7F46A72B447CFF1B7DC6C0A65
+              amount: "300000"
             - denom: ueden
               amount: "300000"
             - denom: uedenb
               amount: "200000"
-            - denom: uusdc
-              amount: "300000"
           rewards_by_edenb_unclaimed:
+            - denom: ibc/2180E84E20F5679FCC760D8C165B60F42065DEF7F46A72B447CFF1B7DC6C0A65
+              amount: "200000"
             - denom: ueden
               amount: "200000"
             - denom: uedenb
-              amount: "200000"
-            - denom: uusdc
               amount: "200000"
     incentive:
       params:
@@ -378,17 +540,17 @@ genesis:
           bandTicker: "ETH"
           elysTicker: "ETH"
           decimal: 18
-        - denom: "uatom"
+        - denom: "ibc/E2D2F6ADCC68AA3384B2F5DFACCA437923D137C14E86FB8A10207CF3BED0C8D4"
           display: "ATOM"
           bandTicker: "ATOM"
           elysTicker: "ATOM"
           decimal: 6
-        - denom: "uusdt"
+        - denom: "ibc/0E1517E2771CA7C03F2ED3F9BAECCAEADF0BFD79B89679E834933BC0F179AD98"
           display: "USDT"
           bandTicker: "USDT"
           elysTicker: "USDT"
           decimal: 6
-        - denom: "uusdc"
+        - denom: "ibc/2180E84E20F5679FCC760D8C165B60F42065DEF7F46A72B447CFF1B7DC6C0A65"
           display: "USDC"
           bandTicker: "USDC"
           elysTicker: "USDC"
