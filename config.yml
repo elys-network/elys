@@ -35,7 +35,7 @@ genesis:
     clock:
       params:
         contract_addresses:
-          ["elys14hj2tavq8fpesdwxxcu44rty3hh90vhujrvcmstl4zr3txmfvw9s3fsthx"]
+          ["elys1suhgf5svhu4usrurvxzlgn54ksxmn8gljarjtxqnapv8kjnp4nrswuu7l0"]
     crisis:
       constant_fee:
         denom: uelys
