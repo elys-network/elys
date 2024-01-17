@@ -85758,16 +85758,6 @@ definitions:
       decimal:
         type: string
         format: uint64
-  elys.oracle.BandPriceCallData:
-    type: object
-    properties:
-      symbols:
-        type: array
-        items:
-          type: string
-      multiplier:
-        type: string
-        format: uint64
   elys.oracle.BandPriceResult:
     type: object
     properties:
@@ -85781,8 +85771,6 @@ definitions:
   elys.oracle.MsgFeedMultiplePricesResponse:
     type: object
   elys.oracle.MsgFeedPriceResponse:
-    type: object
-  elys.oracle.MsgRequestBandPriceResponse:
     type: object
   elys.oracle.MsgSetPriceFeederResponse:
     type: object
