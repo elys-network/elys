@@ -705,6 +705,7 @@ func NewElysApp(
 		keys[assetprofilemoduletypes.StoreKey],
 		keys[assetprofilemoduletypes.MemStoreKey],
 		app.GetSubspace(assetprofilemoduletypes.ModuleName),
+		&app.TransferKeeper,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 	assetprofileModule := assetprofilemodule.NewAppModule(appCodec, app.AssetprofileKeeper, app.AccountKeeper, app.BankKeeper)
@@ -912,7 +913,7 @@ func NewElysApp(
 
 	// The gov proposal types can be individually enabled
 	if len(enabledProposals) != 0 {
-		govRouter.AddRoute(wasmmodule.RouterKey, wasmmodule.NewWasmProposalHandler(app.WasmKeeper, enabledProposals))
+		govRouter.AddRoute(wasmmoduletypes.RouterKey, wasmmodulekeeper.NewWasmProposalHandler(app.WasmKeeper, enabledProposals))
 	}
 	govKeeper.SetLegacyRouter(govRouter)
 
@@ -970,7 +971,7 @@ func NewElysApp(
 	ibcRouter := ibcporttypes.NewRouter()
 	ibcRouter.AddRoute(icahosttypes.SubModuleName, icaHostIBCModule).
 		AddRoute(ibctransfertypes.ModuleName, transferStack).
-		AddRoute(wasmmodule.ModuleName, wasmStack).
+		AddRoute(wasmmoduletypes.ModuleName, wasmStack).
 		AddRoute(oracletypes.ModuleName, oracleIBCModule)
 	// this line is used by starport scaffolding # ibc/app/router
 	app.IBCKeeper.SetRouter(ibcRouter)
@@ -1153,7 +1154,7 @@ func NewElysApp(
 		ammmoduletypes.ModuleName,
 		parametermoduletypes.ModuleName,
 		marginmoduletypes.ModuleName,
-		wasmmodule.ModuleName,
+		wasmmoduletypes.ModuleName,
 		accountedpoolmoduletypes.ModuleName,
 		transferhooktypes.ModuleName,
 		clockmoduletypes.ModuleName,
@@ -1198,7 +1199,7 @@ func NewElysApp(
 		burnermoduletypes.ModuleName,
 		ammmoduletypes.ModuleName,
 		marginmoduletypes.ModuleName,
-		wasmmodule.ModuleName,
+		wasmmoduletypes.ModuleName,
 		accountedpoolmoduletypes.ModuleName,
 		transferhooktypes.ModuleName,
 		clockmoduletypes.ModuleName,

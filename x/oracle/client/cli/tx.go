@@ -26,7 +26,6 @@ func GetTxCmd() *cobra.Command {
 		RunE:                       client.ValidateCmd,
 	}
 
-	cmd.AddCommand(CmdRequestBandPrice())
 	cmd.AddCommand(CmdSubmitAddAssetInfoProposal())
 	cmd.AddCommand(CmdSubmitRemoveAssetInfoProposal())
 	cmd.AddCommand(CmdSubmitAddPriceFeedersProposal())

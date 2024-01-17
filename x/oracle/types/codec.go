@@ -9,7 +9,6 @@ import (
 )
 
 func RegisterCodec(cdc *codec.LegacyAmino) {
-	cdc.RegisterConcrete(&MsgRequestBandPrice{}, "oracle/RequestBandPrice", nil)
 	cdc.RegisterConcrete(&MsgFeedPrice{}, "oracle/FeedPrice", nil)
 	cdc.RegisterConcrete(&MsgSetPriceFeeder{}, "oracle/SetPriceFeeder", nil)
 	cdc.RegisterConcrete(&MsgDeletePriceFeeder{}, "oracle/DeletePriceFeeder", nil)
@@ -19,7 +18,6 @@ func RegisterCodec(cdc *codec.LegacyAmino) {
 
 func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 	registry.RegisterImplementations((*sdk.Msg)(nil),
-		&MsgRequestBandPrice{},
 		&MsgFeedPrice{},
 		&MsgSetPriceFeeder{},
 		&MsgDeletePriceFeeder{},

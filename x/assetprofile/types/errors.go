@@ -2,11 +2,11 @@ package types
 
 // DONTCOVER
 
-import (
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-)
+import "cosmossdk.io/errors"
 
 // x/assetprofile module sentinel errors
 var (
-	ErrAssetProfileNotFound = sdkerrors.Register(ModuleName, 1100, "asset profile not found for denom")
+	ErrAssetProfileNotFound          = errors.Register(ModuleName, 1, "asset profile not found for denom")
+	ErrChannelIdAndDenomHashMismatch = errors.Register(ModuleName, 2, "channel id and denom hash mismatch")
+	ErrNotValidIbcDenom              = errors.Register(ModuleName, 3, "not valid ibc denom")
 )

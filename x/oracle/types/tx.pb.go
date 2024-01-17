@@ -6,8 +6,8 @@ package types
 import (
 	context "context"
 	fmt "fmt"
+	_ "github.com/cosmos/cosmos-sdk/types"
 	github_com_cosmos_cosmos_sdk_types "github.com/cosmos/cosmos-sdk/types"
-	types "github.com/cosmos/cosmos-sdk/types"
 	_ "github.com/cosmos/gogoproto/gogoproto"
 	grpc1 "github.com/cosmos/gogoproto/grpc"
 	proto "github.com/cosmos/gogoproto/proto"
@@ -30,158 +30,6 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
-type MsgRequestBandPrice struct {
-	Creator        string                                   `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
-	OracleScriptID uint64                                   `protobuf:"varint,2,opt,name=oracle_script_id,json=oracleScriptId,proto3" json:"oracle_script_id,omitempty"`
-	SourceChannel  string                                   `protobuf:"bytes,3,opt,name=source_channel,json=sourceChannel,proto3" json:"source_channel,omitempty"`
-	Calldata       *BandPriceCallData                       `protobuf:"bytes,4,opt,name=calldata,proto3" json:"calldata,omitempty"`
-	AskCount       uint64                                   `protobuf:"varint,5,opt,name=ask_count,json=askCount,proto3" json:"ask_count,omitempty"`
-	MinCount       uint64                                   `protobuf:"varint,6,opt,name=min_count,json=minCount,proto3" json:"min_count,omitempty"`
-	FeeLimit       github_com_cosmos_cosmos_sdk_types.Coins `protobuf:"bytes,7,rep,name=fee_limit,json=feeLimit,proto3,castrepeated=github.com/cosmos/cosmos-sdk/types.Coins" json:"fee_limit"`
-	PrepareGas     uint64                                   `protobuf:"varint,8,opt,name=prepare_gas,json=prepareGas,proto3" json:"prepare_gas,omitempty"`
-	ExecuteGas     uint64                                   `protobuf:"varint,9,opt,name=execute_gas,json=executeGas,proto3" json:"execute_gas,omitempty"`
-	ClientID       string                                   `protobuf:"bytes,10,opt,name=client_id,json=clientId,proto3" json:"client_id,omitempty"`
-}
-
-func (m *MsgRequestBandPrice) Reset()         { *m = MsgRequestBandPrice{} }
-func (m *MsgRequestBandPrice) String() string { return proto.CompactTextString(m) }
-func (*MsgRequestBandPrice) ProtoMessage()    {}
-func (*MsgRequestBandPrice) Descriptor() ([]byte, []int) {
-	return fileDescriptor_f1fcab3fbd407da0, []int{0}
-}
-func (m *MsgRequestBandPrice) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *MsgRequestBandPrice) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_MsgRequestBandPrice.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *MsgRequestBandPrice) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgRequestBandPrice.Merge(m, src)
-}
-func (m *MsgRequestBandPrice) XXX_Size() int {
-	return m.Size()
-}
-func (m *MsgRequestBandPrice) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgRequestBandPrice.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_MsgRequestBandPrice proto.InternalMessageInfo
-
-func (m *MsgRequestBandPrice) GetCreator() string {
-	if m != nil {
-		return m.Creator
-	}
-	return ""
-}
-
-func (m *MsgRequestBandPrice) GetOracleScriptID() uint64 {
-	if m != nil {
-		return m.OracleScriptID
-	}
-	return 0
-}
-
-func (m *MsgRequestBandPrice) GetSourceChannel() string {
-	if m != nil {
-		return m.SourceChannel
-	}
-	return ""
-}
-
-func (m *MsgRequestBandPrice) GetCalldata() *BandPriceCallData {
-	if m != nil {
-		return m.Calldata
-	}
-	return nil
-}
-
-func (m *MsgRequestBandPrice) GetAskCount() uint64 {
-	if m != nil {
-		return m.AskCount
-	}
-	return 0
-}
-
-func (m *MsgRequestBandPrice) GetMinCount() uint64 {
-	if m != nil {
-		return m.MinCount
-	}
-	return 0
-}
-
-func (m *MsgRequestBandPrice) GetFeeLimit() github_com_cosmos_cosmos_sdk_types.Coins {
-	if m != nil {
-		return m.FeeLimit
-	}
-	return nil
-}
-
-func (m *MsgRequestBandPrice) GetPrepareGas() uint64 {
-	if m != nil {
-		return m.PrepareGas
-	}
-	return 0
-}
-
-func (m *MsgRequestBandPrice) GetExecuteGas() uint64 {
-	if m != nil {
-		return m.ExecuteGas
-	}
-	return 0
-}
-
-func (m *MsgRequestBandPrice) GetClientID() string {
-	if m != nil {
-		return m.ClientID
-	}
-	return ""
-}
-
-type MsgRequestBandPriceResponse struct {
-}
-
-func (m *MsgRequestBandPriceResponse) Reset()         { *m = MsgRequestBandPriceResponse{} }
-func (m *MsgRequestBandPriceResponse) String() string { return proto.CompactTextString(m) }
-func (*MsgRequestBandPriceResponse) ProtoMessage()    {}
-func (*MsgRequestBandPriceResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_f1fcab3fbd407da0, []int{1}
-}
-func (m *MsgRequestBandPriceResponse) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *MsgRequestBandPriceResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_MsgRequestBandPriceResponse.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *MsgRequestBandPriceResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgRequestBandPriceResponse.Merge(m, src)
-}
-func (m *MsgRequestBandPriceResponse) XXX_Size() int {
-	return m.Size()
-}
-func (m *MsgRequestBandPriceResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgRequestBandPriceResponse.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_MsgRequestBandPriceResponse proto.InternalMessageInfo
-
 type MsgFeedPrice struct {
 	Asset    string                                 `protobuf:"bytes,1,opt,name=asset,proto3" json:"asset,omitempty"`
 	Price    github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,2,opt,name=price,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"price"`
@@ -193,7 +41,7 @@ func (m *MsgFeedPrice) Reset()         { *m = MsgFeedPrice{} }
 func (m *MsgFeedPrice) String() string { return proto.CompactTextString(m) }
 func (*MsgFeedPrice) ProtoMessage()    {}
 func (*MsgFeedPrice) Descriptor() ([]byte, []int) {
-	return fileDescriptor_f1fcab3fbd407da0, []int{2}
+	return fileDescriptor_f1fcab3fbd407da0, []int{0}
 }
 func (m *MsgFeedPrice) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -250,7 +98,7 @@ func (m *MsgFeedPriceResponse) Reset()         { *m = MsgFeedPriceResponse{} }
 func (m *MsgFeedPriceResponse) String() string { return proto.CompactTextString(m) }
 func (*MsgFeedPriceResponse) ProtoMessage()    {}
 func (*MsgFeedPriceResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_f1fcab3fbd407da0, []int{3}
+	return fileDescriptor_f1fcab3fbd407da0, []int{1}
 }
 func (m *MsgFeedPriceResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -288,7 +136,7 @@ func (m *MsgSetPriceFeeder) Reset()         { *m = MsgSetPriceFeeder{} }
 func (m *MsgSetPriceFeeder) String() string { return proto.CompactTextString(m) }
 func (*MsgSetPriceFeeder) ProtoMessage()    {}
 func (*MsgSetPriceFeeder) Descriptor() ([]byte, []int) {
-	return fileDescriptor_f1fcab3fbd407da0, []int{4}
+	return fileDescriptor_f1fcab3fbd407da0, []int{2}
 }
 func (m *MsgSetPriceFeeder) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -338,7 +186,7 @@ func (m *MsgSetPriceFeederResponse) Reset()         { *m = MsgSetPriceFeederResp
 func (m *MsgSetPriceFeederResponse) String() string { return proto.CompactTextString(m) }
 func (*MsgSetPriceFeederResponse) ProtoMessage()    {}
 func (*MsgSetPriceFeederResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_f1fcab3fbd407da0, []int{5}
+	return fileDescriptor_f1fcab3fbd407da0, []int{3}
 }
 func (m *MsgSetPriceFeederResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -375,7 +223,7 @@ func (m *MsgDeletePriceFeeder) Reset()         { *m = MsgDeletePriceFeeder{} }
 func (m *MsgDeletePriceFeeder) String() string { return proto.CompactTextString(m) }
 func (*MsgDeletePriceFeeder) ProtoMessage()    {}
 func (*MsgDeletePriceFeeder) Descriptor() ([]byte, []int) {
-	return fileDescriptor_f1fcab3fbd407da0, []int{6}
+	return fileDescriptor_f1fcab3fbd407da0, []int{4}
 }
 func (m *MsgDeletePriceFeeder) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -418,7 +266,7 @@ func (m *MsgDeletePriceFeederResponse) Reset()         { *m = MsgDeletePriceFeed
 func (m *MsgDeletePriceFeederResponse) String() string { return proto.CompactTextString(m) }
 func (*MsgDeletePriceFeederResponse) ProtoMessage()    {}
 func (*MsgDeletePriceFeederResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_f1fcab3fbd407da0, []int{7}
+	return fileDescriptor_f1fcab3fbd407da0, []int{5}
 }
 func (m *MsgDeletePriceFeederResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -456,7 +304,7 @@ func (m *MsgFeedMultiplePrices) Reset()         { *m = MsgFeedMultiplePrices{} }
 func (m *MsgFeedMultiplePrices) String() string { return proto.CompactTextString(m) }
 func (*MsgFeedMultiplePrices) ProtoMessage()    {}
 func (*MsgFeedMultiplePrices) Descriptor() ([]byte, []int) {
-	return fileDescriptor_f1fcab3fbd407da0, []int{8}
+	return fileDescriptor_f1fcab3fbd407da0, []int{6}
 }
 func (m *MsgFeedMultiplePrices) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -506,7 +354,7 @@ func (m *MsgFeedMultiplePricesResponse) Reset()         { *m = MsgFeedMultiplePr
 func (m *MsgFeedMultiplePricesResponse) String() string { return proto.CompactTextString(m) }
 func (*MsgFeedMultiplePricesResponse) ProtoMessage()    {}
 func (*MsgFeedMultiplePricesResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_f1fcab3fbd407da0, []int{9}
+	return fileDescriptor_f1fcab3fbd407da0, []int{7}
 }
 func (m *MsgFeedMultiplePricesResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -536,8 +384,6 @@ func (m *MsgFeedMultiplePricesResponse) XXX_DiscardUnknown() {
 var xxx_messageInfo_MsgFeedMultiplePricesResponse proto.InternalMessageInfo
 
 func init() {
-	proto.RegisterType((*MsgRequestBandPrice)(nil), "elys.oracle.MsgRequestBandPrice")
-	proto.RegisterType((*MsgRequestBandPriceResponse)(nil), "elys.oracle.MsgRequestBandPriceResponse")
 	proto.RegisterType((*MsgFeedPrice)(nil), "elys.oracle.MsgFeedPrice")
 	proto.RegisterType((*MsgFeedPriceResponse)(nil), "elys.oracle.MsgFeedPriceResponse")
 	proto.RegisterType((*MsgSetPriceFeeder)(nil), "elys.oracle.MsgSetPriceFeeder")
@@ -551,57 +397,40 @@ func init() {
 func init() { proto.RegisterFile("elys/oracle/tx.proto", fileDescriptor_f1fcab3fbd407da0) }
 
 var fileDescriptor_f1fcab3fbd407da0 = []byte{
-	// 787 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x8c, 0x55, 0xdd, 0x72, 0xdb, 0x44,
-	0x14, 0x8e, 0xea, 0x24, 0x95, 0x36, 0x25, 0xd3, 0x8a, 0x50, 0x14, 0xa5, 0x95, 0x8d, 0x66, 0xe8,
-	0xb8, 0x30, 0x95, 0xda, 0x70, 0xc7, 0x70, 0x83, 0x6d, 0x0a, 0x9e, 0xc1, 0x03, 0xa3, 0xde, 0x30,
-	0x5c, 0xa0, 0x59, 0xaf, 0x8e, 0x95, 0x1d, 0xcb, 0x5a, 0xa1, 0x5d, 0x87, 0xf4, 0x2d, 0x78, 0x02,
-	0x1e, 0x80, 0x27, 0xe9, 0x65, 0x67, 0xb8, 0x61, 0xb8, 0x30, 0xe0, 0xbc, 0x08, 0xb3, 0xbb, 0xb2,
-	0x90, 0x7f, 0xda, 0xf4, 0x2a, 0x39, 0xe7, 0xfb, 0xce, 0x77, 0xce, 0xee, 0x77, 0xd6, 0x42, 0x27,
-	0x90, 0xbd, 0xe4, 0x21, 0x2b, 0x31, 0xc9, 0x20, 0x14, 0x57, 0x41, 0x51, 0x32, 0xc1, 0xec, 0x23,
-	0x99, 0x0d, 0x74, 0xd6, 0x3d, 0x49, 0x59, 0xca, 0x54, 0x3e, 0x94, 0xff, 0x69, 0x8a, 0xeb, 0x11,
-	0xc6, 0x67, 0x8c, 0x87, 0x63, 0xcc, 0x21, 0xbc, 0x7c, 0x36, 0x06, 0x81, 0x9f, 0x85, 0x84, 0xd1,
-	0xbc, 0xc2, 0x1f, 0x34, 0x85, 0xc7, 0x38, 0x4f, 0xe2, 0xa2, 0xa4, 0x04, 0x76, 0xa1, 0x98, 0x73,
-	0x10, 0x31, 0xcd, 0x27, 0x2b, 0xed, 0x0f, 0x9b, 0x68, 0xb3, 0xcc, 0xdb, 0x02, 0xe2, 0x09, 0x40,
-	0x02, 0xa5, 0xc6, 0xfd, 0x7f, 0x5b, 0xe8, 0xfd, 0x11, 0x4f, 0x23, 0xf8, 0x79, 0x0e, 0x5c, 0xf4,
-	0x70, 0x9e, 0x7c, 0x2f, 0x49, 0xb6, 0x83, 0x6e, 0x93, 0x12, 0xb0, 0x60, 0xa5, 0x63, 0x74, 0x8c,
-	0xae, 0x15, 0xad, 0x42, 0xfb, 0x0b, 0x74, 0x57, 0xcb, 0xc5, 0x9c, 0x94, 0xb4, 0x10, 0x31, 0x4d,
-	0x9c, 0x5b, 0x1d, 0xa3, 0xbb, 0xdf, 0xb3, 0x97, 0x8b, 0xf6, 0xf1, 0x77, 0x0a, 0x7b, 0xa1, 0xa0,
-	0xe1, 0x20, 0x3a, 0x66, 0xcd, 0x38, 0xb1, 0x3f, 0x46, 0xc7, 0x9c, 0xcd, 0x4b, 0x02, 0x31, 0xb9,
-	0xc0, 0x79, 0x0e, 0x99, 0xd3, 0x52, 0xf2, 0xef, 0xe9, 0x6c, 0x5f, 0x27, 0xed, 0xcf, 0x91, 0x49,
-	0x70, 0x96, 0x25, 0x58, 0x60, 0x67, 0xbf, 0x63, 0x74, 0x8f, 0xce, 0xbd, 0xa0, 0x71, 0xc3, 0x41,
-	0x3d, 0x68, 0x1f, 0x67, 0xd9, 0x00, 0x0b, 0x1c, 0xd5, 0x7c, 0xfb, 0x0c, 0x59, 0x98, 0x4f, 0x63,
-	0xc2, 0xe6, 0xb9, 0x70, 0x0e, 0xe4, 0x64, 0x91, 0x89, 0xf9, 0xb4, 0x2f, 0x63, 0x09, 0xce, 0x68,
-	0x5e, 0x81, 0x87, 0x1a, 0x9c, 0xd1, 0x5c, 0x83, 0x17, 0xc8, 0x9a, 0x00, 0xc4, 0x19, 0x9d, 0x51,
-	0xe1, 0xdc, 0xee, 0xb4, 0xba, 0x47, 0xe7, 0xa7, 0x81, 0x76, 0x2d, 0x90, 0xae, 0x05, 0x95, 0x6b,
-	0x41, 0x9f, 0xd1, 0xbc, 0xf7, 0xf4, 0xd5, 0xa2, 0xbd, 0xf7, 0xfb, 0xdf, 0xed, 0x6e, 0x4a, 0xc5,
-	0xc5, 0x7c, 0x1c, 0x10, 0x36, 0x0b, 0x2b, 0x8b, 0xf5, 0x9f, 0x27, 0x3c, 0x99, 0x86, 0xe2, 0x65,
-	0x01, 0x5c, 0x15, 0xf0, 0xc8, 0x9c, 0x00, 0x7c, 0x2b, 0xc5, 0xed, 0x36, 0x3a, 0x2a, 0x4a, 0x28,
-	0x70, 0x09, 0x71, 0x8a, 0xb9, 0x63, 0xaa, 0x41, 0x50, 0x95, 0xfa, 0x1a, 0x73, 0x49, 0x80, 0x2b,
-	0x20, 0x73, 0xa1, 0x09, 0x96, 0x26, 0x54, 0x29, 0x49, 0x78, 0x8c, 0x2c, 0x92, 0x51, 0xc8, 0xd5,
-	0xfd, 0x23, 0x79, 0x87, 0xbd, 0x3b, 0xcb, 0x45, 0xdb, 0xec, 0xab, 0xe4, 0x70, 0x10, 0x99, 0x1a,
-	0x1e, 0x26, 0xfe, 0x43, 0x74, 0xb6, 0xc3, 0xe2, 0x08, 0x78, 0xc1, 0x72, 0x0e, 0xfe, 0x6f, 0x06,
-	0xba, 0x33, 0xe2, 0xe9, 0x73, 0x80, 0xca, 0xfb, 0x13, 0x74, 0xa0, 0x16, 0xac, 0x72, 0x5e, 0x07,
-	0xf6, 0x00, 0x1d, 0xa8, 0xfd, 0x51, 0x66, 0x5b, 0xbd, 0x40, 0x9e, 0xfe, 0xaf, 0x45, 0xfb, 0xd1,
-	0x3b, 0x9c, 0x7e, 0x00, 0x24, 0xd2, 0xc5, 0xf6, 0x7d, 0x74, 0xa8, 0x9d, 0xae, 0x7c, 0xaf, 0x22,
-	0xdb, 0x45, 0x66, 0x51, 0xb2, 0x4b, 0x9a, 0x40, 0xa9, 0x0c, 0xb7, 0xa2, 0x3a, 0xf6, 0xef, 0xa3,
-	0x93, 0xe6, 0x7c, 0xf5, 0xe0, 0xdf, 0xa0, 0x7b, 0x23, 0x9e, 0xbe, 0x00, 0xa1, 0xd2, 0xcf, 0xd5,
-	0x5a, 0xcb, 0x06, 0x7a, 0xc1, 0xab, 0xe9, 0xab, 0x48, 0x1a, 0x4f, 0x79, 0x8c, 0x89, 0xa0, 0x97,
-	0xfa, 0x08, 0x66, 0x64, 0x52, 0xfe, 0xa5, 0x8a, 0xfd, 0x33, 0x74, 0xba, 0xa5, 0x54, 0xb7, 0x09,
-	0x54, 0xfb, 0x01, 0x64, 0x20, 0xe0, 0x1d, 0x3a, 0xf9, 0x1e, 0x7a, 0xb0, 0x8b, 0x5f, 0xeb, 0x11,
-	0xf4, 0x41, 0x75, 0x9c, 0xd1, 0x3c, 0x13, 0xb4, 0xc8, 0x34, 0x8b, 0xbf, 0xe5, 0xcd, 0x3d, 0x45,
-	0x87, 0xea, 0xfa, 0xb8, 0x73, 0x4b, 0x6d, 0xa5, 0xbd, 0xf6, 0x18, 0x54, 0x79, 0x6f, 0x5f, 0x1a,
-	0x12, 0x55, 0x3c, 0xbf, 0x8d, 0x1e, 0xee, 0x6c, 0xb2, 0x9a, 0xe2, 0xfc, 0x8f, 0x16, 0x6a, 0x8d,
-	0x78, 0x6a, 0x0f, 0x91, 0xf5, 0xbf, 0xf3, 0xa7, 0x6b, 0xba, 0xcd, 0x4b, 0x77, 0x3f, 0x7a, 0x23,
-	0xb4, 0x92, 0xb4, 0x13, 0x64, 0xef, 0x38, 0x95, 0xbf, 0xab, 0x70, 0x9d, 0xe3, 0x7e, 0x72, 0x33,
-	0xa7, 0xee, 0xf2, 0x13, 0xba, 0xbb, 0xf5, 0x6b, 0xd5, 0xd9, 0xac, 0xdf, 0x64, 0xb8, 0xdd, 0x9b,
-	0x18, 0xb5, 0xfe, 0x0f, 0xe8, 0x78, 0x63, 0xa5, 0xbc, 0xcd, 0xda, 0x75, 0xdc, 0x7d, 0xf4, 0x76,
-	0xbc, 0x56, 0xc6, 0xe8, 0xde, 0xf6, 0x16, 0x6d, 0xdd, 0xeb, 0x16, 0xc5, 0x7d, 0x7c, 0x23, 0x65,
-	0xd5, 0xa2, 0xf7, 0xd5, 0xab, 0xa5, 0x67, 0xbc, 0x5e, 0x7a, 0xc6, 0x3f, 0x4b, 0xcf, 0xf8, 0xf5,
-	0xda, 0xdb, 0x7b, 0x7d, 0xed, 0xed, 0xfd, 0x79, 0xed, 0xed, 0xfd, 0xf8, 0x69, 0xe3, 0x9d, 0x4a,
-	0xb9, 0x27, 0x39, 0x88, 0x5f, 0x58, 0x39, 0x55, 0x41, 0x78, 0x55, 0x7f, 0xd0, 0xe4, 0x83, 0x1d,
-	0x1f, 0xaa, 0x8f, 0xc3, 0x67, 0xff, 0x05, 0x00, 0x00, 0xff, 0xff, 0x69, 0xe0, 0xa4, 0x79, 0xec,
-	0x06, 0x00, 0x00,
+	// 517 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x8c, 0x54, 0x4d, 0x6e, 0xd3, 0x40,
+	0x14, 0x8e, 0x93, 0x36, 0x24, 0xaf, 0x08, 0xa9, 0xa3, 0x50, 0x5c, 0xb7, 0x4c, 0x8a, 0x17, 0x55,
+	0x01, 0xd5, 0xa6, 0xe5, 0x04, 0x44, 0xa1, 0x82, 0x45, 0x24, 0x14, 0x36, 0x88, 0x4d, 0xe4, 0x8c,
+	0x5f, 0x8d, 0x55, 0xd7, 0x63, 0x79, 0x26, 0xa1, 0xbd, 0x05, 0x27, 0xe0, 0x3c, 0x5d, 0x76, 0x89,
+	0x58, 0x54, 0x28, 0x39, 0x02, 0x17, 0x40, 0x1e, 0xff, 0xe0, 0xd4, 0x86, 0x76, 0x95, 0xbc, 0xf7,
+	0x7d, 0xef, 0xfb, 0xe6, 0x9b, 0x97, 0x09, 0xf4, 0x30, 0xb8, 0x14, 0x36, 0x8f, 0x1d, 0x16, 0xa0,
+	0x2d, 0x2f, 0xac, 0x28, 0xe6, 0x92, 0x93, 0x8d, 0xa4, 0x6b, 0xa5, 0x5d, 0xa3, 0xe7, 0x71, 0x8f,
+	0xab, 0xbe, 0x9d, 0x7c, 0x4b, 0x29, 0x06, 0x65, 0x5c, 0x9c, 0x73, 0x61, 0x4f, 0x1d, 0x81, 0xf6,
+	0xfc, 0x68, 0x8a, 0xd2, 0x39, 0xb2, 0x19, 0xf7, 0xc3, 0x0c, 0xdf, 0x2d, 0x0b, 0x4f, 0x9d, 0xd0,
+	0x9d, 0x44, 0xb1, 0xcf, 0xb0, 0x0e, 0x75, 0x84, 0x40, 0x39, 0xf1, 0xc3, 0xd3, 0x5c, 0xfb, 0x49,
+	0x19, 0x2d, 0x8f, 0xd1, 0x0a, 0x30, 0x39, 0x45, 0x74, 0x31, 0x4e, 0x71, 0xf3, 0xbb, 0x06, 0x0f,
+	0x47, 0xc2, 0x3b, 0x41, 0x74, 0x3f, 0x24, 0x28, 0xe9, 0xc1, 0xba, 0x52, 0xd7, 0xb5, 0x3d, 0xed,
+	0xa0, 0x3b, 0x4e, 0x0b, 0x32, 0x84, 0x75, 0x35, 0xac, 0x37, 0x93, 0xee, 0xc0, 0xba, 0xba, 0xe9,
+	0x37, 0x7e, 0xde, 0xf4, 0xf7, 0x3d, 0x5f, 0x7e, 0x99, 0x4d, 0x2d, 0xc6, 0xcf, 0xed, 0x2c, 0x5d,
+	0xfa, 0x71, 0x28, 0xdc, 0x33, 0x5b, 0x5e, 0x46, 0x28, 0xac, 0x21, 0xb2, 0x71, 0x3a, 0x4c, 0xb6,
+	0xa0, 0x2d, 0xf8, 0x2c, 0x66, 0xa8, 0xb7, 0x94, 0x78, 0x56, 0x11, 0x03, 0x3a, 0x51, 0xcc, 0xe7,
+	0xbe, 0x8b, 0xb1, 0xbe, 0xa6, 0x90, 0xa2, 0x36, 0xb7, 0xa0, 0x57, 0x3e, 0xdf, 0x18, 0x45, 0xc4,
+	0x43, 0x81, 0xe6, 0x3b, 0xd8, 0x1c, 0x09, 0xef, 0x23, 0x4a, 0xd5, 0x3e, 0x51, 0x99, 0x12, 0x83,
+	0x34, 0x5d, 0x76, 0xfa, 0xac, 0x22, 0x3b, 0xd0, 0xf5, 0xc5, 0xc4, 0x61, 0xd2, 0x9f, 0xa7, 0x11,
+	0x3a, 0xe3, 0x8e, 0x2f, 0xde, 0xa8, 0xda, 0xdc, 0x81, 0xed, 0x8a, 0x52, 0x61, 0x63, 0x29, 0xfb,
+	0x21, 0x06, 0x28, 0xf1, 0x1e, 0x4e, 0x26, 0x85, 0xdd, 0x3a, 0x7e, 0xa1, 0xc7, 0xe0, 0x71, 0x16,
+	0x67, 0x34, 0x0b, 0xa4, 0x1f, 0x05, 0x29, 0x4b, 0x10, 0x1d, 0x1e, 0xb0, 0x18, 0x1d, 0xc9, 0x73,
+	0xc5, 0xbc, 0x24, 0xaf, 0xa0, 0xad, 0xae, 0x4f, 0xe8, 0xcd, 0xbd, 0xd6, 0xc1, 0xc6, 0x31, 0xb1,
+	0x4a, 0xbf, 0x35, 0x4b, 0x8d, 0x0f, 0xd6, 0x92, 0x85, 0x8c, 0x33, 0x9e, 0xd9, 0x87, 0xa7, 0xb5,
+	0x26, 0xf9, 0x29, 0x8e, 0x7f, 0x37, 0xa1, 0x35, 0x12, 0x1e, 0x79, 0x0f, 0xdd, 0xbf, 0x9b, 0xdf,
+	0x5e, 0xd1, 0x2d, 0x5f, 0xba, 0xf1, 0xec, 0x9f, 0x50, 0x2e, 0x49, 0x5c, 0x20, 0x35, 0xa9, 0xcc,
+	0xba, 0xc1, 0x55, 0x8e, 0xf1, 0xe2, 0x6e, 0x4e, 0xe1, 0xf2, 0x09, 0x1e, 0xdd, 0x5a, 0x39, 0xbd,
+	0x3d, 0xbd, 0x8a, 0x1b, 0xfb, 0xff, 0xc7, 0x0b, 0x65, 0x07, 0x36, 0xab, 0x5b, 0xae, 0xe4, 0xae,
+	0x50, 0x8c, 0xe7, 0x77, 0x52, 0x72, 0x8b, 0xc1, 0xdb, 0xab, 0x05, 0xd5, 0xae, 0x17, 0x54, 0xfb,
+	0xb5, 0xa0, 0xda, 0xb7, 0x25, 0x6d, 0x5c, 0x2f, 0x69, 0xe3, 0xc7, 0x92, 0x36, 0x3e, 0xbf, 0x2c,
+	0xbd, 0xa3, 0x44, 0xee, 0x30, 0x44, 0xf9, 0x95, 0xc7, 0x67, 0xaa, 0xb0, 0x2f, 0x8a, 0x7f, 0x9b,
+	0xe4, 0x41, 0x4d, 0xdb, 0xea, 0xe5, 0xbe, 0xfe, 0x13, 0x00, 0x00, 0xff, 0xff, 0x35, 0xcb, 0x0f,
+	0x9a, 0x89, 0x04, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -618,7 +447,6 @@ const _ = grpc.SupportPackageIsVersion4
 type MsgClient interface {
 	FeedPrice(ctx context.Context, in *MsgFeedPrice, opts ...grpc.CallOption) (*MsgFeedPriceResponse, error)
 	FeedMultiplePrices(ctx context.Context, in *MsgFeedMultiplePrices, opts ...grpc.CallOption) (*MsgFeedMultiplePricesResponse, error)
-	RequestBandPrice(ctx context.Context, in *MsgRequestBandPrice, opts ...grpc.CallOption) (*MsgRequestBandPriceResponse, error)
 	SetPriceFeeder(ctx context.Context, in *MsgSetPriceFeeder, opts ...grpc.CallOption) (*MsgSetPriceFeederResponse, error)
 	DeletePriceFeeder(ctx context.Context, in *MsgDeletePriceFeeder, opts ...grpc.CallOption) (*MsgDeletePriceFeederResponse, error)
 }
@@ -649,15 +477,6 @@ func (c *msgClient) FeedMultiplePrices(ctx context.Context, in *MsgFeedMultipleP
 	return out, nil
 }
 
-func (c *msgClient) RequestBandPrice(ctx context.Context, in *MsgRequestBandPrice, opts ...grpc.CallOption) (*MsgRequestBandPriceResponse, error) {
-	out := new(MsgRequestBandPriceResponse)
-	err := c.cc.Invoke(ctx, "/elys.oracle.Msg/RequestBandPrice", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 func (c *msgClient) SetPriceFeeder(ctx context.Context, in *MsgSetPriceFeeder, opts ...grpc.CallOption) (*MsgSetPriceFeederResponse, error) {
 	out := new(MsgSetPriceFeederResponse)
 	err := c.cc.Invoke(ctx, "/elys.oracle.Msg/SetPriceFeeder", in, out, opts...)
@@ -680,7 +499,6 @@ func (c *msgClient) DeletePriceFeeder(ctx context.Context, in *MsgDeletePriceFee
 type MsgServer interface {
 	FeedPrice(context.Context, *MsgFeedPrice) (*MsgFeedPriceResponse, error)
 	FeedMultiplePrices(context.Context, *MsgFeedMultiplePrices) (*MsgFeedMultiplePricesResponse, error)
-	RequestBandPrice(context.Context, *MsgRequestBandPrice) (*MsgRequestBandPriceResponse, error)
 	SetPriceFeeder(context.Context, *MsgSetPriceFeeder) (*MsgSetPriceFeederResponse, error)
 	DeletePriceFeeder(context.Context, *MsgDeletePriceFeeder) (*MsgDeletePriceFeederResponse, error)
 }
@@ -694,9 +512,6 @@ func (*UnimplementedMsgServer) FeedPrice(ctx context.Context, req *MsgFeedPrice)
 }
 func (*UnimplementedMsgServer) FeedMultiplePrices(ctx context.Context, req *MsgFeedMultiplePrices) (*MsgFeedMultiplePricesResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method FeedMultiplePrices not implemented")
-}
-func (*UnimplementedMsgServer) RequestBandPrice(ctx context.Context, req *MsgRequestBandPrice) (*MsgRequestBandPriceResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method RequestBandPrice not implemented")
 }
 func (*UnimplementedMsgServer) SetPriceFeeder(ctx context.Context, req *MsgSetPriceFeeder) (*MsgSetPriceFeederResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SetPriceFeeder not implemented")
@@ -741,24 +556,6 @@ func _Msg_FeedMultiplePrices_Handler(srv interface{}, ctx context.Context, dec f
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(MsgServer).FeedMultiplePrices(ctx, req.(*MsgFeedMultiplePrices))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Msg_RequestBandPrice_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgRequestBandPrice)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(MsgServer).RequestBandPrice(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/elys.oracle.Msg/RequestBandPrice",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).RequestBandPrice(ctx, req.(*MsgRequestBandPrice))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -812,10 +609,6 @@ var _Msg_serviceDesc = grpc.ServiceDesc{
 			Handler:    _Msg_FeedMultiplePrices_Handler,
 		},
 		{
-			MethodName: "RequestBandPrice",
-			Handler:    _Msg_RequestBandPrice_Handler,
-		},
-		{
 			MethodName: "SetPriceFeeder",
 			Handler:    _Msg_SetPriceFeeder_Handler,
 		},
@@ -826,124 +619,6 @@ var _Msg_serviceDesc = grpc.ServiceDesc{
 	},
 	Streams:  []grpc.StreamDesc{},
 	Metadata: "elys/oracle/tx.proto",
-}
-
-func (m *MsgRequestBandPrice) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *MsgRequestBandPrice) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *MsgRequestBandPrice) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if len(m.ClientID) > 0 {
-		i -= len(m.ClientID)
-		copy(dAtA[i:], m.ClientID)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.ClientID)))
-		i--
-		dAtA[i] = 0x52
-	}
-	if m.ExecuteGas != 0 {
-		i = encodeVarintTx(dAtA, i, uint64(m.ExecuteGas))
-		i--
-		dAtA[i] = 0x48
-	}
-	if m.PrepareGas != 0 {
-		i = encodeVarintTx(dAtA, i, uint64(m.PrepareGas))
-		i--
-		dAtA[i] = 0x40
-	}
-	if len(m.FeeLimit) > 0 {
-		for iNdEx := len(m.FeeLimit) - 1; iNdEx >= 0; iNdEx-- {
-			{
-				size, err := m.FeeLimit[iNdEx].MarshalToSizedBuffer(dAtA[:i])
-				if err != nil {
-					return 0, err
-				}
-				i -= size
-				i = encodeVarintTx(dAtA, i, uint64(size))
-			}
-			i--
-			dAtA[i] = 0x3a
-		}
-	}
-	if m.MinCount != 0 {
-		i = encodeVarintTx(dAtA, i, uint64(m.MinCount))
-		i--
-		dAtA[i] = 0x30
-	}
-	if m.AskCount != 0 {
-		i = encodeVarintTx(dAtA, i, uint64(m.AskCount))
-		i--
-		dAtA[i] = 0x28
-	}
-	if m.Calldata != nil {
-		{
-			size, err := m.Calldata.MarshalToSizedBuffer(dAtA[:i])
-			if err != nil {
-				return 0, err
-			}
-			i -= size
-			i = encodeVarintTx(dAtA, i, uint64(size))
-		}
-		i--
-		dAtA[i] = 0x22
-	}
-	if len(m.SourceChannel) > 0 {
-		i -= len(m.SourceChannel)
-		copy(dAtA[i:], m.SourceChannel)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.SourceChannel)))
-		i--
-		dAtA[i] = 0x1a
-	}
-	if m.OracleScriptID != 0 {
-		i = encodeVarintTx(dAtA, i, uint64(m.OracleScriptID))
-		i--
-		dAtA[i] = 0x10
-	}
-	if len(m.Creator) > 0 {
-		i -= len(m.Creator)
-		copy(dAtA[i:], m.Creator)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.Creator)))
-		i--
-		dAtA[i] = 0xa
-	}
-	return len(dAtA) - i, nil
-}
-
-func (m *MsgRequestBandPriceResponse) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *MsgRequestBandPriceResponse) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *MsgRequestBandPriceResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	return len(dAtA) - i, nil
 }
 
 func (m *MsgFeedPrice) Marshal() (dAtA []byte, err error) {
@@ -1217,61 +892,6 @@ func encodeVarintTx(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
-func (m *MsgRequestBandPrice) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	l = len(m.Creator)
-	if l > 0 {
-		n += 1 + l + sovTx(uint64(l))
-	}
-	if m.OracleScriptID != 0 {
-		n += 1 + sovTx(uint64(m.OracleScriptID))
-	}
-	l = len(m.SourceChannel)
-	if l > 0 {
-		n += 1 + l + sovTx(uint64(l))
-	}
-	if m.Calldata != nil {
-		l = m.Calldata.Size()
-		n += 1 + l + sovTx(uint64(l))
-	}
-	if m.AskCount != 0 {
-		n += 1 + sovTx(uint64(m.AskCount))
-	}
-	if m.MinCount != 0 {
-		n += 1 + sovTx(uint64(m.MinCount))
-	}
-	if len(m.FeeLimit) > 0 {
-		for _, e := range m.FeeLimit {
-			l = e.Size()
-			n += 1 + l + sovTx(uint64(l))
-		}
-	}
-	if m.PrepareGas != 0 {
-		n += 1 + sovTx(uint64(m.PrepareGas))
-	}
-	if m.ExecuteGas != 0 {
-		n += 1 + sovTx(uint64(m.ExecuteGas))
-	}
-	l = len(m.ClientID)
-	if l > 0 {
-		n += 1 + l + sovTx(uint64(l))
-	}
-	return n
-}
-
-func (m *MsgRequestBandPriceResponse) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	return n
-}
-
 func (m *MsgFeedPrice) Size() (n int) {
 	if m == nil {
 		return 0
@@ -1384,367 +1004,6 @@ func sovTx(x uint64) (n int) {
 }
 func sozTx(x uint64) (n int) {
 	return sovTx(uint64((x << 1) ^ uint64((int64(x) >> 63))))
-}
-func (m *MsgRequestBandPrice) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowTx
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: MsgRequestBandPrice: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgRequestBandPrice: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Creator", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTx
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthTx
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthTx
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Creator = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 2:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field OracleScriptID", wireType)
-			}
-			m.OracleScriptID = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTx
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.OracleScriptID |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		case 3:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field SourceChannel", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTx
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthTx
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthTx
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.SourceChannel = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 4:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Calldata", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTx
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthTx
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthTx
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if m.Calldata == nil {
-				m.Calldata = &BandPriceCallData{}
-			}
-			if err := m.Calldata.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		case 5:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field AskCount", wireType)
-			}
-			m.AskCount = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTx
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.AskCount |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		case 6:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field MinCount", wireType)
-			}
-			m.MinCount = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTx
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.MinCount |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		case 7:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field FeeLimit", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTx
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthTx
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthTx
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.FeeLimit = append(m.FeeLimit, types.Coin{})
-			if err := m.FeeLimit[len(m.FeeLimit)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		case 8:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field PrepareGas", wireType)
-			}
-			m.PrepareGas = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTx
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.PrepareGas |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		case 9:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field ExecuteGas", wireType)
-			}
-			m.ExecuteGas = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTx
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.ExecuteGas |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		case 10:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field ClientID", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTx
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthTx
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthTx
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.ClientID = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipTx(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthTx
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *MsgRequestBandPriceResponse) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowTx
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: MsgRequestBandPriceResponse: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgRequestBandPriceResponse: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		default:
-			iNdEx = preIndex
-			skippy, err := skipTx(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthTx
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
 }
 func (m *MsgFeedPrice) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)

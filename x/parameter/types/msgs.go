@@ -103,5 +103,10 @@ func (msg *MsgUpdateBrokerAddress) ValidateBasic() error {
 	if err != nil {
 		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid sender address (%s)", err)
 	}
+
+	_, err = sdk.AccAddressFromBech32(msg.BrokerAddress)
+	if err != nil {
+		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid broker address (%s)", err)
+	}
 	return nil
 }
