@@ -23,14 +23,12 @@ var (
 	KeyBorrowInterestRateDecrease                     = []byte("BorrowInterestRateDecrease")
 	KeyHealthGainFactor                               = []byte("HealthGainFactor")
 	KeyEpochLength                                    = []byte("EpochLength")
-	KeyRemovalQueueThreshold                          = []byte("RemovalQueueThreshold")
 	KeyMaxOpenPositions                               = []byte("MaxOpenPositions")
 	KeyPoolOpenThreshold                              = []byte("PoolOpenThreshold")
 	KeyForceCloseFundPercentage                       = []byte("ForceCloseFundPercentage")
 	KeyForceCloseFundAddress                          = []byte("ForceCloseFundAddress")
 	KeyIncrementalBorrowInterestPaymentFundPercentage = []byte("IncrementalBorrowInterestPaymentFundPercentage")
 	KeyIncrementalBorrowInterestPaymentFundAddress    = []byte("IncrementalBorrowInterestPaymentFundAddress")
-	KeySqModifier                                     = []byte("SqModifier")
 	KeySafetyFactor                                   = []byte("SafetyFactor")
 	KeyIncrementalBorrowInterestPaymentEnabled        = []byte("IncrementalBorrowInterestPaymentEnabled")
 	KeyWhitelistingEnabled                            = []byte("WhitelistingEnabled")
@@ -73,9 +71,7 @@ func NewParams() Params {
 		LeverageMax:                                    sdk.NewDec(10),
 		MaxOpenPositions:                               (int64)(9999),
 		PoolOpenThreshold:                              sdk.OneDec(),
-		RemovalQueueThreshold:                          sdk.NewDecWithPrec(35, 1),                     // 35%
 		SafetyFactor:                                   sdk.MustNewDecFromStr("1.050000000000000000"), // 5%
-		SqModifier:                                     sdk.MustNewDecFromStr("10000000000000000000000000"),
 		WhitelistingEnabled:                            false,
 	}
 }
@@ -95,14 +91,12 @@ func (p *Params) ParamSetPairs() paramtypes.ParamSetPairs {
 		paramtypes.NewParamSetPair(KeyBorrowInterestRateDecrease, &p.BorrowInterestRateDecrease, validateBorrowInterestRateDecrease),
 		paramtypes.NewParamSetPair(KeyHealthGainFactor, &p.HealthGainFactor, validateHealthGainFactor),
 		paramtypes.NewParamSetPair(KeyEpochLength, &p.EpochLength, validateEpochLength),
-		paramtypes.NewParamSetPair(KeyRemovalQueueThreshold, &p.RemovalQueueThreshold, validateRemovalQueueThreshold),
 		paramtypes.NewParamSetPair(KeyMaxOpenPositions, &p.MaxOpenPositions, validateMaxOpenPositions),
 		paramtypes.NewParamSetPair(KeyPoolOpenThreshold, &p.PoolOpenThreshold, validatePoolOpenThreshold),
 		paramtypes.NewParamSetPair(KeyForceCloseFundPercentage, &p.ForceCloseFundPercentage, validateForceCloseFundPercentage),
 		paramtypes.NewParamSetPair(KeyForceCloseFundAddress, &p.ForceCloseFundAddress, validateForceCloseFundAddress),
 		paramtypes.NewParamSetPair(KeyIncrementalBorrowInterestPaymentFundPercentage, &p.IncrementalBorrowInterestPaymentFundPercentage, validateIncrementalBorrowInterestPaymentFundPercentage),
 		paramtypes.NewParamSetPair(KeyIncrementalBorrowInterestPaymentFundAddress, &p.IncrementalBorrowInterestPaymentFundAddress, validateIncrementalBorrowInterestPaymentFundAddress),
-		paramtypes.NewParamSetPair(KeySqModifier, &p.SqModifier, validateSqModifier),
 		paramtypes.NewParamSetPair(KeySafetyFactor, &p.SafetyFactor, validateSafetyFactor),
 		paramtypes.NewParamSetPair(KeyIncrementalBorrowInterestPaymentEnabled, &p.IncrementalBorrowInterestPaymentEnabled, validateIncrementalBorrowInterestPaymentEnabled),
 		paramtypes.NewParamSetPair(KeyWhitelistingEnabled, &p.WhitelistingEnabled, validateWhitelistingEnabled),
@@ -139,9 +133,7 @@ func (p Params) Validate() error {
 	if err := validateEpochLength(p.EpochLength); err != nil {
 		return err
 	}
-	if err := validateRemovalQueueThreshold(p.RemovalQueueThreshold); err != nil {
-		return err
-	}
+
 	if err := validateMaxOpenPositions(p.MaxOpenPositions); err != nil {
 		return err
 	}
@@ -158,9 +150,6 @@ func (p Params) Validate() error {
 		return err
 	}
 	if err := validateIncrementalBorrowInterestPaymentFundAddress(p.IncrementalBorrowInterestPaymentFundAddress); err != nil {
-		return err
-	}
-	if err := validateSqModifier(p.SqModifier); err != nil {
 		return err
 	}
 	if err := validateSafetyFactor(p.SafetyFactor); err != nil {
@@ -314,22 +303,6 @@ func validateEpochLength(i interface{}) error {
 	return nil
 }
 
-func validateRemovalQueueThreshold(i interface{}) error {
-	v, ok := i.(sdk.Dec)
-	if !ok {
-		return fmt.Errorf("invalid parameter type: %T", i)
-	}
-
-	if v.IsNil() {
-		return fmt.Errorf("removal queue threashold must be not nil")
-	}
-	if v.IsNegative() {
-		return fmt.Errorf("removal queue threashold must be positive: %s", v)
-	}
-
-	return nil
-}
-
 func validateMaxOpenPositions(i interface{}) error {
 	_, ok := i.(int64)
 	if !ok {
@@ -384,22 +357,6 @@ func validateIncrementalBorrowInterestPaymentFundAddress(i interface{}) error {
 	_, ok := i.(string)
 	if !ok {
 		return fmt.Errorf("invalid parameter type: %T", i)
-	}
-
-	return nil
-}
-
-func validateSqModifier(i interface{}) error {
-	v, ok := i.(sdk.Dec)
-	if !ok {
-		return fmt.Errorf("invalid parameter type: %T", i)
-	}
-
-	if v.IsNil() {
-		return fmt.Errorf("sq modifier must be not nil")
-	}
-	if v.IsNegative() {
-		return fmt.Errorf("sq modifier must be positive: %s", v)
 	}
 
 	return nil

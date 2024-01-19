@@ -38,6 +38,7 @@ func (k Keeper) Repay(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, ammPool
 		return err
 	}
 
+	// Reminder:
 	// if long both repay amount and liablities are collateral asset
 	// if short both repay amount and liablities are trading asset
 
@@ -170,7 +171,10 @@ func (k Keeper) Repay(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, ammPool
 			return err
 		}
 	} else {
-		k.SetMTP(ctx, mtp)
+		err = k.SetMTP(ctx, mtp)
+		if err != nil {
+			return err
+		}
 	}
 
 	k.SetPool(ctx, *pool)

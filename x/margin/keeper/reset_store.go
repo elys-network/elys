@@ -15,7 +15,6 @@ func (k Keeper) ResetStore(ctx sdk.Context) error {
 		types.MTPCountPrefix,
 		types.OpenMTPCountPrefix,
 		types.WhitelistPrefix,
-		types.SQBeginBlockPrefix,
 	}
 
 	for _, prefix := range prefixes {

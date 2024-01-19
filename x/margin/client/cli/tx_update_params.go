@@ -21,7 +21,6 @@ const (
 	FlagBorrowInterestRateIncrease                     = "borrow-interest-rate-increase"
 	FlagBorrowInterestRateDecrease                     = "borrow-interest-rate-decrease"
 	FlagHealthGainFactor                               = "health-gain-factor"
-	FlagRemovalQueueThreshold                          = "removal-queue-threshold"
 	FlagMaxOpenPositions                               = "max-open-positions"
 	FlagPoolOpenThreshold                              = "pool-open-threshold"
 	FlagForceCloseFundPercentage                       = "force-close-fund-percentage"
@@ -29,7 +28,6 @@ const (
 	FlagIncrementalBorrowInterestPaymentEnabled        = "incremental-borrow-interest-payment-enabled"
 	FlagIncrementalBorrowInterestPaymentFundPercentage = "incremental-borrow-interest-payment-fund-percentage"
 	FlagIncrementalBorrowInterestPaymentFundAddress    = "incremental-borrow-interest-payment-fund-address"
-	FlagSqModifier                                     = "sq-modifier"
 	FlagSafetyFactor                                   = "safety-factor"
 	FlagWhitelistingEnabled                            = "whitelisting-enabled"
 	FlagEpochLength                                    = "epoch-length"
@@ -61,42 +59,37 @@ func CmdUpdateParams() *cobra.Command {
 				return err
 			}
 
-			leverage_max, err := cmd.Flags().GetString(FlagLeverageMax)
+			leverageMax, err := cmd.Flags().GetString(FlagLeverageMax)
 			if err != nil {
 				return err
 			}
 
-			borrow_interest_rate_max, err := cmd.Flags().GetString(FlagBorrowInterestRateMax)
+			borrowInterestRateMax, err := cmd.Flags().GetString(FlagBorrowInterestRateMax)
 			if err != nil {
 				return err
 			}
 
-			borrow_interest_rate_min, err := cmd.Flags().GetString(FlagBorrowInterestRateMin)
+			borrowInterestRateMin, err := cmd.Flags().GetString(FlagBorrowInterestRateMin)
 			if err != nil {
 				return err
 			}
 
-			borrow_interest_rate_increase, err := cmd.Flags().GetString(FlagBorrowInterestRateIncrease)
+			borrowInterestRateIncrease, err := cmd.Flags().GetString(FlagBorrowInterestRateIncrease)
 			if err != nil {
 				return err
 			}
 
-			borrow_interest_rate_decrease, err := cmd.Flags().GetString(FlagBorrowInterestRateDecrease)
+			borrowInterestRateDecrease, err := cmd.Flags().GetString(FlagBorrowInterestRateDecrease)
 			if err != nil {
 				return err
 			}
 
-			health_gain_factor, err := cmd.Flags().GetString(FlagHealthGainFactor)
+			healthGainFactor, err := cmd.Flags().GetString(FlagHealthGainFactor)
 			if err != nil {
 				return err
 			}
 
-			epoch_length, err := cmd.Flags().GetInt64(FlagEpochLength)
-			if err != nil {
-				return err
-			}
-
-			removal_queue_threshold, err := cmd.Flags().GetString(FlagRemovalQueueThreshold)
+			epochLength, err := cmd.Flags().GetInt64(FlagEpochLength)
 			if err != nil {
 				return err
 			}
@@ -131,11 +124,6 @@ func CmdUpdateParams() *cobra.Command {
 				return err
 			}
 
-			sqModifier, err := cmd.Flags().GetString(FlagSqModifier)
-			if err != nil {
-				return err
-			}
-
 			safetyFactor, err := cmd.Flags().GetString(FlagSafetyFactor)
 			if err != nil {
 				return err
@@ -152,24 +140,22 @@ func CmdUpdateParams() *cobra.Command {
 			}
 
 			params := &types.Params{
-				LeverageMax:                                    sdk.MustNewDecFromStr(leverage_max),
-				BorrowInterestRateMax:                          sdk.MustNewDecFromStr(borrow_interest_rate_max),
-				BorrowInterestRateMin:                          sdk.MustNewDecFromStr(borrow_interest_rate_min),
-				BorrowInterestRateIncrease:                     sdk.MustNewDecFromStr(borrow_interest_rate_increase),
-				BorrowInterestRateDecrease:                     sdk.MustNewDecFromStr(borrow_interest_rate_decrease),
-				HealthGainFactor:                               sdk.MustNewDecFromStr(health_gain_factor),
-				EpochLength:                                    epoch_length,
-				RemovalQueueThreshold:                          sdk.MustNewDecFromStr(removal_queue_threshold),
-				MaxOpenPositions:                               maxOpenPositions,
-				PoolOpenThreshold:                              sdk.MustNewDecFromStr(poolOpenThreshold),
-				ForceCloseFundPercentage:                       sdk.MustNewDecFromStr(forceCloseFundPercentage),
-				ForceCloseFundAddress:                          forceCloseFundAddress,
+				LeverageMax:                sdk.MustNewDecFromStr(leverageMax),
+				BorrowInterestRateMax:      sdk.MustNewDecFromStr(borrowInterestRateMax),
+				BorrowInterestRateMin:      sdk.MustNewDecFromStr(borrowInterestRateMin),
+				BorrowInterestRateIncrease: sdk.MustNewDecFromStr(borrowInterestRateIncrease),
+				BorrowInterestRateDecrease: sdk.MustNewDecFromStr(borrowInterestRateDecrease),
+				HealthGainFactor:           sdk.MustNewDecFromStr(healthGainFactor),
+				EpochLength:                epochLength,
+				MaxOpenPositions:           maxOpenPositions,
+				PoolOpenThreshold:          sdk.MustNewDecFromStr(poolOpenThreshold),
+				ForceCloseFundPercentage:   sdk.MustNewDecFromStr(forceCloseFundPercentage),
+				ForceCloseFundAddress:      forceCloseFundAddress,
 				IncrementalBorrowInterestPaymentFundPercentage: sdk.MustNewDecFromStr(incrementalBorrowInterestPaymentFundPercentage),
 				IncrementalBorrowInterestPaymentFundAddress:    incrementalBorrowInterestPaymentFundAddress,
-				SqModifier:                                     sdk.MustNewDecFromStr(sqModifier),
-				SafetyFactor:                                   sdk.MustNewDecFromStr(safetyFactor),
-				IncrementalBorrowInterestPaymentEnabled:        incrementalBorrowInterestPaymentEnabled,
-				WhitelistingEnabled:                            whitelistingEnabled,
+				SafetyFactor:                            sdk.MustNewDecFromStr(safetyFactor),
+				IncrementalBorrowInterestPaymentEnabled: incrementalBorrowInterestPaymentEnabled,
+				WhitelistingEnabled:                     whitelistingEnabled,
 			}
 
 			signer := clientCtx.GetFromAddress()
@@ -213,14 +199,12 @@ func CmdUpdateParams() *cobra.Command {
 	cmd.Flags().String(FlagHealthGainFactor, "", "health gain factor (decimal)")
 	cmd.Flags().Int64(FlagEpochLength, 1, "epoch length in blocks (integer)")
 	cmd.Flags().Int64(FlagMaxOpenPositions, 10000, "max open positions")
-	cmd.Flags().String(FlagRemovalQueueThreshold, "", "removal queue threshold (decimal range 0-1)")
 	cmd.Flags().String(FlagPoolOpenThreshold, "", "threshold to prevent new positions (decimal range 0-1)")
 	cmd.Flags().String(FlagForceCloseFundPercentage, "", "percentage of force close proceeds for fund (decimal range 0-1)")
 	cmd.Flags().String(FlagForceCloseFundAddress, "", "address of fund wallet for force close")
 	cmd.Flags().Bool(FlagIncrementalBorrowInterestPaymentEnabled, true, "enable incremental borrow interest payment")
 	cmd.Flags().String(FlagIncrementalBorrowInterestPaymentFundPercentage, "", "percentage of incremental borrow interest payment proceeds for fund (decimal range 0-1)")
 	cmd.Flags().String(FlagIncrementalBorrowInterestPaymentFundAddress, "", "address of fund wallet for incremental borrow interest payment")
-	cmd.Flags().String(FlagSqModifier, "", "the modifier value for the removal queue's sq formula")
 	cmd.Flags().String(FlagSafetyFactor, "", "the safety factor used in liquidation ratio")
 	cmd.Flags().Bool(FlagWhitelistingEnabled, false, "Enable whitelisting")
 	cmd.Flags().String(cli.FlagTitle, "", "title of proposal")
@@ -233,7 +217,6 @@ func CmdUpdateParams() *cobra.Command {
 	_ = cmd.MarkFlagRequired(FlagBorrowInterestRateIncrease)
 	_ = cmd.MarkFlagRequired(FlagBorrowInterestRateDecrease)
 	_ = cmd.MarkFlagRequired(FlagHealthGainFactor)
-	_ = cmd.MarkFlagRequired(FlagRemovalQueueThreshold)
 	_ = cmd.MarkFlagRequired(FlagMaxOpenPositions)
 	_ = cmd.MarkFlagRequired(FlagPoolOpenThreshold)
 	_ = cmd.MarkFlagRequired(FlagForceCloseFundPercentage)
@@ -241,7 +224,6 @@ func CmdUpdateParams() *cobra.Command {
 	_ = cmd.MarkFlagRequired(FlagIncrementalBorrowInterestPaymentEnabled)
 	_ = cmd.MarkFlagRequired(FlagIncrementalBorrowInterestPaymentFundPercentage)
 	_ = cmd.MarkFlagRequired(FlagIncrementalBorrowInterestPaymentFundAddress)
-	_ = cmd.MarkFlagRequired(FlagSqModifier)
 	_ = cmd.MarkFlagRequired(FlagSafetyFactor)
 	_ = cmd.MarkFlagRequired(FlagWhitelistingEnabled)
 	_ = cmd.MarkFlagRequired(cli.FlagTitle)

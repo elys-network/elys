@@ -41388,8 +41388,6 @@ paths:
                   epoch_length:
                     type: string
                     format: int64
-                  removal_queue_threshold:
-                    type: string
                   max_open_positions:
                     type: string
                     format: int64
@@ -41402,8 +41400,6 @@ paths:
                   incremental_borrow_interest_payment_fund_percentage:
                     type: string
                   incremental_borrow_interest_payment_fund_address:
-                    type: string
-                  sq_modifier:
                     type: string
                   safety_factor:
                     type: string
@@ -84969,8 +84965,6 @@ definitions:
         format: uint64
   elys.margin.MsgUpdateParamsResponse:
     type: object
-  elys.margin.MsgUpdatePoolsResponse:
-    type: object
   elys.margin.MsgWhitelistResponse:
     type: object
   elys.margin.Params:
@@ -84991,8 +84985,6 @@ definitions:
       epoch_length:
         type: string
         format: int64
-      removal_queue_threshold:
-        type: string
       max_open_positions:
         type: string
         format: int64
@@ -85005,8 +84997,6 @@ definitions:
       incremental_borrow_interest_payment_fund_percentage:
         type: string
       incremental_borrow_interest_payment_fund_address:
-        type: string
-      sq_modifier:
         type: string
       safety_factor:
         type: string
@@ -85051,8 +85041,6 @@ definitions:
           epoch_length:
             type: string
             format: int64
-          removal_queue_threshold:
-            type: string
           max_open_positions:
             type: string
             format: int64
@@ -85065,8 +85053,6 @@ definitions:
           incremental_borrow_interest_payment_fund_percentage:
             type: string
           incremental_borrow_interest_payment_fund_address:
-            type: string
-          sq_modifier:
             type: string
           safety_factor:
             type: string

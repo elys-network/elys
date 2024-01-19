@@ -15,8 +15,7 @@ func (k Keeper) AfterEpochEnd(ctx sdk.Context, epochIdentifier string, _ int64) 
 	if epochIdentifier == params.InvariantCheckEpoch {
 		err := k.InvariantCheck(ctx)
 		if err != nil {
-			// panic(err)
-			// TODO: have correct invariant checking algorithm needed
+			ctx.Logger().Error("Margin: Invariant check failure", "err", err)
 			return
 		}
 	}

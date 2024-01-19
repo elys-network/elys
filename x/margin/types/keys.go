@@ -31,7 +31,6 @@ var (
 	MTPCountPrefix     = []byte{0x02}
 	OpenMTPCountPrefix = []byte{0x04}
 	WhitelistPrefix    = []byte{0x05}
-	SQBeginBlockPrefix = []byte{0x06}
 )
 
 func KeyPrefix(p string) []byte {

@@ -7,14 +7,9 @@ import (
 )
 
 // RemovePool removes a pool from the store
-func (k Keeper) RemovePool(
-	ctx sdk.Context,
-	index uint64,
-) {
+func (k Keeper) RemovePool(ctx sdk.Context, index uint64) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.PoolKeyPrefix))
-	store.Delete(types.PoolKey(
-		index,
-	))
+	store.Delete(types.PoolKey(index))
 }
 
 // GetAllPool returns all pool

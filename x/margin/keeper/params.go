@@ -49,10 +49,6 @@ func (k Keeper) GetPoolOpenThreshold(ctx sdk.Context) sdk.Dec {
 	return k.GetParams(ctx).PoolOpenThreshold
 }
 
-func (k Keeper) GetRemovalQueueThreshold(ctx sdk.Context) sdk.Dec {
-	return k.GetParams(ctx).RemovalQueueThreshold
-}
-
 func (k Keeper) GetForceCloseFundPercentage(ctx sdk.Context) sdk.Dec {
 	return k.GetParams(ctx).ForceCloseFundPercentage
 }
@@ -134,10 +130,6 @@ func (k Keeper) IsPoolClosed(ctx sdk.Context, poolId uint64) bool {
 	}
 
 	return pool.Closed
-}
-
-func (k Keeper) GetSqModifier(ctx sdk.Context) sdk.Dec {
-	return k.GetParams(ctx).SqModifier
 }
 
 func (k Keeper) IsWhitelistingEnabled(ctx sdk.Context) bool {

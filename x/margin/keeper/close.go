@@ -5,6 +5,7 @@ import (
 	"strconv"
 
 	errorsmod "cosmossdk.io/errors"
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
 	"github.com/elys-network/elys/x/margin/types"
@@ -24,7 +25,7 @@ func (k Keeper) Close(ctx sdk.Context, msg *types.MsgClose) (*types.MsgCloseResp
 	baseCurrency := entry.Denom
 
 	var closedMtp *types.MTP
-	var repayAmount sdk.Int
+	var repayAmount math.Int
 	switch mtp.Position {
 	case types.Position_LONG:
 		closedMtp, repayAmount, err = k.CloseLong(ctx, msg, baseCurrency)
