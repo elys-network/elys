@@ -303,22 +303,6 @@ func validateEpochLength(i interface{}) error {
 	return nil
 }
 
-func validateRemovalQueueThreshold(i interface{}) error {
-	v, ok := i.(sdk.Dec)
-	if !ok {
-		return fmt.Errorf("invalid parameter type: %T", i)
-	}
-
-	if v.IsNil() {
-		return fmt.Errorf("removal queue threashold must be not nil")
-	}
-	if v.IsNegative() {
-		return fmt.Errorf("removal queue threashold must be positive: %s", v)
-	}
-
-	return nil
-}
-
 func validateMaxOpenPositions(i interface{}) error {
 	_, ok := i.(int64)
 	if !ok {
@@ -373,22 +357,6 @@ func validateIncrementalBorrowInterestPaymentFundAddress(i interface{}) error {
 	_, ok := i.(string)
 	if !ok {
 		return fmt.Errorf("invalid parameter type: %T", i)
-	}
-
-	return nil
-}
-
-func validateSqModifier(i interface{}) error {
-	v, ok := i.(sdk.Dec)
-	if !ok {
-		return fmt.Errorf("invalid parameter type: %T", i)
-	}
-
-	if v.IsNil() {
-		return fmt.Errorf("sq modifier must be not nil")
-	}
-	if v.IsNegative() {
-		return fmt.Errorf("sq modifier must be positive: %s", v)
 	}
 
 	return nil
