@@ -2,12 +2,13 @@ package keeper
 
 import (
 	errorsmod "cosmossdk.io/errors"
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/margin/types"
 )
 
 // CalcMinCollateral calculates the minimum collateral required to open a position
-func (k Keeper) CalcMinCollateral(ctx sdk.Context, leverage sdk.Dec) (sdk.Int, error) {
+func (k Keeper) CalcMinCollateral(ctx sdk.Context, leverage sdk.Dec) (math.Int, error) {
 	// leverage must be greater than 1
 	if leverage.LTE(sdk.NewDec(1)) {
 		return sdk.ZeroInt(), errorsmod.Wrapf(types.ErrInvalidLeverage, "leverage must be greater than 1")

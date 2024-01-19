@@ -15,7 +15,10 @@ func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) 
 
 	// Set all the pool
 	for _, elem := range genState.MtpList {
-		k.SetMTP(ctx, &elem)
+		err := k.SetMTP(ctx, &elem)
+		if err != nil {
+			panic(err)
+		}
 	}
 
 	// Set genesis MTP count

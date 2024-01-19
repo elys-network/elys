@@ -3,7 +3,8 @@ package keeper
 import (
 	"fmt"
 
-	"github.com/cosmos/cosmos-sdk/types/errors"
+	"cosmossdk.io/errors"
+	"cosmossdk.io/math"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
@@ -36,8 +37,6 @@ func BeginBlockerProcessMTP(ctx sdk.Context, k Keeper, mtp *types.MTP, pool type
 		return errors.Wrap(err, fmt.Sprintf("error updating mtp health: %s", mtp.String()))
 	}
 	mtp.MtpHealth = h
-	// compute borrow interest
-	// TODO: missing fields
 
 	// Handle Borrow Interest if within epoch position
 	if err := k.HandleBorrowInterest(ctx, mtp, &pool, ammPool); err != nil {
@@ -47,7 +46,10 @@ func BeginBlockerProcessMTP(ctx sdk.Context, k Keeper, mtp *types.MTP, pool type
 		return errors.Wrap(err, fmt.Sprintf("error handling funding fee collection: %s", mtp.CollateralAsset))
 	}
 
-	_ = k.SetMTP(ctx, mtp)
+	err = k.SetMTP(ctx, mtp)
+	if err != nil {
+		return err
+	}
 
 	// check MTP health against threshold
 	safetyFactor := k.GetSafetyFactor(ctx)
@@ -76,7 +78,7 @@ func BeginBlockerProcessMTP(ctx sdk.Context, k Keeper, mtp *types.MTP, pool type
 		return nil
 	}
 
-	var repayAmount sdk.Int
+	var repayAmount math.Int
 	switch mtp.Position {
 	case types.Position_LONG:
 		repayAmount, err = k.ForceCloseLong(ctx, mtp, &pool, true, baseCurrency)

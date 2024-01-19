@@ -34,10 +34,6 @@ const (
 	// TODO: Determine the simulation weight value
 	defaultWeightMsgUpdateParams int = 100
 
-	opWeightMsgUpdatePools = "op_weight_msg_update_pools"
-	// TODO: Determine the simulation weight value
-	defaultWeightMsgUpdatePools int = 100
-
 	opWeightMsgWhitelist = "op_weight_msg_whitelist"
 	// TODO: Determine the simulation weight value
 	defaultWeightMsgWhitelist int = 100
@@ -102,17 +98,6 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 			weightMsgUpdateParams = defaultWeightMsgUpdateParams
 		},
 	)
-
-	var weightMsgUpdatePools int
-	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgUpdatePools, &weightMsgUpdatePools, nil,
-		func(_ *rand.Rand) {
-			weightMsgUpdatePools = defaultWeightMsgUpdatePools
-		},
-	)
-	operations = append(operations, simulation.NewWeightedOperation(
-		weightMsgUpdatePools,
-		marginsimulation.SimulateMsgUpdatePools(am.accountKeeper, am.bankKeeper, am.keeper),
-	))
 
 	var weightMsgWhitelist int
 	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgWhitelist, &weightMsgWhitelist, nil,

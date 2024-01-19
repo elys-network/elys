@@ -32,29 +32,37 @@ func (k Keeper) BeginBlocker(ctx sdk.Context) {
 		ammPool, err := k.GetAmmPool(ctx, pool.AmmPoolId, "")
 		if err != nil {
 			ctx.Logger().Error(errorsmod.Wrap(err, fmt.Sprintf("error getting amm pool: %d", pool.AmmPoolId)).Error())
-			continue // ?
+			continue
 		}
 		if k.IsPoolEnabled(ctx, pool.AmmPoolId) {
 			rate, err := k.BorrowInterestRateComputation(ctx, pool)
 			if err != nil {
 				ctx.Logger().Error(err.Error())
-				continue // ?
+				continue
 			}
 			pool.BorrowInterestRate = rate
 			pool.LastHeightBorrowInterestRateComputed = currentHeight
-			_ = k.UpdatePoolHealth(ctx, &pool)
-			_ = k.UpdateFundingRate(ctx, &pool)
-			// TODO: function missing
-			// k.TrackSQBeginBlock(ctx, pool)
+			err = k.UpdatePoolHealth(ctx, &pool)
+			if err != nil {
+				ctx.Logger().Error(err.Error())
+			}
+			err = k.UpdateFundingRate(ctx, &pool)
+			if err != nil {
+				ctx.Logger().Error(err.Error())
+			}
+
 			mtps, _, _ := k.GetMTPsForPool(ctx, pool.AmmPoolId, nil)
 			for _, mtp := range mtps {
 				err := BeginBlockerProcessMTP(ctx, k, mtp, pool, ammPool, baseCurrency)
 				if err != nil {
 					ctx.Logger().Error(err.Error())
-					continue // ?
+					continue
 				}
 			}
-			_ = k.HandleFundingFeeDistribution(ctx, mtps, &pool, ammPool, baseCurrency)
+			err = k.HandleFundingFeeDistribution(ctx, mtps, &pool, ammPool, baseCurrency)
+			if err != nil {
+				ctx.Logger().Error(err.Error())
+			}
 		}
 		k.SetPool(ctx, pool)
 	}

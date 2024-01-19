@@ -14,9 +14,9 @@ func (k Keeper) EstimateSwap(ctx sdk.Context, tokenInAmount sdk.Coin, tokenOutDe
 		return sdk.ZeroInt(), errorsmod.Wrap(types.ErrMarginDisabled, "Margin disabled pool")
 	}
 
-	tokensIn := sdk.Coins{tokenInAmount}
 	// Estimate swap
 	snapshot := k.amm.GetPoolSnapshotOrSet(ctx, ammPool)
+	tokensIn := sdk.Coins{tokenInAmount}
 	swapResult, err := k.amm.CalcOutAmtGivenIn(ctx, ammPool.PoolId, k.oracleKeeper, &snapshot, tokensIn, tokenOutDenom, sdk.ZeroDec())
 	if err != nil {
 		return sdk.ZeroInt(), err

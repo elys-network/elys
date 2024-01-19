@@ -11,7 +11,6 @@ const (
 	TypeMsgClose        = "close"
 	TypeMsgUpdateParams = "update_params"
 	TypeMsgWhitelist    = "whitelist"
-	TypeMsgUpdatePools  = "update_pools"
 	TypeMsgDewhitelist  = "dewhitelist"
 )
 
@@ -20,7 +19,6 @@ var (
 	_ sdk.Msg = &MsgOpen{}
 	_ sdk.Msg = &MsgUpdateParams{}
 	_ sdk.Msg = &MsgWhitelist{}
-	_ sdk.Msg = &MsgUpdatePools{}
 	_ sdk.Msg = &MsgDewhitelist{}
 )
 
@@ -166,43 +164,6 @@ func (msg *MsgWhitelist) GetSignBytes() []byte {
 }
 
 func (msg *MsgWhitelist) ValidateBasic() error {
-	_, err := sdk.AccAddressFromBech32(msg.Authority)
-	if err != nil {
-		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
-	}
-	return nil
-}
-
-func NewMsgUpdatePools(signer string, pools []string, closedPools []string) *MsgUpdatePools {
-	return &MsgUpdatePools{
-		Authority:   signer,
-		Pools:       pools,
-		ClosedPools: closedPools,
-	}
-}
-
-func (msg *MsgUpdatePools) Route() string {
-	return RouterKey
-}
-
-func (msg *MsgUpdatePools) Type() string {
-	return TypeMsgUpdatePools
-}
-
-func (msg *MsgUpdatePools) GetSigners() []sdk.AccAddress {
-	authority, err := sdk.AccAddressFromBech32(msg.Authority)
-	if err != nil {
-		panic(err)
-	}
-	return []sdk.AccAddress{authority}
-}
-
-func (msg *MsgUpdatePools) GetSignBytes() []byte {
-	bz := ModuleCdc.MustMarshalJSON(msg)
-	return sdk.MustSortJSON(bz)
-}
-
-func (msg *MsgUpdatePools) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Authority)
 	if err != nil {
 		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)

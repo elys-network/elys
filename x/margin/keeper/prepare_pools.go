@@ -6,6 +6,7 @@ import (
 	"github.com/elys-network/elys/x/margin/types"
 )
 
+// PreparePools creates accounted pools
 func (k Keeper) PreparePools(ctx sdk.Context, collateralAsset, tradingAsset string) (poolId uint64, ammPool ammtypes.Pool, pool types.Pool, err error) {
 	poolId, err = k.GetFirstValidPool(ctx, collateralAsset, tradingAsset)
 	if err != nil {
@@ -20,7 +21,10 @@ func (k Keeper) PreparePools(ctx sdk.Context, collateralAsset, tradingAsset stri
 	pool, found := k.GetPool(ctx, poolId)
 	if !found {
 		pool = types.NewPool(poolId)
-		pool.InitiatePool(ctx, &ammPool)
+		err = pool.InitiatePool(ctx, &ammPool)
+		if err != nil {
+			return
+		}
 		k.SetPool(ctx, pool)
 	}
 

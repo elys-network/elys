@@ -11,7 +11,6 @@ func RegisterCodec(cdc *codec.LegacyAmino) {
 	cdc.RegisterConcrete(&MsgOpen{}, "margin/Open", nil)
 	cdc.RegisterConcrete(&MsgClose{}, "margin/Close", nil)
 	cdc.RegisterConcrete(&MsgUpdateParams{}, "margin/UpdateParams", nil)
-	cdc.RegisterConcrete(&MsgUpdatePools{}, "margin/UpdatePools", nil)
 	cdc.RegisterConcrete(&MsgWhitelist{}, "margin/Whitelist", nil)
 	cdc.RegisterConcrete(&MsgDewhitelist{}, "margin/Dewhitelist", nil)
 	// this line is used by starport scaffolding # 2
@@ -22,7 +21,6 @@ func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 		&MsgOpen{},
 		&MsgClose{},
 		&MsgUpdateParams{},
-		&MsgUpdatePools{},
 		&MsgWhitelist{},
 		&MsgDewhitelist{},
 	)

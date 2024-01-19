@@ -10,9 +10,7 @@ const (
 )
 
 // PoolKey returns the store key to retrieve a Pool from the index fields
-func PoolKey(
-	index uint64,
-) []byte {
+func PoolKey(index uint64) []byte {
 	var key []byte
 
 	indexBytes := make([]byte, 8)

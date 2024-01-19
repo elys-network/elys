@@ -14,7 +14,6 @@ service Msg {
   rpc Open         (MsgOpen        ) returns (MsgOpenResponse        );
   rpc Close        (MsgClose       ) returns (MsgCloseResponse       );
   rpc UpdateParams (MsgUpdateParams) returns (MsgUpdateParamsResponse);
-  rpc UpdatePools  (MsgUpdatePools ) returns (MsgUpdatePoolsResponse );
   rpc Whitelist    (MsgWhitelist   ) returns (MsgWhitelistResponse   );
   rpc Dewhitelist  (MsgDewhitelist ) returns (MsgDewhitelistResponse );
 }
@@ -58,14 +57,6 @@ message MsgUpdateParams {
 }
 
 message MsgUpdateParamsResponse {}
-
-message MsgUpdatePools {
-  string authority            = 1;
-  repeated string pools       = 2;
-  repeated string closed_pools = 3;
-}
-
-message MsgUpdatePoolsResponse {}
 
 message MsgWhitelist {
   string authority          = 1;
