@@ -26,6 +26,11 @@ service Query {
     option (google.api.http).get = "/elys-network/elys/incentive/community_pool";
   
   }
+
+  // Calculate APR
+  rpc Apr (QueryAprRequest) returns (QueryAprResponse) {
+    option (google.api.http).get = "/elys-network/elys/incentive/apr/{withdraw_type}/{denom}";
+  }
 }
 // QueryParamsRequest is request type for the Query/Params RPC method.
 message QueryParamsRequest {}
