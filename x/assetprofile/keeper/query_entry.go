@@ -51,3 +51,17 @@ func (k Keeper) Entry(goCtx context.Context, req *types.QueryGetEntryRequest) (*
 
 	return &types.QueryGetEntryResponse{Entry: val}, nil
 }
+
+func (k Keeper) EntryByDenom(goCtx context.Context, req *types.QueryGetEntryByDenomRequest) (*types.QueryGetEntryByDenomResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
+	}
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	val, found := k.GetEntryByDenom(ctx, req.Denom)
+	if !found {
+		return nil, status.Error(codes.NotFound, "not found")
+	}
+
+	return &types.QueryGetEntryByDenomResponse{Entry: val}, nil
+}

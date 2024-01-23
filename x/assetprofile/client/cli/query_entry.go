@@ -71,3 +71,33 @@ func CmdShowEntry() *cobra.Command {
 
 	return cmd
 }
+
+func CmdShowEntryByDenom() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "show-entry-by-denom [denom]",
+		Short: "shows a entry by denom",
+		Args:  cobra.ExactArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) (err error) {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+
+			queryClient := types.NewQueryClient(clientCtx)
+
+			argDenom := args[0]
+
+			params := &types.QueryGetEntryByDenomRequest{
+				Denom: argDenom,
+			}
+
+			res, err := queryClient.EntryByDenom(context.Background(), params)
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+
+	return cmd
+}
