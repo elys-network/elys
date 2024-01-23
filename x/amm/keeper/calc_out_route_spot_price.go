@@ -83,6 +83,9 @@ func (k Keeper) CalcOutRouteSpotPrice(ctx sdk.Context, tokenOut sdk.Coin, routes
 	// Calculate the token in amount
 	tokenInAmt := sdk.NewDecFromInt(tokenOut.Amount).Mul(spotPrice)
 
+	// invert the spot price
+	spotPrice = sdk.OneDec().Quo(spotPrice)
+
 	// Construct the token out coin
 	tokenIn := sdk.NewCoin(tokenInDenom, tokenInAmt.TruncateInt())
 
