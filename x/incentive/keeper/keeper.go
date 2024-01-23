@@ -131,23 +131,23 @@ func (k Keeper) UpdateStakersRewardsUnclaimed(ctx sdk.Context, stakeIncentive ty
 	// Calculate eden amount per epoch
 	params := k.GetParams(ctx)
 
-	// Ensure stakeIncentive.TotalBlocksPerYear or stakeIncentive.AllocationEpochInBlocks are not zero to avoid division by zero
-	if stakeIncentive.TotalBlocksPerYear.IsZero() || stakeIncentive.AllocationEpochInBlocks.IsZero() {
+	// Ensure stakeIncentive.TotalBlocksPerYear or stakeIncentive.EpochNumBlocks are not zero to avoid division by zero
+	if stakeIncentive.TotalBlocksPerYear.IsZero() || stakeIncentive.EpochNumBlocks.IsZero() {
 		return errorsmod.Wrap(types.ErrNoInflationaryParams, "invalid inflationary params")
 	}
 
 	// Calculate
-	edenAmountPerEpochStakersPerDay := stakeIncentive.EdenAmountPerYear.Mul(stakeIncentive.AllocationEpochInBlocks).Quo(stakeIncentive.TotalBlocksPerYear)
+	epochStakersEdenAmount := stakeIncentive.EdenAmountPerYear.Mul(stakeIncentive.EpochNumBlocks).Quo(stakeIncentive.TotalBlocksPerYear)
 
 	// Maximum eden based per distribution epoch on maximum APR - 30% by default
 	// Allocated for staking per day = (0.3/365)* ( total elys staked + total Eden committed + total Eden boost committed)
-	maxEdenAmountPerStakersPerDay := params.MaxEdenRewardAprStakers.MulInt(k.tci.TotalElysBonded.Add(k.tci.TotalEdenEdenBoostCommitted)).MulInt(stakeIncentive.AllocationEpochInBlocks).QuoInt(stakeIncentive.TotalBlocksPerYear)
+	epochStakersMaxEdenAmount := params.MaxEdenRewardAprStakers.MulInt(k.tci.TotalElysBonded.Add(k.tci.TotalEdenEdenBoostCommitted)).MulInt(stakeIncentive.EpochNumBlocks).QuoInt(stakeIncentive.TotalBlocksPerYear)
 
 	// Use min amount (eden allocation from tokenomics and max apr based eden amount)
-	edenAmountPerEpochStakersPerDay = sdk.MinInt(edenAmountPerEpochStakersPerDay, maxEdenAmountPerStakersPerDay.TruncateInt())
+	epochStakersEdenAmount = sdk.MinInt(epochStakersEdenAmount, epochStakersMaxEdenAmount.TruncateInt())
 
 	// Calculate eden amount per distribution epoch
-	edenAmountPerEpochStakersPerDistribution := edenAmountPerEpochStakersPerDay.Mul(stakeIncentive.DistributionEpochInBlocks).Quo(stakeIncentive.AllocationEpochInBlocks)
+	edenAmountPerEpochStakersPerDistribution := epochStakersEdenAmount.Mul(stakeIncentive.DistributionEpochInBlocks).Quo(stakeIncentive.EpochNumBlocks)
 
 	// Track the DEX rewards distribution for stakers
 	// Add dexRevenue amount that was tracked by Lp tracker
@@ -352,26 +352,26 @@ func (k Keeper) UpdateLPRewardsUnclaimed(ctx sdk.Context, lpIncentive types.Ince
 	// Proxy TVL = 20*0.3+30*0.5+40*1.0
 	totalProxyTVL := k.CalculateProxyTVL(ctx, baseCurrency)
 
-	// Ensure lpIncentive.TotalBlocksPerYear or lpIncentive.AllocationEpochInBlocks are not zero to avoid division by zero
-	if lpIncentive.TotalBlocksPerYear.IsZero() || lpIncentive.AllocationEpochInBlocks.IsZero() {
+	// Ensure lpIncentive.TotalBlocksPerYear or lpIncentive.EpochNumBlocks are not zero to avoid division by zero
+	if lpIncentive.TotalBlocksPerYear.IsZero() || lpIncentive.EpochNumBlocks.IsZero() {
 		return errorsmod.Wrap(types.ErrNoInflationaryParams, "invalid inflationary params")
 	}
 
 	// Calculate eden amount per epoch
-	edenAmountPerEpochLPsPerDay := lpIncentive.EdenAmountPerYear.Mul(lpIncentive.AllocationEpochInBlocks).Quo(lpIncentive.TotalBlocksPerYear)
+	epochLpsEdenAmount := lpIncentive.EdenAmountPerYear.Mul(lpIncentive.EpochNumBlocks).Quo(lpIncentive.TotalBlocksPerYear)
 
 	// Track the DEX rewards distribution for stakers
 	params := k.GetParams(ctx)
 
 	// Maximum eden based per distribution epoch on maximum APR - 30% by default
 	// Allocated for staking per day = (0.3/365)* (total weighted proxy TVL)
-	maxEdenAmountPerLpsPerDay := params.MaxEdenRewardAprLps.Mul(totalProxyTVL).MulInt(lpIncentive.AllocationEpochInBlocks).QuoInt(lpIncentive.TotalBlocksPerYear)
+	epochLpsMaxEdenAmount := params.MaxEdenRewardAprLps.Mul(totalProxyTVL).MulInt(lpIncentive.EpochNumBlocks).QuoInt(lpIncentive.TotalBlocksPerYear)
 
 	// Use min amount (eden allocation from tokenomics and max apr based eden amount)
-	edenAmountPerEpochLPsPerDay = sdk.MinInt(edenAmountPerEpochLPsPerDay, maxEdenAmountPerLpsPerDay.TruncateInt())
+	epochLpsEdenAmount = sdk.MinInt(epochLpsEdenAmount, epochLpsMaxEdenAmount.TruncateInt())
 
 	// Calculate Eden amount per distribution epoch
-	edenAmountPerEpochLPsPerDistribution := edenAmountPerEpochLPsPerDay.Mul(lpIncentive.DistributionEpochInBlocks).Quo(lpIncentive.AllocationEpochInBlocks)
+	edenAmountPerEpochLPsPerDistribution := epochLpsEdenAmount.Mul(lpIncentive.DistributionEpochInBlocks).Quo(lpIncentive.EpochNumBlocks)
 
 	// Add dexRevenue amount that was tracked by Lp tracker
 	dexRevenueLPsAmtPerDistribution = dexRevenueLPsAmtPerDistribution.Add(params.DexRewardsLps.AmountCollectedByOtherTracker)
@@ -597,12 +597,20 @@ func (k Keeper) UpdateAmmPoolAPR(ctx sdk.Context, lpIncentive types.IncentiveInf
 		}
 
 		// Dex reward Apr per pool =  total accumulated usdc rewards for 7 day * 52/ tvl of pool
-		totalLMDexRewardsAllocatedPerWeek := poolInfo.DexRewardAmountGiven.MulInt(lpIncentive.AllocationEpochInBlocks).MulInt(sdk.NewInt(ptypes.DaysPerWeek)).QuoInt(poolInfo.NumBlocks)
-		poolInfo.DexApr = totalLMDexRewardsAllocatedPerWeek.MulInt(sdk.NewInt(ptypes.WeeksPerYear)).Quo(tvl)
+		weeklyDexRewardsTotal := poolInfo.DexRewardAmountGiven.
+			MulInt(lpIncentive.EpochNumBlocks).
+			MulInt(sdk.NewInt(ptypes.DaysPerWeek)).
+			QuoInt(poolInfo.NumBlocks)
+		poolInfo.DexApr = weeklyDexRewardsTotal.
+			MulInt(sdk.NewInt(ptypes.WeeksPerYear)).
+			Quo(tvl)
 
 		// Eden reward Apr per pool = (total LM Eden reward allocated per day*((tvl of pool * multiplier)/total proxy TVL) ) * 365 / TVL of pool
-		totalLMEdenRewardsAllocatedPerDay := poolInfo.EdenRewardAmountGiven.Mul(lpIncentive.AllocationEpochInBlocks).Quo(poolInfo.NumBlocks)
-		poolInfo.EdenApr = sdk.NewDecFromInt(totalLMEdenRewardsAllocatedPerDay).Mul(poolShare).MulInt(sdk.NewInt(ptypes.DaysPerYear)).Quo(tvl)
+		dailyEdenRewardsTotal := poolInfo.EdenRewardAmountGiven.Mul(lpIncentive.EpochNumBlocks).Quo(poolInfo.NumBlocks)
+		poolInfo.EdenApr = sdk.NewDecFromInt(dailyEdenRewardsTotal).
+			Mul(poolShare).
+			MulInt(sdk.NewInt(ptypes.DaysPerYear)).
+			Quo(tvl)
 
 		// Update Pool Info
 		k.SetPoolInfo(ctx, poolId, poolInfo)

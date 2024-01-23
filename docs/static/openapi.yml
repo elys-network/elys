@@ -39454,6 +39454,53 @@ paths:
           type: boolean
       tags:
         - Query
+  /elys-network/elys/incentive/apr/{withdraw_type}/{denom}:
+    get:
+      summary: Calculate APR
+      operationId: ElysIncentiveApr
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              apr:
+                type: string
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: withdraw_type
+          in: path
+          required: true
+          type: string
+          enum:
+            - ALL_PROGRAM
+            - USDC_PROGRAM
+            - ELYS_PROGRAM
+            - EDEN_PROGRAM
+            - EDENB_PROGRAM
+        - name: denom
+          in: path
+          required: true
+          type: string
+      tags:
+        - Query
   /elys-network/elys/incentive/community_pool:
     get:
       summary: Queries a list of CommunityPool items.
@@ -39531,9 +39578,9 @@ paths:
                         total_blocks_per_year:
                           type: string
                           title: distribution duration - block number per year
-                        allocation_epoch_in_blocks:
+                        epoch_num_blocks:
                           type: string
-                          title: we set block numbers in 24 hrs
+                          title: we set block count in 24 hrs
                         max_eden_per_allocation:
                           type: string
                           title: >-
@@ -39563,9 +39610,9 @@ paths:
                         total_blocks_per_year:
                           type: string
                           title: distribution duration - block number per year
-                        allocation_epoch_in_blocks:
+                        epoch_num_blocks:
                           type: string
-                          title: we set block numbers in 24 hrs
+                          title: we set block count in 24 hrs
                         max_eden_per_allocation:
                           type: string
                           title: >-
@@ -83937,9 +83984,9 @@ definitions:
       total_blocks_per_year:
         type: string
         title: distribution duration - block number per year
-      allocation_epoch_in_blocks:
+      epoch_num_blocks:
         type: string
-        title: we set block numbers in 24 hrs
+        title: we set block count in 24 hrs
       max_eden_per_allocation:
         type: string
         title: maximum eden allocation per day that won't exceed 30% apr
@@ -83984,9 +84031,9 @@ definitions:
             total_blocks_per_year:
               type: string
               title: distribution duration - block number per year
-            allocation_epoch_in_blocks:
+            epoch_num_blocks:
               type: string
-              title: we set block numbers in 24 hrs
+              title: we set block count in 24 hrs
             max_eden_per_allocation:
               type: string
               title: maximum eden allocation per day that won't exceed 30% apr
@@ -84014,9 +84061,9 @@ definitions:
             total_blocks_per_year:
               type: string
               title: distribution duration - block number per year
-            allocation_epoch_in_blocks:
+            epoch_num_blocks:
               type: string
-              title: we set block numbers in 24 hrs
+              title: we set block count in 24 hrs
             max_eden_per_allocation:
               type: string
               title: maximum eden allocation per day that won't exceed 30% apr
@@ -84153,6 +84200,11 @@ definitions:
         format: uint64
       multiplier:
         type: string
+  elys.incentive.QueryAprResponse:
+    type: object
+    properties:
+      apr:
+        type: string
   elys.incentive.QueryCommunityPoolResponse:
     type: object
     properties:
@@ -84192,9 +84244,9 @@ definitions:
                 total_blocks_per_year:
                   type: string
                   title: distribution duration - block number per year
-                allocation_epoch_in_blocks:
+                epoch_num_blocks:
                   type: string
-                  title: we set block numbers in 24 hrs
+                  title: we set block count in 24 hrs
                 max_eden_per_allocation:
                   type: string
                   title: maximum eden allocation per day that won't exceed 30% apr
@@ -84222,9 +84274,9 @@ definitions:
                 total_blocks_per_year:
                   type: string
                   title: distribution duration - block number per year
-                allocation_epoch_in_blocks:
+                epoch_num_blocks:
                   type: string
-                  title: we set block numbers in 24 hrs
+                  title: we set block count in 24 hrs
                 max_eden_per_allocation:
                   type: string
                   title: maximum eden allocation per day that won't exceed 30% apr

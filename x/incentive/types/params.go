@@ -279,7 +279,7 @@ func validateLPIncentives(i interface{}) error {
 			return fmt.Errorf("invalid total blocks per year: %v", vv)
 		}
 
-		if vv.AllocationEpochInBlocks.LT(sdk.NewInt(0)) {
+		if vv.EpochNumBlocks.LT(sdk.NewInt(0)) {
 			return fmt.Errorf("invalid allocation epoch in blocks: %v", vv)
 		}
 
@@ -321,7 +321,7 @@ func validateStakeIncentives(i interface{}) error {
 			return fmt.Errorf("invalid total blocks per year: %v", vv)
 		}
 
-		if vv.AllocationEpochInBlocks.LT(sdk.NewInt(0)) {
+		if vv.EpochNumBlocks.LT(sdk.NewInt(0)) {
 			return fmt.Errorf("invalid allocation epoch in blocks: %v", vv)
 		}
 
