@@ -105,14 +105,14 @@ func (k Keeper) ProcessUpdateIncentiveParams(ctx sdk.Context) bool {
 
 		// ------------- LP Incentive parameter -------------
 		// ptypes.DaysPerYear is guaranteed to be positive as it is defined as a constant
-		EpochNumBlocks := totalBlocksPerYear.Quo(sdk.NewInt(ptypes.DaysPerYear))
+		allocationEpochInblocks := totalBlocksPerYear.Quo(sdk.NewInt(ptypes.DaysPerYear))
 		totalDistributionEpochPerYear := totalBlocksPerYear.Quo(sdk.NewInt(params.DistributionEpochForLpsInBlocks))
 		// If totalDistributionEpochPerYear is zero, we skip this inflation to avoid division by zero
 		if totalBlocksPerYear == sdk.ZeroInt() {
 			continue
 		}
 		currentEpochInBlocks := sdk.NewInt(ctx.BlockHeight() - int64(inflation.StartBlockHeight)).Mul(totalDistributionEpochPerYear).Quo(totalBlocksPerYear)
-		maxEdenPerAllocation := sdk.NewInt(int64(inflation.Inflation.LmRewards)).Mul(EpochNumBlocks).Quo(totalBlocksPerYear)
+		maxEdenPerAllocation := sdk.NewInt(int64(inflation.Inflation.LmRewards)).Mul(allocationEpochInblocks).Quo(totalBlocksPerYear)
 		incentiveInfo := types.IncentiveInfo{
 			// reward amount in eden for 1 year
 			EdenAmountPerYear: sdk.NewInt(int64(inflation.Inflation.LmRewards)),
@@ -121,7 +121,7 @@ func (k Keeper) ProcessUpdateIncentiveParams(ctx sdk.Context) bool {
 			// distribution duration - block number per year
 			TotalBlocksPerYear: totalBlocksPerYear,
 			// we set block numbers in 24 hrs
-			EpochNumBlocks: EpochNumBlocks,
+			AllocationEpochInBlocks: allocationEpochInblocks,
 			// maximum eden allocation per day that won't exceed 30% apr
 			MaxEdenPerAllocation: maxEdenPerAllocation,
 			// number of block intervals that distribute rewards.
@@ -144,7 +144,7 @@ func (k Keeper) ProcessUpdateIncentiveParams(ctx sdk.Context) bool {
 			params.LpIncentives[0].EdenAmountPerYear = incentiveInfo.EdenAmountPerYear
 			params.LpIncentives[0].DistributionStartBlock = incentiveInfo.DistributionStartBlock
 			params.LpIncentives[0].TotalBlocksPerYear = incentiveInfo.TotalBlocksPerYear
-			params.LpIncentives[0].EpochNumBlocks = incentiveInfo.EpochNumBlocks
+			params.LpIncentives[0].AllocationEpochInBlocks = incentiveInfo.AllocationEpochInBlocks
 			params.LpIncentives[0].DistributionEpochInBlocks = incentiveInfo.DistributionEpochInBlocks
 			params.LpIncentives[0].EdenBoostApr = incentiveInfo.EdenBoostApr
 		}
@@ -152,7 +152,7 @@ func (k Keeper) ProcessUpdateIncentiveParams(ctx sdk.Context) bool {
 		// ------------- Stakers parameter -------------
 		totalDistributionEpochPerYear = totalBlocksPerYear.Quo(sdk.NewInt(params.DistributionEpochForStakersInBlocks))
 		currentEpochInBlocks = sdk.NewInt(ctx.BlockHeight() - int64(inflation.StartBlockHeight)).Mul(totalDistributionEpochPerYear).Quo(totalBlocksPerYear)
-		maxEdenPerAllocation = sdk.NewInt(int64(inflation.Inflation.IcsStakingRewards)).Mul(EpochNumBlocks).Quo(totalBlocksPerYear)
+		maxEdenPerAllocation = sdk.NewInt(int64(inflation.Inflation.IcsStakingRewards)).Mul(allocationEpochInblocks).Quo(totalBlocksPerYear)
 		incentiveInfo = types.IncentiveInfo{
 			// reward amount in eden for 1 year
 			EdenAmountPerYear: sdk.NewInt(int64(inflation.Inflation.IcsStakingRewards)),
@@ -161,7 +161,7 @@ func (k Keeper) ProcessUpdateIncentiveParams(ctx sdk.Context) bool {
 			// distribution duration - block number per year
 			TotalBlocksPerYear: totalBlocksPerYear,
 			// we set block numbers in 24 hrs
-			EpochNumBlocks: EpochNumBlocks,
+			AllocationEpochInBlocks: allocationEpochInblocks,
 			// maximum eden allocation per day that won't exceed 30% apr
 			MaxEdenPerAllocation: maxEdenPerAllocation,
 			// number of block intervals that distribute rewards.
@@ -184,7 +184,7 @@ func (k Keeper) ProcessUpdateIncentiveParams(ctx sdk.Context) bool {
 			params.StakeIncentives[0].EdenAmountPerYear = incentiveInfo.EdenAmountPerYear
 			params.StakeIncentives[0].DistributionStartBlock = incentiveInfo.DistributionStartBlock
 			params.StakeIncentives[0].TotalBlocksPerYear = incentiveInfo.TotalBlocksPerYear
-			params.StakeIncentives[0].EpochNumBlocks = incentiveInfo.EpochNumBlocks
+			params.StakeIncentives[0].AllocationEpochInBlocks = incentiveInfo.AllocationEpochInBlocks
 			params.StakeIncentives[0].DistributionEpochInBlocks = incentiveInfo.DistributionEpochInBlocks
 			params.StakeIncentives[0].EdenBoostApr = incentiveInfo.EdenBoostApr
 		}

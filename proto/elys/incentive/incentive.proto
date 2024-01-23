@@ -16,8 +16,8 @@ message IncentiveInfo {
     // distribution duration - block number per year
 	string total_blocks_per_year = 3
         [ (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false];
-    // we set block count in 24 hrs
-    string epoch_num_blocks = 4
+    // we set block numbers in 24 hrs
+    string allocation_epoch_in_blocks = 4
         [ (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false];
     // maximum eden allocation per day that won't exceed 30% apr
     string max_eden_per_allocation = 5 

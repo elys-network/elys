@@ -41,6 +41,9 @@ const (
 	// 31540000s per year
 	SecondsPerYear = 31540000
 
+	// One day seconds
+	SecondsPerDay = 86400
+
 	// Days per year
 	DaysPerYear = 365
 

@@ -79,7 +79,7 @@ func TestAPRCalculationPerPool(t *testing.T) {
 		// distribution duration - block number per year
 		TotalBlocksPerYear: sdk.NewInt(10000),
 		// we set block numbers in 24 hrs
-		EpochNumBlocks: sdk.NewInt(100),
+		AllocationEpochInBlocks: sdk.NewInt(100),
 		// maximum eden allocation per day that won't exceed 30% apr
 		MaxEdenPerAllocation: sdk.NewInt(100),
 		// number of block intervals that distribute rewards.
@@ -109,7 +109,7 @@ func TestAPRCalculationPerPool(t *testing.T) {
 	require.NoError(t, err)
 
 	// 1 week later.
-	ctx = ctx.WithBlockHeight(lpIncentive.EpochNumBlocks.Mul(sdk.NewInt(ptypes.DaysPerWeek)).Int64())
+	ctx = ctx.WithBlockHeight(lpIncentive.AllocationEpochInBlocks.Mul(sdk.NewInt(ptypes.DaysPerWeek)).Int64())
 	poolInfo.NumBlocks = sdk.NewInt(ctx.BlockHeight())
 	ik.SetPoolInfo(ctx, poolId, poolInfo)
 
