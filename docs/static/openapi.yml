@@ -38686,6 +38686,84 @@ paths:
           type: string
       tags:
         - Query
+  /elys-network/elys/assetprofile/entry/{denom}:
+    get:
+      operationId: ElysAssetprofileEntryByDenom
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              entry:
+                type: object
+                properties:
+                  base_denom:
+                    type: string
+                  decimals:
+                    type: string
+                    format: uint64
+                  denom:
+                    type: string
+                  path:
+                    type: string
+                  ibc_channel_id:
+                    type: string
+                  ibc_counterparty_channel_id:
+                    type: string
+                  display_name:
+                    type: string
+                  display_symbol:
+                    type: string
+                  network:
+                    type: string
+                  address:
+                    type: string
+                  external_symbol:
+                    type: string
+                  transfer_limit:
+                    type: string
+                  permissions:
+                    type: array
+                    items:
+                      type: string
+                  unit_denom:
+                    type: string
+                  ibc_counterparty_denom:
+                    type: string
+                  ibc_counterparty_chain_id:
+                    type: string
+                  authority:
+                    type: string
+                  commit_enabled:
+                    type: boolean
+                  withdraw_enabled:
+                    type: boolean
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: denom
+          in: path
+          required: true
+          type: string
+      tags:
+        - Query
   /elys-network/elys/assetprofile/params:
     get:
       summary: Parameters queries the parameters of the module.
@@ -39452,6 +39530,53 @@ paths:
           in: query
           required: false
           type: boolean
+      tags:
+        - Query
+  /elys-network/elys/incentive/apr/{withdraw_type}/{denom}:
+    get:
+      summary: Calculate APR
+      operationId: ElysIncentiveApr
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              apr:
+                type: string
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: withdraw_type
+          in: path
+          required: true
+          type: string
+          enum:
+            - ALL_PROGRAM
+            - USDC_PROGRAM
+            - ELYS_PROGRAM
+            - EDEN_PROGRAM
+            - EDENB_PROGRAM
+        - name: denom
+          in: path
+          required: true
+          type: string
       tags:
         - Query
   /elys-network/elys/incentive/community_pool:
@@ -83171,6 +83296,53 @@ definitions:
                    repeated Bar results = 1;
                    PageResponse page = 2;
            }
+  elys.assetprofile.QueryGetEntryByDenomResponse:
+    type: object
+    properties:
+      entry:
+        type: object
+        properties:
+          base_denom:
+            type: string
+          decimals:
+            type: string
+            format: uint64
+          denom:
+            type: string
+          path:
+            type: string
+          ibc_channel_id:
+            type: string
+          ibc_counterparty_channel_id:
+            type: string
+          display_name:
+            type: string
+          display_symbol:
+            type: string
+          network:
+            type: string
+          address:
+            type: string
+          external_symbol:
+            type: string
+          transfer_limit:
+            type: string
+          permissions:
+            type: array
+            items:
+              type: string
+          unit_denom:
+            type: string
+          ibc_counterparty_denom:
+            type: string
+          ibc_counterparty_chain_id:
+            type: string
+          authority:
+            type: string
+          commit_enabled:
+            type: boolean
+          withdraw_enabled:
+            type: boolean
   elys.assetprofile.QueryGetEntryResponse:
     type: object
     properties:
@@ -84152,6 +84324,11 @@ definitions:
         type: string
         format: uint64
       multiplier:
+        type: string
+  elys.incentive.QueryAprResponse:
+    type: object
+    properties:
+      apr:
         type: string
   elys.incentive.QueryCommunityPoolResponse:
     type: object
