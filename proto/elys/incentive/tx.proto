@@ -47,30 +47,24 @@ message MsgWithdrawValidatorCommissionResponse {}
 
 message MsgUpdateIncentiveParams {
   string authority                   = 1;
-  string communityTax                = 2 [
+  string rewardPortionForLps         = 2 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
-  bool withdrawAddrEnabled           = 3;
-  string rewardPortionForLps         = 4 [
+  string rewardPortionForStakers     = 3 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
-  string rewardPortionForStakers     = 5 [
+  int64 elysStakeSnapInterval       = 4;
+  string maxEdenRewardAprStakers    = 5 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
-  int64 elysStakeTrackingRate       = 6;
-  string maxEdenRewardAprStakers    = 7 [
+  string maxEdenRewardAprLps         = 6 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
-  string maxEdenRewardAprLps         = 8 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
-    (gogoproto.nullable) = false
-  ];
-  int64 distributionEpochForStakers = 9;
-  int64 distributionEpochForLps     = 10;
+  int64 distributionInterval = 7;
 }
 
 message MsgUpdateIncentiveParamsResponse {}

@@ -7,7 +7,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
 
 	errorsmod "cosmossdk.io/errors"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
@@ -23,7 +22,6 @@ type (
 		cdc                codec.BinaryCodec
 		storeKey           storetypes.StoreKey
 		memKey             storetypes.StoreKey
-		paramstore         paramtypes.Subspace
 		cmk                types.CommitmentKeeper
 		stk                types.StakingKeeper
 		tci                *types.TotalCommitmentInfo
@@ -46,7 +44,6 @@ func NewKeeper(
 	cdc codec.BinaryCodec,
 	storeKey,
 	memKey storetypes.StoreKey,
-	ps paramtypes.Subspace,
 	ck types.CommitmentKeeper,
 	sk types.StakingKeeper,
 	ak types.AccountKeeper,
@@ -61,16 +58,10 @@ func NewKeeper(
 	dexRevCollectorName string,
 	authority string,
 ) *Keeper {
-	// set KeyTable if it has not already been set
-	if !ps.HasKeyTable() {
-		ps = ps.WithKeyTable(types.ParamKeyTable())
-	}
-
 	return &Keeper{
 		cdc:                 cdc,
 		storeKey:            storeKey,
 		memKey:              memKey,
-		paramstore:          ps,
 		cmk:                 ck,
 		stk:                 sk,
 		tci:                 &types.TotalCommitmentInfo{},
@@ -119,12 +110,9 @@ func (k Keeper) UpdateStakersRewardsUnclaimed(ctx sdk.Context, stakeIncentive ty
 	// But won't sum dex revenue for LPs and gas fees for LPs as the LP revenue will be rewared by pool.
 	dexRevenueForStakersPerDistribution = dexRevenueForStakersPerDistribution.Add(gasFeesForStakers...)
 
-	// Fund community pool based on the communtiy tax
-	dexRevenueRemainedForStakersPerDistribution := k.UpdateCommunityPool(ctx, dexRevenueForStakersPerDistribution)
-
 	// USDC amount in sdk.Dec type
 	dexRevenueLPsAmtPerDistribution := dexRevenueForLpsPerDistribution.AmountOf(baseCurrency)
-	dexRevenueStakersAmtPerDistribution := dexRevenueRemainedForStakersPerDistribution.AmountOf(baseCurrency)
+	dexRevenueStakersAmtPerDistribution := dexRevenueForStakersPerDistribution.AmountOf(baseCurrency)
 	gasFeesLPsAmtPerDistribution := gasFeesForLps.AmountOf(baseCurrency)
 	edenBoostAPR := stakeIncentive.EdenBoostApr
 
@@ -149,6 +137,7 @@ func (k Keeper) UpdateStakersRewardsUnclaimed(ctx sdk.Context, stakeIncentive ty
 	// Calculate eden amount per distribution epoch
 	edenAmountPerEpochStakersPerDistribution := epochStakersEdenAmount.Mul(stakeIncentive.DistributionEpochInBlocks).Quo(stakeIncentive.EpochNumBlocks)
 
+	// TODO: check this code block
 	// Track the DEX rewards distribution for stakers
 	// Add dexRevenue amount that was tracked by Lp tracker
 	dexRevenueStakersAmtPerDistribution = dexRevenueStakersAmtPerDistribution.Add(params.DexRewardsStakers.AmountCollectedByOtherTracker)
@@ -337,12 +326,9 @@ func (k Keeper) UpdateLPRewardsUnclaimed(ctx sdk.Context, lpIncentive types.Ince
 	// But won't sum dex revenue for LPs and gas fees for LPs as the LP revenue will be rewared by pool.
 	dexRevenueForStakersPerDistribution = dexRevenueForStakersPerDistribution.Add(gasFeesForStakersPerDistribution...)
 
-	// Fund community pool based on the communtiy tax
-	dexRevenueRemainedForStakersPerDistribution := k.UpdateCommunityPool(ctx, dexRevenueForStakersPerDistribution)
-
 	// USDC amount in sdk.Dec type
 	dexRevenueLPsAmtPerDistribution := dexRevenueForLpsPerDistribution.AmountOf(baseCurrency)
-	dexRevenueStakersAmtPerDistribution := dexRevenueRemainedForStakersPerDistribution.AmountOf(baseCurrency)
+	dexRevenueStakersAmtPerDistribution := dexRevenueForStakersPerDistribution.AmountOf(baseCurrency)
 	gasFeesLPsAmtPerDistribution := gasFeesForLpsPerDistribution.AmountOf(baseCurrency)
 
 	// Proxy TVL

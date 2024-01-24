@@ -17,19 +17,16 @@ import (
 
 func CmdUpdateIncentiveParams() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "update-incentive-params [community-tax] [withdraw-addr-enabled] [reward-portion-for-lps] [reward-portion-for-stakers] [elys-stake-tracking-rate] [max-eden-reward-apr-stakers] [max-eden-reward-apr-lps] [distribution-epoch-for-stakers] [distribution-epoch-for-lps]",
-		Short: "Broadcast message update-incentive-params update-incentive-params [community-tax] [withdraw-addr-enabled] [reward-portion-for-lps] [reward-portion-for-stakers] [elys-stake-tracking-rate] [max-eden-reward-apr-stakers] [max-eden-reward-apr-lps] [distribution-epoch-for-stakers] [distribution-epoch-for-lps]",
-		Args:  cobra.ExactArgs(9),
+		Use:   "update-incentive-params [reward-portion-for-lps] [reward-portion-for-stakers] [elys-stake-tracking-rate] [max-eden-reward-apr-stakers] [max-eden-reward-apr-lps] [distribution-interval]",
+		Short: "Broadcast message update-incentive-params update-incentive-params [reward-portion-for-lps] [reward-portion-for-stakers] [elys-stake-tracking-rate] [max-eden-reward-apr-stakers] [max-eden-reward-apr-lps] [distribution-interval]",
+		Args:  cobra.ExactArgs(6),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
-			argCommunityTax := args[0]
-			argWithdrawAddrEnabled := args[1]
-			argRewardPortionForLps := args[2]
-			argRewardPortionForStakers := args[3]
-			argElysStakeTrackingRate := args[4]
-			argMaxEdenRewardAprStakers := args[5]
-			argMaxEdenRewardAprLps := args[6]
-			argDistributionEpochForStakers := args[7]
-			argDistributionEpochForLps := args[8]
+			argRewardPortionForLps := args[0]
+			argRewardPortionForStakers := args[1]
+			argElysStakeSnapInterval := args[2]
+			argMaxEdenRewardAprStakers := args[3]
+			argMaxEdenRewardAprLps := args[4]
+			argDistributionInterval := args[5]
 
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
@@ -56,24 +53,15 @@ func CmdUpdateIncentiveParams() *cobra.Command {
 				return errors.New("signer address is missing")
 			}
 
-			communityTax := sdk.MustNewDecFromStr(argCommunityTax)
-			withdarwAddrEnabled, err := strconv.ParseBool(argWithdrawAddrEnabled)
-			if err != nil {
-				return err
-			}
 			rewardPortionForLps := sdk.MustNewDecFromStr(argRewardPortionForLps)
 			rewardPortionForStakers := sdk.MustNewDecFromStr(argRewardPortionForStakers)
-			elysStakeTrackingRate, err := strconv.ParseInt(argElysStakeTrackingRate, 10, 64)
+			elysStakeSnapInterval, err := strconv.ParseInt(argElysStakeSnapInterval, 10, 64)
 			if err != nil {
 				return err
 			}
 			maxEdenRewardAprStakers := sdk.MustNewDecFromStr(argMaxEdenRewardAprStakers)
 			maxEdenRewardLps := sdk.MustNewDecFromStr(argMaxEdenRewardAprLps)
-			distributionEpochForStaker, err := strconv.ParseInt(argDistributionEpochForStakers, 10, 64)
-			if err != nil {
-				return err
-			}
-			distributionEpochForLps, err := strconv.ParseInt(argDistributionEpochForLps, 10, 64)
+			distributionInterval, err := strconv.ParseInt(argDistributionInterval, 10, 64)
 			if err != nil {
 				return err
 			}
@@ -81,15 +69,12 @@ func CmdUpdateIncentiveParams() *cobra.Command {
 			govAddress := sdk.AccAddress(address.Module("gov"))
 			msg := types.NewMsgUpdateIncentiveParams(
 				govAddress.String(),
-				communityTax,
-				withdarwAddrEnabled,
 				rewardPortionForLps,
 				rewardPortionForStakers,
-				elysStakeTrackingRate,
+				elysStakeSnapInterval,
 				maxEdenRewardAprStakers,
 				maxEdenRewardLps,
-				distributionEpochForStaker,
-				distributionEpochForLps,
+				distributionInterval,
 			)
 			if err := msg.ValidateBasic(); err != nil {
 				return err

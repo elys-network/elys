@@ -18,13 +18,11 @@ service Query {
   // Parameters queries the parameters of the module.
   rpc Params (QueryParamsRequest) returns (QueryParamsResponse) {
     option (google.api.http).get = "/elys-network/elys/incentive/params";
-  
   }
   
   // Queries a list of CommunityPool items.
   rpc CommunityPool (QueryCommunityPoolRequest) returns (QueryCommunityPoolResponse) {
     option (google.api.http).get = "/elys-network/elys/incentive/community_pool";
-  
   }
 
   // Calculate APR
@@ -37,7 +35,6 @@ message QueryParamsRequest {}
 
 // QueryParamsResponse is response type for the Query/Params RPC method.
 message QueryParamsResponse {
-  
   // params holds all the parameters of this module.
   Params params = 1 [(gogoproto.nullable) = false];
 }
@@ -45,7 +42,6 @@ message QueryParamsResponse {
 message QueryCommunityPoolRequest {}
 
 message QueryCommunityPoolResponse {
-  
   // pool defines community pool's coins.
   repeated cosmos.base.v1beta1.DecCoin pool = 1 [(gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.DecCoins", (gogoproto.nullable) = false];
 }

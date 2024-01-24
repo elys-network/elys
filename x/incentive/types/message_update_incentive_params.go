@@ -12,18 +12,15 @@ const TypeMsgUpdateIncentiveParams = "update_incentive_params"
 
 var _ sdk.Msg = &MsgUpdateIncentiveParams{}
 
-func NewMsgUpdateIncentiveParams(creator string, communityTax sdk.Dec, withdrawAddrEnabled bool, rewardPortionForLps sdk.Dec, rewardPortionForStakers sdk.Dec, elysStakeTrackingRate int64, maxEdenRewardAprStakers sdk.Dec, maxEdenRewardParLps sdk.Dec, distributionEpochForStakers int64, distributionEpochForLps int64) *MsgUpdateIncentiveParams {
+func NewMsgUpdateIncentiveParams(creator string, rewardPortionForLps sdk.Dec, rewardPortionForStakers sdk.Dec, elysStakeSnapInterval int64, maxEdenRewardAprStakers sdk.Dec, maxEdenRewardParLps sdk.Dec, distributionInterval int64) *MsgUpdateIncentiveParams {
 	return &MsgUpdateIncentiveParams{
-		Authority:                   creator,
-		CommunityTax:                communityTax,
-		WithdrawAddrEnabled:         withdrawAddrEnabled,
-		RewardPortionForLps:         rewardPortionForLps,
-		RewardPortionForStakers:     rewardPortionForStakers,
-		ElysStakeTrackingRate:       elysStakeTrackingRate,
-		MaxEdenRewardAprStakers:     maxEdenRewardAprStakers,
-		MaxEdenRewardAprLps:         maxEdenRewardParLps,
-		DistributionEpochForStakers: distributionEpochForStakers,
-		DistributionEpochForLps:     distributionEpochForLps,
+		Authority:               creator,
+		RewardPortionForLps:     rewardPortionForLps,
+		RewardPortionForStakers: rewardPortionForStakers,
+		ElysStakeSnapInterval:   elysStakeSnapInterval,
+		MaxEdenRewardAprStakers: maxEdenRewardAprStakers,
+		MaxEdenRewardAprLps:     maxEdenRewardParLps,
+		DistributionInterval:    distributionInterval,
 	}
 }
 
@@ -68,13 +65,10 @@ func (msg *MsgUpdateIncentiveParams) ValidateBasic() error {
 	if msg.MaxEdenRewardAprLps.LT(sdk.ZeroDec()) {
 		return errorsmod.Wrapf(sdkerrors.ErrNotSupported, "invalid max eden rewards apr for stakers (%s)", errors.New("Invalid Rewards APR"))
 	}
-	if msg.DistributionEpochForStakers < 1 {
+	if msg.DistributionInterval < 1 {
 		return errorsmod.Wrapf(sdkerrors.ErrNotSupported, "invalid distribution epoch (%s)", errors.New("Invalid epoch"))
 	}
-	if msg.DistributionEpochForLps < 1 {
-		return errorsmod.Wrapf(sdkerrors.ErrNotSupported, "invalid distribution epoch (%s)", errors.New("Invalid epoch"))
-	}
-	if msg.ElysStakeTrackingRate < 1 {
+	if msg.ElysStakeSnapInterval < 1 {
 		return errorsmod.Wrapf(sdkerrors.ErrNotSupported, "invalid elys staked tracking epoch (%s)", errors.New("Invalid elys staked tracking epoch"))
 	}
 	return nil

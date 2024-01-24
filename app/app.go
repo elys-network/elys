@@ -775,7 +775,6 @@ func NewElysApp(
 		appCodec,
 		keys[incentivemoduletypes.StoreKey],
 		keys[incentivemoduletypes.MemStoreKey],
-		app.GetSubspace(incentivemoduletypes.ModuleName),
 		commitmentKeeper,
 		app.StakingKeeper,
 		app.AccountKeeper,
@@ -1493,7 +1492,6 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(oracletypes.ModuleName)
 	paramsKeeper.Subspace(commitmentmoduletypes.ModuleName)
 	paramsKeeper.Subspace(tokenomicsmoduletypes.ModuleName)
-	paramsKeeper.Subspace(incentivemoduletypes.ModuleName)
 	paramsKeeper.Subspace(burnermoduletypes.ModuleName)
 	paramsKeeper.Subspace(ammmoduletypes.ModuleName)
 	paramsKeeper.Subspace(marginmoduletypes.ModuleName)

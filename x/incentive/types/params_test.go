@@ -19,9 +19,6 @@ func Test_validateParams(t *testing.T) {
 	params.RewardPortionForLps = sdk.NewDecWithPrec(12, 1)
 	require.Error(t, params.Validate())
 
-	params.CommunityTax = sdk.NewDecWithPrec(1, 0)
-	require.Error(t, params.Validate())
-
 	lpIncentive := types.IncentiveInfo{
 		// reward amount in eden for 1 year
 		EdenAmountPerYear: sdk.NewInt(10000000000000),
@@ -41,6 +38,6 @@ func Test_validateParams(t *testing.T) {
 		EdenBoostApr: sdk.NewDec(1),
 	}
 
-	params.LpIncentives = append(params.LpIncentives, lpIncentive)
+	params.LpIncentives = &lpIncentive
 	require.Error(t, params.Validate())
 }

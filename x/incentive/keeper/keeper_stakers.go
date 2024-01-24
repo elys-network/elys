@@ -16,14 +16,6 @@ func (k Keeper) CalculateRewardsForStakersByElysStaked(ctx sdk.Context, delegate
 	// Calculate newly creating eden amount by its share
 	newEdenAllocated := stakeShare.MulInt(edenAmountPerDistribution)
 
-	// -----------------Fund community Eden token----------------------
-	// ----------------------------------------------------------------
-	edenCoin := sdk.NewDecCoinFromDec(ptypes.Eden, newEdenAllocated)
-	newEdenCoinRemained := k.UpdateCommunityPool(ctx, sdk.DecCoins{edenCoin})
-
-	// Get remained Eden amount
-	newEdenAllocated = newEdenCoinRemained.AmountOf(ptypes.Eden)
-
 	// --------------------DEX rewards calculation --------------------
 	// ----------------------------------------------------------------
 	// Calculate dex rewards
@@ -44,14 +36,6 @@ func (k Keeper) CalculateRewardsForStakersByCommitted(ctx sdk.Context, amt sdk.I
 
 	// Calculate newly creating eden amount by its share
 	newEdenAllocated := stakeShare.MulInt(edenAmountPerEpoch)
-
-	// -----------------Fund community Eden token----------------------
-	// ----------------------------------------------------------------
-	edenCoin := sdk.NewDecCoinFromDec(ptypes.Eden, newEdenAllocated)
-	newEdenCoinRemained := k.UpdateCommunityPool(ctx, sdk.DecCoins{edenCoin})
-
-	// Get remained Eden amount
-	newEdenAllocated = newEdenCoinRemained.AmountOf(ptypes.Eden)
 
 	// --------------------DEX rewards calculation --------------------
 	// ----------------------------------------------------------------

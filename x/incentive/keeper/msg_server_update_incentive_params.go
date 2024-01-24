@@ -17,14 +17,11 @@ func (k msgServer) UpdateIncentiveParams(goCtx context.Context, msg *types.MsgUp
 	}
 
 	params := k.GetParams(ctx)
-	params.CommunityTax = msg.CommunityTax
-	params.WithdrawAddrEnabled = msg.WithdrawAddrEnabled
 	params.RewardPortionForLps = msg.RewardPortionForLps
-	params.ElysStakeTrackingRate = msg.ElysStakeTrackingRate
+	params.ElysStakeSnapInterval = msg.ElysStakeSnapInterval
 	params.MaxEdenRewardAprLps = msg.MaxEdenRewardAprLps
 	params.MaxEdenRewardAprStakers = msg.MaxEdenRewardAprStakers
-	params.DistributionEpochForLpsInBlocks = msg.DistributionEpochForLps
-	params.DistributionEpochForStakersInBlocks = msg.DistributionEpochForStakers
+	params.DistributionInterval = msg.DistributionInterval
 
 	k.SetParams(ctx, params)
 

@@ -39565,85 +39565,91 @@ paths:
                 type: object
                 properties:
                   lp_incentives:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        eden_amount_per_year:
-                          type: string
-                          title: reward amount in eden for 1 year
-                        distribution_start_block:
-                          type: string
-                          title: starting block height of the distribution
-                        total_blocks_per_year:
-                          type: string
-                          title: distribution duration - block number per year
-                        epoch_num_blocks:
-                          type: string
-                          title: we set block count in 24 hrs
-                        max_eden_per_allocation:
-                          type: string
-                          title: >-
-                            maximum eden allocation per day that won't exceed
-                            30% apr
-                        distribution_epoch_in_blocks:
-                          type: string
-                          description: number of block intervals that distribute rewards.
-                        current_epoch_in_blocks:
-                          type: string
-                          title: current epoch in block number
-                        eden_boost_apr:
-                          type: string
-                          title: eden boost apr (0-1) range
-                      title: Incentive Info
+                    type: object
+                    properties:
+                      eden_amount_per_year:
+                        type: string
+                        title: reward amount in eden for 1 year
+                      distribution_start_block:
+                        type: string
+                        title: starting block height of the distribution
+                      total_blocks_per_year:
+                        type: string
+                        title: distribution duration - block number per year
+                      epoch_num_blocks:
+                        type: string
+                        title: we set block count in 24 hrs
+                      max_eden_per_allocation:
+                        type: string
+                        title: >-
+                          maximum eden allocation per day that won't exceed 30%
+                          apr
+                      distribution_epoch_in_blocks:
+                        type: string
+                        title: >-
+                          number of block intervals that distribute rewards -
+                          this value is coming
+
+                          from Params.distribution_epoch_for_stakers_in_blocks
+                          or
+
+                          Params.distribution_epoch_for_lps_in_blocks
+                      current_epoch_in_blocks:
+                        type: string
+                        title: current epoch in block number
+                      eden_boost_apr:
+                        type: string
+                        title: eden boost apr (0-1) range
+                    title: Incentive Info
                   stake_incentives:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        eden_amount_per_year:
-                          type: string
-                          title: reward amount in eden for 1 year
-                        distribution_start_block:
-                          type: string
-                          title: starting block height of the distribution
-                        total_blocks_per_year:
-                          type: string
-                          title: distribution duration - block number per year
-                        epoch_num_blocks:
-                          type: string
-                          title: we set block count in 24 hrs
-                        max_eden_per_allocation:
-                          type: string
-                          title: >-
-                            maximum eden allocation per day that won't exceed
-                            30% apr
-                        distribution_epoch_in_blocks:
-                          type: string
-                          description: number of block intervals that distribute rewards.
-                        current_epoch_in_blocks:
-                          type: string
-                          title: current epoch in block number
-                        eden_boost_apr:
-                          type: string
-                          title: eden boost apr (0-1) range
-                      title: Incentive Info
-                  community_tax:
-                    type: string
-                  withdraw_addr_enabled:
-                    type: boolean
+                    type: object
+                    properties:
+                      eden_amount_per_year:
+                        type: string
+                        title: reward amount in eden for 1 year
+                      distribution_start_block:
+                        type: string
+                        title: starting block height of the distribution
+                      total_blocks_per_year:
+                        type: string
+                        title: distribution duration - block number per year
+                      epoch_num_blocks:
+                        type: string
+                        title: we set block count in 24 hrs
+                      max_eden_per_allocation:
+                        type: string
+                        title: >-
+                          maximum eden allocation per day that won't exceed 30%
+                          apr
+                      distribution_epoch_in_blocks:
+                        type: string
+                        title: >-
+                          number of block intervals that distribute rewards -
+                          this value is coming
+
+                          from Params.distribution_epoch_for_stakers_in_blocks
+                          or
+
+                          Params.distribution_epoch_for_lps_in_blocks
+                      current_epoch_in_blocks:
+                        type: string
+                        title: current epoch in block number
+                      eden_boost_apr:
+                        type: string
+                        title: eden boost apr (0-1) range
+                    title: Incentive Info
                   reward_portion_for_lps:
                     type: string
                     description: >-
-                      Dex revenue percent for lps, 100 - reward_portion_for_lps
+                      Dex revenue percent for lps, `100 - reward_portion_for_lps
                       - reward_portion_for_stakers = revenue percent for
-                      protocol.
+                      protocol`.
                   reward_portion_for_stakers:
                     type: string
                     description: >-
-                      Dex revenue percent for lps, 100 - reward_portion_for_lps
+                      Dex revenue percent for lps, `100 - reward_portion_for_lps
                       - reward_portion_for_stakers = revenue percent for
-                      protocol.
+                      protocol`.
                   pool_infos:
                     type: array
                     items:
@@ -39661,7 +39667,7 @@ paths:
                           title: multiplier for lp rewards
                         num_blocks:
                           type: string
-                          title: Block number since creation
+                          title: Block number since creation of PoolInfo
                         dex_reward_amount_given:
                           type: string
                           title: Total dex rewards given
@@ -39670,51 +39676,80 @@ paths:
                           title: Total eden rewards given
                         eden_apr:
                           type: string
-                          title: Eden APR
+                          title: >-
+                            Eden APR - Updated at every distribution (TODO:
+                            might need to split stakers & 
+
+                            lps - note from Kenta: this might be APR for stakers
+                            - need to check)
                         dex_apr:
                           type: string
-                          title: Dex APR
+                          title: >-
+                            Dex APR - Updated at every distribution (TODO: might
+                            need to split stakers & 
+
+                            lps - note from Kenta: this might be APR for stakers
+                            - need to check)
                       title: Pool Info
                     title: |-
                       Pool information
-                      poolId, reward wallet, mulitplier, dex rewards given
-                  elys_stake_tracking_rate:
+                      poolId, reward wallet, **multiplier**, dex rewards given
+                  elys_stake_snap_interval:
                     type: string
                     format: int64
+                    title: >-
+                      Number of blocks to update elys staked amount for
+                      delegators
                   dex_rewards_stakers:
                     title: Tracking dex rewards given to stakers
                     type: object
                     properties:
                       num_blocks:
                         type: string
+                        title: >-
+                          Number of blocks since start of epoch (distribution
+                          epoch)
                       amount:
                         type: string
+                        title: >-
+                          Accumulated amount at distribution epoch -
+                          recalculated at every distribution epoch
                       amount_collected_by_other_tracker:
                         type: string
+                        title: >-
+                          Accumulated rewards tracked by other (when it's for
+                          staking, from lp, if it's for lp, from staking)
                   dex_rewards_lps:
                     title: Tracking dex rewards given to LPs
                     type: object
                     properties:
                       num_blocks:
                         type: string
+                        title: >-
+                          Number of blocks since start of epoch (distribution
+                          epoch)
                       amount:
                         type: string
+                        title: >-
+                          Accumulated amount at distribution epoch -
+                          recalculated at every distribution epoch
                       amount_collected_by_other_tracker:
                         type: string
+                        title: >-
+                          Accumulated rewards tracked by other (when it's for
+                          staking, from lp, if it's for lp, from staking)
                   max_eden_reward_apr_stakers:
                     type: string
-                    title: Maximum eden reward apr for stakers
+                    title: Maximum eden reward apr for stakers - [0 - 0.3]
                   max_eden_reward_apr_lps:
                     type: string
-                    title: Maximum eden reward apr for lps
-                  distribution_epoch_for_stakers_in_blocks:
+                    title: Maximum eden reward apr for lps - [0 - 0.3]
+                  distribution_interval:
                     type: string
                     format: int64
-                    title: Distribution epochs for stakers in blocks
-                  distribution_epoch_for_lps_in_blocks:
-                    type: string
-                    format: int64
-                    title: Distribution epochs for LPs in blocks
+                    title: >-
+                      Distribution interval in blocks - number of blocks on
+                      distribution epoch
             description: >-
               QueryParamsResponse is response type for the Query/Params RPC
               method.
@@ -83967,11 +84002,20 @@ definitions:
     properties:
       num_blocks:
         type: string
+        title: Number of blocks since start of epoch (distribution epoch)
       amount:
         type: string
+        title: >-
+          Accumulated amount at distribution epoch - recalculated at every
+          distribution epoch
       amount_collected_by_other_tracker:
         type: string
-    title: DexRewardsTracker
+        title: >-
+          Accumulated rewards tracked by other (when it's for staking, from lp,
+          if it's for lp, from staking)
+    title: >-
+      DexRewardsTracker is used for tracking rewards for stakers & lps - all
+      amount here is in USDC
   elys.incentive.IncentiveInfo:
     type: object
     properties:
@@ -83992,7 +84036,13 @@ definitions:
         title: maximum eden allocation per day that won't exceed 30% apr
       distribution_epoch_in_blocks:
         type: string
-        description: number of block intervals that distribute rewards.
+        title: >-
+          number of block intervals that distribute rewards - this value is
+          coming
+
+          from Params.distribution_epoch_for_stakers_in_blocks or
+
+          Params.distribution_epoch_for_lps_in_blocks
       current_epoch_in_blocks:
         type: string
         title: current epoch in block number
@@ -84018,79 +84068,83 @@ definitions:
     type: object
     properties:
       lp_incentives:
-        type: array
-        items:
-          type: object
-          properties:
-            eden_amount_per_year:
-              type: string
-              title: reward amount in eden for 1 year
-            distribution_start_block:
-              type: string
-              title: starting block height of the distribution
-            total_blocks_per_year:
-              type: string
-              title: distribution duration - block number per year
-            epoch_num_blocks:
-              type: string
-              title: we set block count in 24 hrs
-            max_eden_per_allocation:
-              type: string
-              title: maximum eden allocation per day that won't exceed 30% apr
-            distribution_epoch_in_blocks:
-              type: string
-              description: number of block intervals that distribute rewards.
-            current_epoch_in_blocks:
-              type: string
-              title: current epoch in block number
-            eden_boost_apr:
-              type: string
-              title: eden boost apr (0-1) range
-          title: Incentive Info
+        type: object
+        properties:
+          eden_amount_per_year:
+            type: string
+            title: reward amount in eden for 1 year
+          distribution_start_block:
+            type: string
+            title: starting block height of the distribution
+          total_blocks_per_year:
+            type: string
+            title: distribution duration - block number per year
+          epoch_num_blocks:
+            type: string
+            title: we set block count in 24 hrs
+          max_eden_per_allocation:
+            type: string
+            title: maximum eden allocation per day that won't exceed 30% apr
+          distribution_epoch_in_blocks:
+            type: string
+            title: >-
+              number of block intervals that distribute rewards - this value is
+              coming
+
+              from Params.distribution_epoch_for_stakers_in_blocks or
+
+              Params.distribution_epoch_for_lps_in_blocks
+          current_epoch_in_blocks:
+            type: string
+            title: current epoch in block number
+          eden_boost_apr:
+            type: string
+            title: eden boost apr (0-1) range
+        title: Incentive Info
       stake_incentives:
-        type: array
-        items:
-          type: object
-          properties:
-            eden_amount_per_year:
-              type: string
-              title: reward amount in eden for 1 year
-            distribution_start_block:
-              type: string
-              title: starting block height of the distribution
-            total_blocks_per_year:
-              type: string
-              title: distribution duration - block number per year
-            epoch_num_blocks:
-              type: string
-              title: we set block count in 24 hrs
-            max_eden_per_allocation:
-              type: string
-              title: maximum eden allocation per day that won't exceed 30% apr
-            distribution_epoch_in_blocks:
-              type: string
-              description: number of block intervals that distribute rewards.
-            current_epoch_in_blocks:
-              type: string
-              title: current epoch in block number
-            eden_boost_apr:
-              type: string
-              title: eden boost apr (0-1) range
-          title: Incentive Info
-      community_tax:
-        type: string
-      withdraw_addr_enabled:
-        type: boolean
+        type: object
+        properties:
+          eden_amount_per_year:
+            type: string
+            title: reward amount in eden for 1 year
+          distribution_start_block:
+            type: string
+            title: starting block height of the distribution
+          total_blocks_per_year:
+            type: string
+            title: distribution duration - block number per year
+          epoch_num_blocks:
+            type: string
+            title: we set block count in 24 hrs
+          max_eden_per_allocation:
+            type: string
+            title: maximum eden allocation per day that won't exceed 30% apr
+          distribution_epoch_in_blocks:
+            type: string
+            title: >-
+              number of block intervals that distribute rewards - this value is
+              coming
+
+              from Params.distribution_epoch_for_stakers_in_blocks or
+
+              Params.distribution_epoch_for_lps_in_blocks
+          current_epoch_in_blocks:
+            type: string
+            title: current epoch in block number
+          eden_boost_apr:
+            type: string
+            title: eden boost apr (0-1) range
+        title: Incentive Info
       reward_portion_for_lps:
         type: string
         description: >-
-          Dex revenue percent for lps, 100 - reward_portion_for_lps -
-          reward_portion_for_stakers = revenue percent for protocol.
+          Dex revenue percent for lps, `100 - reward_portion_for_lps -
+          reward_portion_for_stakers = revenue percent for protocol`.
       reward_portion_for_stakers:
         type: string
         description: >-
-          Dex revenue percent for lps, 100 - reward_portion_for_lps -
-          reward_portion_for_stakers = revenue percent for protocol.
+          Dex revenue percent for lps, `100 - reward_portion_for_lps -
+          reward_portion_for_stakers = revenue percent for protocol`.
       pool_infos:
         type: array
         items:
@@ -84108,7 +84162,7 @@ definitions:
               title: multiplier for lp rewards
             num_blocks:
               type: string
-              title: Block number since creation
+              title: Block number since creation of PoolInfo
             dex_reward_amount_given:
               type: string
               title: Total dex rewards given
@@ -84117,51 +84171,74 @@ definitions:
               title: Total eden rewards given
             eden_apr:
               type: string
-              title: Eden APR
+              title: >-
+                Eden APR - Updated at every distribution (TODO: might need to
+                split stakers & 
+
+                lps - note from Kenta: this might be APR for stakers - need to
+                check)
             dex_apr:
               type: string
-              title: Dex APR
+              title: >-
+                Dex APR - Updated at every distribution (TODO: might need to
+                split stakers & 
+
+                lps - note from Kenta: this might be APR for stakers - need to
+                check)
           title: Pool Info
         title: |-
           Pool information
-          poolId, reward wallet, mulitplier, dex rewards given
-      elys_stake_tracking_rate:
+          poolId, reward wallet, **multiplier**, dex rewards given
+      elys_stake_snap_interval:
         type: string
         format: int64
+        title: Number of blocks to update elys staked amount for delegators
       dex_rewards_stakers:
         title: Tracking dex rewards given to stakers
         type: object
         properties:
           num_blocks:
             type: string
+            title: Number of blocks since start of epoch (distribution epoch)
           amount:
             type: string
+            title: >-
+              Accumulated amount at distribution epoch - recalculated at every
+              distribution epoch
           amount_collected_by_other_tracker:
             type: string
+            title: >-
+              Accumulated rewards tracked by other (when it's for staking, from
+              lp, if it's for lp, from staking)
       dex_rewards_lps:
         title: Tracking dex rewards given to LPs
         type: object
         properties:
           num_blocks:
             type: string
+            title: Number of blocks since start of epoch (distribution epoch)
           amount:
             type: string
+            title: >-
+              Accumulated amount at distribution epoch - recalculated at every
+              distribution epoch
           amount_collected_by_other_tracker:
             type: string
+            title: >-
+              Accumulated rewards tracked by other (when it's for staking, from
+              lp, if it's for lp, from staking)
       max_eden_reward_apr_stakers:
         type: string
-        title: Maximum eden reward apr for stakers
+        title: Maximum eden reward apr for stakers - [0 - 0.3]
       max_eden_reward_apr_lps:
         type: string
-        title: Maximum eden reward apr for lps
-      distribution_epoch_for_stakers_in_blocks:
+        title: Maximum eden reward apr for lps - [0 - 0.3]
+      distribution_interval:
         type: string
         format: int64
-        title: Distribution epochs for stakers in blocks
-      distribution_epoch_for_lps_in_blocks:
-        type: string
-        format: int64
-        title: Distribution epochs for LPs in blocks
+        title: >-
+          Distribution interval in blocks - number of blocks on distribution
+          epoch
     description: Params defines the parameters for the module.
   elys.incentive.PoolInfo:
     type: object
@@ -84178,7 +84255,7 @@ definitions:
         title: multiplier for lp rewards
       num_blocks:
         type: string
-        title: Block number since creation
+        title: Block number since creation of PoolInfo
       dex_reward_amount_given:
         type: string
         title: Total dex rewards given
@@ -84187,10 +84264,18 @@ definitions:
         title: Total eden rewards given
       eden_apr:
         type: string
-        title: Eden APR
+        title: >-
+          Eden APR - Updated at every distribution (TODO: might need to split
+          stakers & 
+
+          lps - note from Kenta: this might be APR for stakers - need to check)
       dex_apr:
         type: string
-        title: Dex APR
+        title: >-
+          Dex APR - Updated at every distribution (TODO: might need to split
+          stakers & 
+
+          lps - note from Kenta: this might be APR for stakers - need to check)
     title: Pool Info
   elys.incentive.PoolMultiplier:
     type: object
@@ -84231,79 +84316,83 @@ definitions:
         type: object
         properties:
           lp_incentives:
-            type: array
-            items:
-              type: object
-              properties:
-                eden_amount_per_year:
-                  type: string
-                  title: reward amount in eden for 1 year
-                distribution_start_block:
-                  type: string
-                  title: starting block height of the distribution
-                total_blocks_per_year:
-                  type: string
-                  title: distribution duration - block number per year
-                epoch_num_blocks:
-                  type: string
-                  title: we set block count in 24 hrs
-                max_eden_per_allocation:
-                  type: string
-                  title: maximum eden allocation per day that won't exceed 30% apr
-                distribution_epoch_in_blocks:
-                  type: string
-                  description: number of block intervals that distribute rewards.
-                current_epoch_in_blocks:
-                  type: string
-                  title: current epoch in block number
-                eden_boost_apr:
-                  type: string
-                  title: eden boost apr (0-1) range
-              title: Incentive Info
+            type: object
+            properties:
+              eden_amount_per_year:
+                type: string
+                title: reward amount in eden for 1 year
+              distribution_start_block:
+                type: string
+                title: starting block height of the distribution
+              total_blocks_per_year:
+                type: string
+                title: distribution duration - block number per year
+              epoch_num_blocks:
+                type: string
+                title: we set block count in 24 hrs
+              max_eden_per_allocation:
+                type: string
+                title: maximum eden allocation per day that won't exceed 30% apr
+              distribution_epoch_in_blocks:
+                type: string
+                title: >-
+                  number of block intervals that distribute rewards - this value
+                  is coming
+
+                  from Params.distribution_epoch_for_stakers_in_blocks or
+
+                  Params.distribution_epoch_for_lps_in_blocks
+              current_epoch_in_blocks:
+                type: string
+                title: current epoch in block number
+              eden_boost_apr:
+                type: string
+                title: eden boost apr (0-1) range
+            title: Incentive Info
           stake_incentives:
-            type: array
-            items:
-              type: object
-              properties:
-                eden_amount_per_year:
-                  type: string
-                  title: reward amount in eden for 1 year
-                distribution_start_block:
-                  type: string
-                  title: starting block height of the distribution
-                total_blocks_per_year:
-                  type: string
-                  title: distribution duration - block number per year
-                epoch_num_blocks:
-                  type: string
-                  title: we set block count in 24 hrs
-                max_eden_per_allocation:
-                  type: string
-                  title: maximum eden allocation per day that won't exceed 30% apr
-                distribution_epoch_in_blocks:
-                  type: string
-                  description: number of block intervals that distribute rewards.
-                current_epoch_in_blocks:
-                  type: string
-                  title: current epoch in block number
-                eden_boost_apr:
-                  type: string
-                  title: eden boost apr (0-1) range
-              title: Incentive Info
-          community_tax:
-            type: string
-          withdraw_addr_enabled:
-            type: boolean
+            type: object
+            properties:
+              eden_amount_per_year:
+                type: string
+                title: reward amount in eden for 1 year
+              distribution_start_block:
+                type: string
+                title: starting block height of the distribution
+              total_blocks_per_year:
+                type: string
+                title: distribution duration - block number per year
+              epoch_num_blocks:
+                type: string
+                title: we set block count in 24 hrs
+              max_eden_per_allocation:
+                type: string
+                title: maximum eden allocation per day that won't exceed 30% apr
+              distribution_epoch_in_blocks:
+                type: string
+                title: >-
+                  number of block intervals that distribute rewards - this value
+                  is coming
+
+                  from Params.distribution_epoch_for_stakers_in_blocks or
+
+                  Params.distribution_epoch_for_lps_in_blocks
+              current_epoch_in_blocks:
+                type: string
+                title: current epoch in block number
+              eden_boost_apr:
+                type: string
+                title: eden boost apr (0-1) range
+            title: Incentive Info
           reward_portion_for_lps:
             type: string
             description: >-
-              Dex revenue percent for lps, 100 - reward_portion_for_lps -
-              reward_portion_for_stakers = revenue percent for protocol.
+              Dex revenue percent for lps, `100 - reward_portion_for_lps -
+              reward_portion_for_stakers = revenue percent for protocol`.
           reward_portion_for_stakers:
             type: string
             description: >-
-              Dex revenue percent for lps, 100 - reward_portion_for_lps -
-              reward_portion_for_stakers = revenue percent for protocol.
+              Dex revenue percent for lps, `100 - reward_portion_for_lps -
+              reward_portion_for_stakers = revenue percent for protocol`.
           pool_infos:
             type: array
             items:
@@ -84321,7 +84410,7 @@ definitions:
                   title: multiplier for lp rewards
                 num_blocks:
                   type: string
-                  title: Block number since creation
+                  title: Block number since creation of PoolInfo
                 dex_reward_amount_given:
                   type: string
                   title: Total dex rewards given
@@ -84330,51 +84419,74 @@ definitions:
                   title: Total eden rewards given
                 eden_apr:
                   type: string
-                  title: Eden APR
+                  title: >-
+                    Eden APR - Updated at every distribution (TODO: might need
+                    to split stakers & 
+
+                    lps - note from Kenta: this might be APR for stakers - need
+                    to check)
                 dex_apr:
                   type: string
-                  title: Dex APR
+                  title: >-
+                    Dex APR - Updated at every distribution (TODO: might need to
+                    split stakers & 
+
+                    lps - note from Kenta: this might be APR for stakers - need
+                    to check)
               title: Pool Info
             title: |-
               Pool information
-              poolId, reward wallet, mulitplier, dex rewards given
-          elys_stake_tracking_rate:
+              poolId, reward wallet, **multiplier**, dex rewards given
+          elys_stake_snap_interval:
             type: string
             format: int64
+            title: Number of blocks to update elys staked amount for delegators
           dex_rewards_stakers:
             title: Tracking dex rewards given to stakers
             type: object
             properties:
               num_blocks:
                 type: string
+                title: Number of blocks since start of epoch (distribution epoch)
               amount:
                 type: string
+                title: >-
+                  Accumulated amount at distribution epoch - recalculated at
+                  every distribution epoch
               amount_collected_by_other_tracker:
                 type: string
+                title: >-
+                  Accumulated rewards tracked by other (when it's for staking,
+                  from lp, if it's for lp, from staking)
           dex_rewards_lps:
             title: Tracking dex rewards given to LPs
             type: object
             properties:
               num_blocks:
                 type: string
+                title: Number of blocks since start of epoch (distribution epoch)
               amount:
                 type: string
+                title: >-
+                  Accumulated amount at distribution epoch - recalculated at
+                  every distribution epoch
               amount_collected_by_other_tracker:
                 type: string
+                title: >-
+                  Accumulated rewards tracked by other (when it's for staking,
+                  from lp, if it's for lp, from staking)
           max_eden_reward_apr_stakers:
             type: string
-            title: Maximum eden reward apr for stakers
+            title: Maximum eden reward apr for stakers - [0 - 0.3]
           max_eden_reward_apr_lps:
             type: string
-            title: Maximum eden reward apr for lps
-          distribution_epoch_for_stakers_in_blocks:
+            title: Maximum eden reward apr for lps - [0 - 0.3]
+          distribution_interval:
             type: string
             format: int64
-            title: Distribution epochs for stakers in blocks
-          distribution_epoch_for_lps_in_blocks:
-            type: string
-            format: int64
-            title: Distribution epochs for LPs in blocks
+            title: >-
+              Distribution interval in blocks - number of blocks on distribution
+              epoch
     description: QueryParamsResponse is response type for the Query/Params RPC method.
   elys.leveragelp.IsWhitelistedResponse:
     type: object

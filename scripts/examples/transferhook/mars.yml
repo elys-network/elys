@@ -237,21 +237,19 @@ genesis:
     incentive:
       params:
         lp_incentives:
-          - amount: "10000000"
-            epoch_identifier: week
-            start_time: "2023-04-20T12:34:56.789Z"
-            num_epochs: "50"
-            current_epoch: "0"
-            eden_boost_apr: "100"
+          amount: "10000000"
+          epoch_identifier: week
+          start_time: "2023-04-20T12:34:56.789Z"
+          num_epochs: "50"
+          current_epoch: "0"
+          eden_boost_apr: "100"
         stake_incentives:
-          - amount: "10000000"
-            epoch_identifier: week
-            start_time: "2023-04-20T12:34:56.789Z"
-            num_epochs: "50"
-            current_epoch: "0"
-            eden_boost_apr: "100"
-        community_tax: "0.02"
-        withdraw_addr_enabled: true
+          amount: "10000000"
+          epoch_identifier: week
+          start_time: "2023-04-20T12:34:56.789Z"
+          num_epochs: "50"
+          current_epoch: "0"
+          eden_boost_apr: "100"
         reward_portion_for_lps: "0.65"
         pool_infos: []
       fee_pool:
@@ -389,14 +387,12 @@ genesis:
         borrow_interest_rate_decrease: "0.000000000333333333"
         health_gain_factor: "0.000000022"
         epoch_length: 1
-        removal_queue_threshold: "0.35"
         max_open_positions: 9999
         pool_open_threshold: "1.0"
         force_close_fund_percentage: "1.0"
         force_close_fund_address: "elys1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqnrec2l"
         incremental_borrow_interest_payment_fund_percentage: "0.35"
         incremental_borrow_interest_payment_fund_address: "elys1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqnrec2l"
-        sq_modifier: "10000000000000000000000000"
         safety_factor: "1.05"
         incremental_borrow_interest_payment_enabled: true
         whitelisting_enabled: false

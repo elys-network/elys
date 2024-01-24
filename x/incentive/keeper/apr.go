@@ -18,7 +18,7 @@ func (k Keeper) CalculateApr(ctx sdk.Context, query *types.QueryAprRequest) (sdk
 	defer k.SetParams(ctx, params)
 
 	// If we don't have enough params
-	if len(params.StakeIncentives) < 1 || len(params.LpIncentives) < 1 {
+	if params.StakeIncentives == nil || params.LpIncentives == nil {
 		return sdk.ZeroInt(), errorsmod.Wrap(types.ErrNoInflationaryParams, "no inflationary params available")
 	}
 
@@ -28,8 +28,8 @@ func (k Keeper) CalculateApr(ctx sdk.Context, query *types.QueryAprRequest) (sdk
 	}
 
 	baseCurrency := entry.Denom
-	lpIncentive := params.LpIncentives[0]
-	stkIncentive := params.StakeIncentives[0]
+	lpIncentive := params.LpIncentives
+	stkIncentive := params.StakeIncentives
 
 	if lpIncentive.TotalBlocksPerYear.IsZero() || stkIncentive.TotalBlocksPerYear.IsZero() {
 		return sdk.ZeroInt(), errorsmod.Wrap(types.ErrNoInflationaryParams, "invalid inflationary params")
