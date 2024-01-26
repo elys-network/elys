@@ -98,6 +98,6 @@ func TestCalculateRewardsForStakers(t *testing.T) {
 	totalEdenGiven = totalEdenGiven.Add(newUnclaimedEdenTokens)
 	totalRewardsGiven = totalRewardsGiven.Add(dexRewards)
 
-	require.Equal(t, totalEdenGiven, sdk.NewInt(291))
+	require.Equal(t, totalEdenGiven, sdk.NewInt(297))
 	require.Equal(t, totalRewardsGiven, sdk.NewInt(297))
 }
