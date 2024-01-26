@@ -24,6 +24,10 @@ service Query {
     option (google.api.http).get = "/elys-network/elys/assetprofile/entry/{base_denom}";
   
   }
+  rpc EntryByDenom    (QueryGetEntryByDenomRequest) returns (QueryGetEntryByDenomResponse) {
+    option (google.api.http).get = "/elys-network/elys/assetprofile/entry/{denom}";
+  
+  }
   rpc EntryAll (QueryAllEntryRequest) returns (QueryAllEntryResponse) {
     option (google.api.http).get = "/elys-network/elys/assetprofile/entry";
   
@@ -43,7 +47,15 @@ message QueryGetEntryRequest {
   string base_denom = 1;
 }
 
+message QueryGetEntryByDenomRequest {
+  string denom = 1;
+}
+
 message QueryGetEntryResponse {
+  Entry entry = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryGetEntryByDenomResponse {
   Entry entry = 1 [(gogoproto.nullable) = false];
 }
 
