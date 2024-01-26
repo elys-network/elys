@@ -4,6 +4,11 @@
 
 The Incentive module is designed to reward the ecosystem participants including liquidity providers (LPs), Elys stakers, and Eden committers.
 
+Reward is distributed per epoch, `distribution` epoch, which is counted in number of blocks (`distribution_interval`).
+
+There's Eden allocation epoch per day, based on tokenomics.
+The source of rewards are from `Eden + Dex revenue (USDC) + Gas fees (XX,YY -> USDC)`
+
 ## Contents
 
 1. **[Concepts](01_concepts.md)**

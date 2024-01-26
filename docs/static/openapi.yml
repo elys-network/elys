@@ -39587,13 +39587,8 @@ paths:
                       distribution_epoch_in_blocks:
                         type: string
                         title: >-
-                          number of block intervals that distribute rewards -
-                          this value is coming
-
-                          from Params.distribution_epoch_for_stakers_in_blocks
-                          or
-
-                          Params.distribution_epoch_for_lps_in_blocks
+                          number of block intervals that distribute rewards,
+                          this is set from params.distribution_interval
                       current_epoch_in_blocks:
                         type: string
                         title: current epoch in block number
@@ -39624,13 +39619,8 @@ paths:
                       distribution_epoch_in_blocks:
                         type: string
                         title: >-
-                          number of block intervals that distribute rewards -
-                          this value is coming
-
-                          from Params.distribution_epoch_for_stakers_in_blocks
-                          or
-
-                          Params.distribution_epoch_for_lps_in_blocks
+                          number of block intervals that distribute rewards,
+                          this is set from params.distribution_interval
                       current_epoch_in_blocks:
                         type: string
                         title: current epoch in block number
@@ -39667,7 +39657,7 @@ paths:
                           title: multiplier for lp rewards
                         num_blocks:
                           type: string
-                          title: Block number since creation of PoolInfo
+                          title: Block number since the creation of PoolInfo
                         dex_reward_amount_given:
                           type: string
                           title: Total dex rewards given
@@ -39676,20 +39666,10 @@ paths:
                           title: Total eden rewards given
                         eden_apr:
                           type: string
-                          title: >-
-                            Eden APR - Updated at every distribution (TODO:
-                            might need to split stakers & 
-
-                            lps - note from Kenta: this might be APR for stakers
-                            - need to check)
+                          title: Eden APR, updated at every distribution
                         dex_apr:
                           type: string
-                          title: >-
-                            Dex APR - Updated at every distribution (TODO: might
-                            need to split stakers & 
-
-                            lps - note from Kenta: this might be APR for stakers
-                            - need to check)
+                          title: Dex APR, updated at every distribution
                       title: Pool Info
                     title: |-
                       Pool information
@@ -84037,12 +84017,8 @@ definitions:
       distribution_epoch_in_blocks:
         type: string
         title: >-
-          number of block intervals that distribute rewards - this value is
-          coming
-
-          from Params.distribution_epoch_for_stakers_in_blocks or
-
-          Params.distribution_epoch_for_lps_in_blocks
+          number of block intervals that distribute rewards, this is set from
+          params.distribution_interval
       current_epoch_in_blocks:
         type: string
         title: current epoch in block number
@@ -84088,12 +84064,8 @@ definitions:
           distribution_epoch_in_blocks:
             type: string
             title: >-
-              number of block intervals that distribute rewards - this value is
-              coming
-
-              from Params.distribution_epoch_for_stakers_in_blocks or
-
-              Params.distribution_epoch_for_lps_in_blocks
+              number of block intervals that distribute rewards, this is set
+              from params.distribution_interval
           current_epoch_in_blocks:
             type: string
             title: current epoch in block number
@@ -84122,12 +84094,8 @@ definitions:
           distribution_epoch_in_blocks:
             type: string
             title: >-
-              number of block intervals that distribute rewards - this value is
-              coming
-
-              from Params.distribution_epoch_for_stakers_in_blocks or
-
-              Params.distribution_epoch_for_lps_in_blocks
+              number of block intervals that distribute rewards, this is set
+              from params.distribution_interval
           current_epoch_in_blocks:
             type: string
             title: current epoch in block number
@@ -84162,7 +84130,7 @@ definitions:
               title: multiplier for lp rewards
             num_blocks:
               type: string
-              title: Block number since creation of PoolInfo
+              title: Block number since the creation of PoolInfo
             dex_reward_amount_given:
               type: string
               title: Total dex rewards given
@@ -84171,20 +84139,10 @@ definitions:
               title: Total eden rewards given
             eden_apr:
               type: string
-              title: >-
-                Eden APR - Updated at every distribution (TODO: might need to
-                split stakers & 
-
-                lps - note from Kenta: this might be APR for stakers - need to
-                check)
+              title: Eden APR, updated at every distribution
             dex_apr:
               type: string
-              title: >-
-                Dex APR - Updated at every distribution (TODO: might need to
-                split stakers & 
-
-                lps - note from Kenta: this might be APR for stakers - need to
-                check)
+              title: Dex APR, updated at every distribution
           title: Pool Info
         title: |-
           Pool information
@@ -84255,7 +84213,7 @@ definitions:
         title: multiplier for lp rewards
       num_blocks:
         type: string
-        title: Block number since creation of PoolInfo
+        title: Block number since the creation of PoolInfo
       dex_reward_amount_given:
         type: string
         title: Total dex rewards given
@@ -84264,18 +84222,10 @@ definitions:
         title: Total eden rewards given
       eden_apr:
         type: string
-        title: >-
-          Eden APR - Updated at every distribution (TODO: might need to split
-          stakers & 
-
-          lps - note from Kenta: this might be APR for stakers - need to check)
+        title: Eden APR, updated at every distribution
       dex_apr:
         type: string
-        title: >-
-          Dex APR - Updated at every distribution (TODO: might need to split
-          stakers & 
-
-          lps - note from Kenta: this might be APR for stakers - need to check)
+        title: Dex APR, updated at every distribution
     title: Pool Info
   elys.incentive.PoolMultiplier:
     type: object
@@ -84336,12 +84286,8 @@ definitions:
               distribution_epoch_in_blocks:
                 type: string
                 title: >-
-                  number of block intervals that distribute rewards - this value
-                  is coming
-
-                  from Params.distribution_epoch_for_stakers_in_blocks or
-
-                  Params.distribution_epoch_for_lps_in_blocks
+                  number of block intervals that distribute rewards, this is set
+                  from params.distribution_interval
               current_epoch_in_blocks:
                 type: string
                 title: current epoch in block number
@@ -84370,12 +84316,8 @@ definitions:
               distribution_epoch_in_blocks:
                 type: string
                 title: >-
-                  number of block intervals that distribute rewards - this value
-                  is coming
-
-                  from Params.distribution_epoch_for_stakers_in_blocks or
-
-                  Params.distribution_epoch_for_lps_in_blocks
+                  number of block intervals that distribute rewards, this is set
+                  from params.distribution_interval
               current_epoch_in_blocks:
                 type: string
                 title: current epoch in block number
@@ -84410,7 +84352,7 @@ definitions:
                   title: multiplier for lp rewards
                 num_blocks:
                   type: string
-                  title: Block number since creation of PoolInfo
+                  title: Block number since the creation of PoolInfo
                 dex_reward_amount_given:
                   type: string
                   title: Total dex rewards given
@@ -84419,20 +84361,10 @@ definitions:
                   title: Total eden rewards given
                 eden_apr:
                   type: string
-                  title: >-
-                    Eden APR - Updated at every distribution (TODO: might need
-                    to split stakers & 
-
-                    lps - note from Kenta: this might be APR for stakers - need
-                    to check)
+                  title: Eden APR, updated at every distribution
                 dex_apr:
                   type: string
-                  title: >-
-                    Dex APR - Updated at every distribution (TODO: might need to
-                    split stakers & 
-
-                    lps - note from Kenta: this might be APR for stakers - need
-                    to check)
+                  title: Dex APR, updated at every distribution
               title: Pool Info
             title: |-
               Pool information
