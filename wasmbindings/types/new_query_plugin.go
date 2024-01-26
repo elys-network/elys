@@ -13,9 +13,9 @@ import (
 	epochskeeper "github.com/elys-network/elys/x/epochs/keeper"
 	incentivekeeper "github.com/elys-network/elys/x/incentive/keeper"
 	leveragelpkeeper "github.com/elys-network/elys/x/leveragelp/keeper"
-	marginkeeper "github.com/elys-network/elys/x/margin/keeper"
 	oraclekeeper "github.com/elys-network/elys/x/oracle/keeper"
 	parameterkeeper "github.com/elys-network/elys/x/parameter/keeper"
+	perpetualkeeper "github.com/elys-network/elys/x/perpetual/keeper"
 	stablestakekeeper "github.com/elys-network/elys/x/stablestake/keeper"
 	tokenomicskeeper "github.com/elys-network/elys/x/tokenomics/keeper"
 	transferhookkeeper "github.com/elys-network/elys/x/transferhook/keeper"
@@ -35,7 +35,7 @@ func NewQueryPlugin(
 	epochs *epochskeeper.Keeper,
 	incentive *incentivekeeper.Keeper,
 	leveragelp *leveragelpkeeper.Keeper,
-	margin *marginkeeper.Keeper,
+	perpetual *perpetualkeeper.Keeper,
 	oracle *oraclekeeper.Keeper,
 	parameter *parameterkeeper.Keeper,
 	stablestake *stablestakekeeper.Keeper,
@@ -57,7 +57,7 @@ func NewQueryPlugin(
 		incentiveKeeper:     incentive,
 		leveragelpKeeper:    leveragelp,
 		stakingKeeper:       staking,
-		marginKeeper:        margin,
+		perpetualKeeper:     perpetual,
 		oracleKeeper:        oracle,
 		parameterKeeper:     parameter,
 		stablestakeKeeper:   stablestake,

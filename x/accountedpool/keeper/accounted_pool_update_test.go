@@ -9,8 +9,8 @@ import (
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 
 	"github.com/elys-network/elys/x/accountedpool/types"
-	margintypes "github.com/elys-network/elys/x/margin/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
+	perpetualtypes "github.com/elys-network/elys/x/perpetual/types"
 	"github.com/stretchr/testify/require"
 )
 
@@ -50,13 +50,13 @@ func TestAccountedPoolUpdate(t *testing.T) {
 	// Set accounted pool
 	apk.SetAccountedPool(ctx, accountedPool)
 
-	marginPool := margintypes.Pool{
+	perpetualPool := perpetualtypes.Pool{
 		AmmPoolId:          0,
 		Health:             sdk.NewDec(1),
 		Enabled:            true,
 		Closed:             false,
 		BorrowInterestRate: sdk.NewDec(1),
-		PoolAssetsLong: []margintypes.PoolAsset{
+		PoolAssetsLong: []perpetualtypes.PoolAsset{
 			{
 				Liabilities:         sdk.NewInt(400),
 				Custody:             sdk.NewInt(0),
@@ -72,7 +72,7 @@ func TestAccountedPoolUpdate(t *testing.T) {
 				AssetDenom:          ptypes.ATOM,
 			},
 		},
-		PoolAssetsShort: []margintypes.PoolAsset{
+		PoolAssetsShort: []perpetualtypes.PoolAsset{
 			{
 				Liabilities:         sdk.NewInt(400),
 				Custody:             sdk.NewInt(0),
@@ -90,7 +90,7 @@ func TestAccountedPoolUpdate(t *testing.T) {
 		},
 	}
 	// Update accounted pool
-	apk.UpdateAccountedPool(ctx, ammPool, marginPool)
+	apk.UpdateAccountedPool(ctx, ammPool, perpetualPool)
 
 	apool, found := apk.GetAccountedPool(ctx, (uint64)(0))
 	require.Equal(t, found, true)

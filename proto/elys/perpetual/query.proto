@@ -1,0 +1,196 @@
+syntax = "proto3";
+
+package elys.perpetual;
+
+import "gogoproto/gogo.proto";
+import "google/api/annotations.proto";
+import "cosmos/base/query/v1beta1/pagination.proto";
+import "elys/perpetual/params.proto";
+import "elys/perpetual/types.proto";
+import "elys/perpetual/pool.proto";
+import "cosmos/base/v1beta1/coin.proto";
+
+option go_package = "github.com/elys-network/elys/x/perpetual/types";
+
+// Query defines the gRPC querier service.
+service Query {
+  // Parameters queries the parameters of the module.
+  rpc Params (ParamsRequest) returns (ParamsResponse) {
+    option (google.api.http).get = "/elys-network/elys/perpetual/params";
+  }
+  
+  // Queries a list of positions.
+  rpc GetPositions (PositionsRequest) returns (PositionsResponse) {
+    option (google.api.http).get = "/elys-network/elys/perpetual/positions/{pagination.key}";
+  }
+  
+  // Queries a list of mtp positions by pool.
+  rpc GetPositionsByPool (PositionsByPoolRequest) returns (PositionsByPoolResponse) {
+    option (google.api.http).get = "/elys-network/elys/perpetual/mtps-by-pool/{amm_pool_id}/{pagination.key}";
+  }
+  
+  // Retuns the total number of open and lifetime mtps.
+  rpc GetStatus (StatusRequest) returns (StatusResponse) {
+    option (google.api.http).get = "/elys-network/elys/perpetual/status";
+  }
+  
+  // Queries a list of mtp positions for a given address.
+  rpc GetPositionsForAddress (PositionsForAddressRequest) returns (PositionsForAddressResponse) {
+    option (google.api.http).get = "/elys-network/elys/perpetual/mtps-for-address/{address}/{pagination.key}";
+  }
+  
+  // Queries a list of whitelisted addresses.
+  rpc GetWhitelist (WhitelistRequest) returns (WhitelistResponse) {
+    option (google.api.http).get = "/elys-network/elys/perpetual/whitelist/{pagination.key}";
+  
+  }
+  
+  // Is an address whitelisted?
+  rpc IsWhitelisted (IsWhitelistedRequest) returns (IsWhitelistedResponse) {
+    option (google.api.http).get = "/elys-network/elys/perpetual/is-whitelisted";
+  }
+  
+  // Queries a single pool given its index.
+  rpc Pool  (QueryGetPoolRequest) returns (QueryGetPoolResponse) {
+    option (google.api.http).get = "/elys-network/elys/perpetual/pool/{index}";
+  }
+
+  // Queries a list of all pools.
+  rpc Pools (QueryAllPoolRequest) returns (QueryAllPoolResponse) {
+    option (google.api.http).get = "/elys-network/elys/perpetual/pool/{pagination.key}";
+  }
+  
+  // Queries a single mtp position given its address and id.
+  rpc MTP (MTPRequest) returns (MTPResponse) {
+    option (google.api.http).get = "/elys-network/elys/perpetual/mtp/{address}/{id}";
+  }
+  
+  // Queries an estimation of a new open position details.
+  rpc OpenEstimation (QueryOpenEstimationRequest) returns (QueryOpenEstimationResponse) {
+    option (google.api.http).get = "/elys-network/elys/perpetual/open-estimation";
+  }
+}
+// ParamsRequest is request type for the Query/Params RPC method.
+message ParamsRequest {}
+
+// ParamsResponse is response type for the Query/Params RPC method.
+message ParamsResponse {
+  // params holds all the parameters of this module.
+  Params params = 1 [(gogoproto.nullable) = false];
+}
+
+message PositionsRequest {
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+message PositionsResponse {
+  repeated MTP                                    mtps       = 1;
+           cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+message PositionsByPoolRequest {
+  uint64                                amm_pool_id = 1;
+  cosmos.base.query.v1beta1.PageRequest pagination  = 2;
+}
+
+message PositionsByPoolResponse {
+  repeated MTP                                    mtps       = 1;
+           cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+message StatusRequest {}
+
+message StatusResponse {
+  uint64 open_mtp_count     = 1;
+  uint64 lifetime_mtp_count = 2;
+}
+
+message PositionsForAddressRequest {
+  string                                address    = 1;
+  cosmos.base.query.v1beta1.PageRequest pagination = 2;
+}
+
+message PositionsForAddressResponse {
+  repeated MTP                                    mtps       = 1;
+           cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+message WhitelistRequest {
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+message WhitelistResponse {
+  repeated string                                 whitelist  = 1;
+           cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+message IsWhitelistedRequest {
+  string address = 1;
+}
+
+message IsWhitelistedResponse {
+  string address        = 1;
+  bool   is_whitelisted = 2;
+}
+
+message QueryGetPoolRequest {
+  uint64 index = 1;
+}
+
+message QueryGetPoolResponse {
+  Pool pool = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryAllPoolRequest {
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+message QueryAllPoolResponse {
+  repeated Pool                                   pool       = 1 [(gogoproto.nullable) = false];
+           cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+message MTPRequest {
+  string address = 1;
+  uint64 id      = 2;
+}
+
+message MTPResponse {
+  MTP mtp = 1;
+}
+
+message QueryOpenEstimationRequest {
+  Position position         = 1;
+  string   leverage         = 2 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+  string trading_asset    = 3;
+  cosmos.base.v1beta1.Coin collateral     = 4 [(gogoproto.nullable)   = false                                   ] ;
+  string discount   = 5 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+  string   take_profit_price  = 6 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+}
+
+message QueryOpenEstimationResponse {
+  Position position         = 1;
+  string   leverage         = 2 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+  string   trading_asset      = 3;
+  cosmos.base.v1beta1.Coin collateral     = 4 [(gogoproto.nullable)   = false                                   ] ;
+  cosmos.base.v1beta1.Coin min_collateral     = 5 [(gogoproto.nullable)   = false                                   ] ;
+  bool valid_collateral = 6;
+  cosmos.base.v1beta1.Coin position_size = 7 [(gogoproto.nullable)   = false                                   ] ;
+  string   swap_fee         = 8 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+  string   discount   = 9 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+  string   open_price  = 10 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+  string   take_profit_price  = 11 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+  string   liquidation_price  = 12 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+  string   estimated_pnl = 13 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin available_liquidity  = 14 [(gogoproto.nullable)   = false                                   ] ;
+  string                   weight_balance_ratio = 15 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+  string borrow_interest_rate = 16 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  string funding_rate = 17 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  string price_impact = 18 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+}

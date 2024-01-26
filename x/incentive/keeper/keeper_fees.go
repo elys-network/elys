@@ -106,10 +106,10 @@ func (k Keeper) CollectGasFeesToIncentiveModule(ctx sdk.Context, baseCurrency st
 
 // Collect all DEX revenues to DEX revenue wallet,
 // while tracking the 65% of it for LPs reward distribution
-// transfer collected fees from different wallets(liquidity pool, margin module etc) to the distribution module account
+// transfer collected fees from different wallets(liquidity pool, perpetual module etc) to the distribution module account
 // Assume this is already in USDC.
 // TODO:
-// + Collect revenue from margin, lend module
+// + Collect revenue from perpetual, lend module
 func (k Keeper) CollectDEXRevenue(ctx sdk.Context) (sdk.Coins, sdk.DecCoins, sdk.DecCoins) {
 	// Total colllected revenue amount
 	amountTotalCollected := sdk.Coins{}

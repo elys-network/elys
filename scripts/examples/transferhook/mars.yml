@@ -380,7 +380,7 @@ genesis:
         max_voting_power: "0.66"
         min_self_delegation: "1"
         broker_address: ""
-    margin:
+    perpetual:
       params:
         leverage_max: "10"
         borrow_interest_rate_max: "0.00000027"

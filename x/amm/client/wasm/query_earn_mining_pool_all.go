@@ -14,7 +14,7 @@ func (oq *Querier) checkFilterType(ctx sdk.Context, ammPool *types.Pool, filterT
 	case types.FilterType_FilterAll:
 		return true
 	case types.FilterType_FilterPerpetual:
-		_, found := oq.marginKeeper.GetPool(ctx, ammPool.PoolId)
+		_, found := oq.perpetualKeeper.GetPool(ctx, ammPool.PoolId)
 		return found
 	case types.FilterType_FilterFixedWeight:
 		return ammPool.PoolParams.UseOracle
@@ -57,9 +57,9 @@ func (oq *Querier) generateEarnPool(ctx sdk.Context, ammPool *types.Pool, filter
 		leverageLpPercent = leverageLpPool.Health
 	}
 
-	marginPool, found := oq.marginKeeper.GetPool(ctx, ammPool.PoolId)
+	perpetualPool, found := oq.perpetualKeeper.GetPool(ctx, ammPool.PoolId)
 	if found {
-		perpetualPercent = marginPool.Health
+		perpetualPercent = perpetualPool.Health
 	}
 
 	return types.EarnPool{

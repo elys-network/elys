@@ -10,8 +10,8 @@ import (
 	commitmentkeeper "github.com/elys-network/elys/x/commitment/keeper"
 	incentivekeeper "github.com/elys-network/elys/x/incentive/keeper"
 	leveragelpkeeper "github.com/elys-network/elys/x/leveragelp/keeper"
-	marginkeeper "github.com/elys-network/elys/x/margin/keeper"
 	oraclekeeper "github.com/elys-network/elys/x/oracle/keeper"
+	perpetualkeeper "github.com/elys-network/elys/x/perpetual/keeper"
 	stablestakekeeper "github.com/elys-network/elys/x/stablestake/keeper"
 )
 
@@ -21,7 +21,7 @@ type Querier struct {
 	bankKeeper          *bankkeeper.BaseKeeper
 	commitmentKeeper    *commitmentkeeper.Keeper
 	assetProfileKeeper  *assetprofilekeeper.Keeper
-	marginKeeper        *marginkeeper.Keeper
+	perpetualKeeper     *perpetualkeeper.Keeper
 	incentiveKeeper     *incentivekeeper.Keeper
 	oraclekeeper        *oraclekeeper.Keeper
 	leveragelpKeeper    *leveragelpkeeper.Keeper
@@ -34,7 +34,7 @@ func NewQuerier(
 	bankKeeper *bankkeeper.BaseKeeper,
 	commitmentKeeper *commitmentkeeper.Keeper,
 	assetProfileKeeper *assetprofilekeeper.Keeper,
-	marginKeeper *marginkeeper.Keeper,
+	perpetualKeeper *perpetualkeeper.Keeper,
 	incentiveKeeper *incentivekeeper.Keeper,
 	oraclekeeper *oraclekeeper.Keeper,
 	leveragelpKeeper *leveragelpkeeper.Keeper,
@@ -45,7 +45,7 @@ func NewQuerier(
 		bankKeeper:          bankKeeper,
 		commitmentKeeper:    commitmentKeeper,
 		assetProfileKeeper:  assetProfileKeeper,
-		marginKeeper:        marginKeeper,
+		perpetualKeeper:     perpetualKeeper,
 		incentiveKeeper:     incentiveKeeper,
 		oraclekeeper:        oraclekeeper,
 		leveragelpKeeper:    leveragelpKeeper,

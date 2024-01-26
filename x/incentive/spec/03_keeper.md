@@ -14,7 +14,7 @@ There's constant reward pool address per liquidity pool id which will be distrib
     }
 ```
 
-Generates an address to be used in collecting DEX revenue and margin revenue from the specified pool. We will have unique reward wallet address per pool and incentive module will access these wallets and distribute them to the specified LPs.
+Generates an address to be used in collecting DEX revenue and perpetual revenue from the specified pool. We will have unique reward wallet address per pool and incentive module will access these wallets and distribute them to the specified LPs.
 
 ## Elys token to USDC conversion
 
@@ -54,7 +54,7 @@ Rewards = RewardsAmountOfPoolPerEpoch * UserLPCommitment / TotalLPCommitment
 Rewards = l.rewardAmount * UserLPCommitment / TotalLPCommitmentOfPool
 ```
 
-Rewards for LPs should be combined with Eden, Eden boost and DEX/margin rewards.
+Rewards for LPs should be combined with Eden, Eden boost and DEX/perpetual rewards.
 
 Note: To update in rewards distribution - users can run a bot to instantly put liquidity just before reward distribution and take it out. This happens because of zero lockup time and epoch based reward distribution. One of lockup or epoch based distribution modified. This is common problem on reward distribution per epoch.
 The easiest way to solve this issue is by timestamping whenever an LP add or withdraw liquidity and only distribute rewards to the LP if the timestamp is older than the epoch

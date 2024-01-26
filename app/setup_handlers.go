@@ -23,9 +23,9 @@ import (
 	commitmenttypes "github.com/elys-network/elys/x/commitment/types"
 	incentivetypes "github.com/elys-network/elys/x/incentive/types"
 	leveragelptypes "github.com/elys-network/elys/x/leveragelp/types"
-	margintypes "github.com/elys-network/elys/x/margin/types"
 	oracletypes "github.com/elys-network/elys/x/oracle/types"
 	parametertypes "github.com/elys-network/elys/x/parameter/types"
+	perpetualtypes "github.com/elys-network/elys/x/perpetual/types"
 	stablestaketypes "github.com/elys-network/elys/x/stablestake/types"
 	tokenomicstypes "github.com/elys-network/elys/x/tokenomics/types"
 	transferhooktypes "github.com/elys-network/elys/x/transferhook/types"
@@ -70,10 +70,10 @@ func setUpgradeHandler(app *ElysApp) {
 			keyTable = commitmenttypes.ParamKeyTable() //nolint:staticcheck
 		case incentivetypes.ModuleName:
 			keyTable = incentivetypes.ParamKeyTable() //nolint:staticcheck
-		case margintypes.ModuleName:
-			keyTable = margintypes.ParamKeyTable() //nolint:staticcheck
+		case perpetualtypes.ModuleName:
+			keyTable = perpetualtypes.ParamKeyTable() //nolint:staticcheck
 		case leveragelptypes.ModuleName:
-			keyTable = margintypes.ParamKeyTable() //nolint:staticcheck
+			keyTable = perpetualtypes.ParamKeyTable() //nolint:staticcheck
 		case oracletypes.ModuleName:
 			keyTable = oracletypes.ParamKeyTable() //nolint:staticcheck
 		case tokenomicstypes.ModuleName:
@@ -118,6 +118,7 @@ func loadUpgradeStore(app *ElysApp) {
 	if shouldLoadUpgradeStore(app, upgradeInfo) {
 		storeUpgrades := storetypes.StoreUpgrades{
 			// Added: []string{},
+			Renamed: []storetypes.StoreRename{{OldKey: "margin", NewKey: "perpetual"}},
 		}
 		// Use upgrade store loader for the initial loading of all stores when app starts,
 		// it checks if version == upgradeHeight and applies store upgrades before loading the stores,

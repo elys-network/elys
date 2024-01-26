@@ -3,19 +3,19 @@ package keeper
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
-	margintypes "github.com/elys-network/elys/x/margin/types"
+	perpetualtypes "github.com/elys-network/elys/x/perpetual/types"
 )
 
-func (k Keeper) AfterMarginPositionOpen(ctx sdk.Context, ammPool ammtypes.Pool, marginPool margintypes.Pool) {
-	k.UpdateAccountedPool(ctx, ammPool, marginPool)
+func (k Keeper) AfterPerpetualPositionOpen(ctx sdk.Context, ammPool ammtypes.Pool, perpetualPool perpetualtypes.Pool) {
+	k.UpdateAccountedPool(ctx, ammPool, perpetualPool)
 }
 
-func (k Keeper) AfterMarginPositionModified(ctx sdk.Context, ammPool ammtypes.Pool, marginPool margintypes.Pool) {
-	k.UpdateAccountedPool(ctx, ammPool, marginPool)
+func (k Keeper) AfterPerpetualPositionModified(ctx sdk.Context, ammPool ammtypes.Pool, perpetualPool perpetualtypes.Pool) {
+	k.UpdateAccountedPool(ctx, ammPool, perpetualPool)
 }
 
-func (k Keeper) AfterMarginPositionClosed(ctx sdk.Context, ammPool ammtypes.Pool, marginPool margintypes.Pool) {
-	k.UpdateAccountedPool(ctx, ammPool, marginPool)
+func (k Keeper) AfterPerpetualPositionClosed(ctx sdk.Context, ammPool ammtypes.Pool, perpetualPool perpetualtypes.Pool) {
+	k.UpdateAccountedPool(ctx, ammPool, perpetualPool)
 }
 
 // AfterPoolCreated is called after CreatePool
@@ -24,56 +24,56 @@ func (k Keeper) AfterAmmPoolCreated(ctx sdk.Context, ammPool ammtypes.Pool) {
 }
 
 // AfterJoinPool is called after JoinPool, JoinSwapExternAmountIn, and JoinSwapShareAmountOut
-func (k Keeper) AfterAmmJoinPool(ctx sdk.Context, ammPool ammtypes.Pool, marginPool margintypes.Pool) {
-	k.UpdateAccountedPool(ctx, ammPool, marginPool)
+func (k Keeper) AfterAmmJoinPool(ctx sdk.Context, ammPool ammtypes.Pool, perpetualPool perpetualtypes.Pool) {
+	k.UpdateAccountedPool(ctx, ammPool, perpetualPool)
 }
 
 // AfterExitPool is called after ExitPool, ExitSwapShareAmountIn, and ExitSwapExternAmountOut
-func (k Keeper) AfterAmmExitPool(ctx sdk.Context, ammPool ammtypes.Pool, marginPool margintypes.Pool) {
-	k.UpdateAccountedPool(ctx, ammPool, marginPool)
+func (k Keeper) AfterAmmExitPool(ctx sdk.Context, ammPool ammtypes.Pool, perpetualPool perpetualtypes.Pool) {
+	k.UpdateAccountedPool(ctx, ammPool, perpetualPool)
 }
 
 // AfterSwap is called after SwapExactAmountIn and SwapExactAmountOut
-func (k Keeper) AfterAmmSwap(ctx sdk.Context, ammPool ammtypes.Pool, marginPool margintypes.Pool) {
-	k.UpdateAccountedPool(ctx, ammPool, marginPool)
+func (k Keeper) AfterAmmSwap(ctx sdk.Context, ammPool ammtypes.Pool, perpetualPool perpetualtypes.Pool) {
+	k.UpdateAccountedPool(ctx, ammPool, perpetualPool)
 }
 
 // Hooks wrapper struct for tvl keeper
-type MarginHooks struct {
+type PerpetualHooks struct {
 	k Keeper
 }
 
-var _ margintypes.MarginHooks = MarginHooks{}
+var _ perpetualtypes.PerpetualHooks = PerpetualHooks{}
 
 // Return the wrapper struct
-func (k Keeper) MarginHooks() MarginHooks {
-	return MarginHooks{k}
+func (k Keeper) PerpetualHooks() PerpetualHooks {
+	return PerpetualHooks{k}
 }
 
-func (h MarginHooks) AfterMarginPositionOpen(ctx sdk.Context, ammPool ammtypes.Pool, marginPool margintypes.Pool) {
-	h.k.AfterMarginPositionOpen(ctx, ammPool, marginPool)
+func (h PerpetualHooks) AfterPerpetualPositionOpen(ctx sdk.Context, ammPool ammtypes.Pool, perpetualPool perpetualtypes.Pool) {
+	h.k.AfterPerpetualPositionOpen(ctx, ammPool, perpetualPool)
 }
 
-func (h MarginHooks) AfterMarginPositionModified(ctx sdk.Context, ammPool ammtypes.Pool, marginPool margintypes.Pool) {
-	h.k.AfterMarginPositionModified(ctx, ammPool, marginPool)
+func (h PerpetualHooks) AfterPerpetualPositionModified(ctx sdk.Context, ammPool ammtypes.Pool, perpetualPool perpetualtypes.Pool) {
+	h.k.AfterPerpetualPositionModified(ctx, ammPool, perpetualPool)
 }
 
-func (h MarginHooks) AfterMarginPositionClosed(ctx sdk.Context, ammPool ammtypes.Pool, marginPool margintypes.Pool) {
-	h.k.AfterMarginPositionClosed(ctx, ammPool, marginPool)
+func (h PerpetualHooks) AfterPerpetualPositionClosed(ctx sdk.Context, ammPool ammtypes.Pool, perpetualPool perpetualtypes.Pool) {
+	h.k.AfterPerpetualPositionClosed(ctx, ammPool, perpetualPool)
 }
 
-func (h MarginHooks) AfterAmmPoolCreated(ctx sdk.Context, ammPool ammtypes.Pool) {
+func (h PerpetualHooks) AfterAmmPoolCreated(ctx sdk.Context, ammPool ammtypes.Pool) {
 	h.k.AfterAmmPoolCreated(ctx, ammPool)
 }
 
-func (h MarginHooks) AfterAmmJoinPool(ctx sdk.Context, ammPool ammtypes.Pool, marginPool margintypes.Pool) {
-	h.k.AfterAmmJoinPool(ctx, ammPool, marginPool)
+func (h PerpetualHooks) AfterAmmJoinPool(ctx sdk.Context, ammPool ammtypes.Pool, perpetualPool perpetualtypes.Pool) {
+	h.k.AfterAmmJoinPool(ctx, ammPool, perpetualPool)
 }
 
-func (h MarginHooks) AfterAmmExitPool(ctx sdk.Context, ammPool ammtypes.Pool, marginPool margintypes.Pool) {
-	h.k.AfterAmmExitPool(ctx, ammPool, marginPool)
+func (h PerpetualHooks) AfterAmmExitPool(ctx sdk.Context, ammPool ammtypes.Pool, perpetualPool perpetualtypes.Pool) {
+	h.k.AfterAmmExitPool(ctx, ammPool, perpetualPool)
 }
 
-func (h MarginHooks) AfterAmmSwap(ctx sdk.Context, ammPool ammtypes.Pool, marginPool margintypes.Pool) {
-	h.k.AfterAmmSwap(ctx, ammPool, marginPool)
+func (h PerpetualHooks) AfterAmmSwap(ctx sdk.Context, ammPool ammtypes.Pool, perpetualPool perpetualtypes.Pool) {
+	h.k.AfterAmmSwap(ctx, ammPool, perpetualPool)
 }
