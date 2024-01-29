@@ -47,11 +47,15 @@ func PerformMsgClose(f *marginkeeper.Keeper, ctx sdk.Context, contractAddr sdk.A
 		return nil, errorsmod.Wrap(err, "failed validating msgMsgClose")
 	}
 
-	_, err := msgServer.Close(sdk.WrapSDKContext(ctx), msgMsgClose) // Discard the response because it's empty
+	res, err := msgServer.Close(sdk.WrapSDKContext(ctx), msgMsgClose) // Discard the response because it's empty
 	if err != nil {
 		return nil, errorsmod.Wrap(err, "margin close msg")
 	}
 
-	resp := &margintypes.MsgCloseResponse{}
+	resp := &margintypes.MsgCloseResponse{
+		Id:     res.Id,
+		Amount: res.Amount,
+	}
+
 	return resp, nil
 }
