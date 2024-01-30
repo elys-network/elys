@@ -8,11 +8,11 @@ import (
 	"github.com/elys-network/elys/x/perpetual/types"
 )
 
-func (k Keeper) GetFirstValidPool(ctx sdk.Context, collateralAsset string, tradingAsset string) (uint64, error) {
+func (k Keeper) GetBestPool(ctx sdk.Context, collateralAsset string, tradingAsset string) (uint64, error) {
 	denoms := []string{collateralAsset, tradingAsset}
-	poolId, found := k.amm.GetPoolIdWithAllDenoms(ctx, denoms)
+	pool, found := k.amm.GetBestPoolWithDenoms(ctx, denoms)
 	if !found {
 		return 0, errorsmod.Wrap(types.ErrPoolDoesNotExist, fmt.Sprintf("%s", denoms))
 	}
-	return poolId, nil
+	return pool.PoolId, nil
 }

@@ -13,7 +13,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestGetFirstValidPool_NoPoolID(t *testing.T) {
+func TestGetBestPool_NoPoolID(t *testing.T) {
 	app := simapp.InitElysTestApp(true)
 	ctx := app.BaseApp.NewContext(true, tmproto.Header{})
 
@@ -22,13 +22,12 @@ func TestGetFirstValidPool_NoPoolID(t *testing.T) {
 	collateralAsset := ptypes.BaseCurrency
 	borrowAsset := "testAsset"
 
-	_, err := perpetual.GetFirstValidPool(ctx, collateralAsset, borrowAsset)
-
 	// Expect an error about the pool not existing
+	_, err := perpetual.GetBestPool(ctx, collateralAsset, borrowAsset)
 	assert.True(t, errors.Is(err, types.ErrPoolDoesNotExist))
 }
 
-func TestGetFirstValidPool_ValidPoolID(t *testing.T) {
+func TestGetBestPool_ValidPoolID(t *testing.T) {
 	app := simapp.InitElysTestApp(true)
 	ctx := app.BaseApp.NewContext(true, tmproto.Header{})
 
@@ -66,9 +65,7 @@ func TestGetFirstValidPool_ValidPoolID(t *testing.T) {
 	}
 	app.AmmKeeper.SetPool(ctx, pool)
 
-	poolID, err := perpetual.GetFirstValidPool(ctx, collateralAsset, borrowAsset)
-
-	// Expect no error and the first pool ID to be returned
+	poolID, err := perpetual.GetBestPool(ctx, collateralAsset, borrowAsset)
 	assert.Nil(t, err)
 	assert.Equal(t, uint64(1), poolID)
 }

@@ -67,7 +67,7 @@ func (k Keeper) OpenEstimation(goCtx context.Context, req *types.QueryOpenEstima
 	liquidationPrice = liquidationPrice.Add(openPrice)
 
 	// get pool rates
-	poolId, err := k.GetFirstValidPool(ctx, req.Collateral.Denom, req.TradingAsset)
+	poolId, err := k.GetBestPool(ctx, req.Collateral.Denom, req.TradingAsset)
 	if err != nil {
 		return nil, err
 	}

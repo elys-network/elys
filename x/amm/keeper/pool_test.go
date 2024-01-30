@@ -73,7 +73,7 @@ func TestPoolGetAll(t *testing.T) {
 	)
 }
 
-func TestGetPoolIdWithAllDenoms(t *testing.T) {
+func TestGetBestPoolWithDenoms(t *testing.T) {
 	keeper, ctx, _, _ := keepertest.AmmKeeper(t)
 	items := createNPool(keeper, ctx, 10)
 
@@ -93,11 +93,11 @@ func TestGetPoolIdWithAllDenoms(t *testing.T) {
 	}
 
 	// Test case where pool is found
-	poolId, found := keeper.GetPoolIdWithAllDenoms(ctx, []string{"denom2", "usdc"})
+	pool, found := keeper.GetBestPoolWithDenoms(ctx, []string{"denom2", "usdc"})
 	require.True(t, found)
-	require.Equal(t, uint64(2), poolId)
+	require.Equal(t, uint64(2), pool.PoolId)
 
 	// Test case where pool is not found
-	_, found = keeper.GetPoolIdWithAllDenoms(ctx, []string{"nonexistent", "usdc"})
+	_, found = keeper.GetBestPoolWithDenoms(ctx, []string{"nonexistent", "usdc"})
 	require.False(t, found)
 }

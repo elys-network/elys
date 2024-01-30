@@ -91,8 +91,7 @@ type AmmKeeper interface {
 		swapFeeOut sdk.Dec,
 		weightBalanceBonus sdk.Dec,
 	) (sdk.Int, error)
-	// Get pool Ids that contains the denom in pool assets
-	GetAllPoolIdsWithDenom(sdk.Context, string) []uint64
+	GetBestPoolWithDenoms(ctx sdk.Context, denoms []string) (pool ammtypes.Pool, found bool)
 	// GetPool returns a pool from its index
 	GetPool(sdk.Context, uint64) (ammtypes.Pool, bool)
 	// Get all pools

@@ -7,31 +7,6 @@ import (
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
 
-// FindPool function gets a pool that can convert in_denom token to out_denom token
-// TODO:
-// Later on: add a logic to choose best pool
-func (k Keeper) FindPool(ctx sdk.Context, inDenom string, outDenom string) (ammtypes.Pool, bool) {
-	// Get pool ids that can convert tokenIn
-	poolIds := k.amm.GetAllPoolIdsWithDenom(ctx, inDenom)
-
-	for _, pId := range poolIds {
-		// Get a pool with poolId
-		pool, found := k.amm.GetPool(ctx, pId)
-		if !found {
-			continue
-		}
-
-		// Loop pool assets to find out pair
-		for _, asset := range pool.PoolAssets {
-			if asset.Token.Denom == outDenom {
-				return pool, true
-			}
-		}
-	}
-
-	return ammtypes.Pool{}, false
-}
-
 // Move gas fees collected to dex revenue wallet
 // Convert it into USDC
 func (k Keeper) CollectGasFeesToIncentiveModule(ctx sdk.Context, baseCurrency string) sdk.Coins {
@@ -59,7 +34,7 @@ func (k Keeper) CollectGasFeesToIncentiveModule(ctx sdk.Context, baseCurrency st
 		}
 
 		// Find a pool that can convert tokenIn to usdc
-		pool, found := k.FindPool(ctx, tokenIn.Denom, baseCurrency)
+		pool, found := k.amm.GetBestPoolWithDenoms(ctx, []string{tokenIn.Denom, baseCurrency})
 		if !found {
 			continue
 		}

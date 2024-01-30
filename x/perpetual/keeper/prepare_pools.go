@@ -8,7 +8,7 @@ import (
 
 // PreparePools creates accounted pools
 func (k Keeper) PreparePools(ctx sdk.Context, collateralAsset, tradingAsset string) (poolId uint64, ammPool ammtypes.Pool, pool types.Pool, err error) {
-	poolId, err = k.GetFirstValidPool(ctx, collateralAsset, tradingAsset)
+	poolId, err = k.GetBestPool(ctx, collateralAsset, tradingAsset)
 	if err != nil {
 		return
 	}
