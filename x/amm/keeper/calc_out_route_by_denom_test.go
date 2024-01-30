@@ -3,15 +3,18 @@ package keeper_test
 import (
 	"testing"
 
-	keepertest "github.com/elys-network/elys/testutil/keeper"
+	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
+	simapp "github.com/elys-network/elys/app"
 	"github.com/stretchr/testify/require"
 )
 
 func TestCalcOutRouteByDenom(t *testing.T) {
-	k, ctx, _, _ := keepertest.AmmKeeper(t)
+	app := simapp.InitElysTestApp(initChain)
+	ctx := app.BaseApp.NewContext(initChain, tmproto.Header{})
+	k := app.AmmKeeper
 
 	// Setup mock pools and assets
-	SetupMockPools(k, ctx)
+	SetupMockPools(&k, ctx)
 
 	// Test direct pool route
 	route, err := k.CalcOutRouteByDenom(ctx, "denom2", "denom1", "baseCurrency")

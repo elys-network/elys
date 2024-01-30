@@ -4,7 +4,9 @@ import (
 	"strconv"
 	"testing"
 
+	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	simapp "github.com/elys-network/elys/app"
 	keepertest "github.com/elys-network/elys/testutil/keeper"
 	"github.com/elys-network/elys/testutil/nullify"
 	"github.com/elys-network/elys/x/amm/keeper"
@@ -74,8 +76,10 @@ func TestPoolGetAll(t *testing.T) {
 }
 
 func TestGetBestPoolWithDenoms(t *testing.T) {
-	keeper, ctx, _, _ := keepertest.AmmKeeper(t)
-	items := createNPool(keeper, ctx, 10)
+	app := simapp.InitElysTestApp(initChain)
+	ctx := app.BaseApp.NewContext(initChain, tmproto.Header{})
+	keeper := app.AmmKeeper
+	items := createNPool(&keeper, ctx, 10)
 
 	// Add assets to some pools for testing
 	for i, item := range items {
