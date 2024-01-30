@@ -4,7 +4,9 @@ import (
 	"strconv"
 	"testing"
 
+	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	simapp "github.com/elys-network/elys/app"
 	keepertest "github.com/elys-network/elys/testutil/keeper"
 	"github.com/elys-network/elys/testutil/nullify"
 	"github.com/elys-network/elys/x/amm/keeper"
@@ -73,9 +75,11 @@ func TestPoolGetAll(t *testing.T) {
 	)
 }
 
-func TestGetPoolIdWithAllDenoms(t *testing.T) {
-	keeper, ctx, _, _ := keepertest.AmmKeeper(t)
-	items := createNPool(keeper, ctx, 10)
+func TestGetBestPoolWithDenoms(t *testing.T) {
+	app := simapp.InitElysTestApp(initChain)
+	ctx := app.BaseApp.NewContext(initChain, tmproto.Header{})
+	keeper := app.AmmKeeper
+	items := createNPool(&keeper, ctx, 10)
 
 	// Add assets to some pools for testing
 	for i, item := range items {
@@ -93,11 +97,11 @@ func TestGetPoolIdWithAllDenoms(t *testing.T) {
 	}
 
 	// Test case where pool is found
-	poolId, found := keeper.GetPoolIdWithAllDenoms(ctx, []string{"denom2", "usdc"})
+	pool, found := keeper.GetBestPoolWithDenoms(ctx, []string{"denom2", "usdc"})
 	require.True(t, found)
-	require.Equal(t, uint64(2), poolId)
+	require.Equal(t, uint64(2), pool.PoolId)
 
 	// Test case where pool is not found
-	_, found = keeper.GetPoolIdWithAllDenoms(ctx, []string{"nonexistent", "usdc"})
+	_, found = keeper.GetBestPoolWithDenoms(ctx, []string{"nonexistent", "usdc"})
 	require.False(t, found)
 }

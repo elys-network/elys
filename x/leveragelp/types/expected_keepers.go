@@ -17,8 +17,6 @@ type AccountKeeper interface {
 
 // AmmKeeper defines the expected interface needed to swap tokens
 type AmmKeeper interface {
-	// Get pool Ids that contains the denom in pool assets
-	GetAllPoolIdsWithDenom(sdk.Context, string) []uint64
 	// GetPool returns a pool from its index
 	GetPool(sdk.Context, uint64) (ammtypes.Pool, bool)
 	// Get all pools
