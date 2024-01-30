@@ -195,7 +195,7 @@ release:
     See the full changelog [here](https://github.com/elys-network/elys/blob/v{{ .Version }}/CHANGELOG.md)
   name_template: "v{{.Version}}"
   mode: replace
-  draft: true
+  draft: false
 # Docs: https://goreleaser.com/customization/announce/
 # We could automatically announce the release in
 # - discord
