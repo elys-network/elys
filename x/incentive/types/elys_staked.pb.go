@@ -24,7 +24,8 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
-// Elys staked
+// Elys staked amount is tracked because EdenBoost has to be burnt when unstake ELYS event happens,
+// and there's no way to track staked amount change from staking hook and this struct is added.
 type ElysStaked struct {
 	Address string                                 `protobuf:"bytes,1,opt,name=address,proto3" json:"address,omitempty"`
 	Amount  github_com_cosmos_cosmos_sdk_types.Int `protobuf:"bytes,2,opt,name=amount,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"amount"`

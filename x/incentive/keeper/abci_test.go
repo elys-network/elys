@@ -91,11 +91,11 @@ func TestABCI_EndBlocker(t *testing.T) {
 
 	// Check if the params are correctly set
 	params := ik.GetParams(ctx)
-	require.Equal(t, len(params.StakeIncentives), 1)
-	require.Equal(t, len(params.LpIncentives), 1)
+	require.NotNil(t, params.StakeIncentives)
+	require.NotNil(t, params.LpIncentives)
 
-	require.Equal(t, params.StakeIncentives[0].EdenAmountPerYear, sdk.NewInt(int64(listTimeBasdInflations[0].Inflation.IcsStakingRewards)))
-	require.Equal(t, params.LpIncentives[0].EdenAmountPerYear, sdk.NewInt(int64(listTimeBasdInflations[0].Inflation.LmRewards)))
+	require.Equal(t, params.StakeIncentives.EdenAmountPerYear, sdk.NewInt(int64(listTimeBasdInflations[0].Inflation.IcsStakingRewards)))
+	require.Equal(t, params.LpIncentives.EdenAmountPerYear, sdk.NewInt(int64(listTimeBasdInflations[0].Inflation.LmRewards)))
 
 	// After the first year
 	ctx = ctx.WithBlockHeight(6307210)
@@ -104,13 +104,13 @@ func TestABCI_EndBlocker(t *testing.T) {
 	stakerEpoch, stakeIncentive := ik.IsStakerRewardsDistributionEpoch(ctx)
 	params = ik.GetParams(ctx)
 	require.Equal(t, stakerEpoch, false)
-	require.Equal(t, len(params.StakeIncentives), 0)
+	require.Nil(t, params.StakeIncentives)
 
 	// Incentive param should be empty
 	lpEpoch, lpIncentive := ik.IsLPRewardsDistributionEpoch(ctx)
 	params = ik.GetParams(ctx)
 	require.Equal(t, lpEpoch, false)
-	require.Equal(t, len(params.LpIncentives), 0)
+	require.Nil(t, params.LpIncentives)
 
 	// After reading tokenomics again
 	paramSet = ik.ProcessUpdateIncentiveParams(ctx)

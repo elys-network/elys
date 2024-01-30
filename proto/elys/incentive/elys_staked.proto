@@ -6,7 +6,8 @@ option (gogoproto.equal_all) = true;
 
 import "gogoproto/gogo.proto";
 
-// Elys staked
+// Elys staked amount is tracked because EdenBoost has to be burnt when unstake ELYS event happens,
+// and there's no way to track staked amount change from staking hook and this struct is added.
 message ElysStaked {
     string address = 1;
     string amount = 2 [
@@ -14,4 +15,3 @@ message ElysStaked {
         (gogoproto.nullable) = false
     ]; 
 }
-  

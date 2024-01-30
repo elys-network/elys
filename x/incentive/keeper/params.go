@@ -10,40 +10,33 @@ import (
 )
 
 // GetParams get all parameters as types.Params
-func (k Keeper) GetParams(ctx sdk.Context) types.Params {
-	var params types.Params
-	k.paramstore.GetParamSet(ctx, &params)
-	return params
+func (k Keeper) GetParams(ctx sdk.Context) (params types.Params) {
+	store := ctx.KVStore(k.storeKey)
+
+	b := store.Get([]byte(types.ParamsKey))
+	if b == nil {
+		return
+	}
+
+	k.cdc.MustUnmarshal(b, &params)
+	return
 }
 
 // SetParams set the params
 func (k Keeper) SetParams(ctx sdk.Context, params types.Params) {
-	k.paramstore.SetParamSet(ctx, &params)
-}
-
-// GetCommunityTax returns the current distribution community tax.
-func (k Keeper) GetCommunityTax(ctx sdk.Context) (percent sdk.Dec) {
-	k.paramstore.Get(ctx, types.ParamStoreKeyCommunityTax, &percent)
-	return percent
-}
-
-// GetWithdrawAddrEnabled returns the current distribution withdraw address
-// enabled parameter.
-func (k Keeper) GetWithdrawAddrEnabled(ctx sdk.Context) (enabled bool) {
-	k.paramstore.Get(ctx, types.ParamStoreKeyWithdrawAddrEnabled, &enabled)
-	return enabled
+	store := ctx.KVStore(k.storeKey)
+	b := k.cdc.MustMarshal(&params)
+	store.Set([]byte(types.ParamsKey), b)
 }
 
 // GetDEXRewardPortionForLPs returns the dex revenue percent for Lps
 func (k Keeper) GetDEXRewardPortionForLPs(ctx sdk.Context) (percent sdk.Dec) {
-	k.paramstore.Get(ctx, types.ParamStoreKeyRewardPortionForLps, &percent)
-	return percent
+	return k.GetParams(ctx).RewardPortionForLps
 }
 
 // GetDEXRewardPortionForStakers returns the dex revenue percent for Stakers
 func (k Keeper) GetDEXRewardPortionForStakers(ctx sdk.Context) (percent sdk.Dec) {
-	k.paramstore.Get(ctx, types.ParamStoreKeyRewardPortionForStakers, &percent)
-	return percent
+	return k.GetParams(ctx).RewardPortionForStakers
 }
 
 // GetPoolInfo

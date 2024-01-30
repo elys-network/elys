@@ -47,11 +47,15 @@ func PerformMsgClose(f *perpetualkeeper.Keeper, ctx sdk.Context, contractAddr sd
 		return nil, errorsmod.Wrap(err, "failed validating msgMsgClose")
 	}
 
-	_, err := msgServer.Close(sdk.WrapSDKContext(ctx), msgMsgClose) // Discard the response because it's empty
+	res, err := msgServer.Close(sdk.WrapSDKContext(ctx), msgMsgClose) // Discard the response because it's empty
 	if err != nil {
 		return nil, errorsmod.Wrap(err, "perpetual close msg")
 	}
 
-	resp := &perpetualtypes.MsgCloseResponse{}
+	resp := &perpetualtypes.MsgCloseResponse{
+		Id:     res.Id,
+		Amount: res.Amount,
+	}
+
 	return resp, nil
 }

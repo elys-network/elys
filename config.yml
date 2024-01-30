@@ -287,13 +287,11 @@ genesis:
               amount: "200000"
     incentive:
       params:
-        lp_incentives: []
-        stake_incentives: []
-        community_tax: "0.00"
-        withdraw_addr_enabled: true
+        lp_incentives: null
+        stake_incentives: null
         reward_portion_for_lps: "0.65"
         pool_infos: []
-        elys_stake_tracking_rate: "10"
+        elys_stake_snap_interval: "10"
         dex_rewards_stakers:
           num_blocks: "0"
           amount: "0"

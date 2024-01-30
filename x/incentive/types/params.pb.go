@@ -26,30 +26,27 @@ const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
 // Params defines the parameters for the module.
 type Params struct {
-	LpIncentives        []IncentiveInfo                        `protobuf:"bytes,1,rep,name=lp_incentives,json=lpIncentives,proto3" json:"lp_incentives"`
-	StakeIncentives     []IncentiveInfo                        `protobuf:"bytes,2,rep,name=stake_incentives,json=stakeIncentives,proto3" json:"stake_incentives"`
-	CommunityTax        github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,3,opt,name=community_tax,json=communityTax,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"community_tax"`
-	WithdrawAddrEnabled bool                                   `protobuf:"varint,4,opt,name=withdraw_addr_enabled,json=withdrawAddrEnabled,proto3" json:"withdraw_addr_enabled,omitempty"`
-	// Dex revenue percent for lps, 100 - reward_portion_for_lps - reward_portion_for_stakers = revenue percent for protocol.
-	RewardPortionForLps github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,5,opt,name=reward_portion_for_lps,json=rewardPortionForLps,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"reward_portion_for_lps"`
-	// Dex revenue percent for lps, 100 - reward_portion_for_lps - reward_portion_for_stakers = revenue percent for protocol.
-	RewardPortionForStakers github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,6,opt,name=reward_portion_for_stakers,json=rewardPortionForStakers,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"reward_portion_for_stakers"`
+	LpIncentives    *IncentiveInfo `protobuf:"bytes,1,opt,name=lp_incentives,json=lpIncentives,proto3" json:"lp_incentives,omitempty"`
+	StakeIncentives *IncentiveInfo `protobuf:"bytes,2,opt,name=stake_incentives,json=stakeIncentives,proto3" json:"stake_incentives,omitempty"`
+	// Dex revenue percent for lps, `100 - reward_portion_for_lps - reward_portion_for_stakers = revenue percent for protocol`.
+	RewardPortionForLps github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,3,opt,name=reward_portion_for_lps,json=rewardPortionForLps,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"reward_portion_for_lps"`
+	// Dex revenue percent for lps, `100 - reward_portion_for_lps - reward_portion_for_stakers = revenue percent for protocol`.
+	RewardPortionForStakers github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,4,opt,name=reward_portion_for_stakers,json=rewardPortionForStakers,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"reward_portion_for_stakers"`
 	// Pool information
-	// poolId, reward wallet, mulitplier, dex rewards given
-	PoolInfos             []PoolInfo `protobuf:"bytes,7,rep,name=pool_infos,json=poolInfos,proto3" json:"pool_infos"`
-	ElysStakeTrackingRate int64      `protobuf:"varint,8,opt,name=elys_stake_tracking_rate,json=elysStakeTrackingRate,proto3" json:"elys_stake_tracking_rate,omitempty"`
+	// poolId, reward wallet, **multiplier**, dex rewards given
+	PoolInfos []PoolInfo `protobuf:"bytes,5,rep,name=pool_infos,json=poolInfos,proto3" json:"pool_infos"`
+	// Number of blocks to update elys staked amount for delegators
+	ElysStakeSnapInterval int64 `protobuf:"varint,6,opt,name=elys_stake_snap_interval,json=elysStakeSnapInterval,proto3" json:"elys_stake_snap_interval,omitempty"`
 	// Tracking dex rewards given to stakers
-	DexRewardsStakers DexRewardsTracker `protobuf:"bytes,9,opt,name=dex_rewards_stakers,json=dexRewardsStakers,proto3" json:"dex_rewards_stakers"`
+	DexRewardsStakers DexRewardsTracker `protobuf:"bytes,7,opt,name=dex_rewards_stakers,json=dexRewardsStakers,proto3" json:"dex_rewards_stakers"`
 	// Tracking dex rewards given to LPs
-	DexRewardsLps DexRewardsTracker `protobuf:"bytes,10,opt,name=dex_rewards_lps,json=dexRewardsLps,proto3" json:"dex_rewards_lps"`
-	// Maximum eden reward apr for stakers
-	MaxEdenRewardAprStakers github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,11,opt,name=max_eden_reward_apr_stakers,json=maxEdenRewardAprStakers,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"max_eden_reward_apr_stakers"`
-	// Maximum eden reward apr for lps
-	MaxEdenRewardAprLps github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,12,opt,name=max_eden_reward_apr_lps,json=maxEdenRewardAprLps,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"max_eden_reward_apr_lps"`
-	// Distribution epochs for stakers in blocks
-	DistributionEpochForStakersInBlocks int64 `protobuf:"varint,13,opt,name=distribution_epoch_for_stakers_in_blocks,json=distributionEpochForStakersInBlocks,proto3" json:"distribution_epoch_for_stakers_in_blocks,omitempty"`
-	// Distribution epochs for LPs in blocks
-	DistributionEpochForLpsInBlocks int64 `protobuf:"varint,14,opt,name=distribution_epoch_for_lps_in_blocks,json=distributionEpochForLpsInBlocks,proto3" json:"distribution_epoch_for_lps_in_blocks,omitempty"`
+	DexRewardsLps DexRewardsTracker `protobuf:"bytes,8,opt,name=dex_rewards_lps,json=dexRewardsLps,proto3" json:"dex_rewards_lps"`
+	// Maximum eden reward apr for stakers - [0 - 0.3]
+	MaxEdenRewardAprStakers github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,9,opt,name=max_eden_reward_apr_stakers,json=maxEdenRewardAprStakers,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"max_eden_reward_apr_stakers"`
+	// Maximum eden reward apr for lps - [0 - 0.3]
+	MaxEdenRewardAprLps github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,10,opt,name=max_eden_reward_apr_lps,json=maxEdenRewardAprLps,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"max_eden_reward_apr_lps"`
+	// Distribution interval in blocks - number of blocks on distribution epoch
+	DistributionInterval int64 `protobuf:"varint,11,opt,name=distribution_interval,json=distributionInterval,proto3" json:"distribution_interval,omitempty"`
 }
 
 func (m *Params) Reset()      { *m = Params{} }
@@ -84,25 +81,18 @@ func (m *Params) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_Params proto.InternalMessageInfo
 
-func (m *Params) GetLpIncentives() []IncentiveInfo {
+func (m *Params) GetLpIncentives() *IncentiveInfo {
 	if m != nil {
 		return m.LpIncentives
 	}
 	return nil
 }
 
-func (m *Params) GetStakeIncentives() []IncentiveInfo {
+func (m *Params) GetStakeIncentives() *IncentiveInfo {
 	if m != nil {
 		return m.StakeIncentives
 	}
 	return nil
-}
-
-func (m *Params) GetWithdrawAddrEnabled() bool {
-	if m != nil {
-		return m.WithdrawAddrEnabled
-	}
-	return false
 }
 
 func (m *Params) GetPoolInfos() []PoolInfo {
@@ -112,9 +102,9 @@ func (m *Params) GetPoolInfos() []PoolInfo {
 	return nil
 }
 
-func (m *Params) GetElysStakeTrackingRate() int64 {
+func (m *Params) GetElysStakeSnapInterval() int64 {
 	if m != nil {
-		return m.ElysStakeTrackingRate
+		return m.ElysStakeSnapInterval
 	}
 	return 0
 }
@@ -133,16 +123,9 @@ func (m *Params) GetDexRewardsLps() DexRewardsTracker {
 	return DexRewardsTracker{}
 }
 
-func (m *Params) GetDistributionEpochForStakersInBlocks() int64 {
+func (m *Params) GetDistributionInterval() int64 {
 	if m != nil {
-		return m.DistributionEpochForStakersInBlocks
-	}
-	return 0
-}
-
-func (m *Params) GetDistributionEpochForLpsInBlocks() int64 {
-	if m != nil {
-		return m.DistributionEpochForLpsInBlocks
+		return m.DistributionInterval
 	}
 	return 0
 }
@@ -154,46 +137,40 @@ func init() {
 func init() { proto.RegisterFile("elys/incentive/params.proto", fileDescriptor_3bca0267cb466fec) }
 
 var fileDescriptor_3bca0267cb466fec = []byte{
-	// 622 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x9c, 0x94, 0x4f, 0x4f, 0xd4, 0x4e,
-	0x18, 0xc7, 0xb7, 0x3f, 0xf8, 0x21, 0x3b, 0xb0, 0xa0, 0x45, 0xa4, 0x42, 0xec, 0xae, 0x7f, 0xa2,
-	0xbd, 0xd0, 0x26, 0x78, 0x30, 0x31, 0xf1, 0xc0, 0x06, 0x0c, 0x24, 0xa8, 0xa4, 0x60, 0x4c, 0xbc,
-	0x4c, 0x66, 0x3b, 0xc3, 0xd2, 0xb4, 0x9d, 0x99, 0xcc, 0x0c, 0x6e, 0x79, 0x17, 0x1e, 0xbd, 0xe9,
-	0xcb, 0xe1, 0xc8, 0xd1, 0x78, 0x20, 0x06, 0xde, 0x88, 0x99, 0x69, 0xb7, 0xd4, 0x06, 0x13, 0xdd,
-	0xd3, 0x4e, 0xf7, 0xfb, 0xf4, 0xf3, 0x7d, 0xe6, 0xf9, 0x3e, 0x29, 0x58, 0x23, 0xe9, 0xa9, 0x0c,
-	0x62, 0x1a, 0x11, 0xaa, 0xe2, 0x4f, 0x24, 0xe0, 0x48, 0xa0, 0x4c, 0xfa, 0x5c, 0x30, 0xc5, 0xec,
-	0x05, 0x2d, 0xfa, 0x95, 0xb8, 0x7a, 0x77, 0xc8, 0x86, 0xcc, 0x48, 0x81, 0x3e, 0x15, 0x55, 0xab,
-	0x6e, 0x03, 0x51, 0x9d, 0x4a, 0xfd, 0x7e, 0xd3, 0x82, 0xb1, 0xb4, 0x94, 0x9e, 0x35, 0x24, 0x4c,
-	0x72, 0x28, 0xc8, 0x08, 0x09, 0x2c, 0xa1, 0x12, 0x28, 0x21, 0xa2, 0x28, 0x7c, 0xf4, 0xb5, 0x0d,
-	0x66, 0xf6, 0x4d, 0x6b, 0xf6, 0x0e, 0xe8, 0xa4, 0x1c, 0x56, 0xef, 0x48, 0xc7, 0xea, 0x4d, 0x79,
-	0x73, 0x1b, 0x0f, 0xfc, 0xdf, 0x9b, 0xf5, 0x77, 0xc7, 0xa7, 0x5d, 0x7a, 0xc4, 0xfa, 0xd3, 0x67,
-	0x17, 0xdd, 0x56, 0x38, 0x9f, 0xf2, 0xea, 0x6f, 0x69, 0xbf, 0x05, 0xb7, 0xa5, 0x42, 0x09, 0xa9,
-	0xc3, 0xfe, 0xfb, 0x7b, 0xd8, 0xa2, 0x79, 0xb9, 0xc6, 0x3b, 0x00, 0x9d, 0x88, 0x65, 0xd9, 0x09,
-	0x8d, 0xd5, 0x29, 0x54, 0x28, 0x77, 0xa6, 0x7a, 0x96, 0xd7, 0xee, 0xfb, 0xba, 0xfa, 0xc7, 0x45,
-	0xf7, 0xe9, 0x30, 0x56, 0xc7, 0x27, 0x03, 0x3f, 0x62, 0x59, 0x10, 0x31, 0x99, 0x31, 0x59, 0xfe,
-	0xac, 0x4b, 0x9c, 0x04, 0xea, 0x94, 0x13, 0xe9, 0x6f, 0x91, 0x28, 0x9c, 0xaf, 0x20, 0x87, 0x28,
-	0xb7, 0x37, 0xc0, 0xf2, 0x28, 0x56, 0xc7, 0x58, 0xa0, 0x11, 0x44, 0x18, 0x0b, 0x48, 0x28, 0x1a,
-	0xa4, 0x04, 0x3b, 0xd3, 0x3d, 0xcb, 0x9b, 0x0d, 0x97, 0xc6, 0xe2, 0x26, 0xc6, 0x62, 0xbb, 0x90,
-	0xec, 0x08, 0xdc, 0x2b, 0xa6, 0x08, 0x39, 0x13, 0x2a, 0x66, 0x14, 0x1e, 0x31, 0x01, 0x53, 0x2e,
-	0x9d, 0xff, 0x27, 0xea, 0x68, 0xa9, 0xa0, 0xed, 0x17, 0xb0, 0xd7, 0x4c, 0xec, 0x71, 0x69, 0x27,
-	0x60, 0xf5, 0x06, 0x13, 0x33, 0x13, 0x21, 0x9d, 0x99, 0x89, 0x8c, 0x56, 0x9a, 0x46, 0x07, 0x05,
-	0xce, 0x7e, 0x05, 0x80, 0x5e, 0x1b, 0x18, 0xd3, 0x23, 0x26, 0x9d, 0x5b, 0x26, 0x24, 0xa7, 0x19,
-	0xd2, 0x3e, 0x63, 0x69, 0x2d, 0x9f, 0x36, 0x2f, 0x9f, 0xa5, 0xfd, 0x02, 0x38, 0xba, 0xb6, 0xe8,
-	0x4e, 0x6f, 0x56, 0x94, 0xc4, 0x74, 0x08, 0x05, 0x52, 0xc4, 0x99, 0xed, 0x59, 0xde, 0x54, 0xb8,
-	0xac, 0x75, 0xe3, 0x76, 0x58, 0xaa, 0x21, 0x52, 0xc4, 0xfe, 0x00, 0x96, 0xea, 0x3b, 0x39, 0xbe,
-	0x5d, 0xbb, 0x67, 0x79, 0x73, 0x1b, 0x0f, 0x9b, 0x0d, 0x6c, 0x91, 0x3c, 0x2c, 0x2a, 0x0d, 0x84,
-	0x88, 0xb2, 0x93, 0x3b, 0xb8, 0x12, 0xc6, 0x17, 0x7a, 0x07, 0x16, 0xeb, 0x60, 0x9d, 0x0d, 0xf8,
-	0x37, 0x68, 0xe7, 0x1a, 0xaa, 0xe3, 0x48, 0xc1, 0x5a, 0x86, 0x72, 0x48, 0x30, 0xa1, 0x25, 0x15,
-	0x22, 0x7e, 0x9d, 0xc7, 0xdc, 0x64, 0x79, 0x64, 0x28, 0xdf, 0xc6, 0x84, 0x16, 0x3e, 0x9b, 0xbc,
-	0xca, 0x03, 0x83, 0x95, 0x9b, 0xdc, 0xf4, 0x35, 0xe6, 0x27, 0x5b, 0xb1, 0xa6, 0x93, 0xbe, 0xd3,
-	0x7b, 0xe0, 0xe1, 0x58, 0x2a, 0x11, 0x0f, 0x4e, 0xcc, 0x82, 0x11, 0xce, 0xa2, 0xe3, 0xfa, 0x9a,
-	0xc1, 0x98, 0xc2, 0x41, 0xca, 0xa2, 0x44, 0x3a, 0x1d, 0x13, 0xe3, 0xe3, 0x7a, 0xfd, 0xb6, 0x2e,
-	0xbf, 0x5e, 0xa2, 0x5d, 0xda, 0x37, 0xa5, 0xf6, 0x1b, 0xf0, 0xe4, 0x0f, 0xd8, 0x94, 0xd7, 0x91,
-	0x0b, 0x06, 0xd9, 0xbd, 0x09, 0xb9, 0xc7, 0x2b, 0xdc, 0xcb, 0xe9, 0x2f, 0xdf, 0xba, 0xad, 0xfe,
-	0xce, 0xd9, 0xa5, 0x6b, 0x9d, 0x5f, 0xba, 0xd6, 0xcf, 0x4b, 0xd7, 0xfa, 0x7c, 0xe5, 0xb6, 0xce,
-	0xaf, 0xdc, 0xd6, 0xf7, 0x2b, 0xb7, 0xf5, 0xd1, 0xaf, 0x8d, 0x40, 0x67, 0xbb, 0x4e, 0x89, 0x1a,
-	0x31, 0x91, 0x98, 0x87, 0x20, 0xaf, 0x7d, 0xfe, 0xcc, 0x38, 0x06, 0x33, 0xe6, 0x93, 0xf7, 0xfc,
-	0x57, 0x00, 0x00, 0x00, 0xff, 0xff, 0x61, 0x67, 0x7b, 0xad, 0x9b, 0x05, 0x00, 0x00,
+	// 526 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x9c, 0x53, 0x41, 0x6f, 0xd3, 0x30,
+	0x18, 0x4d, 0x68, 0xe9, 0xa8, 0xcb, 0x18, 0x64, 0x1b, 0x0b, 0x9d, 0x48, 0x0b, 0x07, 0xe8, 0x65,
+	0x89, 0xb4, 0x1d, 0x90, 0x90, 0x38, 0x50, 0x0d, 0xb4, 0x4a, 0x48, 0x54, 0x19, 0x12, 0x12, 0x17,
+	0xcb, 0x4d, 0xdc, 0x12, 0x25, 0xb1, 0x2d, 0xdb, 0xdb, 0xb2, 0x7f, 0xc1, 0x11, 0x6e, 0xfc, 0x9c,
+	0x1d, 0x77, 0x44, 0x1c, 0x26, 0xd4, 0xfe, 0x11, 0x64, 0x27, 0xcd, 0x42, 0xb4, 0x03, 0xeb, 0x29,
+	0x76, 0xde, 0xe7, 0xf7, 0xde, 0xf7, 0x3d, 0x1b, 0xec, 0xe2, 0xe4, 0x5c, 0x78, 0x11, 0x09, 0x30,
+	0x91, 0xd1, 0x29, 0xf6, 0x18, 0xe2, 0x28, 0x15, 0x2e, 0xe3, 0x54, 0x52, 0xeb, 0x81, 0x02, 0xdd,
+	0x12, 0xec, 0x6e, 0xcd, 0xe8, 0x8c, 0x6a, 0xc8, 0x53, 0xab, 0xbc, 0xaa, 0xeb, 0xd4, 0x28, 0xca,
+	0x55, 0x81, 0x3f, 0xa9, 0x4b, 0x50, 0x9a, 0x14, 0xd0, 0xcb, 0x1a, 0x14, 0xe2, 0x0c, 0x72, 0x7c,
+	0x86, 0x78, 0x28, 0xa0, 0xe4, 0x28, 0xc6, 0x3c, 0x2f, 0x7c, 0xfe, 0x63, 0x0d, 0xb4, 0xc6, 0xda,
+	0x9a, 0x35, 0x04, 0xeb, 0x09, 0x83, 0xe5, 0x19, 0x61, 0x9b, 0x7d, 0x73, 0xd0, 0xd9, 0x7f, 0xea,
+	0xfe, 0x6b, 0xd6, 0x1d, 0x2d, 0x57, 0x23, 0x32, 0xa5, 0xfe, 0xfd, 0x84, 0x95, 0x3f, 0x84, 0x75,
+	0x04, 0x1e, 0x0a, 0x89, 0x62, 0x5c, 0xa5, 0xb9, 0xf3, 0x3f, 0x34, 0x1b, 0xfa, 0x58, 0x85, 0x29,
+	0x00, 0x8f, 0x73, 0xc3, 0x90, 0x51, 0x2e, 0x23, 0x4a, 0xe0, 0x94, 0x72, 0x98, 0x30, 0x61, 0x37,
+	0xfa, 0xe6, 0xa0, 0x3d, 0x74, 0x2f, 0xae, 0x7a, 0xc6, 0xef, 0xab, 0xde, 0x8b, 0x59, 0x24, 0xbf,
+	0x9e, 0x4c, 0xdc, 0x80, 0xa6, 0x5e, 0x40, 0x45, 0x4a, 0x45, 0xf1, 0xd9, 0x13, 0x61, 0xec, 0xc9,
+	0x73, 0x86, 0x85, 0x7b, 0x88, 0x03, 0x7f, 0x33, 0x67, 0x1b, 0xe7, 0x64, 0xef, 0x29, 0xff, 0xc0,
+	0x84, 0x15, 0x83, 0xee, 0x0d, 0x22, 0xda, 0x0a, 0x17, 0x76, 0x73, 0x25, 0xa1, 0x9d, 0xba, 0xd0,
+	0x71, 0x4e, 0x67, 0xbd, 0x01, 0x40, 0x25, 0x04, 0x23, 0x32, 0xa5, 0xc2, 0xbe, 0xdb, 0x6f, 0x0c,
+	0x3a, 0xfb, 0x76, 0x7d, 0x2a, 0x63, 0x4a, 0x13, 0x35, 0x90, 0x61, 0x53, 0xc9, 0xfa, 0x6d, 0x56,
+	0xec, 0x85, 0xf5, 0x0a, 0xd8, 0xaa, 0x36, 0x77, 0x07, 0x05, 0x41, 0x2a, 0x2b, 0x89, 0xf9, 0x29,
+	0x4a, 0xec, 0x56, 0xdf, 0x1c, 0x34, 0xfc, 0x6d, 0x85, 0x6b, 0xb5, 0x63, 0x82, 0xd8, 0xa8, 0x00,
+	0xad, 0xcf, 0x60, 0xb3, 0x1a, 0xff, 0xb2, 0xbb, 0x35, 0x1d, 0xcb, 0xb3, 0xba, 0x81, 0x43, 0x9c,
+	0xf9, 0x79, 0xe5, 0x27, 0x8e, 0x82, 0x18, 0xf3, 0xc2, 0xc9, 0xa3, 0xb0, 0x04, 0x96, 0x0d, 0x7d,
+	0x04, 0x1b, 0x55, 0x62, 0x95, 0xcd, 0xbd, 0xdb, 0x91, 0xae, 0x5f, 0x93, 0xaa, 0x38, 0x12, 0xb0,
+	0x9b, 0xa2, 0x0c, 0xe2, 0x10, 0x93, 0x82, 0x15, 0x22, 0x76, 0x9d, 0x47, 0x7b, 0xb5, 0x3c, 0x52,
+	0x94, 0xbd, 0x0b, 0x31, 0xc9, 0x75, 0xde, 0xb2, 0x32, 0x8f, 0x10, 0xec, 0xdc, 0xa4, 0xa6, 0xda,
+	0x00, 0xab, 0x5d, 0xb1, 0xba, 0x92, 0xea, 0xe9, 0x00, 0x6c, 0x87, 0x91, 0x90, 0x3c, 0x9a, 0x9c,
+	0xe8, 0x0b, 0x56, 0x66, 0xd6, 0xd1, 0x99, 0x6d, 0x55, 0xc1, 0x65, 0x64, 0xaf, 0x9b, 0xdf, 0x7f,
+	0xf6, 0x8c, 0xe1, 0xd1, 0xc5, 0xdc, 0x31, 0x2f, 0xe7, 0x8e, 0xf9, 0x67, 0xee, 0x98, 0xdf, 0x16,
+	0x8e, 0x71, 0xb9, 0x70, 0x8c, 0x5f, 0x0b, 0xc7, 0xf8, 0xe2, 0x56, 0x1c, 0xa9, 0x51, 0xef, 0x11,
+	0x2c, 0xcf, 0x28, 0x8f, 0xf5, 0xc6, 0xcb, 0x2a, 0x0f, 0x5f, 0xbb, 0x9b, 0xb4, 0xf4, 0x63, 0x3f,
+	0xf8, 0x1b, 0x00, 0x00, 0xff, 0xff, 0x54, 0xb8, 0x55, 0x93, 0x95, 0x04, 0x00, 0x00,
 }
 
 func (m *Params) Marshal() (dAtA []byte, err error) {
@@ -216,15 +193,10 @@ func (m *Params) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if m.DistributionEpochForLpsInBlocks != 0 {
-		i = encodeVarintParams(dAtA, i, uint64(m.DistributionEpochForLpsInBlocks))
+	if m.DistributionInterval != 0 {
+		i = encodeVarintParams(dAtA, i, uint64(m.DistributionInterval))
 		i--
-		dAtA[i] = 0x70
-	}
-	if m.DistributionEpochForStakersInBlocks != 0 {
-		i = encodeVarintParams(dAtA, i, uint64(m.DistributionEpochForStakersInBlocks))
-		i--
-		dAtA[i] = 0x68
+		dAtA[i] = 0x58
 	}
 	{
 		size := m.MaxEdenRewardAprLps.Size()
@@ -235,7 +207,7 @@ func (m *Params) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i = encodeVarintParams(dAtA, i, uint64(size))
 	}
 	i--
-	dAtA[i] = 0x62
+	dAtA[i] = 0x52
 	{
 		size := m.MaxEdenRewardAprStakers.Size()
 		i -= size
@@ -245,7 +217,7 @@ func (m *Params) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i = encodeVarintParams(dAtA, i, uint64(size))
 	}
 	i--
-	dAtA[i] = 0x5a
+	dAtA[i] = 0x4a
 	{
 		size, err := m.DexRewardsLps.MarshalToSizedBuffer(dAtA[:i])
 		if err != nil {
@@ -255,7 +227,7 @@ func (m *Params) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i = encodeVarintParams(dAtA, i, uint64(size))
 	}
 	i--
-	dAtA[i] = 0x52
+	dAtA[i] = 0x42
 	{
 		size, err := m.DexRewardsStakers.MarshalToSizedBuffer(dAtA[:i])
 		if err != nil {
@@ -265,11 +237,11 @@ func (m *Params) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i = encodeVarintParams(dAtA, i, uint64(size))
 	}
 	i--
-	dAtA[i] = 0x4a
-	if m.ElysStakeTrackingRate != 0 {
-		i = encodeVarintParams(dAtA, i, uint64(m.ElysStakeTrackingRate))
+	dAtA[i] = 0x3a
+	if m.ElysStakeSnapInterval != 0 {
+		i = encodeVarintParams(dAtA, i, uint64(m.ElysStakeSnapInterval))
 		i--
-		dAtA[i] = 0x40
+		dAtA[i] = 0x30
 	}
 	if len(m.PoolInfos) > 0 {
 		for iNdEx := len(m.PoolInfos) - 1; iNdEx >= 0; iNdEx-- {
@@ -282,7 +254,7 @@ func (m *Params) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 				i = encodeVarintParams(dAtA, i, uint64(size))
 			}
 			i--
-			dAtA[i] = 0x3a
+			dAtA[i] = 0x2a
 		}
 	}
 	{
@@ -294,7 +266,7 @@ func (m *Params) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i = encodeVarintParams(dAtA, i, uint64(size))
 	}
 	i--
-	dAtA[i] = 0x32
+	dAtA[i] = 0x22
 	{
 		size := m.RewardPortionForLps.Size()
 		i -= size
@@ -304,54 +276,30 @@ func (m *Params) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i = encodeVarintParams(dAtA, i, uint64(size))
 	}
 	i--
-	dAtA[i] = 0x2a
-	if m.WithdrawAddrEnabled {
-		i--
-		if m.WithdrawAddrEnabled {
-			dAtA[i] = 1
-		} else {
-			dAtA[i] = 0
-		}
-		i--
-		dAtA[i] = 0x20
-	}
-	{
-		size := m.CommunityTax.Size()
-		i -= size
-		if _, err := m.CommunityTax.MarshalTo(dAtA[i:]); err != nil {
-			return 0, err
-		}
-		i = encodeVarintParams(dAtA, i, uint64(size))
-	}
-	i--
 	dAtA[i] = 0x1a
-	if len(m.StakeIncentives) > 0 {
-		for iNdEx := len(m.StakeIncentives) - 1; iNdEx >= 0; iNdEx-- {
-			{
-				size, err := m.StakeIncentives[iNdEx].MarshalToSizedBuffer(dAtA[:i])
-				if err != nil {
-					return 0, err
-				}
-				i -= size
-				i = encodeVarintParams(dAtA, i, uint64(size))
+	if m.StakeIncentives != nil {
+		{
+			size, err := m.StakeIncentives.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
 			}
-			i--
-			dAtA[i] = 0x12
+			i -= size
+			i = encodeVarintParams(dAtA, i, uint64(size))
 		}
+		i--
+		dAtA[i] = 0x12
 	}
-	if len(m.LpIncentives) > 0 {
-		for iNdEx := len(m.LpIncentives) - 1; iNdEx >= 0; iNdEx-- {
-			{
-				size, err := m.LpIncentives[iNdEx].MarshalToSizedBuffer(dAtA[:i])
-				if err != nil {
-					return 0, err
-				}
-				i -= size
-				i = encodeVarintParams(dAtA, i, uint64(size))
+	if m.LpIncentives != nil {
+		{
+			size, err := m.LpIncentives.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
 			}
-			i--
-			dAtA[i] = 0xa
+			i -= size
+			i = encodeVarintParams(dAtA, i, uint64(size))
 		}
+		i--
+		dAtA[i] = 0xa
 	}
 	return len(dAtA) - i, nil
 }
@@ -373,22 +321,13 @@ func (m *Params) Size() (n int) {
 	}
 	var l int
 	_ = l
-	if len(m.LpIncentives) > 0 {
-		for _, e := range m.LpIncentives {
-			l = e.Size()
-			n += 1 + l + sovParams(uint64(l))
-		}
+	if m.LpIncentives != nil {
+		l = m.LpIncentives.Size()
+		n += 1 + l + sovParams(uint64(l))
 	}
-	if len(m.StakeIncentives) > 0 {
-		for _, e := range m.StakeIncentives {
-			l = e.Size()
-			n += 1 + l + sovParams(uint64(l))
-		}
-	}
-	l = m.CommunityTax.Size()
-	n += 1 + l + sovParams(uint64(l))
-	if m.WithdrawAddrEnabled {
-		n += 2
+	if m.StakeIncentives != nil {
+		l = m.StakeIncentives.Size()
+		n += 1 + l + sovParams(uint64(l))
 	}
 	l = m.RewardPortionForLps.Size()
 	n += 1 + l + sovParams(uint64(l))
@@ -400,8 +339,8 @@ func (m *Params) Size() (n int) {
 			n += 1 + l + sovParams(uint64(l))
 		}
 	}
-	if m.ElysStakeTrackingRate != 0 {
-		n += 1 + sovParams(uint64(m.ElysStakeTrackingRate))
+	if m.ElysStakeSnapInterval != 0 {
+		n += 1 + sovParams(uint64(m.ElysStakeSnapInterval))
 	}
 	l = m.DexRewardsStakers.Size()
 	n += 1 + l + sovParams(uint64(l))
@@ -411,11 +350,8 @@ func (m *Params) Size() (n int) {
 	n += 1 + l + sovParams(uint64(l))
 	l = m.MaxEdenRewardAprLps.Size()
 	n += 1 + l + sovParams(uint64(l))
-	if m.DistributionEpochForStakersInBlocks != 0 {
-		n += 1 + sovParams(uint64(m.DistributionEpochForStakersInBlocks))
-	}
-	if m.DistributionEpochForLpsInBlocks != 0 {
-		n += 1 + sovParams(uint64(m.DistributionEpochForLpsInBlocks))
+	if m.DistributionInterval != 0 {
+		n += 1 + sovParams(uint64(m.DistributionInterval))
 	}
 	return n
 }
@@ -484,8 +420,10 @@ func (m *Params) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.LpIncentives = append(m.LpIncentives, IncentiveInfo{})
-			if err := m.LpIncentives[len(m.LpIncentives)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+			if m.LpIncentives == nil {
+				m.LpIncentives = &IncentiveInfo{}
+			}
+			if err := m.LpIncentives.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
@@ -518,66 +456,14 @@ func (m *Params) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.StakeIncentives = append(m.StakeIncentives, IncentiveInfo{})
-			if err := m.StakeIncentives[len(m.StakeIncentives)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+			if m.StakeIncentives == nil {
+				m.StakeIncentives = &IncentiveInfo{}
+			}
+			if err := m.StakeIncentives.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
 		case 3:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field CommunityTax", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowParams
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthParams
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthParams
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if err := m.CommunityTax.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		case 4:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field WithdrawAddrEnabled", wireType)
-			}
-			var v int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowParams
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				v |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			m.WithdrawAddrEnabled = bool(v != 0)
-		case 5:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field RewardPortionForLps", wireType)
 			}
@@ -611,7 +497,7 @@ func (m *Params) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			iNdEx = postIndex
-		case 6:
+		case 4:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field RewardPortionForStakers", wireType)
 			}
@@ -645,7 +531,7 @@ func (m *Params) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			iNdEx = postIndex
-		case 7:
+		case 5:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field PoolInfos", wireType)
 			}
@@ -679,11 +565,11 @@ func (m *Params) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			iNdEx = postIndex
-		case 8:
+		case 6:
 			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field ElysStakeTrackingRate", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field ElysStakeSnapInterval", wireType)
 			}
-			m.ElysStakeTrackingRate = 0
+			m.ElysStakeSnapInterval = 0
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowParams
@@ -693,12 +579,12 @@ func (m *Params) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.ElysStakeTrackingRate |= int64(b&0x7F) << shift
+				m.ElysStakeSnapInterval |= int64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
-		case 9:
+		case 7:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field DexRewardsStakers", wireType)
 			}
@@ -731,7 +617,7 @@ func (m *Params) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			iNdEx = postIndex
-		case 10:
+		case 8:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field DexRewardsLps", wireType)
 			}
@@ -764,7 +650,7 @@ func (m *Params) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			iNdEx = postIndex
-		case 11:
+		case 9:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field MaxEdenRewardAprStakers", wireType)
 			}
@@ -798,7 +684,7 @@ func (m *Params) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			iNdEx = postIndex
-		case 12:
+		case 10:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field MaxEdenRewardAprLps", wireType)
 			}
@@ -832,11 +718,11 @@ func (m *Params) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			iNdEx = postIndex
-		case 13:
+		case 11:
 			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field DistributionEpochForStakersInBlocks", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field DistributionInterval", wireType)
 			}
-			m.DistributionEpochForStakersInBlocks = 0
+			m.DistributionInterval = 0
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowParams
@@ -846,26 +732,7 @@ func (m *Params) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.DistributionEpochForStakersInBlocks |= int64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		case 14:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field DistributionEpochForLpsInBlocks", wireType)
-			}
-			m.DistributionEpochForLpsInBlocks = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowParams
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.DistributionEpochForLpsInBlocks |= int64(b&0x7F) << shift
+				m.DistributionInterval |= int64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}

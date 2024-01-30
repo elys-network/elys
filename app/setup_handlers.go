@@ -21,10 +21,8 @@ import (
 	burnertypes "github.com/elys-network/elys/x/burner/types"
 	clocktypes "github.com/elys-network/elys/x/clock/types"
 	commitmenttypes "github.com/elys-network/elys/x/commitment/types"
-	incentivetypes "github.com/elys-network/elys/x/incentive/types"
 	leveragelptypes "github.com/elys-network/elys/x/leveragelp/types"
 	oracletypes "github.com/elys-network/elys/x/oracle/types"
-	parametertypes "github.com/elys-network/elys/x/parameter/types"
 	perpetualtypes "github.com/elys-network/elys/x/perpetual/types"
 	stablestaketypes "github.com/elys-network/elys/x/stablestake/types"
 	tokenomicstypes "github.com/elys-network/elys/x/tokenomics/types"
@@ -68,8 +66,6 @@ func setUpgradeHandler(app *ElysApp) {
 			keyTable = burnertypes.ParamKeyTable() //nolint:staticcheck
 		case commitmenttypes.ModuleName:
 			keyTable = commitmenttypes.ParamKeyTable() //nolint:staticcheck
-		case incentivetypes.ModuleName:
-			keyTable = incentivetypes.ParamKeyTable() //nolint:staticcheck
 		case perpetualtypes.ModuleName:
 			keyTable = perpetualtypes.ParamKeyTable() //nolint:staticcheck
 		case leveragelptypes.ModuleName:
@@ -84,8 +80,6 @@ func setUpgradeHandler(app *ElysApp) {
 			keyTable = transferhooktypes.ParamKeyTable() //nolint:staticcheck
 		case stablestaketypes.ModuleName:
 			keyTable = stablestaketypes.ParamKeyTable() //nolint:staticcheck
-		case parametertypes.ModuleName:
-			keyTable = parametertypes.ParamKeyTable() //nolint:staticcheck
 		}
 
 		if !subspace.HasKeyTable() {
