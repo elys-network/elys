@@ -54,11 +54,13 @@ func PerformMsgOpen(f *marginkeeper.Keeper, ctx sdk.Context, contractAddr sdk.Ac
 		return nil, errorsmod.Wrap(err, "failed validating msgMsgOpen")
 	}
 
-	_, err := msgServer.Open(sdk.WrapSDKContext(ctx), msgMsgOpen) // Discard the response because it's empty
+	res, err := msgServer.Open(sdk.WrapSDKContext(ctx), msgMsgOpen) // Discard the response because it's empty
 	if err != nil {
 		return nil, errorsmod.Wrap(err, "margin open msg")
 	}
 
-	resp := &margintypes.MsgOpenResponse{}
+	resp := &margintypes.MsgOpenResponse{
+		Id: res.Id,
+	}
 	return resp, nil
 }
