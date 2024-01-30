@@ -6,7 +6,7 @@ import (
 )
 
 func (k Keeper) OpenConsolidateLong(ctx sdk.Context, poolId uint64, mtp *types.MTP, msg *types.MsgOpen, baseCurrency string) (*types.MTP, error) {
-	if mtp.Leverage != msg.Leverage {
+	if !mtp.Leverage.Equal(msg.Leverage) {
 		return nil, types.ErrInvalidLeverage
 	}
 

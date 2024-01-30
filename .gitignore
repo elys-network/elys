@@ -19,3 +19,4 @@ scripts/csv/node_modules
 scripts/csv/.env
 price-feeder
 *-skip
+__debug*

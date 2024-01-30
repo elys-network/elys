@@ -54,11 +54,13 @@ func PerformMsgOpen(f *perpetualkeeper.Keeper, ctx sdk.Context, contractAddr sdk
 		return nil, errorsmod.Wrap(err, "failed validating msgMsgOpen")
 	}
 
-	_, err := msgServer.Open(sdk.WrapSDKContext(ctx), msgMsgOpen) // Discard the response because it's empty
+	res, err := msgServer.Open(sdk.WrapSDKContext(ctx), msgMsgOpen) // Discard the response because it's empty
 	if err != nil {
 		return nil, errorsmod.Wrap(err, "perpetual open msg")
 	}
 
-	resp := &perpetualtypes.MsgOpenResponse{}
+	resp := &perpetualtypes.MsgOpenResponse{
+		Id: res.Id,
+	}
 	return resp, nil
 }

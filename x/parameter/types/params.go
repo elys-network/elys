@@ -2,24 +2,8 @@ package types
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
 	"gopkg.in/yaml.v2"
 )
-
-var _ paramtypes.ParamSet = (*Params)(nil)
-
-// Parameter keys
-var (
-	KeyMinCommissionRate = []byte("MinCommissionRate")
-	KeyMaxVotingPower    = []byte("MaxVotingPower")
-	KeyMinSelfDelegation = []byte("MinSelfDelegation")
-	KeyBrokerAddress     = []byte("BrokerAddress")
-)
-
-// ParamKeyTable the param key table for launch module
-func ParamKeyTable() paramtypes.KeyTable {
-	return paramtypes.NewKeyTable().RegisterParamSet(&Params{})
-}
 
 // NewParams creates a new Params instance
 func NewParams(minCommissionRate sdk.Dec, maxVotingPower sdk.Dec, minSelfDelegation sdk.Int, brokerAddress string) Params {
@@ -39,16 +23,6 @@ func DefaultParams() Params {
 		sdk.OneInt(),
 		"elys1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqnrec2l",
 	)
-}
-
-// ParamSetPairs get the params.ParamSet
-func (p *Params) ParamSetPairs() paramtypes.ParamSetPairs {
-	return paramtypes.ParamSetPairs{
-		paramtypes.NewParamSetPair(KeyMinCommissionRate, &p.MinCommissionRate, validateMinCommissionRate),
-		paramtypes.NewParamSetPair(KeyMaxVotingPower, &p.MaxVotingPower, validateMaxVotingPower),
-		paramtypes.NewParamSetPair(KeyMinSelfDelegation, &p.MinSelfDelegation, validateMinSelfDelegation),
-		paramtypes.NewParamSetPair(KeyBrokerAddress, &p.BrokerAddress, validateBrokerAddress),
-	}
 }
 
 // Validate validates the set of params
