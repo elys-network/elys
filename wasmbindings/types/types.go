@@ -28,12 +28,12 @@ import (
 	incentivetypes "github.com/elys-network/elys/x/incentive/types"
 	leveragelpkeeper "github.com/elys-network/elys/x/leveragelp/keeper"
 	leveragelptypes "github.com/elys-network/elys/x/leveragelp/types"
-	marginkeeper "github.com/elys-network/elys/x/margin/keeper"
-	margintypes "github.com/elys-network/elys/x/margin/types"
 	oraclekeeper "github.com/elys-network/elys/x/oracle/keeper"
 	oracletypes "github.com/elys-network/elys/x/oracle/types"
 	parameterkeeper "github.com/elys-network/elys/x/parameter/keeper"
 	parametertypes "github.com/elys-network/elys/x/parameter/types"
+	perpetualkeeper "github.com/elys-network/elys/x/perpetual/keeper"
+	perpetualtypes "github.com/elys-network/elys/x/perpetual/types"
 	stablestakekeeper "github.com/elys-network/elys/x/stablestake/keeper"
 	stablestaketypes "github.com/elys-network/elys/x/stablestake/types"
 	tokenomicskeeper "github.com/elys-network/elys/x/tokenomics/keeper"
@@ -73,7 +73,7 @@ type QueryPlugin struct {
 	epochsKeeper        *epochskeeper.Keeper
 	incentiveKeeper     *incentivekeeper.Keeper
 	leveragelpKeeper    *leveragelpkeeper.Keeper
-	marginKeeper        *marginkeeper.Keeper
+	perpetualKeeper     *perpetualkeeper.Keeper
 	oracleKeeper        *oraclekeeper.Keeper
 	parameterKeeper     *parameterkeeper.Keeper
 	stablestakeKeeper   *stablestakekeeper.Keeper
@@ -168,18 +168,18 @@ type ElysQuery struct {
 	LeveragelpPools                    *leveragelptypes.QueryAllPoolRequest        `json:"leveragelp_pools,omitempty"`
 	LeveragelpPosition                 *leveragelptypes.PositionRequest            `json:"leveragelp_position,omitempty"`
 
-	// margin queriers
-	MarginParams                 *margintypes.ParamsRequest              `json:"margin_params,omitempty"`
-	MarginQueryPositions         *margintypes.PositionsRequest           `json:"margin_query_positions,omitempty"`
-	MarginQueryPositionsByPool   *margintypes.PositionsByPoolRequest     `json:"margin_query_positions_by_pool,omitempty"`
-	MarginGetStatus              *margintypes.StatusRequest              `json:"margin_get_status,omitempty"`
-	MarginGetPositionsForAddress *margintypes.PositionsForAddressRequest `json:"margin_get_positions_for_address,omitempty"`
-	MarginGetWhitelist           *margintypes.WhitelistRequest           `json:"margin_get_whitelist,omitempty"`
-	MarginIsWhitelisted          *margintypes.IsWhitelistedRequest       `json:"margin_is_whitelisted,omitempty"`
-	MarginPool                   *margintypes.QueryGetPoolRequest        `json:"margin_pool,omitempty"`
-	MarginPools                  *margintypes.QueryAllPoolRequest        `json:"margin_pools,omitempty"`
-	MarginMTP                    *margintypes.MTPRequest                 `json:"margin_mtp,omitempty"`
-	MarginOpenEstimation         *margintypes.QueryOpenEstimationRequest `json:"margin_open_estimation,omitempty"`
+	// perpetual queriers
+	PerpetualParams                 *perpetualtypes.ParamsRequest              `json:"perpetual_params,omitempty"`
+	PerpetualQueryPositions         *perpetualtypes.PositionsRequest           `json:"perpetual_query_positions,omitempty"`
+	PerpetualQueryPositionsByPool   *perpetualtypes.PositionsByPoolRequest     `json:"perpetual_query_positions_by_pool,omitempty"`
+	PerpetualGetStatus              *perpetualtypes.StatusRequest              `json:"perpetual_get_status,omitempty"`
+	PerpetualGetPositionsForAddress *perpetualtypes.PositionsForAddressRequest `json:"perpetual_get_positions_for_address,omitempty"`
+	PerpetualGetWhitelist           *perpetualtypes.WhitelistRequest           `json:"perpetual_get_whitelist,omitempty"`
+	PerpetualIsWhitelisted          *perpetualtypes.IsWhitelistedRequest       `json:"perpetual_is_whitelisted,omitempty"`
+	PerpetualPool                   *perpetualtypes.QueryGetPoolRequest        `json:"perpetual_pool,omitempty"`
+	PerpetualPools                  *perpetualtypes.QueryAllPoolRequest        `json:"perpetual_pools,omitempty"`
+	PerpetualMTP                    *perpetualtypes.MTPRequest                 `json:"perpetual_mtp,omitempty"`
+	PerpetualOpenEstimation         *perpetualtypes.QueryOpenEstimationRequest `json:"perpetual_open_estimation,omitempty"`
 
 	// oracle queriers
 	OracleParams            *oracletypes.QueryParamsRequest            `json:"oracle_params,omitempty"`
@@ -225,7 +225,7 @@ type CustomMessenger struct {
 	epochs           *epochskeeper.Keeper
 	incentive        *incentivekeeper.Keeper
 	leveragelp       *leveragelpkeeper.Keeper
-	margin           *marginkeeper.Keeper
+	perpetual        *perpetualkeeper.Keeper
 	oracle           *oraclekeeper.Keeper
 	parameter        *parameterkeeper.Keeper
 	stablestake      *stablestakekeeper.Keeper
@@ -274,9 +274,9 @@ type ElysMsg struct {
 	LeveragelpOpen  *leveragelptypes.MsgOpen  `json:"leveragelp_open,omitempty"`
 	LeveragelpClose *leveragelptypes.MsgClose `json:"leveragelp_close,omitempty"`
 
-	// margin messages
-	MarginOpen  *margintypes.MsgOpen  `json:"margin_open,omitempty"`
-	MarginClose *margintypes.MsgClose `json:"margin_close,omitempty"`
+	// perpetual messages
+	PerpetualOpen  *perpetualtypes.MsgOpen  `json:"perpetual_open,omitempty"`
+	PerpetualClose *perpetualtypes.MsgClose `json:"perpetual_close,omitempty"`
 
 	// oracle messages
 	// parameter messages

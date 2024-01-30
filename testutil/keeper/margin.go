@@ -12,12 +12,12 @@ import (
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/address"
-	"github.com/elys-network/elys/x/margin/keeper"
-	"github.com/elys-network/elys/x/margin/types"
+	"github.com/elys-network/elys/x/perpetual/keeper"
+	"github.com/elys-network/elys/x/perpetual/types"
 	"github.com/stretchr/testify/require"
 )
 
-func MarginKeeper(t testing.TB) (*keeper.Keeper, sdk.Context) {
+func PerpetualKeeper(t testing.TB) (*keeper.Keeper, sdk.Context) {
 	storeKey := sdk.NewKVStoreKey(types.StoreKey)
 	memStoreKey := storetypes.NewMemoryStoreKey(types.MemStoreKey)
 

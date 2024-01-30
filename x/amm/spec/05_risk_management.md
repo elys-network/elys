@@ -44,7 +44,7 @@ Initial Major molecule token price = $1
 
 Number of The fee is always swapped to USDC and sent to the major molecule fee wallet which stores all the revenue.
 
-Price of Major molecule token at any point = (USD value of all assets within the major molecule +/- Margin Gains/Losses)/circulating supply of Major Molecule Tokens
+Price of Major molecule token at any point = (USD value of all assets within the major molecule +/- Perpetual Gains/Losses)/circulating supply of Major Molecule Tokens
 ```
 
 ### Slippage

@@ -468,7 +468,7 @@ func (k Keeper) UpdateCommitments(ctx sdk.Context, creator string, commitments *
 	// All dex revenue are collected to incentive module in USDC
 	// Gas fees (Elys) are also converted into USDC and collected into total dex revenue wallet of incentive module.
 	// Update USDC balances in the Commitments structure.
-	// These are the rewards from each pool, margin, gas fee.
+	// These are the rewards from each pool, perpetual, gas fee.
 	commitments.AddRewardsUnclaimed(sdk.NewCoin(baseCurrency, dexRewards))
 
 	// Save the updated Commitments

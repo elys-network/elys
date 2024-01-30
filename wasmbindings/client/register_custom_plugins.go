@@ -26,12 +26,12 @@ import (
 	incentivekeeper "github.com/elys-network/elys/x/incentive/keeper"
 	leveragelpclientwasm "github.com/elys-network/elys/x/leveragelp/client/wasm"
 	leveragelpkeeper "github.com/elys-network/elys/x/leveragelp/keeper"
-	marginclientwasm "github.com/elys-network/elys/x/margin/client/wasm"
-	marginkeeper "github.com/elys-network/elys/x/margin/keeper"
 	oracleclientwasm "github.com/elys-network/elys/x/oracle/client/wasm"
 	oraclekeeper "github.com/elys-network/elys/x/oracle/keeper"
 	parameterclientwasm "github.com/elys-network/elys/x/parameter/client/wasm"
 	parameterkeeper "github.com/elys-network/elys/x/parameter/keeper"
+	perpetualclientwasm "github.com/elys-network/elys/x/perpetual/client/wasm"
+	perpetualkeeper "github.com/elys-network/elys/x/perpetual/keeper"
 	stablestakeclientwasm "github.com/elys-network/elys/x/stablestake/client/wasm"
 	stablestakekeeper "github.com/elys-network/elys/x/stablestake/keeper"
 	tokenomicsclientwasm "github.com/elys-network/elys/x/tokenomics/client/wasm"
@@ -52,7 +52,7 @@ func RegisterCustomPlugins(
 	epochs *epochskeeper.Keeper,
 	incentive *incentivekeeper.Keeper,
 	leveragelp *leveragelpkeeper.Keeper,
-	margin *marginkeeper.Keeper,
+	perpetual *perpetualkeeper.Keeper,
 	oracle *oraclekeeper.Keeper,
 	parameter *parameterkeeper.Keeper,
 	stablestake *stablestakekeeper.Keeper,
@@ -63,7 +63,7 @@ func RegisterCustomPlugins(
 	accountedpoolQuerier := accountedpoolclientwasm.NewQuerier(accountedpool)
 	accountedpoolMessenger := accountedpoolclientwasm.NewMessenger(accountedpool)
 
-	ammQuerier := ammclientwasm.NewQuerier(amm, bank, commitment, assetprofile, margin, incentive, oracle, leveragelp, accountedpool, stablestake)
+	ammQuerier := ammclientwasm.NewQuerier(amm, bank, commitment, assetprofile, perpetual, incentive, oracle, leveragelp, accountedpool, stablestake)
 	ammMessenger := ammclientwasm.NewMessenger(amm)
 
 	assetprofileQuerier := assetprofileclientwasm.NewQuerier(assetprofile)
@@ -90,8 +90,8 @@ func RegisterCustomPlugins(
 	leveragelpQuerier := leveragelpclientwasm.NewQuerier(leveragelp)
 	leveragelpMessenger := leveragelpclientwasm.NewMessenger(leveragelp, parameter)
 
-	marginQuerier := marginclientwasm.NewQuerier(margin)
-	marginMessenger := marginclientwasm.NewMessenger(margin, parameter)
+	perpetualQuerier := perpetualclientwasm.NewQuerier(perpetual)
+	perpetualMessenger := perpetualclientwasm.NewMessenger(perpetual, parameter)
 
 	oracleQuerier := oracleclientwasm.NewQuerier(oracle)
 	oracleMessenger := oracleclientwasm.NewMessenger(oracle)
@@ -119,7 +119,7 @@ func RegisterCustomPlugins(
 		epochsQuerier,
 		incentiveQuerier,
 		leveragelpQuerier,
-		marginQuerier,
+		perpetualQuerier,
 		oracleQuerier,
 		parameterQuerier,
 		stablestakeQuerier,
@@ -140,7 +140,7 @@ func RegisterCustomPlugins(
 		epochs,
 		incentive,
 		leveragelp,
-		margin,
+		perpetual,
 		oracle,
 		parameter,
 		stablestake,
@@ -164,7 +164,7 @@ func RegisterCustomPlugins(
 		epochsMessenger,
 		incentiveMessenger,
 		leveragelpMessenger,
-		marginMessenger,
+		perpetualMessenger,
 		oracleMessenger,
 		parameterMessenger,
 		stablestakeMessenger,
@@ -186,7 +186,7 @@ func RegisterCustomPlugins(
 			epochs,
 			incentive,
 			leveragelp,
-			margin,
+			perpetual,
 			oracle,
 			parameter,
 			stablestake,

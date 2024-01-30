@@ -154,9 +154,9 @@ import (
 	parametermodulekeeper "github.com/elys-network/elys/x/parameter/keeper"
 	parametermoduletypes "github.com/elys-network/elys/x/parameter/types"
 
-	marginmodule "github.com/elys-network/elys/x/margin"
-	marginmodulekeeper "github.com/elys-network/elys/x/margin/keeper"
-	marginmoduletypes "github.com/elys-network/elys/x/margin/types"
+	perpetualmodule "github.com/elys-network/elys/x/perpetual"
+	perpetualmodulekeeper "github.com/elys-network/elys/x/perpetual/keeper"
+	perpetualmoduletypes "github.com/elys-network/elys/x/perpetual/types"
 
 	accountedpoolmodule "github.com/elys-network/elys/x/accountedpool"
 	accountedpoolmodulekeeper "github.com/elys-network/elys/x/accountedpool/keeper"
@@ -279,7 +279,7 @@ var (
 		burnermodule.AppModuleBasic{},
 		ammmodule.AppModuleBasic{},
 		parametermodule.AppModuleBasic{},
-		marginmodule.AppModuleBasic{},
+		perpetualmodule.AppModuleBasic{},
 		accountedpoolmodule.AppModuleBasic{},
 		transferhook.AppModuleBasic{},
 		clockmodule.AppModuleBasic{},
@@ -379,7 +379,7 @@ type ElysApp struct {
 	BurnerKeeper       burnermodulekeeper.Keeper
 	AmmKeeper          ammmodulekeeper.Keeper
 	ParameterKeeper    parametermodulekeeper.Keeper
-	MarginKeeper       marginmodulekeeper.Keeper
+	PerpetualKeeper    perpetualmodulekeeper.Keeper
 	TransferhookKeeper transferhookkeeper.Keeper
 	ContractKeeper     *wasmmodulekeeper.PermissionedKeeper
 	ClockKeeper        clockmodulekeeper.Keeper
@@ -459,7 +459,7 @@ func NewElysApp(
 		accountedpoolmoduletypes.StoreKey,
 		ammmoduletypes.StoreKey,
 		parametermoduletypes.StoreKey,
-		marginmoduletypes.StoreKey,
+		perpetualmoduletypes.StoreKey,
 		transferhooktypes.StoreKey,
 		clockmoduletypes.StoreKey,
 		stablestaketypes.StoreKey,
@@ -835,7 +835,7 @@ func NewElysApp(
 			&app.EpochsKeeper,
 			&app.IncentiveKeeper,
 			&app.LeveragelpKeeper,
-			&app.MarginKeeper,
+			&app.PerpetualKeeper,
 			&app.OracleKeeper,
 			&app.ParameterKeeper,
 			&app.StablestakeKeeper,
@@ -916,10 +916,10 @@ func NewElysApp(
 	}
 	govKeeper.SetLegacyRouter(govRouter)
 
-	app.MarginKeeper = *marginmodulekeeper.NewKeeper(
+	app.PerpetualKeeper = *perpetualmodulekeeper.NewKeeper(
 		appCodec,
-		keys[marginmoduletypes.StoreKey],
-		keys[marginmoduletypes.MemStoreKey],
+		keys[perpetualmoduletypes.StoreKey],
+		keys[perpetualmoduletypes.MemStoreKey],
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 		app.AmmKeeper,
 		app.BankKeeper,
@@ -997,7 +997,7 @@ func NewElysApp(
 		ammmoduletypes.NewMultiAmmHooks(
 			// insert amm hooks receivers here
 			app.IncentiveKeeper.AmmHooks(),
-			app.MarginKeeper.AmmHooks(),
+			app.PerpetualKeeper.AmmHooks(),
 			app.LeveragelpKeeper.AmmHooks(),
 		),
 	)
@@ -1009,18 +1009,18 @@ func NewElysApp(
 			app.OracleKeeper.Hooks(),
 			app.CommitmentKeeper.Hooks(),
 			app.BurnerKeeper.Hooks(),
-			app.MarginKeeper.Hooks(),
+			app.PerpetualKeeper.Hooks(),
 		),
 	)
 	epochsModule := epochsmodule.NewAppModule(appCodec, app.EpochsKeeper)
 
-	app.MarginKeeper = *app.MarginKeeper.SetHooks(
-		marginmoduletypes.NewMultiMarginHooks(
-			// insert margin hooks receivers here
-			app.AccountedPoolKeeper.MarginHooks(),
+	app.PerpetualKeeper = *app.PerpetualKeeper.SetHooks(
+		perpetualmoduletypes.NewMultiPerpetualHooks(
+			// insert perpetual hooks receivers here
+			app.AccountedPoolKeeper.PerpetualHooks(),
 		),
 	)
-	marginModule := marginmodule.NewAppModule(appCodec, app.MarginKeeper, app.AccountKeeper, app.BankKeeper)
+	perpetualModule := perpetualmodule.NewAppModule(appCodec, app.PerpetualKeeper, app.AccountKeeper, app.BankKeeper)
 
 	/**** Module Options ****/
 
@@ -1065,7 +1065,7 @@ func NewElysApp(
 		burnerModule,
 		ammModule,
 		parameterModule,
-		marginModule,
+		perpetualModule,
 		accountedPoolModule,
 		transferhookModule,
 		clockModule,
@@ -1111,7 +1111,7 @@ func NewElysApp(
 		burnermoduletypes.ModuleName,
 		ammmoduletypes.ModuleName,
 		parametermoduletypes.ModuleName,
-		marginmoduletypes.ModuleName,
+		perpetualmoduletypes.ModuleName,
 		wasmmodule.ModuleName,
 		accountedpoolmoduletypes.ModuleName,
 		transferhooktypes.ModuleName,
@@ -1152,7 +1152,7 @@ func NewElysApp(
 		burnermoduletypes.ModuleName,
 		ammmoduletypes.ModuleName,
 		parametermoduletypes.ModuleName,
-		marginmoduletypes.ModuleName,
+		perpetualmoduletypes.ModuleName,
 		wasmmoduletypes.ModuleName,
 		accountedpoolmoduletypes.ModuleName,
 		transferhooktypes.ModuleName,
@@ -1197,7 +1197,7 @@ func NewElysApp(
 		tokenomicsmoduletypes.ModuleName,
 		burnermoduletypes.ModuleName,
 		ammmoduletypes.ModuleName,
-		marginmoduletypes.ModuleName,
+		perpetualmoduletypes.ModuleName,
 		wasmmoduletypes.ModuleName,
 		accountedpoolmoduletypes.ModuleName,
 		transferhooktypes.ModuleName,
@@ -1494,7 +1494,7 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(tokenomicsmoduletypes.ModuleName)
 	paramsKeeper.Subspace(burnermoduletypes.ModuleName)
 	paramsKeeper.Subspace(ammmoduletypes.ModuleName)
-	paramsKeeper.Subspace(marginmoduletypes.ModuleName)
+	paramsKeeper.Subspace(perpetualmoduletypes.ModuleName)
 	paramsKeeper.Subspace(transferhooktypes.ModuleName)
 	paramsKeeper.Subspace(clockmoduletypes.ModuleName)
 	paramsKeeper.Subspace(stablestaketypes.ModuleName)

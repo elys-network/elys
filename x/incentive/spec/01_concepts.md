@@ -12,7 +12,7 @@ The Incentive module is designed to reward the ecosystem participants including 
 
 2. Non-inflationary rewards
 
-- Fees that are collected from amm, margin and transaction gas fees.
+- Fees that are collected from amm, perpetual and transaction gas fees.
 
 3. Functions
 

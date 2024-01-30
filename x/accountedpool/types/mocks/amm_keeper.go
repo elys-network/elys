@@ -66,50 +66,6 @@ func (_c *AmmKeeper_GetAllPool_Call) RunAndReturn(run func(types.Context) []ammt
 	return _c
 }
 
-// GetAllPoolIdsWithDenom provides a mock function with given fields: _a0, _a1
-func (_m *AmmKeeper) GetAllPoolIdsWithDenom(_a0 types.Context, _a1 string) []uint64 {
-	ret := _m.Called(_a0, _a1)
-
-	var r0 []uint64
-	if rf, ok := ret.Get(0).(func(types.Context, string) []uint64); ok {
-		r0 = rf(_a0, _a1)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).([]uint64)
-		}
-	}
-
-	return r0
-}
-
-// AmmKeeper_GetAllPoolIdsWithDenom_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetAllPoolIdsWithDenom'
-type AmmKeeper_GetAllPoolIdsWithDenom_Call struct {
-	*mock.Call
-}
-
-// GetAllPoolIdsWithDenom is a helper method to define mock.On call
-//   - _a0 types.Context
-//   - _a1 string
-func (_e *AmmKeeper_Expecter) GetAllPoolIdsWithDenom(_a0 interface{}, _a1 interface{}) *AmmKeeper_GetAllPoolIdsWithDenom_Call {
-	return &AmmKeeper_GetAllPoolIdsWithDenom_Call{Call: _e.mock.On("GetAllPoolIdsWithDenom", _a0, _a1)}
-}
-
-func (_c *AmmKeeper_GetAllPoolIdsWithDenom_Call) Run(run func(_a0 types.Context, _a1 string)) *AmmKeeper_GetAllPoolIdsWithDenom_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(types.Context), args[1].(string))
-	})
-	return _c
-}
-
-func (_c *AmmKeeper_GetAllPoolIdsWithDenom_Call) Return(_a0 []uint64) *AmmKeeper_GetAllPoolIdsWithDenom_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *AmmKeeper_GetAllPoolIdsWithDenom_Call) RunAndReturn(run func(types.Context, string) []uint64) *AmmKeeper_GetAllPoolIdsWithDenom_Call {
-	_c.Call.Return(run)
-	return _c
-}
 
 // GetPool provides a mock function with given fields: _a0, _a1
 func (_m *AmmKeeper) GetPool(_a0 types.Context, _a1 uint64) (ammtypes.Pool, bool) {

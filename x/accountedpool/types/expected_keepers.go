@@ -4,7 +4,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
-	margintypes "github.com/elys-network/elys/x/margin/types"
+	perpetualtypes "github.com/elys-network/elys/x/perpetual/types"
 )
 
 // AccountKeeper defines the expected account keeper used for simulations (noalias)
@@ -17,8 +17,6 @@ type AccountKeeper interface {
 //
 //go:generate mockery --srcpkg . --name AmmKeeper --structname AmmKeeper --filename amm_keeper.go --with-expecter
 type AmmKeeper interface {
-	// Get pool Ids that contains the denom in pool assets
-	GetAllPoolIdsWithDenom(sdk.Context, string) []uint64
 	// GetPool returns a pool from its index
 	GetPool(sdk.Context, uint64) (ammtypes.Pool, bool)
 	// Get all pools
@@ -44,12 +42,12 @@ type BankKeeper interface {
 	HasBalance(ctx sdk.Context, addr sdk.AccAddress, amt sdk.Coin) bool
 }
 
-// MarginKeeper defines the expected interface needed
+// PerpetualKeeper defines the expected interface needed
 //
-//go:generate mockery --srcpkg . --name MarginKeeper --structname MarginKeeper --filename margin_keeper.go --with-expecter
-type MarginKeeper interface {
-	GetPool(ctx sdk.Context, poolId uint64) (margintypes.Pool, bool)
+//go:generate mockery --srcpkg . --name PerpetualKeeper --structname PerpetualKeeper --filename perpetual_keeper.go --with-expecter
+type PerpetualKeeper interface {
+	GetPool(ctx sdk.Context, poolId uint64) (perpetualtypes.Pool, bool)
 	IsPoolEnabled(ctx sdk.Context, poolId uint64) bool
 	IsPoolClosed(ctx sdk.Context, poolId uint64) bool
-	GetAllMTPs(ctx sdk.Context) []margintypes.MTP
+	GetAllMTPs(ctx sdk.Context) []perpetualtypes.MTP
 }

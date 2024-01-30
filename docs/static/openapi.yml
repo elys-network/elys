@@ -40822,1377 +40822,6 @@ paths:
           type: boolean
       tags:
         - Query
-  /elys-network/elys/margin/is-whitelisted:
-    get:
-      summary: Is an address whitelisted?
-      operationId: ElysMarginIsWhitelisted
-      responses:
-        '200':
-          description: A successful response.
-          schema:
-            type: object
-            properties:
-              address:
-                type: string
-              is_whitelisted:
-                type: boolean
-        default:
-          description: An unexpected error response.
-          schema:
-            type: object
-            properties:
-              code:
-                type: integer
-                format: int32
-              message:
-                type: string
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    '@type':
-                      type: string
-                  additionalProperties: {}
-      parameters:
-        - name: address
-          in: query
-          required: false
-          type: string
-      tags:
-        - Query
-  /elys-network/elys/margin/mtp/{address}/{id}:
-    get:
-      summary: Queries a single mtp position given its address and id.
-      operationId: ElysMarginMTP
-      responses:
-        '200':
-          description: A successful response.
-          schema:
-            type: object
-            properties:
-              mtp:
-                type: object
-                properties:
-                  address:
-                    type: string
-                  collateral_asset:
-                    type: string
-                  trading_asset:
-                    type: string
-                  liabilities_asset:
-                    type: string
-                  custody_asset:
-                    type: string
-                  collateral:
-                    type: string
-                  liabilities:
-                    type: string
-                  borrow_interest_paid_collateral:
-                    type: string
-                  borrow_interest_paid_custody:
-                    type: string
-                  borrow_interest_unpaid_collateral:
-                    type: string
-                  custody:
-                    type: string
-                  take_profit_liabilities:
-                    type: string
-                  take_profit_custody:
-                    type: string
-                  leverage:
-                    type: string
-                  mtp_health:
-                    type: string
-                  position:
-                    type: string
-                    enum:
-                      - UNSPECIFIED
-                      - LONG
-                      - SHORT
-                    default: UNSPECIFIED
-                  id:
-                    type: string
-                    format: uint64
-                  amm_pool_id:
-                    type: string
-                    format: uint64
-                  consolidate_leverage:
-                    type: string
-                  sum_collateral:
-                    type: string
-                  take_profit_price:
-                    type: string
-                  take_profit_borrow_rate:
-                    type: string
-                  funding_fee_paid_collateral:
-                    type: string
-                    title: funding fee paid
-                  funding_fee_paid_custody:
-                    type: string
-                  funding_fee_received_collateral:
-                    type: string
-                    title: funding fee received
-                  funding_fee_received_custody:
-                    type: string
-                  open_price:
-                    type: string
-        default:
-          description: An unexpected error response.
-          schema:
-            type: object
-            properties:
-              code:
-                type: integer
-                format: int32
-              message:
-                type: string
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    '@type':
-                      type: string
-                  additionalProperties: {}
-      parameters:
-        - name: address
-          in: path
-          required: true
-          type: string
-        - name: id
-          in: path
-          required: true
-          type: string
-          format: uint64
-      tags:
-        - Query
-  /elys-network/elys/margin/mtps-by-pool/{amm_pool_id}/{pagination.key}:
-    get:
-      summary: Queries a list of mtp positions by pool.
-      operationId: ElysMarginGetPositionsByPool
-      responses:
-        '200':
-          description: A successful response.
-          schema:
-            type: object
-            properties:
-              mtps:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    address:
-                      type: string
-                    collateral_asset:
-                      type: string
-                    trading_asset:
-                      type: string
-                    liabilities_asset:
-                      type: string
-                    custody_asset:
-                      type: string
-                    collateral:
-                      type: string
-                    liabilities:
-                      type: string
-                    borrow_interest_paid_collateral:
-                      type: string
-                    borrow_interest_paid_custody:
-                      type: string
-                    borrow_interest_unpaid_collateral:
-                      type: string
-                    custody:
-                      type: string
-                    take_profit_liabilities:
-                      type: string
-                    take_profit_custody:
-                      type: string
-                    leverage:
-                      type: string
-                    mtp_health:
-                      type: string
-                    position:
-                      type: string
-                      enum:
-                        - UNSPECIFIED
-                        - LONG
-                        - SHORT
-                      default: UNSPECIFIED
-                    id:
-                      type: string
-                      format: uint64
-                    amm_pool_id:
-                      type: string
-                      format: uint64
-                    consolidate_leverage:
-                      type: string
-                    sum_collateral:
-                      type: string
-                    take_profit_price:
-                      type: string
-                    take_profit_borrow_rate:
-                      type: string
-                    funding_fee_paid_collateral:
-                      type: string
-                      title: funding fee paid
-                    funding_fee_paid_custody:
-                      type: string
-                    funding_fee_received_collateral:
-                      type: string
-                      title: funding fee received
-                    funding_fee_received_custody:
-                      type: string
-                    open_price:
-                      type: string
-              pagination:
-                type: object
-                properties:
-                  next_key:
-                    type: string
-                    format: byte
-                    description: |-
-                      next_key is the key to be passed to PageRequest.key to
-                      query the next page most efficiently. It will be empty if
-                      there are no more results.
-                  total:
-                    type: string
-                    format: uint64
-                    title: >-
-                      total is total number of results available if
-                      PageRequest.count_total
-
-                      was set, its value is undefined otherwise
-                description: >-
-                  PageResponse is to be embedded in gRPC response messages where
-                  the
-
-                  corresponding request message has used PageRequest.
-
-                   message SomeResponse {
-                           repeated Bar results = 1;
-                           PageResponse page = 2;
-                   }
-        default:
-          description: An unexpected error response.
-          schema:
-            type: object
-            properties:
-              code:
-                type: integer
-                format: int32
-              message:
-                type: string
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    '@type':
-                      type: string
-                  additionalProperties: {}
-      parameters:
-        - name: amm_pool_id
-          in: path
-          required: true
-          type: string
-          format: uint64
-        - name: pagination.key
-          description: |-
-            key is a value returned in PageResponse.next_key to begin
-            querying the next page most efficiently. Only one of offset or key
-            should be set.
-          in: path
-          required: true
-          type: string
-          format: byte
-        - name: pagination.offset
-          description: >-
-            offset is a numeric offset that can be used when key is unavailable.
-
-            It is less efficient than using key. Only one of offset or key
-            should
-
-            be set.
-          in: query
-          required: false
-          type: string
-          format: uint64
-        - name: pagination.limit
-          description: >-
-            limit is the total number of results to be returned in the result
-            page.
-
-            If left empty it will default to a value to be set by each app.
-          in: query
-          required: false
-          type: string
-          format: uint64
-        - name: pagination.count_total
-          description: >-
-            count_total is set to true  to indicate that the result set should
-            include
-
-            a count of the total number of items available for pagination in
-            UIs.
-
-            count_total is only respected when offset is used. It is ignored
-            when key
-
-            is set.
-          in: query
-          required: false
-          type: boolean
-        - name: pagination.reverse
-          description: >-
-            reverse is set to true if results are to be returned in the
-            descending order.
-
-
-            Since: cosmos-sdk 0.43
-          in: query
-          required: false
-          type: boolean
-      tags:
-        - Query
-  /elys-network/elys/margin/mtps-for-address/{address}/{pagination.key}:
-    get:
-      summary: Queries a list of mtp positions for a given address.
-      operationId: ElysMarginGetPositionsForAddress
-      responses:
-        '200':
-          description: A successful response.
-          schema:
-            type: object
-            properties:
-              mtps:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    address:
-                      type: string
-                    collateral_asset:
-                      type: string
-                    trading_asset:
-                      type: string
-                    liabilities_asset:
-                      type: string
-                    custody_asset:
-                      type: string
-                    collateral:
-                      type: string
-                    liabilities:
-                      type: string
-                    borrow_interest_paid_collateral:
-                      type: string
-                    borrow_interest_paid_custody:
-                      type: string
-                    borrow_interest_unpaid_collateral:
-                      type: string
-                    custody:
-                      type: string
-                    take_profit_liabilities:
-                      type: string
-                    take_profit_custody:
-                      type: string
-                    leverage:
-                      type: string
-                    mtp_health:
-                      type: string
-                    position:
-                      type: string
-                      enum:
-                        - UNSPECIFIED
-                        - LONG
-                        - SHORT
-                      default: UNSPECIFIED
-                    id:
-                      type: string
-                      format: uint64
-                    amm_pool_id:
-                      type: string
-                      format: uint64
-                    consolidate_leverage:
-                      type: string
-                    sum_collateral:
-                      type: string
-                    take_profit_price:
-                      type: string
-                    take_profit_borrow_rate:
-                      type: string
-                    funding_fee_paid_collateral:
-                      type: string
-                      title: funding fee paid
-                    funding_fee_paid_custody:
-                      type: string
-                    funding_fee_received_collateral:
-                      type: string
-                      title: funding fee received
-                    funding_fee_received_custody:
-                      type: string
-                    open_price:
-                      type: string
-              pagination:
-                type: object
-                properties:
-                  next_key:
-                    type: string
-                    format: byte
-                    description: |-
-                      next_key is the key to be passed to PageRequest.key to
-                      query the next page most efficiently. It will be empty if
-                      there are no more results.
-                  total:
-                    type: string
-                    format: uint64
-                    title: >-
-                      total is total number of results available if
-                      PageRequest.count_total
-
-                      was set, its value is undefined otherwise
-                description: >-
-                  PageResponse is to be embedded in gRPC response messages where
-                  the
-
-                  corresponding request message has used PageRequest.
-
-                   message SomeResponse {
-                           repeated Bar results = 1;
-                           PageResponse page = 2;
-                   }
-        default:
-          description: An unexpected error response.
-          schema:
-            type: object
-            properties:
-              code:
-                type: integer
-                format: int32
-              message:
-                type: string
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    '@type':
-                      type: string
-                  additionalProperties: {}
-      parameters:
-        - name: address
-          in: path
-          required: true
-          type: string
-        - name: pagination.key
-          description: |-
-            key is a value returned in PageResponse.next_key to begin
-            querying the next page most efficiently. Only one of offset or key
-            should be set.
-          in: path
-          required: true
-          type: string
-          format: byte
-        - name: pagination.offset
-          description: >-
-            offset is a numeric offset that can be used when key is unavailable.
-
-            It is less efficient than using key. Only one of offset or key
-            should
-
-            be set.
-          in: query
-          required: false
-          type: string
-          format: uint64
-        - name: pagination.limit
-          description: >-
-            limit is the total number of results to be returned in the result
-            page.
-
-            If left empty it will default to a value to be set by each app.
-          in: query
-          required: false
-          type: string
-          format: uint64
-        - name: pagination.count_total
-          description: >-
-            count_total is set to true  to indicate that the result set should
-            include
-
-            a count of the total number of items available for pagination in
-            UIs.
-
-            count_total is only respected when offset is used. It is ignored
-            when key
-
-            is set.
-          in: query
-          required: false
-          type: boolean
-        - name: pagination.reverse
-          description: >-
-            reverse is set to true if results are to be returned in the
-            descending order.
-
-
-            Since: cosmos-sdk 0.43
-          in: query
-          required: false
-          type: boolean
-      tags:
-        - Query
-  /elys-network/elys/margin/open-estimation:
-    get:
-      summary: Queries an estimation of a new open position details.
-      operationId: ElysMarginOpenEstimation
-      responses:
-        '200':
-          description: A successful response.
-          schema:
-            type: object
-            properties:
-              position:
-                type: string
-                enum:
-                  - UNSPECIFIED
-                  - LONG
-                  - SHORT
-                default: UNSPECIFIED
-              leverage:
-                type: string
-              trading_asset:
-                type: string
-              collateral:
-                type: object
-                properties:
-                  denom:
-                    type: string
-                  amount:
-                    type: string
-                description: >-
-                  Coin defines a token with a denomination and an amount.
-
-
-                  NOTE: The amount field is an Int which implements the custom
-                  method
-
-                  signatures required by gogoproto.
-              min_collateral:
-                type: object
-                properties:
-                  denom:
-                    type: string
-                  amount:
-                    type: string
-                description: >-
-                  Coin defines a token with a denomination and an amount.
-
-
-                  NOTE: The amount field is an Int which implements the custom
-                  method
-
-                  signatures required by gogoproto.
-              valid_collateral:
-                type: boolean
-              position_size:
-                type: object
-                properties:
-                  denom:
-                    type: string
-                  amount:
-                    type: string
-                description: >-
-                  Coin defines a token with a denomination and an amount.
-
-
-                  NOTE: The amount field is an Int which implements the custom
-                  method
-
-                  signatures required by gogoproto.
-              swap_fee:
-                type: string
-              discount:
-                type: string
-              open_price:
-                type: string
-              take_profit_price:
-                type: string
-              liquidation_price:
-                type: string
-              estimated_pnl:
-                type: string
-              available_liquidity:
-                type: object
-                properties:
-                  denom:
-                    type: string
-                  amount:
-                    type: string
-                description: >-
-                  Coin defines a token with a denomination and an amount.
-
-
-                  NOTE: The amount field is an Int which implements the custom
-                  method
-
-                  signatures required by gogoproto.
-              weight_balance_ratio:
-                type: string
-              borrow_interest_rate:
-                type: string
-              funding_rate:
-                type: string
-              price_impact:
-                type: string
-        default:
-          description: An unexpected error response.
-          schema:
-            type: object
-            properties:
-              code:
-                type: integer
-                format: int32
-              message:
-                type: string
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    '@type':
-                      type: string
-                  additionalProperties: {}
-      parameters:
-        - name: position
-          in: query
-          required: false
-          type: string
-          enum:
-            - UNSPECIFIED
-            - LONG
-            - SHORT
-          default: UNSPECIFIED
-        - name: leverage
-          in: query
-          required: false
-          type: string
-        - name: trading_asset
-          in: query
-          required: false
-          type: string
-        - name: collateral.denom
-          in: query
-          required: false
-          type: string
-        - name: collateral.amount
-          in: query
-          required: false
-          type: string
-        - name: discount
-          in: query
-          required: false
-          type: string
-        - name: take_profit_price
-          in: query
-          required: false
-          type: string
-      tags:
-        - Query
-  /elys-network/elys/margin/params:
-    get:
-      summary: Parameters queries the parameters of the module.
-      operationId: ElysMarginParams
-      responses:
-        '200':
-          description: A successful response.
-          schema:
-            type: object
-            properties:
-              params:
-                description: params holds all the parameters of this module.
-                type: object
-                properties:
-                  leverage_max:
-                    type: string
-                  borrow_interest_rate_max:
-                    type: string
-                  borrow_interest_rate_min:
-                    type: string
-                  borrow_interest_rate_increase:
-                    type: string
-                  borrow_interest_rate_decrease:
-                    type: string
-                  health_gain_factor:
-                    type: string
-                  epoch_length:
-                    type: string
-                    format: int64
-                  max_open_positions:
-                    type: string
-                    format: int64
-                  pool_open_threshold:
-                    type: string
-                  force_close_fund_percentage:
-                    type: string
-                  force_close_fund_address:
-                    type: string
-                  incremental_borrow_interest_payment_fund_percentage:
-                    type: string
-                  incremental_borrow_interest_payment_fund_address:
-                    type: string
-                  safety_factor:
-                    type: string
-                  incremental_borrow_interest_payment_enabled:
-                    type: boolean
-                  whitelisting_enabled:
-                    type: boolean
-                  invariant_check_epoch:
-                    type: string
-                  take_profit_borrow_interest_rate_min:
-                    type: string
-                  funding_fee_base_rate:
-                    type: string
-                  funding_fee_max_rate:
-                    type: string
-                  funding_fee_min_rate:
-                    type: string
-                  funding_fee_collection_address:
-                    type: string
-                  swap_fee:
-                    type: string
-            description: ParamsResponse is response type for the Query/Params RPC method.
-        default:
-          description: An unexpected error response.
-          schema:
-            type: object
-            properties:
-              code:
-                type: integer
-                format: int32
-              message:
-                type: string
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    '@type':
-                      type: string
-                  additionalProperties: {}
-      tags:
-        - Query
-  /elys-network/elys/margin/pool/{index}:
-    get:
-      summary: Queries a single pool given its index.
-      operationId: ElysMarginPool
-      responses:
-        '200':
-          description: A successful response.
-          schema:
-            type: object
-            properties:
-              pool:
-                type: object
-                properties:
-                  amm_pool_id:
-                    type: string
-                    format: uint64
-                  health:
-                    type: string
-                  enabled:
-                    type: boolean
-                  closed:
-                    type: boolean
-                  borrow_interest_rate:
-                    type: string
-                  pool_assets_long:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        liabilities:
-                          type: string
-                        custody:
-                          type: string
-                        take_profit_liabilities:
-                          type: string
-                        take_profit_custody:
-                          type: string
-                        asset_balance:
-                          type: string
-                        block_borrow_interest:
-                          type: string
-                        asset_denom:
-                          type: string
-                  pool_assets_short:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        liabilities:
-                          type: string
-                        custody:
-                          type: string
-                        take_profit_liabilities:
-                          type: string
-                        take_profit_custody:
-                          type: string
-                        asset_balance:
-                          type: string
-                        block_borrow_interest:
-                          type: string
-                        asset_denom:
-                          type: string
-                  last_height_borrow_interest_rate_computed:
-                    type: string
-                    format: int64
-                  funding_rate:
-                    type: string
-                    title: >-
-                      funding rate, if positive longs pay shorts, if negative
-                      shorts pay longs
-        default:
-          description: An unexpected error response.
-          schema:
-            type: object
-            properties:
-              code:
-                type: integer
-                format: int32
-              message:
-                type: string
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    '@type':
-                      type: string
-                  additionalProperties: {}
-      parameters:
-        - name: index
-          in: path
-          required: true
-          type: string
-          format: uint64
-      tags:
-        - Query
-  /elys-network/elys/margin/pool/{pagination.key}:
-    get:
-      summary: Queries a list of all pools.
-      operationId: ElysMarginPools
-      responses:
-        '200':
-          description: A successful response.
-          schema:
-            type: object
-            properties:
-              pool:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    amm_pool_id:
-                      type: string
-                      format: uint64
-                    health:
-                      type: string
-                    enabled:
-                      type: boolean
-                    closed:
-                      type: boolean
-                    borrow_interest_rate:
-                      type: string
-                    pool_assets_long:
-                      type: array
-                      items:
-                        type: object
-                        properties:
-                          liabilities:
-                            type: string
-                          custody:
-                            type: string
-                          take_profit_liabilities:
-                            type: string
-                          take_profit_custody:
-                            type: string
-                          asset_balance:
-                            type: string
-                          block_borrow_interest:
-                            type: string
-                          asset_denom:
-                            type: string
-                    pool_assets_short:
-                      type: array
-                      items:
-                        type: object
-                        properties:
-                          liabilities:
-                            type: string
-                          custody:
-                            type: string
-                          take_profit_liabilities:
-                            type: string
-                          take_profit_custody:
-                            type: string
-                          asset_balance:
-                            type: string
-                          block_borrow_interest:
-                            type: string
-                          asset_denom:
-                            type: string
-                    last_height_borrow_interest_rate_computed:
-                      type: string
-                      format: int64
-                    funding_rate:
-                      type: string
-                      title: >-
-                        funding rate, if positive longs pay shorts, if negative
-                        shorts pay longs
-              pagination:
-                type: object
-                properties:
-                  next_key:
-                    type: string
-                    format: byte
-                    description: |-
-                      next_key is the key to be passed to PageRequest.key to
-                      query the next page most efficiently. It will be empty if
-                      there are no more results.
-                  total:
-                    type: string
-                    format: uint64
-                    title: >-
-                      total is total number of results available if
-                      PageRequest.count_total
-
-                      was set, its value is undefined otherwise
-                description: >-
-                  PageResponse is to be embedded in gRPC response messages where
-                  the
-
-                  corresponding request message has used PageRequest.
-
-                   message SomeResponse {
-                           repeated Bar results = 1;
-                           PageResponse page = 2;
-                   }
-        default:
-          description: An unexpected error response.
-          schema:
-            type: object
-            properties:
-              code:
-                type: integer
-                format: int32
-              message:
-                type: string
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    '@type':
-                      type: string
-                  additionalProperties: {}
-      parameters:
-        - name: pagination.key
-          description: |-
-            key is a value returned in PageResponse.next_key to begin
-            querying the next page most efficiently. Only one of offset or key
-            should be set.
-          in: path
-          required: true
-          type: string
-          format: byte
-        - name: pagination.offset
-          description: >-
-            offset is a numeric offset that can be used when key is unavailable.
-
-            It is less efficient than using key. Only one of offset or key
-            should
-
-            be set.
-          in: query
-          required: false
-          type: string
-          format: uint64
-        - name: pagination.limit
-          description: >-
-            limit is the total number of results to be returned in the result
-            page.
-
-            If left empty it will default to a value to be set by each app.
-          in: query
-          required: false
-          type: string
-          format: uint64
-        - name: pagination.count_total
-          description: >-
-            count_total is set to true  to indicate that the result set should
-            include
-
-            a count of the total number of items available for pagination in
-            UIs.
-
-            count_total is only respected when offset is used. It is ignored
-            when key
-
-            is set.
-          in: query
-          required: false
-          type: boolean
-        - name: pagination.reverse
-          description: >-
-            reverse is set to true if results are to be returned in the
-            descending order.
-
-
-            Since: cosmos-sdk 0.43
-          in: query
-          required: false
-          type: boolean
-      tags:
-        - Query
-  /elys-network/elys/margin/positions/{pagination.key}:
-    get:
-      summary: Queries a list of positions.
-      operationId: ElysMarginGetPositions
-      responses:
-        '200':
-          description: A successful response.
-          schema:
-            type: object
-            properties:
-              mtps:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    address:
-                      type: string
-                    collateral_asset:
-                      type: string
-                    trading_asset:
-                      type: string
-                    liabilities_asset:
-                      type: string
-                    custody_asset:
-                      type: string
-                    collateral:
-                      type: string
-                    liabilities:
-                      type: string
-                    borrow_interest_paid_collateral:
-                      type: string
-                    borrow_interest_paid_custody:
-                      type: string
-                    borrow_interest_unpaid_collateral:
-                      type: string
-                    custody:
-                      type: string
-                    take_profit_liabilities:
-                      type: string
-                    take_profit_custody:
-                      type: string
-                    leverage:
-                      type: string
-                    mtp_health:
-                      type: string
-                    position:
-                      type: string
-                      enum:
-                        - UNSPECIFIED
-                        - LONG
-                        - SHORT
-                      default: UNSPECIFIED
-                    id:
-                      type: string
-                      format: uint64
-                    amm_pool_id:
-                      type: string
-                      format: uint64
-                    consolidate_leverage:
-                      type: string
-                    sum_collateral:
-                      type: string
-                    take_profit_price:
-                      type: string
-                    take_profit_borrow_rate:
-                      type: string
-                    funding_fee_paid_collateral:
-                      type: string
-                      title: funding fee paid
-                    funding_fee_paid_custody:
-                      type: string
-                    funding_fee_received_collateral:
-                      type: string
-                      title: funding fee received
-                    funding_fee_received_custody:
-                      type: string
-                    open_price:
-                      type: string
-              pagination:
-                type: object
-                properties:
-                  next_key:
-                    type: string
-                    format: byte
-                    description: |-
-                      next_key is the key to be passed to PageRequest.key to
-                      query the next page most efficiently. It will be empty if
-                      there are no more results.
-                  total:
-                    type: string
-                    format: uint64
-                    title: >-
-                      total is total number of results available if
-                      PageRequest.count_total
-
-                      was set, its value is undefined otherwise
-                description: >-
-                  PageResponse is to be embedded in gRPC response messages where
-                  the
-
-                  corresponding request message has used PageRequest.
-
-                   message SomeResponse {
-                           repeated Bar results = 1;
-                           PageResponse page = 2;
-                   }
-        default:
-          description: An unexpected error response.
-          schema:
-            type: object
-            properties:
-              code:
-                type: integer
-                format: int32
-              message:
-                type: string
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    '@type':
-                      type: string
-                  additionalProperties: {}
-      parameters:
-        - name: pagination.key
-          description: |-
-            key is a value returned in PageResponse.next_key to begin
-            querying the next page most efficiently. Only one of offset or key
-            should be set.
-          in: path
-          required: true
-          type: string
-          format: byte
-        - name: pagination.offset
-          description: >-
-            offset is a numeric offset that can be used when key is unavailable.
-
-            It is less efficient than using key. Only one of offset or key
-            should
-
-            be set.
-          in: query
-          required: false
-          type: string
-          format: uint64
-        - name: pagination.limit
-          description: >-
-            limit is the total number of results to be returned in the result
-            page.
-
-            If left empty it will default to a value to be set by each app.
-          in: query
-          required: false
-          type: string
-          format: uint64
-        - name: pagination.count_total
-          description: >-
-            count_total is set to true  to indicate that the result set should
-            include
-
-            a count of the total number of items available for pagination in
-            UIs.
-
-            count_total is only respected when offset is used. It is ignored
-            when key
-
-            is set.
-          in: query
-          required: false
-          type: boolean
-        - name: pagination.reverse
-          description: >-
-            reverse is set to true if results are to be returned in the
-            descending order.
-
-
-            Since: cosmos-sdk 0.43
-          in: query
-          required: false
-          type: boolean
-      tags:
-        - Query
-  /elys-network/elys/margin/status:
-    get:
-      summary: Retuns the total number of open and lifetime mtps.
-      operationId: ElysMarginGetStatus
-      responses:
-        '200':
-          description: A successful response.
-          schema:
-            type: object
-            properties:
-              open_mtp_count:
-                type: string
-                format: uint64
-              lifetime_mtp_count:
-                type: string
-                format: uint64
-        default:
-          description: An unexpected error response.
-          schema:
-            type: object
-            properties:
-              code:
-                type: integer
-                format: int32
-              message:
-                type: string
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    '@type':
-                      type: string
-                  additionalProperties: {}
-      tags:
-        - Query
-  /elys-network/elys/margin/whitelist/{pagination.key}:
-    get:
-      summary: Queries a list of whitelisted addresses.
-      operationId: ElysMarginGetWhitelist
-      responses:
-        '200':
-          description: A successful response.
-          schema:
-            type: object
-            properties:
-              whitelist:
-                type: array
-                items:
-                  type: string
-              pagination:
-                type: object
-                properties:
-                  next_key:
-                    type: string
-                    format: byte
-                    description: |-
-                      next_key is the key to be passed to PageRequest.key to
-                      query the next page most efficiently. It will be empty if
-                      there are no more results.
-                  total:
-                    type: string
-                    format: uint64
-                    title: >-
-                      total is total number of results available if
-                      PageRequest.count_total
-
-                      was set, its value is undefined otherwise
-                description: >-
-                  PageResponse is to be embedded in gRPC response messages where
-                  the
-
-                  corresponding request message has used PageRequest.
-
-                   message SomeResponse {
-                           repeated Bar results = 1;
-                           PageResponse page = 2;
-                   }
-        default:
-          description: An unexpected error response.
-          schema:
-            type: object
-            properties:
-              code:
-                type: integer
-                format: int32
-              message:
-                type: string
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    '@type':
-                      type: string
-                  additionalProperties: {}
-      parameters:
-        - name: pagination.key
-          description: |-
-            key is a value returned in PageResponse.next_key to begin
-            querying the next page most efficiently. Only one of offset or key
-            should be set.
-          in: path
-          required: true
-          type: string
-          format: byte
-        - name: pagination.offset
-          description: >-
-            offset is a numeric offset that can be used when key is unavailable.
-
-            It is less efficient than using key. Only one of offset or key
-            should
-
-            be set.
-          in: query
-          required: false
-          type: string
-          format: uint64
-        - name: pagination.limit
-          description: >-
-            limit is the total number of results to be returned in the result
-            page.
-
-            If left empty it will default to a value to be set by each app.
-          in: query
-          required: false
-          type: string
-          format: uint64
-        - name: pagination.count_total
-          description: >-
-            count_total is set to true  to indicate that the result set should
-            include
-
-            a count of the total number of items available for pagination in
-            UIs.
-
-            count_total is only respected when offset is used. It is ignored
-            when key
-
-            is set.
-          in: query
-          required: false
-          type: boolean
-        - name: pagination.reverse
-          description: >-
-            reverse is set to true if results are to be returned in the
-            descending order.
-
-
-            Since: cosmos-sdk 0.43
-          in: query
-          required: false
-          type: boolean
-      tags:
-        - Query
   /elys-network/elys/oracle/asset_info:
     get:
       summary: Queries a list of AssetInfo items.
@@ -42871,6 +41500,1377 @@ paths:
                     '@type':
                       type: string
                   additionalProperties: {}
+      tags:
+        - Query
+  /elys-network/elys/perpetual/is-whitelisted:
+    get:
+      summary: Is an address whitelisted?
+      operationId: ElysPerpetualIsWhitelisted
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              address:
+                type: string
+              is_whitelisted:
+                type: boolean
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: address
+          in: query
+          required: false
+          type: string
+      tags:
+        - Query
+  /elys-network/elys/perpetual/mtp/{address}/{id}:
+    get:
+      summary: Queries a single mtp position given its address and id.
+      operationId: ElysPerpetualMTP
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              mtp:
+                type: object
+                properties:
+                  address:
+                    type: string
+                  collateral_asset:
+                    type: string
+                  trading_asset:
+                    type: string
+                  liabilities_asset:
+                    type: string
+                  custody_asset:
+                    type: string
+                  collateral:
+                    type: string
+                  liabilities:
+                    type: string
+                  borrow_interest_paid_collateral:
+                    type: string
+                  borrow_interest_paid_custody:
+                    type: string
+                  borrow_interest_unpaid_collateral:
+                    type: string
+                  custody:
+                    type: string
+                  take_profit_liabilities:
+                    type: string
+                  take_profit_custody:
+                    type: string
+                  leverage:
+                    type: string
+                  mtp_health:
+                    type: string
+                  position:
+                    type: string
+                    enum:
+                      - UNSPECIFIED
+                      - LONG
+                      - SHORT
+                    default: UNSPECIFIED
+                  id:
+                    type: string
+                    format: uint64
+                  amm_pool_id:
+                    type: string
+                    format: uint64
+                  consolidate_leverage:
+                    type: string
+                  sum_collateral:
+                    type: string
+                  take_profit_price:
+                    type: string
+                  take_profit_borrow_rate:
+                    type: string
+                  funding_fee_paid_collateral:
+                    type: string
+                    title: funding fee paid
+                  funding_fee_paid_custody:
+                    type: string
+                  funding_fee_received_collateral:
+                    type: string
+                    title: funding fee received
+                  funding_fee_received_custody:
+                    type: string
+                  open_price:
+                    type: string
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: address
+          in: path
+          required: true
+          type: string
+        - name: id
+          in: path
+          required: true
+          type: string
+          format: uint64
+      tags:
+        - Query
+  /elys-network/elys/perpetual/mtps-by-pool/{amm_pool_id}/{pagination.key}:
+    get:
+      summary: Queries a list of mtp positions by pool.
+      operationId: ElysPerpetualGetPositionsByPool
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              mtps:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    address:
+                      type: string
+                    collateral_asset:
+                      type: string
+                    trading_asset:
+                      type: string
+                    liabilities_asset:
+                      type: string
+                    custody_asset:
+                      type: string
+                    collateral:
+                      type: string
+                    liabilities:
+                      type: string
+                    borrow_interest_paid_collateral:
+                      type: string
+                    borrow_interest_paid_custody:
+                      type: string
+                    borrow_interest_unpaid_collateral:
+                      type: string
+                    custody:
+                      type: string
+                    take_profit_liabilities:
+                      type: string
+                    take_profit_custody:
+                      type: string
+                    leverage:
+                      type: string
+                    mtp_health:
+                      type: string
+                    position:
+                      type: string
+                      enum:
+                        - UNSPECIFIED
+                        - LONG
+                        - SHORT
+                      default: UNSPECIFIED
+                    id:
+                      type: string
+                      format: uint64
+                    amm_pool_id:
+                      type: string
+                      format: uint64
+                    consolidate_leverage:
+                      type: string
+                    sum_collateral:
+                      type: string
+                    take_profit_price:
+                      type: string
+                    take_profit_borrow_rate:
+                      type: string
+                    funding_fee_paid_collateral:
+                      type: string
+                      title: funding fee paid
+                    funding_fee_paid_custody:
+                      type: string
+                    funding_fee_received_collateral:
+                      type: string
+                      title: funding fee received
+                    funding_fee_received_custody:
+                      type: string
+                    open_price:
+                      type: string
+              pagination:
+                type: object
+                properties:
+                  next_key:
+                    type: string
+                    format: byte
+                    description: |-
+                      next_key is the key to be passed to PageRequest.key to
+                      query the next page most efficiently. It will be empty if
+                      there are no more results.
+                  total:
+                    type: string
+                    format: uint64
+                    title: >-
+                      total is total number of results available if
+                      PageRequest.count_total
+
+                      was set, its value is undefined otherwise
+                description: >-
+                  PageResponse is to be embedded in gRPC response messages where
+                  the
+
+                  corresponding request message has used PageRequest.
+
+                   message SomeResponse {
+                           repeated Bar results = 1;
+                           PageResponse page = 2;
+                   }
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: amm_pool_id
+          in: path
+          required: true
+          type: string
+          format: uint64
+        - name: pagination.key
+          description: |-
+            key is a value returned in PageResponse.next_key to begin
+            querying the next page most efficiently. Only one of offset or key
+            should be set.
+          in: path
+          required: true
+          type: string
+          format: byte
+        - name: pagination.offset
+          description: >-
+            offset is a numeric offset that can be used when key is unavailable.
+
+            It is less efficient than using key. Only one of offset or key
+            should
+
+            be set.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.limit
+          description: >-
+            limit is the total number of results to be returned in the result
+            page.
+
+            If left empty it will default to a value to be set by each app.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.count_total
+          description: >-
+            count_total is set to true  to indicate that the result set should
+            include
+
+            a count of the total number of items available for pagination in
+            UIs.
+
+            count_total is only respected when offset is used. It is ignored
+            when key
+
+            is set.
+          in: query
+          required: false
+          type: boolean
+        - name: pagination.reverse
+          description: >-
+            reverse is set to true if results are to be returned in the
+            descending order.
+
+
+            Since: cosmos-sdk 0.43
+          in: query
+          required: false
+          type: boolean
+      tags:
+        - Query
+  /elys-network/elys/perpetual/mtps-for-address/{address}/{pagination.key}:
+    get:
+      summary: Queries a list of mtp positions for a given address.
+      operationId: ElysPerpetualGetPositionsForAddress
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              mtps:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    address:
+                      type: string
+                    collateral_asset:
+                      type: string
+                    trading_asset:
+                      type: string
+                    liabilities_asset:
+                      type: string
+                    custody_asset:
+                      type: string
+                    collateral:
+                      type: string
+                    liabilities:
+                      type: string
+                    borrow_interest_paid_collateral:
+                      type: string
+                    borrow_interest_paid_custody:
+                      type: string
+                    borrow_interest_unpaid_collateral:
+                      type: string
+                    custody:
+                      type: string
+                    take_profit_liabilities:
+                      type: string
+                    take_profit_custody:
+                      type: string
+                    leverage:
+                      type: string
+                    mtp_health:
+                      type: string
+                    position:
+                      type: string
+                      enum:
+                        - UNSPECIFIED
+                        - LONG
+                        - SHORT
+                      default: UNSPECIFIED
+                    id:
+                      type: string
+                      format: uint64
+                    amm_pool_id:
+                      type: string
+                      format: uint64
+                    consolidate_leverage:
+                      type: string
+                    sum_collateral:
+                      type: string
+                    take_profit_price:
+                      type: string
+                    take_profit_borrow_rate:
+                      type: string
+                    funding_fee_paid_collateral:
+                      type: string
+                      title: funding fee paid
+                    funding_fee_paid_custody:
+                      type: string
+                    funding_fee_received_collateral:
+                      type: string
+                      title: funding fee received
+                    funding_fee_received_custody:
+                      type: string
+                    open_price:
+                      type: string
+              pagination:
+                type: object
+                properties:
+                  next_key:
+                    type: string
+                    format: byte
+                    description: |-
+                      next_key is the key to be passed to PageRequest.key to
+                      query the next page most efficiently. It will be empty if
+                      there are no more results.
+                  total:
+                    type: string
+                    format: uint64
+                    title: >-
+                      total is total number of results available if
+                      PageRequest.count_total
+
+                      was set, its value is undefined otherwise
+                description: >-
+                  PageResponse is to be embedded in gRPC response messages where
+                  the
+
+                  corresponding request message has used PageRequest.
+
+                   message SomeResponse {
+                           repeated Bar results = 1;
+                           PageResponse page = 2;
+                   }
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: address
+          in: path
+          required: true
+          type: string
+        - name: pagination.key
+          description: |-
+            key is a value returned in PageResponse.next_key to begin
+            querying the next page most efficiently. Only one of offset or key
+            should be set.
+          in: path
+          required: true
+          type: string
+          format: byte
+        - name: pagination.offset
+          description: >-
+            offset is a numeric offset that can be used when key is unavailable.
+
+            It is less efficient than using key. Only one of offset or key
+            should
+
+            be set.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.limit
+          description: >-
+            limit is the total number of results to be returned in the result
+            page.
+
+            If left empty it will default to a value to be set by each app.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.count_total
+          description: >-
+            count_total is set to true  to indicate that the result set should
+            include
+
+            a count of the total number of items available for pagination in
+            UIs.
+
+            count_total is only respected when offset is used. It is ignored
+            when key
+
+            is set.
+          in: query
+          required: false
+          type: boolean
+        - name: pagination.reverse
+          description: >-
+            reverse is set to true if results are to be returned in the
+            descending order.
+
+
+            Since: cosmos-sdk 0.43
+          in: query
+          required: false
+          type: boolean
+      tags:
+        - Query
+  /elys-network/elys/perpetual/open-estimation:
+    get:
+      summary: Queries an estimation of a new open position details.
+      operationId: ElysPerpetualOpenEstimation
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              position:
+                type: string
+                enum:
+                  - UNSPECIFIED
+                  - LONG
+                  - SHORT
+                default: UNSPECIFIED
+              leverage:
+                type: string
+              trading_asset:
+                type: string
+              collateral:
+                type: object
+                properties:
+                  denom:
+                    type: string
+                  amount:
+                    type: string
+                description: >-
+                  Coin defines a token with a denomination and an amount.
+
+
+                  NOTE: The amount field is an Int which implements the custom
+                  method
+
+                  signatures required by gogoproto.
+              min_collateral:
+                type: object
+                properties:
+                  denom:
+                    type: string
+                  amount:
+                    type: string
+                description: >-
+                  Coin defines a token with a denomination and an amount.
+
+
+                  NOTE: The amount field is an Int which implements the custom
+                  method
+
+                  signatures required by gogoproto.
+              valid_collateral:
+                type: boolean
+              position_size:
+                type: object
+                properties:
+                  denom:
+                    type: string
+                  amount:
+                    type: string
+                description: >-
+                  Coin defines a token with a denomination and an amount.
+
+
+                  NOTE: The amount field is an Int which implements the custom
+                  method
+
+                  signatures required by gogoproto.
+              swap_fee:
+                type: string
+              discount:
+                type: string
+              open_price:
+                type: string
+              take_profit_price:
+                type: string
+              liquidation_price:
+                type: string
+              estimated_pnl:
+                type: string
+              available_liquidity:
+                type: object
+                properties:
+                  denom:
+                    type: string
+                  amount:
+                    type: string
+                description: >-
+                  Coin defines a token with a denomination and an amount.
+
+
+                  NOTE: The amount field is an Int which implements the custom
+                  method
+
+                  signatures required by gogoproto.
+              weight_balance_ratio:
+                type: string
+              borrow_interest_rate:
+                type: string
+              funding_rate:
+                type: string
+              price_impact:
+                type: string
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: position
+          in: query
+          required: false
+          type: string
+          enum:
+            - UNSPECIFIED
+            - LONG
+            - SHORT
+          default: UNSPECIFIED
+        - name: leverage
+          in: query
+          required: false
+          type: string
+        - name: trading_asset
+          in: query
+          required: false
+          type: string
+        - name: collateral.denom
+          in: query
+          required: false
+          type: string
+        - name: collateral.amount
+          in: query
+          required: false
+          type: string
+        - name: discount
+          in: query
+          required: false
+          type: string
+        - name: take_profit_price
+          in: query
+          required: false
+          type: string
+      tags:
+        - Query
+  /elys-network/elys/perpetual/params:
+    get:
+      summary: Parameters queries the parameters of the module.
+      operationId: ElysPerpetualParams
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              params:
+                description: params holds all the parameters of this module.
+                type: object
+                properties:
+                  leverage_max:
+                    type: string
+                  borrow_interest_rate_max:
+                    type: string
+                  borrow_interest_rate_min:
+                    type: string
+                  borrow_interest_rate_increase:
+                    type: string
+                  borrow_interest_rate_decrease:
+                    type: string
+                  health_gain_factor:
+                    type: string
+                  epoch_length:
+                    type: string
+                    format: int64
+                  max_open_positions:
+                    type: string
+                    format: int64
+                  pool_open_threshold:
+                    type: string
+                  force_close_fund_percentage:
+                    type: string
+                  force_close_fund_address:
+                    type: string
+                  incremental_borrow_interest_payment_fund_percentage:
+                    type: string
+                  incremental_borrow_interest_payment_fund_address:
+                    type: string
+                  safety_factor:
+                    type: string
+                  incremental_borrow_interest_payment_enabled:
+                    type: boolean
+                  whitelisting_enabled:
+                    type: boolean
+                  invariant_check_epoch:
+                    type: string
+                  take_profit_borrow_interest_rate_min:
+                    type: string
+                  funding_fee_base_rate:
+                    type: string
+                  funding_fee_max_rate:
+                    type: string
+                  funding_fee_min_rate:
+                    type: string
+                  funding_fee_collection_address:
+                    type: string
+                  swap_fee:
+                    type: string
+            description: ParamsResponse is response type for the Query/Params RPC method.
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      tags:
+        - Query
+  /elys-network/elys/perpetual/pool/{index}:
+    get:
+      summary: Queries a single pool given its index.
+      operationId: ElysPerpetualPool
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              pool:
+                type: object
+                properties:
+                  amm_pool_id:
+                    type: string
+                    format: uint64
+                  health:
+                    type: string
+                  enabled:
+                    type: boolean
+                  closed:
+                    type: boolean
+                  borrow_interest_rate:
+                    type: string
+                  pool_assets_long:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        liabilities:
+                          type: string
+                        custody:
+                          type: string
+                        take_profit_liabilities:
+                          type: string
+                        take_profit_custody:
+                          type: string
+                        asset_balance:
+                          type: string
+                        block_borrow_interest:
+                          type: string
+                        asset_denom:
+                          type: string
+                  pool_assets_short:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        liabilities:
+                          type: string
+                        custody:
+                          type: string
+                        take_profit_liabilities:
+                          type: string
+                        take_profit_custody:
+                          type: string
+                        asset_balance:
+                          type: string
+                        block_borrow_interest:
+                          type: string
+                        asset_denom:
+                          type: string
+                  last_height_borrow_interest_rate_computed:
+                    type: string
+                    format: int64
+                  funding_rate:
+                    type: string
+                    title: >-
+                      funding rate, if positive longs pay shorts, if negative
+                      shorts pay longs
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: index
+          in: path
+          required: true
+          type: string
+          format: uint64
+      tags:
+        - Query
+  /elys-network/elys/perpetual/pool/{pagination.key}:
+    get:
+      summary: Queries a list of all pools.
+      operationId: ElysPerpetualPools
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              pool:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    amm_pool_id:
+                      type: string
+                      format: uint64
+                    health:
+                      type: string
+                    enabled:
+                      type: boolean
+                    closed:
+                      type: boolean
+                    borrow_interest_rate:
+                      type: string
+                    pool_assets_long:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          liabilities:
+                            type: string
+                          custody:
+                            type: string
+                          take_profit_liabilities:
+                            type: string
+                          take_profit_custody:
+                            type: string
+                          asset_balance:
+                            type: string
+                          block_borrow_interest:
+                            type: string
+                          asset_denom:
+                            type: string
+                    pool_assets_short:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          liabilities:
+                            type: string
+                          custody:
+                            type: string
+                          take_profit_liabilities:
+                            type: string
+                          take_profit_custody:
+                            type: string
+                          asset_balance:
+                            type: string
+                          block_borrow_interest:
+                            type: string
+                          asset_denom:
+                            type: string
+                    last_height_borrow_interest_rate_computed:
+                      type: string
+                      format: int64
+                    funding_rate:
+                      type: string
+                      title: >-
+                        funding rate, if positive longs pay shorts, if negative
+                        shorts pay longs
+              pagination:
+                type: object
+                properties:
+                  next_key:
+                    type: string
+                    format: byte
+                    description: |-
+                      next_key is the key to be passed to PageRequest.key to
+                      query the next page most efficiently. It will be empty if
+                      there are no more results.
+                  total:
+                    type: string
+                    format: uint64
+                    title: >-
+                      total is total number of results available if
+                      PageRequest.count_total
+
+                      was set, its value is undefined otherwise
+                description: >-
+                  PageResponse is to be embedded in gRPC response messages where
+                  the
+
+                  corresponding request message has used PageRequest.
+
+                   message SomeResponse {
+                           repeated Bar results = 1;
+                           PageResponse page = 2;
+                   }
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: pagination.key
+          description: |-
+            key is a value returned in PageResponse.next_key to begin
+            querying the next page most efficiently. Only one of offset or key
+            should be set.
+          in: path
+          required: true
+          type: string
+          format: byte
+        - name: pagination.offset
+          description: >-
+            offset is a numeric offset that can be used when key is unavailable.
+
+            It is less efficient than using key. Only one of offset or key
+            should
+
+            be set.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.limit
+          description: >-
+            limit is the total number of results to be returned in the result
+            page.
+
+            If left empty it will default to a value to be set by each app.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.count_total
+          description: >-
+            count_total is set to true  to indicate that the result set should
+            include
+
+            a count of the total number of items available for pagination in
+            UIs.
+
+            count_total is only respected when offset is used. It is ignored
+            when key
+
+            is set.
+          in: query
+          required: false
+          type: boolean
+        - name: pagination.reverse
+          description: >-
+            reverse is set to true if results are to be returned in the
+            descending order.
+
+
+            Since: cosmos-sdk 0.43
+          in: query
+          required: false
+          type: boolean
+      tags:
+        - Query
+  /elys-network/elys/perpetual/positions/{pagination.key}:
+    get:
+      summary: Queries a list of positions.
+      operationId: ElysPerpetualGetPositions
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              mtps:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    address:
+                      type: string
+                    collateral_asset:
+                      type: string
+                    trading_asset:
+                      type: string
+                    liabilities_asset:
+                      type: string
+                    custody_asset:
+                      type: string
+                    collateral:
+                      type: string
+                    liabilities:
+                      type: string
+                    borrow_interest_paid_collateral:
+                      type: string
+                    borrow_interest_paid_custody:
+                      type: string
+                    borrow_interest_unpaid_collateral:
+                      type: string
+                    custody:
+                      type: string
+                    take_profit_liabilities:
+                      type: string
+                    take_profit_custody:
+                      type: string
+                    leverage:
+                      type: string
+                    mtp_health:
+                      type: string
+                    position:
+                      type: string
+                      enum:
+                        - UNSPECIFIED
+                        - LONG
+                        - SHORT
+                      default: UNSPECIFIED
+                    id:
+                      type: string
+                      format: uint64
+                    amm_pool_id:
+                      type: string
+                      format: uint64
+                    consolidate_leverage:
+                      type: string
+                    sum_collateral:
+                      type: string
+                    take_profit_price:
+                      type: string
+                    take_profit_borrow_rate:
+                      type: string
+                    funding_fee_paid_collateral:
+                      type: string
+                      title: funding fee paid
+                    funding_fee_paid_custody:
+                      type: string
+                    funding_fee_received_collateral:
+                      type: string
+                      title: funding fee received
+                    funding_fee_received_custody:
+                      type: string
+                    open_price:
+                      type: string
+              pagination:
+                type: object
+                properties:
+                  next_key:
+                    type: string
+                    format: byte
+                    description: |-
+                      next_key is the key to be passed to PageRequest.key to
+                      query the next page most efficiently. It will be empty if
+                      there are no more results.
+                  total:
+                    type: string
+                    format: uint64
+                    title: >-
+                      total is total number of results available if
+                      PageRequest.count_total
+
+                      was set, its value is undefined otherwise
+                description: >-
+                  PageResponse is to be embedded in gRPC response messages where
+                  the
+
+                  corresponding request message has used PageRequest.
+
+                   message SomeResponse {
+                           repeated Bar results = 1;
+                           PageResponse page = 2;
+                   }
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: pagination.key
+          description: |-
+            key is a value returned in PageResponse.next_key to begin
+            querying the next page most efficiently. Only one of offset or key
+            should be set.
+          in: path
+          required: true
+          type: string
+          format: byte
+        - name: pagination.offset
+          description: >-
+            offset is a numeric offset that can be used when key is unavailable.
+
+            It is less efficient than using key. Only one of offset or key
+            should
+
+            be set.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.limit
+          description: >-
+            limit is the total number of results to be returned in the result
+            page.
+
+            If left empty it will default to a value to be set by each app.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.count_total
+          description: >-
+            count_total is set to true  to indicate that the result set should
+            include
+
+            a count of the total number of items available for pagination in
+            UIs.
+
+            count_total is only respected when offset is used. It is ignored
+            when key
+
+            is set.
+          in: query
+          required: false
+          type: boolean
+        - name: pagination.reverse
+          description: >-
+            reverse is set to true if results are to be returned in the
+            descending order.
+
+
+            Since: cosmos-sdk 0.43
+          in: query
+          required: false
+          type: boolean
+      tags:
+        - Query
+  /elys-network/elys/perpetual/status:
+    get:
+      summary: Retuns the total number of open and lifetime mtps.
+      operationId: ElysPerpetualGetStatus
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              open_mtp_count:
+                type: string
+                format: uint64
+              lifetime_mtp_count:
+                type: string
+                format: uint64
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      tags:
+        - Query
+  /elys-network/elys/perpetual/whitelist/{pagination.key}:
+    get:
+      summary: Queries a list of whitelisted addresses.
+      operationId: ElysPerpetualGetWhitelist
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              whitelist:
+                type: array
+                items:
+                  type: string
+              pagination:
+                type: object
+                properties:
+                  next_key:
+                    type: string
+                    format: byte
+                    description: |-
+                      next_key is the key to be passed to PageRequest.key to
+                      query the next page most efficiently. It will be empty if
+                      there are no more results.
+                  total:
+                    type: string
+                    format: uint64
+                    title: >-
+                      total is total number of results available if
+                      PageRequest.count_total
+
+                      was set, its value is undefined otherwise
+                description: >-
+                  PageResponse is to be embedded in gRPC response messages where
+                  the
+
+                  corresponding request message has used PageRequest.
+
+                   message SomeResponse {
+                           repeated Bar results = 1;
+                           PageResponse page = 2;
+                   }
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: pagination.key
+          description: |-
+            key is a value returned in PageResponse.next_key to begin
+            querying the next page most efficiently. Only one of offset or key
+            should be set.
+          in: path
+          required: true
+          type: string
+          format: byte
+        - name: pagination.offset
+          description: >-
+            offset is a numeric offset that can be used when key is unavailable.
+
+            It is less efficient than using key. Only one of offset or key
+            should
+
+            be set.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.limit
+          description: >-
+            limit is the total number of results to be returned in the result
+            page.
+
+            If left empty it will default to a value to be set by each app.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.count_total
+          description: >-
+            count_total is set to true  to indicate that the result set should
+            include
+
+            a count of the total number of items available for pagination in
+            UIs.
+
+            count_total is only respected when offset is used. It is ignored
+            when key
+
+            is set.
+          in: query
+          required: false
+          type: boolean
+        - name: pagination.reverse
+          description: >-
+            reverse is set to true if results are to be returned in the
+            descending order.
+
+
+            Since: cosmos-sdk 0.43
+          in: query
+          required: false
+          type: boolean
       tags:
         - Query
   /elys-network/elys/stablestake/borrow-ratio:
@@ -85026,931 +85026,6 @@ definitions:
                    repeated Bar results = 1;
                    PageResponse page = 2;
            }
-  elys.margin.IsWhitelistedResponse:
-    type: object
-    properties:
-      address:
-        type: string
-      is_whitelisted:
-        type: boolean
-  elys.margin.MTP:
-    type: object
-    properties:
-      address:
-        type: string
-      collateral_asset:
-        type: string
-      trading_asset:
-        type: string
-      liabilities_asset:
-        type: string
-      custody_asset:
-        type: string
-      collateral:
-        type: string
-      liabilities:
-        type: string
-      borrow_interest_paid_collateral:
-        type: string
-      borrow_interest_paid_custody:
-        type: string
-      borrow_interest_unpaid_collateral:
-        type: string
-      custody:
-        type: string
-      take_profit_liabilities:
-        type: string
-      take_profit_custody:
-        type: string
-      leverage:
-        type: string
-      mtp_health:
-        type: string
-      position:
-        type: string
-        enum:
-          - UNSPECIFIED
-          - LONG
-          - SHORT
-        default: UNSPECIFIED
-      id:
-        type: string
-        format: uint64
-      amm_pool_id:
-        type: string
-        format: uint64
-      consolidate_leverage:
-        type: string
-      sum_collateral:
-        type: string
-      take_profit_price:
-        type: string
-      take_profit_borrow_rate:
-        type: string
-      funding_fee_paid_collateral:
-        type: string
-        title: funding fee paid
-      funding_fee_paid_custody:
-        type: string
-      funding_fee_received_collateral:
-        type: string
-        title: funding fee received
-      funding_fee_received_custody:
-        type: string
-      open_price:
-        type: string
-  elys.margin.MTPResponse:
-    type: object
-    properties:
-      mtp:
-        type: object
-        properties:
-          address:
-            type: string
-          collateral_asset:
-            type: string
-          trading_asset:
-            type: string
-          liabilities_asset:
-            type: string
-          custody_asset:
-            type: string
-          collateral:
-            type: string
-          liabilities:
-            type: string
-          borrow_interest_paid_collateral:
-            type: string
-          borrow_interest_paid_custody:
-            type: string
-          borrow_interest_unpaid_collateral:
-            type: string
-          custody:
-            type: string
-          take_profit_liabilities:
-            type: string
-          take_profit_custody:
-            type: string
-          leverage:
-            type: string
-          mtp_health:
-            type: string
-          position:
-            type: string
-            enum:
-              - UNSPECIFIED
-              - LONG
-              - SHORT
-            default: UNSPECIFIED
-          id:
-            type: string
-            format: uint64
-          amm_pool_id:
-            type: string
-            format: uint64
-          consolidate_leverage:
-            type: string
-          sum_collateral:
-            type: string
-          take_profit_price:
-            type: string
-          take_profit_borrow_rate:
-            type: string
-          funding_fee_paid_collateral:
-            type: string
-            title: funding fee paid
-          funding_fee_paid_custody:
-            type: string
-          funding_fee_received_collateral:
-            type: string
-            title: funding fee received
-          funding_fee_received_custody:
-            type: string
-          open_price:
-            type: string
-  elys.margin.MsgCloseResponse:
-    type: object
-    properties:
-      id:
-        type: string
-        format: uint64
-      amount:
-        type: string
-  elys.margin.MsgDewhitelistResponse:
-    type: object
-  elys.margin.MsgOpenResponse:
-    type: object
-    properties:
-      id:
-        type: string
-        format: uint64
-  elys.margin.MsgUpdateParamsResponse:
-    type: object
-  elys.margin.MsgWhitelistResponse:
-    type: object
-  elys.margin.Params:
-    type: object
-    properties:
-      leverage_max:
-        type: string
-      borrow_interest_rate_max:
-        type: string
-      borrow_interest_rate_min:
-        type: string
-      borrow_interest_rate_increase:
-        type: string
-      borrow_interest_rate_decrease:
-        type: string
-      health_gain_factor:
-        type: string
-      epoch_length:
-        type: string
-        format: int64
-      max_open_positions:
-        type: string
-        format: int64
-      pool_open_threshold:
-        type: string
-      force_close_fund_percentage:
-        type: string
-      force_close_fund_address:
-        type: string
-      incremental_borrow_interest_payment_fund_percentage:
-        type: string
-      incremental_borrow_interest_payment_fund_address:
-        type: string
-      safety_factor:
-        type: string
-      incremental_borrow_interest_payment_enabled:
-        type: boolean
-      whitelisting_enabled:
-        type: boolean
-      invariant_check_epoch:
-        type: string
-      take_profit_borrow_interest_rate_min:
-        type: string
-      funding_fee_base_rate:
-        type: string
-      funding_fee_max_rate:
-        type: string
-      funding_fee_min_rate:
-        type: string
-      funding_fee_collection_address:
-        type: string
-      swap_fee:
-        type: string
-    description: Params defines the parameters for the module.
-  elys.margin.ParamsResponse:
-    type: object
-    properties:
-      params:
-        description: params holds all the parameters of this module.
-        type: object
-        properties:
-          leverage_max:
-            type: string
-          borrow_interest_rate_max:
-            type: string
-          borrow_interest_rate_min:
-            type: string
-          borrow_interest_rate_increase:
-            type: string
-          borrow_interest_rate_decrease:
-            type: string
-          health_gain_factor:
-            type: string
-          epoch_length:
-            type: string
-            format: int64
-          max_open_positions:
-            type: string
-            format: int64
-          pool_open_threshold:
-            type: string
-          force_close_fund_percentage:
-            type: string
-          force_close_fund_address:
-            type: string
-          incremental_borrow_interest_payment_fund_percentage:
-            type: string
-          incremental_borrow_interest_payment_fund_address:
-            type: string
-          safety_factor:
-            type: string
-          incremental_borrow_interest_payment_enabled:
-            type: boolean
-          whitelisting_enabled:
-            type: boolean
-          invariant_check_epoch:
-            type: string
-          take_profit_borrow_interest_rate_min:
-            type: string
-          funding_fee_base_rate:
-            type: string
-          funding_fee_max_rate:
-            type: string
-          funding_fee_min_rate:
-            type: string
-          funding_fee_collection_address:
-            type: string
-          swap_fee:
-            type: string
-    description: ParamsResponse is response type for the Query/Params RPC method.
-  elys.margin.Pool:
-    type: object
-    properties:
-      amm_pool_id:
-        type: string
-        format: uint64
-      health:
-        type: string
-      enabled:
-        type: boolean
-      closed:
-        type: boolean
-      borrow_interest_rate:
-        type: string
-      pool_assets_long:
-        type: array
-        items:
-          type: object
-          properties:
-            liabilities:
-              type: string
-            custody:
-              type: string
-            take_profit_liabilities:
-              type: string
-            take_profit_custody:
-              type: string
-            asset_balance:
-              type: string
-            block_borrow_interest:
-              type: string
-            asset_denom:
-              type: string
-      pool_assets_short:
-        type: array
-        items:
-          type: object
-          properties:
-            liabilities:
-              type: string
-            custody:
-              type: string
-            take_profit_liabilities:
-              type: string
-            take_profit_custody:
-              type: string
-            asset_balance:
-              type: string
-            block_borrow_interest:
-              type: string
-            asset_denom:
-              type: string
-      last_height_borrow_interest_rate_computed:
-        type: string
-        format: int64
-      funding_rate:
-        type: string
-        title: >-
-          funding rate, if positive longs pay shorts, if negative shorts pay
-          longs
-  elys.margin.PoolAsset:
-    type: object
-    properties:
-      liabilities:
-        type: string
-      custody:
-        type: string
-      take_profit_liabilities:
-        type: string
-      take_profit_custody:
-        type: string
-      asset_balance:
-        type: string
-      block_borrow_interest:
-        type: string
-      asset_denom:
-        type: string
-  elys.margin.Position:
-    type: string
-    enum:
-      - UNSPECIFIED
-      - LONG
-      - SHORT
-    default: UNSPECIFIED
-  elys.margin.PositionsByPoolResponse:
-    type: object
-    properties:
-      mtps:
-        type: array
-        items:
-          type: object
-          properties:
-            address:
-              type: string
-            collateral_asset:
-              type: string
-            trading_asset:
-              type: string
-            liabilities_asset:
-              type: string
-            custody_asset:
-              type: string
-            collateral:
-              type: string
-            liabilities:
-              type: string
-            borrow_interest_paid_collateral:
-              type: string
-            borrow_interest_paid_custody:
-              type: string
-            borrow_interest_unpaid_collateral:
-              type: string
-            custody:
-              type: string
-            take_profit_liabilities:
-              type: string
-            take_profit_custody:
-              type: string
-            leverage:
-              type: string
-            mtp_health:
-              type: string
-            position:
-              type: string
-              enum:
-                - UNSPECIFIED
-                - LONG
-                - SHORT
-              default: UNSPECIFIED
-            id:
-              type: string
-              format: uint64
-            amm_pool_id:
-              type: string
-              format: uint64
-            consolidate_leverage:
-              type: string
-            sum_collateral:
-              type: string
-            take_profit_price:
-              type: string
-            take_profit_borrow_rate:
-              type: string
-            funding_fee_paid_collateral:
-              type: string
-              title: funding fee paid
-            funding_fee_paid_custody:
-              type: string
-            funding_fee_received_collateral:
-              type: string
-              title: funding fee received
-            funding_fee_received_custody:
-              type: string
-            open_price:
-              type: string
-      pagination:
-        type: object
-        properties:
-          next_key:
-            type: string
-            format: byte
-            description: |-
-              next_key is the key to be passed to PageRequest.key to
-              query the next page most efficiently. It will be empty if
-              there are no more results.
-          total:
-            type: string
-            format: uint64
-            title: >-
-              total is total number of results available if
-              PageRequest.count_total
-
-              was set, its value is undefined otherwise
-        description: |-
-          PageResponse is to be embedded in gRPC response messages where the
-          corresponding request message has used PageRequest.
-
-           message SomeResponse {
-                   repeated Bar results = 1;
-                   PageResponse page = 2;
-           }
-  elys.margin.PositionsForAddressResponse:
-    type: object
-    properties:
-      mtps:
-        type: array
-        items:
-          type: object
-          properties:
-            address:
-              type: string
-            collateral_asset:
-              type: string
-            trading_asset:
-              type: string
-            liabilities_asset:
-              type: string
-            custody_asset:
-              type: string
-            collateral:
-              type: string
-            liabilities:
-              type: string
-            borrow_interest_paid_collateral:
-              type: string
-            borrow_interest_paid_custody:
-              type: string
-            borrow_interest_unpaid_collateral:
-              type: string
-            custody:
-              type: string
-            take_profit_liabilities:
-              type: string
-            take_profit_custody:
-              type: string
-            leverage:
-              type: string
-            mtp_health:
-              type: string
-            position:
-              type: string
-              enum:
-                - UNSPECIFIED
-                - LONG
-                - SHORT
-              default: UNSPECIFIED
-            id:
-              type: string
-              format: uint64
-            amm_pool_id:
-              type: string
-              format: uint64
-            consolidate_leverage:
-              type: string
-            sum_collateral:
-              type: string
-            take_profit_price:
-              type: string
-            take_profit_borrow_rate:
-              type: string
-            funding_fee_paid_collateral:
-              type: string
-              title: funding fee paid
-            funding_fee_paid_custody:
-              type: string
-            funding_fee_received_collateral:
-              type: string
-              title: funding fee received
-            funding_fee_received_custody:
-              type: string
-            open_price:
-              type: string
-      pagination:
-        type: object
-        properties:
-          next_key:
-            type: string
-            format: byte
-            description: |-
-              next_key is the key to be passed to PageRequest.key to
-              query the next page most efficiently. It will be empty if
-              there are no more results.
-          total:
-            type: string
-            format: uint64
-            title: >-
-              total is total number of results available if
-              PageRequest.count_total
-
-              was set, its value is undefined otherwise
-        description: |-
-          PageResponse is to be embedded in gRPC response messages where the
-          corresponding request message has used PageRequest.
-
-           message SomeResponse {
-                   repeated Bar results = 1;
-                   PageResponse page = 2;
-           }
-  elys.margin.PositionsResponse:
-    type: object
-    properties:
-      mtps:
-        type: array
-        items:
-          type: object
-          properties:
-            address:
-              type: string
-            collateral_asset:
-              type: string
-            trading_asset:
-              type: string
-            liabilities_asset:
-              type: string
-            custody_asset:
-              type: string
-            collateral:
-              type: string
-            liabilities:
-              type: string
-            borrow_interest_paid_collateral:
-              type: string
-            borrow_interest_paid_custody:
-              type: string
-            borrow_interest_unpaid_collateral:
-              type: string
-            custody:
-              type: string
-            take_profit_liabilities:
-              type: string
-            take_profit_custody:
-              type: string
-            leverage:
-              type: string
-            mtp_health:
-              type: string
-            position:
-              type: string
-              enum:
-                - UNSPECIFIED
-                - LONG
-                - SHORT
-              default: UNSPECIFIED
-            id:
-              type: string
-              format: uint64
-            amm_pool_id:
-              type: string
-              format: uint64
-            consolidate_leverage:
-              type: string
-            sum_collateral:
-              type: string
-            take_profit_price:
-              type: string
-            take_profit_borrow_rate:
-              type: string
-            funding_fee_paid_collateral:
-              type: string
-              title: funding fee paid
-            funding_fee_paid_custody:
-              type: string
-            funding_fee_received_collateral:
-              type: string
-              title: funding fee received
-            funding_fee_received_custody:
-              type: string
-            open_price:
-              type: string
-      pagination:
-        type: object
-        properties:
-          next_key:
-            type: string
-            format: byte
-            description: |-
-              next_key is the key to be passed to PageRequest.key to
-              query the next page most efficiently. It will be empty if
-              there are no more results.
-          total:
-            type: string
-            format: uint64
-            title: >-
-              total is total number of results available if
-              PageRequest.count_total
-
-              was set, its value is undefined otherwise
-        description: |-
-          PageResponse is to be embedded in gRPC response messages where the
-          corresponding request message has used PageRequest.
-
-           message SomeResponse {
-                   repeated Bar results = 1;
-                   PageResponse page = 2;
-           }
-  elys.margin.QueryAllPoolResponse:
-    type: object
-    properties:
-      pool:
-        type: array
-        items:
-          type: object
-          properties:
-            amm_pool_id:
-              type: string
-              format: uint64
-            health:
-              type: string
-            enabled:
-              type: boolean
-            closed:
-              type: boolean
-            borrow_interest_rate:
-              type: string
-            pool_assets_long:
-              type: array
-              items:
-                type: object
-                properties:
-                  liabilities:
-                    type: string
-                  custody:
-                    type: string
-                  take_profit_liabilities:
-                    type: string
-                  take_profit_custody:
-                    type: string
-                  asset_balance:
-                    type: string
-                  block_borrow_interest:
-                    type: string
-                  asset_denom:
-                    type: string
-            pool_assets_short:
-              type: array
-              items:
-                type: object
-                properties:
-                  liabilities:
-                    type: string
-                  custody:
-                    type: string
-                  take_profit_liabilities:
-                    type: string
-                  take_profit_custody:
-                    type: string
-                  asset_balance:
-                    type: string
-                  block_borrow_interest:
-                    type: string
-                  asset_denom:
-                    type: string
-            last_height_borrow_interest_rate_computed:
-              type: string
-              format: int64
-            funding_rate:
-              type: string
-              title: >-
-                funding rate, if positive longs pay shorts, if negative shorts
-                pay longs
-      pagination:
-        type: object
-        properties:
-          next_key:
-            type: string
-            format: byte
-            description: |-
-              next_key is the key to be passed to PageRequest.key to
-              query the next page most efficiently. It will be empty if
-              there are no more results.
-          total:
-            type: string
-            format: uint64
-            title: >-
-              total is total number of results available if
-              PageRequest.count_total
-
-              was set, its value is undefined otherwise
-        description: |-
-          PageResponse is to be embedded in gRPC response messages where the
-          corresponding request message has used PageRequest.
-
-           message SomeResponse {
-                   repeated Bar results = 1;
-                   PageResponse page = 2;
-           }
-  elys.margin.QueryGetPoolResponse:
-    type: object
-    properties:
-      pool:
-        type: object
-        properties:
-          amm_pool_id:
-            type: string
-            format: uint64
-          health:
-            type: string
-          enabled:
-            type: boolean
-          closed:
-            type: boolean
-          borrow_interest_rate:
-            type: string
-          pool_assets_long:
-            type: array
-            items:
-              type: object
-              properties:
-                liabilities:
-                  type: string
-                custody:
-                  type: string
-                take_profit_liabilities:
-                  type: string
-                take_profit_custody:
-                  type: string
-                asset_balance:
-                  type: string
-                block_borrow_interest:
-                  type: string
-                asset_denom:
-                  type: string
-          pool_assets_short:
-            type: array
-            items:
-              type: object
-              properties:
-                liabilities:
-                  type: string
-                custody:
-                  type: string
-                take_profit_liabilities:
-                  type: string
-                take_profit_custody:
-                  type: string
-                asset_balance:
-                  type: string
-                block_borrow_interest:
-                  type: string
-                asset_denom:
-                  type: string
-          last_height_borrow_interest_rate_computed:
-            type: string
-            format: int64
-          funding_rate:
-            type: string
-            title: >-
-              funding rate, if positive longs pay shorts, if negative shorts pay
-              longs
-  elys.margin.QueryOpenEstimationResponse:
-    type: object
-    properties:
-      position:
-        type: string
-        enum:
-          - UNSPECIFIED
-          - LONG
-          - SHORT
-        default: UNSPECIFIED
-      leverage:
-        type: string
-      trading_asset:
-        type: string
-      collateral:
-        type: object
-        properties:
-          denom:
-            type: string
-          amount:
-            type: string
-        description: |-
-          Coin defines a token with a denomination and an amount.
-
-          NOTE: The amount field is an Int which implements the custom method
-          signatures required by gogoproto.
-      min_collateral:
-        type: object
-        properties:
-          denom:
-            type: string
-          amount:
-            type: string
-        description: |-
-          Coin defines a token with a denomination and an amount.
-
-          NOTE: The amount field is an Int which implements the custom method
-          signatures required by gogoproto.
-      valid_collateral:
-        type: boolean
-      position_size:
-        type: object
-        properties:
-          denom:
-            type: string
-          amount:
-            type: string
-        description: |-
-          Coin defines a token with a denomination and an amount.
-
-          NOTE: The amount field is an Int which implements the custom method
-          signatures required by gogoproto.
-      swap_fee:
-        type: string
-      discount:
-        type: string
-      open_price:
-        type: string
-      take_profit_price:
-        type: string
-      liquidation_price:
-        type: string
-      estimated_pnl:
-        type: string
-      available_liquidity:
-        type: object
-        properties:
-          denom:
-            type: string
-          amount:
-            type: string
-        description: |-
-          Coin defines a token with a denomination and an amount.
-
-          NOTE: The amount field is an Int which implements the custom method
-          signatures required by gogoproto.
-      weight_balance_ratio:
-        type: string
-      borrow_interest_rate:
-        type: string
-      funding_rate:
-        type: string
-      price_impact:
-        type: string
-  elys.margin.StatusResponse:
-    type: object
-    properties:
-      open_mtp_count:
-        type: string
-        format: uint64
-      lifetime_mtp_count:
-        type: string
-        format: uint64
-  elys.margin.WhitelistResponse:
-    type: object
-    properties:
-      whitelist:
-        type: array
-        items:
-          type: string
-      pagination:
-        type: object
-        properties:
-          next_key:
-            type: string
-            format: byte
-            description: |-
-              next_key is the key to be passed to PageRequest.key to
-              query the next page most efficiently. It will be empty if
-              there are no more results.
-          total:
-            type: string
-            format: uint64
-            title: >-
-              total is total number of results available if
-              PageRequest.count_total
-
-              was set, its value is undefined otherwise
-        description: |-
-          PageResponse is to be embedded in gRPC response messages where the
-          corresponding request message has used PageRequest.
-
-           message SomeResponse {
-                   repeated Bar results = 1;
-                   PageResponse page = 2;
-           }
   elys.oracle.AssetInfo:
     type: object
     properties:
@@ -86324,6 +85399,931 @@ definitions:
           broker_address:
             type: string
     description: QueryParamsResponse is response type for the Query/Params RPC method.
+  elys.perpetual.IsWhitelistedResponse:
+    type: object
+    properties:
+      address:
+        type: string
+      is_whitelisted:
+        type: boolean
+  elys.perpetual.MTP:
+    type: object
+    properties:
+      address:
+        type: string
+      collateral_asset:
+        type: string
+      trading_asset:
+        type: string
+      liabilities_asset:
+        type: string
+      custody_asset:
+        type: string
+      collateral:
+        type: string
+      liabilities:
+        type: string
+      borrow_interest_paid_collateral:
+        type: string
+      borrow_interest_paid_custody:
+        type: string
+      borrow_interest_unpaid_collateral:
+        type: string
+      custody:
+        type: string
+      take_profit_liabilities:
+        type: string
+      take_profit_custody:
+        type: string
+      leverage:
+        type: string
+      mtp_health:
+        type: string
+      position:
+        type: string
+        enum:
+          - UNSPECIFIED
+          - LONG
+          - SHORT
+        default: UNSPECIFIED
+      id:
+        type: string
+        format: uint64
+      amm_pool_id:
+        type: string
+        format: uint64
+      consolidate_leverage:
+        type: string
+      sum_collateral:
+        type: string
+      take_profit_price:
+        type: string
+      take_profit_borrow_rate:
+        type: string
+      funding_fee_paid_collateral:
+        type: string
+        title: funding fee paid
+      funding_fee_paid_custody:
+        type: string
+      funding_fee_received_collateral:
+        type: string
+        title: funding fee received
+      funding_fee_received_custody:
+        type: string
+      open_price:
+        type: string
+  elys.perpetual.MTPResponse:
+    type: object
+    properties:
+      mtp:
+        type: object
+        properties:
+          address:
+            type: string
+          collateral_asset:
+            type: string
+          trading_asset:
+            type: string
+          liabilities_asset:
+            type: string
+          custody_asset:
+            type: string
+          collateral:
+            type: string
+          liabilities:
+            type: string
+          borrow_interest_paid_collateral:
+            type: string
+          borrow_interest_paid_custody:
+            type: string
+          borrow_interest_unpaid_collateral:
+            type: string
+          custody:
+            type: string
+          take_profit_liabilities:
+            type: string
+          take_profit_custody:
+            type: string
+          leverage:
+            type: string
+          mtp_health:
+            type: string
+          position:
+            type: string
+            enum:
+              - UNSPECIFIED
+              - LONG
+              - SHORT
+            default: UNSPECIFIED
+          id:
+            type: string
+            format: uint64
+          amm_pool_id:
+            type: string
+            format: uint64
+          consolidate_leverage:
+            type: string
+          sum_collateral:
+            type: string
+          take_profit_price:
+            type: string
+          take_profit_borrow_rate:
+            type: string
+          funding_fee_paid_collateral:
+            type: string
+            title: funding fee paid
+          funding_fee_paid_custody:
+            type: string
+          funding_fee_received_collateral:
+            type: string
+            title: funding fee received
+          funding_fee_received_custody:
+            type: string
+          open_price:
+            type: string
+  elys.perpetual.MsgCloseResponse:
+    type: object
+    properties:
+      id:
+        type: string
+        format: uint64
+      amount:
+        type: string
+  elys.perpetual.MsgDewhitelistResponse:
+    type: object
+  elys.perpetual.MsgOpenResponse:
+    type: object
+    properties:
+      id:
+        type: string
+        format: uint64
+  elys.perpetual.MsgUpdateParamsResponse:
+    type: object
+  elys.perpetual.MsgWhitelistResponse:
+    type: object
+  elys.perpetual.Params:
+    type: object
+    properties:
+      leverage_max:
+        type: string
+      borrow_interest_rate_max:
+        type: string
+      borrow_interest_rate_min:
+        type: string
+      borrow_interest_rate_increase:
+        type: string
+      borrow_interest_rate_decrease:
+        type: string
+      health_gain_factor:
+        type: string
+      epoch_length:
+        type: string
+        format: int64
+      max_open_positions:
+        type: string
+        format: int64
+      pool_open_threshold:
+        type: string
+      force_close_fund_percentage:
+        type: string
+      force_close_fund_address:
+        type: string
+      incremental_borrow_interest_payment_fund_percentage:
+        type: string
+      incremental_borrow_interest_payment_fund_address:
+        type: string
+      safety_factor:
+        type: string
+      incremental_borrow_interest_payment_enabled:
+        type: boolean
+      whitelisting_enabled:
+        type: boolean
+      invariant_check_epoch:
+        type: string
+      take_profit_borrow_interest_rate_min:
+        type: string
+      funding_fee_base_rate:
+        type: string
+      funding_fee_max_rate:
+        type: string
+      funding_fee_min_rate:
+        type: string
+      funding_fee_collection_address:
+        type: string
+      swap_fee:
+        type: string
+    description: Params defines the parameters for the module.
+  elys.perpetual.ParamsResponse:
+    type: object
+    properties:
+      params:
+        description: params holds all the parameters of this module.
+        type: object
+        properties:
+          leverage_max:
+            type: string
+          borrow_interest_rate_max:
+            type: string
+          borrow_interest_rate_min:
+            type: string
+          borrow_interest_rate_increase:
+            type: string
+          borrow_interest_rate_decrease:
+            type: string
+          health_gain_factor:
+            type: string
+          epoch_length:
+            type: string
+            format: int64
+          max_open_positions:
+            type: string
+            format: int64
+          pool_open_threshold:
+            type: string
+          force_close_fund_percentage:
+            type: string
+          force_close_fund_address:
+            type: string
+          incremental_borrow_interest_payment_fund_percentage:
+            type: string
+          incremental_borrow_interest_payment_fund_address:
+            type: string
+          safety_factor:
+            type: string
+          incremental_borrow_interest_payment_enabled:
+            type: boolean
+          whitelisting_enabled:
+            type: boolean
+          invariant_check_epoch:
+            type: string
+          take_profit_borrow_interest_rate_min:
+            type: string
+          funding_fee_base_rate:
+            type: string
+          funding_fee_max_rate:
+            type: string
+          funding_fee_min_rate:
+            type: string
+          funding_fee_collection_address:
+            type: string
+          swap_fee:
+            type: string
+    description: ParamsResponse is response type for the Query/Params RPC method.
+  elys.perpetual.Pool:
+    type: object
+    properties:
+      amm_pool_id:
+        type: string
+        format: uint64
+      health:
+        type: string
+      enabled:
+        type: boolean
+      closed:
+        type: boolean
+      borrow_interest_rate:
+        type: string
+      pool_assets_long:
+        type: array
+        items:
+          type: object
+          properties:
+            liabilities:
+              type: string
+            custody:
+              type: string
+            take_profit_liabilities:
+              type: string
+            take_profit_custody:
+              type: string
+            asset_balance:
+              type: string
+            block_borrow_interest:
+              type: string
+            asset_denom:
+              type: string
+      pool_assets_short:
+        type: array
+        items:
+          type: object
+          properties:
+            liabilities:
+              type: string
+            custody:
+              type: string
+            take_profit_liabilities:
+              type: string
+            take_profit_custody:
+              type: string
+            asset_balance:
+              type: string
+            block_borrow_interest:
+              type: string
+            asset_denom:
+              type: string
+      last_height_borrow_interest_rate_computed:
+        type: string
+        format: int64
+      funding_rate:
+        type: string
+        title: >-
+          funding rate, if positive longs pay shorts, if negative shorts pay
+          longs
+  elys.perpetual.PoolAsset:
+    type: object
+    properties:
+      liabilities:
+        type: string
+      custody:
+        type: string
+      take_profit_liabilities:
+        type: string
+      take_profit_custody:
+        type: string
+      asset_balance:
+        type: string
+      block_borrow_interest:
+        type: string
+      asset_denom:
+        type: string
+  elys.perpetual.Position:
+    type: string
+    enum:
+      - UNSPECIFIED
+      - LONG
+      - SHORT
+    default: UNSPECIFIED
+  elys.perpetual.PositionsByPoolResponse:
+    type: object
+    properties:
+      mtps:
+        type: array
+        items:
+          type: object
+          properties:
+            address:
+              type: string
+            collateral_asset:
+              type: string
+            trading_asset:
+              type: string
+            liabilities_asset:
+              type: string
+            custody_asset:
+              type: string
+            collateral:
+              type: string
+            liabilities:
+              type: string
+            borrow_interest_paid_collateral:
+              type: string
+            borrow_interest_paid_custody:
+              type: string
+            borrow_interest_unpaid_collateral:
+              type: string
+            custody:
+              type: string
+            take_profit_liabilities:
+              type: string
+            take_profit_custody:
+              type: string
+            leverage:
+              type: string
+            mtp_health:
+              type: string
+            position:
+              type: string
+              enum:
+                - UNSPECIFIED
+                - LONG
+                - SHORT
+              default: UNSPECIFIED
+            id:
+              type: string
+              format: uint64
+            amm_pool_id:
+              type: string
+              format: uint64
+            consolidate_leverage:
+              type: string
+            sum_collateral:
+              type: string
+            take_profit_price:
+              type: string
+            take_profit_borrow_rate:
+              type: string
+            funding_fee_paid_collateral:
+              type: string
+              title: funding fee paid
+            funding_fee_paid_custody:
+              type: string
+            funding_fee_received_collateral:
+              type: string
+              title: funding fee received
+            funding_fee_received_custody:
+              type: string
+            open_price:
+              type: string
+      pagination:
+        type: object
+        properties:
+          next_key:
+            type: string
+            format: byte
+            description: |-
+              next_key is the key to be passed to PageRequest.key to
+              query the next page most efficiently. It will be empty if
+              there are no more results.
+          total:
+            type: string
+            format: uint64
+            title: >-
+              total is total number of results available if
+              PageRequest.count_total
+
+              was set, its value is undefined otherwise
+        description: |-
+          PageResponse is to be embedded in gRPC response messages where the
+          corresponding request message has used PageRequest.
+
+           message SomeResponse {
+                   repeated Bar results = 1;
+                   PageResponse page = 2;
+           }
+  elys.perpetual.PositionsForAddressResponse:
+    type: object
+    properties:
+      mtps:
+        type: array
+        items:
+          type: object
+          properties:
+            address:
+              type: string
+            collateral_asset:
+              type: string
+            trading_asset:
+              type: string
+            liabilities_asset:
+              type: string
+            custody_asset:
+              type: string
+            collateral:
+              type: string
+            liabilities:
+              type: string
+            borrow_interest_paid_collateral:
+              type: string
+            borrow_interest_paid_custody:
+              type: string
+            borrow_interest_unpaid_collateral:
+              type: string
+            custody:
+              type: string
+            take_profit_liabilities:
+              type: string
+            take_profit_custody:
+              type: string
+            leverage:
+              type: string
+            mtp_health:
+              type: string
+            position:
+              type: string
+              enum:
+                - UNSPECIFIED
+                - LONG
+                - SHORT
+              default: UNSPECIFIED
+            id:
+              type: string
+              format: uint64
+            amm_pool_id:
+              type: string
+              format: uint64
+            consolidate_leverage:
+              type: string
+            sum_collateral:
+              type: string
+            take_profit_price:
+              type: string
+            take_profit_borrow_rate:
+              type: string
+            funding_fee_paid_collateral:
+              type: string
+              title: funding fee paid
+            funding_fee_paid_custody:
+              type: string
+            funding_fee_received_collateral:
+              type: string
+              title: funding fee received
+            funding_fee_received_custody:
+              type: string
+            open_price:
+              type: string
+      pagination:
+        type: object
+        properties:
+          next_key:
+            type: string
+            format: byte
+            description: |-
+              next_key is the key to be passed to PageRequest.key to
+              query the next page most efficiently. It will be empty if
+              there are no more results.
+          total:
+            type: string
+            format: uint64
+            title: >-
+              total is total number of results available if
+              PageRequest.count_total
+
+              was set, its value is undefined otherwise
+        description: |-
+          PageResponse is to be embedded in gRPC response messages where the
+          corresponding request message has used PageRequest.
+
+           message SomeResponse {
+                   repeated Bar results = 1;
+                   PageResponse page = 2;
+           }
+  elys.perpetual.PositionsResponse:
+    type: object
+    properties:
+      mtps:
+        type: array
+        items:
+          type: object
+          properties:
+            address:
+              type: string
+            collateral_asset:
+              type: string
+            trading_asset:
+              type: string
+            liabilities_asset:
+              type: string
+            custody_asset:
+              type: string
+            collateral:
+              type: string
+            liabilities:
+              type: string
+            borrow_interest_paid_collateral:
+              type: string
+            borrow_interest_paid_custody:
+              type: string
+            borrow_interest_unpaid_collateral:
+              type: string
+            custody:
+              type: string
+            take_profit_liabilities:
+              type: string
+            take_profit_custody:
+              type: string
+            leverage:
+              type: string
+            mtp_health:
+              type: string
+            position:
+              type: string
+              enum:
+                - UNSPECIFIED
+                - LONG
+                - SHORT
+              default: UNSPECIFIED
+            id:
+              type: string
+              format: uint64
+            amm_pool_id:
+              type: string
+              format: uint64
+            consolidate_leverage:
+              type: string
+            sum_collateral:
+              type: string
+            take_profit_price:
+              type: string
+            take_profit_borrow_rate:
+              type: string
+            funding_fee_paid_collateral:
+              type: string
+              title: funding fee paid
+            funding_fee_paid_custody:
+              type: string
+            funding_fee_received_collateral:
+              type: string
+              title: funding fee received
+            funding_fee_received_custody:
+              type: string
+            open_price:
+              type: string
+      pagination:
+        type: object
+        properties:
+          next_key:
+            type: string
+            format: byte
+            description: |-
+              next_key is the key to be passed to PageRequest.key to
+              query the next page most efficiently. It will be empty if
+              there are no more results.
+          total:
+            type: string
+            format: uint64
+            title: >-
+              total is total number of results available if
+              PageRequest.count_total
+
+              was set, its value is undefined otherwise
+        description: |-
+          PageResponse is to be embedded in gRPC response messages where the
+          corresponding request message has used PageRequest.
+
+           message SomeResponse {
+                   repeated Bar results = 1;
+                   PageResponse page = 2;
+           }
+  elys.perpetual.QueryAllPoolResponse:
+    type: object
+    properties:
+      pool:
+        type: array
+        items:
+          type: object
+          properties:
+            amm_pool_id:
+              type: string
+              format: uint64
+            health:
+              type: string
+            enabled:
+              type: boolean
+            closed:
+              type: boolean
+            borrow_interest_rate:
+              type: string
+            pool_assets_long:
+              type: array
+              items:
+                type: object
+                properties:
+                  liabilities:
+                    type: string
+                  custody:
+                    type: string
+                  take_profit_liabilities:
+                    type: string
+                  take_profit_custody:
+                    type: string
+                  asset_balance:
+                    type: string
+                  block_borrow_interest:
+                    type: string
+                  asset_denom:
+                    type: string
+            pool_assets_short:
+              type: array
+              items:
+                type: object
+                properties:
+                  liabilities:
+                    type: string
+                  custody:
+                    type: string
+                  take_profit_liabilities:
+                    type: string
+                  take_profit_custody:
+                    type: string
+                  asset_balance:
+                    type: string
+                  block_borrow_interest:
+                    type: string
+                  asset_denom:
+                    type: string
+            last_height_borrow_interest_rate_computed:
+              type: string
+              format: int64
+            funding_rate:
+              type: string
+              title: >-
+                funding rate, if positive longs pay shorts, if negative shorts
+                pay longs
+      pagination:
+        type: object
+        properties:
+          next_key:
+            type: string
+            format: byte
+            description: |-
+              next_key is the key to be passed to PageRequest.key to
+              query the next page most efficiently. It will be empty if
+              there are no more results.
+          total:
+            type: string
+            format: uint64
+            title: >-
+              total is total number of results available if
+              PageRequest.count_total
+
+              was set, its value is undefined otherwise
+        description: |-
+          PageResponse is to be embedded in gRPC response messages where the
+          corresponding request message has used PageRequest.
+
+           message SomeResponse {
+                   repeated Bar results = 1;
+                   PageResponse page = 2;
+           }
+  elys.perpetual.QueryGetPoolResponse:
+    type: object
+    properties:
+      pool:
+        type: object
+        properties:
+          amm_pool_id:
+            type: string
+            format: uint64
+          health:
+            type: string
+          enabled:
+            type: boolean
+          closed:
+            type: boolean
+          borrow_interest_rate:
+            type: string
+          pool_assets_long:
+            type: array
+            items:
+              type: object
+              properties:
+                liabilities:
+                  type: string
+                custody:
+                  type: string
+                take_profit_liabilities:
+                  type: string
+                take_profit_custody:
+                  type: string
+                asset_balance:
+                  type: string
+                block_borrow_interest:
+                  type: string
+                asset_denom:
+                  type: string
+          pool_assets_short:
+            type: array
+            items:
+              type: object
+              properties:
+                liabilities:
+                  type: string
+                custody:
+                  type: string
+                take_profit_liabilities:
+                  type: string
+                take_profit_custody:
+                  type: string
+                asset_balance:
+                  type: string
+                block_borrow_interest:
+                  type: string
+                asset_denom:
+                  type: string
+          last_height_borrow_interest_rate_computed:
+            type: string
+            format: int64
+          funding_rate:
+            type: string
+            title: >-
+              funding rate, if positive longs pay shorts, if negative shorts pay
+              longs
+  elys.perpetual.QueryOpenEstimationResponse:
+    type: object
+    properties:
+      position:
+        type: string
+        enum:
+          - UNSPECIFIED
+          - LONG
+          - SHORT
+        default: UNSPECIFIED
+      leverage:
+        type: string
+      trading_asset:
+        type: string
+      collateral:
+        type: object
+        properties:
+          denom:
+            type: string
+          amount:
+            type: string
+        description: |-
+          Coin defines a token with a denomination and an amount.
+
+          NOTE: The amount field is an Int which implements the custom method
+          signatures required by gogoproto.
+      min_collateral:
+        type: object
+        properties:
+          denom:
+            type: string
+          amount:
+            type: string
+        description: |-
+          Coin defines a token with a denomination and an amount.
+
+          NOTE: The amount field is an Int which implements the custom method
+          signatures required by gogoproto.
+      valid_collateral:
+        type: boolean
+      position_size:
+        type: object
+        properties:
+          denom:
+            type: string
+          amount:
+            type: string
+        description: |-
+          Coin defines a token with a denomination and an amount.
+
+          NOTE: The amount field is an Int which implements the custom method
+          signatures required by gogoproto.
+      swap_fee:
+        type: string
+      discount:
+        type: string
+      open_price:
+        type: string
+      take_profit_price:
+        type: string
+      liquidation_price:
+        type: string
+      estimated_pnl:
+        type: string
+      available_liquidity:
+        type: object
+        properties:
+          denom:
+            type: string
+          amount:
+            type: string
+        description: |-
+          Coin defines a token with a denomination and an amount.
+
+          NOTE: The amount field is an Int which implements the custom method
+          signatures required by gogoproto.
+      weight_balance_ratio:
+        type: string
+      borrow_interest_rate:
+        type: string
+      funding_rate:
+        type: string
+      price_impact:
+        type: string
+  elys.perpetual.StatusResponse:
+    type: object
+    properties:
+      open_mtp_count:
+        type: string
+        format: uint64
+      lifetime_mtp_count:
+        type: string
+        format: uint64
+  elys.perpetual.WhitelistResponse:
+    type: object
+    properties:
+      whitelist:
+        type: array
+        items:
+          type: string
+      pagination:
+        type: object
+        properties:
+          next_key:
+            type: string
+            format: byte
+            description: |-
+              next_key is the key to be passed to PageRequest.key to
+              query the next page most efficiently. It will be empty if
+              there are no more results.
+          total:
+            type: string
+            format: uint64
+            title: >-
+              total is total number of results available if
+              PageRequest.count_total
+
+              was set, its value is undefined otherwise
+        description: |-
+          PageResponse is to be embedded in gRPC response messages where the
+          corresponding request message has used PageRequest.
+
+           message SomeResponse {
+                   repeated Bar results = 1;
+                   PageResponse page = 2;
+           }
   elys.stablestake.MsgBondResponse:
     type: object
   elys.stablestake.MsgUnbondResponse:

@@ -79,27 +79,13 @@ func (k Keeper) PoolExists(ctx sdk.Context, poolId uint64) bool {
 	return b != nil
 }
 
-// Get pool Ids that contains the denom in pool assets
-func (k Keeper) GetAllPoolIdsWithDenom(ctx sdk.Context, denom string) (list []uint64) {
-	pools := k.GetAllPool(ctx)
-
-	for _, p := range pools {
-		for _, asset := range p.PoolAssets {
-			if denom == asset.Token.Denom {
-				list = append(list, p.PoolId)
-				break
-			}
-		}
-	}
-
-	return list
-}
-
-// GetPoolIdWithAllDenoms returns the first pool id that contains all specified denominations
-func (k Keeper) GetPoolIdWithAllDenoms(ctx sdk.Context, denoms []string) (poolId uint64, found bool) {
+// GetBestPoolWithDenoms returns the first pool id that contains all specified denominations
+func (k Keeper) GetBestPoolWithDenoms(ctx sdk.Context, denoms []string) (pool types.Pool, found bool) {
 	// Get all pools
 	pools := k.GetAllPool(ctx)
 
+	maxTvl := sdk.NewDec(-1)
+	bestPool := types.Pool{}
 	for _, p := range pools {
 		// If the number of assets in the pool is less than the number of denoms, skip
 		if len(p.PoolAssets) < len(denoms) {
@@ -125,13 +111,19 @@ func (k Keeper) GetPoolIdWithAllDenoms(ctx sdk.Context, denoms []string) (poolId
 			}
 		}
 
+		poolTvl, err := p.TVL(ctx, k.oracleKeeper)
+		if err != nil {
+			poolTvl = sdk.ZeroDec()
+		}
+
 		// If all denoms are found in this pool, return the pool id
-		if allDenomsFound {
-			return p.PoolId, true
+		if allDenomsFound && maxTvl.LT(poolTvl) {
+			maxTvl = poolTvl
+			bestPool = p
 		}
 	}
 
-	return 0, false
+	return bestPool, !maxTvl.IsNegative()
 }
 
 // IterateLiquidty iterates over all LiquidityPools and performs a

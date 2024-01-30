@@ -1,0 +1,57 @@
+syntax = "proto3";
+package elys.perpetual;
+
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/elys-network/elys/x/perpetual/types";
+
+message PoolAsset {
+  string liabilities = 1 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+  string custody = 2 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+  string take_profit_liabilities = 3 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+  string take_profit_custody = 4 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+  string asset_balance = 5 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+  string block_borrow_interest = 6 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+  string asset_denom =  7;
+}
+
+message Pool {
+  uint64 amm_pool_id = 1; 
+  string health = 2 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  bool enabled = 3; 
+  bool closed = 4; 
+  string borrow_interest_rate = 5 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  repeated PoolAsset pool_assets_long = 6 [(gogoproto.nullable) = false]; 
+  repeated PoolAsset pool_assets_short = 7 [(gogoproto.nullable) = false]; 
+  int64 last_height_borrow_interest_rate_computed = 8;
+  // funding rate, if positive longs pay shorts, if negative shorts pay longs
+  string funding_rate = 9 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+}
+
