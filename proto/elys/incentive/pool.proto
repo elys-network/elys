@@ -17,8 +17,7 @@ message PoolInfo {
         (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
         (gogoproto.nullable) = false
       ];
-
-    // Block number since creation
+    // Block number since the creation of PoolInfo
     string num_blocks = 4 [
         (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
         (gogoproto.nullable) = false
@@ -33,12 +32,12 @@ message PoolInfo {
         (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
         (gogoproto.nullable) = false
     ]; 
-    // Eden APR
+    // Eden APR, updated at every distribution
     string eden_apr = 7 [
         (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
         (gogoproto.nullable) = false
     ]; 
-    // Dex APR
+    // Dex APR, updated at every distribution
     string dex_apr = 8 [
         (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
         (gogoproto.nullable) = false

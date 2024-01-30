@@ -33,15 +33,15 @@ type PoolInfo struct {
 	RewardWallet string `protobuf:"bytes,2,opt,name=reward_wallet,json=rewardWallet,proto3" json:"reward_wallet,omitempty"`
 	// multiplier for lp rewards
 	Multiplier github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,3,opt,name=multiplier,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"multiplier"`
-	// Block number since creation
+	// Block number since the creation of PoolInfo
 	NumBlocks github_com_cosmos_cosmos_sdk_types.Int `protobuf:"bytes,4,opt,name=num_blocks,json=numBlocks,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"num_blocks"`
 	// Total dex rewards given
 	DexRewardAmountGiven github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,5,opt,name=dex_reward_amount_given,json=dexRewardAmountGiven,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"dex_reward_amount_given"`
 	// Total eden rewards given
 	EdenRewardAmountGiven github_com_cosmos_cosmos_sdk_types.Int `protobuf:"bytes,6,opt,name=eden_reward_amount_given,json=edenRewardAmountGiven,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"eden_reward_amount_given"`
-	// Eden APR
+	// Eden APR, updated at every distribution
 	EdenApr github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,7,opt,name=eden_apr,json=edenApr,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"eden_apr"`
-	// Dex APR
+	// Dex APR, updated at every distribution
 	DexApr github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,8,opt,name=dex_apr,json=dexApr,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"dex_apr"`
 }
 

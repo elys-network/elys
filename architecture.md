@@ -544,12 +544,10 @@ Defines the rules for proposing and voting on changes to the network. To make a 
 
 ## Distribution
 
-Defines the distribution of rewards and fees in the network. Block proposers receive a portion of the block rewards as an incentive to maintain the network. The `community_tax` parameter specifies the percentage of the rewards that are allocated to a community pool for network development and improvement.
+Defines the distribution of rewards and fees in the network. Block proposers receive a portion of the block rewards as an incentive to maintain the network.
 
-- `Community_tax`: The percentage of inflation that is allocated to the community pool. Current value: 2%.
 - `Base_proposer_reward`: The base percentage of block rewards given to proposers. Current value: 1%.
 - `Bonus_proposer_reward`: The additional percentage of block rewards given to proposers if they include all valid transactions. Current value: 4%.
-- `Withdraw_addr_enabled`: A boolean flag that indicates whether withdraw addresses are enabled. Current value: true.
 
 ## Slashing
 

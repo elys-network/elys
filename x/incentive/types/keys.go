@@ -14,6 +14,9 @@ const (
 	MemStoreKey = "mem_incentive"
 
 	ElysStakedKeyPrefix = "ElysStaked/value/"
+
+	// ParamsKey is the prefix to retrieve all Params
+	ParamsKey = "Params/value/"
 )
 
 func KeyPrefix(p string) []byte {
@@ -23,9 +26,7 @@ func KeyPrefix(p string) []byte {
 var FeePoolKey = []byte{0x00} // key for global distribution state
 
 // ElysStakedKey returns the store key to retrieve a ElysStaked from the address fields
-func ElysStakedKey(
-	address string,
-) []byte {
+func ElysStakedKey(address string) []byte {
 	var key []byte
 
 	addressBytes := []byte(address)

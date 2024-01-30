@@ -10,14 +10,9 @@ order: 2
 message Params {
   option (gogoproto.goproto_stringer) = false;
 
-  repeated IncentiveInfo lp_incentives = 1 [(gogoproto.nullable) = false, (gogoproto.moretags) = "yaml:\"lp_incentives\""];
-  repeated IncentiveInfo stake_incentives = 2 [(gogoproto.nullable) = false, (gogoproto.moretags) = "yaml:\"stake_incentives\""];
-  string community_tax = 3 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
-    (gogoproto.nullable) = false
-  ];
-  bool withdraw_addr_enabled = 4;
-  string reward_portion_for_lps = 5 [
+  IncentiveInfo lp_incentives = 1;
+  IncentiveInfo stake_incentives = 2;
+  string reward_portion_for_lps = 3 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];

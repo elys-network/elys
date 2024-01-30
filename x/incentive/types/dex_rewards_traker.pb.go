@@ -24,10 +24,13 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
-// DexRewardsTracker
+// DexRewardsTracker is used for tracking rewards for stakers & lps - all amount here is in USDC
 type DexRewardsTracker struct {
-	NumBlocks                     github_com_cosmos_cosmos_sdk_types.Int `protobuf:"bytes,1,opt,name=num_blocks,json=numBlocks,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"num_blocks"`
-	Amount                        github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,2,opt,name=amount,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"amount"`
+	// Number of blocks since start of epoch (distribution epoch)
+	NumBlocks github_com_cosmos_cosmos_sdk_types.Int `protobuf:"bytes,1,opt,name=num_blocks,json=numBlocks,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"num_blocks"`
+	// Accumulated amount at distribution epoch - recalculated at every distribution epoch
+	Amount github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,2,opt,name=amount,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"amount"`
+	// Accumulated rewards tracked by other (when it's for staking, from lp, if it's for lp, from staking)
 	AmountCollectedByOtherTracker github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,3,opt,name=amount_collected_by_other_tracker,json=amountCollectedByOtherTracker,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"amount_collected_by_other_tracker"`
 }
 

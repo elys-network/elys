@@ -25,16 +25,13 @@ func TestGovUpdateIncentiveParams(t *testing.T) {
 	// Use baseURL to make API HTTP requests or use val.RPCClient to make direct
 	// Tendermint RPC calls.
 	// ...
-	// [community-tax] [withdraw-addr-enabled] [reward-portion-for-lps] [elys-stake-tracking-rate] [max-eden-reward-apr-stakers] [max-eden-reward-par-lps] [distribution-epoch-for-stakers] [distribution-epoch-for-lps]
+	// [reward-portion-for-lps] [elys-stake-snap-interval] [max-eden-reward-apr-stakers] [max-eden-reward-par-lps] [distribution-interval]
 	args := []string{
-		"0.00",
-		"true",
 		"0.60",
 		"0.30",
 		"10",
 		"0.30",
 		"0.30",
-		"10",
 		"10",
 		"--title=test",
 		"--summary=test",
