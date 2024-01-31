@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	ctypes "github.com/elys-network/elys/x/commitment/types"
 	"github.com/elys-network/elys/x/incentive/types"
@@ -46,33 +47,29 @@ func (k Keeper) CalculateRewardsForStakersByCommitted(ctx sdk.Context, amt sdk.I
 }
 
 // Calculate new Eden-Boost token amounts based on the given conditions and user's current unclaimed token balance
-func (k Keeper) CalculateEdenBoostRewards(ctx sdk.Context, delegatedAmt sdk.Int, commitments ctypes.Commitments, incentiveInfo types.IncentiveInfo, edenBoostAPR sdk.Dec) (sdk.Int, sdk.Int, sdk.Int) {
+func (k Keeper) CalculateEdenBoostRewards(
+	ctx sdk.Context,
+	delegatedAmt math.Int,
+	commitments ctypes.Commitments,
+	incentiveInfo types.IncentiveInfo,
+	edenBoostAPR sdk.Dec,
+) (math.Int, math.Int, math.Int) {
 	// Get eden commitments
 	edenCommitted := commitments.GetCommittedAmountForDenom(ptypes.Eden)
 
-	// Compute eden reward based on above and param factors for each
-	totalEden := delegatedAmt.Add(edenCommitted)
-
-	// Ensure incentiveInfo.DistributionEpochInBlocks is not zero to avoid division by zero
-	if incentiveInfo.DistributionEpochInBlocks.IsZero() {
-		return sdk.ZeroInt(), sdk.ZeroInt(), sdk.ZeroInt()
-	}
-
-	// Calculate edenBoostAPR % APR for eden boost
-	epochNumsPerYear := incentiveInfo.TotalBlocksPerYear.Quo(incentiveInfo.DistributionEpochInBlocks)
-	if epochNumsPerYear.IsZero() {
-		return sdk.ZeroInt(), sdk.ZeroInt(), sdk.ZeroInt()
-	}
-
-	apr := edenBoostAPR.TruncateInt()
-	newEdenBoost := totalEden.Quo(epochNumsPerYear).Mul(apr)
-
 	// Calculate the portion of each program contribution
-	newEdenBoostByElysStaked := sdk.ZeroInt()
-	if !totalEden.IsZero() {
-		newEdenBoostByElysStaked = sdk.NewDecFromInt(delegatedAmt).QuoInt(totalEden).MulInt(newEdenBoost).TruncateInt()
-	}
-	newEdenBoostByEdenCommitted := newEdenBoost.Sub(newEdenBoostByElysStaked)
+	newEdenBByElysStaked := sdk.NewDecFromInt(delegatedAmt).
+		Mul(edenBoostAPR).
+		MulInt(incentiveInfo.DistributionEpochInBlocks).
+		QuoInt(incentiveInfo.TotalBlocksPerYear).
+		RoundInt()
 
-	return newEdenBoost, newEdenBoostByElysStaked, newEdenBoostByEdenCommitted
+	newEdenBByEdenCommitted := sdk.NewDecFromInt(edenCommitted).
+		Mul(edenBoostAPR).
+		MulInt(incentiveInfo.DistributionEpochInBlocks).
+		QuoInt(incentiveInfo.TotalBlocksPerYear).
+		RoundInt()
+
+	newEdenBoost := newEdenBByElysStaked.Add(newEdenBByEdenCommitted)
+	return newEdenBoost, newEdenBByElysStaked, newEdenBByEdenCommitted
 }

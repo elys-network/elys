@@ -113,7 +113,9 @@ func (k Keeper) ProcessUpdateIncentiveParams(ctx sdk.Context) bool {
 		if totalBlocksPerYear == sdk.ZeroInt() {
 			continue
 		}
-		currentEpochInBlocks := sdk.NewInt(ctx.BlockHeight() - int64(inflation.StartBlockHeight)).Mul(totalDistributionEpochPerYear).Quo(totalBlocksPerYear)
+		currentEpochInBlocks := sdk.NewInt(ctx.BlockHeight() - int64(inflation.StartBlockHeight)).
+			Mul(totalDistributionEpochPerYear).
+			Quo(totalBlocksPerYear)
 
 		// PerAllocation means per day - since allocation's once per day
 		maxEdenPerAllocation := sdk.NewInt(int64(inflation.Inflation.LmRewards)).Mul(EpochNumBlocks).Quo(totalBlocksPerYear)
@@ -132,8 +134,6 @@ func (k Keeper) ProcessUpdateIncentiveParams(ctx sdk.Context) bool {
 			DistributionEpochInBlocks: sdk.NewInt(params.DistributionInterval),
 			// current epoch in block number
 			CurrentEpochInBlocks: currentEpochInBlocks,
-			// eden boost apr (0-1) range
-			EdenBoostApr: sdk.NewDec(1),
 		}
 
 		if params.LpIncentives == nil {
@@ -150,7 +150,6 @@ func (k Keeper) ProcessUpdateIncentiveParams(ctx sdk.Context) bool {
 			params.LpIncentives.TotalBlocksPerYear = incentiveInfo.TotalBlocksPerYear
 			params.LpIncentives.EpochNumBlocks = incentiveInfo.EpochNumBlocks
 			params.LpIncentives.DistributionEpochInBlocks = incentiveInfo.DistributionEpochInBlocks
-			params.LpIncentives.EdenBoostApr = incentiveInfo.EdenBoostApr
 		}
 
 		// ------------- Stakers parameter -------------
@@ -172,8 +171,6 @@ func (k Keeper) ProcessUpdateIncentiveParams(ctx sdk.Context) bool {
 			DistributionEpochInBlocks: sdk.NewInt(params.DistributionInterval),
 			// current epoch in block number
 			CurrentEpochInBlocks: currentEpochInBlocks,
-			// eden boost apr (0-1) range
-			EdenBoostApr: sdk.NewDec(1),
 		}
 
 		if params.StakeIncentives == nil {
@@ -190,7 +187,6 @@ func (k Keeper) ProcessUpdateIncentiveParams(ctx sdk.Context) bool {
 			params.StakeIncentives.TotalBlocksPerYear = incentiveInfo.TotalBlocksPerYear
 			params.StakeIncentives.EpochNumBlocks = incentiveInfo.EpochNumBlocks
 			params.StakeIncentives.DistributionEpochInBlocks = incentiveInfo.DistributionEpochInBlocks
-			params.StakeIncentives.EdenBoostApr = incentiveInfo.EdenBoostApr
 		}
 		break
 	}

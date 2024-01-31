@@ -28,7 +28,4 @@ message IncentiveInfo {
     // current epoch in block number
     string current_epoch_in_blocks = 7
         [ (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false];
-    // eden boost apr (0-1) range
-	string eden_boost_apr = 8 
-        [ (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
 }

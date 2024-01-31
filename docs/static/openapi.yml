@@ -39665,14 +39665,11 @@ paths:
                       distribution_epoch_in_blocks:
                         type: string
                         title: >-
-                          number of block intervals that distribute rewards,
-                          this is set from params.distribution_interval
+                          number of block intervals that distribute rewards, set
+                          from params.distribution_interval
                       current_epoch_in_blocks:
                         type: string
                         title: current epoch in block number
-                      eden_boost_apr:
-                        type: string
-                        title: eden boost apr (0-1) range
                     title: Incentive Info
                   stake_incentives:
                     type: object
@@ -39697,14 +39694,11 @@ paths:
                       distribution_epoch_in_blocks:
                         type: string
                         title: >-
-                          number of block intervals that distribute rewards,
-                          this is set from params.distribution_interval
+                          number of block intervals that distribute rewards, set
+                          from params.distribution_interval
                       current_epoch_in_blocks:
                         type: string
                         title: current epoch in block number
-                      eden_boost_apr:
-                        type: string
-                        title: eden boost apr (0-1) range
                     title: Incentive Info
                   reward_portion_for_lps:
                     type: string
@@ -84119,7 +84113,7 @@ definitions:
           Accumulated rewards tracked by other (when it's for staking, from lp,
           if it's for lp, from staking)
     title: >-
-      DexRewardsTracker is used for tracking rewards for stakers & lps - all
+      DexRewardsTracker is used for tracking rewards for stakers and LPs, all
       amount here is in USDC
   elys.incentive.IncentiveInfo:
     type: object
@@ -84142,14 +84136,11 @@ definitions:
       distribution_epoch_in_blocks:
         type: string
         title: >-
-          number of block intervals that distribute rewards, this is set from
+          number of block intervals that distribute rewards, set from
           params.distribution_interval
       current_epoch_in_blocks:
         type: string
         title: current epoch in block number
-      eden_boost_apr:
-        type: string
-        title: eden boost apr (0-1) range
     title: Incentive Info
   elys.incentive.MsgUpdateIncentiveParamsResponse:
     type: object
@@ -84189,14 +84180,11 @@ definitions:
           distribution_epoch_in_blocks:
             type: string
             title: >-
-              number of block intervals that distribute rewards, this is set
-              from params.distribution_interval
+              number of block intervals that distribute rewards, set from
+              params.distribution_interval
           current_epoch_in_blocks:
             type: string
             title: current epoch in block number
-          eden_boost_apr:
-            type: string
-            title: eden boost apr (0-1) range
         title: Incentive Info
       stake_incentives:
         type: object
@@ -84219,14 +84207,11 @@ definitions:
           distribution_epoch_in_blocks:
             type: string
             title: >-
-              number of block intervals that distribute rewards, this is set
-              from params.distribution_interval
+              number of block intervals that distribute rewards, set from
+              params.distribution_interval
           current_epoch_in_blocks:
             type: string
             title: current epoch in block number
-          eden_boost_apr:
-            type: string
-            title: eden boost apr (0-1) range
         title: Incentive Info
       reward_portion_for_lps:
         type: string
@@ -84411,14 +84396,11 @@ definitions:
               distribution_epoch_in_blocks:
                 type: string
                 title: >-
-                  number of block intervals that distribute rewards, this is set
-                  from params.distribution_interval
+                  number of block intervals that distribute rewards, set from
+                  params.distribution_interval
               current_epoch_in_blocks:
                 type: string
                 title: current epoch in block number
-              eden_boost_apr:
-                type: string
-                title: eden boost apr (0-1) range
             title: Incentive Info
           stake_incentives:
             type: object
@@ -84441,14 +84423,11 @@ definitions:
               distribution_epoch_in_blocks:
                 type: string
                 title: >-
-                  number of block intervals that distribute rewards, this is set
-                  from params.distribution_interval
+                  number of block intervals that distribute rewards, set from
+                  params.distribution_interval
               current_epoch_in_blocks:
                 type: string
                 title: current epoch in block number
-              eden_boost_apr:
-                type: string
-                title: eden boost apr (0-1) range
             title: Incentive Info
           reward_portion_for_lps:
             type: string

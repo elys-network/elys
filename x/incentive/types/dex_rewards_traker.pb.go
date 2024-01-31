@@ -24,7 +24,7 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
-// DexRewardsTracker is used for tracking rewards for stakers & lps - all amount here is in USDC
+// DexRewardsTracker is used for tracking rewards for stakers and LPs, all amount here is in USDC
 type DexRewardsTracker struct {
 	// Number of blocks since start of epoch (distribution epoch)
 	NumBlocks github_com_cosmos_cosmos_sdk_types.Int `protobuf:"bytes,1,opt,name=num_blocks,json=numBlocks,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"num_blocks"`
