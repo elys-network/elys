@@ -9,6 +9,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	errorsmod "cosmossdk.io/errors"
+	"cosmossdk.io/math"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
 	ctypes "github.com/elys-network/elys/x/commitment/types"
@@ -114,7 +115,6 @@ func (k Keeper) UpdateStakersRewardsUnclaimed(ctx sdk.Context, stakeIncentive ty
 	dexRevenueLPsAmtPerDistribution := dexRevenueForLpsPerDistribution.AmountOf(baseCurrency)
 	dexRevenueStakersAmtPerDistribution := dexRevenueForStakersPerDistribution.AmountOf(baseCurrency)
 	gasFeesLPsAmtPerDistribution := gasFeesForLps.AmountOf(baseCurrency)
-	edenBoostAPR := stakeIncentive.EdenBoostApr
 
 	// Calculate eden amount per epoch
 	params := k.GetParams(ctx)
@@ -264,11 +264,12 @@ func (k Keeper) UpdateStakersRewardsUnclaimed(ctx sdk.Context, stakeIncentive ty
 			// Calculate new unclaimed Eden-Boost tokens for staker and Eden token holders
 			// ----------------------------------------------------------
 			// ----------------------------------------------------------
-			newUnclaimedEdenBoostTokens, newUnclaimedEdenBoostFromElysStaking, newUnclaimedEdenBoostFromEdenCommited := k.CalculateEdenBoostRewards(ctx, delegatedAmt, commitments, stakeIncentive, edenBoostAPR)
-			rewardsByElysStaking = rewardsByElysStaking.Add(sdk.NewCoin(ptypes.EdenB, newUnclaimedEdenBoostFromElysStaking))
-			rewardsByEdenCommitted = rewardsByEdenCommitted.Add(sdk.NewCoin(ptypes.EdenB, newUnclaimedEdenBoostFromEdenCommited))
+			newEdenBTokens, newEdenBFromElysStaking, newEdenBFromEdenCommited := k.CalculateEdenBoostRewards(
+				ctx, delegatedAmt, commitments, stakeIncentive, types.EdenBoostApr)
+			rewardsByElysStaking = rewardsByElysStaking.Add(sdk.NewCoin(ptypes.EdenB, newEdenBFromElysStaking))
+			rewardsByEdenCommitted = rewardsByEdenCommitted.Add(sdk.NewCoin(ptypes.EdenB, newEdenBFromEdenCommited))
 
-			newSumEdenBRewardsUnClaimed = newSumEdenBRewardsUnClaimed.Add(newUnclaimedEdenBoostTokens)
+			newSumEdenBRewardsUnClaimed = newSumEdenBRewardsUnClaimed.Add(newEdenBTokens)
 			// ----------------------------------------------------------
 			// ----------------------------------------------------------
 
@@ -459,11 +460,19 @@ func (k Keeper) UpdateLPRewardsUnclaimed(ctx sdk.Context, lpIncentive types.Ince
 }
 
 // Update commitment record
-func (k Keeper) UpdateCommitments(ctx sdk.Context, creator string, commitments *ctypes.Commitments, newUnclaimedEdenTokens sdk.Int, newUnclaimedEdenBoostTokens sdk.Int, dexRewards sdk.Int, baseCurrency string) {
+func (k Keeper) UpdateCommitments(
+	ctx sdk.Context,
+	creator string,
+	commitments *ctypes.Commitments,
+	newUnclaimedEdenTokens math.Int,
+	newUnclaimedEdenBTokens math.Int,
+	dexRewards math.Int,
+	baseCurrency string,
+) {
 	// Update unclaimed Eden balances in the Commitments structure
 	commitments.AddRewardsUnclaimed(sdk.NewCoin(ptypes.Eden, newUnclaimedEdenTokens))
 	// Update unclaimed Eden-Boost token balances in the Commitments structure
-	commitments.AddRewardsUnclaimed(sdk.NewCoin(ptypes.EdenB, newUnclaimedEdenBoostTokens))
+	commitments.AddRewardsUnclaimed(sdk.NewCoin(ptypes.EdenB, newUnclaimedEdenBTokens))
 
 	// All dex revenue are collected to incentive module in USDC
 	// Gas fees (Elys) are also converted into USDC and collected into total dex revenue wallet of incentive module.

@@ -8,6 +8,8 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
+var EdenBoostApr = sdk.NewDec(1)
+
 // NewParams creates a new Params instance
 func NewParams(
 	lpIncentives *IncentiveInfo,
@@ -184,10 +186,6 @@ func validateLPIncentives(i interface{}) error {
 		return fmt.Errorf("invalid distribution epoch: %v", vv)
 	}
 
-	if vv.EdenBoostApr.GT(sdk.NewDec(1)) || vv.EdenBoostApr.LT(sdk.ZeroDec()) {
-		return fmt.Errorf("invalid eden boot apr: %v", vv)
-	}
-
 	return nil
 }
 
@@ -222,10 +220,6 @@ func validateStakeIncentives(i interface{}) error {
 
 	if vv.DistributionStartBlock.LT(sdk.NewInt(0)) {
 		return fmt.Errorf("invalid distribution epoch: %v", vv)
-	}
-
-	if vv.EdenBoostApr.GT(sdk.NewDec(1)) || vv.EdenBoostApr.LT(sdk.ZeroDec()) {
-		return fmt.Errorf("invalid eden boot apr: %v", vv)
 	}
 
 	return nil

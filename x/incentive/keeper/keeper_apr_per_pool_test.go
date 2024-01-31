@@ -86,8 +86,6 @@ func TestAPRCalculationPerPool(t *testing.T) {
 		DistributionEpochInBlocks: sdk.NewInt(10),
 		// current epoch in block number
 		CurrentEpochInBlocks: sdk.NewInt(1),
-		// eden boost apr (0-1) range
-		EdenBoostApr: sdk.NewDec(1),
 	}
 
 	ctx = ctx.WithBlockHeight(lpIncentive.DistributionEpochInBlocks.Int64())
