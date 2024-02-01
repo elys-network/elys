@@ -9,7 +9,7 @@ import (
 // x/amm module sentinel errors
 var (
 	ErrLimitMaxAmount      = errors.Register(ModuleName, 6, "calculated amount is larger than max amount")
-	ErrLimitMinAmount      = errors.Register(ModuleName, 7, "calculated amount is lesser than min amount")
+	ErrLimitMinAmount      = errors.Register(ModuleName, 7, "calculated amount is less than min amount")
 	ErrInvalidMathApprox   = errors.Register(ModuleName, 8, "invalid calculated result")
 	ErrInvalidPool         = errors.Register(ModuleName, 10, "attempting to create an invalid pool")
 	ErrDenomNotFoundInPool = errors.Register(ModuleName, 11, "denom does not exist in pool")
@@ -17,8 +17,8 @@ var (
 	ErrEmptyRoutes     = errors.Register(ModuleName, 21, "routes not defined")
 	ErrNegativeSwapFee = errors.Register(ModuleName, 23, "swap fee is negative")
 	ErrNegativeExitFee = errors.Register(ModuleName, 24, "exit fee is negative")
-	ErrTooMuchSwapFee  = errors.Register(ModuleName, 25, "swap fee should be lesser than 1 (100%)")
-	ErrTooMuchExitFee  = errors.Register(ModuleName, 26, "exit fee should be lesser than 1 (100%)")
+	ErrTooMuchSwapFee  = errors.Register(ModuleName, 25, "swap fee should be less than 1 (100%)")
+	ErrTooMuchExitFee  = errors.Register(ModuleName, 26, "exit fee should be less than 1 (100%)")
 
 	ErrTooManyTokensOut = errors.Register(ModuleName, 31, "tx is trying to get more tokens out of the pool than exist")
 

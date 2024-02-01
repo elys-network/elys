@@ -57,7 +57,7 @@ func (k Keeper) SwapExactAmountIn(
 	}
 
 	if tokenOutAmount.LT(tokenOutMinAmount) {
-		return math.Int{}, errorsmod.Wrapf(types.ErrLimitMinAmount, "%s token is lesser than the minimum amount", tokenOutDenom)
+		return math.Int{}, errorsmod.Wrapf(types.ErrLimitMinAmount, "%s token is less than the minimum amount", tokenOutDenom)
 	}
 
 	// Settles balances between the tx sender and the pool to match the swap that was executed earlier.
