@@ -43,5 +43,7 @@ func (k Keeper) OpenConsolidate(ctx sdk.Context, mtp *types.MTP, msg *types.MsgO
 		k.hooks.AfterPerpetualPositionModified(ctx, ammPool, pool)
 	}
 
-	return &types.MsgOpenResponse{}, nil
+	return &types.MsgOpenResponse{
+		Id: mtp.Id,
+	}, nil
 }

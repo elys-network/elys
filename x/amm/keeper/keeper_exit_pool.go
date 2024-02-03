@@ -2,6 +2,7 @@ package keeper
 
 import (
 	errorsmod "cosmossdk.io/errors"
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/amm/types"
 )
@@ -10,7 +11,7 @@ func (k Keeper) ExitPool(
 	ctx sdk.Context,
 	sender sdk.AccAddress,
 	poolId uint64,
-	shareInAmount sdk.Int,
+	shareInAmount math.Int,
 	tokenOutMins sdk.Coins,
 	tokenOutDenom string,
 ) (exitCoins sdk.Coins, err error) {

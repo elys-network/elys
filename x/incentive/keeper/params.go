@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	ctypes "github.com/elys-network/elys/x/commitment/types"
@@ -193,7 +194,7 @@ func (k Keeper) UpdateTotalCommitmentInfo(ctx sdk.Context, baseCurrency string) 
 	// Initialize with amount zero
 	k.tci.TotalFeesCollected = sdk.Coins{}
 	// Initialize Lp tokens amount
-	k.tci.TotalLpTokensCommitted = make(map[string]sdk.Int)
+	k.tci.TotalLpTokensCommitted = make(map[string]math.Int)
 	// Reinitialize Pool revenue tracker
 	k.tci.PoolRevenueTrack = make(map[string]sdk.Dec)
 

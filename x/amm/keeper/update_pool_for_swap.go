@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/amm/types"
 )
@@ -18,7 +19,7 @@ func (k Keeper) UpdatePoolForSwap(
 	swapFeeIn sdk.Dec,
 	swapFeeOut sdk.Dec,
 	weightBalanceBonus sdk.Dec,
-) (sdk.Int, error) {
+) (math.Int, error) {
 	tokensIn := sdk.Coins{tokenIn}
 	tokensOut := sdk.Coins{tokenOut}
 

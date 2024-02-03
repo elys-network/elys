@@ -2,6 +2,7 @@ package types
 
 import (
 	errorsmod "cosmossdk.io/errors"
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
@@ -10,7 +11,7 @@ const TypeMsgUnbond = "unbond"
 
 var _ sdk.Msg = &MsgUnbond{}
 
-func NewMsgUnbond(creator string, amount sdk.Int) *MsgUnbond {
+func NewMsgUnbond(creator string, amount math.Int) *MsgUnbond {
 	return &MsgUnbond{
 		Creator: creator,
 		Amount:  amount,

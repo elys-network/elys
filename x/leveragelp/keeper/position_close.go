@@ -2,11 +2,12 @@ package keeper
 
 import (
 	errorsmod "cosmossdk.io/errors"
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/leveragelp/types"
 )
 
-func (k Keeper) ForceCloseLong(ctx sdk.Context, position types.Position, pool types.Pool, lpAmount sdk.Int) (sdk.Int, error) {
+func (k Keeper) ForceCloseLong(ctx sdk.Context, position types.Position, pool types.Pool, lpAmount math.Int) (math.Int, error) {
 	if lpAmount.GT(position.LeveragedLpAmount) || lpAmount.IsNegative() {
 		return sdk.ZeroInt(), types.ErrInvalidCloseSize
 	}
@@ -62,7 +63,7 @@ func (k Keeper) ForceCloseLong(ctx sdk.Context, position types.Position, pool ty
 	return repayAmount, nil
 }
 
-func (k Keeper) CloseLong(ctx sdk.Context, msg *types.MsgClose) (*types.Position, sdk.Int, error) {
+func (k Keeper) CloseLong(ctx sdk.Context, msg *types.MsgClose) (*types.Position, math.Int, error) {
 	// Retrieve Position
 	position, err := k.GetPosition(ctx, msg.Creator, msg.Id)
 	if err != nil {

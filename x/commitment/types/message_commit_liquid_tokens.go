@@ -2,6 +2,7 @@ package types
 
 import (
 	errorsmod "cosmossdk.io/errors"
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
@@ -10,7 +11,7 @@ const TypeMsgDepositTokens = "commit_liquid_tokens"
 
 var _ sdk.Msg = &MsgCommitLiquidTokens{}
 
-func NewMsgCommitLiquidTokens(creator string, amount sdk.Int, denom string) *MsgCommitLiquidTokens {
+func NewMsgCommitLiquidTokens(creator string, amount math.Int, denom string) *MsgCommitLiquidTokens {
 	return &MsgCommitLiquidTokens{
 		Creator: creator,
 		Amount:  amount,

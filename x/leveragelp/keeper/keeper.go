@@ -2,7 +2,7 @@ package keeper
 
 import (
 	"fmt"
-	"math"
+	gomath "math"
 
 	"github.com/cometbft/cometbft/libs/log"
 	"github.com/cosmos/cosmos-sdk/codec"
@@ -11,6 +11,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	errorsmod "cosmossdk.io/errors"
+	"cosmossdk.io/math"
 	"github.com/cosmos/cosmos-sdk/types/query"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	"github.com/elys-network/elys/x/leveragelp/types"
@@ -86,7 +87,7 @@ func (k Keeper) CheckIfWhitelisted(ctx sdk.Context, address string) bool {
 }
 
 // Swap estimation using amm CalcInAmtGivenOut function
-func (k Keeper) EstimateSwapGivenOut(ctx sdk.Context, tokenOutAmount sdk.Coin, tokenInDenom string, ammPool ammtypes.Pool) (sdk.Int, error) {
+func (k Keeper) EstimateSwapGivenOut(ctx sdk.Context, tokenOutAmount sdk.Coin, tokenInDenom string, ammPool ammtypes.Pool) (math.Int, error) {
 	leveragelpEnabled := k.IsPoolEnabled(ctx, ammPool.PoolId)
 	if !leveragelpEnabled {
 		return sdk.ZeroInt(), errorsmod.Wrap(types.ErrLeveragelpDisabled, "Leveragelp disabled pool")
@@ -124,7 +125,7 @@ func (k Keeper) CalculatePoolHealth(ctx sdk.Context, pool *types.Pool) sdk.Dec {
 	return sdk.NewDecFromBigInt(pool.LeveragedLpAmount.BigInt()).Quo(sdk.NewDecFromBigInt(ammPool.TotalShares.Amount.BigInt()))
 }
 
-func (k Keeper) TakeFundPayment(ctx sdk.Context, returnAmount sdk.Int, returnAsset string, takePercentage sdk.Dec, fundAddr sdk.AccAddress, ammPool *ammtypes.Pool) (sdk.Int, error) {
+func (k Keeper) TakeFundPayment(ctx sdk.Context, returnAmount math.Int, returnAsset string, takePercentage sdk.Dec, fundAddr sdk.AccAddress, ammPool *ammtypes.Pool) (math.Int, error) {
 	returnAmountDec := sdk.NewDecFromBigInt(returnAmount.BigInt())
 	takeAmount := sdk.NewIntFromBigInt(takePercentage.Mul(returnAmountDec).TruncateInt().BigInt())
 
@@ -167,7 +168,7 @@ func (k Keeper) GetWhitelistedAddress(ctx sdk.Context, pagination *query.PageReq
 
 	if pagination == nil {
 		pagination = &query.PageRequest{
-			Limit: math.MaxUint64 - 1,
+			Limit: gomath.MaxUint64 - 1,
 		}
 	}
 

@@ -2,6 +2,7 @@ package types
 
 import (
 	errorsmod "cosmossdk.io/errors"
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
@@ -10,7 +11,7 @@ const TypeMsgExitPool = "exit_pool"
 
 var _ sdk.Msg = &MsgExitPool{}
 
-func NewMsgExitPool(sender string, poolId uint64, minAmountsOut sdk.Coins, shareAmountIn sdk.Int) *MsgExitPool {
+func NewMsgExitPool(sender string, poolId uint64, minAmountsOut sdk.Coins, shareAmountIn math.Int) *MsgExitPool {
 	return &MsgExitPool{
 		Sender:        sender,
 		PoolId:        poolId,

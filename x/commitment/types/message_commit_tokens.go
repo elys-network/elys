@@ -2,6 +2,7 @@ package types
 
 import (
 	errorsmod "cosmossdk.io/errors"
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
@@ -10,7 +11,7 @@ const TypeMsgCommitClaimedRewards = "commit_tokens"
 
 var _ sdk.Msg = &MsgCommitClaimedRewards{}
 
-func NewMsgCommitClaimedRewards(creator string, amount sdk.Int, denom string) *MsgCommitClaimedRewards {
+func NewMsgCommitClaimedRewards(creator string, amount math.Int, denom string) *MsgCommitClaimedRewards {
 	return &MsgCommitClaimedRewards{
 		Creator: creator,
 		Amount:  amount,

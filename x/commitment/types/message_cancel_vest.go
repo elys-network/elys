@@ -2,6 +2,7 @@ package types
 
 import (
 	errorsmod "cosmossdk.io/errors"
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
@@ -10,7 +11,7 @@ const TypeMsgCancelVest = "cancel_vest"
 
 var _ sdk.Msg = &MsgCancelVest{}
 
-func NewMsgCancelVest(creator string, amount sdk.Int, denom string) *MsgCancelVest {
+func NewMsgCancelVest(creator string, amount math.Int, denom string) *MsgCancelVest {
 	return &MsgCancelVest{
 		Creator: creator,
 		Amount:  amount,

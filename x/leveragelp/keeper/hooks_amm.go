@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	"github.com/elys-network/elys/x/leveragelp/types"
@@ -39,7 +40,7 @@ func (k Keeper) AfterPoolCreated(ctx sdk.Context, sender sdk.AccAddress, ammPool
 }
 
 // AfterJoinPool is called after JoinPool, JoinSwapExternAmountIn, and JoinSwapShareAmountOut
-func (k Keeper) AfterJoinPool(ctx sdk.Context, sender sdk.AccAddress, ammPool ammtypes.Pool, enterCoins sdk.Coins, shareOutAmount sdk.Int) {
+func (k Keeper) AfterJoinPool(ctx sdk.Context, sender sdk.AccAddress, ammPool ammtypes.Pool, enterCoins sdk.Coins, shareOutAmount math.Int) {
 	leveragelpPool, found := k.GetPool(ctx, ammPool.PoolId)
 	if !found {
 		return
@@ -51,7 +52,7 @@ func (k Keeper) AfterJoinPool(ctx sdk.Context, sender sdk.AccAddress, ammPool am
 }
 
 // AfterExitPool is called after ExitPool, ExitSwapShareAmountIn, and ExitSwapExternAmountOut
-func (k Keeper) AfterExitPool(ctx sdk.Context, sender sdk.AccAddress, ammPool ammtypes.Pool, shareInAmount sdk.Int, exitCoins sdk.Coins) error {
+func (k Keeper) AfterExitPool(ctx sdk.Context, sender sdk.AccAddress, ammPool ammtypes.Pool, shareInAmount math.Int, exitCoins sdk.Coins) error {
 	return k.CheckAmmPoolUsdcBalance(ctx, ammPool)
 }
 
@@ -78,12 +79,12 @@ func (h AmmHooks) AfterPoolCreated(ctx sdk.Context, sender sdk.AccAddress, pool 
 }
 
 // AfterJoinPool is called after JoinPool, JoinSwapExternAmountIn, and JoinSwapShareAmountOut
-func (h AmmHooks) AfterJoinPool(ctx sdk.Context, sender sdk.AccAddress, pool ammtypes.Pool, enterCoins sdk.Coins, shareOutAmount sdk.Int) {
+func (h AmmHooks) AfterJoinPool(ctx sdk.Context, sender sdk.AccAddress, pool ammtypes.Pool, enterCoins sdk.Coins, shareOutAmount math.Int) {
 	h.k.AfterJoinPool(ctx, sender, pool, enterCoins, shareOutAmount)
 }
 
 // AfterExitPool is called after ExitPool, ExitSwapShareAmountIn, and ExitSwapExternAmountOut
-func (h AmmHooks) AfterExitPool(ctx sdk.Context, sender sdk.AccAddress, pool ammtypes.Pool, shareInAmount sdk.Int, exitCoins sdk.Coins) error {
+func (h AmmHooks) AfterExitPool(ctx sdk.Context, sender sdk.AccAddress, pool ammtypes.Pool, shareInAmount math.Int, exitCoins sdk.Coins) error {
 	return h.k.AfterExitPool(ctx, sender, pool, shareInAmount, exitCoins)
 }
 

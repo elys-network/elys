@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/amm/types"
 )
@@ -11,8 +12,8 @@ func (k Keeper) createElysMultihopExpectedSwapOuts(
 	routes []types.SwapAmountOutRoute,
 	tokenOut sdk.Coin,
 	cumulativeRouteSwapFee, sumOfSwapFees sdk.Dec,
-) ([]sdk.Int, error) {
-	insExpected := make([]sdk.Int, len(routes))
+) ([]math.Int, error) {
+	insExpected := make([]math.Int, len(routes))
 
 	for i := len(routes) - 1; i >= 0; i-- {
 		route := routes[i]

@@ -37,7 +37,7 @@ func (m *CustomMessenger) DispatchMsg(ctx sdk.Context, contractAddr sdk.AccAddre
 		}
 
 		// If no handler could handle the message, return an error
-		return nil, nil, sdkerrors.Wrap(sdkerrors.ErrUnknownRequest, "unknown message type")
+		return nil, nil, errorsmod.Wrap(sdkerrors.ErrUnknownRequest, "unknown message type")
 	}
 	return m.wrapped.DispatchMsg(ctx, contractAddr, contractIBCPortID, msg)
 }

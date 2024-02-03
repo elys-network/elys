@@ -4,6 +4,7 @@ import (
 	"context"
 
 	errorsmod "cosmossdk.io/errors"
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/elys-network/elys/x/commitment/types"
@@ -24,7 +25,7 @@ func (k msgServer) Vest(goCtx context.Context, msg *types.MsgVest) (*types.MsgVe
 // Vesting token
 // Check if vesting entity count is not exceeding the maximum and if it is fine, creates a new vesting entity
 // Deduct from unclaimed bucket. If it is insufficent, deduct from committed bucket as well.
-func (k Keeper) ProcessTokenVesting(ctx sdk.Context, denom string, amount sdk.Int, creator string) error {
+func (k Keeper) ProcessTokenVesting(ctx sdk.Context, denom string, amount math.Int, creator string) error {
 	vestingInfo, _ := k.GetVestingInfo(ctx, denom)
 
 	if vestingInfo == nil {

@@ -3,6 +3,7 @@ package types
 import (
 	"errors"
 
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
@@ -18,7 +19,7 @@ import (
 //  1. iterate through all the tokens provided as an argument, calculate how much ratio it accounts for the asset in the pool
 //  2. get the minimal share ratio that would work as the benchmark for all tokens.
 //  3. calculate the number of shares that could be joined (total share * min share ratio), return the remaining coins
-func MaximalExactRatioJoin(p *Pool, tokensIn sdk.Coins) (numShares sdk.Int, remCoins sdk.Coins, err error) {
+func MaximalExactRatioJoin(p *Pool, tokensIn sdk.Coins) (numShares math.Int, remCoins sdk.Coins, err error) {
 	coinShareRatios := make([]sdk.Dec, len(tokensIn))
 	minShareRatio := sdk.MaxSortableDec
 	maxShareRatio := sdk.ZeroDec()
@@ -79,7 +80,7 @@ func MaximalExactRatioJoin(p *Pool, tokensIn sdk.Coins) (numShares sdk.Int, remC
 // Since CalcJoinPoolNoSwapShares is non-mutative, the steps for updating pool shares / liquidity are
 // more complex / don't just alter the state.
 // We should simplify this logic further in the future using multi-join equations.
-func (p *Pool) CalcJoinPoolNoSwapShares(tokensIn sdk.Coins) (numShares sdk.Int, tokensJoined sdk.Coins, err error) {
+func (p *Pool) CalcJoinPoolNoSwapShares(tokensIn sdk.Coins) (numShares math.Int, tokensJoined sdk.Coins, err error) {
 	// get all 'pool assets' (aka current pool liquidity + balancer weight)
 	poolAssetsByDenom, err := GetPoolAssetsByDenom(p.GetAllPoolAssets())
 	if err != nil {

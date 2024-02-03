@@ -2,6 +2,7 @@ package types
 
 import (
 	errorsmod "cosmossdk.io/errors"
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
@@ -10,7 +11,7 @@ const TypeMsgUncommitTokens = "uncommit_tokens"
 
 var _ sdk.Msg = &MsgUncommitTokens{}
 
-func NewMsgUncommitTokens(creator string, amount sdk.Int, denom string) *MsgUncommitTokens {
+func NewMsgUncommitTokens(creator string, amount math.Int, denom string) *MsgUncommitTokens {
 	return &MsgUncommitTokens{
 		Creator: creator,
 		Amount:  amount,

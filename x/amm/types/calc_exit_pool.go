@@ -5,10 +5,11 @@ import (
 	fmt "fmt"
 
 	errorsmod "cosmossdk.io/errors"
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-func CalcExitValueWithoutSlippage(ctx sdk.Context, oracleKeeper OracleKeeper, accPoolKeeper AccountedPoolKeeper, pool Pool, exitingShares sdk.Int, tokenOutDenom string) (sdk.Dec, error) {
+func CalcExitValueWithoutSlippage(ctx sdk.Context, oracleKeeper OracleKeeper, accPoolKeeper AccountedPoolKeeper, pool Pool, exitingShares math.Int, tokenOutDenom string) (sdk.Dec, error) {
 	tvl, err := pool.TVL(ctx, oracleKeeper)
 	if err != nil {
 		return sdk.ZeroDec(), err
@@ -79,7 +80,7 @@ func CalcExitValueWithoutSlippage(ctx sdk.Context, oracleKeeper OracleKeeper, ac
 }
 
 // CalcExitPool returns how many tokens should come out, when exiting k LP shares against a "standard" CFMM
-func CalcExitPool(ctx sdk.Context, oracleKeeper OracleKeeper, pool Pool, accountedPoolKeeper AccountedPoolKeeper, exitingShares sdk.Int, tokenOutDenom string) (sdk.Coins, error) {
+func CalcExitPool(ctx sdk.Context, oracleKeeper OracleKeeper, pool Pool, accountedPoolKeeper AccountedPoolKeeper, exitingShares math.Int, tokenOutDenom string) (sdk.Coins, error) {
 	totalShares := pool.GetTotalShares()
 	if exitingShares.GTE(totalShares.Amount) {
 		return sdk.Coins{}, errorsmod.Wrapf(ErrLimitMaxAmount, ErrMsgFormatSharesLargerThanMax, exitingShares, totalShares)
