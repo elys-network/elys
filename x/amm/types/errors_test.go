@@ -9,15 +9,15 @@ import (
 
 func TestErrors(t *testing.T) {
 	require.Equal(t, types.ErrLimitMaxAmount.Error(), "calculated amount is larger than max amount")
-	require.Equal(t, types.ErrLimitMinAmount.Error(), "calculated amount is lesser than min amount")
+	require.Equal(t, types.ErrLimitMinAmount.Error(), "calculated amount is less than min amount")
 	require.Equal(t, types.ErrInvalidMathApprox.Error(), "invalid calculated result")
 	require.Equal(t, types.ErrInvalidPool.Error(), "attempting to create an invalid pool")
 	require.Equal(t, types.ErrDenomNotFoundInPool.Error(), "denom does not exist in pool")
 	require.Equal(t, types.ErrEmptyRoutes.Error(), "routes not defined")
 	require.Equal(t, types.ErrNegativeSwapFee.Error(), "swap fee is negative")
 	require.Equal(t, types.ErrNegativeExitFee.Error(), "exit fee is negative")
-	require.Equal(t, types.ErrTooMuchSwapFee.Error(), "swap fee should be lesser than 1 (100%)")
-	require.Equal(t, types.ErrTooMuchExitFee.Error(), "exit fee should be lesser than 1 (100%)")
+	require.Equal(t, types.ErrTooMuchSwapFee.Error(), "swap fee should be less than 1 (100%)")
+	require.Equal(t, types.ErrTooMuchExitFee.Error(), "exit fee should be less than 1 (100%)")
 	require.Equal(t, types.ErrTooManyTokensOut.Error(), "tx is trying to get more tokens out of the pool than exist")
 	require.Equal(t, types.ErrInvalidPoolId.Error(), "invalid pool id")
 }
