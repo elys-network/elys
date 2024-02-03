@@ -4,6 +4,7 @@ import (
 	"context"
 	"strconv"
 
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/leveragelp/types"
 )
@@ -21,7 +22,7 @@ func (k Keeper) Close(ctx sdk.Context, msg *types.MsgClose) (*types.MsgCloseResp
 	}
 
 	var closedPosition *types.Position
-	var repayAmount sdk.Int
+	var repayAmount math.Int
 	closedPosition, repayAmount, err = k.CloseLong(ctx, msg)
 	if err != nil {
 		return nil, err

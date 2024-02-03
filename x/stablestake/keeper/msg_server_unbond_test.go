@@ -1,6 +1,7 @@
 package keeper_test
 
 import (
+	"cosmossdk.io/math"
 	"github.com/cometbft/cometbft/crypto/ed25519"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
@@ -18,7 +19,7 @@ func (suite *KeeperTestSuite) TestMsgServerUnbond() {
 		desc              string
 		senderInitBalance sdk.Coins
 		moduleInitBalance sdk.Coins
-		unbondAmount      sdk.Int
+		unbondAmount      math.Int
 		expSenderBalance  sdk.Coins
 		expPass           bool
 	}{

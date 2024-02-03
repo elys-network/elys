@@ -2,6 +2,7 @@ package keeper
 
 import (
 	errorsmod "cosmossdk.io/errors"
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/cosmos/cosmos-sdk/x/distribution/types"
@@ -12,7 +13,7 @@ import (
 )
 
 // Increase unclaimed token amount for the corresponding validator
-func (k Keeper) UpdateTokensForValidator(ctx sdk.Context, validator string, newUnclaimedEdenTokens sdk.Int, dexRewards sdk.Dec, baseCurrency string) {
+func (k Keeper) UpdateTokensForValidator(ctx sdk.Context, validator string, newUnclaimedEdenTokens math.Int, dexRewards sdk.Dec, baseCurrency string) {
 	commitments := k.cmk.GetCommitments(ctx, validator)
 
 	// Update Eden amount
@@ -26,7 +27,7 @@ func (k Keeper) UpdateTokensForValidator(ctx sdk.Context, validator string, newU
 }
 
 // Give commissions to validators
-func (k Keeper) GiveCommissionToValidators(ctx sdk.Context, delegator string, totalDelegationAmt sdk.Int, newUnclaimedAmt sdk.Int, dexRewards sdk.Dec, baseCurrency string) (sdk.Int, sdk.Int) {
+func (k Keeper) GiveCommissionToValidators(ctx sdk.Context, delegator string, totalDelegationAmt math.Int, newUnclaimedAmt math.Int, dexRewards sdk.Dec, baseCurrency string) (math.Int, math.Int) {
 	delAdr, err := sdk.AccAddressFromBech32(delegator)
 	if err != nil {
 		return sdk.ZeroInt(), sdk.ZeroInt()
@@ -82,7 +83,7 @@ func (k Keeper) GiveCommissionToValidators(ctx sdk.Context, delegator string, to
 }
 
 // Deduct rewards per program per denom
-func (k Keeper) CalcAmountSubbucketsPerProgram(ctx sdk.Context, delegator string, denom string, withdrawType commitmenttypes.EarnType, commitments commitmenttypes.Commitments) sdk.Int {
+func (k Keeper) CalcAmountSubbucketsPerProgram(ctx sdk.Context, delegator string, denom string, withdrawType commitmenttypes.EarnType, commitments commitmenttypes.Commitments) math.Int {
 	unclaimed := sdk.ZeroInt()
 	switch withdrawType {
 	case commitmenttypes.EarnType_ELYS_PROGRAM:

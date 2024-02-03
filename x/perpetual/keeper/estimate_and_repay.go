@@ -1,12 +1,13 @@
 package keeper
 
 import (
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	"github.com/elys-network/elys/x/perpetual/types"
 )
 
-func (k Keeper) EstimateAndRepay(ctx sdk.Context, mtp types.MTP, pool types.Pool, ammPool ammtypes.Pool, amount sdk.Int, baseCurrency string) (sdk.Int, error) {
+func (k Keeper) EstimateAndRepay(ctx sdk.Context, mtp types.MTP, pool types.Pool, ammPool ammtypes.Pool, amount math.Int, baseCurrency string) (math.Int, error) {
 	// init repay amount
 	repayAmount := sdk.ZeroInt()
 	var err error

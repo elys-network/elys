@@ -2,6 +2,7 @@ package keeper
 
 import (
 	errorsmod "cosmossdk.io/errors"
+	"cosmossdk.io/math"
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
@@ -81,7 +82,7 @@ func (k Keeper) IterateCommitments(ctx sdk.Context, handlerFn func(commitments t
 	}
 }
 
-func (k Keeper) DeductClaimed(ctx sdk.Context, creator string, denom string, amount sdk.Int) (types.Commitments, error) {
+func (k Keeper) DeductClaimed(ctx sdk.Context, creator string, denom string, amount math.Int) (types.Commitments, error) {
 	// Get the Commitments for the creator
 	commitments := k.GetCommitments(ctx, creator)
 
@@ -93,7 +94,7 @@ func (k Keeper) DeductClaimed(ctx sdk.Context, creator string, denom string, amo
 	return commitments, nil
 }
 
-func (k Keeper) DeductUnclaimed(ctx sdk.Context, creator string, denom string, amount sdk.Int) (types.Commitments, error) {
+func (k Keeper) DeductUnclaimed(ctx sdk.Context, creator string, denom string, amount math.Int) (types.Commitments, error) {
 	// Get the Commitments for the creator
 	commitments := k.GetCommitments(ctx, creator)
 
@@ -110,7 +111,7 @@ func (k Keeper) DeductUnclaimed(ctx sdk.Context, creator string, denom string, a
 	return commitments, nil
 }
 
-func (k Keeper) BurnEdenBoost(ctx sdk.Context, creator string, denom string, amount sdk.Int) (types.Commitments, error) {
+func (k Keeper) BurnEdenBoost(ctx sdk.Context, creator string, denom string, amount math.Int) (types.Commitments, error) {
 	// Get the Commitments for the creator
 	commitments := k.GetCommitments(ctx, creator)
 
@@ -184,7 +185,7 @@ func (k Keeper) HandleWithdrawFromCommitment(ctx sdk.Context, commitments *types
 }
 
 // Update commitments for validator's commission withdrawal to self delegator
-func (k Keeper) RecordWithdrawValidatorCommission(ctx sdk.Context, delegator string, creator string, denom string, amount sdk.Int) error {
+func (k Keeper) RecordWithdrawValidatorCommission(ctx sdk.Context, delegator string, creator string, denom string, amount math.Int) error {
 	assetProfile, found := k.assetProfileKeeper.GetEntry(ctx, denom)
 	if !found {
 		return errorsmod.Wrapf(aptypes.ErrAssetProfileNotFound, "denom: %s", denom)

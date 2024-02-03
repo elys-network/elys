@@ -1,6 +1,7 @@
 package types
 
 import (
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
@@ -24,16 +25,16 @@ type CommitmentKeeper interface {
 	// Get commitment
 	GetCommitments(sdk.Context, string) ctypes.Commitments
 	// Update commitments for claim reward operation
-	RecordClaimReward(sdk.Context, string, string, sdk.Int, ctypes.EarnType) error
+	RecordClaimReward(sdk.Context, string, string, math.Int, ctypes.EarnType) error
 	// Update commitments for validator commission
-	RecordWithdrawValidatorCommission(sdk.Context, string, string, string, sdk.Int) error
+	RecordWithdrawValidatorCommission(sdk.Context, string, string, string, math.Int) error
 	// Burn eden boost
-	BurnEdenBoost(ctx sdk.Context, creator string, denom string, amount sdk.Int) (ctypes.Commitments, error)
+	BurnEdenBoost(ctx sdk.Context, creator string, denom string, amount math.Int) (ctypes.Commitments, error)
 }
 
 // Staking keeper
 type StakingKeeper interface {
-	TotalBondedTokens(sdk.Context) sdk.Int // total bonded tokens within the validator set
+	TotalBondedTokens(sdk.Context) math.Int // total bonded tokens within the validator set
 	// iterate through all delegations from one delegator by validator-AccAddress,
 	// execute func for each validator
 	IterateDelegations(ctx sdk.Context, delegator sdk.AccAddress, fn func(index int64, delegation stakingtypes.DelegationI) (stop bool))
@@ -90,7 +91,7 @@ type AmmKeeper interface {
 		swapFeeIn sdk.Dec,
 		swapFeeOut sdk.Dec,
 		weightBalanceBonus sdk.Dec,
-	) (sdk.Int, error)
+	) (math.Int, error)
 	GetBestPoolWithDenoms(ctx sdk.Context, denoms []string) (pool ammtypes.Pool, found bool)
 	// GetPool returns a pool from its index
 	GetPool(sdk.Context, uint64) (ammtypes.Pool, bool)
@@ -120,7 +121,7 @@ type OracleKeeper interface {
 
 // AccountedPoolKeeper
 type AccountedPoolKeeper interface {
-	GetAccountedBalance(sdk.Context, uint64, string) sdk.Int
+	GetAccountedBalance(sdk.Context, uint64, string) math.Int
 }
 
 // AssetProfileKeeper defines the expected interface needed to retrieve denom info

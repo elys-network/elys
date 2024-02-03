@@ -2,6 +2,7 @@ package keeper
 
 import (
 	errorsmod "cosmossdk.io/errors"
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
 	commitmenttypes "github.com/elys-network/elys/x/commitment/types"
@@ -10,7 +11,7 @@ import (
 	stabletypes "github.com/elys-network/elys/x/stablestake/types"
 )
 
-func (k Keeper) CalculateApr(ctx sdk.Context, query *types.QueryAprRequest) (sdk.Int, error) {
+func (k Keeper) CalculateApr(ctx sdk.Context, query *types.QueryAprRequest) (math.Int, error) {
 	// Fetch incentive params
 	params := k.GetParams(ctx)
 

@@ -14,7 +14,7 @@ func (k Keeper) CalcMTPTakeProfitBorrowRate(ctx sdk.Context, mtp *types.MTP) (sd
 	// Calculate the borrow rate for this takeProfitCustody
 	takeProfitBorrowRateInt := mtp.TakeProfitCustody.Quo(mtp.Custody)
 
-	// Convert takeProfitBorrowRateInt from sdk.Int to sdk.Dec
+	// Convert takeProfitBorrowRateInt from math.Int to sdk.Dec
 	takeProfitBorrowRateDec := sdk.NewDecFromInt(takeProfitBorrowRateInt)
 
 	// Get Perpetual Params

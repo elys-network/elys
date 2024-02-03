@@ -4,11 +4,12 @@ import (
 	"fmt"
 	"strconv"
 
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-func GenerateOpenEvent(mtp *MTP) sdk.Event {
-	return sdk.NewEvent(EventOpen,
+func GenerateCloseEvent(mtp *MTP, repayAmount math.Int) sdk.Event {
+	return sdk.NewEvent(EventClose,
 		sdk.NewAttribute("address", mtp.Address),
 		sdk.NewAttribute("collateral_asset", mtp.CollateralAsset),
 		sdk.NewAttribute("trading_asset", mtp.TradingAsset),
@@ -36,5 +37,6 @@ func GenerateOpenEvent(mtp *MTP) sdk.Event {
 		sdk.NewAttribute("funding_fee_received_collateral", mtp.FundingFeeReceivedCollateral.String()),
 		sdk.NewAttribute("funding_fee_received_custody", mtp.FundingFeeReceivedCustody.String()),
 		sdk.NewAttribute("open_price", mtp.OpenPrice.String()),
+		sdk.NewAttribute("repay_amount", repayAmount.String()),
 	)
 }

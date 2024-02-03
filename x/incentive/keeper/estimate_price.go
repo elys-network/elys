@@ -1,11 +1,12 @@
 package keeper
 
 import (
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 // Estimate the price : eg, 1 Eden -> x usdc
-func (k Keeper) EstimatePrice(ctx sdk.Context, tokenIn sdk.Coin, baseCurrency string) sdk.Int {
+func (k Keeper) EstimatePrice(ctx sdk.Context, tokenIn sdk.Coin, baseCurrency string) math.Int {
 	// Find a pool that can convert tokenIn to usdc
 	pool, found := k.amm.GetBestPoolWithDenoms(ctx, []string{tokenIn.Denom, baseCurrency})
 	if !found {

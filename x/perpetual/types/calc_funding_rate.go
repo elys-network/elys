@@ -1,11 +1,12 @@
 package types
 
 import (
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 // CalculateFundingRate calculates and returns the funding rate based on long and short amounts
-func CalcFundingRate(longAmount, shortAmount sdk.Int, baseRate, maxRate, minRate sdk.Dec) sdk.Dec {
+func CalcFundingRate(longAmount, shortAmount math.Int, baseRate, maxRate, minRate sdk.Dec) sdk.Dec {
 	var ratio sdk.Dec
 
 	// Check for division by zero when longAmount > shortAmount

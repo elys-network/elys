@@ -1,12 +1,13 @@
 package types
 
 import (
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"gopkg.in/yaml.v2"
 )
 
 // NewParams creates a new Params instance
-func NewParams(minCommissionRate sdk.Dec, maxVotingPower sdk.Dec, minSelfDelegation sdk.Int, brokerAddress string) Params {
+func NewParams(minCommissionRate sdk.Dec, maxVotingPower sdk.Dec, minSelfDelegation math.Int, brokerAddress string) Params {
 	return Params{
 		MinCommissionRate: minCommissionRate,
 		MaxVotingPower:    maxVotingPower,
@@ -71,7 +72,7 @@ func validateMaxVotingPower(i interface{}) error {
 }
 
 func validateMinSelfDelegation(i interface{}) error {
-	v, ok := i.(sdk.Int)
+	v, ok := i.(math.Int)
 	if !ok {
 		return ErrInvalidMinSelfDelegation
 	}

@@ -139,11 +139,11 @@ func (p *Pool) SetInitialPoolAssets(PoolAssets []PoolAsset) error {
 	return nil
 }
 
-func (p *Pool) AddTotalShares(amt sdk.Int) {
+func (p *Pool) AddTotalShares(amt math.Int) {
 	p.TotalShares.Amount = p.TotalShares.Amount.Add(amt)
 }
 
-func (p *Pool) IncreaseLiquidity(sharesOut sdk.Int, coinsIn sdk.Coins) {
+func (p *Pool) IncreaseLiquidity(sharesOut math.Int, coinsIn sdk.Coins) {
 	err := p.addToPoolAssetBalances(coinsIn)
 	if err != nil {
 		panic(err)
@@ -232,7 +232,7 @@ func (p Pool) GetPoolAssetAndIndex(denom string) (int, PoolAsset, error) {
 // 1. calculate how much percent of the pool does given share account for(# of input shares / # of current total shares)
 // 2. since we know how much % of the pool we want, iterate through all pool liquidity to calculate how much coins we need for
 // each pool asset.
-func (pool Pool) GetMaximalNoSwapLPAmount(shareOutAmount sdk.Int) (neededLpLiquidity sdk.Coins, err error) {
+func (pool Pool) GetMaximalNoSwapLPAmount(shareOutAmount math.Int) (neededLpLiquidity sdk.Coins, err error) {
 	totalSharesAmount := pool.GetTotalShares()
 	// shareRatio is the desired number of shares, divided by the total number of
 	// shares currently in the pool. It is intended to be used in scenarios where you want

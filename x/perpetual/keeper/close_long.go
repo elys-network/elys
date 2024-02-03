@@ -2,11 +2,12 @@ package keeper
 
 import (
 	errorsmod "cosmossdk.io/errors"
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/perpetual/types"
 )
 
-func (k Keeper) CloseLong(ctx sdk.Context, msg *types.MsgClose, baseCurrency string) (*types.MTP, sdk.Int, error) {
+func (k Keeper) CloseLong(ctx sdk.Context, msg *types.MsgClose, baseCurrency string) (*types.MTP, math.Int, error) {
 	// Retrieve MTP
 	mtp, err := k.CloseLongChecker.GetMTP(ctx, msg.Creator, msg.Id)
 	if err != nil {

@@ -2,14 +2,15 @@ package keeper
 
 import (
 	"fmt"
-	"math"
+	gomath "math"
 
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 )
 
 // Calculate total share of staking
-func (k Keeper) CalculateTotalShareOfStaking(amount sdk.Int) sdk.Dec {
+func (k Keeper) CalculateTotalShareOfStaking(amount math.Int) sdk.Dec {
 	// Total statked = Elys staked + Eden Committed + Eden boost Committed
 	totalStaked := k.tci.TotalElysBonded.Add(k.tci.TotalEdenEdenBoostCommitted)
 	if totalStaked.LTE(sdk.ZeroInt()) {
@@ -21,7 +22,7 @@ func (k Keeper) CalculateTotalShareOfStaking(amount sdk.Int) sdk.Dec {
 }
 
 // Calculate the delegated amount
-func (k Keeper) CalculateDelegatedAmount(ctx sdk.Context, delegator string) sdk.Int {
+func (k Keeper) CalculateDelegatedAmount(ctx sdk.Context, delegator string) math.Int {
 	// Derivate bech32 based delegator address
 	delAdr, err := sdk.AccAddressFromBech32(delegator)
 	if err != nil {
@@ -33,7 +34,7 @@ func (k Keeper) CalculateDelegatedAmount(ctx sdk.Context, delegator string) sdk.
 	delegatedAmt := sdk.ZeroDec()
 
 	// Get all delegations
-	delegations := k.stk.GetDelegatorDelegations(ctx, delAdr, math.MaxUint16)
+	delegations := k.stk.GetDelegatorDelegations(ctx, delAdr, gomath.MaxUint16)
 	for _, del := range delegations {
 		// Get validator address
 		valAddr := del.GetValidatorAddr()

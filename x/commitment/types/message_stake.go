@@ -2,6 +2,7 @@ package types
 
 import (
 	errorsmod "cosmossdk.io/errors"
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
@@ -10,7 +11,7 @@ const TypeMsgStake = "stake"
 
 var _ sdk.Msg = &MsgStake{}
 
-func NewMsgStake(creator string, amount sdk.Int, asset string, validatorAddress string) *MsgStake {
+func NewMsgStake(creator string, amount math.Int, asset string, validatorAddress string) *MsgStake {
 	return &MsgStake{
 		Creator:          creator,
 		Amount:           amount,

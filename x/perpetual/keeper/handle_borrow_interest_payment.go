@@ -2,12 +2,13 @@ package keeper
 
 import (
 	errorsmod "cosmossdk.io/errors"
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	"github.com/elys-network/elys/x/perpetual/types"
 )
 
-func (k Keeper) HandleBorrowInterestPayment(ctx sdk.Context, borrowInterestPayment sdk.Int, mtp *types.MTP, pool *types.Pool, ammPool ammtypes.Pool, baseCurrency string) sdk.Int {
+func (k Keeper) HandleBorrowInterestPayment(ctx sdk.Context, borrowInterestPayment math.Int, mtp *types.MTP, pool *types.Pool, ammPool ammtypes.Pool, baseCurrency string) math.Int {
 	incrementalBorrowInterestPaymentEnabled := k.GetIncrementalBorrowInterestPaymentEnabled(ctx)
 	// if incremental payment on, pay interest
 	if incrementalBorrowInterestPaymentEnabled {

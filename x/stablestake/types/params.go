@@ -3,6 +3,7 @@ package types
 import (
 	fmt "fmt"
 
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
 	"gopkg.in/yaml.v2"
@@ -40,7 +41,7 @@ func NewParams(
 	interestRateIncrease sdk.Dec,
 	interestRateDecrease sdk.Dec,
 	healthGainFactor sdk.Dec,
-	totalValue sdk.Int,
+	totalValue math.Int,
 ) Params {
 	return Params{
 		DepositDenom:         depositDenom,
@@ -270,7 +271,7 @@ func validateHealthGainFactor(i interface{}) error {
 }
 
 func validateTotalValue(i interface{}) error {
-	v, ok := i.(sdk.Int)
+	v, ok := i.(math.Int)
 	if !ok {
 		return fmt.Errorf("invalid parameter type: %T", i)
 	}

@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	errorsmod "cosmossdk.io/errors"
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/amm/types"
 )
@@ -19,14 +20,14 @@ func (k Keeper) JoinPoolNoSwap(
 	ctx sdk.Context,
 	sender sdk.AccAddress,
 	poolId uint64,
-	shareOutAmount sdk.Int,
+	shareOutAmount math.Int,
 	tokenInMaxs sdk.Coins,
-) (tokenIn sdk.Coins, sharesOut sdk.Int, err error) {
+) (tokenIn sdk.Coins, sharesOut math.Int, err error) {
 	// defer to catch panics, in case something internal overflows.
 	defer func() {
 		if r := recover(); r != nil {
 			tokenIn = sdk.Coins{}
-			sharesOut = sdk.Int{}
+			sharesOut = math.Int{}
 			err = fmt.Errorf("function JoinPoolNoSwap failed due to internal reason: %v", r)
 		}
 	}()

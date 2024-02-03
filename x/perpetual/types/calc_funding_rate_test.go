@@ -3,6 +3,7 @@ package types_test
 import (
 	"testing"
 
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	types "github.com/elys-network/elys/x/perpetual/types"
 	"github.com/stretchr/testify/assert"
@@ -16,8 +17,8 @@ func TestCalculateFundingRate(t *testing.T) {
 	// Test cases
 	tests := []struct {
 		name         string
-		longAmount   sdk.Int
-		shortAmount  sdk.Int
+		longAmount   math.Int
+		shortAmount  math.Int
 		expectedRate string
 	}{
 		{

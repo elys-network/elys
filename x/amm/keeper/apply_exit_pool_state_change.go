@@ -1,13 +1,14 @@
 package keeper
 
 import (
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/amm/types"
 	commitmentkeeper "github.com/elys-network/elys/x/commitment/keeper"
 	ctypes "github.com/elys-network/elys/x/commitment/types"
 )
 
-func (k Keeper) ApplyExitPoolStateChange(ctx sdk.Context, pool types.Pool, exiter sdk.AccAddress, numShares sdk.Int, exitCoins sdk.Coins) error {
+func (k Keeper) ApplyExitPoolStateChange(ctx sdk.Context, pool types.Pool, exiter sdk.AccAddress, numShares math.Int, exitCoins sdk.Coins) error {
 	// Withdraw exit amount of token from commitment module to exiter's wallet.
 	msgServer := commitmentkeeper.NewMsgServerImpl(*k.commitmentKeeper)
 

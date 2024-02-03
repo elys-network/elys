@@ -1,10 +1,11 @@
 package types
 
 import (
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-func (p *Pool) ExitPool(ctx sdk.Context, oracleKeeper OracleKeeper, accountedPoolKeeepr AccountedPoolKeeper, exitingShares sdk.Int, tokenOutDenom string) (exitingCoins sdk.Coins, err error) {
+func (p *Pool) ExitPool(ctx sdk.Context, oracleKeeper OracleKeeper, accountedPoolKeeepr AccountedPoolKeeper, exitingShares math.Int, tokenOutDenom string) (exitingCoins sdk.Coins, err error) {
 	exitingCoins, err = p.CalcExitPoolCoinsFromShares(ctx, oracleKeeper, accountedPoolKeeepr, exitingShares, tokenOutDenom)
 	if err != nil {
 		return sdk.Coins{}, err
@@ -19,7 +20,7 @@ func (p *Pool) ExitPool(ctx sdk.Context, oracleKeeper OracleKeeper, accountedPoo
 
 // exitPool exits the pool given exitingCoins and exitingShares.
 // updates the pool's liquidity and totalShares.
-func (p *Pool) processExitPool(ctx sdk.Context, exitingCoins sdk.Coins, exitingShares sdk.Int) error {
+func (p *Pool) processExitPool(ctx sdk.Context, exitingCoins sdk.Coins, exitingShares math.Int) error {
 	balances := p.GetTotalPoolLiquidity().Sub(exitingCoins...)
 	if err := p.UpdatePoolAssetBalances(balances); err != nil {
 		return err

@@ -2,7 +2,7 @@ package keeper
 
 import (
 	"fmt"
-	"math"
+	gomath "math"
 	"math/big"
 
 	"github.com/cometbft/cometbft/libs/log"
@@ -14,6 +14,7 @@ import (
 	"google.golang.org/grpc/status"
 
 	errorsmod "cosmossdk.io/errors"
+	"cosmossdk.io/math"
 	"github.com/cosmos/cosmos-sdk/types/query"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	pkeeper "github.com/elys-network/elys/x/parameter/keeper"
@@ -117,7 +118,7 @@ func (k Keeper) CheckIfWhitelisted(ctx sdk.Context, address string) bool {
 }
 
 // Swap estimation using amm CalcInAmtGivenOut function
-func (k Keeper) EstimateSwapGivenOut(ctx sdk.Context, tokenOutAmount sdk.Coin, tokenInDenom string, ammPool ammtypes.Pool) (sdk.Int, error) {
+func (k Keeper) EstimateSwapGivenOut(ctx sdk.Context, tokenOutAmount sdk.Coin, tokenInDenom string, ammPool ammtypes.Pool) (math.Int, error) {
 	perpetualEnabled := k.IsPoolEnabled(ctx, ammPool.PoolId)
 	if !perpetualEnabled {
 		return sdk.ZeroInt(), errorsmod.Wrap(types.ErrPerpetualDisabled, "Perpetual disabled pool")
@@ -137,7 +138,7 @@ func (k Keeper) EstimateSwapGivenOut(ctx sdk.Context, tokenOutAmount sdk.Coin, t
 	return swapResult.Amount, nil
 }
 
-func (k Keeper) Borrow(ctx sdk.Context, collateralAmount sdk.Int, custodyAmount sdk.Int, mtp *types.MTP, ammPool *ammtypes.Pool, pool *types.Pool, eta sdk.Dec, baseCurrency string) error {
+func (k Keeper) Borrow(ctx sdk.Context, collateralAmount math.Int, custodyAmount math.Int, mtp *types.MTP, ammPool *ammtypes.Pool, pool *types.Pool, eta sdk.Dec, baseCurrency string) error {
 	mtpAddress, err := sdk.AccAddressFromBech32(mtp.Address)
 	if err != nil {
 		return err
@@ -296,7 +297,7 @@ func (k Keeper) TakeInCustody(ctx sdk.Context, mtp types.MTP, pool *types.Pool) 
 	return nil
 }
 
-func (k Keeper) IncrementalBorrowInterestPayment(ctx sdk.Context, borrowInterestPayment sdk.Int, mtp *types.MTP, pool *types.Pool, ammPool ammtypes.Pool, baseCurrency string) (sdk.Int, error) {
+func (k Keeper) IncrementalBorrowInterestPayment(ctx sdk.Context, borrowInterestPayment math.Int, mtp *types.MTP, pool *types.Pool, ammPool ammtypes.Pool, baseCurrency string) (math.Int, error) {
 	// if mtp has unpaid borrow interest, add to payment
 	// convert it into base currency
 	if mtp.BorrowInterestUnpaidCollateral.IsPositive() {
@@ -537,7 +538,7 @@ func (k Keeper) DestroyMTP(ctx sdk.Context, mtpAddress string, id uint64) error 
 	return nil
 }
 
-func (k Keeper) TakeFundPayment(ctx sdk.Context, returnAmount sdk.Int, returnAsset string, takePercentage sdk.Dec, fundAddr sdk.AccAddress, ammPool *ammtypes.Pool) (sdk.Int, error) {
+func (k Keeper) TakeFundPayment(ctx sdk.Context, returnAmount math.Int, returnAsset string, takePercentage sdk.Dec, fundAddr sdk.AccAddress, ammPool *ammtypes.Pool) (math.Int, error) {
 	returnAmountDec := sdk.NewDecFromBigInt(returnAmount.BigInt())
 	takeAmount := sdk.NewIntFromBigInt(takePercentage.Mul(returnAmountDec).TruncateInt().BigInt())
 
@@ -639,7 +640,7 @@ func (k Keeper) GetMTPs(ctx sdk.Context, pagination *query.PageRequest) ([]*type
 
 	if pagination == nil {
 		pagination = &query.PageRequest{
-			Limit: math.MaxUint64 - 1,
+			Limit: gomath.MaxUint64 - 1,
 		}
 	}
 
@@ -661,7 +662,7 @@ func (k Keeper) GetMTPsForPool(ctx sdk.Context, ammPoolId uint64, pagination *qu
 
 	if pagination == nil {
 		pagination = &query.PageRequest{
-			Limit: math.MaxUint64 - 1,
+			Limit: gomath.MaxUint64 - 1,
 		}
 	}
 
@@ -715,7 +716,7 @@ func (k Keeper) GetWhitelistedAddress(ctx sdk.Context, pagination *query.PageReq
 
 	if pagination == nil {
 		pagination = &query.PageRequest{
-			Limit: math.MaxUint64 - 1,
+			Limit: gomath.MaxUint64 - 1,
 		}
 	}
 

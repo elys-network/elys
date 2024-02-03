@@ -1,16 +1,19 @@
 package types
 
-import sdk "github.com/cosmos/cosmos-sdk/types"
+import (
+	"cosmossdk.io/math"
+	sdk "github.com/cosmos/cosmos-sdk/types"
+)
 
 type AmmHooks interface {
 	// AfterPoolCreated is called after CreatePool
 	AfterPoolCreated(ctx sdk.Context, sender sdk.AccAddress, pool Pool)
 
 	// AfterJoinPool is called after JoinPool, JoinSwapExternAmountIn, and JoinSwapShareAmountOut
-	AfterJoinPool(ctx sdk.Context, sender sdk.AccAddress, pool Pool, enterCoins sdk.Coins, shareOutAmount sdk.Int)
+	AfterJoinPool(ctx sdk.Context, sender sdk.AccAddress, pool Pool, enterCoins sdk.Coins, shareOutAmount math.Int)
 
 	// AfterExitPool is called after ExitPool, ExitSwapShareAmountIn, and ExitSwapExternAmountOut
-	AfterExitPool(ctx sdk.Context, sender sdk.AccAddress, pool Pool, shareInAmount sdk.Int, exitCoins sdk.Coins) error
+	AfterExitPool(ctx sdk.Context, sender sdk.AccAddress, pool Pool, shareInAmount math.Int, exitCoins sdk.Coins) error
 
 	// AfterSwap is called after SwapExactAmountIn and SwapExactAmountOut
 	AfterSwap(ctx sdk.Context, sender sdk.AccAddress, pool Pool, input sdk.Coins, output sdk.Coins) error
@@ -32,13 +35,13 @@ func (h MultiAmmHooks) AfterPoolCreated(ctx sdk.Context, sender sdk.AccAddress, 
 	}
 }
 
-func (h MultiAmmHooks) AfterJoinPool(ctx sdk.Context, sender sdk.AccAddress, pool Pool, enterCoins sdk.Coins, shareOutAmount sdk.Int) {
+func (h MultiAmmHooks) AfterJoinPool(ctx sdk.Context, sender sdk.AccAddress, pool Pool, enterCoins sdk.Coins, shareOutAmount math.Int) {
 	for i := range h {
 		h[i].AfterJoinPool(ctx, sender, pool, enterCoins, shareOutAmount)
 	}
 }
 
-func (h MultiAmmHooks) AfterExitPool(ctx sdk.Context, sender sdk.AccAddress, pool Pool, shareInAmount sdk.Int, exitCoins sdk.Coins) error {
+func (h MultiAmmHooks) AfterExitPool(ctx sdk.Context, sender sdk.AccAddress, pool Pool, shareInAmount math.Int, exitCoins sdk.Coins) error {
 	for i := range h {
 		err := h[i].AfterExitPool(ctx, sender, pool, shareInAmount, exitCoins)
 		if err != nil {
