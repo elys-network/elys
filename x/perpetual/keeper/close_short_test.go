@@ -256,7 +256,7 @@ func TestCloseShort_ErrorEstimateAndRepay(t *testing.T) {
 	mockChecker.On("GetAmmPool", ctx, mtp.AmmPoolId, mtp.CustodyAsset).Return(ammPool, nil)
 	mockChecker.On("HandleBorrowInterest", ctx, &mtp, &pool, ammPool).Return(nil)
 	mockChecker.On("TakeOutCustody", ctx, mtp, &pool, msg.Amount).Return(nil)
-	mockChecker.On("EstimateAndRepay", ctx, mtp, pool, ammPool, msg.Amount, ptypes.BaseCurrency).Return(sdk.Int{}, errors.New("error executing estimate and repay"))
+	mockChecker.On("EstimateAndRepay", ctx, mtp, pool, ammPool, msg.Amount, ptypes.BaseCurrency).Return(math.Int{}, errors.New("error executing estimate and repay"))
 
 	_, _, err := k.CloseShort(ctx, msg, ptypes.BaseCurrency)
 

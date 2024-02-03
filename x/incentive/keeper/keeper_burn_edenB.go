@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
@@ -55,7 +56,7 @@ func (k Keeper) BurnEdenBFromElysUnstaking(ctx sdk.Context, delegator sdk.AccAdd
 }
 
 // Burn EdenBoost from Eden unclaimed
-func (k Keeper) BurnEdenBFromEdenUncommitted(ctx sdk.Context, delegator string, uncommitAmt sdk.Int) error {
+func (k Keeper) BurnEdenBFromEdenUncommitted(ctx sdk.Context, delegator string, uncommitAmt math.Int) error {
 	// Get elys staked amount
 	elysStaked, found := k.GetElysStaked(ctx, delegator)
 	if !found {

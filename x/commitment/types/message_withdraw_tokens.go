@@ -2,6 +2,7 @@ package types
 
 import (
 	errorsmod "cosmossdk.io/errors"
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
@@ -10,7 +11,7 @@ const TypeMsgClaimReward = "withdraw_tokens"
 
 var _ sdk.Msg = &MsgClaimReward{}
 
-func NewMsgClaimReward(creator string, amount sdk.Int, denom string) *MsgClaimReward {
+func NewMsgClaimReward(creator string, amount math.Int, denom string) *MsgClaimReward {
 	return &MsgClaimReward{
 		Creator: creator,
 		Amount:  amount,

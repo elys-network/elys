@@ -3,12 +3,13 @@ package keeper
 import (
 	"math/big"
 
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	"github.com/elys-network/elys/x/perpetual/types"
 )
 
-func (k Keeper) CalcMTPBorrowInterestLiabilities(ctx sdk.Context, mtp *types.MTP, borrowInterestRate sdk.Dec, epochPosition, epochLength int64, ammPool ammtypes.Pool, baseCurrency string) (sdk.Int, error) {
+func (k Keeper) CalcMTPBorrowInterestLiabilities(ctx sdk.Context, mtp *types.MTP, borrowInterestRate sdk.Dec, epochPosition, epochLength int64, ammPool ammtypes.Pool, baseCurrency string) (math.Int, error) {
 	// Ensure borrow interest rate or liabilities are not zero to avoid division by zero
 	if borrowInterestRate.IsZero() || mtp.Liabilities.IsZero() {
 		return sdk.ZeroInt(), types.ErrAmountTooLow

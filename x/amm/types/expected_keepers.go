@@ -1,6 +1,7 @@
 package types
 
 import (
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
@@ -52,5 +53,5 @@ type AssetProfileKeeper interface {
 //
 //go:generate mockery --srcpkg . --name AccountedPoolKeeper --structname AccountedPoolKeeper --filename accounted_pool_keeper.go --with-expecter
 type AccountedPoolKeeper interface {
-	GetAccountedBalance(sdk.Context, uint64, string) sdk.Int
+	GetAccountedBalance(sdk.Context, uint64, string) math.Int
 }

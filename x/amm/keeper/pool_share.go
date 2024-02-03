@@ -89,7 +89,7 @@ func (k Keeper) MintPoolShareToAccount(ctx sdk.Context, pool types.Pool, addr sd
 }
 
 // BurnPoolShareFromAccount burns `amount` of the given pool's shares held by `addr`.
-func (k Keeper) BurnPoolShareFromAccount(ctx sdk.Context, pool types.Pool, addr sdk.AccAddress, amount sdk.Int) error {
+func (k Keeper) BurnPoolShareFromAccount(ctx sdk.Context, pool types.Pool, addr sdk.AccAddress, amount math.Int) error {
 	coin := sdk.NewCoin(types.GetPoolShareDenom(pool.GetPoolId()), amount)
 	coins := sdk.NewCoins(coin)
 

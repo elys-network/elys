@@ -1,6 +1,7 @@
 package keeper_test
 
 import (
+	"cosmossdk.io/math"
 	"github.com/cometbft/cometbft/crypto/ed25519"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
@@ -15,7 +16,7 @@ func (suite *KeeperTestSuite) TestMsgServerJoinPool() {
 		senderInitBalance sdk.Coins
 		poolInitBalance   sdk.Coins
 		poolParams        types.PoolParams
-		shareOutAmount    sdk.Int
+		shareOutAmount    math.Int
 		expSenderBalance  sdk.Coins
 		expTotalLiquidity sdk.Coins
 		expTokenIn        sdk.Coins

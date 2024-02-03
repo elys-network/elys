@@ -2,6 +2,7 @@ package types
 
 import (
 	errorsmod "cosmossdk.io/errors"
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
@@ -60,7 +61,7 @@ func (msg *MsgClose) ValidateBasic() error {
 	return nil
 }
 
-func NewMsgOpen(creator string, collateralAsset string, collateralAmount sdk.Int, ammPoolId uint64, leverage sdk.Dec) *MsgOpen {
+func NewMsgOpen(creator string, collateralAsset string, collateralAmount math.Int, ammPoolId uint64, leverage sdk.Dec) *MsgOpen {
 	return &MsgOpen{
 		Creator:          creator,
 		CollateralAsset:  collateralAsset,

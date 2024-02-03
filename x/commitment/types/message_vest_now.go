@@ -2,6 +2,7 @@ package types
 
 import (
 	errorsmod "cosmossdk.io/errors"
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
@@ -10,7 +11,7 @@ const TypeMsgVestNow = "vest_now"
 
 var _ sdk.Msg = &MsgVestNow{}
 
-func NewMsgVestNow(creator string, amount sdk.Int, denom string) *MsgVestNow {
+func NewMsgVestNow(creator string, amount math.Int, denom string) *MsgVestNow {
 	return &MsgVestNow{
 		Creator: creator,
 		Amount:  amount,

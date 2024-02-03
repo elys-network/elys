@@ -2,6 +2,7 @@ package types
 
 import (
 	errorsmod "cosmossdk.io/errors"
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
@@ -10,7 +11,7 @@ const TypeMsgBond = "stake"
 
 var _ sdk.Msg = &MsgBond{}
 
-func NewMsgBond(creator string, amount sdk.Int) *MsgBond {
+func NewMsgBond(creator string, amount math.Int) *MsgBond {
 	return &MsgBond{
 		Creator: creator,
 		Amount:  amount,

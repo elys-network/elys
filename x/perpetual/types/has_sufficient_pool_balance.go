@@ -1,12 +1,12 @@
 package types
 
 import (
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	"cosmossdk.io/math"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 )
 
 // Check if amm pool has sufficcient balance
-func HasSufficientPoolBalance(ammPool ammtypes.Pool, assetDenom string, requiredAmount sdk.Int) bool {
+func HasSufficientPoolBalance(ammPool ammtypes.Pool, assetDenom string, requiredAmount math.Int) bool {
 	balance, err := GetAmmPoolBalance(ammPool, assetDenom)
 	if err != nil {
 		return false

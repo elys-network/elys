@@ -2,6 +2,7 @@ package types
 
 import (
 	errorsmod "cosmossdk.io/errors"
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
@@ -22,7 +23,7 @@ var (
 	_ sdk.Msg = &MsgDewhitelist{}
 )
 
-func NewMsgClose(creator string, id uint64, amount sdk.Int) *MsgClose {
+func NewMsgClose(creator string, id uint64, amount math.Int) *MsgClose {
 	return &MsgClose{
 		Creator: creator,
 		Id:      id,

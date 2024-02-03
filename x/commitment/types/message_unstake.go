@@ -2,6 +2,7 @@ package types
 
 import (
 	errorsmod "cosmossdk.io/errors"
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
@@ -10,7 +11,7 @@ const TypeMsgUnstake = "unstake"
 
 var _ sdk.Msg = &MsgUnstake{}
 
-func NewMsgUnstake(creator string, amount sdk.Int, asset string, validatorAddress string) *MsgUnstake {
+func NewMsgUnstake(creator string, amount math.Int, asset string, validatorAddress string) *MsgUnstake {
 	return &MsgUnstake{
 		Creator:          creator,
 		Amount:           amount,

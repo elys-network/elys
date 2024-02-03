@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	errorsmod "cosmossdk.io/errors"
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	aptypes "github.com/elys-network/elys/x/assetprofile/types"
@@ -11,7 +12,7 @@ import (
 )
 
 // accounting the liquid token as a claimed token in commitment module.
-func (k Keeper) DepositLiquidTokensClaimed(ctx sdk.Context, denom string, amount sdk.Int, sender string) error {
+func (k Keeper) DepositLiquidTokensClaimed(ctx sdk.Context, denom string, amount math.Int, sender string) error {
 	assetProfile, found := k.assetProfileKeeper.GetEntry(ctx, denom)
 	if !found {
 		return errorsmod.Wrapf(aptypes.ErrAssetProfileNotFound, "denom: %s", denom)

@@ -9,7 +9,7 @@ import (
 )
 
 // Calculate new Eden token amounts based on the given conditions and user's current unclaimed token balance
-func (k Keeper) CalculateRewardsForStakersByElysStaked(ctx sdk.Context, delegatedAmt sdk.Int, edenAmountPerDistribution sdk.Int, dexRevenueAmtForStakersPerDistribution sdk.Dec) (sdk.Int, sdk.Int, sdk.Dec) {
+func (k Keeper) CalculateRewardsForStakersByElysStaked(ctx sdk.Context, delegatedAmt math.Int, edenAmountPerDistribution math.Int, dexRevenueAmtForStakersPerDistribution sdk.Dec) (math.Int, math.Int, sdk.Dec) {
 	// -----------Eden calculation ---------------------
 	// --------------------------------------------------------------
 	stakeShare := k.CalculateTotalShareOfStaking(delegatedAmt)
@@ -30,7 +30,7 @@ func (k Keeper) CalculateRewardsForStakersByElysStaked(ctx sdk.Context, delegate
 }
 
 // Calculate new Eden token amounts based on the given conditions and user's current unclaimed token balance
-func (k Keeper) CalculateRewardsForStakersByCommitted(ctx sdk.Context, amt sdk.Int, edenAmountPerEpoch sdk.Int, dexRevenueAmtForStakers sdk.Dec) (sdk.Int, sdk.Int) {
+func (k Keeper) CalculateRewardsForStakersByCommitted(ctx sdk.Context, amt math.Int, edenAmountPerEpoch math.Int, dexRevenueAmtForStakers sdk.Dec) (math.Int, math.Int) {
 	// -----------Eden calculation ---------------------
 	// --------------------------------------------------------------
 	stakeShare := k.CalculateTotalShareOfStaking(amt)

@@ -2,6 +2,7 @@ package keeper
 
 import (
 	errorsmod "cosmossdk.io/errors"
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	aptypes "github.com/elys-network/elys/x/assetprofile/types"
@@ -9,7 +10,7 @@ import (
 )
 
 // Update commitments for claim reward operation
-func (k Keeper) RecordClaimReward(ctx sdk.Context, creator string, denom string, amount sdk.Int, withdrawMode types.EarnType) error {
+func (k Keeper) RecordClaimReward(ctx sdk.Context, creator string, denom string, amount math.Int, withdrawMode types.EarnType) error {
 	assetProfile, found := k.assetProfileKeeper.GetEntry(ctx, denom)
 	if !found {
 		return errorsmod.Wrapf(aptypes.ErrAssetProfileNotFound, "denom: %s", denom)

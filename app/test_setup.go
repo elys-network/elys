@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"time"
 
-	sdkmath "cosmossdk.io/math"
+	"cosmossdk.io/math"
 	dbm "github.com/cometbft/cometbft-db"
 	abci "github.com/cometbft/cometbft/abci/types"
 	"github.com/cometbft/cometbft/crypto/secp256k1"
@@ -128,7 +128,7 @@ func GenesisStateWithValSet(app *ElysApp) (GenesisState, *tmtypes.ValidatorSet, 
 	acc := authtypes.NewBaseAccountWithAddress(senderPrivKey.PubKey().Address().Bytes())
 	balance := banktypes.Balance{
 		Address: acc.GetAddress().String(),
-		Coins:   sdk.NewCoins(sdk.NewCoin(ptypes.Elys, sdkmath.NewInt(100000000000000))),
+		Coins:   sdk.NewCoins(sdk.NewCoin(ptypes.Elys, math.NewInt(100000000000000))),
 	}
 
 	//////////////////////
@@ -165,7 +165,7 @@ func GenesisStateWithValSet(app *ElysApp) (GenesisState, *tmtypes.ValidatorSet, 
 			UnbondingHeight:   int64(0),
 			UnbondingTime:     time.Unix(0, 0).UTC(),
 			Commission:        stakingtypes.NewCommission(sdk.NewDecWithPrec(5, 2), sdk.NewDecWithPrec(10, 2), sdk.NewDecWithPrec(10, 2)),
-			MinSelfDelegation: sdkmath.OneInt(),
+			MinSelfDelegation: math.OneInt(),
 		}
 		validators = append(validators, validator)
 		delegations = append(delegations, stakingtypes.NewDelegation(genAccs[0].GetAddress(), val.Address.Bytes(), sdk.OneDec()))
@@ -216,11 +216,11 @@ func createRandomAccounts(accNum int) []sdk.AccAddress {
 
 // AddTestAddrs constructs and returns accNum amount of accounts with an
 // initial balance of accAmt in random order
-func AddTestAddrs(app *ElysApp, ctx sdk.Context, accNum int, accAmt sdk.Int) []sdk.AccAddress {
+func AddTestAddrs(app *ElysApp, ctx sdk.Context, accNum int, accAmt math.Int) []sdk.AccAddress {
 	return addTestAddrs(app, ctx, accNum, accAmt, createRandomAccounts)
 }
 
-func addTestAddrs(app *ElysApp, ctx sdk.Context, accNum int, accAmt sdk.Int, strategy GenerateAccountStrategy) []sdk.AccAddress {
+func addTestAddrs(app *ElysApp, ctx sdk.Context, accNum int, accAmt math.Int, strategy GenerateAccountStrategy) []sdk.AccAddress {
 	testAddrs := strategy(accNum)
 
 	bondDenom := app.StakingKeeper.BondDenom(ctx)

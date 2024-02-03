@@ -2,6 +2,7 @@ package types
 
 import (
 	errorsmod "cosmossdk.io/errors"
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
@@ -42,7 +43,7 @@ func (p *Pool) GetPoolAsset(position Position, assetDenom string) *PoolAsset {
 }
 
 // Update the asset balance
-func (p *Pool) UpdateBalance(ctx sdk.Context, assetDenom string, amount sdk.Int, isIncrease bool, position Position) error {
+func (p *Pool) UpdateBalance(ctx sdk.Context, assetDenom string, amount math.Int, isIncrease bool, position Position) error {
 	poolAsset := p.GetPoolAsset(position, assetDenom)
 	if poolAsset == nil {
 		return errorsmod.Wrap(sdkerrors.ErrInvalidCoins, "invalid asset denom")
@@ -58,7 +59,7 @@ func (p *Pool) UpdateBalance(ctx sdk.Context, assetDenom string, amount sdk.Int,
 }
 
 // Update the asset liabilities
-func (p *Pool) UpdateLiabilities(ctx sdk.Context, assetDenom string, amount sdk.Int, isIncrease bool, position Position) error {
+func (p *Pool) UpdateLiabilities(ctx sdk.Context, assetDenom string, amount math.Int, isIncrease bool, position Position) error {
 	poolAsset := p.GetPoolAsset(position, assetDenom)
 	if poolAsset == nil {
 		return errorsmod.Wrap(sdkerrors.ErrInvalidCoins, "invalid asset denom")
@@ -74,7 +75,7 @@ func (p *Pool) UpdateLiabilities(ctx sdk.Context, assetDenom string, amount sdk.
 }
 
 // Update the asset take profit liabilities
-func (p *Pool) UpdateTakeProfitLiabilities(ctx sdk.Context, assetDenom string, amount sdk.Int, isIncrease bool, position Position) error {
+func (p *Pool) UpdateTakeProfitLiabilities(ctx sdk.Context, assetDenom string, amount math.Int, isIncrease bool, position Position) error {
 	poolAsset := p.GetPoolAsset(position, assetDenom)
 	if poolAsset == nil {
 		return errorsmod.Wrap(sdkerrors.ErrInvalidCoins, "invalid asset denom")
@@ -90,7 +91,7 @@ func (p *Pool) UpdateTakeProfitLiabilities(ctx sdk.Context, assetDenom string, a
 }
 
 // Update the asset take profit custody
-func (p *Pool) UpdateTakeProfitCustody(ctx sdk.Context, assetDenom string, amount sdk.Int, isIncrease bool, position Position) error {
+func (p *Pool) UpdateTakeProfitCustody(ctx sdk.Context, assetDenom string, amount math.Int, isIncrease bool, position Position) error {
 	poolAsset := p.GetPoolAsset(position, assetDenom)
 	if poolAsset == nil {
 		return errorsmod.Wrap(sdkerrors.ErrInvalidCoins, "invalid asset denom")
@@ -106,7 +107,7 @@ func (p *Pool) UpdateTakeProfitCustody(ctx sdk.Context, assetDenom string, amoun
 }
 
 // Update the asset custody
-func (p *Pool) UpdateCustody(ctx sdk.Context, assetDenom string, amount sdk.Int, isIncrease bool, position Position) error {
+func (p *Pool) UpdateCustody(ctx sdk.Context, assetDenom string, amount math.Int, isIncrease bool, position Position) error {
 	poolAsset := p.GetPoolAsset(position, assetDenom)
 	if poolAsset == nil {
 		return errorsmod.Wrap(sdkerrors.ErrInvalidCoins, "invalid asset denom")
@@ -122,7 +123,7 @@ func (p *Pool) UpdateCustody(ctx sdk.Context, assetDenom string, amount sdk.Int,
 }
 
 // Update the unsettled liabilities balance
-func (p *Pool) UpdateBlockBorrowInterest(ctx sdk.Context, assetDenom string, amount sdk.Int, isIncrease bool, position Position) error {
+func (p *Pool) UpdateBlockBorrowInterest(ctx sdk.Context, assetDenom string, amount math.Int, isIncrease bool, position Position) error {
 	poolAsset := p.GetPoolAsset(position, assetDenom)
 	if poolAsset == nil {
 		return errorsmod.Wrap(sdkerrors.ErrInvalidCoins, "invalid asset denom")

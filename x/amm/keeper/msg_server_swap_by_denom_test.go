@@ -1,6 +1,7 @@
 package keeper_test
 
 import (
+	"cosmossdk.io/math"
 	"github.com/cometbft/cometbft/crypto/ed25519"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
@@ -16,7 +17,7 @@ func (suite *KeeperTestSuite) TestMsgServerSwapByDenom() {
 		senderInitBalance sdk.Coins
 		swapFee           sdk.Dec
 		tokenIn           sdk.Coin
-		tokenOutMin       sdk.Int
+		tokenOutMin       math.Int
 		tokenOut          sdk.Coin
 		expSenderBalance  sdk.Coins
 		expPass           bool

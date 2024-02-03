@@ -1,6 +1,7 @@
 package types
 
 import (
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
@@ -27,8 +28,8 @@ type AmmKeeper interface {
 
 	CalcOutAmtGivenIn(ctx sdk.Context, poolId uint64, oracle ammtypes.OracleKeeper, snapshot *ammtypes.Pool, tokensIn sdk.Coins, tokenOutDenom string, swapFee sdk.Dec) (sdk.Coin, error)
 	CalcInAmtGivenOut(ctx sdk.Context, poolId uint64, oracle ammtypes.OracleKeeper, snapshot *ammtypes.Pool, tokensOut sdk.Coins, tokenInDenom string, swapFee sdk.Dec) (tokenIn sdk.Coin, err error)
-	JoinPoolNoSwap(ctx sdk.Context, sender sdk.AccAddress, poolId uint64, shareOutAmount sdk.Int, tokenInMaxs sdk.Coins) (tokenIn sdk.Coins, sharesOut sdk.Int, err error)
-	ExitPool(ctx sdk.Context, sender sdk.AccAddress, poolId uint64, shareInAmount sdk.Int, tokenOutMins sdk.Coins, tokenOutDenom string) (exitCoins sdk.Coins, err error)
+	JoinPoolNoSwap(ctx sdk.Context, sender sdk.AccAddress, poolId uint64, shareOutAmount math.Int, tokenInMaxs sdk.Coins) (tokenIn sdk.Coins, sharesOut math.Int, err error)
+	ExitPool(ctx sdk.Context, sender sdk.AccAddress, poolId uint64, shareInAmount math.Int, tokenOutMins sdk.Coins, tokenOutDenom string) (exitCoins sdk.Coins, err error)
 }
 
 // BankKeeper defines the expected interface needed to retrieve account balances.

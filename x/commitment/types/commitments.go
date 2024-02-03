@@ -1,6 +1,7 @@
 package types
 
 import (
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
@@ -20,7 +21,7 @@ func (c Commitments) IsEmpty() bool {
 	return true
 }
 
-func (c *Commitments) GetCommittedAmountForDenom(denom string) sdk.Int {
+func (c *Commitments) GetCommittedAmountForDenom(denom string) math.Int {
 	for _, token := range c.CommittedTokens {
 		if token.Denom == denom {
 			return token.Amount
@@ -38,7 +39,7 @@ func (c *Commitments) GetCommittedLockUpsForDenom(denom string) []Lockup {
 	return nil
 }
 
-func (c *Commitments) AddCommittedTokens(denom string, amount sdk.Int, unlockTime uint64) {
+func (c *Commitments) AddCommittedTokens(denom string, amount math.Int, unlockTime uint64) {
 	for i, token := range c.CommittedTokens {
 		if token.Denom == denom {
 			c.CommittedTokens[i].Amount = token.Amount.Add(amount)
@@ -79,7 +80,7 @@ func (c *Commitments) AddCommittedTokens(denom string, amount sdk.Int, unlockTim
 	})
 }
 
-func (c *Commitments) DeductFromCommitted(denom string, amount sdk.Int, currTime uint64) error {
+func (c *Commitments) DeductFromCommitted(denom string, amount math.Int, currTime uint64) error {
 	for i, token := range c.CommittedTokens {
 		if token.Denom == denom {
 			c.CommittedTokens[i].Amount = token.Amount.Sub(amount)
@@ -116,7 +117,7 @@ func (c *Commitments) DeductFromCommitted(denom string, amount sdk.Int, currTime
 	return ErrInsufficientCommittedTokens
 }
 
-func (c *Commitments) GetRewardUnclaimedForDenom(denom string) sdk.Int {
+func (c *Commitments) GetRewardUnclaimedForDenom(denom string) math.Int {
 	for _, token := range c.RewardsUnclaimed {
 		if token.Denom == denom {
 			return token.Amount
@@ -126,7 +127,7 @@ func (c *Commitments) GetRewardUnclaimedForDenom(denom string) sdk.Int {
 }
 
 // Sub bucket rewards query - Elys
-func (c *Commitments) GetElysSubBucketRewardUnclaimedForDenom(denom string) sdk.Int {
+func (c *Commitments) GetElysSubBucketRewardUnclaimedForDenom(denom string) math.Int {
 	for _, token := range c.RewardsByElysUnclaimed {
 		if token.Denom == denom {
 			return token.Amount
@@ -136,7 +137,7 @@ func (c *Commitments) GetElysSubBucketRewardUnclaimedForDenom(denom string) sdk.
 }
 
 // Sub bucket rewards query - Eden
-func (c *Commitments) GetEdenSubBucketRewardUnclaimedForDenom(denom string) sdk.Int {
+func (c *Commitments) GetEdenSubBucketRewardUnclaimedForDenom(denom string) math.Int {
 	for _, token := range c.RewardsByEdenUnclaimed {
 		if token.Denom == denom {
 			return token.Amount
@@ -146,7 +147,7 @@ func (c *Commitments) GetEdenSubBucketRewardUnclaimedForDenom(denom string) sdk.
 }
 
 // Sub bucket rewards query - EdenB
-func (c *Commitments) GetEdenBSubBucketRewardUnclaimedForDenom(denom string) sdk.Int {
+func (c *Commitments) GetEdenBSubBucketRewardUnclaimedForDenom(denom string) math.Int {
 	for _, token := range c.RewardsByEdenbUnclaimed {
 		if token.Denom == denom {
 			return token.Amount
@@ -156,7 +157,7 @@ func (c *Commitments) GetEdenBSubBucketRewardUnclaimedForDenom(denom string) sdk
 }
 
 // Sub bucket rewards query - Usdc
-func (c *Commitments) GetUsdcSubBucketRewardUnclaimedForDenom(denom string) sdk.Int {
+func (c *Commitments) GetUsdcSubBucketRewardUnclaimedForDenom(denom string) math.Int {
 	for _, token := range c.RewardsByUsdcUnclaimed {
 		if token.Denom == denom {
 			return token.Amount
@@ -323,7 +324,7 @@ func (c *Commitments) DeductSubBucketRewardsByUsdcUnclaimed(amount sdk.Coin) (bo
 	return false, remainedAmount
 }
 
-func (c *Commitments) GetClaimedForDenom(denom string) sdk.Int {
+func (c *Commitments) GetClaimedForDenom(denom string) math.Int {
 	for _, token := range c.Claimed {
 		if token.Denom == denom {
 			return token.Amount

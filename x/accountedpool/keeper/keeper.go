@@ -3,6 +3,7 @@ package keeper
 import (
 	"fmt"
 
+	"cosmossdk.io/math"
 	"github.com/cometbft/cometbft/libs/log"
 	"github.com/cosmos/cosmos-sdk/codec"
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
@@ -39,7 +40,7 @@ func (k Keeper) Logger(ctx sdk.Context) log.Logger {
 }
 
 // Get accounted pool balance
-func (k Keeper) GetAccountedBalance(ctx sdk.Context, poolId uint64, denom string) sdk.Int {
+func (k Keeper) GetAccountedBalance(ctx sdk.Context, poolId uint64, denom string) math.Int {
 	pool, found := k.GetAccountedPool(ctx, poolId)
 	if !found {
 		return sdk.ZeroInt()

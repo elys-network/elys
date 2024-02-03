@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	ctypes "github.com/elys-network/elys/x/commitment/types"
 	"github.com/elys-network/elys/x/incentive/types"
@@ -36,7 +37,7 @@ func (k Keeper) CalculatePoolShareForStableStakeLPs(ctx sdk.Context, totalProxyT
 }
 
 // Calculate new Eden token amounts based on LpElys committed and MElys committed
-func (k Keeper) CalculateRewardsForStableStakeLPs(ctx sdk.Context, totalProxyTVL sdk.Dec, commitments ctypes.Commitments, edenAmountPerEpochLp sdk.Int, gasFeesForLPs sdk.Dec, baseCurrency string) (sdk.Int, sdk.Int) {
+func (k Keeper) CalculateRewardsForStableStakeLPs(ctx sdk.Context, totalProxyTVL sdk.Dec, commitments ctypes.Commitments, edenAmountPerEpochLp math.Int, gasFeesForLPs sdk.Dec, baseCurrency string) (math.Int, math.Int) {
 	// Method 2 - Using Proxy TVL
 	totalDexRewardsAllocated := sdk.ZeroDec()
 

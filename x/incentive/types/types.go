@@ -3,6 +3,7 @@ package types
 import (
 	fmt "fmt"
 
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
@@ -10,13 +11,13 @@ import (
 // Stores the
 type TotalCommitmentInfo struct {
 	// Total Elys staked
-	TotalElysBonded sdk.Int
+	TotalElysBonded math.Int
 	// Total Eden + Eden boost committed
-	TotalEdenEdenBoostCommitted sdk.Int
+	TotalEdenEdenBoostCommitted math.Int
 	// Gas fees collected and DEX revenus
 	TotalFeesCollected sdk.Coins
 	// Total Lp Token committed
-	TotalLpTokensCommitted map[string]sdk.Int
+	TotalLpTokensCommitted map[string]math.Int
 	// Revenue tracking per pool, key => (poolId)
 	PoolRevenueTrack map[string]sdk.Dec
 }

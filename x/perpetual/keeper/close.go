@@ -1,9 +1,6 @@
 package keeper
 
 import (
-	"fmt"
-	"strconv"
-
 	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -41,20 +38,11 @@ func (k Keeper) Close(ctx sdk.Context, msg *types.MsgClose) (*types.MsgCloseResp
 		return nil, errorsmod.Wrap(types.ErrInvalidPosition, mtp.Position.String())
 	}
 
-	ctx.EventManager().EmitEvent(sdk.NewEvent(types.EventClose,
-		sdk.NewAttribute("id", strconv.FormatInt(int64(closedMtp.Id), 10)),
-		sdk.NewAttribute("position", closedMtp.Position.String()),
-		sdk.NewAttribute("address", closedMtp.Address),
-		sdk.NewAttribute("collateral", closedMtp.Collateral.String()),
-		sdk.NewAttribute("custody", closedMtp.Custody.String()),
-		sdk.NewAttribute("repay_amount", repayAmount.String()),
-		sdk.NewAttribute("leverage", fmt.Sprintf("%s", closedMtp.Leverage)),
-		sdk.NewAttribute("liabilities", closedMtp.Liabilities.String()),
-		sdk.NewAttribute("borrow_interest_paid_collateral", mtp.BorrowInterestPaidCollateral.String()),
-		sdk.NewAttribute("borrow_interest_paid_custody", mtp.BorrowInterestPaidCustody.String()),
-		sdk.NewAttribute("borrow_interest_unpaid_collateral", closedMtp.BorrowInterestUnpaidCollateral.String()),
-		sdk.NewAttribute("health", closedMtp.MtpHealth.String()),
-	))
+	// Emit close event
+	k.EmitCloseEvent(ctx, closedMtp, repayAmount)
 
-	return &types.MsgCloseResponse{}, nil
+	return &types.MsgCloseResponse{
+		Id:     closedMtp.Id,
+		Amount: repayAmount,
+	}, nil
 }
