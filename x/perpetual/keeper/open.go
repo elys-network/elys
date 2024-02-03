@@ -74,5 +74,7 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen) (*types.MsgOpenRespons
 		k.hooks.AfterPerpetualPositionOpen(ctx, ammPool, pool)
 	}
 
-	return &types.MsgOpenResponse{}, nil
+	return &types.MsgOpenResponse{
+		Id: mtp.Id,
+	}, nil
 }
