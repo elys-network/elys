@@ -33,10 +33,8 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen) (*types.MsgOpenRespons
 		return nil, err
 	}
 
-	// Check if it is the same direction position for the same trader.
-	if mtp := k.OpenChecker.CheckSameAssetPosition(ctx, msg); mtp != nil {
-		return k.OpenConsolidate(ctx, mtp, msg, baseCurrency)
-	}
+	// check if existing mtp to consolidate
+	existingMtp := k.OpenChecker.CheckSameAssetPosition(ctx, msg)
 
 	if err := k.OpenChecker.CheckMaxOpenPositions(ctx); err != nil {
 		return nil, err
@@ -66,6 +64,10 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen) (*types.MsgOpenRespons
 		}
 	default:
 		return nil, errorsmod.Wrap(types.ErrInvalidPosition, msg.Position.String())
+	}
+
+	if existingMtp != nil {
+		return k.OpenConsolidate(ctx, existingMtp, mtp, msg, baseCurrency)
 	}
 
 	k.OpenChecker.EmitOpenEvent(ctx, mtp)

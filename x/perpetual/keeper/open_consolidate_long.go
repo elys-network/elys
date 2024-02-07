@@ -5,15 +5,20 @@ import (
 	"github.com/elys-network/elys/x/perpetual/types"
 )
 
-func (k Keeper) OpenConsolidateLong(ctx sdk.Context, poolId uint64, mtp *types.MTP, msg *types.MsgOpen, baseCurrency string) (*types.MTP, error) {
-	if !mtp.Leverage.Equal(msg.Leverage) {
-		return nil, types.ErrInvalidLeverage
+func (k Keeper) OpenConsolidateLong(ctx sdk.Context, poolId uint64, existingMtp *types.MTP, newMtp *types.MTP, msg *types.MsgOpen, baseCurrency string) (*types.MTP, error) {
+	existingMtp.Collateral = existingMtp.Collateral.Add(newMtp.Collateral)
+	existingMtp.Custody = existingMtp.Custody.Add(newMtp.Custody)
+	existingMtp.Liabilities = existingMtp.Liabilities.Add(newMtp.Liabilities)
+
+	// Set existing MTP
+	if err := k.SetMTP(ctx, existingMtp); err != nil {
+		return nil, err
 	}
 
-	maxLeverage := k.OpenLongChecker.GetMaxLeverageParam(ctx)
-	leverage := sdk.MinDec(mtp.Leverage, maxLeverage)
-	eta := leverage.Sub(sdk.OneDec())
-	collateralAmountDec := sdk.NewDecFromBigInt(msg.Collateral.Amount.BigInt())
+	// Destroy new MTP
+	if err := k.DestroyMTP(ctx, newMtp.Address, newMtp.Id); err != nil {
+		return nil, err
+	}
 
-	return k.ProcessOpenLong(ctx, mtp, leverage, eta, collateralAmountDec, poolId, msg, baseCurrency)
+	return existingMtp, nil
 }

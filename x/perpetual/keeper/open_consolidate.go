@@ -6,30 +6,34 @@ import (
 	"github.com/elys-network/elys/x/perpetual/types"
 )
 
-func (k Keeper) OpenConsolidate(ctx sdk.Context, mtp *types.MTP, msg *types.MsgOpen, baseCurrency string) (*types.MsgOpenResponse, error) {
-	poolId := mtp.AmmPoolId
+func (k Keeper) OpenConsolidate(ctx sdk.Context, existingMtp *types.MTP, newMtp *types.MTP, msg *types.MsgOpen, baseCurrency string) (*types.MsgOpenResponse, error) {
+	if !existingMtp.Leverage.Equal(msg.Leverage) {
+		return nil, types.ErrInvalidLeverage
+	}
+
+	poolId := existingMtp.AmmPoolId
 	pool, found := k.OpenLongChecker.GetPool(ctx, poolId)
 	if !found {
-		return nil, errorsmod.Wrap(types.ErrPoolDoesNotExist, mtp.CustodyAsset)
+		return nil, errorsmod.Wrap(types.ErrPoolDoesNotExist, newMtp.CustodyAsset)
 	}
 
 	if !k.OpenLongChecker.IsPoolEnabled(ctx, poolId) {
-		return nil, errorsmod.Wrap(types.ErrMTPDisabled, mtp.CustodyAsset)
+		return nil, errorsmod.Wrap(types.ErrMTPDisabled, existingMtp.CustodyAsset)
 	}
 
-	ammPool, err := k.OpenLongChecker.GetAmmPool(ctx, poolId, mtp.CustodyAsset)
+	ammPool, err := k.OpenLongChecker.GetAmmPool(ctx, poolId, existingMtp.CustodyAsset)
 	if err != nil {
 		return nil, err
 	}
 
 	switch msg.Position {
 	case types.Position_LONG:
-		mtp, err = k.OpenConsolidateLong(ctx, poolId, mtp, msg, baseCurrency)
+		existingMtp, err = k.OpenConsolidateLong(ctx, poolId, existingMtp, newMtp, msg, baseCurrency)
 		if err != nil {
 			return nil, err
 		}
 	case types.Position_SHORT:
-		mtp, err = k.OpenConsolidateShort(ctx, poolId, mtp, msg, baseCurrency)
+		existingMtp, err = k.OpenConsolidateShort(ctx, poolId, existingMtp, newMtp, msg, baseCurrency)
 		if err != nil {
 			return nil, err
 		}
@@ -37,13 +41,13 @@ func (k Keeper) OpenConsolidate(ctx sdk.Context, mtp *types.MTP, msg *types.MsgO
 		return nil, errorsmod.Wrap(types.ErrInvalidPosition, msg.Position.String())
 	}
 
-	ctx.EventManager().EmitEvent(types.GenerateOpenEvent(mtp))
+	ctx.EventManager().EmitEvent(types.GenerateOpenEvent(existingMtp))
 
 	if k.hooks != nil {
 		k.hooks.AfterPerpetualPositionModified(ctx, ammPool, pool)
 	}
 
 	return &types.MsgOpenResponse{
-		Id: mtp.Id,
+		Id: existingMtp.Id,
 	}, nil
 }
