@@ -1126,6 +1126,7 @@ func NewElysApp(
 		stakingtypes.ModuleName,
 		// Note: epochs' endblock should be "real" end of epochs, we keep epochs endblock at the end
 		epochsmoduletypes.ModuleName,
+		clockmoduletypes.ModuleName,
 		ibctransfertypes.ModuleName,
 		ibcexported.ModuleName,
 		icatypes.ModuleName,
@@ -1156,7 +1157,6 @@ func NewElysApp(
 		wasmmoduletypes.ModuleName,
 		accountedpoolmoduletypes.ModuleName,
 		transferhooktypes.ModuleName,
-		clockmoduletypes.ModuleName,
 		leveragelpmoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/endBlockers
 	)
