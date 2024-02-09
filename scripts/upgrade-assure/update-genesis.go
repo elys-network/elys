@@ -88,7 +88,7 @@ func updateGenesis(validatorBalance, homePath, genesisFilePath string) {
 		"elys1nc5tatafv6eyq7llkr2gv50ff9e22mnf70qgjlv737ktmt4eswrqau4f4q",
 		"elys17p9rzwnnfxcjp32un9ug7yhhzgtkhvl9jfksztgw5uh69wac2pgs98tvuy",
 	}
-	genesis.AppState.Clock.Params.ContractGasLimit = "100000000"
+	genesis.AppState.Clock.Params.ContractGasLimit = "1000000000"
 
 	// update broker address
 	genesis.AppState.Parameter.Params.BrokerAddress = "elys1nc5tatafv6eyq7llkr2gv50ff9e22mnf70qgjlv737ktmt4eswrqau4f4q"
