@@ -59,7 +59,7 @@ func BeginBlockerProcessMTP(ctx sdk.Context, k Keeper, mtp *types.MTP, pool type
 		// flag position as must force close
 		mustForceClose = true
 	} else {
-		ctx.Logger().Error(errors.Wrap(types.ErrMTPHealthy, "skipping executing force close because mtp is healthy").Error())
+		ctx.Logger().Info(errors.Wrap(types.ErrMTPHealthy, "skipping executing force close because mtp is healthy").Error())
 	}
 
 	assetPrice, err := k.EstimateSwap(ctx, sdk.NewCoin(mtp.CustodyAsset, sdk.OneInt()), baseCurrency, ammPool)
@@ -70,7 +70,7 @@ func BeginBlockerProcessMTP(ctx sdk.Context, k Keeper, mtp *types.MTP, pool type
 		// flag position as must force close
 		mustForceClose = true
 	} else {
-		ctx.Logger().Error(fmt.Sprintf("skipping force close on position %s because take profit price %s <> %s", mtp.String(), mtp.TakeProfitPrice.String(), assetPrice.String()))
+		ctx.Logger().Info(fmt.Sprintf("skipping force close on position %s because take profit price %s <> %s", mtp.String(), mtp.TakeProfitPrice.String(), assetPrice.String()))
 	}
 
 	// if flag is false, then skip force close
