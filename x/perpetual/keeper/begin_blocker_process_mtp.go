@@ -4,11 +4,13 @@ import (
 	"fmt"
 
 	"cosmossdk.io/errors"
+	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/math"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	ammtypes "github.com/elys-network/elys/x/amm/types"
+	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
 	"github.com/elys-network/elys/x/perpetual/types"
 )
 
@@ -62,7 +64,15 @@ func BeginBlockerProcessMTP(ctx sdk.Context, k Keeper, mtp *types.MTP, pool type
 		ctx.Logger().Info(errors.Wrap(types.ErrMTPHealthy, "skipping executing force close because mtp is healthy").Error())
 	}
 
-	assetPrice, err := k.EstimateSwap(ctx, sdk.NewCoin(mtp.CustodyAsset, sdk.OneInt()), baseCurrency, ammPool)
+	entry, found := k.assetProfileKeeper.GetEntryByDenom(ctx, mtp.CustodyAsset)
+	if !found {
+		ctx.Logger().Error(errorsmod.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", mtp.CustodyAsset).Error())
+	}
+	custodyAssetDecimals := entry.Decimals
+
+	oneToken := math.NewIntFromBigInt(math.LegacyNewDec(10).Power(uint64(custodyAssetDecimals)).TruncateInt().BigInt())
+
+	assetPrice, err := k.EstimateSwap(ctx, sdk.NewCoin(mtp.CustodyAsset, oneToken), baseCurrency, ammPool)
 	if err != nil {
 		return errors.Wrap(err, fmt.Sprintf("error estimating swap: %s", mtp.CustodyAsset))
 	}

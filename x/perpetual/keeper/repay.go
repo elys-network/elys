@@ -13,24 +13,26 @@ func (k Keeper) Repay(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, ammPool
 	Liabilities := mtp.Liabilities
 	BorrowInterestUnpaid := mtp.BorrowInterestUnpaidCollateral
 
-	if mtp.Position == types.Position_SHORT {
-		// swap to trading asset
-		unpaidCollateralIn := sdk.NewCoin(mtp.CollateralAsset, mtp.BorrowInterestUnpaidCollateral)
-		C, err := k.EstimateSwapGivenOut(ctx, unpaidCollateralIn, mtp.TradingAsset, ammPool)
-		if err != nil {
-			return err
-		}
+	if mtp.BorrowInterestUnpaidCollateral.IsPositive() {
+		if mtp.Position == types.Position_SHORT {
+			// swap to trading asset
+			unpaidCollateralIn := sdk.NewCoin(mtp.CollateralAsset, mtp.BorrowInterestUnpaidCollateral)
+			C, err := k.EstimateSwapGivenOut(ctx, unpaidCollateralIn, mtp.TradingAsset, ammPool)
+			if err != nil {
+				return err
+			}
 
-		BorrowInterestUnpaid = C
-	} else if mtp.CollateralAsset != baseCurrency {
-		// swap to base currency
-		unpaidCollateralIn := sdk.NewCoin(mtp.CollateralAsset, mtp.BorrowInterestUnpaidCollateral)
-		C, err := k.EstimateSwapGivenOut(ctx, unpaidCollateralIn, baseCurrency, ammPool)
-		if err != nil {
-			return err
-		}
+			BorrowInterestUnpaid = C
+		} else if mtp.CollateralAsset != baseCurrency {
+			// swap to base currency
+			unpaidCollateralIn := sdk.NewCoin(mtp.CollateralAsset, mtp.BorrowInterestUnpaidCollateral)
+			C, err := k.EstimateSwapGivenOut(ctx, unpaidCollateralIn, baseCurrency, ammPool)
+			if err != nil {
+				return err
+			}
 
-		BorrowInterestUnpaid = C
+			BorrowInterestUnpaid = C
+		}
 	}
 
 	var err error
