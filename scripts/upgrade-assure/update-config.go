@@ -19,9 +19,7 @@ func updateConfig(homePath string) {
 	}
 
 	// Update app.toml
-	args = []string{"-i", "", "s/^enable = false/enable = true/", appPath}
-
-	log.Printf(Green+"args: %v", args)
+	args = []string{"-i", "", "/^# Enable defines if the API server should be enabled./{n;s/enable = false/enable = true/;}", appPath}
 
 	// Execute the sed command
 	if err := exec.Command("sed", args...).Run(); err != nil {
