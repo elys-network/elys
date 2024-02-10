@@ -93,6 +93,9 @@ func updateGenesis(validatorBalance, homePath, genesisFilePath string) {
 	// update broker address
 	genesis.AppState.Parameter.Params.BrokerAddress = "elys1nc5tatafv6eyq7llkr2gv50ff9e22mnf70qgjlv737ktmt4eswrqau4f4q"
 
+	// update oracle price expiration
+	genesis.AppState.Oracle.Params.PriceExpiryTime = "604800"
+
 	outputFilePath := homePath + "/config/genesis.json"
 	if err := writeGenesisFile(outputFilePath, genesis); err != nil {
 		log.Fatalf(Red+"Error writing genesis file: %v", err)

@@ -2,7 +2,6 @@ package keeper
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	appparams "github.com/elys-network/elys/app/params"
 	"github.com/elys-network/elys/x/amm/types"
 )
 
@@ -31,7 +30,7 @@ func (k Keeper) isElysRoutedMultihop(ctx sdk.Context, route types.MultihopRoute,
 		return false
 	}
 	intemediateDenoms := route.IntermediateDenoms()
-	if len(intemediateDenoms) != 1 || intemediateDenoms[0] != appparams.BaseCoinUnit {
+	if len(intemediateDenoms) != 1 /*|| intemediateDenoms[0] != appparams.BaseCoinUnit*/ {
 		return false
 	}
 	if inDenom == outDenom {
