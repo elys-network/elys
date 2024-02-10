@@ -47,6 +47,12 @@ func (k Keeper) RouteExactAmountIn(
 	totalDiscountedSwapFee = sdk.ZeroDec()
 
 	for i, route := range routes {
+		// recipient is the same as the sender until the last pool
+		actualRecipient := sender
+		if len(routes)-1 == i {
+			actualRecipient = recipient
+		}
+
 		// To prevent the multihop swap from being interrupted prematurely, we keep
 		// the minimum expected output at a very low number until the last pool
 		_outMinAmount := math.NewInt(1)
@@ -86,7 +92,7 @@ func (k Keeper) RouteExactAmountIn(
 		// Calculate the total discounted swap fee
 		totalDiscountedSwapFee = totalDiscountedSwapFee.Add(swapFee)
 
-		tokenOutAmount, err = k.SwapExactAmountIn(ctx, sender, recipient, pool, tokenIn, route.TokenOutDenom, _outMinAmount, swapFee)
+		tokenOutAmount, err = k.SwapExactAmountIn(ctx, sender, actualRecipient, pool, tokenIn, route.TokenOutDenom, _outMinAmount, swapFee)
 		if err != nil {
 			ctx.Logger().Error(err.Error())
 			return math.Int{}, sdk.ZeroDec(), sdk.ZeroDec(), err
