@@ -36,7 +36,7 @@ func (k Keeper) CalcSwapEstimationByDenom(
 	// Initialize return variables
 	inRoute, outRoute = nil, nil
 	outAmount, availableLiquidity = sdk.Coin{}, sdk.Coin{}
-	spotPrice, swapFeeOut, discountOut, weightBonus, priceImpact = sdk.ZeroDec(), sdk.ZeroDec(), sdk.ZeroDec(), sdk.ZeroDec(), sdk.ZeroDec()
+	spotPrice, swapFeeOut, discountOut, weightBonus, priceImpact = sdk.ZeroDec(), sdk.ZeroDec(), discount, sdk.ZeroDec(), sdk.ZeroDec()
 
 	// Determine the correct route based on the amount's denom
 	if amount.Denom == denomIn {
