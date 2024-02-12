@@ -286,6 +286,15 @@ func (k Keeper) UpdateStakersRewardsUnclaimed(ctx sdk.Context, stakeIncentive ty
 	edenRemained := edenAmountPerEpochStakersPerDistribution.Sub(totalEdenGiven)
 	dexRewardsRemained := dexRevenueStakersAmtPerDistribution.Sub(sdk.NewDecFromInt(totalRewardsGiven))
 
+	// if edenRemained is negative, override it with zero
+	if edenRemained.IsNegative() {
+		edenRemained = sdk.ZeroInt()
+	}
+	// if dexRewardsRemained is negative, override it with zero
+	if dexRewardsRemained.IsNegative() {
+		dexRewardsRemained = sdk.ZeroDec()
+	}
+
 	// Fund community the remain coins
 	// ----------------------------------
 	edenRemainedCoin := sdk.NewDecCoin(ptypes.Eden, edenRemained)
