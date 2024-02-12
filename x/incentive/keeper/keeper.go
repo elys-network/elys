@@ -135,9 +135,8 @@ func (k Keeper) UpdateStakersRewardsUnclaimed(ctx sdk.Context, stakeIncentive ty
 	epochStakersEdenAmount = sdk.MinInt(epochStakersEdenAmount, epochStakersMaxEdenAmount.TruncateInt())
 
 	// Calculate eden amount per distribution epoch
-	edenAmountPerEpochStakersPerDistribution := epochStakersEdenAmount.Mul(stakeIncentive.DistributionEpochInBlocks).Quo(stakeIncentive.EpochNumBlocks)
+	stakersEdenAmountPerDistribution := epochStakersEdenAmount.Mul(stakeIncentive.DistributionEpochInBlocks).Quo(stakeIncentive.EpochNumBlocks)
 
-	// TODO: check this code block
 	// Track the DEX rewards distribution for stakers
 	// Add dexRevenue amount that was tracked by Lp tracker
 	dexRevenueStakersAmtPerDistribution = dexRevenueStakersAmtPerDistribution.Add(params.DexRewardsStakers.AmountCollectedByOtherTracker)
@@ -181,7 +180,9 @@ func (k Keeper) UpdateStakersRewardsUnclaimed(ctx sdk.Context, stakeIncentive ty
 
 			// Calculate new unclaimed Eden tokens from Elys staked
 			// ----------------------------------------------------------
-			newUnclaimedEdenTokens, dexRewards, dexRewardsByStakers := k.CalculateRewardsForStakersByElysStaked(ctx, delegatedAmt, edenAmountPerEpochStakersPerDistribution, dexRevenueStakersAmtPerDistribution)
+			newUnclaimedEdenTokens, dexRewards, dexRewardsByStakers := k.CalculateRewardsForStakersByElysStaked(ctx, delegatedAmt, stakersEdenAmountPerDistribution, dexRevenueStakersAmtPerDistribution)
+			fmt.Println("newUnclaimedEdenTokens1", newUnclaimedEdenTokens.String())
+
 			// Total
 			totalEdenGiven = totalEdenGiven.Add(newUnclaimedEdenTokens)
 			totalRewardsGiven = totalRewardsGiven.Add(dexRewards)
@@ -199,7 +200,8 @@ func (k Keeper) UpdateStakersRewardsUnclaimed(ctx sdk.Context, stakeIncentive ty
 			// ----------------------------------------------------------
 			// ----------------------------------------------------------
 			edenCommitted := commitments.GetCommittedAmountForDenom(ptypes.Eden)
-			newUnclaimedEdenTokens, dexRewards = k.CalculateRewardsForStakersByCommitted(ctx, edenCommitted, edenAmountPerEpochStakersPerDistribution, dexRevenueStakersAmtPerDistribution)
+			newUnclaimedEdenTokens, dexRewards = k.CalculateRewardsForStakersByCommitted(ctx, edenCommitted, stakersEdenAmountPerDistribution, dexRevenueStakersAmtPerDistribution)
+			fmt.Println("newUnclaimedEdenTokens2", newUnclaimedEdenTokens.String())
 
 			// Total
 			totalEdenGiven = totalEdenGiven.Add(newUnclaimedEdenTokens)
@@ -219,7 +221,8 @@ func (k Keeper) UpdateStakersRewardsUnclaimed(ctx sdk.Context, stakeIncentive ty
 			// ----------------------------------------------------------
 			// ----------------------------------------------------------
 			edenBoostCommitted := commitments.GetCommittedAmountForDenom(ptypes.EdenB)
-			newUnclaimedEdenTokens, dexRewards = k.CalculateRewardsForStakersByCommitted(ctx, edenBoostCommitted, edenAmountPerEpochStakersPerDistribution, dexRevenueStakersAmtPerDistribution)
+			newUnclaimedEdenTokens, dexRewards = k.CalculateRewardsForStakersByCommitted(ctx, edenBoostCommitted, stakersEdenAmountPerDistribution, dexRevenueStakersAmtPerDistribution)
+			fmt.Println("newUnclaimedEdenTokens3", newUnclaimedEdenTokens.String())
 
 			// Total
 			totalEdenGiven = totalEdenGiven.Add(newUnclaimedEdenTokens)
@@ -283,7 +286,10 @@ func (k Keeper) UpdateStakersRewardsUnclaimed(ctx sdk.Context, stakeIncentive ty
 	)
 
 	// Calcualte the remainings
-	edenRemained := edenAmountPerEpochStakersPerDistribution.Sub(totalEdenGiven)
+	fmt.Println("totalEdenGiven", totalEdenGiven.String())
+	fmt.Println("stakersEdenAmountPerDistribution", stakersEdenAmountPerDistribution.String())
+
+	edenRemained := stakersEdenAmountPerDistribution.Sub(totalEdenGiven)
 	dexRewardsRemained := dexRevenueStakersAmtPerDistribution.Sub(sdk.NewDecFromInt(totalRewardsGiven))
 
 	// if edenRemained is negative, override it with zero

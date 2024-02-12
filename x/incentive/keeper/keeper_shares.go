@@ -11,7 +11,7 @@ import (
 
 // Calculate total share of staking
 func (k Keeper) CalculateTotalShareOfStaking(amount math.Int) sdk.Dec {
-	// Total statked = Elys staked + Eden Committed + Eden boost Committed
+	// Total staked = Elys staked + Eden Committed + Eden boost Committed
 	totalStaked := k.tci.TotalElysBonded.Add(k.tci.TotalEdenEdenBoostCommitted)
 	if totalStaked.LTE(sdk.ZeroInt()) {
 		return sdk.ZeroDec()
