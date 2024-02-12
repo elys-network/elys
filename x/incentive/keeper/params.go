@@ -1,6 +1,8 @@
 package keeper
 
 import (
+	"fmt"
+
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
@@ -189,6 +191,8 @@ func (k Keeper) CalculateEpochCountsPerYear(ctx sdk.Context, epochIdentifier str
 func (k Keeper) UpdateTotalCommitmentInfo(ctx sdk.Context, baseCurrency string) {
 	// Fetch total staked Elys amount again
 	k.tci.TotalElysBonded = k.stk.TotalBondedTokens(ctx)
+	fmt.Println("TotalElysBonded", k.tci.TotalElysBonded.String())
+
 	// Initialize with amount zero
 	k.tci.TotalEdenEdenBoostCommitted = sdk.ZeroInt()
 	// Initialize with amount zero
@@ -211,6 +215,9 @@ func (k Keeper) UpdateTotalCommitmentInfo(ctx sdk.Context, baseCurrency string) 
 
 		k.tci.TotalEdenEdenBoostCommitted = k.tci.TotalEdenEdenBoostCommitted.Add(committedEdenToken).Add(committedEdenBoostToken)
 
+		fmt.Println("commitment.owner", commitments.Creator)
+		fmt.Println("committedEdenToken", committedEdenToken.String())
+		fmt.Println("committedEdenBoostToken", committedEdenBoostToken.String())
 		// Iterate to calculate total Lp tokens committed
 		k.amm.IterateLiquidityPools(ctx, func(p ammtypes.Pool) bool {
 			lpToken := ammtypes.GetPoolShareDenom(p.GetPoolId())
@@ -236,4 +243,5 @@ func (k Keeper) UpdateTotalCommitmentInfo(ctx sdk.Context, baseCurrency string) 
 		}
 		return false
 	})
+	fmt.Println("TotalEdenEdenBoostCommitted", k.tci.TotalEdenEdenBoostCommitted.String())
 }
