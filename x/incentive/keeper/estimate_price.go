@@ -33,6 +33,7 @@ func (k Keeper) GetEdenPrice(ctx sdk.Context, baseCurrency string) math.LegacyDe
 	// We put Elys as denom as Eden won't be avaialble in amm pool and has the same value as Elys
 	// TODO: replace to use spot price
 	// TODO: Remember to use the $ value of Eden price and not eden/usdc
+	// TODO: to be updated as part of spot price calculation PR
 	edenPrice := k.EstimatePrice(ctx, sdk.NewCoin(ptypes.Elys, sdk.NewInt(100000)), baseCurrency)
 	edenPriceDec := sdk.NewDecFromInt(edenPrice).Quo(sdk.NewDec(100000))
 	if edenPriceDec.IsZero() {
