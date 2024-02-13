@@ -1,6 +1,8 @@
 package types
 
 import (
+	context "context"
+
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth/types"
@@ -137,6 +139,7 @@ type EpochsKeeper interface {
 // StableStakeKeeper defines the expected epochs keeper used for simulations (noalias)
 type StableStakeKeeper interface {
 	GetParams(ctx sdk.Context) (params stabletypes.Params)
+	BorrowRatio(goCtx context.Context, req *stabletypes.QueryBorrowRatioRequest) (*stabletypes.QueryBorrowRatioResponse, error)
 }
 
 // TokenomicsKeeper defines the expected tokenomics keeper used for simulations (noalias)

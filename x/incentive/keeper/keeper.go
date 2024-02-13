@@ -360,14 +360,21 @@ func (k Keeper) UpdateLPRewardsUnclaimed(ctx sdk.Context, lpIncentive types.Ince
 	}
 
 	// Calculate eden amount per epoch
-	epochLpsEdenAmount := lpIncentive.EdenAmountPerYear.Mul(lpIncentive.EpochNumBlocks).Quo(lpIncentive.TotalBlocksPerYear)
+	epochLpsEdenAmount := lpIncentive.EdenAmountPerYear.
+		Mul(lpIncentive.EpochNumBlocks).
+		Quo(lpIncentive.TotalBlocksPerYear)
 
 	// Track the DEX rewards distribution for stakers
 	params := k.GetParams(ctx)
 
 	// Maximum eden based per distribution epoch on maximum APR - 30% by default
 	// Allocated for staking per day = (0.3/365)* (total weighted proxy TVL)
-	epochLpsMaxEdenAmount := params.MaxEdenRewardAprLps.Mul(totalProxyTVL).MulInt(lpIncentive.EpochNumBlocks).QuoInt(lpIncentive.TotalBlocksPerYear)
+	edenPriceDec := k.GetEdenPrice(ctx, baseCurrency)
+	epochLpsMaxEdenAmount := params.MaxEdenRewardAprLps.
+		Mul(totalProxyTVL).
+		MulInt(lpIncentive.EpochNumBlocks).
+		QuoInt(lpIncentive.TotalBlocksPerYear).
+		Quo(edenPriceDec)
 
 	// Use min amount (eden allocation from tokenomics and max apr based eden amount)
 	epochLpsEdenAmount = sdk.MinInt(epochLpsEdenAmount, epochLpsMaxEdenAmount.TruncateInt())
