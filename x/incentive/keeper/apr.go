@@ -46,33 +46,31 @@ func (k Keeper) CalculateApr(ctx sdk.Context, query *types.QueryAprRequest) (mat
 			// Calculate total Proxy TVL
 			totalProxyTVL := k.CalculateProxyTVL(ctx, baseCurrency)
 
-			// Calculate stable stake pool share.
-			poolShare := k.CalculatePoolShareForStableStakeLPs(ctx, totalProxyTVL, baseCurrency)
-
 			// Eden amount for LP in 24hrs = EpochNumBlocks is the number of block for 24 hrs
-			epochEdenAmount := lpIncentive.EdenAmountPerYear.Mul(lpIncentive.EpochNumBlocks).Quo(lpIncentive.TotalBlocksPerYear)
+			epochEdenAmount := lpIncentive.EdenAmountPerYear.
+				Mul(lpIncentive.EpochNumBlocks).
+				Quo(lpIncentive.TotalBlocksPerYear)
 
-			epochLpsMaxEdenAmount := params.MaxEdenRewardAprLps.Mul(totalProxyTVL).MulInt(lpIncentive.EpochNumBlocks).QuoInt(lpIncentive.TotalBlocksPerYear)
+			edenPriceDec := k.GetEdenPrice(ctx, baseCurrency)
+			epochLpsMaxEdenAmount := params.MaxEdenRewardAprLps.
+				Mul(totalProxyTVL).
+				MulInt(lpIncentive.EpochNumBlocks).
+				QuoInt(lpIncentive.TotalBlocksPerYear).
+				Quo(edenPriceDec)
 
 			// Use min amount (eden allocation from tokenomics and max apr based eden amount)
 			epochEdenAmount = sdk.MinInt(epochEdenAmount, epochLpsMaxEdenAmount.TruncateInt())
 
 			// Eden amount for stable stake LP in 24hrs
-			epochStableStakeEdenAmount := sdk.NewDecFromInt(epochEdenAmount).Mul(poolShare)
-
-			// Calc Eden price in usdc
-			// We put Elys as denom as Eden won't be avaialble in amm pool and has the same value as Elys
-			// TODO: replace to use spot price
-			edenPrice := k.EstimatePrice(ctx, sdk.NewCoin(ptypes.Elys, sdk.NewInt(100000)), baseCurrency)
+			stableStakePoolShare := k.CalculatePoolShareForStableStakeLPs(ctx, totalProxyTVL, baseCurrency)
+			epochStableStakeEdenAmount := sdk.NewDecFromInt(epochEdenAmount).Mul(stableStakePoolShare)
 
 			// Eden Apr for usdc earn program = {(Eden allocated for stable stake pool per day*365*price{eden/usdc}/(total usdc deposit)}*100
-			// we divide 100000 as we have use 100000elys as input in the price estimation
 			apr := epochStableStakeEdenAmount.
 				MulInt(sdk.NewInt(ptypes.DaysPerYear)).
-				MulInt(edenPrice).
+				Mul(edenPriceDec).
 				MulInt(sdk.NewInt(100)).
-				QuoInt(totalUSDCDeposit.Amount).
-				QuoInt(sdk.NewInt(100000))
+				QuoInt(totalUSDCDeposit.Amount)
 			return apr.TruncateInt(), nil
 		} else {
 			// Elys staking, Eden committed, EdenB committed.
@@ -112,7 +110,11 @@ func (k Keeper) CalculateApr(ctx sdk.Context, query *types.QueryAprRequest) (mat
 	} else if query.Denom == ptypes.BaseCurrency {
 		if query.WithdrawType == commitmenttypes.EarnType_USDC_PROGRAM {
 			params := k.stableKeeper.GetParams(ctx)
-			apr := params.InterestRate.MulInt(sdk.NewInt(100))
+			res, err := k.stableKeeper.BorrowRatio(ctx, &stabletypes.QueryBorrowRatioRequest{})
+			if err != nil {
+				return sdk.ZeroInt(), err
+			}
+			apr := params.InterestRate.Mul(res.BorrowRatio).MulInt(sdk.NewInt(100))
 			return apr.TruncateInt(), nil
 		} else {
 			// Elys staking, Eden committed, EdenB committed.
