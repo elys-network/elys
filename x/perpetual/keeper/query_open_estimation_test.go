@@ -99,7 +99,7 @@ func TestOpenEstimation_Long5XAtom100Usdc(t *testing.T) {
 		OpenPrice:          sdk.MustNewDecFromStr("1.006001001196340415"),
 		TakeProfitPrice:    sdk.MustNewDecFromStr("2.000000000000000000"),
 		LiquidationPrice:   sdk.MustNewDecFromStr("0.806001001196340415"),
-		EstimatedPnl:       sdk.NewInt(3000500),
+		EstimatedPnl:       sdk.NewInt(-3000500),
 		AvailableLiquidity: sdk.NewCoin(ptypes.ATOM, sdk.NewInt(100000000000)),
 		WeightBalanceRatio: sdk.MustNewDecFromStr("0.000000000000000000"),
 		BorrowInterestRate: sdk.MustNewDecFromStr("0.000000000000000000"),
