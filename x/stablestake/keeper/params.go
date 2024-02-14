@@ -18,10 +18,9 @@ func (k Keeper) SetParams(ctx sdk.Context, params types.Params) {
 
 func (k Keeper) GetDepositDenom(ctx sdk.Context) string {
 	params := k.GetParams(ctx)
-	depositDenom := params.DepositDenom
 	entry, found := k.assetProfileKeeper.GetEntry(ctx, params.DepositDenom)
 	if !found {
-		depositDenom = entry.Denom
+		return params.DepositDenom
 	}
-	return depositDenom
+	return entry.Denom
 }
