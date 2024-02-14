@@ -91,7 +91,7 @@ func TestOpenEstimation_Long5XAtom100Usdc(t *testing.T) {
 		Leverage:           sdk.MustNewDecFromStr("5.0"),
 		TradingAsset:       ptypes.ATOM,
 		Collateral:         sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(100000000)),
-		MinCollateral:      sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(8333333)),
+		MinCollateral:      sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(16666667)),
 		ValidCollateral:    true,
 		PositionSize:       sdk.NewCoin(ptypes.ATOM, sdk.NewInt(497017398)),
 		SwapFee:            sdk.MustNewDecFromStr("0.001000000000000000"),
