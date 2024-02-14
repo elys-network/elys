@@ -3,7 +3,6 @@ package keeper
 import (
 	"context"
 
-	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	commitmentkeeper "github.com/elys-network/elys/x/commitment/keeper"
 	ctypes "github.com/elys-network/elys/x/commitment/types"
@@ -42,12 +41,8 @@ func (k msgServer) Unbond(goCtx context.Context, msg *types.MsgUnbond) (*types.M
 	}
 
 	redemptionAmount := sdk.NewDecFromInt(shareCoin.Amount).Mul(params.RedemptionRate).RoundInt()
-	entry, found := k.assetProfileKeeper.GetEntry(ctx, params.DepositDenom)
-	if !found {
-		return nil, errorsmod.Wrap(types.ErrInvalidDepositDenom, params.DepositDenom)
-	}
 
-	depositDenom := entry.Denom
+	depositDenom := k.GetDepositDenom(ctx)
 	redemptionCoin := sdk.NewCoin(depositDenom, redemptionAmount)
 	err = k.bk.SendCoinsFromModuleToAccount(ctx, types.ModuleName, sender, sdk.Coins{redemptionCoin})
 	if err != nil {

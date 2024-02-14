@@ -77,8 +77,8 @@ func (k Keeper) UpdateInterestStacked(ctx sdk.Context, debt types.Debt) types.De
 }
 
 func (k Keeper) Borrow(ctx sdk.Context, addr sdk.AccAddress, amount sdk.Coin) error {
-	params := k.GetParams(ctx)
-	if params.DepositDenom != amount.Denom {
+	depositDenom := k.GetDepositDenom(ctx)
+	if depositDenom != amount.Denom {
 		return types.ErrInvalidBorrowDenom
 	}
 	debt := k.UpdateInterestStackedByAddress(ctx, addr)
@@ -88,8 +88,8 @@ func (k Keeper) Borrow(ctx sdk.Context, addr sdk.AccAddress, amount sdk.Coin) er
 }
 
 func (k Keeper) Repay(ctx sdk.Context, addr sdk.AccAddress, amount sdk.Coin) error {
-	params := k.GetParams(ctx)
-	if params.DepositDenom != amount.Denom {
+	depositDenom := k.GetDepositDenom(ctx)
+	if depositDenom != amount.Denom {
 		return types.ErrInvalidBorrowDenom
 	}
 

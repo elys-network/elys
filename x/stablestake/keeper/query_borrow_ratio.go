@@ -19,11 +19,7 @@ func (k Keeper) BorrowRatio(goCtx context.Context, req *types.QueryBorrowRatioRe
 	params := k.GetParams(ctx)
 	moduleAddr := authtypes.NewModuleAddress(types.ModuleName)
 
-	depositDenom := params.DepositDenom
-	entry, found := k.assetProfileKeeper.GetEntry(ctx, params.DepositDenom)
-	if !found {
-		depositDenom = entry.Denom
-	}
+	depositDenom := k.GetDepositDenom(ctx)
 
 	balance := k.bk.GetBalance(ctx, moduleAddr, depositDenom)
 	borrowed := params.TotalValue.Sub(balance.Amount)
