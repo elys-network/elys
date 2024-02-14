@@ -3,7 +3,6 @@ package keeper
 import (
 	"context"
 
-	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
@@ -19,12 +18,7 @@ func (k msgServer) Bond(goCtx context.Context, msg *types.MsgBond) (*types.MsgBo
 	params := k.GetParams(ctx)
 	sender := sdk.MustAccAddressFromBech32(msg.Creator)
 
-	entry, found := k.assetProfileKeeper.GetEntry(ctx, params.DepositDenom)
-	if !found {
-		return nil, errorsmod.Wrap(types.ErrInvalidDepositDenom, params.DepositDenom)
-	}
-
-	depositDenom := entry.Denom
+	depositDenom := k.GetDepositDenom(ctx)
 	depositCoin := sdk.NewCoin(depositDenom, msg.Amount)
 	err := k.bk.SendCoinsFromAccountToModule(ctx, sender, types.ModuleName, sdk.Coins{depositCoin})
 	if err != nil {
@@ -48,7 +42,7 @@ func (k msgServer) Bond(goCtx context.Context, msg *types.MsgBond) (*types.MsgBo
 		return nil, err
 	}
 
-	entry, found = k.assetProfileKeeper.GetEntry(ctx, shareDenom)
+	entry, found := k.assetProfileKeeper.GetEntry(ctx, shareDenom)
 	if !found {
 		// Set an entity to assetprofile
 		entry = assetprofiletypes.Entry{

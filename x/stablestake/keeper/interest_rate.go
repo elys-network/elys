@@ -17,7 +17,8 @@ func (k Keeper) InterestRateComputation(ctx sdk.Context) sdk.Dec {
 	prevInterestRate := params.InterestRate
 
 	moduleAddr := authtypes.NewModuleAddress(types.ModuleName)
-	balance := k.bk.GetBalance(ctx, moduleAddr, params.DepositDenom)
+	depositDenom := k.GetDepositDenom(ctx)
+	balance := k.bk.GetBalance(ctx, moduleAddr, depositDenom)
 	borrowed := params.TotalValue.Sub(balance.Amount)
 	targetInterestRate := healthGainFactor.
 		Mul(sdk.NewDecFromInt(borrowed)).
