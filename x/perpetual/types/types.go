@@ -35,6 +35,7 @@ func NewMTP(signer, collateralAsset, tradingAsset, liabilitiesAsset, custodyAsse
 		Leverage:                       leverage,
 		MtpHealth:                      sdk.ZeroDec(),
 		Position:                       position,
+		Id:                             0,
 		AmmPoolId:                      poolId,
 		ConsolidateLeverage:            leverage,
 		SumCollateral:                  sdk.ZeroInt(),
@@ -44,6 +45,7 @@ func NewMTP(signer, collateralAsset, tradingAsset, liabilitiesAsset, custodyAsse
 		FundingFeePaidCustody:          sdk.ZeroInt(),
 		FundingFeeReceivedCollateral:   sdk.ZeroInt(),
 		FundingFeeReceivedCustody:      sdk.ZeroInt(),
+		OpenPrice:                      sdk.ZeroDec(),
 	}
 }
 

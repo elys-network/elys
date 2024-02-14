@@ -1,7 +1,6 @@
 package keeper_test
 
 import (
-	"fmt"
 	"testing"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -87,7 +86,6 @@ func TestOpenEstimation_Long5XAtom100Usdc(t *testing.T) {
 		TakeProfitPrice: sdk.MustNewDecFromStr("2.0"),
 	})
 	require.NoError(t, err)
-	fmt.Println(res)
 	require.Equal(t, &types.QueryOpenEstimationResponse{
 		Position:           types.Position_LONG,
 		Leverage:           sdk.MustNewDecFromStr("5.0"),

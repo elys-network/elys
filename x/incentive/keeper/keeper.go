@@ -181,7 +181,6 @@ func (k Keeper) UpdateStakersRewardsUnclaimed(ctx sdk.Context, stakeIncentive ty
 			// Calculate new unclaimed Eden tokens from Elys staked
 			// ----------------------------------------------------------
 			newUnclaimedEdenTokens, dexRewards, dexRewardsByStakers := k.CalculateRewardsForStakersByElysStaked(ctx, delegatedAmt, stakersEdenAmountPerDistribution, dexRevenueStakersAmtPerDistribution)
-			fmt.Println("newUnclaimedEdenTokens1", newUnclaimedEdenTokens.String())
 
 			// Total
 			totalEdenGiven = totalEdenGiven.Add(newUnclaimedEdenTokens)
@@ -201,7 +200,6 @@ func (k Keeper) UpdateStakersRewardsUnclaimed(ctx sdk.Context, stakeIncentive ty
 			// ----------------------------------------------------------
 			edenCommitted := commitments.GetCommittedAmountForDenom(ptypes.Eden)
 			newUnclaimedEdenTokens, dexRewards = k.CalculateRewardsForStakersByCommitted(ctx, edenCommitted, stakersEdenAmountPerDistribution, dexRevenueStakersAmtPerDistribution)
-			fmt.Println("newUnclaimedEdenTokens2", newUnclaimedEdenTokens.String())
 
 			// Total
 			totalEdenGiven = totalEdenGiven.Add(newUnclaimedEdenTokens)
@@ -222,7 +220,6 @@ func (k Keeper) UpdateStakersRewardsUnclaimed(ctx sdk.Context, stakeIncentive ty
 			// ----------------------------------------------------------
 			edenBoostCommitted := commitments.GetCommittedAmountForDenom(ptypes.EdenB)
 			newUnclaimedEdenTokens, dexRewards = k.CalculateRewardsForStakersByCommitted(ctx, edenBoostCommitted, stakersEdenAmountPerDistribution, dexRevenueStakersAmtPerDistribution)
-			fmt.Println("newUnclaimedEdenTokens3", newUnclaimedEdenTokens.String())
 
 			// Total
 			totalEdenGiven = totalEdenGiven.Add(newUnclaimedEdenTokens)
@@ -286,9 +283,6 @@ func (k Keeper) UpdateStakersRewardsUnclaimed(ctx sdk.Context, stakeIncentive ty
 	)
 
 	// Calcualte the remainings
-	fmt.Println("totalEdenGiven", totalEdenGiven.String())
-	fmt.Println("stakersEdenAmountPerDistribution", stakersEdenAmountPerDistribution.String())
-
 	edenRemained := stakersEdenAmountPerDistribution.Sub(totalEdenGiven)
 	dexRewardsRemained := dexRevenueStakersAmtPerDistribution.Sub(sdk.NewDecFromInt(totalRewardsGiven))
 

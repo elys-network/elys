@@ -50,10 +50,14 @@ func (k Keeper) OpenEstimation(goCtx context.Context, req *types.QueryOpenEstima
 		return nil, err
 	}
 
+	// invert openPrice
+	openPrice = sdk.OneDec().Quo(openPrice)
+
 	// calculate estimated pnl
-	// estimated_pnl = leveraged_amount * (take_profit_price - open_price)
+	// estimated_pnl = leveraged_amount * (take_profit_price - open_price) - leveraged_amount
 	estimatedPnL := sdk.NewDecFromBigInt(leveragedAmount.BigInt())
 	estimatedPnL = estimatedPnL.Mul(req.TakeProfitPrice.Sub(openPrice))
+	estimatedPnL = estimatedPnL.Sub(sdk.NewDecFromBigInt(leveragedAmount.BigInt()))
 	estimatedPnLInt := estimatedPnL.TruncateInt()
 
 	if leveragedAmount.IsZero() {
