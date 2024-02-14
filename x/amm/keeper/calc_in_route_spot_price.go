@@ -60,9 +60,6 @@ func (k Keeper) CalcInRouteSpotPrice(ctx sdk.Context, tokenIn sdk.Coin, routes [
 			return sdk.ZeroDec(), sdk.Coin{}, sdk.ZeroDec(), sdk.ZeroDec(), sdk.Coin{}, sdk.ZeroDec(), types.ErrAmountTooLow
 		}
 
-		// Subtract the swap fee from the token out amount
-		tokenOut.Amount = tokenOut.Amount.Sub(sdk.NewDecFromInt(tokenOut.Amount).Mul(swapFee).TruncateInt())
-
 		// Use the current swap result as the input for the next iteration
 		tokensIn = sdk.Coins{tokenOut}
 

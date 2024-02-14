@@ -494,7 +494,7 @@ func (k Keeper) CheckMinLiabilities(ctx sdk.Context, collateralAmount sdk.Coin, 
 
 	borrowInterestNew := borrowInterestRational.Num().Quo(borrowInterestRational.Num(), borrowInterestRational.Denom())
 	samplePayment := sdk.NewInt(borrowInterestNew.Int64())
-	if samplePayment.IsZero() && !minBorrowInterestRate.IsZero() {
+	if samplePayment.IsZero() {
 		return types.ErrBorrowTooLow
 	}
 

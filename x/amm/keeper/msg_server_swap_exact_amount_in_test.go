@@ -30,7 +30,7 @@ func (suite *KeeperTestSuite) TestMsgServerSwapExactAmountIn() {
 			swapFee:           sdk.NewDecWithPrec(1, 2), // 1%
 			tokenIn:           sdk.NewInt64Coin(ptypes.Elys, 10000),
 			tokenOutMin:       sdk.ZeroInt(),
-			tokenOut:          sdk.NewInt64Coin(ptypes.BaseCurrency, 9704),
+			tokenOut:          sdk.NewInt64Coin(ptypes.BaseCurrency, 9802),
 			swapRoute: []types.SwapAmountInRoute{
 				{
 					PoolId:        1,

@@ -31,9 +31,9 @@ func (p Pool) CalcOutAmtGivenIn(
 
 	poolTokenOutBalance := sdk.NewDecFromInt(poolAssetOut.Token.Amount)
 	// accounted pool balance
-	acountedPoolAssetOutAmt := accountedPool.GetAccountedBalance(ctx, p.PoolId, poolAssetOut.Token.Denom)
-	if acountedPoolAssetOutAmt.IsPositive() {
-		poolTokenOutBalance = sdk.NewDecFromInt(acountedPoolAssetOutAmt)
+	accountedPoolAssetOutAmt := accountedPool.GetAccountedBalance(ctx, p.PoolId, poolAssetOut.Token.Denom)
+	if accountedPoolAssetOutAmt.IsPositive() {
+		poolTokenOutBalance = sdk.NewDecFromInt(accountedPoolAssetOutAmt)
 	}
 
 	poolPostSwapInBalance := poolTokenInBalance.Add(tokenAmountInAfterFee)
@@ -42,6 +42,9 @@ func (p Pool) CalcOutAmtGivenIn(
 	inWeight := sdk.NewDecFromInt(poolAssetIn.Weight)
 	if p.PoolParams.UseOracle {
 		_, poolAssetIn, poolAssetOut, err := snapshot.parsePoolAssets(tokensIn, tokenOutDenom)
+		if err != nil {
+			return sdk.Coin{}, err
+		}
 		oracleWeights, err := OraclePoolNormalizedWeights(ctx, oracle, []PoolAsset{poolAssetIn, poolAssetOut})
 		if err != nil {
 			return sdk.Coin{}, err

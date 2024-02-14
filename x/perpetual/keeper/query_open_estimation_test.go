@@ -1,7 +1,6 @@
 package keeper_test
 
 import (
-	"fmt"
 	"testing"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -87,7 +86,6 @@ func TestOpenEstimation_Long5XAtom100Usdc(t *testing.T) {
 		TakeProfitPrice: sdk.MustNewDecFromStr("2.0"),
 	})
 	require.NoError(t, err)
-	fmt.Println(res)
 	require.Equal(t, &types.QueryOpenEstimationResponse{
 		Position:           types.Position_LONG,
 		Leverage:           sdk.MustNewDecFromStr("5.0"),
@@ -95,13 +93,13 @@ func TestOpenEstimation_Long5XAtom100Usdc(t *testing.T) {
 		Collateral:         sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(100000000)),
 		MinCollateral:      sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(8333333)),
 		ValidCollateral:    true,
-		PositionSize:       sdk.NewCoin(ptypes.ATOM, sdk.NewInt(496520381)),
+		PositionSize:       sdk.NewCoin(ptypes.ATOM, sdk.NewInt(497017398)),
 		SwapFee:            sdk.MustNewDecFromStr("0.001000000000000000"),
 		Discount:           sdk.MustNewDecFromStr("0.000000000000000000"),
-		OpenPrice:          sdk.MustNewDecFromStr("0.993040762000000000"),
+		OpenPrice:          sdk.MustNewDecFromStr("1.006001001196340415"),
 		TakeProfitPrice:    sdk.MustNewDecFromStr("2.000000000000000000"),
-		LiquidationPrice:   sdk.MustNewDecFromStr("0.793040762000000000"),
-		EstimatedPnl:       sdk.NewInt(503479619),
+		LiquidationPrice:   sdk.MustNewDecFromStr("0.806001001196340415"),
+		EstimatedPnl:       sdk.NewInt(-3000500),
 		AvailableLiquidity: sdk.NewCoin(ptypes.ATOM, sdk.NewInt(100000000000)),
 		WeightBalanceRatio: sdk.MustNewDecFromStr("0.000000000000000000"),
 		BorrowInterestRate: sdk.MustNewDecFromStr("0.000000000000000000"),
