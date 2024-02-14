@@ -19,12 +19,6 @@ func (k Keeper) OpenEstimation(goCtx context.Context, req *types.QueryOpenEstima
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	// calculate min collateral
-	minCollateral, err := k.CalcMinCollateral(ctx, req.Leverage)
-	if err != nil {
-		return nil, errorsmod.Wrapf(types.ErrCalcMinCollateral, "error calculating min collateral: %s", err.Error())
-	}
-
 	// get swap fee param
 	swapFee := k.GetSwapFee(ctx)
 
@@ -52,6 +46,12 @@ func (k Keeper) OpenEstimation(goCtx context.Context, req *types.QueryOpenEstima
 
 	// invert openPrice
 	openPrice = sdk.OneDec().Quo(openPrice)
+
+	// calculate min collateral
+	minCollateral, err := k.CalcMinCollateral(ctx, req.Leverage, openPrice, decimals)
+	if err != nil {
+		return nil, errorsmod.Wrapf(types.ErrCalcMinCollateral, "error calculating min collateral: %s", err.Error())
+	}
 
 	// calculate estimated pnl
 	// estimated_pnl = leveraged_amount * (take_profit_price - open_price) - leveraged_amount
