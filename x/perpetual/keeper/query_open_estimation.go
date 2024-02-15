@@ -54,10 +54,10 @@ func (k Keeper) OpenEstimation(goCtx context.Context, req *types.QueryOpenEstima
 	}
 
 	// calculate estimated pnl
-	// estimated_pnl = leveraged_amount * (take_profit_price - open_price) - leveraged_amount
-	estimatedPnL := sdk.NewDecFromBigInt(leveragedAmount.BigInt())
+	// estimated_pnl = position_size * (take_profit_price - open_price) - initial_collateral
+	estimatedPnL := sdk.NewDecFromBigInt(positionSize.Amount.BigInt())
 	estimatedPnL = estimatedPnL.Mul(req.TakeProfitPrice.Sub(openPrice))
-	estimatedPnL = estimatedPnL.Sub(sdk.NewDecFromBigInt(leveragedAmount.BigInt()))
+	estimatedPnL = estimatedPnL.Sub(sdk.NewDecFromBigInt(req.Collateral.Amount.BigInt()))
 	estimatedPnLInt := estimatedPnL.TruncateInt()
 
 	if leveragedAmount.IsZero() {
@@ -67,7 +67,7 @@ func (k Keeper) OpenEstimation(goCtx context.Context, req *types.QueryOpenEstima
 	// calculate liquidation price
 	// liquidation_price = -collateral_amount / leveraged_amount_value + open_price_value
 	liquidationPrice := sdk.NewDecFromBigInt(req.Collateral.Amount.Neg().BigInt())
-	liquidationPrice = liquidationPrice.Quo(sdk.NewDecFromBigInt(leveragedAmount.BigInt()))
+	liquidationPrice = liquidationPrice.Quo(sdk.NewDecFromBigInt(positionSize.Amount.BigInt()))
 	liquidationPrice = liquidationPrice.Add(openPrice)
 
 	// get pool rates
