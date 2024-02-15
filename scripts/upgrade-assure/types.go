@@ -399,7 +399,9 @@ type ChannelGenesis struct {
 type LeverageLP struct {
 	leveragelptypes.GenesisState
 
-	Params LeverageLPParams `json:"params"`
+	Params       LeverageLPParams `json:"params"`
+	PoolList     []interface{}    `json:"pool_list"`
+	PositionList []interface{}    `json:"position_list"`
 }
 
 type LeverageLPParams struct {
