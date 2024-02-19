@@ -98,6 +98,13 @@ func setUpgradeHandler(app *ElysApp) {
 			// dedicated x/consensus module.
 			baseapp.MigrateParams(ctx, baseAppLegacySS, &app.ConsensusParamsKeeper)
 
+			proposals := app.GovKeeper.GetProposals(ctx)
+			for _, p := range proposals {
+				if p.Id <= 54 {
+					app.GovKeeper.DeleteProposal(ctx, p.Id)
+				}
+			}
+
 			return app.mm.RunMigrations(ctx, app.configurator, vm)
 		},
 	)
