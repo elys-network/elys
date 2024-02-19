@@ -7,37 +7,31 @@ import (
 )
 
 // Estimate the price : eg, 1 Eden -> x usdc
-func (k Keeper) EstimatePrice(ctx sdk.Context, tokenIn sdk.Coin, baseCurrency string) math.Int {
+func (k Keeper) EstimatePrice(ctx sdk.Context, tokenInDenom, baseCurrency string) math.LegacyDec {
 	// Find a pool that can convert tokenIn to usdc
-	pool, found := k.amm.GetBestPoolWithDenoms(ctx, []string{tokenIn.Denom, baseCurrency})
+	pool, found := k.amm.GetBestPoolWithDenoms(ctx, []string{tokenInDenom, baseCurrency})
 	if !found {
-		return sdk.ZeroInt()
+		return sdk.ZeroDec()
 	}
 
 	// Executes the swap in the pool and stores the output. Updates pool assets but
 	// does not actually transfer any tokens to or from the pool.
 	snapshot := k.amm.GetPoolSnapshotOrSet(ctx, pool)
-	swapResult, err := k.amm.CalcOutAmtGivenIn(ctx, pool.PoolId, k.oracleKeeper, &snapshot, sdk.Coins{tokenIn}, baseCurrency, sdk.ZeroDec())
+
+	rate, err := pool.GetTokenARate(ctx, k.oracleKeeper, &snapshot, tokenInDenom, baseCurrency, k.accountedPoolKeeper)
 	if err != nil {
-		return sdk.ZeroInt()
+		return sdk.ZeroDec()
 	}
 
-	if swapResult.IsZero() {
-		return sdk.ZeroInt()
-	}
-	return swapResult.Amount
+	return rate
 }
 
 func (k Keeper) GetEdenPrice(ctx sdk.Context, baseCurrency string) math.LegacyDec {
 	// Calc Eden price in usdc
 	// We put Elys as denom as Eden won't be avaialble in amm pool and has the same value as Elys
-	// TODO: replace to use spot price
-	// TODO: Remember to use the $ value of Eden price and not eden/usdc
-	// TODO: to be updated as part of spot price calculation PR
-	edenPrice := k.EstimatePrice(ctx, sdk.NewCoin(ptypes.Elys, sdk.NewInt(100000)), baseCurrency)
-	edenPriceDec := sdk.NewDecFromInt(edenPrice).Quo(sdk.NewDec(100000))
-	if edenPriceDec.IsZero() {
-		edenPriceDec = sdk.OneDec()
+	edenPrice := k.EstimatePrice(ctx, ptypes.Elys, baseCurrency)
+	if edenPrice.IsZero() {
+		edenPrice = sdk.OneDec()
 	}
-	return edenPriceDec
+	return edenPrice
 }

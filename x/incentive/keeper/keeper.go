@@ -20,20 +20,21 @@ import (
 
 type (
 	Keeper struct {
-		cdc                codec.BinaryCodec
-		storeKey           storetypes.StoreKey
-		memKey             storetypes.StoreKey
-		cmk                types.CommitmentKeeper
-		stk                types.StakingKeeper
-		tci                *types.TotalCommitmentInfo
-		authKeeper         types.AccountKeeper
-		bankKeeper         types.BankKeeper
-		amm                types.AmmKeeper
-		oracleKeeper       types.OracleKeeper
-		assetProfileKeeper types.AssetProfileKeeper
-		epochsKeeper       types.EpochsKeeper
-		stableKeeper       types.StableStakeKeeper
-		tokenomicsKeeper   types.TokenomicsKeeper
+		cdc                 codec.BinaryCodec
+		storeKey            storetypes.StoreKey
+		memKey              storetypes.StoreKey
+		cmk                 types.CommitmentKeeper
+		stk                 types.StakingKeeper
+		tci                 *types.TotalCommitmentInfo
+		authKeeper          types.AccountKeeper
+		bankKeeper          types.BankKeeper
+		amm                 types.AmmKeeper
+		oracleKeeper        types.OracleKeeper
+		assetProfileKeeper  types.AssetProfileKeeper
+		accountedPoolKeeper types.AccountedPoolKeeper
+		epochsKeeper        types.EpochsKeeper
+		stableKeeper        types.StableStakeKeeper
+		tokenomicsKeeper    types.TokenomicsKeeper
 
 		feeCollectorName    string // name of the FeeCollector ModuleAccount
 		dexRevCollectorName string // name of the Dex Revenue ModuleAccount
@@ -52,6 +53,7 @@ func NewKeeper(
 	amm types.AmmKeeper,
 	ok types.OracleKeeper,
 	ap types.AssetProfileKeeper,
+	accountedPoolKeeper types.AccountedPoolKeeper,
 	epochsKeeper types.EpochsKeeper,
 	stableKeeper types.StableStakeKeeper,
 	tokenomicsKeeper types.TokenomicsKeeper,
@@ -73,6 +75,7 @@ func NewKeeper(
 		amm:                 amm,
 		oracleKeeper:        ok,
 		assetProfileKeeper:  ap,
+		accountedPoolKeeper: accountedPoolKeeper,
 		epochsKeeper:        epochsKeeper,
 		stableKeeper:        stableKeeper,
 		tokenomicsKeeper:    tokenomicsKeeper,
