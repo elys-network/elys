@@ -98,6 +98,17 @@ func setUpgradeHandler(app *ElysApp) {
 			// dedicated x/consensus module.
 			baseapp.MigrateParams(ctx, baseAppLegacySS, &app.ConsensusParamsKeeper)
 
+			// Only run the following migrations if the version is v0.29.13
+			if version.Version == "v0.29.13" {
+				app.Logger().Info("Deleting proposals with ID <= 54")
+				proposals := app.GovKeeper.GetProposals(ctx)
+				for _, p := range proposals {
+					if p.Id <= 54 {
+						app.GovKeeper.DeleteProposal(ctx, p.Id)
+					}
+				}
+			}
+
 			return app.mm.RunMigrations(ctx, app.configurator, vm)
 		},
 	)
