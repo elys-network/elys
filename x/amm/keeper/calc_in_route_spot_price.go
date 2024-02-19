@@ -7,7 +7,7 @@ import (
 
 // CalcInRouteSpotPrice calculates the spot price of the given token and in route
 func (k Keeper) CalcInRouteSpotPrice(ctx sdk.Context, tokenIn sdk.Coin, routes []*types.SwapAmountInRoute, discount sdk.Dec, overrideSwapFee sdk.Dec) (sdk.Dec, sdk.Coin, sdk.Dec, sdk.Dec, sdk.Coin, sdk.Dec, error) {
-	if routes == nil || len(routes) == 0 {
+	if len(routes) == 0 {
 		return sdk.ZeroDec(), sdk.Coin{}, sdk.ZeroDec(), sdk.ZeroDec(), sdk.Coin{}, sdk.ZeroDec(), types.ErrEmptyRoutes
 	}
 
@@ -69,8 +69,7 @@ func (k Keeper) CalcInRouteSpotPrice(ctx sdk.Context, tokenIn sdk.Coin, routes [
 			return sdk.ZeroDec(), sdk.Coin{}, sdk.ZeroDec(), sdk.ZeroDec(), sdk.Coin{}, sdk.ZeroDec(), err
 		}
 		availableLiquidity = poolAsset.Token
-
-		weightBalance = weightBalanceBonus
+		weightBalance = weightBalance.Add(weightBalanceBonus)
 	}
 
 	// Ensure tokenIn.Amount is not zero to avoid division by zero
@@ -78,8 +77,29 @@ func (k Keeper) CalcInRouteSpotPrice(ctx sdk.Context, tokenIn sdk.Coin, routes [
 		return sdk.ZeroDec(), sdk.Coin{}, sdk.ZeroDec(), sdk.ZeroDec(), sdk.Coin{}, sdk.ZeroDec(), types.ErrAmountTooLow
 	}
 
-	// Calculate the spot price given the initial token in and the final token out
-	spotPrice := sdk.NewDecFromInt(tokensIn[0].Amount).Quo(sdk.NewDecFromInt(tokenIn.Amount))
+	// Calculate spot price with GetTokenARate
+	spotPrice := sdk.OneDec()
+	tokenInDenom := tokenIn.Denom
+	for _, route := range routes {
+		poolId := route.PoolId
+		tokenOutDenom = route.TokenOutDenom
+
+		pool, found := k.GetPool(ctx, poolId)
+		if !found {
+			return sdk.ZeroDec(), sdk.Coin{}, sdk.ZeroDec(), sdk.ZeroDec(), sdk.Coin{}, sdk.ZeroDec(), types.ErrPoolNotFound
+		}
+
+		// Estimate swap
+		snapshot := k.GetPoolSnapshotOrSet(ctx, pool)
+		rate, err := pool.GetTokenARate(ctx, k.oracleKeeper, &snapshot, tokenInDenom, tokenOutDenom, k.accountedPoolKeeper)
+		if err != nil {
+			return sdk.ZeroDec(), sdk.Coin{}, sdk.ZeroDec(), sdk.ZeroDec(), sdk.Coin{}, sdk.ZeroDec(), err
+		}
+
+		// set new tokenIn denom for multihop
+		tokenInDenom = tokenOutDenom
+		spotPrice = spotPrice.Mul(rate)
+	}
 
 	if !spotPrice.IsPositive() {
 		return sdk.ZeroDec(), sdk.Coin{}, sdk.ZeroDec(), sdk.ZeroDec(), sdk.Coin{}, sdk.ZeroDec(), types.ErrSpotPriceIsZero

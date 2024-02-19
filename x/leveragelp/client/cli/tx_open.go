@@ -17,7 +17,7 @@ func CmdOpen() *cobra.Command {
 		Use:     "open [leverage] [collateral-asset] [collateral-amount] [amm-pool-id] [flags]",
 		Short:   "Open leveragelp position",
 		Example: `elysd tx leveragelp open 5 uusdc 100000000 1 --from=treasury --keyring-backend=test --chain-id=elystestnet-1 --yes --gas=1000000`,
-		Args:    cobra.ExactArgs(5),
+		Args:    cobra.ExactArgs(4),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
