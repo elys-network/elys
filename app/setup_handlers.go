@@ -101,11 +101,9 @@ func setUpgradeHandler(app *ElysApp) {
 			// Only run the following migrations if the version is v0.29.13
 			if version.Version == "v0.29.13" {
 				app.Logger().Info("Deleting proposals with ID <= 54")
-				proposals := app.GovKeeper.GetProposals(ctx)
-				for _, p := range proposals {
-					if p.Id <= 54 {
-						app.GovKeeper.DeleteProposal(ctx, p.Id)
-					}
+				store := ctx.KVStore(app.keys[govtypes.StoreKey])
+				for i := uint64(1); i <= 54; i++ {
+					store.Delete(govtypes.ProposalKey(i))
 				}
 			}
 
