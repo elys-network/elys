@@ -63,10 +63,6 @@ func (k Keeper) OpenEstimation(goCtx context.Context, req *types.QueryOpenEstima
 		return nil, errorsmod.Wrapf(types.ErrCalcMinCollateral, "error calculating min collateral: %s", err.Error())
 	}
 
-	if req.Collateral.Denom != baseCurrency {
-		minCollateral = minCollateral.Quo(openPrice.TruncateInt())
-	}
-
 	// check req.TakeProfitPrice not zero to prevent division by zero
 	if req.TakeProfitPrice.IsZero() {
 		return nil, errorsmod.Wrapf(types.ErrAmountTooLow, "take profit price is zero")
