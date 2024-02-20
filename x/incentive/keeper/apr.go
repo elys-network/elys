@@ -131,7 +131,7 @@ func (k Keeper) CalculateApr(ctx sdk.Context, query *types.QueryAprRequest) (mat
 
 			// Calc Eden price in usdc
 			// We put Elys as denom as Eden won't be avaialble in amm pool and has the same value as Elys
-			edenPrice := k.EstimatePrice(ctx, sdk.NewCoin(ptypes.Elys, sdk.NewInt(1000000)), baseCurrency)
+			edenPrice := k.EstimatePrice(ctx, ptypes.Elys, baseCurrency)
 			if edenPrice.IsZero() {
 				return sdk.ZeroInt(), nil
 			}
@@ -155,7 +155,7 @@ func (k Keeper) CalculateApr(ctx sdk.Context, query *types.QueryAprRequest) (mat
 				MulInt(sdk.NewInt(ptypes.DaysPerYear)).
 				MulInt(sdk.NewInt(100)).
 				MulInt(sdk.NewInt(1000000)).
-				QuoInt(edenPrice).
+				Quo(edenPrice).
 				QuoInt(totalStakedSnapshot)
 
 			return apr.TruncateInt(), nil

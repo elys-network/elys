@@ -44,6 +44,17 @@ func solveConstantFunctionInvariant(
 	return amountY, nil
 }
 
+// E.g. tokenA: ELYS, tokenB: USDC
+func CalculateTokenARate(tokenBalanceA, tokenWeightA, tokenBalanceB, tokenWeightB sdk.Dec) sdk.Dec {
+	if tokenBalanceA.IsZero() || tokenWeightB.IsZero() {
+		return sdk.ZeroDec()
+	}
+	return tokenBalanceB.
+		Mul(tokenWeightA).
+		Quo(tokenWeightB).
+		Quo(tokenBalanceA)
+}
+
 // feeRatio returns the fee ratio that is defined as follows:
 // 1 - ((1 - normalizedTokenWeightOut) * spreadFactor)
 func feeRatio(normalizedWeight, spreadFactor sdk.Dec) sdk.Dec {

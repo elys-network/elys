@@ -787,6 +787,7 @@ func NewElysApp(
 		app.AmmKeeper,
 		app.OracleKeeper,
 		app.AssetprofileKeeper,
+		app.AccountedPoolKeeper,
 		app.EpochsKeeper,
 		app.StablestakeKeeper,
 		app.TokenomicsKeeper,
