@@ -20,7 +20,7 @@ func (k Keeper) CalcMinCollateral(ctx sdk.Context, leverage sdk.Dec, price sdk.D
 	// round up price
 	price = price.Ceil()
 
-	// min_collateral = ( trading_asset_rate_in_usdc / (( leverage - 1 ) * borrow_interest_rate_min )) + 10 ^ collateral_decimals
+	// min_collateral = [ trading_asset_rate_in_usdc / (( leverage - 1 ) * borrow_interest_rate_min ) ] + 10 ^ collateral_decimals
 	minCollateral := price.Quo(
 		leverage.Sub(sdk.NewDec(1)).Mul(borrowInterestRateMin),
 	).Add(sdk.MustNewDecFromStr("10").Power(decimals))
