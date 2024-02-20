@@ -54,8 +54,14 @@ func (k Keeper) OpenEstimation(goCtx context.Context, req *types.QueryOpenEstima
 		return nil, err
 	}
 
-	// invert openPrice
-	openPrice = sdk.OneDec().Quo(openPrice)
+	if req.Position == types.Position_SHORT {
+		positionSize = sdk.NewCoin(req.Collateral.Denom, leveragedAmount)
+	}
+
+	// invert openPrice if collateral is not in base currency
+	if req.Collateral.Denom != baseCurrency {
+		openPrice = sdk.OneDec().Quo(openPrice)
+	}
 
 	// calculate min collateral
 	minCollateral, err := k.CalcMinCollateral(ctx, req.Leverage, openPrice, decimals)
@@ -72,17 +78,31 @@ func (k Keeper) OpenEstimation(goCtx context.Context, req *types.QueryOpenEstima
 	liabilitiesAmountDec := sdk.NewDecFromBigInt(collateralAmountInBaseCurrency.Amount.BigInt()).Mul(req.Leverage.Sub(sdk.OneDec()))
 
 	// calculate estimated pnl
-	// estimated_pnl = ( custody_amount - liability_amount / take_profit_price ) - ( collateral_amount / take_profit_price )
+	// estimated_pnl = custody_amount - (liability_amount + collateral_amount) / take_profit_price
 	estimatedPnL := sdk.NewDecFromBigInt(positionSize.Amount.BigInt())
-	estimatedPnL = estimatedPnL.Sub(liabilitiesAmountDec.Quo(req.TakeProfitPrice))
-	estimatedPnL = estimatedPnL.Sub(sdk.NewDecFromBigInt(req.Collateral.Amount.BigInt()).Quo(req.TakeProfitPrice))
-	estimatedPnLCoin := sdk.NewCoin(req.TradingAsset, estimatedPnL.TruncateInt())
+	estimatedPnL = estimatedPnL.Sub(liabilitiesAmountDec.Add(sdk.NewDecFromBigInt(req.Collateral.Amount.BigInt())).Quo(req.TakeProfitPrice))
+	estimatedPnLDenom := req.TradingAsset
+
+	// if position is short then estimated pnl is custody_amount / open_price - (liability_amount + collateral_amount) / take_profit_price
+	if req.Position == types.Position_SHORT {
+		estimatedPnL = liabilitiesAmountDec.Add(sdk.NewDecFromBigInt(req.Collateral.Amount.BigInt())).Quo(req.TakeProfitPrice)
+		estimatedPnL = estimatedPnL.Sub(sdk.NewDecFromBigInt(positionSize.Amount.BigInt()).Quo(openPrice))
+		estimatedPnLDenom = baseCurrency
+	}
 
 	// calculate liquidation price
 	// liquidation_price = open_price_value - collateral_amount / custody_amount
 	liquidationPrice := openPrice.Sub(
 		sdk.NewDecFromBigInt(collateralAmountInBaseCurrency.Amount.BigInt()).Quo(sdk.NewDecFromBigInt(positionSize.Amount.BigInt())),
 	)
+
+	// if position is short then liquidation price is open price + collateral amount / (custody amount / open price)
+	if req.Position == types.Position_SHORT {
+		positionSizeInTradingAsset := sdk.NewDecFromBigInt(positionSize.Amount.BigInt()).Quo(openPrice)
+		liquidationPrice = openPrice.Add(
+			sdk.NewDecFromBigInt(collateralAmountInBaseCurrency.Amount.BigInt()).Quo(positionSizeInTradingAsset),
+		)
+	}
 
 	// get pool rates
 	poolId, err := k.GetBestPool(ctx, baseCurrency, req.TradingAsset)
@@ -110,7 +130,8 @@ func (k Keeper) OpenEstimation(goCtx context.Context, req *types.QueryOpenEstima
 		OpenPrice:          openPrice,
 		TakeProfitPrice:    req.TakeProfitPrice,
 		LiquidationPrice:   liquidationPrice,
-		EstimatedPnl:       estimatedPnLCoin,
+		EstimatedPnl:       estimatedPnL.TruncateInt(),
+		EstimatedPnlDenom:  estimatedPnLDenom,
 		AvailableLiquidity: availableLiquidity,
 		WeightBalanceRatio: weightBonus,
 		PriceImpact:        priceImpact,

@@ -181,16 +181,17 @@ message QueryOpenEstimationResponse {
   string   open_price  = 10 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
   string   take_profit_price  = 11 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
   string   liquidation_price  = 12 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
-  cosmos.base.v1beta1.Coin   estimated_pnl = 13 [(gogoproto.nullable) = false];
-  cosmos.base.v1beta1.Coin available_liquidity  = 14 [(gogoproto.nullable)   = false                                   ] ;
-  string                   weight_balance_ratio = 15 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
-  string borrow_interest_rate = 16 [
+  string   estimated_pnl = 13 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false];
+  string   estimated_pnl_denom = 14;
+  cosmos.base.v1beta1.Coin available_liquidity  = 15 [(gogoproto.nullable)   = false                                   ] ;
+  string                   weight_balance_ratio = 16 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+  string borrow_interest_rate = 17 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
-  string funding_rate = 17 [
+  string funding_rate = 18 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
-  string price_impact = 18 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+  string price_impact = 19 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
 }
