@@ -7,7 +7,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/telemetry"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	ctypes "github.com/elys-network/elys/x/commitment/types"
 	"github.com/elys-network/elys/x/incentive/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
@@ -15,47 +14,36 @@ import (
 // EndBlocker of incentive module
 func (k Keeper) EndBlocker(ctx sdk.Context) {
 	defer telemetry.ModuleMeasureSince(types.ModuleName, time.Now(), telemetry.MetricKeyEndBlocker)
-
-	// Elys staked amount tracking
-	k.ProcessElysStakedTracking(ctx)
+	// Burn EdenB tokens if staking changed
+	k.BurnEdenBIfElysStakingReduced(ctx)
 
 	// Rewards distribution
 	k.ProcessRewardsDistribution(ctx)
 }
 
-// Elys staked amount tracking
-func (k Keeper) ProcessElysStakedTracking(ctx sdk.Context) {
-	params := k.GetParams(ctx)
-	// Update Elys staked amount every n blocks
-	if params.ElysStakeSnapInterval == 0 || ctx.BlockHeight()%params.ElysStakeSnapInterval != 0 {
-		return
+func (k Keeper) TakeDelegationSnapshot(ctx sdk.Context, addr string) {
+	// Calculate delegated amount per delegator
+	delegatedAmt := k.CalculateDelegatedAmount(ctx, addr)
+
+	elysStaked := types.ElysStaked{
+		Address: addr,
+		Amount:  delegatedAmt,
 	}
 
-	// Track the amount of Elys staked
-	k.cmk.IterateCommitments(
-		ctx, func(commitments ctypes.Commitments) bool {
-			// Commitment owner
-			creator := commitments.Creator
-			_, err := sdk.AccAddressFromBech32(creator)
-			if err != nil {
-				// This could be validator address
-				return false
-			}
+	// Set Elys staked amount
+	k.SetElysStaked(ctx, elysStaked)
+}
 
-			// Calculate delegated amount per delegator
-			delegatedAmt := k.CalculateDelegatedAmount(ctx, creator)
+func (k Keeper) BurnEdenBIfElysStakingReduced(ctx sdk.Context) {
+	addrs := k.GetAllElysStakeChange(ctx)
 
-			elysStaked := types.ElysStaked{
-				Address: creator,
-				Amount:  delegatedAmt,
-			}
-
-			// Set Elys staked amount
-			k.SetElysStaked(ctx, elysStaked)
-
-			return false
-		},
-	)
+	// Handle addresses recorded on AfterDelegationModified
+	// This hook is exposed for genesis delegations as well
+	for _, delAddr := range addrs {
+		k.BurnEdenBFromElysUnstaking(ctx, delAddr)
+		k.TakeDelegationSnapshot(ctx, delAddr.String())
+		k.RemoveElysStakeChange(ctx, delAddr)
+	}
 }
 
 // Rewards distribution

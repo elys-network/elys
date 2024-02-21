@@ -37,13 +37,11 @@ func TestABCI_EndBlocker(t *testing.T) {
 
 	// Add testing commitment
 	simapp.AddTestCommitment(app, ctx, genAccount, committed, unclaimed)
-	// Update Elys staked amount
 	ik.EndBlocker(ctx)
 
 	// Get elys staked
-	elysStaked, found := ik.GetElysStaked(ctx, genAccount.String())
-	require.Equal(t, found, true)
-	require.Equal(t, elysStaked.Amount, sdk.DefaultPowerReduction)
+	elysStaked := ik.GetElysStaked(ctx, genAccount.String())
+	require.Equal(t, elysStaked, sdk.DefaultPowerReduction)
 
 	authority := authtypes.NewModuleAddress(govtypes.ModuleName).String()
 
@@ -101,13 +99,13 @@ func TestABCI_EndBlocker(t *testing.T) {
 	ctx = ctx.WithBlockHeight(6307210)
 
 	// Incentive param should be empty
-	stakerEpoch, stakeIncentive := ik.IsStakerRewardsDistributionEpoch(ctx)
+	stakerEpoch, _ := ik.IsStakerRewardsDistributionEpoch(ctx)
 	params = ik.GetParams(ctx)
 	require.Equal(t, stakerEpoch, false)
 	require.Nil(t, params.StakeIncentives)
 
 	// Incentive param should be empty
-	lpEpoch, lpIncentive := ik.IsLPRewardsDistributionEpoch(ctx)
+	lpEpoch, _ := ik.IsLPRewardsDistributionEpoch(ctx)
 	params = ik.GetParams(ctx)
 	require.Equal(t, lpEpoch, false)
 	require.Nil(t, params.LpIncentives)
@@ -115,13 +113,14 @@ func TestABCI_EndBlocker(t *testing.T) {
 	// After reading tokenomics again
 	paramSet = ik.ProcessUpdateIncentiveParams(ctx)
 	require.Equal(t, paramSet, true)
+
 	// Check params
-	stakerEpoch, stakeIncentive = ik.IsStakerRewardsDistributionEpoch(ctx)
+	_, stakeIncentive := ik.IsStakerRewardsDistributionEpoch(ctx)
 	params = ik.GetParams(ctx)
 	require.Equal(t, stakeIncentive.EdenAmountPerYear, sdk.NewInt(int64(listTimeBasdInflations[0].Inflation.IcsStakingRewards)))
 
 	// Check params
-	lpEpoch, lpIncentive = ik.IsLPRewardsDistributionEpoch(ctx)
+	_, lpIncentive := ik.IsLPRewardsDistributionEpoch(ctx)
 	params = ik.GetParams(ctx)
 	require.Equal(t, lpIncentive.EdenAmountPerYear, sdk.NewInt(int64(listTimeBasdInflations[0].Inflation.IcsStakingRewards)))
 }

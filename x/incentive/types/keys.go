@@ -13,7 +13,8 @@ const (
 	// MemStoreKey defines the in-memory store key
 	MemStoreKey = "mem_incentive"
 
-	ElysStakedKeyPrefix = "ElysStaked/value/"
+	ElysStakedKeyPrefix      = "ElysStaked/value/"
+	ElysStakeChangeKeyPrefix = "ElysStakeChanged/value/"
 
 	// ParamsKey is the prefix to retrieve all Params
 	ParamsKey = "Params/value/"

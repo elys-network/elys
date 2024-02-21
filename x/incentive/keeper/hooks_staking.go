@@ -20,7 +20,8 @@ func (k Keeper) BeforeDelegationCreated(ctx sdk.Context, delAddr sdk.AccAddress,
 
 // Updating commitments on delegation changes
 func (k Keeper) AfterDelegationModified(ctx sdk.Context, delAddr sdk.AccAddress, valAddr sdk.ValAddress) error {
-	return k.BurnEdenBFromElysUnstaking(ctx, delAddr)
+	k.SetElysStakeChange(ctx, delAddr)
+	return nil
 }
 
 func (k Keeper) BeforeDelegationRemoved(ctx sdk.Context, delAddr sdk.AccAddress, valAddr sdk.ValAddress) error {
