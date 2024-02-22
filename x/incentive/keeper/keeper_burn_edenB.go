@@ -7,16 +7,15 @@ import (
 )
 
 // Burn EdenBoost from Elys unstaked
-func (k Keeper) BurnEdenBFromElysUnstaking(ctx sdk.Context, delegator sdk.AccAddress) error {
+func (k Keeper) BurnEdenBFromElysUnstaking(ctx sdk.Context, delegator sdk.AccAddress) {
 	delAddr := delegator.String()
 	// Get commitments
 	commitments := k.cmk.GetCommitments(ctx, delAddr)
 
 	// Get previous amount
-	prevElysStaked, found := k.GetElysStaked(ctx, delAddr)
-	// should return nil otherwise it will break staking module
-	if !found {
-		return nil
+	prevElysStaked := k.GetElysStaked(ctx, delAddr)
+	if prevElysStaked.IsZero() {
+		return
 	}
 
 	// Calculate current delegated amount of delegator
@@ -24,8 +23,8 @@ func (k Keeper) BurnEdenBFromElysUnstaking(ctx sdk.Context, delegator sdk.AccAdd
 
 	// If not unstaked,
 	// should return nil otherwise it will break staking module
-	if delegatedAmt.GTE(prevElysStaked.Amount) {
-		return nil
+	if delegatedAmt.GTE(prevElysStaked) {
+		return
 	}
 
 	edenCommitted := commitments.GetCommittedAmountForDenom(ptypes.Eden)
@@ -39,27 +38,29 @@ func (k Keeper) BurnEdenBFromElysUnstaking(ctx sdk.Context, delegator sdk.AccAdd
 	totalEdenB := edenBCommitted.Add(edenBUnclaimed).Add(edenBClaimed)
 
 	// Unstaked
-	unstakedElys := prevElysStaked.Amount.Sub(delegatedAmt)
+	unstakedElys := prevElysStaked.Sub(delegatedAmt)
 
 	unstakedElysDec := sdk.NewDecFromInt(unstakedElys)
-	edenCommittedAndElysStakedDec := sdk.NewDecFromInt(edenCommitted.Add(prevElysStaked.Amount))
+	edenCommittedAndElysStakedDec := sdk.NewDecFromInt(edenCommitted.Add(prevElysStaked))
 	totalEdenBDec := sdk.NewDecFromInt(totalEdenB)
 	edenBToBurn := sdk.ZeroDec()
 	if edenCommittedAndElysStakedDec.GT(sdk.ZeroDec()) {
 		edenBToBurn = unstakedElysDec.Quo(edenCommittedAndElysStakedDec).Mul(totalEdenBDec)
 	}
-	// Burn EdenB ( Deduction EdenB in commitment module)
+	// Burn EdenB in commitment module
 	commitment, err := k.cmk.BurnEdenBoost(ctx, delAddr, ptypes.EdenB, edenBToBurn.TruncateInt())
-	k.cmk.SetCommitments(ctx, commitment)
-
-	return err
+	if err != nil {
+		k.Logger(ctx).Error("EdenB burn failure", err)
+	} else {
+		k.cmk.SetCommitments(ctx, commitment)
+	}
 }
 
 // Burn EdenBoost from Eden unclaimed
 func (k Keeper) BurnEdenBFromEdenUncommitted(ctx sdk.Context, delegator string, uncommitAmt math.Int) error {
 	// Get elys staked amount
-	elysStaked, found := k.GetElysStaked(ctx, delegator)
-	if !found {
+	elysStaked := k.GetElysStaked(ctx, delegator)
+	if elysStaked.IsZero() {
 		return nil
 	}
 
@@ -77,7 +78,7 @@ func (k Keeper) BurnEdenBFromEdenUncommitted(ctx sdk.Context, delegator string, 
 	unclaimedAmtDec := sdk.NewDecFromInt(uncommitAmt)
 	// This formula shud be applied before eden uncommitted or elys staked is removed from eden committed amount and elys staked amount respectively
 	// So add uncommitted amount to committed eden bucket in calculation.
-	edenCommittedAndElysStakedDec := sdk.NewDecFromInt(edenCommitted.Add(elysStaked.Amount).Add(uncommitAmt))
+	edenCommittedAndElysStakedDec := sdk.NewDecFromInt(edenCommitted.Add(elysStaked).Add(uncommitAmt))
 	totalEdenBDec := sdk.NewDecFromInt(totalEdenB)
 
 	edenBToBurn := sdk.ZeroDec()

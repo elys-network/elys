@@ -24,7 +24,7 @@ func (k Keeper) CalculateTotalShareOfStaking(amount math.Int) sdk.Dec {
 // Calculate the delegated amount
 func (k Keeper) CalculateDelegatedAmount(ctx sdk.Context, delegator string) math.Int {
 	// Derivate bech32 based delegator address
-	delAdr, err := sdk.AccAddressFromBech32(delegator)
+	delAddr, err := sdk.AccAddressFromBech32(delegator)
 	if err != nil {
 		// This could be validator address
 		return sdk.ZeroInt()
@@ -34,7 +34,7 @@ func (k Keeper) CalculateDelegatedAmount(ctx sdk.Context, delegator string) math
 	delegatedAmt := sdk.ZeroDec()
 
 	// Get all delegations
-	delegations := k.stk.GetDelegatorDelegations(ctx, delAdr, gomath.MaxUint16)
+	delegations := k.stk.GetDelegatorDelegations(ctx, delAddr, gomath.MaxUint16)
 	for _, del := range delegations {
 		// Get validator address
 		valAddr := del.GetValidatorAddr()

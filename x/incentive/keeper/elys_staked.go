@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	"cosmossdk.io/math"
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/incentive/types"
@@ -14,16 +15,17 @@ func (k Keeper) SetElysStaked(ctx sdk.Context, elysStaked types.ElysStaked) {
 }
 
 // GetElysStaked returns a elysStaked from its index
-func (k Keeper) GetElysStaked(ctx sdk.Context, address string) (val types.ElysStaked, found bool) {
+func (k Keeper) GetElysStaked(ctx sdk.Context, address string) math.Int {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.ElysStakedKeyPrefix))
 
 	b := store.Get(types.ElysStakedKey(address))
 	if b == nil {
-		return val, false
+		return math.ZeroInt()
 	}
 
+	val := types.ElysStaked{}
 	k.cdc.MustUnmarshal(b, &val)
-	return val, true
+	return val.Amount
 }
 
 // RemoveElysStaked removes a elysStaked from the store

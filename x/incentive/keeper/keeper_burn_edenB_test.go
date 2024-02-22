@@ -51,12 +51,16 @@ func TestBurnEdenBFromElysUnstaked(t *testing.T) {
 	require.Equal(t, commitment.RewardsUnclaimed[1].Denom, ptypes.EdenB)
 	require.Equal(t, commitment.RewardsUnclaimed[1].Amount, sdk.NewInt(20000))
 
-	// Track Elys staked amount
-	ik.EndBlocker(ctx)
+	// Take elys staked snapshot
+	ik.TakeDelegationSnapshot(ctx, genAccount.String())
 
 	// burn amount = 100000 (unbonded amt) / (1000000 (elys staked) + 10000 (Eden committed)) * (20000 EdenB + 5000 EdenB committed)
 	unbondAmt, err := sk.Unbond(ctx, genAccount, valAddr, sdk.NewDecWithPrec(10, 2))
 	require.Equal(t, unbondAmt, sdk.NewInt(100000))
+	require.NoError(t, err)
+
+	// Process EdenB burn operation
+	ik.EndBlocker(ctx)
 
 	commitment = app.CommitmentKeeper.GetCommitments(ctx, genAccount.String())
 	require.Equal(t, commitment.RewardsUnclaimed[1].Denom, ptypes.EdenB)
