@@ -61,9 +61,6 @@ func updateGenesis(validatorBalance, homePath, genesisFilePath string) {
 	// set genutil from genesisInit
 	genesis.AppState.Genutil = genesisInit.AppState.Genutil
 
-	// reset gov as there are broken proposoals
-	genesis.AppState.Gov = genesisInit.AppState.Gov
-
 	// add localhost as allowed client
 	genesis.AppState.Ibc.ClientGenesis.Params.AllowedClients = append(genesis.AppState.Ibc.ClientGenesis.Params.AllowedClients, "09-localhost")
 
