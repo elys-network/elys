@@ -57,6 +57,7 @@ func (oq *Querier) BuildUnStakedPositionResponseCW(ctx sdk.Context, unbondingDel
 			}
 
 			unstakedPosition.Validator = commitmenttypes.StakingValidator{
+				Id: val.Description.Identity,
 				// The validator address.
 				Address: val.OperatorAddress,
 				// The validator name.
@@ -65,8 +66,6 @@ func (oq *Querier) BuildUnStakedPositionResponseCW(ctx sdk.Context, unbondingDel
 				VotingPower: votingPower,
 				// Comission percentage for the validator.
 				Commission: val.GetCommission(),
-				// The url of the validator profile picture
-				ProfilePictureSrc: website,
 			}
 			unstakedPosition.RemainingTime = uint64(entity.CompletionTime.Unix())
 			unstakedPosition.Unstaked = commitmenttypes.BalanceAvailable{
