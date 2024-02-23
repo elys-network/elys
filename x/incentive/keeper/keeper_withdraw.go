@@ -117,6 +117,9 @@ func (k Keeper) ProcessWithdrawRewards(ctx sdk.Context, delegator string, withdr
 	unclaimed := k.CalcAmountSubbucketsPerProgram(ctx, delegator, ptypes.Eden, withdrawType, commitments)
 	if !unclaimed.IsZero() {
 		err = k.cmk.RecordClaimReward(ctx, delegator, ptypes.Eden, unclaimed, withdrawType)
+		if err != nil {
+			return err
+		}
 	}
 
 	// Claim EdenB
@@ -124,6 +127,9 @@ func (k Keeper) ProcessWithdrawRewards(ctx sdk.Context, delegator string, withdr
 	unclaimed = k.CalcAmountSubbucketsPerProgram(ctx, delegator, ptypes.EdenB, withdrawType, commitments)
 	if !unclaimed.IsZero() {
 		err = k.cmk.RecordClaimReward(ctx, delegator, ptypes.EdenB, unclaimed, withdrawType)
+		if err != nil {
+			return err
+		}
 	}
 
 	// Claim USDC
@@ -134,7 +140,7 @@ func (k Keeper) ProcessWithdrawRewards(ctx sdk.Context, delegator string, withdr
 	}
 	baseCurrency := entry.Denom
 
-	// Get available usdc amount can be withdrew
+	// Get available usdc amount can be withdraw
 	unclaimedUsdc := k.CalcAmountSubbucketsPerProgram(ctx, delegator, baseCurrency, withdrawType, commitments)
 	if unclaimedUsdc.IsZero() {
 		return nil
@@ -190,12 +196,18 @@ func (k Keeper) RecordWithdrawValidatorCommission(ctx sdk.Context, delegator str
 	unclaimed := commitments.GetRewardUnclaimedForDenom(ptypes.Eden)
 	if !unclaimed.IsZero() {
 		err = k.cmk.RecordWithdrawValidatorCommission(ctx, delegator, validator, ptypes.Eden, unclaimed)
+		if err != nil {
+			return err
+		}
 	}
 
 	// EdenB
 	unclaimed = commitments.GetRewardUnclaimedForDenom(ptypes.EdenB)
 	if !unclaimed.IsZero() {
 		err = k.cmk.RecordWithdrawValidatorCommission(ctx, delegator, validator, ptypes.EdenB, unclaimed)
+		if err != nil {
+			return err
+		}
 	}
 
 	entry, found := k.assetProfileKeeper.GetEntry(ctx, ptypes.BaseCurrency)
@@ -235,10 +247,5 @@ func (k Keeper) RecordWithdrawValidatorCommission(ctx sdk.Context, delegator str
 	// Set withdraw usdc amount
 	revenue := sdk.NewCoin(baseCurrency, unclaimedUsdc)
 	// Transfer revenue from a single wallet of DEX revenue wallet to user's wallet.
-	err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, k.dexRevCollectorName, addr, sdk.NewCoins(revenue))
-	if err != nil {
-		panic(err)
-	}
-
-	return err
+	return k.bankKeeper.SendCoinsFromModuleToAccount(ctx, k.dexRevCollectorName, addr, sdk.NewCoins(revenue))
 }

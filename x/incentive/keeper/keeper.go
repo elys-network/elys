@@ -150,7 +150,9 @@ func (k Keeper) UpdateStakersRewardsUnclaimed(ctx sdk.Context, stakeIncentive ty
 	// Reset amount from other tracker
 	params.DexRewardsStakers.AmountCollectedByOtherTracker = sdk.ZeroDec()
 	// Don't increase Lps rewards blocks, it will be increased whenever LP distribution epoch happens.
-	params.DexRewardsLps.AmountCollectedByOtherTracker = params.DexRewardsLps.AmountCollectedByOtherTracker.Add(dexRevenueLPsAmtPerDistribution).Add(gasFeesLPsAmtPerDistribution)
+	params.DexRewardsLps.AmountCollectedByOtherTracker = params.DexRewardsLps.AmountCollectedByOtherTracker.
+		Add(dexRevenueLPsAmtPerDistribution).
+		Add(gasFeesLPsAmtPerDistribution)
 	k.SetParams(ctx, params)
 
 	totalEdenGiven := sdk.ZeroInt()

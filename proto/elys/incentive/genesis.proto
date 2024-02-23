@@ -17,4 +17,3 @@ message GenesisState {
     // fee_pool defines the fee pool at genesis.
     FeePool fee_pool = 2 [(gogoproto.nullable) = false];
 }
-

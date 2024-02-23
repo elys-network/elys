@@ -171,14 +171,14 @@ func (k Keeper) HandleWithdrawFromCommitment(ctx sdk.Context, commitments *types
 	commitments.AddClaimed(sdk.NewCoin(ptypes.EdenB, edenBAmount))
 	k.SetCommitments(ctx, *commitments)
 
+	// Emit Hook commitment changed
+	k.AfterCommitmentChange(ctx, addr.String(), amount)
+
 	withdrawCoins := amount.
 		Sub(sdk.NewCoin(ptypes.Eden, edenAmount)).
 		Sub(sdk.NewCoin(ptypes.EdenB, edenBAmount))
 
-	// Emit Hook commitment changed
-	k.AfterCommitmentChange(ctx, addr.String(), withdrawCoins)
-
-	if sendCoins {
+	if sendCoins && !withdrawCoins.Empty() {
 		return k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, addr, withdrawCoins)
 	}
 	return nil

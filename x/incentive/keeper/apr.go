@@ -154,7 +154,6 @@ func (k Keeper) CalculateApr(ctx sdk.Context, query *types.QueryAprRequest) (mat
 			apr := dailyDexRewardAmount.
 				MulInt(sdk.NewInt(ptypes.DaysPerYear)).
 				MulInt(sdk.NewInt(100)).
-				MulInt(sdk.NewInt(1000000)).
 				Quo(edenPrice).
 				QuoInt(totalStakedSnapshot)
 
