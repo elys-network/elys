@@ -164,7 +164,7 @@ func (k Keeper) BurnEdenBoost(ctx sdk.Context, creator string, denom string, amo
 	return commitments, nil
 }
 
-func (k Keeper) HandleWithdrawFromCommitment(ctx sdk.Context, commitments *types.Commitments, addr sdk.AccAddress, amount sdk.Coins, sendCoins bool) error {
+func (k Keeper) HandleWithdrawFromCommitment(ctx sdk.Context, commitments *types.Commitments, amount sdk.Coins, sendCoins bool, addr sdk.AccAddress) error {
 	edenAmount := amount.AmountOf(ptypes.Eden)
 	edenBAmount := amount.AmountOf(ptypes.EdenB)
 	commitments.AddClaimed(sdk.NewCoin(ptypes.Eden, edenAmount))
@@ -172,7 +172,7 @@ func (k Keeper) HandleWithdrawFromCommitment(ctx sdk.Context, commitments *types
 	k.SetCommitments(ctx, *commitments)
 
 	// Emit Hook commitment changed
-	k.AfterCommitmentChange(ctx, addr.String(), amount)
+	k.AfterCommitmentChange(ctx, commitments.Creator, amount)
 
 	withdrawCoins := amount.
 		Sub(sdk.NewCoin(ptypes.Eden, edenAmount)).
@@ -212,7 +212,7 @@ func (k Keeper) RecordWithdrawValidatorCommission(ctx sdk.Context, delegator str
 	}
 
 	commitments = k.GetCommitments(ctx, delegator)
-	err = k.HandleWithdrawFromCommitment(ctx, &commitments, addr, withdrawCoins, false)
+	err = k.HandleWithdrawFromCommitment(ctx, &commitments, withdrawCoins, false, addr)
 	if err != nil {
 		return err
 	}

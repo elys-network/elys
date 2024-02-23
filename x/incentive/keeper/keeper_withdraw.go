@@ -235,7 +235,7 @@ func (k Keeper) RecordWithdrawValidatorCommission(ctx sdk.Context, delegator str
 	// This function call will deduct the accounting in commitment module only.
 	err = k.cmk.RecordClaimReward(ctx, validator, baseCurrency, unclaimedUsdc, commitmenttypes.EarnType_ALL_PROGRAM)
 	if err != nil {
-		return errorsmod.Wrapf(types.ErrIntOverflowTx, "Internal error with amount: %d", unclaimedUsdc)
+		return err
 	}
 
 	// Get Bech32 address for delegator
