@@ -41,7 +41,7 @@ func (k msgServer) UncommitTokens(goCtx context.Context, msg *types.MsgUncommitT
 		return nil, errorsmod.Wrap(sdkerrors.ErrInvalidAddress, "unable to convert address from bech32")
 	}
 
-	err = k.HandleWithdrawFromCommitment(ctx, &commitments, addr, liquidCoins, true)
+	err = k.HandleWithdrawFromCommitment(ctx, &commitments, liquidCoins, true, addr)
 	if err != nil {
 		return nil, err
 	}

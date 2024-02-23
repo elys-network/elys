@@ -126,9 +126,9 @@ func TestRecordWithdrawValidatorCommission(t *testing.T) {
 	app.CommitmentKeeper.BeforeDelegationCreated(ctx, delegator, valAddress.String())
 
 	// Set assetprofile entry for denom
-	app.AssetprofileKeeper.SetEntry(ctx, aptypes.Entry{BaseDenom: ptypes.BaseCurrency, CommitEnabled: false, WithdrawEnabled: true})
-	app.AssetprofileKeeper.SetEntry(ctx, aptypes.Entry{BaseDenom: ptypes.Eden, CommitEnabled: true, WithdrawEnabled: true})
-	app.AssetprofileKeeper.SetEntry(ctx, aptypes.Entry{BaseDenom: ptypes.EdenB, CommitEnabled: true, WithdrawEnabled: true})
+	app.AssetprofileKeeper.SetEntry(ctx, aptypes.Entry{BaseDenom: ptypes.BaseCurrency, Denom: ptypes.BaseCurrency, CommitEnabled: false, WithdrawEnabled: true})
+	app.AssetprofileKeeper.SetEntry(ctx, aptypes.Entry{BaseDenom: ptypes.Eden, Denom: ptypes.Eden, CommitEnabled: true, WithdrawEnabled: true})
+	app.AssetprofileKeeper.SetEntry(ctx, aptypes.Entry{BaseDenom: ptypes.EdenB, Denom: ptypes.EdenB, CommitEnabled: true, WithdrawEnabled: true})
 
 	// Give commission to validators ( Eden from stakers and Dex rewards from stakers. )
 	edenCommissionGiven, dexRewardsCommissionGiven := ik.GiveCommissionToValidators(ctx, delegator, delegatedAmt, newUnclaimedEdenTokens, dexRewardsByStakers, ptypes.BaseCurrency)

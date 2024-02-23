@@ -118,52 +118,27 @@ func (c *Commitments) DeductFromCommitted(denom string, amount math.Int, currTim
 }
 
 func (c *Commitments) GetRewardUnclaimedForDenom(denom string) math.Int {
-	for _, token := range c.RewardsUnclaimed {
-		if token.Denom == denom {
-			return token.Amount
-		}
-	}
-	return sdk.ZeroInt()
+	return c.RewardsUnclaimed.AmountOf(denom)
 }
 
 // Sub bucket rewards query - Elys
 func (c *Commitments) GetElysSubBucketRewardUnclaimedForDenom(denom string) math.Int {
-	for _, token := range c.RewardsByElysUnclaimed {
-		if token.Denom == denom {
-			return token.Amount
-		}
-	}
-	return sdk.ZeroInt()
+	return c.RewardsByElysUnclaimed.AmountOf(denom)
 }
 
 // Sub bucket rewards query - Eden
 func (c *Commitments) GetEdenSubBucketRewardUnclaimedForDenom(denom string) math.Int {
-	for _, token := range c.RewardsByEdenUnclaimed {
-		if token.Denom == denom {
-			return token.Amount
-		}
-	}
-	return sdk.ZeroInt()
+	return c.RewardsByEdenUnclaimed.AmountOf(denom)
 }
 
 // Sub bucket rewards query - EdenB
 func (c *Commitments) GetEdenBSubBucketRewardUnclaimedForDenom(denom string) math.Int {
-	for _, token := range c.RewardsByEdenbUnclaimed {
-		if token.Denom == denom {
-			return token.Amount
-		}
-	}
-	return sdk.ZeroInt()
+	return c.RewardsByEdenbUnclaimed.AmountOf(denom)
 }
 
 // Sub bucket rewards query - Usdc
 func (c *Commitments) GetUsdcSubBucketRewardUnclaimedForDenom(denom string) math.Int {
-	for _, token := range c.RewardsByUsdcUnclaimed {
-		if token.Denom == denom {
-			return token.Amount
-		}
-	}
-	return sdk.ZeroInt()
+	return c.RewardsByUsdcUnclaimed.AmountOf(denom)
 }
 
 func (c *Commitments) AddRewardsUnclaimed(amount sdk.Coin) {
