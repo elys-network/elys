@@ -97,7 +97,7 @@ func SetupMockPools(k *keeper.Keeper, ctx sdk.Context) {
 		{
 			PoolId: 2,
 			PoolAssets: []types.PoolAsset{
-				{Token: sdk.NewCoin("baseCurrency", sdk.NewInt(1000)), Weight: sdk.OneInt()},
+				{Token: sdk.NewCoin("uusdc", sdk.NewInt(1000)), Weight: sdk.OneInt()},
 				{Token: sdk.NewCoin("denom1", sdk.NewInt(1000)), Weight: sdk.OneInt()},
 			},
 			TotalWeight: sdk.NewInt(2),
@@ -108,7 +108,7 @@ func SetupMockPools(k *keeper.Keeper, ctx sdk.Context) {
 		{
 			PoolId: 3,
 			PoolAssets: []types.PoolAsset{
-				{Token: sdk.NewCoin("baseCurrency", sdk.NewInt(1000)), Weight: sdk.OneInt()},
+				{Token: sdk.NewCoin("uusdc", sdk.NewInt(1000)), Weight: sdk.OneInt()},
 				{Token: sdk.NewCoin("denom3", sdk.NewInt(1000)), Weight: sdk.OneInt()},
 			},
 			TotalWeight: sdk.NewInt(2),
