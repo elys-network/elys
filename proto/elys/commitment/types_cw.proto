@@ -135,24 +135,24 @@ message StakedAvailable {
 }
 
 message ValidatorDetail {
+    // Validator Identity
+    string id = 1;
 	// The validator address.
-	string address = 1;
+	string address = 2;
 	// The validator name.
-	string name = 2;
+	string name = 3;
 	// Voting power percentage for this validator.
-    string voting_power = 3 [
+    string voting_power = 4 [
         (cosmos_proto.scalar)  = "cosmos.Dec",
         (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
         (gogoproto.nullable)   = false
     ];
 	// Comission percentage for the validator.
-    string commission = 4 [
+    string commission = 5 [
         (cosmos_proto.scalar)  = "cosmos.Dec",
         (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
         (gogoproto.nullable)   = false
     ];
-	// The url of the validator profile picture
-	string profile_picture_src = 5 [(amino.dont_omitempty) = true];
 	// The staked amount the user has w/ this validator
 	// Only available if there's some and if address.
 	// is sent in request object.
@@ -160,24 +160,24 @@ message ValidatorDetail {
 }
 
 message StakingValidator {
+    // Validator Identity
+    string id = 1;
 	// The validator address.
-	string address = 1;
+	string address = 2;
 	// The validator name.
-	string name = 2;
+	string name = 3;
 	// Voting power percentage for this validator.
-    string voting_power = 3 [
+    string voting_power = 4 [
         (cosmos_proto.scalar)  = "cosmos.Dec",
         (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
         (gogoproto.nullable)   = false
     ];
 	// Comission percentage for the validator.
-    string commission = 4 [
+    string commission = 5 [
         (cosmos_proto.scalar)  = "cosmos.Dec",
         (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
         (gogoproto.nullable)   = false
     ];
-	// The url of the validator profile picture
-	string profile_picture_src = 5;
 }
 
 message StakedPosition {
