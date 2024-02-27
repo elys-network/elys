@@ -70,6 +70,9 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen) (*types.MsgOpenRespons
 		return k.OpenConsolidate(ctx, existingMtp, mtp, msg, baseCurrency)
 	}
 
+	// calc and update open price
+	k.UpdateOpenPrice(ctx, mtp, ammPool, baseCurrency)
+
 	k.OpenChecker.EmitOpenEvent(ctx, mtp)
 
 	if k.hooks != nil {
