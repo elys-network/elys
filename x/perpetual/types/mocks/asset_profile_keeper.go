@@ -4,7 +4,6 @@ package mocks
 
 import (
 	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
-
 	mock "github.com/stretchr/testify/mock"
 
 	types "github.com/cosmos/cosmos-sdk/types"

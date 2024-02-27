@@ -41,6 +41,9 @@ func (k Keeper) OpenConsolidate(ctx sdk.Context, existingMtp *types.MTP, newMtp 
 		return nil, errorsmod.Wrap(types.ErrInvalidPosition, msg.Position.String())
 	}
 
+	// calc and update open price
+	k.UpdateOpenPrice(ctx, existingMtp, ammPool, baseCurrency)
+
 	ctx.EventManager().EmitEvent(types.GenerateOpenEvent(existingMtp))
 
 	if k.hooks != nil {

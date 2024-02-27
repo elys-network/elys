@@ -66,7 +66,6 @@ func (_c *AmmKeeper_GetAllPool_Call) RunAndReturn(run func(types.Context) []ammt
 	return _c
 }
 
-
 // GetPool provides a mock function with given fields: _a0, _a1
 func (_m *AmmKeeper) GetPool(_a0 types.Context, _a1 uint64) (ammtypes.Pool, bool) {
 	ret := _m.Called(_a0, _a1)

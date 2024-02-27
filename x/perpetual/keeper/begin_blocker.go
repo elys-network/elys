@@ -25,6 +25,7 @@ func (k Keeper) BeginBlocker(ctx sdk.Context) {
 		ctx.Logger().Error(errorsmod.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency).Error())
 	}
 	baseCurrency := entry.Denom
+	baseCurrencyDecimal := entry.Decimals
 
 	currentHeight := ctx.BlockHeight()
 	pools := k.GetAllPools(ctx)
@@ -53,7 +54,7 @@ func (k Keeper) BeginBlocker(ctx sdk.Context) {
 
 			mtps, _, _ := k.GetMTPsForPool(ctx, pool.AmmPoolId, nil)
 			for _, mtp := range mtps {
-				err := BeginBlockerProcessMTP(ctx, k, mtp, pool, ammPool, baseCurrency)
+				err := BeginBlockerProcessMTP(ctx, k, mtp, pool, ammPool, baseCurrency, baseCurrencyDecimal)
 				if err != nil {
 					ctx.Logger().Error(err.Error())
 					continue

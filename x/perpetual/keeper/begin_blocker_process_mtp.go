@@ -14,7 +14,7 @@ import (
 	"github.com/elys-network/elys/x/perpetual/types"
 )
 
-func BeginBlockerProcessMTP(ctx sdk.Context, k Keeper, mtp *types.MTP, pool types.Pool, ammPool ammtypes.Pool, baseCurrency string) error {
+func BeginBlockerProcessMTP(ctx sdk.Context, k Keeper, mtp *types.MTP, pool types.Pool, ammPool ammtypes.Pool, baseCurrency string, baseCurrencyDecimal uint64) error {
 	defer func() {
 		if r := recover(); r != nil {
 			if msg, ok := r.(string); ok {
@@ -76,7 +76,11 @@ func BeginBlockerProcessMTP(ctx sdk.Context, k Keeper, mtp *types.MTP, pool type
 	if err != nil {
 		return errors.Wrap(err, fmt.Sprintf("error estimating swap: %s", mtp.CustodyAsset))
 	}
-	if types.ReachedTakeProfitPrice(mtp, assetPrice) {
+
+	// divide assetPrice by 10^baseCurrencyDecimal to get the actual price in decimal
+	assetPriceDec := math.LegacyNewDecFromBigInt(assetPrice.BigInt()).Quo(math.LegacyNewDec(10).Power(uint64(baseCurrencyDecimal)))
+
+	if types.ReachedTakeProfitPrice(mtp, assetPriceDec) {
 		// flag position as must force close
 		mustForceClose = true
 	} else {

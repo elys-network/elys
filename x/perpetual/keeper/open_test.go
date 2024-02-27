@@ -261,6 +261,7 @@ func TestOpen_Successful(t *testing.T) {
 	mockChecker.On("PreparePools", ctx, msg.Collateral.Denom, msg.TradingAsset).Return(poolId, ammtypes.Pool{}, types.Pool{}, nil)
 	mockChecker.On("CheckPoolHealth", ctx, poolId).Return(nil)
 	mockChecker.On("OpenShort", ctx, poolId, msg, ptypes.BaseCurrency).Return(mtp, nil)
+	mockChecker.On("UpdateOpenPrice", ctx, mtp, ammtypes.Pool{}, ptypes.BaseCurrency).Return(nil)
 	mockChecker.On("EmitOpenEvent", ctx, mtp).Return()
 
 	_, err := k.Open(ctx, msg)

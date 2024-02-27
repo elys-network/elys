@@ -2,15 +2,14 @@ package types
 
 import (
 	"cosmossdk.io/math"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 // ReachedTakeProfitPrice tells if the take profit price is reached
-func ReachedTakeProfitPrice(mtp *MTP, assetPrice math.Int) bool {
+func ReachedTakeProfitPrice(mtp *MTP, assetPrice math.LegacyDec) bool {
 	if mtp.Position == Position_LONG {
-		return mtp.TakeProfitPrice.GTE(sdk.NewDecFromInt(assetPrice))
+		return mtp.TakeProfitPrice.GTE(assetPrice)
 	} else if mtp.Position == Position_SHORT {
-		return mtp.TakeProfitPrice.LTE(sdk.NewDecFromInt(assetPrice))
+		return mtp.TakeProfitPrice.LTE(assetPrice)
 	}
 	return false
 }

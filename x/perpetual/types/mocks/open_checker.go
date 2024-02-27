@@ -4,9 +4,9 @@ package mocks
 
 import (
 	ammtypes "github.com/elys-network/elys/x/amm/types"
-	perpetualtypes "github.com/elys-network/elys/x/perpetual/types"
-
 	mock "github.com/stretchr/testify/mock"
+
+	perpetualtypes "github.com/elys-network/elys/x/perpetual/types"
 
 	types "github.com/cosmos/cosmos-sdk/types"
 )
@@ -536,6 +536,51 @@ func (_c *OpenChecker_SetMTP_Call) Return(_a0 error) *OpenChecker_SetMTP_Call {
 }
 
 func (_c *OpenChecker_SetMTP_Call) RunAndReturn(run func(types.Context, *perpetualtypes.MTP) error) *OpenChecker_SetMTP_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// UpdateOpenPrice provides a mock function with given fields: ctx, mtp, ammPool, baseCurrency
+func (_m *OpenChecker) UpdateOpenPrice(ctx types.Context, mtp *perpetualtypes.MTP, ammPool ammtypes.Pool, baseCurrency string) error {
+	ret := _m.Called(ctx, mtp, ammPool, baseCurrency)
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(types.Context, *perpetualtypes.MTP, ammtypes.Pool, string) error); ok {
+		r0 = rf(ctx, mtp, ammPool, baseCurrency)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// OpenChecker_UpdateOpenPrice_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'UpdateOpenPrice'
+type OpenChecker_UpdateOpenPrice_Call struct {
+	*mock.Call
+}
+
+// UpdateOpenPrice is a helper method to define mock.On call
+//   - ctx types.Context
+//   - mtp *perpetualtypes.MTP
+//   - ammPool ammtypes.Pool
+//   - baseCurrency string
+func (_e *OpenChecker_Expecter) UpdateOpenPrice(ctx interface{}, mtp interface{}, ammPool interface{}, baseCurrency interface{}) *OpenChecker_UpdateOpenPrice_Call {
+	return &OpenChecker_UpdateOpenPrice_Call{Call: _e.mock.On("UpdateOpenPrice", ctx, mtp, ammPool, baseCurrency)}
+}
+
+func (_c *OpenChecker_UpdateOpenPrice_Call) Run(run func(ctx types.Context, mtp *perpetualtypes.MTP, ammPool ammtypes.Pool, baseCurrency string)) *OpenChecker_UpdateOpenPrice_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(types.Context), args[1].(*perpetualtypes.MTP), args[2].(ammtypes.Pool), args[3].(string))
+	})
+	return _c
+}
+
+func (_c *OpenChecker_UpdateOpenPrice_Call) Return(_a0 error) *OpenChecker_UpdateOpenPrice_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *OpenChecker_UpdateOpenPrice_Call) RunAndReturn(run func(types.Context, *perpetualtypes.MTP, ammtypes.Pool, string) error) *OpenChecker_UpdateOpenPrice_Call {
 	_c.Call.Return(run)
 	return _c
 }

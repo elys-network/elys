@@ -36,6 +36,7 @@ type OpenChecker interface {
 	CheckPoolHealth(ctx sdk.Context, poolId uint64) error
 	OpenLong(ctx sdk.Context, poolId uint64, msg *MsgOpen, baseCurrency string) (*MTP, error)
 	OpenShort(ctx sdk.Context, poolId uint64, msg *MsgOpen, baseCurrency string) (*MTP, error)
+	UpdateOpenPrice(ctx sdk.Context, mtp *MTP, ammPool ammtypes.Pool, baseCurrency string) error
 	EmitOpenEvent(ctx sdk.Context, mtp *MTP)
 	SetMTP(ctx sdk.Context, mtp *MTP) error
 	CheckSameAssetPosition(ctx sdk.Context, msg *MsgOpen) *MTP
