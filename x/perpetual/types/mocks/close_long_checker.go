@@ -3,12 +3,12 @@
 package mocks
 
 import (
-	ammtypes "github.com/elys-network/elys/x/amm/types"
-	perpetualtypes "github.com/elys-network/elys/x/perpetual/types"
-
 	math "cosmossdk.io/math"
+	ammtypes "github.com/elys-network/elys/x/amm/types"
 
 	mock "github.com/stretchr/testify/mock"
+
+	perpetualtypes "github.com/elys-network/elys/x/perpetual/types"
 
 	types "github.com/cosmos/cosmos-sdk/types"
 )

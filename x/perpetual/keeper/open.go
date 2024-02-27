@@ -71,7 +71,7 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen) (*types.MsgOpenRespons
 	}
 
 	// calc and update open price
-	k.UpdateOpenPrice(ctx, mtp, ammPool, baseCurrency)
+	k.OpenChecker.UpdateOpenPrice(ctx, mtp, ammPool, baseCurrency)
 
 	k.OpenChecker.EmitOpenEvent(ctx, mtp)
 
