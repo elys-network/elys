@@ -45,7 +45,7 @@ func TestOpenEstimation_Long5XAtom100Usdc(t *testing.T) {
 	poolAssets := []ammtypes.PoolAsset{
 		{
 			Weight: sdk.NewInt(50),
-			Token:  sdk.NewCoin(ptypes.ATOM, sdk.NewInt(100000000000)),
+			Token:  sdk.NewCoin(ptypes.ATOM, sdk.NewInt(10000000000)),
 		},
 		{
 			Weight: sdk.NewInt(50),
@@ -84,7 +84,7 @@ func TestOpenEstimation_Long5XAtom100Usdc(t *testing.T) {
 		TradingAsset:    ptypes.ATOM,
 		Collateral:      sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(100000000)),
 		Discount:        sdk.MustNewDecFromStr("0.0"),
-		TakeProfitPrice: sdk.MustNewDecFromStr("2.0"),
+		TakeProfitPrice: sdk.MustNewDecFromStr("20.0"),
 	})
 	require.NoError(t, err)
 	require.Equal(t, &types.QueryOpenEstimationResponse{
@@ -92,17 +92,17 @@ func TestOpenEstimation_Long5XAtom100Usdc(t *testing.T) {
 		Leverage:           sdk.MustNewDecFromStr("5.0"),
 		TradingAsset:       ptypes.ATOM,
 		Collateral:         sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(100000000)),
-		MinCollateral:      sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(8333334)),
+		MinCollateral:      sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(83333334)),
 		ValidCollateral:    true,
-		PositionSize:       sdk.NewCoin(ptypes.ATOM, sdk.NewInt(497017398)),
+		PositionSize:       sdk.NewCoin(ptypes.ATOM, sdk.NewInt(49701739)),
 		SwapFee:            sdk.MustNewDecFromStr("0.001000000000000000"),
 		Discount:           sdk.MustNewDecFromStr("0.000000000000000000"),
-		OpenPrice:          sdk.MustNewDecFromStr("1.000000000000000000"),
-		TakeProfitPrice:    sdk.MustNewDecFromStr("2.000000000000000000"),
-		LiquidationPrice:   sdk.MustNewDecFromStr("0.798799799760731917"),
-		EstimatedPnl:       sdk.NewInt(247017398),
+		OpenPrice:          sdk.MustNewDecFromStr("10.00000000000000000"),
+		TakeProfitPrice:    sdk.MustNewDecFromStr("20.00000000000000000"),
+		LiquidationPrice:   sdk.MustNewDecFromStr("7.987997965222102188"),
+		EstimatedPnl:       sdk.NewInt(24701739),
 		EstimatedPnlDenom:  ptypes.ATOM,
-		AvailableLiquidity: sdk.NewCoin(ptypes.ATOM, sdk.NewInt(100000000000)),
+		AvailableLiquidity: sdk.NewCoin(ptypes.ATOM, sdk.NewInt(10000000000)),
 		WeightBalanceRatio: sdk.MustNewDecFromStr("0.000000000000000000"),
 		BorrowInterestRate: sdk.MustNewDecFromStr("0.000000000000000000"),
 		FundingRate:        sdk.MustNewDecFromStr("0.000000000000000000"),
@@ -153,11 +153,11 @@ func TestOpenEstimation_Long5XAtom10Atom(t *testing.T) {
 	poolAssets := []ammtypes.PoolAsset{
 		{
 			Weight: sdk.NewInt(50),
-			Token:  sdk.NewCoin(ptypes.ATOM, sdk.NewInt(100000000000)),
+			Token:  sdk.NewCoin(ptypes.ATOM, sdk.NewInt(10000000000)),
 		},
 		{
 			Weight: sdk.NewInt(50),
-			Token:  sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(10000000000)),
+			Token:  sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(100000000000)),
 		},
 	}
 
@@ -192,7 +192,7 @@ func TestOpenEstimation_Long5XAtom10Atom(t *testing.T) {
 		TradingAsset:    ptypes.ATOM,
 		Collateral:      sdk.NewCoin(ptypes.ATOM, sdk.NewInt(10000000)),
 		Discount:        sdk.MustNewDecFromStr("0.0"),
-		TakeProfitPrice: sdk.MustNewDecFromStr("2.0"),
+		TakeProfitPrice: sdk.MustNewDecFromStr("20.0"),
 	})
 	require.NoError(t, err)
 	require.Equal(t, &types.QueryOpenEstimationResponse{
@@ -200,21 +200,21 @@ func TestOpenEstimation_Long5XAtom10Atom(t *testing.T) {
 		Leverage:           sdk.MustNewDecFromStr("5.0"),
 		TradingAsset:       ptypes.ATOM,
 		Collateral:         sdk.NewCoin(ptypes.ATOM, sdk.NewInt(10000000)),
-		MinCollateral:      sdk.NewCoin(ptypes.ATOM, sdk.NewInt(9333333)),
-		ValidCollateral:    true,
-		PositionSize:       sdk.NewCoin(ptypes.ATOM, sdk.NewInt(49870172)),
+		MinCollateral:      sdk.NewCoin(ptypes.ATOM, sdk.NewInt(84333333)),
+		ValidCollateral:    false,
+		PositionSize:       sdk.NewCoin(ptypes.ATOM, sdk.NewInt(49602977)),
 		SwapFee:            sdk.MustNewDecFromStr("0.001000000000000000"),
 		Discount:           sdk.MustNewDecFromStr("0.000000000000000000"),
-		OpenPrice:          sdk.MustNewDecFromStr("0.100000000000000000"),
-		TakeProfitPrice:    sdk.MustNewDecFromStr("2.000000000000000000"),
-		LiquidationPrice:   sdk.MustNewDecFromStr("0.079969990879518122"),
-		EstimatedPnl:       sdk.NewInt(42872372),
+		OpenPrice:          sdk.MustNewDecFromStr("10.00000000000000000"),
+		TakeProfitPrice:    sdk.MustNewDecFromStr("20.00000000000000000"),
+		LiquidationPrice:   sdk.MustNewDecFromStr("7.988017957067375210"),
+		EstimatedPnl:       sdk.NewInt(29142917),
 		EstimatedPnlDenom:  ptypes.ATOM,
-		AvailableLiquidity: sdk.NewCoin(ptypes.ATOM, sdk.NewInt(100000000000)),
+		AvailableLiquidity: sdk.NewCoin(ptypes.ATOM, sdk.NewInt(10000000000)),
 		WeightBalanceRatio: sdk.MustNewDecFromStr("0.000000000000000000"),
 		BorrowInterestRate: sdk.MustNewDecFromStr("0.000000000000000000"),
 		FundingRate:        sdk.MustNewDecFromStr("0.000000000000000000"),
-		PriceImpact:        sdk.MustNewDecFromStr("0.001498208028831715"),
+		PriceImpact:        sdk.MustNewDecFromStr("0.005955342879283360"),
 	}, res)
 }
 
@@ -261,11 +261,11 @@ func TestOpenEstimation_Short5XAtom10Usdc(t *testing.T) {
 	poolAssets := []ammtypes.PoolAsset{
 		{
 			Weight: sdk.NewInt(50),
-			Token:  sdk.NewCoin(ptypes.ATOM, sdk.NewInt(100000000000)),
+			Token:  sdk.NewCoin(ptypes.ATOM, sdk.NewInt(10000000000)),
 		},
 		{
 			Weight: sdk.NewInt(50),
-			Token:  sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(10000000000)),
+			Token:  sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(100000000000)),
 		},
 	}
 
@@ -318,10 +318,10 @@ func TestOpenEstimation_Short5XAtom10Usdc(t *testing.T) {
 		LiquidationPrice:   sdk.MustNewDecFromStr("12.000000000000000000"),
 		EstimatedPnl:       sdk.NewInt(200000000),
 		EstimatedPnlDenom:  ptypes.BaseCurrency,
-		AvailableLiquidity: sdk.NewCoin(ptypes.ATOM, sdk.NewInt(100000000000)),
+		AvailableLiquidity: sdk.NewCoin(ptypes.ATOM, sdk.NewInt(10000000000)),
 		WeightBalanceRatio: sdk.MustNewDecFromStr("0.000000000000000000"),
 		BorrowInterestRate: sdk.MustNewDecFromStr("0.000000000000000000"),
 		FundingRate:        sdk.MustNewDecFromStr("0.000000000000000000"),
-		PriceImpact:        sdk.MustNewDecFromStr("0.048526120400000000"),
+		PriceImpact:        sdk.MustNewDecFromStr("0.005965220000000000"),
 	}, res)
 }

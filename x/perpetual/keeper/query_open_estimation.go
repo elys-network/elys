@@ -59,9 +59,7 @@ func (k Keeper) OpenEstimation(goCtx context.Context, req *types.QueryOpenEstima
 	}
 
 	// invert openPrice if collateral is not in base currency
-	if req.Collateral.Denom != baseCurrency {
-		openPrice = sdk.OneDec().Quo(openPrice)
-	}
+	openPrice = sdk.OneDec().Quo(openPrice)
 
 	// calculate min collateral
 	minCollateral, err := k.CalcMinCollateral(ctx, req.Leverage, openPrice, decimals)
