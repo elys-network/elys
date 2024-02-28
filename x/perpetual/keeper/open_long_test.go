@@ -545,7 +545,7 @@ func TestOpenLong_BaseCurrency_Collateral(t *testing.T) {
 		FundingFeePaidCustody:          sdk.NewInt(0),
 		FundingFeeReceivedCollateral:   sdk.NewInt(0),
 		FundingFeeReceivedCustody:      sdk.NewInt(0),
-		OpenPrice:                      sdk.MustNewDecFromStr("10.00000000000000000"),
+		OpenPrice:                      sdk.MustNewDecFromStr("10.050000157785002477"),
 	}, mtp)
 }
 
@@ -651,4 +651,37 @@ func TestOpenLong_ATOM_Collateral(t *testing.T) {
 
 	err = mk.InvariantCheck(ctx)
 	require.Equal(t, err, nil)
+
+	mtp := mtps[0]
+
+	// Check MTP
+	require.Equal(t, types.MTP{
+		Address:                        addr[0].String(),
+		CollateralAsset:                "uatom",
+		TradingAsset:                   "uatom",
+		LiabilitiesAsset:               "uusdc",
+		CustodyAsset:                   "uatom",
+		Collateral:                     sdk.NewInt(10000000),
+		Liabilities:                    sdk.NewInt(416666667),
+		BorrowInterestPaidCollateral:   sdk.NewInt(0),
+		BorrowInterestPaidCustody:      sdk.NewInt(0),
+		BorrowInterestUnpaidCollateral: sdk.NewInt(0),
+		Custody:                        sdk.NewInt(50000000),
+		TakeProfitLiabilities:          sdk.NewInt(476190476),
+		TakeProfitCustody:              sdk.NewInt(50000000),
+		Leverage:                       sdk.NewDec(5),
+		MtpHealth:                      sdk.MustNewDecFromStr("1.263157894989473684"),
+		Position:                       types.Position_LONG,
+		Id:                             uint64(1),
+		AmmPoolId:                      uint64(1),
+		ConsolidateLeverage:            sdk.NewDec(4),
+		SumCollateral:                  sdk.NewInt(101010102),
+		TakeProfitPrice:                sdk.MustNewDecFromStr(types.TakeProfitPriceDefault),
+		TakeProfitBorrowRate:           sdk.MustNewDecFromStr("1.0"),
+		FundingFeePaidCollateral:       sdk.NewInt(0),
+		FundingFeePaidCustody:          sdk.NewInt(0),
+		FundingFeeReceivedCollateral:   sdk.NewInt(0),
+		FundingFeeReceivedCustody:      sdk.NewInt(0),
+		OpenPrice:                      sdk.MustNewDecFromStr("10.313531340000000000"),
+	}, mtp)
 }

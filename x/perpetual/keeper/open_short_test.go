@@ -8,6 +8,7 @@ import (
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
+	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
 	"github.com/elys-network/elys/x/perpetual/keeper"
 	"github.com/elys-network/elys/x/perpetual/types"
 	"github.com/elys-network/elys/x/perpetual/types/mocks"
@@ -395,14 +396,26 @@ func TestOpenShort_BaseCurrency_Collateral(t *testing.T) {
 	// Setup coin prices
 	SetupStableCoinPrices(ctx, oracle)
 
+	// Set asset profile
+	app.AssetprofileKeeper.SetEntry(ctx, assetprofiletypes.Entry{
+		BaseDenom: ptypes.BaseCurrency,
+		Denom:     ptypes.BaseCurrency,
+		Decimals:  6,
+	})
+	app.AssetprofileKeeper.SetEntry(ctx, assetprofiletypes.Entry{
+		BaseDenom: ptypes.ATOM,
+		Denom:     ptypes.ATOM,
+		Decimals:  6,
+	})
+
 	// Generate 1 random account with 1000stake balanced
 	addr := simapp.AddTestAddrs(app, ctx, 1, sdk.NewInt(1000000000000))
 
 	// Create a pool
 	// Mint 100000USDC
-	usdcToken := []sdk.Coin{sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(100000000000))}
+	usdcToken := []sdk.Coin{sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(200000000000))}
 	// Mint 100000ATOM
-	atomToken := []sdk.Coin{sdk.NewCoin(ptypes.ATOM, sdk.NewInt(100000000000))}
+	atomToken := []sdk.Coin{sdk.NewCoin(ptypes.ATOM, sdk.NewInt(200000000000))}
 
 	err := app.BankKeeper.MintCoins(ctx, ammtypes.ModuleName, usdcToken)
 	require.NoError(t, err)
@@ -417,11 +430,11 @@ func TestOpenShort_BaseCurrency_Collateral(t *testing.T) {
 	poolAssets := []ammtypes.PoolAsset{
 		{
 			Weight: sdk.NewInt(50),
-			Token:  sdk.NewCoin(ptypes.ATOM, sdk.NewInt(100000000000)),
+			Token:  sdk.NewCoin(ptypes.ATOM, sdk.NewInt(10000000000)),
 		},
 		{
 			Weight: sdk.NewInt(50),
-			Token:  sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(10000000000)),
+			Token:  sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(100000000000)),
 		},
 	}
 
@@ -460,14 +473,14 @@ func TestOpenShort_BaseCurrency_Collateral(t *testing.T) {
 
 	// Balance check before create a perpetual position
 	balances := app.BankKeeper.GetAllBalances(ctx, poolAddress)
-	require.Equal(t, balances.AmountOf(ptypes.BaseCurrency), sdk.NewInt(10000000000))
-	require.Equal(t, balances.AmountOf(ptypes.ATOM), sdk.NewInt(100000000000))
+	require.Equal(t, balances.AmountOf(ptypes.BaseCurrency), sdk.NewInt(100000000000))
+	require.Equal(t, balances.AmountOf(ptypes.ATOM), sdk.NewInt(10000000000))
 
 	// Create a perpetual position open msg
 	msg2 := types.NewMsgOpen(
 		addr[0].String(),
 		types.Position_SHORT,
-		sdk.NewDec(2),
+		sdk.NewDec(5),
 		ptypes.ATOM,
 		sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(100000000)),
 		sdk.MustNewDecFromStr(types.TakeProfitPriceDefault),
@@ -480,14 +493,47 @@ func TestOpenShort_BaseCurrency_Collateral(t *testing.T) {
 	require.Equal(t, len(mtps), 1)
 
 	balances = app.BankKeeper.GetAllBalances(ctx, poolAddress)
-	require.Equal(t, balances.AmountOf(ptypes.BaseCurrency), sdk.NewInt(10100000000))
-	require.Equal(t, balances.AmountOf(ptypes.ATOM), sdk.NewInt(100000000000))
+	require.Equal(t, balances.AmountOf(ptypes.BaseCurrency), sdk.NewInt(100100000000))
+	require.Equal(t, balances.AmountOf(ptypes.ATOM), sdk.NewInt(10000000000))
 
 	_, found = mk.OpenShortChecker.GetPool(ctx, pool.PoolId)
 	require.Equal(t, found, true)
 
 	err = mk.InvariantCheck(ctx)
 	require.Equal(t, err, nil)
+
+	mtp := mtps[0]
+
+	// Check MTP
+	require.Equal(t, types.MTP{
+		Address:                        addr[0].String(),
+		CollateralAsset:                "uusdc",
+		TradingAsset:                   "uatom",
+		LiabilitiesAsset:               "uatom",
+		CustodyAsset:                   "uusdc",
+		Collateral:                     sdk.NewInt(100000000),
+		Liabilities:                    sdk.NewInt(39840637),
+		BorrowInterestPaidCollateral:   sdk.NewInt(0),
+		BorrowInterestPaidCustody:      sdk.NewInt(0),
+		BorrowInterestUnpaidCollateral: sdk.NewInt(0),
+		Custody:                        sdk.NewInt(500000000),
+		TakeProfitLiabilities:          sdk.NewInt(497512437),
+		TakeProfitCustody:              sdk.NewInt(500000000),
+		Leverage:                       sdk.NewDec(5),
+		MtpHealth:                      sdk.MustNewDecFromStr("1.250000012500000125"),
+		Position:                       types.Position_SHORT,
+		Id:                             uint64(1),
+		AmmPoolId:                      uint64(1),
+		ConsolidateLeverage:            sdk.NewDec(0),
+		SumCollateral:                  sdk.NewInt(100000000),
+		TakeProfitPrice:                sdk.MustNewDecFromStr(types.TakeProfitPriceDefault),
+		TakeProfitBorrowRate:           sdk.MustNewDecFromStr("1.0"),
+		FundingFeePaidCollateral:       sdk.NewInt(0),
+		FundingFeePaidCustody:          sdk.NewInt(0),
+		FundingFeeReceivedCollateral:   sdk.NewInt(0),
+		FundingFeeReceivedCustody:      sdk.NewInt(0),
+		OpenPrice:                      sdk.MustNewDecFromStr("9.986190535983191415"),
+	}, mtp)
 }
 
 func TestOpenShort_ATOM_Collateral(t *testing.T) {
