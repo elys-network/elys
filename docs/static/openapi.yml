@@ -42096,6 +42096,8 @@ paths:
                 type: string
               estimated_pnl:
                 type: string
+              estimated_pnl_denom:
+                type: string
               available_liquidity:
                 type: object
                 properties:
@@ -86240,6 +86242,8 @@ definitions:
       liquidation_price:
         type: string
       estimated_pnl:
+        type: string
+      estimated_pnl_denom:
         type: string
       available_liquidity:
         type: object

@@ -21,9 +21,9 @@ func (k Keeper) CheckAmmPoolUsdcBalance(ctx sdk.Context, ammPool ammtypes.Pool) 
 		Mul(sdk.NewDecFromInt(leveragelpPool.LeveragedLpAmount)).
 		Quo(sdk.NewDecFromInt(ammPool.TotalShares.Amount))
 
-	params := k.stableKeeper.GetParams(ctx)
+	depositDenom := k.stableKeeper.GetDepositDenom(ctx)
 	for _, asset := range ammPool.PoolAssets {
-		if asset.Token.Denom == params.DepositDenom {
+		if asset.Token.Denom == depositDenom {
 			if asset.Token.Amount.LT(leverageLpTvl.RoundInt()) {
 				return types.ErrInsufficientUsdcAfterOp
 			}
