@@ -38301,6 +38301,8 @@ paths:
                   method
 
                   signatures required by gogoproto.
+              slippage:
+                type: string
               weight_balance_ratio:
                 type: string
         default:
@@ -83167,6 +83169,8 @@ definitions:
 
           NOTE: The amount field is an Int which implements the custom method
           signatures required by gogoproto.
+      slippage:
+        type: string
       weight_balance_ratio:
         type: string
   elys.amm.SwapAmountInRoute:

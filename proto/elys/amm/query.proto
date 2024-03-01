@@ -123,7 +123,8 @@ message QuerySwapEstimationResponse {
   string                   swap_fee   = 3 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
   string                   discount   = 4 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
   cosmos.base.v1beta1.Coin available_liquidity  = 5 [(gogoproto.nullable)   = false];
-  string                   weight_balance_ratio = 6 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+  string                   slippage             = 6 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+  string                   weight_balance_ratio = 7 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
 }
 
 message QuerySlippageTrackRequest {
