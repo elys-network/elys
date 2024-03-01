@@ -71,6 +71,7 @@ func (oq *Querier) generateEarnPool(ctx sdk.Context, ammPool *types.Pool, filter
 		Perpetual:  perpetualPercent,
 		Tvl:        tvl,
 		Rewards:    rewards,
+		PoolId:     ammPool.PoolId,
 	}
 }
 
