@@ -34,8 +34,8 @@ type OpenChecker interface {
 	CheckMaxOpenPositions(ctx sdk.Context) error
 	PreparePools(ctx sdk.Context, collateralAsset, tradingAsset string) (poolId uint64, ammPool ammtypes.Pool, pool Pool, err error)
 	CheckPoolHealth(ctx sdk.Context, poolId uint64) error
-	OpenLong(ctx sdk.Context, poolId uint64, msg *MsgOpen, baseCurrency string) (*MTP, error)
-	OpenShort(ctx sdk.Context, poolId uint64, msg *MsgOpen, baseCurrency string) (*MTP, error)
+	OpenLong(ctx sdk.Context, poolId uint64, msg *MsgOpen, baseCurrency string, isBroker bool) (*MTP, error)
+	OpenShort(ctx sdk.Context, poolId uint64, msg *MsgOpen, baseCurrency string, isBroker bool) (*MTP, error)
 	UpdateOpenPrice(ctx sdk.Context, mtp *MTP, ammPool ammtypes.Pool, baseCurrency string) error
 	EmitOpenEvent(ctx sdk.Context, mtp *MTP)
 	SetMTP(ctx sdk.Context, mtp *MTP) error
@@ -53,7 +53,7 @@ type OpenLongChecker interface {
 	CheckMinLiabilities(ctx sdk.Context, collateralTokenAmt sdk.Coin, eta sdk.Dec, ammPool ammtypes.Pool, borrowAsset string, baseCurrency string) error
 	EstimateSwap(ctx sdk.Context, leveragedAmtTokenIn sdk.Coin, borrowAsset string, ammPool ammtypes.Pool) (math.Int, error)
 	EstimateSwapGivenOut(ctx sdk.Context, tokenOutAmount sdk.Coin, tokenInDenom string, ammPool ammtypes.Pool) (math.Int, error)
-	Borrow(ctx sdk.Context, collateralAmount math.Int, custodyAmount math.Int, mtp *MTP, ammPool *ammtypes.Pool, pool *Pool, eta sdk.Dec, baseCurrency string) error
+	Borrow(ctx sdk.Context, collateralAmount math.Int, custodyAmount math.Int, mtp *MTP, ammPool *ammtypes.Pool, pool *Pool, eta sdk.Dec, baseCurrency string, isBroker bool) error
 	UpdatePoolHealth(ctx sdk.Context, pool *Pool) error
 	TakeInCustody(ctx sdk.Context, mtp MTP, pool *Pool) error
 	UpdateMTPHealth(ctx sdk.Context, mtp MTP, ammPool ammtypes.Pool, baseCurrency string) (sdk.Dec, error)
@@ -73,7 +73,7 @@ type OpenShortChecker interface {
 	CheckMinLiabilities(ctx sdk.Context, collateralTokenAmt sdk.Coin, eta sdk.Dec, ammPool ammtypes.Pool, borrowAsset string, baseCurrency string) error
 	EstimateSwap(ctx sdk.Context, leveragedAmtTokenIn sdk.Coin, borrowAsset string, ammPool ammtypes.Pool) (math.Int, error)
 	EstimateSwapGivenOut(ctx sdk.Context, tokenOutAmount sdk.Coin, tokenInDenom string, ammPool ammtypes.Pool) (math.Int, error)
-	Borrow(ctx sdk.Context, collateralAmount math.Int, custodyAmount math.Int, mtp *MTP, ammPool *ammtypes.Pool, pool *Pool, eta sdk.Dec, baseCurrency string) error
+	Borrow(ctx sdk.Context, collateralAmount math.Int, custodyAmount math.Int, mtp *MTP, ammPool *ammtypes.Pool, pool *Pool, eta sdk.Dec, baseCurrency string, isBroker bool) error
 	UpdatePoolHealth(ctx sdk.Context, pool *Pool) error
 	TakeInCustody(ctx sdk.Context, mtp MTP, pool *Pool) error
 	UpdateMTPHealth(ctx sdk.Context, mtp MTP, ammPool ammtypes.Pool, baseCurrency string) (sdk.Dec, error)

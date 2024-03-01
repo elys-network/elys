@@ -275,8 +275,8 @@ type ElysMsg struct {
 	LeveragelpClose *leveragelptypes.MsgClose `json:"leveragelp_close,omitempty"`
 
 	// perpetual messages
-	PerpetualOpen  *perpetualtypes.MsgOpen  `json:"perpetual_open,omitempty"`
-	PerpetualClose *perpetualtypes.MsgClose `json:"perpetual_close,omitempty"`
+	PerpetualOpen  *perpetualtypes.MsgBrokerOpen `json:"perpetual_open,omitempty"`
+	PerpetualClose *perpetualtypes.MsgClose      `json:"perpetual_close,omitempty"`
 
 	// oracle messages
 	// parameter messages

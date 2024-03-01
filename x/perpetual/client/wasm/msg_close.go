@@ -16,7 +16,11 @@ func (m *Messenger) msgClose(ctx sdk.Context, contractAddr sdk.AccAddress, msgCl
 	}
 
 	brokerAddress := m.parameterKeeper.GetParams(ctx).BrokerAddress
-	if msgClose.Creator != contractAddr.String() && contractAddr.String() != brokerAddress {
+	if contractAddr.String() != brokerAddress {
+		return nil, nil, wasmvmtypes.InvalidRequest{Err: "contract address must be broker address"}
+	}
+
+	if msgClose.Creator != contractAddr.String() {
 		return nil, nil, wasmvmtypes.InvalidRequest{Err: "close wrong sender"}
 	}
 

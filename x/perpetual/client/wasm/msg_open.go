@@ -10,13 +10,17 @@ import (
 	perpetualtypes "github.com/elys-network/elys/x/perpetual/types"
 )
 
-func (m *Messenger) msgOpen(ctx sdk.Context, contractAddr sdk.AccAddress, msgOpen *perpetualtypes.MsgOpen) ([]sdk.Event, [][]byte, error) {
+func (m *Messenger) msgOpen(ctx sdk.Context, contractAddr sdk.AccAddress, msgOpen *perpetualtypes.MsgBrokerOpen) ([]sdk.Event, [][]byte, error) {
 	if msgOpen == nil {
 		return nil, nil, wasmvmtypes.InvalidRequest{Err: "Open null msg"}
 	}
 
 	brokerAddress := m.parameterKeeper.GetParams(ctx).BrokerAddress
-	if msgOpen.Creator != contractAddr.String() && contractAddr.String() != brokerAddress {
+	if contractAddr.String() != brokerAddress {
+		return nil, nil, wasmvmtypes.InvalidRequest{Err: "contract address must be broker address"}
+	}
+
+	if msgOpen.Creator != contractAddr.String() {
 		return nil, nil, wasmvmtypes.InvalidRequest{Err: "open wrong sender"}
 	}
 
@@ -35,26 +39,27 @@ func (m *Messenger) msgOpen(ctx sdk.Context, contractAddr sdk.AccAddress, msgOpe
 	return nil, resp, nil
 }
 
-func PerformMsgOpen(f *perpetualkeeper.Keeper, ctx sdk.Context, contractAddr sdk.AccAddress, msgOpen *perpetualtypes.MsgOpen) (*perpetualtypes.MsgOpenResponse, error) {
+func PerformMsgOpen(f *perpetualkeeper.Keeper, ctx sdk.Context, contractAddr sdk.AccAddress, msgOpen *perpetualtypes.MsgBrokerOpen) (*perpetualtypes.MsgOpenResponse, error) {
 	if msgOpen == nil {
 		return nil, wasmvmtypes.InvalidRequest{Err: "perpetual open null perpetual open"}
 	}
 	msgServer := perpetualkeeper.NewMsgServerImpl(*f)
 
-	msgMsgOpen := perpetualtypes.NewMsgOpen(
+	msgMsgOpen := perpetualtypes.NewMsgBrokerOpen(
 		msgOpen.Creator,
 		msgOpen.Position,
 		msgOpen.Leverage,
 		msgOpen.TradingAsset,
 		msgOpen.Collateral,
 		msgOpen.TakeProfitPrice,
+		msgOpen.Owner,
 	)
 
 	if err := msgMsgOpen.ValidateBasic(); err != nil {
 		return nil, errorsmod.Wrap(err, "failed validating msgMsgOpen")
 	}
 
-	res, err := msgServer.Open(sdk.WrapSDKContext(ctx), msgMsgOpen) // Discard the response because it's empty
+	res, err := msgServer.BrokerOpen(sdk.WrapSDKContext(ctx), msgMsgOpen) // Discard the response because it's empty
 	if err != nil {
 		return nil, errorsmod.Wrap(err, "perpetual open msg")
 	}
