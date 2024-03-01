@@ -93,7 +93,7 @@ func (suite *KeeperTestSuite) TestCalcOutRouteSpotPrice() {
 
 	tokenOut := sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(100))
 	routes := []*types.SwapAmountOutRoute{{PoolId: 1, TokenInDenom: ptypes.Elys}}
-	spotPrice, _, _, _, _, _, _, err := suite.app.AmmKeeper.CalcOutRouteSpotPrice(suite.ctx, tokenOut, routes, sdk.ZeroDec(), sdk.ZeroDec())
+	spotPrice, _, _, _, _, _, _, _, err := suite.app.AmmKeeper.CalcOutRouteSpotPrice(suite.ctx, tokenOut, routes, sdk.ZeroDec(), sdk.ZeroDec())
 	suite.Require().NoError(err)
 	suite.Require().NotZero(spotPrice)
 
@@ -102,16 +102,16 @@ func (suite *KeeperTestSuite) TestCalcOutRouteSpotPrice() {
 		{PoolId: 2, TokenInDenom: ptypes.BaseCurrency},
 		{PoolId: 1, TokenInDenom: ptypes.Elys},
 	}
-	spotPrice, _, _, _, _, _, _, err = suite.app.AmmKeeper.CalcOutRouteSpotPrice(suite.ctx, tokenOut, routes, sdk.ZeroDec(), sdk.ZeroDec())
+	spotPrice, _, _, _, _, _, _, _, err = suite.app.AmmKeeper.CalcOutRouteSpotPrice(suite.ctx, tokenOut, routes, sdk.ZeroDec(), sdk.ZeroDec())
 	suite.Require().NoError(err)
 	suite.Require().NotZero(spotPrice)
 
 	// Test no routes
-	_, _, _, _, _, _, _, err = suite.app.AmmKeeper.CalcOutRouteSpotPrice(suite.ctx, tokenOut, nil, sdk.ZeroDec(), sdk.ZeroDec())
+	_, _, _, _, _, _, _, _, err = suite.app.AmmKeeper.CalcOutRouteSpotPrice(suite.ctx, tokenOut, nil, sdk.ZeroDec(), sdk.ZeroDec())
 	suite.Require().Error(err)
 
 	// Test invalid pool
 	routes = []*types.SwapAmountOutRoute{{PoolId: 9999, TokenInDenom: "denom2"}}
-	_, _, _, _, _, _, _, err = suite.app.AmmKeeper.CalcOutRouteSpotPrice(suite.ctx, tokenOut, routes, sdk.ZeroDec(), sdk.ZeroDec())
+	_, _, _, _, _, _, _, _, err = suite.app.AmmKeeper.CalcOutRouteSpotPrice(suite.ctx, tokenOut, routes, sdk.ZeroDec(), sdk.ZeroDec())
 	suite.Require().Error(err)
 }

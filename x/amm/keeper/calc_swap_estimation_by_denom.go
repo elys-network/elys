@@ -23,6 +23,7 @@ func (k Keeper) CalcSwapEstimationByDenom(
 	swapFeeOut sdk.Dec,
 	discountOut sdk.Dec,
 	availableLiquidity sdk.Coin,
+	slippage sdk.Dec,
 	weightBonus sdk.Dec,
 	priceImpact sdk.Dec,
 	err error,
@@ -52,9 +53,9 @@ func (k Keeper) CalcSwapEstimationByDenom(
 
 	// Calculate final spot price and other outputs
 	if amount.Denom == denomIn {
-		spotPrice, impactedPrice, outAmount, swapFeeOut, _, availableLiquidity, weightBonus, err = k.CalcInRouteSpotPrice(ctx, amount, inRoute, discount, overrideSwapFee)
+		spotPrice, impactedPrice, outAmount, swapFeeOut, _, availableLiquidity, weightBonus, slippage, err = k.CalcInRouteSpotPrice(ctx, amount, inRoute, discount, overrideSwapFee)
 	} else {
-		spotPrice, impactedPrice, outAmount, swapFeeOut, _, availableLiquidity, weightBonus, err = k.CalcOutRouteSpotPrice(ctx, amount, outRoute, discount, overrideSwapFee)
+		spotPrice, impactedPrice, outAmount, swapFeeOut, _, availableLiquidity, weightBonus, slippage, err = k.CalcOutRouteSpotPrice(ctx, amount, outRoute, discount, overrideSwapFee)
 	}
 
 	if err != nil {

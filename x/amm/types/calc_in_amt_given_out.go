@@ -12,11 +12,16 @@ func (p Pool) CalcInAmtGivenOut(
 	oracle OracleKeeper,
 	snapshot *Pool,
 	tokensOut sdk.Coins, tokenInDenom string, swapFee sdk.Dec, accountedPool AccountedPoolKeeper) (
-	tokenIn sdk.Coin, err error,
+	tokenIn sdk.Coin, slippage sdk.Dec, err error,
 ) {
 	tokenOut, poolAssetOut, poolAssetIn, err := p.parsePoolAssets(tokensOut, tokenInDenom)
 	if err != nil {
-		return sdk.Coin{}, err
+		return sdk.Coin{}, sdk.ZeroDec(), err
+	}
+
+	rate, err := p.GetTokenARate(ctx, oracle, snapshot, tokenInDenom, tokenOut.Denom, accountedPool)
+	if err != nil {
+		return sdk.Coin{}, sdk.ZeroDec(), err
 	}
 
 	outWeight := sdk.NewDecFromInt(poolAssetOut.Weight)
@@ -25,7 +30,7 @@ func (p Pool) CalcInAmtGivenOut(
 		_, poolAssetOut, poolAssetIn, err := snapshot.parsePoolAssets(tokensOut, tokenInDenom)
 		oracleWeights, err := OraclePoolNormalizedWeights(ctx, oracle, []PoolAsset{poolAssetIn, poolAssetOut})
 		if err != nil {
-			return sdk.Coin{}, err
+			return sdk.Coin{}, sdk.ZeroDec(), err
 		}
 		inWeight = oracleWeights[0].Weight
 		outWeight = oracleWeights[1].Weight
@@ -55,13 +60,16 @@ func (p Pool) CalcInAmtGivenOut(
 		inWeight,
 	)
 	if err != nil {
-		return sdk.Coin{}, err
+		return sdk.Coin{}, sdk.ZeroDec(), err
 	}
 	tokenAmountIn = tokenAmountIn.Neg()
 
+	amountInWithoutSlippage := poolPostSwapOutBalance.Quo(rate)
+	slippage = sdk.OneDec().Sub(amountInWithoutSlippage.Quo(tokenAmountIn))
+
 	// Ensure (1 - swapfee) is not zero to avoid division by zero
 	if swapFee.GTE(sdk.OneDec()) {
-		return sdk.Coin{}, ErrTooMuchSwapFee
+		return sdk.Coin{}, sdk.ZeroDec(), ErrTooMuchSwapFee
 	}
 
 	// We deduct a swap fee on the input asset. The swap happens by following the invariant curve on the input * (1 - swap fee)
@@ -75,7 +83,7 @@ func (p Pool) CalcInAmtGivenOut(
 	tokenInAmt := tokenAmountInBeforeFee.Ceil().TruncateInt()
 
 	if !tokenInAmt.IsPositive() {
-		return sdk.Coin{}, errorsmod.Wrapf(ErrInvalidMathApprox, "token amount must be positive")
+		return sdk.Coin{}, sdk.ZeroDec(), errorsmod.Wrapf(ErrInvalidMathApprox, "token amount must be positive")
 	}
-	return sdk.NewCoin(tokenInDenom, tokenInAmt), nil
+	return sdk.NewCoin(tokenInDenom, tokenInAmt), slippage, nil
 }

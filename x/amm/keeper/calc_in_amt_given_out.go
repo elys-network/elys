@@ -14,11 +14,11 @@ func (k Keeper) CalcInAmtGivenOut(
 	oracle types.OracleKeeper,
 	snapshot *types.Pool,
 	tokensOut sdk.Coins, tokenInDenom string, swapFee sdk.Dec) (
-	tokenIn sdk.Coin, err error,
+	tokenIn sdk.Coin, slippage sdk.Dec, err error,
 ) {
 	p, found := k.GetPool(ctx, poolId)
 	if !found {
-		return sdk.Coin{}, errorsmod.Wrapf(types.ErrInvalidPool, "invalid pool")
+		return sdk.Coin{}, sdk.ZeroDec(), errorsmod.Wrapf(types.ErrInvalidPool, "invalid pool")
 	}
 
 	return p.CalcInAmtGivenOut(ctx, oracle, snapshot, tokensOut, tokenInDenom, swapFee, k.accountedPoolKeeper)

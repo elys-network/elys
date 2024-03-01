@@ -14,7 +14,7 @@ func (p Pool) CalcGivenOutSlippage(
 	tokenInDenom string,
 	accPoolKeeper AccountedPoolKeeper,
 ) (sdk.Dec, error) {
-	balancerInCoin, err := p.CalcInAmtGivenOut(ctx, oracleKeeper, snapshot, tokensOut, tokenInDenom, sdk.ZeroDec(), accPoolKeeper)
+	balancerInCoin, _, err := p.CalcInAmtGivenOut(ctx, oracleKeeper, snapshot, tokensOut, tokenInDenom, sdk.ZeroDec(), accPoolKeeper)
 	if err != nil {
 		return sdk.ZeroDec(), err
 	}
@@ -48,35 +48,36 @@ func (p Pool) CalcGivenOutSlippage(
 func (p *Pool) SwapInAmtGivenOut(
 	ctx sdk.Context, oracleKeeper OracleKeeper, snapshot *Pool,
 	tokensOut sdk.Coins, tokenInDenom string, swapFee sdk.Dec, accPoolKeeper AccountedPoolKeeper) (
-	tokenIn sdk.Coin, slippageAmount sdk.Dec, weightBalanceBonus sdk.Dec, err error,
+	tokenIn sdk.Coin, slippage, slippageAmount sdk.Dec, weightBalanceBonus sdk.Dec, err error,
 ) {
 	// early return with balancer swap if normal amm pool
 	if !p.PoolParams.UseOracle {
-		balancerInCoin, err := p.CalcInAmtGivenOut(ctx, oracleKeeper, snapshot, tokensOut, tokenInDenom, swapFee, accPoolKeeper)
+		balancerInCoin, slippage, err := p.CalcInAmtGivenOut(ctx, oracleKeeper, snapshot, tokensOut, tokenInDenom, swapFee, accPoolKeeper)
 		if err != nil {
-			return sdk.Coin{}, sdk.ZeroDec(), sdk.ZeroDec(), err
+			return sdk.Coin{}, sdk.ZeroDec(), sdk.ZeroDec(), sdk.ZeroDec(), err
 		}
 
 		err = p.applySwap(ctx, sdk.Coins{balancerInCoin}, tokensOut, swapFee, sdk.ZeroDec(), accPoolKeeper)
 		if err != nil {
-			return sdk.Coin{}, sdk.ZeroDec(), sdk.ZeroDec(), err
+			return sdk.Coin{}, sdk.ZeroDec(), sdk.ZeroDec(), sdk.ZeroDec(), err
 		}
-		return balancerInCoin, sdk.ZeroDec(), sdk.ZeroDec(), nil
+
+		return balancerInCoin, slippage, sdk.ZeroDec(), sdk.ZeroDec(), nil
 	}
 
 	tokenOut, poolAssetOut, poolAssetIn, err := p.parsePoolAssets(tokensOut, tokenInDenom)
 	if err != nil {
-		return sdk.Coin{}, sdk.ZeroDec(), sdk.ZeroDec(), err
+		return sdk.Coin{}, sdk.ZeroDec(), sdk.ZeroDec(), sdk.ZeroDec(), err
 	}
 
 	// ensure token prices for in/out tokens set properly
 	inTokenPrice := oracleKeeper.GetAssetPriceFromDenom(ctx, tokenInDenom)
 	if inTokenPrice.IsZero() {
-		return sdk.Coin{}, sdk.ZeroDec(), sdk.ZeroDec(), fmt.Errorf("price for inToken not set: %s", poolAssetIn.Token.Denom)
+		return sdk.Coin{}, sdk.ZeroDec(), sdk.ZeroDec(), sdk.ZeroDec(), fmt.Errorf("price for inToken not set: %s", poolAssetIn.Token.Denom)
 	}
 	outTokenPrice := oracleKeeper.GetAssetPriceFromDenom(ctx, tokenOut.Denom)
 	if outTokenPrice.IsZero() {
-		return sdk.Coin{}, sdk.ZeroDec(), sdk.ZeroDec(), fmt.Errorf("price for outToken not set: %s", poolAssetOut.Token.Denom)
+		return sdk.Coin{}, sdk.ZeroDec(), sdk.ZeroDec(), sdk.ZeroDec(), fmt.Errorf("price for outToken not set: %s", poolAssetOut.Token.Denom)
 	}
 
 	initialWeightDistance := p.WeightDistanceFromTarget(ctx, oracleKeeper, p.PoolAssets)
@@ -89,7 +90,7 @@ func (p *Pool) SwapInAmtGivenOut(
 
 	// Ensure p.PoolParams.ExternalLiquidityRatio is not zero to avoid division by zero
 	if p.PoolParams.ExternalLiquidityRatio.IsZero() {
-		return sdk.Coin{}, sdk.ZeroDec(), sdk.ZeroDec(), ErrAmountTooLow
+		return sdk.Coin{}, sdk.ZeroDec(), sdk.ZeroDec(), sdk.ZeroDec(), ErrAmountTooLow
 	}
 
 	resizedAmount := sdk.NewDecFromInt(tokenOut.Amount).Quo(p.PoolParams.ExternalLiquidityRatio).RoundInt()
@@ -102,9 +103,10 @@ func (p *Pool) SwapInAmtGivenOut(
 		accPoolKeeper,
 	)
 	if err != nil {
-		return sdk.Coin{}, sdk.ZeroDec(), sdk.ZeroDec(), err
+		return sdk.Coin{}, sdk.OneDec(), sdk.ZeroDec(), sdk.ZeroDec(), err
 	}
 	inAmountAfterSlippage := oracleInAmount.Add(slippageAmount)
+	slippage = slippageAmount.Quo(inAmountAfterSlippage)
 
 	// calculate weight distance difference to calculate bonus/cut on the operation
 	newAssetPools, err := p.NewPoolAssetsAfterSwap(
@@ -112,7 +114,7 @@ func (p *Pool) SwapInAmtGivenOut(
 		tokensOut,
 	)
 	if err != nil {
-		return sdk.Coin{}, sdk.ZeroDec(), sdk.ZeroDec(), err
+		return sdk.Coin{}, sdk.OneDec(), sdk.ZeroDec(), sdk.ZeroDec(), err
 	}
 	weightDistance := p.WeightDistanceFromTarget(ctx, oracleKeeper, newAssetPools)
 	distanceDiff := weightDistance.Sub(initialWeightDistance)
@@ -141,17 +143,17 @@ func (p *Pool) SwapInAmtGivenOut(
 	}
 
 	if swapFee.GTE(sdk.OneDec()) {
-		return sdk.Coin{}, sdk.ZeroDec(), sdk.ZeroDec(), ErrTooMuchSwapFee
+		return sdk.Coin{}, sdk.OneDec(), sdk.ZeroDec(), sdk.ZeroDec(), ErrTooMuchSwapFee
 	}
 
 	tokenAmountInInt := inAmountAfterSlippage.
 		Mul(sdk.OneDec().Add(weightBreakingFee)).
 		Quo(sdk.OneDec().Sub(swapFee)).
 		TruncateInt()
-	oracleInCoin := sdk.NewCoin(tokenInDenom, tokenAmountInInt)
-	err = p.applySwap(ctx, sdk.Coins{oracleInCoin}, tokensOut, swapFee, sdk.ZeroDec(), accPoolKeeper)
+	tokenIn = sdk.NewCoin(tokenInDenom, tokenAmountInInt)
+	err = p.applySwap(ctx, sdk.Coins{tokenIn}, tokensOut, swapFee, sdk.ZeroDec(), accPoolKeeper)
 	if err != nil {
-		return sdk.Coin{}, sdk.ZeroDec(), sdk.ZeroDec(), err
+		return sdk.Coin{}, sdk.ZeroDec(), sdk.ZeroDec(), sdk.ZeroDec(), err
 	}
-	return oracleInCoin, slippageAmount, weightBalanceBonus, nil
+	return tokenIn, slippage, slippageAmount, weightBalanceBonus, nil
 }
