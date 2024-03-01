@@ -21,11 +21,6 @@ func (p Pool) CalcOutAmtGivenIn(
 		return sdk.Coin{}, sdk.ZeroDec(), err
 	}
 
-	rate, err := p.GetTokenARate(ctx, oracle, snapshot, tokenIn.Denom, tokenOutDenom, accountedPool)
-	if err != nil {
-		return sdk.Coin{}, sdk.ZeroDec(), err
-	}
-
 	tokenAmountInAfterFee := sdk.NewDecFromInt(tokenIn.Amount).Mul(sdk.OneDec().Sub(swapFee))
 	poolTokenInBalance := sdk.NewDecFromInt(poolAssetIn.Token.Amount)
 	// accounted pool balance
@@ -71,7 +66,12 @@ func (p Pool) CalcOutAmtGivenIn(
 		return sdk.Coin{}, sdk.ZeroDec(), err
 	}
 
-	amountOutWithoutSlippage := poolPostSwapInBalance.Mul(rate)
+	rate, err := p.GetTokenARate(ctx, oracle, snapshot, tokenIn.Denom, tokenOutDenom, accountedPool)
+	if err != nil {
+		return sdk.Coin{}, sdk.ZeroDec(), err
+	}
+
+	amountOutWithoutSlippage := tokenAmountInAfterFee.Mul(rate)
 	slippage := sdk.OneDec().Sub(tokenAmountOut.Quo(amountOutWithoutSlippage))
 
 	// We ignore the decimal component, as we round down the token amount out.

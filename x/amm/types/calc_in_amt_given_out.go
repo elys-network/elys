@@ -19,15 +19,13 @@ func (p Pool) CalcInAmtGivenOut(
 		return sdk.Coin{}, sdk.ZeroDec(), err
 	}
 
-	rate, err := p.GetTokenARate(ctx, oracle, snapshot, tokenInDenom, tokenOut.Denom, accountedPool)
-	if err != nil {
-		return sdk.Coin{}, sdk.ZeroDec(), err
-	}
-
 	outWeight := sdk.NewDecFromInt(poolAssetOut.Weight)
 	inWeight := sdk.NewDecFromInt(poolAssetIn.Weight)
 	if p.PoolParams.UseOracle {
 		_, poolAssetOut, poolAssetIn, err := snapshot.parsePoolAssets(tokensOut, tokenInDenom)
+		if err != nil {
+			return sdk.Coin{}, sdk.ZeroDec(), err
+		}
 		oracleWeights, err := OraclePoolNormalizedWeights(ctx, oracle, []PoolAsset{poolAssetIn, poolAssetOut})
 		if err != nil {
 			return sdk.Coin{}, sdk.ZeroDec(), err
@@ -64,7 +62,12 @@ func (p Pool) CalcInAmtGivenOut(
 	}
 	tokenAmountIn = tokenAmountIn.Neg()
 
-	amountInWithoutSlippage := poolPostSwapOutBalance.Quo(rate)
+	rate, err := p.GetTokenARate(ctx, oracle, snapshot, tokenInDenom, tokenOut.Denom, accountedPool)
+	if err != nil {
+		return sdk.Coin{}, sdk.ZeroDec(), err
+	}
+
+	amountInWithoutSlippage := sdk.NewDecFromInt(tokenOut.Amount).Quo(rate)
 	slippage = sdk.OneDec().Sub(amountInWithoutSlippage.Quo(tokenAmountIn))
 
 	// Ensure (1 - swapfee) is not zero to avoid division by zero
