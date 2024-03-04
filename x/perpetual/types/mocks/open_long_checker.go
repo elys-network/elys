@@ -26,13 +26,13 @@ func (_m *OpenLongChecker) EXPECT() *OpenLongChecker_Expecter {
 	return &OpenLongChecker_Expecter{mock: &_m.Mock}
 }
 
-// Borrow provides a mock function with given fields: ctx, collateralAmount, custodyAmount, mtp, ammPool, pool, eta, baseCurrency
-func (_m *OpenLongChecker) Borrow(ctx types.Context, collateralAmount math.Int, custodyAmount math.Int, mtp *perpetualtypes.MTP, ammPool *ammtypes.Pool, pool *perpetualtypes.Pool, eta math.LegacyDec, baseCurrency string) error {
-	ret := _m.Called(ctx, collateralAmount, custodyAmount, mtp, ammPool, pool, eta, baseCurrency)
+// Borrow provides a mock function with given fields: ctx, collateralAmount, custodyAmount, mtp, ammPool, pool, eta, baseCurrency, isBroker
+func (_m *OpenLongChecker) Borrow(ctx types.Context, collateralAmount math.Int, custodyAmount math.Int, mtp *perpetualtypes.MTP, ammPool *ammtypes.Pool, pool *perpetualtypes.Pool, eta math.LegacyDec, baseCurrency string, isBroker bool) error {
+	ret := _m.Called(ctx, collateralAmount, custodyAmount, mtp, ammPool, pool, eta, baseCurrency, isBroker)
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(types.Context, math.Int, math.Int, *perpetualtypes.MTP, *ammtypes.Pool, *perpetualtypes.Pool, math.LegacyDec, string) error); ok {
-		r0 = rf(ctx, collateralAmount, custodyAmount, mtp, ammPool, pool, eta, baseCurrency)
+	if rf, ok := ret.Get(0).(func(types.Context, math.Int, math.Int, *perpetualtypes.MTP, *ammtypes.Pool, *perpetualtypes.Pool, math.LegacyDec, string, bool) error); ok {
+		r0 = rf(ctx, collateralAmount, custodyAmount, mtp, ammPool, pool, eta, baseCurrency, isBroker)
 	} else {
 		r0 = ret.Error(0)
 	}
@@ -54,13 +54,14 @@ type OpenLongChecker_Borrow_Call struct {
 //   - pool *perpetualtypes.Pool
 //   - eta math.LegacyDec
 //   - baseCurrency string
-func (_e *OpenLongChecker_Expecter) Borrow(ctx interface{}, collateralAmount interface{}, custodyAmount interface{}, mtp interface{}, ammPool interface{}, pool interface{}, eta interface{}, baseCurrency interface{}) *OpenLongChecker_Borrow_Call {
-	return &OpenLongChecker_Borrow_Call{Call: _e.mock.On("Borrow", ctx, collateralAmount, custodyAmount, mtp, ammPool, pool, eta, baseCurrency)}
+//   - isBroker bool
+func (_e *OpenLongChecker_Expecter) Borrow(ctx interface{}, collateralAmount interface{}, custodyAmount interface{}, mtp interface{}, ammPool interface{}, pool interface{}, eta interface{}, baseCurrency interface{}, isBroker interface{}) *OpenLongChecker_Borrow_Call {
+	return &OpenLongChecker_Borrow_Call{Call: _e.mock.On("Borrow", ctx, collateralAmount, custodyAmount, mtp, ammPool, pool, eta, baseCurrency, isBroker)}
 }
 
-func (_c *OpenLongChecker_Borrow_Call) Run(run func(ctx types.Context, collateralAmount math.Int, custodyAmount math.Int, mtp *perpetualtypes.MTP, ammPool *ammtypes.Pool, pool *perpetualtypes.Pool, eta math.LegacyDec, baseCurrency string)) *OpenLongChecker_Borrow_Call {
+func (_c *OpenLongChecker_Borrow_Call) Run(run func(ctx types.Context, collateralAmount math.Int, custodyAmount math.Int, mtp *perpetualtypes.MTP, ammPool *ammtypes.Pool, pool *perpetualtypes.Pool, eta math.LegacyDec, baseCurrency string, isBroker bool)) *OpenLongChecker_Borrow_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(types.Context), args[1].(math.Int), args[2].(math.Int), args[3].(*perpetualtypes.MTP), args[4].(*ammtypes.Pool), args[5].(*perpetualtypes.Pool), args[6].(math.LegacyDec), args[7].(string))
+		run(args[0].(types.Context), args[1].(math.Int), args[2].(math.Int), args[3].(*perpetualtypes.MTP), args[4].(*ammtypes.Pool), args[5].(*perpetualtypes.Pool), args[6].(math.LegacyDec), args[7].(string), args[8].(bool))
 	})
 	return _c
 }
@@ -70,7 +71,7 @@ func (_c *OpenLongChecker_Borrow_Call) Return(_a0 error) *OpenLongChecker_Borrow
 	return _c
 }
 
-func (_c *OpenLongChecker_Borrow_Call) RunAndReturn(run func(types.Context, math.Int, math.Int, *perpetualtypes.MTP, *ammtypes.Pool, *perpetualtypes.Pool, math.LegacyDec, string) error) *OpenLongChecker_Borrow_Call {
+func (_c *OpenLongChecker_Borrow_Call) RunAndReturn(run func(types.Context, math.Int, math.Int, *perpetualtypes.MTP, *ammtypes.Pool, *perpetualtypes.Pool, math.LegacyDec, string, bool) error) *OpenLongChecker_Borrow_Call {
 	_c.Call.Return(run)
 	return _c
 }

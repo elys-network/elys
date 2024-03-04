@@ -5,7 +5,7 @@ import (
 	"github.com/elys-network/elys/x/perpetual/types"
 )
 
-func (k Keeper) OpenShort(ctx sdk.Context, poolId uint64, msg *types.MsgOpen, baseCurrency string) (*types.MTP, error) {
+func (k Keeper) OpenShort(ctx sdk.Context, poolId uint64, msg *types.MsgOpen, baseCurrency string, isBroker bool) (*types.MTP, error) {
 	// Determine the maximum leverage available and compute the effective leverage to be used.
 	maxLeverage := k.OpenShortChecker.GetMaxLeverageParam(ctx)
 	leverage := sdk.MinDec(msg.Leverage, maxLeverage)
@@ -24,5 +24,5 @@ func (k Keeper) OpenShort(ctx sdk.Context, poolId uint64, msg *types.MsgOpen, ba
 	mtp := types.NewMTP(msg.Creator, msg.Collateral.Denom, msg.TradingAsset, liabilitiesAsset, custodyAsset, msg.Position, leverage, msg.TakeProfitPrice, poolId)
 
 	// Call the function to process the open short logic.
-	return k.ProcessOpenShort(ctx, mtp, leverage, eta, collateralAmountDec, poolId, msg, baseCurrency)
+	return k.ProcessOpenShort(ctx, mtp, leverage, eta, collateralAmountDec, poolId, msg, baseCurrency, isBroker)
 }

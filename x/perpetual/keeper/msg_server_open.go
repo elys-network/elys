@@ -10,5 +10,5 @@ import (
 func (k msgServer) Open(goCtx context.Context, msg *types.MsgOpen) (*types.MsgOpenResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	return k.Keeper.Open(ctx, msg)
+	return k.Keeper.Open(ctx, msg, false)
 }

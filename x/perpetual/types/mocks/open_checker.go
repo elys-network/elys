@@ -315,25 +315,25 @@ func (_c *OpenChecker_GetOpenMTPCount_Call) RunAndReturn(run func(types.Context)
 	return _c
 }
 
-// OpenLong provides a mock function with given fields: ctx, poolId, msg, baseCurrency
-func (_m *OpenChecker) OpenLong(ctx types.Context, poolId uint64, msg *perpetualtypes.MsgOpen, baseCurrency string) (*perpetualtypes.MTP, error) {
-	ret := _m.Called(ctx, poolId, msg, baseCurrency)
+// OpenLong provides a mock function with given fields: ctx, poolId, msg, baseCurrency, isBroker
+func (_m *OpenChecker) OpenLong(ctx types.Context, poolId uint64, msg *perpetualtypes.MsgOpen, baseCurrency string, isBroker bool) (*perpetualtypes.MTP, error) {
+	ret := _m.Called(ctx, poolId, msg, baseCurrency, isBroker)
 
 	var r0 *perpetualtypes.MTP
 	var r1 error
-	if rf, ok := ret.Get(0).(func(types.Context, uint64, *perpetualtypes.MsgOpen, string) (*perpetualtypes.MTP, error)); ok {
-		return rf(ctx, poolId, msg, baseCurrency)
+	if rf, ok := ret.Get(0).(func(types.Context, uint64, *perpetualtypes.MsgOpen, string, bool) (*perpetualtypes.MTP, error)); ok {
+		return rf(ctx, poolId, msg, baseCurrency, isBroker)
 	}
-	if rf, ok := ret.Get(0).(func(types.Context, uint64, *perpetualtypes.MsgOpen, string) *perpetualtypes.MTP); ok {
-		r0 = rf(ctx, poolId, msg, baseCurrency)
+	if rf, ok := ret.Get(0).(func(types.Context, uint64, *perpetualtypes.MsgOpen, string, bool) *perpetualtypes.MTP); ok {
+		r0 = rf(ctx, poolId, msg, baseCurrency, isBroker)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(*perpetualtypes.MTP)
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(types.Context, uint64, *perpetualtypes.MsgOpen, string) error); ok {
-		r1 = rf(ctx, poolId, msg, baseCurrency)
+	if rf, ok := ret.Get(1).(func(types.Context, uint64, *perpetualtypes.MsgOpen, string, bool) error); ok {
+		r1 = rf(ctx, poolId, msg, baseCurrency, isBroker)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -351,13 +351,14 @@ type OpenChecker_OpenLong_Call struct {
 //   - poolId uint64
 //   - msg *perpetualtypes.MsgOpen
 //   - baseCurrency string
-func (_e *OpenChecker_Expecter) OpenLong(ctx interface{}, poolId interface{}, msg interface{}, baseCurrency interface{}) *OpenChecker_OpenLong_Call {
-	return &OpenChecker_OpenLong_Call{Call: _e.mock.On("OpenLong", ctx, poolId, msg, baseCurrency)}
+//   - isBroker bool
+func (_e *OpenChecker_Expecter) OpenLong(ctx interface{}, poolId interface{}, msg interface{}, baseCurrency interface{}, isBroker interface{}) *OpenChecker_OpenLong_Call {
+	return &OpenChecker_OpenLong_Call{Call: _e.mock.On("OpenLong", ctx, poolId, msg, baseCurrency, isBroker)}
 }
 
-func (_c *OpenChecker_OpenLong_Call) Run(run func(ctx types.Context, poolId uint64, msg *perpetualtypes.MsgOpen, baseCurrency string)) *OpenChecker_OpenLong_Call {
+func (_c *OpenChecker_OpenLong_Call) Run(run func(ctx types.Context, poolId uint64, msg *perpetualtypes.MsgOpen, baseCurrency string, isBroker bool)) *OpenChecker_OpenLong_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(types.Context), args[1].(uint64), args[2].(*perpetualtypes.MsgOpen), args[3].(string))
+		run(args[0].(types.Context), args[1].(uint64), args[2].(*perpetualtypes.MsgOpen), args[3].(string), args[4].(bool))
 	})
 	return _c
 }
@@ -367,30 +368,30 @@ func (_c *OpenChecker_OpenLong_Call) Return(_a0 *perpetualtypes.MTP, _a1 error) 
 	return _c
 }
 
-func (_c *OpenChecker_OpenLong_Call) RunAndReturn(run func(types.Context, uint64, *perpetualtypes.MsgOpen, string) (*perpetualtypes.MTP, error)) *OpenChecker_OpenLong_Call {
+func (_c *OpenChecker_OpenLong_Call) RunAndReturn(run func(types.Context, uint64, *perpetualtypes.MsgOpen, string, bool) (*perpetualtypes.MTP, error)) *OpenChecker_OpenLong_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
-// OpenShort provides a mock function with given fields: ctx, poolId, msg, baseCurrency
-func (_m *OpenChecker) OpenShort(ctx types.Context, poolId uint64, msg *perpetualtypes.MsgOpen, baseCurrency string) (*perpetualtypes.MTP, error) {
-	ret := _m.Called(ctx, poolId, msg, baseCurrency)
+// OpenShort provides a mock function with given fields: ctx, poolId, msg, baseCurrency, isBroker
+func (_m *OpenChecker) OpenShort(ctx types.Context, poolId uint64, msg *perpetualtypes.MsgOpen, baseCurrency string, isBroker bool) (*perpetualtypes.MTP, error) {
+	ret := _m.Called(ctx, poolId, msg, baseCurrency, isBroker)
 
 	var r0 *perpetualtypes.MTP
 	var r1 error
-	if rf, ok := ret.Get(0).(func(types.Context, uint64, *perpetualtypes.MsgOpen, string) (*perpetualtypes.MTP, error)); ok {
-		return rf(ctx, poolId, msg, baseCurrency)
+	if rf, ok := ret.Get(0).(func(types.Context, uint64, *perpetualtypes.MsgOpen, string, bool) (*perpetualtypes.MTP, error)); ok {
+		return rf(ctx, poolId, msg, baseCurrency, isBroker)
 	}
-	if rf, ok := ret.Get(0).(func(types.Context, uint64, *perpetualtypes.MsgOpen, string) *perpetualtypes.MTP); ok {
-		r0 = rf(ctx, poolId, msg, baseCurrency)
+	if rf, ok := ret.Get(0).(func(types.Context, uint64, *perpetualtypes.MsgOpen, string, bool) *perpetualtypes.MTP); ok {
+		r0 = rf(ctx, poolId, msg, baseCurrency, isBroker)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(*perpetualtypes.MTP)
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(types.Context, uint64, *perpetualtypes.MsgOpen, string) error); ok {
-		r1 = rf(ctx, poolId, msg, baseCurrency)
+	if rf, ok := ret.Get(1).(func(types.Context, uint64, *perpetualtypes.MsgOpen, string, bool) error); ok {
+		r1 = rf(ctx, poolId, msg, baseCurrency, isBroker)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -408,13 +409,14 @@ type OpenChecker_OpenShort_Call struct {
 //   - poolId uint64
 //   - msg *perpetualtypes.MsgOpen
 //   - baseCurrency string
-func (_e *OpenChecker_Expecter) OpenShort(ctx interface{}, poolId interface{}, msg interface{}, baseCurrency interface{}) *OpenChecker_OpenShort_Call {
-	return &OpenChecker_OpenShort_Call{Call: _e.mock.On("OpenShort", ctx, poolId, msg, baseCurrency)}
+//   - isBroker bool
+func (_e *OpenChecker_Expecter) OpenShort(ctx interface{}, poolId interface{}, msg interface{}, baseCurrency interface{}, isBroker interface{}) *OpenChecker_OpenShort_Call {
+	return &OpenChecker_OpenShort_Call{Call: _e.mock.On("OpenShort", ctx, poolId, msg, baseCurrency, isBroker)}
 }
 
-func (_c *OpenChecker_OpenShort_Call) Run(run func(ctx types.Context, poolId uint64, msg *perpetualtypes.MsgOpen, baseCurrency string)) *OpenChecker_OpenShort_Call {
+func (_c *OpenChecker_OpenShort_Call) Run(run func(ctx types.Context, poolId uint64, msg *perpetualtypes.MsgOpen, baseCurrency string, isBroker bool)) *OpenChecker_OpenShort_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(types.Context), args[1].(uint64), args[2].(*perpetualtypes.MsgOpen), args[3].(string))
+		run(args[0].(types.Context), args[1].(uint64), args[2].(*perpetualtypes.MsgOpen), args[3].(string), args[4].(bool))
 	})
 	return _c
 }
@@ -424,7 +426,7 @@ func (_c *OpenChecker_OpenShort_Call) Return(_a0 *perpetualtypes.MTP, _a1 error)
 	return _c
 }
 
-func (_c *OpenChecker_OpenShort_Call) RunAndReturn(run func(types.Context, uint64, *perpetualtypes.MsgOpen, string) (*perpetualtypes.MTP, error)) *OpenChecker_OpenShort_Call {
+func (_c *OpenChecker_OpenShort_Call) RunAndReturn(run func(types.Context, uint64, *perpetualtypes.MsgOpen, string, bool) (*perpetualtypes.MTP, error)) *OpenChecker_OpenShort_Call {
 	_c.Call.Return(run)
 	return _c
 }

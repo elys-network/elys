@@ -102,7 +102,7 @@ func TestCheckBalanceInvariant_InvalidBalance(t *testing.T) {
 		sdk.MustNewDecFromStr(perpetualtypes.TakeProfitPriceDefault),
 	)
 
-	_, err = mk.Open(ctx, msg2)
+	_, err = mk.Open(ctx, msg2, false)
 	require.NoError(t, err)
 
 	mtps := mk.GetAllMTPs(ctx)

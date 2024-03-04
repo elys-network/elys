@@ -138,14 +138,23 @@ func (k Keeper) EstimateSwapGivenOut(ctx sdk.Context, tokenOutAmount sdk.Coin, t
 	return swapResult.Amount, nil
 }
 
-func (k Keeper) Borrow(ctx sdk.Context, collateralAmount math.Int, custodyAmount math.Int, mtp *types.MTP, ammPool *ammtypes.Pool, pool *types.Pool, eta sdk.Dec, baseCurrency string) error {
-	mtpAddress, err := sdk.AccAddressFromBech32(mtp.Address)
+func (k Keeper) Borrow(ctx sdk.Context, collateralAmount math.Int, custodyAmount math.Int, mtp *types.MTP, ammPool *ammtypes.Pool, pool *types.Pool, eta sdk.Dec, baseCurrency string, isBroker bool) error {
+	senderAddress, err := sdk.AccAddressFromBech32(mtp.Address)
 	if err != nil {
 		return err
 	}
+	// if isBroker is true, then retrieve broker address and assign it to senderAddress
+	if isBroker {
+		brokerAddress, err := sdk.AccAddressFromBech32(k.parameterKeeper.GetParams(ctx).BrokerAddress)
+		if err != nil {
+			return err
+		}
+		senderAddress = brokerAddress
+	}
+
 	collateralCoin := sdk.NewCoin(mtp.CollateralAsset, collateralAmount)
 
-	if !k.bankKeeper.HasBalance(ctx, mtpAddress, collateralCoin) {
+	if !k.bankKeeper.HasBalance(ctx, senderAddress, collateralCoin) {
 		return types.ErrBalanceNotAvailable
 	}
 
@@ -205,7 +214,7 @@ func (k Keeper) Borrow(ctx sdk.Context, collateralAmount math.Int, custodyAmount
 	}
 
 	collateralCoins := sdk.NewCoins(collateralCoin)
-	err = k.bankKeeper.SendCoins(ctx, mtpAddress, ammPoolAddr, collateralCoins)
+	err = k.bankKeeper.SendCoins(ctx, senderAddress, ammPoolAddr, collateralCoins)
 
 	if err != nil {
 		return err
