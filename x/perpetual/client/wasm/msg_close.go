@@ -26,13 +26,11 @@ func (m *Messenger) msgClose(ctx sdk.Context, contractAddr sdk.AccAddress, msgCl
 
 	msgServer := perpetualkeeper.NewMsgServerImpl(*m.keeper)
 
-	msgMsgClose := perpetualtypes.NewMsgClose(msgClose.Creator, uint64(msgClose.Id), msgClose.Amount)
-
-	if err := msgMsgClose.ValidateBasic(); err != nil {
+	if err := msgClose.ValidateBasic(); err != nil {
 		return nil, nil, errorsmod.Wrap(err, "failed validating msgMsgClose")
 	}
 
-	res, err := msgServer.Close(sdk.WrapSDKContext(ctx), msgMsgClose)
+	res, err := msgServer.BrokerClose(sdk.WrapSDKContext(ctx), msgClose)
 	if err != nil {
 		return nil, nil, errorsmod.Wrap(err, "perpetual close msg")
 	}
