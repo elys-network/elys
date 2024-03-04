@@ -24,9 +24,15 @@ func (m *Messenger) msgOpen(ctx sdk.Context, contractAddr sdk.AccAddress, msgOpe
 		return nil, nil, wasmvmtypes.InvalidRequest{Err: "open wrong sender"}
 	}
 
-	res, err := PerformMsgOpen(m.keeper, ctx, contractAddr, msgOpen)
+	msgServer := perpetualkeeper.NewMsgServerImpl(*m.keeper)
+
+	if err := msgOpen.ValidateBasic(); err != nil {
+		return nil, nil, errorsmod.Wrap(err, "failed validating msgMsgOpen")
+	}
+
+	res, err := msgServer.BrokerOpen(sdk.WrapSDKContext(ctx), msgOpen)
 	if err != nil {
-		return nil, nil, errorsmod.Wrap(err, "perform open")
+		return nil, nil, errorsmod.Wrap(err, "perpetual open msg")
 	}
 
 	responseBytes, err := json.Marshal(*res)
@@ -37,35 +43,4 @@ func (m *Messenger) msgOpen(ctx sdk.Context, contractAddr sdk.AccAddress, msgOpe
 	resp := [][]byte{responseBytes}
 
 	return nil, resp, nil
-}
-
-func PerformMsgOpen(f *perpetualkeeper.Keeper, ctx sdk.Context, contractAddr sdk.AccAddress, msgOpen *perpetualtypes.MsgBrokerOpen) (*perpetualtypes.MsgOpenResponse, error) {
-	if msgOpen == nil {
-		return nil, wasmvmtypes.InvalidRequest{Err: "perpetual open null perpetual open"}
-	}
-	msgServer := perpetualkeeper.NewMsgServerImpl(*f)
-
-	msgMsgOpen := perpetualtypes.NewMsgBrokerOpen(
-		msgOpen.Creator,
-		msgOpen.Position,
-		msgOpen.Leverage,
-		msgOpen.TradingAsset,
-		msgOpen.Collateral,
-		msgOpen.TakeProfitPrice,
-		msgOpen.Owner,
-	)
-
-	if err := msgMsgOpen.ValidateBasic(); err != nil {
-		return nil, errorsmod.Wrap(err, "failed validating msgMsgOpen")
-	}
-
-	res, err := msgServer.BrokerOpen(sdk.WrapSDKContext(ctx), msgMsgOpen) // Discard the response because it's empty
-	if err != nil {
-		return nil, errorsmod.Wrap(err, "perpetual open msg")
-	}
-
-	resp := &perpetualtypes.MsgOpenResponse{
-		Id: res.Id,
-	}
-	return resp, nil
 }

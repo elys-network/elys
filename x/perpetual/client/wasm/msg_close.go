@@ -10,7 +10,7 @@ import (
 	perpetualtypes "github.com/elys-network/elys/x/perpetual/types"
 )
 
-func (m *Messenger) msgClose(ctx sdk.Context, contractAddr sdk.AccAddress, msgClose *perpetualtypes.MsgClose) ([]sdk.Event, [][]byte, error) {
+func (m *Messenger) msgClose(ctx sdk.Context, contractAddr sdk.AccAddress, msgClose *perpetualtypes.MsgBrokerClose) ([]sdk.Event, [][]byte, error) {
 	if msgClose == nil {
 		return nil, nil, wasmvmtypes.InvalidRequest{Err: "Close null msg"}
 	}
@@ -24,9 +24,17 @@ func (m *Messenger) msgClose(ctx sdk.Context, contractAddr sdk.AccAddress, msgCl
 		return nil, nil, wasmvmtypes.InvalidRequest{Err: "close wrong sender"}
 	}
 
-	res, err := PerformMsgClose(m.keeper, ctx, contractAddr, msgClose)
+	msgServer := perpetualkeeper.NewMsgServerImpl(*m.keeper)
+
+	msgMsgClose := perpetualtypes.NewMsgClose(msgClose.Creator, uint64(msgClose.Id), msgClose.Amount)
+
+	if err := msgMsgClose.ValidateBasic(); err != nil {
+		return nil, nil, errorsmod.Wrap(err, "failed validating msgMsgClose")
+	}
+
+	res, err := msgServer.Close(sdk.WrapSDKContext(ctx), msgMsgClose)
 	if err != nil {
-		return nil, nil, errorsmod.Wrap(err, "perform close")
+		return nil, nil, errorsmod.Wrap(err, "perpetual close msg")
 	}
 
 	responseBytes, err := json.Marshal(*res)
@@ -37,29 +45,4 @@ func (m *Messenger) msgClose(ctx sdk.Context, contractAddr sdk.AccAddress, msgCl
 	resp := [][]byte{responseBytes}
 
 	return nil, resp, nil
-}
-
-func PerformMsgClose(f *perpetualkeeper.Keeper, ctx sdk.Context, contractAddr sdk.AccAddress, msgClose *perpetualtypes.MsgClose) (*perpetualtypes.MsgCloseResponse, error) {
-	if msgClose == nil {
-		return nil, wasmvmtypes.InvalidRequest{Err: "perpetual close null perpetual close"}
-	}
-	msgServer := perpetualkeeper.NewMsgServerImpl(*f)
-
-	msgMsgClose := perpetualtypes.NewMsgClose(msgClose.Creator, uint64(msgClose.Id), msgClose.Amount)
-
-	if err := msgMsgClose.ValidateBasic(); err != nil {
-		return nil, errorsmod.Wrap(err, "failed validating msgMsgClose")
-	}
-
-	res, err := msgServer.Close(sdk.WrapSDKContext(ctx), msgMsgClose) // Discard the response because it's empty
-	if err != nil {
-		return nil, errorsmod.Wrap(err, "perpetual close msg")
-	}
-
-	resp := &perpetualtypes.MsgCloseResponse{
-		Id:     res.Id,
-		Amount: res.Amount,
-	}
-
-	return resp, nil
 }

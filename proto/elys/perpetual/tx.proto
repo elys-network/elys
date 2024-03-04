@@ -14,6 +14,7 @@ service Msg {
   rpc Open         (MsgOpen        ) returns (MsgOpenResponse        );
   rpc BrokerOpen   (MsgBrokerOpen  ) returns (MsgOpenResponse        );
   rpc Close        (MsgClose       ) returns (MsgCloseResponse       );
+  rpc BrokerClose  (MsgBrokerClose ) returns (MsgCloseResponse       );
   rpc UpdateParams (MsgUpdateParams) returns (MsgUpdateParamsResponse);
   rpc Whitelist    (MsgWhitelist   ) returns (MsgWhitelistResponse   );
   rpc Dewhitelist  (MsgDewhitelist ) returns (MsgDewhitelistResponse );
@@ -47,6 +48,15 @@ message MsgClose {
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
     (gogoproto.nullable) = false
   ];
+}
+message MsgBrokerClose {
+  string creator = 1;
+  uint64 id      = 2;
+  string amount = 3 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+  string   owner = 4;
 }
 
 message MsgCloseResponse {
