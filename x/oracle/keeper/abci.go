@@ -4,8 +4,6 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-const OracleLifeTimeInBlocks = uint64(1)
-
 func (k Keeper) EndBlock(ctx sdk.Context) {
 	// Remove outdated prices
 	params := k.GetParams(ctx)
@@ -14,7 +12,7 @@ func (k Keeper) EndBlock(ctx sdk.Context) {
 			k.RemovePrice(ctx, price.Asset, price.Source, price.Timestamp)
 		}
 
-		if price.BlockHeight+OracleLifeTimeInBlocks < uint64(ctx.BlockHeight()) {
+		if price.BlockHeight+params.LifeTimeInBlocks < uint64(ctx.BlockHeight()) {
 			k.RemovePrice(ctx, price.Asset, price.Source, price.Timestamp)
 		}
 	}

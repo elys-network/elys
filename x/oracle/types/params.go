@@ -21,6 +21,7 @@ var (
 	KeyExecuteGas        = []byte("ExecuteGas")
 	KeyModuleAdmin       = []byte("ModuleAdmin")
 	KeyPriceExpiryTime   = []byte("PriceExpiryTime")
+	KeyLifeTimeInBlocks  = []byte("LifeTimeInBlocks")
 )
 
 var _ paramtypes.ParamSet = (*Params)(nil)
@@ -42,6 +43,7 @@ func NewParams(
 	prepareGas uint64,
 	executeGas uint64,
 	priceExpiryTime uint64,
+	lifeTimeInBlocks uint64,
 ) Params {
 	return Params{
 		BandEpoch:         bandEpoch,
@@ -55,6 +57,7 @@ func NewParams(
 		PrepareGas:        prepareGas,
 		ExecuteGas:        executeGas,
 		PriceExpiryTime:   priceExpiryTime,
+		LifeTimeInBlocks:  lifeTimeInBlocks,
 	}
 }
 
@@ -71,6 +74,7 @@ func DefaultParams() Params {
 		600000,
 		600000,
 		86400, // 1 day old data
+		1,     // 1 block old data
 	)
 }
 
@@ -88,6 +92,7 @@ func (p *Params) ParamSetPairs() paramtypes.ParamSetPairs {
 		paramtypes.NewParamSetPair(KeyPrepareGas, &p.PrepareGas, validateGas),
 		paramtypes.NewParamSetPair(KeyExecuteGas, &p.ExecuteGas, validateGas),
 		paramtypes.NewParamSetPair(KeyPriceExpiryTime, &p.PriceExpiryTime, validatePriceExpiryTime),
+		paramtypes.NewParamSetPair(KeyLifeTimeInBlocks, &p.LifeTimeInBlocks, validateLifeTimeInBlocks),
 	}
 }
 
@@ -124,6 +129,9 @@ func (p Params) Validate() error {
 		return err
 	}
 	if err := validatePriceExpiryTime(p.PriceExpiryTime); err != nil {
+		return err
+	}
+	if err := validateLifeTimeInBlocks(p.LifeTimeInBlocks); err != nil {
 		return err
 	}
 
@@ -229,7 +237,16 @@ func validateGas(i interface{}) error {
 func validatePriceExpiryTime(i interface{}) error {
 	_, ok := i.(uint64)
 	if !ok {
-		return fmt.Errorf("invalid type for module admin: %T", i)
+		return fmt.Errorf("invalid type for price expiry time: %T", i)
+	}
+
+	return nil
+}
+
+func validateLifeTimeInBlocks(i interface{}) error {
+	_, ok := i.(uint64)
+	if !ok {
+		return fmt.Errorf("invalid type for life time in blocks: %T", i)
 	}
 
 	return nil

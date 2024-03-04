@@ -244,13 +244,14 @@ type Oracle struct {
 type OracleParams struct {
 	oracletypes.Params
 
-	OracleScriptID  json.Number `json:"oracle_script_id"`
-	Multiplier      json.Number `json:"multiplier"`
-	AskCount        json.Number `json:"ask_count"`
-	MinCount        json.Number `json:"min_count"`
-	PrepareGas      json.Number `json:"prepare_gas"`
-	ExecuteGas      json.Number `json:"execute_gas"`
-	PriceExpiryTime json.Number `json:"price_expiry_time"`
+	OracleScriptID   json.Number `json:"oracle_script_id"`
+	Multiplier       json.Number `json:"multiplier"`
+	AskCount         json.Number `json:"ask_count"`
+	MinCount         json.Number `json:"min_count"`
+	PrepareGas       json.Number `json:"prepare_gas"`
+	ExecuteGas       json.Number `json:"execute_gas"`
+	PriceExpiryTime  json.Number `json:"price_expiry_time"`
+	LifeTimeInBlocks json.Number `json:"life_time_in_blocks"`
 }
 
 type Capability struct {

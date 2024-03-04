@@ -92,6 +92,7 @@ func updateGenesis(validatorBalance, homePath, genesisFilePath string) {
 
 	// update oracle price expiration
 	genesis.AppState.Oracle.Params.PriceExpiryTime = "604800"
+	genesis.AppState.Oracle.Params.LifeTimeInBlocks = "1000000"
 
 	outputFilePath := homePath + "/config/genesis.json"
 	if err := writeGenesisFile(outputFilePath, genesis); err != nil {
