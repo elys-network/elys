@@ -11,5 +11,9 @@ func (k Keeper) EndBlock(ctx sdk.Context) {
 		if price.Timestamp+params.PriceExpiryTime < uint64(ctx.BlockTime().Unix()) {
 			k.RemovePrice(ctx, price.Asset, price.Source, price.Timestamp)
 		}
+
+		if price.BlockHeight+params.LifeTimeInBlocks < uint64(ctx.BlockHeight()) {
+			k.RemovePrice(ctx, price.Asset, price.Source, price.Timestamp)
+		}
 	}
 }

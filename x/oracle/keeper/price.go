@@ -76,6 +76,29 @@ func (k Keeper) GetAllPrice(ctx sdk.Context) (list []types.Price) {
 	return
 }
 
+// MigrateAllLegacyPrices migrates all legacy prices
+func (k Keeper) MigrateAllLegacyPrices(ctx sdk.Context) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.PriceKeyPrefix))
+	iterator := sdk.KVStorePrefixIterator(store, []byte{})
+
+	defer iterator.Close()
+
+	for ; iterator.Valid(); iterator.Next() {
+		var val types.LegacyPrice
+		k.cdc.MustUnmarshal(iterator.Value(), &val)
+		k.SetPrice(ctx, types.Price{
+			Asset:       val.Asset,
+			Price:       val.Price,
+			Source:      val.Source,
+			Provider:    val.Provider,
+			Timestamp:   val.Timestamp,
+			BlockHeight: uint64(ctx.BlockHeight()),
+		})
+	}
+
+	return
+}
+
 func (k Keeper) GetAssetPrice(ctx sdk.Context, asset string) (types.Price, bool) {
 	// try out elys source
 	val, found := k.GetLatestPriceFromAssetAndSource(ctx, asset, types.ELYS)

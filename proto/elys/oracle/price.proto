@@ -14,4 +14,16 @@ message Price {
   string source = 3;
   string provider = 4;
   uint64 timestamp = 5;
+  uint64 block_height = 6;
+}
+
+message LegacyPrice {
+  string asset = 1;
+  string price = 2 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  string source = 3;
+  string provider = 4;
+  uint64 timestamp = 5;
 }
