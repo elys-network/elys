@@ -40,7 +40,7 @@ func (k Keeper) OpenEstimation(goCtx context.Context, req *types.QueryOpenEstima
 	collateralAmountInBaseCurrency := req.Collateral
 	if req.Collateral.Denom != baseCurrency {
 		var err error
-		_, _, collateralAmountInBaseCurrency, _, _, _, _, _, _, err = k.amm.CalcSwapEstimationByDenom(ctx, req.Collateral, req.Collateral.Denom, baseCurrency, baseCurrency, req.Discount, swapFee, uint64(0))
+		_, _, collateralAmountInBaseCurrency, _, _, _, _, _, _, _, err = k.amm.CalcSwapEstimationByDenom(ctx, req.Collateral, req.Collateral.Denom, baseCurrency, baseCurrency, req.Discount, swapFee, uint64(0))
 		if err != nil {
 			return nil, err
 		}
@@ -49,7 +49,7 @@ func (k Keeper) OpenEstimation(goCtx context.Context, req *types.QueryOpenEstima
 	leveragedAmount := sdk.NewDecFromBigInt(collateralAmountInBaseCurrency.Amount.BigInt()).Mul(req.Leverage).TruncateInt()
 	leveragedCoin := sdk.NewCoin(baseCurrency, leveragedAmount)
 
-	_, _, positionSize, openPrice, swapFee, discount, availableLiquidity, weightBonus, priceImpact, err := k.amm.CalcSwapEstimationByDenom(ctx, leveragedCoin, baseCurrency, req.TradingAsset, baseCurrency, req.Discount, swapFee, decimals)
+	_, _, positionSize, openPrice, swapFee, discount, availableLiquidity, slippage, weightBonus, priceImpact, err := k.amm.CalcSwapEstimationByDenom(ctx, leveragedCoin, baseCurrency, req.TradingAsset, baseCurrency, req.Discount, swapFee, decimals)
 	if err != nil {
 		return nil, err
 	}
@@ -131,6 +131,7 @@ func (k Keeper) OpenEstimation(goCtx context.Context, req *types.QueryOpenEstima
 		EstimatedPnl:       estimatedPnL.TruncateInt(),
 		EstimatedPnlDenom:  estimatedPnLDenom,
 		AvailableLiquidity: availableLiquidity,
+		Slippage:           slippage,
 		WeightBalanceRatio: weightBonus,
 		PriceImpact:        priceImpact,
 		BorrowInterestRate: borrowInterestRate,

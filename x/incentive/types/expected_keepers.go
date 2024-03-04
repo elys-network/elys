@@ -110,8 +110,8 @@ type AmmKeeper interface {
 		tokensIn sdk.Coins,
 		tokenOutDenom string,
 		swapFee sdk.Dec,
-	) (tokenOut sdk.Coin, slippageAmount sdk.Dec, weightBalanceBonus sdk.Dec, err error)
-	CalcOutAmtGivenIn(ctx sdk.Context, poolId uint64, oracle ammtypes.OracleKeeper, snapshot *ammtypes.Pool, tokensIn sdk.Coins, tokenOutDenom string, swapFee sdk.Dec) (sdk.Coin, error)
+	) (tokenOut sdk.Coin, slippage, slippageAmount sdk.Dec, weightBalanceBonus sdk.Dec, err error)
+	CalcOutAmtGivenIn(ctx sdk.Context, poolId uint64, oracle ammtypes.OracleKeeper, snapshot *ammtypes.Pool, tokensIn sdk.Coins, tokenOutDenom string, swapFee sdk.Dec) (sdk.Coin, sdk.Dec, error)
 }
 
 // OracleKeeper defines the expected interface needed to retrieve price info

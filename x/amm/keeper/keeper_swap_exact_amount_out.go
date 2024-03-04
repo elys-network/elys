@@ -41,7 +41,7 @@ func (k Keeper) SwapExactAmountOut(
 	}
 
 	snapshot := k.GetPoolSnapshotOrSet(ctx, pool)
-	tokenIn, slippageAmount, weightBalanceBonus, err := pool.SwapInAmtGivenOut(ctx, k.oracleKeeper, &snapshot, sdk.Coins{tokenOut}, tokenInDenom, swapFee, k.accountedPoolKeeper)
+	tokenIn, _, slippageAmount, weightBalanceBonus, err := pool.SwapInAmtGivenOut(ctx, k.oracleKeeper, &snapshot, sdk.Coins{tokenOut}, tokenInDenom, swapFee, k.accountedPoolKeeper)
 	if err != nil {
 		return math.Int{}, err
 	}

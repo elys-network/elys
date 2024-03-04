@@ -15,10 +15,10 @@ func (p Pool) CalcOutAmtGivenIn(
 	tokenOutDenom string,
 	swapFee sdk.Dec,
 	accountedPool AccountedPoolKeeper,
-) (sdk.Coin, error) {
+) (sdk.Coin, sdk.Dec, error) {
 	tokenIn, poolAssetIn, poolAssetOut, err := p.parsePoolAssets(tokensIn, tokenOutDenom)
 	if err != nil {
-		return sdk.Coin{}, err
+		return sdk.Coin{}, sdk.ZeroDec(), err
 	}
 
 	tokenAmountInAfterFee := sdk.NewDecFromInt(tokenIn.Amount).Mul(sdk.OneDec().Sub(swapFee))
@@ -43,11 +43,11 @@ func (p Pool) CalcOutAmtGivenIn(
 	if p.PoolParams.UseOracle {
 		_, poolAssetIn, poolAssetOut, err := snapshot.parsePoolAssets(tokensIn, tokenOutDenom)
 		if err != nil {
-			return sdk.Coin{}, err
+			return sdk.Coin{}, sdk.ZeroDec(), err
 		}
 		oracleWeights, err := OraclePoolNormalizedWeights(ctx, oracle, []PoolAsset{poolAssetIn, poolAssetOut})
 		if err != nil {
-			return sdk.Coin{}, err
+			return sdk.Coin{}, sdk.ZeroDec(), err
 		}
 		inWeight = oracleWeights[0].Weight
 		outWeight = oracleWeights[1].Weight
@@ -63,14 +63,22 @@ func (p Pool) CalcOutAmtGivenIn(
 		outWeight,
 	)
 	if err != nil {
-		return sdk.Coin{}, err
+		return sdk.Coin{}, sdk.ZeroDec(), err
 	}
+
+	rate, err := p.GetTokenARate(ctx, oracle, snapshot, tokenIn.Denom, tokenOutDenom, accountedPool)
+	if err != nil {
+		return sdk.Coin{}, sdk.ZeroDec(), err
+	}
+
+	amountOutWithoutSlippage := tokenAmountInAfterFee.Mul(rate)
+	slippage := sdk.OneDec().Sub(tokenAmountOut.Quo(amountOutWithoutSlippage))
 
 	// We ignore the decimal component, as we round down the token amount out.
 	tokenAmountOutInt := tokenAmountOut.TruncateInt()
 	if !tokenAmountOutInt.IsPositive() {
-		return sdk.Coin{}, errorsmod.Wrapf(ErrInvalidMathApprox, "token amount must be positive")
+		return sdk.Coin{}, sdk.ZeroDec(), errorsmod.Wrapf(ErrInvalidMathApprox, "token amount must be positive")
 	}
 
-	return sdk.NewCoin(tokenOutDenom, tokenAmountOutInt), nil
+	return sdk.NewCoin(tokenOutDenom, tokenAmountOutInt), slippage, nil
 }
