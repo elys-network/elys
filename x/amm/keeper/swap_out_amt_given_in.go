@@ -15,10 +15,10 @@ func (k Keeper) SwapOutAmtGivenIn(
 	tokensIn sdk.Coins,
 	tokenOutDenom string,
 	swapFee sdk.Dec,
-) (tokenOut sdk.Coin, slippageAmount sdk.Dec, weightBalanceBonus sdk.Dec, err error) {
+) (tokenOut sdk.Coin, slippage sdk.Dec, slippageAmount sdk.Dec, weightBalanceBonus sdk.Dec, err error) {
 	ammPool, found := k.GetPool(ctx, poolId)
 	if !found {
-		return sdk.Coin{}, sdk.ZeroDec(), sdk.ZeroDec(), fmt.Errorf("invalid pool: %d", poolId)
+		return sdk.Coin{}, sdk.ZeroDec(), sdk.ZeroDec(), sdk.ZeroDec(), fmt.Errorf("invalid pool: %d", poolId)
 	}
 
 	return ammPool.SwapOutAmtGivenIn(ctx, oracleKeeper, snapshot, tokensIn, tokenOutDenom, swapFee, k.accountedPoolKeeper)
