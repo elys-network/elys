@@ -42,7 +42,7 @@ func TestOpenLong_PoolNotFound(t *testing.T) {
 	mockChecker.On("GetMaxLeverageParam", ctx).Return(msg.Leverage)
 	mockChecker.On("GetPool", ctx, poolId).Return(types.Pool{}, false)
 
-	_, err := k.OpenLong(ctx, poolId, msg, ptypes.BaseCurrency)
+	_, err := k.OpenLong(ctx, poolId, msg, ptypes.BaseCurrency, false)
 
 	// Expect an error about the pool not existing
 	assert.True(t, errors.Is(err, types.ErrPoolDoesNotExist))
@@ -73,7 +73,7 @@ func TestOpenLong_PoolDisabled(t *testing.T) {
 	mockChecker.On("GetPool", ctx, poolId).Return(types.Pool{}, true)
 	mockChecker.On("IsPoolEnabled", ctx, poolId).Return(false)
 
-	_, err := k.OpenLong(ctx, poolId, msg, ptypes.BaseCurrency)
+	_, err := k.OpenLong(ctx, poolId, msg, ptypes.BaseCurrency, false)
 
 	// Expect an error about the pool being disabled
 	assert.True(t, errors.Is(err, types.ErrMTPDisabled))
@@ -127,7 +127,7 @@ func TestOpenLong_InsufficientLiabilities(t *testing.T) {
 
 	mockChecker.On("CheckMinLiabilities", ctx, msg.Collateral, sdk.NewDec(1), ammPool, msg.TradingAsset, ptypes.BaseCurrency).Return(liabilityError)
 
-	_, err := k.OpenLong(ctx, ammPool.PoolId, msg, ptypes.BaseCurrency)
+	_, err := k.OpenLong(ctx, ammPool.PoolId, msg, ptypes.BaseCurrency, false)
 
 	// Expect the custom error indicating insufficient liabilities
 	assert.True(t, errors.Is(err, liabilityError))
@@ -184,7 +184,7 @@ func TestOpenLong_InsufficientAmmPoolBalanceForCustody(t *testing.T) {
 
 	mockChecker.On("EstimateSwap", ctx, leveragedAmtTokenIn, msg.TradingAsset, ammPool).Return(custodyAmount, nil)
 
-	_, err := k.OpenLong(ctx, ammPool.PoolId, msg, ptypes.BaseCurrency)
+	_, err := k.OpenLong(ctx, ammPool.PoolId, msg, ptypes.BaseCurrency, false)
 
 	// Expect an error about custody amount being too high
 	assert.True(t, errors.Is(err, types.ErrCustodyTooHigh))
@@ -246,9 +246,9 @@ func TestOpenLong_ErrorsDuringOperations(t *testing.T) {
 	mtp := types.NewMTP(msg.Creator, msg.Collateral.Denom, msg.TradingAsset, msg.Collateral.Denom, msg.TradingAsset, msg.Position, msg.Leverage, sdk.MustNewDecFromStr(types.TakeProfitPriceDefault), ammPool.PoolId)
 
 	borrowError := errors.New("borrow error")
-	mockChecker.On("Borrow", ctx, msg.Collateral.Amount, custodyAmount, mtp, &ammPool, &pool, eta, ptypes.BaseCurrency).Return(borrowError)
+	mockChecker.On("Borrow", ctx, msg.Collateral.Amount, custodyAmount, mtp, &ammPool, &pool, eta, ptypes.BaseCurrency, false).Return(borrowError)
 
-	_, err := k.OpenLong(ctx, ammPool.PoolId, msg, ptypes.BaseCurrency)
+	_, err := k.OpenLong(ctx, ammPool.PoolId, msg, ptypes.BaseCurrency, false)
 
 	// Expect the borrow error
 	assert.True(t, errors.Is(err, borrowError))
@@ -309,7 +309,7 @@ func TestOpenLong_LeverageRatioLessThanSafetyFactor(t *testing.T) {
 
 	mtp := types.NewMTP(msg.Creator, msg.Collateral.Denom, msg.TradingAsset, msg.Collateral.Denom, msg.TradingAsset, msg.Position, msg.Leverage, sdk.MustNewDecFromStr(types.TakeProfitPriceDefault), ammPool.PoolId)
 
-	mockChecker.On("Borrow", ctx, msg.Collateral.Amount, custodyAmount, mtp, &ammPool, &pool, eta, ptypes.BaseCurrency).Return(nil)
+	mockChecker.On("Borrow", ctx, msg.Collateral.Amount, custodyAmount, mtp, &ammPool, &pool, eta, ptypes.BaseCurrency, false).Return(nil)
 	mockChecker.On("UpdatePoolHealth", ctx, &pool).Return(nil)
 	mockChecker.On("TakeInCustody", ctx, *mtp, &pool).Return(nil)
 
@@ -318,7 +318,7 @@ func TestOpenLong_LeverageRatioLessThanSafetyFactor(t *testing.T) {
 	mockChecker.On("UpdateMTPHealth", ctx, *mtp, ammPool, ptypes.BaseCurrency).Return(lr, nil)
 	mockChecker.On("GetSafetyFactor", ctx).Return(sdk.NewDec(100))
 
-	_, err := k.OpenLong(ctx, ammPool.PoolId, msg, ptypes.BaseCurrency)
+	_, err := k.OpenLong(ctx, ammPool.PoolId, msg, ptypes.BaseCurrency, false)
 
 	// Expect an error indicating MTP is unhealthy
 	assert.True(t, errors.Is(err, types.ErrMTPUnhealthy))
@@ -379,7 +379,7 @@ func TestOpenLong_Success(t *testing.T) {
 
 	mtp := types.NewMTP(msg.Creator, msg.Collateral.Denom, msg.TradingAsset, msg.Collateral.Denom, msg.TradingAsset, msg.Position, msg.Leverage, sdk.MustNewDecFromStr(types.TakeProfitPriceDefault), ammPool.PoolId)
 
-	mockChecker.On("Borrow", ctx, msg.Collateral.Amount, custodyAmount, mtp, &ammPool, &pool, eta, ptypes.BaseCurrency).Return(nil)
+	mockChecker.On("Borrow", ctx, msg.Collateral.Amount, custodyAmount, mtp, &ammPool, &pool, eta, ptypes.BaseCurrency, false).Return(nil)
 	mockChecker.On("UpdatePoolHealth", ctx, &pool).Return(nil)
 	mockChecker.On("TakeInCustody", ctx, *mtp, &pool).Return(nil)
 
@@ -394,7 +394,7 @@ func TestOpenLong_Success(t *testing.T) {
 	mockChecker.On("CalcMTPConsolidateCollateral", ctx, mtp, ptypes.BaseCurrency).Return(nil)
 	mockChecker.On("SetMTP", ctx, mtp).Return(nil)
 
-	_, err := k.OpenLong(ctx, ammPool.PoolId, msg, ptypes.BaseCurrency)
+	_, err := k.OpenLong(ctx, ammPool.PoolId, msg, ptypes.BaseCurrency, false)
 	// Expect no error
 	assert.Nil(t, err)
 	mockChecker.AssertExpectations(t)
@@ -499,7 +499,7 @@ func TestOpenLong_BaseCurrency_Collateral(t *testing.T) {
 		sdk.MustNewDecFromStr(types.TakeProfitPriceDefault),
 	)
 
-	_, err = mk.Open(ctx, msg2)
+	_, err = mk.Open(ctx, msg2, false)
 	require.NoError(t, err)
 
 	mtps := mk.GetAllMTPs(ctx)
@@ -636,7 +636,7 @@ func TestOpenLong_ATOM_Collateral(t *testing.T) {
 		sdk.MustNewDecFromStr(types.TakeProfitPriceDefault),
 	)
 
-	_, err = mk.Open(ctx, msg2)
+	_, err = mk.Open(ctx, msg2, false)
 	require.NoError(t, err)
 
 	mtps := mk.GetAllMTPs(ctx)

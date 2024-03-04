@@ -12,7 +12,9 @@ import "elys/perpetual/types.proto";
 // Msg defines the Msg service.
 service Msg {
   rpc Open         (MsgOpen        ) returns (MsgOpenResponse        );
+  rpc BrokerOpen   (MsgBrokerOpen  ) returns (MsgOpenResponse        );
   rpc Close        (MsgClose       ) returns (MsgCloseResponse       );
+  rpc BrokerClose  (MsgBrokerClose ) returns (MsgCloseResponse       );
   rpc UpdateParams (MsgUpdateParams) returns (MsgUpdateParamsResponse);
   rpc Whitelist    (MsgWhitelist   ) returns (MsgWhitelistResponse   );
   rpc Dewhitelist  (MsgDewhitelist ) returns (MsgDewhitelistResponse );
@@ -24,6 +26,15 @@ message MsgOpen {
   string   trading_asset      = 4;
   cosmos.base.v1beta1.Coin collateral     = 5 [(gogoproto.nullable)   = false                                   ] ;
   string   take_profit_price  = 6 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+}
+message MsgBrokerOpen {
+  string   creator          = 1;
+  Position position         = 2;
+  string   leverage         = 3 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+  string   trading_asset      = 4;
+  cosmos.base.v1beta1.Coin collateral     = 5 [(gogoproto.nullable)   = false                                   ] ;
+  string   take_profit_price  = 6 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+  string   owner = 7;
 }
 
 message MsgOpenResponse {
@@ -37,6 +48,15 @@ message MsgClose {
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
     (gogoproto.nullable) = false
   ];
+}
+message MsgBrokerClose {
+  string creator = 1;
+  uint64 id      = 2;
+  string amount = 3 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+  string   owner = 4;
 }
 
 message MsgCloseResponse {
