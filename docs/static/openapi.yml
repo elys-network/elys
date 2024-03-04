@@ -41103,6 +41103,9 @@ paths:
                     timestamp:
                       type: string
                       format: uint64
+                    block_height:
+                      type: string
+                      format: uint64
               pagination:
                 type: object
                 properties:
@@ -85096,6 +85099,9 @@ definitions:
       timestamp:
         type: string
         format: uint64
+      block_height:
+        type: string
+        format: uint64
   elys.oracle.PriceFeeder:
     type: object
     properties:
@@ -85205,6 +85211,9 @@ definitions:
             timestamp:
               type: string
               format: uint64
+            block_height:
+              type: string
+              format: uint64
       pagination:
         type: object
         properties:
@@ -85284,6 +85293,9 @@ definitions:
           provider:
             type: string
           timestamp:
+            type: string
+            format: uint64
+          block_height:
             type: string
             format: uint64
   elys.oracle.QueryLastBandRequestIdResponse:

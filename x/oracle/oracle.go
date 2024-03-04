@@ -45,11 +45,12 @@ func (im IBCModule) handleOraclePacket(
 
 		for index, symbol := range request.Symbols {
 			im.keeper.SetPrice(ctx, types.Price{
-				Asset:     symbol,
-				Price:     sdk.NewDecWithPrec(int64(BandPriceResult.Rates[index]), int64(params.Multiplier)),
-				Source:    types.BAND,
-				Provider:  "automation",
-				Timestamp: uint64(ctx.BlockTime().Unix()),
+				Asset:       symbol,
+				Price:       sdk.NewDecWithPrec(int64(BandPriceResult.Rates[index]), int64(params.Multiplier)),
+				Source:      types.BAND,
+				Provider:    "automation",
+				Timestamp:   uint64(ctx.BlockTime().Unix()),
+				BlockHeight: uint64(ctx.BlockHeight()),
 			})
 		}
 
