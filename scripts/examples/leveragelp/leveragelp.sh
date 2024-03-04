@@ -72,7 +72,7 @@ pool:
     denom: amm/pool/2
   total_weight: "21474836480"
 
-# Open 100 USDC position
+# Open 50 USDC position
 elysd tx leveragelp open 5 ibc/2180E84E20F5679FCC760D8C165B60F42065DEF7F46A72B447CFF1B7DC6C0A65 50000000 2 --from=treasury --keyring-backend=test --chain-id=elystestnet-1 --yes --gas=1000000 --node=https://rpc.testnet.elys.network:443 --fees=250uelys
 
 

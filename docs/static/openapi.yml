@@ -38301,6 +38301,8 @@ paths:
                   method
 
                   signatures required by gogoproto.
+              slippage:
+                type: string
               weight_balance_ratio:
                 type: string
         default:
@@ -38403,6 +38405,8 @@ paths:
 
                   signatures required by gogoproto.
               weight_balance_ratio:
+                type: string
+              slippage:
                 type: string
               price_impact:
                 type: string
@@ -42113,6 +42117,8 @@ paths:
                   method
 
                   signatures required by gogoproto.
+              slippage:
+                type: string
               weight_balance_ratio:
                 type: string
               borrow_interest_rate:
@@ -83126,6 +83132,8 @@ definitions:
           signatures required by gogoproto.
       weight_balance_ratio:
         type: string
+      slippage:
+        type: string
       price_impact:
         type: string
   elys.amm.QuerySwapEstimationResponse:
@@ -83161,6 +83169,8 @@ definitions:
 
           NOTE: The amount field is an Int which implements the custom method
           signatures required by gogoproto.
+      slippage:
+        type: string
       weight_balance_ratio:
         type: string
   elys.amm.SwapAmountInRoute:
@@ -86257,6 +86267,8 @@ definitions:
 
           NOTE: The amount field is an Int which implements the custom method
           signatures required by gogoproto.
+      slippage:
+        type: string
       weight_balance_ratio:
         type: string
       borrow_interest_rate:
