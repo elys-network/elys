@@ -48,10 +48,12 @@ func TestCalcTotalShareOfStaking(t *testing.T) {
 	err = app.BankKeeper.MintCoins(ctx, ctypes.ModuleName, committed)
 	require.NoError(t, err)
 	err = app.BankKeeper.SendCoinsFromModuleToAccount(ctx, ctypes.ModuleName, addr[0], committed)
+	require.NoError(t, err)
 
 	err = app.BankKeeper.MintCoins(ctx, ctypes.ModuleName, committed)
 	require.NoError(t, err)
 	err = app.BankKeeper.SendCoinsFromModuleToAccount(ctx, ctypes.ModuleName, addr[1], committed)
+	require.NoError(t, err)
 
 	// Add testing commitment
 	simapp.AddTestCommitment(app, ctx, addr[0], committed, unclaimed)

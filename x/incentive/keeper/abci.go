@@ -50,7 +50,7 @@ func (k Keeper) BurnEdenBIfElysStakingReduced(ctx sdk.Context) {
 func (k Keeper) ProcessRewardsDistribution(ctx sdk.Context) {
 	// Read tokenomics time based inflation params and update incentive module params.
 	if !k.ProcessUpdateIncentiveParams(ctx) {
-		ctx.Logger().Error("Invalid tokenomics params", "error", errors.New("Invalid tokenomics params"))
+		ctx.Logger().Error("Invalid tokenomics params", "error", errors.New("invalid tokenomics params"))
 		return
 	}
 
