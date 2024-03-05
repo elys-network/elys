@@ -11,7 +11,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestCalculateRewardsForStakers(t *testing.T) {
+func TestCalcRewardsForStakers(t *testing.T) {
 	app := simapp.InitElysTestApp(initChain)
 	ctx := app.BaseApp.NewContext(initChain, tmproto.Header{})
 
@@ -82,19 +82,19 @@ func TestCalculateRewardsForStakers(t *testing.T) {
 	dexRevenueStakersAmt := sdk.NewDec(100000)
 	edenAmountPerEpochStakers := sdk.NewInt(100000)
 	// Calculate delegated amount per delegator
-	delegatedAmt := sdk.NewInt(1000)
+	delAmount := sdk.NewInt(1000)
 	// Calculate new unclaimed Eden tokens from Elys staked Eden & Eden boost committed, Dex rewards distribution
-	newUnclaimedEdenTokens, dexRewards, _ := ik.CalculateRewardsForStakersByElysStaked(ctx, delegatedAmt, edenAmountPerEpochStakers, dexRevenueStakersAmt)
+	newUnclaimedEdenTokens, dexRewards, _ := ik.CalcRewardsForStakersByElysStaked(ctx, delAmount, edenAmountPerEpochStakers, dexRevenueStakersAmt)
 	totalEdenGiven = totalEdenGiven.Add(newUnclaimedEdenTokens)
 	totalRewardsGiven = totalRewardsGiven.Add(dexRewards)
 
 	// Calculate new unclaimed Eden tokens from Eden committed, Dex rewards distribution
-	newUnclaimedEdenTokens, dexRewards = ik.CalculateRewardsForStakersByCommitted(ctx, delegatedAmt, edenAmountPerEpochStakers, dexRevenueStakersAmt)
+	newUnclaimedEdenTokens, dexRewards = ik.CalcRewardsForStakersByCommitted(ctx, delAmount, edenAmountPerEpochStakers, dexRevenueStakersAmt)
 	totalEdenGiven = totalEdenGiven.Add(newUnclaimedEdenTokens)
 	totalRewardsGiven = totalRewardsGiven.Add(dexRewards)
 
 	// Calculate new unclaimed Eden tokens from Eden boost committed, Dex rewards distribution
-	newUnclaimedEdenTokens, dexRewards = ik.CalculateRewardsForStakersByCommitted(ctx, delegatedAmt, edenAmountPerEpochStakers, dexRevenueStakersAmt)
+	newUnclaimedEdenTokens, dexRewards = ik.CalcRewardsForStakersByCommitted(ctx, delAmount, edenAmountPerEpochStakers, dexRevenueStakersAmt)
 	totalEdenGiven = totalEdenGiven.Add(newUnclaimedEdenTokens)
 	totalRewardsGiven = totalRewardsGiven.Add(dexRewards)
 

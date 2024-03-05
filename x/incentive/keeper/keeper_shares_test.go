@@ -11,7 +11,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestCalculateTotalShareOfStaking(t *testing.T) {
+func TestCalcTotalShareOfStaking(t *testing.T) {
 	app := simapp.InitElysTestApp(initChain)
 	ctx := app.BaseApp.NewContext(initChain, tmproto.Header{})
 
@@ -74,14 +74,14 @@ func TestCalculateTotalShareOfStaking(t *testing.T) {
 	// Recalculate total committed info
 	ik.UpdateTotalCommitmentInfo(ctx, ptypes.BaseCurrency)
 
-	share1 := ik.CalculateTotalShareOfStaking(sdk.ZeroInt())
+	share1 := ik.CalcTotalShareOfStaking(sdk.ZeroInt())
 	require.Equal(t, share1, sdk.ZeroDec())
 
-	share2 := ik.CalculateTotalShareOfStaking(sdk.NewInt(1004000))
+	share2 := ik.CalcTotalShareOfStaking(sdk.NewInt(1004000))
 	require.Equal(t, share2, sdk.NewDecWithPrec(1, 0))
 }
 
-func TestCalcDelegatedAmount(t *testing.T) {
+func TestCalcDelegationAmount(t *testing.T) {
 	app, genAccount, _ := simapp.InitElysTestAppWithGenAccount()
 	ctx := app.BaseApp.NewContext(initChain, tmproto.Header{})
 
@@ -89,10 +89,10 @@ func TestCalcDelegatedAmount(t *testing.T) {
 	addr := simapp.AddTestAddrs(app, ctx, 1, sdk.NewInt(1000))
 
 	// Check with non-delegator
-	delegatedAmount := ik.CalcDelegatedAmount(ctx, addr[0].String())
+	delegatedAmount := ik.CalcDelegationAmount(ctx, addr[0].String())
 	require.Equal(t, delegatedAmount, sdk.ZeroInt())
 
 	// Check with genesis account (delegator)
-	delegatedAmount = ik.CalcDelegatedAmount(ctx, genAccount.String())
+	delegatedAmount = ik.CalcDelegationAmount(ctx, genAccount.String())
 	require.Equal(t, delegatedAmount, sdk.DefaultPowerReduction)
 }

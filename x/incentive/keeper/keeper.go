@@ -185,7 +185,7 @@ func (k Keeper) UpdateStakersRewardsUnclaimed(ctx sdk.Context, stakeIncentive ty
 
 			// Calculate new unclaimed Eden tokens from Elys staked
 			// ----------------------------------------------------------
-			newUnclaimedEdenTokens, dexRewards, dexRewardsByStakers := k.CalculateRewardsForStakersByElysStaked(ctx, bondedDelAmount, stakersEdenAmountPerDistribution, dexRevenueStakersAmtPerDistribution)
+			newUnclaimedEdenTokens, dexRewards, dexRewardsByStakers := k.CalcRewardsForStakersByElysStaked(ctx, bondedDelAmount, stakersEdenAmountPerDistribution, dexRevenueStakersAmtPerDistribution)
 
 			// Total
 			totalEdenGiven = totalEdenGiven.Add(newUnclaimedEdenTokens)
@@ -204,7 +204,7 @@ func (k Keeper) UpdateStakersRewardsUnclaimed(ctx sdk.Context, stakeIncentive ty
 			// ----------------------------------------------------------
 			// ----------------------------------------------------------
 			edenCommitted := commitments.GetCommittedAmountForDenom(ptypes.Eden)
-			newUnclaimedEdenTokens, dexRewards = k.CalculateRewardsForStakersByCommitted(ctx, edenCommitted, stakersEdenAmountPerDistribution, dexRevenueStakersAmtPerDistribution)
+			newUnclaimedEdenTokens, dexRewards = k.CalcRewardsForStakersByCommitted(ctx, edenCommitted, stakersEdenAmountPerDistribution, dexRevenueStakersAmtPerDistribution)
 
 			// Total
 			totalEdenGiven = totalEdenGiven.Add(newUnclaimedEdenTokens)
@@ -224,7 +224,7 @@ func (k Keeper) UpdateStakersRewardsUnclaimed(ctx sdk.Context, stakeIncentive ty
 			// ----------------------------------------------------------
 			// ----------------------------------------------------------
 			edenBoostCommitted := commitments.GetCommittedAmountForDenom(ptypes.EdenB)
-			newUnclaimedEdenTokens, dexRewards = k.CalculateRewardsForStakersByCommitted(ctx, edenBoostCommitted, stakersEdenAmountPerDistribution, dexRevenueStakersAmtPerDistribution)
+			newUnclaimedEdenTokens, dexRewards = k.CalcRewardsForStakersByCommitted(ctx, edenBoostCommitted, stakersEdenAmountPerDistribution, dexRevenueStakersAmtPerDistribution)
 
 			// Total
 			totalEdenGiven = totalEdenGiven.Add(newUnclaimedEdenTokens)
@@ -419,7 +419,7 @@ func (k Keeper) UpdateLPRewardsUnclaimed(ctx sdk.Context, lpIncentive types.Ince
 			// Distribute gas fees to LPs
 			// ----------------------------------------------------------
 			// ----------------------------------------------------------
-			newUnclaimedEdenTokensLp, dexRewardsLp := k.CalculateRewardsForLPs(ctx, totalProxyTVL, commitments, edenAmountPerEpochLPsPerDistribution, gasFeesLPsAmtPerDistribution)
+			newUnclaimedEdenTokensLp, dexRewardsLp := k.CalcRewardsForLPs(ctx, totalProxyTVL, commitments, edenAmountPerEpochLPsPerDistribution, gasFeesLPsAmtPerDistribution)
 			// Total
 			totalEdenGivenLP = totalEdenGivenLP.Add(newUnclaimedEdenTokensLp)
 			totalRewardsGivenLP = totalRewardsGivenLP.Add(dexRewardsLp)
@@ -434,7 +434,7 @@ func (k Keeper) UpdateLPRewardsUnclaimed(ctx sdk.Context, lpIncentive types.Ince
 			// Distribute gas fees to LPs
 			// ----------------------------------------------------------
 			// ----------------------------------------------------------
-			newUnclaimedEdenTokensStableLp, dexRewardsStableLp := k.CalculateRewardsForStableStakeLPs(ctx, totalProxyTVL, commitments, edenAmountPerEpochLPsPerDistribution, gasFeesLPsAmtPerDistribution, baseCurrency)
+			newUnclaimedEdenTokensStableLp, dexRewardsStableLp := k.CalcRewardsForStableStakeLPs(ctx, totalProxyTVL, commitments, edenAmountPerEpochLPsPerDistribution, gasFeesLPsAmtPerDistribution, baseCurrency)
 
 			// Total
 			totalEdenGivenLP = totalEdenGivenLP.Add(newUnclaimedEdenTokensStableLp)

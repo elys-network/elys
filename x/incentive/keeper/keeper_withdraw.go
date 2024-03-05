@@ -56,13 +56,13 @@ func (k Keeper) GiveCommissionToValidators(ctx sdk.Context, delegator string, to
 		// Get delegator share
 		shares := del.GetShares()
 		// Get token amount delegated
-		delegatedAmt := val.TokensFromSharesTruncated(shares)
+		delAmount := val.TokensFromSharesTruncated(shares)
 
 		//-----------------------------
 		// Eden commission
 		//-----------------------------
 		// to give = delegated amount / total delegation * newly minted eden * commission rate
-		edenCommission := delegatedAmt.QuoInt(totalDelegationAmt).MulInt(newUnclaimedAmt).Mul(commRate)
+		edenCommission := delAmount.QuoInt(totalDelegationAmt).MulInt(newUnclaimedAmt).Mul(commRate)
 
 		// Sum total commission given
 		totalEdenGiven = totalEdenGiven.Add(edenCommission.TruncateInt())
@@ -72,7 +72,7 @@ func (k Keeper) GiveCommissionToValidators(ctx sdk.Context, delegator string, to
 		// Dex rewards commission
 		//-----------------------------
 		// to give = delegated amount / total delegation * newly minted eden * commission rate
-		dexRewardsCommission := delegatedAmt.QuoInt(totalDelegationAmt).Mul(dexRewards).Mul(commRate)
+		dexRewardsCommission := delAmount.QuoInt(totalDelegationAmt).Mul(dexRewards).Mul(commRate)
 		// Sum total commission given
 		totalDexRewardsGiven = totalDexRewardsGiven.Add(dexRewardsCommission.TruncateInt())
 		//-----------------------------

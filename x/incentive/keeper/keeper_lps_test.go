@@ -70,7 +70,7 @@ func SetupStableCoinPrices(ctx sdk.Context, oracle oraclekeeper.Keeper) {
 	})
 }
 
-func TestCalculateRewardsForLPs(t *testing.T) {
+func TestCalcRewardsForLPs(t *testing.T) {
 	app := simapp.InitElysTestApp(initChain)
 	ctx := app.BaseApp.NewContext(initChain, tmproto.Header{})
 
@@ -179,7 +179,7 @@ func TestCalculateRewardsForLPs(t *testing.T) {
 
 	gasFeesLPsAmt := sdk.NewDec(1000)
 	// Calculate rewards for LPs
-	newUnclaimedEdenTokensLp, dexRewardsLp := ik.CalculateRewardsForLPs(ctx, totalProxyTVL, commitments, edenAmountPerEpochLp, gasFeesLPsAmt)
+	newUnclaimedEdenTokensLp, dexRewardsLp := ik.CalcRewardsForLPs(ctx, totalProxyTVL, commitments, edenAmountPerEpochLp, gasFeesLPsAmt)
 
 	require.Equal(t, newUnclaimedEdenTokensLp, sdk.NewInt(1000000))
 	require.Equal(t, dexRewardsLp, sdk.NewInt(1000))

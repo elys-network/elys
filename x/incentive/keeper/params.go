@@ -169,7 +169,7 @@ func (k Keeper) UpdatePoolMultipliers(ctx sdk.Context, poolMultipliers []types.P
 }
 
 // Calculate epoch counts per year to be used in APR calculation
-func (k Keeper) CalculateEpochCountsPerYear(ctx sdk.Context, epochIdentifier string) int64 {
+func (k Keeper) CalcEpochCountsPerYear(ctx sdk.Context, epochIdentifier string) int64 {
 	epochInfo, found := k.epochsKeeper.GetEpochInfo(ctx, epochIdentifier)
 	epochSeconds := int64(epochInfo.Duration.Seconds())
 	if !found || epochSeconds == 0 {

@@ -55,10 +55,9 @@ func (oq *Querier) BuildDelegatorValidatorsResponseCW(ctx sdk.Context, validator
 		delegations, _ := oq.stakingKeeper.GetDelegation(ctx, delAddress, valAddress)
 		shares := delegations.GetShares()
 		tokens := validator.TokensFromSharesTruncated(shares)
-		delegatedAmt := tokens.TruncateInt()
 
 		validatorCW.Staked = commitmenttypes.BalanceAvailable{
-			Amount:    delegatedAmt,
+			Amount:    tokens.TruncateInt(),
 			UsdAmount: tokens,
 		}
 

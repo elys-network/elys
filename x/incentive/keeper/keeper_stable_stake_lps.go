@@ -37,7 +37,7 @@ func (k Keeper) CalculatePoolShareForStableStakeLPs(ctx sdk.Context, totalProxyT
 }
 
 // Calculate new Eden token amounts based on LpElys committed and MElys committed
-func (k Keeper) CalculateRewardsForStableStakeLPs(ctx sdk.Context, totalProxyTVL sdk.Dec, commitments ctypes.Commitments, edenAmountPerEpochLp math.Int, gasFeesForLPs sdk.Dec, baseCurrency string) (math.Int, math.Int) {
+func (k Keeper) CalcRewardsForStableStakeLPs(ctx sdk.Context, totalProxyTVL sdk.Dec, commitments ctypes.Commitments, edenAmountPerEpochLp math.Int, gasFeesForLPs sdk.Dec, baseCurrency string) (math.Int, math.Int) {
 	// Method 2 - Using Proxy TVL
 	totalDexRewardsAllocated := sdk.ZeroDec()
 

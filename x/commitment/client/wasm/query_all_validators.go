@@ -69,9 +69,8 @@ func (oq *Querier) BuildAllValidatorsResponseCW(ctx sdk.Context, allValidators [
 			delegations, _ := oq.stakingKeeper.GetDelegation(ctx, delAddress, valAddress)
 			shares := delegations.GetShares()
 			tokens := validator.TokensFromSharesTruncated(shares)
-			delegatedAmt := tokens.TruncateInt()
 
-			validatorCW.Staked.Amount = delegatedAmt
+			validatorCW.Staked.Amount = tokens.TruncateInt()
 			validatorCW.Staked.UsdAmount = tokens
 		}
 
