@@ -81,7 +81,7 @@ func TestCalculateTotalShareOfStaking(t *testing.T) {
 	require.Equal(t, share2, sdk.NewDecWithPrec(1, 0))
 }
 
-func TestCalculateDelegatedAmount(t *testing.T) {
+func TestCalcDelegatedAmount(t *testing.T) {
 	app, genAccount, _ := simapp.InitElysTestAppWithGenAccount()
 	ctx := app.BaseApp.NewContext(initChain, tmproto.Header{})
 
@@ -89,10 +89,10 @@ func TestCalculateDelegatedAmount(t *testing.T) {
 	addr := simapp.AddTestAddrs(app, ctx, 1, sdk.NewInt(1000))
 
 	// Check with non-delegator
-	delegatedAmount := ik.CalculateDelegatedAmount(ctx, addr[0].String())
+	delegatedAmount := ik.CalcDelegatedAmount(ctx, addr[0].String())
 	require.Equal(t, delegatedAmount, sdk.ZeroInt())
 
 	// Check with genesis account (delegator)
-	delegatedAmount = ik.CalculateDelegatedAmount(ctx, genAccount.String())
+	delegatedAmount = ik.CalcDelegatedAmount(ctx, genAccount.String())
 	require.Equal(t, delegatedAmount, sdk.DefaultPowerReduction)
 }

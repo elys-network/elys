@@ -36,14 +36,14 @@ func (k Keeper) CalculateRewardsForStakersByCommitted(ctx sdk.Context, amt math.
 	stakeShare := k.CalculateTotalShareOfStaking(amt)
 
 	// Calculate newly creating eden amount by its share
-	newEdenAllocated := stakeShare.MulInt(edenAmountPerEpoch)
+	newEdenAllocated := stakeShare.MulInt(edenAmountPerEpoch).TruncateInt()
 
 	// --------------------DEX rewards calculation --------------------
 	// ----------------------------------------------------------------
 	// Calculate dex rewards
 	dexRewards := stakeShare.Mul(dexRevenueAmtForStakers).TruncateInt()
 
-	return newEdenAllocated.TruncateInt(), dexRewards
+	return newEdenAllocated, dexRewards
 }
 
 // Calculate new Eden-Boost token amounts based on the given conditions and user's current unclaimed token balance

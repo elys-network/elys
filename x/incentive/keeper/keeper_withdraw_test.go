@@ -27,7 +27,7 @@ func TestGiveCommissionToValidators(t *testing.T) {
 
 	delegator := genAccount.String()
 	// Calculate delegated amount per delegator
-	delegatedAmt := ik.CalculateDelegatedAmount(ctx, delegator)
+	delegatedAmt := ik.CalcDelegatedAmount(ctx, delegator)
 	newUnclaimedEdenTokens := sdk.NewInt(10000)
 	dexRewardsByStakers := sdk.NewDec(1000)
 	// Give commission to validators ( Eden from stakers and Dex rewards from stakers. )
@@ -118,7 +118,7 @@ func TestRecordWithdrawValidatorCommission(t *testing.T) {
 
 	delegator := genAccount.String()
 	// Calculate delegated amount per delegator
-	delegatedAmt := ik.CalculateDelegatedAmount(ctx, delegator)
+	delegatedAmt := ik.CalcDelegatedAmount(ctx, delegator)
 	newUnclaimedEdenTokens := sdk.NewInt(10000)
 	dexRewardsByStakers := sdk.NewDec(1000)
 

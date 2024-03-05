@@ -19,7 +19,7 @@ func (k Keeper) BurnEdenBFromElysUnstaking(ctx sdk.Context, delegator sdk.AccAdd
 	}
 
 	// Calculate current delegated amount of delegator
-	delegatedAmt := k.CalculateDelegatedAmount(ctx, delAddr)
+	delegatedAmt := k.CalcDelegatedAmount(ctx, delAddr)
 
 	// If not unstaked,
 	// should return nil otherwise it will break staking module

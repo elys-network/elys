@@ -178,14 +178,14 @@ func (k Keeper) UpdateStakersRewardsUnclaimed(ctx sdk.Context, stakeIncentive ty
 			newSumDexRewardsUnClaimed := sdk.ZeroInt()
 
 			// Calculate delegated amount per delegator
-			delegatedAmt := k.CalculateDelegatedAmount(ctx, creator)
+			bondedDelAmount := k.CalcBondedDelegationAmount(ctx, creator)
 
 			// Calculate new unclaimed Eden tokens from Eden & Eden boost committed, Dex rewards distribution
 			// Distribute gas fees to stakers
 
 			// Calculate new unclaimed Eden tokens from Elys staked
 			// ----------------------------------------------------------
-			newUnclaimedEdenTokens, dexRewards, dexRewardsByStakers := k.CalculateRewardsForStakersByElysStaked(ctx, delegatedAmt, stakersEdenAmountPerDistribution, dexRevenueStakersAmtPerDistribution)
+			newUnclaimedEdenTokens, dexRewards, dexRewardsByStakers := k.CalculateRewardsForStakersByElysStaked(ctx, bondedDelAmount, stakersEdenAmountPerDistribution, dexRevenueStakersAmtPerDistribution)
 
 			// Total
 			totalEdenGiven = totalEdenGiven.Add(newUnclaimedEdenTokens)
@@ -244,7 +244,7 @@ func (k Keeper) UpdateStakersRewardsUnclaimed(ctx sdk.Context, stakeIncentive ty
 			// Give commission to validators ( Eden from stakers and Dex rewards from stakers. )
 			// ----------------------------------------------------------
 			// ----------------------------------------------------------
-			edenCommissionGiven, dexRewardsCommissionGiven := k.GiveCommissionToValidators(ctx, creator, delegatedAmt, newEdenFromElysStaking, dexRewardsByStakers, baseCurrency)
+			edenCommissionGiven, dexRewardsCommissionGiven := k.GiveCommissionToValidators(ctx, creator, bondedDelAmount, newEdenFromElysStaking, dexRewardsByStakers, baseCurrency)
 
 			// Minus the commission amount given
 			newSumEdenRewardsUnClaimed = newSumEdenRewardsUnClaimed.Sub(edenCommissionGiven)
@@ -270,7 +270,7 @@ func (k Keeper) UpdateStakersRewardsUnclaimed(ctx sdk.Context, stakeIncentive ty
 			// ----------------------------------------------------------
 			// ----------------------------------------------------------
 			newEdenBTokens, newEdenBFromElysStaking, newEdenBFromEdenCommited := k.CalculateEdenBoostRewards(
-				ctx, delegatedAmt, commitments, stakeIncentive, types.EdenBoostApr)
+				ctx, bondedDelAmount, commitments, stakeIncentive, types.EdenBoostApr)
 			rewardsByElysStaking = rewardsByElysStaking.Add(sdk.NewCoin(ptypes.EdenB, newEdenBFromElysStaking))
 			rewardsByEdenCommitted = rewardsByEdenCommitted.Add(sdk.NewCoin(ptypes.EdenB, newEdenBFromEdenCommited))
 

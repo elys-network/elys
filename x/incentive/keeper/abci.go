@@ -23,7 +23,7 @@ func (k Keeper) EndBlocker(ctx sdk.Context) {
 
 func (k Keeper) TakeDelegationSnapshot(ctx sdk.Context, addr string) {
 	// Calculate delegated amount per delegator
-	delegatedAmt := k.CalculateDelegatedAmount(ctx, addr)
+	delegatedAmt := k.CalcDelegatedAmount(ctx, addr)
 
 	elysStaked := types.ElysStaked{
 		Address: addr,
