@@ -23,11 +23,11 @@ func (k Keeper) EndBlocker(ctx sdk.Context) {
 
 func (k Keeper) TakeDelegationSnapshot(ctx sdk.Context, addr string) {
 	// Calculate delegated amount per delegator
-	delegatedAmt := k.CalculateDelegatedAmount(ctx, addr)
+	delAmount := k.CalcDelegationAmount(ctx, addr)
 
 	elysStaked := types.ElysStaked{
 		Address: addr,
-		Amount:  delegatedAmt,
+		Amount:  delAmount,
 	}
 
 	// Set Elys staked amount
@@ -50,7 +50,7 @@ func (k Keeper) BurnEdenBIfElysStakingReduced(ctx sdk.Context) {
 func (k Keeper) ProcessRewardsDistribution(ctx sdk.Context) {
 	// Read tokenomics time based inflation params and update incentive module params.
 	if !k.ProcessUpdateIncentiveParams(ctx) {
-		ctx.Logger().Error("Invalid tokenomics params", "error", errors.New("Invalid tokenomics params"))
+		ctx.Logger().Error("Invalid tokenomics params", "error", errors.New("invalid tokenomics params"))
 		return
 	}
 

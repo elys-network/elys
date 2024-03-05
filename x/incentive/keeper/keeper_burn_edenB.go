@@ -19,11 +19,11 @@ func (k Keeper) BurnEdenBFromElysUnstaking(ctx sdk.Context, delegator sdk.AccAdd
 	}
 
 	// Calculate current delegated amount of delegator
-	delegatedAmt := k.CalculateDelegatedAmount(ctx, delAddr)
+	delAmount := k.CalcDelegationAmount(ctx, delAddr)
 
 	// If not unstaked,
 	// should return nil otherwise it will break staking module
-	if delegatedAmt.GTE(prevElysStaked) {
+	if delAmount.GTE(prevElysStaked) {
 		return
 	}
 
@@ -38,7 +38,7 @@ func (k Keeper) BurnEdenBFromElysUnstaking(ctx sdk.Context, delegator sdk.AccAdd
 	totalEdenB := edenBCommitted.Add(edenBUnclaimed).Add(edenBClaimed)
 
 	// Unstaked
-	unstakedElys := prevElysStaked.Sub(delegatedAmt)
+	unstakedElys := prevElysStaked.Sub(delAmount)
 
 	unstakedElysDec := sdk.NewDecFromInt(unstakedElys)
 	edenCommittedAndElysStakedDec := sdk.NewDecFromInt(edenCommitted.Add(prevElysStaked))

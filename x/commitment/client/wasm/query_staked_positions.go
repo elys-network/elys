@@ -54,7 +54,7 @@ func (oq *Querier) BuildStakedPositionResponseCW(ctx sdk.Context, validators []s
 
 		shares := delegations.GetShares()
 		tokens := validator.TokensFromSharesTruncated(shares)
-		delegatedAmt := tokens.TruncateInt()
+		delAmount := tokens.TruncateInt()
 		votingPower := sdk.NewDecFromInt(validator.Tokens).QuoInt(totalBonded).MulInt(sdk.NewInt(100))
 
 		website := validator.Description.Website
@@ -74,7 +74,7 @@ func (oq *Querier) BuildStakedPositionResponseCW(ctx sdk.Context, validators []s
 			Commission: validator.GetCommission(),
 		}
 		stakedPosition.Staked = commitmenttypes.BalanceAvailable{
-			Amount:    delegatedAmt,
+			Amount:    delAmount,
 			UsdAmount: tokens,
 		}
 

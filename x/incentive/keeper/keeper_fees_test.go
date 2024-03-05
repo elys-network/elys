@@ -7,7 +7,6 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	simapp "github.com/elys-network/elys/app"
-	"github.com/elys-network/elys/x/amm/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 	"github.com/stretchr/testify/require"
@@ -40,9 +39,9 @@ func TestCollectGasFeesToIncentiveModule(t *testing.T) {
 	// Mint 100000USDC
 	usdcToken := sdk.NewCoins(sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(100000)))
 
-	err = app.BankKeeper.MintCoins(ctx, types.ModuleName, usdcToken)
+	err = app.BankKeeper.MintCoins(ctx, ammtypes.ModuleName, usdcToken)
 	require.NoError(t, err)
-	err = app.BankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, addr[0], usdcToken)
+	err = app.BankKeeper.SendCoinsFromModuleToAccount(ctx, ammtypes.ModuleName, addr[0], usdcToken)
 	require.NoError(t, err)
 
 	poolAssets := []ammtypes.PoolAsset{
@@ -64,7 +63,7 @@ func TestCollectGasFeesToIncentiveModule(t *testing.T) {
 		ExitFee: argExitFee,
 	}
 
-	msg := types.NewMsgCreatePool(
+	msg := ammtypes.NewMsgCreatePool(
 		addr[0].String(),
 		poolParams,
 		poolAssets,
@@ -115,9 +114,9 @@ func TestCollectDEXRevenueToIncentiveModule(t *testing.T) {
 	// Mint 100000USDC
 	usdcToken := sdk.NewCoins(sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(100000)))
 
-	err := bk.MintCoins(ctx, types.ModuleName, usdcToken)
+	err := bk.MintCoins(ctx, ammtypes.ModuleName, usdcToken)
 	require.NoError(t, err)
-	err = bk.SendCoinsFromModuleToAccount(ctx, types.ModuleName, addr[0], usdcToken)
+	err = bk.SendCoinsFromModuleToAccount(ctx, ammtypes.ModuleName, addr[0], usdcToken)
 	require.NoError(t, err)
 
 	poolAssets := []ammtypes.PoolAsset{
@@ -139,7 +138,7 @@ func TestCollectDEXRevenueToIncentiveModule(t *testing.T) {
 		ExitFee: argExitFee,
 	}
 
-	msg := types.NewMsgCreatePool(
+	msg := ammtypes.NewMsgCreatePool(
 		addr[0].String(),
 		poolParams,
 		poolAssets,
@@ -155,16 +154,16 @@ func TestCollectDEXRevenueToIncentiveModule(t *testing.T) {
 	// Mint uusdc
 	usdcToken = sdk.NewCoins(sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(200000)))
 
-	err = app.BankKeeper.MintCoins(ctx, types.ModuleName, usdcToken)
+	err = app.BankKeeper.MintCoins(ctx, ammtypes.ModuleName, usdcToken)
 	require.NoError(t, err)
-	err = app.BankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, addr[1], usdcToken)
+	err = app.BankKeeper.SendCoinsFromModuleToAccount(ctx, ammtypes.ModuleName, addr[1], usdcToken)
 	require.NoError(t, err)
 
 	// Mint uatom
 	atomToken := sdk.NewCoins(sdk.NewCoin(ptypes.ATOM, sdk.NewInt(200000)))
-	err = bk.MintCoins(ctx, types.ModuleName, atomToken)
+	err = bk.MintCoins(ctx, ammtypes.ModuleName, atomToken)
 	require.NoError(t, err)
-	err = bk.SendCoinsFromModuleToAccount(ctx, types.ModuleName, addr[1], atomToken)
+	err = bk.SendCoinsFromModuleToAccount(ctx, ammtypes.ModuleName, addr[1], atomToken)
 	require.NoError(t, err)
 
 	poolAssets2 := []ammtypes.PoolAsset{
@@ -178,7 +177,7 @@ func TestCollectDEXRevenueToIncentiveModule(t *testing.T) {
 		},
 	}
 
-	msg = types.NewMsgCreatePool(
+	msg = ammtypes.NewMsgCreatePool(
 		addr[1].String(),
 		poolParams,
 		poolAssets2,
@@ -200,17 +199,17 @@ func TestCollectDEXRevenueToIncentiveModule(t *testing.T) {
 	// Fill in pool #1 revenue wallet
 	revenueAddress1 := ammtypes.NewPoolRevenueAddress(0)
 	usdcRevToken1 := sdk.NewCoins(sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(1000)))
-	err = app.BankKeeper.MintCoins(ctx, types.ModuleName, usdcRevToken1)
+	err = app.BankKeeper.MintCoins(ctx, ammtypes.ModuleName, usdcRevToken1)
 	require.NoError(t, err)
-	err = app.BankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, revenueAddress1, usdcRevToken1)
+	err = app.BankKeeper.SendCoinsFromModuleToAccount(ctx, ammtypes.ModuleName, revenueAddress1, usdcRevToken1)
 	require.NoError(t, err)
 
 	// Fill in pool #2 revenue wallet
 	revenueAddress2 := ammtypes.NewPoolRevenueAddress(1)
 	usdcRevToken2 := sdk.NewCoins(sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(3000)))
-	err = app.BankKeeper.MintCoins(ctx, types.ModuleName, usdcRevToken2)
+	err = app.BankKeeper.MintCoins(ctx, ammtypes.ModuleName, usdcRevToken2)
 	require.NoError(t, err)
-	err = app.BankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, revenueAddress2, usdcRevToken2)
+	err = app.BankKeeper.SendCoinsFromModuleToAccount(ctx, ammtypes.ModuleName, revenueAddress2, usdcRevToken2)
 	require.NoError(t, err)
 
 	// Collect revenue

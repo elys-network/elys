@@ -10,7 +10,7 @@ import (
 )
 
 // Calculate total share of staking
-func (k Keeper) CalculateTotalShareOfStaking(amount math.Int) sdk.Dec {
+func (k Keeper) CalcTotalShareOfStaking(amount math.Int) sdk.Dec {
 	// Total staked = Elys staked + Eden Committed + Eden boost Committed
 	totalStaked := k.tci.TotalElysBonded.Add(k.tci.TotalEdenEdenBoostCommitted)
 	if totalStaked.LTE(sdk.ZeroInt()) {
@@ -22,7 +22,7 @@ func (k Keeper) CalculateTotalShareOfStaking(amount math.Int) sdk.Dec {
 }
 
 // Calculate the delegated amount
-func (k Keeper) CalculateDelegatedAmount(ctx sdk.Context, delegator string) math.Int {
+func (k Keeper) CalcDelegationAmount(ctx sdk.Context, delegator string) math.Int {
 	// Derivate bech32 based delegator address
 	delAddr, err := sdk.AccAddressFromBech32(delegator)
 	if err != nil {
@@ -31,7 +31,7 @@ func (k Keeper) CalculateDelegatedAmount(ctx sdk.Context, delegator string) math
 	}
 
 	// Get elys delegation for creator address
-	delegatedAmt := sdk.ZeroDec()
+	delAmount := sdk.ZeroDec()
 
 	// Get all delegations
 	delegations := k.stk.GetDelegatorDelegations(ctx, delAddr, gomath.MaxUint16)
@@ -43,10 +43,41 @@ func (k Keeper) CalculateDelegatedAmount(ctx sdk.Context, delegator string) math
 
 		shares := del.GetShares()
 		tokens := val.TokensFromSharesTruncated(shares)
-		delegatedAmt = delegatedAmt.Add(tokens)
+		delAmount = delAmount.Add(tokens)
 	}
 
-	return delegatedAmt.TruncateInt()
+	return delAmount.TruncateInt()
+}
+
+// Calculate delegation to bonded validators
+func (k Keeper) CalcBondedDelegationAmount(ctx sdk.Context, delegator string) math.Int {
+	// Derivate bech32 based delegator address
+	delAddr, err := sdk.AccAddressFromBech32(delegator)
+	if err != nil {
+		// This could be validator address
+		return sdk.ZeroInt()
+	}
+
+	// Get elys delegation for creator address
+	delAmount := sdk.ZeroDec()
+
+	// Get all delegations
+	delegations := k.stk.GetDelegatorDelegations(ctx, delAddr, gomath.MaxUint16)
+	for _, del := range delegations {
+		// Get validator address
+		valAddr := del.GetValidatorAddr()
+		// Get validator
+		val := k.stk.Validator(ctx, valAddr)
+
+		if !val.IsBonded() {
+			continue
+		}
+		shares := del.GetShares()
+		tokens := val.TokensFromSharesTruncated(shares)
+		delAmount = delAmount.Add(tokens)
+	}
+
+	return delAmount.TruncateInt()
 }
 
 // Calculate the amm pool ratio

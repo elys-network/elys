@@ -11,7 +11,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestCalculateTotalShareOfStaking(t *testing.T) {
+func TestCalcTotalShareOfStaking(t *testing.T) {
 	app := simapp.InitElysTestApp(initChain)
 	ctx := app.BaseApp.NewContext(initChain, tmproto.Header{})
 
@@ -48,10 +48,12 @@ func TestCalculateTotalShareOfStaking(t *testing.T) {
 	err = app.BankKeeper.MintCoins(ctx, ctypes.ModuleName, committed)
 	require.NoError(t, err)
 	err = app.BankKeeper.SendCoinsFromModuleToAccount(ctx, ctypes.ModuleName, addr[0], committed)
+	require.NoError(t, err)
 
 	err = app.BankKeeper.MintCoins(ctx, ctypes.ModuleName, committed)
 	require.NoError(t, err)
 	err = app.BankKeeper.SendCoinsFromModuleToAccount(ctx, ctypes.ModuleName, addr[1], committed)
+	require.NoError(t, err)
 
 	// Add testing commitment
 	simapp.AddTestCommitment(app, ctx, addr[0], committed, unclaimed)
@@ -74,14 +76,14 @@ func TestCalculateTotalShareOfStaking(t *testing.T) {
 	// Recalculate total committed info
 	ik.UpdateTotalCommitmentInfo(ctx, ptypes.BaseCurrency)
 
-	share1 := ik.CalculateTotalShareOfStaking(sdk.ZeroInt())
+	share1 := ik.CalcTotalShareOfStaking(sdk.ZeroInt())
 	require.Equal(t, share1, sdk.ZeroDec())
 
-	share2 := ik.CalculateTotalShareOfStaking(sdk.NewInt(1004000))
+	share2 := ik.CalcTotalShareOfStaking(sdk.NewInt(1004000))
 	require.Equal(t, share2, sdk.NewDecWithPrec(1, 0))
 }
 
-func TestCalculateDelegatedAmount(t *testing.T) {
+func TestCalcDelegationAmount(t *testing.T) {
 	app, genAccount, _ := simapp.InitElysTestAppWithGenAccount()
 	ctx := app.BaseApp.NewContext(initChain, tmproto.Header{})
 
@@ -89,10 +91,10 @@ func TestCalculateDelegatedAmount(t *testing.T) {
 	addr := simapp.AddTestAddrs(app, ctx, 1, sdk.NewInt(1000))
 
 	// Check with non-delegator
-	delegatedAmount := ik.CalculateDelegatedAmount(ctx, addr[0].String())
+	delegatedAmount := ik.CalcDelegationAmount(ctx, addr[0].String())
 	require.Equal(t, delegatedAmount, sdk.ZeroInt())
 
 	// Check with genesis account (delegator)
-	delegatedAmount = ik.CalculateDelegatedAmount(ctx, genAccount.String())
+	delegatedAmount = ik.CalcDelegationAmount(ctx, genAccount.String())
 	require.Equal(t, delegatedAmount, sdk.DefaultPowerReduction)
 }

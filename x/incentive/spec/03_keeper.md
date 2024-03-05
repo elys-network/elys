@@ -66,7 +66,7 @@ The easiest way to solve this issue is by timestamping whenever an LP add or wit
 
 ```go
     // Calculate total share of staking considering Eden committed, Eden boost committed and Elys staked.
-	stakeShare := k.CalculateTotalShareOfStaking(totalEdenCommittedByStake)
+	stakeShare := k.CalcTotalShareOfStaking(totalEdenCommittedByStake)
 	newEdenAllocated := stakeShare.MulInt(edenAmountPerEpoch)
 ```
 
