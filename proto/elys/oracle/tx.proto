@@ -7,6 +7,7 @@ import "elys/oracle/band_price.proto";
 import "elys/oracle/asset_info.proto";
 import "elys/oracle/price.proto";
 import "elys/oracle/price_feeder.proto";
+import "elys/oracle/params.proto";
 // this line is used by starport scaffolding # proto/tx/import
 
 option go_package = "github.com/elys-network/elys/x/oracle/types";
@@ -22,7 +23,8 @@ service Msg {
   rpc RemoveAssetInfo(MsgRemoveAssetInfo) returns (MsgRemoveAssetInfoResponse);
   rpc AddPriceFeeders(MsgAddPriceFeeders) returns (MsgAddPriceFeedersResponse);
   rpc RemovePriceFeeders(MsgRemovePriceFeeders) returns (MsgRemovePriceFeedersResponse);
-// this line is used by starport scaffolding # proto/tx/rpc
+  rpc UpdateParams(MsgUpdateParams) returns (MsgUpdateParamsResponse);
+  // this line is used by starport scaffolding # proto/tx/rpc
 }
 
 message MsgFeedPrice {
@@ -82,5 +84,13 @@ message MsgRemovePriceFeeders {
   repeated string feeders = 2;
 }
 message MsgRemovePriceFeedersResponse {}
+
+message MsgUpdateParams {
+  string authority = 1;
+  // NOTE: All parameters must be supplied.
+  Params params = 2 [ (gogoproto.nullable) = false ];
+}
+
+message MsgUpdateParamsResponse {}
 
 // this line is used by starport scaffolding # proto/tx/message

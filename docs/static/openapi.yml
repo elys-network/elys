@@ -85061,6 +85061,8 @@ definitions:
     type: object
   elys.oracle.MsgSetPriceFeederResponse:
     type: object
+  elys.oracle.MsgUpdateParamsResponse:
+    type: object
   elys.oracle.Params:
     type: object
     properties:
