@@ -1,8 +1,21 @@
 # How to use a testnet snapshot in localnet?
 
+## Polkachu testnet snapshots
+
+You can find the latest Polkachu testnet snapshot [here](https://polkachu.com/testnets/elys/snapshots).
+
 ```
 make install
 go run ./scripts/upgrade-assure/... https://snapshots.polkachu.com/testnet-snapshots/elys/elys_5724942.tar.lz4 ~/go/bin/elysd ~/go/bin/elysd --skip-proposal
+```
+
+## AviaOne testnet snapshots
+
+You can find the latest AviaOne testnet snapshot [here](https://aviaone.com/blockchains-service/elystestnet-1-elys.html#8).
+
+```
+make install
+go run ./scripts/upgrade-assure/... https://services.elystestnet-1.elys.aviaone.com/elystestnet-1_2024-03-06.tar.gz ~/go/bin/elysd ~/go/bin/elysd --skip-proposal
 ```
 
 # How can I perform a test with a version upgrade that involves extensive changes to data structures?

@@ -6,8 +6,28 @@ import (
 )
 
 func retrieveSnapshot(snapshotUrl, homePath string) {
-	// Construct the command string
-	cmdString := "curl -o - -L " + snapshotUrl + " | lz4 -c -d - | tar -x -C " + homePath
+	var cmdString string
+
+	// if snapshot url ends with `.tar.lz4`
+	if snapshotUrl[len(snapshotUrl)-8:] == ".tar.lz4" {
+		// Construct the command string
+		cmdString = "curl -o - -L " + snapshotUrl + " | lz4 -c -d - | tar -x -C " + homePath
+	} else if snapshotUrl[len(snapshotUrl)-7:] == ".tar.gz" {
+		// if snapshot url ends with `.tar.gz`
+		// Construct the command string
+		cmdString = "curl -o - -L " + snapshotUrl + " | tar -xz -C " + homePath
+	} else if snapshotUrl[len(snapshotUrl)-4:] == ".tar" {
+		// if snapshot url ends with `.tar`
+		// Construct the command string
+		cmdString = "curl -o - -L " + snapshotUrl + " | tar -x -C " + homePath
+	} else {
+		// otherwise, the snapshot url is invalid
+		log.Fatalf(Red+"Invalid snapshot url: %s", snapshotUrl)
+	}
+
+	// print cmdString
+	log.Printf(Green+"Retrieving snapshot using command: %s",
+		cmdString)
 
 	// Execute the command using /bin/sh
 	cmd := exec.Command("/bin/sh", "-c", cmdString)
