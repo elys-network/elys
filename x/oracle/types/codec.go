@@ -5,7 +5,6 @@ import (
 	cdctypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/msgservice"
-	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
 )
 
 func RegisterCodec(cdc *codec.LegacyAmino) {
@@ -13,6 +12,11 @@ func RegisterCodec(cdc *codec.LegacyAmino) {
 	cdc.RegisterConcrete(&MsgSetPriceFeeder{}, "oracle/SetPriceFeeder", nil)
 	cdc.RegisterConcrete(&MsgDeletePriceFeeder{}, "oracle/DeletePriceFeeder", nil)
 	cdc.RegisterConcrete(&MsgFeedMultiplePrices{}, "oracle/FeedMultiplePrices", nil)
+	cdc.RegisterConcrete(&MsgAddAssetInfo{}, "oracle/AddAssetInfo", nil)
+	cdc.RegisterConcrete(&MsgRemoveAssetInfo{}, "oracle/RemoveAssetInfo", nil)
+	cdc.RegisterConcrete(&MsgAddPriceFeeders{}, "oracle/AddPriceFeeders", nil)
+	cdc.RegisterConcrete(&MsgRemovePriceFeeders{}, "oracle/RemovePriceFeeders", nil)
+	cdc.RegisterConcrete(&MsgUpdateParams{}, "oracle/UpdateParams", nil)
 	// this line is used by starport scaffolding # 2
 }
 
@@ -22,14 +26,11 @@ func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 		&MsgSetPriceFeeder{},
 		&MsgDeletePriceFeeder{},
 		&MsgFeedMultiplePrices{},
-	)
-
-	registry.RegisterImplementations(
-		(*govtypes.Content)(nil),
-		&ProposalAddAssetInfo{},
-		&ProposalRemoveAssetInfo{},
-		&ProposalAddPriceFeeders{},
-		&ProposalRemovePriceFeeders{},
+		&MsgAddAssetInfo{},
+		&MsgRemoveAssetInfo{},
+		&MsgAddPriceFeeders{},
+		&MsgRemovePriceFeeders{},
+		&MsgUpdateParams{},
 	)
 
 	// this line is used by starport scaffolding # 3
