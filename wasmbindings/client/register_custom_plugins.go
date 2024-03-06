@@ -64,7 +64,7 @@ func RegisterCustomPlugins(
 	accountedpoolMessenger := accountedpoolclientwasm.NewMessenger(accountedpool)
 
 	ammQuerier := ammclientwasm.NewQuerier(amm, bank, commitment, assetprofile, perpetual, incentive, oracle, leveragelp, accountedpool, stablestake)
-	ammMessenger := ammclientwasm.NewMessenger(amm)
+	ammMessenger := ammclientwasm.NewMessenger(amm, parameter)
 
 	assetprofileQuerier := assetprofileclientwasm.NewQuerier(assetprofile)
 	assetprofileMessenger := assetprofileclientwasm.NewMessenger(assetprofile)

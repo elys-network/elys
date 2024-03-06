@@ -15,7 +15,8 @@ func (m *Messenger) msgExitPool(ctx sdk.Context, contractAddr sdk.AccAddress, ms
 		return nil, nil, wasmvmtypes.InvalidRequest{Err: "exit pool null msg"}
 	}
 
-	if msg.Sender != contractAddr.String() {
+	brokerAddress := m.parameterKeeper.GetParams(ctx).BrokerAddress
+	if msg.Sender != contractAddr.String() && contractAddr.String() != brokerAddress {
 		return nil, nil, wasmvmtypes.InvalidRequest{Err: "exit pool wrong sender"}
 	}
 
