@@ -41058,6 +41058,9 @@ paths:
                   price_expiry_time:
                     type: string
                     format: uint64
+                  life_time_in_blocks:
+                    type: string
+                    format: uint64
             description: >-
               QueryParamsResponse is response type for the Query/Params RPC
               method.
@@ -85042,11 +85045,19 @@ definitions:
         items:
           type: string
           format: uint64
+  elys.oracle.MsgAddAssetInfoResponse:
+    type: object
+  elys.oracle.MsgAddPriceFeedersResponse:
+    type: object
   elys.oracle.MsgDeletePriceFeederResponse:
     type: object
   elys.oracle.MsgFeedMultiplePricesResponse:
     type: object
   elys.oracle.MsgFeedPriceResponse:
+    type: object
+  elys.oracle.MsgRemoveAssetInfoResponse:
+    type: object
+  elys.oracle.MsgRemovePriceFeedersResponse:
     type: object
   elys.oracle.MsgSetPriceFeederResponse:
     type: object
@@ -85092,6 +85103,9 @@ definitions:
       band_epoch:
         type: string
       price_expiry_time:
+        type: string
+        format: uint64
+      life_time_in_blocks:
         type: string
         format: uint64
     description: Params defines the parameters for the module.
@@ -85363,6 +85377,9 @@ definitions:
           band_epoch:
             type: string
           price_expiry_time:
+            type: string
+            format: uint64
+          life_time_in_blocks:
             type: string
             format: uint64
     description: QueryParamsResponse is response type for the Query/Params RPC method.

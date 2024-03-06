@@ -20,6 +20,7 @@ type Keeper struct {
 	cdc        codec.BinaryCodec
 	storeKey   storetypes.StoreKey
 	memKey     storetypes.StoreKey
+	authority  string
 	paramstore paramtypes.Subspace
 
 	channelKeeper types.ChannelKeeper
@@ -31,6 +32,7 @@ func NewKeeper(
 	cdc codec.BinaryCodec,
 	storeKey,
 	memKey storetypes.StoreKey,
+	authority string,
 	ps paramtypes.Subspace,
 	channelKeeper types.ChannelKeeper,
 	portKeeper types.PortKeeper,
@@ -45,6 +47,7 @@ func NewKeeper(
 		cdc:        cdc,
 		storeKey:   storeKey,
 		memKey:     memKey,
+		authority:  authority,
 		paramstore: ps,
 
 		channelKeeper: channelKeeper,

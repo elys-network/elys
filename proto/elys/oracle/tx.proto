@@ -17,6 +17,11 @@ service Msg {
   rpc FeedMultiplePrices(MsgFeedMultiplePrices) returns (MsgFeedMultiplePricesResponse);
   rpc SetPriceFeeder(MsgSetPriceFeeder) returns (MsgSetPriceFeederResponse);
   rpc DeletePriceFeeder(MsgDeletePriceFeeder) returns (MsgDeletePriceFeederResponse);
+  // proposals
+  rpc AddAssetInfo(MsgAddAssetInfo) returns (MsgAddAssetInfoResponse);
+  rpc RemoveAssetInfo(MsgRemoveAssetInfo) returns (MsgRemoveAssetInfoResponse);
+  rpc AddPriceFeeders(MsgAddPriceFeeders) returns (MsgAddPriceFeedersResponse);
+  rpc RemovePriceFeeders(MsgRemovePriceFeeders) returns (MsgRemovePriceFeedersResponse);
 // this line is used by starport scaffolding # proto/tx/rpc
 }
 
@@ -49,5 +54,33 @@ message MsgFeedMultiplePrices {
 
 message MsgFeedMultiplePricesResponse {
 }
+
+message MsgAddAssetInfo {
+  string authority = 1;
+  string denom = 2;
+  string display = 3;
+  string band_ticker = 4;
+  string elys_ticker = 5;
+  uint64 decimal = 6;
+}
+message MsgAddAssetInfoResponse {}
+
+message MsgRemoveAssetInfo {
+  string authority = 1;
+  string denom = 2;
+}
+message MsgRemoveAssetInfoResponse {}
+
+message MsgAddPriceFeeders {
+  string authority = 1;
+  repeated string feeders = 2;
+}
+message MsgAddPriceFeedersResponse {}
+
+message MsgRemovePriceFeeders {
+  string authority = 1;
+  repeated string feeders = 2;
+}
+message MsgRemovePriceFeedersResponse {}
 
 // this line is used by starport scaffolding # proto/tx/message
