@@ -1,0 +1,12 @@
+syntax = "proto3";
+package elys.masterchef;
+
+import "gogoproto/gogo.proto";
+import "elys/masterchef/params.proto";
+
+option go_package = "github.com/elys-network/elys/x/masterchef/types";
+
+// GenesisState defines the masterchef module's genesis state.
+message GenesisState {
+  Params params = 1 [(gogoproto.nullable) = false];
+}
