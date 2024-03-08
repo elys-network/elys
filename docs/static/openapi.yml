@@ -39536,6 +39536,42 @@ paths:
           type: boolean
       tags:
         - Query
+  /elys-network/elys/estaking/params:
+    get:
+      summary: Parameters queries the parameters of the module.
+      operationId: ElysEstakingParams
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              params:
+                description: params holds all the parameters of this module.
+                type: object
+            description: >-
+              QueryParamsResponse is response type for the Query/Params RPC
+              method.
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      tags:
+        - Query
   /elys-network/elys/incentive/apr/{withdraw_type}/{denom}:
     get:
       summary: Calculate APR
@@ -84129,6 +84165,16 @@ definitions:
     description: |-
       QueryEpochsInfoResponse is the response type for the Query/EpochInfos RPC
       method.
+  elys.estaking.Params:
+    type: object
+    description: Params defines the parameters for the module.
+  elys.estaking.QueryParamsResponse:
+    type: object
+    properties:
+      params:
+        description: params holds all the parameters of this module.
+        type: object
+    description: QueryParamsResponse is response type for the Query/Params RPC method.
   cosmos.base.v1beta1.DecCoin:
     type: object
     properties:

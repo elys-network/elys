@@ -1,0 +1,7 @@
+syntax = "proto3";
+package elys.estaking;
+
+option go_package = "github.com/elys-network/elys/x/estaking/types";
+
+// Msg defines the Msg service.
+service Msg {}
