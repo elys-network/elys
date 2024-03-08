@@ -114,14 +114,15 @@ func CmdPoolAprs() *cobra.Command {
 
 			idStrs := strings.Split(args[0], ",")
 			ids := []uint64{}
-			for _, idStr := range idStrs {
-				id, err := strconv.Atoi(idStr)
-				if err != nil {
-					return err
+			if args[0] != "" {
+				for _, idStr := range idStrs {
+					id, err := strconv.Atoi(idStr)
+					if err != nil {
+						return err
+					}
+					ids = append(ids, uint64(id))
 				}
-				ids = append(ids, uint64(id))
 			}
-
 			params := &types.QueryPoolAprsRequest{
 				PoolIds: ids,
 			}
