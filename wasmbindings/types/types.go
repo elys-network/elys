@@ -155,6 +155,7 @@ type ElysQuery struct {
 	IncentiveParams        *incentivetypes.QueryParamsRequest        `json:"incentive_params,omitempty"`
 	IncentiveCommunityPool *incentivetypes.QueryCommunityPoolRequest `json:"incentive_community_pool,omitempty"`
 	IncentiveApr           *incentivetypes.QueryAprRequest           `json:"incentive_apr"`
+	IncentivePoolAprs      *incentivetypes.QueryPoolAprsRequest      `json:"incentive_pool_aprs"`
 
 	// leveragelp queriers
 	LeveragelpParams                   *leveragelptypes.ParamsRequest              `json:"leveragelp_params,omitempty"`

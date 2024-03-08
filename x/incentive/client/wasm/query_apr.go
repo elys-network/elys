@@ -19,7 +19,7 @@ func (oq *Querier) queryApr(ctx sdk.Context, query *types.QueryAprRequest) ([]by
 	}
 	responseBytes, err := json.Marshal(resp)
 	if err != nil {
-		return nil, errorsmod.Wrap(err, "failed to serialize community pool response")
+		return nil, errorsmod.Wrap(err, "failed to serialize apr response")
 	}
 	return responseBytes, nil
 }

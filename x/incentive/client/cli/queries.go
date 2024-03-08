@@ -3,6 +3,7 @@ package cli
 import (
 	"context"
 	"strconv"
+	"strings"
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
@@ -88,6 +89,44 @@ func CmdApr() *cobra.Command {
 			}
 
 			res, err := queryClient.Apr(context.Background(), params)
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+
+	return cmd
+}
+
+func CmdPoolAprs() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:     "pool-aprs",
+		Short:   "calculate pool APRs",
+		Example: "elysd q incentive pool-aprs [ids]",
+		Args:    cobra.ExactArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+			queryClient := types.NewQueryClient(clientCtx)
+
+			idStrs := strings.Split(args[0], ",")
+			ids := []uint64{}
+			for _, idStr := range idStrs {
+				id, err := strconv.Atoi(idStr)
+				if err != nil {
+					return err
+				}
+				ids = append(ids, uint64(id))
+			}
+
+			params := &types.QueryPoolAprsRequest{
+				PoolIds: ids,
+			}
+
+			res, err := queryClient.PoolAprs(context.Background(), params)
 			if err != nil {
 				return err
 			}
