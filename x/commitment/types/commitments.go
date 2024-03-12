@@ -141,6 +141,15 @@ func (c *Commitments) GetUsdcSubBucketRewardUnclaimedForDenom(denom string) math
 	return c.RewardsByUsdcUnclaimed.AmountOf(denom)
 }
 
+func (c *Commitments) GetLPMiningSubBucketRewardUnclaimedForDenom(denom string) math.Int {
+	lpMiningRewards := c.RewardsUnclaimed.
+		Sub(c.RewardsByElysUnclaimed...).
+		Sub(c.RewardsByEdenUnclaimed...).
+		Sub(c.RewardsByEdenbUnclaimed...).
+		Sub(c.RewardsByUsdcUnclaimed...)
+	return lpMiningRewards.AmountOf(denom)
+}
+
 func (c *Commitments) AddRewardsUnclaimed(amount sdk.Coin) {
 	c.RewardsUnclaimed = c.RewardsUnclaimed.Add(amount)
 }
