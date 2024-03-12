@@ -101,7 +101,7 @@ func (min MinCommissionDecorator) CalculateDelegateProjectedVotingPower(ctx sdk.
 		return sdk.ZeroDec()
 	}
 
-	return projectedValidatorTokens.Quo(projectedTotalDelegatedTokens).Mul(sdk.NewDec(100))
+	return projectedValidatorTokens.Quo(projectedTotalDelegatedTokens)
 }
 
 // Returns the projected voting power as a percentage (not a fraction)
@@ -163,7 +163,7 @@ func (min MinCommissionDecorator) AnteHandle(
 			if projectedVotingPower.GTE(maxVotingPower) {
 				return errorsmod.Wrapf(
 					sdkerrors.ErrInvalidRequest,
-					"This validator has a voting power of %s%%. Delegations not allowed to a validator whose post-delegation voting power is more than %s%%. Please delegate to a validator with less bonded tokens", projectedVotingPower, maxVotingPower)
+					"This validator has a voting power of %s%%. Delegations not allowed to a validator whose post-delegation voting power is more than %s%%. Please delegate to a validator with less bonded tokens", projectedVotingPower.Mul(sdk.NewDec(100)), maxVotingPower.Mul(sdk.NewDec(100)))
 			}
 		case *stakingtypes.MsgBeginRedelegate:
 			dstVal, err := min.getValidator(ctx, msg.ValidatorDstAddress)
