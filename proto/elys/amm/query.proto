@@ -39,6 +39,14 @@ service Query {
   rpc SwapEstimation (QuerySwapEstimationRequest) returns (QuerySwapEstimationResponse) {
     option (google.api.http).get = "/elys-network/elys/amm/swap_estimation";
   }
+  // Queries JoinPool estimation
+  rpc JoinPoolEstimation (QueryJoinPoolEstimationRequest) returns (QueryJoinPoolEstimationResponse) {
+    option (google.api.http).get = "/elys-network/elys/amm/join_pool_estimation";
+  }
+  // Queries ExistPool estimation
+  rpc ExitPoolEstimation (QueryExitPoolEstimationRequest) returns (QueryExitPoolEstimationResponse) {
+    option (google.api.http).get = "/elys-network/elys/amm/exit_pool_estimation";
+  }
   // Queries slippage track for a week.
   rpc SlippageTrack (QuerySlippageTrackRequest) returns (QuerySlippageTrackResponse) {
     option (google.api.http).get = "/elys-network/elys/amm/slippage_track/{pool_id}";
@@ -115,6 +123,26 @@ message QuerySwapEstimationRequest {
   repeated SwapAmountInRoute        routes   = 1;
            cosmos.base.v1beta1.Coin token_in = 2 [(gogoproto.nullable) = false];
            string                   discount   = 3 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+}
+
+message QueryJoinPoolEstimationRequest {
+           uint64                   pool_id          = 1;
+  repeated cosmos.base.v1beta1.Coin amounts_in   = 2 [(gogoproto.nullable)   = false] ;
+}
+
+message QueryJoinPoolEstimationResponse {
+           string                   share_amount_out = 1 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false];
+  repeated cosmos.base.v1beta1.Coin amounts_in       = 2 [(gogoproto.nullable)   = false] ;
+}
+
+message QueryExitPoolEstimationRequest {
+           uint64                   pool_id         = 1;
+           string                   share_amount_in = 2 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false];
+           string                   token_out_denom = 3;
+}
+
+message QueryExitPoolEstimationResponse {
+  repeated cosmos.base.v1beta1.Coin amounts_out      = 1 [(gogoproto.nullable)   = false] ;
 }
 
 message QuerySwapEstimationResponse {

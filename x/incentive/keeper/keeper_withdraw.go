@@ -98,6 +98,8 @@ func (k Keeper) CalcAmountSubbucketsPerProgram(ctx sdk.Context, delegator string
 		unclaimed = commitments.GetEdenBSubBucketRewardUnclaimedForDenom(denom)
 	case commitmenttypes.EarnType_USDC_PROGRAM:
 		unclaimed = commitments.GetUsdcSubBucketRewardUnclaimedForDenom(denom)
+	case commitmenttypes.EarnType_LP_MINING_PROGRAM:
+		unclaimed = commitments.GetLPMiningSubBucketRewardUnclaimedForDenom(denom)
 	case commitmenttypes.EarnType_ALL_PROGRAM:
 		unclaimed = commitments.GetRewardUnclaimedForDenom(denom)
 	}
