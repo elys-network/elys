@@ -39945,6 +39945,55 @@ paths:
                   additionalProperties: {}
       tags:
         - Query
+  /elys-network/elys/incentive/pool_aprs:
+    get:
+      summary: Calculate liquidity mining pool APRs
+      operationId: ElysIncentivePoolAprs
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    pool_id:
+                      type: string
+                      format: uint64
+                    apr:
+                      type: string
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: pool_ids
+          in: query
+          required: false
+          type: array
+          items:
+            type: string
+            format: uint64
+          collectionFormat: multi
+      tags:
+        - Query
   /elys-network/elys/leveragelp/is-whitelisted:
     get:
       summary: Queries a list of IsWhitelisted items.
@@ -84478,6 +84527,14 @@ definitions:
           Distribution interval in blocks - number of blocks on distribution
           epoch
     description: Params defines the parameters for the module.
+  elys.incentive.PoolApr:
+    type: object
+    properties:
+      pool_id:
+        type: string
+        format: uint64
+      apr:
+        type: string
   elys.incentive.PoolInfo:
     type: object
     properties:
@@ -84694,6 +84751,19 @@ definitions:
               Distribution interval in blocks - number of blocks on distribution
               epoch
     description: QueryParamsResponse is response type for the Query/Params RPC method.
+  elys.incentive.QueryPoolAprsResponse:
+    type: object
+    properties:
+      data:
+        type: array
+        items:
+          type: object
+          properties:
+            pool_id:
+              type: string
+              format: uint64
+            apr:
+              type: string
   elys.leveragelp.IsWhitelistedResponse:
     type: object
     properties:
