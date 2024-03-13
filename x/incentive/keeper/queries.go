@@ -45,3 +45,13 @@ func (k Keeper) Apr(goCtx context.Context, req *types.QueryAprRequest) (*types.Q
 
 	return &types.QueryAprResponse{Apr: apr}, nil
 }
+
+func (k Keeper) PoolAprs(goCtx context.Context, req *types.QueryPoolAprsRequest) (*types.QueryPoolAprsResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
+	}
+
+	ctx := sdk.UnwrapSDKContext(goCtx)
+	data := k.CalculatePoolAprs(ctx, req.PoolIds)
+	return &types.QueryPoolAprsResponse{Data: data}, nil
+}

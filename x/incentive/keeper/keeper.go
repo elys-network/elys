@@ -592,7 +592,8 @@ func (k Keeper) UpdateAmmPoolAPR(ctx sdk.Context, lpIncentive types.IncentiveInf
 		// Get pool info from incentive param
 		poolInfo, found := k.GetPoolInfo(ctx, poolId)
 		if !found {
-			return false
+			k.InitPoolParams(ctx, poolId)
+			poolInfo, _ = k.GetPoolInfo(ctx, poolId)
 		}
 
 		poolInfo.NumBlocks = poolInfo.NumBlocks.Add(lpIncentive.DistributionEpochInBlocks)
