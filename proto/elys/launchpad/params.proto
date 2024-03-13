@@ -2,11 +2,22 @@ syntax = "proto3";
 package elys.launchpad;
 
 import "gogoproto/gogo.proto";
+import "elys/launchpad/launchpad.proto";
 
 option go_package = "github.com/elys-network/elys/x/launchpad/types";
 
 // Params defines the parameters for the module.
 message Params {
   option (gogoproto.goproto_stringer) = false;
-  
+
+  string initial_price = 1;       // 0.75 USDC
+  string total_reserve = 2;       // 4.5 million
+  string sold_amount = 3;       // 3.375 million USDC totally
+  string withdrawn_amount = 4;
+  uint64 launchpad_starttime = 5; // May 1st
+  uint64 launchpad_duration = 6;  // 1 week
+  string shield_duration = 7;
+  uint64 max_shield_percent = 8;
+  repeated string spending_tokens = 9; // USDC, ETH, ATOM
+  Bonus bonus_info = 10 [ (gogoproto.nullable) = false ];
 }

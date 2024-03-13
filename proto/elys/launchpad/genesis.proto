@@ -3,10 +3,12 @@ package elys.launchpad;
 
 import "gogoproto/gogo.proto";
 import "elys/launchpad/params.proto";
+import "elys/launchpad/launchpad.proto";
 
 option go_package = "github.com/elys-network/elys/x/launchpad/types";
 
 // GenesisState defines the launchpad module's genesis state.
 message GenesisState {
   Params params = 1 [(gogoproto.nullable) = false];
+  repeated Purchase purchases = 2 [ (gogoproto.nullable) = false ];
 }

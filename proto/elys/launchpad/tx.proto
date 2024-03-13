@@ -4,4 +4,8 @@ package elys.launchpad;
 option go_package = "github.com/elys-network/elys/x/launchpad/types";
 
 // Msg defines the Msg service.
-service Msg {}
+service Msg {
+  // TODO: BuyElys (user)
+  // TODO: ReturnElys (user)
+  // TODO: WithdrawRaised (admin)
+}
