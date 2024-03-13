@@ -28,23 +28,42 @@ func TestClaimReward(t *testing.T) {
 	creator := creatorAddr.String()
 	denom := ptypes.Eden
 	initialUnclaimed := sdk.NewInt(50)
+	rewardsByElysUnclaimed := sdk.NewInt(1)
+	rewardsByEdenUnclaimed := sdk.NewInt(1)
+	rewardsByEdenbUnclaimed := sdk.NewInt(1)
+	rewardsByUsdcUnclaimed := sdk.NewInt(1)
+
 	initialCommitted := sdk.NewInt(100)
 
 	// Set up initial commitments object with sufficient unclaimed & committed tokens
-	rewardsUnclaimed := sdk.Coin{
-		Denom:  denom,
-		Amount: initialUnclaimed,
-	}
-
 	committedTokens := types.CommittedTokens{
 		Denom:  denom,
 		Amount: initialCommitted,
 	}
 
 	initialCommitments := types.Commitments{
-		Creator:          creator,
-		RewardsUnclaimed: sdk.Coins{rewardsUnclaimed},
-		CommittedTokens:  []*types.CommittedTokens{&committedTokens},
+		Creator: creator,
+		RewardsUnclaimed: sdk.Coins{sdk.Coin{
+			Denom:  denom,
+			Amount: initialUnclaimed,
+		}},
+		RewardsByElysUnclaimed: sdk.Coins{sdk.Coin{
+			Denom:  denom,
+			Amount: rewardsByElysUnclaimed,
+		}},
+		RewardsByEdenUnclaimed: sdk.Coins{sdk.Coin{
+			Denom:  denom,
+			Amount: rewardsByEdenUnclaimed,
+		}},
+		RewardsByEdenbUnclaimed: sdk.Coins{sdk.Coin{
+			Denom:  denom,
+			Amount: rewardsByEdenbUnclaimed,
+		}},
+		RewardsByUsdcUnclaimed: sdk.Coins{sdk.Coin{
+			Denom:  denom,
+			Amount: rewardsByUsdcUnclaimed,
+		}},
+		CommittedTokens: []*types.CommittedTokens{&committedTokens},
 	}
 
 	keeper.SetCommitments(ctx, initialCommitments)
@@ -52,19 +71,25 @@ func TestClaimReward(t *testing.T) {
 	// Set assetprofile entry for denom
 	app.AssetprofileKeeper.SetEntry(ctx, aptypes.Entry{Denom: denom, BaseDenom: denom, WithdrawEnabled: true})
 
-	// Test scenario 1: Withdraw within unclaimed balance
-	err := app.CommitmentKeeper.RecordClaimReward(ctx, creator, denom, sdk.NewInt(30), types.EarnType_ALL_PROGRAM)
+	// Test scenario 1: Withdraw LP mining rewards
+	err := app.CommitmentKeeper.RecordClaimReward(ctx, creator, denom, sdk.NewInt(46), types.EarnType_ALL_PROGRAM)
 	require.NoError(t, err)
 
 	updatedCommitments := keeper.GetCommitments(ctx, creator)
+	unclaimedBalance := updatedCommitments.GetLPMiningSubBucketRewardUnclaimedForDenom(denom)
+	assert.Equal(t, sdk.NewInt(4), unclaimedBalance)
+	require.Equal(t, "46ueden", updatedCommitments.Claimed.String(), "tokens were not claimed correctly")
 
-	unclaimedBalance := updatedCommitments.GetRewardUnclaimedForDenom(denom)
-	assert.Equal(t, sdk.NewInt(20), unclaimedBalance)
+	// Test scenario 2: Withdraw within unclaimed balance
+	err = app.CommitmentKeeper.RecordClaimReward(ctx, creator, denom, sdk.NewInt(2), types.EarnType_ALL_PROGRAM)
+	require.NoError(t, err)
 
-	// Check if the withdrawn tokens were received
-	require.Equal(t, "30ueden", updatedCommitments.Claimed.String(), "tokens were not claimed correctly")
+	updatedCommitments = keeper.GetCommitments(ctx, creator)
+	unclaimedBalance = updatedCommitments.GetRewardUnclaimedForDenom(denom)
+	assert.Equal(t, sdk.NewInt(2), unclaimedBalance)
+	require.Equal(t, "48ueden", updatedCommitments.Claimed.String(), "tokens were not claimed correctly")
 
-	// Test scenario 2: Withdraw more than unclaimed reward
+	// Test scenario 3: Withdraw more than unclaimed reward
 	err = app.CommitmentKeeper.RecordClaimReward(ctx, creator, denom, sdk.NewInt(70), types.EarnType_ALL_PROGRAM)
 	require.Error(t, err)
 }
