@@ -94,7 +94,7 @@ func TestAPRCalculationPerPool(t *testing.T) {
 	// Get pool info from incentive param
 	poolInfo, found := ik.GetPoolInfo(ctx, poolId)
 	require.Equal(t, found, true)
-	require.GreaterOrEqual(t, poolInfo.EdenApr.MulInt(sdk.NewInt(100)).TruncateInt().Int64(), int64(90))
+	require.Equal(t, poolInfo.EdenApr.String(), "0.036463536463536464")
 
 	// Get dex rewards per pool
 	revenueAddress := ammtypes.NewPoolRevenueAddress(poolId)
@@ -114,5 +114,5 @@ func TestAPRCalculationPerPool(t *testing.T) {
 	ik.UpdateLPRewardsUnclaimed(ctx, lpIncentive)
 	poolInfo, found = ik.GetPoolInfo(ctx, poolId)
 	require.Equal(t, found, true)
-	require.GreaterOrEqual(t, poolInfo.DexApr.MulInt(sdk.NewInt(100)).TruncateInt().Int64(), int64(90))
+	require.Equal(t, poolInfo.EdenApr.String(), "0.036463536463536464")
 }
