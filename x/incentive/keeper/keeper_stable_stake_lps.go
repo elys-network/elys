@@ -15,7 +15,7 @@ func (k Keeper) CalculatePoolShareForStableStakeLPs(ctx sdk.Context, totalProxyT
 	// newEdenAllocated = 80 / ( 80 + 90 + 200 + 0) * 100
 	// Pool share = 80
 	// edenAmountPerEpochLp = 100
-	tvl := stabletypes.TVL(ctx, k.oracleKeeper, k.bankKeeper, baseCurrency)
+	tvl := k.stableKeeper.TVL(ctx, k.oracleKeeper, baseCurrency)
 
 	// Get pool Id
 	poolId := uint64(stabletypes.PoolId)

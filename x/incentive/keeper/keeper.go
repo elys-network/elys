@@ -554,7 +554,7 @@ func (k Keeper) CalculateProxyTVL(ctx sdk.Context, baseCurrency string) sdk.Dec 
 		k.InitStableStakePoolParams(ctx, stableStakePoolId)
 		poolInfo, _ = k.GetPoolInfo(ctx, stableStakePoolId)
 	}
-	tvl := stabletypes.TVL(ctx, k.oracleKeeper, k.bankKeeper, baseCurrency)
+	tvl := k.stableKeeper.TVL(ctx, k.oracleKeeper, baseCurrency)
 	proxyTVL := tvl.Mul(poolInfo.Multiplier)
 	multipliedShareSum = multipliedShareSum.Add(proxyTVL)
 

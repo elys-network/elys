@@ -38,8 +38,8 @@ func (k Keeper) CalculateApr(ctx sdk.Context, query *types.QueryAprRequest) (mat
 
 	if query.Denom == ptypes.Eden {
 		if query.WithdrawType == commitmenttypes.EarnType_USDC_PROGRAM {
-			totalUSDCDeposit := k.bankKeeper.GetBalance(ctx, stabletypes.PoolAddress(), baseCurrency)
-			if totalUSDCDeposit.Amount.IsZero() {
+			stableTvl := k.stableKeeper.TVL(ctx, k.oracleKeeper, baseCurrency)
+			if stableTvl.IsZero() {
 				return sdk.ZeroInt(), nil
 			}
 
@@ -70,7 +70,7 @@ func (k Keeper) CalculateApr(ctx sdk.Context, query *types.QueryAprRequest) (mat
 				MulInt(sdk.NewInt(ptypes.DaysPerYear)).
 				Mul(edenDenomPrice).
 				MulInt(sdk.NewInt(100)).
-				QuoInt(totalUSDCDeposit.Amount)
+				Quo(stableTvl)
 			return apr.TruncateInt(), nil
 		} else {
 			// Elys staking, Eden committed, EdenB committed.
