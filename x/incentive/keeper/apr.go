@@ -51,12 +51,12 @@ func (k Keeper) CalculateApr(ctx sdk.Context, query *types.QueryAprRequest) (mat
 				Mul(lpIncentive.EpochNumBlocks).
 				Quo(lpIncentive.TotalBlocksPerYear)
 
-			edenPriceDec := k.GetEdenPrice(ctx, baseCurrency)
+			edenDenomPrice := k.GetEdenDenomPrice(ctx, baseCurrency)
 			epochLpsMaxEdenAmount := params.MaxEdenRewardAprLps.
 				Mul(totalProxyTVL).
 				MulInt(lpIncentive.EpochNumBlocks).
 				QuoInt(lpIncentive.TotalBlocksPerYear).
-				Quo(edenPriceDec)
+				Quo(edenDenomPrice)
 
 			// Use min amount (eden allocation from tokenomics and max apr based eden amount)
 			epochEdenAmount = sdk.MinInt(epochEdenAmount, epochLpsMaxEdenAmount.TruncateInt())
@@ -68,7 +68,7 @@ func (k Keeper) CalculateApr(ctx sdk.Context, query *types.QueryAprRequest) (mat
 			// Eden Apr for usdc earn program = {(Eden allocated for stable stake pool per day*365*price{eden/usdc}/(total usdc deposit)}*100
 			apr := epochStableStakeEdenAmount.
 				MulInt(sdk.NewInt(ptypes.DaysPerYear)).
-				Mul(edenPriceDec).
+				Mul(edenDenomPrice).
 				MulInt(sdk.NewInt(100)).
 				QuoInt(totalUSDCDeposit.Amount)
 			return apr.TruncateInt(), nil
