@@ -26,26 +26,12 @@ func (k Keeper) EstimatePrice(ctx sdk.Context, tokenInDenom, baseCurrency string
 	return rate
 }
 
-func (k Keeper) GetEdenPrice(ctx sdk.Context, baseCurrency string) math.LegacyDec {
-	// Calc Eden price in usdc
-	// We put Elys as denom as Eden won't be avaialble in amm pool and has the same value as Elys
-	edenPrice := k.EstimatePrice(ctx, ptypes.Elys, baseCurrency)
-	if edenPrice.IsZero() {
-		edenPrice = sdk.OneDec()
-	}
-	return edenPrice
-}
-
-func OneEden() math.Int {
-	return math.NewInt(1000_000)
-}
-
 func (k Keeper) GetEdenDenomPrice(ctx sdk.Context, baseCurrency string) math.LegacyDec {
-	// Calc Eden price in usdc
-	// We put Elys as denom as Eden won't be avaialble in amm pool and has the same value as Elys
-	edenPrice := k.EstimatePrice(ctx, ptypes.Elys, baseCurrency)
-	if edenPrice.IsZero() {
-		edenPrice = sdk.OneDec()
+	// Calc ueden / uusdc rate
+	edenUsdcRate := k.EstimatePrice(ctx, ptypes.Elys, baseCurrency)
+	if edenUsdcRate.IsZero() {
+		edenUsdcRate = sdk.OneDec()
 	}
-	return edenPrice.QuoInt(OneEden())
+	usdcDenomPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, baseCurrency)
+	return edenUsdcRate.Mul(usdcDenomPrice)
 }
