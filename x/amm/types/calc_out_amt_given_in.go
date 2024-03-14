@@ -72,6 +72,12 @@ func (p Pool) CalcOutAmtGivenIn(
 	}
 
 	amountOutWithoutSlippage := tokenAmountInAfterFee.Mul(rate)
+
+	// check if amountOutWithoutSlippage is zero to avoid division by zero
+	if amountOutWithoutSlippage.IsZero() {
+		return sdk.Coin{}, sdk.ZeroDec(), errorsmod.Wrapf(ErrInvalidMathApprox, "amount out without slippage must be positive")
+	}
+
 	slippage := sdk.OneDec().Sub(tokenAmountOut.Quo(amountOutWithoutSlippage))
 
 	// We ignore the decimal component, as we round down the token amount out.
