@@ -368,6 +368,12 @@ func (k Keeper) UpdateLPRewardsUnclaimed(ctx sdk.Context, lpIncentive types.Ince
 	// Maximum eden based per distribution epoch on maximum APR - 30% by default
 	// Allocated for staking per day = (0.3/365)* (total weighted proxy TVL)
 	edenDenomPrice := k.GetEdenDenomPrice(ctx, baseCurrency)
+
+	// Ensure edenDenomPrice is not zero to avoid division by zero
+	if edenDenomPrice.IsZero() {
+		return errorsmod.Wrap(types.ErrNoInflationaryParams, "invalid eden price")
+	}
+
 	epochLpsMaxEdenAmount := params.MaxEdenRewardAprLps.
 		Mul(totalProxyTVL).
 		MulInt(lpIncentive.EpochNumBlocks).
