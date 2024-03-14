@@ -33,5 +33,13 @@ func (k Keeper) GetEdenDenomPrice(ctx sdk.Context, baseCurrency string) math.Leg
 		edenUsdcRate = sdk.OneDec()
 	}
 	usdcDenomPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, baseCurrency)
+	if usdcDenomPrice.IsZero() {
+		usdcDecimal := int64(6)
+		usdcEntry, found := k.assetProfileKeeper.GetEntry(ctx, ptypes.BaseCurrency)
+		if found {
+			usdcDecimal = int64(usdcEntry.Decimals)
+		}
+		usdcDenomPrice = sdk.NewDecWithPrec(1, usdcDecimal)
+	}
 	return edenUsdcRate.Mul(usdcDenomPrice)
 }
