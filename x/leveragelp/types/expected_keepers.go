@@ -58,6 +58,7 @@ type StableStakeKeeper interface {
 	UpdateInterestStackedByAddress(ctx sdk.Context, addr sdk.AccAddress) stablestaketypes.Debt
 	Borrow(ctx sdk.Context, addr sdk.AccAddress, amount sdk.Coin) error
 	Repay(ctx sdk.Context, addr sdk.AccAddress, amount sdk.Coin) error
+	TVL(ctx sdk.Context, oracleKeeper stablestaketypes.OracleKeeper, baseCurrency string) math.LegacyDec
 }
 
 type CommitmentKeeper interface {
