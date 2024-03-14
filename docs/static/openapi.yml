@@ -40856,6 +40856,61 @@ paths:
           type: boolean
       tags:
         - Query
+  /elys-network/elys/masterchef/external_incentive:
+    get:
+      operationId: ElysMasterchefExternalIncentive
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              external_incentive:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uint64
+                  reward_denom:
+                    type: string
+                  pool_id:
+                    type: string
+                    format: uint64
+                  from_block:
+                    type: string
+                    format: uint64
+                  to_block:
+                    type: string
+                    format: uint64
+                  amount_per_block:
+                    type: string
+                description: ExternalIncentive defines the external incentives.
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: id
+          in: query
+          required: false
+          type: string
+          format: uint64
+      tags:
+        - Query
   /elys-network/elys/masterchef/params:
     get:
       summary: Parameters queries the parameters of the module.
@@ -40890,6 +40945,253 @@ paths:
                     '@type':
                       type: string
                   additionalProperties: {}
+      tags:
+        - Query
+  /elys-network/elys/masterchef/pending_reward:
+    get:
+      operationId: ElysMasterchefUserPendingReward
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              rewards:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    pool_id:
+                      type: string
+                      format: uint64
+                    reward:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          denom:
+                            type: string
+                          amount:
+                            type: string
+                        description: >-
+                          Coin defines a token with a denomination and an
+                          amount.
+
+
+                          NOTE: The amount field is an Int which implements the
+                          custom method
+
+                          signatures required by gogoproto.
+              total_rewards:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    denom:
+                      type: string
+                    amount:
+                      type: string
+                  description: >-
+                    Coin defines a token with a denomination and an amount.
+
+
+                    NOTE: The amount field is an Int which implements the custom
+                    method
+
+                    signatures required by gogoproto.
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: user
+          in: query
+          required: false
+          type: string
+      tags:
+        - Query
+  /elys-network/elys/masterchef/pool_info:
+    get:
+      operationId: ElysMasterchefPoolInfo
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              pool_info:
+                type: object
+                properties:
+                  pool_id:
+                    type: string
+                    format: uint64
+                    title: reward amount
+                  reward_wallet:
+                    type: string
+                    title: reward wallet address
+                  multiplier:
+                    type: string
+                    title: multiplier for lp rewards
+                  num_blocks:
+                    type: string
+                    title: Block number since the creation of PoolInfo
+                  dex_reward_amount_given:
+                    type: string
+                    title: Total dex rewards given
+                  eden_reward_amount_given:
+                    type: string
+                    title: Total eden rewards given
+                  eden_apr:
+                    type: string
+                    title: Eden APR, updated at every distribution
+                  dex_apr:
+                    type: string
+                    title: Dex APR, updated at every distribution
+                title: Pool Info
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: pool_id
+          in: query
+          required: false
+          type: string
+          format: uint64
+      tags:
+        - Query
+  /elys-network/elys/masterchef/pool_reward_info:
+    get:
+      operationId: ElysMasterchefPoolRewardInfo
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              pool_reward_info:
+                type: object
+                properties:
+                  pool_id:
+                    type: string
+                    format: uint64
+                  reward_denom:
+                    type: string
+                  pool_acc_reward_per_share:
+                    type: string
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: pool_id
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: reward_denom
+          in: query
+          required: false
+          type: string
+      tags:
+        - Query
+  /elys-network/elys/masterchef/user_reward_info:
+    get:
+      operationId: ElysMasterchefUserRewardInfo
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              user_reward_info:
+                type: object
+                properties:
+                  user:
+                    type: string
+                  pool_id:
+                    type: string
+                    format: uint64
+                  reward_denom:
+                    type: string
+                  reward_debt:
+                    type: string
+                  reward_pending:
+                    type: string
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: user
+          in: query
+          required: false
+          type: string
+        - name: pool_id
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: reward_denom
+          in: query
+          required: false
+          type: string
       tags:
         - Query
   /elys-network/elys/oracle/asset_info:
@@ -85105,9 +85407,95 @@ definitions:
                    repeated Bar results = 1;
                    PageResponse page = 2;
            }
+  elys.masterchef.ExternalIncentive:
+    type: object
+    properties:
+      id:
+        type: string
+        format: uint64
+      reward_denom:
+        type: string
+      pool_id:
+        type: string
+        format: uint64
+      from_block:
+        type: string
+        format: uint64
+      to_block:
+        type: string
+        format: uint64
+      amount_per_block:
+        type: string
+    description: ExternalIncentive defines the external incentives.
+  elys.masterchef.MsgAddExternalIncentiveResponse:
+    type: object
+  elys.masterchef.MsgClaimRewardsResponse:
+    type: object
   elys.masterchef.Params:
     type: object
     description: Params defines the parameters for the module.
+  elys.masterchef.PoolInfo:
+    type: object
+    properties:
+      pool_id:
+        type: string
+        format: uint64
+        title: reward amount
+      reward_wallet:
+        type: string
+        title: reward wallet address
+      multiplier:
+        type: string
+        title: multiplier for lp rewards
+      num_blocks:
+        type: string
+        title: Block number since the creation of PoolInfo
+      dex_reward_amount_given:
+        type: string
+        title: Total dex rewards given
+      eden_reward_amount_given:
+        type: string
+        title: Total eden rewards given
+      eden_apr:
+        type: string
+        title: Eden APR, updated at every distribution
+      dex_apr:
+        type: string
+        title: Dex APR, updated at every distribution
+    title: Pool Info
+  elys.masterchef.PoolRewardInfo:
+    type: object
+    properties:
+      pool_id:
+        type: string
+        format: uint64
+      reward_denom:
+        type: string
+      pool_acc_reward_per_share:
+        type: string
+  elys.masterchef.QueryExternalIncentiveResponse:
+    type: object
+    properties:
+      external_incentive:
+        type: object
+        properties:
+          id:
+            type: string
+            format: uint64
+          reward_denom:
+            type: string
+          pool_id:
+            type: string
+            format: uint64
+          from_block:
+            type: string
+            format: uint64
+          to_block:
+            type: string
+            format: uint64
+          amount_per_block:
+            type: string
+        description: ExternalIncentive defines the external incentives.
   elys.masterchef.QueryParamsResponse:
     type: object
     properties:
@@ -85115,6 +85503,144 @@ definitions:
         description: params holds all the parameters of this module.
         type: object
     description: QueryParamsResponse is response type for the Query/Params RPC method.
+  elys.masterchef.QueryPoolInfoResponse:
+    type: object
+    properties:
+      pool_info:
+        type: object
+        properties:
+          pool_id:
+            type: string
+            format: uint64
+            title: reward amount
+          reward_wallet:
+            type: string
+            title: reward wallet address
+          multiplier:
+            type: string
+            title: multiplier for lp rewards
+          num_blocks:
+            type: string
+            title: Block number since the creation of PoolInfo
+          dex_reward_amount_given:
+            type: string
+            title: Total dex rewards given
+          eden_reward_amount_given:
+            type: string
+            title: Total eden rewards given
+          eden_apr:
+            type: string
+            title: Eden APR, updated at every distribution
+          dex_apr:
+            type: string
+            title: Dex APR, updated at every distribution
+        title: Pool Info
+  elys.masterchef.QueryPoolRewardInfoResponse:
+    type: object
+    properties:
+      pool_reward_info:
+        type: object
+        properties:
+          pool_id:
+            type: string
+            format: uint64
+          reward_denom:
+            type: string
+          pool_acc_reward_per_share:
+            type: string
+  elys.masterchef.QueryUserPendingRewardResponse:
+    type: object
+    properties:
+      rewards:
+        type: array
+        items:
+          type: object
+          properties:
+            pool_id:
+              type: string
+              format: uint64
+            reward:
+              type: array
+              items:
+                type: object
+                properties:
+                  denom:
+                    type: string
+                  amount:
+                    type: string
+                description: >-
+                  Coin defines a token with a denomination and an amount.
+
+
+                  NOTE: The amount field is an Int which implements the custom
+                  method
+
+                  signatures required by gogoproto.
+      total_rewards:
+        type: array
+        items:
+          type: object
+          properties:
+            denom:
+              type: string
+            amount:
+              type: string
+          description: |-
+            Coin defines a token with a denomination and an amount.
+
+            NOTE: The amount field is an Int which implements the custom method
+            signatures required by gogoproto.
+  elys.masterchef.QueryUserRewardInfoResponse:
+    type: object
+    properties:
+      user_reward_info:
+        type: object
+        properties:
+          user:
+            type: string
+          pool_id:
+            type: string
+            format: uint64
+          reward_denom:
+            type: string
+          reward_debt:
+            type: string
+          reward_pending:
+            type: string
+  elys.masterchef.RewardInfo:
+    type: object
+    properties:
+      pool_id:
+        type: string
+        format: uint64
+      reward:
+        type: array
+        items:
+          type: object
+          properties:
+            denom:
+              type: string
+            amount:
+              type: string
+          description: |-
+            Coin defines a token with a denomination and an amount.
+
+            NOTE: The amount field is an Int which implements the custom method
+            signatures required by gogoproto.
+  elys.masterchef.UserRewardInfo:
+    type: object
+    properties:
+      user:
+        type: string
+      pool_id:
+        type: string
+        format: uint64
+      reward_denom:
+        type: string
+      reward_debt:
+        type: string
+      reward_pending:
+        type: string
   elys.oracle.AssetInfo:
     type: object
     properties:

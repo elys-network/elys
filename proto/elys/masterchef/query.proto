@@ -4,7 +4,11 @@ package elys.masterchef;
 import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
+import "cosmos/base/v1beta1/coin.proto";
+import "cosmos_proto/cosmos.proto";
 import "elys/masterchef/params.proto";
+import "elys/masterchef/external_incentive.proto";
+import "elys/masterchef/pool.proto";
 
 option go_package = "github.com/elys-network/elys/x/masterchef/types";
 
@@ -13,6 +17,26 @@ service Query {
   // Parameters queries the parameters of the module.
   rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
     option (google.api.http).get = "/elys-network/elys/masterchef/params";
+  }
+
+  rpc ExternalIncentive(QueryExternalIncentiveRequest) returns (QueryExternalIncentiveResponse) {
+    option (google.api.http).get = "/elys-network/elys/masterchef/external_incentive";
+  }
+
+  rpc PoolInfo(QueryPoolInfoRequest) returns (QueryPoolInfoResponse) {
+    option (google.api.http).get = "/elys-network/elys/masterchef/pool_info";
+  }
+
+  rpc PoolRewardInfo(QueryPoolRewardInfoRequest) returns (QueryPoolRewardInfoResponse) {
+    option (google.api.http).get = "/elys-network/elys/masterchef/pool_reward_info";
+  }
+
+  rpc UserRewardInfo(QueryUserRewardInfoRequest) returns (QueryUserRewardInfoResponse) {
+    option (google.api.http).get = "/elys-network/elys/masterchef/user_reward_info";
+  }
+
+  rpc UserPendingReward(QueryUserPendingRewardRequest) returns (QueryUserPendingRewardResponse) {
+    option (google.api.http).get = "/elys-network/elys/masterchef/pending_reward";
   }
 }
 
@@ -23,4 +47,60 @@ message QueryParamsRequest {}
 message QueryParamsResponse {
   // params holds all the parameters of this module.
   Params params = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryExternalIncentiveRequest {
+  uint64 id = 1;
+}
+
+message QueryExternalIncentiveResponse {
+  ExternalIncentive external_incentive = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryPoolInfoRequest {
+  uint64 pool_id = 1;
+}
+
+message QueryPoolInfoResponse {
+  PoolInfo pool_info = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryPoolRewardInfoRequest {
+  uint64 pool_id = 1;
+  string reward_denom = 2;
+}
+
+message QueryPoolRewardInfoResponse {
+  PoolRewardInfo pool_reward_info = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryUserRewardInfoRequest {
+  string user = 1;
+  uint64 pool_id = 2;
+  string reward_denom = 3;
+}
+
+message QueryUserRewardInfoResponse {
+  UserRewardInfo user_reward_info = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryUserPendingRewardRequest {
+  string user = 1;
+}
+
+message RewardInfo {
+  uint64 pool_id = 1;
+  repeated cosmos.base.v1beta1.Coin reward = 2 [
+    (gogoproto.nullable) = false,
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
+  ];
+}
+
+message QueryUserPendingRewardResponse {
+  repeated RewardInfo rewards = 1;
+
+  repeated cosmos.base.v1beta1.Coin total_rewards = 2 [
+    (gogoproto.nullable) = false,
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
+  ];
 }

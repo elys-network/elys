@@ -25,7 +25,11 @@ const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
 // GenesisState defines the masterchef module's genesis state.
 type GenesisState struct {
-	Params Params `protobuf:"bytes,1,opt,name=params,proto3" json:"params"`
+	Params             Params              `protobuf:"bytes,1,opt,name=params,proto3" json:"params"`
+	ExternalIncentives []ExternalIncentive `protobuf:"bytes,2,rep,name=external_incentives,json=externalIncentives,proto3" json:"external_incentives"`
+	PoolInfos          []PoolInfo          `protobuf:"bytes,3,rep,name=pool_infos,json=poolInfos,proto3" json:"pool_infos"`
+	PoolRewardInfos    []PoolRewardInfo    `protobuf:"bytes,4,rep,name=pool_reward_infos,json=poolRewardInfos,proto3" json:"pool_reward_infos"`
+	UserRewardInfos    []UserRewardInfo    `protobuf:"bytes,5,rep,name=user_reward_infos,json=userRewardInfos,proto3" json:"user_reward_infos"`
 }
 
 func (m *GenesisState) Reset()         { *m = GenesisState{} }
@@ -68,6 +72,34 @@ func (m *GenesisState) GetParams() Params {
 	return Params{}
 }
 
+func (m *GenesisState) GetExternalIncentives() []ExternalIncentive {
+	if m != nil {
+		return m.ExternalIncentives
+	}
+	return nil
+}
+
+func (m *GenesisState) GetPoolInfos() []PoolInfo {
+	if m != nil {
+		return m.PoolInfos
+	}
+	return nil
+}
+
+func (m *GenesisState) GetPoolRewardInfos() []PoolRewardInfo {
+	if m != nil {
+		return m.PoolRewardInfos
+	}
+	return nil
+}
+
+func (m *GenesisState) GetUserRewardInfos() []UserRewardInfo {
+	if m != nil {
+		return m.UserRewardInfos
+	}
+	return nil
+}
+
 func init() {
 	proto.RegisterType((*GenesisState)(nil), "elys.masterchef.GenesisState")
 }
@@ -75,20 +107,28 @@ func init() {
 func init() { proto.RegisterFile("elys/masterchef/genesis.proto", fileDescriptor_b55d8c0403fbd8da) }
 
 var fileDescriptor_b55d8c0403fbd8da = []byte{
-	// 195 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x92, 0x4d, 0xcd, 0xa9, 0x2c,
-	0xd6, 0xcf, 0x4d, 0x2c, 0x2e, 0x49, 0x2d, 0x4a, 0xce, 0x48, 0x4d, 0xd3, 0x4f, 0x4f, 0xcd, 0x4b,
-	0x2d, 0xce, 0x2c, 0xd6, 0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x17, 0xe2, 0x07, 0x49, 0xeb, 0x21, 0xa4,
-	0xa5, 0x44, 0xd2, 0xf3, 0xd3, 0xf3, 0xc1, 0x72, 0xfa, 0x20, 0x16, 0x44, 0x99, 0x94, 0x0c, 0xba,
-	0x29, 0x05, 0x89, 0x45, 0x89, 0xb9, 0x50, 0x43, 0x94, 0x5c, 0xb9, 0x78, 0xdc, 0x21, 0xa6, 0x06,
-	0x97, 0x24, 0x96, 0xa4, 0x0a, 0x99, 0x72, 0xb1, 0x41, 0xe4, 0x25, 0x18, 0x15, 0x18, 0x35, 0xb8,
-	0x8d, 0xc4, 0xf5, 0xd0, 0x6c, 0xd1, 0x0b, 0x00, 0x4b, 0x3b, 0xb1, 0x9c, 0xb8, 0x27, 0xcf, 0x10,
-	0x04, 0x55, 0xec, 0xe4, 0x79, 0xe2, 0x91, 0x1c, 0xe3, 0x85, 0x47, 0x72, 0x8c, 0x0f, 0x1e, 0xc9,
-	0x31, 0x4e, 0x78, 0x2c, 0xc7, 0x70, 0xe1, 0xb1, 0x1c, 0xc3, 0x8d, 0xc7, 0x72, 0x0c, 0x51, 0xfa,
-	0xe9, 0x99, 0x25, 0x19, 0xa5, 0x49, 0x7a, 0xc9, 0xf9, 0xb9, 0xfa, 0x20, 0xa3, 0x74, 0xf3, 0x52,
-	0x4b, 0xca, 0xf3, 0x8b, 0xb2, 0xc1, 0x1c, 0xfd, 0x0a, 0x64, 0x87, 0x95, 0x54, 0x16, 0xa4, 0x16,
-	0x27, 0xb1, 0x81, 0x1d, 0x66, 0x0c, 0x08, 0x00, 0x00, 0xff, 0xff, 0x26, 0x13, 0xfb, 0x0b, 0xfe,
-	0x00, 0x00, 0x00,
+	// 336 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x74, 0xd1, 0x31, 0x4f, 0xc2, 0x40,
+	0x14, 0x07, 0xf0, 0x56, 0x90, 0xc4, 0xc3, 0x84, 0x58, 0x4d, 0xc4, 0x46, 0x0b, 0x61, 0x62, 0xb1,
+	0x4d, 0x30, 0xae, 0x0e, 0x24, 0xc6, 0xb0, 0x29, 0xc6, 0x41, 0x17, 0x52, 0xf0, 0x51, 0x1a, 0xcb,
+	0xbd, 0xe6, 0xde, 0x21, 0xf0, 0x05, 0x9c, 0xfd, 0x58, 0x8c, 0x8c, 0x4e, 0xc6, 0xc0, 0x17, 0x31,
+	0xbd, 0x9e, 0x11, 0x5a, 0xdd, 0x7a, 0xf7, 0xff, 0xf7, 0x77, 0x2f, 0x79, 0xec, 0x0c, 0xa2, 0x39,
+	0x79, 0x63, 0x9f, 0x24, 0x88, 0xc1, 0x08, 0x86, 0x5e, 0x00, 0x1c, 0x28, 0x24, 0x37, 0x16, 0x28,
+	0xd1, 0xaa, 0x24, 0xb1, 0xfb, 0x1b, 0xdb, 0x47, 0x01, 0x06, 0xa8, 0x32, 0x2f, 0xf9, 0x4a, 0x6b,
+	0xf6, 0x69, 0x56, 0x89, 0x7d, 0xe1, 0x8f, 0x35, 0x62, 0x37, 0xb3, 0x29, 0xcc, 0x24, 0x08, 0xee,
+	0x47, 0xbd, 0x90, 0x0f, 0x80, 0xcb, 0xf0, 0x15, 0x74, 0xd3, 0xce, 0x39, 0x88, 0x51, 0x9a, 0x35,
+	0xde, 0x0a, 0x6c, 0xff, 0x26, 0x1d, 0xee, 0x5e, 0xfa, 0x12, 0xac, 0x4b, 0x56, 0x4a, 0x9f, 0xa9,
+	0x9a, 0x75, 0xb3, 0x59, 0x6e, 0x1d, 0xbb, 0x99, 0x61, 0xdd, 0x5b, 0x15, 0xb7, 0x8b, 0x8b, 0xcf,
+	0x9a, 0xd1, 0xd5, 0x65, 0xeb, 0x91, 0x1d, 0xe6, 0xdf, 0xa7, 0xea, 0x4e, 0xbd, 0xd0, 0x2c, 0xb7,
+	0x1a, 0x39, 0xe3, 0x5a, 0x77, 0x3b, 0x3f, 0x55, 0xcd, 0x59, 0x90, 0x0d, 0xc8, 0xba, 0x62, 0x2c,
+	0x19, 0xb8, 0x17, 0xf2, 0x21, 0x52, 0xb5, 0xa0, 0xc4, 0x93, 0xfc, 0x54, 0x88, 0x51, 0x87, 0x0f,
+	0x51, 0x43, 0x7b, 0xb1, 0x3e, 0x93, 0x75, 0xc7, 0x0e, 0xd4, 0xff, 0x02, 0xa6, 0xbe, 0x78, 0xd6,
+	0x4c, 0x51, 0x31, 0xb5, 0x3f, 0x99, 0xae, 0x2a, 0x6e, 0x60, 0x95, 0x78, 0xeb, 0x56, 0x91, 0x13,
+	0x02, 0xb1, 0x4d, 0xee, 0xfe, 0x43, 0x3e, 0x10, 0x88, 0x3c, 0x39, 0xd9, 0xba, 0xa5, 0x76, 0x67,
+	0xb1, 0x72, 0xcc, 0xe5, 0xca, 0x31, 0xbf, 0x56, 0x8e, 0xf9, 0xbe, 0x76, 0x8c, 0xe5, 0xda, 0x31,
+	0x3e, 0xd6, 0x8e, 0xf1, 0xe4, 0x05, 0xa1, 0x1c, 0x4d, 0xfa, 0xee, 0x00, 0xc7, 0x5e, 0x62, 0x9f,
+	0x73, 0x90, 0x53, 0x14, 0x2f, 0xea, 0xe0, 0xcd, 0x36, 0x17, 0x2b, 0xe7, 0x31, 0x50, 0xbf, 0xa4,
+	0x56, 0x7b, 0xf1, 0x1d, 0x00, 0x00, 0xff, 0xff, 0xc3, 0x17, 0x5f, 0x62, 0x86, 0x02, 0x00, 0x00,
 }
 
 func (m *GenesisState) Marshal() (dAtA []byte, err error) {
@@ -111,6 +151,62 @@ func (m *GenesisState) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
+	if len(m.UserRewardInfos) > 0 {
+		for iNdEx := len(m.UserRewardInfos) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.UserRewardInfos[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintGenesis(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0x2a
+		}
+	}
+	if len(m.PoolRewardInfos) > 0 {
+		for iNdEx := len(m.PoolRewardInfos) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.PoolRewardInfos[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintGenesis(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0x22
+		}
+	}
+	if len(m.PoolInfos) > 0 {
+		for iNdEx := len(m.PoolInfos) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.PoolInfos[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintGenesis(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0x1a
+		}
+	}
+	if len(m.ExternalIncentives) > 0 {
+		for iNdEx := len(m.ExternalIncentives) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.ExternalIncentives[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintGenesis(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0x12
+		}
+	}
 	{
 		size, err := m.Params.MarshalToSizedBuffer(dAtA[:i])
 		if err != nil {
@@ -143,6 +239,30 @@ func (m *GenesisState) Size() (n int) {
 	_ = l
 	l = m.Params.Size()
 	n += 1 + l + sovGenesis(uint64(l))
+	if len(m.ExternalIncentives) > 0 {
+		for _, e := range m.ExternalIncentives {
+			l = e.Size()
+			n += 1 + l + sovGenesis(uint64(l))
+		}
+	}
+	if len(m.PoolInfos) > 0 {
+		for _, e := range m.PoolInfos {
+			l = e.Size()
+			n += 1 + l + sovGenesis(uint64(l))
+		}
+	}
+	if len(m.PoolRewardInfos) > 0 {
+		for _, e := range m.PoolRewardInfos {
+			l = e.Size()
+			n += 1 + l + sovGenesis(uint64(l))
+		}
+	}
+	if len(m.UserRewardInfos) > 0 {
+		for _, e := range m.UserRewardInfos {
+			l = e.Size()
+			n += 1 + l + sovGenesis(uint64(l))
+		}
+	}
 	return n
 }
 
@@ -211,6 +331,142 @@ func (m *GenesisState) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			if err := m.Params.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ExternalIncentives", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGenesis
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.ExternalIncentives = append(m.ExternalIncentives, ExternalIncentive{})
+			if err := m.ExternalIncentives[len(m.ExternalIncentives)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field PoolInfos", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGenesis
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.PoolInfos = append(m.PoolInfos, PoolInfo{})
+			if err := m.PoolInfos[len(m.PoolInfos)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field PoolRewardInfos", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGenesis
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.PoolRewardInfos = append(m.PoolRewardInfos, PoolRewardInfo{})
+			if err := m.PoolRewardInfos[len(m.PoolRewardInfos)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 5:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field UserRewardInfos", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGenesis
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.UserRewardInfos = append(m.UserRewardInfos, UserRewardInfo{})
+			if err := m.UserRewardInfos[len(m.UserRewardInfos)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex

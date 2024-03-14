@@ -3,10 +3,16 @@ package elys.masterchef;
 
 import "gogoproto/gogo.proto";
 import "elys/masterchef/params.proto";
+import "elys/masterchef/external_incentive.proto";
+import "elys/masterchef/pool.proto";
 
 option go_package = "github.com/elys-network/elys/x/masterchef/types";
 
 // GenesisState defines the masterchef module's genesis state.
 message GenesisState {
   Params params = 1 [(gogoproto.nullable) = false];
+  repeated ExternalIncentive external_incentives = 2 [(gogoproto.nullable) = false];
+  repeated PoolInfo pool_infos = 3 [(gogoproto.nullable) = false];
+  repeated PoolRewardInfo pool_reward_infos = 4 [(gogoproto.nullable) = false];
+  repeated UserRewardInfo user_reward_infos = 5 [(gogoproto.nullable) = false];
 }
