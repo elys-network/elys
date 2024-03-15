@@ -29,7 +29,7 @@ func setUpgradeHandler(app *ElysApp) {
 					delegations := app.StakingKeeper.GetValidatorDelegations(ctx, val.GetOperator())
 					for _, del := range delegations {
 						tokens := val.TokensFromShares(del.Shares)
-						if tokens.LTE(sdk.OneDec()) {
+						if tokens.LTE(sdk.NewDec(1000_000)) {
 							_, err := app.StakingKeeper.Unbond(ctx, del.GetDelegatorAddr(), val.GetOperator(), del.Shares)
 							if err != nil {
 								panic(fmt.Errorf("error unbonding from %s to %s", del.DelegatorAddress, val.OperatorAddress))
