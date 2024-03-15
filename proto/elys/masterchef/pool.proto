@@ -51,6 +51,7 @@ message PoolRewardInfo {
         (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
         (gogoproto.nullable) = false
       ];
+    uint64 last_updated_block = 4;
 }
 
 message UserRewardInfo {

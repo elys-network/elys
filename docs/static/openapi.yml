@@ -41107,6 +41107,9 @@ paths:
                     type: string
                   pool_acc_reward_per_share:
                     type: string
+                  last_updated_block:
+                    type: string
+                    format: uint64
         default:
           description: An unexpected error response.
           schema:
@@ -85473,6 +85476,9 @@ definitions:
         type: string
       pool_acc_reward_per_share:
         type: string
+      last_updated_block:
+        type: string
+        format: uint64
   elys.masterchef.QueryExternalIncentiveResponse:
     type: object
     properties:
@@ -85548,6 +85554,9 @@ definitions:
             type: string
           pool_acc_reward_per_share:
             type: string
+          last_updated_block:
+            type: string
+            format: uint64
   elys.masterchef.QueryUserPendingRewardResponse:
     type: object
     properties:
