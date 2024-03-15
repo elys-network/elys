@@ -1,11 +1,12 @@
 package app
 
 import (
+	"fmt"
+
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	m "github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/cosmos/cosmos-sdk/version"
-	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 )
 
@@ -21,11 +22,20 @@ func setUpgradeHandler(app *ElysApp) {
 		func(ctx sdk.Context, plan upgradetypes.Plan, vm m.VersionMap) (m.VersionMap, error) {
 			app.Logger().Info("Running upgrade handler for " + version.Version)
 
-			if version.Version == "v0.29.21" {
-				app.Logger().Info("Deleting proposals with ID <= 113")
-				store := ctx.KVStore(app.keys[govtypes.StoreKey])
-				for i := uint64(1); i <= 113; i++ {
-					store.Delete(govtypes.ProposalKey(i))
+			if version.Version == "v0.29.24" {
+				app.Logger().Info("Unbonding delegations lower than 1 ELYS")
+				validators := app.StakingKeeper.GetAllValidators(ctx)
+				for _, val := range validators {
+					delegations := app.StakingKeeper.GetValidatorDelegations(ctx, val.GetOperator())
+					for _, del := range delegations {
+						tokens := val.TokensFromShares(del.Shares)
+						if tokens.LTE(sdk.OneDec()) {
+							_, err := app.StakingKeeper.Unbond(ctx, del.GetDelegatorAddr(), val.GetOperator(), del.Shares)
+							if err != nil {
+								panic(fmt.Errorf("error unbonding from %s to %s", del.DelegatorAddress, val.OperatorAddress))
+							}
+						}
+					}
 				}
 			}
 
