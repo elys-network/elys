@@ -37821,7 +37821,20 @@ paths:
             type: object
             properties:
               share_amount_out:
-                type: string
+                type: object
+                properties:
+                  denom:
+                    type: string
+                  amount:
+                    type: string
+                description: >-
+                  Coin defines a token with a denomination and an amount.
+
+
+                  NOTE: The amount field is an Int which implements the custom
+                  method
+
+                  signatures required by gogoproto.
               amounts_in:
                 type: array
                 items:
@@ -83185,7 +83198,17 @@ definitions:
     type: object
     properties:
       share_amount_out:
-        type: string
+        type: object
+        properties:
+          denom:
+            type: string
+          amount:
+            type: string
+        description: |-
+          Coin defines a token with a denomination and an amount.
+
+          NOTE: The amount field is an Int which implements the custom method
+          signatures required by gogoproto.
       amounts_in:
         type: array
         items:

@@ -21,8 +21,9 @@ func (k Keeper) JoinPoolEstimation(goCtx context.Context, req *types.QueryJoinPo
 		return nil, err
 	}
 
+	shareDenom := types.GetPoolShareDenom(req.PoolId)
 	return &types.QueryJoinPoolEstimationResponse{
-		ShareAmountOut: sharesOut,
+		ShareAmountOut: sdk.NewCoin(shareDenom, sharesOut),
 		AmountsIn:      tokensIn,
 	}, nil
 }

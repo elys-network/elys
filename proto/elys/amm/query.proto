@@ -12,6 +12,7 @@ import "elys/amm/pool_params.proto";
 import "cosmos/base/v1beta1/coin.proto";
 import "elys/amm/denom_liquidity.proto";
 import "elys/amm/swap_route.proto";
+import "cosmos_proto/cosmos.proto";
 
 option go_package = "github.com/elys-network/elys/x/amm/types";
 
@@ -131,7 +132,7 @@ message QueryJoinPoolEstimationRequest {
 }
 
 message QueryJoinPoolEstimationResponse {
-           string                   share_amount_out = 1 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin share_amount_out = 1 [ (gogoproto.nullable) = false ];
   repeated cosmos.base.v1beta1.Coin amounts_in       = 2 [(gogoproto.nullable)   = false] ;
 }
 
