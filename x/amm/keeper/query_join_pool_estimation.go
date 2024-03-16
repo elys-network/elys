@@ -16,14 +16,17 @@ func (k Keeper) JoinPoolEstimation(goCtx context.Context, req *types.QueryJoinPo
 	}
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	tokensIn, sharesOut, err := k.joinPoolEstimation(ctx, req.PoolId, req.AmountsIn)
+	tokensIn, sharesOut, slippage, weightBalanceBonus, err := k.joinPoolEstimation(ctx, req.PoolId, req.AmountsIn)
 	if err != nil {
 		return nil, err
 	}
 
+	shareDenom := types.GetPoolShareDenom(req.PoolId)
 	return &types.QueryJoinPoolEstimationResponse{
-		ShareAmountOut: sharesOut,
-		AmountsIn:      tokensIn,
+		ShareAmountOut:     sdk.NewCoin(shareDenom, sharesOut),
+		AmountsIn:          tokensIn,
+		Slippage:           slippage,
+		WeightBalanceRatio: weightBalanceBonus,
 	}, nil
 }
 
@@ -31,11 +34,11 @@ func (k Keeper) joinPoolEstimation(
 	ctx sdk.Context,
 	poolId uint64,
 	tokenInMaxs sdk.Coins,
-) (tokensIn sdk.Coins, sharesOut math.Int, err error) {
+) (tokensIn sdk.Coins, sharesOut math.Int, slippage sdk.Dec, weightBalanceBonus sdk.Dec, err error) {
 	// all pools handled within this method are pointer references, `JoinPool` directly updates the pools
 	pool, poolExists := k.GetPool(ctx, poolId)
 	if !poolExists {
-		return nil, sdk.ZeroInt(), types.ErrInvalidPoolId
+		return nil, sdk.ZeroInt(), sdk.ZeroDec(), sdk.ZeroDec(), types.ErrInvalidPoolId
 	}
 
 	if !pool.PoolParams.UseOracle {
@@ -43,23 +46,27 @@ func (k Keeper) joinPoolEstimation(
 		if len(tokensIn) != 1 {
 			numShares, tokensIn, err := pool.CalcJoinPoolNoSwapShares(tokenInMaxs)
 			if err != nil {
-				return tokensIn, numShares, err
+				return tokensIn, numShares, sdk.ZeroDec(), sdk.ZeroDec(), err
 			}
 		}
 
-		sharesOut, err = pool.JoinPool(ctx, k.oracleKeeper, k.accountedPoolKeeper, tokensIn)
+		snapshot := k.GetPoolSnapshotOrSet(ctx, pool)
+		cacheCtx, _ := ctx.CacheContext()
+		sharesOut, slippage, weightBalanceBonus, err = pool.JoinPool(cacheCtx, &snapshot, k.oracleKeeper, k.accountedPoolKeeper, tokensIn)
 		if err != nil {
-			return nil, sdk.ZeroInt(), err
+			return nil, sdk.ZeroInt(), sdk.ZeroDec(), sdk.ZeroDec(), err
 		}
 
-		return tokensIn, sharesOut, err
+		return tokensIn, sharesOut, slippage, weightBalanceBonus, err
 	}
 
 	// on oracle pool, full tokenInMaxs are used regardless shareOutAmount
-	sharesOut, err = pool.JoinPool(ctx, k.oracleKeeper, k.accountedPoolKeeper, tokenInMaxs)
+	snapshot := k.GetPoolSnapshotOrSet(ctx, pool)
+	cacheCtx, _ := ctx.CacheContext()
+	sharesOut, slippage, weightBalanceBonus, err = pool.JoinPool(cacheCtx, &snapshot, k.oracleKeeper, k.accountedPoolKeeper, tokenInMaxs)
 	if err != nil {
-		return nil, sdk.ZeroInt(), err
+		return nil, sdk.ZeroInt(), sdk.ZeroDec(), sdk.ZeroDec(), err
 	}
 
-	return tokenInMaxs, sharesOut, err
+	return tokenInMaxs, sharesOut, slippage, weightBalanceBonus, err
 }
