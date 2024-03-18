@@ -79,7 +79,7 @@ func NewRootCmd() (*cobra.Command, appparams.EncodingConfig) {
 			customTMConfig := initTendermintConfig()
 
 			// override the default timeout commit value
-			customTMConfig.Consensus.TimeoutCommit = 3000 * time.Millisecond
+			customTMConfig.Consensus.TimeoutCommit = 5000 * time.Millisecond
 
 			return server.InterceptConfigsPreRunHandler(
 				cmd, customAppTemplate, customAppConfig, customTMConfig,
