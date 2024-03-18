@@ -16,7 +16,7 @@ func (k Keeper) GetWhitelist(goCtx context.Context, req *types.WhitelistRequest)
 	}
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	if req.Pagination.Limit > types.MaxPageLimit {
+	if req.Pagination != nil && req.Pagination.Limit > types.MaxPageLimit {
 		return nil, status.Error(codes.InvalidArgument, fmt.Sprintf("page size greater than max %d", types.MaxPageLimit))
 	}
 
