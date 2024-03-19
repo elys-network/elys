@@ -20,16 +20,12 @@ func (m *Messenger) msgExitPool(ctx sdk.Context, contractAddr sdk.AccAddress, ms
 		return nil, nil, wasmvmtypes.InvalidRequest{Err: "exit pool wrong sender"}
 	}
 
-	msgServer := ammkeeper.NewMsgServerImpl(*m.keeper)
-
 	if err := msg.ValidateBasic(); err != nil {
 		return nil, nil, errorsmod.Wrap(err, "failed validating msg")
 	}
 
-	res, err := msgServer.ExitPool(
-		sdk.WrapSDKContext(ctx),
-		msg,
-	)
+	msgServer := ammkeeper.NewMsgServerImpl(*m.keeper)
+	res, err := msgServer.ExitPool(sdk.WrapSDKContext(ctx), msg)
 	if err != nil {
 		return nil, nil, errorsmod.Wrap(err, "exit pool msg")
 	}
