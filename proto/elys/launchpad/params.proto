@@ -13,11 +13,12 @@ message Params {
   string initial_price = 1;       // 0.75 USDC
   string total_reserve = 2;       // 4.5 million
   string sold_amount = 3;       // 3.375 million USDC totally
-  string withdrawn_amount = 4;
-  uint64 launchpad_starttime = 5; // May 1st
-  uint64 launchpad_duration = 6;  // 1 week
-  string shield_duration = 7;
-  uint64 max_shield_percent = 8;
-  repeated string spending_tokens = 9; // USDC, ETH, ATOM
-  Bonus bonus_info = 10 [ (gogoproto.nullable) = false ];
+  string withdraw_address = 4;
+  string withdrawn_amount = 5;
+  uint64 launchpad_starttime = 6; // May 1st
+  uint64 launchpad_duration = 7;  // 1 week
+  uint64 return_duration = 8;
+  uint64 max_return_percent = 9;
+  repeated string spending_tokens = 10; // USDC, ETH, ATOM
+  Bonus bonus_info = 11 [ (gogoproto.nullable) = false ];
 }

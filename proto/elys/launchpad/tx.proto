@@ -1,11 +1,46 @@
 syntax = "proto3";
 package elys.launchpad;
 
+import "cosmos/base/v1beta1/coin.proto";
+import "gogoproto/gogo.proto";
+import "google/api/annotations.proto";
+
 option go_package = "github.com/elys-network/elys/x/launchpad/types";
 
 // Msg defines the Msg service.
 service Msg {
-  // TODO: BuyElys (user)
-  // TODO: ReturnElys (user)
-  // TODO: WithdrawRaised (admin)
+  rpc BuyElys(MsgBuyElys) returns (MsgBuyElysResponse);
+  rpc ReturnElys(MsgReturnElys) returns (MsgReturnElysResponse);
+  rpc WithdrawRaised(MsgWithdrawRaised) returns (MsgWithdrawRaisedResponse);
 }
+
+message MsgBuyElys {
+  string sender = 1;
+  string spending_token = 2 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+  string token_amount = 3 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+}
+message MsgBuyElysResponse {
+  uint64 order_id = 1;
+}
+
+message MsgReturnElys {
+  string sender = 1;
+  uint64 order_id = 2;
+  string return_elys_amount = 3 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+}
+message MsgReturnElysResponse {}
+
+message MsgWithdrawRaised {
+  string sender = 1;
+  repeated cosmos.base.v1beta1.Coin coins = 2 [ (gogoproto.nullable) = false ];
+}
+message MsgWithdrawRaisedResponse {}
