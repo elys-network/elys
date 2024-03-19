@@ -16,10 +16,7 @@ service Msg {
 
 message MsgBuyElys {
   string sender = 1;
-  string spending_token = 2 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
-    (gogoproto.nullable) = false
-  ];
+  string spending_token = 2;
   string token_amount = 3 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
     (gogoproto.nullable) = false
