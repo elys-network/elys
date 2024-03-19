@@ -148,12 +148,12 @@ func (p *Pool) JoinPool(
 
 		numShares, tokensJoined, err := p.CalcSingleAssetJoinPoolShares(tokensIn)
 		if err != nil {
-			return math.Int{}, totalSlippage, sdk.ZeroDec(), err
+			return math.Int{}, sdk.ZeroDec(), sdk.ZeroDec(), err
 		}
 
 		// update pool with the calculated share and liquidity needed to join pool
 		p.IncreaseLiquidity(numShares, tokensJoined)
-		return numShares, sdk.ZeroDec(), sdk.ZeroDec(), nil
+		return numShares, totalSlippage, sdk.ZeroDec(), nil
 	}
 
 	joinValueWithoutSlippage, err := p.CalcJoinValueWithoutSlippage(ctx, oracleKeeper, accountedPoolKeeper, tokensIn)
@@ -194,8 +194,8 @@ func (p *Pool) JoinPool(
 		weightIn := OracleAssetWeight(ctx, oracleKeeper, newAssetPools, tokenInDenom)
 		weightOut := sdk.OneDec().Sub(weightIn)
 		weightBreakingFee = GetWeightBreakingFee(weightIn, weightOut, targetWeightIn, targetWeightOut, p.PoolParams)
-
 	}
+
 	weightBalanceBonus = weightBreakingFee.Neg()
 	if initialWeightDistance.GT(p.PoolParams.ThresholdWeightDifference) && distanceDiff.IsNegative() {
 		weightBalanceBonus = p.PoolParams.WeightBreakingFeeMultiplier.Mul(distanceDiff).Abs()

@@ -15,7 +15,7 @@ func (k Keeper) QueryPositions(goCtx context.Context, req *types.PositionsReques
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
-	if req.Pagination.Limit > types.MaxPageLimit {
+	if req.Pagination != nil && req.Pagination.Limit > types.MaxPageLimit {
 		return nil, status.Error(codes.InvalidArgument, fmt.Sprintf("page size greater than max %d", types.MaxPageLimit))
 	}
 
