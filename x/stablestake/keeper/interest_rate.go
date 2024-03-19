@@ -8,6 +8,9 @@ import (
 
 func (k Keeper) InterestRateComputation(ctx sdk.Context) sdk.Dec {
 	params := k.GetParams(ctx)
+	if params.TotalValue.IsZero() {
+		return params.InterestRate
+	}
 
 	interestRateMax := params.InterestRateMax
 	interestRateMin := params.InterestRateMin
