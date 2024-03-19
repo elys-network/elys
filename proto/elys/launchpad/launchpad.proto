@@ -23,10 +23,7 @@ message Bonus {
 message Purchase {
   uint64 order_id = 1;
   string order_maker = 2;
-  string spending_token = 3 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
-    (gogoproto.nullable) = false
-  ];
+  string spending_token = 3;
   string token_amount = 4 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
     (gogoproto.nullable) = false

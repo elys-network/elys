@@ -84933,8 +84933,10 @@ definitions:
     type: object
     properties:
       order_id:
-        type: string
-        format: uint64
+        type: array
+        items:
+          type: string
+          format: uint64
   elys.launchpad.MsgReturnElysResponse:
     type: object
   elys.launchpad.MsgWithdrawRaisedResponse:

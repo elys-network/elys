@@ -14,6 +14,8 @@ const (
 	MemStoreKey = "mem_launchpad"
 )
 
+var PurchasePrefixKey = []byte{0x01}
+
 func KeyPrefix(p string) []byte {
 	return []byte(p)
 }
