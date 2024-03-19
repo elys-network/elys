@@ -16,4 +16,5 @@ var (
 	ErrLaunchpadReturnPeriodFinished = errorsmod.Register(ModuleName, 6, "launchpad return period finished")
 	ErrPurchaseOrderNotFound         = errorsmod.Register(ModuleName, 7, "purchase order not found")
 	ErrExceedMaxReturnAmount         = errorsmod.Register(ModuleName, 8, "exceed max return amount")
+	ErrExceedMaxWithdrawableAmount   = errorsmod.Register(ModuleName, 9, "exceed max withdrawable amount")
 )

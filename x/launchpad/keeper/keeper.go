@@ -15,10 +15,12 @@ import (
 
 type (
 	Keeper struct {
-		cdc                codec.BinaryCodec
-		storeKey           storetypes.StoreKey
-		memKey             storetypes.StoreKey
-		paramstore         paramtypes.Subspace
+		cdc        codec.BinaryCodec
+		storeKey   storetypes.StoreKey
+		memKey     storetypes.StoreKey
+		paramstore paramtypes.Subspace
+		authority  string
+
 		bankKeeper         types.BankKeeper
 		oracleKeeper       types.OracleKeeper
 		commitmentKeeper   *commitmentkeeper.Keeper
@@ -31,6 +33,7 @@ func NewKeeper(
 	storeKey,
 	memKey storetypes.StoreKey,
 	ps paramtypes.Subspace,
+	authority string,
 	bankKeeper types.BankKeeper,
 	oracleKeeper types.OracleKeeper,
 	commitmentKeeper *commitmentkeeper.Keeper,
@@ -46,6 +49,7 @@ func NewKeeper(
 		storeKey:           storeKey,
 		memKey:             memKey,
 		paramstore:         ps,
+		authority:          authority,
 		bankKeeper:         bankKeeper,
 		oracleKeeper:       oracleKeeper,
 		commitmentKeeper:   commitmentKeeper,

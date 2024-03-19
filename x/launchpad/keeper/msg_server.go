@@ -175,11 +175,53 @@ func (k msgServer) WithdrawRaised(goCtx context.Context, msg *types.MsgWithdrawR
 		return nil, errorsmod.Wrapf(govtypes.ErrInvalidSigner, "expected %s, got %s", params.WithdrawAddress, msg.Sender)
 	}
 
-	// TODO: implement
-	// params := k.GetParams(ctx)
-	// params.ReturnDuration
-	// params.WithdrawAddress
-	// params.WithdrawnAmount
+	// Once return period is over, can withdraw all
+	returnEndTime := params.LaunchpadStarttime + params.LaunchpadDuration + params.ReturnDuration
+	if returnEndTime < uint64(ctx.BlockTime().Unix()) {
+		addr := sdk.MustAccAddressFromBech32(msg.Sender)
+		err := k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, addr, sdk.Coins(msg.Coins))
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	totalWithdrawAmount := sdk.Coins(params.WithdrawnAmount).Add(msg.Coins...)
+	maxWithdrawAmount := sdk.Coins{}
+	orders := k.GetAllOrders(ctx)
+	for _, order := range orders {
+		orderWithdrawable := sdk.NewDecWithPrec(int64(100-params.MaxReturnPercent), 2).MulInt(order.TokenAmount).RoundInt()
+		asset, found := k.assetProfileKeeper.GetEntry(ctx, order.SpendingToken)
+		if !found {
+			return nil, errorsmod.Wrapf(atypes.ErrAssetProfileNotFound, "denom: %s", order.SpendingToken)
+		}
+		coin := sdk.NewCoin(asset.Denom, orderWithdrawable)
+		maxWithdrawAmount = maxWithdrawAmount.Add(coin)
+	}
+
+	if totalWithdrawAmount.IsAnyGT(maxWithdrawAmount) {
+		return nil, types.ErrExceedMaxWithdrawableAmount
+	}
+
+	coins := sdk.Coins(msg.Coins)
+	addr := sdk.MustAccAddressFromBech32(msg.Sender)
+	err := k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, addr, coins)
+	if err != nil {
+		return nil, err
+	}
 
 	return &types.MsgWithdrawRaisedResponse{}, nil
+}
+
+// Update params through gov proposal
+func (k msgServer) UpdateParams(goCtx context.Context, msg *types.MsgUpdateParams) (*types.MsgUpdateParamsResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	if k.authority != msg.Authority {
+		return nil, errorsmod.Wrapf(govtypes.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.authority, msg.Authority)
+	}
+
+	// store params
+	k.SetParams(ctx, msg.Params)
+
+	return &types.MsgUpdateParamsResponse{}, nil
 }

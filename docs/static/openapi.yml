@@ -40056,7 +40056,22 @@ paths:
                   withdraw_address:
                     type: string
                   withdrawn_amount:
-                    type: string
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        denom:
+                          type: string
+                        amount:
+                          type: string
+                      description: >-
+                        Coin defines a token with a denomination and an amount.
+
+
+                        NOTE: The amount field is an Int which implements the
+                        custom method
+
+                        signatures required by gogoproto.
                   launchpad_starttime:
                     type: string
                     format: uint64
@@ -84939,6 +84954,8 @@ definitions:
           format: uint64
   elys.launchpad.MsgReturnElysResponse:
     type: object
+  elys.launchpad.MsgUpdateParamsResponse:
+    type: object
   elys.launchpad.MsgWithdrawRaisedResponse:
     type: object
   elys.launchpad.Params:
@@ -84956,7 +84973,19 @@ definitions:
       withdraw_address:
         type: string
       withdrawn_amount:
-        type: string
+        type: array
+        items:
+          type: object
+          properties:
+            denom:
+              type: string
+            amount:
+              type: string
+          description: |-
+            Coin defines a token with a denomination and an amount.
+
+            NOTE: The amount field is an Int which implements the custom method
+            signatures required by gogoproto.
       launchpad_starttime:
         type: string
         format: uint64
@@ -85118,7 +85147,22 @@ definitions:
           withdraw_address:
             type: string
           withdrawn_amount:
-            type: string
+            type: array
+            items:
+              type: object
+              properties:
+                denom:
+                  type: string
+                amount:
+                  type: string
+              description: >-
+                Coin defines a token with a denomination and an amount.
+
+
+                NOTE: The amount field is an Int which implements the custom
+                method
+
+                signatures required by gogoproto.
           launchpad_starttime:
             type: string
             format: uint64
