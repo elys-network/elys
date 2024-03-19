@@ -26,18 +26,18 @@ func (k Keeper) GetOrder(ctx sdk.Context, orderId uint64) types.Purchase {
 	return order
 }
 
-func (k Keeper) SetPurchase(ctx sdk.Context, order types.Purchase) {
+func (k Keeper) SetOrder(ctx sdk.Context, order types.Purchase) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.PurchasePrefixKey)
 	bz := k.cdc.MustMarshal(&order)
 	store.Set(sdk.Uint64ToBigEndian(order.OrderId), bz)
 }
 
-func (k Keeper) DeletePurchase(ctx sdk.Context, order types.Purchase) {
+func (k Keeper) DeleteOrder(ctx sdk.Context, order types.Purchase) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.PurchasePrefixKey)
 	store.Delete(sdk.Uint64ToBigEndian(order.OrderId))
 }
 
-func (k Keeper) AllPurchases(ctx sdk.Context) []types.Purchase {
+func (k Keeper) GetAllOrders(ctx sdk.Context) []types.Purchase {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.PurchasePrefixKey)
 
 	iterator := sdk.KVStorePrefixIterator(store, nil)

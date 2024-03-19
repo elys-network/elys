@@ -970,6 +970,7 @@ func NewElysApp(
 		keys[launchpadmoduletypes.StoreKey],
 		keys[launchpadmoduletypes.MemStoreKey],
 		app.GetSubspace(launchpadmoduletypes.ModuleName),
+		app.BankKeeper,
 		app.OracleKeeper,
 		&app.CommitmentKeeper,
 		app.AssetprofileKeeper,
