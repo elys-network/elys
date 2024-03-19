@@ -52,3 +52,18 @@ func (k Keeper) AllPurchases(ctx sdk.Context) []types.Purchase {
 	}
 	return orders
 }
+
+func (k Keeper) LastOrderId(ctx sdk.Context) uint64 {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.PurchasePrefixKey)
+
+	iterator := sdk.KVStoreReversePrefixIterator(store, nil)
+	defer iterator.Close()
+
+	for ; iterator.Valid(); iterator.Next() {
+		order := types.Purchase{}
+		k.cdc.MustUnmarshal(iterator.Value(), &order)
+
+		return order.OrderId
+	}
+	return 0
+}

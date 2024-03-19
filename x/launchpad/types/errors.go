@@ -3,10 +3,13 @@ package types
 // DONTCOVER
 
 import (
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	errorsmod "cosmossdk.io/errors"
 )
 
 // x/launchpad module sentinel errors
 var (
-	ErrSample = sdkerrors.Register(ModuleName, 1100, "sample error")
+	ErrNotEnabledSpendingToken  = errorsmod.Register(ModuleName, 1, "not enabled spending token")
+	ErrLaunchpadNotStarted      = errorsmod.Register(ModuleName, 2, "launchpad not started")
+	ErrLaunchpadAlreadyFinished = errorsmod.Register(ModuleName, 3, "launchpad already finished")
+	ErrOverflowTotalReserve     = errorsmod.Register(ModuleName, 4, "buy amount overflow total reserve")
 )

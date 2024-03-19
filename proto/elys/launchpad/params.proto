@@ -10,11 +10,23 @@ option go_package = "github.com/elys-network/elys/x/launchpad/types";
 message Params {
   option (gogoproto.goproto_stringer) = false;
 
-  string initial_price = 1;       // 0.75 USDC
-  string total_reserve = 2;       // 4.5 million
-  string sold_amount = 3;       // 3.375 million USDC totally
+  string initial_price = 1 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];                              // 0.75 USDC
+  string total_reserve = 2 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];                            // 4.5 million
+  string sold_amount = 3 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ]; // 3.375 million USDC totally
   string withdraw_address = 4;
-  string withdrawn_amount = 5;
+  string withdrawn_amount = 5 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
   uint64 launchpad_starttime = 6; // May 1st
   uint64 launchpad_duration = 7;  // 1 week
   uint64 return_duration = 8;

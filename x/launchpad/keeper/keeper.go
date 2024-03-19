@@ -8,16 +8,20 @@ import (
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
+	commitmentkeeper "github.com/elys-network/elys/x/commitment/keeper"
 
 	"github.com/elys-network/elys/x/launchpad/types"
 )
 
 type (
 	Keeper struct {
-		cdc        codec.BinaryCodec
-		storeKey   storetypes.StoreKey
-		memKey     storetypes.StoreKey
-		paramstore paramtypes.Subspace
+		cdc                codec.BinaryCodec
+		storeKey           storetypes.StoreKey
+		memKey             storetypes.StoreKey
+		paramstore         paramtypes.Subspace
+		oracleKeeper       types.OracleKeeper
+		commitmentKeeper   *commitmentkeeper.Keeper
+		assetProfileKeeper types.AssetProfileKeeper
 	}
 )
 
@@ -26,7 +30,9 @@ func NewKeeper(
 	storeKey,
 	memKey storetypes.StoreKey,
 	ps paramtypes.Subspace,
-
+	oracleKeeper types.OracleKeeper,
+	commitmentKeeper *commitmentkeeper.Keeper,
+	assetProfileKeeper types.AssetProfileKeeper,
 ) *Keeper {
 	// set KeyTable if it has not already been set
 	if !ps.HasKeyTable() {
@@ -34,10 +40,13 @@ func NewKeeper(
 	}
 
 	return &Keeper{
-		cdc:        cdc,
-		storeKey:   storeKey,
-		memKey:     memKey,
-		paramstore: ps,
+		cdc:                cdc,
+		storeKey:           storeKey,
+		memKey:             memKey,
+		paramstore:         ps,
+		oracleKeeper:       oracleKeeper,
+		commitmentKeeper:   commitmentKeeper,
+		assetProfileKeeper: assetProfileKeeper,
 	}
 }
 

@@ -185,6 +185,7 @@ import (
 	launchpadmodule "github.com/elys-network/elys/x/launchpad"
 	launchpadmodulekeeper "github.com/elys-network/elys/x/launchpad/keeper"
 	launchpadmoduletypes "github.com/elys-network/elys/x/launchpad/types"
+
 	// this line is used by starport scaffolding # stargate/app/moduleImport
 
 	"github.com/elys-network/elys/docs"
@@ -969,6 +970,9 @@ func NewElysApp(
 		keys[launchpadmoduletypes.StoreKey],
 		keys[launchpadmoduletypes.MemStoreKey],
 		app.GetSubspace(launchpadmoduletypes.ModuleName),
+		app.OracleKeeper,
+		&app.CommitmentKeeper,
+		app.AssetprofileKeeper,
 	)
 	launchpadModule := launchpadmodule.NewAppModule(appCodec, app.LaunchpadKeeper, app.AccountKeeper, app.BankKeeper)
 
