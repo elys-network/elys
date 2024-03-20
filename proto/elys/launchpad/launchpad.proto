@@ -40,4 +40,5 @@ message Purchase {
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
     (gogoproto.nullable) = false
   ];
+  bool vesting_started = 8;
 }

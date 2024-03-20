@@ -39859,6 +39859,8 @@ paths:
                       type: string
                     bonus_amount:
                       type: string
+                    vesting_started:
+                      type: boolean
         default:
           description: An unexpected error response.
           schema:
@@ -39950,6 +39952,8 @@ paths:
                       type: string
                     bonus_amount:
                       type: string
+                    vesting_started:
+                      type: boolean
         default:
           description: An unexpected error response.
           schema:
@@ -40009,6 +40013,8 @@ paths:
                       type: string
                     bonus_amount:
                       type: string
+                    vesting_started:
+                      type: boolean
         default:
           description: An unexpected error response.
           schema:
@@ -85043,6 +85049,8 @@ definitions:
         type: string
       bonus_amount:
         type: string
+      vesting_started:
+        type: boolean
   elys.launchpad.QueryAllOrdersResponse:
     type: object
     properties:
@@ -85066,6 +85074,8 @@ definitions:
               type: string
             bonus_amount:
               type: string
+            vesting_started:
+              type: boolean
   elys.launchpad.QueryBonusResponse:
     type: object
     properties:
@@ -85098,6 +85108,8 @@ definitions:
               type: string
             bonus_amount:
               type: string
+            vesting_started:
+              type: boolean
   elys.launchpad.QueryOrdersResponse:
     type: object
     properties:
@@ -85121,6 +85133,8 @@ definitions:
               type: string
             bonus_amount:
               type: string
+            vesting_started:
+              type: boolean
   elys.launchpad.QueryParamsResponse:
     type: object
     properties:
