@@ -26,6 +26,7 @@ import (
 	epochstypes "github.com/elys-network/elys/x/epochs/types"
 	incentivekeeper "github.com/elys-network/elys/x/incentive/keeper"
 	incentivetypes "github.com/elys-network/elys/x/incentive/types"
+	launchpadtypes "github.com/elys-network/elys/x/launchpad/types"
 	leveragelpkeeper "github.com/elys-network/elys/x/leveragelp/keeper"
 	leveragelptypes "github.com/elys-network/elys/x/leveragelp/types"
 	oraclekeeper "github.com/elys-network/elys/x/oracle/keeper"
@@ -168,6 +169,14 @@ type ElysQuery struct {
 	LeveragelpPools                    *leveragelptypes.QueryAllPoolRequest        `json:"leveragelp_pools,omitempty"`
 	LeveragelpPosition                 *leveragelptypes.PositionRequest            `json:"leveragelp_position,omitempty"`
 
+	// launchpad queriers
+	LaunchpadParams        *launchpadtypes.QueryParamsRequest        `json:"launchpad_params,omitempty"`
+	LaunchpadBonus         *launchpadtypes.QueryBonusRequest         `json:"launchpad_bonus,omitempty"`
+	LaunchpadBuyElysEst    *launchpadtypes.QueryBuyElysEstRequest    `json:"launchpad_buy_elys_estimation,omitempty"`
+	LaunchpadReturnElysEst *launchpadtypes.QueryReturnElysEstRequest `json:"launchpad_return_elys_estimation,omitempty"`
+	LaunchpadOrders        *launchpadtypes.QueryOrdersRequest        `json:"launchpad_orders,omitempty"`
+	LaunchpadAllOrders     *launchpadtypes.QueryAllOrdersRequest     `json:"launchpad_all_orders,omitempty"`
+
 	// perpetual queriers
 	PerpetualParams                 *perpetualtypes.ParamsRequest              `json:"perpetual_params,omitempty"`
 	PerpetualQueryPositions         *perpetualtypes.PositionsRequest           `json:"perpetual_query_positions,omitempty"`
@@ -273,6 +282,10 @@ type ElysMsg struct {
 	// leveragelp messages
 	LeveragelpOpen  *leveragelptypes.MsgOpen  `json:"leveragelp_open,omitempty"`
 	LeveragelpClose *leveragelptypes.MsgClose `json:"leveragelp_close,omitempty"`
+
+	// launchpad messages
+	LaunchpadBuyElys    *launchpadtypes.MsgBuyElys    `json:"launchpad_buy_elys,omitempty"`
+	LaunchpadReturnElys *launchpadtypes.MsgReturnElys `json:"launchpad_return_elys,omitempty"`
 
 	// perpetual messages
 	PerpetualOpen  *perpetualtypes.MsgBrokerOpen  `json:"perpetual_open,omitempty"`
