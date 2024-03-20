@@ -58,17 +58,22 @@ message QueryBonusResponse {
 }
 
 message QueryBuyElysEstRequest {
-  string spending_token = 1 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
-    (gogoproto.nullable) = false
-  ];
+  string spending_token = 1;
   string token_amount = 2 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
     (gogoproto.nullable) = false
   ];
 }
 message QueryBuyElysEstResponse {
-  repeated Purchase orders = 1 [ (gogoproto.nullable) = false ];
+  string elys_amount = 1 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+  string bonus_amount = 2 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+  repeated Purchase orders = 3 [ (gogoproto.nullable) = false ];
 }
 
 message QueryReturnElysEstRequest {
@@ -79,7 +84,10 @@ message QueryReturnElysEstRequest {
   ];
 }
 message QueryReturnElysEstResponse {
-  repeated cosmos.base.v1beta1.Coin coins = 2 [ (gogoproto.nullable) = false ];
+  string amount = 1 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
 }
 
 message QueryOrdersRequest { string user = 1; }

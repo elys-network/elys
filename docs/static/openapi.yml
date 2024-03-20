@@ -39926,6 +39926,10 @@ paths:
           schema:
             type: object
             properties:
+              elys_amount:
+                type: string
+              bonus_amount:
+                type: string
               orders:
                 type: array
                 items:
@@ -40154,23 +40158,8 @@ paths:
           schema:
             type: object
             properties:
-              coins:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    denom:
-                      type: string
-                    amount:
-                      type: string
-                  description: >-
-                    Coin defines a token with a denomination and an amount.
-
-
-                    NOTE: The amount field is an Int which implements the custom
-                    method
-
-                    signatures required by gogoproto.
+              amount:
+                type: string
         default:
           description: An unexpected error response.
           schema:
@@ -85085,6 +85074,10 @@ definitions:
   elys.launchpad.QueryBuyElysEstResponse:
     type: object
     properties:
+      elys_amount:
+        type: string
+      bonus_amount:
+        type: string
       orders:
         type: array
         items:
@@ -85216,20 +85209,8 @@ definitions:
   elys.launchpad.QueryReturnElysEstResponse:
     type: object
     properties:
-      coins:
-        type: array
-        items:
-          type: object
-          properties:
-            denom:
-              type: string
-            amount:
-              type: string
-          description: |-
-            Coin defines a token with a denomination and an amount.
-
-            NOTE: The amount field is an Int which implements the custom method
-            signatures required by gogoproto.
+      amount:
+        type: string
   elys.leveragelp.IsWhitelistedResponse:
     type: object
     properties:

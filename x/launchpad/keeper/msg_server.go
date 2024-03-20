@@ -35,7 +35,7 @@ func (k Keeper) isEnabledToken(ctx sdk.Context, spendingToken string) bool {
 	return false
 }
 
-func (k Keeper) CreateOrder(ctx sdk.Context, orderMaker string, spendingToken string, elysAmount math.Int, bonusRate sdk.Dec) {
+func (k Keeper) GenerateOrder(ctx sdk.Context, orderMaker string, spendingToken string, elysAmount math.Int, bonusRate sdk.Dec) types.Purchase {
 	params := k.GetParams(ctx)
 	order := types.Purchase{}
 	order.OrderId = k.LastOrderId(ctx) + 1
@@ -46,7 +46,54 @@ func (k Keeper) CreateOrder(ctx sdk.Context, orderMaker string, spendingToken st
 	order.TokenAmount = sdk.NewDecFromInt(elysAmount).Mul(sdk.NewDec(1000_000)).Quo(params.InitialPrice).RoundInt()
 	order.ReturnedElysAmount = sdk.ZeroInt()
 
-	k.SetOrder(ctx, order)
+	return order
+}
+
+func (k Keeper) CalcBuyElysResult(ctx sdk.Context, sender string, spendingToken string, tokenAmount math.Int) (math.Int, []types.Purchase, error) {
+	params := k.GetParams(ctx)
+	asset, found := k.assetProfileKeeper.GetEntry(ctx, spendingToken)
+	if !found {
+		return sdk.ZeroInt(), []types.Purchase{}, errorsmod.Wrapf(atypes.ErrAssetProfileNotFound, "denom: %s", spendingToken)
+	}
+
+	price := k.oracleKeeper.GetAssetPriceFromDenom(ctx, asset.Denom)
+
+	elysAmount := price.MulInt(tokenAmount).Mul(sdk.NewDec(1000_000)).Quo(params.InitialPrice).RoundInt()
+
+	soldAmount := params.SoldAmount.Add(elysAmount)
+	if soldAmount.GT(params.TotalReserve) {
+		return sdk.ZeroInt(), []types.Purchase{}, types.ErrOverflowTotalReserve
+	}
+
+	// 0-20% raise 100% bonus
+	// 20-30% raise 90% bonus
+	// 30-40% raise bonus 80%
+	// 40-50% raise bonus 70%
+	// 50-60% raise bonus 60%
+	// 60-70% raise bonus 50%
+	// 70-80% raise bonus 40%
+	// 80-100% raise bonus 30%
+	soldSoFar := params.SoldAmount
+	purchases := []types.Purchase{}
+	for index, raisePercent := range params.BonusInfo.RaisePercents {
+		roundMaxRaise := sdk.NewDecWithPrec(int64(raisePercent), 2).Mul(sdk.NewDecFromInt(params.TotalReserve)).RoundInt()
+		if soldSoFar.LT(roundMaxRaise) {
+			bonusPercent := params.BonusInfo.BonusPercents[index]
+			bonusRate := sdk.NewDecWithPrec(int64(bonusPercent), 2)
+			if roundMaxRaise.GTE(soldAmount) {
+				roundSellAmount := soldAmount.Sub(soldSoFar)
+				order := k.GenerateOrder(ctx, sender, spendingToken, roundSellAmount, bonusRate)
+				purchases = append(purchases, order)
+				break
+			} else {
+				roundSellAmount := roundMaxRaise.Sub(soldSoFar)
+				order := k.GenerateOrder(ctx, sender, spendingToken, roundSellAmount, bonusRate)
+				purchases = append(purchases, order)
+				soldSoFar = roundMaxRaise
+			}
+		}
+	}
+	return elysAmount, purchases, nil
 }
 
 func (k msgServer) BuyElys(goCtx context.Context, msg *types.MsgBuyElys) (*types.MsgBuyElysResponse, error) {
@@ -77,42 +124,16 @@ func (k msgServer) BuyElys(goCtx context.Context, msg *types.MsgBuyElys) (*types
 		return nil, err
 	}
 
-	price := k.oracleKeeper.GetAssetPriceFromDenom(ctx, asset.Denom)
-
-	elysAmount := price.MulInt(msg.TokenAmount).Mul(sdk.NewDec(1000_000)).Quo(params.InitialPrice).RoundInt()
-
-	soldAmount := params.SoldAmount.Add(elysAmount)
-	if soldAmount.GT(params.TotalReserve) {
-		return nil, types.ErrOverflowTotalReserve
+	elysAmount, orders, err := k.CalcBuyElysResult(ctx, msg.Sender, msg.SpendingToken, msg.TokenAmount)
+	if err != nil {
+		return nil, err
 	}
 
-	// 0-20% raise 100% bonus
-	// 20-30% raise 90% bonus
-	// 30-40% raise bonus 80%
-	// 40-50% raise bonus 70%
-	// 50-60% raise bonus 60%
-	// 60-70% raise bonus 50%
-	// 70-80% raise bonus 40%
-	// 80-100% raise bonus 30%
-	soldSoFar := params.SoldAmount
-	for index, raisePercent := range params.BonusInfo.RaisePercents {
-		roundMaxRaise := sdk.NewDecWithPrec(int64(raisePercent), 2).Mul(sdk.NewDecFromInt(params.TotalReserve)).RoundInt()
-		if soldSoFar.LT(roundMaxRaise) {
-			bonusPercent := params.BonusInfo.BonusPercents[index]
-			bonusRate := sdk.NewDecWithPrec(int64(bonusPercent), 2)
-			if roundMaxRaise.GTE(soldAmount) {
-				roundSellAmount := soldAmount.Sub(soldSoFar)
-				k.CreateOrder(ctx, msg.Sender, msg.SpendingToken, roundSellAmount, bonusRate)
-				break
-			} else {
-				roundSellAmount := roundMaxRaise.Sub(soldSoFar)
-				k.CreateOrder(ctx, msg.Sender, msg.SpendingToken, roundSellAmount, bonusRate)
-				soldSoFar = roundMaxRaise
-			}
-		}
+	for _, order := range orders {
+		k.SetOrder(ctx, order)
 	}
 
-	params.SoldAmount = soldAmount
+	params.SoldAmount = params.SoldAmount.Add(elysAmount)
 	k.SetParams(ctx, params)
 
 	elysCoins := sdk.Coins{sdk.NewCoin(ptypes.Elys, elysAmount)}
@@ -122,6 +143,22 @@ func (k msgServer) BuyElys(goCtx context.Context, msg *types.MsgBuyElys) (*types
 	}
 
 	return &types.MsgBuyElysResponse{}, nil
+}
+
+func (k Keeper) CalcReturnElysResult(ctx sdk.Context, orderId uint64, returnElysAmount math.Int) (math.Int, error) {
+	params := k.GetParams(ctx)
+	order := k.GetOrder(ctx, orderId)
+	if order.OrderId == 0 {
+		return sdk.ZeroInt(), types.ErrPurchaseOrderNotFound
+	}
+
+	maxReturnAmount := sdk.NewDecWithPrec(int64(params.MaxReturnPercent), 2).MulInt(order.ElysAmount).RoundInt()
+	if order.ReturnedElysAmount.Add(returnElysAmount).GT(maxReturnAmount) {
+		return sdk.ZeroInt(), types.ErrExceedMaxReturnAmount
+	}
+
+	returnTokenAmount := returnElysAmount.Mul(order.TokenAmount).Quo(order.ElysAmount)
+	return returnTokenAmount, nil
 }
 
 func (k msgServer) ReturnElys(goCtx context.Context, msg *types.MsgReturnElys) (*types.MsgReturnElysResponse, error) {
@@ -146,21 +183,25 @@ func (k msgServer) ReturnElys(goCtx context.Context, msg *types.MsgReturnElys) (
 		return nil, errorsmod.Wrapf(govtypes.ErrInvalidSigner, "expected %s, got %s", order.OrderMaker, msg.Sender)
 	}
 
-	maxReturnAmount := sdk.NewDecWithPrec(int64(params.MaxReturnPercent), 2).MulInt(order.ElysAmount).RoundInt()
-	if order.ReturnedElysAmount.Add(msg.ReturnElysAmount).GT(maxReturnAmount) {
-		return nil, types.ErrExceedMaxReturnAmount
+	coins := sdk.Coins{sdk.NewCoin(ptypes.Elys, msg.ReturnElysAmount)}
+	addr := sdk.MustAccAddressFromBech32(msg.Sender)
+	err := k.bankKeeper.SendCoinsFromAccountToModule(ctx, addr, types.ModuleName, coins)
+	if err != nil {
+		return nil, err
 	}
 
-	returnTokenAmount := msg.ReturnElysAmount.Mul(order.TokenAmount).Quo(order.ElysAmount)
+	returnTokenAmount, err := k.CalcReturnElysResult(ctx, msg.OrderId, msg.ReturnElysAmount)
+	if err != nil {
+		return nil, err
+	}
 
 	asset, found := k.assetProfileKeeper.GetEntry(ctx, order.SpendingToken)
 	if !found {
 		return nil, errorsmod.Wrapf(atypes.ErrAssetProfileNotFound, "denom: %s", order.SpendingToken)
 	}
 
-	coins := sdk.Coins{sdk.NewCoin(asset.Denom, returnTokenAmount)}
-	addr := sdk.MustAccAddressFromBech32(msg.Sender)
-	err := k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, addr, coins)
+	coins = sdk.Coins{sdk.NewCoin(asset.Denom, returnTokenAmount)}
+	err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, addr, coins)
 	if err != nil {
 		return nil, err
 	}
