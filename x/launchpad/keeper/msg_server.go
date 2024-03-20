@@ -129,6 +129,7 @@ func (k msgServer) BuyElys(goCtx context.Context, msg *types.MsgBuyElys) (*types
 		return nil, err
 	}
 
+	// TODO: consider existing order on same bonus period - all should be combined into one
 	for _, order := range orders {
 		k.SetOrder(ctx, order)
 	}
