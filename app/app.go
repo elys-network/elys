@@ -973,6 +973,7 @@ func NewElysApp(
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 		app.BankKeeper,
 		app.OracleKeeper,
+		&app.EpochsKeeper,
 		&app.CommitmentKeeper,
 		app.AssetprofileKeeper,
 	)
