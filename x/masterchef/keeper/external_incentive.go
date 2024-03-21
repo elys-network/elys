@@ -6,7 +6,28 @@ import (
 	"github.com/elys-network/elys/x/masterchef/types"
 )
 
+func (k Keeper) GetExternalIncentiveIndex(ctx sdk.Context) (index uint64) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.ExternalIncentiveKeyPrefix))
+
+	index = sdk.BigEndianToUint64(store.Get(types.ExternalIncentiveIndex()))
+
+	return index
+}
+
+func (k Keeper) SetExternalIncentiveIndex(ctx sdk.Context, index uint64) error {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.ExternalIncentiveKeyPrefix))
+
+	store.Set(types.ExternalIncentiveIndex(), sdk.Uint64ToBigEndian(index))
+
+	return nil
+}
+
 func (k Keeper) SetExternalIncentive(ctx sdk.Context, externalIncentive types.ExternalIncentive) error {
+	// Update external incentive index and increase +1
+	index := k.GetExternalIncentiveIndex(ctx)
+	externalIncentive.Id = index
+	k.SetExternalIncentiveIndex(ctx, index+1)
+
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.ExternalIncentiveKeyPrefix))
 	b := k.cdc.MustMarshal(&externalIncentive)
 	store.Set(types.ExternalIncentiveKey(externalIncentive.Id), b)

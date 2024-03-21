@@ -41061,6 +41061,10 @@ paths:
                   dex_apr:
                     type: string
                     title: Dex APR, updated at every distribution
+                  external_reward_denoms:
+                    type: array
+                    items:
+                      type: string
                 title: Pool Info
         default:
           description: An unexpected error response.
@@ -85465,6 +85469,10 @@ definitions:
       dex_apr:
         type: string
         title: Dex APR, updated at every distribution
+      external_reward_denoms:
+        type: array
+        items:
+          type: string
     title: Pool Info
   elys.masterchef.PoolRewardInfo:
     type: object
@@ -85540,6 +85548,10 @@ definitions:
           dex_apr:
             type: string
             title: Dex APR, updated at every distribution
+          external_reward_denoms:
+            type: array
+            items:
+              type: string
         title: Pool Info
   elys.masterchef.QueryPoolRewardInfoResponse:
     type: object

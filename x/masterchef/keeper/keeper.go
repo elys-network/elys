@@ -18,6 +18,16 @@ type (
 		storeKey   storetypes.StoreKey
 		memKey     storetypes.StoreKey
 		paramstore paramtypes.Subspace
+
+		cmk                 types.CommitmentKeeper
+		amm                 types.AmmKeeper
+		oracleKeeper        types.OracleKeeper
+		assetProfileKeeper  types.AssetProfileKeeper
+		accountedPoolKeeper types.AccountedPoolKeeper
+		epochsKeeper        types.EpochsKeeper
+		stableKeeper        types.StableStakeKeeper
+		tokenomicsKeeper    types.TokenomicsKeeper
+		bankKeeper          types.BankKeeper
 	}
 )
 
@@ -26,7 +36,15 @@ func NewKeeper(
 	storeKey,
 	memKey storetypes.StoreKey,
 	ps paramtypes.Subspace,
-
+	ck types.CommitmentKeeper,
+	amm types.AmmKeeper,
+	ok types.OracleKeeper,
+	ap types.AssetProfileKeeper,
+	accountedPoolKeeper types.AccountedPoolKeeper,
+	epochsKeeper types.EpochsKeeper,
+	stableKeeper types.StableStakeKeeper,
+	tokenomicsKeeper types.TokenomicsKeeper,
+	bk types.BankKeeper,
 ) *Keeper {
 	// set KeyTable if it has not already been set
 	if !ps.HasKeyTable() {
@@ -34,10 +52,19 @@ func NewKeeper(
 	}
 
 	return &Keeper{
-		cdc:        cdc,
-		storeKey:   storeKey,
-		memKey:     memKey,
-		paramstore: ps,
+		cdc:                 cdc,
+		storeKey:            storeKey,
+		memKey:              memKey,
+		paramstore:          ps,
+		cmk:                 ck,
+		amm:                 amm,
+		oracleKeeper:        ok,
+		assetProfileKeeper:  ap,
+		accountedPoolKeeper: accountedPoolKeeper,
+		epochsKeeper:        epochsKeeper,
+		stableKeeper:        stableKeeper,
+		tokenomicsKeeper:    tokenomicsKeeper,
+		bankKeeper:          bk,
 	}
 }
 

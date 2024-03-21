@@ -52,6 +52,13 @@ func ExternalIncentiveKey(incentiveId uint64) []byte {
 	return key
 }
 
+func ExternalIncentiveIndex() []byte {
+	var key []byte
+
+	key = append(key, "ExternalIncentiveIndex"...)
+	return key
+}
+
 func PoolRewardInfoKey(poolId uint64, rewardDenom string) []byte {
 	var key []byte
 

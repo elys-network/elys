@@ -42,6 +42,8 @@ message PoolInfo {
         (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
         (gogoproto.nullable) = false
     ]; 
+    // external reward denoms on the pool
+    repeated string external_reward_denoms = 9;
 }
 
 message PoolRewardInfo {

@@ -17,26 +17,15 @@ func (k Keeper) AfterDepositPerReward(ctx sdk.Context, poolId uint64, rewardDeno
 	k.UpdateUserRewardDebt(
 		ctx,
 		poolId,
-		ptypes.Eden,
+		rewardDenom,
 		user,
 	)
 }
 
 func (k Keeper) AfterDeposit(ctx sdk.Context, poolId uint64, user string, amount sdk.Int) {
-	// Update Eden
-	k.AfterDepositPerReward(ctx, poolId, ptypes.Eden, user, amount)
-
-	// Update BaseCurrency
-	k.AfterDepositPerReward(ctx, poolId, ptypes.BaseCurrency, user, amount)
-
-	externalIncentives := k.GetAllExternalIncentives(ctx)
-
-	for _, externalIncentive := range externalIncentives {
-		if externalIncentive.PoolId == poolId {
-			k.AfterDepositPerReward(ctx, poolId, externalIncentive.RewardDenom, user, amount)
-		}
+	for _, rewardDenom := range k.GetRewardDenoms(ctx, poolId) {
+		k.AfterDepositPerReward(ctx, poolId, rewardDenom, user, amount)
 	}
-
 }
 
 func (k Keeper) AfterWithdrawPerReward(ctx sdk.Context, poolId uint64, rewardDenom string, user string, amount sdk.Int) {
@@ -51,23 +40,37 @@ func (k Keeper) AfterWithdrawPerReward(ctx sdk.Context, poolId uint64, rewardDen
 	k.UpdateUserRewardDebt(
 		ctx,
 		poolId,
-		ptypes.Eden,
+		rewardDenom,
 		user,
 	)
 }
 
 func (k Keeper) AfterWithdraw(ctx sdk.Context, poolId uint64, user string, amount sdk.Int) {
-	// Update Eden
-	k.AfterWithdrawPerReward(ctx, poolId, ptypes.Eden, user, amount)
-
-	// Update BaseCurrency
-	k.AfterWithdrawPerReward(ctx, poolId, ptypes.BaseCurrency, user, amount)
-
-	externalIncentives := k.GetAllExternalIncentives(ctx)
-
-	for _, externalIncentive := range externalIncentives {
-		if externalIncentive.PoolId == poolId {
-			k.AfterWithdrawPerReward(ctx, poolId, externalIncentive.RewardDenom, user, amount)
-		}
+	for _, rewardDenom := range k.GetRewardDenoms(ctx, poolId) {
+		k.AfterWithdrawPerReward(ctx, poolId, rewardDenom, user, amount)
 	}
+}
+
+func (k Keeper) GetRewardDenoms(ctx sdk.Context, poolId uint64) []string {
+	rewardDenoms := make(map[string]bool)
+
+	rewardDenoms[ptypes.Eden] = true
+	rewardDenoms[ptypes.BaseCurrency] = true
+
+	poolInfo, found := k.GetPool(ctx, poolId)
+	if !found {
+		return []string{}
+	}
+
+	externalIncentives := poolInfo.ExternalRewardDenoms
+	for _, externalIncentive := range externalIncentives {
+		rewardDenoms[externalIncentive] = true
+	}
+
+	keys := make([]string, 0, len(rewardDenoms))
+	for k2 := range rewardDenoms {
+		keys = append(keys, k2)
+	}
+
+	return keys
 }

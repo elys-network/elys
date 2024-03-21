@@ -188,6 +188,7 @@ import (
 	masterchefmodule "github.com/elys-network/elys/x/masterchef"
 	masterchefmodulekeeper "github.com/elys-network/elys/x/masterchef/keeper"
 	masterchefmoduletypes "github.com/elys-network/elys/x/masterchef/types"
+
 	// this line is used by starport scaffolding # stargate/app/moduleImport
 
 	"github.com/elys-network/elys/docs"
@@ -313,6 +314,7 @@ var (
 		ammmoduletypes.ModuleName:        {authtypes.Minter, authtypes.Burner, authtypes.Staking},
 		wasmmoduletypes.ModuleName:       {authtypes.Burner},
 		stablestaketypes.ModuleName:      {authtypes.Minter, authtypes.Burner},
+		masterchefmoduletypes.ModuleName: {},
 		// this line is used by starport scaffolding # stargate/app/maccPerms
 	}
 )
@@ -976,6 +978,15 @@ func NewElysApp(
 		keys[masterchefmoduletypes.StoreKey],
 		keys[masterchefmoduletypes.MemStoreKey],
 		app.GetSubspace(masterchefmoduletypes.ModuleName),
+		app.CommitmentKeeper,
+		app.AmmKeeper,
+		app.OracleKeeper,
+		app.AssetprofileKeeper,
+		app.AccountedPoolKeeper,
+		app.EpochsKeeper,
+		app.StablestakeKeeper,
+		app.TokenomicsKeeper,
+		app.BankKeeper,
 	)
 	masterchefModule := masterchefmodule.NewAppModule(appCodec, app.MasterchefKeeper, app.AccountKeeper, app.BankKeeper)
 
@@ -1035,6 +1046,7 @@ func NewElysApp(
 			app.IncentiveKeeper.AmmHooks(),
 			app.PerpetualKeeper.AmmHooks(),
 			app.LeveragelpKeeper.AmmHooks(),
+			app.MasterchefKeeper.AmmHooks(),
 		),
 	)
 	ammModule := ammmodule.NewAppModule(appCodec, app.AmmKeeper, app.AccountKeeper, app.BankKeeper)

@@ -3,16 +3,22 @@ package keeper
 import (
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	ammtypes "github.com/elys-network/elys/x/amm/types"
 )
 
-func (k Keeper) GetPoolTotalSupply(poolId uint64) sdk.Int {
-	// TODO
-	return sdk.NewInt(0)
+func (k Keeper) GetPoolTotalSupply(ctx sdk.Context, poolId uint64) sdk.Int {
+	pool, found := k.amm.GetPool(ctx, poolId)
+	if !found {
+		return sdk.ZeroInt()
+	}
+
+	return pool.TotalShares.Amount
 }
 
-func (k Keeper) GetPoolBalance(poolId uint64, user string) sdk.Int {
-	// TODO
-	return sdk.NewInt(0)
+func (k Keeper) GetPoolBalance(ctx sdk.Context, poolId uint64, user string) sdk.Int {
+	commitments := k.cmk.GetCommitments(ctx, user)
+
+	return commitments.GetCommittedAmountForDenom(ammtypes.GetPoolShareDenom(poolId))
 }
 
 func (k Keeper) UpdateAccPerShare(ctx sdk.Context, poolId uint64, rewardDenom string, amount sdk.Int) {
@@ -23,7 +29,7 @@ func (k Keeper) UpdateAccPerShare(ctx sdk.Context, poolId uint64, rewardDenom st
 	}
 
 	poolRewardInfo.PoolAccRewardPerShare = poolRewardInfo.PoolAccRewardPerShare.Add(
-		math.LegacyDec(amount.Quo(k.GetPoolTotalSupply(poolId))),
+		math.LegacyDec(amount.Quo(k.GetPoolTotalSupply(ctx, poolId))),
 	)
 	poolRewardInfo.LastUpdatedBlock = uint64(ctx.BlockHeight())
 
@@ -44,7 +50,7 @@ func (k Keeper) UpdateUserRewardPending(ctx sdk.Context, poolId uint64, rewardDe
 	}
 
 	// need to consider balance change on deposit/withdraw
-	userBalance := k.GetPoolBalance(poolId, user)
+	userBalance := k.GetPoolBalance(ctx, poolId, user)
 	if isDeposit {
 		userBalance = userBalance.Sub(amount)
 	} else {
@@ -74,7 +80,7 @@ func (k Keeper) UpdateUserRewardDebt(ctx sdk.Context, poolId uint64, rewardDenom
 	}
 
 	userRewardInfo.RewardDebt = poolRewardInfo.PoolAccRewardPerShare.Mul(
-		math.LegacyDec(k.GetPoolBalance(poolId, user)),
+		math.LegacyDec(k.GetPoolBalance(ctx, poolId, user)),
 	)
 
 	k.SetUserRewardInfo(ctx, userRewardInfo)
