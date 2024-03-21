@@ -22,7 +22,7 @@ message Params {
   string sold_amount = 3 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
     (gogoproto.nullable) = false
-  ]; // 3.375 million USDC totally
+  ];
   string withdraw_address = 4;
   repeated cosmos.base.v1beta1.Coin withdrawn_amount = 5 [
     (gogoproto.nullable) = false
