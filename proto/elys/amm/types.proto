@@ -4,6 +4,7 @@ package elys.amm;
 import "gogoproto/gogo.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
 import "elys/amm/pool_asset.proto";
+import "cosmos/base/v1beta1/coin.proto";
 
 option go_package = "github.com/elys-network/elys/x/amm/types";
 
@@ -31,6 +32,7 @@ message EarnPool {
     string tvl                = 7 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
     string rewards            = 8 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
     uint64 pool_id = 9;
+    cosmos.base.v1beta1.Coin total_shares = 10 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Coin", (gogoproto.nullable) = false];
 }
   
 message QueryEarnPoolResponse {
