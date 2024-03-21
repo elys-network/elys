@@ -12,7 +12,6 @@ import (
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/address"
-	typesparams "github.com/cosmos/cosmos-sdk/x/params/types"
 	"github.com/elys-network/elys/x/launchpad/keeper"
 	"github.com/elys-network/elys/x/launchpad/types"
 	"github.com/stretchr/testify/require"
@@ -31,18 +30,11 @@ func LaunchpadKeeper(t testing.TB) (*keeper.Keeper, sdk.Context) {
 	registry := codectypes.NewInterfaceRegistry()
 	cdc := codec.NewProtoCodec(registry)
 
-	paramsSubspace := typesparams.NewSubspace(cdc,
-		types.Amino,
-		storeKey,
-		memStoreKey,
-		"LaunchpadParams",
-	)
 	govAddress := sdk.AccAddress(address.Module("gov"))
 	k := keeper.NewKeeper(
 		cdc,
 		storeKey,
 		memStoreKey,
-		paramsSubspace,
 		govAddress.String(),
 		nil,
 		nil,

@@ -13,6 +13,7 @@ func RegisterCodec(cdc *codec.LegacyAmino) {
 	cdc.RegisterConcrete(&MsgBuyElys{}, "launchpad/BuyElys", nil)
 	cdc.RegisterConcrete(&MsgReturnElys{}, "launchpad/ReturnElys", nil)
 	cdc.RegisterConcrete(&MsgWithdrawRaised{}, "launchpad/WithdrawRaised", nil)
+	cdc.RegisterConcrete(&MsgDepositElysToken{}, "launchpad/DepositElysToken", nil)
 }
 
 func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
@@ -20,6 +21,7 @@ func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 		&MsgBuyElys{},
 		&MsgReturnElys{},
 		&MsgWithdrawRaised{},
+		&MsgDepositElysToken{},
 	)
 
 	msgservice.RegisterMsgServiceDesc(registry, &_Msg_serviceDesc)

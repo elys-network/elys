@@ -12,6 +12,9 @@ const (
 
 	// MemStoreKey defines the in-memory store key
 	MemStoreKey = "mem_launchpad"
+
+	// ParamsKey is the prefix to retrieve all Params
+	ParamsKey = "Params/value/"
 )
 
 var PurchasePrefixKey = []byte{0x01}

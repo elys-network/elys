@@ -11,6 +11,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+
 	// "github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/elys-network/elys/x/launchpad/types"
 )
@@ -34,10 +35,9 @@ func GetTxCmd() *cobra.Command {
 		RunE:                       client.ValidateCmd,
 	}
 
-	// this line is used by starport scaffolding # 1
-
 	cmd.AddCommand(CmdBuyElys())
 	cmd.AddCommand(CmdReturnElys())
+	cmd.AddCommand(CmdDepositElysToken())
 	cmd.AddCommand(CmdWithdrawRaised())
 
 	return cmd
@@ -102,6 +102,39 @@ func CmdReturnElys() *cobra.Command {
 			msg := types.NewMsgReturnElys(
 				clientCtx.GetFromAddress().String(),
 				uint64(orderId),
+				amount,
+			)
+			if err := msg.ValidateBasic(); err != nil {
+				return err
+			}
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+
+	return cmd
+}
+
+func CmdDepositElysToken() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:     "deposit-elys-token [amount]",
+		Short:   "Deposit elys token for launchpad",
+		Example: `elysd tx launchpad deposit-elys-token 100000000000uelys --from=treasury --keyring-backend=test --chain-id=elystestnet-1 --yes --gas=1000000`,
+		Args:    cobra.ExactArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) (err error) {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			amount, err := sdk.ParseCoinNormalized(args[0])
+			if err != nil {
+				return err
+			}
+
+			msg := types.NewMsgDepositElysToken(
+				clientCtx.GetFromAddress().String(),
 				amount,
 			)
 			if err := msg.ValidateBasic(); err != nil {

@@ -210,6 +210,18 @@ func (k msgServer) ReturnElys(goCtx context.Context, msg *types.MsgReturnElys) (
 	return &types.MsgReturnElysResponse{}, nil
 }
 
+func (k msgServer) DepositElysToken(goCtx context.Context, msg *types.MsgDepositElysToken) (*types.MsgDepositElysTokenResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	sender := sdk.MustAccAddressFromBech32(msg.Sender)
+	err := k.bankKeeper.SendCoinsFromAccountToModule(ctx, sender, types.ModuleName, sdk.Coins{msg.Coin})
+	if err != nil {
+		return nil, err
+	}
+
+	return &types.MsgDepositElysTokenResponse{}, nil
+}
+
 func (k msgServer) WithdrawRaised(goCtx context.Context, msg *types.MsgWithdrawRaised) (*types.MsgWithdrawRaisedResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	params := k.GetParams(ctx)
@@ -250,6 +262,9 @@ func (k msgServer) WithdrawRaised(goCtx context.Context, msg *types.MsgWithdrawR
 	if err != nil {
 		return nil, err
 	}
+
+	params.WithdrawnAmount = sdk.Coins(params.WithdrawnAmount).Add(msg.Coins...)
+	k.SetParams(ctx, params)
 
 	return &types.MsgWithdrawRaisedResponse{}, nil
 }

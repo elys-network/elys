@@ -12,6 +12,7 @@ option go_package = "github.com/elys-network/elys/x/launchpad/types";
 service Msg {
   rpc BuyElys(MsgBuyElys) returns (MsgBuyElysResponse);
   rpc ReturnElys(MsgReturnElys) returns (MsgReturnElysResponse);
+  rpc DepositElysToken(MsgDepositElysToken) returns (MsgDepositElysTokenResponse);
   rpc WithdrawRaised(MsgWithdrawRaised) returns (MsgWithdrawRaisedResponse);
   rpc UpdateParams(MsgUpdateParams) returns (MsgUpdateParamsResponse);
 }
@@ -43,6 +44,12 @@ message MsgWithdrawRaised {
   repeated cosmos.base.v1beta1.Coin coins = 2 [ (gogoproto.nullable) = false ];
 }
 message MsgWithdrawRaisedResponse {}
+
+message MsgDepositElysToken {
+  string sender = 1;
+  cosmos.base.v1beta1.Coin coin = 2 [ (gogoproto.nullable) = false ];
+}
+message MsgDepositElysTokenResponse {}
 
 message MsgUpdateParams {
   string authority = 1;

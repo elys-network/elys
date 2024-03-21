@@ -40062,7 +40062,6 @@ paths:
                     title: 4.5 million
                   sold_amount:
                     type: string
-                    title: 3.375 million USDC totally
                   withdraw_address:
                     type: string
                   withdrawn_amount:
@@ -84947,6 +84946,8 @@ definitions:
         items:
           type: string
           format: uint64
+  elys.launchpad.MsgDepositElysTokenResponse:
+    type: object
   elys.launchpad.MsgReturnElysResponse:
     type: object
   elys.launchpad.MsgUpdateParamsResponse:
@@ -84964,7 +84965,6 @@ definitions:
         title: 4.5 million
       sold_amount:
         type: string
-        title: 3.375 million USDC totally
       withdraw_address:
         type: string
       withdrawn_amount:
@@ -85150,7 +85150,6 @@ definitions:
             title: 4.5 million
           sold_amount:
             type: string
-            title: 3.375 million USDC totally
           withdraw_address:
             type: string
           withdrawn_amount:

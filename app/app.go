@@ -969,7 +969,6 @@ func NewElysApp(
 		appCodec,
 		keys[launchpadmoduletypes.StoreKey],
 		keys[launchpadmoduletypes.MemStoreKey],
-		app.GetSubspace(launchpadmoduletypes.ModuleName),
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 		app.BankKeeper,
 		app.OracleKeeper,
@@ -1531,7 +1530,6 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(clockmoduletypes.ModuleName)
 	paramsKeeper.Subspace(stablestaketypes.ModuleName)
 	paramsKeeper.Subspace(leveragelpmoduletypes.ModuleName)
-	paramsKeeper.Subspace(launchpadmoduletypes.ModuleName)
 	// this line is used by starport scaffolding # stargate/app/paramSubspace
 
 	return paramsKeeper

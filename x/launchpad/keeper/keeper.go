@@ -34,7 +34,6 @@ func NewKeeper(
 	cdc codec.BinaryCodec,
 	storeKey,
 	memKey storetypes.StoreKey,
-	ps paramtypes.Subspace,
 	authority string,
 	bankKeeper types.BankKeeper,
 	oracleKeeper types.OracleKeeper,
@@ -42,16 +41,10 @@ func NewKeeper(
 	commitmentKeeper *commitmentkeeper.Keeper,
 	assetProfileKeeper types.AssetProfileKeeper,
 ) *Keeper {
-	// set KeyTable if it has not already been set
-	if !ps.HasKeyTable() {
-		ps = ps.WithKeyTable(types.ParamKeyTable())
-	}
-
 	return &Keeper{
 		cdc:                cdc,
 		storeKey:           storeKey,
 		memKey:             memKey,
-		paramstore:         ps,
 		authority:          authority,
 		bankKeeper:         bankKeeper,
 		oracleKeeper:       oracleKeeper,

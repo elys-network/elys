@@ -8,16 +8,18 @@ import (
 )
 
 const (
-	TypeMsgBuyElys        = "BuyElys"
-	TypeMsgReturnElys     = "ReturnElys"
-	TypeMsgWithdrawRaised = "WithdrawRaised"
-	TypeMsgUpdateParams   = "UpdateParams"
+	TypeMsgBuyElys          = "BuyElys"
+	TypeMsgReturnElys       = "ReturnElys"
+	TypeMsgDepositElysToken = "DepositElysToken"
+	TypeMsgWithdrawRaised   = "WithdrawRaised"
+	TypeMsgUpdateParams     = "UpdateParams"
 )
 
 var (
 	_ sdk.Msg = &MsgBuyElys{}
 	_ sdk.Msg = &MsgReturnElys{}
 	_ sdk.Msg = &MsgWithdrawRaised{}
+	_ sdk.Msg = &MsgDepositElysToken{}
 )
 
 func NewMsgBuyElys(sender string, spendingToken string, tokenAmount sdk.Int) *MsgBuyElys {
@@ -87,6 +89,42 @@ func (msg *MsgReturnElys) GetSignBytes() []byte {
 }
 
 func (msg *MsgReturnElys) ValidateBasic() error {
+	_, err := sdk.AccAddressFromBech32(msg.Sender)
+	if err != nil {
+		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid sender address (%s)", err)
+	}
+	return nil
+}
+
+func NewMsgDepositElysToken(sender string, coin sdk.Coin) *MsgDepositElysToken {
+	return &MsgDepositElysToken{
+		Sender: sender,
+		Coin:   coin,
+	}
+}
+
+func (msg *MsgDepositElysToken) Route() string {
+	return RouterKey
+}
+
+func (msg *MsgDepositElysToken) Type() string {
+	return TypeMsgDepositElysToken
+}
+
+func (msg *MsgDepositElysToken) GetSigners() []sdk.AccAddress {
+	creator, err := sdk.AccAddressFromBech32(msg.Sender)
+	if err != nil {
+		panic(err)
+	}
+	return []sdk.AccAddress{creator}
+}
+
+func (msg *MsgDepositElysToken) GetSignBytes() []byte {
+	bz := ModuleCdc.MustMarshalJSON(msg)
+	return sdk.MustSortJSON(bz)
+}
+
+func (msg *MsgDepositElysToken) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Sender)
 	if err != nil {
 		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid sender address (%s)", err)
