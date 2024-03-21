@@ -310,6 +310,7 @@ var (
 		ammmoduletypes.ModuleName:        {authtypes.Minter, authtypes.Burner, authtypes.Staking},
 		wasmmoduletypes.ModuleName:       {authtypes.Burner},
 		stablestaketypes.ModuleName:      {authtypes.Minter, authtypes.Burner},
+		launchpadmoduletypes.ModuleName:  {},
 		// this line is used by starport scaffolding # stargate/app/maccPerms
 	}
 )

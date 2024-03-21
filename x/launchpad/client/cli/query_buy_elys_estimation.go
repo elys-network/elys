@@ -15,7 +15,7 @@ func CmdQueryBuyElysEstimation() *cobra.Command {
 		Use:     "buy-elys-estimation [spendingToken] [amount]",
 		Short:   "Query BuyElys estimation",
 		Example: "elysd q launchpad buy-elys-estimation [spendingToken] [amount]",
-		Args:    cobra.ExactArgs(1),
+		Args:    cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			clientCtx, err := client.GetClientQueryContext(cmd)
 			if err != nil {

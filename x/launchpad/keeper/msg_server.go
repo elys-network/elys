@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	"fmt"
 
 	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/math"
@@ -9,6 +10,7 @@ import (
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	atypes "github.com/elys-network/elys/x/assetprofile/types"
 	"github.com/elys-network/elys/x/launchpad/types"
+	oracletypes "github.com/elys-network/elys/x/oracle/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
 
@@ -35,7 +37,7 @@ func (k Keeper) isEnabledToken(ctx sdk.Context, spendingToken string) bool {
 	return false
 }
 
-func (k Keeper) GenerateOrder(ctx sdk.Context, orderMaker string, spendingToken string, elysAmount math.Int, bonusRate sdk.Dec) types.Purchase {
+func (k Keeper) GenerateOrder(ctx sdk.Context, orderMaker string, spendingToken string, elysAmount math.Int, bonusRate sdk.Dec, price sdk.Dec) types.Purchase {
 	params := k.GetParams(ctx)
 	order := types.Purchase{}
 	order.OrderId = k.LastOrderId(ctx) + 1
@@ -43,7 +45,7 @@ func (k Keeper) GenerateOrder(ctx sdk.Context, orderMaker string, spendingToken 
 	order.SpendingToken = spendingToken
 	order.ElysAmount = elysAmount
 	order.BonusAmount = bonusRate.MulInt(elysAmount).TruncateInt()
-	order.TokenAmount = sdk.NewDecFromInt(elysAmount).Mul(sdk.NewDec(1000_000)).Quo(params.InitialPrice).RoundInt()
+	order.TokenAmount = sdk.NewDecFromInt(elysAmount).Mul(params.InitialPrice).Quo(sdk.NewDec(1000_000)).Quo(price).RoundInt()
 	order.ReturnedElysAmount = sdk.ZeroInt()
 
 	return order
@@ -57,6 +59,9 @@ func (k Keeper) CalcBuyElysResult(ctx sdk.Context, sender string, spendingToken 
 	}
 
 	price := k.oracleKeeper.GetAssetPriceFromDenom(ctx, asset.Denom)
+	if price.IsZero() {
+		return sdk.ZeroInt(), []types.Purchase{}, oracletypes.ErrPriceNotSet
+	}
 
 	elysAmount := price.MulInt(tokenAmount).Mul(sdk.NewDec(1000_000)).Quo(params.InitialPrice).RoundInt()
 
@@ -82,12 +87,12 @@ func (k Keeper) CalcBuyElysResult(ctx sdk.Context, sender string, spendingToken 
 			bonusRate := sdk.NewDecWithPrec(int64(bonusPercent), 2)
 			if roundMaxRaise.GTE(soldAmount) {
 				roundSellAmount := soldAmount.Sub(soldSoFar)
-				order := k.GenerateOrder(ctx, sender, spendingToken, roundSellAmount, bonusRate)
+				order := k.GenerateOrder(ctx, sender, spendingToken, roundSellAmount, bonusRate, price)
 				purchases = append(purchases, order)
 				break
 			} else {
 				roundSellAmount := roundMaxRaise.Sub(soldSoFar)
-				order := k.GenerateOrder(ctx, sender, spendingToken, roundSellAmount, bonusRate)
+				order := k.GenerateOrder(ctx, sender, spendingToken, roundSellAmount, bonusRate, price)
 				purchases = append(purchases, order)
 				soldSoFar = roundMaxRaise
 			}
@@ -226,7 +231,7 @@ func (k msgServer) WithdrawRaised(goCtx context.Context, msg *types.MsgWithdrawR
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	params := k.GetParams(ctx)
 	if params.WithdrawAddress != msg.Sender {
-		return nil, errorsmod.Wrapf(govtypes.ErrInvalidSigner, "expected %s, got %s", params.WithdrawAddress, msg.Sender)
+		return nil, errorsmod.Wrapf(types.ErrInvalidWithrawAccount, "expected %s, got %s", params.WithdrawAddress, msg.Sender)
 	}
 
 	// Once return period is over, can withdraw all
@@ -244,6 +249,10 @@ func (k msgServer) WithdrawRaised(goCtx context.Context, msg *types.MsgWithdrawR
 	orders := k.GetAllOrders(ctx)
 	for _, order := range orders {
 		orderWithdrawable := sdk.NewDecWithPrec(int64(100-params.MaxReturnPercent), 2).MulInt(order.TokenAmount).RoundInt()
+		fmt.Println("order.TokenAmount", order.TokenAmount.String())
+		fmt.Println("sdk.NewDecWithPrec(int64(100-params.MaxReturnPercent), 2)", sdk.NewDecWithPrec(int64(100-params.MaxReturnPercent), 2).String())
+		fmt.Println("orderWithdrawable", orderWithdrawable.String())
+
 		asset, found := k.assetProfileKeeper.GetEntry(ctx, order.SpendingToken)
 		if !found {
 			return nil, errorsmod.Wrapf(atypes.ErrAssetProfileNotFound, "denom: %s", order.SpendingToken)
@@ -252,6 +261,9 @@ func (k msgServer) WithdrawRaised(goCtx context.Context, msg *types.MsgWithdrawR
 		maxWithdrawAmount = maxWithdrawAmount.Add(coin)
 	}
 
+	fmt.Println("maxWithdrawAmount", maxWithdrawAmount.String())
+	fmt.Println("totalWithdrawAmount", totalWithdrawAmount.String())
+	fmt.Println("params.WithdrawnAmount", sdk.Coins(params.WithdrawnAmount).String())
 	if totalWithdrawAmount.IsAnyGT(maxWithdrawAmount) {
 		return nil, types.ErrExceedMaxWithdrawableAmount
 	}

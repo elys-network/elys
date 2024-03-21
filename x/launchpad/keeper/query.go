@@ -20,6 +20,7 @@ func (k Keeper) Bonus(goCtx context.Context, req *types.QueryBonusRequest) (*typ
 
 	allOrders := k.GetAllOrders(ctx)
 	orders := []types.Purchase{}
+	// TODO: optimize query speed
 	for _, order := range allOrders {
 		if order.OrderMaker == req.User {
 			orders = append(orders, order)
@@ -77,6 +78,7 @@ func (k Keeper) Orders(goCtx context.Context, req *types.QueryOrdersRequest) (*t
 	}
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
+	// TODO: optimize query speed
 	allOrders := k.GetAllOrders(ctx)
 	orders := []types.Purchase{}
 	for _, order := range allOrders {
