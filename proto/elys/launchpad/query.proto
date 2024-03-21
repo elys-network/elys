@@ -36,6 +36,10 @@ service Query {
   rpc AllOrders(QueryAllOrdersRequest) returns (QueryAllOrdersResponse) {
     option (google.api.http).get = "/elys-network/elys/launchpad/all_orders";
   }
+  // ModuleBalances queries module balances
+  rpc ModuleBalances(QueryModuleBalancesRequest) returns (QueryModuleBalancesResponse) {
+    option (google.api.http).get = "/elys-network/elys/launchpad/module_balances";
+  }
 }
 
 // QueryParamsRequest is request type for the Query/Params RPC method.
@@ -98,4 +102,9 @@ message QueryOrdersResponse {
 message QueryAllOrdersRequest {}
 message QueryAllOrdersResponse {
   repeated Purchase purchases = 1 [ (gogoproto.nullable) = false ];
+}
+
+message QueryModuleBalancesRequest {}
+message QueryModuleBalancesResponse {
+  repeated cosmos.base.v1beta1.Coin coins = 1 [ (gogoproto.nullable) = false ];
 }

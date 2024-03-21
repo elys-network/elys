@@ -3,7 +3,6 @@ package cli
 import (
 	"fmt"
 	"strconv"
-	"time"
 
 	"github.com/spf13/cobra"
 
@@ -14,15 +13,6 @@ import (
 
 	// "github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/elys-network/elys/x/launchpad/types"
-)
-
-var (
-	DefaultRelativePacketTimeoutTimestamp = uint64((time.Duration(10) * time.Minute).Nanoseconds())
-)
-
-const (
-	flagPacketTimeoutTimestamp = "packet-timeout-timestamp"
-	listSeparator              = ","
 )
 
 // GetTxCmd returns the transaction commands for this module

@@ -39983,6 +39983,53 @@ paths:
           type: string
       tags:
         - Query
+  /elys-network/elys/launchpad/module_balances:
+    get:
+      summary: ModuleBalances queries module balances
+      operationId: ElysLaunchpadModuleBalances
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              coins:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    denom:
+                      type: string
+                    amount:
+                      type: string
+                  description: >-
+                    Coin defines a token with a denomination and an amount.
+
+
+                    NOTE: The amount field is an Int which implements the custom
+                    method
+
+                    signatures required by gogoproto.
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      tags:
+        - Query
   /elys-network/elys/launchpad/orders:
     get:
       summary: Orders queries orders placed by user
@@ -85110,6 +85157,23 @@ definitions:
               type: string
             vesting_started:
               type: boolean
+  elys.launchpad.QueryModuleBalancesResponse:
+    type: object
+    properties:
+      coins:
+        type: array
+        items:
+          type: object
+          properties:
+            denom:
+              type: string
+            amount:
+              type: string
+          description: |-
+            Coin defines a token with a denomination and an amount.
+
+            NOTE: The amount field is an Int which implements the custom method
+            signatures required by gogoproto.
   elys.launchpad.QueryOrdersResponse:
     type: object
     properties:
