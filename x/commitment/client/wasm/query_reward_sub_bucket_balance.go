@@ -28,6 +28,8 @@ func (oq *Querier) queryRewardSubBucketBalanceOfDenom(ctx sdk.Context, query *co
 		uncommittedToken = commitment.GetEdenSubBucketRewardUnclaimedForDenom(denom)
 	case commitmenttypes.EarnType_EDENB_PROGRAM:
 		uncommittedToken = commitment.GetEdenBSubBucketRewardUnclaimedForDenom(denom)
+	case commitmenttypes.EarnType_LP_MINING_PROGRAM:
+		uncommittedToken = commitment.GetLPMiningSubBucketRewardUnclaimedForDenom(denom)
 	}
 
 	balance = sdk.NewCoin(denom, uncommittedToken)

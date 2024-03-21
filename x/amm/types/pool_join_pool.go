@@ -116,49 +116,65 @@ func (p *Pool) CalcJoinValueWithoutSlippage(ctx sdk.Context, oracleKeeper Oracle
 
 // JoinPool calculates the number of shares needed for an all-asset join given tokensIn with swapFee applied.
 // It updates the liquidity if the pool is joined successfully. If not, returns error.
-func (p *Pool) JoinPool(ctx sdk.Context, oracleKeeper OracleKeeper, accountedPoolKeeper AccountedPoolKeeper, tokensIn sdk.Coins) (numShares math.Int, err error) {
+func (p *Pool) JoinPool(
+	ctx sdk.Context, snapshot *Pool,
+	oracleKeeper OracleKeeper,
+	accountedPoolKeeper AccountedPoolKeeper, tokensIn sdk.Coins,
+) (numShares math.Int, slippage sdk.Dec, weightBalanceBonus sdk.Dec, err error) {
 	// if it's not single sided liquidity, add at pool ratio
 	if len(tokensIn) != 1 {
 		numShares, tokensJoined, err := p.CalcJoinPoolNoSwapShares(tokensIn)
 		if err != nil {
-			return math.Int{}, err
+			return math.Int{}, sdk.ZeroDec(), sdk.ZeroDec(), err
 		}
 
 		// update pool with the calculated share and liquidity needed to join pool
 		p.IncreaseLiquidity(numShares, tokensJoined)
-		return numShares, nil
+		return numShares, sdk.ZeroDec(), sdk.ZeroDec(), nil
 	}
 
 	if !p.PoolParams.UseOracle {
+		tokenIn := tokensIn[0]
+		totalSlippage := sdk.ZeroDec()
+		normalizedWeights := NormalizedWeights(p.PoolAssets)
+		for _, weight := range normalizedWeights {
+			if weight.Asset != tokenIn.Denom {
+				_, slippage, err := p.CalcOutAmtGivenIn(ctx, oracleKeeper, snapshot, tokensIn, weight.Asset, sdk.ZeroDec(), accountedPoolKeeper)
+				if err == nil {
+					totalSlippage = totalSlippage.Add(slippage.Mul(weight.Weight))
+				}
+			}
+		}
+
 		numShares, tokensJoined, err := p.CalcSingleAssetJoinPoolShares(tokensIn)
 		if err != nil {
-			return math.Int{}, err
+			return math.Int{}, sdk.ZeroDec(), sdk.ZeroDec(), err
 		}
 
 		// update pool with the calculated share and liquidity needed to join pool
 		p.IncreaseLiquidity(numShares, tokensJoined)
-		return numShares, nil
+		return numShares, totalSlippage, sdk.ZeroDec(), nil
 	}
 
 	joinValueWithoutSlippage, err := p.CalcJoinValueWithoutSlippage(ctx, oracleKeeper, accountedPoolKeeper, tokensIn)
 	if err != nil {
-		return sdk.ZeroInt(), err
+		return sdk.ZeroInt(), sdk.ZeroDec(), sdk.ZeroDec(), err
 	}
 
 	initialWeightDistance := p.WeightDistanceFromTarget(ctx, oracleKeeper, p.PoolAssets)
 	tvl, err := p.TVL(ctx, oracleKeeper)
 	if err != nil {
-		return sdk.ZeroInt(), err
+		return sdk.ZeroInt(), sdk.ZeroDec(), sdk.ZeroDec(), err
 	}
 
 	// Ensure tvl is not zero to avoid division by zero
 	if tvl.IsZero() {
-		return sdk.ZeroInt(), ErrAmountTooLow
+		return sdk.ZeroInt(), sdk.ZeroDec(), sdk.ZeroDec(), ErrAmountTooLow
 	}
 
 	newAssetPools, err := p.NewPoolAssetsAfterSwap(tokensIn, sdk.Coins{})
 	if err != nil {
-		return sdk.ZeroInt(), err
+		return sdk.ZeroInt(), sdk.ZeroDec(), sdk.ZeroDec(), err
 	}
 	weightDistance := p.WeightDistanceFromTarget(ctx, oracleKeeper, newAssetPools)
 
@@ -178,9 +194,9 @@ func (p *Pool) JoinPool(ctx sdk.Context, oracleKeeper OracleKeeper, accountedPoo
 		weightIn := OracleAssetWeight(ctx, oracleKeeper, newAssetPools, tokenInDenom)
 		weightOut := sdk.OneDec().Sub(weightIn)
 		weightBreakingFee = GetWeightBreakingFee(weightIn, weightOut, targetWeightIn, targetWeightOut, p.PoolParams)
-
 	}
-	weightBalanceBonus := sdk.ZeroDec()
+
+	weightBalanceBonus = weightBreakingFee.Neg()
 	if initialWeightDistance.GT(p.PoolParams.ThresholdWeightDifference) && distanceDiff.IsNegative() {
 		weightBalanceBonus = p.PoolParams.WeightBreakingFeeMultiplier.Mul(distanceDiff).Abs()
 	}
@@ -188,8 +204,10 @@ func (p *Pool) JoinPool(ctx sdk.Context, oracleKeeper OracleKeeper, accountedPoo
 	totalShares := p.GetTotalShares()
 	numSharesDec := sdk.NewDecFromInt(totalShares.Amount).
 		Mul(joinValueWithoutSlippage).Quo(tvl).
-		Mul(sdk.OneDec().Add(weightBalanceBonus).Sub(weightBreakingFee))
+		Mul(sdk.OneDec().Add(weightBalanceBonus))
 	numShares = numSharesDec.RoundInt()
 	p.IncreaseLiquidity(numShares, tokensIn)
-	return numShares, nil
+
+	// No slippage in oracle pool due to 1 hr lock
+	return numShares, sdk.ZeroDec(), weightBalanceBonus, nil
 }

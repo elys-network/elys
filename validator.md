@@ -31,8 +31,8 @@ We provide official support for macOS and Linux operating systems exclusively in
 
 To operate mainnet or testnet validator nodes, a machine that meets the following minimum hardware specifications is required:
 
-- At least 4 physical CPU cores
-- At least 500GB of SSD disk storage
+- At least 8 physical CPU cores
+- At least 500GB of NVMe disk storage
 - At least 32GB of memory (RAM)
 - At least 100mbps network bandwidth
 

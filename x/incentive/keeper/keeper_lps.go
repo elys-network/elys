@@ -35,7 +35,8 @@ func (k Keeper) CalcRewardsForLPs(ctx sdk.Context, totalProxyTVL sdk.Dec, commit
 		// Get pool info from incentive param
 		poolInfo, found := k.GetPoolInfo(ctx, poolId)
 		if !found {
-			return false
+			k.InitPoolParams(ctx, poolId)
+			poolInfo, _ = k.GetPoolInfo(ctx, poolId)
 		}
 
 		// Calculate Proxy TVL share considering multiplier
@@ -100,8 +101,8 @@ func (k Keeper) CalcRewardsForLPs(ctx sdk.Context, totalProxyTVL sdk.Dec, commit
 
 		//----------------------------------------------------------------
 
-		poolInfo.EdenRewardAmountGiven = poolInfo.EdenRewardAmountGiven.Add(totalNewEdenAllocatedPerDistribution)
-		poolInfo.DexRewardAmountGiven = poolInfo.DexRewardAmountGiven.Add(totalDexRewardsAllocatedPerDistribution)
+		poolInfo.EdenRewardAmountGiven = newEdenAllocatedForPool.RoundInt()
+		poolInfo.DexRewardAmountGiven = gasRewardsAllocatedForPool.Add(dexRewardsAllocatedForPool)
 		// Update Pool Info
 		k.SetPoolInfo(ctx, poolId, poolInfo)
 
