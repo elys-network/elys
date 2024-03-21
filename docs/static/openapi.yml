@@ -40011,6 +40011,419 @@ paths:
           collectionFormat: multi
       tags:
         - Query
+  /elys-network/elys/launchpad/all_orders:
+    get:
+      summary: AllOrders queries all the orders placed
+      operationId: ElysLaunchpadAllOrders
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              purchases:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    order_id:
+                      type: string
+                      format: uint64
+                    order_maker:
+                      type: string
+                    spending_token:
+                      type: string
+                    token_amount:
+                      type: string
+                    elys_amount:
+                      type: string
+                    returned_elys_amount:
+                      type: string
+                    bonus_amount:
+                      type: string
+                    vesting_started:
+                      type: boolean
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      tags:
+        - Query
+  /elys-network/elys/launchpad/bonus:
+    get:
+      summary: Bonus queries bonus amounts for a user
+      operationId: ElysLaunchpadBonus
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              total_bonus:
+                type: string
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: user
+          in: query
+          required: false
+          type: string
+      tags:
+        - Query
+  /elys-network/elys/launchpad/buy_elys_estimation:
+    get:
+      summary: BuyElysEst queries estimation result for buying elys
+      operationId: ElysLaunchpadBuyElysEst
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              elys_amount:
+                type: string
+              bonus_amount:
+                type: string
+              orders:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    order_id:
+                      type: string
+                      format: uint64
+                    order_maker:
+                      type: string
+                    spending_token:
+                      type: string
+                    token_amount:
+                      type: string
+                    elys_amount:
+                      type: string
+                    returned_elys_amount:
+                      type: string
+                    bonus_amount:
+                      type: string
+                    vesting_started:
+                      type: boolean
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: spending_token
+          in: query
+          required: false
+          type: string
+        - name: token_amount
+          in: query
+          required: false
+          type: string
+      tags:
+        - Query
+  /elys-network/elys/launchpad/module_balances:
+    get:
+      summary: ModuleBalances queries module balances
+      operationId: ElysLaunchpadModuleBalances
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              coins:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    denom:
+                      type: string
+                    amount:
+                      type: string
+                  description: >-
+                    Coin defines a token with a denomination and an amount.
+
+
+                    NOTE: The amount field is an Int which implements the custom
+                    method
+
+                    signatures required by gogoproto.
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      tags:
+        - Query
+  /elys-network/elys/launchpad/orders:
+    get:
+      summary: Orders queries orders placed by user
+      operationId: ElysLaunchpadOrders
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              purchases:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    order_id:
+                      type: string
+                      format: uint64
+                    order_maker:
+                      type: string
+                    spending_token:
+                      type: string
+                    token_amount:
+                      type: string
+                    elys_amount:
+                      type: string
+                    returned_elys_amount:
+                      type: string
+                    bonus_amount:
+                      type: string
+                    vesting_started:
+                      type: boolean
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: user
+          in: query
+          required: false
+          type: string
+      tags:
+        - Query
+  /elys-network/elys/launchpad/params:
+    get:
+      summary: Parameters queries the parameters of the module.
+      operationId: ElysLaunchpadParams
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              params:
+                description: params holds all the parameters of this module.
+                type: object
+                properties:
+                  initial_price:
+                    type: string
+                    title: 0.75 USDC
+                  total_reserve:
+                    type: string
+                    title: 4.5 million
+                  sold_amount:
+                    type: string
+                  withdraw_address:
+                    type: string
+                  withdrawn_amount:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        denom:
+                          type: string
+                        amount:
+                          type: string
+                      description: >-
+                        Coin defines a token with a denomination and an amount.
+
+
+                        NOTE: The amount field is an Int which implements the
+                        custom method
+
+                        signatures required by gogoproto.
+                  launchpad_starttime:
+                    type: string
+                    format: uint64
+                    title: May 1st
+                  launchpad_duration:
+                    type: string
+                    format: uint64
+                    title: 1 week
+                  return_duration:
+                    type: string
+                    format: uint64
+                  max_return_percent:
+                    type: string
+                    format: uint64
+                  spending_tokens:
+                    type: array
+                    items:
+                      type: string
+                    title: USDC, ETH, ATOM
+                  bonus_info:
+                    type: object
+                    properties:
+                      raise_percents:
+                        type: array
+                        items:
+                          type: string
+                          format: uint64
+                      bonus_percents:
+                        type: array
+                        items:
+                          type: string
+                          format: uint64
+                      lock_duration:
+                        type: string
+                        format: uint64
+                        title: 6 months
+                      vesting_duration:
+                        type: string
+                        format: uint64
+                        title: 12 months
+                    title: |-
+                      0-20% raise 100% bonus
+                      20-30% raise 90% bonus
+                      30-40% raise bonus 80%
+                      40-50% raise bonus 70%
+                      50-60% raise bonus 60%
+                      60-70% raise bonus 50%
+                      70-80% raise bonus 40%
+                      80-100% raise bonus 30%
+            description: >-
+              QueryParamsResponse is response type for the Query/Params RPC
+              method.
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      tags:
+        - Query
+  /elys-network/elys/launchpad/return_elys_estimation:
+    get:
+      summary: ReturnElysEst queries estimation result for returning elys
+      operationId: ElysLaunchpadReturnElysEst
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              amount:
+                type: string
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: order_id
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: elys_amount
+          in: query
+          required: false
+          type: string
+      tags:
+        - Query
   /elys-network/elys/leveragelp/is-whitelisted:
     get:
       summary: Queries a list of IsWhitelisted items.
@@ -84795,6 +85208,339 @@ definitions:
               format: uint64
             apr:
               type: string
+  elys.launchpad.Bonus:
+    type: object
+    properties:
+      raise_percents:
+        type: array
+        items:
+          type: string
+          format: uint64
+      bonus_percents:
+        type: array
+        items:
+          type: string
+          format: uint64
+      lock_duration:
+        type: string
+        format: uint64
+        title: 6 months
+      vesting_duration:
+        type: string
+        format: uint64
+        title: 12 months
+    title: |-
+      0-20% raise 100% bonus
+      20-30% raise 90% bonus
+      30-40% raise bonus 80%
+      40-50% raise bonus 70%
+      50-60% raise bonus 60%
+      60-70% raise bonus 50%
+      70-80% raise bonus 40%
+      80-100% raise bonus 30%
+  elys.launchpad.MsgBuyElysResponse:
+    type: object
+    properties:
+      order_id:
+        type: array
+        items:
+          type: string
+          format: uint64
+  elys.launchpad.MsgDepositElysTokenResponse:
+    type: object
+  elys.launchpad.MsgReturnElysResponse:
+    type: object
+  elys.launchpad.MsgUpdateParamsResponse:
+    type: object
+  elys.launchpad.MsgWithdrawRaisedResponse:
+    type: object
+  elys.launchpad.Params:
+    type: object
+    properties:
+      initial_price:
+        type: string
+        title: 0.75 USDC
+      total_reserve:
+        type: string
+        title: 4.5 million
+      sold_amount:
+        type: string
+      withdraw_address:
+        type: string
+      withdrawn_amount:
+        type: array
+        items:
+          type: object
+          properties:
+            denom:
+              type: string
+            amount:
+              type: string
+          description: |-
+            Coin defines a token with a denomination and an amount.
+
+            NOTE: The amount field is an Int which implements the custom method
+            signatures required by gogoproto.
+      launchpad_starttime:
+        type: string
+        format: uint64
+        title: May 1st
+      launchpad_duration:
+        type: string
+        format: uint64
+        title: 1 week
+      return_duration:
+        type: string
+        format: uint64
+      max_return_percent:
+        type: string
+        format: uint64
+      spending_tokens:
+        type: array
+        items:
+          type: string
+        title: USDC, ETH, ATOM
+      bonus_info:
+        type: object
+        properties:
+          raise_percents:
+            type: array
+            items:
+              type: string
+              format: uint64
+          bonus_percents:
+            type: array
+            items:
+              type: string
+              format: uint64
+          lock_duration:
+            type: string
+            format: uint64
+            title: 6 months
+          vesting_duration:
+            type: string
+            format: uint64
+            title: 12 months
+        title: |-
+          0-20% raise 100% bonus
+          20-30% raise 90% bonus
+          30-40% raise bonus 80%
+          40-50% raise bonus 70%
+          50-60% raise bonus 60%
+          60-70% raise bonus 50%
+          70-80% raise bonus 40%
+          80-100% raise bonus 30%
+    description: Params defines the parameters for the module.
+  elys.launchpad.Purchase:
+    type: object
+    properties:
+      order_id:
+        type: string
+        format: uint64
+      order_maker:
+        type: string
+      spending_token:
+        type: string
+      token_amount:
+        type: string
+      elys_amount:
+        type: string
+      returned_elys_amount:
+        type: string
+      bonus_amount:
+        type: string
+      vesting_started:
+        type: boolean
+  elys.launchpad.QueryAllOrdersResponse:
+    type: object
+    properties:
+      purchases:
+        type: array
+        items:
+          type: object
+          properties:
+            order_id:
+              type: string
+              format: uint64
+            order_maker:
+              type: string
+            spending_token:
+              type: string
+            token_amount:
+              type: string
+            elys_amount:
+              type: string
+            returned_elys_amount:
+              type: string
+            bonus_amount:
+              type: string
+            vesting_started:
+              type: boolean
+  elys.launchpad.QueryBonusResponse:
+    type: object
+    properties:
+      total_bonus:
+        type: string
+  elys.launchpad.QueryBuyElysEstResponse:
+    type: object
+    properties:
+      elys_amount:
+        type: string
+      bonus_amount:
+        type: string
+      orders:
+        type: array
+        items:
+          type: object
+          properties:
+            order_id:
+              type: string
+              format: uint64
+            order_maker:
+              type: string
+            spending_token:
+              type: string
+            token_amount:
+              type: string
+            elys_amount:
+              type: string
+            returned_elys_amount:
+              type: string
+            bonus_amount:
+              type: string
+            vesting_started:
+              type: boolean
+  elys.launchpad.QueryModuleBalancesResponse:
+    type: object
+    properties:
+      coins:
+        type: array
+        items:
+          type: object
+          properties:
+            denom:
+              type: string
+            amount:
+              type: string
+          description: |-
+            Coin defines a token with a denomination and an amount.
+
+            NOTE: The amount field is an Int which implements the custom method
+            signatures required by gogoproto.
+  elys.launchpad.QueryOrdersResponse:
+    type: object
+    properties:
+      purchases:
+        type: array
+        items:
+          type: object
+          properties:
+            order_id:
+              type: string
+              format: uint64
+            order_maker:
+              type: string
+            spending_token:
+              type: string
+            token_amount:
+              type: string
+            elys_amount:
+              type: string
+            returned_elys_amount:
+              type: string
+            bonus_amount:
+              type: string
+            vesting_started:
+              type: boolean
+  elys.launchpad.QueryParamsResponse:
+    type: object
+    properties:
+      params:
+        description: params holds all the parameters of this module.
+        type: object
+        properties:
+          initial_price:
+            type: string
+            title: 0.75 USDC
+          total_reserve:
+            type: string
+            title: 4.5 million
+          sold_amount:
+            type: string
+          withdraw_address:
+            type: string
+          withdrawn_amount:
+            type: array
+            items:
+              type: object
+              properties:
+                denom:
+                  type: string
+                amount:
+                  type: string
+              description: >-
+                Coin defines a token with a denomination and an amount.
+
+
+                NOTE: The amount field is an Int which implements the custom
+                method
+
+                signatures required by gogoproto.
+          launchpad_starttime:
+            type: string
+            format: uint64
+            title: May 1st
+          launchpad_duration:
+            type: string
+            format: uint64
+            title: 1 week
+          return_duration:
+            type: string
+            format: uint64
+          max_return_percent:
+            type: string
+            format: uint64
+          spending_tokens:
+            type: array
+            items:
+              type: string
+            title: USDC, ETH, ATOM
+          bonus_info:
+            type: object
+            properties:
+              raise_percents:
+                type: array
+                items:
+                  type: string
+                  format: uint64
+              bonus_percents:
+                type: array
+                items:
+                  type: string
+                  format: uint64
+              lock_duration:
+                type: string
+                format: uint64
+                title: 6 months
+              vesting_duration:
+                type: string
+                format: uint64
+                title: 12 months
+            title: |-
+              0-20% raise 100% bonus
+              20-30% raise 90% bonus
+              30-40% raise bonus 80%
+              40-50% raise bonus 70%
+              50-60% raise bonus 60%
+              60-70% raise bonus 50%
+              70-80% raise bonus 40%
+              80-100% raise bonus 30%
+    description: QueryParamsResponse is response type for the Query/Params RPC method.
+  elys.launchpad.QueryReturnElysEstResponse:
+    type: object
+    properties:
+      amount:
+        type: string
   elys.leveragelp.IsWhitelistedResponse:
     type: object
     properties:

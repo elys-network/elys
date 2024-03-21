@@ -1,0 +1,110 @@
+syntax = "proto3";
+package elys.launchpad;
+
+import "gogoproto/gogo.proto";
+import "google/api/annotations.proto";
+import "cosmos/base/query/v1beta1/pagination.proto";
+import "elys/launchpad/params.proto";
+import "elys/launchpad/launchpad.proto";
+import "cosmos/base/v1beta1/coin.proto";
+
+option go_package = "github.com/elys-network/elys/x/launchpad/types";
+
+// Query defines the gRPC querier service.
+service Query {
+  // Parameters queries the parameters of the module.
+  rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
+    option (google.api.http).get = "/elys-network/elys/launchpad/params";
+  }
+  // Bonus queries bonus amounts for a user
+  rpc Bonus(QueryBonusRequest) returns (QueryBonusResponse) {
+    option (google.api.http).get = "/elys-network/elys/launchpad/bonus";
+  }
+  // BuyElysEst queries estimation result for buying elys
+  rpc BuyElysEst(QueryBuyElysEstRequest) returns (QueryBuyElysEstResponse) {
+    option (google.api.http).get = "/elys-network/elys/launchpad/buy_elys_estimation";
+  }
+  // ReturnElysEst queries estimation result for returning elys
+  rpc ReturnElysEst(QueryReturnElysEstRequest) returns (QueryReturnElysEstResponse) {
+    option (google.api.http).get = "/elys-network/elys/launchpad/return_elys_estimation";
+  }
+  // Orders queries orders placed by user
+  rpc Orders(QueryOrdersRequest) returns (QueryOrdersResponse) {
+    option (google.api.http).get = "/elys-network/elys/launchpad/orders";
+  }
+  // AllOrders queries all the orders placed
+  rpc AllOrders(QueryAllOrdersRequest) returns (QueryAllOrdersResponse) {
+    option (google.api.http).get = "/elys-network/elys/launchpad/all_orders";
+  }
+  // ModuleBalances queries module balances
+  rpc ModuleBalances(QueryModuleBalancesRequest) returns (QueryModuleBalancesResponse) {
+    option (google.api.http).get = "/elys-network/elys/launchpad/module_balances";
+  }
+}
+
+// QueryParamsRequest is request type for the Query/Params RPC method.
+message QueryParamsRequest {}
+
+// QueryParamsResponse is response type for the Query/Params RPC method.
+message QueryParamsResponse {
+  // params holds all the parameters of this module.
+  Params params = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryBonusRequest {
+  string user = 1;
+}
+message QueryBonusResponse {
+  string total_bonus = 1 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message QueryBuyElysEstRequest {
+  string spending_token = 1;
+  string token_amount = 2 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+}
+message QueryBuyElysEstResponse {
+  string elys_amount = 1 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+  string bonus_amount = 2 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+  repeated Purchase orders = 3 [ (gogoproto.nullable) = false ];
+}
+
+message QueryReturnElysEstRequest {
+  uint64 order_id = 1;
+  string elys_amount = 2 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+}
+message QueryReturnElysEstResponse {
+  string amount = 1 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message QueryOrdersRequest { string user = 1; }
+message QueryOrdersResponse {
+  repeated Purchase purchases = 1 [ (gogoproto.nullable) = false ];
+}
+
+message QueryAllOrdersRequest {}
+message QueryAllOrdersResponse {
+  repeated Purchase purchases = 1 [ (gogoproto.nullable) = false ];
+}
+
+message QueryModuleBalancesRequest {}
+message QueryModuleBalancesResponse {
+  repeated cosmos.base.v1beta1.Coin coins = 1 [ (gogoproto.nullable) = false ];
+}

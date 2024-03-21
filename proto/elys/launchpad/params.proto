@@ -1,0 +1,36 @@
+syntax = "proto3";
+package elys.launchpad;
+
+import "gogoproto/gogo.proto";
+import "elys/launchpad/launchpad.proto";
+import "cosmos/base/v1beta1/coin.proto";
+
+option go_package = "github.com/elys-network/elys/x/launchpad/types";
+
+// Params defines the parameters for the module.
+message Params {
+  option (gogoproto.goproto_stringer) = false;
+
+  string initial_price = 1 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];                              // 0.75 USDC
+  string total_reserve = 2 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];                            // 4.5 million
+  string sold_amount = 3 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+  string withdraw_address = 4;
+  repeated cosmos.base.v1beta1.Coin withdrawn_amount = 5 [
+    (gogoproto.nullable) = false
+  ];
+  uint64 launchpad_starttime = 6; // May 1st
+  uint64 launchpad_duration = 7;  // 1 week
+  uint64 return_duration = 8;
+  uint64 max_return_percent = 9;
+  repeated string spending_tokens = 10; // USDC, ETH, ATOM
+  Bonus bonus_info = 11 [ (gogoproto.nullable) = false ];
+}
