@@ -46,7 +46,7 @@ require (
 	github.com/google/gofuzz v1.2.0 // indirect
 	github.com/google/s2a-go v0.1.4 // indirect
 	github.com/huandu/skiplist v1.2.0 // indirect
-	github.com/linxGnu/grocksdb v1.7.16 // indirect
+	github.com/linxGnu/grocksdb v1.8.12 // indirect
 	github.com/opencontainers/go-digest v1.0.0 // indirect
 	github.com/stretchr/objx v0.5.0 // indirect
 	github.com/tidwall/btree v1.6.0 // indirect
