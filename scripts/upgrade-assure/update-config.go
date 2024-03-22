@@ -18,6 +18,13 @@ func updateConfig(homePath string) {
 		log.Fatalf(Red+"Error updating config.toml: %v\n", err)
 	}
 
+	args = []string{"-i", "", "s/^db_backend =.*/db_backend = \\\"rocksdb\\\"/", configPath}
+
+	// Execute the sed command
+	if err := exec.Command("sed", args...).Run(); err != nil {
+		log.Fatalf(Red+"Error updating config.toml: %v\n", err)
+	}
+
 	// Update app.toml
 	args = []string{"-i", "", "/^# Enable defines if the API server should be enabled./{n;s/enable = false/enable = true/;}", appPath}
 
