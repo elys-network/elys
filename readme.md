@@ -43,13 +43,40 @@ git checkout <version>
 sudo apt-get install --yes make
 ```
 
-5. Run the `make build` command to build the binary:
+5. Ensure that you have RocksDB installed on your machine. On Ubuntu, you can install RocksDB using the following suite of commands:
+
+```bash
+# set rocks db version
+ROCKSDB_VERSION=8.9.1
+
+# install rocks db dependencies
+sudo apt install -y libgflags-dev libsnappy-dev zlib1g-dev libbz2-dev liblz4-dev libzstd-dev
+
+# download and extract on /tmp
+cd /tmp
+wget https://github.com/facebook/rocksdb/archive/refs/tags/v${ROCKSDB_VERSION}.tar.gz
+tar -xvf v${ROCKSDB_VERSION}.tar.gz && cd rocksdb-${ROCKSDB_VERSION} || return
+
+# build rocks db
+export CXXFLAGS='-Wno-error=deprecated-copy -Wno-error=pessimizing-move -Wno-error=class-memaccess'
+make shared_lib
+
+# install rocks db
+sudo make install-shared INSTALL_PATH=/usr
+
+# cleanup to save space
+rm -rf /tmp/rocksdb-${ROCKSDB_VERSION} /tmp/v${ROCKSDB_VERSION}.tar.gz
+```
+
+Note: RocksDB is only required for Linux machines. For macOS, you can continue without installing RocksDB.
+
+6. Run the `make build` command to build the binary:
 
 ```bash
 make build
 ```
 
-6. The binary will be generated in the `./build` directory. You can run the binary using the following command:
+7. The binary will be generated in the `./build` directory. You can run the binary using the following command:
 
 ```bash
 ./build/elysd
