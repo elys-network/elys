@@ -70,6 +70,18 @@ rm -rf /tmp/rocksdb-${ROCKSDB_VERSION} /tmp/v${ROCKSDB_VERSION}.tar.gz
 
 Note: RocksDB is only required for Linux machines. For macOS, you can continue without installing RocksDB.
 
+When running `make build`, if you are getting this error:
+
+```bash
+elysd: error while loading shared libraries: librocksdb.so.8.9: cannot open shared object file: No such file or directory
+```
+
+You might need to set the `LD_LIBRARY_PATH` environment variable to the local library path. You can do this by running the following command:
+
+```bash
+export LD_LIBRARY_PATH=/usr/local/lib
+```
+
 6. Run the `make build` command to build the binary:
 
 ```bash
