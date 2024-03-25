@@ -218,8 +218,33 @@ genesis:
           currentEpoch: "0"
           currentEpochStartHeight: "0"
           epochCountingStarted: false
+        - identifier: twelvehours
+          duration: "12h"
+          currentEpoch: "0"
+          currentEpochStartHeight: "0"
+          epochCountingStarted: false
+        - identifier: sixhours
+          duration: "6h"
+          currentEpoch: "0"
+          currentEpochStartHeight: "0"
+          epochCountingStarted: false
+        - identifier: fourhours
+          duration: "4h"
+          currentEpoch: "0"
+          currentEpochStartHeight: "0"
+          epochCountingStarted: false
+        - identifier: twohours
+          duration: "2h"
+          currentEpoch: "0"
+          currentEpochStartHeight: "0"
+          epochCountingStarted: false
         - identifier: hour
           duration: "1h"
+          currentEpoch: "0"
+          currentEpochStartHeight: "0"
+          epochCountingStarted: false
+        - identifier: halfhour
+          duration: "30m"
           currentEpoch: "0"
           currentEpochStartHeight: "0"
           epochCountingStarted: false
