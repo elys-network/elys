@@ -3,7 +3,13 @@ package main
 import (
 	"log"
 	"os/exec"
+	"runtime"
 )
+
+func isLinux() bool {
+	// Check if the OS is Linux
+	return runtime.GOOS == "linux"
+}
 
 func updateConfig(homePath string) {
 	// Path to config files
@@ -16,6 +22,16 @@ func updateConfig(homePath string) {
 	// Execute the sed command
 	if err := exec.Command("sed", args...).Run(); err != nil {
 		log.Fatalf(Red+"Error updating config.toml: %v\n", err)
+	}
+
+	// only apply this change if the os is linux
+	if isLinux() {
+		args = []string{"-i", "", "s/^db_backend =.*/db_backend = \\\"rocksdb\\\"/", configPath}
+
+		// Execute the sed command
+		if err := exec.Command("sed", args...).Run(); err != nil {
+			log.Fatalf(Red+"Error updating config.toml: %v\n", err)
+		}
 	}
 
 	// Update app.toml

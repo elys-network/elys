@@ -5,7 +5,6 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	m "github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/cosmos/cosmos-sdk/version"
-	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 )
 
@@ -21,11 +20,20 @@ func setUpgradeHandler(app *ElysApp) {
 		func(ctx sdk.Context, plan upgradetypes.Plan, vm m.VersionMap) (m.VersionMap, error) {
 			app.Logger().Info("Running upgrade handler for " + version.Version)
 
-			if version.Version == "v0.29.21" {
-				app.Logger().Info("Deleting proposals with ID <= 113")
-				store := ctx.KVStore(app.keys[govtypes.StoreKey])
-				for i := uint64(1); i <= 113; i++ {
-					store.Delete(govtypes.ProposalKey(i))
+			if version.Version == "v0.29.27" {
+				app.Logger().Info("Update num_epochs and epoch identifier for all commitments")
+				allCommitements := app.CommitmentKeeper.GetAllCommitments(ctx)
+				for _, commitments := range allCommitements {
+					for i, vestingToken := range commitments.VestingTokens {
+						vestingInfo, _ := app.CommitmentKeeper.GetVestingInfo(ctx, vestingToken.Denom)
+						if vestingInfo == nil {
+							app.Logger().Info("Vesting info for " + vestingToken.Denom + " not found. Skipping...")
+							continue
+						}
+						commitments.VestingTokens[i].NumEpochs = vestingInfo.NumEpochs
+						commitments.VestingTokens[i].EpochIdentifier = vestingInfo.EpochIdentifier
+					}
+					app.CommitmentKeeper.SetCommitments(ctx, *commitments)
 				}
 			}
 

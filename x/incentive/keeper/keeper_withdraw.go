@@ -28,7 +28,7 @@ func (k Keeper) UpdateTokensForValidator(ctx sdk.Context, validator string, newU
 
 // Give commissions to validators
 func (k Keeper) GiveCommissionToValidators(ctx sdk.Context, delegator string, totalDelegationAmt math.Int, newUnclaimedAmt math.Int, dexRewards sdk.Dec, baseCurrency string) (math.Int, math.Int) {
-	delAdr, err := sdk.AccAddressFromBech32(delegator)
+	delAddr, err := sdk.AccAddressFromBech32(delegator)
 	if err != nil {
 		return sdk.ZeroInt(), sdk.ZeroInt()
 	}
@@ -43,7 +43,7 @@ func (k Keeper) GiveCommissionToValidators(ctx sdk.Context, delegator string, to
 	totalDexRewardsGiven := sdk.ZeroInt()
 
 	// Iterate all delegated validators
-	k.stk.IterateDelegations(ctx, delAdr, func(index int64, del stypes.DelegationI) (stop bool) {
+	k.stk.IterateDelegations(ctx, delAddr, func(index int64, del stypes.DelegationI) (stop bool) {
 		valAddr := del.GetValidatorAddr()
 		// Get validator
 		val := k.stk.Validator(ctx, valAddr)
@@ -98,6 +98,8 @@ func (k Keeper) CalcAmountSubbucketsPerProgram(ctx sdk.Context, delegator string
 		unclaimed = commitments.GetEdenBSubBucketRewardUnclaimedForDenom(denom)
 	case commitmenttypes.EarnType_USDC_PROGRAM:
 		unclaimed = commitments.GetUsdcSubBucketRewardUnclaimedForDenom(denom)
+	case commitmenttypes.EarnType_LP_MINING_PROGRAM:
+		unclaimed = commitments.GetLPMiningSubBucketRewardUnclaimedForDenom(denom)
 	case commitmenttypes.EarnType_ALL_PROGRAM:
 		unclaimed = commitments.GetRewardUnclaimedForDenom(denom)
 	}

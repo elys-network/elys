@@ -37700,6 +37700,67 @@ paths:
           type: string
       tags:
         - Query
+  /elys-network/elys/amm/exit_pool_estimation:
+    get:
+      summary: Queries ExistPool estimation
+      operationId: ElysAmmExitPoolEstimation
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              amounts_out:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    denom:
+                      type: string
+                    amount:
+                      type: string
+                  description: >-
+                    Coin defines a token with a denomination and an amount.
+
+
+                    NOTE: The amount field is an Int which implements the custom
+                    method
+
+                    signatures required by gogoproto.
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: pool_id
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: share_amount_in
+          in: query
+          required: false
+          type: string
+        - name: token_out_denom
+          in: query
+          required: false
+          type: string
+      tags:
+        - Query
   /elys-network/elys/amm/in_route_by_denom/{denom_in}/{denom_out}:
     get:
       summary: Queries a list of InRouteByDenom items.
@@ -37747,6 +37808,78 @@ paths:
           in: path
           required: true
           type: string
+      tags:
+        - Query
+  /elys-network/elys/amm/join_pool_estimation:
+    get:
+      summary: Queries JoinPool estimation
+      operationId: ElysAmmJoinPoolEstimation
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              share_amount_out:
+                type: object
+                properties:
+                  denom:
+                    type: string
+                  amount:
+                    type: string
+                description: >-
+                  Coin defines a token with a denomination and an amount.
+
+
+                  NOTE: The amount field is an Int which implements the custom
+                  method
+
+                  signatures required by gogoproto.
+              amounts_in:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    denom:
+                      type: string
+                    amount:
+                      type: string
+                  description: >-
+                    Coin defines a token with a denomination and an amount.
+
+
+                    NOTE: The amount field is an Int which implements the custom
+                    method
+
+                    signatures required by gogoproto.
+              slippage:
+                type: string
+              weight_balance_ratio:
+                type: string
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: pool_id
+          in: query
+          required: false
+          type: string
+          format: uint64
       tags:
         - Query
   /elys-network/elys/amm/out_route_by_denom/{denom_out}/{denom_in}:
@@ -39613,6 +39746,7 @@ paths:
             - ELYS_PROGRAM
             - EDEN_PROGRAM
             - EDENB_PROGRAM
+            - LP_MINING_PROGRAM
         - name: denom
           in: path
           required: true
@@ -39863,6 +39997,178 @@ paths:
                     '@type':
                       type: string
                   additionalProperties: {}
+      tags:
+        - Query
+  /elys-network/elys/incentive/pool_aprs:
+    get:
+      summary: Calculate liquidity mining pool APRs
+      operationId: ElysIncentivePoolAprs
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    pool_id:
+                      type: string
+                      format: uint64
+                    apr:
+                      type: string
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: pool_ids
+          in: query
+          required: false
+          type: array
+          items:
+            type: string
+            format: uint64
+          collectionFormat: multi
+      tags:
+        - Query
+  /elys-network/elys/incentive/pool_rewards:
+    get:
+      summary: Queries PoolReward items
+      operationId: ElysIncentivePoolRewards
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              pools:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    pool_id:
+                      type: string
+                      format: uint64
+                    rewardsUsd:
+                      type: string
+                    reward_coins:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          denom:
+                            type: string
+                          amount:
+                            type: string
+                        description: >-
+                          Coin defines a token with a denomination and an
+                          amount.
+
+
+                          NOTE: The amount field is an Int which implements the
+                          custom method
+
+                          signatures required by gogoproto.
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: pool_ids
+          in: query
+          required: false
+          type: array
+          items:
+            type: string
+            format: uint64
+          collectionFormat: multi
+        - name: pagination.key
+          description: |-
+            key is a value returned in PageResponse.next_key to begin
+            querying the next page most efficiently. Only one of offset or key
+            should be set.
+          in: query
+          required: false
+          type: string
+          format: byte
+        - name: pagination.offset
+          description: >-
+            offset is a numeric offset that can be used when key is unavailable.
+
+            It is less efficient than using key. Only one of offset or key
+            should
+
+            be set.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.limit
+          description: >-
+            limit is the total number of results to be returned in the result
+            page.
+
+            If left empty it will default to a value to be set by each app.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.count_total
+          description: >-
+            count_total is set to true  to indicate that the result set should
+            include
+
+            a count of the total number of items available for pagination in
+            UIs.
+
+            count_total is only respected when offset is used. It is ignored
+            when key
+
+            is set.
+          in: query
+          required: false
+          type: boolean
+        - name: pagination.reverse
+          description: >-
+            reverse is set to true if results are to be returned in the
+            descending order.
+
+
+            Since: cosmos-sdk 0.43
+          in: query
+          required: false
+          type: boolean
       tags:
         - Query
   /elys-network/elys/leveragelp/is-whitelisted:
@@ -83283,6 +83589,23 @@ definitions:
 
           NOTE: The amount field is an Int which implements the custom method
           signatures required by gogoproto.
+  elys.amm.QueryExitPoolEstimationResponse:
+    type: object
+    properties:
+      amounts_out:
+        type: array
+        items:
+          type: object
+          properties:
+            denom:
+              type: string
+            amount:
+              type: string
+          description: |-
+            Coin defines a token with a denomination and an amount.
+
+            NOTE: The amount field is an Int which implements the custom method
+            signatures required by gogoproto.
   elys.amm.QueryGetDenomLiquidityResponse:
     type: object
     properties:
@@ -83380,6 +83703,39 @@ definitions:
               format: uint64
             token_out_denom:
               type: string
+  elys.amm.QueryJoinPoolEstimationResponse:
+    type: object
+    properties:
+      share_amount_out:
+        type: object
+        properties:
+          denom:
+            type: string
+          amount:
+            type: string
+        description: |-
+          Coin defines a token with a denomination and an amount.
+
+          NOTE: The amount field is an Int which implements the custom method
+          signatures required by gogoproto.
+      amounts_in:
+        type: array
+        items:
+          type: object
+          properties:
+            denom:
+              type: string
+            amount:
+              type: string
+          description: |-
+            Coin defines a token with a denomination and an amount.
+
+            NOTE: The amount field is an Int which implements the custom method
+            signatures required by gogoproto.
+      slippage:
+        type: string
+      weight_balance_ratio:
+        type: string
   elys.amm.QueryOutRouteByDenomResponse:
     type: object
     properties:
@@ -84504,6 +84860,7 @@ definitions:
       - ELYS_PROGRAM
       - EDEN_PROGRAM
       - EDENB_PROGRAM
+      - LP_MINING_PROGRAM
     default: ALL_PROGRAM
   elys.incentive.DexRewardsTracker:
     type: object
@@ -84717,6 +85074,14 @@ definitions:
           Distribution interval in blocks - number of blocks on distribution
           epoch
     description: Params defines the parameters for the module.
+  elys.incentive.PoolApr:
+    type: object
+    properties:
+      pool_id:
+        type: string
+        format: uint64
+      apr:
+        type: string
   elys.incentive.PoolInfo:
     type: object
     properties:
@@ -84754,6 +85119,28 @@ definitions:
         format: uint64
       multiplier:
         type: string
+  elys.incentive.PoolRewards:
+    type: object
+    properties:
+      pool_id:
+        type: string
+        format: uint64
+      rewardsUsd:
+        type: string
+      reward_coins:
+        type: array
+        items:
+          type: object
+          properties:
+            denom:
+              type: string
+            amount:
+              type: string
+          description: |-
+            Coin defines a token with a denomination and an amount.
+
+            NOTE: The amount field is an Int which implements the custom method
+            signatures required by gogoproto.
   elys.incentive.QueryAprResponse:
     type: object
     properties:
@@ -84933,6 +85320,49 @@ definitions:
               Distribution interval in blocks - number of blocks on distribution
               epoch
     description: QueryParamsResponse is response type for the Query/Params RPC method.
+  elys.incentive.QueryPoolAprsResponse:
+    type: object
+    properties:
+      data:
+        type: array
+        items:
+          type: object
+          properties:
+            pool_id:
+              type: string
+              format: uint64
+            apr:
+              type: string
+  elys.incentive.QueryPoolRewardsResponse:
+    type: object
+    properties:
+      pools:
+        type: array
+        items:
+          type: object
+          properties:
+            pool_id:
+              type: string
+              format: uint64
+            rewardsUsd:
+              type: string
+            reward_coins:
+              type: array
+              items:
+                type: object
+                properties:
+                  denom:
+                    type: string
+                  amount:
+                    type: string
+                description: >-
+                  Coin defines a token with a denomination and an amount.
+
+
+                  NOTE: The amount field is an Int which implements the custom
+                  method
+
+                  signatures required by gogoproto.
   elys.leveragelp.IsWhitelistedResponse:
     type: object
     properties:

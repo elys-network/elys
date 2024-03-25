@@ -93,6 +93,7 @@ func SetupMockPools(k *keeper.Keeper, ctx sdk.Context) {
 			PoolParams: types.PoolParams{
 				UseOracle: false,
 			},
+			TotalShares: sdk.NewCoin(types.GetPoolShareDenom(1), types.OneShare),
 		},
 		{
 			PoolId: 2,
@@ -104,6 +105,7 @@ func SetupMockPools(k *keeper.Keeper, ctx sdk.Context) {
 			PoolParams: types.PoolParams{
 				UseOracle: false,
 			},
+			TotalShares: sdk.NewCoin(types.GetPoolShareDenom(2), types.OneShare),
 		},
 		{
 			PoolId: 3,
@@ -115,6 +117,7 @@ func SetupMockPools(k *keeper.Keeper, ctx sdk.Context) {
 			PoolParams: types.PoolParams{
 				UseOracle: false,
 			},
+			TotalShares: sdk.NewCoin(types.GetPoolShareDenom(3), types.OneShare),
 		},
 	}
 

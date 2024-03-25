@@ -66,7 +66,8 @@ func (k Keeper) JoinPoolNoSwap(
 			tokensIn = neededLpLiquidity
 		}
 
-		sharesOut, err = pool.JoinPool(ctx, k.oracleKeeper, k.accountedPoolKeeper, tokensIn)
+		snapshot := k.GetPoolSnapshotOrSet(ctx, pool)
+		sharesOut, _, _, err = pool.JoinPool(ctx, &snapshot, k.oracleKeeper, k.accountedPoolKeeper, tokensIn)
 		if err != nil {
 			return nil, sdk.ZeroInt(), err
 		}
@@ -86,7 +87,8 @@ func (k Keeper) JoinPoolNoSwap(
 	}
 
 	// on oracle pool, full tokenInMaxs are used regardless shareOutAmount
-	sharesOut, err = pool.JoinPool(ctx, k.oracleKeeper, k.accountedPoolKeeper, tokenInMaxs)
+	snapshot := k.GetPoolSnapshotOrSet(ctx, pool)
+	sharesOut, _, _, err = pool.JoinPool(ctx, &snapshot, k.oracleKeeper, k.accountedPoolKeeper, tokenInMaxs)
 	if err != nil {
 		return nil, sdk.ZeroInt(), err
 	}

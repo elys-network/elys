@@ -29,4 +29,5 @@ enum EarnType {
 	ELYS_PROGRAM = 2;
 	EDEN_PROGRAM = 3;
 	EDENB_PROGRAM = 4;
+  LP_MINING_PROGRAM = 5;
 }

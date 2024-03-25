@@ -70,6 +70,10 @@ func (oq *Querier) HandleQuery(ctx sdk.Context, query wasmbindingstypes.ElysQuer
 		return oq.querySwapEstimation(ctx, query.AmmSwapEstimation)
 	case query.AmmSwapEstimationByDenom != nil:
 		return oq.querySwapEstimationByDenom(ctx, query.AmmSwapEstimationByDenom)
+	case query.AmmJoinPoolEstimation != nil:
+		return oq.queryJoinPoolEstimation(ctx, query.AmmJoinPoolEstimation)
+	case query.AmmExitPoolEstimation != nil:
+		return oq.queryExitPoolEstimation(ctx, query.AmmExitPoolEstimation)
 	case query.AmmSlippageTrack != nil:
 		return oq.querySlippageTrack(ctx, query.AmmSlippageTrack)
 	case query.AmmSlippageTrackAll != nil:

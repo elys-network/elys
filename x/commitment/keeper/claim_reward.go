@@ -60,6 +60,12 @@ func (k Keeper) RecordClaimReward(ctx sdk.Context, creator string, denom string,
 		if err != nil {
 			return err
 		}
+	case types.EarnType_LP_MINING_PROGRAM:
+		// Subtract the withdrawn amount from lp mining
+		err := commitments.SubRewardsUnclaimed(sdk.NewCoin(denom, amount))
+		if err != nil {
+			return err
+		}
 	default:
 		return errorsmod.Wrapf(types.ErrUnsupportedWithdrawMode, "creator: %s", creator)
 	}
