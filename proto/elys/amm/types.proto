@@ -36,6 +36,7 @@ message EarnPool {
       (gogoproto.nullable) = false,
       (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
     ];
+    cosmos.base.v1beta1.Coin total_shares = 11 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Coin", (gogoproto.nullable) = false];
 }
   
 message QueryEarnPoolResponse {

@@ -73,6 +73,7 @@ func (oq *Querier) generateEarnPool(ctx sdk.Context, ammPool *types.Pool, filter
 		RewardsUsd:  rewardsUsd,
 		RewardCoins: rewardCoins,
 		PoolId:      ammPool.PoolId,
+		TotalShares: ammPool.TotalShares,
 	}
 }
 
