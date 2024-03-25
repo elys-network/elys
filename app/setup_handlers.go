@@ -24,10 +24,14 @@ func setUpgradeHandler(app *ElysApp) {
 				app.Logger().Info("Update num_epochs and epoch identifier for all commitments")
 				allCommitements := app.CommitmentKeeper.GetAllCommitments(ctx)
 				for _, commitments := range allCommitements {
-					for _, vestingToken := range commitments.VestingTokens {
+					for i, vestingToken := range commitments.VestingTokens {
 						vestingInfo, _ := app.CommitmentKeeper.GetVestingInfo(ctx, vestingToken.Denom)
-						vestingToken.NumEpochs = vestingInfo.NumEpochs
-						vestingToken.EpochIdentifier = vestingInfo.EpochIdentifier
+						if vestingInfo == nil {
+							app.Logger().Info("Vesting info for " + vestingToken.Denom + " not found. Skipping...")
+							continue
+						}
+						commitments.VestingTokens[i].NumEpochs = vestingInfo.NumEpochs
+						commitments.VestingTokens[i].EpochIdentifier = vestingInfo.EpochIdentifier
 					}
 					app.CommitmentKeeper.SetCommitments(ctx, *commitments)
 				}
