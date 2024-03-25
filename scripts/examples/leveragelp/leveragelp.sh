@@ -20,7 +20,7 @@ elysd tx gov vote 1 Yes --from=treasury --keyring-backend=test --chain-id=elyste
 elysd tx gov vote 3 Yes --from=treasury --keyring-backend=test --chain-id=elystestnet-1 --yes --gas=1000000
 
 # Open position
-elysd tx leveragelp open 5 uusdc 50000 1 --from=treasury --keyring-backend=test --chain-id=elystestnet-1 --yes --gas=1000000 --fees=250uelys
+elysd tx leveragelp open 5 uusdc 500000 1 --from=treasury --keyring-backend=test --chain-id=elystestnet-1 --yes --gas=1000000 --fees=250uelys
 elysd tx leveragelp open [leverage] [collateral-asset] [collateral-amount] [amm-pool-id] [flags]
 
 # Close position

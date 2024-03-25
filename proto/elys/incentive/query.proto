@@ -34,6 +34,11 @@ service Query {
   rpc PoolAprs (QueryPoolAprsRequest) returns (QueryPoolAprsResponse) {
     option (google.api.http).get = "/elys-network/elys/incentive/pool_aprs";
   }
+
+  // Queries PoolReward items
+  rpc PoolRewards(QueryPoolRewardsRequest) returns (QueryPoolRewardsResponse) {
+    option (google.api.http).get = "/elys-network/elys/incentive/pool_rewards";
+  }
 }
 // QueryParamsRequest is request type for the Query/Params RPC method.
 message QueryParamsRequest {}
@@ -80,3 +85,25 @@ message PoolApr {
     (gogoproto.nullable) = false
   ];
 }
+  
+message QueryPoolRewardsRequest {
+    repeated uint64 pool_ids    = 1;
+    cosmos.base.query.v1beta1.PageRequest pagination = 2;
+}
+
+message PoolRewards {
+  uint64 pool_id = 1;
+  string rewardsUsd = 2 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  repeated cosmos.base.v1beta1.Coin reward_coins = 3 [
+    (gogoproto.nullable) = false,
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
+  ];
+}
+
+message QueryPoolRewardsResponse {
+  repeated PoolRewards pools = 1 [ (gogoproto.nullable) = false ];
+}
+  
