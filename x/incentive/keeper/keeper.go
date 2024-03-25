@@ -640,23 +640,41 @@ func (k Keeper) UpdateAmmPoolAPR(ctx sdk.Context, lpIncentive types.IncentiveInf
 }
 
 // Get total dex rewards amount from the specified pool
-func (k Keeper) GetDexRewardsAmountForPool(ctx sdk.Context, poolId uint64) sdk.Dec {
-	if _, found := k.amm.GetPool(ctx, poolId); !found {
-		return sdk.ZeroDec()
+func (k Keeper) GetDailyRewardsAmountForPool(ctx sdk.Context, poolId uint64) (sdk.Dec, sdk.Coins) {
+	poolInfo, found := k.GetPoolInfo(ctx, poolId)
+	if !found {
+		return sdk.ZeroDec(), sdk.Coins{}
 	}
 
-	lpPortionPercent := k.GetDEXRewardPortionForLPs(ctx)
-	if lpPortionPercent.IsZero() {
-		return sdk.ZeroDec()
+	// Fetch incentive params
+	params := k.GetParams(ctx)
+	if params.LpIncentives == nil {
+		return sdk.ZeroDec(), sdk.Coins{}
 	}
+	lpIncentive := params.LpIncentives
 
-	if k.tci == nil || k.tci.PoolRevenueTrack == nil || len(k.tci.PoolRevenueTrack) < 1 {
-		return sdk.ZeroDec()
+	// Dex reward Apr per pool =  total accumulated usdc rewards for 7 day * 52/ tvl of pool
+	dailyDexRewardsTotal := poolInfo.DexRewardAmountGiven.
+		MulInt(lpIncentive.EpochNumBlocks).
+		QuoInt(poolInfo.NumBlocks)
+
+	// Eden reward Apr per pool = (total LM Eden reward allocated per day*((tvl of pool * multiplier)/total proxy TVL) ) * 365 / TVL of pool
+	dailyEdenRewardsTotal := poolInfo.EdenRewardAmountGiven.
+		Mul(lpIncentive.EpochNumBlocks).
+		Quo(poolInfo.NumBlocks)
+
+	entry, found := k.assetProfileKeeper.GetEntry(ctx, ptypes.BaseCurrency)
+	if !found {
+		return sdk.ZeroDec(), sdk.Coins{}
 	}
+	baseCurrency := entry.Denom
 
-	// reward tracking key
-	trackKey := types.GetPoolRevenueTrackKey(poolId)
-	revenue := k.tci.PoolRevenueTrack[trackKey]
-	// calculate total dex rewards
-	return revenue.Quo(lpPortionPercent)
+	rewardCoins := sdk.NewCoins(sdk.NewCoin(ptypes.Eden, dailyEdenRewardsTotal))
+	rewardCoins = rewardCoins.Add(sdk.NewCoin(baseCurrency, math.Int(dailyDexRewardsTotal)))
+
+	usdcDenomPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, baseCurrency)
+	edenDenomPrice := k.GetEdenDenomPrice(ctx, baseCurrency)
+
+	totalRewardsUsd := usdcDenomPrice.Mul(dailyDexRewardsTotal).Add(edenDenomPrice.MulInt(dailyEdenRewardsTotal))
+	return totalRewardsUsd, rewardCoins
 }
