@@ -1,8 +1,6 @@
 package app
 
 import (
-	"fmt"
-
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	m "github.com/cosmos/cosmos-sdk/types/module"
@@ -22,20 +20,16 @@ func setUpgradeHandler(app *ElysApp) {
 		func(ctx sdk.Context, plan upgradetypes.Plan, vm m.VersionMap) (m.VersionMap, error) {
 			app.Logger().Info("Running upgrade handler for " + version.Version)
 
-			if version.Version == "v0.29.24" {
-				app.Logger().Info("Unbonding delegations lower than 1 ELYS")
-				validators := app.StakingKeeper.GetAllValidators(ctx)
-				for _, val := range validators {
-					delegations := app.StakingKeeper.GetValidatorDelegations(ctx, val.GetOperator())
-					for _, del := range delegations {
-						tokens := val.TokensFromShares(del.Shares)
-						if tokens.LTE(sdk.NewDec(1000_000)) {
-							_, err := app.StakingKeeper.Unbond(ctx, del.GetDelegatorAddr(), val.GetOperator(), del.Shares)
-							if err != nil {
-								panic(fmt.Errorf("error unbonding from %s to %s", del.DelegatorAddress, val.OperatorAddress))
-							}
-						}
+			if version.Version == "v0.29.27" {
+				app.Logger().Info("Update num_epochs and epoch identifier for all commitments")
+				allCommitements := app.CommitmentKeeper.GetAllCommitments(ctx)
+				for _, commitments := range allCommitements {
+					for _, vestingToken := range commitments.VestingTokens {
+						vestingInfo, _ := app.CommitmentKeeper.GetVestingInfo(ctx, vestingToken.Denom)
+						vestingToken.NumEpochs = vestingInfo.NumEpochs
+						vestingToken.EpochIdentifier = vestingInfo.EpochIdentifier
 					}
+					app.CommitmentKeeper.SetCommitments(ctx, *commitments)
 				}
 			}
 
