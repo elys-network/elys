@@ -16,8 +16,16 @@ func updateConfig(homePath string) {
 	configPath := homePath + "/config/config.toml"
 	appPath := homePath + "/config/app.toml"
 
-	// Update config.toml
+	// Update config.toml for cors_allowed_origins
 	args := []string{"-i", "", "s/^cors_allowed_origins =.*/cors_allowed_origins = [\\\"*\\\"]/", configPath}
+
+	// Execute the sed command
+	if err := exec.Command("sed", args...).Run(); err != nil {
+		log.Fatalf(Red+"Error updating config.toml: %v\n", err)
+	}
+
+	// Update config.toml for timeout_broadcast_tx_commit
+	args = []string{"-i", "", "s/^timeout_broadcast_tx_commit =.*/timeout_broadcast_tx_commit = \\\"30s\\\"/", configPath}
 
 	// Execute the sed command
 	if err := exec.Command("sed", args...).Run(); err != nil {
@@ -34,7 +42,7 @@ func updateConfig(homePath string) {
 		}
 	}
 
-	// Update app.toml
+	// Update app.toml for enabling the API server
 	args = []string{"-i", "", "/^# Enable defines if the API server should be enabled./{n;s/enable = false/enable = true/;}", appPath}
 
 	// Execute the sed command
