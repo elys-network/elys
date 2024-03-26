@@ -63,7 +63,16 @@ builds:
     binary: elysd
     hooks:
       pre:
+        # install wasmvm libs
         - wget https://github.com/CosmWasm/wasmvm/releases/download/{{ .Env.COSMWASM_VERSION }}/libwasmvm_muslc.x86_64.a -O /usr/lib/x86_64-linux-gnu/libwasmvm_muslc.a
+        # install rocksdb lib
+        - apt update -y && apt install -y libgflags-dev libsnappy-dev zlib1g-dev libbz2-dev liblz4-dev libzstd-dev
+        - cd /tmp && wget https://github.com/facebook/rocksdb/archive/refs/tags/v{{ .Env.ROCKSDB_VERSION }}.tar.gz && tar -xvf v{{ .Env.ROCKSDB_VERSION }}.tar.gz && cd rocksdb-{{ .Env.ROCKSDB_VERSION }} || return
+        - export CXXFLAGS='-Wno-error=deprecated-copy -Wno-error=pessimizing-move -Wno-error=class-memaccess'
+        - make shared_lib
+        - make install-shared INSTALL_PATH=/usr
+        - rm -rf /tmp/rocksdb-{{ .Env.ROCKSDB_VERSION }} /tmp/v{{ .Env.ROCKSDB_VERSION }}.tar.gz
+        - export LD_LIBRARY_PATH=/usr/local/lib
     goos:
       - linux
     goarch:
@@ -78,7 +87,7 @@ builds:
       - -X github.com/cosmos/cosmos-sdk/version.AppName=elysd
       - -X github.com/cosmos/cosmos-sdk/version.Version=v{{ .Version }}
       - -X github.com/cosmos/cosmos-sdk/version.Commit={{ .Commit }}
-      - -X github.com/cosmos/cosmos-sdk/version.BuildTags=netgo,ledger,muslc,osusergo
+      - -X github.com/cosmos/cosmos-sdk/version.BuildTags=netgo,ledger,muslc,osusergo,rocksdb
       - -w -s
       - -linkmode=external
       - -extldflags '-Wl,-z,muldefs -static -lm'
@@ -93,7 +102,16 @@ builds:
     binary: elysd
     hooks:
       pre:
+        # install wasmvm libs
         - wget https://github.com/CosmWasm/wasmvm/releases/download/{{ .Env.COSMWASM_VERSION }}/libwasmvm_muslc.aarch64.a -O /usr/lib/aarch64-linux-gnu/libwasmvm_muslc.a
+        # install rocksdb lib
+        - apt update -y && apt install -y libgflags-dev libsnappy-dev zlib1g-dev libbz2-dev liblz4-dev libzstd-dev
+        - cd /tmp && wget https://github.com/facebook/rocksdb/archive/refs/tags/v{{ .Env.ROCKSDB_VERSION }}.tar.gz && tar -xvf v{{ .Env.ROCKSDB_VERSION }}.tar.gz && cd rocksdb-{{ .Env.ROCKSDB_VERSION }} || return
+        - export CXXFLAGS='-Wno-error=deprecated-copy -Wno-error=pessimizing-move -Wno-error=class-memaccess'
+        - make shared_lib
+        - make install-shared INSTALL_PATH=/usr
+        - rm -rf /tmp/rocksdb-{{ .Env.ROCKSDB_VERSION }} /tmp/v{{ .Env.ROCKSDB_VERSION }}.tar.gz
+        - export LD_LIBRARY_PATH=/usr/local/lib
     goos:
       - linux
     goarch:
@@ -108,7 +126,7 @@ builds:
       - -X github.com/cosmos/cosmos-sdk/version.AppName=elysd
       - -X github.com/cosmos/cosmos-sdk/version.Version=v{{ .Version }}
       - -X github.com/cosmos/cosmos-sdk/version.Commit={{ .Commit }}
-      - -X github.com/cosmos/cosmos-sdk/version.BuildTags=netgo,ledger,muslc,osusergo
+      - -X github.com/cosmos/cosmos-sdk/version.BuildTags=netgo,ledger,muslc,osusergo,rocksdb
       - -w -s
       - -linkmode=external
       - -extldflags '-Wl,-z,muldefs -static -lm'
