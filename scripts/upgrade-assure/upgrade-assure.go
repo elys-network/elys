@@ -17,7 +17,7 @@ func main() {
 		Args:  cobra.ExactArgs(3), // Expect exactly 1 argument
 		Run: func(cmd *cobra.Command, args []string) {
 			snapshotUrl, oldBinaryUrl, newBinaryUrl := getArgs(args)
-			homePath, skipSnapshot, skipChainInit, skipNodeStart, skipProposal, skipBinary, moniker, chainId, keyringBackend, validatorKeyName, validatorBalance, validatorSelfDelegation, genesisFilePath, node, broadcastMode := getFlags(cmd)
+			homePath, skipSnapshot, skipChainInit, skipNodeStart, skipProposal, skipBinary, moniker, chainId, keyringBackend, validatorKeyName, validatorBalance, validatorSelfDelegation, genesisFilePath, node, broadcastMode, validatorMnemonic := getFlags(cmd)
 
 			// set address prefix
 			elyscmd.InitSDKConfig()
@@ -62,7 +62,7 @@ func main() {
 				initChain(oldBinaryPath, moniker, chainId, homePath)
 
 				// add validator key
-				validatorAddress := addKey(oldBinaryPath, validatorKeyName, homePath, keyringBackend)
+				validatorAddress := addKey(oldBinaryPath, validatorKeyName, validatorMnemonic, homePath, keyringBackend)
 
 				// add genesis account
 				addGenesisAccount(oldBinaryPath, validatorAddress, validatorBalance, homePath)
@@ -164,6 +164,7 @@ func main() {
 	rootCmd.PersistentFlags().String(flagGenesisFilePath, "/tmp/genesis.json", "genesis file path")
 	rootCmd.PersistentFlags().String(flagNode, "tcp://localhost:26657", "node")
 	rootCmd.PersistentFlags().String(flagBroadcastMode, "sync", "broadcast mode")
+	rootCmd.PersistentFlags().String(flagValidatorMnemonic, "bargain toss help way dash forget bar casual boat drill execute ordinary human lecture leopard enroll joy rural shed express kite sample brick void", "validator mnemonic")
 
 	if err := rootCmd.Execute(); err != nil {
 		log.Fatalf(Red+"Error executing command: %v", err)
