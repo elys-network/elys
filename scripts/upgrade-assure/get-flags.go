@@ -23,9 +23,10 @@ const (
 	flagGenesisFilePath         = "genesis-file-path"
 	flagNode                    = "node"
 	flagBroadcastMode           = "broadcast-mode"
+	flagValidatorMnemonic       = "validator-mnemonic"
 )
 
-func getFlags(cmd *cobra.Command) (homePath string, skipSnapshot, skipChainInit, skipNodeStart, skipProposal, skipBinary bool, moniker, chainId, keyringBackend, validatorKeyName, validatorBalance, validatorSelfDelegation, genesisFilePath, node, broadcastMode string) {
+func getFlags(cmd *cobra.Command) (homePath string, skipSnapshot, skipChainInit, skipNodeStart, skipProposal, skipBinary bool, moniker, chainId, keyringBackend, validatorKeyName, validatorBalance, validatorSelfDelegation, genesisFilePath, node, broadcastMode, validatorMnemonic string) {
 	homePath, _ = cmd.Flags().GetString(flagHome)
 	if homePath == "" {
 		log.Fatalf(Red + "home path is required")
@@ -99,6 +100,11 @@ func getFlags(cmd *cobra.Command) (homePath string, skipSnapshot, skipChainInit,
 	broadcastMode, _ = cmd.Flags().GetString(flagBroadcastMode)
 	if broadcastMode == "" {
 		log.Fatalf(Red + "broadcast mode is required")
+	}
+
+	validatorMnemonic, _ = cmd.Flags().GetString(flagValidatorMnemonic)
+	if validatorMnemonic == "" {
+		log.Fatalf(Red + "validator mnemonic is required")
 	}
 
 	return

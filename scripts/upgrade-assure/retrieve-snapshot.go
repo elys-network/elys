@@ -3,31 +3,38 @@ package main
 import (
 	"log"
 	"os/exec"
+	"strings"
 )
 
 func retrieveSnapshot(snapshotUrl, homePath string) {
 	var cmdString string
+	isUrl := strings.HasPrefix(snapshotUrl, "http://") || strings.HasPrefix(snapshotUrl, "https://")
 
-	// if snapshot url ends with `.tar.lz4`
-	if snapshotUrl[len(snapshotUrl)-8:] == ".tar.lz4" {
-		// Construct the command string
-		cmdString = "curl -o - -L " + snapshotUrl + " | lz4 -c -d - | tar -x -C " + homePath
-	} else if snapshotUrl[len(snapshotUrl)-7:] == ".tar.gz" {
-		// if snapshot url ends with `.tar.gz`
-		// Construct the command string
-		cmdString = "curl -o - -L " + snapshotUrl + " | tar -xz -C " + homePath
-	} else if snapshotUrl[len(snapshotUrl)-4:] == ".tar" {
-		// if snapshot url ends with `.tar`
-		// Construct the command string
-		cmdString = "curl -o - -L " + snapshotUrl + " | tar -x -C " + homePath
+	// Check the file type and construct the command accordingly
+	if strings.HasSuffix(snapshotUrl, ".tar.lz4") {
+		if isUrl {
+			cmdString = "curl -o - -L " + snapshotUrl + " | lz4 -c -d - | tar -x -C " + homePath
+		} else {
+			cmdString = "lz4 -c -d " + snapshotUrl + " | tar -x -C " + homePath
+		}
+	} else if strings.HasSuffix(snapshotUrl, ".tar.gz") {
+		if isUrl {
+			cmdString = "curl -o - -L " + snapshotUrl + " | tar -xz -C " + homePath
+		} else {
+			cmdString = "tar -xz -f " + snapshotUrl + " -C " + homePath
+		}
+	} else if strings.HasSuffix(snapshotUrl, ".tar") {
+		if isUrl {
+			cmdString = "curl -o - -L " + snapshotUrl + " | tar -x -C " + homePath
+		} else {
+			cmdString = "tar -x -f " + snapshotUrl + " -C " + homePath
+		}
 	} else {
-		// otherwise, the snapshot url is invalid
-		log.Fatalf(Red+"Invalid snapshot url: %s", snapshotUrl)
+		log.Fatalf(Red+"Invalid snapshot url or path: %s", snapshotUrl)
 	}
 
-	// print cmdString
-	log.Printf(Green+"Retrieving snapshot using command: %s",
-		cmdString)
+	// Print cmdString
+	log.Printf(Green+"Retrieving snapshot using command: %s", cmdString)
 
 	// Execute the command using /bin/sh
 	cmd := exec.Command("/bin/sh", "-c", cmdString)
