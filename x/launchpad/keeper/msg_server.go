@@ -26,7 +26,7 @@ func NewMsgServerImpl(keeper Keeper) types.MsgServer {
 
 var _ types.MsgServer = msgServer{}
 
-func (k Keeper) isEnabledToken(ctx sdk.Context, spendingToken string) bool {
+func (k Keeper) IsEnabledToken(ctx sdk.Context, spendingToken string) bool {
 	params := k.GetParams(ctx)
 
 	for _, token := range params.SpendingTokens {
@@ -113,7 +113,7 @@ func (k msgServer) BuyElys(goCtx context.Context, msg *types.MsgBuyElys) (*types
 		return nil, types.ErrLaunchpadAlreadyFinished
 	}
 
-	if !k.isEnabledToken(ctx, msg.SpendingToken) {
+	if !k.IsEnabledToken(ctx, msg.SpendingToken) {
 		return nil, types.ErrNotEnabledSpendingToken
 	}
 
@@ -211,7 +211,7 @@ func (k msgServer) ReturnElys(goCtx context.Context, msg *types.MsgReturnElys) (
 	if err != nil {
 		return nil, err
 	}
-
+	// TODO: might need to check BonusAmount cut
 	return &types.MsgReturnElysResponse{}, nil
 }
 
