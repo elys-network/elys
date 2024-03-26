@@ -66,7 +66,7 @@ builds:
         # install wasmvm libs
         - wget https://github.com/CosmWasm/wasmvm/releases/download/{{ .Env.COSMWASM_VERSION }}/libwasmvm_muslc.x86_64.a -O /usr/lib/x86_64-linux-gnu/libwasmvm_muslc.a
         # install rocksdb lib
-        - apt install -y libgflags-dev libsnappy-dev zlib1g-dev libbz2-dev liblz4-dev libzstd-dev
+        - apt update -y && apt install -y libgflags-dev libsnappy-dev zlib1g-dev libbz2-dev liblz4-dev libzstd-dev
         - cd /tmp && wget https://github.com/facebook/rocksdb/archive/refs/tags/v{{ .Env.ROCKSDB_VERSION }}.tar.gz && tar -xvf v{{ .Env.ROCKSDB_VERSION }}.tar.gz && cd rocksdb-{{ .Env.ROCKSDB_VERSION }} || return
         - export CXXFLAGS='-Wno-error=deprecated-copy -Wno-error=pessimizing-move -Wno-error=class-memaccess'
         - make shared_lib
