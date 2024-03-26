@@ -87,6 +87,7 @@ builds:
       - ledger
       - muslc
       - osusergo
+      - rocksdb
   - id: elysd-linux-arm64
     main: ./cmd/elysd
     binary: elysd
@@ -116,6 +117,7 @@ builds:
       - ledger
       - muslc
       - osusergo
+      - rocksdb
 universal_binaries:
   - id: elysd-darwin-universal
     ids:
