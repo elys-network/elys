@@ -20,6 +20,7 @@ type (
 		paramstore paramtypes.Subspace
 
 		cmk                 types.CommitmentKeeper
+		tci                 *types.TotalCommitmentInfo
 		amm                 types.AmmKeeper
 		oracleKeeper        types.OracleKeeper
 		assetProfileKeeper  types.AssetProfileKeeper
@@ -27,7 +28,12 @@ type (
 		epochsKeeper        types.EpochsKeeper
 		stableKeeper        types.StableStakeKeeper
 		tokenomicsKeeper    types.TokenomicsKeeper
+		authKeeper          types.AccountKeeper
 		bankKeeper          types.BankKeeper
+
+		feeCollectorName    string // name of the FeeCollector ModuleAccount
+		dexRevCollectorName string // name of the Dex Revenue ModuleAccount
+		authority           string // gov module addresss
 	}
 )
 
@@ -44,7 +50,11 @@ func NewKeeper(
 	epochsKeeper types.EpochsKeeper,
 	stableKeeper types.StableStakeKeeper,
 	tokenomicsKeeper types.TokenomicsKeeper,
+	ak types.AccountKeeper,
 	bk types.BankKeeper,
+	feeCollectorName string,
+	dexRevCollectorName string,
+	authority string,
 ) *Keeper {
 	// set KeyTable if it has not already been set
 	if !ps.HasKeyTable() {
@@ -57,6 +67,7 @@ func NewKeeper(
 		memKey:              memKey,
 		paramstore:          ps,
 		cmk:                 ck,
+		tci:                 &types.TotalCommitmentInfo{},
 		amm:                 amm,
 		oracleKeeper:        ok,
 		assetProfileKeeper:  ap,
@@ -64,7 +75,11 @@ func NewKeeper(
 		epochsKeeper:        epochsKeeper,
 		stableKeeper:        stableKeeper,
 		tokenomicsKeeper:    tokenomicsKeeper,
+		authKeeper:          ak,
 		bankKeeper:          bk,
+		feeCollectorName:    feeCollectorName,
+		dexRevCollectorName: dexRevCollectorName,
+		authority:           authority,
 	}
 }
 

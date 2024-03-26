@@ -41230,6 +41230,90 @@ paths:
               params:
                 description: params holds all the parameters of this module.
                 type: object
+                properties:
+                  lp_incentives:
+                    type: object
+                    properties:
+                      eden_amount_per_year:
+                        type: string
+                        title: reward amount in eden for 1 year
+                      distribution_start_block:
+                        type: string
+                        title: starting block height of the distribution
+                      total_blocks_per_year:
+                        type: string
+                        title: distribution duration - block number per year
+                      max_eden_per_allocation:
+                        type: string
+                        title: >-
+                          maximum eden allocation per day that won't exceed 30%
+                          apr
+                      current_epoch_in_blocks:
+                        type: string
+                        title: current epoch in block number
+                    title: Incentive Info
+                  reward_portion_for_lps:
+                    type: string
+                    description: >-
+                      Dex revenue percent for lps, `100 - reward_portion_for_lps
+                      - reward_portion_for_stakers = revenue percent for
+                      protocol`.
+                  pool_infos:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        pool_id:
+                          type: string
+                          format: uint64
+                          title: reward amount
+                        reward_wallet:
+                          type: string
+                          title: reward wallet address
+                        multiplier:
+                          type: string
+                          title: multiplier for lp rewards
+                        num_blocks:
+                          type: string
+                          title: Block number since the creation of PoolInfo
+                        dex_reward_amount_given:
+                          type: string
+                          title: Total dex rewards given
+                        eden_reward_amount_given:
+                          type: string
+                          title: Total eden rewards given
+                        eden_apr:
+                          type: string
+                          title: Eden APR, updated at every distribution
+                        dex_apr:
+                          type: string
+                          title: Dex APR, updated at every distribution
+                        external_reward_denoms:
+                          type: array
+                          items:
+                            type: string
+                          title: external reward denoms on the pool
+                      title: Pool Info
+                    title: |-
+                      Pool information
+                      poolId, reward wallet, **multiplier**, dex rewards given
+                  dex_rewards_lps:
+                    title: Tracking dex rewards given to LPs
+                    type: object
+                    properties:
+                      num_blocks:
+                        type: string
+                        title: >-
+                          Number of blocks since start of epoch (distribution
+                          epoch)
+                      amount:
+                        type: string
+                        title: >-
+                          Accumulated amount at distribution epoch -
+                          recalculated at every distribution epoch
+                  max_eden_reward_apr_lps:
+                    type: string
+                    title: Maximum eden reward apr for lps - [0 - 0.3]
             description: >-
               QueryParamsResponse is response type for the Query/Params RPC
               method.
@@ -41371,6 +41455,7 @@ paths:
                     type: array
                     items:
                       type: string
+                    title: external reward denoms on the pool
                 title: Pool Info
         default:
           description: An unexpected error response.
@@ -85844,6 +85929,20 @@ definitions:
                    repeated Bar results = 1;
                    PageResponse page = 2;
            }
+  elys.masterchef.DexRewardsTracker:
+    type: object
+    properties:
+      num_blocks:
+        type: string
+        title: Number of blocks since start of epoch (distribution epoch)
+      amount:
+        type: string
+        title: >-
+          Accumulated amount at distribution epoch - recalculated at every
+          distribution epoch
+    title: >-
+      DexRewardsTracker is used for tracking rewards for LPs, all amount here is
+      in USDC
   elys.masterchef.ExternalIncentive:
     type: object
     properties:
@@ -85864,12 +85963,110 @@ definitions:
       amount_per_block:
         type: string
     description: ExternalIncentive defines the external incentives.
+  elys.masterchef.IncentiveInfo:
+    type: object
+    properties:
+      eden_amount_per_year:
+        type: string
+        title: reward amount in eden for 1 year
+      distribution_start_block:
+        type: string
+        title: starting block height of the distribution
+      total_blocks_per_year:
+        type: string
+        title: distribution duration - block number per year
+      max_eden_per_allocation:
+        type: string
+        title: maximum eden allocation per day that won't exceed 30% apr
+      current_epoch_in_blocks:
+        type: string
+        title: current epoch in block number
+    title: Incentive Info
   elys.masterchef.MsgAddExternalIncentiveResponse:
     type: object
   elys.masterchef.MsgClaimRewardsResponse:
     type: object
   elys.masterchef.Params:
     type: object
+    properties:
+      lp_incentives:
+        type: object
+        properties:
+          eden_amount_per_year:
+            type: string
+            title: reward amount in eden for 1 year
+          distribution_start_block:
+            type: string
+            title: starting block height of the distribution
+          total_blocks_per_year:
+            type: string
+            title: distribution duration - block number per year
+          max_eden_per_allocation:
+            type: string
+            title: maximum eden allocation per day that won't exceed 30% apr
+          current_epoch_in_blocks:
+            type: string
+            title: current epoch in block number
+        title: Incentive Info
+      reward_portion_for_lps:
+        type: string
+        description: >-
+          Dex revenue percent for lps, `100 - reward_portion_for_lps -
+          reward_portion_for_stakers = revenue percent for protocol`.
+      pool_infos:
+        type: array
+        items:
+          type: object
+          properties:
+            pool_id:
+              type: string
+              format: uint64
+              title: reward amount
+            reward_wallet:
+              type: string
+              title: reward wallet address
+            multiplier:
+              type: string
+              title: multiplier for lp rewards
+            num_blocks:
+              type: string
+              title: Block number since the creation of PoolInfo
+            dex_reward_amount_given:
+              type: string
+              title: Total dex rewards given
+            eden_reward_amount_given:
+              type: string
+              title: Total eden rewards given
+            eden_apr:
+              type: string
+              title: Eden APR, updated at every distribution
+            dex_apr:
+              type: string
+              title: Dex APR, updated at every distribution
+            external_reward_denoms:
+              type: array
+              items:
+                type: string
+              title: external reward denoms on the pool
+          title: Pool Info
+        title: |-
+          Pool information
+          poolId, reward wallet, **multiplier**, dex rewards given
+      dex_rewards_lps:
+        title: Tracking dex rewards given to LPs
+        type: object
+        properties:
+          num_blocks:
+            type: string
+            title: Number of blocks since start of epoch (distribution epoch)
+          amount:
+            type: string
+            title: >-
+              Accumulated amount at distribution epoch - recalculated at every
+              distribution epoch
+      max_eden_reward_apr_lps:
+        type: string
+        title: Maximum eden reward apr for lps - [0 - 0.3]
     description: Params defines the parameters for the module.
   elys.masterchef.PoolInfo:
     type: object
@@ -85903,6 +86100,7 @@ definitions:
         type: array
         items:
           type: string
+        title: external reward denoms on the pool
     title: Pool Info
   elys.masterchef.PoolRewardInfo:
     type: object
@@ -85946,6 +86144,85 @@ definitions:
       params:
         description: params holds all the parameters of this module.
         type: object
+        properties:
+          lp_incentives:
+            type: object
+            properties:
+              eden_amount_per_year:
+                type: string
+                title: reward amount in eden for 1 year
+              distribution_start_block:
+                type: string
+                title: starting block height of the distribution
+              total_blocks_per_year:
+                type: string
+                title: distribution duration - block number per year
+              max_eden_per_allocation:
+                type: string
+                title: maximum eden allocation per day that won't exceed 30% apr
+              current_epoch_in_blocks:
+                type: string
+                title: current epoch in block number
+            title: Incentive Info
+          reward_portion_for_lps:
+            type: string
+            description: >-
+              Dex revenue percent for lps, `100 - reward_portion_for_lps -
+              reward_portion_for_stakers = revenue percent for protocol`.
+          pool_infos:
+            type: array
+            items:
+              type: object
+              properties:
+                pool_id:
+                  type: string
+                  format: uint64
+                  title: reward amount
+                reward_wallet:
+                  type: string
+                  title: reward wallet address
+                multiplier:
+                  type: string
+                  title: multiplier for lp rewards
+                num_blocks:
+                  type: string
+                  title: Block number since the creation of PoolInfo
+                dex_reward_amount_given:
+                  type: string
+                  title: Total dex rewards given
+                eden_reward_amount_given:
+                  type: string
+                  title: Total eden rewards given
+                eden_apr:
+                  type: string
+                  title: Eden APR, updated at every distribution
+                dex_apr:
+                  type: string
+                  title: Dex APR, updated at every distribution
+                external_reward_denoms:
+                  type: array
+                  items:
+                    type: string
+                  title: external reward denoms on the pool
+              title: Pool Info
+            title: |-
+              Pool information
+              poolId, reward wallet, **multiplier**, dex rewards given
+          dex_rewards_lps:
+            title: Tracking dex rewards given to LPs
+            type: object
+            properties:
+              num_blocks:
+                type: string
+                title: Number of blocks since start of epoch (distribution epoch)
+              amount:
+                type: string
+                title: >-
+                  Accumulated amount at distribution epoch - recalculated at
+                  every distribution epoch
+          max_eden_reward_apr_lps:
+            type: string
+            title: Maximum eden reward apr for lps - [0 - 0.3]
     description: QueryParamsResponse is response type for the Query/Params RPC method.
   elys.masterchef.QueryPoolInfoResponse:
     type: object
@@ -85982,6 +86259,7 @@ definitions:
             type: array
             items:
               type: string
+            title: external reward denoms on the pool
         title: Pool Info
   elys.masterchef.QueryPoolRewardInfoResponse:
     type: object

@@ -42,8 +42,9 @@ type PoolInfo struct {
 	// Eden APR, updated at every distribution
 	EdenApr github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,7,opt,name=eden_apr,json=edenApr,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"eden_apr"`
 	// Dex APR, updated at every distribution
-	DexApr               github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,8,opt,name=dex_apr,json=dexApr,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"dex_apr"`
-	ExternalRewardDenoms []string                               `protobuf:"bytes,9,rep,name=external_reward_denoms,json=externalRewardDenoms,proto3" json:"external_reward_denoms,omitempty"`
+	DexApr github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,8,opt,name=dex_apr,json=dexApr,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"dex_apr"`
+	// external reward denoms on the pool
+	ExternalRewardDenoms []string `protobuf:"bytes,9,rep,name=external_reward_denoms,json=externalRewardDenoms,proto3" json:"external_reward_denoms,omitempty"`
 }
 
 func (m *PoolInfo) Reset()         { *m = PoolInfo{} }

@@ -55,7 +55,7 @@ func (k Keeper) GetRewardDenoms(ctx sdk.Context, poolId uint64) []string {
 	rewardDenoms := make(map[string]bool)
 
 	rewardDenoms[ptypes.Eden] = true
-	rewardDenoms[ptypes.BaseCurrency] = true
+	rewardDenoms[k.GetBaseCurrencyDenom(ctx)] = true
 
 	poolInfo, found := k.GetPool(ctx, poolId)
 	if !found {
@@ -73,4 +73,13 @@ func (k Keeper) GetRewardDenoms(ctx sdk.Context, poolId uint64) []string {
 	}
 
 	return keys
+}
+
+func (k Keeper) GetBaseCurrencyDenom(ctx sdk.Context) string {
+	baseCurrency := ptypes.BaseCurrency
+	entry, found := k.assetProfileKeeper.GetEntry(ctx, ptypes.BaseCurrency)
+	if found {
+		baseCurrency = entry.Denom
+	}
+	return baseCurrency
 }

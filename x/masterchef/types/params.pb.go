@@ -5,6 +5,7 @@ package types
 
 import (
 	fmt "fmt"
+	github_com_cosmos_cosmos_sdk_types "github.com/cosmos/cosmos-sdk/types"
 	_ "github.com/cosmos/gogoproto/gogoproto"
 	proto "github.com/cosmos/gogoproto/proto"
 	io "io"
@@ -25,6 +26,16 @@ const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
 // Params defines the parameters for the module.
 type Params struct {
+	LpIncentives *IncentiveInfo `protobuf:"bytes,1,opt,name=lp_incentives,json=lpIncentives,proto3" json:"lp_incentives,omitempty"`
+	// Dex revenue percent for lps, `100 - reward_portion_for_lps - reward_portion_for_stakers = revenue percent for protocol`.
+	RewardPortionForLps github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,2,opt,name=reward_portion_for_lps,json=rewardPortionForLps,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"reward_portion_for_lps"`
+	// Pool information
+	// poolId, reward wallet, **multiplier**, dex rewards given
+	PoolInfos []PoolInfo `protobuf:"bytes,3,rep,name=pool_infos,json=poolInfos,proto3" json:"pool_infos"`
+	// Tracking dex rewards given to LPs
+	DexRewardsLps DexRewardsTracker `protobuf:"bytes,4,opt,name=dex_rewards_lps,json=dexRewardsLps,proto3" json:"dex_rewards_lps"`
+	// Maximum eden reward apr for lps - [0 - 0.3]
+	MaxEdenRewardAprLps github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,5,opt,name=max_eden_reward_apr_lps,json=maxEdenRewardAprLps,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"max_eden_reward_apr_lps"`
 }
 
 func (m *Params) Reset()      { *m = Params{} }
@@ -59,6 +70,27 @@ func (m *Params) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_Params proto.InternalMessageInfo
 
+func (m *Params) GetLpIncentives() *IncentiveInfo {
+	if m != nil {
+		return m.LpIncentives
+	}
+	return nil
+}
+
+func (m *Params) GetPoolInfos() []PoolInfo {
+	if m != nil {
+		return m.PoolInfos
+	}
+	return nil
+}
+
+func (m *Params) GetDexRewardsLps() DexRewardsTracker {
+	if m != nil {
+		return m.DexRewardsLps
+	}
+	return DexRewardsTracker{}
+}
+
 func init() {
 	proto.RegisterType((*Params)(nil), "elys.masterchef.Params")
 }
@@ -66,17 +98,33 @@ func init() {
 func init() { proto.RegisterFile("elys/masterchef/params.proto", fileDescriptor_bc83f5a7f5a55e20) }
 
 var fileDescriptor_bc83f5a7f5a55e20 = []byte{
-	// 154 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x92, 0x49, 0xcd, 0xa9, 0x2c,
-	0xd6, 0xcf, 0x4d, 0x2c, 0x2e, 0x49, 0x2d, 0x4a, 0xce, 0x48, 0x4d, 0xd3, 0x2f, 0x48, 0x2c, 0x4a,
-	0xcc, 0x2d, 0xd6, 0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x17, 0xe2, 0x07, 0xc9, 0xea, 0x21, 0x64, 0xa5,
-	0x44, 0xd2, 0xf3, 0xd3, 0xf3, 0xc1, 0x72, 0xfa, 0x20, 0x16, 0x44, 0x99, 0x12, 0x1f, 0x17, 0x5b,
-	0x00, 0x58, 0x9b, 0x15, 0xcb, 0x8c, 0x05, 0xf2, 0x0c, 0x4e, 0x9e, 0x27, 0x1e, 0xc9, 0x31, 0x5e,
-	0x78, 0x24, 0xc7, 0xf8, 0xe0, 0x91, 0x1c, 0xe3, 0x84, 0xc7, 0x72, 0x0c, 0x17, 0x1e, 0xcb, 0x31,
-	0xdc, 0x78, 0x2c, 0xc7, 0x10, 0xa5, 0x9f, 0x9e, 0x59, 0x92, 0x51, 0x9a, 0xa4, 0x97, 0x9c, 0x9f,
-	0xab, 0x0f, 0x32, 0x5b, 0x37, 0x2f, 0xb5, 0xa4, 0x3c, 0xbf, 0x28, 0x1b, 0xcc, 0xd1, 0xaf, 0x40,
-	0x76, 0x48, 0x49, 0x65, 0x41, 0x6a, 0x71, 0x12, 0x1b, 0xd8, 0x06, 0x63, 0x40, 0x00, 0x00, 0x00,
-	0xff, 0xff, 0xad, 0x76, 0x72, 0x81, 0xa8, 0x00, 0x00, 0x00,
+	// 408 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x9c, 0x52, 0xcf, 0x8a, 0xd3, 0x40,
+	0x18, 0x4f, 0x6c, 0x5d, 0xd8, 0x59, 0x97, 0x85, 0x28, 0x5a, 0x8b, 0x24, 0x65, 0x0f, 0x92, 0xcb,
+	0x26, 0xb0, 0xde, 0x3c, 0x08, 0xd6, 0x55, 0x28, 0x78, 0x08, 0xc1, 0x93, 0x97, 0x61, 0x36, 0xf9,
+	0xd2, 0x0d, 0x49, 0xe6, 0x1b, 0x66, 0x46, 0x37, 0xfb, 0x16, 0x1e, 0x3d, 0xfa, 0x08, 0x3e, 0x46,
+	0x8f, 0x3d, 0x8a, 0x87, 0x22, 0xed, 0x8b, 0xc8, 0x64, 0x62, 0x2d, 0xed, 0x6d, 0x4f, 0x33, 0xdf,
+	0xfc, 0x7e, 0xfc, 0xfe, 0x0c, 0x1f, 0x79, 0x01, 0xf5, 0x9d, 0x8a, 0x1b, 0xa6, 0x34, 0xc8, 0xec,
+	0x06, 0x8a, 0x58, 0x30, 0xc9, 0x1a, 0x15, 0x09, 0x89, 0x1a, 0xbd, 0x33, 0x83, 0x46, 0xff, 0xd1,
+	0xf1, 0x93, 0x39, 0xce, 0xb1, 0xc3, 0x62, 0x73, 0xb3, 0xb4, 0x71, 0xb0, 0x2f, 0x52, 0xf2, 0x0c,
+	0xb8, 0x2e, 0xbf, 0x42, 0x4f, 0x18, 0x1f, 0xb8, 0x20, 0xd6, 0x3d, 0x16, 0xee, 0x63, 0x39, 0xb4,
+	0x54, 0xc2, 0x2d, 0x93, 0xb9, 0xa2, 0x5a, 0xb2, 0x0a, 0xa4, 0x65, 0x9e, 0xff, 0x1c, 0x90, 0xa3,
+	0xa4, 0x8b, 0xe7, 0xbd, 0x23, 0xa7, 0xb5, 0xa0, 0x5b, 0x1b, 0x35, 0x72, 0x27, 0x6e, 0x78, 0x72,
+	0xe9, 0x47, 0x7b, 0x81, 0xa3, 0xd9, 0x3f, 0xca, 0x8c, 0x17, 0x98, 0x3e, 0xaa, 0xc5, 0xf6, 0x41,
+	0x79, 0x19, 0x79, 0x6a, 0x7d, 0xa8, 0x40, 0xa9, 0x4b, 0xe4, 0xb4, 0x40, 0x49, 0x6b, 0xa1, 0x46,
+	0x0f, 0x26, 0x6e, 0x78, 0x3c, 0x8d, 0x16, 0xab, 0xc0, 0xf9, 0xbd, 0x0a, 0x5e, 0xce, 0x4b, 0x7d,
+	0xf3, 0xe5, 0x3a, 0xca, 0xb0, 0x89, 0x33, 0x54, 0x0d, 0xaa, 0xfe, 0xb8, 0x50, 0x79, 0x15, 0xeb,
+	0x3b, 0x01, 0x2a, 0xba, 0x82, 0x2c, 0x7d, 0x6c, 0xd5, 0x12, 0x2b, 0xf6, 0x01, 0xe5, 0x47, 0xa1,
+	0xbc, 0x37, 0x84, 0x98, 0xb2, 0xb4, 0xe4, 0x05, 0xaa, 0xd1, 0x60, 0x32, 0x08, 0x4f, 0x2e, 0x9f,
+	0x1f, 0xc4, 0x4c, 0x10, 0x6b, 0x93, 0x70, 0x3a, 0x34, 0x9e, 0xe9, 0xb1, 0xe8, 0x67, 0xe5, 0x25,
+	0xe4, 0x6c, 0xf7, 0x43, 0x4c, 0xba, 0x61, 0xd7, 0xf5, 0xfc, 0x40, 0xe4, 0x0a, 0xda, 0xd4, 0xd2,
+	0x3e, 0x49, 0x96, 0x55, 0x20, 0x7b, 0xb5, 0xd3, 0x7c, 0x0b, 0x98, 0x44, 0x39, 0x79, 0xd6, 0xb0,
+	0x96, 0x42, 0x0e, 0xbc, 0x97, 0xa5, 0x4c, 0xd8, 0xde, 0x0f, 0xef, 0xd7, 0xbb, 0x61, 0xed, 0xfb,
+	0x1c, 0xb8, 0xf5, 0x78, 0x2b, 0x4c, 0xef, 0xd7, 0xc3, 0xef, 0x3f, 0x02, 0x67, 0x3a, 0x5b, 0xac,
+	0x7d, 0x77, 0xb9, 0xf6, 0xdd, 0x3f, 0x6b, 0xdf, 0xfd, 0xb6, 0xf1, 0x9d, 0xe5, 0xc6, 0x77, 0x7e,
+	0x6d, 0x7c, 0xe7, 0x73, 0xbc, 0x23, 0x6e, 0x8a, 0x5c, 0x70, 0xd0, 0xb7, 0x28, 0xab, 0x6e, 0x88,
+	0xdb, 0xdd, 0x85, 0xe8, 0x9c, 0xae, 0x8f, 0xba, 0x25, 0x78, 0xf5, 0x37, 0x00, 0x00, 0xff, 0xff,
+	0x65, 0xec, 0x5f, 0xfe, 0xb2, 0x02, 0x00, 0x00,
 }
 
 func (m *Params) Marshal() (dAtA []byte, err error) {
@@ -99,6 +147,62 @@ func (m *Params) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
+	{
+		size := m.MaxEdenRewardAprLps.Size()
+		i -= size
+		if _, err := m.MaxEdenRewardAprLps.MarshalTo(dAtA[i:]); err != nil {
+			return 0, err
+		}
+		i = encodeVarintParams(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0x2a
+	{
+		size, err := m.DexRewardsLps.MarshalToSizedBuffer(dAtA[:i])
+		if err != nil {
+			return 0, err
+		}
+		i -= size
+		i = encodeVarintParams(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0x22
+	if len(m.PoolInfos) > 0 {
+		for iNdEx := len(m.PoolInfos) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.PoolInfos[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintParams(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0x1a
+		}
+	}
+	{
+		size := m.RewardPortionForLps.Size()
+		i -= size
+		if _, err := m.RewardPortionForLps.MarshalTo(dAtA[i:]); err != nil {
+			return 0, err
+		}
+		i = encodeVarintParams(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0x12
+	if m.LpIncentives != nil {
+		{
+			size, err := m.LpIncentives.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintParams(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0xa
+	}
 	return len(dAtA) - i, nil
 }
 
@@ -119,6 +223,22 @@ func (m *Params) Size() (n int) {
 	}
 	var l int
 	_ = l
+	if m.LpIncentives != nil {
+		l = m.LpIncentives.Size()
+		n += 1 + l + sovParams(uint64(l))
+	}
+	l = m.RewardPortionForLps.Size()
+	n += 1 + l + sovParams(uint64(l))
+	if len(m.PoolInfos) > 0 {
+		for _, e := range m.PoolInfos {
+			l = e.Size()
+			n += 1 + l + sovParams(uint64(l))
+		}
+	}
+	l = m.DexRewardsLps.Size()
+	n += 1 + l + sovParams(uint64(l))
+	l = m.MaxEdenRewardAprLps.Size()
+	n += 1 + l + sovParams(uint64(l))
 	return n
 }
 
@@ -157,6 +277,177 @@ func (m *Params) Unmarshal(dAtA []byte) error {
 			return fmt.Errorf("proto: Params: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field LpIncentives", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowParams
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthParams
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthParams
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.LpIncentives == nil {
+				m.LpIncentives = &IncentiveInfo{}
+			}
+			if err := m.LpIncentives.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field RewardPortionForLps", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowParams
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthParams
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthParams
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.RewardPortionForLps.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field PoolInfos", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowParams
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthParams
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthParams
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.PoolInfos = append(m.PoolInfos, PoolInfo{})
+			if err := m.PoolInfos[len(m.PoolInfos)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DexRewardsLps", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowParams
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthParams
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthParams
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.DexRewardsLps.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 5:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field MaxEdenRewardAprLps", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowParams
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthParams
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthParams
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.MaxEdenRewardAprLps.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipParams(dAtA[iNdEx:])
