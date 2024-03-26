@@ -93,7 +93,7 @@ message QueryPoolRewardsRequest {
 
 message PoolRewards {
   uint64 pool_id = 1;
-  string rewardsUsd = 2 [
+  string rewards_usd = 2 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
