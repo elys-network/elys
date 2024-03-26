@@ -158,6 +158,7 @@ stop-docker:
 
 GORELEASER_IMAGE := ghcr.io/goreleaser/goreleaser-cross:v$(GO_VERSION)
 COSMWASM_VERSION := $(shell go list -m github.com/CosmWasm/wasmvm | sed 's/.* //')
+ROCKSDB_VERSION := 8.9.1
 
 ## release: Build binaries for all platforms and generate checksums
 ifdef GITHUB_TOKEN
