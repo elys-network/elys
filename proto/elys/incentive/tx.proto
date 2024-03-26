@@ -46,25 +46,25 @@ message MsgWithdrawValidatorCommission {
 message MsgWithdrawValidatorCommissionResponse {}
 
 message MsgUpdateIncentiveParams {
-  string authority                   = 1;
-  string rewardPortionForLps         = 2 [
+  string authority = 1;
+  string reward_portion_for_lps = 2 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
-  string rewardPortionForStakers     = 3 [
+  string reward_portion_for_stakers = 3 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
-  int64 elysStakeSnapInterval       = 4;
-  string maxEdenRewardAprStakers    = 5 [
+  int64 elys_stake_snap_interval = 4;
+  string max_eden_reward_apr_stakers = 5 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
-  string maxEdenRewardAprLps         = 6 [
+  string max_eden_reward_apr_lps = 6 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
-  int64 distributionInterval = 7;
+  int64 distribution_interval = 7;
 }
 
 message MsgUpdateIncentiveParamsResponse {}
