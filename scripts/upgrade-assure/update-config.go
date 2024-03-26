@@ -25,7 +25,7 @@ func updateConfig(homePath string) {
 	}
 
 	// Update config.toml for timeout_broadcast_tx_commit
-	args = []string{"-i", "", "s/^timeout_broadcast_tx_commit =.*/timeout_broadcast_tx_commit = \\\"10s\\\"/", configPath}
+	args = []string{"-i", "", "s/^timeout_broadcast_tx_commit =.*/timeout_broadcast_tx_commit = \\\"30s\\\"/", configPath}
 
 	// Execute the sed command
 	if err := exec.Command("sed", args...).Run(); err != nil {
