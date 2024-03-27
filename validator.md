@@ -226,13 +226,17 @@ The foreign assets for ATOM and USDC would be coming from IBC and this will need
 
 We recommend validators to check the community social channels for foreign denoms and minimum gas prices settings.
 
-### Migrating from goleveldb to rocksdb
+### Migrating from goleveldb to pebbledb or rocksdb
 
-Please follow the instructions on how to install rocksdb on your machine available in the [readme](readme.md) file.
+Please follow the instructions on how to install the binary with pebbledb or rocksdb on your machine available in the [readme](readme.md) file.
 
-The fastest way to migrate from goleveldb to rocksdb is to follow the steps below:
+The fastest way to migrate from goleveldb to pebbledb or rocksdb is to follow the steps below:
 
-- Update the `~/.elys/config/config.toml` file to use rocksdb as the database backend:
+- Update the `~/.elys/config/config.toml` file to use pebbledb or rocksdb as the database backend:
+
+```toml
+db_backend = "pebbledb"
+```
 
 ```toml
 db_backend = "rocksdb"
