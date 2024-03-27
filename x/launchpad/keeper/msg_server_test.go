@@ -183,8 +183,26 @@ func TestMsgServerReturnElys(t *testing.T) {
 	require.Error(t, err)
 }
 
+func TestIsEnabledToken(t *testing.T) {
+	app := simapp.InitElysTestApp(true)
+	ctx := app.BaseApp.NewContext(true, tmproto.Header{})
+	k := app.LaunchpadKeeper
+
+	params := k.GetParams(ctx)
+	require.Len(t, params.SpendingTokens, 3)
+	require.Equal(t, params.SpendingTokens[0], ptypes.BaseCurrency)
+
+	isEnabled := k.IsEnabledToken(ctx, ptypes.BaseCurrency)
+	require.Equal(t, isEnabled, true)
+
+	isEnabled = k.IsEnabledToken(ctx, ptypes.Elys)
+	require.Equal(t, isEnabled, false)
+
+	isEnabled = k.IsEnabledToken(ctx, "uatom")
+	require.Equal(t, isEnabled, true)
+}
+
 // TODO:
-// func (k Keeper) IsEnabledToken(ctx sdk.Context, spendingToken string) bool {
 // func (k Keeper) GenerateOrder(ctx sdk.Context, orderMaker string, spendingToken string, elysAmount math.Int, bonusRate sdk.Dec, price sdk.Dec) types.Purchase {
 // func (k Keeper) CalcBuyElysResult(ctx sdk.Context, sender string, spendingToken string, tokenAmount math.Int) (math.Int, []types.Purchase, error) {
 // func (k Keeper) CalcReturnElysResult(ctx sdk.Context, orderId uint64, returnElysAmount math.Int) (math.Int, error) {
