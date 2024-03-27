@@ -67,15 +67,18 @@ func (k Keeper) BeginBlocker(ctx sdk.Context) {
 		}
 		cacheCtx, write := ctx.CacheContext()
 		coins := sdk.Coins{sdk.NewCoin(ptypes.Elys, order.BonusAmount)}
-		if err := k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, sdk.AccAddress(order.OrderMaker), coins); err != nil {
+		if err := k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, sdk.MustAccAddressFromBech32(order.OrderMaker), coins); err != nil {
+			ctx.Logger().Error("failed to send bonus coins to order maker", "err", err)
 			continue
 		}
 
 		if err := k.commitmentKeeper.DepositLiquidTokensClaimed(cacheCtx, ptypes.Elys, order.BonusAmount, order.OrderMaker); err != nil {
+			ctx.Logger().Error("failed to deposit bonus coins to claimed", "err", err)
 			continue
 		}
 
 		if err := k.commitmentKeeper.ProcessTokenVesting(cacheCtx, ptypes.Elys, order.BonusAmount, order.OrderMaker); err != nil {
+			ctx.Logger().Error("failed to process vesting for elys token", "err", err)
 			continue
 		}
 		write()
