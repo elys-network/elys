@@ -3,14 +3,33 @@ package keeper_test
 import (
 	"testing"
 
+	"github.com/cometbft/cometbft/crypto/ed25519"
 	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 	simapp "github.com/elys-network/elys/app"
 	"github.com/elys-network/elys/x/launchpad/types"
+	oracletypes "github.com/elys-network/elys/x/oracle/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 	"github.com/stretchr/testify/require"
 )
+
+func SetupStableCoinPrices(app *simapp.ElysApp, ctx sdk.Context) {
+	// prices set for USDT and USDC
+	provider := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
+	app.OracleKeeper.SetAssetInfo(ctx, oracletypes.AssetInfo{
+		Denom:   ptypes.BaseCurrency,
+		Display: "USDC",
+		Decimal: 6,
+	})
+	app.OracleKeeper.SetPrice(ctx, oracletypes.Price{
+		Asset:     "USDC",
+		Price:     sdk.NewDec(1),
+		Source:    "elys",
+		Provider:  provider.String(),
+		Timestamp: uint64(ctx.BlockTime().Unix()),
+	})
+}
 
 func TestBonus(t *testing.T) {
 	app := simapp.InitElysTestApp(true)
@@ -123,6 +142,61 @@ func TestQueryModuleBalances(t *testing.T) {
 	require.Equal(t, sdk.Coins(response.Coins).String(), coins.String())
 }
 
+func TestBuyElysEst(t *testing.T) {
+	app := simapp.InitElysTestApp(true)
+	ctx := app.BaseApp.NewContext(true, tmproto.Header{})
+	k := app.LaunchpadKeeper
+	SetupStableCoinPrices(app, ctx)
+
+	coins := sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 1000_000)}
+
+	err := app.BankKeeper.MintCoins(ctx, minttypes.ModuleName, coins)
+	require.NoError(t, err)
+	err = app.BankKeeper.SendCoinsFromModuleToModule(ctx, minttypes.ModuleName, types.ModuleName, coins)
+	require.NoError(t, err)
+
+	response, err := k.BuyElysEst(ctx, &types.QueryBuyElysEstRequest{
+		SpendingToken: ptypes.BaseCurrency,
+		TokenAmount:   sdk.NewInt(1000_000),
+	})
+	require.NoError(t, err)
+	require.Equal(t, response.BonusAmount.String(), "1333333")
+	require.Equal(t, response.ElysAmount.String(), "1333333")
+	require.Len(t, response.Orders, 1)
+	require.Equal(t, response.Orders[0].OrderId, uint64(1))
+	require.Equal(t, response.Orders[0].OrderMaker, "")
+	require.Equal(t, response.Orders[0].SpendingToken, ptypes.BaseCurrency)
+	require.Equal(t, response.Orders[0].TokenAmount.String(), "1000000")
+	require.Equal(t, response.Orders[0].ElysAmount.String(), "1333333")
+	require.Equal(t, response.Orders[0].ReturnedElysAmount.String(), "0")
+	require.Equal(t, response.Orders[0].BonusAmount.String(), "1333333")
+	require.Equal(t, response.Orders[0].VestingStarted, false)
+
+	response, err = k.BuyElysEst(ctx, &types.QueryBuyElysEstRequest{
+		SpendingToken: ptypes.BaseCurrency,
+		TokenAmount:   sdk.NewInt(1000_000_000_000),
+	})
+	require.NoError(t, err)
+	require.Equal(t, response.BonusAmount.String(), "1289999999999")
+	require.Equal(t, response.ElysAmount.String(), "1333333333333")
+	require.Len(t, response.Orders, 2)
+	require.Equal(t, response.Orders[0].OrderId, uint64(1))
+	require.Equal(t, response.Orders[0].OrderMaker, "")
+	require.Equal(t, response.Orders[0].SpendingToken, ptypes.BaseCurrency)
+	require.Equal(t, response.Orders[0].TokenAmount.String(), "675000000000")
+	require.Equal(t, response.Orders[0].ElysAmount.String(), "900000000000")
+	require.Equal(t, response.Orders[0].ReturnedElysAmount.String(), "0")
+	require.Equal(t, response.Orders[0].BonusAmount.String(), "900000000000")
+	require.Equal(t, response.Orders[0].VestingStarted, false)
+	require.Equal(t, response.Orders[1].OrderId, uint64(2))
+	require.Equal(t, response.Orders[1].OrderMaker, "")
+	require.Equal(t, response.Orders[1].SpendingToken, ptypes.BaseCurrency)
+	require.Equal(t, response.Orders[1].TokenAmount.String(), "325000000000")
+	require.Equal(t, response.Orders[1].ElysAmount.String(), "433333333333")
+	require.Equal(t, response.Orders[1].ReturnedElysAmount.String(), "0")
+	require.Equal(t, response.Orders[1].BonusAmount.String(), "389999999999")
+	require.Equal(t, response.Orders[1].VestingStarted, false)
+}
+
 // TODO:
-// func (k Keeper) BuyElysEst(goCtx context.Context, req *types.QueryBuyElysEstRequest) (*types.QueryBuyElysEstResponse, error)
 // func (k Keeper) ReturnElysEst(goCtx context.Context, req *types.QueryReturnElysEstRequest) (*types.QueryReturnElysEstResponse, error)

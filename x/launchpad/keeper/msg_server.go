@@ -37,10 +37,10 @@ func (k Keeper) IsEnabledToken(ctx sdk.Context, spendingToken string) bool {
 	return false
 }
 
-func (k Keeper) GenerateOrder(ctx sdk.Context, orderMaker string, spendingToken string, elysAmount math.Int, bonusRate sdk.Dec, price sdk.Dec) types.Purchase {
+func (k Keeper) GenerateOrder(ctx sdk.Context, orderId uint64, orderMaker string, spendingToken string, elysAmount math.Int, bonusRate sdk.Dec, price sdk.Dec) types.Purchase {
 	params := k.GetParams(ctx)
 	order := types.Purchase{}
-	order.OrderId = k.LastOrderId(ctx) + 1
+	order.OrderId = orderId
 	order.OrderMaker = orderMaker
 	order.SpendingToken = spendingToken
 	order.ElysAmount = elysAmount
@@ -80,6 +80,7 @@ func (k Keeper) CalcBuyElysResult(ctx sdk.Context, sender string, spendingToken 
 	// 80-100% raise bonus 30%
 	soldSoFar := params.SoldAmount
 	purchases := []types.Purchase{}
+	lastOrderId := k.LastOrderId(ctx)
 	for index, raisePercent := range params.BonusInfo.RaisePercents {
 		roundMaxRaise := sdk.NewDecWithPrec(int64(raisePercent), 2).Mul(sdk.NewDecFromInt(params.TotalReserve)).RoundInt()
 		if soldSoFar.LT(roundMaxRaise) {
@@ -87,14 +88,16 @@ func (k Keeper) CalcBuyElysResult(ctx sdk.Context, sender string, spendingToken 
 			bonusRate := sdk.NewDecWithPrec(int64(bonusPercent), 2)
 			if roundMaxRaise.GTE(soldAmount) {
 				roundSellAmount := soldAmount.Sub(soldSoFar)
-				order := k.GenerateOrder(ctx, sender, spendingToken, roundSellAmount, bonusRate, price)
+				order := k.GenerateOrder(ctx, lastOrderId+1, sender, spendingToken, roundSellAmount, bonusRate, price)
 				purchases = append(purchases, order)
+				lastOrderId++
 				break
 			} else {
 				roundSellAmount := roundMaxRaise.Sub(soldSoFar)
-				order := k.GenerateOrder(ctx, sender, spendingToken, roundSellAmount, bonusRate, price)
+				order := k.GenerateOrder(ctx, lastOrderId+1, sender, spendingToken, roundSellAmount, bonusRate, price)
 				purchases = append(purchases, order)
 				soldSoFar = roundMaxRaise
+				lastOrderId++
 			}
 		}
 	}

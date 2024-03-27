@@ -7,7 +7,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
 	commitmentkeeper "github.com/elys-network/elys/x/commitment/keeper"
 
 	epochkeeper "github.com/elys-network/elys/x/epochs/keeper"
@@ -16,11 +15,10 @@ import (
 
 type (
 	Keeper struct {
-		cdc        codec.BinaryCodec
-		storeKey   storetypes.StoreKey
-		memKey     storetypes.StoreKey
-		paramstore paramtypes.Subspace
-		authority  string
+		cdc       codec.BinaryCodec
+		storeKey  storetypes.StoreKey
+		memKey    storetypes.StoreKey
+		authority string
 
 		bankKeeper         types.BankKeeper
 		oracleKeeper       types.OracleKeeper
