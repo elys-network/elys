@@ -17,7 +17,7 @@ func DefaultParams() Params {
 		TotalReserve:       sdk.NewInt(4500000_000000), // 4.5 million
 		SoldAmount:         sdk.NewInt(0),
 		WithdrawAddress:    "",
-		WithdrawnAmount:    sdk.NewCoins(),
+		WithdrawnAmount:    sdk.Coins(nil),
 		LaunchpadStarttime: 1710984623,  // 2024-03-21
 		LaunchpadDuration:  86400 * 100, // 100 days
 		ReturnDuration:     86400 * 180, // 6 months

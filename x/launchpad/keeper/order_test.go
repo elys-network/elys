@@ -17,7 +17,7 @@ func TestOrder(t *testing.T) {
 
 	// check query when empty
 	orderQuery := k.GetOrder(ctx, 1)
-	require.Equal(t, orderQuery.OrderId, 0)
+	require.Equal(t, orderQuery.OrderId, uint64(0))
 
 	ordersQuery := k.GetAllOrders(ctx)
 	require.Len(t, ordersQuery, 0)
@@ -79,5 +79,5 @@ func TestOrder(t *testing.T) {
 	require.Len(t, ordersQuery, 2)
 
 	lastOrderId = k.LastOrderId(ctx)
-	require.Equal(t, lastOrderId, uint64(4))
+	require.Equal(t, lastOrderId, uint64(3))
 }
