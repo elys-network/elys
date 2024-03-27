@@ -26,7 +26,7 @@ message MsgBuyElys {
   ];
 }
 message MsgBuyElysResponse {
-  repeated uint64 order_id = 1;
+  repeated uint64 order_ids = 1;
 }
 
 message MsgReturnElys {

@@ -85241,7 +85241,7 @@ definitions:
   elys.launchpad.MsgBuyElysResponse:
     type: object
     properties:
-      order_id:
+      order_ids:
         type: array
         items:
           type: string

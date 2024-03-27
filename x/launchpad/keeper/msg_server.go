@@ -151,7 +151,14 @@ func (k msgServer) BuyElys(goCtx context.Context, msg *types.MsgBuyElys) (*types
 		return nil, err
 	}
 
-	return &types.MsgBuyElysResponse{}, nil
+	orderIds := []uint64{}
+	for _, order := range orders {
+		orderIds = append(orderIds, order.OrderId)
+	}
+
+	return &types.MsgBuyElysResponse{
+		OrderIds: orderIds,
+	}, nil
 }
 
 func (k Keeper) CalcReturnElysResult(ctx sdk.Context, orderId uint64, returnElysAmount math.Int) (math.Int, error) {
