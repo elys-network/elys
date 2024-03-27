@@ -2,7 +2,6 @@ package keeper
 
 import (
 	"context"
-	"fmt"
 
 	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/math"
@@ -249,36 +248,24 @@ func (k msgServer) WithdrawRaised(goCtx context.Context, msg *types.MsgWithdrawR
 
 	// Once return period is over, can withdraw all
 	returnEndTime := params.LaunchpadStarttime + params.LaunchpadDuration + params.ReturnDuration
-	if returnEndTime < uint64(ctx.BlockTime().Unix()) {
-		addr := sdk.MustAccAddressFromBech32(msg.Sender)
-		err := k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, addr, sdk.Coins(msg.Coins))
-		if err != nil {
-			return nil, err
+	if returnEndTime > uint64(ctx.BlockTime().Unix()) {
+		totalWithdrawAmount := sdk.Coins(params.WithdrawnAmount).Add(msg.Coins...)
+		maxWithdrawAmount := sdk.Coins{}
+		orders := k.GetAllOrders(ctx)
+		for _, order := range orders {
+			orderWithdrawable := sdk.NewDecWithPrec(int64(100-params.MaxReturnPercent), 2).MulInt(order.TokenAmount).RoundInt()
+
+			asset, found := k.assetProfileKeeper.GetEntry(ctx, order.SpendingToken)
+			if !found {
+				return nil, errorsmod.Wrapf(atypes.ErrAssetProfileNotFound, "denom: %s", order.SpendingToken)
+			}
+			coin := sdk.NewCoin(asset.Denom, orderWithdrawable)
+			maxWithdrawAmount = maxWithdrawAmount.Add(coin)
 		}
-	}
 
-	totalWithdrawAmount := sdk.Coins(params.WithdrawnAmount).Add(msg.Coins...)
-	maxWithdrawAmount := sdk.Coins{}
-	orders := k.GetAllOrders(ctx)
-	for _, order := range orders {
-		orderWithdrawable := sdk.NewDecWithPrec(int64(100-params.MaxReturnPercent), 2).MulInt(order.TokenAmount).RoundInt()
-		fmt.Println("order.TokenAmount", order.TokenAmount.String())
-		fmt.Println("sdk.NewDecWithPrec(int64(100-params.MaxReturnPercent), 2)", sdk.NewDecWithPrec(int64(100-params.MaxReturnPercent), 2).String())
-		fmt.Println("orderWithdrawable", orderWithdrawable.String())
-
-		asset, found := k.assetProfileKeeper.GetEntry(ctx, order.SpendingToken)
-		if !found {
-			return nil, errorsmod.Wrapf(atypes.ErrAssetProfileNotFound, "denom: %s", order.SpendingToken)
+		if totalWithdrawAmount.IsAnyGT(maxWithdrawAmount) {
+			return nil, types.ErrExceedMaxWithdrawableAmount
 		}
-		coin := sdk.NewCoin(asset.Denom, orderWithdrawable)
-		maxWithdrawAmount = maxWithdrawAmount.Add(coin)
-	}
-
-	fmt.Println("maxWithdrawAmount", maxWithdrawAmount.String())
-	fmt.Println("totalWithdrawAmount", totalWithdrawAmount.String())
-	fmt.Println("params.WithdrawnAmount", sdk.Coins(params.WithdrawnAmount).String())
-	if totalWithdrawAmount.IsAnyGT(maxWithdrawAmount) {
-		return nil, types.ErrExceedMaxWithdrawableAmount
 	}
 
 	coins := sdk.Coins(msg.Coins)
