@@ -74,6 +74,9 @@ func (oq *Querier) generateEarnPool(ctx sdk.Context, ammPool *types.Pool, filter
 		RewardCoins: rewardCoins,
 		PoolId:      ammPool.PoolId,
 		TotalShares: ammPool.TotalShares,
+		SwapFee: ammPool.PoolParams.SwapFee,
+		FeeDenom: ammPool.PoolParams.FeeDenom,
+		UseOracle: ammPool.PoolParams.UseOracle,
 	}
 }
 
