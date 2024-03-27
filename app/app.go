@@ -986,7 +986,11 @@ func NewElysApp(
 		app.EpochsKeeper,
 		app.StablestakeKeeper,
 		app.TokenomicsKeeper,
+		app.AccountKeeper,
 		app.BankKeeper,
+		authtypes.FeeCollectorName,
+		DexRevenueCollectorName,
+		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 	masterchefModule := masterchefmodule.NewAppModule(appCodec, app.MasterchefKeeper, app.AccountKeeper, app.BankKeeper)
 

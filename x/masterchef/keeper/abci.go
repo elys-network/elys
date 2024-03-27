@@ -14,16 +14,43 @@ import (
 
 // EndBlocker of amm module
 func (k Keeper) EndBlocker(ctx sdk.Context) {
-	// TODO: reward distributions
-	// new reward at this block (eden, usdc)
+	// distribute LP rewards
 	k.ProcessLPRewardDistribution(ctx)
-	// loop external rewards and distribute
-
+	// distribute external rewards
+	k.ProcessExternalRewardsDistribution(ctx)
 	// TODO: calculate APR (for external rewards)
+}
 
-	// TODO: remove expired external incentives
+func (k Keeper) ProcessExternalRewardsDistribution(ctx sdk.Context) {
+	curBlockHeight := sdk.NewInt(ctx.BlockHeight())
 
-	// TODO: add pool external_reward_denoms array
+	externalIncentives := k.GetAllExternalIncentives(ctx)
+	for _, externalIncentive := range externalIncentives {
+		pool, found := k.GetPool(ctx, externalIncentive.PoolId)
+		if !found {
+			continue
+		}
+
+		if externalIncentive.FromBlock < curBlockHeight.Uint64() && curBlockHeight.Uint64() <= externalIncentive.ToBlock {
+			k.UpdateAccPerShare(ctx, externalIncentive.PoolId, ptypes.Eden, externalIncentive.AmountPerBlock)
+
+			hasRewardDenom := false
+			poolRewardDenoms := pool.ExternalRewardDenoms
+			for _, poolRewardDenom := range poolRewardDenoms {
+				if poolRewardDenom == externalIncentive.RewardDenom {
+					hasRewardDenom = true
+				}
+			}
+			if !hasRewardDenom {
+				pool.ExternalRewardDenoms = append(pool.ExternalRewardDenoms, externalIncentive.RewardDenom)
+				k.SetPool(ctx, pool)
+			}
+		}
+
+		if curBlockHeight.Uint64() == externalIncentive.ToBlock {
+			k.RemoveExternalIncentive(ctx, externalIncentive.Id)
+		}
+	}
 }
 
 func (k Keeper) ProcessLPRewardDistribution(ctx sdk.Context) {
