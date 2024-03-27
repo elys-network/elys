@@ -249,4 +249,10 @@ func TestReturnElysEst(t *testing.T) {
 	})
 	require.NoError(t, err)
 	require.Equal(t, resp.Amount.String(), "249999")
+
+	_, err = k.ReturnElysEst(ctx, &types.QueryReturnElysEstRequest{
+		OrderId:    1,
+		ElysAmount: sdk.NewInt(7000_000),
+	})
+	require.Error(t, err)
 }

@@ -199,6 +199,9 @@ func (k msgServer) ReturnElys(goCtx context.Context, msg *types.MsgReturnElys) (
 		return nil, errorsmod.Wrapf(govtypes.ErrInvalidSigner, "expected %s, got %s", order.OrderMaker, msg.Sender)
 	}
 
+	order.ReturnedElysAmount = order.ReturnedElysAmount.Add(msg.ReturnElysAmount)
+	k.SetOrder(ctx, order)
+
 	coins := sdk.Coins{sdk.NewCoin(ptypes.Elys, msg.ReturnElysAmount)}
 	addr := sdk.MustAccAddressFromBech32(msg.Sender)
 	err := k.bankKeeper.SendCoinsFromAccountToModule(ctx, addr, types.ModuleName, coins)
