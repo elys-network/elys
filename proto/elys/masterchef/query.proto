@@ -38,6 +38,14 @@ service Query {
   rpc UserPendingReward(QueryUserPendingRewardRequest) returns (QueryUserPendingRewardResponse) {
     option (google.api.http).get = "/elys-network/elys/masterchef/pending_reward";
   }
+
+  rpc StableStakeApr (QueryStableStakeAprRequest) returns (QueryStableStakeAprResponse) {
+    option (google.api.http).get = "/elys-network/elys/masterchef/stable_stake_apr/{denom}";
+  }
+
+  rpc PoolAprs (QueryPoolAprsRequest) returns (QueryPoolAprsResponse) {
+    option (google.api.http).get = "/elys-network/elys/masterchef/pool_aprs";
+  }
 }
 
 // QueryParamsRequest is request type for the Query/Params RPC method.
@@ -102,5 +110,34 @@ message QueryUserPendingRewardResponse {
   repeated cosmos.base.v1beta1.Coin total_rewards = 2 [
     (gogoproto.nullable) = false,
     (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
+  ];
+}
+
+message QueryStableStakeAprRequest {
+  string denom = 1;
+}
+
+message QueryStableStakeAprResponse {
+  string apr = 1 [
+      (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+      (gogoproto.nullable) = false
+  ]; 
+}
+
+message QueryPoolAprsRequest {
+  repeated uint64 pool_ids = 1;
+}
+
+message QueryPoolAprsResponse {
+  repeated PoolApr data = 1 [
+    (gogoproto.nullable) = false
+  ];
+}
+
+message PoolApr {
+  uint64 pool_id = 1;
+  string apr = 2 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
   ];
 }

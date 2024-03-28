@@ -98,3 +98,28 @@ func (k Keeper) UserPendingReward(goCtx context.Context, req *types.QueryUserPen
 		TotalRewards: totalRewards,
 	}, nil
 }
+
+func (k Keeper) StableStakeApr(goCtx context.Context, req *types.QueryStableStakeAprRequest) (*types.QueryStableStakeAprResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
+	}
+
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	apr, err := k.CalculateStableStakeApr(ctx, req)
+	if err != nil {
+		return nil, err
+	}
+
+	return &types.QueryStableStakeAprResponse{Apr: apr}, nil
+}
+
+func (k Keeper) PoolAprs(goCtx context.Context, req *types.QueryPoolAprsRequest) (*types.QueryPoolAprsResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
+	}
+
+	ctx := sdk.UnwrapSDKContext(goCtx)
+	data := k.CalculatePoolAprs(ctx, req.PoolIds)
+	return &types.QueryPoolAprsResponse{Data: data}, nil
+}
