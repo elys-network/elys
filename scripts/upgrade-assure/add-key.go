@@ -6,12 +6,28 @@ import (
 	"os/exec"
 )
 
-func addKey(cmdPath, name, homePath, keyringBackend string) string {
-	// Command and arguments
-	args := []string{"keys", "add", name, "--home", homePath, "--keyring-backend", keyringBackend, "--output", "json"}
+func addKey(cmdPath, name, mnemonic, homePath, keyringBackend string) string {
+	// Prepare the command
+	args := []string{"keys", "add", name, "--recover", "--home", homePath, "--keyring-backend", keyringBackend, "--output", "json"}
+	cmd := exec.Command(cmdPath, args...)
 
-	// Execute the command
-	output, err := exec.Command(cmdPath, args...).CombinedOutput()
+	// Get the stdin pipe to send the mnemonic
+	stdinPipe, err := cmd.StdinPipe()
+	if err != nil {
+		log.Fatalf(Red+"Failed to create stdin pipe: %v", err)
+	}
+
+	// Write the mnemonic to the stdin pipe
+	go func() {
+		defer stdinPipe.Close()
+		_, err := stdinPipe.Write([]byte(mnemonic + "\n"))
+		if err != nil {
+			log.Fatalf(Red+"Failed to write mnemonic to stdin: %v", err)
+		}
+	}()
+
+	// Run the command and wait for it to finish
+	output, err := cmd.CombinedOutput()
 	if err != nil {
 		log.Fatalf(Red+"Command execution failed: %v", err)
 	}
@@ -23,7 +39,7 @@ func addKey(cmdPath, name, homePath, keyringBackend string) string {
 	}
 
 	// Log the address
-	log.Printf(Yellow+"add key with name %s, home path: %s, keyring backend %s and address %s successfully", name, homePath, keyringBackend, keyOutput.Address)
+	log.Printf(Yellow+"Added key with name %s, home path: %s, keyring backend %s and address %s successfully", name, homePath, keyringBackend, keyOutput.Address)
 
 	return keyOutput.Address
 }

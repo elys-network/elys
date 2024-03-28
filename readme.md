@@ -43,7 +43,9 @@ git checkout <version>
 sudo apt-get install --yes make
 ```
 
-5. Ensure that you have RocksDB installed on your machine. On Ubuntu, you can install RocksDB using the following suite of commands:
+5. **Optional**: Use _RocksDB_ instead of _pebbledb_
+
+Ensure that you have RocksDB installed on your machine. On Ubuntu, you can install RocksDB using the following suite of commands:
 
 ```bash
 # set rocks db version
@@ -68,9 +70,15 @@ sudo make install-shared INSTALL_PATH=/usr
 rm -rf /tmp/rocksdb-${ROCKSDB_VERSION} /tmp/v${ROCKSDB_VERSION}.tar.gz
 ```
 
+In order to build the binary with RocksDB, you need to run the following command:
+
+```bash
+ROCKSDB=1 make build
+```
+
 Note: RocksDB is only required for Linux machines. For macOS, you can continue without installing RocksDB.
 
-When running `make build`, if you are getting this error:
+When running `ROCKSDB=1 make build`, if you are getting this error:
 
 ```bash
 elysd: error while loading shared libraries: librocksdb.so.8.9: cannot open shared object file: No such file or directory

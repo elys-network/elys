@@ -15,7 +15,7 @@ func waitForNodeToStart(node string) {
 			log.Fatalf(Red + "Node did not start within the specified timeout")
 		}
 		log.Println(Yellow + "Waiting for node to start...")
-		time.Sleep(5 * time.Second)
+		time.Sleep(60 * time.Second)
 	}
 	log.Println(Yellow + "Node is running.")
 }

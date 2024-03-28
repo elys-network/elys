@@ -40066,7 +40066,7 @@ paths:
                     pool_id:
                       type: string
                       format: uint64
-                    rewardsUsd:
+                    rewards_usd:
                       type: string
                     reward_coins:
                       type: array
@@ -85303,7 +85303,7 @@ definitions:
       pool_id:
         type: string
         format: uint64
-      rewardsUsd:
+      rewards_usd:
         type: string
       reward_coins:
         type: array
@@ -85522,7 +85522,7 @@ definitions:
             pool_id:
               type: string
               format: uint64
-            rewardsUsd:
+            rewards_usd:
               type: string
             reward_coins:
               type: array

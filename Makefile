@@ -6,12 +6,15 @@ BINARY?=$(NAME)d
 COMMIT:=$(shell git log -1 --format='%H')
 VERSION:=$(shell git describe --tags --match 'v*' --abbrev=8 | sed 's/-g/-/' | sed 's/-[0-9]*-/-/')
 GOFLAGS:=""
-GOTAGS:=ledger
 
-# add rocksdb if using linux
-ifeq ($(shell uname), Linux)
-	GOTAGS+=rocksdb
+# if rocksdb env variable is set, add the tag
+ifdef ROCKSDB
+	DBENGINE=rocksdb
+else
+	DBENGINE=pebbledb
 endif
+
+GOTAGS:=ledger,$(DBENGINE)
 
 SHELL := /bin/bash # Use bash syntax
 
@@ -43,7 +46,9 @@ ldflags = -X github.com/cosmos/cosmos-sdk/version.Name=$(NAME) \
 		  -X github.com/cosmos/cosmos-sdk/version.ServerName=$(BINARY) \
 		  -X github.com/cosmos/cosmos-sdk/version.ClientName=$(BINARY) \
 		  -X github.com/cosmos/cosmos-sdk/version.Version=$(VERSION) \
-		  -X github.com/cosmos/cosmos-sdk/version.Commit=$(COMMIT)
+		  -X github.com/cosmos/cosmos-sdk/version.Commit=$(COMMIT) \
+		  -X github.com/cosmos/cosmos-sdk/types.DBBackend=$(DBENGINE) \
+		  -X github.com/cosmos/cosmos-sdk/version.BuildTags=netgo,ledger,muslc,osusergo,$(DBENGINE)
 BUILD_FLAGS := -ldflags '$(ldflags)' -tags '$(GOTAGS)'
 BUILD_FOLDER = ./build
 
@@ -158,6 +163,7 @@ stop-docker:
 
 GORELEASER_IMAGE := ghcr.io/goreleaser/goreleaser-cross:v$(GO_VERSION)
 COSMWASM_VERSION := $(shell go list -m github.com/CosmWasm/wasmvm | sed 's/.* //')
+ROCKSDB_VERSION := 8.9.1
 
 ## release: Build binaries for all platforms and generate checksums
 ifdef GITHUB_TOKEN
