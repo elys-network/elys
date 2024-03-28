@@ -14,6 +14,8 @@ service Query {
   rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
     option (google.api.http).get = "/elys-network/elys/estaking/params";
   }
+  // TODO: query staking reward from EdenB staking
+  // TODO: query staking reward from Eden staking
 }
 
 // QueryParamsRequest is request type for the Query/Params RPC method.

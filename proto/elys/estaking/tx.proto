@@ -4,4 +4,8 @@ package elys.estaking;
 option go_package = "github.com/elys-network/elys/x/estaking/types";
 
 // Msg defines the Msg service.
-service Msg {}
+service Msg {
+  // TODO: update params
+  // TODO: claim reward from EdenB commitment
+  // TODO: claim reward from Eden commitment
+}
