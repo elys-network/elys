@@ -57,6 +57,9 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/crisis"
 	crisiskeeper "github.com/cosmos/cosmos-sdk/x/crisis/keeper"
 	crisistypes "github.com/cosmos/cosmos-sdk/x/crisis/types"
+	distr "github.com/cosmos/cosmos-sdk/x/distribution"
+	distrkeeper "github.com/cosmos/cosmos-sdk/x/distribution/keeper"
+	distrtypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
 	"github.com/cosmos/cosmos-sdk/x/evidence"
 	evidencekeeper "github.com/cosmos/cosmos-sdk/x/evidence/keeper"
 	evidencetypes "github.com/cosmos/cosmos-sdk/x/evidence/types"
@@ -129,6 +132,8 @@ import (
 	epochsmodule "github.com/elys-network/elys/x/epochs"
 	epochsmodulekeeper "github.com/elys-network/elys/x/epochs/keeper"
 	epochsmoduletypes "github.com/elys-network/elys/x/epochs/types"
+	exdistr "github.com/elys-network/elys/x/estaking/modules/distribution"
+	exstaking "github.com/elys-network/elys/x/estaking/modules/staking"
 	oraclemodule "github.com/elys-network/elys/x/oracle"
 	oraclekeeper "github.com/elys-network/elys/x/oracle/keeper"
 	oracletypes "github.com/elys-network/elys/x/oracle/types"
@@ -260,6 +265,7 @@ var (
 		capability.AppModuleBasic{},
 		staking.AppModuleBasic{},
 		mint.AppModuleBasic{},
+		distr.AppModuleBasic{},
 		gov.NewAppModuleBasic(getGovProposalHandlers()),
 		params.AppModuleBasic{},
 		crisis.AppModuleBasic{},
@@ -300,6 +306,7 @@ var (
 	// module account permissions
 	maccPerms = map[string][]string{
 		authtypes.FeeCollectorName:       nil,
+		distrtypes.ModuleName:            nil,
 		DexRevenueCollectorName:          nil,
 		icatypes.ModuleName:              nil,
 		ibcfeetypes.ModuleName:           nil,
@@ -357,6 +364,7 @@ type ElysApp struct {
 	StakingKeeper         *stakingkeeper.Keeper
 	SlashingKeeper        slashingkeeper.Keeper
 	MintKeeper            mintkeeper.Keeper
+	DistrKeeper           distrkeeper.Keeper
 	GovKeeper             govkeeper.Keeper
 	CrisisKeeper          *crisiskeeper.Keeper
 	UpgradeKeeper         *upgradekeeper.Keeper
@@ -466,6 +474,7 @@ func NewElysApp(
 		ibctransfertypes.StoreKey, icahosttypes.StoreKey, capabilitytypes.StoreKey, group.StoreKey,
 		ibcfeetypes.StoreKey,
 		icacontrollertypes.StoreKey,
+		distrtypes.StoreKey,
 		wasmmodule.StoreKey,
 		consensusparamtypes.StoreKey,
 		epochsmoduletypes.StoreKey,
@@ -582,6 +591,16 @@ func NewElysApp(
 		app.StakingKeeper,
 		app.AccountKeeper,
 		app.BankKeeper,
+		authtypes.FeeCollectorName,
+		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+	)
+
+	app.DistrKeeper = distrkeeper.NewKeeper(
+		appCodec,
+		keys[distrtypes.StoreKey],
+		app.AccountKeeper,
+		app.BankKeeper,
+		app.StakingKeeper,
 		authtypes.FeeCollectorName,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
@@ -875,7 +894,7 @@ func NewElysApp(
 		app.AccountKeeper,
 		app.BankKeeper,
 		app.StakingKeeper,
-		nil,
+		distrkeeper.NewQuerier(app.DistrKeeper),
 		app.IBCFeeKeeper, // ISC4 Wrapper: fee IBC middleware
 		app.IBCKeeper.ChannelKeeper,
 		&app.IBCKeeper.PortKeeper,
@@ -1035,6 +1054,7 @@ func NewElysApp(
 			// insert staking hooks receivers here
 			app.SlashingKeeper.Hooks(),
 			app.IncentiveKeeper.StakingHooks(),
+			app.DistrKeeper.Hooks(),
 		),
 	)
 
@@ -1099,7 +1119,8 @@ func NewElysApp(
 		gov.NewAppModule(appCodec, &app.GovKeeper, app.AccountKeeper, app.BankKeeper, app.GetSubspace(govtypes.ModuleName)),
 		mint.NewAppModule(appCodec, app.MintKeeper, app.AccountKeeper, nil, app.GetSubspace(minttypes.ModuleName)),
 		slashing.NewAppModule(appCodec, app.SlashingKeeper, app.AccountKeeper, app.BankKeeper, app.StakingKeeper, app.GetSubspace(slashingtypes.ModuleName)),
-		staking.NewAppModule(appCodec, app.StakingKeeper, app.AccountKeeper, app.BankKeeper, app.GetSubspace(stakingtypes.ModuleName)),
+		exdistr.NewAppModule(appCodec, app.DistrKeeper, app.AccountKeeper, app.BankKeeper, app.StakingKeeper, app.GetSubspace(distrtypes.ModuleName)),
+		exstaking.NewAppModule(appCodec, app.StakingKeeper, app.AccountKeeper, app.BankKeeper, app.GetSubspace(stakingtypes.ModuleName)),
 		upgrade.NewAppModule(app.UpgradeKeeper),
 		evidence.NewAppModule(app.EvidenceKeeper),
 		consensus.NewAppModule(appCodec, app.ConsensusParamsKeeper),
@@ -1139,6 +1160,7 @@ func NewElysApp(
 		// Note: epochs' begin should be "real" start of epochs, we keep epochs beginblock at the beginning
 		epochsmoduletypes.ModuleName,
 		minttypes.ModuleName,
+		distrtypes.ModuleName,
 		stablestaketypes.ModuleName,
 		incentivemoduletypes.ModuleName,
 		slashingtypes.ModuleName,
@@ -1189,6 +1211,7 @@ func NewElysApp(
 		capabilitytypes.ModuleName,
 		authtypes.ModuleName,
 		banktypes.ModuleName,
+		distrtypes.ModuleName,
 		stablestaketypes.ModuleName,
 		incentivemoduletypes.ModuleName,
 		slashingtypes.ModuleName,
@@ -1229,6 +1252,7 @@ func NewElysApp(
 		capabilitytypes.ModuleName,
 		authtypes.ModuleName,
 		banktypes.ModuleName,
+		distrtypes.ModuleName,
 		epochsmoduletypes.ModuleName,
 		stablestaketypes.ModuleName,
 		incentivemoduletypes.ModuleName,
@@ -1541,6 +1565,7 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(banktypes.ModuleName)
 	paramsKeeper.Subspace(stakingtypes.ModuleName)
 	paramsKeeper.Subspace(minttypes.ModuleName)
+	paramsKeeper.Subspace(distrtypes.ModuleName)
 	paramsKeeper.Subspace(slashingtypes.ModuleName)
 	paramsKeeper.Subspace(govtypes.ModuleName).WithKeyTable(govv1.ParamKeyTable())
 	paramsKeeper.Subspace(crisistypes.ModuleName)
