@@ -7,8 +7,24 @@ option go_package = "github.com/elys-network/elys/x/masterchef/types";
 
 // Msg defines the Msg service.
 service Msg {
+    rpc AddExternalRewardDenom (MsgAddExternalRewardDenom) returns (MsgAddExternalRewardDenomResponse);
     rpc AddExternalIncentive (MsgAddExternalIncentive) returns (MsgAddExternalIncentiveResponse);
+    rpc UpdateIncentiveParams(MsgUpdateIncentiveParams) returns (MsgUpdateIncentiveParamsResponse);
+    rpc UpdatePoolMultipliers(MsgUpdatePoolMultipliers) returns (MsgUpdatePoolMultipliersResponse);
     rpc ClaimRewards (MsgClaimRewards) returns (MsgClaimRewardsResponse);
+}
+
+message MsgAddExternalRewardDenom {
+    string authority = 1;
+    string reward_denom = 2;
+    string min_amount = 3 [
+        (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+        (gogoproto.nullable) = false
+    ]; 
+    bool supported = 4;
+}
+
+message MsgAddExternalRewardDenomResponse {
 }
 
 message MsgAddExternalIncentive {
@@ -23,6 +39,34 @@ message MsgAddExternalIncentive {
 
 message MsgAddExternalIncentiveResponse {
 }
+
+message MsgUpdateIncentiveParams {
+  string authority                   = 1;
+  string reward_portion_for_lps         = 2 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  string max_eden_reward_apr_lps         = 3 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message MsgUpdateIncentiveParamsResponse {}
+
+message PoolMultiplier {
+  uint64 pool_id = 1;
+  string multiplier = 2 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message MsgUpdatePoolMultipliers {
+  string authority = 1;
+  repeated PoolMultiplier pool_multipliers = 2 [ (gogoproto.nullable) = false ];
+}
+message MsgUpdatePoolMultipliersResponse {}
 
 message MsgClaimRewards {
     string sender = 1;

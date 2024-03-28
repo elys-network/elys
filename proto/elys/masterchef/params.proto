@@ -31,4 +31,15 @@ message Params {
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
+
+  repeated SupportedRewardDenom supported_reward_denoms = 6;
+}
+
+
+message SupportedRewardDenom {
+  string denom = 1;
+  string min_amount = 2 [
+      (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+      (gogoproto.nullable) = false
+  ]; 
 }

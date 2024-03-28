@@ -41314,6 +41314,15 @@ paths:
                   max_eden_reward_apr_lps:
                     type: string
                     title: Maximum eden reward apr for lps - [0 - 0.3]
+                  supported_reward_denoms:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        denom:
+                          type: string
+                        min_amount:
+                          type: string
             description: >-
               QueryParamsResponse is response type for the Query/Params RPC
               method.
@@ -41412,6 +41421,54 @@ paths:
           in: query
           required: false
           type: string
+      tags:
+        - Query
+  /elys-network/elys/masterchef/pool_aprs:
+    get:
+      operationId: ElysMasterchefPoolAprs
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    pool_id:
+                      type: string
+                      format: uint64
+                    apr:
+                      type: string
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: pool_ids
+          in: query
+          required: false
+          type: array
+          items:
+            type: string
+            format: uint64
+          collectionFormat: multi
       tags:
         - Query
   /elys-network/elys/masterchef/pool_info:
@@ -41532,6 +41589,42 @@ paths:
         - name: reward_denom
           in: query
           required: false
+          type: string
+      tags:
+        - Query
+  /elys-network/elys/masterchef/stable_stake_apr/{denom}:
+    get:
+      operationId: ElysMasterchefStableStakeApr
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              apr:
+                type: string
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: denom
+          in: path
+          required: true
           type: string
       tags:
         - Query
@@ -85984,7 +86077,13 @@ definitions:
     title: Incentive Info
   elys.masterchef.MsgAddExternalIncentiveResponse:
     type: object
+  elys.masterchef.MsgAddExternalRewardDenomResponse:
+    type: object
   elys.masterchef.MsgClaimRewardsResponse:
+    type: object
+  elys.masterchef.MsgUpdateIncentiveParamsResponse:
+    type: object
+  elys.masterchef.MsgUpdatePoolMultipliersResponse:
     type: object
   elys.masterchef.Params:
     type: object
@@ -86067,7 +86166,24 @@ definitions:
       max_eden_reward_apr_lps:
         type: string
         title: Maximum eden reward apr for lps - [0 - 0.3]
+      supported_reward_denoms:
+        type: array
+        items:
+          type: object
+          properties:
+            denom:
+              type: string
+            min_amount:
+              type: string
     description: Params defines the parameters for the module.
+  elys.masterchef.PoolApr:
+    type: object
+    properties:
+      pool_id:
+        type: string
+        format: uint64
+      apr:
+        type: string
   elys.masterchef.PoolInfo:
     type: object
     properties:
@@ -86102,6 +86218,14 @@ definitions:
           type: string
         title: external reward denoms on the pool
     title: Pool Info
+  elys.masterchef.PoolMultiplier:
+    type: object
+    properties:
+      pool_id:
+        type: string
+        format: uint64
+      multiplier:
+        type: string
   elys.masterchef.PoolRewardInfo:
     type: object
     properties:
@@ -86223,7 +86347,29 @@ definitions:
           max_eden_reward_apr_lps:
             type: string
             title: Maximum eden reward apr for lps - [0 - 0.3]
+          supported_reward_denoms:
+            type: array
+            items:
+              type: object
+              properties:
+                denom:
+                  type: string
+                min_amount:
+                  type: string
     description: QueryParamsResponse is response type for the Query/Params RPC method.
+  elys.masterchef.QueryPoolAprsResponse:
+    type: object
+    properties:
+      data:
+        type: array
+        items:
+          type: object
+          properties:
+            pool_id:
+              type: string
+              format: uint64
+            apr:
+              type: string
   elys.masterchef.QueryPoolInfoResponse:
     type: object
     properties:
@@ -86277,6 +86423,11 @@ definitions:
           last_updated_block:
             type: string
             format: uint64
+  elys.masterchef.QueryStableStakeAprResponse:
+    type: object
+    properties:
+      apr:
+        type: string
   elys.masterchef.QueryUserPendingRewardResponse:
     type: object
     properties:
@@ -86356,6 +86507,13 @@ definitions:
 
             NOTE: The amount field is an Int which implements the custom method
             signatures required by gogoproto.
+  elys.masterchef.SupportedRewardDenom:
+    type: object
+    properties:
+      denom:
+        type: string
+      min_amount:
+        type: string
   elys.masterchef.UserRewardInfo:
     type: object
     properties:
