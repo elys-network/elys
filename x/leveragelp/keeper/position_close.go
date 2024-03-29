@@ -78,7 +78,7 @@ func (k Keeper) CloseLong(ctx sdk.Context, msg *types.MsgClose) (*types.Position
 
 	// If lpAmount is lower than zero, close full amount
 	lpAmount := msg.LpAmount
-	if lpAmount.LTE(sdk.ZeroInt()) {
+	if lpAmount.IsNil() || lpAmount.LTE(sdk.ZeroInt()) {
 		lpAmount = position.LeveragedLpAmount
 	}
 
