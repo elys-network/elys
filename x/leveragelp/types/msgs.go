@@ -61,13 +61,14 @@ func (msg *MsgClose) ValidateBasic() error {
 	return nil
 }
 
-func NewMsgOpen(creator string, collateralAsset string, collateralAmount math.Int, ammPoolId uint64, leverage sdk.Dec) *MsgOpen {
+func NewMsgOpen(creator string, collateralAsset string, collateralAmount math.Int, ammPoolId uint64, leverage sdk.Dec, stopLossPrice sdk.Dec) *MsgOpen {
 	return &MsgOpen{
 		Creator:          creator,
 		CollateralAsset:  collateralAsset,
 		CollateralAmount: collateralAmount,
 		AmmPoolId:        ammPoolId,
 		Leverage:         leverage,
+		StopLossPrice:    stopLossPrice,
 	}
 }
 

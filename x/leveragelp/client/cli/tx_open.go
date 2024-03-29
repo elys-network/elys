@@ -14,10 +14,10 @@ import (
 
 func CmdOpen() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:     "open [leverage] [collateral-asset] [collateral-amount] [amm-pool-id] [flags]",
+		Use:     "open [leverage] [collateral-asset] [collateral-amount] [amm-pool-id] [stop-loss-price] [flags]",
 		Short:   "Open leveragelp position",
 		Example: `elysd tx leveragelp open 5 uusdc 100000000 1 --from=treasury --keyring-backend=test --chain-id=elystestnet-1 --yes --gas=1000000`,
-		Args:    cobra.ExactArgs(4),
+		Args:    cobra.ExactArgs(5),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
@@ -45,12 +45,18 @@ func CmdOpen() *cobra.Command {
 				return err
 			}
 
+			stopLossPrice, err := sdk.NewDecFromStr(args[4])
+			if err != nil {
+				return err
+			}
+
 			msg := types.NewMsgOpen(
 				signer.String(),
 				collateralAsset,
 				collateralAmount,
 				uint64(ammPoolId),
 				leverage,
+				stopLossPrice,
 			)
 
 			if err := msg.ValidateBasic(); err != nil {
