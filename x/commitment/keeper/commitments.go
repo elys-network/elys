@@ -115,6 +115,12 @@ func (k Keeper) BurnEdenBoost(ctx sdk.Context, creator string, denom string, amo
 	// Get the Commitments for the creator
 	commitments := k.GetCommitments(ctx, creator)
 
+	addr := sdk.MustAccAddressFromBech32(creator)
+	err := k.hooks.BeforeEdenBCommitChange(ctx, addr)
+	if err != nil {
+		return commitments, err
+	}
+
 	// if deduction amount is zero
 	if amount.Equal(sdk.ZeroInt()) {
 		return commitments, nil
@@ -126,7 +132,7 @@ func (k Keeper) BurnEdenBoost(ctx sdk.Context, creator string, denom string, amo
 	if rewardUnclaimed.LT(unclaimedRemovalAmount) {
 		unclaimedRemovalAmount = rewardUnclaimed
 	}
-	err := commitments.SubRewardsUnclaimed(sdk.NewCoin(denom, unclaimedRemovalAmount))
+	err = commitments.SubRewardsUnclaimed(sdk.NewCoin(denom, unclaimedRemovalAmount))
 	if err != nil {
 		return types.Commitments{}, err
 	}
@@ -161,6 +167,11 @@ func (k Keeper) BurnEdenBoost(ctx sdk.Context, creator string, denom string, amo
 	if err != nil {
 		return types.Commitments{}, err
 	}
+
+	err = k.hooks.CommitmentChanged(ctx, creator, sdk.Coins{sdk.NewCoin(denom, amount)})
+	if err != nil {
+		return types.Commitments{}, err
+	}
 	return commitments, nil
 }
 
@@ -172,7 +183,10 @@ func (k Keeper) HandleWithdrawFromCommitment(ctx sdk.Context, commitments *types
 	k.SetCommitments(ctx, *commitments)
 
 	// Emit Hook commitment changed
-	k.AfterCommitmentChange(ctx, commitments.Creator, amount)
+	err := k.AfterCommitmentChange(ctx, commitments.Creator, amount)
+	if err != nil {
+		return err
+	}
 
 	withdrawCoins := amount.
 		Sub(sdk.NewCoin(ptypes.Eden, edenAmount)).
@@ -251,7 +265,10 @@ func (k Keeper) BeforeDelegationCreated(ctx sdk.Context, delegator string, valid
 		k.SetCommitments(ctx, commitments)
 
 		// Emit Hook commitment changed
-		k.AfterCommitmentChange(ctx, delegator, sdk.Coins{})
+		err := k.AfterCommitmentChange(ctx, delegator, sdk.Coins{})
+		if err != nil {
+			return err
+		}
 
 		// Emit blockchain event
 		ctx.EventManager().EmitEvent(

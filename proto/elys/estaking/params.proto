@@ -2,6 +2,7 @@ syntax = "proto3";
 package elys.estaking;
 
 import "gogoproto/gogo.proto";
+import "elys/estaking/incentive.proto";
 
 option go_package = "github.com/elys-network/elys/x/estaking/types";
 

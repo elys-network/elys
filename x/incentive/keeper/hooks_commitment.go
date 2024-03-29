@@ -6,12 +6,14 @@ import (
 )
 
 // Process commitmentChanged hook
-func (k Keeper) CommitmentChanged(ctx sdk.Context, creator string, amount sdk.Coins) {
+func (k Keeper) CommitmentChanged(ctx sdk.Context, creator string, amount sdk.Coins) error {
+	return nil
 }
 
 // Process eden uncommitted hook
-func (k Keeper) EdenUncommitted(ctx sdk.Context, creator string, amount sdk.Coin) {
+func (k Keeper) EdenUncommitted(ctx sdk.Context, creator string, amount sdk.Coin) error {
 	k.BurnEdenBFromEdenUncommitted(ctx, creator, amount.Amount)
+	return nil
 }
 
 // ___________________________________________________________________________________________________
@@ -29,11 +31,27 @@ func (k Keeper) CommitmentHooks() CommitmentHooks {
 }
 
 // CommitmentChanged implements CommentmentHook
-func (h CommitmentHooks) CommitmentChanged(ctx sdk.Context, creator string, amount sdk.Coins) {
-	h.k.CommitmentChanged(ctx, creator, amount)
+func (h CommitmentHooks) CommitmentChanged(ctx sdk.Context, creator string, amount sdk.Coins) error {
+	return h.k.CommitmentChanged(ctx, creator, amount)
 }
 
 // EdenUncommitted implements EdenUncommitted
-func (h CommitmentHooks) EdenUncommitted(ctx sdk.Context, creator string, amount sdk.Coin) {
-	h.k.EdenUncommitted(ctx, creator, amount)
+func (h CommitmentHooks) EdenUncommitted(ctx sdk.Context, creator string, amount sdk.Coin) error {
+	return h.k.EdenUncommitted(ctx, creator, amount)
+}
+
+func (h CommitmentHooks) BeforeEdenInitialCommit(ctx sdk.Context, addr sdk.AccAddress) error {
+	return nil
+}
+
+func (h CommitmentHooks) BeforeEdenBInitialCommit(ctx sdk.Context, addr sdk.AccAddress) error {
+	return nil
+}
+
+func (h CommitmentHooks) BeforeEdenCommitChange(ctx sdk.Context, addr sdk.AccAddress) error {
+	return nil
+}
+
+func (h CommitmentHooks) BeforeEdenBCommitChange(ctx sdk.Context, addr sdk.AccAddress) error {
+	return nil
 }

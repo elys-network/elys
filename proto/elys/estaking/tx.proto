@@ -1,11 +1,41 @@
 syntax = "proto3";
 package elys.estaking;
 
+import "gogoproto/gogo.proto";
+import "cosmos/base/v1beta1/coin.proto";
+import "elys/estaking/params.proto";
+
 option go_package = "github.com/elys-network/elys/x/estaking/types";
 
 // Msg defines the Msg service.
 service Msg {
-  // TODO: update params
-  // TODO: claim reward from EdenB commitment
-  // TODO: claim reward from Eden commitment
+  // UpdateParams defines a governance operation for updating the x/distribution
+  // module parameters. The authority is defined in the keeper.
+  rpc UpdateParams(MsgUpdateParams) returns (MsgUpdateParamsResponse);
+
+  // WithdrawReward defines a method to withdraw rewards of delegator from a single validator.
+  rpc WithdrawReward(MsgWithdrawReward) returns (MsgWithdrawRewardResponse);
+}
+
+// MsgUpdateParams is the Msg/UpdateParams request type.
+message MsgUpdateParams {
+  string authority = 1;
+  Params params = 2 [ (gogoproto.nullable) = false ];
+}
+
+// MsgUpdateParamsResponse defines the response structure for executing a MsgUpdateParams message.
+message MsgUpdateParamsResponse {}
+
+// MsgWithdrawReward represents delegation withdrawal to a delegator from a single validator.
+message MsgWithdrawReward {
+  string delegator_address = 1;
+  string validator_address = 2;
+}
+
+// MsgWithdrawRewardResponse defines the Msg/WithdrawDelegatorReward response type.
+message MsgWithdrawRewardResponse {
+  repeated cosmos.base.v1beta1.Coin amount = 1 [
+    (gogoproto.nullable)     = false,
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
+  ];
 }

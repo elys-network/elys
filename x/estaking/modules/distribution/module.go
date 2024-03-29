@@ -11,8 +11,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/distribution/exported"
 	"github.com/cosmos/cosmos-sdk/x/distribution/keeper"
 	distrtypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
-	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
+	estakingkeeper "github.com/elys-network/elys/x/estaking/keeper"
 
 	abci "github.com/cometbft/cometbft/abci/types"
 )
@@ -33,10 +33,10 @@ type AppModule struct {
 	// embed the Cosmos SDK's x/distribution AppModule
 	distr.AppModule
 
-	keeper        keeper.Keeper
-	accountKeeper distrtypes.AccountKeeper
-	bankKeeper    distrtypes.BankKeeper
-	stakingKeeper stakingkeeper.Keeper
+	keeper         keeper.Keeper
+	accountKeeper  distrtypes.AccountKeeper
+	bankKeeper     distrtypes.BankKeeper
+	estakingKeeper *estakingkeeper.Keeper
 
 	feeCollectorName string
 }
@@ -45,7 +45,7 @@ type AppModule struct {
 // AppModule constructor.
 func NewAppModule(
 	cdc codec.Codec, keeper keeper.Keeper, ak distrtypes.AccountKeeper,
-	bk distrtypes.BankKeeper, sk stakingkeeper.Keeper, feeCollectorName string, subspace exported.Subspace,
+	bk distrtypes.BankKeeper, sk *estakingkeeper.Keeper, feeCollectorName string, subspace exported.Subspace,
 ) AppModule {
 	distrAppMod := distr.NewAppModule(cdc, keeper, ak, bk, sk, subspace)
 	return AppModule{
@@ -53,7 +53,7 @@ func NewAppModule(
 		keeper:           keeper,
 		accountKeeper:    ak,
 		bankKeeper:       bk,
-		stakingKeeper:    sk,
+		estakingKeeper:   sk,
 		feeCollectorName: feeCollectorName,
 	}
 }
@@ -74,19 +74,12 @@ func (am AppModule) BeginBlock(ctx sdk.Context, req abci.RequestBeginBlock) {
 func (am AppModule) AllocateTokens(
 	ctx sdk.Context,
 ) {
-	// TODO: Allocate tokens to Eden validator
-	// TODO: Allocate tokens to EdenB validator
-
-	// temporary workaround to keep CanWithdrawInvariant happy
-	// general discussions here: https://github.com/cosmos/cosmos-sdk/issues/2906#issuecomment-441867634
-	feePool := am.keeper.GetFeePool(ctx)
-	vs := am.stakingKeeper.GetValidatorSet()
-	totalBondedTokens := vs.TotalBondedTokens(ctx)
-	if totalBondedTokens.IsZero() {
-		feePool.CommunityPool = feePool.CommunityPool.Add(feesCollected...)
-		am.keeper.SetFeePool(ctx, feePool)
-		return
-	}
+	// fetch and clear the collected fees for distribution, since this is
+	// called in BeginBlock, collected fees will be from the previous block
+	// (and distributed to the current representatives)
+	feeCollector := am.accountKeeper.GetModuleAccount(ctx, am.feeCollectorName)
+	feesCollectedInt := am.bankKeeper.GetAllBalances(ctx, feeCollector.GetAddress())
+	feesCollected := sdk.NewDecCoinsFromCoins(feesCollectedInt...)
 
 	// calculate the fraction allocated to representatives by subtracting the community tax.
 	// e.g. if community tax is 0.02, representatives fraction will be 0.98 (2% goes to the community pool and the rest to the representatives)
@@ -94,8 +87,10 @@ func (am AppModule) AllocateTokens(
 	communityTax := am.keeper.GetCommunityTax(ctx)
 	representativesFraction := sdk.OneDec().Sub(communityTax)
 
+	totalBondedTokens := am.estakingKeeper.TotalBondedTokens(ctx)
+
 	// allocate tokens proportionally to representatives voting power
-	vs.IterateBondedValidatorsByPower(ctx, func(_ int64, validator stakingtypes.ValidatorI) bool {
+	am.estakingKeeper.IterateBondedValidatorsByPower(ctx, func(_ int64, validator stakingtypes.ValidatorI) bool {
 		// we get this validator's percentage of the total power by dividing their tokens by the total bonded tokens
 		powerFraction := sdk.NewDecFromInt(validator.GetTokens()).QuoTruncate(sdk.NewDecFromInt(totalBondedTokens))
 		// we truncate here again, which means that the reward will be slightly lower than it should be
@@ -106,8 +101,8 @@ func (am AppModule) AllocateTokens(
 		return false
 	})
 
-	// allocate community funding
-	// due to the 3 truncations above, remaining sent to the community pool will be slightly more than it should be. This is OK
+	// temporary workaround to keep CanWithdrawInvariant happy
+	feePool := am.keeper.GetFeePool(ctx)
 	feePool.CommunityPool = feePool.CommunityPool.Add(remaining...)
 	am.keeper.SetFeePool(ctx, feePool)
 }

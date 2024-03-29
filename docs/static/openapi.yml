@@ -39682,6 +39682,38 @@ paths:
               params:
                 description: params holds all the parameters of this module.
                 type: object
+                properties:
+                  stake_incentives:
+                    type: object
+                    properties:
+                      eden_amount_per_year:
+                        type: string
+                        title: reward amount in eden for 1 year
+                      distribution_start_block:
+                        type: string
+                        title: starting block height of the distribution
+                      total_blocks_per_year:
+                        type: string
+                        title: distribution duration - block number per year
+                      max_eden_per_allocation:
+                        type: string
+                        title: >-
+                          maximum eden allocation per day that won't exceed 30%
+                          apr
+                    title: Incentive Info
+                  eden_commit_val:
+                    type: string
+                  edenb_commit_val:
+                    type: string
+                  reward_portion_for_stakers:
+                    type: string
+                    description: >-
+                      Dex revenue percent for lps, `100 - reward_portion_for_lps
+                      - reward_portion_for_stakers = revenue percent for
+                      protocol`.
+                  max_eden_reward_apr_stakers:
+                    type: string
+                    title: Maximum eden reward apr for stakers - [0 - 0.3]
             description: >-
               QueryParamsResponse is response type for the Query/Params RPC
               method.
@@ -39703,6 +39735,86 @@ paths:
                     '@type':
                       type: string
                   additionalProperties: {}
+      tags:
+        - Query
+  /elys-network/elys/estaking/rewards/{address}:
+    get:
+      summary: Rewards queries the total rewards accrued by a delegation
+      operationId: ElysEstakingRewards
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              rewards:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    validator_address:
+                      type: string
+                    reward:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          denom:
+                            type: string
+                          amount:
+                            type: string
+                        description: >-
+                          DecCoin defines a token with a denomination and a
+                          decimal amount.
+
+
+                          NOTE: The amount field is an Dec which implements the
+                          custom method
+
+                          signatures required by gogoproto.
+                description: rewards defines all the rewards accrued by a delegator.
+              total:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    denom:
+                      type: string
+                    amount:
+                      type: string
+                  description: >-
+                    DecCoin defines a token with a denomination and a decimal
+                    amount.
+
+
+                    NOTE: The amount field is an Dec which implements the custom
+                    method
+
+                    signatures required by gogoproto.
+                description: total defines the sum of all the rewards.
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: address
+          in: path
+          required: true
+          type: string
       tags:
         - Query
   /elys-network/elys/incentive/apr/{withdraw_type}/{denom}:
@@ -85008,16 +85120,6 @@ definitions:
     description: |-
       QueryEpochsInfoResponse is the response type for the Query/EpochInfos RPC
       method.
-  elys.estaking.Params:
-    type: object
-    description: Params defines the parameters for the module.
-  elys.estaking.QueryParamsResponse:
-    type: object
-    properties:
-      params:
-        description: params holds all the parameters of this module.
-        type: object
-    description: QueryParamsResponse is response type for the Query/Params RPC method.
   cosmos.base.v1beta1.DecCoin:
     type: object
     properties:
@@ -85030,6 +85132,178 @@ definitions:
 
       NOTE: The amount field is an Dec which implements the custom method
       signatures required by gogoproto.
+  elys.estaking.DelegationDelegatorReward:
+    type: object
+    properties:
+      validator_address:
+        type: string
+      reward:
+        type: array
+        items:
+          type: object
+          properties:
+            denom:
+              type: string
+            amount:
+              type: string
+          description: |-
+            DecCoin defines a token with a denomination and a decimal amount.
+
+            NOTE: The amount field is an Dec which implements the custom method
+            signatures required by gogoproto.
+  elys.estaking.IncentiveInfo:
+    type: object
+    properties:
+      eden_amount_per_year:
+        type: string
+        title: reward amount in eden for 1 year
+      distribution_start_block:
+        type: string
+        title: starting block height of the distribution
+      total_blocks_per_year:
+        type: string
+        title: distribution duration - block number per year
+      max_eden_per_allocation:
+        type: string
+        title: maximum eden allocation per day that won't exceed 30% apr
+    title: Incentive Info
+  elys.estaking.MsgUpdateParamsResponse:
+    type: object
+    description: >-
+      MsgUpdateParamsResponse defines the response structure for executing a
+      MsgUpdateParams message.
+  elys.estaking.MsgWithdrawRewardResponse:
+    type: object
+    properties:
+      amount:
+        type: array
+        items:
+          type: object
+          properties:
+            denom:
+              type: string
+            amount:
+              type: string
+          description: |-
+            Coin defines a token with a denomination and an amount.
+
+            NOTE: The amount field is an Int which implements the custom method
+            signatures required by gogoproto.
+    description: >-
+      MsgWithdrawRewardResponse defines the Msg/WithdrawDelegatorReward response
+      type.
+  elys.estaking.Params:
+    type: object
+    properties:
+      stake_incentives:
+        type: object
+        properties:
+          eden_amount_per_year:
+            type: string
+            title: reward amount in eden for 1 year
+          distribution_start_block:
+            type: string
+            title: starting block height of the distribution
+          total_blocks_per_year:
+            type: string
+            title: distribution duration - block number per year
+          max_eden_per_allocation:
+            type: string
+            title: maximum eden allocation per day that won't exceed 30% apr
+        title: Incentive Info
+      eden_commit_val:
+        type: string
+      edenb_commit_val:
+        type: string
+      reward_portion_for_stakers:
+        type: string
+        description: >-
+          Dex revenue percent for lps, `100 - reward_portion_for_lps -
+          reward_portion_for_stakers = revenue percent for protocol`.
+      max_eden_reward_apr_stakers:
+        type: string
+        title: Maximum eden reward apr for stakers - [0 - 0.3]
+    description: Params defines the parameters for the module.
+  elys.estaking.QueryParamsResponse:
+    type: object
+    properties:
+      params:
+        description: params holds all the parameters of this module.
+        type: object
+        properties:
+          stake_incentives:
+            type: object
+            properties:
+              eden_amount_per_year:
+                type: string
+                title: reward amount in eden for 1 year
+              distribution_start_block:
+                type: string
+                title: starting block height of the distribution
+              total_blocks_per_year:
+                type: string
+                title: distribution duration - block number per year
+              max_eden_per_allocation:
+                type: string
+                title: maximum eden allocation per day that won't exceed 30% apr
+            title: Incentive Info
+          eden_commit_val:
+            type: string
+          edenb_commit_val:
+            type: string
+          reward_portion_for_stakers:
+            type: string
+            description: >-
+              Dex revenue percent for lps, `100 - reward_portion_for_lps -
+              reward_portion_for_stakers = revenue percent for protocol`.
+          max_eden_reward_apr_stakers:
+            type: string
+            title: Maximum eden reward apr for stakers - [0 - 0.3]
+    description: QueryParamsResponse is response type for the Query/Params RPC method.
+  elys.estaking.QueryRewardsResponse:
+    type: object
+    properties:
+      rewards:
+        type: array
+        items:
+          type: object
+          properties:
+            validator_address:
+              type: string
+            reward:
+              type: array
+              items:
+                type: object
+                properties:
+                  denom:
+                    type: string
+                  amount:
+                    type: string
+                description: >-
+                  DecCoin defines a token with a denomination and a decimal
+                  amount.
+
+
+                  NOTE: The amount field is an Dec which implements the custom
+                  method
+
+                  signatures required by gogoproto.
+        description: rewards defines all the rewards accrued by a delegator.
+      total:
+        type: array
+        items:
+          type: object
+          properties:
+            denom:
+              type: string
+            amount:
+              type: string
+          description: |-
+            DecCoin defines a token with a denomination and a decimal amount.
+
+            NOTE: The amount field is an Dec which implements the custom method
+            signatures required by gogoproto.
+        description: total defines the sum of all the rewards.
   elys.commitment.EarnType:
     type: string
     enum:

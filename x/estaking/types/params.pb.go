@@ -5,6 +5,7 @@ package types
 
 import (
 	fmt "fmt"
+	github_com_cosmos_cosmos_sdk_types "github.com/cosmos/cosmos-sdk/types"
 	_ "github.com/cosmos/gogoproto/gogoproto"
 	proto "github.com/cosmos/gogoproto/proto"
 	io "io"
@@ -25,6 +26,13 @@ const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
 // Params defines the parameters for the module.
 type Params struct {
+	StakeIncentives *IncentiveInfo `protobuf:"bytes,1,opt,name=stake_incentives,json=stakeIncentives,proto3" json:"stake_incentives,omitempty"`
+	EdenCommitVal   string         `protobuf:"bytes,2,opt,name=eden_commit_val,json=edenCommitVal,proto3" json:"eden_commit_val,omitempty"`
+	EdenbCommitVal  string         `protobuf:"bytes,3,opt,name=edenb_commit_val,json=edenbCommitVal,proto3" json:"edenb_commit_val,omitempty"`
+	// Dex revenue percent for lps, `100 - reward_portion_for_lps - reward_portion_for_stakers = revenue percent for protocol`.
+	RewardPortionForStakers github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,4,opt,name=reward_portion_for_stakers,json=rewardPortionForStakers,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"reward_portion_for_stakers"`
+	// Maximum eden reward apr for stakers - [0 - 0.3]
+	MaxEdenRewardAprStakers github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,5,opt,name=max_eden_reward_apr_stakers,json=maxEdenRewardAprStakers,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"max_eden_reward_apr_stakers"`
 }
 
 func (m *Params) Reset()      { *m = Params{} }
@@ -59,6 +67,27 @@ func (m *Params) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_Params proto.InternalMessageInfo
 
+func (m *Params) GetStakeIncentives() *IncentiveInfo {
+	if m != nil {
+		return m.StakeIncentives
+	}
+	return nil
+}
+
+func (m *Params) GetEdenCommitVal() string {
+	if m != nil {
+		return m.EdenCommitVal
+	}
+	return ""
+}
+
+func (m *Params) GetEdenbCommitVal() string {
+	if m != nil {
+		return m.EdenbCommitVal
+	}
+	return ""
+}
+
 func init() {
 	proto.RegisterType((*Params)(nil), "elys.estaking.Params")
 }
@@ -66,17 +95,30 @@ func init() {
 func init() { proto.RegisterFile("elys/estaking/params.proto", fileDescriptor_66041162e1ecb63b) }
 
 var fileDescriptor_66041162e1ecb63b = []byte{
-	// 151 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x92, 0x4a, 0xcd, 0xa9, 0x2c,
-	0xd6, 0x4f, 0x2d, 0x2e, 0x49, 0xcc, 0xce, 0xcc, 0x4b, 0xd7, 0x2f, 0x48, 0x2c, 0x4a, 0xcc, 0x2d,
-	0xd6, 0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x17, 0xe2, 0x05, 0xc9, 0xe9, 0xc1, 0xe4, 0xa4, 0x44, 0xd2,
-	0xf3, 0xd3, 0xf3, 0xc1, 0x32, 0xfa, 0x20, 0x16, 0x44, 0x91, 0x12, 0x1f, 0x17, 0x5b, 0x00, 0x58,
-	0x93, 0x15, 0xcb, 0x8c, 0x05, 0xf2, 0x0c, 0x4e, 0xee, 0x27, 0x1e, 0xc9, 0x31, 0x5e, 0x78, 0x24,
-	0xc7, 0xf8, 0xe0, 0x91, 0x1c, 0xe3, 0x84, 0xc7, 0x72, 0x0c, 0x17, 0x1e, 0xcb, 0x31, 0xdc, 0x78,
-	0x2c, 0xc7, 0x10, 0xa5, 0x9b, 0x9e, 0x59, 0x92, 0x51, 0x9a, 0xa4, 0x97, 0x9c, 0x9f, 0xab, 0x0f,
-	0x32, 0x59, 0x37, 0x2f, 0xb5, 0xa4, 0x3c, 0xbf, 0x28, 0x1b, 0xcc, 0xd1, 0xaf, 0x40, 0x38, 0xa2,
-	0xa4, 0xb2, 0x20, 0xb5, 0x38, 0x89, 0x0d, 0x6c, 0xbe, 0x31, 0x20, 0x00, 0x00, 0xff, 0xff, 0x6e,
-	0x33, 0xee, 0x5c, 0xa2, 0x00, 0x00, 0x00,
+	// 362 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x9c, 0x91, 0x3d, 0x6f, 0xea, 0x30,
+	0x18, 0x85, 0x93, 0x0b, 0x17, 0xe9, 0xe6, 0x8a, 0x0b, 0x8a, 0xae, 0x54, 0x94, 0xb6, 0x01, 0x75,
+	0x40, 0x2c, 0x24, 0x52, 0xbb, 0x75, 0x2b, 0xfd, 0x40, 0x6c, 0x28, 0x95, 0x3a, 0x74, 0x89, 0x4c,
+	0x62, 0xd2, 0x28, 0xb1, 0xdf, 0xc8, 0x76, 0xf9, 0xd8, 0xfb, 0x03, 0x3a, 0x76, 0xec, 0xcf, 0x61,
+	0x64, 0xac, 0x3a, 0xa0, 0x0a, 0xfe, 0x48, 0x65, 0x87, 0xcf, 0xb5, 0x93, 0xed, 0x73, 0xce, 0x7b,
+	0x1e, 0x59, 0xaf, 0x61, 0xe1, 0x74, 0xca, 0x5d, 0xcc, 0x05, 0x4a, 0x62, 0x1a, 0xb9, 0x19, 0x62,
+	0x88, 0x70, 0x27, 0x63, 0x20, 0xc0, 0x2c, 0x4b, 0xcf, 0xd9, 0x78, 0xd6, 0xff, 0x08, 0x22, 0x50,
+	0x8e, 0x2b, 0x6f, 0x79, 0xc8, 0x3a, 0x3d, 0x2c, 0x88, 0x69, 0x80, 0xa9, 0x88, 0x47, 0x38, 0xb7,
+	0xcf, 0x5e, 0x0a, 0x46, 0xa9, 0xaf, 0x4a, 0xcd, 0xae, 0x51, 0x95, 0x29, 0xec, 0x6f, 0x33, 0xbc,
+	0xa6, 0x37, 0xf4, 0xd6, 0xdf, 0xf3, 0x13, 0xe7, 0x80, 0xe4, 0xf4, 0x36, 0x81, 0x1e, 0x1d, 0x82,
+	0x57, 0x51, 0x53, 0x5b, 0x8d, 0x9b, 0x4d, 0xa3, 0x82, 0x43, 0x4c, 0xfd, 0x00, 0x08, 0x89, 0x85,
+	0x3f, 0x42, 0x69, 0xed, 0x57, 0x43, 0x6f, 0xfd, 0xf1, 0xca, 0x52, 0xbe, 0x56, 0xea, 0x03, 0x4a,
+	0xcd, 0x96, 0x51, 0x95, 0xc2, 0x60, 0x3f, 0x58, 0x50, 0xc1, 0x7f, 0x4a, 0xdf, 0x25, 0x13, 0xc3,
+	0x62, 0x78, 0x8c, 0x58, 0xe8, 0x67, 0xc0, 0x44, 0x0c, 0xd4, 0x1f, 0x02, 0xf3, 0x15, 0x97, 0xf1,
+	0x5a, 0x51, 0xce, 0x74, 0x9c, 0xd9, 0xa2, 0xae, 0x7d, 0x2e, 0xea, 0xcd, 0x28, 0x16, 0x4f, 0xcf,
+	0x03, 0x27, 0x00, 0xe2, 0x06, 0xc0, 0x09, 0xf0, 0xf5, 0xd1, 0xe6, 0x61, 0xe2, 0x8a, 0x69, 0x86,
+	0xb9, 0x73, 0x83, 0x03, 0xef, 0x28, 0x6f, 0xec, 0xe7, 0x85, 0x77, 0xc0, 0xee, 0xf3, 0x3a, 0x33,
+	0x35, 0x8e, 0x09, 0x9a, 0xf8, 0xea, 0x0b, 0x6b, 0x2a, 0xca, 0x76, 0xb4, 0xdf, 0x3f, 0xa3, 0x11,
+	0x34, 0xb9, 0x0d, 0x31, 0xf5, 0x54, 0xe1, 0x55, 0xb6, 0xa1, 0x5d, 0x16, 0xdf, 0xde, 0xeb, 0x5a,
+	0xa7, 0x3b, 0x5b, 0xda, 0xfa, 0x7c, 0x69, 0xeb, 0x5f, 0x4b, 0x5b, 0x7f, 0x5d, 0xd9, 0xda, 0x7c,
+	0x65, 0x6b, 0x1f, 0x2b, 0x5b, 0x7b, 0x6c, 0xef, 0x01, 0xe4, 0x16, 0xda, 0x14, 0x8b, 0x31, 0xb0,
+	0x44, 0x3d, 0xdc, 0xc9, 0x6e, 0xb3, 0x8a, 0x35, 0x28, 0xa9, 0xb5, 0x5e, 0x7c, 0x07, 0x00, 0x00,
+	0xff, 0xff, 0xb3, 0xe6, 0xa9, 0x4f, 0x38, 0x02, 0x00, 0x00,
 }
 
 func (m *Params) Marshal() (dAtA []byte, err error) {
@@ -99,6 +141,52 @@ func (m *Params) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
+	{
+		size := m.MaxEdenRewardAprStakers.Size()
+		i -= size
+		if _, err := m.MaxEdenRewardAprStakers.MarshalTo(dAtA[i:]); err != nil {
+			return 0, err
+		}
+		i = encodeVarintParams(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0x2a
+	{
+		size := m.RewardPortionForStakers.Size()
+		i -= size
+		if _, err := m.RewardPortionForStakers.MarshalTo(dAtA[i:]); err != nil {
+			return 0, err
+		}
+		i = encodeVarintParams(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0x22
+	if len(m.EdenbCommitVal) > 0 {
+		i -= len(m.EdenbCommitVal)
+		copy(dAtA[i:], m.EdenbCommitVal)
+		i = encodeVarintParams(dAtA, i, uint64(len(m.EdenbCommitVal)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.EdenCommitVal) > 0 {
+		i -= len(m.EdenCommitVal)
+		copy(dAtA[i:], m.EdenCommitVal)
+		i = encodeVarintParams(dAtA, i, uint64(len(m.EdenCommitVal)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if m.StakeIncentives != nil {
+		{
+			size, err := m.StakeIncentives.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintParams(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0xa
+	}
 	return len(dAtA) - i, nil
 }
 
@@ -119,6 +207,22 @@ func (m *Params) Size() (n int) {
 	}
 	var l int
 	_ = l
+	if m.StakeIncentives != nil {
+		l = m.StakeIncentives.Size()
+		n += 1 + l + sovParams(uint64(l))
+	}
+	l = len(m.EdenCommitVal)
+	if l > 0 {
+		n += 1 + l + sovParams(uint64(l))
+	}
+	l = len(m.EdenbCommitVal)
+	if l > 0 {
+		n += 1 + l + sovParams(uint64(l))
+	}
+	l = m.RewardPortionForStakers.Size()
+	n += 1 + l + sovParams(uint64(l))
+	l = m.MaxEdenRewardAprStakers.Size()
+	n += 1 + l + sovParams(uint64(l))
 	return n
 }
 
@@ -157,6 +261,174 @@ func (m *Params) Unmarshal(dAtA []byte) error {
 			return fmt.Errorf("proto: Params: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field StakeIncentives", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowParams
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthParams
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthParams
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.StakeIncentives == nil {
+				m.StakeIncentives = &IncentiveInfo{}
+			}
+			if err := m.StakeIncentives.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field EdenCommitVal", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowParams
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthParams
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthParams
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.EdenCommitVal = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field EdenbCommitVal", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowParams
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthParams
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthParams
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.EdenbCommitVal = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field RewardPortionForStakers", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowParams
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthParams
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthParams
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.RewardPortionForStakers.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 5:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field MaxEdenRewardAprStakers", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowParams
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthParams
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthParams
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.MaxEdenRewardAprStakers.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipParams(dAtA[iNdEx:])
