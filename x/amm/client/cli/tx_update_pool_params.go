@@ -101,6 +101,7 @@ func CmdUpdatePoolParams() *cobra.Command {
 	cmd.Flags().String(FlagSwapFee, "0.00", "swap fee")
 	cmd.Flags().String(FlagExitFee, "0.00", "exit fee")
 	cmd.Flags().Bool(FlagUseOracle, false, "flag to be an oracle pool or non-oracle pool")
+	cmd.Flags().String(FlagWeightBreakingFeeExponent, "0.00", "weight breaking fee exponent")
 	cmd.Flags().String(FlagWeightBreakingFeeMultiplier, "0.00", "weight breaking fee multiplier")
 	cmd.Flags().String(FlagExternalLiquidityRatio, "0.00", "external liquidity ratio - valid for oracle pools")
 	cmd.Flags().String(FlagWeightRecoveryFeePortion, "0.00", "weight recovery fee portion")
