@@ -124,7 +124,7 @@ func (am AppModule) NewHandler() sdk.Handler {
 func (am AppModule) RegisterServices(cfg module.Configurator) {
 	types.RegisterQueryServer(cfg.QueryServer(), am.keeper)
 	m := migrations.NewMigrator(am.keeper)
-	err := cfg.RegisterMigration(types.ModuleName, 1, m.V2Migration)
+	err := cfg.RegisterMigration(types.ModuleName, 2, m.V3Migration)
 	if err != nil {
 		panic(err)
 	}
@@ -183,4 +183,4 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 }
 
 // ConsensusVersion implements AppModule/ConsensusVersion.
-func (AppModule) ConsensusVersion() uint64 { return 2 }
+func (AppModule) ConsensusVersion() uint64 { return 3 }
