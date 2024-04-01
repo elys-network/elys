@@ -170,14 +170,6 @@ func validateLPIncentives(i interface{}) error {
 		return fmt.Errorf("invalid total blocks per year: %v", vv)
 	}
 
-	if vv.EpochNumBlocks.LT(sdk.NewInt(0)) {
-		return fmt.Errorf("invalid number of blocks in epoch: %v", vv)
-	}
-
-	if vv.DistributionEpochInBlocks.LT(sdk.NewInt(0)) {
-		return fmt.Errorf("invalid distribution epoch in blocks: %v", vv)
-	}
-
 	if vv.CurrentEpochInBlocks.LT(sdk.NewInt(0)) {
 		return fmt.Errorf("invalid current epoch: %v", vv)
 	}
@@ -204,14 +196,6 @@ func validateStakeIncentives(i interface{}) error {
 
 	if vv.TotalBlocksPerYear.LT(sdk.NewInt(1)) {
 		return fmt.Errorf("invalid total blocks per year: %v", vv)
-	}
-
-	if vv.EpochNumBlocks.LT(sdk.NewInt(0)) {
-		return fmt.Errorf("invalid number of blocks in epoch: %v", vv)
-	}
-
-	if vv.DistributionEpochInBlocks.LT(sdk.NewInt(0)) {
-		return fmt.Errorf("invalid distribution epoch in blocks: %v", vv)
 	}
 
 	if vv.CurrentEpochInBlocks.LT(sdk.NewInt(0)) {

@@ -39794,7 +39794,7 @@ paths:
                         title: distribution duration - block number per year
                       epoch_num_blocks:
                         type: string
-                        title: we set block count in 24 hrs
+                        title: unused
                       max_eden_per_allocation:
                         type: string
                         title: >-
@@ -39802,9 +39802,7 @@ paths:
                           apr
                       distribution_epoch_in_blocks:
                         type: string
-                        title: >-
-                          number of block intervals that distribute rewards, set
-                          from params.distribution_interval
+                        title: unused
                       current_epoch_in_blocks:
                         type: string
                         title: current epoch in block number
@@ -39823,7 +39821,7 @@ paths:
                         title: distribution duration - block number per year
                       epoch_num_blocks:
                         type: string
-                        title: we set block count in 24 hrs
+                        title: unused
                       max_eden_per_allocation:
                         type: string
                         title: >-
@@ -39831,9 +39829,7 @@ paths:
                           apr
                       distribution_epoch_in_blocks:
                         type: string
-                        title: >-
-                          number of block intervals that distribute rewards, set
-                          from params.distribution_interval
+                        title: unused
                       current_epoch_in_blocks:
                         type: string
                         title: current epoch in block number
@@ -84504,15 +84500,13 @@ definitions:
         title: distribution duration - block number per year
       epoch_num_blocks:
         type: string
-        title: we set block count in 24 hrs
+        title: unused
       max_eden_per_allocation:
         type: string
         title: maximum eden allocation per day that won't exceed 30% apr
       distribution_epoch_in_blocks:
         type: string
-        title: >-
-          number of block intervals that distribute rewards, set from
-          params.distribution_interval
+        title: unused
       current_epoch_in_blocks:
         type: string
         title: current epoch in block number
@@ -84548,15 +84542,13 @@ definitions:
             title: distribution duration - block number per year
           epoch_num_blocks:
             type: string
-            title: we set block count in 24 hrs
+            title: unused
           max_eden_per_allocation:
             type: string
             title: maximum eden allocation per day that won't exceed 30% apr
           distribution_epoch_in_blocks:
             type: string
-            title: >-
-              number of block intervals that distribute rewards, set from
-              params.distribution_interval
+            title: unused
           current_epoch_in_blocks:
             type: string
             title: current epoch in block number
@@ -84575,15 +84567,13 @@ definitions:
             title: distribution duration - block number per year
           epoch_num_blocks:
             type: string
-            title: we set block count in 24 hrs
+            title: unused
           max_eden_per_allocation:
             type: string
             title: maximum eden allocation per day that won't exceed 30% apr
           distribution_epoch_in_blocks:
             type: string
-            title: >-
-              number of block intervals that distribute rewards, set from
-              params.distribution_interval
+            title: unused
           current_epoch_in_blocks:
             type: string
             title: current epoch in block number
@@ -84794,15 +84784,13 @@ definitions:
                 title: distribution duration - block number per year
               epoch_num_blocks:
                 type: string
-                title: we set block count in 24 hrs
+                title: unused
               max_eden_per_allocation:
                 type: string
                 title: maximum eden allocation per day that won't exceed 30% apr
               distribution_epoch_in_blocks:
                 type: string
-                title: >-
-                  number of block intervals that distribute rewards, set from
-                  params.distribution_interval
+                title: unused
               current_epoch_in_blocks:
                 type: string
                 title: current epoch in block number
@@ -84821,15 +84809,13 @@ definitions:
                 title: distribution duration - block number per year
               epoch_num_blocks:
                 type: string
-                title: we set block count in 24 hrs
+                title: unused
               max_eden_per_allocation:
                 type: string
                 title: maximum eden allocation per day that won't exceed 30% apr
               distribution_epoch_in_blocks:
                 type: string
-                title: >-
-                  number of block intervals that distribute rewards, set from
-                  params.distribution_interval
+                title: unused
               current_epoch_in_blocks:
                 type: string
                 title: current epoch in block number
