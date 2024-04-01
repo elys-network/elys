@@ -1,6 +1,8 @@
 package keeper
 
 import (
+	"fmt"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	"github.com/elys-network/elys/x/incentive/types"
@@ -124,7 +126,12 @@ func (k Keeper) CollectDEXRevenue(ctx sdk.Context) (sdk.Coins, sdk.DecCoins, sdk
 		trackKey := types.GetPoolRevenueTrackKey(poolId)
 
 		// Store revenue portion for Lps temporarilly
-		k.tci.PoolRevenueTrack[trackKey] = revenuePortionForLPs.AmountOf(ptypes.BaseCurrency)
+		entry, found := k.assetProfileKeeper.GetEntry(ctx, ptypes.BaseCurrency)
+		if !found {
+			panic(fmt.Sprintf("asset %s not found", ptypes.BaseCurrency))
+		}
+		baseCurrency := entry.Denom
+		k.tci.PoolRevenueTrack[trackKey] = revenuePortionForLPs.AmountOf(baseCurrency)
 
 		// Sum total collected amount
 		amountTotalCollected = amountTotalCollected.Add(revenue...)
