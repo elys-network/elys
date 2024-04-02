@@ -16,7 +16,7 @@ func SetupHandlers(app *ElysApp) {
 
 func setUpgradeHandler(app *ElysApp) {
 	app.UpgradeKeeper.SetUpgradeHandler(
-		version.Version,
+		"v0.29.30", // version.Version,
 		func(ctx sdk.Context, plan upgradetypes.Plan, vm m.VersionMap) (m.VersionMap, error) {
 			app.Logger().Info("Running upgrade handler for " + version.Version)
 
