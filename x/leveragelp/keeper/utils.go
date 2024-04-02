@@ -4,7 +4,6 @@ import (
 	"fmt"
 
 	errorsmod "cosmossdk.io/errors"
-	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	"github.com/elys-network/elys/x/leveragelp/types"
@@ -68,6 +67,6 @@ func (k Keeper) GetLpTokenPrice(ctx sdk.Context, ammPool *ammtypes.Pool) (sdk.De
 	if ammPool.TotalShares.IsZero() {
 		return sdk.ZeroDec(), types.ErrAmountTooLow
 	}
-	lpTokenPrice := ammPoolTvl.Quo(sdkmath.LegacyNewDecFromInt(ammPool.TotalShares.Amount))
+	lpTokenPrice := ammPoolTvl.MulInt(ammtypes.OneShare).QuoInt(ammPool.TotalShares.Amount)
 	return lpTokenPrice, nil
 }
