@@ -15,8 +15,8 @@ func (m Migrator) V3Migration(ctx sdk.Context) error {
 		CurrentEpoch:            0,
 		CurrentEpochStartHeight: 0,
 		EpochCountingStarted:    false,
-		CurrentEpochStartTime:   time.Now(),
-		StartTime:               time.Now(),
+		CurrentEpochStartTime:   ctx.BlockTime(),
+		StartTime:               ctx.BlockTime(),
 	})
 
 	// six hours
@@ -26,8 +26,8 @@ func (m Migrator) V3Migration(ctx sdk.Context) error {
 		CurrentEpoch:            0,
 		CurrentEpochStartHeight: 0,
 		EpochCountingStarted:    false,
-		CurrentEpochStartTime:   time.Now(),
-		StartTime:               time.Now(),
+		CurrentEpochStartTime:   ctx.BlockTime(),
+		StartTime:               ctx.BlockTime(),
 	})
 
 	// four hours
@@ -37,8 +37,8 @@ func (m Migrator) V3Migration(ctx sdk.Context) error {
 		CurrentEpoch:            0,
 		CurrentEpochStartHeight: 0,
 		EpochCountingStarted:    false,
-		CurrentEpochStartTime:   time.Now(),
-		StartTime:               time.Now(),
+		CurrentEpochStartTime:   ctx.BlockTime(),
+		StartTime:               ctx.BlockTime(),
 	})
 
 	// two hours
@@ -48,8 +48,8 @@ func (m Migrator) V3Migration(ctx sdk.Context) error {
 		CurrentEpoch:            0,
 		CurrentEpochStartHeight: 0,
 		EpochCountingStarted:    false,
-		CurrentEpochStartTime:   time.Now(),
-		StartTime:               time.Now(),
+		CurrentEpochStartTime:   ctx.BlockTime(),
+		StartTime:               ctx.BlockTime(),
 	})
 
 	// half hour
@@ -59,8 +59,8 @@ func (m Migrator) V3Migration(ctx sdk.Context) error {
 		CurrentEpoch:            0,
 		CurrentEpochStartHeight: 0,
 		EpochCountingStarted:    false,
-		CurrentEpochStartTime:   time.Now(),
-		StartTime:               time.Now(),
+		CurrentEpochStartTime:   ctx.BlockTime(),
+		StartTime:               ctx.BlockTime(),
 	})
 
 	return nil
