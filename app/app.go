@@ -1340,6 +1340,16 @@ func (app *ElysApp) Name() string { return app.BaseApp.Name() }
 
 // BeginBlocker application updates every begin block
 func (app *ElysApp) BeginBlocker(ctx sdk.Context, req abci.RequestBeginBlock) abci.ResponseBeginBlock {
+	// Set max block size to 10MB
+	app.Logger().Info("Setting max block size to 10MB")
+
+	consensusParams, err := app.ConsensusParamsKeeper.Get(ctx)
+	if err != nil {
+		panic(fmt.Errorf("failed to get consensus params: %s", err))
+	}
+	consensusParams.Block.MaxBytes = int64(10485760)
+	app.ConsensusParamsKeeper.Set(ctx, consensusParams)
+
 	return app.mm.BeginBlock(ctx, req)
 }
 
