@@ -20,6 +20,7 @@ func createNPool(keeper *keeper.Keeper, ctx sdk.Context, n int) []types.Pool {
 	for i := range items {
 		items[i].PoolId = uint64(i)
 		items[i].TotalWeight = sdk.NewInt(100)
+		items[i].TotalShares = sdk.NewCoin(types.GetPoolShareDenom(uint64(i)), types.OneShare)
 		items[i].PoolParams = types.PoolParams{
 			SwapFee:                     sdk.ZeroDec(),
 			ExitFee:                     sdk.ZeroDec(),
