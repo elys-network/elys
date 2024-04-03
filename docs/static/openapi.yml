@@ -38054,6 +38054,15 @@ paths:
                       type: string
                     rebalance_treasury:
                       type: string
+              extra_info:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    tvl:
+                      type: string
+                    lp_token_price:
+                      type: string
               pagination:
                 type: object
                 properties:
@@ -38240,6 +38249,13 @@ paths:
                   total_weight:
                     type: string
                   rebalance_treasury:
+                    type: string
+              extra_info:
+                type: object
+                properties:
+                  tvl:
+                    type: string
+                  lp_token_price:
                     type: string
         default:
           description: An unexpected error response.
@@ -83027,6 +83043,13 @@ definitions:
         type: string
       rebalance_treasury:
         type: string
+  elys.amm.PoolExtraInfo:
+    type: object
+    properties:
+      tvl:
+        type: string
+      lp_token_price:
+        type: string
   elys.amm.PoolParams:
     type: object
     properties:
@@ -83162,6 +83185,15 @@ definitions:
             total_weight:
               type: string
             rebalance_treasury:
+              type: string
+      extra_info:
+        type: array
+        items:
+          type: object
+          properties:
+            tvl:
+              type: string
+            lp_token_price:
               type: string
       pagination:
         type: object
@@ -83304,6 +83336,13 @@ definitions:
           total_weight:
             type: string
           rebalance_treasury:
+            type: string
+      extra_info:
+        type: object
+        properties:
+          tvl:
+            type: string
+          lp_token_price:
             type: string
   elys.amm.QueryInRouteByDenomResponse:
     type: object

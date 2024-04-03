@@ -57,16 +57,3 @@ func (k Keeper) GetAmmPool(ctx sdk.Context, poolId uint64) (ammtypes.Pool, error
 	}
 	return ammPool, nil
 }
-
-func (k Keeper) GetLpTokenPrice(ctx sdk.Context, ammPool *ammtypes.Pool) (sdk.Dec, error) {
-	ammPoolTvl, err := ammPool.TVL(ctx, k.oracleKeeper)
-	if err != nil {
-		return sdk.ZeroDec(), err
-	}
-	// Ensure ammPool.TotalShares is not zero to avoid division by zero
-	if ammPool.TotalShares.IsZero() {
-		return sdk.ZeroDec(), types.ErrAmountTooLow
-	}
-	lpTokenPrice := ammPoolTvl.MulInt(ammtypes.OneShare).QuoInt(ammPool.TotalShares.Amount)
-	return lpTokenPrice, nil
-}
