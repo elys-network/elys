@@ -2,15 +2,10 @@ package cli
 
 import (
 	"fmt"
-	// "strings"
-
-	"github.com/spf13/cobra"
 
 	"github.com/cosmos/cosmos-sdk/client"
-	// "github.com/cosmos/cosmos-sdk/client/flags"
-	// sdk "github.com/cosmos/cosmos-sdk/types"
-
 	"github.com/elys-network/elys/x/masterchef/types"
+	"github.com/spf13/cobra"
 )
 
 // GetQueryCmd returns the cli query commands for this module
@@ -25,6 +20,13 @@ func GetQueryCmd(queryRoute string) *cobra.Command {
 	}
 
 	cmd.AddCommand(CmdQueryParams())
+	cmd.AddCommand(CmdQueryExternalIncentive())
+	cmd.AddCommand(CmdQueryPoolInfo())
+	cmd.AddCommand(CmdQueryPoolRewardInfo())
+	cmd.AddCommand(CmdQueryUserRewardInfo())
+	cmd.AddCommand(CmdQueryUserPendingReward())
+	cmd.AddCommand(CmdQueryStableStakeApr())
+	cmd.AddCommand(CmdQueryPoolAprs())
 	// this line is used by starport scaffolding # 1
 
 	return cmd

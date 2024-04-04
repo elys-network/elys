@@ -20,6 +20,10 @@ const (
 	listSeparator              = ","
 )
 
+var (
+	FlagPoolIds = "pool-ids"
+)
+
 // GetTxCmd returns the transaction commands for this module
 func GetTxCmd() *cobra.Command {
 	cmd := &cobra.Command{
@@ -29,6 +33,14 @@ func GetTxCmd() *cobra.Command {
 		SuggestionsMinimumDistance: 2,
 		RunE:                       client.ValidateCmd,
 	}
+
+	cmd.AddCommand(
+		CmdAddExternalRewardDenom(),
+		CmdAddExternalIncentive(),
+		CmdUpdateIncentiveParams(),
+		CmdUpdatePoolMultipliers(),
+		CmdClaimRewards(),
+	)
 
 	// this line is used by starport scaffolding # 1
 
