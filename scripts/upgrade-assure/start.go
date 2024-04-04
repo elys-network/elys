@@ -7,14 +7,16 @@ import (
 	"syscall"
 )
 
-func start(cmdPath, homePath string) *exec.Cmd {
+func start(cmdPath, homePath, rpc, p2p string, display bool) *exec.Cmd {
 	// Command and arguments
-	args := []string{"start", "--home", homePath}
+	args := []string{"start", "--home", homePath, "--rpc.laddr", rpc, "--p2p.laddr", p2p}
 
 	// Set up the command
 	cmd := exec.Command(cmdPath, args...)
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
+	if display {
+		cmd.Stdout = os.Stdout
+		cmd.Stderr = os.Stderr
+	}
 
 	// Execute the command and stream the output in a goroutine to avoid blocking
 	go func() {

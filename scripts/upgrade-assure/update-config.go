@@ -44,5 +44,8 @@ func updateConfig(homePath string) {
 	// Update app.toml for enabling the API server
 	sed("/^# Enable defines if the API server should be enabled./{n;s/enable = false/enable = true/;}", appPath)
 
+	// Update app.toml for app-db-backend
+	sed("s/^app\\-db\\-backend =.*/app\\-db\\-backend = \\\"pebbledb\\\"/", appPath)
+
 	log.Printf(Yellow + "config files have been updated successfully.")
 }

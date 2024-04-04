@@ -5,7 +5,7 @@ import (
 	"os/exec"
 )
 
-func initChain(cmdPath, moniker, chainId, homePath string) {
+func initNode(cmdPath, moniker, chainId, homePath string) {
 	// Command and arguments
 	args := []string{"init", moniker, "--chain-id", chainId, "--home", homePath}
 
@@ -15,5 +15,5 @@ func initChain(cmdPath, moniker, chainId, homePath string) {
 	}
 
 	// If execution reaches here, the command was successful
-	log.Printf(Yellow+"init chain with moniker %s, chain id %s and home path: %s successfully", moniker, chainId, homePath)
+	log.Printf(Yellow+"init node with moniker %s, chain id %s and home path: %s successfully", moniker, chainId, homePath)
 }
