@@ -45,6 +45,7 @@ func (oq *Querier) generateEarnPool(ctx sdk.Context, ammPool *types.Pool, filter
 		borrowApr = prams.InterestRate
 	}
 	tvl, _ := ammPool.TVL(ctx, oq.oraclekeeper)
+	lpTokenPrice, _ := ammPool.LpTokenPrice(ctx, oq.oraclekeeper)
 
 	// Get rewards amount
 	rewardsUsd, rewardCoins := oq.incentiveKeeper.GetDailyRewardsAmountForPool(ctx, ammPool.PoolId)
@@ -63,20 +64,21 @@ func (oq *Querier) generateEarnPool(ctx sdk.Context, ammPool *types.Pool, filter
 	}
 
 	return types.EarnPool{
-		Assets:      ammPool.PoolAssets,
-		PoolRatio:   poolRatio,
-		RewardsApr:  rewardsApr,
-		BorrowApr:   borrowApr,
-		LeverageLp:  leverageLpPercent,
-		Perpetual:   perpetualPercent,
-		Tvl:         tvl,
-		RewardsUsd:  rewardsUsd,
-		RewardCoins: rewardCoins,
-		PoolId:      ammPool.PoolId,
-		TotalShares: ammPool.TotalShares,
-		SwapFee: ammPool.PoolParams.SwapFee,
-		FeeDenom: ammPool.PoolParams.FeeDenom,
-		UseOracle: ammPool.PoolParams.UseOracle,
+		Assets:       ammPool.PoolAssets,
+		PoolRatio:    poolRatio,
+		RewardsApr:   rewardsApr,
+		BorrowApr:    borrowApr,
+		LeverageLp:   leverageLpPercent,
+		Perpetual:    perpetualPercent,
+		Tvl:          tvl,
+		LpTokenPrice: lpTokenPrice,
+		RewardsUsd:   rewardsUsd,
+		RewardCoins:  rewardCoins,
+		PoolId:       ammPool.PoolId,
+		TotalShares:  ammPool.TotalShares,
+		SwapFee:      ammPool.PoolParams.SwapFee,
+		FeeDenom:     ammPool.PoolParams.FeeDenom,
+		UseOracle:    ammPool.PoolParams.UseOracle,
 	}
 }
 

@@ -13,7 +13,7 @@ func export(cmdPath, homePath, genesisFilePath string) {
 		"assetprofile",
 		"auth",
 		"authz",
-		// "bank",
+		"bank",
 		"burner",
 		"capability",
 		"clock",

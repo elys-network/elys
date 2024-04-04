@@ -28,6 +28,8 @@ func (oq *Querier) HandleQuery(ctx sdk.Context, query wasmbindingstypes.ElysQuer
 		return oq.queryCommunityPool(ctx, query.IncentiveCommunityPool)
 	case query.IncentiveApr != nil:
 		return oq.queryApr(ctx, query.IncentiveApr)
+	case query.IncentiveAprs != nil:
+		return oq.queryAprs(ctx, query.IncentiveAprs)
 	case query.IncentivePoolAprs != nil:
 		return oq.queryPoolAprs(ctx, query.IncentivePoolAprs)
 	default:

@@ -92,6 +92,7 @@ message QueryGetPoolRequest {
 
 message QueryGetPoolResponse {
   Pool pool = 1 [(gogoproto.nullable) = false];
+  PoolExtraInfo extra_info = 2 [ (gogoproto.nullable) = false ];
 }
 
 message QueryAllPoolRequest {
@@ -99,8 +100,9 @@ message QueryAllPoolRequest {
 }
 
 message QueryAllPoolResponse {
-  repeated Pool                                   pool       = 1 [(gogoproto.nullable) = false];
-           cosmos.base.query.v1beta1.PageResponse pagination = 2;
+  repeated Pool pool = 1 [ (gogoproto.nullable) = false ];
+  repeated PoolExtraInfo extra_infos = 2 [ (gogoproto.nullable) = false ];
+  cosmos.base.query.v1beta1.PageResponse pagination = 3;
 }
 
 message QueryGetDenomLiquidityRequest {
