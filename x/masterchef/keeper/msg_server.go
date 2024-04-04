@@ -130,6 +130,13 @@ func (k msgServer) ClaimRewards(goCtx context.Context, msg *types.MsgClaimReward
 
 	coins := sdk.NewCoins()
 
+	if len(msg.PoolIds) == 0 {
+		allPools := k.GetAllPools(ctx)
+		for _, pool := range allPools {
+			msg.PoolIds = append(msg.PoolIds, pool.PoolId)
+		}
+	}
+
 	for _, poolId := range msg.PoolIds {
 		k.AfterWithdraw(
 			ctx,

@@ -28,6 +28,8 @@ import (
 	incentivetypes "github.com/elys-network/elys/x/incentive/types"
 	leveragelpkeeper "github.com/elys-network/elys/x/leveragelp/keeper"
 	leveragelptypes "github.com/elys-network/elys/x/leveragelp/types"
+	masterchefkeeper "github.com/elys-network/elys/x/masterchef/keeper"
+	mastercheftypes "github.com/elys-network/elys/x/masterchef/types"
 	oraclekeeper "github.com/elys-network/elys/x/oracle/keeper"
 	oracletypes "github.com/elys-network/elys/x/oracle/types"
 	parameterkeeper "github.com/elys-network/elys/x/parameter/keeper"
@@ -72,6 +74,7 @@ type QueryPlugin struct {
 	commitmentKeeper    *commitmentkeeper.Keeper
 	epochsKeeper        *epochskeeper.Keeper
 	incentiveKeeper     *incentivekeeper.Keeper
+	masterchefKeeper    *masterchefkeeper.Keeper
 	leveragelpKeeper    *leveragelpkeeper.Keeper
 	perpetualKeeper     *perpetualkeeper.Keeper
 	oracleKeeper        *oraclekeeper.Keeper
@@ -159,6 +162,16 @@ type ElysQuery struct {
 	IncentiveApr           *incentivetypes.QueryAprRequest           `json:"incentive_apr"`
 	IncentivePoolAprs      *incentivetypes.QueryPoolAprsRequest      `json:"incentive_pool_aprs"`
 
+	// masterchef queriers
+	MasterchefParams            *mastercheftypes.QueryParamsRequest            `json:"masterchef_params,omitempty"`
+	MasterchefExternalIncentive *mastercheftypes.QueryExternalIncentiveRequest `json:"masterchef_external_incentive,omitempty"`
+	MasterchefPoolInfo          *mastercheftypes.QueryPoolInfoRequest          `json:"masterchef_pool_info,omitempty"`
+	MasterchefPoolRewardInfo    *mastercheftypes.QueryPoolRewardInfoRequest    `json:"masterchef_pool_reward_info,omitempty"`
+	MasterchefUserRewardInfo    *mastercheftypes.QueryUserRewardInfoRequest    `json:"masterchef_user_reward_info,omitempty"`
+	MasterchefUserPendingReward *mastercheftypes.QueryUserPendingRewardRequest `json:"masterchef_user_pending_reward,omitempty"`
+	MasterchefStableStakeApr    *mastercheftypes.QueryStableStakeAprRequest    `json:"masterchef_stable_stake_apr,omitempty"`
+	MasterchefPoolAprs          *mastercheftypes.QueryPoolAprsRequest          `json:"masterchef_pool_aprs,omitempty"`
+
 	// leveragelp queriers
 	LeveragelpParams                   *leveragelptypes.ParamsRequest              `json:"leveragelp_params,omitempty"`
 	LeveragelpQueryPositions           *leveragelptypes.PositionsRequest           `json:"leveragelp_query_positions,omitempty"`
@@ -227,6 +240,7 @@ type CustomMessenger struct {
 	commitment       *commitmentkeeper.Keeper
 	epochs           *epochskeeper.Keeper
 	incentive        *incentivekeeper.Keeper
+	masterchef       *masterchefkeeper.Keeper
 	leveragelp       *leveragelpkeeper.Keeper
 	perpetual        *perpetualkeeper.Keeper
 	oracle           *oraclekeeper.Keeper
@@ -272,6 +286,9 @@ type ElysMsg struct {
 	IncentiveCancelUnbondingDelegation   *incentivetypes.MsgCancelUnbondingDelegation   `json:"incentive_cancel_unbonding_delegation"`
 	IncentiveWithdrawRewards             *incentivetypes.MsgWithdrawRewards             `json:"incentive_withdraw_rewards"`
 	IncentiveWithdrawValidatorCommission *incentivetypes.MsgWithdrawValidatorCommission `json:"incentive_withdraw_validator_commission"`
+
+	// masterchef messages
+	MasterchefClaimRewards *mastercheftypes.MsgClaimRewards `json:"claim_rewards,omitempty"`
 
 	// leveragelp messages
 	LeveragelpOpen  *leveragelptypes.MsgOpen  `json:"leveragelp_open,omitempty"`
