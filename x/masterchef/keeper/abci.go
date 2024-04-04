@@ -83,7 +83,7 @@ func (k Keeper) CanDistributeLPRewards(ctx sdk.Context) bool {
 		return false
 	}
 
-	// Increase current epoch of Stake incentive param
+	// Increase current epoch of incentive param
 	lpIncentive.CurrentEpochInBlocks = lpIncentive.CurrentEpochInBlocks.Add(sdk.OneInt())
 	if lpIncentive.CurrentEpochInBlocks.GTE(lpIncentive.TotalBlocksPerYear) || curBlockHeight.GT(lpIncentive.TotalBlocksPerYear.Add(lpIncentive.DistributionStartBlock)) {
 		params.LpIncentives = nil
@@ -94,7 +94,6 @@ func (k Keeper) CanDistributeLPRewards(ctx sdk.Context) bool {
 	params.LpIncentives.CurrentEpochInBlocks = lpIncentive.CurrentEpochInBlocks
 	k.SetParams(ctx, params)
 
-	// return found, lp incentive params
 	return true
 }
 
@@ -152,6 +151,7 @@ func (k Keeper) UpdateLPRewardsUnclaimed(ctx sdk.Context) error {
 		return errorsmod.Wrap(types.ErrNoInflationaryParams, "invalid eden price")
 	}
 
+	// TODO: apply update on incentive module
 	epochLpsMaxEdenAmount := params.MaxEdenRewardAprLps.
 		Mul(totalProxyTVL).
 		QuoInt(lpIncentive.TotalBlocksPerYear).
@@ -163,7 +163,7 @@ func (k Keeper) UpdateLPRewardsUnclaimed(ctx sdk.Context) error {
 	stableStakePoolId := uint64(stabletypes.PoolId)
 	// Distribute Eden / USDC Rewards
 	for _, pool := range k.GetAllPools(ctx) {
-		proxyTVL := sdk.ZeroDec()
+		var proxyTVL sdk.Dec
 		if pool.PoolId == stableStakePoolId {
 			tvl := k.stableKeeper.TVL(ctx, k.oracleKeeper, baseCurrency)
 			proxyTVL = tvl.Mul(pool.Multiplier)
@@ -232,6 +232,7 @@ func (k Keeper) UpdateLPRewardsUnclaimed(ctx sdk.Context) error {
 }
 
 // Update total commitment info
+// TODO: should be removed or updated for complexity in calculation
 func (k Keeper) UpdateTotalCommitmentInfo(ctx sdk.Context, baseCurrency string) {
 	// Initialize with amount zero
 	k.tci.TotalFeesCollected = sdk.Coins{}
