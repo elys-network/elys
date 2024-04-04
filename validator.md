@@ -242,6 +242,16 @@ db_backend = "pebbledb"
 db_backend = "rocksdb"
 ```
 
+- Update the `~/.elys/config/app.toml` file to use pebbledb or rocksdb as the app database backend:
+
+```toml
+app-db-backend = "pebbledb"
+```
+
+```toml
+app-db-backend = "rocksdb"
+```
+
 - We would then recommend using State-Sync in order to start the node with the new database backend. Below you can find an example of how to start the node with State-Sync:
 
 ```bash
