@@ -9,6 +9,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	"github.com/cosmos/cosmos-sdk/crypto/keys/ed25519"
+	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
@@ -29,6 +30,30 @@ type (
 		authority  string
 	}
 )
+
+var (
+	EdenValPubKey     cryptotypes.PubKey
+	EdenBValPubKey    cryptotypes.PubKey
+	EdenValPubKeyAny  *codectypes.Any
+	EdenBValPubKeyAny *codectypes.Any
+)
+
+func init() {
+	// validator with duplicated pubkey fails and this is unique pubKey
+	EdenValPubKey := ed25519.GenPrivKeyFromSecret([]byte(ptypes.Eden)).PubKey()
+	pk1Any, err := codectypes.NewAnyWithValue(EdenValPubKey)
+	if err != nil {
+		panic(err)
+	}
+	EdenValPubKeyAny = pk1Any
+
+	EdenBValPubKey := ed25519.GenPrivKeyFromSecret([]byte(ptypes.EdenB)).PubKey()
+	pk2Any, err := codectypes.NewAnyWithValue(EdenBValPubKey)
+	if err != nil {
+		panic(err)
+	}
+	EdenBValPubKeyAny = pk2Any
+}
 
 func NewKeeper(
 	cdc codec.BinaryCodec,
@@ -69,15 +94,10 @@ func (k Keeper) TotalBondedTokens(ctx sdk.Context) math.Int {
 
 func (k Keeper) GetEdenValidator(ctx sdk.Context) stakingtypes.ValidatorI {
 	params := k.GetParams(ctx)
-	// TODO: check potential issue
-	pk1 := ed25519.GenPrivKeyFromSecret([]byte{1}).PubKey()
-	pk1Any, err := codectypes.NewAnyWithValue(pk1)
-	if err != nil {
-		panic(err)
-	}
+
 	return stakingtypes.Validator{
 		OperatorAddress: params.EdenCommitVal,
-		ConsensusPubkey: pk1Any,
+		ConsensusPubkey: EdenValPubKeyAny,
 		Jailed:          false,
 		Status:          stakingtypes.Bonded,
 		Tokens:          sdk.ZeroInt(), // TODO: total Eden commitment
@@ -96,15 +116,9 @@ func (k Keeper) GetEdenValidator(ctx sdk.Context) stakingtypes.ValidatorI {
 
 func (k Keeper) GetEdenBValidator(ctx sdk.Context) stakingtypes.ValidatorI {
 	params := k.GetParams(ctx)
-	// TODO: check potential issue
-	pk2 := ed25519.GenPrivKeyFromSecret([]byte{2}).PubKey()
-	pk2Any, err := codectypes.NewAnyWithValue(pk2)
-	if err != nil {
-		panic(err)
-	}
 	return stakingtypes.Validator{
 		OperatorAddress: params.EdenbCommitVal,
-		ConsensusPubkey: pk2Any,
+		ConsensusPubkey: EdenBValPubKeyAny,
 		Jailed:          false,
 		Status:          stakingtypes.Unbonded,
 		Tokens:          sdk.ZeroInt(), // TODO: total EdenB commitment
@@ -215,4 +229,12 @@ func (k Keeper) IterateBondedValidatorsByPower(ctx sdk.Context, fn func(index in
 		}
 	}
 	k.Keeper.IterateBondedValidatorsByPower(ctx, fn)
+}
+
+func (k Keeper) Slash(ctx sdk.Context, consAddr sdk.ConsAddress, infractionHeight int64, power int64, slashFactor sdk.Dec) math.Int {
+	return k.Keeper.Slash(ctx, consAddr, infractionHeight, power, slashFactor)
+}
+
+func (k Keeper) SlashWithInfractionReason(ctx sdk.Context, consAddr sdk.ConsAddress, infractionHeight int64, power int64, slashFactor sdk.Dec, infraction stakingtypes.Infraction) math.Int {
+	return k.Keeper.SlashWithInfractionReason(ctx, consAddr, infractionHeight, power, slashFactor, infraction)
 }
