@@ -43,3 +43,23 @@ func (k Keeper) GetEdenDenomPrice(ctx sdk.Context, baseCurrency string) math.Leg
 	}
 	return edenUsdcRate.Mul(usdcDenomPrice)
 }
+
+func (k Keeper) GetTokenPrice(ctx sdk.Context, tokenInDenom, baseCurrency string) math.LegacyDec {
+	oraclePrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, tokenInDenom)
+	if !oraclePrice.IsZero() {
+		return oraclePrice
+	}
+
+	// Calc tokenIn / uusdc rate
+	tokenUsdcRate := k.EstimatePrice(ctx, tokenInDenom, baseCurrency)
+	usdcDenomPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, baseCurrency)
+	if usdcDenomPrice.IsZero() {
+		usdcDecimal := int64(6)
+		usdcEntry, found := k.assetProfileKeeper.GetEntry(ctx, ptypes.BaseCurrency)
+		if found {
+			usdcDecimal = int64(usdcEntry.Decimals)
+		}
+		usdcDenomPrice = sdk.NewDecWithPrec(1, usdcDecimal)
+	}
+	return tokenUsdcRate.Mul(usdcDenomPrice)
+}
