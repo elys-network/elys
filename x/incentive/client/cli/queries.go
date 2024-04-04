@@ -102,6 +102,33 @@ func CmdApr() *cobra.Command {
 	return cmd
 }
 
+func CmdAprs() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:     "aprs",
+		Short:   "calculate APRs",
+		Example: "elysd q incentive aprs",
+		Args:    cobra.ExactArgs(0),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+
+			queryClient := types.NewQueryClient(clientCtx)
+
+			params := &types.QueryAprsRequest{}
+
+			res, err := queryClient.Aprs(context.Background(), params)
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+
+	return cmd
+}
+
 func CmdPoolAprs() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:     "pool-aprs",

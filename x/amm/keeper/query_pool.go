@@ -11,12 +11,22 @@ import (
 	"google.golang.org/grpc/status"
 )
 
+func (k Keeper) PoolExtraInfo(ctx sdk.Context, pool types.Pool) types.PoolExtraInfo {
+	tvl, _ := pool.TVL(ctx, k.oracleKeeper)
+	lpTokenPrice, _ := pool.LpTokenPrice(ctx, k.oracleKeeper)
+	return types.PoolExtraInfo{
+		Tvl:          tvl,
+		LpTokenPrice: lpTokenPrice,
+	}
+}
+
 func (k Keeper) PoolAll(goCtx context.Context, req *types.QueryAllPoolRequest) (*types.QueryAllPoolResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
 	var pools []types.Pool
+	var extraInfos []types.PoolExtraInfo
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	store := ctx.KVStore(k.storeKey)
@@ -29,13 +39,14 @@ func (k Keeper) PoolAll(goCtx context.Context, req *types.QueryAllPoolRequest) (
 		}
 
 		pools = append(pools, pool)
+		extraInfos = append(extraInfos, k.PoolExtraInfo(ctx, pool))
 		return nil
 	})
 	if err != nil {
 		return nil, status.Error(codes.Internal, err.Error())
 	}
 
-	return &types.QueryAllPoolResponse{Pool: pools, Pagination: pageRes}, nil
+	return &types.QueryAllPoolResponse{Pool: pools, ExtraInfos: extraInfos, Pagination: pageRes}, nil
 }
 
 func (k Keeper) Pool(goCtx context.Context, req *types.QueryGetPoolRequest) (*types.QueryGetPoolResponse, error) {
@@ -44,13 +55,13 @@ func (k Keeper) Pool(goCtx context.Context, req *types.QueryGetPoolRequest) (*ty
 	}
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	val, found := k.GetPool(
-		ctx,
-		req.PoolId,
-	)
+	pool, found := k.GetPool(ctx, req.PoolId)
 	if !found {
 		return nil, status.Error(codes.NotFound, "not found")
 	}
 
-	return &types.QueryGetPoolResponse{Pool: val}, nil
+	return &types.QueryGetPoolResponse{
+		Pool:      pool,
+		ExtraInfo: k.PoolExtraInfo(ctx, pool),
+	}, nil
 }

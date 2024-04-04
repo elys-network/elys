@@ -38054,6 +38054,15 @@ paths:
                       type: string
                     rebalance_treasury:
                       type: string
+              extra_infos:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    tvl:
+                      type: string
+                    lp_token_price:
+                      type: string
               pagination:
                 type: object
                 properties:
@@ -38240,6 +38249,13 @@ paths:
                   total_weight:
                     type: string
                   rebalance_treasury:
+                    type: string
+              extra_info:
+                type: object
+                properties:
+                  tvl:
+                    type: string
+                  lp_token_price:
                     type: string
         default:
           description: An unexpected error response.
@@ -39715,6 +39731,56 @@ paths:
           in: path
           required: true
           type: string
+      tags:
+        - Query
+  /elys-network/elys/incentive/aprs:
+    get:
+      summary: Calculate APRs
+      operationId: ElysIncentiveAprs
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              usdc_apr_usdc:
+                type: string
+              eden_apr_usdc:
+                type: string
+              usdc_apr_edenb:
+                type: string
+              eden_apr_edenb:
+                type: string
+              usdc_apr_eden:
+                type: string
+              eden_apr_eden:
+                type: string
+              edenb_apr_eden:
+                type: string
+              usdc_apr_elys:
+                type: string
+              eden_apr_elys:
+                type: string
+              edenb_apr_elys:
+                type: string
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
       tags:
         - Query
   /elys-network/elys/incentive/community_pool:
@@ -83027,6 +83093,13 @@ definitions:
         type: string
       rebalance_treasury:
         type: string
+  elys.amm.PoolExtraInfo:
+    type: object
+    properties:
+      tvl:
+        type: string
+      lp_token_price:
+        type: string
   elys.amm.PoolParams:
     type: object
     properties:
@@ -83162,6 +83235,15 @@ definitions:
             total_weight:
               type: string
             rebalance_treasury:
+              type: string
+      extra_infos:
+        type: array
+        items:
+          type: object
+          properties:
+            tvl:
+              type: string
+            lp_token_price:
               type: string
       pagination:
         type: object
@@ -83304,6 +83386,13 @@ definitions:
           total_weight:
             type: string
           rebalance_treasury:
+            type: string
+      extra_info:
+        type: object
+        properties:
+          tvl:
+            type: string
+          lp_token_price:
             type: string
   elys.amm.QueryInRouteByDenomResponse:
     type: object
@@ -84744,6 +84833,29 @@ definitions:
     type: object
     properties:
       apr:
+        type: string
+  elys.incentive.QueryAprsResponse:
+    type: object
+    properties:
+      usdc_apr_usdc:
+        type: string
+      eden_apr_usdc:
+        type: string
+      usdc_apr_edenb:
+        type: string
+      eden_apr_edenb:
+        type: string
+      usdc_apr_eden:
+        type: string
+      eden_apr_eden:
+        type: string
+      edenb_apr_eden:
+        type: string
+      usdc_apr_elys:
+        type: string
+      eden_apr_elys:
+        type: string
+      edenb_apr_elys:
         type: string
   elys.incentive.QueryCommunityPoolResponse:
     type: object

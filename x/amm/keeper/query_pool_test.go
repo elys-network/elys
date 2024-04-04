@@ -57,8 +57,8 @@ func TestPoolQuerySingle(t *testing.T) {
 			} else {
 				require.NoError(t, err)
 				require.Equal(t,
-					nullify.Fill(tc.response),
-					nullify.Fill(response),
+					nullify.Fill(tc.response.Pool),
+					nullify.Fill(response.Pool),
 				)
 			}
 		})
