@@ -29,6 +29,7 @@ func updateGenesis(validatorBalance, homePath, genesisFilePath string) {
 		authtypes.NewModuleAddress("distribution").String(),
 		authtypes.NewModuleAddress("bonded_tokens_pool").String(),
 		authtypes.NewModuleAddress("not_bonded_tokens_pool").String(),
+		authtypes.NewModuleAddress("gov").String(),
 	}
 
 	var coinsToRemove sdk.Coins
@@ -75,7 +76,8 @@ func updateGenesis(validatorBalance, homePath, genesisFilePath string) {
 	genesis.AppState.Gov.DepositParams.MinDeposit = sdk.Coins{sdk.NewInt64Coin("uelys", 10000000)}
 
 	// update commitment params
-	// genesis.AppState.Commitment.Params.VestingInfos[0].NumMaxVestings = "100000"
+	genesis.AppState.Commitment.Params.VestingInfos[0].NumMaxVestings = "1"
+	genesis.AppState.Commitment.Params.VestingInfos[0].EpochIdentifier = "week"
 
 	// update wasm params
 	// genesis.AppState.Wasm.Params = wasmtypes.DefaultParams()

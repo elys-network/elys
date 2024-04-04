@@ -11,8 +11,8 @@ import (
 
 func main() {
 	var rootCmd = &cobra.Command{
-		Use:   "initiator [snapshot_url] [old_binary_url] [new_binary_url] [flags]",
-		Short: "Chain Initiator is a tool for running a chain from a snapshot.",
+		Use:   "upgrade-assure [snapshot_url] [old_binary_url] [new_binary_url] [flags]",
+		Short: "Upgrade Assure is a tool for running a chain from a snapshot and to test out the upgrade process.",
 		Long:  `A tool for running a chain from a snapshot.`,
 		Args:  cobra.ExactArgs(3), // Expect exactly 1 argument
 		Run: func(cmd *cobra.Command, args []string) {
