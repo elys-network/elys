@@ -7,6 +7,8 @@ import (
 	"cosmossdk.io/math"
 	"github.com/cometbft/cometbft/libs/log"
 	"github.com/cosmos/cosmos-sdk/codec"
+	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
+	"github.com/cosmos/cosmos-sdk/crypto/keys/ed25519"
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
@@ -67,9 +69,15 @@ func (k Keeper) TotalBondedTokens(ctx sdk.Context) math.Int {
 
 func (k Keeper) GetEdenValidator(ctx sdk.Context) stakingtypes.ValidatorI {
 	params := k.GetParams(ctx)
+	// TODO: check potential issue
+	pk1 := ed25519.GenPrivKeyFromSecret([]byte{1}).PubKey()
+	pk1Any, err := codectypes.NewAnyWithValue(pk1)
+	if err != nil {
+		panic(err)
+	}
 	return stakingtypes.Validator{
 		OperatorAddress: params.EdenCommitVal,
-		ConsensusPubkey: nil,
+		ConsensusPubkey: pk1Any,
 		Jailed:          false,
 		Status:          stakingtypes.Bonded,
 		Tokens:          sdk.ZeroInt(), // TODO: total Eden commitment
@@ -88,9 +96,15 @@ func (k Keeper) GetEdenValidator(ctx sdk.Context) stakingtypes.ValidatorI {
 
 func (k Keeper) GetEdenBValidator(ctx sdk.Context) stakingtypes.ValidatorI {
 	params := k.GetParams(ctx)
+	// TODO: check potential issue
+	pk2 := ed25519.GenPrivKeyFromSecret([]byte{2}).PubKey()
+	pk2Any, err := codectypes.NewAnyWithValue(pk2)
+	if err != nil {
+		panic(err)
+	}
 	return stakingtypes.Validator{
 		OperatorAddress: params.EdenbCommitVal,
-		ConsensusPubkey: nil,
+		ConsensusPubkey: pk2Any,
 		Jailed:          false,
 		Status:          stakingtypes.Unbonded,
 		Tokens:          sdk.ZeroInt(), // TODO: total EdenB commitment
@@ -188,13 +202,17 @@ func (k Keeper) IterateDelegations(ctx sdk.Context, delegator sdk.AccAddress,
 
 // iterate through the bonded validator set and perform the provided function
 func (k Keeper) IterateBondedValidatorsByPower(ctx sdk.Context, fn func(index int64, validator stakingtypes.ValidatorI) (stop bool)) {
-	edenValidator := k.GetEdenValidator(ctx)
-	edenBValidator := k.GetEdenBValidator(ctx)
-	if stop := fn(0, edenValidator); stop {
-		return
+	if false { // TODO: if eden commitment positive
+		edenValidator := k.GetEdenValidator(ctx)
+		if stop := fn(0, edenValidator); stop {
+			return
+		}
 	}
-	if stop := fn(0, edenBValidator); stop {
-		return
+	if false { // TODO: if edenB commmitment positive
+		edenBValidator := k.GetEdenBValidator(ctx)
+		if stop := fn(0, edenBValidator); stop {
+			return
+		}
 	}
 	k.Keeper.IterateBondedValidatorsByPower(ctx, fn)
 }

@@ -10,21 +10,39 @@ import (
 
 // InitGenesis initializes the module's state from a provided genesis state.
 func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) {
+	var shouldRunEdenValHook = false
+	var shouldRunEdenBValHook = false
+	edenValAddr := sdk.ValAddress(authtypes.NewModuleAddress(ptypes.Eden))
+	edenBValAddr := sdk.ValAddress(authtypes.NewModuleAddress(ptypes.EdenB))
+
 	// Create validators for Eden and EdenB
 	if genState.Params.EdenCommitVal == "" {
-		edenValAddr := sdk.ValAddress(authtypes.NewModuleAddress(ptypes.Eden))
-		k.Keeper.Hooks().AfterValidatorCreated(ctx, edenValAddr)
 		genState.Params.EdenCommitVal = edenValAddr.String()
+		shouldRunEdenValHook = true
 	}
 
 	if genState.Params.EdenbCommitVal == "" {
-		edenBValAddr := sdk.ValAddress(authtypes.NewModuleAddress(ptypes.EdenB))
-		k.Keeper.Hooks().AfterValidatorCreated(ctx, edenBValAddr)
 		genState.Params.EdenbCommitVal = edenBValAddr.String()
+		shouldRunEdenBValHook = true
 	}
 
 	// this line is used by starport scaffolding # genesis/module/init
 	k.SetParams(ctx, genState.Params)
+
+	if k.Hooks() != nil {
+		if shouldRunEdenValHook {
+			err := k.Hooks().AfterValidatorCreated(ctx, edenValAddr)
+			if err != nil {
+				panic(err)
+			}
+		}
+		if shouldRunEdenBValHook {
+			err := k.Hooks().AfterValidatorCreated(ctx, edenBValAddr)
+			if err != nil {
+				panic(err)
+			}
+		}
+	}
 
 	// TODO: remove rewards management in incentive module (might be good to completely remove incentive module)
 }

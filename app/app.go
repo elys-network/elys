@@ -585,6 +585,30 @@ func NewElysApp(
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 
+	commitmentKeeper := *commitmentmodulekeeper.NewKeeper(
+		appCodec,
+		keys[commitmentmoduletypes.StoreKey],
+		keys[commitmentmoduletypes.MemStoreKey],
+		app.GetSubspace(commitmentmoduletypes.ModuleName),
+
+		app.BankKeeper,
+		app.StakingKeeper,
+		app.AssetprofileKeeper,
+		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+	)
+
+	app.EstakingKeeper = *estakingmodulekeeper.NewKeeper(
+		appCodec,
+		keys[estakingmoduletypes.StoreKey],
+		keys[estakingmoduletypes.MemStoreKey],
+		app.GetSubspace(estakingmoduletypes.ModuleName),
+		app.StakingKeeper,
+		commitmentKeeper,
+		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+	)
+
+	estakingModule := estakingmodule.NewAppModule(appCodec, app.EstakingKeeper, app.AccountKeeper, app.BankKeeper)
+
 	app.MintKeeper = mintkeeper.NewKeeper(
 		appCodec,
 		keys[minttypes.StoreKey],
@@ -599,7 +623,7 @@ func NewElysApp(
 		appCodec,
 		cdc,
 		keys[slashingtypes.StoreKey],
-		app.StakingKeeper,
+		app.EstakingKeeper,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 
@@ -746,18 +770,6 @@ func NewElysApp(
 		keys[epochsmoduletypes.StoreKey],
 	)
 
-	commitmentKeeper := *commitmentmodulekeeper.NewKeeper(
-		appCodec,
-		keys[commitmentmoduletypes.StoreKey],
-		keys[commitmentmoduletypes.MemStoreKey],
-		app.GetSubspace(commitmentmoduletypes.ModuleName),
-
-		app.BankKeeper,
-		app.StakingKeeper,
-		app.AssetprofileKeeper,
-		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
-	)
-
 	app.AccountedPoolKeeper = *accountedpoolmodulekeeper.NewKeeper(
 		appCodec,
 		keys[accountedpoolmoduletypes.StoreKey],
@@ -829,17 +841,6 @@ func NewElysApp(
 			app.EstakingKeeper.CommitmentHooks(),
 		),
 	)
-
-	app.EstakingKeeper = *estakingmodulekeeper.NewKeeper(
-		appCodec,
-		keys[estakingmoduletypes.StoreKey],
-		keys[estakingmoduletypes.MemStoreKey],
-		app.GetSubspace(estakingmoduletypes.ModuleName),
-		app.StakingKeeper,
-		&app.CommitmentKeeper,
-		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
-	)
-	estakingModule := estakingmodule.NewAppModule(appCodec, app.EstakingKeeper, app.AccountKeeper, app.BankKeeper)
 
 	app.DistrKeeper = distrkeeper.NewKeeper(
 		appCodec,

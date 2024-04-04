@@ -12,6 +12,9 @@ const (
 
 	// MemStoreKey defines the in-memory store key
 	MemStoreKey = "mem_estaking"
+
+	// ParamsKey is the prefix to retrieve all Params
+	ParamsKey = "Params/value/"
 )
 
 func KeyPrefix(p string) []byte {
