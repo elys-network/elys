@@ -7,6 +7,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	"github.com/elys-network/elys/x/masterchef/types"
+	ptypes "github.com/elys-network/elys/x/parameter/types"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -128,7 +129,7 @@ func (k msgServer) AddExternalIncentive(goCtx context.Context, msg *types.MsgAdd
 func (k msgServer) ClaimRewards(goCtx context.Context, msg *types.MsgClaimRewards) (*types.MsgClaimRewardsResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	coins := sdk.NewCoins()
+	sender := sdk.MustAccAddressFromBech32(msg.Sender)
 
 	if len(msg.PoolIds) == 0 {
 		allPools := k.GetAllPools(ctx)
@@ -137,24 +138,16 @@ func (k msgServer) ClaimRewards(goCtx context.Context, msg *types.MsgClaimReward
 		}
 	}
 
+	coins := sdk.NewCoins()
 	for _, poolId := range msg.PoolIds {
-		k.AfterWithdraw(
-			ctx,
-			poolId,
-			msg.Sender,
-			sdk.ZeroInt(),
-		)
+		k.AfterWithdraw(ctx, poolId, msg.Sender, sdk.ZeroInt())
 
 		for _, rewardDenom := range k.GetRewardDenoms(ctx, poolId) {
 			userRewardInfo, found := k.GetUserRewardInfo(ctx, msg.Sender, poolId, rewardDenom)
 
 			if found && userRewardInfo.RewardPending.IsPositive() {
-				coins = coins.Add(
-					sdk.NewCoin(
-						rewardDenom,
-						userRewardInfo.RewardPending.TruncateInt(),
-					),
-				)
+				coin := sdk.NewCoin(rewardDenom, userRewardInfo.RewardPending.TruncateInt())
+				coins = coins.Add(coin)
 
 				userRewardInfo.RewardPending = sdk.ZeroDec()
 				k.SetUserRewardInfo(ctx, userRewardInfo)
@@ -162,13 +155,24 @@ func (k msgServer) ClaimRewards(goCtx context.Context, msg *types.MsgClaimReward
 		}
 	}
 
-	// TODO: consider Eden
-	err := k.bankKeeper.SendCoinsFromModuleToAccount(
-		ctx,
-		types.ModuleName,
-		sdk.MustAccAddressFromBech32(msg.Sender),
-		coins,
-	)
+	// Add Eden and EdenB as claimed
+	commitments := k.cmk.GetCommitments(ctx, msg.Sender)
+	if coins.AmountOf(ptypes.Eden).IsPositive() {
+		coin := sdk.NewCoin(ptypes.Eden, coins.AmountOf(ptypes.Eden))
+		coins = coins.Sub(coin)
+		commitments.AddClaimed(coin)
+	}
+	if coins.AmountOf(ptypes.EdenB).IsPositive() {
+		coin := sdk.NewCoin(ptypes.EdenB, coins.AmountOf(ptypes.EdenB))
+		coins = coins.Sub(coin)
+		commitments.AddClaimed(coin)
+	}
+
+	// Save the updated Commitments
+	k.cmk.SetCommitments(ctx, commitments)
+
+	// Send coins for rest of rewards
+	err := k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, sender, coins)
 	if err != nil {
 		return nil, err
 	}
