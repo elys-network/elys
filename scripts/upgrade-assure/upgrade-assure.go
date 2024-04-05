@@ -172,7 +172,7 @@ func main() {
 				waitForBlockHeight(oldBinaryPath, rpc, upgradeBlockHeight)
 
 				// wait 5 seconds
-				time.Sleep(5 * time.Second)
+				time.Sleep(10 * time.Second)
 
 				// stop old binaries
 				stop(oldBinaryCmd, oldBinaryCmd2)
@@ -192,9 +192,9 @@ func main() {
 				waitForNextBlock(newBinaryPath, rpc)
 				waitForNextBlock(newBinaryPath, rpc2)
 
-				// wait for next block
-				waitForNextBlock(newBinaryPath, rpc)
-				waitForNextBlock(newBinaryPath, rpc2)
+				// check if the upgrade was successful
+				queryUpgradeApplied(newBinaryPath, rpc, newVersion)
+				queryUpgradeApplied(newBinaryPath, rpc2, newVersion)
 
 				// stop new binaries
 				stop(newBinaryCmd, newBinaryCmd2)
