@@ -39,4 +39,4 @@ jobs:
         run: make build
 
       - name: Execute upgrade-assure script
-        run: go run ./scripts/upgrade-assure/... $DOWNLOAD_URL https://github.com/elys-network/elys/releases/download/$LATEST_TAG/elysd-$LATEST_TAG-linux-amd64 ./build/elysd
+        run: go run ./scripts/upgrade-assure/... $DOWNLOAD_URL https://github.com/elys-network/elys/releases/download/$LATEST_TAG/elysd-$LATEST_TAG-linux-amd64 ./build/elysd --db-engine goleveldb

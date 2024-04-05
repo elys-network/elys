@@ -18,6 +18,7 @@ const (
 	flagKeyringBackend  = "keyring-backend"
 	flagGenesisFilePath = "genesis-file-path"
 	flagBroadcastMode   = "broadcast-mode"
+	flagDbEngine        = "db-engine"
 
 	// node 1
 	flagHome                    = "home"
@@ -51,6 +52,7 @@ func getFlags(cmd *cobra.Command) (
 	keyringBackend string,
 	genesisFilePath string,
 	broadcastMode string,
+	dbEngine string,
 
 	// node 1
 	homePath string,
@@ -116,6 +118,11 @@ func getFlags(cmd *cobra.Command) (
 	broadcastMode, _ = cmd.Flags().GetString(flagBroadcastMode)
 	if broadcastMode == "" {
 		log.Fatalf(Red + "broadcast mode is required")
+	}
+
+	dbEngine, _ = cmd.Flags().GetString(flagDbEngine)
+	if dbEngine == "" {
+		log.Fatalf(Red + "database engine is required")
 	}
 
 	// node 1

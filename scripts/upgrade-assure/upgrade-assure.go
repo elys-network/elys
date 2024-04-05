@@ -18,7 +18,7 @@ func main() {
 		Run: func(cmd *cobra.Command, args []string) {
 			snapshotUrl, oldBinaryUrl, newBinaryUrl := getArgs(args)
 			// global flags
-			skipSnapshot, skipChainInit, skipNodeStart, skipProposal, skipBinary, chainId, keyringBackend, genesisFilePath, broadcastMode,
+			skipSnapshot, skipChainInit, skipNodeStart, skipProposal, skipBinary, chainId, keyringBackend, genesisFilePath, broadcastMode, dbEngine,
 				// node 1 flags
 				homePath, moniker, validatorKeyName, validatorBalance, validatorSelfDelegation, validatorMnemonic, rpc, p2p,
 				// node 2 flags
@@ -96,8 +96,8 @@ func main() {
 				node1Id := queryNodeId(oldBinaryPath, homePath)
 
 				// update config files to enable api and cors
-				updateConfig(homePath, p2p, node1Id)
-				updateConfig(homePath2, p2p, node1Id)
+				updateConfig(homePath, p2p, node1Id, dbEngine)
+				updateConfig(homePath2, p2p, node1Id, dbEngine)
 			}
 
 			if !skipNodeStart {
@@ -204,6 +204,7 @@ func main() {
 	rootCmd.PersistentFlags().String(flagKeyringBackend, "test", "keyring backend")
 	rootCmd.PersistentFlags().String(flagGenesisFilePath, "/tmp/genesis.json", "genesis file path")
 	rootCmd.PersistentFlags().String(flagBroadcastMode, "sync", "broadcast mode")
+	rootCmd.PersistentFlags().String(flagDbEngine, "pebbledb", "database engine to use")
 
 	// node 1 flags
 	rootCmd.PersistentFlags().String(flagHome, homeEnv+"/.elys", "home directory")

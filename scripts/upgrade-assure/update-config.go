@@ -28,7 +28,7 @@ func sed(pattern, file string) {
 	}
 }
 
-func updateConfig(homePath, p2p, nodeId string) {
+func updateConfig(homePath, p2p, nodeId, dbEngine string) {
 	// Path to config files
 	configPath := homePath + "/config/config.toml"
 	appPath := homePath + "/config/app.toml"
@@ -41,7 +41,7 @@ func updateConfig(homePath, p2p, nodeId string) {
 	sed("s/^timeout_broadcast_tx_commit =.*/timeout_broadcast_tx_commit = \\\"30s\\\"/", configPath)
 
 	// Update config.toml for db_backend
-	sed("s/^db_backend =.*/db_backend = \\\"pebbledb\\\"/", configPath)
+	sed("s/^db_backend =.*/db_backend = \\\""+dbEngine+"\\\"/", configPath)
 
 	// update p2p url to remove the `tcp://` or `http://` or `https://` prefix
 	p2p = strings.TrimPrefix(p2p, "tcp://")
@@ -59,7 +59,7 @@ func updateConfig(homePath, p2p, nodeId string) {
 	sed("/^# Enable defines if the API server should be enabled./{n;s/enable = false/enable = true/;}", appPath)
 
 	// Update app.toml for app-db-backend
-	sed("s/^app\\-db\\-backend =.*/app\\-db\\-backend = \\\"pebbledb\\\"/", appPath)
+	sed("s/^app\\-db\\-backend =.*/app\\-db\\-backend = \\\""+dbEngine+"\\\"/", appPath)
 
 	// Update client.toml for keyring-backend
 	sed("s/^keyring\\-backend =.*/keyring\\-backend = \\\"test\\\"/", clientPath)
