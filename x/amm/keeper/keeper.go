@@ -7,7 +7,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
 
 	"github.com/elys-network/elys/x/amm/types"
 	commitmentkeeper "github.com/elys-network/elys/x/commitment/keeper"
@@ -19,7 +18,6 @@ type (
 		cdc               codec.BinaryCodec
 		storeKey          storetypes.StoreKey
 		transientStoreKey storetypes.StoreKey
-		paramstore        paramtypes.Subspace
 		authority         string
 		hooks             types.AmmHooks
 
@@ -37,7 +35,6 @@ func NewKeeper(
 	cdc codec.BinaryCodec,
 	storeKey,
 	transientStoreKey storetypes.StoreKey,
-	ps paramtypes.Subspace,
 	authority string,
 
 	parameterKeeper *pkeeper.Keeper,
@@ -48,16 +45,11 @@ func NewKeeper(
 	assetProfileKeeper types.AssetProfileKeeper,
 	accountedPoolKeeper types.AccountedPoolKeeper,
 ) *Keeper {
-	// set KeyTable if it has not already been set
-	if !ps.HasKeyTable() {
-		ps = ps.WithKeyTable(types.ParamKeyTable())
-	}
 
 	return &Keeper{
 		cdc:               cdc,
 		storeKey:          storeKey,
 		transientStoreKey: transientStoreKey,
-		paramstore:        ps,
 		authority:         authority,
 
 		parameterKeeper:     parameterKeeper,

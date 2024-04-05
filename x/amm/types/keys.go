@@ -32,6 +32,9 @@ const (
 	TLastSwapRequestIndex  = "last-swap-request-index"
 	TSwapExactAmountInKey  = "batch/swap-exact-amount-in"
 	TSwapExactAmountOutKey = "batch/swap-exact-amount-out"
+
+	// ParamsKey is the prefix to retrieve all Params
+	ParamsKey = "Params/value/"
 )
 
 func KeyPrefix(p string) []byte {

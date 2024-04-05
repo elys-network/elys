@@ -13,7 +13,6 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
-	typesparams "github.com/cosmos/cosmos-sdk/x/params/types"
 	"github.com/elys-network/elys/x/amm/keeper"
 	"github.com/elys-network/elys/x/amm/types"
 	"github.com/elys-network/elys/x/amm/types/mocks"
@@ -33,13 +32,6 @@ func AmmKeeper(t testing.TB) (*keeper.Keeper, sdk.Context, *mocks.AccountedPoolK
 	registry := codectypes.NewInterfaceRegistry()
 	cdc := codec.NewProtoCodec(registry)
 
-	paramsSubspace := typesparams.NewSubspace(cdc,
-		types.Amino,
-		storeKey,
-		transientStoreKey,
-		"AmmParams",
-	)
-
 	accountedPoolKeeper := mocks.NewAccountedPoolKeeper(t)
 	oracleKeeper := mocks.NewOracleKeeper(t)
 
@@ -47,7 +39,6 @@ func AmmKeeper(t testing.TB) (*keeper.Keeper, sdk.Context, *mocks.AccountedPoolK
 		cdc,
 		storeKey,
 		transientStoreKey,
-		paramsSubspace,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 		nil,
 		nil,
