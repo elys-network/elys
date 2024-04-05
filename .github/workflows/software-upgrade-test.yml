@@ -1,0 +1,42 @@
+name: Test Software Upgrade
+
+on:
+  pull_request:
+
+jobs:
+  software-upgrade-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Download HTML content
+        run: |
+          curl https://services.elystestnet-1.elys.aviaone.com/ > /tmp/download.html
+
+      - name: Retrieve the most recent download filename
+        id: set_download_url
+        run: |
+          FILENAME=$(cat /tmp/download.html | \
+            egrep -o 'elystestnet-1_[0-9]{4}-[0-9]{2}-[0-9]{2}\.tar\.gz' | \
+            sort | uniq | \
+            tail -n 1)
+          echo "DOWNLOAD_URL=https://services.elystestnet-1.elys.aviaone.com/$FILENAME" >> $GITHUB_ENV
+          echo "::set-output name=download_url::$DOWNLOAD_URL"
+
+      - name: Retrieve latest tag
+        id: set_latest_tag
+        run: |
+          LATEST_TAG=$(git describe --tags `git rev-list --tags --max-count=1`)
+          echo "LATEST_TAG=$LATEST_TAG" >> $GITHUB_ENV
+          echo "::set-output name=latest_tag::$LATEST_TAG"
+
+      - name: Create git tag
+        run: git tag v999.999.999
+
+      - name: Run make build
+        run: make build
+
+      - name: Execute upgrade-assure script
+        run: go run ./scripts/upgrade-assure/... ${{ steps.set_download_url.outputs.download_url }} https://github.com/elys-network/elys/releases/download/${{ steps.set_latest_tag.outputs.latest_tag }}/elysd-${{ steps.set_latest_tag.outputs.latest_tag }}-linux-amd64 ./build/elysd
