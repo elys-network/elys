@@ -82,8 +82,6 @@ func TestAPRCalculationPerPool(t *testing.T) {
 		DistributionStartBlock: sdk.NewInt(1),
 		// distribution duration - block number per year
 		TotalBlocksPerYear: sdk.NewInt(10000),
-		// maximum eden allocation per day that won't exceed 30% apr
-		MaxEdenPerAllocation: sdk.NewInt(100),
 		// current epoch in block number
 		CurrentEpochInBlocks: sdk.NewInt(1),
 	}
@@ -94,7 +92,7 @@ func TestAPRCalculationPerPool(t *testing.T) {
 	// Get pool info from incentive param
 	poolInfo, found := ik.GetPoolInfo(ctx, poolId)
 	require.Equal(t, found, true)
-	require.Equal(t, poolInfo.EdenApr.String(), "0.182317682317682318")
+	require.Equal(t, poolInfo.EdenApr.String(), "0.499500499500499500")
 
 	// Get dex rewards per pool
 	revenueAddress := ammtypes.NewPoolRevenueAddress(poolId)
@@ -107,12 +105,12 @@ func TestAPRCalculationPerPool(t *testing.T) {
 	require.NoError(t, err)
 
 	// 1 week later.
-	ctx = ctx.WithBlockHeight(params.DistributionInterval * ptypes.DaysPerWeek)
+	ctx = ctx.WithBlockHeight(params.DistributionInterval * 7)
 	poolInfo.NumBlocks = sdk.NewInt(ctx.BlockHeight())
 	ik.SetPoolInfo(ctx, poolId, poolInfo)
 
 	ik.UpdateLPRewardsUnclaimed(ctx, lpIncentive)
 	poolInfo, found = ik.GetPoolInfo(ctx, poolId)
 	require.Equal(t, found, true)
-	require.Equal(t, poolInfo.EdenApr.String(), "0.182317682317682318")
+	require.Equal(t, poolInfo.EdenApr.String(), "0.499500499500499500")
 }

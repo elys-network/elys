@@ -22,7 +22,7 @@ func (suite *KeeperTestSuite) TestMsgServerCreatePool() {
 	}{
 		{
 			desc:              "zero tvl pool creation",
-			senderInitBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.Eden, 1000000), sdk.NewInt64Coin(ptypes.Elys, 1000000)},
+			senderInitBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.Eden, 1000000), sdk.NewInt64Coin(ptypes.Elys, 11000000)},
 			poolParams: types.PoolParams{
 				SwapFee:                     sdk.ZeroDec(),
 				ExitFee:                     sdk.ZeroDec(),
@@ -50,7 +50,7 @@ func (suite *KeeperTestSuite) TestMsgServerCreatePool() {
 		},
 		{
 			desc:              "positive tvl pool creation",
-			senderInitBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.Eden, 1000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)},
+			senderInitBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.Eden, 1000000), sdk.NewInt64Coin(ptypes.Elys, 10000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)},
 			poolParams: types.PoolParams{
 				SwapFee:                     sdk.ZeroDec(),
 				ExitFee:                     sdk.ZeroDec(),
@@ -78,7 +78,7 @@ func (suite *KeeperTestSuite) TestMsgServerCreatePool() {
 		},
 		{
 			desc:              "not enough balance to create pool",
-			senderInitBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.Eden, 1000000)},
+			senderInitBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.Eden, 1000000), sdk.NewInt64Coin(ptypes.Elys, 10000000)},
 			poolParams: types.PoolParams{
 				SwapFee:                     sdk.ZeroDec(),
 				ExitFee:                     sdk.ZeroDec(),

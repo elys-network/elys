@@ -8,7 +8,6 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/elys-network/elys/x/incentive/types"
-	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
 
 // EndBlocker of incentive module
@@ -94,8 +93,6 @@ func (k Keeper) ProcessUpdateIncentiveParams(ctx sdk.Context) bool {
 		totalBlocksPerYear := sdk.NewInt(int64(inflation.EndBlockHeight - inflation.StartBlockHeight + 1))
 
 		// ------------- LP Incentive parameter -------------
-		// ptypes.DaysPerYear is guaranteed to be positive as it is defined as a constant
-		EpochNumBlocks := totalBlocksPerYear.Quo(sdk.NewInt(ptypes.DaysPerYear))
 		totalDistributionEpochPerYear := totalBlocksPerYear.Quo(sdk.NewInt(params.DistributionInterval))
 		// If totalDistributionEpochPerYear is zero, we skip this inflation to avoid division by zero
 		if totalBlocksPerYear == sdk.ZeroInt() {
@@ -105,8 +102,6 @@ func (k Keeper) ProcessUpdateIncentiveParams(ctx sdk.Context) bool {
 			Mul(totalDistributionEpochPerYear).
 			Quo(totalBlocksPerYear)
 
-		// PerAllocation means per day - since allocation's once per day
-		maxEdenPerAllocation := sdk.NewInt(int64(inflation.Inflation.LmRewards)).Mul(EpochNumBlocks).Quo(totalBlocksPerYear)
 		incentiveInfo := types.IncentiveInfo{
 			// reward amount in eden for 1 year
 			EdenAmountPerYear: sdk.NewInt(int64(inflation.Inflation.LmRewards)),
@@ -114,8 +109,6 @@ func (k Keeper) ProcessUpdateIncentiveParams(ctx sdk.Context) bool {
 			DistributionStartBlock: sdk.NewInt(int64(inflation.StartBlockHeight)),
 			// distribution duration - block number per year
 			TotalBlocksPerYear: totalBlocksPerYear,
-			// maximum eden allocation per day that won't exceed 30% apr
-			MaxEdenPerAllocation: maxEdenPerAllocation,
 			// current epoch in block number
 			CurrentEpochInBlocks: currentEpochInBlocks,
 		}
@@ -136,7 +129,6 @@ func (k Keeper) ProcessUpdateIncentiveParams(ctx sdk.Context) bool {
 		// ------------- Stakers parameter -------------
 		totalDistributionEpochPerYear = totalBlocksPerYear.Quo(sdk.NewInt(params.DistributionInterval))
 		currentEpochInBlocks = sdk.NewInt(ctx.BlockHeight() - int64(inflation.StartBlockHeight)).Mul(totalDistributionEpochPerYear).Quo(totalBlocksPerYear)
-		maxEdenPerAllocation = sdk.NewInt(int64(inflation.Inflation.IcsStakingRewards)).Mul(EpochNumBlocks).Quo(totalBlocksPerYear)
 		incentiveInfo = types.IncentiveInfo{
 			// reward amount in eden for 1 year
 			EdenAmountPerYear: sdk.NewInt(int64(inflation.Inflation.IcsStakingRewards)),
@@ -144,8 +136,6 @@ func (k Keeper) ProcessUpdateIncentiveParams(ctx sdk.Context) bool {
 			DistributionStartBlock: sdk.NewInt(int64(inflation.StartBlockHeight)),
 			// distribution duration - block number per year
 			TotalBlocksPerYear: totalBlocksPerYear,
-			// maximum eden allocation per day that won't exceed 30% apr
-			MaxEdenPerAllocation: maxEdenPerAllocation,
 			// current epoch in block number
 			CurrentEpochInBlocks: currentEpochInBlocks,
 		}

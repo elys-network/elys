@@ -30,7 +30,6 @@ func (k Keeper) BeginBlocker(ctx sdk.Context) {
 					k.LiquidatePositionIfUnhealthy(ctx, position, pool, ammPool)
 				}
 			}
-			k.SetPool(ctx, pool)
 		}
 	}
 }

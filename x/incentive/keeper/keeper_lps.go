@@ -6,13 +6,30 @@ import (
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	ctypes "github.com/elys-network/elys/x/commitment/types"
 	"github.com/elys-network/elys/x/incentive/types"
+	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
 
 // Calculate new Eden token amounts based on LpElys committed and MElys committed
-func (k Keeper) CalcRewardsForLPs(ctx sdk.Context, totalProxyTVL sdk.Dec, commitments ctypes.Commitments, edenAmountForLpPerDistribution math.Int, gasFeesForLPsPerDistribution sdk.Dec) (math.Int, math.Int) {
+func (k Keeper) CalcRewardsForLPs(
+	ctx sdk.Context,
+	totalBlocksPerYear sdk.Int,
+	totalProxyTVL sdk.Dec,
+	commitments ctypes.Commitments,
+	edenAmountForLpPerDistribution math.Int,
+	gasFeesForLPsPerDistribution sdk.Dec,
+) (math.Int, math.Int) {
 	// Method 2 - Using Proxy TVL
 	totalNewEdenAllocatedPerDistribution := sdk.ZeroInt()
 	totalDexRewardsAllocatedPerDistribution := sdk.ZeroDec()
+
+	entry, found := k.assetProfileKeeper.GetEntry(ctx, ptypes.BaseCurrency)
+	if !found {
+		return sdk.ZeroInt(), sdk.ZeroInt()
+	}
+	baseCurrency := entry.Denom
+
+	params := k.GetParams(ctx)
+	edenDenomPrice := k.GetEdenDenomPrice(ctx, baseCurrency)
 
 	// Iterate to calculate total Eden from LpElys, MElys committed
 	k.amm.IterateLiquidityPools(ctx, func(p ammtypes.Pool) bool {
@@ -48,6 +65,15 @@ func (k Keeper) CalcRewardsForLPs(ctx sdk.Context, totalProxyTVL sdk.Dec, commit
 
 		// Calculate new Eden for this pool
 		newEdenAllocatedForPool := poolShare.MulInt(edenAmountForLpPerDistribution)
+
+		poolMaxEdenAmount := params.MaxEdenRewardAprLps.
+			Mul(tvl).
+			MulInt64(params.DistributionInterval).
+			QuoInt(totalBlocksPerYear).
+			Quo(edenDenomPrice)
+
+		// Use min amount (eden allocation from tokenomics and max apr based eden amount)
+		newEdenAllocatedForPool = sdk.MinDec(newEdenAllocatedForPool, poolMaxEdenAmount)
 
 		// this lp token committed
 		commmittedLpToken := commitments.GetCommittedAmountForDenom(lpToken)
