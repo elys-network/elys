@@ -37947,6 +37947,10 @@ paths:
                 properties:
                   pool_creation_fee:
                     type: string
+                  slippage_track_duration:
+                    type: string
+                    format: uint64
+                    title: 'default 1 week: 604,800'
             description: >-
               QueryParamsResponse is response type for the Query/Params RPC
               method.
@@ -83024,6 +83028,10 @@ definitions:
     properties:
       pool_creation_fee:
         type: string
+      slippage_track_duration:
+        type: string
+        format: uint64
+        title: 'default 1 week: 604,800'
     description: Params defines the parameters for the module.
   elys.amm.Pool:
     type: object
@@ -83462,6 +83470,10 @@ definitions:
         properties:
           pool_creation_fee:
             type: string
+          slippage_track_duration:
+            type: string
+            format: uint64
+            title: 'default 1 week: 604,800'
     description: QueryParamsResponse is response type for the Query/Params RPC method.
   elys.amm.QuerySlippageTrackAllResponse:
     type: object

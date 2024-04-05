@@ -6,9 +6,10 @@ import (
 )
 
 // NewParams creates a new Params instance
-func NewParams(poolCreationFee math.Int) Params {
+func NewParams(poolCreationFee math.Int, slippageTrackDuration uint64) Params {
 	return Params{
-		PoolCreationFee: poolCreationFee,
+		PoolCreationFee:       poolCreationFee,
+		SlippageTrackDuration: slippageTrackDuration,
 	}
 }
 
@@ -16,12 +17,12 @@ func NewParams(poolCreationFee math.Int) Params {
 func DefaultParams() Params {
 	return NewParams(
 		math.NewInt(10_000_000), // 10 ELYS
+		86400*7,
 	)
 }
 
 // Validate validates the set of params
 func (p Params) Validate() error {
-
 	return nil
 }
 
