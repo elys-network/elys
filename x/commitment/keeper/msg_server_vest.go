@@ -48,10 +48,8 @@ func (k Keeper) ProcessTokenVesting(ctx sdk.Context, denom string, amount math.I
 	vestingTokens = append(vestingTokens, &types.VestingTokens{
 		Denom:                vestingInfo.VestingDenom,
 		TotalAmount:          amount,
-		UnvestedAmount:       amount,
-		EpochIdentifier:      vestingInfo.EpochIdentifier,
-		NumEpochs:            vestingInfo.NumEpochs,
-		CurrentEpoch:         0,
+		ClaimedAmount:        sdk.ZeroInt(),
+		NumBlocks:            vestingInfo.NumBlocks,
 		VestStartedTimestamp: ctx.BlockTime().Unix(),
 	})
 	commitments.VestingTokens = vestingTokens

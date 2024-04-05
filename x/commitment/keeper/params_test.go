@@ -22,12 +22,11 @@ func TestGetParams(t *testing.T) {
 
 	vestingInfos := []*types.VestingInfo{
 		{
-			BaseDenom:       ptypes.Eden,
-			VestingDenom:    ptypes.Elys,
-			EpochIdentifier: "tenseconds",
-			NumEpochs:       10,
-			VestNowFactor:   sdk.NewInt(90),
-			NumMaxVestings:  10,
+			BaseDenom:      ptypes.Eden,
+			VestingDenom:   ptypes.Elys,
+			NumBlocks:      10,
+			VestNowFactor:  sdk.NewInt(90),
+			NumMaxVestings: 10,
 		},
 	}
 
@@ -44,12 +43,11 @@ func TestGetParams(t *testing.T) {
 func TestEncodeDecodeParams(t *testing.T) {
 	vestingInfos := []*types.VestingInfo{
 		{
-			BaseDenom:       ptypes.Eden,
-			VestingDenom:    ptypes.Elys,
-			EpochIdentifier: "tenseconds",
-			NumEpochs:       10,
-			VestNowFactor:   sdk.NewInt(90),
-			NumMaxVestings:  10,
+			BaseDenom:      ptypes.Eden,
+			VestingDenom:   ptypes.Elys,
+			NumBlocks:      10,
+			VestNowFactor:  sdk.NewInt(90),
+			NumMaxVestings: 10,
 		},
 	}
 
@@ -77,12 +75,11 @@ func TestGetParamsNew(t *testing.T) {
 
 	vestingInfos := []*types.VestingInfo{
 		{
-			BaseDenom:       ptypes.Eden,
-			VestingDenom:    ptypes.Elys,
-			EpochIdentifier: "tenseconds",
-			NumEpochs:       10,
-			VestNowFactor:   sdk.NewInt(90),
-			NumMaxVestings:  10,
+			BaseDenom:      ptypes.Eden,
+			VestingDenom:   ptypes.Elys,
+			NumBlocks:      10,
+			VestNowFactor:  sdk.NewInt(90),
+			NumMaxVestings: 10,
 		},
 	}
 
@@ -108,20 +105,18 @@ func TestGetVestingInfo(t *testing.T) {
 
 	vestingInfos := []*types.VestingInfo{
 		{
-			BaseDenom:       ptypes.Eden,
-			VestingDenom:    ptypes.Elys,
-			EpochIdentifier: "tenseconds",
-			NumEpochs:       10,
-			VestNowFactor:   sdk.NewInt(90),
-			NumMaxVestings:  10,
+			BaseDenom:      ptypes.Eden,
+			VestingDenom:   ptypes.Elys,
+			NumBlocks:      10,
+			VestNowFactor:  sdk.NewInt(90),
+			NumMaxVestings: 10,
 		},
 		{
-			BaseDenom:       "test",
-			VestingDenom:    "test_vesting",
-			EpochIdentifier: "tenseconds",
-			NumEpochs:       10,
-			VestNowFactor:   sdk.NewInt(90),
-			NumMaxVestings:  10,
+			BaseDenom:      "test",
+			VestingDenom:   "test_vesting",
+			NumBlocks:      10,
+			VestNowFactor:  sdk.NewInt(90),
+			NumMaxVestings: 10,
 		},
 	}
 

@@ -221,13 +221,13 @@ message QueryVestingInfoRequest {
 message VestingDetail {
     string id = 1;
     // The total vest for the current vest
-    BalanceAvailable total_vest = 2 [(gogoproto.nullable) = false, (amino.dont_omitempty) = true];
+    BalanceAvailable total_vesting = 2 [(gogoproto.nullable) = false, (amino.dont_omitempty) = true];
     // The balance that's already vested
-    BalanceAvailable balance_vested = 3 [(gogoproto.nullable) = false, (amino.dont_omitempty) = true];
-    // The remaining amount to vest
-    BalanceAvailable remaining_vest = 4 [(gogoproto.nullable) = false, (amino.dont_omitempty) = true];
-    // Remaining time to vest. Javascript timestamp.
-    int64 remaining_time = 5;
+    BalanceAvailable claimed = 3 [(gogoproto.nullable) = false, (amino.dont_omitempty) = true];
+    // The amount vested so far
+    BalanceAvailable vested_so_far = 4 [(gogoproto.nullable) = false, (amino.dont_omitempty) = true];
+    // Remaining blocks
+    int64 remaining_blocks = 5;
 }
 
 message QueryVestingInfoResponse {

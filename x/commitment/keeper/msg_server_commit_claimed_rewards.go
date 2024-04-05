@@ -22,6 +22,10 @@ func (k msgServer) CommitClaimedRewards(goCtx context.Context, msg *types.MsgCom
 		return nil, errorsmod.Wrapf(types.ErrCommitDisabled, "denom: %s", msg.Denom)
 	}
 
+	params := k.GetParams(ctx)
+	params.TotalCommitted = params.TotalCommitted.Add(sdk.NewCoin(msg.Denom, msg.Amount))
+	k.SetParams(ctx, params)
+
 	// Get the Commitments for the creator
 	commitments := k.GetCommitments(ctx, msg.Creator)
 

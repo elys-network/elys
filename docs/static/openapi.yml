@@ -39272,9 +39272,7 @@ paths:
                           type: string
                         vesting_denom:
                           type: string
-                        epoch_identifier:
-                          type: string
-                        num_epochs:
+                        num_blocks:
                           type: string
                           format: int64
                         vest_now_factor:
@@ -39282,6 +39280,23 @@ paths:
                         num_max_vestings:
                           type: string
                           format: int64
+                  total_committed:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        denom:
+                          type: string
+                        amount:
+                          type: string
+                      description: >-
+                        Coin defines a token with a denomination and an amount.
+
+
+                        NOTE: The amount field is an Int which implements the
+                        custom method
+
+                        signatures required by gogoproto.
             description: >-
               QueryParamsResponse is response type for the Query/Params RPC
               method.
@@ -39382,14 +39397,12 @@ paths:
                           type: string
                         total_amount:
                           type: string
-                        unvested_amount:
+                        claimed_amount:
                           type: string
-                        epoch_identifier:
-                          type: string
-                        num_epochs:
+                        num_blocks:
                           type: string
                           format: int64
-                        current_epoch:
+                        start_block:
                           type: string
                           format: int64
                         vest_started_timestamp:
@@ -84054,14 +84067,12 @@ definitions:
               type: string
             total_amount:
               type: string
-            unvested_amount:
+            claimed_amount:
               type: string
-            epoch_identifier:
-              type: string
-            num_epochs:
+            num_blocks:
               type: string
               format: int64
-            current_epoch:
+            start_block:
               type: string
               format: int64
             vest_started_timestamp:
@@ -84151,6 +84162,8 @@ definitions:
         format: uint64
   elys.commitment.MsgCancelVestResponse:
     type: object
+  elys.commitment.MsgClaimVestingResponse:
+    type: object
   elys.commitment.MsgCommitClaimedRewardsResponse:
     type: object
   elys.commitment.MsgCommitLiquidTokensResponse:
@@ -84193,9 +84206,7 @@ definitions:
               type: string
             vesting_denom:
               type: string
-            epoch_identifier:
-              type: string
-            num_epochs:
+            num_blocks:
               type: string
               format: int64
             vest_now_factor:
@@ -84203,6 +84214,20 @@ definitions:
             num_max_vestings:
               type: string
               format: int64
+      total_committed:
+        type: array
+        items:
+          type: object
+          properties:
+            denom:
+              type: string
+            amount:
+              type: string
+          description: |-
+            Coin defines a token with a denomination and an amount.
+
+            NOTE: The amount field is an Int which implements the custom method
+            signatures required by gogoproto.
     description: Params defines the parameters for the module.
   elys.commitment.QueryParamsResponse:
     type: object
@@ -84220,9 +84245,7 @@ definitions:
                   type: string
                 vesting_denom:
                   type: string
-                epoch_identifier:
-                  type: string
-                num_epochs:
+                num_blocks:
                   type: string
                   format: int64
                 vest_now_factor:
@@ -84230,6 +84253,23 @@ definitions:
                 num_max_vestings:
                   type: string
                   format: int64
+          total_committed:
+            type: array
+            items:
+              type: object
+              properties:
+                denom:
+                  type: string
+                amount:
+                  type: string
+              description: >-
+                Coin defines a token with a denomination and an amount.
+
+
+                NOTE: The amount field is an Int which implements the custom
+                method
+
+                signatures required by gogoproto.
     description: QueryParamsResponse is response type for the Query/Params RPC method.
   elys.commitment.QueryShowCommitmentsResponse:
     type: object
@@ -84301,14 +84341,12 @@ definitions:
                   type: string
                 total_amount:
                   type: string
-                unvested_amount:
+                claimed_amount:
                   type: string
-                epoch_identifier:
-                  type: string
-                num_epochs:
+                num_blocks:
                   type: string
                   format: int64
-                current_epoch:
+                start_block:
                   type: string
                   format: int64
                 vest_started_timestamp:
@@ -84390,9 +84428,7 @@ definitions:
         type: string
       vesting_denom:
         type: string
-      epoch_identifier:
-        type: string
-      num_epochs:
+      num_blocks:
         type: string
         format: int64
       vest_now_factor:
@@ -84407,14 +84443,12 @@ definitions:
         type: string
       total_amount:
         type: string
-      unvested_amount:
+      claimed_amount:
         type: string
-      epoch_identifier:
-        type: string
-      num_epochs:
+      num_blocks:
         type: string
         format: int64
-      current_epoch:
+      start_block:
         type: string
         format: int64
       vest_started_timestamp:

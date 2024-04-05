@@ -77,6 +77,57 @@ message VestingTokens {
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
     (gogoproto.nullable) = false
   ];
+  string claimed_amount = 3 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+  int64 num_blocks = 5;
+  int64 start_block = 6;
+  int64 vest_started_timestamp = 7;
+}
+
+
+// GenesisState defines the commitment module's genesis state.
+message LegacyCommitments {
+  string creator = 1;
+  repeated CommittedTokens committed_tokens = 2;
+  repeated cosmos.base.v1beta1.Coin rewards_unclaimed = 3 [
+    (gogoproto.nullable) = false,
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
+  ];
+  repeated cosmos.base.v1beta1.Coin claimed = 4 [
+    (gogoproto.nullable) = false,
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
+  ];
+  repeated LegacyVestingTokens vesting_tokens = 5;
+
+  repeated cosmos.base.v1beta1.Coin rewards_by_elys_unclaimed = 6 [
+    (gogoproto.nullable) = false,
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
+  ];
+
+  repeated cosmos.base.v1beta1.Coin rewards_by_eden_unclaimed = 7 [
+    (gogoproto.nullable) = false,
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
+  ];
+
+  repeated cosmos.base.v1beta1.Coin rewards_by_edenb_unclaimed = 8 [
+    (gogoproto.nullable) = false,
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
+  ];
+
+  repeated cosmos.base.v1beta1.Coin rewards_by_usdc_unclaimed = 9 [
+    (gogoproto.nullable) = false,
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
+  ];
+}
+
+message LegacyVestingTokens {
+  string denom = 1;
+  string total_amount = 2 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
   string unvested_amount = 3 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
     (gogoproto.nullable) = false
@@ -85,4 +136,23 @@ message VestingTokens {
   int64 num_epochs = 5;
   int64 current_epoch = 6;
   int64 vest_started_timestamp = 7;
+}
+
+message LegacyVestingInfo {
+  string base_denom = 1;
+  string vesting_denom = 2;
+  string epoch_identifier = 3;
+  int64 num_epochs = 4;
+  string vest_now_factor = 5 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+  int64 num_max_vestings = 6;
+}
+
+// Params defines the parameters for the module.
+message LegacyParams {
+  option (gogoproto.goproto_stringer) = false;
+
+  repeated LegacyVestingInfo vesting_infos = 1;
 }

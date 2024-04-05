@@ -34,6 +34,22 @@ func (k Keeper) GetAllCommitments(ctx sdk.Context) (list []*types.Commitments) {
 	return
 }
 
+// GetAllLegacyCommitments returns all legacy commitments
+func (k Keeper) GetAllLegacyCommitments(ctx sdk.Context) (list []*types.LegacyCommitments) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.CommitmentsKeyPrefix))
+	iterator := sdk.KVStorePrefixIterator(store, []byte{})
+
+	defer iterator.Close()
+
+	for ; iterator.Valid(); iterator.Next() {
+		var val types.LegacyCommitments
+		k.cdc.MustUnmarshal(iterator.Value(), &val)
+		list = append(list, &val)
+	}
+
+	return
+}
+
 // GetCommitments returns a commitments from its index
 func (k Keeper) GetCommitments(ctx sdk.Context, creator string) types.Commitments {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.CommitmentsKeyPrefix))
