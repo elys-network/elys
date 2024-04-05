@@ -32,6 +32,7 @@ func updateConfig(homePath, p2p, nodeId string) {
 	// Path to config files
 	configPath := homePath + "/config/config.toml"
 	appPath := homePath + "/config/app.toml"
+	clientPath := homePath + "/config/client.toml"
 
 	// Update config.toml for cors_allowed_origins
 	sed("s/^cors_allowed_origins =.*/cors_allowed_origins = [\\\"*\\\"]/", configPath)
@@ -59,6 +60,9 @@ func updateConfig(homePath, p2p, nodeId string) {
 
 	// Update app.toml for app-db-backend
 	sed("s/^app\\-db\\-backend =.*/app\\-db\\-backend = \\\"pebbledb\\\"/", appPath)
+
+	// Update client.toml for keyring-backend
+	sed("s/^keyring\\-backend =.*/keyring\\-backend = \\\"test\\\"/", clientPath)
 
 	log.Printf(Yellow + "config files have been updated successfully.")
 }

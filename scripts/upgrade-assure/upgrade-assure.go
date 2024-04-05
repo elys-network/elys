@@ -208,7 +208,7 @@ func main() {
 	// node 1 flags
 	rootCmd.PersistentFlags().String(flagHome, homeEnv+"/.elys", "home directory")
 	rootCmd.PersistentFlags().String(flagMoniker, "alice", "moniker")
-	rootCmd.PersistentFlags().String(flagValidatorKeyName, "alice-validator", "validator key name")
+	rootCmd.PersistentFlags().String(flagValidatorKeyName, "validator", "validator key name")
 	rootCmd.PersistentFlags().String(flagValidatorBalance, "200000000000000", "validator balance")
 	rootCmd.PersistentFlags().String(flagValidatorSelfDelegation, "50000000000000", "validator self delegation")
 	rootCmd.PersistentFlags().String(flagValidatorMnemonic, "bargain toss help way dash forget bar casual boat drill execute ordinary human lecture leopard enroll joy rural shed express kite sample brick void", "validator mnemonic")
@@ -218,7 +218,7 @@ func main() {
 	// node 2 flags
 	rootCmd.PersistentFlags().String(flagHome2, homeEnv+"/.elys2", "home directory 2")
 	rootCmd.PersistentFlags().String(flagMoniker2, "bob", "moniker 2")
-	rootCmd.PersistentFlags().String(flagValidatorKeyName2, "bob-validator", "validator key name 2")
+	rootCmd.PersistentFlags().String(flagValidatorKeyName2, "validator-2", "validator key name 2")
 	rootCmd.PersistentFlags().String(flagValidatorBalance2, "200000000000000", "validator balance 2")
 	rootCmd.PersistentFlags().String(flagValidatorSelfDelegation2, "1000000", "validator self delegation 2")
 	rootCmd.PersistentFlags().String(flagValidatorMnemonic2, "kidney seat stay demand panel garlic uncle flock plunge logic link owner laugh sponsor desk scare pipe derive trick smart coffee goat arrange cause", "validator mnemonic 2")
