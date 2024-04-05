@@ -10,6 +10,10 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+          # Optionally, if you want to fetch all tags specifically, add:
+          tags: true
 
       - name: Download HTML content
         run: |
