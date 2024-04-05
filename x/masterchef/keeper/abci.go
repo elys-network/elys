@@ -22,6 +22,10 @@ func (k Keeper) EndBlocker(ctx sdk.Context) {
 }
 
 func (k Keeper) ProcessExternalRewardsDistribution(ctx sdk.Context) {
+	// Fetch incentive params
+	params := k.GetParams(ctx)
+	lpIncentive := params.LpIncentives
+
 	curBlockHeight := sdk.NewInt(ctx.BlockHeight())
 
 	externalIncentives := k.GetAllExternalIncentives(ctx)
@@ -32,7 +36,7 @@ func (k Keeper) ProcessExternalRewardsDistribution(ctx sdk.Context) {
 		}
 
 		if externalIncentive.FromBlock < curBlockHeight.Uint64() && curBlockHeight.Uint64() <= externalIncentive.ToBlock {
-			k.UpdateAccPerShare(ctx, externalIncentive.PoolId, ptypes.Eden, externalIncentive.AmountPerBlock)
+			k.UpdateAccPerShare(ctx, externalIncentive.PoolId, externalIncentive.RewardDenom, externalIncentive.AmountPerBlock)
 
 			hasRewardDenom := false
 			poolRewardDenoms := pool.ExternalRewardDenoms
@@ -45,6 +49,26 @@ func (k Keeper) ProcessExternalRewardsDistribution(ctx sdk.Context) {
 				pool.ExternalRewardDenoms = append(pool.ExternalRewardDenoms, externalIncentive.RewardDenom)
 				k.SetPool(ctx, pool)
 			}
+
+			ammPool, found := k.amm.GetPool(ctx, pool.PoolId)
+			if found {
+				tvl, err := ammPool.TVL(ctx, k.oracleKeeper)
+				if err == nil {
+					yearlyIncentiveRewardsTotal := externalIncentive.AmountPerBlock.
+						Mul(lpIncentive.TotalBlocksPerYear).
+						Quo(pool.NumBlocks)
+
+					entry, found := k.assetProfileKeeper.GetEntry(ctx, ptypes.BaseCurrency)
+					if found {
+						baseCurrency := entry.Denom
+						pool.ExternalIncentiveApr = sdk.NewDecFromInt(yearlyIncentiveRewardsTotal).
+							Mul(k.GetTokenPrice(ctx, externalIncentive.RewardDenom, baseCurrency)).
+							Quo(tvl)
+						k.SetPool(ctx, pool)
+					}
+				}
+			}
+
 		}
 
 		if curBlockHeight.Uint64() == externalIncentive.ToBlock {
@@ -226,7 +250,7 @@ func (k Keeper) UpdateLPRewardsUnclaimed(ctx sdk.Context) error {
 	k.SetParams(ctx, params)
 
 	// Update APR for amm pools
-	k.UpdateAmmPoolAPR(ctx, totalProxyTVL, edenDenomPrice)
+	k.UpdateAmmPoolAPR(ctx, lpIncentive.TotalBlocksPerYear, totalProxyTVL, edenDenomPrice)
 
 	return nil
 }
@@ -758,7 +782,7 @@ func (k Keeper) UpdateCommitmentsSubBuckets(ctx sdk.Context, creator string, com
 }
 
 // Update APR for AMM pool
-func (k Keeper) UpdateAmmPoolAPR(ctx sdk.Context, totalProxyTVL sdk.Dec, edenDenomPrice sdk.Dec) {
+func (k Keeper) UpdateAmmPoolAPR(ctx sdk.Context, totalBlocksPerYear sdk.Int, totalProxyTVL sdk.Dec, edenDenomPrice sdk.Dec) {
 	// Iterate to calculate total Eden from LpElys, MElys committed
 	k.amm.IterateLiquidityPools(ctx, func(p ammtypes.Pool) bool {
 		tvl, err := p.TVL(ctx, k.oracleKeeper)
@@ -787,19 +811,18 @@ func (k Keeper) UpdateAmmPoolAPR(ctx sdk.Context, totalProxyTVL sdk.Dec, edenDen
 		}
 
 		// Dex reward Apr per pool =  total accumulated usdc rewards for 7 day * 52/ tvl of pool
-		weeklyDexRewardsTotal := poolInfo.DexRewardAmountGiven.
-			MulInt(sdk.NewInt(ptypes.DaysPerWeek)).
+		yearlyDexRewardsTotal := poolInfo.DexRewardAmountGiven.
+			MulInt(totalBlocksPerYear).
 			QuoInt(poolInfo.NumBlocks)
-		poolInfo.DexApr = weeklyDexRewardsTotal.
-			MulInt(sdk.NewInt(ptypes.WeeksPerYear)).
+		poolInfo.DexApr = yearlyDexRewardsTotal.
 			Quo(tvl)
 
 		// Eden reward Apr per pool = (total LM Eden reward allocated per day*((tvl of pool * multiplier)/total proxy TVL) ) * 365 / TVL of pool
-		dailyEdenRewardsTotal := poolInfo.EdenRewardAmountGiven.
+		yearlyEdenRewardsTotal := poolInfo.EdenRewardAmountGiven.
+			Mul(totalBlocksPerYear).
 			Quo(poolInfo.NumBlocks)
 
-		poolInfo.EdenApr = sdk.NewDecFromInt(dailyEdenRewardsTotal).
-			MulInt(sdk.NewInt(ptypes.DaysPerYear)).
+		poolInfo.EdenApr = sdk.NewDecFromInt(yearlyEdenRewardsTotal).
 			Mul(edenDenomPrice).
 			Quo(tvl)
 

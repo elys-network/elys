@@ -41288,6 +41288,11 @@ paths:
                         dex_apr:
                           type: string
                           title: Dex APR, updated at every distribution
+                        external_incentive_apr:
+                          type: string
+                          title: >-
+                            External Incentive APR, updated at every
+                            distribution
                         external_reward_denoms:
                           type: array
                           items:
@@ -41508,6 +41513,9 @@ paths:
                   dex_apr:
                     type: string
                     title: Dex APR, updated at every distribution
+                  external_incentive_apr:
+                    type: string
+                    title: External Incentive APR, updated at every distribution
                   external_reward_denoms:
                     type: array
                     items:
@@ -86142,6 +86150,9 @@ definitions:
             dex_apr:
               type: string
               title: Dex APR, updated at every distribution
+            external_incentive_apr:
+              type: string
+              title: External Incentive APR, updated at every distribution
             external_reward_denoms:
               type: array
               items:
@@ -86212,6 +86223,9 @@ definitions:
       dex_apr:
         type: string
         title: Dex APR, updated at every distribution
+      external_incentive_apr:
+        type: string
+        title: External Incentive APR, updated at every distribution
       external_reward_denoms:
         type: array
         items:
@@ -86323,6 +86337,9 @@ definitions:
                 dex_apr:
                   type: string
                   title: Dex APR, updated at every distribution
+                external_incentive_apr:
+                  type: string
+                  title: External Incentive APR, updated at every distribution
                 external_reward_denoms:
                   type: array
                   items:
@@ -86401,6 +86418,9 @@ definitions:
           dex_apr:
             type: string
             title: Dex APR, updated at every distribution
+          external_incentive_apr:
+            type: string
+            title: External Incentive APR, updated at every distribution
           external_reward_denoms:
             type: array
             items:

@@ -19,6 +19,8 @@ const (
 
 	PoolInfoKeyPrefix = "PoolInfo"
 
+	ExternalIncentiveIndexKeyPrefix = "IndexExternalIncentive"
+
 	ExternalIncentiveKeyPrefix = "ExternalIncentive"
 
 	PoolRewardInfoKeyPrefix = "PoolRewardInfo"
@@ -55,7 +57,7 @@ func ExternalIncentiveKey(incentiveId uint64) []byte {
 func ExternalIncentiveIndex() []byte {
 	var key []byte
 
-	key = append(key, "ExternalIncentiveIndex"...)
+	key = append(key, ExternalIncentiveIndexKeyPrefix...)
 	return key
 }
 
