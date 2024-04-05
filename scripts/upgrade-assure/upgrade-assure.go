@@ -52,11 +52,8 @@ func main() {
 				// init chain
 				initNode(oldBinaryPath, moniker, chainId, homePath)
 
-				// query node 1 id
-				node1Id := queryNodeId(oldBinaryPath, homePath)
-
-				// update config files to enable api and cors
-				updateConfig(homePath, p2p, node1Id, dbEngine)
+				// update config files
+				updateConfig(homePath, dbEngine)
 
 				// retrieve the snapshot
 				retrieveSnapshot(snapshotUrl, homePath)
@@ -74,12 +71,15 @@ func main() {
 				initNode(oldBinaryPath, moniker, chainId, homePath)
 				initNode(oldBinaryPath, moniker2, chainId, homePath2)
 
+				// update config files to enable api and cors
+				updateConfig(homePath, dbEngine)
+				updateConfig(homePath2, dbEngine)
+
 				// query node 1 id
 				node1Id := queryNodeId(oldBinaryPath, homePath)
 
-				// update config files to enable api and cors
-				updateConfig(homePath, p2p, node1Id, dbEngine)
-				updateConfig(homePath2, p2p, node1Id, dbEngine)
+				// add peers
+				addPeers(homePath2, p2p, node1Id)
 
 				// add validator keys to node 1
 				validatorAddress := addKey(oldBinaryPath, validatorKeyName, validatorMnemonic, homePath, keyringBackend)
