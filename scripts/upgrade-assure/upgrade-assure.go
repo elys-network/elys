@@ -52,6 +52,12 @@ func main() {
 				// init chain
 				initNode(oldBinaryPath, moniker, chainId, homePath)
 
+				// query node 1 id
+				node1Id := queryNodeId(oldBinaryPath, homePath)
+
+				// update config files to enable api and cors
+				updateConfig(homePath, p2p, node1Id, dbEngine)
+
 				// retrieve the snapshot
 				retrieveSnapshot(snapshotUrl, homePath)
 
@@ -67,6 +73,13 @@ func main() {
 				// init nodes
 				initNode(oldBinaryPath, moniker, chainId, homePath)
 				initNode(oldBinaryPath, moniker2, chainId, homePath2)
+
+				// query node 1 id
+				node1Id := queryNodeId(oldBinaryPath, homePath)
+
+				// update config files to enable api and cors
+				updateConfig(homePath, p2p, node1Id, dbEngine)
+				updateConfig(homePath2, p2p, node1Id, dbEngine)
 
 				// add validator keys to node 1
 				validatorAddress := addKey(oldBinaryPath, validatorKeyName, validatorMnemonic, homePath, keyringBackend)
@@ -91,13 +104,6 @@ func main() {
 
 				// update genesis
 				updateGenesis(validatorBalance, homePath, genesisFilePath)
-
-				// query node 1 id
-				node1Id := queryNodeId(oldBinaryPath, homePath)
-
-				// update config files to enable api and cors
-				updateConfig(homePath, p2p, node1Id, dbEngine)
-				updateConfig(homePath2, p2p, node1Id, dbEngine)
 			}
 
 			if !skipNodeStart {

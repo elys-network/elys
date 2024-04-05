@@ -1,5 +1,14 @@
 # How to use a testnet snapshot in localnet?
 
+## Stake Town testnet snapshots
+
+You can find the latest Stake Town testnet snapshot [here](https://snapshots-testnet.stake-town.com/elys/elystestnet-1_latest.tar.lz4).
+
+```
+make install
+go run ./scripts/upgrade-assure/... https://snapshots-testnet.stake-town.com/elys/elystestnet-1_latest.tar.lz4 ~/go/bin/elysd ~/go/bin/elysd --skip-proposal
+```
+
 ## Polkachu testnet snapshots
 
 You can find the latest Polkachu testnet snapshot [here](https://polkachu.com/testnets/elys/snapshots).
@@ -21,21 +30,21 @@ go run ./scripts/upgrade-assure/... https://services.elystestnet-1.elys.aviaone.
 # How can I perform a test with a version upgrade that involves extensive changes to data structures?
 
 ```
-git checkout v0.28.1
+git checkout v0.28.30
 make install
-cp -a ~/go/bin/elysd /tmp/elysd-v0.28.1
+cp -a ~/go/bin/elysd /tmp/elysd-v0.28.30
 ```
 
 ```
-go run ./scripts/upgrade-assure/... --home /tmp/elys https://snapshots.polkachu.com/testnet-snapshots/elys/elys_5511381.tar.lz4 /tmp/elysd-v0.28.1 /tmp/elysd-v0.29.0 --skip-node-start
+go run ./scripts/upgrade-assure/... --home /tmp/elys --home2 /tmp/elysd2 https://snapshots-testnet.stake-town.com/elys/elystestnet-1_latest.tar.lz4 /tmp/elysd-v0.29.30 /tmp/elysd-v0.29.31 --skip-node-start
 ```
 
 ```
-git checkout v0.29.0
+git checkout v0.29.31
 make install
-cp -a ~/go/bin/elysd /tmp/elysd-v0.29.0
+cp -a ~/go/bin/elysd /tmp/elysd-v0.29.31
 ```
 
 ```
-go run ./scripts/upgrade-assure/... --home /tmp/elys https://snapshots.polkachu.com/testnet-snapshots/elys/elys_5511381.tar.lz4 /tmp/elysd-v0.28.1 /tmp/elysd-v0.29.0 --skip-snapshot --skip-chain-init
+go run ./scripts/upgrade-assure/... --home /tmp/elys --home2 /tmp/elysd2 https://snapshots-testnet.stake-town.com/elys/elystestnet-1_latest.tar.lz4 /tmp/elysd-v0.29.30 /tmp/elysd-v0.29.31 --skip-snapshot --skip-chain-init
 ```
