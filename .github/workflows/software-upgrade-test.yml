@@ -12,21 +12,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
-          # Optionally, if you want to fetch all tags specifically, add:
           tags: true
-
-      # Disable AviaOne download for now as it does not work with pebbledb
-      # - name: Download HTML content
-      #   run: |
-      #     curl https://services.elystestnet-1.elys.aviaone.com/ > /tmp/download.html
-
-      # - name: Retrieve the most recent download filename
-      #   run: |
-      #     FILENAME=$(cat /tmp/download.html | \
-      #       egrep -o 'elystestnet-1_[0-9]{4}-[0-9]{2}-[0-9]{2}\.tar\.gz' | \
-      #       sort | uniq | \
-      #       tail -n 1)
-      #     echo "DOWNLOAD_URL=https://services.elystestnet-1.elys.aviaone.com/$FILENAME" >> $GITHUB_ENV
 
       - name: Retrieve latest tag
         run: |

@@ -174,7 +174,7 @@ func main() {
 				// wait 5 seconds
 				time.Sleep(5 * time.Second)
 
-				// stop old binary
+				// stop old binaries
 				stop(oldBinaryCmd, oldBinaryCmd2)
 
 				// wait 5 seconds
@@ -190,9 +190,14 @@ func main() {
 
 				// wait for next block
 				waitForNextBlock(newBinaryPath, rpc)
+				waitForNextBlock(newBinaryPath, rpc2)
 
-				// listen for signals
-				listenForSignals(newBinaryCmd, newBinaryCmd2)
+				// wait for next block
+				waitForNextBlock(newBinaryPath, rpc)
+				waitForNextBlock(newBinaryPath, rpc2)
+
+				// stop new binaries
+				stop(newBinaryCmd, newBinaryCmd2)
 			}
 		},
 	}
