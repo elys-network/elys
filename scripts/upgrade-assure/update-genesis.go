@@ -75,10 +75,6 @@ func updateGenesis(validatorBalance, homePath, genesisFilePath string) {
 	genesis.AppState.Gov.DepositParams.MaxDepositPeriod = "10s"
 	genesis.AppState.Gov.DepositParams.MinDeposit = sdk.Coins{sdk.NewInt64Coin("uelys", 10000000)}
 
-	// update commitment params
-	genesis.AppState.Commitment.Params.VestingInfos[0].NumMaxVestings = "1"
-	genesis.AppState.Commitment.Params.VestingInfos[0].EpochIdentifier = "week"
-
 	// update wasm params
 	// genesis.AppState.Wasm.Params = wasmtypes.DefaultParams()
 	genesis.AppState.Wasm = genesisInit.AppState.Wasm
