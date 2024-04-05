@@ -100,7 +100,7 @@ func main() {
 
 			if !skipNodeStart {
 				// start node 1
-				oldBinaryCmd := start(oldBinaryPath, homePath, rpc, p2p, true)
+				oldBinaryCmd := start(oldBinaryPath, homePath, rpc, p2p, moniker, "\033[32m", "\033[31m")
 
 				// wait for rpc to start
 				waitForServiceToStart(rpc)
@@ -120,16 +120,24 @@ func main() {
 				// create validator node 2
 				createValidator(oldBinaryPath, validatorKeyName2, validatorSelfDelegation2, moniker2, validatorPubkey2, homePath, keyringBackend, chainId, rpc, broadcastMode)
 
+				// wait for next block
+				waitForNextBlock(oldBinaryPath, rpc)
+
+				// stop old binary
+				stop(oldBinaryCmd)
+
 				// copy data from node 1 to node 2
 				copyDataFromNodeToNode(homePath, homePath2)
 
 				// generate priv_validator_state.json file for node 2
 				generatePrivValidatorState(homePath2)
 
-				// start node 2
-				oldBinaryCmd2 := start(oldBinaryPath, homePath2, rpc2, p2p2, false)
+				// start node 1 and 2
+				oldBinaryCmd = start(oldBinaryPath, homePath, rpc, p2p, moniker, "\033[32m", "\033[31m")
+				oldBinaryCmd2 := start(oldBinaryPath, homePath2, rpc2, p2p2, moniker2, "\033[32m", "\033[31m")
 
-				// wait for rpc 2 to start
+				// wait for rpc 1 and 2 to start
+				waitForServiceToStart(rpc)
 				waitForServiceToStart(rpc2)
 
 				// query and calculate upgrade block height
@@ -165,8 +173,8 @@ func main() {
 				time.Sleep(5 * time.Second)
 
 				// start new binary
-				newBinaryCmd := start(newBinaryPath, homePath, rpc, p2p, true)
-				newBinaryCmd2 := start(newBinaryPath, homePath2, rpc2, p2p2, false)
+				newBinaryCmd := start(newBinaryPath, homePath, rpc, p2p, moniker, "\033[32m", "\033[31m")
+				newBinaryCmd2 := start(newBinaryPath, homePath2, rpc2, p2p2, moniker2, "\033[32m", "\033[31m")
 
 				// wait for node to start
 				waitForServiceToStart(rpc)
