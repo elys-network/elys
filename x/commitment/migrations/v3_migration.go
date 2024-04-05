@@ -15,11 +15,17 @@ func (m Migrator) V3Migration(ctx sdk.Context) error {
 
 		vestingTokens := []*types.VestingTokens{}
 		for _, vt := range legacy.VestingTokens {
+			blockMultiplier := int64(17280) // "day"
+			if vt.EpochIdentifier == "tenseconds" {
+				blockMultiplier = int64(2)
+			} else {
+				blockMultiplier = int64(720) // "hour"
+			}
 			vestingTokens = append(vestingTokens, &types.VestingTokens{
 				Denom:                vt.Denom,
 				TotalAmount:          vt.UnvestedAmount,
 				ClaimedAmount:        math.ZeroInt(),
-				NumBlocks:            vt.NumEpochs, // TODO:
+				NumBlocks:            vt.NumEpochs * blockMultiplier,
 				StartBlock:           ctx.BlockHeight(),
 				VestStartedTimestamp: vt.VestStartedTimestamp,
 			})
@@ -45,7 +51,7 @@ func (m Migrator) V3Migration(ctx sdk.Context) error {
 		vestingInfos = append(vestingInfos, &types.VestingInfo{
 			BaseDenom:      legacy.BaseDenom,
 			VestingDenom:   legacy.VestingDenom,
-			NumBlocks:      legacy.NumEpochs, // TODO:
+			NumBlocks:      legacy.NumEpochs * 17280,
 			VestNowFactor:  legacy.VestNowFactor,
 			NumMaxVestings: legacy.NumMaxVestings,
 		})
