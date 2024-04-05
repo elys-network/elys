@@ -761,7 +761,6 @@ func NewElysApp(
 		appCodec,
 		keys[ammmoduletypes.StoreKey],
 		tkeys[ammmoduletypes.TStoreKey],
-		app.GetSubspace(ammmoduletypes.ModuleName),
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 		&app.ParameterKeeper,
 		app.BankKeeper,
@@ -1553,7 +1552,6 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(commitmentmoduletypes.ModuleName)
 	paramsKeeper.Subspace(tokenomicsmoduletypes.ModuleName)
 	paramsKeeper.Subspace(burnermoduletypes.ModuleName)
-	paramsKeeper.Subspace(ammmoduletypes.ModuleName)
 	paramsKeeper.Subspace(perpetualmoduletypes.ModuleName)
 	paramsKeeper.Subspace(transferhooktypes.ModuleName)
 	paramsKeeper.Subspace(clockmoduletypes.ModuleName)
