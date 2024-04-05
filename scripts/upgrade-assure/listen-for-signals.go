@@ -7,7 +7,7 @@ import (
 	"syscall"
 )
 
-func listenForSignals(cmd *exec.Cmd) {
+func listenForSignals(cmds ...*exec.Cmd) {
 	// Set up channel to listen for signals
 	sigChan := make(chan os.Signal, 1)
 	signal.Notify(sigChan, os.Interrupt, syscall.SIGTERM)
@@ -15,6 +15,8 @@ func listenForSignals(cmd *exec.Cmd) {
 	// Block until a signal is received
 	<-sigChan
 
-	// Stop the process when a signal is received
-	stop(cmd)
+	for _, cmd := range cmds {
+		// Stop the process when a signal is received
+		stop(cmd)
+	}
 }

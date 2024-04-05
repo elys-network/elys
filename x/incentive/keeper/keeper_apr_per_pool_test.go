@@ -71,6 +71,10 @@ func TestAPRCalculationPerPool(t *testing.T) {
 	// check block height
 	require.Equal(t, int64(0), ctx.BlockHeight())
 
+	params := ik.GetParams(ctx)
+	params.DistributionInterval = 10
+	ik.SetParams(ctx, params)
+
 	lpIncentive := types.IncentiveInfo{
 		// reward amount in eden for 1 year
 		EdenAmountPerYear: sdk.NewInt(1000000000),
@@ -78,23 +82,17 @@ func TestAPRCalculationPerPool(t *testing.T) {
 		DistributionStartBlock: sdk.NewInt(1),
 		// distribution duration - block number per year
 		TotalBlocksPerYear: sdk.NewInt(10000),
-		// we set block numbers in 24 hrs
-		EpochNumBlocks: sdk.NewInt(100),
-		// maximum eden allocation per day that won't exceed 30% apr
-		MaxEdenPerAllocation: sdk.NewInt(100),
-		// number of block intervals that distribute rewards.
-		DistributionEpochInBlocks: sdk.NewInt(10),
 		// current epoch in block number
 		CurrentEpochInBlocks: sdk.NewInt(1),
 	}
 
-	ctx = ctx.WithBlockHeight(lpIncentive.DistributionEpochInBlocks.Int64())
+	ctx = ctx.WithBlockHeight(params.DistributionInterval)
 	ik.UpdateLPRewardsUnclaimed(ctx, lpIncentive)
 
 	// Get pool info from incentive param
 	poolInfo, found := ik.GetPoolInfo(ctx, poolId)
 	require.Equal(t, found, true)
-	require.Equal(t, poolInfo.EdenApr.String(), "1.823176823176823177")
+	require.Equal(t, poolInfo.EdenApr.String(), "0.499500499500499500")
 
 	// Get dex rewards per pool
 	revenueAddress := ammtypes.NewPoolRevenueAddress(poolId)
@@ -107,12 +105,12 @@ func TestAPRCalculationPerPool(t *testing.T) {
 	require.NoError(t, err)
 
 	// 1 week later.
-	ctx = ctx.WithBlockHeight(lpIncentive.EpochNumBlocks.Mul(sdk.NewInt(ptypes.DaysPerWeek)).Int64())
+	ctx = ctx.WithBlockHeight(params.DistributionInterval * 7)
 	poolInfo.NumBlocks = sdk.NewInt(ctx.BlockHeight())
 	ik.SetPoolInfo(ctx, poolId, poolInfo)
 
 	ik.UpdateLPRewardsUnclaimed(ctx, lpIncentive)
 	poolInfo, found = ik.GetPoolInfo(ctx, poolId)
 	require.Equal(t, found, true)
-	require.Equal(t, poolInfo.EdenApr.String(), "1.823176823176823177")
+	require.Equal(t, poolInfo.EdenApr.String(), "0.499500499500499500")
 }

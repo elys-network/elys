@@ -1,0 +1,31 @@
+name: Test Software Upgrade
+
+on:
+  pull_request:
+
+jobs:
+  software-upgrade-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+          tags: true
+
+      - name: Retrieve latest tag
+        run: |
+          LATEST_TAG=$(git describe --tags `git rev-list --tags --max-count=1`)
+          echo "LATEST_TAG=$LATEST_TAG" >> $GITHUB_ENV
+
+      - name: Create git tag
+        run: git tag v999.999.999
+
+      - name: Run make build
+        run: make build
+
+      - name: Execute upgrade-assure script
+        run: |
+          DOWNLOAD_URL=https://snapshots-testnet.stake-town.com/elys/elystestnet-1_latest.tar.lz4
+          go run ./scripts/upgrade-assure/... $DOWNLOAD_URL https://github.com/elys-network/elys/releases/download/$LATEST_TAG/elysd-$LATEST_TAG-linux-amd64 ./build/elysd

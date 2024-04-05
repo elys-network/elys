@@ -168,23 +168,6 @@ func (k Keeper) UpdatePoolMultipliers(ctx sdk.Context, poolMultipliers []types.P
 	return true
 }
 
-// Calculate epoch counts per year to be used in APR calculation
-func (k Keeper) CalcEpochCountsPerYear(ctx sdk.Context, epochIdentifier string) int64 {
-	epochInfo, found := k.epochsKeeper.GetEpochInfo(ctx, epochIdentifier)
-	epochSeconds := int64(epochInfo.Duration.Seconds())
-	if !found || epochSeconds == 0 {
-		return 0
-	}
-
-	// epoch min & max check
-	if epochSeconds == 0 || epochSeconds > ptypes.SecondsPerYear {
-		return 0
-	}
-
-	// returns num of epochs
-	return ptypes.SecondsPerYear / epochSeconds
-}
-
 // Update total commitment info
 func (k Keeper) UpdateTotalCommitmentInfo(ctx sdk.Context, baseCurrency string) {
 	// Fetch total staked Elys amount again

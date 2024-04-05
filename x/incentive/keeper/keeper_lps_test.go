@@ -108,12 +108,11 @@ func TestCalcRewardsForLPs(t *testing.T) {
 	simapp.AddTestCommitment(app, ctx, addr[0], committed, unclaimed)
 
 	// Create a pool
-	// Mint 100000USDC
-	usdcToken := sdk.NewCoins(sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(100000)))
-
-	err = app.BankKeeper.MintCoins(ctx, ammtypes.ModuleName, usdcToken)
+	// Mint 100000USDC + 10 ELYS (pool creation fee)
+	coins := sdk.NewCoins(sdk.NewInt64Coin(ptypes.Elys, 10000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 100000))
+	err = app.BankKeeper.MintCoins(ctx, ammtypes.ModuleName, coins)
 	require.NoError(t, err)
-	err = app.BankKeeper.SendCoinsFromModuleToAccount(ctx, ammtypes.ModuleName, addr[0], usdcToken)
+	err = app.BankKeeper.SendCoinsFromModuleToAccount(ctx, ammtypes.ModuleName, addr[0], coins)
 	require.NoError(t, err)
 
 	var poolAssets []ammtypes.PoolAsset
@@ -179,8 +178,9 @@ func TestCalcRewardsForLPs(t *testing.T) {
 
 	gasFeesLPsAmt := sdk.NewDec(1000)
 	// Calculate rewards for LPs
-	newUnclaimedEdenTokensLp, dexRewardsLp := ik.CalcRewardsForLPs(ctx, totalProxyTVL, commitments, edenAmountPerEpochLp, gasFeesLPsAmt)
+	newUnclaimedEdenTokensLp, dexRewardsLp := ik.CalcRewardsForLPs(
+		ctx, sdk.NewInt(1), totalProxyTVL, commitments, edenAmountPerEpochLp, gasFeesLPsAmt)
 
-	require.Equal(t, newUnclaimedEdenTokensLp, sdk.NewInt(1000000))
+	require.Equal(t, newUnclaimedEdenTokensLp, sdk.NewInt(5005))
 	require.Equal(t, dexRewardsLp, sdk.NewInt(1000))
 }

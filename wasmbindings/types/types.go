@@ -160,6 +160,7 @@ type ElysQuery struct {
 	IncentiveParams        *incentivetypes.QueryParamsRequest        `json:"incentive_params,omitempty"`
 	IncentiveCommunityPool *incentivetypes.QueryCommunityPoolRequest `json:"incentive_community_pool,omitempty"`
 	IncentiveApr           *incentivetypes.QueryAprRequest           `json:"incentive_apr"`
+	IncentiveAprs          *incentivetypes.QueryAprsRequest          `json:"incentive_aprs"`
 	IncentivePoolAprs      *incentivetypes.QueryPoolAprsRequest      `json:"incentive_pool_aprs"`
 
 	// masterchef queriers

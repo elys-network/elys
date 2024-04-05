@@ -37947,7 +37947,10 @@ paths:
                 properties:
                   pool_creation_fee:
                     type: string
+                  slippage_track_duration:
+                    type: string
                     format: uint64
+                    title: 'default 1 week: 604,800'
             description: >-
               QueryParamsResponse is response type for the Query/Params RPC
               method.
@@ -38053,6 +38056,15 @@ paths:
                     total_weight:
                       type: string
                     rebalance_treasury:
+                      type: string
+              extra_infos:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    tvl:
+                      type: string
+                    lp_token_price:
                       type: string
               pagination:
                 type: object
@@ -38240,6 +38252,13 @@ paths:
                   total_weight:
                     type: string
                   rebalance_treasury:
+                    type: string
+              extra_info:
+                type: object
+                properties:
+                  tvl:
+                    type: string
+                  lp_token_price:
                     type: string
         default:
           description: An unexpected error response.
@@ -39865,6 +39884,56 @@ paths:
           type: string
       tags:
         - Query
+  /elys-network/elys/incentive/aprs:
+    get:
+      summary: Calculate APRs
+      operationId: ElysIncentiveAprs
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              usdc_apr_usdc:
+                type: string
+              eden_apr_usdc:
+                type: string
+              usdc_apr_edenb:
+                type: string
+              eden_apr_edenb:
+                type: string
+              usdc_apr_eden:
+                type: string
+              eden_apr_eden:
+                type: string
+              edenb_apr_eden:
+                type: string
+              usdc_apr_elys:
+                type: string
+              eden_apr_elys:
+                type: string
+              edenb_apr_elys:
+                type: string
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      tags:
+        - Query
   /elys-network/elys/incentive/community_pool:
     get:
       summary: Queries a list of CommunityPool items.
@@ -39942,7 +40011,7 @@ paths:
                         title: distribution duration - block number per year
                       epoch_num_blocks:
                         type: string
-                        title: we set block count in 24 hrs
+                        title: unused
                       max_eden_per_allocation:
                         type: string
                         title: >-
@@ -39950,9 +40019,7 @@ paths:
                           apr
                       distribution_epoch_in_blocks:
                         type: string
-                        title: >-
-                          number of block intervals that distribute rewards, set
-                          from params.distribution_interval
+                        title: unused
                       current_epoch_in_blocks:
                         type: string
                         title: current epoch in block number
@@ -39971,7 +40038,7 @@ paths:
                         title: distribution duration - block number per year
                       epoch_num_blocks:
                         type: string
-                        title: we set block count in 24 hrs
+                        title: unused
                       max_eden_per_allocation:
                         type: string
                         title: >-
@@ -39979,9 +40046,7 @@ paths:
                           apr
                       distribution_epoch_in_blocks:
                         type: string
-                        title: >-
-                          number of block intervals that distribute rewards, set
-                          from params.distribution_interval
+                        title: unused
                       current_epoch_in_blocks:
                         type: string
                         title: current epoch in block number
@@ -83584,6 +83649,8 @@ definitions:
         type: string
       recipient:
         type: string
+  elys.amm.MsgUpdateParamsResponse:
+    type: object
   elys.amm.MsgUpdatePoolParamsResponse:
     type: object
     properties:
@@ -83640,7 +83707,10 @@ definitions:
     properties:
       pool_creation_fee:
         type: string
+      slippage_track_duration:
+        type: string
         format: uint64
+        title: 'default 1 week: 604,800'
     description: Params defines the parameters for the module.
   elys.amm.Pool:
     type: object
@@ -83709,6 +83779,13 @@ definitions:
       total_weight:
         type: string
       rebalance_treasury:
+        type: string
+  elys.amm.PoolExtraInfo:
+    type: object
+    properties:
+      tvl:
+        type: string
+      lp_token_price:
         type: string
   elys.amm.PoolParams:
     type: object
@@ -83845,6 +83922,15 @@ definitions:
             total_weight:
               type: string
             rebalance_treasury:
+              type: string
+      extra_infos:
+        type: array
+        items:
+          type: object
+          properties:
+            tvl:
+              type: string
+            lp_token_price:
               type: string
       pagination:
         type: object
@@ -83988,6 +84074,13 @@ definitions:
             type: string
           rebalance_treasury:
             type: string
+      extra_info:
+        type: object
+        properties:
+          tvl:
+            type: string
+          lp_token_price:
+            type: string
   elys.amm.QueryInRouteByDenomResponse:
     type: object
     properties:
@@ -84056,7 +84149,10 @@ definitions:
         properties:
           pool_creation_fee:
             type: string
+          slippage_track_duration:
+            type: string
             format: uint64
+            title: 'default 1 week: 604,800'
     description: QueryParamsResponse is response type for the Query/Params RPC method.
   elys.amm.QuerySlippageTrackAllResponse:
     type: object
@@ -85355,15 +85451,13 @@ definitions:
         title: distribution duration - block number per year
       epoch_num_blocks:
         type: string
-        title: we set block count in 24 hrs
+        title: unused
       max_eden_per_allocation:
         type: string
         title: maximum eden allocation per day that won't exceed 30% apr
       distribution_epoch_in_blocks:
         type: string
-        title: >-
-          number of block intervals that distribute rewards, set from
-          params.distribution_interval
+        title: unused
       current_epoch_in_blocks:
         type: string
         title: current epoch in block number
@@ -85399,15 +85493,13 @@ definitions:
             title: distribution duration - block number per year
           epoch_num_blocks:
             type: string
-            title: we set block count in 24 hrs
+            title: unused
           max_eden_per_allocation:
             type: string
             title: maximum eden allocation per day that won't exceed 30% apr
           distribution_epoch_in_blocks:
             type: string
-            title: >-
-              number of block intervals that distribute rewards, set from
-              params.distribution_interval
+            title: unused
           current_epoch_in_blocks:
             type: string
             title: current epoch in block number
@@ -85426,15 +85518,13 @@ definitions:
             title: distribution duration - block number per year
           epoch_num_blocks:
             type: string
-            title: we set block count in 24 hrs
+            title: unused
           max_eden_per_allocation:
             type: string
             title: maximum eden allocation per day that won't exceed 30% apr
           distribution_epoch_in_blocks:
             type: string
-            title: >-
-              number of block intervals that distribute rewards, set from
-              params.distribution_interval
+            title: unused
           current_epoch_in_blocks:
             type: string
             title: current epoch in block number
@@ -85606,6 +85696,29 @@ definitions:
     properties:
       apr:
         type: string
+  elys.incentive.QueryAprsResponse:
+    type: object
+    properties:
+      usdc_apr_usdc:
+        type: string
+      eden_apr_usdc:
+        type: string
+      usdc_apr_edenb:
+        type: string
+      eden_apr_edenb:
+        type: string
+      usdc_apr_eden:
+        type: string
+      eden_apr_eden:
+        type: string
+      edenb_apr_eden:
+        type: string
+      usdc_apr_elys:
+        type: string
+      eden_apr_elys:
+        type: string
+      edenb_apr_elys:
+        type: string
   elys.incentive.QueryCommunityPoolResponse:
     type: object
     properties:
@@ -85645,15 +85758,13 @@ definitions:
                 title: distribution duration - block number per year
               epoch_num_blocks:
                 type: string
-                title: we set block count in 24 hrs
+                title: unused
               max_eden_per_allocation:
                 type: string
                 title: maximum eden allocation per day that won't exceed 30% apr
               distribution_epoch_in_blocks:
                 type: string
-                title: >-
-                  number of block intervals that distribute rewards, set from
-                  params.distribution_interval
+                title: unused
               current_epoch_in_blocks:
                 type: string
                 title: current epoch in block number
@@ -85672,15 +85783,13 @@ definitions:
                 title: distribution duration - block number per year
               epoch_num_blocks:
                 type: string
-                title: we set block count in 24 hrs
+                title: unused
               max_eden_per_allocation:
                 type: string
                 title: maximum eden allocation per day that won't exceed 30% apr
               distribution_epoch_in_blocks:
                 type: string
-                title: >-
-                  number of block intervals that distribute rewards, set from
-                  params.distribution_interval
+                title: unused
               current_epoch_in_blocks:
                 type: string
                 title: current epoch in block number

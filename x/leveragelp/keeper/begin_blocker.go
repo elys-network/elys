@@ -30,7 +30,6 @@ func (k Keeper) BeginBlocker(ctx sdk.Context) {
 					k.LiquidatePositionIfUnhealthy(ctx, position, pool, ammPool)
 				}
 			}
-			k.SetPool(ctx, pool)
 		}
 	}
 }
@@ -51,7 +50,7 @@ func (k Keeper) LiquidatePositionIfUnhealthy(ctx sdk.Context, position *types.Po
 	position.PositionHealth = h
 	k.SetPosition(ctx, position)
 
-	lpTokenPrice, err := k.GetLpTokenPrice(ctx, &ammPool)
+	lpTokenPrice, err := ammPool.LpTokenPrice(ctx, k.oracleKeeper)
 	if err != nil {
 		return
 	}

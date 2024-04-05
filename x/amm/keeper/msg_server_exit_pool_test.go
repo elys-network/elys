@@ -113,11 +113,13 @@ func (suite *KeeperTestSuite) TestMsgServerExitPool() {
 
 			// bootstrap accounts
 			sender := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
-
+			params := suite.app.AmmKeeper.GetParams(suite.ctx)
 			// bootstrap balances
-			err := suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, tc.poolInitBalance)
+			poolCreationFee := sdk.NewCoin(ptypes.Elys, params.PoolCreationFee)
+			coins := tc.poolInitBalance.Add(poolCreationFee)
+			err := suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, coins)
 			suite.Require().NoError(err)
-			err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, sender, tc.poolInitBalance)
+			err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, sender, coins)
 			suite.Require().NoError(err)
 
 			// execute function
