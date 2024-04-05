@@ -105,7 +105,7 @@ func main() {
 				oldBinaryCmd := start(oldBinaryPath, homePath, rpc, p2p, moniker, "\033[32m", "\033[31m")
 
 				// wait for rpc to start
-				waitForServiceToStart(rpc)
+				waitForServiceToStart(rpc, moniker)
 
 				// wait for next block
 				waitForNextBlock(oldBinaryPath, rpc)
@@ -139,8 +139,8 @@ func main() {
 				oldBinaryCmd2 := start(oldBinaryPath, homePath2, rpc2, p2p2, moniker2, "\033[32m", "\033[31m")
 
 				// wait for rpc 1 and 2 to start
-				waitForServiceToStart(rpc)
-				waitForServiceToStart(rpc2)
+				waitForServiceToStart(rpc, moniker)
+				waitForServiceToStart(rpc2, moniker2)
 
 				// query and calculate upgrade block height
 				upgradeBlockHeight := queryAndCalcUpgradeBlockHeight(oldBinaryPath, rpc)
@@ -179,8 +179,8 @@ func main() {
 				newBinaryCmd2 := start(newBinaryPath, homePath2, rpc2, p2p2, moniker2, "\033[32m", "\033[31m")
 
 				// wait for node to start
-				waitForServiceToStart(rpc)
-				waitForServiceToStart(rpc2)
+				waitForServiceToStart(rpc, moniker)
+				waitForServiceToStart(rpc2, moniker2)
 
 				// wait for next block
 				waitForNextBlock(newBinaryPath, rpc)
@@ -207,23 +207,23 @@ func main() {
 
 	// node 1 flags
 	rootCmd.PersistentFlags().String(flagHome, homeEnv+"/.elys", "home directory")
-	rootCmd.PersistentFlags().String(flagMoniker, "node", "moniker")
-	rootCmd.PersistentFlags().String(flagValidatorKeyName, "validator", "validator key name")
+	rootCmd.PersistentFlags().String(flagMoniker, "alice", "moniker")
+	rootCmd.PersistentFlags().String(flagValidatorKeyName, "alice-validator", "validator key name")
 	rootCmd.PersistentFlags().String(flagValidatorBalance, "200000000000000", "validator balance")
 	rootCmd.PersistentFlags().String(flagValidatorSelfDelegation, "50000000000000", "validator self delegation")
 	rootCmd.PersistentFlags().String(flagValidatorMnemonic, "bargain toss help way dash forget bar casual boat drill execute ordinary human lecture leopard enroll joy rural shed express kite sample brick void", "validator mnemonic")
-	rootCmd.PersistentFlags().String(flagRpc, "tcp://localhost:26657", "rpc")
-	rootCmd.PersistentFlags().String(flagP2p, "tcp://localhost:26656", "p2p")
+	rootCmd.PersistentFlags().String(flagRpc, "tcp://0.0.0.0:26657", "rpc")
+	rootCmd.PersistentFlags().String(flagP2p, "tcp://0.0.0.0:26656", "p2p")
 
 	// node 2 flags
 	rootCmd.PersistentFlags().String(flagHome2, homeEnv+"/.elys2", "home directory 2")
-	rootCmd.PersistentFlags().String(flagMoniker2, "node-2", "moniker 2")
-	rootCmd.PersistentFlags().String(flagValidatorKeyName2, "validator-2", "validator key name 2")
+	rootCmd.PersistentFlags().String(flagMoniker2, "bob", "moniker 2")
+	rootCmd.PersistentFlags().String(flagValidatorKeyName2, "bob-validator", "validator key name 2")
 	rootCmd.PersistentFlags().String(flagValidatorBalance2, "200000000000000", "validator balance 2")
 	rootCmd.PersistentFlags().String(flagValidatorSelfDelegation2, "1000000", "validator self delegation 2")
 	rootCmd.PersistentFlags().String(flagValidatorMnemonic2, "kidney seat stay demand panel garlic uncle flock plunge logic link owner laugh sponsor desk scare pipe derive trick smart coffee goat arrange cause", "validator mnemonic 2")
-	rootCmd.PersistentFlags().String(flagRpc2, "tcp://localhost:26667", "rpc")
-	rootCmd.PersistentFlags().String(flagP2p2, "tcp://localhost:26666", "p2p")
+	rootCmd.PersistentFlags().String(flagRpc2, "tcp://0.0.0.0:26667", "rpc")
+	rootCmd.PersistentFlags().String(flagP2p2, "tcp://0.0.0.0:26666", "p2p")
 
 	if err := rootCmd.Execute(); err != nil {
 		log.Fatalf(Red+"Error executing command: %v", err)

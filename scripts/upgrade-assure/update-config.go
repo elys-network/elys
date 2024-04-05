@@ -52,12 +52,6 @@ func updateConfig(homePath, p2p, nodeId string) {
 	// escape the `.` character from p2p
 	p2p = strings.ReplaceAll(p2p, ".", "\\.")
 
-	// print p2p
-	log.Printf(Yellow+"p2p: %v", p2p)
-
-	// print "s/^persistent_peers =.*/persistent_peers = \\\""+nodeId+"\\@"+p2p+"\\\"/"
-	log.Printf(Yellow + "s/^persistent_peers =.*/persistent_peers = \\\"" + nodeId + "\\@" + p2p + "\\\"/")
-
 	sed("s/^persistent_peers =.*/persistent_peers = \\\""+nodeId+"\\@"+p2p+"\\\"/", configPath)
 
 	// Update app.toml for enabling the API server
