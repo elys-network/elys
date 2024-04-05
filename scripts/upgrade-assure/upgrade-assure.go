@@ -91,11 +91,13 @@ func main() {
 
 				// update genesis
 				updateGenesis(validatorBalance, homePath, genesisFilePath)
-				// updateGenesis(validatorBalance, homePath2, genesisFilePath)
+
+				// query node 1 id
+				node1Id := queryNodeId(oldBinaryPath, homePath)
 
 				// update config files to enable api and cors
-				updateConfig(homePath)
-				updateConfig(homePath2)
+				updateConfig(homePath, p2p, node1Id)
+				updateConfig(homePath2, p2p, node1Id)
 			}
 
 			if !skipNodeStart {

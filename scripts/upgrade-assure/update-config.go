@@ -4,6 +4,7 @@ import (
 	"log"
 	"os/exec"
 	"runtime"
+	"strings"
 )
 
 // is linux?
@@ -23,11 +24,11 @@ func sed(pattern, file string) {
 
 	// Execute the sed command
 	if err := exec.Command("sed", args...).Run(); err != nil {
-		log.Fatalf(Red+"Error updating config.toml: %v\n", err)
+		log.Fatalf(Red+"Error updating "+file+": %v\n", err)
 	}
 }
 
-func updateConfig(homePath string) {
+func updateConfig(homePath, p2p, nodeId string) {
 	// Path to config files
 	configPath := homePath + "/config/config.toml"
 	appPath := homePath + "/config/app.toml"
@@ -40,6 +41,24 @@ func updateConfig(homePath string) {
 
 	// Update config.toml for db_backend
 	sed("s/^db_backend =.*/db_backend = \\\"pebbledb\\\"/", configPath)
+
+	// update p2p url to remove the `tcp://` or `http://` or `https://` prefix
+	p2p = strings.TrimPrefix(p2p, "tcp://")
+	p2p = strings.TrimPrefix(p2p, "http://")
+	p2p = strings.TrimPrefix(p2p, "https://")
+
+	// escape the `:` character from p2p
+	p2p = strings.ReplaceAll(p2p, ":", "\\:")
+	// escape the `.` character from p2p
+	p2p = strings.ReplaceAll(p2p, ".", "\\.")
+
+	// print p2p
+	log.Printf(Yellow+"p2p: %v", p2p)
+
+	// print "s/^persistent_peers =.*/persistent_peers = \\\""+nodeId+"\\@"+p2p+"\\\"/"
+	log.Printf(Yellow + "s/^persistent_peers =.*/persistent_peers = \\\"" + nodeId + "\\@" + p2p + "\\\"/")
+
+	sed("s/^persistent_peers =.*/persistent_peers = \\\""+nodeId+"\\@"+p2p+"\\\"/", configPath)
 
 	// Update app.toml for enabling the API server
 	sed("/^# Enable defines if the API server should be enabled./{n;s/enable = false/enable = true/;}", appPath)

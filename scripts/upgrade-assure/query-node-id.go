@@ -6,14 +6,14 @@ import (
 	"strings"
 )
 
-func queryValidatorPubkey(cmdPath, home string) string {
+func queryNodeId(cmdPath, home string) string {
 	// Command and arguments
-	args := []string{"tendermint", "show-validator", "--home", home}
+	args := []string{"tendermint", "show-node-id", "--home", home}
 
 	// Execute the command
 	output, err := exec.Command(cmdPath, args...).CombinedOutput()
 	if err != nil {
-		log.Fatalf(Red+"Failed to query validator pubkey: %v", err)
+		log.Fatalf(Red+"Failed to query node id: %v", err)
 	}
 
 	// trim the output
