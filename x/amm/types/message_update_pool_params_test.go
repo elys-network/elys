@@ -20,7 +20,7 @@ func TestMsgUpdatePoolParams_ValidateBasic(t *testing.T) {
 		{
 			name: "invalid address",
 			msg: types.MsgUpdatePoolParams{
-				Sender: "invalid_address",
+				Authority: "invalid_address",
 				PoolParams: &types.PoolParams{
 					SwapFee:                     sdk.ZeroDec(),
 					ExitFee:                     sdk.ZeroDec(),
@@ -37,7 +37,7 @@ func TestMsgUpdatePoolParams_ValidateBasic(t *testing.T) {
 		}, {
 			name: "valid address",
 			msg: types.MsgUpdatePoolParams{
-				Sender: sample.AccAddress(),
+				Authority: sample.AccAddress(),
 				PoolParams: &types.PoolParams{
 					SwapFee:                     sdk.ZeroDec(),
 					ExitFee:                     sdk.ZeroDec(),
