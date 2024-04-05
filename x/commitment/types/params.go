@@ -28,7 +28,7 @@ func NewLegacyParams(vestingInfos []*LegacyVestingInfo) LegacyParams {
 func DefaultParams() Params {
 	return Params{
 		VestingInfos:   nil,
-		TotalCommitted: sdk.Coins{},
+		TotalCommitted: sdk.Coins(nil),
 	}
 }
 

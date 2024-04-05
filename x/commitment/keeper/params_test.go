@@ -52,7 +52,8 @@ func TestEncodeDecodeParams(t *testing.T) {
 	}
 
 	params := types.Params{
-		VestingInfos: vestingInfos,
+		VestingInfos:   vestingInfos,
+		TotalCommitted: sdk.Coins{sdk.NewInt64Coin(ptypes.Eden, 10)},
 	}
 
 	encoded, err := types.ModuleCdc.MarshalJSON(&params)

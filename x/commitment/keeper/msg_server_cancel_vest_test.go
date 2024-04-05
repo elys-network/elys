@@ -59,7 +59,7 @@ func TestCancelVest(t *testing.T) {
 			{
 				Denom:         ptypes.Eden,
 				TotalAmount:   sdk.NewInt(100),
-				ClaimedAmount: sdk.NewInt(0),
+				ClaimedAmount: sdk.NewInt(1),
 				NumBlocks:     100,
 				StartBlock:    0,
 			},
@@ -75,12 +75,12 @@ func TestCancelVest(t *testing.T) {
 	newCommitments := keeper.GetCommitments(ctx, cancelVestMsg.Creator)
 	require.Len(t, newCommitments.VestingTokens, 1, "vesting tokens were not updated correctly")
 	require.Equal(t, sdk.NewInt(75), newCommitments.VestingTokens[0].TotalAmount, "total amount was not updated correctly")
-	require.Equal(t, sdk.NewInt(75), newCommitments.VestingTokens[0].ClaimedAmount, "unvested amount was not updated correctly")
+	require.Equal(t, sdk.NewInt(1), newCommitments.VestingTokens[0].ClaimedAmount, "claimed amount was not updated correctly")
 	// check if the unclaimed tokens were updated correctly
 	require.Equal(t, sdk.NewInt(25), newCommitments.GetClaimedForDenom(ptypes.Eden))
 
 	// Try to cancel an amount that exceeds the unvested amount
-	cancelVestMsg.Amount = sdk.NewInt(101)
+	cancelVestMsg.Amount = sdk.NewInt(100)
 	_, err = msgServer.CancelVest(ctx, cancelVestMsg)
 	require.Error(t, err, "should throw an error when trying to cancel more tokens than available")
 	require.True(t, types.ErrInsufficientVestingTokens.Is(err), "error should be insufficient vesting tokens")
