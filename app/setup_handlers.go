@@ -1,8 +1,6 @@
 package app
 
 import (
-	"fmt"
-
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	m "github.com/cosmos/cosmos-sdk/types/module"
@@ -21,28 +19,6 @@ func setUpgradeHandler(app *ElysApp) {
 		version.Version,
 		func(ctx sdk.Context, plan upgradetypes.Plan, vm m.VersionMap) (m.VersionMap, error) {
 			app.Logger().Info("Running upgrade handler for " + version.Version)
-
-			if version.Version == "v0.29.29" {
-				app.Logger().Info("Decommission deprecated pool #1")
-				pool, found := app.AmmKeeper.GetPool(ctx, 1)
-				if found {
-					// withdraw all liquidity from the pool
-					allCommitments := app.CommitmentKeeper.GetAllCommitments(ctx)
-					for _, commitments := range allCommitments {
-						addr, err := sdk.AccAddressFromBech32(commitments.Creator)
-						if err != nil {
-							continue
-						}
-						for _, committedToken := range commitments.CommittedTokens {
-							if committedToken.Denom == fmt.Sprintf("amm/pool/%d", pool.PoolId) {
-								app.AmmKeeper.ExitPool(ctx, addr, pool.PoolId, committedToken.Amount, sdk.NewCoins(), "")
-							}
-						}
-					}
-					// remove the pool
-					app.AmmKeeper.RemovePool(ctx, pool.PoolId)
-				}
-			}
 
 			return app.mm.RunMigrations(ctx, app.configurator, vm)
 		},

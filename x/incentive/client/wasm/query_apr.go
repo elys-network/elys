@@ -23,3 +23,16 @@ func (oq *Querier) queryApr(ctx sdk.Context, query *types.QueryAprRequest) ([]by
 	}
 	return responseBytes, nil
 }
+
+func (oq *Querier) queryAprs(ctx sdk.Context, query *types.QueryAprsRequest) ([]byte, error) {
+	resp, err := oq.keeper.Aprs(ctx, query)
+	if err != nil {
+		return nil, errorsmod.Wrap(err, "failed to get community pool")
+	}
+
+	responseBytes, err := json.Marshal(resp)
+	if err != nil {
+		return nil, errorsmod.Wrap(err, "failed to serialize aprs response")
+	}
+	return responseBytes, nil
+}

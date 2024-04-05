@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 
 	errorsmod "cosmossdk.io/errors"
-	cosmos_sdk_math "cosmossdk.io/math"
 	wasmvmtypes "github.com/CosmWasm/wasmvm/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	leveragelpkeeper "github.com/elys-network/elys/x/leveragelp/keeper"
@@ -42,7 +41,7 @@ func PerformMsgOpen(f *leveragelpkeeper.Keeper, ctx sdk.Context, contractAddr sd
 	}
 	msgServer := leveragelpkeeper.NewMsgServerImpl(*f)
 
-	msgMsgOpen := leveragelptypes.NewMsgOpen(msgOpen.Creator, msgOpen.CollateralAsset, cosmos_sdk_math.Int(msgOpen.CollateralAmount), msgOpen.AmmPoolId, msgOpen.Leverage)
+	msgMsgOpen := leveragelptypes.NewMsgOpen(msgOpen.Creator, msgOpen.CollateralAsset, msgOpen.CollateralAmount, msgOpen.AmmPoolId, msgOpen.Leverage, msgOpen.StopLossPrice)
 
 	if err := msgMsgOpen.ValidateBasic(); err != nil {
 		return nil, errorsmod.Wrap(err, "failed validating msgMsgOpen")

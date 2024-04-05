@@ -290,6 +290,19 @@ func (p *Pool) TVL(ctx sdk.Context, oracleKeeper OracleKeeper) (sdk.Dec, error) 
 	return oracleAssetsTVL.Mul(sdk.NewDecFromInt(totalWeight)).Quo(sdk.NewDecFromInt(oracleAssetsWeight)), nil
 }
 
+func (p *Pool) LpTokenPrice(ctx sdk.Context, oracleKeeper OracleKeeper) (sdk.Dec, error) {
+	ammPoolTvl, err := p.TVL(ctx, oracleKeeper)
+	if err != nil {
+		return sdk.ZeroDec(), err
+	}
+	// Ensure ammPool.TotalShares is not zero to avoid division by zero
+	if p.TotalShares.IsZero() {
+		return sdk.OneDec(), nil
+	}
+	lpTokenPrice := ammPoolTvl.MulInt(OneShare).QuoInt(p.TotalShares.Amount)
+	return lpTokenPrice, nil
+}
+
 func (pool Pool) Validate(poolId uint64) error {
 	if pool.GetPoolId() != poolId {
 		return errorsmod.Wrapf(ErrInvalidPool,

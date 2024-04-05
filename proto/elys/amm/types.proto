@@ -31,15 +31,16 @@ message EarnPool {
     string leverage_lp        = 6 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
     string perpetual          = 7 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
     string tvl                = 8 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
-    string rewards_usd         = 9 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
-    repeated cosmos.base.v1beta1.Coin reward_coins = 10 [
+    string lp_token_price     = 9 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+    string rewards_usd        = 10 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+    repeated cosmos.base.v1beta1.Coin reward_coins = 11 [
       (gogoproto.nullable) = false,
       (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
     ];
-    cosmos.base.v1beta1.Coin total_shares = 11 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Coin", (gogoproto.nullable) = false];
-    string swap_fee = 12 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
-    string fee_denom = 13;
-    bool use_oracle = 14;
+    cosmos.base.v1beta1.Coin total_shares = 12 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Coin", (gogoproto.nullable) = false];
+    string swap_fee = 13 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+    string fee_denom = 14;
+    bool use_oracle = 15;
 }
   
 message QueryEarnPoolResponse {

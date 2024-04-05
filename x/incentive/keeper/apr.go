@@ -48,13 +48,13 @@ func (k Keeper) CalculateApr(ctx sdk.Context, query *types.QueryAprRequest) (mat
 
 			// Eden amount for LP in 24hrs = EpochNumBlocks is the number of block for 24 hrs
 			epochEdenAmount := lpIncentive.EdenAmountPerYear.
-				Mul(lpIncentive.EpochNumBlocks).
+				Mul(sdk.NewInt(params.DistributionInterval)).
 				Quo(lpIncentive.TotalBlocksPerYear)
 
 			edenDenomPrice := k.GetEdenDenomPrice(ctx, baseCurrency)
 			epochLpsMaxEdenAmount := params.MaxEdenRewardAprLps.
 				Mul(totalProxyTVL).
-				MulInt(lpIncentive.EpochNumBlocks).
+				MulInt64(params.DistributionInterval).
 				QuoInt(lpIncentive.TotalBlocksPerYear).
 				Quo(edenDenomPrice)
 
@@ -86,14 +86,14 @@ func (k Keeper) CalculateApr(ctx sdk.Context, query *types.QueryAprRequest) (mat
 
 			// Calculate
 			epochStakersEdenAmount := stkIncentive.EdenAmountPerYear.
-				Mul(stkIncentive.EpochNumBlocks).
+				Mul(sdk.NewInt(params.DistributionInterval)).
 				Quo(stkIncentive.TotalBlocksPerYear)
 
 			// Maximum eden based per distribution epoch on maximum APR - 30% by default
 			// Allocated for staking per day = (0.3/365)* ( total elys staked + total Eden committed + total Eden boost committed)
 			epochStakersMaxEdenAmount := params.MaxEdenRewardAprStakers.
 				MulInt(totalStakedSnapshot).
-				MulInt(stkIncentive.EpochNumBlocks).
+				MulInt64(params.DistributionInterval).
 				QuoInt(stkIncentive.TotalBlocksPerYear)
 
 			// Use min amount (eden allocation from tokenomics and max apr based eden amount)
@@ -147,7 +147,7 @@ func (k Keeper) CalculateApr(ctx sdk.Context, query *types.QueryAprRequest) (mat
 
 			// DexReward amount per day = amount distributed / duration(in seconds) * total seconds per day.
 			// EpochNumBlocks is the number of the block per day
-			dailyDexRewardAmount := amount.MulInt(stkIncentive.EpochNumBlocks).QuoInt(params.DexRewardsStakers.NumBlocks)
+			dailyDexRewardAmount := amount.MulInt64(params.DistributionInterval).QuoInt(params.DexRewardsStakers.NumBlocks)
 
 			// Usdc apr for elys staking = (24 hour dex rewards in USDC generated for stakers) * 365*100/ {price ( elys/usdc)*( sum of (elys staked, Eden committed, Eden boost committed))}
 			// we multiply 10 as we have use 10elys as input in the price estimation
