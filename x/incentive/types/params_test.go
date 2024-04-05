@@ -26,8 +26,6 @@ func Test_validateParams(t *testing.T) {
 		DistributionStartBlock: sdk.ZeroInt(),
 		// distribution duration - block number per year
 		TotalBlocksPerYear: sdk.NewInt(10512000),
-		// maximum eden allocation per day that won't exceed 30% apr
-		MaxEdenPerAllocation: sdk.NewInt(27397238400),
 		// current epoch in block number
 		CurrentEpochInBlocks: sdk.NewInt(0),
 	}

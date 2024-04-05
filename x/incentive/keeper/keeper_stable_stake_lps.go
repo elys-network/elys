@@ -37,7 +37,15 @@ func (k Keeper) CalculatePoolShareForStableStakeLPs(ctx sdk.Context, totalProxyT
 }
 
 // Calculate new Eden token amounts based on LpElys committed and MElys committed
-func (k Keeper) CalcRewardsForStableStakeLPs(ctx sdk.Context, totalProxyTVL sdk.Dec, commitments ctypes.Commitments, edenAmountPerEpochLp math.Int, gasFeesForLPs sdk.Dec, baseCurrency string) (math.Int, math.Int) {
+func (k Keeper) CalcRewardsForStableStakeLPs(
+	ctx sdk.Context,
+	totalBlocksPerYear sdk.Int,
+	totalProxyTVL sdk.Dec,
+	commitments ctypes.Commitments,
+	edenAmountPerEpochLp math.Int,
+	gasFeesForLPs sdk.Dec,
+	baseCurrency string,
+) (math.Int, math.Int) {
 	// Method 2 - Using Proxy TVL
 	totalDexRewardsAllocated := sdk.ZeroDec()
 
@@ -46,6 +54,18 @@ func (k Keeper) CalcRewardsForStableStakeLPs(ctx sdk.Context, totalProxyTVL sdk.
 
 	// Calculate new Eden for this pool
 	newEdenAllocatedForPool := poolShare.MulInt(edenAmountPerEpochLp)
+
+	tvl := k.stableKeeper.TVL(ctx, k.oracleKeeper, baseCurrency)
+	edenDenomPrice := k.GetEdenDenomPrice(ctx, baseCurrency)
+	params := k.GetParams(ctx)
+	poolMaxEdenAmount := params.MaxEdenRewardAprLps.
+		Mul(tvl).
+		MulInt64(params.DistributionInterval).
+		QuoInt(totalBlocksPerYear).
+		Quo(edenDenomPrice)
+
+	// Use min amount (eden allocation from tokenomics and max apr based eden amount)
+	newEdenAllocatedForPool = sdk.MinDec(newEdenAllocatedForPool, poolMaxEdenAmount)
 
 	// Get pool share denom - stable stake lp token
 	lpToken := stabletypes.GetShareDenom()
