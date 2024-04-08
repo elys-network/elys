@@ -328,3 +328,11 @@ func (c *Commitments) SubClaimed(amount sdk.Coin) error {
 	c.Claimed = c.Claimed.Sub(amount)
 	return nil
 }
+
+func (vesting *VestingTokens) VestedSoFar(ctx sdk.Context) math.Int {
+	totalBlocks := ctx.BlockHeight() - vesting.StartBlock
+	if totalBlocks > vesting.NumBlocks {
+		totalBlocks = vesting.NumBlocks
+	}
+	return vesting.TotalAmount.Mul(sdk.NewInt(totalBlocks)).Quo(sdk.NewInt(vesting.NumBlocks))
+}

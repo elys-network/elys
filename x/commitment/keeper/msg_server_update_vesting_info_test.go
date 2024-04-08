@@ -29,13 +29,12 @@ func TestAddVestingInfo(t *testing.T) {
 
 	// Call the Update Vesting Info function
 	msg := types.MsgUpdateVestingInfo{
-		Authority:       signer,
-		BaseDenom:       "test_denom",
-		VestingDenom:    "test_denom",
-		EpochIdentifier: "day",
-		NumEpochs:       10,
-		VestNowFactor:   10,
-		NumMaxVestings:  10,
+		Authority:      signer,
+		BaseDenom:      "test_denom",
+		VestingDenom:   "test_denom",
+		NumBlocks:      10,
+		VestNowFactor:  10,
+		NumMaxVestings: 10,
 	}
 	_, err := msgServer.UpdateVestingInfo(ctx, &msg)
 	require.NoError(t, err)
@@ -58,12 +57,11 @@ func TestUpdateVestingInfo(t *testing.T) {
 	// Define the test data
 	signer := govAddress.String()
 	vestingInfo := &types.VestingInfo{
-		BaseDenom:       "test_denom",
-		VestingDenom:    "test_denom",
-		EpochIdentifier: "month",
-		NumEpochs:       10,
-		VestNowFactor:   sdk.NewInt(10),
-		NumMaxVestings:  10,
+		BaseDenom:      "test_denom",
+		VestingDenom:   "test_denom",
+		NumBlocks:      10,
+		VestNowFactor:  sdk.NewInt(10),
+		NumMaxVestings: 10,
 	}
 
 	params := keeper.GetParams(ctx)
@@ -75,18 +73,13 @@ func TestUpdateVestingInfo(t *testing.T) {
 
 	// Call the UpdateVestingInfo function
 	msg := types.MsgUpdateVestingInfo{
-		Authority:       signer,
-		BaseDenom:       "test_denom",
-		VestingDenom:    "test_denom",
-		EpochIdentifier: "day",
-		NumEpochs:       10,
-		VestNowFactor:   10,
-		NumMaxVestings:  10,
+		Authority:      signer,
+		BaseDenom:      "test_denom",
+		VestingDenom:   "test_denom",
+		NumBlocks:      10,
+		VestNowFactor:  10,
+		NumMaxVestings: 10,
 	}
 	_, err := msgServer.UpdateVestingInfo(ctx, &msg)
 	require.NoError(t, err)
-
-	// Check if the committed tokens have been added to the store
-	vestingInfo, _ = keeper.GetVestingInfo(ctx, "test_denom")
-	assert.Equal(t, vestingInfo.EpochIdentifier, "day", "Incorrect epoch identifier")
 }

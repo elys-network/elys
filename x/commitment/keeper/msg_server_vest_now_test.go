@@ -36,12 +36,11 @@ func TestVestNow(t *testing.T) {
 
 	vestingInfos := []*types.VestingInfo{
 		{
-			BaseDenom:       ptypes.Eden,
-			VestingDenom:    ptypes.Elys,
-			EpochIdentifier: "tenseconds",
-			NumEpochs:       10,
-			VestNowFactor:   sdk.NewInt(90),
-			NumMaxVestings:  10,
+			BaseDenom:      ptypes.Eden,
+			VestingDenom:   ptypes.Elys,
+			NumBlocks:      10,
+			VestNowFactor:  sdk.NewInt(90),
+			NumMaxVestings: 10,
 		},
 	}
 

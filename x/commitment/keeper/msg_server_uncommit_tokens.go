@@ -74,6 +74,11 @@ func (k msgServer) UncommitTokens(goCtx context.Context, msg *types.MsgUncommitT
 		return nil, err
 	}
 
+	// Update total commitment
+	params := k.GetParams(ctx)
+	params.TotalCommitted = params.TotalCommitted.Add(liquidCoins...)
+	k.SetParams(ctx, params)
+
 	// Emit blockchain event
 	ctx.EventManager().EmitEvent(
 		sdk.NewEvent(

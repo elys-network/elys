@@ -1,6 +1,8 @@
 package keeper
 
 import (
+	"errors"
+
 	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -22,6 +24,11 @@ func (k Keeper) EndBlocker(ctx sdk.Context) {
 }
 
 func (k Keeper) ProcessExternalRewardsDistribution(ctx sdk.Context) {
+	canDistribute := k.CanDistributeLPRewards(ctx)
+	if !canDistribute {
+		return
+	}
+
 	// Fetch incentive params
 	params := k.GetParams(ctx)
 	lpIncentive := params.LpIncentives
@@ -78,6 +85,12 @@ func (k Keeper) ProcessExternalRewardsDistribution(ctx sdk.Context) {
 }
 
 func (k Keeper) ProcessLPRewardDistribution(ctx sdk.Context) {
+	// Read tokenomics time based inflation params and update incentive module params.
+	if !k.ProcessUpdateIncentiveParams(ctx) {
+		ctx.Logger().Error("Invalid tokenomics params", "error", errors.New("invalid tokenomics params"))
+		return
+	}
+
 	canDistribute := k.CanDistributeLPRewards(ctx)
 	if canDistribute {
 		err := k.UpdateLPRewardsUnclaimed(ctx)
@@ -85,6 +98,77 @@ func (k Keeper) ProcessLPRewardDistribution(ctx sdk.Context) {
 			ctx.Logger().Error("Failed to update lp rewards unclaimed", "error", err)
 		}
 	}
+}
+
+func (k Keeper) ProcessUpdateIncentiveParams(ctx sdk.Context) bool {
+	// Non-linear inflation per year happens and this includes yearly inflation data
+	listTimeBasedInflations := k.tokenomicsKeeper.GetAllTimeBasedInflation(ctx)
+	if len(listTimeBasedInflations) < 1 {
+		return false
+	}
+
+	params := k.GetParams(ctx)
+
+	for _, inflation := range listTimeBasedInflations {
+		// Finding only current inflation data - and skip rest
+		if inflation.StartBlockHeight > uint64(ctx.BlockHeight()) || inflation.EndBlockHeight < uint64(ctx.BlockHeight()) {
+			continue
+		}
+
+		totalBlocksPerYear := sdk.NewInt(int64(inflation.EndBlockHeight - inflation.StartBlockHeight + 1))
+
+		// ------------- LP Incentive parameter -------------
+		totalDistributionEpochPerYear := totalBlocksPerYear.Quo(sdk.NewInt(1))
+		// If totalDistributionEpochPerYear is zero, we skip this inflation to avoid division by zero
+		if totalBlocksPerYear == sdk.ZeroInt() {
+			continue
+		}
+		currentEpochInBlocks := sdk.NewInt(ctx.BlockHeight() - int64(inflation.StartBlockHeight)).
+			Mul(totalDistributionEpochPerYear).
+			Quo(totalBlocksPerYear)
+
+		incentiveInfo := types.IncentiveInfo{
+			// reward amount in eden for 1 year
+			EdenAmountPerYear: sdk.NewInt(int64(inflation.Inflation.LmRewards)),
+			// starting block height of the distribution
+			DistributionStartBlock: sdk.NewInt(int64(inflation.StartBlockHeight)),
+			// distribution duration - block number per year
+			TotalBlocksPerYear: totalBlocksPerYear,
+			// current epoch in block number
+			CurrentEpochInBlocks: currentEpochInBlocks,
+		}
+
+		if params.LpIncentives == nil {
+			params.LpIncentives = &incentiveInfo
+		} else {
+			// If any of block number related parameter changed, we re-calculate the current epoch
+			if params.LpIncentives.DistributionStartBlock != incentiveInfo.DistributionStartBlock ||
+				params.LpIncentives.TotalBlocksPerYear != incentiveInfo.TotalBlocksPerYear {
+				params.LpIncentives.CurrentEpochInBlocks = currentEpochInBlocks
+			}
+			params.LpIncentives.EdenAmountPerYear = incentiveInfo.EdenAmountPerYear
+			params.LpIncentives.DistributionStartBlock = incentiveInfo.DistributionStartBlock
+			params.LpIncentives.TotalBlocksPerYear = incentiveInfo.TotalBlocksPerYear
+		}
+
+		// ------------- Stakers parameter -------------
+		totalDistributionEpochPerYear = totalBlocksPerYear.Quo(sdk.NewInt(1))
+		currentEpochInBlocks = sdk.NewInt(ctx.BlockHeight() - int64(inflation.StartBlockHeight)).Mul(totalDistributionEpochPerYear).Quo(totalBlocksPerYear)
+		incentiveInfo = types.IncentiveInfo{
+			// reward amount in eden for 1 year
+			EdenAmountPerYear: sdk.NewInt(int64(inflation.Inflation.IcsStakingRewards)),
+			// starting block height of the distribution
+			DistributionStartBlock: sdk.NewInt(int64(inflation.StartBlockHeight)),
+			// distribution duration - block number per year
+			TotalBlocksPerYear: totalBlocksPerYear,
+			// current epoch in block number
+			CurrentEpochInBlocks: currentEpochInBlocks,
+		}
+		break
+	}
+
+	k.SetParams(ctx, params)
+	return true
 }
 
 func (k Keeper) CanDistributeLPRewards(ctx sdk.Context) bool {

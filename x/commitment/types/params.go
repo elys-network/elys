@@ -3,36 +3,51 @@ package types
 import (
 	fmt "fmt"
 
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
 	"gopkg.in/yaml.v2"
 )
 
-var _ paramtypes.ParamSet = (*Params)(nil)
+var _ paramtypes.ParamSet = (*LegacyParams)(nil)
 
 var KeyVestingInfos = []byte("VestingInfos")
 
 // ParamKeyTable the param key table for launch module
 func ParamKeyTable() paramtypes.KeyTable {
-	return paramtypes.NewKeyTable().RegisterParamSet(&Params{})
+	return paramtypes.NewKeyTable().RegisterParamSet(&LegacyParams{})
 }
 
-// NewParams creates a new Params instance
-func NewParams(vestingInfos []*VestingInfo) Params {
-	return Params{
+// NewLegacyParams creates a new LegacyParams instance
+func NewLegacyParams(vestingInfos []*LegacyVestingInfo) LegacyParams {
+	return LegacyParams{
 		VestingInfos: vestingInfos,
 	}
 }
 
 // DefaultParams returns a default set of parameters
 func DefaultParams() Params {
-	return NewParams(nil)
+	return Params{
+		VestingInfos:   nil,
+		TotalCommitted: sdk.Coins(nil),
+	}
 }
 
 // ParamSetPairs get the params.ParamSet
-func (p *Params) ParamSetPairs() paramtypes.ParamSetPairs {
+func (p *LegacyParams) ParamSetPairs() paramtypes.ParamSetPairs {
 	return paramtypes.ParamSetPairs{
 		paramtypes.NewParamSetPair(KeyVestingInfos, &p.VestingInfos, validateVestingInfos),
 	}
+}
+
+// Validate validates the set of params
+func (p LegacyParams) Validate() error {
+	return nil
+}
+
+// String implements the Stringer interface.
+func (p LegacyParams) String() string {
+	out, _ := yaml.Marshal(p)
+	return string(out)
 }
 
 // Validate validates the set of params
@@ -71,12 +86,8 @@ func validateVestingInfo(info *VestingInfo) error {
 		return fmt.Errorf("vesting_denom cannot be empty")
 	}
 
-	if info.EpochIdentifier == "" {
-		return fmt.Errorf("epoch_identifier cannot be empty")
-	}
-
-	if info.NumEpochs <= 0 {
-		return fmt.Errorf("num_epochs must be greater than zero")
+	if info.NumBlocks <= 0 {
+		return fmt.Errorf("num_blocks must be greater than zero")
 	}
 
 	if info.NumMaxVestings < 0 {

@@ -40,10 +40,12 @@ func TestExternalIncentive(t *testing.T) {
 			AmountPerBlock: sdk.OneInt(),
 		},
 	}
+	require.Equal(t, app.MasterchefKeeper.GetExternalIncentiveIndex(ctx), uint64(0))
 	for _, externalIncentive := range externalIncentives {
 		err := app.MasterchefKeeper.SetExternalIncentive(ctx, externalIncentive)
 		require.NoError(t, err)
 	}
+	require.Equal(t, app.MasterchefKeeper.GetExternalIncentiveIndex(ctx), uint64(3))
 	for _, externalIncentive := range externalIncentives {
 		info, found := app.MasterchefKeeper.GetExternalIncentive(ctx, externalIncentive.Id)
 		require.True(t, found)

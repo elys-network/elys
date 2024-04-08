@@ -10,7 +10,7 @@ func (m Migrator) V2Migration(ctx sdk.Context) error {
 	if params.VestingInfos != nil {
 		for _, vi := range params.VestingInfos {
 			if vi != nil && vi.BaseDenom == ptypes.Eden {
-				vi.NumEpochs = 4320 // 10s * 4320 = 12 hrs
+				vi.NumBlocks = 4320 // 10s * 4320 = 12 hrs
 			}
 		}
 	}

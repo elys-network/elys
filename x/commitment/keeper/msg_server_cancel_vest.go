@@ -7,11 +7,16 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/elys-network/elys/x/commitment/types"
+	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
 
 // CancelVest cancel the user's vesting and the user reject to get vested tokens
 func (k msgServer) CancelVest(goCtx context.Context, msg *types.MsgCancelVest) (*types.MsgCancelVestResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	if msg.Denom != ptypes.Eden {
+		return nil, errorsmod.Wrapf(types.ErrInvalidDenom, "denom: %s", msg.Denom)
+	}
 
 	vestingInfo, _ := k.GetVestingInfo(ctx, msg.Denom)
 	if vestingInfo == nil {
@@ -23,40 +28,25 @@ func (k msgServer) CancelVest(goCtx context.Context, msg *types.MsgCancelVest) (
 
 	remainingToCancel := msg.Amount
 
-	remainVestingTokens := make([]*types.VestingTokens, 0, len(commitments.VestingTokens))
-	newVestingTokens := make([]*types.VestingTokens, 0, len(commitments.VestingTokens))
-
 	for i := len(commitments.VestingTokens) - 1; i >= 0; i-- {
 		vesting := commitments.VestingTokens[i]
-		cancelAmount := sdk.MinInt(remainingToCancel, vesting.UnvestedAmount)
-		if vesting.NumEpochs == 0 || vesting.TotalAmount.IsZero() {
+		if vesting.Denom != msg.Denom || vesting.NumBlocks == 0 || vesting.TotalAmount.IsZero() {
 			continue
 		}
-		amtPerEpoch := vesting.TotalAmount.Quo(sdk.NewInt(vesting.NumEpochs))
+		cancelAmount := sdk.MinInt(remainingToCancel, vesting.TotalAmount.Sub(vesting.ClaimedAmount))
 		vesting.TotalAmount = vesting.TotalAmount.Sub(cancelAmount)
-		vesting.UnvestedAmount = vesting.UnvestedAmount.Sub(cancelAmount)
-
-		if amtPerEpoch.IsZero() {
-			continue
-		}
 		// Update the num epochs for the reduced amount
-		vesting.NumEpochs = vesting.TotalAmount.Quo(amtPerEpoch).Int64()
-
-		if !vesting.TotalAmount.IsZero() {
-			remainVestingTokens = append(remainVestingTokens, vesting)
-		}
+		commitments.VestingTokens[i] = vesting
 
 		remainingToCancel = remainingToCancel.Sub(cancelAmount)
-		if remainingToCancel.IsZero() {
-			newVestingTokens = append(newVestingTokens, commitments.VestingTokens[:i]...)
-
-			break
-		}
 	}
 
-	// Add the remaining vesting in reverse order.
-	for i := len(remainVestingTokens) - 1; i >= 0; i-- {
-		newVestingTokens = append(newVestingTokens, remainVestingTokens[i])
+	newVestingTokens := []*types.VestingTokens{}
+	for _, vesting := range commitments.VestingTokens {
+		if vesting.ClaimedAmount.GTE(vesting.TotalAmount) {
+			continue
+		}
+		newVestingTokens = append(newVestingTokens, vesting)
 	}
 
 	commitments.VestingTokens = newVestingTokens
