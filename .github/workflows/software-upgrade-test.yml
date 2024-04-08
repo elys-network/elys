@@ -44,11 +44,11 @@ jobs:
 
       - name: Chain initialization
         run: |
-          go run ./scripts/upgrade-assure/... $SNAPSHOT_PATH $OLD_BINARY_URL $NEW_BINARY_PATH --skip-node-start
+          go run ./scripts/upgrade-assure/... $SNAPSHOT_PATH $OLD_BINARY_PATH $NEW_BINARY_PATH --skip-node-start
 
       - name: Check out new branch
         run: git checkout ${{ github.head_ref }}
 
       - name: Software upgrade
         run: |
-          go run ./scripts/upgrade-assure/... $SNAPSHOT_PATH $OLD_BINARY_URL $NEW_BINARY_PATH --skip-snapshot --skip-chain-init
+          go run ./scripts/upgrade-assure/... $SNAPSHOT_PATH $OLD_BINARY_PATH $NEW_BINARY_PATH --skip-snapshot --skip-chain-init
