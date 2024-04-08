@@ -3,27 +3,13 @@ package keeper
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	epochstypes "github.com/elys-network/elys/x/epochs/types"
-	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
 
 // BeforeEpochStart performs a no-op
 func (k Keeper) BeforeEpochStart(_ sdk.Context, _ string, _ int64) {}
 
 // AfterEpochEnd distributes vested tokens at the end of each epoch
-func (k Keeper) AfterEpochEnd(ctx sdk.Context, epochIdentifier string, _ int64) {
-	// Future Improvement: check all VestingInfos and get all VestingTokens by denom
-	// 	so we can iterate different denoms in different EpochIdentifiers
-	vestingInfo, _ := k.GetVestingInfo(ctx, ptypes.Eden)
-	if vestingInfo != nil {
-		if epochIdentifier == vestingInfo.EpochIdentifier {
-			k.Logger(ctx).Info("Vesting tokens for vestingInfo", vestingInfo)
-			if err := k.VestTokens(ctx, epochIdentifier); err != nil {
-				k.Logger(ctx).Error("Error vesting tokens", "vestingInfo", vestingInfo)
-				panic(err)
-			}
-		}
-	}
-}
+func (k Keeper) AfterEpochEnd(ctx sdk.Context, epochIdentifier string, _ int64) {}
 
 // ___________________________________________________________________________________________________
 
