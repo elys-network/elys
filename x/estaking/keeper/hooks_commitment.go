@@ -68,7 +68,6 @@ func (k Keeper) BeforeEdenBInitialCommit(ctx sdk.Context, addr sdk.AccAddress) e
 }
 
 func (k Keeper) BeforeEdenCommitChange(ctx sdk.Context, addr sdk.AccAddress) error {
-
 	params := k.GetParams(ctx)
 	edenValAddr, err := sdk.ValAddressFromBech32(params.EdenCommitVal)
 	if err != nil {
@@ -119,17 +118,17 @@ func (h CommitmentHooks) EdenUncommitted(ctx sdk.Context, creator string, amount
 }
 
 func (h CommitmentHooks) BeforeEdenInitialCommit(ctx sdk.Context, addr sdk.AccAddress) error {
-	return nil
+	return h.k.BeforeEdenInitialCommit(ctx, addr)
 }
 
 func (h CommitmentHooks) BeforeEdenBInitialCommit(ctx sdk.Context, addr sdk.AccAddress) error {
-	return nil
+	return h.k.BeforeEdenBInitialCommit(ctx, addr)
 }
 
 func (h CommitmentHooks) BeforeEdenCommitChange(ctx sdk.Context, addr sdk.AccAddress) error {
-	return nil
+	return h.k.BeforeEdenCommitChange(ctx, addr)
 }
 
 func (h CommitmentHooks) BeforeEdenBCommitChange(ctx sdk.Context, addr sdk.AccAddress) error {
-	return nil
+	return h.k.BeforeEdenBCommitChange(ctx, addr)
 }

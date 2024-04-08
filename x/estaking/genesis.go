@@ -43,8 +43,6 @@ func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) 
 			}
 		}
 	}
-
-	// TODO: remove rewards management in incentive module (might be good to completely remove incentive module)
 }
 
 // ExportGenesis returns the module's exported genesis
