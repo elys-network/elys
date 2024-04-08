@@ -42,4 +42,11 @@ type StakingKeeper interface {
 
 type CommitmentKeeper interface {
 	GetCommitments(ctx sdk.Context, creator string) commitmenttypes.Commitments
+	GetParams(ctx sdk.Context) commitmenttypes.Params
+}
+
+type DistrKeeper interface {
+	WithdrawDelegationRewards(ctx sdk.Context, delAddr sdk.AccAddress, valAddr sdk.ValAddress) (sdk.Coins, error)
+	IncrementValidatorPeriod(ctx sdk.Context, val stakingtypes.ValidatorI) uint64
+	CalculateDelegationRewards(ctx sdk.Context, val stakingtypes.ValidatorI, del stakingtypes.DelegationI, endingPeriod uint64) (rewards sdk.DecCoins)
 }

@@ -16,8 +16,8 @@ func (k Keeper) EndBlocker(ctx sdk.Context) {
 	// Burn EdenB tokens if staking changed
 	k.BurnEdenBIfElysStakingReduced(ctx)
 
-	// Rewards distribution
-	k.ProcessRewardsDistribution(ctx)
+	// // Rewards distribution
+	// k.ProcessRewardsDistribution(ctx)
 }
 
 func (k Keeper) TakeDelegationSnapshot(ctx sdk.Context, addr string) {

@@ -604,6 +604,7 @@ func NewElysApp(
 		app.GetSubspace(estakingmoduletypes.ModuleName),
 		app.StakingKeeper,
 		commitmentKeeper,
+		&app.DistrKeeper,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 

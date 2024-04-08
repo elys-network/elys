@@ -32,10 +32,18 @@ func (k msgServer) UpdateParams(goCtx context.Context, req *types.MsgUpdateParam
 	return &types.MsgUpdateParamsResponse{}, nil
 }
 
-func (k msgServer) WithdrawReward(goCtx context.Context, req *types.MsgWithdrawReward) (*types.MsgWithdrawRewardResponse, error) {
+func (k msgServer) WithdrawReward(goCtx context.Context, msg *types.MsgWithdrawReward) (*types.MsgWithdrawRewardResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	_ = ctx
-	// TODO: implement
 
-	return &types.MsgWithdrawRewardResponse{}, nil
+	delAddr := sdk.MustAccAddressFromBech32(msg.DelegatorAddress)
+	valAddr, err := sdk.ValAddressFromBech32(msg.ValidatorAddress)
+	if err != nil {
+		return nil, err
+	}
+	amount, err := k.distrKeeper.WithdrawDelegationRewards(ctx, delAddr, valAddr)
+	if err != nil {
+		return nil, err
+	}
+
+	return &types.MsgWithdrawRewardResponse{Amount: amount}, nil
 }

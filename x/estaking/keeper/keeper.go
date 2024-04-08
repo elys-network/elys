@@ -22,12 +22,13 @@ import (
 type (
 	Keeper struct {
 		*stakingkeeper.Keeper
-		cdc        codec.BinaryCodec
-		storeKey   storetypes.StoreKey
-		memKey     storetypes.StoreKey
-		paramstore paramtypes.Subspace
-		commKeeper types.CommitmentKeeper
-		authority  string
+		cdc         codec.BinaryCodec
+		storeKey    storetypes.StoreKey
+		memKey      storetypes.StoreKey
+		paramstore  paramtypes.Subspace
+		commKeeper  types.CommitmentKeeper
+		distrKeeper types.DistrKeeper
+		authority   string
 	}
 )
 
@@ -62,6 +63,7 @@ func NewKeeper(
 	ps paramtypes.Subspace,
 	stakingKeeper *stakingkeeper.Keeper,
 	commKeeper types.CommitmentKeeper,
+	distrKeeper types.DistrKeeper,
 	authority string,
 ) *Keeper {
 	// set KeyTable if it has not already been set
@@ -70,13 +72,14 @@ func NewKeeper(
 	}
 
 	return &Keeper{
-		Keeper:     stakingKeeper,
-		cdc:        cdc,
-		storeKey:   storeKey,
-		memKey:     memKey,
-		paramstore: ps,
-		commKeeper: commKeeper,
-		authority:  authority,
+		Keeper:      stakingKeeper,
+		cdc:         cdc,
+		storeKey:    storeKey,
+		memKey:      memKey,
+		paramstore:  ps,
+		commKeeper:  commKeeper,
+		authority:   authority,
+		distrKeeper: distrKeeper,
 	}
 }
 
@@ -94,14 +97,16 @@ func (k Keeper) TotalBondedTokens(ctx sdk.Context) math.Int {
 
 func (k Keeper) GetEdenValidator(ctx sdk.Context) stakingtypes.ValidatorI {
 	params := k.GetParams(ctx)
+	commParams := k.commKeeper.GetParams(ctx)
+	totalEdenCommit := commParams.TotalCommitted.AmountOf(ptypes.Eden)
 
 	return stakingtypes.Validator{
 		OperatorAddress: params.EdenCommitVal,
 		ConsensusPubkey: EdenValPubKeyAny,
 		Jailed:          false,
 		Status:          stakingtypes.Bonded,
-		Tokens:          sdk.ZeroInt(), // TODO: total Eden commitment
-		DelegatorShares: sdk.ZeroDec(), // TODO: total eden commitment
+		Tokens:          totalEdenCommit,
+		DelegatorShares: sdk.NewDecFromInt(totalEdenCommit),
 		Description: stakingtypes.Description{
 			Moniker: "EdenValidator",
 		},
@@ -116,13 +121,16 @@ func (k Keeper) GetEdenValidator(ctx sdk.Context) stakingtypes.ValidatorI {
 
 func (k Keeper) GetEdenBValidator(ctx sdk.Context) stakingtypes.ValidatorI {
 	params := k.GetParams(ctx)
+	commParams := k.commKeeper.GetParams(ctx)
+	totalEdenBCommit := commParams.TotalCommitted.AmountOf(ptypes.EdenB)
+
 	return stakingtypes.Validator{
 		OperatorAddress: params.EdenbCommitVal,
 		ConsensusPubkey: EdenBValPubKeyAny,
 		Jailed:          false,
 		Status:          stakingtypes.Unbonded,
-		Tokens:          sdk.ZeroInt(), // TODO: total EdenB commitment
-		DelegatorShares: sdk.ZeroDec(), // TODO: total edenb commitment
+		Tokens:          totalEdenBCommit,
+		DelegatorShares: sdk.NewDecFromInt(totalEdenBCommit),
 		Description: stakingtypes.Description{
 			Moniker: "EdenBValidator",
 		},
@@ -216,13 +224,16 @@ func (k Keeper) IterateDelegations(ctx sdk.Context, delegator sdk.AccAddress,
 
 // iterate through the bonded validator set and perform the provided function
 func (k Keeper) IterateBondedValidatorsByPower(ctx sdk.Context, fn func(index int64, validator stakingtypes.ValidatorI) (stop bool)) {
-	if false { // TODO: if eden commitment positive
+	commParams := k.commKeeper.GetParams(ctx)
+
+	if commParams.TotalCommitted.AmountOf(ptypes.Eden).IsPositive() {
 		edenValidator := k.GetEdenValidator(ctx)
 		if stop := fn(0, edenValidator); stop {
 			return
 		}
 	}
-	if false { // TODO: if edenB commmitment positive
+
+	if commParams.TotalCommitted.AmountOf(ptypes.EdenB).IsPositive() {
 		edenBValidator := k.GetEdenBValidator(ctx)
 		if stop := fn(0, edenBValidator); stop {
 			return
