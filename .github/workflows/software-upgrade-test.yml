@@ -16,8 +16,8 @@ jobs:
 
       - name: Retrieve latest snapshot
         run: |
-          DOWNLOAD_URL=https://tools.highstakes.ch/files/elys.tar.gz
-          SNAPSHOT_PATH=/tmp/snapshot.tar.gz
+          DOWNLOAD_URL=https://snapshots-testnet.stake-town.com/elys/elystestnet-1_latest.tar.lz4
+          SNAPSHOT_PATH=/tmp/snapshot.tar.lz4
           curl -L $DOWNLOAD_URL -o $SNAPSHOT_PATH
           echo "SNAPSHOT_PATH=$SNAPSHOT_PATH" >> $GITHUB_ENV
 
