@@ -39,16 +39,19 @@ jobs:
           NEW_BINARY_PATH=./build/elysd
           echo "NEW_BINARY_PATH=$NEW_BINARY_PATH" >> $GITHUB_ENV
 
+      - name: Copy upgrade-assure scripts
+        run: cp -a scripts/upgrade-assure scripts/upgrade-assure-skip
+
       - name: Check out latest tag
         run: git checkout $LATEST_TAG
 
       - name: Chain initialization
         run: |
-          go run ./scripts/upgrade-assure/... $SNAPSHOT_PATH $OLD_BINARY_PATH $NEW_BINARY_PATH --skip-node-start
+          go run ./scripts/upgrade-assure-skip/... $SNAPSHOT_PATH $OLD_BINARY_PATH $NEW_BINARY_PATH --skip-node-start
 
       - name: Check out new branch
         run: git checkout ${{ github.head_ref }}
 
       - name: Software upgrade
         run: |
-          go run ./scripts/upgrade-assure/... $SNAPSHOT_PATH $OLD_BINARY_PATH $NEW_BINARY_PATH --skip-snapshot --skip-chain-init
+          go run ./scripts/upgrade-assure-skip/... $SNAPSHOT_PATH $OLD_BINARY_PATH $NEW_BINARY_PATH --skip-snapshot --skip-chain-init
