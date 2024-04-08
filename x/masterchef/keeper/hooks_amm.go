@@ -4,10 +4,31 @@ import (
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
+	"github.com/elys-network/elys/x/masterchef/types"
 )
 
 // AfterPoolCreated is called after CreatePool
 func (k Keeper) AfterPoolCreated(ctx sdk.Context, sender sdk.AccAddress, poolId uint64) {
+	_, found := k.GetPool(ctx, poolId)
+	if found {
+		return
+	}
+	// Initiate a new pool info
+	poolInfo := types.PoolInfo{
+		// reward amount
+		PoolId: poolId,
+		// reward wallet address
+		RewardWallet: ammtypes.NewPoolRevenueAddress(poolId).String(),
+		// multiplier for lp rewards
+		Multiplier: sdk.NewDec(1),
+		// Number of blocks since creation
+		NumBlocks: sdk.NewInt(1),
+		// Total dex rewards given since creation
+		DexRewardAmountGiven: sdk.ZeroDec(),
+		// Total eden rewards given since creation
+		EdenRewardAmountGiven: sdk.ZeroInt(),
+	}
+	k.SetPool(ctx, poolInfo)
 }
 
 // AfterJoinPool is called after JoinPool, JoinSwapExternAmountIn, and JoinSwapShareAmountOut

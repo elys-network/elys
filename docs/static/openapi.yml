@@ -39902,9 +39902,7 @@ paths:
                         title: unused
                       max_eden_per_allocation:
                         type: string
-                        title: >-
-                          maximum eden allocation per day that won't exceed 30%
-                          apr
+                        title: unused
                       distribution_epoch_in_blocks:
                         type: string
                         title: unused
@@ -39929,9 +39927,7 @@ paths:
                         title: unused
                       max_eden_per_allocation:
                         type: string
-                        title: >-
-                          maximum eden allocation per day that won't exceed 30%
-                          apr
+                        title: unused
                       distribution_epoch_in_blocks:
                         type: string
                         title: unused
@@ -85180,7 +85176,7 @@ definitions:
         title: unused
       max_eden_per_allocation:
         type: string
-        title: maximum eden allocation per day that won't exceed 30% apr
+        title: unused
       distribution_epoch_in_blocks:
         type: string
         title: unused
@@ -85222,7 +85218,7 @@ definitions:
             title: unused
           max_eden_per_allocation:
             type: string
-            title: maximum eden allocation per day that won't exceed 30% apr
+            title: unused
           distribution_epoch_in_blocks:
             type: string
             title: unused
@@ -85247,7 +85243,7 @@ definitions:
             title: unused
           max_eden_per_allocation:
             type: string
-            title: maximum eden allocation per day that won't exceed 30% apr
+            title: unused
           distribution_epoch_in_blocks:
             type: string
             title: unused
@@ -85487,7 +85483,7 @@ definitions:
                 title: unused
               max_eden_per_allocation:
                 type: string
-                title: maximum eden allocation per day that won't exceed 30% apr
+                title: unused
               distribution_epoch_in_blocks:
                 type: string
                 title: unused
@@ -85512,7 +85508,7 @@ definitions:
                 title: unused
               max_eden_per_allocation:
                 type: string
-                title: maximum eden allocation per day that won't exceed 30% apr
+                title: unused
               distribution_epoch_in_blocks:
                 type: string
                 title: unused
