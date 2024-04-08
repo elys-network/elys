@@ -263,8 +263,7 @@ genesis:
         vesting_infos:
           - base_denom: ueden
             vesting_denom: uelys
-            epoch_identifier: tenseconds
-            num_epochs: "100"
+            num_blocks: "100"
             vest_now_factor: "90"
             num_max_vestings: "10"
       commitments:

@@ -37,6 +37,8 @@ func (m *Messenger) HandleMsg(ctx sdk.Context, contractAddr sdk.AccAddress, cont
 		return m.msgCommitClaimedRewards(ctx, contractAddr, msg.CommitmentCommitUnclaimedRewards)
 	case msg.CommitmentUncommitTokens != nil:
 		return m.msgUncommitTokens(ctx, contractAddr, msg.CommitmentUncommitTokens)
+	case msg.CommitmentClaimVesting != nil:
+		return m.msgClaimVesting(ctx, contractAddr, msg.CommitmentClaimVesting)
 	case msg.CommitmentVest != nil:
 		return m.msgVest(ctx, contractAddr, msg.CommitmentVest)
 	case msg.CommitmentVestNow != nil:

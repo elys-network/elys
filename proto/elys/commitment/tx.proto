@@ -8,7 +8,6 @@ option go_package = "github.com/elys-network/elys/x/commitment/types";
 
 // Msg defines the Msg service.
 service Msg {
-  
   // CommitLiquidTokens commit the tokens from user's balance
   rpc CommitLiquidTokens (MsgCommitLiquidTokens) returns (MsgCommitLiquidTokensResponse);
   
@@ -31,6 +30,9 @@ service Msg {
   
   // CancelVest cancel the user's vesting and the user reject to get vested tokens
   rpc CancelVest (MsgCancelVest) returns (MsgCancelVestResponse);
+    
+  // ClaimVesting claims already vested amount
+  rpc ClaimVesting (MsgClaimVesting) returns (MsgClaimVestingResponse);
   
   // UpdateVestingInfo add/update specific vesting info by denom on Params
   rpc UpdateVestingInfo (MsgUpdateVestingInfo) returns (MsgUpdateVestingInfoResponse);
@@ -88,6 +90,12 @@ message MsgCancelVest {
 
 message MsgCancelVestResponse {}
 
+message MsgClaimVesting {
+  string sender = 1;
+}
+
+message MsgClaimVestingResponse {}
+
 message MsgVestNow {
   string creator = 1;
   string amount  = 2 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false];
@@ -97,13 +105,12 @@ message MsgVestNow {
 message MsgVestNowResponse {}
 
 message MsgUpdateVestingInfo {
-  string authority       = 1;
+  string authority        = 1;
   string base_denom       = 2;
   string vesting_denom    = 3;
-  string epoch_identifier = 4;
-  int64  num_epochs       = 5;
-  int64  vest_now_factor   = 6;
-  int64  num_max_vestings  = 7;
+  int64  num_blocks       = 4;
+  int64  vest_now_factor  = 5;
+  int64  num_max_vestings = 6;
 }
 
 message MsgUpdateVestingInfoResponse {}
