@@ -27,6 +27,7 @@ jobs:
           DOWNLOAD_URL=https://github.com/elys-network/elys/releases/download/$LATEST_TAG/elysd-$LATEST_TAG-linux-amd64
           OLD_BINARY_PATH=/tmp/elysd-$LATEST_TAG
           curl -L $DOWNLOAD_URL -o OLD_BINARY_PATH
+          chmod +x $OLD_BINARY_PATH
           echo "LATEST_TAG=$LATEST_TAG" >> $GITHUB_ENV
           echo "OLD_BINARY_PATH=$OLD_BINARY_PATH" >> $GITHUB_ENV
 
