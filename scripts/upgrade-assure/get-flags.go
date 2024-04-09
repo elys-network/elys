@@ -77,134 +77,134 @@ func getFlags(cmd *cobra.Command) (
 	// global
 	skipSnapshot, _ = cmd.Flags().GetBool(flagSkipSnapshot)
 	if skipSnapshot {
-		log.Printf(Yellow + "skipping snapshot retrieval")
+		log.Printf(ColorYellow + "skipping snapshot retrieval")
 	}
 
 	skipChainInit, _ = cmd.Flags().GetBool(flagSkipChainInit)
 	if skipChainInit {
-		log.Printf(Yellow + "skipping chain init")
+		log.Printf(ColorYellow + "skipping chain init")
 	}
 
 	skipNodeStart, _ = cmd.Flags().GetBool(flagSkipNodeStart)
 	if skipNodeStart {
-		log.Printf(Yellow + "skipping node start")
+		log.Printf(ColorYellow + "skipping node start")
 	}
 
 	skipProposal, _ = cmd.Flags().GetBool(flagSkipProposal)
 	if skipProposal {
-		log.Printf(Yellow + "skipping proposal")
+		log.Printf(ColorYellow + "skipping proposal")
 	}
 
 	skipBinary, _ = cmd.Flags().GetBool(flagSkipBinary)
 	if skipBinary {
-		log.Printf(Yellow + "skipping binary download")
+		log.Printf(ColorYellow + "skipping binary download")
 	}
 
 	chainId, _ = cmd.Flags().GetString(flagChainId)
 	if chainId == "" {
-		log.Fatalf(Red + "chain id is required")
+		log.Fatalf(ColorRed + "chain id is required")
 	}
 
 	keyringBackend, _ = cmd.Flags().GetString(flagKeyringBackend)
 	if keyringBackend == "" {
-		log.Fatalf(Red + "keyring backend is required")
+		log.Fatalf(ColorRed + "keyring backend is required")
 	}
 
 	genesisFilePath, _ = cmd.Flags().GetString(flagGenesisFilePath)
 	if genesisFilePath == "" {
-		log.Fatalf(Red + "genesis file path is required")
+		log.Fatalf(ColorRed + "genesis file path is required")
 	}
 
 	broadcastMode, _ = cmd.Flags().GetString(flagBroadcastMode)
 	if broadcastMode == "" {
-		log.Fatalf(Red + "broadcast mode is required")
+		log.Fatalf(ColorRed + "broadcast mode is required")
 	}
 
 	dbEngine, _ = cmd.Flags().GetString(flagDbEngine)
 	if dbEngine == "" {
-		log.Fatalf(Red + "database engine is required")
+		log.Fatalf(ColorRed + "database engine is required")
 	}
 
 	// node 1
 	homePath, _ = cmd.Flags().GetString(flagHome)
 	if homePath == "" {
-		log.Fatalf(Red + "home path is required")
+		log.Fatalf(ColorRed + "home path is required")
 	}
 
 	moniker, _ = cmd.Flags().GetString(flagMoniker)
 	if moniker == "" {
-		log.Fatalf(Red + "moniker is required")
+		log.Fatalf(ColorRed + "moniker is required")
 	}
 
 	validatorKeyName, _ = cmd.Flags().GetString(flagValidatorKeyName)
 	if validatorKeyName == "" {
-		log.Fatalf(Red + "validator key name is required")
+		log.Fatalf(ColorRed + "validator key name is required")
 	}
 
 	validatorBalance, _ = cmd.Flags().GetString(flagValidatorBalance)
 	if validatorBalance == "" {
-		log.Fatalf(Red + "validator balance is required")
+		log.Fatalf(ColorRed + "validator balance is required")
 	}
 
 	validatorSelfDelegation, _ = cmd.Flags().GetString(flagValidatorSelfDelegation)
 	if validatorSelfDelegation == "" {
-		log.Fatalf(Red + "validator self delegation is required")
+		log.Fatalf(ColorRed + "validator self delegation is required")
 	}
 
 	validatorMnemonic, _ = cmd.Flags().GetString(flagValidatorMnemonic)
 	if validatorMnemonic == "" {
-		log.Fatalf(Red + "validator mnemonic is required")
+		log.Fatalf(ColorRed + "validator mnemonic is required")
 	}
 
 	rpc, _ = cmd.Flags().GetString(flagRpc)
 	if rpc == "" {
-		log.Fatalf(Red + "rpc is required")
+		log.Fatalf(ColorRed + "rpc is required")
 	}
 
 	p2p, _ = cmd.Flags().GetString(flagP2p)
 	if p2p == "" {
-		log.Fatalf(Red + "p2p is required")
+		log.Fatalf(ColorRed + "p2p is required")
 	}
 
 	// node 2
 	homePath2, _ = cmd.Flags().GetString(flagHome2)
 	if homePath2 == "" {
-		log.Fatalf(Red + "home path 2 is required")
+		log.Fatalf(ColorRed + "home path 2 is required")
 	}
 
 	moniker2, _ = cmd.Flags().GetString(flagMoniker2)
 	if moniker2 == "" {
-		log.Fatalf(Red + "moniker 2 is required")
+		log.Fatalf(ColorRed + "moniker 2 is required")
 	}
 
 	validatorKeyName2, _ = cmd.Flags().GetString(flagValidatorKeyName2)
 	if validatorKeyName2 == "" {
-		log.Fatalf(Red + "validator key name 2 is required")
+		log.Fatalf(ColorRed + "validator key name 2 is required")
 	}
 
 	validatorBalance2, _ = cmd.Flags().GetString(flagValidatorBalance2)
 	if validatorBalance2 == "" {
-		log.Fatalf(Red + "validator balance 2 is required")
+		log.Fatalf(ColorRed + "validator balance 2 is required")
 	}
 
 	validatorSelfDelegation2, _ = cmd.Flags().GetString(flagValidatorSelfDelegation2)
 	if validatorSelfDelegation2 == "" {
-		log.Fatalf(Red + "validator self delegation 2 is required")
+		log.Fatalf(ColorRed + "validator self delegation 2 is required")
 	}
 
 	validatorMnemonic2, _ = cmd.Flags().GetString(flagValidatorMnemonic2)
 	if validatorMnemonic2 == "" {
-		log.Fatalf(Red + "validator mnemonic 2 is required")
+		log.Fatalf(ColorRed + "validator mnemonic 2 is required")
 	}
 
 	rpc2, _ = cmd.Flags().GetString(flagRpc2)
 	if rpc2 == "" {
-		log.Fatalf(Red + "rpc 2 is required")
+		log.Fatalf(ColorRed + "rpc 2 is required")
 	}
 
 	p2p2, _ = cmd.Flags().GetString(flagP2p2)
 	if p2p2 == "" {
-		log.Fatalf(Red + "p2p 2 is required")
+		log.Fatalf(ColorRed + "p2p 2 is required")
 	}
 
 	return

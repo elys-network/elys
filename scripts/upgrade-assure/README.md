@@ -39,9 +39,9 @@ go run ./scripts/upgrade-assure/... https://services.elystestnet-1.elys.aviaone.
 # How can I perform a test with a version upgrade that involves extensive changes to data structures?
 
 ```
-git checkout v0.28.30
+git checkout v0.29.30
 make install
-cp -a ~/go/bin/elysd /tmp/elysd-v0.28.30
+cp -a ~/go/bin/elysd /tmp/elysd-v0.29.30
 ```
 
 ```

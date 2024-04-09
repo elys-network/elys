@@ -11,9 +11,9 @@ func validateGenesis(cmdPath, homePath string) {
 
 	// Execute the command
 	if err := exec.Command(cmdPath, args...).Run(); err != nil {
-		log.Fatalf(Red+"Command execution failed: %v", err)
+		log.Fatalf(ColorRed+"Command execution failed: %v", err)
 	}
 
 	// If execution reaches here, the command was successful
-	log.Printf(Yellow+"validate genesis with home path %s successfully", homePath)
+	log.Printf(ColorYellow+"validate genesis with home path %s successfully", homePath)
 }

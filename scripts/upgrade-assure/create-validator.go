@@ -32,9 +32,9 @@ func createValidator(cmdPath, name, selfDelegation, moniker, pubkey, homePath, k
 
 	// Execute the command
 	if err := exec.Command(cmdPath, args...).Run(); err != nil {
-		log.Fatalf(Red+"Failed to create validator: %v", err)
+		log.Fatalf(ColorRed+"Failed to create validator: %v", err)
 	}
 
 	// If execution reaches here, the command was successful
-	log.Printf(Yellow+"Validator %s created successfully", moniker)
+	log.Printf(ColorYellow+"Validator %s created successfully", moniker)
 }

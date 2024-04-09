@@ -17,6 +17,6 @@ func sed(pattern, file string) {
 
 	// Execute the sed command
 	if err := exec.Command("sed", args...).Run(); err != nil {
-		log.Fatalf(Red+"Error updating "+file+": %v\n", err)
+		log.Fatalf(ColorRed+"Error updating "+file+": %v\n", err)
 	}
 }
