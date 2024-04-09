@@ -24,6 +24,7 @@ func setUpgradeHandler(app *ElysApp) {
 				validators := []string{
 					"elysvalcons1j7047ewlfa75dv0q93lnqkctr9afgfayyvmhc4", // euphoria
 					"elysvalcons1a58n8t00elj7g4v8lm7rd9q06xu4nz3dgy723q", // shangrila
+					"elysvalcons1t0cm443g88ns9rl7ac45a5u9cs54thtww7w4ag", // ottersync
 				}
 				for _, val := range validators {
 					addr, err := sdk.ConsAddressFromBech32(val)
