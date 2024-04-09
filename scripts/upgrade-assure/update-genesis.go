@@ -73,12 +73,12 @@ func updateGenesis(validatorBalance, homePath, genesisFilePath string) {
 	genesis.AppState.Ibc.ClientGenesis.Params.AllowedClients = append(genesis.AppState.Ibc.ClientGenesis.Params.AllowedClients, "09-localhost")
 
 	// update voting period
-	genesis.AppState.Gov.Params.VotingPeriod = "10s"
-	genesis.AppState.Gov.Params.MaxDepositPeriod = "10s"
+	genesis.AppState.Gov.Params.VotingPeriod = "20s"
+	genesis.AppState.Gov.Params.MaxDepositPeriod = "20s"
 	genesis.AppState.Gov.Params.MinDeposit = sdk.Coins{sdk.NewInt64Coin("uelys", 10000000)}
 	// set deprecated settings
-	genesis.AppState.Gov.VotingParams.VotingPeriod = "10s"
-	genesis.AppState.Gov.DepositParams.MaxDepositPeriod = "10s"
+	genesis.AppState.Gov.VotingParams.VotingPeriod = "20s"
+	genesis.AppState.Gov.DepositParams.MaxDepositPeriod = "20s"
 	genesis.AppState.Gov.DepositParams.MinDeposit = sdk.Coins{sdk.NewInt64Coin("uelys", 10000000)}
 
 	// update wasm params
