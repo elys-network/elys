@@ -35,7 +35,7 @@ func (k Keeper) UpdateAccPerShare(ctx sdk.Context, poolId uint64, rewardDenom st
 	}
 
 	poolRewardInfo.PoolAccRewardPerShare = poolRewardInfo.PoolAccRewardPerShare.Add(
-		math.LegacyNewDecFromInt(amount).Quo(math.LegacyNewDecFromInt(k.GetPoolTotalSupply(ctx, poolId))),
+		math.LegacyNewDecFromInt(amount.Mul(ammtypes.OneShare)).Quo(math.LegacyNewDecFromInt(k.GetPoolTotalSupply(ctx, poolId))),
 	)
 	poolRewardInfo.LastUpdatedBlock = uint64(ctx.BlockHeight())
 
@@ -76,8 +76,8 @@ func (k Keeper) UpdateUserRewardPending(ctx sdk.Context, poolId uint64, rewardDe
 
 	userRewardInfo.RewardPending = userRewardInfo.RewardPending.Add(
 		poolRewardInfo.PoolAccRewardPerShare.Mul(
-			math.LegacyDec(userBalance),
-		).Sub(userRewardInfo.RewardDebt).Quo(sdk.NewDecFromIntWithPrec(math.OneInt(), 18)),
+			math.LegacyNewDecFromInt(userBalance),
+		).Sub(userRewardInfo.RewardDebt).Quo(math.LegacyNewDecFromInt(ammtypes.OneShare)),
 	)
 
 	k.SetUserRewardInfo(ctx, userRewardInfo)
@@ -108,7 +108,7 @@ func (k Keeper) UpdateUserRewardDebt(ctx sdk.Context, poolId uint64, rewardDenom
 	}
 
 	userRewardInfo.RewardDebt = poolRewardInfo.PoolAccRewardPerShare.Mul(
-		math.LegacyDec(k.GetPoolBalance(ctx, poolId, user)),
+		math.LegacyNewDecFromInt(k.GetPoolBalance(ctx, poolId, user)),
 	)
 
 	k.SetUserRewardInfo(ctx, userRewardInfo)

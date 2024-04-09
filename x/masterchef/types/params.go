@@ -19,14 +19,12 @@ func ParamKeyTable() paramtypes.KeyTable {
 func NewParams(
 	lpIncentives *IncentiveInfo,
 	rewardPortionForLps sdk.Dec,
-	poolInfos []PoolInfo,
 	dexRewardsLps DexRewardsTracker,
 	maxEdenRewardAprLps sdk.Dec,
 ) Params {
 	return Params{
 		LpIncentives:          lpIncentives,
 		RewardPortionForLps:   rewardPortionForLps,
-		PoolInfos:             poolInfos,
 		DexRewardsLps:         dexRewardsLps,
 		MaxEdenRewardAprLps:   maxEdenRewardAprLps,
 		SupportedRewardDenoms: nil,
@@ -38,7 +36,6 @@ func DefaultParams() Params {
 	return NewParams(
 		nil,
 		sdk.NewDecWithPrec(60, 2),
-		[]PoolInfo(nil),
 		DexRewardsTracker{
 			NumBlocks: sdk.NewInt(1),
 			Amount:    sdk.ZeroDec(),
@@ -59,10 +56,6 @@ func (p Params) Validate() error {
 	}
 
 	if err := validateLPIncentives(p.LpIncentives); err != nil {
-		return err
-	}
-
-	if err := validatePoolInfos(p.PoolInfos); err != nil {
 		return err
 	}
 

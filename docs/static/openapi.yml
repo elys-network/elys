@@ -41332,50 +41332,6 @@ paths:
                       Dex revenue percent for lps, `100 - reward_portion_for_lps
                       - reward_portion_for_stakers = revenue percent for
                       protocol`.
-                  pool_infos:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        pool_id:
-                          type: string
-                          format: uint64
-                          title: reward amount
-                        reward_wallet:
-                          type: string
-                          title: reward wallet address
-                        multiplier:
-                          type: string
-                          title: multiplier for lp rewards
-                        num_blocks:
-                          type: string
-                          title: Block number since the creation of PoolInfo
-                        dex_reward_amount_given:
-                          type: string
-                          title: Total dex rewards given
-                        eden_reward_amount_given:
-                          type: string
-                          title: Total eden rewards given
-                        eden_apr:
-                          type: string
-                          title: Eden APR, updated at every distribution
-                        dex_apr:
-                          type: string
-                          title: Dex APR, updated at every distribution
-                        external_incentive_apr:
-                          type: string
-                          title: >-
-                            External Incentive APR, updated at every
-                            distribution
-                        external_reward_denoms:
-                          type: array
-                          items:
-                            type: string
-                          title: external reward denoms on the pool
-                      title: Pool Info
-                    title: |-
-                      Pool information
-                      poolId, reward wallet, **multiplier**, dex rewards given
                   dex_rewards_lps:
                     title: Tracking dex rewards given to LPs
                     type: object
@@ -86259,48 +86215,6 @@ definitions:
         description: >-
           Dex revenue percent for lps, `100 - reward_portion_for_lps -
           reward_portion_for_stakers = revenue percent for protocol`.
-      pool_infos:
-        type: array
-        items:
-          type: object
-          properties:
-            pool_id:
-              type: string
-              format: uint64
-              title: reward amount
-            reward_wallet:
-              type: string
-              title: reward wallet address
-            multiplier:
-              type: string
-              title: multiplier for lp rewards
-            num_blocks:
-              type: string
-              title: Block number since the creation of PoolInfo
-            dex_reward_amount_given:
-              type: string
-              title: Total dex rewards given
-            eden_reward_amount_given:
-              type: string
-              title: Total eden rewards given
-            eden_apr:
-              type: string
-              title: Eden APR, updated at every distribution
-            dex_apr:
-              type: string
-              title: Dex APR, updated at every distribution
-            external_incentive_apr:
-              type: string
-              title: External Incentive APR, updated at every distribution
-            external_reward_denoms:
-              type: array
-              items:
-                type: string
-              title: external reward denoms on the pool
-          title: Pool Info
-        title: |-
-          Pool information
-          poolId, reward wallet, **multiplier**, dex rewards given
       dex_rewards_lps:
         title: Tracking dex rewards given to LPs
         type: object
@@ -86446,48 +86360,6 @@ definitions:
             description: >-
               Dex revenue percent for lps, `100 - reward_portion_for_lps -
               reward_portion_for_stakers = revenue percent for protocol`.
-          pool_infos:
-            type: array
-            items:
-              type: object
-              properties:
-                pool_id:
-                  type: string
-                  format: uint64
-                  title: reward amount
-                reward_wallet:
-                  type: string
-                  title: reward wallet address
-                multiplier:
-                  type: string
-                  title: multiplier for lp rewards
-                num_blocks:
-                  type: string
-                  title: Block number since the creation of PoolInfo
-                dex_reward_amount_given:
-                  type: string
-                  title: Total dex rewards given
-                eden_reward_amount_given:
-                  type: string
-                  title: Total eden rewards given
-                eden_apr:
-                  type: string
-                  title: Eden APR, updated at every distribution
-                dex_apr:
-                  type: string
-                  title: Dex APR, updated at every distribution
-                external_incentive_apr:
-                  type: string
-                  title: External Incentive APR, updated at every distribution
-                external_reward_denoms:
-                  type: array
-                  items:
-                    type: string
-                  title: external reward denoms on the pool
-              title: Pool Info
-            title: |-
-              Pool information
-              poolId, reward wallet, **multiplier**, dex rewards given
           dex_rewards_lps:
             title: Tracking dex rewards given to LPs
             type: object
