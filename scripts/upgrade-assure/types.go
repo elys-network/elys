@@ -218,7 +218,7 @@ type Amm struct {
 type AmmParams struct {
 	ammtypes.Params
 
-	PoolCreationFee json.Number `json:"pool_creation_fee"`
+	SlippageTrackDuration json.Number `json:"slippage_track_duration"`
 }
 
 type Genutil struct {
@@ -489,6 +489,7 @@ type ProposalsOutput struct {
 
 // Colors
 const (
+	Reset  = "\033[0m"
 	Red    = "\033[31m"
 	Green  = "\033[32m"
 	Yellow = "\033[33m"

@@ -17,7 +17,7 @@ type PromptWriter struct {
 // Write adds color codes to the data and writes it to the log
 func (cw PromptWriter) Write(data []byte) (int, error) {
 	// Add color codes to the data
-	coloredData := []byte(cw.color + "[" + cw.moniker + "]" + "\033[0m" + " " + string(data))
+	coloredData := []byte(cw.color + "[" + cw.moniker + "]" + Reset + " " + string(data))
 	_, err := cw.w.Write(coloredData)
 	if err != nil {
 		log.Fatalf("Error writing to log: %v", err)

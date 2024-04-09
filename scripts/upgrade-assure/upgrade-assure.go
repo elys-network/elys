@@ -108,13 +108,13 @@ func main() {
 
 			if !skipNodeStart {
 				// start node 1
-				oldBinaryCmd := start(oldBinaryPath, homePath, rpc, p2p, moniker, "\033[32m", "\033[31m")
+				oldBinaryCmd := start(oldBinaryPath, homePath, rpc, p2p, moniker, Green, Red)
 
 				// wait for rpc to start
 				waitForServiceToStart(rpc, moniker)
 
 				// wait for next block
-				waitForNextBlock(oldBinaryPath, rpc)
+				waitForNextBlock(oldBinaryPath, rpc, moniker)
 
 				if skipProposal {
 					// listen for signals
@@ -129,7 +129,7 @@ func main() {
 				createValidator(oldBinaryPath, validatorKeyName2, validatorSelfDelegation2, moniker2, validatorPubkey2, homePath, keyringBackend, chainId, rpc, broadcastMode)
 
 				// wait for next block
-				waitForNextBlock(oldBinaryPath, rpc)
+				waitForNextBlock(oldBinaryPath, rpc, moniker)
 
 				// stop old binary
 				stop(oldBinaryCmd)
@@ -141,8 +141,8 @@ func main() {
 				generatePrivValidatorState(homePath2)
 
 				// start node 1 and 2
-				oldBinaryCmd = start(oldBinaryPath, homePath, rpc, p2p, moniker, "\033[32m", "\033[31m")
-				oldBinaryCmd2 := start(oldBinaryPath, homePath2, rpc2, p2p2, moniker2, "\033[32m", "\033[31m")
+				oldBinaryCmd = start(oldBinaryPath, homePath, rpc, p2p, moniker, Green, Red)
+				oldBinaryCmd2 := start(oldBinaryPath, homePath2, rpc2, p2p2, moniker2, Green, Red)
 
 				// wait for rpc 1 and 2 to start
 				waitForServiceToStart(rpc, moniker)
@@ -163,7 +163,7 @@ func main() {
 				submitUpgradeProposal(oldBinaryPath, validatorKeyName, newVersion, upgradeBlockHeight, homePath, keyringBackend, chainId, rpc, broadcastMode)
 
 				// wait for next block
-				waitForNextBlock(oldBinaryPath, rpc)
+				waitForNextBlock(oldBinaryPath, rpc, moniker)
 
 				// vote on upgrade proposal
 				voteOnUpgradeProposal(oldBinaryPath, validatorKeyName, proposalId, homePath, keyringBackend, chainId, rpc, broadcastMode)
@@ -189,8 +189,8 @@ func main() {
 				waitForServiceToStart(rpc2, moniker2)
 
 				// wait for next block
-				waitForNextBlock(newBinaryPath, rpc)
-				waitForNextBlock(newBinaryPath, rpc2)
+				waitForNextBlock(newBinaryPath, rpc, moniker)
+				waitForNextBlock(newBinaryPath, rpc2, moniker2)
 
 				// check if the upgrade was successful
 				queryUpgradeApplied(newBinaryPath, rpc, newVersion)
