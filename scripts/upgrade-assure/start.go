@@ -17,7 +17,7 @@ type PromptWriter struct {
 // Write adds color codes to the data and writes it to the log
 func (cw PromptWriter) Write(data []byte) (int, error) {
 	// Add color codes to the data
-	coloredData := []byte(cw.color + "[" + cw.moniker + "]" + Reset + " " + string(data))
+	coloredData := []byte(cw.color + "[" + cw.moniker + "]" + ColorReset + " " + string(data))
 	_, err := cw.w.Write(coloredData)
 	if err != nil {
 		log.Fatalf("Error writing to log: %v", err)
@@ -33,8 +33,8 @@ func start(cmdPath, homePath, rpc, p2p, moniker, successColor, errorColor string
 	cmd := exec.Command(cmdPath, args...)
 
 	// Use PromptWriter to handle logging for standard output and error
-	cmd.Stdout = PromptWriter{w: os.Stdout, color: successColor, moniker: moniker} // Green for stdout
-	cmd.Stderr = PromptWriter{w: os.Stderr, color: errorColor, moniker: moniker}   // Red for stderr
+	cmd.Stdout = PromptWriter{w: os.Stdout, color: successColor, moniker: moniker} // ColorGreen for stdout
+	cmd.Stderr = PromptWriter{w: os.Stderr, color: errorColor, moniker: moniker}   // ColorRed for stderr
 
 	// Execute the command and stream the output in a goroutine to avoid blocking
 	go func() {

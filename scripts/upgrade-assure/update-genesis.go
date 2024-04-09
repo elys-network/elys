@@ -10,13 +10,13 @@ import (
 func updateGenesis(validatorBalance, homePath, genesisFilePath string) {
 	genesis, err := readGenesisFile(genesisFilePath)
 	if err != nil {
-		log.Fatalf(Red+"Error reading genesis file: %v", err)
+		log.Fatalf(ColorRed+"Error reading genesis file: %v", err)
 	}
 
 	genesisInitFilePath := homePath + "/config/genesis.json"
 	genesisInit, err := readGenesisFile(genesisInitFilePath)
 	if err != nil {
-		log.Fatalf(Red+"Error reading initial genesis file: %v", err)
+		log.Fatalf(ColorRed+"Error reading initial genesis file: %v", err)
 	}
 
 	filterAccountAddresses := []string{
@@ -39,7 +39,7 @@ func updateGenesis(validatorBalance, homePath, genesisFilePath string) {
 
 	newValidatorBalance, ok := sdk.NewIntFromString(validatorBalance)
 	if !ok {
-		panic(Red + "invalid number")
+		panic(ColorRed + "invalid number")
 	}
 
 	// update supply
@@ -55,15 +55,15 @@ func updateGenesis(validatorBalance, homePath, genesisFilePath string) {
 	genesis.AppState.Auth.Accounts = append(genesis.AppState.Auth.Accounts, genesisInit.AppState.Auth.Accounts...)
 	genesis.AppState.Bank.Balances = append(genesis.AppState.Bank.Balances, genesisInit.AppState.Bank.Balances...)
 
-	// reset staking data
+	// ColorReset staking data
 	stakingParams := genesis.AppState.Staking.Params
 	genesis.AppState.Staking = genesisInit.AppState.Staking
 	genesis.AppState.Staking.Params = stakingParams
 
-	// reset slashing data
+	// ColorReset slashing data
 	genesis.AppState.Slashing = genesisInit.AppState.Slashing
 
-	// reset distribution data
+	// ColorReset distribution data
 	genesis.AppState.Distribution = genesisInit.AppState.Distribution
 
 	// set genutil from genesisInit
@@ -101,6 +101,6 @@ func updateGenesis(validatorBalance, homePath, genesisFilePath string) {
 
 	outputFilePath := homePath + "/config/genesis.json"
 	if err := writeGenesisFile(outputFilePath, genesis); err != nil {
-		log.Fatalf(Red+"Error writing genesis file: %v", err)
+		log.Fatalf(ColorRed+"Error writing genesis file: %v", err)
 	}
 }

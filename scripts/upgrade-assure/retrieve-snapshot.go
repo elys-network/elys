@@ -30,18 +30,18 @@ func retrieveSnapshot(snapshotUrl, homePath string) {
 			cmdString = "tar -x -f " + snapshotUrl + " -C " + homePath
 		}
 	} else {
-		log.Fatalf(Red+"Invalid snapshot url or path: %s", snapshotUrl)
+		log.Fatalf(ColorRed+"Invalid snapshot url or path: %s", snapshotUrl)
 	}
 
 	// Print cmdString
-	log.Printf(Green+"Retrieving snapshot using command: %s", cmdString)
+	log.Printf(ColorGreen+"Retrieving snapshot using command: %s", cmdString)
 
 	// Execute the command using /bin/sh
 	cmd := exec.Command("/bin/sh", "-c", cmdString)
 	if err := cmd.Run(); err != nil {
-		log.Fatalf(Red+"Command execution failed: %v", err)
+		log.Fatalf(ColorRed+"Command execution failed: %v", err)
 	}
 
 	// If execution reaches here, the command was successful
-	log.Printf(Yellow+"Snapshot retrieved and extracted to path: %s", homePath)
+	log.Printf(ColorYellow+"Snapshot retrieved and extracted to path: %s", homePath)
 }

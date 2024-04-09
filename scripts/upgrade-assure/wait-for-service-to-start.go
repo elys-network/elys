@@ -12,10 +12,10 @@ func waitForServiceToStart(url, name string) {
 	// Wait for the node to be running with timout
 	for !isServiceRunning(url) {
 		if time.Since(start) > timeout {
-			log.Fatalf(Red + "[" + name + "] Service did not start within the specified timeout")
+			log.Fatalf(ColorRed + "[" + name + "] Service did not start within the specified timeout")
 		}
-		log.Println(Yellow + "[" + name + "] Waiting for service to start...")
+		log.Println(ColorYellow + "[" + name + "] Waiting for service to start...")
 		time.Sleep(5 * time.Second)
 	}
-	log.Println(Yellow + "[" + name + "] Service is running.")
+	log.Println(ColorYellow + "[" + name + "] Service is running.")
 }

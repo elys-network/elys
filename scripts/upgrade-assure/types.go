@@ -327,7 +327,7 @@ type Staking struct {
 	Validators           []interface{} `json:"validators"`
 	Delegations          []interface{} `json:"delegations"`
 	UnbondingDelegations []interface{} `json:"unbonding_delegations"`
-	Redelegations        []interface{} `json:"redelegations"`
+	ColorRedelegations   []interface{} `json:"redelegations"`
 }
 
 type StakingParams struct {
@@ -486,11 +486,3 @@ type ProposalsOutput struct {
 		Id string `json:"id"`
 	} `json:"proposals"`
 }
-
-// Colors
-const (
-	Reset  = "\033[0m"
-	Red    = "\033[31m"
-	Green  = "\033[32m"
-	Yellow = "\033[33m"
-)
