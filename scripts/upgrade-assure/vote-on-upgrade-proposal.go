@@ -22,9 +22,9 @@ func voteOnUpgradeProposal(cmdPath, name, proposalId, homePath, keyringBackend, 
 
 	// Execute the command
 	if err := exec.Command(cmdPath, args...).Run(); err != nil {
-		log.Fatalf(Red+"Command execution failed: %v", err)
+		log.Fatalf(ColorRed+"Command execution failed: %v", err)
 	}
 
 	// If execution reaches here, the command was successful
-	log.Printf(Yellow+"Voted on upgrade proposal: %s", proposalId)
+	log.Printf(ColorYellow+"Voted on upgrade proposal: %s", proposalId)
 }

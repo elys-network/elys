@@ -21,5 +21,5 @@ func addPeers(homePath, p2p, nodeId string) {
 
 	sed("s/^persistent_peers =.*/persistent_peers = \\\""+nodeId+"\\@"+p2p+"\\\"/", configPath)
 
-	log.Printf(Yellow + "peers have been added successfully.")
+	log.Printf(ColorYellow + "peers have been added successfully.")
 }
