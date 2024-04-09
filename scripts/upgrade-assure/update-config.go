@@ -28,5 +28,5 @@ func updateConfig(homePath, dbEngine string) {
 	// Update client.toml for keyring-backend
 	sed("s/^keyring\\-backend =.*/keyring\\-backend = \\\"test\\\"/", clientPath)
 
-	log.Printf(Yellow + "config files have been updated successfully.")
+	log.Printf(ColorYellow + "config files have been updated successfully.")
 }

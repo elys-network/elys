@@ -13,7 +13,7 @@ func queryValidatorPubkey(cmdPath, home string) string {
 	// Execute the command
 	output, err := exec.Command(cmdPath, args...).CombinedOutput()
 	if err != nil {
-		log.Fatalf(Red+"Failed to query validator pubkey: %v", err)
+		log.Fatalf(ColorRed+"Failed to query validator pubkey: %v", err)
 	}
 
 	// trim the output

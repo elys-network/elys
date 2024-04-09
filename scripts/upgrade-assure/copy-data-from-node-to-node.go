@@ -13,7 +13,7 @@ func copyDataFromNodeToNode(homePath, homePath2 string) {
 	}
 
 	if err := exec.Command("rm", args...).Run(); err != nil {
-		log.Fatalf(Red+"Failed to delete data folder on node 2: %v", err)
+		log.Fatalf(ColorRed+"Failed to delete data folder on node 2: %v", err)
 	}
 
 	// Copy data from node 1 to node 2
@@ -24,9 +24,9 @@ func copyDataFromNodeToNode(homePath, homePath2 string) {
 	}
 
 	if err := exec.Command("cp", args...).Run(); err != nil {
-		log.Fatalf(Red+"Failed to copy data from node 1 to node 2: %v", err)
+		log.Fatalf(ColorRed+"Failed to copy data from node 1 to node 2: %v", err)
 	}
 
 	// If execution reaches here, the command was successful
-	log.Printf(Yellow + "Data copied from node 1 to node 2")
+	log.Printf(ColorYellow + "Data copied from node 1 to node 2")
 }
