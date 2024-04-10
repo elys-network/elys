@@ -21,3 +21,8 @@ func TestMsgServer(t *testing.T) {
 	require.NotNil(t, ms)
 	require.NotNil(t, ctx)
 }
+
+// TODO: claim reward for normal validator
+// TODO: claim reawrd for Eden validator
+// TODO: claim reward for EdenB validator
+// func WithdrawReward(goCtx context.Context, msg *types.MsgWithdrawReward) (*types.MsgWithdrawRewardResponse, error)
