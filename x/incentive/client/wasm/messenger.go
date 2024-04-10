@@ -37,10 +37,6 @@ func (m *Messenger) HandleMsg(ctx sdk.Context, contractAddr sdk.AccAddress, cont
 		return m.msgBeginRedelegate(ctx, contractAddr, msg.IncentiveBeginRedelegate)
 	case msg.IncentiveCancelUnbondingDelegation != nil:
 		return m.msgCancelUnbondingDelegation(ctx, contractAddr, msg.IncentiveCancelUnbondingDelegation)
-	case msg.IncentiveWithdrawRewards != nil:
-		return m.msgWithdrawRewards(ctx, contractAddr, msg.IncentiveWithdrawRewards)
-	case msg.IncentiveWithdrawValidatorCommission != nil:
-		return m.msgWithdrawValidatorCommission(ctx, contractAddr, msg.IncentiveWithdrawValidatorCommission)
 	default:
 		// This handler cannot handle the message
 		return nil, nil, wasmbindingstypes.ErrCannotHandleMsg

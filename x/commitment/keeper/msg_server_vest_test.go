@@ -63,7 +63,6 @@ func TestVest(t *testing.T) {
 				Amount: sdk.NewInt(50),
 			},
 		},
-		RewardsUnclaimed: sdk.Coins{},
 		Claimed: sdk.Coins{
 			{
 				Denom:  ptypes.Eden,
@@ -142,7 +141,6 @@ func TestExceedVesting(t *testing.T) {
 				Amount: sdk.NewInt(50),
 			},
 		},
-		RewardsUnclaimed: sdk.Coins{},
 		Claimed: sdk.Coins{
 			{
 				Denom:  ptypes.Eden,

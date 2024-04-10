@@ -1,7 +1,6 @@
 package keeper_test
 
 import (
-	"strconv"
 	"strings"
 	"testing"
 
@@ -99,30 +98,11 @@ func TestUpdatePoolMultiplierInfo(t *testing.T) {
 	require.Equal(t, commitments.CommittedTokens[0].Amount.String(), "100100000000000000000")
 
 	poolIds := strings.Split("1,2,3", ",")
-	multipliers := strings.Split("5,1,1", ",")
 	require.Len(t, poolIds, 3)
 
 	poolInfo, found := ik.GetPoolInfo(ctx, resp.PoolID)
 	require.True(t, found)
 	require.Equal(t, poolInfo.Multiplier, sdk.NewDec(1))
-
-	poolMultipliers := make([]types.PoolMultiplier, 0)
-	for i := range poolIds {
-		poolId, err := strconv.ParseUint(poolIds[i], 10, 64)
-		require.NoError(t, err)
-
-		multiplier, err := sdk.NewDecFromStr(multipliers[i])
-		require.NoError(t, err)
-
-		poolMultiplier := types.PoolMultiplier{
-			PoolId:     poolId,
-			Multiplier: multiplier,
-		}
-
-		poolMultipliers = append(poolMultipliers, poolMultiplier)
-	}
-
-	ik.UpdatePoolMultipliers(ctx, poolMultipliers)
 
 	poolInfo, found = ik.GetPoolInfo(ctx, resp.PoolID)
 	require.True(t, found)

@@ -60,7 +60,6 @@ func (k Keeper) CalcRewardsForStableStakeLPs(
 	params := k.GetParams(ctx)
 	poolMaxEdenAmount := params.MaxEdenRewardAprLps.
 		Mul(tvl).
-		MulInt64(params.DistributionInterval).
 		QuoInt(totalBlocksPerYear).
 		Quo(edenDenomPrice)
 

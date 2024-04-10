@@ -31,15 +31,10 @@ func (m Migrator) V3Migration(ctx sdk.Context) error {
 			})
 		}
 		m.keeper.SetCommitments(ctx, types.Commitments{
-			Creator:                 legacy.Creator,
-			CommittedTokens:         legacy.CommittedTokens,
-			RewardsUnclaimed:        legacy.RewardsUnclaimed,
-			Claimed:                 legacy.Claimed,
-			VestingTokens:           vestingTokens,
-			RewardsByElysUnclaimed:  legacy.RewardsByElysUnclaimed,
-			RewardsByEdenUnclaimed:  legacy.RewardsByEdenUnclaimed,
-			RewardsByEdenbUnclaimed: legacy.RewardsByEdenbUnclaimed,
-			RewardsByUsdcUnclaimed:  legacy.RewardsByUsdcUnclaimed,
+			Creator:         legacy.Creator,
+			CommittedTokens: legacy.CommittedTokens,
+			Claimed:         legacy.Claimed,
+			VestingTokens:   vestingTokens,
 		})
 		for _, token := range legacy.CommittedTokens {
 			totalCommitted = totalCommitted.Add(sdk.NewCoin(token.Denom, token.Amount))

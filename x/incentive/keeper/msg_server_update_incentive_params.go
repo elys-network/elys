@@ -21,7 +21,6 @@ func (k msgServer) UpdateIncentiveParams(goCtx context.Context, msg *types.MsgUp
 	params.ElysStakeSnapInterval = msg.ElysStakeSnapInterval
 	params.MaxEdenRewardAprLps = msg.MaxEdenRewardAprLps
 	params.MaxEdenRewardAprStakers = msg.MaxEdenRewardAprStakers
-	params.DistributionInterval = msg.DistributionInterval
 
 	k.SetParams(ctx, params)
 

@@ -57,18 +57,14 @@ func (k Keeper) CalculateEdenBoostRewards(
 	// Get eden commitments
 	edenCommitted := commitments.GetCommittedAmountForDenom(ptypes.Eden)
 
-	params := k.GetParams(ctx)
-
 	// Calculate the portion of each program contribution
 	newEdenBByElysStaked := sdk.NewDecFromInt(delAmount).
 		Mul(edenBoostAPR).
-		MulInt64(params.DistributionInterval).
 		QuoInt(incentiveInfo.TotalBlocksPerYear).
 		RoundInt()
 
 	newEdenBByEdenCommitted := sdk.NewDecFromInt(edenCommitted).
 		Mul(edenBoostAPR).
-		MulInt64(params.DistributionInterval).
 		QuoInt(incentiveInfo.TotalBlocksPerYear).
 		RoundInt()
 

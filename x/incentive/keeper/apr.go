@@ -48,7 +48,6 @@ func (k Keeper) CalculateApr(ctx sdk.Context, query *types.QueryAprRequest) (mat
 
 			// Eden amount for LP in 24hrs = EpochNumBlocks is the number of block for 24 hrs
 			epochEdenAmount := lpIncentive.EdenAmountPerYear.
-				Mul(sdk.NewInt(params.DistributionInterval)).
 				Quo(lpIncentive.TotalBlocksPerYear)
 
 			// Eden amount for stable stake LP in 24hrs
@@ -59,7 +58,6 @@ func (k Keeper) CalculateApr(ctx sdk.Context, query *types.QueryAprRequest) (mat
 			params := k.GetParams(ctx)
 			poolMaxEdenAmount := params.MaxEdenRewardAprLps.
 				Mul(stableTvl).
-				MulInt64(params.DistributionInterval).
 				QuoInt(lpIncentive.TotalBlocksPerYear).
 				Quo(edenDenomPrice)
 
@@ -68,7 +66,6 @@ func (k Keeper) CalculateApr(ctx sdk.Context, query *types.QueryAprRequest) (mat
 			// Eden Apr for usdc earn program = {stablestakeEdenAllocationYearly*edenPrice/UsdcTvl}*100
 			apr := epochStableStakeEdenAmount.
 				MulInt(lpIncentive.TotalBlocksPerYear).
-				QuoInt64(params.DistributionInterval).
 				Mul(edenDenomPrice).
 				MulInt(sdk.NewInt(100)).
 				Quo(stableTvl)
@@ -88,14 +85,12 @@ func (k Keeper) CalculateApr(ctx sdk.Context, query *types.QueryAprRequest) (mat
 
 			// Calculate
 			epochStakersEdenAmount := stkIncentive.EdenAmountPerYear.
-				Mul(sdk.NewInt(params.DistributionInterval)).
 				Quo(stkIncentive.TotalBlocksPerYear)
 
 			// Maximum eden based per distribution epoch on maximum APR - 30% by default
 			// Allocated for staking per day = (0.3/365)* ( total elys staked + total Eden committed + total Eden boost committed)
 			epochStakersMaxEdenAmount := params.MaxEdenRewardAprStakers.
 				MulInt(totalStakedSnapshot).
-				MulInt64(params.DistributionInterval).
 				QuoInt(stkIncentive.TotalBlocksPerYear)
 
 			// Use min amount (eden allocation from tokenomics and max apr based eden amount)
@@ -104,7 +99,6 @@ func (k Keeper) CalculateApr(ctx sdk.Context, query *types.QueryAprRequest) (mat
 			// For Eden reward Apr for elys staking = {(amount of Eden allocated for staking per day)*365/( total elys staked + total Eden committed + total Eden boost committed)}*100
 			apr := epochStakersEdenAmount.
 				Mul(lpIncentive.TotalBlocksPerYear).
-				Quo(sdk.NewInt(params.DistributionInterval)).
 				Mul(sdk.NewInt(100)).
 				Quo(totalStakedSnapshot)
 

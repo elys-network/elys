@@ -14,17 +14,6 @@ import (
 
 var _ types.QueryServer = Keeper{}
 
-func (k Keeper) CommunityPool(goCtx context.Context, req *types.QueryCommunityPoolRequest) (*types.QueryCommunityPoolResponse, error) {
-	if req == nil {
-		return nil, status.Error(codes.InvalidArgument, "invalid request")
-	}
-
-	ctx := sdk.UnwrapSDKContext(goCtx)
-	pool := k.GetFeePoolCommunityCoins(ctx)
-
-	return &types.QueryCommunityPoolResponse{Pool: pool}, nil
-}
-
 func (k Keeper) Params(goCtx context.Context, req *types.QueryParamsRequest) (*types.QueryParamsResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
@@ -120,16 +109,6 @@ func (k Keeper) Aprs(goCtx context.Context, req *types.QueryAprsRequest) (*types
 	}, nil
 }
 
-func (k Keeper) PoolAprs(goCtx context.Context, req *types.QueryPoolAprsRequest) (*types.QueryPoolAprsResponse, error) {
-	if req == nil {
-		return nil, status.Error(codes.InvalidArgument, "invalid request")
-	}
-
-	ctx := sdk.UnwrapSDKContext(goCtx)
-	data := k.CalculatePoolAprs(ctx, req.PoolIds)
-	return &types.QueryPoolAprsResponse{Data: data}, nil
-}
-
 func (k Keeper) PoolRewards(goCtx context.Context, req *types.QueryPoolRewardsRequest) (*types.QueryPoolRewardsResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
@@ -186,6 +165,67 @@ func (k Keeper) PoolRewards(goCtx context.Context, req *types.QueryPoolRewardsRe
 	return &types.QueryPoolRewardsResponse{
 		Pools: pools,
 	}, nil
+}
+
+func (k Keeper) AllProgramRewards(goCtx context.Context, req *types.QueryAllProgramRewardsRequest) (*types.QueryAllProgramRewardsResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
+	}
+	ctx := sdk.UnwrapSDKContext(goCtx)
+	_ = ctx
+	// TODO: implement query
+
+	// usdcAprUsdc, err := k.CalculateApr(ctx, &types.QueryAprRequest{WithdrawType: commitmenttypes.EarnType_USDC_PROGRAM, Denom: ptypes.BaseCurrency})
+	// if err != nil {
+	// 	return nil, err
+	// }
+
+	// edenAprUsdc, err := k.CalculateApr(ctx, &types.QueryAprRequest{WithdrawType: commitmenttypes.EarnType_USDC_PROGRAM, Denom: ptypes.Eden})
+	// if err != nil {
+	// 	return nil, err
+	// }
+
+	// usdcAprEdenb, err := k.CalculateApr(ctx, &types.QueryAprRequest{WithdrawType: commitmenttypes.EarnType_EDENB_PROGRAM, Denom: ptypes.BaseCurrency})
+	// if err != nil {
+	// 	return nil, err
+	// }
+
+	// edenAprEdenb, err := k.CalculateApr(ctx, &types.QueryAprRequest{WithdrawType: commitmenttypes.EarnType_EDENB_PROGRAM, Denom: ptypes.Eden})
+	// if err != nil {
+	// 	return nil, err
+	// }
+
+	// usdcAprEden, err := k.CalculateApr(ctx, &types.QueryAprRequest{WithdrawType: commitmenttypes.EarnType_EDEN_PROGRAM, Denom: ptypes.BaseCurrency})
+	// if err != nil {
+	// 	return nil, err
+	// }
+
+	// edenAprEden, err := k.CalculateApr(ctx, &types.QueryAprRequest{WithdrawType: commitmenttypes.EarnType_EDEN_PROGRAM, Denom: ptypes.Eden})
+	// if err != nil {
+	// 	return nil, err
+	// }
+
+	// edenbAprEden, err := k.CalculateApr(ctx, &types.QueryAprRequest{WithdrawType: commitmenttypes.EarnType_EDEN_PROGRAM, Denom: ptypes.EdenB})
+	// if err != nil {
+	// 	return nil, err
+	// }
+
+	// usdcAprElys, err := k.CalculateApr(ctx, &types.QueryAprRequest{WithdrawType: commitmenttypes.EarnType_ELYS_PROGRAM, Denom: ptypes.BaseCurrency})
+	// if err != nil {
+	// 	return nil, err
+	// }
+
+	// edenAprElys, err := k.CalculateApr(ctx, &types.QueryAprRequest{WithdrawType: commitmenttypes.EarnType_ELYS_PROGRAM, Denom: ptypes.Eden})
+	// if err != nil {
+	// 	return nil, err
+	// }
+
+	// edenbAprElys, err := k.CalculateApr(ctx, &types.QueryAprRequest{WithdrawType: commitmenttypes.EarnType_ELYS_PROGRAM, Denom: ptypes.EdenB})
+	// if err != nil {
+	// 	return nil, err
+	// }
+
+	return &types.QueryAllProgramRewardsResponse{}, nil
 }
 
 // Generate earn pool struct

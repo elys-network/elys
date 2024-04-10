@@ -50,7 +50,4 @@ message Params {
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
-
-  // Distribution interval in blocks - number of blocks on distribution epoch
-  int64 distribution_interval = 11;
 }

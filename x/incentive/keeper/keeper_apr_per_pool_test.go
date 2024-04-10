@@ -71,10 +71,6 @@ func TestAPRCalculationPerPool(t *testing.T) {
 	// check block height
 	require.Equal(t, int64(0), ctx.BlockHeight())
 
-	params := ik.GetParams(ctx)
-	params.DistributionInterval = 10
-	ik.SetParams(ctx, params)
-
 	lpIncentive := types.IncentiveInfo{
 		// reward amount in eden for 1 year
 		EdenAmountPerYear: sdk.NewInt(1000000000),
@@ -86,7 +82,7 @@ func TestAPRCalculationPerPool(t *testing.T) {
 		CurrentEpochInBlocks: sdk.NewInt(1),
 	}
 
-	ctx = ctx.WithBlockHeight(params.DistributionInterval)
+	ctx = ctx.WithBlockHeight(1)
 	ik.UpdateLPRewardsUnclaimed(ctx, lpIncentive)
 
 	// Get pool info from incentive param
@@ -104,8 +100,8 @@ func TestAPRCalculationPerPool(t *testing.T) {
 	err = app.BankKeeper.SendCoinsFromModuleToAccount(ctx, ammtypes.ModuleName, revenueAddress, usdcToken)
 	require.NoError(t, err)
 
-	// 1 week later.
-	ctx = ctx.WithBlockHeight(params.DistributionInterval * 7)
+	// 7 blocks later.
+	ctx = ctx.WithBlockHeight(7)
 	poolInfo.NumBlocks = sdk.NewInt(ctx.BlockHeight())
 	ik.SetPoolInfo(ctx, poolId, poolInfo)
 

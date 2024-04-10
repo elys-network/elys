@@ -143,31 +143,6 @@ func (k Keeper) InitStableStakePoolParams(ctx sdk.Context, poolId uint64) bool {
 	return true
 }
 
-// UpdatePoolMultipliers updates pool multipliers through gov proposal
-func (k Keeper) UpdatePoolMultipliers(ctx sdk.Context, poolMultipliers []types.PoolMultiplier) bool {
-	if len(poolMultipliers) < 1 {
-		return false
-	}
-
-	// Fetch incentive params
-	params := k.GetParams(ctx)
-
-	// Update pool multiplier
-	for _, pm := range poolMultipliers {
-		for i, p := range params.PoolInfos {
-			// If we found matching poolId
-			if p.PoolId == pm.PoolId {
-				params.PoolInfos[i].Multiplier = pm.Multiplier
-			}
-		}
-	}
-
-	// Update parameter
-	k.SetParams(ctx, params)
-
-	return true
-}
-
 // Update total commitment info
 func (k Keeper) UpdateTotalCommitmentInfo(ctx sdk.Context, baseCurrency string) {
 	// Fetch total staked Elys amount again

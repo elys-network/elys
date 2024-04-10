@@ -36,7 +36,7 @@ func TestABCI_EndBlocker(t *testing.T) {
 	require.NoError(t, err)
 
 	// Add testing commitment
-	simapp.AddTestCommitment(app, ctx, genAccount, committed, unclaimed)
+	simapp.AddTestCommitment(app, ctx, genAccount, committed)
 	ik.EndBlocker(ctx)
 
 	// Get elys staked

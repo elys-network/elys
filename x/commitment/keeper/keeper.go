@@ -3,7 +3,6 @@ package keeper
 import (
 	"fmt"
 
-	"cosmossdk.io/math"
 	"github.com/cometbft/cometbft/libs/log"
 	"github.com/cosmos/cosmos-sdk/codec"
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
@@ -24,12 +23,6 @@ type CommitmentKeeperI interface {
 
 	// Get commitment
 	GetCommitments(sdk.Context, string) types.Commitments
-
-	// Update commitments for claim reward operation
-	RecordClaimReward(sdk.Context, string, string, math.Int, types.EarnType) error
-
-	// Update commitments for validator's commission withdrawal to self delegator
-	RecordWithdrawValidatorCommission(sdk.Context, string, string, string, math.Int) error
 }
 
 var _ CommitmentKeeperI = Keeper{}

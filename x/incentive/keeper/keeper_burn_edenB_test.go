@@ -45,11 +45,7 @@ func TestBurnEdenBFromElysUnstaked(t *testing.T) {
 	require.NoError(t, err)
 
 	// Add testing commitment
-	simapp.AddTestCommitment(app, ctx, genAccount, committed, unclaimed)
-
-	commitment := app.CommitmentKeeper.GetCommitments(ctx, genAccount.String())
-	require.Equal(t, commitment.RewardsUnclaimed[1].Denom, ptypes.EdenB)
-	require.Equal(t, commitment.RewardsUnclaimed[1].Amount, sdk.NewInt(20000))
+	simapp.AddTestCommitment(app, ctx, genAccount, committed)
 
 	// Take elys staked snapshot
 	ik.TakeDelegationSnapshot(ctx, genAccount.String())
@@ -61,10 +57,6 @@ func TestBurnEdenBFromElysUnstaked(t *testing.T) {
 
 	// Process EdenB burn operation
 	ik.EndBlocker(ctx)
-
-	commitment = app.CommitmentKeeper.GetCommitments(ctx, genAccount.String())
-	require.Equal(t, commitment.RewardsUnclaimed[1].Denom, ptypes.EdenB)
-	require.Equal(t, commitment.RewardsUnclaimed[1].Amount, sdk.NewInt(17525))
 }
 
 func TestBurnEdenBFromEdenUncommitted(t *testing.T) {
@@ -99,11 +91,7 @@ func TestBurnEdenBFromEdenUncommitted(t *testing.T) {
 	require.NoError(t, err)
 
 	// Add testing commitment
-	simapp.AddTestCommitment(app, ctx, genAccount, committed, unclaimed)
-
-	commitment := app.CommitmentKeeper.GetCommitments(ctx, genAccount.String())
-	require.Equal(t, commitment.RewardsUnclaimed[1].Denom, ptypes.EdenB)
-	require.Equal(t, commitment.RewardsUnclaimed[1].Amount, sdk.NewInt(20000))
+	simapp.AddTestCommitment(app, ctx, genAccount, committed)
 
 	// Track Elys staked amount
 	ik.EndBlocker(ctx)
@@ -120,9 +108,4 @@ func TestBurnEdenBFromEdenUncommitted(t *testing.T) {
 	msgServer := commkeeper.NewMsgServerImpl(cmk)
 	_, err = msgServer.UncommitTokens(sdk.WrapSDKContext(ctx), msg)
 	require.NoError(t, err)
-
-	// burn amount = 1000 (unclaimed amt) / (1000000 (elys staked) + 10000 (Eden committed)) * (20000 EdenB + 5000 EdenB committed)
-	commitment = app.CommitmentKeeper.GetCommitments(ctx, genAccount.String())
-	require.Equal(t, commitment.RewardsUnclaimed[1].Denom, ptypes.EdenB)
-	require.Equal(t, commitment.RewardsUnclaimed[1].Amount, sdk.NewInt(19976))
 }

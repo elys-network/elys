@@ -56,16 +56,10 @@ func TestCalcRewardsForStakers(t *testing.T) {
 	require.NoError(t, err)
 
 	// Add testing commitment
-	simapp.AddTestCommitment(app, ctx, addr[0], committed, unclaimed)
-	simapp.AddTestCommitment(app, ctx, addr[1], committed, unclaimed)
+	simapp.AddTestCommitment(app, ctx, addr[0], committed)
+	simapp.AddTestCommitment(app, ctx, addr[1], committed)
 
 	commitment := app.CommitmentKeeper.GetCommitments(ctx, addr[0].String())
-
-	require.Equal(t, commitment.RewardsUnclaimed[0].Denom, ptypes.Eden)
-	require.Equal(t, commitment.RewardsUnclaimed[0].Amount, sdk.NewInt(2000))
-
-	require.Equal(t, commitment.RewardsUnclaimed[1].Denom, ptypes.EdenB)
-	require.Equal(t, commitment.RewardsUnclaimed[1].Amount, sdk.NewInt(2000))
 
 	require.Equal(t, commitment.CommittedTokens[0].Denom, ptypes.Eden)
 	require.Equal(t, commitment.CommittedTokens[0].Amount, sdk.NewInt(1500))

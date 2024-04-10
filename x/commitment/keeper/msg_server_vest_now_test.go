@@ -51,15 +51,13 @@ func TestVestNow(t *testing.T) {
 	keeper.SetParams(ctx, params)
 
 	// Set up initial commitments object with sufficient claimed & committed tokens
-
 	committedTokens := types.CommittedTokens{
 		Denom:  denom,
 		Amount: initialCommitted,
 	}
 
 	initialCommitments := types.Commitments{
-		Creator:          creator,
-		RewardsUnclaimed: sdk.Coins{},
+		Creator: creator,
 		Claimed: sdk.Coins{
 			{
 				Denom:  denom,

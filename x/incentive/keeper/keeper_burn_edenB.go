@@ -27,15 +27,16 @@ func (k Keeper) BurnEdenBFromElysUnstaking(ctx sdk.Context, delegator sdk.AccAdd
 		return
 	}
 
+	// TODO: might need to claim all rewards before burn operation to properly burn EdenB including unclaimed
+
 	edenCommitted := commitments.GetCommittedAmountForDenom(ptypes.Eden)
 
 	// Total EdenB amount
 	edenBCommitted := commitments.GetCommittedAmountForDenom(ptypes.EdenB)
-	edenBUnclaimed := commitments.GetRewardUnclaimedForDenom(ptypes.EdenB)
 	edenBClaimed := commitments.GetClaimedForDenom(ptypes.EdenB)
 
 	// Total EdenB amount
-	totalEdenB := edenBCommitted.Add(edenBUnclaimed).Add(edenBClaimed)
+	totalEdenB := edenBCommitted.Add(edenBClaimed)
 
 	// Unstaked
 	unstakedElys := prevElysStaked.Sub(delAmount)
@@ -69,11 +70,10 @@ func (k Keeper) BurnEdenBFromEdenUncommitted(ctx sdk.Context, delegator string, 
 
 	// Total EdenB amount
 	edenBCommitted := commitments.GetCommittedAmountForDenom(ptypes.EdenB)
-	edenBUnclaimed := commitments.GetRewardUnclaimedForDenom(ptypes.EdenB)
 	edenBClaimed := commitments.GetClaimedForDenom(ptypes.EdenB)
 
 	// Total EdenB amount
-	totalEdenB := edenBCommitted.Add(edenBUnclaimed).Add(edenBClaimed)
+	totalEdenB := edenBCommitted.Add(edenBClaimed)
 
 	unclaimedAmtDec := sdk.NewDecFromInt(uncommitAmt)
 	// This formula shud be applied before eden uncommitted or elys staked is removed from eden committed amount and elys staked amount respectively

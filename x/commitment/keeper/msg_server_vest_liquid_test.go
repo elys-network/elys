@@ -68,7 +68,6 @@ func TestLiquidVestWithExceed(t *testing.T) {
 				Amount: sdk.NewInt(50),
 			},
 		},
-		RewardsUnclaimed: sdk.Coins{},
 		Claimed: sdk.Coins{
 			{
 				Denom:  ptypes.Eden,

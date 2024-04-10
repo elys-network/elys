@@ -36,7 +36,6 @@ func (m Migrator) V9Migration(ctx sdk.Context) error {
 		},
 		MaxEdenRewardAprStakers: sdk.NewDecWithPrec(3, 1), // 30%
 		MaxEdenRewardAprLps:     sdk.NewDecWithPrec(5, 1), // 50%
-		DistributionInterval:    10,
 	})
 	return nil
 }

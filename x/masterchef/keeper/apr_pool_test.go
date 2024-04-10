@@ -13,10 +13,10 @@ import (
 )
 
 func TestCalculatePoolAprs(t *testing.T) {
-	app := simapp.InitElysTestApp(initChain)
-	ctx := app.BaseApp.NewContext(initChain, tmproto.Header{})
+	app := simapp.InitElysTestApp(true)
+	ctx := app.BaseApp.NewContext(true, tmproto.Header{})
 
-	ik, amm, oracle := app.IncentiveKeeper, app.AmmKeeper, app.OracleKeeper
+	mk, amm, oracle := app.MasterchefKeeper, app.AmmKeeper, app.OracleKeeper
 
 	// Setup coin prices
 	SetupStableCoinPrices(ctx, oracle)
@@ -70,25 +70,25 @@ func TestCalculatePoolAprs(t *testing.T) {
 	require.NoError(t, err)
 	require.Equal(t, resp.PoolID, uint64(1))
 
-	poolInfo, found := ik.GetPoolInfo(ctx, resp.PoolID)
+	poolInfo, found := mk.GetPool(ctx, resp.PoolID)
 	require.True(t, found)
 
 	poolInfo.DexApr = sdk.NewDecWithPrec(1, 2)  // 1%
 	poolInfo.EdenApr = sdk.NewDecWithPrec(2, 2) // 2%
-	ik.SetPoolInfo(ctx, poolInfo.PoolId, poolInfo)
+	mk.SetPool(ctx, poolInfo)
 
 	// When passing empty array
-	aprs := ik.CalculatePoolAprs(ctx, []uint64{})
+	aprs := mk.CalculatePoolAprs(ctx, []uint64{})
 	require.Len(t, aprs, 1)
 	require.Equal(t, aprs[0].Apr.String(), "0.030000000000000000")
 
 	// When passing specific id
-	aprs = ik.CalculatePoolAprs(ctx, []uint64{1})
+	aprs = mk.CalculatePoolAprs(ctx, []uint64{1})
 	require.Len(t, aprs, 1)
 	require.Equal(t, aprs[0].Apr.String(), "0.030000000000000000")
 
 	// When passing invalid id
-	aprs = ik.CalculatePoolAprs(ctx, []uint64{4})
+	aprs = mk.CalculatePoolAprs(ctx, []uint64{4})
 	require.Len(t, aprs, 1)
 	require.Equal(t, aprs[0].Apr.String(), "0.000000000000000000")
 }

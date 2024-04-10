@@ -11,39 +11,10 @@ option go_package = "github.com/elys-network/elys/x/incentive/types";
 
 // Msg defines the Msg service.
 service Msg {
-  // WithdrawDelegatorReward defines a method to withdraw rewards of delegator
-  // from a single validator.
-  rpc WithdrawRewards (MsgWithdrawRewards) returns (MsgWithdrawRewardsResponse);
-  
   // WithdrawValidatorCommission defines a method to withdraw the
   // full commission to the validator address.
-  rpc WithdrawValidatorCommission(MsgWithdrawValidatorCommission) returns (MsgWithdrawValidatorCommissionResponse);
   rpc UpdateIncentiveParams(MsgUpdateIncentiveParams) returns (MsgUpdateIncentiveParamsResponse);
-  rpc UpdatePoolMultipliers(MsgUpdatePoolMultipliers) returns (MsgUpdatePoolMultipliersResponse);
 }
-// MsgWithdrawDelegatorReward represents delegation withdrawal to a delegator
-// from a single validator.
-message MsgWithdrawRewards {
-  option           (gogoproto.equal) = false;
-  option (gogoproto.goproto_getters) = false;
-  string                   delegator_address = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
-  elys.commitment.EarnType withdraw_type     = 2;
-}
-
-// MsgWithdrawDelegatorRewardResponse defines the Msg/WithdrawDelegatorReward response type.
-message MsgWithdrawRewardsResponse {}
-
-// MsgWithdrawValidatorCommission withdraws the full commission to the validator
-// address.
-message MsgWithdrawValidatorCommission {
-  option           (gogoproto.equal) = false;
-  option (gogoproto.goproto_getters) = false;
-  string delegator_address = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
-  string validator_address = 2 [(cosmos_proto.scalar) = "cosmos.AddressString"];
-}
-
-// MsgWithdrawValidatorCommissionResponse defines the Msg/WithdrawValidatorCommission response type.
-message MsgWithdrawValidatorCommissionResponse {}
 
 message MsgUpdateIncentiveParams {
   string authority = 1;
@@ -64,7 +35,6 @@ message MsgUpdateIncentiveParams {
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
-  int64 distribution_interval = 7;
 }
 
 message MsgUpdateIncentiveParamsResponse {}
@@ -91,16 +61,3 @@ message MsgCancelUnbondingDelegation{
   int64 creation_height = 4;
 }
 
-message PoolMultiplier {
-  uint64 pool_id = 1;
-  string multiplier = 2 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
-    (gogoproto.nullable) = false
-  ];
-}
-
-message MsgUpdatePoolMultipliers {
-  string authority = 1;
-  repeated PoolMultiplier pool_multipliers = 2 [ (gogoproto.nullable) = false ];
-}
-message MsgUpdatePoolMultipliersResponse {}

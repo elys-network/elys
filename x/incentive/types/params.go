@@ -22,7 +22,6 @@ func NewParams(
 	dexRewardsLps DexRewardsTracker,
 	maxEdenRewardAprStakers sdk.Dec,
 	maxEdenRewardAprLps sdk.Dec,
-	distributionInterval int64,
 ) Params {
 	return Params{
 		LpIncentives:            lpIncentives,
@@ -35,7 +34,6 @@ func NewParams(
 		DexRewardsLps:           dexRewardsLps,
 		MaxEdenRewardAprStakers: maxEdenRewardAprStakers,
 		MaxEdenRewardAprLps:     maxEdenRewardAprLps,
-		DistributionInterval:    distributionInterval,
 	}
 }
 
@@ -60,7 +58,6 @@ func DefaultParams() Params {
 		},
 		sdk.NewDecWithPrec(3, 1),
 		sdk.NewDecWithPrec(5, 1),
-		10,
 	)
 }
 
@@ -95,10 +92,6 @@ func (p Params) Validate() error {
 	}
 
 	if err := validateDexRewardsLps(p.DexRewardsLps); err != nil {
-		return err
-	}
-
-	if err := validateDistributionInterval(p.DistributionInterval); err != nil {
 		return err
 	}
 
@@ -252,19 +245,6 @@ func validateEdenRewardApr(i interface{}) error {
 	}
 
 	if v.IsNegative() {
-		return fmt.Errorf("invalid parameter type: %T", i)
-	}
-
-	return nil
-}
-
-func validateDistributionInterval(i interface{}) error {
-	v, ok := i.(int64)
-	if !ok {
-		return fmt.Errorf("invalid parameter type: %T", i)
-	}
-
-	if v == 0 {
 		return fmt.Errorf("invalid parameter type: %T", i)
 	}
 

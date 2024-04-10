@@ -12,7 +12,7 @@ const TypeMsgUpdateIncentiveParams = "update_incentive_params"
 
 var _ sdk.Msg = &MsgUpdateIncentiveParams{}
 
-func NewMsgUpdateIncentiveParams(creator string, rewardPortionForLps sdk.Dec, rewardPortionForStakers sdk.Dec, elysStakeSnapInterval int64, maxEdenRewardAprStakers sdk.Dec, maxEdenRewardParLps sdk.Dec, distributionInterval int64) *MsgUpdateIncentiveParams {
+func NewMsgUpdateIncentiveParams(creator string, rewardPortionForLps sdk.Dec, rewardPortionForStakers sdk.Dec, elysStakeSnapInterval int64, maxEdenRewardAprStakers sdk.Dec, maxEdenRewardParLps sdk.Dec) *MsgUpdateIncentiveParams {
 	return &MsgUpdateIncentiveParams{
 		Authority:               creator,
 		RewardPortionForLps:     rewardPortionForLps,
@@ -20,7 +20,6 @@ func NewMsgUpdateIncentiveParams(creator string, rewardPortionForLps sdk.Dec, re
 		ElysStakeSnapInterval:   elysStakeSnapInterval,
 		MaxEdenRewardAprStakers: maxEdenRewardAprStakers,
 		MaxEdenRewardAprLps:     maxEdenRewardParLps,
-		DistributionInterval:    distributionInterval,
 	}
 }
 
@@ -64,9 +63,6 @@ func (msg *MsgUpdateIncentiveParams) ValidateBasic() error {
 	}
 	if msg.MaxEdenRewardAprLps.LT(sdk.ZeroDec()) {
 		return errorsmod.Wrapf(sdkerrors.ErrNotSupported, "invalid max eden rewards apr for stakers (%s)", errors.New("Invalid Rewards APR"))
-	}
-	if msg.DistributionInterval < 1 {
-		return errorsmod.Wrapf(sdkerrors.ErrNotSupported, "invalid distribution epoch (%s)", errors.New("Invalid epoch"))
 	}
 	if msg.ElysStakeSnapInterval < 1 {
 		return errorsmod.Wrapf(sdkerrors.ErrNotSupported, "invalid elys staked tracking epoch (%s)", errors.New("Invalid elys staked tracking epoch"))

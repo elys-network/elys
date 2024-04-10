@@ -39357,23 +39357,6 @@ paths:
                               unlock_timestamp:
                                 type: string
                                 format: uint64
-                  rewards_unclaimed:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        denom:
-                          type: string
-                        amount:
-                          type: string
-                      description: >-
-                        Coin defines a token with a denomination and an amount.
-
-
-                        NOTE: The amount field is an Int which implements the
-                        custom method
-
-                        signatures required by gogoproto.
                   claimed:
                     type: array
                     items:
@@ -39411,74 +39394,6 @@ paths:
                         vest_started_timestamp:
                           type: string
                           format: int64
-                  rewards_by_elys_unclaimed:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        denom:
-                          type: string
-                        amount:
-                          type: string
-                      description: >-
-                        Coin defines a token with a denomination and an amount.
-
-
-                        NOTE: The amount field is an Int which implements the
-                        custom method
-
-                        signatures required by gogoproto.
-                  rewards_by_eden_unclaimed:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        denom:
-                          type: string
-                        amount:
-                          type: string
-                      description: >-
-                        Coin defines a token with a denomination and an amount.
-
-
-                        NOTE: The amount field is an Int which implements the
-                        custom method
-
-                        signatures required by gogoproto.
-                  rewards_by_edenb_unclaimed:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        denom:
-                          type: string
-                        amount:
-                          type: string
-                      description: >-
-                        Coin defines a token with a denomination and an amount.
-
-
-                        NOTE: The amount field is an Int which implements the
-                        custom method
-
-                        signatures required by gogoproto.
-                  rewards_by_usdc_unclaimed:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        denom:
-                          type: string
-                        amount:
-                          type: string
-                      description: >-
-                        Coin defines a token with a denomination and an amount.
-
-
-                        NOTE: The amount field is an Int which implements the
-                        custom method
-
-                        signatures required by gogoproto.
                 description: GenesisState defines the commitment module's genesis state.
         default:
           description: An unexpected error response.
@@ -39863,6 +39778,106 @@ paths:
           type: string
       tags:
         - Query
+  /elys-network/elys/incentive/all_program_rewards:
+    get:
+      summary: Queries all program rewards
+      operationId: ElysIncentiveAllProgramRewards
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              usdc_rewards_usdc:
+                type: object
+                properties:
+                  amount:
+                    type: string
+                  usd_amount:
+                    type: string
+              eden_rewards_usdc:
+                type: object
+                properties:
+                  amount:
+                    type: string
+                  usd_amount:
+                    type: string
+              usdc_rewards_edenb:
+                type: object
+                properties:
+                  amount:
+                    type: string
+                  usd_amount:
+                    type: string
+              eden_rewards_edenb:
+                type: object
+                properties:
+                  amount:
+                    type: string
+                  usd_amount:
+                    type: string
+              usdc_rewards_eden:
+                type: object
+                properties:
+                  amount:
+                    type: string
+                  usd_amount:
+                    type: string
+              eden_rewards_eden:
+                type: object
+                properties:
+                  amount:
+                    type: string
+                  usd_amount:
+                    type: string
+              edenb_rewards_eden:
+                type: object
+                properties:
+                  amount:
+                    type: string
+                  usd_amount:
+                    type: string
+              usdc_rewards_elys:
+                type: object
+                properties:
+                  amount:
+                    type: string
+                  usd_amount:
+                    type: string
+              eden_rewards_elys:
+                type: object
+                properties:
+                  amount:
+                    type: string
+                  usd_amount:
+                    type: string
+              edenb_rewards_elys:
+                type: object
+                properties:
+                  amount:
+                    type: string
+                  usd_amount:
+                    type: string
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      tags:
+        - Query
   /elys-network/elys/incentive/apr/{withdraw_type}/{denom}:
     get:
       summary: Calculate APR
@@ -39941,55 +39956,6 @@ paths:
                 type: string
               edenb_apr_elys:
                 type: string
-        default:
-          description: An unexpected error response.
-          schema:
-            type: object
-            properties:
-              code:
-                type: integer
-                format: int32
-              message:
-                type: string
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    '@type':
-                      type: string
-                  additionalProperties: {}
-      tags:
-        - Query
-  /elys-network/elys/incentive/community_pool:
-    get:
-      summary: Queries a list of CommunityPool items.
-      operationId: ElysIncentiveCommunityPool
-      responses:
-        '200':
-          description: A successful response.
-          schema:
-            type: object
-            properties:
-              pool:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    denom:
-                      type: string
-                    amount:
-                      type: string
-                  description: >-
-                    DecCoin defines a token with a denomination and a decimal
-                    amount.
-
-
-                    NOTE: The amount field is an Dec which implements the custom
-                    method
-
-                    signatures required by gogoproto.
-                description: pool defines community pool's coins.
         default:
           description: An unexpected error response.
           schema:
@@ -40170,12 +40136,6 @@ paths:
                   max_eden_reward_apr_lps:
                     type: string
                     title: Maximum eden reward apr for lps - [0 - 0.3]
-                  distribution_interval:
-                    type: string
-                    format: int64
-                    title: >-
-                      Distribution interval in blocks - number of blocks on
-                      distribution epoch
             description: >-
               QueryParamsResponse is response type for the Query/Params RPC
               method.
@@ -40197,55 +40157,6 @@ paths:
                     '@type':
                       type: string
                   additionalProperties: {}
-      tags:
-        - Query
-  /elys-network/elys/incentive/pool_aprs:
-    get:
-      summary: Calculate liquidity mining pool APRs
-      operationId: ElysIncentivePoolAprs
-      responses:
-        '200':
-          description: A successful response.
-          schema:
-            type: object
-            properties:
-              data:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    pool_id:
-                      type: string
-                      format: uint64
-                    apr:
-                      type: string
-        default:
-          description: An unexpected error response.
-          schema:
-            type: object
-            properties:
-              code:
-                type: integer
-                format: int32
-              message:
-                type: string
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    '@type':
-                      type: string
-                  additionalProperties: {}
-      parameters:
-        - name: pool_ids
-          in: query
-          required: false
-          type: array
-          items:
-            type: string
-            format: uint64
-          collectionFormat: multi
       tags:
         - Query
   /elys-network/elys/incentive/pool_rewards:
@@ -84730,20 +84641,6 @@ definitions:
                   unlock_timestamp:
                     type: string
                     format: uint64
-      rewards_unclaimed:
-        type: array
-        items:
-          type: object
-          properties:
-            denom:
-              type: string
-            amount:
-              type: string
-          description: |-
-            Coin defines a token with a denomination and an amount.
-
-            NOTE: The amount field is an Int which implements the custom method
-            signatures required by gogoproto.
       claimed:
         type: array
         items:
@@ -84778,62 +84675,6 @@ definitions:
             vest_started_timestamp:
               type: string
               format: int64
-      rewards_by_elys_unclaimed:
-        type: array
-        items:
-          type: object
-          properties:
-            denom:
-              type: string
-            amount:
-              type: string
-          description: |-
-            Coin defines a token with a denomination and an amount.
-
-            NOTE: The amount field is an Int which implements the custom method
-            signatures required by gogoproto.
-      rewards_by_eden_unclaimed:
-        type: array
-        items:
-          type: object
-          properties:
-            denom:
-              type: string
-            amount:
-              type: string
-          description: |-
-            Coin defines a token with a denomination and an amount.
-
-            NOTE: The amount field is an Int which implements the custom method
-            signatures required by gogoproto.
-      rewards_by_edenb_unclaimed:
-        type: array
-        items:
-          type: object
-          properties:
-            denom:
-              type: string
-            amount:
-              type: string
-          description: |-
-            Coin defines a token with a denomination and an amount.
-
-            NOTE: The amount field is an Int which implements the custom method
-            signatures required by gogoproto.
-      rewards_by_usdc_unclaimed:
-        type: array
-        items:
-          type: object
-          properties:
-            denom:
-              type: string
-            amount:
-              type: string
-          description: |-
-            Coin defines a token with a denomination and an amount.
-
-            NOTE: The amount field is an Int which implements the custom method
-            signatures required by gogoproto.
     description: GenesisState defines the commitment module's genesis state.
   elys.commitment.CommittedTokens:
     type: object
@@ -84998,23 +84839,6 @@ definitions:
                       unlock_timestamp:
                         type: string
                         format: uint64
-          rewards_unclaimed:
-            type: array
-            items:
-              type: object
-              properties:
-                denom:
-                  type: string
-                amount:
-                  type: string
-              description: >-
-                Coin defines a token with a denomination and an amount.
-
-
-                NOTE: The amount field is an Int which implements the custom
-                method
-
-                signatures required by gogoproto.
           claimed:
             type: array
             items:
@@ -85052,74 +84876,6 @@ definitions:
                 vest_started_timestamp:
                   type: string
                   format: int64
-          rewards_by_elys_unclaimed:
-            type: array
-            items:
-              type: object
-              properties:
-                denom:
-                  type: string
-                amount:
-                  type: string
-              description: >-
-                Coin defines a token with a denomination and an amount.
-
-
-                NOTE: The amount field is an Int which implements the custom
-                method
-
-                signatures required by gogoproto.
-          rewards_by_eden_unclaimed:
-            type: array
-            items:
-              type: object
-              properties:
-                denom:
-                  type: string
-                amount:
-                  type: string
-              description: >-
-                Coin defines a token with a denomination and an amount.
-
-
-                NOTE: The amount field is an Int which implements the custom
-                method
-
-                signatures required by gogoproto.
-          rewards_by_edenb_unclaimed:
-            type: array
-            items:
-              type: object
-              properties:
-                denom:
-                  type: string
-                amount:
-                  type: string
-              description: >-
-                Coin defines a token with a denomination and an amount.
-
-
-                NOTE: The amount field is an Int which implements the custom
-                method
-
-                signatures required by gogoproto.
-          rewards_by_usdc_unclaimed:
-            type: array
-            items:
-              type: object
-              properties:
-                denom:
-                  type: string
-                amount:
-                  type: string
-              description: >-
-                Coin defines a token with a denomination and an amount.
-
-
-                NOTE: The amount field is an Int which implements the custom
-                method
-
-                signatures required by gogoproto.
         description: GenesisState defines the commitment module's genesis state.
   elys.commitment.VestingInfo:
     type: object
@@ -85502,6 +85258,13 @@ definitions:
       - EDENB_PROGRAM
       - LP_MINING_PROGRAM
     default: ALL_PROGRAM
+  elys.incentive.BalanceAvailable:
+    type: object
+    properties:
+      amount:
+        type: string
+      usd_amount:
+        type: string
   elys.incentive.DexRewardsTracker:
     type: object
     properties:
@@ -85548,18 +85311,6 @@ definitions:
     title: Incentive Info
   elys.incentive.MsgUpdateIncentiveParamsResponse:
     type: object
-  elys.incentive.MsgUpdatePoolMultipliersResponse:
-    type: object
-  elys.incentive.MsgWithdrawRewardsResponse:
-    type: object
-    description: >-
-      MsgWithdrawDelegatorRewardResponse defines the Msg/WithdrawDelegatorReward
-      response type.
-  elys.incentive.MsgWithdrawValidatorCommissionResponse:
-    type: object
-    description: >-
-      MsgWithdrawValidatorCommissionResponse defines the
-      Msg/WithdrawValidatorCommission response type.
   elys.incentive.Params:
     type: object
     properties:
@@ -85701,21 +85452,7 @@ definitions:
       max_eden_reward_apr_lps:
         type: string
         title: Maximum eden reward apr for lps - [0 - 0.3]
-      distribution_interval:
-        type: string
-        format: int64
-        title: >-
-          Distribution interval in blocks - number of blocks on distribution
-          epoch
     description: Params defines the parameters for the module.
-  elys.incentive.PoolApr:
-    type: object
-    properties:
-      pool_id:
-        type: string
-        format: uint64
-      apr:
-        type: string
   elys.incentive.PoolInfo:
     type: object
     properties:
@@ -85745,14 +85482,6 @@ definitions:
         type: string
         title: Dex APR, updated at every distribution
     title: Pool Info
-  elys.incentive.PoolMultiplier:
-    type: object
-    properties:
-      pool_id:
-        type: string
-        format: uint64
-      multiplier:
-        type: string
   elys.incentive.PoolRewards:
     type: object
     properties:
@@ -85775,6 +85504,79 @@ definitions:
 
             NOTE: The amount field is an Int which implements the custom method
             signatures required by gogoproto.
+  elys.incentive.QueryAllProgramRewardsResponse:
+    type: object
+    properties:
+      usdc_rewards_usdc:
+        type: object
+        properties:
+          amount:
+            type: string
+          usd_amount:
+            type: string
+      eden_rewards_usdc:
+        type: object
+        properties:
+          amount:
+            type: string
+          usd_amount:
+            type: string
+      usdc_rewards_edenb:
+        type: object
+        properties:
+          amount:
+            type: string
+          usd_amount:
+            type: string
+      eden_rewards_edenb:
+        type: object
+        properties:
+          amount:
+            type: string
+          usd_amount:
+            type: string
+      usdc_rewards_eden:
+        type: object
+        properties:
+          amount:
+            type: string
+          usd_amount:
+            type: string
+      eden_rewards_eden:
+        type: object
+        properties:
+          amount:
+            type: string
+          usd_amount:
+            type: string
+      edenb_rewards_eden:
+        type: object
+        properties:
+          amount:
+            type: string
+          usd_amount:
+            type: string
+      usdc_rewards_elys:
+        type: object
+        properties:
+          amount:
+            type: string
+          usd_amount:
+            type: string
+      eden_rewards_elys:
+        type: object
+        properties:
+          amount:
+            type: string
+          usd_amount:
+            type: string
+      edenb_rewards_elys:
+        type: object
+        properties:
+          amount:
+            type: string
+          usd_amount:
+            type: string
   elys.incentive.QueryAprResponse:
     type: object
     properties:
@@ -85803,24 +85605,6 @@ definitions:
         type: string
       edenb_apr_elys:
         type: string
-  elys.incentive.QueryCommunityPoolResponse:
-    type: object
-    properties:
-      pool:
-        type: array
-        items:
-          type: object
-          properties:
-            denom:
-              type: string
-            amount:
-              type: string
-          description: |-
-            DecCoin defines a token with a denomination and a decimal amount.
-
-            NOTE: The amount field is an Dec which implements the custom method
-            signatures required by gogoproto.
-        description: pool defines community pool's coins.
   elys.incentive.QueryParamsResponse:
     type: object
     properties:
@@ -85966,26 +85750,7 @@ definitions:
           max_eden_reward_apr_lps:
             type: string
             title: Maximum eden reward apr for lps - [0 - 0.3]
-          distribution_interval:
-            type: string
-            format: int64
-            title: >-
-              Distribution interval in blocks - number of blocks on distribution
-              epoch
     description: QueryParamsResponse is response type for the Query/Params RPC method.
-  elys.incentive.QueryPoolAprsResponse:
-    type: object
-    properties:
-      data:
-        type: array
-        items:
-          type: object
-          properties:
-            pool_id:
-              type: string
-              format: uint64
-            apr:
-              type: string
   elys.incentive.QueryPoolRewardsResponse:
     type: object
     properties:

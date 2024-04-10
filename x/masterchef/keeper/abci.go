@@ -826,45 +826,6 @@ func (k Keeper) CalcRewardsForStableStakeLPs(ctx sdk.Context, totalProxyTVL sdk.
 	return newEdenAllocated, totalDexRewardsAllocated.TruncateInt()
 }
 
-func (k Keeper) UpdateCommitments(
-	ctx sdk.Context,
-	creator string,
-	commitments *ctypes.Commitments,
-	newUnclaimedEdenTokens math.Int,
-	newUnclaimedEdenBTokens math.Int,
-	dexRewards math.Int,
-	baseCurrency string,
-) {
-	// Update unclaimed Eden balances in the Commitments structure
-	commitments.AddRewardsUnclaimed(sdk.NewCoin(ptypes.Eden, newUnclaimedEdenTokens))
-	// Update unclaimed Eden-Boost token balances in the Commitments structure
-	commitments.AddRewardsUnclaimed(sdk.NewCoin(ptypes.EdenB, newUnclaimedEdenBTokens))
-
-	// All dex revenue are collected to incentive module in USDC
-	// Gas fees (Elys) are also converted into USDC and collected into total dex revenue wallet of incentive module.
-	// Update USDC balances in the Commitments structure.
-	// These are the rewards from each pool, perpetual, gas fee.
-	commitments.AddRewardsUnclaimed(sdk.NewCoin(baseCurrency, dexRewards))
-
-	// Save the updated Commitments
-	k.cmk.SetCommitments(ctx, *commitments)
-}
-
-// Update sub bucket commitment record
-func (k Keeper) UpdateCommitmentsSubBuckets(ctx sdk.Context, creator string, commitments *ctypes.Commitments, rewardsByElysStaking sdk.Coins, rewardsByEdenCommitted sdk.Coins, rewardsByEdenBCommitted sdk.Coins, rewardsByUSDCDeposit sdk.Coins) {
-	// Add to Elys staking bucket
-	commitments.AddSubBucketRewardsByElysUnclaimed(rewardsByElysStaking)
-	// Add to Eden committed bucket
-	commitments.AddSubBucketRewardsByEdenUnclaimed(rewardsByEdenCommitted)
-	// Add to EdenB committed bucket
-	commitments.AddSubBucketRewardsByEdenBUnclaimed(rewardsByEdenBCommitted)
-	// Add to USDC deposit bucket
-	commitments.AddSubBucketRewardsByUsdcUnclaimed(rewardsByUSDCDeposit)
-
-	// Save the updated Commitments
-	k.cmk.SetCommitments(ctx, *commitments)
-}
-
 // Update APR for AMM pool
 func (k Keeper) UpdateAmmPoolAPR(ctx sdk.Context, totalBlocksPerYear sdk.Int, totalProxyTVL sdk.Dec, edenDenomPrice sdk.Dec) {
 	// Iterate to calculate total Eden from LpElys, MElys committed

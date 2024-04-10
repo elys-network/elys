@@ -32,9 +32,8 @@ func TestCommitClaimedRewards(t *testing.T) {
 	// Set up initial commitments object with sufficient unclaimed tokens
 	rewardsClaimed := sdk.NewCoin(denom, initialUnclaimed)
 	initialCommitments := types.Commitments{
-		Creator:          creator,
-		RewardsUnclaimed: sdk.Coins{},
-		Claimed:          sdk.Coins{rewardsClaimed},
+		Creator: creator,
+		Claimed: sdk.Coins{rewardsClaimed},
 	}
 
 	keeper.SetCommitments(ctx, initialCommitments)

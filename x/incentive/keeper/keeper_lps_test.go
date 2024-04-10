@@ -105,7 +105,7 @@ func TestCalcRewardsForLPs(t *testing.T) {
 	err = app.BankKeeper.SendCoinsFromModuleToAccount(ctx, ctypes.ModuleName, addr[0], committed)
 	require.NoError(t, err)
 
-	simapp.AddTestCommitment(app, ctx, addr[0], committed, unclaimed)
+	simapp.AddTestCommitment(app, ctx, addr[0], committed)
 
 	// Create a pool
 	// Mint 100000USDC + 10 ELYS (pool creation fee)

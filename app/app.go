@@ -814,6 +814,45 @@ func NewElysApp(
 	)
 	tokenomicsModule := tokenomicsmodule.NewAppModule(appCodec, app.TokenomicsKeeper, app.AccountKeeper, app.BankKeeper)
 
+	app.CommitmentKeeper = *commitmentKeeper.SetHooks(
+		commitmentmodulekeeper.NewMultiEpochHooks(
+			app.IncentiveKeeper.CommitmentHooks(),
+			app.EstakingKeeper.CommitmentHooks(),
+		),
+	)
+	commitmentModule := commitmentmodule.NewAppModule(appCodec, app.CommitmentKeeper, app.AccountKeeper, app.BankKeeper)
+
+	app.DistrKeeper = distrkeeper.NewKeeper(
+		appCodec,
+		keys[distrtypes.StoreKey],
+		app.AccountKeeper,
+		app.CommitmentKeeper,
+		app.EstakingKeeper,
+		authtypes.FeeCollectorName,
+		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+	)
+
+	app.MasterchefKeeper = *masterchefmodulekeeper.NewKeeper(
+		appCodec,
+		keys[masterchefmoduletypes.StoreKey],
+		keys[masterchefmoduletypes.MemStoreKey],
+		app.GetSubspace(masterchefmoduletypes.ModuleName),
+		app.CommitmentKeeper,
+		app.AmmKeeper,
+		app.OracleKeeper,
+		app.AssetprofileKeeper,
+		app.AccountedPoolKeeper,
+		app.EpochsKeeper,
+		app.StablestakeKeeper,
+		app.TokenomicsKeeper,
+		app.AccountKeeper,
+		app.BankKeeper,
+		authtypes.FeeCollectorName,
+		DexRevenueCollectorName,
+		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+	)
+	masterchefModule := masterchefmodule.NewAppModule(appCodec, app.MasterchefKeeper, app.AccountKeeper, app.BankKeeper)
+
 	app.IncentiveKeeper = *incentivemodulekeeper.NewKeeper(
 		appCodec,
 		keys[incentivemoduletypes.StoreKey],
@@ -829,30 +868,13 @@ func NewElysApp(
 		app.EpochsKeeper,
 		app.StablestakeKeeper,
 		app.TokenomicsKeeper,
+		&app.MasterchefKeeper,
+		&app.EstakingKeeper,
 		authtypes.FeeCollectorName,
 		DexRevenueCollectorName,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 	incentiveModule := incentivemodule.NewAppModule(appCodec, app.IncentiveKeeper)
-
-	app.CommitmentKeeper = *commitmentKeeper.SetHooks(
-		commitmentmodulekeeper.NewMultiEpochHooks(
-			app.IncentiveKeeper.CommitmentHooks(),
-			app.EstakingKeeper.CommitmentHooks(),
-		),
-	)
-
-	app.DistrKeeper = distrkeeper.NewKeeper(
-		appCodec,
-		keys[distrtypes.StoreKey],
-		app.AccountKeeper,
-		app.CommitmentKeeper,
-		app.EstakingKeeper,
-		authtypes.FeeCollectorName,
-		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
-	)
-
-	commitmentModule := commitmentmodule.NewAppModule(appCodec, app.CommitmentKeeper, app.AccountKeeper, app.BankKeeper)
 
 	app.BurnerKeeper = *burnermodulekeeper.NewKeeper(
 		appCodec,
@@ -1004,27 +1026,6 @@ func NewElysApp(
 		app.AssetprofileKeeper,
 	)
 	leveragelpModule := leveragelpmodule.NewAppModule(appCodec, app.LeveragelpKeeper, app.AccountKeeper, app.BankKeeper)
-
-	app.MasterchefKeeper = *masterchefmodulekeeper.NewKeeper(
-		appCodec,
-		keys[masterchefmoduletypes.StoreKey],
-		keys[masterchefmoduletypes.MemStoreKey],
-		app.GetSubspace(masterchefmoduletypes.ModuleName),
-		app.CommitmentKeeper,
-		app.AmmKeeper,
-		app.OracleKeeper,
-		app.AssetprofileKeeper,
-		app.AccountedPoolKeeper,
-		app.EpochsKeeper,
-		app.StablestakeKeeper,
-		app.TokenomicsKeeper,
-		app.AccountKeeper,
-		app.BankKeeper,
-		authtypes.FeeCollectorName,
-		DexRevenueCollectorName,
-		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
-	)
-	masterchefModule := masterchefmodule.NewAppModule(appCodec, app.MasterchefKeeper, app.AccountKeeper, app.BankKeeper)
 
 	// this line is used by starport scaffolding # stargate/app/keeperDefinition
 

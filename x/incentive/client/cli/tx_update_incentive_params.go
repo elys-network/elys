@@ -19,14 +19,13 @@ func CmdUpdateIncentiveParams() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "update-incentive-params [reward-portion-for-lps] [reward-portion-for-stakers] [elys-stake-tracking-rate] [max-eden-reward-apr-stakers] [max-eden-reward-apr-lps] [distribution-interval]",
 		Short: "Broadcast message update-incentive-params update-incentive-params [reward-portion-for-lps] [reward-portion-for-stakers] [elys-stake-tracking-rate] [max-eden-reward-apr-stakers] [max-eden-reward-apr-lps] [distribution-interval]",
-		Args:  cobra.ExactArgs(6),
+		Args:  cobra.ExactArgs(5),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			argRewardPortionForLps := args[0]
 			argRewardPortionForStakers := args[1]
 			argElysStakeSnapInterval := args[2]
 			argMaxEdenRewardAprStakers := args[3]
 			argMaxEdenRewardAprLps := args[4]
-			argDistributionInterval := args[5]
 
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
@@ -61,10 +60,6 @@ func CmdUpdateIncentiveParams() *cobra.Command {
 			}
 			maxEdenRewardAprStakers := sdk.MustNewDecFromStr(argMaxEdenRewardAprStakers)
 			maxEdenRewardLps := sdk.MustNewDecFromStr(argMaxEdenRewardAprLps)
-			distributionInterval, err := strconv.ParseInt(argDistributionInterval, 10, 64)
-			if err != nil {
-				return err
-			}
 
 			govAddress := sdk.AccAddress(address.Module("gov"))
 			msg := types.NewMsgUpdateIncentiveParams(
@@ -74,7 +69,6 @@ func CmdUpdateIncentiveParams() *cobra.Command {
 				elysStakeSnapInterval,
 				maxEdenRewardAprStakers,
 				maxEdenRewardLps,
-				distributionInterval,
 			)
 			if err := msg.ValidateBasic(); err != nil {
 				return err
