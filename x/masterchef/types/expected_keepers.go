@@ -32,6 +32,7 @@ type CommitmentKeeper interface {
 	RecordWithdrawValidatorCommission(sdk.Context, string, string, string, math.Int) error
 	// Burn eden boost
 	BurnEdenBoost(ctx sdk.Context, creator string, denom string, amount math.Int) (ctypes.Commitments, error)
+	SendCoinsFromModuleToAccount(ctx sdk.Context, senderModule string, recipientAddr sdk.AccAddress, amt sdk.Coins) error
 }
 
 // Staking keeper

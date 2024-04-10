@@ -12,7 +12,6 @@ import (
 	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	"github.com/elys-network/elys/x/estaking/types"
@@ -22,13 +21,14 @@ import (
 type (
 	Keeper struct {
 		*stakingkeeper.Keeper
-		cdc         codec.BinaryCodec
-		storeKey    storetypes.StoreKey
-		memKey      storetypes.StoreKey
-		paramstore  paramtypes.Subspace
-		commKeeper  types.CommitmentKeeper
-		distrKeeper types.DistrKeeper
-		authority   string
+		cdc                codec.BinaryCodec
+		storeKey           storetypes.StoreKey
+		memKey             storetypes.StoreKey
+		commKeeper         types.CommitmentKeeper
+		distrKeeper        types.DistrKeeper
+		tokenomicsKeeper   types.TokenomicsKeeper
+		assetProfileKeeper types.AssetProfileKeeper
+		authority          string
 	}
 )
 
@@ -60,26 +60,21 @@ func NewKeeper(
 	cdc codec.BinaryCodec,
 	storeKey,
 	memKey storetypes.StoreKey,
-	ps paramtypes.Subspace,
 	stakingKeeper *stakingkeeper.Keeper,
 	commKeeper types.CommitmentKeeper,
 	distrKeeper types.DistrKeeper,
+	assetProfileKeeper types.AssetProfileKeeper,
 	authority string,
 ) *Keeper {
-	// set KeyTable if it has not already been set
-	if !ps.HasKeyTable() {
-		ps = ps.WithKeyTable(types.ParamKeyTable())
-	}
-
 	return &Keeper{
-		Keeper:      stakingKeeper,
-		cdc:         cdc,
-		storeKey:    storeKey,
-		memKey:      memKey,
-		paramstore:  ps,
-		commKeeper:  commKeeper,
-		authority:   authority,
-		distrKeeper: distrKeeper,
+		Keeper:             stakingKeeper,
+		cdc:                cdc,
+		storeKey:           storeKey,
+		memKey:             memKey,
+		commKeeper:         commKeeper,
+		authority:          authority,
+		distrKeeper:        distrKeeper,
+		assetProfileKeeper: assetProfileKeeper,
 	}
 }
 

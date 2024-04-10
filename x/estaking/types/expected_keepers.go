@@ -4,7 +4,9 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
+	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
 	commitmenttypes "github.com/elys-network/elys/x/commitment/types"
+	tokenomictypes "github.com/elys-network/elys/x/tokenomics/types"
 )
 
 // AccountKeeper defines the expected account keeper used for simulations (noalias)
@@ -43,10 +45,26 @@ type StakingKeeper interface {
 type CommitmentKeeper interface {
 	GetCommitments(ctx sdk.Context, creator string) commitmenttypes.Commitments
 	GetParams(ctx sdk.Context) commitmenttypes.Params
+	SendCoinsFromModuleToModule(ctx sdk.Context, senderModule string, recipientModule string, amt sdk.Coins) error
 }
 
 type DistrKeeper interface {
 	WithdrawDelegationRewards(ctx sdk.Context, delAddr sdk.AccAddress, valAddr sdk.ValAddress) (sdk.Coins, error)
 	IncrementValidatorPeriod(ctx sdk.Context, val stakingtypes.ValidatorI) uint64
 	CalculateDelegationRewards(ctx sdk.Context, val stakingtypes.ValidatorI, del stakingtypes.DelegationI, endingPeriod uint64) (rewards sdk.DecCoins)
+}
+
+// TokenomicsKeeper defines the expected tokenomics keeper used for simulations (noalias)
+type TokenomicsKeeper interface {
+	GetAllTimeBasedInflation(ctx sdk.Context) (list []tokenomictypes.TimeBasedInflation)
+}
+
+// AssetProfileKeeper defines the expected interfaces
+type AssetProfileKeeper interface {
+	// SetEntry set a specific entry in the store from its index
+	SetEntry(ctx sdk.Context, entry assetprofiletypes.Entry)
+	// GetEntry returns a entry from its index
+	GetEntry(ctx sdk.Context, baseDenom string) (val assetprofiletypes.Entry, found bool)
+	// GetEntryByDenom returns a entry from its denom value
+	GetEntryByDenom(ctx sdk.Context, denom string) (val assetprofiletypes.Entry, found bool)
 }

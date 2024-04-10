@@ -3,6 +3,7 @@ package elys.estaking;
 
 import "gogoproto/gogo.proto";
 import "elys/estaking/incentive.proto";
+import "elys/estaking/dex_rewards_tracker.proto";
 
 option go_package = "github.com/elys-network/elys/x/estaking/types";
 
@@ -23,4 +24,6 @@ message Params {
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
+  // Tracking dex rewards given to stakers
+  DexRewardsTracker dex_rewards_stakers = 6 [ (gogoproto.nullable) = false ];
 }

@@ -1,30 +1,19 @@
 package types
 
 import (
-	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"gopkg.in/yaml.v2"
 )
 
-var _ paramtypes.ParamSet = (*Params)(nil)
-
-// ParamKeyTable the param key table for launch module
-func ParamKeyTable() paramtypes.KeyTable {
-	return paramtypes.NewKeyTable().RegisterParamSet(&Params{})
-}
-
-// NewParams creates a new Params instance
-func NewParams() Params {
-	return Params{}
-}
-
 // DefaultParams returns a default set of parameters
 func DefaultParams() Params {
-	return NewParams()
-}
-
-// ParamSetPairs get the params.ParamSet
-func (p *Params) ParamSetPairs() paramtypes.ParamSetPairs {
-	return paramtypes.ParamSetPairs{}
+	return Params{
+		StakeIncentives:         nil,
+		EdenCommitVal:           "",
+		EdenbCommitVal:          "",
+		MaxEdenRewardAprStakers: sdk.NewDecWithPrec(3, 1),  // 30%
+		RewardPortionForStakers: sdk.NewDecWithPrec(30, 2), // 30%
+	}
 }
 
 // Validate validates the set of params

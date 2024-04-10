@@ -39727,11 +39727,9 @@ paths:
                       total_blocks_per_year:
                         type: string
                         title: distribution duration - block number per year
-                      max_eden_per_allocation:
+                      current_epoch_in_blocks:
                         type: string
-                        title: >-
-                          maximum eden allocation per day that won't exceed 30%
-                          apr
+                        title: current epoch in block number
                     title: Incentive Info
                   eden_commit_val:
                     type: string
@@ -39746,6 +39744,22 @@ paths:
                   max_eden_reward_apr_stakers:
                     type: string
                     title: Maximum eden reward apr for stakers - [0 - 0.3]
+                  dex_rewards_stakers:
+                    title: Tracking dex rewards given to stakers
+                    type: object
+                    properties:
+                      num_blocks:
+                        type: string
+                        title: >-
+                          Number of blocks since start of epoch (distribution
+                          epoch)
+                      amount:
+                        type: string
+                        title: >-
+                          Accumulated amount at distribution epoch -
+                          recalculated at every
+
+                          distribution epoch
             description: >-
               QueryParamsResponse is response type for the Query/Params RPC
               method.
@@ -85285,6 +85299,20 @@ definitions:
 
             NOTE: The amount field is an Dec which implements the custom method
             signatures required by gogoproto.
+  elys.estaking.DexRewardsTracker:
+    type: object
+    properties:
+      num_blocks:
+        type: string
+        title: Number of blocks since start of epoch (distribution epoch)
+      amount:
+        type: string
+        title: |-
+          Accumulated amount at distribution epoch - recalculated at every
+          distribution epoch
+    title: |-
+      DexRewardsTracker is used for tracking rewards for stakers and LPs, all
+      amount here is in USDC
   elys.estaking.IncentiveInfo:
     type: object
     properties:
@@ -85297,9 +85325,9 @@ definitions:
       total_blocks_per_year:
         type: string
         title: distribution duration - block number per year
-      max_eden_per_allocation:
+      current_epoch_in_blocks:
         type: string
-        title: maximum eden allocation per day that won't exceed 30% apr
+        title: current epoch in block number
     title: Incentive Info
   elys.estaking.MsgUpdateParamsResponse:
     type: object
@@ -85341,9 +85369,9 @@ definitions:
           total_blocks_per_year:
             type: string
             title: distribution duration - block number per year
-          max_eden_per_allocation:
+          current_epoch_in_blocks:
             type: string
-            title: maximum eden allocation per day that won't exceed 30% apr
+            title: current epoch in block number
         title: Incentive Info
       eden_commit_val:
         type: string
@@ -85357,6 +85385,18 @@ definitions:
       max_eden_reward_apr_stakers:
         type: string
         title: Maximum eden reward apr for stakers - [0 - 0.3]
+      dex_rewards_stakers:
+        title: Tracking dex rewards given to stakers
+        type: object
+        properties:
+          num_blocks:
+            type: string
+            title: Number of blocks since start of epoch (distribution epoch)
+          amount:
+            type: string
+            title: |-
+              Accumulated amount at distribution epoch - recalculated at every
+              distribution epoch
     description: Params defines the parameters for the module.
   elys.estaking.QueryParamsResponse:
     type: object
@@ -85377,9 +85417,9 @@ definitions:
               total_blocks_per_year:
                 type: string
                 title: distribution duration - block number per year
-              max_eden_per_allocation:
+              current_epoch_in_blocks:
                 type: string
-                title: maximum eden allocation per day that won't exceed 30% apr
+                title: current epoch in block number
             title: Incentive Info
           eden_commit_val:
             type: string
@@ -85393,6 +85433,20 @@ definitions:
           max_eden_reward_apr_stakers:
             type: string
             title: Maximum eden reward apr for stakers - [0 - 0.3]
+          dex_rewards_stakers:
+            title: Tracking dex rewards given to stakers
+            type: object
+            properties:
+              num_blocks:
+                type: string
+                title: Number of blocks since start of epoch (distribution epoch)
+              amount:
+                type: string
+                title: >-
+                  Accumulated amount at distribution epoch - recalculated at
+                  every
+
+                  distribution epoch
     description: QueryParamsResponse is response type for the Query/Params RPC method.
   elys.estaking.QueryRewardsResponse:
     type: object
