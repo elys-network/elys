@@ -32,7 +32,7 @@ func (oq *Querier) queryVestingInfo(ctx sdk.Context, query *commitmenttypes.Quer
 			Id: fmt.Sprintf("%d", i),
 			TotalVesting: commitmenttypes.BalanceAvailable{
 				Amount:    vesting.TotalAmount,
-				UsdAmount: sdk.NewDecFromInt(vesting.TotalAmount),
+				UsdAmount: edenDenomPrice.MulInt(vesting.TotalAmount),
 			},
 			Claimed: commitmenttypes.BalanceAvailable{
 				Amount:    vesting.ClaimedAmount,
@@ -52,7 +52,7 @@ func (oq *Querier) queryVestingInfo(ctx sdk.Context, query *commitmenttypes.Quer
 	res := commitmenttypes.QueryVestingInfoResponse{
 		Vesting: commitmenttypes.BalanceAvailable{
 			Amount:    totalVesting,
-			UsdAmount: sdk.NewDecFromInt(totalVesting),
+			UsdAmount: edenDenomPrice.MulInt(totalVesting),
 		},
 		VestingDetails: vestingDetails,
 	}
