@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"os"
 	"os/exec"
 	"strings"
 )
@@ -49,10 +50,24 @@ func export(cmdPath, homePath, genesisFilePath string) {
 	modulesStr := strings.Join(modules, ",")
 
 	// Command and arguments
-	args := []string{"export", "--home", homePath, "--output-document", genesisFilePath, "--modules-to-export", modulesStr}
+	args := []string{"export", "--home", homePath, "--modules-to-export", modulesStr}
 
-	// Execute the command and capture the output
+	// Create the command
 	cmd := exec.Command(cmdPath, args...)
+
+	// Create the output file
+	outFile, err := os.Create(genesisFilePath)
+	if err != nil {
+		// Handle error
+		panic(err)
+	}
+	defer outFile.Close()
+
+	// Redirect the output to a file
+	cmd.Stdout = outFile
+	cmd.Stderr = outFile // You can also direct stderr to a different file or os.Stderr
+
+	// Execute the command
 	out, err := cmd.CombinedOutput()
 	if err != nil {
 		log.Fatalf("Command execution failed: %v\nOutput: %s", err, out)
