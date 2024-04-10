@@ -8,10 +8,18 @@ import (
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	commitmenttypes "github.com/elys-network/elys/x/commitment/types"
 	paramtypes "github.com/elys-network/elys/x/parameter/types"
+	ptypes "github.com/elys-network/elys/x/parameter/types"
 	stabletypes "github.com/elys-network/elys/x/stablestake/types"
 )
 
 func (oq *Querier) queryStakedBalanceOfDenom(ctx sdk.Context, query *ammtypes.QueryBalanceRequest) ([]byte, error) {
+	edenDenomPrice := sdk.ZeroDec()
+	entry, found := oq.assetKeeper.GetEntry(ctx, ptypes.BaseCurrency)
+	if found {
+		baseCurrency := entry.Denom
+		edenDenomPrice = oq.ammKeeper.GetEdenDenomPrice(ctx, baseCurrency)
+	}
+
 	denom := query.Denom
 	addr := query.Address
 	address, err := sdk.AccAddressFromBech32(query.Address)
@@ -36,7 +44,7 @@ func (oq *Querier) queryStakedBalanceOfDenom(ctx sdk.Context, query *ammtypes.Qu
 
 	resp := commitmenttypes.StakedAvailable{
 		Amount:    balance.Amount,
-		UsdAmount: sdk.NewDecFromInt(balance.Amount),
+		UsdAmount: edenDenomPrice.MulInt(balance.Amount),
 		Lockups:   lockups,
 	}
 
