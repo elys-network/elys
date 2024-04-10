@@ -24,9 +24,9 @@ func generatePrivValidatorState(homePath string) {
 
 	// Execute the command
 	if err := exec.Command("sh", args...).Run(); err != nil {
-		log.Fatalf(Red+"Failed to generate priv_validator_state.json: %v", err)
+		log.Fatalf(ColorRed+"Failed to generate priv_validator_state.json: %v", err)
 	}
 
 	// If execution reaches here, the command was successful
-	log.Printf(Yellow + "priv_validator_state.json generated successfully")
+	log.Printf(ColorYellow + "priv_validator_state.json generated successfully")
 }

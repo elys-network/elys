@@ -11,9 +11,9 @@ func stop(cmds ...*exec.Cmd) {
 		if cmd != nil && cmd.Process != nil {
 			err := cmd.Process.Kill()
 			if err != nil {
-				log.Fatalf(Red+"Failed to kill process: %v", err)
+				log.Fatalf(ColorRed+"Failed to kill process: %v", err)
 			}
-			log.Println(Yellow + "Process killed successfully")
+			log.Println(ColorYellow + "Process killed successfully")
 		}
 	}
 }

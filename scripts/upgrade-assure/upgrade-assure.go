@@ -30,20 +30,20 @@ func main() {
 			// download and run old binary
 			oldBinaryPath, oldVersion, err := downloadAndRunVersion(oldBinaryUrl, skipBinary)
 			if err != nil {
-				log.Fatalf(Red+"Error downloading and running old binary: %v", err)
+				log.Fatalf(ColorRed+"Error downloading and running old binary: %v", err)
 			}
 
 			// print old binary path and version
-			log.Printf(Green+"Old binary path: %v and version: %v", oldBinaryPath, oldVersion)
+			log.Printf(ColorGreen+"Old binary path: %v and version: %v", oldBinaryPath, oldVersion)
 
 			// download and run new binary
 			newBinaryPath, newVersion, err := downloadAndRunVersion(newBinaryUrl, skipBinary)
 			if err != nil {
-				log.Fatalf(Red+"Error downloading and running new binary: %v", err)
+				log.Fatalf(ColorRed+"Error downloading and running new binary: %v", err)
 			}
 
 			// print new binary path and version
-			log.Printf(Green+"New binary path: %v and version: %v", newBinaryPath, newVersion)
+			log.Printf(ColorGreen+"New binary path: %v and version: %v", newBinaryPath, newVersion)
 
 			if !skipSnapshot {
 				// remove home path
@@ -108,13 +108,13 @@ func main() {
 
 			if !skipNodeStart {
 				// start node 1
-				oldBinaryCmd := start(oldBinaryPath, homePath, rpc, p2p, moniker, "\033[32m", "\033[31m")
+				oldBinaryCmd := start(oldBinaryPath, homePath, rpc, p2p, moniker, ColorGreen, ColorRed)
 
 				// wait for rpc to start
 				waitForServiceToStart(rpc, moniker)
 
 				// wait for next block
-				waitForNextBlock(oldBinaryPath, rpc)
+				waitForNextBlock(oldBinaryPath, rpc, moniker)
 
 				if skipProposal {
 					// listen for signals
@@ -129,7 +129,7 @@ func main() {
 				createValidator(oldBinaryPath, validatorKeyName2, validatorSelfDelegation2, moniker2, validatorPubkey2, homePath, keyringBackend, chainId, rpc, broadcastMode)
 
 				// wait for next block
-				waitForNextBlock(oldBinaryPath, rpc)
+				waitForNextBlock(oldBinaryPath, rpc, moniker)
 
 				// stop old binary
 				stop(oldBinaryCmd)
@@ -141,8 +141,8 @@ func main() {
 				generatePrivValidatorState(homePath2)
 
 				// start node 1 and 2
-				oldBinaryCmd = start(oldBinaryPath, homePath, rpc, p2p, moniker, "\033[32m", "\033[31m")
-				oldBinaryCmd2 := start(oldBinaryPath, homePath2, rpc2, p2p2, moniker2, "\033[32m", "\033[31m")
+				oldBinaryCmd = start(oldBinaryPath, homePath, rpc, p2p, moniker, ColorGreen, ColorRed)
+				oldBinaryCmd2 := start(oldBinaryPath, homePath2, rpc2, p2p2, moniker2, ColorGreen, ColorRed)
 
 				// wait for rpc 1 and 2 to start
 				waitForServiceToStart(rpc, moniker)
@@ -154,8 +154,8 @@ func main() {
 				// query next proposal id
 				proposalId, err := queryNextProposalId(oldBinaryPath, rpc)
 				if err != nil {
-					log.Printf(Yellow+"Error querying next proposal id: %v", err)
-					log.Printf(Yellow + "Setting proposal id to 1")
+					log.Printf(ColorYellow+"Error querying next proposal id: %v", err)
+					log.Printf(ColorYellow + "Setting proposal id to 1")
 					proposalId = "1"
 				}
 
@@ -163,7 +163,7 @@ func main() {
 				submitUpgradeProposal(oldBinaryPath, validatorKeyName, newVersion, upgradeBlockHeight, homePath, keyringBackend, chainId, rpc, broadcastMode)
 
 				// wait for next block
-				waitForNextBlock(oldBinaryPath, rpc)
+				waitForNextBlock(oldBinaryPath, rpc, moniker)
 
 				// vote on upgrade proposal
 				voteOnUpgradeProposal(oldBinaryPath, validatorKeyName, proposalId, homePath, keyringBackend, chainId, rpc, broadcastMode)
@@ -171,8 +171,8 @@ func main() {
 				// wait for upgrade block height
 				waitForBlockHeight(oldBinaryPath, rpc, upgradeBlockHeight)
 
-				// wait 20 seconds
-				time.Sleep(20 * time.Second)
+				// wait 5 seconds
+				time.Sleep(5 * time.Second)
 
 				// stop old binaries
 				stop(oldBinaryCmd, oldBinaryCmd2)
@@ -189,8 +189,8 @@ func main() {
 				waitForServiceToStart(rpc2, moniker2)
 
 				// wait for next block
-				waitForNextBlock(newBinaryPath, rpc)
-				waitForNextBlock(newBinaryPath, rpc2)
+				waitForNextBlock(newBinaryPath, rpc, moniker)
+				waitForNextBlock(newBinaryPath, rpc2, moniker2)
 
 				// check if the upgrade was successful
 				queryUpgradeApplied(newBinaryPath, rpc, newVersion)
@@ -238,6 +238,6 @@ func main() {
 	rootCmd.PersistentFlags().String(flagP2p2, "tcp://0.0.0.0:26666", "p2p")
 
 	if err := rootCmd.Execute(); err != nil {
-		log.Fatalf(Red+"Error executing command: %v", err)
+		log.Fatalf(ColorRed+"Error executing command: %v", err)
 	}
 }
