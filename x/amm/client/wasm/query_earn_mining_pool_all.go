@@ -35,7 +35,7 @@ func (oq *Querier) generateEarnPool(ctx sdk.Context, ammPool *types.Pool, filter
 	leverageLpPercent := sdk.ZeroDec()
 	perpetualPercent := sdk.ZeroDec()
 
-	poolInfo, found := oq.incentiveKeeper.GetPoolInfo(ctx, ammPool.PoolId)
+	poolInfo, found := oq.masterchefKeeper.GetPool(ctx, ammPool.PoolId)
 	if found {
 		rewardsApr = poolInfo.DexApr.Add(poolInfo.EdenApr)
 	}

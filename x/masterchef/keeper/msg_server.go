@@ -163,20 +163,16 @@ func (k msgServer) ClaimRewards(goCtx context.Context, msg *types.MsgClaimReward
 	return &types.MsgClaimRewardsResponse{}, nil
 }
 
-func (k msgServer) UpdateIncentiveParams(goCtx context.Context, msg *types.MsgUpdateIncentiveParams) (*types.MsgUpdateIncentiveParamsResponse, error) {
+func (k msgServer) UpdateParams(goCtx context.Context, msg *types.MsgUpdateParams) (*types.MsgUpdateParamsResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	if k.authority != msg.Authority {
 		return nil, errorsmod.Wrapf(govtypes.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.authority, msg.Authority)
 	}
 
-	params := k.GetParams(ctx)
-	params.RewardPortionForLps = msg.RewardPortionForLps
-	params.MaxEdenRewardAprLps = msg.MaxEdenRewardAprLps
+	k.SetParams(ctx, msg.Params)
 
-	k.SetParams(ctx, params)
-
-	return &types.MsgUpdateIncentiveParamsResponse{}, nil
+	return &types.MsgUpdateParamsResponse{}, nil
 }
 
 func (k msgServer) UpdatePoolMultipliers(goCtx context.Context, msg *types.MsgUpdatePoolMultipliers) (*types.MsgUpdatePoolMultipliersResponse, error) {

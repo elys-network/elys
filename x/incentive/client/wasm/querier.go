@@ -22,8 +22,6 @@ func NewQuerier(keeper *keeper.Keeper, stakingKeeper *stakingkeeper.Keeper) *Que
 
 func (oq *Querier) HandleQuery(ctx sdk.Context, query wasmbindingstypes.ElysQuery) ([]byte, error) {
 	switch {
-	case query.IncentiveParams != nil:
-		return oq.queryParams(ctx, query.IncentiveParams)
 	case query.IncentiveApr != nil:
 		return oq.queryApr(ctx, query.IncentiveApr)
 	case query.IncentiveAprs != nil:

@@ -5,7 +5,6 @@ import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
 import "cosmos/base/v1beta1/coin.proto";
-import "cosmos_proto/cosmos.proto";
 import "elys/masterchef/params.proto";
 import "elys/masterchef/external_incentive.proto";
 import "elys/masterchef/pool.proto";

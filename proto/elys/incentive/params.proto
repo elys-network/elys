@@ -2,52 +2,11 @@ syntax = "proto3";
 package elys.incentive;
 
 import "gogoproto/gogo.proto";
-import "elys/incentive/incentive.proto";
-import "elys/incentive/pool.proto";
-import "elys/incentive/dex_rewards_traker.proto";
 
 option go_package = "github.com/elys-network/elys/x/incentive/types";
 
 // Params defines the parameters for the module.
 message Params {
   option (gogoproto.goproto_stringer) = false;
-	IncentiveInfo lp_incentives = 1;
-	IncentiveInfo stake_incentives = 2;
 
-  // Dex revenue percent for lps, `100 - reward_portion_for_lps - reward_portion_for_stakers = revenue percent for protocol`.
-  string reward_portion_for_lps = 3 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
-    (gogoproto.nullable) = false
-  ];
-
-  // Dex revenue percent for lps, `100 - reward_portion_for_lps - reward_portion_for_stakers = revenue percent for protocol`.
-  string reward_portion_for_stakers = 4 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
-    (gogoproto.nullable) = false
-  ];
-
-  // Pool information
-  // poolId, reward wallet, **multiplier**, dex rewards given
-	repeated PoolInfo pool_infos = 5 [(gogoproto.nullable) = false];
-
-  // Number of blocks to update elys staked amount for delegators
-	int64 elys_stake_snap_interval = 6;
-
-  // Tracking dex rewards given to stakers
-  DexRewardsTracker dex_rewards_stakers = 7 [(gogoproto.nullable) = false];
-  
-  // Tracking dex rewards given to LPs
-  DexRewardsTracker dex_rewards_lps = 8 [(gogoproto.nullable) = false];
-
-  // Maximum eden reward apr for stakers - [0 - 0.3]
-  string max_eden_reward_apr_stakers = 9 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
-    (gogoproto.nullable) = false
-  ];
-
-  // Maximum eden reward apr for lps - [0 - 0.3]
-  string max_eden_reward_apr_lps = 10 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
-    (gogoproto.nullable) = false
-  ];
 }

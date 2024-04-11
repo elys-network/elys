@@ -10390,6 +10390,717 @@ paths:
                   additionalProperties: {}
       tags:
         - Query
+  /cosmos/distribution/v1beta1/community_pool:
+    get:
+      summary: CommunityPool queries the community pool coins.
+      operationId: CosmosDistributionV1Beta1CommunityPool
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              pool:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    denom:
+                      type: string
+                    amount:
+                      type: string
+                  description: >-
+                    DecCoin defines a token with a denomination and a decimal
+                    amount.
+
+
+                    NOTE: The amount field is an Dec which implements the custom
+                    method
+
+                    signatures required by gogoproto.
+                description: pool defines community pool's coins.
+            description: >-
+              QueryCommunityPoolResponse is the response type for the
+              Query/CommunityPool
+
+              RPC method.
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      tags:
+        - Query
+  /cosmos/distribution/v1beta1/delegators/{delegator_address}/rewards:
+    get:
+      summary: |-
+        DelegationTotalRewards queries the total rewards accrued by a each
+        validator.
+      operationId: CosmosDistributionV1Beta1DelegationTotalRewards
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              rewards:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    validator_address:
+                      type: string
+                    reward:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          denom:
+                            type: string
+                          amount:
+                            type: string
+                        description: >-
+                          DecCoin defines a token with a denomination and a
+                          decimal amount.
+
+
+                          NOTE: The amount field is an Dec which implements the
+                          custom method
+
+                          signatures required by gogoproto.
+                  description: |-
+                    DelegationDelegatorReward represents the properties
+                    of a delegator's delegation reward.
+                description: rewards defines all the rewards accrued by a delegator.
+              total:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    denom:
+                      type: string
+                    amount:
+                      type: string
+                  description: >-
+                    DecCoin defines a token with a denomination and a decimal
+                    amount.
+
+
+                    NOTE: The amount field is an Dec which implements the custom
+                    method
+
+                    signatures required by gogoproto.
+                description: total defines the sum of all the rewards.
+            description: |-
+              QueryDelegationTotalRewardsResponse is the response type for the
+              Query/DelegationTotalRewards RPC method.
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: delegator_address
+          description: delegator_address defines the delegator address to query for.
+          in: path
+          required: true
+          type: string
+      tags:
+        - Query
+  /cosmos/distribution/v1beta1/delegators/{delegator_address}/rewards/{validator_address}:
+    get:
+      summary: DelegationRewards queries the total rewards accrued by a delegation.
+      operationId: CosmosDistributionV1Beta1DelegationRewards
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              rewards:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    denom:
+                      type: string
+                    amount:
+                      type: string
+                  description: >-
+                    DecCoin defines a token with a denomination and a decimal
+                    amount.
+
+
+                    NOTE: The amount field is an Dec which implements the custom
+                    method
+
+                    signatures required by gogoproto.
+                description: rewards defines the rewards accrued by a delegation.
+            description: |-
+              QueryDelegationRewardsResponse is the response type for the
+              Query/DelegationRewards RPC method.
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: delegator_address
+          description: delegator_address defines the delegator address to query for.
+          in: path
+          required: true
+          type: string
+        - name: validator_address
+          description: validator_address defines the validator address to query for.
+          in: path
+          required: true
+          type: string
+      tags:
+        - Query
+  /cosmos/distribution/v1beta1/delegators/{delegator_address}/validators:
+    get:
+      summary: DelegatorValidators queries the validators of a delegator.
+      operationId: CosmosDistributionV1Beta1DelegatorValidators
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              validators:
+                type: array
+                items:
+                  type: string
+                description: >-
+                  validators defines the validators a delegator is delegating
+                  for.
+            description: |-
+              QueryDelegatorValidatorsResponse is the response type for the
+              Query/DelegatorValidators RPC method.
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: delegator_address
+          description: delegator_address defines the delegator address to query for.
+          in: path
+          required: true
+          type: string
+      tags:
+        - Query
+  /cosmos/distribution/v1beta1/delegators/{delegator_address}/withdraw_address:
+    get:
+      summary: DelegatorWithdrawAddress queries withdraw address of a delegator.
+      operationId: CosmosDistributionV1Beta1DelegatorWithdrawAddress
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              withdraw_address:
+                type: string
+                description: withdraw_address defines the delegator address to query for.
+            description: |-
+              QueryDelegatorWithdrawAddressResponse is the response type for the
+              Query/DelegatorWithdrawAddress RPC method.
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: delegator_address
+          description: delegator_address defines the delegator address to query for.
+          in: path
+          required: true
+          type: string
+      tags:
+        - Query
+  /cosmos/distribution/v1beta1/params:
+    get:
+      summary: Params queries params of the distribution module.
+      operationId: CosmosDistributionV1Beta1Params
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              params:
+                description: params defines the parameters of the module.
+                type: object
+                properties:
+                  community_tax:
+                    type: string
+                  base_proposer_reward:
+                    type: string
+                    description: >-
+                      Deprecated: The base_proposer_reward field is deprecated
+                      and is no longer used
+
+                      in the x/distribution module's reward mechanism.
+                  bonus_proposer_reward:
+                    type: string
+                    description: >-
+                      Deprecated: The bonus_proposer_reward field is deprecated
+                      and is no longer used
+
+                      in the x/distribution module's reward mechanism.
+                  withdraw_addr_enabled:
+                    type: boolean
+            description: >-
+              QueryParamsResponse is the response type for the Query/Params RPC
+              method.
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      tags:
+        - Query
+  /cosmos/distribution/v1beta1/validators/{validator_address}:
+    get:
+      summary: >-
+        ValidatorDistributionInfo queries validator commission and
+        self-delegation rewards for validator
+      operationId: CosmosDistributionV1Beta1ValidatorDistributionInfo
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              operator_address:
+                type: string
+                description: operator_address defines the validator operator address.
+              self_bond_rewards:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    denom:
+                      type: string
+                    amount:
+                      type: string
+                  description: >-
+                    DecCoin defines a token with a denomination and a decimal
+                    amount.
+
+
+                    NOTE: The amount field is an Dec which implements the custom
+                    method
+
+                    signatures required by gogoproto.
+                description: self_bond_rewards defines the self delegations rewards.
+              commission:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    denom:
+                      type: string
+                    amount:
+                      type: string
+                  description: >-
+                    DecCoin defines a token with a denomination and a decimal
+                    amount.
+
+
+                    NOTE: The amount field is an Dec which implements the custom
+                    method
+
+                    signatures required by gogoproto.
+                description: commission defines the commission the validator received.
+            description: >-
+              QueryValidatorDistributionInfoResponse is the response type for
+              the Query/ValidatorDistributionInfo RPC method.
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: validator_address
+          description: validator_address defines the validator address to query for.
+          in: path
+          required: true
+          type: string
+      tags:
+        - Query
+  /cosmos/distribution/v1beta1/validators/{validator_address}/commission:
+    get:
+      summary: ValidatorCommission queries accumulated commission for a validator.
+      operationId: CosmosDistributionV1Beta1ValidatorCommission
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              commission:
+                description: commission defines the commission the validator received.
+                type: object
+                properties:
+                  commission:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        denom:
+                          type: string
+                        amount:
+                          type: string
+                      description: >-
+                        DecCoin defines a token with a denomination and a
+                        decimal amount.
+
+
+                        NOTE: The amount field is an Dec which implements the
+                        custom method
+
+                        signatures required by gogoproto.
+            title: |-
+              QueryValidatorCommissionResponse is the response type for the
+              Query/ValidatorCommission RPC method
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: validator_address
+          description: validator_address defines the validator address to query for.
+          in: path
+          required: true
+          type: string
+      tags:
+        - Query
+  /cosmos/distribution/v1beta1/validators/{validator_address}/outstanding_rewards:
+    get:
+      summary: ValidatorOutstandingRewards queries rewards of a validator address.
+      operationId: CosmosDistributionV1Beta1ValidatorOutstandingRewards
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              rewards:
+                type: object
+                properties:
+                  rewards:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        denom:
+                          type: string
+                        amount:
+                          type: string
+                      description: >-
+                        DecCoin defines a token with a denomination and a
+                        decimal amount.
+
+
+                        NOTE: The amount field is an Dec which implements the
+                        custom method
+
+                        signatures required by gogoproto.
+                description: >-
+                  ValidatorOutstandingRewards represents outstanding
+                  (un-withdrawn) rewards
+
+                  for a validator inexpensive to track, allows simple sanity
+                  checks.
+            description: >-
+              QueryValidatorOutstandingRewardsResponse is the response type for
+              the
+
+              Query/ValidatorOutstandingRewards RPC method.
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: validator_address
+          description: validator_address defines the validator address to query for.
+          in: path
+          required: true
+          type: string
+      tags:
+        - Query
+  /cosmos/distribution/v1beta1/validators/{validator_address}/slashes:
+    get:
+      summary: ValidatorSlashes queries slash events of a validator.
+      operationId: CosmosDistributionV1Beta1ValidatorSlashes
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              slashes:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    validator_period:
+                      type: string
+                      format: uint64
+                    fraction:
+                      type: string
+                  description: >-
+                    ValidatorSlashEvent represents a validator slash event.
+
+                    Height is implicit within the store key.
+
+                    This is needed to calculate appropriate amount of staking
+                    tokens
+
+                    for delegations which are withdrawn after a slash has
+                    occurred.
+                description: slashes defines the slashes the validator received.
+              pagination:
+                description: pagination defines the pagination in the response.
+                type: object
+                properties:
+                  next_key:
+                    type: string
+                    format: byte
+                    description: |-
+                      next_key is the key to be passed to PageRequest.key to
+                      query the next page most efficiently. It will be empty if
+                      there are no more results.
+                  total:
+                    type: string
+                    format: uint64
+                    title: >-
+                      total is total number of results available if
+                      PageRequest.count_total
+
+                      was set, its value is undefined otherwise
+            description: |-
+              QueryValidatorSlashesResponse is the response type for the
+              Query/ValidatorSlashes RPC method.
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: validator_address
+          description: validator_address defines the validator address to query for.
+          in: path
+          required: true
+          type: string
+        - name: starting_height
+          description: >-
+            starting_height defines the optional starting height to query the
+            slashes.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: ending_height
+          description: >-
+            starting_height defines the optional ending height to query the
+            slashes.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.key
+          description: |-
+            key is a value returned in PageResponse.next_key to begin
+            querying the next page most efficiently. Only one of offset or key
+            should be set.
+          in: query
+          required: false
+          type: string
+          format: byte
+        - name: pagination.offset
+          description: >-
+            offset is a numeric offset that can be used when key is unavailable.
+
+            It is less efficient than using key. Only one of offset or key
+            should
+
+            be set.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.limit
+          description: >-
+            limit is the total number of results to be returned in the result
+            page.
+
+            If left empty it will default to a value to be set by each app.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.count_total
+          description: >-
+            count_total is set to true  to indicate that the result set should
+            include
+
+            a count of the total number of items available for pagination in
+            UIs.
+
+            count_total is only respected when offset is used. It is ignored
+            when key
+
+            is set.
+          in: query
+          required: false
+          type: boolean
+        - name: pagination.reverse
+          description: >-
+            reverse is set to true if results are to be returned in the
+            descending order.
+
+
+            Since: cosmos-sdk 0.43
+          in: query
+          required: false
+          type: boolean
+      tags:
+        - Query
   /cosmos/evidence/v1beta1/evidence:
     get:
       summary: AllEvidence queries all evidence.
@@ -39642,9 +40353,9 @@ paths:
                       total_blocks_per_year:
                         type: string
                         title: distribution duration - block number per year
-                      current_epoch_in_blocks:
+                      blocks_distributed:
                         type: string
-                        title: current epoch in block number
+                        title: blocks distributed
                     title: Incentive Info
                   eden_commit_val:
                     type: string
@@ -39956,189 +40667,6 @@ paths:
                 type: string
               edenb_apr_elys:
                 type: string
-        default:
-          description: An unexpected error response.
-          schema:
-            type: object
-            properties:
-              code:
-                type: integer
-                format: int32
-              message:
-                type: string
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    '@type':
-                      type: string
-                  additionalProperties: {}
-      tags:
-        - Query
-  /elys-network/elys/incentive/params:
-    get:
-      summary: Parameters queries the parameters of the module.
-      operationId: ElysIncentiveParams
-      responses:
-        '200':
-          description: A successful response.
-          schema:
-            type: object
-            properties:
-              params:
-                description: params holds all the parameters of this module.
-                type: object
-                properties:
-                  lp_incentives:
-                    type: object
-                    properties:
-                      eden_amount_per_year:
-                        type: string
-                        title: reward amount in eden for 1 year
-                      distribution_start_block:
-                        type: string
-                        title: starting block height of the distribution
-                      total_blocks_per_year:
-                        type: string
-                        title: distribution duration - block number per year
-                      epoch_num_blocks:
-                        type: string
-                        title: unused
-                      max_eden_per_allocation:
-                        type: string
-                        title: unused
-                      distribution_epoch_in_blocks:
-                        type: string
-                        title: unused
-                      current_epoch_in_blocks:
-                        type: string
-                        title: current epoch in block number
-                    title: Incentive Info
-                  stake_incentives:
-                    type: object
-                    properties:
-                      eden_amount_per_year:
-                        type: string
-                        title: reward amount in eden for 1 year
-                      distribution_start_block:
-                        type: string
-                        title: starting block height of the distribution
-                      total_blocks_per_year:
-                        type: string
-                        title: distribution duration - block number per year
-                      epoch_num_blocks:
-                        type: string
-                        title: unused
-                      max_eden_per_allocation:
-                        type: string
-                        title: unused
-                      distribution_epoch_in_blocks:
-                        type: string
-                        title: unused
-                      current_epoch_in_blocks:
-                        type: string
-                        title: current epoch in block number
-                    title: Incentive Info
-                  reward_portion_for_lps:
-                    type: string
-                    description: >-
-                      Dex revenue percent for lps, `100 - reward_portion_for_lps
-                      - reward_portion_for_stakers = revenue percent for
-                      protocol`.
-                  reward_portion_for_stakers:
-                    type: string
-                    description: >-
-                      Dex revenue percent for lps, `100 - reward_portion_for_lps
-                      - reward_portion_for_stakers = revenue percent for
-                      protocol`.
-                  pool_infos:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        pool_id:
-                          type: string
-                          format: uint64
-                          title: reward amount
-                        reward_wallet:
-                          type: string
-                          title: reward wallet address
-                        multiplier:
-                          type: string
-                          title: multiplier for lp rewards
-                        num_blocks:
-                          type: string
-                          title: Block number since the creation of PoolInfo
-                        dex_reward_amount_given:
-                          type: string
-                          title: Total dex rewards given
-                        eden_reward_amount_given:
-                          type: string
-                          title: Total eden rewards given
-                        eden_apr:
-                          type: string
-                          title: Eden APR, updated at every distribution
-                        dex_apr:
-                          type: string
-                          title: Dex APR, updated at every distribution
-                      title: Pool Info
-                    title: |-
-                      Pool information
-                      poolId, reward wallet, **multiplier**, dex rewards given
-                  elys_stake_snap_interval:
-                    type: string
-                    format: int64
-                    title: >-
-                      Number of blocks to update elys staked amount for
-                      delegators
-                  dex_rewards_stakers:
-                    title: Tracking dex rewards given to stakers
-                    type: object
-                    properties:
-                      num_blocks:
-                        type: string
-                        title: >-
-                          Number of blocks since start of epoch (distribution
-                          epoch)
-                      amount:
-                        type: string
-                        title: >-
-                          Accumulated amount at distribution epoch -
-                          recalculated at every distribution epoch
-                      amount_collected_by_other_tracker:
-                        type: string
-                        title: >-
-                          Accumulated rewards tracked by other (when it's for
-                          staking, from lp, if it's for lp, from staking)
-                  dex_rewards_lps:
-                    title: Tracking dex rewards given to LPs
-                    type: object
-                    properties:
-                      num_blocks:
-                        type: string
-                        title: >-
-                          Number of blocks since start of epoch (distribution
-                          epoch)
-                      amount:
-                        type: string
-                        title: >-
-                          Accumulated amount at distribution epoch -
-                          recalculated at every distribution epoch
-                      amount_collected_by_other_tracker:
-                        type: string
-                        title: >-
-                          Accumulated rewards tracked by other (when it's for
-                          staking, from lp, if it's for lp, from staking)
-                  max_eden_reward_apr_stakers:
-                    type: string
-                    title: Maximum eden reward apr for stakers - [0 - 0.3]
-                  max_eden_reward_apr_lps:
-                    type: string
-                    title: Maximum eden reward apr for lps - [0 - 0.3]
-            description: >-
-              QueryParamsResponse is response type for the Query/Params RPC
-              method.
         default:
           description: An unexpected error response.
           schema:
@@ -41359,16 +41887,22 @@ paths:
                         title: >-
                           maximum eden allocation per day that won't exceed 30%
                           apr
-                      current_epoch_in_blocks:
+                      blocks_distributed:
                         type: string
-                        title: current epoch in block number
+                        title: blocks distributed
                     title: Incentive Info
                   reward_portion_for_lps:
                     type: string
                     description: >-
-                      Dex revenue percent for lps, `100 - reward_portion_for_lps
-                      - reward_portion_for_stakers = revenue percent for
-                      protocol`.
+                      gas fees and swap fees portion for lps, `100 -
+                      reward_portion_for_lps - reward_portion_for_stakers =
+                      revenue percent for protocol`.
+                  reward_portion_for_stakers:
+                    type: string
+                    description: >-
+                      gas fees and swap fees portion for stakers, `100 -
+                      reward_portion_for_lps - reward_portion_for_stakers =
+                      revenue percent for protocol`.
                   dex_rewards_lps:
                     title: Tracking dex rewards given to LPs
                     type: object
@@ -68461,6 +68995,461 @@ definitions:
   cosmos.crisis.v1beta1.MsgVerifyInvariantResponse:
     type: object
     description: MsgVerifyInvariantResponse defines the Msg/VerifyInvariant response type.
+  cosmos.base.v1beta1.DecCoin:
+    type: object
+    properties:
+      denom:
+        type: string
+      amount:
+        type: string
+    description: |-
+      DecCoin defines a token with a denomination and a decimal amount.
+
+      NOTE: The amount field is an Dec which implements the custom method
+      signatures required by gogoproto.
+  cosmos.distribution.v1beta1.DelegationDelegatorReward:
+    type: object
+    properties:
+      validator_address:
+        type: string
+      reward:
+        type: array
+        items:
+          type: object
+          properties:
+            denom:
+              type: string
+            amount:
+              type: string
+          description: |-
+            DecCoin defines a token with a denomination and a decimal amount.
+
+            NOTE: The amount field is an Dec which implements the custom method
+            signatures required by gogoproto.
+    description: |-
+      DelegationDelegatorReward represents the properties
+      of a delegator's delegation reward.
+  cosmos.distribution.v1beta1.MsgCommunityPoolSpendResponse:
+    type: object
+    description: |-
+      MsgCommunityPoolSpendResponse defines the response to executing a
+      MsgCommunityPoolSpend message.
+
+      Since: cosmos-sdk 0.47
+  cosmos.distribution.v1beta1.MsgFundCommunityPoolResponse:
+    type: object
+    description: >-
+      MsgFundCommunityPoolResponse defines the Msg/FundCommunityPool response
+      type.
+  cosmos.distribution.v1beta1.MsgSetWithdrawAddressResponse:
+    type: object
+    description: |-
+      MsgSetWithdrawAddressResponse defines the Msg/SetWithdrawAddress response
+      type.
+  cosmos.distribution.v1beta1.MsgUpdateParamsResponse:
+    type: object
+    description: |-
+      MsgUpdateParamsResponse defines the response structure for executing a
+      MsgUpdateParams message.
+
+      Since: cosmos-sdk 0.47
+  cosmos.distribution.v1beta1.MsgWithdrawDelegatorRewardResponse:
+    type: object
+    properties:
+      amount:
+        type: array
+        items:
+          type: object
+          properties:
+            denom:
+              type: string
+            amount:
+              type: string
+          description: |-
+            Coin defines a token with a denomination and an amount.
+
+            NOTE: The amount field is an Int which implements the custom method
+            signatures required by gogoproto.
+        title: 'Since: cosmos-sdk 0.46'
+    description: |-
+      MsgWithdrawDelegatorRewardResponse defines the Msg/WithdrawDelegatorReward
+      response type.
+  cosmos.distribution.v1beta1.MsgWithdrawValidatorCommissionResponse:
+    type: object
+    properties:
+      amount:
+        type: array
+        items:
+          type: object
+          properties:
+            denom:
+              type: string
+            amount:
+              type: string
+          description: |-
+            Coin defines a token with a denomination and an amount.
+
+            NOTE: The amount field is an Int which implements the custom method
+            signatures required by gogoproto.
+        title: 'Since: cosmos-sdk 0.46'
+    description: |-
+      MsgWithdrawValidatorCommissionResponse defines the
+      Msg/WithdrawValidatorCommission response type.
+  cosmos.distribution.v1beta1.Params:
+    type: object
+    properties:
+      community_tax:
+        type: string
+      base_proposer_reward:
+        type: string
+        description: >-
+          Deprecated: The base_proposer_reward field is deprecated and is no
+          longer used
+
+          in the x/distribution module's reward mechanism.
+      bonus_proposer_reward:
+        type: string
+        description: >-
+          Deprecated: The bonus_proposer_reward field is deprecated and is no
+          longer used
+
+          in the x/distribution module's reward mechanism.
+      withdraw_addr_enabled:
+        type: boolean
+    description: Params defines the set of params for the distribution module.
+  cosmos.distribution.v1beta1.QueryCommunityPoolResponse:
+    type: object
+    properties:
+      pool:
+        type: array
+        items:
+          type: object
+          properties:
+            denom:
+              type: string
+            amount:
+              type: string
+          description: |-
+            DecCoin defines a token with a denomination and a decimal amount.
+
+            NOTE: The amount field is an Dec which implements the custom method
+            signatures required by gogoproto.
+        description: pool defines community pool's coins.
+    description: >-
+      QueryCommunityPoolResponse is the response type for the
+      Query/CommunityPool
+
+      RPC method.
+  cosmos.distribution.v1beta1.QueryDelegationRewardsResponse:
+    type: object
+    properties:
+      rewards:
+        type: array
+        items:
+          type: object
+          properties:
+            denom:
+              type: string
+            amount:
+              type: string
+          description: |-
+            DecCoin defines a token with a denomination and a decimal amount.
+
+            NOTE: The amount field is an Dec which implements the custom method
+            signatures required by gogoproto.
+        description: rewards defines the rewards accrued by a delegation.
+    description: |-
+      QueryDelegationRewardsResponse is the response type for the
+      Query/DelegationRewards RPC method.
+  cosmos.distribution.v1beta1.QueryDelegationTotalRewardsResponse:
+    type: object
+    properties:
+      rewards:
+        type: array
+        items:
+          type: object
+          properties:
+            validator_address:
+              type: string
+            reward:
+              type: array
+              items:
+                type: object
+                properties:
+                  denom:
+                    type: string
+                  amount:
+                    type: string
+                description: >-
+                  DecCoin defines a token with a denomination and a decimal
+                  amount.
+
+
+                  NOTE: The amount field is an Dec which implements the custom
+                  method
+
+                  signatures required by gogoproto.
+          description: |-
+            DelegationDelegatorReward represents the properties
+            of a delegator's delegation reward.
+        description: rewards defines all the rewards accrued by a delegator.
+      total:
+        type: array
+        items:
+          type: object
+          properties:
+            denom:
+              type: string
+            amount:
+              type: string
+          description: |-
+            DecCoin defines a token with a denomination and a decimal amount.
+
+            NOTE: The amount field is an Dec which implements the custom method
+            signatures required by gogoproto.
+        description: total defines the sum of all the rewards.
+    description: |-
+      QueryDelegationTotalRewardsResponse is the response type for the
+      Query/DelegationTotalRewards RPC method.
+  cosmos.distribution.v1beta1.QueryDelegatorValidatorsResponse:
+    type: object
+    properties:
+      validators:
+        type: array
+        items:
+          type: string
+        description: validators defines the validators a delegator is delegating for.
+    description: |-
+      QueryDelegatorValidatorsResponse is the response type for the
+      Query/DelegatorValidators RPC method.
+  cosmos.distribution.v1beta1.QueryDelegatorWithdrawAddressResponse:
+    type: object
+    properties:
+      withdraw_address:
+        type: string
+        description: withdraw_address defines the delegator address to query for.
+    description: |-
+      QueryDelegatorWithdrawAddressResponse is the response type for the
+      Query/DelegatorWithdrawAddress RPC method.
+  cosmos.distribution.v1beta1.QueryParamsResponse:
+    type: object
+    properties:
+      params:
+        description: params defines the parameters of the module.
+        type: object
+        properties:
+          community_tax:
+            type: string
+          base_proposer_reward:
+            type: string
+            description: >-
+              Deprecated: The base_proposer_reward field is deprecated and is no
+              longer used
+
+              in the x/distribution module's reward mechanism.
+          bonus_proposer_reward:
+            type: string
+            description: >-
+              Deprecated: The bonus_proposer_reward field is deprecated and is
+              no longer used
+
+              in the x/distribution module's reward mechanism.
+          withdraw_addr_enabled:
+            type: boolean
+    description: QueryParamsResponse is the response type for the Query/Params RPC method.
+  cosmos.distribution.v1beta1.QueryValidatorCommissionResponse:
+    type: object
+    properties:
+      commission:
+        description: commission defines the commission the validator received.
+        type: object
+        properties:
+          commission:
+            type: array
+            items:
+              type: object
+              properties:
+                denom:
+                  type: string
+                amount:
+                  type: string
+              description: >-
+                DecCoin defines a token with a denomination and a decimal
+                amount.
+
+
+                NOTE: The amount field is an Dec which implements the custom
+                method
+
+                signatures required by gogoproto.
+    title: |-
+      QueryValidatorCommissionResponse is the response type for the
+      Query/ValidatorCommission RPC method
+  cosmos.distribution.v1beta1.QueryValidatorDistributionInfoResponse:
+    type: object
+    properties:
+      operator_address:
+        type: string
+        description: operator_address defines the validator operator address.
+      self_bond_rewards:
+        type: array
+        items:
+          type: object
+          properties:
+            denom:
+              type: string
+            amount:
+              type: string
+          description: |-
+            DecCoin defines a token with a denomination and a decimal amount.
+
+            NOTE: The amount field is an Dec which implements the custom method
+            signatures required by gogoproto.
+        description: self_bond_rewards defines the self delegations rewards.
+      commission:
+        type: array
+        items:
+          type: object
+          properties:
+            denom:
+              type: string
+            amount:
+              type: string
+          description: |-
+            DecCoin defines a token with a denomination and a decimal amount.
+
+            NOTE: The amount field is an Dec which implements the custom method
+            signatures required by gogoproto.
+        description: commission defines the commission the validator received.
+    description: >-
+      QueryValidatorDistributionInfoResponse is the response type for the
+      Query/ValidatorDistributionInfo RPC method.
+  cosmos.distribution.v1beta1.QueryValidatorOutstandingRewardsResponse:
+    type: object
+    properties:
+      rewards:
+        type: object
+        properties:
+          rewards:
+            type: array
+            items:
+              type: object
+              properties:
+                denom:
+                  type: string
+                amount:
+                  type: string
+              description: >-
+                DecCoin defines a token with a denomination and a decimal
+                amount.
+
+
+                NOTE: The amount field is an Dec which implements the custom
+                method
+
+                signatures required by gogoproto.
+        description: >-
+          ValidatorOutstandingRewards represents outstanding (un-withdrawn)
+          rewards
+
+          for a validator inexpensive to track, allows simple sanity checks.
+    description: |-
+      QueryValidatorOutstandingRewardsResponse is the response type for the
+      Query/ValidatorOutstandingRewards RPC method.
+  cosmos.distribution.v1beta1.QueryValidatorSlashesResponse:
+    type: object
+    properties:
+      slashes:
+        type: array
+        items:
+          type: object
+          properties:
+            validator_period:
+              type: string
+              format: uint64
+            fraction:
+              type: string
+          description: |-
+            ValidatorSlashEvent represents a validator slash event.
+            Height is implicit within the store key.
+            This is needed to calculate appropriate amount of staking tokens
+            for delegations which are withdrawn after a slash has occurred.
+        description: slashes defines the slashes the validator received.
+      pagination:
+        description: pagination defines the pagination in the response.
+        type: object
+        properties:
+          next_key:
+            type: string
+            format: byte
+            description: |-
+              next_key is the key to be passed to PageRequest.key to
+              query the next page most efficiently. It will be empty if
+              there are no more results.
+          total:
+            type: string
+            format: uint64
+            title: >-
+              total is total number of results available if
+              PageRequest.count_total
+
+              was set, its value is undefined otherwise
+    description: |-
+      QueryValidatorSlashesResponse is the response type for the
+      Query/ValidatorSlashes RPC method.
+  cosmos.distribution.v1beta1.ValidatorAccumulatedCommission:
+    type: object
+    properties:
+      commission:
+        type: array
+        items:
+          type: object
+          properties:
+            denom:
+              type: string
+            amount:
+              type: string
+          description: |-
+            DecCoin defines a token with a denomination and a decimal amount.
+
+            NOTE: The amount field is an Dec which implements the custom method
+            signatures required by gogoproto.
+    description: |-
+      ValidatorAccumulatedCommission represents accumulated commission
+      for a validator kept as a running counter, can be withdrawn at any time.
+  cosmos.distribution.v1beta1.ValidatorOutstandingRewards:
+    type: object
+    properties:
+      rewards:
+        type: array
+        items:
+          type: object
+          properties:
+            denom:
+              type: string
+            amount:
+              type: string
+          description: |-
+            DecCoin defines a token with a denomination and a decimal amount.
+
+            NOTE: The amount field is an Dec which implements the custom method
+            signatures required by gogoproto.
+    description: |-
+      ValidatorOutstandingRewards represents outstanding (un-withdrawn) rewards
+      for a validator inexpensive to track, allows simple sanity checks.
+  cosmos.distribution.v1beta1.ValidatorSlashEvent:
+    type: object
+    properties:
+      validator_period:
+        type: string
+        format: uint64
+      fraction:
+        type: string
+    description: |-
+      ValidatorSlashEvent represents a validator slash event.
+      Height is implicit within the store key.
+      This is needed to calculate appropriate amount of staking tokens
+      for delegations which are withdrawn after a slash has occurred.
   cosmos.evidence.v1beta1.MsgSubmitEvidenceResponse:
     type: object
     properties:
@@ -84980,18 +85969,6 @@ definitions:
     description: |-
       QueryEpochsInfoResponse is the response type for the Query/EpochInfos RPC
       method.
-  cosmos.base.v1beta1.DecCoin:
-    type: object
-    properties:
-      denom:
-        type: string
-      amount:
-        type: string
-    description: |-
-      DecCoin defines a token with a denomination and a decimal amount.
-
-      NOTE: The amount field is an Dec which implements the custom method
-      signatures required by gogoproto.
   elys.estaking.DelegationDelegatorReward:
     type: object
     properties:
@@ -85037,9 +86014,9 @@ definitions:
       total_blocks_per_year:
         type: string
         title: distribution duration - block number per year
-      current_epoch_in_blocks:
+      blocks_distributed:
         type: string
-        title: current epoch in block number
+        title: blocks distributed
     title: Incentive Info
   elys.estaking.MsgUpdateParamsResponse:
     type: object
@@ -85081,9 +86058,9 @@ definitions:
           total_blocks_per_year:
             type: string
             title: distribution duration - block number per year
-          current_epoch_in_blocks:
+          blocks_distributed:
             type: string
-            title: current epoch in block number
+            title: blocks distributed
         title: Incentive Info
       eden_commit_val:
         type: string
@@ -85129,9 +86106,9 @@ definitions:
               total_blocks_per_year:
                 type: string
                 title: distribution duration - block number per year
-              current_epoch_in_blocks:
+              blocks_distributed:
                 type: string
-                title: current epoch in block number
+                title: blocks distributed
             title: Incentive Info
           eden_commit_val:
             type: string
@@ -85221,223 +86198,6 @@ definitions:
         type: string
       usd_amount:
         type: string
-  elys.incentive.DexRewardsTracker:
-    type: object
-    properties:
-      num_blocks:
-        type: string
-        title: Number of blocks since start of epoch (distribution epoch)
-      amount:
-        type: string
-        title: >-
-          Accumulated amount at distribution epoch - recalculated at every
-          distribution epoch
-      amount_collected_by_other_tracker:
-        type: string
-        title: >-
-          Accumulated rewards tracked by other (when it's for staking, from lp,
-          if it's for lp, from staking)
-    title: >-
-      DexRewardsTracker is used for tracking rewards for stakers and LPs, all
-      amount here is in USDC
-  elys.incentive.IncentiveInfo:
-    type: object
-    properties:
-      eden_amount_per_year:
-        type: string
-        title: reward amount in eden for 1 year
-      distribution_start_block:
-        type: string
-        title: starting block height of the distribution
-      total_blocks_per_year:
-        type: string
-        title: distribution duration - block number per year
-      epoch_num_blocks:
-        type: string
-        title: unused
-      max_eden_per_allocation:
-        type: string
-        title: unused
-      distribution_epoch_in_blocks:
-        type: string
-        title: unused
-      current_epoch_in_blocks:
-        type: string
-        title: current epoch in block number
-    title: Incentive Info
-  elys.incentive.MsgUpdateIncentiveParamsResponse:
-    type: object
-  elys.incentive.Params:
-    type: object
-    properties:
-      lp_incentives:
-        type: object
-        properties:
-          eden_amount_per_year:
-            type: string
-            title: reward amount in eden for 1 year
-          distribution_start_block:
-            type: string
-            title: starting block height of the distribution
-          total_blocks_per_year:
-            type: string
-            title: distribution duration - block number per year
-          epoch_num_blocks:
-            type: string
-            title: unused
-          max_eden_per_allocation:
-            type: string
-            title: unused
-          distribution_epoch_in_blocks:
-            type: string
-            title: unused
-          current_epoch_in_blocks:
-            type: string
-            title: current epoch in block number
-        title: Incentive Info
-      stake_incentives:
-        type: object
-        properties:
-          eden_amount_per_year:
-            type: string
-            title: reward amount in eden for 1 year
-          distribution_start_block:
-            type: string
-            title: starting block height of the distribution
-          total_blocks_per_year:
-            type: string
-            title: distribution duration - block number per year
-          epoch_num_blocks:
-            type: string
-            title: unused
-          max_eden_per_allocation:
-            type: string
-            title: unused
-          distribution_epoch_in_blocks:
-            type: string
-            title: unused
-          current_epoch_in_blocks:
-            type: string
-            title: current epoch in block number
-        title: Incentive Info
-      reward_portion_for_lps:
-        type: string
-        description: >-
-          Dex revenue percent for lps, `100 - reward_portion_for_lps -
-          reward_portion_for_stakers = revenue percent for protocol`.
-      reward_portion_for_stakers:
-        type: string
-        description: >-
-          Dex revenue percent for lps, `100 - reward_portion_for_lps -
-          reward_portion_for_stakers = revenue percent for protocol`.
-      pool_infos:
-        type: array
-        items:
-          type: object
-          properties:
-            pool_id:
-              type: string
-              format: uint64
-              title: reward amount
-            reward_wallet:
-              type: string
-              title: reward wallet address
-            multiplier:
-              type: string
-              title: multiplier for lp rewards
-            num_blocks:
-              type: string
-              title: Block number since the creation of PoolInfo
-            dex_reward_amount_given:
-              type: string
-              title: Total dex rewards given
-            eden_reward_amount_given:
-              type: string
-              title: Total eden rewards given
-            eden_apr:
-              type: string
-              title: Eden APR, updated at every distribution
-            dex_apr:
-              type: string
-              title: Dex APR, updated at every distribution
-          title: Pool Info
-        title: |-
-          Pool information
-          poolId, reward wallet, **multiplier**, dex rewards given
-      elys_stake_snap_interval:
-        type: string
-        format: int64
-        title: Number of blocks to update elys staked amount for delegators
-      dex_rewards_stakers:
-        title: Tracking dex rewards given to stakers
-        type: object
-        properties:
-          num_blocks:
-            type: string
-            title: Number of blocks since start of epoch (distribution epoch)
-          amount:
-            type: string
-            title: >-
-              Accumulated amount at distribution epoch - recalculated at every
-              distribution epoch
-          amount_collected_by_other_tracker:
-            type: string
-            title: >-
-              Accumulated rewards tracked by other (when it's for staking, from
-              lp, if it's for lp, from staking)
-      dex_rewards_lps:
-        title: Tracking dex rewards given to LPs
-        type: object
-        properties:
-          num_blocks:
-            type: string
-            title: Number of blocks since start of epoch (distribution epoch)
-          amount:
-            type: string
-            title: >-
-              Accumulated amount at distribution epoch - recalculated at every
-              distribution epoch
-          amount_collected_by_other_tracker:
-            type: string
-            title: >-
-              Accumulated rewards tracked by other (when it's for staking, from
-              lp, if it's for lp, from staking)
-      max_eden_reward_apr_stakers:
-        type: string
-        title: Maximum eden reward apr for stakers - [0 - 0.3]
-      max_eden_reward_apr_lps:
-        type: string
-        title: Maximum eden reward apr for lps - [0 - 0.3]
-    description: Params defines the parameters for the module.
-  elys.incentive.PoolInfo:
-    type: object
-    properties:
-      pool_id:
-        type: string
-        format: uint64
-        title: reward amount
-      reward_wallet:
-        type: string
-        title: reward wallet address
-      multiplier:
-        type: string
-        title: multiplier for lp rewards
-      num_blocks:
-        type: string
-        title: Block number since the creation of PoolInfo
-      dex_reward_amount_given:
-        type: string
-        title: Total dex rewards given
-      eden_reward_amount_given:
-        type: string
-        title: Total eden rewards given
-      eden_apr:
-        type: string
-        title: Eden APR, updated at every distribution
-      dex_apr:
-        type: string
-        title: Dex APR, updated at every distribution
-    title: Pool Info
   elys.incentive.PoolRewards:
     type: object
     properties:
@@ -85561,152 +86321,6 @@ definitions:
         type: string
       edenb_apr_elys:
         type: string
-  elys.incentive.QueryParamsResponse:
-    type: object
-    properties:
-      params:
-        description: params holds all the parameters of this module.
-        type: object
-        properties:
-          lp_incentives:
-            type: object
-            properties:
-              eden_amount_per_year:
-                type: string
-                title: reward amount in eden for 1 year
-              distribution_start_block:
-                type: string
-                title: starting block height of the distribution
-              total_blocks_per_year:
-                type: string
-                title: distribution duration - block number per year
-              epoch_num_blocks:
-                type: string
-                title: unused
-              max_eden_per_allocation:
-                type: string
-                title: unused
-              distribution_epoch_in_blocks:
-                type: string
-                title: unused
-              current_epoch_in_blocks:
-                type: string
-                title: current epoch in block number
-            title: Incentive Info
-          stake_incentives:
-            type: object
-            properties:
-              eden_amount_per_year:
-                type: string
-                title: reward amount in eden for 1 year
-              distribution_start_block:
-                type: string
-                title: starting block height of the distribution
-              total_blocks_per_year:
-                type: string
-                title: distribution duration - block number per year
-              epoch_num_blocks:
-                type: string
-                title: unused
-              max_eden_per_allocation:
-                type: string
-                title: unused
-              distribution_epoch_in_blocks:
-                type: string
-                title: unused
-              current_epoch_in_blocks:
-                type: string
-                title: current epoch in block number
-            title: Incentive Info
-          reward_portion_for_lps:
-            type: string
-            description: >-
-              Dex revenue percent for lps, `100 - reward_portion_for_lps -
-              reward_portion_for_stakers = revenue percent for protocol`.
-          reward_portion_for_stakers:
-            type: string
-            description: >-
-              Dex revenue percent for lps, `100 - reward_portion_for_lps -
-              reward_portion_for_stakers = revenue percent for protocol`.
-          pool_infos:
-            type: array
-            items:
-              type: object
-              properties:
-                pool_id:
-                  type: string
-                  format: uint64
-                  title: reward amount
-                reward_wallet:
-                  type: string
-                  title: reward wallet address
-                multiplier:
-                  type: string
-                  title: multiplier for lp rewards
-                num_blocks:
-                  type: string
-                  title: Block number since the creation of PoolInfo
-                dex_reward_amount_given:
-                  type: string
-                  title: Total dex rewards given
-                eden_reward_amount_given:
-                  type: string
-                  title: Total eden rewards given
-                eden_apr:
-                  type: string
-                  title: Eden APR, updated at every distribution
-                dex_apr:
-                  type: string
-                  title: Dex APR, updated at every distribution
-              title: Pool Info
-            title: |-
-              Pool information
-              poolId, reward wallet, **multiplier**, dex rewards given
-          elys_stake_snap_interval:
-            type: string
-            format: int64
-            title: Number of blocks to update elys staked amount for delegators
-          dex_rewards_stakers:
-            title: Tracking dex rewards given to stakers
-            type: object
-            properties:
-              num_blocks:
-                type: string
-                title: Number of blocks since start of epoch (distribution epoch)
-              amount:
-                type: string
-                title: >-
-                  Accumulated amount at distribution epoch - recalculated at
-                  every distribution epoch
-              amount_collected_by_other_tracker:
-                type: string
-                title: >-
-                  Accumulated rewards tracked by other (when it's for staking,
-                  from lp, if it's for lp, from staking)
-          dex_rewards_lps:
-            title: Tracking dex rewards given to LPs
-            type: object
-            properties:
-              num_blocks:
-                type: string
-                title: Number of blocks since start of epoch (distribution epoch)
-              amount:
-                type: string
-                title: >-
-                  Accumulated amount at distribution epoch - recalculated at
-                  every distribution epoch
-              amount_collected_by_other_tracker:
-                type: string
-                title: >-
-                  Accumulated rewards tracked by other (when it's for staking,
-                  from lp, if it's for lp, from staking)
-          max_eden_reward_apr_stakers:
-            type: string
-            title: Maximum eden reward apr for stakers - [0 - 0.3]
-          max_eden_reward_apr_lps:
-            type: string
-            title: Maximum eden reward apr for lps - [0 - 0.3]
-    description: QueryParamsResponse is response type for the Query/Params RPC method.
   elys.incentive.QueryPoolRewardsResponse:
     type: object
     properties:
@@ -86267,9 +86881,9 @@ definitions:
       max_eden_per_allocation:
         type: string
         title: maximum eden allocation per day that won't exceed 30% apr
-      current_epoch_in_blocks:
+      blocks_distributed:
         type: string
-        title: current epoch in block number
+        title: blocks distributed
     title: Incentive Info
   elys.masterchef.MsgAddExternalIncentiveResponse:
     type: object
@@ -86277,7 +86891,7 @@ definitions:
     type: object
   elys.masterchef.MsgClaimRewardsResponse:
     type: object
-  elys.masterchef.MsgUpdateIncentiveParamsResponse:
+  elys.masterchef.MsgUpdateParamsResponse:
     type: object
   elys.masterchef.MsgUpdatePoolMultipliersResponse:
     type: object
@@ -86299,15 +86913,21 @@ definitions:
           max_eden_per_allocation:
             type: string
             title: maximum eden allocation per day that won't exceed 30% apr
-          current_epoch_in_blocks:
+          blocks_distributed:
             type: string
-            title: current epoch in block number
+            title: blocks distributed
         title: Incentive Info
       reward_portion_for_lps:
         type: string
         description: >-
-          Dex revenue percent for lps, `100 - reward_portion_for_lps -
-          reward_portion_for_stakers = revenue percent for protocol`.
+          gas fees and swap fees portion for lps, `100 - reward_portion_for_lps
+          - reward_portion_for_stakers = revenue percent for protocol`.
+      reward_portion_for_stakers:
+        type: string
+        description: >-
+          gas fees and swap fees portion for stakers, `100 -
+          reward_portion_for_lps - reward_portion_for_stakers = revenue percent
+          for protocol`.
       dex_rewards_lps:
         title: Tracking dex rewards given to LPs
         type: object
@@ -86444,15 +87064,22 @@ definitions:
               max_eden_per_allocation:
                 type: string
                 title: maximum eden allocation per day that won't exceed 30% apr
-              current_epoch_in_blocks:
+              blocks_distributed:
                 type: string
-                title: current epoch in block number
+                title: blocks distributed
             title: Incentive Info
           reward_portion_for_lps:
             type: string
             description: >-
-              Dex revenue percent for lps, `100 - reward_portion_for_lps -
-              reward_portion_for_stakers = revenue percent for protocol`.
+              gas fees and swap fees portion for lps, `100 -
+              reward_portion_for_lps - reward_portion_for_stakers = revenue
+              percent for protocol`.
+          reward_portion_for_stakers:
+            type: string
+            description: >-
+              gas fees and swap fees portion for stakers, `100 -
+              reward_portion_for_lps - reward_portion_for_stakers = revenue
+              percent for protocol`.
           dex_rewards_lps:
             title: Tracking dex rewards given to LPs
             type: object

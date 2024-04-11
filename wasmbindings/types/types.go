@@ -155,7 +155,6 @@ type ElysQuery struct {
 	EpochsCurrentEpoch *epochstypes.QueryCurrentEpochRequest `json:"epochs_current_epoch,omitempty"`
 
 	// incentive queriers
-	IncentiveParams            *incentivetypes.QueryParamsRequest            `json:"incentive_params,omitempty"`
 	IncentiveApr               *incentivetypes.QueryAprRequest               `json:"incentive_apr,omitempty"`
 	IncentiveAprs              *incentivetypes.QueryAprsRequest              `json:"incentive_aprs,omitempty"`
 	IncentiveAllProgramRewards *incentivetypes.QueryAllProgramRewardsRequest `json:"incentive_all_program_rewards,omitempty"`

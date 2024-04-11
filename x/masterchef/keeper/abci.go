@@ -69,7 +69,7 @@ func (k Keeper) ProcessExternalRewardsDistribution(ctx sdk.Context) {
 					if found {
 						baseCurrency := entry.Denom
 						pool.ExternalIncentiveApr = sdk.NewDecFromInt(yearlyIncentiveRewardsTotal).
-							Mul(k.GetTokenPrice(ctx, externalIncentive.RewardDenom, baseCurrency)).
+							Mul(k.amm.GetTokenPrice(ctx, externalIncentive.RewardDenom, baseCurrency)).
 							Quo(tvl)
 						k.SetPool(ctx, pool)
 					}
@@ -93,7 +93,7 @@ func (k Keeper) ProcessLPRewardDistribution(ctx sdk.Context) {
 
 	canDistribute := k.CanDistributeLPRewards(ctx)
 	if canDistribute {
-		err := k.UpdateLPRewardsUnclaimed(ctx)
+		err := k.UpdateLPRewards(ctx)
 		if err != nil {
 			ctx.Logger().Error("Failed to update lp rewards unclaimed", "error", err)
 		}
@@ -117,15 +117,11 @@ func (k Keeper) ProcessUpdateIncentiveParams(ctx sdk.Context) bool {
 
 		totalBlocksPerYear := sdk.NewInt(int64(inflation.EndBlockHeight - inflation.StartBlockHeight + 1))
 
-		// ------------- LP Incentive parameter -------------
-		totalDistributionEpochPerYear := totalBlocksPerYear.Quo(sdk.NewInt(1))
-		// If totalDistributionEpochPerYear is zero, we skip this inflation to avoid division by zero
+		// If totalBlocksPerYear is zero, we skip this inflation to avoid division by zero
 		if totalBlocksPerYear == sdk.ZeroInt() {
 			continue
 		}
-		currentEpochInBlocks := sdk.NewInt(ctx.BlockHeight() - int64(inflation.StartBlockHeight)).
-			Mul(totalDistributionEpochPerYear).
-			Quo(totalBlocksPerYear)
+		blocksDistributed := sdk.NewInt(ctx.BlockHeight() - int64(inflation.StartBlockHeight))
 
 		incentiveInfo := types.IncentiveInfo{
 			// reward amount in eden for 1 year
@@ -135,7 +131,7 @@ func (k Keeper) ProcessUpdateIncentiveParams(ctx sdk.Context) bool {
 			// distribution duration - block number per year
 			TotalBlocksPerYear: totalBlocksPerYear,
 			// current epoch in block number
-			CurrentEpochInBlocks: currentEpochInBlocks,
+			BlocksDistributed: blocksDistributed,
 		}
 
 		if params.LpIncentives == nil {
@@ -144,25 +140,11 @@ func (k Keeper) ProcessUpdateIncentiveParams(ctx sdk.Context) bool {
 			// If any of block number related parameter changed, we re-calculate the current epoch
 			if params.LpIncentives.DistributionStartBlock != incentiveInfo.DistributionStartBlock ||
 				params.LpIncentives.TotalBlocksPerYear != incentiveInfo.TotalBlocksPerYear {
-				params.LpIncentives.CurrentEpochInBlocks = currentEpochInBlocks
+				params.LpIncentives.BlocksDistributed = blocksDistributed
 			}
 			params.LpIncentives.EdenAmountPerYear = incentiveInfo.EdenAmountPerYear
 			params.LpIncentives.DistributionStartBlock = incentiveInfo.DistributionStartBlock
 			params.LpIncentives.TotalBlocksPerYear = incentiveInfo.TotalBlocksPerYear
-		}
-
-		// ------------- Stakers parameter -------------
-		totalDistributionEpochPerYear = totalBlocksPerYear.Quo(sdk.NewInt(1))
-		currentEpochInBlocks = sdk.NewInt(ctx.BlockHeight() - int64(inflation.StartBlockHeight)).Mul(totalDistributionEpochPerYear).Quo(totalBlocksPerYear)
-		incentiveInfo = types.IncentiveInfo{
-			// reward amount in eden for 1 year
-			EdenAmountPerYear: sdk.NewInt(int64(inflation.Inflation.IcsStakingRewards)),
-			// starting block height of the distribution
-			DistributionStartBlock: sdk.NewInt(int64(inflation.StartBlockHeight)),
-			// distribution duration - block number per year
-			TotalBlocksPerYear: totalBlocksPerYear,
-			// current epoch in block number
-			CurrentEpochInBlocks: currentEpochInBlocks,
 		}
 		break
 	}
@@ -192,22 +174,20 @@ func (k Keeper) CanDistributeLPRewards(ctx sdk.Context) bool {
 	}
 
 	// Increase current epoch of incentive param
-	lpIncentive.CurrentEpochInBlocks = lpIncentive.CurrentEpochInBlocks.Add(sdk.OneInt())
-	if lpIncentive.CurrentEpochInBlocks.GTE(lpIncentive.TotalBlocksPerYear) || curBlockHeight.GT(lpIncentive.TotalBlocksPerYear.Add(lpIncentive.DistributionStartBlock)) {
+	lpIncentive.BlocksDistributed = lpIncentive.BlocksDistributed.Add(sdk.OneInt())
+	if lpIncentive.BlocksDistributed.GTE(lpIncentive.TotalBlocksPerYear) || curBlockHeight.GT(lpIncentive.TotalBlocksPerYear.Add(lpIncentive.DistributionStartBlock)) {
 		params.LpIncentives = nil
 		k.SetParams(ctx, params)
 		return false
 	}
 
-	params.LpIncentives.CurrentEpochInBlocks = lpIncentive.CurrentEpochInBlocks
+	params.LpIncentives.BlocksDistributed = lpIncentive.BlocksDistributed
 	k.SetParams(ctx, params)
 
 	return true
 }
 
-// Update unclaimed token amount
-// Called back through epoch hook
-func (k Keeper) UpdateLPRewardsUnclaimed(ctx sdk.Context) error {
+func (k Keeper) UpdateLPRewards(ctx sdk.Context) error {
 	// Fetch incentive params
 	params := k.GetParams(ctx)
 	lpIncentive := params.LpIncentives
@@ -252,28 +232,20 @@ func (k Keeper) UpdateLPRewardsUnclaimed(ctx sdk.Context) error {
 
 	// Maximum eden based per distribution epoch on maximum APR - 30% by default
 	// Allocated for staking per day = (0.3/365)* (total weighted proxy TVL)
-	edenDenomPrice := k.GetEdenDenomPrice(ctx, baseCurrency)
+	edenDenomPrice := k.amm.GetEdenDenomPrice(ctx, baseCurrency)
 
 	// Ensure edenDenomPrice is not zero to avoid division by zero
 	if edenDenomPrice.IsZero() {
 		return errorsmod.Wrap(types.ErrNoInflationaryParams, "invalid eden price")
 	}
 
-	// TODO: apply update on incentive module
-	epochLpsMaxEdenAmount := params.MaxEdenRewardAprLps.
-		Mul(totalProxyTVL).
-		QuoInt(lpIncentive.TotalBlocksPerYear).
-		Quo(edenDenomPrice)
-
-	// Use min amount (eden allocation from tokenomics and max apr based eden amount)
-	epochLpsEdenAmount = sdk.MinInt(epochLpsEdenAmount, epochLpsMaxEdenAmount.TruncateInt())
-
 	stableStakePoolId := uint64(stabletypes.PoolId)
 	// Distribute Eden / USDC Rewards
 	for _, pool := range k.GetAllPools(ctx) {
-		var proxyTVL sdk.Dec
+		var proxyTVL, tvl sdk.Dec
+		var err error
 		if pool.PoolId == stableStakePoolId {
-			tvl := k.stableKeeper.TVL(ctx, k.oracleKeeper, baseCurrency)
+			tvl = k.stableKeeper.TVL(ctx, k.oracleKeeper, baseCurrency)
 			proxyTVL = tvl.Mul(pool.Multiplier)
 		} else {
 			ammPool, found := k.amm.GetPool(ctx, pool.PoolId)
@@ -286,7 +258,7 @@ func (k Keeper) UpdateLPRewardsUnclaimed(ctx sdk.Context) error {
 			// newEdenAllocated = 80 / ( 80 + 90 + 200 + 0) * 100
 			// Pool share = 80
 			// edenAmountPerEpochLp = 100
-			tvl, err := ammPool.TVL(ctx, k.oracleKeeper)
+			tvl, err = ammPool.TVL(ctx, k.oracleKeeper)
 			if err != nil {
 				continue
 			}
@@ -301,6 +273,14 @@ func (k Keeper) UpdateLPRewardsUnclaimed(ctx sdk.Context) error {
 
 		// Calculate new Eden for this pool
 		newEdenAllocatedForPool := poolShare.MulInt(epochLpsEdenAmount)
+
+		poolMaxEdenAmount := params.MaxEdenRewardAprLps.
+			Mul(tvl).
+			QuoInt(lpIncentive.TotalBlocksPerYear).
+			Quo(edenDenomPrice)
+
+		// Use min amount (eden allocation from tokenomics and max apr based eden amount)
+		newEdenAllocatedForPool = sdk.MinDec(newEdenAllocatedForPool, poolMaxEdenAmount)
 
 		// Get gas fee rewards per pool
 		gasRewardsAllocatedForPool := poolShare.Mul(gasFeesLPsAmtPerDistribution)
@@ -486,12 +466,15 @@ func (k Keeper) CollectDEXRevenue(ctx sdk.Context) (sdk.Coins, sdk.DecCoins) {
 
 		// LPs Portion param
 		rewardPortionForLps := k.GetParams(ctx).RewardPortionForLps
+		rewardPortionForStakers := k.GetParams(ctx).RewardPortionForStakers
 
 		// Calculate revenue portion for LPs
 		revenueDec := sdk.NewDecCoinsFromCoins(revenue...)
 
 		// LPs portion of pool revenue
 		revenuePortionForLPs := revenueDec.MulDecTruncate(rewardPortionForLps)
+		revenuePortionForStakers := revenueDec.MulDecTruncate(rewardPortionForStakers)
+		_ = revenuePortionForStakers
 
 		// Get track key
 		trackKey := types.GetPoolRevenueTrackKey(poolId)
@@ -603,111 +586,6 @@ func (k Keeper) InitStableStakePoolParams(ctx sdk.Context, poolId uint64) bool {
 	return true
 }
 
-// Calculate new Eden token amounts based on LpElys committed and MElys committed
-func (k Keeper) CalcRewardsForLPs(ctx sdk.Context, totalProxyTVL sdk.Dec, commitments ctypes.Commitments, edenAmountForLpPerDistribution math.Int, gasFeesForLPsPerDistribution sdk.Dec) (math.Int, math.Int) {
-	// Method 2 - Using Proxy TVL
-	totalNewEdenAllocatedPerDistribution := sdk.ZeroInt()
-	totalDexRewardsAllocatedPerDistribution := sdk.ZeroDec()
-
-	// Iterate to calculate total Eden from LpElys, MElys committed
-	k.amm.IterateLiquidityPools(ctx, func(p ammtypes.Pool) bool {
-		// ------------ New Eden calculation -------------------
-		// -----------------------------------------------------
-		// newEdenAllocated = 80 / ( 80 + 90 + 200 + 0) * 100
-		// Pool share = 80
-		// edenAmountPerEpochLp = 100
-		tvl, err := p.TVL(ctx, k.oracleKeeper)
-		if err != nil {
-			return false
-		}
-
-		// Get pool Id
-		poolId := p.GetPoolId()
-
-		// Get pool share denom - lp token
-		lpToken := ammtypes.GetPoolShareDenom(poolId)
-
-		// Get pool info from incentive param
-		poolInfo, found := k.GetPool(ctx, poolId)
-		if !found {
-			k.InitPoolParams(ctx, poolId)
-			poolInfo, _ = k.GetPool(ctx, poolId)
-		}
-
-		// Calculate Proxy TVL share considering multiplier
-		proxyTVL := tvl.Mul(poolInfo.Multiplier)
-		poolShare := sdk.ZeroDec()
-		if totalProxyTVL.IsPositive() {
-			poolShare = proxyTVL.Quo(totalProxyTVL)
-		}
-
-		// Calculate new Eden for this pool
-		newEdenAllocatedForPool := poolShare.MulInt(edenAmountForLpPerDistribution)
-
-		// this lp token committed
-		commmittedLpToken := commitments.GetCommittedAmountForDenom(lpToken)
-		// this lp token total committed
-		totalCommittedLpToken, ok := k.tci.TotalLpTokensCommitted[lpToken]
-		if !ok {
-			return false
-		}
-
-		// If total committed LP token amount is zero
-		if totalCommittedLpToken.LTE(sdk.ZeroInt()) {
-			return false
-		}
-
-		// Calculalte lp token share of the pool
-		lpShare := sdk.NewDecFromInt(commmittedLpToken).QuoInt(totalCommittedLpToken)
-
-		// Calculate new Eden allocated per LP
-		newEdenAllocated := lpShare.Mul(newEdenAllocatedForPool).TruncateInt()
-
-		// Sum the total amount
-		totalNewEdenAllocatedPerDistribution = totalNewEdenAllocatedPerDistribution.Add(newEdenAllocated)
-		// -------------------------------------------------------
-
-		// ------------------- DEX rewards calculation -------------------
-		// ---------------------------------------------------------------
-		// Get dex rewards per pool
-		// Get track key
-		trackKey := types.GetPoolRevenueTrackKey(poolId)
-		// Get tracked amount for Lps per pool
-		dexRewardsAllocatedForPool, ok := k.tci.PoolRevenueTrack[trackKey]
-		if !ok {
-			dexRewardsAllocatedForPool = sdk.NewDec(0)
-		}
-
-		// Calculate dex rewards per lp
-		dexRewardsForLP := lpShare.Mul(dexRewardsAllocatedForPool)
-		// Sum total rewards per commitment
-		totalDexRewardsAllocatedPerDistribution = totalDexRewardsAllocatedPerDistribution.Add(dexRewardsForLP)
-
-		//----------------------------------------------------------------
-
-		// ------------------- Gas rewards calculation -------------------
-		// ---------------------------------------------------------------
-		// Get gas fee rewards per pool
-		gasRewardsAllocatedForPool := poolShare.Mul(gasFeesForLPsPerDistribution)
-		// Calculate gas fee rewards per lp
-		gasRewardsForLP := lpShare.Mul(gasRewardsAllocatedForPool)
-		// Sum total rewards per commitment
-		totalDexRewardsAllocatedPerDistribution = totalDexRewardsAllocatedPerDistribution.Add(gasRewardsForLP)
-
-		//----------------------------------------------------------------
-
-		poolInfo.EdenRewardAmountGiven = newEdenAllocatedForPool.RoundInt()
-		poolInfo.DexRewardAmountGiven = gasRewardsAllocatedForPool.Add(dexRewardsAllocatedForPool)
-		// Update Pool Info
-		k.SetPool(ctx, poolInfo)
-
-		return false
-	})
-
-	// return
-	return totalNewEdenAllocatedPerDistribution, totalDexRewardsAllocatedPerDistribution.TruncateInt()
-}
-
 // Calculate pool share for stable stake pool
 func (k Keeper) CalculatePoolShareForStableStakeLPs(ctx sdk.Context, totalProxyTVL sdk.Dec, baseCurrency string) sdk.Dec {
 	// ------------ New Eden calculation -------------------
@@ -734,74 +612,6 @@ func (k Keeper) CalculatePoolShareForStableStakeLPs(ctx sdk.Context, totalProxyT
 	poolShare := proxyTVL.Quo(totalProxyTVL)
 
 	return poolShare
-}
-
-// Calculate new Eden token amounts based on LpElys committed and MElys committed
-func (k Keeper) CalcRewardsForStableStakeLPs(ctx sdk.Context, totalProxyTVL sdk.Dec, commitments ctypes.Commitments, edenAmountPerEpochLp math.Int, gasFeesForLPs sdk.Dec, baseCurrency string) (math.Int, math.Int) {
-	// Method 2 - Using Proxy TVL
-	totalDexRewardsAllocated := sdk.ZeroDec()
-
-	// Calculate pool share for stable stake pool
-	poolShare := k.CalculatePoolShareForStableStakeLPs(ctx, totalProxyTVL, baseCurrency)
-
-	// Calculate new Eden for this pool
-	newEdenAllocatedForPool := poolShare.MulInt(edenAmountPerEpochLp)
-
-	// Get pool share denom - stable stake lp token
-	lpToken := stabletypes.GetShareDenom()
-
-	// this lp token committed
-	commmittedLpToken := commitments.GetCommittedAmountForDenom(lpToken)
-	// this lp token total committed
-	totalCommittedLpToken, ok := k.tci.TotalLpTokensCommitted[lpToken]
-	if !ok {
-		return sdk.ZeroInt(), sdk.ZeroInt()
-	}
-
-	// If total committed LP token amount is zero
-	if totalCommittedLpToken.LTE(sdk.ZeroInt()) {
-		return sdk.ZeroInt(), sdk.ZeroInt()
-	}
-
-	// Calculalte lp token share of the pool
-	lpShare := sdk.NewDecFromInt(commmittedLpToken).QuoInt(totalCommittedLpToken)
-
-	// Calculate new Eden allocated per LP
-	newEdenAllocated := lpShare.Mul(newEdenAllocatedForPool).TruncateInt()
-
-	// -------------------------------------------------------
-
-	// ------------------- DEX rewards calculation -------------------
-	// ---------------------------------------------------------------
-	// Get dex rewards per pool
-	// Get pool Id
-	poolId := uint64(stabletypes.PoolId)
-	// Get track key
-	trackKey := types.GetPoolRevenueTrackKey(poolId)
-	// Get tracked amount for Lps per pool
-	dexRewardsAllocatedForPool, ok := k.tci.PoolRevenueTrack[trackKey]
-	if !ok {
-		dexRewardsAllocatedForPool = sdk.NewDec(0)
-	}
-
-	// Calculate dex rewards per lp
-	dexRewardsForLP := lpShare.Mul(dexRewardsAllocatedForPool)
-	// Sum total rewards per commitment
-	totalDexRewardsAllocated = totalDexRewardsAllocated.Add(dexRewardsForLP)
-
-	//----------------------------------------------------------------
-
-	// ------------------- Gas rewards calculation -------------------
-	// ---------------------------------------------------------------
-	// Get gas fee rewards per pool
-	gasRewardsAllocatedForPool := poolShare.Mul(gasFeesForLPs)
-	// Calculate gas fee rewards per lp
-	gasRewardsForLP := lpShare.Mul(gasRewardsAllocatedForPool)
-	// Sum total rewards per commitment
-	totalDexRewardsAllocated = totalDexRewardsAllocated.Add(gasRewardsForLP)
-
-	// return
-	return newEdenAllocated, totalDexRewardsAllocated.TruncateInt()
 }
 
 // Update APR for AMM pool

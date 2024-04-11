@@ -2,6 +2,7 @@ syntax = "proto3";
 package elys.masterchef;
 
 import "gogoproto/gogo.proto";
+import "elys/masterchef/params.proto";
 
 option go_package = "github.com/elys-network/elys/x/masterchef/types";
 
@@ -9,7 +10,7 @@ option go_package = "github.com/elys-network/elys/x/masterchef/types";
 service Msg {
     rpc AddExternalRewardDenom (MsgAddExternalRewardDenom) returns (MsgAddExternalRewardDenomResponse);
     rpc AddExternalIncentive (MsgAddExternalIncentive) returns (MsgAddExternalIncentiveResponse);
-    rpc UpdateIncentiveParams(MsgUpdateIncentiveParams) returns (MsgUpdateIncentiveParamsResponse);
+    rpc UpdateParams(MsgUpdateParams) returns (MsgUpdateParamsResponse);
     rpc UpdatePoolMultipliers(MsgUpdatePoolMultipliers) returns (MsgUpdatePoolMultipliersResponse);
     rpc ClaimRewards (MsgClaimRewards) returns (MsgClaimRewardsResponse);
 }
@@ -40,19 +41,12 @@ message MsgAddExternalIncentive {
 message MsgAddExternalIncentiveResponse {
 }
 
-message MsgUpdateIncentiveParams {
-  string authority                   = 1;
-  string reward_portion_for_lps         = 2 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
-    (gogoproto.nullable) = false
-  ];
-  string max_eden_reward_apr_lps         = 3 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
-    (gogoproto.nullable) = false
-  ];
+message MsgUpdateParams {
+  string authority = 1;
+  Params params = 2 [(gogoproto.nullable) = false];
 }
 
-message MsgUpdateIncentiveParamsResponse {}
+message MsgUpdateParamsResponse {}
 
 message PoolMultiplier {
   uint64 pool_id = 1;

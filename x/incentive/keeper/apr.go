@@ -7,6 +7,7 @@ import (
 	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
 	commitmenttypes "github.com/elys-network/elys/x/commitment/types"
 	"github.com/elys-network/elys/x/incentive/types"
+	mastercheftypes "github.com/elys-network/elys/x/masterchef/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 	stabletypes "github.com/elys-network/elys/x/stablestake/types"
 )
@@ -14,12 +15,14 @@ import (
 func (k Keeper) CalculateApr(ctx sdk.Context, query *types.QueryAprRequest) (math.Int, error) {
 	// Fetch incentive params
 	params := k.GetParams(ctx)
+	masterchefParams := k.masterchef.GetParams(ctx)
+	estakingParams := k.estaking.GetParams(ctx)
 
 	// Update params
 	defer k.SetParams(ctx, params)
 
 	// If we don't have enough params
-	if params.StakeIncentives == nil || params.LpIncentives == nil {
+	if estakingParams.StakeIncentives == nil || masterchefParams.LpIncentives == nil {
 		return sdk.ZeroInt(), errorsmod.Wrap(types.ErrNoInflationaryParams, "no inflationary params available")
 	}
 
@@ -29,8 +32,8 @@ func (k Keeper) CalculateApr(ctx sdk.Context, query *types.QueryAprRequest) (mat
 	}
 
 	baseCurrency := entry.Denom
-	lpIncentive := params.LpIncentives
-	stkIncentive := params.StakeIncentives
+	lpIncentive := masterchefParams.LpIncentives
+	stkIncentive := estakingParams.StakeIncentives
 
 	if lpIncentive.TotalBlocksPerYear.IsZero() || stkIncentive.TotalBlocksPerYear.IsZero() {
 		return sdk.ZeroInt(), errorsmod.Wrap(types.ErrNoInflationaryParams, "invalid inflationary params")
@@ -38,39 +41,9 @@ func (k Keeper) CalculateApr(ctx sdk.Context, query *types.QueryAprRequest) (mat
 
 	if query.Denom == ptypes.Eden {
 		if query.WithdrawType == commitmenttypes.EarnType_USDC_PROGRAM {
-			stableTvl := k.stableKeeper.TVL(ctx, k.oracleKeeper, baseCurrency)
-			if stableTvl.IsZero() {
-				return sdk.ZeroInt(), nil
-			}
-
-			// Calculate total Proxy TVL
-			totalProxyTVL := k.CalculateProxyTVL(ctx, baseCurrency)
-
-			// Eden amount for LP in 24hrs = EpochNumBlocks is the number of block for 24 hrs
-			epochEdenAmount := lpIncentive.EdenAmountPerYear.
-				Quo(lpIncentive.TotalBlocksPerYear)
-
-			// Eden amount for stable stake LP in 24hrs
-			stableStakePoolShare := k.CalculatePoolShareForStableStakeLPs(ctx, totalProxyTVL, baseCurrency)
-			epochStableStakeEdenAmount := sdk.NewDecFromInt(epochEdenAmount).Mul(stableStakePoolShare)
-
-			edenDenomPrice := k.GetEdenDenomPrice(ctx, baseCurrency)
-			params := k.GetParams(ctx)
-			poolMaxEdenAmount := params.MaxEdenRewardAprLps.
-				Mul(stableTvl).
-				QuoInt(lpIncentive.TotalBlocksPerYear).
-				Quo(edenDenomPrice)
-
-			epochStableStakeEdenAmount = sdk.MinDec(epochStableStakeEdenAmount, poolMaxEdenAmount)
-
-			// Eden Apr for usdc earn program = {stablestakeEdenAllocationYearly*edenPrice/UsdcTvl}*100
-			apr := epochStableStakeEdenAmount.
-				MulInt(lpIncentive.TotalBlocksPerYear).
-				Mul(edenDenomPrice).
-				MulInt(sdk.NewInt(100)).
-				Quo(stableTvl)
-
-			return apr.TruncateInt(), nil
+			return k.masterchef.CalculateStableStakeApr(ctx, &mastercheftypes.QueryStableStakeAprRequest{
+				Denom: ptypes.Eden,
+			})
 		} else {
 			// Elys staking, Eden committed, EdenB committed.
 
@@ -89,7 +62,7 @@ func (k Keeper) CalculateApr(ctx sdk.Context, query *types.QueryAprRequest) (mat
 
 			// Maximum eden based per distribution epoch on maximum APR - 30% by default
 			// Allocated for staking per day = (0.3/365)* ( total elys staked + total Eden committed + total Eden boost committed)
-			epochStakersMaxEdenAmount := params.MaxEdenRewardAprStakers.
+			epochStakersMaxEdenAmount := estakingParams.MaxEdenRewardAprStakers.
 				MulInt(totalStakedSnapshot).
 				QuoInt(stkIncentive.TotalBlocksPerYear)
 
@@ -115,7 +88,7 @@ func (k Keeper) CalculateApr(ctx sdk.Context, query *types.QueryAprRequest) (mat
 			return apr.TruncateInt(), nil
 		} else {
 			// Elys staking, Eden committed, EdenB committed.
-			params := k.GetParams(ctx)
+			params := k.estaking.GetParams(ctx)
 			amount := params.DexRewardsStakers.Amount
 			if amount.IsZero() {
 				return sdk.ZeroInt(), nil
@@ -128,8 +101,8 @@ func (k Keeper) CalculateApr(ctx sdk.Context, query *types.QueryAprRequest) (mat
 
 			// Calc Eden price in usdc
 			// We put Elys as denom as Eden won't be avaialble in amm pool and has the same value as Elys
-			edenPrice := k.EstimatePrice(ctx, ptypes.Elys, baseCurrency)
-			if edenPrice.IsZero() {
+			edenDenomPrice := k.amm.GetEdenDenomPrice(ctx, baseCurrency)
+			if edenDenomPrice.IsZero() {
 				return sdk.ZeroInt(), nil
 			}
 
@@ -150,7 +123,7 @@ func (k Keeper) CalculateApr(ctx sdk.Context, query *types.QueryAprRequest) (mat
 			// we multiply 10 as we have use 10elys as input in the price estimation
 			apr := yearlyDexRewardAmount.
 				MulInt(sdk.NewInt(100)).
-				Quo(edenPrice).
+				Quo(edenDenomPrice).
 				QuoInt(totalStakedSnapshot)
 
 			return apr.TruncateInt(), nil

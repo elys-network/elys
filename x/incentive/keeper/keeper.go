@@ -14,7 +14,6 @@ import (
 	"github.com/elys-network/elys/x/incentive/types"
 	masterchefkeeper "github.com/elys-network/elys/x/masterchef/keeper"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
-	stabletypes "github.com/elys-network/elys/x/stablestake/types"
 )
 
 type (
@@ -92,47 +91,6 @@ func (k Keeper) Logger(ctx sdk.Context) log.Logger {
 	return ctx.Logger().With("module", fmt.Sprintf("x/%s", types.ModuleName))
 }
 
-// Calculate Proxy TVL
-func (k Keeper) CalculateProxyTVL(ctx sdk.Context, baseCurrency string) sdk.Dec {
-	multipliedShareSum := sdk.ZeroDec()
-	k.amm.IterateLiquidityPools(ctx, func(p ammtypes.Pool) bool {
-		tvl, err := p.TVL(ctx, k.oracleKeeper)
-		if err != nil {
-			return false
-		}
-
-		// Get pool info from incentive param
-		poolInfo, found := k.GetPoolInfo(ctx, p.GetPoolId())
-		if !found {
-			return false
-		}
-
-		proxyTVL := tvl.Mul(poolInfo.Multiplier)
-
-		// Calculate total pool share by TVL and multiplier
-		multipliedShareSum = multipliedShareSum.Add(proxyTVL)
-
-		return false
-	})
-
-	//-----------------------------------
-	// Handle stable stake pool
-	stableStakePoolId := uint64(stabletypes.PoolId)
-
-	// Get pool info from incentive param
-	poolInfo, found := k.GetPoolInfo(ctx, stableStakePoolId)
-	if !found {
-		k.InitStableStakePoolParams(ctx, stableStakePoolId)
-		poolInfo, _ = k.GetPoolInfo(ctx, stableStakePoolId)
-	}
-	tvl := k.stableKeeper.TVL(ctx, k.oracleKeeper, baseCurrency)
-	proxyTVL := tvl.Mul(poolInfo.Multiplier)
-	multipliedShareSum = multipliedShareSum.Add(proxyTVL)
-
-	// return total sum of TVL share using multiplier of all pools
-	return multipliedShareSum
-}
-
 // Caculate total TVL
 func (k Keeper) CalculateTVL(ctx sdk.Context) sdk.Dec {
 	TVL := sdk.ZeroDec()
@@ -149,66 +107,15 @@ func (k Keeper) CalculateTVL(ctx sdk.Context) sdk.Dec {
 	return TVL
 }
 
-// Update APR for AMM pool
-func (k Keeper) UpdateAmmPoolAPR(ctx sdk.Context, lpIncentive types.IncentiveInfo, totalProxyTVL sdk.Dec, edenDenomPrice sdk.Dec) {
-	// Iterate to calculate total Eden from LpElys, MElys committed
-	k.amm.IterateLiquidityPools(ctx, func(p ammtypes.Pool) bool {
-		tvl, err := p.TVL(ctx, k.oracleKeeper)
-		if err != nil {
-			return false
-		}
-
-		// Get pool Id
-		poolId := p.GetPoolId()
-
-		// Get pool info from incentive param
-		poolInfo, found := k.GetPoolInfo(ctx, poolId)
-		if !found {
-			k.InitPoolParams(ctx, poolId)
-			poolInfo, _ = k.GetPoolInfo(ctx, poolId)
-		}
-
-		poolInfo.NumBlocks = sdk.NewInt(1)
-		// Invalid block number
-		if poolInfo.NumBlocks.IsZero() {
-			return false
-		}
-
-		if tvl.IsZero() {
-			return false
-		}
-
-		// poolDexApr = usdcRewardPerBlock * lpIncentive.TotalBlocksPerYear / TVL of pool
-		yearlyDexRewardsTotal := poolInfo.DexRewardAmountGiven.
-			MulInt(lpIncentive.TotalBlocksPerYear).
-			QuoInt(poolInfo.NumBlocks)
-		poolInfo.DexApr = yearlyDexRewardsTotal.Quo(tvl)
-
-		// poolEdenApr = edenRewardPerBlock * edenPrice * lpIncentive.TotalBlocksPerYear / TVL of pool
-		yearlyEdenRewardsTotal := poolInfo.EdenRewardAmountGiven.
-			Mul(lpIncentive.TotalBlocksPerYear).
-			Quo(poolInfo.NumBlocks)
-
-		poolInfo.EdenApr = sdk.NewDecFromInt(yearlyEdenRewardsTotal).
-			Mul(edenDenomPrice).
-			Quo(tvl)
-
-		// Update Pool Info
-		k.SetPoolInfo(ctx, poolId, poolInfo)
-
-		return false
-	})
-}
-
 // Get total dex rewards amount from the specified pool
 func (k Keeper) GetDailyRewardsAmountForPool(ctx sdk.Context, poolId uint64) (sdk.Dec, sdk.Coins) {
-	poolInfo, found := k.GetPoolInfo(ctx, poolId)
+	poolInfo, found := k.masterchef.GetPool(ctx, poolId)
 	if !found {
 		return sdk.ZeroDec(), sdk.Coins{}
 	}
 
 	// Fetch incentive params
-	params := k.GetParams(ctx)
+	params := k.masterchef.GetParams(ctx)
 	if params.LpIncentives == nil {
 		return sdk.ZeroDec(), sdk.Coins{}
 	}
@@ -231,7 +138,7 @@ func (k Keeper) GetDailyRewardsAmountForPool(ctx sdk.Context, poolId uint64) (sd
 	rewardCoins = rewardCoins.Add(sdk.NewCoin(baseCurrency, math.Int(dailyDexRewardsTotal)))
 
 	usdcDenomPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, baseCurrency)
-	edenDenomPrice := k.GetEdenDenomPrice(ctx, baseCurrency)
+	edenDenomPrice := k.amm.GetEdenDenomPrice(ctx, baseCurrency)
 
 	totalRewardsUsd := usdcDenomPrice.Mul(dailyDexRewardsTotal).Add(edenDenomPrice.MulInt(dailyEdenRewardsTotal))
 	return totalRewardsUsd, rewardCoins

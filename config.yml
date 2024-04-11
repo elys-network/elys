@@ -314,17 +314,8 @@ genesis:
       params:
         lp_incentives: null
         stake_incentives: null
-        reward_portion_for_lps: "0.65"
-        pool_infos: []
-        elys_stake_snap_interval: "10"
-        dex_rewards_stakers:
-          num_blocks: "0"
-          amount: "0"
-          amount_collected_by_other_tracker: "0"
-        dex_rewards_lps:
-          num_blocks: "0"
-          amount: "0"
-          amount_collected_by_other_tracker: "0"
+        reward_portion_for_lps: "0.60"
+        reward_portion_for_stakers: "0.25"
         max_eden_reward_apr_stakers: "0.30"
         max_eden_reward_apr_lps: "0.30"
       fee_pool:
@@ -499,8 +490,8 @@ genesis:
         deposit_denom: "uusdc"
         redemption_rate: "1.000000000000000000"
     masterchef:
-      params: 
-        supported_reward_denoms: 
+      params:
+        supported_reward_denoms:
           - denom: "uinc"
             min_amount: "1000000"
         reward_portion_for_lps: "0.6"

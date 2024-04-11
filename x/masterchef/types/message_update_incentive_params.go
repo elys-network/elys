@@ -6,19 +6,19 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
-const TypeMsgUpdateIncentiveParams = "update_incentive_params"
+const TypeMsgUpdateParams = "update_incentive_params"
 
-var _ sdk.Msg = &MsgUpdateIncentiveParams{}
+var _ sdk.Msg = &MsgUpdateParams{}
 
-func (msg *MsgUpdateIncentiveParams) Route() string {
+func (msg *MsgUpdateParams) Route() string {
 	return RouterKey
 }
 
-func (msg *MsgUpdateIncentiveParams) Type() string {
-	return TypeMsgUpdateIncentiveParams
+func (msg *MsgUpdateParams) Type() string {
+	return TypeMsgUpdateParams
 }
 
-func (msg *MsgUpdateIncentiveParams) GetSigners() []sdk.AccAddress {
+func (msg *MsgUpdateParams) GetSigners() []sdk.AccAddress {
 	sender, err := sdk.AccAddressFromBech32(msg.Authority)
 	if err != nil {
 		panic(err)
@@ -26,12 +26,12 @@ func (msg *MsgUpdateIncentiveParams) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{sender}
 }
 
-func (msg *MsgUpdateIncentiveParams) GetSignBytes() []byte {
+func (msg *MsgUpdateParams) GetSignBytes() []byte {
 	bz := ModuleCdc.MustMarshalJSON(msg)
 	return sdk.MustSortJSON(bz)
 }
 
-func (msg *MsgUpdateIncentiveParams) ValidateBasic() error {
+func (msg *MsgUpdateParams) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Authority)
 	if err != nil {
 		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid sender address (%s)", err)

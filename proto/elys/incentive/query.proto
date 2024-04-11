@@ -3,8 +3,6 @@ syntax = "proto3";
 package elys.incentive;
 
 import "cosmos_proto/cosmos.proto";
-import "elys/incentive/params.proto";
-import "elys/incentive/distribution.proto";
 import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
 import "cosmos/base/v1beta1/coin.proto";
@@ -15,11 +13,6 @@ option go_package = "github.com/elys-network/elys/x/incentive/types";
 
 // Query defines the gRPC querier service.
 service Query {
-  // Parameters queries the parameters of the module.
-  rpc Params (QueryParamsRequest) returns (QueryParamsResponse) {
-    option (google.api.http).get = "/elys-network/elys/incentive/params";
-  }
-  
   // Calculate APR
   rpc Apr (QueryAprRequest) returns (QueryAprResponse) {
     option (google.api.http).get = "/elys-network/elys/incentive/apr/{withdraw_type}/{denom}";
@@ -39,14 +32,6 @@ service Query {
   rpc AllProgramRewards(QueryAllProgramRewardsRequest) returns (QueryAllProgramRewardsResponse) {
     option (google.api.http).get = "/elys-network/elys/incentive/all_program_rewards";
   }
-}
-// QueryParamsRequest is request type for the Query/Params RPC method.
-message QueryParamsRequest {}
-
-// QueryParamsResponse is response type for the Query/Params RPC method.
-message QueryParamsResponse {
-  // params holds all the parameters of this module.
-  Params params = 1 [(gogoproto.nullable) = false];
 }
 
 message QueryAprRequest {

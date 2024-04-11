@@ -4,7 +4,6 @@ package elys.masterchef;
 option go_package = "github.com/elys-network/elys/x/masterchef/types";
 
 import "gogoproto/gogo.proto";
-import "cosmos_proto/cosmos.proto";
 
 // Pool Info
 message PoolInfo {

@@ -1,25 +1,11 @@
 package keeper
 
 import (
-	"fmt"
 	gomath "math"
 
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	ammtypes "github.com/elys-network/elys/x/amm/types"
 )
-
-// Calculate total share of staking
-func (k Keeper) CalcTotalShareOfStaking(amount math.Int) sdk.Dec {
-	// Total staked = Elys staked + Eden Committed + Eden boost Committed
-	totalStaked := k.tci.TotalElysBonded.Add(k.tci.TotalEdenEdenBoostCommitted)
-	if totalStaked.LTE(sdk.ZeroInt()) {
-		return sdk.ZeroDec()
-	}
-
-	// Share = Amount / Total Staked
-	return sdk.NewDecFromInt(amount).QuoInt(totalStaked)
-}
 
 // Calculate the delegated amount
 func (k Keeper) CalcDelegationAmount(ctx sdk.Context, delegator string) math.Int {
@@ -78,30 +64,4 @@ func (k Keeper) CalcBondedDelegationAmount(ctx sdk.Context, delegator string) ma
 	}
 
 	return delAmount.TruncateInt()
-}
-
-// Calculate the amm pool ratio
-func (k Keeper) CalculatePoolRatio(ctx sdk.Context, pool *ammtypes.Pool) string {
-	weightString := ""
-	totalWeight := sdk.ZeroInt()
-	for _, asset := range pool.PoolAssets {
-		totalWeight = totalWeight.Add(asset.Weight)
-	}
-
-	if totalWeight.IsZero() {
-		return weightString
-	}
-
-	for _, asset := range pool.PoolAssets {
-		weight := sdk.NewDecFromInt(asset.Weight).QuoInt(totalWeight).MulInt(sdk.NewInt(100)).TruncateInt64()
-		weightString = fmt.Sprintf("%s : %d", weightString, weight)
-	}
-
-	// remove prefix " : " 3 characters
-	if len(weightString) > 1 {
-		weightString = weightString[3:]
-	}
-
-	// returns pool weight string
-	return weightString
 }

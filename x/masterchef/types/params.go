@@ -108,7 +108,7 @@ func validateLPIncentives(i interface{}) error {
 		return fmt.Errorf("invalid total blocks per year: %v", vv)
 	}
 
-	if vv.CurrentEpochInBlocks.LT(sdk.NewInt(0)) {
+	if vv.BlocksDistributed.LT(sdk.NewInt(0)) {
 		return fmt.Errorf("invalid current epoch: %v", vv)
 	}
 

@@ -26,9 +26,9 @@ func (k Keeper) ProcessRewardsDistribution(ctx sdk.Context) {
 		return
 	}
 
-	stakerEpoch, stakeIncentive := k.IsStakerRewardsDistributionEpoch(ctx)
-	if stakerEpoch {
-		err := k.UpdateStakersRewardsUnclaimed(ctx, *stakeIncentive)
+	canDistribute := k.CanDistributeStakingRewards(ctx)
+	if canDistribute {
+		err := k.UpdateStakersRewards(ctx)
 		if err != nil {
 			ctx.Logger().Error("Failed to update staker rewards unclaimed", "error", err)
 		}
@@ -52,35 +52,18 @@ func (k Keeper) ProcessUpdateIncentiveParams(ctx sdk.Context) bool {
 
 		totalBlocksPerYear := sdk.NewInt(int64(inflation.EndBlockHeight - inflation.StartBlockHeight + 1))
 
-		// ------------- LP Incentive parameter -------------
-		totalDistributionEpochPerYear := totalBlocksPerYear
 		// If totalDistributionEpochPerYear is zero, we skip this inflation to avoid division by zero
 		if totalBlocksPerYear == sdk.ZeroInt() {
 			continue
 		}
-		currentEpochInBlocks := sdk.NewInt(ctx.BlockHeight() - int64(inflation.StartBlockHeight)).
-			Mul(totalDistributionEpochPerYear).
-			Quo(totalBlocksPerYear)
-
-		incentiveInfo := types.IncentiveInfo{
-			// reward amount in eden for 1 year
-			EdenAmountPerYear: sdk.NewInt(int64(inflation.Inflation.LmRewards)),
-			// starting block height of the distribution
-			DistributionStartBlock: sdk.NewInt(int64(inflation.StartBlockHeight)),
-			// distribution duration - block number per year
-			TotalBlocksPerYear: totalBlocksPerYear,
-		}
 
 		// ------------- Stakers parameter -------------
-		totalDistributionEpochPerYear = totalBlocksPerYear
-		currentEpochInBlocks = sdk.NewInt(ctx.BlockHeight() - int64(inflation.StartBlockHeight)).Mul(totalDistributionEpochPerYear).Quo(totalBlocksPerYear)
-		incentiveInfo = types.IncentiveInfo{
-			// reward amount in eden for 1 year
-			EdenAmountPerYear: sdk.NewInt(int64(inflation.Inflation.IcsStakingRewards)),
-			// starting block height of the distribution
+		blocksDistributed := sdk.NewInt(ctx.BlockHeight() - int64(inflation.StartBlockHeight))
+		incentiveInfo := types.IncentiveInfo{
+			EdenAmountPerYear:      sdk.NewInt(int64(inflation.Inflation.IcsStakingRewards)),
 			DistributionStartBlock: sdk.NewInt(int64(inflation.StartBlockHeight)),
-			// distribution duration - block number per year
-			TotalBlocksPerYear: totalBlocksPerYear,
+			TotalBlocksPerYear:     totalBlocksPerYear,
+			BlocksDistributed:      blocksDistributed,
 		}
 
 		if params.StakeIncentives == nil {
@@ -89,7 +72,7 @@ func (k Keeper) ProcessUpdateIncentiveParams(ctx sdk.Context) bool {
 			// If any of block number related parameter changed, we re-calculate the current epoch
 			if params.StakeIncentives.DistributionStartBlock != incentiveInfo.DistributionStartBlock ||
 				params.StakeIncentives.TotalBlocksPerYear != incentiveInfo.TotalBlocksPerYear {
-				params.StakeIncentives.CurrentEpochInBlocks = currentEpochInBlocks
+				params.StakeIncentives.BlocksDistributed = blocksDistributed
 			}
 			params.StakeIncentives.EdenAmountPerYear = incentiveInfo.EdenAmountPerYear
 			params.StakeIncentives.DistributionStartBlock = incentiveInfo.DistributionStartBlock
@@ -102,16 +85,16 @@ func (k Keeper) ProcessUpdateIncentiveParams(ctx sdk.Context) bool {
 	return true
 }
 
-func (k Keeper) IsStakerRewardsDistributionEpoch(ctx sdk.Context) (bool, *types.IncentiveInfo) {
+func (k Keeper) CanDistributeStakingRewards(ctx sdk.Context) bool {
 	// Fetch incentive params
 	params := k.GetParams(ctx)
 	if ctx.BlockHeight() < 1 {
-		return false, nil
+		return false
 	}
 
 	// If we don't have enough params
 	if params.StakeIncentives == nil {
-		return false, nil
+		return false
 	}
 
 	// Incentive params initialize
@@ -119,27 +102,27 @@ func (k Keeper) IsStakerRewardsDistributionEpoch(ctx sdk.Context) (bool, *types.
 
 	curBlockHeight := sdk.NewInt(ctx.BlockHeight())
 	if stakeIncentive.DistributionStartBlock.GT(curBlockHeight) {
-		return false, nil
+		return false
 	}
 
 	// Increase current epoch of Stake incentive param
-	stakeIncentive.CurrentEpochInBlocks = stakeIncentive.CurrentEpochInBlocks.Add(sdk.OneInt())
-	if stakeIncentive.CurrentEpochInBlocks.GTE(stakeIncentive.TotalBlocksPerYear) || curBlockHeight.GT(stakeIncentive.TotalBlocksPerYear.Add(stakeIncentive.DistributionStartBlock)) {
+	stakeIncentive.BlocksDistributed = stakeIncentive.BlocksDistributed.Add(sdk.OneInt())
+	if stakeIncentive.BlocksDistributed.GTE(stakeIncentive.TotalBlocksPerYear) || curBlockHeight.GT(stakeIncentive.TotalBlocksPerYear.Add(stakeIncentive.DistributionStartBlock)) {
 		params.StakeIncentives = nil
 		k.SetParams(ctx, params)
-		return false, nil
+		return false
 	}
 
-	params.StakeIncentives.CurrentEpochInBlocks = stakeIncentive.CurrentEpochInBlocks
+	params.StakeIncentives.BlocksDistributed = stakeIncentive.BlocksDistributed
 	k.SetParams(ctx, params)
 
 	// return found, stake incentive params
-	return true, stakeIncentive
+	return true
 }
 
 // Update unclaimed token amount
 // Called back through epoch hook
-func (k Keeper) UpdateStakersRewardsUnclaimed(ctx sdk.Context, stakeIncentive types.IncentiveInfo) error {
+func (k Keeper) UpdateStakersRewards(ctx sdk.Context) error {
 	entry, found := k.assetProfileKeeper.GetEntry(ctx, ptypes.BaseCurrency)
 	if !found {
 		return errorsmod.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency)
@@ -161,6 +144,7 @@ func (k Keeper) UpdateStakersRewardsUnclaimed(ctx sdk.Context, stakeIncentive ty
 
 	// Calculate eden amount per epoch
 	params := k.GetParams(ctx)
+	stakeIncentive := params.StakeIncentives
 
 	// Ensure stakeIncentive.TotalBlocksPerYear or stakeIncentive.EpochNumBlocks are not zero to avoid division by zero
 	if stakeIncentive.TotalBlocksPerYear.IsZero() {

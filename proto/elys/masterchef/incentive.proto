@@ -19,7 +19,7 @@ message IncentiveInfo {
     // maximum eden allocation per day that won't exceed 30% apr
     string max_eden_per_allocation = 4 
         [ (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false];
-    // current epoch in block number
-    string current_epoch_in_blocks = 5
+    // blocks distributed
+    string blocks_distributed = 5
         [ (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false];
 }

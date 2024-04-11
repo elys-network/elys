@@ -11,33 +11,7 @@ option go_package = "github.com/elys-network/elys/x/incentive/types";
 
 // Msg defines the Msg service.
 service Msg {
-  // WithdrawValidatorCommission defines a method to withdraw the
-  // full commission to the validator address.
-  rpc UpdateIncentiveParams(MsgUpdateIncentiveParams) returns (MsgUpdateIncentiveParamsResponse);
 }
-
-message MsgUpdateIncentiveParams {
-  string authority = 1;
-  string reward_portion_for_lps = 2 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
-    (gogoproto.nullable) = false
-  ];
-  string reward_portion_for_stakers = 3 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
-    (gogoproto.nullable) = false
-  ];
-  int64 elys_stake_snap_interval = 4;
-  string max_eden_reward_apr_stakers = 5 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
-    (gogoproto.nullable) = false
-  ];
-  string max_eden_reward_apr_lps = 6 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
-    (gogoproto.nullable) = false
-  ];
-}
-
-message MsgUpdateIncentiveParamsResponse {}
 
 message MsgBeginRedelegate {
   option (gogoproto.equal)           = false;

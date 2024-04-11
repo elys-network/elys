@@ -239,24 +239,23 @@ func (m *MsgAddExternalIncentiveResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgAddExternalIncentiveResponse proto.InternalMessageInfo
 
-type MsgUpdateIncentiveParams struct {
-	Authority           string                                 `protobuf:"bytes,1,opt,name=authority,proto3" json:"authority,omitempty"`
-	RewardPortionForLps github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,2,opt,name=reward_portion_for_lps,json=rewardPortionForLps,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"reward_portion_for_lps"`
-	MaxEdenRewardAprLps github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,3,opt,name=max_eden_reward_apr_lps,json=maxEdenRewardAprLps,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"max_eden_reward_apr_lps"`
+type MsgUpdateParams struct {
+	Authority string `protobuf:"bytes,1,opt,name=authority,proto3" json:"authority,omitempty"`
+	Params    Params `protobuf:"bytes,2,opt,name=params,proto3" json:"params"`
 }
 
-func (m *MsgUpdateIncentiveParams) Reset()         { *m = MsgUpdateIncentiveParams{} }
-func (m *MsgUpdateIncentiveParams) String() string { return proto.CompactTextString(m) }
-func (*MsgUpdateIncentiveParams) ProtoMessage()    {}
-func (*MsgUpdateIncentiveParams) Descriptor() ([]byte, []int) {
+func (m *MsgUpdateParams) Reset()         { *m = MsgUpdateParams{} }
+func (m *MsgUpdateParams) String() string { return proto.CompactTextString(m) }
+func (*MsgUpdateParams) ProtoMessage()    {}
+func (*MsgUpdateParams) Descriptor() ([]byte, []int) {
 	return fileDescriptor_2574ed545e5b2c11, []int{4}
 }
-func (m *MsgUpdateIncentiveParams) XXX_Unmarshal(b []byte) error {
+func (m *MsgUpdateParams) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgUpdateIncentiveParams) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgUpdateParams) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgUpdateIncentiveParams.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgUpdateParams.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -266,40 +265,47 @@ func (m *MsgUpdateIncentiveParams) XXX_Marshal(b []byte, deterministic bool) ([]
 		return b[:n], nil
 	}
 }
-func (m *MsgUpdateIncentiveParams) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgUpdateIncentiveParams.Merge(m, src)
+func (m *MsgUpdateParams) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgUpdateParams.Merge(m, src)
 }
-func (m *MsgUpdateIncentiveParams) XXX_Size() int {
+func (m *MsgUpdateParams) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgUpdateIncentiveParams) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgUpdateIncentiveParams.DiscardUnknown(m)
+func (m *MsgUpdateParams) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgUpdateParams.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgUpdateIncentiveParams proto.InternalMessageInfo
+var xxx_messageInfo_MsgUpdateParams proto.InternalMessageInfo
 
-func (m *MsgUpdateIncentiveParams) GetAuthority() string {
+func (m *MsgUpdateParams) GetAuthority() string {
 	if m != nil {
 		return m.Authority
 	}
 	return ""
 }
 
-type MsgUpdateIncentiveParamsResponse struct {
+func (m *MsgUpdateParams) GetParams() Params {
+	if m != nil {
+		return m.Params
+	}
+	return Params{}
 }
 
-func (m *MsgUpdateIncentiveParamsResponse) Reset()         { *m = MsgUpdateIncentiveParamsResponse{} }
-func (m *MsgUpdateIncentiveParamsResponse) String() string { return proto.CompactTextString(m) }
-func (*MsgUpdateIncentiveParamsResponse) ProtoMessage()    {}
-func (*MsgUpdateIncentiveParamsResponse) Descriptor() ([]byte, []int) {
+type MsgUpdateParamsResponse struct {
+}
+
+func (m *MsgUpdateParamsResponse) Reset()         { *m = MsgUpdateParamsResponse{} }
+func (m *MsgUpdateParamsResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgUpdateParamsResponse) ProtoMessage()    {}
+func (*MsgUpdateParamsResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_2574ed545e5b2c11, []int{5}
 }
-func (m *MsgUpdateIncentiveParamsResponse) XXX_Unmarshal(b []byte) error {
+func (m *MsgUpdateParamsResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgUpdateIncentiveParamsResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgUpdateParamsResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgUpdateIncentiveParamsResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgUpdateParamsResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -309,17 +315,17 @@ func (m *MsgUpdateIncentiveParamsResponse) XXX_Marshal(b []byte, deterministic b
 		return b[:n], nil
 	}
 }
-func (m *MsgUpdateIncentiveParamsResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgUpdateIncentiveParamsResponse.Merge(m, src)
+func (m *MsgUpdateParamsResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgUpdateParamsResponse.Merge(m, src)
 }
-func (m *MsgUpdateIncentiveParamsResponse) XXX_Size() int {
+func (m *MsgUpdateParamsResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgUpdateIncentiveParamsResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgUpdateIncentiveParamsResponse.DiscardUnknown(m)
+func (m *MsgUpdateParamsResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgUpdateParamsResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgUpdateIncentiveParamsResponse proto.InternalMessageInfo
+var xxx_messageInfo_MsgUpdateParamsResponse proto.InternalMessageInfo
 
 type PoolMultiplier struct {
 	PoolId     uint64                                 `protobuf:"varint,1,opt,name=pool_id,json=poolId,proto3" json:"pool_id,omitempty"`
@@ -547,8 +553,8 @@ func init() {
 	proto.RegisterType((*MsgAddExternalRewardDenomResponse)(nil), "elys.masterchef.MsgAddExternalRewardDenomResponse")
 	proto.RegisterType((*MsgAddExternalIncentive)(nil), "elys.masterchef.MsgAddExternalIncentive")
 	proto.RegisterType((*MsgAddExternalIncentiveResponse)(nil), "elys.masterchef.MsgAddExternalIncentiveResponse")
-	proto.RegisterType((*MsgUpdateIncentiveParams)(nil), "elys.masterchef.MsgUpdateIncentiveParams")
-	proto.RegisterType((*MsgUpdateIncentiveParamsResponse)(nil), "elys.masterchef.MsgUpdateIncentiveParamsResponse")
+	proto.RegisterType((*MsgUpdateParams)(nil), "elys.masterchef.MsgUpdateParams")
+	proto.RegisterType((*MsgUpdateParamsResponse)(nil), "elys.masterchef.MsgUpdateParamsResponse")
 	proto.RegisterType((*PoolMultiplier)(nil), "elys.masterchef.PoolMultiplier")
 	proto.RegisterType((*MsgUpdatePoolMultipliers)(nil), "elys.masterchef.MsgUpdatePoolMultipliers")
 	proto.RegisterType((*MsgUpdatePoolMultipliersResponse)(nil), "elys.masterchef.MsgUpdatePoolMultipliersResponse")
@@ -559,51 +565,49 @@ func init() {
 func init() { proto.RegisterFile("elys/masterchef/tx.proto", fileDescriptor_2574ed545e5b2c11) }
 
 var fileDescriptor_2574ed545e5b2c11 = []byte{
-	// 700 bytes of a gzipped FileDescriptorProto
+	// 662 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x9c, 0x55, 0xc1, 0x4e, 0xdb, 0x4a,
-	0x14, 0x8d, 0x49, 0x5e, 0x20, 0x17, 0x04, 0xc8, 0x8f, 0x07, 0x49, 0xf4, 0x9a, 0x04, 0x57, 0xaa,
-	0xd2, 0x4a, 0xc4, 0x2d, 0xfd, 0x02, 0x52, 0xa8, 0x14, 0xa9, 0xa9, 0x22, 0x4b, 0x95, 0x2a, 0x36,
-	0x96, 0xb1, 0x07, 0x63, 0x61, 0xcf, 0x8c, 0x66, 0x26, 0x25, 0x59, 0x56, 0xdd, 0x75, 0xd5, 0x1f,
-	0xea, 0x9e, 0xee, 0x58, 0x56, 0x5d, 0xa0, 0x0a, 0x7e, 0xa4, 0x1a, 0xdb, 0x38, 0x76, 0x88, 0x49,
-	0xca, 0x2a, 0x99, 0xb9, 0x47, 0xe7, 0x9c, 0x39, 0x73, 0xef, 0x18, 0xaa, 0xc8, 0x1f, 0x73, 0x3d,
-	0xb0, 0xb8, 0x40, 0xcc, 0x3e, 0x43, 0xa7, 0xba, 0x18, 0x75, 0x28, 0x23, 0x82, 0xa8, 0x1b, 0xb2,
-	0xd2, 0x99, 0x54, 0xea, 0x5b, 0x2e, 0x71, 0x49, 0x58, 0xd3, 0xe5, 0xbf, 0x08, 0xa6, 0xfd, 0x50,
-	0xa0, 0xd6, 0xe7, 0xee, 0x81, 0xe3, 0x1c, 0x8d, 0x04, 0x62, 0xd8, 0xf2, 0x0d, 0x74, 0x61, 0x31,
-	0xe7, 0x10, 0x61, 0x12, 0xa8, 0xff, 0x43, 0xc5, 0x1a, 0x8a, 0x33, 0xc2, 0x3c, 0x31, 0xae, 0x2a,
-	0x2d, 0xa5, 0x5d, 0x31, 0x26, 0x1b, 0xea, 0x2e, 0xac, 0xb1, 0x10, 0x6c, 0x3a, 0x12, 0x5d, 0x5d,
-	0x0a, 0x01, 0xab, 0x2c, 0x45, 0xd0, 0x07, 0x08, 0x3c, 0x6c, 0x5a, 0x01, 0x19, 0x62, 0x51, 0x2d,
-	0x4a, 0x40, 0xb7, 0x73, 0x79, 0xdd, 0x2c, 0xfc, 0xba, 0x6e, 0x3e, 0x73, 0x3d, 0x71, 0x36, 0x3c,
-	0xe9, 0xd8, 0x24, 0xd0, 0x6d, 0xc2, 0x03, 0xc2, 0xe3, 0x9f, 0x3d, 0xee, 0x9c, 0xeb, 0x62, 0x4c,
-	0x11, 0xef, 0xf4, 0xb0, 0x30, 0x2a, 0x81, 0x87, 0x0f, 0x42, 0x02, 0xe9, 0x87, 0x0f, 0x29, 0x25,
-	0x4c, 0x20, 0xa7, 0x5a, 0x6a, 0x29, 0xed, 0x15, 0x63, 0xb2, 0xa1, 0x3d, 0x85, 0xdd, 0xdc, 0xa3,
-	0x18, 0x88, 0x53, 0x82, 0x39, 0xd2, 0x3e, 0x2f, 0xc1, 0x4e, 0x16, 0xd5, 0xc3, 0x36, 0xc2, 0xc2,
-	0xfb, 0x84, 0xd4, 0x6d, 0x28, 0x73, 0x84, 0x1d, 0xc4, 0xe2, 0xb3, 0xc6, 0xab, 0x45, 0x0e, 0xba,
-	0x03, 0xcb, 0x94, 0x10, 0xdf, 0xf4, 0x9c, 0xf0, 0x94, 0x25, 0xa3, 0x2c, 0x97, 0x3d, 0x47, 0x7d,
-	0x02, 0x70, 0xca, 0x48, 0x60, 0x9e, 0xf8, 0xc4, 0x3e, 0x0f, 0x3d, 0x97, 0x8c, 0x8a, 0xdc, 0xe9,
-	0xca, 0x0d, 0xb5, 0x06, 0x2b, 0x82, 0xc4, 0xc5, 0x7f, 0xc2, 0xe2, 0xb2, 0x20, 0x51, 0xe9, 0x23,
-	0x6c, 0x46, 0xb9, 0x99, 0x14, 0xb1, 0x18, 0x52, 0x7e, 0x54, 0x82, 0xeb, 0x11, 0xcf, 0x00, 0xb1,
-	0x90, 0x59, 0xdb, 0x85, 0x66, 0x4e, 0x04, 0x49, 0x4c, 0x5f, 0x96, 0xa0, 0xda, 0xe7, 0xee, 0x07,
-	0xea, 0x58, 0x02, 0x25, 0xe5, 0x81, 0xc5, 0xac, 0x80, 0xcf, 0x69, 0x0b, 0x1b, 0xb6, 0xe3, 0xb4,
-	0xe4, 0xbd, 0x78, 0x04, 0x9b, 0xa7, 0x84, 0x99, 0x3e, 0xe5, 0x51, 0x6e, 0x7f, 0xe5, 0xfe, 0x10,
-	0xd9, 0xc6, 0xbf, 0x11, 0xdb, 0x20, 0x22, 0x7b, 0x4b, 0xd8, 0x3b, 0xca, 0x55, 0x07, 0x76, 0x02,
-	0x6b, 0x64, 0x22, 0x07, 0x61, 0x33, 0x56, 0xb3, 0x68, 0xa4, 0x52, 0x7c, 0x9c, 0x4a, 0x60, 0x8d,
-	0x8e, 0x1c, 0x84, 0xa3, 0x9e, 0x39, 0xa0, 0x52, 0x45, 0xd3, 0xa0, 0x95, 0x17, 0x42, 0x92, 0xd4,
-	0x18, 0xd6, 0x07, 0x84, 0xf8, 0xfd, 0xa1, 0x2f, 0x3c, 0xea, 0x7b, 0x88, 0xa5, 0x7b, 0x41, 0xc9,
-	0xf4, 0xc2, 0x7b, 0x80, 0x20, 0x81, 0x3d, 0x32, 0x8d, 0x14, 0x83, 0xf6, 0x55, 0x49, 0x5d, 0x52,
-	0xd6, 0xc4, 0xbc, 0x4b, 0x1a, 0xc0, 0x66, 0xe8, 0x71, 0xc2, 0x26, 0xaf, 0xa7, 0xd8, 0x5e, 0xdd,
-	0x6f, 0x76, 0xa6, 0x5e, 0x8e, 0x4e, 0x96, 0xb9, 0x5b, 0x92, 0x8e, 0x8d, 0x0d, 0x9a, 0xd5, 0xcb,
-	0x64, 0x35, 0xe5, 0x25, 0xc9, 0xea, 0x10, 0x36, 0xfa, 0xdc, 0x7d, 0xe3, 0x5b, 0x5e, 0x10, 0xe5,
-	0xcc, 0x73, 0x67, 0xae, 0x06, 0x2b, 0x71, 0x88, 0x91, 0xb1, 0x92, 0xb1, 0x1c, 0xa5, 0xc8, 0xb5,
-	0x5a, 0x38, 0xc1, 0x69, 0x96, 0x3b, 0x81, 0xfd, 0xef, 0x25, 0x28, 0xf6, 0xb9, 0xab, 0x8e, 0x60,
-	0x3b, 0xe7, 0x49, 0x7b, 0x71, 0xef, 0x78, 0xb9, 0x6f, 0x46, 0x7d, 0x7f, 0x71, 0xec, 0x9d, 0x03,
-	0x95, 0xc1, 0xd6, 0xcc, 0xb7, 0xa5, 0x3d, 0x87, 0x2b, 0x41, 0xd6, 0x5f, 0x2e, 0x8a, 0x4c, 0x34,
-	0x87, 0xf0, 0xdf, 0xec, 0x41, 0x7d, 0x3e, 0x8b, 0x6a, 0x26, 0xb4, 0xfe, 0x6a, 0x61, 0xe8, 0x7d,
-	0xd9, 0xe9, 0xd6, 0x7b, 0x40, 0x76, 0x0a, 0xfa, 0x90, 0x6c, 0x4e, 0x13, 0xa9, 0xc7, 0xb0, 0x96,
-	0xe9, 0xa0, 0xd6, 0x2c, 0x8a, 0x34, 0xa2, 0xde, 0x9e, 0x87, 0xb8, 0xe3, 0xee, 0xf6, 0x2e, 0x6f,
-	0x1a, 0xca, 0xd5, 0x4d, 0x43, 0xf9, 0x7d, 0xd3, 0x50, 0xbe, 0xdd, 0x36, 0x0a, 0x57, 0xb7, 0x8d,
-	0xc2, 0xcf, 0xdb, 0x46, 0xe1, 0x58, 0x4f, 0xcd, 0xa7, 0x64, 0xdb, 0xc3, 0x48, 0x5c, 0x10, 0x76,
-	0x1e, 0x2e, 0xf4, 0x51, 0xe6, 0x1b, 0x2c, 0x87, 0xf5, 0xa4, 0x1c, 0x7e, 0x60, 0x5f, 0xff, 0x09,
-	0x00, 0x00, 0xff, 0xff, 0x5c, 0xb9, 0x2d, 0xd8, 0xa3, 0x07, 0x00, 0x00,
+	0x14, 0x8d, 0x21, 0x2f, 0x90, 0x0b, 0x02, 0x64, 0xf1, 0x20, 0x89, 0xa8, 0x13, 0x5c, 0xa9, 0x4a,
+	0x2b, 0x61, 0xb7, 0xa9, 0xfa, 0x01, 0xa4, 0x74, 0x91, 0x45, 0xaa, 0xc8, 0x52, 0xa5, 0x8a, 0x4d,
+	0x64, 0xec, 0xc1, 0x58, 0xd8, 0x1e, 0x6b, 0x66, 0x5c, 0x92, 0x65, 0xb7, 0x5d, 0xf5, 0x1b, 0xfa,
+	0x35, 0x74, 0xc7, 0xb2, 0xea, 0x02, 0x55, 0xf0, 0x23, 0xd5, 0x8c, 0x1d, 0xc7, 0x06, 0xbb, 0x49,
+	0xbb, 0x4a, 0x66, 0xee, 0xd1, 0x99, 0x73, 0xcf, 0x9c, 0xeb, 0x81, 0x06, 0xf2, 0xa6, 0x54, 0xf7,
+	0x4d, 0xca, 0x10, 0xb1, 0x2e, 0xd0, 0xb9, 0xce, 0x26, 0x5a, 0x48, 0x30, 0xc3, 0xf2, 0x36, 0xaf,
+	0x68, 0xf3, 0x4a, 0x6b, 0xd7, 0xc1, 0x0e, 0x16, 0x35, 0x9d, 0xff, 0x8b, 0x61, 0xad, 0x83, 0x87,
+	0x04, 0xa1, 0x49, 0x4c, 0x9f, 0xc6, 0x55, 0xf5, 0xbb, 0x04, 0xcd, 0x21, 0x75, 0x8e, 0x6d, 0xfb,
+	0xdd, 0x84, 0x21, 0x12, 0x98, 0x9e, 0x81, 0xae, 0x4c, 0x62, 0x9f, 0xa0, 0x00, 0xfb, 0xf2, 0x01,
+	0xd4, 0xcd, 0x88, 0x5d, 0x60, 0xe2, 0xb2, 0x69, 0x43, 0xea, 0x48, 0xdd, 0xba, 0x31, 0xdf, 0x90,
+	0x0f, 0x61, 0x93, 0x08, 0xf0, 0xd8, 0xe6, 0xe8, 0xc6, 0x8a, 0x00, 0x6c, 0x90, 0x0c, 0xc1, 0x10,
+	0xc0, 0x77, 0x83, 0xb1, 0xe9, 0xe3, 0x28, 0x60, 0x8d, 0x55, 0x0e, 0xe8, 0x6b, 0xd7, 0xb7, 0xed,
+	0xca, 0xcf, 0xdb, 0xf6, 0x33, 0xc7, 0x65, 0x17, 0xd1, 0x99, 0x66, 0x61, 0x5f, 0xb7, 0x30, 0xf5,
+	0x31, 0x4d, 0x7e, 0x8e, 0xa8, 0x7d, 0xa9, 0xb3, 0x69, 0x88, 0xa8, 0x36, 0x08, 0x98, 0x51, 0xf7,
+	0xdd, 0xe0, 0x58, 0x10, 0x70, 0x3d, 0x34, 0x0a, 0x43, 0x4c, 0x18, 0xb2, 0x1b, 0xd5, 0x8e, 0xd4,
+	0x5d, 0x37, 0xe6, 0x1b, 0xea, 0x53, 0x38, 0x2c, 0x6d, 0xc5, 0x40, 0x34, 0xc4, 0x01, 0x45, 0xea,
+	0xe7, 0x15, 0xd8, 0xcf, 0xa3, 0x06, 0x81, 0x85, 0x02, 0xe6, 0x7e, 0x42, 0xf2, 0x1e, 0xd4, 0x28,
+	0x0a, 0x6c, 0x44, 0x92, 0x5e, 0x93, 0xd5, 0x32, 0x8d, 0xee, 0xc3, 0x5a, 0x88, 0xb1, 0x37, 0x76,
+	0x6d, 0xd1, 0x65, 0xd5, 0xa8, 0xf1, 0xe5, 0xc0, 0x96, 0x9f, 0x00, 0x9c, 0x13, 0xec, 0x8f, 0xcf,
+	0x3c, 0x6c, 0x5d, 0x0a, 0xcd, 0x55, 0xa3, 0xce, 0x77, 0xfa, 0x7c, 0x43, 0x6e, 0xc2, 0x3a, 0xc3,
+	0x49, 0xf1, 0x3f, 0x51, 0x5c, 0x63, 0x38, 0x2e, 0x7d, 0x84, 0x9d, 0xd8, 0xb7, 0x71, 0x88, 0x48,
+	0x02, 0xa9, 0xfd, 0x93, 0x83, 0x5b, 0x31, 0xcf, 0x08, 0x11, 0xc1, 0xac, 0x1e, 0x42, 0xbb, 0xc4,
+	0x82, 0xd4, 0xa6, 0x73, 0xd8, 0x1e, 0x52, 0xe7, 0x43, 0x68, 0x9b, 0x0c, 0x8d, 0x44, 0x60, 0x16,
+	0x84, 0xe1, 0x0d, 0xd4, 0xe2, 0x60, 0x09, 0x77, 0x36, 0x7a, 0xfb, 0xda, 0x83, 0x78, 0x6a, 0x31,
+	0x4d, 0xbf, 0xca, 0xc5, 0x1b, 0x09, 0x58, 0x6d, 0x8a, 0xdb, 0xc8, 0x9e, 0x93, 0x4a, 0x98, 0xc2,
+	0xd6, 0x08, 0x63, 0x6f, 0x18, 0x79, 0xcc, 0x0d, 0x3d, 0x17, 0x91, 0xac, 0xc9, 0x52, 0xce, 0xe4,
+	0xf7, 0x00, 0x7e, 0x0a, 0x8b, 0xaf, 0xe7, 0xaf, 0x4c, 0x3a, 0x41, 0x96, 0x91, 0x61, 0x50, 0xbf,
+	0x48, 0xd0, 0x98, 0xcb, 0xca, 0x89, 0x58, 0xe4, 0xc3, 0x08, 0x76, 0x84, 0xc6, 0x39, 0x1b, 0x77,
+	0x64, 0xb5, 0xbb, 0xd1, 0x6b, 0x3f, 0x76, 0x24, 0xc7, 0x9c, 0x38, 0xb3, 0x1d, 0xe6, 0xcf, 0x53,
+	0x55, 0xe8, 0x94, 0x69, 0x49, 0xbd, 0x3a, 0x11, 0xd7, 0xf5, 0xd6, 0x33, 0x5d, 0x3f, 0x0e, 0x3d,
+	0x2d, 0x0d, 0x73, 0x13, 0xd6, 0x13, 0x13, 0x63, 0x61, 0x55, 0x63, 0x2d, 0x76, 0x71, 0x76, 0x19,
+	0x59, 0x96, 0xd9, 0x01, 0xbd, 0x6f, 0x55, 0x58, 0x1d, 0x52, 0x47, 0x9e, 0xc0, 0x5e, 0xc9, 0xb7,
+	0xe2, 0xc5, 0xa3, 0xf6, 0x4a, 0x87, 0xb1, 0xd5, 0x5b, 0x1e, 0x3b, 0x53, 0x20, 0x13, 0xd8, 0x2d,
+	0x1c, 0xda, 0xee, 0x02, 0xae, 0x14, 0xd9, 0x7a, 0xb9, 0x2c, 0x32, 0x3d, 0xf3, 0x14, 0x36, 0x73,
+	0x23, 0xd0, 0x29, 0x62, 0xc8, 0x22, 0x5a, 0xdd, 0x45, 0x88, 0x94, 0x3b, 0x82, 0xff, 0x8b, 0xf3,
+	0xf5, 0xfc, 0x0f, 0x14, 0x79, 0x68, 0xeb, 0xd5, 0xd2, 0xd0, 0x6c, 0x4b, 0xb9, 0x98, 0x14, 0xb6,
+	0x94, 0x45, 0x14, 0xb7, 0x54, 0x14, 0x92, 0xfe, 0xe0, 0xfa, 0x4e, 0x91, 0x6e, 0xee, 0x14, 0xe9,
+	0xd7, 0x9d, 0x22, 0x7d, 0xbd, 0x57, 0x2a, 0x37, 0xf7, 0x4a, 0xe5, 0xc7, 0xbd, 0x52, 0x39, 0xd5,
+	0x33, 0x43, 0xc8, 0xd9, 0x8e, 0x02, 0xc4, 0xae, 0x30, 0xb9, 0x14, 0x0b, 0x7d, 0x92, 0x7b, 0xdf,
+	0xf8, 0x44, 0x9e, 0xd5, 0xc4, 0xf3, 0xf4, 0xfa, 0x77, 0x00, 0x00, 0x00, 0xff, 0xff, 0x77, 0x66,
+	0xbc, 0xcf, 0xff, 0x06, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -620,7 +624,7 @@ const _ = grpc.SupportPackageIsVersion4
 type MsgClient interface {
 	AddExternalRewardDenom(ctx context.Context, in *MsgAddExternalRewardDenom, opts ...grpc.CallOption) (*MsgAddExternalRewardDenomResponse, error)
 	AddExternalIncentive(ctx context.Context, in *MsgAddExternalIncentive, opts ...grpc.CallOption) (*MsgAddExternalIncentiveResponse, error)
-	UpdateIncentiveParams(ctx context.Context, in *MsgUpdateIncentiveParams, opts ...grpc.CallOption) (*MsgUpdateIncentiveParamsResponse, error)
+	UpdateParams(ctx context.Context, in *MsgUpdateParams, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
 	UpdatePoolMultipliers(ctx context.Context, in *MsgUpdatePoolMultipliers, opts ...grpc.CallOption) (*MsgUpdatePoolMultipliersResponse, error)
 	ClaimRewards(ctx context.Context, in *MsgClaimRewards, opts ...grpc.CallOption) (*MsgClaimRewardsResponse, error)
 }
@@ -651,9 +655,9 @@ func (c *msgClient) AddExternalIncentive(ctx context.Context, in *MsgAddExternal
 	return out, nil
 }
 
-func (c *msgClient) UpdateIncentiveParams(ctx context.Context, in *MsgUpdateIncentiveParams, opts ...grpc.CallOption) (*MsgUpdateIncentiveParamsResponse, error) {
-	out := new(MsgUpdateIncentiveParamsResponse)
-	err := c.cc.Invoke(ctx, "/elys.masterchef.Msg/UpdateIncentiveParams", in, out, opts...)
+func (c *msgClient) UpdateParams(ctx context.Context, in *MsgUpdateParams, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error) {
+	out := new(MsgUpdateParamsResponse)
+	err := c.cc.Invoke(ctx, "/elys.masterchef.Msg/UpdateParams", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -682,7 +686,7 @@ func (c *msgClient) ClaimRewards(ctx context.Context, in *MsgClaimRewards, opts 
 type MsgServer interface {
 	AddExternalRewardDenom(context.Context, *MsgAddExternalRewardDenom) (*MsgAddExternalRewardDenomResponse, error)
 	AddExternalIncentive(context.Context, *MsgAddExternalIncentive) (*MsgAddExternalIncentiveResponse, error)
-	UpdateIncentiveParams(context.Context, *MsgUpdateIncentiveParams) (*MsgUpdateIncentiveParamsResponse, error)
+	UpdateParams(context.Context, *MsgUpdateParams) (*MsgUpdateParamsResponse, error)
 	UpdatePoolMultipliers(context.Context, *MsgUpdatePoolMultipliers) (*MsgUpdatePoolMultipliersResponse, error)
 	ClaimRewards(context.Context, *MsgClaimRewards) (*MsgClaimRewardsResponse, error)
 }
@@ -697,8 +701,8 @@ func (*UnimplementedMsgServer) AddExternalRewardDenom(ctx context.Context, req *
 func (*UnimplementedMsgServer) AddExternalIncentive(ctx context.Context, req *MsgAddExternalIncentive) (*MsgAddExternalIncentiveResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AddExternalIncentive not implemented")
 }
-func (*UnimplementedMsgServer) UpdateIncentiveParams(ctx context.Context, req *MsgUpdateIncentiveParams) (*MsgUpdateIncentiveParamsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UpdateIncentiveParams not implemented")
+func (*UnimplementedMsgServer) UpdateParams(ctx context.Context, req *MsgUpdateParams) (*MsgUpdateParamsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateParams not implemented")
 }
 func (*UnimplementedMsgServer) UpdatePoolMultipliers(ctx context.Context, req *MsgUpdatePoolMultipliers) (*MsgUpdatePoolMultipliersResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdatePoolMultipliers not implemented")
@@ -747,20 +751,20 @@ func _Msg_AddExternalIncentive_Handler(srv interface{}, ctx context.Context, dec
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Msg_UpdateIncentiveParams_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgUpdateIncentiveParams)
+func _Msg_UpdateParams_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgUpdateParams)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MsgServer).UpdateIncentiveParams(ctx, in)
+		return srv.(MsgServer).UpdateParams(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/elys.masterchef.Msg/UpdateIncentiveParams",
+		FullMethod: "/elys.masterchef.Msg/UpdateParams",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).UpdateIncentiveParams(ctx, req.(*MsgUpdateIncentiveParams))
+		return srv.(MsgServer).UpdateParams(ctx, req.(*MsgUpdateParams))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -814,8 +818,8 @@ var _Msg_serviceDesc = grpc.ServiceDesc{
 			Handler:    _Msg_AddExternalIncentive_Handler,
 		},
 		{
-			MethodName: "UpdateIncentiveParams",
-			Handler:    _Msg_UpdateIncentiveParams_Handler,
+			MethodName: "UpdateParams",
+			Handler:    _Msg_UpdateParams_Handler,
 		},
 		{
 			MethodName: "UpdatePoolMultipliers",
@@ -995,7 +999,7 @@ func (m *MsgAddExternalIncentiveResponse) MarshalToSizedBuffer(dAtA []byte) (int
 	return len(dAtA) - i, nil
 }
 
-func (m *MsgUpdateIncentiveParams) Marshal() (dAtA []byte, err error) {
+func (m *MsgUpdateParams) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -1005,32 +1009,22 @@ func (m *MsgUpdateIncentiveParams) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgUpdateIncentiveParams) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgUpdateParams) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgUpdateIncentiveParams) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgUpdateParams) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
 	{
-		size := m.MaxEdenRewardAprLps.Size()
-		i -= size
-		if _, err := m.MaxEdenRewardAprLps.MarshalTo(dAtA[i:]); err != nil {
+		size, err := m.Params.MarshalToSizedBuffer(dAtA[:i])
+		if err != nil {
 			return 0, err
 		}
-		i = encodeVarintTx(dAtA, i, uint64(size))
-	}
-	i--
-	dAtA[i] = 0x1a
-	{
-		size := m.RewardPortionForLps.Size()
 		i -= size
-		if _, err := m.RewardPortionForLps.MarshalTo(dAtA[i:]); err != nil {
-			return 0, err
-		}
 		i = encodeVarintTx(dAtA, i, uint64(size))
 	}
 	i--
@@ -1045,7 +1039,7 @@ func (m *MsgUpdateIncentiveParams) MarshalToSizedBuffer(dAtA []byte) (int, error
 	return len(dAtA) - i, nil
 }
 
-func (m *MsgUpdateIncentiveParamsResponse) Marshal() (dAtA []byte, err error) {
+func (m *MsgUpdateParamsResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -1055,12 +1049,12 @@ func (m *MsgUpdateIncentiveParamsResponse) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgUpdateIncentiveParamsResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgUpdateParamsResponse) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgUpdateIncentiveParamsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgUpdateParamsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -1194,20 +1188,20 @@ func (m *MsgClaimRewards) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	var l int
 	_ = l
 	if len(m.PoolIds) > 0 {
-		dAtA2 := make([]byte, len(m.PoolIds)*10)
-		var j1 int
+		dAtA3 := make([]byte, len(m.PoolIds)*10)
+		var j2 int
 		for _, num := range m.PoolIds {
 			for num >= 1<<7 {
-				dAtA2[j1] = uint8(uint64(num)&0x7f | 0x80)
+				dAtA3[j2] = uint8(uint64(num)&0x7f | 0x80)
 				num >>= 7
-				j1++
+				j2++
 			}
-			dAtA2[j1] = uint8(num)
-			j1++
+			dAtA3[j2] = uint8(num)
+			j2++
 		}
-		i -= j1
-		copy(dAtA[i:], dAtA2[:j1])
-		i = encodeVarintTx(dAtA, i, uint64(j1))
+		i -= j2
+		copy(dAtA[i:], dAtA3[:j2])
+		i = encodeVarintTx(dAtA, i, uint64(j2))
 		i--
 		dAtA[i] = 0x12
 	}
@@ -1323,7 +1317,7 @@ func (m *MsgAddExternalIncentiveResponse) Size() (n int) {
 	return n
 }
 
-func (m *MsgUpdateIncentiveParams) Size() (n int) {
+func (m *MsgUpdateParams) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -1333,14 +1327,12 @@ func (m *MsgUpdateIncentiveParams) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
-	l = m.RewardPortionForLps.Size()
-	n += 1 + l + sovTx(uint64(l))
-	l = m.MaxEdenRewardAprLps.Size()
+	l = m.Params.Size()
 	n += 1 + l + sovTx(uint64(l))
 	return n
 }
 
-func (m *MsgUpdateIncentiveParamsResponse) Size() (n int) {
+func (m *MsgUpdateParamsResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -1899,7 +1891,7 @@ func (m *MsgAddExternalIncentiveResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *MsgUpdateIncentiveParams) Unmarshal(dAtA []byte) error {
+func (m *MsgUpdateParams) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -1922,10 +1914,10 @@ func (m *MsgUpdateIncentiveParams) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgUpdateIncentiveParams: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgUpdateParams: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgUpdateIncentiveParams: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgUpdateParams: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -1962,9 +1954,9 @@ func (m *MsgUpdateIncentiveParams) Unmarshal(dAtA []byte) error {
 			iNdEx = postIndex
 		case 2:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field RewardPortionForLps", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Params", wireType)
 			}
-			var stringLen uint64
+			var msglen int
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowTx
@@ -1974,57 +1966,22 @@ func (m *MsgUpdateIncentiveParams) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
+				msglen |= int(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
+			if msglen < 0 {
 				return ErrInvalidLengthTx
 			}
-			postIndex := iNdEx + intStringLen
+			postIndex := iNdEx + msglen
 			if postIndex < 0 {
 				return ErrInvalidLengthTx
 			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if err := m.RewardPortionForLps.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		case 3:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field MaxEdenRewardAprLps", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTx
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthTx
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthTx
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if err := m.MaxEdenRewardAprLps.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+			if err := m.Params.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
@@ -2049,7 +2006,7 @@ func (m *MsgUpdateIncentiveParams) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *MsgUpdateIncentiveParamsResponse) Unmarshal(dAtA []byte) error {
+func (m *MsgUpdateParamsResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -2072,10 +2029,10 @@ func (m *MsgUpdateIncentiveParamsResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgUpdateIncentiveParamsResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgUpdateParamsResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgUpdateIncentiveParamsResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgUpdateParamsResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		default:

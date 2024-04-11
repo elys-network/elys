@@ -26,6 +26,7 @@ import (
 	incentivekeeper "github.com/elys-network/elys/x/incentive/keeper"
 	leveragelpclientwasm "github.com/elys-network/elys/x/leveragelp/client/wasm"
 	leveragelpkeeper "github.com/elys-network/elys/x/leveragelp/keeper"
+	masterchefkeeper "github.com/elys-network/elys/x/masterchef/keeper"
 	oracleclientwasm "github.com/elys-network/elys/x/oracle/client/wasm"
 	oraclekeeper "github.com/elys-network/elys/x/oracle/keeper"
 	parameterclientwasm "github.com/elys-network/elys/x/parameter/client/wasm"
@@ -59,11 +60,12 @@ func RegisterCustomPlugins(
 	staking *stakingkeeper.Keeper,
 	tokenomics *tokenomicskeeper.Keeper,
 	transferhook *transferhookkeeper.Keeper,
+	masterchef *masterchefkeeper.Keeper,
 ) []wasmkeeper.Option {
 	accountedpoolQuerier := accountedpoolclientwasm.NewQuerier(accountedpool)
 	accountedpoolMessenger := accountedpoolclientwasm.NewMessenger(accountedpool)
 
-	ammQuerier := ammclientwasm.NewQuerier(amm, bank, commitment, assetprofile, perpetual, incentive, oracle, leveragelp, accountedpool, stablestake)
+	ammQuerier := ammclientwasm.NewQuerier(amm, bank, commitment, assetprofile, perpetual, incentive, oracle, leveragelp, accountedpool, stablestake, masterchef)
 	ammMessenger := ammclientwasm.NewMessenger(amm, parameter)
 
 	assetprofileQuerier := assetprofileclientwasm.NewQuerier(assetprofile)
