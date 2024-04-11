@@ -18,9 +18,9 @@ func (k msgServer) CancelVest(goCtx context.Context, msg *types.MsgCancelVest) (
 		return nil, errorsmod.Wrapf(types.ErrInvalidDenom, "denom: %s", msg.Denom)
 	}
 
-	vestingInfo, _ := k.GetVestingInfo(ctx, msg.Denom)
+	vestingInfo, _ := k.GetVestingInfo(ctx, ptypes.Eden)
 	if vestingInfo == nil {
-		return nil, errorsmod.Wrapf(types.ErrInvalidDenom, "denom: %s", msg.Denom)
+		return nil, errorsmod.Wrapf(types.ErrInvalidDenom, "denom: %s", ptypes.Eden)
 	}
 
 	// Get the Commitments for the creator
@@ -30,7 +30,7 @@ func (k msgServer) CancelVest(goCtx context.Context, msg *types.MsgCancelVest) (
 
 	for i := len(commitments.VestingTokens) - 1; i >= 0; i-- {
 		vesting := commitments.VestingTokens[i]
-		if vesting.Denom != msg.Denom || vesting.NumBlocks == 0 || vesting.TotalAmount.IsZero() {
+		if vesting.Denom != ptypes.Elys || vesting.NumBlocks == 0 || vesting.TotalAmount.IsZero() {
 			continue
 		}
 		cancelAmount := sdk.MinInt(remainingToCancel, vesting.TotalAmount.Sub(vesting.ClaimedAmount))
@@ -52,15 +52,15 @@ func (k msgServer) CancelVest(goCtx context.Context, msg *types.MsgCancelVest) (
 	commitments.VestingTokens = newVestingTokens
 
 	if !remainingToCancel.IsZero() {
-		return nil, errorsmod.Wrapf(types.ErrInsufficientVestingTokens, "denom: %s, amount: %s", msg.Denom, msg.Amount)
+		return nil, errorsmod.Wrapf(types.ErrInsufficientVestingTokens, "denom: %s, amount: %s", ptypes.Eden, msg.Amount)
 	}
 
 	// Update the unclaimed tokens amount
-	commitments.AddClaimed(sdk.NewCoin(msg.Denom, msg.Amount))
+	commitments.AddClaimed(sdk.NewCoin(ptypes.Eden, msg.Amount))
 	k.SetCommitments(ctx, commitments)
 
 	// Emit Hook commitment changed
-	k.AfterCommitmentChange(ctx, msg.Creator, sdk.Coins{sdk.NewCoin(msg.Denom, msg.Amount)})
+	k.AfterCommitmentChange(ctx, msg.Creator, sdk.Coins{sdk.NewCoin(ptypes.Eden, msg.Amount)})
 
 	// Emit blockchain event
 	ctx.EventManager().EmitEvent(
@@ -68,7 +68,7 @@ func (k msgServer) CancelVest(goCtx context.Context, msg *types.MsgCancelVest) (
 			types.EventTypeCommitmentChanged,
 			sdk.NewAttribute(types.AttributeCreator, msg.Creator),
 			sdk.NewAttribute(types.AttributeAmount, msg.Amount.String()),
-			sdk.NewAttribute(types.AttributeDenom, msg.Denom),
+			sdk.NewAttribute(types.AttributeDenom, ptypes.Eden),
 		),
 	)
 
