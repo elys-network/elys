@@ -557,70 +557,48 @@ func (k Keeper) CalculateProxyTVL(ctx sdk.Context, baseCurrency string) sdk.Dec 
 
 // InitPoolParams: creates a poolInfo at the time of pool creation.
 func (k Keeper) InitPoolParams(ctx sdk.Context, poolId uint64) bool {
-	// Fetch incentive params
-	params := k.GetParams(ctx)
-	poolInfos := params.PoolInfos
-
-	for _, ps := range poolInfos {
-		if ps.PoolId == poolId {
-			return true
+	poolInfo, found := k.GetPool(ctx, poolId)
+	if !found {
+		poolInfo = types.PoolInfo{
+			// reward amount
+			PoolId: poolId,
+			// reward wallet address
+			RewardWallet: ammtypes.NewPoolRevenueAddress(poolId).String(),
+			// multiplier for lp rewards
+			Multiplier: sdk.NewDec(1),
+			// Number of blocks since creation
+			NumBlocks: sdk.NewInt(1),
+			// Total dex rewards given since creation
+			DexRewardAmountGiven: sdk.ZeroDec(),
+			// Total eden rewards given since creation
+			EdenRewardAmountGiven: sdk.ZeroInt(),
 		}
+		k.SetPool(ctx, poolInfo)
 	}
-
-	// Initiate a new pool info
-	poolInfo := types.PoolInfo{
-		// reward amount
-		PoolId: poolId,
-		// reward wallet address
-		RewardWallet: ammtypes.NewPoolRevenueAddress(poolId).String(),
-		// multiplier for lp rewards
-		Multiplier: sdk.NewDec(1),
-		// Number of blocks since creation
-		NumBlocks: sdk.NewInt(1),
-		// Total dex rewards given since creation
-		DexRewardAmountGiven: sdk.ZeroDec(),
-		// Total eden rewards given since creation
-		EdenRewardAmountGiven: sdk.ZeroInt(),
-	}
-
-	// Update pool information
-	params.PoolInfos = append(params.PoolInfos, poolInfo)
-	k.SetParams(ctx, params)
 
 	return true
 }
 
 // InitStableStakePoolMultiplier: create a stable stake pool information responding to the pool creation.
 func (k Keeper) InitStableStakePoolParams(ctx sdk.Context, poolId uint64) bool {
-	// Fetch incentive params
-	params := k.GetParams(ctx)
-	poolInfos := params.PoolInfos
-
-	for _, ps := range poolInfos {
-		if ps.PoolId == poolId {
-			return true
+	poolInfo, found := k.GetPool(ctx, poolId)
+	if !found {
+		poolInfo = types.PoolInfo{
+			// reward amount
+			PoolId: poolId,
+			// reward wallet address
+			RewardWallet: stabletypes.PoolAddress().String(),
+			// multiplier for lp rewards
+			Multiplier: sdk.NewDec(1),
+			// Number of blocks since creation
+			NumBlocks: sdk.NewInt(1),
+			// Total dex rewards given since creation
+			DexRewardAmountGiven: sdk.ZeroDec(),
+			// Total eden rewards given since creation
+			EdenRewardAmountGiven: sdk.ZeroInt(),
 		}
+		k.SetPool(ctx, poolInfo)
 	}
-
-	// Initiate a new pool info
-	poolInfo := types.PoolInfo{
-		// reward amount
-		PoolId: poolId,
-		// reward wallet address
-		RewardWallet: stabletypes.PoolAddress().String(),
-		// multiplier for lp rewards
-		Multiplier: sdk.NewDec(1),
-		// Number of blocks since creation
-		NumBlocks: sdk.NewInt(1),
-		// Total dex rewards given since creation
-		DexRewardAmountGiven: sdk.ZeroDec(),
-		// Total eden rewards given since creation
-		EdenRewardAmountGiven: sdk.ZeroInt(),
-	}
-
-	// Update pool information
-	params.PoolInfos = append(params.PoolInfos, poolInfo)
-	k.SetParams(ctx, params)
 
 	return true
 }

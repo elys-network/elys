@@ -18,21 +18,17 @@ message Params {
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
-
-  // Pool information
-  // poolId, reward wallet, **multiplier**, dex rewards given
-	repeated PoolInfo pool_infos = 3 [(gogoproto.nullable) = false];
   
   // Tracking dex rewards given to LPs
-  DexRewardsTracker dex_rewards_lps = 4 [(gogoproto.nullable) = false];
+  DexRewardsTracker dex_rewards_lps = 3 [(gogoproto.nullable) = false];
 
   // Maximum eden reward apr for lps - [0 - 0.3]
-  string max_eden_reward_apr_lps = 5 [
+  string max_eden_reward_apr_lps = 4 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
 
-  repeated SupportedRewardDenom supported_reward_denoms = 6;
+  repeated SupportedRewardDenom supported_reward_denoms = 5;
 }
 
 

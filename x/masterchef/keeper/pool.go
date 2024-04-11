@@ -50,21 +50,14 @@ func (k Keeper) UpdatePoolMultipliers(ctx sdk.Context, poolMultipliers []types.P
 		return false
 	}
 
-	// Fetch incentive params
-	params := k.GetParams(ctx)
-
 	// Update pool multiplier
 	for _, pm := range poolMultipliers {
-		for i, p := range params.PoolInfos {
-			// If we found matching poolId
-			if p.PoolId == pm.PoolId {
-				params.PoolInfos[i].Multiplier = pm.Multiplier
-			}
+		p, found := k.GetPool(ctx, pm.PoolId)
+		if found {
+			p.Multiplier = pm.Multiplier
+			k.SetPool(ctx, p)
 		}
 	}
-
-	// Update parameter
-	k.SetParams(ctx, params)
 
 	return true
 }

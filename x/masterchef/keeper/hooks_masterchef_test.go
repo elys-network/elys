@@ -121,11 +121,11 @@ func TestHookMasterchef(t *testing.T) {
 	require.NoError(t, err)
 
 	// Generate 1 random account with 1000stake balanced
-	addr := simapp.AddTestAddrs(app, ctx, 2, sdk.NewInt(100000000))
+	addr := simapp.AddTestAddrs(app, ctx, 2, sdk.NewInt(10000000000))
 
 	// Create a pool
 	// Mint 100000USDC
-	usdcToken := sdk.NewCoins(sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(100000000)))
+	usdcToken := sdk.NewCoins(sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(10000000000)))
 
 	err = app.BankKeeper.MintCoins(ctx, ammtypes.ModuleName, usdcToken.MulInt(sdk.NewInt(2)))
 	require.NoError(t, err)
@@ -137,11 +137,11 @@ func TestHookMasterchef(t *testing.T) {
 	poolAssets := []ammtypes.PoolAsset{
 		{
 			Weight: sdk.NewInt(50),
-			Token:  sdk.NewCoin(ptypes.Elys, sdk.NewInt(100)),
+			Token:  sdk.NewCoin(ptypes.Elys, sdk.NewInt(10000000)),
 		},
 		{
 			Weight: sdk.NewInt(50),
-			Token:  sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(100)),
+			Token:  sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(10000000)),
 		},
 	}
 
@@ -169,16 +169,17 @@ func TestHookMasterchef(t *testing.T) {
 	// check length of pools
 	require.Equal(t, len(pools), 1)
 
-	_, err = amm.ExitPool(ctx, addr[0], pools[0].PoolId, math.NewIntWithDecimal(1, 16), sdk.NewCoins(), "")
+	_, err = amm.ExitPool(ctx, addr[0], pools[0].PoolId, math.NewIntWithDecimal(1, 21), sdk.NewCoins(), "")
 	require.NoError(t, err)
 
 	// new user join pool with same shares
-	share := ammtypes.InitPoolSharesSupply
-	require.Equal(t, mk.GetPoolTotalSupply(ctx, pools[0].PoolId), ammtypes.InitPoolSharesSupply)
+	share := ammtypes.InitPoolSharesSupply.Mul(math.NewIntWithDecimal(1, 5))
+	t.Log(mk.GetPoolTotalSupply(ctx, pools[0].PoolId))
+	require.Equal(t, mk.GetPoolTotalSupply(ctx, pools[0].PoolId), share)
 	require.Equal(t, mk.GetPoolBalance(ctx, pools[0].PoolId, addr[0].String()), share)
-	_, _, err = amm.JoinPoolNoSwap(ctx, addr[1], pools[0].PoolId, share, sdk.NewCoins(sdk.NewCoin(ptypes.Elys, sdk.NewInt(10000)), sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(10000))))
+	_, _, err = amm.JoinPoolNoSwap(ctx, addr[1], pools[0].PoolId, share, sdk.NewCoins(sdk.NewCoin(ptypes.Elys, sdk.NewInt(10000000)), sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(10000000))))
 	require.NoError(t, err)
-	require.Equal(t, mk.GetPoolTotalSupply(ctx, pools[0].PoolId), ammtypes.InitPoolSharesSupply.MulRaw(2))
+	require.Equal(t, mk.GetPoolTotalSupply(ctx, pools[0].PoolId), share.MulRaw(2))
 	require.Equal(t, mk.GetPoolBalance(ctx, pools[0].PoolId, addr[1].String()), share)
 
 	atomToken := sdk.NewCoins(sdk.NewCoin("uatom", math.NewIntWithDecimal(100000000, 6)))
@@ -271,12 +272,12 @@ func TestHookMasterchef(t *testing.T) {
 		User: addr[0].String(),
 	})
 	require.NoError(t, err)
-	require.Equal(t, res.TotalRewards[0].String(), "6666670000uatom")
+	require.Equal(t, res.TotalRewards[0].String(), "6666666666uatom")
 	res, err = mk.UserPendingReward(ctx, &types.QueryUserPendingRewardRequest{
 		User: addr[1].String(),
 	})
 	require.NoError(t, err)
-	require.Equal(t, res.TotalRewards[0].String(), "3333335000uatom")
+	require.Equal(t, res.TotalRewards[0].String(), "3333333333uatom")
 
 	// check rewards claimed
 	_, err = masterchefSrv.ClaimRewards(sdk.WrapSDKContext(ctx), &types.MsgClaimRewards{
@@ -291,7 +292,7 @@ func TestHookMasterchef(t *testing.T) {
 	require.NoError(t, err)
 
 	atomAmount = app.BankKeeper.GetBalance(ctx, addr[1], "uatom")
-	require.Equal(t, atomAmount.String(), "8283335000uatom")
+	require.Equal(t, atomAmount.String(), "8283333333uatom")
 
 	// no pending rewards
 	res, err = mk.UserPendingReward(ctx, &types.QueryUserPendingRewardRequest{
@@ -304,4 +305,7 @@ func TestHookMasterchef(t *testing.T) {
 	})
 	require.NoError(t, err)
 	require.Len(t, res.TotalRewards, 0)
+
+	pool, _ := mk.GetPool(ctx, pools[0].PoolId)
+	require.Equal(t, pool.ExternalIncentiveApr.String(), "4204.799481351999973502")
 }

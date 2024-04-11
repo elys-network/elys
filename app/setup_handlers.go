@@ -20,6 +20,29 @@ func setUpgradeHandler(app *ElysApp) {
 		func(ctx sdk.Context, plan upgradetypes.Plan, vm m.VersionMap) (m.VersionMap, error) {
 			app.Logger().Info("Running upgrade handler for " + version.Version)
 
+			if version.Version == "v0.29.31" {
+				validators := []string{
+					"elysvalcons1j7047ewlfa75dv0q93lnqkctr9afgfayyvmhc4", // euphoria
+					"elysvalcons1a58n8t00elj7g4v8lm7rd9q06xu4nz3dgy723q", // shangrila
+					"elysvalcons1t0cm443g88ns9rl7ac45a5u9cs54thtww7w4ag", // ottersync
+				}
+				for _, val := range validators {
+					addr, err := sdk.ConsAddressFromBech32(val)
+					if err != nil {
+						app.Logger().Error("failed to convert validator address", "error", err)
+						continue
+					}
+					signingInfo, found := app.SlashingKeeper.GetValidatorSigningInfo(ctx, addr)
+					if !found {
+						app.Logger().Error("failed to get validator signing info", "validator", val)
+						continue
+					}
+					signingInfo.Tombstoned = false
+					app.SlashingKeeper.SetValidatorSigningInfo(ctx, addr, signingInfo)
+					app.Logger().Info("reset tombstoned status for validator", "validator", val)
+				}
+			}
+
 			return app.mm.RunMigrations(ctx, app.configurator, vm)
 		},
 	)
