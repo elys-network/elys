@@ -132,12 +132,10 @@ func (k Keeper) UpdateStakersRewards(ctx sdk.Context) error {
 	// Calculate each portion of Gas fees collected - stakers, LPs
 	totalFeesCollected := sdk.Coins{} // TODO: calculate USDC amount
 	gasFeeCollectedDec := sdk.NewDecCoinsFromCoins(totalFeesCollected...)
-	rewardPortionForStakers := k.GetParams(ctx).RewardPortionForStakers
-	gasFeesForStakers := gasFeeCollectedDec.MulDecTruncate(rewardPortionForStakers)
 
 	// Sum Dex revenue for stakers + Gas fees for stakers and name it dex Revenus for stakers
 	// But won't sum dex revenue for LPs and gas fees for LPs as the LP revenue will be rewared by pool.
-	dexRevenueForStakersPerDistribution := gasFeesForStakers
+	dexRevenueForStakersPerDistribution := gasFeeCollectedDec
 
 	// USDC amount in sdk.Dec type
 	dexRevenueStakersAmtPerDistribution := dexRevenueForStakersPerDistribution.AmountOf(baseCurrency)
@@ -158,10 +156,7 @@ func (k Keeper) UpdateStakersRewards(ctx sdk.Context) error {
 	// Maximum eden based per distribution epoch on maximum APR - 30% by default
 	// Allocated for staking per day = (0.3/365)* ( total elys staked + total Eden committed + total Eden boost committed)
 
-	cparams := k.commKeeper.GetParams(ctx)
-	totalElysEdenEdenBStake := k.Keeper.TotalBondedTokens(ctx).
-		Add(cparams.TotalCommitted.AmountOf(ptypes.Eden)).
-		Add(cparams.TotalCommitted.AmountOf(ptypes.EdenB))
+	totalElysEdenEdenBStake := k.TotalBondedTokens(ctx)
 
 	epochStakersMaxEdenAmount := params.MaxEdenRewardAprStakers.
 		MulInt(totalElysEdenEdenBStake).
@@ -169,6 +164,11 @@ func (k Keeper) UpdateStakersRewards(ctx sdk.Context) error {
 
 	// Use min amount (eden allocation from tokenomics and max apr based eden amount)
 	epochStakersEdenAmount = sdk.MinInt(epochStakersEdenAmount, epochStakersMaxEdenAmount.TruncateInt())
+
+	epochStakersEdenBAmount := sdk.NewDecFromInt(totalElysEdenEdenBStake).
+		Mul(types.EdenBoostApr).
+		QuoInt(stakeIncentive.TotalBlocksPerYear).
+		RoundInt()
 
 	// Set block number and total dex rewards given
 	params.DexRewardsStakers.NumBlocks = sdk.OneInt()
@@ -179,6 +179,7 @@ func (k Keeper) UpdateStakersRewards(ctx sdk.Context) error {
 	coins := sdk.NewCoins(
 		sdk.NewCoin(baseCurrency, dexRevenueStakersAmtPerDistribution.RoundInt()),
 		sdk.NewCoin(ptypes.Eden, epochStakersEdenAmount),
+		sdk.NewCoin(ptypes.EdenB, epochStakersEdenBAmount),
 	)
 	return k.commKeeper.SendCoinsFromModuleToModule(ctx, authtypes.FeeCollectorName, types.ModuleName, coins.Sort())
 }

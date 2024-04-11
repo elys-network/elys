@@ -46,10 +46,7 @@ func (k Keeper) CalculateApr(ctx sdk.Context, query *types.QueryAprRequest) (mat
 			})
 		} else {
 			// Elys staking, Eden committed, EdenB committed.
-
-			// Update total committed states
-			k.UpdateTotalCommitmentInfo(ctx, baseCurrency)
-			totalStakedSnapshot := k.tci.TotalElysBonded.Add(k.tci.TotalEdenEdenBoostCommitted)
+			totalStakedSnapshot := k.estaking.TotalBondedTokens(ctx)
 
 			// Ensure totalStakedSnapshot is not zero to avoid division by zero
 			if totalStakedSnapshot.IsZero() {
@@ -107,8 +104,7 @@ func (k Keeper) CalculateApr(ctx sdk.Context, query *types.QueryAprRequest) (mat
 			}
 
 			// Update total committed states
-			k.UpdateTotalCommitmentInfo(ctx, baseCurrency)
-			totalStakedSnapshot := k.tci.TotalElysBonded.Add(k.tci.TotalEdenEdenBoostCommitted)
+			totalStakedSnapshot := k.estaking.TotalBondedTokens(ctx)
 
 			// Ensure totalStakedSnapshot is not zero to avoid division by zero
 			if totalStakedSnapshot.IsZero() {

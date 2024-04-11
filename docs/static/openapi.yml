@@ -40361,12 +40361,6 @@ paths:
                     type: string
                   edenb_commit_val:
                     type: string
-                  reward_portion_for_stakers:
-                    type: string
-                    description: >-
-                      Dex revenue percent for lps, `100 - reward_portion_for_lps
-                      - reward_portion_for_stakers = revenue percent for
-                      protocol`.
                   max_eden_reward_apr_stakers:
                     type: string
                     title: Maximum eden reward apr for stakers - [0 - 0.3]
@@ -86066,11 +86060,6 @@ definitions:
         type: string
       edenb_commit_val:
         type: string
-      reward_portion_for_stakers:
-        type: string
-        description: >-
-          Dex revenue percent for lps, `100 - reward_portion_for_lps -
-          reward_portion_for_stakers = revenue percent for protocol`.
       max_eden_reward_apr_stakers:
         type: string
         title: Maximum eden reward apr for stakers - [0 - 0.3]
@@ -86114,11 +86103,6 @@ definitions:
             type: string
           edenb_commit_val:
             type: string
-          reward_portion_for_stakers:
-            type: string
-            description: >-
-              Dex revenue percent for lps, `100 - reward_portion_for_lps -
-              reward_portion_for_stakers = revenue percent for protocol`.
           max_eden_reward_apr_stakers:
             type: string
             title: Maximum eden reward apr for stakers - [0 - 0.3]

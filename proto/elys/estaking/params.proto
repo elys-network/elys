@@ -14,11 +14,6 @@ message Params {
   IncentiveInfo stake_incentives = 1;
   string eden_commit_val = 2;
   string edenb_commit_val = 3;
-  // Dex revenue percent for lps, `100 - reward_portion_for_lps - reward_portion_for_stakers = revenue percent for protocol`.
-  string reward_portion_for_stakers = 4 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
-    (gogoproto.nullable) = false
-  ];
   // Maximum eden reward apr for stakers - [0 - 0.3]
   string max_eden_reward_apr_stakers = 5 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",

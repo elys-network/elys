@@ -207,8 +207,8 @@ func TestCollectGasFeesToIncentiveModule(t *testing.T) {
 }
 
 func TestCollectDEXRevenueToIncentiveModule(t *testing.T) {
-	app := simapp.InitElysTestApp(initChain)
-	ctx := app.BaseApp.NewContext(initChain, tmproto.Header{})
+	app := simapp.InitElysTestApp(true)
+	ctx := app.BaseApp.NewContext(true, tmproto.Header{})
 
 	ik, bk, amm, oracle := app.IncentiveKeeper, app.BankKeeper, app.AmmKeeper, app.OracleKeeper
 

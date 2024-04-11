@@ -37,7 +37,6 @@ func GetTxCmd() *cobra.Command {
 	cmd.AddCommand(
 		CmdAddExternalRewardDenom(),
 		CmdAddExternalIncentive(),
-		CmdUpdateIncentiveParams(),
 		CmdUpdatePoolMultipliers(),
 		CmdClaimRewards(),
 	)

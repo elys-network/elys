@@ -1,10 +1,12 @@
 package keeper
 
 import (
+	"fmt"
 	gomath "math"
 
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	ammtypes "github.com/elys-network/elys/x/amm/types"
 )
 
 // Calculate the delegated amount
@@ -64,4 +66,30 @@ func (k Keeper) CalcBondedDelegationAmount(ctx sdk.Context, delegator string) ma
 	}
 
 	return delAmount.TruncateInt()
+}
+
+// Calculate the amm pool ratio
+func (k Keeper) CalculatePoolRatio(ctx sdk.Context, pool *ammtypes.Pool) string {
+	weightString := ""
+	totalWeight := sdk.ZeroInt()
+	for _, asset := range pool.PoolAssets {
+		totalWeight = totalWeight.Add(asset.Weight)
+	}
+
+	if totalWeight.IsZero() {
+		return weightString
+	}
+
+	for _, asset := range pool.PoolAssets {
+		weight := sdk.NewDecFromInt(asset.Weight).QuoInt(totalWeight).MulInt(sdk.NewInt(100)).TruncateInt64()
+		weightString = fmt.Sprintf("%s : %d", weightString, weight)
+	}
+
+	// remove prefix " : " 3 characters
+	if len(weightString) > 1 {
+		weightString = weightString[3:]
+	}
+
+	// returns pool weight string
+	return weightString
 }
