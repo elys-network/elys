@@ -226,9 +226,9 @@ func CmdQueryUserRewardInfo() *cobra.Command {
 
 func CmdQueryUserPendingReward() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:     "user-reward-info",
-		Short:   "shows user reward info",
-		Example: "elysd q incentive user-reward-info [user]",
+		Use:     "user-pending-reward",
+		Short:   "shows user pending reward",
+		Example: "elysd q incentive user-pending-reward [user]",
 		Args:    cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)

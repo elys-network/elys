@@ -30,21 +30,6 @@ func CmdAddExternalIncentive() *cobra.Command {
 				return err
 			}
 
-			title, err := cmd.Flags().GetString(cli.FlagTitle)
-			if err != nil {
-				return err
-			}
-
-			summary, err := cmd.Flags().GetString(cli.FlagSummary)
-			if err != nil {
-				return err
-			}
-
-			metadata, err := cmd.Flags().GetString(cli.FlagMetadata)
-			if err != nil {
-				return err
-			}
-
 			signer := clientCtx.GetFromAddress()
 			if signer == nil {
 				return errors.New("signer address is missing")
@@ -68,53 +53,22 @@ func CmdAddExternalIncentive() *cobra.Command {
 				return errors.New("invalid amount per block")
 			}
 
-			govAddress := sdk.AccAddress(address.Module("gov"))
 			msg := &types.MsgAddExternalIncentive{
-				Sender:         govAddress.String(),
+				Sender:         signer.String(),
 				RewardDenom:    rewardDenom,
 				PoolId:         poolId,
 				FromBlock:      fromBlock,
 				ToBlock:        toBlock,
 				AmountPerBlock: amountPerBlock,
 			}
+
 			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}
 
-			depositStr, err := cmd.Flags().GetString(cli.FlagDeposit)
-			if err != nil {
-				return err
-			}
-
-			deposit, err := sdk.ParseCoinsNormalized(depositStr)
-			if err != nil {
-				return err
-			}
-
-			govMsg, err := v1.NewMsgSubmitProposal([]sdk.Msg{msg}, deposit, signer.String(), metadata, title, summary)
-			if err != nil {
-				return err
-			}
-
-			err = tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), govMsg)
-			if err != nil {
-				return err
-			}
-
-			return nil
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
 		},
 	}
-
-	cmd.Flags().String(cli.FlagTitle, "", "title of proposal")
-	cmd.Flags().String(cli.FlagSummary, "", "summary of proposal")
-	cmd.Flags().String(cli.FlagMetadata, "", "metadata of proposal")
-	cmd.Flags().String(cli.FlagDeposit, "", "deposit of proposal")
-
-	_ = cmd.MarkFlagRequired(cli.FlagTitle)
-	_ = cmd.MarkFlagRequired(cli.FlagSummary)
-	_ = cmd.MarkFlagRequired(cli.FlagMetadata)
-	_ = cmd.MarkFlagRequired(cli.FlagDeposit)
-
 	flags.AddTxFlagsToCmd(cmd)
 
 	return cmd

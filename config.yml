@@ -3,6 +3,7 @@ accounts:
   - name: treasury
     coins:
       - 1000000000000uatom
+      - 1000000000000uinc
       - 1000000000000uusdc
       - 1000000000000uusdt
       - 9000000000000000uelys
@@ -333,29 +334,29 @@ genesis:
     tokenomics:
       airdropList:
         - intent: AtomStakers
-          amount: 9999999
+          amount: 9999999000000
           authority: elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3
         - intent: RowanStakersLP
-          amount: 9999999
+          amount: 9999999000000
           authority: elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3
         - intent: Juno
-          amount: 9999999
+          amount: 9999999000000
           authority: elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3
         - intent: Osmo
-          amount: 9999999
+          amount: 9999999000000
           authority: elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3
         - intent: Evmos
-          amount: 9999999
+          amount: 9999999000000
           authority: elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3
       genesisInflation:
         inflation:
-          lmRewards: 9999999
-          icsStakingRewards: 9999999
-          communityFund: 9999999
-          strategicReserve: 9999999
-          teamTokensVested: 9999999
-        seedVesting: 9999999
-        strategicSalesVesting: 9999999
+          lmRewards: 9999999000000
+          icsStakingRewards: 9999999000000
+          communityFund: 9999999000000
+          strategicReserve: 9999999000000
+          teamTokensVested: 9999999000000
+        seedVesting: 9999999000000
+        strategicSalesVesting: 9999999000000
         authority: elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3
       timeBasedInflationList:
         - startBlockHeight: 1
@@ -363,31 +364,31 @@ genesis:
           description: 1st Year Inflation
           authority: elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3
           inflation:
-            lmRewards: 9999999
-            icsStakingRewards: 9999999
-            communityFund: 9999999
-            strategicReserve: 9999999
-            teamTokensVested: 9999999
+            lmRewards: 9999999000000
+            icsStakingRewards: 9999999000000
+            communityFund: 9999999000000
+            strategicReserve: 9999999000000
+            teamTokensVested: 9999999000000
         - startBlockHeight: 6307201
           endBlockHeight: 12614401
           description: 2nd Year Inflation
           authority: elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3
           inflation:
-            lmRewards: 9999999
-            icsStakingRewards: 9999999
-            communityFund: 9999999
-            strategicReserve: 9999999
-            teamTokensVested: 9999999
+            lmRewards: 9999999000000
+            icsStakingRewards: 9999999000000
+            communityFund: 9999999000000
+            strategicReserve: 9999999000000
+            teamTokensVested: 9999999000000
         - startBlockHeight: 12614402
           endBlockHeight: 18921602
           description: 3rd Year Inflation
           authority: elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3
           inflation:
-            lmRewards: 9999999
-            icsStakingRewards: 9999999
-            communityFund: 9999999
-            strategicReserve: 9999999
-            teamTokensVested: 9999999
+            lmRewards: 9999999000000
+            icsStakingRewards: 9999999000000
+            communityFund: 9999999000000
+            strategicReserve: 9999999000000
+            teamTokensVested: 9999999000000
     oracle:
       assetInfos:
         - denom: "satoshi"
@@ -497,4 +498,14 @@ genesis:
       params:
         deposit_denom: "uusdc"
         redemption_rate: "1.000000000000000000"
+    masterchef:
+      params: 
+        supported_reward_denoms: 
+          - denom: "uinc"
+            min_amount: "1000000"
+        reward_portion_for_lps: "0.6"
+        dex_rewards_lps:
+          num_blocks: "1"
+          amount: "0"
+        max_eden_reward_apr_lps: "0.5"
   chain_id: elystestnet-1
