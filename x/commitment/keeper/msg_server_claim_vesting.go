@@ -6,6 +6,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/elys-network/elys/x/commitment/types"
+	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
 
 // ClaimVesting claims already vested amount
@@ -25,6 +26,15 @@ func (k msgServer) ClaimVesting(goCtx context.Context, msg *types.MsgClaimVestin
 	}
 
 	if newClaims.IsAllPositive() {
+		// mint coins if vesting token is ELYS
+		if newClaims.AmountOf(ptypes.Elys).IsPositive() {
+			elysCoins := sdk.Coins{sdk.NewCoin(ptypes.Elys, newClaims.AmountOf(ptypes.Elys))}
+			err := k.bankKeeper.MintCoins(ctx, types.ModuleName, elysCoins)
+			if err != nil {
+				return nil, err
+			}
+		}
+
 		err := k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, sender, newClaims)
 		if err != nil {
 			return nil, err

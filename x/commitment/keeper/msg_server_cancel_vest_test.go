@@ -57,7 +57,7 @@ func TestCancelVest(t *testing.T) {
 		Creator: creator.String(),
 		VestingTokens: []*types.VestingTokens{
 			{
-				Denom:         ptypes.Eden,
+				Denom:         ptypes.Elys,
 				TotalAmount:   sdk.NewInt(100),
 				ClaimedAmount: sdk.NewInt(1),
 				NumBlocks:     100,
