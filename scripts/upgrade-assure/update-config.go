@@ -14,7 +14,7 @@ func updateConfig(homePath, dbEngine string) {
 	sed("s/^cors_allowed_origins =.*/cors_allowed_origins = [\\\"*\\\"]/", configPath)
 
 	// Update config.toml for timeout_broadcast_tx_commit
-	sed("s/^timeout_broadcast_tx_commit =.*/timeout_broadcast_tx_commit = \\\"30s\\\"/", configPath)
+	sed("s/^timeout_broadcast_tx_commit =.*/timeout_broadcast_tx_commit = \\\"60s\\\"/", configPath)
 
 	// Update config.toml for db_backend
 	sed("s/^db_backend =.*/db_backend = \\\""+dbEngine+"\\\"/", configPath)
