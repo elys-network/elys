@@ -6,7 +6,7 @@ import (
 )
 
 func waitForServiceToStart(url, name string) {
-	timeout := 120 * time.Second
+	timeout := 240 * time.Second
 	start := time.Now()
 
 	// Wait for the node to be running with timout
