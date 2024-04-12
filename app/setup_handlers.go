@@ -5,6 +5,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	m "github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/cosmos/cosmos-sdk/version"
+	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 )
 
@@ -20,26 +21,65 @@ func setUpgradeHandler(app *ElysApp) {
 		func(ctx sdk.Context, plan upgradetypes.Plan, vm m.VersionMap) (m.VersionMap, error) {
 			app.Logger().Info("Running upgrade handler for " + version.Version)
 
-			if version.Version == "v0.29.31" {
-				validators := []string{
+			if version.Version == "v0.29.32" {
+				// update the signing info for the validators
+				signers := []string{
 					"elysvalcons1j7047ewlfa75dv0q93lnqkctr9afgfayyvmhc4", // euphoria
 					"elysvalcons1a58n8t00elj7g4v8lm7rd9q06xu4nz3dgy723q", // shangrila
 					"elysvalcons1t0cm443g88ns9rl7ac45a5u9cs54thtww7w4ag", // ottersync
 				}
-				for _, val := range validators {
-					addr, err := sdk.ConsAddressFromBech32(val)
+				for _, signer := range signers {
+					addr, err := sdk.ConsAddressFromBech32(signer)
 					if err != nil {
-						app.Logger().Error("failed to convert validator address", "error", err)
+						app.Logger().Error("failed to convert signer address", "error", err)
 						continue
 					}
 					signingInfo, found := app.SlashingKeeper.GetValidatorSigningInfo(ctx, addr)
 					if !found {
-						app.Logger().Error("failed to get validator signing info", "validator", val)
+						app.Logger().Error("failed to get signer signing info", "signer", signer)
 						continue
 					}
+					signingInfo.JailedUntil = ctx.BlockTime() // set jailed until to current block time
 					signingInfo.Tombstoned = false
 					app.SlashingKeeper.SetValidatorSigningInfo(ctx, addr, signingInfo)
-					app.Logger().Info("reset tombstoned status for validator", "validator", val)
+					app.Logger().Info("reset tombstoned status and jailed until date for signer", "signer", signer)
+				}
+
+				// update the unbonded status for the validators
+				operators := []string{
+					"elysvaloper1cduy8wep22mdnsmml8w9gn94ek8hqnsdffy098", // euphoria
+					"elysvaloper17wc3s7am5qgjk4pm0k96kg6laxq8hkyq0dzq5n", // shangrila
+					"elysvaloper1uf8m4jga7akv25lf2lem50alu3kxdd8lzlvak6", // ottersync
+				}
+				for _, operator := range operators {
+					addr, err := sdk.ValAddressFromBech32(operator)
+					if err != nil {
+						app.Logger().Error("failed to convert operator address", "error", err)
+						continue
+					}
+					validator, found := app.StakingKeeper.GetValidator(ctx, addr)
+					if !found {
+						app.Logger().Error("failed to get validator", "operator", operator)
+						continue
+					}
+
+					for _, unbondingId := range validator.UnbondingIds {
+						unbondingDelegation, found := app.StakingKeeper.GetUnbondingDelegationByUnbondingID(ctx, unbondingId)
+						if !found {
+							app.Logger().Error("failed to get unbonding delegation", "operator", operator, "unbondingId", unbondingId)
+							continue
+						}
+						app.StakingKeeper.RemoveUnbondingDelegation(ctx, unbondingDelegation)
+						app.Logger().Info("removed unbonding delegation", "operator", operator, "unbondingId", unbondingId)
+					}
+
+					validator.Jailed = false
+					validator.Status = stakingtypes.Bonded
+					validator.UnbondingTime = ctx.BlockTime()
+					validator.UnbondingIds = []uint64{}
+
+					app.StakingKeeper.SetValidator(ctx, validator)
+					app.Logger().Info("reset unbonded status for validator", "operator", operator)
 				}
 			}
 
