@@ -92,30 +92,26 @@ message QueryAprsResponse {
   ];
 }
 
-message QueryAllProgramRewardsRequest {}
+message QueryAllProgramRewardsRequest {
+  string address = 1;
+}
 
 message QueryAllProgramRewardsResponse {
-  BalanceAvailable usdc_rewards_usdc = 1 [(gogoproto.nullable) = false];
-  BalanceAvailable eden_rewards_usdc = 2 [ (gogoproto.nullable) = false ];
-  BalanceAvailable usdc_rewards_edenb = 3 [ (gogoproto.nullable) = false ];
-  BalanceAvailable eden_rewards_edenb = 4 [ (gogoproto.nullable) = false ];
-  BalanceAvailable usdc_rewards_eden = 5 [ (gogoproto.nullable) = false ];
-  BalanceAvailable eden_rewards_eden = 6 [ (gogoproto.nullable) = false ];
-  BalanceAvailable edenb_rewards_eden = 7 [ (gogoproto.nullable) = false ];
-  BalanceAvailable usdc_rewards_elys = 8 [ (gogoproto.nullable) = false ];
-  BalanceAvailable eden_rewards_elys = 9 [ (gogoproto.nullable) = false ];
-  BalanceAvailable edenb_rewards_elys = 10 [ (gogoproto.nullable) = false ];
-}
-message BalanceAvailable {
-  string amount = 1 [
-    (cosmos_proto.scalar) = "cosmos.Int",
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
-    (gogoproto.nullable) = false
+  repeated cosmos.base.v1beta1.DecCoin usdc_staking_rewards = 1 [
+    (gogoproto.nullable) = false,
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.DecCoins"
   ];
-  string usd_amount = 2 [
-    (cosmos_proto.scalar) = "cosmos.Dec",
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
-    (gogoproto.nullable) = false
+  repeated cosmos.base.v1beta1.DecCoin elys_staking_rewards = 2 [
+    (gogoproto.nullable) = false,
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.DecCoins"
+  ];
+  repeated cosmos.base.v1beta1.DecCoin eden_staking_rewards = 3 [
+    (gogoproto.nullable) = false,
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.DecCoins"
+  ];
+  repeated cosmos.base.v1beta1.DecCoin edenb_staking_rewards = 4 [
+    (gogoproto.nullable) = false,
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.DecCoins"
   ];
 }
 

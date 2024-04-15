@@ -40495,76 +40495,78 @@ paths:
           schema:
             type: object
             properties:
-              usdc_rewards_usdc:
-                type: object
-                properties:
-                  amount:
-                    type: string
-                  usd_amount:
-                    type: string
-              eden_rewards_usdc:
-                type: object
-                properties:
-                  amount:
-                    type: string
-                  usd_amount:
-                    type: string
-              usdc_rewards_edenb:
-                type: object
-                properties:
-                  amount:
-                    type: string
-                  usd_amount:
-                    type: string
-              eden_rewards_edenb:
-                type: object
-                properties:
-                  amount:
-                    type: string
-                  usd_amount:
-                    type: string
-              usdc_rewards_eden:
-                type: object
-                properties:
-                  amount:
-                    type: string
-                  usd_amount:
-                    type: string
-              eden_rewards_eden:
-                type: object
-                properties:
-                  amount:
-                    type: string
-                  usd_amount:
-                    type: string
-              edenb_rewards_eden:
-                type: object
-                properties:
-                  amount:
-                    type: string
-                  usd_amount:
-                    type: string
-              usdc_rewards_elys:
-                type: object
-                properties:
-                  amount:
-                    type: string
-                  usd_amount:
-                    type: string
-              eden_rewards_elys:
-                type: object
-                properties:
-                  amount:
-                    type: string
-                  usd_amount:
-                    type: string
-              edenb_rewards_elys:
-                type: object
-                properties:
-                  amount:
-                    type: string
-                  usd_amount:
-                    type: string
+              usdc_staking_rewards:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    denom:
+                      type: string
+                    amount:
+                      type: string
+                  description: >-
+                    DecCoin defines a token with a denomination and a decimal
+                    amount.
+
+
+                    NOTE: The amount field is an Dec which implements the custom
+                    method
+
+                    signatures required by gogoproto.
+              elys_staking_rewards:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    denom:
+                      type: string
+                    amount:
+                      type: string
+                  description: >-
+                    DecCoin defines a token with a denomination and a decimal
+                    amount.
+
+
+                    NOTE: The amount field is an Dec which implements the custom
+                    method
+
+                    signatures required by gogoproto.
+              eden_staking_rewards:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    denom:
+                      type: string
+                    amount:
+                      type: string
+                  description: >-
+                    DecCoin defines a token with a denomination and a decimal
+                    amount.
+
+
+                    NOTE: The amount field is an Dec which implements the custom
+                    method
+
+                    signatures required by gogoproto.
+              edenb_staking_rewards:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    denom:
+                      type: string
+                    amount:
+                      type: string
+                  description: >-
+                    DecCoin defines a token with a denomination and a decimal
+                    amount.
+
+
+                    NOTE: The amount field is an Dec which implements the custom
+                    method
+
+                    signatures required by gogoproto.
         default:
           description: An unexpected error response.
           schema:
@@ -40583,6 +40585,11 @@ paths:
                     '@type':
                       type: string
                   additionalProperties: {}
+      parameters:
+        - name: address
+          in: query
+          required: false
+          type: string
       tags:
         - Query
   /elys-network/elys/incentive/apr/{withdraw_type}/{denom}:
@@ -86183,13 +86190,6 @@ definitions:
       - EDENB_PROGRAM
       - LP_MINING_PROGRAM
     default: ALL_PROGRAM
-  elys.incentive.BalanceAvailable:
-    type: object
-    properties:
-      amount:
-        type: string
-      usd_amount:
-        type: string
   elys.incentive.PoolRewards:
     type: object
     properties:
@@ -86215,76 +86215,62 @@ definitions:
   elys.incentive.QueryAllProgramRewardsResponse:
     type: object
     properties:
-      usdc_rewards_usdc:
-        type: object
-        properties:
-          amount:
-            type: string
-          usd_amount:
-            type: string
-      eden_rewards_usdc:
-        type: object
-        properties:
-          amount:
-            type: string
-          usd_amount:
-            type: string
-      usdc_rewards_edenb:
-        type: object
-        properties:
-          amount:
-            type: string
-          usd_amount:
-            type: string
-      eden_rewards_edenb:
-        type: object
-        properties:
-          amount:
-            type: string
-          usd_amount:
-            type: string
-      usdc_rewards_eden:
-        type: object
-        properties:
-          amount:
-            type: string
-          usd_amount:
-            type: string
-      eden_rewards_eden:
-        type: object
-        properties:
-          amount:
-            type: string
-          usd_amount:
-            type: string
-      edenb_rewards_eden:
-        type: object
-        properties:
-          amount:
-            type: string
-          usd_amount:
-            type: string
-      usdc_rewards_elys:
-        type: object
-        properties:
-          amount:
-            type: string
-          usd_amount:
-            type: string
-      eden_rewards_elys:
-        type: object
-        properties:
-          amount:
-            type: string
-          usd_amount:
-            type: string
-      edenb_rewards_elys:
-        type: object
-        properties:
-          amount:
-            type: string
-          usd_amount:
-            type: string
+      usdc_staking_rewards:
+        type: array
+        items:
+          type: object
+          properties:
+            denom:
+              type: string
+            amount:
+              type: string
+          description: |-
+            DecCoin defines a token with a denomination and a decimal amount.
+
+            NOTE: The amount field is an Dec which implements the custom method
+            signatures required by gogoproto.
+      elys_staking_rewards:
+        type: array
+        items:
+          type: object
+          properties:
+            denom:
+              type: string
+            amount:
+              type: string
+          description: |-
+            DecCoin defines a token with a denomination and a decimal amount.
+
+            NOTE: The amount field is an Dec which implements the custom method
+            signatures required by gogoproto.
+      eden_staking_rewards:
+        type: array
+        items:
+          type: object
+          properties:
+            denom:
+              type: string
+            amount:
+              type: string
+          description: |-
+            DecCoin defines a token with a denomination and a decimal amount.
+
+            NOTE: The amount field is an Dec which implements the custom method
+            signatures required by gogoproto.
+      edenb_staking_rewards:
+        type: array
+        items:
+          type: object
+          properties:
+            denom:
+              type: string
+            amount:
+              type: string
+          description: |-
+            DecCoin defines a token with a denomination and a decimal amount.
+
+            NOTE: The amount field is an Dec which implements the custom method
+            signatures required by gogoproto.
   elys.incentive.QueryAprResponse:
     type: object
     properties:

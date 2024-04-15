@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"time"
 
+	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/math"
 	"github.com/cometbft/cometbft/libs/log"
 	"github.com/cosmos/cosmos-sdk/codec"
@@ -12,6 +13,7 @@ import (
 	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	distrtypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	"github.com/elys-network/elys/x/estaking/types"
@@ -159,6 +161,21 @@ func (k Keeper) Validator(ctx sdk.Context, address sdk.ValAddress) stakingtypes.
 	return val
 }
 
+func (k Keeper) IterateValidators(ctx sdk.Context,
+	fn func(index int64, validator stakingtypes.ValidatorI) (stop bool)) {
+	params := k.GetParams(ctx)
+	if params.EdenCommitVal != "" {
+		edenVal := k.GetEdenValidator(ctx)
+		fn(0, edenVal)
+	}
+
+	if params.EdenbCommitVal != "" {
+		edenBVal := k.GetEdenBValidator(ctx)
+		fn(0, edenBVal)
+	}
+	k.Keeper.IterateValidators(ctx, fn)
+}
+
 func (k Keeper) Delegation(ctx sdk.Context, addrDel sdk.AccAddress, addrVal sdk.ValAddress) stakingtypes.DelegationI {
 	params := k.GetParams(ctx)
 	if addrVal.String() == params.EdenCommitVal {
@@ -245,4 +262,44 @@ func (k Keeper) Slash(ctx sdk.Context, consAddr sdk.ConsAddress, infractionHeigh
 
 func (k Keeper) SlashWithInfractionReason(ctx sdk.Context, consAddr sdk.ConsAddress, infractionHeight int64, power int64, slashFactor sdk.Dec, infraction stakingtypes.Infraction) math.Int {
 	return k.Keeper.SlashWithInfractionReason(ctx, consAddr, infractionHeight, power, slashFactor, infraction)
+}
+
+func (k Keeper) WithdrawEdenBReward(ctx sdk.Context, addr sdk.AccAddress) error {
+	params := k.GetParams(ctx)
+	valAddr, err := sdk.ValAddressFromBech32(params.EdenbCommitVal)
+	if err != nil {
+		return err
+	}
+	_, err = k.distrKeeper.WithdrawDelegationRewards(ctx, addr, valAddr)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (k Keeper) DelegationRewards(ctx sdk.Context, delegatorAddress string, validatorAddress string) (sdk.DecCoins, error) {
+	valAdr, err := sdk.ValAddressFromBech32(validatorAddress)
+	if err != nil {
+		return nil, err
+	}
+
+	val := k.Validator(ctx, valAdr)
+	if val == nil {
+		return nil, errorsmod.Wrap(distrtypes.ErrNoValidatorExists, validatorAddress)
+	}
+
+	delAdr, err := sdk.AccAddressFromBech32(delegatorAddress)
+	if err != nil {
+		return nil, err
+	}
+
+	del := k.Delegation(ctx, delAdr, valAdr)
+	if del == nil {
+		return nil, distrtypes.ErrNoDelegationExists
+	}
+
+	endingPeriod := k.distrKeeper.IncrementValidatorPeriod(ctx, val)
+	rewards := k.distrKeeper.CalculateDelegationRewards(ctx, val, del, endingPeriod)
+	return rewards, nil
 }

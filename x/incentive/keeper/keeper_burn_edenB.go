@@ -8,8 +8,17 @@ import (
 
 // Burn EdenBoost from Elys unstaked
 func (k Keeper) BurnEdenBFromElysUnstaking(ctx sdk.Context, delegator sdk.AccAddress) {
-	delAddr := delegator.String()
+	// Claim EdenB rewards
+	cacheCtx, write := ctx.CacheContext()
+	err := k.estaking.WithdrawEdenBReward(cacheCtx, delegator)
+	if err != nil {
+		k.Logger(ctx).Error(err.Error())
+	} else {
+		write()
+	}
+
 	// Get commitments
+	delAddr := delegator.String()
 	commitments := k.cmk.GetCommitments(ctx, delAddr)
 
 	// Get previous amount
@@ -26,8 +35,6 @@ func (k Keeper) BurnEdenBFromElysUnstaking(ctx sdk.Context, delegator sdk.AccAdd
 	if delAmount.GTE(prevElysStaked) {
 		return
 	}
-
-	// TODO: might need to claim all rewards before burn operation to properly burn EdenB including unclaimed
 
 	edenCommitted := commitments.GetCommittedAmountForDenom(ptypes.Eden)
 
@@ -59,6 +66,16 @@ func (k Keeper) BurnEdenBFromElysUnstaking(ctx sdk.Context, delegator sdk.AccAdd
 
 // Burn EdenBoost from Eden unclaimed
 func (k Keeper) BurnEdenBFromEdenUncommitted(ctx sdk.Context, delegator string, uncommitAmt math.Int) error {
+	// Claim EdenB rewards
+	delAddr := sdk.MustAccAddressFromBech32(delegator)
+	cacheCtx, write := ctx.CacheContext()
+	err := k.estaking.WithdrawEdenBReward(cacheCtx, delAddr)
+	if err != nil {
+		k.Logger(ctx).Error(err.Error())
+	} else {
+		write()
+	}
+
 	// Get elys staked amount
 	elysStaked := k.GetElysStaked(ctx, delegator)
 	if elysStaked.IsZero() {

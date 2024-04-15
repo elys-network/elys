@@ -63,11 +63,13 @@ func NewAppModule(
 func (am AppModule) BeginBlock(ctx sdk.Context, req abci.RequestBeginBlock) {
 	defer telemetry.ModuleMeasureSince(distrtypes.ModuleName, time.Now(), telemetry.MetricKeyBeginBlocker)
 
-	// TODO this is Tendermint-dependent
-	// ref https://github.com/cosmos/cosmos-sdk/issues/3095
 	if ctx.BlockHeight() > 1 {
 		am.AllocateTokens(ctx)
 	}
+}
+
+// RegisterInvariants registers the distribution module invariants.
+func (am AppModule) RegisterInvariants(ir sdk.InvariantRegistry) {
 }
 
 // AllocateTokens handles distribution of the collected fees

@@ -8,6 +8,7 @@ import (
 	commitmenttypes "github.com/elys-network/elys/x/commitment/types"
 	"github.com/elys-network/elys/x/incentive/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
+	stablestaketypes "github.com/elys-network/elys/x/stablestake/types"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -163,60 +164,53 @@ func (k Keeper) AllProgramRewards(goCtx context.Context, req *types.QueryAllProg
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	_ = ctx
-	// TODO: implement query
 
-	// usdcAprUsdc, err := k.CalculateApr(ctx, &types.QueryAprRequest{WithdrawType: commitmenttypes.EarnType_USDC_PROGRAM, Denom: ptypes.BaseCurrency})
-	// if err != nil {
-	// 	return nil, err
-	// }
+	k.masterchef.AfterWithdraw(ctx, stablestaketypes.PoolId, req.Address, sdk.ZeroInt())
 
-	// edenAprUsdc, err := k.CalculateApr(ctx, &types.QueryAprRequest{WithdrawType: commitmenttypes.EarnType_USDC_PROGRAM, Denom: ptypes.Eden})
-	// if err != nil {
-	// 	return nil, err
-	// }
+	stableStakeRewards := sdk.NewDecCoins()
+	for _, rewardDenom := range k.masterchef.GetRewardDenoms(ctx, stablestaketypes.PoolId) {
+		userRewardInfo, found := k.masterchef.GetUserRewardInfo(ctx, req.Address, stablestaketypes.PoolId, rewardDenom)
+		if found && userRewardInfo.RewardPending.IsPositive() {
+			stableStakeRewards = stableStakeRewards.Add(
+				sdk.NewDecCoinFromDec(
+					rewardDenom,
+					userRewardInfo.RewardPending,
+				),
+			)
+		}
+	}
 
-	// usdcAprEdenb, err := k.CalculateApr(ctx, &types.QueryAprRequest{WithdrawType: commitmenttypes.EarnType_EDENB_PROGRAM, Denom: ptypes.BaseCurrency})
-	// if err != nil {
-	// 	return nil, err
-	// }
+	delAddr := sdk.MustAccAddressFromBech32(req.Address)
+	delegations := k.estaking.Keeper.GetDelegatorDelegations(ctx, delAddr, 5000)
+	elysStakingRewards := sdk.DecCoins{}
+	for _, del := range delegations {
+		rewards, err := k.estaking.DelegationRewards(ctx, req.Address, del.ValidatorAddress)
+		if err != nil {
+			return nil, err
+		}
+		elysStakingRewards = elysStakingRewards.Add(rewards...)
+	}
 
-	// edenAprEdenb, err := k.CalculateApr(ctx, &types.QueryAprRequest{WithdrawType: commitmenttypes.EarnType_EDENB_PROGRAM, Denom: ptypes.Eden})
-	// if err != nil {
-	// 	return nil, err
-	// }
+	// Eden commit rewards
+	edenVal := k.estaking.GetParams(ctx).EdenCommitVal
+	edenCommitRewards, err := k.estaking.DelegationRewards(ctx, req.Address, edenVal)
+	if err != nil {
+		return nil, err
+	}
 
-	// usdcAprEden, err := k.CalculateApr(ctx, &types.QueryAprRequest{WithdrawType: commitmenttypes.EarnType_EDEN_PROGRAM, Denom: ptypes.BaseCurrency})
-	// if err != nil {
-	// 	return nil, err
-	// }
+	// EdenB commit rewards
+	edenBVal := k.estaking.GetParams(ctx).EdenbCommitVal
+	edenBCommitRewards, err := k.estaking.DelegationRewards(ctx, req.Address, edenBVal)
+	if err != nil {
+		return nil, err
+	}
 
-	// edenAprEden, err := k.CalculateApr(ctx, &types.QueryAprRequest{WithdrawType: commitmenttypes.EarnType_EDEN_PROGRAM, Denom: ptypes.Eden})
-	// if err != nil {
-	// 	return nil, err
-	// }
-
-	// edenbAprEden, err := k.CalculateApr(ctx, &types.QueryAprRequest{WithdrawType: commitmenttypes.EarnType_EDEN_PROGRAM, Denom: ptypes.EdenB})
-	// if err != nil {
-	// 	return nil, err
-	// }
-
-	// usdcAprElys, err := k.CalculateApr(ctx, &types.QueryAprRequest{WithdrawType: commitmenttypes.EarnType_ELYS_PROGRAM, Denom: ptypes.BaseCurrency})
-	// if err != nil {
-	// 	return nil, err
-	// }
-
-	// edenAprElys, err := k.CalculateApr(ctx, &types.QueryAprRequest{WithdrawType: commitmenttypes.EarnType_ELYS_PROGRAM, Denom: ptypes.Eden})
-	// if err != nil {
-	// 	return nil, err
-	// }
-
-	// edenbAprElys, err := k.CalculateApr(ctx, &types.QueryAprRequest{WithdrawType: commitmenttypes.EarnType_ELYS_PROGRAM, Denom: ptypes.EdenB})
-	// if err != nil {
-	// 	return nil, err
-	// }
-
-	return &types.QueryAllProgramRewardsResponse{}, nil
+	return &types.QueryAllProgramRewardsResponse{
+		UsdcStakingRewards:  stableStakeRewards,
+		ElysStakingRewards:  elysStakingRewards,
+		EdenStakingRewards:  edenCommitRewards,
+		EdenbStakingRewards: edenBCommitRewards,
+	}, nil
 }
 
 // Generate earn pool struct

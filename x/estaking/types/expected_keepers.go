@@ -45,6 +45,8 @@ type StakingKeeper interface {
 type CommitmentKeeper interface {
 	GetCommitments(ctx sdk.Context, creator string) commitmenttypes.Commitments
 	GetParams(ctx sdk.Context) commitmenttypes.Params
+	GetAllBalances(ctx sdk.Context, addr sdk.AccAddress) sdk.Coins
+	MintCoins(ctx sdk.Context, moduleName string, amt sdk.Coins) error
 	SendCoinsFromModuleToModule(ctx sdk.Context, senderModule string, recipientModule string, amt sdk.Coins) error
 }
 

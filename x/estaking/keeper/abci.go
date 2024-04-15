@@ -129,16 +129,11 @@ func (k Keeper) UpdateStakersRewards(ctx sdk.Context) error {
 	}
 	baseCurrency := entry.Denom
 
-	// Calculate each portion of Gas fees collected - stakers, LPs
-	totalFeesCollected := sdk.Coins{} // TODO: calculate USDC amount
-	gasFeeCollectedDec := sdk.NewDecCoinsFromCoins(totalFeesCollected...)
-
-	// Sum Dex revenue for stakers + Gas fees for stakers and name it dex Revenus for stakers
-	// But won't sum dex revenue for LPs and gas fees for LPs as the LP revenue will be rewared by pool.
-	dexRevenueForStakersPerDistribution := gasFeeCollectedDec
-
 	// USDC amount in sdk.Dec type
-	dexRevenueStakersAmtPerDistribution := dexRevenueForStakersPerDistribution.AmountOf(baseCurrency)
+	feeCollectorAddr := authtypes.NewModuleAddress(authtypes.FeeCollectorName)
+	totalFeesCollected := k.commKeeper.GetAllBalances(ctx, feeCollectorAddr)
+	gasFeeCollectedDec := sdk.NewDecCoinsFromCoins(totalFeesCollected...)
+	dexRevenueStakersAmount := gasFeeCollectedDec.AmountOf(baseCurrency)
 
 	// Calculate eden amount per epoch
 	params := k.GetParams(ctx)
@@ -172,14 +167,13 @@ func (k Keeper) UpdateStakersRewards(ctx sdk.Context) error {
 
 	// Set block number and total dex rewards given
 	params.DexRewardsStakers.NumBlocks = sdk.OneInt()
-	params.DexRewardsStakers.Amount = dexRevenueStakersAmtPerDistribution
+	params.DexRewardsStakers.Amount = dexRevenueStakersAmount
 
 	k.SetParams(ctx, params)
 
 	coins := sdk.NewCoins(
-		sdk.NewCoin(baseCurrency, dexRevenueStakersAmtPerDistribution.RoundInt()),
 		sdk.NewCoin(ptypes.Eden, epochStakersEdenAmount),
 		sdk.NewCoin(ptypes.EdenB, epochStakersEdenBAmount),
 	)
-	return k.commKeeper.SendCoinsFromModuleToModule(ctx, authtypes.FeeCollectorName, types.ModuleName, coins.Sort())
+	return k.commKeeper.MintCoins(ctx, authtypes.FeeCollectorName, coins.Sort())
 }

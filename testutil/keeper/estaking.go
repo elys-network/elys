@@ -37,6 +37,7 @@ func EstakingKeeper(t testing.TB) (*keeper.Keeper, sdk.Context) {
 		nil,
 		nil,
 		nil,
+		nil,
 		"",
 	)
 

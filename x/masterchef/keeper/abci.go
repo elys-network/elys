@@ -19,7 +19,6 @@ func (k Keeper) EndBlocker(ctx sdk.Context) {
 	k.ProcessLPRewardDistribution(ctx)
 	// distribute external rewards
 	k.ProcessExternalRewardsDistribution(ctx)
-	// TODO: calculate APR (for external rewards)
 }
 
 func (k Keeper) ProcessExternalRewardsDistribution(ctx sdk.Context) {
