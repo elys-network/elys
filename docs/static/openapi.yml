@@ -40364,6 +40364,8 @@ paths:
                   max_eden_reward_apr_stakers:
                     type: string
                     title: Maximum eden reward apr for stakers - [0 - 0.3]
+                  eden_boost_apr:
+                    type: string
                   dex_rewards_stakers:
                     title: Tracking dex rewards given to stakers
                     type: object
@@ -41923,6 +41925,8 @@ paths:
                           type: string
                         min_amount:
                           type: string
+                  protocol_revenue_address:
+                    type: string
             description: >-
               QueryParamsResponse is response type for the Query/Params RPC
               method.
@@ -86063,6 +86067,8 @@ definitions:
       max_eden_reward_apr_stakers:
         type: string
         title: Maximum eden reward apr for stakers - [0 - 0.3]
+      eden_boost_apr:
+        type: string
       dex_rewards_stakers:
         title: Tracking dex rewards given to stakers
         type: object
@@ -86106,6 +86112,8 @@ definitions:
           max_eden_reward_apr_stakers:
             type: string
             title: Maximum eden reward apr for stakers - [0 - 0.3]
+          eden_boost_apr:
+            type: string
           dex_rewards_stakers:
             title: Tracking dex rewards given to stakers
             type: object
@@ -86936,6 +86944,8 @@ definitions:
               type: string
             min_amount:
               type: string
+      protocol_revenue_address:
+        type: string
     description: Params defines the parameters for the module.
   elys.masterchef.PoolApr:
     type: object
@@ -87088,6 +87098,8 @@ definitions:
                   type: string
                 min_amount:
                   type: string
+          protocol_revenue_address:
+            type: string
     description: QueryParamsResponse is response type for the Query/Params RPC method.
   elys.masterchef.QueryPoolAprsResponse:
     type: object

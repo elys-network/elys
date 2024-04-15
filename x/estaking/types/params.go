@@ -14,6 +14,10 @@ func DefaultParams() Params {
 		EdenCommitVal:           "",
 		EdenbCommitVal:          "",
 		MaxEdenRewardAprStakers: sdk.NewDecWithPrec(3, 1), // 30%
+		DexRewardsStakers: DexRewardsTracker{
+			NumBlocks: sdk.OneInt(),
+			Amount:    sdk.ZeroDec(),
+		},
 	}
 }
 

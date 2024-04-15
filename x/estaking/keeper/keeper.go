@@ -64,6 +64,7 @@ func NewKeeper(
 	commKeeper types.CommitmentKeeper,
 	distrKeeper types.DistrKeeper,
 	assetProfileKeeper types.AssetProfileKeeper,
+	tokenomicsKeeper types.TokenomicsKeeper,
 	authority string,
 ) *Keeper {
 	return &Keeper{
@@ -75,6 +76,7 @@ func NewKeeper(
 		authority:          authority,
 		distrKeeper:        distrKeeper,
 		assetProfileKeeper: assetProfileKeeper,
+		tokenomicsKeeper:   tokenomicsKeeper,
 	}
 }
 

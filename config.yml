@@ -274,54 +274,7 @@ genesis:
               denom: ueden
             - amount: "10000"
               denom: uedenb
-          rewards_unclaimed:
-            - amount: "1000000"
-              denom: ueden
-            - amount: "1000000"
-              denom: uedenb
-            - amount: "1000000"
-              denom: uusdc
           vesting_tokens: []
-          rewards_by_usdc_unclaimed:
-            - denom: ueden
-              amount: "200000"
-            - denom: uedenb
-              amount: "200000"
-            - denom: uusdc
-              amount: "200000"
-          rewards_by_elys_unclaimed:
-            - denom: ueden
-              amount: "300000"
-            - denom: uedenb
-              amount: "200000"
-            - denom: uusdc
-              amount: "300000"
-          rewards_by_eden_unclaimed:
-            - denom: ueden
-              amount: "300000"
-            - denom: uedenb
-              amount: "200000"
-            - denom: uusdc
-              amount: "300000"
-          rewards_by_edenb_unclaimed:
-            - denom: ueden
-              amount: "200000"
-            - denom: uedenb
-              amount: "200000"
-            - denom: uusdc
-              amount: "200000"
-    incentive:
-      params:
-        lp_incentives: null
-        stake_incentives: null
-        reward_portion_for_lps: "0.60"
-        reward_portion_for_stakers: "0.25"
-        max_eden_reward_apr_stakers: "0.30"
-        max_eden_reward_apr_lps: "0.30"
-      fee_pool:
-        community_pool:
-          - amount: "0"
-            denom: uelys
     tokenomics:
       airdropList:
         - intent: AtomStakers
@@ -499,4 +452,5 @@ genesis:
           num_blocks: "1"
           amount: "0"
         max_eden_reward_apr_lps: "0.5"
+        protocol_revenue_address: "elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3"
   chain_id: elystestnet-1

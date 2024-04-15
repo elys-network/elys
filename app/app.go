@@ -116,7 +116,6 @@ import (
 	ibcclientclient "github.com/cosmos/ibc-go/v7/modules/core/02-client/client"
 	ibcclienttypes "github.com/cosmos/ibc-go/v7/modules/core/02-client/types"
 	ibcporttypes "github.com/cosmos/ibc-go/v7/modules/core/05-port/types"
-	porttypes "github.com/cosmos/ibc-go/v7/modules/core/05-port/types"
 	ibcexported "github.com/cosmos/ibc-go/v7/modules/core/exported"
 	ibckeeper "github.com/cosmos/ibc-go/v7/modules/core/keeper"
 	solomachine "github.com/cosmos/ibc-go/v7/modules/light-clients/06-solomachine"
@@ -202,9 +201,6 @@ import (
 const (
 	AccountAddressPrefix = "elys"
 	Name                 = "elys"
-
-	// Dex revenue consolidating wallet
-	DexRevenueCollectorName = "dexRevenueCollector"
 
 	// If EnabledSpecificProposals is "", and this is "true", then enable all x/wasm proposals.
 	// If EnabledSpecificProposals is "", and this is not "true", then disable all x/wasm proposals.
@@ -307,7 +303,6 @@ var (
 	maccPerms = map[string][]string{
 		authtypes.FeeCollectorName:       nil,
 		distrtypes.ModuleName:            nil,
-		DexRevenueCollectorName:          nil,
 		icatypes.ModuleName:              nil,
 		ibcfeetypes.ModuleName:           nil,
 		minttypes.ModuleName:             {authtypes.Minter},
@@ -577,6 +572,16 @@ func NewElysApp(
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 
+	app.AssetprofileKeeper = *assetprofilemodulekeeper.NewKeeper(
+		appCodec,
+		keys[assetprofilemoduletypes.StoreKey],
+		keys[assetprofilemoduletypes.MemStoreKey],
+		app.GetSubspace(assetprofilemoduletypes.ModuleName),
+		&app.TransferKeeper,
+		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+	)
+	assetprofileModule := assetprofilemodule.NewAppModule(appCodec, app.AssetprofileKeeper, app.AccountKeeper, app.BankKeeper)
+
 	app.StakingKeeper = stakingkeeper.NewKeeper(
 		appCodec,
 		keys[stakingtypes.StoreKey],
@@ -597,6 +602,16 @@ func NewElysApp(
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 
+	app.TokenomicsKeeper = *tokenomicsmodulekeeper.NewKeeper(
+		appCodec,
+		keys[tokenomicsmoduletypes.StoreKey],
+		keys[tokenomicsmoduletypes.MemStoreKey],
+		app.GetSubspace(tokenomicsmoduletypes.ModuleName),
+		&app.CommitmentKeeper,
+		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+	)
+	tokenomicsModule := tokenomicsmodule.NewAppModule(appCodec, app.TokenomicsKeeper, app.AccountKeeper, app.BankKeeper)
+
 	app.EstakingKeeper = *estakingmodulekeeper.NewKeeper(
 		appCodec,
 		keys[estakingmoduletypes.StoreKey],
@@ -605,6 +620,7 @@ func NewElysApp(
 		commitmentKeeper,
 		&app.DistrKeeper,
 		app.AssetprofileKeeper,
+		app.TokenomicsKeeper,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 
@@ -756,16 +772,6 @@ func NewElysApp(
 
 	oracleIBCModule := oraclemodule.NewIBCModule(app.OracleKeeper)
 
-	app.AssetprofileKeeper = *assetprofilemodulekeeper.NewKeeper(
-		appCodec,
-		keys[assetprofilemoduletypes.StoreKey],
-		keys[assetprofilemoduletypes.MemStoreKey],
-		app.GetSubspace(assetprofilemoduletypes.ModuleName),
-		&app.TransferKeeper,
-		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
-	)
-	assetprofileModule := assetprofilemodule.NewAppModule(appCodec, app.AssetprofileKeeper, app.AccountKeeper, app.BankKeeper)
-
 	app.EpochsKeeper = *epochsmodulekeeper.NewKeeper(
 		appCodec,
 		keys[epochsmoduletypes.StoreKey],
@@ -804,16 +810,6 @@ func NewElysApp(
 	)
 	stablestake := stablestake.NewAppModule(appCodec, app.StablestakeKeeper, app.AccountKeeper, app.BankKeeper)
 
-	app.TokenomicsKeeper = *tokenomicsmodulekeeper.NewKeeper(
-		appCodec,
-		keys[tokenomicsmoduletypes.StoreKey],
-		keys[tokenomicsmoduletypes.MemStoreKey],
-		app.GetSubspace(tokenomicsmoduletypes.ModuleName),
-		&app.CommitmentKeeper,
-		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
-	)
-	tokenomicsModule := tokenomicsmodule.NewAppModule(appCodec, app.TokenomicsKeeper, app.AccountKeeper, app.BankKeeper)
-
 	app.CommitmentKeeper = *commitmentKeeper.SetHooks(
 		commitmentmodulekeeper.NewMultiEpochHooks(
 			app.IncentiveKeeper.CommitmentHooks(),
@@ -847,8 +843,6 @@ func NewElysApp(
 		app.TokenomicsKeeper,
 		app.AccountKeeper,
 		app.BankKeeper,
-		authtypes.FeeCollectorName,
-		DexRevenueCollectorName,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 	masterchefModule := masterchefmodule.NewAppModule(appCodec, app.MasterchefKeeper, app.AccountKeeper, app.BankKeeper)
@@ -871,7 +865,6 @@ func NewElysApp(
 		&app.MasterchefKeeper,
 		&app.EstakingKeeper,
 		authtypes.FeeCollectorName,
-		DexRevenueCollectorName,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 	incentiveModule := incentivemodule.NewAppModule(appCodec, app.IncentiveKeeper)
@@ -1040,7 +1033,7 @@ func NewElysApp(
 	wasmStack = wasmmodule.NewIBCHandler(app.WasmKeeper, app.IBCKeeper.ChannelKeeper, app.IBCFeeKeeper)
 	wasmStack = ibcfee.NewIBCMiddleware(wasmStack, app.IBCFeeKeeper)
 
-	var transferStack porttypes.IBCModule = transferIBCModule
+	var transferStack ibcporttypes.IBCModule = transferIBCModule
 	transferStack = transferhook.NewIBCModule(app.TransferhookKeeper, transferStack)
 
 	// Create static IBC router, add transfer route, then set and seal it
@@ -1056,7 +1049,7 @@ func NewElysApp(
 
 	// register hooks after all modules have been initialized
 
-	app.StakingKeeper.SetHooks(
+	app.EstakingKeeper.SetHooks(
 		stakingtypes.NewMultiStakingHooks(
 			// insert staking hooks receivers here
 			app.SlashingKeeper.Hooks(),

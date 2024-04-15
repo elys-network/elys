@@ -35,6 +35,8 @@ message Params {
   ];
 
   repeated SupportedRewardDenom supported_reward_denoms = 6;
+
+  string protocol_revenue_address = 7;
 }
 
 

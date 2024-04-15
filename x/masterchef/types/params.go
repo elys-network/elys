@@ -4,30 +4,26 @@ import (
 	fmt "fmt"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
 	"gopkg.in/yaml.v2"
 )
-
-var _ paramtypes.ParamSet = (*Params)(nil)
-
-// ParamKeyTable the param key table for launch module
-func ParamKeyTable() paramtypes.KeyTable {
-	return paramtypes.NewKeyTable().RegisterParamSet(&Params{})
-}
 
 // NewParams creates a new Params instance
 func NewParams(
 	lpIncentives *IncentiveInfo,
 	rewardPortionForLps sdk.Dec,
+	rewardPortionForStakers sdk.Dec,
 	dexRewardsLps DexRewardsTracker,
 	maxEdenRewardAprLps sdk.Dec,
+	protocolRevenueAddress string,
 ) Params {
 	return Params{
-		LpIncentives:          lpIncentives,
-		RewardPortionForLps:   rewardPortionForLps,
-		DexRewardsLps:         dexRewardsLps,
-		MaxEdenRewardAprLps:   maxEdenRewardAprLps,
-		SupportedRewardDenoms: nil,
+		LpIncentives:            lpIncentives,
+		RewardPortionForLps:     rewardPortionForLps,
+		RewardPortionForStakers: rewardPortionForStakers,
+		DexRewardsLps:           dexRewardsLps,
+		MaxEdenRewardAprLps:     maxEdenRewardAprLps,
+		SupportedRewardDenoms:   nil,
+		ProtocolRevenueAddress:  protocolRevenueAddress,
 	}
 }
 
@@ -36,17 +32,14 @@ func DefaultParams() Params {
 	return NewParams(
 		nil,
 		sdk.NewDecWithPrec(60, 2),
+		sdk.NewDecWithPrec(25, 2),
 		DexRewardsTracker{
 			NumBlocks: sdk.NewInt(1),
 			Amount:    sdk.ZeroDec(),
 		},
 		sdk.NewDecWithPrec(5, 1),
+		"elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3",
 	)
-}
-
-// ParamSetPairs get the params.ParamSet
-func (p *Params) ParamSetPairs() paramtypes.ParamSetPairs {
-	return paramtypes.ParamSetPairs{}
 }
 
 // Validate validates the set of params
@@ -114,15 +107,6 @@ func validateLPIncentives(i interface{}) error {
 
 	if vv.DistributionStartBlock.LT(sdk.NewInt(0)) {
 		return fmt.Errorf("invalid distribution epoch: %v", vv)
-	}
-
-	return nil
-}
-
-func validatePoolInfos(i interface{}) error {
-	_, ok := i.([]PoolInfo)
-	if !ok {
-		return fmt.Errorf("invalid parameter type: %T", i)
 	}
 
 	return nil

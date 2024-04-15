@@ -1,6 +1,8 @@
 package estaking
 
 import (
+	"fmt"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/elys-network/elys/x/estaking/keeper"
@@ -14,6 +16,14 @@ func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) 
 	var shouldRunEdenBValHook = false
 	edenValAddr := sdk.ValAddress(authtypes.NewModuleAddress(ptypes.Eden))
 	edenBValAddr := sdk.ValAddress(authtypes.NewModuleAddress(ptypes.EdenB))
+	fmt.Println("k.Keeper", k.Keeper)
+	fmt.Println("k", k)
+
+	// 	commKeeper         types.CommitmentKeeper
+	// distrKeeper        types.DistrKeeper
+	// tokenomicsKeeper   types.TokenomicsKeeper
+	// assetProfileKeeper types.AssetProfileKeeper
+	// authority          string
 
 	// Create validators for Eden and EdenB
 	if genState.Params.EdenCommitVal == "" {

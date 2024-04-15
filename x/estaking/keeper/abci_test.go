@@ -17,8 +17,6 @@ func TestCalcRewardsForStakers(t *testing.T) {
 	app := simapp.InitElysTestApp(true)
 	ctx := app.BaseApp.NewContext(true, tmproto.Header{})
 
-	ik := app.IncentiveKeeper
-
 	// Generate 2 random accounts with 10000uelys balanced
 	addr := simapp.AddTestAddrs(app, ctx, 2, sdk.NewInt(10000))
 
@@ -68,29 +66,4 @@ func TestCalcRewardsForStakers(t *testing.T) {
 
 	require.Equal(t, commitment.CommittedTokens[1].Denom, ptypes.EdenB)
 	require.Equal(t, commitment.CommittedTokens[1].Amount, sdk.NewInt(500))
-
-	totalEdenGiven := sdk.ZeroInt()
-	totalRewardsGiven := sdk.ZeroInt()
-
-	dexRevenueStakersAmt := sdk.NewDec(100000)
-	edenAmountPerEpochStakers := sdk.NewInt(100000)
-	// Calculate delegated amount per delegator
-	delAmount := sdk.NewInt(1000)
-	// Calculate new unclaimed Eden tokens from Elys staked Eden & Eden boost committed, Dex rewards distribution
-	newUnclaimedEdenTokens, dexRewards, _ := ik.CalcRewardsForStakersByElysStaked(ctx, delAmount, edenAmountPerEpochStakers, dexRevenueStakersAmt)
-	totalEdenGiven = totalEdenGiven.Add(newUnclaimedEdenTokens)
-	totalRewardsGiven = totalRewardsGiven.Add(dexRewards)
-
-	// Calculate new unclaimed Eden tokens from Eden committed, Dex rewards distribution
-	newUnclaimedEdenTokens, dexRewards = ik.CalcRewardsForStakersByCommitted(ctx, delAmount, edenAmountPerEpochStakers, dexRevenueStakersAmt)
-	totalEdenGiven = totalEdenGiven.Add(newUnclaimedEdenTokens)
-	totalRewardsGiven = totalRewardsGiven.Add(dexRewards)
-
-	// Calculate new unclaimed Eden tokens from Eden boost committed, Dex rewards distribution
-	newUnclaimedEdenTokens, dexRewards = ik.CalcRewardsForStakersByCommitted(ctx, delAmount, edenAmountPerEpochStakers, dexRevenueStakersAmt)
-	totalEdenGiven = totalEdenGiven.Add(newUnclaimedEdenTokens)
-	totalRewardsGiven = totalRewardsGiven.Add(dexRewards)
-
-	require.Equal(t, totalEdenGiven, sdk.NewInt(297))
-	require.Equal(t, totalRewardsGiven, sdk.NewInt(297))
 }

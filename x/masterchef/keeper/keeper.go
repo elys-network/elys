@@ -31,9 +31,7 @@ type (
 		authKeeper          types.AccountKeeper
 		bankKeeper          types.BankKeeper
 
-		feeCollectorName    string // name of the FeeCollector ModuleAccount
-		dexRevCollectorName string // name of the Dex Revenue ModuleAccount
-		authority           string // gov module addresss
+		authority string // gov module addresss
 	}
 )
 
@@ -52,15 +50,8 @@ func NewKeeper(
 	tokenomicsKeeper types.TokenomicsKeeper,
 	ak types.AccountKeeper,
 	bk types.BankKeeper,
-	feeCollectorName string,
-	dexRevCollectorName string,
 	authority string,
 ) *Keeper {
-	// set KeyTable if it has not already been set
-	if !ps.HasKeyTable() {
-		ps = ps.WithKeyTable(types.ParamKeyTable())
-	}
-
 	return &Keeper{
 		cdc:                 cdc,
 		storeKey:            storeKey,
@@ -77,8 +68,6 @@ func NewKeeper(
 		tokenomicsKeeper:    tokenomicsKeeper,
 		authKeeper:          ak,
 		bankKeeper:          bk,
-		feeCollectorName:    feeCollectorName,
-		dexRevCollectorName: dexRevCollectorName,
 		authority:           authority,
 	}
 }

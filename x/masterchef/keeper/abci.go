@@ -4,11 +4,10 @@ import (
 	"errors"
 
 	errorsmod "cosmossdk.io/errors"
-	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
-	ctypes "github.com/elys-network/elys/x/commitment/types"
 	"github.com/elys-network/elys/x/masterchef/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 	stabletypes "github.com/elys-network/elys/x/stablestake/types"
@@ -198,21 +197,13 @@ func (k Keeper) UpdateLPRewards(ctx sdk.Context) error {
 	}
 	baseCurrency := entry.Denom
 
-	// Recalculate total committed info
-	k.UpdateTotalCommitmentInfo(ctx, baseCurrency)
-
-	// Collect DEX revenue while tracking 65% of it for LPs reward calculation
-	// Assume these are collected in USDC
-	_, dexRevenueForLpsPerDistribution := k.CollectDEXRevenue(ctx)
-
-	// Calculate each portion of Gas fees collected - stakers, LPs
-	gasFeeCollectedDec := sdk.NewDecCoinsFromCoins(k.tci.TotalFeesCollected...)
-	rewardPortionForLps := k.GetParams(ctx).RewardPortionForLps
-	gasFeesForLpsPerDistribution := gasFeeCollectedDec.MulDecTruncate(rewardPortionForLps)
+	// Collect Gas fees + swap fees
+	gasFeesForLpsDec := k.CollectGasFees(ctx, baseCurrency)
+	_, dexRevenueForLps := k.CollectDEXRevenue(ctx)
 
 	// USDC amount in sdk.Dec type
-	dexRevenueLPsAmtPerDistribution := dexRevenueForLpsPerDistribution.AmountOf(baseCurrency)
-	gasFeesLPsAmtPerDistribution := gasFeesForLpsPerDistribution.AmountOf(baseCurrency)
+	dexUsdcAmountForLps := dexRevenueForLps.AmountOf(baseCurrency)
+	gasFeeUsdcAmountForLps := gasFeesForLpsDec.AmountOf(baseCurrency)
 
 	// Proxy TVL
 	// Multiplier on each liquidity pool
@@ -283,7 +274,7 @@ func (k Keeper) UpdateLPRewards(ctx sdk.Context) error {
 		newEdenAllocatedForPool = sdk.MinDec(newEdenAllocatedForPool, poolMaxEdenAmount)
 
 		// Get gas fee rewards per pool
-		gasRewardsAllocatedForPool := poolShare.Mul(gasFeesLPsAmtPerDistribution)
+		gasRewardsAllocatedForPool := poolShare.Mul(gasFeeUsdcAmountForLps)
 
 		// ------------------- DEX rewards calculation -------------------
 		// ---------------------------------------------------------------
@@ -307,10 +298,9 @@ func (k Keeper) UpdateLPRewards(ctx sdk.Context) error {
 		k.SetPool(ctx, pool)
 	}
 
-	// Increase block number
+	// Set DexRewards info
 	params.DexRewardsLps.NumBlocks = sdk.OneInt()
-	// Incrase total dex rewards given
-	params.DexRewardsLps.Amount = dexRevenueLPsAmtPerDistribution.Add(gasFeesLPsAmtPerDistribution)
+	params.DexRewardsLps.Amount = dexUsdcAmountForLps.Add(gasFeeUsdcAmountForLps)
 	k.SetParams(ctx, params)
 
 	// Update APR for amm pools
@@ -319,58 +309,13 @@ func (k Keeper) UpdateLPRewards(ctx sdk.Context) error {
 	return nil
 }
 
-// Update total commitment info
-// TODO: should be removed or updated for complexity in calculation
-func (k Keeper) UpdateTotalCommitmentInfo(ctx sdk.Context, baseCurrency string) {
-	// Initialize with amount zero
-	k.tci.TotalFeesCollected = sdk.Coins{}
-	// Initialize Lp tokens amount
-	k.tci.TotalLpTokensCommitted = make(map[string]math.Int)
-	// Reinitialize Pool revenue tracker
-	k.tci.PoolRevenueTrack = make(map[string]sdk.Dec)
-
-	// Collect gas fees collected
-	fees := k.CollectGasFeesToIncentiveModule(ctx, baseCurrency)
-
-	// Calculate total fees - Gas fees collected
-	k.tci.TotalFeesCollected = k.tci.TotalFeesCollected.Add(fees...)
-
-	// Iterate to calculate total Eden, Eden boost and Lp tokens committed
-	k.cmk.IterateCommitments(ctx, func(commitments ctypes.Commitments) bool {
-		// Iterate to calculate total Lp tokens committed
-		k.amm.IterateLiquidityPools(ctx, func(p ammtypes.Pool) bool {
-			lpToken := ammtypes.GetPoolShareDenom(p.GetPoolId())
-
-			committedLpToken := commitments.GetCommittedAmountForDenom(lpToken)
-			amt, ok := k.tci.TotalLpTokensCommitted[lpToken]
-			if !ok {
-				k.tci.TotalLpTokensCommitted[lpToken] = committedLpToken
-			} else {
-				k.tci.TotalLpTokensCommitted[lpToken] = amt.Add(committedLpToken)
-			}
-			return false
-		})
-
-		// handle stable stake pool lp token
-		lpStableStakeDenom := stabletypes.GetShareDenom()
-		committedLpToken := commitments.GetCommittedAmountForDenom(lpStableStakeDenom)
-		amt, ok := k.tci.TotalLpTokensCommitted[lpStableStakeDenom]
-		if !ok {
-			k.tci.TotalLpTokensCommitted[lpStableStakeDenom] = committedLpToken
-		} else {
-			k.tci.TotalLpTokensCommitted[lpStableStakeDenom] = amt.Add(committedLpToken)
-		}
-		return false
-	})
-}
-
 // Move gas fees collected to dex revenue wallet
 // Convert it into USDC
-func (k Keeper) CollectGasFeesToIncentiveModule(ctx sdk.Context, baseCurrency string) sdk.Coins {
+func (k Keeper) ConvertGasFeesToUsdc(ctx sdk.Context, baseCurrency string) sdk.Coins {
 	// fetch and clear the collected fees for distribution, since this is
 	// called in BeginBlock, collected fees will be from the previous block
 	// (and distributed to the previous proposer)
-	feeCollector := k.authKeeper.GetModuleAccount(ctx, k.feeCollectorName)
+	feeCollector := k.authKeeper.GetModuleAccount(ctx, authtypes.FeeCollectorName)
 	feesCollected := k.bankKeeper.GetAllBalances(ctx, feeCollector.GetAddress())
 
 	// Total Swapped coin
@@ -379,12 +324,6 @@ func (k Keeper) CollectGasFeesToIncentiveModule(ctx sdk.Context, baseCurrency st
 	for _, tokenIn := range feesCollected {
 		// if it is base currency - usdc, we don't need convert. We just need to collect it to fee wallet.
 		if tokenIn.Denom == baseCurrency {
-			// Transfer converted USDC fees to the Dex revenue module account
-			err := k.bankKeeper.SendCoinsFromModuleToModule(ctx, k.feeCollectorName, k.dexRevCollectorName, sdk.Coins{tokenIn})
-			if err != nil {
-				panic(err)
-			}
-
 			// Sum total swapped
 			totalSwappedCoins = totalSwappedCoins.Add(tokenIn)
 			continue
@@ -421,14 +360,6 @@ func (k Keeper) CollectGasFeesToIncentiveModule(ctx sdk.Context, baseCurrency st
 		// Swapped USDC coin
 		swappedCoins := sdk.NewCoins(sdk.NewCoin(baseCurrency, tokenOutAmount))
 
-		// Transfer converted USDC fees to the Dex revenue module account
-		if swappedCoins.IsAllPositive() {
-			err = k.bankKeeper.SendCoinsFromModuleToModule(ctx, k.feeCollectorName, k.dexRevCollectorName, swappedCoins)
-			if err != nil {
-				panic(err)
-			}
-		}
-
 		// Sum total swapped
 		totalSwappedCoins = totalSwappedCoins.Add(swappedCoins...)
 	}
@@ -436,8 +367,41 @@ func (k Keeper) CollectGasFeesToIncentiveModule(ctx sdk.Context, baseCurrency st
 	return totalSwappedCoins
 }
 
+func (k Keeper) CollectGasFees(ctx sdk.Context, baseCurrency string) sdk.DecCoins {
+	params := k.GetParams(ctx)
+
+	// Calculate each portion of Gas fees collected - stakers, LPs
+	fees := k.ConvertGasFeesToUsdc(ctx, baseCurrency)
+	gasFeeCollectedDec := sdk.NewDecCoinsFromCoins(fees...)
+
+	gasFeesForLpsDec := gasFeeCollectedDec.MulDecTruncate(params.RewardPortionForLps)
+	gasFeesForStakersDec := gasFeeCollectedDec.MulDecTruncate(params.RewardPortionForStakers)
+	gasFeesForProtocolDec := gasFeeCollectedDec.Sub(gasFeesForLpsDec).Sub(gasFeesForStakersDec)
+
+	lpsGasFeeCoins, _ := gasFeesForLpsDec.TruncateDecimal()
+	protocolGasFeeCoins, _ := gasFeesForProtocolDec.TruncateDecimal()
+
+	// Send coins from fee collector name to masterchef
+	if lpsGasFeeCoins.IsAllPositive() {
+		err := k.bankKeeper.SendCoinsFromModuleToModule(ctx, authtypes.FeeCollectorName, types.ModuleName, lpsGasFeeCoins)
+		if err != nil {
+			panic(err)
+		}
+	}
+
+	// Send coins to protocol revenue address
+	if protocolGasFeeCoins.IsAllPositive() {
+		protocolRevenueAddress := sdk.MustAccAddressFromBech32(params.ProtocolRevenueAddress)
+		err := k.bankKeeper.SendCoinsFromModuleToAccount(ctx, authtypes.FeeCollectorName, protocolRevenueAddress, protocolGasFeeCoins)
+		if err != nil {
+			panic(err)
+		}
+	}
+	return gasFeesForLpsDec
+}
+
 // Collect all DEX revenues to DEX revenue wallet,
-// while tracking the 65% of it for LPs reward distribution
+// while tracking the 60% of it for LPs reward distribution
 // transfer collected fees from different wallets(liquidity pool, perpetual module etc) to the distribution module account
 // Assume this is already in USDC.
 // TODO:
@@ -446,6 +410,8 @@ func (k Keeper) CollectDEXRevenue(ctx sdk.Context) (sdk.Coins, sdk.DecCoins) {
 	// Total colllected revenue amount
 	amountTotalCollected := sdk.Coins{}
 	amountLPsCollected := sdk.DecCoins{}
+
+	k.tci.PoolRevenueTrack = make(map[string]sdk.Dec)
 
 	// Iterate to calculate total Eden from LpElys, MElys committed
 	k.amm.IterateLiquidityPools(ctx, func(p ammtypes.Pool) bool {
@@ -458,15 +424,16 @@ func (k Keeper) CollectDEXRevenue(ctx sdk.Context) (sdk.Coins, sdk.DecCoins) {
 		// Transfer revenue to a single wallet of DEX revenue wallet.
 		revenue := k.bankKeeper.GetAllBalances(ctx, revenueAddress)
 		if revenue.IsAllPositive() {
-			err := k.bankKeeper.SendCoinsFromAccountToModule(ctx, revenueAddress, k.dexRevCollectorName, revenue)
+			err := k.bankKeeper.SendCoinsFromAccountToModule(ctx, revenueAddress, types.ModuleName, revenue)
 			if err != nil {
 				panic(err)
 			}
 		}
 
 		// LPs Portion param
-		rewardPortionForLps := k.GetParams(ctx).RewardPortionForLps
-		rewardPortionForStakers := k.GetParams(ctx).RewardPortionForStakers
+		params := k.GetParams(ctx)
+		rewardPortionForLps := params.RewardPortionForLps
+		rewardPortionForStakers := params.RewardPortionForStakers
 
 		// Calculate revenue portion for LPs
 		revenueDec := sdk.NewDecCoinsFromCoins(revenue...)
@@ -474,7 +441,26 @@ func (k Keeper) CollectDEXRevenue(ctx sdk.Context) (sdk.Coins, sdk.DecCoins) {
 		// LPs portion of pool revenue
 		revenuePortionForLPs := revenueDec.MulDecTruncate(rewardPortionForLps)
 		revenuePortionForStakers := revenueDec.MulDecTruncate(rewardPortionForStakers)
-		_ = revenuePortionForStakers
+		revenuePortionForProtocol := revenueDec.Sub(revenuePortionForLPs).Sub(revenuePortionForStakers)
+		stakerRevenueCoins, _ := revenuePortionForStakers.TruncateDecimal()
+		protocolRevenueCoins, _ := revenuePortionForProtocol.TruncateDecimal()
+
+		// Send coins to fee collector name
+		if stakerRevenueCoins.IsAllPositive() {
+			err := k.bankKeeper.SendCoinsFromModuleToModule(ctx, types.ModuleName, authtypes.FeeCollectorName, stakerRevenueCoins)
+			if err != nil {
+				panic(err)
+			}
+		}
+
+		// Send coins to protocol revenue address
+		if protocolRevenueCoins.IsAllPositive() {
+			protocolRevenueAddress := sdk.MustAccAddressFromBech32(params.ProtocolRevenueAddress)
+			err := k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, protocolRevenueAddress, protocolRevenueCoins)
+			if err != nil {
+				panic(err)
+			}
+		}
 
 		// Get track key
 		trackKey := types.GetPoolRevenueTrackKey(poolId)
@@ -540,9 +526,9 @@ func (k Keeper) CalculateProxyTVL(ctx sdk.Context, baseCurrency string) sdk.Dec 
 
 // InitPoolParams: creates a poolInfo at the time of pool creation.
 func (k Keeper) InitPoolParams(ctx sdk.Context, poolId uint64) bool {
-	poolInfo, found := k.GetPool(ctx, poolId)
+	_, found := k.GetPool(ctx, poolId)
 	if !found {
-		poolInfo = types.PoolInfo{
+		poolInfo := types.PoolInfo{
 			// reward amount
 			PoolId: poolId,
 			// reward wallet address
@@ -564,9 +550,9 @@ func (k Keeper) InitPoolParams(ctx sdk.Context, poolId uint64) bool {
 
 // InitStableStakePoolMultiplier: create a stable stake pool information responding to the pool creation.
 func (k Keeper) InitStableStakePoolParams(ctx sdk.Context, poolId uint64) bool {
-	poolInfo, found := k.GetPool(ctx, poolId)
+	_, found := k.GetPool(ctx, poolId)
 	if !found {
-		poolInfo = types.PoolInfo{
+		poolInfo := types.PoolInfo{
 			// reward amount
 			PoolId: poolId,
 			// reward wallet address

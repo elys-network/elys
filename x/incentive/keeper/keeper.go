@@ -36,9 +36,7 @@ type (
 		masterchef          *masterchefkeeper.Keeper
 		estaking            *estakingkeeper.Keeper
 
-		feeCollectorName    string // name of the FeeCollector ModuleAccount
-		dexRevCollectorName string // name of the Dex Revenue ModuleAccount
-		authority           string // gov module addresss
+		authority string // gov module addresss
 	}
 )
 
@@ -60,7 +58,6 @@ func NewKeeper(
 	masterchef *masterchefkeeper.Keeper,
 	estaking *estakingkeeper.Keeper,
 	feeCollectorName string,
-	dexRevCollectorName string,
 	authority string,
 ) *Keeper {
 	return &Keeper{
@@ -70,8 +67,6 @@ func NewKeeper(
 		cmk:                 ck,
 		stk:                 sk,
 		tci:                 &types.TotalCommitmentInfo{},
-		feeCollectorName:    feeCollectorName,
-		dexRevCollectorName: dexRevCollectorName,
 		authKeeper:          ak,
 		bankKeeper:          bk,
 		amm:                 amm,

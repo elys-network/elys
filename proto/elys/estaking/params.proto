@@ -19,6 +19,10 @@ message Params {
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
+  string eden_boost_apr = 6 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
   // Tracking dex rewards given to stakers
-  DexRewardsTracker dex_rewards_stakers = 6 [ (gogoproto.nullable) = false ];
+  DexRewardsTracker dex_rewards_stakers = 7 [ (gogoproto.nullable) = false ];
 }
