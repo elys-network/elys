@@ -160,13 +160,20 @@ func main() {
 				}
 
 				// submit upgrade proposal
-				submitUpgradeProposal(oldBinaryPath, validatorKeyName, newVersion, upgradeBlockHeight, homePath, keyringBackend, chainId, rpc, broadcastMode)
+				txHash := submitUpgradeProposal(oldBinaryPath, validatorKeyName, newVersion, upgradeBlockHeight, homePath, keyringBackend, chainId, rpc, broadcastMode)
 
-				// wait for next block
-				waitForNextBlock(oldBinaryPath, rpc, moniker)
+				err = waitForTxConfirmation(oldBinaryPath, rpc, txHash, 5*time.Minute)
+				if err != nil {
+					log.Fatalf("upgrade proposal not confirmed: %v", err)
+				}
 
 				// vote on upgrade proposal
-				voteOnUpgradeProposal(oldBinaryPath, validatorKeyName, proposalId, homePath, keyringBackend, chainId, rpc, broadcastMode)
+				txHash = voteOnUpgradeProposal(oldBinaryPath, validatorKeyName, proposalId, homePath, keyringBackend, chainId, rpc, broadcastMode)
+
+				err = waitForTxConfirmation(oldBinaryPath, rpc, txHash, 5*time.Minute)
+				if err != nil {
+					log.Fatalf("voting on upgrade proposal not confirmed: %v", err)
+				}
 
 				// wait for upgrade block height
 				waitForBlockHeight(oldBinaryPath, rpc, upgradeBlockHeight)
