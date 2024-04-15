@@ -166,7 +166,7 @@ func (k Keeper) UpdateStakersRewards(ctx sdk.Context) error {
 	epochStakersEdenAmount = sdk.MinInt(epochStakersEdenAmount, epochStakersMaxEdenAmount.TruncateInt())
 
 	epochStakersEdenBAmount := sdk.NewDecFromInt(totalElysEdenEdenBStake).
-		Mul(types.EdenBoostApr).
+		Mul(params.EdenBoostApr).
 		QuoInt(stakeIncentive.TotalBlocksPerYear).
 		RoundInt()
 

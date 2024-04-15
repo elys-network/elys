@@ -82,6 +82,12 @@ genesis:
       params:
         bond_denom: uelys
         unbonding_time: 1209600s
+    estaking:
+      params:
+        eden_commit_val: ""
+        edenb_commit_val: ""
+        max_eden_reward_apr_stakers: "0.3"
+        eden_boost_apr: "1.0"
     bank:
       denom_metadata:
         - base: uelys

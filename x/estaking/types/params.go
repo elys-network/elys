@@ -5,8 +5,6 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
-var EdenBoostApr = sdk.NewDec(1)
-
 // DefaultParams returns a default set of parameters
 func DefaultParams() Params {
 	return Params{
@@ -14,6 +12,7 @@ func DefaultParams() Params {
 		EdenCommitVal:           "",
 		EdenbCommitVal:          "",
 		MaxEdenRewardAprStakers: sdk.NewDecWithPrec(3, 1), // 30%
+		EdenBoostApr:            sdk.OneDec(),
 		DexRewardsStakers: DexRewardsTracker{
 			NumBlocks: sdk.OneInt(),
 			Amount:    sdk.ZeroDec(),

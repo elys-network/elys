@@ -1,11 +1,8 @@
 package types
 
 import (
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	"gopkg.in/yaml.v2"
 )
-
-var EdenBoostApr = sdk.NewDec(1)
 
 // NewParams creates a new Params instance
 func NewParams() Params {

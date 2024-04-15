@@ -125,7 +125,7 @@ func (k Keeper) CalculateApr(ctx sdk.Context, query *types.QueryAprRequest) (mat
 			return apr.TruncateInt(), nil
 		}
 	} else if query.Denom == ptypes.EdenB {
-		apr := types.EdenBoostApr.MulInt(sdk.NewInt(100)).TruncateInt()
+		apr := estakingParams.EdenBoostApr.MulInt(sdk.NewInt(100)).TruncateInt()
 		return apr, nil
 	}
 
