@@ -24,7 +24,7 @@ func export(cmdPath, homePath, genesisFilePath string) {
 		"evidence",
 		"feegrant",
 		"genutil",
-		"gov",
+		// "gov",
 		"group",
 		"ibc",
 		"incentive",
