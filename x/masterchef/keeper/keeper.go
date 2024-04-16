@@ -25,7 +25,6 @@ type (
 		oracleKeeper        types.OracleKeeper
 		assetProfileKeeper  types.AssetProfileKeeper
 		accountedPoolKeeper types.AccountedPoolKeeper
-		epochsKeeper        types.EpochsKeeper
 		stableKeeper        types.StableStakeKeeper
 		tokenomicsKeeper    types.TokenomicsKeeper
 		authKeeper          types.AccountKeeper
@@ -45,7 +44,6 @@ func NewKeeper(
 	ok types.OracleKeeper,
 	ap types.AssetProfileKeeper,
 	accountedPoolKeeper types.AccountedPoolKeeper,
-	epochsKeeper types.EpochsKeeper,
 	stableKeeper types.StableStakeKeeper,
 	tokenomicsKeeper types.TokenomicsKeeper,
 	ak types.AccountKeeper,
@@ -63,7 +61,6 @@ func NewKeeper(
 		oracleKeeper:        ok,
 		assetProfileKeeper:  ap,
 		accountedPoolKeeper: accountedPoolKeeper,
-		epochsKeeper:        epochsKeeper,
 		stableKeeper:        stableKeeper,
 		tokenomicsKeeper:    tokenomicsKeeper,
 		authKeeper:          ak,

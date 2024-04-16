@@ -416,7 +416,7 @@ genesis:
     parameter:
       params:
         min_commission_rate: "0.05"
-        max_voting_power: "0.66"
+        max_voting_power: "1.00"
         min_self_delegation: "1"
         broker_address: "elys1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqnrec2l"
     perpetual:

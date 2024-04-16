@@ -23,14 +23,12 @@ type (
 		memKey              storetypes.StoreKey
 		cmk                 types.CommitmentKeeper
 		stk                 types.StakingKeeper
-		tci                 *types.TotalCommitmentInfo
 		authKeeper          types.AccountKeeper
 		bankKeeper          types.BankKeeper
 		amm                 types.AmmKeeper
 		oracleKeeper        types.OracleKeeper
 		assetProfileKeeper  types.AssetProfileKeeper
 		accountedPoolKeeper types.AccountedPoolKeeper
-		epochsKeeper        types.EpochsKeeper
 		stableKeeper        types.StableStakeKeeper
 		tokenomicsKeeper    types.TokenomicsKeeper
 		masterchef          *masterchefkeeper.Keeper
@@ -52,7 +50,6 @@ func NewKeeper(
 	ok types.OracleKeeper,
 	ap types.AssetProfileKeeper,
 	accountedPoolKeeper types.AccountedPoolKeeper,
-	epochsKeeper types.EpochsKeeper,
 	stableKeeper types.StableStakeKeeper,
 	tokenomicsKeeper types.TokenomicsKeeper,
 	masterchef *masterchefkeeper.Keeper,
@@ -66,14 +63,12 @@ func NewKeeper(
 		memKey:              memKey,
 		cmk:                 ck,
 		stk:                 sk,
-		tci:                 &types.TotalCommitmentInfo{},
 		authKeeper:          ak,
 		bankKeeper:          bk,
 		amm:                 amm,
 		oracleKeeper:        ok,
 		assetProfileKeeper:  ap,
 		accountedPoolKeeper: accountedPoolKeeper,
-		epochsKeeper:        epochsKeeper,
 		stableKeeper:        stableKeeper,
 		tokenomicsKeeper:    tokenomicsKeeper,
 		masterchef:          masterchef,

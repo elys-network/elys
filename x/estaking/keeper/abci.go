@@ -52,7 +52,7 @@ func (k Keeper) ProcessUpdateIncentiveParams(ctx sdk.Context) bool {
 
 		totalBlocksPerYear := sdk.NewInt(int64(inflation.EndBlockHeight - inflation.StartBlockHeight + 1))
 
-		// If totalDistributionEpochPerYear is zero, we skip this inflation to avoid division by zero
+		// If totalBlocksPerYear is zero, we skip this inflation to avoid division by zero
 		if totalBlocksPerYear == sdk.ZeroInt() {
 			continue
 		}
@@ -120,8 +120,6 @@ func (k Keeper) CanDistributeStakingRewards(ctx sdk.Context) bool {
 	return true
 }
 
-// Update unclaimed token amount
-// Called back through epoch hook
 func (k Keeper) UpdateStakersRewards(ctx sdk.Context) error {
 	entry, found := k.assetProfileKeeper.GetEntry(ctx, ptypes.BaseCurrency)
 	if !found {
@@ -135,32 +133,31 @@ func (k Keeper) UpdateStakersRewards(ctx sdk.Context) error {
 	gasFeeCollectedDec := sdk.NewDecCoinsFromCoins(totalFeesCollected...)
 	dexRevenueStakersAmount := gasFeeCollectedDec.AmountOf(baseCurrency)
 
-	// Calculate eden amount per epoch
+	// Calculate eden amount per block
 	params := k.GetParams(ctx)
 	stakeIncentive := params.StakeIncentives
 
-	// Ensure stakeIncentive.TotalBlocksPerYear or stakeIncentive.EpochNumBlocks are not zero to avoid division by zero
+	// Ensure stakeIncentive.TotalBlocksPerYear are not zero to avoid division by zero
 	if stakeIncentive.TotalBlocksPerYear.IsZero() {
 		return errorsmod.Wrap(types.ErrNoInflationaryParams, "invalid inflationary params")
 	}
 
 	// Calculate
-	epochStakersEdenAmount := stakeIncentive.EdenAmountPerYear.
+	stakersEdenAmount := stakeIncentive.EdenAmountPerYear.
 		Quo(stakeIncentive.TotalBlocksPerYear)
 
-	// Maximum eden based per distribution epoch on maximum APR - 30% by default
+	// Maximum eden APR - 30% by default
 	// Allocated for staking per day = (0.3/365)* ( total elys staked + total Eden committed + total Eden boost committed)
-
 	totalElysEdenEdenBStake := k.TotalBondedTokens(ctx)
 
-	epochStakersMaxEdenAmount := params.MaxEdenRewardAprStakers.
+	stakersMaxEdenAmount := params.MaxEdenRewardAprStakers.
 		MulInt(totalElysEdenEdenBStake).
 		QuoInt(stakeIncentive.TotalBlocksPerYear)
 
 	// Use min amount (eden allocation from tokenomics and max apr based eden amount)
-	epochStakersEdenAmount = sdk.MinInt(epochStakersEdenAmount, epochStakersMaxEdenAmount.TruncateInt())
+	stakersEdenAmount = sdk.MinInt(stakersEdenAmount, stakersMaxEdenAmount.TruncateInt())
 
-	epochStakersEdenBAmount := sdk.NewDecFromInt(totalElysEdenEdenBStake).
+	stakersEdenBAmount := sdk.NewDecFromInt(totalElysEdenEdenBStake).
 		Mul(params.EdenBoostApr).
 		QuoInt(stakeIncentive.TotalBlocksPerYear).
 		RoundInt()
@@ -168,12 +165,11 @@ func (k Keeper) UpdateStakersRewards(ctx sdk.Context) error {
 	// Set block number and total dex rewards given
 	params.DexRewardsStakers.NumBlocks = sdk.OneInt()
 	params.DexRewardsStakers.Amount = dexRevenueStakersAmount
-
 	k.SetParams(ctx, params)
 
 	coins := sdk.NewCoins(
-		sdk.NewCoin(ptypes.Eden, epochStakersEdenAmount),
-		sdk.NewCoin(ptypes.EdenB, epochStakersEdenBAmount),
+		sdk.NewCoin(ptypes.Eden, stakersEdenAmount),
+		sdk.NewCoin(ptypes.EdenB, stakersEdenBAmount),
 	)
 	return k.commKeeper.MintCoins(ctx, authtypes.FeeCollectorName, coins.Sort())
 }

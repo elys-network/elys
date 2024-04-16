@@ -10,7 +10,6 @@ import (
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	aptypes "github.com/elys-network/elys/x/assetprofile/types"
 	ctypes "github.com/elys-network/elys/x/commitment/types"
-	epochstypes "github.com/elys-network/elys/x/epochs/types"
 	oracletypes "github.com/elys-network/elys/x/oracle/types"
 	stabletypes "github.com/elys-network/elys/x/stablestake/types"
 	tokenomictypes "github.com/elys-network/elys/x/tokenomics/types"
@@ -22,6 +21,7 @@ type CommitmentKeeper interface {
 	IterateCommitments(sdk.Context, func(ctypes.Commitments) (stop bool))
 	GetCommitments(sdk.Context, string) ctypes.Commitments
 	SetCommitments(sdk.Context, ctypes.Commitments)
+	MintCoins(ctx sdk.Context, moduleName string, amt sdk.Coins) error
 	BurnEdenBoost(ctx sdk.Context, creator string, denom string, amount math.Int) (ctypes.Commitments, error)
 	SendCoinsFromModuleToAccount(ctx sdk.Context, senderModule string, recipientAddr sdk.AccAddress, amt sdk.Coins) error
 }
@@ -122,12 +122,7 @@ type AssetProfileKeeper interface {
 	GetEntry(ctx sdk.Context, baseDenom string) (val aptypes.Entry, found bool)
 }
 
-// EpochsKeeper defines the expected epochs keeper used for simulations (noalias)
-type EpochsKeeper interface {
-	GetEpochInfo(ctx sdk.Context, identifier string) (epochstypes.EpochInfo, bool)
-}
-
-// StableStakeKeeper defines the expected epochs keeper used for simulations (noalias)
+// StableStakeKeeper defines the expected stablestake keeper used for simulations (noalias)
 type StableStakeKeeper interface {
 	GetParams(ctx sdk.Context) (params stabletypes.Params)
 	BorrowRatio(goCtx context.Context, req *stabletypes.QueryBorrowRatioRequest) (*stabletypes.QueryBorrowRatioResponse, error)

@@ -811,7 +811,7 @@ func NewElysApp(
 	stablestake := stablestake.NewAppModule(appCodec, app.StablestakeKeeper, app.AccountKeeper, app.BankKeeper)
 
 	app.CommitmentKeeper = *commitmentKeeper.SetHooks(
-		commitmentmodulekeeper.NewMultiEpochHooks(
+		commitmentmodulekeeper.NewMultiCommitmentHooks(
 			app.IncentiveKeeper.CommitmentHooks(),
 			app.EstakingKeeper.CommitmentHooks(),
 		),
@@ -838,7 +838,6 @@ func NewElysApp(
 		app.OracleKeeper,
 		app.AssetprofileKeeper,
 		app.AccountedPoolKeeper,
-		app.EpochsKeeper,
 		app.StablestakeKeeper,
 		app.TokenomicsKeeper,
 		app.AccountKeeper,
@@ -859,7 +858,6 @@ func NewElysApp(
 		app.OracleKeeper,
 		app.AssetprofileKeeper,
 		app.AccountedPoolKeeper,
-		app.EpochsKeeper,
 		app.StablestakeKeeper,
 		app.TokenomicsKeeper,
 		&app.MasterchefKeeper,
@@ -1119,7 +1117,7 @@ func NewElysApp(
 		gov.NewAppModule(appCodec, &app.GovKeeper, app.AccountKeeper, app.BankKeeper, app.GetSubspace(govtypes.ModuleName)),
 		mint.NewAppModule(appCodec, app.MintKeeper, app.AccountKeeper, nil, app.GetSubspace(minttypes.ModuleName)),
 		slashing.NewAppModule(appCodec, app.SlashingKeeper, app.AccountKeeper, app.BankKeeper, app.StakingKeeper, app.GetSubspace(slashingtypes.ModuleName)),
-		exdistr.NewAppModule(appCodec, app.DistrKeeper, app.AccountKeeper, app.BankKeeper, &app.EstakingKeeper, authtypes.FeeCollectorName, app.GetSubspace(distrtypes.ModuleName)),
+		exdistr.NewAppModule(appCodec, app.DistrKeeper, app.AccountKeeper, app.CommitmentKeeper, &app.EstakingKeeper, authtypes.FeeCollectorName, app.GetSubspace(distrtypes.ModuleName)),
 		exstaking.NewAppModule(appCodec, app.StakingKeeper, app.AccountKeeper, app.BankKeeper, app.GetSubspace(stakingtypes.ModuleName)),
 		upgrade.NewAppModule(app.UpgradeKeeper),
 		evidence.NewAppModule(app.EvidenceKeeper),
@@ -1252,6 +1250,7 @@ func NewElysApp(
 		capabilitytypes.ModuleName,
 		authtypes.ModuleName,
 		banktypes.ModuleName,
+		commitmentmoduletypes.ModuleName,
 		distrtypes.ModuleName,
 		epochsmoduletypes.ModuleName,
 		stablestaketypes.ModuleName,
@@ -1275,7 +1274,6 @@ func NewElysApp(
 		consensusparamtypes.ModuleName,
 		assetprofilemoduletypes.ModuleName,
 		oracletypes.ModuleName,
-		commitmentmoduletypes.ModuleName,
 		tokenomicsmoduletypes.ModuleName,
 		burnermoduletypes.ModuleName,
 		ammmoduletypes.ModuleName,

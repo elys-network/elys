@@ -128,7 +128,7 @@ func (k Keeper) ProcessUpdateIncentiveParams(ctx sdk.Context) bool {
 			DistributionStartBlock: sdk.NewInt(int64(inflation.StartBlockHeight)),
 			// distribution duration - block number per year
 			TotalBlocksPerYear: totalBlocksPerYear,
-			// current epoch in block number
+			// number of blocks distributed
 			BlocksDistributed: blocksDistributed,
 		}
 
@@ -211,16 +211,16 @@ func (k Keeper) UpdateLPRewards(ctx sdk.Context) error {
 	// Proxy TVL = 20*0.3+30*0.5+40*1.0
 	totalProxyTVL := k.CalculateProxyTVL(ctx, baseCurrency)
 
-	// Ensure lpIncentive.TotalBlocksPerYear or lpIncentive.EpochNumBlocks are not zero to avoid division by zero
+	// Ensure lpIncentive.TotalBlocksPerYear is not zero to avoid division by zero
 	if lpIncentive.TotalBlocksPerYear.IsZero() {
 		return errorsmod.Wrap(types.ErrNoInflationaryParams, "invalid inflationary params")
 	}
 
-	// Calculate eden amount per epoch
-	epochLpsEdenAmount := lpIncentive.EdenAmountPerYear.
+	// Calculate eden amount per block
+	lpsEdenAmount := lpIncentive.EdenAmountPerYear.
 		Quo(lpIncentive.TotalBlocksPerYear)
 
-	// Maximum eden based per distribution epoch on maximum APR - 30% by default
+	// Maximum eden APR - 30% by default
 	// Allocated for staking per day = (0.3/365)* (total weighted proxy TVL)
 	edenDenomPrice := k.amm.GetEdenDenomPrice(ctx, baseCurrency)
 
@@ -247,7 +247,7 @@ func (k Keeper) UpdateLPRewards(ctx sdk.Context) error {
 			// -----------------------------------------------------
 			// newEdenAllocated = 80 / ( 80 + 90 + 200 + 0) * 100
 			// Pool share = 80
-			// edenAmountPerEpochLp = 100
+			// edenAmountLp = 100
 			tvl, err = ammPool.TVL(ctx, k.oracleKeeper)
 			if err != nil {
 				continue
@@ -262,7 +262,7 @@ func (k Keeper) UpdateLPRewards(ctx sdk.Context) error {
 		}
 
 		// Calculate new Eden for this pool
-		newEdenAllocatedForPool := poolShare.MulInt(epochLpsEdenAmount)
+		newEdenAllocatedForPool := poolShare.MulInt(lpsEdenAmount)
 
 		poolMaxEdenAmount := params.MaxEdenRewardAprLps.
 			Mul(tvl).
@@ -271,6 +271,10 @@ func (k Keeper) UpdateLPRewards(ctx sdk.Context) error {
 
 		// Use min amount (eden allocation from tokenomics and max apr based eden amount)
 		newEdenAllocatedForPool = sdk.MinDec(newEdenAllocatedForPool, poolMaxEdenAmount)
+		err = k.cmk.MintCoins(ctx, types.ModuleName, sdk.Coins{sdk.NewCoin(ptypes.Eden, newEdenAllocatedForPool.TruncateInt())})
+		if err != nil {
+			panic(err)
+		}
 
 		// Get gas fee rewards per pool
 		gasRewardsAllocatedForPool := poolShare.Mul(gasFeeUsdcAmountForLps)
@@ -577,7 +581,7 @@ func (k Keeper) CalculatePoolShareForStableStakeLPs(ctx sdk.Context, totalProxyT
 	// -----------------------------------------------------
 	// newEdenAllocated = 80 / ( 80 + 90 + 200 + 0) * 100
 	// Pool share = 80
-	// edenAmountPerEpochLp = 100
+	// edenAmountLp = 100
 	tvl := k.stableKeeper.TVL(ctx, k.oracleKeeper, baseCurrency)
 
 	// Get pool Id

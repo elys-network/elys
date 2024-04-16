@@ -43,25 +43,24 @@ func (k Keeper) CalculateStableStakeApr(ctx sdk.Context, query *types.QueryStabl
 		// Calculate total Proxy TVL
 		totalProxyTVL := k.CalculateProxyTVL(ctx, baseCurrency)
 
-		// Eden amount for LP in 24hrs = EpochNumBlocks is the number of block for 24 hrs
-		epochEdenAmount := lpIncentive.EdenAmountPerYear.
+		edenAmount := lpIncentive.EdenAmountPerYear.
 			Quo(lpIncentive.TotalBlocksPerYear)
 
 		edenDenomPrice := k.amm.GetEdenDenomPrice(ctx, baseCurrency)
 
 		// Eden amount for stable stake LP in 24hrs
 		stableStakePoolShare := k.CalculatePoolShareForStableStakeLPs(ctx, totalProxyTVL, baseCurrency)
-		epochStableStakeEdenAmount := sdk.NewDecFromInt(epochEdenAmount).Mul(stableStakePoolShare)
+		stableStakeEdenAmount := sdk.NewDecFromInt(edenAmount).Mul(stableStakePoolShare)
 
 		params := k.GetParams(ctx)
 		poolMaxEdenAmount := params.MaxEdenRewardAprLps.
 			Mul(stableTvl).
 			QuoInt(lpIncentive.TotalBlocksPerYear).
 			Quo(edenDenomPrice)
-		epochStableStakeEdenAmount = sdk.MinDec(epochStableStakeEdenAmount, poolMaxEdenAmount)
+		stableStakeEdenAmount = sdk.MinDec(stableStakeEdenAmount, poolMaxEdenAmount)
 
 		// Eden Apr for usdc earn program = {(Eden allocated for stable stake pool per day*365*price{eden/usdc}/(total usdc deposit)}*100
-		apr := epochStableStakeEdenAmount.
+		apr := stableStakeEdenAmount.
 			MulInt(sdk.NewInt(ptypes.DaysPerYear)).
 			Mul(edenDenomPrice).
 			MulInt(sdk.NewInt(100)).

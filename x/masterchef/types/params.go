@@ -102,11 +102,11 @@ func validateLPIncentives(i interface{}) error {
 	}
 
 	if vv.BlocksDistributed.LT(sdk.NewInt(0)) {
-		return fmt.Errorf("invalid current epoch: %v", vv)
+		return fmt.Errorf("invalid BlocksDistributed: %v", vv)
 	}
 
 	if vv.DistributionStartBlock.LT(sdk.NewInt(0)) {
-		return fmt.Errorf("invalid distribution epoch: %v", vv)
+		return fmt.Errorf("invalid DistributionStartBlock: %v", vv)
 	}
 
 	return nil

@@ -14,7 +14,7 @@ type TotalCommitmentInfo struct {
 }
 
 // Returns the pool revenue tracking key.
-// Unique per pool per epoch, clean once complete the calculation.
+// Unique per pool, clean once complete the calculation.
 func GetPoolRevenueTrackKey(poolId uint64) string {
 	return fmt.Sprintf("pool_revenue_%d", poolId)
 }

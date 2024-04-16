@@ -10,7 +10,7 @@ var _ types.CommitmentHooks = MultiCommitmentHooks{}
 // combine multiple commitment hooks, all hook functions are run in array sequence
 type MultiCommitmentHooks []types.CommitmentHooks
 
-func NewMultiEpochHooks(hooks ...types.CommitmentHooks) MultiCommitmentHooks {
+func NewMultiCommitmentHooks(hooks ...types.CommitmentHooks) MultiCommitmentHooks {
 	return hooks
 }
 
@@ -18,7 +18,7 @@ func NewMultiEpochHooks(hooks ...types.CommitmentHooks) MultiCommitmentHooks {
 func (mh MultiCommitmentHooks) CommitmentChanged(ctx sdk.Context, creator string, amount sdk.Coins) error {
 	for i := range mh {
 		err := mh[i].CommitmentChanged(ctx, creator, amount)
-		if err == nil {
+		if err != nil {
 			return err
 		}
 	}
@@ -29,7 +29,7 @@ func (mh MultiCommitmentHooks) CommitmentChanged(ctx sdk.Context, creator string
 func (mh MultiCommitmentHooks) EdenUncommitted(ctx sdk.Context, creator string, amount sdk.Coin) error {
 	for i := range mh {
 		err := mh[i].EdenUncommitted(ctx, creator, amount)
-		if err == nil {
+		if err != nil {
 			return err
 		}
 	}
@@ -39,7 +39,7 @@ func (mh MultiCommitmentHooks) EdenUncommitted(ctx sdk.Context, creator string, 
 func (mh MultiCommitmentHooks) BeforeEdenInitialCommit(ctx sdk.Context, addr sdk.AccAddress) error {
 	for i := range mh {
 		err := mh[i].BeforeEdenInitialCommit(ctx, addr)
-		if err == nil {
+		if err != nil {
 			return err
 		}
 	}
@@ -49,7 +49,7 @@ func (mh MultiCommitmentHooks) BeforeEdenInitialCommit(ctx sdk.Context, addr sdk
 func (mh MultiCommitmentHooks) BeforeEdenBInitialCommit(ctx sdk.Context, addr sdk.AccAddress) error {
 	for i := range mh {
 		err := mh[i].BeforeEdenBInitialCommit(ctx, addr)
-		if err == nil {
+		if err != nil {
 			return err
 		}
 	}
@@ -59,7 +59,7 @@ func (mh MultiCommitmentHooks) BeforeEdenBInitialCommit(ctx sdk.Context, addr sd
 func (mh MultiCommitmentHooks) BeforeEdenCommitChange(ctx sdk.Context, addr sdk.AccAddress) error {
 	for i := range mh {
 		err := mh[i].BeforeEdenCommitChange(ctx, addr)
-		if err == nil {
+		if err != nil {
 			return err
 		}
 	}
@@ -69,7 +69,7 @@ func (mh MultiCommitmentHooks) BeforeEdenCommitChange(ctx sdk.Context, addr sdk.
 func (mh MultiCommitmentHooks) BeforeEdenBCommitChange(ctx sdk.Context, addr sdk.AccAddress) error {
 	for i := range mh {
 		err := mh[i].BeforeEdenBCommitChange(ctx, addr)
-		if err == nil {
+		if err != nil {
 			return err
 		}
 	}

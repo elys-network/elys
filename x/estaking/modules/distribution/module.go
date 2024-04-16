@@ -73,15 +73,19 @@ func (am AppModule) RegisterInvariants(ir sdk.InvariantRegistry) {
 }
 
 // AllocateTokens handles distribution of the collected fees
-func (am AppModule) AllocateTokens(
-	ctx sdk.Context,
-) {
+func (am AppModule) AllocateTokens(ctx sdk.Context) {
 	// fetch and clear the collected fees for distribution, since this is
 	// called in BeginBlock, collected fees will be from the previous block
 	// (and distributed to the current representatives)
 	feeCollector := am.accountKeeper.GetModuleAccount(ctx, am.feeCollectorName)
 	feesCollectedInt := am.bankKeeper.GetAllBalances(ctx, feeCollector.GetAddress())
 	feesCollected := sdk.NewDecCoinsFromCoins(feesCollectedInt...)
+
+	// transfer collected fees to the distribution module account
+	err := am.bankKeeper.SendCoinsFromModuleToModule(ctx, am.feeCollectorName, distrtypes.ModuleName, feesCollectedInt)
+	if err != nil {
+		panic(err)
+	}
 
 	// calculate the fraction allocated to representatives by subtracting the community tax.
 	// e.g. if community tax is 0.02, representatives fraction will be 0.98 (2% goes to the community pool and the rest to the representatives)
@@ -99,7 +103,6 @@ func (am AppModule) AllocateTokens(
 		reward := feesCollected.MulDecTruncate(representativesFraction).MulDecTruncate(powerFraction)
 		am.keeper.AllocateTokensToValidator(ctx, validator, reward)
 		remaining = remaining.Sub(reward)
-
 		return false
 	})
 
