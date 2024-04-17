@@ -17,6 +17,7 @@ func voteOnUpgradeProposal(cmdPath, name, proposalId, homePath, keyringBackend, 
 		"--fees", "100000uelys",
 		"--gas", "1000000",
 		"--home", homePath,
+		"--output", "json",
 		"--yes",
 	}
 
