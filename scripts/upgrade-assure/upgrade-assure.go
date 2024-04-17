@@ -114,7 +114,7 @@ func main() {
 				waitForServiceToStart(rpc, moniker)
 
 				// wait for next block
-				waitForNextBlock(oldBinaryPath, rpc, moniker)
+				waitForNextBlock(oldBinaryPath, rpc, moniker, 5*time.Minute)
 
 				if skipProposal {
 					// listen for signals
@@ -129,7 +129,7 @@ func main() {
 				createValidator(oldBinaryPath, validatorKeyName2, validatorSelfDelegation2, moniker2, validatorPubkey2, homePath, keyringBackend, chainId, rpc, broadcastMode)
 
 				// wait for next block
-				waitForNextBlock(oldBinaryPath, rpc, moniker)
+				waitForNextBlock(oldBinaryPath, rpc, moniker, 2*time.Minute)
 
 				// stop old binary
 				stop(oldBinaryCmd)
@@ -162,18 +162,12 @@ func main() {
 				// submit upgrade proposal
 				txHash := submitUpgradeProposal(oldBinaryPath, validatorKeyName, newVersion, upgradeBlockHeight, homePath, keyringBackend, chainId, rpc, broadcastMode)
 
-				err = waitForTxConfirmation(oldBinaryPath, rpc, txHash, 5*time.Minute)
-				if err != nil {
-					log.Fatalf("upgrade proposal not confirmed: %v", err)
-				}
+				waitForTxConfirmation(oldBinaryPath, rpc, txHash, 5*time.Minute)
 
 				// vote on upgrade proposal
 				txHash = voteOnUpgradeProposal(oldBinaryPath, validatorKeyName, proposalId, homePath, keyringBackend, chainId, rpc, broadcastMode)
 
-				err = waitForTxConfirmation(oldBinaryPath, rpc, txHash, 5*time.Minute)
-				if err != nil {
-					log.Fatalf("voting on upgrade proposal not confirmed: %v", err)
-				}
+				waitForTxConfirmation(oldBinaryPath, rpc, txHash, 5*time.Minute)
 
 				// wait for upgrade block height
 				waitForBlockHeight(oldBinaryPath, rpc, upgradeBlockHeight)
@@ -196,8 +190,8 @@ func main() {
 				waitForServiceToStart(rpc2, moniker2)
 
 				// wait for next block
-				waitForNextBlock(newBinaryPath, rpc, moniker)
-				waitForNextBlock(newBinaryPath, rpc2, moniker2)
+				waitForNextBlock(newBinaryPath, rpc, moniker, 5*time.Minute)
+				waitForNextBlock(newBinaryPath, rpc2, moniker2, 5*time.Minute)
 
 				// check if the upgrade was successful
 				queryUpgradeApplied(newBinaryPath, rpc, newVersion)

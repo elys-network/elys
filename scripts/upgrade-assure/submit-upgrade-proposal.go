@@ -26,6 +26,7 @@ func submitUpgradeProposal(cmdPath, name, newVersion, upgradeHeight, homePath, k
 		"--gas", "1000000",
 		"--deposit", "10000000uelys",
 		"--home", homePath,
+		"--output", "json",
 		"--yes",
 	}
 

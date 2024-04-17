@@ -5,6 +5,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	m "github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/cosmos/cosmos-sdk/version"
+	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 )
@@ -22,6 +23,12 @@ func setUpgradeHandler(app *ElysApp) {
 			app.Logger().Info("Running upgrade handler for " + version.Version)
 
 			if version.Version == "v0.29.32" {
+				app.Logger().Info("Deleting proposals with ID <= 185")
+				store := ctx.KVStore(app.keys[govtypes.StoreKey])
+				for i := uint64(1); i <= 185; i++ {
+					store.Delete(govtypes.ProposalKey(i))
+				}
+
 				// update the signing info for the validators
 				signers := []string{
 					"elysvalcons1j7047ewlfa75dv0q93lnqkctr9afgfayyvmhc4", // euphoria
