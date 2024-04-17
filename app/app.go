@@ -911,6 +911,7 @@ func NewElysApp(
 			&app.TokenomicsKeeper,
 			&app.TransferhookKeeper,
 			&app.MasterchefKeeper,
+			&app.EstakingKeeper,
 		),
 		wasmOpts...,
 	)

@@ -22,10 +22,13 @@ import (
 	commitmentkeeper "github.com/elys-network/elys/x/commitment/keeper"
 	epochsclientwasm "github.com/elys-network/elys/x/epochs/client/wasm"
 	epochskeeper "github.com/elys-network/elys/x/epochs/keeper"
+	estakingclientwasm "github.com/elys-network/elys/x/estaking/client/wasm"
+	estakingkeeper "github.com/elys-network/elys/x/estaking/keeper"
 	incentiveclientwasm "github.com/elys-network/elys/x/incentive/client/wasm"
 	incentivekeeper "github.com/elys-network/elys/x/incentive/keeper"
 	leveragelpclientwasm "github.com/elys-network/elys/x/leveragelp/client/wasm"
 	leveragelpkeeper "github.com/elys-network/elys/x/leveragelp/keeper"
+	masterchefclientwasm "github.com/elys-network/elys/x/masterchef/client/wasm"
 	masterchefkeeper "github.com/elys-network/elys/x/masterchef/keeper"
 	oracleclientwasm "github.com/elys-network/elys/x/oracle/client/wasm"
 	oraclekeeper "github.com/elys-network/elys/x/oracle/keeper"
@@ -61,6 +64,7 @@ func RegisterCustomPlugins(
 	tokenomics *tokenomicskeeper.Keeper,
 	transferhook *transferhookkeeper.Keeper,
 	masterchef *masterchefkeeper.Keeper,
+	estaking *estakingkeeper.Keeper,
 ) []wasmkeeper.Option {
 	accountedpoolQuerier := accountedpoolclientwasm.NewQuerier(accountedpool)
 	accountedpoolMessenger := accountedpoolclientwasm.NewMessenger(accountedpool)
@@ -110,6 +114,12 @@ func RegisterCustomPlugins(
 	transferhookQuerier := transferhookclientwasm.NewQuerier(transferhook)
 	transferhookMessenger := transferhookclientwasm.NewMessenger(transferhook)
 
+	masterchefQuerier := masterchefclientwasm.NewQuerier(masterchef, staking)
+	masterchefMessenger := masterchefclientwasm.NewMessenger(masterchef, staking, commitment, parameter)
+
+	estakingQuerier := estakingclientwasm.NewQuerier(estaking)
+	estakingMessenger := estakingclientwasm.NewMessenger(estaking, parameter)
+
 	moduleQueriers := []types.ModuleQuerier{
 		accountedpoolQuerier,
 		ammQuerier,
@@ -127,6 +137,8 @@ func RegisterCustomPlugins(
 		stablestakeQuerier,
 		tokenomicsQuerier,
 		transferhookQuerier,
+		masterchefQuerier,
+		estakingQuerier,
 	}
 
 	wasmQueryPlugin := types.NewQueryPlugin(
@@ -149,6 +161,8 @@ func RegisterCustomPlugins(
 		staking,
 		tokenomics,
 		transferhook,
+		masterchef,
+		estaking,
 	)
 
 	queryPluginOpt := wasmkeeper.WithQueryPlugins(&wasmkeeper.QueryPlugins{
@@ -172,6 +186,8 @@ func RegisterCustomPlugins(
 		stablestakeMessenger,
 		tokenomicsMessenger,
 		transferhookMessenger,
+		masterchefMessenger,
+		estakingMessenger,
 	}
 
 	messengerDecoratorOpt := wasmkeeper.WithMessageHandlerDecorator(
@@ -195,6 +211,8 @@ func RegisterCustomPlugins(
 			staking,
 			tokenomics,
 			transferhook,
+			masterchef,
+			estaking,
 		),
 	)
 	return []wasm.Option{

@@ -12,8 +12,10 @@ import (
 	clockkeeper "github.com/elys-network/elys/x/clock/keeper"
 	commitmentkeeper "github.com/elys-network/elys/x/commitment/keeper"
 	epochskeeper "github.com/elys-network/elys/x/epochs/keeper"
+	estakingkeeper "github.com/elys-network/elys/x/estaking/keeper"
 	incentivekeeper "github.com/elys-network/elys/x/incentive/keeper"
 	leveragelpkeeper "github.com/elys-network/elys/x/leveragelp/keeper"
+	masterchefkeeper "github.com/elys-network/elys/x/masterchef/keeper"
 	oraclekeeper "github.com/elys-network/elys/x/oracle/keeper"
 	parameterkeeper "github.com/elys-network/elys/x/parameter/keeper"
 	perpetualkeeper "github.com/elys-network/elys/x/perpetual/keeper"
@@ -42,6 +44,8 @@ func CustomMessageDecorator(
 	staking *stakingkeeper.Keeper,
 	tokenomics *tokenomicskeeper.Keeper,
 	transferhook *transferhookkeeper.Keeper,
+	masterchef *masterchefkeeper.Keeper,
+	estaking *estakingkeeper.Keeper,
 ) func(wasmkeeper.Messenger) wasmkeeper.Messenger {
 	return func(old wasmkeeper.Messenger) wasmkeeper.Messenger {
 		return &CustomMessenger{
@@ -65,6 +69,8 @@ func CustomMessageDecorator(
 			staking:          staking,
 			tokenomics:       tokenomics,
 			transferhook:     transferhook,
+			masterchef:       masterchef,
+			estaking:         estaking,
 		}
 	}
 }

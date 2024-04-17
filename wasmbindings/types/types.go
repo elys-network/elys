@@ -24,6 +24,8 @@ import (
 	commitmenttypes "github.com/elys-network/elys/x/commitment/types"
 	epochskeeper "github.com/elys-network/elys/x/epochs/keeper"
 	epochstypes "github.com/elys-network/elys/x/epochs/types"
+	estakingkeeper "github.com/elys-network/elys/x/estaking/keeper"
+	estakingtypes "github.com/elys-network/elys/x/estaking/types"
 	incentivekeeper "github.com/elys-network/elys/x/incentive/keeper"
 	incentivetypes "github.com/elys-network/elys/x/incentive/types"
 	leveragelpkeeper "github.com/elys-network/elys/x/leveragelp/keeper"
@@ -83,6 +85,7 @@ type QueryPlugin struct {
 	stakingKeeper       *stakingkeeper.Keeper
 	tokenomicsKeeper    *tokenomicskeeper.Keeper
 	transferhookKeeper  *transferhookkeeper.Keeper
+	estakingKeeper      *estakingkeeper.Keeper
 }
 
 // AllCapabilities returns all capabilities available with the current wasmvm
@@ -169,6 +172,10 @@ type ElysQuery struct {
 	MasterchefStableStakeApr    *mastercheftypes.QueryStableStakeAprRequest    `json:"masterchef_stable_stake_apr,omitempty"`
 	MasterchefPoolAprs          *mastercheftypes.QueryPoolAprsRequest          `json:"masterchef_pool_aprs,omitempty"`
 
+	// estaking queriers
+	EstakingParams  *estakingtypes.QueryParamsRequest  `json:"estaking_params,omitempty"`
+	EstakingRewards *estakingtypes.QueryRewardsRequest `json:"estaking_rewards,omitempty"`
+
 	// leveragelp queriers
 	LeveragelpParams                   *leveragelptypes.ParamsRequest              `json:"leveragelp_params,omitempty"`
 	LeveragelpQueryPositions           *leveragelptypes.PositionsRequest           `json:"leveragelp_query_positions,omitempty"`
@@ -238,6 +245,7 @@ type CustomMessenger struct {
 	epochs           *epochskeeper.Keeper
 	incentive        *incentivekeeper.Keeper
 	masterchef       *masterchefkeeper.Keeper
+	estaking         *estakingkeeper.Keeper
 	leveragelp       *leveragelpkeeper.Keeper
 	perpetual        *perpetualkeeper.Keeper
 	oracle           *oraclekeeper.Keeper
@@ -284,7 +292,10 @@ type ElysMsg struct {
 	IncentiveCancelUnbondingDelegation *incentivetypes.MsgCancelUnbondingDelegation `json:"incentive_cancel_unbonding_delegation"`
 
 	// masterchef messages
-	MasterchefClaimRewards *mastercheftypes.MsgClaimRewards `json:"claim_rewards,omitempty"`
+	MasterchefClaimRewards *mastercheftypes.MsgClaimRewards `json:"masterchef_claim_rewards,omitempty"`
+
+	// estaking messages
+	EstakingWithdrawReward *estakingtypes.MsgWithdrawReward `json:"estaking_withdraw_reward,omitempty"`
 
 	// leveragelp messages
 	LeveragelpOpen  *leveragelptypes.MsgOpen  `json:"leveragelp_open,omitempty"`
