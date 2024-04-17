@@ -114,7 +114,7 @@ func main() {
 				waitForServiceToStart(rpc, moniker)
 
 				// wait for next block
-				waitForNextBlock(oldBinaryPath, rpc, moniker)
+				waitForNextBlock(oldBinaryPath, rpc, moniker, 300*time.Second)
 
 				if skipProposal {
 					// listen for signals
@@ -129,7 +129,7 @@ func main() {
 				createValidator(oldBinaryPath, validatorKeyName2, validatorSelfDelegation2, moniker2, validatorPubkey2, homePath, keyringBackend, chainId, rpc, broadcastMode)
 
 				// wait for next block
-				waitForNextBlock(oldBinaryPath, rpc, moniker)
+				waitForNextBlock(oldBinaryPath, rpc, moniker, 120*time.Second)
 
 				// stop old binary
 				stop(oldBinaryCmd)
@@ -196,8 +196,8 @@ func main() {
 				waitForServiceToStart(rpc2, moniker2)
 
 				// wait for next block
-				waitForNextBlock(newBinaryPath, rpc, moniker)
-				waitForNextBlock(newBinaryPath, rpc2, moniker2)
+				waitForNextBlock(newBinaryPath, rpc, moniker, 300*time.Second)
+				waitForNextBlock(newBinaryPath, rpc2, moniker2, 300*time.Second)
 
 				// check if the upgrade was successful
 				queryUpgradeApplied(newBinaryPath, rpc, newVersion)
