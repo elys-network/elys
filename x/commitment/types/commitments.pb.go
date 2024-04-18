@@ -310,14 +310,12 @@ func (m *VestingTokens) GetVestStartedTimestamp() int64 {
 	}
 	return 0
 }
-
-// GenesisState defines the commitment module's genesis state.
 type LegacyCommitments struct {
 	Creator                 string                                   `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
 	CommittedTokens         []*CommittedTokens                       `protobuf:"bytes,2,rep,name=committed_tokens,json=committedTokens,proto3" json:"committed_tokens,omitempty"`
 	RewardsUnclaimed        github_com_cosmos_cosmos_sdk_types.Coins `protobuf:"bytes,3,rep,name=rewards_unclaimed,json=rewardsUnclaimed,proto3,castrepeated=github.com/cosmos/cosmos-sdk/types.Coins" json:"rewards_unclaimed"`
 	Claimed                 github_com_cosmos_cosmos_sdk_types.Coins `protobuf:"bytes,4,rep,name=claimed,proto3,castrepeated=github.com/cosmos/cosmos-sdk/types.Coins" json:"claimed"`
-	VestingTokens           []*LegacyVestingTokens                   `protobuf:"bytes,5,rep,name=vesting_tokens,json=vestingTokens,proto3" json:"vesting_tokens,omitempty"`
+	VestingTokens           []*VestingTokens                         `protobuf:"bytes,5,rep,name=vesting_tokens,json=vestingTokens,proto3" json:"vesting_tokens,omitempty"`
 	RewardsByElysUnclaimed  github_com_cosmos_cosmos_sdk_types.Coins `protobuf:"bytes,6,rep,name=rewards_by_elys_unclaimed,json=rewardsByElysUnclaimed,proto3,castrepeated=github.com/cosmos/cosmos-sdk/types.Coins" json:"rewards_by_elys_unclaimed"`
 	RewardsByEdenUnclaimed  github_com_cosmos_cosmos_sdk_types.Coins `protobuf:"bytes,7,rep,name=rewards_by_eden_unclaimed,json=rewardsByEdenUnclaimed,proto3,castrepeated=github.com/cosmos/cosmos-sdk/types.Coins" json:"rewards_by_eden_unclaimed"`
 	RewardsByEdenbUnclaimed github_com_cosmos_cosmos_sdk_types.Coins `protobuf:"bytes,8,rep,name=rewards_by_edenb_unclaimed,json=rewardsByEdenbUnclaimed,proto3,castrepeated=github.com/cosmos/cosmos-sdk/types.Coins" json:"rewards_by_edenb_unclaimed"`
@@ -328,7 +326,7 @@ func (m *LegacyCommitments) Reset()         { *m = LegacyCommitments{} }
 func (m *LegacyCommitments) String() string { return proto.CompactTextString(m) }
 func (*LegacyCommitments) ProtoMessage()    {}
 func (*LegacyCommitments) Descriptor() ([]byte, []int) {
-	return fileDescriptor_47379c930fe66ed6, []int{5}
+	return fileDescriptor_47379c930fe66ed6, []int{0}
 }
 func (m *LegacyCommitments) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -385,7 +383,7 @@ func (m *LegacyCommitments) GetClaimed() github_com_cosmos_cosmos_sdk_types.Coin
 	return nil
 }
 
-func (m *LegacyCommitments) GetVestingTokens() []*LegacyVestingTokens {
+func (m *LegacyCommitments) GetVestingTokens() []*VestingTokens {
 	if m != nil {
 		return m.VestingTokens
 	}
@@ -2491,7 +2489,7 @@ func (m *LegacyCommitments) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.VestingTokens = append(m.VestingTokens, &LegacyVestingTokens{})
+			m.VestingTokens = append(m.VestingTokens, &VestingTokens{})
 			if err := m.VestingTokens[len(m.VestingTokens)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}

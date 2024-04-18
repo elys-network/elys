@@ -865,7 +865,7 @@ func NewElysApp(
 		authtypes.FeeCollectorName,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
-	incentiveModule := incentivemodule.NewAppModule(appCodec, app.IncentiveKeeper)
+	incentiveModule := incentivemodule.NewAppModule(appCodec, app.IncentiveKeeper, app.EstakingKeeper, app.MasterchefKeeper, app.DistrKeeper, app.CommitmentKeeper)
 
 	app.BurnerKeeper = *burnermodulekeeper.NewKeeper(
 		appCodec,

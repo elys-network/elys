@@ -39,14 +39,6 @@ message CommittedTokens {
   repeated Lockup lockups = 3 [ (gogoproto.nullable) = false ];
 }
 
-message RewardsUnclaimed {
-  string denom = 1;
-  string amount = 2 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
-    (gogoproto.nullable) = false
-  ];
-}
-
 message VestingTokens {
   string denom = 1;
   string total_amount = 2 [
@@ -62,8 +54,6 @@ message VestingTokens {
   int64 vest_started_timestamp = 7;
 }
 
-
-// GenesisState defines the commitment module's genesis state.
 message LegacyCommitments {
   string creator = 1;
   repeated CommittedTokens committed_tokens = 2;
@@ -75,7 +65,7 @@ message LegacyCommitments {
     (gogoproto.nullable) = false,
     (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
   ];
-  repeated LegacyVestingTokens vesting_tokens = 5;
+  repeated VestingTokens vesting_tokens = 5;
 
   repeated cosmos.base.v1beta1.Coin rewards_by_elys_unclaimed = 6 [
     (gogoproto.nullable) = false,
@@ -96,39 +86,4 @@ message LegacyCommitments {
     (gogoproto.nullable) = false,
     (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
   ];
-}
-
-message LegacyVestingTokens {
-  string denom = 1;
-  string total_amount = 2 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
-    (gogoproto.nullable) = false
-  ];
-  string unvested_amount = 3 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
-    (gogoproto.nullable) = false
-  ];
-  string epoch_identifier = 4;
-  int64 num_epochs = 5;
-  int64 current_epoch = 6;
-  int64 vest_started_timestamp = 7;
-}
-
-message LegacyVestingInfo {
-  string base_denom = 1;
-  string vesting_denom = 2;
-  string epoch_identifier = 3;
-  int64 num_epochs = 4;
-  string vest_now_factor = 5 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
-    (gogoproto.nullable) = false
-  ];
-  int64 num_max_vestings = 6;
-}
-
-// Params defines the parameters for the module.
-message LegacyParams {
-  option (gogoproto.goproto_stringer) = false;
-
-  repeated LegacyVestingInfo vesting_infos = 1;
 }

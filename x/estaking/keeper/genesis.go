@@ -1,15 +1,14 @@
-package estaking
+package keeper
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-	"github.com/elys-network/elys/x/estaking/keeper"
 	"github.com/elys-network/elys/x/estaking/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
 
 // InitGenesis initializes the module's state from a provided genesis state.
-func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) {
+func (k Keeper) InitGenesis(ctx sdk.Context, genState types.GenesisState) {
 	var shouldRunEdenValHook = false
 	var shouldRunEdenBValHook = false
 	edenValAddr := sdk.ValAddress(authtypes.NewModuleAddress(ptypes.Eden))
@@ -46,7 +45,7 @@ func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) 
 }
 
 // ExportGenesis returns the module's exported genesis
-func ExportGenesis(ctx sdk.Context, k keeper.Keeper) *types.GenesisState {
+func (k Keeper) ExportGenesis(ctx sdk.Context) *types.GenesisState {
 	genesis := types.DefaultGenesis()
 	genesis.Params = k.GetParams(ctx)
 

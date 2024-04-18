@@ -44,7 +44,6 @@ func (k Keeper) UpdateAccPerShare(ctx sdk.Context, poolId uint64, rewardDenom st
 
 func (k Keeper) UpdateUserRewardPending(ctx sdk.Context, poolId uint64, rewardDenom string, user string, isDeposit bool, amount sdk.Int) {
 	poolRewardInfo, found := k.GetPoolRewardInfo(ctx, poolId, rewardDenom)
-
 	if !found {
 		poolRewardInfo = types.PoolRewardInfo{
 			PoolId:                poolId,
@@ -55,7 +54,6 @@ func (k Keeper) UpdateUserRewardPending(ctx sdk.Context, poolId uint64, rewardDe
 	}
 
 	userRewardInfo, found := k.GetUserRewardInfo(ctx, user, poolId, rewardDenom)
-
 	if !found {
 		userRewardInfo = types.UserRewardInfo{
 			User:          user,
@@ -75,9 +73,10 @@ func (k Keeper) UpdateUserRewardPending(ctx sdk.Context, poolId uint64, rewardDe
 	}
 
 	userRewardInfo.RewardPending = userRewardInfo.RewardPending.Add(
-		poolRewardInfo.PoolAccRewardPerShare.Mul(
-			math.LegacyNewDecFromInt(userBalance),
-		).Sub(userRewardInfo.RewardDebt).Quo(math.LegacyNewDecFromInt(ammtypes.OneShare)),
+		poolRewardInfo.PoolAccRewardPerShare.
+			Mul(math.LegacyNewDecFromInt(userBalance)).
+			Sub(userRewardInfo.RewardDebt).
+			Quo(math.LegacyNewDecFromInt(ammtypes.OneShare)),
 	)
 
 	k.SetUserRewardInfo(ctx, userRewardInfo)
