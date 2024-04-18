@@ -1,0 +1,45 @@
+syntax = "proto3";
+package elys.incentive;
+
+option go_package = "github.com/elys-network/elys/x/incentive/types";
+
+import "gogoproto/gogo.proto";
+import "cosmos_proto/cosmos.proto";
+
+// Pool Info
+message PoolInfo {
+  // reward amount
+  uint64 pool_id = 1;
+  // reward wallet address
+  string reward_wallet = 2;
+  // multiplier for lp rewards
+  string multiplier = 3 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  // Block number since the creation of PoolInfo
+  string num_blocks = 4 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+  // Total dex rewards given
+  string dex_reward_amount_given = 5 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  // Total eden rewards given
+  string eden_reward_amount_given = 6 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+  // Eden APR, updated at every distribution
+  string eden_apr = 7 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  // Dex APR, updated at every distribution
+  string dex_apr = 8 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+}

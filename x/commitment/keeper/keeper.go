@@ -54,11 +54,6 @@ func NewKeeper(
 	assetProfileKeeper types.AssetProfileKeeper,
 	authority string,
 ) *Keeper {
-	// set KeyTable if it has not already been set
-	if !ps.HasKeyTable() {
-		ps = ps.WithKeyTable(types.ParamKeyTable())
-	}
-
 	return &Keeper{
 		cdc:        cdc,
 		storeKey:   storeKey,
