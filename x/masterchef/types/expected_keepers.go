@@ -24,6 +24,7 @@ type CommitmentKeeper interface {
 	MintCoins(ctx sdk.Context, moduleName string, amt sdk.Coins) error
 	BurnEdenBoost(ctx sdk.Context, creator string, denom string, amount math.Int) (ctypes.Commitments, error)
 	SendCoinsFromModuleToAccount(ctx sdk.Context, senderModule string, recipientAddr sdk.AccAddress, amt sdk.Coins) error
+	GetParams(sdk.Context) ctypes.Params
 }
 
 // Staking keeper

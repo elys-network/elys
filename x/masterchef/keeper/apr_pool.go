@@ -7,7 +7,7 @@ import (
 
 func (k Keeper) CalculatePoolAprs(ctx sdk.Context, ids []uint64) []types.PoolApr {
 	if len(ids) == 0 {
-		pools := k.amm.GetAllPool(ctx)
+		pools := k.GetAllPools(ctx)
 		for _, pool := range pools {
 			ids = append(ids, pool.PoolId)
 		}

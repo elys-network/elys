@@ -5,9 +5,15 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	"github.com/elys-network/elys/x/masterchef/types"
+	stablestaketypes "github.com/elys-network/elys/x/stablestake/types"
 )
 
 func (k Keeper) GetPoolTotalSupply(ctx sdk.Context, poolId uint64) sdk.Int {
+	if poolId == stablestaketypes.PoolId {
+		params := k.cmk.GetParams(ctx)
+		return params.TotalCommitted.AmountOf(stablestaketypes.GetShareDenom())
+	}
+
 	pool, found := k.amm.GetPool(ctx, poolId)
 	if !found {
 		return sdk.ZeroInt()
@@ -18,8 +24,12 @@ func (k Keeper) GetPoolTotalSupply(ctx sdk.Context, poolId uint64) sdk.Int {
 
 func (k Keeper) GetPoolBalance(ctx sdk.Context, poolId uint64, user string) sdk.Int {
 	commitments := k.cmk.GetCommitments(ctx, user)
+	shareDenom := stablestaketypes.GetShareDenom()
+	if poolId != stablestaketypes.PoolId {
+		shareDenom = ammtypes.GetPoolShareDenom(poolId)
+	}
 
-	return commitments.GetCommittedAmountForDenom(ammtypes.GetPoolShareDenom(poolId))
+	return commitments.GetCommittedAmountForDenom(shareDenom)
 }
 
 func (k Keeper) UpdateAccPerShare(ctx sdk.Context, poolId uint64, rewardDenom string, amount sdk.Int) {
@@ -34,11 +44,15 @@ func (k Keeper) UpdateAccPerShare(ctx sdk.Context, poolId uint64, rewardDenom st
 		}
 	}
 
+	supply := k.GetPoolTotalSupply(ctx, poolId)
+	if supply.IsZero() {
+		return
+	}
 	poolRewardInfo.PoolAccRewardPerShare = poolRewardInfo.PoolAccRewardPerShare.Add(
-		math.LegacyNewDecFromInt(amount.Mul(ammtypes.OneShare)).Quo(math.LegacyNewDecFromInt(k.GetPoolTotalSupply(ctx, poolId))),
+		math.LegacyNewDecFromInt(amount.Mul(ammtypes.OneShare)).
+			Quo(math.LegacyNewDecFromInt(supply)),
 	)
 	poolRewardInfo.LastUpdatedBlock = uint64(ctx.BlockHeight())
-
 	k.SetPoolRewardInfo(ctx, poolRewardInfo)
 }
 

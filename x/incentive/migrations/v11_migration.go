@@ -4,10 +4,12 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	distrtypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
+	ammtypes "github.com/elys-network/elys/x/amm/types"
 	commitmenttypes "github.com/elys-network/elys/x/commitment/types"
 	estakingtypes "github.com/elys-network/elys/x/estaking/types"
 	mastercheftypes "github.com/elys-network/elys/x/masterchef/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
+	stablestaketypes "github.com/elys-network/elys/x/stablestake/types"
 )
 
 func (m Migrator) V11Migration(ctx sdk.Context) error {
@@ -30,7 +32,7 @@ func (m Migrator) V11Migration(ctx sdk.Context) error {
 
 	// initiate masterchef params
 	m.masterchefKeeper.SetParams(ctx, mastercheftypes.NewParams(
-		nil, // TODO:
+		nil,
 		sdk.NewDecWithPrec(60, 2),
 		sdk.NewDecWithPrec(25, 2),
 		mastercheftypes.DexRewardsTracker{
@@ -44,7 +46,7 @@ func (m Migrator) V11Migration(ctx sdk.Context) error {
 	// initiate estaking module data
 	m.estakingKeeper.InitGenesis(ctx, estakingtypes.GenesisState{
 		Params: estakingtypes.Params{
-			StakeIncentives:         nil, // TODO:
+			StakeIncentives:         nil,
 			EdenCommitVal:           "",
 			EdenbCommitVal:          "",
 			MaxEdenRewardAprStakers: sdk.NewDecWithPrec(3, 1), // 30%
@@ -103,21 +105,32 @@ func (m Migrator) V11Migration(ctx sdk.Context) error {
 			VestingTokens:   legacy.VestingTokens,
 		}
 		m.commitmentKeeper.SetCommitments(ctx, commitments)
+		commParams := m.commitmentKeeper.GetParams(ctx)
 		for _, committed := range commitments.CommittedTokens {
-			if committed.Denom == ptypes.Eden {
+			if committed.Denom == ptypes.Eden && commParams.TotalCommitted.AmountOf(ptypes.Eden).IsPositive() {
 				err = m.estakingKeeper.Hooks().AfterDelegationModified(ctx, addr, edenValAddr)
 				if err != nil {
 					panic(err)
 				}
 			}
-			if committed.Denom == ptypes.EdenB {
+			if committed.Denom == ptypes.EdenB && commParams.TotalCommitted.AmountOf(ptypes.EdenB).IsPositive() {
 				err = m.estakingKeeper.Hooks().AfterDelegationModified(ctx, addr, edenBValAddr)
 				if err != nil {
 					panic(err)
 				}
 			}
-		}
 
+			// Execute hook for normal amm pool deposit
+			poolId, err := ammtypes.GetPoolIdFromShareDenom(committed.Denom)
+			if err == nil {
+				m.masterchefKeeper.AfterDeposit(ctx, poolId, addr.String(), committed.Amount)
+			}
+
+			// Execute hook for stablestake deposit
+			if committed.Denom == stablestaketypes.GetShareDenom() {
+				m.masterchefKeeper.AfterDeposit(ctx, stablestaketypes.PoolId, addr.String(), committed.Amount)
+			}
+		}
 	}
 
 	return nil

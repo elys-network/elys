@@ -4,6 +4,7 @@ import (
 	"errors"
 
 	errorsmod "cosmossdk.io/errors"
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
@@ -19,6 +20,26 @@ func (k Keeper) EndBlocker(ctx sdk.Context) {
 	k.ProcessLPRewardDistribution(ctx)
 	// distribute external rewards
 	k.ProcessExternalRewardsDistribution(ctx)
+}
+
+func (k Keeper) GetPoolTVL(ctx sdk.Context, poolId uint64) math.LegacyDec {
+	if poolId == stabletypes.PoolId {
+		entry, found := k.assetProfileKeeper.GetEntry(ctx, ptypes.BaseCurrency)
+		if !found {
+			return math.LegacyZeroDec()
+		}
+		baseCurrency := entry.Denom
+		return k.stableKeeper.TVL(ctx, k.oracleKeeper, baseCurrency)
+	}
+	ammPool, found := k.amm.GetPool(ctx, poolId)
+	if found {
+		tvl, err := ammPool.TVL(ctx, k.oracleKeeper)
+		if err != nil {
+			return math.LegacyZeroDec()
+		}
+		return tvl
+	}
+	return math.LegacyZeroDec()
 }
 
 func (k Keeper) ProcessExternalRewardsDistribution(ctx sdk.Context) {
@@ -55,25 +76,21 @@ func (k Keeper) ProcessExternalRewardsDistribution(ctx sdk.Context) {
 				k.SetPool(ctx, pool)
 			}
 
-			ammPool, found := k.amm.GetPool(ctx, pool.PoolId)
-			if found {
-				tvl, err := ammPool.TVL(ctx, k.oracleKeeper)
-				if err == nil {
-					yearlyIncentiveRewardsTotal := externalIncentive.AmountPerBlock.
-						Mul(lpIncentive.TotalBlocksPerYear).
-						Quo(pool.NumBlocks)
+			tvl := k.GetPoolTVL(ctx, pool.PoolId)
+			if tvl.IsPositive() {
+				yearlyIncentiveRewardsTotal := externalIncentive.AmountPerBlock.
+					Mul(lpIncentive.TotalBlocksPerYear).
+					Quo(pool.NumBlocks)
 
-					entry, found := k.assetProfileKeeper.GetEntry(ctx, ptypes.BaseCurrency)
-					if found {
-						baseCurrency := entry.Denom
-						pool.ExternalIncentiveApr = sdk.NewDecFromInt(yearlyIncentiveRewardsTotal).
-							Mul(k.amm.GetTokenPrice(ctx, externalIncentive.RewardDenom, baseCurrency)).
-							Quo(tvl)
-						k.SetPool(ctx, pool)
-					}
+				entry, found := k.assetProfileKeeper.GetEntry(ctx, ptypes.BaseCurrency)
+				if found {
+					baseCurrency := entry.Denom
+					pool.ExternalIncentiveApr = sdk.NewDecFromInt(yearlyIncentiveRewardsTotal).
+						Mul(k.amm.GetTokenPrice(ctx, externalIncentive.RewardDenom, baseCurrency)).
+						Quo(tvl)
+					k.SetPool(ctx, pool)
 				}
 			}
-
 		}
 
 		if curBlockHeight.Uint64() == externalIncentive.ToBlock {
@@ -229,31 +246,13 @@ func (k Keeper) UpdateLPRewards(ctx sdk.Context) error {
 		return errorsmod.Wrap(types.ErrNoInflationaryParams, "invalid eden price")
 	}
 
-	stableStakePoolId := uint64(stabletypes.PoolId)
 	// Distribute Eden / USDC Rewards
 	for _, pool := range k.GetAllPools(ctx) {
-		var proxyTVL, tvl sdk.Dec
 		var err error
-		if pool.PoolId == stableStakePoolId {
-			tvl = k.stableKeeper.TVL(ctx, k.oracleKeeper, baseCurrency)
-			proxyTVL = tvl.Mul(pool.Multiplier)
-		} else {
-			ammPool, found := k.amm.GetPool(ctx, pool.PoolId)
-			if !found {
-				continue
-			}
-
-			// ------------ New Eden calculation -------------------
-			// -----------------------------------------------------
-			// newEdenAllocated = 80 / ( 80 + 90 + 200 + 0) * 100
-			// Pool share = 80
-			// edenAmountLp = 100
-			tvl, err = ammPool.TVL(ctx, k.oracleKeeper)
-			if err != nil {
-				continue
-			}
-			// Calculate Proxy TVL share considering multiplier
-			proxyTVL = tvl.Mul(pool.Multiplier)
+		tvl := k.GetPoolTVL(ctx, pool.PoolId)
+		proxyTVL := tvl.Mul(pool.Multiplier)
+		if proxyTVL.IsZero() {
+			continue
 		}
 
 		poolShare := sdk.ZeroDec()
@@ -487,37 +486,14 @@ func (k Keeper) CollectDEXRevenue(ctx sdk.Context) (sdk.Coins, sdk.DecCoins) {
 func (k Keeper) CalculateProxyTVL(ctx sdk.Context, baseCurrency string) sdk.Dec {
 	multipliedShareSum := sdk.ZeroDec()
 	stableStakePoolId := uint64(stabletypes.PoolId)
+	_, found := k.GetPool(ctx, stableStakePoolId)
+	// Ensure stablestakePoolParams exist
+	if !found {
+		k.InitStableStakePoolParams(ctx, stableStakePoolId)
+	}
 	for _, pool := range k.GetAllPools(ctx) {
-		if pool.PoolId == stableStakePoolId {
-			// Get pool info from incentive param
-			poolInfo, found := k.GetPool(ctx, stableStakePoolId)
-			if !found {
-				k.InitStableStakePoolParams(ctx, stableStakePoolId)
-				poolInfo, _ = k.GetPool(ctx, stableStakePoolId)
-			}
-			tvl := k.stableKeeper.TVL(ctx, k.oracleKeeper, baseCurrency)
-			proxyTVL := tvl.Mul(poolInfo.Multiplier)
-			multipliedShareSum = multipliedShareSum.Add(proxyTVL)
-			continue
-		}
-
-		ammPool, found := k.amm.GetPool(ctx, pool.PoolId)
-		if !found {
-			continue
-		}
-
-		tvl, err := ammPool.TVL(ctx, k.oracleKeeper)
-		if err != nil {
-			continue
-		}
-
-		// Get pool info from incentive param
-		poolInfo, found := k.GetPool(ctx, ammPool.GetPoolId())
-		if !found {
-			continue
-		}
-
-		proxyTVL := tvl.Mul(poolInfo.Multiplier)
+		tvl := k.GetPoolTVL(ctx, pool.PoolId)
+		proxyTVL := tvl.Mul(pool.Multiplier)
 
 		// Calculate total pool share by TVL and multiplier
 		multipliedShareSum = multipliedShareSum.Add(proxyTVL)

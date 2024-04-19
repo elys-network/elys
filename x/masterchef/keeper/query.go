@@ -49,7 +49,7 @@ func (k Keeper) UserRewardInfo(goCtx context.Context, req *types.QueryUserReward
 
 	userRewardInfo, found := k.GetUserRewardInfo(ctx, req.User, req.PoolId, req.RewardDenom)
 	if !found {
-		return nil, status.Error(codes.InvalidArgument, "invalid pool id")
+		return nil, status.Error(codes.InvalidArgument, "invalid pool id or denom")
 	}
 
 	return &types.QueryUserRewardInfoResponse{UserRewardInfo: userRewardInfo}, nil

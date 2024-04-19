@@ -2,6 +2,8 @@ package types
 
 import (
 	fmt "fmt"
+	"strconv"
+	"strings"
 
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -9,6 +11,14 @@ import (
 
 func GetPoolShareDenom(poolId uint64) string {
 	return fmt.Sprintf("amm/pool/%d", poolId)
+}
+
+func GetPoolIdFromShareDenom(shareDenom string) (uint64, error) {
+	poolId, err := strconv.Atoi(strings.TrimPrefix(shareDenom, "amm/pool/"))
+	if err != nil {
+		return 0, err
+	}
+	return uint64(poolId), nil
 }
 
 // poolAssetsCoins returns all the coins corresponding to a slice of pool assets.

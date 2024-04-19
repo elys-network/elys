@@ -808,8 +808,6 @@ func NewElysApp(
 		&app.CommitmentKeeper,
 		app.AssetprofileKeeper,
 	)
-	stablestake := stablestake.NewAppModule(appCodec, app.StablestakeKeeper, app.AccountKeeper, app.BankKeeper)
-
 	app.CommitmentKeeper = *commitmentKeeper.SetHooks(
 		commitmentmodulekeeper.NewMultiCommitmentHooks(
 			app.IncentiveKeeper.CommitmentHooks(),
@@ -845,6 +843,11 @@ func NewElysApp(
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 	masterchefModule := masterchefmodule.NewAppModule(appCodec, app.MasterchefKeeper, app.AccountKeeper, app.BankKeeper)
+
+	app.StablestakeKeeper = *app.StablestakeKeeper.SetHooks(stablestakekeeper.NewMultiStableStakeHooks(
+		app.MasterchefKeeper.StableStakeHooks(),
+	))
+	stablestakeModule := stablestake.NewAppModule(appCodec, app.StablestakeKeeper, app.AccountKeeper, app.BankKeeper)
 
 	app.IncentiveKeeper = *incentivemodulekeeper.NewKeeper(
 		appCodec,
@@ -1141,7 +1144,7 @@ func NewElysApp(
 		accountedPoolModule,
 		transferhookModule,
 		clockModule,
-		stablestake,
+		stablestakeModule,
 		leveragelpModule,
 		masterchefModule,
 		estakingModule,
