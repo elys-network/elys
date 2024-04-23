@@ -20,6 +20,10 @@ const (
 	flagBroadcastMode   = "broadcast-mode"
 	flagDbEngine        = "db-engine"
 
+	//Timeout
+	flagTimeOutToWaitForService = "timeout-wait-for-node"
+	flagTimeOutNextBlock        = "timeout-next-block"
+
 	// node 1
 	flagHome                    = "home"
 	flagMoniker                 = "moniker"
@@ -53,6 +57,10 @@ func getFlags(cmd *cobra.Command) (
 	genesisFilePath string,
 	broadcastMode string,
 	dbEngine string,
+
+	//timeouts
+	timeOutWaitForNode int,
+	timeOutNextBlock int,
 
 	// node 1
 	homePath string,
@@ -123,6 +131,26 @@ func getFlags(cmd *cobra.Command) (
 	dbEngine, _ = cmd.Flags().GetString(flagDbEngine)
 	if dbEngine == "" {
 		log.Fatalf(ColorRed + "database engine is required")
+	}
+
+	timeOutWaitForNode, err := cmd.Flags().GetInt(flagTimeOutToWaitForService)
+
+	if err != nil {
+		log.Fatalf(ColorRed + err.Error())
+	}
+
+	if timeOutWaitForNode == 0 {
+		log.Fatalf(ColorRed + "time out to wait for service is required")
+	}
+
+	timeOutNextBlock, err = cmd.Flags().GetInt(flagTimeOutNextBlock)
+
+	if err != nil {
+		log.Fatalf(ColorRed + err.Error())
+	}
+
+	if timeOutNextBlock == 0 {
+		log.Fatalf(ColorRed + "time out next block is required")
 	}
 
 	// node 1
