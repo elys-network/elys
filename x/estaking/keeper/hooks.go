@@ -14,7 +14,7 @@ func (k Keeper) CommitmentChanged(ctx sdk.Context, creator string, amount sdk.Co
 	if !amount.AmountOf(ptypes.Eden).IsZero() {
 		edenValAddr, err := sdk.ValAddressFromBech32(params.EdenCommitVal)
 		if err != nil {
-			panic(err)
+			return err
 		}
 		err = k.Keeper.Hooks().AfterDelegationModified(ctx, addr, edenValAddr)
 		if err != nil {
@@ -25,7 +25,7 @@ func (k Keeper) CommitmentChanged(ctx sdk.Context, creator string, amount sdk.Co
 	if !amount.AmountOf(ptypes.EdenB).IsZero() {
 		edenBValAddr, err := sdk.ValAddressFromBech32(params.EdenbCommitVal)
 		if err != nil {
-			panic(err)
+			return err
 		}
 		err = k.Keeper.Hooks().AfterDelegationModified(ctx, addr, edenBValAddr)
 		if err != nil {
@@ -45,7 +45,7 @@ func (k Keeper) BeforeEdenInitialCommit(ctx sdk.Context, addr sdk.AccAddress) er
 	params := k.GetParams(ctx)
 	edenValAddr, err := sdk.ValAddressFromBech32(params.EdenCommitVal)
 	if err != nil {
-		panic(err)
+		return err
 	}
 	err = k.Keeper.Hooks().BeforeDelegationCreated(ctx, addr, edenValAddr)
 	if err != nil {
@@ -58,7 +58,7 @@ func (k Keeper) BeforeEdenBInitialCommit(ctx sdk.Context, addr sdk.AccAddress) e
 	params := k.GetParams(ctx)
 	edenBValAddr, err := sdk.ValAddressFromBech32(params.EdenbCommitVal)
 	if err != nil {
-		panic(err)
+		return err
 	}
 	err = k.Keeper.Hooks().BeforeDelegationCreated(ctx, addr, edenBValAddr)
 	if err != nil {
