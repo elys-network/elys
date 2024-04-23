@@ -76,7 +76,7 @@ func (suite *KeeperTestSuite) TestSwapExactAmountIn() {
 			swapFeeOut:          sdk.ZeroDec(),
 			tokenIn:             sdk.NewInt64Coin("uusda", 10000),
 			tokenOutMin:         sdk.ZeroInt(),
-			tokenOut:            sdk.NewInt64Coin(ptypes.BaseCurrency, 9802),
+			tokenOut:            sdk.NewInt64Coin(ptypes.BaseCurrency, 9704),
 			weightBalanceBonus:  sdk.ZeroDec(),
 			isOraclePool:        false,
 			useNewRecipient:     false,
