@@ -1,69 +1,80 @@
 package keeper_test
 
-// TODO: test for reward distribution
-
 import (
 	"testing"
 
 	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	distrtypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
 	simapp "github.com/elys-network/elys/app"
-	ctypes "github.com/elys-network/elys/x/commitment/types"
+	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
+	"github.com/elys-network/elys/x/estaking/keeper"
+	exdistr "github.com/elys-network/elys/x/estaking/modules/distribution"
+	"github.com/elys-network/elys/x/estaking/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 	"github.com/stretchr/testify/require"
 )
 
-func TestCalcRewardsForStakers(t *testing.T) {
+func TestUpdateStakersRewards(t *testing.T) {
 	app := simapp.InitElysTestApp(true)
 	ctx := app.BaseApp.NewContext(true, tmproto.Header{})
 
-	// Generate 2 random accounts with 10000uelys balanced
-	addr := simapp.AddTestAddrs(app, ctx, 2, sdk.NewInt(10000))
+	stakingKeeper := app.StakingKeeper
+	estakingKeeper := app.EstakingKeeper
 
-	var committed sdk.Coins
-	var unclaimed sdk.Coins
+	// create validator with 50% commission
+	validators := stakingKeeper.GetAllValidators(ctx)
+	require.True(t, len(validators) > 0)
+	valAddr := validators[0].GetOperator()
+	delegations := stakingKeeper.GetValidatorDelegations(ctx, valAddr)
+	require.True(t, len(delegations) > 0)
+	addr := sdk.MustAccAddressFromBech32(delegations[0].DelegatorAddress)
 
-	// Prepare unclaimed tokens
-	uedenToken := sdk.NewCoin(ptypes.Eden, sdk.NewInt(2000))
-	uedenBToken := sdk.NewCoin(ptypes.EdenB, sdk.NewInt(2000))
-	unclaimed = unclaimed.Add(uedenToken, uedenBToken)
+	app.AssetprofileKeeper.SetEntry(ctx, assetprofiletypes.Entry{
+		BaseDenom:       ptypes.Eden,
+		Denom:           ptypes.Eden,
+		Decimals:        6,
+		CommitEnabled:   true,
+		WithdrawEnabled: true,
+	})
+	app.AssetprofileKeeper.SetEntry(ctx, assetprofiletypes.Entry{
+		BaseDenom:       ptypes.BaseCurrency,
+		Denom:           ptypes.BaseCurrency,
+		Decimals:        6,
+		CommitEnabled:   true,
+		WithdrawEnabled: true,
+	})
 
-	// Mint coins
-	err := app.BankKeeper.MintCoins(ctx, ctypes.ModuleName, unclaimed)
-	require.NoError(t, err)
-	err = app.BankKeeper.SendCoinsFromModuleToAccount(ctx, ctypes.ModuleName, addr[0], unclaimed)
-	require.NoError(t, err)
+	// next block
+	ctx = ctx.WithBlockHeight(ctx.BlockHeight() + 1)
 
-	err = app.BankKeeper.MintCoins(ctx, ctypes.ModuleName, unclaimed)
-	require.NoError(t, err)
-	err = app.BankKeeper.SendCoinsFromModuleToAccount(ctx, ctypes.ModuleName, addr[1], unclaimed)
-	require.NoError(t, err)
+	params := estakingKeeper.GetParams(ctx)
+	params.StakeIncentives = &types.IncentiveInfo{
+		EdenAmountPerYear:      sdk.NewInt(1000_000_000_000_000),
+		DistributionStartBlock: sdk.NewInt(0),
+		TotalBlocksPerYear:     sdk.NewInt(6307200),
+		BlocksDistributed:      sdk.NewInt(1),
+	}
+	params.MaxEdenRewardAprStakers = sdk.NewDec(1000_000)
+	estakingKeeper.SetParams(ctx, params)
 
-	// Prepare committed tokens
-	uedenToken = sdk.NewCoin(ptypes.Eden, sdk.NewInt(1500))
-	uedenBToken = sdk.NewCoin(ptypes.EdenB, sdk.NewInt(500))
-	committed = committed.Add(uedenToken, uedenBToken)
+	// update staker rewards
+	err := estakingKeeper.UpdateStakersRewards(ctx)
+	require.Nil(t, err)
 
-	// Mint coins
-	err = app.BankKeeper.MintCoins(ctx, ctypes.ModuleName, committed)
-	require.NoError(t, err)
-	err = app.BankKeeper.SendCoinsFromModuleToAccount(ctx, ctypes.ModuleName, addr[0], committed)
-	require.NoError(t, err)
+	distrAppModule := exdistr.NewAppModule(
+		app.AppCodec(), app.DistrKeeper, app.AccountKeeper,
+		app.CommitmentKeeper, &app.EstakingKeeper,
+		authtypes.FeeCollectorName, app.GetSubspace(distrtypes.ModuleName))
+	distrAppModule.AllocateTokens(ctx)
 
-	err = app.BankKeeper.MintCoins(ctx, ctypes.ModuleName, committed)
-	require.NoError(t, err)
-	err = app.BankKeeper.SendCoinsFromModuleToAccount(ctx, ctypes.ModuleName, addr[1], committed)
-	require.NoError(t, err)
-
-	// Add testing commitment
-	simapp.AddTestCommitment(app, ctx, addr[0], committed)
-	simapp.AddTestCommitment(app, ctx, addr[1], committed)
-
-	commitment := app.CommitmentKeeper.GetCommitments(ctx, addr[0].String())
-
-	require.Equal(t, commitment.CommittedTokens[0].Denom, ptypes.Eden)
-	require.Equal(t, commitment.CommittedTokens[0].Amount, sdk.NewInt(1500))
-
-	require.Equal(t, commitment.CommittedTokens[1].Denom, ptypes.EdenB)
-	require.Equal(t, commitment.CommittedTokens[1].Amount, sdk.NewInt(500))
+	// withdraw eden rewards
+	msgServer := keeper.NewMsgServerImpl(estakingKeeper)
+	res, err := msgServer.WithdrawReward(ctx, &types.MsgWithdrawReward{
+		DelegatorAddress: addr.String(),
+		ValidatorAddress: valAddr.String(),
+	})
+	require.Nil(t, err)
+	require.Equal(t, res.Amount.String(), "147608ueden")
 }
