@@ -29,10 +29,7 @@ func (k Keeper) SwapExactAmountIn(
 	if tokenIn.Denom == tokenOutDenom {
 		return math.Int{}, errors.New("cannot trade the same denomination in and out")
 	}
-	poolSwapFee := pool.GetPoolParams().SwapFee
-	if swapFee.LT(poolSwapFee.QuoInt64(2)) {
-		return math.Int{}, fmt.Errorf("given swap fee (%s) must be greater than or equal to half of the pool's swap fee (%s)", swapFee, poolSwapFee)
-	}
+
 	tokensIn := sdk.Coins{tokenIn}
 
 	defer func() {

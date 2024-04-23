@@ -22,6 +22,38 @@ func (k Keeper) CalcInRouteSpotPrice(ctx sdk.Context,
 	// The final token out denom
 	var tokenOutDenom string
 
+	isMultiHopRouted, routeSwapFee, sumOfSwapFees := false, sdk.Dec{}, sdk.Dec{}
+
+	// convert routes []*types.SwapAmountInRoute to []types.SwapAmountInRoute
+	routesNoPtr := make([]types.SwapAmountInRoute, len(routes))
+	for i, route := range routes {
+		routesNoPtr[i] = *route
+	}
+
+	route := types.SwapAmountInRoutes(routesNoPtr)
+	if err := route.Validate(); err != nil {
+		return sdk.ZeroDec(), sdk.ZeroDec(), sdk.Coin{}, sdk.ZeroDec(), sdk.ZeroDec(), sdk.Coin{}, sdk.ZeroDec(), sdk.ZeroDec(), err
+	}
+
+	// In this loop, we check if:
+	// - the route is of length 2
+	// - route 1 and route 2 don't trade via the same pool
+	// - route 1 contains uelys
+	// - both route 1 and route 2 are incentivized pools
+	//
+	// If all of the above is true, then we collect the additive and max fee between the
+	// two pools to later calculate the following:
+	// total_swap_fee = total_swap_fee = max(swapfee1, swapfee2)
+	// fee_per_pool = total_swap_fee * ((pool_fee) / (swapfee1 + swapfee2))
+	if k.isElysRoutedMultihop(ctx, route, routes[0].TokenOutDenom, tokenIn.Denom) {
+		isMultiHopRouted = true
+		var err error
+		routeSwapFee, sumOfSwapFees, err = k.getElysRoutedMultihopTotalSwapFee(ctx, route)
+		if err != nil {
+			return sdk.ZeroDec(), sdk.ZeroDec(), sdk.Coin{}, sdk.ZeroDec(), sdk.ZeroDec(), sdk.Coin{}, sdk.ZeroDec(), sdk.ZeroDec(), err
+		}
+	}
+
 	// Initialize the total discounted swap fee
 	totalDiscountedSwapFee := sdk.ZeroDec()
 
@@ -42,6 +74,12 @@ func (k Keeper) CalcInRouteSpotPrice(ctx sdk.Context,
 
 		// Get Pool swap fee
 		swapFee := pool.GetPoolParams().SwapFee
+
+		// If we determined the route is an elys multi-hop and both routes are incentivized,
+		// we modify the swap fee accordingly.
+		if isMultiHopRouted && sumOfSwapFees.IsPositive() {
+			swapFee = routeSwapFee.Mul((swapFee.Quo(sumOfSwapFees)))
+		}
 
 		// Override swap fee if applicable
 		if overrideSwapFee.IsPositive() {
