@@ -218,44 +218,139 @@ func (m *MsgWithdrawRewardResponse) GetAmount() github_com_cosmos_cosmos_sdk_typ
 	return nil
 }
 
+// MsgWithdrawElysStakingRewards represents delegation withdrawal to a delegator from all the validators.
+type MsgWithdrawElysStakingRewards struct {
+	DelegatorAddress string `protobuf:"bytes,1,opt,name=delegator_address,json=delegatorAddress,proto3" json:"delegator_address,omitempty"`
+}
+
+func (m *MsgWithdrawElysStakingRewards) Reset()         { *m = MsgWithdrawElysStakingRewards{} }
+func (m *MsgWithdrawElysStakingRewards) String() string { return proto.CompactTextString(m) }
+func (*MsgWithdrawElysStakingRewards) ProtoMessage()    {}
+func (*MsgWithdrawElysStakingRewards) Descriptor() ([]byte, []int) {
+	return fileDescriptor_dcd8bcdd6e10f7de, []int{4}
+}
+func (m *MsgWithdrawElysStakingRewards) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgWithdrawElysStakingRewards) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgWithdrawElysStakingRewards.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgWithdrawElysStakingRewards) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgWithdrawElysStakingRewards.Merge(m, src)
+}
+func (m *MsgWithdrawElysStakingRewards) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgWithdrawElysStakingRewards) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgWithdrawElysStakingRewards.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgWithdrawElysStakingRewards proto.InternalMessageInfo
+
+func (m *MsgWithdrawElysStakingRewards) GetDelegatorAddress() string {
+	if m != nil {
+		return m.DelegatorAddress
+	}
+	return ""
+}
+
+// MsgWithdrawElysStakingRewards defines the Msg/WithdrawElysStakingRewards response type.
+type MsgWithdrawElysStakingRewardsResponse struct {
+	Amount github_com_cosmos_cosmos_sdk_types.Coins `protobuf:"bytes,1,rep,name=amount,proto3,castrepeated=github.com/cosmos/cosmos-sdk/types.Coins" json:"amount"`
+}
+
+func (m *MsgWithdrawElysStakingRewardsResponse) Reset()         { *m = MsgWithdrawElysStakingRewardsResponse{} }
+func (m *MsgWithdrawElysStakingRewardsResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgWithdrawElysStakingRewardsResponse) ProtoMessage()    {}
+func (*MsgWithdrawElysStakingRewardsResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_dcd8bcdd6e10f7de, []int{5}
+}
+func (m *MsgWithdrawElysStakingRewardsResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgWithdrawElysStakingRewardsResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgWithdrawElysStakingRewardsResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgWithdrawElysStakingRewardsResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgWithdrawElysStakingRewardsResponse.Merge(m, src)
+}
+func (m *MsgWithdrawElysStakingRewardsResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgWithdrawElysStakingRewardsResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgWithdrawElysStakingRewardsResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgWithdrawElysStakingRewardsResponse proto.InternalMessageInfo
+
+func (m *MsgWithdrawElysStakingRewardsResponse) GetAmount() github_com_cosmos_cosmos_sdk_types.Coins {
+	if m != nil {
+		return m.Amount
+	}
+	return nil
+}
+
 func init() {
 	proto.RegisterType((*MsgUpdateParams)(nil), "elys.estaking.MsgUpdateParams")
 	proto.RegisterType((*MsgUpdateParamsResponse)(nil), "elys.estaking.MsgUpdateParamsResponse")
 	proto.RegisterType((*MsgWithdrawReward)(nil), "elys.estaking.MsgWithdrawReward")
 	proto.RegisterType((*MsgWithdrawRewardResponse)(nil), "elys.estaking.MsgWithdrawRewardResponse")
+	proto.RegisterType((*MsgWithdrawElysStakingRewards)(nil), "elys.estaking.MsgWithdrawElysStakingRewards")
+	proto.RegisterType((*MsgWithdrawElysStakingRewardsResponse)(nil), "elys.estaking.MsgWithdrawElysStakingRewardsResponse")
 }
 
 func init() { proto.RegisterFile("elys/estaking/tx.proto", fileDescriptor_dcd8bcdd6e10f7de) }
 
 var fileDescriptor_dcd8bcdd6e10f7de = []byte{
-	// 426 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x84, 0x92, 0xdd, 0x6e, 0xd3, 0x30,
-	0x1c, 0xc5, 0xeb, 0x0d, 0x55, 0x9a, 0xc7, 0xd7, 0x22, 0x3e, 0xda, 0x08, 0x79, 0x51, 0x2e, 0x50,
-	0x24, 0x54, 0x9b, 0x75, 0x4f, 0x40, 0xb9, 0xe0, 0xaa, 0x12, 0x8a, 0x04, 0x48, 0x08, 0x09, 0x39,
-	0xb1, 0xe5, 0x46, 0x6d, 0xe2, 0xc8, 0x7f, 0x77, 0x5d, 0xef, 0x78, 0x04, 0x9e, 0x83, 0x57, 0xe0,
-	0x05, 0x76, 0xb9, 0x4b, 0xae, 0x00, 0xb5, 0x2f, 0x82, 0x12, 0xa7, 0x65, 0xc9, 0x24, 0xb8, 0x4a,
-	0x72, 0xce, 0xf1, 0xf1, 0xdf, 0xbf, 0x18, 0x3f, 0x91, 0x8b, 0x35, 0x30, 0x09, 0x96, 0xcf, 0xb3,
-	0x42, 0x31, 0x7b, 0x49, 0x4b, 0xa3, 0xad, 0xf6, 0xee, 0x55, 0x3a, 0xdd, 0xe9, 0xfe, 0x23, 0xa5,
-	0x95, 0xae, 0x1d, 0x56, 0xbd, 0xb9, 0x90, 0x4f, 0x52, 0x0d, 0xb9, 0x06, 0x96, 0x70, 0x90, 0xec,
-	0xe2, 0x2c, 0x91, 0x96, 0x9f, 0xb1, 0x54, 0x67, 0x45, 0xe3, 0xfb, 0xed, 0xf2, 0x92, 0x1b, 0x9e,
-	0x83, 0xf3, 0x42, 0x81, 0x1f, 0x4c, 0x41, 0xbd, 0x2b, 0x05, 0xb7, 0xf2, 0x6d, 0x6d, 0x78, 0xcf,
-	0xf0, 0x11, 0x5f, 0xda, 0x99, 0x36, 0x99, 0x5d, 0x0f, 0x50, 0x80, 0xa2, 0xa3, 0xf8, 0xaf, 0xe0,
-	0x9d, 0xe3, 0xbe, 0x2b, 0x18, 0x1c, 0x04, 0x28, 0x3a, 0x1e, 0x3f, 0xa6, 0xad, 0x11, 0xa9, 0x2b,
-	0x99, 0xdc, 0xb9, 0xfa, 0x79, 0xda, 0x8b, 0x9b, 0x68, 0x38, 0xc4, 0x4f, 0x3b, 0xbb, 0xc4, 0x12,
-	0x4a, 0x5d, 0x80, 0x0c, 0x73, 0x7c, 0x32, 0x05, 0xf5, 0x21, 0xb3, 0x33, 0x61, 0xf8, 0x2a, 0x96,
-	0x2b, 0x6e, 0x84, 0xf7, 0x02, 0x9f, 0x08, 0xb9, 0x90, 0x8a, 0x5b, 0x6d, 0x3e, 0x73, 0x21, 0x8c,
-	0x04, 0x68, 0x46, 0x79, 0xb8, 0x37, 0x5e, 0x39, 0xbd, 0x0a, 0x5f, 0xf0, 0x45, 0x26, 0x5a, 0xe1,
-	0x03, 0x17, 0xde, 0x1b, 0x4d, 0x38, 0xfc, 0x82, 0xf0, 0xf0, 0xd6, 0x7e, 0xbb, 0x61, 0xbc, 0x14,
-	0xf7, 0x79, 0xae, 0x97, 0x85, 0x1d, 0xa0, 0xe0, 0x30, 0x3a, 0x1e, 0x0f, 0xa9, 0x43, 0x4b, 0x2b,
-	0xb4, 0xb4, 0x41, 0x4b, 0x5f, 0xeb, 0xac, 0x98, 0xbc, 0xac, 0x0e, 0xf8, 0xed, 0xd7, 0x69, 0xa4,
-	0x32, 0x3b, 0x5b, 0x26, 0x34, 0xd5, 0x39, 0x6b, 0xfe, 0x83, 0x7b, 0x8c, 0x40, 0xcc, 0x99, 0x5d,
-	0x97, 0x12, 0xea, 0x05, 0x10, 0x37, 0xd5, 0xe3, 0xef, 0x08, 0x1f, 0x4e, 0x41, 0x79, 0xef, 0xf1,
-	0xdd, 0x16, 0x77, 0xd2, 0x21, 0xd9, 0x21, 0xe6, 0x3f, 0xff, 0xb7, 0xbf, 0x3f, 0xc4, 0x27, 0x7c,
-	0xbf, 0x83, 0x33, 0xb8, 0xbd, 0xb2, 0x9d, 0xf0, 0xa3, 0xff, 0x25, 0x76, 0xed, 0x93, 0x37, 0x57,
-	0x1b, 0x82, 0xae, 0x37, 0x04, 0xfd, 0xde, 0x10, 0xf4, 0x75, 0x4b, 0x7a, 0xd7, 0x5b, 0xd2, 0xfb,
-	0xb1, 0x25, 0xbd, 0x8f, 0xa3, 0x1b, 0x24, 0xaa, 0xb6, 0x51, 0x21, 0xed, 0x4a, 0x9b, 0x79, 0xfd,
-	0xc1, 0x2e, 0x6f, 0xdc, 0xee, 0x0a, 0x4a, 0xd2, 0xaf, 0x2f, 0xe0, 0xf9, 0x9f, 0x00, 0x00, 0x00,
-	0xff, 0xff, 0xf9, 0xdf, 0x7a, 0x57, 0xfb, 0x02, 0x00, 0x00,
+	// 476 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xbc, 0x54, 0x4d, 0x8b, 0xd3, 0x40,
+	0x18, 0xee, 0x74, 0xa5, 0xb0, 0xb3, 0x7e, 0x6d, 0xf0, 0xa3, 0x0d, 0x9a, 0x2d, 0x01, 0x25, 0xa0,
+	0x9d, 0x71, 0xbb, 0xfe, 0x01, 0x2b, 0xe2, 0xc5, 0x82, 0x44, 0x54, 0x10, 0x41, 0xa6, 0x9d, 0x61,
+	0x1a, 0xda, 0x64, 0xc2, 0xbc, 0xd3, 0xed, 0xf6, 0xb6, 0x3f, 0xc0, 0x83, 0xbf, 0xc3, 0x1f, 0xe1,
+	0x79, 0x8f, 0x7b, 0xf4, 0xa4, 0xd2, 0xfe, 0x11, 0x49, 0x26, 0xad, 0x4d, 0x8b, 0x95, 0x5e, 0x3c,
+	0x25, 0x79, 0x9f, 0x67, 0x9e, 0xf7, 0x79, 0x3f, 0x32, 0xf8, 0x8e, 0x18, 0x4d, 0x81, 0x0a, 0x30,
+	0x6c, 0x18, 0x25, 0x92, 0x9a, 0x33, 0x92, 0x6a, 0x65, 0x94, 0x73, 0x2d, 0x8b, 0x93, 0x45, 0xdc,
+	0xbd, 0x25, 0x95, 0x54, 0x39, 0x42, 0xb3, 0x37, 0x4b, 0x72, 0xbd, 0xbe, 0x82, 0x58, 0x01, 0xed,
+	0x31, 0x10, 0xf4, 0xf4, 0xb8, 0x27, 0x0c, 0x3b, 0xa6, 0x7d, 0x15, 0x25, 0x05, 0xee, 0x96, 0xc5,
+	0x53, 0xa6, 0x59, 0x0c, 0x16, 0xf3, 0x39, 0xbe, 0xd1, 0x05, 0xf9, 0x36, 0xe5, 0xcc, 0x88, 0xd7,
+	0x39, 0xe0, 0xdc, 0xc3, 0xfb, 0x6c, 0x6c, 0x06, 0x4a, 0x47, 0x66, 0x5a, 0x47, 0x4d, 0x14, 0xec,
+	0x87, 0x7f, 0x02, 0xce, 0x09, 0xae, 0x59, 0x81, 0x7a, 0xb5, 0x89, 0x82, 0x83, 0xf6, 0x6d, 0x52,
+	0xb2, 0x48, 0xac, 0x48, 0xe7, 0xca, 0xc5, 0x8f, 0xa3, 0x4a, 0x58, 0x50, 0xfd, 0x06, 0xbe, 0xbb,
+	0x96, 0x25, 0x14, 0x90, 0xaa, 0x04, 0x84, 0x1f, 0xe3, 0xc3, 0x2e, 0xc8, 0xf7, 0x91, 0x19, 0x70,
+	0xcd, 0x26, 0xa1, 0x98, 0x30, 0xcd, 0x9d, 0x47, 0xf8, 0x90, 0x8b, 0x91, 0x90, 0xcc, 0x28, 0xfd,
+	0x89, 0x71, 0xae, 0x05, 0x40, 0x61, 0xe5, 0xe6, 0x12, 0x78, 0x66, 0xe3, 0x19, 0xf9, 0x94, 0x8d,
+	0x22, 0x5e, 0x22, 0x57, 0x2d, 0x79, 0x09, 0x14, 0x64, 0xff, 0x1c, 0xe1, 0xc6, 0x46, 0xbe, 0x85,
+	0x19, 0xa7, 0x8f, 0x6b, 0x2c, 0x56, 0xe3, 0xc4, 0xd4, 0x51, 0x73, 0x2f, 0x38, 0x68, 0x37, 0x88,
+	0x6d, 0x2d, 0xc9, 0x5a, 0x4b, 0x8a, 0xd6, 0x92, 0xe7, 0x2a, 0x4a, 0x3a, 0x4f, 0xb2, 0x02, 0xbf,
+	0xfe, 0x3c, 0x0a, 0x64, 0x64, 0x06, 0xe3, 0x1e, 0xe9, 0xab, 0x98, 0x16, 0x73, 0xb0, 0x8f, 0x16,
+	0xf0, 0x21, 0x35, 0xd3, 0x54, 0x40, 0x7e, 0x00, 0xc2, 0x42, 0xda, 0x7f, 0x85, 0xef, 0xaf, 0x38,
+	0x78, 0x31, 0x9a, 0xc2, 0x1b, 0xdb, 0x3b, 0x6b, 0x06, 0x76, 0xaa, 0xde, 0xff, 0x8c, 0xf0, 0x83,
+	0xad, 0x72, 0xff, 0xb5, 0xb8, 0xf6, 0xb7, 0x2a, 0xde, 0xeb, 0x82, 0x74, 0xde, 0xe1, 0xab, 0xa5,
+	0xa5, 0xf2, 0xd6, 0xd6, 0x64, 0x6d, 0x1d, 0xdc, 0x87, 0xdb, 0xf1, 0x65, 0x11, 0x1f, 0xf1, 0xf5,
+	0xb5, 0x5d, 0x69, 0x6e, 0x9e, 0x2c, 0x33, 0xdc, 0xe0, 0x5f, 0x8c, 0xa5, 0xfa, 0x39, 0xc2, 0xee,
+	0x96, 0xc1, 0x3c, 0xfe, 0xbb, 0xd0, 0x26, 0xdb, 0x7d, 0xba, 0x0b, 0x7b, 0x61, 0xa1, 0xf3, 0xf2,
+	0x62, 0xe6, 0xa1, 0xcb, 0x99, 0x87, 0x7e, 0xcd, 0x3c, 0xf4, 0x65, 0xee, 0x55, 0x2e, 0xe7, 0x5e,
+	0xe5, 0xfb, 0xdc, 0xab, 0x7c, 0x68, 0xad, 0x0c, 0x23, 0x53, 0x6e, 0x25, 0xc2, 0x4c, 0x94, 0x1e,
+	0xe6, 0x1f, 0xf4, 0x6c, 0xe5, 0xf6, 0xc8, 0xe6, 0xd2, 0xab, 0xe5, 0x3f, 0xf8, 0xc9, 0xef, 0x00,
+	0x00, 0x00, 0xff, 0xff, 0x16, 0xeb, 0xb8, 0x4f, 0x5b, 0x04, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -275,6 +370,8 @@ type MsgClient interface {
 	UpdateParams(ctx context.Context, in *MsgUpdateParams, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
 	// WithdrawReward defines a method to withdraw rewards of delegator from a single validator.
 	WithdrawReward(ctx context.Context, in *MsgWithdrawReward, opts ...grpc.CallOption) (*MsgWithdrawRewardResponse, error)
+	// WithdrawElysStakingRewards defines a method to withdraw rewards of delegator from all the validators.
+	WithdrawElysStakingRewards(ctx context.Context, in *MsgWithdrawElysStakingRewards, opts ...grpc.CallOption) (*MsgWithdrawElysStakingRewardsResponse, error)
 }
 
 type msgClient struct {
@@ -303,6 +400,15 @@ func (c *msgClient) WithdrawReward(ctx context.Context, in *MsgWithdrawReward, o
 	return out, nil
 }
 
+func (c *msgClient) WithdrawElysStakingRewards(ctx context.Context, in *MsgWithdrawElysStakingRewards, opts ...grpc.CallOption) (*MsgWithdrawElysStakingRewardsResponse, error) {
+	out := new(MsgWithdrawElysStakingRewardsResponse)
+	err := c.cc.Invoke(ctx, "/elys.estaking.Msg/WithdrawElysStakingRewards", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // MsgServer is the server API for Msg service.
 type MsgServer interface {
 	// UpdateParams defines a governance operation for updating the x/distribution
@@ -310,6 +416,8 @@ type MsgServer interface {
 	UpdateParams(context.Context, *MsgUpdateParams) (*MsgUpdateParamsResponse, error)
 	// WithdrawReward defines a method to withdraw rewards of delegator from a single validator.
 	WithdrawReward(context.Context, *MsgWithdrawReward) (*MsgWithdrawRewardResponse, error)
+	// WithdrawElysStakingRewards defines a method to withdraw rewards of delegator from all the validators.
+	WithdrawElysStakingRewards(context.Context, *MsgWithdrawElysStakingRewards) (*MsgWithdrawElysStakingRewardsResponse, error)
 }
 
 // UnimplementedMsgServer can be embedded to have forward compatible implementations.
@@ -321,6 +429,9 @@ func (*UnimplementedMsgServer) UpdateParams(ctx context.Context, req *MsgUpdateP
 }
 func (*UnimplementedMsgServer) WithdrawReward(ctx context.Context, req *MsgWithdrawReward) (*MsgWithdrawRewardResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method WithdrawReward not implemented")
+}
+func (*UnimplementedMsgServer) WithdrawElysStakingRewards(ctx context.Context, req *MsgWithdrawElysStakingRewards) (*MsgWithdrawElysStakingRewardsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method WithdrawElysStakingRewards not implemented")
 }
 
 func RegisterMsgServer(s grpc1.Server, srv MsgServer) {
@@ -363,6 +474,24 @@ func _Msg_WithdrawReward_Handler(srv interface{}, ctx context.Context, dec func(
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Msg_WithdrawElysStakingRewards_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgWithdrawElysStakingRewards)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).WithdrawElysStakingRewards(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/elys.estaking.Msg/WithdrawElysStakingRewards",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).WithdrawElysStakingRewards(ctx, req.(*MsgWithdrawElysStakingRewards))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var _Msg_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "elys.estaking.Msg",
 	HandlerType: (*MsgServer)(nil),
@@ -374,6 +503,10 @@ var _Msg_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "WithdrawReward",
 			Handler:    _Msg_WithdrawReward_Handler,
+		},
+		{
+			MethodName: "WithdrawElysStakingRewards",
+			Handler:    _Msg_WithdrawElysStakingRewards_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
@@ -517,6 +650,73 @@ func (m *MsgWithdrawRewardResponse) MarshalToSizedBuffer(dAtA []byte) (int, erro
 	return len(dAtA) - i, nil
 }
 
+func (m *MsgWithdrawElysStakingRewards) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgWithdrawElysStakingRewards) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgWithdrawElysStakingRewards) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.DelegatorAddress) > 0 {
+		i -= len(m.DelegatorAddress)
+		copy(dAtA[i:], m.DelegatorAddress)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.DelegatorAddress)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgWithdrawElysStakingRewardsResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgWithdrawElysStakingRewardsResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgWithdrawElysStakingRewardsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Amount) > 0 {
+		for iNdEx := len(m.Amount) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.Amount[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintTx(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0xa
+		}
+	}
+	return len(dAtA) - i, nil
+}
+
 func encodeVarintTx(dAtA []byte, offset int, v uint64) int {
 	offset -= sovTx(v)
 	base := offset
@@ -570,6 +770,34 @@ func (m *MsgWithdrawReward) Size() (n int) {
 }
 
 func (m *MsgWithdrawRewardResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if len(m.Amount) > 0 {
+		for _, e := range m.Amount {
+			l = e.Size()
+			n += 1 + l + sovTx(uint64(l))
+		}
+	}
+	return n
+}
+
+func (m *MsgWithdrawElysStakingRewards) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.DelegatorAddress)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	return n
+}
+
+func (m *MsgWithdrawElysStakingRewardsResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -896,6 +1124,172 @@ func (m *MsgWithdrawRewardResponse) Unmarshal(dAtA []byte) error {
 		}
 		if fieldNum <= 0 {
 			return fmt.Errorf("proto: MsgWithdrawRewardResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Amount", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Amount = append(m.Amount, types.Coin{})
+			if err := m.Amount[len(m.Amount)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgWithdrawElysStakingRewards) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgWithdrawElysStakingRewards: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgWithdrawElysStakingRewards: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DelegatorAddress", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.DelegatorAddress = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgWithdrawElysStakingRewardsResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgWithdrawElysStakingRewardsResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgWithdrawElysStakingRewardsResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:

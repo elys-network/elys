@@ -42051,7 +42051,11 @@ paths:
                     pool_id:
                       type: string
                       format: uint64
-                    apr:
+                    eden_apr:
+                      type: string
+                    usdc_apr:
+                      type: string
+                    total_apr:
                       type: string
         default:
           description: An unexpected error response.
@@ -86028,6 +86032,26 @@ definitions:
     description: >-
       MsgUpdateParamsResponse defines the response structure for executing a
       MsgUpdateParams message.
+  elys.estaking.MsgWithdrawElysStakingRewardsResponse:
+    type: object
+    properties:
+      amount:
+        type: array
+        items:
+          type: object
+          properties:
+            denom:
+              type: string
+            amount:
+              type: string
+          description: |-
+            Coin defines a token with a denomination and an amount.
+
+            NOTE: The amount field is an Int which implements the custom method
+            signatures required by gogoproto.
+    description: >-
+      MsgWithdrawElysStakingRewards defines the Msg/WithdrawElysStakingRewards
+      response type.
   elys.estaking.MsgWithdrawRewardResponse:
     type: object
     properties:
@@ -86939,7 +86963,11 @@ definitions:
       pool_id:
         type: string
         format: uint64
-      apr:
+      eden_apr:
+        type: string
+      usdc_apr:
+        type: string
+      total_apr:
         type: string
   elys.masterchef.PoolInfo:
     type: object
@@ -87098,7 +87126,11 @@ definitions:
             pool_id:
               type: string
               format: uint64
-            apr:
+            eden_apr:
+              type: string
+            usdc_apr:
+              type: string
+            total_apr:
               type: string
   elys.masterchef.QueryPoolInfoResponse:
     type: object

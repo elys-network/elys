@@ -47,3 +47,24 @@ func (k msgServer) WithdrawReward(goCtx context.Context, msg *types.MsgWithdrawR
 
 	return &types.MsgWithdrawRewardResponse{Amount: amount}, nil
 }
+
+func (k msgServer) WithdrawElysStakingRewards(goCtx context.Context, msg *types.MsgWithdrawElysStakingRewards) (*types.MsgWithdrawElysStakingRewardsResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	delAddr := sdk.MustAccAddressFromBech32(msg.DelegatorAddress)
+	delegations := k.Keeper.Keeper.GetAllDelegations(ctx)
+	rewards := sdk.Coins{}
+	for _, del := range delegations {
+		valAddr, err := sdk.ValAddressFromBech32(del.ValidatorAddress)
+		if err != nil {
+			return nil, err
+		}
+		amount, err := k.distrKeeper.WithdrawDelegationRewards(ctx, delAddr, valAddr)
+		if err != nil {
+			return nil, err
+		}
+		rewards = rewards.Add(amount...)
+	}
+
+	return &types.MsgWithdrawElysStakingRewardsResponse{Amount: rewards}, nil
+}

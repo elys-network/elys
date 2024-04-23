@@ -12,6 +12,7 @@ import (
 func RegisterCodec(cdc *codec.LegacyAmino) {
 	cdc.RegisterConcrete(&MsgUpdateParams{}, "estaking/UpdateParams", nil)
 	cdc.RegisterConcrete(&MsgWithdrawReward{}, "estaking/WithdrawReward", nil)
+	cdc.RegisterConcrete(&MsgWithdrawReward{}, "estaking/WithdrawElysStakingRewards", nil)
 	// this line is used by starport scaffolding # 2
 }
 
@@ -19,6 +20,7 @@ func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 	registry.RegisterImplementations((*sdk.Msg)(nil),
 		&MsgUpdateParams{},
 		&MsgWithdrawReward{},
+		&MsgWithdrawElysStakingRewards{},
 	)
 	// this line is used by starport scaffolding # 3
 

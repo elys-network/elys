@@ -80,15 +80,15 @@ func TestCalculatePoolAprs(t *testing.T) {
 	// When passing empty array
 	aprs := mk.CalculatePoolAprs(ctx, []uint64{})
 	require.Len(t, aprs, 1)
-	require.Equal(t, aprs[0].Apr.String(), "0.030000000000000000")
+	require.Equal(t, aprs[0].TotalApr.String(), "0.030000000000000000")
 
 	// When passing specific id
 	aprs = mk.CalculatePoolAprs(ctx, []uint64{1})
 	require.Len(t, aprs, 1)
-	require.Equal(t, aprs[0].Apr.String(), "0.030000000000000000")
+	require.Equal(t, aprs[0].TotalApr.String(), "0.030000000000000000")
 
 	// When passing invalid id
 	aprs = mk.CalculatePoolAprs(ctx, []uint64{4})
 	require.Len(t, aprs, 1)
-	require.Equal(t, aprs[0].Apr.String(), "0.000000000000000000")
+	require.Equal(t, aprs[0].TotalApr.String(), "0.000000000000000000")
 }

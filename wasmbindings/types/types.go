@@ -295,7 +295,8 @@ type ElysMsg struct {
 	MasterchefClaimRewards *mastercheftypes.MsgClaimRewards `json:"masterchef_claim_rewards,omitempty"`
 
 	// estaking messages
-	EstakingWithdrawReward *estakingtypes.MsgWithdrawReward `json:"estaking_withdraw_reward,omitempty"`
+	EstakingWithdrawReward             *estakingtypes.MsgWithdrawReward             `json:"estaking_withdraw_reward,omitempty"`
+	EstakingWithdrawElysStakingRewards *estakingtypes.MsgWithdrawElysStakingRewards `json:"estaking_withdraw_elys_staking_rewards,omitempty"`
 
 	// leveragelp messages
 	LeveragelpOpen  *leveragelptypes.MsgOpen  `json:"leveragelp_open,omitempty"`

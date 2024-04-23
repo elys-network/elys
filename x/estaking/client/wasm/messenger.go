@@ -27,6 +27,8 @@ func (m *Messenger) HandleMsg(ctx sdk.Context, contractAddr sdk.AccAddress, cont
 	switch {
 	case msg.EstakingWithdrawReward != nil:
 		return m.msgWithdrawReward(ctx, contractAddr, msg.EstakingWithdrawReward)
+	case msg.EstakingWithdrawElysStakingRewards != nil:
+		return m.msgWithdrawElysStakingRewards(ctx, contractAddr, msg.EstakingWithdrawElysStakingRewards)
 	default:
 		// This handler cannot handle the message
 		return nil, nil, wasmbindingstypes.ErrCannotHandleMsg
