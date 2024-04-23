@@ -72,6 +72,9 @@ func updateGenesis(validatorBalance, homePath, genesisFilePath string) {
 	// add localhost as allowed client
 	genesis.AppState.Ibc.ClientGenesis.Params.AllowedClients = append(genesis.AppState.Ibc.ClientGenesis.Params.AllowedClients, "09-localhost")
 
+	// reset gov as there are broken proposoals
+	genesis.AppState.Gov = genesisInit.AppState.Gov
+
 	// update voting period
 	genesis.AppState.Gov.Params.VotingPeriod = "20s"
 	genesis.AppState.Gov.Params.MaxDepositPeriod = "20s"

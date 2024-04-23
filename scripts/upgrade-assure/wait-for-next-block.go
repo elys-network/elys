@@ -6,11 +6,10 @@ import (
 	"time"
 )
 
-func waitForNextBlock(cmdPath, node, moniker string) {
+func waitForNextBlock(cmdPath, node, moniker string, timeout time.Duration) {
 	var currentBlockHeight, newBlockHeight int
 	var err error
 
-	timeout := 120 * time.Second
 	start := time.Now()
 
 	// First, get the current block height

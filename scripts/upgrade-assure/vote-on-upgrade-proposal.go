@@ -5,7 +5,7 @@ import (
 	"os/exec"
 )
 
-func voteOnUpgradeProposal(cmdPath, name, proposalId, homePath, keyringBackend, chainId, node, broadcastMode string) {
+func voteOnUpgradeProposal(cmdPath, name, proposalId, homePath, keyringBackend, chainId, node, broadcastMode string) string {
 	// Command and arguments
 	args := []string{
 		"tx", "gov", "vote", proposalId, "yes",
@@ -17,14 +17,25 @@ func voteOnUpgradeProposal(cmdPath, name, proposalId, homePath, keyringBackend, 
 		"--fees", "100000uelys",
 		"--gas", "1000000",
 		"--home", homePath,
+		"--output", "json",
 		"--yes",
 	}
 
 	// Execute the command
-	if err := exec.Command(cmdPath, args...).Run(); err != nil {
+	output, err := exec.Command(cmdPath, args...).CombinedOutput()
+	if err != nil {
 		log.Fatalf(ColorRed+"Command execution failed: %v", err)
+	}
+
+	// Parse output to find the transaction hash
+	txHash, err := parseTxHash(output)
+	if err != nil {
+		log.Fatalf(ColorRed+"Failed to parse transaction hash: %v", err)
 	}
 
 	// If execution reaches here, the command was successful
 	log.Printf(ColorYellow+"Voted on upgrade proposal: %s", proposalId)
+
+	// Return the transaction hash
+	return txHash
 }

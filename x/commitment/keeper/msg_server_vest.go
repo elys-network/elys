@@ -49,6 +49,7 @@ func (k Keeper) ProcessTokenVesting(ctx sdk.Context, denom string, amount math.I
 		Denom:                vestingInfo.VestingDenom,
 		TotalAmount:          amount,
 		ClaimedAmount:        sdk.ZeroInt(),
+		StartBlock:           ctx.BlockHeight(),
 		NumBlocks:            vestingInfo.NumBlocks,
 		VestStartedTimestamp: ctx.BlockTime().Unix(),
 	})

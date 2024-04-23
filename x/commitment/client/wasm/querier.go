@@ -8,6 +8,8 @@ import (
 	assetkeeper "github.com/elys-network/elys/x/assetprofile/keeper"
 	"github.com/elys-network/elys/x/commitment/keeper"
 	epochkeeper "github.com/elys-network/elys/x/epochs/keeper"
+	oraclekeeper "github.com/elys-network/elys/x/oracle/keeper"
+	stablekeeper "github.com/elys-network/elys/x/stablestake/keeper"
 )
 
 // Querier handles queries for the Commitment module.
@@ -17,6 +19,8 @@ type Querier struct {
 	epochKeeper   *epochkeeper.Keeper
 	ammKeeper     *ammkeeper.Keeper
 	assetKeeper   *assetkeeper.Keeper
+	stableKeeper  *stablekeeper.Keeper
+	oracleKeeper  *oraclekeeper.Keeper
 }
 
 func NewQuerier(
@@ -25,6 +29,8 @@ func NewQuerier(
 	epochKeeper *epochkeeper.Keeper,
 	ammKeeper *ammkeeper.Keeper,
 	assetKeeper *assetkeeper.Keeper,
+	stableKeeper *stablekeeper.Keeper,
+	oracleKeeper *oraclekeeper.Keeper,
 ) *Querier {
 	return &Querier{
 		keeper:        keeper,
@@ -32,6 +38,8 @@ func NewQuerier(
 		epochKeeper:   epochKeeper,
 		ammKeeper:     ammKeeper,
 		assetKeeper:   assetKeeper,
+		stableKeeper:  stableKeeper,
+		oracleKeeper:  oracleKeeper,
 	}
 }
 

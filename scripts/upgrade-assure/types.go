@@ -184,7 +184,7 @@ type CommitmentParams struct {
 type CommitmentVestingInfo struct {
 	commitmenttypes.VestingInfo
 
-	NumEpochs      json.Number `json:"num_epochs"`
+	NumBlocks      json.Number `json:"num_blocks"`
 	NumMaxVestings json.Number `json:"num_max_vestings"`
 }
 
