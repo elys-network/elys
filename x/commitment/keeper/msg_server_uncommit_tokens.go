@@ -69,7 +69,7 @@ func (k msgServer) UncommitTokens(goCtx context.Context, msg *types.MsgUncommitT
 	}
 
 	// Emit Hook commitment changed
-	err = k.AfterCommitmentChange(ctx, msg.Creator, sdk.Coins{sdk.NewCoin(msg.Denom, msg.Amount)})
+	err = k.CommitmentChanged(ctx, msg.Creator, sdk.Coins{sdk.NewCoin(msg.Denom, msg.Amount)})
 	if err != nil {
 		return nil, err
 	}

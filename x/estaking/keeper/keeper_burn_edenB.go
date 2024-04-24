@@ -10,7 +10,7 @@ import (
 func (k Keeper) BurnEdenBFromElysUnstaking(ctx sdk.Context, delegator sdk.AccAddress) {
 	// Claim EdenB rewards
 	cacheCtx, write := ctx.CacheContext()
-	err := k.estaking.WithdrawEdenBReward(cacheCtx, delegator)
+	err := k.WithdrawEdenBReward(cacheCtx, delegator)
 	if err != nil {
 		k.Logger(ctx).Error(err.Error())
 	} else {
@@ -19,7 +19,7 @@ func (k Keeper) BurnEdenBFromElysUnstaking(ctx sdk.Context, delegator sdk.AccAdd
 
 	// Get commitments
 	delAddr := delegator.String()
-	commitments := k.cmk.GetCommitments(ctx, delAddr)
+	commitments := k.commKeeper.GetCommitments(ctx, delAddr)
 
 	// Get previous amount
 	prevElysStaked := k.GetElysStaked(ctx, delAddr)
@@ -56,11 +56,11 @@ func (k Keeper) BurnEdenBFromElysUnstaking(ctx sdk.Context, delegator sdk.AccAdd
 		edenBToBurn = unstakedElysDec.Quo(edenCommittedAndElysStakedDec).Mul(totalEdenBDec)
 	}
 	// Burn EdenB in commitment module
-	commitment, err := k.cmk.BurnEdenBoost(ctx, delAddr, ptypes.EdenB, edenBToBurn.TruncateInt())
+	commitment, err := k.commKeeper.BurnEdenBoost(ctx, delAddr, ptypes.EdenB, edenBToBurn.TruncateInt())
 	if err != nil {
 		k.Logger(ctx).Error("EdenB burn failure", err)
 	} else {
-		k.cmk.SetCommitments(ctx, commitment)
+		k.commKeeper.SetCommitments(ctx, commitment)
 	}
 }
 
@@ -69,7 +69,7 @@ func (k Keeper) BurnEdenBFromEdenUncommitted(ctx sdk.Context, delegator string, 
 	// Claim EdenB rewards
 	delAddr := sdk.MustAccAddressFromBech32(delegator)
 	cacheCtx, write := ctx.CacheContext()
-	err := k.estaking.WithdrawEdenBReward(cacheCtx, delAddr)
+	err := k.WithdrawEdenBReward(cacheCtx, delAddr)
 	if err != nil {
 		k.Logger(ctx).Error(err.Error())
 	} else {
@@ -82,7 +82,7 @@ func (k Keeper) BurnEdenBFromEdenUncommitted(ctx sdk.Context, delegator string, 
 		return nil
 	}
 
-	commitments := k.cmk.GetCommitments(ctx, delegator)
+	commitments := k.commKeeper.GetCommitments(ctx, delegator)
 	edenCommitted := commitments.GetCommittedAmountForDenom(ptypes.Eden)
 
 	// Total EdenB amount
@@ -104,8 +104,8 @@ func (k Keeper) BurnEdenBFromEdenUncommitted(ctx sdk.Context, delegator string, 
 	}
 
 	// Burn EdenB ( Deduction EdenB in commitment module)
-	commitment, err := k.cmk.BurnEdenBoost(ctx, delegator, ptypes.EdenB, edenBToBurn.TruncateInt())
-	k.cmk.SetCommitments(ctx, commitment)
+	commitment, err := k.commKeeper.BurnEdenBoost(ctx, delegator, ptypes.EdenB, edenBToBurn.TruncateInt())
+	k.commKeeper.SetCommitments(ctx, commitment)
 
 	return err
 }

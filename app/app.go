@@ -617,7 +617,7 @@ func NewElysApp(
 		keys[estakingmoduletypes.StoreKey],
 		keys[estakingmoduletypes.MemStoreKey],
 		app.StakingKeeper,
-		commitmentKeeper,
+		&app.CommitmentKeeper,
 		&app.DistrKeeper,
 		app.AssetprofileKeeper,
 		app.TokenomicsKeeper,
@@ -810,7 +810,6 @@ func NewElysApp(
 	)
 	app.CommitmentKeeper = *commitmentKeeper.SetHooks(
 		commitmentmodulekeeper.NewMultiCommitmentHooks(
-			app.IncentiveKeeper.CommitmentHooks(),
 			app.EstakingKeeper.CommitmentHooks(),
 		),
 	)
@@ -1055,8 +1054,8 @@ func NewElysApp(
 		stakingtypes.NewMultiStakingHooks(
 			// insert staking hooks receivers here
 			app.SlashingKeeper.Hooks(),
-			app.IncentiveKeeper.StakingHooks(),
 			app.DistrKeeper.Hooks(),
+			app.EstakingKeeper.StakingHooks(),
 		),
 	)
 
@@ -1069,7 +1068,6 @@ func NewElysApp(
 	app.AmmKeeper = *app.AmmKeeper.SetHooks(
 		ammmoduletypes.NewMultiAmmHooks(
 			// insert amm hooks receivers here
-			app.IncentiveKeeper.AmmHooks(),
 			app.PerpetualKeeper.AmmHooks(),
 			app.LeveragelpKeeper.AmmHooks(),
 			app.MasterchefKeeper.AmmHooks(),

@@ -16,6 +16,33 @@ import (
 func (k Keeper) EndBlocker(ctx sdk.Context) {
 	// Rewards distribution
 	k.ProcessRewardsDistribution(ctx)
+	// Burn EdenB tokens if staking changed
+	k.BurnEdenBIfElysStakingReduced(ctx)
+}
+
+func (k Keeper) TakeDelegationSnapshot(ctx sdk.Context, addr string) {
+	// Calculate delegated amount per delegator
+	delAmount := k.CalcDelegationAmount(ctx, addr)
+
+	elysStaked := types.ElysStaked{
+		Address: addr,
+		Amount:  delAmount,
+	}
+
+	// Set Elys staked amount
+	k.SetElysStaked(ctx, elysStaked)
+}
+
+func (k Keeper) BurnEdenBIfElysStakingReduced(ctx sdk.Context) {
+	addrs := k.GetAllElysStakeChange(ctx)
+
+	// Handle addresses recorded on AfterDelegationModified
+	// This hook is exposed for genesis delegations as well
+	for _, delAddr := range addrs {
+		k.BurnEdenBFromElysUnstaking(ctx, delAddr)
+		k.TakeDelegationSnapshot(ctx, delAddr.String())
+		k.RemoveElysStakeChange(ctx, delAddr)
+	}
 }
 
 // Rewards distribution

@@ -1,6 +1,7 @@
 package types
 
 import (
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
@@ -48,6 +49,9 @@ type CommitmentKeeper interface {
 	GetAllBalances(ctx sdk.Context, addr sdk.AccAddress) sdk.Coins
 	MintCoins(ctx sdk.Context, moduleName string, amt sdk.Coins) error
 	SendCoinsFromModuleToModule(ctx sdk.Context, senderModule string, recipientModule string, amt sdk.Coins) error
+	SetCommitments(sdk.Context, commitmenttypes.Commitments)
+	BurnEdenBoost(ctx sdk.Context, creator string, denom string, amount math.Int) (commitmenttypes.Commitments, error)
+	BeforeDelegationCreated(sdk.Context, string, string) error
 }
 
 type DistrKeeper interface {

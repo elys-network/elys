@@ -58,6 +58,15 @@ func (m Migrator) V11Migration(ctx sdk.Context) error {
 		},
 	})
 
+	// initiate delegation snapshot
+	stakedSnapshots := m.incentiveKeeper.GetAllElysStaked(ctx)
+	for _, snap := range stakedSnapshots {
+		m.estakingKeeper.SetElysStaked(ctx, estakingtypes.ElysStaked{
+			Address: snap.Address,
+			Amount:  snap.Amount,
+		})
+	}
+
 	// initiate missing distribution module data
 	m.distrKeeper.InitGenesis(ctx, *distrtypes.DefaultGenesisState())
 

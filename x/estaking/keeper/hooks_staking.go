@@ -13,7 +13,7 @@ func (k Keeper) BeforeDelegationCreated(ctx sdk.Context, delAddr sdk.AccAddress,
 	}
 
 	// Create an entity in commitment module
-	k.cmk.BeforeDelegationCreated(ctx, delAddr.String(), valAddr.String())
+	k.commKeeper.BeforeDelegationCreated(ctx, delAddr.String(), valAddr.String())
 
 	return nil
 }

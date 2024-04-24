@@ -77,7 +77,7 @@ func (mh MultiCommitmentHooks) BeforeEdenBCommitChange(ctx sdk.Context, addr sdk
 }
 
 // Committed executes the indicated for committed hook
-func (k Keeper) AfterCommitmentChange(ctx sdk.Context, creator string, amount sdk.Coins) error {
+func (k Keeper) CommitmentChanged(ctx sdk.Context, creator string, amount sdk.Coins) error {
 	if k.hooks == nil {
 		return nil
 	}

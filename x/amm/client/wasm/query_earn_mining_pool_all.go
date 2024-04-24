@@ -2,6 +2,7 @@ package wasm
 
 import (
 	"encoding/json"
+	"fmt"
 
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -28,6 +29,32 @@ func (oq *Querier) checkFilterType(ctx sdk.Context, ammPool *types.Pool, filterT
 	return false
 }
 
+// Calculate the amm pool ratio
+func CalculatePoolRatio(ctx sdk.Context, pool *types.Pool) string {
+	weightString := ""
+	totalWeight := sdk.ZeroInt()
+	for _, asset := range pool.PoolAssets {
+		totalWeight = totalWeight.Add(asset.Weight)
+	}
+
+	if totalWeight.IsZero() {
+		return weightString
+	}
+
+	for _, asset := range pool.PoolAssets {
+		weight := sdk.NewDecFromInt(asset.Weight).QuoInt(totalWeight).MulInt(sdk.NewInt(100)).TruncateInt64()
+		weightString = fmt.Sprintf("%s : %d", weightString, weight)
+	}
+
+	// remove prefix " : " 3 characters
+	if len(weightString) > 1 {
+		weightString = weightString[3:]
+	}
+
+	// returns pool weight string
+	return weightString
+}
+
 // Generate earn pool struct
 func (oq *Querier) generateEarnPool(ctx sdk.Context, ammPool *types.Pool, filterType types.FilterType) types.EarnPool {
 	rewardsApr := sdk.ZeroDec()
@@ -51,7 +78,7 @@ func (oq *Querier) generateEarnPool(ctx sdk.Context, ammPool *types.Pool, filter
 	rewardsUsd, rewardCoins := oq.incentiveKeeper.GetDailyRewardsAmountForPool(ctx, ammPool.PoolId)
 
 	// Get pool ratio
-	poolRatio := oq.incentiveKeeper.CalculatePoolRatio(ctx, ammPool)
+	poolRatio := CalculatePoolRatio(ctx, ammPool)
 
 	leverageLpPool, found := oq.leveragelpKeeper.GetPool(ctx, ammPool.PoolId)
 	if found {

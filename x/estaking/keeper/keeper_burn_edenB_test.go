@@ -15,9 +15,9 @@ import (
 
 func TestBurnEdenBFromElysUnstaked(t *testing.T) {
 	app, genAccount, valAddr := simapp.InitElysTestAppWithGenAccount()
-	ctx := app.BaseApp.NewContext(initChain, tmproto.Header{})
+	ctx := app.BaseApp.NewContext(true, tmproto.Header{})
 
-	ik, sk := app.IncentiveKeeper, app.StakingKeeper
+	ek, sk := app.EstakingKeeper, app.StakingKeeper
 
 	var committed sdk.Coins
 	var unclaimed sdk.Coins
@@ -48,7 +48,7 @@ func TestBurnEdenBFromElysUnstaked(t *testing.T) {
 	simapp.AddTestCommitment(app, ctx, genAccount, committed)
 
 	// Take elys staked snapshot
-	ik.TakeDelegationSnapshot(ctx, genAccount.String())
+	ek.TakeDelegationSnapshot(ctx, genAccount.String())
 
 	// burn amount = 100000 (unbonded amt) / (1000000 (elys staked) + 10000 (Eden committed)) * (20000 EdenB + 5000 EdenB committed)
 	unbondAmt, err := sk.Unbond(ctx, genAccount, valAddr, sdk.NewDecWithPrec(10, 2))
@@ -56,14 +56,14 @@ func TestBurnEdenBFromElysUnstaked(t *testing.T) {
 	require.NoError(t, err)
 
 	// Process EdenB burn operation
-	ik.EndBlocker(ctx)
+	ek.EndBlocker(ctx)
 }
 
 func TestBurnEdenBFromEdenUncommitted(t *testing.T) {
 	app, genAccount, _ := simapp.InitElysTestAppWithGenAccount()
-	ctx := app.BaseApp.NewContext(initChain, tmproto.Header{})
+	ctx := app.BaseApp.NewContext(true, tmproto.Header{})
 
-	ik, cmk := app.IncentiveKeeper, app.CommitmentKeeper
+	ek, cmk := app.EstakingKeeper, app.CommitmentKeeper
 
 	var committed sdk.Coins
 	var unclaimed sdk.Coins
@@ -84,28 +84,29 @@ func TestBurnEdenBFromEdenUncommitted(t *testing.T) {
 	uedenBToken = sdk.NewCoin(ptypes.EdenB, sdk.NewInt(5000))
 	committed = committed.Add(uedenToken, uedenBToken)
 
-	// Mint coins
-	err = app.BankKeeper.MintCoins(ctx, ctypes.ModuleName, committed)
-	require.NoError(t, err)
-	err = app.BankKeeper.SendCoinsFromModuleToAccount(ctx, ctypes.ModuleName, genAccount, committed)
-	require.NoError(t, err)
-
-	// Add testing commitment
-	simapp.AddTestCommitment(app, ctx, genAccount, committed)
-
-	// Track Elys staked amount
-	ik.EndBlocker(ctx)
-
 	// Set assetprofile entry for denom
 	app.AssetprofileKeeper.SetEntry(ctx, aptypes.Entry{BaseDenom: ptypes.Eden, CommitEnabled: true, WithdrawEnabled: true})
 
-	msg := &ctypes.MsgUncommitTokens{
+	commitment := app.CommitmentKeeper.GetCommitments(ctx, genAccount.String())
+	commitment.Claimed = commitment.Claimed.Add(committed...)
+	app.CommitmentKeeper.SetCommitments(ctx, commitment)
+
+	msgServer := commkeeper.NewMsgServerImpl(cmk)
+	_, err = msgServer.CommitClaimedRewards(ctx, &ctypes.MsgCommitClaimedRewards{
 		Creator: genAccount.String(),
 		Amount:  sdk.NewInt(1000),
 		Denom:   ptypes.Eden,
-	}
+	})
+	require.NoError(t, err)
 
-	msgServer := commkeeper.NewMsgServerImpl(cmk)
-	_, err = msgServer.UncommitTokens(sdk.WrapSDKContext(ctx), msg)
+	// Track Elys staked amount
+	ek.EndBlocker(ctx)
+
+	// Uncommit tokens
+	_, err = msgServer.UncommitTokens(sdk.WrapSDKContext(ctx), &ctypes.MsgUncommitTokens{
+		Creator: genAccount.String(),
+		Amount:  sdk.NewInt(1000),
+		Denom:   ptypes.Eden,
+	})
 	require.NoError(t, err)
 }

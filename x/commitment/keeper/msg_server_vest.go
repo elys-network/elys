@@ -58,12 +58,6 @@ func (k Keeper) ProcessTokenVesting(ctx sdk.Context, denom string, amount math.I
 	// Update the commitments
 	k.SetCommitments(ctx, commitments)
 
-	// Emit Hook commitment changed
-	err = k.AfterCommitmentChange(ctx, creator, sdk.Coins{sdk.NewCoin(denom, amount)})
-	if err != nil {
-		return err
-	}
-
 	// Emit blockchain event
 	ctx.EventManager().EmitEvent(
 		sdk.NewEvent(

@@ -50,7 +50,7 @@ func (k msgServer) CommitLiquidTokens(goCtx context.Context, msg *types.MsgCommi
 	k.SetCommitments(ctx, commitments)
 
 	// Emit Hook commitment changed
-	err = k.AfterCommitmentChange(ctx, msg.Creator, sdk.Coins{sdk.NewCoin(msg.Denom, msg.Amount)})
+	err = k.CommitmentChanged(ctx, msg.Creator, sdk.Coins{sdk.NewCoin(msg.Denom, msg.Amount)})
 	if err != nil {
 		return nil, err
 	}

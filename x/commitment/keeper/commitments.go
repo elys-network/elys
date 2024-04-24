@@ -161,7 +161,7 @@ func (k Keeper) HandleWithdrawFromCommitment(ctx sdk.Context, commitments *types
 	k.SetCommitments(ctx, *commitments)
 
 	// Emit Hook commitment changed
-	err := k.AfterCommitmentChange(ctx, commitments.Creator, amount)
+	err := k.CommitmentChanged(ctx, commitments.Creator, amount)
 	if err != nil {
 		return err
 	}
@@ -197,7 +197,7 @@ func (k Keeper) BeforeDelegationCreated(ctx sdk.Context, delegator string, valid
 		k.SetCommitments(ctx, commitments)
 
 		// Emit Hook commitment changed
-		err := k.AfterCommitmentChange(ctx, delegator, sdk.Coins{})
+		err := k.CommitmentChanged(ctx, delegator, sdk.Coins{})
 		if err != nil {
 			return err
 		}

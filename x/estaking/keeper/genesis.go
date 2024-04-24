@@ -27,6 +27,9 @@ func (k Keeper) InitGenesis(ctx sdk.Context, genState types.GenesisState) {
 
 	// this line is used by starport scaffolding # genesis/module/init
 	k.SetParams(ctx, genState.Params)
+	for _, snap := range genState.StakingSnapshots {
+		k.SetElysStaked(ctx, snap)
+	}
 
 	if k.Hooks() != nil {
 		if shouldRunEdenValHook {
@@ -48,7 +51,7 @@ func (k Keeper) InitGenesis(ctx sdk.Context, genState types.GenesisState) {
 func (k Keeper) ExportGenesis(ctx sdk.Context) *types.GenesisState {
 	genesis := types.DefaultGenesis()
 	genesis.Params = k.GetParams(ctx)
-
+	genesis.StakingSnapshots = k.GetAllElysStaked(ctx)
 	// this line is used by starport scaffolding # genesis/module/export
 
 	return genesis
