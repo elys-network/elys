@@ -5,8 +5,8 @@ import (
 	"time"
 )
 
-func waitForServiceToStart(url, name string) {
-	timeout := 240 * time.Second
+func waitForServiceToStart(url, name string, timeoutFlag int) {
+	timeout := time.Duration(timeoutFlag) * time.Second
 	start := time.Now()
 
 	// Wait for the node to be running with timout
