@@ -19,11 +19,16 @@ func main() {
 			snapshotUrl, oldBinaryUrl, newBinaryUrl := getArgs(args)
 			// global flags
 			skipSnapshot, skipChainInit, skipNodeStart, skipProposal, skipBinary, chainId, keyringBackend, genesisFilePath, broadcastMode, dbEngine,
+
+				//timeouts
+				timeOutToWaitForService, timeOutToWaitForNextBlock,
+
 				// node 1 flags
 				homePath, moniker, validatorKeyName, validatorBalance, validatorSelfDelegation, validatorMnemonic, rpc, p2p,
 				// node 2 flags
 				homePath2, moniker2, validatorKeyName2, validatorBalance2, validatorSelfDelegation2, validatorMnemonic2, rpc2, p2p2 := getFlags(cmd)
 
+			timeOutForNextBlock := time.Duration(timeOutToWaitForNextBlock) * time.Minute
 			// set address prefix
 			elyscmd.InitSDKConfig()
 
@@ -111,10 +116,10 @@ func main() {
 				oldBinaryCmd := start(oldBinaryPath, homePath, rpc, p2p, moniker, ColorGreen, ColorRed)
 
 				// wait for rpc to start
-				waitForServiceToStart(rpc, moniker)
+				waitForServiceToStart(rpc, moniker, timeOutToWaitForService)
 
 				// wait for next block
-				waitForNextBlock(oldBinaryPath, rpc, moniker, 5*time.Minute)
+				waitForNextBlock(oldBinaryPath, rpc, moniker, timeOutForNextBlock)
 
 				if skipProposal {
 					// listen for signals
@@ -129,7 +134,7 @@ func main() {
 				createValidator(oldBinaryPath, validatorKeyName2, validatorSelfDelegation2, moniker2, validatorPubkey2, homePath, keyringBackend, chainId, rpc, broadcastMode)
 
 				// wait for next block
-				waitForNextBlock(oldBinaryPath, rpc, moniker, 2*time.Minute)
+				waitForNextBlock(oldBinaryPath, rpc, moniker, timeOutForNextBlock)
 
 				// stop old binary
 				stop(oldBinaryCmd)
@@ -145,8 +150,8 @@ func main() {
 				oldBinaryCmd2 := start(oldBinaryPath, homePath2, rpc2, p2p2, moniker2, ColorGreen, ColorRed)
 
 				// wait for rpc 1 and 2 to start
-				waitForServiceToStart(rpc, moniker)
-				waitForServiceToStart(rpc2, moniker2)
+				waitForServiceToStart(rpc, moniker, timeOutToWaitForService)
+				waitForServiceToStart(rpc2, moniker2, timeOutToWaitForService)
 
 				// query and calculate upgrade block height
 				upgradeBlockHeight := queryAndCalcUpgradeBlockHeight(oldBinaryPath, rpc)
@@ -186,12 +191,12 @@ func main() {
 				newBinaryCmd2 := start(newBinaryPath, homePath2, rpc2, p2p2, moniker2, "\033[32m", "\033[31m")
 
 				// wait for node to start
-				waitForServiceToStart(rpc, moniker)
-				waitForServiceToStart(rpc2, moniker2)
+				waitForServiceToStart(rpc, moniker, timeOutToWaitForService)
+				waitForServiceToStart(rpc2, moniker2, timeOutToWaitForService)
 
 				// wait for next block
-				waitForNextBlock(newBinaryPath, rpc, moniker, 5*time.Minute)
-				waitForNextBlock(newBinaryPath, rpc2, moniker2, 5*time.Minute)
+				waitForNextBlock(newBinaryPath, rpc, moniker, timeOutForNextBlock)
+				waitForNextBlock(newBinaryPath, rpc2, moniker2, timeOutForNextBlock)
 
 				// check if the upgrade was successful
 				queryUpgradeApplied(newBinaryPath, rpc, newVersion)
@@ -218,6 +223,8 @@ func main() {
 	rootCmd.PersistentFlags().String(flagBroadcastMode, "sync", "broadcast mode")
 	rootCmd.PersistentFlags().String(flagDbEngine, "pebbledb", "database engine to use")
 
+	rootCmd.PersistentFlags().Int(flagTimeOutToWaitForService, 240, "set the maximum timeout in (seconds) to wait for the node starting")
+	rootCmd.PersistentFlags().Int(flagTimeOutNextBlock, 5, "set the maximum timeout in (minutes) to wait for the next block")
 	// node 1 flags
 	rootCmd.PersistentFlags().String(flagHome, homeEnv+"/.elys", "home directory")
 	rootCmd.PersistentFlags().String(flagMoniker, "alice", "moniker")

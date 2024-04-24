@@ -57,3 +57,19 @@ cp -a ~/go/bin/elysd /tmp/elysd-v0.29.31
 ```
 go run ./scripts/upgrade-assure/... --home /tmp/elys --home2 /tmp/elysd2 https://tools.highstakes.ch/files/elys.tar.gz /tmp/elysd-v0.29.30 /tmp/elysd-v0.29.31 --skip-snapshot --skip-chain-init
 ```
+# Troubleshooting
+
+These are some problems and its solutions when the script is executed
+
+- The O.S could kill the process if you don´t have enough ram this happened in 6.6.24-1-MANJARO (64 bits) with 16gb of ram a solution was create a swapFile
+```
+https://wiki.manjaro.org/index.php?title=Swap#Using_a_Swapfile
+```
+-  Timeout, if you have timeout problems with the node or waiting for the next block you can use these flags: 
+timeout-wait-for-node is expressed in seconds
+timeout-next-block is expressed in minutes
+
+```
+--timeout-wait-for-node=600
+--timeout-next-block=15
+```

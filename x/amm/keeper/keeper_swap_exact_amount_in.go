@@ -29,10 +29,7 @@ func (k Keeper) SwapExactAmountIn(
 	if tokenIn.Denom == tokenOutDenom {
 		return math.Int{}, errors.New("cannot trade the same denomination in and out")
 	}
-	poolSwapFee := pool.GetPoolParams().SwapFee
-	if swapFee.LT(poolSwapFee.QuoInt64(2)) {
-		return math.Int{}, fmt.Errorf("given swap fee (%s) must be greater than or equal to half of the pool's swap fee (%s)", swapFee, poolSwapFee)
-	}
+
 	tokensIn := sdk.Coins{tokenIn}
 
 	defer func() {
@@ -62,7 +59,7 @@ func (k Keeper) SwapExactAmountIn(
 
 	// Settles balances between the tx sender and the pool to match the swap that was executed earlier.
 	// Also emits a swap event and updates related liquidity metrics.
-	_, err = k.UpdatePoolForSwap(ctx, pool, sender, recipient, tokenIn, tokenOutCoin, sdk.ZeroDec(), swapFee, weightBalanceBonus)
+	swapOutFee, err := k.UpdatePoolForSwap(ctx, pool, sender, recipient, tokenIn, tokenOutCoin, sdk.ZeroDec(), swapFee, weightBalanceBonus)
 	if err != nil {
 		return math.Int{}, err
 	}
@@ -71,5 +68,5 @@ func (k Keeper) SwapExactAmountIn(
 	k.TrackSlippage(ctx, pool.PoolId, sdk.NewCoin(tokenOutCoin.Denom, slippageAmount.RoundInt()))
 
 	// Subtract swap out fee from the token out amount.
-	return tokenOutAmount, nil
+	return tokenOutAmount.Sub(swapOutFee), nil
 }
