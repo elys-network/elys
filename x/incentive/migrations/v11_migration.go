@@ -117,15 +117,23 @@ func (m Migrator) V11Migration(ctx sdk.Context) error {
 		commParams := m.commitmentKeeper.GetParams(ctx)
 		for _, committed := range commitments.CommittedTokens {
 			if committed.Denom == ptypes.Eden && commParams.TotalCommitted.AmountOf(ptypes.Eden).IsPositive() {
+				err = m.estakingKeeper.Hooks().BeforeDelegationCreated(ctx, addr, edenValAddr)
+				if err != nil {
+					return err
+				}
 				err = m.estakingKeeper.Hooks().AfterDelegationModified(ctx, addr, edenValAddr)
 				if err != nil {
-					panic(err)
+					return err
 				}
 			}
 			if committed.Denom == ptypes.EdenB && commParams.TotalCommitted.AmountOf(ptypes.EdenB).IsPositive() {
+				err = m.estakingKeeper.Hooks().BeforeDelegationCreated(ctx, addr, edenValAddr)
+				if err != nil {
+					return err
+				}
 				err = m.estakingKeeper.Hooks().AfterDelegationModified(ctx, addr, edenBValAddr)
 				if err != nil {
-					panic(err)
+					return err
 				}
 			}
 
