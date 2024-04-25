@@ -36,7 +36,7 @@ make install
 Download the specific binary for Darwin ARM64 architecture using `curl`:
 
 ```bash
-curl -L https://github.com/elys-network/elys/releases/download/v0.29.31/elysd-v0.29.31-darwin-arm64 -o /tmp/elysd-v0.29.31
+curl -L https://github.com/elys-network/elys/releases/download/v0.30.0/elysd-v0.30.0-darwin-arm64 -o /tmp/elysd-v0.30.0
 ```
 
 ### Step 4: Retrieve Testnet Snapshot
@@ -52,7 +52,7 @@ curl -L https://snapshots-testnet.stake-town.com/elys/elystestnet-1_latest.tar.l
 Switch to the previously stable version:
 
 ```bash
-git checkout v0.29.31
+git checkout v0.30.0
 ```
 
 ### Step 6: Run Upgrade-Assure Script
@@ -62,7 +62,7 @@ git checkout v0.29.31
 Run the upgrade-assure script without starting the node:
 
 ```bash
-go run ./scripts/upgrade-assure/... /tmp/snapshot.tar.lz4 /tmp/elysd-v0.29.31 ~/go/bin/elysd --skip-node-start
+go run ./scripts/upgrade-assure/... /tmp/snapshot.tar.lz4 /tmp/elysd-v0.30.0 ~/go/bin/elysd --skip-node-start
 ```
 
 #### 6b: Handle Potential Errors
@@ -78,7 +78,7 @@ Modify `scripts/upgrade-assure/types.go` to reflect data structure changes neces
 Repeat the process after updating the script:
 
 ```bash
-go run ./scripts/upgrade-assure/... /tmp/snapshot.tar.lz4 /tmp/elysd-v0.29.31 ~/go/bin/elysd --skip-node-start
+go run ./scripts/upgrade-assure/... /tmp/snapshot.tar.lz4 /tmp/elysd-v0.30.0 ~/go/bin/elysd --skip-node-start
 ```
 
 ### Step 7: Checkout to Latest Changes Branch
@@ -94,7 +94,7 @@ git checkout main
 Execute the final upgrade command to complete the upgrade process:
 
 ```bash
-go run ./scripts/upgrade-assure/... /tmp/snapshot.tar.lz4 /tmp/elysd-v0.29.31 ~/go/bin/elysd --skip-snapshot --skip-chain-init
+go run ./scripts/upgrade-assure/... /tmp/snapshot.tar.lz4 /tmp/elysd-v0.30.0 ~/go/bin/elysd --skip-snapshot --skip-chain-init
 ```
 
 ## Testnet Snapshots Usage
