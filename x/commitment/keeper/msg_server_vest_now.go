@@ -63,9 +63,6 @@ func (k msgServer) VestNow(goCtx context.Context, msg *types.MsgVestNow) (*types
 	// Update the commitments
 	k.SetCommitments(ctx, commitments)
 
-	// Emit Hook commitment changed
-	k.AfterCommitmentChange(ctx, msg.Creator, sdk.Coins{sdk.NewCoin(msg.Denom, msg.Amount)})
-
 	// Emit blockchain event
 	ctx.EventManager().EmitEvent(
 		sdk.NewEvent(

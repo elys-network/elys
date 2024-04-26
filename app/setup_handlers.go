@@ -5,9 +5,12 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	m "github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/cosmos/cosmos-sdk/version"
+	distrtypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
+	estakingtypes "github.com/elys-network/elys/x/estaking/types"
+	mastercheftypes "github.com/elys-network/elys/x/masterchef/types"
 )
 
 func SetupHandlers(app *ElysApp) {
@@ -103,7 +106,7 @@ func loadUpgradeStore(app *ElysApp) {
 
 	if shouldLoadUpgradeStore(app, upgradeInfo) {
 		storeUpgrades := storetypes.StoreUpgrades{
-			// Added: []string{},
+			Added: []string{distrtypes.StoreKey, mastercheftypes.StoreKey, estakingtypes.StoreKey},
 		}
 		// Use upgrade store loader for the initial loading of all stores when app starts,
 		// it checks if version == upgradeHeight and applies store upgrades before loading the stores,

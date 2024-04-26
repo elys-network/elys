@@ -1,0 +1,71 @@
+syntax = "proto3";
+package elys.masterchef;
+
+import "gogoproto/gogo.proto";
+import "elys/masterchef/params.proto";
+
+option go_package = "github.com/elys-network/elys/x/masterchef/types";
+
+// Msg defines the Msg service.
+service Msg {
+    rpc AddExternalRewardDenom (MsgAddExternalRewardDenom) returns (MsgAddExternalRewardDenomResponse);
+    rpc AddExternalIncentive (MsgAddExternalIncentive) returns (MsgAddExternalIncentiveResponse);
+    rpc UpdateParams(MsgUpdateParams) returns (MsgUpdateParamsResponse);
+    rpc UpdatePoolMultipliers(MsgUpdatePoolMultipliers) returns (MsgUpdatePoolMultipliersResponse);
+    rpc ClaimRewards (MsgClaimRewards) returns (MsgClaimRewardsResponse);
+}
+
+message MsgAddExternalRewardDenom {
+    string authority = 1;
+    string reward_denom = 2;
+    string min_amount = 3 [
+        (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+        (gogoproto.nullable) = false
+    ]; 
+    bool supported = 4;
+}
+
+message MsgAddExternalRewardDenomResponse {
+}
+
+message MsgAddExternalIncentive {
+    string sender = 1;
+    string reward_denom = 2;
+    uint64 pool_id = 3;
+    uint64 from_block = 4;
+    uint64 to_block = 5;
+    string amount_per_block = 6
+        [ (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false];
+}
+
+message MsgAddExternalIncentiveResponse {
+}
+
+message MsgUpdateParams {
+  string authority = 1;
+  Params params = 2 [(gogoproto.nullable) = false];
+}
+
+message MsgUpdateParamsResponse {}
+
+message PoolMultiplier {
+  uint64 pool_id = 1;
+  string multiplier = 2 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message MsgUpdatePoolMultipliers {
+  string authority = 1;
+  repeated PoolMultiplier pool_multipliers = 2 [ (gogoproto.nullable) = false ];
+}
+message MsgUpdatePoolMultipliersResponse {}
+
+message MsgClaimRewards {
+    string sender = 1;
+    repeated uint64 pool_ids = 2;
+}
+
+message MsgClaimRewardsResponse {
+}

@@ -246,13 +246,8 @@ func initAccountWithCoins(app *ElysApp, ctx sdk.Context, addr sdk.AccAddress, co
 }
 
 // Add testing commitments
-func AddTestCommitment(app *ElysApp, ctx sdk.Context, address sdk.AccAddress, committed sdk.Coins, rewardsUnclaimed sdk.Coins) {
+func AddTestCommitment(app *ElysApp, ctx sdk.Context, address sdk.AccAddress, committed sdk.Coins) {
 	commitment := app.CommitmentKeeper.GetCommitments(ctx, address.String())
-
-	// Loop unclaimed rewards
-	for _, uc := range rewardsUnclaimed {
-		commitment.AddRewardsUnclaimed(uc)
-	}
 
 	for _, c := range committed {
 		commitment.AddCommittedTokens(c.Denom, c.Amount, uint64(ctx.BlockTime().Unix()))

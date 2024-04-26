@@ -76,13 +76,15 @@ func updateGenesis(validatorBalance, homePath, genesisFilePath string) {
 	genesis.AppState.Gov = genesisInit.AppState.Gov
 
 	// update voting period
-	genesis.AppState.Gov.Params.VotingPeriod = "20s"
-	genesis.AppState.Gov.Params.MaxDepositPeriod = "20s"
-	genesis.AppState.Gov.Params.MinDeposit = sdk.Coins{sdk.NewInt64Coin("uelys", 10000000)}
+	votingPeriod := "30s"
+	minDeposit := sdk.Coins{sdk.NewInt64Coin("uelys", 10000000)}
+	genesis.AppState.Gov.Params.VotingPeriod = votingPeriod
+	genesis.AppState.Gov.Params.MaxDepositPeriod = votingPeriod
+	genesis.AppState.Gov.Params.MinDeposit = minDeposit
 	// set deprecated settings
-	genesis.AppState.Gov.VotingParams.VotingPeriod = "20s"
-	genesis.AppState.Gov.DepositParams.MaxDepositPeriod = "20s"
-	genesis.AppState.Gov.DepositParams.MinDeposit = sdk.Coins{sdk.NewInt64Coin("uelys", 10000000)}
+	genesis.AppState.Gov.VotingParams.VotingPeriod = votingPeriod
+	genesis.AppState.Gov.DepositParams.MaxDepositPeriod = votingPeriod
+	genesis.AppState.Gov.DepositParams.MinDeposit = minDeposit
 
 	// update wasm params
 	// genesis.AppState.Wasm.Params = wasmtypes.DefaultParams()
