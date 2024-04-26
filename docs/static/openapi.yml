@@ -41885,11 +41885,6 @@ paths:
                       total_blocks_per_year:
                         type: string
                         title: distribution duration - block number per year
-                      max_eden_per_allocation:
-                        type: string
-                        title: >-
-                          maximum eden allocation per day that won't exceed 30%
-                          apr
                       blocks_distributed:
                         type: string
                         title: blocks distributed
@@ -86880,9 +86875,6 @@ definitions:
       total_blocks_per_year:
         type: string
         title: distribution duration - block number per year
-      max_eden_per_allocation:
-        type: string
-        title: maximum eden allocation per day that won't exceed 30% apr
       blocks_distributed:
         type: string
         title: blocks distributed
@@ -86912,9 +86904,6 @@ definitions:
           total_blocks_per_year:
             type: string
             title: distribution duration - block number per year
-          max_eden_per_allocation:
-            type: string
-            title: maximum eden allocation per day that won't exceed 30% apr
           blocks_distributed:
             type: string
             title: blocks distributed
@@ -87069,9 +87058,6 @@ definitions:
               total_blocks_per_year:
                 type: string
                 title: distribution duration - block number per year
-              max_eden_per_allocation:
-                type: string
-                title: maximum eden allocation per day that won't exceed 30% apr
               blocks_distributed:
                 type: string
                 title: blocks distributed
