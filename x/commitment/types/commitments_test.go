@@ -10,10 +10,9 @@ import (
 
 func TestCommitments_AddCommittedTokens(t *testing.T) {
 	commitments := types.Commitments{
-		Creator:          "",
-		CommittedTokens:  []*types.CommittedTokens{},
-		RewardsUnclaimed: sdk.Coins{},
-		VestingTokens:    []*types.VestingTokens{},
+		Creator:         "",
+		CommittedTokens: []*types.CommittedTokens{},
+		VestingTokens:   []*types.VestingTokens{},
 	}
 
 	commitments.AddCommittedTokens("lp/1", sdk.NewInt(100), 100)
@@ -30,10 +29,9 @@ func TestCommitments_AddCommittedTokens(t *testing.T) {
 
 func TestCommitments_WithdrawCommitedTokens(t *testing.T) {
 	commitments := types.Commitments{
-		Creator:          "",
-		CommittedTokens:  []*types.CommittedTokens{},
-		RewardsUnclaimed: sdk.Coins{},
-		VestingTokens:    []*types.VestingTokens{},
+		Creator:         "",
+		CommittedTokens: []*types.CommittedTokens{},
+		VestingTokens:   []*types.VestingTokens{},
 	}
 
 	commitments.AddCommittedTokens("lp/1", sdk.NewInt(100), 100)

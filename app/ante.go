@@ -139,7 +139,7 @@ func (min MinCommissionDecorator) AnteHandle(
 				return errorsmod.Wrap(sdkerrors.ErrUnauthorized, "commission can't be lower than 5%")
 			}
 			projectedVotingPower := min.CalculateValidatorProjectedVotingPower(ctx, sdk.NewDecFromInt(msg.Value.Amount))
-			if projectedVotingPower.GTE(maxVotingPower) {
+			if projectedVotingPower.GT(maxVotingPower) {
 				return errorsmod.Wrapf(
 					sdkerrors.ErrInvalidRequest,
 					"This validator has a voting power of %s%%. Delegations not allowed to a validator whose post-delegation voting power is more than %s%%. Please delegate to a validator with less bonded tokens", projectedVotingPower.Mul(sdk.NewDec(100)), maxVotingPower.Mul(sdk.NewDec(100)))
@@ -160,7 +160,7 @@ func (min MinCommissionDecorator) AnteHandle(
 			}
 
 			projectedVotingPower := min.CalculateDelegateProjectedVotingPower(ctx, val, sdk.NewDecFromInt(msg.Amount.Amount))
-			if projectedVotingPower.GTE(maxVotingPower) {
+			if projectedVotingPower.GT(maxVotingPower) {
 				return errorsmod.Wrapf(
 					sdkerrors.ErrInvalidRequest,
 					"This validator has a voting power of %s%%. Delegations not allowed to a validator whose post-delegation voting power is more than %s%%. Please delegate to a validator with less bonded tokens", projectedVotingPower.Mul(sdk.NewDec(100)), maxVotingPower.Mul(sdk.NewDec(100)))
@@ -181,7 +181,7 @@ func (min MinCommissionDecorator) AnteHandle(
 			}
 
 			projectedVotingPower := min.CalculateRedelegateProjectedVotingPower(ctx, dstVal, delegateAmount)
-			if projectedVotingPower.GTE(maxVotingPower) {
+			if projectedVotingPower.GT(maxVotingPower) {
 				return errorsmod.Wrapf(
 					sdkerrors.ErrInvalidRequest,
 					"This validator has a voting power of %s%%. Delegations not allowed to a validator whose post-delegation voting power is more than %s%%. Please redelegate to a validator with less bonded tokens", projectedVotingPower.Mul(sdk.NewDec(100)), maxVotingPower.Mul(sdk.NewDec(100)))

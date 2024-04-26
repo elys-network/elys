@@ -5,18 +5,6 @@ import (
 	"github.com/elys-network/elys/x/commitment/types"
 )
 
-// GetParams returns the current parameters of the Commitment module
-func (k Keeper) GetLegacyParams(ctx sdk.Context) types.LegacyParams {
-	var params types.LegacyParams
-	k.paramstore.GetParamSet(ctx, &params)
-	return params
-}
-
-// SetParams set the params
-func (k Keeper) SetLegacyParams(ctx sdk.Context, params types.LegacyParams) {
-	k.paramstore.SetParamSet(ctx, &params)
-}
-
 // GetParams get all parameters as types.Params
 func (k Keeper) GetParams(ctx sdk.Context) (params types.Params) {
 	store := ctx.KVStore(k.storeKey)

@@ -3,14 +3,15 @@ package keeper
 import (
 	"fmt"
 
-	"cosmossdk.io/math"
 	"github.com/cometbft/cometbft/libs/log"
 	"github.com/cosmos/cosmos-sdk/codec"
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
 
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/elys-network/elys/x/commitment/types"
+	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
 
 // Interface declearation
@@ -23,12 +24,6 @@ type CommitmentKeeperI interface {
 
 	// Get commitment
 	GetCommitments(sdk.Context, string) types.Commitments
-
-	// Update commitments for claim reward operation
-	RecordClaimReward(sdk.Context, string, string, math.Int, types.EarnType) error
-
-	// Update commitments for validator's commission withdrawal to self delegator
-	RecordWithdrawValidatorCommission(sdk.Context, string, string, string, math.Int) error
 }
 
 var _ CommitmentKeeperI = Keeper{}
@@ -59,11 +54,6 @@ func NewKeeper(
 	assetProfileKeeper types.AssetProfileKeeper,
 	authority string,
 ) *Keeper {
-	// set KeyTable if it has not already been set
-	if !ps.HasKeyTable() {
-		ps = ps.WithKeyTable(types.ParamKeyTable())
-	}
-
 	return &Keeper{
 		cdc:        cdc,
 		storeKey:   storeKey,
@@ -94,4 +84,134 @@ func (k *Keeper) SetHooks(eh types.CommitmentHooks) *Keeper {
 	k.hooks = eh
 
 	return k
+}
+
+func (k Keeper) GetAllBalances(ctx sdk.Context, addr sdk.AccAddress) sdk.Coins {
+	commitments := k.GetCommitments(ctx, addr.String())
+	edenEdenBAmounts := sdk.Coins{}
+	edenEdenBAmounts = edenEdenBAmounts.Add(sdk.NewCoin(ptypes.Eden, commitments.Claimed.AmountOf(ptypes.Eden)))
+	edenEdenBAmounts = edenEdenBAmounts.Add(sdk.NewCoin(ptypes.EdenB, commitments.Claimed.AmountOf(ptypes.EdenB)))
+
+	balances := k.bankKeeper.GetAllBalances(ctx, addr)
+	return balances.Add(edenEdenBAmounts...)
+}
+
+func (k Keeper) SpendableCoins(ctx sdk.Context, addr sdk.AccAddress) sdk.Coins {
+	return k.bankKeeper.SpendableCoins(ctx, addr)
+}
+
+func (k Keeper) BlockedAddr(addr sdk.AccAddress) bool {
+	return k.bankKeeper.BlockedAddr(addr)
+}
+
+func (k Keeper) AddEdenEdenBOnAccount(ctx sdk.Context, addr sdk.AccAddress, amt sdk.Coins) sdk.Coins {
+	commitments := k.GetCommitments(ctx, addr.String())
+	if amt.AmountOf(ptypes.Eden).IsPositive() {
+		coin := sdk.NewCoin(ptypes.Eden, amt.AmountOf(ptypes.Eden))
+		amt = amt.Sub(coin)
+		commitments.AddClaimed(coin)
+	}
+	if amt.AmountOf(ptypes.EdenB).IsPositive() {
+		coin := sdk.NewCoin(ptypes.EdenB, amt.AmountOf(ptypes.EdenB))
+		amt = amt.Sub(coin)
+		commitments.AddClaimed(coin)
+	}
+
+	// Save the updated Commitments
+	k.SetCommitments(ctx, commitments)
+	return amt
+}
+
+func (k Keeper) AddEdenEdenBOnModule(ctx sdk.Context, moduleName string, amt sdk.Coins) sdk.Coins {
+	addr := authtypes.NewModuleAddress(moduleName)
+	commitments := k.GetCommitments(ctx, addr.String())
+	if amt.AmountOf(ptypes.Eden).IsPositive() {
+		coin := sdk.NewCoin(ptypes.Eden, amt.AmountOf(ptypes.Eden))
+		amt = amt.Sub(coin)
+		commitments.AddClaimed(coin)
+	}
+	if amt.AmountOf(ptypes.EdenB).IsPositive() {
+		coin := sdk.NewCoin(ptypes.EdenB, amt.AmountOf(ptypes.EdenB))
+		amt = amt.Sub(coin)
+		commitments.AddClaimed(coin)
+	}
+
+	// Save the updated Commitments
+	k.SetCommitments(ctx, commitments)
+	return amt
+}
+
+func (k Keeper) SubEdenEdenBOnModule(ctx sdk.Context, moduleName string, amt sdk.Coins) (sdk.Coins, error) {
+	addr := authtypes.NewModuleAddress(moduleName)
+	commitments := k.GetCommitments(ctx, addr.String())
+	if amt.AmountOf(ptypes.Eden).IsPositive() {
+		coin := sdk.NewCoin(ptypes.Eden, amt.AmountOf(ptypes.Eden))
+		amt = amt.Sub(coin)
+		err := commitments.SubClaimed(coin)
+		if err != nil {
+			return amt, err
+		}
+	}
+	if amt.AmountOf(ptypes.EdenB).IsPositive() {
+		coin := sdk.NewCoin(ptypes.EdenB, amt.AmountOf(ptypes.EdenB))
+		amt = amt.Sub(coin)
+		err := commitments.SubClaimed(coin)
+		if err != nil {
+			return amt, err
+		}
+	}
+
+	// Save the updated Commitments
+	k.SetCommitments(ctx, commitments)
+	return amt, nil
+}
+
+func (k Keeper) MintCoins(ctx sdk.Context, moduleName string, amt sdk.Coins) error {
+	amt = k.AddEdenEdenBOnModule(ctx, moduleName, amt)
+	if amt.Empty() {
+		return nil
+	}
+	return k.bankKeeper.MintCoins(ctx, moduleName, amt)
+}
+
+func (k Keeper) BurnCoins(ctx sdk.Context, moduleName string, amt sdk.Coins) error {
+	amt, err := k.SubEdenEdenBOnModule(ctx, moduleName, amt)
+	if err != nil {
+		return err
+	}
+	if amt.Empty() {
+		return nil
+	}
+
+	return k.bankKeeper.BurnCoins(ctx, moduleName, amt)
+}
+
+func (k Keeper) SendCoinsFromModuleToModule(ctx sdk.Context, senderModule string, recipientModule string, amt sdk.Coins) error {
+	_, err := k.SubEdenEdenBOnModule(ctx, senderModule, amt)
+	if err != nil {
+		return err
+	}
+	amt = k.AddEdenEdenBOnModule(ctx, recipientModule, amt)
+	if amt.Empty() {
+		return nil
+	}
+	return k.bankKeeper.SendCoinsFromModuleToModule(ctx, senderModule, recipientModule, amt)
+}
+
+func (k Keeper) SendCoinsFromModuleToAccount(ctx sdk.Context, senderModule string, recipientAddr sdk.AccAddress, amt sdk.Coins) error {
+	_, err := k.SubEdenEdenBOnModule(ctx, senderModule, amt)
+	if err != nil {
+		return err
+	}
+
+	amt = k.AddEdenEdenBOnAccount(ctx, recipientAddr, amt)
+	if amt.Empty() {
+		return nil
+	}
+
+	return k.bankKeeper.SendCoinsFromModuleToAccount(ctx, senderModule, recipientAddr, amt)
+}
+
+func (k Keeper) SendCoinsFromAccountToModule(ctx sdk.Context, senderAddr sdk.AccAddress, recipientModule string, amt sdk.Coins) error {
+	return k.bankKeeper.SendCoinsFromAccountToModule(ctx, senderAddr, recipientModule, amt)
 }

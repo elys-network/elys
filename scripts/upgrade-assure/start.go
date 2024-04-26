@@ -25,9 +25,9 @@ func (cw PromptWriter) Write(data []byte) (int, error) {
 	return len(data), err
 }
 
-func start(cmdPath, homePath, rpc, p2p, moniker, successColor, errorColor string) *exec.Cmd {
+func start(cmdPath, homePath, rpc, p2p, pprof, api, moniker, successColor, errorColor string) *exec.Cmd {
 	// Command and arguments
-	args := []string{"start", "--home", homePath, "--rpc.laddr", rpc, "--p2p.laddr", p2p}
+	args := []string{"start", "--home", homePath, "--rpc.laddr", rpc, "--p2p.laddr", p2p, "--rpc.pprof_laddr", pprof, "--api.address", api}
 
 	// Set up the command
 	cmd := exec.Command(cmdPath, args...)

@@ -55,8 +55,6 @@ func (oq *Querier) HandleQuery(ctx sdk.Context, query wasmbindingstypes.ElysQuer
 		return oq.queryUnbondingDelegations(ctx, query.CommitmentUnbondingDelegations)
 	case query.CommitmentStakedBalanceOfDenom != nil:
 		return oq.queryStakedBalanceOfDenom(ctx, query.CommitmentStakedBalanceOfDenom)
-	case query.CommitmentRewardsBalanceOfDenom != nil:
-		return oq.queryRewardBalanceOfDenom(ctx, query.CommitmentRewardsBalanceOfDenom)
 	case query.CommitmentAllValidators != nil:
 		return oq.queryAllValidators(ctx, query.CommitmentAllValidators)
 	case query.CommitmentDelegatorValidators != nil:
@@ -65,8 +63,6 @@ func (oq *Querier) HandleQuery(ctx sdk.Context, query wasmbindingstypes.ElysQuer
 		return oq.queryStakedPositions(ctx, query.CommitmentStakedPositions)
 	case query.CommitmentUnStakedPositions != nil:
 		return oq.queryUnStakedPositions(ctx, query.CommitmentUnStakedPositions)
-	case query.CommitmentRewardsSubBucketBalanceOfDenom != nil:
-		return oq.queryRewardSubBucketBalanceOfDenom(ctx, query.CommitmentRewardsSubBucketBalanceOfDenom)
 	case query.CommitmentVestingInfo != nil:
 		return oq.queryVestingInfo(ctx, query.CommitmentVestingInfo)
 	default:

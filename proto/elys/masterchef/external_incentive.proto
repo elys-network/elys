@@ -1,0 +1,17 @@
+syntax = "proto3";
+package elys.masterchef;
+
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/elys-network/elys/x/masterchef/types";
+
+// ExternalIncentive defines the external incentives.
+message ExternalIncentive {
+  uint64 id = 1;
+  string reward_denom = 2;
+  uint64 pool_id = 3;
+  uint64 from_block = 4;
+  uint64 to_block = 5;
+	string amount_per_block = 6
+    [ (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false];
+}

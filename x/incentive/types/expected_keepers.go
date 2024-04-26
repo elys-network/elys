@@ -10,7 +10,6 @@ import (
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	aptypes "github.com/elys-network/elys/x/assetprofile/types"
 	ctypes "github.com/elys-network/elys/x/commitment/types"
-	epochstypes "github.com/elys-network/elys/x/epochs/types"
 	oracletypes "github.com/elys-network/elys/x/oracle/types"
 	stabletypes "github.com/elys-network/elys/x/stablestake/types"
 	tokenomictypes "github.com/elys-network/elys/x/tokenomics/types"
@@ -26,10 +25,6 @@ type CommitmentKeeper interface {
 	SetCommitments(sdk.Context, ctypes.Commitments)
 	// Get commitment
 	GetCommitments(sdk.Context, string) ctypes.Commitments
-	// Update commitments for claim reward operation
-	RecordClaimReward(sdk.Context, string, string, math.Int, ctypes.EarnType) error
-	// Update commitments for validator commission
-	RecordWithdrawValidatorCommission(sdk.Context, string, string, string, math.Int) error
 	// Burn eden boost
 	BurnEdenBoost(ctx sdk.Context, creator string, denom string, amount math.Int) (ctypes.Commitments, error)
 }
@@ -57,9 +52,6 @@ type AccountKeeper interface {
 
 	GetModuleAddress(name string) sdk.AccAddress
 	GetModuleAccount(ctx sdk.Context, name string) types.ModuleAccountI
-
-	// TODO remove with genesis 2-phases refactor https://github.com/cosmos/cosmos-sdk/issues/2862
-	SetModuleAccount(sdk.Context, types.ModuleAccountI)
 }
 
 // BankKeeper defines the expected interface needed to retrieve account balances.
@@ -112,6 +104,8 @@ type AmmKeeper interface {
 		swapFee sdk.Dec,
 	) (tokenOut sdk.Coin, slippage, slippageAmount sdk.Dec, weightBalanceBonus sdk.Dec, err error)
 	CalcOutAmtGivenIn(ctx sdk.Context, poolId uint64, oracle ammtypes.OracleKeeper, snapshot *ammtypes.Pool, tokensIn sdk.Coins, tokenOutDenom string, swapFee sdk.Dec) (sdk.Coin, sdk.Dec, error)
+	GetEdenDenomPrice(ctx sdk.Context, baseCurrency string) math.LegacyDec
+	GetTokenPrice(ctx sdk.Context, tokenInDenom, baseCurrency string) math.LegacyDec
 }
 
 // OracleKeeper defines the expected interface needed to retrieve price info
@@ -131,12 +125,7 @@ type AssetProfileKeeper interface {
 	GetEntry(ctx sdk.Context, baseDenom string) (val aptypes.Entry, found bool)
 }
 
-// EpochsKeeper defines the expected epochs keeper used for simulations (noalias)
-type EpochsKeeper interface {
-	GetEpochInfo(ctx sdk.Context, identifier string) (epochstypes.EpochInfo, bool)
-}
-
-// StableStakeKeeper defines the expected epochs keeper used for simulations (noalias)
+// StableStakeKeeper defines the expected StableStake keeper used for simulations (noalias)
 type StableStakeKeeper interface {
 	GetParams(ctx sdk.Context) (params stabletypes.Params)
 	BorrowRatio(goCtx context.Context, req *stabletypes.QueryBorrowRatioRequest) (*stabletypes.QueryBorrowRatioResponse, error)

@@ -17,10 +17,14 @@ import (
 	cdctypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
+	distrkeeper "github.com/cosmos/cosmos-sdk/x/distribution/keeper"
+	commitmentkeeper "github.com/elys-network/elys/x/commitment/keeper"
+	estakingkeeper "github.com/elys-network/elys/x/estaking/keeper"
 	"github.com/elys-network/elys/x/incentive/client/cli"
 	"github.com/elys-network/elys/x/incentive/keeper"
 	"github.com/elys-network/elys/x/incentive/migrations"
 	"github.com/elys-network/elys/x/incentive/types"
+	masterchefkeeper "github.com/elys-network/elys/x/masterchef/keeper"
 )
 
 var (
@@ -93,16 +97,28 @@ func (AppModuleBasic) GetQueryCmd() *cobra.Command {
 type AppModule struct {
 	AppModuleBasic
 
-	keeper keeper.Keeper
+	keeper           keeper.Keeper
+	estakingKeeper   estakingkeeper.Keeper
+	masterchefKeeper masterchefkeeper.Keeper
+	distrKeeper      distrkeeper.Keeper
+	commitmentKeeper commitmentkeeper.Keeper
 }
 
 func NewAppModule(
 	cdc codec.Codec,
 	keeper keeper.Keeper,
+	estakingKeeper estakingkeeper.Keeper,
+	masterchefKeeper masterchefkeeper.Keeper,
+	distrKeeper distrkeeper.Keeper,
+	commitmentKeeper commitmentkeeper.Keeper,
 ) AppModule {
 	return AppModule{
-		AppModuleBasic: NewAppModuleBasic(cdc),
-		keeper:         keeper,
+		AppModuleBasic:   NewAppModuleBasic(cdc),
+		keeper:           keeper,
+		estakingKeeper:   estakingKeeper,
+		masterchefKeeper: masterchefKeeper,
+		distrKeeper:      distrKeeper,
+		commitmentKeeper: commitmentKeeper,
 	}
 }
 
@@ -110,8 +126,8 @@ func NewAppModule(
 func (am AppModule) RegisterServices(cfg module.Configurator) {
 	types.RegisterMsgServer(cfg.MsgServer(), keeper.NewMsgServerImpl(am.keeper))
 	types.RegisterQueryServer(cfg.QueryServer(), am.keeper)
-	m := migrations.NewMigrator(am.keeper)
-	err := cfg.RegisterMigration(types.ModuleName, 9, m.V10Migration)
+	m := migrations.NewMigrator(am.keeper, am.estakingKeeper, am.masterchefKeeper, am.distrKeeper, am.commitmentKeeper)
+	err := cfg.RegisterMigration(types.ModuleName, 10, m.V11Migration)
 	if err != nil {
 		panic(err)
 	}
@@ -137,7 +153,7 @@ func (am AppModule) ExportGenesis(ctx sdk.Context, cdc codec.JSONCodec) json.Raw
 }
 
 // ConsensusVersion is a sequence number for state-breaking change of the module. It should be incremented on each consensus-breaking change introduced by the module. To avoid wrong/empty versions, the initial version should be set to 1
-func (AppModule) ConsensusVersion() uint64 { return 10 }
+func (AppModule) ConsensusVersion() uint64 { return 11 }
 
 // BeginBlock contains the logic that is automatically triggered at the beginning of each block
 func (am AppModule) BeginBlock(_ sdk.Context, _ abci.RequestBeginBlock) {}

@@ -95,13 +95,18 @@ test-unit:
 	@echo Running unit tests...
 	@GOFLAGS=$(GOFLAGS) go test -race -failfast -v ./...
 
+## ci-test-unit: Run unit tests
+ci-test-unit:
+	@echo Running unit tests via CI...
+	@GOFLAGS=$(GOFLAGS) GOMEMLIMIT=16GiB go test -race -cpu=4 -failfast -v ./...
+
 ## clean: Clean build files. Runs `go clean` internally.
 clean:
 	@echo Cleaning build cache...
 	@rm -rf $(BUILD_FOLDER) 2> /dev/null
 	@go clean ./...
 
-.PHONY: mocks test-unit clean
+.PHONY: mocks test-unit ci-test-unit clean
 
 ## go-mod-cache: Retrieve the go modules and store them in the local cache
 go-mod-cache: go.sum

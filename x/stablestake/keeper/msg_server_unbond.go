@@ -52,5 +52,12 @@ func (k msgServer) Unbond(goCtx context.Context, msg *types.MsgUnbond) (*types.M
 	params.TotalValue = params.TotalValue.Sub(redemptionAmount)
 	k.SetParams(ctx, params)
 
+	if k.hooks != nil {
+		err := k.hooks.AfterUnbond(ctx, msg.Creator, msg.Amount)
+		if err != nil {
+			return nil, err
+		}
+	}
+
 	return &types.MsgUnbondResponse{}, nil
 }

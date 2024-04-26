@@ -42,10 +42,10 @@ func (k msgServer) Bond(goCtx context.Context, msg *types.MsgBond) (*types.MsgBo
 		return nil, err
 	}
 
-	entry, found := k.assetProfileKeeper.GetEntry(ctx, shareDenom)
+	_, found := k.assetProfileKeeper.GetEntry(ctx, shareDenom)
 	if !found {
 		// Set an entity to assetprofile
-		entry = assetprofiletypes.Entry{
+		entry := assetprofiletypes.Entry{
 			Authority:                authtypes.NewModuleAddress(types.ModuleName).String(),
 			BaseDenom:                shareDenom,
 			Decimals:                 ptypes.BASE_DECIMAL,
@@ -87,6 +87,13 @@ func (k msgServer) Bond(goCtx context.Context, msg *types.MsgBond) (*types.MsgBo
 
 	params.TotalValue = params.TotalValue.Add(msg.Amount)
 	k.SetParams(ctx, params)
+
+	if k.hooks != nil {
+		err := k.hooks.AfterBond(ctx, msg.Creator, shareAmount)
+		if err != nil {
+			return nil, err
+		}
+	}
 
 	return &types.MsgBondResponse{}, nil
 }
