@@ -24,11 +24,11 @@ func (m *Messenger) msgClose(ctx sdk.Context, contractAddr sdk.AccAddress, msgCl
 		return nil, nil, wasmvmtypes.InvalidRequest{Err: "close wrong sender"}
 	}
 
-	msgServer := perpetualkeeper.NewMsgServerImpl(*m.keeper)
-
 	if err := msgClose.ValidateBasic(); err != nil {
 		return nil, nil, errorsmod.Wrap(err, "failed validating msgMsgClose")
 	}
+
+	msgServer := perpetualkeeper.NewMsgServerImpl(*m.keeper)
 
 	res, err := msgServer.BrokerClose(sdk.WrapSDKContext(ctx), msgClose)
 	if err != nil {

@@ -25,10 +25,11 @@ var (
 	_ sdk.Msg = &MsgDewhitelist{}
 )
 
-func NewMsgClose(creator string, id uint64) *MsgClose {
+func NewMsgClose(creator string, id uint64, amount math.Int) *MsgClose {
 	return &MsgClose{
-		Creator: creator,
-		Id:      id,
+		Creator:  creator,
+		Id:       id,
+		LpAmount: amount,
 	}
 }
 
