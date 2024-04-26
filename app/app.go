@@ -57,6 +57,9 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/crisis"
 	crisiskeeper "github.com/cosmos/cosmos-sdk/x/crisis/keeper"
 	crisistypes "github.com/cosmos/cosmos-sdk/x/crisis/types"
+	distr "github.com/cosmos/cosmos-sdk/x/distribution"
+	distrkeeper "github.com/cosmos/cosmos-sdk/x/distribution/keeper"
+	distrtypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
 	"github.com/cosmos/cosmos-sdk/x/evidence"
 	evidencekeeper "github.com/cosmos/cosmos-sdk/x/evidence/keeper"
 	evidencetypes "github.com/cosmos/cosmos-sdk/x/evidence/types"
@@ -113,7 +116,6 @@ import (
 	ibcclientclient "github.com/cosmos/ibc-go/v7/modules/core/02-client/client"
 	ibcclienttypes "github.com/cosmos/ibc-go/v7/modules/core/02-client/types"
 	ibcporttypes "github.com/cosmos/ibc-go/v7/modules/core/05-port/types"
-	porttypes "github.com/cosmos/ibc-go/v7/modules/core/05-port/types"
 	ibcexported "github.com/cosmos/ibc-go/v7/modules/core/exported"
 	ibckeeper "github.com/cosmos/ibc-go/v7/modules/core/keeper"
 	solomachine "github.com/cosmos/ibc-go/v7/modules/light-clients/06-solomachine"
@@ -129,6 +131,8 @@ import (
 	epochsmodule "github.com/elys-network/elys/x/epochs"
 	epochsmodulekeeper "github.com/elys-network/elys/x/epochs/keeper"
 	epochsmoduletypes "github.com/elys-network/elys/x/epochs/types"
+	exdistr "github.com/elys-network/elys/x/estaking/modules/distribution"
+	exstaking "github.com/elys-network/elys/x/estaking/modules/staking"
 	oraclemodule "github.com/elys-network/elys/x/oracle"
 	oraclekeeper "github.com/elys-network/elys/x/oracle/keeper"
 	oracletypes "github.com/elys-network/elys/x/oracle/types"
@@ -182,9 +186,15 @@ import (
 	leveragelpmodulekeeper "github.com/elys-network/elys/x/leveragelp/keeper"
 	leveragelpmoduletypes "github.com/elys-network/elys/x/leveragelp/types"
 
+	estakingmodule "github.com/elys-network/elys/x/estaking"
+	estakingmodulekeeper "github.com/elys-network/elys/x/estaking/keeper"
+	estakingmoduletypes "github.com/elys-network/elys/x/estaking/types"
 	launchpadmodule "github.com/elys-network/elys/x/launchpad"
 	launchpadmodulekeeper "github.com/elys-network/elys/x/launchpad/keeper"
 	launchpadmoduletypes "github.com/elys-network/elys/x/launchpad/types"
+	masterchefmodule "github.com/elys-network/elys/x/masterchef"
+	masterchefmodulekeeper "github.com/elys-network/elys/x/masterchef/keeper"
+	masterchefmoduletypes "github.com/elys-network/elys/x/masterchef/types"
 
 	// this line is used by starport scaffolding # stargate/app/moduleImport
 
@@ -194,9 +204,6 @@ import (
 const (
 	AccountAddressPrefix = "elys"
 	Name                 = "elys"
-
-	// Dex revenue consolidating wallet
-	DexRevenueCollectorName = "dexRevenueCollector"
 
 	// If EnabledSpecificProposals is "", and this is "true", then enable all x/wasm proposals.
 	// If EnabledSpecificProposals is "", and this is not "true", then disable all x/wasm proposals.
@@ -257,6 +264,7 @@ var (
 		capability.AppModuleBasic{},
 		staking.AppModuleBasic{},
 		mint.AppModuleBasic{},
+		distr.AppModuleBasic{},
 		gov.NewAppModuleBasic(getGovProposalHandlers()),
 		params.AppModuleBasic{},
 		crisis.AppModuleBasic{},
@@ -290,13 +298,15 @@ var (
 		stablestake.AppModuleBasic{},
 		leveragelpmodule.AppModuleBasic{},
 		launchpadmodule.AppModuleBasic{},
+		masterchefmodule.AppModuleBasic{},
+		estakingmodule.AppModuleBasic{},
 		// this line is used by starport scaffolding # stargate/app/moduleBasic
 	)
 
 	// module account permissions
 	maccPerms = map[string][]string{
 		authtypes.FeeCollectorName:       nil,
-		DexRevenueCollectorName:          nil,
+		distrtypes.ModuleName:            nil,
 		icatypes.ModuleName:              nil,
 		ibcfeetypes.ModuleName:           nil,
 		minttypes.ModuleName:             {authtypes.Minter},
@@ -311,6 +321,7 @@ var (
 		wasmmoduletypes.ModuleName:       {authtypes.Burner},
 		stablestaketypes.ModuleName:      {authtypes.Minter, authtypes.Burner},
 		launchpadmoduletypes.ModuleName:  {},
+		masterchefmoduletypes.ModuleName: {},
 		// this line is used by starport scaffolding # stargate/app/maccPerms
 	}
 )
@@ -353,6 +364,7 @@ type ElysApp struct {
 	StakingKeeper         *stakingkeeper.Keeper
 	SlashingKeeper        slashingkeeper.Keeper
 	MintKeeper            mintkeeper.Keeper
+	DistrKeeper           distrkeeper.Keeper
 	GovKeeper             govkeeper.Keeper
 	CrisisKeeper          *crisiskeeper.Keeper
 	UpgradeKeeper         *upgradekeeper.Keeper
@@ -396,7 +408,10 @@ type ElysApp struct {
 
 	LeveragelpKeeper leveragelpmodulekeeper.Keeper
 
-	LaunchpadKeeper launchpadmodulekeeper.Keeper
+	LaunchpadKeeper  launchpadmodulekeeper.Keeper
+	MasterchefKeeper masterchefmodulekeeper.Keeper
+
+	EstakingKeeper estakingmodulekeeper.Keeper
 	// this line is used by starport scaffolding # stargate/app/keeperDeclaration
 
 	// mm is the module manager
@@ -460,6 +475,7 @@ func NewElysApp(
 		ibctransfertypes.StoreKey, icahosttypes.StoreKey, capabilitytypes.StoreKey, group.StoreKey,
 		ibcfeetypes.StoreKey,
 		icacontrollertypes.StoreKey,
+		distrtypes.StoreKey,
 		wasmmodule.StoreKey,
 		consensusparamtypes.StoreKey,
 		epochsmoduletypes.StoreKey,
@@ -478,6 +494,8 @@ func NewElysApp(
 		stablestaketypes.StoreKey,
 		leveragelpmoduletypes.StoreKey,
 		launchpadmoduletypes.StoreKey,
+		masterchefmoduletypes.StoreKey,
+		estakingmoduletypes.StoreKey,
 		// this line is used by starport scaffolding # stargate/app/storeKey
 	)
 	tkeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey, ammmoduletypes.TStoreKey)
@@ -561,6 +579,16 @@ func NewElysApp(
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 
+	app.AssetprofileKeeper = *assetprofilemodulekeeper.NewKeeper(
+		appCodec,
+		keys[assetprofilemoduletypes.StoreKey],
+		keys[assetprofilemoduletypes.MemStoreKey],
+		app.GetSubspace(assetprofilemoduletypes.ModuleName),
+		&app.TransferKeeper,
+		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+	)
+	assetprofileModule := assetprofilemodule.NewAppModule(appCodec, app.AssetprofileKeeper, app.AccountKeeper, app.BankKeeper)
+
 	app.StakingKeeper = stakingkeeper.NewKeeper(
 		appCodec,
 		keys[stakingtypes.StoreKey],
@@ -568,6 +596,42 @@ func NewElysApp(
 		app.BankKeeper,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
+
+	commitmentKeeper := *commitmentmodulekeeper.NewKeeper(
+		appCodec,
+		keys[commitmentmoduletypes.StoreKey],
+		keys[commitmentmoduletypes.MemStoreKey],
+		app.GetSubspace(commitmentmoduletypes.ModuleName),
+
+		app.BankKeeper,
+		app.StakingKeeper,
+		app.AssetprofileKeeper,
+		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+	)
+
+	app.TokenomicsKeeper = *tokenomicsmodulekeeper.NewKeeper(
+		appCodec,
+		keys[tokenomicsmoduletypes.StoreKey],
+		keys[tokenomicsmoduletypes.MemStoreKey],
+		app.GetSubspace(tokenomicsmoduletypes.ModuleName),
+		&app.CommitmentKeeper,
+		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+	)
+	tokenomicsModule := tokenomicsmodule.NewAppModule(appCodec, app.TokenomicsKeeper, app.AccountKeeper, app.BankKeeper)
+
+	app.EstakingKeeper = *estakingmodulekeeper.NewKeeper(
+		appCodec,
+		keys[estakingmoduletypes.StoreKey],
+		keys[estakingmoduletypes.MemStoreKey],
+		app.StakingKeeper,
+		&app.CommitmentKeeper,
+		&app.DistrKeeper,
+		app.AssetprofileKeeper,
+		app.TokenomicsKeeper,
+		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+	)
+
+	estakingModule := estakingmodule.NewAppModule(appCodec, app.EstakingKeeper, app.AccountKeeper, app.BankKeeper)
 
 	app.MintKeeper = mintkeeper.NewKeeper(
 		appCodec,
@@ -583,7 +647,7 @@ func NewElysApp(
 		appCodec,
 		cdc,
 		keys[slashingtypes.StoreKey],
-		app.StakingKeeper,
+		app.EstakingKeeper,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 
@@ -715,31 +779,9 @@ func NewElysApp(
 
 	oracleIBCModule := oraclemodule.NewIBCModule(app.OracleKeeper)
 
-	app.AssetprofileKeeper = *assetprofilemodulekeeper.NewKeeper(
-		appCodec,
-		keys[assetprofilemoduletypes.StoreKey],
-		keys[assetprofilemoduletypes.MemStoreKey],
-		app.GetSubspace(assetprofilemoduletypes.ModuleName),
-		&app.TransferKeeper,
-		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
-	)
-	assetprofileModule := assetprofilemodule.NewAppModule(appCodec, app.AssetprofileKeeper, app.AccountKeeper, app.BankKeeper)
-
 	app.EpochsKeeper = *epochsmodulekeeper.NewKeeper(
 		appCodec,
 		keys[epochsmoduletypes.StoreKey],
-	)
-
-	commitmentKeeper := *commitmentmodulekeeper.NewKeeper(
-		appCodec,
-		keys[commitmentmoduletypes.StoreKey],
-		keys[commitmentmoduletypes.MemStoreKey],
-		app.GetSubspace(commitmentmoduletypes.ModuleName),
-
-		app.BankKeeper,
-		app.StakingKeeper,
-		app.AssetprofileKeeper,
-		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 
 	app.AccountedPoolKeeper = *accountedpoolmodulekeeper.NewKeeper(
@@ -754,7 +796,6 @@ func NewElysApp(
 		appCodec,
 		keys[ammmoduletypes.StoreKey],
 		tkeys[ammmoduletypes.TStoreKey],
-		app.GetSubspace(ammmoduletypes.ModuleName),
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 		&app.ParameterKeeper,
 		app.BankKeeper,
@@ -774,17 +815,45 @@ func NewElysApp(
 		&app.CommitmentKeeper,
 		app.AssetprofileKeeper,
 	)
-	stablestake := stablestake.NewAppModule(appCodec, app.StablestakeKeeper, app.AccountKeeper, app.BankKeeper)
+	app.CommitmentKeeper = *commitmentKeeper.SetHooks(
+		commitmentmodulekeeper.NewMultiCommitmentHooks(
+			app.EstakingKeeper.CommitmentHooks(),
+		),
+	)
+	commitmentModule := commitmentmodule.NewAppModule(appCodec, app.CommitmentKeeper, app.AccountKeeper, app.BankKeeper)
 
-	app.TokenomicsKeeper = *tokenomicsmodulekeeper.NewKeeper(
+	app.DistrKeeper = distrkeeper.NewKeeper(
 		appCodec,
-		keys[tokenomicsmoduletypes.StoreKey],
-		keys[tokenomicsmoduletypes.MemStoreKey],
-		app.GetSubspace(tokenomicsmoduletypes.ModuleName),
-		&app.CommitmentKeeper,
+		keys[distrtypes.StoreKey],
+		app.AccountKeeper,
+		app.CommitmentKeeper,
+		app.EstakingKeeper,
+		authtypes.FeeCollectorName,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
-	tokenomicsModule := tokenomicsmodule.NewAppModule(appCodec, app.TokenomicsKeeper, app.AccountKeeper, app.BankKeeper)
+
+	app.MasterchefKeeper = *masterchefmodulekeeper.NewKeeper(
+		appCodec,
+		keys[masterchefmoduletypes.StoreKey],
+		keys[masterchefmoduletypes.MemStoreKey],
+		app.GetSubspace(masterchefmoduletypes.ModuleName),
+		app.CommitmentKeeper,
+		app.AmmKeeper,
+		app.OracleKeeper,
+		app.AssetprofileKeeper,
+		app.AccountedPoolKeeper,
+		app.StablestakeKeeper,
+		app.TokenomicsKeeper,
+		app.AccountKeeper,
+		app.BankKeeper,
+		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+	)
+	masterchefModule := masterchefmodule.NewAppModule(appCodec, app.MasterchefKeeper, app.AccountKeeper, app.BankKeeper)
+
+	app.StablestakeKeeper = *app.StablestakeKeeper.SetHooks(stablestakekeeper.NewMultiStableStakeHooks(
+		app.MasterchefKeeper.StableStakeHooks(),
+	))
+	stablestakeModule := stablestake.NewAppModule(appCodec, app.StablestakeKeeper, app.AccountKeeper, app.BankKeeper)
 
 	app.IncentiveKeeper = *incentivemodulekeeper.NewKeeper(
 		appCodec,
@@ -798,22 +867,14 @@ func NewElysApp(
 		app.OracleKeeper,
 		app.AssetprofileKeeper,
 		app.AccountedPoolKeeper,
-		app.EpochsKeeper,
 		app.StablestakeKeeper,
 		app.TokenomicsKeeper,
+		&app.MasterchefKeeper,
+		&app.EstakingKeeper,
 		authtypes.FeeCollectorName,
-		DexRevenueCollectorName,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
-	incentiveModule := incentivemodule.NewAppModule(appCodec, app.IncentiveKeeper)
-
-	app.CommitmentKeeper = *commitmentKeeper.SetHooks(
-		commitmentmodulekeeper.NewMultiEpochHooks(
-			app.IncentiveKeeper.CommitmentHooks(),
-		),
-	)
-
-	commitmentModule := commitmentmodule.NewAppModule(appCodec, app.CommitmentKeeper, app.AccountKeeper, app.BankKeeper)
+	incentiveModule := incentivemodule.NewAppModule(appCodec, app.IncentiveKeeper, app.EstakingKeeper, app.MasterchefKeeper, app.DistrKeeper, app.CommitmentKeeper)
 
 	app.BurnerKeeper = *burnermodulekeeper.NewKeeper(
 		appCodec,
@@ -858,6 +919,8 @@ func NewElysApp(
 			app.StakingKeeper,
 			&app.TokenomicsKeeper,
 			&app.TransferhookKeeper,
+			&app.MasterchefKeeper,
+			&app.EstakingKeeper,
 		),
 		wasmOpts...,
 	)
@@ -868,7 +931,7 @@ func NewElysApp(
 		app.AccountKeeper,
 		app.BankKeeper,
 		app.StakingKeeper,
-		nil,
+		distrkeeper.NewQuerier(app.DistrKeeper),
 		app.IBCFeeKeeper, // ISC4 Wrapper: fee IBC middleware
 		app.IBCKeeper.ChannelKeeper,
 		&app.IBCKeeper.PortKeeper,
@@ -991,7 +1054,7 @@ func NewElysApp(
 	wasmStack = wasmmodule.NewIBCHandler(app.WasmKeeper, app.IBCKeeper.ChannelKeeper, app.IBCFeeKeeper)
 	wasmStack = ibcfee.NewIBCMiddleware(wasmStack, app.IBCFeeKeeper)
 
-	var transferStack porttypes.IBCModule = transferIBCModule
+	var transferStack ibcporttypes.IBCModule = transferIBCModule
 	transferStack = transferhook.NewIBCModule(app.TransferhookKeeper, transferStack)
 
 	// Create static IBC router, add transfer route, then set and seal it
@@ -1007,11 +1070,12 @@ func NewElysApp(
 
 	// register hooks after all modules have been initialized
 
-	app.StakingKeeper.SetHooks(
+	app.EstakingKeeper.SetHooks(
 		stakingtypes.NewMultiStakingHooks(
 			// insert staking hooks receivers here
 			app.SlashingKeeper.Hooks(),
-			app.IncentiveKeeper.StakingHooks(),
+			app.DistrKeeper.Hooks(),
+			app.EstakingKeeper.StakingHooks(),
 		),
 	)
 
@@ -1024,9 +1088,9 @@ func NewElysApp(
 	app.AmmKeeper = *app.AmmKeeper.SetHooks(
 		ammmoduletypes.NewMultiAmmHooks(
 			// insert amm hooks receivers here
-			app.IncentiveKeeper.AmmHooks(),
 			app.PerpetualKeeper.AmmHooks(),
 			app.LeveragelpKeeper.AmmHooks(),
+			app.MasterchefKeeper.AmmHooks(),
 		),
 	)
 	ammModule := ammmodule.NewAppModule(appCodec, app.AmmKeeper, app.AccountKeeper, app.BankKeeper)
@@ -1075,7 +1139,8 @@ func NewElysApp(
 		gov.NewAppModule(appCodec, &app.GovKeeper, app.AccountKeeper, app.BankKeeper, app.GetSubspace(govtypes.ModuleName)),
 		mint.NewAppModule(appCodec, app.MintKeeper, app.AccountKeeper, nil, app.GetSubspace(minttypes.ModuleName)),
 		slashing.NewAppModule(appCodec, app.SlashingKeeper, app.AccountKeeper, app.BankKeeper, app.StakingKeeper, app.GetSubspace(slashingtypes.ModuleName)),
-		staking.NewAppModule(appCodec, app.StakingKeeper, app.AccountKeeper, app.BankKeeper, app.GetSubspace(stakingtypes.ModuleName)),
+		exdistr.NewAppModule(appCodec, app.DistrKeeper, app.AccountKeeper, app.CommitmentKeeper, &app.EstakingKeeper, authtypes.FeeCollectorName, app.GetSubspace(distrtypes.ModuleName)),
+		exstaking.NewAppModule(appCodec, app.StakingKeeper, app.AccountKeeper, app.BankKeeper, app.GetSubspace(stakingtypes.ModuleName)),
 		upgrade.NewAppModule(app.UpgradeKeeper),
 		evidence.NewAppModule(app.EvidenceKeeper),
 		consensus.NewAppModule(appCodec, app.ConsensusParamsKeeper),
@@ -1097,9 +1162,11 @@ func NewElysApp(
 		accountedPoolModule,
 		transferhookModule,
 		clockModule,
-		stablestake,
+		stablestakeModule,
 		leveragelpModule,
 		launchpadModule,
+		masterchefModule,
+		estakingModule,
 		// this line is used by starport scaffolding # stargate/app/appModule
 	)
 
@@ -1114,6 +1181,7 @@ func NewElysApp(
 		// Note: epochs' begin should be "real" start of epochs, we keep epochs beginblock at the beginning
 		epochsmoduletypes.ModuleName,
 		minttypes.ModuleName,
+		distrtypes.ModuleName,
 		stablestaketypes.ModuleName,
 		incentivemoduletypes.ModuleName,
 		slashingtypes.ModuleName,
@@ -1147,6 +1215,8 @@ func NewElysApp(
 		clockmoduletypes.ModuleName,
 		leveragelpmoduletypes.ModuleName,
 		launchpadmoduletypes.ModuleName,
+		masterchefmoduletypes.ModuleName,
+		estakingmoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/beginBlockers
 	)
 
@@ -1163,6 +1233,7 @@ func NewElysApp(
 		capabilitytypes.ModuleName,
 		authtypes.ModuleName,
 		banktypes.ModuleName,
+		distrtypes.ModuleName,
 		stablestaketypes.ModuleName,
 		incentivemoduletypes.ModuleName,
 		slashingtypes.ModuleName,
@@ -1189,6 +1260,8 @@ func NewElysApp(
 		transferhooktypes.ModuleName,
 		leveragelpmoduletypes.ModuleName,
 		launchpadmoduletypes.ModuleName,
+		masterchefmoduletypes.ModuleName,
+		estakingmoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/endBlockers
 	)
 
@@ -1202,6 +1275,8 @@ func NewElysApp(
 		capabilitytypes.ModuleName,
 		authtypes.ModuleName,
 		banktypes.ModuleName,
+		commitmentmoduletypes.ModuleName,
+		distrtypes.ModuleName,
 		epochsmoduletypes.ModuleName,
 		stablestaketypes.ModuleName,
 		incentivemoduletypes.ModuleName,
@@ -1224,7 +1299,6 @@ func NewElysApp(
 		consensusparamtypes.ModuleName,
 		assetprofilemoduletypes.ModuleName,
 		oracletypes.ModuleName,
-		commitmentmoduletypes.ModuleName,
 		tokenomicsmoduletypes.ModuleName,
 		burnermoduletypes.ModuleName,
 		ammmoduletypes.ModuleName,
@@ -1235,6 +1309,8 @@ func NewElysApp(
 		clockmoduletypes.ModuleName,
 		leveragelpmoduletypes.ModuleName,
 		launchpadmoduletypes.ModuleName,
+		masterchefmoduletypes.ModuleName,
+		estakingmoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/initGenesis
 	}
 	app.mm.SetOrderInitGenesis(genesisModuleOrder...)
@@ -1513,6 +1589,7 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(banktypes.ModuleName)
 	paramsKeeper.Subspace(stakingtypes.ModuleName)
 	paramsKeeper.Subspace(minttypes.ModuleName)
+	paramsKeeper.Subspace(distrtypes.ModuleName)
 	paramsKeeper.Subspace(slashingtypes.ModuleName)
 	paramsKeeper.Subspace(govtypes.ModuleName).WithKeyTable(govv1.ParamKeyTable())
 	paramsKeeper.Subspace(crisistypes.ModuleName)
@@ -1525,12 +1602,12 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(commitmentmoduletypes.ModuleName)
 	paramsKeeper.Subspace(tokenomicsmoduletypes.ModuleName)
 	paramsKeeper.Subspace(burnermoduletypes.ModuleName)
-	paramsKeeper.Subspace(ammmoduletypes.ModuleName)
 	paramsKeeper.Subspace(perpetualmoduletypes.ModuleName)
 	paramsKeeper.Subspace(transferhooktypes.ModuleName)
 	paramsKeeper.Subspace(clockmoduletypes.ModuleName)
 	paramsKeeper.Subspace(stablestaketypes.ModuleName)
 	paramsKeeper.Subspace(leveragelpmoduletypes.ModuleName)
+	paramsKeeper.Subspace(masterchefmoduletypes.ModuleName)
 	// this line is used by starport scaffolding # stargate/app/paramSubspace
 
 	return paramsKeeper

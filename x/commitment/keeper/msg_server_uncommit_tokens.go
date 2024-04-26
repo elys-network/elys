@@ -15,6 +15,11 @@ import (
 func (k msgServer) UncommitTokens(goCtx context.Context, msg *types.MsgUncommitTokens) (*types.MsgUncommitTokensResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
+	addr, err := sdk.AccAddressFromBech32(msg.Creator)
+	if err != nil {
+		return nil, errorsmod.Wrap(sdkerrors.ErrInvalidAddress, "unable to convert address from bech32")
+	}
+
 	assetProfile, found := k.assetProfileKeeper.GetEntry(ctx, msg.Denom)
 	if !found {
 		return nil, errorsmod.Wrapf(aptypes.ErrAssetProfileNotFound, "denom: %s", msg.Denom)
@@ -27,19 +32,28 @@ func (k msgServer) UncommitTokens(goCtx context.Context, msg *types.MsgUncommitT
 	// Get the Commitments for the creator
 	commitments := k.GetCommitments(ctx, msg.Creator)
 
+	if msg.Denom == ptypes.Eden {
+		err := k.hooks.BeforeEdenCommitChange(ctx, addr)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	if msg.Denom == ptypes.EdenB {
+		err := k.hooks.BeforeEdenBCommitChange(ctx, addr)
+		if err != nil {
+			return nil, err
+		}
+	}
+
 	// Deduct from committed tokens
-	err := commitments.DeductFromCommitted(msg.Denom, msg.Amount, uint64(ctx.BlockTime().Unix()))
+	err = commitments.DeductFromCommitted(msg.Denom, msg.Amount, uint64(ctx.BlockTime().Unix()))
 	if err != nil {
 		return nil, err
 	}
 	k.SetCommitments(ctx, commitments)
 
 	liquidCoins := sdk.NewCoins(sdk.NewCoin(msg.Denom, msg.Amount))
-
-	addr, err := sdk.AccAddressFromBech32(commitments.Creator)
-	if err != nil {
-		return nil, errorsmod.Wrap(sdkerrors.ErrInvalidAddress, "unable to convert address from bech32")
-	}
 
 	err = k.HandleWithdrawFromCommitment(ctx, &commitments, liquidCoins, true, addr)
 	if err != nil {
@@ -48,8 +62,22 @@ func (k msgServer) UncommitTokens(goCtx context.Context, msg *types.MsgUncommitT
 
 	// Emit Hook if Eden is uncommitted
 	if msg.Denom == ptypes.Eden {
-		k.EdenUncommitted(ctx, msg.Creator, sdk.NewCoin(msg.Denom, msg.Amount))
+		err = k.EdenUncommitted(ctx, msg.Creator, sdk.NewCoin(msg.Denom, msg.Amount))
+		if err != nil {
+			return nil, err
+		}
 	}
+
+	// Emit Hook commitment changed
+	err = k.CommitmentChanged(ctx, msg.Creator, sdk.Coins{sdk.NewCoin(msg.Denom, msg.Amount)})
+	if err != nil {
+		return nil, err
+	}
+
+	// Update total commitment
+	params := k.GetParams(ctx)
+	params.TotalCommitted = params.TotalCommitted.Add(liquidCoins...)
+	k.SetParams(ctx, params)
 
 	// Emit blockchain event
 	ctx.EventManager().EmitEvent(

@@ -2,6 +2,8 @@ syntax = "proto3";
 package elys.commitment;
 
 import "gogoproto/gogo.proto";
+import "cosmos_proto/cosmos.proto";
+import "cosmos/base/v1beta1/coin.proto";
 
 option go_package = "github.com/elys-network/elys/x/commitment/types";
 
@@ -9,18 +11,21 @@ option go_package = "github.com/elys-network/elys/x/commitment/types";
 message Params {
   option (gogoproto.goproto_stringer) = false;
   repeated VestingInfo vesting_infos = 1;
+  repeated cosmos.base.v1beta1.Coin total_committed = 2 [
+    (gogoproto.nullable) = false,
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
+  ];
 }
 
 message VestingInfo {
   string base_denom = 1;
   string vesting_denom = 2;
-  string epoch_identifier = 3;
-  int64 num_epochs = 4;
-  string vest_now_factor = 5 [
+  int64 num_blocks = 3;
+  string vest_now_factor = 4 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
     (gogoproto.nullable) = false
   ];
-  int64 num_max_vestings = 6;
+  int64 num_max_vestings = 5;
 }
 
 enum EarnType {

@@ -5,13 +5,15 @@ import (
 	"os/exec"
 )
 
-func stop(cmd *exec.Cmd) {
-	// Stop the process
-	if cmd != nil && cmd.Process != nil {
-		err := cmd.Process.Kill()
-		if err != nil {
-			log.Fatalf(Red+"Failed to kill process: %v", err)
+func stop(cmds ...*exec.Cmd) {
+	for _, cmd := range cmds {
+		// Stop the process
+		if cmd != nil && cmd.Process != nil {
+			err := cmd.Process.Kill()
+			if err != nil {
+				log.Fatalf(ColorRed+"Failed to kill process: %v", err)
+			}
+			log.Println(ColorYellow + "Process killed successfully")
 		}
-		log.Println(Yellow + "Process killed successfully")
 	}
 }

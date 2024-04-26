@@ -73,7 +73,7 @@ func (k Keeper) RouteExactAmountIn(
 
 		swapFee := pool.GetPoolParams().SwapFee
 
-		// If we determined the route is an osmo multi-hop and both routes are incentivized,
+		// If we determined the route is an elys multi-hop and both routes are incentivized,
 		// we modify the swap fee accordingly.
 		if isMultiHopRouted && sumOfSwapFees.IsPositive() {
 			swapFee = routeSwapFee.Mul((swapFee.Quo(sumOfSwapFees)))

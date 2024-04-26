@@ -31,6 +31,8 @@ func GetQueryCmd(queryRoute string) *cobra.Command {
 	cmd.AddCommand(CmdSwapEstimationByDenom())
 	cmd.AddCommand(CmdJoinPoolEstimation())
 	cmd.AddCommand(CmdExitPoolEstimation())
+	cmd.AddCommand(CmdTrackedSlippage())
+	cmd.AddCommand(CmdTrackedSlippageAll())
 
 	// this line is used by starport scaffolding # 1
 

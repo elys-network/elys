@@ -15,35 +15,11 @@ option go_package = "github.com/elys-network/elys/x/commitment/types";
 message Commitments {
     string creator = 1;
     repeated CommittedTokens committed_tokens = 2;
-    repeated cosmos.base.v1beta1.Coin rewards_unclaimed = 3 [
+    repeated cosmos.base.v1beta1.Coin claimed = 3 [
       (gogoproto.nullable) = false,
       (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
     ];
-    repeated cosmos.base.v1beta1.Coin claimed = 4 [
-      (gogoproto.nullable) = false,
-      (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
-    ];
-    repeated VestingTokens vesting_tokens = 5;
-
-    repeated cosmos.base.v1beta1.Coin rewards_by_elys_unclaimed = 6 [
-      (gogoproto.nullable) = false,
-      (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
-    ];
-
-    repeated cosmos.base.v1beta1.Coin rewards_by_eden_unclaimed = 7 [
-      (gogoproto.nullable) = false,
-      (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
-    ];
-    
-    repeated cosmos.base.v1beta1.Coin rewards_by_edenb_unclaimed = 8 [
-      (gogoproto.nullable) = false,
-      (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
-    ];
-
-    repeated cosmos.base.v1beta1.Coin rewards_by_usdc_unclaimed = 9 [
-      (gogoproto.nullable) = false,
-      (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
-    ];
+    repeated VestingTokens vesting_tokens = 4;
 }
 
 message Lockup {
@@ -63,26 +39,51 @@ message CommittedTokens {
   repeated Lockup lockups = 3 [ (gogoproto.nullable) = false ];
 }
 
-message RewardsUnclaimed {
-  string denom = 1;
-  string amount = 2 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
-    (gogoproto.nullable) = false
-  ];
-}
-
 message VestingTokens {
   string denom = 1;
   string total_amount = 2 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
     (gogoproto.nullable) = false
   ];
-  string unvested_amount = 3 [
+  string claimed_amount = 3 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
     (gogoproto.nullable) = false
   ];
-  string epoch_identifier = 4;
-  int64 num_epochs = 5;
-  int64 current_epoch = 6;
+  int64 num_blocks = 5;
+  int64 start_block = 6;
   int64 vest_started_timestamp = 7;
+}
+
+message LegacyCommitments {
+  string creator = 1;
+  repeated CommittedTokens committed_tokens = 2;
+  repeated cosmos.base.v1beta1.Coin rewards_unclaimed = 3 [
+    (gogoproto.nullable) = false,
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
+  ];
+  repeated cosmos.base.v1beta1.Coin claimed = 4 [
+    (gogoproto.nullable) = false,
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
+  ];
+  repeated VestingTokens vesting_tokens = 5;
+
+  repeated cosmos.base.v1beta1.Coin rewards_by_elys_unclaimed = 6 [
+    (gogoproto.nullable) = false,
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
+  ];
+
+  repeated cosmos.base.v1beta1.Coin rewards_by_eden_unclaimed = 7 [
+    (gogoproto.nullable) = false,
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
+  ];
+
+  repeated cosmos.base.v1beta1.Coin rewards_by_edenb_unclaimed = 8 [
+    (gogoproto.nullable) = false,
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
+  ];
+
+  repeated cosmos.base.v1beta1.Coin rewards_by_usdc_unclaimed = 9 [
+    (gogoproto.nullable) = false,
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
+  ];
 }

@@ -6,7 +6,9 @@ import (
 
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
 	commitmenttypes "github.com/elys-network/elys/x/commitment/types"
+	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
 
 func (oq *Querier) queryVestingInfo(ctx sdk.Context, query *commitmenttypes.QueryVestingInfoRequest) ([]byte, error) {
@@ -15,43 +17,42 @@ func (oq *Querier) queryVestingInfo(ctx sdk.Context, query *commitmenttypes.Quer
 	commitment := oq.keeper.GetCommitments(ctx, addr)
 	vestingTokens := commitment.GetVestingTokens()
 
+	entry, found := oq.assetKeeper.GetEntry(ctx, ptypes.BaseCurrency)
+	if !found {
+		return nil, errorsmod.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency)
+	}
+
+	baseCurrency := entry.Denom
+	edenDenomPrice := oq.ammKeeper.GetEdenDenomPrice(ctx, baseCurrency)
+
 	totalVesting := sdk.ZeroInt()
 	vestingDetails := make([]commitmenttypes.VestingDetail, 0)
 	for i, vesting := range vestingTokens {
-		vested := vesting.TotalAmount.Sub(vesting.UnvestedAmount)
-		epochInfo, found := oq.epochKeeper.GetEpochInfo(ctx, vesting.EpochIdentifier)
-		if !found {
-			continue
-		}
-
 		vestingDetail := commitmenttypes.VestingDetail{
 			Id: fmt.Sprintf("%d", i),
-			// The total vest for the current vest
-			TotalVest: commitmenttypes.BalanceAvailable{
+			TotalVesting: commitmenttypes.BalanceAvailable{
 				Amount:    vesting.TotalAmount,
-				UsdAmount: sdk.NewDecFromInt(vesting.TotalAmount),
+				UsdAmount: edenDenomPrice.MulInt(vesting.TotalAmount),
 			},
-			// The balance that's already vested
-			BalanceVested: commitmenttypes.BalanceAvailable{
-				Amount:    vested,
-				UsdAmount: sdk.NewDecFromInt(vested),
+			Claimed: commitmenttypes.BalanceAvailable{
+				Amount:    vesting.ClaimedAmount,
+				UsdAmount: edenDenomPrice.MulInt(vesting.ClaimedAmount),
 			},
-			// The remaining amount to vest
-			RemainingVest: commitmenttypes.BalanceAvailable{
-				Amount:    vesting.UnvestedAmount,
-				UsdAmount: sdk.NewDecFromInt(vesting.UnvestedAmount),
+			VestedSoFar: commitmenttypes.BalanceAvailable{
+				Amount:    vesting.VestedSoFar(ctx),
+				UsdAmount: edenDenomPrice.MulInt(vesting.VestedSoFar(ctx)),
 			},
-			RemainingTime: vesting.VestStartedTimestamp + vesting.NumEpochs*epochInfo.Duration.Milliseconds(),
+			RemainingBlocks: vesting.NumBlocks - (ctx.BlockHeight() - vesting.StartBlock),
 		}
 
 		vestingDetails = append(vestingDetails, vestingDetail)
-		totalVesting = totalVesting.Add(vesting.UnvestedAmount)
+		totalVesting = totalVesting.Add(vesting.TotalAmount.Sub(vesting.ClaimedAmount))
 	}
 
 	res := commitmenttypes.QueryVestingInfoResponse{
 		Vesting: commitmenttypes.BalanceAvailable{
 			Amount:    totalVesting,
-			UsdAmount: sdk.NewDecFromInt(totalVesting),
+			UsdAmount: edenDenomPrice.MulInt(totalVesting),
 		},
 		VestingDetails: vestingDetails,
 	}

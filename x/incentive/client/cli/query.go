@@ -19,10 +19,9 @@ func GetQueryCmd(queryRoute string) *cobra.Command {
 		RunE:                       client.ValidateCmd,
 	}
 
-	cmd.AddCommand(CmdQueryParams())
-	cmd.AddCommand(CmdCommunityPool())
 	cmd.AddCommand(CmdApr())
-	cmd.AddCommand(CmdPoolAprs())
+	cmd.AddCommand(CmdAprs())
+	cmd.AddCommand(CmdPoolRewards())
 	// this line is used by starport scaffolding # 1
 
 	return cmd

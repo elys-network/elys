@@ -3,6 +3,7 @@ accounts:
   - name: treasury
     coins:
       - 1000000000000uatom
+      - 1000000000000uinc
       - 1000000000000uusdc
       - 1000000000000uusdt
       - 9000000000000000uelys
@@ -81,6 +82,12 @@ genesis:
       params:
         bond_denom: uelys
         unbonding_time: 1209600s
+    estaking:
+      params:
+        eden_commit_val: ""
+        edenb_commit_val: ""
+        max_eden_reward_apr_stakers: "0.3"
+        eden_boost_apr: "1.0"
     bank:
       denom_metadata:
         - base: uelys
@@ -218,8 +225,33 @@ genesis:
           currentEpoch: "0"
           currentEpochStartHeight: "0"
           epochCountingStarted: false
+        - identifier: twelvehours
+          duration: "12h"
+          currentEpoch: "0"
+          currentEpochStartHeight: "0"
+          epochCountingStarted: false
+        - identifier: sixhours
+          duration: "6h"
+          currentEpoch: "0"
+          currentEpochStartHeight: "0"
+          epochCountingStarted: false
+        - identifier: fourhours
+          duration: "4h"
+          currentEpoch: "0"
+          currentEpochStartHeight: "0"
+          epochCountingStarted: false
+        - identifier: twohours
+          duration: "2h"
+          currentEpoch: "0"
+          currentEpochStartHeight: "0"
+          epochCountingStarted: false
         - identifier: hour
           duration: "1h"
+          currentEpoch: "0"
+          currentEpochStartHeight: "0"
+          epochCountingStarted: false
+        - identifier: halfhour
+          duration: "30m"
           currentEpoch: "0"
           currentEpochStartHeight: "0"
           epochCountingStarted: false
@@ -238,8 +270,7 @@ genesis:
         vesting_infos:
           - base_denom: ueden
             vesting_denom: uelys
-            epoch_identifier: tenseconds
-            num_epochs: "100"
+            num_blocks: "100"
             vest_now_factor: "90"
             num_max_vestings: "10"
       commitments:
@@ -249,63 +280,7 @@ genesis:
               denom: ueden
             - amount: "10000"
               denom: uedenb
-          rewards_unclaimed:
-            - amount: "1000000"
-              denom: ueden
-            - amount: "1000000"
-              denom: uedenb
-            - amount: "1000000"
-              denom: uusdc
           vesting_tokens: []
-          rewards_by_usdc_unclaimed:
-            - denom: ueden
-              amount: "200000"
-            - denom: uedenb
-              amount: "200000"
-            - denom: uusdc
-              amount: "200000"
-          rewards_by_elys_unclaimed:
-            - denom: ueden
-              amount: "300000"
-            - denom: uedenb
-              amount: "200000"
-            - denom: uusdc
-              amount: "300000"
-          rewards_by_eden_unclaimed:
-            - denom: ueden
-              amount: "300000"
-            - denom: uedenb
-              amount: "200000"
-            - denom: uusdc
-              amount: "300000"
-          rewards_by_edenb_unclaimed:
-            - denom: ueden
-              amount: "200000"
-            - denom: uedenb
-              amount: "200000"
-            - denom: uusdc
-              amount: "200000"
-    incentive:
-      params:
-        lp_incentives: null
-        stake_incentives: null
-        reward_portion_for_lps: "0.65"
-        pool_infos: []
-        elys_stake_snap_interval: "10"
-        dex_rewards_stakers:
-          num_blocks: "0"
-          amount: "0"
-          amount_collected_by_other_tracker: "0"
-        dex_rewards_lps:
-          num_blocks: "0"
-          amount: "0"
-          amount_collected_by_other_tracker: "0"
-        max_eden_reward_apr_stakers: "0.30"
-        max_eden_reward_apr_lps: "0.30"
-      fee_pool:
-        community_pool:
-          - amount: "0"
-            denom: uelys
     launchpad:
       params:
         initial_price: "0.75"
@@ -345,29 +320,29 @@ genesis:
     tokenomics:
       airdropList:
         - intent: AtomStakers
-          amount: 9999999
+          amount: 9999999000000
           authority: elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3
         - intent: RowanStakersLP
-          amount: 9999999
+          amount: 9999999000000
           authority: elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3
         - intent: Juno
-          amount: 9999999
+          amount: 9999999000000
           authority: elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3
         - intent: Osmo
-          amount: 9999999
+          amount: 9999999000000
           authority: elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3
         - intent: Evmos
-          amount: 9999999
+          amount: 9999999000000
           authority: elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3
       genesisInflation:
         inflation:
-          lmRewards: 9999999
-          icsStakingRewards: 9999999
-          communityFund: 9999999
-          strategicReserve: 9999999
-          teamTokensVested: 9999999
-        seedVesting: 9999999
-        strategicSalesVesting: 9999999
+          lmRewards: 9999999000000
+          icsStakingRewards: 9999999000000
+          communityFund: 9999999000000
+          strategicReserve: 9999999000000
+          teamTokensVested: 9999999000000
+        seedVesting: 9999999000000
+        strategicSalesVesting: 9999999000000
         authority: elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3
       timeBasedInflationList:
         - startBlockHeight: 1
@@ -375,31 +350,31 @@ genesis:
           description: 1st Year Inflation
           authority: elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3
           inflation:
-            lmRewards: 9999999
-            icsStakingRewards: 9999999
-            communityFund: 9999999
-            strategicReserve: 9999999
-            teamTokensVested: 9999999
+            lmRewards: 9999999000000
+            icsStakingRewards: 9999999000000
+            communityFund: 9999999000000
+            strategicReserve: 9999999000000
+            teamTokensVested: 9999999000000
         - startBlockHeight: 6307201
           endBlockHeight: 12614401
           description: 2nd Year Inflation
           authority: elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3
           inflation:
-            lmRewards: 9999999
-            icsStakingRewards: 9999999
-            communityFund: 9999999
-            strategicReserve: 9999999
-            teamTokensVested: 9999999
+            lmRewards: 9999999000000
+            icsStakingRewards: 9999999000000
+            communityFund: 9999999000000
+            strategicReserve: 9999999000000
+            teamTokensVested: 9999999000000
         - startBlockHeight: 12614402
           endBlockHeight: 18921602
           description: 3rd Year Inflation
           authority: elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3
           inflation:
-            lmRewards: 9999999
-            icsStakingRewards: 9999999
-            communityFund: 9999999
-            strategicReserve: 9999999
-            teamTokensVested: 9999999
+            lmRewards: 9999999000000
+            icsStakingRewards: 9999999000000
+            communityFund: 9999999000000
+            strategicReserve: 9999999000000
+            teamTokensVested: 9999999000000
     oracle:
       assetInfos:
         - denom: "satoshi"
@@ -440,7 +415,7 @@ genesis:
         multiplier: "18"
         oracle_script_id: "37"
         prepare_gas: "600000"
-        price_expiry_time: "86400000"
+        price_expiry_time: "8640000000"
         life_time_in_blocks: "1000000000"
       portId: "oracle"
       priceFeeders:
@@ -459,6 +434,11 @@ genesis:
           provider: elys12tzylat4udvjj56uuhu3vj2n4vgp7cf9fwna9w
           source: elys
           timestamp: "1694743319"
+        - asset: ATOM
+          price: "10.00"
+          provider: elys12tzylat4udvjj56uuhu3vj2n4vgp7cf9fwna9w
+          source: elys
+          timestamp: "1694743319"
     burner:
       params:
         epochIdentifier: day
@@ -472,7 +452,7 @@ genesis:
     parameter:
       params:
         min_commission_rate: "0.05"
-        max_voting_power: "0.66"
+        max_voting_power: "1.00"
         min_self_delegation: "1"
         broker_address: "elys1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqnrec2l"
     perpetual:
@@ -504,4 +484,15 @@ genesis:
       params:
         deposit_denom: "uusdc"
         redemption_rate: "1.000000000000000000"
+    masterchef:
+      params:
+        supported_reward_denoms:
+          - denom: "uinc"
+            min_amount: "1000000"
+        reward_portion_for_lps: "0.6"
+        dex_rewards_lps:
+          num_blocks: "1"
+          amount: "0"
+        max_eden_reward_apr_lps: "0.5"
+        protocol_revenue_address: "elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3"
   chain_id: elystestnet-1

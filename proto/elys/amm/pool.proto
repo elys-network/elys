@@ -21,6 +21,11 @@ message Pool {
   string rebalance_treasury = 7;
 }
 
+message PoolExtraInfo {
+  string tvl            = 1 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+  string lp_token_price = 2 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+}
+
 message OraclePoolSlippageTrack {
   uint64 pool_id = 1;
   uint64 timestamp = 2;

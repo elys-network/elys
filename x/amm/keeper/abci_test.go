@@ -314,7 +314,6 @@ func (suite *KeeperTestSuite) TestExecuteSwapRequests() {
 	}
 }
 
-// TODO: test ClearOutdatedSlippageTrack
 func (suite *KeeperTestSuite) TestClearOutdatedSlippageTrack() {
 	now := time.Now()
 	tracks := []types.OraclePoolSlippageTrack{

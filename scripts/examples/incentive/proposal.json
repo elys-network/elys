@@ -1,0 +1,21 @@
+{
+  "title": "Update incentive pool multipliers",
+  "summary": "Stablestake pool multiplier to 0.7 and ELYS <> USDC pool multiplier to 1.5",
+  "messages": [
+    {
+        "@type": "/elys.incentive.MsgUpdatePoolMultipliers",
+        "authority": "elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3",
+        "pool_multipliers": [
+            {
+                "pool_id": 32767,
+                "multiplier": "0.7"
+            },
+            {
+                "pool_id": 3,
+                "multiplier": "1.5"
+            }
+        ]
+    }
+  ],
+  "deposit": "10000000uelys"
+}

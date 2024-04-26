@@ -21,6 +21,7 @@ service Msg {
   rpc SwapByDenom                   (MsgSwapByDenom                  ) returns (MsgSwapByDenomResponse                  );
   rpc FeedMultipleExternalLiquidity (MsgFeedMultipleExternalLiquidity) returns (MsgFeedMultipleExternalLiquidityResponse);
   rpc UpdatePoolParams              (MsgUpdatePoolParams             ) returns (MsgUpdatePoolParamsResponse             );
+  rpc UpdateParams                  (MsgUpdateParams                 ) returns (MsgUpdateParamsResponse                 );
 }
 message MsgCreatePool {
            string     sender      = 1;
@@ -129,7 +130,7 @@ message MsgSwapByDenomResponse {
 }
 
 message MsgUpdatePoolParams {
-  string sender     = 1;
+  string authority = 1;
   uint64 pool_id     = 2;
   PoolParams pool_params = 3;
 }
@@ -139,3 +140,9 @@ message MsgUpdatePoolParamsResponse {
   PoolParams pool_params = 2;
 }
 
+message MsgUpdateParams {
+  string authority = 1;
+  Params params = 2;
+}
+
+message MsgUpdateParamsResponse {}

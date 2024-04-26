@@ -1,0 +1,64 @@
+name: Test Software Upgrade
+
+on:
+  pull_request:
+
+jobs:
+  software-upgrade-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: "1.21"
+
+      - name: Retrieve latest snapshot
+        run: |
+          DOWNLOAD_URL=https://snapshots-testnet.stake-town.com/elys/elystestnet-1_latest.tar.lz4
+          SNAPSHOT_PATH=/tmp/snapshot.tar.lz4
+          curl -L $DOWNLOAD_URL -o $SNAPSHOT_PATH
+          echo "SNAPSHOT_PATH=$SNAPSHOT_PATH" >> $GITHUB_ENV
+
+      - name: Retrieve latest binary
+        run: |
+          LATEST_TAG=$(git describe --tags `git rev-list --tags --max-count=1`)
+          DOWNLOAD_URL=https://github.com/elys-network/elys/releases/download/$LATEST_TAG/elysd-$LATEST_TAG-linux-amd64
+          OLD_BINARY_PATH=/tmp/elysd-$LATEST_TAG
+          curl -L $DOWNLOAD_URL -o $OLD_BINARY_PATH && chmod +x $OLD_BINARY_PATH
+          echo "LATEST_TAG=$LATEST_TAG" >> $GITHUB_ENV
+          echo "OLD_BINARY_PATH=$OLD_BINARY_PATH" >> $GITHUB_ENV
+
+      - name: Create git tag
+        run: git tag v999.999.999
+
+      - name: Run make build
+        run: |
+          make build
+          NEW_BINARY_PATH=./build/elysd
+          echo "NEW_BINARY_PATH=$NEW_BINARY_PATH" >> $GITHUB_ENV
+
+      - name: Copy upgrade-assure scripts
+        run: cp -a scripts/upgrade-assure scripts/upgrade-assure-skip
+
+      - name: Check out latest tag
+        run: git checkout $LATEST_TAG
+
+      - name: Chain initialization
+        run: |
+          cp -a scripts/upgrade-assure/types.go scripts/upgrade-assure-skip/types.go
+          GOMEMLIMIT=16GiB go run ./scripts/upgrade-assure-skip/... $SNAPSHOT_PATH $OLD_BINARY_PATH $NEW_BINARY_PATH --skip-node-start
+
+      - name: Check out new branch
+        run: git checkout ${{ github.head_ref }}
+
+      - name: Software upgrade
+        run: |
+          GOMEMLIMIT=16GiB go run ./scripts/upgrade-assure/... $SNAPSHOT_PATH $OLD_BINARY_PATH $NEW_BINARY_PATH --skip-snapshot --skip-chain-init

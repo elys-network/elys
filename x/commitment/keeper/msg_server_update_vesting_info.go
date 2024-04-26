@@ -21,19 +21,17 @@ func (k msgServer) UpdateVestingInfo(goCtx context.Context, msg *types.MsgUpdate
 	vestingInfo, index := k.GetVestingInfo(ctx, msg.BaseDenom)
 	if vestingInfo == nil {
 		vestingInfo = &types.VestingInfo{
-			BaseDenom:       msg.BaseDenom,
-			VestingDenom:    msg.VestingDenom,
-			EpochIdentifier: msg.EpochIdentifier,
-			NumEpochs:       msg.NumEpochs,
-			VestNowFactor:   sdk.NewInt(msg.VestNowFactor),
-			NumMaxVestings:  msg.NumMaxVestings,
+			BaseDenom:      msg.BaseDenom,
+			VestingDenom:   msg.VestingDenom,
+			NumBlocks:      msg.NumBlocks,
+			VestNowFactor:  sdk.NewInt(msg.VestNowFactor),
+			NumMaxVestings: msg.NumMaxVestings,
 		}
 		params.VestingInfos = append(params.VestingInfos, vestingInfo)
 	} else {
 		params.VestingInfos[index].BaseDenom = msg.BaseDenom
 		params.VestingInfos[index].VestingDenom = msg.VestingDenom
-		params.VestingInfos[index].EpochIdentifier = msg.EpochIdentifier
-		params.VestingInfos[index].NumEpochs = msg.NumEpochs
+		params.VestingInfos[index].NumBlocks = msg.NumBlocks
 		params.VestingInfos[index].VestNowFactor = sdk.NewInt(msg.VestNowFactor)
 		params.VestingInfos[index].NumMaxVestings = msg.NumMaxVestings
 	}

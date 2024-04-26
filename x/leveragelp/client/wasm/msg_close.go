@@ -20,9 +20,15 @@ func (m *Messenger) msgClose(ctx sdk.Context, contractAddr sdk.AccAddress, msgCl
 		return nil, nil, wasmvmtypes.InvalidRequest{Err: "close wrong sender"}
 	}
 
-	res, err := PerformMsgClose(m.keeper, ctx, contractAddr, msgClose)
+	if err := msgClose.ValidateBasic(); err != nil {
+		return nil, nil, errorsmod.Wrap(err, "failed validating msgMsgClose")
+	}
+
+	msgServer := leveragelpkeeper.NewMsgServerImpl(*m.keeper)
+
+	res, err := msgServer.Close(sdk.WrapSDKContext(ctx), msgClose)
 	if err != nil {
-		return nil, nil, errorsmod.Wrap(err, "perform close")
+		return nil, nil, errorsmod.Wrap(err, "leveragelp close msg")
 	}
 
 	responseBytes, err := json.Marshal(*res)
@@ -33,25 +39,4 @@ func (m *Messenger) msgClose(ctx sdk.Context, contractAddr sdk.AccAddress, msgCl
 	resp := [][]byte{responseBytes}
 
 	return nil, resp, nil
-}
-
-func PerformMsgClose(f *leveragelpkeeper.Keeper, ctx sdk.Context, contractAddr sdk.AccAddress, msgClose *leveragelptypes.MsgClose) (*leveragelptypes.MsgCloseResponse, error) {
-	if msgClose == nil {
-		return nil, wasmvmtypes.InvalidRequest{Err: "leveragelp close null leveragelp close"}
-	}
-	msgServer := leveragelpkeeper.NewMsgServerImpl(*f)
-
-	msgMsgClose := leveragelptypes.NewMsgClose(msgClose.Creator, uint64(msgClose.Id))
-
-	if err := msgMsgClose.ValidateBasic(); err != nil {
-		return nil, errorsmod.Wrap(err, "failed validating msgMsgClose")
-	}
-
-	_, err := msgServer.Close(sdk.WrapSDKContext(ctx), msgMsgClose) // Discard the response because it's empty
-	if err != nil {
-		return nil, errorsmod.Wrap(err, "leveragelp close msg")
-	}
-
-	resp := &leveragelptypes.MsgCloseResponse{}
-	return resp, nil
 }

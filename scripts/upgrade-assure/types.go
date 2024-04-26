@@ -158,9 +158,8 @@ type Incentive struct {
 type IncentiveParams struct {
 	incentivetypes.Params
 
-	PoolInfos             []interface{} `json:"pool_infos"`
-	ElysStakeSnapInterval json.Number   `json:"elys_stake_snap_interval"`
-	DistributionInterval  json.Number   `json:"distribution_interval"`
+	PoolInfos            []interface{} `json:"pool_infos"`
+	DistributionInterval json.Number   `json:"distribution_interval"`
 }
 
 type Epochs struct {
@@ -185,7 +184,7 @@ type CommitmentParams struct {
 type CommitmentVestingInfo struct {
 	commitmenttypes.VestingInfo
 
-	NumEpochs      json.Number `json:"num_epochs"`
+	NumBlocks      json.Number `json:"num_blocks"`
 	NumMaxVestings json.Number `json:"num_max_vestings"`
 }
 
@@ -218,7 +217,7 @@ type Amm struct {
 type AmmParams struct {
 	ammtypes.Params
 
-	PoolCreationFee json.Number `json:"pool_creation_fee"`
+	SlippageTrackDuration json.Number `json:"slippage_track_duration"`
 }
 
 type Genutil struct {
@@ -327,7 +326,7 @@ type Staking struct {
 	Validators           []interface{} `json:"validators"`
 	Delegations          []interface{} `json:"delegations"`
 	UnbondingDelegations []interface{} `json:"unbonding_delegations"`
-	Redelegations        []interface{} `json:"redelegations"`
+	ColorRedelegations   []interface{} `json:"redelegations"`
 }
 
 type StakingParams struct {
@@ -486,10 +485,3 @@ type ProposalsOutput struct {
 		Id string `json:"id"`
 	} `json:"proposals"`
 }
-
-// Colors
-const (
-	Red    = "\033[31m"
-	Green  = "\033[32m"
-	Yellow = "\033[33m"
-)

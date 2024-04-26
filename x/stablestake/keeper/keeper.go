@@ -21,6 +21,7 @@ type (
 		bk                 types.BankKeeper
 		commitmentKeeper   *commitmentkeeper.Keeper
 		assetProfileKeeper types.AssetProfileKeeper
+		hooks              types.StableStakeHooks
 	}
 )
 
@@ -51,4 +52,15 @@ func NewKeeper(
 
 func (k Keeper) Logger(ctx sdk.Context) log.Logger {
 	return ctx.Logger().With("module", fmt.Sprintf("x/%s", types.ModuleName))
+}
+
+// SetHooks set the epoch hooks
+func (k *Keeper) SetHooks(eh types.StableStakeHooks) *Keeper {
+	if k.hooks != nil {
+		panic("cannot set stablestake hooks twice")
+	}
+
+	k.hooks = eh
+
+	return k
 }

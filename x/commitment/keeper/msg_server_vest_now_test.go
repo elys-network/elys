@@ -36,12 +36,11 @@ func TestVestNow(t *testing.T) {
 
 	vestingInfos := []*types.VestingInfo{
 		{
-			BaseDenom:       ptypes.Eden,
-			VestingDenom:    ptypes.Elys,
-			EpochIdentifier: "tenseconds",
-			NumEpochs:       10,
-			VestNowFactor:   sdk.NewInt(90),
-			NumMaxVestings:  10,
+			BaseDenom:      ptypes.Eden,
+			VestingDenom:   ptypes.Elys,
+			NumBlocks:      10,
+			VestNowFactor:  sdk.NewInt(90),
+			NumMaxVestings: 10,
 		},
 	}
 
@@ -52,15 +51,13 @@ func TestVestNow(t *testing.T) {
 	keeper.SetParams(ctx, params)
 
 	// Set up initial commitments object with sufficient claimed & committed tokens
-
 	committedTokens := types.CommittedTokens{
 		Denom:  denom,
 		Amount: initialCommitted,
 	}
 
 	initialCommitments := types.Commitments{
-		Creator:          creator,
-		RewardsUnclaimed: sdk.Coins{},
+		Creator: creator,
 		Claimed: sdk.Coins{
 			{
 				Denom:  denom,

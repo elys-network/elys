@@ -21,6 +21,7 @@ import (
 
 	"github.com/elys-network/elys/x/epochs/client/cli"
 	"github.com/elys-network/elys/x/epochs/keeper"
+	"github.com/elys-network/elys/x/epochs/migrations"
 	"github.com/elys-network/elys/x/epochs/types"
 )
 
@@ -122,6 +123,11 @@ func (am AppModule) NewHandler() sdk.Handler {
 // module-specific GRPC queries.
 func (am AppModule) RegisterServices(cfg module.Configurator) {
 	types.RegisterQueryServer(cfg.QueryServer(), am.keeper)
+	m := migrations.NewMigrator(am.keeper)
+	err := cfg.RegisterMigration(types.ModuleName, 2, m.V3Migration)
+	if err != nil {
+		panic(err)
+	}
 }
 
 // RegisterInvariants registers the epochs module's invariants.
@@ -177,4 +183,4 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 }
 
 // ConsensusVersion implements AppModule/ConsensusVersion.
-func (AppModule) ConsensusVersion() uint64 { return 1 }
+func (AppModule) ConsensusVersion() uint64 { return 3 }

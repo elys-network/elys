@@ -37,6 +37,11 @@ func (k msgServer) CommitLiquidTokens(goCtx context.Context, msg *types.MsgCommi
 		return nil, errorsmod.Wrap(sdkerrors.ErrInsufficientFunds, fmt.Sprintf("unable to send deposit tokens: %v", depositCoins))
 	}
 
+	// Update total commitment
+	params := k.GetParams(ctx)
+	params.TotalCommitted = params.TotalCommitted.Add(depositCoins...)
+	k.SetParams(ctx, params)
+
 	// Get the Commitments for the creator
 	commitments := k.GetCommitments(ctx, msg.Creator)
 
@@ -45,7 +50,10 @@ func (k msgServer) CommitLiquidTokens(goCtx context.Context, msg *types.MsgCommi
 	k.SetCommitments(ctx, commitments)
 
 	// Emit Hook commitment changed
-	k.AfterCommitmentChange(ctx, msg.Creator, sdk.Coins{sdk.NewCoin(msg.Denom, msg.Amount)})
+	err = k.CommitmentChanged(ctx, msg.Creator, sdk.Coins{sdk.NewCoin(msg.Denom, msg.Amount)})
+	if err != nil {
+		return nil, err
+	}
 
 	// Emit blockchain event
 	ctx.EventManager().EmitEvent(

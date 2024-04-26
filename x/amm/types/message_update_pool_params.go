@@ -10,9 +10,9 @@ const TypeMsgUpdatePoolParams = "update_pool_params"
 
 var _ sdk.Msg = &MsgUpdatePoolParams{}
 
-func NewMsgUpdatePoolParams(sender string, poolId uint64, poolParams *PoolParams) *MsgUpdatePoolParams {
+func NewMsgUpdatePoolParams(authority string, poolId uint64, poolParams *PoolParams) *MsgUpdatePoolParams {
 	return &MsgUpdatePoolParams{
-		Sender:     sender,
+		Authority:  authority,
 		PoolId:     poolId,
 		PoolParams: poolParams,
 	}
@@ -27,11 +27,11 @@ func (msg *MsgUpdatePoolParams) Type() string {
 }
 
 func (msg *MsgUpdatePoolParams) GetSigners() []sdk.AccAddress {
-	sender, err := sdk.AccAddressFromBech32(msg.Sender)
+	authority, err := sdk.AccAddressFromBech32(msg.Authority)
 	if err != nil {
 		panic(err)
 	}
-	return []sdk.AccAddress{sender}
+	return []sdk.AccAddress{authority}
 }
 
 func (msg *MsgUpdatePoolParams) GetSignBytes() []byte {
@@ -40,7 +40,7 @@ func (msg *MsgUpdatePoolParams) GetSignBytes() []byte {
 }
 
 func (msg *MsgUpdatePoolParams) ValidateBasic() error {
-	_, err := sdk.AccAddressFromBech32(msg.Sender)
+	_, err := sdk.AccAddressFromBech32(msg.Authority)
 	if err != nil {
 		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid sender address (%s)", err)
 	}

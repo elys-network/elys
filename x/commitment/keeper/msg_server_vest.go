@@ -48,19 +48,15 @@ func (k Keeper) ProcessTokenVesting(ctx sdk.Context, denom string, amount math.I
 	vestingTokens = append(vestingTokens, &types.VestingTokens{
 		Denom:                vestingInfo.VestingDenom,
 		TotalAmount:          amount,
-		UnvestedAmount:       amount,
-		EpochIdentifier:      vestingInfo.EpochIdentifier,
-		NumEpochs:            vestingInfo.NumEpochs,
-		CurrentEpoch:         0,
+		ClaimedAmount:        sdk.ZeroInt(),
+		StartBlock:           ctx.BlockHeight(),
+		NumBlocks:            vestingInfo.NumBlocks,
 		VestStartedTimestamp: ctx.BlockTime().Unix(),
 	})
 	commitments.VestingTokens = vestingTokens
 
 	// Update the commitments
 	k.SetCommitments(ctx, commitments)
-
-	// Emit Hook commitment changed
-	k.AfterCommitmentChange(ctx, creator, sdk.Coins{sdk.NewCoin(denom, amount)})
 
 	// Emit blockchain event
 	ctx.EventManager().EmitEvent(

@@ -9,7 +9,7 @@ import (
 func waitForBlockHeight(cmdPath, node, height string) {
 	targetBlockHeight, err := strconv.Atoi(height)
 	if err != nil {
-		log.Fatalf(Red+"Error converting target block height to integer: %v", err)
+		log.Fatalf(ColorRed+"Error converting target block height to integer: %v", err)
 	}
 
 	// Now, wait for the block height
@@ -22,9 +22,9 @@ func waitForBlockHeight(cmdPath, node, height string) {
 				break
 			}
 		}
-		log.Println(Yellow+"Waiting for block height", height, "...")
+		log.Println(ColorYellow+"Waiting for block height", height, "...")
 		time.Sleep(5 * time.Second) // Wait 5 seconds before retrying
 	}
 
-	log.Printf(Yellow+"Block height %d reached", targetBlockHeight)
+	log.Printf(ColorYellow+"Block height %d reached", targetBlockHeight)
 }

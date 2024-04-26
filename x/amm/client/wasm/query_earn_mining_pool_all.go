@@ -2,6 +2,7 @@ package wasm
 
 import (
 	"encoding/json"
+	"fmt"
 
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -28,16 +29,42 @@ func (oq *Querier) checkFilterType(ctx sdk.Context, ammPool *types.Pool, filterT
 	return false
 }
 
+// Calculate the amm pool ratio
+func CalculatePoolRatio(ctx sdk.Context, pool *types.Pool) string {
+	weightString := ""
+	totalWeight := sdk.ZeroInt()
+	for _, asset := range pool.PoolAssets {
+		totalWeight = totalWeight.Add(asset.Weight)
+	}
+
+	if totalWeight.IsZero() {
+		return weightString
+	}
+
+	for _, asset := range pool.PoolAssets {
+		weight := sdk.NewDecFromInt(asset.Weight).QuoInt(totalWeight).MulInt(sdk.NewInt(100)).TruncateInt64()
+		weightString = fmt.Sprintf("%s : %d", weightString, weight)
+	}
+
+	// remove prefix " : " 3 characters
+	if len(weightString) > 1 {
+		weightString = weightString[3:]
+	}
+
+	// returns pool weight string
+	return weightString
+}
+
 // Generate earn pool struct
 func (oq *Querier) generateEarnPool(ctx sdk.Context, ammPool *types.Pool, filterType types.FilterType) types.EarnPool {
-	dexApr := sdk.ZeroDec()
+	rewardsApr := sdk.ZeroDec()
 	borrowApr := sdk.ZeroDec()
 	leverageLpPercent := sdk.ZeroDec()
 	perpetualPercent := sdk.ZeroDec()
 
-	poolInfo, found := oq.incentiveKeeper.GetPoolInfo(ctx, ammPool.PoolId)
+	poolInfo, found := oq.masterchefKeeper.GetPool(ctx, ammPool.PoolId)
 	if found {
-		dexApr = poolInfo.DexApr
+		rewardsApr = poolInfo.DexApr.Add(poolInfo.EdenApr)
 	}
 
 	if filterType == types.FilterType_FilterLeverage {
@@ -45,12 +72,13 @@ func (oq *Querier) generateEarnPool(ctx sdk.Context, ammPool *types.Pool, filter
 		borrowApr = prams.InterestRate
 	}
 	tvl, _ := ammPool.TVL(ctx, oq.oraclekeeper)
+	lpTokenPrice, _ := ammPool.LpTokenPrice(ctx, oq.oraclekeeper)
 
 	// Get rewards amount
-	rewards := oq.incentiveKeeper.GetDexRewardsAmountForPool(ctx, ammPool.PoolId)
+	rewardsUsd, rewardCoins := oq.incentiveKeeper.GetDailyRewardsAmountForPool(ctx, ammPool.PoolId)
 
 	// Get pool ratio
-	poolRatio := oq.incentiveKeeper.CalculatePoolRatio(ctx, ammPool)
+	poolRatio := CalculatePoolRatio(ctx, ammPool)
 
 	leverageLpPool, found := oq.leveragelpKeeper.GetPool(ctx, ammPool.PoolId)
 	if found {
@@ -63,15 +91,21 @@ func (oq *Querier) generateEarnPool(ctx sdk.Context, ammPool *types.Pool, filter
 	}
 
 	return types.EarnPool{
-		Assets:     ammPool.PoolAssets,
-		PoolRatio:  poolRatio,
-		RewardsApr: dexApr,
-		BorrowApr:  borrowApr,
-		LeverageLp: leverageLpPercent,
-		Perpetual:  perpetualPercent,
-		Tvl:        tvl,
-		Rewards:    rewards,
-		PoolId:     ammPool.PoolId,
+		Assets:       ammPool.PoolAssets,
+		PoolRatio:    poolRatio,
+		RewardsApr:   rewardsApr,
+		BorrowApr:    borrowApr,
+		LeverageLp:   leverageLpPercent,
+		Perpetual:    perpetualPercent,
+		Tvl:          tvl,
+		LpTokenPrice: lpTokenPrice,
+		RewardsUsd:   rewardsUsd,
+		RewardCoins:  rewardCoins,
+		PoolId:       ammPool.PoolId,
+		TotalShares:  ammPool.TotalShares,
+		SwapFee:      ammPool.PoolParams.SwapFee,
+		FeeDenom:     ammPool.PoolParams.FeeDenom,
+		UseOracle:    ammPool.PoolParams.UseOracle,
 	}
 }
 
