@@ -197,7 +197,7 @@ func CmdQueryUserRewardInfo() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:     "user-reward-info",
 		Short:   "shows user reward info",
-		Example: "elysd q masterchef user-reward-info [user] [id] [reward-denom]",
+		Example: "elysd q masterchef user-reward-info [user] [pool-id] [reward-denom]",
 		Args:    cobra.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
