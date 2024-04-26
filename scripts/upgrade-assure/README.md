@@ -79,6 +79,10 @@ Address any type errors, such as difficulties in unmarshaling strings into integ
 
 Modify `scripts/upgrade-assure/types.go` to reflect data structure changes necessary to resolve type errors.
 
+The `types.go` file employs the `elys` data structure types to serialize the genesis state into JSON format for initializing localnet. This file predominantly handles conversion issues where Go struggles with fields defined as integers. To address this, such fields are overridden as `json.Number`.
+
+During the `read-genisis-file` step of the `upgrade-assure` process, if parsing of the genesis JSON file fails, an error is returned. This issue generally arises from integer fields that must be redefined to `json.Number`.
+
 #### 6d: Retry Upgrade-Assure
 
 Repeat the process after updating the script:
