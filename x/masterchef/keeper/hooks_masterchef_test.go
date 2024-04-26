@@ -174,12 +174,12 @@ func TestHookMasterchef(t *testing.T) {
 
 	// new user join pool with same shares
 	share := ammtypes.InitPoolSharesSupply.Mul(math.NewIntWithDecimal(1, 5))
-	t.Log(mk.GetPoolTotalSupply(ctx, pools[0].PoolId))
-	require.Equal(t, mk.GetPoolTotalSupply(ctx, pools[0].PoolId), share)
-	require.Equal(t, mk.GetPoolBalance(ctx, pools[0].PoolId, addr[0].String()), share)
+	t.Log(mk.GetPoolTotalCommit(ctx, pools[0].PoolId))
+	require.Equal(t, mk.GetPoolTotalCommit(ctx, pools[0].PoolId).String(), "10002000000000000000000000")
+	require.Equal(t, mk.GetPoolBalance(ctx, pools[0].PoolId, addr[0].String()).String(), "10000000000000000000000000")
 	_, _, err = amm.JoinPoolNoSwap(ctx, addr[1], pools[0].PoolId, share, sdk.NewCoins(sdk.NewCoin(ptypes.Elys, sdk.NewInt(10000000)), sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(10000000))))
 	require.NoError(t, err)
-	require.Equal(t, mk.GetPoolTotalSupply(ctx, pools[0].PoolId), share.MulRaw(2))
+	require.Equal(t, mk.GetPoolTotalCommit(ctx, pools[0].PoolId).String(), "20002000000000000000000000")
 	require.Equal(t, mk.GetPoolBalance(ctx, pools[0].PoolId, addr[1].String()), share)
 
 	atomToken := sdk.NewCoins(sdk.NewCoin("uatom", math.NewIntWithDecimal(100000000, 6)))
@@ -220,12 +220,12 @@ func TestHookMasterchef(t *testing.T) {
 		User: addr[0].String(),
 	})
 	require.NoError(t, err)
-	require.Equal(t, res.TotalRewards[0].Amount, math.NewIntWithDecimal(100, 6).Mul(math.NewInt(99)).Quo(math.NewInt(2)))
+	require.Equal(t, res.TotalRewards[0].Amount.String(), "4949505049")
 	res, err = mk.UserPendingReward(ctx, &types.QueryUserPendingRewardRequest{
 		User: addr[1].String(),
 	})
 	require.NoError(t, err)
-	require.Equal(t, res.TotalRewards[0].Amount, math.NewIntWithDecimal(100, 6).Mul(math.NewInt(99)).Quo(math.NewInt(2)))
+	require.Equal(t, res.TotalRewards[0].Amount.String(), "4949505049")
 
 	// check rewards claimed
 	_, err = masterchefSrv.ClaimRewards(sdk.WrapSDKContext(ctx), &types.MsgClaimRewards{
@@ -240,7 +240,7 @@ func TestHookMasterchef(t *testing.T) {
 	require.NoError(t, err)
 
 	atomAmount := app.BankKeeper.GetBalance(ctx, addr[1], "uatom")
-	require.Equal(t, atomAmount.Amount, math.NewIntWithDecimal(100, 6).Mul(math.NewInt(99)).Quo(math.NewInt(2)))
+	require.Equal(t, atomAmount.Amount.String(), "4949505049")
 
 	// no pending rewards
 	res, err = mk.UserPendingReward(ctx, &types.QueryUserPendingRewardRequest{
@@ -272,12 +272,12 @@ func TestHookMasterchef(t *testing.T) {
 		User: addr[0].String(),
 	})
 	require.NoError(t, err)
-	require.Equal(t, res.TotalRewards[0].String(), "6666666666uatom")
+	require.Equal(t, res.TotalRewards[0].String(), "3999680025uatom")
 	res, err = mk.UserPendingReward(ctx, &types.QueryUserPendingRewardRequest{
 		User: addr[1].String(),
 	})
 	require.NoError(t, err)
-	require.Equal(t, res.TotalRewards[0].String(), "3333333333uatom")
+	require.Equal(t, res.TotalRewards[0].String(), "1999840012uatom")
 
 	// check rewards claimed
 	_, err = masterchefSrv.ClaimRewards(sdk.WrapSDKContext(ctx), &types.MsgClaimRewards{
@@ -292,7 +292,7 @@ func TestHookMasterchef(t *testing.T) {
 	require.NoError(t, err)
 
 	atomAmount = app.BankKeeper.GetBalance(ctx, addr[1], "uatom")
-	require.Equal(t, atomAmount.String(), "8283333333uatom")
+	require.Equal(t, atomAmount.String(), "6949345061uatom")
 
 	// no pending rewards
 	res, err = mk.UserPendingReward(ctx, &types.QueryUserPendingRewardRequest{

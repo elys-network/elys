@@ -8,18 +8,14 @@ import (
 	stablestaketypes "github.com/elys-network/elys/x/stablestake/types"
 )
 
-func (k Keeper) GetPoolTotalSupply(ctx sdk.Context, poolId uint64) sdk.Int {
+func (k Keeper) GetPoolTotalCommit(ctx sdk.Context, poolId uint64) sdk.Int {
+	shareDenom := ammtypes.GetPoolShareDenom(poolId)
 	if poolId == stablestaketypes.PoolId {
-		params := k.cmk.GetParams(ctx)
-		return params.TotalCommitted.AmountOf(stablestaketypes.GetShareDenom())
+		shareDenom = stablestaketypes.GetShareDenom()
 	}
 
-	pool, found := k.amm.GetPool(ctx, poolId)
-	if !found {
-		return sdk.ZeroInt()
-	}
-
-	return pool.TotalShares.Amount
+	params := k.cmk.GetParams(ctx)
+	return params.TotalCommitted.AmountOf(shareDenom)
 }
 
 func (k Keeper) GetPoolBalance(ctx sdk.Context, poolId uint64, user string) sdk.Int {
@@ -44,13 +40,13 @@ func (k Keeper) UpdateAccPerShare(ctx sdk.Context, poolId uint64, rewardDenom st
 		}
 	}
 
-	supply := k.GetPoolTotalSupply(ctx, poolId)
-	if supply.IsZero() {
+	totalCommit := k.GetPoolTotalCommit(ctx, poolId)
+	if totalCommit.IsZero() {
 		return
 	}
 	poolRewardInfo.PoolAccRewardPerShare = poolRewardInfo.PoolAccRewardPerShare.Add(
 		math.LegacyNewDecFromInt(amount.Mul(ammtypes.OneShare)).
-			Quo(math.LegacyNewDecFromInt(supply)),
+			Quo(math.LegacyNewDecFromInt(totalCommit)),
 	)
 	poolRewardInfo.LastUpdatedBlock = uint64(ctx.BlockHeight())
 	k.SetPoolRewardInfo(ctx, poolRewardInfo)
