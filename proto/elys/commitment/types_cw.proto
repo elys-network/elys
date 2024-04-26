@@ -208,12 +208,6 @@ message QueryUnstakedPositionResponse {
 	repeated UnstakedPosition unstaked_position = 1 [(gogoproto.nullable) = false, (amino.dont_omitempty) = true];
 }
 
-message QuerySubBucketBalanceRequest {
-    string address = 1;
-    string denom   = 2;
-    elys.commitment.EarnType program = 3;
-}
-
 message QueryVestingInfoRequest {
     string address = 1;
 }

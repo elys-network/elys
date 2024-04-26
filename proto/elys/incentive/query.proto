@@ -2,8 +2,7 @@ syntax = "proto3";
 
 package elys.incentive;
 
-import "elys/incentive/params.proto";
-import "elys/incentive/distribution.proto";
+import "cosmos_proto/cosmos.proto";
 import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
 import "cosmos/base/v1beta1/coin.proto";
@@ -14,16 +13,6 @@ option go_package = "github.com/elys-network/elys/x/incentive/types";
 
 // Query defines the gRPC querier service.
 service Query {
-  // Parameters queries the parameters of the module.
-  rpc Params (QueryParamsRequest) returns (QueryParamsResponse) {
-    option (google.api.http).get = "/elys-network/elys/incentive/params";
-  }
-  
-  // Queries a list of CommunityPool items.
-  rpc CommunityPool (QueryCommunityPoolRequest) returns (QueryCommunityPoolResponse) {
-    option (google.api.http).get = "/elys-network/elys/incentive/community_pool";
-  }
-
   // Calculate APR
   rpc Apr (QueryAprRequest) returns (QueryAprResponse) {
     option (google.api.http).get = "/elys-network/elys/incentive/apr/{withdraw_type}/{denom}";
@@ -34,30 +23,15 @@ service Query {
     option (google.api.http).get = "/elys-network/elys/incentive/aprs";
   }
 
-  // Calculate liquidity mining pool APRs
-  rpc PoolAprs (QueryPoolAprsRequest) returns (QueryPoolAprsResponse) {
-    option (google.api.http).get = "/elys-network/elys/incentive/pool_aprs";
-  }
-
   // Queries PoolReward items
   rpc PoolRewards(QueryPoolRewardsRequest) returns (QueryPoolRewardsResponse) {
     option (google.api.http).get = "/elys-network/elys/incentive/pool_rewards";
   }
-}
-// QueryParamsRequest is request type for the Query/Params RPC method.
-message QueryParamsRequest {}
 
-// QueryParamsResponse is response type for the Query/Params RPC method.
-message QueryParamsResponse {
-  // params holds all the parameters of this module.
-  Params params = 1 [(gogoproto.nullable) = false];
-}
-
-message QueryCommunityPoolRequest {}
-
-message QueryCommunityPoolResponse {
-  // pool defines community pool's coins.
-  repeated cosmos.base.v1beta1.DecCoin pool = 1 [(gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.DecCoins", (gogoproto.nullable) = false];
+  // Queries all program rewards
+  rpc AllProgramRewards(QueryAllProgramRewardsRequest) returns (QueryAllProgramRewardsResponse) {
+    option (google.api.http).get = "/elys-network/elys/incentive/all_program_rewards";
+  }
 }
 
 message QueryAprRequest {
@@ -118,24 +92,29 @@ message QueryAprsResponse {
   ];
 }
 
-message QueryPoolAprsRequest {
-  repeated uint64 pool_ids = 1;
+message QueryAllProgramRewardsRequest {
+  string address = 1;
 }
 
-message QueryPoolAprsResponse {
-  repeated PoolApr data = 1 [
-    (gogoproto.nullable) = false
+message QueryAllProgramRewardsResponse {
+  repeated cosmos.base.v1beta1.DecCoin usdc_staking_rewards = 1 [
+    (gogoproto.nullable) = false,
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.DecCoins"
+  ];
+  repeated cosmos.base.v1beta1.DecCoin elys_staking_rewards = 2 [
+    (gogoproto.nullable) = false,
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.DecCoins"
+  ];
+  repeated cosmos.base.v1beta1.DecCoin eden_staking_rewards = 3 [
+    (gogoproto.nullable) = false,
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.DecCoins"
+  ];
+  repeated cosmos.base.v1beta1.DecCoin edenb_staking_rewards = 4 [
+    (gogoproto.nullable) = false,
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.DecCoins"
   ];
 }
 
-message PoolApr {
-  uint64 pool_id = 1;
-  string apr = 2 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
-    (gogoproto.nullable) = false
-  ];
-}
-  
 message QueryPoolRewardsRequest {
     repeated uint64 pool_ids    = 1;
     cosmos.base.query.v1beta1.PageRequest pagination = 2;

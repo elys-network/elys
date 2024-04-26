@@ -34,10 +34,6 @@ const (
 	// TODO: Determine the simulation weight value
 	defaultWeightMsgWithdrawDelegatorReward int = 100
 
-	opWeightMsgUpdateIncentiveParams = "op_weight_msg_update_incentive_params"
-	// TODO: Determine the simulation weight value
-	defaultWeightMsgUpdateIncentiveParams int = 100
-
 	// this line is used by starport scaffolding # simapp/module/const
 )
 
@@ -48,7 +44,6 @@ func (AppModule) GenerateGenesisState(simState *module.SimulationState) {
 		accs[i] = acc.Address.String()
 	}
 	incentiveGenesis := types.GenesisState{
-		Params: types.DefaultParams(),
 		// this line is used by starport scaffolding # simapp/module/genesisState
 	}
 	simState.GenState[types.ModuleName] = simState.Cdc.MustMarshalJSON(&incentiveGenesis)

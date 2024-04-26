@@ -7,25 +7,39 @@ option go_package = "github.com/elys-network/elys/x/incentive/types";
 
 // Incentive Info
 message IncentiveInfo {
-    // reward amount in eden for 1 year
-	string eden_amount_per_year = 1 
-        [ (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false];
-    // starting block height of the distribution
-    string distribution_start_block = 2
-        [ (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false];
-    // distribution duration - block number per year
-	string total_blocks_per_year = 3
-        [ (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false];
-    // unused
-    string epoch_num_blocks = 4
-        [ (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false];
-    // unused
-    string max_eden_per_allocation = 5 
-        [ (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false];
-    // unused
-    string distribution_epoch_in_blocks = 6
-        [ (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false];
-    // current epoch in block number
-    string current_epoch_in_blocks = 7
-        [ (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false];
+  // reward amount in eden for 1 year
+  string eden_amount_per_year = 1 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+  // starting block height of the distribution
+  string distribution_start_block = 2 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+  // distribution duration - block number per year
+  string total_blocks_per_year = 3 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+  // unused
+  string epoch_num_blocks = 4 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+  // unused
+  string max_eden_per_allocation = 5 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+  // unused
+  string distribution_epoch_in_blocks = 6 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+  // current epoch in block number
+  string current_epoch_in_blocks = 7 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
 }

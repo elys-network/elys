@@ -1,12 +1,3 @@
-# This workflow file defines a job named test that runs on Ubuntu and is triggered
-# on push and pull request events.
-#
-# The job checks out the repository code, sets up Go with version 1.20, installs
-# the project dependencies, and runs the unit tests using `go test`.
-#
-# The purpose of this workflow file is to automate the process of running unit tests
-# for the Elys codebase whenever code changes are pushed or a pull request is opened.
-
 name: Run unit tests
 on: push
 
@@ -29,4 +20,4 @@ jobs:
 
       - name: Run unit tests
         run: |
-          go test ./...
+          make ci-test-unit

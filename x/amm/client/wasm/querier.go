@@ -10,6 +10,7 @@ import (
 	commitmentkeeper "github.com/elys-network/elys/x/commitment/keeper"
 	incentivekeeper "github.com/elys-network/elys/x/incentive/keeper"
 	leveragelpkeeper "github.com/elys-network/elys/x/leveragelp/keeper"
+	masterchefkeeper "github.com/elys-network/elys/x/masterchef/keeper"
 	oraclekeeper "github.com/elys-network/elys/x/oracle/keeper"
 	perpetualkeeper "github.com/elys-network/elys/x/perpetual/keeper"
 	stablestakekeeper "github.com/elys-network/elys/x/stablestake/keeper"
@@ -27,6 +28,7 @@ type Querier struct {
 	leveragelpKeeper    *leveragelpkeeper.Keeper
 	accountedpoolKeeper *accountedpoolkeeper.Keeper
 	stablestakeKeeper   *stablestakekeeper.Keeper
+	masterchefKeeper    *masterchefkeeper.Keeper
 }
 
 func NewQuerier(
@@ -39,7 +41,9 @@ func NewQuerier(
 	oraclekeeper *oraclekeeper.Keeper,
 	leveragelpKeeper *leveragelpkeeper.Keeper,
 	accountedpoolKeeper *accountedpoolkeeper.Keeper,
-	stablestakeKeeper *stablestakekeeper.Keeper) *Querier {
+	stablestakeKeeper *stablestakekeeper.Keeper,
+	masterchefKeeper *masterchefkeeper.Keeper,
+) *Querier {
 	return &Querier{
 		keeper:              keeper,
 		bankKeeper:          bankKeeper,
@@ -51,6 +55,7 @@ func NewQuerier(
 		leveragelpKeeper:    leveragelpKeeper,
 		accountedpoolKeeper: accountedpoolKeeper,
 		stablestakeKeeper:   stablestakeKeeper,
+		masterchefKeeper:    masterchefKeeper,
 	}
 }
 

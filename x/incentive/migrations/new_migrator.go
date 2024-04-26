@@ -1,13 +1,33 @@
 package migrations
 
 import (
-	"github.com/elys-network/elys/x/incentive/keeper"
+	distrkeeper "github.com/cosmos/cosmos-sdk/x/distribution/keeper"
+	commitmentkeeper "github.com/elys-network/elys/x/commitment/keeper"
+	estakingkeeper "github.com/elys-network/elys/x/estaking/keeper"
+	incentivekeeper "github.com/elys-network/elys/x/incentive/keeper"
+	masterchefkeeper "github.com/elys-network/elys/x/masterchef/keeper"
 )
 
 type Migrator struct {
-	keeper keeper.Keeper
+	incentiveKeeper  incentivekeeper.Keeper
+	estakingKeeper   estakingkeeper.Keeper
+	masterchefKeeper masterchefkeeper.Keeper
+	distrKeeper      distrkeeper.Keeper
+	commitmentKeeper commitmentkeeper.Keeper
 }
 
-func NewMigrator(keeper keeper.Keeper) Migrator {
-	return Migrator{keeper: keeper}
+func NewMigrator(
+	incentiveKeeper incentivekeeper.Keeper,
+	estakingKeeper estakingkeeper.Keeper,
+	masterchefKeeper masterchefkeeper.Keeper,
+	distrKeeper distrkeeper.Keeper,
+	commitmentKeeper commitmentkeeper.Keeper,
+) Migrator {
+	return Migrator{
+		incentiveKeeper:  incentiveKeeper,
+		estakingKeeper:   estakingKeeper,
+		masterchefKeeper: masterchefKeeper,
+		distrKeeper:      distrKeeper,
+		commitmentKeeper: commitmentKeeper,
+	}
 }

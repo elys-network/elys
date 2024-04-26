@@ -158,9 +158,8 @@ type Incentive struct {
 type IncentiveParams struct {
 	incentivetypes.Params
 
-	PoolInfos             []interface{} `json:"pool_infos"`
-	ElysStakeSnapInterval json.Number   `json:"elys_stake_snap_interval"`
-	DistributionInterval  json.Number   `json:"distribution_interval"`
+	PoolInfos            []interface{} `json:"pool_infos"`
+	DistributionInterval json.Number   `json:"distribution_interval"`
 }
 
 type Epochs struct {

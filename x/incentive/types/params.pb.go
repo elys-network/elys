@@ -28,9 +28,11 @@ const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 type Params struct {
 	LpIncentives    *IncentiveInfo `protobuf:"bytes,1,opt,name=lp_incentives,json=lpIncentives,proto3" json:"lp_incentives,omitempty"`
 	StakeIncentives *IncentiveInfo `protobuf:"bytes,2,opt,name=stake_incentives,json=stakeIncentives,proto3" json:"stake_incentives,omitempty"`
-	// Dex revenue percent for lps, `100 - reward_portion_for_lps - reward_portion_for_stakers = revenue percent for protocol`.
+	// Dex revenue percent for lps, `100 - reward_portion_for_lps -
+	// reward_portion_for_stakers = revenue percent for protocol`.
 	RewardPortionForLps github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,3,opt,name=reward_portion_for_lps,json=rewardPortionForLps,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"reward_portion_for_lps"`
-	// Dex revenue percent for lps, `100 - reward_portion_for_lps - reward_portion_for_stakers = revenue percent for protocol`.
+	// Dex revenue percent for lps, `100 - reward_portion_for_lps -
+	// reward_portion_for_stakers = revenue percent for protocol`.
 	RewardPortionForStakers github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,4,opt,name=reward_portion_for_stakers,json=rewardPortionForStakers,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"reward_portion_for_stakers"`
 	// Pool information
 	// poolId, reward wallet, **multiplier**, dex rewards given

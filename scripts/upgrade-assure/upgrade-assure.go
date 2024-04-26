@@ -19,14 +19,12 @@ func main() {
 			snapshotUrl, oldBinaryUrl, newBinaryUrl := getArgs(args)
 			// global flags
 			skipSnapshot, skipChainInit, skipNodeStart, skipProposal, skipBinary, chainId, keyringBackend, genesisFilePath, broadcastMode, dbEngine,
-
-				//timeouts
+				// timeouts
 				timeOutToWaitForService, timeOutToWaitForNextBlock,
-
 				// node 1 flags
-				homePath, moniker, validatorKeyName, validatorBalance, validatorSelfDelegation, validatorMnemonic, rpc, p2p,
+				homePath, moniker, validatorKeyName, validatorBalance, validatorSelfDelegation, validatorMnemonic, rpc, p2p, pprof, api,
 				// node 2 flags
-				homePath2, moniker2, validatorKeyName2, validatorBalance2, validatorSelfDelegation2, validatorMnemonic2, rpc2, p2p2 := getFlags(cmd)
+				homePath2, moniker2, validatorKeyName2, validatorBalance2, validatorSelfDelegation2, validatorMnemonic2, rpc2, p2p2, pprof2, api2 := getFlags(cmd)
 
 			timeOutForNextBlock := time.Duration(timeOutToWaitForNextBlock) * time.Minute
 			// set address prefix
@@ -113,7 +111,7 @@ func main() {
 
 			if !skipNodeStart {
 				// start node 1
-				oldBinaryCmd := start(oldBinaryPath, homePath, rpc, p2p, moniker, ColorGreen, ColorRed)
+				oldBinaryCmd := start(oldBinaryPath, homePath, rpc, p2p, pprof, api, moniker, ColorGreen, ColorRed)
 
 				// wait for rpc to start
 				waitForServiceToStart(rpc, moniker, timeOutToWaitForService)
@@ -146,8 +144,8 @@ func main() {
 				generatePrivValidatorState(homePath2)
 
 				// start node 1 and 2
-				oldBinaryCmd = start(oldBinaryPath, homePath, rpc, p2p, moniker, ColorGreen, ColorRed)
-				oldBinaryCmd2 := start(oldBinaryPath, homePath2, rpc2, p2p2, moniker2, ColorGreen, ColorRed)
+				oldBinaryCmd = start(oldBinaryPath, homePath, rpc, p2p, pprof, api, moniker, ColorGreen, ColorRed)
+				oldBinaryCmd2 := start(oldBinaryPath, homePath2, rpc2, p2p2, pprof2, api2, moniker2, ColorGreen, ColorRed)
 
 				// wait for rpc 1 and 2 to start
 				waitForServiceToStart(rpc, moniker, timeOutToWaitForService)
@@ -187,8 +185,8 @@ func main() {
 				time.Sleep(5 * time.Second)
 
 				// start new binary
-				newBinaryCmd := start(newBinaryPath, homePath, rpc, p2p, moniker, "\033[32m", "\033[31m")
-				newBinaryCmd2 := start(newBinaryPath, homePath2, rpc2, p2p2, moniker2, "\033[32m", "\033[31m")
+				newBinaryCmd := start(newBinaryPath, homePath, rpc, p2p, pprof, api, moniker, "\033[32m", "\033[31m")
+				newBinaryCmd2 := start(newBinaryPath, homePath2, rpc2, p2p2, pprof2, api2, moniker2, "\033[32m", "\033[31m")
 
 				// wait for node to start
 				waitForServiceToStart(rpc, moniker, timeOutToWaitForService)
@@ -223,7 +221,7 @@ func main() {
 	rootCmd.PersistentFlags().String(flagBroadcastMode, "sync", "broadcast mode")
 	rootCmd.PersistentFlags().String(flagDbEngine, "pebbledb", "database engine to use")
 
-	rootCmd.PersistentFlags().Int(flagTimeOutToWaitForService, 240, "set the maximum timeout in (seconds) to wait for the node starting")
+	rootCmd.PersistentFlags().Int(flagTimeOutToWaitForService, 600, "set the maximum timeout in (seconds) to wait for the node starting")
 	rootCmd.PersistentFlags().Int(flagTimeOutNextBlock, 5, "set the maximum timeout in (minutes) to wait for the next block")
 	// node 1 flags
 	rootCmd.PersistentFlags().String(flagHome, homeEnv+"/.elys", "home directory")
@@ -234,6 +232,8 @@ func main() {
 	rootCmd.PersistentFlags().String(flagValidatorMnemonic, "bargain toss help way dash forget bar casual boat drill execute ordinary human lecture leopard enroll joy rural shed express kite sample brick void", "validator mnemonic")
 	rootCmd.PersistentFlags().String(flagRpc, "tcp://0.0.0.0:26657", "rpc")
 	rootCmd.PersistentFlags().String(flagP2p, "tcp://0.0.0.0:26656", "p2p")
+	rootCmd.PersistentFlags().String(flagPprof, "localhost:6060", "pprof")
+	rootCmd.PersistentFlags().String(flagApi, "tcp://localhost:1317", "api")
 
 	// node 2 flags
 	rootCmd.PersistentFlags().String(flagHome2, homeEnv+"/.elys2", "home directory 2")
@@ -244,6 +244,8 @@ func main() {
 	rootCmd.PersistentFlags().String(flagValidatorMnemonic2, "kidney seat stay demand panel garlic uncle flock plunge logic link owner laugh sponsor desk scare pipe derive trick smart coffee goat arrange cause", "validator mnemonic 2")
 	rootCmd.PersistentFlags().String(flagRpc2, "tcp://0.0.0.0:26667", "rpc")
 	rootCmd.PersistentFlags().String(flagP2p2, "tcp://0.0.0.0:26666", "p2p")
+	rootCmd.PersistentFlags().String(flagPprof2, "localhost:6061", "pprof")
+	rootCmd.PersistentFlags().String(flagApi2, "tcp://localhost:1318", "api")
 
 	if err := rootCmd.Execute(); err != nil {
 		log.Fatalf(ColorRed+"Error executing command: %v", err)
