@@ -264,7 +264,7 @@ func CmdClaimRewards() *cobra.Command {
 		Long: strings.TrimSpace(
 			fmt.Sprintf(`Claim rewards from a given delegation address,
 Example:
-$ %s tx incentive claim-rewards --from mykey --pool-ids [pool-ids] 
+$ %s tx masterchef claim-rewards --from mykey --pool-ids [pool-ids] 
 `,
 				version.AppName,
 			),

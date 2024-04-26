@@ -39,7 +39,7 @@ func CmdQueryStableStakeApr() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:     "stable-stake-apr",
 		Short:   "calculate Stable Stake APR",
-		Example: "elysd q incentive stable-stake-apr [denom]",
+		Example: "elysd q masterchef stable-stake-apr [denom]",
 		Args:    cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
@@ -70,7 +70,7 @@ func CmdQueryPoolAprs() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:     "pool-aprs",
 		Short:   "calculate pool APRs",
-		Example: "elysd q incentive pool-aprs [ids]",
+		Example: "elysd q masterchef pool-aprs [ids]",
 		Args:    cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
@@ -109,7 +109,7 @@ func CmdQueryExternalIncentive() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:     "external-incentive",
 		Short:   "shows external incentive",
-		Example: "elysd q incentive external-incentive [id]",
+		Example: "elysd q masterchef external-incentive [id]",
 		Args:    cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
@@ -138,7 +138,7 @@ func CmdQueryPoolInfo() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:     "pool-info",
 		Short:   "shows pool info",
-		Example: "elysd q incentive pool-info [id]",
+		Example: "elysd q masterchef pool-info [id]",
 		Args:    cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
@@ -167,7 +167,7 @@ func CmdQueryPoolRewardInfo() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:     "pool-reward-info",
 		Short:   "shows pool reward info",
-		Example: "elysd q incentive pool-reward-info [id] [reward-denom]",
+		Example: "elysd q masterchef pool-reward-info [id] [reward-denom]",
 		Args:    cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
@@ -197,7 +197,7 @@ func CmdQueryUserRewardInfo() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:     "user-reward-info",
 		Short:   "shows user reward info",
-		Example: "elysd q incentive user-reward-info [user] [id] [reward-denom]",
+		Example: "elysd q masterchef user-reward-info [user] [id] [reward-denom]",
 		Args:    cobra.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
@@ -228,7 +228,7 @@ func CmdQueryUserPendingReward() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:     "user-pending-reward",
 		Short:   "shows user pending reward",
-		Example: "elysd q incentive user-pending-reward [user]",
+		Example: "elysd q masterchef user-pending-reward [user]",
 		Args:    cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
