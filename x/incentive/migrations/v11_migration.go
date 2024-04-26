@@ -127,7 +127,7 @@ func (m Migrator) V11Migration(ctx sdk.Context) error {
 				}
 			}
 			if committed.Denom == ptypes.EdenB && commParams.TotalCommitted.AmountOf(ptypes.EdenB).IsPositive() {
-				err = m.estakingKeeper.Hooks().BeforeDelegationCreated(ctx, addr, edenValAddr)
+				err = m.estakingKeeper.Hooks().BeforeDelegationCreated(ctx, addr, edenBValAddr)
 				if err != nil {
 					return err
 				}
