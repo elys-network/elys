@@ -31,12 +31,18 @@ git tag v0.31.0
 make install
 ```
 
-### Step 3: Retrieve the Current Binary for Darwin Users
+### Step 3: Retrieve the current binary depending on your OS
 
-Download the specific binary for Darwin ARM64 architecture using `curl`:
+For MacOS/Darwin users:
 
 ```bash
 curl -L https://github.com/elys-network/elys/releases/download/v0.30.0/elysd-v0.30.0-darwin-arm64 -o /tmp/elysd-v0.30.0
+```
+
+For Linux users:
+
+```bash
+curl -L https://github.com/elys-network/elys/releases/download/v0.30.0/elysd-v0.30.0-linux-amd64 -o /tmp/elysd-v0.30.0
 ```
 
 ### Step 4: Retrieve Testnet Snapshot
