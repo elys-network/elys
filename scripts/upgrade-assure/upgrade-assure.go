@@ -223,7 +223,7 @@ func main() {
 	rootCmd.PersistentFlags().String(flagBroadcastMode, "sync", "broadcast mode")
 	rootCmd.PersistentFlags().String(flagDbEngine, "pebbledb", "database engine to use")
 
-	rootCmd.PersistentFlags().Int(flagTimeOutToWaitForService, 240, "set the maximum timeout in (seconds) to wait for the node starting")
+	rootCmd.PersistentFlags().Int(flagTimeOutToWaitForService, 600, "set the maximum timeout in (seconds) to wait for the node starting")
 	rootCmd.PersistentFlags().Int(flagTimeOutNextBlock, 5, "set the maximum timeout in (minutes) to wait for the next block")
 	// node 1 flags
 	rootCmd.PersistentFlags().String(flagHome, homeEnv+"/.elys", "home directory")
