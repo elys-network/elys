@@ -54,11 +54,11 @@ jobs:
       - name: Chain initialization
         run: |
           cp -a scripts/upgrade-assure/types.go scripts/upgrade-assure-skip/types.go
-          go run ./scripts/upgrade-assure-skip/... $SNAPSHOT_PATH $OLD_BINARY_PATH $NEW_BINARY_PATH --skip-node-start
+          GOMEMLIMIT=16GiB go run ./scripts/upgrade-assure-skip/... $SNAPSHOT_PATH $OLD_BINARY_PATH $NEW_BINARY_PATH --skip-node-start
 
       - name: Check out new branch
         run: git checkout ${{ github.head_ref }}
 
       - name: Software upgrade
         run: |
-          go run ./scripts/upgrade-assure/... $SNAPSHOT_PATH $OLD_BINARY_PATH $NEW_BINARY_PATH --skip-snapshot --skip-chain-init
+          GOMEMLIMIT=16GiB go run ./scripts/upgrade-assure/... $SNAPSHOT_PATH $OLD_BINARY_PATH $NEW_BINARY_PATH --skip-snapshot --skip-chain-init
