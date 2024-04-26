@@ -53,9 +53,7 @@ jobs:
 
       - name: Chain initialization
         run: |
-          # disabled this line temporarily as v0.29.31 types.go commitment vesting info structure is different
-          # TODO: restore this line before v0.29.32 is released
-          # cp -a scripts/upgrade-assure/types.go scripts/upgrade-assure-skip/types.go
+          cp -a scripts/upgrade-assure/types.go scripts/upgrade-assure-skip/types.go
           go run ./scripts/upgrade-assure-skip/... $SNAPSHOT_PATH $OLD_BINARY_PATH $NEW_BINARY_PATH --skip-node-start
 
       - name: Check out new branch
