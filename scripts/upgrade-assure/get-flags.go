@@ -33,6 +33,8 @@ const (
 	flagValidatorMnemonic       = "validator-mnemonic"
 	flagRpc                     = "rpc"
 	flagP2p                     = "p2p"
+	flagPprof                   = "pprof"
+	flagApi                     = "api"
 
 	// node 2
 	flagHome2                    = "home-2"
@@ -43,6 +45,8 @@ const (
 	flagValidatorMnemonic2       = "validator-mnemonic-2"
 	flagRpc2                     = "rpc-2"
 	flagP2p2                     = "p2p-2"
+	flagPprof2                   = "pprof-2"
+	flagApi2                     = "api-2"
 )
 
 func getFlags(cmd *cobra.Command) (
@@ -71,6 +75,8 @@ func getFlags(cmd *cobra.Command) (
 	validatorMnemonic string,
 	rpc string,
 	p2p string,
+	pprof string,
+	api string,
 
 	// node 2
 	homePath2 string,
@@ -81,6 +87,8 @@ func getFlags(cmd *cobra.Command) (
 	validatorMnemonic2 string,
 	rpc2 string,
 	p2p2 string,
+	pprof2 string,
+	api2 string,
 ) {
 	// global
 	skipSnapshot, _ = cmd.Flags().GetBool(flagSkipSnapshot)
@@ -194,6 +202,16 @@ func getFlags(cmd *cobra.Command) (
 		log.Fatalf(ColorRed + "p2p is required")
 	}
 
+	pprof, _ = cmd.Flags().GetString(flagPprof)
+	if pprof == "" {
+		log.Fatalf(ColorRed + "pprof is required")
+	}
+
+	api, _ = cmd.Flags().GetString(flagApi)
+	if api == "" {
+		log.Fatalf(ColorRed + "api is required")
+	}
+
 	// node 2
 	homePath2, _ = cmd.Flags().GetString(flagHome2)
 	if homePath2 == "" {
@@ -233,6 +251,16 @@ func getFlags(cmd *cobra.Command) (
 	p2p2, _ = cmd.Flags().GetString(flagP2p2)
 	if p2p2 == "" {
 		log.Fatalf(ColorRed + "p2p 2 is required")
+	}
+
+	pprof2, _ = cmd.Flags().GetString(flagPprof2)
+	if pprof2 == "" {
+		log.Fatalf(ColorRed + "pprof 2 is required")
+	}
+
+	api2, _ = cmd.Flags().GetString(flagApi2)
+	if api2 == "" {
+		log.Fatalf(ColorRed + "api 2 is required")
 	}
 
 	return
