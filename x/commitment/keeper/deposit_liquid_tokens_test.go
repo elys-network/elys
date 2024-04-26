@@ -44,8 +44,7 @@ func TestDepositLiquidTokens(t *testing.T) {
 				Amount: sdk.NewInt(50),
 			},
 		},
-		RewardsUnclaimed: sdk.Coins{},
-		Claimed:          sdk.Coins{sdk.NewCoin(ptypes.Eden, sdk.NewInt(150))},
+		Claimed: sdk.Coins{sdk.NewCoin(ptypes.Eden, sdk.NewInt(150))},
 	}
 	keeper.SetCommitments(ctx, commitments)
 

@@ -1,0 +1,53 @@
+syntax = "proto3";
+package elys.estaking;
+
+import "gogoproto/gogo.proto";
+import "google/api/annotations.proto";
+import "cosmos/base/v1beta1/coin.proto";
+import "cosmos/base/query/v1beta1/pagination.proto";
+import "elys/estaking/params.proto";
+
+option go_package = "github.com/elys-network/elys/x/estaking/types";
+
+// Query defines the gRPC querier service.
+service Query {
+  // Parameters queries the parameters of the module.
+  rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
+    option (google.api.http).get = "/elys-network/elys/estaking/params";
+  }
+  // Rewards queries the total rewards accrued by a delegation
+  rpc Rewards(QueryRewardsRequest) returns (QueryRewardsResponse) {
+    option (google.api.http).get = "/elys-network/elys/estaking/rewards/{address}";
+  }
+}
+
+// QueryParamsRequest is request type for the Query/Params RPC method.
+message QueryParamsRequest {}
+
+// QueryParamsResponse is response type for the Query/Params RPC method.
+message QueryParamsResponse {
+  // params holds all the parameters of this module.
+  Params params = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryRewardsRequest {
+  string address = 1;
+}
+
+message DelegationDelegatorReward {
+  string validator_address = 1;
+  repeated cosmos.base.v1beta1.DecCoin reward = 2 [
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.DecCoins",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message QueryRewardsResponse {
+  // rewards defines all the rewards accrued by a delegator.
+  repeated DelegationDelegatorReward rewards = 1 [(gogoproto.nullable) = false];
+  // total defines the sum of all the rewards.
+  repeated cosmos.base.v1beta1.DecCoin total = 2 [
+    (gogoproto.nullable)     = false,
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.DecCoins"
+  ];
+}

@@ -35,7 +35,7 @@ type IncentiveInfo struct {
 	TotalBlocksPerYear github_com_cosmos_cosmos_sdk_types.Int `protobuf:"bytes,3,opt,name=total_blocks_per_year,json=totalBlocksPerYear,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"total_blocks_per_year"`
 	// unused
 	EpochNumBlocks github_com_cosmos_cosmos_sdk_types.Int `protobuf:"bytes,4,opt,name=epoch_num_blocks,json=epochNumBlocks,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"epoch_num_blocks"`
-	// maximum eden allocation per day that won't exceed 30% apr
+	// unused
 	MaxEdenPerAllocation github_com_cosmos_cosmos_sdk_types.Int `protobuf:"bytes,5,opt,name=max_eden_per_allocation,json=maxEdenPerAllocation,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"max_eden_per_allocation"`
 	// unused
 	DistributionEpochInBlocks github_com_cosmos_cosmos_sdk_types.Int `protobuf:"bytes,6,opt,name=distribution_epoch_in_blocks,json=distributionEpochInBlocks,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"distribution_epoch_in_blocks"`

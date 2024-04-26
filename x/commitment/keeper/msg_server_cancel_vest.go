@@ -59,9 +59,6 @@ func (k msgServer) CancelVest(goCtx context.Context, msg *types.MsgCancelVest) (
 	commitments.AddClaimed(sdk.NewCoin(ptypes.Eden, msg.Amount))
 	k.SetCommitments(ctx, commitments)
 
-	// Emit Hook commitment changed
-	k.AfterCommitmentChange(ctx, msg.Creator, sdk.Coins{sdk.NewCoin(ptypes.Eden, msg.Amount)})
-
 	// Emit blockchain event
 	ctx.EventManager().EmitEvent(
 		sdk.NewEvent(

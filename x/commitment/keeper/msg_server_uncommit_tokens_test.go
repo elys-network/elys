@@ -29,25 +29,18 @@ func TestUncommitTokens(t *testing.T) {
 	// Define the test data
 	creator := addr[0].String()
 	denom := "test_denom"
-	initialUnclaimed := sdk.NewInt(400)
 	initialCommitted := sdk.NewInt(100)
 	uncommitAmount := sdk.NewInt(100)
 
 	// Set up initial commitments object with sufficient unclaimed & committed tokens
-	rewardsUnclaimed := sdk.Coin{
-		Denom:  denom,
-		Amount: initialUnclaimed,
-	}
-
 	committedTokens := types.CommittedTokens{
 		Denom:  denom,
 		Amount: initialCommitted,
 	}
 
 	initialCommitments := types.Commitments{
-		Creator:          creator,
-		RewardsUnclaimed: sdk.Coins{rewardsUnclaimed},
-		CommittedTokens:  []*types.CommittedTokens{&committedTokens},
+		Creator:         creator,
+		CommittedTokens: []*types.CommittedTokens{&committedTokens},
 	}
 
 	keeper.SetCommitments(ctx, initialCommitments)
