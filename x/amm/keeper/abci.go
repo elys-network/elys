@@ -188,7 +188,7 @@ func (k Keeper) EndBlocker(ctx sdk.Context) {
 	msgs := k.ExecuteSwapRequests(ctx)
 	if len(msgs) > 0 {
 		bz, _ := json.Marshal(msgs)
-		k.Logger(ctx).Info("Executed swap requests: " + string(bz))
+		k.Logger(ctx).Debug("Executed swap requests: " + string(bz))
 	}
 
 	k.ClearOutdatedSlippageTrack(ctx)
