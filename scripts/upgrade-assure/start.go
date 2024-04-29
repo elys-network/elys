@@ -26,8 +26,14 @@ func (cw PromptWriter) Write(data []byte) (int, error) {
 }
 
 func start(cmdPath, homePath, rpc, p2p, pprof, api, moniker, successColor, errorColor string) *exec.Cmd {
+	// Set the log level
+	logLevel := "info"
+	if os.Getenv("LOG_LEVEL") != "" {
+		logLevel = os.Getenv("LOG_LEVEL")
+	}
+
 	// Command and arguments
-	args := []string{"start", "--home", homePath, "--rpc.laddr", rpc, "--p2p.laddr", p2p, "--rpc.pprof_laddr", pprof, "--api.address", api}
+	args := []string{"start", "--home", homePath, "--rpc.laddr", rpc, "--p2p.laddr", p2p, "--rpc.pprof_laddr", pprof, "--api.address", api, "--log_level", logLevel}
 
 	// Set up the command
 	cmd := exec.Command(cmdPath, args...)
