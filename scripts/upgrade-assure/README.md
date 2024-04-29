@@ -156,3 +156,11 @@ Run the following command to start the nodes manually:
 ```bash
 go run ./scripts/upgrade-assure/... /tmp/snapshot.tar.lz4 ~/go/bin/elysd ~/go/bin/elysd --only-start-with-new-binary
 ```
+
+**Debug Mode**
+
+By default the nodes run in `info` mode. To enable debug mode, add the following flag to the command:
+
+```bash
+LOG_LEVEL=debug go run ./scripts/upgrade-assure/... /tmp/snapshot.tar.lz4 ~/go/bin/elysd ~/go/bin/elysd --only-start-with-new-binary
+```
