@@ -85656,8 +85656,6 @@ definitions:
     type: object
   elys.commitment.MsgCommitClaimedRewardsResponse:
     type: object
-  elys.commitment.MsgCommitLiquidTokensResponse:
-    type: object
   elys.commitment.MsgStakeResponse:
     type: object
     properties:

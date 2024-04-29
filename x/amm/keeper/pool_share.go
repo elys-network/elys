@@ -7,8 +7,6 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/amm/types"
 	atypes "github.com/elys-network/elys/x/assetprofile/types"
-	commitmentkeeper "github.com/elys-network/elys/x/commitment/keeper"
-	ctypes "github.com/elys-network/elys/x/commitment/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
 
@@ -35,10 +33,10 @@ func (k Keeper) MintPoolShareToAccount(ctx sdk.Context, pool types.Pool, addr sd
 	// Before commit LP token to commitment module, we should first register the new denom
 	// to assetProfile module.
 
-	entry, found := k.assetProfileKeeper.GetEntry(ctx, poolShareDenom)
+	_, found := k.assetProfileKeeper.GetEntry(ctx, poolShareDenom)
 	if !found {
 		// Set an entity to assetprofile
-		entry = atypes.Entry{
+		entry := atypes.Entry{
 			Authority:                pool.Address,
 			BaseDenom:                poolShareDenom,
 			Decimals:                 ptypes.BASE_DECIMAL,
@@ -64,23 +62,12 @@ func (k Keeper) MintPoolShareToAccount(ctx sdk.Context, pool types.Pool, addr sd
 	}
 
 	// Commit LP token minted
-	msgServer := commitmentkeeper.NewMsgServerImpl(*k.commitmentKeeper)
-
 	lockUntil := uint64(ctx.BlockTime().Unix())
 	if pool.PoolParams.UseOracle {
 		lockUntil += uint64(time.Hour.Seconds())
 	}
 
-	// Create a commit LP token message
-	msgLiquidCommitLPToken := &ctypes.MsgCommitLiquidTokens{
-		Creator:   addr.String(),
-		Denom:     poolShareDenom,
-		Amount:    amount,
-		LockUntil: lockUntil,
-	}
-
-	// Commit LP token
-	_, err = msgServer.CommitLiquidTokens(sdk.WrapSDKContext(ctx), msgLiquidCommitLPToken)
+	err = k.commitmentKeeper.CommitLiquidTokens(ctx, addr, poolShareDenom, amount, lockUntil)
 	if err != nil {
 		return err
 	}

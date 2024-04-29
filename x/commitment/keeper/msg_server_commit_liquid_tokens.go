@@ -1,10 +1,10 @@
 package keeper
 
 import (
-	"context"
 	"fmt"
 
 	errorsmod "cosmossdk.io/errors"
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	aptypes "github.com/elys-network/elys/x/assetprofile/types"
@@ -12,29 +12,22 @@ import (
 )
 
 // CommitLiquidTokens commit the tokens from user's balance
-func (k msgServer) CommitLiquidTokens(goCtx context.Context, msg *types.MsgCommitLiquidTokens) (*types.MsgCommitLiquidTokensResponse, error) {
-	ctx := sdk.UnwrapSDKContext(goCtx)
-
-	assetProfile, found := k.assetProfileKeeper.GetEntry(ctx, msg.Denom)
+func (k Keeper) CommitLiquidTokens(ctx sdk.Context, addr sdk.AccAddress, denom string, amount math.Int, lockUntil uint64) error {
+	assetProfile, found := k.assetProfileKeeper.GetEntry(ctx, denom)
 	if !found {
-		return nil, errorsmod.Wrapf(aptypes.ErrAssetProfileNotFound, "denom: %s", msg.Denom)
+		return errorsmod.Wrapf(aptypes.ErrAssetProfileNotFound, "denom: %s", denom)
 	}
 
 	if !assetProfile.CommitEnabled {
-		return nil, errorsmod.Wrapf(types.ErrCommitDisabled, "denom: %s", msg.Denom)
+		return errorsmod.Wrapf(types.ErrCommitDisabled, "denom: %s", denom)
 	}
 
-	depositCoins := sdk.NewCoins(sdk.NewCoin(msg.Denom, msg.Amount))
-
-	addr, err := sdk.AccAddressFromBech32(msg.Creator)
-	if err != nil {
-		return nil, errorsmod.Wrap(sdkerrors.ErrInvalidAddress, "unable to convert address from bech32")
-	}
+	depositCoins := sdk.NewCoins(sdk.NewCoin(denom, amount))
 
 	// send the deposited coins to the module
-	err = k.bankKeeper.SendCoinsFromAccountToModule(ctx, addr, types.ModuleName, depositCoins)
+	err := k.bankKeeper.SendCoinsFromAccountToModule(ctx, addr, types.ModuleName, depositCoins)
 	if err != nil {
-		return nil, errorsmod.Wrap(sdkerrors.ErrInsufficientFunds, fmt.Sprintf("unable to send deposit tokens: %v", depositCoins))
+		return errorsmod.Wrap(sdkerrors.ErrInsufficientFunds, fmt.Sprintf("unable to send deposit tokens: %v", depositCoins))
 	}
 
 	// Update total commitment
@@ -43,27 +36,27 @@ func (k msgServer) CommitLiquidTokens(goCtx context.Context, msg *types.MsgCommi
 	k.SetParams(ctx, params)
 
 	// Get the Commitments for the creator
-	commitments := k.GetCommitments(ctx, msg.Creator)
+	commitments := k.GetCommitments(ctx, addr.String())
 
 	// Update the commitments
-	commitments.AddCommittedTokens(msg.Denom, msg.Amount, msg.LockUntil)
+	commitments.AddCommittedTokens(denom, amount, lockUntil)
 	k.SetCommitments(ctx, commitments)
 
 	// Emit Hook commitment changed
-	err = k.CommitmentChanged(ctx, msg.Creator, sdk.Coins{sdk.NewCoin(msg.Denom, msg.Amount)})
+	err = k.CommitmentChanged(ctx, addr.String(), sdk.Coins{sdk.NewCoin(denom, amount)})
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	// Emit blockchain event
 	ctx.EventManager().EmitEvent(
 		sdk.NewEvent(
 			types.EventTypeCommitmentChanged,
-			sdk.NewAttribute(types.AttributeCreator, msg.Creator),
-			sdk.NewAttribute(types.AttributeAmount, msg.Amount.String()),
-			sdk.NewAttribute(types.AttributeDenom, msg.Denom),
+			sdk.NewAttribute(types.AttributeCreator, addr.String()),
+			sdk.NewAttribute(types.AttributeAmount, amount.String()),
+			sdk.NewAttribute(types.AttributeDenom, denom),
 		),
 	)
 
-	return &types.MsgCommitLiquidTokensResponse{}, nil
+	return nil
 }

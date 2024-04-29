@@ -21,4 +21,5 @@ var (
 	ErrInsufficientWithdrawableTokens = errorsmod.Register(ModuleName, 1011, "insufficient withdrawable tokens")
 	ErrVestNowIsNotEnabled            = errorsmod.Register(ModuleName, 1012, "instant vesting is not enabled at this stage")
 	ErrUnsupportedWithdrawMode        = errorsmod.Register(ModuleName, 1013, "unsupported withdraw mode")
+	ErrUnsupportedUncommitToken       = errorsmod.Register(ModuleName, 1014, "unsupported uncommit token")
 )

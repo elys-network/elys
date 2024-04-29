@@ -21,7 +21,6 @@ func GetTxCmd() *cobra.Command {
 	}
 
 	cmd.AddCommand(CmdCommitClaimedRewards())
-	cmd.AddCommand(CmdCommitLiquidTokens())
 	cmd.AddCommand(CmdUncommitTokens())
 	cmd.AddCommand(CmdVest())
 	cmd.AddCommand(CmdCancelVest())

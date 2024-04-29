@@ -273,7 +273,6 @@ type ElysMsg struct {
 	// clock messages
 
 	// commitment messages
-	CommitmentCommitLiquidTokens     *commitmenttypes.MsgCommitLiquidTokens   `json:"commitment_commit_liquid_tokens,omitempty"`
 	CommitmentCommitUnclaimedRewards *commitmenttypes.MsgCommitClaimedRewards `json:"commitment_commit_unclaimed_rewards,omitempty"`
 	CommitmentUncommitTokens         *commitmenttypes.MsgUncommitTokens       `json:"commitment_uncommit_tokens,omitempty"`
 	CommitmentClaimVesting           *commitmenttypes.MsgClaimVesting         `json:"commitment_claim_vesting,omitempty"`
