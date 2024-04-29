@@ -9,18 +9,19 @@ import (
 
 const (
 	// global
-	flagSkipSnapshot    = "skip-snapshot"
-	flagSkipChainInit   = "skip-chain-init"
-	flagSkipNodeStart   = "skip-node-start"
-	flagSkipProposal    = "skip-proposal"
-	flagSkipBinary      = "skip-binary"
-	flagChainId         = "chain-id"
-	flagKeyringBackend  = "keyring-backend"
-	flagGenesisFilePath = "genesis-file-path"
-	flagBroadcastMode   = "broadcast-mode"
-	flagDbEngine        = "db-engine"
+	flagOnlyStartWithNewBinary = "only-start-with-new-binary"
+	flagSkipSnapshot           = "skip-snapshot"
+	flagSkipChainInit          = "skip-chain-init"
+	flagSkipNodeStart          = "skip-node-start"
+	flagSkipProposal           = "skip-proposal"
+	flagSkipBinary             = "skip-binary"
+	flagChainId                = "chain-id"
+	flagKeyringBackend         = "keyring-backend"
+	flagGenesisFilePath        = "genesis-file-path"
+	flagBroadcastMode          = "broadcast-mode"
+	flagDbEngine               = "db-engine"
 
-	//Timeout
+	// timeout
 	flagTimeOutToWaitForService = "timeout-wait-for-node"
 	flagTimeOutNextBlock        = "timeout-next-block"
 
@@ -51,6 +52,7 @@ const (
 
 func getFlags(cmd *cobra.Command) (
 	// global
+	onlyStartWithNewBinaries bool,
 	skipSnapshot bool,
 	skipChainInit bool,
 	skipNodeStart bool,
@@ -91,6 +93,11 @@ func getFlags(cmd *cobra.Command) (
 	api2 string,
 ) {
 	// global
+	onlyStartWithNewBinaries, _ = cmd.Flags().GetBool(flagOnlyStartWithNewBinary)
+	if onlyStartWithNewBinaries {
+		log.Printf(ColorYellow + "only starting with new binaries, skipping all other steps")
+	}
+
 	skipSnapshot, _ = cmd.Flags().GetBool(flagSkipSnapshot)
 	if skipSnapshot {
 		log.Printf(ColorYellow + "skipping snapshot retrieval")

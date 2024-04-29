@@ -18,7 +18,7 @@ func main() {
 		Run: func(cmd *cobra.Command, args []string) {
 			snapshotUrl, oldBinaryUrl, newBinaryUrl := getArgs(args)
 			// global flags
-			skipSnapshot, skipChainInit, skipNodeStart, skipProposal, skipBinary, chainId, keyringBackend, genesisFilePath, broadcastMode, dbEngine,
+			onlyStartWithNewBinary, skipSnapshot, skipChainInit, skipNodeStart, skipProposal, skipBinary, chainId, keyringBackend, genesisFilePath, broadcastMode, dbEngine,
 				// timeouts
 				timeOutToWaitForService, timeOutToWaitForNextBlock,
 				// node 1 flags
@@ -47,6 +47,17 @@ func main() {
 
 			// print new binary path and version
 			log.Printf(ColorGreen+"New binary path: %v and version: %v", newBinaryPath, newVersion)
+
+			// only start with new binary, skip everything else
+			if onlyStartWithNewBinary {
+				// start new binary
+				newBinaryCmd := start(newBinaryPath, homePath, rpc, p2p, pprof, api, moniker, "\033[32m", "\033[31m")
+				newBinaryCmd2 := start(newBinaryPath, homePath2, rpc2, p2p2, pprof2, api2, moniker2, "\033[32m", "\033[31m")
+
+				// listen for signals
+				listenForSignals(newBinaryCmd, newBinaryCmd2)
+				return
+			}
 
 			if !skipSnapshot {
 				// remove home path
@@ -210,6 +221,7 @@ func main() {
 	homeEnv, _ := os.LookupEnv("HOME")
 
 	// global flags
+	rootCmd.PersistentFlags().Bool(flagOnlyStartWithNewBinary, false, "only start with new binary")
 	rootCmd.PersistentFlags().Bool(flagSkipSnapshot, false, "skip snapshot retrieval")
 	rootCmd.PersistentFlags().Bool(flagSkipChainInit, false, "skip chain init")
 	rootCmd.PersistentFlags().Bool(flagSkipNodeStart, false, "skip node start")
