@@ -107,6 +107,14 @@ Execute the final upgrade command to complete the upgrade process:
 go run ./scripts/upgrade-assure/... /tmp/snapshot.tar.lz4 /tmp/elysd-v0.30.0 ~/go/bin/elysd --skip-snapshot --skip-chain-init
 ```
 
+### Step 9: Start the Nodes manually (optional)
+
+If something went wrong while you were starting the node at step 8, you can start the nodes manually with the new binary by using the following command:
+
+```bash
+go run ./scripts/upgrade-assure/... /tmp/snapshot.tar.lz4 /tmp/elysd-v0.30.0 ~/go/bin/elysd --only-start-with-new-binary
+```
+
 ## Testnet Snapshots Usage
 
 **Snapshot Sources and Installation Procedures:**
@@ -139,4 +147,12 @@ go run ./scripts/upgrade-assure/... /tmp/snapshot.tar.lz4 /tmp/elysd-v0.30.0 ~/g
 ```bash
 --timeout-wait-for-node=600  # Time in seconds
 --timeout-next-block=15       # Time in minutes
+```
+
+**My nodes crashed after the upgrade. What should I do?**
+
+Run the following command to start the nodes manually:
+
+```bash
+go run ./scripts/upgrade-assure/... /tmp/snapshot.tar.lz4 ~/go/bin/elysd ~/go/bin/elysd --only-start-with-new-binary
 ```
