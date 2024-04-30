@@ -51,7 +51,6 @@ func (c *Commitments) AddCommittedTokens(denom string, amount math.Int, unlockTi
 					li++
 					continue
 				} else if lockup.UnlockTimestamp == unlockTime {
-					c.CommittedTokens[i].Lockups[li].Amount = lockup.Amount.Add(amount)
 					return
 				} else {
 					break
