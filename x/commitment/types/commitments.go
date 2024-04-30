@@ -44,23 +44,6 @@ func (c *Commitments) AddCommittedTokens(denom string, amount math.Int, unlockTi
 				Amount:          amount,
 				UnlockTimestamp: unlockTime,
 			})
-
-			li := int(0)
-			for _, lockup := range token.Lockups {
-				if lockup.UnlockTimestamp < unlockTime {
-					li++
-					continue
-				} else if lockup.UnlockTimestamp == unlockTime {
-					return
-				} else {
-					break
-				}
-			}
-			c.CommittedTokens[i].Lockups = append(token.Lockups[:li+1], token.Lockups[li:]...)
-			c.CommittedTokens[i].Lockups[li] = Lockup{
-				Amount:          amount,
-				UnlockTimestamp: unlockTime,
-			}
 			return
 		}
 	}
