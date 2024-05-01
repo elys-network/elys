@@ -21,7 +21,7 @@ func (m *Messenger) msgClaimRewards(ctx sdk.Context, contractAddr sdk.AccAddress
 		return nil, nil, wasmvmtypes.InvalidRequest{Err: "wrong sender"}
 	}
 
-	res, err = performMsgClaimRewards(m.masterchefKeeper, ctx, contractAddr, msgClaimRewards)
+	res, err = performMsgClaimRewards(m.keeper, ctx, contractAddr, msgClaimRewards)
 	if err != nil {
 		return nil, nil, errorsmod.Wrap(err, "perform elys claim rewards")
 	}
