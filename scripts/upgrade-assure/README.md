@@ -115,6 +115,14 @@ go run ./scripts/upgrade-assure/... /tmp/snapshot.tar.lz4 /tmp/elysd-v0.30.0 ~/g
 
 Notice that /tmp/elysd-v0.30.0 is the current binary retrieved in step 3.
 
+This command will execute both Alice and Bob nodes and it takes some time to execute. You will know it sucessfully finishes after the process
+kills itself. The final logs are:
+
+```
+2024/05/01 15:14:00 Process killed successfully
+2024/05/01 15:14:00 Process killed successfully
+```
+
 ### Step 9: Run the chain
 
 1. Run the first node with `elysd start`
