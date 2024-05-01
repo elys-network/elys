@@ -14,25 +14,27 @@ Ensure the following prerequisites are met before proceeding with the upgrade an
 
 ## Upgrade Steps
 
-### Step 1: Checkout the Implementation Branch
+### Step 1: Checkout the Branch containing the new implementation
 
 Switch to the branch containing the new implementation:
 
 ```bash
-git checkout estaking_impl
+git checkout <branch_name>
 ```
 
-### Step 2: Create a New Tag and Install
+### Step 2: Create a New Tag using semantic versioning and Install It.
 
-Tag the new release and install it:
+i.e for tag v0.31.0, tag the new release and install it:
 
 ```bash
 git tag v0.31.0
 make install
+git checkout v0.31.0
 ```
 
 ### Step 3: Retrieve the current binary depending on your OS
 
+i.e In case of current Binary is v0.30.0:
 For MacOS/Darwin users:
 
 ```bash
@@ -53,12 +55,12 @@ Fetch the latest testnet snapshot, necessary for data migration using `curl`:
 curl -L https://snapshots-testnet.stake-town.com/elys/elystestnet-1_latest.tar.lz4 -o /tmp/snapshot.tar.lz4
 ```
 
-### Step 5: Checkout the Previous Version
+### Step 5: Checkout the latest working tag available in https://github.com/elys-network/elys/releases/tag
 
-Switch to the previously stable version:
+Switch to the previously stable version.
 
 ```bash
-git checkout v0.30.0
+git checkout <tag_name>
 ```
 
 ### Step 6: Run Upgrade-Assure Script
@@ -70,6 +72,8 @@ Run the upgrade-assure script without starting the node:
 ```bash
 go run ./scripts/upgrade-assure/... /tmp/snapshot.tar.lz4 /tmp/elysd-v0.30.0 ~/go/bin/elysd --skip-node-start
 ```
+
+Notice that /tmp/elysd-v0.30.0 is the current binary retrieved in step 3.
 
 #### 6b: Handle Potential Errors
 
@@ -91,12 +95,14 @@ Repeat the process after updating the script:
 go run ./scripts/upgrade-assure/... /tmp/snapshot.tar.lz4 /tmp/elysd-v0.30.0 ~/go/bin/elysd --skip-node-start
 ```
 
-### Step 7: Checkout to Latest Changes Branch
+Notice that /tmp/elysd-v0.30.0 is the current binary retrieved in step 3.
+
+### Step 7: Checkout to Latest Changes Branch you used in step 1
 
 Switch back to the main branch to incorporate the latest changes:
 
 ```bash
-git checkout main
+git checkout <branch_name>
 ```
 
 ### Step 8: Final Upgrade Command
@@ -107,13 +113,28 @@ Execute the final upgrade command to complete the upgrade process:
 go run ./scripts/upgrade-assure/... /tmp/snapshot.tar.lz4 /tmp/elysd-v0.30.0 ~/go/bin/elysd --skip-snapshot --skip-chain-init
 ```
 
-### Step 9: Start the Nodes manually (optional)
+Notice that /tmp/elysd-v0.30.0 is the current binary retrieved in step 3.
+
+### Step 9: Run the chain
+
+1. Run the first node with `elysd start`
+2. After running and the log prints "No addresses to dial" you have to start the second node:
+   `elysd start --home ~/.elys2 --rpc.laddr tcp://127.0.0.1:26667 --p2p.laddr tcp://0.0.0.0:26666`.
+
+### Step 10 (optional):
+
+You can make a backup copy of .elys and .elys2 folders available in your home directory in case you want
+to start a fresh copy of the chain without going to this process again.
+
+### Step 11: Start the Nodes manually (optional)
 
 If something went wrong while you were starting the node at step 8, you can start the nodes manually with the new binary by using the following command:
 
 ```bash
 go run ./scripts/upgrade-assure/... /tmp/snapshot.tar.lz4 /tmp/elysd-v0.30.0 ~/go/bin/elysd --only-start-with-new-binary
 ```
+
+Notice that /tmp/elysd-v0.30.0 is the current binary retrieved in step 3.
 
 ## Testnet Snapshots Usage
 
