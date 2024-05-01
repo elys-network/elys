@@ -28,8 +28,8 @@ i.e for tag v0.31.0, tag the new release and install it:
 
 ```bash
 git tag v0.31.0
-make install
 git checkout tags/v0.31.0
+make install
 ```
 
 ### Step 3: Retrieve the current binary depending on your OS
