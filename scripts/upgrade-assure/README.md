@@ -29,7 +29,7 @@ i.e for tag v0.31.0, tag the new release and install it:
 ```bash
 git tag v0.31.0
 make install
-git checkout v0.31.0
+git checkout tags/v0.31.0
 ```
 
 ### Step 3: Retrieve the current binary depending on your OS
@@ -60,7 +60,7 @@ curl -L https://snapshots-testnet.stake-town.com/elys/elystestnet-1_latest.tar.l
 Switch to the previously stable version.
 
 ```bash
-git checkout <tag_name>
+git checkout tags/<tag_name>
 ```
 
 ### Step 6: Run Upgrade-Assure Script
@@ -97,7 +97,7 @@ go run ./scripts/upgrade-assure/... /tmp/snapshot.tar.lz4 /tmp/elysd-v0.30.0 ~/g
 
 Notice that /tmp/elysd-v0.30.0 is the current binary retrieved in step 3.
 
-### Step 7: Checkout to Latest Changes Branch you used in step 1
+### Step 7: Checkout to Latest Changes Branch or tag you used in step 1
 
 Switch back to the main branch to incorporate the latest changes:
 
