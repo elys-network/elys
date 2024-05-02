@@ -27,14 +27,7 @@ func (k Keeper) BurnEdenBFromElysUnstaking(ctx sdk.Context, delegator sdk.AccAdd
 		return
 	}
 
-	// Claim EdenB rewards
-	cacheCtx, write := ctx.CacheContext()
-	err := k.WithdrawEdenBReward(cacheCtx, delegator)
-	if err != nil {
-		k.Logger(ctx).Error(err.Error())
-	} else {
-		write()
-	}
+	// TODO: Claim all delegation rewards
 
 	edenCommitted := commitments.GetCommittedAmountForDenom(ptypes.Eden)
 
@@ -67,15 +60,7 @@ func (k Keeper) BurnEdenBFromElysUnstaking(ctx sdk.Context, delegator sdk.AccAdd
 
 // Burn EdenBoost from Eden unclaimed
 func (k Keeper) BurnEdenBFromEdenUncommitted(ctx sdk.Context, delegator string, uncommitAmt math.Int) error {
-	// Claim EdenB rewards
-	delAddr := sdk.MustAccAddressFromBech32(delegator)
-	cacheCtx, write := ctx.CacheContext()
-	err := k.WithdrawEdenBReward(cacheCtx, delAddr)
-	if err != nil {
-		k.Logger(ctx).Error(err.Error())
-	} else {
-		write()
-	}
+	// TODO: Claim all delegation rewards
 
 	// Get elys staked amount
 	elysStaked := k.GetElysStaked(ctx, delegator)

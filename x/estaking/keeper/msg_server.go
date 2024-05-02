@@ -52,7 +52,7 @@ func (k msgServer) WithdrawElysStakingRewards(goCtx context.Context, msg *types.
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	delAddr := sdk.MustAccAddressFromBech32(msg.DelegatorAddress)
-	delegations := k.Keeper.Keeper.GetAllDelegations(ctx)
+	delegations := k.Keeper.Keeper.GetDelegatorDelegations(ctx, delAddr, 1024)
 	rewards := sdk.Coins{}
 	for _, del := range delegations {
 		valAddr, err := sdk.ValAddressFromBech32(del.ValidatorAddress)
