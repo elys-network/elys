@@ -13,6 +13,7 @@ func RegisterCodec(cdc *codec.LegacyAmino) {
 	cdc.RegisterConcrete(&MsgUpdateParams{}, "estaking/UpdateParams", nil)
 	cdc.RegisterConcrete(&MsgWithdrawReward{}, "estaking/WithdrawReward", nil)
 	cdc.RegisterConcrete(&MsgWithdrawElysStakingRewards{}, "estaking/WithdrawElysStakingRewards", nil)
+	cdc.RegisterConcrete(&MsgWithdrawAllRewards{}, "estaking/MsgWithdrawAllRewards", nil)
 	// this line is used by starport scaffolding # 2
 }
 
@@ -21,6 +22,7 @@ func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 		&MsgUpdateParams{},
 		&MsgWithdrawReward{},
 		&MsgWithdrawElysStakingRewards{},
+		&MsgWithdrawAllRewards{},
 	)
 	// this line is used by starport scaffolding # 3
 

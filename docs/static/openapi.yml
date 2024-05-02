@@ -86025,6 +86025,26 @@ definitions:
     description: >-
       MsgUpdateParamsResponse defines the response structure for executing a
       MsgUpdateParams message.
+  elys.estaking.MsgWithdrawAllRewardsResponse:
+    type: object
+    properties:
+      amount:
+        type: array
+        items:
+          type: object
+          properties:
+            denom:
+              type: string
+            amount:
+              type: string
+          description: |-
+            Coin defines a token with a denomination and an amount.
+
+            NOTE: The amount field is an Int which implements the custom method
+            signatures required by gogoproto.
+    description: >-
+      MsgWithdrawAllRewardsResponse defines the Msg/WithdrawAllRewards response
+      type.
   elys.estaking.MsgWithdrawElysStakingRewardsResponse:
     type: object
     properties:

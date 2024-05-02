@@ -18,6 +18,9 @@ service Msg {
 
   // WithdrawElysStakingRewards defines a method to withdraw rewards of delegator from all the validators.
   rpc WithdrawElysStakingRewards(MsgWithdrawElysStakingRewards) returns (MsgWithdrawElysStakingRewardsResponse);
+
+  // WithdrawAllRewards defines a method to withdraw rewards of delegator from all the validators and Eden/EdenB commitment.
+  rpc WithdrawAllRewards(MsgWithdrawAllRewards) returns (MsgWithdrawAllRewardsResponse);
 }
 
 // MsgUpdateParams is the Msg/UpdateParams request type.
@@ -50,6 +53,19 @@ message MsgWithdrawElysStakingRewards {
 
 // MsgWithdrawElysStakingRewards defines the Msg/WithdrawElysStakingRewards response type.
 message MsgWithdrawElysStakingRewardsResponse {
+  repeated cosmos.base.v1beta1.Coin amount = 1 [
+    (gogoproto.nullable)     = false,
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
+  ];
+}
+
+// MsgWithdrawElysStakingRewards represents delegation withdrawal to a delegator from all the validators and Eden/EdenB commitment.
+message MsgWithdrawAllRewards {
+  string delegator_address = 1;
+}
+
+// MsgWithdrawAllRewardsResponse defines the Msg/WithdrawAllRewards response type.
+message MsgWithdrawAllRewardsResponse {
   repeated cosmos.base.v1beta1.Coin amount = 1 [
     (gogoproto.nullable)     = false,
     (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
