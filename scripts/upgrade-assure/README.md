@@ -1,6 +1,6 @@
 # Localnet Upgrade and Data Migration Guide for ELYS Network
 
-This document offers a detailed framework for upgrading the localnet used in the ELYS network, encompassing version changes, data migrations, and utilizing old testnet snapshots in newwer versions for local development purposes.
+This document offers a detailed framework for upgrading the localnet used in the ELYS network, encompassing version changes, data migrations, and utilizing latest testnet snapshots in newer versions for local development purposes.
 
 ## Prerequisites
 
