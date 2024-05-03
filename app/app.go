@@ -198,6 +198,8 @@ import (
 	ccvconsumertypes "github.com/cosmos/interchain-security/v4/x/ccv/consumer/types"
 	ccv "github.com/cosmos/interchain-security/v4/x/ccv/types"
 
+	ibctestingtypes "github.com/cosmos/ibc-go/v7/testing/types"
+
 	// this line is used by starport scaffolding # stargate/app/moduleImport
 
 	"github.com/elys-network/elys/docs"
@@ -1658,4 +1660,9 @@ func (app *ElysApp) Configurator() module.Configurator {
 // ModuleManager returns the app ModuleManager
 func (app *ElysApp) ModuleManager() *module.Manager {
 	return app.mm
+}
+
+// GetStakingKeeper implements the TestingApp interface.
+func (app *ElysApp) GetStakingKeeper() ibctestingtypes.StakingKeeper {
+	return app.ConsumerKeeper
 }
