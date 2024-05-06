@@ -18,7 +18,7 @@ func main() {
 		Run: func(cmd *cobra.Command, args []string) {
 			snapshotUrl, oldBinaryUrl, newBinaryUrl := getArgs(args)
 			// global flags
-			skipSnapshot, skipChainInit, skipNodeStart, skipProposal, skipBinary, chainId, keyringBackend, genesisFilePath, broadcastMode, dbEngine,
+			onlyStartWithNewBinary, skipSnapshot, skipChainInit, skipNodeStart, skipProposal, skipBinary, chainId, keyringBackend, genesisFilePath, broadcastMode, dbEngine,
 				// timeouts
 				timeOutToWaitForService, timeOutToWaitForNextBlock,
 				// node 1 flags
@@ -47,6 +47,17 @@ func main() {
 
 			// print new binary path and version
 			log.Printf(ColorGreen+"New binary path: %v and version: %v", newBinaryPath, newVersion)
+
+			// only start with new binary, skip everything else
+			if onlyStartWithNewBinary {
+				// start new binary
+				newBinaryCmd := start(newBinaryPath, homePath, rpc, p2p, pprof, api, moniker, "\033[32m", "\033[31m")
+				newBinaryCmd2 := start(newBinaryPath, homePath2, rpc2, p2p2, pprof2, api2, moniker2, "\033[32m", "\033[31m")
+
+				// listen for signals
+				listenForSignals(newBinaryCmd, newBinaryCmd2)
+				return
+			}
 
 			if !skipSnapshot {
 				// remove home path
@@ -210,6 +221,7 @@ func main() {
 	homeEnv, _ := os.LookupEnv("HOME")
 
 	// global flags
+	rootCmd.PersistentFlags().Bool(flagOnlyStartWithNewBinary, false, "only start with new binary")
 	rootCmd.PersistentFlags().Bool(flagSkipSnapshot, false, "skip snapshot retrieval")
 	rootCmd.PersistentFlags().Bool(flagSkipChainInit, false, "skip chain init")
 	rootCmd.PersistentFlags().Bool(flagSkipNodeStart, false, "skip node start")
@@ -229,7 +241,7 @@ func main() {
 	rootCmd.PersistentFlags().String(flagValidatorKeyName, "validator", "validator key name")
 	rootCmd.PersistentFlags().String(flagValidatorBalance, "200000000000000", "validator balance")
 	rootCmd.PersistentFlags().String(flagValidatorSelfDelegation, "50000000000000", "validator self delegation")
-	rootCmd.PersistentFlags().String(flagValidatorMnemonic, "bargain toss help way dash forget bar casual boat drill execute ordinary human lecture leopard enroll joy rural shed express kite sample brick void", "validator mnemonic")
+	rootCmd.PersistentFlags().String(flagValidatorMnemonic, "approve rough inherit item monkey brass patrol bulk face beach april myth proud exclude patient fantasy decade area job garage stand install nominee symbol", "validator mnemonic")
 	rootCmd.PersistentFlags().String(flagRpc, "tcp://0.0.0.0:26657", "rpc")
 	rootCmd.PersistentFlags().String(flagP2p, "tcp://0.0.0.0:26656", "p2p")
 	rootCmd.PersistentFlags().String(flagPprof, "localhost:6060", "pprof")
@@ -241,7 +253,7 @@ func main() {
 	rootCmd.PersistentFlags().String(flagValidatorKeyName2, "validator-2", "validator key name 2")
 	rootCmd.PersistentFlags().String(flagValidatorBalance2, "200000000000000", "validator balance 2")
 	rootCmd.PersistentFlags().String(flagValidatorSelfDelegation2, "1000000", "validator self delegation 2")
-	rootCmd.PersistentFlags().String(flagValidatorMnemonic2, "kidney seat stay demand panel garlic uncle flock plunge logic link owner laugh sponsor desk scare pipe derive trick smart coffee goat arrange cause", "validator mnemonic 2")
+	rootCmd.PersistentFlags().String(flagValidatorMnemonic2, "hundred hidden surprise bundle dawn priority hungry balcony control raccoon choice laptop name holiday ill member almost hurt tomorrow bag nose tooth minor way", "validator mnemonic 2")
 	rootCmd.PersistentFlags().String(flagRpc2, "tcp://0.0.0.0:26667", "rpc")
 	rootCmd.PersistentFlags().String(flagP2p2, "tcp://0.0.0.0:26666", "p2p")
 	rootCmd.PersistentFlags().String(flagPprof2, "localhost:6061", "pprof")
