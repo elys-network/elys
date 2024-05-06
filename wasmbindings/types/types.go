@@ -152,6 +152,7 @@ type ElysQuery struct {
 	CommitmentStakedPositions      *commitmenttypes.QueryValidatorsRequest                    `json:"commitment_staked_positions,omitempty"`
 	CommitmentUnStakedPositions    *commitmenttypes.QueryValidatorsRequest                    `json:"commitment_un_staked_positions,omitempty"`
 	CommitmentVestingInfo          *commitmenttypes.QueryVestingInfoRequest                   `json:"commitment_vesting_info,omitempty"`
+	CommitmentNumberOfCommitments  *commitmenttypes.QueryNumberOfCommitmentsRequest           `json:"commitment_number_of_commitments,omitempty"`
 
 	// epochs queriers
 	EpochsEpochInfos   *epochstypes.QueryEpochsInfoRequest   `json:"epochs_epoch_infos,omitempty"`

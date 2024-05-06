@@ -18,9 +18,14 @@ service Query {
     option (google.api.http).get = "/elys-network/elys/commitment/params";
   }
   
-  // Queries a list of ShowCommitments items.
+  // Queries a Commitment item.
   rpc ShowCommitments (QueryShowCommitmentsRequest) returns (QueryShowCommitmentsResponse) {
     option (google.api.http).get = "/elys-network/elys/commitment/show_commitments/{creator}";
+  }
+
+  // Queries the total number of commitment items.
+  rpc NumberOfCommitments (QueryNumberOfCommitmentsRequest) returns (QueryNumberOfCommitmentsResponse) {
+    option (google.api.http).get = "/elys-network/elys/commitment/number_of_commitments";
   }
 }
 // QueryParamsRequest is request type for the Query/Params RPC method.
@@ -38,4 +43,10 @@ message QueryShowCommitmentsRequest {
 
 message QueryShowCommitmentsResponse {
   Commitments commitments = 1 [(gogoproto.nullable) = false, (amino.dont_omitempty) = true];
+}
+
+message QueryNumberOfCommitmentsRequest {}
+
+message QueryNumberOfCommitmentsResponse {
+  int64 number = 1;
 }

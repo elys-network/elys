@@ -65,6 +65,8 @@ func (oq *Querier) HandleQuery(ctx sdk.Context, query wasmbindingstypes.ElysQuer
 		return oq.queryUnStakedPositions(ctx, query.CommitmentUnStakedPositions)
 	case query.CommitmentVestingInfo != nil:
 		return oq.queryVestingInfo(ctx, query.CommitmentVestingInfo)
+	case query.CommitmentNumberOfCommitments != nil:
+		return oq.queryNumberOfCommitments(ctx, query.CommitmentNumberOfCommitments)
 	default:
 		// This handler cannot handle the query
 		return nil, wasmbindingstypes.ErrCannotHandleQuery
