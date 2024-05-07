@@ -20,23 +20,27 @@ jobs:
         with:
           go-version: "1.21"
 
-      - name: Retrieve info.json
+      - name: Retrieve info.json and set snapshot path
         run: |
           DOWNLOAD_URL=https://snapshots-testnet.stake-town.com/elys/info.json
           curl -L $DOWNLOAD_URL -o /tmp/info.json
           echo "Info.json downloaded to check snapshot version."
+
+          # retrieve blockHeight field value from info.json
+          SNAPSHOT_BLOCK_HEIGHT=$(jq -r '.blockHeight' /tmp/info.json)
+          echo "SNAPSHOT_BLOCK_HEIGHT=$SNAPSHOT_BLOCK_HEIGHT" >> $GITHUB_ENV
+          echo "Snapshot block height: $SNAPSHOT_BLOCK_HEIGHT"
+
+          # set snapshot path
+          SNAPSHOT_PATH=/tmp/snapshot.tar.lz4
+          echo "SNAPSHOT_PATH=$SNAPSHOT_PATH" >> $GITHUB_ENV
 
       - name: Cache Snapshot
         uses: actions/cache@v2
         id: cache-snapshot
         with:
           path: /tmp/snapshot.tar.lz4
-          key: ${{ runner.os }}-snapshot-${{ hashFiles('/tmp/info.json') }}
-
-      - name: Set snapshot path variable
-        run: |
-          SNAPSHOT_PATH=/tmp/snapshot.tar.lz4
-          echo "SNAPSHOT_PATH=$SNAPSHOT_PATH" >> $GITHUB_ENV
+          key: ${{ runner.os }}-snapshot-${{ SNAPSHOT_BLOCK_HEIGHT }}
 
       - name: Retrieve latest snapshot
         run: |
