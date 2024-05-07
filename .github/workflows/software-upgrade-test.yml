@@ -40,20 +40,14 @@ jobs:
         id: cache-snapshot
         with:
           path: |
-            /tmp/snapshot.tar.lz4
             ~/.elys
             ~/.elys2
           key: ${{ runner.os }}-snapshot-${{ env.SNAPSHOT_BLOCK_HEIGHT }}
 
       - name: Retrieve latest snapshot
         run: |
-          if [ ! -f /tmp/snapshot.tar.lz4 ]; then
-            DOWNLOAD_URL=https://snapshots-testnet.stake-town.com/elys/elystestnet-1_latest.tar.lz4
-            curl -L $DOWNLOAD_URL -o $SNAPSHOT_PATH
-            echo "Snapshot downloaded because it was not found in cache or is updated."
-          else
-            echo "Snapshot retrieved from cache."
-          fi
+          DOWNLOAD_URL=https://snapshots-testnet.stake-town.com/elys/elystestnet-1_latest.tar.lz4
+          curl -L $DOWNLOAD_URL -o $SNAPSHOT_PATH
         if: steps.cache-snapshot.outputs.cache-hit != 'true'
 
       - name: Retrieve latest binary
@@ -147,6 +141,11 @@ jobs:
             --timeout-next-block 100000 \
             --timeout-wait-for-node 100000
         if: steps.cache-snapshot.outputs.cache-hit != 'true'
+
+      - name: Save up space
+        run: |
+          rm -rf /tmp/genesis.json
+          rm -rf ~/.elys/config/genesis.json
 
       - name: Prepare second validator data
         run: |
