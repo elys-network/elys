@@ -8,7 +8,7 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/app"
-	aptypes "github.com/elys-network/elys/x/assetprofile/types"
+	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
 	commitmentkeeper "github.com/elys-network/elys/x/commitment/keeper"
 	"github.com/elys-network/elys/x/commitment/types"
 	"github.com/stretchr/testify/assert"
@@ -40,7 +40,7 @@ func TestCommitClaimedRewards(t *testing.T) {
 	keeper.SetCommitments(ctx, initialCommitments)
 
 	// Set assetprofile entry for denom
-	app.AssetprofileKeeper.SetEntry(ctx, aptypes.Entry{BaseDenom: denom, CommitEnabled: true})
+	app.AssetprofileKeeper.SetEntry(ctx, assetprofiletypes.Entry{BaseDenom: denom, CommitEnabled: true})
 
 	// Call the CommitClaimedRewards function
 	msg := types.MsgCommitClaimedRewards{

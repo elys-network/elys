@@ -4,6 +4,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/assetprofile/types"
+	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
 
 // SetEntry set a specific entry in the store from its index
@@ -63,4 +64,12 @@ func (k Keeper) GetAllEntry(ctx sdk.Context) (list []types.Entry) {
 	}
 
 	return
+}
+
+func (k Keeper) GetUsdcDenom(ctx sdk.Context) (string, bool) {
+	entry, found := k.GetEntry(ctx, ptypes.BaseCurrency)
+	if !found {
+		return ptypes.BaseCurrency, false
+	}
+	return entry.Denom, true
 }

@@ -7,7 +7,7 @@ import (
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	aptypes "github.com/elys-network/elys/x/assetprofile/types"
+	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
 	"github.com/elys-network/elys/x/commitment/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
@@ -15,7 +15,7 @@ import (
 func (k Keeper) UncommitTokens(ctx sdk.Context, addr sdk.AccAddress, denom string, amount math.Int) error {
 	assetProfile, found := k.assetProfileKeeper.GetEntry(ctx, denom)
 	if !found {
-		return errorsmod.Wrapf(aptypes.ErrAssetProfileNotFound, "denom: %s", denom)
+		return errorsmod.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "denom: %s", denom)
 	}
 
 	if !assetProfile.WithdrawEnabled {

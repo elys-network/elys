@@ -3,6 +3,7 @@ package distribution
 import (
 	"time"
 
+	abci "github.com/cometbft/cometbft/abci/types"
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/telemetry"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -12,9 +13,9 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/distribution/keeper"
 	distrtypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
+	assetprofilekeeper "github.com/elys-network/elys/x/assetprofile/keeper"
 	estakingkeeper "github.com/elys-network/elys/x/estaking/keeper"
-
-	abci "github.com/cometbft/cometbft/abci/types"
+	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
 
 var (
@@ -33,10 +34,11 @@ type AppModule struct {
 	// embed the Cosmos SDK's x/distribution AppModule
 	distr.AppModule
 
-	keeper         keeper.Keeper
-	accountKeeper  distrtypes.AccountKeeper
-	bankKeeper     distrtypes.BankKeeper
-	estakingKeeper *estakingkeeper.Keeper
+	keeper             keeper.Keeper
+	accountKeeper      distrtypes.AccountKeeper
+	bankKeeper         distrtypes.BankKeeper
+	estakingKeeper     *estakingkeeper.Keeper
+	assetprofileKeeper *assetprofilekeeper.Keeper
 
 	feeCollectorName string
 }
@@ -45,16 +47,20 @@ type AppModule struct {
 // AppModule constructor.
 func NewAppModule(
 	cdc codec.Codec, keeper keeper.Keeper, ak distrtypes.AccountKeeper,
-	bk distrtypes.BankKeeper, sk *estakingkeeper.Keeper, feeCollectorName string, subspace exported.Subspace,
+	bk distrtypes.BankKeeper,
+	sk *estakingkeeper.Keeper,
+	assetprofileKeeper *assetprofilekeeper.Keeper,
+	feeCollectorName string, subspace exported.Subspace,
 ) AppModule {
 	distrAppMod := distr.NewAppModule(cdc, keeper, ak, bk, sk, subspace)
 	return AppModule{
-		AppModule:        distrAppMod,
-		keeper:           keeper,
-		accountKeeper:    ak,
-		bankKeeper:       bk,
-		estakingKeeper:   sk,
-		feeCollectorName: feeCollectorName,
+		AppModule:          distrAppMod,
+		keeper:             keeper,
+		accountKeeper:      ak,
+		bankKeeper:         bk,
+		estakingKeeper:     sk,
+		assetprofileKeeper: assetprofileKeeper,
+		feeCollectorName:   feeCollectorName,
 	}
 }
 
@@ -72,6 +78,14 @@ func (am AppModule) BeginBlock(ctx sdk.Context, req abci.RequestBeginBlock) {
 func (am AppModule) RegisterInvariants(ir sdk.InvariantRegistry) {
 }
 
+func FilterDenoms(coins sdk.Coins, denoms ...string) sdk.Coins {
+	filtered := sdk.Coins{}
+	for _, denom := range denoms {
+		filtered = filtered.Add(sdk.NewCoin(denom, coins.AmountOf(denom)))
+	}
+	return filtered
+}
+
 // AllocateTokens handles distribution of the collected fees
 func (am AppModule) AllocateTokens(ctx sdk.Context) {
 	// fetch and clear the collected fees for distribution, since this is
@@ -79,7 +93,10 @@ func (am AppModule) AllocateTokens(ctx sdk.Context) {
 	// (and distributed to the current representatives)
 	feeCollector := am.accountKeeper.GetModuleAccount(ctx, am.feeCollectorName)
 	feesCollectedInt := am.bankKeeper.GetAllBalances(ctx, feeCollector.GetAddress())
-	feesCollected := sdk.NewDecCoinsFromCoins(feesCollectedInt...)
+
+	usdcDenom, _ := am.assetprofileKeeper.GetUsdcDenom(ctx)
+	filteredCoins := FilterDenoms(feesCollectedInt, usdcDenom, ptypes.Eden, ptypes.EdenB)
+	feesCollected := sdk.NewDecCoinsFromCoins(filteredCoins...)
 
 	// transfer collected fees to the distribution module account
 	err := am.bankKeeper.SendCoinsFromModuleToModule(ctx, am.feeCollectorName, distrtypes.ModuleName, feesCollectedInt)

@@ -65,6 +65,7 @@ func TestQueryRewards(t *testing.T) {
 	distrAppModule := exdistr.NewAppModule(
 		app.AppCodec(), app.DistrKeeper, app.AccountKeeper,
 		app.CommitmentKeeper, &app.EstakingKeeper,
+		&app.AssetprofileKeeper,
 		authtypes.FeeCollectorName, app.GetSubspace(distrtypes.ModuleName))
 	distrAppModule.AllocateTokens(ctx)
 

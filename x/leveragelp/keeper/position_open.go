@@ -95,11 +95,10 @@ func (k Keeper) ProcessOpenLong(ctx sdk.Context, position *types.Position, lever
 		return nil, err
 	}
 
-	entry, found := k.assetProfileKeeper.GetEntry(ctx, ptypes.BaseCurrency)
+	baseCurrency, found := k.assetProfileKeeper.GetUsdcDenom(ctx)
 	if !found {
 		return nil, errorsmod.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency)
 	}
-	baseCurrency := entry.Denom
 
 	if msg.CollateralAsset != baseCurrency {
 		return nil, types.ErrOnlyBaseCurrencyAllowed

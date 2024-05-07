@@ -118,11 +118,10 @@ func (k Keeper) GetDailyRewardsAmountForPool(ctx sdk.Context, poolId uint64) (sd
 	dailyEdenRewardsTotal := poolInfo.EdenRewardAmountGiven.
 		Quo(poolInfo.NumBlocks)
 
-	entry, found := k.assetProfileKeeper.GetEntry(ctx, ptypes.BaseCurrency)
+	baseCurrency, found := k.assetProfileKeeper.GetUsdcDenom(ctx)
 	if !found {
 		return sdk.ZeroDec(), sdk.Coins{}
 	}
-	baseCurrency := entry.Denom
 
 	rewardCoins := sdk.NewCoins(sdk.NewCoin(ptypes.Eden, dailyEdenRewardsTotal))
 	rewardCoins = rewardCoins.Add(sdk.NewCoin(baseCurrency, math.Int(dailyDexRewardsTotal)))

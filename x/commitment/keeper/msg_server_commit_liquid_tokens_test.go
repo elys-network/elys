@@ -7,7 +7,7 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/app"
-	aptypes "github.com/elys-network/elys/x/assetprofile/types"
+	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
 	"github.com/elys-network/elys/x/commitment/types"
 	"github.com/stretchr/testify/require"
 )
@@ -24,7 +24,7 @@ func TestCommitLiquidTokens(t *testing.T) {
 
 	// Set assetprofile entry for denom
 	denom := "amm/pool/1"
-	app.AssetprofileKeeper.SetEntry(ctx, aptypes.Entry{BaseDenom: denom, CommitEnabled: true})
+	app.AssetprofileKeeper.SetEntry(ctx, assetprofiletypes.Entry{BaseDenom: denom, CommitEnabled: true})
 
 	// Add initial funds to creator's account
 	coins := sdk.NewCoins(sdk.NewCoin(denom, sdk.NewInt(200)))

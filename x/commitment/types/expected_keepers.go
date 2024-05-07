@@ -3,7 +3,7 @@ package types
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth/types"
-	aptypes "github.com/elys-network/elys/x/assetprofile/types"
+	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
 )
 
 // AccountKeeper defines the expected account keeper used for simulations (noalias)
@@ -34,5 +34,5 @@ type StakingKeeper interface {
 
 // AssetProfileKeeper defines the expected interface needed to retrieve denom info
 type AssetProfileKeeper interface {
-	GetEntry(ctx sdk.Context, baseDenom string) (val aptypes.Entry, found bool)
+	GetEntry(ctx sdk.Context, baseDenom string) (val assetprofiletypes.Entry, found bool)
 }
