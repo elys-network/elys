@@ -40,7 +40,7 @@ jobs:
         id: cache-snapshot
         with:
           path: /tmp/snapshot.tar.lz4
-          key: ${{ runner.os }}-snapshot-${{ SNAPSHOT_BLOCK_HEIGHT }}
+          key: ${{ runner.os }}-snapshot-${SNAPSHOT_BLOCK_HEIGHT}
 
       - name: Retrieve latest snapshot
         run: |
