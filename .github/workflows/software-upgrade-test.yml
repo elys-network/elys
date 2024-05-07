@@ -66,6 +66,7 @@ jobs:
           echo "OLD_BINARY_PATH=$OLD_BINARY_PATH" >> $GITHUB_ENV
 
           # TODO: retrieve upgrade-assure and upload-snapshot binaries
+        if: steps.cache-snapshot.outputs.cache-hit != 'true'
 
       - name: Create git tag
         run: git tag v999.999.999
@@ -92,14 +93,17 @@ jobs:
       - name: Copy upgrade assure folder
         run: |
           cp -a ./cmd/upgrade-assure ./cmd/upgrade-assure-skip
+        if: steps.cache-snapshot.outputs.cache-hit != 'true'
 
       - name: Check out latest tag
         run: git checkout $LATEST_TAG
+        if: steps.cache-snapshot.outputs.cache-hit != 'true'
 
       # TODO: to remove when upgrade-assure binary is available in previous release
       - name: Copy old upgrade assure types.go file
         run: |
           cp -a ./scripts/upgrade-assure/types.go ./cmd/upgrade-assure-skip/types.go
+        if: steps.cache-snapshot.outputs.cache-hit != 'true'
 
       # TODO: to remove when upgrade-assure binary is available in previous release
       - name: Build old binaries
@@ -109,10 +113,11 @@ jobs:
           OLD_UPGRADE_ASSURE_BINARY_PATH=./build/old-upgrade-assure
           mv ./build/upgrade-assure-skip $OLD_UPGRADE_ASSURE_BINARY_PATH
           echo "OLD_UPGRADE_ASSURE_BINARY_PATH=$OLD_UPGRADE_ASSURE_BINARY_PATH" >> $GITHUB_ENV
+        if: steps.cache-snapshot.outputs.cache-hit != 'true'
 
       - name: Chain snapshot and export
         run: |
-          $OLD_UPGRADE_ASSURE_BINARY_PATH $SNAPSHOT_PATH $OLD_BINARY_PATH $NEW_BINARY_PATH \
+          GOMEMLIMIT=16GiB $OLD_UPGRADE_ASSURE_BINARY_PATH $SNAPSHOT_PATH $OLD_BINARY_PATH $NEW_BINARY_PATH \
             --skip-chain-init \
             --skip-node-start \
             --timeout-next-block 100000 \
@@ -121,7 +126,7 @@ jobs:
 
       - name: Chain initialization
         run: |
-          $OLD_UPGRADE_ASSURE_BINARY_PATH $SNAPSHOT_PATH $OLD_BINARY_PATH $NEW_BINARY_PATH \
+          GOMEMLIMIT=16GiB $OLD_UPGRADE_ASSURE_BINARY_PATH $SNAPSHOT_PATH $OLD_BINARY_PATH $NEW_BINARY_PATH \
             --skip-snapshot \
             --skip-node-start \
             --timeout-next-block 100000 \
@@ -133,7 +138,7 @@ jobs:
 
       - name: Create second validator
         run: |
-          $NEW_UPGRADE_ASSURE_BINARY_PATH $SNAPSHOT_PATH $OLD_BINARY_PATH $NEW_BINARY_PATH \
+          GOMEMLIMIT=16GiB $NEW_UPGRADE_ASSURE_BINARY_PATH $SNAPSHOT_PATH $OLD_BINARY_PATH $NEW_BINARY_PATH \
             --skip-snapshot \
             --skip-chain-init \
             --skip-prepare-validator-data \
@@ -145,7 +150,7 @@ jobs:
 
       - name: Prepare second validator data
         run: |
-          $NEW_UPGRADE_ASSURE_BINARY_PATH $SNAPSHOT_PATH $OLD_BINARY_PATH $NEW_BINARY_PATH \
+          GOMEMLIMIT=16GiB $NEW_UPGRADE_ASSURE_BINARY_PATH $SNAPSHOT_PATH $OLD_BINARY_PATH $NEW_BINARY_PATH \
             --skip-snapshot \
             --skip-chain-init \
             --skip-create-validator \
@@ -157,7 +162,7 @@ jobs:
 
       - name: Submit new proposal
         run: |
-          $NEW_UPGRADE_ASSURE_BINARY_PATH $SNAPSHOT_PATH $OLD_BINARY_PATH $NEW_BINARY_PATH \
+          GOMEMLIMIT=16GiB $NEW_UPGRADE_ASSURE_BINARY_PATH $SNAPSHOT_PATH $OLD_BINARY_PATH $NEW_BINARY_PATH \
             --skip-snapshot \
             --skip-chain-init \
             --skip-create-validator \
@@ -169,7 +174,7 @@ jobs:
 
       - name: Upgrade to new binary
         run: |
-          $NEW_UPGRADE_ASSURE_BINARY_PATH $SNAPSHOT_PATH $OLD_BINARY_PATH $NEW_BINARY_PATH \
+          GOMEMLIMIT=16GiB $NEW_UPGRADE_ASSURE_BINARY_PATH $SNAPSHOT_PATH $NEW_BINARY_PATH $NEW_BINARY_PATH \
             --skip-snapshot \
             --skip-chain-init \
             --skip-create-validator \
