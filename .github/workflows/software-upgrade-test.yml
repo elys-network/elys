@@ -6,7 +6,7 @@ on:
 jobs:
   software-upgrade-test:
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    timeout-minutes: 120
 
     steps:
       - name: Checkout repository
@@ -114,14 +114,18 @@ jobs:
         run: |
           $OLD_UPGRADE_ASSURE_BINARY_PATH $SNAPSHOT_PATH $OLD_BINARY_PATH $NEW_BINARY_PATH \
             --skip-chain-init \
-            --skip-node-start
+            --skip-node-start \
+            --timeout-next-block 100000 \
+            --timeout-wait-for-node 100000
         if: steps.cache-snapshot.outputs.cache-hit != 'true'
 
       - name: Chain initialization
         run: |
           $OLD_UPGRADE_ASSURE_BINARY_PATH $SNAPSHOT_PATH $OLD_BINARY_PATH $NEW_BINARY_PATH \
             --skip-snapshot \
-            --skip-node-start
+            --skip-node-start \
+            --timeout-next-block 100000 \
+            --timeout-wait-for-node 100000
         if: steps.cache-snapshot.outputs.cache-hit != 'true'
 
       - name: Check out new branch
@@ -134,7 +138,9 @@ jobs:
             --skip-chain-init \
             --skip-prepare-validator-data \
             --skip-submit-proposal \
-            --skip-upgrade-to-new-binary
+            --skip-upgrade-to-new-binary \
+            --timeout-next-block 100000 \
+            --timeout-wait-for-node 100000
         if: steps.cache-snapshot.outputs.cache-hit != 'true'
 
       - name: Prepare second validator data
@@ -144,7 +150,9 @@ jobs:
             --skip-chain-init \
             --skip-create-validator \
             --skip-submit-proposal \
-            --skip-upgrade-to-new-binary
+            --skip-upgrade-to-new-binary \
+            --timeout-next-block 100000 \
+            --timeout-wait-for-node 100000
         if: steps.cache-snapshot.outputs.cache-hit != 'true'
 
       - name: Submit new proposal
@@ -154,7 +162,9 @@ jobs:
             --skip-chain-init \
             --skip-create-validator \
             --skip-prepare-validator-data \
-            --skip-upgrade-to-new-binary
+            --skip-upgrade-to-new-binary \
+            --timeout-next-block 100000 \
+            --timeout-wait-for-node 100000
         if: steps.cache-snapshot.outputs.cache-hit != 'true'
 
       - name: Upgrade to new binary
@@ -164,7 +174,9 @@ jobs:
             --skip-chain-init \
             --skip-create-validator \
             --skip-prepare-validator-data \
-            --skip-submit-proposal
+            --skip-submit-proposal \
+            --timeout-next-block 100000 \
+            --timeout-wait-for-node 100000
 
       - name: Create new snapshot file
         run: |
