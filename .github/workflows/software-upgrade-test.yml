@@ -27,7 +27,7 @@ jobs:
           echo "Info.json downloaded to check snapshot version."
 
           # retrieve blockHeight field value from info.json
-          SNAPSHOT_BLOCK_HEIGHT=$(jq -r '.blockHeight' /tmp/info.json)
+          SNAPSHOT_BLOCK_HEIGHT=$(cat /tmp/info.json | awk -F'"' '/"blockHeight":/{print $4}')
           echo "SNAPSHOT_BLOCK_HEIGHT=$SNAPSHOT_BLOCK_HEIGHT" >> $GITHUB_ENV
           echo "Snapshot block height: $SNAPSHOT_BLOCK_HEIGHT"
 
