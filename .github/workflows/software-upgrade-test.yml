@@ -88,7 +88,7 @@ jobs:
       # TODO: to remove when upgrade-assure binary is available in previous release
       - name: Copy upgrade assure folder
         run: |
-          cp -a $NEW_UPGRADE_ASSURE_BINARY_PATH ./cmd/upgrade-assure-skip
+          cp -a ./cmd/upgrade-assure ./cmd/upgrade-assure-skip
 
       - name: Check out latest tag
         run: git checkout $LATEST_TAG
