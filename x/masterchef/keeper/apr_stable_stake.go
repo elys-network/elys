@@ -57,7 +57,7 @@ func (k Keeper) CalculateStableStakeApr(ctx sdk.Context, query *types.QueryStabl
 			Quo(edenDenomPrice)
 		stableStakeEdenAmount = sdk.MinDec(stableStakeEdenAmount, poolMaxEdenAmount)
 
-		// Eden Apr for usdc earn program = {(Eden allocated for stable stake pool per day*365*price{eden/usdc}/(total usdc deposit)}*100
+		// Eden Apr for usdc earn program
 		apr := stableStakeEdenAmount.
 			MulInt(lpIncentive.TotalBlocksPerYear).
 			Mul(edenDenomPrice).
