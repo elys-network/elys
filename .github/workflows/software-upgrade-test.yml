@@ -36,6 +36,8 @@ jobs:
           echo "LATEST_TAG=$LATEST_TAG" >> $GITHUB_ENV
           echo "OLD_BINARY_PATH=$OLD_BINARY_PATH" >> $GITHUB_ENV
 
+          # TODO: retrieve upgrade-assure and upload-snapshot binaries
+
       - name: Create git tag
         run: git tag v999.999.999
 
@@ -57,13 +59,24 @@ jobs:
           UPLOAD_SNAPSHOT_BINARY_PATH=./build/upload-snapshot
           echo "UPLOAD_SNAPSHOT_BINARY_PATH=$UPLOAD_SNAPSHOT_BINARY_PATH" >> $GITHUB_ENV
 
+      # TODO: to remove when upgrade-assure binary is available in previous release
+      - name: Copy upgrade assure folder
+        run: |
+          cp -a $NEW_UPGRADE_ASSURE_BINARY_PATH ./cmd/upgrade-assure-skip
+
       - name: Check out latest tag
         run: git checkout $LATEST_TAG
 
+      # TODO: to remove when upgrade-assure binary is available in previous release
+      - name: Copy old upgrade assure types.go file
+        run: |
+          cp -a ./scripts/upgrade-assure/types.go ./cmd/upgrade-assure-skip/types.go
+
+      # TODO: to remove when upgrade-assure binary is available in previous release
       - name: Build old binaries
         run: |
           # build old upgrade assure binary
-          make build-upgrade-assure
+          go build -o build ./cmd/upgrade-assure-skip
           OLD_UPGRADE_ASSURE_BINARY_PATH=./build/old-upgrade-assure
           mv ./build/upgrade-assure $OLD_UPGRADE_ASSURE_BINARY_PATH
           echo "OLD_UPGRADE_ASSURE_BINARY_PATH=$OLD_UPGRADE_ASSURE_BINARY_PATH" >> $GITHUB_ENV
