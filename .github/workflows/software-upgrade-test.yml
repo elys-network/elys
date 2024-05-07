@@ -20,6 +20,13 @@ jobs:
         with:
           go-version: "1.21"
 
+      - name: get latest tag
+        run: |
+          git fetch --tags
+          LATEST_TAG=$(git describe --tags `git rev-list --tags --max-count=1`)
+          echo "LATEST_TAG=$LATEST_TAG" >> $GITHUB_ENV
+          echo "Latest tag: $LATEST_TAG"
+
       - name: Retrieve info.json and set snapshot path
         run: |
           DOWNLOAD_URL=https://snapshots-testnet.stake-town.com/elys/info.json
@@ -35,32 +42,30 @@ jobs:
           SNAPSHOT_PATH=/tmp/snapshot.tar.lz4
           echo "SNAPSHOT_PATH=$SNAPSHOT_PATH" >> $GITHUB_ENV
 
-      - name: Cache Snapshot and Directories
+      - name: Cache Directories
         uses: actions/cache@v4
-        id: cache-snapshot
+        id: cache-directories
         with:
           path: |
             ~/.elys
             ~/.elys2
-          key: ${{ runner.os }}-snapshot-${{ env.SNAPSHOT_BLOCK_HEIGHT }}
+          key: ${{ runner.os }}-directories-${{ env.LATEST_TAG }}
 
       - name: Retrieve latest snapshot
         run: |
           DOWNLOAD_URL=https://snapshots-testnet.stake-town.com/elys/elystestnet-1_latest.tar.lz4
           curl -L $DOWNLOAD_URL -o $SNAPSHOT_PATH
-        if: steps.cache-snapshot.outputs.cache-hit != 'true'
+        if: steps.cache-directories.outputs.cache-hit != 'true'
 
       - name: Retrieve latest binary
         run: |
-          LATEST_TAG=$(git describe --tags `git rev-list --tags --max-count=1`)
           DOWNLOAD_URL=https://github.com/elys-network/elys/releases/download/$LATEST_TAG/elysd-$LATEST_TAG-linux-amd64
           OLD_BINARY_PATH=/tmp/elysd-$LATEST_TAG
           curl -L $DOWNLOAD_URL -o $OLD_BINARY_PATH && chmod +x $OLD_BINARY_PATH
-          echo "LATEST_TAG=$LATEST_TAG" >> $GITHUB_ENV
           echo "OLD_BINARY_PATH=$OLD_BINARY_PATH" >> $GITHUB_ENV
 
           # TODO: retrieve upgrade-assure and upload-snapshot binaries
-        if: steps.cache-snapshot.outputs.cache-hit != 'true'
+        if: steps.cache-directories.outputs.cache-hit != 'true'
 
       - name: Create git tag
         run: git tag v999.999.999
@@ -87,17 +92,17 @@ jobs:
       - name: Copy upgrade assure folder
         run: |
           cp -a ./cmd/upgrade-assure ./cmd/upgrade-assure-skip
-        if: steps.cache-snapshot.outputs.cache-hit != 'true'
+        if: steps.cache-directories.outputs.cache-hit != 'true'
 
       - name: Check out latest tag
         run: git checkout $LATEST_TAG
-        if: steps.cache-snapshot.outputs.cache-hit != 'true'
+        if: steps.cache-directories.outputs.cache-hit != 'true'
 
       # TODO: to remove when upgrade-assure binary is available in previous release
       - name: Copy old upgrade assure types.go file
         run: |
           cp -a ./scripts/upgrade-assure/types.go ./cmd/upgrade-assure-skip/types.go
-        if: steps.cache-snapshot.outputs.cache-hit != 'true'
+        if: steps.cache-directories.outputs.cache-hit != 'true'
 
       # TODO: to remove when upgrade-assure binary is available in previous release
       - name: Build old binaries
@@ -107,7 +112,7 @@ jobs:
           OLD_UPGRADE_ASSURE_BINARY_PATH=./build/old-upgrade-assure
           mv ./build/upgrade-assure-skip $OLD_UPGRADE_ASSURE_BINARY_PATH
           echo "OLD_UPGRADE_ASSURE_BINARY_PATH=$OLD_UPGRADE_ASSURE_BINARY_PATH" >> $GITHUB_ENV
-        if: steps.cache-snapshot.outputs.cache-hit != 'true'
+        if: steps.cache-directories.outputs.cache-hit != 'true'
 
       - name: Chain snapshot and export
         run: |
@@ -116,7 +121,7 @@ jobs:
             --skip-node-start \
             --timeout-next-block 100000 \
             --timeout-wait-for-node 100000
-        if: steps.cache-snapshot.outputs.cache-hit != 'true'
+        if: steps.cache-directories.outputs.cache-hit != 'true'
 
       - name: Chain initialization
         run: |
@@ -125,7 +130,7 @@ jobs:
             --skip-node-start \
             --timeout-next-block 100000 \
             --timeout-wait-for-node 100000
-        if: steps.cache-snapshot.outputs.cache-hit != 'true'
+        if: steps.cache-directories.outputs.cache-hit != 'true'
 
       - name: Check out new branch
         run: git checkout ${{ github.head_ref }}
@@ -140,7 +145,7 @@ jobs:
             --skip-upgrade-to-new-binary \
             --timeout-next-block 100000 \
             --timeout-wait-for-node 100000
-        if: steps.cache-snapshot.outputs.cache-hit != 'true'
+        if: steps.cache-directories.outputs.cache-hit != 'true'
 
       - name: Save up space
         run: |
@@ -157,7 +162,7 @@ jobs:
             --skip-upgrade-to-new-binary \
             --timeout-next-block 100000 \
             --timeout-wait-for-node 100000
-        if: steps.cache-snapshot.outputs.cache-hit != 'true'
+        if: steps.cache-directories.outputs.cache-hit != 'true'
 
       - name: Submit new proposal
         run: |
@@ -169,7 +174,7 @@ jobs:
             --skip-upgrade-to-new-binary \
             --timeout-next-block 100000 \
             --timeout-wait-for-node 100000
-        if: steps.cache-snapshot.outputs.cache-hit != 'true'
+        if: steps.cache-directories.outputs.cache-hit != 'true'
 
       - name: Upgrade to new binary
         run: |
