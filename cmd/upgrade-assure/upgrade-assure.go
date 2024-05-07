@@ -223,6 +223,9 @@ func main() {
 					if !skipUnbondValidator {
 						operatorAddress2 := queryOperatorAddress(newBinaryPath, homePath, keyringBackend, validatorKeyName2)
 
+						// print operator address 2
+						log.Printf(ColorGreen+"Operator address 2: %v", operatorAddress2)
+
 						// unbound the second validator power
 						unbondValidator(newBinaryPath, validatorKeyName2, operatorAddress2, validatorSelfDelegation2, keyringBackend, chainId, rpc, broadcastMode, homePath)
 

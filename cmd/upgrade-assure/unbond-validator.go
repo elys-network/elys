@@ -13,7 +13,7 @@ func unbondValidator(cmdPath, validatorKeyName, operatorAddress, validatorSelfDe
 		"staking",
 		"unbond",
 		operatorAddress,
-		validatorSelfDelegation,
+		validatorSelfDelegation + "uelys",
 		"--from", validatorKeyName,
 		"--keyring-backend", keyringBackend,
 		"--chain-id", chainId,
@@ -37,6 +37,9 @@ func unbondValidator(cmdPath, validatorKeyName, operatorAddress, validatorSelfDe
 	if err != nil {
 		log.Fatalf(ColorRed+"Failed to parse transaction hash: %v", err)
 	}
+
+	// If execution reaches here, the command was successful
+	log.Printf(ColorYellow+"Unbonded validator: %s, self-delegation: %s", operatorAddress, validatorSelfDelegation)
 
 	waitForTxConfirmation(cmdPath, rpc, txHash, 5*time.Minute)
 }
