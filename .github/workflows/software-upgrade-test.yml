@@ -184,9 +184,10 @@ jobs:
 
       - name: Create new snapshot file
         run: |
-          NEW_SNAPSHOT_PATH=/tmp/elys-snapshot-${{ github.head_ref }}.tar.lz4
+          SANITIZED_HEAD_REF=$(echo "${{ github.head_ref }}" | sed 's|/|_|g')
+          NEW_SNAPSHOT_PATH="/tmp/elys-snapshot-${SANITIZED_HEAD_REF}.tar.lz4"
           echo "NEW_SNAPSHOT_PATH=$NEW_SNAPSHOT_PATH" >> $GITHUB_ENV
-          tar -cf - ~/.elys | lz4 -z - > $NEW_SNAPSHOT_PATH
+          tar -cf - ~/.elys | lz4 -z - > "$NEW_SNAPSHOT_PATH"
 
       - name: Upload snapshot
         run: |

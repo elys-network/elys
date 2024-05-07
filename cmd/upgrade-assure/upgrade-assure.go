@@ -19,7 +19,7 @@ func main() {
 			snapshotUrl, oldBinaryUrl, newBinaryUrl := getArgs(args)
 			// global flags
 			onlyStartWithNewBinary, skipSnapshot, skipChainInit, skipNodeStart, skipProposal, skipBinary,
-				skipCreateValidator, skipPrepareValidatorData, skipSubmitProposal, skipUpgradeToNewBinary,
+				skipCreateValidator, skipPrepareValidatorData, skipSubmitProposal, skipUpgradeToNewBinary, skipUnbondValidator,
 				chainId, keyringBackend, genesisFilePath, broadcastMode, dbEngine,
 				// timeouts
 				timeOutToWaitForService, timeOutToWaitForNextBlock,
@@ -220,6 +220,16 @@ func main() {
 					queryUpgradeApplied(newBinaryPath, rpc, newVersion)
 					queryUpgradeApplied(newBinaryPath, rpc2, newVersion)
 
+					if !skipUnbondValidator {
+						operatorAddress2 := queryOperatorAddress(newBinaryPath, homePath, keyringBackend, validatorKeyName2)
+
+						// unbound the second validator power
+						unbondValidator(newBinaryPath, validatorKeyName2, operatorAddress2, validatorSelfDelegation2, keyringBackend, chainId, rpc, broadcastMode, homePath)
+
+						// wait for next block
+						waitForNextBlock(newBinaryPath, rpc, moniker, timeOutForNextBlock)
+					}
+
 					// stop new binaries
 					stop(newBinaryCmd, newBinaryCmd2)
 				}
@@ -241,6 +251,7 @@ func main() {
 	rootCmd.PersistentFlags().Bool(flagSkipPrepareValidatorData, false, "skip prepare validator data")
 	rootCmd.PersistentFlags().Bool(flagSkipSubmitProposal, false, "skip submit proposal")
 	rootCmd.PersistentFlags().Bool(flagSkipUpgradeToNewBinary, false, "skip upgrade to new binary")
+	rootCmd.PersistentFlags().Bool(flagSkipUnbondValidator, false, "skip unbond validator")
 	rootCmd.PersistentFlags().String(flagChainId, "elystestnet-1", "chain id")
 	rootCmd.PersistentFlags().String(flagKeyringBackend, "test", "keyring backend")
 	rootCmd.PersistentFlags().String(flagGenesisFilePath, "/tmp/genesis.json", "genesis file path")

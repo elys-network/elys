@@ -19,6 +19,7 @@ const (
 	flagSkipPrepareValidatorData = "skip-prepare-validator-data"
 	flagSkipSubmitProposal       = "skip-submit-proposal"
 	flagSkipUpgradeToNewBinary   = "skip-upgrade-to-new-binary"
+	flagSkipUnbondValidator      = "skip-unbond-validator"
 	flagChainId                  = "chain-id"
 	flagKeyringBackend           = "keyring-backend"
 	flagGenesisFilePath          = "genesis-file-path"
@@ -66,6 +67,7 @@ func getFlags(cmd *cobra.Command) (
 	skipPrepareValidatorData bool,
 	skipSubmitProposal bool,
 	skipUpgradeToNewBinary bool,
+	skipUnbondValidator bool,
 	chainId string,
 	keyringBackend string,
 	genesisFilePath string,
@@ -149,6 +151,11 @@ func getFlags(cmd *cobra.Command) (
 	skipUpgradeToNewBinary, _ = cmd.Flags().GetBool(flagSkipUpgradeToNewBinary)
 	if skipUpgradeToNewBinary {
 		log.Printf(ColorYellow + "skipping upgrade to new binary")
+	}
+
+	skipUnbondValidator, _ = cmd.Flags().GetBool(flagSkipUnbondValidator)
+	if skipUnbondValidator {
+		log.Printf(ColorYellow + "skipping unbond validator")
 	}
 
 	chainId, _ = cmd.Flags().GetString(flagChainId)
