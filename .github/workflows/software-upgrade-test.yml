@@ -35,11 +35,14 @@ jobs:
           SNAPSHOT_PATH=/tmp/snapshot.tar.lz4
           echo "SNAPSHOT_PATH=$SNAPSHOT_PATH" >> $GITHUB_ENV
 
-      - name: Cache Snapshot
+      - name: Cache Snapshot and Directories
         uses: actions/cache@v2
         id: cache-snapshot
         with:
-          path: /tmp/snapshot.tar.lz4
+          path: |
+            /tmp/snapshot.tar.lz4
+            ~/.elys
+            ~/.elys2
           key: ${{ runner.os }}-snapshot-${{ env.SNAPSHOT_BLOCK_HEIGHT }}
 
       - name: Retrieve latest snapshot
@@ -104,7 +107,7 @@ jobs:
           # build old upgrade assure binary
           go build -o build ./cmd/upgrade-assure-skip
           OLD_UPGRADE_ASSURE_BINARY_PATH=./build/old-upgrade-assure
-          mv ./build/upgrade-assure $OLD_UPGRADE_ASSURE_BINARY_PATH
+          mv ./build/upgrade-assure-skip $OLD_UPGRADE_ASSURE_BINARY_PATH
           echo "OLD_UPGRADE_ASSURE_BINARY_PATH=$OLD_UPGRADE_ASSURE_BINARY_PATH" >> $GITHUB_ENV
 
       - name: Chain snapshot and export
@@ -112,12 +115,14 @@ jobs:
           $OLD_UPGRADE_ASSURE_BINARY_PATH $SNAPSHOT_PATH $OLD_BINARY_PATH $NEW_BINARY_PATH \
             --skip-chain-init \
             --skip-node-start
+        if: steps.cache-snapshot.outputs.cache-hit != 'true'
 
       - name: Chain initialization
         run: |
           $OLD_UPGRADE_ASSURE_BINARY_PATH $SNAPSHOT_PATH $OLD_BINARY_PATH $NEW_BINARY_PATH \
             --skip-snapshot \
             --skip-node-start
+        if: steps.cache-snapshot.outputs.cache-hit != 'true'
 
       - name: Check out new branch
         run: git checkout ${{ github.head_ref }}
@@ -130,6 +135,7 @@ jobs:
             --skip-prepare-validator-data \
             --skip-submit-proposal \
             --skip-upgrade-to-new-binary
+        if: steps.cache-snapshot.outputs.cache-hit != 'true'
 
       - name: Prepare second validator data
         run: |
@@ -139,6 +145,7 @@ jobs:
             --skip-create-validator \
             --skip-submit-proposal \
             --skip-upgrade-to-new-binary
+        if: steps.cache-snapshot.outputs.cache-hit != 'true'
 
       - name: Submit new proposal
         run: |
@@ -148,6 +155,7 @@ jobs:
             --skip-create-validator \
             --skip-prepare-validator-data \
             --skip-upgrade-to-new-binary
+        if: steps.cache-snapshot.outputs.cache-hit != 'true'
 
       - name: Upgrade to new binary
         run: |
