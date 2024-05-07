@@ -73,4 +73,6 @@ type AssetProfileKeeper interface {
 	GetEntry(ctx sdk.Context, baseDenom string) (val assetprofiletypes.Entry, found bool)
 	// GetEntryByDenom returns a entry from its denom value
 	GetEntryByDenom(ctx sdk.Context, denom string) (val assetprofiletypes.Entry, found bool)
+	// GetUsdcDenom returns USDC denom
+	GetUsdcDenom(ctx sdk.Context) (string, bool)
 }

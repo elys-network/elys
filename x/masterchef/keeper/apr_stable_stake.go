@@ -18,23 +18,21 @@ func (k Keeper) CalculateStableStakeApr(ctx sdk.Context, query *types.QueryStabl
 	defer k.SetParams(ctx, params)
 
 	// If we don't have enough params
-	if params.LpIncentives == nil {
-		return sdk.ZeroInt(), errorsmod.Wrap(types.ErrNoInflationaryParams, "no inflationary params available")
-	}
-
-	entry, found := k.assetProfileKeeper.GetEntry(ctx, ptypes.BaseCurrency)
-	if !found {
-		return sdk.ZeroInt(), errorsmod.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency)
-	}
-
-	baseCurrency := entry.Denom
-	lpIncentive := params.LpIncentives
-
-	if lpIncentive.TotalBlocksPerYear.IsZero() {
-		return sdk.ZeroInt(), errorsmod.Wrap(types.ErrNoInflationaryParams, "invalid inflationary params")
-	}
-
 	if query.Denom == ptypes.Eden {
+		lpIncentive := params.LpIncentives
+		if lpIncentive == nil {
+			return sdk.ZeroInt(), errorsmod.Wrap(types.ErrNoInflationaryParams, "no inflationary params available")
+		}
+
+		if lpIncentive.TotalBlocksPerYear.IsZero() {
+			return sdk.ZeroInt(), nil
+		}
+
+		baseCurrency, found := k.assetProfileKeeper.GetUsdcDenom(ctx)
+		if !found {
+			return sdk.ZeroInt(), errorsmod.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency)
+		}
+
 		stableTvl := k.stableKeeper.TVL(ctx, k.oracleKeeper, baseCurrency)
 		if stableTvl.IsZero() {
 			return sdk.ZeroInt(), nil
@@ -59,9 +57,9 @@ func (k Keeper) CalculateStableStakeApr(ctx sdk.Context, query *types.QueryStabl
 			Quo(edenDenomPrice)
 		stableStakeEdenAmount = sdk.MinDec(stableStakeEdenAmount, poolMaxEdenAmount)
 
-		// Eden Apr for usdc earn program = {(Eden allocated for stable stake pool per day*365*price{eden/usdc}/(total usdc deposit)}*100
+		// Eden Apr for usdc earn program
 		apr := stableStakeEdenAmount.
-			MulInt(sdk.NewInt(ptypes.DaysPerYear)).
+			MulInt(lpIncentive.TotalBlocksPerYear).
 			Mul(edenDenomPrice).
 			MulInt(sdk.NewInt(100)).
 			Quo(stableTvl)

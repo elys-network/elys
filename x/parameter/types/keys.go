@@ -38,9 +38,6 @@ const (
 	// BaseDecimal
 	BASE_DECIMAL = 6
 
-	// Days per year
-	DaysPerYear = 365
-
 	// Return ok
 	RES_OK = uint64(200)
 )

@@ -8,7 +8,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/auth/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
-	aptypes "github.com/elys-network/elys/x/assetprofile/types"
+	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
 	ctypes "github.com/elys-network/elys/x/commitment/types"
 	oracletypes "github.com/elys-network/elys/x/oracle/types"
 	stabletypes "github.com/elys-network/elys/x/stablestake/types"
@@ -120,7 +120,9 @@ type AccountedPoolKeeper interface {
 
 // AssetProfileKeeper defines the expected interface needed to retrieve denom info
 type AssetProfileKeeper interface {
-	GetEntry(ctx sdk.Context, baseDenom string) (val aptypes.Entry, found bool)
+	GetEntry(ctx sdk.Context, baseDenom string) (val assetprofiletypes.Entry, found bool)
+	// GetUsdcDenom returns USDC denom
+	GetUsdcDenom(ctx sdk.Context) (string, bool)
 }
 
 // StableStakeKeeper defines the expected stablestake keeper used for simulations (noalias)

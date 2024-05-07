@@ -10,7 +10,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	simapp "github.com/elys-network/elys/app"
-	aptypes "github.com/elys-network/elys/x/assetprofile/types"
+	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
 	commitmentkeeper "github.com/elys-network/elys/x/commitment/keeper"
 	"github.com/elys-network/elys/x/commitment/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
@@ -78,7 +78,7 @@ func TestLiquidVestWithExceed(t *testing.T) {
 	keeper.SetCommitments(ctx, commitments)
 
 	// Set assetprofile entry for denom
-	app.AssetprofileKeeper.SetEntry(ctx, aptypes.Entry{BaseDenom: ptypes.Eden, CommitEnabled: true})
+	app.AssetprofileKeeper.SetEntry(ctx, assetprofiletypes.Entry{BaseDenom: ptypes.Eden, CommitEnabled: true})
 
 	// Execute the Vest function
 	_, err = msgServer.VestLiquid(ctx, vestMsg)

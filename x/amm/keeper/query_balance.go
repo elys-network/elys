@@ -33,11 +33,10 @@ func (k Keeper) Balance(goCtx context.Context, req *types.QueryBalanceRequest) (
 		claimed := commitment.GetClaimedForDenom(denom)
 		commitBalance := sdk.NewCoin(denom, claimed)
 
-		entry, found := k.assetProfileKeeper.GetEntry(ctx, paramtypes.BaseCurrency)
+		baseCurrency, found := k.assetProfileKeeper.GetUsdcDenom(ctx)
 		if !found {
 			return nil, errorsmod.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", paramtypes.BaseCurrency)
 		}
-		baseCurrency := entry.Denom
 
 		// If it is USDC, we should add bank module balance as well.
 		if denom == baseCurrency {

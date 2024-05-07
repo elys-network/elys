@@ -148,11 +148,10 @@ func (k Keeper) CanDistributeStakingRewards(ctx sdk.Context) bool {
 }
 
 func (k Keeper) UpdateStakersRewards(ctx sdk.Context) error {
-	entry, found := k.assetProfileKeeper.GetEntry(ctx, ptypes.BaseCurrency)
+	baseCurrency, found := k.assetProfileKeeper.GetUsdcDenom(ctx)
 	if !found {
 		return errorsmod.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency)
 	}
-	baseCurrency := entry.Denom
 
 	// USDC amount in sdk.Dec type
 	feeCollectorAddr := authtypes.NewModuleAddress(authtypes.FeeCollectorName)

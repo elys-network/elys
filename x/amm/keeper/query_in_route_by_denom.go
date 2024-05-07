@@ -19,11 +19,10 @@ func (k Keeper) InRouteByDenom(goCtx context.Context, req *types.QueryInRouteByD
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	entry, found := k.assetProfileKeeper.GetEntry(ctx, ptypes.BaseCurrency)
+	baseCurrency, found := k.assetProfileKeeper.GetUsdcDenom(ctx)
 	if !found {
 		return nil, errorsmod.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency)
 	}
-	baseCurrency := entry.Denom
 
 	inRoute, err := k.CalcInRouteByDenom(ctx, req.DenomIn, req.DenomOut, baseCurrency)
 	if err != nil {

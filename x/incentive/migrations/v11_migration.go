@@ -1,6 +1,8 @@
 package migrations
 
 import (
+	"fmt"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	distrtypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
@@ -13,6 +15,8 @@ import (
 )
 
 func (m Migrator) V11Migration(ctx sdk.Context) error {
+	fmt.Println("Running incentive v11 migration ...")
+	fmt.Println("1) Running PoolInfos migration ...")
 	// initialize pool infos from incentive module
 	incentiveParams := m.incentiveKeeper.GetParams(ctx)
 	for _, poolInfo := range incentiveParams.PoolInfos {
@@ -30,6 +34,7 @@ func (m Migrator) V11Migration(ctx sdk.Context) error {
 		})
 	}
 
+	fmt.Println("2) Setting masterchef params ...")
 	// initiate masterchef params
 	m.masterchefKeeper.SetParams(ctx, mastercheftypes.NewParams(
 		nil,
@@ -43,6 +48,7 @@ func (m Migrator) V11Migration(ctx sdk.Context) error {
 		"elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3",
 	))
 
+	fmt.Println("3) Running init genesis for estaking ...")
 	// initiate estaking module data
 	m.estakingKeeper.InitGenesis(ctx, estakingtypes.GenesisState{
 		Params: estakingtypes.Params{
@@ -58,6 +64,7 @@ func (m Migrator) V11Migration(ctx sdk.Context) error {
 		},
 	})
 
+	fmt.Println("4) Moving staking snapshots to estaking ...")
 	// initiate delegation snapshot
 	stakedSnapshots := m.incentiveKeeper.GetAllElysStaked(ctx)
 	for _, snap := range stakedSnapshots {
@@ -67,9 +74,11 @@ func (m Migrator) V11Migration(ctx sdk.Context) error {
 		})
 	}
 
+	fmt.Println("5) Running InitGenesis for distribution ...")
 	// initiate missing distribution module data
 	m.distrKeeper.InitGenesis(ctx, *distrtypes.DefaultGenesisState())
 
+	fmt.Println("6) Running validator creation hooks ...")
 	// execute missing validator creation hooks
 	validators := m.estakingKeeper.Keeper.GetAllValidators(ctx)
 	for _, val := range validators {
@@ -79,11 +88,16 @@ func (m Migrator) V11Migration(ctx sdk.Context) error {
 		}
 	}
 
+	fmt.Println("7) Running delegation hooks ...")
 	// execute missing delegation creation hooks
 	allDelegations := m.estakingKeeper.Keeper.GetAllDelegations(ctx)
 	for _, delegation := range allDelegations {
 		delAddr := sdk.MustAccAddressFromBech32(delegation.DelegatorAddress)
 		valAddr, err := sdk.ValAddressFromBech32(delegation.ValidatorAddress)
+		if err != nil {
+			panic(err)
+		}
+		err = m.estakingKeeper.Hooks().BeforeDelegationCreated(ctx, delAddr, valAddr)
 		if err != nil {
 			panic(err)
 		}
@@ -93,6 +107,7 @@ func (m Migrator) V11Migration(ctx sdk.Context) error {
 		}
 	}
 
+	fmt.Println("8) Running commitment migrations ...")
 	// Update all commitments (move all unclaimed into claimed)
 	// and execute missing eden/edenb commitment hooks
 	edenValAddr := sdk.ValAddress(authtypes.NewModuleAddress(ptypes.Eden))
@@ -150,5 +165,6 @@ func (m Migrator) V11Migration(ctx sdk.Context) error {
 		}
 	}
 
+	fmt.Println("Finished incentive v11 migration  ...")
 	return nil
 }

@@ -31,8 +31,6 @@ func NewMessenger(keeper *keeper.Keeper, stakingKeeper *stakingkeeper.Keeper, as
 
 func (m *Messenger) HandleMsg(ctx sdk.Context, contractAddr sdk.AccAddress, contractIBCPortID string, msg wasmbindingstypes.ElysMsg) ([]sdk.Event, [][]byte, error) {
 	switch {
-	case msg.CommitmentCommitLiquidTokens != nil:
-		return m.msgCommitLiquidTokens(ctx, contractAddr, msg.CommitmentCommitLiquidTokens)
 	case msg.CommitmentCommitUnclaimedRewards != nil:
 		return m.msgCommitClaimedRewards(ctx, contractAddr, msg.CommitmentCommitUnclaimedRewards)
 	case msg.CommitmentUncommitTokens != nil:

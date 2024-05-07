@@ -6,7 +6,7 @@ import (
 	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	simapp "github.com/elys-network/elys/app"
-	aptypes "github.com/elys-network/elys/x/assetprofile/types"
+	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
 	commkeeper "github.com/elys-network/elys/x/commitment/keeper"
 	ctypes "github.com/elys-network/elys/x/commitment/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
@@ -85,7 +85,7 @@ func TestBurnEdenBFromEdenUncommitted(t *testing.T) {
 	committed = committed.Add(uedenToken, uedenBToken)
 
 	// Set assetprofile entry for denom
-	app.AssetprofileKeeper.SetEntry(ctx, aptypes.Entry{BaseDenom: ptypes.Eden, CommitEnabled: true, WithdrawEnabled: true})
+	app.AssetprofileKeeper.SetEntry(ctx, assetprofiletypes.Entry{BaseDenom: ptypes.Eden, CommitEnabled: true, WithdrawEnabled: true})
 
 	commitment := app.CommitmentKeeper.GetCommitments(ctx, genAccount.String())
 	commitment.Claimed = commitment.Claimed.Add(committed...)

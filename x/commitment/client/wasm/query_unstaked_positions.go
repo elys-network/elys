@@ -10,7 +10,6 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	commitmenttypes "github.com/elys-network/elys/x/commitment/types"
-	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
 
 func (oq *Querier) queryUnStakedPositions(ctx sdk.Context, query *commitmenttypes.QueryValidatorsRequest) ([]byte, error) {
@@ -37,9 +36,8 @@ func (oq *Querier) queryUnStakedPositions(ctx sdk.Context, query *commitmenttype
 
 func (oq *Querier) BuildUnStakedPositionResponseCW(ctx sdk.Context, unbondingDelegations []stakingtypes.UnbondingDelegation, totalBonded cosmos_sdk_math.Int, delegatorAddress string) []commitmenttypes.UnstakedPosition {
 	edenDenomPrice := sdk.ZeroDec()
-	entry, found := oq.assetKeeper.GetEntry(ctx, ptypes.BaseCurrency)
+	baseCurrency, found := oq.assetKeeper.GetUsdcDenom(ctx)
 	if found {
-		baseCurrency := entry.Denom
 		edenDenomPrice = oq.ammKeeper.GetEdenDenomPrice(ctx, baseCurrency)
 	}
 

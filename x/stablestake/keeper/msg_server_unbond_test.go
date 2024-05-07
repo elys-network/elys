@@ -7,14 +7,12 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
-	commitmentkeeper "github.com/elys-network/elys/x/commitment/keeper"
-	ctypes "github.com/elys-network/elys/x/commitment/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 	"github.com/elys-network/elys/x/stablestake/keeper"
 	"github.com/elys-network/elys/x/stablestake/types"
 )
 
-func (suite *KeeperTestSuite) TestMsgServerUnbond() {
+func (suite *KeeperTestSuite) TestUnbond() {
 	for _, tc := range []struct {
 		desc              string
 		senderInitBalance sdk.Coins
@@ -78,17 +76,12 @@ func (suite *KeeperTestSuite) TestMsgServerUnbond() {
 			}
 			suite.app.AssetprofileKeeper.SetEntry(suite.ctx, entry)
 
-			// Create a commit LP token message
-			msgLiquidCommitLPToken := &ctypes.MsgCommitLiquidTokens{
-				Creator:   sender.String(),
-				Denom:     tc.senderInitBalance[0].Denom,
-				Amount:    tc.senderInitBalance[0].Amount,
-				LockUntil: uint64(suite.ctx.BlockTime().Unix()),
-			}
-
 			// Commit LP token
-			cMsgServer := commitmentkeeper.NewMsgServerImpl(suite.app.CommitmentKeeper)
-			_, err = cMsgServer.CommitLiquidTokens(sdk.WrapSDKContext(suite.ctx), msgLiquidCommitLPToken)
+			err = suite.app.CommitmentKeeper.CommitLiquidTokens(
+				suite.ctx, sender,
+				tc.senderInitBalance[0].Denom, tc.senderInitBalance[0].Amount,
+				uint64(suite.ctx.BlockTime().Unix()),
+			)
 			suite.Require().NoError(err)
 
 			params := suite.app.StablestakeKeeper.GetParams(suite.ctx)
