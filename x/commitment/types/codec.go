@@ -11,7 +11,6 @@ func RegisterCodec(cdc *codec.LegacyAmino) {
 	cdc.RegisterConcrete(&MsgCommitClaimedRewards{}, "commitment/CommitClaimedRewards", nil)
 	cdc.RegisterConcrete(&MsgUncommitTokens{}, "commitment/UncommitTokens", nil)
 	cdc.RegisterConcrete(&MsgClaimReward{}, "commitment/ClaimReward", nil)
-	cdc.RegisterConcrete(&MsgCommitLiquidTokens{}, "commitment/CommitLiquidTokens", nil)
 	cdc.RegisterConcrete(&MsgVest{}, "commitment/Vest", nil)
 	cdc.RegisterConcrete(&MsgClaimVesting{}, "commitment/ClaimVesting", nil)
 	cdc.RegisterConcrete(&MsgCancelVest{}, "commitment/CancelVest", nil)
@@ -29,7 +28,6 @@ func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 		&MsgCommitClaimedRewards{},
 		&MsgUncommitTokens{},
 		&MsgClaimReward{},
-		&MsgCommitLiquidTokens{},
 		&MsgVest{},
 		&MsgClaimVesting{},
 		&MsgCancelVest{},

@@ -6,6 +6,7 @@ import (
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
+	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	"github.com/elys-network/elys/x/estaking/types"
 )
 
@@ -52,7 +53,7 @@ func (k msgServer) WithdrawElysStakingRewards(goCtx context.Context, msg *types.
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	delAddr := sdk.MustAccAddressFromBech32(msg.DelegatorAddress)
-	delegations := k.Keeper.Keeper.GetAllDelegations(ctx)
+	delegations := k.Keeper.Keeper.GetDelegatorDelegations(ctx, delAddr, 1024)
 	rewards := sdk.Coins{}
 	for _, del := range delegations {
 		valAddr, err := sdk.ValAddressFromBech32(del.ValidatorAddress)
@@ -67,4 +68,26 @@ func (k msgServer) WithdrawElysStakingRewards(goCtx context.Context, msg *types.
 	}
 
 	return &types.MsgWithdrawElysStakingRewardsResponse{Amount: rewards}, nil
+}
+
+func (k Keeper) WithdrawAllRewards(goCtx context.Context, msg *types.MsgWithdrawAllRewards) (*types.MsgWithdrawAllRewardsResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+	delAddr := sdk.MustAccAddressFromBech32(msg.DelegatorAddress)
+	var amount sdk.Coins
+	var err error = nil
+	var rewards = sdk.Coins{}
+	k.IterateDelegations(ctx, delAddr, func(index int64, del stakingtypes.DelegationI) (stop bool) {
+		valAddr := del.GetValidatorAddr()
+		amount, err = k.distrKeeper.WithdrawDelegationRewards(ctx, delAddr, valAddr)
+		if err != nil {
+			return true
+		}
+		rewards = rewards.Add(amount...)
+		return false
+	})
+
+	if err != nil {
+		return nil, err
+	}
+	return &types.MsgWithdrawAllRewardsResponse{Amount: rewards}, nil
 }

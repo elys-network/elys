@@ -278,6 +278,20 @@ func (k Keeper) WithdrawEdenBReward(ctx sdk.Context, addr sdk.AccAddress) error 
 	return nil
 }
 
+func (k Keeper) WithdrawEdenReward(ctx sdk.Context, addr sdk.AccAddress) error {
+	params := k.GetParams(ctx)
+	valAddr, err := sdk.ValAddressFromBech32(params.EdenCommitVal)
+	if err != nil {
+		return err
+	}
+	_, err = k.distrKeeper.WithdrawDelegationRewards(ctx, addr, valAddr)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (k Keeper) DelegationRewards(ctx sdk.Context, delegatorAddress string, validatorAddress string) (sdk.DecCoins, error) {
 	valAdr, err := sdk.ValAddressFromBech32(validatorAddress)
 	if err != nil {

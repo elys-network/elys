@@ -6,8 +6,6 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
-	commitmentkeeper "github.com/elys-network/elys/x/commitment/keeper"
-	ctypes "github.com/elys-network/elys/x/commitment/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 	"github.com/elys-network/elys/x/stablestake/types"
 )
@@ -70,17 +68,8 @@ func (k msgServer) Bond(goCtx context.Context, msg *types.MsgBond) (*types.MsgBo
 		k.assetProfileKeeper.SetEntry(ctx, entry)
 	}
 
-	// Create a commit LP token message
-	msgLiquidCommitLPToken := &ctypes.MsgCommitLiquidTokens{
-		Creator:   sender.String(),
-		Denom:     shareDenom,
-		Amount:    shareAmount,
-		LockUntil: uint64(ctx.BlockTime().Unix()),
-	}
-
 	// Commit LP token
-	msgServer := commitmentkeeper.NewMsgServerImpl(*k.commitmentKeeper)
-	_, err = msgServer.CommitLiquidTokens(sdk.WrapSDKContext(ctx), msgLiquidCommitLPToken)
+	err = k.commitmentKeeper.CommitLiquidTokens(ctx, sender, shareDenom, shareAmount, uint64(ctx.BlockTime().Unix()))
 	if err != nil {
 		return nil, err
 	}

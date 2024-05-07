@@ -26,12 +26,11 @@ func (k Keeper) CalculateApr(ctx sdk.Context, query *types.QueryAprRequest) (mat
 		return sdk.ZeroInt(), errorsmod.Wrap(types.ErrNoInflationaryParams, "no inflationary params available")
 	}
 
-	entry, found := k.assetProfileKeeper.GetEntry(ctx, ptypes.BaseCurrency)
+	baseCurrency, found := k.assetProfileKeeper.GetUsdcDenom(ctx)
 	if !found {
 		return sdk.ZeroInt(), errorsmod.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency)
 	}
 
-	baseCurrency := entry.Denom
 	lpIncentive := masterchefParams.LpIncentives
 	stkIncentive := estakingParams.StakeIncentives
 

@@ -92,6 +92,20 @@ func (k Keeper) IterateCommitments(ctx sdk.Context, handlerFn func(commitments t
 	}
 }
 
+// NumberOfCommitments returns total number of commitment items
+func (k Keeper) TotalNumberOfCommitments(ctx sdk.Context) int64 {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.CommitmentsKeyPrefix))
+
+	iterator := sdk.KVStorePrefixIterator(store, []byte{})
+	defer iterator.Close()
+
+	numberOfCommitments := int64(0)
+	for ; iterator.Valid(); iterator.Next() {
+		numberOfCommitments++
+	}
+	return numberOfCommitments
+}
+
 func (k Keeper) DeductClaimed(ctx sdk.Context, creator string, denom string, amount math.Int) (types.Commitments, error) {
 	// Get the Commitments for the creator
 	commitments := k.GetCommitments(ctx, creator)

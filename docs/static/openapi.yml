@@ -39963,6 +39963,39 @@ paths:
                   additionalProperties: {}
       tags:
         - Query
+  /elys-network/elys/commitment/number_of_commitments:
+    get:
+      summary: Queries the total number of commitment items.
+      operationId: ElysCommitmentNumberOfCommitments
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              number:
+                type: string
+                format: int64
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      tags:
+        - Query
   /elys-network/elys/commitment/params:
     get:
       summary: Parameters queries the parameters of the module.
@@ -40036,7 +40069,7 @@ paths:
         - Query
   /elys-network/elys/commitment/show_commitments/{creator}:
     get:
-      summary: Queries a list of ShowCommitments items.
+      summary: Queries a Commitment item.
       operationId: ElysCommitmentShowCommitments
       responses:
         '200':
@@ -85656,8 +85689,6 @@ definitions:
     type: object
   elys.commitment.MsgCommitClaimedRewardsResponse:
     type: object
-  elys.commitment.MsgCommitLiquidTokensResponse:
-    type: object
   elys.commitment.MsgStakeResponse:
     type: object
     properties:
@@ -85719,6 +85750,12 @@ definitions:
             NOTE: The amount field is an Int which implements the custom method
             signatures required by gogoproto.
     description: Params defines the parameters for the module.
+  elys.commitment.QueryNumberOfCommitmentsResponse:
+    type: object
+    properties:
+      number:
+        type: string
+        format: int64
   elys.commitment.QueryParamsResponse:
     type: object
     properties:
@@ -86027,6 +86064,26 @@ definitions:
     description: >-
       MsgUpdateParamsResponse defines the response structure for executing a
       MsgUpdateParams message.
+  elys.estaking.MsgWithdrawAllRewardsResponse:
+    type: object
+    properties:
+      amount:
+        type: array
+        items:
+          type: object
+          properties:
+            denom:
+              type: string
+            amount:
+              type: string
+          description: |-
+            Coin defines a token with a denomination and an amount.
+
+            NOTE: The amount field is an Int which implements the custom method
+            signatures required by gogoproto.
+    description: >-
+      MsgWithdrawAllRewardsResponse defines the Msg/WithdrawAllRewards response
+      type.
   elys.estaking.MsgWithdrawElysStakingRewardsResponse:
     type: object
     properties:

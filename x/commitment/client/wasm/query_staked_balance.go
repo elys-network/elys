@@ -13,11 +13,10 @@ import (
 
 func (oq *Querier) queryStakedBalanceOfDenom(ctx sdk.Context, query *ammtypes.QueryBalanceRequest) ([]byte, error) {
 	edenDenomPrice := sdk.ZeroDec()
-	entry, found := oq.assetKeeper.GetEntry(ctx, ptypes.BaseCurrency)
+	baseCurrency, found := oq.assetKeeper.GetUsdcDenom(ctx)
 	if found {
-		edenDenomPrice = oq.ammKeeper.GetEdenDenomPrice(ctx, entry.Denom)
+		edenDenomPrice = oq.ammKeeper.GetEdenDenomPrice(ctx, baseCurrency)
 	}
-	baseCurrency := entry.Denom
 
 	denom := query.Denom
 	addr := query.Address

@@ -2,11 +2,14 @@ package cli
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/spf13/cobra"
 
 	"github.com/cosmos/cosmos-sdk/client"
-	// "github.com/cosmos/cosmos-sdk/client/flags"
+	"github.com/cosmos/cosmos-sdk/client/flags"
+	"github.com/cosmos/cosmos-sdk/client/tx"
+	"github.com/cosmos/cosmos-sdk/version"
 	"github.com/elys-network/elys/x/estaking/types"
 )
 
@@ -21,6 +24,72 @@ func GetTxCmd() *cobra.Command {
 	}
 
 	// this line is used by starport scaffolding # 1
+	cmd.AddCommand(
+		CmdWithdrawAllRewards(),
+		CmdWithdrawElysStakingRewards(),
+	)
 
+	return cmd
+}
+
+func CmdWithdrawAllRewards() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "withdraw-all-rewards",
+		Short: "Withdraw all rewards for delegations and Eden/EdenB commit",
+		Long: strings.TrimSpace(
+			fmt.Sprintf(`Withdraw all rewards for delegations and Eden/EdenB commit,
+Example:
+$ %s tx estaking withdraw-all-rewards --from mykey 
+`,
+				version.AppName,
+			),
+		),
+		Args: cobra.ExactArgs(0),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			delAddr := clientCtx.GetFromAddress()
+			msg := &types.MsgWithdrawAllRewards{
+				DelegatorAddress: delAddr.String(),
+			}
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+	return cmd
+}
+
+func CmdWithdrawElysStakingRewards() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "withdraw-elys-staking-rewards",
+		Short: "Withdraw rewards for delegations",
+		Long: strings.TrimSpace(
+			fmt.Sprintf(`Withdraw rewards for delegations,
+Example:
+$ %s tx estaking withdraw-elys-staking-rewards --from mykey 
+`,
+				version.AppName,
+			),
+		),
+		Args: cobra.ExactArgs(0),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			delAddr := clientCtx.GetFromAddress()
+			msg := &types.MsgWithdrawAllRewards{
+				DelegatorAddress: delAddr.String(),
+			}
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
 	return cmd
 }

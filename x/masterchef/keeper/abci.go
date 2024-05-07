@@ -24,11 +24,10 @@ func (k Keeper) EndBlocker(ctx sdk.Context) {
 
 func (k Keeper) GetPoolTVL(ctx sdk.Context, poolId uint64) math.LegacyDec {
 	if poolId == stabletypes.PoolId {
-		entry, found := k.assetProfileKeeper.GetEntry(ctx, ptypes.BaseCurrency)
+		baseCurrency, found := k.assetProfileKeeper.GetUsdcDenom(ctx)
 		if !found {
 			return math.LegacyZeroDec()
 		}
-		baseCurrency := entry.Denom
 		return k.stableKeeper.TVL(ctx, k.oracleKeeper, baseCurrency)
 	}
 	ammPool, found := k.amm.GetPool(ctx, poolId)
@@ -82,9 +81,8 @@ func (k Keeper) ProcessExternalRewardsDistribution(ctx sdk.Context) {
 					Mul(lpIncentive.TotalBlocksPerYear).
 					Quo(pool.NumBlocks)
 
-				entry, found := k.assetProfileKeeper.GetEntry(ctx, ptypes.BaseCurrency)
+				baseCurrency, found := k.assetProfileKeeper.GetUsdcDenom(ctx)
 				if found {
-					baseCurrency := entry.Denom
 					pool.ExternalIncentiveApr = sdk.NewDecFromInt(yearlyIncentiveRewardsTotal).
 						Mul(k.amm.GetTokenPrice(ctx, externalIncentive.RewardDenom, baseCurrency)).
 						Quo(tvl)
@@ -207,11 +205,10 @@ func (k Keeper) UpdateLPRewards(ctx sdk.Context) error {
 	params := k.GetParams(ctx)
 	lpIncentive := params.LpIncentives
 
-	entry, found := k.assetProfileKeeper.GetEntry(ctx, ptypes.BaseCurrency)
+	baseCurrency, found := k.assetProfileKeeper.GetUsdcDenom(ctx)
 	if !found {
 		return errorsmod.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency)
 	}
-	baseCurrency := entry.Denom
 
 	// Collect Gas fees + swap fees
 	gasFeesForLpsDec := k.CollectGasFees(ctx, baseCurrency)

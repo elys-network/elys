@@ -8,9 +8,6 @@ option go_package = "github.com/elys-network/elys/x/commitment/types";
 
 // Msg defines the Msg service.
 service Msg {
-  // CommitLiquidTokens commit the tokens from user's balance
-  rpc CommitLiquidTokens (MsgCommitLiquidTokens) returns (MsgCommitLiquidTokensResponse);
-  
   // CommitClaimedRewards commit the tokens on claimed store to committed
   rpc CommitClaimedRewards (MsgCommitClaimedRewards) returns (MsgCommitClaimedRewardsResponse);
 
@@ -64,15 +61,6 @@ message MsgClaimReward {
 }
 
 message MsgClaimRewardResponse {}
-
-message MsgCommitLiquidTokens {
-  string creator = 1;
-  string amount  = 2 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false];
-  string denom   = 3;
-  uint64 lock_until = 4; // timestamp to lock until the time
-}
-
-message MsgCommitLiquidTokensResponse {}
 
 message MsgVest {
   string creator = 1;

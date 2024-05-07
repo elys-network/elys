@@ -17,12 +17,11 @@ func (oq *Querier) queryVestingInfo(ctx sdk.Context, query *commitmenttypes.Quer
 	commitment := oq.keeper.GetCommitments(ctx, addr)
 	vestingTokens := commitment.GetVestingTokens()
 
-	entry, found := oq.assetKeeper.GetEntry(ctx, ptypes.BaseCurrency)
+	baseCurrency, found := oq.assetKeeper.GetUsdcDenom(ctx)
 	if !found {
 		return nil, errorsmod.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency)
 	}
 
-	baseCurrency := entry.Denom
 	edenDenomPrice := oq.ammKeeper.GetEdenDenomPrice(ctx, baseCurrency)
 
 	totalVesting := sdk.ZeroInt()

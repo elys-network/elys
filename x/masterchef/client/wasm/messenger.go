@@ -6,7 +6,6 @@ import (
 	wasmbindingstypes "github.com/elys-network/elys/wasmbindings/types"
 	commitmentkeeper "github.com/elys-network/elys/x/commitment/keeper"
 	"github.com/elys-network/elys/x/masterchef/keeper"
-	masterchefkeeper "github.com/elys-network/elys/x/masterchef/keeper"
 	parameterkeeper "github.com/elys-network/elys/x/parameter/keeper"
 )
 
@@ -16,7 +15,6 @@ type Messenger struct {
 	stakingKeeper    *stakingkeeper.Keeper
 	commitmentKeeper *commitmentkeeper.Keeper
 	parameterKeeper  *parameterkeeper.Keeper
-	masterchefKeeper *masterchefkeeper.Keeper
 }
 
 func NewMessenger(

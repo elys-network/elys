@@ -18,11 +18,10 @@ func (k Keeper) UpdatePoolParams(ctx sdk.Context, poolId uint64, poolParams type
 		return 0, types.PoolParams{}, types.ErrPoolNotFound
 	}
 
-	entry, found := k.assetProfileKeeper.GetEntry(ctx, ptypes.BaseCurrency)
+	baseCurrency, found := k.assetProfileKeeper.GetUsdcDenom(ctx)
 	if !found {
 		return 0, types.PoolParams{}, errorsmod.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency)
 	}
-	baseCurrency := entry.Denom
 
 	// If the fee denom is empty, set it to the base currency
 	if poolParams.FeeDenom == "" {

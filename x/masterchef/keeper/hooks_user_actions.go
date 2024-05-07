@@ -76,10 +76,6 @@ func (k Keeper) GetRewardDenoms(ctx sdk.Context, poolId uint64) []string {
 }
 
 func (k Keeper) GetBaseCurrencyDenom(ctx sdk.Context) string {
-	baseCurrency := ptypes.BaseCurrency
-	entry, found := k.assetProfileKeeper.GetEntry(ctx, ptypes.BaseCurrency)
-	if found {
-		baseCurrency = entry.Denom
-	}
+	baseCurrency, _ := k.assetProfileKeeper.GetUsdcDenom(ctx)
 	return baseCurrency
 }

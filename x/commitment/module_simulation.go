@@ -131,17 +131,6 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 		commitmentsimulation.SimulateMsgClaimReward(am.accountKeeper, am.bankKeeper, am.keeper),
 	))
 
-	var weightMsgCommitLiquidTokens int
-	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgCommitLiquidTokens, &weightMsgCommitLiquidTokens, nil,
-		func(_ *rand.Rand) {
-			weightMsgCommitLiquidTokens = defaultWeightMsgCommitLiquidTokens
-		},
-	)
-	operations = append(operations, simulation.NewWeightedOperation(
-		weightMsgCommitLiquidTokens,
-		commitmentsimulation.SimulateMsgCommitLiquidTokens(am.accountKeeper, am.bankKeeper, am.keeper),
-	))
-
 	var weightMsgVest int
 	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgVest, &weightMsgVest, nil,
 		func(_ *rand.Rand) {
