@@ -39,26 +39,92 @@ jobs:
       - name: Create git tag
         run: git tag v999.999.999
 
-      - name: Run make build
+      - name: Build new binaries
         run: |
+          # build new elys binary
           make build
           NEW_BINARY_PATH=./build/elysd
           echo "NEW_BINARY_PATH=$NEW_BINARY_PATH" >> $GITHUB_ENV
 
-      - name: Copy upgrade-assure scripts
-        run: cp -a scripts/upgrade-assure scripts/upgrade-assure-skip
+          # build new upgrade assure binary
+          make build-upgrade-assure
+          NEW_UPGRADE_ASSURE_BINARY_PATH=./build/new-upgrade-assure
+          mv ./build/upgrade-assure $NEW_UPGRADE_ASSURE_BINARY_PATH
+          echo "NEW_UPGRADE_ASSURE_BINARY_PATH=$NEW_UPGRADE_ASSURE_BINARY_PATH" >> $GITHUB_ENV
+
+          # build upload snapshot binary
+          make build-upload-snapshot
+          UPLOAD_SNAPSHOT_BINARY_PATH=./build/upload-snapshot
+          echo "UPLOAD_SNAPSHOT_BINARY_PATH=$UPLOAD_SNAPSHOT_BINARY_PATH" >> $GITHUB_ENV
 
       - name: Check out latest tag
         run: git checkout $LATEST_TAG
 
+      - name: Build old binaries
+        run: |
+          # build old upgrade assure binary
+          make build-upgrade-assure
+          OLD_UPGRADE_ASSURE_BINARY_PATH=./build/old-upgrade-assure
+          mv ./build/upgrade-assure $OLD_UPGRADE_ASSURE_BINARY_PATH
+          echo "OLD_UPGRADE_ASSURE_BINARY_PATH=$OLD_UPGRADE_ASSURE_BINARY_PATH" >> $GITHUB_ENV
+
+      - name: Chain snapshot and export
+        run: |
+          $OLD_UPGRADE_ASSURE_BINARY_PATH $SNAPSHOT_PATH $OLD_BINARY_PATH $NEW_BINARY_PATH \
+            --skip-chain-init \
+            --skip-node-start
+
       - name: Chain initialization
         run: |
-          cp -a scripts/upgrade-assure/types.go scripts/upgrade-assure-skip/types.go
-          GOMEMLIMIT=16GiB go run ./scripts/upgrade-assure-skip/... $SNAPSHOT_PATH $OLD_BINARY_PATH $NEW_BINARY_PATH --skip-node-start
+          $OLD_UPGRADE_ASSURE_BINARY_PATH $SNAPSHOT_PATH $OLD_BINARY_PATH $NEW_BINARY_PATH \
+            --skip-snapshot \
+            --skip-node-start
 
       - name: Check out new branch
         run: git checkout ${{ github.head_ref }}
 
-      - name: Software upgrade
+      - name: Create second validator
         run: |
-          GOMEMLIMIT=16GiB go run ./scripts/upgrade-assure/... $SNAPSHOT_PATH $OLD_BINARY_PATH $NEW_BINARY_PATH --skip-snapshot --skip-chain-init
+          $NEW_UPGRADE_ASSURE_BINARY_PATH $SNAPSHOT_PATH $OLD_BINARY_PATH $NEW_BINARY_PATH \
+            --skip-snapshot \
+            --skip-chain-init \
+            --skip-prepare-validator-data \
+            --skip-submit-proposal \
+            --skip-upgrade-to-new-binary
+
+      - name: Prepare second validator data
+        run: |
+          $NEW_UPGRADE_ASSURE_BINARY_PATH $SNAPSHOT_PATH $OLD_BINARY_PATH $NEW_BINARY_PATH \
+            --skip-snapshot \
+            --skip-chain-init \
+            --skip-create-validator \
+            --skip-submit-proposal \
+            --skip-upgrade-to-new-binary
+
+      - name: Submit new proposal
+        run: |
+          $NEW_UPGRADE_ASSURE_BINARY_PATH $SNAPSHOT_PATH $OLD_BINARY_PATH $NEW_BINARY_PATH \
+            --skip-snapshot \
+            --skip-chain-init \
+            --skip-create-validator \
+            --skip-prepare-validator-data \
+            --skip-upgrade-to-new-binary
+
+      - name: Upgrade to new binary
+        run: |
+          $NEW_UPGRADE_ASSURE_BINARY_PATH $SNAPSHOT_PATH $OLD_BINARY_PATH $NEW_BINARY_PATH \
+            --skip-snapshot \
+            --skip-chain-init \
+            --skip-create-validator \
+            --skip-prepare-validator-data \
+            --skip-submit-proposal
+
+      - name: Create new snapshot file
+        run: |
+          NEW_SNAPSHOT_PATH=/tmp/elys-snapshot-${{ github.head_ref }}.tar.lz4
+          echo "NEW_SNAPSHOT_PATH=$NEW_SNAPSHOT_PATH" >> $GITHUB_ENV
+          tar -cf - ~/.elys | lz4 -z - > $NEW_SNAPSHOT_PATH
+
+      - name: Upload snapshot
+        run: |
+          $UPLOAD_SNAPSHOT_BINARY_PATH $NEW_SNAPSHOT_PATH
