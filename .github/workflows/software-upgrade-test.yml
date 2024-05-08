@@ -151,6 +151,7 @@ jobs:
         run: |
           rm -rf /tmp/genesis.json
           rm -rf ~/.elys/config/genesis.json
+          rm -rf $SNAPSHOT_PATH
 
       - name: Prepare second validator data
         run: |
@@ -201,3 +202,7 @@ jobs:
           export R2_ENDPOINT=${{ secrets.R2_ENDPOINT }}
           export R2_BUCKET_NAME=${{ secrets.R2_BUCKET_NAME }}
           $UPLOAD_SNAPSHOT_BINARY_PATH $NEW_SNAPSHOT_PATH
+
+      - name: Remove snapshot file
+        run: |
+          rm -f $NEW_SNAPSHOT_PATH
