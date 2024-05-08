@@ -23,6 +23,13 @@ jobs:
         run: |
           go mod tidy
 
+      - name: Cache Go cache folder
+        uses: actions/cache@v4
+        with:
+          path: |
+            ${{ env.GOCACHE }}
+          key: ${{ runner.os }}-go
+
       - name: Run unit tests
         run: |
           make ci-test-unit
