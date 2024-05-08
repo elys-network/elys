@@ -206,7 +206,7 @@ jobs:
           CURRENT_DATE=$(date +'%Y%m%d-%H%M%S')
           NEW_SNAPSHOT_PATH="/tmp/elys-snapshot-${SANITIZED_HEAD_REF}-${CURRENT_DATE}.tar.lz4"
           echo "NEW_SNAPSHOT_PATH=$NEW_SNAPSHOT_PATH" >> $GITHUB_ENV
-          tar -cf - ~/.elys |
+          tar -cf - ~/.elys | lz4 -z - > "$NEW_SNAPSHOT_PATH"
 
       - name: Upload snapshot
         run: |
