@@ -42,7 +42,7 @@ jobs:
           echo "Snapshot block height: $SNAPSHOT_BLOCK_HEIGHT"
 
           # set snapshot path
-          SNAPSHOT_PATH=/tmp/snapshot.tar.lz4
+          SNAPSHOT_PATH=/$HOME/snapshot.tar.lz4
           echo "SNAPSHOT_PATH=$SNAPSHOT_PATH" >> $GITHUB_ENV
 
       - name: Cache Directories
@@ -208,7 +208,7 @@ jobs:
           SANITIZED_HEAD_REF=$(echo "${{ github.head_ref }}" | sed 's|/|_|g')
           CURRENT_DATE=$(date +'%Y%m%d-%H%M%S')
           NEW_SNAPSHOT_FILENAME="elys-snapshot-${SANITIZED_HEAD_REF}-${CURRENT_DATE}.tar.lz4"
-          NEW_SNAPSHOT_PATH="/tmp/${NEW_SNAPSHOT_FILENAME}"
+          NEW_SNAPSHOT_PATH="/$HOME/${NEW_SNAPSHOT_FILENAME}"
           echo "NEW_SNAPSHOT_FILENAME=$NEW_SNAPSHOT_FILENAME" >> $GITHUB_ENV
           echo "NEW_SNAPSHOT_PATH=$NEW_SNAPSHOT_PATH" >> $GITHUB_ENV
           tar -cf - ~/.elys | lz4 -z - > "$NEW_SNAPSHOT_PATH"
