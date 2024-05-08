@@ -18,7 +18,9 @@ func main() {
 		Run: func(cmd *cobra.Command, args []string) {
 			snapshotUrl, oldBinaryUrl, newBinaryUrl := getArgs(args)
 			// global flags
-			onlyStartWithNewBinary, skipSnapshot, skipChainInit, skipNodeStart, skipProposal, skipBinary, chainId, keyringBackend, genesisFilePath, broadcastMode, dbEngine,
+			onlyStartWithNewBinary, skipSnapshot, skipChainInit, skipNodeStart, skipProposal, skipBinary,
+				skipCreateValidator, skipPrepareValidatorData, skipSubmitProposal, skipUpgradeToNewBinary, skipUnbondValidator,
+				chainId, keyringBackend, genesisFilePath, broadcastMode, dbEngine,
 				// timeouts
 				timeOutToWaitForService, timeOutToWaitForNextBlock,
 				// node 1 flags
@@ -121,98 +123,119 @@ func main() {
 			}
 
 			if !skipNodeStart {
-				// start node 1
-				oldBinaryCmd := start(oldBinaryPath, homePath, rpc, p2p, pprof, api, moniker, ColorGreen, ColorRed)
+				if !skipCreateValidator {
+					// start node 1
+					oldBinaryCmd := start(oldBinaryPath, homePath, rpc, p2p, pprof, api, moniker, ColorGreen, ColorRed)
 
-				// wait for rpc to start
-				waitForServiceToStart(rpc, moniker, timeOutToWaitForService)
+					// wait for rpc to start
+					waitForServiceToStart(rpc, moniker, timeOutToWaitForService)
 
-				// wait for next block
-				waitForNextBlock(oldBinaryPath, rpc, moniker, timeOutForNextBlock)
+					// wait for next block
+					waitForNextBlock(oldBinaryPath, rpc, moniker, timeOutForNextBlock)
 
-				if skipProposal {
-					// listen for signals
-					listenForSignals(oldBinaryCmd)
-					return
+					if skipProposal {
+						// listen for signals
+						listenForSignals(oldBinaryCmd)
+						return
+					}
+
+					// query validator pubkey
+					validatorPubkey2 := queryValidatorPubkey(oldBinaryPath, homePath2)
+
+					// create validator node 2
+					createValidator(oldBinaryPath, validatorKeyName2, validatorSelfDelegation2, moniker2, validatorPubkey2, homePath, keyringBackend, chainId, rpc, broadcastMode)
+
+					// wait for next block
+					waitForNextBlock(oldBinaryPath, rpc, moniker, timeOutForNextBlock)
+
+					// stop old binary
+					stop(oldBinaryCmd)
 				}
 
-				// query validator pubkey
-				validatorPubkey2 := queryValidatorPubkey(oldBinaryPath, homePath2)
+				if !skipPrepareValidatorData {
+					// copy data from node 1 to node 2
+					copyDataFromNodeToNode(homePath, homePath2)
 
-				// create validator node 2
-				createValidator(oldBinaryPath, validatorKeyName2, validatorSelfDelegation2, moniker2, validatorPubkey2, homePath, keyringBackend, chainId, rpc, broadcastMode)
-
-				// wait for next block
-				waitForNextBlock(oldBinaryPath, rpc, moniker, timeOutForNextBlock)
-
-				// stop old binary
-				stop(oldBinaryCmd)
-
-				// copy data from node 1 to node 2
-				copyDataFromNodeToNode(homePath, homePath2)
-
-				// generate priv_validator_state.json file for node 2
-				generatePrivValidatorState(homePath2)
-
-				// start node 1 and 2
-				oldBinaryCmd = start(oldBinaryPath, homePath, rpc, p2p, pprof, api, moniker, ColorGreen, ColorRed)
-				oldBinaryCmd2 := start(oldBinaryPath, homePath2, rpc2, p2p2, pprof2, api2, moniker2, ColorGreen, ColorRed)
-
-				// wait for rpc 1 and 2 to start
-				waitForServiceToStart(rpc, moniker, timeOutToWaitForService)
-				waitForServiceToStart(rpc2, moniker2, timeOutToWaitForService)
-
-				// query and calculate upgrade block height
-				upgradeBlockHeight := queryAndCalcUpgradeBlockHeight(oldBinaryPath, rpc)
-
-				// query next proposal id
-				proposalId, err := queryNextProposalId(oldBinaryPath, rpc)
-				if err != nil {
-					log.Printf(ColorYellow+"Error querying next proposal id: %v", err)
-					log.Printf(ColorYellow + "Setting proposal id to 1")
-					proposalId = "1"
+					// generate priv_validator_state.json file for node 2
+					generatePrivValidatorState(homePath2)
 				}
 
-				// submit upgrade proposal
-				txHash := submitUpgradeProposal(oldBinaryPath, validatorKeyName, newVersion, upgradeBlockHeight, homePath, keyringBackend, chainId, rpc, broadcastMode)
+				if !skipSubmitProposal {
+					// start node 1 and 2
+					oldBinaryCmd := start(oldBinaryPath, homePath, rpc, p2p, pprof, api, moniker, ColorGreen, ColorRed)
+					oldBinaryCmd2 := start(oldBinaryPath, homePath2, rpc2, p2p2, pprof2, api2, moniker2, ColorGreen, ColorRed)
 
-				waitForTxConfirmation(oldBinaryPath, rpc, txHash, 5*time.Minute)
+					// wait for rpc 1 and 2 to start
+					waitForServiceToStart(rpc, moniker, timeOutToWaitForService)
+					waitForServiceToStart(rpc2, moniker2, timeOutToWaitForService)
 
-				// vote on upgrade proposal
-				txHash = voteOnUpgradeProposal(oldBinaryPath, validatorKeyName, proposalId, homePath, keyringBackend, chainId, rpc, broadcastMode)
+					// query and calculate upgrade block height
+					upgradeBlockHeight := queryAndCalcUpgradeBlockHeight(oldBinaryPath, rpc)
 
-				waitForTxConfirmation(oldBinaryPath, rpc, txHash, 5*time.Minute)
+					// query next proposal id
+					proposalId, err := queryNextProposalId(oldBinaryPath, rpc)
+					if err != nil {
+						log.Printf(ColorYellow+"Error querying next proposal id: %v", err)
+						log.Printf(ColorYellow + "Setting proposal id to 1")
+						proposalId = "1"
+					}
 
-				// wait for upgrade block height
-				waitForBlockHeight(oldBinaryPath, rpc, upgradeBlockHeight)
+					// submit upgrade proposal
+					txHash := submitUpgradeProposal(oldBinaryPath, validatorKeyName, newVersion, upgradeBlockHeight, homePath, keyringBackend, chainId, rpc, broadcastMode)
 
-				// wait 5 seconds
-				time.Sleep(5 * time.Second)
+					waitForTxConfirmation(oldBinaryPath, rpc, txHash, 5*time.Minute)
 
-				// stop old binaries
-				stop(oldBinaryCmd, oldBinaryCmd2)
+					// vote on upgrade proposal
+					txHash = voteOnUpgradeProposal(oldBinaryPath, validatorKeyName, proposalId, homePath, keyringBackend, chainId, rpc, broadcastMode)
 
-				// wait 5 seconds
-				time.Sleep(5 * time.Second)
+					waitForTxConfirmation(oldBinaryPath, rpc, txHash, 5*time.Minute)
 
-				// start new binary
-				newBinaryCmd := start(newBinaryPath, homePath, rpc, p2p, pprof, api, moniker, "\033[32m", "\033[31m")
-				newBinaryCmd2 := start(newBinaryPath, homePath2, rpc2, p2p2, pprof2, api2, moniker2, "\033[32m", "\033[31m")
+					// wait for upgrade block height
+					waitForBlockHeight(oldBinaryPath, rpc, upgradeBlockHeight)
 
-				// wait for node to start
-				waitForServiceToStart(rpc, moniker, timeOutToWaitForService)
-				waitForServiceToStart(rpc2, moniker2, timeOutToWaitForService)
+					// wait 5 seconds
+					time.Sleep(5 * time.Second)
 
-				// wait for next block
-				waitForNextBlock(newBinaryPath, rpc, moniker, timeOutForNextBlock)
-				waitForNextBlock(newBinaryPath, rpc2, moniker2, timeOutForNextBlock)
+					// stop old binaries
+					stop(oldBinaryCmd, oldBinaryCmd2)
+				}
 
-				// check if the upgrade was successful
-				queryUpgradeApplied(newBinaryPath, rpc, newVersion)
-				queryUpgradeApplied(newBinaryPath, rpc2, newVersion)
+				if !skipUpgradeToNewBinary {
+					// wait 5 seconds
+					time.Sleep(5 * time.Second)
 
-				// stop new binaries
-				stop(newBinaryCmd, newBinaryCmd2)
+					// start new binary
+					newBinaryCmd := start(newBinaryPath, homePath, rpc, p2p, pprof, api, moniker, "\033[32m", "\033[31m")
+					newBinaryCmd2 := start(newBinaryPath, homePath2, rpc2, p2p2, pprof2, api2, moniker2, "\033[32m", "\033[31m")
+
+					// wait for node to start
+					waitForServiceToStart(rpc, moniker, timeOutToWaitForService)
+					waitForServiceToStart(rpc2, moniker2, timeOutToWaitForService)
+
+					// wait for next block
+					waitForNextBlock(newBinaryPath, rpc, moniker, timeOutForNextBlock)
+					waitForNextBlock(newBinaryPath, rpc2, moniker2, timeOutForNextBlock)
+
+					// check if the upgrade was successful
+					queryUpgradeApplied(newBinaryPath, rpc, newVersion)
+					queryUpgradeApplied(newBinaryPath, rpc2, newVersion)
+
+					if !skipUnbondValidator {
+						operatorAddress2 := queryOperatorAddress(newBinaryPath, homePath, keyringBackend, validatorKeyName2)
+
+						// print operator address 2
+						log.Printf(ColorGreen+"Operator address 2: %v", operatorAddress2)
+
+						// unbound the second validator power
+						unbondValidator(newBinaryPath, validatorKeyName2, operatorAddress2, validatorSelfDelegation2, keyringBackend, chainId, rpc, broadcastMode, homePath)
+
+						// wait for next block
+						waitForNextBlock(newBinaryPath, rpc, moniker, timeOutForNextBlock)
+					}
+
+					// stop new binaries
+					stop(newBinaryCmd, newBinaryCmd2)
+				}
 			}
 		},
 	}
@@ -227,6 +250,11 @@ func main() {
 	rootCmd.PersistentFlags().Bool(flagSkipNodeStart, false, "skip node start")
 	rootCmd.PersistentFlags().Bool(flagSkipProposal, false, "skip proposal")
 	rootCmd.PersistentFlags().Bool(flagSkipBinary, false, "skip binary download")
+	rootCmd.PersistentFlags().Bool(flagSkipCreateValidator, false, "skip create validator")
+	rootCmd.PersistentFlags().Bool(flagSkipPrepareValidatorData, false, "skip prepare validator data")
+	rootCmd.PersistentFlags().Bool(flagSkipSubmitProposal, false, "skip submit proposal")
+	rootCmd.PersistentFlags().Bool(flagSkipUpgradeToNewBinary, false, "skip upgrade to new binary")
+	rootCmd.PersistentFlags().Bool(flagSkipUnbondValidator, false, "skip unbond validator")
 	rootCmd.PersistentFlags().String(flagChainId, "elystestnet-1", "chain id")
 	rootCmd.PersistentFlags().String(flagKeyringBackend, "test", "keyring backend")
 	rootCmd.PersistentFlags().String(flagGenesisFilePath, "/tmp/genesis.json", "genesis file path")

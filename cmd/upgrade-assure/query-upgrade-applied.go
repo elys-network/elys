@@ -14,4 +14,7 @@ func queryUpgradeApplied(cmdPath, node, newVersion string) {
 	if err != nil {
 		log.Fatalf("Failed to retrieve applied upgrade: %v", err)
 	}
+
+	// If execution reaches here, the command was successful
+	log.Printf("Successfully retrieved applied upgrade: %s", newVersion)
 }

@@ -9,17 +9,22 @@ import (
 
 const (
 	// global
-	flagOnlyStartWithNewBinary = "only-start-with-new-binary"
-	flagSkipSnapshot           = "skip-snapshot"
-	flagSkipChainInit          = "skip-chain-init"
-	flagSkipNodeStart          = "skip-node-start"
-	flagSkipProposal           = "skip-proposal"
-	flagSkipBinary             = "skip-binary"
-	flagChainId                = "chain-id"
-	flagKeyringBackend         = "keyring-backend"
-	flagGenesisFilePath        = "genesis-file-path"
-	flagBroadcastMode          = "broadcast-mode"
-	flagDbEngine               = "db-engine"
+	flagOnlyStartWithNewBinary   = "only-start-with-new-binary"
+	flagSkipSnapshot             = "skip-snapshot"
+	flagSkipChainInit            = "skip-chain-init"
+	flagSkipNodeStart            = "skip-node-start"
+	flagSkipProposal             = "skip-proposal"
+	flagSkipBinary               = "skip-binary"
+	flagSkipCreateValidator      = "skip-create-validator"
+	flagSkipPrepareValidatorData = "skip-prepare-validator-data"
+	flagSkipSubmitProposal       = "skip-submit-proposal"
+	flagSkipUpgradeToNewBinary   = "skip-upgrade-to-new-binary"
+	flagSkipUnbondValidator      = "skip-unbond-validator"
+	flagChainId                  = "chain-id"
+	flagKeyringBackend           = "keyring-backend"
+	flagGenesisFilePath          = "genesis-file-path"
+	flagBroadcastMode            = "broadcast-mode"
+	flagDbEngine                 = "db-engine"
 
 	// timeout
 	flagTimeOutToWaitForService = "timeout-wait-for-node"
@@ -58,6 +63,11 @@ func getFlags(cmd *cobra.Command) (
 	skipNodeStart bool,
 	skipProposal bool,
 	skipBinary bool,
+	skipCreateValidator bool,
+	skipPrepareValidatorData bool,
+	skipSubmitProposal bool,
+	skipUpgradeToNewBinary bool,
+	skipUnbondValidator bool,
 	chainId string,
 	keyringBackend string,
 	genesisFilePath string,
@@ -121,6 +131,31 @@ func getFlags(cmd *cobra.Command) (
 	skipBinary, _ = cmd.Flags().GetBool(flagSkipBinary)
 	if skipBinary {
 		log.Printf(ColorYellow + "skipping binary download")
+	}
+
+	skipCreateValidator, _ = cmd.Flags().GetBool(flagSkipCreateValidator)
+	if skipCreateValidator {
+		log.Printf(ColorYellow + "skipping create validator")
+	}
+
+	skipPrepareValidatorData, _ = cmd.Flags().GetBool(flagSkipPrepareValidatorData)
+	if skipPrepareValidatorData {
+		log.Printf(ColorYellow + "skipping prepare validator data")
+	}
+
+	skipSubmitProposal, _ = cmd.Flags().GetBool(flagSkipSubmitProposal)
+	if skipSubmitProposal {
+		log.Printf(ColorYellow + "skipping submit proposal")
+	}
+
+	skipUpgradeToNewBinary, _ = cmd.Flags().GetBool(flagSkipUpgradeToNewBinary)
+	if skipUpgradeToNewBinary {
+		log.Printf(ColorYellow + "skipping upgrade to new binary")
+	}
+
+	skipUnbondValidator, _ = cmd.Flags().GetBool(flagSkipUnbondValidator)
+	if skipUnbondValidator {
+		log.Printf(ColorYellow + "skipping unbond validator")
 	}
 
 	chainId, _ = cmd.Flags().GetString(flagChainId)

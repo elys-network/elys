@@ -120,6 +120,30 @@ builds:
       - muslc
       - osusergo
       - pebbledb
+  - id: upgrade-assure-linux-amd64
+    main: ./cmd/upgrade-assure
+    binary: upgrade-assure
+    goos:
+      - linux
+    goarch:
+      - amd64
+    env:
+      - CC=x86_64-linux-gnu-gcc
+    flags:
+      - -mod=readonly
+      - -trimpath
+  - id: upload-snapshot-linux-amd64
+    main: ./cmd/upload-snapshot
+    binary: upload-snapshot
+    goos:
+      - linux
+    goarch:
+      - amd64
+    env:
+      - CC=x86_64-linux-gnu-gcc
+    flags:
+      - -mod=readonly
+      - -trimpath
 universal_binaries:
   - id: elysd-darwin-universal
     ids:
