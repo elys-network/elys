@@ -56,7 +56,6 @@ BUILD_FOLDER = ./build
 install: check-version go.sum
 	@echo Installing Elysd binary...
 	@GOFLAGS=$(GOFLAGS) go install $(BUILD_FLAGS) ./cmd/$(BINARY)
-	@elysd version
 
 ## build: Build the binary
 build: check-version go.sum
