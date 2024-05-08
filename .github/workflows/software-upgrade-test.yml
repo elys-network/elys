@@ -6,7 +6,7 @@ on:
 jobs:
   software-upgrade-test:
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    timeout-minutes: 120
 
     steps:
       - name: Checkout repository
@@ -16,49 +16,212 @@ jobs:
           fetch-tags: true
 
       - name: Set up Go
-        uses: actions/setup-go@v2
+        uses: actions/setup-go@v5
         with:
           go-version: "1.21"
+
+      - name: Get latest tag
+        run: |
+          git fetch --tags
+          LATEST_TAG=$(git describe --tags `git rev-list --tags --max-count=1`)
+          echo "LATEST_TAG=$LATEST_TAG" >> $GITHUB_ENV
+          echo "Latest tag: $LATEST_TAG"
+
+      - name: Retrieve info.json and set snapshot path
+        run: |
+          DOWNLOAD_URL=https://snapshots-testnet.stake-town.com/elys/info.json
+          curl -L $DOWNLOAD_URL -o /tmp/info.json
+          echo "Info.json downloaded to check snapshot version."
+
+          # retrieve blockHeight field value from info.json
+          SNAPSHOT_BLOCK_HEIGHT=$(cat /tmp/info.json | awk -F'"' '/"blockHeight":/{print $4}')
+          echo "SNAPSHOT_BLOCK_HEIGHT=$SNAPSHOT_BLOCK_HEIGHT" >> $GITHUB_ENV
+          echo "Snapshot block height: $SNAPSHOT_BLOCK_HEIGHT"
+
+          # set snapshot path
+          SNAPSHOT_PATH=/tmp/snapshot.tar.lz4
+          echo "SNAPSHOT_PATH=$SNAPSHOT_PATH" >> $GITHUB_ENV
+
+      - name: Cache Directories
+        uses: actions/cache@v4
+        id: cache-directories
+        with:
+          path: |
+            ~/.elys
+            ~/.elys2
+          key: ${{ runner.os }}-directories-${{ env.LATEST_TAG }}
 
       - name: Retrieve latest snapshot
         run: |
           DOWNLOAD_URL=https://snapshots-testnet.stake-town.com/elys/elystestnet-1_latest.tar.lz4
-          SNAPSHOT_PATH=/tmp/snapshot.tar.lz4
           curl -L $DOWNLOAD_URL -o $SNAPSHOT_PATH
-          echo "SNAPSHOT_PATH=$SNAPSHOT_PATH" >> $GITHUB_ENV
+        if: steps.cache-directories.outputs.cache-hit != 'true'
 
       - name: Retrieve latest binary
         run: |
-          LATEST_TAG=$(git describe --tags `git rev-list --tags --max-count=1`)
           DOWNLOAD_URL=https://github.com/elys-network/elys/releases/download/$LATEST_TAG/elysd-$LATEST_TAG-linux-amd64
           OLD_BINARY_PATH=/tmp/elysd-$LATEST_TAG
           curl -L $DOWNLOAD_URL -o $OLD_BINARY_PATH && chmod +x $OLD_BINARY_PATH
-          echo "LATEST_TAG=$LATEST_TAG" >> $GITHUB_ENV
           echo "OLD_BINARY_PATH=$OLD_BINARY_PATH" >> $GITHUB_ENV
+
+          # TODO: retrieve upgrade-assure and upload-snapshot binaries
+        if: steps.cache-directories.outputs.cache-hit != 'true'
 
       - name: Create git tag
         run: git tag v999.999.999
 
-      - name: Run make build
+      - name: Build new binaries
         run: |
+          # build new elys binary
           make build
           NEW_BINARY_PATH=./build/elysd
           echo "NEW_BINARY_PATH=$NEW_BINARY_PATH" >> $GITHUB_ENV
 
-      - name: Copy upgrade-assure scripts
-        run: cp -a scripts/upgrade-assure scripts/upgrade-assure-skip
+          # build new upgrade assure binary
+          make build-upgrade-assure
+          NEW_UPGRADE_ASSURE_BINARY_PATH=./build/new-upgrade-assure
+          mv ./build/upgrade-assure $NEW_UPGRADE_ASSURE_BINARY_PATH
+          echo "NEW_UPGRADE_ASSURE_BINARY_PATH=$NEW_UPGRADE_ASSURE_BINARY_PATH" >> $GITHUB_ENV
+
+          # build upload snapshot binary
+          make build-upload-snapshot
+          UPLOAD_SNAPSHOT_BINARY_PATH=./build/upload-snapshot
+          echo "UPLOAD_SNAPSHOT_BINARY_PATH=$UPLOAD_SNAPSHOT_BINARY_PATH" >> $GITHUB_ENV
+
+      # TODO: to remove when upgrade-assure binary is available in previous release
+      - name: Copy upgrade assure folder
+        run: |
+          cp -a ./cmd/upgrade-assure ./cmd/upgrade-assure-skip
+        if: steps.cache-directories.outputs.cache-hit != 'true'
 
       - name: Check out latest tag
         run: git checkout $LATEST_TAG
+        if: steps.cache-directories.outputs.cache-hit != 'true'
+
+      # TODO: to remove when upgrade-assure binary is available in previous release
+      - name: Copy old upgrade assure types.go file
+        run: |
+          cp -a ./scripts/upgrade-assure/types.go ./cmd/upgrade-assure-skip/types.go
+        if: steps.cache-directories.outputs.cache-hit != 'true'
+
+      # TODO: to remove when upgrade-assure binary is available in previous release
+      - name: Build old binaries
+        run: |
+          # build old upgrade assure binary
+          go build -o build ./cmd/upgrade-assure-skip
+          OLD_UPGRADE_ASSURE_BINARY_PATH=./build/old-upgrade-assure
+          mv ./build/upgrade-assure-skip $OLD_UPGRADE_ASSURE_BINARY_PATH
+          echo "OLD_UPGRADE_ASSURE_BINARY_PATH=$OLD_UPGRADE_ASSURE_BINARY_PATH" >> $GITHUB_ENV
+        if: steps.cache-directories.outputs.cache-hit != 'true'
+
+      - name: Chain snapshot and export
+        run: |
+          GOMEMLIMIT=8GiB $OLD_UPGRADE_ASSURE_BINARY_PATH $SNAPSHOT_PATH $OLD_BINARY_PATH $NEW_BINARY_PATH \
+            --skip-chain-init \
+            --skip-node-start \
+            --timeout-next-block 100000 \
+            --timeout-wait-for-node 100000
+        if: steps.cache-directories.outputs.cache-hit != 'true'
 
       - name: Chain initialization
         run: |
-          cp -a scripts/upgrade-assure/types.go scripts/upgrade-assure-skip/types.go
-          GOMEMLIMIT=16GiB go run ./scripts/upgrade-assure-skip/... $SNAPSHOT_PATH $OLD_BINARY_PATH $NEW_BINARY_PATH --skip-node-start
+          GOMEMLIMIT=8GiB $OLD_UPGRADE_ASSURE_BINARY_PATH $SNAPSHOT_PATH $OLD_BINARY_PATH $NEW_BINARY_PATH \
+            --skip-snapshot \
+            --skip-node-start \
+            --timeout-next-block 100000 \
+            --timeout-wait-for-node 100000
+        if: steps.cache-directories.outputs.cache-hit != 'true'
 
       - name: Check out new branch
         run: git checkout ${{ github.head_ref }}
 
-      - name: Software upgrade
+      - name: Create second validator
+        uses: nick-fields/retry@v3
+        with:
+          timeout_minutes: 30
+          max_attempts: 3
+          command: |
+            GOMEMLIMIT=8GiB $NEW_UPGRADE_ASSURE_BINARY_PATH $SNAPSHOT_PATH $OLD_BINARY_PATH $NEW_BINARY_PATH \
+              --skip-snapshot \
+              --skip-chain-init \
+              --skip-prepare-validator-data \
+              --skip-submit-proposal \
+              --skip-upgrade-to-new-binary \
+              --timeout-next-block 100000 \
+              --timeout-wait-for-node 100000
+        if: steps.cache-directories.outputs.cache-hit != 'true'
+
+      - name: Save up space
         run: |
-          GOMEMLIMIT=16GiB go run ./scripts/upgrade-assure/... $SNAPSHOT_PATH $OLD_BINARY_PATH $NEW_BINARY_PATH --skip-snapshot --skip-chain-init
+          rm -rf /tmp/genesis.json
+          rm -rf ~/.elys/config/genesis.json
+          rm -rf $SNAPSHOT_PATH
+
+      - name: Prepare second validator data
+        run: |
+          GOMEMLIMIT=8GiB $NEW_UPGRADE_ASSURE_BINARY_PATH $SNAPSHOT_PATH $OLD_BINARY_PATH $NEW_BINARY_PATH \
+            --skip-snapshot \
+            --skip-chain-init \
+            --skip-create-validator \
+            --skip-submit-proposal \
+            --skip-upgrade-to-new-binary \
+            --timeout-next-block 100000 \
+            --timeout-wait-for-node 100000
+        if: steps.cache-directories.outputs.cache-hit != 'true'
+
+      - name: Submit new proposal
+        uses: nick-fields/retry@v3
+        with:
+          timeout_minutes: 30
+          max_attempts: 3
+          command: |
+            GOMEMLIMIT=8GiB $NEW_UPGRADE_ASSURE_BINARY_PATH $SNAPSHOT_PATH $OLD_BINARY_PATH $NEW_BINARY_PATH \
+              --skip-snapshot \
+              --skip-chain-init \
+              --skip-create-validator \
+              --skip-prepare-validator-data \
+              --skip-upgrade-to-new-binary \
+              --timeout-next-block 100000 \
+              --timeout-wait-for-node 100000
+        if: steps.cache-directories.outputs.cache-hit != 'true'
+
+      - name: Upgrade to new binary
+        uses: nick-fields/retry@v3
+        with:
+          timeout_minutes: 30
+          max_attempts: 3
+          command: |
+            GOMEMLIMIT=8GiB $NEW_UPGRADE_ASSURE_BINARY_PATH $SNAPSHOT_PATH $NEW_BINARY_PATH $NEW_BINARY_PATH \
+              --skip-snapshot \
+              --skip-chain-init \
+              --skip-create-validator \
+              --skip-prepare-validator-data \
+              --skip-submit-proposal \
+              --timeout-next-block 100000 \
+              --timeout-wait-for-node 100000
+
+      - name: Create new snapshot file
+        run: |
+          SANITIZED_HEAD_REF=$(echo "${{ github.head_ref }}" | sed 's|/|_|g')
+          CURRENT_DATE=$(date +'%Y%m%d-%H%M%S')
+          NEW_SNAPSHOT_FILENAME="elys-snapshot-${SANITIZED_HEAD_REF}-${CURRENT_DATE}.tar.lz4"
+          NEW_SNAPSHOT_PATH="/tmp/${NEW_SNAPSHOT_FILENAME}"
+          echo "NEW_SNAPSHOT_FILENAME=$NEW_SNAPSHOT_FILENAME" >> $GITHUB_ENV
+          echo "NEW_SNAPSHOT_PATH=$NEW_SNAPSHOT_PATH" >> $GITHUB_ENV
+          tar -cf - ~/.elys | lz4 -z - > "$NEW_SNAPSHOT_PATH"
+
+      - name: Upload snapshot
+        run: |
+          export R2_ACCESS_KEY=${{ secrets.R2_ACCESS_KEY }}
+          export R2_SECRET_KEY=${{ secrets.R2_SECRET_KEY }}
+          export R2_ENDPOINT=${{ secrets.R2_ENDPOINT }}
+          export R2_BUCKET_NAME=${{ secrets.R2_BUCKET_NAME }}
+          $UPLOAD_SNAPSHOT_BINARY_PATH $NEW_SNAPSHOT_PATH
+
+      - name: Remove snapshot file
+        run: |
+          rm -f $NEW_SNAPSHOT_PATH
+
+      - name: Info about the snapshot
+        run: |
+          echo "Snapshot URL: https://snapshots.elys.network/$NEW_SNAPSHOT_FILENAME"

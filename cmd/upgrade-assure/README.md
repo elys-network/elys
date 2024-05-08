@@ -14,7 +14,7 @@ Ensure the following prerequisites are met before proceeding with the upgrade an
 
 ## Upgrade Steps
 
-### Step 1: Checkout the Branch containing the new implementation
+### Step 1: Checkout the Branch containing the new implementation and build the upgrade assure binary
 
 Switch to the branch containing the new implementation:
 
@@ -22,13 +22,18 @@ Switch to the branch containing the new implementation:
 git checkout <branch_name>
 ```
 
+```bash
+make build-upgrade-assure
+mv build/upgrade-assure build/new-upgrade-assure
+```
+
 ### Step 2: Create a New Tag using semantic versioning and Install It.
 
 i.e for tag v0.31.0, tag the new release and install it:
 
 ```bash
+git tag -d v0.31.0
 git tag v0.31.0
-git checkout tags/v0.31.0
 make install
 ```
 
@@ -65,12 +70,19 @@ git checkout tags/<tag_name>
 
 ### Step 6: Run Upgrade-Assure Script
 
+#### 6a: Build old upgrade assure binary
+
+```bash
+make build-upgrade-assure
+mv build/upgrade-assure build/old-upgrade-assure
+```
+
 #### 6a: Initial Run
 
 Run the upgrade-assure script without starting the node:
 
 ```bash
-go run ./scripts/upgrade-assure/... /tmp/snapshot.tar.lz4 /tmp/elysd-v0.30.0 ~/go/bin/elysd --skip-node-start
+./build/old-upgrade-assure /tmp/snapshot.tar.lz4 /tmp/elysd-v0.30.0 ~/go/bin/elysd --skip-node-start
 ```
 
 Notice that /tmp/elysd-v0.30.0 is the current binary retrieved in step 3.
@@ -81,7 +93,7 @@ Address any type errors, such as difficulties in unmarshaling strings into integ
 
 #### 6c: Update the Script
 
-Modify `scripts/upgrade-assure/types.go` to reflect data structure changes necessary to resolve type errors.
+Modify `cmd/upgrade-assure/types.go` to reflect data structure changes necessary to resolve type errors.
 
 The `types.go` file employs the `elys` data structure types to serialize the genesis state into JSON format for initializing localnet. This file predominantly handles conversion issues where Go struggles with fields defined as integers. To address this, such fields are overridden as `json.Number`.
 
@@ -92,7 +104,7 @@ During the `read-genisis-file` step of the `upgrade-assure` process, if parsing 
 Repeat the process after updating the script:
 
 ```bash
-go run ./scripts/upgrade-assure/... /tmp/snapshot.tar.lz4 /tmp/elysd-v0.30.0 ~/go/bin/elysd --skip-node-start
+./build/old-upgrade-assure /tmp/snapshot.tar.lz4 /tmp/elysd-v0.30.0 ~/go/bin/elysd --skip-node-start
 ```
 
 Notice that /tmp/elysd-v0.30.0 is the current binary retrieved in step 3.
@@ -110,10 +122,10 @@ git checkout <branch_name>
 Execute the final upgrade command to complete the upgrade process:
 
 ```bash
-go run ./scripts/upgrade-assure/... /tmp/snapshot.tar.lz4 /tmp/elysd-v0.30.0 ~/go/bin/elysd --skip-snapshot --skip-chain-init
+./build/new-upgrade-assure /tmp/snapshot.tar.lz4 /tmp/elysd-v0.30.0 ~/go/bin/elysd --skip-snapshot --skip-chain-init
 ```
 
-Notice that /tmp/elysd-v0.30.0 is the current binary retrieved in step 3.
+Notice that /tmp/elysd-v0.30.0 is the current binary retrieved in step 3 and we are using the new upgrade assure binary.
 
 This command will execute both Alice and Bob nodes and it takes some time to execute. You will know it sucessfully finishes after the process
 kills itself. The final logs are:
@@ -139,7 +151,7 @@ to start a fresh copy of the chain without going to this process again.
 If something went wrong while you were starting the node at step 8, you can start the nodes manually with the new binary by using the following command:
 
 ```bash
-go run ./scripts/upgrade-assure/... /tmp/snapshot.tar.lz4 /tmp/elysd-v0.30.0 ~/go/bin/elysd --only-start-with-new-binary
+./build/new-upgrade-assure /tmp/snapshot.tar.lz4 /tmp/elysd-v0.30.0 ~/go/bin/elysd --only-start-with-new-binary
 ```
 
 Notice that /tmp/elysd-v0.30.0 is the current binary retrieved in step 3.
@@ -153,8 +165,8 @@ Notice that /tmp/elysd-v0.30.0 is the current binary retrieved in step 3.
 - **Snapshot Source:** [Download the latest snapshot for High Stakes Testnet](https://tools.highstakes.ch/files/elys.tar.gz).
 - **Installation Commands:**
   ```bash
-  make install
-  go run ./scripts/upgrade-assure/... https://tools.highstakes.ch/files/elys.tar.gz ~/go/bin/elysd ~/go/bin/elysd --skip-proposal
+  make install build-upgrade-assure
+  ./build/upgrade-assure https://tools.highstakes.ch/files/elys.tar.gz ~/go/bin/elysd ~/go/bin/elysd --skip-proposal
   ```
 
 ### Stake Town Testnet
@@ -162,8 +174,8 @@ Notice that /tmp/elysd-v0.30.0 is the current binary retrieved in step 3.
 - **Snapshot Source:** [Download the latest snapshot for Stake Town Testnet](https://snapshots-testnet.stake-town.com/elys/elystestnet-1_latest.tar.lz4).
 - **Installation Commands:**
   ```bash
-  make install
-  go run ./scripts/upgrade-assure/... https://snapshots-testnet.stake-town.com/elys/elystestnet-1_latest.tar.lz4 ~/go/bin/elysd ~/go/bin/elysd --skip-proposal
+  make install build-upgrade-assure
+  ./build/upgrade-assure https://snapshots-testnet.stake-town.com/elys/elystestnet-1_latest.tar.lz4 ~/go/bin/elysd ~/go/bin/elysd --skip-proposal
   ```
 
 ## Troubleshooting
@@ -183,7 +195,8 @@ Notice that /tmp/elysd-v0.30.0 is the current binary retrieved in step 3.
 Run the following command to start the nodes manually:
 
 ```bash
-go run ./scripts/upgrade-assure/... /tmp/snapshot.tar.lz4 ~/go/bin/elysd ~/go/bin/elysd --only-start-with-new-binary
+make build-upgrade-assure
+./build/upgrade-assure /tmp/snapshot.tar.lz4 ~/go/bin/elysd ~/go/bin/elysd --only-start-with-new-binary
 ```
 
 **Debug Mode**
@@ -191,5 +204,6 @@ go run ./scripts/upgrade-assure/... /tmp/snapshot.tar.lz4 ~/go/bin/elysd ~/go/bi
 By default the nodes run in `info` mode. To enable debug mode, add the following flag to the command:
 
 ```bash
-LOG_LEVEL=debug go run ./scripts/upgrade-assure/... /tmp/snapshot.tar.lz4 ~/go/bin/elysd ~/go/bin/elysd --only-start-with-new-binary
+make install build-upgrade-assure
+LOG_LEVEL=debug ./build/upgrade-assure /tmp/snapshot.tar.lz4 ~/go/bin/elysd ~/go/bin/elysd --only-start-with-new-binary
 ```
