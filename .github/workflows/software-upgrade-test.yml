@@ -136,17 +136,20 @@ jobs:
         run: git checkout ${{ github.head_ref }}
 
       - name: Create second validator
-        run: |
-          GOMEMLIMIT=8GiB $NEW_UPGRADE_ASSURE_BINARY_PATH $SNAPSHOT_PATH $OLD_BINARY_PATH $NEW_BINARY_PATH \
-            --skip-snapshot \
-            --skip-chain-init \
-            --skip-prepare-validator-data \
-            --skip-submit-proposal \
-            --skip-upgrade-to-new-binary \
-            --timeout-next-block 100000 \
-            --timeout-wait-for-node 100000
+        uses: nick-fields/retry@v3
+        with:
+          timeout_minutes: 30
+          max_attempts: 3
+          command: |
+            GOMEMLIMIT=8GiB $NEW_UPGRADE_ASSURE_BINARY_PATH $SNAPSHOT_PATH $OLD_BINARY_PATH $NEW_BINARY_PATH \
+              --skip-snapshot \
+              --skip-chain-init \
+              --skip-prepare-validator-data \
+              --skip-submit-proposal \
+              --skip-upgrade-to-new-binary \
+              --timeout-next-block 100000 \
+              --timeout-wait-for-node 100000
         if: steps.cache-directories.outputs.cache-hit != 'true'
-        retry: 3 # Retry up to 3 times in case of failure
 
       - name: Save up space
         run: |
@@ -167,29 +170,35 @@ jobs:
         if: steps.cache-directories.outputs.cache-hit != 'true'
 
       - name: Submit new proposal
-        run: |
-          GOMEMLIMIT=8GiB $NEW_UPGRADE_ASSURE_BINARY_PATH $SNAPSHOT_PATH $OLD_BINARY_PATH $NEW_BINARY_PATH \
-            --skip-snapshot \
-            --skip-chain-init \
-            --skip-create-validator \
-            --skip-prepare-validator-data \
-            --skip-upgrade-to-new-binary \
-            --timeout-next-block 100000 \
-            --timeout-wait-for-node 100000
+        uses: nick-fields/retry@v3
+        with:
+          timeout_minutes: 30
+          max_attempts: 3
+          command: |
+            GOMEMLIMIT=8GiB $NEW_UPGRADE_ASSURE_BINARY_PATH $SNAPSHOT_PATH $OLD_BINARY_PATH $NEW_BINARY_PATH \
+              --skip-snapshot \
+              --skip-chain-init \
+              --skip-create-validator \
+              --skip-prepare-validator-data \
+              --skip-upgrade-to-new-binary \
+              --timeout-next-block 100000 \
+              --timeout-wait-for-node 100000
         if: steps.cache-directories.outputs.cache-hit != 'true'
-        retry: 3 # Retry up to 3 times in case of failure
 
       - name: Upgrade to new binary
-        run: |
-          GOMEMLIMIT=8GiB $NEW_UPGRADE_ASSURE_BINARY_PATH $SNAPSHOT_PATH $NEW_BINARY_PATH $NEW_BINARY_PATH \
-            --skip-snapshot \
-            --skip-chain-init \
-            --skip-create-validator \
-            --skip-prepare-validator-data \
-            --skip-submit-proposal \
-            --timeout-next-block 100000 \
-            --timeout-wait-for-node 100000
-        retry: 3 # Retry up to 3 times in case of failure
+        uses: nick-fields/retry@v3
+        with:
+          timeout_minutes: 30
+          max_attempts: 3
+          command: |
+            GOMEMLIMIT=8GiB $NEW_UPGRADE_ASSURE_BINARY_PATH $SNAPSHOT_PATH $NEW_BINARY_PATH $NEW_BINARY_PATH \
+              --skip-snapshot \
+              --skip-chain-init \
+              --skip-create-validator \
+              --skip-prepare-validator-data \
+              --skip-submit-proposal \
+              --timeout-next-block 100000 \
+              --timeout-wait-for-node 100000
 
       - name: Create new snapshot file
         run: |
