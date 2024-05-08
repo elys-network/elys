@@ -204,7 +204,9 @@ jobs:
         run: |
           SANITIZED_HEAD_REF=$(echo "${{ github.head_ref }}" | sed 's|/|_|g')
           CURRENT_DATE=$(date +'%Y%m%d-%H%M%S')
-          NEW_SNAPSHOT_PATH="/tmp/elys-snapshot-${SANITIZED_HEAD_REF}-${CURRENT_DATE}.tar.lz4"
+          NEW_SNAPSHOT_FILENAME="elys-snapshot-${SANITIZED_HEAD_REF}-${CURRENT_DATE}.tar.lz4"
+          NEW_SNAPSHOT_PATH="/tmp/${NEW_SNAPSHOT_FILENAME}"
+          echo "NEW_SNAPSHOT_FILENAME=$NEW_SNAPSHOT_FILENAME" >> $GITHUB_ENV
           echo "NEW_SNAPSHOT_PATH=$NEW_SNAPSHOT_PATH" >> $GITHUB_ENV
           tar -cf - ~/.elys | lz4 -z - > "$NEW_SNAPSHOT_PATH"
 
@@ -222,4 +224,4 @@ jobs:
 
       - name: Info about the snapshot
         run: |
-          echo "Snapshot URL: https://snapshots.elys.network/$NEW_SNAPSHOT_PATH"
+          echo "Snapshot URL: https://snapshots.elys.network/$NEW_SNAPSHOT_FILENAME"
