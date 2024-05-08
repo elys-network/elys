@@ -146,6 +146,7 @@ jobs:
             --timeout-next-block 100000 \
             --timeout-wait-for-node 100000
         if: steps.cache-directories.outputs.cache-hit != 'true'
+        retry: 3 # Retry up to 3 times in case of failure
 
       - name: Save up space
         run: |
@@ -176,6 +177,7 @@ jobs:
             --timeout-next-block 100000 \
             --timeout-wait-for-node 100000
         if: steps.cache-directories.outputs.cache-hit != 'true'
+        retry: 3 # Retry up to 3 times in case of failure
 
       - name: Upgrade to new binary
         run: |
@@ -187,6 +189,7 @@ jobs:
             --skip-submit-proposal \
             --timeout-next-block 100000 \
             --timeout-wait-for-node 100000
+        retry: 3 # Retry up to 3 times in case of failure
 
       - name: Create new snapshot file
         run: |
