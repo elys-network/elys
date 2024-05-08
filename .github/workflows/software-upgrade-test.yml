@@ -219,3 +219,7 @@ jobs:
       - name: Remove snapshot file
         run: |
           rm -f $NEW_SNAPSHOT_PATH
+
+      - name: Info about the snapshot
+        run: |
+          echo "Snapshot URL: https://snapshots.elys.network/$NEW_SNAPSHOT_PATH"
