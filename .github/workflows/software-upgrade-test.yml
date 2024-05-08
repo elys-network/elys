@@ -47,12 +47,12 @@ jobs:
 
       - name: Cache Directories
         uses: actions/cache@v4
-        id: cache-directories
+        id: cache-backup-directories
         with:
           path: |
-            ~/.elys
-            ~/.elys2
-          key: ${{ runner.os }}-directories-${{ env.LATEST_TAG }}
+            /tmp/elys-backup
+            /tmp/elys2-backup
+          key: ${{ runner.os }}-backup-directories-${{ env.LATEST_TAG }}
 
       - name: Retrieve latest binary
         run: |
@@ -62,7 +62,7 @@ jobs:
           echo "OLD_BINARY_PATH=$OLD_BINARY_PATH" >> $GITHUB_ENV
 
           # TODO: retrieve upgrade-assure and upload-snapshot binaries
-        if: steps.cache-directories.outputs.cache-hit != 'true'
+        if: steps.cache-backup-directories.outputs.cache-hit != 'true'
 
       - name: Create git tag
         run: git tag v999.999.999
@@ -89,17 +89,17 @@ jobs:
       - name: Copy upgrade assure folder
         run: |
           cp -a ./cmd/upgrade-assure ./cmd/upgrade-assure-skip
-        if: steps.cache-directories.outputs.cache-hit != 'true'
+        if: steps.cache-backup-directories.outputs.cache-hit != 'true'
 
       - name: Check out latest tag
         run: git checkout $LATEST_TAG
-        if: steps.cache-directories.outputs.cache-hit != 'true'
+        if: steps.cache-backup-directories.outputs.cache-hit != 'true'
 
       # TODO: to remove when upgrade-assure binary is available in previous release
       - name: Copy old upgrade assure types.go file
         run: |
           cp -a ./scripts/upgrade-assure/types.go ./cmd/upgrade-assure-skip/types.go
-        if: steps.cache-directories.outputs.cache-hit != 'true'
+        if: steps.cache-backup-directories.outputs.cache-hit != 'true'
 
       # TODO: to remove when upgrade-assure binary is available in previous release
       - name: Build old binaries
@@ -109,7 +109,7 @@ jobs:
           OLD_UPGRADE_ASSURE_BINARY_PATH=./build/old-upgrade-assure
           mv ./build/upgrade-assure-skip $OLD_UPGRADE_ASSURE_BINARY_PATH
           echo "OLD_UPGRADE_ASSURE_BINARY_PATH=$OLD_UPGRADE_ASSURE_BINARY_PATH" >> $GITHUB_ENV
-        if: steps.cache-directories.outputs.cache-hit != 'true'
+        if: steps.cache-backup-directories.outputs.cache-hit != 'true'
 
       - name: Chain snapshot and export
         run: |
@@ -118,7 +118,7 @@ jobs:
             --skip-node-start \
             --timeout-next-block 100000 \
             --timeout-wait-for-node 100000
-        if: steps.cache-directories.outputs.cache-hit != 'true'
+        if: steps.cache-backup-directories.outputs.cache-hit != 'true'
 
       - name: Chain initialization
         run: |
@@ -127,7 +127,7 @@ jobs:
             --skip-node-start \
             --timeout-next-block 100000 \
             --timeout-wait-for-node 100000
-        if: steps.cache-directories.outputs.cache-hit != 'true'
+        if: steps.cache-backup-directories.outputs.cache-hit != 'true'
 
       - name: Check out new branch
         run: git checkout ${{ github.head_ref }}
@@ -146,7 +146,7 @@ jobs:
               --skip-upgrade-to-new-binary \
               --timeout-next-block 100000 \
               --timeout-wait-for-node 100000
-        if: steps.cache-directories.outputs.cache-hit != 'true'
+        if: steps.cache-backup-directories.outputs.cache-hit != 'true'
 
       - name: Save up space
         run: |
@@ -163,7 +163,7 @@ jobs:
             --skip-upgrade-to-new-binary \
             --timeout-next-block 100000 \
             --timeout-wait-for-node 100000
-        if: steps.cache-directories.outputs.cache-hit != 'true'
+        if: steps.cache-backup-directories.outputs.cache-hit != 'true'
 
       - name: Submit new proposal
         uses: nick-fields/retry@v3
@@ -179,7 +179,19 @@ jobs:
               --skip-upgrade-to-new-binary \
               --timeout-next-block 100000 \
               --timeout-wait-for-node 100000
-        if: steps.cache-directories.outputs.cache-hit != 'true'
+        if: steps.cache-backup-directories.outputs.cache-hit != 'true'
+
+      - name: Backup elys folders
+        run: |
+          cp -a $HOME/.elys /tmp/elys-backup
+          cp -a $HOME/.elys2 /tmp/elys2-backup
+        if: steps.cache-backup-directories.outputs.cache-hit != 'true'
+
+      - name: Restore elys folders from backup
+        run: |
+          mv /tmp/elys-backup $HOME/.elys
+          mv /tmp/elys2-backup $HOME/.elys2
+        if: steps.cache-backup-directories.outputs.cache-hit == 'true'
 
       - name: Upgrade to new binary
         uses: nick-fields/retry@v3
@@ -205,7 +217,8 @@ jobs:
           NEW_SNAPSHOT_PATH="/tmp/${NEW_SNAPSHOT_FILENAME}"
           echo "NEW_SNAPSHOT_FILENAME=$NEW_SNAPSHOT_FILENAME" >> $GITHUB_ENV
           echo "NEW_SNAPSHOT_PATH=$NEW_SNAPSHOT_PATH" >> $GITHUB_ENV
-          tar -cf - ~/.elys | lz4 -z - > "$NEW_SNAPSHOT_PATH"
+          cd $HOME
+          tar -cf - .elys | lz4 -z - > "$NEW_SNAPSHOT_PATH"
 
       - name: Upload snapshot
         run: |
