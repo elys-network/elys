@@ -38,6 +38,9 @@ func (k Keeper) Rewards(goCtx context.Context, req *types.QueryRewardsRequest) (
 			val := k.Validator(ctx, valAddr)
 			endingPeriod := k.distrKeeper.IncrementValidatorPeriod(ctx, val)
 			delReward := k.distrKeeper.CalculateDelegationRewards(ctx, val, del, endingPeriod)
+			if delReward == nil {
+				delReward = []sdk.DecCoin{}
+			}
 
 			delRewards = append(delRewards, types.DelegationDelegatorReward{
 				ValidatorAddress: valAddr.String(),
