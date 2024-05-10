@@ -16,15 +16,11 @@ func (k Keeper) CalcDelegationAmount(ctx sdk.Context, delegator string) math.Int
 		return sdk.ZeroInt()
 	}
 
-	// Get elys delegation for creator address
+	// Get elys delegation
 	delAmount := sdk.ZeroDec()
-
-	// Get all delegations
 	delegations := k.Keeper.GetDelegatorDelegations(ctx, delAddr, gomath.MaxUint16)
 	for _, del := range delegations {
-		// Get validator address
 		valAddr := del.GetValidatorAddr()
-		// Get validator
 		val := k.Keeper.Validator(ctx, valAddr)
 
 		shares := del.GetShares()
@@ -46,13 +42,9 @@ func (k Keeper) CalcBondedDelegationAmount(ctx sdk.Context, delegator string) ma
 
 	// Get elys delegation for creator address
 	delAmount := sdk.ZeroDec()
-
-	// Get all delegations
 	delegations := k.Keeper.GetDelegatorDelegations(ctx, delAddr, gomath.MaxUint16)
 	for _, del := range delegations {
-		// Get validator address
 		valAddr := del.GetValidatorAddr()
-		// Get validator
 		val := k.Keeper.Validator(ctx, valAddr)
 
 		if !val.IsBonded() {

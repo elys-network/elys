@@ -19,8 +19,8 @@ type (
 		memKey     storetypes.StoreKey
 		paramstore paramtypes.Subspace
 
+		parameterKeeper     types.ParameterKeeper
 		cmk                 types.CommitmentKeeper
-		tci                 *types.TotalCommitmentInfo
 		amm                 types.AmmKeeper
 		oracleKeeper        types.OracleKeeper
 		assetProfileKeeper  types.AssetProfileKeeper
@@ -39,6 +39,7 @@ func NewKeeper(
 	storeKey,
 	memKey storetypes.StoreKey,
 	ps paramtypes.Subspace,
+	parameterKeeper types.ParameterKeeper,
 	ck types.CommitmentKeeper,
 	amm types.AmmKeeper,
 	ok types.OracleKeeper,
@@ -55,8 +56,8 @@ func NewKeeper(
 		storeKey:            storeKey,
 		memKey:              memKey,
 		paramstore:          ps,
+		parameterKeeper:     parameterKeeper,
 		cmk:                 ck,
-		tci:                 &types.TotalCommitmentInfo{},
 		amm:                 amm,
 		oracleKeeper:        ok,
 		assetProfileKeeper:  ap,

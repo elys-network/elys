@@ -30,7 +30,6 @@ func (k Keeper) GetPoolBalance(ctx sdk.Context, poolId uint64, user string) sdk.
 
 func (k Keeper) UpdateAccPerShare(ctx sdk.Context, poolId uint64, rewardDenom string, amount sdk.Int) {
 	poolRewardInfo, found := k.GetPoolRewardInfo(ctx, poolId, rewardDenom)
-
 	if !found {
 		poolRewardInfo = types.PoolRewardInfo{
 			PoolId:                poolId,
@@ -94,7 +93,6 @@ func (k Keeper) UpdateUserRewardPending(ctx sdk.Context, poolId uint64, rewardDe
 
 func (k Keeper) UpdateUserRewardDebt(ctx sdk.Context, poolId uint64, rewardDenom string, user string) {
 	poolRewardInfo, found := k.GetPoolRewardInfo(ctx, poolId, rewardDenom)
-
 	if !found {
 		poolRewardInfo = types.PoolRewardInfo{
 			PoolId:                poolId,
@@ -105,7 +103,6 @@ func (k Keeper) UpdateUserRewardDebt(ctx sdk.Context, poolId uint64, rewardDenom
 	}
 
 	userRewardInfo, found := k.GetUserRewardInfo(ctx, user, poolId, rewardDenom)
-
 	if !found {
 		userRewardInfo = types.UserRewardInfo{
 			User:          user,

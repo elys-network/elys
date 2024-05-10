@@ -8,18 +8,13 @@ import (
 
 func (k Keeper) GetExternalIncentiveIndex(ctx sdk.Context) (index uint64) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.ExternalIncentiveIndexKeyPrefix))
-
 	index = sdk.BigEndianToUint64(store.Get(types.ExternalIncentiveIndex()))
-
 	return index
 }
 
-func (k Keeper) SetExternalIncentiveIndex(ctx sdk.Context, index uint64) error {
+func (k Keeper) SetExternalIncentiveIndex(ctx sdk.Context, index uint64) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.ExternalIncentiveIndexKeyPrefix))
-
 	store.Set(types.ExternalIncentiveIndex(), sdk.Uint64ToBigEndian(index))
-
-	return nil
 }
 
 func (k Keeper) SetExternalIncentive(ctx sdk.Context, externalIncentive types.ExternalIncentive) error {
@@ -36,7 +31,6 @@ func (k Keeper) SetExternalIncentive(ctx sdk.Context, externalIncentive types.Ex
 
 func (k Keeper) GetExternalIncentive(ctx sdk.Context, id uint64) (val types.ExternalIncentive, found bool) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.ExternalIncentiveKeyPrefix))
-
 	b := store.Get(types.ExternalIncentiveKey(id))
 	if b == nil {
 		return val, false

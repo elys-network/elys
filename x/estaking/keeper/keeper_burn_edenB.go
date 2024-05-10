@@ -88,7 +88,7 @@ func (k Keeper) BurnEdenBFromEdenUncommitted(ctx sdk.Context, delegator string, 
 		return nil
 	}
 
-	// Burn EdenB ( Deduction EdenB in commitment module)
+	// Burn EdenB in commitment module
 	commitment, err := k.commKeeper.BurnEdenBoost(ctx, delegator, ptypes.EdenB, edenBToBurn.TruncateInt())
 	k.commKeeper.SetCommitments(ctx, commitment)
 	return err

@@ -127,7 +127,6 @@ func (k msgServer) AddExternalIncentive(goCtx context.Context, msg *types.MsgAdd
 
 func (k msgServer) ClaimRewards(goCtx context.Context, msg *types.MsgClaimRewards) (*types.MsgClaimRewardsResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-
 	sender := sdk.MustAccAddressFromBech32(msg.Sender)
 
 	if len(msg.PoolIds) == 0 {
@@ -143,7 +142,6 @@ func (k msgServer) ClaimRewards(goCtx context.Context, msg *types.MsgClaimReward
 
 		for _, rewardDenom := range k.GetRewardDenoms(ctx, poolId) {
 			userRewardInfo, found := k.GetUserRewardInfo(ctx, msg.Sender, poolId, rewardDenom)
-
 			if found && userRewardInfo.RewardPending.IsPositive() {
 				coin := sdk.NewCoin(rewardDenom, userRewardInfo.RewardPending.TruncateInt())
 				coins = coins.Add(coin)
@@ -165,7 +163,6 @@ func (k msgServer) ClaimRewards(goCtx context.Context, msg *types.MsgClaimReward
 
 func (k msgServer) UpdateParams(goCtx context.Context, msg *types.MsgUpdateParams) (*types.MsgUpdateParamsResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-
 	if k.authority != msg.Authority {
 		return nil, errorsmod.Wrapf(govtypes.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.authority, msg.Authority)
 	}
@@ -177,7 +174,6 @@ func (k msgServer) UpdateParams(goCtx context.Context, msg *types.MsgUpdateParam
 
 func (k msgServer) UpdatePoolMultipliers(goCtx context.Context, msg *types.MsgUpdatePoolMultipliers) (*types.MsgUpdatePoolMultipliersResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-
 	if k.authority != msg.Authority {
 		return nil, errorsmod.Wrapf(govtypes.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.authority, msg.Authority)
 	}

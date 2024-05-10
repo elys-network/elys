@@ -97,10 +97,6 @@ func validateLPIncentives(i interface{}) error {
 		return fmt.Errorf("invalid eden amount per year: %v", vv)
 	}
 
-	if vv.TotalBlocksPerYear.LT(sdk.NewInt(1)) {
-		return fmt.Errorf("invalid total blocks per year: %v", vv)
-	}
-
 	if vv.BlocksDistributed.LT(sdk.NewInt(0)) {
 		return fmt.Errorf("invalid BlocksDistributed: %v", vv)
 	}

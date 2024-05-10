@@ -23,12 +23,12 @@ func (m *Messenger) msgWithdrawReward(ctx sdk.Context, contractAddr sdk.AccAddre
 
 	res, err = performMsgWithdrawReward(m.keeper, ctx, contractAddr, msgWithdrawReward)
 	if err != nil {
-		return nil, nil, errorsmod.Wrap(err, "perform elys claim rewards")
+		return nil, nil, errorsmod.Wrap(err, "perform msgWithdrawReward")
 	}
 
 	responseBytes, err := json.Marshal(*res)
 	if err != nil {
-		return nil, nil, errorsmod.Wrap(err, "failed to serialize stake")
+		return nil, nil, errorsmod.Wrap(err, "failed to serialize msgWithdrawReward response")
 	}
 
 	resp := [][]byte{responseBytes}

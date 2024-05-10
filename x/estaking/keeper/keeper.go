@@ -26,6 +26,7 @@ type (
 		cdc                codec.BinaryCodec
 		storeKey           storetypes.StoreKey
 		memKey             storetypes.StoreKey
+		parameterKeeper    types.ParameterKeeper
 		commKeeper         types.CommitmentKeeper
 		distrKeeper        types.DistrKeeper
 		tokenomicsKeeper   types.TokenomicsKeeper
@@ -62,6 +63,7 @@ func NewKeeper(
 	cdc codec.BinaryCodec,
 	storeKey,
 	memKey storetypes.StoreKey,
+	parameterKeeper types.ParameterKeeper,
 	stakingKeeper *stakingkeeper.Keeper,
 	commKeeper types.CommitmentKeeper,
 	distrKeeper types.DistrKeeper,
@@ -74,6 +76,7 @@ func NewKeeper(
 		cdc:                cdc,
 		storeKey:           storeKey,
 		memKey:             memKey,
+		parameterKeeper:    parameterKeeper,
 		commKeeper:         commKeeper,
 		authority:          authority,
 		distrKeeper:        distrKeeper,
@@ -293,22 +296,22 @@ func (k Keeper) WithdrawEdenReward(ctx sdk.Context, addr sdk.AccAddress) error {
 }
 
 func (k Keeper) DelegationRewards(ctx sdk.Context, delegatorAddress string, validatorAddress string) (sdk.DecCoins, error) {
-	valAdr, err := sdk.ValAddressFromBech32(validatorAddress)
+	valAddr, err := sdk.ValAddressFromBech32(validatorAddress)
 	if err != nil {
 		return nil, err
 	}
 
-	val := k.Validator(ctx, valAdr)
+	val := k.Validator(ctx, valAddr)
 	if val == nil {
 		return nil, errorsmod.Wrap(distrtypes.ErrNoValidatorExists, validatorAddress)
 	}
 
-	delAdr, err := sdk.AccAddressFromBech32(delegatorAddress)
+	delAddr, err := sdk.AccAddressFromBech32(delegatorAddress)
 	if err != nil {
 		return nil, err
 	}
 
-	del := k.Delegation(ctx, delAdr, valAdr)
+	del := k.Delegation(ctx, delAddr, valAddr)
 	if del == nil {
 		return nil, distrtypes.ErrNoDelegationExists
 	}

@@ -31,12 +31,9 @@ func (k Keeper) CalculateApr(ctx sdk.Context, query *types.QueryAprRequest) (mat
 		return sdk.ZeroInt(), errorsmod.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency)
 	}
 
-	lpIncentive := masterchefParams.LpIncentives
 	stkIncentive := estakingParams.StakeIncentives
 
-	if lpIncentive.TotalBlocksPerYear.IsZero() || stkIncentive.TotalBlocksPerYear.IsZero() {
-		return sdk.ZeroInt(), errorsmod.Wrap(types.ErrNoInflationaryParams, "invalid inflationary params")
-	}
+	totalBlocksPerYear := k.parameterKeeper.GetParams(ctx).TotalBlocksPerYear
 
 	if query.Denom == ptypes.Eden {
 		if query.WithdrawType == commitmenttypes.EarnType_USDC_PROGRAM {
@@ -52,22 +49,24 @@ func (k Keeper) CalculateApr(ctx sdk.Context, query *types.QueryAprRequest) (mat
 				return sdk.ZeroInt(), nil
 			}
 
+			if stkIncentive == nil || stkIncentive.EdenAmountPerYear.IsNil() {
+				return sdk.ZeroInt(), nil
+			}
+
 			// Calculate
-			stakersEdenAmount := stkIncentive.EdenAmountPerYear.
-				Quo(stkIncentive.TotalBlocksPerYear)
+			stakersEdenAmount := stkIncentive.EdenAmountPerYear.Quo(sdk.NewInt(totalBlocksPerYear))
 
 			// Maximum eden APR - 30% by default
-			// Allocated for staking per day = (0.3/365)* ( total elys staked + total Eden committed + total Eden boost committed)
 			stakersMaxEdenAmount := estakingParams.MaxEdenRewardAprStakers.
 				MulInt(totalStakedSnapshot).
-				QuoInt(stkIncentive.TotalBlocksPerYear)
+				QuoInt64(totalBlocksPerYear)
 
 			// Use min amount (eden allocation from tokenomics and max apr based eden amount)
 			stakersEdenAmount = sdk.MinInt(stakersEdenAmount, stakersMaxEdenAmount.TruncateInt())
 
-			// For Eden reward Apr for elys staking = {(amount of Eden allocated for staking per day)*365/( total elys staked + total Eden committed + total Eden boost committed)}*100
+			// For Eden reward Apr for elys staking
 			apr := stakersEdenAmount.
-				Mul(lpIncentive.TotalBlocksPerYear).
+				Mul(sdk.NewInt(totalBlocksPerYear)).
 				Mul(sdk.NewInt(100)).
 				Quo(totalStakedSnapshot)
 
@@ -111,7 +110,9 @@ func (k Keeper) CalculateApr(ctx sdk.Context, query *types.QueryAprRequest) (mat
 			}
 
 			// DexReward amount per day = amount distributed / duration(in seconds) * total seconds per day.
-			yearlyDexRewardAmount := amount.MulInt(lpIncentive.TotalBlocksPerYear).QuoInt(params.DexRewardsStakers.NumBlocks)
+			yearlyDexRewardAmount := amount.
+				MulInt64(totalBlocksPerYear).
+				QuoInt(params.DexRewardsStakers.NumBlocks)
 
 			// Usdc apr for elys staking = (24 hour dex rewards in USDC generated for stakers) * 365*100/ {price ( elys/usdc)*( sum of (elys staked, Eden committed, Eden boost committed))}
 			// we multiply 10 as we have use 10elys as input in the price estimation

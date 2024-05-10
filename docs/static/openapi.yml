@@ -42994,6 +42994,9 @@ paths:
                     type: string
                   broker_address:
                     type: string
+                  total_blocks_per_year:
+                    type: string
+                    format: int64
             description: >-
               QueryParamsResponse is response type for the Query/Params RPC
               method.
@@ -87717,6 +87720,9 @@ definitions:
         type: string
       broker_address:
         type: string
+      total_blocks_per_year:
+        type: string
+        format: int64
     description: Params defines the parameters for the module.
   elys.parameter.QueryParamsResponse:
     type: object
@@ -87733,6 +87739,9 @@ definitions:
             type: string
           broker_address:
             type: string
+          total_blocks_per_year:
+            type: string
+            format: int64
     description: QueryParamsResponse is response type for the Query/Params RPC method.
   elys.perpetual.IsWhitelistedResponse:
     type: object
