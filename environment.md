@@ -1,22 +1,24 @@
 # Introduction
 
-In this document, we're going to see how to make a new environment from 0 with 2 differents servers with the Elys binary on its version **0.30.0**
+In this document, we're going to see how to create a new environment from scratch. We will demonstrate it setting up 2 different nodes with the Elys binary on its version **0.30.0**.
 
-## To be organized we have 2 servers with these names
- 1. Mallorca
- 2. Fuji
+## Nodes
+
+1.  Mallorca: Represents 60% of the staked tokens.
+2.  Fuji: Represents 40% of the staked tokens.
 
 ## Data for this example:
-- chain-id: elysdevnet-1
-- Moniker of Mallorca: mallorca
-- Moniker of Fuji: fuji
+
+- chain-id: `elysdevnet-1`
+- Mallorca moniker: `mallorca`
+- Fuji moniker: `fuji`
 
 ## Install Elys on (Mallorca and Fuji)
 
 ### Install the node
 
-> You have to make this step with Mallorca and Fuji Servers  
- 
+> You have to make this step with Mallorca and Fuji Servers
+
 ```bash
 cd $HOME || return
 rm -rf $HOME/elys
@@ -33,7 +35,7 @@ elysd config chain-id elysdevnet-1
 #Examples:
 #elysd init "fuji" --chain-id elysdevnet-1
 #elysd init "mallorca" --chain-id elysdevnet-1
-elysd init "Your Moniker" --chain-id elysdevnet-1 
+elysd init "Your Moniker" --chain-id elysdevnet-1
 
 APP_TOML="~/.elys/config/app.toml"
 sed -i "s/^app-db-backend *=.*/app-db-backend = \"pebbledb\"/" $APP_TOML
@@ -49,42 +51,42 @@ sed -i 's|^prometheus *=.*|prometheus = true|' $CONFIG_TOML
 sed -i -e "s/^filter_peers *=.*/filter_peers = \"true\"/" $CONFIG_TOML
 ```
 
-###  Rcp server extra configuration
-Edit your config.toml and change ```laddr``` and ```cors_allowed_origins``` like these :
+### RPC server extra configuration
+
+Edit your config.toml and change `laddr` and `cors_allowed_origins` like these:
+
 ```
 [rpc]
 laddr = "tcp://0.0.0.0:26657"
 cors_allowed_origins = ["*"]
 ```
 
+## Genesis creation
 
-## Initial Balances and Initial Stakes
+### Initial Balances and Initial Stakes
 
-### Mallorca Server 
+**Mallorca Server**
+
 ```bash
 elysd keys add mallorca
 elysd add-genesis-account {mallorca-address} 1000000000uelys
-```
-Now move the genesis file to Fuji server and replace it there
-
-### Fuji Server
-
-```bash
-elysd keys add fuji
-elysd add-genesis-account {fuji-address} 1000000000uelys
-elysd gentx fuji 40000000uelys \   
+elysd gentx mallorca 60000000uelys \
     --keyring-backend file --keyring-dir /home/ubuntu/.elys/keys \
     --account-number 0 --sequence 0 \
     --pubkey=$(elysd tendermint show-validator) \
     --chain-id elysdevnet-1 \
     --gas 1000000 \
-    --gas-prices 0.1uelys 
+    --gas-prices 0.1uelys
 ```
 
-Now move the genesis file to Mallorca server and replace it there
+Share the genesis file to Fuji server and continue:
+
+**Fuji Server**
 
 ```bash
-elysd gentx mallorca 60000000uelys \
+elysd keys add fuji
+elysd add-genesis-account {fuji-address} 1000000000uelys
+elysd gentx fuji 40000000uelys \
     --keyring-backend file --keyring-dir /home/ubuntu/.elys/keys \
     --account-number 0 --sequence 0 \
     --pubkey=$(elysd tendermint show-validator) \
@@ -98,57 +100,61 @@ elysd gentx mallorca 60000000uelys \
 With the two initial staking transactions created. Mallorca have to include both of them in the genesis:
 
 1. Move the fuji tx in `.elys/config/gentx/gentx-*` to mallorca: `.elys/config/gentx/`
-2. Call to `elysd collect-gentxs`
+2. Call to `elysd collect-gentxs` from Mallorca.
 3. As an added precaution, confirm that it is a valid genesis: `elysd validate-genesis`
-4. Edit your genesis.json and change `"stake"` to `"uelys"`
-
-It should return:
-
-``` File at /root/.checkers/config/genesis.json is a valid genesis file```
+   It should return:
+   ` File at /root/.checkers/config/genesis.json is a valid genesis file`
+4. Edit your genesis.json and change every reference from `"stake"` denom to `"uelys"`.
 
 ## Genesis distribution
-All the nodes that will run the executable need the final version of the genesis. You have to copy genesis to `fuji`
+
+All the nodes that will start the chain need the final version of the genesis so please share again with Fuji.
 
 ## Network preparation
 
 ### Setup Fuji
 
-1. ``` elysd tendermint show-node-id ``` 
+1. `elysd tendermint show-node-id`
 2. This returns something like: f2673103417334a839f5c20096909c3023ba4903
 3. Your node identification is: f2673103417334a839f5c20096909c3023ba4903@your-public-ip:26656
 
 Eventually, in fuji server, you should have **config/config.toml**:
-``` bash
+
+```bash
 seeds = "7009cc51174dce87c31f537fe8fed906349a27f4@ip-mallorca:26656"
 persistent_peers = "f2673103417334a839f5c20096909c3023ba4903@fuji-ip:26656"
 private_peer_ids = "f2673103417334a839f5c20096909c3023ba4903"
-``` 
+```
 
 ### Setup Mallorca
 
-1. ``` elysd tendermint show-node-id ``` 
+1. `elysd tendermint show-node-id`
 2. This returns something like: 009cc51174dce87c31f537fe8fed906349a27f4
 3. Your node identification is: 009cc51174dce87c31f537fe8fed906349a27f4@your-public-ip:26656
 
 Eventually, in mallorca server, you should have **config/config.toml**:
-``` bash
+
+```bash
 seeds = "f2673103417334a839f5c20096909c3023ba49034@fuji:26656"
 persistent_peers = "7009cc51174dce87c31f537fe8fed906349a27f43@mallorca-ip:26656"
 private_peer_ids = "7009cc51174dce87c31f537fe8fed906349a27f4"
-``` 
+```
 
 ## Cosmovisor
 
-``` bash
+We will be setting up Cosmovisor.
+Cosmovisor is a process manager for Cosmos SDK application binaries that automates application binary switch at chain upgrades.
+
+```bash
 go install cosmossdk.io/tools/cosmovisor/cmd/cosmovisor@v1.4.0
 mkdir -p ~/.elys/cosmovisor/genesis/bin
 mkdir -p ~/.elys/cosmovisor/upgrades
 cp ~/go/bin/elysd ~/.elys/cosmovisor/genesis/bin
-``` 
+```
 
-## Service
+## Starting the chain as a Service
 
-``` bash
+```bash
 sudo tee /etc/systemd/system/elysd.service > /dev/null << EOF
 [Unit]
 Description=Elys Node
@@ -167,17 +173,22 @@ Environment="UNSAFE_SKIP_BACKUP=true"
 [Install]
 WantedBy=multi-user.target
 EOF
-``` 
+```
+
 [Reference](https://services.stake-town.com/home/testnet/elys/installation)
+
 ## Enable and start service
-``` bash
+
+```bash
 sudo systemctl daemon-reload
 sudo systemctl enable elysd
 sudo systemctl start elysd
+```
 
-#stop service
-sudo systemctl stop elysd
-#logs
-sudo journalctl -u elysd -f -o cat
-``` 
+## Stopping the service
 
+`sudo systemctl stop elysd`
+
+## Watching logs
+
+`sudo journalctl -u elysd -f -o cat`
