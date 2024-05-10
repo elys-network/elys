@@ -88,3 +88,16 @@ func (k msgServer) UpdateBrokerAddress(goCtx context.Context, msg *types.MsgUpda
 	k.SetParams(ctx, params)
 	return &types.MsgUpdateBrokerAddressResponse{}, nil
 }
+
+func (k msgServer) UpdateTotalBlocksPerYear(goCtx context.Context, msg *types.MsgUpdateTotalBlocksPerYear) (*types.MsgUpdateTotalBlocksPerYearResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	if k.authority != msg.Creator {
+		return nil, errorsmod.Wrapf(govtypes.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.authority, msg.Creator)
+	}
+
+	params := k.GetParams(ctx)
+	params.TotalBlocksPerYear = msg.TotalBlocksPerYear
+	k.SetParams(ctx, params)
+	return &types.MsgUpdateTotalBlocksPerYearResponse{}, nil
+}

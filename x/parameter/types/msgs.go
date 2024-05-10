@@ -110,3 +110,33 @@ func (msg *MsgUpdateBrokerAddress) ValidateBasic() error {
 	}
 	return nil
 }
+
+var _ sdk.Msg = &MsgUpdateTotalBlocksPerYear{}
+
+func NewMsgUpdateTotalBlocksPerYear(creator string, totalBlocksPerYear int64) *MsgUpdateTotalBlocksPerYear {
+	return &MsgUpdateTotalBlocksPerYear{
+		Creator:            creator,
+		TotalBlocksPerYear: totalBlocksPerYear,
+	}
+}
+
+func (msg *MsgUpdateTotalBlocksPerYear) GetSigners() []sdk.AccAddress {
+	sender, err := sdk.AccAddressFromBech32(msg.Creator)
+	if err != nil {
+		panic(err)
+	}
+	return []sdk.AccAddress{sender}
+}
+
+func (msg *MsgUpdateTotalBlocksPerYear) ValidateBasic() error {
+	_, err := sdk.AccAddressFromBech32(msg.Creator)
+	if err != nil {
+		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid sender address (%s)", err)
+	}
+
+	if msg.TotalBlocksPerYear == 0 {
+		return errorsmod.Wrapf(sdkerrors.ErrInvalidRequest, "invalid total blocks per year")
+	}
+
+	return nil
+}
