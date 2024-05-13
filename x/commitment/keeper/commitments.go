@@ -12,6 +12,11 @@ import (
 
 // SetCommitments set a specific commitments in the store from its index
 func (k Keeper) SetCommitments(ctx sdk.Context, commitments types.Commitments) {
+	if !k.HasCommitments(ctx, commitments.Creator) {
+		params := k.GetParams(ctx)
+		params.NumberOfCommitments++
+		k.SetParams(ctx, params)
+	}
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.CommitmentsKeyPrefix))
 	b := k.cdc.MustMarshal(&commitments)
 	store.Set(types.CommitmentsKey(commitments.Creator), b)
@@ -68,8 +73,19 @@ func (k Keeper) GetCommitments(ctx sdk.Context, creator string) types.Commitment
 	return val
 }
 
+func (k Keeper) HasCommitments(ctx sdk.Context, creator string) bool {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.CommitmentsKeyPrefix))
+	b := store.Get(types.CommitmentsKey(creator))
+	return b != nil
+}
+
 // RemoveCommitments removes a commitments from the store
 func (k Keeper) RemoveCommitments(ctx sdk.Context, creator string) {
+	if k.HasCommitments(ctx, creator) {
+		params := k.GetParams(ctx)
+		params.NumberOfCommitments--
+		k.SetParams(ctx, params)
+	}
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.CommitmentsKeyPrefix))
 	store.Delete(types.CommitmentsKey(creator))
 }
@@ -94,16 +110,8 @@ func (k Keeper) IterateCommitments(ctx sdk.Context, handlerFn func(commitments t
 
 // NumberOfCommitments returns total number of commitment items
 func (k Keeper) TotalNumberOfCommitments(ctx sdk.Context) int64 {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.CommitmentsKeyPrefix))
-
-	iterator := sdk.KVStorePrefixIterator(store, []byte{})
-	defer iterator.Close()
-
-	numberOfCommitments := int64(0)
-	for ; iterator.Valid(); iterator.Next() {
-		numberOfCommitments++
-	}
-	return numberOfCommitments
+	params := k.GetParams(ctx)
+	return int64(params.NumberOfCommitments)
 }
 
 func (k Keeper) DeductClaimed(ctx sdk.Context, creator string, denom string, amount math.Int) (types.Commitments, error) {
