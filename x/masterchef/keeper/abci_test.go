@@ -80,8 +80,7 @@ func TestABCI_EndBlocker(t *testing.T) {
 
 	// After the first year
 	ctx = ctx.WithBlockHeight(1)
-	paramSet := mk.ProcessUpdateIncentiveParams(ctx)
-	require.Equal(t, paramSet, true)
+	mk.ProcessUpdateIncentiveParams(ctx)
 
 	// Check if the params are correctly set
 	params := mk.GetParams(ctx)
@@ -91,15 +90,13 @@ func TestABCI_EndBlocker(t *testing.T) {
 	// After the first year
 	ctx = ctx.WithBlockHeight(6307210)
 
-	// Incentive param should be empty
-	lpEpoch := mk.CanDistributeLPRewards(ctx)
-	params = mk.GetParams(ctx)
-	require.Equal(t, lpEpoch, false)
-	require.Nil(t, params.LpIncentives)
-
 	// After reading tokenomics again
-	paramSet = mk.ProcessUpdateIncentiveParams(ctx)
-	require.Equal(t, paramSet, true)
+	mk.ProcessUpdateIncentiveParams(ctx)
+
+	// Check if the params are correctly set
+	params = mk.GetParams(ctx)
+	require.NotNil(t, params.LpIncentives)
+	require.Equal(t, params.LpIncentives.EdenAmountPerYear, sdk.NewInt(int64(listTimeBasdInflations[0].Inflation.LmRewards)))
 }
 
 func TestCollectGasFees(t *testing.T) {
@@ -310,7 +307,7 @@ func TestCollectDEXRevenue(t *testing.T) {
 	mk.SetParams(ctx, params)
 
 	// Collect revenue
-	collectedAmt, rewardForLpsAmt := mk.CollectDEXRevenue(ctx)
+	collectedAmt, rewardForLpsAmt, _ := mk.CollectDEXRevenue(ctx)
 
 	// check block height
 	require.Equal(t, int64(0), ctx.BlockHeight())

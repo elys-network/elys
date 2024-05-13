@@ -1,8 +1,6 @@
 package keeper
 
 import (
-	"errors"
-
 	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -42,18 +40,12 @@ func (k Keeper) GetPoolTVL(ctx sdk.Context, poolId uint64) math.LegacyDec {
 }
 
 func (k Keeper) ProcessExternalRewardsDistribution(ctx sdk.Context) {
-	canDistribute := k.CanDistributeLPRewards(ctx)
-	if !canDistribute {
-		return
-	}
-
-	// Fetch incentive params
-	params := k.GetParams(ctx)
-	lpIncentive := params.LpIncentives
-
+	baseCurrency, _ := k.assetProfileKeeper.GetUsdcDenom(ctx)
 	curBlockHeight := sdk.NewInt(ctx.BlockHeight())
+	totalBlocksPerYear := k.parameterKeeper.GetParams(ctx).TotalBlocksPerYear
 
 	externalIncentives := k.GetAllExternalIncentives(ctx)
+	externalIncentiveAprs := make(map[uint64]math.LegacyDec)
 	for _, externalIncentive := range externalIncentives {
 		pool, found := k.GetPool(ctx, externalIncentive.PoolId)
 		if !found {
@@ -78,16 +70,23 @@ func (k Keeper) ProcessExternalRewardsDistribution(ctx sdk.Context) {
 			tvl := k.GetPoolTVL(ctx, pool.PoolId)
 			if tvl.IsPositive() {
 				yearlyIncentiveRewardsTotal := externalIncentive.AmountPerBlock.
-					Mul(lpIncentive.TotalBlocksPerYear).
+					Mul(sdk.NewInt(totalBlocksPerYear)).
 					Quo(pool.NumBlocks)
 
-				baseCurrency, found := k.assetProfileKeeper.GetUsdcDenom(ctx)
-				if found {
-					pool.ExternalIncentiveApr = sdk.NewDecFromInt(yearlyIncentiveRewardsTotal).
-						Mul(k.amm.GetTokenPrice(ctx, externalIncentive.RewardDenom, baseCurrency)).
-						Quo(tvl)
-					k.SetPool(ctx, pool)
+				apr := sdk.NewDecFromInt(yearlyIncentiveRewardsTotal).
+					Mul(k.amm.GetTokenPrice(ctx, externalIncentive.RewardDenom, baseCurrency)).
+					Quo(tvl)
+				externalIncentive.Apr = apr
+				k.SetExternalIncentive(ctx, externalIncentive)
+				poolExternalApr, ok := externalIncentiveAprs[pool.PoolId]
+				if !ok {
+					poolExternalApr = math.LegacyZeroDec()
 				}
+
+				poolExternalApr = poolExternalApr.Add(apr)
+				externalIncentiveAprs[pool.PoolId] = poolExternalApr
+				pool.ExternalIncentiveApr = poolExternalApr
+				k.SetPool(ctx, pool)
 			}
 		}
 
@@ -99,29 +98,22 @@ func (k Keeper) ProcessExternalRewardsDistribution(ctx sdk.Context) {
 
 func (k Keeper) ProcessLPRewardDistribution(ctx sdk.Context) {
 	// Read tokenomics time based inflation params and update incentive module params.
-	if !k.ProcessUpdateIncentiveParams(ctx) {
-		ctx.Logger().Error("Invalid tokenomics params", "error", errors.New("invalid tokenomics params"))
-		return
-	}
+	k.ProcessUpdateIncentiveParams(ctx)
 
-	canDistribute := k.CanDistributeLPRewards(ctx)
-	if canDistribute {
-		err := k.UpdateLPRewards(ctx)
-		if err != nil {
-			ctx.Logger().Error("Failed to update lp rewards unclaimed", "error", err)
-		}
+	err := k.UpdateLPRewards(ctx)
+	if err != nil {
+		ctx.Logger().Error("Failed to update lp rewards unclaimed", "error", err)
 	}
 }
 
-func (k Keeper) ProcessUpdateIncentiveParams(ctx sdk.Context) bool {
+func (k Keeper) ProcessUpdateIncentiveParams(ctx sdk.Context) {
 	// Non-linear inflation per year happens and this includes yearly inflation data
 	listTimeBasedInflations := k.tokenomicsKeeper.GetAllTimeBasedInflation(ctx)
-	if len(listTimeBasedInflations) < 1 {
-		return false
+	if len(listTimeBasedInflations) == 0 {
+		return
 	}
 
 	params := k.GetParams(ctx)
-
 	for _, inflation := range listTimeBasedInflations {
 		// Finding only current inflation data - and skip rest
 		if inflation.StartBlockHeight > uint64(ctx.BlockHeight()) || inflation.EndBlockHeight < uint64(ctx.BlockHeight()) {
@@ -136,7 +128,7 @@ func (k Keeper) ProcessUpdateIncentiveParams(ctx sdk.Context) bool {
 		}
 		blocksDistributed := sdk.NewInt(ctx.BlockHeight() - int64(inflation.StartBlockHeight))
 
-		incentiveInfo := types.IncentiveInfo{
+		params.LpIncentives = &types.IncentiveInfo{
 			// reward amount in eden for 1 year
 			EdenAmountPerYear: sdk.NewInt(int64(inflation.Inflation.LmRewards)),
 			// starting block height of the distribution
@@ -146,58 +138,12 @@ func (k Keeper) ProcessUpdateIncentiveParams(ctx sdk.Context) bool {
 			// number of blocks distributed
 			BlocksDistributed: blocksDistributed,
 		}
-
-		if params.LpIncentives == nil {
-			params.LpIncentives = &incentiveInfo
-		} else {
-			// If any of block number related parameter changed, we re-calculate the current epoch
-			if params.LpIncentives.DistributionStartBlock != incentiveInfo.DistributionStartBlock ||
-				params.LpIncentives.TotalBlocksPerYear != incentiveInfo.TotalBlocksPerYear {
-				params.LpIncentives.BlocksDistributed = blocksDistributed
-			}
-			params.LpIncentives.EdenAmountPerYear = incentiveInfo.EdenAmountPerYear
-			params.LpIncentives.DistributionStartBlock = incentiveInfo.DistributionStartBlock
-			params.LpIncentives.TotalBlocksPerYear = incentiveInfo.TotalBlocksPerYear
-		}
-		break
-	}
-
-	k.SetParams(ctx, params)
-	return true
-}
-
-func (k Keeper) CanDistributeLPRewards(ctx sdk.Context) bool {
-	// Fetch incentive params
-	params := k.GetParams(ctx)
-	if ctx.BlockHeight() < 1 {
-		return false
-	}
-
-	// If we don't have enough params
-	if params.LpIncentives == nil {
-		return false
-	}
-
-	// Incentive params initialize
-	lpIncentive := params.LpIncentives
-
-	curBlockHeight := sdk.NewInt(ctx.BlockHeight())
-	if lpIncentive.DistributionStartBlock.GT(curBlockHeight) {
-		return false
-	}
-
-	// Increase current epoch of incentive param
-	lpIncentive.BlocksDistributed = lpIncentive.BlocksDistributed.Add(sdk.OneInt())
-	if lpIncentive.BlocksDistributed.GTE(lpIncentive.TotalBlocksPerYear) || curBlockHeight.GT(lpIncentive.TotalBlocksPerYear.Add(lpIncentive.DistributionStartBlock)) {
-		params.LpIncentives = nil
 		k.SetParams(ctx, params)
-		return false
+		return
 	}
 
-	params.LpIncentives.BlocksDistributed = lpIncentive.BlocksDistributed
+	params.LpIncentives = nil
 	k.SetParams(ctx, params)
-
-	return true
 }
 
 func (k Keeper) UpdateLPRewards(ctx sdk.Context) error {
@@ -212,7 +158,7 @@ func (k Keeper) UpdateLPRewards(ctx sdk.Context) error {
 
 	// Collect Gas fees + swap fees
 	gasFeesForLpsDec := k.CollectGasFees(ctx, baseCurrency)
-	_, dexRevenueForLps := k.CollectDEXRevenue(ctx)
+	_, dexRevenueForLps, rewardsPerPool := k.CollectDEXRevenue(ctx)
 
 	// USDC amount in sdk.Dec type
 	dexUsdcAmountForLps := dexRevenueForLps.AmountOf(baseCurrency)
@@ -225,20 +171,21 @@ func (k Keeper) UpdateLPRewards(ctx sdk.Context) error {
 	// Proxy TVL = 20*0.3+30*0.5+40*1.0
 	totalProxyTVL := k.CalculateProxyTVL(ctx, baseCurrency)
 
-	// Ensure lpIncentive.TotalBlocksPerYear is not zero to avoid division by zero
-	if lpIncentive.TotalBlocksPerYear.IsZero() {
+	// Ensure totalBlocksPerYear is not zero to avoid division by zero
+	totalBlocksPerYear := k.parameterKeeper.GetParams(ctx).TotalBlocksPerYear
+	if totalBlocksPerYear == 0 {
 		return errorsmod.Wrap(types.ErrNoInflationaryParams, "invalid inflationary params")
 	}
 
 	// Calculate eden amount per block
-	lpsEdenAmount := lpIncentive.EdenAmountPerYear.
-		Quo(lpIncentive.TotalBlocksPerYear)
-
-	// Maximum eden APR - 30% by default
-	// Allocated for staking per day = (0.3/365)* (total weighted proxy TVL)
-	edenDenomPrice := k.amm.GetEdenDenomPrice(ctx, baseCurrency)
+	edenAmountPerYear := sdk.ZeroInt()
+	if lpIncentive != nil && lpIncentive.EdenAmountPerYear.IsPositive() {
+		edenAmountPerYear = lpIncentive.EdenAmountPerYear
+	}
+	lpsEdenAmount := edenAmountPerYear.Quo(sdk.NewInt(totalBlocksPerYear))
 
 	// Ensure edenDenomPrice is not zero to avoid division by zero
+	edenDenomPrice := k.amm.GetEdenDenomPrice(ctx, baseCurrency)
 	if edenDenomPrice.IsZero() {
 		return errorsmod.Wrap(types.ErrNoInflationaryParams, "invalid eden price")
 	}
@@ -260,16 +207,19 @@ func (k Keeper) UpdateLPRewards(ctx sdk.Context) error {
 		// Calculate new Eden for this pool
 		newEdenAllocatedForPool := poolShare.MulInt(lpsEdenAmount)
 
+		// Maximum eden APR - 30% by default
 		poolMaxEdenAmount := params.MaxEdenRewardAprLps.
 			Mul(tvl).
-			QuoInt(lpIncentive.TotalBlocksPerYear).
+			QuoInt64(totalBlocksPerYear).
 			Quo(edenDenomPrice)
 
 		// Use min amount (eden allocation from tokenomics and max apr based eden amount)
 		newEdenAllocatedForPool = sdk.MinDec(newEdenAllocatedForPool, poolMaxEdenAmount)
-		err = k.cmk.MintCoins(ctx, types.ModuleName, sdk.Coins{sdk.NewCoin(ptypes.Eden, newEdenAllocatedForPool.TruncateInt())})
-		if err != nil {
-			panic(err)
+		if newEdenAllocatedForPool.IsPositive() {
+			err = k.cmk.MintCoins(ctx, types.ModuleName, sdk.Coins{sdk.NewCoin(ptypes.Eden, newEdenAllocatedForPool.TruncateInt())})
+			if err != nil {
+				return err
+			}
 		}
 
 		// Get gas fee rewards per pool
@@ -278,10 +228,8 @@ func (k Keeper) UpdateLPRewards(ctx sdk.Context) error {
 		// ------------------- DEX rewards calculation -------------------
 		// ---------------------------------------------------------------
 		// Get dex rewards per pool
-		// Get track key
-		trackKey := types.GetPoolRevenueTrackKey(pool.PoolId)
 		// Get tracked amount for Lps per pool
-		dexRewardsAllocatedForPool, ok := k.tci.PoolRevenueTrack[trackKey]
+		dexRewardsAllocatedForPool, ok := rewardsPerPool[pool.PoolId]
 		if !ok {
 			dexRewardsAllocatedForPool = sdk.NewDec(0)
 		}
@@ -303,7 +251,7 @@ func (k Keeper) UpdateLPRewards(ctx sdk.Context) error {
 	k.SetParams(ctx, params)
 
 	// Update APR for amm pools
-	k.UpdateAmmPoolAPR(ctx, lpIncentive.TotalBlocksPerYear, totalProxyTVL, edenDenomPrice)
+	k.UpdateAmmPoolAPR(ctx, totalBlocksPerYear, totalProxyTVL, edenDenomPrice)
 
 	return nil
 }
@@ -319,7 +267,6 @@ func (k Keeper) ConvertGasFeesToUsdc(ctx sdk.Context, baseCurrency string) sdk.C
 
 	// Total Swapped coin
 	totalSwappedCoins := sdk.Coins{}
-
 	for _, tokenIn := range feesCollected {
 		// if it is base currency - usdc, we don't need convert. We just need to collect it to fee wallet.
 		if tokenIn.Denom == baseCurrency {
@@ -405,12 +352,11 @@ func (k Keeper) CollectGasFees(ctx sdk.Context, baseCurrency string) sdk.DecCoin
 // Assume this is already in USDC.
 // TODO:
 // + Collect revenue from perpetual, lend module
-func (k Keeper) CollectDEXRevenue(ctx sdk.Context) (sdk.Coins, sdk.DecCoins) {
+func (k Keeper) CollectDEXRevenue(ctx sdk.Context) (sdk.Coins, sdk.DecCoins, map[uint64]sdk.Dec) {
 	// Total colllected revenue amount
 	amountTotalCollected := sdk.Coins{}
 	amountLPsCollected := sdk.DecCoins{}
-
-	k.tci.PoolRevenueTrack = make(map[string]sdk.Dec)
+	rewardsPerPool := make(map[uint64]sdk.Dec)
 
 	// Iterate to calculate total Eden from LpElys, MElys committed
 	k.amm.IterateLiquidityPools(ctx, func(p ammtypes.Pool) bool {
@@ -461,11 +407,8 @@ func (k Keeper) CollectDEXRevenue(ctx sdk.Context) (sdk.Coins, sdk.DecCoins) {
 			}
 		}
 
-		// Get track key
-		trackKey := types.GetPoolRevenueTrackKey(poolId)
-
 		// Store revenue portion for Lps temporarilly
-		k.tci.PoolRevenueTrack[trackKey] = revenuePortionForLPs.AmountOf(ptypes.BaseCurrency)
+		rewardsPerPool[poolId] = revenuePortionForLPs.AmountOf(ptypes.BaseCurrency)
 
 		// Sum total collected amount
 		amountTotalCollected = amountTotalCollected.Add(revenue...)
@@ -476,18 +419,19 @@ func (k Keeper) CollectDEXRevenue(ctx sdk.Context) (sdk.Coins, sdk.DecCoins) {
 		return false
 	})
 
-	return amountTotalCollected, amountLPsCollected
+	return amountTotalCollected, amountLPsCollected, rewardsPerPool
 }
 
 // Calculate Proxy TVL
 func (k Keeper) CalculateProxyTVL(ctx sdk.Context, baseCurrency string) sdk.Dec {
-	multipliedShareSum := sdk.ZeroDec()
+	// Ensure stablestakePoolParams exist
 	stableStakePoolId := uint64(stabletypes.PoolId)
 	_, found := k.GetPool(ctx, stableStakePoolId)
-	// Ensure stablestakePoolParams exist
 	if !found {
 		k.InitStableStakePoolParams(ctx, stableStakePoolId)
 	}
+
+	multipliedShareSum := sdk.ZeroDec()
 	for _, pool := range k.GetAllPools(ctx) {
 		tvl := k.GetPoolTVL(ctx, pool.PoolId)
 		proxyTVL := tvl.Mul(pool.Multiplier)
@@ -557,11 +501,8 @@ func (k Keeper) CalculatePoolShareForStableStakeLPs(ctx sdk.Context, totalProxyT
 	// edenAmountLp = 100
 	tvl := k.stableKeeper.TVL(ctx, k.oracleKeeper, baseCurrency)
 
-	// Get pool Id
-	poolId := uint64(stabletypes.PoolId)
-
 	// Get pool info from incentive param
-	poolInfo, found := k.GetPool(ctx, poolId)
+	poolInfo, found := k.GetPool(ctx, uint64(stabletypes.PoolId))
 	if !found {
 		return sdk.ZeroDec()
 	}
@@ -577,8 +518,7 @@ func (k Keeper) CalculatePoolShareForStableStakeLPs(ctx sdk.Context, totalProxyT
 }
 
 // Update APR for AMM pool
-func (k Keeper) UpdateAmmPoolAPR(ctx sdk.Context, totalBlocksPerYear sdk.Int, totalProxyTVL sdk.Dec, edenDenomPrice sdk.Dec) {
-	// Iterate to calculate total Eden from LpElys, MElys committed
+func (k Keeper) UpdateAmmPoolAPR(ctx sdk.Context, totalBlocksPerYear int64, totalProxyTVL sdk.Dec, edenDenomPrice sdk.Dec) {
 	k.amm.IterateLiquidityPools(ctx, func(p ammtypes.Pool) bool {
 		tvl, err := p.TVL(ctx, k.oracleKeeper)
 		if err != nil {
@@ -596,25 +536,24 @@ func (k Keeper) UpdateAmmPoolAPR(ctx sdk.Context, totalBlocksPerYear sdk.Int, to
 		}
 
 		poolInfo.NumBlocks = sdk.OneInt()
-		// Invalid block number
-		if poolInfo.NumBlocks.IsZero() {
-			return false
-		}
 
 		if tvl.IsZero() {
 			return false
 		}
 
+		if poolInfo.NumBlocks.IsZero() {
+			return false
+		}
+
 		// Dex reward Apr per pool =  total accumulated usdc rewards for 7 day * 52/ tvl of pool
 		yearlyDexRewardsTotal := poolInfo.DexRewardAmountGiven.
-			MulInt(totalBlocksPerYear).
+			MulInt64(totalBlocksPerYear).
 			QuoInt(poolInfo.NumBlocks)
-		poolInfo.DexApr = yearlyDexRewardsTotal.
-			Quo(tvl)
+		poolInfo.DexApr = yearlyDexRewardsTotal.Quo(tvl)
 
 		// Eden reward Apr per pool = (total LM Eden reward allocated per day*((tvl of pool * multiplier)/total proxy TVL) ) * 365 / TVL of pool
 		yearlyEdenRewardsTotal := poolInfo.EdenRewardAmountGiven.
-			Mul(totalBlocksPerYear).
+			Mul(sdk.NewInt(totalBlocksPerYear)).
 			Quo(poolInfo.NumBlocks)
 
 		poolInfo.EdenApr = sdk.NewDecFromInt(yearlyEdenRewardsTotal).
@@ -623,7 +562,6 @@ func (k Keeper) UpdateAmmPoolAPR(ctx sdk.Context, totalBlocksPerYear sdk.Int, to
 
 		// Update Pool Info
 		k.SetPool(ctx, poolInfo)
-
 		return false
 	})
 }

@@ -41865,6 +41865,8 @@ paths:
                     format: uint64
                   amount_per_block:
                     type: string
+                  apr:
+                    type: string
                 description: ExternalIncentive defines the external incentives.
         default:
           description: An unexpected error response.
@@ -42994,6 +42996,9 @@ paths:
                     type: string
                   broker_address:
                     type: string
+                  total_blocks_per_year:
+                    type: string
+                    format: int64
             description: >-
               QueryParamsResponse is response type for the Query/Params RPC
               method.
@@ -86919,6 +86924,8 @@ definitions:
         format: uint64
       amount_per_block:
         type: string
+      apr:
+        type: string
     description: ExternalIncentive defines the external incentives.
   elys.masterchef.IncentiveInfo:
     type: object
@@ -87094,6 +87101,8 @@ definitions:
             type: string
             format: uint64
           amount_per_block:
+            type: string
+          apr:
             type: string
         description: ExternalIncentive defines the external incentives.
   elys.masterchef.QueryParamsResponse:
@@ -87706,6 +87715,8 @@ definitions:
     type: object
   elys.parameter.MsgUpdateMinSelfDelegationResponse:
     type: object
+  elys.parameter.MsgUpdateTotalBlocksPerYearResponse:
+    type: object
   elys.parameter.Params:
     type: object
     properties:
@@ -87717,6 +87728,9 @@ definitions:
         type: string
       broker_address:
         type: string
+      total_blocks_per_year:
+        type: string
+        format: int64
     description: Params defines the parameters for the module.
   elys.parameter.QueryParamsResponse:
     type: object
@@ -87733,6 +87747,9 @@ definitions:
             type: string
           broker_address:
             type: string
+          total_blocks_per_year:
+            type: string
+            format: int64
     description: QueryParamsResponse is response type for the Query/Params RPC method.
   elys.perpetual.IsWhitelistedResponse:
     type: object

@@ -12,7 +12,8 @@ option go_package = "github.com/elys-network/elys/x/masterchef/types";
 message GenesisState {
   Params params = 1 [(gogoproto.nullable) = false];
   repeated ExternalIncentive external_incentives = 2 [(gogoproto.nullable) = false];
-  repeated PoolInfo pool_infos = 3 [(gogoproto.nullable) = false];
-  repeated PoolRewardInfo pool_reward_infos = 4 [(gogoproto.nullable) = false];
-  repeated UserRewardInfo user_reward_infos = 5 [(gogoproto.nullable) = false];
+  uint64 external_incentive_index = 3;
+  repeated PoolInfo pool_infos = 4 [(gogoproto.nullable) = false];
+  repeated PoolRewardInfo pool_reward_infos = 5 [(gogoproto.nullable) = false];
+  repeated UserRewardInfo user_reward_infos = 6 [(gogoproto.nullable) = false];
 }

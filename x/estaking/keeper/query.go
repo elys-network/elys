@@ -26,18 +26,21 @@ func (k Keeper) Rewards(goCtx context.Context, req *types.QueryRewardsRequest) (
 	total := sdk.DecCoins{}
 	var delRewards []types.DelegationDelegatorReward
 
-	delAdr, err := sdk.AccAddressFromBech32(req.Address)
+	delAddr, err := sdk.AccAddressFromBech32(req.Address)
 	if err != nil {
 		return nil, err
 	}
 
 	k.IterateDelegations(
-		ctx, delAdr,
+		ctx, delAddr,
 		func(_ int64, del stakingtypes.DelegationI) (stop bool) {
 			valAddr := del.GetValidatorAddr()
 			val := k.Validator(ctx, valAddr)
 			endingPeriod := k.distrKeeper.IncrementValidatorPeriod(ctx, val)
 			delReward := k.distrKeeper.CalculateDelegationRewards(ctx, val, del, endingPeriod)
+			if delReward == nil {
+				delReward = []sdk.DecCoin{}
+			}
 
 			delRewards = append(delRewards, types.DelegationDelegatorReward{
 				ValidatorAddress: valAddr.String(),

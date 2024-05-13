@@ -7,12 +7,19 @@ import (
 )
 
 // NewParams creates a new Params instance
-func NewParams(minCommissionRate sdk.Dec, maxVotingPower sdk.Dec, minSelfDelegation math.Int, brokerAddress string) Params {
+func NewParams(
+	minCommissionRate sdk.Dec,
+	maxVotingPower sdk.Dec,
+	minSelfDelegation math.Int,
+	brokerAddress string,
+	totalBlocksPerYear int64,
+) Params {
 	return Params{
-		MinCommissionRate: minCommissionRate,
-		MaxVotingPower:    maxVotingPower,
-		MinSelfDelegation: minSelfDelegation,
-		BrokerAddress:     brokerAddress,
+		MinCommissionRate:  minCommissionRate,
+		MaxVotingPower:     maxVotingPower,
+		MinSelfDelegation:  minSelfDelegation,
+		BrokerAddress:      brokerAddress,
+		TotalBlocksPerYear: totalBlocksPerYear,
 	}
 }
 
@@ -23,6 +30,7 @@ func DefaultParams() Params {
 		sdk.NewDec(100),
 		sdk.OneInt(),
 		"elys1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqnrec2l",
+		6307200,
 	)
 }
 

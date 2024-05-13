@@ -22,4 +22,5 @@ message Params {
     (gogoproto.nullable) = false
   ];
   string broker_address = 4;
+	int64 total_blocks_per_year = 5;
 }

@@ -21,6 +21,7 @@ type (
 		cdc                 codec.BinaryCodec
 		storeKey            storetypes.StoreKey
 		memKey              storetypes.StoreKey
+		parameterKeeper     types.ParameterKeeper
 		cmk                 types.CommitmentKeeper
 		stk                 types.StakingKeeper
 		authKeeper          types.AccountKeeper
@@ -42,6 +43,7 @@ func NewKeeper(
 	cdc codec.BinaryCodec,
 	storeKey,
 	memKey storetypes.StoreKey,
+	parameterKeeper types.ParameterKeeper,
 	ck types.CommitmentKeeper,
 	sk types.StakingKeeper,
 	ak types.AccountKeeper,
@@ -61,6 +63,7 @@ func NewKeeper(
 		cdc:                 cdc,
 		storeKey:            storeKey,
 		memKey:              memKey,
+		parameterKeeper:     parameterKeeper,
 		cmk:                 ck,
 		stk:                 sk,
 		authKeeper:          ak,

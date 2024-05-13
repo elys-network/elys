@@ -62,12 +62,7 @@ func (k Keeper) UserPendingReward(goCtx context.Context, req *types.QueryUserPen
 	rewardsInfos := []*types.RewardInfo{}
 
 	for _, pool := range k.GetAllPools(ctx) {
-		k.AfterWithdraw(
-			ctx,
-			pool.PoolId,
-			req.User,
-			sdk.ZeroInt(),
-		)
+		k.AfterWithdraw(ctx, pool.PoolId, req.User, sdk.ZeroInt())
 
 		poolRewards := sdk.NewCoins()
 		for _, rewardDenom := range k.GetRewardDenoms(ctx, pool.PoolId) {
@@ -88,9 +83,7 @@ func (k Keeper) UserPendingReward(goCtx context.Context, req *types.QueryUserPen
 			},
 		)
 
-		totalRewards = totalRewards.Add(
-			poolRewards...,
-		)
+		totalRewards = totalRewards.Add(poolRewards...)
 	}
 
 	return &types.QueryUserPendingRewardResponse{
@@ -105,7 +98,6 @@ func (k Keeper) StableStakeApr(goCtx context.Context, req *types.QueryStableStak
 	}
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
-
 	apr, err := k.CalculateStableStakeApr(ctx, req)
 	if err != nil {
 		return nil, err
