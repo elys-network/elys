@@ -40,10 +40,12 @@ func (k Keeper) GetPoolTVL(ctx sdk.Context, poolId uint64) math.LegacyDec {
 }
 
 func (k Keeper) ProcessExternalRewardsDistribution(ctx sdk.Context) {
+	baseCurrency, _ := k.assetProfileKeeper.GetUsdcDenom(ctx)
 	curBlockHeight := sdk.NewInt(ctx.BlockHeight())
 	totalBlocksPerYear := k.parameterKeeper.GetParams(ctx).TotalBlocksPerYear
 
 	externalIncentives := k.GetAllExternalIncentives(ctx)
+	externalIncentiveAprs := make(map[uint64]math.LegacyDec)
 	for _, externalIncentive := range externalIncentives {
 		pool, found := k.GetPool(ctx, externalIncentive.PoolId)
 		if !found {
@@ -71,13 +73,20 @@ func (k Keeper) ProcessExternalRewardsDistribution(ctx sdk.Context) {
 					Mul(sdk.NewInt(totalBlocksPerYear)).
 					Quo(pool.NumBlocks)
 
-				baseCurrency, found := k.assetProfileKeeper.GetUsdcDenom(ctx)
-				if found {
-					pool.ExternalIncentiveApr = sdk.NewDecFromInt(yearlyIncentiveRewardsTotal).
-						Mul(k.amm.GetTokenPrice(ctx, externalIncentive.RewardDenom, baseCurrency)).
-						Quo(tvl)
-					k.SetPool(ctx, pool)
+				apr := sdk.NewDecFromInt(yearlyIncentiveRewardsTotal).
+					Mul(k.amm.GetTokenPrice(ctx, externalIncentive.RewardDenom, baseCurrency)).
+					Quo(tvl)
+				externalIncentive.Apr = apr
+				k.SetExternalIncentive(ctx, externalIncentive)
+				poolExternalApr, ok := externalIncentiveAprs[pool.PoolId]
+				if !ok {
+					poolExternalApr = math.LegacyZeroDec()
 				}
+
+				poolExternalApr = poolExternalApr.Add(apr)
+				externalIncentiveAprs[pool.PoolId] = poolExternalApr
+				pool.ExternalIncentiveApr = poolExternalApr
+				k.SetPool(ctx, pool)
 			}
 		}
 

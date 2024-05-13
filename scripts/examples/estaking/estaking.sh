@@ -28,3 +28,4 @@ elysd tx commitment commit-claimed-rewards 1678547 uedenb --from=treasury --keyr
 elysd tx staking delegate $VALIDATOR 1000uelys --fees=10000uusdc --from=treasury --keyring-backend=test --chain-id=elystestnet-1 --yes --gas=1000000
 
 elysd query estaking rewards $TREASURY
+elysd tx estaking withdraw-all-rewards --from=validator --chain-id=elystestnet-1

@@ -41865,6 +41865,8 @@ paths:
                     format: uint64
                   amount_per_block:
                     type: string
+                  apr:
+                    type: string
                 description: ExternalIncentive defines the external incentives.
         default:
           description: An unexpected error response.
@@ -86922,6 +86924,8 @@ definitions:
         format: uint64
       amount_per_block:
         type: string
+      apr:
+        type: string
     description: ExternalIncentive defines the external incentives.
   elys.masterchef.IncentiveInfo:
     type: object
@@ -87097,6 +87101,8 @@ definitions:
             type: string
             format: uint64
           amount_per_block:
+            type: string
+          apr:
             type: string
         description: ExternalIncentive defines the external incentives.
   elys.masterchef.QueryParamsResponse:
