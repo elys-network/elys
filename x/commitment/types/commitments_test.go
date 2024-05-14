@@ -57,3 +57,20 @@ func TestCommitments_WithdrawCommitedTokens(t *testing.T) {
 	err = commitments.DeductFromCommitted("lp/2", sdk.NewInt(200), 100)
 	require.Error(t, err)
 }
+
+func TestLockupAmount_WithdrawCommited(t *testing.T) {
+	commitments := types.Commitments{
+		Creator:         "",
+		CommittedTokens: []*types.CommittedTokens{},
+		VestingTokens:   []*types.VestingTokens{},
+	}
+
+	commitments.AddCommittedTokens("lp/1", sdk.NewInt(1000), 1)
+	commitments.AddCommittedTokens("lp/1", sdk.NewInt(5000), 2)
+	commitments.AddCommittedTokens("lp/1", sdk.NewInt(3000), 4)
+
+	err := commitments.DeductFromCommitted("lp/1", sdk.NewInt(9000), 3)
+	//I could withdraw all liquidity
+
+	require.Error(t, err)
+}
