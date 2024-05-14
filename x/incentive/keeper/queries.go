@@ -195,14 +195,14 @@ func (k Keeper) AllProgramRewards(goCtx context.Context, req *types.QueryAllProg
 	edenVal := k.estaking.GetParams(ctx).EdenCommitVal
 	edenCommitRewards, err := k.estaking.DelegationRewards(ctx, req.Address, edenVal)
 	if err != nil {
-		return nil, err
+		edenCommitRewards = []sdk.DecCoin{}
 	}
 
 	// EdenB commit rewards
 	edenBVal := k.estaking.GetParams(ctx).EdenbCommitVal
 	edenBCommitRewards, err := k.estaking.DelegationRewards(ctx, req.Address, edenBVal)
 	if err != nil {
-		return nil, err
+		edenBCommitRewards = []sdk.DecCoin{}
 	}
 
 	return &types.QueryAllProgramRewardsResponse{
