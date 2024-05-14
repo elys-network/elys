@@ -132,7 +132,7 @@ func (m Migrator) V11Migration(ctx sdk.Context) error {
 		}
 		m.commitmentKeeper.SetCommitments(ctx, commitments)
 		for _, committed := range commitments.CommittedTokens {
-			if committed.Denom == ptypes.Eden && commParams.TotalCommitted.AmountOf(ptypes.Eden).IsPositive() {
+			if committed.Denom == ptypes.Eden && committed.Amount.IsPositive() && commParams.TotalCommitted.AmountOf(ptypes.Eden).IsPositive() {
 				err = m.estakingKeeper.Hooks().BeforeDelegationCreated(ctx, addr, edenValAddr)
 				if err != nil {
 					return err
@@ -142,7 +142,7 @@ func (m Migrator) V11Migration(ctx sdk.Context) error {
 					return err
 				}
 			}
-			if committed.Denom == ptypes.EdenB && commParams.TotalCommitted.AmountOf(ptypes.EdenB).IsPositive() {
+			if committed.Denom == ptypes.EdenB && committed.Amount.IsPositive() && commParams.TotalCommitted.AmountOf(ptypes.EdenB).IsPositive() {
 				err = m.estakingKeeper.Hooks().BeforeDelegationCreated(ctx, addr, edenBValAddr)
 				if err != nil {
 					return err
