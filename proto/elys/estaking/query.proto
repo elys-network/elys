@@ -36,8 +36,8 @@ message QueryRewardsRequest {
 
 message DelegationDelegatorReward {
   string validator_address = 1;
-  repeated cosmos.base.v1beta1.DecCoin reward = 2 [
-    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.DecCoins",
+  repeated cosmos.base.v1beta1.Coin reward = 2 [
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins",
     (gogoproto.nullable) = false
   ];
 }
@@ -46,8 +46,8 @@ message QueryRewardsResponse {
   // rewards defines all the rewards accrued by a delegator.
   repeated DelegationDelegatorReward rewards = 1 [(gogoproto.nullable) = false];
   // total defines the sum of all the rewards.
-  repeated cosmos.base.v1beta1.DecCoin total = 2 [
+  repeated cosmos.base.v1beta1.Coin total = 2 [
     (gogoproto.nullable)     = false,
-    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.DecCoins"
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
   ];
 }

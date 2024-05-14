@@ -40468,11 +40468,11 @@ paths:
                           amount:
                             type: string
                         description: >-
-                          DecCoin defines a token with a denomination and a
-                          decimal amount.
+                          Coin defines a token with a denomination and an
+                          amount.
 
 
-                          NOTE: The amount field is an Dec which implements the
+                          NOTE: The amount field is an Int which implements the
                           custom method
 
                           signatures required by gogoproto.
@@ -40487,11 +40487,10 @@ paths:
                     amount:
                       type: string
                   description: >-
-                    DecCoin defines a token with a denomination and a decimal
-                    amount.
+                    Coin defines a token with a denomination and an amount.
 
 
-                    NOTE: The amount field is an Dec which implements the custom
+                    NOTE: The amount field is an Int which implements the custom
                     method
 
                     signatures required by gogoproto.
@@ -86039,9 +86038,9 @@ definitions:
             amount:
               type: string
           description: |-
-            DecCoin defines a token with a denomination and a decimal amount.
+            Coin defines a token with a denomination and an amount.
 
-            NOTE: The amount field is an Dec which implements the custom method
+            NOTE: The amount field is an Int which implements the custom method
             signatures required by gogoproto.
   elys.estaking.DexRewardsTracker:
     type: object
@@ -86246,11 +86245,10 @@ definitions:
                   amount:
                     type: string
                 description: >-
-                  DecCoin defines a token with a denomination and a decimal
-                  amount.
+                  Coin defines a token with a denomination and an amount.
 
 
-                  NOTE: The amount field is an Dec which implements the custom
+                  NOTE: The amount field is an Int which implements the custom
                   method
 
                   signatures required by gogoproto.
@@ -86265,9 +86263,9 @@ definitions:
             amount:
               type: string
           description: |-
-            DecCoin defines a token with a denomination and a decimal amount.
+            Coin defines a token with a denomination and an amount.
 
-            NOTE: The amount field is an Dec which implements the custom method
+            NOTE: The amount field is an Int which implements the custom method
             signatures required by gogoproto.
         description: total defines the sum of all the rewards.
   elys.commitment.EarnType:

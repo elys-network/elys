@@ -42,14 +42,16 @@ func (k Keeper) Rewards(goCtx context.Context, req *types.QueryRewardsRequest) (
 				delReward = []sdk.DecCoin{}
 			}
 
+			finalRewards, _ := delReward.TruncateDecimal()
 			delRewards = append(delRewards, types.DelegationDelegatorReward{
 				ValidatorAddress: valAddr.String(),
-				Reward:           delReward,
+				Reward:           finalRewards,
 			})
 			total = total.Add(delReward...)
 			return false
 		},
 	)
+	finalTotalRewards, _ := total.TruncateDecimal()
 
-	return &types.QueryRewardsResponse{Rewards: delRewards, Total: total}, nil
+	return &types.QueryRewardsResponse{Rewards: delRewards, Total: finalTotalRewards}, nil
 }
