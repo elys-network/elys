@@ -70,7 +70,5 @@ func TestLockupAmount_WithdrawCommited(t *testing.T) {
 	commitments.AddCommittedTokens("lp/1", sdk.NewInt(3000), 4)
 
 	err := commitments.DeductFromCommitted("lp/1", sdk.NewInt(9000), 3)
-	//I could withdraw all liquidity
-
 	require.Error(t, err)
 }
