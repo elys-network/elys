@@ -7,10 +7,8 @@ on:
       - main
 
 jobs:
-  software-upgrade-test:
+  checkout-and-setup:
     runs-on: ubuntu-latest
-    timeout-minutes: 120
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -24,6 +22,7 @@ jobs:
           go-version: "1.21"
 
       - name: Get latest tag
+        id: get-latest-tag
         run: |
           git fetch --tags
           LATEST_TAG=$(git describe --tags `git rev-list --tags --max-count=1`)
@@ -31,6 +30,7 @@ jobs:
           echo "Latest tag: $LATEST_TAG"
 
       - name: Retrieve info.json and set snapshot path
+        id: retrieve-info
         run: |
           DOWNLOAD_URL=https://snapshots-testnet.stake-town.com/elys/info.json
           curl -L $DOWNLOAD_URL -o /tmp/info.json
@@ -45,6 +45,10 @@ jobs:
           SNAPSHOT_DOWNLOAD_URL=https://snapshots-testnet.stake-town.com/elys/elystestnet-1_latest.tar.lz4
           echo "SNAPSHOT_DOWNLOAD_URL=$SNAPSHOT_DOWNLOAD_URL" >> $GITHUB_ENV
 
+  cache-and-retrieve:
+    runs-on: ubuntu-latest
+    needs: checkout-and-setup
+    steps:
       - name: Cache Directories
         uses: actions/cache@v4
         id: cache-elys-folders
@@ -52,21 +56,22 @@ jobs:
           path: |
             /tmp/elys-backup
             /tmp/elys2-backup
-          key: ${{ runner.os }}-elys-folders-${{ env.LATEST_TAG }}
+          key: ${{ runner.os }}-elys-folders-${{ needs.checkout-and-setup.outputs['get-latest-tag'].LATEST_TAG }}
 
       - name: Retrieve latest binary
         run: |
-          DOWNLOAD_URL=https://github.com/elys-network/elys/releases/download/$LATEST_TAG/elysd-$LATEST_TAG-linux-amd64
-          OLD_BINARY_PATH=/tmp/elysd-$LATEST_TAG
+          DOWNLOAD_URL=https://github.com/elys-network/elys/releases/download/${{ needs.checkout-and-setup.outputs['get-latest-tag'].LATEST_TAG }}/elysd-${{ needs.checkout-and-setup.outputs['get-latest-tag'].LATEST_TAG }}-linux-amd64
+          OLD_BINARY_PATH=/tmp/elysd-${{ needs.checkout-and-setup.outputs['get-latest-tag'].LATEST_TAG }}
           curl -L $DOWNLOAD_URL -o $OLD_BINARY_PATH && chmod +x $OLD_BINARY_PATH
           echo "OLD_BINARY_PATH=$OLD_BINARY_PATH" >> $GITHUB_ENV
-
-          # TODO: retrieve upgrade-assure and upload-snapshot binaries
-        if: steps.cache-elys-folders.outputs.cache-hit != 'true'
 
       - name: Create git tag
         run: git tag v999.999.999
 
+  build-new-binaries:
+    runs-on: ubuntu-latest
+    needs: cache-and-retrieve
+    steps:
       - name: Build new binaries
         run: |
           # build new elys binary
@@ -85,23 +90,22 @@ jobs:
           UPLOAD_SNAPSHOT_BINARY_PATH=./build/upload-snapshot
           echo "UPLOAD_SNAPSHOT_BINARY_PATH=$UPLOAD_SNAPSHOT_BINARY_PATH" >> $GITHUB_ENV
 
-      # TODO: to remove when upgrade-assure binary is available in previous release
+  build-old-binaries:
+    runs-on: ubuntu-latest
+    needs: cache-and-retrieve
+    if: steps.cache-elys-folders.outputs.cache-hit != 'true'
+    steps:
       - name: Copy upgrade assure folder
         run: |
           cp -a ./cmd/upgrade-assure ./cmd/upgrade-assure-skip
-        if: steps.cache-elys-folders.outputs.cache-hit != 'true'
 
       - name: Check out latest tag
-        run: git checkout $LATEST_TAG
-        if: steps.cache-elys-folders.outputs.cache-hit != 'true'
+        run: git checkout ${{ needs.checkout-and-setup.outputs['get-latest-tag'].LATEST_TAG }}
 
-      # TODO: to remove when upgrade-assure binary is available in previous release
       - name: Copy old upgrade assure types.go file
         run: |
           cp -a ./scripts/upgrade-assure/types.go ./cmd/upgrade-assure-skip/types.go
-        if: steps.cache-elys-folders.outputs.cache-hit != 'true'
 
-      # TODO: to remove when upgrade-assure binary is available in previous release
       - name: Build old binaries
         run: |
           # build old upgrade assure binary
@@ -109,8 +113,12 @@ jobs:
           OLD_UPGRADE_ASSURE_BINARY_PATH=./build/old-upgrade-assure
           mv ./build/upgrade-assure-skip $OLD_UPGRADE_ASSURE_BINARY_PATH
           echo "OLD_UPGRADE_ASSURE_BINARY_PATH=$OLD_UPGRADE_ASSURE_BINARY_PATH" >> $GITHUB_ENV
-        if: steps.cache-elys-folders.outputs.cache-hit != 'true'
 
+  chain-operations:
+    runs-on: ubuntu-latest
+    needs: build-old-binaries
+    if: steps.cache-elys-folders.outputs.cache-hit != 'true'
+    steps:
       - name: Chain snapshot and export
         run: |
           GOMEMLIMIT=8GiB $OLD_UPGRADE_ASSURE_BINARY_PATH $SNAPSHOT_DOWNLOAD_URL $OLD_BINARY_PATH $NEW_BINARY_PATH \
@@ -118,7 +126,6 @@ jobs:
             --skip-node-start \
             --timeout-next-block 100000 \
             --timeout-wait-for-node 100000
-        if: steps.cache-elys-folders.outputs.cache-hit != 'true'
 
       - name: Chain initialization
         run: |
@@ -127,8 +134,11 @@ jobs:
             --skip-node-start \
             --timeout-next-block 100000 \
             --timeout-wait-for-node 100000
-        if: steps.cache-elys-folders.outputs.cache-hit != 'true'
 
+  create-validator:
+    runs-on: ubuntu-latest
+    needs: chain-operations
+    steps:
       - name: Check out new branch
         run: git checkout ${{ github.head_ref }}
 
@@ -146,7 +156,6 @@ jobs:
               --skip-upgrade-to-new-binary \
               --timeout-next-block 100000 \
               --timeout-wait-for-node 100000
-        if: steps.cache-elys-folders.outputs.cache-hit != 'true'
 
       - name: Save up space
         run: |
@@ -162,7 +171,6 @@ jobs:
             --skip-upgrade-to-new-binary \
             --timeout-next-block 100000 \
             --timeout-wait-for-node 100000
-        if: steps.cache-elys-folders.outputs.cache-hit != 'true'
 
       - name: Submit new proposal
         uses: nick-fields/retry@v3
@@ -178,8 +186,11 @@ jobs:
               --skip-upgrade-to-new-binary \
               --timeout-next-block 100000 \
               --timeout-wait-for-node 100000
-        if: steps.cache-elys-folders.outputs.cache-hit != 'true'
 
+  backup-restore:
+    runs-on: ubuntu-latest
+    needs: create-validator
+    steps:
       - name: Backup elys folders
         run: |
           cp -a $HOME/.elys /tmp/elys-backup
@@ -192,6 +203,10 @@ jobs:
           mv /tmp/elys2-backup $HOME/.elys2
         if: steps.cache-elys-folders.outputs.cache-hit == 'true'
 
+  upgrade-binary:
+    runs-on: ubuntu-latest
+    needs: backup-restore
+    steps:
       - name: Upgrade to new binary
         uses: nick-fields/retry@v3
         with:
@@ -207,6 +222,10 @@ jobs:
               --timeout-next-block 100000 \
               --timeout-wait-for-node 100000
 
+  create-snapshot:
+    runs-on: ubuntu-latest
+    needs: upgrade-binary
+    steps:
       - name: Create new snapshot file
         run: |
           SANITIZED_HEAD_REF=${{ github.head_ref || github.ref }}
