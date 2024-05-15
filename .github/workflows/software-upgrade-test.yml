@@ -15,6 +15,7 @@ jobs:
       NEW_UPGRADE_ASSURE_BINARY_PATH: ${{ steps.build-new-binaries.outputs.NEW_UPGRADE_ASSURE_BINARY_PATH }}
       SNAPSHOT_DOWNLOAD_URL: ${{ steps.retrieve-info-json.outputs.SNAPSHOT_DOWNLOAD_URL }}
       NEW_BINARY_PATH: ${{ steps.build-new-binaries.outputs.NEW_BINARY_PATH }}
+      UPLOAD_SNAPSHOT_BINARY_PATH: ${{ steps.build-new-binaries.outputs.UPLOAD_SNAPSHOT_BINARY_PATH }}
 
     steps:
       - name: Checkout repository
@@ -59,8 +60,8 @@ jobs:
         id: cache-elys-folders
         with:
           path: |
-            $HOME/.elys
-            $HOME/.elys2
+            ${{ env.HOME }}/.elys
+            ${{ env.$HOME }}/.elys2
           key: ${{ runner.os }}-elys-folders-${{ env.LATEST_TAG }}
 
       - name: Retrieve latest binary
@@ -158,7 +159,7 @@ jobs:
 
       - name: Save up space
         run: |
-          rm -rf ~/.elys/config/genesis.json
+          rm -rf /tmp/genesis.json
 
       - name: Prepare second validator data
         run: |
@@ -188,7 +189,10 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: workspace
-          path: .
+          path: |
+            ${{ env.NEW_BINARY_PATH }}
+            ${{ env.NEW_UPGRADE_ASSURE_BINARY_PATH}}
+            ${{ env.UPLOAD_SNAPSHOT_BINARY_PATH }}
 
   post-software-upgrade:
     runs-on: ubuntu-latest
@@ -200,20 +204,23 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: workspace
-          path: .
+          path: |
+            ${{ needs.pre-software-upgrade.outputs.NEW_BINARY_PATH }}
+            ${{ needs.pre-software-upgrade.outputs.NEW_UPGRADE_ASSURE_BINARY_PATH}}
+            ${{ needs.pre-software-upgrade.outputs.UPLOAD_SNAPSHOT_BINARY_PATH }}
 
       - name: Restore elys folders from cache
         id: cache-elys-folders
         uses: actions/cache/restore@v4
         with:
           path: |
-            $HOME/.elys
-            $HOME/.elys2
+            ${{ env.HOME }}/.elys
+            ${{ env.HOME }}/.elys2
           key: ${{ runner.os }}-elys-folders-${{ needs.pre-software-upgrade.outputs.LATEST_TAG }}
 
       - name: Upgrade to new binary
         run: |
-          GOMEMLIMIT=4GiB \
+          GOMEMLIMIT=8GiB \
             ${{ needs.pre-software-upgrade.outputs.NEW_UPGRADE_ASSURE_BINARY_PATH }} \
             ${{ needs.pre-software-upgrade.outputs.SNAPSHOT_DOWNLOAD_URL }} \
             ${{ needs.pre-software-upgrade.outputs.NEW_BINARY_PATH }} \
