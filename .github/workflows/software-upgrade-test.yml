@@ -7,9 +7,13 @@ on:
       - main
 
 jobs:
-  software-upgrade-test:
+  pre-software-upgrade:
     runs-on: ubuntu-latest
-    timeout-minutes: 120
+
+    outputs:
+      NEW_UPGRADE_ASSURE_BINARY_PATH: ${{ steps.build-new-binaries.outputs.NEW_UPGRADE_ASSURE_BINARY_PATH }}
+      SNAPSHOT_DOWNLOAD_URL: ${{ steps.retrieve-info-json.outputs.SNAPSHOT_DOWNLOAD_URL }}
+      NEW_BINARY_PATH: ${{ steps.build-new-binaries.outputs.NEW_BINARY_PATH }}
 
     steps:
       - name: Checkout repository
@@ -31,6 +35,7 @@ jobs:
           echo "Latest tag: $LATEST_TAG"
 
       - name: Retrieve info.json and set snapshot path
+        id: retrieve-info-json
         run: |
           DOWNLOAD_URL=https://snapshots-testnet.stake-town.com/elys/info.json
           curl -L $DOWNLOAD_URL -o /tmp/info.json
@@ -44,14 +49,15 @@ jobs:
           # set snapshot download url
           SNAPSHOT_DOWNLOAD_URL=https://snapshots-testnet.stake-town.com/elys/elystestnet-1_latest.tar.lz4
           echo "SNAPSHOT_DOWNLOAD_URL=$SNAPSHOT_DOWNLOAD_URL" >> $GITHUB_ENV
+          echo "SNAPSHOT_DOWNLOAD_URL=$SNAPSHOT_DOWNLOAD_URL" >> $GITHUB_OUTPUT
 
       - name: Cache Directories
         uses: actions/cache@v4
         id: cache-elys-folders
         with:
           path: |
-            /tmp/elys-backup
-            /tmp/elys2-backup
+            $HOME/.elys
+            $HOME/.elys2
           key: ${{ runner.os }}-elys-folders-${{ env.LATEST_TAG }}
 
       - name: Retrieve latest binary
@@ -68,17 +74,20 @@ jobs:
         run: git tag v999.999.999
 
       - name: Build new binaries
+        id: build-new-binaries
         run: |
           # build new elys binary
           make build
           NEW_BINARY_PATH=./build/elysd
           echo "NEW_BINARY_PATH=$NEW_BINARY_PATH" >> $GITHUB_ENV
+          echo "NEW_BINARY_PATH=$NEW_BINARY_PATH" >> $GITHUB_OUTPUT
 
           # build new upgrade assure binary
           make build-upgrade-assure
           NEW_UPGRADE_ASSURE_BINARY_PATH=./build/new-upgrade-assure
           mv ./build/upgrade-assure $NEW_UPGRADE_ASSURE_BINARY_PATH
           echo "NEW_UPGRADE_ASSURE_BINARY_PATH=$NEW_UPGRADE_ASSURE_BINARY_PATH" >> $GITHUB_ENV
+          echo "NEW_UPGRADE_ASSURE_BINARY_PATH=$NEW_UPGRADE_ASSURE_BINARY_PATH" >> $GITHUB_OUTPUT
 
           # build upload snapshot binary
           make build-upload-snapshot
@@ -133,19 +142,15 @@ jobs:
         run: git checkout ${{ github.head_ref }}
 
       - name: Create second validator
-        uses: nick-fields/retry@v3
-        with:
-          timeout_minutes: 30
-          max_attempts: 3
-          command: |
-            GOMEMLIMIT=8GiB $NEW_UPGRADE_ASSURE_BINARY_PATH $SNAPSHOT_DOWNLOAD_URL $OLD_BINARY_PATH $NEW_BINARY_PATH \
-              --skip-snapshot \
-              --skip-chain-init \
-              --skip-prepare-validator-data \
-              --skip-submit-proposal \
-              --skip-upgrade-to-new-binary \
-              --timeout-next-block 100000 \
-              --timeout-wait-for-node 100000
+        run: |
+          GOMEMLIMIT=8GiB $NEW_UPGRADE_ASSURE_BINARY_PATH $SNAPSHOT_DOWNLOAD_URL $OLD_BINARY_PATH $NEW_BINARY_PATH \
+            --skip-snapshot \
+            --skip-chain-init \
+            --skip-prepare-validator-data \
+            --skip-submit-proposal \
+            --skip-upgrade-to-new-binary \
+            --timeout-next-block 100000 \
+            --timeout-wait-for-node 100000
         if: steps.cache-elys-folders.outputs.cache-hit != 'true'
 
       - name: Save up space
@@ -165,47 +170,58 @@ jobs:
         if: steps.cache-elys-folders.outputs.cache-hit != 'true'
 
       - name: Submit new proposal
-        uses: nick-fields/retry@v3
+        run: |
+          GOMEMLIMIT=8GiB $NEW_UPGRADE_ASSURE_BINARY_PATH $SNAPSHOT_DOWNLOAD_URL $OLD_BINARY_PATH $NEW_BINARY_PATH \
+            --skip-snapshot \
+            --skip-chain-init \
+            --skip-create-validator \
+            --skip-prepare-validator-data \
+            --skip-upgrade-to-new-binary \
+            --timeout-next-block 100000 \
+            --timeout-wait-for-node 100000
+        if: steps.cache-elys-folders.outputs.cache-hit != 'true'
+
+      - name: Save workspace as artifact
+        uses: actions/upload-artifact@v3
         with:
-          timeout_minutes: 30
-          max_attempts: 3
-          command: |
-            GOMEMLIMIT=8GiB $NEW_UPGRADE_ASSURE_BINARY_PATH $SNAPSHOT_DOWNLOAD_URL $OLD_BINARY_PATH $NEW_BINARY_PATH \
-              --skip-snapshot \
-              --skip-chain-init \
-              --skip-create-validator \
-              --skip-prepare-validator-data \
-              --skip-upgrade-to-new-binary \
-              --timeout-next-block 100000 \
-              --timeout-wait-for-node 100000
-        if: steps.cache-elys-folders.outputs.cache-hit != 'true'
+          name: workspace
+          path: .
 
-      - name: Backup elys folders
-        run: |
-          cp -a $HOME/.elys /tmp/elys-backup
-          cp -a $HOME/.elys2 /tmp/elys2-backup
-        if: steps.cache-elys-folders.outputs.cache-hit != 'true'
+  post-software-upgrade:
+    runs-on: ubuntu-latest
 
-      - name: Restore elys folders from backup
-        run: |
-          mv /tmp/elys-backup $HOME/.elys
-          mv /tmp/elys2-backup $HOME/.elys2
-        if: steps.cache-elys-folders.outputs.cache-hit == 'true'
+    needs: pre-software-upgrade
+
+    steps:
+      - name: Download workspace artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: workspace
+          path: .
+
+      - name: Restore elys folders from cache
+        id: cache-elys-folders
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            $HOME/.elys
+            $HOME/.elys2
+          key: ${{ runner.os }}-elys-folders-${{ needs.pre-software-upgrade.outputs.LATEST_TAG }}
 
       - name: Upgrade to new binary
-        uses: nick-fields/retry@v3
-        with:
-          timeout_minutes: 30
-          max_attempts: 3
-          command: |
-            GOMEMLIMIT=4GiB $NEW_UPGRADE_ASSURE_BINARY_PATH $SNAPSHOT_DOWNLOAD_URL $NEW_BINARY_PATH $NEW_BINARY_PATH \
-              --skip-snapshot \
-              --skip-chain-init \
-              --skip-create-validator \
-              --skip-prepare-validator-data \
-              --skip-submit-proposal \
-              --timeout-next-block 100000 \
-              --timeout-wait-for-node 100000
+        run: |
+          GOMEMLIMIT=4GiB \
+            ${{ needs.pre-software-upgrade.outputs.NEW_UPGRADE_ASSURE_BINARY_PATH }} \
+            ${{ needs.pre-software-upgrade.outputs.SNAPSHOT_DOWNLOAD_URL }} \
+            ${{ needs.pre-software-upgrade.outputs.NEW_BINARY_PATH }} \
+            ${{ needs.pre-software-upgrade.outputs.NEW_BINARY_PATH }} \
+            --skip-snapshot \
+            --skip-chain-init \
+            --skip-create-validator \
+            --skip-prepare-validator-data \
+            --skip-submit-proposal \
+            --timeout-next-block 100000 \
+            --timeout-wait-for-node 100000
 
       - name: Create new snapshot file
         run: |
