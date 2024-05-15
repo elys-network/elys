@@ -1,13 +1,10 @@
 package keeper
 
 import (
-	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/math"
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/elys-network/elys/x/commitment/types"
-	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
 
 // SetCommitments set a specific commitments in the store from its index
@@ -126,19 +123,13 @@ func (k Keeper) DeductClaimed(ctx sdk.Context, creator string, denom string, amo
 	return commitments, nil
 }
 
-func (k Keeper) BurnEdenBoost(ctx sdk.Context, creator string, denom string, amount math.Int) (types.Commitments, error) {
+func (k Keeper) BurnEdenBoost(ctx sdk.Context, creator string, denom string, amount math.Int) error {
 	// Get the Commitments for the creator
 	commitments := k.GetCommitments(ctx, creator)
 
-	addr := sdk.MustAccAddressFromBech32(creator)
-	err := k.hooks.BeforeEdenBCommitChange(ctx, addr)
-	if err != nil {
-		return commitments, err
-	}
-
 	// if deduction amount is zero
-	if amount.Equal(sdk.ZeroInt()) {
-		return commitments, nil
+	if amount.IsZero() {
+		return nil
 	}
 
 	// Subtract the amount from the claimed balance
@@ -147,109 +138,41 @@ func (k Keeper) BurnEdenBoost(ctx sdk.Context, creator string, denom string, amo
 	if claimed.LT(claimedRemovalAmount) {
 		claimedRemovalAmount = claimed
 	}
-	err = commitments.SubClaimed(sdk.NewCoin(denom, claimedRemovalAmount))
+	err := commitments.SubClaimed(sdk.NewCoin(denom, claimedRemovalAmount))
 	if err != nil {
-		return types.Commitments{}, err
+		return err
 	}
 
 	amount = amount.Sub(claimedRemovalAmount)
-	if amount.Equal(sdk.ZeroInt()) {
-		return commitments, nil
+	if amount.IsZero() {
+		return nil
 	}
 
 	committedAmount := commitments.GetCommittedAmountForDenom(denom)
 	if committedAmount.LT(amount) {
 		amount = committedAmount
 	}
-
-	// Subtract the amount from the committed balance
-	err = commitments.DeductFromCommitted(denom, amount, uint64(ctx.BlockTime().Unix()))
-	if err != nil {
-		return types.Commitments{}, err
+	if amount.IsZero() {
+		return nil
 	}
 
-	err = k.hooks.CommitmentChanged(ctx, creator, sdk.Coins{sdk.NewCoin(denom, amount)})
-	if err != nil {
-		return types.Commitments{}, err
-	}
-	return commitments, nil
-}
-
-func (k Keeper) HandleWithdrawFromCommitment(ctx sdk.Context, commitments *types.Commitments, amount sdk.Coins, sendCoins bool, addr sdk.AccAddress) error {
-	edenAmount := amount.AmountOf(ptypes.Eden)
-	edenBAmount := amount.AmountOf(ptypes.EdenB)
-	commitments.AddClaimed(sdk.NewCoin(ptypes.Eden, edenAmount))
-	commitments.AddClaimed(sdk.NewCoin(ptypes.EdenB, edenBAmount))
-	k.SetCommitments(ctx, *commitments)
-
-	// Emit Hook commitment changed
-	err := k.CommitmentChanged(ctx, commitments.Creator, amount)
+	addr := sdk.MustAccAddressFromBech32(creator)
+	err = k.hooks.BeforeEdenBCommitChange(ctx, addr)
 	if err != nil {
 		return err
 	}
 
-	withdrawCoins := amount.
-		Sub(sdk.NewCoin(ptypes.Eden, edenAmount)).
-		Sub(sdk.NewCoin(ptypes.EdenB, edenBAmount))
-
-	if sendCoins && !withdrawCoins.Empty() {
-		return k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, addr, withdrawCoins)
-	}
-	return nil
-}
-
-// Process delegation hook - create commitment entities for delegator and validator
-func (k Keeper) BeforeDelegationCreated(ctx sdk.Context, delegator string, validator string) error {
-	_, err := sdk.AccAddressFromBech32(delegator)
+	// Subtract the amount from the committed balance
+	err = commitments.DeductFromCommitted(denom, amount, uint64(ctx.BlockTime().Unix()))
 	if err != nil {
-		return errorsmod.Wrap(sdkerrors.ErrInvalidAddress, "unable to convert address from bech32")
+		return err
 	}
 
-	_, err = sdk.ValAddressFromBech32(validator)
+	k.SetCommitments(ctx, commitments)
+
+	err = k.hooks.CommitmentChanged(ctx, creator, sdk.Coins{sdk.NewCoin(denom, amount)})
 	if err != nil {
-		return errorsmod.Wrap(sdkerrors.ErrInvalidAddress, "unable to convert validator address from bech32")
+		return err
 	}
-
-	/***********************************************************/
-	////////////////// Delegator entity //////////////////////////
-	/***********************************************************/
-	// Get the Commitments for the delegator
-	commitments := k.GetCommitments(ctx, delegator)
-	if commitments.IsEmpty() {
-		k.SetCommitments(ctx, commitments)
-
-		// Emit Hook commitment changed
-		err := k.CommitmentChanged(ctx, delegator, sdk.Coins{})
-		if err != nil {
-			return err
-		}
-
-		// Emit blockchain event
-		ctx.EventManager().EmitEvent(
-			sdk.NewEvent(
-				types.EventTypeCommitmentChanged,
-				sdk.NewAttribute(types.AttributeCreator, delegator),
-				sdk.NewAttribute(types.AttributeAmount, sdk.ZeroInt().String()),
-			),
-		)
-	}
-
-	/***************************************************************/
-	////////////////////// Validator entity /////////////////////////
-	// Get the Commitments for the validator
-	commitments = k.GetCommitments(ctx, validator)
-	if commitments.IsEmpty() {
-		k.SetCommitments(ctx, commitments)
-
-		// Emit blockchain event
-		ctx.EventManager().EmitEvent(
-			sdk.NewEvent(
-				types.EventTypeCommitmentChanged,
-				sdk.NewAttribute(types.AttributeCreator, validator),
-				sdk.NewAttribute(types.AttributeAmount, sdk.ZeroInt().String()),
-			),
-		)
-	}
-
 	return nil
 }

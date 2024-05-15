@@ -50,11 +50,9 @@ func (k Keeper) BurnEdenBFromElysUnstaking(ctx sdk.Context, delegator sdk.AccAdd
 	}
 
 	// Burn EdenB in commitment module
-	commitment, err := k.commKeeper.BurnEdenBoost(ctx, delAddr, ptypes.EdenB, edenBToBurn.TruncateInt())
+	err := k.commKeeper.BurnEdenBoost(ctx, delAddr, ptypes.EdenB, edenBToBurn.TruncateInt())
 	if err != nil {
 		k.Logger(ctx).Error("EdenB burn failure", err)
-	} else {
-		k.commKeeper.SetCommitments(ctx, commitment)
 	}
 }
 
@@ -89,7 +87,6 @@ func (k Keeper) BurnEdenBFromEdenUncommitted(ctx sdk.Context, delegator string, 
 	}
 
 	// Burn EdenB in commitment module
-	commitment, err := k.commKeeper.BurnEdenBoost(ctx, delegator, ptypes.EdenB, edenBToBurn.TruncateInt())
-	k.commKeeper.SetCommitments(ctx, commitment)
+	err := k.commKeeper.BurnEdenBoost(ctx, delegator, ptypes.EdenB, edenBToBurn.TruncateInt())
 	return err
 }
