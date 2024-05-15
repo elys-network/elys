@@ -8,7 +8,7 @@ on:
 
 jobs:
   retrieve-latest-tag:
-    runs-on: ubuntu-latest
+    runs-on: elys-runner
 
     outputs:
       LATEST_TAG: ${{ steps.get-latest-tag.outputs.LATEST_TAG }}
@@ -35,7 +35,7 @@ jobs:
           echo "Latest tag: $LATEST_TAG"
 
   retrieve-snapshot:
-    runs-on: ubuntu-latest
+    runs-on: elys-runner
 
     needs: retrieve-latest-tag
 
@@ -47,19 +47,17 @@ jobs:
       - name: Retrieve info.json and set snapshot path
         id: retrieve-info-json
         run: |
-          # DOWNLOAD_URL=https://snapshots-testnet.stake-town.com/elys/info.json
-          # curl -L $DOWNLOAD_URL -o /tmp/info.json
-          # echo "Info.json downloaded to check snapshot version."
+          DOWNLOAD_URL=https://snapshots-testnet.stake-town.com/elys/info.json
+          curl -L $DOWNLOAD_URL -o /tmp/info.json
+          echo "Info.json downloaded to check snapshot version."
 
-          # # retrieve blockHeight field value from info.json
-          # SNAPSHOT_BLOCK_HEIGHT=$(cat /tmp/info.json | awk -F'"' '/"blockHeight":/{print $4}')
-          # echo "SNAPSHOT_BLOCK_HEIGHT=$SNAPSHOT_BLOCK_HEIGHT" >> $GITHUB_ENV
-          # echo "Snapshot block height: $SNAPSHOT_BLOCK_HEIGHT"
+          # retrieve blockHeight field value from info.json
+          SNAPSHOT_BLOCK_HEIGHT=$(cat /tmp/info.json | awk -F'"' '/"blockHeight":/{print $4}')
+          echo "SNAPSHOT_BLOCK_HEIGHT=$SNAPSHOT_BLOCK_HEIGHT" >> $GITHUB_ENV
+          echo "Snapshot block height: $SNAPSHOT_BLOCK_HEIGHT"
 
           # set snapshot download url
-          # SNAPSHOT_DOWNLOAD_URL=https://snapshots-testnet.stake-town.com/elys/elystestnet-1_latest.tar.lz4
-          # SNAPSHOT_DOWNLOAD_URL=https://tools.highstakes.ch/files/elys.tar.gz
-          SNAPSHOT_DOWNLOAD_URL=https://snapshots.elys.network/elys.tar.gz
+          SNAPSHOT_DOWNLOAD_URL=https://snapshots-testnet.stake-town.com/elys/elystestnet-1_latest.tar.lz4
           echo "SNAPSHOT_DOWNLOAD_URL=$SNAPSHOT_DOWNLOAD_URL" >> $GITHUB_ENV
           echo "SNAPSHOT_DOWNLOAD_URL=$SNAPSHOT_DOWNLOAD_URL" >> $GITHUB_OUTPUT
 
@@ -83,7 +81,7 @@ jobs:
         if: steps.cache-snapshot.outputs.cache-hit != 'true'
 
   retrieve-old-binary:
-    runs-on: ubuntu-latest
+    runs-on: elys-runner
 
     needs: retrieve-latest-tag
 
@@ -116,7 +114,7 @@ jobs:
         if: steps.cache-old-binary.outputs.cache-hit != 'true'
 
   build-new-binary:
-    runs-on: ubuntu-latest
+    runs-on: elys-runner
 
     outputs:
       NEW_BINARY_PATH: ${{ steps.set-new-binary-paths.outputs.NEW_BINARY_PATH }}
@@ -186,7 +184,7 @@ jobs:
         if: steps.cache-new-binary.outputs.cache-hit != 'true'
 
   build-old-binary:
-    runs-on: ubuntu-latest
+    runs-on: elys-runner
 
     needs: retrieve-latest-tag
 
@@ -250,7 +248,7 @@ jobs:
         if: steps.cache-old-binaries.outputs.cache-hit != 'true'
 
   chain-snapshot-and-export:
-    runs-on: ubuntu-latest
+    runs-on: elys-runner
 
     needs:
       [
@@ -274,12 +272,12 @@ jobs:
           go-version: "1.21"
         if: steps.cache-new-binary.outputs.cache-hit != 'true'
 
-      # - name: Restore snapshot from cache
-      #   uses: actions/cache/restore@v4
-      #   with:
-      #     path: |
-      #       ${{ needs.retrieve-snapshot.outputs.SNAPSHOT_FILE_PATH }}
-      #     key: ${{ runner.os }}-snapshot-${{ needs.retrieve-latest-tag.outputs.LATEST_TAG }}
+      - name: Restore snapshot from cache
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            ${{ needs.retrieve-snapshot.outputs.SNAPSHOT_FILE_PATH }}
+          key: ${{ runner.os }}-snapshot-${{ needs.retrieve-latest-tag.outputs.LATEST_TAG }}
 
       - name: Restore new binary from cache
         uses: actions/cache@v4
@@ -307,10 +305,8 @@ jobs:
 
       - name: Chain snapshot and export
         run: |
-          # export SNAPSHOT_DOWNLOAD_URL=https://tools.highstakes.ch/files/elys.tar.gz
-          export SNAPSHOT_DOWNLOAD_URL=https://snapshots.elys.network/elys.tar.gz
           ${{ needs.build-old-binary.outputs.OLD_UPGRADE_ASSURE_BINARY_PATH }} \
-            $SNAPSHOT_DOWNLOAD_URL \
+            ${{ needs.retrieve-snapshot.outputs.SNAPSHOT_FILE_PATH }} \
             ${{ needs.retrieve-old-binary.outputs.OLD_BINARY_PATH }} \
             ${{ needs.build-new-binary.outputs.NEW_BINARY_PATH }} \
             --skip-chain-init \
@@ -319,7 +315,7 @@ jobs:
             --timeout-wait-for-node 100000
 
   pre-software-upgrade:
-    runs-on: ubuntu-latest
+    runs-on: elys-runner
 
     needs: chain-snapshot-and-export
 
@@ -341,28 +337,28 @@ jobs:
 
       - name: Chain snapshot and export
         run: |
-          GOMEMLIMIT=4GiB $OLD_UPGRADE_ASSURE_BINARY_PATH $SNAPSHOT_DOWNLOAD_URL $OLD_BINARY_PATH $NEW_BINARY_PATH \
+          GOMEMLIMIT=32GiB $OLD_UPGRADE_ASSURE_BINARY_PATH $SNAPSHOT_DOWNLOAD_URL $OLD_BINARY_PATH $NEW_BINARY_PATH \
             --skip-chain-init \
             --skip-node-start \
             --timeout-next-block 100000 \
             --timeout-wait-for-node 100000
-        if: steps.cache-elys-folders.outputs.cache-hit != 'true'
+        if: steps.cache-backup-directories.outputs.cache-hit != 'true'
 
       - name: Chain initialization
         run: |
-          GOMEMLIMIT=4GiB $OLD_UPGRADE_ASSURE_BINARY_PATH $SNAPSHOT_DOWNLOAD_URL $OLD_BINARY_PATH $NEW_BINARY_PATH \
+          GOMEMLIMIT=32iB $OLD_UPGRADE_ASSURE_BINARY_PATH $SNAPSHOT_DOWNLOAD_URL $OLD_BINARY_PATH $NEW_BINARY_PATH \
             --skip-snapshot \
             --skip-node-start \
             --timeout-next-block 100000 \
             --timeout-wait-for-node 100000
-        if: steps.cache-elys-folders.outputs.cache-hit != 'true'
+        if: steps.cache-backup-directories.outputs.cache-hit != 'true'
 
       - name: Check out new branch
         run: git checkout ${{ github.head_ref }}
 
       - name: Create second validator
         run: |
-          GOMEMLIMIT=4GiB $NEW_UPGRADE_ASSURE_BINARY_PATH $SNAPSHOT_DOWNLOAD_URL $OLD_BINARY_PATH $NEW_BINARY_PATH \
+          GOMEMLIMIT=32GiB $NEW_UPGRADE_ASSURE_BINARY_PATH $SNAPSHOT_DOWNLOAD_URL $OLD_BINARY_PATH $NEW_BINARY_PATH \
             --skip-snapshot \
             --skip-chain-init \
             --skip-prepare-validator-data \
@@ -378,7 +374,7 @@ jobs:
 
       - name: Prepare second validator data
         run: |
-          GOMEMLIMIT=4GiB $NEW_UPGRADE_ASSURE_BINARY_PATH $SNAPSHOT_DOWNLOAD_URL $OLD_BINARY_PATH $NEW_BINARY_PATH \
+          GOMEMLIMIT=32GiB $NEW_UPGRADE_ASSURE_BINARY_PATH $SNAPSHOT_DOWNLOAD_URL $OLD_BINARY_PATH $NEW_BINARY_PATH \
             --skip-snapshot \
             --skip-chain-init \
             --skip-create-validator \
@@ -386,11 +382,11 @@ jobs:
             --skip-upgrade-to-new-binary \
             --timeout-next-block 100000 \
             --timeout-wait-for-node 100000
-        if: steps.cache-elys-folders.outputs.cache-hit != 'true'
+        if: steps.cache-backup-directories.outputs.cache-hit != 'true'
 
       - name: Submit new proposal
         run: |
-          GOMEMLIMIT=4GiB $NEW_UPGRADE_ASSURE_BINARY_PATH $SNAPSHOT_DOWNLOAD_URL $OLD_BINARY_PATH $NEW_BINARY_PATH \
+          GOMEMLIMIT=32GiB $NEW_UPGRADE_ASSURE_BINARY_PATH $SNAPSHOT_DOWNLOAD_URL $OLD_BINARY_PATH $NEW_BINARY_PATH \
             --skip-snapshot \
             --skip-chain-init \
             --skip-create-validator \
@@ -410,7 +406,7 @@ jobs:
             ${{ env.UPLOAD_SNAPSHOT_BINARY_PATH }}
 
   post-software-upgrade:
-    runs-on: ubuntu-latest
+    runs-on: elys-runner
 
     needs: pre-software-upgrade
 
