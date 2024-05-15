@@ -291,6 +291,12 @@ jobs:
             ${{ needs.retrieve-old-binary.outputs.OLD_BINARY_PATH }}
           key: ${{ runner.os }}-retrieve-old-binary-${{ needs.retrieve-latest-tag.outputs.LATEST_TAG }}
 
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
