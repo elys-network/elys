@@ -263,9 +263,9 @@ jobs:
         uses: actions/cache@v4
         with:
           path: |
-            ${{ env.NEW_BINARY_PATH }}
-            ${{ env.NEW_UPGRADE_ASSURE_BINARY_PATH}}
-            ${{ env.UPLOAD_SNAPSHOT_BINARY_PATH }}
+            ${{ needs.build-new-binary.outputs.NEW_BINARY_PATH }}
+            ${{ needs.build-new-binary.outputs.NEW_UPGRADE_ASSURE_BINARY_PATH}}
+            ${{ needs.build-new-binary.outputs.UPLOAD_SNAPSHOT_BINARY_PATH }}
           key: ${{ needs.build-new-binary.outputs.CACHE_KEY }}
 
       - name: Restore old binaries from cache
