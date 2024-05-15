@@ -7,15 +7,11 @@ on:
       - main
 
 jobs:
-  pre-software-upgrade:
+  retrieve-latest-tag:
     runs-on: ubuntu-latest
 
     outputs:
       LATEST_TAG: ${{ steps.get-latest-tag.outputs.LATEST_TAG }}
-      NEW_UPGRADE_ASSURE_BINARY_PATH: ${{ steps.build-new-binaries.outputs.NEW_UPGRADE_ASSURE_BINARY_PATH }}
-      SNAPSHOT_DOWNLOAD_URL: ${{ steps.retrieve-info-json.outputs.SNAPSHOT_DOWNLOAD_URL }}
-      NEW_BINARY_PATH: ${{ steps.build-new-binaries.outputs.NEW_BINARY_PATH }}
-      UPLOAD_SNAPSHOT_BINARY_PATH: ${{ steps.build-new-binaries.outputs.UPLOAD_SNAPSHOT_BINARY_PATH }}
 
     steps:
       - name: Checkout repository
@@ -35,9 +31,18 @@ jobs:
           git fetch --tags
           LATEST_TAG=$(git describe --tags `git rev-list --tags --max-count=1`)
           echo "LATEST_TAG=$LATEST_TAG" >> $GITHUB_ENV
-          echo "LATEST_TAG=$LATEST_TAG" >> $GITHUB_OUTPUT
           echo "Latest tag: $LATEST_TAG"
 
+  retrieve-snapshot:
+    runs-on: ubuntu-latest
+
+    needs: retrieve-latest-tag
+
+    outputs:
+      SNAPSHOT_DOWNLOAD_URL: ${{ steps.retrieve-info-json.outputs.SNAPSHOT_DOWNLOAD_URL }}
+      SNAPSHOT_FILE_PATH: ${{ steps.retrieve-info-json.outputs.SNAPSHOT_FILE_PATH }}
+
+    steps:
       - name: Retrieve info.json and set snapshot path
         id: retrieve-info-json
         run: |
@@ -54,6 +59,47 @@ jobs:
           SNAPSHOT_DOWNLOAD_URL=https://snapshots-testnet.stake-town.com/elys/elystestnet-1_latest.tar.lz4
           echo "SNAPSHOT_DOWNLOAD_URL=$SNAPSHOT_DOWNLOAD_URL" >> $GITHUB_ENV
           echo "SNAPSHOT_DOWNLOAD_URL=$SNAPSHOT_DOWNLOAD_URL" >> $GITHUB_OUTPUT
+
+          # set snapshot file path
+          SNAPSHOT_FILE_PATH=/tmp/snapshot.tar.lz4
+          echo "SNAPSHOT_FILE_PATH=$SNAPSHOT_FILE_PATH" >> $GITHUB_ENV
+          echo "SNAPSHOT_FILE_PATH=$SNAPSHOT_FILE_PATH" >> $GITHUB_OUTPUT
+
+      - name: Cache Snapshot
+        uses: actions/cache@v4
+        id: cache-snapshot
+        with:
+          path: |
+            ${{ env.SNAPSHOT_FILE_PATH }}
+          key: ${{ runner.os }}-snapshot-${{ needs.retrieve-latest-tag.outputs.LATEST_TAG }}
+
+      - name: Download snapshot
+        run: |
+          curl -L $SNAPSHOT_DOWNLOAD_URL -o $SNAPSHOT_FILE_PATH
+        if: steps.cache-snapshot.outputs.cache-hit != 'true'
+
+  pre-software-upgrade:
+    runs-on: ubuntu-latest
+
+    needs: retrieve-latest-tag
+
+    outputs:
+      NEW_UPGRADE_ASSURE_BINARY_PATH: ${{ steps.build-new-binaries.outputs.NEW_UPGRADE_ASSURE_BINARY_PATH }}
+      SNAPSHOT_DOWNLOAD_URL: ${{ steps.retrieve-info-json.outputs.SNAPSHOT_DOWNLOAD_URL }}
+      NEW_BINARY_PATH: ${{ steps.build-new-binaries.outputs.NEW_BINARY_PATH }}
+      UPLOAD_SNAPSHOT_BINARY_PATH: ${{ steps.build-new-binaries.outputs.UPLOAD_SNAPSHOT_BINARY_PATH }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.21"
 
       - name: Cache Directories
         uses: actions/cache@v4
