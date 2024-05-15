@@ -73,6 +73,7 @@ jobs:
           path: |
             ${{ env.SNAPSHOT_FILE_PATH }}
           key: ${{ runner.os }}-snapshot-${{ needs.retrieve-latest-tag.outputs.LATEST_TAG }}
+          lookup-only: true
 
       - name: Download snapshot
         run: |
@@ -102,6 +103,7 @@ jobs:
           path: |
             ${{ env.OLD_BINARY_PATH }}
           key: ${{ runner.os }}-retrieve-old-binary-${{ needs.retrieve-latest-tag.outputs.LATEST_TAG }}
+          lookup-only: true
 
       - name: Retrieve latest binary
         run: |
@@ -118,7 +120,7 @@ jobs:
       NEW_BINARY_PATH: ${{ steps.set-new-binary-paths.outputs.NEW_BINARY_PATH }}
       NEW_UPGRADE_ASSURE_BINARY_PATH: ${{ steps.set-new-binary-paths.outputs.NEW_UPGRADE_ASSURE_BINARY_PATH }}
       UPLOAD_SNAPSHOT_BINARY_PATH: ${{ steps.set-new-binary-paths.outputs.UPLOAD_SNAPSHOT_BINARY_PATH }}
-      CACHE_KEY: ${{ steps.cache-new-binary.outputs.cache-primary-key }}
+      CACHE_KEY: ${{ steps.set-new-binary-paths.outputs.CACHE_KEY }}
 
     steps:
       - name: Checkout repository
@@ -142,6 +144,10 @@ jobs:
           echo "UPLOAD_SNAPSHOT_BINARY_PATH=$UPLOAD_SNAPSHOT_BINARY_PATH" >> $GITHUB_ENV
           echo "UPLOAD_SNAPSHOT_BINARY_PATH=$UPLOAD_SNAPSHOT_BINARY_PATH" >> $GITHUB_OUTPUT
 
+          CACHE_KEY=${{ runner.os }}-build-new-binary-${{ hashFiles('**/go.mod', '**/*.go') }}
+          echo "CACHE_KEY=$CACHE_KEY" >> $GITHUB_ENV
+          echo "CACHE_KEY=$CACHE_KEY" >> $GITHUB_OUTPUT
+
       - name: Cache new binary
         uses: actions/cache@v4
         id: cache-new-binary
@@ -150,7 +156,8 @@ jobs:
             ${{ env.NEW_BINARY_PATH }}
             ${{ env.NEW_UPGRADE_ASSURE_BINARY_PATH}}
             ${{ env.UPLOAD_SNAPSHOT_BINARY_PATH }}
-          key: ${{ runner.os }}-build-new-binary-${{ hashFiles('**/go.mod', '**/*.go') }}
+          key: ${{ env.CACHE_KEY }}
+          lookup-only: true
 
       - name: Set up Go
         uses: actions/setup-go@v5
@@ -199,6 +206,7 @@ jobs:
           path: |
             ${{ env.OLD_UPGRADE_ASSURE_BINARY_PATH }}
           key: ${{ runner.os }}-build-old-binary-${{ needs.retrieve-latest-tag.outputs.LATEST_TAG }}
+          lookup-only: true
 
       - name: Checkout repository
         uses: actions/checkout@v4
