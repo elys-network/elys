@@ -54,7 +54,7 @@ jobs:
           path: |
             /tmp/elys-backup
             /tmp/elys2-backup
-          key: ${{ runner.os }}-elys-folders-${{ env.LATEST_TAG }}
+          key: ${{ runner.os }}-backup-directories-${{ env.LATEST_TAG }}
 
       - name: Retrieve latest binary
         run: |
