@@ -47,17 +47,19 @@ jobs:
       - name: Retrieve info.json and set snapshot path
         id: retrieve-info-json
         run: |
-          DOWNLOAD_URL=https://snapshots-testnet.stake-town.com/elys/info.json
-          curl -L $DOWNLOAD_URL -o /tmp/info.json
-          echo "Info.json downloaded to check snapshot version."
+          # DOWNLOAD_URL=https://snapshots-testnet.stake-town.com/elys/info.json
+          # curl -L $DOWNLOAD_URL -o /tmp/info.json
+          # echo "Info.json downloaded to check snapshot version."
 
-          # retrieve blockHeight field value from info.json
-          SNAPSHOT_BLOCK_HEIGHT=$(cat /tmp/info.json | awk -F'"' '/"blockHeight":/{print $4}')
-          echo "SNAPSHOT_BLOCK_HEIGHT=$SNAPSHOT_BLOCK_HEIGHT" >> $GITHUB_ENV
-          echo "Snapshot block height: $SNAPSHOT_BLOCK_HEIGHT"
+          # # retrieve blockHeight field value from info.json
+          # SNAPSHOT_BLOCK_HEIGHT=$(cat /tmp/info.json | awk -F'"' '/"blockHeight":/{print $4}')
+          # echo "SNAPSHOT_BLOCK_HEIGHT=$SNAPSHOT_BLOCK_HEIGHT" >> $GITHUB_ENV
+          # echo "Snapshot block height: $SNAPSHOT_BLOCK_HEIGHT"
 
           # set snapshot download url
-          SNAPSHOT_DOWNLOAD_URL=https://snapshots-testnet.stake-town.com/elys/elystestnet-1_latest.tar.lz4
+          # SNAPSHOT_DOWNLOAD_URL=https://snapshots-testnet.stake-town.com/elys/elystestnet-1_latest.tar.lz4
+          # SNAPSHOT_DOWNLOAD_URL=https://tools.highstakes.ch/files/elys.tar.gz
+          SNAPSHOT_DOWNLOAD_URL=https://snapshots.elys.network/elys.tar.gz
           echo "SNAPSHOT_DOWNLOAD_URL=$SNAPSHOT_DOWNLOAD_URL" >> $GITHUB_ENV
           echo "SNAPSHOT_DOWNLOAD_URL=$SNAPSHOT_DOWNLOAD_URL" >> $GITHUB_OUTPUT
 
@@ -433,7 +435,7 @@ jobs:
 
       - name: Upgrade to new binary
         run: |
-          GOMEMLIMIT=4GiB \
+          GOMEMLIMIT=8GiB \
             ${{ needs.pre-software-upgrade.outputs.NEW_UPGRADE_ASSURE_BINARY_PATH }} \
             ${{ needs.pre-software-upgrade.outputs.SNAPSHOT_DOWNLOAD_URL }} \
             ${{ needs.pre-software-upgrade.outputs.NEW_BINARY_PATH }} \
