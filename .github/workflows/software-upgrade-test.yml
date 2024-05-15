@@ -305,7 +305,8 @@ jobs:
 
       - name: Chain snapshot and export
         run: |
-          export SNAPSHOT_DOWNLOAD_URL=https://tools.highstakes.ch/files/elys.tar.gz
+          # export SNAPSHOT_DOWNLOAD_URL=https://tools.highstakes.ch/files/elys.tar.gz
+          export SNAPSHOT_DOWNLOAD_URL=https://snapshots.elys.network/elys.tar.gz
           ${{ needs.build-old-binary.outputs.OLD_UPGRADE_ASSURE_BINARY_PATH }} \
             $SNAPSHOT_DOWNLOAD_URL \
             ${{ needs.retrieve-old-binary.outputs.OLD_BINARY_PATH }} \
