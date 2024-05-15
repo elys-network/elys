@@ -30,8 +30,7 @@ jobs:
         run: |
           git fetch --tags
           LATEST_TAG=$(git describe --tags `git rev-list --tags --max-count=1`)
-          echo "::set-output name=LATEST_TAG::$LATEST_TAG"
-          echo "LATEST_TAG=$LATEST_TAG" >> $GITHUB_ENV
+          echo "LATEST_TAG=$LATEST_TAG" >> $GITHUB_OUTPUT
           echo "Latest tag: $LATEST_TAG"
 
       - name: Retrieve info.json and set snapshot path
@@ -43,20 +42,19 @@ jobs:
 
           # retrieve blockHeight field value from info.json
           SNAPSHOT_BLOCK_HEIGHT=$(cat /tmp/info.json | awk -F'"' '/"blockHeight":/{print $4}')
-          echo "::set-output name=SNAPSHOT_BLOCK_HEIGHT::$SNAPSHOT_BLOCK_HEIGHT"
-          echo "SNAPSHOT_BLOCK_HEIGHT=$SNAPSHOT_BLOCK_HEIGHT" >> $GITHUB_ENV
+          echo "SNAPSHOT_BLOCK_HEIGHT=$SNAPSHOT_BLOCK_HEIGHT" >> $GITHUB_OUTPUT
           echo "Snapshot block height: $SNAPSHOT_BLOCK_HEIGHT"
 
           # set snapshot download url
           SNAPSHOT_DOWNLOAD_URL=https://snapshots-testnet.stake-town.com/elys/elystestnet-1_latest.tar.lz4
-          echo "::set-output name=SNAPSHOT_DOWNLOAD_URL::$SNAPSHOT_DOWNLOAD_URL"
-          echo "SNAPSHOT_DOWNLOAD_URL=$SNAPSHOT_DOWNLOAD_URL" >> $GITHUB_ENV
+          echo "SNAPSHOT_DOWNLOAD_URL=$SNAPSHOT_DOWNLOAD_URL" >> $GITHUB_OUTPUT
 
   cache-and-retrieve:
     runs-on: ubuntu-latest
     needs: checkout-and-setup
     outputs:
       CACHE_HIT: ${{ steps.cache-elys-folders.outputs.cache-hit }}
+      OLD_BINARY_PATH: ${{ steps.retrieve-latest-binary.outputs.OLD_BINARY_PATH }}
     steps:
       - name: Cache Directories
         id: cache-elys-folders
@@ -72,7 +70,7 @@ jobs:
           DOWNLOAD_URL=https://github.com/elys-network/elys/releases/download/${{ needs.checkout-and-setup.outputs.LATEST_TAG }}/elysd-${{ needs.checkout-and-setup.outputs.LATEST_TAG }}-linux-amd64
           OLD_BINARY_PATH=/tmp/elysd-${{ needs.checkout-and-setup.outputs.LATEST_TAG }}
           curl -L $DOWNLOAD_URL -o $OLD_BINARY_PATH && chmod +x $OLD_BINARY_PATH
-          echo "OLD_BINARY_PATH=$OLD_BINARY_PATH" >> $GITHUB_ENV
+          echo "OLD_BINARY_PATH=$OLD_BINARY_PATH" >> $GITHUB_OUTPUT
 
       - name: Create git tag
         run: git tag v999.999.999
@@ -80,28 +78,34 @@ jobs:
   build-new-binaries:
     runs-on: ubuntu-latest
     needs: cache-and-retrieve
+    outputs:
+      NEW_BINARY_PATH: ${{ steps.build-new-binaries.outputs.NEW_BINARY_PATH }}
+      NEW_UPGRADE_ASSURE_BINARY_PATH: ${{ steps.build-new-binaries.outputs.NEW_UPGRADE_ASSURE_BINARY_PATH }}
+      UPLOAD_SNAPSHOT_BINARY_PATH: ${{ steps.build-new-binaries.outputs.UPLOAD_SNAPSHOT_BINARY_PATH }}
     steps:
       - name: Build new binaries
         run: |
           # build new elys binary
           make build
           NEW_BINARY_PATH=./build/elysd
-          echo "NEW_BINARY_PATH=$NEW_BINARY_PATH" >> $GITHUB_ENV
+          echo "NEW_BINARY_PATH=$NEW_BINARY_PATH" >> $GITHUB_OUTPUT
 
           # build new upgrade assure binary
           make build-upgrade-assure
           NEW_UPGRADE_ASSURE_BINARY_PATH=./build/new-upgrade-assure
           mv ./build/upgrade-assure $NEW_UPGRADE_ASSURE_BINARY_PATH
-          echo "NEW_UPGRADE_ASSURE_BINARY_PATH=$NEW_UPGRADE_ASSURE_BINARY_PATH" >> $GITHUB_ENV
+          echo "NEW_UPGRADE_ASSURE_BINARY_PATH=$NEW_UPGRADE_ASSURE_BINARY_PATH" >> $GITHUB_OUTPUT
 
           # build upload snapshot binary
           make build-upload-snapshot
           UPLOAD_SNAPSHOT_BINARY_PATH=./build/upload-snapshot
-          echo "UPLOAD_SNAPSHOT_BINARY_PATH=$UPLOAD_SNAPSHOT_BINARY_PATH" >> $GITHUB_ENV
+          echo "UPLOAD_SNAPSHOT_BINARY_PATH=$UPLOAD_SNAPSHOT_BINARY_PATH" >> $GITHUB_OUTPUT
 
   build-old-binaries:
     runs-on: ubuntu-latest
     needs: cache-and-retrieve
+    outputs:
+      OLD_UPGRADE_ASSURE_BINARY_PATH: ${{ steps.build-old-binaries.outputs.OLD_UPGRADE_ASSURE_BINARY_PATH }}
     if: needs.cache-and-retrieve.outputs.CACHE_HIT != 'true'
     steps:
       - name: Copy upgrade assure folder
@@ -121,7 +125,7 @@ jobs:
           go build -o build ./cmd/upgrade-assure-skip
           OLD_UPGRADE_ASSURE_BINARY_PATH=./build/old-upgrade-assure
           mv ./build/upgrade-assure-skip $OLD_UPGRADE_ASSURE_BINARY_PATH
-          echo "OLD_UPGRADE_ASSURE_BINARY_PATH=$OLD_UPGRADE_ASSURE_BINARY_PATH" >> $GITHUB_ENV
+          echo "OLD_UPGRADE_ASSURE_BINARY_PATH=$OLD_UPGRADE_ASSURE_BINARY_PATH" >> $GITHUB_OUTPUT
 
   chain-operations:
     runs-on: ubuntu-latest
@@ -130,7 +134,11 @@ jobs:
     steps:
       - name: Chain snapshot and export
         run: |
-          GOMEMLIMIT=8GiB $OLD_UPGRADE_ASSURE_BINARY_PATH $SNAPSHOT_DOWNLOAD_URL $OLD_BINARY_PATH $NEW_BINARY_PATH \
+          GOMEMLIMIT=8GiB \
+            ${{ needs.build-old-binaries.outputs.OLD_UPGRADE_ASSURE_BINARY_PATH }} \
+            ${{ needs.checkout-and-setup.outputs.SNAPSHOT_DOWNLOAD_URL }} \
+            ${{ needs.cache-and-retrieve.outputs.OLD_BINARY_PATH }} \
+            ${{ needs.build-new-binaries.outputs.NEW_BINARY_PATH }} \
             --skip-chain-init \
             --skip-node-start \
             --timeout-next-block 100000 \
@@ -138,7 +146,11 @@ jobs:
 
       - name: Chain initialization
         run: |
-          GOMEMLIMIT=8GiB $OLD_UPGRADE_ASSURE_BINARY_PATH $SNAPSHOT_DOWNLOAD_URL $OLD_BINARY_PATH $NEW_BINARY_PATH \
+          GOMEMLIMIT=8GiB \
+            ${{ needs.build-old-binaries.outputs.OLD_UPGRADE_ASSURE_BINARY_PATH }} \
+            ${{ needs.checkout-and-setup.outputs.SNAPSHOT_DOWNLOAD_URL }} \
+            ${{ needs.cache-and-retrieve.outputs.OLD_BINARY_PATH }} \
+            ${{ needs.build-new-binaries.outputs.NEW_BINARY_PATH }} \
             --skip-snapshot \
             --skip-node-start \
             --timeout-next-block 100000 \
@@ -157,7 +169,11 @@ jobs:
           timeout_minutes: 30
           max_attempts: 3
           command: |
-            GOMEMLIMIT=8GiB $NEW_UPGRADE_ASSURE_BINARY_PATH $SNAPSHOT_DOWNLOAD_URL $OLD_BINARY_PATH $NEW_BINARY_PATH \
+            GOMEMLIMIT=8GiB \
+              ${{ needs.build-old-binaries.outputs.NEW_UPGRADE_ASSURE_BINARY_PATH }} \
+              ${{ needs.checkout-and-setup.outputs.SNAPSHOT_DOWNLOAD_URL }} \
+              ${{ needs.cache-and-retrieve.outputs.OLD_BINARY_PATH }} \
+              ${{ needs.build-new-binaries.outputs.NEW_BINARY_PATH }} \
               --skip-snapshot \
               --skip-chain-init \
               --skip-prepare-validator-data \
@@ -172,14 +188,18 @@ jobs:
 
       - name: Prepare second validator data
         run: |
-          GOMEMLIMIT=8GiB $NEW_UPGRADE_ASSURE_BINARY_PATH $SNAPSHOT_DOWNLOAD_URL $OLD_BINARY_PATH $NEW_BINARY_PATH \
-            --skip-snapshot \
-            --skip-chain-init \
-            --skip-create-validator \
-            --skip-submit-proposal \
-            --skip-upgrade-to-new-binary \
-            --timeout-next-block 100000 \
-            --timeout-wait-for-node 100000
+          GOMEMLIMIT=8GiB \
+            ${{ needs.build-old-binaries.outputs.NEW_UPGRADE_ASSURE_BINARY_PATH }} \
+            ${{ needs.checkout-and-setup.outputs.SNAPSHOT_DOWNLOAD_URL }} \
+            ${{ needs.cache-and-retrieve.outputs.OLD_BINARY_PATH }} \
+            ${{ needs.build-new-binaries.outputs.NEW_BINARY_PATH }} \
+          --skip-snapshot \
+          --skip-chain-init \
+          --skip-create-validator \
+          --skip-submit-proposal \
+          --skip-upgrade-to-new-binary \
+          --timeout-next-block 100000 \
+          --timeout-wait-for-node 100000
 
       - name: Submit new proposal
         uses: nick-fields/retry@v3
@@ -187,7 +207,11 @@ jobs:
           timeout_minutes: 30
           max_attempts: 3
           command: |
-            GOMEMLIMIT=8GiB $NEW_UPGRADE_ASSURE_BINARY_PATH $SNAPSHOT_DOWNLOAD_URL $OLD_BINARY_PATH $NEW_BINARY_PATH \
+            GOMEMLIMIT=8GiB \
+              ${{ needs.build-old-binaries.outputs.NEW_UPGRADE_ASSURE_BINARY_PATH }} \
+              ${{ needs.checkout-and-setup.outputs.SNAPSHOT_DOWNLOAD_URL }} \
+              ${{ needs.cache-and-retrieve.outputs.OLD_BINARY_PATH }} \
+              ${{ needs.build-new-binaries.outputs.NEW_BINARY_PATH }} \
               --skip-snapshot \
               --skip-chain-init \
               --skip-create-validator \
@@ -222,7 +246,11 @@ jobs:
           timeout_minutes: 30
           max_attempts: 3
           command: |
-            GOMEMLIMIT=4GiB $NEW_UPGRADE_ASSURE_BINARY_PATH $SNAPSHOT_DOWNLOAD_URL $NEW_BINARY_PATH $NEW_BINARY_PATH \
+            GOMEMLIMIT=8GiB \
+              ${{ needs.build-old-binaries.outputs.NEW_UPGRADE_ASSURE_BINARY_PATH }} \
+              ${{ needs.checkout-and-setup.outputs.SNAPSHOT_DOWNLOAD_URL }} \
+              ${{ needs.cache-and-retrieve.outputs.NEW_BINARY_PATH }} \
+              ${{ needs.build-new-binaries.outputs.NEW_BINARY_PATH }} \
               --skip-snapshot \
               --skip-chain-init \
               --skip-create-validator \
@@ -234,15 +262,19 @@ jobs:
   create-snapshot:
     runs-on: ubuntu-latest
     needs: upgrade-binary
+    outputs:
+      NEW_SNAPSHOT_FILENAME: ${{ steps.create-snapshot.outputs.NEW_SNAPSHOT_FILENAME }}
+      NEW_SNAPSHOT_PATH: ${{ steps.create-snapshot.outputs.NEW_SNAPSHOT_PATH }}
     steps:
       - name: Create new snapshot file
+        id: create-snapshot
         run: |
           SANITIZED_HEAD_REF=${{ github.head_ref || github.ref }}
           SANITIZED_HEAD_REF=$(echo "$SANITIZED_HEAD_REF" | sed 's|refs/heads/||; s|/|_|g')
           NEW_SNAPSHOT_FILENAME="elys-snapshot-${SANITIZED_HEAD_REF}.tar.lz4"
           NEW_SNAPSHOT_PATH="/tmp/${NEW_SNAPSHOT_FILENAME}"
-          echo "NEW_SNAPSHOT_FILENAME=$NEW_SNAPSHOT_FILENAME" >> $GITHUB_ENV
-          echo "NEW_SNAPSHOT_PATH=$NEW_SNAPSHOT_PATH" >> $GITHUB_ENV
+          echo "NEW_SNAPSHOT_FILENAME=$NEW_SNAPSHOT_FILENAME" >> $GITHUB_OUTPUT
+          echo "NEW_SNAPSHOT_PATH=$NEW_SNAPSHOT_PATH" >> $GITHUB_OUTPUT
           cd $HOME
           tar -cf - .elys | lz4 -z - > "$NEW_SNAPSHOT_PATH"
 
@@ -252,12 +284,12 @@ jobs:
           export R2_SECRET_KEY=${{ secrets.R2_SECRET_KEY }}
           export R2_ENDPOINT=${{ secrets.R2_ENDPOINT }}
           export R2_BUCKET_NAME=${{ secrets.R2_BUCKET_NAME }}
-          $UPLOAD_SNAPSHOT_BINARY_PATH $NEW_SNAPSHOT_PATH
+          ${{ needs.build-new-binaries.outputs.UPLOAD_SNAPSHOT_BINARY_PATH }} ${{ steps.create-snapshot.outputs.NEW_SNAPSHOT_PATH }}
 
       - name: Remove snapshot file
         run: |
-          rm -f $NEW_SNAPSHOT_PATH
+          rm -f ${{ steps.create-snapshot.outputs.NEW_SNAPSHOT_PATH }}
 
       - name: Info about the snapshot
         run: |
-          echo "Snapshot URL: https://snapshots.elys.network/$NEW_SNAPSHOT_FILENAME"
+          echo "Snapshot URL: https://snapshots.elys.network/${{ steps.create-snapshot.outputs.NEW_SNAPSHOT_FILENAME }}"
