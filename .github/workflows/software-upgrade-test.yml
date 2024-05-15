@@ -61,7 +61,7 @@ jobs:
         with:
           path: |
             ${{ env.HOME }}/.elys
-            ${{ env.$HOME }}/.elys2
+            ${{ env.HOME }}/.elys2
           key: ${{ runner.os }}-elys-folders-${{ env.LATEST_TAG }}
 
       - name: Retrieve latest binary
