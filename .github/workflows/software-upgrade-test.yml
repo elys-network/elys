@@ -150,7 +150,6 @@ jobs:
 
       - name: Save up space
         run: |
-          rm -rf /tmp/genesis.json
           rm -rf ~/.elys/config/genesis.json
 
       - name: Prepare second validator data
