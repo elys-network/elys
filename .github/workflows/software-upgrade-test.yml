@@ -260,6 +260,18 @@ jobs:
       ]
 
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.21"
+        if: steps.cache-new-binary.outputs.cache-hit != 'true'
+
       - name: Restore snapshot from cache
         uses: actions/cache/restore@v4
         with:
@@ -290,18 +302,6 @@ jobs:
           path: |
             ${{ needs.retrieve-old-binary.outputs.OLD_BINARY_PATH }}
           key: ${{ runner.os }}-retrieve-old-binary-${{ needs.retrieve-latest-tag.outputs.LATEST_TAG }}
-
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          fetch-tags: true
-
-      - name: Set up Go
-        uses: actions/setup-go@v5
-        with:
-          go-version: "1.21"
-        if: steps.cache-new-binary.outputs.cache-hit != 'true'
 
       - name: Chain snapshot and export
         run: |
