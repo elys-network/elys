@@ -20,11 +20,12 @@ func (k Keeper) CalculateStableStakeApr(ctx sdk.Context, query *types.QueryStabl
 	// If we don't have enough params
 	if query.Denom == ptypes.Eden {
 		lpIncentive := params.LpIncentives
-		if lpIncentive == nil {
-			return sdk.ZeroInt(), errorsmod.Wrap(types.ErrNoInflationaryParams, "no inflationary params available")
+		if lpIncentive == nil || lpIncentive.EdenAmountPerYear.IsNil() {
+			return sdk.ZeroInt(), nil
 		}
 
-		if lpIncentive.TotalBlocksPerYear.IsZero() {
+		totalBlocksPerYear := k.parameterKeeper.GetParams(ctx).TotalBlocksPerYear
+		if totalBlocksPerYear == 0 {
 			return sdk.ZeroInt(), nil
 		}
 
@@ -41,8 +42,7 @@ func (k Keeper) CalculateStableStakeApr(ctx sdk.Context, query *types.QueryStabl
 		// Calculate total Proxy TVL
 		totalProxyTVL := k.CalculateProxyTVL(ctx, baseCurrency)
 
-		edenAmount := lpIncentive.EdenAmountPerYear.
-			Quo(lpIncentive.TotalBlocksPerYear)
+		edenAmount := lpIncentive.EdenAmountPerYear.Quo(sdk.NewInt(totalBlocksPerYear))
 
 		edenDenomPrice := k.amm.GetEdenDenomPrice(ctx, baseCurrency)
 
@@ -53,13 +53,13 @@ func (k Keeper) CalculateStableStakeApr(ctx sdk.Context, query *types.QueryStabl
 		params := k.GetParams(ctx)
 		poolMaxEdenAmount := params.MaxEdenRewardAprLps.
 			Mul(stableTvl).
-			QuoInt(lpIncentive.TotalBlocksPerYear).
+			QuoInt64(totalBlocksPerYear).
 			Quo(edenDenomPrice)
 		stableStakeEdenAmount = sdk.MinDec(stableStakeEdenAmount, poolMaxEdenAmount)
 
 		// Eden Apr for usdc earn program
 		apr := stableStakeEdenAmount.
-			MulInt(lpIncentive.TotalBlocksPerYear).
+			MulInt64(totalBlocksPerYear).
 			Mul(edenDenomPrice).
 			MulInt(sdk.NewInt(100)).
 			Quo(stableTvl)

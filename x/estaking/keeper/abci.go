@@ -1,8 +1,6 @@
 package keeper
 
 import (
-	"errors"
-
 	errorsmod "cosmossdk.io/errors"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -48,25 +46,19 @@ func (k Keeper) BurnEdenBIfElysStakingReduced(ctx sdk.Context) {
 // Rewards distribution
 func (k Keeper) ProcessRewardsDistribution(ctx sdk.Context) {
 	// Read tokenomics time based inflation params and update incentive module params.
-	if !k.ProcessUpdateIncentiveParams(ctx) {
-		ctx.Logger().Error("Invalid tokenomics params", "error", errors.New("invalid tokenomics params"))
-		return
-	}
+	k.ProcessUpdateIncentiveParams(ctx)
 
-	canDistribute := k.CanDistributeStakingRewards(ctx)
-	if canDistribute {
-		err := k.UpdateStakersRewards(ctx)
-		if err != nil {
-			ctx.Logger().Error("Failed to update staker rewards unclaimed", "error", err)
-		}
+	err := k.UpdateStakersRewards(ctx)
+	if err != nil {
+		ctx.Logger().Error("Failed to update staker rewards unclaimed", "error", err)
 	}
 }
 
-func (k Keeper) ProcessUpdateIncentiveParams(ctx sdk.Context) bool {
+func (k Keeper) ProcessUpdateIncentiveParams(ctx sdk.Context) {
 	// Non-linear inflation per year happens and this includes yearly inflation data
 	listTimeBasedInflations := k.tokenomicsKeeper.GetAllTimeBasedInflation(ctx)
-	if len(listTimeBasedInflations) < 1 {
-		return false
+	if len(listTimeBasedInflations) == 0 {
+		return
 	}
 
 	params := k.GetParams(ctx)
@@ -86,65 +78,18 @@ func (k Keeper) ProcessUpdateIncentiveParams(ctx sdk.Context) bool {
 
 		// ------------- Stakers parameter -------------
 		blocksDistributed := sdk.NewInt(ctx.BlockHeight() - int64(inflation.StartBlockHeight))
-		incentiveInfo := types.IncentiveInfo{
+		params.StakeIncentives = &types.IncentiveInfo{
 			EdenAmountPerYear:      sdk.NewInt(int64(inflation.Inflation.IcsStakingRewards)),
 			DistributionStartBlock: sdk.NewInt(int64(inflation.StartBlockHeight)),
 			TotalBlocksPerYear:     totalBlocksPerYear,
 			BlocksDistributed:      blocksDistributed,
 		}
-
-		if params.StakeIncentives == nil {
-			params.StakeIncentives = &incentiveInfo
-		} else {
-			// If any of block number related parameter changed, we re-calculate the current epoch
-			if params.StakeIncentives.DistributionStartBlock != incentiveInfo.DistributionStartBlock ||
-				params.StakeIncentives.TotalBlocksPerYear != incentiveInfo.TotalBlocksPerYear {
-				params.StakeIncentives.BlocksDistributed = blocksDistributed
-			}
-			params.StakeIncentives.EdenAmountPerYear = incentiveInfo.EdenAmountPerYear
-			params.StakeIncentives.DistributionStartBlock = incentiveInfo.DistributionStartBlock
-			params.StakeIncentives.TotalBlocksPerYear = incentiveInfo.TotalBlocksPerYear
-		}
-		break
-	}
-
-	k.SetParams(ctx, params)
-	return true
-}
-
-func (k Keeper) CanDistributeStakingRewards(ctx sdk.Context) bool {
-	// Fetch incentive params
-	params := k.GetParams(ctx)
-	if ctx.BlockHeight() < 1 {
-		return false
-	}
-
-	// If we don't have enough params
-	if params.StakeIncentives == nil {
-		return false
-	}
-
-	// Incentive params initialize
-	stakeIncentive := params.StakeIncentives
-
-	curBlockHeight := sdk.NewInt(ctx.BlockHeight())
-	if stakeIncentive.DistributionStartBlock.GT(curBlockHeight) {
-		return false
-	}
-
-	// Increase current epoch of Stake incentive param
-	stakeIncentive.BlocksDistributed = stakeIncentive.BlocksDistributed.Add(sdk.OneInt())
-	if stakeIncentive.BlocksDistributed.GTE(stakeIncentive.TotalBlocksPerYear) || curBlockHeight.GT(stakeIncentive.TotalBlocksPerYear.Add(stakeIncentive.DistributionStartBlock)) {
-		params.StakeIncentives = nil
 		k.SetParams(ctx, params)
-		return false
+		return
 	}
 
-	params.StakeIncentives.BlocksDistributed = stakeIncentive.BlocksDistributed
+	params.StakeIncentives = nil
 	k.SetParams(ctx, params)
-
-	// return found, stake incentive params
-	return true
 }
 
 func (k Keeper) UpdateStakersRewards(ctx sdk.Context) error {
@@ -163,29 +108,29 @@ func (k Keeper) UpdateStakersRewards(ctx sdk.Context) error {
 	params := k.GetParams(ctx)
 	stakeIncentive := params.StakeIncentives
 
-	// Ensure stakeIncentive.TotalBlocksPerYear are not zero to avoid division by zero
-	if stakeIncentive.TotalBlocksPerYear.IsZero() {
-		return errorsmod.Wrap(types.ErrNoInflationaryParams, "invalid inflationary params")
-	}
+	// Ensure totalBlocksPerYear are not zero to avoid division by zero
+	totalBlocksPerYear := k.parameterKeeper.GetParams(ctx).TotalBlocksPerYear
 
 	// Calculate
-	stakersEdenAmount := stakeIncentive.EdenAmountPerYear.
-		Quo(stakeIncentive.TotalBlocksPerYear)
+	edenAmountPerYear := sdk.ZeroInt()
+	if stakeIncentive != nil && stakeIncentive.EdenAmountPerYear.IsPositive() {
+		edenAmountPerYear = stakeIncentive.EdenAmountPerYear
+	}
+	stakersEdenAmount := edenAmountPerYear.Quo(sdk.NewInt(totalBlocksPerYear))
 
 	// Maximum eden APR - 30% by default
-	// Allocated for staking per day = (0.3/365)* ( total elys staked + total Eden committed + total Eden boost committed)
 	totalElysEdenEdenBStake := k.TotalBondedTokens(ctx)
 
 	stakersMaxEdenAmount := params.MaxEdenRewardAprStakers.
 		MulInt(totalElysEdenEdenBStake).
-		QuoInt(stakeIncentive.TotalBlocksPerYear)
+		QuoInt64(totalBlocksPerYear)
 
 	// Use min amount (eden allocation from tokenomics and max apr based eden amount)
 	stakersEdenAmount = sdk.MinInt(stakersEdenAmount, stakersMaxEdenAmount.TruncateInt())
 
 	stakersEdenBAmount := sdk.NewDecFromInt(totalElysEdenEdenBStake).
 		Mul(params.EdenBoostApr).
-		QuoInt(stakeIncentive.TotalBlocksPerYear).
+		QuoInt64(totalBlocksPerYear).
 		RoundInt()
 
 	// Set block number and total dex rewards given

@@ -22,6 +22,7 @@ func TestExternalIncentive(t *testing.T) {
 			FromBlock:      0,
 			ToBlock:        100,
 			AmountPerBlock: sdk.OneInt(),
+			Apr:            sdk.ZeroDec(),
 		},
 		{
 			Id:             1,
@@ -30,6 +31,7 @@ func TestExternalIncentive(t *testing.T) {
 			FromBlock:      0,
 			ToBlock:        100,
 			AmountPerBlock: sdk.OneInt(),
+			Apr:            sdk.ZeroDec(),
 		},
 		{
 			Id:             2,
@@ -38,12 +40,12 @@ func TestExternalIncentive(t *testing.T) {
 			FromBlock:      0,
 			ToBlock:        100,
 			AmountPerBlock: sdk.OneInt(),
+			Apr:            sdk.ZeroDec(),
 		},
 	}
 	require.Equal(t, app.MasterchefKeeper.GetExternalIncentiveIndex(ctx), uint64(0))
 	for _, externalIncentive := range externalIncentives {
-		err := app.MasterchefKeeper.SetExternalIncentive(ctx, externalIncentive)
-		require.NoError(t, err)
+		app.MasterchefKeeper.AddExternalIncentive(ctx, externalIncentive)
 	}
 	require.Equal(t, app.MasterchefKeeper.GetExternalIncentiveIndex(ctx), uint64(3))
 	for _, externalIncentive := range externalIncentives {

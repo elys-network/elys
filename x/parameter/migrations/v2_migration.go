@@ -12,6 +12,7 @@ func (m Migrator) V2Migration(ctx sdk.Context) error {
 		sdk.NewDecWithPrec(66, 1),                     // max voting power
 		sdk.NewInt(1),                                 // min self delegation
 		"elys1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqnrec2l", // broker address
+		6307200, // total blocks per year
 	)
 	m.keeper.SetParams(ctx, params)
 

@@ -11,6 +11,7 @@ import (
 	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
 	ctypes "github.com/elys-network/elys/x/commitment/types"
 	oracletypes "github.com/elys-network/elys/x/oracle/types"
+	parametertypes "github.com/elys-network/elys/x/parameter/types"
 	stabletypes "github.com/elys-network/elys/x/stablestake/types"
 	tokenomictypes "github.com/elys-network/elys/x/tokenomics/types"
 )
@@ -135,4 +136,8 @@ type StableStakeKeeper interface {
 // TokenomicsKeeper defines the expected tokenomics keeper used for simulations (noalias)
 type TokenomicsKeeper interface {
 	GetAllTimeBasedInflation(ctx sdk.Context) (list []tokenomictypes.TimeBasedInflation)
+}
+
+type ParameterKeeper interface {
+	GetParams(ctx sdk.Context) (params parametertypes.Params)
 }

@@ -71,7 +71,7 @@ func (k Keeper) BeforeEdenCommitChange(ctx sdk.Context, addr sdk.AccAddress) err
 	params := k.GetParams(ctx)
 	edenValAddr, err := sdk.ValAddressFromBech32(params.EdenCommitVal)
 	if err != nil {
-		panic(err)
+		return err
 	}
 	err = k.Keeper.Hooks().BeforeDelegationSharesModified(ctx, addr, edenValAddr)
 	if err != nil {
@@ -84,7 +84,7 @@ func (k Keeper) BeforeEdenBCommitChange(ctx sdk.Context, addr sdk.AccAddress) er
 	params := k.GetParams(ctx)
 	edenBValAddr, err := sdk.ValAddressFromBech32(params.EdenbCommitVal)
 	if err != nil {
-		panic(err)
+		return err
 	}
 	err = k.Keeper.Hooks().BeforeDelegationSharesModified(ctx, addr, edenBValAddr)
 	if err != nil {

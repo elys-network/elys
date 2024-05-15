@@ -14,4 +14,6 @@ message ExternalIncentive {
   uint64 to_block = 5;
 	string amount_per_block = 6
     [ (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false];
+  string apr = 7 
+    [ (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
 }

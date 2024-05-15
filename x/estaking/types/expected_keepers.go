@@ -7,6 +7,7 @@ import (
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
 	commitmenttypes "github.com/elys-network/elys/x/commitment/types"
+	parametertypes "github.com/elys-network/elys/x/parameter/types"
 	tokenomictypes "github.com/elys-network/elys/x/tokenomics/types"
 )
 
@@ -75,4 +76,8 @@ type AssetProfileKeeper interface {
 	GetEntryByDenom(ctx sdk.Context, denom string) (val assetprofiletypes.Entry, found bool)
 	// GetUsdcDenom returns USDC denom
 	GetUsdcDenom(ctx sdk.Context) (string, bool)
+}
+
+type ParameterKeeper interface {
+	GetParams(ctx sdk.Context) (params parametertypes.Params)
 }
