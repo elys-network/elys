@@ -31,6 +31,7 @@ jobs:
           git fetch --tags
           LATEST_TAG=$(git describe --tags `git rev-list --tags --max-count=1`)
           echo "LATEST_TAG=$LATEST_TAG" >> $GITHUB_ENV
+          echo "LATEST_TAG=$LATEST_TAG" >> $GITHUB_OUTPUT
           echo "Latest tag: $LATEST_TAG"
 
   retrieve-snapshot:
@@ -84,12 +85,13 @@ jobs:
     needs: retrieve-latest-tag
 
     outputs:
-      OLD_BINARY_PATH: ${{ steps.retrieve-latest-binary.outputs.OLD_BINARY_PATH }}
+      OLD_BINARY_PATH: ${{ steps.set-old-binary-path.outputs.OLD_BINARY_PATH }}
 
     steps:
       - name: Set old binary path
+        id: set-old-binary-path
         run: |
-          OLD_BINARY_PATH=/tmp/elysd-$LATEST_TAG
+          OLD_BINARY_PATH=/tmp/elysd-${{ needs.retrieve-latest-tag.outputs.LATEST_TAG }}
           echo "OLD_BINARY_PATH=$OLD_BINARY_PATH" >> $GITHUB_ENV
           echo "OLD_BINARY_PATH=$OLD_BINARY_PATH" >> $GITHUB_OUTPUT
 
@@ -103,7 +105,7 @@ jobs:
 
       - name: Retrieve latest binary
         run: |
-          DOWNLOAD_URL=https://github.com/elys-network/elys/releases/download/$LATEST_TAG/elysd-$LATEST_TAG-linux-amd64
+          DOWNLOAD_URL=https://github.com/elys-network/elys/releases/download/${{ needs.retrieve-latest-tag.outputs.LATEST_TAG }}/elysd-${{ needs.retrieve-latest-tag.outputs.LATEST_TAG }}-linux-amd64
           curl -L $DOWNLOAD_URL -o $OLD_BINARY_PATH && chmod +x $OLD_BINARY_PATH
 
           # TODO: retrieve upgrade-assure and upload-snapshot binaries
