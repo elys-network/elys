@@ -118,6 +118,7 @@ jobs:
       NEW_BINARY_PATH: ${{ steps.build-new-binaries.outputs.NEW_BINARY_PATH }}
       NEW_UPGRADE_ASSURE_BINARY_PATH: ${{ steps.build-new-binaries.outputs.NEW_UPGRADE_ASSURE_BINARY_PATH }}
       UPLOAD_SNAPSHOT_BINARY_PATH: ${{ steps.build-new-binaries.outputs.UPLOAD_SNAPSHOT_BINARY_PATH }}
+      CACHE_KEY: ${{ steps.cache-new-binary.outputs.cache-primary-key }}
 
     steps:
       - name: Checkout repository
@@ -126,44 +127,54 @@ jobs:
           fetch-depth: 0
           fetch-tags: true
 
+      - name: Set new binary paths
+        id: set-new-binary-paths
+        run: |
+          NEW_BINARY_PATH=./build/elysd
+          echo "NEW_BINARY_PATH=$NEW_BINARY_PATH" >> $GITHUB_ENV
+          echo "NEW_BINARY_PATH=$NEW_BINARY_PATH" >> $GITHUB_OUTPUT
+
+          NEW_UPGRADE_ASSURE_BINARY_PATH=./build/new-upgrade-assure
+          echo "NEW_UPGRADE_ASSURE_BINARY_PATH=$NEW_UPGRADE_ASSURE_BINARY_PATH" >> $GITHUB_ENV
+          echo "NEW_UPGRADE_ASSURE_BINARY_PATH=$NEW_UPGRADE_ASSURE_BINARY_PATH" >> $GITHUB_OUTPUT
+
+          UPLOAD_SNAPSHOT_BINARY_PATH=./build/upload-snapshot
+          echo "UPLOAD_SNAPSHOT_BINARY_PATH=$UPLOAD_SNAPSHOT_BINARY_PATH" >> $GITHUB_ENV
+          echo "UPLOAD_SNAPSHOT_BINARY_PATH=$UPLOAD_SNAPSHOT_BINARY_PATH" >> $GITHUB_OUTPUT
+
+      - name: Cache new binary
+        uses: actions/cache@v4
+        id: cache-new-binary
+        with:
+          path: |
+            ${{ env.NEW_BINARY_PATH }}
+            ${{ env.NEW_UPGRADE_ASSURE_BINARY_PATH}}
+            ${{ env.UPLOAD_SNAPSHOT_BINARY_PATH }}
+          key: ${{ runner.os }}-build-new-binary-${{ hashFiles('**/go.mod', '**/*.go') }}
+
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
           go-version: "1.21"
+        if: steps.cache-new-binary.outputs.cache-hit != 'true'
 
       - name: Create git tag
         run: git tag v999.999.999
+        if: steps.cache-new-binary.outputs.cache-hit != 'true'
 
       - name: Build new binaries
         id: build-new-binaries
         run: |
           # build new elys binary
           make build
-          NEW_BINARY_PATH=./build/elysd
-          echo "NEW_BINARY_PATH=$NEW_BINARY_PATH" >> $GITHUB_ENV
-          echo "NEW_BINARY_PATH=$NEW_BINARY_PATH" >> $GITHUB_OUTPUT
 
           # build new upgrade assure binary
           make build-upgrade-assure
-          NEW_UPGRADE_ASSURE_BINARY_PATH=./build/new-upgrade-assure
           mv ./build/upgrade-assure $NEW_UPGRADE_ASSURE_BINARY_PATH
-          echo "NEW_UPGRADE_ASSURE_BINARY_PATH=$NEW_UPGRADE_ASSURE_BINARY_PATH" >> $GITHUB_ENV
-          echo "NEW_UPGRADE_ASSURE_BINARY_PATH=$NEW_UPGRADE_ASSURE_BINARY_PATH" >> $GITHUB_OUTPUT
 
           # build upload snapshot binary
           make build-upload-snapshot
-          UPLOAD_SNAPSHOT_BINARY_PATH=./build/upload-snapshot
-          echo "UPLOAD_SNAPSHOT_BINARY_PATH=$UPLOAD_SNAPSHOT_BINARY_PATH" >> $GITHUB_ENV
-          echo "UPLOAD_SNAPSHOT_BINARY_PATH=$UPLOAD_SNAPSHOT_BINARY_PATH" >> $GITHUB_OUTPUT
-
-      - name: Save new binary as artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: new-binary
-          path: |
-            ${{ env.NEW_BINARY_PATH }}
-            ${{ env.NEW_UPGRADE_ASSURE_BINARY_PATH}}
-            ${{ env.UPLOAD_SNAPSHOT_BINARY_PATH }}
+        if: steps.cache-new-binary.outputs.cache-hit != 'true'
 
   build-old-binary:
     runs-on: ubuntu-latest
@@ -188,6 +199,19 @@ jobs:
           path: |
             ${{ env.OLD_UPGRADE_ASSURE_BINARY_PATH }}
           key: ${{ runner.os }}-build-old-binary-${{ needs.retrieve-latest-tag.outputs.LATEST_TAG }}
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+        if: steps.cache-old-binaries.outputs.cache-hit != 'true'
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.21"
+        if: steps.cache-old-binaries.outputs.cache-hit != 'true'
 
       # TODO: to remove when upgrade-assure binary is available in previous release
       - name: Copy upgrade assure folder
@@ -223,6 +247,7 @@ jobs:
         retrieve-snapshot,
         retrieve-old-binary,
         build-new-binary,
+        build-old-binary,
       ]
 
     steps:
@@ -233,9 +258,33 @@ jobs:
             ${{ needs.retrieve-snapshot.outputs.SNAPSHOT_FILE_PATH }}
           key: ${{ runner.os }}-snapshot-${{ needs.retrieve-latest-tag.outputs.LATEST_TAG }}
 
+      - name: Restore new binary from cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            ${{ env.NEW_BINARY_PATH }}
+            ${{ env.NEW_UPGRADE_ASSURE_BINARY_PATH}}
+            ${{ env.UPLOAD_SNAPSHOT_BINARY_PATH }}
+          key: ${{ needs.build-new-binary.outputs.CACHE_KEY }}
+
+      - name: Restore old binaries from cache
+        uses: actions/cache@v4
+        id: cache-old-binaries
+        with:
+          path: |
+            ${{ needs.build-old-binary.outputs.OLD_UPGRADE_ASSURE_BINARY_PATH }}
+          key: ${{ runner.os }}-build-old-binary-${{ needs.retrieve-latest-tag.outputs.LATEST_TAG }}
+
+      - name: Restore old binary from cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            ${{ needs.retrieve-old-binary.outputs.OLD_BINARY_PATH }}
+          key: ${{ runner.os }}-retrieve-old-binary-${{ needs.retrieve-latest-tag.outputs.LATEST_TAG }}
+
       - name: Chain snapshot and export
         run: |
-          ${{ needs.build-new-binary.outputs.OLD_UPGRADE_ASSURE_BINARY_PATH }} \
+          ${{ needs.build-old-binary.outputs.OLD_UPGRADE_ASSURE_BINARY_PATH }} \
             ${{ needs.retrieve-snapshot.outputs.SNAPSHOT_FILE_PATH }} \
             ${{ needs.retrieve-old-binary.outputs.OLD_BINARY_PATH }} \
             ${{ needs.build-new-binary.outputs.NEW_BINARY_PATH }} \
