@@ -53,6 +53,7 @@ jobs:
             /tmp/elys-backup
             /tmp/elys2-backup
           key: ${{ runner.os }}-backup-directories-2-${{ env.LATEST_TAG }}
+          save-always: true
 
       - name: Retrieve latest binary
         run: |
