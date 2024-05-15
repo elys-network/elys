@@ -43,7 +43,8 @@ jobs:
 
           # set snapshot download url
           # SNAPSHOT_DOWNLOAD_URL=https://snapshots-testnet.stake-town.com/elys/elystestnet-1_latest.tar.lz4
-          SNAPSHOT_DOWNLOAD_URL=https://tools.highstakes.ch/files/elys.tar.gz
+          # SNAPSHOT_DOWNLOAD_URL=https://tools.highstakes.ch/files/elys.tar.gz
+          SNAPSHOT_DOWNLOAD_URL=https://snapshots.elys.network/elys.tar.gz
           echo "SNAPSHOT_DOWNLOAD_URL=$SNAPSHOT_DOWNLOAD_URL" >> $GITHUB_ENV
 
       - name: Cache Directories
