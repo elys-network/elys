@@ -235,7 +235,7 @@ jobs:
         run: |
           # build old upgrade assure binary
           go build -o build ./cmd/upgrade-assure-skip
-          ls -l ./build
+          ls -l ./build/
           mv ./build/upgrade-assure-skip $OLD_UPGRADE_ASSURE_BINARY_PATH
         if: steps.cache-old-binaries.outputs.cache-hit != 'true'
 
