@@ -78,6 +78,91 @@ jobs:
           curl -L $SNAPSHOT_DOWNLOAD_URL -o $SNAPSHOT_FILE_PATH
         if: steps.cache-snapshot.outputs.cache-hit != 'true'
 
+  retrieve-old-binary:
+    runs-on: ubuntu-latest
+
+    needs: retrieve-latest-tag
+
+    outputs:
+      OLD_BINARY_PATH: ${{ steps.retrieve-latest-binary.outputs.OLD_BINARY_PATH }}
+
+    steps:
+      - name: Set old binary path
+        run: |
+          OLD_BINARY_PATH=/tmp/elysd-$LATEST_TAG
+          echo "OLD_BINARY_PATH=$OLD_BINARY_PATH" >> $GITHUB_ENV
+          echo "OLD_BINARY_PATH=$OLD_BINARY_PATH" >> $GITHUB_OUTPUT
+
+      - name: Cache old binary
+        uses: actions/cache@v4
+        id: cache-old-binary
+        with:
+          path: |
+            ${{ env.OLD_BINARY_PATH }}
+          key: ${{ runner.os }}-snapshot-${{ needs.retrieve-latest-tag.outputs.LATEST_TAG }}
+
+      - name: Retrieve latest binary
+        run: |
+          DOWNLOAD_URL=https://github.com/elys-network/elys/releases/download/$LATEST_TAG/elysd-$LATEST_TAG-linux-amd64
+          curl -L $DOWNLOAD_URL -o $OLD_BINARY_PATH && chmod +x $OLD_BINARY_PATH
+
+          # TODO: retrieve upgrade-assure and upload-snapshot binaries
+        if: steps.cache-old-binary.outputs.cache-hit != 'true'
+
+  build-new-binary:
+    runs-on: ubuntu-latest
+
+    outputs:
+      NEW_BINARY_PATH: ${{ steps.build-new-binaries.outputs.NEW_BINARY_PATH }}
+      NEW_UPGRADE_ASSURE_BINARY_PATH: ${{ steps.build-new-binaries.outputs.NEW_UPGRADE_ASSURE_BINARY_PATH }}
+      UPLOAD_SNAPSHOT_BINARY_PATH: ${{ steps.build-new-binaries.outputs.UPLOAD_SNAPSHOT_BINARY_PATH }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.21"
+
+      - name: Create git tag
+        run: git tag v999.999.999
+
+      - name: Build new binaries
+        id: build-new-binaries
+        run: |
+          # build new elys binary
+          make build
+          NEW_BINARY_PATH=./build/elysd
+          echo "NEW_BINARY_PATH=$NEW_BINARY_PATH" >> $GITHUB_ENV
+          echo "NEW_BINARY_PATH=$NEW_BINARY_PATH" >> $GITHUB_OUTPUT
+
+          # build new upgrade assure binary
+          make build-upgrade-assure
+          NEW_UPGRADE_ASSURE_BINARY_PATH=./build/new-upgrade-assure
+          mv ./build/upgrade-assure $NEW_UPGRADE_ASSURE_BINARY_PATH
+          echo "NEW_UPGRADE_ASSURE_BINARY_PATH=$NEW_UPGRADE_ASSURE_BINARY_PATH" >> $GITHUB_ENV
+          echo "NEW_UPGRADE_ASSURE_BINARY_PATH=$NEW_UPGRADE_ASSURE_BINARY_PATH" >> $GITHUB_OUTPUT
+
+          # build upload snapshot binary
+          make build-upload-snapshot
+          UPLOAD_SNAPSHOT_BINARY_PATH=./build/upload-snapshot
+          echo "UPLOAD_SNAPSHOT_BINARY_PATH=$UPLOAD_SNAPSHOT_BINARY_PATH" >> $GITHUB_ENV
+          echo "UPLOAD_SNAPSHOT_BINARY_PATH=$UPLOAD_SNAPSHOT_BINARY_PATH" >> $GITHUB_OUTPUT
+
+      - name: Save new binary as artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: new-binary
+          path: |
+            ${{ env.NEW_BINARY_PATH }}
+            ${{ env.NEW_UPGRADE_ASSURE_BINARY_PATH}}
+            ${{ env.UPLOAD_SNAPSHOT_BINARY_PATH }}
+
   pre-software-upgrade:
     runs-on: ubuntu-latest
 
@@ -109,40 +194,6 @@ jobs:
             ${{ env.HOME }}/.elys
             ${{ env.HOME }}/.elys2
           key: ${{ runner.os }}-elys-folders-${{ env.LATEST_TAG }}
-
-      - name: Retrieve latest binary
-        run: |
-          DOWNLOAD_URL=https://github.com/elys-network/elys/releases/download/$LATEST_TAG/elysd-$LATEST_TAG-linux-amd64
-          OLD_BINARY_PATH=/tmp/elysd-$LATEST_TAG
-          curl -L $DOWNLOAD_URL -o $OLD_BINARY_PATH && chmod +x $OLD_BINARY_PATH
-          echo "OLD_BINARY_PATH=$OLD_BINARY_PATH" >> $GITHUB_ENV
-
-          # TODO: retrieve upgrade-assure and upload-snapshot binaries
-        if: steps.cache-elys-folders.outputs.cache-hit != 'true'
-
-      - name: Create git tag
-        run: git tag v999.999.999
-
-      - name: Build new binaries
-        id: build-new-binaries
-        run: |
-          # build new elys binary
-          make build
-          NEW_BINARY_PATH=./build/elysd
-          echo "NEW_BINARY_PATH=$NEW_BINARY_PATH" >> $GITHUB_ENV
-          echo "NEW_BINARY_PATH=$NEW_BINARY_PATH" >> $GITHUB_OUTPUT
-
-          # build new upgrade assure binary
-          make build-upgrade-assure
-          NEW_UPGRADE_ASSURE_BINARY_PATH=./build/new-upgrade-assure
-          mv ./build/upgrade-assure $NEW_UPGRADE_ASSURE_BINARY_PATH
-          echo "NEW_UPGRADE_ASSURE_BINARY_PATH=$NEW_UPGRADE_ASSURE_BINARY_PATH" >> $GITHUB_ENV
-          echo "NEW_UPGRADE_ASSURE_BINARY_PATH=$NEW_UPGRADE_ASSURE_BINARY_PATH" >> $GITHUB_OUTPUT
-
-          # build upload snapshot binary
-          make build-upload-snapshot
-          UPLOAD_SNAPSHOT_BINARY_PATH=./build/upload-snapshot
-          echo "UPLOAD_SNAPSHOT_BINARY_PATH=$UPLOAD_SNAPSHOT_BINARY_PATH" >> $GITHUB_ENV
 
       # TODO: to remove when upgrade-assure binary is available in previous release
       - name: Copy upgrade assure folder
