@@ -198,7 +198,7 @@ jobs:
           timeout_minutes: 30
           max_attempts: 3
           command: |
-            GOMEMLIMIT=8GiB $NEW_UPGRADE_ASSURE_BINARY_PATH $SNAPSHOT_DOWNLOAD_URL $NEW_BINARY_PATH $NEW_BINARY_PATH \
+            GOMEMLIMIT=4GiB $NEW_UPGRADE_ASSURE_BINARY_PATH $SNAPSHOT_DOWNLOAD_URL $NEW_BINARY_PATH $NEW_BINARY_PATH \
               --skip-snapshot \
               --skip-chain-init \
               --skip-create-validator \
