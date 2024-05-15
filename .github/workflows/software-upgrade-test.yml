@@ -101,7 +101,7 @@ jobs:
         with:
           path: |
             ${{ env.OLD_BINARY_PATH }}
-          key: ${{ runner.os }}-snapshot-${{ needs.retrieve-latest-tag.outputs.LATEST_TAG }}
+          key: ${{ runner.os }}-retrieve-old-binary-${{ needs.retrieve-latest-tag.outputs.LATEST_TAG }}
 
       - name: Retrieve latest binary
         run: |
@@ -157,7 +157,7 @@ jobs:
           echo "UPLOAD_SNAPSHOT_BINARY_PATH=$UPLOAD_SNAPSHOT_BINARY_PATH" >> $GITHUB_OUTPUT
 
       - name: Save new binary as artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: new-binary
           path: |
@@ -165,10 +165,89 @@ jobs:
             ${{ env.NEW_UPGRADE_ASSURE_BINARY_PATH}}
             ${{ env.UPLOAD_SNAPSHOT_BINARY_PATH }}
 
-  pre-software-upgrade:
+  build-old-binary:
     runs-on: ubuntu-latest
 
     needs: retrieve-latest-tag
+
+    outputs:
+      OLD_UPGRADE_ASSURE_BINARY_PATH: ${{ steps.set-old-binary-path.outputs.OLD_UPGRADE_ASSURE_BINARY_PATH }}
+
+    steps:
+      - name: Set old binary path
+        id: set-old-binary-path
+        run: |
+          OLD_UPGRADE_ASSURE_BINARY_PATH=./build/old-upgrade-assure
+          echo "OLD_UPGRADE_ASSURE_BINARY_PATH=$OLD_UPGRADE_ASSURE_BINARY_PATH" >> $GITHUB_ENV
+          echo "OLD_UPGRADE_ASSURE_BINARY_PATH=$OLD_UPGRADE_ASSURE_BINARY_PATH" >> $GITHUB_OUTPUT
+
+      - name: Cache old binaries
+        uses: actions/cache@v4
+        id: cache-old-binaries
+        with:
+          path: |
+            ${{ env.OLD_UPGRADE_ASSURE_BINARY_PATH }}
+          key: ${{ runner.os }}-build-old-binary-${{ needs.retrieve-latest-tag.outputs.LATEST_TAG }}
+
+      # TODO: to remove when upgrade-assure binary is available in previous release
+      - name: Copy upgrade assure folder
+        run: |
+          cp -a ./cmd/upgrade-assure ./cmd/upgrade-assure-skip
+        if: steps.cache-old-binaries.outputs.cache-hit != 'true'
+
+      - name: Check out latest tag
+        run: git checkout ${{ needs.retrieve-latest-tag.outputs.LATEST_TAG }}
+        if: steps.cache-old-binaries.outputs.cache-hit != 'true'
+
+      # TODO: to remove when upgrade-assure binary is available in previous release
+      - name: Copy old upgrade assure types.go file
+        run: |
+          cp -a ./scripts/upgrade-assure/types.go ./cmd/upgrade-assure-skip/types.go
+        if: steps.cache-old-binaries.outputs.cache-hit != 'true'
+
+      # TODO: to remove when upgrade-assure binary is available in previous release
+      - name: Build old binaries
+        id: build-old-binaries
+        run: |
+          # build old upgrade assure binary
+          go build -o build ./cmd/upgrade-assure-skip
+          mv ./build/upgrade-assure-skip $OLD_UPGRADE_ASSURE_BINARY_PATH
+        if: steps.cache-old-binaries.outputs.cache-hit != 'true'
+
+  chain-snapshot-and-export:
+    runs-on: ubuntu-latest
+
+    needs:
+      [
+        retrieve-latest-tag,
+        retrieve-snapshot,
+        retrieve-old-binary,
+        build-new-binary,
+      ]
+
+    steps:
+      - name: Restore snapshot from cache
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            ${{ needs.retrieve-snapshot.outputs.SNAPSHOT_FILE_PATH }}
+          key: ${{ runner.os }}-snapshot-${{ needs.retrieve-latest-tag.outputs.LATEST_TAG }}
+
+      - name: Chain snapshot and export
+        run: |
+          ${{ needs.build-new-binary.outputs.OLD_UPGRADE_ASSURE_BINARY_PATH }} \
+            ${{ needs.retrieve-snapshot.outputs.SNAPSHOT_FILE_PATH }} \
+            ${{ needs.retrieve-old-binary.outputs.OLD_BINARY_PATH }} \
+            ${{ needs.build-new-binary.outputs.NEW_BINARY_PATH }} \
+            --skip-chain-init \
+            --skip-node-start \
+            --timeout-next-block 100000 \
+            --timeout-wait-for-node 100000
+
+  pre-software-upgrade:
+    runs-on: ubuntu-latest
+
+    needs: chain-snapshot-and-export
 
     outputs:
       NEW_UPGRADE_ASSURE_BINARY_PATH: ${{ steps.build-new-binaries.outputs.NEW_UPGRADE_ASSURE_BINARY_PATH }}
@@ -177,17 +256,6 @@ jobs:
       UPLOAD_SNAPSHOT_BINARY_PATH: ${{ steps.build-new-binaries.outputs.UPLOAD_SNAPSHOT_BINARY_PATH }}
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          fetch-tags: true
-
-      - name: Set up Go
-        uses: actions/setup-go@v5
-        with:
-          go-version: "1.21"
-
       - name: Cache Directories
         uses: actions/cache@v4
         id: cache-elys-folders
@@ -196,32 +264,6 @@ jobs:
             ${{ env.HOME }}/.elys
             ${{ env.HOME }}/.elys2
           key: ${{ runner.os }}-elys-folders-${{ env.LATEST_TAG }}
-
-      # TODO: to remove when upgrade-assure binary is available in previous release
-      - name: Copy upgrade assure folder
-        run: |
-          cp -a ./cmd/upgrade-assure ./cmd/upgrade-assure-skip
-        if: steps.cache-elys-folders.outputs.cache-hit != 'true'
-
-      - name: Check out latest tag
-        run: git checkout $LATEST_TAG
-        if: steps.cache-elys-folders.outputs.cache-hit != 'true'
-
-      # TODO: to remove when upgrade-assure binary is available in previous release
-      - name: Copy old upgrade assure types.go file
-        run: |
-          cp -a ./scripts/upgrade-assure/types.go ./cmd/upgrade-assure-skip/types.go
-        if: steps.cache-elys-folders.outputs.cache-hit != 'true'
-
-      # TODO: to remove when upgrade-assure binary is available in previous release
-      - name: Build old binaries
-        run: |
-          # build old upgrade assure binary
-          go build -o build ./cmd/upgrade-assure-skip
-          OLD_UPGRADE_ASSURE_BINARY_PATH=./build/old-upgrade-assure
-          mv ./build/upgrade-assure-skip $OLD_UPGRADE_ASSURE_BINARY_PATH
-          echo "OLD_UPGRADE_ASSURE_BINARY_PATH=$OLD_UPGRADE_ASSURE_BINARY_PATH" >> $GITHUB_ENV
-        if: steps.cache-elys-folders.outputs.cache-hit != 'true'
 
       - name: Chain snapshot and export
         run: |
@@ -285,7 +327,7 @@ jobs:
         if: steps.cache-elys-folders.outputs.cache-hit != 'true'
 
       - name: Save workspace as artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: workspace
           path: |
@@ -300,7 +342,7 @@ jobs:
 
     steps:
       - name: Download workspace artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: workspace
           path: |
