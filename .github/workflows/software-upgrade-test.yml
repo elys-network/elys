@@ -211,8 +211,7 @@ jobs:
         run: |
           SANITIZED_HEAD_REF=${{ github.head_ref || github.ref }}
           SANITIZED_HEAD_REF=$(echo "$SANITIZED_HEAD_REF" | sed 's|refs/heads/||; s|/|_|g')
-          CURRENT_DATE=$(date +'%Y%m%d-%H%M%S')
-          NEW_SNAPSHOT_FILENAME="elys-snapshot-${SANITIZED_HEAD_REF}-${CURRENT_DATE}.tar.lz4"
+          NEW_SNAPSHOT_FILENAME="elys-snapshot-${SANITIZED_HEAD_REF}.tar.lz4"
           NEW_SNAPSHOT_PATH="/tmp/${NEW_SNAPSHOT_FILENAME}"
           echo "NEW_SNAPSHOT_FILENAME=$NEW_SNAPSHOT_FILENAME" >> $GITHUB_ENV
           echo "NEW_SNAPSHOT_PATH=$NEW_SNAPSHOT_PATH" >> $GITHUB_ENV
