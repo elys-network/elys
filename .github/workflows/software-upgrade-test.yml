@@ -115,9 +115,9 @@ jobs:
     runs-on: ubuntu-latest
 
     outputs:
-      NEW_BINARY_PATH: ${{ steps.build-new-binaries.outputs.NEW_BINARY_PATH }}
-      NEW_UPGRADE_ASSURE_BINARY_PATH: ${{ steps.build-new-binaries.outputs.NEW_UPGRADE_ASSURE_BINARY_PATH }}
-      UPLOAD_SNAPSHOT_BINARY_PATH: ${{ steps.build-new-binaries.outputs.UPLOAD_SNAPSHOT_BINARY_PATH }}
+      NEW_BINARY_PATH: ${{ steps.set-new-binary-paths.outputs.NEW_BINARY_PATH }}
+      NEW_UPGRADE_ASSURE_BINARY_PATH: ${{ steps.set-new-binary-paths.outputs.NEW_UPGRADE_ASSURE_BINARY_PATH }}
+      UPLOAD_SNAPSHOT_BINARY_PATH: ${{ steps.set-new-binary-paths.outputs.UPLOAD_SNAPSHOT_BINARY_PATH }}
       CACHE_KEY: ${{ steps.cache-new-binary.outputs.cache-primary-key }}
 
     steps:
