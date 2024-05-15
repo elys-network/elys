@@ -192,7 +192,7 @@ jobs:
         run: |
           mv /tmp/elys-backup $HOME/.elys
           mv /tmp/elys2-backup $HOME/.elys2
-          cp -a /tmp/elys2-backup/config/genesis.json $HOME/.elys/config/genesis.json
+          cp -a $HOME/.elys2/config/genesis.json $HOME/.elys/config/genesis.json
         if: steps.cache-backup-directories.outputs.cache-hit == 'true'
 
       - name: Upgrade to new binary
