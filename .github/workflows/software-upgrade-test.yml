@@ -9,6 +9,10 @@ on:
 jobs:
   checkout-and-setup:
     runs-on: ubuntu-latest
+    outputs:
+      LATEST_TAG: ${{ steps.get-latest-tag.outputs.LATEST_TAG }}
+      SNAPSHOT_BLOCK_HEIGHT: ${{ steps.retrieve-info.outputs.SNAPSHOT_BLOCK_HEIGHT }}
+      SNAPSHOT_DOWNLOAD_URL: ${{ steps.retrieve-info.outputs.SNAPSHOT_DOWNLOAD_URL }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -26,6 +30,7 @@ jobs:
         run: |
           git fetch --tags
           LATEST_TAG=$(git describe --tags `git rev-list --tags --max-count=1`)
+          echo "::set-output name=LATEST_TAG::$LATEST_TAG"
           echo "LATEST_TAG=$LATEST_TAG" >> $GITHUB_ENV
           echo "Latest tag: $LATEST_TAG"
 
@@ -38,30 +43,34 @@ jobs:
 
           # retrieve blockHeight field value from info.json
           SNAPSHOT_BLOCK_HEIGHT=$(cat /tmp/info.json | awk -F'"' '/"blockHeight":/{print $4}')
+          echo "::set-output name=SNAPSHOT_BLOCK_HEIGHT::$SNAPSHOT_BLOCK_HEIGHT"
           echo "SNAPSHOT_BLOCK_HEIGHT=$SNAPSHOT_BLOCK_HEIGHT" >> $GITHUB_ENV
           echo "Snapshot block height: $SNAPSHOT_BLOCK_HEIGHT"
 
           # set snapshot download url
           SNAPSHOT_DOWNLOAD_URL=https://snapshots-testnet.stake-town.com/elys/elystestnet-1_latest.tar.lz4
+          echo "::set-output name=SNAPSHOT_DOWNLOAD_URL::$SNAPSHOT_DOWNLOAD_URL"
           echo "SNAPSHOT_DOWNLOAD_URL=$SNAPSHOT_DOWNLOAD_URL" >> $GITHUB_ENV
 
   cache-and-retrieve:
     runs-on: ubuntu-latest
     needs: checkout-and-setup
+    outputs:
+      CACHE_HIT: ${{ steps.cache-elys-folders.outputs.cache-hit }}
     steps:
       - name: Cache Directories
-        uses: actions/cache@v4
         id: cache-elys-folders
+        uses: actions/cache@v4
         with:
           path: |
             /tmp/elys-backup
             /tmp/elys2-backup
-          key: ${{ runner.os }}-elys-folders-${{ needs.checkout-and-setup.outputs['get-latest-tag'].LATEST_TAG }}
+          key: ${{ runner.os }}-elys-folders-${{ needs.checkout-and-setup.outputs.LATEST_TAG }}
 
       - name: Retrieve latest binary
         run: |
-          DOWNLOAD_URL=https://github.com/elys-network/elys/releases/download/${{ needs.checkout-and-setup.outputs['get-latest-tag'].LATEST_TAG }}/elysd-${{ needs.checkout-and-setup.outputs['get-latest-tag'].LATEST_TAG }}-linux-amd64
-          OLD_BINARY_PATH=/tmp/elysd-${{ needs.checkout-and-setup.outputs['get-latest-tag'].LATEST_TAG }}
+          DOWNLOAD_URL=https://github.com/elys-network/elys/releases/download/${{ needs.checkout-and-setup.outputs.LATEST_TAG }}/elysd-${{ needs.checkout-and-setup.outputs.LATEST_TAG }}-linux-amd64
+          OLD_BINARY_PATH=/tmp/elysd-${{ needs.checkout-and-setup.outputs.LATEST_TAG }}
           curl -L $DOWNLOAD_URL -o $OLD_BINARY_PATH && chmod +x $OLD_BINARY_PATH
           echo "OLD_BINARY_PATH=$OLD_BINARY_PATH" >> $GITHUB_ENV
 
@@ -93,14 +102,14 @@ jobs:
   build-old-binaries:
     runs-on: ubuntu-latest
     needs: cache-and-retrieve
-    if: steps.cache-elys-folders.outputs.cache-hit != 'true'
+    if: needs.cache-and-retrieve.outputs.CACHE_HIT != 'true'
     steps:
       - name: Copy upgrade assure folder
         run: |
           cp -a ./cmd/upgrade-assure ./cmd/upgrade-assure-skip
 
       - name: Check out latest tag
-        run: git checkout ${{ needs.checkout-and-setup.outputs['get-latest-tag'].LATEST_TAG }}
+        run: git checkout ${{ needs.checkout-and-setup.outputs.LATEST_TAG }}
 
       - name: Copy old upgrade assure types.go file
         run: |
@@ -117,7 +126,7 @@ jobs:
   chain-operations:
     runs-on: ubuntu-latest
     needs: build-old-binaries
-    if: steps.cache-elys-folders.outputs.cache-hit != 'true'
+    if: needs.cache-and-retrieve.outputs.CACHE_HIT != 'true'
     steps:
       - name: Chain snapshot and export
         run: |
@@ -195,13 +204,13 @@ jobs:
         run: |
           cp -a $HOME/.elys /tmp/elys-backup
           cp -a $HOME/.elys2 /tmp/elys2-backup
-        if: steps.cache-elys-folders.outputs.cache-hit != 'true'
+        if: needs.cache-and-retrieve.outputs.CACHE_HIT != 'true'
 
       - name: Restore elys folders from backup
         run: |
           mv /tmp/elys-backup $HOME/.elys
           mv /tmp/elys2-backup $HOME/.elys2
-        if: steps.cache-elys-folders.outputs.cache-hit == 'true'
+        if: needs.cache-and-retrieve.outputs.CACHE_HIT == 'true'
 
   upgrade-binary:
     runs-on: ubuntu-latest
