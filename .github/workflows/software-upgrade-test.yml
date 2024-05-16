@@ -771,7 +771,7 @@ jobs:
           NEW_SNAPSHOT_PATH="/tmp/${NEW_SNAPSHOT_FILENAME}"
           echo "NEW_SNAPSHOT_FILENAME=$NEW_SNAPSHOT_FILENAME" >> $GITHUB_ENV
           echo "NEW_SNAPSHOT_PATH=$NEW_SNAPSHOT_PATH" >> $GITHUB_ENV
-          cd $HOME
+          cd /home/runner
           tar -cf - .elys | lz4 -z - > "$NEW_SNAPSHOT_PATH"
 
       - name: Upload snapshot
@@ -781,10 +781,6 @@ jobs:
           export R2_ENDPOINT=${{ secrets.R2_ENDPOINT }}
           export R2_BUCKET_NAME=${{ secrets.R2_BUCKET_NAME }}
           $UPLOAD_SNAPSHOT_BINARY_PATH $NEW_SNAPSHOT_PATH
-
-      - name: Remove snapshot file
-        run: |
-          rm -f $NEW_SNAPSHOT_PATH
 
       - name: Info about the snapshot
         run: |
