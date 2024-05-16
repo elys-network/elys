@@ -97,21 +97,21 @@ message QueryAllProgramRewardsRequest {
 }
 
 message QueryAllProgramRewardsResponse {
-  repeated cosmos.base.v1beta1.DecCoin usdc_staking_rewards = 1 [
+  repeated cosmos.base.v1beta1.Coin usdc_staking_rewards = 1 [
     (gogoproto.nullable) = false,
-    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.DecCoins"
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
   ];
-  repeated cosmos.base.v1beta1.DecCoin elys_staking_rewards = 2 [
+  repeated cosmos.base.v1beta1.Coin elys_staking_rewards = 2 [
     (gogoproto.nullable) = false,
-    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.DecCoins"
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
   ];
-  repeated cosmos.base.v1beta1.DecCoin eden_staking_rewards = 3 [
+  repeated cosmos.base.v1beta1.Coin eden_staking_rewards = 3 [
     (gogoproto.nullable) = false,
-    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.DecCoins"
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
   ];
-  repeated cosmos.base.v1beta1.DecCoin edenb_staking_rewards = 4 [
+  repeated cosmos.base.v1beta1.Coin edenb_staking_rewards = 4 [
     (gogoproto.nullable) = false,
-    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.DecCoins"
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
   ];
 }
 
