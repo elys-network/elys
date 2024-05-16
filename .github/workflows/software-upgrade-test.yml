@@ -267,6 +267,7 @@ jobs:
           path: |
             /home/runner/.elys
             /home/runner/.elys2
+            /tmp/genesis.json
           key: ${{ runner.os }}-chain-snapshot-and-export-${{ needs.retrieve-latest-tag.outputs.LATEST_TAG }}
           lookup-only: true
 
@@ -381,6 +382,7 @@ jobs:
           path: |
             /home/runner/.elys
             /home/runner/.elys2
+            /tmp/genesis.json
           key: ${{ runner.os }}-chain-snapshot-and-export-${{ needs.retrieve-latest-tag.outputs.LATEST_TAG }}
         if: steps.cache-chain-init.outputs.cache-hit != 'true'
 
