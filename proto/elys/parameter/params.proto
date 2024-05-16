@@ -24,3 +24,21 @@ message Params {
   string broker_address = 4;
 	int64 total_blocks_per_year = 5;
 }
+
+message LegacyParams {
+  option (gogoproto.goproto_stringer) = false;
+
+  string min_commission_rate = 1 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  string max_voting_power = 2 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  string min_self_delegation = 3 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+  string broker_address = 4;
+}

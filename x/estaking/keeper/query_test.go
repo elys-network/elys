@@ -74,5 +74,5 @@ func TestQueryRewards(t *testing.T) {
 		Address: addr.String(),
 	})
 	require.Nil(t, err)
-	require.Equal(t, res.Total.String(), "147608.188000000000000000ueden")
+	require.Equal(t, res.Total.String(), "147608ueden")
 }

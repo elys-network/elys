@@ -67,7 +67,7 @@ func TestEstakingExtendedFunctions(t *testing.T) {
 	require.Equal(t, edenDel.GetShares(), sdk.NewDec(1000_000))
 
 	edenBDel := estakingKeeper.Delegation(ctx, addr, edenBVal.GetOperator())
-	require.Equal(t, edenBDel.GetShares(), sdk.NewDec(0))
+	require.Nil(t, edenBDel)
 
 	numDelegations := int64(0)
 	estakingKeeper.IterateDelegations(ctx, addr, func(index int64, delegation stakingtypes.DelegationI) (stop bool) {

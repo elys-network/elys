@@ -3,6 +3,7 @@ package wasm
 import (
 	"encoding/json"
 	"math"
+	"strconv"
 
 	errorsmod "cosmossdk.io/errors"
 	cosmos_sdk_math "cosmossdk.io/math"
@@ -54,7 +55,8 @@ func (oq *Querier) BuildAllValidatorsResponseCW(ctx sdk.Context, allValidators [
 			UsdAmount: sdk.ZeroDec(),
 		}
 		validatorCW.Commission = validator.GetCommission()
-
+		validatorCW.Jailed = strconv.FormatBool(validator.Jailed)
+		validatorCW.Inactive = strconv.FormatBool(!validator.IsBonded())
 		// if there is delegation,
 		if isDelegated {
 			valAddress, err := sdk.ValAddressFromBech32(validator.OperatorAddress)

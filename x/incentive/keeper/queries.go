@@ -167,14 +167,14 @@ func (k Keeper) AllProgramRewards(goCtx context.Context, req *types.QueryAllProg
 
 	k.masterchef.AfterWithdraw(ctx, stablestaketypes.PoolId, req.Address, sdk.ZeroInt())
 
-	stableStakeRewards := sdk.NewDecCoins()
+	stableStakeRewards := sdk.Coins{}
 	for _, rewardDenom := range k.masterchef.GetRewardDenoms(ctx, stablestaketypes.PoolId) {
 		userRewardInfo, found := k.masterchef.GetUserRewardInfo(ctx, req.Address, stablestaketypes.PoolId, rewardDenom)
 		if found && userRewardInfo.RewardPending.IsPositive() {
 			stableStakeRewards = stableStakeRewards.Add(
-				sdk.NewDecCoinFromDec(
+				sdk.NewCoin(
 					rewardDenom,
-					userRewardInfo.RewardPending,
+					userRewardInfo.RewardPending.TruncateInt(),
 				),
 			)
 		}
@@ -182,34 +182,37 @@ func (k Keeper) AllProgramRewards(goCtx context.Context, req *types.QueryAllProg
 
 	delAddr := sdk.MustAccAddressFromBech32(req.Address)
 	delegations := k.estaking.Keeper.GetDelegatorDelegations(ctx, delAddr, 5000)
-	elysStakingRewards := sdk.DecCoins{}
+	elysStakingRewards := sdk.Coins{}
 	for _, del := range delegations {
 		rewards, err := k.estaking.DelegationRewards(ctx, req.Address, del.ValidatorAddress)
 		if err != nil {
 			return nil, err
 		}
-		elysStakingRewards = elysStakingRewards.Add(rewards...)
+		finalRewards, _ := rewards.TruncateDecimal()
+		elysStakingRewards = elysStakingRewards.Add(finalRewards...)
 	}
 
 	// Eden commit rewards
 	edenVal := k.estaking.GetParams(ctx).EdenCommitVal
 	edenCommitRewards, err := k.estaking.DelegationRewards(ctx, req.Address, edenVal)
 	if err != nil {
-		return nil, err
+		edenCommitRewards = []sdk.DecCoin{}
 	}
+	finalEdenCommitRewards, _ := edenCommitRewards.TruncateDecimal()
 
 	// EdenB commit rewards
 	edenBVal := k.estaking.GetParams(ctx).EdenbCommitVal
 	edenBCommitRewards, err := k.estaking.DelegationRewards(ctx, req.Address, edenBVal)
 	if err != nil {
-		return nil, err
+		edenBCommitRewards = []sdk.DecCoin{}
 	}
+	finalEdenBCommitRewards, _ := edenBCommitRewards.TruncateDecimal()
 
 	return &types.QueryAllProgramRewardsResponse{
 		UsdcStakingRewards:  stableStakeRewards,
 		ElysStakingRewards:  elysStakingRewards,
-		EdenStakingRewards:  edenCommitRewards,
-		EdenbStakingRewards: edenBCommitRewards,
+		EdenStakingRewards:  finalEdenCommitRewards,
+		EdenbStakingRewards: finalEdenBCommitRewards,
 	}, nil
 }
 

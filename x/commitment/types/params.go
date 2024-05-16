@@ -23,3 +23,14 @@ func (p Params) String() string {
 	out, _ := yaml.Marshal(p)
 	return string(out)
 }
+
+// Validate validates the set of params
+func (p LegacyParams) Validate() error {
+	return nil
+}
+
+// String implements the Stringer interface.
+func (p LegacyParams) String() string {
+	out, _ := yaml.Marshal(p)
+	return string(out)
+}

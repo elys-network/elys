@@ -20,3 +20,9 @@ pools:
   - amount: "78653292"
     denom: ueden
   rewardsUsd: "901.930122946153613244"
+
+elysd query incentive all-program-rewards elys1htv5hgrdjytzp2rd9j08e36974e6x5azzge80l
+eden_staking_rewards: []
+edenb_staking_rewards: []
+elys_staking_rewards: []
+usdc_staking_rewards: []
