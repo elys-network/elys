@@ -266,7 +266,7 @@ jobs:
         with:
           path: |
             ${{ runner.home }}/.elys
-            ${{ runner.home/.elys2
+            ${{ runner.home }}/.elys2
           key: ${{ runner.os }}-chain-snapshot-and-export-${{ needs.retrieve-latest-tag.outputs.LATEST_TAG }}
           lookup-only: true
 
@@ -354,7 +354,7 @@ jobs:
         with:
           path: |
             ${{ runner.home }}/.elys
-            ${{ runner.home/.elys2
+            ${{ runner.home }}/.elys2
           key: ${{ runner.os }}-chain-init-${{ needs.retrieve-latest-tag.outputs.LATEST_TAG }}
           lookup-only: true
 
@@ -380,7 +380,7 @@ jobs:
         with:
           path: |
             ${{ runner.home }}/.elys
-            ${{ runner.home/.elys2
+            ${{ runner.home }}/.elys2
           key: ${{ runner.os }}-chain-snapshot-and-export-${{ needs.retrieve-latest-tag.outputs.LATEST_TAG }}
         if: steps.cache-chain-init.outputs.cache-hit != 'true'
 
@@ -442,7 +442,7 @@ jobs:
         with:
           path: |
             ${{ runner.home }}/.elys
-            ${{ runner.home/.elys2
+            ${{ runner.home }}/.elys2
           key: ${{ runner.os }}-create-second-validator-${{ needs.retrieve-latest-tag.outputs.LATEST_TAG }}
           lookup-only: true
 
@@ -451,7 +451,7 @@ jobs:
         with:
           path: |
             ${{ runner.home }}/.elys
-            ${{ runner.home/.elys2
+            ${{ runner.home }}/.elys2
           key: ${{ runner.os }}-chain-init-${{ needs.retrieve-latest-tag.outputs.LATEST_TAG }}
         if: steps.cache-create-second-validator.outputs.cache-hit != 'true'
 
@@ -508,7 +508,7 @@ jobs:
         with:
           path: |
             ${{ runner.home }}/.elys
-            ${{ runner.home/.elys2
+            ${{ runner.home }}/.elys2
           key: ${{ runner.os }}-prepare-validator-data-${{ needs.retrieve-latest-tag.outputs.LATEST_TAG }}
           lookup-only: true
 
@@ -517,7 +517,7 @@ jobs:
         with:
           path: |
             ${{ runner.home }}/.elys
-            ${{ runner.home/.elys2
+            ${{ runner.home }}/.elys2
           key: ${{ runner.os }}-create-second-validator-${{ needs.retrieve-latest-tag.outputs.LATEST_TAG }}
         if: steps.cache-prepare-validator-data.outputs.cache-hit != 'true'
 
@@ -574,7 +574,7 @@ jobs:
         with:
           path: |
             ${{ runner.home }}/.elys
-            ${{ runner.home/.elys2
+            ${{ runner.home }}/.elys2
           key: ${{ runner.os }}-submit-new-proposal-${{ needs.retrieve-latest-tag.outputs.LATEST_TAG }}
           lookup-only: true
 
@@ -583,7 +583,7 @@ jobs:
         with:
           path: |
             ${{ runner.home }}/.elys
-            ${{ runner.home/.elys2
+            ${{ runner.home }}/.elys2
           key: ${{ runner.os }}-prepare-validator-data-${{ needs.retrieve-latest-tag.outputs.LATEST_TAG }}
         if: steps.cache-submit-new-proposal.outputs.cache-hit != 'true'
 
@@ -639,7 +639,7 @@ jobs:
         with:
           path: |
             ${{ runner.home }}/.elys
-            ${{ runner.home/.elys2
+            ${{ runner.home }}/.elys2
           key: ${{ needs.build-new-binary.outputs.CACHE_KEY }}-upgrade-to-new-binary
           lookup-only: true
 
@@ -648,7 +648,7 @@ jobs:
         with:
           path: |
             ${{ runner.home }}/.elys
-            ${{ runner.home/.elys2
+            ${{ runner.home }}/.elys2
           key: ${{ runner.os }}-submit-new-proposal-${{ needs.retrieve-latest-tag.outputs.LATEST_TAG }}
         if: steps.cache-upgrade-to-new-binary.outputs.cache-hit != 'true'
 
@@ -689,7 +689,7 @@ jobs:
         with:
           path: |
             ${{ runner.home }}/.elys
-            ${{ runner.home/.elys2
+            ${{ runner.home }}/.elys2
           key: ${{ needs.build-new-binary.outputs.CACHE_KEY }}-upgrade-to-new-binary
 
       - name: Create new snapshot file
