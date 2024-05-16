@@ -184,6 +184,9 @@ func (k Keeper) Delegation(ctx sdk.Context, addrDel sdk.AccAddress, addrVal sdk.
 	if addrVal.String() == params.EdenCommitVal {
 		commitments := k.commKeeper.GetCommitments(ctx, addrDel.String())
 		edenCommit := commitments.GetCommittedAmountForDenom(ptypes.Eden)
+		if edenCommit.IsZero() {
+			return nil
+		}
 		return stakingtypes.Delegation{
 			DelegatorAddress: addrDel.String(),
 			ValidatorAddress: addrVal.String(),
@@ -194,6 +197,9 @@ func (k Keeper) Delegation(ctx sdk.Context, addrDel sdk.AccAddress, addrVal sdk.
 	if addrVal.String() == params.EdenbCommitVal {
 		commitments := k.commKeeper.GetCommitments(ctx, addrDel.String())
 		edenBCommit := commitments.GetCommittedAmountForDenom(ptypes.EdenB)
+		if edenBCommit.IsZero() {
+			return nil
+		}
 		return stakingtypes.Delegation{
 			DelegatorAddress: addrDel.String(),
 			ValidatorAddress: addrVal.String(),

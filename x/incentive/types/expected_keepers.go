@@ -18,8 +18,6 @@ import (
 
 // CommitmentKeeper
 type CommitmentKeeper interface {
-	// Initiate commitment according to standard staking
-	BeforeDelegationCreated(sdk.Context, string, string) error
 	// Iterate all commitment
 	IterateCommitments(sdk.Context, func(ctypes.Commitments) (stop bool))
 	// Update commitment
@@ -27,7 +25,7 @@ type CommitmentKeeper interface {
 	// Get commitment
 	GetCommitments(sdk.Context, string) ctypes.Commitments
 	// Burn eden boost
-	BurnEdenBoost(ctx sdk.Context, creator string, denom string, amount math.Int) (ctypes.Commitments, error)
+	BurnEdenBoost(ctx sdk.Context, creator string, denom string, amount math.Int) error
 }
 
 // Staking keeper

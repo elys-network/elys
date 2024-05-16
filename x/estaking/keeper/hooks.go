@@ -16,9 +16,18 @@ func (k Keeper) CommitmentChanged(ctx sdk.Context, creator string, amount sdk.Co
 		if err != nil {
 			return err
 		}
-		err = k.Keeper.Hooks().AfterDelegationModified(ctx, addr, edenValAddr)
-		if err != nil {
-			return err
+
+		del := k.Delegation(ctx, addr, edenValAddr)
+		if del == nil {
+			err = k.Keeper.Hooks().BeforeDelegationRemoved(ctx, addr, edenValAddr)
+			if err != nil {
+				return err
+			}
+		} else {
+			err = k.Keeper.Hooks().AfterDelegationModified(ctx, addr, edenValAddr)
+			if err != nil {
+				return err
+			}
 		}
 	}
 
@@ -27,9 +36,18 @@ func (k Keeper) CommitmentChanged(ctx sdk.Context, creator string, amount sdk.Co
 		if err != nil {
 			return err
 		}
-		err = k.Keeper.Hooks().AfterDelegationModified(ctx, addr, edenBValAddr)
-		if err != nil {
-			return err
+
+		del := k.Delegation(ctx, addr, edenBValAddr)
+		if del == nil {
+			err = k.Keeper.Hooks().BeforeDelegationRemoved(ctx, addr, edenBValAddr)
+			if err != nil {
+				return err
+			}
+		} else {
+			err = k.Keeper.Hooks().AfterDelegationModified(ctx, addr, edenBValAddr)
+			if err != nil {
+				return err
+			}
 		}
 	}
 	return nil
@@ -73,9 +91,18 @@ func (k Keeper) BeforeEdenCommitChange(ctx sdk.Context, addr sdk.AccAddress) err
 	if err != nil {
 		return err
 	}
-	err = k.Keeper.Hooks().BeforeDelegationSharesModified(ctx, addr, edenValAddr)
-	if err != nil {
-		return err
+
+	del := k.Delegation(ctx, addr, edenValAddr)
+	if del == nil {
+		err = k.Keeper.Hooks().BeforeDelegationCreated(ctx, addr, edenValAddr)
+		if err != nil {
+			return err
+		}
+	} else {
+		err = k.Keeper.Hooks().BeforeDelegationSharesModified(ctx, addr, edenValAddr)
+		if err != nil {
+			return err
+		}
 	}
 	return nil
 }
@@ -86,9 +113,18 @@ func (k Keeper) BeforeEdenBCommitChange(ctx sdk.Context, addr sdk.AccAddress) er
 	if err != nil {
 		return err
 	}
-	err = k.Keeper.Hooks().BeforeDelegationSharesModified(ctx, addr, edenBValAddr)
-	if err != nil {
-		return err
+
+	del := k.Delegation(ctx, addr, edenBValAddr)
+	if del == nil {
+		err = k.Keeper.Hooks().BeforeDelegationCreated(ctx, addr, edenBValAddr)
+		if err != nil {
+			return err
+		}
+	} else {
+		err = k.Keeper.Hooks().BeforeDelegationSharesModified(ctx, addr, edenBValAddr)
+		if err != nil {
+			return err
+		}
 	}
 	return nil
 }
