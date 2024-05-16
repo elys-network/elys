@@ -62,9 +62,9 @@ func (k Keeper) MintPoolShareToAccount(ctx sdk.Context, pool types.Pool, addr sd
 	}
 
 	// Commit LP token minted
-	lockUntil := uint64(ctx.BlockTime().Unix())
+	lockUntil := uint64(0)
 	if pool.PoolParams.UseOracle {
-		lockUntil += uint64(time.Hour.Seconds())
+		lockUntil = uint64(ctx.BlockTime().Unix()) + uint64(time.Hour.Seconds())
 	}
 
 	err = k.commitmentKeeper.CommitLiquidTokens(ctx, addr, poolShareDenom, amount, lockUntil)
