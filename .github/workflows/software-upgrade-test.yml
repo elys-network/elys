@@ -7,9 +7,11 @@ on:
       - main
 
 jobs:
-  software-upgrade-test:
-    runs-on: ubuntu-latest
-    timeout-minutes: 120
+  retrieve-latest-tag:
+    runs-on: elys-runner
+
+    outputs:
+      LATEST_TAG: ${{ steps.get-latest-tag.outputs.LATEST_TAG }}
 
     steps:
       - name: Checkout repository
@@ -24,139 +26,554 @@ jobs:
           go-version: "1.21"
 
       - name: Get latest tag
+        id: get-latest-tag
         run: |
           git fetch --tags
           LATEST_TAG=$(git describe --tags `git rev-list --tags --max-count=1`)
           echo "LATEST_TAG=$LATEST_TAG" >> $GITHUB_ENV
+          echo "LATEST_TAG=$LATEST_TAG" >> $GITHUB_OUTPUT
           echo "Latest tag: $LATEST_TAG"
 
-      - name: Retrieve info.json and set snapshot path
-        run: |
-          # DOWNLOAD_URL=https://snapshots-testnet.stake-town.com/elys/info.json
-          # curl -L $DOWNLOAD_URL -o /tmp/info.json
-          # echo "Info.json downloaded to check snapshot version."
+  retrieve-snapshot:
+    runs-on: elys-runner
 
-          # # retrieve blockHeight field value from info.json
-          # SNAPSHOT_BLOCK_HEIGHT=$(cat /tmp/info.json | awk -F'"' '/"blockHeight":/{print $4}')
-          # echo "SNAPSHOT_BLOCK_HEIGHT=$SNAPSHOT_BLOCK_HEIGHT" >> $GITHUB_ENV
-          # echo "Snapshot block height: $SNAPSHOT_BLOCK_HEIGHT"
+    needs: retrieve-latest-tag
+
+    outputs:
+      SNAPSHOT_DOWNLOAD_URL: ${{ steps.retrieve-info-json.outputs.SNAPSHOT_DOWNLOAD_URL }}
+      SNAPSHOT_FILE_PATH: ${{ steps.retrieve-info-json.outputs.SNAPSHOT_FILE_PATH }}
+
+    steps:
+      - name: Retrieve info.json and set snapshot path
+        id: retrieve-info-json
+        run: |
+          DOWNLOAD_URL=https://snapshots-testnet.stake-town.com/elys/info.json
+          curl -L $DOWNLOAD_URL -o /tmp/info.json
+          echo "Info.json downloaded to check snapshot version."
+
+          # retrieve blockHeight field value from info.json
+          SNAPSHOT_BLOCK_HEIGHT=$(cat /tmp/info.json | awk -F'"' '/"blockHeight":/{print $4}')
+          echo "SNAPSHOT_BLOCK_HEIGHT=$SNAPSHOT_BLOCK_HEIGHT" >> $GITHUB_ENV
+          echo "Snapshot block height: $SNAPSHOT_BLOCK_HEIGHT"
 
           # set snapshot download url
-          # SNAPSHOT_DOWNLOAD_URL=https://snapshots-testnet.stake-town.com/elys/elystestnet-1_latest.tar.lz4
-          # SNAPSHOT_DOWNLOAD_URL=https://tools.highstakes.ch/files/elys.tar.gz
-          SNAPSHOT_DOWNLOAD_URL=https://snapshots.elys.network/elys.tar.gz
+          SNAPSHOT_DOWNLOAD_URL=https://snapshots-testnet.stake-town.com/elys/elystestnet-1_latest.tar.lz4
           echo "SNAPSHOT_DOWNLOAD_URL=$SNAPSHOT_DOWNLOAD_URL" >> $GITHUB_ENV
+          echo "SNAPSHOT_DOWNLOAD_URL=$SNAPSHOT_DOWNLOAD_URL" >> $GITHUB_OUTPUT
 
-      - name: Cache Directories
+          # set snapshot file path
+          SNAPSHOT_FILE_PATH=/tmp/snapshot.tar.lz4
+          echo "SNAPSHOT_FILE_PATH=$SNAPSHOT_FILE_PATH" >> $GITHUB_ENV
+          echo "SNAPSHOT_FILE_PATH=$SNAPSHOT_FILE_PATH" >> $GITHUB_OUTPUT
+
+      - name: Cache Snapshot
         uses: actions/cache@v4
-        id: cache-elys-folders
+        id: cache-snapshot
         with:
           path: |
-            /tmp/elys-backup
-            /tmp/elys2-backup
-          key: ${{ runner.os }}-elys-folders-${{ env.LATEST_TAG }}
+            ${{ env.SNAPSHOT_FILE_PATH }}
+          key: ${{ runner.os }}-snapshot-${{ needs.retrieve-latest-tag.outputs.LATEST_TAG }}
+          lookup-only: true
+
+      - name: Download snapshot
+        run: |
+          curl -L $SNAPSHOT_DOWNLOAD_URL -o $SNAPSHOT_FILE_PATH
+        if: steps.cache-snapshot.outputs.cache-hit != 'true'
+
+  retrieve-old-binary:
+    runs-on: elys-runner
+
+    needs: retrieve-latest-tag
+
+    outputs:
+      OLD_BINARY_PATH: ${{ steps.set-old-binary-path.outputs.OLD_BINARY_PATH }}
+
+    steps:
+      - name: Set old binary path
+        id: set-old-binary-path
+        run: |
+          OLD_BINARY_PATH=/tmp/elysd-${{ needs.retrieve-latest-tag.outputs.LATEST_TAG }}
+          echo "OLD_BINARY_PATH=$OLD_BINARY_PATH" >> $GITHUB_ENV
+          echo "OLD_BINARY_PATH=$OLD_BINARY_PATH" >> $GITHUB_OUTPUT
+
+      - name: Cache old binary
+        uses: actions/cache@v4
+        id: cache-old-binary
+        with:
+          path: |
+            ${{ env.OLD_BINARY_PATH }}
+          key: ${{ runner.os }}-retrieve-old-binary-${{ needs.retrieve-latest-tag.outputs.LATEST_TAG }}
+          lookup-only: true
 
       - name: Retrieve latest binary
         run: |
-          DOWNLOAD_URL=https://github.com/elys-network/elys/releases/download/$LATEST_TAG/elysd-$LATEST_TAG-linux-amd64
-          OLD_BINARY_PATH=/tmp/elysd-$LATEST_TAG
+          DOWNLOAD_URL=https://github.com/elys-network/elys/releases/download/${{ needs.retrieve-latest-tag.outputs.LATEST_TAG }}/elysd-${{ needs.retrieve-latest-tag.outputs.LATEST_TAG }}-linux-amd64
           curl -L $DOWNLOAD_URL -o $OLD_BINARY_PATH && chmod +x $OLD_BINARY_PATH
-          echo "OLD_BINARY_PATH=$OLD_BINARY_PATH" >> $GITHUB_ENV
 
           # TODO: retrieve upgrade-assure and upload-snapshot binaries
-        if: steps.cache-elys-folders.outputs.cache-hit != 'true'
+        if: steps.cache-old-binary.outputs.cache-hit != 'true'
+
+  build-new-binary:
+    runs-on: elys-runner
+
+    outputs:
+      NEW_BINARY_PATH: ${{ steps.set-new-binary-paths.outputs.NEW_BINARY_PATH }}
+      NEW_UPGRADE_ASSURE_BINARY_PATH: ${{ steps.set-new-binary-paths.outputs.NEW_UPGRADE_ASSURE_BINARY_PATH }}
+      UPLOAD_SNAPSHOT_BINARY_PATH: ${{ steps.set-new-binary-paths.outputs.UPLOAD_SNAPSHOT_BINARY_PATH }}
+      CACHE_KEY: ${{ steps.set-new-binary-paths.outputs.CACHE_KEY }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+
+      - name: Set new binary paths
+        id: set-new-binary-paths
+        run: |
+          NEW_BINARY_PATH=./build/elysd
+          echo "NEW_BINARY_PATH=$NEW_BINARY_PATH" >> $GITHUB_ENV
+          echo "NEW_BINARY_PATH=$NEW_BINARY_PATH" >> $GITHUB_OUTPUT
+
+          NEW_UPGRADE_ASSURE_BINARY_PATH=./build/new-upgrade-assure
+          echo "NEW_UPGRADE_ASSURE_BINARY_PATH=$NEW_UPGRADE_ASSURE_BINARY_PATH" >> $GITHUB_ENV
+          echo "NEW_UPGRADE_ASSURE_BINARY_PATH=$NEW_UPGRADE_ASSURE_BINARY_PATH" >> $GITHUB_OUTPUT
+
+          UPLOAD_SNAPSHOT_BINARY_PATH=./build/upload-snapshot
+          echo "UPLOAD_SNAPSHOT_BINARY_PATH=$UPLOAD_SNAPSHOT_BINARY_PATH" >> $GITHUB_ENV
+          echo "UPLOAD_SNAPSHOT_BINARY_PATH=$UPLOAD_SNAPSHOT_BINARY_PATH" >> $GITHUB_OUTPUT
+
+          CACHE_KEY=${{ runner.os }}-build-new-binary-${{ hashFiles('**/go.mod', '**/*.go') }}
+          echo "CACHE_KEY=$CACHE_KEY" >> $GITHUB_ENV
+          echo "CACHE_KEY=$CACHE_KEY" >> $GITHUB_OUTPUT
+
+      - name: Cache new binary
+        uses: actions/cache@v4
+        id: cache-new-binary
+        with:
+          path: |
+            ${{ env.NEW_BINARY_PATH }}
+            ${{ env.NEW_UPGRADE_ASSURE_BINARY_PATH}}
+            ${{ env.UPLOAD_SNAPSHOT_BINARY_PATH }}
+          key: ${{ env.CACHE_KEY }}
+          lookup-only: true
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.21"
+        if: steps.cache-new-binary.outputs.cache-hit != 'true'
 
       - name: Create git tag
         run: git tag v999.999.999
+        if: steps.cache-new-binary.outputs.cache-hit != 'true'
 
       - name: Build new binaries
+        id: build-new-binaries
         run: |
           # build new elys binary
           make build
-          NEW_BINARY_PATH=./build/elysd
-          echo "NEW_BINARY_PATH=$NEW_BINARY_PATH" >> $GITHUB_ENV
 
           # build new upgrade assure binary
           make build-upgrade-assure
-          NEW_UPGRADE_ASSURE_BINARY_PATH=./build/new-upgrade-assure
           mv ./build/upgrade-assure $NEW_UPGRADE_ASSURE_BINARY_PATH
-          echo "NEW_UPGRADE_ASSURE_BINARY_PATH=$NEW_UPGRADE_ASSURE_BINARY_PATH" >> $GITHUB_ENV
 
           # build upload snapshot binary
           make build-upload-snapshot
-          UPLOAD_SNAPSHOT_BINARY_PATH=./build/upload-snapshot
-          echo "UPLOAD_SNAPSHOT_BINARY_PATH=$UPLOAD_SNAPSHOT_BINARY_PATH" >> $GITHUB_ENV
+        if: steps.cache-new-binary.outputs.cache-hit != 'true'
+
+  build-old-binary:
+    runs-on: elys-runner
+
+    needs: retrieve-latest-tag
+
+    outputs:
+      OLD_UPGRADE_ASSURE_BINARY_PATH: ${{ steps.set-old-binary-path.outputs.OLD_UPGRADE_ASSURE_BINARY_PATH }}
+
+    steps:
+      - name: Set old binary path
+        id: set-old-binary-path
+        run: |
+          OLD_UPGRADE_ASSURE_BINARY_PATH=./build/old-upgrade-assure
+          echo "OLD_UPGRADE_ASSURE_BINARY_PATH=$OLD_UPGRADE_ASSURE_BINARY_PATH" >> $GITHUB_ENV
+          echo "OLD_UPGRADE_ASSURE_BINARY_PATH=$OLD_UPGRADE_ASSURE_BINARY_PATH" >> $GITHUB_OUTPUT
+
+      - name: Cache old binaries
+        uses: actions/cache@v4
+        id: cache-old-binaries
+        with:
+          path: |
+            ${{ env.OLD_UPGRADE_ASSURE_BINARY_PATH }}
+          key: ${{ runner.os }}-build-old-binary-${{ needs.retrieve-latest-tag.outputs.LATEST_TAG }}
+          lookup-only: true
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+        if: steps.cache-old-binaries.outputs.cache-hit != 'true'
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.21"
+        if: steps.cache-old-binaries.outputs.cache-hit != 'true'
 
       # TODO: to remove when upgrade-assure binary is available in previous release
       - name: Copy upgrade assure folder
         run: |
           cp -a ./cmd/upgrade-assure ./cmd/upgrade-assure-skip
-        if: steps.cache-elys-folders.outputs.cache-hit != 'true'
+        if: steps.cache-old-binaries.outputs.cache-hit != 'true'
 
       - name: Check out latest tag
-        run: git checkout $LATEST_TAG
-        if: steps.cache-elys-folders.outputs.cache-hit != 'true'
+        run: git checkout ${{ needs.retrieve-latest-tag.outputs.LATEST_TAG }}
+        if: steps.cache-old-binaries.outputs.cache-hit != 'true'
 
       # TODO: to remove when upgrade-assure binary is available in previous release
       - name: Copy old upgrade assure types.go file
         run: |
           cp -a ./scripts/upgrade-assure/types.go ./cmd/upgrade-assure-skip/types.go
-        if: steps.cache-elys-folders.outputs.cache-hit != 'true'
+        if: steps.cache-old-binaries.outputs.cache-hit != 'true'
 
       # TODO: to remove when upgrade-assure binary is available in previous release
       - name: Build old binaries
+        id: build-old-binaries
         run: |
           # build old upgrade assure binary
+          mkdir -p build
           go build -o build ./cmd/upgrade-assure-skip
-          OLD_UPGRADE_ASSURE_BINARY_PATH=./build/old-upgrade-assure
           mv ./build/upgrade-assure-skip $OLD_UPGRADE_ASSURE_BINARY_PATH
-          echo "OLD_UPGRADE_ASSURE_BINARY_PATH=$OLD_UPGRADE_ASSURE_BINARY_PATH" >> $GITHUB_ENV
-        if: steps.cache-elys-folders.outputs.cache-hit != 'true'
+        if: steps.cache-old-binaries.outputs.cache-hit != 'true'
+
+  chain-snapshot-and-export:
+    runs-on: elys-runner
+
+    needs:
+      [
+        retrieve-latest-tag,
+        retrieve-snapshot,
+        retrieve-old-binary,
+        build-new-binary,
+        build-old-binary,
+      ]
+
+    steps:
+      - name: Cache Directories
+        uses: actions/cache@v4
+        id: cache-chain-snapshot-and-export
+        with:
+          path: |
+            /home/runner/.elys
+            /home/runner/.elys2
+            /tmp/genesis.json
+          key: ${{ runner.os }}-chain-snapshot-and-export-${{ needs.retrieve-latest-tag.outputs.LATEST_TAG }}
+          lookup-only: true
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+        if: steps.cache-chain-snapshot-and-export.outputs.cache-hit != 'true'
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.21"
+        if: steps.cache-chain-snapshot-and-export.outputs.cache-hit != 'true'
+
+      - name: Check out latest tag
+        run: git checkout ${{ needs.retrieve-latest-tag.outputs.LATEST_TAG }}
+        if: steps.cache-chain-snapshot-and-export.outputs.cache-hit != 'true'
+
+      - name: Restore snapshot from cache
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            ${{ needs.retrieve-snapshot.outputs.SNAPSHOT_FILE_PATH }}
+          key: ${{ runner.os }}-snapshot-${{ needs.retrieve-latest-tag.outputs.LATEST_TAG }}
+        if: steps.cache-chain-snapshot-and-export.outputs.cache-hit != 'true'
+
+      - name: Restore new binary from cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            ${{ needs.build-new-binary.outputs.NEW_BINARY_PATH }}
+            ${{ needs.build-new-binary.outputs.NEW_UPGRADE_ASSURE_BINARY_PATH}}
+            ${{ needs.build-new-binary.outputs.UPLOAD_SNAPSHOT_BINARY_PATH }}
+          key: ${{ needs.build-new-binary.outputs.CACHE_KEY }}
+        if: steps.cache-chain-snapshot-and-export.outputs.cache-hit != 'true'
+
+      - name: Restore old binaries from cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            ${{ needs.build-old-binary.outputs.OLD_UPGRADE_ASSURE_BINARY_PATH }}
+          key: ${{ runner.os }}-build-old-binary-${{ needs.retrieve-latest-tag.outputs.LATEST_TAG }}
+        if: steps.cache-chain-snapshot-and-export.outputs.cache-hit != 'true'
+
+      - name: Restore old binary from cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            ${{ needs.retrieve-old-binary.outputs.OLD_BINARY_PATH }}
+          key: ${{ runner.os }}-retrieve-old-binary-${{ needs.retrieve-latest-tag.outputs.LATEST_TAG }}
+        if: steps.cache-chain-snapshot-and-export.outputs.cache-hit != 'true'
 
       - name: Chain snapshot and export
         run: |
-          GOMEMLIMIT=8GiB $OLD_UPGRADE_ASSURE_BINARY_PATH $SNAPSHOT_DOWNLOAD_URL $OLD_BINARY_PATH $NEW_BINARY_PATH \
+          GOMEMLIMIT=32GiB \
+            ${{ needs.build-old-binary.outputs.OLD_UPGRADE_ASSURE_BINARY_PATH }} \
+            ${{ needs.retrieve-snapshot.outputs.SNAPSHOT_FILE_PATH }} \
+            ${{ needs.retrieve-old-binary.outputs.OLD_BINARY_PATH }} \
+            ${{ needs.build-new-binary.outputs.NEW_BINARY_PATH }} \
             --skip-chain-init \
             --skip-node-start \
             --timeout-next-block 100000 \
             --timeout-wait-for-node 100000
-        if: steps.cache-elys-folders.outputs.cache-hit != 'true'
+        if: steps.cache-chain-snapshot-and-export.outputs.cache-hit != 'true'
+
+  chain-init:
+    runs-on: elys-runner
+
+    needs:
+      [
+        retrieve-latest-tag,
+        retrieve-snapshot,
+        retrieve-old-binary,
+        build-new-binary,
+        build-old-binary,
+        chain-snapshot-and-export,
+      ]
+
+    steps:
+      - name: Cache Directories
+        uses: actions/cache@v4
+        id: cache-chain-init
+        with:
+          path: |
+            /home/runner/.elys
+            /home/runner/.elys2
+          key: ${{ runner.os }}-chain-init-${{ needs.retrieve-latest-tag.outputs.LATEST_TAG }}
+          lookup-only: true
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+        if: steps.cache-chain-init.outputs.cache-hit != 'true'
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.21"
+        if: steps.cache-chain-init.outputs.cache-hit != 'true'
+
+      - name: Check out latest tag
+        run: git checkout ${{ needs.retrieve-latest-tag.outputs.LATEST_TAG }}
+        if: steps.cache-chain-init.outputs.cache-hit != 'true'
+
+      - name: Restore chain snapshot and export from cache
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            /home/runner/.elys
+            /home/runner/.elys2
+            /tmp/genesis.json
+          key: ${{ runner.os }}-chain-snapshot-and-export-${{ needs.retrieve-latest-tag.outputs.LATEST_TAG }}
+        if: steps.cache-chain-init.outputs.cache-hit != 'true'
+
+      - name: Restore new binary from cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            ${{ needs.build-new-binary.outputs.NEW_BINARY_PATH }}
+            ${{ needs.build-new-binary.outputs.NEW_UPGRADE_ASSURE_BINARY_PATH}}
+            ${{ needs.build-new-binary.outputs.UPLOAD_SNAPSHOT_BINARY_PATH }}
+          key: ${{ needs.build-new-binary.outputs.CACHE_KEY }}
+        if: steps.cache-chain-init.outputs.cache-hit != 'true'
+
+      - name: Restore old binaries from cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            ${{ needs.build-old-binary.outputs.OLD_UPGRADE_ASSURE_BINARY_PATH }}
+          key: ${{ runner.os }}-build-old-binary-${{ needs.retrieve-latest-tag.outputs.LATEST_TAG }}
+        if: steps.cache-chain-init.outputs.cache-hit != 'true'
+
+      - name: Restore old binary from cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            ${{ needs.retrieve-old-binary.outputs.OLD_BINARY_PATH }}
+          key: ${{ runner.os }}-retrieve-old-binary-${{ needs.retrieve-latest-tag.outputs.LATEST_TAG }}
+        if: steps.cache-chain-init.outputs.cache-hit != 'true'
 
       - name: Chain initialization
         run: |
-          GOMEMLIMIT=8GiB $OLD_UPGRADE_ASSURE_BINARY_PATH $SNAPSHOT_DOWNLOAD_URL $OLD_BINARY_PATH $NEW_BINARY_PATH \
+          GOMEMLIMIT=32GiB \
+            ${{ needs.build-old-binary.outputs.OLD_UPGRADE_ASSURE_BINARY_PATH }} \
+            ${{ needs.retrieve-snapshot.outputs.SNAPSHOT_FILE_PATH }} \
+            ${{ needs.retrieve-old-binary.outputs.OLD_BINARY_PATH }} \
+            ${{ needs.build-new-binary.outputs.NEW_BINARY_PATH }} \
             --skip-snapshot \
             --skip-node-start \
             --timeout-next-block 100000 \
             --timeout-wait-for-node 100000
-        if: steps.cache-elys-folders.outputs.cache-hit != 'true'
+        if: steps.cache-chain-init.outputs.cache-hit != 'true'
 
-      - name: Check out new branch
-        run: git checkout ${{ github.head_ref }}
+  create-second-validator:
+    runs-on: elys-runner
+
+    needs:
+      [
+        retrieve-latest-tag,
+        retrieve-snapshot,
+        retrieve-old-binary,
+        build-new-binary,
+        chain-init,
+      ]
+
+    steps:
+      - name: Cache Directories
+        uses: actions/cache@v4
+        id: cache-create-second-validator
+        with:
+          path: |
+            /home/runner/.elys
+            /home/runner/.elys2
+          key: ${{ runner.os }}-create-second-validator-${{ needs.retrieve-latest-tag.outputs.LATEST_TAG }}
+          lookup-only: true
+
+      - name: Restore chain snapshot and export from cache
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            /home/runner/.elys
+            /home/runner/.elys2
+          key: ${{ runner.os }}-chain-init-${{ needs.retrieve-latest-tag.outputs.LATEST_TAG }}
+        if: steps.cache-create-second-validator.outputs.cache-hit != 'true'
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+        if: steps.cache-create-second-validator.outputs.cache-hit != 'true'
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.21"
+        if: steps.cache-create-second-validator.outputs.cache-hit != 'true'
+
+      - name: Restore new binary from cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            ${{ needs.build-new-binary.outputs.NEW_BINARY_PATH }}
+            ${{ needs.build-new-binary.outputs.NEW_UPGRADE_ASSURE_BINARY_PATH}}
+            ${{ needs.build-new-binary.outputs.UPLOAD_SNAPSHOT_BINARY_PATH }}
+          key: ${{ needs.build-new-binary.outputs.CACHE_KEY }}
+        if: steps.cache-create-second-validator.outputs.cache-hit != 'true'
+
+      - name: Restore old binary from cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            ${{ needs.retrieve-old-binary.outputs.OLD_BINARY_PATH }}
+          key: ${{ runner.os }}-retrieve-old-binary-${{ needs.retrieve-latest-tag.outputs.LATEST_TAG }}
+        if: steps.cache-create-second-validator.outputs.cache-hit != 'true'
 
       - name: Create second validator
-        uses: nick-fields/retry@v3
+        run: |
+          GOMEMLIMIT=16GiB \
+            ${{ needs.build-new-binary.outputs.NEW_UPGRADE_ASSURE_BINARY_PATH }} \
+            ${{ needs.retrieve-snapshot.outputs.SNAPSHOT_FILE_PATH }} \
+            ${{ needs.retrieve-old-binary.outputs.OLD_BINARY_PATH }} \
+            ${{ needs.build-new-binary.outputs.NEW_BINARY_PATH }} \
+            --skip-snapshot \
+            --skip-chain-init \
+            --skip-prepare-validator-data \
+            --skip-submit-proposal \
+            --skip-upgrade-to-new-binary \
+            --timeout-next-block 100000 \
+            --timeout-wait-for-node 100000
+        if: steps.cache-create-second-validator.outputs.cache-hit != 'true'
+
+  prepare-validator-data:
+    runs-on: elys-runner
+
+    needs:
+      [
+        retrieve-latest-tag,
+        retrieve-snapshot,
+        retrieve-old-binary,
+        build-new-binary,
+        create-second-validator,
+      ]
+
+    steps:
+      - name: Cache Directories
+        uses: actions/cache@v4
+        id: cache-prepare-validator-data
         with:
-          timeout_minutes: 30
-          max_attempts: 3
-          command: |
-            GOMEMLIMIT=8GiB $NEW_UPGRADE_ASSURE_BINARY_PATH $SNAPSHOT_DOWNLOAD_URL $OLD_BINARY_PATH $NEW_BINARY_PATH \
-              --skip-snapshot \
-              --skip-chain-init \
-              --skip-prepare-validator-data \
-              --skip-submit-proposal \
-              --skip-upgrade-to-new-binary \
-              --timeout-next-block 100000 \
-              --timeout-wait-for-node 100000
-        if: steps.cache-elys-folders.outputs.cache-hit != 'true'
+          path: |
+            /home/runner/.elys
+            /home/runner/.elys2
+          key: ${{ runner.os }}-prepare-validator-data-${{ needs.retrieve-latest-tag.outputs.LATEST_TAG }}
+          lookup-only: true
 
-      - name: Save up space
-        run: |
-          rm -rf ~/.elys/config/genesis.json
+      - name: Restore create second validator from cache
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            /home/runner/.elys
+            /home/runner/.elys2
+          key: ${{ runner.os }}-create-second-validator-${{ needs.retrieve-latest-tag.outputs.LATEST_TAG }}
+        if: steps.cache-prepare-validator-data.outputs.cache-hit != 'true'
 
-      - name: Prepare second validator data
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+        if: steps.cache-prepare-validator-data.outputs.cache-hit != 'true'
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.21"
+        if: steps.cache-prepare-validator-data.outputs.cache-hit != 'true'
+
+      - name: Restore new binary from cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            ${{ needs.build-new-binary.outputs.NEW_BINARY_PATH }}
+            ${{ needs.build-new-binary.outputs.NEW_UPGRADE_ASSURE_BINARY_PATH}}
+            ${{ needs.build-new-binary.outputs.UPLOAD_SNAPSHOT_BINARY_PATH }}
+          key: ${{ needs.build-new-binary.outputs.CACHE_KEY }}
+        if: steps.cache-prepare-validator-data.outputs.cache-hit != 'true'
+
+      - name: Restore old binary from cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            ${{ needs.retrieve-old-binary.outputs.OLD_BINARY_PATH }}
+          key: ${{ runner.os }}-retrieve-old-binary-${{ needs.retrieve-latest-tag.outputs.LATEST_TAG }}
+        if: steps.cache-prepare-validator-data.outputs.cache-hit != 'true'
+
+      - name: Prepare validator data
         run: |
-          GOMEMLIMIT=8GiB $NEW_UPGRADE_ASSURE_BINARY_PATH $SNAPSHOT_DOWNLOAD_URL $OLD_BINARY_PATH $NEW_BINARY_PATH \
+          GOMEMLIMIT=32GiB \
+            ${{ needs.build-new-binary.outputs.NEW_UPGRADE_ASSURE_BINARY_PATH }} \
+            ${{ needs.retrieve-snapshot.outputs.SNAPSHOT_FILE_PATH }} \
+            ${{ needs.retrieve-old-binary.outputs.OLD_BINARY_PATH }} \
+            ${{ needs.build-new-binary.outputs.NEW_BINARY_PATH }} \
             --skip-snapshot \
             --skip-chain-init \
             --skip-create-validator \
@@ -164,50 +581,190 @@ jobs:
             --skip-upgrade-to-new-binary \
             --timeout-next-block 100000 \
             --timeout-wait-for-node 100000
-        if: steps.cache-elys-folders.outputs.cache-hit != 'true'
+        if: steps.cache-prepare-validator-data.outputs.cache-hit != 'true'
+
+  submit-new-proposal:
+    runs-on: elys-runner
+
+    needs:
+      [
+        retrieve-latest-tag,
+        retrieve-snapshot,
+        retrieve-old-binary,
+        build-new-binary,
+        prepare-validator-data,
+      ]
+
+    steps:
+      - name: Cache Directories
+        uses: actions/cache@v4
+        id: cache-submit-new-proposal
+        with:
+          path: |
+            /home/runner/.elys
+            /home/runner/.elys2
+          key: ${{ runner.os }}-submit-new-proposal-${{ needs.retrieve-latest-tag.outputs.LATEST_TAG }}
+          lookup-only: true
+
+      - name: Restore prepare validator data from cache
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            /home/runner/.elys
+            /home/runner/.elys2
+          key: ${{ runner.os }}-prepare-validator-data-${{ needs.retrieve-latest-tag.outputs.LATEST_TAG }}
+        if: steps.cache-submit-new-proposal.outputs.cache-hit != 'true'
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+        if: steps.cache-submit-new-proposal.outputs.cache-hit != 'true'
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.21"
+        if: steps.cache-submit-new-proposal.outputs.cache-hit != 'true'
+
+      - name: Restore new binary from cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            ${{ needs.build-new-binary.outputs.NEW_BINARY_PATH }}
+            ${{ needs.build-new-binary.outputs.NEW_UPGRADE_ASSURE_BINARY_PATH}}
+            ${{ needs.build-new-binary.outputs.UPLOAD_SNAPSHOT_BINARY_PATH }}
+          key: ${{ needs.build-new-binary.outputs.CACHE_KEY }}
+        if: steps.cache-submit-new-proposal.outputs.cache-hit != 'true'
+
+      - name: Restore old binary from cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            ${{ needs.retrieve-old-binary.outputs.OLD_BINARY_PATH }}
+          key: ${{ runner.os }}-retrieve-old-binary-${{ needs.retrieve-latest-tag.outputs.LATEST_TAG }}
+        if: steps.cache-submit-new-proposal.outputs.cache-hit != 'true'
 
       - name: Submit new proposal
-        uses: nick-fields/retry@v3
+        run: |
+          GOMEMLIMIT=32GiB \
+            ${{ needs.build-new-binary.outputs.NEW_UPGRADE_ASSURE_BINARY_PATH }} \
+            ${{ needs.retrieve-snapshot.outputs.SNAPSHOT_FILE_PATH }} \
+            ${{ needs.retrieve-old-binary.outputs.OLD_BINARY_PATH }} \
+            ${{ needs.build-new-binary.outputs.NEW_BINARY_PATH }} \
+            --skip-snapshot \
+            --skip-chain-init \
+            --skip-create-validator \
+            --skip-prepare-validator-data \
+            --skip-upgrade-to-new-binary \
+            --timeout-next-block 100000 \
+            --timeout-wait-for-node 100000
+        if: steps.cache-submit-new-proposal.outputs.cache-hit != 'true'
+
+  upgrade-to-new-binary:
+    runs-on: elys-runner
+
+    needs:
+      [
+        retrieve-latest-tag,
+        retrieve-snapshot,
+        build-new-binary,
+        submit-new-proposal,
+      ]
+
+    steps:
+      - name: Cache Directories
+        uses: actions/cache@v4
+        id: cache-upgrade-to-new-binary
         with:
-          timeout_minutes: 30
-          max_attempts: 3
-          command: |
-            GOMEMLIMIT=8GiB $NEW_UPGRADE_ASSURE_BINARY_PATH $SNAPSHOT_DOWNLOAD_URL $OLD_BINARY_PATH $NEW_BINARY_PATH \
-              --skip-snapshot \
-              --skip-chain-init \
-              --skip-create-validator \
-              --skip-prepare-validator-data \
-              --skip-upgrade-to-new-binary \
-              --timeout-next-block 100000 \
-              --timeout-wait-for-node 100000
-        if: steps.cache-elys-folders.outputs.cache-hit != 'true'
+          path: |
+            /home/runner/.elys
+            /home/runner/.elys2
+          key: ${{ needs.build-new-binary.outputs.CACHE_KEY }}-upgrade-to-new-binary
+          lookup-only: true
 
-      - name: Backup elys folders
-        run: |
-          cp -a $HOME/.elys /tmp/elys-backup
-          cp -a $HOME/.elys2 /tmp/elys2-backup
-        if: steps.cache-elys-folders.outputs.cache-hit != 'true'
+      - name: Restore submit new proposal from cache
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            /home/runner/.elys
+            /home/runner/.elys2
+          key: ${{ runner.os }}-submit-new-proposal-${{ needs.retrieve-latest-tag.outputs.LATEST_TAG }}
+        if: steps.cache-upgrade-to-new-binary.outputs.cache-hit != 'true'
 
-      - name: Restore elys folders from backup
-        run: |
-          mv /tmp/elys-backup $HOME/.elys
-          mv /tmp/elys2-backup $HOME/.elys2
-        if: steps.cache-elys-folders.outputs.cache-hit == 'true'
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+        if: steps.cache-upgrade-to-new-binary.outputs.cache-hit != 'true'
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.21"
+        if: steps.cache-upgrade-to-new-binary.outputs.cache-hit != 'true'
+
+      - name: Restore new binary from cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            ${{ needs.build-new-binary.outputs.NEW_BINARY_PATH }}
+            ${{ needs.build-new-binary.outputs.NEW_UPGRADE_ASSURE_BINARY_PATH}}
+            ${{ needs.build-new-binary.outputs.UPLOAD_SNAPSHOT_BINARY_PATH }}
+          key: ${{ needs.build-new-binary.outputs.CACHE_KEY }}
+        if: steps.cache-upgrade-to-new-binary.outputs.cache-hit != 'true'
 
       - name: Upgrade to new binary
-        uses: nick-fields/retry@v3
+        run: |
+          GOMEMLIMIT=8GiB \
+            ${{ needs.build-new-binary.outputs.NEW_UPGRADE_ASSURE_BINARY_PATH }} \
+            ${{ needs.retrieve-snapshot.outputs.SNAPSHOT_FILE_PATH }} \
+            ${{ needs.build-new-binary.outputs.NEW_BINARY_PATH }} \
+            ${{ needs.build-new-binary.outputs.NEW_BINARY_PATH }} \
+            --skip-snapshot \
+            --skip-chain-init \
+            --skip-create-validator \
+            --skip-prepare-validator-data \
+            --skip-submit-proposal \
+            --timeout-next-block 100000 \
+            --timeout-wait-for-node 100000
+        if: steps.cache-upgrade-to-new-binary.outputs.cache-hit != 'true'
+
+  create-new-snapshot-file:
+    runs-on: elys-runner
+
+    needs: [retrieve-latest-tag, build-new-binary, upgrade-to-new-binary]
+
+    steps:
+      - name: Restore upgrade to new binary from cache
+        uses: actions/cache/restore@v4
         with:
-          timeout_minutes: 30
-          max_attempts: 3
-          command: |
-            GOMEMLIMIT=8GiB $NEW_UPGRADE_ASSURE_BINARY_PATH $SNAPSHOT_DOWNLOAD_URL $NEW_BINARY_PATH $NEW_BINARY_PATH \
-              --skip-snapshot \
-              --skip-chain-init \
-              --skip-create-validator \
-              --skip-prepare-validator-data \
-              --skip-submit-proposal \
-              --timeout-next-block 100000 \
-              --timeout-wait-for-node 100000
+          path: |
+            /home/runner/.elys
+            /home/runner/.elys2
+          key: ${{ needs.build-new-binary.outputs.CACHE_KEY }}-upgrade-to-new-binary
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.21"
+
+      - name: Restore new binary from cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            ${{ needs.build-new-binary.outputs.NEW_BINARY_PATH }}
+            ${{ needs.build-new-binary.outputs.NEW_UPGRADE_ASSURE_BINARY_PATH}}
+            ${{ needs.build-new-binary.outputs.UPLOAD_SNAPSHOT_BINARY_PATH }}
+          key: ${{ needs.build-new-binary.outputs.CACHE_KEY }}
 
       - name: Create new snapshot file
         run: |
@@ -217,7 +774,7 @@ jobs:
           NEW_SNAPSHOT_PATH="/tmp/${NEW_SNAPSHOT_FILENAME}"
           echo "NEW_SNAPSHOT_FILENAME=$NEW_SNAPSHOT_FILENAME" >> $GITHUB_ENV
           echo "NEW_SNAPSHOT_PATH=$NEW_SNAPSHOT_PATH" >> $GITHUB_ENV
-          cd $HOME
+          cd /home/runner
           tar -cf - .elys | lz4 -z - > "$NEW_SNAPSHOT_PATH"
 
       - name: Upload snapshot
@@ -226,11 +783,7 @@ jobs:
           export R2_SECRET_KEY=${{ secrets.R2_SECRET_KEY }}
           export R2_ENDPOINT=${{ secrets.R2_ENDPOINT }}
           export R2_BUCKET_NAME=${{ secrets.R2_BUCKET_NAME }}
-          $UPLOAD_SNAPSHOT_BINARY_PATH $NEW_SNAPSHOT_PATH
-
-      - name: Remove snapshot file
-        run: |
-          rm -f $NEW_SNAPSHOT_PATH
+          ${{ needs.build-new-binary.outputs.UPLOAD_SNAPSHOT_BINARY_PATH }} $NEW_SNAPSHOT_PATH
 
       - name: Info about the snapshot
         run: |
