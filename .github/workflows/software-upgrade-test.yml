@@ -718,7 +718,7 @@ jobs:
 
       - name: Upgrade to new binary
         run: |
-          GOMEMLIMIT=4GiB \
+          GOMEMLIMIT=8GiB \
             ${{ needs.build-new-binary.outputs.NEW_UPGRADE_ASSURE_BINARY_PATH }} \
             ${{ needs.retrieve-snapshot.outputs.SNAPSHOT_FILE_PATH }} \
             ${{ needs.build-new-binary.outputs.NEW_BINARY_PATH }} \
