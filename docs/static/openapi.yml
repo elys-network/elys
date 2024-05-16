@@ -40044,6 +40044,9 @@ paths:
                         custom method
 
                         signatures required by gogoproto.
+                  number_of_commitments:
+                    type: string
+                    format: uint64
             description: >-
               QueryParamsResponse is response type for the Query/Params RPC
               method.
@@ -40465,11 +40468,11 @@ paths:
                           amount:
                             type: string
                         description: >-
-                          DecCoin defines a token with a denomination and a
-                          decimal amount.
+                          Coin defines a token with a denomination and an
+                          amount.
 
 
-                          NOTE: The amount field is an Dec which implements the
+                          NOTE: The amount field is an Int which implements the
                           custom method
 
                           signatures required by gogoproto.
@@ -40484,11 +40487,10 @@ paths:
                     amount:
                       type: string
                   description: >-
-                    DecCoin defines a token with a denomination and a decimal
-                    amount.
+                    Coin defines a token with a denomination and an amount.
 
 
-                    NOTE: The amount field is an Dec which implements the custom
+                    NOTE: The amount field is an Int which implements the custom
                     method
 
                     signatures required by gogoproto.
@@ -40538,11 +40540,10 @@ paths:
                     amount:
                       type: string
                   description: >-
-                    DecCoin defines a token with a denomination and a decimal
-                    amount.
+                    Coin defines a token with a denomination and an amount.
 
 
-                    NOTE: The amount field is an Dec which implements the custom
+                    NOTE: The amount field is an Int which implements the custom
                     method
 
                     signatures required by gogoproto.
@@ -40556,11 +40557,10 @@ paths:
                     amount:
                       type: string
                   description: >-
-                    DecCoin defines a token with a denomination and a decimal
-                    amount.
+                    Coin defines a token with a denomination and an amount.
 
 
-                    NOTE: The amount field is an Dec which implements the custom
+                    NOTE: The amount field is an Int which implements the custom
                     method
 
                     signatures required by gogoproto.
@@ -40574,11 +40574,10 @@ paths:
                     amount:
                       type: string
                   description: >-
-                    DecCoin defines a token with a denomination and a decimal
-                    amount.
+                    Coin defines a token with a denomination and an amount.
 
 
-                    NOTE: The amount field is an Dec which implements the custom
+                    NOTE: The amount field is an Int which implements the custom
                     method
 
                     signatures required by gogoproto.
@@ -40592,11 +40591,10 @@ paths:
                     amount:
                       type: string
                   description: >-
-                    DecCoin defines a token with a denomination and a decimal
-                    amount.
+                    Coin defines a token with a denomination and an amount.
 
 
-                    NOTE: The amount field is an Dec which implements the custom
+                    NOTE: The amount field is an Int which implements the custom
                     method
 
                     signatures required by gogoproto.
@@ -85754,6 +85752,9 @@ definitions:
 
             NOTE: The amount field is an Int which implements the custom method
             signatures required by gogoproto.
+      number_of_commitments:
+        type: string
+        format: uint64
     description: Params defines the parameters for the module.
   elys.commitment.QueryNumberOfCommitmentsResponse:
     type: object
@@ -85802,6 +85803,9 @@ definitions:
                 method
 
                 signatures required by gogoproto.
+          number_of_commitments:
+            type: string
+            format: uint64
     description: QueryParamsResponse is response type for the Query/Params RPC method.
   elys.commitment.QueryShowCommitmentsResponse:
     type: object
@@ -86030,9 +86034,9 @@ definitions:
             amount:
               type: string
           description: |-
-            DecCoin defines a token with a denomination and a decimal amount.
+            Coin defines a token with a denomination and an amount.
 
-            NOTE: The amount field is an Dec which implements the custom method
+            NOTE: The amount field is an Int which implements the custom method
             signatures required by gogoproto.
   elys.estaking.DexRewardsTracker:
     type: object
@@ -86237,11 +86241,10 @@ definitions:
                   amount:
                     type: string
                 description: >-
-                  DecCoin defines a token with a denomination and a decimal
-                  amount.
+                  Coin defines a token with a denomination and an amount.
 
 
-                  NOTE: The amount field is an Dec which implements the custom
+                  NOTE: The amount field is an Int which implements the custom
                   method
 
                   signatures required by gogoproto.
@@ -86256,9 +86259,9 @@ definitions:
             amount:
               type: string
           description: |-
-            DecCoin defines a token with a denomination and a decimal amount.
+            Coin defines a token with a denomination and an amount.
 
-            NOTE: The amount field is an Dec which implements the custom method
+            NOTE: The amount field is an Int which implements the custom method
             signatures required by gogoproto.
         description: total defines the sum of all the rewards.
   elys.commitment.EarnType:
@@ -86306,9 +86309,9 @@ definitions:
             amount:
               type: string
           description: |-
-            DecCoin defines a token with a denomination and a decimal amount.
+            Coin defines a token with a denomination and an amount.
 
-            NOTE: The amount field is an Dec which implements the custom method
+            NOTE: The amount field is an Int which implements the custom method
             signatures required by gogoproto.
       elys_staking_rewards:
         type: array
@@ -86320,9 +86323,9 @@ definitions:
             amount:
               type: string
           description: |-
-            DecCoin defines a token with a denomination and a decimal amount.
+            Coin defines a token with a denomination and an amount.
 
-            NOTE: The amount field is an Dec which implements the custom method
+            NOTE: The amount field is an Int which implements the custom method
             signatures required by gogoproto.
       eden_staking_rewards:
         type: array
@@ -86334,9 +86337,9 @@ definitions:
             amount:
               type: string
           description: |-
-            DecCoin defines a token with a denomination and a decimal amount.
+            Coin defines a token with a denomination and an amount.
 
-            NOTE: The amount field is an Dec which implements the custom method
+            NOTE: The amount field is an Int which implements the custom method
             signatures required by gogoproto.
       edenb_staking_rewards:
         type: array
@@ -86348,9 +86351,9 @@ definitions:
             amount:
               type: string
           description: |-
-            DecCoin defines a token with a denomination and a decimal amount.
+            Coin defines a token with a denomination and an amount.
 
-            NOTE: The amount field is an Dec which implements the custom method
+            NOTE: The amount field is an Int which implements the custom method
             signatures required by gogoproto.
   elys.incentive.QueryAprResponse:
     type: object

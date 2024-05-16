@@ -47,11 +47,33 @@ func (k Keeper) UncommitTokens(ctx sdk.Context, addr sdk.AccAddress, denom strin
 	k.SetCommitments(ctx, commitments)
 
 	liquidCoins := sdk.NewCoins(sdk.NewCoin(denom, amount))
+	edenAmount := liquidCoins.AmountOf(ptypes.Eden)
+	edenBAmount := liquidCoins.AmountOf(ptypes.EdenB)
+	commitments.AddClaimed(sdk.NewCoin(ptypes.Eden, edenAmount))
+	commitments.AddClaimed(sdk.NewCoin(ptypes.EdenB, edenBAmount))
+	k.SetCommitments(ctx, commitments)
 
-	err = k.HandleWithdrawFromCommitment(ctx, &commitments, liquidCoins, true, addr)
+	// Emit Hook commitment changed
+	err = k.CommitmentChanged(ctx, addr.String(), sdk.Coins{sdk.NewCoin(denom, amount)})
 	if err != nil {
 		return err
 	}
+
+	withdrawCoins := liquidCoins.
+		Sub(sdk.NewCoin(ptypes.Eden, edenAmount)).
+		Sub(sdk.NewCoin(ptypes.EdenB, edenBAmount))
+
+	if !withdrawCoins.Empty() {
+		err := k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, addr, withdrawCoins)
+		if err != nil {
+			return err
+		}
+	}
+
+	// Update total commitment
+	params := k.GetParams(ctx)
+	params.TotalCommitted = params.TotalCommitted.Add(liquidCoins...)
+	k.SetParams(ctx, params)
 
 	// Emit Hook if Eden is uncommitted
 	if denom == ptypes.Eden {
@@ -61,18 +83,7 @@ func (k Keeper) UncommitTokens(ctx sdk.Context, addr sdk.AccAddress, denom strin
 		}
 	}
 
-	// Emit Hook commitment changed
-	err = k.CommitmentChanged(ctx, addr.String(), sdk.Coins{sdk.NewCoin(denom, amount)})
-	if err != nil {
-		return err
-	}
-
-	// Update total commitment
-	params := k.GetParams(ctx)
-	params.TotalCommitted = params.TotalCommitted.Add(liquidCoins...)
-	k.SetParams(ctx, params)
-
-	// Emit blockchain event
+	// Emit event
 	ctx.EventManager().EmitEvent(
 		sdk.NewEvent(
 			types.EventTypeCommitmentChanged,

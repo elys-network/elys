@@ -114,3 +114,30 @@ func CmdPoolRewards() *cobra.Command {
 
 	return cmd
 }
+
+func CmdAllProgramRewards() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:     "all-program-rewards [address]",
+		Short:   "calculate all program rewards",
+		Example: "elysd q incentive all-program-rewards [address]",
+		Args:    cobra.ExactArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+			queryClient := types.NewQueryClient(clientCtx)
+
+			params := &types.QueryAllProgramRewardsRequest{
+				Address: args[0],
+			}
+			res, err := queryClient.AllProgramRewards(context.Background(), params)
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+
+	return cmd
+}
