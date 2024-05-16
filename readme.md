@@ -2,27 +2,16 @@
 
 **Elys** is a blockchain built using Cosmos SDK and CometBFT. It is designed to be a fast, scalable, and secure blockchain that can be used to build decentralized applications.
 
-| Parameter    | Value                                                                    |
-| ------------ | ------------------------------------------------------------------------ |
-| Chain ID     | elystestnet-1                                                            |
-| Denomination | uelys                                                                    |
-| Decimals     | 6 (1 elys= 1000000uelys)                                                 |
-| Version      | [See latest version here](https://github.com/elys-network/elys/releases) |
-| RPC Endpoint | https://rpc.testnet.elys.network:443                                     |
-
 ## Installation
 
 ### With Makefile (Recommended)
 
 This section provides a step-by-step guide on how to build the Elys Chain binary from the source code using the provided makefile. The makefile automates the build process and generates a binary executable that can be run on your local machine.
 
-<details>
-<summary>Click to expand/collapse</summary>
-
 1. Clone the Elys chain repository:
 
 ```bash
-git clone https://github.com/elys-network/elys.git
+git clone https://github.com/monopauli/elys.git
 ```
 
 2. Navigate to the cloned repository:
@@ -43,106 +32,19 @@ git checkout <version>
 sudo apt-get install --yes make
 ```
 
-5. **Optional**: Use _RocksDB_ instead of _pebbledb_
-
-Ensure that you have RocksDB installed on your machine. On Ubuntu, you can install RocksDB using the following suite of commands:
-
-```bash
-# set rocks db version
-ROCKSDB_VERSION=8.9.1
-
-# install rocks db dependencies
-sudo apt install -y libgflags-dev libsnappy-dev zlib1g-dev libbz2-dev liblz4-dev libzstd-dev
-
-# download and extract on /tmp
-cd /tmp
-wget https://github.com/facebook/rocksdb/archive/refs/tags/v${ROCKSDB_VERSION}.tar.gz
-tar -xvf v${ROCKSDB_VERSION}.tar.gz && cd rocksdb-${ROCKSDB_VERSION} || return
-
-# build rocks db
-export CXXFLAGS='-Wno-error=deprecated-copy -Wno-error=pessimizing-move -Wno-error=class-memaccess'
-make shared_lib
-
-# install rocks db
-sudo make install-shared INSTALL_PATH=/usr
-
-# cleanup to save space
-rm -rf /tmp/rocksdb-${ROCKSDB_VERSION} /tmp/v${ROCKSDB_VERSION}.tar.gz
-```
-
-In order to build the binary with RocksDB, you need to run the following command:
-
-```bash
-ROCKSDB=1 make build
-```
-
-Note: RocksDB is only required for Linux machines. For macOS, you can continue without installing RocksDB.
-
-When running `ROCKSDB=1 make build`, if you are getting this error:
-
-```bash
-elysd: error while loading shared libraries: librocksdb.so.8.9: cannot open shared object file: No such file or directory
-```
-
-You might need to set the `LD_LIBRARY_PATH` environment variable to the local library path. You can do this by running the following command:
-
-```bash
-export LD_LIBRARY_PATH=/usr/local/lib
-```
-
-6. Run the `make build` command to build the binary:
+5. Run the `make build` command to build the binary:
 
 ```bash
 make build
 ```
 
-7. The binary will be generated in the `./build` directory. You can run the binary using the following command:
+6. The binary will be generated in the `./build` directory. You can run the binary using the following command:
 
 ```bash
 ./build/elysd
 ```
 
 You can also use the `make install` command to install the binary in the `bin` directory of your `GOPATH`.
-
-</details>
-
-### With Ignite (Experimental)
-
-To install the latest version of Elys binary, execute the following command on your machine:
-
-```
-curl https://get.ignite.com/elys-network/elys@latest! | sudo bash
-```
-
-## Development
-
-You can use `ignite-cli` to get you started with your development environment. To install `ignite-cli`, execute the following command on your machine:
-
-```
-curl https://get.ignite.com/ignite/ignite-cli@latest! | sudo bash
-```
-
-### Initialize
-
-To initialize and serve your development environment, execute the following command:
-
-```
-ignite chain serve -r
-```
-
-`serve` command installs dependencies, builds, initializes, and starts Elys in development. The `-r` flag rebuilds the binary before starting the chain.
-
-## Validator Guide
-
-The validator guide is accessible [here](./validator.md).
-
-## Network Launch
-
-The network guide is accessible [here](./network.md).
-
-## Architecture
-
-The architecture guide is accessible [here](./architecture.md).
 
 ## Release
 
