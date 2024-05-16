@@ -157,6 +157,10 @@ message ValidatorDetail {
 	// Only available if there's some and if address.
 	// is sent in request object.
 	BalanceAvailable staked = 6 [(gogoproto.nullable) = false, (amino.dont_omitempty) = true];
+    //Is jailed
+    string jailed = 7;
+    //The validator status
+    string inactive = 8;
 }
 
 message StakingValidator {
