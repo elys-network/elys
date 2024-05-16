@@ -757,6 +757,15 @@ jobs:
         with:
           go-version: "1.21"
 
+      - name: Restore new binary from cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            ${{ needs.build-new-binary.outputs.NEW_BINARY_PATH }}
+            ${{ needs.build-new-binary.outputs.NEW_UPGRADE_ASSURE_BINARY_PATH}}
+            ${{ needs.build-new-binary.outputs.UPLOAD_SNAPSHOT_BINARY_PATH }}
+          key: ${{ needs.build-new-binary.outputs.CACHE_KEY }}
+
       - name: Create new snapshot file
         run: |
           SANITIZED_HEAD_REF=${{ github.head_ref || github.ref }}
