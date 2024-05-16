@@ -494,7 +494,7 @@ jobs:
             ${{ needs.build-new-binary.outputs.NEW_UPGRADE_ASSURE_BINARY_PATH }} \
             ${{ needs.retrieve-snapshot.outputs.SNAPSHOT_FILE_PATH }} \
             ${{ needs.retrieve-old-binary.outputs.OLD_BINARY_PATH }} \
-            ${{ needs.build-new-binary.outputs.NEW_BINARY_PATH }} \ \
+            ${{ needs.build-new-binary.outputs.NEW_BINARY_PATH }} \
             --skip-snapshot \
             --skip-chain-init \
             --skip-prepare-validator-data \
