@@ -457,6 +457,19 @@ jobs:
           key: ${{ runner.os }}-chain-init-${{ needs.retrieve-latest-tag.outputs.LATEST_TAG }}
         if: steps.cache-create-second-validator.outputs.cache-hit != 'true'
 
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+        if: steps.cache-create-second-validator.outputs.cache-hit != 'true'
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.21"
+        if: steps.cache-create-second-validator.outputs.cache-hit != 'true'
+
       - name: Restore new binary from cache
         uses: actions/cache@v4
         with:
@@ -521,6 +534,19 @@ jobs:
             /home/runner/.elys
             /home/runner/.elys2
           key: ${{ runner.os }}-create-second-validator-${{ needs.retrieve-latest-tag.outputs.LATEST_TAG }}
+        if: steps.cache-prepare-validator-data.outputs.cache-hit != 'true'
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+        if: steps.cache-prepare-validator-data.outputs.cache-hit != 'true'
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.21"
         if: steps.cache-prepare-validator-data.outputs.cache-hit != 'true'
 
       - name: Restore new binary from cache
@@ -589,6 +615,19 @@ jobs:
           key: ${{ runner.os }}-prepare-validator-data-${{ needs.retrieve-latest-tag.outputs.LATEST_TAG }}
         if: steps.cache-submit-new-proposal.outputs.cache-hit != 'true'
 
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+        if: steps.cache-submit-new-proposal.outputs.cache-hit != 'true'
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.21"
+        if: steps.cache-submit-new-proposal.outputs.cache-hit != 'true'
+
       - name: Restore new binary from cache
         uses: actions/cache@v4
         with:
@@ -654,6 +693,19 @@ jobs:
           key: ${{ runner.os }}-submit-new-proposal-${{ needs.retrieve-latest-tag.outputs.LATEST_TAG }}
         if: steps.cache-upgrade-to-new-binary.outputs.cache-hit != 'true'
 
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+        if: steps.cache-upgrade-to-new-binary.outputs.cache-hit != 'true'
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.21"
+        if: steps.cache-upgrade-to-new-binary.outputs.cache-hit != 'true'
+
       - name: Restore new binary from cache
         uses: actions/cache@v4
         with:
@@ -693,6 +745,17 @@ jobs:
             /home/runner/.elys
             /home/runner/.elys2
           key: ${{ needs.build-new-binary.outputs.CACHE_KEY }}-upgrade-to-new-binary
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.21"
 
       - name: Create new snapshot file
         run: |
