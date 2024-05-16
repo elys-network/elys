@@ -774,6 +774,9 @@ jobs:
           export R2_SECRET_KEY=${{ secrets.R2_SECRET_KEY }}
           export R2_ENDPOINT=${{ secrets.R2_ENDPOINT }}
           export R2_BUCKET_NAME=${{ secrets.R2_BUCKET_NAME }}
+          du -hs $NEW_SNAPSHOT_PATH
+          ls -l $UPLOAD_SNAPSHOT_BINARY_PATH
+          chmod +x $UPLOAD_SNAPSHOT_BINARY_PATH
           $UPLOAD_SNAPSHOT_BINARY_PATH $NEW_SNAPSHOT_PATH
 
       - name: Info about the snapshot
