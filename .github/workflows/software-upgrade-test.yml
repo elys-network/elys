@@ -716,6 +716,12 @@ jobs:
           key: ${{ needs.build-new-binary.outputs.CACHE_KEY }}
         if: steps.cache-upgrade-to-new-binary.outputs.cache-hit != 'true'
 
+      - name: Remove genesis.json files
+        run: |
+          rm -f /home/runner/.elys/genesis.json
+          rm -f /home/runner/.elys2/genesis.json
+        if: steps.cache-upgrade-to-new-binary.outputs.cache-hit != 'true'
+
       - name: Upgrade to new binary
         run: |
           GOMEMLIMIT=32GiB \
