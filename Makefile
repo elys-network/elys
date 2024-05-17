@@ -76,6 +76,12 @@ build-upload-snapshot: check-version go.sum
 	@-mkdir -p $(BUILD_FOLDER) 2> /dev/null
 	@GOFLAGS=$(GOFLAGS) go build -o $(BUILD_FOLDER) ./cmd/upload-snapshot
 
+## build-delete-snapshot: Build the binary for delete snapshot
+build-delete-snapshot: check-version go.sum
+	@echo Building Delete snapshot binary...
+	@-mkdir -p $(BUILD_FOLDER) 2> /dev/null
+	@GOFLAGS=$(GOFLAGS) go build -o $(BUILD_FOLDER) ./cmd/delete-snapshot
+
 ## build-all: Build binaries for all platforms
 build-all:
 	@echo Building Elysd binaries for all platforms...
@@ -91,7 +97,7 @@ do-checksum:
 ## build-with-checksum: Build binaries for all platforms and generate checksums
 build-with-checksum: build-all do-checksum
 
-.PHONY: install build build-all do-checksum build-with-checksum build-upgrade-assure build-upload-snapshot
+.PHONY: install build build-all do-checksum build-with-checksum build-upgrade-assure build-upload-snapshot build-delete-snapshot
 
 ## mocks: Generate mocks
 mocks:
