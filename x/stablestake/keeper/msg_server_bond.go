@@ -69,7 +69,7 @@ func (k msgServer) Bond(goCtx context.Context, msg *types.MsgBond) (*types.MsgBo
 	}
 
 	// Commit LP token
-	err = k.commitmentKeeper.CommitLiquidTokens(ctx, sender, shareDenom, shareAmount, uint64(ctx.BlockTime().Unix()))
+	err = k.commitmentKeeper.CommitLiquidTokens(ctx, sender, shareDenom, shareAmount, 0)
 	if err != nil {
 		return nil, err
 	}
