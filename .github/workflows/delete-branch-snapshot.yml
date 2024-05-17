@@ -40,4 +40,4 @@ jobs:
         run: |
           SANITIZED_HEAD_REF=${{ github.head_ref || github.ref }}
           SANITIZED_HEAD_REF=$(echo "$SANITIZED_HEAD_REF" | sed 's|refs/heads/||; s|/|_|g')
-          ./build/delete_snapshot "$SANITIZED_HEAD_REF"
+          ./build/delete-snapshot "$SANITIZED_HEAD_REF"
