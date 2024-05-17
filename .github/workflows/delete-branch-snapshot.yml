@@ -38,6 +38,6 @@ jobs:
           R2_ENDPOINT: ${{ secrets.R2_ENDPOINT }}
           R2_BUCKET_NAME: ${{ secrets.R2_BUCKET_NAME }}
         run: |
-          SANITIZED_HEAD_REF=${{ github.ref }}
-          SANITIZED_HEAD_REF=$(echo "$SANITIZED_HEAD_REF" | sed 's|refs/heads/||; s|/|_|g')
-          ./build/delete-snapshot "$SANITIZED_HEAD_REF"
+          SANITIZED_EVENT_REF=${{ github.event.ref }}
+          SANITIZED_EVENT_REF=$(echo "$SANITIZED_EVENT_REF" | sed 's|refs/heads/||; s|/|_|g')
+          ./build/delete-snapshot "$SANITIZED_EVENT_REF"
