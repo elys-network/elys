@@ -778,11 +778,12 @@ jobs:
           tar -cf - .elys | lz4 -z - > "$NEW_SNAPSHOT_PATH"
 
       - name: Upload snapshot
+        env:
+          R2_ACCESS_KEY: ${{ secrets.R2_ACCESS_KEY }}
+          R2_SECRET_KEY: ${{ secrets.R2_SECRET_KEY }}
+          R2_ENDPOINT: ${{ secrets.R2_ENDPOINT }}
+          R2_BUCKET_NAME: ${{ secrets.R2_BUCKET_NAME }}
         run: |
-          export R2_ACCESS_KEY=${{ secrets.R2_ACCESS_KEY }}
-          export R2_SECRET_KEY=${{ secrets.R2_SECRET_KEY }}
-          export R2_ENDPOINT=${{ secrets.R2_ENDPOINT }}
-          export R2_BUCKET_NAME=${{ secrets.R2_BUCKET_NAME }}
           ${{ needs.build-new-binary.outputs.UPLOAD_SNAPSHOT_BINARY_PATH }} $NEW_SNAPSHOT_PATH
 
       - name: Info about the snapshot
