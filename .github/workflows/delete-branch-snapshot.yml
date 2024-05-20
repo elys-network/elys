@@ -1,0 +1,43 @@
+name: Delete Snapshot on Branch Deletion
+
+on:
+  delete:
+    branches:
+      - "**"
+
+jobs:
+  delete-snapshot:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.21"
+
+      - name: Cache delete-snapshot binary
+        id: cache-delete-snapshot
+        uses: actions/cache@v4
+        with:
+          path: |
+            ./build
+          key: ${{ runner.os }}-delete-snapshot-${{ hashFiles('cmd/delete-snapshot/*.go') }}
+
+      - name: Build delete-snapshot binary
+        if: steps.cache-delete-snapshot.outputs.cache-hit != 'true'
+        run: |
+          make build-delete-snapshot
+
+      - name: Run delete-snapshot
+        env:
+          R2_ACCESS_KEY: ${{ secrets.R2_ACCESS_KEY }}
+          R2_SECRET_KEY: ${{ secrets.R2_SECRET_KEY }}
+          R2_ENDPOINT: ${{ secrets.R2_ENDPOINT }}
+          R2_BUCKET_NAME: ${{ secrets.R2_BUCKET_NAME }}
+        run: |
+          SANITIZED_EVENT_REF=${{ github.event.ref }}
+          SANITIZED_EVENT_REF=$(echo "$SANITIZED_EVENT_REF" | sed 's|refs/heads/||; s|/|_|g')
+          ./build/delete-snapshot "$SANITIZED_EVENT_REF"
