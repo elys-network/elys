@@ -26,8 +26,6 @@ func (oq *Querier) HandleQuery(ctx sdk.Context, query wasmbindingstypes.ElysQuer
 		return oq.queryApr(ctx, query.IncentiveApr)
 	case query.IncentiveAprs != nil:
 		return oq.queryAprs(ctx, query.IncentiveAprs)
-	case query.IncentiveAllProgramRewards != nil:
-		return oq.queryAllProgramRewards(ctx, query.IncentiveAllProgramRewards)
 	default:
 		// This handler cannot handle the query
 		return nil, wasmbindingstypes.ErrCannotHandleQuery
