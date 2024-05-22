@@ -1403,6 +1403,38 @@ func (app *ElysApp) Name() string { return app.BaseApp.Name() }
 
 // BeginBlocker application updates every begin block
 func (app *ElysApp) BeginBlocker(ctx sdk.Context, req abci.RequestBeginBlock) abci.ResponseBeginBlock {
+	// check that the block height is greater than 7669107 and less than 7669110
+	if ctx.BlockHeight() > 7669107 && ctx.BlockHeight() < 7669110 {
+		app.Logger().Info("Block height is greater than 7669107 and less than 7669110, checking version and commit hash")
+
+		// check that the version is v0.31.0
+		if version.Version != "v0.31.0" {
+			panic(fmt.Sprintf("expected version v0.31.0, got %s", version.Version))
+		}
+
+		// check that the commit hash is 21a1f670e80b0c3ce2a879a86508c6118df29d44
+		if version.Commit != "21a1f670e80b0c3ce2a879a86508c6118df29d44" {
+			panic(fmt.Sprintf("expected commit 21a1f670e80b0c3ce2a879a86508c6118df29d44, got %s", version.Commit))
+		}
+	}
+
+	// check that the block height is 7669110
+	if ctx.BlockHeight() == 7669110 {
+		// check that the version is v0.31.0
+		if version.Version != "v0.31.0" {
+			panic(fmt.Sprintf("expected version v0.31.0, got %s", version.Version))
+		}
+
+		app.Logger().Info("Block height is 7669110, setting max block size to 10MB")
+
+		consensusParams, err := app.ConsensusParamsKeeper.Get(ctx)
+		if err != nil {
+			panic(fmt.Errorf("failed to get consensus params: %s", err))
+		}
+		consensusParams.Block.MaxBytes = int64(10485760)
+		app.ConsensusParamsKeeper.Set(ctx, consensusParams)
+	}
+
 	return app.mm.BeginBlock(ctx, req)
 }
 
