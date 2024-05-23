@@ -19,6 +19,10 @@ service Query {
   rpc Rewards(QueryRewardsRequest) returns (QueryRewardsResponse) {
     option (google.api.http).get = "/elys-network/elys/estaking/rewards/{address}";
   }
+  // Invariant queries the invariant values
+  rpc Invariant(QueryInvariantRequest) returns (QueryInvariantResponse) {
+    option (google.api.http).get = "/elys-network/elys/estaking/invariant";
+  }
 }
 
 // QueryParamsRequest is request type for the Query/Params RPC method.
@@ -49,5 +53,17 @@ message QueryRewardsResponse {
   repeated cosmos.base.v1beta1.Coin total = 2 [
     (gogoproto.nullable)     = false,
     (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
+  ];
+}
+
+message QueryInvariantRequest {}
+message QueryInvariantResponse {
+  string total_bonded = 1 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+  string bonded_validator_tokens_sum = 2 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
   ];
 }
