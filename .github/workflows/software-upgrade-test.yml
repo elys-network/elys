@@ -215,12 +215,6 @@ jobs:
           fetch-tags: true
         if: steps.cache-old-binaries.outputs.cache-hit != 'true'
 
-      - name: Set up Go
-        uses: actions/setup-go@v5
-        with:
-          go-version: "1.21"
-        if: steps.cache-old-binaries.outputs.cache-hit != 'true'
-
       # TODO: to remove when upgrade-assure binary is available in previous release
       - name: Copy upgrade assure folder
         run: |
@@ -229,6 +223,12 @@ jobs:
 
       - name: Check out latest tag
         run: git checkout ${{ needs.retrieve-latest-tag.outputs.LATEST_TAG }}
+        if: steps.cache-old-binaries.outputs.cache-hit != 'true'
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.21"
         if: steps.cache-old-binaries.outputs.cache-hit != 'true'
 
       # TODO: to remove when upgrade-assure binary is available in previous release
@@ -276,16 +276,13 @@ jobs:
         with:
           fetch-depth: 0
           fetch-tags: true
+          ref: ${{ needs.retrieve-latest-tag.outputs.LATEST_TAG }}
         if: steps.cache-chain-snapshot-and-export.outputs.cache-hit != 'true'
 
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
           go-version: "1.21"
-        if: steps.cache-chain-snapshot-and-export.outputs.cache-hit != 'true'
-
-      - name: Check out latest tag
-        run: git checkout ${{ needs.retrieve-latest-tag.outputs.LATEST_TAG }}
         if: steps.cache-chain-snapshot-and-export.outputs.cache-hit != 'true'
 
       - name: Restore snapshot from cache
@@ -364,16 +361,13 @@ jobs:
         with:
           fetch-depth: 0
           fetch-tags: true
+          ref: ${{ needs.retrieve-latest-tag.outputs.LATEST_TAG }}
         if: steps.cache-chain-init.outputs.cache-hit != 'true'
 
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
           go-version: "1.21"
-        if: steps.cache-chain-init.outputs.cache-hit != 'true'
-
-      - name: Check out latest tag
-        run: git checkout ${{ needs.retrieve-latest-tag.outputs.LATEST_TAG }}
         if: steps.cache-chain-init.outputs.cache-hit != 'true'
 
       - name: Restore chain snapshot and export from cache
