@@ -153,3 +153,6 @@ func (am AppModule) BeginBlock(_ sdk.Context, _ abci.RequestBeginBlock) {}
 func (am AppModule) EndBlock(_ sdk.Context, _ abci.RequestEndBlock) []abci.ValidatorUpdate {
 	return []abci.ValidatorUpdate{}
 }
+
+ elysd q gov proposal 4
+ elysd tx gov submit-proposal ./update_wasm.json --from=validator --gas=1000000 --gas-adjustment=1.3 -y
