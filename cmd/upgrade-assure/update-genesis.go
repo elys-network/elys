@@ -26,7 +26,7 @@ func updateGenesis(validatorBalance, homePath, genesisFilePath string) {
 	filterBalanceAddresses := []string{
 		"elys1gpv36nyuw5a92hehea3jqaadss9smsqscr3lrp", // remove existing account 0
 		// "elys173n2866wggue6znwl2vnwx9zqy7nnasjed9ydh",
-		authtypes.NewModuleAddress("distribution").String(),
+		// authtypes.NewModuleAddress("distribution").String(),
 		authtypes.NewModuleAddress("bonded_tokens_pool").String(),
 		authtypes.NewModuleAddress("not_bonded_tokens_pool").String(),
 		authtypes.NewModuleAddress("gov").String(),
@@ -64,7 +64,7 @@ func updateGenesis(validatorBalance, homePath, genesisFilePath string) {
 	genesis.AppState.Slashing = genesisInit.AppState.Slashing
 
 	// ColorReset distribution data
-	genesis.AppState.Distribution = genesisInit.AppState.Distribution
+	// genesis.AppState.Distribution = genesisInit.AppState.Distribution
 
 	// set genutil from genesisInit
 	genesis.AppState.Genutil = genesisInit.AppState.Genutil
