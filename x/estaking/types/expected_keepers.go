@@ -51,8 +51,7 @@ type CommitmentKeeper interface {
 	MintCoins(ctx sdk.Context, moduleName string, amt sdk.Coins) error
 	SendCoinsFromModuleToModule(ctx sdk.Context, senderModule string, recipientModule string, amt sdk.Coins) error
 	SetCommitments(sdk.Context, commitmenttypes.Commitments)
-	BurnEdenBoost(ctx sdk.Context, creator string, denom string, amount math.Int) (commitmenttypes.Commitments, error)
-	BeforeDelegationCreated(sdk.Context, string, string) error
+	BurnEdenBoost(ctx sdk.Context, creator string, denom string, amount math.Int) error
 }
 
 type DistrKeeper interface {

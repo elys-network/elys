@@ -27,11 +27,6 @@ service Query {
   rpc PoolRewards(QueryPoolRewardsRequest) returns (QueryPoolRewardsResponse) {
     option (google.api.http).get = "/elys-network/elys/incentive/pool_rewards";
   }
-
-  // Queries all program rewards
-  rpc AllProgramRewards(QueryAllProgramRewardsRequest) returns (QueryAllProgramRewardsResponse) {
-    option (google.api.http).get = "/elys-network/elys/incentive/all_program_rewards";
-  }
 }
 
 message QueryAprRequest {
@@ -89,29 +84,6 @@ message QueryAprsResponse {
   string edenb_apr_elys = 10 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
     (gogoproto.nullable) = false
-  ];
-}
-
-message QueryAllProgramRewardsRequest {
-  string address = 1;
-}
-
-message QueryAllProgramRewardsResponse {
-  repeated cosmos.base.v1beta1.DecCoin usdc_staking_rewards = 1 [
-    (gogoproto.nullable) = false,
-    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.DecCoins"
-  ];
-  repeated cosmos.base.v1beta1.DecCoin elys_staking_rewards = 2 [
-    (gogoproto.nullable) = false,
-    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.DecCoins"
-  ];
-  repeated cosmos.base.v1beta1.DecCoin eden_staking_rewards = 3 [
-    (gogoproto.nullable) = false,
-    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.DecCoins"
-  ];
-  repeated cosmos.base.v1beta1.DecCoin edenb_staking_rewards = 4 [
-    (gogoproto.nullable) = false,
-    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.DecCoins"
   ];
 }
 

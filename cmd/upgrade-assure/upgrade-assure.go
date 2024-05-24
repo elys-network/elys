@@ -118,6 +118,9 @@ func main() {
 				// validate genesis
 				validateGenesis(oldBinaryPath, homePath)
 
+				// backup genesis init file
+				backupGenesisInitFile(homePath)
+
 				// update genesis
 				updateGenesis(validatorBalance, homePath, genesisFilePath)
 			}
@@ -153,6 +156,9 @@ func main() {
 				}
 
 				if !skipPrepareValidatorData {
+					// restore genesis init file
+					restoreGenesisInitFile(homePath)
+
 					// copy data from node 1 to node 2
 					copyDataFromNodeToNode(homePath, homePath2)
 

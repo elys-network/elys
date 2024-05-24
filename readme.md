@@ -159,5 +159,5 @@ After a draft release is created, make your final changes from the release page 
 
 - [Twitter](https://twitter.com/elys_network)
 - [TestNet Explorer](https://testnet.ping.pub/elys)
-- [Developer Chat](https://discord.gg/3JtgtGJ3By)
+- [Developer Chat](https://discord.gg/elysnetwork)
 - [Github](https://github.com/elys-network)

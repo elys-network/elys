@@ -113,6 +113,8 @@ func (m Migrator) V11Migration(ctx sdk.Context) error {
 	edenValAddr := sdk.ValAddress(authtypes.NewModuleAddress(ptypes.Eden))
 	edenBValAddr := sdk.ValAddress(authtypes.NewModuleAddress(ptypes.EdenB))
 	legacyCommitments := m.commitmentKeeper.GetAllLegacyCommitments(ctx)
+	commParams := m.commitmentKeeper.GetLegacyParams(ctx)
+	numberOfCommitments := uint64(0)
 	for _, legacy := range legacyCommitments {
 		creator := legacy.Creator
 		addr, err := sdk.AccAddressFromBech32(creator)
@@ -129,9 +131,8 @@ func (m Migrator) V11Migration(ctx sdk.Context) error {
 			VestingTokens:   legacy.VestingTokens,
 		}
 		m.commitmentKeeper.SetCommitments(ctx, commitments)
-		commParams := m.commitmentKeeper.GetParams(ctx)
 		for _, committed := range commitments.CommittedTokens {
-			if committed.Denom == ptypes.Eden && commParams.TotalCommitted.AmountOf(ptypes.Eden).IsPositive() {
+			if committed.Denom == ptypes.Eden && committed.Amount.IsPositive() && commParams.TotalCommitted.AmountOf(ptypes.Eden).IsPositive() {
 				err = m.estakingKeeper.Hooks().BeforeDelegationCreated(ctx, addr, edenValAddr)
 				if err != nil {
 					return err
@@ -141,7 +142,7 @@ func (m Migrator) V11Migration(ctx sdk.Context) error {
 					return err
 				}
 			}
-			if committed.Denom == ptypes.EdenB && commParams.TotalCommitted.AmountOf(ptypes.EdenB).IsPositive() {
+			if committed.Denom == ptypes.EdenB && committed.Amount.IsPositive() && commParams.TotalCommitted.AmountOf(ptypes.EdenB).IsPositive() {
 				err = m.estakingKeeper.Hooks().BeforeDelegationCreated(ctx, addr, edenBValAddr)
 				if err != nil {
 					return err
@@ -163,7 +164,13 @@ func (m Migrator) V11Migration(ctx sdk.Context) error {
 				m.masterchefKeeper.AfterDeposit(ctx, stablestaketypes.PoolId, addr.String(), committed.Amount)
 			}
 		}
+		numberOfCommitments++
 	}
+	m.commitmentKeeper.SetParams(ctx, commitmenttypes.Params{
+		VestingInfos:        commParams.VestingInfos,
+		TotalCommitted:      commParams.TotalCommitted,
+		NumberOfCommitments: numberOfCommitments,
+	})
 
 	fmt.Println("Finished incentive v11 migration  ...")
 	return nil

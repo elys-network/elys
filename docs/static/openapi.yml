@@ -39333,6 +39333,9 @@ paths:
                         custom method
 
                         signatures required by gogoproto.
+                  number_of_commitments:
+                    type: string
+                    format: uint64
             description: >-
               QueryParamsResponse is response type for the Query/Params RPC
               method.
@@ -39754,11 +39757,11 @@ paths:
                           amount:
                             type: string
                         description: >-
-                          DecCoin defines a token with a denomination and a
-                          decimal amount.
+                          Coin defines a token with a denomination and an
+                          amount.
 
 
-                          NOTE: The amount field is an Dec which implements the
+                          NOTE: The amount field is an Int which implements the
                           custom method
 
                           signatures required by gogoproto.
@@ -39773,11 +39776,10 @@ paths:
                     amount:
                       type: string
                   description: >-
-                    DecCoin defines a token with a denomination and a decimal
-                    amount.
+                    Coin defines a token with a denomination and an amount.
 
 
-                    NOTE: The amount field is an Dec which implements the custom
+                    NOTE: The amount field is an Int which implements the custom
                     method
 
                     signatures required by gogoproto.
@@ -39804,113 +39806,6 @@ paths:
         - name: address
           in: path
           required: true
-          type: string
-      tags:
-        - Query
-  /elys-network/elys/incentive/all_program_rewards:
-    get:
-      summary: Queries all program rewards
-      operationId: ElysIncentiveAllProgramRewards
-      responses:
-        '200':
-          description: A successful response.
-          schema:
-            type: object
-            properties:
-              usdc_staking_rewards:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    denom:
-                      type: string
-                    amount:
-                      type: string
-                  description: >-
-                    DecCoin defines a token with a denomination and a decimal
-                    amount.
-
-
-                    NOTE: The amount field is an Dec which implements the custom
-                    method
-
-                    signatures required by gogoproto.
-              elys_staking_rewards:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    denom:
-                      type: string
-                    amount:
-                      type: string
-                  description: >-
-                    DecCoin defines a token with a denomination and a decimal
-                    amount.
-
-
-                    NOTE: The amount field is an Dec which implements the custom
-                    method
-
-                    signatures required by gogoproto.
-              eden_staking_rewards:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    denom:
-                      type: string
-                    amount:
-                      type: string
-                  description: >-
-                    DecCoin defines a token with a denomination and a decimal
-                    amount.
-
-
-                    NOTE: The amount field is an Dec which implements the custom
-                    method
-
-                    signatures required by gogoproto.
-              edenb_staking_rewards:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    denom:
-                      type: string
-                    amount:
-                      type: string
-                  description: >-
-                    DecCoin defines a token with a denomination and a decimal
-                    amount.
-
-
-                    NOTE: The amount field is an Dec which implements the custom
-                    method
-
-                    signatures required by gogoproto.
-        default:
-          description: An unexpected error response.
-          schema:
-            type: object
-            properties:
-              code:
-                type: integer
-                format: int32
-              message:
-                type: string
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    '@type':
-                      type: string
-                  additionalProperties: {}
-      parameters:
-        - name: address
-          in: query
-          required: false
           type: string
       tags:
         - Query
@@ -84594,6 +84489,9 @@ definitions:
 
             NOTE: The amount field is an Int which implements the custom method
             signatures required by gogoproto.
+      number_of_commitments:
+        type: string
+        format: uint64
     description: Params defines the parameters for the module.
   elys.commitment.QueryNumberOfCommitmentsResponse:
     type: object
@@ -84642,6 +84540,9 @@ definitions:
                 method
 
                 signatures required by gogoproto.
+          number_of_commitments:
+            type: string
+            format: uint64
     description: QueryParamsResponse is response type for the Query/Params RPC method.
   elys.commitment.QueryShowCommitmentsResponse:
     type: object
@@ -84882,9 +84783,9 @@ definitions:
             amount:
               type: string
           description: |-
-            DecCoin defines a token with a denomination and a decimal amount.
+            Coin defines a token with a denomination and an amount.
 
-            NOTE: The amount field is an Dec which implements the custom method
+            NOTE: The amount field is an Int which implements the custom method
             signatures required by gogoproto.
   elys.estaking.DexRewardsTracker:
     type: object
@@ -85089,11 +84990,10 @@ definitions:
                   amount:
                     type: string
                 description: >-
-                  DecCoin defines a token with a denomination and a decimal
-                  amount.
+                  Coin defines a token with a denomination and an amount.
 
 
-                  NOTE: The amount field is an Dec which implements the custom
+                  NOTE: The amount field is an Int which implements the custom
                   method
 
                   signatures required by gogoproto.
@@ -85108,9 +85008,9 @@ definitions:
             amount:
               type: string
           description: |-
-            DecCoin defines a token with a denomination and a decimal amount.
+            Coin defines a token with a denomination and an amount.
 
-            NOTE: The amount field is an Dec which implements the custom method
+            NOTE: The amount field is an Int which implements the custom method
             signatures required by gogoproto.
         description: total defines the sum of all the rewards.
   elys.commitment.EarnType:
@@ -85144,65 +85044,6 @@ definitions:
             Coin defines a token with a denomination and an amount.
 
             NOTE: The amount field is an Int which implements the custom method
-            signatures required by gogoproto.
-  elys.incentive.QueryAllProgramRewardsResponse:
-    type: object
-    properties:
-      usdc_staking_rewards:
-        type: array
-        items:
-          type: object
-          properties:
-            denom:
-              type: string
-            amount:
-              type: string
-          description: |-
-            DecCoin defines a token with a denomination and a decimal amount.
-
-            NOTE: The amount field is an Dec which implements the custom method
-            signatures required by gogoproto.
-      elys_staking_rewards:
-        type: array
-        items:
-          type: object
-          properties:
-            denom:
-              type: string
-            amount:
-              type: string
-          description: |-
-            DecCoin defines a token with a denomination and a decimal amount.
-
-            NOTE: The amount field is an Dec which implements the custom method
-            signatures required by gogoproto.
-      eden_staking_rewards:
-        type: array
-        items:
-          type: object
-          properties:
-            denom:
-              type: string
-            amount:
-              type: string
-          description: |-
-            DecCoin defines a token with a denomination and a decimal amount.
-
-            NOTE: The amount field is an Dec which implements the custom method
-            signatures required by gogoproto.
-      edenb_staking_rewards:
-        type: array
-        items:
-          type: object
-          properties:
-            denom:
-              type: string
-            amount:
-              type: string
-          description: |-
-            DecCoin defines a token with a denomination and a decimal amount.
-
-            NOTE: The amount field is an Dec which implements the custom method
             signatures required by gogoproto.
   elys.incentive.QueryAprResponse:
     type: object

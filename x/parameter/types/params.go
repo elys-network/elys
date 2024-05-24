@@ -109,3 +109,9 @@ func validateBrokerAddress(i interface{}) error {
 	}
 	return nil
 }
+
+// String implements the Stringer interface.
+func (p LegacyParams) String() string {
+	out, _ := yaml.Marshal(p)
+	return string(out)
+}

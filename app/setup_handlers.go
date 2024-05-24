@@ -1,6 +1,7 @@
 package app
 
 import (
+	"github.com/cosmos/cosmos-sdk/baseapp"
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	m "github.com/cosmos/cosmos-sdk/types/module"
@@ -8,6 +9,7 @@ import (
 	distrtypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
+	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 	estakingtypes "github.com/elys-network/elys/x/estaking/types"
@@ -21,10 +23,35 @@ func SetupHandlers(app *ElysApp) {
 }
 
 func setUpgradeHandler(app *ElysApp) {
+	// Set param key table for params module migration
+	for _, subspace := range app.ParamsKeeper.GetSubspaces() {
+		subspace := subspace
+
+		app.Logger().Info("Setting up upgrade handler for " + subspace.Name())
+
+		var keyTable paramstypes.KeyTable
+		switch subspace.Name() {
+		case distrtypes.ModuleName:
+			keyTable = distrtypes.ParamKeyTable() //nolint:staticcheck
+		default:
+			continue
+		}
+
+		if !subspace.HasKeyTable() {
+			subspace.WithKeyTable(keyTable)
+		}
+	}
+
+	baseAppLegacySS := app.ParamsKeeper.Subspace(baseapp.Paramspace).WithKeyTable(paramstypes.ConsensusParamsKeyTable())
+
 	app.UpgradeKeeper.SetUpgradeHandler(
 		version.Version,
 		func(ctx sdk.Context, plan upgradetypes.Plan, vm m.VersionMap) (m.VersionMap, error) {
 			app.Logger().Info("Running upgrade handler for " + version.Version)
+
+			// Migrate Tendermint consensus parameters from x/params module to a
+			// dedicated x/consensus module.
+			baseapp.MigrateParams(ctx, baseAppLegacySS, &app.ConsensusParamsKeeper)
 
 			if version.Version == "v0.31.0" {
 				app.Logger().Info("Deleting proposals with ID <= 185")
@@ -91,6 +118,14 @@ func setUpgradeHandler(app *ElysApp) {
 
 					app.StakingKeeper.SetValidator(ctx, validator)
 					app.Logger().Info("reset unbonded status for validator", "operator", operator)
+				}
+
+				// send missing funds to distribution module account
+				missingFunds := sdk.NewCoins(sdk.NewCoin("uelys", sdk.NewInt(75896784878)))
+				// send missing funds to distribution module account
+				err := app.BankKeeper.SendCoinsFromModuleToAccount(ctx, distrtypes.ModuleName, sdk.MustAccAddressFromBech32("elys1dh0axa623u3xstkmysfe78l0rnypsd7y3eyhue"), missingFunds)
+				if err != nil {
+					app.Logger().Error("failed to send missing funds to distribution module account", "error", err)
 				}
 			}
 

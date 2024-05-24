@@ -40,41 +40,28 @@ func (c *Commitments) AddCommittedTokens(denom string, amount math.Int, unlockTi
 	for i, token := range c.CommittedTokens {
 		if token.Denom == denom {
 			c.CommittedTokens[i].Amount = token.Amount.Add(amount)
-			c.CommittedTokens[i].Lockups = append(token.Lockups, Lockup{
-				Amount:          amount,
-				UnlockTimestamp: unlockTime,
-			})
-
-			li := int(0)
-			for _, lockup := range token.Lockups {
-				if lockup.UnlockTimestamp < unlockTime {
-					li++
-					continue
-				} else if lockup.UnlockTimestamp == unlockTime {
-					c.CommittedTokens[i].Lockups[li].Amount = lockup.Amount.Add(amount)
-					return
-				} else {
-					break
-				}
-			}
-			c.CommittedTokens[i].Lockups = append(token.Lockups[:li+1], token.Lockups[li:]...)
-			c.CommittedTokens[i].Lockups[li] = Lockup{
-				Amount:          amount,
-				UnlockTimestamp: unlockTime,
+			if unlockTime != 0 {
+				c.CommittedTokens[i].Lockups = append(token.Lockups, Lockup{
+					Amount:          amount,
+					UnlockTimestamp: unlockTime,
+				})
 			}
 			return
 		}
 	}
-	c.CommittedTokens = append(c.CommittedTokens, &CommittedTokens{
-		Denom:  denom,
-		Amount: amount,
-		Lockups: []Lockup{
-			{
-				Amount:          amount,
-				UnlockTimestamp: unlockTime,
-			},
-		},
-	})
+
+	committedToken := &CommittedTokens{
+		Denom:   denom,
+		Amount:  amount,
+		Lockups: []Lockup{},
+	}
+	if unlockTime != 0 {
+		committedToken.Lockups = append(committedToken.Lockups, Lockup{
+			Amount:          amount,
+			UnlockTimestamp: unlockTime,
+		})
+	}
+	c.CommittedTokens = append(c.CommittedTokens, committedToken)
 }
 
 func (c *Commitments) DeductFromCommitted(denom string, amount math.Int, currTime uint64) error {
@@ -85,29 +72,18 @@ func (c *Commitments) DeductFromCommitted(denom string, amount math.Int, currTim
 				return ErrInsufficientCommittedTokens
 			}
 
-			withdrawnTokens := sdk.ZeroInt()
 			newLockups := []Lockup{}
-
+			lockedAmount := sdk.ZeroInt()
 			for _, lockup := range token.Lockups {
-				if withdrawnTokens.LT(amount) {
-					if lockup.UnlockTimestamp <= currTime {
-						withdrawAmount := lockup.Amount
-						if withdrawAmount.GT(amount.Sub(withdrawnTokens)) {
-							withdrawAmount = amount.Sub(withdrawnTokens)
-							newLockups = append(newLockups, Lockup{
-								Amount:          lockup.Amount.Sub(withdrawAmount),
-								UnlockTimestamp: lockup.UnlockTimestamp,
-							})
-						}
-						withdrawnTokens = withdrawnTokens.Add(withdrawAmount)
-					} else {
-						return ErrInsufficientWithdrawableTokens
-					}
-				} else {
+				if lockup.UnlockTimestamp > currTime {
 					newLockups = append(newLockups, lockup)
+					lockedAmount = lockedAmount.Add(lockup.Amount)
 				}
 			}
 			c.CommittedTokens[i].Lockups = newLockups
+			if lockedAmount.GT(c.CommittedTokens[i].Amount) {
+				return ErrInsufficientWithdrawableTokens
+			}
 			return nil
 		}
 	}

@@ -104,8 +104,8 @@ func updateGenesis(validatorBalance, homePath, genesisFilePath string) {
 	genesis.AppState.Parameter.Params.WasmMaxProposalWasmSize = sdk.NewInt(6291456)
 
 	// update oracle price expiration
-	genesis.AppState.Oracle.Params.PriceExpiryTime = "604800"
-	genesis.AppState.Oracle.Params.LifeTimeInBlocks = "1000000"
+	genesis.AppState.Oracle.Params.PriceExpiryTime = "31536000"
+	genesis.AppState.Oracle.Params.LifeTimeInBlocks = "8000000"
 
 	outputFilePath := homePath + "/config/genesis.json"
 	if err := writeGenesisFile(outputFilePath, genesis); err != nil {
