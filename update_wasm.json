@@ -1,0 +1,14 @@
+{
+    "title": "MsgUpdateWasmConfig",
+    "summary": "MsgUpdateWasmConfig",
+    "messages": [
+        {
+            "@type": "/elys.parameter.MsgUpdateWasmConfig",
+            "creator": "elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3",
+            "wasm_max_label_size": "256",
+            "wasm_max_size":"1638400",
+            "wasm_max_proposal_wasm_size":"6291456"
+        }
+    ],
+    "deposit": "10000000uelys"
+}

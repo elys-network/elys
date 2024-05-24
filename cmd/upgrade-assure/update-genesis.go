@@ -99,6 +99,9 @@ func updateGenesis(validatorBalance, homePath, genesisFilePath string) {
 
 	// update broker address
 	genesis.AppState.Parameter.Params.BrokerAddress = "elys1nc5tatafv6eyq7llkr2gv50ff9e22mnf70qgjlv737ktmt4eswrqau4f4q"
+	genesis.AppState.Parameter.Params.WasmMaxLabelSize = sdk.NewInt(256)
+	genesis.AppState.Parameter.Params.WasmMaxSize = sdk.NewInt(1638400)
+	genesis.AppState.Parameter.Params.WasmMaxProposalWasmSize = sdk.NewInt(6291456)
 
 	// update oracle price expiration
 	genesis.AppState.Oracle.Params.PriceExpiryTime = "604800"
