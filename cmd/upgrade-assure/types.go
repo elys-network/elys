@@ -97,7 +97,7 @@ type AppState struct {
 	Perpetual     Perpetual                       `json:"perpetual"`
 	Mint          Mint                            `json:"mint"`
 	Oracle        Oracle                          `json:"oracle"`
-	Parameter     parametertypes.GenesisState     `json:"parameter"`
+	Parameter     Parameter                       `json:"parameter"`
 	Params        interface{}                     `json:"params"`
 	PoolAccounted accountedpooltypes.GenesisState `json:"poolaccounted"`
 	Slashing      Slashing                        `json:"slashing"`
@@ -151,15 +151,6 @@ type StableStakeParams struct {
 
 type Incentive struct {
 	incentivetypes.GenesisState
-
-	Params IncentiveParams `json:"params"`
-}
-
-type IncentiveParams struct {
-	incentivetypes.Params
-
-	PoolInfos            []interface{} `json:"pool_infos"`
-	DistributionInterval json.Number   `json:"distribution_interval"`
 }
 
 type Epochs struct {
@@ -178,7 +169,8 @@ type Commitment struct {
 type CommitmentParams struct {
 	commitmenttypes.Params
 
-	VestingInfos []CommitmentVestingInfo `json:"vesting_infos"`
+	VestingInfos        []CommitmentVestingInfo `json:"vesting_infos"`
+	NumberOfCommitments json.Number             `json:"number_of_commitments"`
 }
 
 type CommitmentVestingInfo struct {
@@ -251,6 +243,18 @@ type OracleParams struct {
 	ExecuteGas       json.Number `json:"execute_gas"`
 	PriceExpiryTime  json.Number `json:"price_expiry_time"`
 	LifeTimeInBlocks json.Number `json:"life_time_in_blocks"`
+}
+
+type Parameter struct {
+	parametertypes.GenesisState
+
+	Params ParameterParams `json:"params"`
+}
+
+type ParameterParams struct {
+	parametertypes.Params
+
+	TotalBlocksPerYear json.Number `json:"total_blocks_per_year"`
 }
 
 type Capability struct {
