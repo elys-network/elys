@@ -481,7 +481,7 @@ jobs:
         run: |
           # build new upgrade assure binary
           make build-upgrade-assure
-          mv ./build/upgrade-assure ${{ needs.build-new-binary.outputs.NEW_UPGRADE_ASSURE_BINARY_PATH}}
+          mv ./build/upgrade-assure ${{ needs.build-new-binary.outputs.NEW_UPGRADE_ASSURE_BINARY_PATH }}
         if: steps.cache-create-second-validator.outputs.cache-hit != 'true'
 
       - name: Restore old binary from cache
@@ -558,9 +558,17 @@ jobs:
         with:
           path: |
             ${{ needs.build-new-binary.outputs.NEW_BINARY_PATH }}
-            ${{ needs.build-new-binary.outputs.NEW_UPGRADE_ASSURE_BINARY_PATH}}
+            ${{ needs.build-new-binary.outputs.NEW_UPGRADE_ASSURE_BINARY_PATH }}
             ${{ needs.build-new-binary.outputs.UPLOAD_SNAPSHOT_BINARY_PATH }}
           key: ${{ needs.build-new-binary.outputs.CACHE_KEY }}
+        if: steps.cache-prepare-validator-data.outputs.cache-hit != 'true'
+
+      - name: Build new binaries
+        id: build-new-binaries
+        run: |
+          # build new upgrade assure binary
+          make build-upgrade-assure
+          mv ./build/upgrade-assure ${{ needs.build-new-binary.outputs.NEW_UPGRADE_ASSURE_BINARY_PATH }}
         if: steps.cache-prepare-validator-data.outputs.cache-hit != 'true'
 
       - name: Restore old binary from cache
