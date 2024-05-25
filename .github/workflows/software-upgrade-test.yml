@@ -658,6 +658,14 @@ jobs:
           key: ${{ runner.os }}-retrieve-old-binary-${{ needs.retrieve-latest-tag.outputs.LATEST_TAG }}
         if: steps.cache-submit-new-proposal.outputs.cache-hit != 'true'
 
+      - name: Build new binaries
+        id: build-new-binaries
+        run: |
+          # build new upgrade assure binary
+          make build-upgrade-assure
+          mv ./build/upgrade-assure ${{ needs.build-new-binary.outputs.NEW_UPGRADE_ASSURE_BINARY_PATH }}
+        if: steps.cache-submit-new-proposal.outputs.cache-hit != 'true'
+
       - name: Submit new proposal
         run: |
           GOMEMLIMIT=32GiB \
@@ -726,6 +734,14 @@ jobs:
             ${{ needs.build-new-binary.outputs.NEW_UPGRADE_ASSURE_BINARY_PATH}}
             ${{ needs.build-new-binary.outputs.UPLOAD_SNAPSHOT_BINARY_PATH }}
           key: ${{ needs.build-new-binary.outputs.CACHE_KEY }}
+        if: steps.cache-upgrade-to-new-binary.outputs.cache-hit != 'true'
+
+      - name: Build new binaries
+        id: build-new-binaries
+        run: |
+          # build new upgrade assure binary
+          make build-upgrade-assure
+          mv ./build/upgrade-assure ${{ needs.build-new-binary.outputs.NEW_UPGRADE_ASSURE_BINARY_PATH }}
         if: steps.cache-upgrade-to-new-binary.outputs.cache-hit != 'true'
 
       - name: Upgrade to new binary
