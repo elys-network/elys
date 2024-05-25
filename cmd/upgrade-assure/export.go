@@ -34,7 +34,6 @@ func export(cmdPath, homePath, genesisFilePath string) {
 		"leveragelp",
 		"masterchef",
 		"perpetual",
-		"mint",
 		"oracle",
 		"parameter",
 		"params",

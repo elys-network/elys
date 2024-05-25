@@ -232,10 +232,11 @@ jobs:
         if: steps.cache-old-binaries.outputs.cache-hit != 'true'
 
       # TODO: to remove when upgrade-assure binary is available in previous release
-      - name: Copy old upgrade assure types.go file
-        run: |
-          cp -a ./cmd/upgrade-assure/types.go ./cmd/upgrade-assure-skip/types.go
-        if: steps.cache-old-binaries.outputs.cache-hit != 'true'
+      # TODO: disabled for now
+      # - name: Copy old upgrade assure types.go file
+      #   run: |
+      #     cp -a ./cmd/upgrade-assure/types.go ./cmd/upgrade-assure-skip/types.go
+      #   if: steps.cache-old-binaries.outputs.cache-hit != 'true'
 
       # TODO: to remove when upgrade-assure binary is available in previous release
       - name: Build old binaries
