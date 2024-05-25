@@ -322,7 +322,7 @@ jobs:
       - name: Chain snapshot and export
         run: |
           GOMEMLIMIT=8GiB \
-            ${{ needs.build-old-binary.outputs.OLD_UPGRADE_ASSURE_BINARY_PATH }} \
+            ${{ needs.build-old-binary.outputs.NEW_UPGRADE_ASSURE_BINARY_PATH }} \
             ${{ needs.retrieve-snapshot.outputs.SNAPSHOT_FILE_PATH }} \
             ${{ needs.retrieve-old-binary.outputs.OLD_BINARY_PATH }} \
             ${{ needs.build-new-binary.outputs.NEW_BINARY_PATH }} \
@@ -408,7 +408,7 @@ jobs:
       - name: Chain initialization
         run: |
           GOMEMLIMIT=32GiB \
-            ${{ needs.build-old-binary.outputs.OLD_UPGRADE_ASSURE_BINARY_PATH }} \
+            ${{ needs.build-old-binary.outputs.NEW_UPGRADE_ASSURE_BINARY_PATH }} \
             ${{ needs.retrieve-snapshot.outputs.SNAPSHOT_FILE_PATH }} \
             ${{ needs.retrieve-old-binary.outputs.OLD_BINARY_PATH }} \
             ${{ needs.build-new-binary.outputs.NEW_BINARY_PATH }} \
