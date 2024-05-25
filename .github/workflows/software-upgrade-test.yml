@@ -463,6 +463,7 @@ jobs:
         uses: actions/setup-go@v5
         with:
           go-version: "1.21"
+          cache: false
         if: steps.cache-create-second-validator.outputs.cache-hit != 'true'
 
       - name: Restore new binary from cache
