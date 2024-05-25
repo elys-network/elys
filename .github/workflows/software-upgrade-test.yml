@@ -277,7 +277,6 @@ jobs:
         with:
           fetch-depth: 0
           fetch-tags: true
-          ref: ${{ needs.retrieve-latest-tag.outputs.LATEST_TAG }}
         if: steps.cache-chain-snapshot-and-export.outputs.cache-hit != 'true'
 
       - name: Set up Go
@@ -362,7 +361,6 @@ jobs:
         with:
           fetch-depth: 0
           fetch-tags: true
-          ref: ${{ needs.retrieve-latest-tag.outputs.LATEST_TAG }}
         if: steps.cache-chain-init.outputs.cache-hit != 'true'
 
       - name: Set up Go
