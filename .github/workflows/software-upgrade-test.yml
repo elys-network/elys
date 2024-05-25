@@ -215,37 +215,37 @@ jobs:
           fetch-tags: true
         if: steps.cache-old-binaries.outputs.cache-hit != 'true'
 
-      # TODO: to remove when upgrade-assure binary is available in previous release
-      - name: Copy upgrade assure folder
-        run: |
-          cp -a ./cmd/upgrade-assure ./cmd/upgrade-assure-skip
-        if: steps.cache-old-binaries.outputs.cache-hit != 'true'
-
-      - name: Check out latest tag
-        run: git checkout ${{ needs.retrieve-latest-tag.outputs.LATEST_TAG }}
-        if: steps.cache-old-binaries.outputs.cache-hit != 'true'
-
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
           go-version: "1.21"
         if: steps.cache-old-binaries.outputs.cache-hit != 'true'
 
-      # TODO: to remove when upgrade-assure binary is available in previous release
-      # TODO: disabled for now
-      # - name: Copy old upgrade assure types.go file
+      - name: Check out latest tag
+        run: git checkout ${{ needs.retrieve-latest-tag.outputs.LATEST_TAG }}
+        if: steps.cache-old-binaries.outputs.cache-hit != 'true'
+
+      - name: Copy old upgrade assure types.go file
+        run: |
+          cp -a ./cmd/upgrade-assure/types.go ./cmd/upgrade-assure/types.go.old
+        if: steps.cache-old-binaries.outputs.cache-hit != 'true'
+
+      - name: Check out previous branch
+        run: git checkout -
+        if: steps.cache-old-binaries.outputs.cache-hit != 'true'
+
+      # TODO: disable for now
+      # - name: Apply old upgrade assure types.go file
       #   run: |
-      #     cp -a ./cmd/upgrade-assure/types.go ./cmd/upgrade-assure-skip/types.go
+      #     cp -a ./cmd/upgrade-assure/types.go.old ./cmd/upgrade-assure/types.go
       #   if: steps.cache-old-binaries.outputs.cache-hit != 'true'
 
-      # TODO: to remove when upgrade-assure binary is available in previous release
       - name: Build old binaries
         id: build-old-binaries
         run: |
           # build old upgrade assure binary
-          mkdir -p build
-          go build -o build ./cmd/upgrade-assure-skip
-          mv ./build/upgrade-assure-skip $OLD_UPGRADE_ASSURE_BINARY_PATH
+          make build-upgrade-assure
+          mv ./build/upgrade-assure $OLD_UPGRADE_ASSURE_BINARY_PATH
         if: steps.cache-old-binaries.outputs.cache-hit != 'true'
 
   chain-snapshot-and-export:
@@ -463,7 +463,6 @@ jobs:
         uses: actions/setup-go@v5
         with:
           go-version: "1.21"
-          cache: false
         if: steps.cache-create-second-validator.outputs.cache-hit != 'true'
 
       - name: Restore new binary from cache
@@ -474,14 +473,6 @@ jobs:
             ${{ needs.build-new-binary.outputs.NEW_UPGRADE_ASSURE_BINARY_PATH}}
             ${{ needs.build-new-binary.outputs.UPLOAD_SNAPSHOT_BINARY_PATH }}
           key: ${{ needs.build-new-binary.outputs.CACHE_KEY }}
-        if: steps.cache-create-second-validator.outputs.cache-hit != 'true'
-
-      - name: Build new binaries
-        id: build-new-binaries
-        run: |
-          # build new upgrade assure binary
-          make build-upgrade-assure
-          mv ./build/upgrade-assure ${{ needs.build-new-binary.outputs.NEW_UPGRADE_ASSURE_BINARY_PATH }}
         if: steps.cache-create-second-validator.outputs.cache-hit != 'true'
 
       - name: Restore old binary from cache
@@ -561,14 +552,6 @@ jobs:
             ${{ needs.build-new-binary.outputs.NEW_UPGRADE_ASSURE_BINARY_PATH }}
             ${{ needs.build-new-binary.outputs.UPLOAD_SNAPSHOT_BINARY_PATH }}
           key: ${{ needs.build-new-binary.outputs.CACHE_KEY }}
-        if: steps.cache-prepare-validator-data.outputs.cache-hit != 'true'
-
-      - name: Build new binaries
-        id: build-new-binaries
-        run: |
-          # build new upgrade assure binary
-          make build-upgrade-assure
-          mv ./build/upgrade-assure ${{ needs.build-new-binary.outputs.NEW_UPGRADE_ASSURE_BINARY_PATH }}
         if: steps.cache-prepare-validator-data.outputs.cache-hit != 'true'
 
       - name: Restore old binary from cache
@@ -658,14 +641,6 @@ jobs:
           key: ${{ runner.os }}-retrieve-old-binary-${{ needs.retrieve-latest-tag.outputs.LATEST_TAG }}
         if: steps.cache-submit-new-proposal.outputs.cache-hit != 'true'
 
-      - name: Build new binaries
-        id: build-new-binaries
-        run: |
-          # build new upgrade assure binary
-          make build-upgrade-assure
-          mv ./build/upgrade-assure ${{ needs.build-new-binary.outputs.NEW_UPGRADE_ASSURE_BINARY_PATH }}
-        if: steps.cache-submit-new-proposal.outputs.cache-hit != 'true'
-
       - name: Submit new proposal
         run: |
           GOMEMLIMIT=32GiB \
@@ -734,14 +709,6 @@ jobs:
             ${{ needs.build-new-binary.outputs.NEW_UPGRADE_ASSURE_BINARY_PATH}}
             ${{ needs.build-new-binary.outputs.UPLOAD_SNAPSHOT_BINARY_PATH }}
           key: ${{ needs.build-new-binary.outputs.CACHE_KEY }}
-        if: steps.cache-upgrade-to-new-binary.outputs.cache-hit != 'true'
-
-      - name: Build new binaries
-        id: build-new-binaries
-        run: |
-          # build new upgrade assure binary
-          make build-upgrade-assure
-          mv ./build/upgrade-assure ${{ needs.build-new-binary.outputs.NEW_UPGRADE_ASSURE_BINARY_PATH }}
         if: steps.cache-upgrade-to-new-binary.outputs.cache-hit != 'true'
 
       - name: Upgrade to new binary
