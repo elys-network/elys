@@ -186,7 +186,7 @@ jobs:
   build-old-binary:
     runs-on: elys-runner
 
-    needs: retrieve-latest-tag
+    needs: [retrieve-latest-tag, build-new-binary]
 
     outputs:
       OLD_UPGRADE_ASSURE_BINARY_PATH: ${{ steps.set-old-binary-path.outputs.OLD_UPGRADE_ASSURE_BINARY_PATH }}
