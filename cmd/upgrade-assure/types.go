@@ -36,7 +36,10 @@ import (
 	stablestaketypes "github.com/elys-network/elys/x/stablestake/types"
 	tokenomicstypes "github.com/elys-network/elys/x/tokenomics/types"
 	transferhooktypes "github.com/elys-network/elys/x/transferhook/types"
+
 	// genutiltypes "github.com/cosmos/cosmos-sdk/x/genutil/types"
+	estakingtypes "github.com/elys-network/elys/x/estaking/types"
+	mastercheftypes "github.com/elys-network/elys/x/masterchef/types"
 )
 
 type Genesis struct {
@@ -88,6 +91,7 @@ type AppState struct {
 	Crisis        crisistypes.GenesisState        `json:"crisis"`
 	Distribution  Distribution                    `json:"distribution"`
 	Epochs        Epochs                          `json:"epochs"`
+	Estaking      Estaking                        `json:"estaking"`
 	Evidence      EvidenceState                   `json:"evidence"`
 	Genutil       Genutil                         `json:"genutil"`
 	Gov           Gov                             `json:"gov"`
@@ -95,6 +99,7 @@ type AppState struct {
 	Incentive     Incentive                       `json:"incentive"`
 	LeverageLP    LeverageLP                      `json:"leveragelp"`
 	Perpetual     Perpetual                       `json:"perpetual"`
+	Masterchef    Masterchef                      `json:"masterchef"`
 	Mint          Mint                            `json:"mint"`
 	Oracle        Oracle                          `json:"oracle"`
 	Parameter     Parameter                       `json:"parameter"`
@@ -109,6 +114,38 @@ type AppState struct {
 	Upgrade       struct{}                        `json:"upgrade"`
 	Wasm          wasmtypes.GenesisState          `json:"wasm"`
 	// Include other fields as needed
+}
+
+type Masterchef struct {
+	mastercheftypes.GenesisState
+
+	ExternalIncentiveIndex json.Number                `json:"external_incentive_index"`
+	PoolInfos              []MasterchefPoolInfo       `json:"pool_infos"`
+	PoolRewardInfos        []MasterchefPoolRewardInfo `json:"pool_reward_infos"`
+	UserRewardInfos        []MasterchefUserRewardInfo `json:"user_reward_infos"`
+}
+
+type MasterchefUserRewardInfo struct {
+	mastercheftypes.UserRewardInfo
+
+	PoolId json.Number `json:"pool_id"`
+}
+
+type MasterchefPoolRewardInfo struct {
+	mastercheftypes.PoolRewardInfo
+
+	PoolId           json.Number `json:"pool_id"`
+	LastUpdatedBlock json.Number `json:"last_updated_block"`
+}
+
+type MasterchefPoolInfo struct {
+	mastercheftypes.PoolInfo
+
+	PoolId json.Number `json:"pool_id"`
+}
+
+type Estaking struct {
+	estakingtypes.GenesisState
 }
 
 type Tokenomics struct {
