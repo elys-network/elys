@@ -43,11 +43,11 @@ jobs:
         id: retrieve-info-json
         run: |
           DOWNLOAD_URL=https://snapshots-testnet.stake-town.com/elys/info.json
-          curl -L $DOWNLOAD_URL -o /home/runner/info.json
+          curl -L $DOWNLOAD_URL -o /tmp/info.json
           echo "Info.json downloaded to check snapshot version."
 
           # retrieve blockHeight field value from info.json
-          SNAPSHOT_BLOCK_HEIGHT=$(cat /home/runner/info.json | awk -F'"' '/"blockHeight":/{print $4}')
+          SNAPSHOT_BLOCK_HEIGHT=$(cat /tmp/info.json | awk -F'"' '/"blockHeight":/{print $4}')
           echo "SNAPSHOT_BLOCK_HEIGHT=$SNAPSHOT_BLOCK_HEIGHT" >> $GITHUB_ENV
           echo "Snapshot block height: $SNAPSHOT_BLOCK_HEIGHT"
 
@@ -57,7 +57,7 @@ jobs:
           echo "SNAPSHOT_DOWNLOAD_URL=$SNAPSHOT_DOWNLOAD_URL" >> $GITHUB_OUTPUT
 
           # set snapshot file path
-          SNAPSHOT_FILE_PATH=/home/runner/snapshot.tar.lz4
+          SNAPSHOT_FILE_PATH=/tmp/snapshot.tar.lz4
           echo "SNAPSHOT_FILE_PATH=$SNAPSHOT_FILE_PATH" >> $GITHUB_ENV
           echo "SNAPSHOT_FILE_PATH=$SNAPSHOT_FILE_PATH" >> $GITHUB_OUTPUT
 
@@ -87,7 +87,7 @@ jobs:
       - name: Set old binary path
         id: set-old-binary-path
         run: |
-          OLD_BINARY_PATH=/home/runner/elysd-${{ needs.retrieve-latest-tag.outputs.LATEST_TAG }}
+          OLD_BINARY_PATH=/tmp/elysd-${{ needs.retrieve-latest-tag.outputs.LATEST_TAG }}
           echo "OLD_BINARY_PATH=$OLD_BINARY_PATH" >> $GITHUB_ENV
           echo "OLD_BINARY_PATH=$OLD_BINARY_PATH" >> $GITHUB_OUTPUT
 
@@ -260,7 +260,7 @@ jobs:
           path: |
             /home/runner/.elys
             /home/runner/.elys2
-            /home/runner/genesis.json
+            /tmp/genesis.json
           key: ${{ runner.os }}-chain-snapshot-and-export-${{ needs.retrieve-latest-tag.outputs.LATEST_TAG }}
           lookup-only: true
 
@@ -314,15 +314,14 @@ jobs:
       - name: Chain snapshot and export
         run: |
           GOMEMLIMIT=8GiB \
-            ${{ needs.build-old-binary.outputs.NEW_UPGRADE_ASSURE_BINARY_PATH }} \
+            ${{ needs.build-old-binary.outputs.OLD_UPGRADE_ASSURE_BINARY_PATH }} \
             ${{ needs.retrieve-snapshot.outputs.SNAPSHOT_FILE_PATH }} \
             ${{ needs.retrieve-old-binary.outputs.OLD_BINARY_PATH }} \
             ${{ needs.build-new-binary.outputs.NEW_BINARY_PATH }} \
             --skip-chain-init \
             --skip-node-start \
             --timeout-next-block 100000 \
-            --timeout-wait-for-node 100000 \
-            --genesis-file-path /home/runner/genesis.json
+            --timeout-wait-for-node 100000
         if: steps.cache-chain-snapshot-and-export.outputs.cache-hit != 'true'
 
   chain-init:
@@ -368,7 +367,7 @@ jobs:
           path: |
             /home/runner/.elys
             /home/runner/.elys2
-            /home/runner/genesis.json
+            /tmp/genesis.json
           key: ${{ runner.os }}-chain-snapshot-and-export-${{ needs.retrieve-latest-tag.outputs.LATEST_TAG }}
         if: steps.cache-chain-init.outputs.cache-hit != 'true'
 
@@ -401,15 +400,14 @@ jobs:
       - name: Chain initialization
         run: |
           GOMEMLIMIT=32GiB \
-            ${{ needs.build-old-binary.outputs.NEW_UPGRADE_ASSURE_BINARY_PATH }} \
+            ${{ needs.build-old-binary.outputs.OLD_UPGRADE_ASSURE_BINARY_PATH }} \
             ${{ needs.retrieve-snapshot.outputs.SNAPSHOT_FILE_PATH }} \
             ${{ needs.retrieve-old-binary.outputs.OLD_BINARY_PATH }} \
             ${{ needs.build-new-binary.outputs.NEW_BINARY_PATH }} \
             --skip-snapshot \
             --skip-node-start \
             --timeout-next-block 100000 \
-            --timeout-wait-for-node 100000 \
-            --genesis-file-path /home/runner/genesis.json
+            --timeout-wait-for-node 100000
         if: steps.cache-chain-init.outputs.cache-hit != 'true'
 
   create-second-validator:
@@ -758,7 +756,7 @@ jobs:
           SANITIZED_HEAD_REF=${{ github.head_ref || github.ref }}
           SANITIZED_HEAD_REF=$(echo "$SANITIZED_HEAD_REF" | sed 's|refs/heads/||; s|/|_|g')
           NEW_SNAPSHOT_FILENAME="elys-snapshot-${SANITIZED_HEAD_REF}.tar.lz4"
-          NEW_SNAPSHOT_PATH="/home/runner/${NEW_SNAPSHOT_FILENAME}"
+          NEW_SNAPSHOT_PATH="/tmp/${NEW_SNAPSHOT_FILENAME}"
           echo "NEW_SNAPSHOT_FILENAME=$NEW_SNAPSHOT_FILENAME" >> $GITHUB_ENV
           echo "NEW_SNAPSHOT_PATH=$NEW_SNAPSHOT_PATH" >> $GITHUB_ENV
           cd /home/runner
