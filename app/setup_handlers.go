@@ -2,16 +2,13 @@ package app
 
 import (
 	"cosmossdk.io/math"
-	"github.com/cosmos/cosmos-sdk/baseapp"
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	m "github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/cosmos/cosmos-sdk/version"
-	distrtypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
-	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
-	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
-	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
+	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
+	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 )
 
@@ -26,10 +23,6 @@ func setUpgradeHandler(app *ElysApp) {
 		version.Version,
 		func(ctx sdk.Context, plan upgradetypes.Plan, vm m.VersionMap) (m.VersionMap, error) {
 			app.Logger().Info("Running upgrade handler for " + version.Version)
-
-			// Migrate Tendermint consensus parameters from x/params module to a
-			// dedicated x/consensus module.
-			baseapp.MigrateParams(ctx, baseAppLegacySS, &app.ConsensusParamsKeeper)
 
 			if version.Version == "v0.32.0" {
 				// Since invariant is broken sending missing amount to bonded pool
@@ -52,13 +45,13 @@ func setUpgradeHandler(app *ElysApp) {
 						panic(err)
 					}
 				}
-        
-        app.Logger().Info("Deleting proposals with ID <= 193")
-			  store := ctx.KVStore(app.keys[govtypes.StoreKey])
-			  for i := uint64(1); i <= 193; i++ {
-				  store.Delete(govtypes.ProposalKey(i))
-			  }
-      }
+
+				app.Logger().Info("Deleting proposals with ID <= 193")
+				store := ctx.KVStore(app.keys[govtypes.StoreKey])
+				for i := uint64(1); i <= 193; i++ {
+					store.Delete(govtypes.ProposalKey(i))
+				}
+			}
 
 			return app.mm.RunMigrations(ctx, app.configurator, vm)
 		},
