@@ -20,11 +20,6 @@ jobs:
           fetch-depth: 0
           fetch-tags: true
 
-      - name: Set up Go
-        uses: actions/setup-go@v5
-        with:
-          go-version: "1.21"
-
       - name: Get latest tag
         id: get-latest-tag
         run: |
@@ -129,6 +124,11 @@ jobs:
           fetch-depth: 0
           fetch-tags: true
 
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.21"
+
       - name: Set new binary paths
         id: set-new-binary-paths
         run: |
@@ -159,12 +159,6 @@ jobs:
           key: ${{ env.CACHE_KEY }}
           lookup-only: true
 
-      - name: Set up Go
-        uses: actions/setup-go@v5
-        with:
-          go-version: "1.21"
-        if: steps.cache-new-binary.outputs.cache-hit != 'true'
-
       - name: Create git tag
         run: git tag v999.999.999
         if: steps.cache-new-binary.outputs.cache-hit != 'true'
@@ -192,6 +186,17 @@ jobs:
       OLD_UPGRADE_ASSURE_BINARY_PATH: ${{ steps.set-old-binary-path.outputs.OLD_UPGRADE_ASSURE_BINARY_PATH }}
 
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.21"
+
       - name: Set old binary path
         id: set-old-binary-path
         run: |
@@ -207,19 +212,6 @@ jobs:
             ${{ env.OLD_UPGRADE_ASSURE_BINARY_PATH }}
           key: ${{ runner.os }}-build-old-binary-${{ needs.retrieve-latest-tag.outputs.LATEST_TAG }}
           lookup-only: true
-
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          fetch-tags: true
-        if: steps.cache-old-binaries.outputs.cache-hit != 'true'
-
-      - name: Set up Go
-        uses: actions/setup-go@v5
-        with:
-          go-version: "1.21"
-        if: steps.cache-old-binaries.outputs.cache-hit != 'true'
 
       - name: Check out latest tag
         run: git checkout ${{ needs.retrieve-latest-tag.outputs.LATEST_TAG }}
