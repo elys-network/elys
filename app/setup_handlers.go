@@ -11,9 +11,8 @@ import (
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
+	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
-	estakingtypes "github.com/elys-network/elys/x/estaking/types"
-	mastercheftypes "github.com/elys-network/elys/x/masterchef/types"
 )
 
 func SetupHandlers(app *ElysApp) {
@@ -23,27 +22,6 @@ func SetupHandlers(app *ElysApp) {
 }
 
 func setUpgradeHandler(app *ElysApp) {
-	// Set param key table for params module migration
-	for _, subspace := range app.ParamsKeeper.GetSubspaces() {
-		subspace := subspace
-
-		app.Logger().Info("Setting up upgrade handler for " + subspace.Name())
-
-		var keyTable paramstypes.KeyTable
-		switch subspace.Name() {
-		case distrtypes.ModuleName:
-			keyTable = distrtypes.ParamKeyTable() //nolint:staticcheck
-		default:
-			continue
-		}
-
-		if !subspace.HasKeyTable() {
-			subspace.WithKeyTable(keyTable)
-		}
-	}
-
-	baseAppLegacySS := app.ParamsKeeper.Subspace(baseapp.Paramspace).WithKeyTable(paramstypes.ConsensusParamsKeyTable())
-
 	app.UpgradeKeeper.SetUpgradeHandler(
 		version.Version,
 		func(ctx sdk.Context, plan upgradetypes.Plan, vm m.VersionMap) (m.VersionMap, error) {
@@ -74,7 +52,13 @@ func setUpgradeHandler(app *ElysApp) {
 						panic(err)
 					}
 				}
-			}
+        
+        app.Logger().Info("Deleting proposals with ID <= 193")
+			  store := ctx.KVStore(app.keys[govtypes.StoreKey])
+			  for i := uint64(1); i <= 193; i++ {
+				  store.Delete(govtypes.ProposalKey(i))
+			  }
+      }
 
 			return app.mm.RunMigrations(ctx, app.configurator, vm)
 		},
@@ -89,8 +73,8 @@ func loadUpgradeStore(app *ElysApp) {
 
 	if shouldLoadUpgradeStore(app, upgradeInfo) {
 		storeUpgrades := storetypes.StoreUpgrades{
-			Added:   []string{distrtypes.StoreKey, mastercheftypes.StoreKey, estakingtypes.StoreKey},
-			Deleted: []string{minttypes.StoreKey},
+			// Added:   []string{},
+			// Deleted: []string{},
 		}
 		// Use upgrade store loader for the initial loading of all stores when app starts,
 		// it checks if version == upgradeHeight and applies store upgrades before loading the stores,
