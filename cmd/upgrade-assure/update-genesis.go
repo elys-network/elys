@@ -57,7 +57,7 @@ func updateGenesis(validatorBalance, homePath, genesisFilePath string) {
 	genesis.AppState.Bank.Balances = append(genesis.AppState.Bank.Balances, genesisInit.AppState.Bank.Balances...)
 
 	// Add distribution account balance
-	distributionCoins := sdk.NewCoins(sdk.NewInt64Coin("ibc/2180E84E20F5679FCC760D8C165B60F42065DEF7F46A72B447CFF1B7DC6C0A65", 12814178))
+	distributionCoins := sdk.NewCoins(sdk.NewInt64Coin("ibc/2180E84E20F5679FCC760D8C165B60F42065DEF7F46A72B447CFF1B7DC6C0A65", 128141787))
 	genesis.AppState.Bank.Balances = append(
 		genesis.AppState.Bank.Balances,
 		banktypes.Balance{
