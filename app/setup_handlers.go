@@ -24,7 +24,7 @@ func setUpgradeHandler(app *ElysApp) {
 		func(ctx sdk.Context, plan upgradetypes.Plan, vm m.VersionMap) (m.VersionMap, error) {
 			app.Logger().Info("Running upgrade handler for " + version.Version)
 
-			if version.Version == "v0.32.0" {
+			if version.Version == "v0.32.0" || version.Version == "v999.999.999" {
 				// Since invariant is broken sending missing amount to bonded pool
 				sumOfValTokens := math.ZeroInt()
 				app.EstakingKeeper.IterateBondedValidatorsByPower(ctx, func(_ int64, validator stakingtypes.ValidatorI) bool {
