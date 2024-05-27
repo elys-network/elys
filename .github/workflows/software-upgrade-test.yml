@@ -68,6 +68,8 @@ jobs:
           path: |
             ${{ env.SNAPSHOT_FILE_PATH }}
           key: ${{ runner.os }}-snapshot-${{ needs.retrieve-latest-tag.outputs.LATEST_TAG }}
+          restore-keys: |
+            ${{ runner.os }}-snapshot-${{ needs.retrieve-latest-tag.outputs.LATEST_TAG }}
           lookup-only: true
           aws-access-key-id: ${{ secrets.R2_ACCESS_KEY }}
           aws-secret-access-key: ${{ secrets.R2_SECRET_KEY }}
@@ -75,7 +77,6 @@ jobs:
           aws-s3-bucket: ${{ secrets.R2_BUCKET_NAME }}
           aws-region: ENAM
           aws-s3-bucket-endpoint: false
-          aws-s3-force-path-style: true
 
       - name: Download snapshot
         run: |
