@@ -11,6 +11,7 @@ import (
 	"github.com/elys-network/elys/x/parameter/types"
 )
 
+// UPDATE wasm config
 func (k msgServer) UpdateWasmConfig(goCtx context.Context, msg *types.MsgUpdateWasmConfig) (*types.MsgUpdateWasmConfigResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
