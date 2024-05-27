@@ -290,7 +290,7 @@ jobs:
         if: steps.cache-chain-snapshot-and-export.outputs.cache-hit != 'true'
 
       - name: Restore snapshot from cache
-        uses: whywaita/actions-cache-s3/restore@v3
+        uses: whywaita/actions-cache-s3@v3
         with:
           path: |
             ${{ needs.retrieve-snapshot.outputs.SNAPSHOT_FILE_PATH }}
@@ -386,7 +386,7 @@ jobs:
         if: steps.cache-chain-init.outputs.cache-hit != 'true'
 
       - name: Restore chain snapshot and export from cache
-        uses: whywaita/actions-cache-s3/restore@v3
+        uses: whywaita/actions-cache-s3@v3
         with:
           path: |
             /home/runner/.elys
@@ -470,7 +470,7 @@ jobs:
           aws-s3-bucket-endpoint: false
 
       - name: Restore chain snapshot and export from cache
-        uses: whywaita/actions-cache-s3/restore@v3
+        uses: whywaita/actions-cache-s3@v3
         with:
           path: |
             /home/runner/.elys
@@ -561,7 +561,7 @@ jobs:
           aws-s3-bucket-endpoint: false
 
       - name: Restore create second validator from cache
-        uses: whywaita/actions-cache-s3/restore@v3
+        uses: whywaita/actions-cache-s3@v3
         with:
           path: |
             /home/runner/.elys
@@ -652,7 +652,7 @@ jobs:
           aws-s3-bucket-endpoint: false
 
       - name: Restore prepare validator data from cache
-        uses: whywaita/actions-cache-s3/restore@v3
+        uses: whywaita/actions-cache-s3@v3
         with:
           path: |
             /home/runner/.elys
@@ -742,7 +742,7 @@ jobs:
           aws-s3-bucket-endpoint: false
 
       - name: Restore submit new proposal from cache
-        uses: whywaita/actions-cache-s3/restore@v3
+        uses: whywaita/actions-cache-s3@v3
         with:
           path: |
             /home/runner/.elys
@@ -802,7 +802,7 @@ jobs:
 
     steps:
       - name: Restore upgrade to new binary from cache
-        uses: whywaita/actions-cache-s3/restore@v3
+        uses: whywaita/actions-cache-s3@v3
         with:
           path: |
             /home/runner/.elys
