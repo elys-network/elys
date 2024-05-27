@@ -62,13 +62,18 @@ jobs:
           echo "SNAPSHOT_FILE_PATH=$SNAPSHOT_FILE_PATH" >> $GITHUB_OUTPUT
 
       - name: Cache Snapshot
-        uses: actions/cache@v4
+        uses: whywaita/actions-cache-s3@v3
         id: cache-snapshot
         with:
           path: |
             ${{ env.SNAPSHOT_FILE_PATH }}
           key: ${{ runner.os }}-snapshot-${{ needs.retrieve-latest-tag.outputs.LATEST_TAG }}
           lookup-only: true
+          aws-access-key-id: ${{ secrets.R2_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.R2_SECRET_KEY }}
+          aws-endpoint: ${{ secrets.R2_ENDPOINT }}
+          aws-s3-bucket: ${{ secrets.R2_BUCKET_NAME }}
+          aws-region: ENAM
 
       - name: Download snapshot
         run: |
@@ -254,7 +259,7 @@ jobs:
 
     steps:
       - name: Cache Directories
-        uses: actions/cache@v4
+        uses: whywaita/actions-cache-s3@v3
         id: cache-chain-snapshot-and-export
         with:
           path: |
@@ -263,6 +268,11 @@ jobs:
             /tmp/genesis.json
           key: ${{ runner.os }}-chain-snapshot-and-export-${{ needs.retrieve-latest-tag.outputs.LATEST_TAG }}
           lookup-only: true
+          aws-access-key-id: ${{ secrets.R2_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.R2_SECRET_KEY }}
+          aws-endpoint: ${{ secrets.R2_ENDPOINT }}
+          aws-s3-bucket: ${{ secrets.R2_BUCKET_NAME }}
+          aws-region: ENAM
 
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -278,11 +288,16 @@ jobs:
         if: steps.cache-chain-snapshot-and-export.outputs.cache-hit != 'true'
 
       - name: Restore snapshot from cache
-        uses: actions/cache/restore@v4
+        uses: whywaita/actions-cache-s3/restore@v3
         with:
           path: |
             ${{ needs.retrieve-snapshot.outputs.SNAPSHOT_FILE_PATH }}
           key: ${{ runner.os }}-snapshot-${{ needs.retrieve-latest-tag.outputs.LATEST_TAG }}
+          aws-access-key-id: ${{ secrets.R2_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.R2_SECRET_KEY }}
+          aws-endpoint: ${{ secrets.R2_ENDPOINT }}
+          aws-s3-bucket: ${{ secrets.R2_BUCKET_NAME }}
+          aws-region: ENAM
         if: steps.cache-chain-snapshot-and-export.outputs.cache-hit != 'true'
 
       - name: Restore new binary from cache
@@ -339,7 +354,7 @@ jobs:
 
     steps:
       - name: Cache Directories
-        uses: actions/cache@v4
+        uses: whywaita/actions-cache-s3@v3
         id: cache-chain-init
         with:
           path: |
@@ -347,6 +362,11 @@ jobs:
             /home/runner/.elys2
           key: ${{ runner.os }}-chain-init-${{ needs.retrieve-latest-tag.outputs.LATEST_TAG }}
           lookup-only: true
+          aws-access-key-id: ${{ secrets.R2_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.R2_SECRET_KEY }}
+          aws-endpoint: ${{ secrets.R2_ENDPOINT }}
+          aws-s3-bucket: ${{ secrets.R2_BUCKET_NAME }}
+          aws-region: ENAM
 
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -362,13 +382,18 @@ jobs:
         if: steps.cache-chain-init.outputs.cache-hit != 'true'
 
       - name: Restore chain snapshot and export from cache
-        uses: actions/cache/restore@v4
+        uses: whywaita/actions-cache-s3/restore@v3
         with:
           path: |
             /home/runner/.elys
             /home/runner/.elys2
             /tmp/genesis.json
           key: ${{ runner.os }}-chain-snapshot-and-export-${{ needs.retrieve-latest-tag.outputs.LATEST_TAG }}
+          aws-access-key-id: ${{ secrets.R2_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.R2_SECRET_KEY }}
+          aws-endpoint: ${{ secrets.R2_ENDPOINT }}
+          aws-s3-bucket: ${{ secrets.R2_BUCKET_NAME }}
+          aws-region: ENAM
         if: steps.cache-chain-init.outputs.cache-hit != 'true'
 
       - name: Restore new binary from cache
@@ -432,14 +457,24 @@ jobs:
             /home/runner/.elys2
           key: ${{ runner.os }}-create-second-validator-${{ needs.retrieve-latest-tag.outputs.LATEST_TAG }}
           lookup-only: true
+          aws-access-key-id: ${{ secrets.R2_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.R2_SECRET_KEY }}
+          aws-endpoint: ${{ secrets.R2_ENDPOINT }}
+          aws-s3-bucket: ${{ secrets.R2_BUCKET_NAME }}
+          aws-region: ENAM
 
       - name: Restore chain snapshot and export from cache
-        uses: actions/cache/restore@v4
+        uses: whywaita/actions-cache-s3/restore@v3
         with:
           path: |
             /home/runner/.elys
             /home/runner/.elys2
           key: ${{ runner.os }}-chain-init-${{ needs.retrieve-latest-tag.outputs.LATEST_TAG }}
+          aws-access-key-id: ${{ secrets.R2_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.R2_SECRET_KEY }}
+          aws-endpoint: ${{ secrets.R2_ENDPOINT }}
+          aws-s3-bucket: ${{ secrets.R2_BUCKET_NAME }}
+          aws-region: ENAM
         if: steps.cache-create-second-validator.outputs.cache-hit != 'true'
 
       - name: Checkout repository
@@ -503,7 +538,7 @@ jobs:
 
     steps:
       - name: Cache Directories
-        uses: actions/cache@v4
+        uses: whywaita/actions-cache-s3@v3
         id: cache-prepare-validator-data
         with:
           path: |
@@ -511,14 +546,24 @@ jobs:
             /home/runner/.elys2
           key: ${{ runner.os }}-prepare-validator-data-${{ needs.retrieve-latest-tag.outputs.LATEST_TAG }}
           lookup-only: true
+          aws-access-key-id: ${{ secrets.R2_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.R2_SECRET_KEY }}
+          aws-endpoint: ${{ secrets.R2_ENDPOINT }}
+          aws-s3-bucket: ${{ secrets.R2_BUCKET_NAME }}
+          aws-region: ENAM
 
       - name: Restore create second validator from cache
-        uses: actions/cache/restore@v4
+        uses: whywaita/actions-cache-s3/restore@v3
         with:
           path: |
             /home/runner/.elys
             /home/runner/.elys2
           key: ${{ runner.os }}-create-second-validator-${{ needs.retrieve-latest-tag.outputs.LATEST_TAG }}
+          aws-access-key-id: ${{ secrets.R2_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.R2_SECRET_KEY }}
+          aws-endpoint: ${{ secrets.R2_ENDPOINT }}
+          aws-s3-bucket: ${{ secrets.R2_BUCKET_NAME }}
+          aws-region: ENAM
         if: steps.cache-prepare-validator-data.outputs.cache-hit != 'true'
 
       - name: Checkout repository
@@ -582,7 +627,7 @@ jobs:
 
     steps:
       - name: Cache Directories
-        uses: actions/cache@v4
+        uses: whywaita/actions-cache-s3@v3
         id: cache-submit-new-proposal
         with:
           path: |
@@ -590,14 +635,24 @@ jobs:
             /home/runner/.elys2
           key: ${{ runner.os }}-submit-new-proposal-${{ needs.retrieve-latest-tag.outputs.LATEST_TAG }}
           lookup-only: true
+          aws-access-key-id: ${{ secrets.R2_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.R2_SECRET_KEY }}
+          aws-endpoint: ${{ secrets.R2_ENDPOINT }}
+          aws-s3-bucket: ${{ secrets.R2_BUCKET_NAME }}
+          aws-region: ENAM
 
       - name: Restore prepare validator data from cache
-        uses: actions/cache/restore@v4
+        uses: whywaita/actions-cache-s3/restore@v3
         with:
           path: |
             /home/runner/.elys
             /home/runner/.elys2
           key: ${{ runner.os }}-prepare-validator-data-${{ needs.retrieve-latest-tag.outputs.LATEST_TAG }}
+          aws-access-key-id: ${{ secrets.R2_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.R2_SECRET_KEY }}
+          aws-endpoint: ${{ secrets.R2_ENDPOINT }}
+          aws-s3-bucket: ${{ secrets.R2_BUCKET_NAME }}
+          aws-region: ENAM
         if: steps.cache-submit-new-proposal.outputs.cache-hit != 'true'
 
       - name: Checkout repository
@@ -660,7 +715,7 @@ jobs:
 
     steps:
       - name: Cache Directories
-        uses: actions/cache@v4
+        uses: whywaita/actions-cache-s3@v3
         id: cache-upgrade-to-new-binary
         with:
           path: |
@@ -668,14 +723,24 @@ jobs:
             /home/runner/.elys2
           key: ${{ needs.build-new-binary.outputs.CACHE_KEY }}-upgrade-to-new-binary
           lookup-only: true
+          aws-access-key-id: ${{ secrets.R2_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.R2_SECRET_KEY }}
+          aws-endpoint: ${{ secrets.R2_ENDPOINT }}
+          aws-s3-bucket: ${{ secrets.R2_BUCKET_NAME }}
+          aws-region: ENAM
 
       - name: Restore submit new proposal from cache
-        uses: actions/cache/restore@v4
+        uses: whywaita/actions-cache-s3/restore@v3
         with:
           path: |
             /home/runner/.elys
             /home/runner/.elys2
           key: ${{ runner.os }}-submit-new-proposal-${{ needs.retrieve-latest-tag.outputs.LATEST_TAG }}
+          aws-access-key-id: ${{ secrets.R2_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.R2_SECRET_KEY }}
+          aws-endpoint: ${{ secrets.R2_ENDPOINT }}
+          aws-s3-bucket: ${{ secrets.R2_BUCKET_NAME }}
+          aws-region: ENAM
         if: steps.cache-upgrade-to-new-binary.outputs.cache-hit != 'true'
 
       - name: Checkout repository
@@ -724,12 +789,17 @@ jobs:
 
     steps:
       - name: Restore upgrade to new binary from cache
-        uses: actions/cache/restore@v4
+        uses: whywaita/actions-cache-s3/restore@v3
         with:
           path: |
             /home/runner/.elys
             /home/runner/.elys2
           key: ${{ needs.build-new-binary.outputs.CACHE_KEY }}-upgrade-to-new-binary
+          aws-access-key-id: ${{ secrets.R2_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.R2_SECRET_KEY }}
+          aws-endpoint: ${{ secrets.R2_ENDPOINT }}
+          aws-s3-bucket: ${{ secrets.R2_BUCKET_NAME }}
+          aws-region: ENAM
 
       - name: Checkout repository
         uses: actions/checkout@v4
