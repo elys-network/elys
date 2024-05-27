@@ -27,6 +27,7 @@ func GetQueryCmd(queryRoute string) *cobra.Command {
 	cmd.AddCommand(
 		CmdQueryParams(),
 		CmdQueryRewards(),
+		CmdQueryInvariant(),
 	)
 	// this line is used by starport scaffolding # 1
 
@@ -75,6 +76,31 @@ func CmdQueryRewards() *cobra.Command {
 			res, err := queryClient.Rewards(cmd.Context(), &types.QueryRewardsRequest{
 				Address: args[0],
 			})
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+
+	return cmd
+}
+
+func CmdQueryInvariant() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "invariant",
+		Short: "Query invariant values",
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientQueryContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			queryClient := types.NewQueryClient(clientCtx)
+			res, err := queryClient.Invariant(cmd.Context(), &types.QueryInvariantRequest{})
 			if err != nil {
 				return err
 			}

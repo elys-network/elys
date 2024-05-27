@@ -55,8 +55,7 @@ func (k Keeper) CommitmentChanged(ctx sdk.Context, creator string, amount sdk.Co
 
 // Process eden uncommitted hook
 func (k Keeper) EdenUncommitted(ctx sdk.Context, creator string, amount sdk.Coin) error {
-	k.BurnEdenBFromEdenUncommitted(ctx, creator, amount.Amount)
-	return nil
+	return k.BurnEdenBFromEdenUncommitted(ctx, creator, amount.Amount)
 }
 
 func (k Keeper) BeforeEdenInitialCommit(ctx sdk.Context, addr sdk.AccAddress) error {

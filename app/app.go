@@ -93,7 +93,7 @@ import (
 	upgradeclient "github.com/cosmos/cosmos-sdk/x/upgrade/client"
 	upgradekeeper "github.com/cosmos/cosmos-sdk/x/upgrade/keeper"
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
-	ibc_hooks "github.com/cosmos/ibc-apps/modules/ibc-hooks/v7"
+	ibchooks "github.com/cosmos/ibc-apps/modules/ibc-hooks/v7"
 	ibchookskeeper "github.com/cosmos/ibc-apps/modules/ibc-hooks/v7/keeper"
 	ibchookstypes "github.com/cosmos/ibc-apps/modules/ibc-hooks/v7/types"
 	ica "github.com/cosmos/ibc-go/v7/modules/apps/27-interchain-accounts"
@@ -412,8 +412,8 @@ type ElysApp struct {
 	configurator module.Configurator
 
 	// Middleware wrapper
-	Ics20WasmHooks   *ibc_hooks.WasmHooks
-	HooksICS4Wrapper ibc_hooks.ICS4Middleware
+	Ics20WasmHooks   *ibchooks.WasmHooks
+	HooksICS4Wrapper ibchooks.ICS4Middleware
 }
 
 // New returns a reference to an initialized blockchain app
@@ -941,9 +941,9 @@ func NewElysApp(
 	)
 	app.IBCHooksKeeper = &hooksKeeper
 
-	wasmHooks := ibc_hooks.NewWasmHooks(app.IBCHooksKeeper, &app.WasmKeeper, AccountAddressPrefix) // The contract keeper needs to be set later
+	wasmHooks := ibchooks.NewWasmHooks(app.IBCHooksKeeper, &app.WasmKeeper, AccountAddressPrefix) // The contract keeper needs to be set later
 	app.Ics20WasmHooks = &wasmHooks
-	app.HooksICS4Wrapper = ibc_hooks.NewICS4Middleware(
+	app.HooksICS4Wrapper = ibchooks.NewICS4Middleware(
 		app.IBCKeeper.ChannelKeeper,
 		app.Ics20WasmHooks,
 	)
