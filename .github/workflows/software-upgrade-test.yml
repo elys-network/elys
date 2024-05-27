@@ -399,7 +399,7 @@ jobs:
 
       - name: Chain initialization
         run: |
-          GOMEMLIMIT=32GiB \
+          GOMEMLIMIT=8GiB \
             ${{ needs.build-old-binary.outputs.OLD_UPGRADE_ASSURE_BINARY_PATH }} \
             ${{ needs.retrieve-snapshot.outputs.SNAPSHOT_FILE_PATH }} \
             ${{ needs.retrieve-old-binary.outputs.OLD_BINARY_PATH }} \
@@ -475,7 +475,7 @@ jobs:
 
       - name: Create second validator
         run: |
-          GOMEMLIMIT=16GiB \
+          GOMEMLIMIT=8GiB \
             ${{ needs.build-new-binary.outputs.NEW_UPGRADE_ASSURE_BINARY_PATH }} \
             ${{ needs.retrieve-snapshot.outputs.SNAPSHOT_FILE_PATH }} \
             ${{ needs.retrieve-old-binary.outputs.OLD_BINARY_PATH }} \
@@ -554,7 +554,7 @@ jobs:
 
       - name: Prepare validator data
         run: |
-          GOMEMLIMIT=32GiB \
+          GOMEMLIMIT=8GiB \
             ${{ needs.build-new-binary.outputs.NEW_UPGRADE_ASSURE_BINARY_PATH }} \
             ${{ needs.retrieve-snapshot.outputs.SNAPSHOT_FILE_PATH }} \
             ${{ needs.retrieve-old-binary.outputs.OLD_BINARY_PATH }} \
