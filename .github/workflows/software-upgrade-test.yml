@@ -62,19 +62,19 @@ jobs:
           echo "SNAPSHOT_FILE_PATH=$SNAPSHOT_FILE_PATH" >> $GITHUB_OUTPUT
 
       - name: Cache Snapshot
-        uses: tespkg/actions-cache@v1
+        uses: whywaita/actions-cache-s3@v3
         id: cache-snapshot
         with:
           path: |
             ${{ env.SNAPSHOT_FILE_PATH }}
           key: ${{ runner.os }}-snapshot-${{ needs.retrieve-latest-tag.outputs.LATEST_TAG }}
-          # lookup-only: true
-          accessKey: ${{ secrets.R2_ACCESS_KEY }}
-          secretKey: ${{ secrets.R2_SECRET_KEY }}
-          endpoint: ${{ secrets.R2_ENDPOINT }}
-          bucket: ${{ secrets.R2_BUCKET_NAME }}
-          region: ENAM
-          use-fallback: false
+          lookup-only: true
+          aws-access-key-id: ${{ secrets.R2_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.R2_SECRET_KEY }}
+          aws-endpoint: ${{ secrets.R2_ENDPOINT }}
+          aws-s3-bucket: ${{ secrets.R2_BUCKET_NAME }}
+          aws-region: ENAM
+          aws-s3-bucket-endpoint: false
 
       - name: Download snapshot
         run: |
