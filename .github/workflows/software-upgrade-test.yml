@@ -75,6 +75,7 @@ jobs:
           aws-s3-bucket: ${{ secrets.R2_BUCKET_NAME }}
           aws-region: ENAM
           aws-s3-bucket-endpoint: false
+          aws-s3-force-path-style: true
 
       - name: Download snapshot
         run: |
