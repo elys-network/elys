@@ -216,7 +216,7 @@ release-dry-run:
 		$(GORELEASER_IMAGE) \
 		release \
 		--clean \
-		--skip-publish
+		--skip=publish
 
 ## release-snapshot: Build snapshots for all platforms and generate checksums
 release-snapshot:
@@ -231,6 +231,6 @@ release-snapshot:
 		--clean \
 		--snapshot \
 		--skip-validate \
-		--skip-publish
+		--skip=publish
 
 .PHONY: release release-dry-run release-snapshot

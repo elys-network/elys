@@ -350,8 +350,6 @@ func (k Keeper) CollectGasFees(ctx sdk.Context, baseCurrency string) sdk.DecCoin
 // while tracking the 60% of it for LPs reward distribution
 // transfer collected fees from different wallets(liquidity pool, perpetual module etc) to the distribution module account
 // Assume this is already in USDC.
-// TODO:
-// + Collect revenue from perpetual, lend module
 func (k Keeper) CollectDEXRevenue(ctx sdk.Context) (sdk.Coins, sdk.DecCoins, map[uint64]sdk.Dec) {
 	// Total colllected revenue amount
 	amountTotalCollected := sdk.Coins{}
@@ -519,6 +517,9 @@ func (k Keeper) CalculatePoolShareForStableStakeLPs(ctx sdk.Context, totalProxyT
 
 // Update APR for AMM pool
 func (k Keeper) UpdateAmmPoolAPR(ctx sdk.Context, totalBlocksPerYear int64, totalProxyTVL sdk.Dec, edenDenomPrice sdk.Dec) {
+	baseCurrency, _ := k.assetProfileKeeper.GetUsdcDenom(ctx)
+	usdcDenomPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, baseCurrency)
+
 	k.amm.IterateLiquidityPools(ctx, func(p ammtypes.Pool) bool {
 		tvl, err := p.TVL(ctx, k.oracleKeeper)
 		if err != nil {
@@ -545,11 +546,11 @@ func (k Keeper) UpdateAmmPoolAPR(ctx sdk.Context, totalBlocksPerYear int64, tota
 			return false
 		}
 
-		// Dex reward Apr per pool =  total accumulated usdc rewards for 7 day * 52/ tvl of pool
+		// Dex reward Apr per pool
 		yearlyDexRewardsTotal := poolInfo.DexRewardAmountGiven.
 			MulInt64(totalBlocksPerYear).
 			QuoInt(poolInfo.NumBlocks)
-		poolInfo.DexApr = yearlyDexRewardsTotal.Quo(tvl)
+		poolInfo.DexApr = yearlyDexRewardsTotal.Mul(usdcDenomPrice).Quo(tvl)
 
 		// Eden reward Apr per pool = (total LM Eden reward allocated per day*((tvl of pool * multiplier)/total proxy TVL) ) * 365 / TVL of pool
 		yearlyEdenRewardsTotal := poolInfo.EdenRewardAmountGiven.

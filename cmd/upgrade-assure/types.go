@@ -36,7 +36,10 @@ import (
 	stablestaketypes "github.com/elys-network/elys/x/stablestake/types"
 	tokenomicstypes "github.com/elys-network/elys/x/tokenomics/types"
 	transferhooktypes "github.com/elys-network/elys/x/transferhook/types"
+
 	// genutiltypes "github.com/cosmos/cosmos-sdk/x/genutil/types"
+	estakingtypes "github.com/elys-network/elys/x/estaking/types"
+	mastercheftypes "github.com/elys-network/elys/x/masterchef/types"
 )
 
 type Genesis struct {
@@ -88,6 +91,7 @@ type AppState struct {
 	Crisis        crisistypes.GenesisState        `json:"crisis"`
 	Distribution  Distribution                    `json:"distribution"`
 	Epochs        Epochs                          `json:"epochs"`
+	Estaking      Estaking                        `json:"estaking"`
 	Evidence      EvidenceState                   `json:"evidence"`
 	Genutil       Genutil                         `json:"genutil"`
 	Gov           Gov                             `json:"gov"`
@@ -95,9 +99,10 @@ type AppState struct {
 	Incentive     Incentive                       `json:"incentive"`
 	LeverageLP    LeverageLP                      `json:"leveragelp"`
 	Perpetual     Perpetual                       `json:"perpetual"`
+	Masterchef    Masterchef                      `json:"masterchef"`
 	Mint          Mint                            `json:"mint"`
 	Oracle        Oracle                          `json:"oracle"`
-	Parameter     parametertypes.GenesisState     `json:"parameter"`
+	Parameter     Parameter                       `json:"parameter"`
 	Params        interface{}                     `json:"params"`
 	PoolAccounted accountedpooltypes.GenesisState `json:"poolaccounted"`
 	Slashing      Slashing                        `json:"slashing"`
@@ -109,6 +114,38 @@ type AppState struct {
 	Upgrade       struct{}                        `json:"upgrade"`
 	Wasm          wasmtypes.GenesisState          `json:"wasm"`
 	// Include other fields as needed
+}
+
+type Masterchef struct {
+	mastercheftypes.GenesisState
+
+	ExternalIncentiveIndex json.Number                `json:"external_incentive_index"`
+	PoolInfos              []MasterchefPoolInfo       `json:"pool_infos"`
+	PoolRewardInfos        []MasterchefPoolRewardInfo `json:"pool_reward_infos"`
+	UserRewardInfos        []MasterchefUserRewardInfo `json:"user_reward_infos"`
+}
+
+type MasterchefUserRewardInfo struct {
+	mastercheftypes.UserRewardInfo
+
+	PoolId json.Number `json:"pool_id"`
+}
+
+type MasterchefPoolRewardInfo struct {
+	mastercheftypes.PoolRewardInfo
+
+	PoolId           json.Number `json:"pool_id"`
+	LastUpdatedBlock json.Number `json:"last_updated_block"`
+}
+
+type MasterchefPoolInfo struct {
+	mastercheftypes.PoolInfo
+
+	PoolId json.Number `json:"pool_id"`
+}
+
+type Estaking struct {
+	estakingtypes.GenesisState
 }
 
 type Tokenomics struct {
@@ -151,15 +188,6 @@ type StableStakeParams struct {
 
 type Incentive struct {
 	incentivetypes.GenesisState
-
-	Params IncentiveParams `json:"params"`
-}
-
-type IncentiveParams struct {
-	incentivetypes.Params
-
-	PoolInfos            []interface{} `json:"pool_infos"`
-	DistributionInterval json.Number   `json:"distribution_interval"`
 }
 
 type Epochs struct {
@@ -178,7 +206,8 @@ type Commitment struct {
 type CommitmentParams struct {
 	commitmenttypes.Params
 
-	VestingInfos []CommitmentVestingInfo `json:"vesting_infos"`
+	VestingInfos        []CommitmentVestingInfo `json:"vesting_infos"`
+	NumberOfCommitments json.Number             `json:"number_of_commitments"`
 }
 
 type CommitmentVestingInfo struct {
@@ -251,6 +280,21 @@ type OracleParams struct {
 	ExecuteGas       json.Number `json:"execute_gas"`
 	PriceExpiryTime  json.Number `json:"price_expiry_time"`
 	LifeTimeInBlocks json.Number `json:"life_time_in_blocks"`
+}
+
+type Parameter struct {
+	parametertypes.GenesisState
+
+	Params ParameterParams `json:"params"`
+}
+
+type ParameterParams struct {
+	parametertypes.Params
+
+	TotalBlocksPerYear      json.Number `json:"total_blocks_per_year"`
+	WasmMaxLabelSize        json.Number `json:"wasm_max_label_size"`
+	WasmMaxSize             json.Number `json:"wasm_max_size"`
+	WasmMaxProposalWasmSize json.Number `json:"wasm_max_proposal_wasm_size"`
 }
 
 type Capability struct {

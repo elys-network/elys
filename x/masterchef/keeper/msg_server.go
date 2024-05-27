@@ -141,7 +141,7 @@ func (k msgServer) ClaimRewards(goCtx context.Context, msg *types.MsgClaimReward
 		}
 	}
 
-	// Send coins for rest of rewards
+	// Transfer rewards (Eden/EdenB is transferred through commitment module)
 	err := k.cmk.SendCoinsFromModuleToAccount(ctx, types.ModuleName, sender, coins)
 	if err != nil {
 		return nil, err

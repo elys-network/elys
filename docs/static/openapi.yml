@@ -39652,6 +39652,40 @@ paths:
           type: boolean
       tags:
         - Query
+  /elys-network/elys/estaking/invariant:
+    get:
+      summary: Invariant queries the invariant values
+      operationId: ElysEstakingInvariant
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              total_bonded:
+                type: string
+              bonded_validator_tokens_sum:
+                type: string
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      tags:
+        - Query
   /elys-network/elys/estaking/params:
     get:
       summary: Parameters queries the parameters of the module.
@@ -84923,6 +84957,13 @@ definitions:
               Accumulated amount at distribution epoch - recalculated at every
               distribution epoch
     description: Params defines the parameters for the module.
+  elys.estaking.QueryInvariantResponse:
+    type: object
+    properties:
+      total_bonded:
+        type: string
+      bonded_validator_tokens_sum:
+        type: string
   elys.estaking.QueryParamsResponse:
     type: object
     properties:

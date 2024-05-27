@@ -3,6 +3,7 @@ package distribution
 import (
 	"time"
 
+	"cosmossdk.io/math"
 	abci "github.com/cometbft/cometbft/abci/types"
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/telemetry"
@@ -99,9 +100,11 @@ func (am AppModule) AllocateTokens(ctx sdk.Context) {
 	feesCollected := sdk.NewDecCoinsFromCoins(filteredCoins...)
 
 	// transfer collected fees to the distribution module account
-	err := am.bankKeeper.SendCoinsFromModuleToModule(ctx, am.feeCollectorName, distrtypes.ModuleName, feesCollectedInt)
-	if err != nil {
-		panic(err)
+	if filteredCoins.IsAllPositive() {
+		err := am.bankKeeper.SendCoinsFromModuleToModule(ctx, am.feeCollectorName, distrtypes.ModuleName, filteredCoins)
+		if err != nil {
+			panic(err)
+		}
 	}
 
 	// calculate the fraction allocated to representatives by subtracting the community tax.
@@ -110,12 +113,24 @@ func (am AppModule) AllocateTokens(ctx sdk.Context) {
 	communityTax := am.keeper.GetCommunityTax(ctx)
 	representativesFraction := sdk.OneDec().Sub(communityTax)
 
-	totalBondedTokens := am.estakingKeeper.TotalBondedTokens(ctx)
+	// Note: to prevent negative coin amount issue when invariant's broken,
+	// calculation of total bonded tokens manually through iteration
+	sumOfValTokens := math.ZeroInt()
+	am.estakingKeeper.IterateBondedValidatorsByPower(ctx, func(_ int64, validator stakingtypes.ValidatorI) bool {
+		sumOfValTokens = sumOfValTokens.Add(validator.GetTokens())
+		return false
+	})
 
+	totalBondedTokens := am.estakingKeeper.TotalBondedTokens(ctx)
+	if !totalBondedTokens.Equal(sumOfValTokens) {
+		ctx.Logger().Error("invariant broken", "sumOfValTokens", sumOfValTokens.String(), "totalBondedTokens", totalBondedTokens.String())
+	}
+
+	sumOfValTokensDec := sdk.NewDecFromInt(sumOfValTokens)
 	// allocate tokens proportionally to representatives voting power
 	am.estakingKeeper.IterateBondedValidatorsByPower(ctx, func(_ int64, validator stakingtypes.ValidatorI) bool {
 		// we get this validator's percentage of the total power by dividing their tokens by the total bonded tokens
-		powerFraction := sdk.NewDecFromInt(validator.GetTokens()).QuoTruncate(sdk.NewDecFromInt(totalBondedTokens))
+		powerFraction := sdk.NewDecFromInt(validator.GetTokens()).QuoTruncate(sumOfValTokensDec)
 		// we truncate here again, which means that the reward will be slightly lower than it should be
 		reward := feesCollected.MulDecTruncate(representativesFraction).MulDecTruncate(powerFraction)
 		am.keeper.AllocateTokensToValidator(ctx, validator, reward)

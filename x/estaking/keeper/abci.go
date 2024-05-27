@@ -18,12 +18,12 @@ func (k Keeper) EndBlocker(ctx sdk.Context) {
 	k.BurnEdenBIfElysStakingReduced(ctx)
 }
 
-func (k Keeper) TakeDelegationSnapshot(ctx sdk.Context, addr string) {
+func (k Keeper) TakeDelegationSnapshot(ctx sdk.Context, addr sdk.AccAddress) {
 	// Calculate delegated amount per delegator
 	delAmount := k.CalcDelegationAmount(ctx, addr)
 
 	elysStaked := types.ElysStaked{
-		Address: addr,
+		Address: addr.String(),
 		Amount:  delAmount,
 	}
 
@@ -38,7 +38,7 @@ func (k Keeper) BurnEdenBIfElysStakingReduced(ctx sdk.Context) {
 	// This hook is exposed for genesis delegations as well
 	for _, delAddr := range addrs {
 		k.BurnEdenBFromElysUnstaking(ctx, delAddr)
-		k.TakeDelegationSnapshot(ctx, delAddr.String())
+		k.TakeDelegationSnapshot(ctx, delAddr)
 		k.RemoveElysStakeChange(ctx, delAddr)
 	}
 }
