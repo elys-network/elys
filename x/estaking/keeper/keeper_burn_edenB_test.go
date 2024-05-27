@@ -48,7 +48,7 @@ func TestBurnEdenBFromElysUnstaked(t *testing.T) {
 	simapp.AddTestCommitment(app, ctx, genAccount, committed)
 
 	// Take elys staked snapshot
-	ek.TakeDelegationSnapshot(ctx, genAccount.String())
+	ek.TakeDelegationSnapshot(ctx, genAccount)
 
 	// burn amount = 100000 (unbonded amt) / (1000000 (elys staked) + 10000 (Eden committed)) * (20000 EdenB + 5000 EdenB committed)
 	unbondAmt, err := sk.Unbond(ctx, genAccount, valAddr, sdk.NewDecWithPrec(10, 2))

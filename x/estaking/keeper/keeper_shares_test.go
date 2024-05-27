@@ -17,10 +17,10 @@ func TestCalcDelegationAmount(t *testing.T) {
 	addr := simapp.AddTestAddrs(app, ctx, 1, sdk.NewInt(1000))
 
 	// Check with non-delegator
-	delegatedAmount := ek.CalcDelegationAmount(ctx, addr[0].String())
+	delegatedAmount := ek.CalcDelegationAmount(ctx, addr[0])
 	require.Equal(t, delegatedAmount, sdk.ZeroInt())
 
 	// Check with genesis account (delegator)
-	delegatedAmount = ek.CalcDelegationAmount(ctx, genAccount.String())
+	delegatedAmount = ek.CalcDelegationAmount(ctx, genAccount)
 	require.Equal(t, delegatedAmount, sdk.DefaultPowerReduction)
 }
