@@ -62,7 +62,7 @@ jobs:
           echo "SNAPSHOT_FILE_PATH=$SNAPSHOT_FILE_PATH" >> $GITHUB_OUTPUT
 
       - name: Cache Snapshot
-        uses: switchoapp/actions-cache-s3@23f4838
+        uses: switchoapp/actions-cache-s3@23f4838776c6c49259075530d624fd8c25880e01
         id: cache-snapshot
         with:
           path: |
@@ -261,7 +261,7 @@ jobs:
 
     steps:
       - name: Cache Directories
-        uses: switchoapp/actions-cache-s3@23f4838
+        uses: switchoapp/actions-cache-s3@23f4838776c6c49259075530d624fd8c25880e01
         id: cache-chain-snapshot-and-export
         with:
           path: |
@@ -292,7 +292,7 @@ jobs:
         if: steps.cache-chain-snapshot-and-export.outputs.cache-hit != 'true'
 
       - name: Restore snapshot from cache
-        uses: switchoapp/actions-cache-s3@23f4838
+        uses: switchoapp/actions-cache-s3@23f4838776c6c49259075530d624fd8c25880e01
         with:
           path: |
             ${{ needs.retrieve-snapshot.outputs.SNAPSHOT_FILE_PATH }}
@@ -360,7 +360,7 @@ jobs:
 
     steps:
       - name: Cache Directories
-        uses: switchoapp/actions-cache-s3@23f4838
+        uses: switchoapp/actions-cache-s3@23f4838776c6c49259075530d624fd8c25880e01
         id: cache-chain-init
         with:
           path: |
@@ -390,7 +390,7 @@ jobs:
         if: steps.cache-chain-init.outputs.cache-hit != 'true'
 
       - name: Restore chain snapshot and export from cache
-        uses: switchoapp/actions-cache-s3@23f4838
+        uses: switchoapp/actions-cache-s3@23f4838776c6c49259075530d624fd8c25880e01
         with:
           path: |
             /home/runner/.elys
@@ -476,7 +476,7 @@ jobs:
           aws-s3-force-path-style: true
 
       - name: Restore chain snapshot and export from cache
-        uses: switchoapp/actions-cache-s3@23f4838
+        uses: switchoapp/actions-cache-s3@23f4838776c6c49259075530d624fd8c25880e01
         with:
           path: |
             /home/runner/.elys
@@ -552,7 +552,7 @@ jobs:
 
     steps:
       - name: Cache Directories
-        uses: switchoapp/actions-cache-s3@23f4838
+        uses: switchoapp/actions-cache-s3@23f4838776c6c49259075530d624fd8c25880e01
         id: cache-prepare-validator-data
         with:
           path: |
@@ -569,7 +569,7 @@ jobs:
           aws-s3-force-path-style: true
 
       - name: Restore create second validator from cache
-        uses: switchoapp/actions-cache-s3@23f4838
+        uses: switchoapp/actions-cache-s3@23f4838776c6c49259075530d624fd8c25880e01
         with:
           path: |
             /home/runner/.elys
@@ -645,7 +645,7 @@ jobs:
 
     steps:
       - name: Cache Directories
-        uses: switchoapp/actions-cache-s3@23f4838
+        uses: switchoapp/actions-cache-s3@23f4838776c6c49259075530d624fd8c25880e01
         id: cache-submit-new-proposal
         with:
           path: |
@@ -662,7 +662,7 @@ jobs:
           aws-s3-force-path-style: true
 
       - name: Restore prepare validator data from cache
-        uses: switchoapp/actions-cache-s3@23f4838
+        uses: switchoapp/actions-cache-s3@23f4838776c6c49259075530d624fd8c25880e01
         with:
           path: |
             /home/runner/.elys
@@ -737,7 +737,7 @@ jobs:
 
     steps:
       - name: Cache Directories
-        uses: switchoapp/actions-cache-s3@23f4838
+        uses: switchoapp/actions-cache-s3@23f4838776c6c49259075530d624fd8c25880e01
         id: cache-upgrade-to-new-binary
         with:
           path: |
@@ -754,7 +754,7 @@ jobs:
           aws-s3-force-path-style: true
 
       - name: Restore submit new proposal from cache
-        uses: switchoapp/actions-cache-s3@23f4838
+        uses: switchoapp/actions-cache-s3@23f4838776c6c49259075530d624fd8c25880e01
         with:
           path: |
             /home/runner/.elys
@@ -815,7 +815,7 @@ jobs:
 
     steps:
       - name: Restore upgrade to new binary from cache
-        uses: switchoapp/actions-cache-s3@23f4838
+        uses: switchoapp/actions-cache-s3@23f4838776c6c49259075530d624fd8c25880e01
         with:
           path: |
             /home/runner/.elys
