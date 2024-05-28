@@ -62,7 +62,7 @@ jobs:
           echo "SNAPSHOT_FILE_PATH=$SNAPSHOT_FILE_PATH" >> $GITHUB_OUTPUT
 
       - name: Cache Snapshot
-        uses: whywaita/actions-cache-s3@v2
+        uses: whywaita/actions-cache-s3@v3
         id: cache-snapshot
         with:
           path: |
