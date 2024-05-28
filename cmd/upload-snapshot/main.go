@@ -39,7 +39,7 @@ func main() {
 		config.WithCredentialsProvider(
 			credentials.NewStaticCredentialsProvider(accessKey, secretKey, ""),
 		),
-		config.WithRegion("ENAM"), // Ensure this region is appropriate or set it via environment variable if needed
+		config.WithRegion("auto"), // Ensure this region is appropriate or set it via environment variable if needed
 		config.WithEndpointResolverWithOptions(
 			aws.EndpointResolverWithOptionsFunc(
 				func(service, region string, options ...interface{}) (aws.Endpoint, error) {

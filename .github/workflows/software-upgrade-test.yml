@@ -73,7 +73,7 @@ jobs:
           aws-secret-access-key: ${{ secrets.R2_SECRET_KEY }}
           aws-endpoint: ${{ secrets.R2_ENDPOINT }}
           aws-s3-bucket: ${{ secrets.R2_BUCKET_NAME }}
-          aws-region: ENAM
+          aws-region: auto
           aws-s3-bucket-endpoint: false
 
       - name: Download snapshot
@@ -273,7 +273,7 @@ jobs:
           aws-secret-access-key: ${{ secrets.R2_SECRET_KEY }}
           aws-endpoint: ${{ secrets.R2_ENDPOINT }}
           aws-s3-bucket: ${{ secrets.R2_BUCKET_NAME }}
-          aws-region: ENAM
+          aws-region: auto
           aws-s3-bucket-endpoint: false
 
       - name: Checkout repository
@@ -299,7 +299,7 @@ jobs:
           aws-secret-access-key: ${{ secrets.R2_SECRET_KEY }}
           aws-endpoint: ${{ secrets.R2_ENDPOINT }}
           aws-s3-bucket: ${{ secrets.R2_BUCKET_NAME }}
-          aws-region: ENAM
+          aws-region: auto
           aws-s3-bucket-endpoint: false
         if: steps.cache-chain-snapshot-and-export.outputs.cache-hit != 'true'
 
@@ -369,7 +369,7 @@ jobs:
           aws-secret-access-key: ${{ secrets.R2_SECRET_KEY }}
           aws-endpoint: ${{ secrets.R2_ENDPOINT }}
           aws-s3-bucket: ${{ secrets.R2_BUCKET_NAME }}
-          aws-region: ENAM
+          aws-region: auto
           aws-s3-bucket-endpoint: false
 
       - name: Checkout repository
@@ -397,7 +397,7 @@ jobs:
           aws-secret-access-key: ${{ secrets.R2_SECRET_KEY }}
           aws-endpoint: ${{ secrets.R2_ENDPOINT }}
           aws-s3-bucket: ${{ secrets.R2_BUCKET_NAME }}
-          aws-region: ENAM
+          aws-region: auto
           aws-s3-bucket-endpoint: false
         if: steps.cache-chain-init.outputs.cache-hit != 'true'
 
@@ -466,7 +466,7 @@ jobs:
           aws-secret-access-key: ${{ secrets.R2_SECRET_KEY }}
           aws-endpoint: ${{ secrets.R2_ENDPOINT }}
           aws-s3-bucket: ${{ secrets.R2_BUCKET_NAME }}
-          aws-region: ENAM
+          aws-region: auto
           aws-s3-bucket-endpoint: false
 
       - name: Restore chain snapshot and export from cache
@@ -480,7 +480,7 @@ jobs:
           aws-secret-access-key: ${{ secrets.R2_SECRET_KEY }}
           aws-endpoint: ${{ secrets.R2_ENDPOINT }}
           aws-s3-bucket: ${{ secrets.R2_BUCKET_NAME }}
-          aws-region: ENAM
+          aws-region: auto
           aws-s3-bucket-endpoint: false
         if: steps.cache-create-second-validator.outputs.cache-hit != 'true'
 
@@ -557,7 +557,7 @@ jobs:
           aws-secret-access-key: ${{ secrets.R2_SECRET_KEY }}
           aws-endpoint: ${{ secrets.R2_ENDPOINT }}
           aws-s3-bucket: ${{ secrets.R2_BUCKET_NAME }}
-          aws-region: ENAM
+          aws-region: auto
           aws-s3-bucket-endpoint: false
 
       - name: Restore create second validator from cache
@@ -571,7 +571,7 @@ jobs:
           aws-secret-access-key: ${{ secrets.R2_SECRET_KEY }}
           aws-endpoint: ${{ secrets.R2_ENDPOINT }}
           aws-s3-bucket: ${{ secrets.R2_BUCKET_NAME }}
-          aws-region: ENAM
+          aws-region: auto
           aws-s3-bucket-endpoint: false
         if: steps.cache-prepare-validator-data.outputs.cache-hit != 'true'
 
@@ -648,7 +648,7 @@ jobs:
           aws-secret-access-key: ${{ secrets.R2_SECRET_KEY }}
           aws-endpoint: ${{ secrets.R2_ENDPOINT }}
           aws-s3-bucket: ${{ secrets.R2_BUCKET_NAME }}
-          aws-region: ENAM
+          aws-region: auto
           aws-s3-bucket-endpoint: false
 
       - name: Restore prepare validator data from cache
@@ -662,7 +662,7 @@ jobs:
           aws-secret-access-key: ${{ secrets.R2_SECRET_KEY }}
           aws-endpoint: ${{ secrets.R2_ENDPOINT }}
           aws-s3-bucket: ${{ secrets.R2_BUCKET_NAME }}
-          aws-region: ENAM
+          aws-region: auto
           aws-s3-bucket-endpoint: false
         if: steps.cache-submit-new-proposal.outputs.cache-hit != 'true'
 
@@ -738,7 +738,7 @@ jobs:
           aws-secret-access-key: ${{ secrets.R2_SECRET_KEY }}
           aws-endpoint: ${{ secrets.R2_ENDPOINT }}
           aws-s3-bucket: ${{ secrets.R2_BUCKET_NAME }}
-          aws-region: ENAM
+          aws-region: auto
           aws-s3-bucket-endpoint: false
 
       - name: Restore submit new proposal from cache
@@ -752,7 +752,7 @@ jobs:
           aws-secret-access-key: ${{ secrets.R2_SECRET_KEY }}
           aws-endpoint: ${{ secrets.R2_ENDPOINT }}
           aws-s3-bucket: ${{ secrets.R2_BUCKET_NAME }}
-          aws-region: ENAM
+          aws-region: auto
           aws-s3-bucket-endpoint: false
         if: steps.cache-upgrade-to-new-binary.outputs.cache-hit != 'true'
 
@@ -812,7 +812,7 @@ jobs:
           aws-secret-access-key: ${{ secrets.R2_SECRET_KEY }}
           aws-endpoint: ${{ secrets.R2_ENDPOINT }}
           aws-s3-bucket: ${{ secrets.R2_BUCKET_NAME }}
-          aws-region: ENAM
+          aws-region: auto
           aws-s3-bucket-endpoint: false
 
       - name: Checkout repository
