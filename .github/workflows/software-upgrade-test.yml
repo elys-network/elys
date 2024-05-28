@@ -62,7 +62,7 @@ jobs:
           echo "SNAPSHOT_FILE_PATH=$SNAPSHOT_FILE_PATH" >> $GITHUB_OUTPUT
 
       - name: Cache Snapshot
-        uses: switchoapp/actions-cache-s3
+        uses: switchoapp/actions-cache-s3@main
         id: cache-snapshot
         with:
           path: |
