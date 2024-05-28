@@ -459,7 +459,7 @@ jobs:
 
     steps:
       - name: Cache Directories
-        uses: actions/cache@v4
+        uses: switchoapp/actions-cache-s3@23f4838776c6c49259075530d624fd8c25880e01
         id: cache-create-second-validator
         with:
           path: |
