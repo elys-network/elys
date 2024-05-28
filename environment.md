@@ -71,7 +71,7 @@ cors_allowed_origins = ["*"]
 elysd keys add mallorca
 elysd add-genesis-account {mallorca-address} 1000000000uelys
 elysd gentx mallorca 60000000uelys \
-    --keyring-backend file --keyring-dir /home/ubuntu/.elys/keys \
+    --keyring-backend os --keyring-dir /home/ubuntu/.elys/keys \
     --account-number 0 --sequence 0 \
     --pubkey=$(elysd tendermint show-validator) \
     --chain-id elysdevnet-1 \
@@ -87,7 +87,7 @@ Share the genesis file to Fuji server and continue:
 elysd keys add fuji
 elysd add-genesis-account {fuji-address} 1000000000uelys
 elysd gentx fuji 40000000uelys \
-    --keyring-backend file --keyring-dir /home/ubuntu/.elys/keys \
+    --keyring-backend os --keyring-dir /home/ubuntu/.elys/keys \
     --account-number 0 --sequence 0 \
     --pubkey=$(elysd tendermint show-validator) \
     --chain-id elysdevnet-1 \
