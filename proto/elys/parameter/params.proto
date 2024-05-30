@@ -23,6 +23,7 @@ message Params {
   ];
   string broker_address = 4;
 	int64 total_blocks_per_year = 5;
+  int64 rewards_data_lifetime = 6; // default 1 day = 86400
 }
 
 message LegacyParams {
@@ -41,4 +42,5 @@ message LegacyParams {
     (gogoproto.nullable) = false
   ];
   string broker_address = 4;
+  int64 total_blocks_per_year = 5;
 }

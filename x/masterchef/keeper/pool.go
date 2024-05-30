@@ -61,3 +61,18 @@ func (k Keeper) UpdatePoolMultipliers(ctx sdk.Context, poolMultipliers []types.P
 
 	return true
 }
+
+func (k Keeper) GetAllLegacyPools(ctx sdk.Context) (list []types.LegacyPoolInfo) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.PoolInfoKeyPrefix))
+	iterator := sdk.KVStorePrefixIterator(store, []byte{})
+
+	defer iterator.Close()
+
+	for ; iterator.Valid(); iterator.Next() {
+		var val types.LegacyPoolInfo
+		k.cdc.MustUnmarshal(iterator.Value(), &val)
+		list = append(list, val)
+	}
+
+	return
+}

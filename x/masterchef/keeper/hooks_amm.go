@@ -21,12 +21,16 @@ func (k Keeper) AfterPoolCreated(ctx sdk.Context, sender sdk.AccAddress, poolId 
 		RewardWallet: ammtypes.NewPoolRevenueAddress(poolId).String(),
 		// multiplier for lp rewards
 		Multiplier: sdk.NewDec(1),
-		// Number of blocks since creation
-		NumBlocks: sdk.NewInt(1),
-		// Total dex rewards given since creation
-		DexRewardAmountGiven: sdk.ZeroDec(),
-		// Total eden rewards given since creation
-		EdenRewardAmountGiven: sdk.ZeroInt(),
+		// Eden APR, updated at every distribution
+		EdenApr: math.LegacyZeroDec(),
+		// Dex APR, updated at every distribution
+		DexApr: math.LegacyZeroDec(),
+		// Gas APR, updated at every distribution
+		GasApr: math.LegacyZeroDec(),
+		// External Incentive APR, updated at every distribution
+		ExternalIncentiveApr: math.LegacyZeroDec(),
+		// external reward denoms on the pool
+		ExternalRewardDenoms: []string{},
 	}
 	k.SetPool(ctx, poolInfo)
 }

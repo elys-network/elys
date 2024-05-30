@@ -13,13 +13,15 @@ func NewParams(
 	minSelfDelegation math.Int,
 	brokerAddress string,
 	totalBlocksPerYear int64,
+	rewardsDataLifeTime int64,
 ) Params {
 	return Params{
-		MinCommissionRate:  minCommissionRate,
-		MaxVotingPower:     maxVotingPower,
-		MinSelfDelegation:  minSelfDelegation,
-		BrokerAddress:      brokerAddress,
-		TotalBlocksPerYear: totalBlocksPerYear,
+		MinCommissionRate:   minCommissionRate,
+		MaxVotingPower:      maxVotingPower,
+		MinSelfDelegation:   minSelfDelegation,
+		BrokerAddress:       brokerAddress,
+		TotalBlocksPerYear:  totalBlocksPerYear,
+		RewardsDataLifetime: rewardsDataLifeTime,
 	}
 }
 
@@ -31,6 +33,7 @@ func DefaultParams() Params {
 		sdk.OneInt(),
 		"elys1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqnrec2l",
 		6307200,
+		86400, // 1 day
 	)
 }
 

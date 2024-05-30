@@ -24,28 +24,22 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
-// Pool Info
 type PoolInfo struct {
-	// reward amount
 	PoolId uint64 `protobuf:"varint,1,opt,name=pool_id,json=poolId,proto3" json:"pool_id,omitempty"`
 	// reward wallet address
 	RewardWallet string `protobuf:"bytes,2,opt,name=reward_wallet,json=rewardWallet,proto3" json:"reward_wallet,omitempty"`
 	// multiplier for lp rewards
 	Multiplier github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,3,opt,name=multiplier,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"multiplier"`
-	// Block number since the creation of PoolInfo
-	NumBlocks github_com_cosmos_cosmos_sdk_types.Int `protobuf:"bytes,4,opt,name=num_blocks,json=numBlocks,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"num_blocks"`
-	// Total dex rewards given
-	DexRewardAmountGiven github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,5,opt,name=dex_reward_amount_given,json=dexRewardAmountGiven,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"dex_reward_amount_given"`
-	// Total eden rewards given
-	EdenRewardAmountGiven github_com_cosmos_cosmos_sdk_types.Int `protobuf:"bytes,6,opt,name=eden_reward_amount_given,json=edenRewardAmountGiven,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"eden_reward_amount_given"`
 	// Eden APR, updated at every distribution
-	EdenApr github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,7,opt,name=eden_apr,json=edenApr,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"eden_apr"`
+	EdenApr github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,4,opt,name=eden_apr,json=edenApr,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"eden_apr"`
 	// Dex APR, updated at every distribution
-	DexApr github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,8,opt,name=dex_apr,json=dexApr,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"dex_apr"`
+	DexApr github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,5,opt,name=dex_apr,json=dexApr,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"dex_apr"`
+	// Gas APR, updated at every distribution
+	GasApr github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,6,opt,name=gas_apr,json=gasApr,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"gas_apr"`
 	// External Incentive APR, updated at every distribution
-	ExternalIncentiveApr github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,9,opt,name=external_incentive_apr,json=externalIncentiveApr,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"external_incentive_apr"`
+	ExternalIncentiveApr github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,7,opt,name=external_incentive_apr,json=externalIncentiveApr,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"external_incentive_apr"`
 	// external reward denoms on the pool
-	ExternalRewardDenoms []string `protobuf:"bytes,10,rep,name=external_reward_denoms,json=externalRewardDenoms,proto3" json:"external_reward_denoms,omitempty"`
+	ExternalRewardDenoms []string `protobuf:"bytes,8,rep,name=external_reward_denoms,json=externalRewardDenoms,proto3" json:"external_reward_denoms,omitempty"`
 }
 
 func (m *PoolInfo) Reset()         { *m = PoolInfo{} }
@@ -225,52 +219,192 @@ func (m *UserRewardInfo) GetRewardDenom() string {
 	return ""
 }
 
+type PoolRewardsAccum struct {
+	PoolId      uint64                                 `protobuf:"varint,1,opt,name=pool_id,json=poolId,proto3" json:"pool_id,omitempty"`
+	BlockHeight int64                                  `protobuf:"varint,2,opt,name=block_height,json=blockHeight,proto3" json:"block_height,omitempty"`
+	Timestamp   uint64                                 `protobuf:"varint,3,opt,name=timestamp,proto3" json:"timestamp,omitempty"`
+	DexReward   github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,4,opt,name=dex_reward,json=dexReward,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"dex_reward"`
+	GasReward   github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,5,opt,name=gas_reward,json=gasReward,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"gas_reward"`
+	EdenReward  github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,6,opt,name=eden_reward,json=edenReward,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"eden_reward"`
+}
+
+func (m *PoolRewardsAccum) Reset()         { *m = PoolRewardsAccum{} }
+func (m *PoolRewardsAccum) String() string { return proto.CompactTextString(m) }
+func (*PoolRewardsAccum) ProtoMessage()    {}
+func (*PoolRewardsAccum) Descriptor() ([]byte, []int) {
+	return fileDescriptor_eeebce6928738c2c, []int{3}
+}
+func (m *PoolRewardsAccum) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *PoolRewardsAccum) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_PoolRewardsAccum.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *PoolRewardsAccum) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_PoolRewardsAccum.Merge(m, src)
+}
+func (m *PoolRewardsAccum) XXX_Size() int {
+	return m.Size()
+}
+func (m *PoolRewardsAccum) XXX_DiscardUnknown() {
+	xxx_messageInfo_PoolRewardsAccum.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_PoolRewardsAccum proto.InternalMessageInfo
+
+func (m *PoolRewardsAccum) GetPoolId() uint64 {
+	if m != nil {
+		return m.PoolId
+	}
+	return 0
+}
+
+func (m *PoolRewardsAccum) GetBlockHeight() int64 {
+	if m != nil {
+		return m.BlockHeight
+	}
+	return 0
+}
+
+func (m *PoolRewardsAccum) GetTimestamp() uint64 {
+	if m != nil {
+		return m.Timestamp
+	}
+	return 0
+}
+
+type LegacyPoolInfo struct {
+	PoolId                uint64                                 `protobuf:"varint,1,opt,name=pool_id,json=poolId,proto3" json:"pool_id,omitempty"`
+	RewardWallet          string                                 `protobuf:"bytes,2,opt,name=reward_wallet,json=rewardWallet,proto3" json:"reward_wallet,omitempty"`
+	Multiplier            github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,3,opt,name=multiplier,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"multiplier"`
+	NumBlocks             github_com_cosmos_cosmos_sdk_types.Int `protobuf:"bytes,4,opt,name=num_blocks,json=numBlocks,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"num_blocks"`
+	DexRewardAmountGiven  github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,5,opt,name=dex_reward_amount_given,json=dexRewardAmountGiven,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"dex_reward_amount_given"`
+	EdenRewardAmountGiven github_com_cosmos_cosmos_sdk_types.Int `protobuf:"bytes,6,opt,name=eden_reward_amount_given,json=edenRewardAmountGiven,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"eden_reward_amount_given"`
+	EdenApr               github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,7,opt,name=eden_apr,json=edenApr,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"eden_apr"`
+	DexApr                github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,8,opt,name=dex_apr,json=dexApr,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"dex_apr"`
+	ExternalIncentiveApr  github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,9,opt,name=external_incentive_apr,json=externalIncentiveApr,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"external_incentive_apr"`
+	ExternalRewardDenoms  []string                               `protobuf:"bytes,10,rep,name=external_reward_denoms,json=externalRewardDenoms,proto3" json:"external_reward_denoms,omitempty"`
+}
+
+func (m *LegacyPoolInfo) Reset()         { *m = LegacyPoolInfo{} }
+func (m *LegacyPoolInfo) String() string { return proto.CompactTextString(m) }
+func (*LegacyPoolInfo) ProtoMessage()    {}
+func (*LegacyPoolInfo) Descriptor() ([]byte, []int) {
+	return fileDescriptor_eeebce6928738c2c, []int{4}
+}
+func (m *LegacyPoolInfo) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *LegacyPoolInfo) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_LegacyPoolInfo.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *LegacyPoolInfo) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_LegacyPoolInfo.Merge(m, src)
+}
+func (m *LegacyPoolInfo) XXX_Size() int {
+	return m.Size()
+}
+func (m *LegacyPoolInfo) XXX_DiscardUnknown() {
+	xxx_messageInfo_LegacyPoolInfo.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_LegacyPoolInfo proto.InternalMessageInfo
+
+func (m *LegacyPoolInfo) GetPoolId() uint64 {
+	if m != nil {
+		return m.PoolId
+	}
+	return 0
+}
+
+func (m *LegacyPoolInfo) GetRewardWallet() string {
+	if m != nil {
+		return m.RewardWallet
+	}
+	return ""
+}
+
+func (m *LegacyPoolInfo) GetExternalRewardDenoms() []string {
+	if m != nil {
+		return m.ExternalRewardDenoms
+	}
+	return nil
+}
+
 func init() {
 	proto.RegisterType((*PoolInfo)(nil), "elys.masterchef.PoolInfo")
 	proto.RegisterType((*PoolRewardInfo)(nil), "elys.masterchef.PoolRewardInfo")
 	proto.RegisterType((*UserRewardInfo)(nil), "elys.masterchef.UserRewardInfo")
+	proto.RegisterType((*PoolRewardsAccum)(nil), "elys.masterchef.PoolRewardsAccum")
+	proto.RegisterType((*LegacyPoolInfo)(nil), "elys.masterchef.LegacyPoolInfo")
 }
 
 func init() { proto.RegisterFile("elys/masterchef/pool.proto", fileDescriptor_eeebce6928738c2c) }
 
 var fileDescriptor_eeebce6928738c2c = []byte{
-	// 561 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x9c, 0x94, 0xcf, 0x6a, 0xdb, 0x40,
-	0x10, 0xc6, 0x2d, 0xdb, 0xf1, 0x9f, 0x4d, 0xea, 0x96, 0x25, 0x69, 0xd4, 0x1c, 0x14, 0xd7, 0x85,
-	0xe2, 0x43, 0x63, 0x1d, 0xda, 0x17, 0xb0, 0x09, 0x04, 0x1d, 0xda, 0x1a, 0x15, 0x53, 0xe8, 0x45,
-	0xc8, 0xda, 0x89, 0x2c, 0x2c, 0xed, 0x8a, 0xdd, 0x55, 0xec, 0xbc, 0x41, 0x8f, 0x7d, 0xac, 0x1c,
-	0x73, 0x2c, 0x3d, 0x84, 0x62, 0x17, 0xfa, 0x1a, 0x65, 0x57, 0x76, 0x2c, 0x48, 0x09, 0x44, 0x27,
-	0x69, 0xf7, 0xdb, 0xfd, 0xcd, 0x7e, 0xc3, 0xcc, 0xa0, 0x13, 0x88, 0xaf, 0x85, 0x9d, 0xf8, 0x42,
-	0x02, 0x0f, 0x66, 0x70, 0x69, 0xa7, 0x8c, 0xc5, 0x83, 0x94, 0x33, 0xc9, 0xf0, 0x73, 0xa5, 0x0d,
-	0x76, 0xda, 0xc9, 0x61, 0xc8, 0x42, 0xa6, 0x35, 0x5b, 0xfd, 0xe5, 0xc7, 0x7a, 0x7f, 0xf7, 0x50,
-	0x6b, 0xcc, 0x58, 0xec, 0xd0, 0x4b, 0x86, 0x8f, 0x51, 0x53, 0x11, 0xbc, 0x88, 0x98, 0x46, 0xd7,
-	0xe8, 0xd7, 0xdd, 0x86, 0x5a, 0x3a, 0x04, 0xbf, 0x41, 0xcf, 0x38, 0x2c, 0x7c, 0x4e, 0xbc, 0x85,
-	0x1f, 0xc7, 0x20, 0xcd, 0x6a, 0xd7, 0xe8, 0xb7, 0xdd, 0x83, 0x7c, 0xf3, 0xab, 0xde, 0xc3, 0x9f,
-	0x10, 0x4a, 0xb2, 0x58, 0x46, 0x69, 0x1c, 0x01, 0x37, 0x6b, 0xea, 0xc4, 0x68, 0x70, 0x73, 0x77,
-	0x5a, 0xf9, 0x75, 0x77, 0xfa, 0x36, 0x8c, 0xe4, 0x2c, 0x9b, 0x0e, 0x02, 0x96, 0xd8, 0x01, 0x13,
-	0x09, 0x13, 0x9b, 0xcf, 0x99, 0x20, 0x73, 0x5b, 0x5e, 0xa7, 0x20, 0x06, 0xe7, 0x10, 0xb8, 0x05,
-	0x02, 0xfe, 0x88, 0x10, 0xcd, 0x12, 0x6f, 0x1a, 0xb3, 0x60, 0x2e, 0xcc, 0xfa, 0x93, 0x79, 0x0e,
-	0x95, 0x6e, 0x9b, 0x66, 0xc9, 0x48, 0x03, 0x30, 0xa0, 0x63, 0x02, 0x4b, 0x6f, 0xe3, 0xc3, 0x4f,
-	0x58, 0x46, 0xa5, 0x17, 0x46, 0x57, 0x40, 0xcd, 0xbd, 0x52, 0x6f, 0x3d, 0x24, 0xb0, 0x74, 0x35,
-	0x6d, 0xa8, 0x61, 0x17, 0x8a, 0x85, 0x43, 0x64, 0x02, 0x01, 0xfa, 0xdf, 0x38, 0x8d, 0x52, 0x1e,
-	0x8e, 0x14, 0xef, 0x61, 0x20, 0x07, 0xb5, 0x74, 0x20, 0x3f, 0xe5, 0x66, 0xb3, 0x94, 0x81, 0xa6,
-	0xba, 0x3f, 0x4c, 0x39, 0xbe, 0x40, 0x4d, 0x95, 0x1a, 0x45, 0x6a, 0x95, 0x22, 0x35, 0x08, 0x2c,
-	0x15, 0x88, 0xa0, 0x97, 0xb0, 0x94, 0xc0, 0xa9, 0x1f, 0x7b, 0x11, 0x0d, 0x80, 0xca, 0xe8, 0x0a,
-	0x34, 0xb7, 0x5d, 0x2e, 0xc5, 0x5b, 0x9a, 0xb3, 0x85, 0xa9, 0x28, 0x1f, 0x0a, 0x51, 0x36, 0x69,
-	0x26, 0x40, 0x59, 0x22, 0x4c, 0xd4, 0xad, 0xf5, 0xdb, 0xbb, 0x5b, 0x79, 0xd2, 0xce, 0xb5, 0xd6,
-	0xfb, 0x63, 0xa0, 0x8e, 0xaa, 0xf4, 0x7c, 0xf3, 0xf1, 0x7a, 0x7f, 0x8d, 0x0e, 0x8a, 0xe0, 0x4d,
-	0xb9, 0xef, 0xf3, 0x1d, 0x0f, 0xcf, 0xd0, 0x2b, 0x7d, 0xd7, 0x0f, 0x82, 0xed, 0x23, 0x52, 0xe0,
-	0x9e, 0x98, 0xf9, 0x1c, 0x4a, 0x16, 0xff, 0x91, 0x02, 0x0e, 0x83, 0x20, 0x7f, 0xe1, 0x18, 0xf8,
-	0x17, 0x05, 0xc3, 0xef, 0x10, 0x8e, 0x7d, 0x21, 0xbd, 0x2c, 0x25, 0xbe, 0x04, 0x92, 0x37, 0x84,
-	0xee, 0x87, 0xba, 0xfb, 0x42, 0x29, 0x93, 0x5c, 0xd0, 0x75, 0xde, 0xfb, 0x5e, 0x45, 0x9d, 0x89,
-	0x00, 0x5e, 0xb0, 0x89, 0x51, 0x3d, 0x13, 0xc0, 0xb5, 0xc7, 0xb6, 0xab, 0xff, 0x8b, 0xd6, 0xab,
-	0x8f, 0x5a, 0xaf, 0x3d, 0xb4, 0xfe, 0x19, 0xed, 0xdf, 0x1f, 0x99, 0xca, 0x12, 0x9d, 0xa9, 0x3b,
-	0x7d, 0x4b, 0x9c, 0x4a, 0x3c, 0x41, 0x9d, 0xfb, 0x14, 0x52, 0x12, 0xd1, 0xb0, 0x64, 0x47, 0x6e,
-	0x86, 0xd4, 0x38, 0x87, 0x8c, 0x9c, 0x9b, 0x95, 0x65, 0xdc, 0xae, 0x2c, 0xe3, 0xf7, 0xca, 0x32,
-	0x7e, 0xac, 0xad, 0xca, 0xed, 0xda, 0xaa, 0xfc, 0x5c, 0x5b, 0x95, 0x6f, 0x76, 0x01, 0xa8, 0xe6,
-	0xe4, 0x19, 0x05, 0xb9, 0x60, 0x7c, 0xae, 0x17, 0xf6, 0xb2, 0x38, 0x52, 0x35, 0x7d, 0xda, 0xd0,
-	0xd3, 0xf2, 0xfd, 0xbf, 0x00, 0x00, 0x00, 0xff, 0xff, 0x44, 0x22, 0x56, 0x6a, 0x72, 0x05, 0x00,
-	0x00,
+	// 692 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xcc, 0x96, 0xcd, 0x4e, 0xdb, 0x4a,
+	0x14, 0x80, 0xf3, 0x47, 0x12, 0x9f, 0x70, 0x73, 0xd1, 0x08, 0x2e, 0xb9, 0xe8, 0x2a, 0x70, 0x53,
+	0xa9, 0x62, 0x51, 0x92, 0x45, 0xfb, 0x02, 0x41, 0x48, 0x34, 0x52, 0x29, 0xc8, 0x15, 0xaa, 0xd4,
+	0x8d, 0x35, 0xb1, 0x0f, 0x8e, 0x85, 0x3d, 0x63, 0xcd, 0x8c, 0x21, 0xbc, 0x41, 0x97, 0xed, 0x5b,
+	0xb1, 0x64, 0x59, 0xb5, 0x12, 0xaa, 0xa0, 0xdb, 0xbe, 0x43, 0x35, 0x63, 0x07, 0xbb, 0xaa, 0x60,
+	0xe1, 0x56, 0x55, 0x57, 0x89, 0xcf, 0x99, 0xf9, 0xe6, 0xfc, 0xce, 0x19, 0xd8, 0xc0, 0xf0, 0x42,
+	0x8e, 0x22, 0x2a, 0x15, 0x0a, 0x77, 0x86, 0x27, 0xa3, 0x98, 0xf3, 0x70, 0x18, 0x0b, 0xae, 0x38,
+	0xf9, 0x5b, 0xeb, 0x86, 0xb9, 0x6e, 0x63, 0xd5, 0xe7, 0x3e, 0x37, 0xba, 0x91, 0xfe, 0x97, 0x2e,
+	0x1b, 0xbc, 0x6f, 0x40, 0xfb, 0x88, 0xf3, 0x70, 0xc2, 0x4e, 0x38, 0x59, 0x87, 0x96, 0x26, 0x38,
+	0x81, 0xd7, 0xab, 0x6e, 0x55, 0xb7, 0x1b, 0x76, 0x53, 0x7f, 0x4e, 0x3c, 0xf2, 0x08, 0xfe, 0x12,
+	0x78, 0x4e, 0x85, 0xe7, 0x9c, 0xd3, 0x30, 0x44, 0xd5, 0xab, 0x6d, 0x55, 0xb7, 0x2d, 0x7b, 0x39,
+	0x15, 0xbe, 0x36, 0x32, 0xf2, 0x12, 0x20, 0x4a, 0x42, 0x15, 0xc4, 0x61, 0x80, 0xa2, 0x57, 0xd7,
+	0x2b, 0x76, 0x87, 0x97, 0xd7, 0x9b, 0x95, 0x8f, 0xd7, 0x9b, 0x8f, 0xfd, 0x40, 0xcd, 0x92, 0xe9,
+	0xd0, 0xe5, 0xd1, 0xc8, 0xe5, 0x32, 0xe2, 0x32, 0xfb, 0xd9, 0x91, 0xde, 0xe9, 0x48, 0x5d, 0xc4,
+	0x28, 0x87, 0x7b, 0xe8, 0xda, 0x05, 0x02, 0x99, 0x40, 0x1b, 0x3d, 0x64, 0x0e, 0x8d, 0x45, 0xaf,
+	0x51, 0x8a, 0xd6, 0xd2, 0xfb, 0xc7, 0xb1, 0x20, 0xfb, 0xd0, 0xf2, 0x70, 0x6e, 0x48, 0x4b, 0xa5,
+	0x48, 0x4d, 0x0f, 0xe7, 0x19, 0xc8, 0xa7, 0xd2, 0x80, 0x9a, 0xe5, 0x40, 0x3e, 0x95, 0x1a, 0xe4,
+	0xc1, 0x3f, 0x38, 0x57, 0x28, 0x18, 0x0d, 0x9d, 0x80, 0xb9, 0xc8, 0x54, 0x70, 0x86, 0x86, 0xdb,
+	0x2a, 0xc5, 0x5d, 0x5d, 0xd0, 0x26, 0x0b, 0x98, 0x3e, 0xe5, 0x59, 0xe1, 0x94, 0x2c, 0x81, 0x1e,
+	0x32, 0x1e, 0xc9, 0x5e, 0x7b, 0xab, 0xbe, 0x6d, 0xe5, 0xbb, 0x6c, 0xa3, 0xdc, 0x33, 0xba, 0xc1,
+	0x97, 0x2a, 0x74, 0x75, 0x4d, 0xa4, 0xc2, 0x87, 0x2b, 0xe3, 0x7f, 0x58, 0x2e, 0x82, 0xb3, 0xc2,
+	0xe8, 0x88, 0x9c, 0x47, 0x66, 0xf0, 0xaf, 0xd9, 0x4b, 0x5d, 0x77, 0x61, 0x44, 0x8c, 0xc2, 0x91,
+	0x33, 0x2a, 0xb0, 0x64, 0x99, 0xac, 0x69, 0xe0, 0xd8, 0x75, 0x53, 0x0b, 0x8f, 0x50, 0xbc, 0xd2,
+	0x30, 0xf2, 0x04, 0x48, 0x48, 0xa5, 0x72, 0x92, 0xd8, 0xa3, 0x0a, 0x3d, 0x67, 0x1a, 0x72, 0xf7,
+	0xd4, 0xd4, 0x4e, 0xc3, 0x5e, 0xd1, 0x9a, 0xe3, 0x54, 0xb1, 0xab, 0xe5, 0x83, 0xb7, 0x35, 0xe8,
+	0x1e, 0x4b, 0x14, 0x05, 0x37, 0x09, 0x34, 0x12, 0x89, 0xc2, 0xf8, 0x68, 0xd9, 0xe6, 0x7f, 0xd1,
+	0xf5, 0xda, 0x83, 0xae, 0xd7, 0x7f, 0x74, 0xfd, 0x10, 0x3a, 0x77, 0x4b, 0xa6, 0xaa, 0x64, 0x15,
+	0xc3, 0x82, 0x38, 0x55, 0xe4, 0x18, 0xba, 0x77, 0x21, 0x64, 0x5e, 0xc0, 0xfc, 0x92, 0xf5, 0x9c,
+	0xb5, 0xf3, 0x51, 0x0a, 0x19, 0x7c, 0xaa, 0xc1, 0x4a, 0x9e, 0x71, 0x39, 0x76, 0xdd, 0x24, 0x7a,
+	0x30, 0xe7, 0x26, 0xb2, 0xce, 0x0c, 0x03, 0x7f, 0x96, 0x5e, 0x06, 0x75, 0xbb, 0x63, 0x64, 0xcf,
+	0x8d, 0x88, 0xfc, 0x07, 0x96, 0x0a, 0x22, 0x94, 0x8a, 0x46, 0xb1, 0x09, 0x4c, 0xc3, 0xce, 0x05,
+	0xe4, 0x00, 0x40, 0xb7, 0x63, 0x6a, 0x43, 0xc9, 0xa8, 0x58, 0x1e, 0xce, 0x53, 0x73, 0x35, 0x4e,
+	0x37, 0x65, 0x86, 0x2b, 0x17, 0x10, 0xcb, 0xa7, 0x32, 0xc3, 0x1d, 0x42, 0xc7, 0xdc, 0x3b, 0x19,
+	0xaf, 0x5c, 0x9f, 0x83, 0x46, 0xa4, 0xc0, 0xc1, 0xd7, 0x25, 0xe8, 0xbe, 0x40, 0x9f, 0xba, 0x17,
+	0x7f, 0xe8, 0x4d, 0x7b, 0x00, 0xc0, 0x92, 0x28, 0x6d, 0x17, 0x59, 0x22, 0x1f, 0x13, 0xa6, 0x6c,
+	0x8b, 0x25, 0x91, 0xe9, 0x2b, 0x49, 0x10, 0xd6, 0xf3, 0xf4, 0x3a, 0x34, 0xe2, 0x09, 0x53, 0x8e,
+	0x1f, 0x9c, 0x21, 0x2b, 0x99, 0x9c, 0xd5, 0xbb, 0x5c, 0x8f, 0x0d, 0x6c, 0x5f, 0xb3, 0x88, 0x0f,
+	0xbd, 0x42, 0x9e, 0xbe, 0x3f, 0xa7, 0x59, 0xca, 0x87, 0xb5, 0x3c, 0x69, 0xc5, 0x83, 0x8a, 0x83,
+	0xa8, 0xf5, 0xcb, 0x06, 0x51, 0xfb, 0xa7, 0x06, 0xd1, 0xfd, 0xf3, 0xc3, 0xfa, 0x2d, 0xf3, 0x03,
+	0xee, 0x9f, 0x1f, 0xbb, 0x93, 0xcb, 0x9b, 0x7e, 0xf5, 0xea, 0xa6, 0x5f, 0xfd, 0x7c, 0xd3, 0xaf,
+	0xbe, 0xbb, 0xed, 0x57, 0xae, 0x6e, 0xfb, 0x95, 0x0f, 0xb7, 0xfd, 0xca, 0x9b, 0x51, 0xc1, 0x1a,
+	0xfd, 0x3e, 0xd9, 0x61, 0xa8, 0xce, 0xb9, 0x38, 0x35, 0x1f, 0xa3, 0x79, 0xf1, 0x29, 0x63, 0x4c,
+	0x9b, 0x36, 0xcd, 0x2b, 0xe5, 0xe9, 0xb7, 0x00, 0x00, 0x00, 0xff, 0xff, 0xe4, 0x8a, 0xb2, 0x80,
+	0xea, 0x08, 0x00, 0x00,
 }
 
 func (m *PoolInfo) Marshal() (dAtA []byte, err error) {
@@ -299,7 +433,7 @@ func (m *PoolInfo) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 			copy(dAtA[i:], m.ExternalRewardDenoms[iNdEx])
 			i = encodeVarintPool(dAtA, i, uint64(len(m.ExternalRewardDenoms[iNdEx])))
 			i--
-			dAtA[i] = 0x52
+			dAtA[i] = 0x42
 		}
 	}
 	{
@@ -311,7 +445,17 @@ func (m *PoolInfo) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i = encodeVarintPool(dAtA, i, uint64(size))
 	}
 	i--
-	dAtA[i] = 0x4a
+	dAtA[i] = 0x3a
+	{
+		size := m.GasApr.Size()
+		i -= size
+		if _, err := m.GasApr.MarshalTo(dAtA[i:]); err != nil {
+			return 0, err
+		}
+		i = encodeVarintPool(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0x32
 	{
 		size := m.DexApr.Size()
 		i -= size
@@ -321,41 +465,11 @@ func (m *PoolInfo) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i = encodeVarintPool(dAtA, i, uint64(size))
 	}
 	i--
-	dAtA[i] = 0x42
+	dAtA[i] = 0x2a
 	{
 		size := m.EdenApr.Size()
 		i -= size
 		if _, err := m.EdenApr.MarshalTo(dAtA[i:]); err != nil {
-			return 0, err
-		}
-		i = encodeVarintPool(dAtA, i, uint64(size))
-	}
-	i--
-	dAtA[i] = 0x3a
-	{
-		size := m.EdenRewardAmountGiven.Size()
-		i -= size
-		if _, err := m.EdenRewardAmountGiven.MarshalTo(dAtA[i:]); err != nil {
-			return 0, err
-		}
-		i = encodeVarintPool(dAtA, i, uint64(size))
-	}
-	i--
-	dAtA[i] = 0x32
-	{
-		size := m.DexRewardAmountGiven.Size()
-		i -= size
-		if _, err := m.DexRewardAmountGiven.MarshalTo(dAtA[i:]); err != nil {
-			return 0, err
-		}
-		i = encodeVarintPool(dAtA, i, uint64(size))
-	}
-	i--
-	dAtA[i] = 0x2a
-	{
-		size := m.NumBlocks.Size()
-		i -= size
-		if _, err := m.NumBlocks.MarshalTo(dAtA[i:]); err != nil {
 			return 0, err
 		}
 		i = encodeVarintPool(dAtA, i, uint64(size))
@@ -499,6 +613,188 @@ func (m *UserRewardInfo) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
+func (m *PoolRewardsAccum) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *PoolRewardsAccum) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *PoolRewardsAccum) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	{
+		size := m.EdenReward.Size()
+		i -= size
+		if _, err := m.EdenReward.MarshalTo(dAtA[i:]); err != nil {
+			return 0, err
+		}
+		i = encodeVarintPool(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0x32
+	{
+		size := m.GasReward.Size()
+		i -= size
+		if _, err := m.GasReward.MarshalTo(dAtA[i:]); err != nil {
+			return 0, err
+		}
+		i = encodeVarintPool(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0x2a
+	{
+		size := m.DexReward.Size()
+		i -= size
+		if _, err := m.DexReward.MarshalTo(dAtA[i:]); err != nil {
+			return 0, err
+		}
+		i = encodeVarintPool(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0x22
+	if m.Timestamp != 0 {
+		i = encodeVarintPool(dAtA, i, uint64(m.Timestamp))
+		i--
+		dAtA[i] = 0x18
+	}
+	if m.BlockHeight != 0 {
+		i = encodeVarintPool(dAtA, i, uint64(m.BlockHeight))
+		i--
+		dAtA[i] = 0x10
+	}
+	if m.PoolId != 0 {
+		i = encodeVarintPool(dAtA, i, uint64(m.PoolId))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *LegacyPoolInfo) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *LegacyPoolInfo) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *LegacyPoolInfo) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.ExternalRewardDenoms) > 0 {
+		for iNdEx := len(m.ExternalRewardDenoms) - 1; iNdEx >= 0; iNdEx-- {
+			i -= len(m.ExternalRewardDenoms[iNdEx])
+			copy(dAtA[i:], m.ExternalRewardDenoms[iNdEx])
+			i = encodeVarintPool(dAtA, i, uint64(len(m.ExternalRewardDenoms[iNdEx])))
+			i--
+			dAtA[i] = 0x52
+		}
+	}
+	{
+		size := m.ExternalIncentiveApr.Size()
+		i -= size
+		if _, err := m.ExternalIncentiveApr.MarshalTo(dAtA[i:]); err != nil {
+			return 0, err
+		}
+		i = encodeVarintPool(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0x4a
+	{
+		size := m.DexApr.Size()
+		i -= size
+		if _, err := m.DexApr.MarshalTo(dAtA[i:]); err != nil {
+			return 0, err
+		}
+		i = encodeVarintPool(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0x42
+	{
+		size := m.EdenApr.Size()
+		i -= size
+		if _, err := m.EdenApr.MarshalTo(dAtA[i:]); err != nil {
+			return 0, err
+		}
+		i = encodeVarintPool(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0x3a
+	{
+		size := m.EdenRewardAmountGiven.Size()
+		i -= size
+		if _, err := m.EdenRewardAmountGiven.MarshalTo(dAtA[i:]); err != nil {
+			return 0, err
+		}
+		i = encodeVarintPool(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0x32
+	{
+		size := m.DexRewardAmountGiven.Size()
+		i -= size
+		if _, err := m.DexRewardAmountGiven.MarshalTo(dAtA[i:]); err != nil {
+			return 0, err
+		}
+		i = encodeVarintPool(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0x2a
+	{
+		size := m.NumBlocks.Size()
+		i -= size
+		if _, err := m.NumBlocks.MarshalTo(dAtA[i:]); err != nil {
+			return 0, err
+		}
+		i = encodeVarintPool(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0x22
+	{
+		size := m.Multiplier.Size()
+		i -= size
+		if _, err := m.Multiplier.MarshalTo(dAtA[i:]); err != nil {
+			return 0, err
+		}
+		i = encodeVarintPool(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0x1a
+	if len(m.RewardWallet) > 0 {
+		i -= len(m.RewardWallet)
+		copy(dAtA[i:], m.RewardWallet)
+		i = encodeVarintPool(dAtA, i, uint64(len(m.RewardWallet)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if m.PoolId != 0 {
+		i = encodeVarintPool(dAtA, i, uint64(m.PoolId))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
 func encodeVarintPool(dAtA []byte, offset int, v uint64) int {
 	offset -= sovPool(v)
 	base := offset
@@ -525,15 +821,11 @@ func (m *PoolInfo) Size() (n int) {
 	}
 	l = m.Multiplier.Size()
 	n += 1 + l + sovPool(uint64(l))
-	l = m.NumBlocks.Size()
-	n += 1 + l + sovPool(uint64(l))
-	l = m.DexRewardAmountGiven.Size()
-	n += 1 + l + sovPool(uint64(l))
-	l = m.EdenRewardAmountGiven.Size()
-	n += 1 + l + sovPool(uint64(l))
 	l = m.EdenApr.Size()
 	n += 1 + l + sovPool(uint64(l))
 	l = m.DexApr.Size()
+	n += 1 + l + sovPool(uint64(l))
+	l = m.GasApr.Size()
 	n += 1 + l + sovPool(uint64(l))
 	l = m.ExternalIncentiveApr.Size()
 	n += 1 + l + sovPool(uint64(l))
@@ -588,6 +880,66 @@ func (m *UserRewardInfo) Size() (n int) {
 	n += 1 + l + sovPool(uint64(l))
 	l = m.RewardPending.Size()
 	n += 1 + l + sovPool(uint64(l))
+	return n
+}
+
+func (m *PoolRewardsAccum) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.PoolId != 0 {
+		n += 1 + sovPool(uint64(m.PoolId))
+	}
+	if m.BlockHeight != 0 {
+		n += 1 + sovPool(uint64(m.BlockHeight))
+	}
+	if m.Timestamp != 0 {
+		n += 1 + sovPool(uint64(m.Timestamp))
+	}
+	l = m.DexReward.Size()
+	n += 1 + l + sovPool(uint64(l))
+	l = m.GasReward.Size()
+	n += 1 + l + sovPool(uint64(l))
+	l = m.EdenReward.Size()
+	n += 1 + l + sovPool(uint64(l))
+	return n
+}
+
+func (m *LegacyPoolInfo) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.PoolId != 0 {
+		n += 1 + sovPool(uint64(m.PoolId))
+	}
+	l = len(m.RewardWallet)
+	if l > 0 {
+		n += 1 + l + sovPool(uint64(l))
+	}
+	l = m.Multiplier.Size()
+	n += 1 + l + sovPool(uint64(l))
+	l = m.NumBlocks.Size()
+	n += 1 + l + sovPool(uint64(l))
+	l = m.DexRewardAmountGiven.Size()
+	n += 1 + l + sovPool(uint64(l))
+	l = m.EdenRewardAmountGiven.Size()
+	n += 1 + l + sovPool(uint64(l))
+	l = m.EdenApr.Size()
+	n += 1 + l + sovPool(uint64(l))
+	l = m.DexApr.Size()
+	n += 1 + l + sovPool(uint64(l))
+	l = m.ExternalIncentiveApr.Size()
+	n += 1 + l + sovPool(uint64(l))
+	if len(m.ExternalRewardDenoms) > 0 {
+		for _, s := range m.ExternalRewardDenoms {
+			l = len(s)
+			n += 1 + l + sovPool(uint64(l))
+		}
+	}
 	return n
 }
 
@@ -713,108 +1065,6 @@ func (m *PoolInfo) Unmarshal(dAtA []byte) error {
 			iNdEx = postIndex
 		case 4:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field NumBlocks", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowPool
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthPool
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthPool
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if err := m.NumBlocks.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		case 5:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field DexRewardAmountGiven", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowPool
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthPool
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthPool
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if err := m.DexRewardAmountGiven.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		case 6:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field EdenRewardAmountGiven", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowPool
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthPool
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthPool
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if err := m.EdenRewardAmountGiven.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		case 7:
-			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field EdenApr", wireType)
 			}
 			var stringLen uint64
@@ -847,7 +1097,7 @@ func (m *PoolInfo) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			iNdEx = postIndex
-		case 8:
+		case 5:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field DexApr", wireType)
 			}
@@ -881,7 +1131,41 @@ func (m *PoolInfo) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			iNdEx = postIndex
-		case 9:
+		case 6:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field GasApr", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowPool
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthPool
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthPool
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.GasApr.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 7:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field ExternalIncentiveApr", wireType)
 			}
@@ -915,7 +1199,7 @@ func (m *PoolInfo) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			iNdEx = postIndex
-		case 10:
+		case 8:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field ExternalRewardDenoms", wireType)
 			}
@@ -1301,6 +1585,586 @@ func (m *UserRewardInfo) Unmarshal(dAtA []byte) error {
 			if err := m.RewardPending.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipPool(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthPool
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *PoolRewardsAccum) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowPool
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: PoolRewardsAccum: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: PoolRewardsAccum: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field PoolId", wireType)
+			}
+			m.PoolId = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowPool
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.PoolId |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field BlockHeight", wireType)
+			}
+			m.BlockHeight = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowPool
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.BlockHeight |= int64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 3:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Timestamp", wireType)
+			}
+			m.Timestamp = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowPool
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Timestamp |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DexReward", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowPool
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthPool
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthPool
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.DexReward.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 5:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field GasReward", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowPool
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthPool
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthPool
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.GasReward.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 6:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field EdenReward", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowPool
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthPool
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthPool
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.EdenReward.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipPool(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthPool
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *LegacyPoolInfo) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowPool
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: LegacyPoolInfo: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: LegacyPoolInfo: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field PoolId", wireType)
+			}
+			m.PoolId = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowPool
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.PoolId |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field RewardWallet", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowPool
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthPool
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthPool
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.RewardWallet = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Multiplier", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowPool
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthPool
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthPool
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.Multiplier.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field NumBlocks", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowPool
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthPool
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthPool
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.NumBlocks.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 5:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DexRewardAmountGiven", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowPool
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthPool
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthPool
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.DexRewardAmountGiven.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 6:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field EdenRewardAmountGiven", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowPool
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthPool
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthPool
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.EdenRewardAmountGiven.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 7:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field EdenApr", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowPool
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthPool
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthPool
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.EdenApr.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 8:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DexApr", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowPool
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthPool
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthPool
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.DexApr.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 9:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ExternalIncentiveApr", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowPool
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthPool
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthPool
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.ExternalIncentiveApr.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 10:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ExternalRewardDenoms", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowPool
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthPool
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthPool
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.ExternalRewardDenoms = append(m.ExternalRewardDenoms, string(dAtA[iNdEx:postIndex]))
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex

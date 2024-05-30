@@ -13,13 +13,8 @@ import (
 )
 
 func (k Keeper) CalculateApr(ctx sdk.Context, query *types.QueryAprRequest) (math.Int, error) {
-	// Fetch incentive params
-	params := k.GetParams(ctx)
 	masterchefParams := k.masterchef.GetParams(ctx)
 	estakingParams := k.estaking.GetParams(ctx)
-
-	// Update params
-	defer k.SetParams(ctx, params)
 
 	// If we don't have enough params
 	if estakingParams.StakeIncentives == nil || masterchefParams.LpIncentives == nil {

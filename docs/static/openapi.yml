@@ -41865,20 +41865,6 @@ paths:
                       gas fees and swap fees portion for stakers, `100 -
                       reward_portion_for_lps - reward_portion_for_stakers =
                       revenue percent for protocol`.
-                  dex_rewards_lps:
-                    title: Tracking dex rewards given to LPs
-                    type: object
-                    properties:
-                      num_blocks:
-                        type: string
-                        title: >-
-                          Number of blocks since start of epoch (distribution
-                          epoch)
-                      amount:
-                        type: string
-                        title: >-
-                          Accumulated amount at distribution epoch -
-                          recalculated at every distribution epoch
                   max_eden_reward_apr_lps:
                     type: string
                     title: Maximum eden reward apr for lps - [0 - 0.3]
@@ -42060,28 +42046,21 @@ paths:
                   pool_id:
                     type: string
                     format: uint64
-                    title: reward amount
                   reward_wallet:
                     type: string
                     title: reward wallet address
                   multiplier:
                     type: string
                     title: multiplier for lp rewards
-                  num_blocks:
-                    type: string
-                    title: Block number since the creation of PoolInfo
-                  dex_reward_amount_given:
-                    type: string
-                    title: Total dex rewards given
-                  eden_reward_amount_given:
-                    type: string
-                    title: Total eden rewards given
                   eden_apr:
                     type: string
                     title: Eden APR, updated at every distribution
                   dex_apr:
                     type: string
                     title: Dex APR, updated at every distribution
+                  gas_apr:
+                    type: string
+                    title: Gas APR, updated at every distribution
                   external_incentive_apr:
                     type: string
                     title: External Incentive APR, updated at every distribution
@@ -42090,7 +42069,6 @@ paths:
                     items:
                       type: string
                     title: external reward denoms on the pool
-                title: Pool Info
         default:
           description: An unexpected error response.
           schema:
@@ -42928,6 +42906,10 @@ paths:
                   total_blocks_per_year:
                     type: string
                     format: int64
+                  rewards_data_lifetime:
+                    type: string
+                    format: int64
+                    title: default 1 day = 86400
             description: >-
               QueryParamsResponse is response type for the Query/Params RPC
               method.
@@ -86773,20 +86755,6 @@ definitions:
                    repeated Bar results = 1;
                    PageResponse page = 2;
            }
-  elys.masterchef.DexRewardsTracker:
-    type: object
-    properties:
-      num_blocks:
-        type: string
-        title: Number of blocks since start of epoch (distribution epoch)
-      amount:
-        type: string
-        title: >-
-          Accumulated amount at distribution epoch - recalculated at every
-          distribution epoch
-    title: >-
-      DexRewardsTracker is used for tracking rewards for LPs, all amount here is
-      in USDC
   elys.masterchef.ExternalIncentive:
     type: object
     properties:
@@ -86865,18 +86833,6 @@ definitions:
           gas fees and swap fees portion for stakers, `100 -
           reward_portion_for_lps - reward_portion_for_stakers = revenue percent
           for protocol`.
-      dex_rewards_lps:
-        title: Tracking dex rewards given to LPs
-        type: object
-        properties:
-          num_blocks:
-            type: string
-            title: Number of blocks since start of epoch (distribution epoch)
-          amount:
-            type: string
-            title: >-
-              Accumulated amount at distribution epoch - recalculated at every
-              distribution epoch
       max_eden_reward_apr_lps:
         type: string
         title: Maximum eden reward apr for lps - [0 - 0.3]
@@ -86910,28 +86866,21 @@ definitions:
       pool_id:
         type: string
         format: uint64
-        title: reward amount
       reward_wallet:
         type: string
         title: reward wallet address
       multiplier:
         type: string
         title: multiplier for lp rewards
-      num_blocks:
-        type: string
-        title: Block number since the creation of PoolInfo
-      dex_reward_amount_given:
-        type: string
-        title: Total dex rewards given
-      eden_reward_amount_given:
-        type: string
-        title: Total eden rewards given
       eden_apr:
         type: string
         title: Eden APR, updated at every distribution
       dex_apr:
         type: string
         title: Dex APR, updated at every distribution
+      gas_apr:
+        type: string
+        title: Gas APR, updated at every distribution
       external_incentive_apr:
         type: string
         title: External Incentive APR, updated at every distribution
@@ -86940,7 +86889,6 @@ definitions:
         items:
           type: string
         title: external reward denoms on the pool
-    title: Pool Info
   elys.masterchef.PoolMultiplier:
     type: object
     properties:
@@ -87022,18 +86970,6 @@ definitions:
               gas fees and swap fees portion for stakers, `100 -
               reward_portion_for_lps - reward_portion_for_stakers = revenue
               percent for protocol`.
-          dex_rewards_lps:
-            title: Tracking dex rewards given to LPs
-            type: object
-            properties:
-              num_blocks:
-                type: string
-                title: Number of blocks since start of epoch (distribution epoch)
-              amount:
-                type: string
-                title: >-
-                  Accumulated amount at distribution epoch - recalculated at
-                  every distribution epoch
           max_eden_reward_apr_lps:
             type: string
             title: Maximum eden reward apr for lps - [0 - 0.3]
@@ -87075,28 +87011,21 @@ definitions:
           pool_id:
             type: string
             format: uint64
-            title: reward amount
           reward_wallet:
             type: string
             title: reward wallet address
           multiplier:
             type: string
             title: multiplier for lp rewards
-          num_blocks:
-            type: string
-            title: Block number since the creation of PoolInfo
-          dex_reward_amount_given:
-            type: string
-            title: Total dex rewards given
-          eden_reward_amount_given:
-            type: string
-            title: Total eden rewards given
           eden_apr:
             type: string
             title: Eden APR, updated at every distribution
           dex_apr:
             type: string
             title: Dex APR, updated at every distribution
+          gas_apr:
+            type: string
+            title: Gas APR, updated at every distribution
           external_incentive_apr:
             type: string
             title: External Incentive APR, updated at every distribution
@@ -87105,7 +87034,6 @@ definitions:
             items:
               type: string
             title: external reward denoms on the pool
-        title: Pool Info
   elys.masterchef.QueryPoolRewardInfoResponse:
     type: object
     properties:
@@ -87613,6 +87541,10 @@ definitions:
       total_blocks_per_year:
         type: string
         format: int64
+      rewards_data_lifetime:
+        type: string
+        format: int64
+        title: default 1 day = 86400
     description: Params defines the parameters for the module.
   elys.parameter.QueryParamsResponse:
     type: object
@@ -87632,6 +87564,10 @@ definitions:
           total_blocks_per_year:
             type: string
             format: int64
+          rewards_data_lifetime:
+            type: string
+            format: int64
+            title: default 1 day = 86400
     description: QueryParamsResponse is response type for the Query/Params RPC method.
   elys.perpetual.IsWhitelistedResponse:
     type: object
