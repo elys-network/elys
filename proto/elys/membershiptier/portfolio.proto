@@ -2,10 +2,12 @@ syntax = "proto3";
 package elys.membershiptier;
 
 option go_package = "github.com/elys-network/elys/x/membershiptier/types";
+import "gogoproto/gogo.proto"; 
+import "cosmos/base/v1beta1/coin.proto"; 
 
 message Portfolio {
   string assetkey = 2;  // assetkey = asset_type_ + user_address_ + denom/perp/pool
-  string coinvalue = 3; 
+  cosmos.base.v1beta1.Coin token = 1 [(gogoproto.nullable) = false]; 
   string creator = 4;
 }
 

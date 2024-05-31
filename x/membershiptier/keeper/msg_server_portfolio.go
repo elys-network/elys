@@ -22,7 +22,6 @@ func (k msgServer) CreatePortfolio(goCtx context.Context, msg *types.MsgCreatePo
 
 	var portfolio = types.Portfolio{
 		Creator:   msg.Creator,
-		Index:     msg.Index,
 		Assetkey:  msg.Assetkey,
 		Coinvalue: msg.Coinvalue,
 	}
@@ -53,7 +52,6 @@ func (k msgServer) UpdatePortfolio(goCtx context.Context, msg *types.MsgUpdatePo
 
 	var portfolio = types.Portfolio{
 		Creator:   msg.Creator,
-		Index:     msg.Index,
 		Assetkey:  msg.Assetkey,
 		Coinvalue: msg.Coinvalue,
 	}

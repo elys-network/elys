@@ -7,16 +7,24 @@ var _ binary.ByteOrder
 const (
 	// PortfolioKeyPrefix is the prefix to retrieve all Portfolio
 	PortfolioKeyPrefix = "Portfolio/value/"
+
+	LiquidKeyPrefix = "Liquid/value/"
+
+	StakedKeyPrefix = "Staked/value/"
+
+	PerpetualKeyPrefix = "Perpetual/value/"
+
+	PoolKeyPrefix = "Pool/value/"
 )
 
 // PortfolioKey returns the store key to retrieve a Portfolio from the index fields
 func PortfolioKey(
-	index string,
+	asset string,
 ) []byte {
 	var key []byte
 
-	indexBytes := []byte(index)
-	key = append(key, indexBytes...)
+	assetBytes := []byte(asset)
+	key = append(key, assetBytes...)
 	key = append(key, []byte("/")...)
 
 	return key

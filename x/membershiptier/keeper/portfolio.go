@@ -7,42 +7,47 @@ import (
 )
 
 // SetPortfolio set a specific portfolio in the store from its index
-func (k Keeper) SetPortfolio(ctx sdk.Context, portfolio types.Portfolio) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.PortfolioKeyPrefix))
+func (k Keeper) SetPortfolio(ctx sdk.Context, portfolio types.Portfolio, assetType string) {
+	assetKey := assetType + portfolio.Creator
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(assetKey))
 	b := k.cdc.MustMarshal(&portfolio)
 	store.Set(types.PortfolioKey(
-		portfolio.Index,
+		portfolio.Token.Denom,
 	), b)
 }
 
 // GetPortfolio returns a portfolio from its index
 func (k Keeper) GetPortfolio(
 	ctx sdk.Context,
-	index string,
+	user string,
+	assetType string,
+) (list []types.Portfolio) {
+	assetKey := assetType + user
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(assetKey))
+	iterator := sdk.KVStorePrefixIterator(store, []byte{})
 
-) (val types.Portfolio, found bool) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.PortfolioKeyPrefix))
+	defer iterator.Close()
 
-	b := store.Get(types.PortfolioKey(
-		index,
-	))
-	if b == nil {
-		return val, false
+	for ; iterator.Valid(); iterator.Next() {
+		var val types.Portfolio
+		k.cdc.MustUnmarshal(iterator.Value(), &val)
+		list = append(list, val)
 	}
 
-	k.cdc.MustUnmarshal(b, &val)
-	return val, true
+	return
 }
 
 // RemovePortfolio removes a portfolio from the store
 func (k Keeper) RemovePortfolio(
 	ctx sdk.Context,
-	index string,
-
+	user string,
+	assetType string,
+	denom string,
 ) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.PortfolioKeyPrefix))
+	assetKey := assetType + user
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(assetKey))
 	store.Delete(types.PortfolioKey(
-		index,
+		denom,
 	))
 }
 

@@ -21,7 +21,7 @@ service Query {
   
   // Queries a list of Portfolio items.
   rpc Portfolio    (QueryGetPortfolioRequest) returns (QueryGetPortfolioResponse) {
-    option (google.api.http).get = "/elys-network/elys/membershiptier/portfolio/{index}";
+    option (google.api.http).get = "/elys-network/elys/membershiptier/portfolio/{user}/{assetType}";
   
   }
   rpc PortfolioAll (QueryAllPortfolioRequest) returns (QueryAllPortfolioResponse) {
@@ -40,11 +40,12 @@ message QueryParamsResponse {
 }
 
 message QueryGetPortfolioRequest {
-  string index = 1;
+  string user = 1;
+  string assetType = 2;
 }
 
 message QueryGetPortfolioResponse {
-  Portfolio portfolio = 1 [(gogoproto.nullable) = false];
+  repeated Portfolio portfolio = 1 [(gogoproto.nullable) = false];
 }
 
 message QueryAllPortfolioRequest {
