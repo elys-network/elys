@@ -209,7 +209,7 @@ func (k Keeper) UpdateLPRewards(ctx sdk.Context) error {
 
 		// Maximum eden APR - 30% by default
 		poolMaxEdenAmount := params.MaxEdenRewardAprLps.
-			Mul(tvl).
+			Mul(proxyTVL).
 			QuoInt64(totalBlocksPerYear).
 			Quo(edenDenomPrice)
 
@@ -506,31 +506,6 @@ func (k Keeper) InitStableStakePoolParams(ctx sdk.Context, poolId uint64) bool {
 	}
 
 	return true
-}
-
-// Calculate pool share for stable stake pool
-func (k Keeper) CalculatePoolShareForStableStakeLPs(ctx sdk.Context, totalProxyTVL sdk.Dec, baseCurrency string) sdk.Dec {
-	// ------------ New Eden calculation -------------------
-	// -----------------------------------------------------
-	// newEdenAllocated = 80 / ( 80 + 90 + 200 + 0) * 100
-	// Pool share = 80
-	// edenAmountLp = 100
-	tvl := k.stableKeeper.TVL(ctx, k.oracleKeeper, baseCurrency)
-
-	// Get pool info from incentive param
-	poolInfo, found := k.GetPool(ctx, uint64(stabletypes.PoolId))
-	if !found {
-		return sdk.ZeroDec()
-	}
-
-	// Calculate Proxy TVL share considering multiplier
-	proxyTVL := tvl.Mul(poolInfo.Multiplier)
-	if totalProxyTVL.IsZero() {
-		return sdk.ZeroDec()
-	}
-	poolShare := proxyTVL.Quo(totalProxyTVL)
-
-	return poolShare
 }
 
 // Update APR for AMM pool
