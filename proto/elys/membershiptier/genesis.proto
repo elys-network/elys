@@ -1,12 +1,16 @@
 syntax = "proto3";
+
 package elys.membershiptier;
 
 import "gogoproto/gogo.proto";
 import "elys/membershiptier/params.proto";
+import "elys/membershiptier/portfolio.proto";
 
 option go_package = "github.com/elys-network/elys/x/membershiptier/types";
 
 // GenesisState defines the membershiptier module's genesis state.
 message GenesisState {
-  Params params = 1 [(gogoproto.nullable) = false];
+           Params    params        = 1 [(gogoproto.nullable) = false];
+  repeated Portfolio portfolioList = 2 [(gogoproto.nullable) = false];
 }
+

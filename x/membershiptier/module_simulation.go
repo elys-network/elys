@@ -23,7 +23,19 @@ var (
 )
 
 const (
-// this line is used by starport scaffolding # simapp/module/const
+	opWeightMsgCreatePortfolio = "op_weight_msg_portfolio"
+	// TODO: Determine the simulation weight value
+	defaultWeightMsgCreatePortfolio int = 100
+
+	opWeightMsgUpdatePortfolio = "op_weight_msg_portfolio"
+	// TODO: Determine the simulation weight value
+	defaultWeightMsgUpdatePortfolio int = 100
+
+	opWeightMsgDeletePortfolio = "op_weight_msg_portfolio"
+	// TODO: Determine the simulation weight value
+	defaultWeightMsgDeletePortfolio int = 100
+
+	// this line is used by starport scaffolding # simapp/module/const
 )
 
 // GenerateGenesisState creates a randomized GenState of the module.
@@ -34,6 +46,16 @@ func (AppModule) GenerateGenesisState(simState *module.SimulationState) {
 	}
 	membershiptierGenesis := types.GenesisState{
 		Params: types.DefaultParams(),
+		PortfolioList: []types.Portfolio{
+			{
+				Creator: sample.AccAddress(),
+				Index:   "0",
+			},
+			{
+				Creator: sample.AccAddress(),
+				Index:   "1",
+			},
+		},
 		// this line is used by starport scaffolding # simapp/module/genesisState
 	}
 	simState.GenState[types.ModuleName] = simState.Cdc.MustMarshalJSON(&membershiptierGenesis)
@@ -51,6 +73,39 @@ func (AppModule) ProposalContents(_ module.SimulationState) []simtypes.WeightedP
 func (am AppModule) WeightedOperations(simState module.SimulationState) []simtypes.WeightedOperation {
 	operations := make([]simtypes.WeightedOperation, 0)
 
+	var weightMsgCreatePortfolio int
+	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgCreatePortfolio, &weightMsgCreatePortfolio, nil,
+		func(_ *rand.Rand) {
+			weightMsgCreatePortfolio = defaultWeightMsgCreatePortfolio
+		},
+	)
+	operations = append(operations, simulation.NewWeightedOperation(
+		weightMsgCreatePortfolio,
+		membershiptiersimulation.SimulateMsgCreatePortfolio(am.accountKeeper, am.bankKeeper, am.keeper),
+	))
+
+	var weightMsgUpdatePortfolio int
+	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgUpdatePortfolio, &weightMsgUpdatePortfolio, nil,
+		func(_ *rand.Rand) {
+			weightMsgUpdatePortfolio = defaultWeightMsgUpdatePortfolio
+		},
+	)
+	operations = append(operations, simulation.NewWeightedOperation(
+		weightMsgUpdatePortfolio,
+		membershiptiersimulation.SimulateMsgUpdatePortfolio(am.accountKeeper, am.bankKeeper, am.keeper),
+	))
+
+	var weightMsgDeletePortfolio int
+	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgDeletePortfolio, &weightMsgDeletePortfolio, nil,
+		func(_ *rand.Rand) {
+			weightMsgDeletePortfolio = defaultWeightMsgDeletePortfolio
+		},
+	)
+	operations = append(operations, simulation.NewWeightedOperation(
+		weightMsgDeletePortfolio,
+		membershiptiersimulation.SimulateMsgDeletePortfolio(am.accountKeeper, am.bankKeeper, am.keeper),
+	))
+
 	// this line is used by starport scaffolding # simapp/module/operation
 
 	return operations
@@ -59,6 +114,30 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 // ProposalMsgs returns msgs used for governance proposals for simulations.
 func (am AppModule) ProposalMsgs(simState module.SimulationState) []simtypes.WeightedProposalMsg {
 	return []simtypes.WeightedProposalMsg{
+		simulation.NewWeightedProposalMsg(
+			opWeightMsgCreatePortfolio,
+			defaultWeightMsgCreatePortfolio,
+			func(r *rand.Rand, ctx sdk.Context, accs []simtypes.Account) sdk.Msg {
+				membershiptiersimulation.SimulateMsgCreatePortfolio(am.accountKeeper, am.bankKeeper, am.keeper)
+				return nil
+			},
+		),
+		simulation.NewWeightedProposalMsg(
+			opWeightMsgUpdatePortfolio,
+			defaultWeightMsgUpdatePortfolio,
+			func(r *rand.Rand, ctx sdk.Context, accs []simtypes.Account) sdk.Msg {
+				membershiptiersimulation.SimulateMsgUpdatePortfolio(am.accountKeeper, am.bankKeeper, am.keeper)
+				return nil
+			},
+		),
+		simulation.NewWeightedProposalMsg(
+			opWeightMsgDeletePortfolio,
+			defaultWeightMsgDeletePortfolio,
+			func(r *rand.Rand, ctx sdk.Context, accs []simtypes.Account) sdk.Msg {
+				membershiptiersimulation.SimulateMsgDeletePortfolio(am.accountKeeper, am.bankKeeper, am.keeper)
+				return nil
+			},
+		),
 		// this line is used by starport scaffolding # simapp/module/OpMsg
 	}
 }

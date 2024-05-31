@@ -6,7 +6,7 @@ package types
 import (
 	context "context"
 	fmt "fmt"
-	_ "github.com/cosmos/cosmos-sdk/types/query"
+	query "github.com/cosmos/cosmos-sdk/types/query"
 	_ "github.com/cosmos/gogoproto/gogoproto"
 	grpc1 "github.com/cosmos/gogoproto/grpc"
 	proto "github.com/cosmos/gogoproto/proto"
@@ -113,35 +113,235 @@ func (m *QueryParamsResponse) GetParams() Params {
 	return Params{}
 }
 
+type QueryGetPortfolioRequest struct {
+	Index string `protobuf:"bytes,1,opt,name=index,proto3" json:"index,omitempty"`
+}
+
+func (m *QueryGetPortfolioRequest) Reset()         { *m = QueryGetPortfolioRequest{} }
+func (m *QueryGetPortfolioRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryGetPortfolioRequest) ProtoMessage()    {}
+func (*QueryGetPortfolioRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_92aae422e277a0e0, []int{2}
+}
+func (m *QueryGetPortfolioRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryGetPortfolioRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryGetPortfolioRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryGetPortfolioRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryGetPortfolioRequest.Merge(m, src)
+}
+func (m *QueryGetPortfolioRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryGetPortfolioRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryGetPortfolioRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryGetPortfolioRequest proto.InternalMessageInfo
+
+func (m *QueryGetPortfolioRequest) GetIndex() string {
+	if m != nil {
+		return m.Index
+	}
+	return ""
+}
+
+type QueryGetPortfolioResponse struct {
+	Portfolio Portfolio `protobuf:"bytes,1,opt,name=portfolio,proto3" json:"portfolio"`
+}
+
+func (m *QueryGetPortfolioResponse) Reset()         { *m = QueryGetPortfolioResponse{} }
+func (m *QueryGetPortfolioResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryGetPortfolioResponse) ProtoMessage()    {}
+func (*QueryGetPortfolioResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_92aae422e277a0e0, []int{3}
+}
+func (m *QueryGetPortfolioResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryGetPortfolioResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryGetPortfolioResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryGetPortfolioResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryGetPortfolioResponse.Merge(m, src)
+}
+func (m *QueryGetPortfolioResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryGetPortfolioResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryGetPortfolioResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryGetPortfolioResponse proto.InternalMessageInfo
+
+func (m *QueryGetPortfolioResponse) GetPortfolio() Portfolio {
+	if m != nil {
+		return m.Portfolio
+	}
+	return Portfolio{}
+}
+
+type QueryAllPortfolioRequest struct {
+	Pagination *query.PageRequest `protobuf:"bytes,1,opt,name=pagination,proto3" json:"pagination,omitempty"`
+}
+
+func (m *QueryAllPortfolioRequest) Reset()         { *m = QueryAllPortfolioRequest{} }
+func (m *QueryAllPortfolioRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryAllPortfolioRequest) ProtoMessage()    {}
+func (*QueryAllPortfolioRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_92aae422e277a0e0, []int{4}
+}
+func (m *QueryAllPortfolioRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryAllPortfolioRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryAllPortfolioRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryAllPortfolioRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryAllPortfolioRequest.Merge(m, src)
+}
+func (m *QueryAllPortfolioRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryAllPortfolioRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryAllPortfolioRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryAllPortfolioRequest proto.InternalMessageInfo
+
+func (m *QueryAllPortfolioRequest) GetPagination() *query.PageRequest {
+	if m != nil {
+		return m.Pagination
+	}
+	return nil
+}
+
+type QueryAllPortfolioResponse struct {
+	Portfolio  []Portfolio         `protobuf:"bytes,1,rep,name=portfolio,proto3" json:"portfolio"`
+	Pagination *query.PageResponse `protobuf:"bytes,2,opt,name=pagination,proto3" json:"pagination,omitempty"`
+}
+
+func (m *QueryAllPortfolioResponse) Reset()         { *m = QueryAllPortfolioResponse{} }
+func (m *QueryAllPortfolioResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryAllPortfolioResponse) ProtoMessage()    {}
+func (*QueryAllPortfolioResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_92aae422e277a0e0, []int{5}
+}
+func (m *QueryAllPortfolioResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryAllPortfolioResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryAllPortfolioResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryAllPortfolioResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryAllPortfolioResponse.Merge(m, src)
+}
+func (m *QueryAllPortfolioResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryAllPortfolioResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryAllPortfolioResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryAllPortfolioResponse proto.InternalMessageInfo
+
+func (m *QueryAllPortfolioResponse) GetPortfolio() []Portfolio {
+	if m != nil {
+		return m.Portfolio
+	}
+	return nil
+}
+
+func (m *QueryAllPortfolioResponse) GetPagination() *query.PageResponse {
+	if m != nil {
+		return m.Pagination
+	}
+	return nil
+}
+
 func init() {
 	proto.RegisterType((*QueryParamsRequest)(nil), "elys.membershiptier.QueryParamsRequest")
 	proto.RegisterType((*QueryParamsResponse)(nil), "elys.membershiptier.QueryParamsResponse")
+	proto.RegisterType((*QueryGetPortfolioRequest)(nil), "elys.membershiptier.QueryGetPortfolioRequest")
+	proto.RegisterType((*QueryGetPortfolioResponse)(nil), "elys.membershiptier.QueryGetPortfolioResponse")
+	proto.RegisterType((*QueryAllPortfolioRequest)(nil), "elys.membershiptier.QueryAllPortfolioRequest")
+	proto.RegisterType((*QueryAllPortfolioResponse)(nil), "elys.membershiptier.QueryAllPortfolioResponse")
 }
 
 func init() { proto.RegisterFile("elys/membershiptier/query.proto", fileDescriptor_92aae422e277a0e0) }
 
 var fileDescriptor_92aae422e277a0e0 = []byte{
-	// 307 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x84, 0x90, 0xb1, 0x4f, 0x3a, 0x31,
-	0x14, 0xc7, 0xaf, 0xbf, 0xfc, 0x64, 0x38, 0xb7, 0xc2, 0x60, 0xd0, 0x14, 0xc2, 0x22, 0x21, 0xf1,
-	0x2a, 0x30, 0xb9, 0xb2, 0x9b, 0x20, 0xa3, 0x5b, 0x8f, 0xbc, 0x94, 0x46, 0xae, 0xaf, 0xb4, 0x45,
-	0x65, 0x75, 0x37, 0x31, 0x71, 0xf0, 0x5f, 0x62, 0x24, 0x71, 0x71, 0x32, 0x06, 0xfc, 0x43, 0xcc,
-	0x5d, 0x6f, 0x41, 0xcf, 0xb8, 0x5d, 0xde, 0xfb, 0x7c, 0x3f, 0xf7, 0xed, 0x8b, 0x5b, 0x30, 0x5f,
-	0x39, 0x9e, 0x41, 0x96, 0x82, 0x75, 0x33, 0x65, 0xbc, 0x02, 0xcb, 0x17, 0x4b, 0xb0, 0xab, 0xc4,
-	0x58, 0xf4, 0x48, 0xeb, 0x39, 0x90, 0xec, 0x03, 0xcd, 0x86, 0x44, 0x89, 0xc5, 0x9e, 0xe7, 0x5f,
-	0x01, 0x6d, 0x9e, 0x48, 0x44, 0x39, 0x07, 0x2e, 0x8c, 0xe2, 0x42, 0x6b, 0xf4, 0xc2, 0x2b, 0xd4,
-	0xae, 0xdc, 0xf6, 0xa6, 0xe8, 0x32, 0x74, 0x3c, 0x15, 0x0e, 0xc2, 0x1f, 0xf8, 0x6d, 0x3f, 0x05,
-	0x2f, 0xfa, 0xdc, 0x08, 0xa9, 0x74, 0x01, 0x97, 0x6c, 0xbb, 0xaa, 0x95, 0x11, 0x56, 0x64, 0xa5,
-	0xad, 0xd3, 0x88, 0xe9, 0x55, 0xee, 0x18, 0x17, 0xc3, 0x09, 0x2c, 0x96, 0xe0, 0x7c, 0x67, 0x1c,
-	0xd7, 0xf7, 0xa6, 0xce, 0xa0, 0x76, 0x40, 0x2f, 0xe2, 0x5a, 0x08, 0x1f, 0x91, 0x36, 0xe9, 0x1e,
-	0x0e, 0x8e, 0x93, 0x8a, 0x47, 0x25, 0x21, 0x34, 0xfa, 0xbf, 0x7e, 0x6f, 0x45, 0x93, 0x32, 0x30,
-	0x78, 0x21, 0xf1, 0x41, 0xa1, 0xa4, 0x8f, 0x24, 0xae, 0x05, 0x84, 0x9e, 0x56, 0xe6, 0x7f, 0xf6,
-	0x69, 0x76, 0xff, 0x06, 0x43, 0xc5, 0xce, 0xf9, 0xc3, 0xeb, 0xe7, 0xf3, 0xbf, 0x1e, 0xed, 0xf2,
-	0x3c, 0x71, 0xa6, 0xc1, 0xdf, 0xa1, 0xbd, 0xe1, 0xbf, 0xdf, 0x61, 0x74, 0xb9, 0xde, 0x32, 0xb2,
-	0xd9, 0x32, 0xf2, 0xb1, 0x65, 0xe4, 0x69, 0xc7, 0xa2, 0xcd, 0x8e, 0x45, 0x6f, 0x3b, 0x16, 0x5d,
-	0x0f, 0xa5, 0xf2, 0xb3, 0x65, 0x9a, 0x4c, 0x31, 0xab, 0xb0, 0xdd, 0x7f, 0xf7, 0xf9, 0x95, 0x01,
-	0x97, 0xd6, 0x8a, 0xbb, 0x0e, 0xbf, 0x02, 0x00, 0x00, 0xff, 0xff, 0x7c, 0xba, 0xdc, 0x49, 0x11,
-	0x02, 0x00, 0x00,
+	// 504 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x9c, 0x94, 0x3f, 0x6f, 0x13, 0x31,
+	0x18, 0xc6, 0xe3, 0x96, 0x46, 0x8a, 0x61, 0x72, 0x33, 0x94, 0x80, 0xae, 0x95, 0x91, 0x68, 0x54,
+	0x14, 0xbb, 0x6d, 0xc4, 0x80, 0x98, 0x9a, 0x81, 0x4e, 0x48, 0x21, 0x23, 0x0b, 0xf2, 0x95, 0x97,
+	0xab, 0xc5, 0xdd, 0xf9, 0x7a, 0x76, 0xa0, 0x11, 0x62, 0x61, 0x47, 0x42, 0xe2, 0x1b, 0xb0, 0xc0,
+	0x47, 0xe9, 0x58, 0x89, 0x85, 0x09, 0xa1, 0x04, 0xf1, 0x39, 0xd0, 0xd9, 0x4e, 0xda, 0x50, 0xf7,
+	0x0f, 0xdd, 0xee, 0xce, 0xcf, 0xf3, 0x3e, 0xbf, 0xd7, 0xef, 0xab, 0xc3, 0xab, 0x90, 0x8e, 0x34,
+	0xcf, 0x20, 0x8b, 0xa1, 0xd4, 0xfb, 0xb2, 0x30, 0x12, 0x4a, 0x7e, 0x30, 0x84, 0x72, 0xc4, 0x8a,
+	0x52, 0x19, 0x45, 0x96, 0x2b, 0x01, 0x9b, 0x17, 0xb4, 0x9a, 0x89, 0x4a, 0x94, 0x3d, 0xe7, 0xd5,
+	0x93, 0x93, 0xb6, 0xee, 0x26, 0x4a, 0x25, 0x29, 0x70, 0x51, 0x48, 0x2e, 0xf2, 0x5c, 0x19, 0x61,
+	0xa4, 0xca, 0xb5, 0x3f, 0xdd, 0xd8, 0x53, 0x3a, 0x53, 0x9a, 0xc7, 0x42, 0x83, 0x4b, 0xe0, 0x6f,
+	0xb6, 0x62, 0x30, 0x62, 0x8b, 0x17, 0x22, 0x91, 0xb9, 0x15, 0x7b, 0xed, 0x5a, 0x88, 0xaa, 0x10,
+	0xa5, 0xc8, 0xa6, 0xd5, 0xee, 0x05, 0x15, 0xaa, 0x34, 0xaf, 0x54, 0x2a, 0x3d, 0x10, 0x6d, 0x62,
+	0xf2, 0xac, 0x0a, 0xea, 0x5b, 0xe7, 0x00, 0x0e, 0x86, 0xa0, 0x0d, 0xed, 0xe3, 0xe5, 0xb9, 0xaf,
+	0xba, 0x50, 0xb9, 0x06, 0xf2, 0x08, 0xd7, 0x5d, 0xc2, 0x0a, 0x5a, 0x43, 0xed, 0x9b, 0xdb, 0x77,
+	0x58, 0xa0, 0x73, 0xe6, 0x4c, 0xbd, 0x1b, 0x47, 0x3f, 0x57, 0x6b, 0x03, 0x6f, 0xa0, 0x9b, 0x78,
+	0xc5, 0x56, 0xdc, 0x05, 0xd3, 0x9f, 0x22, 0xf8, 0x34, 0xd2, 0xc4, 0x4b, 0x32, 0x7f, 0x09, 0x87,
+	0xb6, 0x6a, 0x63, 0xe0, 0x5e, 0xe8, 0x0b, 0x7c, 0x3b, 0xe0, 0xf0, 0x24, 0x3d, 0xdc, 0x98, 0x75,
+	0xe2, 0x61, 0xa2, 0x30, 0xcc, 0x54, 0xe5, 0x79, 0x4e, 0x6c, 0x34, 0xf6, 0x48, 0x3b, 0x69, 0x7a,
+	0x06, 0xe9, 0x09, 0xc6, 0x27, 0x37, 0xee, 0x03, 0xee, 0x33, 0x37, 0x1e, 0x56, 0x8d, 0x87, 0xb9,
+	0x05, 0xf0, 0xe3, 0x61, 0x7d, 0x91, 0x80, 0xf7, 0x0e, 0x4e, 0x39, 0xe9, 0x37, 0xe4, 0xbb, 0x98,
+	0x0f, 0x09, 0x77, 0xb1, 0x78, 0x8d, 0x2e, 0xc8, 0xee, 0x1c, 0xe9, 0x82, 0x25, 0x5d, 0xbf, 0x94,
+	0xd4, 0x01, 0x9c, 0x46, 0xdd, 0xfe, 0xb3, 0x88, 0x97, 0x2c, 0x2a, 0xf9, 0x88, 0x70, 0xdd, 0x0d,
+	0x91, 0xac, 0x07, 0x71, 0xce, 0x6e, 0x4c, 0xab, 0x7d, 0xb9, 0xd0, 0x65, 0xd2, 0xcd, 0x0f, 0xdf,
+	0x7f, 0x7f, 0x5e, 0xd8, 0x20, 0x6d, 0x5e, 0x39, 0x3a, 0x39, 0x98, 0xb7, 0xaa, 0x7c, 0xcd, 0xcf,
+	0x5f, 0x67, 0xf2, 0x15, 0xe1, 0xc6, 0xec, 0x06, 0x48, 0xe7, 0xfc, 0xa4, 0xc0, 0x72, 0xb5, 0xd8,
+	0x55, 0xe5, 0x1e, 0xef, 0xb1, 0xc5, 0x7b, 0x48, 0xba, 0x57, 0xc0, 0x9b, 0x9a, 0xf9, 0x3b, 0xbb,
+	0xb2, 0xef, 0xc9, 0x17, 0x84, 0x6f, 0xcd, 0x4a, 0xee, 0xa4, 0xe9, 0x45, 0xb0, 0x81, 0xb5, 0xbb,
+	0x08, 0x36, 0xb4, 0x40, 0xb4, 0x6b, 0x61, 0x3b, 0xe4, 0xc1, 0x7f, 0xc0, 0xf6, 0x9e, 0x1e, 0x8d,
+	0x23, 0x74, 0x3c, 0x8e, 0xd0, 0xaf, 0x71, 0x84, 0x3e, 0x4d, 0xa2, 0xda, 0xf1, 0x24, 0xaa, 0xfd,
+	0x98, 0x44, 0xb5, 0xe7, 0xdd, 0x44, 0x9a, 0xfd, 0x61, 0xcc, 0xf6, 0x54, 0x16, 0x28, 0x78, 0xf8,
+	0x6f, 0x49, 0x33, 0x2a, 0x40, 0xc7, 0x75, 0xfb, 0x23, 0xe9, 0xfe, 0x0d, 0x00, 0x00, 0xff, 0xff,
+	0x24, 0xe0, 0x2c, 0x79, 0x27, 0x05, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -158,6 +358,9 @@ const _ = grpc.SupportPackageIsVersion4
 type QueryClient interface {
 	// Parameters queries the parameters of the module.
 	Params(ctx context.Context, in *QueryParamsRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error)
+	// Queries a list of Portfolio items.
+	Portfolio(ctx context.Context, in *QueryGetPortfolioRequest, opts ...grpc.CallOption) (*QueryGetPortfolioResponse, error)
+	PortfolioAll(ctx context.Context, in *QueryAllPortfolioRequest, opts ...grpc.CallOption) (*QueryAllPortfolioResponse, error)
 }
 
 type queryClient struct {
@@ -177,10 +380,31 @@ func (c *queryClient) Params(ctx context.Context, in *QueryParamsRequest, opts .
 	return out, nil
 }
 
+func (c *queryClient) Portfolio(ctx context.Context, in *QueryGetPortfolioRequest, opts ...grpc.CallOption) (*QueryGetPortfolioResponse, error) {
+	out := new(QueryGetPortfolioResponse)
+	err := c.cc.Invoke(ctx, "/elys.membershiptier.Query/Portfolio", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) PortfolioAll(ctx context.Context, in *QueryAllPortfolioRequest, opts ...grpc.CallOption) (*QueryAllPortfolioResponse, error) {
+	out := new(QueryAllPortfolioResponse)
+	err := c.cc.Invoke(ctx, "/elys.membershiptier.Query/PortfolioAll", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // QueryServer is the server API for Query service.
 type QueryServer interface {
 	// Parameters queries the parameters of the module.
 	Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error)
+	// Queries a list of Portfolio items.
+	Portfolio(context.Context, *QueryGetPortfolioRequest) (*QueryGetPortfolioResponse, error)
+	PortfolioAll(context.Context, *QueryAllPortfolioRequest) (*QueryAllPortfolioResponse, error)
 }
 
 // UnimplementedQueryServer can be embedded to have forward compatible implementations.
@@ -189,6 +413,12 @@ type UnimplementedQueryServer struct {
 
 func (*UnimplementedQueryServer) Params(ctx context.Context, req *QueryParamsRequest) (*QueryParamsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Params not implemented")
+}
+func (*UnimplementedQueryServer) Portfolio(ctx context.Context, req *QueryGetPortfolioRequest) (*QueryGetPortfolioResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Portfolio not implemented")
+}
+func (*UnimplementedQueryServer) PortfolioAll(ctx context.Context, req *QueryAllPortfolioRequest) (*QueryAllPortfolioResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PortfolioAll not implemented")
 }
 
 func RegisterQueryServer(s grpc1.Server, srv QueryServer) {
@@ -213,6 +443,42 @@ func _Query_Params_Handler(srv interface{}, ctx context.Context, dec func(interf
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Query_Portfolio_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryGetPortfolioRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).Portfolio(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/elys.membershiptier.Query/Portfolio",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).Portfolio(ctx, req.(*QueryGetPortfolioRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_PortfolioAll_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryAllPortfolioRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).PortfolioAll(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/elys.membershiptier.Query/PortfolioAll",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).PortfolioAll(ctx, req.(*QueryAllPortfolioRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var _Query_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "elys.membershiptier.Query",
 	HandlerType: (*QueryServer)(nil),
@@ -220,6 +486,14 @@ var _Query_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Params",
 			Handler:    _Query_Params_Handler,
+		},
+		{
+			MethodName: "Portfolio",
+			Handler:    _Query_Portfolio_Handler,
+		},
+		{
+			MethodName: "PortfolioAll",
+			Handler:    _Query_PortfolioAll_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
@@ -282,6 +556,153 @@ func (m *QueryParamsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
+func (m *QueryGetPortfolioRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryGetPortfolioRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryGetPortfolioRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Index) > 0 {
+		i -= len(m.Index)
+		copy(dAtA[i:], m.Index)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Index)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryGetPortfolioResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryGetPortfolioResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryGetPortfolioResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	{
+		size, err := m.Portfolio.MarshalToSizedBuffer(dAtA[:i])
+		if err != nil {
+			return 0, err
+		}
+		i -= size
+		i = encodeVarintQuery(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0xa
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryAllPortfolioRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryAllPortfolioRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryAllPortfolioRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Pagination != nil {
+		{
+			size, err := m.Pagination.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintQuery(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryAllPortfolioResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryAllPortfolioResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryAllPortfolioResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Pagination != nil {
+		{
+			size, err := m.Pagination.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintQuery(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Portfolio) > 0 {
+		for iNdEx := len(m.Portfolio) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.Portfolio[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintQuery(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0xa
+		}
+	}
+	return len(dAtA) - i, nil
+}
+
 func encodeVarintQuery(dAtA []byte, offset int, v uint64) int {
 	offset -= sovQuery(v)
 	base := offset
@@ -310,6 +731,62 @@ func (m *QueryParamsResponse) Size() (n int) {
 	_ = l
 	l = m.Params.Size()
 	n += 1 + l + sovQuery(uint64(l))
+	return n
+}
+
+func (m *QueryGetPortfolioRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Index)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
+func (m *QueryGetPortfolioResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = m.Portfolio.Size()
+	n += 1 + l + sovQuery(uint64(l))
+	return n
+}
+
+func (m *QueryAllPortfolioRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Pagination != nil {
+		l = m.Pagination.Size()
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
+func (m *QueryAllPortfolioResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if len(m.Portfolio) > 0 {
+		for _, e := range m.Portfolio {
+			l = e.Size()
+			n += 1 + l + sovQuery(uint64(l))
+		}
+	}
+	if m.Pagination != nil {
+		l = m.Pagination.Size()
+		n += 1 + l + sovQuery(uint64(l))
+	}
 	return n
 }
 
@@ -428,6 +905,377 @@ func (m *QueryParamsResponse) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			if err := m.Params.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryGetPortfolioRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryGetPortfolioRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryGetPortfolioRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Index", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Index = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryGetPortfolioResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryGetPortfolioResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryGetPortfolioResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Portfolio", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.Portfolio.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryAllPortfolioRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryAllPortfolioRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryAllPortfolioRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Pagination", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Pagination == nil {
+				m.Pagination = &query.PageRequest{}
+			}
+			if err := m.Pagination.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryAllPortfolioResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryAllPortfolioResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryAllPortfolioResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Portfolio", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Portfolio = append(m.Portfolio, Portfolio{})
+			if err := m.Portfolio[len(m.Portfolio)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Pagination", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Pagination == nil {
+				m.Pagination = &query.PageResponse{}
+			}
+			if err := m.Pagination.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex

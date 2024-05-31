@@ -1,7 +1,39 @@
 syntax = "proto3";
+
 package elys.membershiptier;
+
+import "elys/membershiptier/portfolio.proto";
 
 option go_package = "github.com/elys-network/elys/x/membershiptier/types";
 
 // Msg defines the Msg service.
-service Msg {}
+service Msg {
+  rpc CreatePortfolio (MsgCreatePortfolio) returns (MsgCreatePortfolioResponse);
+  rpc UpdatePortfolio (MsgUpdatePortfolio) returns (MsgUpdatePortfolioResponse);
+  rpc DeletePortfolio (MsgDeletePortfolio) returns (MsgDeletePortfolioResponse);
+}
+message MsgCreatePortfolio {
+  string creator   = 1;
+  string index     = 2;
+  string assetkey  = 3;
+  string coinvalue = 4;
+}
+
+message MsgCreatePortfolioResponse {}
+
+message MsgUpdatePortfolio {
+  string creator   = 1;
+  string index     = 2;
+  string assetkey  = 3;
+  string coinvalue = 4;
+}
+
+message MsgUpdatePortfolioResponse {}
+
+message MsgDeletePortfolio {
+  string creator = 1;
+  string index   = 2;
+}
+
+message MsgDeletePortfolioResponse {}
+

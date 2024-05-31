@@ -1,26 +1,58 @@
 syntax = "proto3";
+
 package elys.membershiptier;
 
 import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
 import "elys/membershiptier/params.proto";
+import "elys/membershiptier/portfolio.proto";
 
 option go_package = "github.com/elys-network/elys/x/membershiptier/types";
 
 // Query defines the gRPC querier service.
 service Query {
+  
   // Parameters queries the parameters of the module.
-  rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
+  rpc Params (QueryParamsRequest) returns (QueryParamsResponse) {
     option (google.api.http).get = "/elys-network/elys/membershiptier/params";
+  
+  }
+  
+  // Queries a list of Portfolio items.
+  rpc Portfolio    (QueryGetPortfolioRequest) returns (QueryGetPortfolioResponse) {
+    option (google.api.http).get = "/elys-network/elys/membershiptier/portfolio/{index}";
+  
+  }
+  rpc PortfolioAll (QueryAllPortfolioRequest) returns (QueryAllPortfolioResponse) {
+    option (google.api.http).get = "/elys-network/elys/membershiptier/portfolio";
+  
   }
 }
-
 // QueryParamsRequest is request type for the Query/Params RPC method.
 message QueryParamsRequest {}
 
 // QueryParamsResponse is response type for the Query/Params RPC method.
 message QueryParamsResponse {
+  
   // params holds all the parameters of this module.
   Params params = 1 [(gogoproto.nullable) = false];
 }
+
+message QueryGetPortfolioRequest {
+  string index = 1;
+}
+
+message QueryGetPortfolioResponse {
+  Portfolio portfolio = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryAllPortfolioRequest {
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+message QueryAllPortfolioResponse {
+  repeated Portfolio                              portfolio  = 1 [(gogoproto.nullable) = false];
+           cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+

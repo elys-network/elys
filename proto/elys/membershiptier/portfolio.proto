@@ -1,0 +1,11 @@
+syntax = "proto3";
+package elys.membershiptier;
+
+option go_package = "github.com/elys-network/elys/x/membershiptier/types";
+
+message Portfolio {
+  string assetkey = 2;  // assetkey = asset_type_ + user_address_ + denom/perp/pool
+  string coinvalue = 3; 
+  string creator = 4;
+}
+
