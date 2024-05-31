@@ -1,0 +1,7 @@
+syntax = "proto3";
+package elys.membershiptier;
+
+option go_package = "github.com/elys-network/elys/x/membershiptier/types";
+
+// Msg defines the Msg service.
+service Msg {}
