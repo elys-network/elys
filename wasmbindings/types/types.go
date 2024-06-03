@@ -187,6 +187,8 @@ type ElysQuery struct {
 	LeveragelpPool                     *leveragelptypes.QueryGetPoolRequest        `json:"leveragelp_pool,omitempty"`
 	LeveragelpPools                    *leveragelptypes.QueryAllPoolRequest        `json:"leveragelp_pools,omitempty"`
 	LeveragelpPosition                 *leveragelptypes.PositionRequest            `json:"leveragelp_position,omitempty"`
+	LeveragelpOpenEst                  *leveragelptypes.QueryOpenEstRequest        `json:"leveragelp_open_estimation,omitempty"`
+	LeveragelpCloseEst                 *leveragelptypes.QueryCloseEstRequest       `json:"leveragelp_close_estimation,omitempty"`
 
 	// perpetual queriers
 	PerpetualParams                 *perpetualtypes.ParamsRequest              `json:"perpetual_params,omitempty"`

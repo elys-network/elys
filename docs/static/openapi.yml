@@ -40775,6 +40775,56 @@ paths:
           type: boolean
       tags:
         - Query
+  /elys-network/elys/leveragelp/close_estimation:
+    get:
+      summary: Get estimated amount of return value closing a position
+      operationId: ElysLeveragelpCloseEst
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              liability:
+                type: string
+              weight_balance_ratio:
+                type: string
+              amount_returned:
+                type: string
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: owner
+          in: query
+          required: false
+          type: string
+        - name: id
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: lp_amount
+          in: query
+          required: false
+          type: string
+      tags:
+        - Query
   /elys-network/elys/leveragelp/is-whitelisted:
     get:
       summary: Queries a list of IsWhitelisted items.
@@ -40809,6 +40859,60 @@ paths:
                   additionalProperties: {}
       parameters:
         - name: address
+          in: query
+          required: false
+          type: string
+      tags:
+        - Query
+  /elys-network/elys/leveragelp/open_estimation:
+    get:
+      summary: Get estimated amount of return value opening a position
+      operationId: ElysLeveragelpOpenEst
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              position_size:
+                type: string
+              weight_balance_ratio:
+                type: string
+              borrow_fee:
+                type: string
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: collateral_asset
+          in: query
+          required: false
+          type: string
+        - name: collateral_amount
+          in: query
+          required: false
+          type: string
+        - name: amm_pool_id
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: leverage
           in: query
           required: false
           type: string
@@ -86694,6 +86798,15 @@ definitions:
                    repeated Bar results = 1;
                    PageResponse page = 2;
            }
+  elys.leveragelp.QueryCloseEstResponse:
+    type: object
+    properties:
+      liability:
+        type: string
+      weight_balance_ratio:
+        type: string
+      amount_returned:
+        type: string
   elys.leveragelp.QueryGetPoolResponse:
     type: object
     properties:
@@ -86713,6 +86826,15 @@ definitions:
             type: string
           leverage_max:
             type: string
+  elys.leveragelp.QueryOpenEstResponse:
+    type: object
+    properties:
+      position_size:
+        type: string
+      weight_balance_ratio:
+        type: string
+      borrow_fee:
+        type: string
   elys.leveragelp.StatusResponse:
     type: object
     properties:

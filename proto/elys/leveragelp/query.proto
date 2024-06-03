@@ -13,7 +13,6 @@ option go_package = "github.com/elys-network/elys/x/leveragelp/types";
 
 // Query defines the gRPC querier service.
 service Query {
-
   // Parameters queries the parameters of the module.
   rpc Params(ParamsRequest) returns (ParamsResponse) {
     option (google.api.http).get = "/elys-network/elys/leveragelp/params";
@@ -69,13 +68,24 @@ service Query {
     option (google.api.http).get =
         "/elys-network/elys/leveragelp/position/{address}/{id}";
   }
+
+  // Get estimated amount of return value opening a position
+  rpc OpenEst(QueryOpenEstRequest) returns (QueryOpenEstResponse) {
+    option (google.api.http).get =
+        "/elys-network/elys/leveragelp/open_estimation";
+  }
+
+  // Get estimated amount of return value closing a position
+  rpc CloseEst(QueryCloseEstRequest) returns (QueryCloseEstResponse) {
+    option (google.api.http).get =
+        "/elys-network/elys/leveragelp/close_estimation";
+  }
 }
 // ParamsRequest is request type for the Query/Params RPC method.
 message ParamsRequest {}
 
 // ParamsResponse is response type for the Query/Params RPC method.
 message ParamsResponse {
-
   // params holds all the parameters of this module.
   Params params = 1 [ (gogoproto.nullable) = false ];
 }
@@ -151,3 +161,55 @@ message PositionRequest {
 }
 
 message PositionResponse { Position position = 1; }
+
+message QueryOpenEstRequest {
+  string collateral_asset = 1;
+  string collateral_amount = 2 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+  uint64 amm_pool_id = 3;
+  string leverage = 4 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message QueryOpenEstResponse {
+  string position_size = 1 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+  string weight_balance_ratio = 2 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  string borrow_fee = 3 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message QueryCloseEstRequest {
+  string owner = 1;
+  uint64 id = 2;
+  string lp_amount = 3 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message QueryCloseEstResponse {
+  string liability = 1 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+  string weight_balance_ratio = 2 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  string amount_returned = 3 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+}

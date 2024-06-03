@@ -39,6 +39,10 @@ func (oq *Querier) HandleQuery(ctx sdk.Context, query wasmbindingstypes.ElysQuer
 		return oq.queryPools(ctx, query.LeveragelpPools)
 	case query.LeveragelpPosition != nil:
 		return oq.queryPosition(ctx, query.LeveragelpPosition)
+	case query.LeveragelpOpenEst != nil:
+		return oq.queryOpenEst(ctx, query.LeveragelpOpenEst)
+	case query.LeveragelpCloseEst != nil:
+		return oq.queryCloseEst(ctx, query.LeveragelpCloseEst)
 	default:
 		// This handler cannot handle the query
 		return nil, wasmbindingstypes.ErrCannotHandleQuery
