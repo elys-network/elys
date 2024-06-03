@@ -80,7 +80,7 @@ func SimulateMsgUpdatePortfolio(
 		}
 		msg.Creator = simAccount.Address.String()
 
-		msg.Index = portfolio.Index
+		msg.Assetkey = portfolio.Assetkey
 
 		txCtx := simulation.OperationInput{
 			R:               r,
@@ -126,7 +126,7 @@ func SimulateMsgDeletePortfolio(
 		}
 		msg.Creator = simAccount.Address.String()
 
-		msg.Index = portfolio.Index
+		msg.Assetkey = portfolio.Assetkey
 
 		txCtx := simulation.OperationInput{
 			R:               r,

@@ -46,9 +46,9 @@ func CmdListPortfolio() *cobra.Command {
 
 func CmdShowPortfolio() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "show-portfolio [index]",
+		Use:   "show-portfolio [user] [asset-type]",
 		Short: "shows a portfolio",
-		Args:  cobra.ExactArgs(1),
+		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			clientCtx, err := client.GetClientQueryContext(cmd)
 			if err != nil {
@@ -57,10 +57,12 @@ func CmdShowPortfolio() *cobra.Command {
 
 			queryClient := types.NewQueryClient(clientCtx)
 
-			argIndex := args[0]
+			argUser := args[0]
+			argType := args[1]
 
 			params := &types.QueryGetPortfolioRequest{
-				Index: argIndex,
+				User:      argUser,
+				AssetType: argType,
 			}
 
 			res, err := queryClient.Portfolio(cmd.Context(), params)

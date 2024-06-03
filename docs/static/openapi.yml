@@ -42312,13 +42312,30 @@ paths:
                 items:
                   type: object
                   properties:
-                    index:
-                      type: string
                     assetkey:
                       type: string
-                    coinvalue:
-                      type: string
+                      title: >-
+                        assetkey = timestamp_ + asset_type_ + user_address_  +
+                        denom/perp/pool -> (amount)
+                    token:
+                      title: current balance
+                      type: object
+                      properties:
+                        denom:
+                          type: string
+                        amount:
+                          type: string
+                      description: >-
+                        Coin defines a token with a denomination and an amount.
+
+
+                        NOTE: The amount field is an Int which implements the
+                        custom method
+
+                        signatures required by gogoproto.
                     creator:
+                      type: string
+                    minimum_today:
                       type: string
               pagination:
                 type: object
@@ -42425,7 +42442,7 @@ paths:
           type: boolean
       tags:
         - Query
-  /elys-network/elys/membershiptier/portfolio/{index}:
+  /elys-network/elys/membershiptier/portfolio/{user}/{assetType}:
     get:
       summary: Queries a list of Portfolio items.
       operationId: ElysMembershiptierPortfolio
@@ -42436,16 +42453,35 @@ paths:
             type: object
             properties:
               portfolio:
-                type: object
-                properties:
-                  index:
-                    type: string
-                  assetkey:
-                    type: string
-                  coinvalue:
-                    type: string
-                  creator:
-                    type: string
+                type: array
+                items:
+                  type: object
+                  properties:
+                    assetkey:
+                      type: string
+                      title: >-
+                        assetkey = timestamp_ + asset_type_ + user_address_  +
+                        denom/perp/pool -> (amount)
+                    token:
+                      title: current balance
+                      type: object
+                      properties:
+                        denom:
+                          type: string
+                        amount:
+                          type: string
+                      description: >-
+                        Coin defines a token with a denomination and an amount.
+
+
+                        NOTE: The amount field is an Int which implements the
+                        custom method
+
+                        signatures required by gogoproto.
+                    creator:
+                      type: string
+                    minimum_today:
+                      type: string
         default:
           description: An unexpected error response.
           schema:
@@ -42465,7 +42501,11 @@ paths:
                       type: string
                   additionalProperties: {}
       parameters:
-        - name: index
+        - name: user
+          in: path
+          required: true
+          type: string
+        - name: assetType
           in: path
           required: true
           type: string
@@ -87448,13 +87488,27 @@ definitions:
   elys.membershiptier.Portfolio:
     type: object
     properties:
-      index:
-        type: string
       assetkey:
         type: string
-      coinvalue:
-        type: string
+        title: >-
+          assetkey = timestamp_ + asset_type_ + user_address_  + denom/perp/pool
+          -> (amount)
+      token:
+        title: current balance
+        type: object
+        properties:
+          denom:
+            type: string
+          amount:
+            type: string
+        description: |-
+          Coin defines a token with a denomination and an amount.
+
+          NOTE: The amount field is an Int which implements the custom method
+          signatures required by gogoproto.
       creator:
+        type: string
+      minimum_today:
         type: string
   elys.membershiptier.QueryAllPortfolioResponse:
     type: object
@@ -87464,13 +87518,30 @@ definitions:
         items:
           type: object
           properties:
-            index:
-              type: string
             assetkey:
               type: string
-            coinvalue:
-              type: string
+              title: >-
+                assetkey = timestamp_ + asset_type_ + user_address_  +
+                denom/perp/pool -> (amount)
+            token:
+              title: current balance
+              type: object
+              properties:
+                denom:
+                  type: string
+                amount:
+                  type: string
+              description: >-
+                Coin defines a token with a denomination and an amount.
+
+
+                NOTE: The amount field is an Int which implements the custom
+                method
+
+                signatures required by gogoproto.
             creator:
+              type: string
+            minimum_today:
               type: string
       pagination:
         type: object
@@ -87502,16 +87573,35 @@ definitions:
     type: object
     properties:
       portfolio:
-        type: object
-        properties:
-          index:
-            type: string
-          assetkey:
-            type: string
-          coinvalue:
-            type: string
-          creator:
-            type: string
+        type: array
+        items:
+          type: object
+          properties:
+            assetkey:
+              type: string
+              title: >-
+                assetkey = timestamp_ + asset_type_ + user_address_  +
+                denom/perp/pool -> (amount)
+            token:
+              title: current balance
+              type: object
+              properties:
+                denom:
+                  type: string
+                amount:
+                  type: string
+              description: >-
+                Coin defines a token with a denomination and an amount.
+
+
+                NOTE: The amount field is an Int which implements the custom
+                method
+
+                signatures required by gogoproto.
+            creator:
+              type: string
+            minimum_today:
+              type: string
   elys.membershiptier.QueryParamsResponse:
     type: object
     properties:

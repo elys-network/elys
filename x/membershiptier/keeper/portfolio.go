@@ -8,12 +8,20 @@ import (
 	"github.com/elys-network/elys/x/membershiptier/types"
 )
 
+func (k Keeper) ProcessPortfolioChange(ctx sdk.Context, assetType string, user string, denom string) {
+	// If val not set, set it to user's current balance
+	// or just query current balance and set it // prefer
+	// TODO: set today's date minimum in USD and current value
+
+	// Get USD from oracle
+
+}
+
 // SetPortfolio set a specific portfolio in the store from its index
 func (k Keeper) SetPortfolio(ctx sdk.Context, portfolio types.Portfolio, assetType string) {
-	assetKey := GetDateFromBlock(ctx.BlockTime()) + assetType + portfolio.Creator
+	assetKey := k.GetDateFromBlock(ctx.BlockTime()) + assetType + portfolio.Creator
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(assetKey))
 	b := k.cdc.MustMarshal(&portfolio)
-	// TODO: set today's date minimum and current value
 	store.Set(types.PortfolioKey(
 		portfolio.Token.Denom,
 	), b)
@@ -78,7 +86,7 @@ func (k Keeper) GetAllPortfolio(ctx sdk.Context) (list []types.Portfolio) {
 	return
 }
 
-func GetDateFromBlock(blockTime time.Time) string {
+func (k Keeper) GetDateFromBlock(blockTime time.Time) string {
 	// Extract the year, month, and day
 	year, month, day := blockTime.Date()
 	// Create a new time.Time object with the extracted date and time set to midnight

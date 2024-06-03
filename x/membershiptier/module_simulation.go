@@ -48,12 +48,12 @@ func (AppModule) GenerateGenesisState(simState *module.SimulationState) {
 		Params: types.DefaultParams(),
 		PortfolioList: []types.Portfolio{
 			{
-				Creator: sample.AccAddress(),
-				Index:   "0",
+				Creator:  sample.AccAddress(),
+				Assetkey: types.LiquidKeyPrefix,
 			},
 			{
-				Creator: sample.AccAddress(),
-				Index:   "1",
+				Creator:  sample.AccAddress(),
+				Assetkey: types.LiquidKeyPrefix,
 			},
 		},
 		// this line is used by starport scaffolding # simapp/module/genesisState
