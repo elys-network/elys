@@ -31,10 +31,10 @@ func SimulateMsgCreatePortfolio(
 			Index:   strconv.Itoa(i),
 		}
 
-		_, found := k.GetPortfolio(ctx, msg.Index)
-		if found {
-			return simtypes.NoOpMsg(types.ModuleName, msg.Type(), "Portfolio already exist"), nil, nil
-		}
+		// _, found := k.GetPortfolio(ctx, msg.Creator, msg.Assetkey)
+		// if found {
+		// 	return simtypes.NoOpMsg(types.ModuleName, msg.Type(), "Portfolio already exist"), nil, nil
+		// }
 
 		txCtx := simulation.OperationInput{
 			R:               r,

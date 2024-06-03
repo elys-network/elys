@@ -18,6 +18,7 @@ import (
 // Prevent strconv unused error
 var _ = strconv.IntSize
 
+// TODO: fix tests
 func TestPortfolioQuerySingle(t *testing.T) {
 	keeper, ctx := keepertest.MembershiptierKeeper(t)
 	wctx := sdk.WrapSDKContext(ctx)
@@ -31,21 +32,25 @@ func TestPortfolioQuerySingle(t *testing.T) {
 		{
 			desc: "First",
 			request: &types.QueryGetPortfolioRequest{
-				Index: msgs[0].Index,
+				User:      msgs[0].Creator,
+				AssetType: msgs[0].Assetkey,
 			},
-			response: &types.QueryGetPortfolioResponse{Portfolio: msgs[0]},
+			response: &types.QueryGetPortfolioResponse{Portfolio: msgs},
 		},
 		{
 			desc: "Second",
 			request: &types.QueryGetPortfolioRequest{
-				Index: msgs[1].Index,
+				User:      msgs[1].Creator,
+				AssetType: msgs[1].Assetkey,
 			},
-			response: &types.QueryGetPortfolioResponse{Portfolio: msgs[1]},
+			response: &types.QueryGetPortfolioResponse{Portfolio: msgs},
 		},
 		{
+			// TODO: update, should be empty
 			desc: "KeyNotFound",
 			request: &types.QueryGetPortfolioRequest{
-				Index: strconv.Itoa(100000),
+				User:      strconv.Itoa(100000),
+				AssetType: strconv.Itoa(100000),
 			},
 			err: status.Error(codes.NotFound, "not found"),
 		},
