@@ -8,27 +8,57 @@ import (
 	"github.com/elys-network/elys/x/membershiptier/types"
 )
 
-func (k Keeper) ProcessPortfolioChange(ctx sdk.Context, assetType string, user string, denom string) {
-	// TODO: set today's date minimum in USD and current value
-	// Get USD from oracle
+func (k Keeper) ProcessPortfolioChange(ctx sdk.Context, assetType string, user string, denom string, amount sdk.Int) {
 	sender := sdk.MustAccAddressFromBech32(user)
 	switch assetType {
 	case types.LiquidKeyPrefix:
 		{
 			balances := k.bankKeeper.GetAllBalances(ctx, sender)
 			for _, balance := range balances {
+				tokenPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, balance.Denom)
+				// TODO: Check for min value when key doesn't exist
+				prevMin := k.GetPortfolioMinimumToday(ctx, user, assetType, k.GetDateFromBlock(ctx.BlockTime()), balance.Denom)
+				totalValue := balance.Amount.ToLegacyDec().Mul(tokenPrice)
+				if totalValue.LT(prevMin) {
+					prevMin = totalValue
+				}
 				k.SetPortfolio(ctx, types.Portfolio{
 					Creator:      user,
 					Assetkey:     types.LiquidKeyPrefix,
 					Token:        balance,
-					MinimumToday: min(minimum_today, balance.Amount*usdDenomPrice),
+					MinimumToday: prevMin,
 				}, types.LiquidKeyPrefix)
 			}
 		}
-
 	case types.PerpetualKeyPrefix:
+		{
+			// Get data from hook, don't query other keeper, avoid cyclic dep
+			tokenPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, denom)
+			// TODO: Check for min value when key doesn't exist
+			// TODO: if amount is zero i.e position is liquidated, remove data or set to 0, data will be removed using expire logic
+			prevMin := k.GetPortfolioMinimumToday(ctx, user, assetType, k.GetDateFromBlock(ctx.BlockTime()), denom)
+			totalValue := amount.ToLegacyDec().Mul(tokenPrice)
+			if totalValue.LT(prevMin) {
+				prevMin = totalValue
+			}
+			k.SetPortfolio(ctx, types.Portfolio{
+				Creator:      user,
+				Assetkey:     types.LiquidKeyPrefix,
+				Token:        sdk.NewCoin(denom, amount),
+				MinimumToday: prevMin,
+			}, types.LiquidKeyPrefix)
+		}
 	case types.PoolKeyPrefix:
+		{
+			// TODO: Check commitment logic to enable pool value tracking
+		}
 	case types.StakedKeyPrefix:
+		{
+			// Get USDC earn program
+			// Get elys earn program
+			// Get eden earn program
+			// Get eden boost program
+		}
 	default:
 	}
 }
@@ -50,7 +80,6 @@ func (k Keeper) GetPortfolio(
 	assetType string,
 	timestamp string,
 ) (list []types.Portfolio) {
-	ctx.BlockTime().Date()
 	assetKey := timestamp + assetType + user
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(assetKey))
 	iterator := sdk.KVStorePrefixIterator(store, []byte{})
@@ -73,8 +102,7 @@ func (k Keeper) GetPortfolioMinimumToday(
 	assetType string,
 	timestamp string,
 	denom string,
-) types.Portfolio {
-	ctx.BlockTime().Date()
+) sdk.Dec {
 	assetKey := timestamp + assetType + user
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(assetKey))
 
@@ -83,7 +111,7 @@ func (k Keeper) GetPortfolioMinimumToday(
 	))
 	var val types.Portfolio
 	k.cdc.MustUnmarshal(portfolio, &val)
-	return val
+	return val.MinimumToday
 }
 
 // RemovePortfolio removes a portfolio from the store

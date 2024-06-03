@@ -9,5 +9,8 @@ message Portfolio {
   string assetkey = 2;  // assetkey = timestamp_ + asset_type_ + user_address_  + denom/perp/pool -> (amount)
   cosmos.base.v1beta1.Coin token = 1 [(gogoproto.nullable) = false];  // current balance
   string creator = 3;
-  string minimum_today = 4;
+  string minimum_today = 4 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
 }
