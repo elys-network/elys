@@ -9,12 +9,28 @@ import (
 )
 
 func (k Keeper) ProcessPortfolioChange(ctx sdk.Context, assetType string, user string, denom string) {
-	// If val not set, set it to user's current balance
-	// or just query current balance and set it // prefer
 	// TODO: set today's date minimum in USD and current value
-
 	// Get USD from oracle
+	sender := sdk.MustAccAddressFromBech32(user)
+	switch assetType {
+	case types.LiquidKeyPrefix:
+		{
+			balances := k.bankKeeper.GetAllBalances(ctx, sender)
+			for _, balance := range balances {
+				k.SetPortfolio(ctx, types.Portfolio{
+					Creator:      user,
+					Assetkey:     types.LiquidKeyPrefix,
+					Token:        balance,
+					MinimumToday: min(minimum_today, balance.Amount*usdDenomPrice),
+				}, types.LiquidKeyPrefix)
+			}
+		}
 
+	case types.PerpetualKeyPrefix:
+	case types.PoolKeyPrefix:
+	case types.StakedKeyPrefix:
+	default:
+	}
 }
 
 // SetPortfolio set a specific portfolio in the store from its index
@@ -48,6 +64,26 @@ func (k Keeper) GetPortfolio(
 	}
 
 	return
+}
+
+// GetPortfolio returns a portfolio from its index
+func (k Keeper) GetPortfolioMinimumToday(
+	ctx sdk.Context,
+	user string,
+	assetType string,
+	timestamp string,
+	denom string,
+) types.Portfolio {
+	ctx.BlockTime().Date()
+	assetKey := timestamp + assetType + user
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(assetKey))
+
+	portfolio := store.Get(types.PortfolioKey(
+		denom,
+	))
+	var val types.Portfolio
+	k.cdc.MustUnmarshal(portfolio, &val)
+	return val
 }
 
 // RemovePortfolio removes a portfolio from the store
