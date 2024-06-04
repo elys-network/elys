@@ -4,19 +4,6 @@ order: 4
 
 # Endpoints
 
-```proto
-// Msg defines the Msg service.
-service Msg {
-  rpc Open(MsgOpen) returns (MsgOpenResponse);
-  rpc Close(MsgClose) returns (MsgCloseResponse);
-  rpc UpdateParams(MsgUpdateParams) returns (MsgUpdateParamsResponse);
-  rpc UpdatePools(MsgUpdatePools) returns (MsgUpdatePoolsResponse);
-  rpc Whitelist(MsgWhitelist) returns (MsgWhitelistResponse);
-  rpc Dewhitelist(MsgDewhitelist) returns (MsgDewhitelistResponse);
-}
-
-```
-
 ## Gov Proposals
 
 ### UpdateParams
