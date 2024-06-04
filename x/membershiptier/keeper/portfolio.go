@@ -1,6 +1,9 @@
 package keeper
 
 import (
+	"math"
+	"strconv"
+	"strings"
 	"time"
 
 	"github.com/cosmos/cosmos-sdk/store/prefix"
@@ -33,11 +36,10 @@ func (k Keeper) ProcessPortfolioChange(ctx sdk.Context, assetType string, user s
 	case types.PerpetualKeyPrefix:
 		{
 			// Get data from hook, don't query other keeper, avoid cyclic dep
-			tokenPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, denom)
 			// TODO: Check for min value when key doesn't exist
 			// TODO: if amount is zero i.e position is liquidated, remove data or set to 0, data will be removed using expire logic
 			prevMin := k.GetPortfolioMinimumToday(ctx, user, assetType, k.GetDateFromBlock(ctx.BlockTime()), denom)
-			totalValue := amount.ToLegacyDec().Mul(tokenPrice)
+			totalValue := amount.ToLegacyDec()
 			if totalValue.LT(prevMin) {
 				prevMin = totalValue
 			}
@@ -46,11 +48,30 @@ func (k Keeper) ProcessPortfolioChange(ctx sdk.Context, assetType string, user s
 				Assetkey:     types.LiquidKeyPrefix,
 				Token:        sdk.NewCoin(denom, amount),
 				MinimumToday: prevMin,
-			}, types.LiquidKeyPrefix)
+			}, types.PerpetualKeyPrefix)
 		}
 	case types.PoolKeyPrefix:
 		{
 			// TODO: Check commitment logic to enable pool value tracking
+			// TODO: Handle error and edge cases
+			poolId, _ := GetPoolIdFromShareDenom(denom)
+			pool, found := k.amm.GetPool(ctx, poolId)
+			if !found {
+				return
+			}
+			info := k.amm.PoolExtraInfo(ctx, pool)
+
+			prevMin := k.GetPortfolioMinimumToday(ctx, user, assetType, k.GetDateFromBlock(ctx.BlockTime()), denom)
+			totalValue := amount.ToLegacyDec().Mul(info.LpTokenPrice)
+			if totalValue.LT(prevMin) {
+				prevMin = totalValue
+			}
+			k.SetPortfolio(ctx, types.Portfolio{
+				Creator:      user,
+				Assetkey:     types.LiquidKeyPrefix,
+				Token:        sdk.NewCoin(denom, amount),
+				MinimumToday: prevMin,
+			}, types.PoolKeyPrefix)
 		}
 	case types.StakedKeyPrefix:
 		{
@@ -58,6 +79,7 @@ func (k Keeper) ProcessPortfolioChange(ctx sdk.Context, assetType string, user s
 			// Get elys earn program
 			// Get eden earn program
 			// Get eden boost program
+			// Check all events and add hook for these
 		}
 	default:
 	}
@@ -71,6 +93,61 @@ func (k Keeper) SetPortfolio(ctx sdk.Context, portfolio types.Portfolio, assetTy
 	store.Set(types.PortfolioKey(
 		portfolio.Token.Denom,
 	), b)
+}
+
+func (k Keeper) GetMembershipTier(ctx sdk.Context, user string) (total_portfoilio sdk.Dec, tier string, discount sdk.Int) {
+	year, month, day := ctx.BlockTime().Date()
+	dateToday := time.Date(year, month, day, 0, 0, 0, 0, ctx.BlockTime().Location())
+	startDate := dateToday.AddDate(0, 0, -7)
+	minTotal := sdk.NewDec(math.MaxInt64)
+	for d := startDate; !d.After(dateToday); d = d.AddDate(0, 0, 1) {
+		// Traverse all possible portfolio data
+		portLiq := k.GetPortfolioTotal(ctx, user, types.LiquidKeyPrefix, d.Format("2006-01-02"))
+		portPerp := k.GetPortfolioTotal(ctx, user, types.PerpetualKeyPrefix, d.Format("2006-01-02"))
+		portPool := k.GetPortfolioTotal(ctx, user, types.PoolKeyPrefix, d.Format("2006-01-02"))
+		portStaked := k.GetPortfolioTotal(ctx, user, types.StakedKeyPrefix, d.Format("2006-01-02"))
+		totalPort := portLiq.Add(portPool).Add(portPerp).Add(portStaked)
+		// TODO: add rewards
+		if totalPort.LT(minTotal) {
+			minTotal = totalPort
+		}
+	}
+
+	if minTotal.GTE(sdk.NewDec(500000)) {
+		return minTotal, "platinum", sdk.NewInt(30)
+	}
+
+	if minTotal.GTE(sdk.NewDec(250000)) {
+		return minTotal, "gold", sdk.NewInt(20)
+	}
+
+	if minTotal.GTE(sdk.NewDec(50000)) {
+		return minTotal, "silver", sdk.NewInt(10)
+	}
+
+	return minTotal, "bronze", sdk.NewInt(0)
+}
+
+// GetPortfolio returns a portfolio from its index
+func (k Keeper) GetPortfolioTotal(
+	ctx sdk.Context,
+	user string,
+	assetType string,
+	timestamp string,
+) (total sdk.Dec) {
+	assetKey := timestamp + assetType + user
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(assetKey))
+	iterator := sdk.KVStorePrefixIterator(store, []byte{})
+
+	defer iterator.Close()
+
+	for ; iterator.Valid(); iterator.Next() {
+		var val types.Portfolio
+		k.cdc.MustUnmarshal(iterator.Value(), &val)
+		total.Add(val.MinimumToday)
+	}
+
+	return
 }
 
 // GetPortfolio returns a portfolio from its index
@@ -157,4 +234,12 @@ func (k Keeper) GetDateFromBlock(blockTime time.Time) string {
 	blockDate := time.Date(year, month, day, 0, 0, 0, 0, blockTime.Location())
 	// Format the date as a string in the "%Y-%m-%d" format
 	return blockDate.Format("2006-01-02")
+}
+
+func GetPoolIdFromShareDenom(shareDenom string) (uint64, error) {
+	poolId, err := strconv.Atoi(strings.TrimPrefix(shareDenom, "amm/pool/"))
+	if err != nil {
+		return 0, err
+	}
+	return uint64(poolId), nil
 }

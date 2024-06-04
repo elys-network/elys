@@ -5,6 +5,7 @@ import (
 	query "github.com/cosmos/cosmos-sdk/types/query"
 	"github.com/cosmos/cosmos-sdk/x/auth/types"
 
+	ammtypes "github.com/elys-network/elys/x/amm/types"
 	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
 	commitmenttypes "github.com/elys-network/elys/x/commitment/types"
 	oracletypes "github.com/elys-network/elys/x/oracle/types"
@@ -45,4 +46,14 @@ type AssetProfileKeeper interface {
 	GetEntry(ctx sdk.Context, baseDenom string) (val assetprofiletypes.Entry, found bool)
 	// GetUsdcDenom returns USDC denom
 	GetUsdcDenom(ctx sdk.Context) (string, bool)
+}
+
+type AmmKeeper interface {
+	// GetPool returns a pool from its index
+	GetPool(sdk.Context, uint64) (ammtypes.Pool, bool)
+	// Get all pools
+	GetAllPool(sdk.Context) []ammtypes.Pool
+	// IterateCommitments iterates over all Commitments and performs a callback.
+	IterateLiquidityPools(sdk.Context, func(ammtypes.Pool) bool)
+	PoolExtraInfo(ctx sdk.Context, pool ammtypes.Pool) ammtypes.PoolExtraInfo
 }

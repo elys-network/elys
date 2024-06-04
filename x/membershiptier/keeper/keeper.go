@@ -21,6 +21,7 @@ type (
 		bankKeeper         types.BankKeeper
 		oracleKeeper       types.OracleKeeper
 		assetProfileKeeper types.AssetProfileKeeper
+		amm                types.AmmKeeper
 	}
 )
 
@@ -32,6 +33,7 @@ func NewKeeper(
 	bankKeeper types.BankKeeper,
 	oracleKeeper types.OracleKeeper,
 	assetProfileKeeper types.AssetProfileKeeper,
+	amm types.AmmKeeper,
 ) *Keeper {
 	// set KeyTable if it has not already been set
 	if !ps.HasKeyTable() {
@@ -46,6 +48,7 @@ func NewKeeper(
 		bankKeeper:         bankKeeper,
 		oracleKeeper:       oracleKeeper,
 		assetProfileKeeper: assetProfileKeeper,
+		amm:                amm,
 	}
 }
 
