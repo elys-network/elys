@@ -121,38 +121,38 @@ Query pool APRs from specified pool ids. If nothing's put in pool ids, full list
 
 #### MastercheClaimRewards
 
-Connecting wasmbinding to `MsgClaimRewards`
+Connect wasmbinding to `MsgClaimRewards`
 
 ### Queries
 
 #### MasterchefParams
 
-Connecting wasmbinding to `Params` query.
+Connect wasmbinding to `Params` query.
 
 #### MasterchefExternalIncentive
 
-Connecting wasmbinding to `ExternalIncentive` query.
+Connect wasmbinding to `ExternalIncentive` query.
 
 #### MasterchefPoolInfo
 
-Connecting wasmbinding to `PoolInfo` query.
+Connect wasmbinding to `PoolInfo` query.
 
 #### MasterchefPoolRewardInfo
 
-Connecting wasmbinding to `PoolRewardInfo` query.
+Connect wasmbinding to `PoolRewardInfo` query.
 
 #### MasterchefUserRewardInfo
 
-Connecting wasmbinding to `UserRewardInfo` query.
+Connect wasmbinding to `UserRewardInfo` query.
 
 #### MasterchefUserPendingReward
 
-Connecting wasmbinding to `UserPendingReward` query.
+Connect wasmbinding to `UserPendingReward` query.
 
 #### MasterchefStableStakeApr
 
-Connecting wasmbinding to `StableStakeApr` query.
+Connect wasmbinding to `StableStakeApr` query.
 
 #### MasterchefPoolAprs
 
-Connecting wasmbinding to `PoolAprs` query.
+Connect wasmbinding to `PoolAprs` query.

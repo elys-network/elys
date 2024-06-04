@@ -1,0 +1,217 @@
+<!--
+order: 4
+-->
+
+# Endpoints
+
+```proto
+// Msg defines the Msg service.
+service Msg {
+  rpc Open(MsgOpen) returns (MsgOpenResponse);
+  rpc Close(MsgClose) returns (MsgCloseResponse);
+  rpc UpdateParams(MsgUpdateParams) returns (MsgUpdateParamsResponse);
+  rpc UpdatePools(MsgUpdatePools) returns (MsgUpdatePoolsResponse);
+  rpc Whitelist(MsgWhitelist) returns (MsgWhitelistResponse);
+  rpc Dewhitelist(MsgDewhitelist) returns (MsgDewhitelistResponse);
+}
+
+```
+
+## Gov Proposals
+
+### UpdateParams
+
+`MsgUpdateParams` is used by governance to update leveragelp module params.
+
+```proto
+message MsgUpdateParams {
+  string authority = 1;
+  Params params = 2 [(gogoproto.nullable) = false];
+}
+```
+
+### MsgUpdatePools
+
+`MsgUpdatePools` is used by governance to update leveragelp pool infos.
+
+```proto
+message MsgUpdatePools {
+  string authority = 1;
+  repeated Pool pools = 2 [(gogoproto.nullable) = false];
+}
+```
+
+### MsgWhitelist
+
+`MsgWhitelist` is used by governance to approve whitelisted addresses.
+
+```proto
+message MsgWhitelist {
+  string authority = 1;
+  string whitelisted_address = 2;
+}
+```
+
+### MsgDewhitelist
+
+`MsgDewhitelist` is used by governance to disapprove whitelisted addresses.
+
+```proto
+message MsgDewhitelist {
+  string authority = 1;
+  string whitelisted_address = 2;
+}
+```
+
+## Msgs
+
+### MsgOpen
+
+`MsgOpen` is used to open a leveragelp position.
+
+```proto
+message MsgOpen {
+  string creator = 1;
+  string collateral_asset = 2;
+  string collateral_amount = 3 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+  uint64 amm_pool_id = 4;
+  string leverage = 5 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  string stop_loss_price = 6 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+}
+```
+
+### MsgClose
+
+`MsgClose` is used to partially close a leveragelp position.
+
+```proto
+message MsgClose {
+  string creator = 1;
+  uint64 id = 2;
+  string lp_amount = 3 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+}
+```
+
+## Query endpoints
+
+### Params
+
+Query module params
+
+### QueryPositions
+
+Query all positions through pagination.
+
+### QueryPositionsByPool
+
+Query open positions by pool id.
+
+### GetStatus
+
+Queries status of leveragelp module, it returns number of active open positions, and positions opened from the beginning.
+
+### QueryPositionsForAddress
+
+Queries open positions for an address
+
+### GetWhitelist
+
+Queries whitelisted addresses for position open, in case `params.whitelisting_enabled` is set to true.
+
+### IsWhitelisted
+
+Queries if an address is in the list of whitelisted array.
+
+### Pool
+
+Queries leveragelp pool info by pool id.
+
+### Pools
+
+Queries all leveragelp pool infos.
+
+### Position
+
+Queries a position by address and id.
+
+### OpenEst
+
+Queries position open estimation result.
+
+### CloseEst
+
+Queries position close estimation result.
+
+## Wasmbindings
+
+### Messages
+
+#### LeveragelpOpen
+
+Connect wasmbinding to `MsgOpen`
+
+#### LeveragelpClose
+
+Connect wasmbinding to `MsgClose`
+
+### Queries
+
+#### LeveragelpParams
+
+Connect wasmbinding to `Params` query.
+
+#### LeveragelpQueryPositions
+
+Connect wasmbinding to `QueryPositions` query.
+
+#### LeveragelpQueryPositionsByPool
+
+Connect wasmbinding to `QueryPositionsByPool` query.
+
+#### LeveragelpGetStatus
+
+Connect wasmbinding to `GetStatus` query.
+
+#### LeveragelpQueryPositionsForAddress
+
+Connect wasmbinding to `QueryPositionsForAddress` query.
+
+#### LeveragelpGetWhitelist
+
+Connect wasmbinding to `GetWhitelist` query.
+
+#### LeveragelpIsWhitelisted
+
+Connect wasmbinding to `IsWhitelisted` query.
+
+#### LeveragelpPool
+
+Connect wasmbinding to `Pool` query.
+
+#### LeveragelpPools
+
+Connect wasmbinding to `Pools` query.
+
+#### LeveragelpPosition
+
+Connect wasmbinding to `Position` query.
+
+#### LeveragelpOpenEst
+
+Connect wasmbinding to `OpenEst` query.
+
+#### LeveragelpCloseEst
+
+Connect wasmbinding to `CloseEst` query.

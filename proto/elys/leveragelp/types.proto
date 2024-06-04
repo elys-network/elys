@@ -37,5 +37,3 @@ message Position {
     (gogoproto.nullable) = false
   ];
 }
-
-message WhiteList { repeated string validator_list = 1; }
