@@ -19,58 +19,56 @@ func (k Keeper) ProcessPortfolioChange(ctx sdk.Context, assetType string, user s
 			balances := k.bankKeeper.GetAllBalances(ctx, sender)
 			for _, balance := range balances {
 				tokenPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, balance.Denom)
-				// TODO: Check for min value when key doesn't exist
-				prevMin := k.GetPortfolioMinimumToday(ctx, user, assetType, k.GetDateFromBlock(ctx.BlockTime()), balance.Denom)
+				prevMin, found := k.GetPortfolioMinimumToday(ctx, user, assetType, k.GetDateFromBlock(ctx.BlockTime()), balance.Denom)
 				totalValue := balance.Amount.ToLegacyDec().Mul(tokenPrice)
-				if totalValue.LT(prevMin) {
-					prevMin = totalValue
+				if prevMin.LT(totalValue) && found {
+					totalValue = prevMin
 				}
 				k.SetPortfolio(ctx, types.Portfolio{
 					Creator:      user,
 					Assetkey:     types.LiquidKeyPrefix,
 					Token:        balance,
-					MinimumToday: prevMin,
+					MinimumToday: totalValue,
 				}, types.LiquidKeyPrefix)
 			}
 		}
 	case types.PerpetualKeyPrefix:
 		{
-			// Get data from hook, don't query other keeper, avoid cyclic dep
-			// TODO: Check for min value when key doesn't exist
-			// TODO: if amount is zero i.e position is liquidated, remove data or set to 0, data will be removed using expire logic
-			prevMin := k.GetPortfolioMinimumToday(ctx, user, assetType, k.GetDateFromBlock(ctx.BlockTime()), denom)
+			prevMin, found := k.GetPortfolioMinimumToday(ctx, user, assetType, k.GetDateFromBlock(ctx.BlockTime()), denom)
 			totalValue := amount.ToLegacyDec()
-			if totalValue.LT(prevMin) {
-				prevMin = totalValue
+			if prevMin.LT(totalValue) && found {
+				totalValue = prevMin
 			}
 			k.SetPortfolio(ctx, types.Portfolio{
 				Creator:      user,
 				Assetkey:     types.LiquidKeyPrefix,
 				Token:        sdk.NewCoin(denom, amount),
-				MinimumToday: prevMin,
+				MinimumToday: totalValue,
 			}, types.PerpetualKeyPrefix)
 		}
 	case types.PoolKeyPrefix:
 		{
 			// TODO: Check commitment logic to enable pool value tracking
-			// TODO: Handle error and edge cases
-			poolId, _ := GetPoolIdFromShareDenom(denom)
+			poolId, err := GetPoolIdFromShareDenom(denom)
+			if err != nil {
+				return
+			}
 			pool, found := k.amm.GetPool(ctx, poolId)
 			if !found {
 				return
 			}
 			info := k.amm.PoolExtraInfo(ctx, pool)
 
-			prevMin := k.GetPortfolioMinimumToday(ctx, user, assetType, k.GetDateFromBlock(ctx.BlockTime()), denom)
+			prevMin, found := k.GetPortfolioMinimumToday(ctx, user, assetType, k.GetDateFromBlock(ctx.BlockTime()), denom)
 			totalValue := amount.ToLegacyDec().Mul(info.LpTokenPrice)
-			if totalValue.LT(prevMin) {
-				prevMin = totalValue
+			if prevMin.LT(totalValue) && found {
+				totalValue = prevMin
 			}
 			k.SetPortfolio(ctx, types.Portfolio{
 				Creator:      user,
 				Assetkey:     types.LiquidKeyPrefix,
 				Token:        sdk.NewCoin(denom, amount),
-				MinimumToday: prevMin,
+				MinimumToday: totalValue,
 			}, types.PoolKeyPrefix)
 		}
 	case types.StakedKeyPrefix:
@@ -179,16 +177,24 @@ func (k Keeper) GetPortfolioMinimumToday(
 	assetType string,
 	timestamp string,
 	denom string,
-) sdk.Dec {
+) (sdk.Dec, bool) {
 	assetKey := timestamp + assetType + user
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(assetKey))
+
+	found := store.Has(types.PortfolioKey(
+		denom,
+	))
+
+	if !found {
+		return sdk.NewDec(0), false
+	}
 
 	portfolio := store.Get(types.PortfolioKey(
 		denom,
 	))
 	var val types.Portfolio
 	k.cdc.MustUnmarshal(portfolio, &val)
-	return val.MinimumToday
+	return val.MinimumToday, true
 }
 
 // RemovePortfolio removes a portfolio from the store
