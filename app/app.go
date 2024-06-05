@@ -194,6 +194,7 @@ import (
 	membershiptiermodule "github.com/elys-network/elys/x/membershiptier"
 	membershiptiermodulekeeper "github.com/elys-network/elys/x/membershiptier/keeper"
 	membershiptiermoduletypes "github.com/elys-network/elys/x/membershiptier/types"
+
 	// this line is used by starport scaffolding # stargate/app/moduleImport
 
 	"github.com/elys-network/elys/docs"
@@ -1023,6 +1024,10 @@ func NewElysApp(
 		keys[membershiptiermoduletypes.StoreKey],
 		keys[membershiptiermoduletypes.MemStoreKey],
 		app.GetSubspace(membershiptiermoduletypes.ModuleName),
+		app.BankKeeper,
+		app.OracleKeeper,
+		app.AssetprofileKeeper,
+		app.AmmKeeper,
 	)
 	membershiptierModule := membershiptiermodule.NewAppModule(appCodec, app.MembershiptierKeeper, app.AccountKeeper, app.BankKeeper)
 

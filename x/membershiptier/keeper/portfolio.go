@@ -27,7 +27,8 @@ func (k Keeper) ProcessPortfolioChange(ctx sdk.Context, assetType string, user s
 				k.SetPortfolio(ctx, types.Portfolio{
 					Creator:      user,
 					Assetkey:     types.LiquidKeyPrefix,
-					Token:        balance,
+					Denom:        denom,
+					Amount:       amount.Uint64(),
 					MinimumToday: totalValue,
 				}, types.LiquidKeyPrefix)
 			}
@@ -41,8 +42,9 @@ func (k Keeper) ProcessPortfolioChange(ctx sdk.Context, assetType string, user s
 			}
 			k.SetPortfolio(ctx, types.Portfolio{
 				Creator:      user,
-				Assetkey:     types.LiquidKeyPrefix,
-				Token:        sdk.NewCoin(denom, amount),
+				Assetkey:     types.PerpetualKeyPrefix,
+				Denom:        denom,
+				Amount:       amount.Uint64(),
 				MinimumToday: totalValue,
 			}, types.PerpetualKeyPrefix)
 		}
@@ -66,8 +68,9 @@ func (k Keeper) ProcessPortfolioChange(ctx sdk.Context, assetType string, user s
 			}
 			k.SetPortfolio(ctx, types.Portfolio{
 				Creator:      user,
-				Assetkey:     types.LiquidKeyPrefix,
-				Token:        sdk.NewCoin(denom, amount),
+				Assetkey:     types.PoolKeyPrefix,
+				Denom:        denom,
+				Amount:       amount.Uint64(),
 				MinimumToday: totalValue,
 			}, types.PoolKeyPrefix)
 		}
@@ -89,11 +92,11 @@ func (k Keeper) SetPortfolio(ctx sdk.Context, portfolio types.Portfolio, assetTy
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(assetKey))
 	b := k.cdc.MustMarshal(&portfolio)
 	store.Set(types.PortfolioKey(
-		portfolio.Token.Denom,
+		portfolio.Denom,
 	), b)
 }
 
-func (k Keeper) GetMembershipTier(ctx sdk.Context, user string) (total_portfoilio sdk.Dec, tier string, discount sdk.Int) {
+func (k Keeper) GetMembershipTier(ctx sdk.Context, user string) (total_portfoilio sdk.Dec, tier string, discount uint64) {
 	year, month, day := ctx.BlockTime().Date()
 	dateToday := time.Date(year, month, day, 0, 0, 0, 0, ctx.BlockTime().Location())
 	startDate := dateToday.AddDate(0, 0, -7)
@@ -112,18 +115,18 @@ func (k Keeper) GetMembershipTier(ctx sdk.Context, user string) (total_portfoili
 	}
 
 	if minTotal.GTE(sdk.NewDec(500000)) {
-		return minTotal, "platinum", sdk.NewInt(30)
+		return minTotal, "platinum", 30
 	}
 
 	if minTotal.GTE(sdk.NewDec(250000)) {
-		return minTotal, "gold", sdk.NewInt(20)
+		return minTotal, "gold", 20
 	}
 
 	if minTotal.GTE(sdk.NewDec(50000)) {
-		return minTotal, "silver", sdk.NewInt(10)
+		return minTotal, "silver", 10
 	}
 
-	return minTotal, "bronze", sdk.NewInt(0)
+	return minTotal, "bronze", 0
 }
 
 // GetPortfolio returns a portfolio from its index
@@ -136,13 +139,14 @@ func (k Keeper) GetPortfolioTotal(
 	assetKey := timestamp + assetType + user
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(assetKey))
 	iterator := sdk.KVStorePrefixIterator(store, []byte{})
+	total = sdk.NewDec(0)
 
 	defer iterator.Close()
 
 	for ; iterator.Valid(); iterator.Next() {
 		var val types.Portfolio
 		k.cdc.MustUnmarshal(iterator.Value(), &val)
-		total.Add(val.MinimumToday)
+		total = total.Add(val.MinimumToday)
 	}
 
 	return
@@ -218,8 +222,8 @@ func (k Keeper) RemovePortfolio(
 }
 
 // GetAllPortfolio returns all portfolio
-func (k Keeper) GetAllPortfolio(ctx sdk.Context) (list []types.Portfolio) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.PortfolioKeyPrefix))
+func (k Keeper) GetAllPortfolio(ctx sdk.Context, timestamp string) (list []types.Portfolio) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(timestamp))
 	iterator := sdk.KVStorePrefixIterator(store, []byte{})
 
 	defer iterator.Close()

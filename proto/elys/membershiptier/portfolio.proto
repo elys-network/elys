@@ -6,10 +6,11 @@ import "gogoproto/gogo.proto";
 import "cosmos/base/v1beta1/coin.proto"; 
 
 message Portfolio {
-  string assetkey = 2;  // assetkey = timestamp_ + asset_type_ + user_address_  + denom/perp/pool -> (amount)
-  cosmos.base.v1beta1.Coin token = 1 [(gogoproto.nullable) = false];  // current balance
-  string creator = 3;
-  string minimum_today = 4 [
+  string assetkey = 1;  // assetkey = timestamp_ + asset_type_ + user_address_  + denom/perp/pool -> (amount)
+  string denom = 2;
+  uint64 amount = 3;
+  string creator = 4;
+  string minimum_today = 5 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
