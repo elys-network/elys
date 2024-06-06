@@ -6,6 +6,15 @@ order: 4
 
 ## Gov Proposals
 
+```proto
+service Msg {
+    rpc UpdateParams(MsgUpdateParams) returns (MsgUpdateParamsResponse);
+    rpc UpdatePools(MsgUpdatePools) returns (MsgUpdatePoolsResponse);
+    rpc Whitelist(MsgWhitelist) returns (MsgWhitelistResponse);
+    rpc Dewhitelist(MsgDewhitelist) returns (MsgDewhitelistResponse);
+}
+```
+
 ### UpdateParams
 
 `MsgUpdateParams` is used by governance to update leveragelp module params.
@@ -52,6 +61,15 @@ message MsgDewhitelist {
 
 ## Msgs
 
+The `Msg` service defines the transactions available in the `leveragelp` module.
+
+```proto
+service Msg {
+    rpc Open(MsgOpen) returns (MsgOpenResponse);
+    rpc Close(MsgClose) returns (MsgCloseResponse);
+}
+```
+
 ### MsgOpen
 
 `MsgOpen` is used to open a leveragelp position.
@@ -92,6 +110,43 @@ message MsgClose {
 ```
 
 ## Query endpoints
+
+The `Query` service defines the gRPC querier service for the `leveragelp` module.
+
+```proto
+service Query {
+    rpc Params(ParamsRequest) returns (ParamsResponse) {
+        option (google.api.http).get = "/elys-network/elys/leveragelp/params";
+    }
+    rpc QueryPositions(PositionsRequest) returns (PositionsResponse) {
+        option (google.api.http).get = "/elys-network/elys/leveragelp/positions/{pagination.key}";
+    }
+    rpc QueryPositionsByPool(PositionsByPoolRequest) returns (PositionsByPoolResponse) {
+        option (google.api.http).get = "/elys-network/elys/leveragelp/positions-by-pool/{amm_pool_id}/{pagination.key}";
+    }
+    rpc GetStatus(StatusRequest) returns (StatusResponse) {
+        option (google.api.http).get = "/elys-network/elys/leveragelp/status";
+    }
+    rpc QueryPositionsForAddress(PositionsForAddressRequest) returns (PositionsForAddressResponse) {
+        option (google.api.http).get = "/elys-network/elys/leveragelp/positions-for-address/{address}/{pagination.key}";
+    }
+    rpc GetWhitelist(WhitelistRequest) returns (WhitelistResponse) {
+        option (google.api.http).get = "/elys-network/elys/leveragelp/whitelist/{pagination.key}";
+    }
+    rpc IsWhitelisted(IsWhitelistedRequest) returns (IsWhitelistedResponse) {
+        option (google.api.http).get = "/elys-network/elys/leveragelp/is-whitelisted";
+    }
+    rpc Pool(QueryGetPoolRequest) returns (QueryGetPoolResponse) {
+        option (google.api.http).get = "/elys-network/elys/leveragelp/pool/{index}";
+    }
+    rpc Pools(QueryAllPoolRequest) returns (QueryAllPoolResponse) {
+        option (google.api.http).get = "/elys-network/elys/leveragelp/pool/{pagination.key}";
+    }
+    rpc Position(PositionRequest) returns (PositionResponse) {
+        option (google.api.http).get = "/elys-network/elys/leveragelp/position/{address}/{id}";
+    }
+}
+```
 
 ### Params
 

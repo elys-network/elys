@@ -6,6 +6,14 @@ order: 4
 
 ## Gov Proposals
 
+```proto
+service Msg {
+    rpc AddExternalRewardDenom(MsgAddExternalRewardDenom) returns (MsgAddExternalRewardDenomResponse);
+    rpc UpdateParams(MsgUpdateParams) returns (MsgUpdateParamsResponse);
+    rpc UpdatePoolMultipliers(MsgUpdatePoolMultipliers) returns (MsgUpdatePoolMultipliersResponse);
+}
+```
+
 ### UpdateParams
 
 `MsgUpdateParams` is used by governance to update masterchef module params.
@@ -54,6 +62,15 @@ message MsgAddExternalRewardDenom {
 
 ## Msgs
 
+The `Msg` service defines the transactions available in the `masterchef` module.
+
+```proto
+service Msg {
+    rpc AddExternalIncentive(MsgAddExternalIncentive) returns (MsgAddExternalIncentiveResponse);
+    rpc ClaimRewards(MsgClaimRewards) returns (MsgClaimRewardsResponse);
+}
+```
+
 ### MsgAddExternalIncentive
 
 `MsgAddExternalIncentive` is used to add external incentive on a specific pool from `from_block` to `to_block` with same amount of `amount_per_block` per block for `reward_denom` denom.
@@ -82,6 +99,37 @@ message MsgClaimRewards {
 ```
 
 ## Query endpoints
+
+The `Query` service defines the gRPC querier service for the `masterchef` module.
+
+```proto
+service Query {
+    rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
+        option (google.api.http).get = "/elys-network/elys/masterchef/params";
+    }
+    rpc ExternalIncentive(QueryExternalIncentiveRequest) returns (QueryExternalIncentiveResponse) {
+        option (google.api.http).get = "/elys-network/elys/masterchef/external-incentive";
+    }
+    rpc PoolInfo(QueryPoolInfoRequest) returns (QueryPoolInfoResponse) {
+        option (google.api.http).get = "/elys-network/elys/masterchef/pool-info";
+    }
+    rpc PoolRewardInfo(QueryPoolRewardInfoRequest) returns (QueryPoolRewardInfoResponse) {
+        option (google.api.http).get = "/elys-network/elys/masterchef/pool-reward-info";
+    }
+    rpc UserRewardInfo(QueryUserRewardInfoRequest) returns (QueryUserRewardInfoResponse) {
+        option (google.api.http).get = "/elys-network/elys/masterchef/user-reward-info";
+    }
+    rpc UserPendingReward(QueryUserPendingRewardRequest) returns (QueryUserPendingRewardResponse) {
+        option (google.api.http).get = "/elys-network/elys/masterchef/pending-reward";
+    }
+    rpc StableStakeApr(QueryStableStakeAprRequest) returns (QueryStableStakeAprResponse) {
+        option (google.api.http).get = "/elys-network/elys/masterchef/stable-stake-apr/{denom}";
+    }
+    rpc PoolAprs(QueryPoolAprsRequest) returns (QueryPoolAprsResponse) {
+        option (google.api.http).get = "/elys-network/elys/masterchef/pool-aprs";
+    }
+}
+```
 
 ### Params
 
