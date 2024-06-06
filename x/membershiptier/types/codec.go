@@ -8,17 +8,13 @@ import (
 )
 
 func RegisterCodec(cdc *codec.LegacyAmino) {
-	cdc.RegisterConcrete(&MsgCreatePortfolio{}, "membershiptier/CreatePortfolio", nil)
-	cdc.RegisterConcrete(&MsgUpdatePortfolio{}, "membershiptier/UpdatePortfolio", nil)
-	cdc.RegisterConcrete(&MsgDeletePortfolio{}, "membershiptier/DeletePortfolio", nil)
+	cdc.RegisterConcrete(&MsgSetPortfolio{}, "membershiptier/SetPortfolio", nil)
 	// this line is used by starport scaffolding # 2
 }
 
 func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 	registry.RegisterImplementations((*sdk.Msg)(nil),
-		&MsgCreatePortfolio{},
-		&MsgUpdatePortfolio{},
-		&MsgDeletePortfolio{},
+		&MsgSetPortfolio{},
 	)
 	// this line is used by starport scaffolding # 3
 

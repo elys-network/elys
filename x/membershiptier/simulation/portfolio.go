@@ -26,10 +26,7 @@ func SimulateMsgCreatePortfolio(
 		simAccount, _ := simtypes.RandomAcc(r, accs)
 
 		i := r.Int()
-		msg := &types.MsgCreatePortfolio{
-			Creator: simAccount.Address.String(),
-			Index:   strconv.Itoa(i),
-		}
+		msg := &types.MsgSetPortfolio{}
 
 		// _, found := k.GetPortfolio(ctx, msg.Creator, msg.Assetkey)
 		// if found {
@@ -64,7 +61,7 @@ func SimulateMsgUpdatePortfolio(
 		var (
 			simAccount   = simtypes.Account{}
 			portfolio    = types.Portfolio{}
-			msg          = &types.MsgUpdatePortfolio{}
+			msg          = &types.MsgSetPortfolio{}
 			allPortfolio = k.GetAllPortfolio(ctx, k.GetDateFromBlock(ctx.BlockTime()))
 			found        = false
 		)
@@ -110,7 +107,7 @@ func SimulateMsgDeletePortfolio(
 		var (
 			simAccount   = simtypes.Account{}
 			portfolio    = types.Portfolio{}
-			msg          = &types.MsgUpdatePortfolio{}
+			msg          = &types.MsgSetPortfolio{}
 			allPortfolio = k.GetAllPortfolio(ctx, k.GetDateFromBlock(ctx.BlockTime()))
 			found        = false
 		)

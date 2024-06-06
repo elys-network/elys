@@ -42441,25 +42441,8 @@ paths:
           schema:
             type: object
             properties:
-              portfolio:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    assetkey:
-                      type: string
-                      title: >-
-                        assetkey = timestamp_ + asset_type_ + user_address_  +
-                        denom/perp/pool -> (amount)
-                    denom:
-                      type: string
-                    amount:
-                      type: string
-                      format: uint64
-                    creator:
-                      type: string
-                    minimum_today:
-                      type: string
+              total_portfolio:
+                type: string
         default:
           description: An unexpected error response.
           schema:
@@ -87458,6 +87441,8 @@ definitions:
     type: object
   elys.membershiptier.MsgDeletePortfolioResponse:
     type: object
+  elys.membershiptier.MsgSetPortfolioResponse:
+    type: object
   elys.membershiptier.MsgUpdatePortfolioResponse:
     type: object
   elys.membershiptier.Params:
@@ -87531,25 +87516,8 @@ definitions:
   elys.membershiptier.QueryGetPortfolioResponse:
     type: object
     properties:
-      portfolio:
-        type: array
-        items:
-          type: object
-          properties:
-            assetkey:
-              type: string
-              title: >-
-                assetkey = timestamp_ + asset_type_ + user_address_  +
-                denom/perp/pool -> (amount)
-            denom:
-              type: string
-            amount:
-              type: string
-              format: uint64
-            creator:
-              type: string
-            minimum_today:
-              type: string
+      total_portfolio:
+        type: string
   elys.membershiptier.QueryParamsResponse:
     type: object
     properties:

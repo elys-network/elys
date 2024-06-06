@@ -45,7 +45,7 @@ message QueryGetPortfolioRequest {
 }
 
 message QueryGetPortfolioResponse {
-  repeated Portfolio portfolio = 1 [(gogoproto.nullable) = false];
+  string total_portfolio = 1;
 }
 
 message QueryAllPortfolioRequest {

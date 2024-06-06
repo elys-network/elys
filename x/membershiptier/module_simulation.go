@@ -35,6 +35,10 @@ const (
 	// TODO: Determine the simulation weight value
 	defaultWeightMsgDeletePortfolio int = 100
 
+	opWeightMsgSetPortfolio = "op_weight_msg_set_portfolio"
+	// TODO: Determine the simulation weight value
+	defaultWeightMsgSetPortfolio int = 100
+
 	// this line is used by starport scaffolding # simapp/module/const
 )
 
@@ -106,6 +110,17 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 		membershiptiersimulation.SimulateMsgDeletePortfolio(am.accountKeeper, am.bankKeeper, am.keeper),
 	))
 
+	var weightMsgSetPortfolio int
+	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgSetPortfolio, &weightMsgSetPortfolio, nil,
+		func(_ *rand.Rand) {
+			weightMsgSetPortfolio = defaultWeightMsgSetPortfolio
+		},
+	)
+	operations = append(operations, simulation.NewWeightedOperation(
+		weightMsgSetPortfolio,
+		membershiptiersimulation.SimulateMsgSetPortfolio(am.accountKeeper, am.bankKeeper, am.keeper),
+	))
+
 	// this line is used by starport scaffolding # simapp/module/operation
 
 	return operations
@@ -135,6 +150,14 @@ func (am AppModule) ProposalMsgs(simState module.SimulationState) []simtypes.Wei
 			defaultWeightMsgDeletePortfolio,
 			func(r *rand.Rand, ctx sdk.Context, accs []simtypes.Account) sdk.Msg {
 				membershiptiersimulation.SimulateMsgDeletePortfolio(am.accountKeeper, am.bankKeeper, am.keeper)
+				return nil
+			},
+		),
+		simulation.NewWeightedProposalMsg(
+			opWeightMsgSetPortfolio,
+			defaultWeightMsgSetPortfolio,
+			func(r *rand.Rand, ctx sdk.Context, accs []simtypes.Account) sdk.Msg {
+				membershiptiersimulation.SimulateMsgSetPortfolio(am.accountKeeper, am.bankKeeper, am.keeper)
 				return nil
 			},
 		),

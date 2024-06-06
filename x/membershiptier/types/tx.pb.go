@@ -27,25 +27,23 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
-type MsgCreatePortfolio struct {
-	Creator   string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
-	Index     string `protobuf:"bytes,2,opt,name=index,proto3" json:"index,omitempty"`
-	Assetkey  string `protobuf:"bytes,3,opt,name=assetkey,proto3" json:"assetkey,omitempty"`
-	Coinvalue string `protobuf:"bytes,4,opt,name=coinvalue,proto3" json:"coinvalue,omitempty"`
+type MsgSetPortfolio struct {
+	Creator string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
+	User    string `protobuf:"bytes,2,opt,name=user,proto3" json:"user,omitempty"`
 }
 
-func (m *MsgCreatePortfolio) Reset()         { *m = MsgCreatePortfolio{} }
-func (m *MsgCreatePortfolio) String() string { return proto.CompactTextString(m) }
-func (*MsgCreatePortfolio) ProtoMessage()    {}
-func (*MsgCreatePortfolio) Descriptor() ([]byte, []int) {
+func (m *MsgSetPortfolio) Reset()         { *m = MsgSetPortfolio{} }
+func (m *MsgSetPortfolio) String() string { return proto.CompactTextString(m) }
+func (*MsgSetPortfolio) ProtoMessage()    {}
+func (*MsgSetPortfolio) Descriptor() ([]byte, []int) {
 	return fileDescriptor_eea15f3ab8c8ad38, []int{0}
 }
-func (m *MsgCreatePortfolio) XXX_Unmarshal(b []byte) error {
+func (m *MsgSetPortfolio) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgCreatePortfolio) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgSetPortfolio) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgCreatePortfolio.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgSetPortfolio.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -55,61 +53,47 @@ func (m *MsgCreatePortfolio) XXX_Marshal(b []byte, deterministic bool) ([]byte, 
 		return b[:n], nil
 	}
 }
-func (m *MsgCreatePortfolio) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgCreatePortfolio.Merge(m, src)
+func (m *MsgSetPortfolio) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgSetPortfolio.Merge(m, src)
 }
-func (m *MsgCreatePortfolio) XXX_Size() int {
+func (m *MsgSetPortfolio) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgCreatePortfolio) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgCreatePortfolio.DiscardUnknown(m)
+func (m *MsgSetPortfolio) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgSetPortfolio.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgCreatePortfolio proto.InternalMessageInfo
+var xxx_messageInfo_MsgSetPortfolio proto.InternalMessageInfo
 
-func (m *MsgCreatePortfolio) GetCreator() string {
+func (m *MsgSetPortfolio) GetCreator() string {
 	if m != nil {
 		return m.Creator
 	}
 	return ""
 }
 
-func (m *MsgCreatePortfolio) GetIndex() string {
+func (m *MsgSetPortfolio) GetUser() string {
 	if m != nil {
-		return m.Index
+		return m.User
 	}
 	return ""
 }
 
-func (m *MsgCreatePortfolio) GetAssetkey() string {
-	if m != nil {
-		return m.Assetkey
-	}
-	return ""
+type MsgSetPortfolioResponse struct {
 }
 
-func (m *MsgCreatePortfolio) GetCoinvalue() string {
-	if m != nil {
-		return m.Coinvalue
-	}
-	return ""
-}
-
-type MsgCreatePortfolioResponse struct {
-}
-
-func (m *MsgCreatePortfolioResponse) Reset()         { *m = MsgCreatePortfolioResponse{} }
-func (m *MsgCreatePortfolioResponse) String() string { return proto.CompactTextString(m) }
-func (*MsgCreatePortfolioResponse) ProtoMessage()    {}
-func (*MsgCreatePortfolioResponse) Descriptor() ([]byte, []int) {
+func (m *MsgSetPortfolioResponse) Reset()         { *m = MsgSetPortfolioResponse{} }
+func (m *MsgSetPortfolioResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgSetPortfolioResponse) ProtoMessage()    {}
+func (*MsgSetPortfolioResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_eea15f3ab8c8ad38, []int{1}
 }
-func (m *MsgCreatePortfolioResponse) XXX_Unmarshal(b []byte) error {
+func (m *MsgSetPortfolioResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgCreatePortfolioResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgSetPortfolioResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgCreatePortfolioResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgSetPortfolioResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -119,244 +103,42 @@ func (m *MsgCreatePortfolioResponse) XXX_Marshal(b []byte, deterministic bool) (
 		return b[:n], nil
 	}
 }
-func (m *MsgCreatePortfolioResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgCreatePortfolioResponse.Merge(m, src)
+func (m *MsgSetPortfolioResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgSetPortfolioResponse.Merge(m, src)
 }
-func (m *MsgCreatePortfolioResponse) XXX_Size() int {
+func (m *MsgSetPortfolioResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgCreatePortfolioResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgCreatePortfolioResponse.DiscardUnknown(m)
+func (m *MsgSetPortfolioResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgSetPortfolioResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgCreatePortfolioResponse proto.InternalMessageInfo
-
-type MsgUpdatePortfolio struct {
-	Creator   string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
-	Index     string `protobuf:"bytes,2,opt,name=index,proto3" json:"index,omitempty"`
-	Assetkey  string `protobuf:"bytes,3,opt,name=assetkey,proto3" json:"assetkey,omitempty"`
-	Coinvalue string `protobuf:"bytes,4,opt,name=coinvalue,proto3" json:"coinvalue,omitempty"`
-}
-
-func (m *MsgUpdatePortfolio) Reset()         { *m = MsgUpdatePortfolio{} }
-func (m *MsgUpdatePortfolio) String() string { return proto.CompactTextString(m) }
-func (*MsgUpdatePortfolio) ProtoMessage()    {}
-func (*MsgUpdatePortfolio) Descriptor() ([]byte, []int) {
-	return fileDescriptor_eea15f3ab8c8ad38, []int{2}
-}
-func (m *MsgUpdatePortfolio) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *MsgUpdatePortfolio) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_MsgUpdatePortfolio.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *MsgUpdatePortfolio) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgUpdatePortfolio.Merge(m, src)
-}
-func (m *MsgUpdatePortfolio) XXX_Size() int {
-	return m.Size()
-}
-func (m *MsgUpdatePortfolio) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgUpdatePortfolio.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_MsgUpdatePortfolio proto.InternalMessageInfo
-
-func (m *MsgUpdatePortfolio) GetCreator() string {
-	if m != nil {
-		return m.Creator
-	}
-	return ""
-}
-
-func (m *MsgUpdatePortfolio) GetIndex() string {
-	if m != nil {
-		return m.Index
-	}
-	return ""
-}
-
-func (m *MsgUpdatePortfolio) GetAssetkey() string {
-	if m != nil {
-		return m.Assetkey
-	}
-	return ""
-}
-
-func (m *MsgUpdatePortfolio) GetCoinvalue() string {
-	if m != nil {
-		return m.Coinvalue
-	}
-	return ""
-}
-
-type MsgUpdatePortfolioResponse struct {
-}
-
-func (m *MsgUpdatePortfolioResponse) Reset()         { *m = MsgUpdatePortfolioResponse{} }
-func (m *MsgUpdatePortfolioResponse) String() string { return proto.CompactTextString(m) }
-func (*MsgUpdatePortfolioResponse) ProtoMessage()    {}
-func (*MsgUpdatePortfolioResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_eea15f3ab8c8ad38, []int{3}
-}
-func (m *MsgUpdatePortfolioResponse) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *MsgUpdatePortfolioResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_MsgUpdatePortfolioResponse.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *MsgUpdatePortfolioResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgUpdatePortfolioResponse.Merge(m, src)
-}
-func (m *MsgUpdatePortfolioResponse) XXX_Size() int {
-	return m.Size()
-}
-func (m *MsgUpdatePortfolioResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgUpdatePortfolioResponse.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_MsgUpdatePortfolioResponse proto.InternalMessageInfo
-
-type MsgDeletePortfolio struct {
-	Creator string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
-	Index   string `protobuf:"bytes,2,opt,name=index,proto3" json:"index,omitempty"`
-}
-
-func (m *MsgDeletePortfolio) Reset()         { *m = MsgDeletePortfolio{} }
-func (m *MsgDeletePortfolio) String() string { return proto.CompactTextString(m) }
-func (*MsgDeletePortfolio) ProtoMessage()    {}
-func (*MsgDeletePortfolio) Descriptor() ([]byte, []int) {
-	return fileDescriptor_eea15f3ab8c8ad38, []int{4}
-}
-func (m *MsgDeletePortfolio) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *MsgDeletePortfolio) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_MsgDeletePortfolio.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *MsgDeletePortfolio) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgDeletePortfolio.Merge(m, src)
-}
-func (m *MsgDeletePortfolio) XXX_Size() int {
-	return m.Size()
-}
-func (m *MsgDeletePortfolio) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgDeletePortfolio.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_MsgDeletePortfolio proto.InternalMessageInfo
-
-func (m *MsgDeletePortfolio) GetCreator() string {
-	if m != nil {
-		return m.Creator
-	}
-	return ""
-}
-
-func (m *MsgDeletePortfolio) GetIndex() string {
-	if m != nil {
-		return m.Index
-	}
-	return ""
-}
-
-type MsgDeletePortfolioResponse struct {
-}
-
-func (m *MsgDeletePortfolioResponse) Reset()         { *m = MsgDeletePortfolioResponse{} }
-func (m *MsgDeletePortfolioResponse) String() string { return proto.CompactTextString(m) }
-func (*MsgDeletePortfolioResponse) ProtoMessage()    {}
-func (*MsgDeletePortfolioResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_eea15f3ab8c8ad38, []int{5}
-}
-func (m *MsgDeletePortfolioResponse) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *MsgDeletePortfolioResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_MsgDeletePortfolioResponse.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *MsgDeletePortfolioResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgDeletePortfolioResponse.Merge(m, src)
-}
-func (m *MsgDeletePortfolioResponse) XXX_Size() int {
-	return m.Size()
-}
-func (m *MsgDeletePortfolioResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgDeletePortfolioResponse.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_MsgDeletePortfolioResponse proto.InternalMessageInfo
+var xxx_messageInfo_MsgSetPortfolioResponse proto.InternalMessageInfo
 
 func init() {
-	proto.RegisterType((*MsgCreatePortfolio)(nil), "elys.membershiptier.MsgCreatePortfolio")
-	proto.RegisterType((*MsgCreatePortfolioResponse)(nil), "elys.membershiptier.MsgCreatePortfolioResponse")
-	proto.RegisterType((*MsgUpdatePortfolio)(nil), "elys.membershiptier.MsgUpdatePortfolio")
-	proto.RegisterType((*MsgUpdatePortfolioResponse)(nil), "elys.membershiptier.MsgUpdatePortfolioResponse")
-	proto.RegisterType((*MsgDeletePortfolio)(nil), "elys.membershiptier.MsgDeletePortfolio")
-	proto.RegisterType((*MsgDeletePortfolioResponse)(nil), "elys.membershiptier.MsgDeletePortfolioResponse")
+	proto.RegisterType((*MsgSetPortfolio)(nil), "elys.membershiptier.MsgSetPortfolio")
+	proto.RegisterType((*MsgSetPortfolioResponse)(nil), "elys.membershiptier.MsgSetPortfolioResponse")
 }
 
 func init() { proto.RegisterFile("elys/membershiptier/tx.proto", fileDescriptor_eea15f3ab8c8ad38) }
 
 var fileDescriptor_eea15f3ab8c8ad38 = []byte{
-	// 327 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xc4, 0x93, 0xbb, 0x4e, 0xc3, 0x30,
-	0x18, 0x85, 0x9b, 0x96, 0x5b, 0xbd, 0x20, 0x19, 0x86, 0x28, 0xaa, 0x2c, 0x54, 0x06, 0x58, 0x48,
-	0x24, 0xfa, 0x06, 0xd0, 0xb5, 0x12, 0xaa, 0xc4, 0xc2, 0xd6, 0xcb, 0x4f, 0x6a, 0xe5, 0x62, 0xcb,
-	0x76, 0x21, 0x59, 0x78, 0x06, 0x1e, 0x8b, 0x81, 0xa1, 0x23, 0x23, 0x4a, 0x5e, 0x04, 0xc5, 0x6d,
-	0x8a, 0x70, 0x6a, 0x09, 0x89, 0x81, 0xf1, 0xfc, 0xe7, 0xb7, 0xbf, 0xa3, 0x63, 0x19, 0xf5, 0x20,
-	0xce, 0x65, 0x90, 0x40, 0x32, 0x05, 0x21, 0x17, 0x94, 0x2b, 0x0a, 0x22, 0x50, 0x99, 0xcf, 0x05,
-	0x53, 0x0c, 0x9f, 0x54, 0xae, 0xff, 0xd3, 0xf5, 0xce, 0x77, 0x1d, 0xe1, 0x4c, 0xa8, 0x47, 0x16,
-	0x53, 0xb6, 0x3e, 0xd9, 0x7f, 0x41, 0x78, 0x24, 0xc3, 0x5b, 0x01, 0x13, 0x05, 0x77, 0xb5, 0x87,
-	0x5d, 0x74, 0x38, 0xab, 0x46, 0x4c, 0xb8, 0xce, 0x99, 0x73, 0xd9, 0x1d, 0xd7, 0x12, 0x9f, 0xa2,
-	0x7d, 0x9a, 0xce, 0x21, 0x73, 0xdb, 0x7a, 0xbe, 0x16, 0xd8, 0x43, 0x47, 0x13, 0x29, 0x41, 0x45,
-	0x90, 0xbb, 0x1d, 0x6d, 0x6c, 0x35, 0xee, 0xa1, 0xee, 0x8c, 0xd1, 0xf4, 0x69, 0x12, 0x2f, 0xc1,
-	0xdd, 0xd3, 0xe6, 0xf7, 0xa0, 0xdf, 0x43, 0x5e, 0x93, 0x3f, 0x06, 0xc9, 0x59, 0x2a, 0x61, 0x93,
-	0xee, 0x9e, 0xcf, 0xff, 0x35, 0x9d, 0xc1, 0xdf, 0xa6, 0x1b, 0xea, 0x74, 0x43, 0x88, 0xe1, 0x0f,
-	0xe9, 0x36, 0x0c, 0xe3, 0x96, 0x9a, 0x71, 0xfd, 0xde, 0x46, 0x9d, 0x91, 0x0c, 0x71, 0x84, 0x8e,
-	0xcd, 0x47, 0xba, 0xf0, 0x77, 0xbc, 0xba, 0xdf, 0x6c, 0xd3, 0x0b, 0x7e, 0xb9, 0x58, 0x43, 0x2b,
-	0x98, 0xd9, 0xb9, 0x15, 0x66, 0x2c, 0xda, 0x61, 0x96, 0x16, 0x2b, 0x98, 0x59, 0xa1, 0x15, 0x66,
-	0x2c, 0xda, 0x61, 0x96, 0x3a, 0x6f, 0x46, 0x6f, 0x05, 0x71, 0x56, 0x05, 0x71, 0x3e, 0x0b, 0xe2,
-	0xbc, 0x96, 0xa4, 0xb5, 0x2a, 0x49, 0xeb, 0xa3, 0x24, 0xad, 0x87, 0x41, 0x48, 0xd5, 0x62, 0x39,
-	0xf5, 0x67, 0x2c, 0x09, 0xaa, 0x4b, 0xaf, 0x52, 0x50, 0xcf, 0x4c, 0x44, 0x5a, 0x04, 0x59, 0xe3,
-	0xeb, 0xe5, 0x1c, 0xe4, 0xf4, 0x40, 0x7f, 0xa2, 0xc1, 0x57, 0x00, 0x00, 0x00, 0xff, 0xff, 0x91,
-	0x15, 0x23, 0x65, 0x9e, 0x03, 0x00, 0x00,
+	// 230 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x92, 0x49, 0xcd, 0xa9, 0x2c,
+	0xd6, 0xcf, 0x4d, 0xcd, 0x4d, 0x4a, 0x2d, 0x2a, 0xce, 0xc8, 0x2c, 0x28, 0xc9, 0x4c, 0x2d, 0xd2,
+	0x2f, 0xa9, 0xd0, 0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x17, 0x12, 0x06, 0xc9, 0xea, 0xa1, 0xca, 0x4a,
+	0x29, 0x63, 0xd3, 0x52, 0x90, 0x5f, 0x54, 0x92, 0x96, 0x9f, 0x93, 0x99, 0x0f, 0xd1, 0xa9, 0x64,
+	0xcf, 0xc5, 0xef, 0x5b, 0x9c, 0x1e, 0x9c, 0x5a, 0x12, 0x00, 0x93, 0x10, 0x92, 0xe0, 0x62, 0x4f,
+	0x2e, 0x4a, 0x4d, 0x2c, 0xc9, 0x2f, 0x92, 0x60, 0x54, 0x60, 0xd4, 0xe0, 0x0c, 0x82, 0x71, 0x85,
+	0x84, 0xb8, 0x58, 0x4a, 0x8b, 0x53, 0x8b, 0x24, 0x98, 0xc0, 0xc2, 0x60, 0xb6, 0x92, 0x24, 0x97,
+	0x38, 0x9a, 0x01, 0x41, 0xa9, 0xc5, 0x05, 0xf9, 0x79, 0xc5, 0xa9, 0x46, 0x99, 0x5c, 0xcc, 0xbe,
+	0xc5, 0xe9, 0x42, 0x49, 0x5c, 0x3c, 0x28, 0xe6, 0xab, 0xe8, 0x61, 0x71, 0xad, 0x1e, 0x9a, 0x21,
+	0x52, 0x3a, 0xc4, 0xa8, 0x82, 0x59, 0xe5, 0xe4, 0x7b, 0xe2, 0x91, 0x1c, 0xe3, 0x85, 0x47, 0x72,
+	0x8c, 0x0f, 0x1e, 0xc9, 0x31, 0x4e, 0x78, 0x2c, 0xc7, 0x70, 0xe1, 0xb1, 0x1c, 0xc3, 0x8d, 0xc7,
+	0x72, 0x0c, 0x51, 0xc6, 0xe9, 0x99, 0x25, 0x19, 0xa5, 0x49, 0x7a, 0xc9, 0xf9, 0xb9, 0xfa, 0x20,
+	0x13, 0x75, 0xf3, 0x52, 0x4b, 0xca, 0xf3, 0x8b, 0xb2, 0xc1, 0x1c, 0xfd, 0x0a, 0x8c, 0x20, 0xad,
+	0x2c, 0x48, 0x2d, 0x4e, 0x62, 0x03, 0x07, 0x8e, 0x31, 0x20, 0x00, 0x00, 0xff, 0xff, 0x25, 0x5c,
+	0x28, 0x08, 0x76, 0x01, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -371,9 +153,10 @@ const _ = grpc.SupportPackageIsVersion4
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type MsgClient interface {
-	CreatePortfolio(ctx context.Context, in *MsgCreatePortfolio, opts ...grpc.CallOption) (*MsgCreatePortfolioResponse, error)
-	UpdatePortfolio(ctx context.Context, in *MsgUpdatePortfolio, opts ...grpc.CallOption) (*MsgUpdatePortfolioResponse, error)
-	DeletePortfolio(ctx context.Context, in *MsgDeletePortfolio, opts ...grpc.CallOption) (*MsgDeletePortfolioResponse, error)
+	// rpc CreatePortfolio (MsgCreatePortfolio) returns (MsgCreatePortfolioResponse);
+	// rpc UpdatePortfolio (MsgUpdatePortfolio) returns (MsgUpdatePortfolioResponse);
+	// rpc DeletePortfolio (MsgDeletePortfolio) returns (MsgDeletePortfolioResponse);
+	SetPortfolio(ctx context.Context, in *MsgSetPortfolio, opts ...grpc.CallOption) (*MsgSetPortfolioResponse, error)
 }
 
 type msgClient struct {
@@ -384,27 +167,9 @@ func NewMsgClient(cc grpc1.ClientConn) MsgClient {
 	return &msgClient{cc}
 }
 
-func (c *msgClient) CreatePortfolio(ctx context.Context, in *MsgCreatePortfolio, opts ...grpc.CallOption) (*MsgCreatePortfolioResponse, error) {
-	out := new(MsgCreatePortfolioResponse)
-	err := c.cc.Invoke(ctx, "/elys.membershiptier.Msg/CreatePortfolio", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *msgClient) UpdatePortfolio(ctx context.Context, in *MsgUpdatePortfolio, opts ...grpc.CallOption) (*MsgUpdatePortfolioResponse, error) {
-	out := new(MsgUpdatePortfolioResponse)
-	err := c.cc.Invoke(ctx, "/elys.membershiptier.Msg/UpdatePortfolio", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *msgClient) DeletePortfolio(ctx context.Context, in *MsgDeletePortfolio, opts ...grpc.CallOption) (*MsgDeletePortfolioResponse, error) {
-	out := new(MsgDeletePortfolioResponse)
-	err := c.cc.Invoke(ctx, "/elys.membershiptier.Msg/DeletePortfolio", in, out, opts...)
+func (c *msgClient) SetPortfolio(ctx context.Context, in *MsgSetPortfolio, opts ...grpc.CallOption) (*MsgSetPortfolioResponse, error) {
+	out := new(MsgSetPortfolioResponse)
+	err := c.cc.Invoke(ctx, "/elys.membershiptier.Msg/SetPortfolio", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -413,79 +178,38 @@ func (c *msgClient) DeletePortfolio(ctx context.Context, in *MsgDeletePortfolio,
 
 // MsgServer is the server API for Msg service.
 type MsgServer interface {
-	CreatePortfolio(context.Context, *MsgCreatePortfolio) (*MsgCreatePortfolioResponse, error)
-	UpdatePortfolio(context.Context, *MsgUpdatePortfolio) (*MsgUpdatePortfolioResponse, error)
-	DeletePortfolio(context.Context, *MsgDeletePortfolio) (*MsgDeletePortfolioResponse, error)
+	// rpc CreatePortfolio (MsgCreatePortfolio) returns (MsgCreatePortfolioResponse);
+	// rpc UpdatePortfolio (MsgUpdatePortfolio) returns (MsgUpdatePortfolioResponse);
+	// rpc DeletePortfolio (MsgDeletePortfolio) returns (MsgDeletePortfolioResponse);
+	SetPortfolio(context.Context, *MsgSetPortfolio) (*MsgSetPortfolioResponse, error)
 }
 
 // UnimplementedMsgServer can be embedded to have forward compatible implementations.
 type UnimplementedMsgServer struct {
 }
 
-func (*UnimplementedMsgServer) CreatePortfolio(ctx context.Context, req *MsgCreatePortfolio) (*MsgCreatePortfolioResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CreatePortfolio not implemented")
-}
-func (*UnimplementedMsgServer) UpdatePortfolio(ctx context.Context, req *MsgUpdatePortfolio) (*MsgUpdatePortfolioResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UpdatePortfolio not implemented")
-}
-func (*UnimplementedMsgServer) DeletePortfolio(ctx context.Context, req *MsgDeletePortfolio) (*MsgDeletePortfolioResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DeletePortfolio not implemented")
+func (*UnimplementedMsgServer) SetPortfolio(ctx context.Context, req *MsgSetPortfolio) (*MsgSetPortfolioResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SetPortfolio not implemented")
 }
 
 func RegisterMsgServer(s grpc1.Server, srv MsgServer) {
 	s.RegisterService(&_Msg_serviceDesc, srv)
 }
 
-func _Msg_CreatePortfolio_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgCreatePortfolio)
+func _Msg_SetPortfolio_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgSetPortfolio)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MsgServer).CreatePortfolio(ctx, in)
+		return srv.(MsgServer).SetPortfolio(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/elys.membershiptier.Msg/CreatePortfolio",
+		FullMethod: "/elys.membershiptier.Msg/SetPortfolio",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).CreatePortfolio(ctx, req.(*MsgCreatePortfolio))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Msg_UpdatePortfolio_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgUpdatePortfolio)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(MsgServer).UpdatePortfolio(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/elys.membershiptier.Msg/UpdatePortfolio",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).UpdatePortfolio(ctx, req.(*MsgUpdatePortfolio))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Msg_DeletePortfolio_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgDeletePortfolio)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(MsgServer).DeletePortfolio(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/elys.membershiptier.Msg/DeletePortfolio",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).DeletePortfolio(ctx, req.(*MsgDeletePortfolio))
+		return srv.(MsgServer).SetPortfolio(ctx, req.(*MsgSetPortfolio))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -495,23 +219,15 @@ var _Msg_serviceDesc = grpc.ServiceDesc{
 	HandlerType: (*MsgServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "CreatePortfolio",
-			Handler:    _Msg_CreatePortfolio_Handler,
-		},
-		{
-			MethodName: "UpdatePortfolio",
-			Handler:    _Msg_UpdatePortfolio_Handler,
-		},
-		{
-			MethodName: "DeletePortfolio",
-			Handler:    _Msg_DeletePortfolio_Handler,
+			MethodName: "SetPortfolio",
+			Handler:    _Msg_SetPortfolio_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
 	Metadata: "elys/membershiptier/tx.proto",
 }
 
-func (m *MsgCreatePortfolio) Marshal() (dAtA []byte, err error) {
+func (m *MsgSetPortfolio) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -521,34 +237,20 @@ func (m *MsgCreatePortfolio) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgCreatePortfolio) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgSetPortfolio) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgCreatePortfolio) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgSetPortfolio) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if len(m.Coinvalue) > 0 {
-		i -= len(m.Coinvalue)
-		copy(dAtA[i:], m.Coinvalue)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.Coinvalue)))
-		i--
-		dAtA[i] = 0x22
-	}
-	if len(m.Assetkey) > 0 {
-		i -= len(m.Assetkey)
-		copy(dAtA[i:], m.Assetkey)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.Assetkey)))
-		i--
-		dAtA[i] = 0x1a
-	}
-	if len(m.Index) > 0 {
-		i -= len(m.Index)
-		copy(dAtA[i:], m.Index)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.Index)))
+	if len(m.User) > 0 {
+		i -= len(m.User)
+		copy(dAtA[i:], m.User)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.User)))
 		i--
 		dAtA[i] = 0x12
 	}
@@ -562,7 +264,7 @@ func (m *MsgCreatePortfolio) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *MsgCreatePortfolioResponse) Marshal() (dAtA []byte, err error) {
+func (m *MsgSetPortfolioResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -572,146 +274,12 @@ func (m *MsgCreatePortfolioResponse) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgCreatePortfolioResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgSetPortfolioResponse) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgCreatePortfolioResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	return len(dAtA) - i, nil
-}
-
-func (m *MsgUpdatePortfolio) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *MsgUpdatePortfolio) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *MsgUpdatePortfolio) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if len(m.Coinvalue) > 0 {
-		i -= len(m.Coinvalue)
-		copy(dAtA[i:], m.Coinvalue)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.Coinvalue)))
-		i--
-		dAtA[i] = 0x22
-	}
-	if len(m.Assetkey) > 0 {
-		i -= len(m.Assetkey)
-		copy(dAtA[i:], m.Assetkey)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.Assetkey)))
-		i--
-		dAtA[i] = 0x1a
-	}
-	if len(m.Index) > 0 {
-		i -= len(m.Index)
-		copy(dAtA[i:], m.Index)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.Index)))
-		i--
-		dAtA[i] = 0x12
-	}
-	if len(m.Creator) > 0 {
-		i -= len(m.Creator)
-		copy(dAtA[i:], m.Creator)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.Creator)))
-		i--
-		dAtA[i] = 0xa
-	}
-	return len(dAtA) - i, nil
-}
-
-func (m *MsgUpdatePortfolioResponse) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *MsgUpdatePortfolioResponse) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *MsgUpdatePortfolioResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	return len(dAtA) - i, nil
-}
-
-func (m *MsgDeletePortfolio) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *MsgDeletePortfolio) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *MsgDeletePortfolio) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if len(m.Index) > 0 {
-		i -= len(m.Index)
-		copy(dAtA[i:], m.Index)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.Index)))
-		i--
-		dAtA[i] = 0x12
-	}
-	if len(m.Creator) > 0 {
-		i -= len(m.Creator)
-		copy(dAtA[i:], m.Creator)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.Creator)))
-		i--
-		dAtA[i] = 0xa
-	}
-	return len(dAtA) - i, nil
-}
-
-func (m *MsgDeletePortfolioResponse) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *MsgDeletePortfolioResponse) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *MsgDeletePortfolioResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgSetPortfolioResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -730,7 +298,7 @@ func encodeVarintTx(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
-func (m *MsgCreatePortfolio) Size() (n int) {
+func (m *MsgSetPortfolio) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -740,82 +308,14 @@ func (m *MsgCreatePortfolio) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
-	l = len(m.Index)
-	if l > 0 {
-		n += 1 + l + sovTx(uint64(l))
-	}
-	l = len(m.Assetkey)
-	if l > 0 {
-		n += 1 + l + sovTx(uint64(l))
-	}
-	l = len(m.Coinvalue)
+	l = len(m.User)
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
 	return n
 }
 
-func (m *MsgCreatePortfolioResponse) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	return n
-}
-
-func (m *MsgUpdatePortfolio) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	l = len(m.Creator)
-	if l > 0 {
-		n += 1 + l + sovTx(uint64(l))
-	}
-	l = len(m.Index)
-	if l > 0 {
-		n += 1 + l + sovTx(uint64(l))
-	}
-	l = len(m.Assetkey)
-	if l > 0 {
-		n += 1 + l + sovTx(uint64(l))
-	}
-	l = len(m.Coinvalue)
-	if l > 0 {
-		n += 1 + l + sovTx(uint64(l))
-	}
-	return n
-}
-
-func (m *MsgUpdatePortfolioResponse) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	return n
-}
-
-func (m *MsgDeletePortfolio) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	l = len(m.Creator)
-	if l > 0 {
-		n += 1 + l + sovTx(uint64(l))
-	}
-	l = len(m.Index)
-	if l > 0 {
-		n += 1 + l + sovTx(uint64(l))
-	}
-	return n
-}
-
-func (m *MsgDeletePortfolioResponse) Size() (n int) {
+func (m *MsgSetPortfolioResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -830,7 +330,7 @@ func sovTx(x uint64) (n int) {
 func sozTx(x uint64) (n int) {
 	return sovTx(uint64((x << 1) ^ uint64((int64(x) >> 63))))
 }
-func (m *MsgCreatePortfolio) Unmarshal(dAtA []byte) error {
+func (m *MsgSetPortfolio) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -853,10 +353,10 @@ func (m *MsgCreatePortfolio) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgCreatePortfolio: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgSetPortfolio: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgCreatePortfolio: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgSetPortfolio: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -893,7 +393,7 @@ func (m *MsgCreatePortfolio) Unmarshal(dAtA []byte) error {
 			iNdEx = postIndex
 		case 2:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Index", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field User", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -921,71 +421,7 @@ func (m *MsgCreatePortfolio) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Index = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 3:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Assetkey", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTx
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthTx
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthTx
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Assetkey = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 4:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Coinvalue", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTx
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthTx
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthTx
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Coinvalue = string(dAtA[iNdEx:postIndex])
+			m.User = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
@@ -1008,7 +444,7 @@ func (m *MsgCreatePortfolio) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *MsgCreatePortfolioResponse) Unmarshal(dAtA []byte) error {
+func (m *MsgSetPortfolioResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -1031,402 +467,10 @@ func (m *MsgCreatePortfolioResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgCreatePortfolioResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgSetPortfolioResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgCreatePortfolioResponse: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		default:
-			iNdEx = preIndex
-			skippy, err := skipTx(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthTx
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *MsgUpdatePortfolio) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowTx
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: MsgUpdatePortfolio: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgUpdatePortfolio: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Creator", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTx
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthTx
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthTx
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Creator = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 2:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Index", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTx
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthTx
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthTx
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Index = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 3:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Assetkey", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTx
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthTx
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthTx
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Assetkey = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 4:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Coinvalue", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTx
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthTx
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthTx
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Coinvalue = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipTx(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthTx
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *MsgUpdatePortfolioResponse) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowTx
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: MsgUpdatePortfolioResponse: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgUpdatePortfolioResponse: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		default:
-			iNdEx = preIndex
-			skippy, err := skipTx(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthTx
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *MsgDeletePortfolio) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowTx
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: MsgDeletePortfolio: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgDeletePortfolio: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Creator", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTx
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthTx
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthTx
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Creator = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 2:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Index", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTx
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthTx
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthTx
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Index = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipTx(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthTx
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *MsgDeletePortfolioResponse) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowTx
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: MsgDeletePortfolioResponse: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgDeletePortfolioResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgSetPortfolioResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		default:

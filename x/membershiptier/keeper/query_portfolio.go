@@ -46,15 +46,14 @@ func (k Keeper) Portfolio(goCtx context.Context, req *types.QueryGetPortfolioReq
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	timestamp := k.GetDateFromBlock(ctx.BlockTime())
 
-	val := k.GetPortfolio(
+	val, found := k.GetPortfolioNew(
 		ctx,
 		req.User,
-		req.AssetType,
 		timestamp,
 	)
-	// if !found {
-	// 	return nil, status.Error(codes.NotFound, "not found")
-	// }
+	if !found {
+		return nil, status.Error(codes.NotFound, "not found")
+	}
 
-	return &types.QueryGetPortfolioResponse{Portfolio: val}, nil
+	return &types.QueryGetPortfolioResponse{TotalPortfolio: val.String()}, nil
 }
