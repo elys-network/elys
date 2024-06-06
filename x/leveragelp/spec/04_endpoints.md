@@ -39,7 +39,7 @@ message MsgUpdatePools {
 
 ### MsgWhitelist
 
-`MsgWhitelist` is used by governance to approve whitelisted addresses.
+`MsgWhitelist` is used by governance to approve an address to the whitelist.
 
 ```proto
 message MsgWhitelist {
@@ -50,7 +50,7 @@ message MsgWhitelist {
 
 ### MsgDewhitelist
 
-`MsgDewhitelist` is used by governance to disapprove whitelisted addresses.
+`MsgDewhitelist` is used by governance to remove an address from the whitelist.
 
 ```proto
 message MsgDewhitelist {

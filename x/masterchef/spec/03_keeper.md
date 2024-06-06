@@ -18,8 +18,6 @@ Reward distribution's executed through `EndBlocker`. The `EndBlocker` function i
 
 The `ProcessLPRewardDistribution` function distributes rewards to liquidity providers. It updates the incentive parameters and calculates the rewards based on the collected fees and staking conditions.
 
-Note: There's constant reward pool address per liquidity pool. `GetLPRewardsPoolAddress` generates an address to be used in collecting DEX revenue from the specified pool.
-
 Gas fees collected are converted into USDC before being distributed. DEX swap fees are collected in USDC, therefore masterchef module doesn't convert DEX fees to USDC.
 
 ### ProcessExternalRewardsDistribution
@@ -32,23 +30,31 @@ The `UpdateLPRewards` function updates the rewards for liquidity providers by ca
 
 ### UpdateAccPerShare
 
-The `UpdateAccPerShare` function updates the accumulated reward per share for a specific pool.
+The `UpdateAccPerShare` function updates the accumulated reward per share for a specific pool and denom.
 
 ### CollectGasFees
 
 The `CollectGasFees` function collects gas fees and allocates them to LPs and the protocol.
 
+Gas fees collected are swapped for USDC through amm module.
+
 ### CollectDEXRevenue
 
 The `CollectDEXRevenue` function collects DEX revenue and distributes it to LPs and the protocol.
+
+There's constant reward pool address per liquidity pool. `GetLPRewardsPoolAddress` generates an address to be used in collecting DEX revenue from the specified pool.
 
 ### CalculateProxyTVL
 
 The `CalculateProxyTVL` function calculates the proxy total value locked (TVL) for the pools.
 
+Pool proxy TVL is calculated by using TVL and multiplier (`Pool TVL * Pool Multiplier`).
+
 ### UpdateAmmPoolAPR
 
 The `UpdateAmmPoolAPR` function updates the APR for AMM pools.
+
+APR calculation considers historical rewards data (24h) to prevent flash effect in APR per block.
 
 ## Rewards claim
 
