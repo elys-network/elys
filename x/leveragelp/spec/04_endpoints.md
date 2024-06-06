@@ -95,7 +95,7 @@ message MsgClose {
 
 ### Params
 
-Query module params
+Query the parameters of the `leveragelp` module.
 
 ### QueryPositions
 

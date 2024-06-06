@@ -4,6 +4,8 @@ order: 2
 
 # State
 
+The `GenesisState` message defines the initial state of the `leveragelp` module at genesis.
+
 ```proto
 // GenesisState defines the leveragelp module's genesis state.
 message GenesisState {
@@ -42,7 +44,7 @@ message Params {
 
 ## Pool
 
-`IncentiveInfo` holds eden reward distribution info for current year.
+The `Pool` message contains information about the AMM pools involved in leveraged positions, including their health and the total amount of leveraged LP tokens.
 
 ```proto
 message Pool {
@@ -66,7 +68,7 @@ message Pool {
 
 ## Position
 
-`Position` holds position information including health, `stopLossPrice`, `liabilities`, `leverage`, `leveragedLpAmount`.
+The `Position` message tracks leveraged positions in the module. It includes information on the collateral, leverage, health, and other parameters.
 
 ```proto
 message Position {
