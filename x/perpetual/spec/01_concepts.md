@@ -48,39 +48,6 @@ Whitelisting is a mechanism to control access to the perpetual module. Only addr
 
 The perpetual module has several configurable parameters that govern its operation. These include leverage limits, interest rates, maintenance margins, and more. These parameters can be updated through governance proposals to adapt to changing market conditions and ensure the module's efficiency and security.
 
-## Perpetual Module Overview
-
-The perpetual module supports perpetual trading on molecule token pools. Initially, isolated perpetual trading is supported, with plans to include cross perpetual trading in the future.
-
-### Pools
-
-Perpetual trading utilizes AMM (Automated Market Maker) pools and maintains position records. When a trader closes a position or it is liquidated, pool tokens are transferred to the perpetual trader for profit and loss (P&L).
-
-### Perpetual Limits
-
-Perpetual trading limits are based on the pool size. To maintain pool health, perpetual positions are restricted to ensure that no more than 50% of the pool's assets are borrowed.
-
-### Race Condition Between AMM and Perpetual
-
-Due to the possibility of pool balance insufficiency, a healthy buffer must be maintained when setting perpetual positions. The position should be auto-closed before the pool becomes insufficient to cover it. Any action affecting the position's health should trigger position closing.
-
-### Risks
-
-Perpetual trading will not be offered on shallow pools to mitigate risk.
-
-### Oracle
-
-The oracle should use average prices to prevent large liquidations caused by sudden, short-term price dumps. In cases where multiple oracle price sources are used, exceptions may need to be made for anomalies such as massive candle spikes from one source.
-
-### Reference Codebases for Perpetual
-
-- To Be Determined (TBD)
-
-### Notes
-
-- The perpetual code will serve as the base for LP leveraging, with the primary difference being that perpetual trading borrows from the pool liquidity itself, while LP leveraging borrows from base currency deposits.
-- Cross perpetual trading will enable interactions between perpetual positions and LP positions once implemented.
-
 ## Transaction Commands
 
 The perpetual module supports various transaction commands for managing positions and parameters. Key commands include:
