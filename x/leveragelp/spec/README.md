@@ -3,10 +3,11 @@
 ## Contents
 
 1. **[Concepts](01_concepts.md)**
-2. **[Usage](02_usage.md)**
-3. **[Keeper](03_keeper.md)**
-4. **[Protobuf Definitions](04_protobuf_definitions.md)**
-5. **[Functions](05_functions.md)**
+2. **[Mechanism](02_mechanism.md)**
+3. **[Usage](03_usage.md)**
+4. **[Keeper](04_keeper.md)**
+5. **[Protobuf Definitions](05_protobuf_definitions.md)**
+6. **[Functions](06_functions.md)**
 
 ## References
 
