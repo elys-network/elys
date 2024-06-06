@@ -10,6 +10,7 @@ import (
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
+	membershiptiertypes "github.com/elys-network/elys/x/membershiptier/types"
 )
 
 func SetupHandlers(app *ElysApp) {
@@ -66,7 +67,7 @@ func loadUpgradeStore(app *ElysApp) {
 
 	if shouldLoadUpgradeStore(app, upgradeInfo) {
 		storeUpgrades := storetypes.StoreUpgrades{
-			// Added:   []string{},
+			Added: []string{membershiptiertypes.StoreKey},
 			// Deleted: []string{},
 		}
 		// Use upgrade store loader for the initial loading of all stores when app starts,
