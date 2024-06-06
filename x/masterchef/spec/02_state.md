@@ -4,6 +4,8 @@ order: 2
 
 # State
 
+The `GenesisState` message defines the initial state of the `masterchef` module at genesis.
+
 ```proto
 // GenesisState defines the masterchef module's genesis state.
 message GenesisState {
@@ -48,6 +50,20 @@ message Params {
   repeated SupportedRewardDenom supported_reward_denoms = 5;
 
   string protocol_revenue_address = 6;
+}
+```
+
+### SupportedRewardDenom
+
+The `SupportedRewardDenom` message defines the supported reward denominations and their minimum amounts.
+
+```proto
+message SupportedRewardDenom {
+    string denom = 1;
+    string min_amount = 2 [
+        (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+        (gogoproto.nullable) = false
+    ];
 }
 ```
 
@@ -149,7 +165,7 @@ message PoolRewardInfo {
 
 ## UserRewardInfo
 
-`UserRewardInfo` is used to track user's reward per reward denom and pool id.
+`UserRewardInfo` is used to track user's reward information per reward denom and pool id.
 
 ```proto
 message UserRewardInfo {

@@ -72,7 +72,7 @@ message MsgAddExternalIncentive {
 
 ### MsgClaimRewards
 
-`MsgClaimRewards` is used to claim rewards on specified pool ids (`pool_ids`).
+`MsgClaimRewards` is used to claim pending rewards on specified pool ids (`pool_ids`).
 
 ```proto
 message MsgClaimRewards {
