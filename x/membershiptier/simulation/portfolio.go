@@ -65,7 +65,7 @@ func SimulateMsgUpdatePortfolio(
 			simAccount   = simtypes.Account{}
 			portfolio    = types.Portfolio{}
 			msg          = &types.MsgUpdatePortfolio{}
-			allPortfolio = k.GetAllPortfolio(ctx)
+			allPortfolio = k.GetAllPortfolio(ctx, k.GetDateFromBlock(ctx.BlockTime()))
 			found        = false
 		)
 		for _, obj := range allPortfolio {
@@ -111,7 +111,7 @@ func SimulateMsgDeletePortfolio(
 			simAccount   = simtypes.Account{}
 			portfolio    = types.Portfolio{}
 			msg          = &types.MsgUpdatePortfolio{}
-			allPortfolio = k.GetAllPortfolio(ctx)
+			allPortfolio = k.GetAllPortfolio(ctx, k.GetDateFromBlock(ctx.BlockTime()))
 			found        = false
 		)
 		for _, obj := range allPortfolio {

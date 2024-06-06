@@ -8,8 +8,145 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/types/query"
+	estakingtypes "github.com/elys-network/elys/x/estaking/types"
+	mastercheftypes "github.com/elys-network/elys/x/masterchef/types"
+
 	"github.com/elys-network/elys/x/membershiptier/types"
 )
+
+// Test all values retreival
+func (k Keeper) RetreiveAllPortfolio(ctx sdk.Context, user string) {
+	// set today + user -> amount
+	sender := sdk.MustAccAddressFromBech32(user)
+	todayDate := k.GetDateFromBlock(ctx.BlockTime())
+
+	_, found := k.GetPortfolioNew(ctx, user, todayDate)
+	if found {
+		return
+	}
+
+	// Liquid assets
+	balances := k.bankKeeper.GetAllBalances(ctx, sender)
+	totalValue := sdk.NewDec(0)
+	for _, balance := range balances {
+		tokenPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, balance.Denom)
+		asset, found := k.assetProfileKeeper.GetEntry(ctx, balance.Denom)
+		if !found {
+			continue
+		}
+		amount := balance.Amount.ToLegacyDec().Quo(Pow10(asset.Decimals))
+		totalValue = totalValue.Add(amount.Mul(tokenPrice))
+	}
+
+	// Rewards
+	estaking, err1 := k.estaking.Rewards(ctx, &estakingtypes.QueryRewardsRequest{Address: user})
+	masterchef, err2 := k.masterchef.UserPendingReward(ctx, &mastercheftypes.QueryUserPendingRewardRequest{User: user})
+
+	if err1 == nil {
+		for _, balance := range estaking.Total {
+			tokenPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, balance.Denom)
+			asset, found := k.assetProfileKeeper.GetEntry(ctx, balance.Denom)
+			if !found {
+				continue
+			}
+			amount := balance.Amount.ToLegacyDec().Quo(Pow10(asset.Decimals))
+			totalValue = totalValue.Add(amount.Mul(tokenPrice))
+		}
+	}
+
+	if err2 == nil {
+		for _, balance := range masterchef.TotalRewards {
+			tokenPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, balance.Denom)
+			asset, found := k.assetProfileKeeper.GetEntry(ctx, balance.Denom)
+			if !found {
+				continue
+			}
+			amount := balance.Amount.ToLegacyDec().Quo(Pow10(asset.Decimals))
+			totalValue = totalValue.Add(amount.Mul(tokenPrice))
+		}
+	}
+
+	// Perpetual
+	perpetuals, _, err := k.perpetual.GetMTPsForAddress(ctx, sender, &query.PageRequest{})
+	if err == nil {
+		for _, perpetual := range perpetuals {
+			asset, found := k.assetProfileKeeper.GetEntry(ctx, perpetual.GetTradingAsset())
+			if !found {
+				continue
+			}
+			amount := perpetual.Custody.ToLegacyDec().Quo(Pow10(asset.Decimals))
+			totalValue = totalValue.Add(amount)
+		}
+	}
+
+	// Staked assets
+	commitments := k.commitement.GetCommitments(ctx, user)
+	for _, commitment := range commitments.CommittedTokens {
+		// Pool balance
+		if strings.HasPrefix(commitment.Denom, "amm/pool") {
+			poolId, err := GetPoolIdFromShareDenom(commitment.Denom)
+			if err != nil {
+				return
+			}
+			pool, found := k.amm.GetPool(ctx, poolId)
+			if !found {
+				return
+			}
+			info := k.amm.PoolExtraInfo(ctx, pool)
+			totalValue = totalValue.Add(commitment.Amount.ToLegacyDec().Mul(info.LpTokenPrice))
+		} else {
+			tokenPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, commitment.Denom)
+			asset, found := k.assetProfileKeeper.GetEntry(ctx, commitment.Denom)
+			if !found {
+				continue
+			}
+			amount := commitment.Amount.ToLegacyDec().Quo(Pow10(asset.Decimals))
+			totalValue = totalValue.Add(amount.Mul(tokenPrice))
+		}
+	}
+
+	k.SetPortfolioAll(ctx, todayDate, sender.String(), types.Portfolio{
+		Creator:      user,
+		Assetkey:     types.LiquidKeyPrefix,
+		Denom:        "",
+		Amount:       1,
+		MinimumToday: totalValue,
+	})
+}
+
+// SetPortfolio set a specific portfolio in the store from its index
+func (k Keeper) SetPortfolioAll(ctx sdk.Context, todayDate string, user string, portfolio types.Portfolio) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(todayDate))
+	b := k.cdc.MustMarshal(&portfolio)
+	store.Set(types.PortfolioKey(
+		user,
+	), b)
+}
+
+// GetPortfolio returns a portfolio from its index
+func (k Keeper) GetPortfolioNew(
+	ctx sdk.Context,
+	user string,
+	timestamp string,
+) (sdk.Dec, bool) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(timestamp))
+
+	found := store.Has(types.PortfolioKey(
+		user,
+	))
+
+	if !found {
+		return sdk.NewDec(0), false
+	}
+
+	portfolio := store.Get(types.PortfolioKey(
+		user,
+	))
+	var val types.Portfolio
+	k.cdc.MustUnmarshal(portfolio, &val)
+	return val.MinimumToday, true
+}
 
 func (k Keeper) ProcessPortfolioChange(ctx sdk.Context, assetType string, user string, denom string, amount sdk.Int) {
 	sender := sdk.MustAccAddressFromBech32(user)
@@ -252,4 +389,12 @@ func GetPoolIdFromShareDenom(shareDenom string) (uint64, error) {
 		return 0, err
 	}
 	return uint64(poolId), nil
+}
+
+func Pow10(decimal uint64) (value sdk.Dec) {
+	value = sdk.NewDec(1)
+	for i := 0; i < int(decimal); i++ {
+		value = value.Mul(sdk.NewDec(10))
+	}
+	return
 }

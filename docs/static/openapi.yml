@@ -42317,22 +42317,11 @@ paths:
                       title: >-
                         assetkey = timestamp_ + asset_type_ + user_address_  +
                         denom/perp/pool -> (amount)
-                    token:
-                      title: current balance
-                      type: object
-                      properties:
-                        denom:
-                          type: string
-                        amount:
-                          type: string
-                      description: >-
-                        Coin defines a token with a denomination and an amount.
-
-
-                        NOTE: The amount field is an Int which implements the
-                        custom method
-
-                        signatures required by gogoproto.
+                    denom:
+                      type: string
+                    amount:
+                      type: string
+                      format: uint64
                     creator:
                       type: string
                     minimum_today:
@@ -42462,22 +42451,11 @@ paths:
                       title: >-
                         assetkey = timestamp_ + asset_type_ + user_address_  +
                         denom/perp/pool -> (amount)
-                    token:
-                      title: current balance
-                      type: object
-                      properties:
-                        denom:
-                          type: string
-                        amount:
-                          type: string
-                      description: >-
-                        Coin defines a token with a denomination and an amount.
-
-
-                        NOTE: The amount field is an Int which implements the
-                        custom method
-
-                        signatures required by gogoproto.
+                    denom:
+                      type: string
+                    amount:
+                      type: string
+                      format: uint64
                     creator:
                       type: string
                     minimum_today:
@@ -87493,19 +87471,11 @@ definitions:
         title: >-
           assetkey = timestamp_ + asset_type_ + user_address_  + denom/perp/pool
           -> (amount)
-      token:
-        title: current balance
-        type: object
-        properties:
-          denom:
-            type: string
-          amount:
-            type: string
-        description: |-
-          Coin defines a token with a denomination and an amount.
-
-          NOTE: The amount field is an Int which implements the custom method
-          signatures required by gogoproto.
+      denom:
+        type: string
+      amount:
+        type: string
+        format: uint64
       creator:
         type: string
       minimum_today:
@@ -87523,22 +87493,11 @@ definitions:
               title: >-
                 assetkey = timestamp_ + asset_type_ + user_address_  +
                 denom/perp/pool -> (amount)
-            token:
-              title: current balance
-              type: object
-              properties:
-                denom:
-                  type: string
-                amount:
-                  type: string
-              description: >-
-                Coin defines a token with a denomination and an amount.
-
-
-                NOTE: The amount field is an Int which implements the custom
-                method
-
-                signatures required by gogoproto.
+            denom:
+              type: string
+            amount:
+              type: string
+              format: uint64
             creator:
               type: string
             minimum_today:
@@ -87582,22 +87541,11 @@ definitions:
               title: >-
                 assetkey = timestamp_ + asset_type_ + user_address_  +
                 denom/perp/pool -> (amount)
-            token:
-              title: current balance
-              type: object
-              properties:
-                denom:
-                  type: string
-                amount:
-                  type: string
-              description: >-
-                Coin defines a token with a denomination and an amount.
-
-
-                NOTE: The amount field is an Int which implements the custom
-                method
-
-                signatures required by gogoproto.
+            denom:
+              type: string
+            amount:
+              type: string
+              format: uint64
             creator:
               type: string
             minimum_today:

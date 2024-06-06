@@ -1,13 +1,18 @@
 package types
 
 import (
+	"context"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	query "github.com/cosmos/cosmos-sdk/types/query"
 	"github.com/cosmos/cosmos-sdk/x/auth/types"
 
+	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
 	commitmenttypes "github.com/elys-network/elys/x/commitment/types"
+	estakingtypes "github.com/elys-network/elys/x/estaking/types"
+	mastercheftypes "github.com/elys-network/elys/x/masterchef/types"
 	oracletypes "github.com/elys-network/elys/x/oracle/types"
 	perpetualtypes "github.com/elys-network/elys/x/perpetual/types"
 )
@@ -56,4 +61,20 @@ type AmmKeeper interface {
 	// IterateCommitments iterates over all Commitments and performs a callback.
 	IterateLiquidityPools(sdk.Context, func(ammtypes.Pool) bool)
 	PoolExtraInfo(ctx sdk.Context, pool ammtypes.Pool) ammtypes.PoolExtraInfo
+}
+
+type EstakingKeeper interface {
+	Rewards(goCtx context.Context, req *estakingtypes.QueryRewardsRequest) (*estakingtypes.QueryRewardsResponse, error)
+}
+
+type MasterchefKeeper interface {
+	UserPendingReward(goCtx context.Context, req *mastercheftypes.QueryUserPendingRewardRequest) (*mastercheftypes.QueryUserPendingRewardResponse, error)
+}
+
+type StakingKeeper interface {
+	BondDenom(ctx sdk.Context) string
+	GetUnbondingDelegations(ctx sdk.Context, delegator sdk.AccAddress, maxRetrieve uint16) (unbondingDelegations []stakingtypes.UnbondingDelegation)
+	GetDelegatorValidators(
+		ctx sdk.Context, delegatorAddr sdk.AccAddress, maxRetrieve uint32,
+	) stakingtypes.Validators
 }

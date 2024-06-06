@@ -1028,6 +1028,11 @@ func NewElysApp(
 		app.OracleKeeper,
 		app.AssetprofileKeeper,
 		app.AmmKeeper,
+		app.EstakingKeeper,
+		app.MasterchefKeeper,
+		app.CommitmentKeeper,
+		app.StakingKeeper,
+		app.PerpetualKeeper,
 	)
 	membershiptierModule := membershiptiermodule.NewAppModule(appCodec, app.MembershiptierKeeper, app.AccountKeeper, app.BankKeeper)
 
