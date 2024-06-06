@@ -87437,13 +87437,7 @@ definitions:
         type: string
       reward_pending:
         type: string
-  elys.membershiptier.MsgCreatePortfolioResponse:
-    type: object
-  elys.membershiptier.MsgDeletePortfolioResponse:
-    type: object
   elys.membershiptier.MsgSetPortfolioResponse:
-    type: object
-  elys.membershiptier.MsgUpdatePortfolioResponse:
     type: object
   elys.membershiptier.Params:
     type: object
