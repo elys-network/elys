@@ -87,7 +87,7 @@ func (k Keeper) RetreiveAllPortfolio(ctx sdk.Context, user string) {
 		if strings.HasPrefix(commitment.Denom, "amm/pool") {
 			poolId, err := GetPoolIdFromShareDenom(commitment.Denom)
 			if err != nil {
-				return
+				continue
 			}
 			pool, found := k.amm.GetPool(ctx, poolId)
 			if !found {
