@@ -220,3 +220,15 @@ func (k Keeper) GetPositionHealth(ctx sdk.Context, position types.Position, ammP
 	lr := positionVal.Quo(sdk.NewDecFromBigInt(xl.BigInt()))
 	return lr, nil
 }
+
+func (k Keeper) GetPositionWithId(ctx sdk.Context, positionAddress sdk.Address, Id uint64) (*types.Position, bool) {
+	store := ctx.KVStore(k.storeKey)
+	key := types.GetPositionKey(positionAddress.String(), Id)
+	if !store.Has(key) {
+		return nil, false
+	}
+	res := store.Get(key)
+	var position types.Position
+	k.cdc.MustUnmarshal(res, &position)
+	return &position, true
+}
