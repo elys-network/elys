@@ -44,7 +44,7 @@ func (k msgServer) UpdateStopLoss(goCtx context.Context, msg *types.MsgUpdateSto
 		sdk.NewAttribute("leverage", position.Leverage.String()),
 		sdk.NewAttribute("liabilities", position.Liabilities.String()),
 		sdk.NewAttribute("health", position.PositionHealth.String()),
-		sdk.NewAttribute("stop_loss", position.PositionHealth.String()),
+		sdk.NewAttribute("stop_loss", position.StopLossPrice.String()),
 	)
 	ctx.EventManager().EmitEvent(event)
 
