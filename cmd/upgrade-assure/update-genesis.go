@@ -5,7 +5,6 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 )
 
 func updateGenesis(validatorBalance, homePath, genesisFilePath string) {
@@ -27,7 +26,7 @@ func updateGenesis(validatorBalance, homePath, genesisFilePath string) {
 	filterBalanceAddresses := []string{
 		"elys1gpv36nyuw5a92hehea3jqaadss9smsqscr3lrp", // remove existing account 0
 		// "elys173n2866wggue6znwl2vnwx9zqy7nnasjed9ydh",
-		authtypes.NewModuleAddress("distribution").String(),
+		// authtypes.NewModuleAddress("distribution").String(),
 		authtypes.NewModuleAddress("bonded_tokens_pool").String(),
 		authtypes.NewModuleAddress("not_bonded_tokens_pool").String(),
 		authtypes.NewModuleAddress("gov").String(),
@@ -57,16 +56,16 @@ func updateGenesis(validatorBalance, homePath, genesisFilePath string) {
 	genesis.AppState.Bank.Balances = append(genesis.AppState.Bank.Balances, genesisInit.AppState.Bank.Balances...)
 
 	// Add distribution account balance
-	distributionCoins := sdk.NewCoins(sdk.NewInt64Coin("ibc/2180E84E20F5679FCC760D8C165B60F42065DEF7F46A72B447CFF1B7DC6C0A65", 127502189))
-	genesis.AppState.Bank.Balances = append(
-		genesis.AppState.Bank.Balances,
-		banktypes.Balance{
-			Address: authtypes.NewModuleAddress("distribution").String(),
-			Coins:   distributionCoins,
-		},
-	)
+	// distributionCoins := sdk.NewCoins(sdk.NewInt64Coin("ibc/2180E84E20F5679FCC760D8C165B60F42065DEF7F46A72B447CFF1B7DC6C0A65", 127502189))
+	// genesis.AppState.Bank.Balances = append(
+	// 	genesis.AppState.Bank.Balances,
+	// 	banktypes.Balance{
+	// 		Address: authtypes.NewModuleAddress("distribution").String(),
+	// 		Coins:   distributionCoins,
+	// 	},
+	// )
 
-	genesis.AppState.Bank.Supply = genesis.AppState.Bank.Supply.Add(distributionCoins...)
+	// genesis.AppState.Bank.Supply = genesis.AppState.Bank.Supply.Add(distributionCoins...)
 
 	// ColorReset staking data
 	stakingParams := genesis.AppState.Staking.Params
