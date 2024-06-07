@@ -6,6 +6,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/leveragelp/types"
 	"github.com/spf13/cast"
 	"github.com/spf13/cobra"
@@ -23,7 +24,10 @@ func CmdUpdateStopLoss() *cobra.Command {
 			if err != nil {
 				return err
 			}
-			argPrice := args[1]
+			argPrice, err := sdk.NewDecFromStr(args[4])
+			if err != nil {
+				return err
+			}
 
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {

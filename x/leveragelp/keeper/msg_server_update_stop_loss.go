@@ -15,6 +15,7 @@ func (k msgServer) UpdateStopLoss(goCtx context.Context, msg *types.MsgUpdateSto
 
 	position, found := k.GetPositionWithId(ctx, sdk.MustAccAddressFromBech32(msg.Creator), uint64(msg.Position))
 	if !found {
+		return nil, errorsmod.Wrap(types.ErrPositionDoesNotExist, fmt.Sprintf("positionId: %d", msg.Position))
 
 	}
 
