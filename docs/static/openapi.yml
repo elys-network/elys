@@ -86309,6 +86309,8 @@ definitions:
     type: object
   elys.leveragelp.MsgUpdatePoolsResponse:
     type: object
+  elys.leveragelp.MsgUpdateStopLossResponse:
+    type: object
   elys.leveragelp.MsgWhitelistResponse:
     type: object
   elys.leveragelp.Params:
