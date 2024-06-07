@@ -20,7 +20,7 @@ func export(cmdPath, homePath, genesisFilePath string) {
 		"commitment",
 		"consensus",
 		"crisis",
-		"distribution",
+		// "distribution",
 		"epochs",
 		"estaking",
 		"evidence",
