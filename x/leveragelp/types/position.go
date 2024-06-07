@@ -7,7 +7,11 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 )
 
+func GetPositionAddress(positionId uint64) sdk.AccAddress {
+	return authtypes.NewModuleAddress(fmt.Sprintf("leveragelp/%d", positionId))
+}
+
 // Get Position address
 func (p *Position) GetPositionAddress() sdk.AccAddress {
-	return authtypes.NewModuleAddress(fmt.Sprintf("leveragelp/%d", p.Id))
+	return GetPositionAddress(p.Id)
 }

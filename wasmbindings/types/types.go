@@ -189,6 +189,7 @@ type ElysQuery struct {
 	LeveragelpPosition                 *leveragelptypes.PositionRequest            `json:"leveragelp_position,omitempty"`
 	LeveragelpOpenEst                  *leveragelptypes.QueryOpenEstRequest        `json:"leveragelp_open_estimation,omitempty"`
 	LeveragelpCloseEst                 *leveragelptypes.QueryCloseEstRequest       `json:"leveragelp_close_estimation,omitempty"`
+	LeveragelpRewards                  *leveragelptypes.QueryRewardsRequest        `json:"leveragelp_rewards,omitempty"`
 
 	// perpetual queriers
 	PerpetualParams                 *perpetualtypes.ParamsRequest              `json:"perpetual_params,omitempty"`
@@ -300,8 +301,9 @@ type ElysMsg struct {
 	EstakingWithdrawElysStakingRewards *estakingtypes.MsgWithdrawElysStakingRewards `json:"estaking_withdraw_elys_staking_rewards,omitempty"`
 
 	// leveragelp messages
-	LeveragelpOpen  *leveragelptypes.MsgOpen  `json:"leveragelp_open,omitempty"`
-	LeveragelpClose *leveragelptypes.MsgClose `json:"leveragelp_close,omitempty"`
+	LeveragelpOpen         *leveragelptypes.MsgOpen         `json:"leveragelp_open,omitempty"`
+	LeveragelpClose        *leveragelptypes.MsgClose        `json:"leveragelp_close,omitempty"`
+	LeveragelpClaimRewards *leveragelptypes.MsgClaimRewards `json:"leveragelp_claim_rewards,omitempty"`
 
 	// perpetual messages
 	PerpetualOpen  *perpetualtypes.MsgBrokerOpen  `json:"perpetual_open,omitempty"`

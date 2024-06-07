@@ -4,6 +4,7 @@ package elys.leveragelp;
 
 import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
+import "cosmos/base/v1beta1/coin.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
 import "elys/leveragelp/params.proto";
 import "elys/leveragelp/types.proto";
@@ -79,6 +80,12 @@ service Query {
   rpc CloseEst(QueryCloseEstRequest) returns (QueryCloseEstResponse) {
     option (google.api.http).get =
         "/elys-network/elys/leveragelp/close_estimation";
+  }
+
+  // Queries rewards on leveragelp
+  rpc Rewards(QueryRewardsRequest) returns (QueryRewardsResponse) {
+    option (google.api.http).get =
+        "/elys-network/elys/leveragelp/rewards/{address}";
   }
 }
 // ParamsRequest is request type for the Query/Params RPC method.
@@ -196,6 +203,26 @@ message QueryCloseEstRequest {
   string lp_amount = 3 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
     (gogoproto.nullable) = false
+  ];
+}
+
+message QueryRewardsRequest {
+  string address = 1;
+  repeated uint64 ids = 2;
+}
+
+message RewardInfo {
+  uint64 position_id = 1;
+  repeated cosmos.base.v1beta1.Coin reward = 2 [
+    (gogoproto.nullable) = false,
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
+  ];
+}
+message QueryRewardsResponse {
+  repeated RewardInfo rewards = 1;
+  repeated cosmos.base.v1beta1.Coin total_rewards = 2 [
+    (gogoproto.nullable) = false,
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
   ];
 }
 

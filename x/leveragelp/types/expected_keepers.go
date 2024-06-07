@@ -73,3 +73,9 @@ type AssetProfileKeeper interface {
 	// GetUsdcDenom returns USDC denom
 	GetUsdcDenom(ctx sdk.Context) (string, bool)
 }
+
+// MasterchefKeeper defines expected interface for masterchef keeper
+type MasterchefKeeper interface {
+	ClaimRewards(ctx sdk.Context, sender sdk.AccAddress, poolIds []uint64) error
+	UserPoolPendingReward(ctx sdk.Context, user sdk.AccAddress, poolId uint64) sdk.Coins
+}
