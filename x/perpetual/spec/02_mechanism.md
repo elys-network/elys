@@ -60,11 +60,11 @@ The module allows participants to leverage their trading positions by borrowing 
 
 ### 4. Swap Logic
 
-1. The system employs swap logic to facilitate asset exchanges within the pool, ensuring the appropriate custody and liabilities are maintained.
+The system employs swap logic to facilitate asset exchanges within the pool, ensuring the appropriate custody and liabilities are maintained.
 
 ### 5. Pool Health Management
 
-1. The overall health of the pool $H(X)$ is continually monitored, ensuring that the pool remains solvent and capable of covering all positions and liabilities.
+The overall health of the pool $H(X)$ is continually monitored, ensuring that the pool remains solvent and capable of covering all positions and liabilities.
 
 ### Summary of Flow
 
@@ -100,7 +100,7 @@ To maintain the stability and health of the pool, the following equations are us
 
    The Pool Health formula is designed to evaluate the stability and risk associated with the assets in a trading pool. It takes into account the balances of the assets, the synthetic liabilities for both long and short positions, and the take profit liabilities for these positions. The formula is given by:
 
-   $\text{Pool Health} = \prod_\text{Asset}{\frac{\text{Asset Balance}}{\text{Asset Balance} + \text{Pool Synthetic Liabilities}_\text{long} - \text{Pool Take Profit Liabilities}_\text{long}}} \times \prod_\text{Asset}{\frac{\text{Asset Balance}}{\text{Asset Balance} + \text{Pool Synthetic Liabilities}_\text{short} - \text{Pool Take Profit Liabilities}_\text{short}}}$
+   $$\text{Pool Health} = \prod_\text{Asset}{\frac{\text{Asset Balance}}{\text{Asset Balance} + \text{Pool Synthetic Liabilities}_\text{long} - \text{Pool Take Profit Liabilities}_\text{long}}} \times \prod_\text{Asset}{\frac{\text{Asset Balance}}{\text{Asset Balance} + \text{Pool Synthetic Liabilities}_\text{short} - \text{Pool Take Profit Liabilities}_\text{short}}}$$
 
    **Components of the Formula**
 
@@ -112,9 +112,9 @@ To maintain the stability and health of the pool, the following equations are us
 
    **Interpretation**
 
-   - **Long Position Component**: The term $\frac{\text{Asset Balance}}{\text{Asset Balance} + \text{Pool Synthetic Liabilities}_\text{long} - \text{Pool Take Profit Liabilities}_\text{long}}$ calculates the ratio of the asset balance to the net synthetic liabilities (considering take profit liabilities) for long positions. This ratio indicates how well the pool's asset balance can cover the synthetic liabilities of long positions. A higher ratio implies a healthier pool.
+   - **Long Position Component**: The term $$\frac{\text{Asset Balance}}{\text{Asset Balance} + \text{Pool Synthetic Liabilities}_\text{long} - \text{Pool Take Profit Liabilities}_\text{long}}$$ calculates the ratio of the asset balance to the net synthetic liabilities (considering take profit liabilities) for long positions. This ratio indicates how well the pool's asset balance can cover the synthetic liabilities of long positions. A higher ratio implies a healthier pool.
 
-   - **Short Position Component**: Similarly, the term $\frac{\text{Asset Balance}}{\text{Asset Balance} + \text{Pool Synthetic Liabilities}_\text{short} - \text{Pool Take Profit Liabilities}_\text{short}}$ calculates the ratio for short positions. It shows the pool's ability to cover synthetic liabilities for short positions.
+   - **Short Position Component**: Similarly, the term $$\frac{\text{Asset Balance}}{\text{Asset Balance} + \text{Pool Synthetic Liabilities}_\text{short} - \text{Pool Take Profit Liabilities}_\text{short}}$$ calculates the ratio for short positions. It shows the pool's ability to cover synthetic liabilities for short positions.
 
    - **Product of Ratios**: The overall pool health is determined by taking the product of these ratios across all assets. This comprehensive measure ensures that both long and short synthetic liabilities are considered for each asset in the pool.
 
@@ -126,7 +126,7 @@ To maintain the stability and health of the pool, the following equations are us
 
    The Position Health formula is used to evaluate the risk level of an individual trading position by comparing the amount of assets held in custody to the total liabilities and unpaid borrow interest. The formula is given by:
 
-   $\text{Position Health} = \frac{\text{Custody Amount}}{\text{Liabilities} + \text{Borrow Interest Unpaid}}$
+   $$\text{Position Health} = \frac{\text{Custody Amount}}{\text{Liabilities} + \text{Borrow Interest Unpaid}}$$
 
    - **Custody Amount**: The total value of assets currently held in custody for the position. This represents the collateral or assets secured to back the position.
    - **Liabilities**: The total amount of liabilities associated with the position. This includes any borrowed amounts that the trader is responsible for repaying.
