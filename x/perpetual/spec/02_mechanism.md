@@ -100,7 +100,7 @@ To maintain the stability and health of the pool, the following equations are us
 
    The Pool Health formula is designed to evaluate the stability and risk associated with the assets in a trading pool. It takes into account the balances of the assets, the synthetic liabilities for both long and short positions, and the take profit liabilities for these positions. The formula is given by:
 
-   $$\text{Pool Health} = \prod_\text{Asset}{\frac{\text{Asset Balance}}{\text{Asset Balance} + \text{Pool Synthetic Liabilities}_\text{long} - \text{Pool Take Profit Liabilities}_\text{long}}} \times \prod_\text{Asset}{\frac{\text{Asset Balance}}{\text{Asset Balance} + \text{Pool Synthetic Liabilities}_\text{short} - \text{Pool Take Profit Liabilities}_\text{short}}}$$
+   $$\text{Pool Health} = \prod_\text{Asset}{\frac{\text{Asset Balance}}{\text{Asset Balance} + \text{Pool Synthetic Liabilities}\_\text{long} - \text{Pool Take Profit Liabilities}\_\text{long}}} \times \prod_\text{Asset}{\frac{\text{Asset Balance}}{\text{Asset Balance} + \text{Pool Synthetic Liabilities}\_\text{short} - \text{Pool Take Profit Liabilities}\_\text{short}}}$$
 
    **Components of the Formula**
 
@@ -112,9 +112,9 @@ To maintain the stability and health of the pool, the following equations are us
 
    **Interpretation**
 
-   - **Long Position Component**: The term $$\frac{\text{Asset Balance}}{\text{Asset Balance} + \text{Pool Synthetic Liabilities}_\text{long} - \text{Pool Take Profit Liabilities}_\text{long}}$$ calculates the ratio of the asset balance to the net synthetic liabilities (considering take profit liabilities) for long positions. This ratio indicates how well the pool's asset balance can cover the synthetic liabilities of long positions. A higher ratio implies a healthier pool.
+   - **Long Position Component**: The term $$\frac{\text{Asset Balance}}{\text{Asset Balance} + \text{Pool Synthetic Liabilities}\_\text{long} - \text{Pool Take Profit Liabilities}\_\text{long}}$$ calculates the ratio of the asset balance to the net synthetic liabilities (considering take profit liabilities) for long positions. This ratio indicates how well the pool's asset balance can cover the synthetic liabilities of long positions. A higher ratio implies a healthier pool.
 
-   - **Short Position Component**: Similarly, the term $$\frac{\text{Asset Balance}}{\text{Asset Balance} + \text{Pool Synthetic Liabilities}_\text{short} - \text{Pool Take Profit Liabilities}_\text{short}}$$ calculates the ratio for short positions. It shows the pool's ability to cover synthetic liabilities for short positions.
+   - **Short Position Component**: Similarly, the term $$\frac{\text{Asset Balance}}{\text{Asset Balance} + \text{Pool Synthetic Liabilities}\_\text{short} - \text{Pool Take Profit Liabilities}\_\text{short}}$$ calculates the ratio for short positions. It shows the pool's ability to cover synthetic liabilities for short positions.
 
    - **Product of Ratios**: The overall pool health is determined by taking the product of these ratios across all assets. This comprehensive measure ensures that both long and short synthetic liabilities are considered for each asset in the pool.
 
