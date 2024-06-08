@@ -24,7 +24,7 @@ func CmdUpdateStopLoss() *cobra.Command {
 			if err != nil {
 				return err
 			}
-			argPrice, err := sdk.NewDecFromStr(args[4])
+			argPrice, err := sdk.NewDecFromStr(args[1])
 			if err != nil {
 				return err
 			}
