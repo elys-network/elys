@@ -46,7 +46,7 @@ func (k Keeper) Portfolio(goCtx context.Context, req *types.QueryGetPortfolioReq
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	timestamp := k.GetDateFromBlock(ctx.BlockTime())
 
-	val, found := k.GetPortfolioNew(
+	val, found := k.GetPortfolio(
 		ctx,
 		req.User,
 		timestamp,
