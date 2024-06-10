@@ -106,7 +106,7 @@ func (k Keeper) RetreiveAllPortfolio(ctx sdk.Context, user string) {
 		}
 	}
 
-	k.SetPortfolioAll(ctx, todayDate, sender.String(), types.Portfolio{
+	k.SetPortfolio(ctx, todayDate, sender.String(), types.Portfolio{
 		Creator:      user,
 		Assetkey:     types.LiquidKeyPrefix,
 		Denom:        "",
@@ -116,7 +116,7 @@ func (k Keeper) RetreiveAllPortfolio(ctx sdk.Context, user string) {
 }
 
 // SetPortfolio set a specific portfolio in the store from its index
-func (k Keeper) SetPortfolioAll(ctx sdk.Context, todayDate string, user string, portfolio types.Portfolio) {
+func (k Keeper) SetPortfolio(ctx sdk.Context, todayDate string, user string, portfolio types.Portfolio) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(todayDate))
 	b := k.cdc.MustMarshal(&portfolio)
 	store.Set(types.PortfolioKey(

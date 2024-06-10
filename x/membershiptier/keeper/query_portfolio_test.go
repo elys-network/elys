@@ -18,7 +18,6 @@ import (
 // Prevent strconv unused error
 var _ = strconv.IntSize
 
-// TODO: fix tests
 func TestPortfolioQuerySingle(t *testing.T) {
 	keeper, ctx := keepertest.MembershiptierKeeper(t)
 	wctx := sdk.WrapSDKContext(ctx)
@@ -35,7 +34,7 @@ func TestPortfolioQuerySingle(t *testing.T) {
 				User:      msgs[0].Creator,
 				AssetType: msgs[0].Assetkey,
 			},
-			response: &types.QueryGetPortfolioResponse{Portfolio: msgs},
+			response: &types.QueryGetPortfolioResponse{TotalPortfolio: "1"},
 		},
 		{
 			desc: "Second",
@@ -43,7 +42,7 @@ func TestPortfolioQuerySingle(t *testing.T) {
 				User:      msgs[1].Creator,
 				AssetType: msgs[1].Assetkey,
 			},
-			response: &types.QueryGetPortfolioResponse{Portfolio: msgs},
+			response: &types.QueryGetPortfolioResponse{TotalPortfolio: "1"},
 		},
 		{
 			// TODO: update, should be empty
