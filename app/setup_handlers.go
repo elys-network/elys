@@ -1,6 +1,8 @@
 package app
 
 import (
+	"fmt"
+
 	"cosmossdk.io/math"
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -10,7 +12,6 @@ import (
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
-	membershiptiertypes "github.com/elys-network/elys/x/membershiptier/types"
 )
 
 func SetupHandlers(app *ElysApp) {
@@ -62,22 +63,28 @@ func setUpgradeHandler(app *ElysApp) {
 func loadUpgradeStore(app *ElysApp) {
 	upgradeInfo, err := app.UpgradeKeeper.ReadUpgradeInfoFromDisk()
 	if err != nil {
-		panic(err)
+		panic(fmt.Sprintf("Failed to read upgrade info from disk: %v", err))
 	}
+
+	fmt.Printf("Upgrade info: %+v\n", upgradeInfo)
 
 	if shouldLoadUpgradeStore(app, upgradeInfo) {
 		storeUpgrades := storetypes.StoreUpgrades{
-			Added: []string{membershiptiertypes.StoreKey},
-			// Deleted: []string{},
+			Added: []string{"membershiptier"},
 		}
-		// Use upgrade store loader for the initial loading of all stores when app starts,
-		// it checks if version == upgradeHeight and applies store upgrades before loading the stores,
-		// so that new stores start with the correct version (the current height of chain),
-		// instead the default which is the latest version that store last committed i.e 0 for new stores.
-		app.SetStoreLoader(upgradetypes.UpgradeStoreLoader(upgradeInfo.Height, &storeUpgrades))
+		fmt.Printf("Setting store loader with height %d and store upgrades: %+v\n", upgradeInfo.Height, storeUpgrades)
+
+		loader := upgradetypes.UpgradeStoreLoader(7708843, &storeUpgrades)
+		app.SetStoreLoader(loader)
+
+		fmt.Println("Store loader set successfully.")
+	} else {
+		fmt.Println("No need to load upgrade store.")
 	}
 }
 
 func shouldLoadUpgradeStore(app *ElysApp, upgradeInfo upgradetypes.Plan) bool {
+	currentHeight := app.LastBlockHeight()
+	fmt.Printf("Current block height: %d, Upgrade height: %d\n", currentHeight, upgradeInfo.Height)
 	return upgradeInfo.Name == version.Version && !app.UpgradeKeeper.IsSkipHeight(upgradeInfo.Height)
 }
