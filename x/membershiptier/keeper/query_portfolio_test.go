@@ -34,7 +34,7 @@ func TestPortfolioQuerySingle(t *testing.T) {
 				User:      msgs[0].Creator,
 				AssetType: msgs[0].Assetkey,
 			},
-			response: &types.QueryGetPortfolioResponse{TotalPortfolio: "1"},
+			response: &types.QueryGetPortfolioResponse{TotalPortfolio: strconv.FormatFloat(float64(msgs[0].Amount), 'f', 18, 64)},
 		},
 		{
 			desc: "Second",
@@ -42,7 +42,7 @@ func TestPortfolioQuerySingle(t *testing.T) {
 				User:      msgs[1].Creator,
 				AssetType: msgs[1].Assetkey,
 			},
-			response: &types.QueryGetPortfolioResponse{TotalPortfolio: "1"},
+			response: &types.QueryGetPortfolioResponse{TotalPortfolio: strconv.FormatFloat(float64(msgs[1].Amount), 'f', 18, 64)},
 		},
 		{
 			// TODO: update, should be empty
