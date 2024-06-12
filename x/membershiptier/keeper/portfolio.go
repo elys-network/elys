@@ -15,7 +15,6 @@ import (
 	"github.com/elys-network/elys/x/membershiptier/types"
 )
 
-// Test all values retreival
 func (k Keeper) RetreiveAllPortfolio(ctx sdk.Context, user string) {
 	// set today + user -> amount
 	sender := sdk.MustAccAddressFromBech32(user)
@@ -94,7 +93,8 @@ func (k Keeper) RetreiveAllPortfolio(ctx sdk.Context, user string) {
 				return
 			}
 			info := k.amm.PoolExtraInfo(ctx, pool)
-			totalValue = totalValue.Add(commitment.Amount.ToLegacyDec().Mul(info.LpTokenPrice))
+			amount := commitment.Amount.ToLegacyDec().Quo(Pow10(18))
+			totalValue = totalValue.Add(amount.Mul(info.LpTokenPrice))
 		} else {
 			tokenPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, commitment.Denom)
 			asset, found := k.assetProfileKeeper.GetEntry(ctx, commitment.Denom)
