@@ -37,3 +37,8 @@ message Position {
     (gogoproto.nullable) = false
   ];
 }
+
+message AddressId {
+  string address = 1;
+  uint64 id = 2;
+}

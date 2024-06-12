@@ -1,6 +1,10 @@
 package types
 
-import "encoding/binary"
+import (
+	"encoding/binary"
+
+	"cosmossdk.io/math"
+)
 
 const (
 	// ModuleName defines the module name
@@ -27,6 +31,8 @@ var (
 	OpenPositionCountPrefix = []byte{0x04}
 	WhitelistPrefix         = []byte{0x05}
 	SQBeginBlockPrefix      = []byte{0x06}
+	LiquidationSortPrefix   = []byte{0x07} // Position liquidation sort prefix
+	StopLossSortPrefix      = []byte{0x08} // Position stop loss sort prefix
 )
 
 func KeyPrefix(p string) []byte {
@@ -51,6 +57,39 @@ func GetWhitelistKey(address string) []byte {
 
 func GetPositionKey(address string, id uint64) []byte {
 	return append(PositionPrefix, append([]byte(address), GetUint64Bytes(id)...)...)
+}
+
+func GetLiquidationSortPrefix(poolId uint64) []byte {
+	return append(LiquidationSortPrefix, GetUint64Bytes(poolId)...)
+}
+
+func GetLiquidationSortKey(poolId uint64, lpAmount math.Int, borrowed math.Int, id uint64) []byte {
+	poolIdPrefix := GetLiquidationSortPrefix(poolId)
+	if lpAmount.IsZero() || borrowed.IsZero() {
+		return []byte{}
+	}
+
+	sortDec := math.LegacyNewDecFromInt(lpAmount).QuoInt(borrowed)
+	bytes := sortDec.BigInt().Bytes()
+	lengthPrefix := GetUint64Bytes(uint64(len(bytes)))
+	posIdSuffix := GetUint64Bytes(id)
+	return append(append(append(poolIdPrefix, lengthPrefix...), bytes...), posIdSuffix...)
+}
+
+func GetStopLossSortPrefix(poolId uint64) []byte {
+	return append(StopLossSortPrefix, GetUint64Bytes(poolId)...)
+}
+
+func GetStopLossSortKey(poolId uint64, stopLossPrice math.LegacyDec, id uint64) []byte {
+	poolIdPrefix := GetStopLossSortPrefix(poolId)
+	if stopLossPrice.IsNil() || !stopLossPrice.IsPositive() {
+		return []byte{}
+	}
+
+	bytes := stopLossPrice.BigInt().Bytes()
+	lengthPrefix := GetUint64Bytes(uint64(len(bytes)))
+	posIdSuffix := GetUint64Bytes(id)
+	return append(append(append(poolIdPrefix, lengthPrefix...), bytes...), posIdSuffix...)
 }
 
 func GetPositionPrefixForAddress(address string) []byte {
