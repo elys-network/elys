@@ -5,7 +5,7 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
-	"github.com/elys-network/elys/x/membershiptier/types"
+	"github.com/elys-network/elys/x/tier/types"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )

@@ -5,7 +5,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/spf13/cobra"
 
-	"github.com/elys-network/elys/x/membershiptier/types"
+	"github.com/elys-network/elys/x/tier/types"
 )
 
 func CmdQueryParams() *cobra.Command {

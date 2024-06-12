@@ -15,8 +15,8 @@ import (
 
 	assetprofilerkeeper "github.com/elys-network/elys/x/assetprofile/keeper"
 	profiletypes "github.com/elys-network/elys/x/assetprofile/types"
-	"github.com/elys-network/elys/x/membershiptier/keeper"
-	"github.com/elys-network/elys/x/membershiptier/types"
+	"github.com/elys-network/elys/x/tier/keeper"
+	"github.com/elys-network/elys/x/tier/types"
 
 	oraclekeeper "github.com/elys-network/elys/x/oracle/keeper"
 	oracletypes "github.com/elys-network/elys/x/oracle/types"

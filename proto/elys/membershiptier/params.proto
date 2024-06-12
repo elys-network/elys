@@ -1,9 +1,9 @@
 syntax = "proto3";
-package elys.membershiptier;
+package elys.tier;
 
 import "gogoproto/gogo.proto";
 
-option go_package = "github.com/elys-network/elys/x/membershiptier/types";
+option go_package = "github.com/elys-network/elys/x/tier/types";
 
 // Params defines the parameters for the module.
 message Params {

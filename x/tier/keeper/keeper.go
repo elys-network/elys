@@ -9,7 +9,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
 
-	"github.com/elys-network/elys/x/membershiptier/types"
+	"github.com/elys-network/elys/x/tier/types"
 )
 
 type (

@@ -5,7 +5,7 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	testkeeper "github.com/elys-network/elys/testutil/keeper"
-	"github.com/elys-network/elys/x/membershiptier/types"
+	"github.com/elys-network/elys/x/tier/types"
 	"github.com/stretchr/testify/require"
 )
 

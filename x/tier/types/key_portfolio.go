@@ -7,14 +7,6 @@ var _ binary.ByteOrder
 const (
 	// PortfolioKeyPrefix is the prefix to retrieve all Portfolio
 	PortfolioKeyPrefix = "Portfolio/value/"
-
-	LiquidKeyPrefix = "Liquid/value/"
-
-	StakedKeyPrefix = "Staked/value/"
-
-	PerpetualKeyPrefix = "Perpetual/value/"
-
-	PoolKeyPrefix = "Pool/value/"
 )
 
 // PortfolioKey returns the store key to retrieve a Portfolio from the index fields

@@ -12,7 +12,7 @@ import (
 	estakingtypes "github.com/elys-network/elys/x/estaking/types"
 	mastercheftypes "github.com/elys-network/elys/x/masterchef/types"
 
-	"github.com/elys-network/elys/x/membershiptier/types"
+	"github.com/elys-network/elys/x/tier/types"
 )
 
 func (k Keeper) RetreiveAllPortfolio(ctx sdk.Context, user string) {

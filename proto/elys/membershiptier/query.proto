@@ -1,14 +1,14 @@
 syntax = "proto3";
 
-package elys.membershiptier;
+package elys.tier;
 
 import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
-import "elys/membershiptier/params.proto";
-import "elys/membershiptier/portfolio.proto";
+import "elys/tier/params.proto";
+import "elys/tier/portfolio.proto";
 
-option go_package = "github.com/elys-network/elys/x/membershiptier/types";
+option go_package = "github.com/elys-network/elys/x/tier/types";
 
 // Query defines the gRPC querier service.
 service Query {

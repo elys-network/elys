@@ -12,8 +12,8 @@ import (
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	typesparams "github.com/cosmos/cosmos-sdk/x/params/types"
-	"github.com/elys-network/elys/x/membershiptier/keeper"
-	"github.com/elys-network/elys/x/membershiptier/types"
+	"github.com/elys-network/elys/x/tier/keeper"
+	"github.com/elys-network/elys/x/tier/types"
 	"github.com/stretchr/testify/require"
 )
 

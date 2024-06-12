@@ -191,9 +191,9 @@ import (
 	masterchefmodulekeeper "github.com/elys-network/elys/x/masterchef/keeper"
 	masterchefmoduletypes "github.com/elys-network/elys/x/masterchef/types"
 
-	membershiptiermodule "github.com/elys-network/elys/x/membershiptier"
-	membershiptiermodulekeeper "github.com/elys-network/elys/x/membershiptier/keeper"
-	membershiptiermoduletypes "github.com/elys-network/elys/x/membershiptier/types"
+	tiermodule "github.com/elys-network/elys/x/tier"
+	tiermodulekeeper "github.com/elys-network/elys/x/tier/keeper"
+	tiermoduletypes "github.com/elys-network/elys/x/tier/types"
 
 	// this line is used by starport scaffolding # stargate/app/moduleImport
 
@@ -297,7 +297,7 @@ var (
 		leveragelpmodule.AppModuleBasic{},
 		masterchefmodule.AppModuleBasic{},
 		estakingmodule.AppModuleBasic{},
-		membershiptiermodule.AppModuleBasic{},
+		tiermodule.AppModuleBasic{},
 		// this line is used by starport scaffolding # stargate/app/moduleBasic
 	)
 
@@ -408,7 +408,7 @@ type ElysApp struct {
 
 	EstakingKeeper estakingmodulekeeper.Keeper
 
-	MembershiptierKeeper membershiptiermodulekeeper.Keeper
+	tierKeeper tiermodulekeeper.Keeper
 	// this line is used by starport scaffolding # stargate/app/keeperDeclaration
 
 	// mm is the module manager
@@ -492,7 +492,7 @@ func NewElysApp(
 		leveragelpmoduletypes.StoreKey,
 		masterchefmoduletypes.StoreKey,
 		estakingmoduletypes.StoreKey,
-		membershiptiermoduletypes.StoreKey,
+		tiermoduletypes.StoreKey,
 		// this line is used by starport scaffolding # stargate/app/storeKey
 	)
 	tkeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey, ammmoduletypes.TStoreKey)
@@ -1019,11 +1019,11 @@ func NewElysApp(
 	)
 	leveragelpModule := leveragelpmodule.NewAppModule(appCodec, app.LeveragelpKeeper, app.AccountKeeper, app.BankKeeper)
 
-	app.MembershiptierKeeper = *membershiptiermodulekeeper.NewKeeper(
+	app.tierKeeper = *tiermodulekeeper.NewKeeper(
 		appCodec,
-		keys[membershiptiermoduletypes.StoreKey],
-		keys[membershiptiermoduletypes.MemStoreKey],
-		app.GetSubspace(membershiptiermoduletypes.ModuleName),
+		keys[tiermoduletypes.StoreKey],
+		keys[tiermoduletypes.MemStoreKey],
+		app.GetSubspace(tiermoduletypes.ModuleName),
 		app.BankKeeper,
 		app.OracleKeeper,
 		app.AssetprofileKeeper,
@@ -1034,7 +1034,7 @@ func NewElysApp(
 		app.StakingKeeper,
 		app.PerpetualKeeper,
 	)
-	membershiptierModule := membershiptiermodule.NewAppModule(appCodec, app.MembershiptierKeeper, app.AccountKeeper, app.BankKeeper)
+	tierModule := tiermodule.NewAppModule(appCodec, app.tierKeeper, app.AccountKeeper, app.BankKeeper)
 
 	// this line is used by starport scaffolding # stargate/app/keeperDefinition
 
@@ -1159,7 +1159,7 @@ func NewElysApp(
 		leveragelpModule,
 		masterchefModule,
 		estakingModule,
-		membershiptierModule,
+		tierModule,
 		// this line is used by starport scaffolding # stargate/app/appModule
 	)
 
@@ -1208,7 +1208,7 @@ func NewElysApp(
 		leveragelpmoduletypes.ModuleName,
 		masterchefmoduletypes.ModuleName,
 		estakingmoduletypes.ModuleName,
-		membershiptiermoduletypes.ModuleName,
+		tiermoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/beginBlockers
 	)
 
@@ -1252,7 +1252,7 @@ func NewElysApp(
 		leveragelpmoduletypes.ModuleName,
 		masterchefmoduletypes.ModuleName,
 		estakingmoduletypes.ModuleName,
-		membershiptiermoduletypes.ModuleName,
+		tiermoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/endBlockers
 	)
 
@@ -1300,7 +1300,7 @@ func NewElysApp(
 		leveragelpmoduletypes.ModuleName,
 		masterchefmoduletypes.ModuleName,
 		estakingmoduletypes.ModuleName,
-		membershiptiermoduletypes.ModuleName,
+		tiermoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/initGenesis
 	}
 	app.mm.SetOrderInitGenesis(genesisModuleOrder...)
@@ -1597,7 +1597,7 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(stablestaketypes.ModuleName)
 	paramsKeeper.Subspace(leveragelpmoduletypes.ModuleName)
 	paramsKeeper.Subspace(masterchefmoduletypes.ModuleName)
-	paramsKeeper.Subspace(membershiptiermoduletypes.ModuleName)
+	paramsKeeper.Subspace(tiermoduletypes.ModuleName)
 	// this line is used by starport scaffolding # stargate/app/paramSubspace
 
 	return paramsKeeper
