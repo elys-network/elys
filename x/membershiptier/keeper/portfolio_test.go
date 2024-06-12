@@ -21,6 +21,7 @@ import (
 	oraclekeeper "github.com/elys-network/elys/x/oracle/keeper"
 	oracletypes "github.com/elys-network/elys/x/oracle/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
+	perpetualtypes "github.com/elys-network/elys/x/perpetual/types"
 	"github.com/stretchr/testify/require"
 )
 
@@ -158,7 +159,7 @@ func TestGetPortfolioAmm(t *testing.T) {
 			PoolAssets: poolAssets,
 		})
 
-	// TODO: Check price
+	// TODO: Check lp token price
 	//pool := amm.GetAllPool(ctx)[0]
 	//info := amm.PoolExtraInfo(ctx, pool)
 	//require.Equal(t, pool.TotalShares, pool)
@@ -177,9 +178,90 @@ func TestGetPortfolioAmm(t *testing.T) {
 	require.Equal(t, portfolio, sdk.NewDec(100100))
 }
 
+func TestGetPortfolioPerpetual(t *testing.T) {
+	app := simapp.InitElysTestApp(true)
+	ctx := app.BaseApp.NewContext(true, tmproto.Header{})
+
+	perpetual, amm, oracle, tier, assetProfiler := app.PerpetualKeeper, app.AmmKeeper, app.OracleKeeper, app.MembershiptierKeeper, app.AssetprofileKeeper
+
+	// Setup coin prices
+	SetupCoinPrices(ctx, oracle, assetProfiler)
+
+	// Generate 1 random account with 1000stake balanced
+	addr := simapp.AddTestAddrs(app, ctx, 1, sdk.NewInt(1000000))
+
+	// Create a pool
+	coins := sdk.NewCoins(sdk.NewInt64Coin(ptypes.Elys, 1000000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 10000000))
+	err := app.BankKeeper.MintCoins(ctx, ammtypes.ModuleName, coins)
+	require.NoError(t, err)
+	err = app.BankKeeper.SendCoinsFromModuleToAccount(ctx, ammtypes.ModuleName, addr[0], coins)
+	require.NoError(t, err)
+
+	var poolAssets []ammtypes.PoolAsset
+	// Elys
+	poolAssets = append(poolAssets, ammtypes.PoolAsset{
+		Weight: sdk.NewInt(50),
+		Token:  sdk.NewCoin(ptypes.Elys, sdk.NewInt(10000000)),
+	})
+
+	// USDC
+	poolAssets = append(poolAssets, ammtypes.PoolAsset{
+		Weight: sdk.NewInt(50),
+		Token:  sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(1000000)),
+	})
+
+	poolParams := &ammtypes.PoolParams{
+		SwapFee:                     sdk.ZeroDec(),
+		ExitFee:                     sdk.ZeroDec(),
+		UseOracle:                   false,
+		WeightBreakingFeeMultiplier: sdk.ZeroDec(),
+		WeightBreakingFeeExponent:   sdk.NewDecWithPrec(25, 1), // 2.5
+		ExternalLiquidityRatio:      sdk.OneDec(),
+		WeightRecoveryFeePortion:    sdk.NewDecWithPrec(10, 2), // 10%
+		ThresholdWeightDifference:   sdk.ZeroDec(),
+		FeeDenom:                    "",
+	}
+
+	// Create a Elys+USDC pool
+	msgServer := ammkeeper.NewMsgServerImpl(amm)
+	resp, err := msgServer.CreatePool(
+		sdk.WrapSDKContext(ctx),
+		&ammtypes.MsgCreatePool{
+			Sender:     addr[0].String(),
+			PoolParams: poolParams,
+			PoolAssets: poolAssets,
+		})
+
+	require.NoError(t, err)
+	require.Equal(t, resp.PoolID, uint64(1))
+
+	perpetual.SetMTP(ctx, &perpetualtypes.MTP{
+		Address:                        addr[0].String(),
+		CollateralAsset:                ptypes.BaseCurrency,
+		CustodyAsset:                   ptypes.Elys,
+		Collateral:                     sdk.NewInt(0),
+		Liabilities:                    sdk.NewInt(0),
+		BorrowInterestPaidCollateral:   sdk.NewInt(0),
+		BorrowInterestPaidCustody:      sdk.NewInt(0),
+		BorrowInterestUnpaidCollateral: sdk.NewInt(0),
+		Custody:                        sdk.NewInt(10000),
+		Leverage:                       sdk.NewDec(0),
+		MtpHealth:                      sdk.NewDec(0),
+		Position:                       perpetualtypes.Position_LONG,
+		Id:                             0,
+		ConsolidateLeverage:            sdk.ZeroDec(),
+		SumCollateral:                  sdk.ZeroInt(),
+	})
+
+	tier.RetreiveAllPortfolio(ctx, addr[0].String())
+
+	portfolio, found := tier.GetPortfolio(ctx, addr[0].String(), tier.GetDateFromBlock(ctx.BlockTime()))
+	require.True(t, found)
+	require.Equal(t, portfolio, sdk.NewDec(10099100))
+}
+
 // TODO
-// 3: rewards
-// 4: native + perpetual
+// 3: staked + rewards
 
 func SetupCoinPrices(ctx sdk.Context, oracle oraclekeeper.Keeper, assetProfiler assetprofilerkeeper.Keeper) {
 	// prices set for USDT and USDC

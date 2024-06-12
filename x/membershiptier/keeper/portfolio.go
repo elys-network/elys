@@ -74,8 +74,9 @@ func (k Keeper) RetreiveAllPortfolio(ctx sdk.Context, user string) {
 			if !found {
 				continue
 			}
+			tokenPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, asset.Denom)
 			amount := perpetual.Custody.ToLegacyDec().Quo(Pow10(asset.Decimals))
-			totalValue = totalValue.Add(amount)
+			totalValue = totalValue.Add((amount.Mul(tokenPrice)))
 		}
 	}
 
