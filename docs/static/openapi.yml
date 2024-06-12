@@ -42262,6 +42262,40 @@ paths:
           type: string
       tags:
         - Query
+  /elys-network/elys/membershiptier/calculate_discount/{user}:
+    get:
+      summary: Queries a list of CalculateDiscount items.
+      operationId: ElysMembershiptierCalculateDiscount
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: user
+          in: path
+          required: true
+          type: string
+      tags:
+        - Query
   /elys-network/elys/membershiptier/params:
     get:
       summary: Parameters queries the parameters of the module.
@@ -42312,19 +42346,9 @@ paths:
                 items:
                   type: object
                   properties:
-                    assetkey:
-                      type: string
-                      title: >-
-                        assetkey = timestamp_ + asset_type_ + user_address_  +
-                        denom/perp/pool -> (amount)
-                    denom:
-                      type: string
-                    amount:
-                      type: string
-                      format: uint64
                     creator:
                       type: string
-                    minimum_today:
+                    portfolio:
                       type: string
               pagination:
                 type: object
@@ -87445,19 +87469,9 @@ definitions:
   elys.membershiptier.Portfolio:
     type: object
     properties:
-      assetkey:
-        type: string
-        title: >-
-          assetkey = timestamp_ + asset_type_ + user_address_  + denom/perp/pool
-          -> (amount)
-      denom:
-        type: string
-      amount:
-        type: string
-        format: uint64
       creator:
         type: string
-      minimum_today:
+      portfolio:
         type: string
   elys.membershiptier.QueryAllPortfolioResponse:
     type: object
@@ -87467,19 +87481,9 @@ definitions:
         items:
           type: object
           properties:
-            assetkey:
-              type: string
-              title: >-
-                assetkey = timestamp_ + asset_type_ + user_address_  +
-                denom/perp/pool -> (amount)
-            denom:
-              type: string
-            amount:
-              type: string
-              format: uint64
             creator:
               type: string
-            minimum_today:
+            portfolio:
               type: string
       pagination:
         type: object
@@ -87507,6 +87511,8 @@ definitions:
                    repeated Bar results = 1;
                    PageResponse page = 2;
            }
+  elys.membershiptier.QueryCalculateDiscountResponse:
+    type: object
   elys.membershiptier.QueryGetPortfolioResponse:
     type: object
     properties:

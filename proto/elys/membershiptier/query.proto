@@ -28,6 +28,12 @@ service Query {
     option (google.api.http).get = "/elys-network/elys/membershiptier/portfolio";
   
   }
+  
+  // Queries a list of CalculateDiscount items.
+  rpc CalculateDiscount (QueryCalculateDiscountRequest) returns (QueryCalculateDiscountResponse) {
+    option (google.api.http).get = "/elys-network/elys/membershiptier/calculate_discount/{user}";
+  
+  }
 }
 // QueryParamsRequest is request type for the Query/Params RPC method.
 message QueryParamsRequest {}
@@ -40,7 +46,7 @@ message QueryParamsResponse {
 }
 
 message QueryGetPortfolioRequest {
-  string user = 1;
+  string user      = 1;
   string assetType = 2;
 }
 
@@ -55,5 +61,15 @@ message QueryAllPortfolioRequest {
 message QueryAllPortfolioResponse {
   repeated Portfolio                              portfolio  = 1 [(gogoproto.nullable) = false];
            cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+message QueryCalculateDiscountRequest {
+  string user = 1;
+}
+
+message QueryCalculateDiscountResponse {
+  string discount = 1;
+  string tier = 2;
+  string portfolio = 3;
 }
 

@@ -153,9 +153,6 @@ const _ = grpc.SupportPackageIsVersion4
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type MsgClient interface {
-	// rpc CreatePortfolio (MsgCreatePortfolio) returns (MsgCreatePortfolioResponse);
-	// rpc UpdatePortfolio (MsgUpdatePortfolio) returns (MsgUpdatePortfolioResponse);
-	// rpc DeletePortfolio (MsgDeletePortfolio) returns (MsgDeletePortfolioResponse);
 	SetPortfolio(ctx context.Context, in *MsgSetPortfolio, opts ...grpc.CallOption) (*MsgSetPortfolioResponse, error)
 }
 
@@ -178,9 +175,6 @@ func (c *msgClient) SetPortfolio(ctx context.Context, in *MsgSetPortfolio, opts 
 
 // MsgServer is the server API for Msg service.
 type MsgServer interface {
-	// rpc CreatePortfolio (MsgCreatePortfolio) returns (MsgCreatePortfolioResponse);
-	// rpc UpdatePortfolio (MsgUpdatePortfolio) returns (MsgUpdatePortfolioResponse);
-	// rpc DeletePortfolio (MsgDeletePortfolio) returns (MsgDeletePortfolioResponse);
 	SetPortfolio(context.Context, *MsgSetPortfolio) (*MsgSetPortfolioResponse, error)
 }
 
