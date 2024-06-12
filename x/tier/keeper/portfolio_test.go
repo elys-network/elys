@@ -81,7 +81,7 @@ func TestGetPortfolioNative(t *testing.T) {
 	app := simapp.InitElysTestApp(true)
 	ctx := app.BaseApp.NewContext(true, tmproto.Header{})
 
-	_, _, oracle, tier, assetProfiler := app.MasterchefKeeper, app.AmmKeeper, app.OracleKeeper, app.MembershiptierKeeper, app.AssetprofileKeeper
+	_, _, oracle, tier, assetProfiler := app.MasterchefKeeper, app.AmmKeeper, app.OracleKeeper, app.TierKeeper, app.AssetprofileKeeper
 
 	// Setup coin prices
 	SetupCoinPrices(ctx, oracle, assetProfiler)
@@ -108,7 +108,7 @@ func TestGetPortfolioAmm(t *testing.T) {
 	app := simapp.InitElysTestApp(true)
 	ctx := app.BaseApp.NewContext(true, tmproto.Header{})
 
-	_, amm, oracle, tier, assetProfiler := app.MasterchefKeeper, app.AmmKeeper, app.OracleKeeper, app.MembershiptierKeeper, app.AssetprofileKeeper
+	_, amm, oracle, tier, assetProfiler := app.MasterchefKeeper, app.AmmKeeper, app.OracleKeeper, app.TierKeeper, app.AssetprofileKeeper
 
 	// Setup coin prices
 	SetupCoinPrices(ctx, oracle, assetProfiler)
@@ -182,7 +182,7 @@ func TestGetPortfolioPerpetual(t *testing.T) {
 	app := simapp.InitElysTestApp(true)
 	ctx := app.BaseApp.NewContext(true, tmproto.Header{})
 
-	perpetual, amm, oracle, tier, assetProfiler := app.PerpetualKeeper, app.AmmKeeper, app.OracleKeeper, app.MembershiptierKeeper, app.AssetprofileKeeper
+	perpetual, amm, oracle, tier, assetProfiler := app.PerpetualKeeper, app.AmmKeeper, app.OracleKeeper, app.TierKeeper, app.AssetprofileKeeper
 
 	// Setup coin prices
 	SetupCoinPrices(ctx, oracle, assetProfiler)

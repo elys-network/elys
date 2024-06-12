@@ -408,7 +408,7 @@ type ElysApp struct {
 
 	EstakingKeeper estakingmodulekeeper.Keeper
 
-	tierKeeper tiermodulekeeper.Keeper
+	TierKeeper tiermodulekeeper.Keeper
 	// this line is used by starport scaffolding # stargate/app/keeperDeclaration
 
 	// mm is the module manager
@@ -1019,7 +1019,7 @@ func NewElysApp(
 	)
 	leveragelpModule := leveragelpmodule.NewAppModule(appCodec, app.LeveragelpKeeper, app.AccountKeeper, app.BankKeeper)
 
-	app.tierKeeper = *tiermodulekeeper.NewKeeper(
+	app.TierKeeper = *tiermodulekeeper.NewKeeper(
 		appCodec,
 		keys[tiermoduletypes.StoreKey],
 		keys[tiermoduletypes.MemStoreKey],
@@ -1034,7 +1034,7 @@ func NewElysApp(
 		app.StakingKeeper,
 		app.PerpetualKeeper,
 	)
-	tierModule := tiermodule.NewAppModule(appCodec, app.tierKeeper, app.AccountKeeper, app.BankKeeper)
+	tierModule := tiermodule.NewAppModule(appCodec, app.TierKeeper, app.AccountKeeper, app.BankKeeper)
 
 	// this line is used by starport scaffolding # stargate/app/keeperDefinition
 
