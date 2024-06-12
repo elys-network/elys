@@ -31,18 +31,16 @@ func TestPortfolioQuerySingle(t *testing.T) {
 		{
 			desc: "First",
 			request: &types.QueryGetPortfolioRequest{
-				User:      msgs[0].Creator,
-				AssetType: msgs[0].Assetkey,
+				User: msgs[0].Creator,
 			},
-			response: &types.QueryGetPortfolioResponse{TotalPortfolio: strconv.FormatFloat(float64(msgs[0].Amount), 'f', 18, 64)},
+			response: &types.QueryGetPortfolioResponse{TotalPortfolio: msgs[0].Portfolio.String()},
 		},
 		{
 			desc: "Second",
 			request: &types.QueryGetPortfolioRequest{
-				User:      msgs[1].Creator,
-				AssetType: msgs[1].Assetkey,
+				User: msgs[1].Creator,
 			},
-			response: &types.QueryGetPortfolioResponse{TotalPortfolio: strconv.FormatFloat(float64(msgs[1].Amount), 'f', 18, 64)},
+			response: &types.QueryGetPortfolioResponse{TotalPortfolio: msgs[0].Portfolio.String()},
 		},
 		{
 			// TODO: update, should be empty

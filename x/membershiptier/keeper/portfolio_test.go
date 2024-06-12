@@ -33,11 +33,7 @@ func createNPortfolio(keeper *keeper.Keeper, ctx sdk.Context, n int) []types.Por
 	items := make([]types.Portfolio, n)
 	for i := range items {
 		items[i].Creator = strconv.Itoa(i)
-		items[i].MinimumToday = sdk.NewDec(1000)
-		items[i].Denom = strconv.Itoa(i)
-		items[i].Assetkey = types.LiquidKeyPrefix
-		items[i].MinimumToday = sdk.NewDec(100)
-		items[i].Amount = 100
+		items[i].Portfolio = sdk.NewDec(1000)
 
 		keeper.SetPortfolio(ctx, keeper.GetDateFromBlock(ctx.BlockTime()), items[i].Creator, items[i])
 	}
@@ -80,10 +76,6 @@ func TestPortfolioGetAll(t *testing.T) {
 	)
 }
 
-// TODO
-// 2: native + amm pool token
-// 3: rewards
-// 4: native + perpetual
 func TestGetPortfolioNative(t *testing.T) {
 	app := simapp.InitElysTestApp(true)
 	ctx := app.BaseApp.NewContext(true, tmproto.Header{})
@@ -184,6 +176,10 @@ func TestGetPortfolioAmm(t *testing.T) {
 	require.True(t, found)
 	require.Equal(t, portfolio, sdk.NewDec(100100))
 }
+
+// TODO
+// 3: rewards
+// 4: native + perpetual
 
 func SetupCoinPrices(ctx sdk.Context, oracle oraclekeeper.Keeper, assetProfiler assetprofilerkeeper.Keeper) {
 	// prices set for USDT and USDC

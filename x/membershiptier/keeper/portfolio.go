@@ -106,12 +106,31 @@ func (k Keeper) RetreiveAllPortfolio(ctx sdk.Context, user string) {
 		}
 	}
 
+	// Delegations
+	delegations := k.stakingKeeper.GetAllDelegatorDelegations(ctx, sender)
+	bondDenom := k.stakingKeeper.BondDenom(ctx)
+	tokenPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, bondDenom)
+	asset, found := k.assetProfileKeeper.GetEntry(ctx, bondDenom)
+	if found {
+		for _, delegation := range delegations {
+			amount := delegation.Shares.Quo(Pow10(asset.Decimals))
+			totalValue = totalValue.Add(amount.Mul(tokenPrice))
+		}
+	}
+	// Max could be 7 for an account
+	unbondingDelegations := k.stakingKeeper.GetUnbondingDelegations(ctx, sender, 100)
+	if found {
+		for _, delegation := range unbondingDelegations {
+			for _, entry := range delegation.Entries {
+				amount := entry.Balance.ToLegacyDec().Quo(Pow10(asset.Decimals))
+				totalValue = totalValue.Add(amount.Mul(tokenPrice))
+			}
+		}
+	}
+
 	k.SetPortfolio(ctx, todayDate, sender.String(), types.Portfolio{
-		Creator:      user,
-		Assetkey:     types.LiquidKeyPrefix,
-		Denom:        "",
-		Amount:       1,
-		MinimumToday: totalValue,
+		Creator:   user,
+		Portfolio: totalValue,
 	})
 }
 
@@ -145,7 +164,7 @@ func (k Keeper) GetPortfolio(
 	))
 	var val types.Portfolio
 	k.cdc.MustUnmarshal(portfolio, &val)
-	return val.MinimumToday, true
+	return val.Portfolio, true
 }
 
 func (k Keeper) GetMembershipTier(ctx sdk.Context, user string) (total_portfoilio sdk.Dec, tier string, discount uint64) {

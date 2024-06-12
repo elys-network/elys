@@ -77,4 +77,5 @@ type StakingKeeper interface {
 	GetDelegatorValidators(
 		ctx sdk.Context, delegatorAddr sdk.AccAddress, maxRetrieve uint32,
 	) stakingtypes.Validators
+	GetAllDelegatorDelegations(ctx sdk.Context, delegator sdk.AccAddress) []stakingtypes.Delegation
 }
