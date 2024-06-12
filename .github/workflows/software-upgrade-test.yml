@@ -524,7 +524,7 @@ jobs:
 
       - name: Create second validator
         run: |
-          GOMEMLIMIT=8GiB \
+          GOMEMLIMIT=4GiB \
             ${{ needs.build-new-binary.outputs.NEW_UPGRADE_ASSURE_BINARY_PATH }} \
             ${{ needs.retrieve-snapshot.outputs.SNAPSHOT_FILE_PATH }} \
             ${{ needs.retrieve-old-binary.outputs.OLD_BINARY_PATH }} \
