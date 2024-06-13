@@ -29,6 +29,8 @@ func (m *Messenger) HandleMsg(ctx sdk.Context, contractAddr sdk.AccAddress, cont
 		return m.msgOpen(ctx, contractAddr, msg.LeveragelpOpen)
 	case msg.LeveragelpClose != nil:
 		return m.msgClose(ctx, contractAddr, msg.LeveragelpClose)
+	case msg.LeveragelpUpdateStopLoss != nil:
+		return m.msgUpdateStopLoss(ctx, contractAddr, msg.LeveragelpUpdateStopLoss)
 	default:
 		// This handler cannot handle the message
 		return nil, nil, wasmbindingstypes.ErrCannotHandleMsg

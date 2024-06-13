@@ -308,7 +308,7 @@ func (m *MsgWithdrawElysStakingRewardsResponse) GetAmount() github_com_cosmos_co
 	return nil
 }
 
-// MsgWithdrawElysStakingRewards represents delegation withdrawal to a delegator from all the validators and Eden/EdenB commitment.
+// MsgWithdrawAllRewards represents delegation withdrawal to a delegator from all the validators and Eden/EdenB commitment.
 type MsgWithdrawAllRewards struct {
 	DelegatorAddress string `protobuf:"bytes,1,opt,name=delegator_address,json=delegatorAddress,proto3" json:"delegator_address,omitempty"`
 }
