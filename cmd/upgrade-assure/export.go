@@ -13,11 +13,11 @@ func export(cmdPath, homePath, genesisFilePath string) {
 		"assetprofile",
 		"auth",
 		"authz",
-		"bank",
+		// "bank", // FIXME: causes the init genesis state from genesis.json to OOM (kill process)
 		"burner",
 		"capability",
 		"clock",
-		"commitment",
+		// "commitment", // FIXME: causes the balance mismatch error
 		"consensus",
 		"crisis",
 		"distribution",
@@ -26,7 +26,7 @@ func export(cmdPath, homePath, genesisFilePath string) {
 		"evidence",
 		"feegrant",
 		"genutil",
-		// "gov",
+		// "gov", // FIXME: should be re-enabled after gov proposal fixes
 		"group",
 		"ibc",
 		"incentive",

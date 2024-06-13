@@ -106,7 +106,7 @@ type AppState struct {
 	Params        interface{}                     `json:"params"`
 	PoolAccounted accountedpooltypes.GenesisState `json:"poolaccounted"`
 	Slashing      Slashing                        `json:"slashing"`
-	StakeStake    StableStake                     `json:"stablestake"`
+	StableStake   StableStake                     `json:"stablestake"`
 	Staking       Staking                         `json:"staking"`
 	Tokenomics    Tokenomics                      `json:"tokenomics"`
 	Transfer      transfertypes.GenesisState      `json:"transfer"`
