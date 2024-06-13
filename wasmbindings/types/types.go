@@ -298,8 +298,9 @@ type ElysMsg struct {
 	EstakingWithdrawElysStakingRewards *estakingtypes.MsgWithdrawElysStakingRewards `json:"estaking_withdraw_elys_staking_rewards,omitempty"`
 
 	// leveragelp messages
-	LeveragelpOpen  *leveragelptypes.MsgOpen  `json:"leveragelp_open,omitempty"`
-	LeveragelpClose *leveragelptypes.MsgClose `json:"leveragelp_close,omitempty"`
+	LeveragelpOpen           *leveragelptypes.MsgOpen           `json:"leveragelp_open,omitempty"`
+	LeveragelpClose          *leveragelptypes.MsgClose          `json:"leveragelp_close,omitempty"`
+	LeveragelpUpdateStopLoss *leveragelptypes.MsgUpdateStopLoss `json:"leveragelp_update_stop_loss,omitempty"`
 
 	// perpetual messages
 	PerpetualOpen  *perpetualtypes.MsgBrokerOpen  `json:"perpetual_open,omitempty"`

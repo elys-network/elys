@@ -5,7 +5,6 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 )
 
 func updateGenesis(validatorBalance, homePath, genesisFilePath string) {
@@ -56,28 +55,30 @@ func updateGenesis(validatorBalance, homePath, genesisFilePath string) {
 	genesis.AppState.Auth.Accounts = append(genesis.AppState.Auth.Accounts, genesisInit.AppState.Auth.Accounts...)
 	genesis.AppState.Bank.Balances = append(genesis.AppState.Bank.Balances, genesisInit.AppState.Bank.Balances...)
 
-	// Add distribution account balance
-	distributionCoins := sdk.NewCoins(sdk.NewInt64Coin("ibc/2180E84E20F5679FCC760D8C165B60F42065DEF7F46A72B447CFF1B7DC6C0A65", 127134079))
-	genesis.AppState.Bank.Balances = append(
-		genesis.AppState.Bank.Balances,
-		banktypes.Balance{
-			Address: authtypes.NewModuleAddress("distribution").String(),
-			Coins:   distributionCoins,
-		},
-	)
+	distrAddr := authtypes.NewModuleAddress("distribution").String()
 
-	genesis.AppState.Bank.Supply = genesis.AppState.Bank.Supply.Add(distributionCoins...)
+	addressDenomMap := map[string][]string{
+		distrAddr: {"ibc/2180E84E20F5679FCC760D8C165B60F42065DEF7F46A72B447CFF1B7DC6C0A65", "ueden", "uedenb"},
+	}
+
+	genesis.AppState.Bank.Balances, coinsToRemove = filterBalancesByDenoms(genesis.AppState.Bank.Balances, addressDenomMap)
+
+	// update supply
+	genesis.AppState.Bank.Supply = genesis.AppState.Bank.Supply.Sub(coinsToRemove...)
 
 	// ColorReset staking data
 	stakingParams := genesis.AppState.Staking.Params
 	genesis.AppState.Staking = genesisInit.AppState.Staking
 	genesis.AppState.Staking.Params = stakingParams
 
+	// temporary fix for staking params
+	genesis.AppState.Staking.Params.BondDenom = "uelys"
+
 	// ColorReset slashing data
 	genesis.AppState.Slashing = genesisInit.AppState.Slashing
 
 	// ColorReset distribution data
-	// genesis.AppState.Distribution = genesisInit.AppState.Distribution
+	genesis.AppState.Distribution = genesisInit.AppState.Distribution
 
 	// set genutil from genesisInit
 	genesis.AppState.Genutil = genesisInit.AppState.Genutil
@@ -113,9 +114,22 @@ func updateGenesis(validatorBalance, homePath, genesisFilePath string) {
 	// update broker address
 	genesis.AppState.Parameter.Params.BrokerAddress = "elys1nc5tatafv6eyq7llkr2gv50ff9e22mnf70qgjlv737ktmt4eswrqau4f4q"
 
+	// temporary fix for oracle
+	// genesis.AppState.Oracle.Params = genesisInit.AppState.Oracle.Params
+	// genesis.AppState.Oracle.PortId = genesisInit.AppState.Oracle.PortId
+	// genesis.AppState.Oracle.Prices = genesisInit.AppState.Oracle.Prices
+	// genesis.AppState.Oracle.PriceFeeders = genesisInit.AppState.Oracle.PriceFeeders
+	// genesis.AppState.Oracle.AssetInfos = genesisInit.AppState.Oracle.AssetInfos
+
 	// update oracle price expiration
 	genesis.AppState.Oracle.Params.PriceExpiryTime = "31536000"
 	genesis.AppState.Oracle.Params.LifeTimeInBlocks = "8000000"
+
+	// update stablestake
+	genesis.AppState.StableStake = genesisInit.AppState.StableStake
+
+	// temporary fix
+	// genesis.InitialHeight = "0"
 
 	outputFilePath := homePath + "/config/genesis.json"
 	if err := writeGenesisFile(outputFilePath, genesis); err != nil {
