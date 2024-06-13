@@ -10,6 +10,7 @@ import (
 )
 
 func RegisterCodec(cdc *codec.LegacyAmino) {
+	cdc.RegisterConcrete(&MsgUpdateWasmConfig{}, "parameter/UpdateWasmConfig", nil)
 	// this line is used by starport scaffolding # 2
 	cdc.RegisterConcrete(&MsgUpdateMinCommission{}, "parameter/MsgUpdateMinCommission", nil)
 	cdc.RegisterConcrete(&MsgUpdateMaxVotingPower{}, "parameter/MsgUpdateMaxVotingPower", nil)
@@ -26,6 +27,9 @@ func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 		&MsgUpdateMinSelfDelegation{},
 		&MsgUpdateBrokerAddress{},
 		&MsgUpdateTotalBlocksPerYear{},
+	)
+	registry.RegisterImplementations((*sdk.Msg)(nil),
+		&MsgUpdateWasmConfig{},
 	)
 	// this line is used by starport scaffolding # 3
 

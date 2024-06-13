@@ -291,7 +291,10 @@ type Parameter struct {
 type ParameterParams struct {
 	parametertypes.Params
 
-	TotalBlocksPerYear json.Number `json:"total_blocks_per_year"`
+	TotalBlocksPerYear      json.Number `json:"total_blocks_per_year"`
+	WasmMaxLabelSize        json.Number `json:"wasm_max_label_size"`
+	WasmMaxSize             json.Number `json:"wasm_max_size"`
+	WasmMaxProposalWasmSize json.Number `json:"wasm_max_proposal_wasm_size"`
 }
 
 type Capability struct {
