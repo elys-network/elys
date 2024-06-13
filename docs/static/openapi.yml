@@ -84254,6 +84254,8 @@ definitions:
         type: string
       amount:
         type: string
+  elys.burner.MsgMsgUpdateParamsResponse:
+    type: object
   elys.burner.Params:
     type: object
     properties:
