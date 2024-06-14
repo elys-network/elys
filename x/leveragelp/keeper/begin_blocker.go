@@ -13,7 +13,7 @@ import (
 
 func (k Keeper) BeginBlocker(ctx sdk.Context) {
 	// check if epoch has passed then execute
-	epochLength := k.GetEpochLength(ctx)
+	epochLength := k.GetEpochLength(ctx) + 1
 	epochPosition := k.GetEpochPosition(ctx, epochLength)
 
 	if epochPosition == 0 { // if epoch has passed
