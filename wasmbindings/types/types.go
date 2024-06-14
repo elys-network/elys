@@ -40,6 +40,7 @@ import (
 	perpetualtypes "github.com/elys-network/elys/x/perpetual/types"
 	stablestakekeeper "github.com/elys-network/elys/x/stablestake/keeper"
 	stablestaketypes "github.com/elys-network/elys/x/stablestake/types"
+	tierkeeper "github.com/elys-network/elys/x/tier/keeper"
 	tiertypes "github.com/elys-network/elys/x/tier/types"
 	tokenomicskeeper "github.com/elys-network/elys/x/tokenomics/keeper"
 	tokenomicstypes "github.com/elys-network/elys/x/tokenomics/types"
@@ -87,6 +88,7 @@ type QueryPlugin struct {
 	tokenomicsKeeper    *tokenomicskeeper.Keeper
 	transferhookKeeper  *transferhookkeeper.Keeper
 	estakingKeeper      *estakingkeeper.Keeper
+	tierKeeper          *tierkeeper.Keeper
 }
 
 // AllCapabilities returns all capabilities available with the current wasmvm
@@ -261,6 +263,7 @@ type CustomMessenger struct {
 	staking          *stakingkeeper.Keeper
 	tokenomics       *tokenomicskeeper.Keeper
 	transferhook     *transferhookkeeper.Keeper
+	tier             *tierkeeper.Keeper
 }
 
 type ElysMsg struct {

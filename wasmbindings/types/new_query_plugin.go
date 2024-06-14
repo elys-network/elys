@@ -19,6 +19,7 @@ import (
 	parameterkeeper "github.com/elys-network/elys/x/parameter/keeper"
 	perpetualkeeper "github.com/elys-network/elys/x/perpetual/keeper"
 	stablestakekeeper "github.com/elys-network/elys/x/stablestake/keeper"
+	tierkeeper "github.com/elys-network/elys/x/tier/keeper"
 	tokenomicskeeper "github.com/elys-network/elys/x/tokenomics/keeper"
 	transferhookkeeper "github.com/elys-network/elys/x/transferhook/keeper"
 )
@@ -46,6 +47,7 @@ func NewQueryPlugin(
 	transferhook *transferhookkeeper.Keeper,
 	masterchef *masterchefkeeper.Keeper,
 	estaking *estakingkeeper.Keeper,
+	tier *tierkeeper.Keeper,
 ) *QueryPlugin {
 	return &QueryPlugin{
 		moduleQueriers:      moduleQueriers,
@@ -69,5 +71,6 @@ func NewQueryPlugin(
 		transferhookKeeper:  transferhook,
 		masterchefKeeper:    masterchef,
 		estakingKeeper:      estaking,
+		tierKeeper:          tier,
 	}
 }
