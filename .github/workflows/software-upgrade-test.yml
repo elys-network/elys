@@ -19,6 +19,12 @@ jobs:
         with:
           fetch-depth: 0
           fetch-tags: true
+      - name: Dependency
+        run: |
+          COSMWASM_VERSION=$(go list -m github.com/CosmWasm/wasmvm | sed 's/.* //')
+          echo $COSMWASM_VERSION
+          sudo wget https://github.com/CosmWasm/wasmvm/releases/download/${COSMWASM_VERSION}/libwasmvm_muslc.x86_64.a -O /usr/lib/libwasmvm.x86_64.a
+      
 
       - name: Get latest tag
         id: get-latest-tag
