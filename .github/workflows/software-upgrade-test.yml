@@ -14,15 +14,6 @@ jobs:
       LATEST_TAG: ${{ steps.get-latest-tag.outputs.LATEST_TAG }}
 
     steps:
-      - name: Install dependencies
-        run: |
-          COSMWASM_VERSION=$(go list -m github.com/CosmWasm/wasmvm | sed 's/.* //')
-          echo $COSMWASM_VERSION
-          sudo wget https://github.com/CosmWasm/wasmvm/releases/download/${COSMWASM_VERSION}/libwasmvm_muslc.x86_64.so -O /usr/lib/libwasmvm.x86_64.so
-  
-      - name: Set LD_LIBRARY_PATH
-        run: echo "/usr/lib" >> $GITHUB_ENV
-
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
