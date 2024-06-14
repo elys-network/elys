@@ -15,6 +15,9 @@ func (m Migrator) V4Migration(ctx sdk.Context) error {
 		legacy.BrokerAddress,      // broker address
 		legacy.TotalBlocksPerYear, // total blocks per year
 		86400,                     // 24 hrs
+		sdk.NewInt(256),
+		sdk.NewInt(1638400),
+		sdk.NewInt(6291456),
 	)
 	m.keeper.SetParams(ctx, params)
 
