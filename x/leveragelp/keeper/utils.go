@@ -5,6 +5,7 @@ import (
 
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/types/query"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	"github.com/elys-network/elys/x/leveragelp/types"
 )
@@ -17,10 +18,13 @@ func (k Keeper) CheckUserAuthorization(ctx sdk.Context, msg *types.MsgOpen) erro
 }
 
 func (k Keeper) CheckSamePosition(ctx sdk.Context, msg *types.MsgOpen) *types.Position {
-	positions := k.GetAllPositions(ctx)
+	positions, _, err := k.GetPositionsForAddress(ctx, sdk.MustAccAddressFromBech32(msg.Creator), &query.PageRequest{})
+	if err != nil {
+		return nil
+	}
 	for _, position := range positions {
-		if position.Address == msg.Creator {
-			return &position
+		if position.AmmPoolId == msg.AmmPoolId && position.Collateral.Denom == msg.CollateralAsset {
+			return position
 		}
 	}
 

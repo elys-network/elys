@@ -28,6 +28,8 @@ func main() {
 				// node 2 flags
 				homePath2, moniker2, validatorKeyName2, validatorBalance2, validatorSelfDelegation2, validatorMnemonic2, rpc2, p2p2, pprof2, api2 := getFlags(cmd)
 
+			_ = dbEngine
+
 			timeOutForNextBlock := time.Duration(timeOutToWaitForNextBlock) * time.Minute
 			// set address prefix
 			elyscmd.InitSDKConfig()
@@ -69,7 +71,7 @@ func main() {
 				initNode(oldBinaryPath, moniker, chainId, homePath)
 
 				// update config files
-				updateConfig(homePath, dbEngine)
+				updateConfig(homePath, "pebbledb")
 
 				// retrieve the snapshot
 				retrieveSnapshot(snapshotUrl, homePath)
@@ -88,8 +90,8 @@ func main() {
 				initNode(oldBinaryPath, moniker2, chainId, homePath2)
 
 				// update config files to enable api and cors
-				updateConfig(homePath, dbEngine)
-				updateConfig(homePath2, dbEngine)
+				updateConfig(homePath, "goleveldb")
+				updateConfig(homePath2, "goleveldb")
 
 				// query node 1 id
 				node1Id := queryNodeId(oldBinaryPath, homePath)

@@ -18,34 +18,23 @@ service Msg {
   rpc UpdatePools(MsgUpdatePools) returns (MsgUpdatePoolsResponse);
   rpc Whitelist(MsgWhitelist) returns (MsgWhitelistResponse);
   rpc Dewhitelist(MsgDewhitelist) returns (MsgDewhitelistResponse);
+  rpc UpdateStopLoss (MsgUpdateStopLoss) returns (MsgUpdateStopLossResponse);
 }
 message MsgOpen {
-  string creator = 1;
-  string collateral_asset = 2;
-  string collateral_amount = 3 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
-    (gogoproto.nullable) = false
-  ];
-  uint64 amm_pool_id = 4;
-  string leverage = 5 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
-    (gogoproto.nullable) = false
-  ];
-  string stop_loss_price = 6 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
-    (gogoproto.nullable) = false
-  ];
+  string creator           = 1;
+  string collateral_asset  = 2;
+  string collateral_amount = 3 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false];
+  uint64 amm_pool_id       = 4;
+  string leverage          = 5 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+  string stop_loss_price   = 6 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
 }
 
 message MsgOpenResponse {}
 
 message MsgClose {
-  string creator = 1;
-  uint64 id = 2;
-  string lp_amount = 3 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
-    (gogoproto.nullable) = false
-  ];
+  string creator   = 1;
+  uint64 id        = 2;
+  string lp_amount = 3 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false];
 }
 
 message MsgCloseResponse {}
@@ -57,11 +46,11 @@ message MsgClaimRewards {
 message MsgClaimRewardsResponse {}
 
 message MsgUpdateParams {
-
+  
   // authority is the address that controls the module (defaults to x/gov unless
   // overwritten).
   string authority = 1;
-
+  
   // NOTE: All parameters must be supplied.
   Params params = 2;
 }
@@ -69,22 +58,31 @@ message MsgUpdateParams {
 message MsgUpdateParamsResponse {}
 
 message MsgUpdatePools {
-  string authority = 1;
-  repeated Pool pools = 2 [(gogoproto.nullable) = false];
+           string authority = 1;
+  repeated Pool   pools     = 2 [(gogoproto.nullable) = false];
 }
 
 message MsgUpdatePoolsResponse {}
 
 message MsgWhitelist {
-  string authority = 1;
+  string authority           = 1;
   string whitelisted_address = 2;
 }
 
 message MsgWhitelistResponse {}
 
 message MsgDewhitelist {
-  string authority = 1;
+  string authority           = 1;
   string whitelisted_address = 2;
 }
 
 message MsgDewhitelistResponse {}
+
+message MsgUpdateStopLoss {
+  string creator  = 1;
+  int32  position = 2;
+  string price   = 3 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+}
+
+message MsgUpdateStopLossResponse {}
+

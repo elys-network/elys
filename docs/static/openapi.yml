@@ -43100,6 +43100,12 @@ paths:
                     type: string
                     format: int64
                     title: default 1 day = 86400
+                  wasm_max_label_size:
+                    type: string
+                  wasm_max_size:
+                    type: string
+                  wasm_max_proposal_wasm_size:
+                    type: string
             description: >-
               QueryParamsResponse is response type for the Query/Params RPC
               method.
@@ -85586,6 +85592,8 @@ definitions:
         type: string
       amount:
         type: string
+  elys.burner.MsgUpdateParamsResponse:
+    type: object
   elys.burner.Params:
     type: object
     properties:
@@ -86482,6 +86490,8 @@ definitions:
   elys.leveragelp.MsgUpdateParamsResponse:
     type: object
   elys.leveragelp.MsgUpdatePoolsResponse:
+    type: object
+  elys.leveragelp.MsgUpdateStopLossResponse:
     type: object
   elys.leveragelp.MsgWhitelistResponse:
     type: object
@@ -87799,6 +87809,8 @@ definitions:
     type: object
   elys.parameter.MsgUpdateTotalBlocksPerYearResponse:
     type: object
+  elys.parameter.MsgUpdateWasmConfigResponse:
+    type: object
   elys.parameter.Params:
     type: object
     properties:
@@ -87817,6 +87829,12 @@ definitions:
         type: string
         format: int64
         title: default 1 day = 86400
+      wasm_max_label_size:
+        type: string
+      wasm_max_size:
+        type: string
+      wasm_max_proposal_wasm_size:
+        type: string
     description: Params defines the parameters for the module.
   elys.parameter.QueryParamsResponse:
     type: object
@@ -87840,6 +87858,12 @@ definitions:
             type: string
             format: int64
             title: default 1 day = 86400
+          wasm_max_label_size:
+            type: string
+          wasm_max_size:
+            type: string
+          wasm_max_proposal_wasm_size:
+            type: string
     description: QueryParamsResponse is response type for the Query/Params RPC method.
   elys.perpetual.IsWhitelistedResponse:
     type: object

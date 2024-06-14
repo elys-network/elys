@@ -59,7 +59,7 @@ message MsgWithdrawElysStakingRewardsResponse {
   ];
 }
 
-// MsgWithdrawElysStakingRewards represents delegation withdrawal to a delegator from all the validators and Eden/EdenB commitment.
+// MsgWithdrawAllRewards represents delegation withdrawal to a delegator from all the validators and Eden/EdenB commitment.
 message MsgWithdrawAllRewards {
   string delegator_address = 1;
 }

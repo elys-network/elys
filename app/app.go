@@ -427,10 +427,6 @@ func NewElysApp(
 	wasmOpts []wasmmodule.Option,
 	baseAppOptions ...func(*baseapp.BaseApp),
 ) *ElysApp {
-	// increase wasm size limit
-	wasmmoduletypes.MaxLabelSize = 128 * 2            // to set the maximum label size on instantiation (default 128)
-	wasmmoduletypes.MaxWasmSize = 819200 * 2          // to set the max size of compiled wasm to be accepted (default 819200)
-	wasmmoduletypes.MaxProposalWasmSize = 3145728 * 2 // to set the max size of gov proposal compiled wasm to be accepted (default 3145728)
 
 	encodingConfig := MakeEncodingConfig()
 	appCodec := encodingConfig.Marshaler
@@ -866,6 +862,7 @@ func NewElysApp(
 
 		app.AccountKeeper,
 		app.BankKeeper,
+		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 	burnerModule := burnermodule.NewAppModule(appCodec, app.BurnerKeeper, app.AccountKeeper, app.BankKeeper)
 
@@ -1354,6 +1351,8 @@ func NewElysApp(
 			os.Exit(1)
 		}
 		ctx := app.BaseApp.NewUncachedContext(true, tmproto.Header{})
+		parameters := app.ParameterKeeper.GetParams(ctx)
+		wasmConfiguration(parameters)
 		// Initialize pinned codes in wasmvm as they are not persisted there
 		if err := app.WasmKeeper.InitializePinnedCodes(ctx); err != nil {
 			tmos.Exit(fmt.Sprintf("failed initialize pinned codes %s", err))

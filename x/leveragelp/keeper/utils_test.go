@@ -4,6 +4,7 @@ import (
 	"errors"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	simapp "github.com/elys-network/elys/app"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	"github.com/elys-network/elys/x/leveragelp/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
@@ -34,13 +35,14 @@ func (suite KeeperTestSuite) TestCheckUserAuthorization() {
 func (suite KeeperTestSuite) TestCheckSameAssets() {
 	app := suite.app
 	k := app.LeveragelpKeeper
+	addr := simapp.AddTestAddrs(app, suite.ctx, 1, sdk.NewInt(1000000))
 
-	position := types.NewPosition("creator", sdk.NewInt64Coin(ptypes.BaseCurrency, 0), sdk.NewDec(5), 1)
+	position := types.NewPosition(addr[0].String(), sdk.NewInt64Coin(ptypes.BaseCurrency, 0), sdk.NewDec(5), 1)
 	k.SetPosition(suite.ctx, position)
 
 	msg := &types.MsgOpen{
-		Creator:          "creator",
-		CollateralAsset:  ptypes.ATOM,
+		Creator:          addr[0].String(),
+		CollateralAsset:  ptypes.BaseCurrency,
 		CollateralAmount: sdk.NewInt(100),
 		AmmPoolId:        1,
 		Leverage:         sdk.NewDec(1),
