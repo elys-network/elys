@@ -20,7 +20,7 @@ func NewQuerier(k Keeper) Querier {
 	}
 }
 
-// ContractModules returns contract addresses which are using the clock
+// ClockContracts returns contract addresses which are using the clock
 func (q Querier) ClockContracts(stdCtx context.Context, _ *types.QueryClockContracts) (*types.QueryClockContractsResponse, error) {
 	ctx := sdk.UnwrapSDKContext(stdCtx)
 

@@ -8,7 +8,7 @@ import (
 	stablestaketypes "github.com/elys-network/elys/x/stablestake/types"
 )
 
-func (k Keeper) GetPoolTotalCommit(ctx sdk.Context, poolId uint64) sdk.Int {
+func (k Keeper) GetPoolTotalCommit(ctx sdk.Context, poolId uint64) math.Int {
 	shareDenom := ammtypes.GetPoolShareDenom(poolId)
 	if poolId == stablestaketypes.PoolId {
 		shareDenom = stablestaketypes.GetShareDenom()
@@ -18,7 +18,7 @@ func (k Keeper) GetPoolTotalCommit(ctx sdk.Context, poolId uint64) sdk.Int {
 	return params.TotalCommitted.AmountOf(shareDenom)
 }
 
-func (k Keeper) GetPoolBalance(ctx sdk.Context, poolId uint64, user string) sdk.Int {
+func (k Keeper) GetPoolBalance(ctx sdk.Context, poolId uint64, user string) math.Int {
 	commitments := k.cmk.GetCommitments(ctx, user)
 	shareDenom := stablestaketypes.GetShareDenom()
 	if poolId != stablestaketypes.PoolId {
@@ -28,7 +28,7 @@ func (k Keeper) GetPoolBalance(ctx sdk.Context, poolId uint64, user string) sdk.
 	return commitments.GetCommittedAmountForDenom(shareDenom)
 }
 
-func (k Keeper) UpdateAccPerShare(ctx sdk.Context, poolId uint64, rewardDenom string, amount sdk.Int) {
+func (k Keeper) UpdateAccPerShare(ctx sdk.Context, poolId uint64, rewardDenom string, amount math.Int) {
 	poolRewardInfo, found := k.GetPoolRewardInfo(ctx, poolId, rewardDenom)
 	if !found {
 		poolRewardInfo = types.PoolRewardInfo{
@@ -51,7 +51,7 @@ func (k Keeper) UpdateAccPerShare(ctx sdk.Context, poolId uint64, rewardDenom st
 	k.SetPoolRewardInfo(ctx, poolRewardInfo)
 }
 
-func (k Keeper) UpdateUserRewardPending(ctx sdk.Context, poolId uint64, rewardDenom string, user string, isDeposit bool, amount sdk.Int) {
+func (k Keeper) UpdateUserRewardPending(ctx sdk.Context, poolId uint64, rewardDenom string, user string, isDeposit bool, amount math.Int) {
 	poolRewardInfo, found := k.GetPoolRewardInfo(ctx, poolId, rewardDenom)
 	if !found {
 		poolRewardInfo = types.PoolRewardInfo{

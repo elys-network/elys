@@ -14,6 +14,7 @@ const (
 	TypeMsgWhitelist    = "whitelist"
 	TypeMsgUpdatePools  = "update_pools"
 	TypeMsgDewhitelist  = "dewhitelist"
+	TypeMsgClaimRewards = "claim_rewards"
 )
 
 var (
@@ -23,6 +24,7 @@ var (
 	_ sdk.Msg = &MsgWhitelist{}
 	_ sdk.Msg = &MsgUpdatePools{}
 	_ sdk.Msg = &MsgDewhitelist{}
+	_ sdk.Msg = &MsgClaimRewards{}
 )
 
 func NewMsgClose(creator string, id uint64, amount math.Int) *MsgClose {
@@ -240,6 +242,42 @@ func (msg *MsgDewhitelist) GetSignBytes() []byte {
 
 func (msg *MsgDewhitelist) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Authority)
+	if err != nil {
+		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
+	}
+	return nil
+}
+
+func NewMsgClaimRewards(signer string, ids []uint64) *MsgClaimRewards {
+	return &MsgClaimRewards{
+		Sender: signer,
+		Ids:    ids,
+	}
+}
+
+func (msg *MsgClaimRewards) Route() string {
+	return RouterKey
+}
+
+func (msg *MsgClaimRewards) Type() string {
+	return TypeMsgClaimRewards
+}
+
+func (msg *MsgClaimRewards) GetSigners() []sdk.AccAddress {
+	authority, err := sdk.AccAddressFromBech32(msg.Sender)
+	if err != nil {
+		panic(err)
+	}
+	return []sdk.AccAddress{authority}
+}
+
+func (msg *MsgClaimRewards) GetSignBytes() []byte {
+	bz := ModuleCdc.MustMarshalJSON(msg)
+	return sdk.MustSortJSON(bz)
+}
+
+func (msg *MsgClaimRewards) ValidateBasic() error {
+	_, err := sdk.AccAddressFromBech32(msg.Sender)
 	if err != nil {
 		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
 	}

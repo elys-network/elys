@@ -8,5 +8,6 @@ import (
 
 // x/masterchef module sentinel errors
 var (
-	ErrNoInflationaryParams = errorsmod.Register(ModuleName, 14, "no inflationary rewards params")
+	ErrNoInflationaryParams     = errorsmod.Register(ModuleName, 1, "no inflationary rewards params")
+	ErrPoolRewardsAccumNotFound = errorsmod.Register(ModuleName, 2, "pool rewards accumulation not found")
 )

@@ -33,7 +33,7 @@ func start(cmdPath, homePath, rpc, p2p, pprof, api, moniker, successColor, error
 	}
 
 	// Command and arguments
-	args := []string{"start", "--home", homePath, "--rpc.laddr", rpc, "--p2p.laddr", p2p, "--rpc.pprof_laddr", pprof, "--api.address", api, "--log_level", logLevel}
+	args := []string{"start", "--home", homePath, "--rpc.laddr", rpc, "--p2p.laddr", p2p, "--rpc.pprof_laddr", pprof, "--api.address", api, "--log_level", logLevel, "--x-crisis-skip-assert-invariants"}
 
 	// Set up the command
 	cmd := exec.Command(cmdPath, args...)

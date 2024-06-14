@@ -114,23 +114,13 @@ func (k msgServer) AddExternalIncentive(goCtx context.Context, msg *types.MsgAdd
 	return &types.MsgAddExternalIncentiveResponse{}, nil
 }
 
-func (k msgServer) ClaimRewards(goCtx context.Context, msg *types.MsgClaimRewards) (*types.MsgClaimRewardsResponse, error) {
-	ctx := sdk.UnwrapSDKContext(goCtx)
-	sender := sdk.MustAccAddressFromBech32(msg.Sender)
-
-	if len(msg.PoolIds) == 0 {
-		allPools := k.GetAllPools(ctx)
-		for _, pool := range allPools {
-			msg.PoolIds = append(msg.PoolIds, pool.PoolId)
-		}
-	}
-
+func (k Keeper) ClaimRewards(ctx sdk.Context, sender sdk.AccAddress, poolIds []uint64) error {
 	coins := sdk.NewCoins()
-	for _, poolId := range msg.PoolIds {
-		k.AfterWithdraw(ctx, poolId, msg.Sender, sdk.ZeroInt())
+	for _, poolId := range poolIds {
+		k.AfterWithdraw(ctx, poolId, sender.String(), sdk.ZeroInt())
 
 		for _, rewardDenom := range k.GetRewardDenoms(ctx, poolId) {
-			userRewardInfo, found := k.GetUserRewardInfo(ctx, msg.Sender, poolId, rewardDenom)
+			userRewardInfo, found := k.GetUserRewardInfo(ctx, sender.String(), poolId, rewardDenom)
 			if found && userRewardInfo.RewardPending.IsPositive() {
 				coin := sdk.NewCoin(rewardDenom, userRewardInfo.RewardPending.TruncateInt())
 				coins = coins.Add(coin)
@@ -143,6 +133,24 @@ func (k msgServer) ClaimRewards(goCtx context.Context, msg *types.MsgClaimReward
 
 	// Transfer rewards (Eden/EdenB is transferred through commitment module)
 	err := k.cmk.SendCoinsFromModuleToAccount(ctx, types.ModuleName, sender, coins)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (k msgServer) ClaimRewards(goCtx context.Context, msg *types.MsgClaimRewards) (*types.MsgClaimRewardsResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+	sender := sdk.MustAccAddressFromBech32(msg.Sender)
+
+	if len(msg.PoolIds) == 0 {
+		allPools := k.GetAllPools(ctx)
+		for _, pool := range allPools {
+			msg.PoolIds = append(msg.PoolIds, pool.PoolId)
+		}
+	}
+
+	err := k.Keeper.ClaimRewards(ctx, sender, msg.PoolIds)
 	if err != nil {
 		return nil, err
 	}

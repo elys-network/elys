@@ -27,7 +27,7 @@ func (p *Pool) calcSingleAssetJoin(tokenIn sdk.Coin, spreadFactor sdk.Dec, token
 	return poolShares.TruncateInt(), nil
 }
 
-// CalcJoinPoolShares calculates the number of shares created to join pool with the provided amount of `tokenIn`.
+// CalcSingleAssetJoinPoolShares calculates the number of shares created to join pool with the provided amount of `tokenIn`.
 // The input tokens must either be:
 // - a single token
 // - contain exactly the same tokens as the pool contains

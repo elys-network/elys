@@ -80,10 +80,17 @@ func CalcExitValueWithoutSlippage(ctx sdk.Context, oracleKeeper OracleKeeper, ac
 }
 
 // CalcExitPool returns how many tokens should come out, when exiting k LP shares against a "standard" CFMM
-func CalcExitPool(ctx sdk.Context, oracleKeeper OracleKeeper, pool Pool, accountedPoolKeeper AccountedPoolKeeper, exitingShares math.Int, tokenOutDenom string) (sdk.Coins, error) {
+func CalcExitPool(
+	ctx sdk.Context,
+	oracleKeeper OracleKeeper,
+	pool Pool,
+	accountedPoolKeeper AccountedPoolKeeper,
+	exitingShares math.Int,
+	tokenOutDenom string,
+) (exitCoins sdk.Coins, weightBalanceBonus math.LegacyDec, err error) {
 	totalShares := pool.GetTotalShares()
 	if exitingShares.GTE(totalShares.Amount) {
-		return sdk.Coins{}, errorsmod.Wrapf(ErrLimitMaxAmount, ErrMsgFormatSharesLargerThanMax, exitingShares, totalShares)
+		return sdk.Coins{}, math.LegacyZeroDec(), errorsmod.Wrapf(ErrLimitMaxAmount, ErrMsgFormatSharesLargerThanMax, exitingShares, totalShares)
 	}
 
 	// refundedShares = exitingShares * (1 - exit fee)
@@ -101,12 +108,12 @@ func CalcExitPool(ctx sdk.Context, oracleKeeper OracleKeeper, pool Pool, account
 		tokenPrice := oracleKeeper.GetAssetPriceFromDenom(ctx, tokenOutDenom)
 		exitValueWithoutSlippage, err := CalcExitValueWithoutSlippage(ctx, oracleKeeper, accountedPoolKeeper, pool, exitingShares, tokenOutDenom)
 		if err != nil {
-			return sdk.Coins{}, err
+			return sdk.Coins{}, math.LegacyZeroDec(), err
 		}
 
 		// Ensure tokenPrice is not zero to avoid division by zero
 		if tokenPrice.IsZero() {
-			return sdk.Coins{}, ErrAmountTooLow
+			return sdk.Coins{}, math.LegacyZeroDec(), ErrAmountTooLow
 		}
 
 		oracleOutAmount := exitValueWithoutSlippage.Quo(tokenPrice)
@@ -116,11 +123,11 @@ func CalcExitPool(ctx sdk.Context, oracleKeeper OracleKeeper, pool Pool, account
 			sdk.Coins{sdk.NewCoin(tokenOutDenom, oracleOutAmount.RoundInt())},
 		)
 		if err != nil {
-			return sdk.Coins{}, err
+			return sdk.Coins{}, math.LegacyZeroDec(), err
 		}
 		for _, asset := range newAssetPools {
 			if asset.Token.Amount.IsNegative() {
-				return sdk.Coins{}, fmt.Errorf("out amount exceeds liquidity balance")
+				return sdk.Coins{}, math.LegacyZeroDec(), fmt.Errorf("out amount exceeds liquidity balance")
 			}
 		}
 
@@ -143,7 +150,7 @@ func CalcExitPool(ctx sdk.Context, oracleKeeper OracleKeeper, pool Pool, account
 		}
 
 		tokenOutAmount := oracleOutAmount.Mul(sdk.OneDec().Sub(weightBreakingFee)).RoundInt()
-		return sdk.Coins{sdk.NewCoin(tokenOutDenom, tokenOutAmount)}, nil
+		return sdk.Coins{sdk.NewCoin(tokenOutDenom, tokenOutAmount)}, weightBreakingFee.Neg(), nil
 	}
 
 	for _, asset := range poolLiquidity {
@@ -153,10 +160,10 @@ func CalcExitPool(ctx sdk.Context, oracleKeeper OracleKeeper, pool Pool, account
 			continue
 		}
 		if exitAmt.GTE(asset.Amount) {
-			return sdk.Coins{}, errors.New("too many shares out")
+			return sdk.Coins{}, math.LegacyZeroDec(), errors.New("too many shares out")
 		}
 		exitedCoins = exitedCoins.Add(sdk.NewCoin(asset.Denom, exitAmt))
 	}
 
-	return exitedCoins, nil
+	return exitedCoins, math.LegacyZeroDec(), nil
 }

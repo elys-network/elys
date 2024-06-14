@@ -39,10 +39,39 @@ func (k Keeper) SetPosition(ctx sdk.Context, position *types.Position) {
 		// increment open position count
 		openCount++
 		k.SetOpenPositionCount(ctx, openCount)
+	} else {
+		old, err := k.GetPosition(ctx, position.Address, position.Id)
+		if err == nil {
+			debt := k.stableKeeper.UpdateInterestStackedByAddress(ctx, old.GetPositionAddress())
+			liquidationKey := types.GetLiquidationSortKey(old.AmmPoolId, old.LeveragedLpAmount, debt.Borrowed, old.Id)
+			if len(liquidationKey) > 0 {
+				store.Delete(liquidationKey)
+			}
+			stopLossKey := types.GetStopLossSortKey(old.AmmPoolId, old.StopLossPrice, old.Id)
+			if len(stopLossKey) > 0 {
+				store.Delete(stopLossKey)
+			}
+		}
 	}
 
 	key := types.GetPositionKey(position.Address, position.Id)
 	store.Set(key, k.cdc.MustMarshal(position))
+
+	// Add position sort keys
+	addrId := types.AddressId{
+		Id:      position.Id,
+		Address: position.Address,
+	}
+	bz := k.cdc.MustMarshal(&addrId)
+	debt := k.stableKeeper.UpdateInterestStackedByAddress(ctx, position.GetPositionAddress())
+	liquidationKey := types.GetLiquidationSortKey(position.AmmPoolId, position.LeveragedLpAmount, debt.Borrowed, position.Id)
+	if len(liquidationKey) > 0 {
+		store.Set(liquidationKey, bz)
+	}
+	stopLossKey := types.GetStopLossSortKey(position.AmmPoolId, position.StopLossPrice, position.Id)
+	if len(stopLossKey) > 0 {
+		store.Set(stopLossKey, bz)
+	}
 }
 
 func (k Keeper) DestroyPosition(ctx sdk.Context, positionAddress string, id uint64) error {
@@ -52,6 +81,21 @@ func (k Keeper) DestroyPosition(ctx sdk.Context, positionAddress string, id uint
 		return types.ErrPositionDoesNotExist
 	}
 	store.Delete(key)
+
+	// Remove position sort keys
+	old, err := k.GetPosition(ctx, positionAddress, id)
+	if err == nil {
+		debt := k.stableKeeper.UpdateInterestStackedByAddress(ctx, old.GetPositionAddress())
+		liquidationKey := types.GetLiquidationSortKey(old.AmmPoolId, old.LeveragedLpAmount, debt.Borrowed, old.Id)
+		if len(liquidationKey) > 0 {
+			store.Delete(liquidationKey)
+		}
+		stopLossKey := types.GetStopLossSortKey(old.AmmPoolId, old.StopLossPrice, old.Id)
+		if len(stopLossKey) > 0 {
+			store.Delete(stopLossKey)
+		}
+	}
+
 	// decrement open position count
 	openCount := k.GetOpenPositionCount(ctx)
 	openCount--
@@ -102,7 +146,7 @@ func (k Keeper) GetPositionIterator(ctx sdk.Context) sdk.Iterator {
 }
 
 func (k Keeper) GetAllPositions(ctx sdk.Context) []types.Position {
-	var positionList []types.Position
+	var positions []types.Position
 	iterator := k.GetPositionIterator(ctx)
 	defer func(iterator sdk.Iterator) {
 		err := iterator.Close()
@@ -115,9 +159,49 @@ func (k Keeper) GetAllPositions(ctx sdk.Context) []types.Position {
 		var position types.Position
 		bytesValue := iterator.Value()
 		k.cdc.MustUnmarshal(bytesValue, &position)
-		positionList = append(positionList, position)
+		positions = append(positions, position)
 	}
-	return positionList
+	return positions
+}
+
+func (k Keeper) IteratePoolPosIdsLiquidationSorted(ctx sdk.Context, poolId uint64, fn func(posId types.AddressId) bool) {
+	store := ctx.KVStore(k.storeKey)
+	iterator := sdk.KVStorePrefixIterator(store, types.GetLiquidationSortPrefix(poolId))
+	defer func(iterator sdk.Iterator) {
+		err := iterator.Close()
+		if err != nil {
+			panic(err)
+		}
+	}(iterator)
+
+	for ; iterator.Valid(); iterator.Next() {
+		addrId := types.AddressId{}
+		k.cdc.MustUnmarshal(iterator.Value(), &addrId)
+		stop := fn(addrId)
+		if stop {
+			return
+		}
+	}
+}
+
+func (k Keeper) IteratePoolPosIdsStopLossSorted(ctx sdk.Context, poolId uint64, fn func(posId types.AddressId) bool) {
+	store := ctx.KVStore(k.storeKey)
+	iterator := sdk.KVStorePrefixIterator(store, types.GetStopLossSortPrefix(poolId))
+	defer func(iterator sdk.Iterator) {
+		err := iterator.Close()
+		if err != nil {
+			panic(err)
+		}
+	}(iterator)
+
+	for ; iterator.Valid(); iterator.Next() {
+		addrId := types.AddressId{}
+		k.cdc.MustUnmarshal(iterator.Value(), &addrId)
+		stop := fn(addrId)
+		if stop {
+			return
+		}
+	}
 }
 
 func (k Keeper) GetPositions(ctx sdk.Context, pagination *query.PageRequest) ([]*types.Position, *query.PageResponse, error) {
@@ -219,4 +303,16 @@ func (k Keeper) GetPositionHealth(ctx sdk.Context, position types.Position, ammP
 
 	lr := positionVal.Quo(sdk.NewDecFromBigInt(xl.BigInt()))
 	return lr, nil
+}
+
+func (k Keeper) GetPositionWithId(ctx sdk.Context, positionAddress sdk.Address, Id uint64) (*types.Position, bool) {
+	store := ctx.KVStore(k.storeKey)
+	key := types.GetPositionKey(positionAddress.String(), Id)
+	if !store.Has(key) {
+		return nil, false
+	}
+	res := store.Get(key)
+	var position types.Position
+	k.cdc.MustUnmarshal(res, &position)
+	return &position, true
 }
