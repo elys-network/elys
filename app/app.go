@@ -908,6 +908,7 @@ func NewElysApp(
 			&app.TransferhookKeeper,
 			&app.MasterchefKeeper,
 			&app.EstakingKeeper,
+			&app.TierKeeper,
 		),
 		wasmOpts...,
 	)
