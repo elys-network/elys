@@ -40,6 +40,7 @@ import (
 	perpetualtypes "github.com/elys-network/elys/x/perpetual/types"
 	stablestakekeeper "github.com/elys-network/elys/x/stablestake/keeper"
 	stablestaketypes "github.com/elys-network/elys/x/stablestake/types"
+	tiertypes "github.com/elys-network/elys/x/tier/types"
 	tokenomicskeeper "github.com/elys-network/elys/x/tokenomics/keeper"
 	tokenomicstypes "github.com/elys-network/elys/x/tokenomics/types"
 	transferhookkeeper "github.com/elys-network/elys/x/transferhook/keeper"
@@ -314,6 +315,9 @@ type ElysMsg struct {
 
 	// tokenomics messages
 	// transferhook messages
+
+	// tier messages
+	TierSetPortfolio *tiertypes.MsgSetPortfolio `json:"tier_set_portfolio,omitempty"`
 }
 
 type RequestResponse struct {
