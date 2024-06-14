@@ -16,11 +16,12 @@ jobs:
     steps:
       - name: Install dependencies
         run: |
-          sudo apt-get update
-          sudo apt-get install -y libwasmvm
+          COSMWASM_VERSION=$(go list -m github.com/CosmWasm/wasmvm | sed 's/.* //')
+          echo $COSMWASM_VERSION
+          sudo wget https://github.com/CosmWasm/wasmvm/releases/download/${COSMWASM_VERSION}/libwasmvm_muslc.x86_64.so -O /usr/lib/libwasmvm.x86_64.so
   
       - name: Set LD_LIBRARY_PATH
-        run: echo "/usr/local/lib" >> $GITHUB_ENV
+        run: echo "/usr/lib" >> $GITHUB_ENV
 
       - name: Checkout repository
         uses: actions/checkout@v4
