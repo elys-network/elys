@@ -454,9 +454,6 @@ genesis:
           - denom: "uinc"
             min_amount: "1000000"
         reward_portion_for_lps: "0.6"
-        dex_rewards_lps:
-          num_blocks: "1"
-          amount: "0"
         max_eden_reward_apr_lps: "0.5"
         protocol_revenue_address: "elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3"
   chain_id: elystestnet-1

@@ -78,10 +78,6 @@ The `BeginBlocker` function is triggered at the beginning of each block. It perf
 
 `CloseShort` processes the closure of a short position, similar to `CloseLong`, but adjusted for short positions.
 
-### Emitting Closure Events
-
-`EmitCloseEvent` emits an event when an MTP is closed, providing details about the closure.
-
 ## Position Opening
 
 ### Opening a New Margin Trading Position

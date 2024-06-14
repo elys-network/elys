@@ -102,36 +102,35 @@ func (k Keeper) CalculateTVL(ctx sdk.Context) sdk.Dec {
 
 // Get total dex rewards amount from the specified pool
 func (k Keeper) GetDailyRewardsAmountForPool(ctx sdk.Context, poolId uint64) (sdk.Dec, sdk.Coins) {
-	poolInfo, found := k.masterchef.GetPool(ctx, poolId)
-	if !found {
-		return sdk.ZeroDec(), sdk.Coins{}
+	dailyDexRewardsTotal := math.LegacyZeroDec()
+	dailyGasRewardsTotal := math.LegacyZeroDec()
+	dailyEdenRewardsTotal := math.LegacyZeroDec()
+	firstAccum := k.masterchef.FirstPoolRewardsAccum(ctx, poolId)
+	lastAccum := k.masterchef.FirstPoolRewardsAccum(ctx, poolId)
+	if lastAccum.Timestamp != 0 {
+		if firstAccum.Timestamp == lastAccum.Timestamp {
+			dailyDexRewardsTotal = lastAccum.DexReward
+			dailyGasRewardsTotal = lastAccum.GasReward
+			dailyEdenRewardsTotal = lastAccum.EdenReward
+		} else {
+			dailyDexRewardsTotal = lastAccum.DexReward.Sub(firstAccum.DexReward)
+			dailyGasRewardsTotal = lastAccum.GasReward.Sub(firstAccum.GasReward)
+			dailyEdenRewardsTotal = lastAccum.EdenReward.Sub(firstAccum.EdenReward)
+		}
 	}
-
-	// Fetch incentive params
-	params := k.masterchef.GetParams(ctx)
-	if params.LpIncentives == nil {
-		return sdk.ZeroDec(), sdk.Coins{}
-	}
-
-	// Dex reward Apr per pool =  total accumulated usdc rewards for 7 day * 52/ tvl of pool
-	dailyDexRewardsTotal := poolInfo.DexRewardAmountGiven.
-		QuoInt(poolInfo.NumBlocks)
-
-	// Eden reward Apr per pool = (total LM Eden reward allocated per day*((tvl of pool * multiplier)/total proxy TVL) ) * 365 / TVL of pool
-	dailyEdenRewardsTotal := poolInfo.EdenRewardAmountGiven.
-		Quo(poolInfo.NumBlocks)
 
 	baseCurrency, found := k.assetProfileKeeper.GetUsdcDenom(ctx)
 	if !found {
 		return sdk.ZeroDec(), sdk.Coins{}
 	}
 
-	rewardCoins := sdk.NewCoins(sdk.NewCoin(ptypes.Eden, dailyEdenRewardsTotal))
-	rewardCoins = rewardCoins.Add(sdk.NewCoin(baseCurrency, math.Int(dailyDexRewardsTotal)))
+	rewardCoins := sdk.NewCoins(sdk.NewCoin(ptypes.Eden, dailyEdenRewardsTotal.RoundInt()))
+	rewardCoins = rewardCoins.Add(sdk.NewCoin(baseCurrency, dailyDexRewardsTotal.Add(dailyGasRewardsTotal).RoundInt()))
 
 	usdcDenomPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, baseCurrency)
 	edenDenomPrice := k.amm.GetEdenDenomPrice(ctx, baseCurrency)
 
-	totalRewardsUsd := usdcDenomPrice.Mul(dailyDexRewardsTotal).Add(edenDenomPrice.MulInt(dailyEdenRewardsTotal))
+	totalRewardsUsd := usdcDenomPrice.Mul(dailyDexRewardsTotal.Add(dailyGasRewardsTotal)).
+		Add(edenDenomPrice.Mul(dailyEdenRewardsTotal))
 	return totalRewardsUsd, rewardCoins
 }

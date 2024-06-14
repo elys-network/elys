@@ -3,6 +3,7 @@ package keeper_test
 import (
 	"time"
 
+	"cosmossdk.io/math"
 	"github.com/cometbft/cometbft/crypto/ed25519"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
@@ -51,10 +52,22 @@ func (suite KeeperTestSuite) TestLiquidatePositionIfUnhealthy() {
 	// suite.Require().Equal(health.String(), "1.024543738200125865") // slippage enabled on amm
 	suite.Require().Equal(health.String(), "1.025220422390814025") // slippage disabled on amm
 
-	params := k.GetParams(suite.ctx)
+	cacheCtx, _ := suite.ctx.CacheContext()
+	params := k.GetParams(cacheCtx)
 	params.SafetyFactor = sdk.NewDecWithPrec(11, 1)
-	k.SetParams(suite.ctx, &params)
-	k.LiquidatePositionIfUnhealthy(suite.ctx, position, pool, ammPool)
-	_, err = k.GetPosition(suite.ctx, position.Address, position.Id)
+	k.SetParams(cacheCtx, &params)
+	isHealthy, earlyReturn := k.LiquidatePositionIfUnhealthy(cacheCtx, position, pool, ammPool)
+	suite.Require().False(isHealthy)
+	suite.Require().False(earlyReturn)
+	_, err = k.GetPosition(cacheCtx, position.Address, position.Id)
+	suite.Require().Error(err)
+
+	cacheCtx, _ = suite.ctx.CacheContext()
+	position.StopLossPrice = math.LegacyNewDec(100000)
+	k.SetPosition(cacheCtx, position)
+	underStopLossPrice, earlyReturn := k.ClosePositionIfUnderStopLossPrice(cacheCtx, position, pool, ammPool)
+	suite.Require().True(underStopLossPrice)
+	suite.Require().False(earlyReturn)
+	_, err = k.GetPosition(cacheCtx, position.Address, position.Id)
 	suite.Require().Error(err)
 }

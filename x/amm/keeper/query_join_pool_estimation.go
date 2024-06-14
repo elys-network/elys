@@ -16,7 +16,7 @@ func (k Keeper) JoinPoolEstimation(goCtx context.Context, req *types.QueryJoinPo
 	}
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	tokensIn, sharesOut, slippage, weightBalanceBonus, err := k.joinPoolEstimation(ctx, req.PoolId, req.AmountsIn)
+	tokensIn, sharesOut, slippage, weightBalanceBonus, err := k.JoinPoolEst(ctx, req.PoolId, req.AmountsIn)
 	if err != nil {
 		return nil, err
 	}
@@ -30,7 +30,7 @@ func (k Keeper) JoinPoolEstimation(goCtx context.Context, req *types.QueryJoinPo
 	}, nil
 }
 
-func (k Keeper) joinPoolEstimation(
+func (k Keeper) JoinPoolEst(
 	ctx sdk.Context,
 	poolId uint64,
 	tokenInMaxs sdk.Coins,

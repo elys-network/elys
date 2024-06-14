@@ -2,6 +2,8 @@ package types
 
 import (
 	"encoding/binary"
+
+	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 const (
@@ -28,6 +30,8 @@ const (
 	PoolRewardInfoKeyPrefix = "PoolRewardInfo"
 
 	UserRewardInfoKeyPrefix = "UserRewardInfo"
+
+	PoolRewardsAccumKeyPrefix = "PoolRewardsAccum"
 )
 
 func KeyPrefix(p string) []byte {
@@ -89,4 +93,12 @@ func UserRewardInfoKey(user string, poolId uint64, rewardDenom string) []byte {
 	key = append(key, []byte("/")...)
 
 	return key
+}
+
+func GetPoolRewardsAccumPrefix(poolId uint64) []byte {
+	return append([]byte(PoolRewardsAccumKeyPrefix), sdk.Uint64ToBigEndian(uint64(poolId))...)
+}
+
+func GetPoolRewardsAccumKey(poolId uint64, timestamp uint64) []byte {
+	return append(GetPoolRewardsAccumPrefix(poolId), sdk.Uint64ToBigEndian(timestamp)...)
 }

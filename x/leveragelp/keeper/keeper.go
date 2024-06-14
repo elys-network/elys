@@ -29,6 +29,7 @@ type (
 		stableKeeper       types.StableStakeKeeper
 		commKeeper         types.CommitmentKeeper
 		assetProfileKeeper types.AssetProfileKeeper
+		masterchefKeeper   types.MasterchefKeeper
 
 		hooks types.LeveragelpHooks
 	}
@@ -45,6 +46,7 @@ func NewKeeper(
 	stableKeeper types.StableStakeKeeper,
 	commitmentKeeper types.CommitmentKeeper,
 	assetProfileKeeper types.AssetProfileKeeper,
+	masterchefKeeper types.MasterchefKeeper,
 ) *Keeper {
 	// ensure that authority is a valid AccAddress
 	if _, err := sdk.AccAddressFromBech32(authority); err != nil {
@@ -62,6 +64,7 @@ func NewKeeper(
 		stableKeeper:       stableKeeper,
 		commKeeper:         commitmentKeeper,
 		assetProfileKeeper: assetProfileKeeper,
+		masterchefKeeper:   masterchefKeeper,
 	}
 
 	return keeper

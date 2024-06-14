@@ -46,13 +46,24 @@ func (k Keeper) CalculateStableStakeApr(ctx sdk.Context, query *types.QueryStabl
 
 		edenDenomPrice := k.amm.GetEdenDenomPrice(ctx, baseCurrency)
 
-		// Eden amount for stable stake LP in 24hrs
-		stableStakePoolShare := k.CalculatePoolShareForStableStakeLPs(ctx, totalProxyTVL, baseCurrency)
+		// Get pool info from incentive param
+		poolInfo, found := k.GetPool(ctx, uint64(stabletypes.PoolId))
+		if !found {
+			return sdk.ZeroInt(), nil
+		}
+
+		// Calculate Proxy TVL share considering multiplier
+		proxyTVL := stableTvl.Mul(poolInfo.Multiplier)
+		if totalProxyTVL.IsZero() {
+			return sdk.ZeroInt(), nil
+		}
+		stableStakePoolShare := proxyTVL.Quo(totalProxyTVL)
+
 		stableStakeEdenAmount := sdk.NewDecFromInt(edenAmount).Mul(stableStakePoolShare)
 
 		params := k.GetParams(ctx)
 		poolMaxEdenAmount := params.MaxEdenRewardAprLps.
-			Mul(stableTvl).
+			Mul(proxyTVL).
 			QuoInt64(totalBlocksPerYear).
 			Quo(edenDenomPrice)
 		stableStakeEdenAmount = sdk.MinDec(stableStakeEdenAmount, poolMaxEdenAmount)
