@@ -794,10 +794,6 @@ jobs:
 
       - name: Upgrade to new binary
         run: |
-          COSMWASM_VERSION=$(go list -m github.com/CosmWasm/wasmvm | sed 's/.* //')
-          echo $COSMWASM_VERSION
-          sudo wget https://github.com/CosmWasm/wasmvm/releases/download/${COSMWASM_VERSION}/libwasmvm_muslc.x86_64.a -O /usr/lib/libwasmvm.x86_64.a
-          export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
           GOMEMLIMIT=8GiB \
             ${{ needs.build-new-binary.outputs.NEW_UPGRADE_ASSURE_BINARY_PATH }} \
             ${{ needs.retrieve-snapshot.outputs.SNAPSHOT_FILE_PATH }} \
