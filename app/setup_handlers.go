@@ -12,6 +12,7 @@ import (
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
+	tiermoduletypes "github.com/elys-network/elys/x/tier/types"
 )
 
 func SetupHandlers(app *ElysApp) {
@@ -70,14 +71,15 @@ func loadUpgradeStore(app *ElysApp) {
 
 	if shouldLoadUpgradeStore(app, upgradeInfo) {
 		storeUpgrades := storetypes.StoreUpgrades{
-			Added: []string{"membershiptier"},
+			Added: []string{tiermoduletypes.StoreKey},
 		}
 		fmt.Printf("Setting store loader with height %d and store upgrades: %+v\n", upgradeInfo.Height, storeUpgrades)
 
-		loader := upgradetypes.UpgradeStoreLoader(upgradeInfo.Height, &storeUpgrades)
-		app.SetStoreLoader(loader)
-
-		fmt.Println("Store loader set successfully.")
+		// Use upgrade store loader for the initial loading of all stores when app starts,
+		// it checks if version == upgradeHeight and applies store upgrades before loading the stores,
+		// so that new stores start with the correct version (the current height of chain),
+		// instead the default which is the latest version that store last committed i.e 0 for new stores.
+		app.SetStoreLoader(upgradetypes.UpgradeStoreLoader(upgradeInfo.Height, &storeUpgrades))
 	} else {
 		fmt.Println("No need to load upgrade store.")
 	}
