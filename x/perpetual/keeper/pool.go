@@ -12,6 +12,19 @@ func (k Keeper) RemovePool(ctx sdk.Context, index uint64) {
 	store.Delete(types.PoolKey(index))
 }
 
+// GetPool returns a pool from its index
+func (k Keeper) GetPool(ctx sdk.Context, poolId uint64) (val types.Pool, found bool) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.PoolKeyPrefix))
+
+	b := store.Get(types.PoolKey(poolId))
+	if b == nil {
+		return val, false
+	}
+
+	k.cdc.MustUnmarshal(b, &val)
+	return val, true
+}
+
 // GetAllPool returns all pool
 func (k Keeper) GetAllPools(ctx sdk.Context) (list []types.Pool) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.PoolKeyPrefix))

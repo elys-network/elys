@@ -46,3 +46,7 @@ func (k Keeper) Close(ctx sdk.Context, msg *types.MsgClose) (*types.MsgCloseResp
 		Amount: repayAmount,
 	}, nil
 }
+
+func (k Keeper) EmitCloseEvent(ctx sdk.Context, mtp *types.MTP, repayAmount math.Int) {
+	ctx.EventManager().EmitEvent(types.GenerateCloseEvent(mtp, repayAmount))
+}

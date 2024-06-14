@@ -9,7 +9,7 @@ import (
 
 func (k Keeper) EstimateAndRepay(ctx sdk.Context, mtp types.MTP, pool types.Pool, ammPool ammtypes.Pool, amount math.Int, baseCurrency string) (math.Int, error) {
 	// init repay amount
-	repayAmount := sdk.ZeroInt()
+	var repayAmount math.Int
 	var err error
 
 	// if position is long, repay in collateral asset
