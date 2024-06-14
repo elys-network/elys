@@ -230,6 +230,9 @@ type ElysQuery struct {
 
 	// transferhook queriers
 	TransferHookParams *transferhooktypes.QueryParamsRequest `json:"transfer_hook_params,omitempty"`
+
+	// tier queries
+	TierCalculateDiscount *tiertypes.QueryCalculateDiscountRequest `json:"tier_calculate_discount,omitempty"`
 }
 
 type CustomMessenger struct {
