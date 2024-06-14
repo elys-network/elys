@@ -14,6 +14,14 @@ jobs:
       LATEST_TAG: ${{ steps.get-latest-tag.outputs.LATEST_TAG }}
 
     steps:
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libwasmvm
+  
+      - name: Set LD_LIBRARY_PATH
+        run: echo "/usr/local/lib" >> $GITHUB_ENV
+
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
