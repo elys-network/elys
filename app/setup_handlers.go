@@ -74,8 +74,7 @@ func loadUpgradeStore(app *ElysApp) {
 		}
 		fmt.Printf("Setting store loader with height %d and store upgrades: %+v\n", upgradeInfo.Height, storeUpgrades)
 
-		loader := upgradetypes.UpgradeStoreLoader(7708843, &storeUpgrades)
-		app.SetStoreLoader(loader)
+		app.SetStoreLoader(upgradetypes.UpgradeStoreLoader(upgradeInfo.Height, &storeUpgrades))
 
 		fmt.Println("Store loader set successfully.")
 	} else {
