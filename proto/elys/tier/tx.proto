@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package elys.tier;
+
+import "elys/tier/portfolio.proto";
+
+option go_package = "github.com/elys-network/elys/x/tier/types";
+
+// Msg defines the Msg service.
+service Msg {
+  rpc SetPortfolio    (MsgSetPortfolio   ) returns (MsgSetPortfolioResponse   );
+}
+
+message MsgSetPortfolio {
+  string creator = 1;
+  string user    = 2;
+}
+
+message MsgSetPortfolioResponse {}
+

@@ -1,0 +1,14 @@
+syntax = "proto3";
+package elys.tier;
+
+option go_package = "github.com/elys-network/elys/x/tier/types";
+import "gogoproto/gogo.proto"; 
+import "cosmos/base/v1beta1/coin.proto"; 
+
+message Portfolio {
+  string creator = 1;
+  string portfolio = 2 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+}

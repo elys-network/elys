@@ -20,6 +20,7 @@ import (
 	parameterkeeper "github.com/elys-network/elys/x/parameter/keeper"
 	perpetualkeeper "github.com/elys-network/elys/x/perpetual/keeper"
 	stablestakekeeper "github.com/elys-network/elys/x/stablestake/keeper"
+	tierkeeper "github.com/elys-network/elys/x/tier/keeper"
 	tokenomicskeeper "github.com/elys-network/elys/x/tokenomics/keeper"
 	transferhookkeeper "github.com/elys-network/elys/x/transferhook/keeper"
 )
@@ -46,6 +47,7 @@ func CustomMessageDecorator(
 	transferhook *transferhookkeeper.Keeper,
 	masterchef *masterchefkeeper.Keeper,
 	estaking *estakingkeeper.Keeper,
+	tier *tierkeeper.Keeper,
 ) func(wasmkeeper.Messenger) wasmkeeper.Messenger {
 	return func(old wasmkeeper.Messenger) wasmkeeper.Messenger {
 		return &CustomMessenger{
@@ -71,6 +73,7 @@ func CustomMessageDecorator(
 			transferhook:     transferhook,
 			masterchef:       masterchef,
 			estaking:         estaking,
+			tier:             tier,
 		}
 	}
 }

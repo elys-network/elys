@@ -40,6 +40,8 @@ import (
 	perpetualtypes "github.com/elys-network/elys/x/perpetual/types"
 	stablestakekeeper "github.com/elys-network/elys/x/stablestake/keeper"
 	stablestaketypes "github.com/elys-network/elys/x/stablestake/types"
+	tierkeeper "github.com/elys-network/elys/x/tier/keeper"
+	tiertypes "github.com/elys-network/elys/x/tier/types"
 	tokenomicskeeper "github.com/elys-network/elys/x/tokenomics/keeper"
 	tokenomicstypes "github.com/elys-network/elys/x/tokenomics/types"
 	transferhookkeeper "github.com/elys-network/elys/x/transferhook/keeper"
@@ -86,6 +88,7 @@ type QueryPlugin struct {
 	tokenomicsKeeper    *tokenomicskeeper.Keeper
 	transferhookKeeper  *transferhookkeeper.Keeper
 	estakingKeeper      *estakingkeeper.Keeper
+	tierKeeper          *tierkeeper.Keeper
 }
 
 // AllCapabilities returns all capabilities available with the current wasmvm
@@ -232,6 +235,9 @@ type ElysQuery struct {
 
 	// transferhook queriers
 	TransferHookParams *transferhooktypes.QueryParamsRequest `json:"transfer_hook_params,omitempty"`
+
+	// tier queries
+	TierCalculateDiscount *tiertypes.QueryCalculateDiscountRequest `json:"tier_calculate_discount,omitempty"`
 }
 
 type CustomMessenger struct {
@@ -257,6 +263,7 @@ type CustomMessenger struct {
 	staking          *stakingkeeper.Keeper
 	tokenomics       *tokenomicskeeper.Keeper
 	transferhook     *transferhookkeeper.Keeper
+	tier             *tierkeeper.Keeper
 }
 
 type ElysMsg struct {
@@ -319,6 +326,9 @@ type ElysMsg struct {
 
 	// tokenomics messages
 	// transferhook messages
+
+	// tier messages
+	TierSetPortfolio *tiertypes.MsgSetPortfolio `json:"tier_set_portfolio,omitempty"`
 }
 
 type RequestResponse struct {
