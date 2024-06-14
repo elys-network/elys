@@ -14,6 +14,7 @@ func RegisterCodec(cdc *codec.LegacyAmino) {
 	cdc.RegisterConcrete(&MsgUpdatePools{}, "leveragelp/UpdatePools", nil)
 	cdc.RegisterConcrete(&MsgWhitelist{}, "leveragelp/Whitelist", nil)
 	cdc.RegisterConcrete(&MsgDewhitelist{}, "leveragelp/Dewhitelist", nil)
+	cdc.RegisterConcrete(&MsgClaimRewards{}, "leveragelp/ClaimRewards", nil)
 	cdc.RegisterConcrete(&MsgUpdateStopLoss{}, "leveragelp/UpdateStopLoss", nil)
 	// this line is used by starport scaffolding # 2
 }
@@ -26,11 +27,10 @@ func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 		&MsgUpdatePools{},
 		&MsgWhitelist{},
 		&MsgDewhitelist{},
-	)
-
-	registry.RegisterImplementations((*sdk.Msg)(nil),
+		&MsgClaimRewards{},
 		&MsgUpdateStopLoss{},
 	)
+
 	// this line is used by starport scaffolding # 3
 
 	msgservice.RegisterMsgServiceDesc(registry, &_Msg_serviceDesc)

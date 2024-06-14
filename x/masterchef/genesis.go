@@ -27,6 +27,10 @@ func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) 
 	for _, elem := range genState.UserRewardInfos {
 		k.SetUserRewardInfo(ctx, elem)
 	}
+
+	for _, elem := range genState.PoolRewardsAccum {
+		k.SetPoolRewardsAccum(ctx, elem)
+	}
 }
 
 // ExportGenesis returns the module's exported genesis
@@ -38,6 +42,7 @@ func ExportGenesis(ctx sdk.Context, k keeper.Keeper) *types.GenesisState {
 	genesis.PoolInfos = k.GetAllPools(ctx)
 	genesis.PoolRewardInfos = k.GetAllPoolRewardInfos(ctx)
 	genesis.UserRewardInfos = k.GetAllUserRewardInfos(ctx)
+	genesis.PoolRewardsAccum = k.GetAllPoolRewardsAccum(ctx)
 
 	// this line is used by starport scaffolding # genesis/module/export
 

@@ -13,13 +13,8 @@ import (
 )
 
 func (k Keeper) CalculateApr(ctx sdk.Context, query *types.QueryAprRequest) (math.Int, error) {
-	// Fetch incentive params
-	params := k.GetParams(ctx)
 	masterchefParams := k.masterchef.GetParams(ctx)
 	estakingParams := k.estaking.GetParams(ctx)
-
-	// Update params
-	defer k.SetParams(ctx, params)
 
 	// If we don't have enough params
 	if estakingParams.StakeIncentives == nil || masterchefParams.LpIncentives == nil {
@@ -109,13 +104,12 @@ func (k Keeper) CalculateApr(ctx sdk.Context, query *types.QueryAprRequest) (mat
 				return sdk.ZeroInt(), nil
 			}
 
-			// DexReward amount per day = amount distributed / duration(in seconds) * total seconds per day.
+			usdcDenomPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, baseCurrency)
 			yearlyDexRewardAmount := amount.
+				Mul(usdcDenomPrice).
 				MulInt64(totalBlocksPerYear).
 				QuoInt(params.DexRewardsStakers.NumBlocks)
 
-			// Usdc apr for elys staking = (24 hour dex rewards in USDC generated for stakers) * 365*100/ {price ( elys/usdc)*( sum of (elys staked, Eden committed, Eden boost committed))}
-			// we multiply 10 as we have use 10elys as input in the price estimation
 			apr := yearlyDexRewardAmount.
 				MulInt(sdk.NewInt(100)).
 				Quo(edenDenomPrice).

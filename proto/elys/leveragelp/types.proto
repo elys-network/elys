@@ -38,4 +38,7 @@ message Position {
   ];
 }
 
-message WhiteList { repeated string validator_list = 1; }
+message AddressId {
+  string address = 1;
+  uint64 id = 2;
+}

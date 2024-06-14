@@ -23,15 +23,16 @@ message Params {
   ];
   string broker_address = 4;
 	int64 total_blocks_per_year = 5;
-  string wasm_max_label_size = 6 [
+  int64 rewards_data_lifetime = 6; // default 1 day = 86400
+  string wasm_max_label_size = 7 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
     (gogoproto.nullable) = false
   ];
-  string wasm_max_size = 7 [
+  string wasm_max_size = 8 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
     (gogoproto.nullable) = false
   ];
-  string wasm_max_proposal_wasm_size = 8 [
+  string wasm_max_proposal_wasm_size = 9 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
     (gogoproto.nullable) = false
   ];
@@ -53,4 +54,5 @@ message LegacyParams {
     (gogoproto.nullable) = false
   ];
   string broker_address = 4;
+  int64 total_blocks_per_year = 5;
 }

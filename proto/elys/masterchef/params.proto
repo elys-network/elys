@@ -4,7 +4,6 @@ package elys.masterchef;
 import "gogoproto/gogo.proto";
 import "elys/masterchef/incentive.proto";
 import "elys/masterchef/pool.proto";
-import "elys/masterchef/dex_rewards_traker.proto";
 
 option go_package = "github.com/elys-network/elys/x/masterchef/types";
 
@@ -24,19 +23,16 @@ message Params {
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
-  
-  // Tracking dex rewards given to LPs
-  DexRewardsTracker dex_rewards_lps = 4 [(gogoproto.nullable) = false];
 
   // Maximum eden reward apr for lps - [0 - 0.3]
-  string max_eden_reward_apr_lps = 5 [
+  string max_eden_reward_apr_lps = 4 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
 
-  repeated SupportedRewardDenom supported_reward_denoms = 6;
+  repeated SupportedRewardDenom supported_reward_denoms = 5;
 
-  string protocol_revenue_address = 7;
+  string protocol_revenue_address = 6;
 }
 
 
@@ -46,4 +42,49 @@ message SupportedRewardDenom {
       (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
       (gogoproto.nullable) = false
   ]; 
+}
+
+message LegacyDexRewardsTracker {
+  // Number of blocks since start of epoch (distribution epoch)
+  string num_blocks = 1 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+  // Accumulated amount at distribution epoch - recalculated at every
+  // distribution epoch
+  string amount = 2 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+}
+
+// Params defines the parameters for the module.
+message LegacyParams {
+  option (gogoproto.goproto_stringer) = false;
+  IncentiveInfo lp_incentives = 1;
+
+  // gas fees and swap fees portion for lps, `100 - reward_portion_for_lps -
+  // reward_portion_for_stakers = revenue percent for protocol`.
+  string reward_portion_for_lps = 2 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+
+  // gas fees and swap fees portion for stakers, `100 - reward_portion_for_lps -
+  // reward_portion_for_stakers = revenue percent for protocol`.
+  string reward_portion_for_stakers = 3 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+
+  // Tracking dex rewards given to LPs
+  LegacyDexRewardsTracker dex_rewards_lps = 4 [ (gogoproto.nullable) = false ];
+
+  // Maximum eden reward apr for lps - [0 - 0.3]
+  string max_eden_reward_apr_lps = 5 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  repeated SupportedRewardDenom supported_reward_denoms = 6;
+  string protocol_revenue_address = 7;
 }

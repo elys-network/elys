@@ -257,7 +257,13 @@ func (pool Pool) GetMaximalNoSwapLPAmount(shareOutAmount math.Int) (neededLpLiqu
 	return neededLpLiquidity, nil
 }
 
-func (p *Pool) CalcExitPoolCoinsFromShares(ctx sdk.Context, oracleKeeper OracleKeeper, accountedPoolKeeper AccountedPoolKeeper, exitingShares math.Int, tokenOutDenom string) (exitedCoins sdk.Coins, err error) {
+func (p *Pool) CalcExitPoolCoinsFromShares(
+	ctx sdk.Context,
+	oracleKeeper OracleKeeper,
+	accountedPoolKeeper AccountedPoolKeeper,
+	exitingShares math.Int,
+	tokenOutDenom string,
+) (exitedCoins sdk.Coins, weightBalanceBonus math.LegacyDec, err error) {
 	return CalcExitPool(ctx, oracleKeeper, *p, accountedPoolKeeper, exitingShares, tokenOutDenom)
 }
 

@@ -11,12 +11,13 @@ import "elys/leveragelp/pool.proto";
 
 // Msg defines the Msg service.
 service Msg {
-  rpc Open           (MsgOpen          ) returns (MsgOpenResponse          );
-  rpc Close          (MsgClose         ) returns (MsgCloseResponse         );
-  rpc UpdateParams   (MsgUpdateParams  ) returns (MsgUpdateParamsResponse  );
-  rpc UpdatePools    (MsgUpdatePools   ) returns (MsgUpdatePoolsResponse   );
-  rpc Whitelist      (MsgWhitelist     ) returns (MsgWhitelistResponse     );
-  rpc Dewhitelist    (MsgDewhitelist   ) returns (MsgDewhitelistResponse   );
+  rpc Open(MsgOpen) returns (MsgOpenResponse);
+  rpc Close(MsgClose) returns (MsgCloseResponse);
+  rpc ClaimRewards(MsgClaimRewards) returns (MsgClaimRewardsResponse);
+  rpc UpdateParams(MsgUpdateParams) returns (MsgUpdateParamsResponse);
+  rpc UpdatePools(MsgUpdatePools) returns (MsgUpdatePoolsResponse);
+  rpc Whitelist(MsgWhitelist) returns (MsgWhitelistResponse);
+  rpc Dewhitelist(MsgDewhitelist) returns (MsgDewhitelistResponse);
   rpc UpdateStopLoss (MsgUpdateStopLoss) returns (MsgUpdateStopLossResponse);
 }
 message MsgOpen {
@@ -37,6 +38,12 @@ message MsgClose {
 }
 
 message MsgCloseResponse {}
+
+message MsgClaimRewards {
+  string sender = 1;
+  repeated uint64 ids = 2;
+}
+message MsgClaimRewardsResponse {}
 
 message MsgUpdateParams {
   
