@@ -309,7 +309,8 @@ func SetupCoinPrices(ctx sdk.Context, oracle oraclekeeper.Keeper, assetProfiler 
 		Display: "ATOM",
 		Decimal: 6,
 	})
-	assetProfiler.SetEntry(ctx, profiletypes.Entry{BaseDenom: ptypes.Elys})
+	assetProfiler.SetEntry(ctx, profiletypes.Entry{BaseDenom: ptypes.Elys, Denom: ptypes.Elys})
+	assetProfiler.SetEntry(ctx, profiletypes.Entry{BaseDenom: ptypes.BaseCurrency, Denom: ptypes.BaseCurrency})
 
 	oracle.SetPrice(ctx, oracletypes.Price{
 		Asset:     "USDC",
