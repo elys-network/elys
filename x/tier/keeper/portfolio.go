@@ -181,6 +181,10 @@ func (k Keeper) GetMembershipTier(ctx sdk.Context, user string) (total_portfoili
 		}
 	}
 
+	if minTotal.Equal(sdk.NewDec(math.MaxInt64)) {
+		return sdk.NewDec(0), "bronze", 0
+	}
+
 	// TODO: Make tier discount and minimum balance configurable
 	if minTotal.GTE(sdk.NewDec(500000)) {
 		return minTotal, "platinum", 30
