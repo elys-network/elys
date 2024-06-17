@@ -178,6 +178,29 @@ func TestGetPortfolioAmm(t *testing.T) {
 	require.Equal(t, portfolio, sdk.NewDec(100100))
 }
 
+func TestPortfolioGetDiscount(t *testing.T) {
+	keeper, ctx := keepertest.MembershiptierKeeper(t)
+	items := make([]types.Portfolio, 10)
+	for j := 0; j < 8; j++ {
+		ctx = ctx.WithBlockTime(ctx.BlockTime().AddDate(0, 0, 1))
+		for i := range items {
+			items[i].Creator = strconv.Itoa(i)
+			items[i].Portfolio = sdk.NewDec(400000)
+
+			keeper.SetPortfolio(ctx, keeper.GetDateFromBlock(ctx.BlockTime()), items[i].Creator, items[i])
+		}
+	}
+
+	items[9].Portfolio = sdk.NewDec(500)
+	keeper.SetPortfolio(ctx, keeper.GetDateFromBlock(ctx.BlockTime()), items[9].Creator, items[9])
+
+	_, _, discount := keeper.GetMembershipTier(ctx, items[0].Creator)
+	require.Equal(t, discount, uint64(20))
+
+	_, _, discount = keeper.GetMembershipTier(ctx, items[9].Creator)
+	require.Equal(t, discount, uint64(0))
+}
+
 func TestGetPortfolioPerpetual(t *testing.T) {
 	app := simapp.InitElysTestApp(true)
 	ctx := app.BaseApp.NewContext(true, tmproto.Header{})
@@ -286,7 +309,8 @@ func SetupCoinPrices(ctx sdk.Context, oracle oraclekeeper.Keeper, assetProfiler 
 		Display: "ATOM",
 		Decimal: 6,
 	})
-	assetProfiler.SetEntry(ctx, profiletypes.Entry{BaseDenom: ptypes.Elys})
+	assetProfiler.SetEntry(ctx, profiletypes.Entry{BaseDenom: ptypes.Elys, Denom: ptypes.Elys})
+	assetProfiler.SetEntry(ctx, profiletypes.Entry{BaseDenom: ptypes.BaseCurrency, Denom: ptypes.BaseCurrency})
 
 	oracle.SetPrice(ctx, oracletypes.Price{
 		Asset:     "USDC",
