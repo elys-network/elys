@@ -10,26 +10,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Set up Go
-        uses: actions/setup-go@v5
-        with:
-          go-version: "1.21"
-
-      - name: Cache delete-snapshot binary
-        id: cache-delete-snapshot
-        uses: actions/cache@v4
-        with:
-          path: |
-            ./build
-          key: ${{ runner.os }}-delete-snapshot-${{ hashFiles('cmd/delete-snapshot/*.go') }}
-
-      - name: Build delete-snapshot binary
-        if: steps.cache-delete-snapshot.outputs.cache-hit != 'true'
+      - name: Retrieve post upgrade snapshot generator binary
         run: |
-          make build-delete-snapshot
+          DOWNLOAD_URL=https://github.com/elys-network/post-upgrade-snapshot-generator/releases/download/v0.1.0/post-upgrade-snapshot-generator-v0.1.0-linux-amd64
+          POST_UPGRADE_SNAPSHOT_GENERATOR_PATH=/tmp/post-upgrade-snapshot-generator-v0.1.0
+          curl -L $DOWNLOAD_URL -o $POST_UPGRADE_SNAPSHOT_GENERATOR_PATH && chmod +x $POST_UPGRADE_SNAPSHOT_GENERATOR_PATH
+          echo "POST_UPGRADE_SNAPSHOT_GENERATOR_PATH=$POST_UPGRADE_SNAPSHOT_GENERATOR_PATH" >> $GITHUB_ENV
 
       - name: Run delete-snapshot
         env:
@@ -40,4 +26,4 @@ jobs:
         run: |
           SANITIZED_EVENT_REF=${{ github.event.ref }}
           SANITIZED_EVENT_REF=$(echo "$SANITIZED_EVENT_REF" | sed 's|refs/heads/||; s|/|_|g')
-          ./build/delete-snapshot "$SANITIZED_EVENT_REF"
+          ${POST_UPGRADE_SNAPSHOT_GENERATOR_PATH} delete-snapshot "$SANITIZED_EVENT_REF"
