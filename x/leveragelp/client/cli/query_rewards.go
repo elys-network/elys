@@ -23,7 +23,7 @@ func CmdRewards() *cobra.Command {
 				return err
 			}
 
-			positionStrs := strings.Split(args[0], ",")
+			positionStrs := strings.Split(args[1], ",")
 			positionIds := []uint64{}
 			for _, positionStr := range positionStrs {
 				id, err := strconv.Atoi(positionStr)
