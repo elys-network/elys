@@ -14,7 +14,7 @@ import (
 func CmdRewards() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "rewards [address] [position-ids]",
-		Short: "Query position",
+		Short: "Query rewards for position ids owned by address",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			reqAddress := args[0]
