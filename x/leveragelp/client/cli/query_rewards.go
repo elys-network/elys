@@ -13,7 +13,7 @@ import (
 
 func CmdRewards() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "get-position [address] [position-ids]",
+		Use:   "rewards [address] [position-ids]",
 		Short: "Query position",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
