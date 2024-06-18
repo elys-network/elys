@@ -120,6 +120,7 @@ func (k msgServer) AddExternalIncentive(goCtx context.Context, msg *types.MsgAdd
 		Apr:            math.LegacyZeroDec(),
 	}
 	k.Keeper.SetExternalIncentive(ctx, externalIncentive)
+	k.SetExternalIncentiveIndex(ctx, externalIncentive.Id+1)
 
 	ctx.EventManager().EmitEvents(sdk.Events{
 		sdk.NewEvent(
