@@ -19,19 +19,19 @@ func TestPoolRewardInfo(t *testing.T) {
 			PoolId:                1,
 			RewardDenom:           "reward1",
 			PoolAccRewardPerShare: sdk.OneDec(),
-			LastUpdatedBlock:      0,
+			LastUpdatedBlock:      uint64(ctx.BlockHeight()),
 		},
 		{
 			PoolId:                1,
 			RewardDenom:           "reward2",
 			PoolAccRewardPerShare: sdk.OneDec(),
-			LastUpdatedBlock:      0,
+			LastUpdatedBlock:      uint64(ctx.BlockHeight()),
 		},
 		{
 			PoolId:                2,
 			RewardDenom:           "reward2",
 			PoolAccRewardPerShare: sdk.OneDec(),
-			LastUpdatedBlock:      0,
+			LastUpdatedBlock:      uint64(ctx.BlockHeight()),
 		},
 	}
 	for _, rewardInfo := range poolRewardInfos {
