@@ -30,7 +30,7 @@ func (k Keeper) RetreiveAllPortfolio(ctx sdk.Context, user string) {
 	totalValue := sdk.NewDec(0)
 	for _, balance := range balances {
 		tokenPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, balance.Denom)
-		asset, found := k.assetProfileKeeper.GetEntry(ctx, balance.Denom)
+		asset, found := k.assetProfileKeeper.GetEntryByDenom(ctx, balance.Denom)
 		if !found {
 			continue
 		}
@@ -45,7 +45,7 @@ func (k Keeper) RetreiveAllPortfolio(ctx sdk.Context, user string) {
 	if err1 == nil {
 		for _, balance := range estaking.Total {
 			tokenPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, balance.Denom)
-			asset, found := k.assetProfileKeeper.GetEntry(ctx, balance.Denom)
+			asset, found := k.assetProfileKeeper.GetEntryByDenom(ctx, balance.Denom)
 			if !found {
 				continue
 			}
@@ -57,7 +57,7 @@ func (k Keeper) RetreiveAllPortfolio(ctx sdk.Context, user string) {
 	if err2 == nil {
 		for _, balance := range masterchef.TotalRewards {
 			tokenPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, balance.Denom)
-			asset, found := k.assetProfileKeeper.GetEntry(ctx, balance.Denom)
+			asset, found := k.assetProfileKeeper.GetEntryByDenom(ctx, balance.Denom)
 			if !found {
 				continue
 			}
@@ -70,7 +70,7 @@ func (k Keeper) RetreiveAllPortfolio(ctx sdk.Context, user string) {
 	perpetuals, _, err := k.perpetual.GetMTPsForAddress(ctx, sender, &query.PageRequest{})
 	if err == nil {
 		for _, perpetual := range perpetuals {
-			asset, found := k.assetProfileKeeper.GetEntry(ctx, perpetual.GetTradingAsset())
+			asset, found := k.assetProfileKeeper.GetEntryByDenom(ctx, perpetual.GetTradingAsset())
 			if !found {
 				continue
 			}
@@ -98,7 +98,7 @@ func (k Keeper) RetreiveAllPortfolio(ctx sdk.Context, user string) {
 			totalValue = totalValue.Add(amount.Mul(info.LpTokenPrice))
 		} else {
 			tokenPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, commitment.Denom)
-			asset, found := k.assetProfileKeeper.GetEntry(ctx, commitment.Denom)
+			asset, found := k.assetProfileKeeper.GetEntryByDenom(ctx, commitment.Denom)
 			if !found {
 				continue
 			}
@@ -111,7 +111,7 @@ func (k Keeper) RetreiveAllPortfolio(ctx sdk.Context, user string) {
 	delegations := k.stakingKeeper.GetAllDelegatorDelegations(ctx, sender)
 	bondDenom := k.stakingKeeper.BondDenom(ctx)
 	tokenPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, bondDenom)
-	asset, found := k.assetProfileKeeper.GetEntry(ctx, bondDenom)
+	asset, found := k.assetProfileKeeper.GetEntryByDenom(ctx, bondDenom)
 	if found {
 		for _, delegation := range delegations {
 			amount := delegation.Shares.Quo(Pow10(asset.Decimals))
@@ -179,6 +179,10 @@ func (k Keeper) GetMembershipTier(ctx sdk.Context, user string) (total_portfoili
 		if found && totalPort.LT(minTotal) {
 			minTotal = totalPort
 		}
+	}
+
+	if minTotal.Equal(sdk.NewDec(math.MaxInt64)) {
+		return sdk.NewDec(0), "bronze", 0
 	}
 
 	// TODO: Make tier discount and minimum balance configurable
