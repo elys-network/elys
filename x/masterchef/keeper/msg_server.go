@@ -114,7 +114,7 @@ func (k msgServer) AddExternalIncentive(goCtx context.Context, msg *types.MsgAdd
 	return &types.MsgAddExternalIncentiveResponse{}, nil
 }
 
-func (k Keeper) ClaimRewards(ctx sdk.Context, sender sdk.AccAddress, poolIds []uint64) error {
+func (k Keeper) ClaimRewards(ctx sdk.Context, sender sdk.AccAddress, poolIds []uint64, recipient sdk.AccAddress) error {
 	coins := sdk.NewCoins()
 	for _, poolId := range poolIds {
 		k.AfterWithdraw(ctx, poolId, sender.String(), sdk.ZeroInt())
@@ -132,7 +132,7 @@ func (k Keeper) ClaimRewards(ctx sdk.Context, sender sdk.AccAddress, poolIds []u
 	}
 
 	// Transfer rewards (Eden/EdenB is transferred through commitment module)
-	err := k.cmk.SendCoinsFromModuleToAccount(ctx, types.ModuleName, sender, coins)
+	err := k.cmk.SendCoinsFromModuleToAccount(ctx, types.ModuleName, recipient, coins)
 	if err != nil {
 		return err
 	}
@@ -150,7 +150,7 @@ func (k msgServer) ClaimRewards(goCtx context.Context, msg *types.MsgClaimReward
 		}
 	}
 
-	err := k.Keeper.ClaimRewards(ctx, sender, msg.PoolIds)
+	err := k.Keeper.ClaimRewards(ctx, sender, msg.PoolIds, sender)
 	if err != nil {
 		return nil, err
 	}
