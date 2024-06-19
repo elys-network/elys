@@ -144,12 +144,8 @@ func (k Keeper) RetreiveLeverageLpTotal(ctx sdk.Context, user sdk.AccAddress, re
 			if !found {
 				continue
 			}
-			asset, found := k.assetProfileKeeper.GetEntryByDenom(ctx, pool.TotalShares.Denom)
-			if !found {
-				continue
-			}
 			info := k.amm.PoolExtraInfo(ctx, pool)
-			amount := position.LeveragedLpAmount.ToLegacyDec().Quo(Pow10(asset.Decimals))
+			amount := position.LeveragedLpAmount.ToLegacyDec().Quo(Pow10(18))
 			totalValue = totalValue.Add(amount.Mul(info.LpTokenPrice))
 		}
 	}
