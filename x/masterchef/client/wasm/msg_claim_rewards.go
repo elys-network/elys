@@ -28,7 +28,7 @@ func (m *Messenger) msgClaimRewards(ctx sdk.Context, contractAddr sdk.AccAddress
 
 	responseBytes, err := json.Marshal(*res)
 	if err != nil {
-		return nil, nil, errorsmod.Wrap(err, "failed to serialize stake")
+		return nil, nil, errorsmod.Wrap(err, "failed to serialize claim rewards response")
 	}
 
 	resp := [][]byte{responseBytes}
@@ -44,7 +44,7 @@ func performMsgClaimRewards(f *masterchefkeeper.Keeper, ctx sdk.Context, contrac
 	msgServer := masterchefkeeper.NewMsgServerImpl(*f)
 	_, err := sdk.AccAddressFromBech32(msgClaimRewards.Sender)
 	if err != nil {
-		return nil, errorsmod.Wrap(err, "invalid address")
+		return nil, errorsmod.Wrap(err, "invalid claim rewards msg sender address")
 	}
 
 	msgMsgClaimRewards := &types.MsgClaimRewards{
@@ -53,17 +53,17 @@ func performMsgClaimRewards(f *masterchefkeeper.Keeper, ctx sdk.Context, contrac
 	}
 
 	if err := msgMsgClaimRewards.ValidateBasic(); err != nil {
-		return nil, errorsmod.Wrap(err, "failed validating msgMsgDelegate")
+		return nil, errorsmod.Wrap(err, "failed validating msgMsgClaimRewards")
 	}
 
 	_, err = msgServer.ClaimRewards(sdk.WrapSDKContext(ctx), msgMsgClaimRewards) // Discard the response because it's empty
 	if err != nil {
-		return nil, errorsmod.Wrap(err, "elys redelegation msg")
+		return nil, errorsmod.Wrap(err, "failed to process claim rewards msg")
 	}
 
 	resp := &wasmbindingstypes.RequestResponse{
 		Code:   paramtypes.RES_OK,
-		Result: "Redelegation succeed!",
+		Result: "Claim rewards succeed!",
 	}
 
 	return resp, nil

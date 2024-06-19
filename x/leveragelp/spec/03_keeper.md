@@ -20,13 +20,27 @@ The `Close` function allows a user to close a leveraged position, either partial
 
 The `BeginBlocker` function performs regular health checks on all positions and liquidates unhealthy positions if necessary.
 
+### Positions indexing
+
+Two indexings are available to
+
+- sort positions by risk level per pool
+- sort positions by stopLossPrice per pool
+
 ## BeginBlocker
 
 The `BeginBlocker` function is called at the beginning of each block to perform necessary updates and maintenance for the `leveragelp` module. It processes health checks and liquidates unhealthy positions if needed.
 
+- To avoid time complexity in liquidation flow, it's iterating till it meets the first healthy position.
+- To avoid time complexity in stop loss close position, it's iterating till it meets the first acceptable stop loss unclose position.
+
 ### LiquidatePositionIfUnhealthy
 
 The `LiquidatePositionIfUnhealthy` function checks the health of a position and liquidates it if it is unhealthy.
+
+### ClosePositionIfUnderStopLossPrice
+
+The `ClosePositionIfUnderStopLossPrice` function checks if the position lp token price is lower than stopLossPrice, it close the position.
 
 ### UpdatePoolHealth
 

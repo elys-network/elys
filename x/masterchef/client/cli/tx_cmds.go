@@ -40,11 +40,11 @@ func CmdAddExternalIncentive() *cobra.Command {
 			if err != nil {
 				return errors.New("invalid pool id")
 			}
-			fromBlock, err := strconv.ParseUint(args[2], 10, 64)
+			fromBlock, err := strconv.ParseInt(args[2], 10, 64)
 			if err != nil {
 				return errors.New("invalid from block")
 			}
-			toBlock, err := strconv.ParseUint(args[3], 10, 64)
+			toBlock, err := strconv.ParseInt(args[3], 10, 64)
 			if err != nil {
 				return errors.New("invalid to block")
 			}
