@@ -84,5 +84,10 @@ message QueryLeverageLpTotalRequest {
   bool   realtime = 2;
 }
 
-message QueryLeverageLpTotalResponse {}
+message QueryLeverageLpTotalResponse {
+  string total = 1 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+}
 

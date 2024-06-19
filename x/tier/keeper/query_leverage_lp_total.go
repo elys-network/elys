@@ -15,9 +15,10 @@ func (k Keeper) LeverageLpTotal(goCtx context.Context, req *types.QueryLeverageL
 	}
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
+	sender := sdk.MustAccAddressFromBech32(req.User)
+	total := k.RetreiveLeverageLpTotal(ctx, sender, req.Realtime)
 
-	// TODO: Process the query
-	_ = ctx
-
-	return &types.QueryLeverageLpTotalResponse{}, nil
+	return &types.QueryLeverageLpTotalResponse{
+		Total: total,
+	}, nil
 }

@@ -135,20 +135,25 @@ func (k Keeper) RetreiveAllPortfolio(ctx sdk.Context, user string) {
 	})
 }
 
-func (k Keeper) RetreiveLeverageLpTotal(ctx sdk.Context, user sdk.AccAddress, realtime bool) {
+func (k Keeper) RetreiveLeverageLpTotal(ctx sdk.Context, user sdk.AccAddress, realtime bool) sdk.Dec {
 	positions, _, err := k.leveragelp.GetPositionsForAddress(ctx, user, &query.PageRequest{})
 	totalValue := sdk.NewDec(0)
 	if err == nil {
 		for _, position := range positions {
-			// asset, found := k.assetProfileKeeper.GetEntryByDenom(ctx, perpetual.GetTradingAsset())
-			// if !found {
-			// 	continue
-			// }
-			// tokenPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, asset.Denom)
-			// amount := perpetual.Custody.ToLegacyDec().Quo(Pow10(asset.Decimals))
-			// totalValue = totalValue.Add((amount.Mul(tokenPrice)))
+			pool, found := k.amm.GetPool(ctx, position.AmmPoolId)
+			if !found {
+				continue
+			}
+			asset, found := k.assetProfileKeeper.GetEntryByDenom(ctx, pool.TotalShares.Denom)
+			if !found {
+				continue
+			}
+			info := k.amm.PoolExtraInfo(ctx, pool)
+			amount := position.LeveragedLpAmount.ToLegacyDec().Quo(Pow10(asset.Decimals))
+			totalValue = totalValue.Add(amount.Mul(info.LpTokenPrice))
 		}
 	}
+	return totalValue
 }
 
 // SetPortfolio set a specific portfolio in the store from its index
