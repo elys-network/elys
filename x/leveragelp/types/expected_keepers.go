@@ -76,6 +76,6 @@ type AssetProfileKeeper interface {
 
 // MasterchefKeeper defines expected interface for masterchef keeper
 type MasterchefKeeper interface {
-	ClaimRewards(ctx sdk.Context, sender sdk.AccAddress, poolIds []uint64) error
+	ClaimRewards(ctx sdk.Context, sender sdk.AccAddress, poolIds []uint64, recipient sdk.AccAddress) error
 	UserPoolPendingReward(ctx sdk.Context, user sdk.AccAddress, poolId uint64) sdk.Coins
 }

@@ -46,27 +46,46 @@ func (k msgServer) WithdrawReward(goCtx context.Context, msg *types.MsgWithdrawR
 		return nil, err
 	}
 
+	ctx.EventManager().EmitEvents(sdk.Events{
+		sdk.NewEvent(
+			types.TypeEvtWithdrawReward,
+			sdk.NewAttribute(types.AttributeDelegatorAddress, msg.DelegatorAddress),
+			sdk.NewAttribute(types.AttributeValidatorAddress, msg.ValidatorAddress),
+			sdk.NewAttribute(types.AttributeAmount, amount.String()),
+		),
+	})
 	return &types.MsgWithdrawRewardResponse{Amount: amount}, nil
 }
 
 func (k msgServer) WithdrawElysStakingRewards(goCtx context.Context, msg *types.MsgWithdrawElysStakingRewards) (*types.MsgWithdrawElysStakingRewardsResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-
 	delAddr := sdk.MustAccAddressFromBech32(msg.DelegatorAddress)
-	delegations := k.Keeper.Keeper.GetDelegatorDelegations(ctx, delAddr, 1024)
-	rewards := sdk.Coins{}
-	for _, del := range delegations {
-		valAddr, err := sdk.ValAddressFromBech32(del.ValidatorAddress)
+
+	var amount sdk.Coins
+	var err error = nil
+	var rewards = sdk.Coins{}
+	k.Keeper.Keeper.IterateDelegations(ctx, delAddr, func(index int64, del stakingtypes.DelegationI) (stop bool) {
+		valAddr := del.GetValidatorAddr()
+		amount, err = k.distrKeeper.WithdrawDelegationRewards(ctx, delAddr, valAddr)
 		if err != nil {
-			return nil, err
-		}
-		amount, err := k.distrKeeper.WithdrawDelegationRewards(ctx, delAddr, valAddr)
-		if err != nil {
-			return nil, err
+			return true
 		}
 		rewards = rewards.Add(amount...)
-	}
 
+		ctx.EventManager().EmitEvents(sdk.Events{
+			sdk.NewEvent(
+				types.TypeEvtWithdrawReward,
+				sdk.NewAttribute(types.AttributeDelegatorAddress, msg.DelegatorAddress),
+				sdk.NewAttribute(types.AttributeValidatorAddress, valAddr.String()),
+				sdk.NewAttribute(types.AttributeAmount, amount.String()),
+			),
+		})
+		return false
+	})
+
+	if err != nil {
+		return nil, err
+	}
 	return &types.MsgWithdrawElysStakingRewardsResponse{Amount: rewards}, nil
 }
 
@@ -83,6 +102,15 @@ func (k Keeper) WithdrawAllRewards(goCtx context.Context, msg *types.MsgWithdraw
 			return true
 		}
 		rewards = rewards.Add(amount...)
+
+		ctx.EventManager().EmitEvents(sdk.Events{
+			sdk.NewEvent(
+				types.TypeEvtWithdrawReward,
+				sdk.NewAttribute(types.AttributeDelegatorAddress, msg.DelegatorAddress),
+				sdk.NewAttribute(types.AttributeValidatorAddress, valAddr.String()),
+				sdk.NewAttribute(types.AttributeAmount, amount.String()),
+			),
+		})
 		return false
 	})
 
