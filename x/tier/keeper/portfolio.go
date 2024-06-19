@@ -135,6 +135,22 @@ func (k Keeper) RetreiveAllPortfolio(ctx sdk.Context, user string) {
 	})
 }
 
+func (k Keeper) RetreiveLeverageLpTotal(ctx sdk.Context, user sdk.AccAddress, realtime bool) {
+	positions, _, err := k.leveragelp.GetPositionsForAddress(ctx, user, &query.PageRequest{})
+	totalValue := sdk.NewDec(0)
+	if err == nil {
+		for _, position := range positions {
+			// asset, found := k.assetProfileKeeper.GetEntryByDenom(ctx, perpetual.GetTradingAsset())
+			// if !found {
+			// 	continue
+			// }
+			// tokenPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, asset.Denom)
+			// amount := perpetual.Custody.ToLegacyDec().Quo(Pow10(asset.Decimals))
+			// totalValue = totalValue.Add((amount.Mul(tokenPrice)))
+		}
+	}
+}
+
 // SetPortfolio set a specific portfolio in the store from its index
 func (k Keeper) SetPortfolio(ctx sdk.Context, todayDate string, user string, portfolio types.Portfolio) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(todayDate))
