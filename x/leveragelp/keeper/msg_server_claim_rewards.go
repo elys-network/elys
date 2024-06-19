@@ -23,16 +23,9 @@ func (k msgServer) ClaimRewards(goCtx context.Context, msg *types.MsgClaimReward
 		if position.Address != msg.Sender {
 			return nil, types.ErrPositionDoesNotExist
 		}
-		err = k.masterchefKeeper.ClaimRewards(ctx, posAddr, []uint64{position.Id})
+		err = k.masterchefKeeper.ClaimRewards(ctx, posAddr, []uint64{position.AmmPoolId}, sender)
 		if err != nil {
 			return nil, err
-		}
-		balances := k.bankKeeper.GetAllBalances(ctx, posAddr)
-		if balances.IsAllPositive() {
-			err := k.bankKeeper.SendCoins(ctx, posAddr, sender, balances)
-			if err != nil {
-				return nil, err
-			}
 		}
 	}
 
