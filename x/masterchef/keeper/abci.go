@@ -41,7 +41,7 @@ func (k Keeper) GetPoolTVL(ctx sdk.Context, poolId uint64) math.LegacyDec {
 
 func (k Keeper) ProcessExternalRewardsDistribution(ctx sdk.Context) {
 	baseCurrency, _ := k.assetProfileKeeper.GetUsdcDenom(ctx)
-	curBlockHeight := sdk.NewInt(ctx.BlockHeight())
+	curBlockHeight := ctx.BlockHeight()
 	totalBlocksPerYear := k.parameterKeeper.GetParams(ctx).TotalBlocksPerYear
 
 	externalIncentives := k.GetAllExternalIncentives(ctx)
@@ -52,7 +52,7 @@ func (k Keeper) ProcessExternalRewardsDistribution(ctx sdk.Context) {
 			continue
 		}
 
-		if externalIncentive.FromBlock < curBlockHeight.Uint64() && curBlockHeight.Uint64() <= externalIncentive.ToBlock {
+		if externalIncentive.FromBlock < curBlockHeight && curBlockHeight <= externalIncentive.ToBlock {
 			k.UpdateAccPerShare(ctx, externalIncentive.PoolId, externalIncentive.RewardDenom, externalIncentive.AmountPerBlock)
 
 			hasRewardDenom := false
@@ -89,7 +89,7 @@ func (k Keeper) ProcessExternalRewardsDistribution(ctx sdk.Context) {
 			}
 		}
 
-		if curBlockHeight.Uint64() == externalIncentive.ToBlock {
+		if curBlockHeight == externalIncentive.ToBlock {
 			k.RemoveExternalIncentive(ctx, externalIncentive.Id)
 		}
 	}
@@ -532,7 +532,7 @@ func (k Keeper) UpdateAmmPoolAPR(ctx sdk.Context, totalBlocksPerYear int64, tota
 		}
 
 		firstAccum := k.FirstPoolRewardsAccum(ctx, poolId)
-		lastAccum := k.FirstPoolRewardsAccum(ctx, poolId)
+		lastAccum := k.LastPoolRewardsAccum(ctx, poolId)
 		if lastAccum.Timestamp == 0 {
 			return false
 		}
