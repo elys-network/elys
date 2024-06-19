@@ -12,6 +12,7 @@ import (
 	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
 	commitmenttypes "github.com/elys-network/elys/x/commitment/types"
 	estakingtypes "github.com/elys-network/elys/x/estaking/types"
+	leveragelptypes "github.com/elys-network/elys/x/leveragelp/types"
 	mastercheftypes "github.com/elys-network/elys/x/masterchef/types"
 	oracletypes "github.com/elys-network/elys/x/oracle/types"
 	perpetualtypes "github.com/elys-network/elys/x/perpetual/types"
@@ -80,4 +81,8 @@ type StakingKeeper interface {
 		ctx sdk.Context, delegatorAddr sdk.AccAddress, maxRetrieve uint32,
 	) stakingtypes.Validators
 	GetAllDelegatorDelegations(ctx sdk.Context, delegator sdk.AccAddress) []stakingtypes.Delegation
+}
+
+type LeverageLpKeeper interface {
+	GetPositionsForAddress(ctx sdk.Context, positionAddress sdk.Address, pagination *query.PageRequest) ([]*leveragelptypes.Position, *query.PageResponse, error)
 }
