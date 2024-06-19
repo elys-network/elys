@@ -17,14 +17,6 @@ func (k Keeper) SetExternalIncentiveIndex(ctx sdk.Context, index uint64) {
 	store.Set(types.ExternalIncentiveIndex(), sdk.Uint64ToBigEndian(index))
 }
 
-func (k Keeper) AddExternalIncentive(ctx sdk.Context, externalIncentive types.ExternalIncentive) {
-	// Update external incentive index and increase +1
-	index := k.GetExternalIncentiveIndex(ctx)
-	externalIncentive.Id = index
-	k.SetExternalIncentiveIndex(ctx, index+1)
-	k.SetExternalIncentive(ctx, externalIncentive)
-}
-
 func (k Keeper) SetExternalIncentive(ctx sdk.Context, externalIncentive types.ExternalIncentive) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.ExternalIncentiveKeyPrefix))
 	b := k.cdc.MustMarshal(&externalIncentive)
