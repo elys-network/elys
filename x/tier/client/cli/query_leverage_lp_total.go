@@ -15,7 +15,7 @@ func CmdLeverageLpTotal() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "leverage-lp-total [user]",
 		Short: "Query leverage-lp-total",
-		Args:  cobra.ExactArgs(2),
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			reqUser := args[0]
 			if err != nil {
