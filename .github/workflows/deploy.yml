@@ -21,7 +21,7 @@ jobs:
         uses: actions/checkout@v4
       - name: Setting variables
         run: |
-          VER=$(cat .version)
+          VER=v${{ github.sha }}
           echo "VERSION=$VER"    >> $GITHUB_ENV
           echo "BINARY=${NAME}d" >> $GITHUB_ENV
           echo "NAME_WITH_VERSION=${NAME}-${VER}" >> $GITHUB_ENV
@@ -111,14 +111,20 @@ jobs:
               --deposit=10000000uelys \
               --upgrade-height=$height \
               --title="${{env.VERSION}}" \
-              --description="Elys Network${{env.VERSION}} released. Focuses on enhancements and codebase improvements." \
+              --description="Elys Network version ${{env.VERSION}} released. Focuses on enhancements and codebase improvements." \
               --upgrade-info="{\"binaries\":{\"linux/amd64\":\"https://snapshots.elys.network/releases/${{env.NAME_WITH_VERSION}}.tar.gz\"}}" \
               --no-validate \
               --from=mallorca \
               $OPTIONS | extract_txhash
           )             
           sleep 10
+
+          #Tx Hash
+          echo "software upgrade tx hash:" $txhash
           proposalid=$($ELYSD q tx $txhash --node $NODE | extract_proposal_id)
+
+          #Proposal Id
+          echo "Proposal Id:" $proposalid
 
           # vote on proposal
           $ELYSD tx gov vote $proposalid yes --from=fuji $OPTIONS
