@@ -13,8 +13,8 @@ import (
 
 func CmdRewards() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "get-position [address] [position-ids]",
-		Short: "Query position",
+		Use:   "rewards [address] [position-ids]",
+		Short: "Query rewards for position ids owned by address",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			reqAddress := args[0]
@@ -23,7 +23,7 @@ func CmdRewards() *cobra.Command {
 				return err
 			}
 
-			positionStrs := strings.Split(args[0], ",")
+			positionStrs := strings.Split(args[1], ",")
 			positionIds := []uint64{}
 			for _, positionStr := range positionStrs {
 				id, err := strconv.Atoi(positionStr)
