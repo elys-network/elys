@@ -129,6 +129,10 @@ func (k Keeper) RetreiveAllPortfolio(ctx sdk.Context, user string) {
 		}
 	}
 
+	// LeverageLp
+	lev := k.RetreiveLeverageLpTotal(ctx, sender)
+	totalValue = totalValue.Add(lev)
+
 	k.SetPortfolio(ctx, todayDate, sender.String(), types.Portfolio{
 		Creator:   user,
 		Portfolio: totalValue,
