@@ -18,14 +18,24 @@ elysd tx stablestake bond 100000000 --from=treasury --keyring-backend=test --cha
 elysd tx gov submit-proposal proposal.json --from=treasury --keyring-backend=test --chain-id=elystestnet-1 --yes --gas=1000000
 elysd tx gov vote 1 Yes --from=treasury --keyring-backend=test --chain-id=elystestnet-1 --yes --gas=1000000
 elysd tx gov vote 3 Yes --from=treasury --keyring-backend=test --chain-id=elystestnet-1 --yes --gas=1000000
+elysd query gov proposals
 
 # Open position
-elysd tx leveragelp open 5 uusdc 500000 1 --from=treasury --keyring-backend=test --chain-id=elystestnet-1 --yes --gas=1000000 --fees=250uelys
+elysd tx leveragelp open 5.0 uusdc 500000 1 0.0 --from=treasury --keyring-backend=test --chain-id=elystestnet-1 --yes --gas=1000000 --fees=250uelys
 elysd tx leveragelp open [leverage] [collateral-asset] [collateral-amount] [amm-pool-id] [flags]
 
 # Close position
 elysd tx leveragelp close 1 --from=treasury --keyring-backend=test --chain-id=elystestnet-1 --yes --gas=1000000
 elysd tx leveragelp close [position-id] [flags]
+
+# Query rewards
+elysd query leveragelp rewards $(elysd keys show -a treasury --keyring-backend=test) 1 --output=json
+# {"rewards":[{"position_id":"1","reward":[{"denom":"ueden","amount":"3086835"}]}],"total_rewards":[{"denom":"ueden","amount":"3086835"}]}
+
+# Claim rewards
+elysd tx leveragelp claim-rewards 1 --from=treasury --keyring-backend=test --chain-id=elystestnet-1 --yes --gas=1000000
+
+elysd query commitment show-commitments $(elysd keys show -a treasury --keyring-backend=test)
 
 # Testnet
 elysd query oracle show-price ATOM  --node=https://rpc.testnet.elys.network:443
