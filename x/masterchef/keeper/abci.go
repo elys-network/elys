@@ -532,7 +532,7 @@ func (k Keeper) UpdateAmmPoolAPR(ctx sdk.Context, totalBlocksPerYear int64, tota
 		}
 
 		firstAccum := k.FirstPoolRewardsAccum(ctx, poolId)
-		lastAccum := k.FirstPoolRewardsAccum(ctx, poolId)
+		lastAccum := k.LastPoolRewardsAccum(ctx, poolId)
 		if lastAccum.Timestamp == 0 {
 			return false
 		}
