@@ -37,7 +37,7 @@ service Query {
   
   // Queries a list of LeverageLpTotal items.
   rpc LeverageLpTotal (QueryLeverageLpTotalRequest) returns (QueryLeverageLpTotalResponse) {
-    option (google.api.http).get = "/elys-network/elys/tier/leverage_lp_total/{user}/{realtime}";
+    option (google.api.http).get = "/elys-network/elys/tier/leverage_lp_total/{user}";
   
   }
 }
@@ -81,7 +81,6 @@ message QueryCalculateDiscountResponse {
 
 message QueryLeverageLpTotalRequest {
   string user     = 1;
-  bool   realtime = 2;
 }
 
 message QueryLeverageLpTotalResponse {

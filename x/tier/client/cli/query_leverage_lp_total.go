@@ -6,7 +6,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/elys-network/elys/x/tier/types"
-	"github.com/spf13/cast"
 	"github.com/spf13/cobra"
 )
 
@@ -14,12 +13,11 @@ var _ = strconv.Itoa(0)
 
 func CmdLeverageLpTotal() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "leverage-lp-total [user] [realtime]",
+		Use:   "leverage-lp-total [user]",
 		Short: "Query leverage-lp-total",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			reqUser := args[0]
-			reqRealtime, err := cast.ToBoolE(args[1])
 			if err != nil {
 				return err
 			}
@@ -32,9 +30,7 @@ func CmdLeverageLpTotal() *cobra.Command {
 			queryClient := types.NewQueryClient(clientCtx)
 
 			params := &types.QueryLeverageLpTotalRequest{
-
-				User:     reqUser,
-				Realtime: reqRealtime,
+				User: reqUser,
 			}
 
 			res, err := queryClient.LeverageLpTotal(cmd.Context(), params)

@@ -135,7 +135,7 @@ func (k Keeper) RetreiveAllPortfolio(ctx sdk.Context, user string) {
 	})
 }
 
-func (k Keeper) RetreiveLeverageLpTotal(ctx sdk.Context, user sdk.AccAddress, realtime bool) sdk.Dec {
+func (k Keeper) RetreiveLeverageLpTotal(ctx sdk.Context, user sdk.AccAddress) sdk.Dec {
 	positions, _, err := k.leveragelp.GetPositionsForAddress(ctx, user, &query.PageRequest{})
 	totalValue := sdk.NewDec(0)
 	if err == nil {
