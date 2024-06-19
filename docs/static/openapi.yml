@@ -41978,10 +41978,10 @@ paths:
                     format: uint64
                   from_block:
                     type: string
-                    format: uint64
+                    format: int64
                   to_block:
                     type: string
-                    format: uint64
+                    format: int64
                   amount_per_block:
                     type: string
                   apr:
@@ -87291,10 +87291,10 @@ definitions:
         format: uint64
       from_block:
         type: string
-        format: uint64
+        format: int64
       to_block:
         type: string
-        format: uint64
+        format: int64
       amount_per_block:
         type: string
       apr:
@@ -87449,10 +87449,10 @@ definitions:
             format: uint64
           from_block:
             type: string
-            format: uint64
+            format: int64
           to_block:
             type: string
-            format: uint64
+            format: int64
           amount_per_block:
             type: string
           apr:
