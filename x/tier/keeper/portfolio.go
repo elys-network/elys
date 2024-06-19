@@ -9,6 +9,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
+	ammtypes "github.com/elys-network/elys/x/amm/types"
 	estakingtypes "github.com/elys-network/elys/x/estaking/types"
 	mastercheftypes "github.com/elys-network/elys/x/masterchef/types"
 
@@ -149,8 +150,8 @@ func (k Keeper) RetreiveLeverageLpTotal(ctx sdk.Context, user sdk.AccAddress) sd
 				continue
 			}
 			info := k.amm.PoolExtraInfo(ctx, pool)
-			amount := position.LeveragedLpAmount.ToLegacyDec().Quo(Pow10(18))
-			totalValue = totalValue.Add(amount.Mul(info.LpTokenPrice))
+			amount := position.LeveragedLpAmount.ToLegacyDec()
+			totalValue = totalValue.Add(amount.Mul(info.LpTokenPrice)).QuoInt(ammtypes.OneShare)
 		}
 	}
 	return totalValue
