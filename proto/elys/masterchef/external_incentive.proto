@@ -10,10 +10,12 @@ message ExternalIncentive {
   uint64 id = 1;
   string reward_denom = 2;
   uint64 pool_id = 3;
-  uint64 from_block = 4;
-  uint64 to_block = 5;
-	string amount_per_block = 6
-    [ (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false];
+  int64 from_block = 4;
+  int64 to_block = 5;
+  string amount_per_block = 6 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
   string apr = 7 
     [ (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
 }
