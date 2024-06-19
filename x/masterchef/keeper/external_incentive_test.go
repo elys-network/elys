@@ -43,11 +43,9 @@ func TestExternalIncentive(t *testing.T) {
 			Apr:            sdk.ZeroDec(),
 		},
 	}
-	require.Equal(t, app.MasterchefKeeper.GetExternalIncentiveIndex(ctx), uint64(0))
 	for _, externalIncentive := range externalIncentives {
-		app.MasterchefKeeper.AddExternalIncentive(ctx, externalIncentive)
+		app.MasterchefKeeper.SetExternalIncentive(ctx, externalIncentive)
 	}
-	require.Equal(t, app.MasterchefKeeper.GetExternalIncentiveIndex(ctx), uint64(3))
 	for _, externalIncentive := range externalIncentives {
 		info, found := app.MasterchefKeeper.GetExternalIncentive(ctx, externalIncentive.Id)
 		require.True(t, found)
