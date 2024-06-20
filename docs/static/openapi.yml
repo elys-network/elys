@@ -44842,7 +44842,7 @@ paths:
           type: string
       tags:
         - Query
-  /elys-network/elys/tier/leverage_lp_total/{user}/{realtime}:
+  /elys-network/elys/tier/leverage_lp_total/{user}:
     get:
       summary: Queries a list of LeverageLpTotal items.
       operationId: ElysTierLeverageLpTotal
@@ -44851,6 +44851,9 @@ paths:
           description: A successful response.
           schema:
             type: object
+            properties:
+              total:
+                type: string
         default:
           description: An unexpected error response.
           schema:
@@ -44874,10 +44877,6 @@ paths:
           in: path
           required: true
           type: string
-        - name: realtime
-          in: path
-          required: true
-          type: boolean
       tags:
         - Query
   /elys-network/elys/tokenomics/airdrop:
@@ -88288,6 +88287,8 @@ definitions:
             type: string
   elys.perpetual.MsgAddCollateralResponse:
     type: object
+  elys.perpetual.MsgBrokerAddCollateralResponse:
+    type: object
   elys.perpetual.MsgCloseResponse:
     type: object
     properties:
@@ -89211,6 +89212,9 @@ definitions:
         type: string
   elys.tier.QueryLeverageLpTotalResponse:
     type: object
+    properties:
+      total:
+        type: string
   elys.tier.QueryParamsResponse:
     type: object
     properties:

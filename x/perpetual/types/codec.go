@@ -14,6 +14,7 @@ func RegisterCodec(cdc *codec.LegacyAmino) {
 	cdc.RegisterConcrete(&MsgWhitelist{}, "perpetual/Whitelist", nil)
 	cdc.RegisterConcrete(&MsgDewhitelist{}, "perpetual/Dewhitelist", nil)
 	cdc.RegisterConcrete(&MsgAddCollateral{}, "perpetual/AddCollateral", nil)
+	cdc.RegisterConcrete(&MsgBrokerAddCollateral{}, "perpetual/BrokerAddCollateral", nil)
 	// this line is used by starport scaffolding # 2
 }
 
@@ -28,6 +29,9 @@ func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 
 	registry.RegisterImplementations((*sdk.Msg)(nil),
 		&MsgAddCollateral{},
+	)
+	registry.RegisterImplementations((*sdk.Msg)(nil),
+		&MsgBrokerAddCollateral{},
 	)
 	// this line is used by starport scaffolding # 3
 
