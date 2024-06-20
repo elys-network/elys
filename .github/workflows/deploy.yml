@@ -77,6 +77,14 @@ jobs:
           r2-bucket: ${{ secrets.R2_BUCKET }}
           source-dir: ${{env.NAME_WITH_VERSION}}
           destination-dir: releases
+      - name: Backup Devnet
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          passphrase: ${{ secrets.SSH_PASSPHRASE }}
+          script: /bin/bash /home/ubuntu/ci-cd-devnet-backup-and-rollback/backup.sh
       - name: Creating software upgrade proposal
         run: |
 
