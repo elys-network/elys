@@ -35,7 +35,7 @@ func (k Keeper) UpdateAccPerShare(ctx sdk.Context, poolId uint64, rewardDenom st
 			PoolId:                poolId,
 			RewardDenom:           rewardDenom,
 			PoolAccRewardPerShare: sdk.NewDec(0),
-			LastUpdatedBlock:      0,
+			LastUpdatedBlock:      uint64(ctx.BlockHeight()),
 		}
 	}
 
@@ -58,7 +58,7 @@ func (k Keeper) UpdateUserRewardPending(ctx sdk.Context, poolId uint64, rewardDe
 			PoolId:                poolId,
 			RewardDenom:           rewardDenom,
 			PoolAccRewardPerShare: sdk.NewDec(0),
-			LastUpdatedBlock:      0,
+			LastUpdatedBlock:      uint64(ctx.BlockHeight()),
 		}
 	}
 
@@ -98,7 +98,7 @@ func (k Keeper) UpdateUserRewardDebt(ctx sdk.Context, poolId uint64, rewardDenom
 			PoolId:                poolId,
 			RewardDenom:           rewardDenom,
 			PoolAccRewardPerShare: sdk.NewDec(0),
-			LastUpdatedBlock:      0,
+			LastUpdatedBlock:      uint64(ctx.BlockHeight()),
 		}
 	}
 

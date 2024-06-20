@@ -34,6 +34,12 @@ service Query {
     option (google.api.http).get = "/elys-network/elys/membershiptier/calculate_discount/{user}";
   
   }
+  
+  // Queries a list of LeverageLpTotal items.
+  rpc LeverageLpTotal (QueryLeverageLpTotalRequest) returns (QueryLeverageLpTotalResponse) {
+    option (google.api.http).get = "/elys-network/elys/tier/leverage_lp_total/{user}";
+  
+  }
 }
 // QueryParamsRequest is request type for the Query/Params RPC method.
 message QueryParamsRequest {}
@@ -68,8 +74,19 @@ message QueryCalculateDiscountRequest {
 }
 
 message QueryCalculateDiscountResponse {
-  string discount = 1;
-  string tier = 2;
+  string discount  = 1;
+  string tier      = 2;
   string portfolio = 3;
+}
+
+message QueryLeverageLpTotalRequest {
+  string user     = 1;
+}
+
+message QueryLeverageLpTotalResponse {
+  string total = 1 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
 }
 

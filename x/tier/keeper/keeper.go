@@ -27,6 +27,7 @@ type (
 		commitement        types.CommitmentKeeper
 		perpetual          types.PerpetualKeeper
 		stakingKeeper      types.StakingKeeper
+		leveragelp         types.LeverageLpKeeper
 	}
 )
 
@@ -44,6 +45,7 @@ func NewKeeper(
 	commitement types.CommitmentKeeper,
 	stakingKeeper types.StakingKeeper,
 	perpetual types.PerpetualKeeper,
+	leveragelp types.LeverageLpKeeper,
 ) *Keeper {
 	// set KeyTable if it has not already been set
 	if !ps.HasKeyTable() {
@@ -64,6 +66,7 @@ func NewKeeper(
 		commitement:        commitement,
 		stakingKeeper:      stakingKeeper,
 		perpetual:          perpetual,
+		leveragelp:         leveragelp,
 	}
 }
 

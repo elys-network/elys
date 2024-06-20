@@ -9,6 +9,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
+	ammtypes "github.com/elys-network/elys/x/amm/types"
 	estakingtypes "github.com/elys-network/elys/x/estaking/types"
 	mastercheftypes "github.com/elys-network/elys/x/masterchef/types"
 
@@ -129,10 +130,31 @@ func (k Keeper) RetreiveAllPortfolio(ctx sdk.Context, user string) {
 		}
 	}
 
+	// LeverageLp
+	lev := k.RetreiveLeverageLpTotal(ctx, sender)
+	totalValue = totalValue.Add(lev)
+
 	k.SetPortfolio(ctx, todayDate, sender.String(), types.Portfolio{
 		Creator:   user,
 		Portfolio: totalValue,
 	})
+}
+
+func (k Keeper) RetreiveLeverageLpTotal(ctx sdk.Context, user sdk.AccAddress) sdk.Dec {
+	positions, _, err := k.leveragelp.GetPositionsForAddress(ctx, user, &query.PageRequest{})
+	totalValue := sdk.NewDec(0)
+	if err == nil {
+		for _, position := range positions {
+			pool, found := k.amm.GetPool(ctx, position.AmmPoolId)
+			if !found {
+				continue
+			}
+			info := k.amm.PoolExtraInfo(ctx, pool)
+			amount := position.LeveragedLpAmount.ToLegacyDec()
+			totalValue = totalValue.Add(amount.Mul(info.LpTokenPrice).QuoInt(ammtypes.OneShare))
+		}
+	}
+	return totalValue
 }
 
 // SetPortfolio set a specific portfolio in the store from its index
