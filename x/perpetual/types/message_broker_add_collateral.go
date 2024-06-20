@@ -9,7 +9,7 @@ const TypeMsgBrokerAddCollateral = "broker_add_collateral"
 
 var _ sdk.Msg = &MsgBrokerAddCollateral{}
 
-func NewMsgBrokerAddCollateral(creator string, amount string, id int32, owner string) *MsgBrokerAddCollateral {
+func NewMsgBrokerAddCollateral(creator string, amount sdk.Int, id int32, owner string) *MsgBrokerAddCollateral {
 	return &MsgBrokerAddCollateral{
 		Creator: creator,
 		Amount:  amount,

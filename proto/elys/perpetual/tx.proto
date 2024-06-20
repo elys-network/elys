@@ -19,7 +19,7 @@ service Msg {
   rpc Whitelist           (MsgWhitelist          ) returns (MsgWhitelistResponse          );
   rpc Dewhitelist         (MsgDewhitelist        ) returns (MsgDewhitelistResponse        );
   rpc AddCollateral       (MsgAddCollateral      ) returns (MsgAddCollateralResponse      );
-  rpc BrokerAddCollateral (MsgBrokerAddCollateral) returns (MsgBrokerAddCollateralResponse);
+  rpc BrokerAddCollateral (MsgBrokerAddCollateral) returns (MsgAddCollateralResponse);
 }
 message MsgOpen {
   string                   creator           = 1;
@@ -101,6 +101,3 @@ message MsgBrokerAddCollateral {
   int32  id      = 3;
   string owner   = 4;
 }
-
-message MsgBrokerAddCollateralResponse {}
-

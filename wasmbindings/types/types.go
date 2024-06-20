@@ -314,8 +314,9 @@ type ElysMsg struct {
 	LeveragelpUpdateStopLoss *leveragelptypes.MsgUpdateStopLoss `json:"leveragelp_update_stop_loss,omitempty"`
 
 	// perpetual messages
-	PerpetualOpen  *perpetualtypes.MsgBrokerOpen  `json:"perpetual_open,omitempty"`
-	PerpetualClose *perpetualtypes.MsgBrokerClose `json:"perpetual_close,omitempty"`
+	PerpetualOpen          *perpetualtypes.MsgBrokerOpen          `json:"perpetual_open,omitempty"`
+	PerpetualClose         *perpetualtypes.MsgBrokerClose         `json:"perpetual_close,omitempty"`
+	PerpetualAddCollateral *perpetualtypes.MsgBrokerAddCollateral `json:"perpetual_add_collateral,omitempty"`
 
 	// oracle messages
 	// parameter messages

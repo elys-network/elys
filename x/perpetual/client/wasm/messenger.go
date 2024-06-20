@@ -29,6 +29,8 @@ func (m *Messenger) HandleMsg(ctx sdk.Context, contractAddr sdk.AccAddress, cont
 		return m.msgOpen(ctx, contractAddr, msg.PerpetualOpen)
 	case msg.PerpetualClose != nil:
 		return m.msgClose(ctx, contractAddr, msg.PerpetualClose)
+	case msg.PerpetualAddCollateral != nil:
+		return m.msgAddCollateral(ctx, contractAddr, msg.PerpetualAddCollateral)
 	default:
 		// This handler cannot handle the message
 		return nil, nil, wasmbindingstypes.ErrCannotHandleMsg
