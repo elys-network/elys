@@ -256,6 +256,13 @@ func (k Keeper) UpdateLPRewards(ctx sdk.Context) error {
 			}
 			k.DeletePoolRewardsAccum(ctx, firstAccum)
 		}
+
+		pool.EdenApr = newEdenAllocatedForPool.
+			MulInt64(totalBlocksPerYear).
+			Mul(edenDenomPrice).
+			Quo(tvl)
+
+		k.SetPool(ctx, pool)
 	}
 
 	// Update APR for amm pools
@@ -547,11 +554,6 @@ func (k Keeper) UpdateAmmPoolAPR(ctx sdk.Context, totalBlocksPerYear int64, tota
 				MulInt64(totalBlocksPerYear).
 				Mul(usdcDenomPrice).
 				Quo(tvl)
-
-			poolInfo.EdenApr = lastAccum.EdenReward.
-				MulInt(sdk.NewInt(totalBlocksPerYear)).
-				Mul(edenDenomPrice).
-				Quo(tvl)
 		} else {
 			duration := lastAccum.Timestamp - firstAccum.Timestamp
 			secondsInYear := int64(86400 * 360)
@@ -566,12 +568,6 @@ func (k Keeper) UpdateAmmPoolAPR(ctx sdk.Context, totalBlocksPerYear int64, tota
 				MulInt64(secondsInYear).
 				QuoInt64(int64(duration)).
 				Mul(usdcDenomPrice).
-				Quo(tvl)
-
-			poolInfo.EdenApr = lastAccum.EdenReward.Sub(firstAccum.EdenReward).
-				MulInt64(secondsInYear).
-				QuoInt64(int64(duration)).
-				Mul(edenDenomPrice).
 				Quo(tvl)
 		}
 		k.SetPool(ctx, poolInfo)
