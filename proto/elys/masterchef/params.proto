@@ -4,7 +4,6 @@ package elys.masterchef;
 import "gogoproto/gogo.proto";
 import "elys/masterchef/incentive.proto";
 import "elys/masterchef/pool.proto";
-import "elys/masterchef/dex_rewards_traker.proto";
 
 option go_package = "github.com/elys-network/elys/x/masterchef/types";
 
@@ -24,19 +23,16 @@ message Params {
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
-  
-  // Tracking dex rewards given to LPs
-  DexRewardsTracker dex_rewards_lps = 4 [(gogoproto.nullable) = false];
 
   // Maximum eden reward apr for lps - [0 - 0.3]
-  string max_eden_reward_apr_lps = 5 [
+  string max_eden_reward_apr_lps = 4 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
 
-  repeated SupportedRewardDenom supported_reward_denoms = 6;
+  repeated SupportedRewardDenom supported_reward_denoms = 5;
 
-  string protocol_revenue_address = 7;
+  string protocol_revenue_address = 6;
 }
 
 

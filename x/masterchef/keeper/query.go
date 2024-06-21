@@ -55,27 +55,36 @@ func (k Keeper) UserRewardInfo(goCtx context.Context, req *types.QueryUserReward
 	return &types.QueryUserRewardInfoResponse{UserRewardInfo: userRewardInfo}, nil
 }
 
+func (k Keeper) UserPoolPendingReward(ctx sdk.Context, user sdk.AccAddress, poolId uint64) sdk.Coins {
+	k.AfterWithdraw(ctx, poolId, user.String(), sdk.ZeroInt())
+
+	poolRewards := sdk.NewCoins()
+	for _, rewardDenom := range k.GetRewardDenoms(ctx, poolId) {
+		userRewardInfo, found := k.GetUserRewardInfo(ctx, user.String(), poolId, rewardDenom)
+		if found && userRewardInfo.RewardPending.IsPositive() {
+			poolRewards = poolRewards.Add(
+				sdk.NewCoin(
+					rewardDenom,
+					userRewardInfo.RewardPending.TruncateInt(),
+				),
+			)
+		}
+	}
+	return poolRewards
+}
+
 func (k Keeper) UserPendingReward(goCtx context.Context, req *types.QueryUserPendingRewardRequest) (*types.QueryUserPendingRewardResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
+	user, err := sdk.AccAddressFromBech32(req.User)
+	if err != nil {
+		return nil, err
+	}
 
 	totalRewards := sdk.NewCoins()
 	rewardsInfos := []*types.RewardInfo{}
 
 	for _, pool := range k.GetAllPools(ctx) {
-		k.AfterWithdraw(ctx, pool.PoolId, req.User, sdk.ZeroInt())
-
-		poolRewards := sdk.NewCoins()
-		for _, rewardDenom := range k.GetRewardDenoms(ctx, pool.PoolId) {
-			userRewardInfo, found := k.GetUserRewardInfo(ctx, req.User, pool.PoolId, rewardDenom)
-			if found && userRewardInfo.RewardPending.IsPositive() {
-				poolRewards = poolRewards.Add(
-					sdk.NewCoin(
-						rewardDenom,
-						userRewardInfo.RewardPending.TruncateInt(),
-					),
-				)
-			}
-		}
+		poolRewards := k.UserPoolPendingReward(ctx, user, pool.PoolId)
 		rewardsInfos = append(rewardsInfos,
 			&types.RewardInfo{
 				PoolId: pool.PoolId,

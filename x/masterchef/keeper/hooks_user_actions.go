@@ -29,7 +29,7 @@ func (k Keeper) AfterDeposit(ctx sdk.Context, poolId uint64, user string, amount
 	}
 }
 
-func (k Keeper) AfterWithdrawPerReward(ctx sdk.Context, poolId uint64, rewardDenom string, user string, amount sdk.Int) {
+func (k Keeper) AfterWithdrawPerReward(ctx sdk.Context, poolId uint64, rewardDenom string, user string, amount math.Int) {
 	k.UpdateUserRewardPending(
 		ctx,
 		poolId,
@@ -46,7 +46,7 @@ func (k Keeper) AfterWithdrawPerReward(ctx sdk.Context, poolId uint64, rewardDen
 	)
 }
 
-func (k Keeper) AfterWithdraw(ctx sdk.Context, poolId uint64, user string, amount sdk.Int) {
+func (k Keeper) AfterWithdraw(ctx sdk.Context, poolId uint64, user string, amount math.Int) {
 	for _, rewardDenom := range k.GetRewardDenoms(ctx, poolId) {
 		k.AfterWithdrawPerReward(ctx, poolId, rewardDenom, user, amount)
 	}

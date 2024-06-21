@@ -12,7 +12,6 @@ func NewParams(
 	lpIncentives *IncentiveInfo,
 	rewardPortionForLps sdk.Dec,
 	rewardPortionForStakers sdk.Dec,
-	dexRewardsLps DexRewardsTracker,
 	maxEdenRewardAprLps sdk.Dec,
 	protocolRevenueAddress string,
 ) Params {
@@ -20,7 +19,6 @@ func NewParams(
 		LpIncentives:            lpIncentives,
 		RewardPortionForLps:     rewardPortionForLps,
 		RewardPortionForStakers: rewardPortionForStakers,
-		DexRewardsLps:           dexRewardsLps,
 		MaxEdenRewardAprLps:     maxEdenRewardAprLps,
 		SupportedRewardDenoms:   nil,
 		ProtocolRevenueAddress:  protocolRevenueAddress,
@@ -33,10 +31,6 @@ func DefaultParams() Params {
 		nil,
 		sdk.NewDecWithPrec(60, 2),
 		sdk.NewDecWithPrec(25, 2),
-		DexRewardsTracker{
-			NumBlocks: sdk.NewInt(1),
-			Amount:    sdk.ZeroDec(),
-		},
 		sdk.NewDecWithPrec(5, 1),
 		"elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3",
 	)
@@ -49,10 +43,6 @@ func (p Params) Validate() error {
 	}
 
 	if err := validateLPIncentives(p.LpIncentives); err != nil {
-		return err
-	}
-
-	if err := validateDexRewardsLps(p.DexRewardsLps); err != nil {
 		return err
 	}
 

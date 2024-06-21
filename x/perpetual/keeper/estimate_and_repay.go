@@ -9,7 +9,7 @@ import (
 
 func (k Keeper) EstimateAndRepay(ctx sdk.Context, mtp types.MTP, pool types.Pool, ammPool ammtypes.Pool, amount math.Int, baseCurrency string) (math.Int, error) {
 	// init repay amount
-	repayAmount := sdk.ZeroInt()
+	var repayAmount math.Int
 	var err error
 
 	// if position is long, repay in collateral asset
@@ -30,6 +30,7 @@ func (k Keeper) EstimateAndRepay(ctx sdk.Context, mtp types.MTP, pool types.Pool
 		return sdk.ZeroInt(), types.ErrInvalidPosition
 	}
 
+	// Note: Long settlement is done in trading asset. And short settlement in usdc in Repay function
 	if err := k.Repay(ctx, &mtp, &pool, ammPool, repayAmount, false, amount, baseCurrency); err != nil {
 		return sdk.ZeroInt(), err
 	}

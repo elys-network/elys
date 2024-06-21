@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	"fmt"
 
 	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/math"
@@ -61,6 +62,14 @@ func (k msgServer) AddExternalRewardDenom(goCtx context.Context, msg *types.MsgA
 
 	k.SetParams(ctx, params)
 
+	ctx.EventManager().EmitEvents(sdk.Events{
+		sdk.NewEvent(
+			types.TypeEvtAddExternalRewardDenom,
+			sdk.NewAttribute(types.AttributeRewardDenom, msg.RewardDenom),
+			sdk.NewAttribute(types.AttributeMinAmount, msg.MinAmount.String()),
+			sdk.NewAttribute(types.AttributeSupported, fmt.Sprintf("%t", msg.Supported)),
+		),
+	})
 	return &types.MsgAddExternalRewardDenomResponse{}, nil
 }
 
@@ -68,7 +77,7 @@ func (k msgServer) AddExternalIncentive(goCtx context.Context, msg *types.MsgAdd
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	sender := sdk.MustAccAddressFromBech32(msg.Sender)
 
-	if msg.FromBlock < uint64(ctx.BlockHeight()) {
+	if msg.FromBlock < ctx.BlockHeight() {
 		return nil, status.Error(codes.InvalidArgument, "invalid from block")
 	}
 	if msg.FromBlock >= msg.ToBlock {
@@ -95,23 +104,69 @@ func (k msgServer) AddExternalIncentive(goCtx context.Context, msg *types.MsgAdd
 		return nil, status.Error(codes.InvalidArgument, "invalid reward denom")
 	}
 
-	amount := msg.AmountPerBlock.Mul(sdk.NewInt(int64(msg.ToBlock - msg.FromBlock)))
+	amount := msg.AmountPerBlock.Mul(sdk.NewInt(msg.ToBlock - msg.FromBlock))
 	err := k.bankKeeper.SendCoinsFromAccountToModule(ctx, sender, types.ModuleName, sdk.Coins{sdk.NewCoin(msg.RewardDenom, amount)})
 	if err != nil {
 		return nil, err
 	}
 
-	k.Keeper.AddExternalIncentive(ctx, types.ExternalIncentive{
-		Id:             0,
+	externalIncentive := types.ExternalIncentive{
+		Id:             k.GetExternalIncentiveIndex(ctx),
 		RewardDenom:    msg.RewardDenom,
 		PoolId:         msg.PoolId,
 		FromBlock:      msg.FromBlock,
 		ToBlock:        msg.ToBlock,
 		AmountPerBlock: msg.AmountPerBlock,
 		Apr:            math.LegacyZeroDec(),
-	})
+	}
+	k.Keeper.SetExternalIncentive(ctx, externalIncentive)
+	k.SetExternalIncentiveIndex(ctx, externalIncentive.Id+1)
 
+	ctx.EventManager().EmitEvents(sdk.Events{
+		sdk.NewEvent(
+			types.TypeEvtAddExternalIncentive,
+			sdk.NewAttribute(types.AttributeRewardDenom, msg.RewardDenom),
+			sdk.NewAttribute(types.AttributePoolId, fmt.Sprintf("%d", msg.PoolId)),
+			sdk.NewAttribute(types.AttributeFromBlock, fmt.Sprintf("%d", msg.FromBlock)),
+			sdk.NewAttribute(types.AttributeToBlock, fmt.Sprintf("%d", msg.ToBlock)),
+			sdk.NewAttribute(types.AttributeAmountPerBlock, fmt.Sprintf("%d", msg.AmountPerBlock)),
+		),
+	})
 	return &types.MsgAddExternalIncentiveResponse{}, nil
+}
+
+func (k Keeper) ClaimRewards(ctx sdk.Context, sender sdk.AccAddress, poolIds []uint64, recipient sdk.AccAddress) error {
+	coins := sdk.NewCoins()
+	for _, poolId := range poolIds {
+		k.AfterWithdraw(ctx, poolId, sender.String(), sdk.ZeroInt())
+
+		for _, rewardDenom := range k.GetRewardDenoms(ctx, poolId) {
+			userRewardInfo, found := k.GetUserRewardInfo(ctx, sender.String(), poolId, rewardDenom)
+			if found && userRewardInfo.RewardPending.IsPositive() {
+				coin := sdk.NewCoin(rewardDenom, userRewardInfo.RewardPending.TruncateInt())
+				coins = coins.Add(coin)
+
+				userRewardInfo.RewardPending = sdk.ZeroDec()
+				k.SetUserRewardInfo(ctx, userRewardInfo)
+
+				ctx.EventManager().EmitEvents(sdk.Events{
+					sdk.NewEvent(
+						types.TypeEvtClaimRewards,
+						sdk.NewAttribute(types.AttributeSender, sender.String()),
+						sdk.NewAttribute(types.AttributePoolId, fmt.Sprintf("%d", poolId)),
+					),
+				})
+			}
+		}
+	}
+
+	// Transfer rewards (Eden/EdenB is transferred through commitment module)
+	err := k.cmk.SendCoinsFromModuleToAccount(ctx, types.ModuleName, recipient, coins)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (k msgServer) ClaimRewards(goCtx context.Context, msg *types.MsgClaimRewards) (*types.MsgClaimRewardsResponse, error) {
@@ -125,24 +180,7 @@ func (k msgServer) ClaimRewards(goCtx context.Context, msg *types.MsgClaimReward
 		}
 	}
 
-	coins := sdk.NewCoins()
-	for _, poolId := range msg.PoolIds {
-		k.AfterWithdraw(ctx, poolId, msg.Sender, sdk.ZeroInt())
-
-		for _, rewardDenom := range k.GetRewardDenoms(ctx, poolId) {
-			userRewardInfo, found := k.GetUserRewardInfo(ctx, msg.Sender, poolId, rewardDenom)
-			if found && userRewardInfo.RewardPending.IsPositive() {
-				coin := sdk.NewCoin(rewardDenom, userRewardInfo.RewardPending.TruncateInt())
-				coins = coins.Add(coin)
-
-				userRewardInfo.RewardPending = sdk.ZeroDec()
-				k.SetUserRewardInfo(ctx, userRewardInfo)
-			}
-		}
-	}
-
-	// Transfer rewards (Eden/EdenB is transferred through commitment module)
-	err := k.cmk.SendCoinsFromModuleToAccount(ctx, types.ModuleName, sender, coins)
+	err := k.Keeper.ClaimRewards(ctx, sender, msg.PoolIds, sender)
 	if err != nil {
 		return nil, err
 	}

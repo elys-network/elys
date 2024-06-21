@@ -1,6 +1,8 @@
 package keeper
 
 import (
+	"fmt"
+
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/masterchef/types"
@@ -56,6 +58,14 @@ func (k Keeper) UpdatePoolMultipliers(ctx sdk.Context, poolMultipliers []types.P
 		if found {
 			p.Multiplier = pm.Multiplier
 			k.SetPool(ctx, p)
+
+			ctx.EventManager().EmitEvents(sdk.Events{
+				sdk.NewEvent(
+					types.TypeEvtSetPoolMultiplier,
+					sdk.NewAttribute(types.AttributePoolId, fmt.Sprintf("%d", pm.PoolId)),
+					sdk.NewAttribute(types.AttributeMultiplier, pm.Multiplier.String()),
+				),
+			})
 		}
 	}
 

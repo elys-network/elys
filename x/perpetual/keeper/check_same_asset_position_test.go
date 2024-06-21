@@ -16,13 +16,14 @@ func TestCheckSameAssetPosition_NewPosition(t *testing.T) {
 	ctx := app.BaseApp.NewContext(true, tmproto.Header{})
 
 	k := app.PerpetualKeeper
+	addr := simapp.AddTestAddrs(app, ctx, 1, sdk.NewInt(1000000))
 
-	mtp := types.NewMTP("creator", ptypes.BaseCurrency, ptypes.ATOM, ptypes.BaseCurrency, ptypes.ATOM, types.Position_LONG, sdk.NewDec(5), sdk.MustNewDecFromStr(types.TakeProfitPriceDefault), 1)
+	mtp := types.NewMTP(addr[0].String(), ptypes.BaseCurrency, ptypes.ATOM, ptypes.BaseCurrency, ptypes.ATOM, types.Position_LONG, sdk.NewDec(5), sdk.MustNewDecFromStr(types.TakeProfitPriceDefault), 1)
 	err := k.SetMTP(ctx, mtp)
 	assert.Nil(t, err)
 
 	msg := &types.MsgOpen{
-		Creator:      "creator",
+		Creator:      addr[0].String(),
 		Position:     types.Position_SHORT,
 		Leverage:     sdk.NewDec(1),
 		TradingAsset: ptypes.ATOM,

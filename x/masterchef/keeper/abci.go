@@ -41,7 +41,7 @@ func (k Keeper) GetPoolTVL(ctx sdk.Context, poolId uint64) math.LegacyDec {
 
 func (k Keeper) ProcessExternalRewardsDistribution(ctx sdk.Context) {
 	baseCurrency, _ := k.assetProfileKeeper.GetUsdcDenom(ctx)
-	curBlockHeight := sdk.NewInt(ctx.BlockHeight())
+	curBlockHeight := ctx.BlockHeight()
 	totalBlocksPerYear := k.parameterKeeper.GetParams(ctx).TotalBlocksPerYear
 
 	externalIncentives := k.GetAllExternalIncentives(ctx)
@@ -52,7 +52,7 @@ func (k Keeper) ProcessExternalRewardsDistribution(ctx sdk.Context) {
 			continue
 		}
 
-		if externalIncentive.FromBlock < curBlockHeight.Uint64() && curBlockHeight.Uint64() <= externalIncentive.ToBlock {
+		if externalIncentive.FromBlock < curBlockHeight && curBlockHeight <= externalIncentive.ToBlock {
 			k.UpdateAccPerShare(ctx, externalIncentive.PoolId, externalIncentive.RewardDenom, externalIncentive.AmountPerBlock)
 
 			hasRewardDenom := false
@@ -70,8 +70,7 @@ func (k Keeper) ProcessExternalRewardsDistribution(ctx sdk.Context) {
 			tvl := k.GetPoolTVL(ctx, pool.PoolId)
 			if tvl.IsPositive() {
 				yearlyIncentiveRewardsTotal := externalIncentive.AmountPerBlock.
-					Mul(sdk.NewInt(totalBlocksPerYear)).
-					Quo(pool.NumBlocks)
+					Mul(sdk.NewInt(totalBlocksPerYear))
 
 				apr := sdk.NewDecFromInt(yearlyIncentiveRewardsTotal).
 					Mul(k.amm.GetTokenPrice(ctx, externalIncentive.RewardDenom, baseCurrency)).
@@ -90,7 +89,7 @@ func (k Keeper) ProcessExternalRewardsDistribution(ctx sdk.Context) {
 			}
 		}
 
-		if curBlockHeight.Uint64() == externalIncentive.ToBlock {
+		if curBlockHeight == externalIncentive.ToBlock {
 			k.RemoveExternalIncentive(ctx, externalIncentive.Id)
 		}
 	}
@@ -158,10 +157,9 @@ func (k Keeper) UpdateLPRewards(ctx sdk.Context) error {
 
 	// Collect Gas fees + swap fees
 	gasFeesForLpsDec := k.CollectGasFees(ctx, baseCurrency)
-	_, dexRevenueForLps, rewardsPerPool := k.CollectDEXRevenue(ctx)
+	_, _, rewardsPerPool := k.CollectDEXRevenue(ctx)
 
 	// USDC amount in sdk.Dec type
-	dexUsdcAmountForLps := dexRevenueForLps.AmountOf(baseCurrency)
 	gasFeeUsdcAmountForLps := gasFeesForLpsDec.AmountOf(baseCurrency)
 
 	// Proxy TVL
@@ -209,7 +207,7 @@ func (k Keeper) UpdateLPRewards(ctx sdk.Context) error {
 
 		// Maximum eden APR - 30% by default
 		poolMaxEdenAmount := params.MaxEdenRewardAprLps.
-			Mul(tvl).
+			Mul(proxyTVL).
 			QuoInt64(totalBlocksPerYear).
 			Quo(edenDenomPrice)
 
@@ -239,16 +237,33 @@ func (k Keeper) UpdateLPRewards(ctx sdk.Context) error {
 		// Distribute Gas fees + Dex rewards (USDC)
 		k.UpdateAccPerShare(ctx, pool.PoolId, k.GetBaseCurrencyDenom(ctx), gasRewardsAllocatedForPool.Add(dexRewardsAllocatedForPool).TruncateInt())
 
-		// Update Pool Info
-		pool.EdenRewardAmountGiven = newEdenAllocatedForPool.RoundInt()
-		pool.DexRewardAmountGiven = gasRewardsAllocatedForPool.Add(dexRewardsAllocatedForPool)
+		// Track pool rewards accumulation
+		k.AddPoolRewardsAccum(
+			ctx,
+			pool.PoolId,
+			uint64(ctx.BlockTime().Unix()),
+			ctx.BlockHeight(),
+			dexRewardsAllocatedForPool,
+			gasRewardsAllocatedForPool,
+			newEdenAllocatedForPool,
+		)
+		params := k.parameterKeeper.GetParams(ctx)
+		dataLifetime := params.RewardsDataLifetime
+		for {
+			firstAccum := k.FirstPoolRewardsAccum(ctx, pool.PoolId)
+			if firstAccum.Timestamp == 0 || int64(firstAccum.Timestamp)+dataLifetime >= ctx.BlockTime().Unix() {
+				break
+			}
+			k.DeletePoolRewardsAccum(ctx, firstAccum)
+		}
+
+		pool.EdenApr = newEdenAllocatedForPool.
+			MulInt64(totalBlocksPerYear).
+			Mul(edenDenomPrice).
+			Quo(tvl)
+
 		k.SetPool(ctx, pool)
 	}
-
-	// Set DexRewards info
-	params.DexRewardsLps.NumBlocks = sdk.OneInt()
-	params.DexRewardsLps.Amount = dexUsdcAmountForLps.Add(gasFeeUsdcAmountForLps)
-	k.SetParams(ctx, params)
 
 	// Update APR for amm pools
 	k.UpdateAmmPoolAPR(ctx, totalBlocksPerYear, totalProxyTVL, edenDenomPrice)
@@ -453,12 +468,16 @@ func (k Keeper) InitPoolParams(ctx sdk.Context, poolId uint64) bool {
 			RewardWallet: ammtypes.NewPoolRevenueAddress(poolId).String(),
 			// multiplier for lp rewards
 			Multiplier: sdk.NewDec(1),
-			// Number of blocks since creation
-			NumBlocks: sdk.NewInt(1),
-			// Total dex rewards given since creation
-			DexRewardAmountGiven: sdk.ZeroDec(),
-			// Total eden rewards given since creation
-			EdenRewardAmountGiven: sdk.ZeroInt(),
+			// Eden APR, updated at every distribution
+			EdenApr: math.LegacyZeroDec(),
+			// Dex APR, updated at every distribution
+			DexApr: math.LegacyZeroDec(),
+			// Gas APR, updated at every distribution
+			GasApr: math.LegacyZeroDec(),
+			// External Incentive APR, updated at every distribution
+			ExternalIncentiveApr: math.LegacyZeroDec(),
+			// external reward denoms on the pool
+			ExternalRewardDenoms: []string{},
 		}
 		k.SetPool(ctx, poolInfo)
 	}
@@ -477,42 +496,21 @@ func (k Keeper) InitStableStakePoolParams(ctx sdk.Context, poolId uint64) bool {
 			RewardWallet: stabletypes.PoolAddress().String(),
 			// multiplier for lp rewards
 			Multiplier: sdk.NewDec(1),
-			// Number of blocks since creation
-			NumBlocks: sdk.NewInt(1),
-			// Total dex rewards given since creation
-			DexRewardAmountGiven: sdk.ZeroDec(),
-			// Total eden rewards given since creation
-			EdenRewardAmountGiven: sdk.ZeroInt(),
+			// Eden APR, updated at every distribution
+			EdenApr: math.LegacyZeroDec(),
+			// Dex APR, updated at every distribution
+			DexApr: math.LegacyZeroDec(),
+			// Gas APR, updated at every distribution
+			GasApr: math.LegacyZeroDec(),
+			// External Incentive APR, updated at every distribution
+			ExternalIncentiveApr: math.LegacyZeroDec(),
+			// external reward denoms on the pool
+			ExternalRewardDenoms: []string{},
 		}
 		k.SetPool(ctx, poolInfo)
 	}
 
 	return true
-}
-
-// Calculate pool share for stable stake pool
-func (k Keeper) CalculatePoolShareForStableStakeLPs(ctx sdk.Context, totalProxyTVL sdk.Dec, baseCurrency string) sdk.Dec {
-	// ------------ New Eden calculation -------------------
-	// -----------------------------------------------------
-	// newEdenAllocated = 80 / ( 80 + 90 + 200 + 0) * 100
-	// Pool share = 80
-	// edenAmountLp = 100
-	tvl := k.stableKeeper.TVL(ctx, k.oracleKeeper, baseCurrency)
-
-	// Get pool info from incentive param
-	poolInfo, found := k.GetPool(ctx, uint64(stabletypes.PoolId))
-	if !found {
-		return sdk.ZeroDec()
-	}
-
-	// Calculate Proxy TVL share considering multiplier
-	proxyTVL := tvl.Mul(poolInfo.Multiplier)
-	if totalProxyTVL.IsZero() {
-		return sdk.ZeroDec()
-	}
-	poolShare := proxyTVL.Quo(totalProxyTVL)
-
-	return poolShare
 }
 
 // Update APR for AMM pool
@@ -536,32 +534,42 @@ func (k Keeper) UpdateAmmPoolAPR(ctx sdk.Context, totalBlocksPerYear int64, tota
 			poolInfo, _ = k.GetPool(ctx, poolId)
 		}
 
-		poolInfo.NumBlocks = sdk.OneInt()
-
 		if tvl.IsZero() {
 			return false
 		}
 
-		if poolInfo.NumBlocks.IsZero() {
+		firstAccum := k.FirstPoolRewardsAccum(ctx, poolId)
+		lastAccum := k.LastPoolRewardsAccum(ctx, poolId)
+		if lastAccum.Timestamp == 0 {
 			return false
 		}
 
-		// Dex reward Apr per pool
-		yearlyDexRewardsTotal := poolInfo.DexRewardAmountGiven.
-			MulInt64(totalBlocksPerYear).
-			QuoInt(poolInfo.NumBlocks)
-		poolInfo.DexApr = yearlyDexRewardsTotal.Mul(usdcDenomPrice).Quo(tvl)
+		if firstAccum.Timestamp == lastAccum.Timestamp {
+			poolInfo.DexApr = lastAccum.DexReward.
+				MulInt64(totalBlocksPerYear).
+				Mul(usdcDenomPrice).
+				Quo(tvl)
 
-		// Eden reward Apr per pool = (total LM Eden reward allocated per day*((tvl of pool * multiplier)/total proxy TVL) ) * 365 / TVL of pool
-		yearlyEdenRewardsTotal := poolInfo.EdenRewardAmountGiven.
-			Mul(sdk.NewInt(totalBlocksPerYear)).
-			Quo(poolInfo.NumBlocks)
+			poolInfo.GasApr = lastAccum.GasReward.
+				MulInt64(totalBlocksPerYear).
+				Mul(usdcDenomPrice).
+				Quo(tvl)
+		} else {
+			duration := lastAccum.Timestamp - firstAccum.Timestamp
+			secondsInYear := int64(86400 * 360)
 
-		poolInfo.EdenApr = sdk.NewDecFromInt(yearlyEdenRewardsTotal).
-			Mul(edenDenomPrice).
-			Quo(tvl)
+			poolInfo.DexApr = lastAccum.DexReward.Sub(firstAccum.DexReward).
+				MulInt64(secondsInYear).
+				QuoInt64(int64(duration)).
+				Mul(usdcDenomPrice).
+				Quo(tvl)
 
-		// Update Pool Info
+			poolInfo.GasApr = lastAccum.GasReward.Sub(firstAccum.GasReward).
+				MulInt64(secondsInYear).
+				QuoInt64(int64(duration)).
+				Mul(usdcDenomPrice).
+				Quo(tvl)
+		}
 		k.SetPool(ctx, poolInfo)
 		return false
 	})

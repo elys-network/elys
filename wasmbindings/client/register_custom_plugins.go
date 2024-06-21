@@ -38,6 +38,8 @@ import (
 	perpetualkeeper "github.com/elys-network/elys/x/perpetual/keeper"
 	stablestakeclientwasm "github.com/elys-network/elys/x/stablestake/client/wasm"
 	stablestakekeeper "github.com/elys-network/elys/x/stablestake/keeper"
+	tierclientwasm "github.com/elys-network/elys/x/tier/client/wasm"
+	tierkeeper "github.com/elys-network/elys/x/tier/keeper"
 	tokenomicsclientwasm "github.com/elys-network/elys/x/tokenomics/client/wasm"
 	tokenomicskeeper "github.com/elys-network/elys/x/tokenomics/keeper"
 	transferhookclientwasm "github.com/elys-network/elys/x/transferhook/client/wasm"
@@ -65,6 +67,7 @@ func RegisterCustomPlugins(
 	transferhook *transferhookkeeper.Keeper,
 	masterchef *masterchefkeeper.Keeper,
 	estaking *estakingkeeper.Keeper,
+	tier *tierkeeper.Keeper,
 ) []wasmkeeper.Option {
 	accountedpoolQuerier := accountedpoolclientwasm.NewQuerier(accountedpool)
 	accountedpoolMessenger := accountedpoolclientwasm.NewMessenger(accountedpool)
@@ -120,6 +123,9 @@ func RegisterCustomPlugins(
 	estakingQuerier := estakingclientwasm.NewQuerier(estaking)
 	estakingMessenger := estakingclientwasm.NewMessenger(estaking, parameter)
 
+	tierQuerier := tierclientwasm.NewQuerier(tier)
+	tierMessenger := tierclientwasm.NewMessenger(tier, parameter)
+
 	moduleQueriers := []types.ModuleQuerier{
 		accountedpoolQuerier,
 		ammQuerier,
@@ -139,6 +145,7 @@ func RegisterCustomPlugins(
 		transferhookQuerier,
 		masterchefQuerier,
 		estakingQuerier,
+		tierQuerier,
 	}
 
 	wasmQueryPlugin := types.NewQueryPlugin(
@@ -163,6 +170,7 @@ func RegisterCustomPlugins(
 		transferhook,
 		masterchef,
 		estaking,
+		tier,
 	)
 
 	queryPluginOpt := wasmkeeper.WithQueryPlugins(&wasmkeeper.QueryPlugins{
@@ -188,6 +196,7 @@ func RegisterCustomPlugins(
 		transferhookMessenger,
 		masterchefMessenger,
 		estakingMessenger,
+		tierMessenger,
 	}
 
 	messengerDecoratorOpt := wasmkeeper.WithMessageHandlerDecorator(
@@ -213,6 +222,7 @@ func RegisterCustomPlugins(
 			transferhook,
 			masterchef,
 			estaking,
+			tier,
 		),
 	)
 	return []wasm.Option{

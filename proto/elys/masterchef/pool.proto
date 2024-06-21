@@ -5,9 +5,7 @@ option go_package = "github.com/elys-network/elys/x/masterchef/types";
 
 import "gogoproto/gogo.proto";
 
-// Pool Info
 message PoolInfo {
-    // reward amount
 	uint64 pool_id = 1;
     // reward wallet address
     string reward_wallet = 2;
@@ -16,38 +14,28 @@ message PoolInfo {
         (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
         (gogoproto.nullable) = false
       ];
-    // Block number since the creation of PoolInfo
-    string num_blocks = 4 [
-        (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
-        (gogoproto.nullable) = false
-    ]; 
-    // Total dex rewards given
-    string dex_reward_amount_given = 5 [
-        (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
-        (gogoproto.nullable) = false
-    ]; 
-    // Total eden rewards given
-    string eden_reward_amount_given = 6 [
-        (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
-        (gogoproto.nullable) = false
-    ]; 
     // Eden APR, updated at every distribution
-    string eden_apr = 7 [
+    string eden_apr = 4 [
         (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
         (gogoproto.nullable) = false
     ]; 
-    // Dex APR, updated at every distribution
-    string dex_apr = 8 [
+    // Dex APR, updated based on 24hr accumulation
+    string dex_apr = 5 [
         (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
         (gogoproto.nullable) = false
-    ]; 
+    ];
+    // Gas APR, updated based on 24hr accumulation
+    string gas_apr = 6 [
+      (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+      (gogoproto.nullable) = false
+    ];
     // External Incentive APR, updated at every distribution
-    string external_incentive_apr = 9 [
+    string external_incentive_apr = 7 [
         (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
         (gogoproto.nullable) = false
     ]; 
     // external reward denoms on the pool
-    repeated string external_reward_denoms = 10;
+    repeated string external_reward_denoms = 8;
 }
 
 message PoolRewardInfo {
@@ -72,4 +60,22 @@ message UserRewardInfo {
         (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
         (gogoproto.nullable) = false
       ];
+}
+
+message PoolRewardsAccum {
+  uint64 pool_id = 1;
+  int64 block_height = 2;
+  uint64 timestamp = 3;
+  string dex_reward = 4 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  string gas_reward = 5 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  string eden_reward = 6 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
 }

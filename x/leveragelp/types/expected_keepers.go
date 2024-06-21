@@ -22,6 +22,8 @@ type AmmKeeper interface {
 	GetPool(sdk.Context, uint64) (ammtypes.Pool, bool)
 	// Get all pools
 	GetAllPool(sdk.Context) []ammtypes.Pool
+	ExitPoolEst(ctx sdk.Context, poolId uint64, shareInAmount math.Int, tokenOutDenom string) (exitCoins sdk.Coins, weightBalanceBonus math.LegacyDec, err error)
+	JoinPoolEst(ctx sdk.Context, poolId uint64, tokenInMaxs sdk.Coins) (tokensIn sdk.Coins, sharesOut math.Int, slippage sdk.Dec, weightBalanceBonus sdk.Dec, err error)
 	// IterateCommitments iterates over all Commitments and performs a callback.
 	IterateLiquidityPools(sdk.Context, func(ammtypes.Pool) bool)
 	GetPoolSnapshotOrSet(ctx sdk.Context, pool ammtypes.Pool) (val ammtypes.Pool)
@@ -70,4 +72,10 @@ type AssetProfileKeeper interface {
 	GetEntry(ctx sdk.Context, baseDenom string) (val assetprofiletypes.Entry, found bool)
 	// GetUsdcDenom returns USDC denom
 	GetUsdcDenom(ctx sdk.Context) (string, bool)
+}
+
+// MasterchefKeeper defines expected interface for masterchef keeper
+type MasterchefKeeper interface {
+	ClaimRewards(ctx sdk.Context, sender sdk.AccAddress, poolIds []uint64, recipient sdk.AccAddress) error
+	UserPoolPendingReward(ctx sdk.Context, user sdk.AccAddress, poolId uint64) sdk.Coins
 }

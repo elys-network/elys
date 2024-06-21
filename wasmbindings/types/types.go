@@ -40,6 +40,8 @@ import (
 	perpetualtypes "github.com/elys-network/elys/x/perpetual/types"
 	stablestakekeeper "github.com/elys-network/elys/x/stablestake/keeper"
 	stablestaketypes "github.com/elys-network/elys/x/stablestake/types"
+	tierkeeper "github.com/elys-network/elys/x/tier/keeper"
+	tiertypes "github.com/elys-network/elys/x/tier/types"
 	tokenomicskeeper "github.com/elys-network/elys/x/tokenomics/keeper"
 	tokenomicstypes "github.com/elys-network/elys/x/tokenomics/types"
 	transferhookkeeper "github.com/elys-network/elys/x/transferhook/keeper"
@@ -86,6 +88,7 @@ type QueryPlugin struct {
 	tokenomicsKeeper    *tokenomicskeeper.Keeper
 	transferhookKeeper  *transferhookkeeper.Keeper
 	estakingKeeper      *estakingkeeper.Keeper
+	tierKeeper          *tierkeeper.Keeper
 }
 
 // AllCapabilities returns all capabilities available with the current wasmvm
@@ -187,6 +190,9 @@ type ElysQuery struct {
 	LeveragelpPool                     *leveragelptypes.QueryGetPoolRequest        `json:"leveragelp_pool,omitempty"`
 	LeveragelpPools                    *leveragelptypes.QueryAllPoolRequest        `json:"leveragelp_pools,omitempty"`
 	LeveragelpPosition                 *leveragelptypes.PositionRequest            `json:"leveragelp_position,omitempty"`
+	LeveragelpOpenEst                  *leveragelptypes.QueryOpenEstRequest        `json:"leveragelp_open_estimation,omitempty"`
+	LeveragelpCloseEst                 *leveragelptypes.QueryCloseEstRequest       `json:"leveragelp_close_estimation,omitempty"`
+	LeveragelpRewards                  *leveragelptypes.QueryRewardsRequest        `json:"leveragelp_rewards,omitempty"`
 
 	// perpetual queriers
 	PerpetualParams                 *perpetualtypes.ParamsRequest              `json:"perpetual_params,omitempty"`
@@ -229,6 +235,9 @@ type ElysQuery struct {
 
 	// transferhook queriers
 	TransferHookParams *transferhooktypes.QueryParamsRequest `json:"transfer_hook_params,omitempty"`
+
+	// tier queries
+	TierCalculateDiscount *tiertypes.QueryCalculateDiscountRequest `json:"tier_calculate_discount,omitempty"`
 }
 
 type CustomMessenger struct {
@@ -254,6 +263,7 @@ type CustomMessenger struct {
 	staking          *stakingkeeper.Keeper
 	tokenomics       *tokenomicskeeper.Keeper
 	transferhook     *transferhookkeeper.Keeper
+	tier             *tierkeeper.Keeper
 }
 
 type ElysMsg struct {
@@ -298,8 +308,10 @@ type ElysMsg struct {
 	EstakingWithdrawElysStakingRewards *estakingtypes.MsgWithdrawElysStakingRewards `json:"estaking_withdraw_elys_staking_rewards,omitempty"`
 
 	// leveragelp messages
-	LeveragelpOpen  *leveragelptypes.MsgOpen  `json:"leveragelp_open,omitempty"`
-	LeveragelpClose *leveragelptypes.MsgClose `json:"leveragelp_close,omitempty"`
+	LeveragelpOpen           *leveragelptypes.MsgOpen           `json:"leveragelp_open,omitempty"`
+	LeveragelpClose          *leveragelptypes.MsgClose          `json:"leveragelp_close,omitempty"`
+	LeveragelpClaimRewards   *leveragelptypes.MsgClaimRewards   `json:"leveragelp_claim_rewards,omitempty"`
+	LeveragelpUpdateStopLoss *leveragelptypes.MsgUpdateStopLoss `json:"leveragelp_update_stop_loss,omitempty"`
 
 	// perpetual messages
 	PerpetualOpen  *perpetualtypes.MsgBrokerOpen  `json:"perpetual_open,omitempty"`
@@ -314,6 +326,9 @@ type ElysMsg struct {
 
 	// tokenomics messages
 	// transferhook messages
+
+	// tier messages
+	TierSetPortfolio *tiertypes.MsgSetPortfolio `json:"tier_set_portfolio,omitempty"`
 }
 
 type RequestResponse struct {
