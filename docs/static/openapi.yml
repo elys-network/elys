@@ -42247,10 +42247,10 @@ paths:
                     title: Eden APR, updated at every distribution
                   dex_apr:
                     type: string
-                    title: Dex APR, updated at every distribution
+                    title: Dex APR, updated based on 24hr accumulation
                   gas_apr:
                     type: string
-                    title: Gas APR, updated at every distribution
+                    title: Gas APR, updated based on 24hr accumulation
                   external_incentive_apr:
                     type: string
                     title: External Incentive APR, updated at every distribution
@@ -44842,7 +44842,7 @@ paths:
           type: string
       tags:
         - Query
-  /elys-network/elys/tier/leverage_lp_total/{user}/{realtime}:
+  /elys-network/elys/tier/leverage_lp_total/{user}:
     get:
       summary: Queries a list of LeverageLpTotal items.
       operationId: ElysTierLeverageLpTotal
@@ -44851,6 +44851,9 @@ paths:
           description: A successful response.
           schema:
             type: object
+            properties:
+              total:
+                type: string
         default:
           description: An unexpected error response.
           schema:
@@ -44874,10 +44877,6 @@ paths:
           in: path
           required: true
           type: string
-        - name: realtime
-          in: path
-          required: true
-          type: boolean
       tags:
         - Query
   /elys-network/elys/tokenomics/airdrop:
@@ -87438,10 +87437,10 @@ definitions:
         title: Eden APR, updated at every distribution
       dex_apr:
         type: string
-        title: Dex APR, updated at every distribution
+        title: Dex APR, updated based on 24hr accumulation
       gas_apr:
         type: string
-        title: Gas APR, updated at every distribution
+        title: Gas APR, updated based on 24hr accumulation
       external_incentive_apr:
         type: string
         title: External Incentive APR, updated at every distribution
@@ -87583,10 +87582,10 @@ definitions:
             title: Eden APR, updated at every distribution
           dex_apr:
             type: string
-            title: Dex APR, updated at every distribution
+            title: Dex APR, updated based on 24hr accumulation
           gas_apr:
             type: string
-            title: Gas APR, updated at every distribution
+            title: Gas APR, updated based on 24hr accumulation
           external_incentive_apr:
             type: string
             title: External Incentive APR, updated at every distribution
@@ -89209,6 +89208,9 @@ definitions:
         type: string
   elys.tier.QueryLeverageLpTotalResponse:
     type: object
+    properties:
+      total:
+        type: string
   elys.tier.QueryParamsResponse:
     type: object
     properties:
