@@ -76,7 +76,7 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen, isBroker bool) (*types
 	k.OpenChecker.EmitOpenEvent(ctx, mtp)
 
 	if k.hooks != nil {
-		k.hooks.AfterPerpetualPositionOpen(ctx, ammPool, pool)
+		k.hooks.AfterPerpetualPositionOpen(ctx, ammPool, pool, msg.Creator)
 	}
 
 	return &types.MsgOpenResponse{
