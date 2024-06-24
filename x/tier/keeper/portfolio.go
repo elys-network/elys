@@ -72,10 +72,16 @@ func (k Keeper) RetreiveStakedAndPoolTotal(ctx sdk.Context, user sdk.AccAddress)
 			amount := commitment.Amount.ToLegacyDec()
 			totalValue = totalValue.Add(amount.Mul(info.LpTokenPrice).QuoInt(ammtypes.OneShare))
 		} else {
+			if commitment.Denom == "ueden" {
+				commitment.Denom = "uelys"
+			}
 			tokenPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, commitment.Denom)
 			asset, found := k.assetProfileKeeper.GetEntryByDenom(ctx, commitment.Denom)
 			if !found {
 				continue
+			}
+			if tokenPrice == sdk.ZeroDec() {
+				tokenPrice = k.GetAmmPrice(ctx, asset.Denom, asset.Decimals)
 			}
 			amount := commitment.Amount.ToLegacyDec().Quo(Pow10(asset.Decimals))
 			totalValue = totalValue.Add(amount.Mul(tokenPrice))
@@ -87,6 +93,9 @@ func (k Keeper) RetreiveStakedAndPoolTotal(ctx sdk.Context, user sdk.AccAddress)
 	bondDenom := k.stakingKeeper.BondDenom(ctx)
 	tokenPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, bondDenom)
 	asset, found := k.assetProfileKeeper.GetEntryByDenom(ctx, bondDenom)
+	if tokenPrice == sdk.ZeroDec() {
+		tokenPrice = k.GetAmmPrice(ctx, asset.Denom, asset.Decimals)
+	}
 	if found {
 		for _, delegation := range delegations {
 			amount := delegation.Shares.Quo(Pow10(asset.Decimals))
@@ -113,10 +122,16 @@ func (k Keeper) RetreiveRewardsTotal(ctx sdk.Context, user sdk.AccAddress) sdk.D
 
 	if err1 == nil {
 		for _, balance := range estaking.Total {
+			if balance.Denom == "ueden" {
+				balance.Denom = "uelys"
+			}
 			tokenPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, balance.Denom)
 			asset, found := k.assetProfileKeeper.GetEntryByDenom(ctx, balance.Denom)
 			if !found {
 				continue
+			}
+			if tokenPrice == sdk.ZeroDec() {
+				tokenPrice = k.GetAmmPrice(ctx, asset.Denom, asset.Decimals)
 			}
 			amount := balance.Amount.ToLegacyDec().Quo(Pow10(asset.Decimals))
 			totalValue = totalValue.Add(amount.Mul(tokenPrice))
@@ -125,10 +140,16 @@ func (k Keeper) RetreiveRewardsTotal(ctx sdk.Context, user sdk.AccAddress) sdk.D
 
 	if err2 == nil {
 		for _, balance := range masterchef.TotalRewards {
+			if balance.Denom == "ueden" {
+				balance.Denom = "uelys"
+			}
 			tokenPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, balance.Denom)
 			asset, found := k.assetProfileKeeper.GetEntryByDenom(ctx, balance.Denom)
 			if !found {
 				continue
+			}
+			if tokenPrice == sdk.ZeroDec() {
+				tokenPrice = k.GetAmmPrice(ctx, asset.Denom, asset.Decimals)
 			}
 			amount := balance.Amount.ToLegacyDec().Quo(Pow10(asset.Decimals))
 			totalValue = totalValue.Add(amount.Mul(tokenPrice))
@@ -147,6 +168,9 @@ func (k Keeper) RetreivePerpetualTotal(ctx sdk.Context, user sdk.AccAddress) sdk
 				continue
 			}
 			tokenPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, asset.Denom)
+			if tokenPrice == sdk.ZeroDec() {
+				tokenPrice = k.GetAmmPrice(ctx, asset.Denom, asset.Decimals)
+			}
 			amount := perpetual.Custody.ToLegacyDec().Quo(Pow10(asset.Decimals))
 			totalValue = totalValue.Add((amount.Mul(tokenPrice)))
 		}
@@ -158,10 +182,16 @@ func (k Keeper) RetreiveLiquidAssetsTotal(ctx sdk.Context, user sdk.AccAddress) 
 	balances := k.bankKeeper.GetAllBalances(ctx, user)
 	totalValue := sdk.NewDec(0)
 	for _, balance := range balances {
+		if balance.Denom == "ueden" {
+			balance.Denom = "uelys"
+		}
 		tokenPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, balance.Denom)
 		asset, found := k.assetProfileKeeper.GetEntryByDenom(ctx, balance.Denom)
 		if !found {
 			continue
+		}
+		if tokenPrice == sdk.ZeroDec() {
+			tokenPrice = k.GetAmmPrice(ctx, balance.Denom, asset.Decimals)
 		}
 		amount := balance.Amount.ToLegacyDec().Quo(Pow10(asset.Decimals))
 		totalValue = totalValue.Add(amount.Mul(tokenPrice))
@@ -184,6 +214,26 @@ func (k Keeper) RetreiveLeverageLpTotal(ctx sdk.Context, user sdk.AccAddress) sd
 		}
 	}
 	return totalValue
+}
+
+func (k Keeper) GetAmmPrice(ctx sdk.Context, denom string, decimal uint64) sdk.Dec {
+	usdcDenom, found := k.assetProfileKeeper.GetUsdcDenom(ctx)
+	if !found {
+		return sdk.ZeroDec()
+	}
+	resp, err := k.amm.InRouteByDenom(sdk.WrapSDKContext(ctx), &ammtypes.QueryInRouteByDenomRequest{DenomIn: denom, DenomOut: usdcDenom})
+	if err != nil {
+		return sdk.ZeroDec()
+	}
+
+	routes := resp.InRoute
+	tokenIn := sdk.NewCoin(denom, sdk.NewInt(Pow10(decimal).TruncateInt64()))
+	discount := sdk.NewDec(1)
+	spotPrice, _, _, _, _, _, _, _, err := k.amm.CalcInRouteSpotPrice(ctx, tokenIn, routes, discount, sdk.ZeroDec())
+	if err != nil {
+		return sdk.ZeroDec()
+	}
+	return spotPrice
 }
 
 // SetPortfolio set a specific portfolio in the store from its index
