@@ -802,6 +802,7 @@ func NewElysApp(
 	app.CommitmentKeeper = *commitmentKeeper.SetHooks(
 		commitmentmodulekeeper.NewMultiCommitmentHooks(
 			app.EstakingKeeper.CommitmentHooks(),
+			app.TierKeeper.CommitmentHooks(),
 		),
 	)
 	commitmentModule := commitmentmodule.NewAppModule(appCodec, app.CommitmentKeeper, app.AccountKeeper, app.BankKeeper)
@@ -837,6 +838,7 @@ func NewElysApp(
 
 	app.StablestakeKeeper = *app.StablestakeKeeper.SetHooks(stablestakekeeper.NewMultiStableStakeHooks(
 		app.MasterchefKeeper.StableStakeHooks(),
+		app.TierKeeper.StableStakeHooks(),
 	))
 	stablestakeModule := stablestake.NewAppModule(appCodec, app.StablestakeKeeper, app.AccountKeeper, app.BankKeeper)
 
@@ -1070,6 +1072,7 @@ func NewElysApp(
 			app.SlashingKeeper.Hooks(),
 			app.DistrKeeper.Hooks(),
 			app.EstakingKeeper.StakingHooks(),
+			app.TierKeeper.StakingHooks(),
 		),
 	)
 
