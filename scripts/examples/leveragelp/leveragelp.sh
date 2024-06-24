@@ -111,3 +111,16 @@ elysd tx gov submit-proposal proposal.json --from=t2a --keyring-backend=test --c
   "deposit": "10000000uelys"
 }
 ```
+
+elysd query leveragelp liquidation-price elys12tzylat4udvjj56uuhu3vj2n4vgp7cf9fwna9w 1
+# price: "0.000000000000080000"
+
+elysd query amm show-pool 1
+# extra_info:
+#   lp_token_price: "1.000000000000000000"
+#   tvl: "110000.000000000000000000"
+# pool:
+#   address: elys12857uh2f6fus3x3jh07cp5u7xfg2ypeec27dcp6864xhraa33mdscw660j
+#   pool_assets:
+#   - token:
+#       amount: "10000000000"
