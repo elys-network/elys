@@ -23,7 +23,7 @@
           "leverage_max": "10.0",
           "max_open_positions": "9999",
           "pool_open_threshold": "0.200000000000000000",
-          "safety_factor": "0.100000000000000000",
+          "safety_factor": "1.100000000000000000",
           "whitelisting_enabled": false,
           "epoch_length": "1"
         }
