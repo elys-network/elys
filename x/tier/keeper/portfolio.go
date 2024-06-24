@@ -26,109 +26,23 @@ func (k Keeper) RetreiveAllPortfolio(ctx sdk.Context, user string) {
 		return
 	}
 
-	// Liquid assets
-	balances := k.bankKeeper.GetAllBalances(ctx, sender)
 	totalValue := sdk.NewDec(0)
-	for _, balance := range balances {
-		tokenPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, balance.Denom)
-		asset, found := k.assetProfileKeeper.GetEntryByDenom(ctx, balance.Denom)
-		if !found {
-			continue
-		}
-		amount := balance.Amount.ToLegacyDec().Quo(Pow10(asset.Decimals))
-		totalValue = totalValue.Add(amount.Mul(tokenPrice))
-	}
+
+	// Liquid assets
+	liq := k.RetreiveLiquidAssetsTotal(ctx, sender)
+	totalValue = totalValue.Add(liq)
 
 	// Rewards
-	estaking, err1 := k.estaking.Rewards(ctx, &estakingtypes.QueryRewardsRequest{Address: user})
-	masterchef, err2 := k.masterchef.UserPendingReward(ctx, &mastercheftypes.QueryUserPendingRewardRequest{User: user})
-
-	if err1 == nil {
-		for _, balance := range estaking.Total {
-			tokenPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, balance.Denom)
-			asset, found := k.assetProfileKeeper.GetEntryByDenom(ctx, balance.Denom)
-			if !found {
-				continue
-			}
-			amount := balance.Amount.ToLegacyDec().Quo(Pow10(asset.Decimals))
-			totalValue = totalValue.Add(amount.Mul(tokenPrice))
-		}
-	}
-
-	if err2 == nil {
-		for _, balance := range masterchef.TotalRewards {
-			tokenPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, balance.Denom)
-			asset, found := k.assetProfileKeeper.GetEntryByDenom(ctx, balance.Denom)
-			if !found {
-				continue
-			}
-			amount := balance.Amount.ToLegacyDec().Quo(Pow10(asset.Decimals))
-			totalValue = totalValue.Add(amount.Mul(tokenPrice))
-		}
-	}
+	rew := k.RetreiveRewardsTotal(ctx, sender)
+	totalValue = totalValue.Add(rew)
 
 	// Perpetual
-	perpetuals, _, err := k.perpetual.GetMTPsForAddress(ctx, sender, &query.PageRequest{})
-	if err == nil {
-		for _, perpetual := range perpetuals {
-			asset, found := k.assetProfileKeeper.GetEntryByDenom(ctx, perpetual.GetTradingAsset())
-			if !found {
-				continue
-			}
-			tokenPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, asset.Denom)
-			amount := perpetual.Custody.ToLegacyDec().Quo(Pow10(asset.Decimals))
-			totalValue = totalValue.Add((amount.Mul(tokenPrice)))
-		}
-	}
+	perp := k.RetreivePerpetualTotal(ctx, sender)
+	totalValue = totalValue.Add(perp)
 
-	// Staked assets
-	commitments := k.commitement.GetCommitments(ctx, user)
-	for _, commitment := range commitments.CommittedTokens {
-		// Pool balance
-		if strings.HasPrefix(commitment.Denom, "amm/pool") {
-			poolId, err := GetPoolIdFromShareDenom(commitment.Denom)
-			if err != nil {
-				continue
-			}
-			pool, found := k.amm.GetPool(ctx, poolId)
-			if !found {
-				return
-			}
-			info := k.amm.PoolExtraInfo(ctx, pool)
-			amount := commitment.Amount.ToLegacyDec().Quo(Pow10(18))
-			totalValue = totalValue.Add(amount.Mul(info.LpTokenPrice))
-		} else {
-			tokenPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, commitment.Denom)
-			asset, found := k.assetProfileKeeper.GetEntryByDenom(ctx, commitment.Denom)
-			if !found {
-				continue
-			}
-			amount := commitment.Amount.ToLegacyDec().Quo(Pow10(asset.Decimals))
-			totalValue = totalValue.Add(amount.Mul(tokenPrice))
-		}
-	}
-
-	// Delegations
-	delegations := k.stakingKeeper.GetAllDelegatorDelegations(ctx, sender)
-	bondDenom := k.stakingKeeper.BondDenom(ctx)
-	tokenPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, bondDenom)
-	asset, found := k.assetProfileKeeper.GetEntryByDenom(ctx, bondDenom)
-	if found {
-		for _, delegation := range delegations {
-			amount := delegation.Shares.Quo(Pow10(asset.Decimals))
-			totalValue = totalValue.Add(amount.Mul(tokenPrice))
-		}
-	}
-	// Max could be 7 for an account
-	unbondingDelegations := k.stakingKeeper.GetUnbondingDelegations(ctx, sender, 100)
-	if found {
-		for _, delegation := range unbondingDelegations {
-			for _, entry := range delegation.Entries {
-				amount := entry.Balance.ToLegacyDec().Quo(Pow10(asset.Decimals))
-				totalValue = totalValue.Add(amount.Mul(tokenPrice))
-			}
-		}
-	}
+	// Staked+Pool assets
+	staked := k.RetreiveStakedAndPoolTotal(ctx, sender)
+	totalValue = totalValue.Add(staked)
 
 	// LeverageLp
 	lev := k.RetreiveLeverageLpTotal(ctx, sender)
@@ -138,6 +52,151 @@ func (k Keeper) RetreiveAllPortfolio(ctx sdk.Context, user string) {
 		Creator:   user,
 		Portfolio: totalValue,
 	})
+}
+
+func (k Keeper) RetreiveStakedAndPoolTotal(ctx sdk.Context, user sdk.AccAddress) sdk.Dec {
+	totalValue := sdk.NewDec(0)
+	commitments := k.commitement.GetCommitments(ctx, user.String())
+	for _, commitment := range commitments.CommittedTokens {
+		// Pool balance
+		if strings.HasPrefix(commitment.Denom, "amm/pool") {
+			poolId, err := GetPoolIdFromShareDenom(commitment.Denom)
+			if err != nil {
+				continue
+			}
+			pool, found := k.amm.GetPool(ctx, poolId)
+			if !found {
+				continue
+			}
+			info := k.amm.PoolExtraInfo(ctx, pool)
+			amount := commitment.Amount.ToLegacyDec()
+			totalValue = totalValue.Add(amount.Mul(info.LpTokenPrice).QuoInt(ammtypes.OneShare))
+		} else {
+			if commitment.Denom == "ueden" {
+				commitment.Denom = "uelys"
+			}
+			tokenPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, commitment.Denom)
+			asset, found := k.assetProfileKeeper.GetEntryByDenom(ctx, commitment.Denom)
+			if !found {
+				continue
+			}
+			if tokenPrice == sdk.ZeroDec() {
+				tokenPrice = k.CalcAmmPrice(ctx, asset.Denom, asset.Decimals)
+			}
+			amount := commitment.Amount.ToLegacyDec().Quo(Pow10(asset.Decimals))
+			totalValue = totalValue.Add(amount.Mul(tokenPrice))
+		}
+	}
+
+	// Delegations
+	delegations := k.stakingKeeper.GetAllDelegatorDelegations(ctx, user)
+	bondDenom := k.stakingKeeper.BondDenom(ctx)
+	tokenPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, bondDenom)
+	asset, found := k.assetProfileKeeper.GetEntryByDenom(ctx, bondDenom)
+	if tokenPrice == sdk.ZeroDec() {
+		tokenPrice = k.CalcAmmPrice(ctx, asset.Denom, asset.Decimals)
+	}
+	if found {
+		for _, delegation := range delegations {
+			amount := delegation.Shares.Quo(Pow10(asset.Decimals))
+			totalValue = totalValue.Add(amount.Mul(tokenPrice))
+		}
+	}
+	// Max could be 7 for an account
+	unbondingDelegations := k.stakingKeeper.GetUnbondingDelegations(ctx, user, 100)
+	if found {
+		for _, delegation := range unbondingDelegations {
+			for _, entry := range delegation.Entries {
+				amount := entry.Balance.ToLegacyDec().Quo(Pow10(asset.Decimals))
+				totalValue = totalValue.Add(amount.Mul(tokenPrice))
+			}
+		}
+	}
+	return totalValue
+}
+
+func (k Keeper) RetreiveRewardsTotal(ctx sdk.Context, user sdk.AccAddress) sdk.Dec {
+	totalValue := sdk.NewDec(0)
+	estaking, err1 := k.estaking.Rewards(ctx, &estakingtypes.QueryRewardsRequest{Address: user.String()})
+	masterchef, err2 := k.masterchef.UserPendingReward(ctx, &mastercheftypes.QueryUserPendingRewardRequest{User: user.String()})
+
+	if err1 == nil {
+		for _, balance := range estaking.Total {
+			if balance.Denom == "ueden" {
+				balance.Denom = "uelys"
+			}
+			tokenPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, balance.Denom)
+			asset, found := k.assetProfileKeeper.GetEntryByDenom(ctx, balance.Denom)
+			if !found {
+				continue
+			}
+			if tokenPrice == sdk.ZeroDec() {
+				tokenPrice = k.CalcAmmPrice(ctx, asset.Denom, asset.Decimals)
+			}
+			amount := balance.Amount.ToLegacyDec().Quo(Pow10(asset.Decimals))
+			totalValue = totalValue.Add(amount.Mul(tokenPrice))
+		}
+	}
+
+	if err2 == nil {
+		for _, balance := range masterchef.TotalRewards {
+			if balance.Denom == "ueden" {
+				balance.Denom = "uelys"
+			}
+			tokenPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, balance.Denom)
+			asset, found := k.assetProfileKeeper.GetEntryByDenom(ctx, balance.Denom)
+			if !found {
+				continue
+			}
+			if tokenPrice == sdk.ZeroDec() {
+				tokenPrice = k.CalcAmmPrice(ctx, asset.Denom, asset.Decimals)
+			}
+			amount := balance.Amount.ToLegacyDec().Quo(Pow10(asset.Decimals))
+			totalValue = totalValue.Add(amount.Mul(tokenPrice))
+		}
+	}
+	return totalValue
+}
+
+func (k Keeper) RetreivePerpetualTotal(ctx sdk.Context, user sdk.AccAddress) sdk.Dec {
+	totalValue := sdk.NewDec(0)
+	perpetuals, _, err := k.perpetual.GetMTPsForAddress(ctx, user, &query.PageRequest{})
+	if err == nil {
+		for _, perpetual := range perpetuals {
+			asset, found := k.assetProfileKeeper.GetEntryByDenom(ctx, perpetual.GetTradingAsset())
+			if !found {
+				continue
+			}
+			tokenPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, asset.Denom)
+			if tokenPrice == sdk.ZeroDec() {
+				tokenPrice = k.CalcAmmPrice(ctx, asset.Denom, asset.Decimals)
+			}
+			amount := perpetual.Custody.ToLegacyDec().Quo(Pow10(asset.Decimals))
+			totalValue = totalValue.Add((amount.Mul(tokenPrice)))
+		}
+	}
+	return totalValue
+}
+
+func (k Keeper) RetreiveLiquidAssetsTotal(ctx sdk.Context, user sdk.AccAddress) sdk.Dec {
+	balances := k.bankKeeper.GetAllBalances(ctx, user)
+	totalValue := sdk.NewDec(0)
+	for _, balance := range balances {
+		if balance.Denom == "ueden" {
+			balance.Denom = "uelys"
+		}
+		tokenPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, balance.Denom)
+		asset, found := k.assetProfileKeeper.GetEntryByDenom(ctx, balance.Denom)
+		if !found {
+			continue
+		}
+		if tokenPrice == sdk.ZeroDec() {
+			tokenPrice = k.CalcAmmPrice(ctx, balance.Denom, asset.Decimals)
+		}
+		amount := balance.Amount.ToLegacyDec()
+		totalValue = totalValue.Add(amount.Mul(tokenPrice).Quo(Pow10(asset.Decimals)))
+	}
+	return totalValue
 }
 
 func (k Keeper) RetreiveLeverageLpTotal(ctx sdk.Context, user sdk.AccAddress) sdk.Dec {
@@ -155,6 +214,27 @@ func (k Keeper) RetreiveLeverageLpTotal(ctx sdk.Context, user sdk.AccAddress) sd
 		}
 	}
 	return totalValue
+}
+
+func (k Keeper) CalcAmmPrice(ctx sdk.Context, denom string, decimal uint64) sdk.Dec {
+	usdcDenom, found := k.assetProfileKeeper.GetUsdcDenom(ctx)
+	if !found {
+		return sdk.ZeroDec()
+	}
+	usdcPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, usdcDenom)
+	resp, err := k.amm.InRouteByDenom(sdk.WrapSDKContext(ctx), &ammtypes.QueryInRouteByDenomRequest{DenomIn: denom, DenomOut: usdcDenom})
+	if err != nil {
+		return sdk.ZeroDec()
+	}
+
+	routes := resp.InRoute
+	tokenIn := sdk.NewCoin(denom, sdk.NewInt(Pow10(decimal).TruncateInt64()))
+	discount := sdk.NewDec(1)
+	spotPrice, _, _, _, _, _, _, _, err := k.amm.CalcInRouteSpotPrice(ctx, tokenIn, routes, discount, sdk.ZeroDec())
+	if err != nil {
+		return sdk.ZeroDec()
+	}
+	return spotPrice.Mul(usdcPrice)
 }
 
 // SetPortfolio set a specific portfolio in the store from its index

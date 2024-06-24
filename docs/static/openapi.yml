@@ -44884,10 +44884,197 @@ paths:
           type: string
       tags:
         - Query
+  /elys-network/elys/tier/get_amm_price/{denom}/{decimal}:
+    get:
+      summary: Queries a list of GetAmmPrice items.
+      operationId: ElysTierGetAmmPrice
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: denom
+          in: path
+          required: true
+          type: string
+        - name: decimal
+          in: path
+          required: true
+          type: integer
+          format: int32
+      tags:
+        - Query
   /elys-network/elys/tier/leverage_lp_total/{user}:
     get:
       summary: Queries a list of LeverageLpTotal items.
       operationId: ElysTierLeverageLpTotal
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              total:
+                type: string
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: user
+          in: path
+          required: true
+          type: string
+      tags:
+        - Query
+  /elys-network/elys/tier/liquid_total/{user}:
+    get:
+      summary: Queries a list of LiquidTotal items.
+      operationId: ElysTierLiquidTotal
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              total:
+                type: string
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: user
+          in: path
+          required: true
+          type: string
+      tags:
+        - Query
+  /elys-network/elys/tier/perpetual/{user}:
+    get:
+      summary: Queries a list of Perpetual items.
+      operationId: ElysTierPerpetual
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              total:
+                type: string
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: user
+          in: path
+          required: true
+          type: string
+      tags:
+        - Query
+  /elys-network/elys/tier/rewards_total/{user}:
+    get:
+      summary: Queries a list of RewardsTotal items.
+      operationId: ElysTierRewardsTotal
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              total:
+                type: string
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: user
+          in: path
+          required: true
+          type: string
+      tags:
+        - Query
+  /elys-network/elys/tier/staked_pool/{user}:
+    get:
+      summary: Queries a list of StakedPool items.
+      operationId: ElysTierStakedPool
       responses:
         '200':
           description: A successful response.
@@ -89252,12 +89439,19 @@ definitions:
         type: string
       portfolio:
         type: string
+  elys.tier.QueryGetAmmPriceResponse:
+    type: object
   elys.tier.QueryGetPortfolioResponse:
     type: object
     properties:
       total_portfolio:
         type: string
   elys.tier.QueryLeverageLpTotalResponse:
+    type: object
+    properties:
+      total:
+        type: string
+  elys.tier.QueryLiquidTotalResponse:
     type: object
     properties:
       total:
@@ -89269,6 +89463,21 @@ definitions:
         description: params holds all the parameters of this module.
         type: object
     description: QueryParamsResponse is response type for the Query/Params RPC method.
+  elys.tier.QueryPerpetualResponse:
+    type: object
+    properties:
+      total:
+        type: string
+  elys.tier.QueryRewardsTotalResponse:
+    type: object
+    properties:
+      total:
+        type: string
+  elys.tier.QueryStakedPoolResponse:
+    type: object
+    properties:
+      total:
+        type: string
   elys.tokenomics.Airdrop:
     type: object
     properties:

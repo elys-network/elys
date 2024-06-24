@@ -835,11 +835,6 @@ func NewElysApp(
 	)
 	masterchefModule := masterchefmodule.NewAppModule(appCodec, app.MasterchefKeeper, app.AccountKeeper, app.BankKeeper)
 
-	app.StablestakeKeeper = *app.StablestakeKeeper.SetHooks(stablestakekeeper.NewMultiStableStakeHooks(
-		app.MasterchefKeeper.StableStakeHooks(),
-	))
-	stablestakeModule := stablestake.NewAppModule(appCodec, app.StablestakeKeeper, app.AccountKeeper, app.BankKeeper)
-
 	app.IncentiveKeeper = *incentivemodulekeeper.NewKeeper(
 		appCodec,
 		keys[incentivemoduletypes.StoreKey],
@@ -1064,12 +1059,19 @@ func NewElysApp(
 
 	// register hooks after all modules have been initialized
 
+	app.StablestakeKeeper = *app.StablestakeKeeper.SetHooks(stablestakekeeper.NewMultiStableStakeHooks(
+		app.MasterchefKeeper.StableStakeHooks(),
+		app.TierKeeper.StableStakeHooks(),
+	))
+	stablestakeModule := stablestake.NewAppModule(appCodec, app.StablestakeKeeper, app.AccountKeeper, app.BankKeeper)
+
 	app.EstakingKeeper.SetHooks(
 		stakingtypes.NewMultiStakingHooks(
 			// insert staking hooks receivers here
 			app.SlashingKeeper.Hooks(),
 			app.DistrKeeper.Hooks(),
 			app.EstakingKeeper.StakingHooks(),
+			app.TierKeeper.StakingHooks(),
 		),
 	)
 
@@ -1085,6 +1087,7 @@ func NewElysApp(
 			app.PerpetualKeeper.AmmHooks(),
 			app.LeveragelpKeeper.AmmHooks(),
 			app.MasterchefKeeper.AmmHooks(),
+			app.TierKeeper.AmmHooks(),
 		),
 	)
 	ammModule := ammmodule.NewAppModule(appCodec, app.AmmKeeper, app.AccountKeeper, app.BankKeeper)
@@ -1104,6 +1107,7 @@ func NewElysApp(
 		perpetualmoduletypes.NewMultiPerpetualHooks(
 			// insert perpetual hooks receivers here
 			app.AccountedPoolKeeper.PerpetualHooks(),
+			app.TierKeeper.PerpetualHooks(),
 		),
 	)
 	perpetualModule := perpetualmodule.NewAppModule(appCodec, app.PerpetualKeeper, app.AccountKeeper, app.BankKeeper)

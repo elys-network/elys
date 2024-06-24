@@ -7,50 +7,27 @@ import (
 )
 
 // AfterPoolCreated is called after CreatePool
-func (k Keeper) AfterPoolCreated(ctx sdk.Context, sender sdk.AccAddress, ammPool ammtypes.Pool) {
-	if k.hooks != nil {
-		k.hooks.AfterAmmPoolCreated(ctx, ammPool, sender.String())
-	}
+func (k Keeper) AfterPoolCreated(ctx sdk.Context, sender sdk.AccAddress, poolId uint64) {
 }
 
 // AfterJoinPool is called after JoinPool, JoinSwapExternAmountIn, and JoinSwapShareAmountOut
-func (k Keeper) AfterJoinPool(ctx sdk.Context, sender sdk.AccAddress, ammPool ammtypes.Pool, enterCoins sdk.Coins, shareOutAmount math.Int) {
-	perpetualPool, found := k.GetPool(ctx, ammPool.PoolId)
-	if !found {
-		return
-	}
-
-	if k.hooks != nil {
-		k.hooks.AfterAmmJoinPool(ctx, ammPool, perpetualPool, sender.String())
-	}
+func (k Keeper) AfterJoinPool(ctx sdk.Context, sender sdk.AccAddress, poolId uint64, enterCoins sdk.Coins, shareOutAmount math.Int) {
+	k.RetreiveAllPortfolio(ctx, sender.String())
 }
 
 // AfterExitPool is called after ExitPool, ExitSwapShareAmountIn, and ExitSwapExternAmountOut
-func (k Keeper) AfterExitPool(ctx sdk.Context, sender sdk.AccAddress, ammPool ammtypes.Pool, shareInAmount math.Int, exitCoins sdk.Coins) error {
-	perpetualPool, found := k.GetPool(ctx, ammPool.PoolId)
-	if !found {
-		return nil
-	}
-
-	if k.hooks != nil {
-		k.hooks.AfterAmmExitPool(ctx, ammPool, perpetualPool, sender.String())
-	}
+func (k Keeper) AfterExitPool(ctx sdk.Context, sender sdk.AccAddress, poolId uint64, shareInAmount math.Int, exitCoins sdk.Coins) error {
+	k.RetreiveAllPortfolio(ctx, sender.String())
 	return nil
 }
 
 // AfterSwap is called after SwapExactAmountIn and SwapExactAmountOut
-func (k Keeper) AfterSwap(ctx sdk.Context, sender sdk.AccAddress, ammPool ammtypes.Pool, input sdk.Coins, output sdk.Coins) error {
-	perpetualPool, found := k.GetPool(ctx, ammPool.PoolId)
-	if !found {
-		return nil
-	}
-	if k.hooks != nil {
-		k.hooks.AfterAmmSwap(ctx, ammPool, perpetualPool, sender.String())
-	}
+func (k Keeper) AfterSwap(ctx sdk.Context, sender sdk.AccAddress, poolId uint64, input sdk.Coins, output sdk.Coins) error {
+	k.RetreiveAllPortfolio(ctx, sender.String())
 	return nil
 }
 
-// Hooks wrapper struct for tvl keeper
+// Hooks wrapper struct for incentive keeper
 type AmmHooks struct {
 	k Keeper
 }
@@ -64,20 +41,20 @@ func (k Keeper) AmmHooks() AmmHooks {
 
 // AfterPoolCreated is called after CreatePool
 func (h AmmHooks) AfterPoolCreated(ctx sdk.Context, sender sdk.AccAddress, pool ammtypes.Pool) {
-	h.k.AfterPoolCreated(ctx, sender, pool)
+	h.k.AfterPoolCreated(ctx, sender, pool.PoolId)
 }
 
 // AfterJoinPool is called after JoinPool, JoinSwapExternAmountIn, and JoinSwapShareAmountOut
 func (h AmmHooks) AfterJoinPool(ctx sdk.Context, sender sdk.AccAddress, pool ammtypes.Pool, enterCoins sdk.Coins, shareOutAmount math.Int) {
-	h.k.AfterJoinPool(ctx, sender, pool, enterCoins, shareOutAmount)
+	h.k.AfterJoinPool(ctx, sender, pool.PoolId, enterCoins, shareOutAmount)
 }
 
 // AfterExitPool is called after ExitPool, ExitSwapShareAmountIn, and ExitSwapExternAmountOut
 func (h AmmHooks) AfterExitPool(ctx sdk.Context, sender sdk.AccAddress, pool ammtypes.Pool, shareInAmount math.Int, exitCoins sdk.Coins) error {
-	return h.k.AfterExitPool(ctx, sender, pool, shareInAmount, exitCoins)
+	return h.k.AfterExitPool(ctx, sender, pool.PoolId, shareInAmount, exitCoins)
 }
 
 // AfterSwap is called after SwapExactAmountIn and SwapExactAmountOut
 func (h AmmHooks) AfterSwap(ctx sdk.Context, sender sdk.AccAddress, pool ammtypes.Pool, input sdk.Coins, output sdk.Coins) error {
-	return h.k.AfterSwap(ctx, sender, pool, input, output)
+	return h.k.AfterSwap(ctx, sender, pool.PoolId, input, output)
 }
