@@ -88332,6 +88332,10 @@ definitions:
             type: string
           open_price:
             type: string
+  elys.perpetual.MsgAddCollateralResponse:
+    type: object
+  elys.perpetual.MsgBrokerAddCollateralResponse:
+    type: object
   elys.perpetual.MsgCloseResponse:
     type: object
     properties:
