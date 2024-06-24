@@ -21,8 +21,8 @@ func (k msgServer) BrokerAddCollateral(goCtx context.Context, msg *types.MsgBrok
 		return nil, errors.Wrap(types.ErrUnauthorised, "creator must be broker address")
 	}
 
-	// TODO
-	//msgAddCollateral := types.NewMsgAddCollateral(msg.Owner, msg.Amount, uint64(msg.Id))
-	//return k.Keeper.Add(ctx, msgAddCollateral)
-	return &types.MsgAddCollateralResponse{}, nil
+	msgClose := types.NewMsgAddCollateral(msg.Owner, msg.Amount, uint64(msg.Id))
+
+	res, err := k.AddCollateralToMtp(ctx, msgClose)
+	return res, err
 }

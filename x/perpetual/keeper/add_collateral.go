@@ -8,7 +8,7 @@ import (
 	"github.com/elys-network/elys/x/perpetual/types"
 )
 
-func (k Keeper) AddCollateral(ctx sdk.Context, msg *types.MsgAddCollateral, isBroker bool) (*types.MsgAddCollateralResponse, error) {
+func (k Keeper) AddCollateralToMtp(ctx sdk.Context, msg *types.MsgAddCollateral) (*types.MsgAddCollateralResponse, error) {
 	entry, found := k.assetProfileKeeper.GetEntry(ctx, ptypes.BaseCurrency)
 	if !found {
 		return nil, errorsmod.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency)

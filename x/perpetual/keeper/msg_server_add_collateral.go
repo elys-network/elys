@@ -10,8 +10,6 @@ import (
 func (k msgServer) AddCollateral(goCtx context.Context, msg *types.MsgAddCollateral) (*types.MsgAddCollateralResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	// TODO: Handling the message
-	_ = ctx
-
-	return &types.MsgAddCollateralResponse{}, nil
+	res, err := k.AddCollateralToMtp(ctx, msg)
+	return res, err
 }
