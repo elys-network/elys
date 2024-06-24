@@ -106,7 +106,7 @@ func (k Keeper) GetDailyRewardsAmountForPool(ctx sdk.Context, poolId uint64) (sd
 	dailyGasRewardsTotal := math.LegacyZeroDec()
 	dailyEdenRewardsTotal := math.LegacyZeroDec()
 	firstAccum := k.masterchef.FirstPoolRewardsAccum(ctx, poolId)
-	lastAccum := k.masterchef.FirstPoolRewardsAccum(ctx, poolId)
+	lastAccum := k.masterchef.LastPoolRewardsAccum(ctx, poolId)
 	if lastAccum.Timestamp != 0 {
 		if firstAccum.Timestamp == lastAccum.Timestamp {
 			dailyDexRewardsTotal = lastAccum.DexReward

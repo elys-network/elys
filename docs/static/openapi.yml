@@ -42247,10 +42247,10 @@ paths:
                     title: Eden APR, updated at every distribution
                   dex_apr:
                     type: string
-                    title: Dex APR, updated at every distribution
+                    title: Dex APR, updated based on 24hr accumulation
                   gas_apr:
                     type: string
-                    title: Gas APR, updated at every distribution
+                    title: Gas APR, updated based on 24hr accumulation
                   external_incentive_apr:
                     type: string
                     title: External Incentive APR, updated at every distribution
@@ -87437,10 +87437,10 @@ definitions:
         title: Eden APR, updated at every distribution
       dex_apr:
         type: string
-        title: Dex APR, updated at every distribution
+        title: Dex APR, updated based on 24hr accumulation
       gas_apr:
         type: string
-        title: Gas APR, updated at every distribution
+        title: Gas APR, updated based on 24hr accumulation
       external_incentive_apr:
         type: string
         title: External Incentive APR, updated at every distribution
@@ -87582,10 +87582,10 @@ definitions:
             title: Eden APR, updated at every distribution
           dex_apr:
             type: string
-            title: Dex APR, updated at every distribution
+            title: Dex APR, updated based on 24hr accumulation
           gas_apr:
             type: string
-            title: Gas APR, updated at every distribution
+            title: Gas APR, updated based on 24hr accumulation
           external_incentive_apr:
             type: string
             title: External Incentive APR, updated at every distribution
