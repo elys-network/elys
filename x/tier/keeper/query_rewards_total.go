@@ -15,9 +15,10 @@ func (k Keeper) RewardsTotal(goCtx context.Context, req *types.QueryRewardsTotal
 	}
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
+	sender := sdk.MustAccAddressFromBech32(req.User)
+	total := k.RetreiveRewardsTotal(ctx, sender)
 
-	// TODO: Process the query
-	_ = ctx
-
-	return &types.QueryRewardsTotalResponse{}, nil
+	return &types.QueryRewardsTotalResponse{
+		Total: total,
+	}, nil
 }
