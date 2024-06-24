@@ -58,6 +58,12 @@ service Query {
     option (google.api.http).get = "/elys-network/elys/tier/perpetual/{user}";
   
   }
+  
+  // Queries a list of LiquidTotal items.
+  rpc LiquidTotal (QueryLiquidTotalRequest) returns (QueryLiquidTotalResponse) {
+    option (google.api.http).get = "/elys-network/elys/tier/liquid_total/{user}";
+  
+  }
 }
 // QueryParamsRequest is request type for the Query/Params RPC method.
 message QueryParamsRequest {}
@@ -126,6 +132,14 @@ message QueryPerpetualRequest {
 }
 
 message QueryPerpetualResponse {
+  string total = 1 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+}
+
+message QueryLiquidTotalRequest {
+  string user = 1;
+}
+
+message QueryLiquidTotalResponse {
   string total = 1 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
 }
 

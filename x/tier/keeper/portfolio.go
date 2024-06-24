@@ -193,8 +193,8 @@ func (k Keeper) RetreiveLiquidAssetsTotal(ctx sdk.Context, user sdk.AccAddress) 
 		if tokenPrice == sdk.ZeroDec() {
 			tokenPrice = k.GetAmmPrice(ctx, balance.Denom, asset.Decimals)
 		}
-		amount := balance.Amount.ToLegacyDec().Quo(Pow10(asset.Decimals))
-		totalValue = totalValue.Add(amount.Mul(tokenPrice))
+		amount := balance.Amount.ToLegacyDec()
+		totalValue = totalValue.Add(amount.Mul(tokenPrice).Quo(Pow10(asset.Decimals)))
 	}
 	return totalValue
 }
