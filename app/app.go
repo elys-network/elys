@@ -802,7 +802,6 @@ func NewElysApp(
 	app.CommitmentKeeper = *commitmentKeeper.SetHooks(
 		commitmentmodulekeeper.NewMultiCommitmentHooks(
 			app.EstakingKeeper.CommitmentHooks(),
-			app.TierKeeper.CommitmentHooks(),
 		),
 	)
 	commitmentModule := commitmentmodule.NewAppModule(appCodec, app.CommitmentKeeper, app.AccountKeeper, app.BankKeeper)
