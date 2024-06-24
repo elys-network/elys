@@ -40,6 +40,24 @@ service Query {
     option (google.api.http).get = "/elys-network/elys/tier/leverage_lp_total/{user}";
   
   }
+  
+  // Queries a list of RewardsTotal items.
+  rpc RewardsTotal (QueryRewardsTotalRequest) returns (QueryRewardsTotalResponse) {
+    option (google.api.http).get = "/elys-network/elys/tier/rewards_total/{user}";
+  
+  }
+  
+  // Queries a list of StakedPool items.
+  rpc StakedPool (QueryStakedPoolRequest) returns (QueryStakedPoolResponse) {
+    option (google.api.http).get = "/elys-network/elys/tier/staked_pool/{user}";
+  
+  }
+  
+  // Queries a list of Perpetual items.
+  rpc Perpetual (QueryPerpetualRequest) returns (QueryPerpetualResponse) {
+    option (google.api.http).get = "/elys-network/elys/tier/perpetual/{user}";
+  
+  }
 }
 // QueryParamsRequest is request type for the Query/Params RPC method.
 message QueryParamsRequest {}
@@ -80,13 +98,34 @@ message QueryCalculateDiscountResponse {
 }
 
 message QueryLeverageLpTotalRequest {
-  string user     = 1;
+  string user = 1;
 }
 
 message QueryLeverageLpTotalResponse {
-  string total = 1 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
-    (gogoproto.nullable) = false
-  ];
+  string total = 1 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+}
+
+message QueryRewardsTotalRequest {
+  string user = 1;
+}
+
+message QueryRewardsTotalResponse {
+  string total = 1 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+}
+
+message QueryStakedPoolRequest {
+  string user = 1;
+}
+
+message QueryStakedPoolResponse {
+  string total = 1 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+}
+
+message QueryPerpetualRequest {
+  string user = 1;
+}
+
+message QueryPerpetualResponse {
+  string total = 1 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
 }
 

@@ -44879,6 +44879,108 @@ paths:
           type: string
       tags:
         - Query
+  /elys-network/elys/tier/perpetual/{user}:
+    get:
+      summary: Queries a list of Perpetual items.
+      operationId: ElysTierPerpetual
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: user
+          in: path
+          required: true
+          type: string
+      tags:
+        - Query
+  /elys-network/elys/tier/rewards_total/{user}:
+    get:
+      summary: Queries a list of RewardsTotal items.
+      operationId: ElysTierRewardsTotal
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: user
+          in: path
+          required: true
+          type: string
+      tags:
+        - Query
+  /elys-network/elys/tier/staked_pool/{user}:
+    get:
+      summary: Queries a list of StakedPool items.
+      operationId: ElysTierStakedPool
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: user
+          in: path
+          required: true
+          type: string
+      tags:
+        - Query
   /elys-network/elys/tokenomics/airdrop:
     get:
       operationId: ElysTokenomicsAirdropAll
@@ -89218,6 +89320,12 @@ definitions:
         description: params holds all the parameters of this module.
         type: object
     description: QueryParamsResponse is response type for the Query/Params RPC method.
+  elys.tier.QueryPerpetualResponse:
+    type: object
+  elys.tier.QueryRewardsTotalResponse:
+    type: object
+  elys.tier.QueryStakedPoolResponse:
+    type: object
   elys.tokenomics.Airdrop:
     type: object
     properties:
