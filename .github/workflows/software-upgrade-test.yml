@@ -7,19 +7,12 @@ on:
       - develop
       - devnet
       - main
-      - ccv-v0.32.0
 
 jobs:
   create-new-snapshot:
-    runs-on: self-hosted
+    runs-on: elys-runner
 
     steps:
-      - name: Delete unused directories
-        run: |
-          sudo rm -rf /usr/share/dotnet
-          sudo rm -rf /opt/ghc
-          sudo rm -rf "/usr/local/share/boost"
-          sudo rm -rf "$AGENT_TOOLSDIRECTORY"
           
       - name: Checkout repository
         uses: actions/checkout@v4
