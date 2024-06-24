@@ -835,12 +835,6 @@ func NewElysApp(
 	)
 	masterchefModule := masterchefmodule.NewAppModule(appCodec, app.MasterchefKeeper, app.AccountKeeper, app.BankKeeper)
 
-	app.StablestakeKeeper = *app.StablestakeKeeper.SetHooks(stablestakekeeper.NewMultiStableStakeHooks(
-		app.MasterchefKeeper.StableStakeHooks(),
-		app.TierKeeper.StableStakeHooks(),
-	))
-	stablestakeModule := stablestake.NewAppModule(appCodec, app.StablestakeKeeper, app.AccountKeeper, app.BankKeeper)
-
 	app.IncentiveKeeper = *incentivemodulekeeper.NewKeeper(
 		appCodec,
 		keys[incentivemoduletypes.StoreKey],
@@ -1064,6 +1058,12 @@ func NewElysApp(
 	/**** Module Hooks ****/
 
 	// register hooks after all modules have been initialized
+
+	app.StablestakeKeeper = *app.StablestakeKeeper.SetHooks(stablestakekeeper.NewMultiStableStakeHooks(
+		app.MasterchefKeeper.StableStakeHooks(),
+		app.TierKeeper.StableStakeHooks(),
+	))
+	stablestakeModule := stablestake.NewAppModule(appCodec, app.StablestakeKeeper, app.AccountKeeper, app.BankKeeper)
 
 	app.EstakingKeeper.SetHooks(
 		stakingtypes.NewMultiStakingHooks(
