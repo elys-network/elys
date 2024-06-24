@@ -221,6 +221,7 @@ func (k Keeper) GetAmmPrice(ctx sdk.Context, denom string, decimal uint64) sdk.D
 	if !found {
 		return sdk.ZeroDec()
 	}
+	usdcPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, usdcDenom)
 	resp, err := k.amm.InRouteByDenom(sdk.WrapSDKContext(ctx), &ammtypes.QueryInRouteByDenomRequest{DenomIn: denom, DenomOut: usdcDenom})
 	if err != nil {
 		return sdk.ZeroDec()
@@ -233,7 +234,7 @@ func (k Keeper) GetAmmPrice(ctx sdk.Context, denom string, decimal uint64) sdk.D
 	if err != nil {
 		return sdk.ZeroDec()
 	}
-	return spotPrice
+	return spotPrice.Mul(usdcPrice)
 }
 
 // SetPortfolio set a specific portfolio in the store from its index
