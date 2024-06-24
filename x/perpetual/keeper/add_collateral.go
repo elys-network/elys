@@ -168,7 +168,7 @@ func (k Keeper) AddCollateralToMtp(ctx sdk.Context, msg *types.MsgAddCollateral)
 	k.EmitOpenEvent(ctx, &mtp)
 
 	if k.hooks != nil {
-		k.hooks.AfterPerpetualPositionModified(ctx, ammPool, pool)
+		k.hooks.AfterPerpetualPositionModified(ctx, ammPool, pool, msg.Creator)
 	}
 
 	return &types.MsgAddCollateralResponse{}, nil
