@@ -40864,6 +40864,48 @@ paths:
           type: string
       tags:
         - Query
+  /elys-network/elys/leveragelp/liquidation_price/{position_id}:
+    get:
+      summary: Query a liquidation price for a position
+      operationId: ElysLeveragelpLiquidationPrice
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              price:
+                type: string
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: position_id
+          in: path
+          required: true
+          type: string
+          format: uint64
+        - name: address
+          in: query
+          required: false
+          type: string
+      tags:
+        - Query
   /elys-network/elys/leveragelp/open_estimation:
     get:
       summary: Get estimated amount of return value opening a position
@@ -87202,6 +87244,11 @@ definitions:
             type: string
           leverage_max:
             type: string
+  elys.leveragelp.QueryLiquidationPriceResponse:
+    type: object
+    properties:
+      price:
+        type: string
   elys.leveragelp.QueryOpenEstResponse:
     type: object
     properties:

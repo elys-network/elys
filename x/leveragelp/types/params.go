@@ -35,8 +35,8 @@ func NewParams() Params {
 		LeverageMax:         sdk.NewDec(10),
 		EpochLength:         (int64)(1),
 		MaxOpenPositions:    (int64)(9999),
-		PoolOpenThreshold:   sdk.NewDecWithPrec(2, 1), // 0.2
-		SafetyFactor:        sdk.NewDecWithPrec(1, 1), // 0.1
+		PoolOpenThreshold:   sdk.NewDecWithPrec(2, 1),  // 0.2
+		SafetyFactor:        sdk.NewDecWithPrec(11, 1), // 1.1
 		WhitelistingEnabled: false,
 	}
 }
