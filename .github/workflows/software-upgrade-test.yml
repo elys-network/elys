@@ -11,7 +11,7 @@ on:
 
 jobs:
   create-new-snapshot:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
 
     steps:
       - name: Delete unused directories
