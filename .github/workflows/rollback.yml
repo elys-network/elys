@@ -1,0 +1,22 @@
+name: Rollback Devnet
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "the version of blockchain to rollback"
+        type: string
+        required: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: devnet 
+    steps:
+      - name: Rollback Devnet
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          passphrase: ${{ secrets.SSH_PASSPHRASE }}
+          script: /bin/bash /home/ubuntu/ci-cd-devnet-backup-and-rollback/rollback.sh ${{inputs.version}}
