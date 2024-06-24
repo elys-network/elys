@@ -81,7 +81,7 @@ func (k Keeper) RetreiveStakedAndPoolTotal(ctx sdk.Context, user sdk.AccAddress)
 				continue
 			}
 			if tokenPrice == sdk.ZeroDec() {
-				tokenPrice = k.GetAmmPrice(ctx, asset.Denom, asset.Decimals)
+				tokenPrice = k.CalcAmmPrice(ctx, asset.Denom, asset.Decimals)
 			}
 			amount := commitment.Amount.ToLegacyDec().Quo(Pow10(asset.Decimals))
 			totalValue = totalValue.Add(amount.Mul(tokenPrice))
@@ -94,7 +94,7 @@ func (k Keeper) RetreiveStakedAndPoolTotal(ctx sdk.Context, user sdk.AccAddress)
 	tokenPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, bondDenom)
 	asset, found := k.assetProfileKeeper.GetEntryByDenom(ctx, bondDenom)
 	if tokenPrice == sdk.ZeroDec() {
-		tokenPrice = k.GetAmmPrice(ctx, asset.Denom, asset.Decimals)
+		tokenPrice = k.CalcAmmPrice(ctx, asset.Denom, asset.Decimals)
 	}
 	if found {
 		for _, delegation := range delegations {
@@ -131,7 +131,7 @@ func (k Keeper) RetreiveRewardsTotal(ctx sdk.Context, user sdk.AccAddress) sdk.D
 				continue
 			}
 			if tokenPrice == sdk.ZeroDec() {
-				tokenPrice = k.GetAmmPrice(ctx, asset.Denom, asset.Decimals)
+				tokenPrice = k.CalcAmmPrice(ctx, asset.Denom, asset.Decimals)
 			}
 			amount := balance.Amount.ToLegacyDec().Quo(Pow10(asset.Decimals))
 			totalValue = totalValue.Add(amount.Mul(tokenPrice))
@@ -149,7 +149,7 @@ func (k Keeper) RetreiveRewardsTotal(ctx sdk.Context, user sdk.AccAddress) sdk.D
 				continue
 			}
 			if tokenPrice == sdk.ZeroDec() {
-				tokenPrice = k.GetAmmPrice(ctx, asset.Denom, asset.Decimals)
+				tokenPrice = k.CalcAmmPrice(ctx, asset.Denom, asset.Decimals)
 			}
 			amount := balance.Amount.ToLegacyDec().Quo(Pow10(asset.Decimals))
 			totalValue = totalValue.Add(amount.Mul(tokenPrice))
@@ -169,7 +169,7 @@ func (k Keeper) RetreivePerpetualTotal(ctx sdk.Context, user sdk.AccAddress) sdk
 			}
 			tokenPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, asset.Denom)
 			if tokenPrice == sdk.ZeroDec() {
-				tokenPrice = k.GetAmmPrice(ctx, asset.Denom, asset.Decimals)
+				tokenPrice = k.CalcAmmPrice(ctx, asset.Denom, asset.Decimals)
 			}
 			amount := perpetual.Custody.ToLegacyDec().Quo(Pow10(asset.Decimals))
 			totalValue = totalValue.Add((amount.Mul(tokenPrice)))
@@ -191,7 +191,7 @@ func (k Keeper) RetreiveLiquidAssetsTotal(ctx sdk.Context, user sdk.AccAddress) 
 			continue
 		}
 		if tokenPrice == sdk.ZeroDec() {
-			tokenPrice = k.GetAmmPrice(ctx, balance.Denom, asset.Decimals)
+			tokenPrice = k.CalcAmmPrice(ctx, balance.Denom, asset.Decimals)
 		}
 		amount := balance.Amount.ToLegacyDec()
 		totalValue = totalValue.Add(amount.Mul(tokenPrice).Quo(Pow10(asset.Decimals)))
@@ -216,7 +216,7 @@ func (k Keeper) RetreiveLeverageLpTotal(ctx sdk.Context, user sdk.AccAddress) sd
 	return totalValue
 }
 
-func (k Keeper) GetAmmPrice(ctx sdk.Context, denom string, decimal uint64) sdk.Dec {
+func (k Keeper) CalcAmmPrice(ctx sdk.Context, denom string, decimal uint64) sdk.Dec {
 	usdcDenom, found := k.assetProfileKeeper.GetUsdcDenom(ctx)
 	if !found {
 		return sdk.ZeroDec()

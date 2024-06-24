@@ -64,6 +64,12 @@ service Query {
     option (google.api.http).get = "/elys-network/elys/tier/liquid_total/{user}";
   
   }
+  
+  // Queries a list of GetAmmPrice items.
+  rpc GetAmmPrice (QueryGetAmmPriceRequest) returns (QueryGetAmmPriceResponse) {
+    option (google.api.http).get = "/elys-network/elys/tier/get_amm_price/{denom}/{decimal}";
+  
+  }
 }
 // QueryParamsRequest is request type for the Query/Params RPC method.
 message QueryParamsRequest {}
@@ -140,6 +146,15 @@ message QueryLiquidTotalRequest {
 }
 
 message QueryLiquidTotalResponse {
+  string total = 1 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+}
+
+message QueryGetAmmPriceRequest {
+  string denom   = 1;
+  int32  decimal = 2;
+}
+
+message QueryGetAmmPriceResponse {
   string total = 1 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
 }
 

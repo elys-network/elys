@@ -44842,6 +44842,45 @@ paths:
           type: string
       tags:
         - Query
+  /elys-network/elys/tier/get_amm_price/{denom}/{decimal}:
+    get:
+      summary: Queries a list of GetAmmPrice items.
+      operationId: ElysTierGetAmmPrice
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: denom
+          in: path
+          required: true
+          type: string
+        - name: decimal
+          in: path
+          required: true
+          type: integer
+          format: int32
+      tags:
+        - Query
   /elys-network/elys/tier/leverage_lp_total/{user}:
     get:
       summary: Queries a list of LeverageLpTotal items.
@@ -44888,6 +44927,9 @@ paths:
           description: A successful response.
           schema:
             type: object
+            properties:
+              total:
+                type: string
         default:
           description: An unexpected error response.
           schema:
@@ -89346,6 +89388,8 @@ definitions:
         type: string
       portfolio:
         type: string
+  elys.tier.QueryGetAmmPriceResponse:
+    type: object
   elys.tier.QueryGetPortfolioResponse:
     type: object
     properties:
@@ -89358,6 +89402,9 @@ definitions:
         type: string
   elys.tier.QueryLiquidTotalResponse:
     type: object
+    properties:
+      total:
+        type: string
   elys.tier.QueryParamsResponse:
     type: object
     properties:
