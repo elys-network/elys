@@ -111,7 +111,11 @@ func (k Keeper) Repay(ctx sdk.Context, addr sdk.AccAddress, amount sdk.Coin) err
 	repayAmount := amount.Amount.Sub(interestPayAmount)
 	debt.Borrowed = debt.Borrowed.Sub(repayAmount)
 
-	if !debt.Borrowed.IsPositive() {
+	if debt.Borrowed.IsNegative() {
+		return types.ErrNegativeBorrowed
+	}
+
+	if debt.Borrowed.IsZero() {
 		k.DeleteDebt(ctx, debt)
 	} else {
 		k.SetDebt(ctx, debt)

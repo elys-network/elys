@@ -28,4 +28,5 @@ var (
 	ErrOnlyBaseCurrencyAllowed = errorsmod.Register(ModuleName, 35, "only base currency is allowed for leverage lp")
 	ErrInsufficientUsdcAfterOp = errorsmod.Register(ModuleName, 36, "insufficient amount of usdc after the operation for leveragelp withdrawal")
 	ErrInvalidCloseSize        = errorsmod.Register(ModuleName, 37, "invalid close size")
+	ErrNegUserAmountAfterRepay = errorsmod.Register(ModuleName, 38, "negative user amount after repay")
 )
