@@ -83,7 +83,7 @@ func (k Keeper) RetreiveStakedAndPoolTotal(ctx sdk.Context, user sdk.AccAddress)
 			if tokenPrice == sdk.ZeroDec() {
 				tokenPrice = k.CalcAmmPrice(ctx, asset.Denom, asset.Decimals)
 			}
-			amount := commitment.Amount.ToLegacyDec().Quo(Pow10(asset.Decimals))
+			amount := commitment.Amount.ToLegacyDec()
 			totalValue = totalValue.Add(amount.Mul(tokenPrice))
 		}
 	}
@@ -98,7 +98,7 @@ func (k Keeper) RetreiveStakedAndPoolTotal(ctx sdk.Context, user sdk.AccAddress)
 	}
 	if found {
 		for _, delegation := range delegations {
-			amount := delegation.Shares.Quo(Pow10(asset.Decimals))
+			amount := delegation.Shares
 			totalValue = totalValue.Add(amount.Mul(tokenPrice))
 		}
 	}
@@ -107,7 +107,7 @@ func (k Keeper) RetreiveStakedAndPoolTotal(ctx sdk.Context, user sdk.AccAddress)
 	if found {
 		for _, delegation := range unbondingDelegations {
 			for _, entry := range delegation.Entries {
-				amount := entry.Balance.ToLegacyDec().Quo(Pow10(asset.Decimals))
+				amount := entry.Balance.ToLegacyDec()
 				totalValue = totalValue.Add(amount.Mul(tokenPrice))
 			}
 		}
@@ -133,7 +133,7 @@ func (k Keeper) RetreiveRewardsTotal(ctx sdk.Context, user sdk.AccAddress) sdk.D
 			if tokenPrice == sdk.ZeroDec() {
 				tokenPrice = k.CalcAmmPrice(ctx, asset.Denom, asset.Decimals)
 			}
-			amount := balance.Amount.ToLegacyDec().Quo(Pow10(asset.Decimals))
+			amount := balance.Amount.ToLegacyDec()
 			totalValue = totalValue.Add(amount.Mul(tokenPrice))
 		}
 	}
@@ -151,7 +151,7 @@ func (k Keeper) RetreiveRewardsTotal(ctx sdk.Context, user sdk.AccAddress) sdk.D
 			if tokenPrice == sdk.ZeroDec() {
 				tokenPrice = k.CalcAmmPrice(ctx, asset.Denom, asset.Decimals)
 			}
-			amount := balance.Amount.ToLegacyDec().Quo(Pow10(asset.Decimals))
+			amount := balance.Amount.ToLegacyDec()
 			totalValue = totalValue.Add(amount.Mul(tokenPrice))
 		}
 	}
@@ -171,7 +171,7 @@ func (k Keeper) RetreivePerpetualTotal(ctx sdk.Context, user sdk.AccAddress) sdk
 			if tokenPrice == sdk.ZeroDec() {
 				tokenPrice = k.CalcAmmPrice(ctx, asset.Denom, asset.Decimals)
 			}
-			amount := perpetual.Custody.ToLegacyDec().Quo(Pow10(asset.Decimals))
+			amount := perpetual.Custody.ToLegacyDec()
 			totalValue = totalValue.Add((amount.Mul(tokenPrice)))
 		}
 	}
@@ -194,7 +194,7 @@ func (k Keeper) RetreiveLiquidAssetsTotal(ctx sdk.Context, user sdk.AccAddress) 
 			tokenPrice = k.CalcAmmPrice(ctx, balance.Denom, asset.Decimals)
 		}
 		amount := balance.Amount.ToLegacyDec()
-		totalValue = totalValue.Add(amount.Mul(tokenPrice).Quo(Pow10(asset.Decimals)))
+		totalValue = totalValue.Add(amount.Mul(tokenPrice))
 	}
 	return totalValue
 }
