@@ -3,6 +3,7 @@ package keeper
 import (
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/elys-network/elys/x/stablestake/types"
 )
 
@@ -81,6 +82,18 @@ func (k Keeper) Borrow(ctx sdk.Context, addr sdk.AccAddress, amount sdk.Coin) er
 	if depositDenom != amount.Denom {
 		return types.ErrInvalidBorrowDenom
 	}
+
+	// For security reasons, we should avoid borrowing more than 90% in total to the stablestake pool.
+	moduleAddr := authtypes.NewModuleAddress(types.ModuleName)
+	params := k.GetParams(ctx)
+	balance := k.bk.GetBalance(ctx, moduleAddr, depositDenom)
+
+	borrowed := params.TotalValue.Sub(balance.Amount).ToLegacyDec().Add(amount.Amount.ToLegacyDec())
+	maxAllowed := params.TotalValue.ToLegacyDec().Mul(sdk.NewDec(9)).Quo(sdk.NewDec(10))
+	if borrowed.GT(maxAllowed) {
+		return types.ErrMaxBorrowAmount
+	}
+
 	debt := k.UpdateInterestStackedByAddress(ctx, addr)
 	debt.Borrowed = debt.Borrowed.Add(amount.Amount)
 	k.SetDebt(ctx, debt)
