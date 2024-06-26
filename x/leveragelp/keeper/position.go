@@ -98,6 +98,9 @@ func (k Keeper) DestroyPosition(ctx sdk.Context, positionAddress string, id uint
 
 	// decrement open position count
 	openCount := k.GetOpenPositionCount(ctx)
+	if openCount != 0 {
+		openCount--
+	}
 	openCount--
 
 	// Set open Position count
