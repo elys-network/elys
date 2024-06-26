@@ -153,7 +153,9 @@ func (k Keeper) ClaimRewards(ctx sdk.Context, sender sdk.AccAddress, poolIds []u
 					sdk.NewEvent(
 						types.TypeEvtClaimRewards,
 						sdk.NewAttribute(types.AttributeSender, sender.String()),
+						sdk.NewAttribute(types.AttributeRecipient, recipient.String()),
 						sdk.NewAttribute(types.AttributePoolId, fmt.Sprintf("%d", poolId)),
+						sdk.NewAttribute(sdk.AttributeKeyAmount, coin.String()),
 					),
 				})
 			}

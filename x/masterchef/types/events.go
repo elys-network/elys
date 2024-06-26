@@ -14,5 +14,6 @@ const (
 	AttributeToBlock        = "to_block"
 	AttributeAmountPerBlock = "amount_per_block"
 	AttributeSender         = "sender"
+	AttributeRecipient      = "recipient"
 	AttributeMultiplier     = "multiplier"
 )
