@@ -44893,6 +44893,9 @@ paths:
           description: A successful response.
           schema:
             type: object
+            properties:
+              total:
+                type: string
         default:
           description: An unexpected error response.
           schema:
@@ -86986,6 +86989,8 @@ definitions:
         type: string
       is_whitelisted:
         type: boolean
+  elys.leveragelp.MsgAddCollateralResponse:
+    type: object
   elys.leveragelp.MsgClaimRewardsResponse:
     type: object
   elys.leveragelp.MsgCloseResponse:
@@ -88521,8 +88526,6 @@ definitions:
             type: string
   elys.perpetual.MsgAddCollateralResponse:
     type: object
-  elys.perpetual.MsgBrokerAddCollateralResponse:
-    type: object
   elys.perpetual.MsgCloseResponse:
     type: object
     properties:
@@ -89441,6 +89444,9 @@ definitions:
         type: string
   elys.tier.QueryGetAmmPriceResponse:
     type: object
+    properties:
+      total:
+        type: string
   elys.tier.QueryGetPortfolioResponse:
     type: object
     properties:

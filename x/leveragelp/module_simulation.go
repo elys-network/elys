@@ -50,6 +50,10 @@ const (
 	// TODO: Determine the simulation weight value
 	defaultWeightMsgUpdateStopLoss int = 100
 
+	opWeightMsgAddCollateral = "op_weight_msg_add_collateral"
+	// TODO: Determine the simulation weight value
+	defaultWeightMsgAddCollateral int = 100
+
 	// this line is used by starport scaffolding # simapp/module/const
 )
 
@@ -149,6 +153,17 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 	operations = append(operations, simulation.NewWeightedOperation(
 		weightMsgUpdateStopLoss,
 		leveragelpsimulation.SimulateMsgUpdateStopLoss(am.accountKeeper, am.bankKeeper, am.keeper),
+	))
+
+	var weightMsgAddCollateral int
+	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgAddCollateral, &weightMsgAddCollateral, nil,
+		func(_ *rand.Rand) {
+			weightMsgAddCollateral = defaultWeightMsgAddCollateral
+		},
+	)
+	operations = append(operations, simulation.NewWeightedOperation(
+		weightMsgAddCollateral,
+		leveragelpsimulation.SimulateMsgAddCollateral(am.accountKeeper, am.bankKeeper, am.keeper),
 	))
 
 	// this line is used by starport scaffolding # simapp/module/operation

@@ -11,14 +11,15 @@ import "elys/leveragelp/pool.proto";
 
 // Msg defines the Msg service.
 service Msg {
-  rpc Open(MsgOpen) returns (MsgOpenResponse);
-  rpc Close(MsgClose) returns (MsgCloseResponse);
-  rpc ClaimRewards(MsgClaimRewards) returns (MsgClaimRewardsResponse);
-  rpc UpdateParams(MsgUpdateParams) returns (MsgUpdateParamsResponse);
-  rpc UpdatePools(MsgUpdatePools) returns (MsgUpdatePoolsResponse);
-  rpc Whitelist(MsgWhitelist) returns (MsgWhitelistResponse);
-  rpc Dewhitelist(MsgDewhitelist) returns (MsgDewhitelistResponse);
+  rpc Open           (MsgOpen          ) returns (MsgOpenResponse          );
+  rpc Close          (MsgClose         ) returns (MsgCloseResponse         );
+  rpc ClaimRewards   (MsgClaimRewards  ) returns (MsgClaimRewardsResponse  );
+  rpc UpdateParams   (MsgUpdateParams  ) returns (MsgUpdateParamsResponse  );
+  rpc UpdatePools    (MsgUpdatePools   ) returns (MsgUpdatePoolsResponse   );
+  rpc Whitelist      (MsgWhitelist     ) returns (MsgWhitelistResponse     );
+  rpc Dewhitelist    (MsgDewhitelist   ) returns (MsgDewhitelistResponse   );
   rpc UpdateStopLoss (MsgUpdateStopLoss) returns (MsgUpdateStopLossResponse);
+  rpc AddCollateral  (MsgAddCollateral ) returns (MsgAddCollateralResponse );
 }
 message MsgOpen {
   string creator           = 1;
@@ -40,9 +41,10 @@ message MsgClose {
 message MsgCloseResponse {}
 
 message MsgClaimRewards {
-  string sender = 1;
-  repeated uint64 ids = 2;
+           string sender = 1;
+  repeated uint64 ids    = 2;
 }
+
 message MsgClaimRewardsResponse {}
 
 message MsgUpdateParams {
@@ -81,8 +83,15 @@ message MsgDewhitelistResponse {}
 message MsgUpdateStopLoss {
   string creator  = 1;
   int32  position = 2;
-  string price   = 3 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+  string price    = 3 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
 }
 
 message MsgUpdateStopLossResponse {}
+
+message MsgAddCollateral {
+  string creator = 1;
+  string id      = 2;
+}
+
+message MsgAddCollateralResponse {}
 
