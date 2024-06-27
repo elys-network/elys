@@ -61,6 +61,7 @@ func (oq *Querier) generateEarnPool(ctx sdk.Context, ammPool *types.Pool, filter
 	borrowApr := sdk.ZeroDec()
 	leverageLpPercent := sdk.ZeroDec()
 	perpetualPercent := sdk.ZeroDec()
+	isLeverageLpEnabled := false
 
 	poolInfo, found := oq.masterchefKeeper.GetPool(ctx, ammPool.PoolId)
 	if found {
@@ -82,6 +83,7 @@ func (oq *Querier) generateEarnPool(ctx sdk.Context, ammPool *types.Pool, filter
 
 	leverageLpPool, found := oq.leveragelpKeeper.GetPool(ctx, ammPool.PoolId)
 	if found {
+		isLeverageLpEnabled = true
 		leverageLpPercent = leverageLpPool.LeveragedLpAmount.ToLegacyDec().Quo(ammPool.TotalShares.Amount.ToLegacyDec()).Mul(sdk.NewDec(100))
 	}
 
@@ -106,6 +108,7 @@ func (oq *Querier) generateEarnPool(ctx sdk.Context, ammPool *types.Pool, filter
 		SwapFee:      ammPool.PoolParams.SwapFee,
 		FeeDenom:     ammPool.PoolParams.FeeDenom,
 		UseOracle:    ammPool.PoolParams.UseOracle,
+		IsLeveragelp: isLeverageLpEnabled,
 	}
 }
 
