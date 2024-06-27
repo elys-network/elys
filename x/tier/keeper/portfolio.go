@@ -315,6 +315,30 @@ func (k Keeper) RemovePortfolio(
 	))
 }
 
+// RemovePortfolioLast removes a portfolio from the store with a specific date
+func (k Keeper) RemovePortfolioLast(
+	ctx sdk.Context,
+	timestamp string,
+	num uint64,
+) uint64 {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(timestamp))
+	iterator := sdk.KVStorePrefixIterator(store, []byte{})
+
+	defer iterator.Close()
+	count := 0
+
+	for ; iterator.Valid(); iterator.Next() {
+		count++
+		store.Delete(types.PortfolioKey(
+			string(iterator.Key()),
+		))
+		if count == int(num) {
+			break
+		}
+	}
+	return uint64(count)
+}
+
 // GetAllPortfolio returns all portfolio
 func (k Keeper) GetAllPortfolio(ctx sdk.Context, timestamp string) (list []types.Portfolio) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(timestamp))
