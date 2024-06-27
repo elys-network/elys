@@ -2,7 +2,7 @@ name: Deploy in devnet
 on:
   push:
     branches:
-      - devnet
+      - main
 jobs:
   deploy:
     runs-on: ubuntu-latest

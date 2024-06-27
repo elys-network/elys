@@ -172,7 +172,13 @@ message PositionRequest {
   uint64 id = 2;
 }
 
-message PositionResponse { Position position = 1; }
+message PositionResponse {
+  Position position = 1;
+  string locked_lp_token = 2 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+}
 
 message QueryLiquidationPriceRequest {
   string address = 1;
