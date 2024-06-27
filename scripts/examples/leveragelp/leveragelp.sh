@@ -27,6 +27,7 @@ elysd tx leveragelp open [leverage] [collateral-asset] [collateral-amount] [amm-
 
 # Close position
 elysd tx leveragelp close 2 25000000000000000000 --from=treasury --keyring-backend=test --chain-id=elystestnet-1 --yes --gas=1000000
+elysd tx leveragelp close 1 500000000000000000 --from=treasury --keyring-backend=test --chain-id=elystestnet-1 --yes --gas=1000000
 elysd tx leveragelp close [position-id] [flags]
 
 # Query rewards
