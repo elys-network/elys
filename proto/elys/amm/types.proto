@@ -41,6 +41,7 @@ message EarnPool {
     string swap_fee = 13 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
     string fee_denom = 14;
     bool use_oracle = 15;
+    bool is_leveragelp = 16;
 }
   
 message QueryEarnPoolResponse {
