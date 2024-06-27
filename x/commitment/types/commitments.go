@@ -64,6 +64,22 @@ func (c *Commitments) AddCommittedTokens(denom string, amount math.Int, unlockTi
 	c.CommittedTokens = append(c.CommittedTokens, committedToken)
 }
 
+func (c Commitments) CommittedTokensLocked(ctx sdk.Context) (sdk.Coins, sdk.Coins) {
+	totalLocked := sdk.Coins{}
+	totalCommitted := sdk.Coins{}
+	for _, token := range c.CommittedTokens {
+		lockedAmount := sdk.ZeroInt()
+		for _, lockup := range token.Lockups {
+			if lockup.UnlockTimestamp > uint64(ctx.BlockTime().Unix()) {
+				lockedAmount = lockedAmount.Add(lockup.Amount)
+			}
+		}
+		totalLocked = totalLocked.Add(sdk.NewCoin(token.Denom, lockedAmount))
+		totalCommitted = totalCommitted.Add(sdk.NewCoin(token.Denom, token.Amount))
+	}
+	return totalLocked, totalCommitted
+}
+
 func (c *Commitments) DeductFromCommitted(denom string, amount math.Int, currTime uint64) error {
 	for i, token := range c.CommittedTokens {
 		if token.Denom == denom {

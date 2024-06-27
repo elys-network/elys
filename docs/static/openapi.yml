@@ -39963,6 +39963,77 @@ paths:
                   additionalProperties: {}
       tags:
         - Query
+  /elys-network/elys/commitment/committed_tokens_locked/{address}:
+    get:
+      summary: Queries sum of committed tokens locked and not unlockable
+      operationId: ElysCommitmentCommittedTokensLocked
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              address:
+                type: string
+              locked_committed:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    denom:
+                      type: string
+                    amount:
+                      type: string
+                  description: >-
+                    Coin defines a token with a denomination and an amount.
+
+
+                    NOTE: The amount field is an Int which implements the custom
+                    method
+
+                    signatures required by gogoproto.
+              total_committed:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    denom:
+                      type: string
+                    amount:
+                      type: string
+                  description: >-
+                    Coin defines a token with a denomination and an amount.
+
+
+                    NOTE: The amount field is an Int which implements the custom
+                    method
+
+                    signatures required by gogoproto.
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: address
+          in: path
+          required: true
+          type: string
+      tags:
+        - Query
   /elys-network/elys/commitment/number_of_commitments:
     get:
       summary: Queries the total number of commitment items.
@@ -41244,6 +41315,8 @@ paths:
                     format: uint64
                   stop_loss_price:
                     type: string
+              locked_lp_token:
+                type: string
         default:
           description: An unexpected error response.
           schema:
@@ -44893,6 +44966,9 @@ paths:
           description: A successful response.
           schema:
             type: object
+            properties:
+              total:
+                type: string
         default:
           description: An unexpected error response.
           schema:
@@ -86374,6 +86450,39 @@ definitions:
         type: string
         format: uint64
     description: Params defines the parameters for the module.
+  elys.commitment.QueryCommittedTokensLockedResponse:
+    type: object
+    properties:
+      address:
+        type: string
+      locked_committed:
+        type: array
+        items:
+          type: object
+          properties:
+            denom:
+              type: string
+            amount:
+              type: string
+          description: |-
+            Coin defines a token with a denomination and an amount.
+
+            NOTE: The amount field is an Int which implements the custom method
+            signatures required by gogoproto.
+      total_committed:
+        type: array
+        items:
+          type: object
+          properties:
+            denom:
+              type: string
+            amount:
+              type: string
+          description: |-
+            Coin defines a token with a denomination and an amount.
+
+            NOTE: The amount field is an Int which implements the custom method
+            signatures required by gogoproto.
   elys.commitment.QueryNumberOfCommitmentsResponse:
     type: object
     properties:
@@ -87140,6 +87249,8 @@ definitions:
             format: uint64
           stop_loss_price:
             type: string
+      locked_lp_token:
+        type: string
   elys.leveragelp.PositionsByPoolResponse:
     type: object
     properties:
@@ -88521,8 +88632,6 @@ definitions:
             type: string
   elys.perpetual.MsgAddCollateralResponse:
     type: object
-  elys.perpetual.MsgBrokerAddCollateralResponse:
-    type: object
   elys.perpetual.MsgCloseResponse:
     type: object
     properties:
@@ -89441,6 +89550,9 @@ definitions:
         type: string
   elys.tier.QueryGetAmmPriceResponse:
     type: object
+    properties:
+      total:
+        type: string
   elys.tier.QueryGetPortfolioResponse:
     type: object
     properties:

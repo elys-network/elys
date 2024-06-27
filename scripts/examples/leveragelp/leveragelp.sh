@@ -2,6 +2,7 @@
 
 # list pool
 elysd query leveragelp list-pool
+elysd query leveragelp get-position $(elysd keys show -a treasury --keyring-backend=test) 1
 elysd query leveragelp get-positions-for-address $(elysd keys show -a treasury --keyring-backend=test)
 elysd query leveragelp get-positions
 elysd query leveragelp params
@@ -25,7 +26,7 @@ elysd tx leveragelp open 5.0 uusdc 5000000 1 0.0 --from=treasury --keyring-backe
 elysd tx leveragelp open [leverage] [collateral-asset] [collateral-amount] [amm-pool-id] [flags]
 
 # Close position
-elysd tx leveragelp close 1 500000000000000000 --from=treasury --keyring-backend=test --chain-id=elystestnet-1 --yes --gas=1000000
+elysd tx leveragelp close 2 25000000000000000000 --from=treasury --keyring-backend=test --chain-id=elystestnet-1 --yes --gas=1000000
 elysd tx leveragelp close [position-id] [flags]
 
 # Query rewards
@@ -36,6 +37,7 @@ elysd query leveragelp rewards $(elysd keys show -a treasury --keyring-backend=t
 elysd tx leveragelp claim-rewards 1 --from=treasury --keyring-backend=test --chain-id=elystestnet-1 --yes --gas=1000000
 
 elysd query commitment show-commitments $(elysd keys show -a treasury --keyring-backend=test)
+elysd query commitment committed-tokens-locked $(elysd keys show -a treasury --keyring-backend=test)
 
 # Testnet
 elysd query oracle show-price ATOM  --node=https://rpc.testnet.elys.network:443

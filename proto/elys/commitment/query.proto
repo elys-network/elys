@@ -8,6 +8,7 @@ import "cosmos/base/query/v1beta1/pagination.proto";
 import "elys/commitment/params.proto";
 import "elys/commitment/commitments.proto";
 import "amino/amino.proto";
+import "cosmos/base/v1beta1/coin.proto";
 
 option go_package = "github.com/elys-network/elys/x/commitment/types";
 
@@ -21,6 +22,11 @@ service Query {
   // Queries a Commitment item.
   rpc ShowCommitments (QueryShowCommitmentsRequest) returns (QueryShowCommitmentsResponse) {
     option (google.api.http).get = "/elys-network/elys/commitment/show_commitments/{creator}";
+  }
+
+  // Queries sum of committed tokens locked and not unlockable
+  rpc CommittedTokensLocked (QueryCommittedTokensLockedRequest) returns (QueryCommittedTokensLockedResponse) {
+    option (google.api.http).get = "/elys-network/elys/commitment/committed_tokens_locked/{address}";
   }
 
   // Queries the total number of commitment items.
@@ -49,4 +55,20 @@ message QueryNumberOfCommitmentsRequest {}
 
 message QueryNumberOfCommitmentsResponse {
   int64 number = 1;
+}
+
+message QueryCommittedTokensLockedRequest {
+  string address = 1;
+}
+
+message QueryCommittedTokensLockedResponse {
+  string address = 1;
+  repeated cosmos.base.v1beta1.Coin locked_committed = 2 [
+    (gogoproto.nullable) = false,
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
+  ];
+  repeated cosmos.base.v1beta1.Coin total_committed = 3 [
+    (gogoproto.nullable) = false,
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
+  ];
 }

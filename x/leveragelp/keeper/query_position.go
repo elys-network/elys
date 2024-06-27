@@ -22,7 +22,13 @@ func (k Keeper) Position(goCtx context.Context, req *types.PositionRequest) (*ty
 		return nil, err
 	}
 
-	return &types.PositionResponse{Position: &position}, nil
+	commitments := k.commKeeper.GetCommitments(ctx, position.GetPositionAddress().String())
+	totalLocked, _ := commitments.CommittedTokensLocked(ctx)
+
+	return &types.PositionResponse{
+		Position:      &position,
+		LockedLpToken: totalLocked.AmountOf(ammtypes.GetPoolShareDenom(position.AmmPoolId)),
+	}, nil
 }
 
 func (k Keeper) LiquidationPrice(goCtx context.Context, req *types.QueryLiquidationPriceRequest) (*types.QueryLiquidationPriceResponse, error) {

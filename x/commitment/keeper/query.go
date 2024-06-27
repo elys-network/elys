@@ -29,3 +29,19 @@ func (k Keeper) NumberOfCommitments(goCtx context.Context, req *types.QueryNumbe
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	return &types.QueryNumberOfCommitmentsResponse{Number: k.TotalNumberOfCommitments(ctx)}, nil
 }
+
+func (k Keeper) CommittedTokensLocked(goCtx context.Context, req *types.QueryCommittedTokensLockedRequest) (*types.QueryCommittedTokensLockedResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
+	}
+
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	commitments := k.GetCommitments(ctx, req.Address)
+	totalLocked, totalCommitted := commitments.CommittedTokensLocked(ctx)
+	return &types.QueryCommittedTokensLockedResponse{
+		Address:         req.Address,
+		LockedCommitted: totalLocked,
+		TotalCommitted:  totalCommitted,
+	}, nil
+}
