@@ -90,7 +90,8 @@ message MsgUpdateStopLossResponse {}
 
 message MsgAddCollateral {
   string creator = 1;
-  string id      = 2;
+  uint64 id      = 2;
+  string collateral = 3 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false];
 }
 
 message MsgAddCollateralResponse {}

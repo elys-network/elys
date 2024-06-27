@@ -9,7 +9,7 @@ const TypeMsgAddCollateral = "add_collateral"
 
 var _ sdk.Msg = &MsgAddCollateral{}
 
-func NewMsgAddCollateral(creator string, id string) *MsgAddCollateral {
+func NewMsgAddCollateral(creator string, id uint64) *MsgAddCollateral {
 	return &MsgAddCollateral{
 		Creator: creator,
 		Id:      id,

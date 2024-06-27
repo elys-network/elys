@@ -1,6 +1,7 @@
 package cli
 
 import (
+	"errors"
 	"strconv"
 
 	"github.com/cosmos/cosmos-sdk/client"
@@ -18,7 +19,10 @@ func CmdAddCollateral() *cobra.Command {
 		Short: "Broadcast message add-collateral",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
-			argId := args[0]
+			argPositionId, err := strconv.ParseUint(args[0], 10, 64)
+			if err != nil {
+				return errors.New("invalid position id")
+			}
 
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
@@ -27,7 +31,7 @@ func CmdAddCollateral() *cobra.Command {
 
 			msg := types.NewMsgAddCollateral(
 				clientCtx.GetFromAddress().String(),
-				argId,
+				argPositionId,
 			)
 			if err := msg.ValidateBasic(); err != nil {
 				return err
