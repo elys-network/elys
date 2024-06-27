@@ -68,6 +68,28 @@ func TestPortfolioRemove(t *testing.T) {
 	}
 }
 
+func TestPortfolioRemoveLast(t *testing.T) {
+	keeper, ctx := keepertest.MembershiptierKeeper(t)
+	items := createNPortfolio(keeper, ctx, 10)
+	count := keeper.RemovePortfolioLast(ctx,
+		keeper.GetDateFromBlock(ctx.BlockTime()),
+		100,
+	)
+	_, found := keeper.GetPortfolio(ctx,
+		items[9].Creator,
+		keeper.GetDateFromBlock(ctx.BlockTime()),
+	)
+	require.Equal(t, count, uint64(10))
+	require.False(t, found)
+
+	// Try to remove again
+	count = keeper.RemovePortfolioLast(ctx,
+		keeper.GetDateFromBlock(ctx.BlockTime()),
+		100,
+	)
+	require.Equal(t, count, uint64(0))
+}
+
 func TestPortfolioGetAll(t *testing.T) {
 	keeper, ctx := keepertest.MembershiptierKeeper(t)
 	items := createNPortfolio(keeper, ctx, 10)

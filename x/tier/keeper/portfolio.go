@@ -329,9 +329,7 @@ func (k Keeper) RemovePortfolioLast(
 
 	for ; iterator.Valid(); iterator.Next() {
 		count++
-		store.Delete(types.PortfolioKey(
-			string(iterator.Key()),
-		))
+		store.Delete(iterator.Key())
 		if count == int(num) {
 			break
 		}
