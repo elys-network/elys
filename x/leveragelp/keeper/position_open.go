@@ -30,6 +30,9 @@ func (k Keeper) OpenLong(ctx sdk.Context, msg *types.MsgOpen) (*types.Position, 
 }
 
 func (k Keeper) OpenConsolidate(ctx sdk.Context, position *types.Position, msg *types.MsgOpen) (*types.MsgOpenResponse, error) {
+	if !position.Leverage.Equal(msg.Leverage) {
+		return nil, types.ErrInvalidLeverage
+	}
 	poolId := position.AmmPoolId
 	pool, found := k.GetPool(ctx, poolId)
 	if !found {
@@ -47,11 +50,8 @@ func (k Keeper) OpenConsolidate(ctx sdk.Context, position *types.Position, msg *
 
 	collateralAmountDec := sdk.NewDecFromInt(msg.CollateralAmount)
 	position.Collateral = position.Collateral.Add(sdk.NewCoin(msg.CollateralAsset, msg.CollateralAmount))
-	maxLeverage := k.GetMaxLeverageParam(ctx)
-	leverage := sdk.MinDec(msg.Leverage, maxLeverage)
-	position.Leverage = leverage
 
-	position, err = k.ProcessOpenLong(ctx, position, leverage, collateralAmountDec, poolId, msg)
+	position, err = k.ProcessOpenLong(ctx, position, position.Leverage, collateralAmountDec, poolId, msg)
 	if err != nil {
 		return nil, err
 	}
