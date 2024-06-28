@@ -11,6 +11,7 @@ func (m Migrator) V6Migration(ctx sdk.Context) error {
 	// Reset pools
 	for _, pool := range pools {
 		pool.LeveragedLpAmount = sdk.NewInt(0)
+		m.keeper.SetPool(ctx, pool)
 	}
 	// Traverse positions and update lp amount and health, as there are few positions, haven't optimized it much
 	positions := m.keeper.GetAllPositions(ctx)
