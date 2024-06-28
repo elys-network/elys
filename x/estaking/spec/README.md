@@ -27,3 +27,7 @@ The `estaking` module in the Elys Network is designed to extend basic staking fu
 - **Token Mechanics**: Handle Eden and EdenB tokens in relation to staking rewards effectively.
 
 For more detailed information, please refer to the individual sections listed in the contents above.
+
+## Diagram
+
+[Estaking diagram](estaking_diagram.png)
