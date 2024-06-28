@@ -30,4 +30,4 @@ For more detailed information, please refer to the individual sections listed in
 
 ## Diagram
 
-[Estaking diagram](estaking_diagram.png)
+![Estaking diagram](estaking_diagram.png)

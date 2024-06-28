@@ -20,4 +20,4 @@ The `Masterchef` module in the Elys Network is designed to manage liquidity prov
 
 ## Diagram
 
-[Masterchef diagram](masterchef_diagram.png)
+![Masterchef diagram](masterchef_diagram.png)
