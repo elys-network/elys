@@ -76,9 +76,6 @@ func (k Keeper) ForceCloseLong(ctx sdk.Context, position types.Position, pool ty
 		k.SetPosition(ctx, &position)
 	}
 
-	pool.LeveragedLpAmount = pool.LeveragedLpAmount.Sub(lpAmount)
-	k.UpdatePoolHealth(ctx, &pool)
-
 	// Hooks after leveragelp position closed
 	if k.hooks != nil {
 		k.hooks.AfterLeveragelpPositionClosed(ctx, pool)
