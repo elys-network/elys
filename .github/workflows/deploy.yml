@@ -85,6 +85,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           passphrase: ${{ secrets.SSH_PASSPHRASE }}
           script: /bin/bash /home/ubuntu/ci-cd-devnet-backup-and-rollback/backup.sh
+          command_timeout: 30m
       - name: Creating software upgrade proposal
         run: |
 
