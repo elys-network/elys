@@ -68,6 +68,10 @@ func (k Keeper) ForceCloseLong(ctx sdk.Context, position types.Position, pool ty
 	// Update leveragedLpAmount
 	position.LeveragedLpAmount = position.LeveragedLpAmount.Sub(lpAmount)
 	if position.LeveragedLpAmount.IsZero() {
+		err = k.masterchefKeeper.ClaimRewards(ctx, position.GetPositionAddress(), []uint64{position.AmmPoolId}, sdk.AccAddress(position.Address))
+		if err != nil {
+			return sdk.ZeroInt(), err
+		}
 		err = k.DestroyPosition(ctx, position.Address, position.Id)
 		if err != nil {
 			return sdk.ZeroInt(), err
