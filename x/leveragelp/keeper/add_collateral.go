@@ -25,6 +25,13 @@ func (k Keeper) ProcessAddCollateral(ctx sdk.Context, address string, id uint64,
 		return errorsmod.Wrap(types.ErrPositionDisabled, fmt.Sprintf("poolId: %d", position.AmmPoolId))
 	}
 
+	// Check if collateral is not more than borrowed
+	debtBefore := k.stableKeeper.UpdateInterestStackedByAddress(ctx, position.GetPositionAddress())
+	maxAllowedCollateral := debtBefore.Borrowed.Add(debtBefore.InterestStacked).Sub(debtBefore.InterestPaid)
+	if collateral.GT(maxAllowedCollateral) {
+		return errorsmod.Wrap(types.ErrPositionDisabled, fmt.Sprintf("poolId: %d", position.AmmPoolId))
+	}
+
 	// Fetch the corresponding AMM (Automated Market Maker) pool.
 	ammPool, err := k.GetAmmPool(ctx, position.AmmPoolId)
 	if err != nil {
