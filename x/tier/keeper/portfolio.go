@@ -145,12 +145,12 @@ func (k Keeper) RetreiveLeverageLpTotal(ctx sdk.Context, user sdk.AccAddress) sd
 	totalValue := sdk.NewDec(0)
 	if err == nil {
 		for _, position := range positions {
-			pool, found := k.amm.GetPool(ctx, position.AmmPoolId)
+			pool, found := k.amm.GetPool(ctx, position.Position.AmmPoolId)
 			if !found {
 				continue
 			}
 			info := k.amm.PoolExtraInfo(ctx, pool)
-			amount := position.LeveragedLpAmount.ToLegacyDec()
+			amount := position.Position.LeveragedLpAmount.ToLegacyDec()
 			totalValue = totalValue.Add(amount.Mul(info.LpTokenPrice).QuoInt(ammtypes.OneShare))
 		}
 	}
