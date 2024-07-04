@@ -23,29 +23,13 @@ func (suite *KeeperTestSuite) TestDebt() {
 		expPass           bool
 	}{
 		{
-			desc:              "successful unbonding process",
+			desc:              "successful debt process",
 			senderInitBalance: sdk.Coins{sdk.NewInt64Coin(types.GetShareDenom(), 1000000)},
 			moduleInitBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)},
 			unbondAmount:      sdk.NewInt(1000000),
 			expSenderBalance:  sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)}.Sort(),
 			expPass:           true,
 		},
-		// {
-		// 	desc:              "lack of balance on the module",
-		// 	senderInitBalance: sdk.Coins{sdk.NewInt64Coin(types.GetShareDenom(), 1000000)},
-		// 	moduleInitBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 1000)},
-		// 	unbondAmount:      sdk.NewInt(1000000),
-		// 	expSenderBalance:  sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)},
-		// 	expPass:           false,
-		// },
-		// {
-		// 	desc:              "lack of sender balance",
-		// 	senderInitBalance: sdk.Coins{sdk.NewInt64Coin(types.GetShareDenom(), 1000000)},
-		// 	moduleInitBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)},
-		// 	unbondAmount:      sdk.NewInt(10000000000000),
-		// 	expSenderBalance:  sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)},
-		// 	expPass:           false,
-		// },
 	} {
 		suite.Run(tc.desc, func() {
 			suite.SetupTest()
@@ -86,26 +70,29 @@ func (suite *KeeperTestSuite) TestDebt() {
 			suite.Require().NoError(err)
 
 			params := suite.app.StablestakeKeeper.GetParams(suite.ctx)
-			params.TotalValue = sdk.NewInt(1000_000_000)
-			params.InterestRate = sdk.NewDec(1000)
+			params.TotalValue = sdk.NewInt(10)
+			params.InterestRate = sdk.NewDec(10)
 			suite.app.StablestakeKeeper.SetParams(suite.ctx, params)
 
-			suite.app.StablestakeKeeper.Borrow(suite.ctx, sender, sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(1000)))
+			err = suite.app.StablestakeKeeper.Borrow(suite.ctx, sender, sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(1000)))
+			suite.Require().NoError(err)
 			suite.ctx = suite.ctx.WithBlockTime(suite.ctx.BlockTime().Add(time.Hour * 24 * 365))
+
+			// Pay partial
 			suite.app.StablestakeKeeper.Repay(suite.ctx, sender, sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(10)))
 
 			res := suite.app.StablestakeKeeper.GetDebt(suite.ctx, sender)
-			suite.Require().Equal(res.InterestStacked.String(), "1")
+			suite.Require().Equal(res.Borrowed.String(), "1000")
+			suite.Require().Equal(res.InterestStacked.String(), "10000")
+			suite.Require().Equal(res.InterestPaid.String(), "10")
 
-			if !tc.expPass {
-				suite.Require().Error(err)
-			} else {
-				suite.Require().NoError(err)
-
-				// check balance change on sender
-				balances := suite.app.BankKeeper.GetAllBalances(suite.ctx, sender)
-				suite.Require().Equal(balances.String(), tc.expSenderBalance.String())
-			}
+			// Pay rest, ensure we don't pay multiple times
+			err = suite.app.StablestakeKeeper.Repay(suite.ctx, sender, sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(11000)))
+			suite.Require().NoError(err)
+			res = suite.app.StablestakeKeeper.GetDebt(suite.ctx, sender)
+			suite.Require().Equal(res.Borrowed.String(), "1000")
+			suite.Require().Equal(res.InterestStacked.String(), "10000")
+			suite.Require().Equal(res.InterestPaid.String(), "10")
 		})
 	}
 }
