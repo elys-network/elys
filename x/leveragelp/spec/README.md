@@ -22,3 +22,4 @@ For more detailed information, please refer to the individual sections listed in
 3. **[Keeper](03_keeper.md)**
 4. **[Endpoints](04_endpoints.md)**
 5. **[CLI](05_cli.md)**
+6. **[Position Workflow](06_position_workflow.md)**

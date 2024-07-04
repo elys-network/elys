@@ -9,7 +9,7 @@ This section contains documentation on the architecture of the Elys chain, inclu
 
 The diagram below illustrates the architecture of Elys Network, outlining its various modules and their interactions. The system is organized into six layers, each with specific functionalities crucial for the overall operation.
 
-![./modules.png](./modules.png)
+![./modules.png](./docs/assets/modules.png)
 
 ### Layers and Components
 
