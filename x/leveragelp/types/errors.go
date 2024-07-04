@@ -30,4 +30,5 @@ var (
 	ErrInvalidCloseSize        = errorsmod.Register(ModuleName, 37, "invalid close size")
 	ErrNegUserAmountAfterRepay = errorsmod.Register(ModuleName, 38, "negative user amount after repay")
 	ErrInvalidLeverage         = errorsmod.Register(ModuleName, 39, "leverage should be same as existing position")
+	ErrInvalidCollateral       = errorsmod.Register(ModuleName, 40, "collateral should not be more than total liability")
 )
