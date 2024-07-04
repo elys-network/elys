@@ -272,6 +272,8 @@ func (k Keeper) GetPositionsForAddress(ctx sdk.Context, positionAddress sdk.Addr
 	pageRes, err := query.Paginate(positionStore, pagination, func(key []byte, value []byte) error {
 		var position types.Position
 		k.cdc.MustUnmarshal(value, &position)
+		debt := k.stableKeeper.UpdateInterestStackedByAddress(ctx, position.GetPositionAddress())
+		position.Liabilities = debt.Borrowed.Add(debt.InterestStacked).Sub(debt.InterestPaid)
 		positions = append(positions, &position)
 		return nil
 	})
