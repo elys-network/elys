@@ -13,6 +13,7 @@ func RegisterCodec(cdc *codec.LegacyAmino) {
 	cdc.RegisterConcrete(&MsgUpdateParams{}, "perpetual/UpdateParams", nil)
 	cdc.RegisterConcrete(&MsgWhitelist{}, "perpetual/Whitelist", nil)
 	cdc.RegisterConcrete(&MsgDewhitelist{}, "perpetual/Dewhitelist", nil)
+	cdc.RegisterConcrete(&MsgAddCollateral{}, "perpetual/AddCollateral", nil)
 	// this line is used by starport scaffolding # 2
 }
 
@@ -23,8 +24,8 @@ func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 		&MsgUpdateParams{},
 		&MsgWhitelist{},
 		&MsgDewhitelist{},
+		&MsgAddCollateral{},
 	)
-
 	// this line is used by starport scaffolding # 3
 
 	msgservice.RegisterMsgServiceDesc(registry, &_Msg_serviceDesc)

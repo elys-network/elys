@@ -2,6 +2,7 @@
 
 # list pool
 elysd query leveragelp list-pool
+elysd query leveragelp get-position $(elysd keys show -a treasury --keyring-backend=test) 1
 elysd query leveragelp get-positions-for-address $(elysd keys show -a treasury --keyring-backend=test)
 elysd query leveragelp get-positions
 elysd query leveragelp params
@@ -21,11 +22,12 @@ elysd tx gov vote 3 Yes --from=treasury --keyring-backend=test --chain-id=elyste
 elysd query gov proposals
 
 # Open position
-elysd tx leveragelp open 5.0 uusdc 500000 1 0.0 --from=treasury --keyring-backend=test --chain-id=elystestnet-1 --yes --gas=1000000 --fees=250uelys
+elysd tx leveragelp open 5.0 uusdc 5000000 1 0.0 --from=treasury --keyring-backend=test --chain-id=elystestnet-1 --yes --gas=1000000 --fees=250uelys
 elysd tx leveragelp open [leverage] [collateral-asset] [collateral-amount] [amm-pool-id] [flags]
 
 # Close position
-elysd tx leveragelp close 1 --from=treasury --keyring-backend=test --chain-id=elystestnet-1 --yes --gas=1000000
+elysd tx leveragelp close 2 25000000000000000000 --from=treasury --keyring-backend=test --chain-id=elystestnet-1 --yes --gas=1000000
+elysd tx leveragelp close 1 500000000000000000 --from=treasury --keyring-backend=test --chain-id=elystestnet-1 --yes --gas=1000000
 elysd tx leveragelp close [position-id] [flags]
 
 # Query rewards
@@ -36,6 +38,7 @@ elysd query leveragelp rewards $(elysd keys show -a treasury --keyring-backend=t
 elysd tx leveragelp claim-rewards 1 --from=treasury --keyring-backend=test --chain-id=elystestnet-1 --yes --gas=1000000
 
 elysd query commitment show-commitments $(elysd keys show -a treasury --keyring-backend=test)
+elysd query commitment committed-tokens-locked $(elysd keys show -a treasury --keyring-backend=test)
 
 # Testnet
 elysd query oracle show-price ATOM  --node=https://rpc.testnet.elys.network:443
@@ -111,3 +114,16 @@ elysd tx gov submit-proposal proposal.json --from=t2a --keyring-backend=test --c
   "deposit": "10000000uelys"
 }
 ```
+
+elysd query leveragelp liquidation-price elys12tzylat4udvjj56uuhu3vj2n4vgp7cf9fwna9w 1
+# price: "0.000000000000080000"
+
+elysd query amm show-pool 1
+# extra_info:
+#   lp_token_price: "1.000000000000000000"
+#   tvl: "110000.000000000000000000"
+# pool:
+#   address: elys12857uh2f6fus3x3jh07cp5u7xfg2ypeec27dcp6864xhraa33mdscw660j
+#   pool_assets:
+#   - token:
+#       amount: "10000000000"

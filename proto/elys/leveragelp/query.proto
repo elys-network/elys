@@ -70,6 +70,11 @@ service Query {
         "/elys-network/elys/leveragelp/position/{address}/{id}";
   }
 
+  // Query a liquidation price for a position
+  rpc LiquidationPrice (QueryLiquidationPriceRequest) returns (QueryLiquidationPriceResponse) {
+    option (google.api.http).get = "/elys-network/elys/leveragelp/liquidation_price/{position_id}";
+  }
+
   // Get estimated amount of return value opening a position
   rpc OpenEst(QueryOpenEstRequest) returns (QueryOpenEstResponse) {
     option (google.api.http).get =
@@ -167,7 +172,25 @@ message PositionRequest {
   uint64 id = 2;
 }
 
-message PositionResponse { Position position = 1; }
+message PositionResponse {
+  Position position = 1;
+  string locked_lp_token = 2 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message QueryLiquidationPriceRequest {
+  string address = 1;
+  uint64 position_id = 2;
+}
+
+message QueryLiquidationPriceResponse {
+  string price = 1 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+}
 
 message QueryOpenEstRequest {
   string collateral_asset = 1;

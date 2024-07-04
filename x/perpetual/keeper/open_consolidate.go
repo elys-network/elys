@@ -47,7 +47,7 @@ func (k Keeper) OpenConsolidate(ctx sdk.Context, existingMtp *types.MTP, newMtp 
 	k.EmitOpenEvent(ctx, existingMtp)
 
 	if k.hooks != nil {
-		k.hooks.AfterPerpetualPositionModified(ctx, ammPool, pool)
+		k.hooks.AfterPerpetualPositionModified(ctx, ammPool, pool, msg.Creator)
 	}
 
 	return &types.MsgOpenResponse{

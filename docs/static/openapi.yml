@@ -39963,6 +39963,77 @@ paths:
                   additionalProperties: {}
       tags:
         - Query
+  /elys-network/elys/commitment/committed_tokens_locked/{address}:
+    get:
+      summary: Queries sum of committed tokens locked and not unlockable
+      operationId: ElysCommitmentCommittedTokensLocked
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              address:
+                type: string
+              locked_committed:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    denom:
+                      type: string
+                    amount:
+                      type: string
+                  description: >-
+                    Coin defines a token with a denomination and an amount.
+
+
+                    NOTE: The amount field is an Int which implements the custom
+                    method
+
+                    signatures required by gogoproto.
+              total_committed:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    denom:
+                      type: string
+                    amount:
+                      type: string
+                  description: >-
+                    Coin defines a token with a denomination and an amount.
+
+
+                    NOTE: The amount field is an Int which implements the custom
+                    method
+
+                    signatures required by gogoproto.
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: address
+          in: path
+          required: true
+          type: string
+      tags:
+        - Query
   /elys-network/elys/commitment/number_of_commitments:
     get:
       summary: Queries the total number of commitment items.
@@ -40864,6 +40935,48 @@ paths:
           type: string
       tags:
         - Query
+  /elys-network/elys/leveragelp/liquidation_price/{position_id}:
+    get:
+      summary: Query a liquidation price for a position
+      operationId: ElysLeveragelpLiquidationPrice
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              price:
+                type: string
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: position_id
+          in: path
+          required: true
+          type: string
+          format: uint64
+        - name: address
+          in: query
+          required: false
+          type: string
+      tags:
+        - Query
   /elys-network/elys/leveragelp/open_estimation:
     get:
       summary: Get estimated amount of return value opening a position
@@ -41202,6 +41315,8 @@ paths:
                     format: uint64
                   stop_loss_price:
                     type: string
+              locked_lp_token:
+                type: string
         default:
           description: An unexpected error response.
           schema:
@@ -42247,10 +42362,10 @@ paths:
                     title: Eden APR, updated at every distribution
                   dex_apr:
                     type: string
-                    title: Dex APR, updated at every distribution
+                    title: Dex APR, updated based on 24hr accumulation
                   gas_apr:
                     type: string
-                    title: Gas APR, updated at every distribution
+                    title: Gas APR, updated based on 24hr accumulation
                   external_incentive_apr:
                     type: string
                     title: External Incentive APR, updated at every distribution
@@ -44842,7 +44957,49 @@ paths:
           type: string
       tags:
         - Query
-  /elys-network/elys/tier/leverage_lp_total/{user}/{realtime}:
+  /elys-network/elys/tier/get_amm_price/{denom}/{decimal}:
+    get:
+      summary: Queries a list of GetAmmPrice items.
+      operationId: ElysTierGetAmmPrice
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              total:
+                type: string
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: denom
+          in: path
+          required: true
+          type: string
+        - name: decimal
+          in: path
+          required: true
+          type: integer
+          format: int32
+      tags:
+        - Query
+  /elys-network/elys/tier/leverage_lp_total/{user}:
     get:
       summary: Queries a list of LeverageLpTotal items.
       operationId: ElysTierLeverageLpTotal
@@ -44851,6 +45008,9 @@ paths:
           description: A successful response.
           schema:
             type: object
+            properties:
+              total:
+                type: string
         default:
           description: An unexpected error response.
           schema:
@@ -44874,10 +45034,154 @@ paths:
           in: path
           required: true
           type: string
-        - name: realtime
+      tags:
+        - Query
+  /elys-network/elys/tier/liquid_total/{user}:
+    get:
+      summary: Queries a list of LiquidTotal items.
+      operationId: ElysTierLiquidTotal
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              total:
+                type: string
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: user
           in: path
           required: true
-          type: boolean
+          type: string
+      tags:
+        - Query
+  /elys-network/elys/tier/perpetual/{user}:
+    get:
+      summary: Queries a list of Perpetual items.
+      operationId: ElysTierPerpetual
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              total:
+                type: string
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: user
+          in: path
+          required: true
+          type: string
+      tags:
+        - Query
+  /elys-network/elys/tier/rewards_total/{user}:
+    get:
+      summary: Queries a list of RewardsTotal items.
+      operationId: ElysTierRewardsTotal
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              total:
+                type: string
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: user
+          in: path
+          required: true
+          type: string
+      tags:
+        - Query
+  /elys-network/elys/tier/staked_pool/{user}:
+    get:
+      summary: Queries a list of StakedPool items.
+      operationId: ElysTierStakedPool
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              total:
+                type: string
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: user
+          in: path
+          required: true
+          type: string
       tags:
         - Query
   /elys-network/elys/tokenomics/airdrop:
@@ -86146,6 +86450,39 @@ definitions:
         type: string
         format: uint64
     description: Params defines the parameters for the module.
+  elys.commitment.QueryCommittedTokensLockedResponse:
+    type: object
+    properties:
+      address:
+        type: string
+      locked_committed:
+        type: array
+        items:
+          type: object
+          properties:
+            denom:
+              type: string
+            amount:
+              type: string
+          description: |-
+            Coin defines a token with a denomination and an amount.
+
+            NOTE: The amount field is an Int which implements the custom method
+            signatures required by gogoproto.
+      total_committed:
+        type: array
+        items:
+          type: object
+          properties:
+            denom:
+              type: string
+            amount:
+              type: string
+          description: |-
+            Coin defines a token with a denomination and an amount.
+
+            NOTE: The amount field is an Int which implements the custom method
+            signatures required by gogoproto.
   elys.commitment.QueryNumberOfCommitmentsResponse:
     type: object
     properties:
@@ -86758,6 +87095,8 @@ definitions:
         type: string
       is_whitelisted:
         type: boolean
+  elys.leveragelp.MsgAddCollateralResponse:
+    type: object
   elys.leveragelp.MsgClaimRewardsResponse:
     type: object
   elys.leveragelp.MsgCloseResponse:
@@ -86912,6 +87251,8 @@ definitions:
             format: uint64
           stop_loss_price:
             type: string
+      locked_lp_token:
+        type: string
   elys.leveragelp.PositionsByPoolResponse:
     type: object
     properties:
@@ -87203,6 +87544,11 @@ definitions:
             type: string
           leverage_max:
             type: string
+  elys.leveragelp.QueryLiquidationPriceResponse:
+    type: object
+    properties:
+      price:
+        type: string
   elys.leveragelp.QueryOpenEstResponse:
     type: object
     properties:
@@ -87438,10 +87784,10 @@ definitions:
         title: Eden APR, updated at every distribution
       dex_apr:
         type: string
-        title: Dex APR, updated at every distribution
+        title: Dex APR, updated based on 24hr accumulation
       gas_apr:
         type: string
-        title: Gas APR, updated at every distribution
+        title: Gas APR, updated based on 24hr accumulation
       external_incentive_apr:
         type: string
         title: External Incentive APR, updated at every distribution
@@ -87583,10 +87929,10 @@ definitions:
             title: Eden APR, updated at every distribution
           dex_apr:
             type: string
-            title: Dex APR, updated at every distribution
+            title: Dex APR, updated based on 24hr accumulation
           gas_apr:
             type: string
-            title: Gas APR, updated at every distribution
+            title: Gas APR, updated based on 24hr accumulation
           external_incentive_apr:
             type: string
             title: External Incentive APR, updated at every distribution
@@ -88286,6 +88632,8 @@ definitions:
             type: string
           open_price:
             type: string
+  elys.perpetual.MsgAddCollateralResponse:
+    type: object
   elys.perpetual.MsgCloseResponse:
     type: object
     properties:
@@ -89202,6 +89550,11 @@ definitions:
         type: string
       portfolio:
         type: string
+  elys.tier.QueryGetAmmPriceResponse:
+    type: object
+    properties:
+      total:
+        type: string
   elys.tier.QueryGetPortfolioResponse:
     type: object
     properties:
@@ -89209,6 +89562,14 @@ definitions:
         type: string
   elys.tier.QueryLeverageLpTotalResponse:
     type: object
+    properties:
+      total:
+        type: string
+  elys.tier.QueryLiquidTotalResponse:
+    type: object
+    properties:
+      total:
+        type: string
   elys.tier.QueryParamsResponse:
     type: object
     properties:
@@ -89216,6 +89577,21 @@ definitions:
         description: params holds all the parameters of this module.
         type: object
     description: QueryParamsResponse is response type for the Query/Params RPC method.
+  elys.tier.QueryPerpetualResponse:
+    type: object
+    properties:
+      total:
+        type: string
+  elys.tier.QueryRewardsTotalResponse:
+    type: object
+    properties:
+      total:
+        type: string
+  elys.tier.QueryStakedPoolResponse:
+    type: object
+    properties:
+      total:
+        type: string
   elys.tokenomics.Airdrop:
     type: object
     properties:

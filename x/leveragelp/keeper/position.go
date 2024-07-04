@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"math"
 	"time"
+
 	cosmosMath "cosmossdk.io/math"
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -98,7 +99,9 @@ func (k Keeper) DestroyPosition(ctx sdk.Context, positionAddress string, id uint
 
 	// decrement open position count
 	openCount := k.GetOpenPositionCount(ctx)
-	openCount--
+	if openCount != 0 {
+		openCount--
+	}
 
 	// Set open Position count
 	k.SetOpenPositionCount(ctx, openCount)
@@ -271,13 +274,15 @@ func (k Keeper) GetPositionsForAddress(ctx sdk.Context, positionAddress sdk.Addr
 	pageRes, err := query.Paginate(positionStore, pagination, func(key []byte, value []byte) error {
 		var p types.Position
 		k.cdc.MustUnmarshal(value, &p)
-		var position types.PositionAndInterest
-		position.Position = &p
+		var positionAndInterest types.PositionAndInterest
+		positionAndInterest.Position = &p
 		price, _ := k.oracleKeeper.GetAssetPrice(ctx, p.Collateral.Denom)
 		interestRateHour := params.InterestRate.Quo(hours)
-		position.InterestRateHour = interestRateHour
-		position.InterestRateHourUsd = interestRateHour.Mul(cosmosMath.LegacyDec(p.Liabilities.Mul(price.Price.RoundInt())))
-		positions = append(positions, &position)
+		positionAndInterest.InterestRateHour = interestRateHour
+		positionAndInterest.InterestRateHourUsd = interestRateHour.Mul(cosmosMath.LegacyDec(p.Liabilities.Mul(price.Price.RoundInt())))
+		debt := k.stableKeeper.UpdateInterestStackedByAddress(ctx, positionAndInterest.Position.GetPositionAddress())
+		positionAndInterest.Position.Liabilities = debt.Borrowed.Add(debt.InterestStacked).Sub(debt.InterestPaid)
+		positions = append(positions, &positionAndInterest)
 		return nil
 	})
 	if err != nil {

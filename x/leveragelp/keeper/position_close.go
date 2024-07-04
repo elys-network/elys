@@ -34,14 +34,44 @@ func (k Keeper) ForceCloseLong(ctx sdk.Context, position types.Position, pool ty
 	}
 
 	userAmount := exitCoins[0].Amount.Sub(repayAmount)
-	positionOwner := sdk.MustAccAddressFromBech32(position.Address)
-	err = k.bankKeeper.SendCoins(ctx, positionOwner, position.GetPositionAddress(), sdk.Coins{sdk.NewCoin(position.Collateral.Denom, userAmount)})
+	if userAmount.IsNegative() {
+		return sdk.ZeroInt(), types.ErrNegUserAmountAfterRepay
+	}
+	if userAmount.IsPositive() {
+		positionOwner := sdk.MustAccAddressFromBech32(position.Address)
+		err = k.bankKeeper.SendCoins(ctx, position.GetPositionAddress(), positionOwner, sdk.Coins{sdk.NewCoin(position.Collateral.Denom, userAmount)})
+		if err != nil {
+			return sdk.ZeroInt(), err
+		}
+	}
+
+	// Update the pool health.
+	pool.LeveragedLpAmount = pool.LeveragedLpAmount.Sub(lpAmount)
+	k.UpdatePoolHealth(ctx, &pool)
+
+	ammPool, found := k.amm.GetPool(ctx, position.AmmPoolId)
+	if !found {
+		return sdk.ZeroInt(), types.ErrAmmPoolNotFound
+	}
+
+	// Update position health
+	positionHealth, err := k.GetPositionHealth(ctx, position, ammPool)
 	if err != nil {
 		return sdk.ZeroInt(), err
 	}
+	position.PositionHealth = positionHealth
 
+	// Update Liabilities
+	debt = k.stableKeeper.UpdateInterestStackedByAddress(ctx, position.GetPositionAddress())
+	position.Liabilities = debt.Borrowed
+
+	// Update leveragedLpAmount
 	position.LeveragedLpAmount = position.LeveragedLpAmount.Sub(lpAmount)
 	if position.LeveragedLpAmount.IsZero() {
+		err = k.masterchefKeeper.ClaimRewards(ctx, position.GetPositionAddress(), []uint64{position.AmmPoolId}, sdk.AccAddress(position.Address))
+		if err != nil {
+			return sdk.ZeroInt(), err
+		}
 		err = k.DestroyPosition(ctx, position.Address, position.Id)
 		if err != nil {
 			return sdk.ZeroInt(), err
@@ -49,9 +79,6 @@ func (k Keeper) ForceCloseLong(ctx sdk.Context, position types.Position, pool ty
 	} else {
 		k.SetPosition(ctx, &position)
 	}
-
-	pool.LeveragedLpAmount = pool.LeveragedLpAmount.Sub(lpAmount)
-	k.UpdatePoolHealth(ctx, &pool)
 
 	// Hooks after leveragelp position closed
 	if k.hooks != nil {

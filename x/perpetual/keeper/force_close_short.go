@@ -29,7 +29,7 @@ func (k Keeper) ForceCloseShort(ctx sdk.Context, mtp *types.MTP, pool *types.Poo
 
 	// Hooks after perpetual position closed
 	if k.hooks != nil {
-		k.hooks.AfterPerpetualPositionClosed(ctx, ammPool, *pool)
+		k.hooks.AfterPerpetualPositionClosed(ctx, ammPool, *pool, mtp.Address)
 	}
 
 	return repayAmount, nil
