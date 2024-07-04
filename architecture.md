@@ -5,6 +5,52 @@ This section contains documentation on the architecture of the Elys chain, inclu
 <details>
 <summary>Click to expand/collapse</summary>
 
+## Overview
+
+The diagram below illustrates the architecture of Elys Network, outlining its various modules and their interactions. The system is organized into six layers, each with specific functionalities crucial for the overall operation.
+
+![./modules.png](./docs/assets/modules.png)
+
+### Layers and Components
+
+1. **Core Components:**
+
+   - **Parameters:** Configuration settings for the overall network.
+   - **Epochs:** Time-based intervals for system operations.
+   - **Clock:** Execute CosmWasm contracts sudo operations.
+   - **Transferhook:** Extends basic IBC transfer capabilities by integrating with the AMM module.
+
+2. **Data Layer:**
+
+   - **Oracle:** Provides external data inputs, such as price feeds.
+   - **Asset Profile:** Maintains information about the different assets managed within the network.
+
+3. **Liquidity Management:**
+
+   - **AMM (Automated Market Maker):** Facilitates decentralized trading by maintaining liquidity pools.
+   - **StableStake:** Manages staking of stable assets.
+   - **Commitment:** Handles token lockups, vesting schedules, and staking interactions.
+   - **Estaking:** Extends basic staking capabilities with additional functionalities.
+
+4. **Pool Aggregation:**
+
+   - **Accounted Pool:** Ensures accurate accounting of assets within pools.
+
+5. **Trading Mechanisms:**
+
+   - **Perpetual:** Implements perpetual trading contracts.
+   - **LeverageLP:** Enables leverage trading by borrowing assets from the StableStake module.
+
+6. **Revenue Model:**
+   - **Masterchef/Incentive:** Manages rewards distribution to liquidity providers.
+   - **Tier:** Implements membership tiers for users based on their activity.
+   - **Burner:** Handles token burning mechanisms to manage supply.
+   - **Tokenomics:** Manages the economic model and token distribution.
+
+### Interaction Flow
+
+The interaction flow between layers is depicted with arrows. Data from the Core Components feeds into the Data Layer. The Liquidity Management layer uses this data to manage liquidity, which is then aggregated in the Pool Aggregation layer. Trading mechanisms utilize the pooled liquidity for various trading activities. The Revenue Model layer ensures economic incentives and sustainability of the system.
+
 ## Boilerplate Generation
 
 The boilerplate was generated using `ignite CLI`, which provides a convenient way to generate new chains, modules, messages, and more. The initial modules that are part of the repository include `AssetProfile` and few others, both of which were generated using the `ignite CLI`.
@@ -40,11 +86,11 @@ Here are the definitions and current values of each individual parameter of the 
 <details>
 <summary>Click to expand/collapse</summary>
 
-## Minting
+### Minting
 
 Defines the rules for automated minting of new tokens. In the current implementation, minting is entirely disabled.
 
-## Staking
+### Staking
 
 Defines the rules for staking and delegating tokens in the network. Validators and delegators must lock their tokens for a certain period to participate in consensus and receive rewards. The `unbonding_time` parameter specifies the duration for which a validator's tokens are locked after they unbond.
 
@@ -54,7 +100,7 @@ Defines the rules for staking and delegating tokens in the network. Validators a
 - `Max_validators`: The maximum number of validators that can be active at once. Current value: 100.
 - `Bond_denom: The denomination used for staking tokens. Current value: `uelys`.
 
-## Governance
+### Governance
 
 Defines the rules for proposing and voting on changes to the network. To make a proposal, a minimum deposit of ELYS is required. The proposal must then go through a voting process where a certain percentage of bonded tokens must vote, and a certain percentage of those votes must be in favor of the proposal for it to pass.
 
@@ -65,14 +111,14 @@ Defines the rules for proposing and voting on changes to the network. To make a 
 - `Veto_threshold`: The percentage of no votes required to veto a proposal. Current value: 33.4%.
 - `Voting_period`: The period for which voting on a proposal is open. Current value: 60.
 
-## Distribution
+### Distribution
 
 Defines the distribution of rewards and fees in the network. Block proposers receive a portion of the block rewards as an incentive to maintain the network.
 
 - `Base_proposer_reward`: The base percentage of block rewards given to proposers. Current value: 1%.
 - `Bonus_proposer_reward`: The additional percentage of block rewards given to proposers if they include all valid transactions. Current value: 4%.
 
-## Slashing
+### Slashing
 
 Defines the penalties for validators who violate the network rules or fail to perform their duties. Validators who sign blocks incorrectly or go offline for too long will be penalized with a percentage of their bonded tokens being slashed. The `signed_blocks_window` parameter specifies the number of blocks used to determine a validator's uptime percentage, and the `min_signed_per_window` parameter specifies the minimum percentage of blocks that a validator must sign in each window to avoid being slashed. The `downtime_jail_duration` parameter specifies the duration for which a validator is jailed if they miss too many blocks.
 
