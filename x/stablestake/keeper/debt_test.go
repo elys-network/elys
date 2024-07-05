@@ -24,7 +24,7 @@ func (suite *KeeperTestSuite) TestDebt() {
 	}{
 		{
 			desc:              "successful debt process",
-			senderInitBalance: sdk.Coins{sdk.NewInt64Coin(types.GetShareDenom(), 1000000)},
+			senderInitBalance: sdk.Coins{sdk.NewInt64Coin(types.GetShareDenom(), 1000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 100000000)},
 			moduleInitBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)},
 			unbondAmount:      sdk.NewInt(1000000),
 			expSenderBalance:  sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)}.Sort(),
@@ -87,12 +87,12 @@ func (suite *KeeperTestSuite) TestDebt() {
 			suite.Require().Equal(res.InterestPaid.String(), "10")
 
 			// Pay rest, ensure we don't pay multiple times
-			err = suite.app.StablestakeKeeper.Repay(suite.ctx, sender, sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(11000)))
+			err = suite.app.StablestakeKeeper.Repay(suite.ctx, sender, sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(10990)))
 			suite.Require().NoError(err)
 			res = suite.app.StablestakeKeeper.GetDebt(suite.ctx, sender)
-			suite.Require().Equal(res.Borrowed.String(), "1000")
-			suite.Require().Equal(res.InterestStacked.String(), "10000")
-			suite.Require().Equal(res.InterestPaid.String(), "10")
+			suite.Require().Equal(res.Borrowed.String(), "0")
+			suite.Require().Equal(res.InterestStacked.String(), "0")
+			suite.Require().Equal(res.InterestPaid.String(), "0")
 		})
 	}
 }
