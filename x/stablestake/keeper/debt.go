@@ -123,6 +123,7 @@ func (k Keeper) Repay(ctx sdk.Context, addr sdk.AccAddress, amount sdk.Coin) err
 	// repay borrowed
 	repayAmount := amount.Amount.Sub(interestPayAmount)
 	debt.Borrowed = debt.Borrowed.Sub(repayAmount)
+	debt.InterestPaid = debt.InterestPaid.Add(interestPayAmount)
 
 	if debt.Borrowed.IsNegative() {
 		return types.ErrNegativeBorrowed
