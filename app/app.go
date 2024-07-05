@@ -318,7 +318,7 @@ var (
 		ammmoduletypes.ModuleName:        {authtypes.Minter, authtypes.Burner, authtypes.Staking},
 		wasmmoduletypes.ModuleName:       {authtypes.Burner},
 		stablestaketypes.ModuleName:      {authtypes.Minter, authtypes.Burner},
-		masterchefmoduletypes.ModuleName: {},
+		masterchefmoduletypes.ModuleName: {authtypes.Minter, authtypes.Burner},
 		// this line is used by starport scaffolding # stargate/app/maccPerms
 	}
 )
