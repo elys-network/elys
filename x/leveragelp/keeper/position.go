@@ -5,6 +5,7 @@ import (
 	"math"
 	"time"
 
+	cosmosMath "cosmossdk.io/math"
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
@@ -238,7 +239,6 @@ func (k Keeper) GetPositionsForPool(ctx sdk.Context, ammPoolId uint64, paginatio
 			Limit: math.MaxUint64 - 1,
 		}
 	}
-
 	pageRes, err := query.FilteredPaginate(positionStore, pagination, func(key []byte, value []byte, accumulate bool) (bool, error) {
 		var position types.Position
 		k.cdc.MustUnmarshal(value, &position)
@@ -253,8 +253,8 @@ func (k Keeper) GetPositionsForPool(ctx sdk.Context, ammPoolId uint64, paginatio
 	return positions, pageRes, err
 }
 
-func (k Keeper) GetPositionsForAddress(ctx sdk.Context, positionAddress sdk.Address, pagination *query.PageRequest) ([]*types.Position, *query.PageResponse, error) {
-	var positions []*types.Position
+func (k Keeper) GetPositionsForAddress(ctx sdk.Context, positionAddress sdk.Address, pagination *query.PageRequest) ([]*types.PositionAndInterest, *query.PageResponse, error) {
+	var positions []*types.PositionAndInterest
 
 	store := ctx.KVStore(k.storeKey)
 	positionStore := prefix.NewStore(store, types.GetPositionPrefixForAddress(positionAddress.String()))
@@ -269,12 +269,20 @@ func (k Keeper) GetPositionsForAddress(ctx sdk.Context, positionAddress sdk.Addr
 		return nil, nil, status.Error(codes.InvalidArgument, fmt.Sprintf("page size greater than max %d", types.MaxPageLimit))
 	}
 
+	params := k.stableKeeper.GetParams(ctx)
+	hours := cosmosMath.LegacyNewDec(365 * 24)
 	pageRes, err := query.Paginate(positionStore, pagination, func(key []byte, value []byte) error {
-		var position types.Position
-		k.cdc.MustUnmarshal(value, &position)
-		debt := k.stableKeeper.UpdateInterestStackedByAddress(ctx, position.GetPositionAddress())
-		position.Liabilities = debt.Borrowed.Add(debt.InterestStacked).Sub(debt.InterestPaid)
-		positions = append(positions, &position)
+		var p types.Position
+		k.cdc.MustUnmarshal(value, &p)
+		var positionAndInterest types.PositionAndInterest
+		positionAndInterest.Position = &p
+		price, _ := k.oracleKeeper.GetAssetPrice(ctx, p.Collateral.Denom)
+		interestRateHour := params.InterestRate.Quo(hours)
+		positionAndInterest.InterestRateHour = interestRateHour
+		positionAndInterest.InterestRateHourUsd = interestRateHour.Mul(cosmosMath.LegacyDec(p.Liabilities.Mul(price.Price.RoundInt())))
+		debt := k.stableKeeper.UpdateInterestStackedByAddress(ctx, positionAndInterest.Position.GetPositionAddress())
+		positionAndInterest.Position.Liabilities = debt.Borrowed.Add(debt.InterestStacked).Sub(debt.InterestPaid)
+		positions = append(positions, &positionAndInterest)
 		return nil
 	})
 	if err != nil {

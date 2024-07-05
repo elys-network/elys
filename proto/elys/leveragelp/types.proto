@@ -42,3 +42,15 @@ message AddressId {
   string address = 1;
   uint64 id = 2;
 }
+
+message PositionAndInterest {
+  Position position = 1;
+  string interest_rate_hour = 2 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  string interest_rate_hour_usd = 3 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+}
