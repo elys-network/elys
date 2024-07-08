@@ -26,18 +26,12 @@ func (k Keeper) BeginBlocker(ctx sdk.Context) {
 				continue
 			}
 			if k.IsPoolEnabled(ctx, pool.AmmPoolId) {
-				positions, _, _ := k.GetPositionsForPool(ctx, pool.AmmPoolId, nil)
-				for _, position := range positions {
-					k.LiquidatePositionIfUnhealthy(ctx, position, pool, ammPool)
-				}
-
 				// Liquidate positions liquidation health threshold
 				// Design
 				// - `Health = PositionValue / Debt`, PositionValue is based on LpToken price change
 				// - Debt growth speed is relying on debt.Borrowed.
 				// - Things are sorted by `LeveragedLpAmount / debt.Borrowed` per pool to liquidate efficiently
 
-				// TODO: should consider InterestStacked-InterestPaid amount
 				k.IteratePoolPosIdsLiquidationSorted(ctx, pool.AmmPoolId, func(posId types.AddressId) bool {
 					position, err := k.GetPosition(ctx, posId.Address, posId.Id)
 					if err != nil {

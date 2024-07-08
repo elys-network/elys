@@ -44,7 +44,7 @@ func (k Keeper) SetPosition(ctx sdk.Context, position *types.Position) {
 		old, err := k.GetPosition(ctx, position.Address, position.Id)
 		if err == nil {
 			debt := k.stableKeeper.UpdateInterestStackedByAddress(ctx, old.GetPositionAddress())
-			liquidationKey := types.GetLiquidationSortKey(old.AmmPoolId, old.LeveragedLpAmount, debt.Borrowed, old.Id)
+			liquidationKey := types.GetLiquidationSortKey(old.AmmPoolId, old.LeveragedLpAmount, debt.Borrowed.Sub(debt.InterestPaid).Add(debt.InterestStacked), old.Id)
 			if len(liquidationKey) > 0 {
 				store.Delete(liquidationKey)
 			}
@@ -65,7 +65,7 @@ func (k Keeper) SetPosition(ctx sdk.Context, position *types.Position) {
 	}
 	bz := k.cdc.MustMarshal(&addrId)
 	debt := k.stableKeeper.UpdateInterestStackedByAddress(ctx, position.GetPositionAddress())
-	liquidationKey := types.GetLiquidationSortKey(position.AmmPoolId, position.LeveragedLpAmount, debt.Borrowed, position.Id)
+	liquidationKey := types.GetLiquidationSortKey(position.AmmPoolId, position.LeveragedLpAmount, debt.Borrowed.Sub(debt.InterestPaid).Add(debt.InterestStacked), position.Id)
 	if len(liquidationKey) > 0 {
 		store.Set(liquidationKey, bz)
 	}
@@ -87,7 +87,7 @@ func (k Keeper) DestroyPosition(ctx sdk.Context, positionAddress string, id uint
 	old, err := k.GetPosition(ctx, positionAddress, id)
 	if err == nil {
 		debt := k.stableKeeper.UpdateInterestStackedByAddress(ctx, old.GetPositionAddress())
-		liquidationKey := types.GetLiquidationSortKey(old.AmmPoolId, old.LeveragedLpAmount, debt.Borrowed, old.Id)
+		liquidationKey := types.GetLiquidationSortKey(old.AmmPoolId, old.LeveragedLpAmount, debt.Borrowed.Sub(debt.InterestPaid).Add(debt.InterestStacked), old.Id)
 		if len(liquidationKey) > 0 {
 			store.Delete(liquidationKey)
 		}

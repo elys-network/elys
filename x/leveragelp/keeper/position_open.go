@@ -143,6 +143,9 @@ func (k Keeper) ProcessOpenLong(ctx sdk.Context, position *types.Position, lever
 	position.LeveragedLpAmount = position.LeveragedLpAmount.Add(shares)
 	position.Liabilities = position.Liabilities.Add(borrowCoin.Amount)
 	position.PositionHealth = lr
+
+	// TODO: Set value to new structure
+
 	k.SetPosition(ctx, position)
 
 	return position, nil
