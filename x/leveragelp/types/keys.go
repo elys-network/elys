@@ -2,6 +2,7 @@ package types
 
 import (
 	"encoding/binary"
+	"strconv"
 
 	"cosmossdk.io/math"
 )
@@ -70,11 +71,33 @@ func GetLiquidationSortKey(poolId uint64, lpAmount math.Int, borrowed math.Int, 
 		return []byte{}
 	}
 
+	// default precision is 18
+	// final string = decimalvalue + positionId(consistentlength)
 	sortDec := math.LegacyNewDecFromInt(lpAmount).QuoInt(borrowed)
-	bytes := sortDec.BigInt().Bytes()
-	lengthPrefix := GetUint64Bytes(uint64(len(bytes)))
-	posIdSuffix := GetUint64Bytes(id)
-	return append(append(append(poolIdPrefix, lengthPrefix...), bytes...), posIdSuffix...)
+	paddedPosition := IntToStringWithPadding(id)
+	bytes := []byte(sortDec.String() + paddedPosition)
+	return append(poolIdPrefix, bytes...)
+}
+
+func IntToStringWithPadding(position uint64) string {
+	// Define the desired length of the output string
+	const length = 9
+
+	// Convert the integer to a string
+	str := strconv.FormatUint(position, 18)
+
+	// Calculate the number of leading zeros needed
+	padding := length - len(str)
+
+	// Create the leading zeros string
+	leadingZeros := ""
+	for i := 0; i < padding; i++ {
+		leadingZeros += "0"
+	}
+
+	// Concatenate leading zeros with the original number string
+	result := leadingZeros + str
+	return result
 }
 
 func GetStopLossSortPrefix(poolId uint64) []byte {

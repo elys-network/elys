@@ -32,6 +32,9 @@ func (suite KeeperTestSuite) TestBeginBlocker() {
 	k.BeginBlocker(suite.ctx)
 	_, err = k.GetPosition(suite.ctx, position.Address, position.Id)
 	suite.Require().Error(err)
+
+	sortDec := math.LegacyNewDecFromInt(sdk.NewInt(100)).QuoInt(sdk.NewInt(10))
+	suite.Require().Equal(sortDec.String(), "1.250000000000000000")
 }
 
 func (suite KeeperTestSuite) TestLiquidatePositionIfUnhealthy() {
@@ -71,3 +74,7 @@ func (suite KeeperTestSuite) TestLiquidatePositionIfUnhealthy() {
 	_, err = k.GetPosition(cacheCtx, position.Address, position.Id)
 	suite.Require().Error(err)
 }
+
+// Test sorted liquidity flow
+// Add values
+// Edge cases
