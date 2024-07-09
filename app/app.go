@@ -34,7 +34,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/cosmos/cosmos-sdk/version"
 	"github.com/cosmos/cosmos-sdk/x/auth"
-	"github.com/cosmos/cosmos-sdk/x/auth/ante"
+	sdkante "github.com/cosmos/cosmos-sdk/x/auth/ante"
 	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
 	"github.com/cosmos/cosmos-sdk/x/auth/posthandler"
 	authsims "github.com/cosmos/cosmos-sdk/x/auth/simulation"
@@ -194,6 +194,8 @@ import (
 	tiermodule "github.com/elys-network/elys/x/tier"
 	tiermodulekeeper "github.com/elys-network/elys/x/tier/keeper"
 	tiermoduletypes "github.com/elys-network/elys/x/tier/types"
+
+	ante "github.com/elys-network/elys/app/ante"
 
 	// this line is used by starport scaffolding # stargate/app/moduleImport
 
@@ -1398,14 +1400,14 @@ func NewElysApp(
 }
 
 func (app *ElysApp) setAnteHandler(txConfig client.TxConfig, wasmConfig wasmmoduletypes.WasmConfig, txCounterStoreKey storetypes.StoreKey) {
-	anteHandler, err := NewAnteHandler(
-		HandlerOptions{
-			HandlerOptions: ante.HandlerOptions{
+	anteHandler, err := ante.NewAnteHandler(
+		ante.HandlerOptions{
+			HandlerOptions: sdkante.HandlerOptions{
 				AccountKeeper:   app.AccountKeeper,
 				BankKeeper:      app.BankKeeper,
 				SignModeHandler: txConfig.SignModeHandler(),
 				FeegrantKeeper:  app.FeeGrantKeeper,
-				SigGasConsumer:  ante.DefaultSigVerificationGasConsumer,
+				SigGasConsumer:  sdkante.DefaultSigVerificationGasConsumer,
 			},
 			StakingKeeper:     app.StakingKeeper,
 			IBCKeeper:         app.IBCKeeper,
