@@ -44,6 +44,8 @@ func (k Keeper) SetPosition(ctx sdk.Context, position *types.Position) {
 		old, err := k.GetPosition(ctx, position.Address, position.Id)
 		if err == nil {
 			debt := k.stableKeeper.UpdateInterestStackedByAddress(ctx, old.GetPositionAddress())
+			// TODO: old debt is wrong here
+			// Make sure liability changes are handled properly here, this should always be updated whenever liability is changed
 			liquidationKey := types.GetLiquidationSortKey(old.AmmPoolId, old.LeveragedLpAmount, debt.Borrowed.Sub(debt.InterestPaid).Add(debt.InterestStacked), old.Id)
 			if len(liquidationKey) > 0 {
 				store.Delete(liquidationKey)
