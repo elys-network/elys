@@ -4,12 +4,13 @@
 
 1. **[Concepts](01_concepts.md)**
 2. **[Mechanism](02_mechanism.md)**
-3. **[State](03_state.md)**
-4. **[Keeper](04_keeper.md)**
-5. **[Endpoints](05_endpoints.md)**
-6. **[Risk Management](06_risk_management.md)**
-7. **[Slippage Model](07_slippage.md)**
-8. **[Swap Transactions Reordering](08_swap_txs_reordering.md)**
+3. **[Oracle Pools](03_oracle_pools.md)**
+4. **[State](04_state.md)**
+5. **[Keeper](05_keeper.md)**
+6. **[Endpoints](06_endpoints.md)**
+7. **[Risk Management](07_risk_management.md)**
+8. **[Slippage Model](08_slippage.md)**
+9. **[Swap Transactions Reordering](09_swap_txs_reordering.md)**
 
 ## References
 

@@ -6,7 +6,7 @@ order: 2
 
 ## Overview
 
-The StableStake module facilitates leveraged liquidity provision (LP) positions by allowing users to borrow funds against their collateral. This process involves interactions between the user, a stable stake pool, and an Automated Market Maker (AMM) pool. The module ensures efficient and secure fund management, enabling users to maximize their liquidity provisioning potential.
+The StableStake module facilitates leveraged liquidity provision (LP) positions by allowing users to borrow funds against their collateral. This process involves interactions between the user, a stable stake pool, and an Automated Market Maker (AMM) pool. The module ensures efficient and secure fund management, enabling users to maximize their liquidity provisioning potential. Additionally, users can bond and unbond their USDC to earn rewards from the interest paid by ongoing leveraged LP positions.
 
 ## Components
 
@@ -91,6 +91,11 @@ The StableStake module facilitates leveraged liquidity provision (LP) positions 
   - **Amount**: Remaining collateral after settling the debt
 
 ## Sequence of Actions
+
+### Bonding and Unbonding USDC
+
+- Bonding: Users can bond their USDC to the stable stake pool to earn rewards. The rewards are generated from the interest paid by users on their leveraged LP positions.
+- Unbonding: Users can unbond their USDC from the stable stake pool, allowing them to retrieve their tokens along with any accrued rewards.
 
 ### Opening Position
 

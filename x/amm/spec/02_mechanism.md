@@ -1,3 +1,7 @@
+<!--
+order: 2
+-->
+
 # Mechanism
 
 The Elys Network AMM module implements an Automated Market Maker (AMM) using various types of liquidity pools. It supports the following types of pools:
@@ -6,6 +10,8 @@ The Elys Network AMM module implements an Automated Market Maker (AMM) using var
 2. **Oracle Pools**: Oracle pools with liquidity centered around an oracle price, designed for assets with stable prices.
 
 This section explains the fundamental mechanism of the AMM module and provides an overview of how the module's code is structured to support both types of pools.
+
+The section **[Oracle Pools](03_oracle_pools.md)** provides additional details on the mechanism of Oracle Pools.
 
 ## Pool
 
