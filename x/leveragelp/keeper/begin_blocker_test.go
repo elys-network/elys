@@ -173,36 +173,11 @@ func (suite KeeperTestSuite) TestLiquidatePositionSorted() {
 		return false
 	})
 
-	// Partial close, add collateral and add more lev should result in correct order
-
-	// suite.ctx = suite.ctx.WithBlockTime(suite.ctx.BlockTime().Add(time.Hour * 24 * 500))
-	// suite.app.StablestakeKeeper.BeginBlocker(suite.ctx)
-	// health, err = k.GetPositionHealth(suite.ctx, *position, ammPool)
-	// suite.Require().NoError(err)
-	// // suite.Require().Equal(health.String(), "1.024543738200125865") // slippage enabled on amm
-	// suite.Require().Equal(health.String(), "1.025220422390814025") // slippage disabled on amm
-
-	// cacheCtx, _ := suite.ctx.CacheContext()
-	// params := k.GetParams(cacheCtx)
-	// params.SafetyFactor = sdk.NewDecWithPrec(11, 1)
-	// k.SetParams(cacheCtx, &params)
-	// isHealthy, earlyReturn := k.LiquidatePositionIfUnhealthy(cacheCtx, position, pool, ammPool)
-	// suite.Require().False(isHealthy)
-	// suite.Require().False(earlyReturn)
-	// _, err = k.GetPosition(cacheCtx, position.Address, position.Id)
-	// suite.Require().Error(err)
-
-	// cacheCtx, _ = suite.ctx.CacheContext()
-	// position.StopLossPrice = math.LegacyNewDec(100000)
-	// k.SetPosition(cacheCtx, position, sdk.NewInt(0))
-	// underStopLossPrice, earlyReturn := k.ClosePositionIfUnderStopLossPrice(cacheCtx, position, pool, ammPool)
-	// suite.Require().True(underStopLossPrice)
-	// suite.Require().False(earlyReturn)
-	// _, err = k.GetPosition(cacheCtx, position.Address, position.Id)
-	// suite.Require().Error(err)
+	// Partial close, and add more lev should result in correct order
 }
 
 // Add values
 // Edge cases
 
 // Test stop loss price
+// Add stablestake update test
