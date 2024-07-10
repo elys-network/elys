@@ -33,7 +33,7 @@ func TestSetGetPosition(t *testing.T) {
 			PositionHealth: sdk.NewDec(0),
 			Id:             0,
 		}
-		leveragelp.SetPosition(ctx, &position)
+		leveragelp.SetPosition(ctx, &position, sdk.NewInt(0))
 	}
 
 	positionCount := leveragelp.GetPositionCount(ctx)
@@ -120,7 +120,7 @@ func TestIteratePoolPosIdsLiquidationSorted(t *testing.T) {
 			LastInterestCalcTime: uint64(ctx.BlockTime().Unix()),
 		}
 		stablestake.SetDebt(ctx, debt)
-		leveragelp.SetPosition(ctx, &position)
+		leveragelp.SetPosition(ctx, &position, sdk.NewInt(0))
 	}
 
 	idsSorted := []uint64{}
@@ -201,7 +201,7 @@ func TestIteratePoolPosIdsStopLossSorted(t *testing.T) {
 			PositionHealth:    sdk.NewDec(0),
 			StopLossPrice:     math.LegacyDec(info.StopLossPrice),
 		}
-		leveragelp.SetPosition(ctx, &position)
+		leveragelp.SetPosition(ctx, &position, sdk.NewInt(0))
 	}
 
 	idsSorted := []uint64{}

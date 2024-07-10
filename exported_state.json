@@ -1,0 +1,11 @@
+Upgrade info: Upgrade Plan
+  Name: v999.999.999
+  height: 8471637
+  Info: .
+Current block height: 8471645, Upgrade height: 8471637
+Setting store loader with height 8471637 and store upgrades: {Added:[] Renamed:[] Deleted:[]}
+[90m11:26AM[0m [32mINF[0m [1masserting crisis invariants[0m [36minv=[0m1/9 [36mmodule=[0mx/crisis [36mname=[0mbank/nonnegative-outstanding
+[90m11:26AM[0m [32mINF[0m [1masserting crisis invariants[0m [36minv=[0m2/9 [36mmodule=[0mx/crisis [36mname=[0mbank/total-supply
+[90m11:26AM[0m [32mINF[0m [1masserting crisis invariants[0m [36minv=[0m3/9 [36mmodule=[0mx/crisis [36mname=[0mgroup/Group-TotalWeight
+[90m11:26AM[0m [32mINF[0m [1masserting crisis invariants[0m [36minv=[0m4/9 [36mmodule=[0mx/crisis [36mname=[0mgov/module-account
+[90m11:26AM[0m [32mINF[0m [1masserting crisis invariants[0m [36minv=[0m5/9 [36mmodule=[0mx/crisis [36mname=[0mtransfer/total-escrow-per-denom

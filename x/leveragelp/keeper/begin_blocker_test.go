@@ -67,7 +67,7 @@ func (suite KeeperTestSuite) TestLiquidatePositionIfUnhealthy() {
 
 	cacheCtx, _ = suite.ctx.CacheContext()
 	position.StopLossPrice = math.LegacyNewDec(100000)
-	k.SetPosition(cacheCtx, position)
+	k.SetPosition(cacheCtx, position, sdk.NewInt(0))
 	underStopLossPrice, earlyReturn := k.ClosePositionIfUnderStopLossPrice(cacheCtx, position, pool, ammPool)
 	suite.Require().True(underStopLossPrice)
 	suite.Require().False(earlyReturn)
