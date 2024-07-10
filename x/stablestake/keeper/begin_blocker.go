@@ -10,7 +10,7 @@ func (k Keeper) BeginBlocker(ctx sdk.Context) {
 	epochPosition := k.GetEpochPosition(ctx, epochLength)
 
 	if epochPosition == 0 { // if epoch has passed
-		// divide them in blocks, update values
+		// TODO: divide them in blocks, update values
 		params := k.GetParams(ctx)
 		rate := k.InterestRateComputation(ctx)
 		params.InterestRate = rate

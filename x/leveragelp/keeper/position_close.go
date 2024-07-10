@@ -75,7 +75,7 @@ func (k Keeper) ForceCloseLong(ctx sdk.Context, position types.Position, pool ty
 		if err != nil {
 			return sdk.ZeroInt(), err
 		}
-		err = k.DestroyPosition(ctx, position.Address, position.Id)
+		err = k.DestroyPosition(ctx, position.Address, position.Id, oldDebt.Borrowed.Add(debt.InterestStacked).Sub(debt.InterestPaid))
 		if err != nil {
 			return sdk.ZeroInt(), err
 		}

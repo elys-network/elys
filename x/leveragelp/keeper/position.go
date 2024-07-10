@@ -58,6 +58,9 @@ func (k Keeper) SetPosition(ctx sdk.Context, position *types.Position, oldDebt s
 	key := types.GetPositionKey(position.Address, position.Id)
 	store.Set(key, k.cdc.MustMarshal(position))
 
+	// for stablestake hook
+	store.Set([]byte(position.GetPositionAddress()), key)
+
 	// Add position sort keys
 	addrId := types.AddressId{
 		Id:      position.Id,
@@ -75,7 +78,7 @@ func (k Keeper) SetPosition(ctx sdk.Context, position *types.Position, oldDebt s
 	}
 }
 
-func (k Keeper) DestroyPosition(ctx sdk.Context, positionAddress string, id uint64) error {
+func (k Keeper) DestroyPosition(ctx sdk.Context, positionAddress string, id uint64, oldDebt sdk.Int) error {
 	key := types.GetPositionKey(positionAddress, id)
 	store := ctx.KVStore(k.storeKey)
 	if !store.Has(key) {
@@ -95,6 +98,7 @@ func (k Keeper) DestroyPosition(ctx sdk.Context, positionAddress string, id uint
 		if len(stopLossKey) > 0 {
 			store.Delete(stopLossKey)
 		}
+		store.Delete([]byte(old.GetPositionAddress()))
 	}
 
 	// decrement open position count
@@ -107,6 +111,36 @@ func (k Keeper) DestroyPosition(ctx sdk.Context, positionAddress string, id uint
 	k.SetOpenPositionCount(ctx, openCount)
 
 	return nil
+}
+
+// Set sorted liquidation
+func (k Keeper) SetSortedLiquidation(ctx sdk.Context, address string, old sdk.Int, new sdk.Int) {
+	store := ctx.KVStore(k.storeKey)
+	if store.Has([]byte(address)) {
+		key := store.Get([]byte(address))
+		if !store.Has(key) {
+			return
+		}
+		res := store.Get(key)
+		var position types.Position
+		k.cdc.MustUnmarshal(res, &position)
+		// Make sure liability changes are handled properly here, this should always be updated whenever liability is changed
+		liquidationKey := types.GetLiquidationSortKey(position.AmmPoolId, position.LeveragedLpAmount, old, position.Id)
+		if len(liquidationKey) > 0 {
+			store.Delete(liquidationKey)
+		}
+
+		// Add position sort keys
+		addrId := types.AddressId{
+			Id:      position.Id,
+			Address: position.Address,
+		}
+		bz := k.cdc.MustMarshal(&addrId)
+		liquidationKey = types.GetLiquidationSortKey(position.AmmPoolId, position.LeveragedLpAmount, new, position.Id)
+		if len(liquidationKey) > 0 {
+			store.Set(liquidationKey, bz)
+		}
+	}
 }
 
 // Set Open Position count
