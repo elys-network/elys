@@ -6,7 +6,7 @@ order: 2
 
 The following section provides a detailed technical explanation of the perpetual trading mechanism as depicted in the Elys Perpetual Trading Design diagram.
 
-![Elys Perpetual Trading Design](elys-perpetual-trading-design-long-y-asset.png)
+![Elys Perpetual Trading Design](./assets/elys-perpetual-trading-design-long-y-asset.png)
 
 ## Overview
 
