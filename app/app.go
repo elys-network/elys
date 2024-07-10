@@ -1408,6 +1408,7 @@ func (app *ElysApp) setAnteHandler(txConfig client.TxConfig, wasmConfig wasmmodu
 				SignModeHandler: txConfig.SignModeHandler(),
 				FeegrantKeeper:  app.FeeGrantKeeper,
 				SigGasConsumer:  sdkante.DefaultSigVerificationGasConsumer,
+				TxFeeChecker:    ante.CheckTxFeeWithValidatorMinGasPrices,
 			},
 			StakingKeeper:     app.StakingKeeper,
 			IBCKeeper:         app.IBCKeeper,

@@ -38,21 +38,25 @@ func NewAnteHandler(options HandlerOptions) (sdk.AnteHandler, error) {
 		sigGasConsumer = sdkante.DefaultSigVerificationGasConsumer
 	}
 
+	txFeeChecker := options.TxFeeChecker
+	if txFeeChecker == nil {
+		txFeeChecker = CheckTxFeeWithValidatorMinGasPrices
+	}
+
 	anteDecorators := []sdk.AnteDecorator{
 		sdkante.NewSetUpContextDecorator(),                                               // outermost AnteDecorator. SetUpContext must be called first
 		wasmkeeper.NewLimitSimulationGasDecorator(options.WasmConfig.SimulationGasLimit), // after setup context to enforce limits early
 		wasmkeeper.NewCountTXDecorator(options.TXCounterStoreKey),
 		NewMinCommissionDecorator(options.Cdc, options.StakingKeeper, options.BankKeeper, options.ParameterKeeper),
-		NewAdjustGasPriceDecorator(),
 		sdkante.NewExtensionOptionsDecorator(options.ExtensionOptionChecker),
 		sdkante.NewValidateBasicDecorator(),
 		sdkante.NewTxTimeoutHeightDecorator(),
 		sdkante.NewValidateMemoDecorator(options.AccountKeeper),
 		sdkante.NewConsumeGasForTxSizeDecorator(options.AccountKeeper),
-		sdkante.NewDeductFeeDecorator(options.AccountKeeper, options.BankKeeper, options.FeegrantKeeper, options.TxFeeChecker),
+		sdkante.NewDeductFeeDecorator(options.AccountKeeper, options.BankKeeper, options.FeegrantKeeper, txFeeChecker),
 		sdkante.NewSetPubKeyDecorator(options.AccountKeeper), // SetPubKeyDecorator must be called before all signature verification decorators
 		sdkante.NewValidateSigCountDecorator(options.AccountKeeper),
-		sdkante.NewSigGasConsumeDecorator(options.AccountKeeper, options.SigGasConsumer),
+		sdkante.NewSigGasConsumeDecorator(options.AccountKeeper, sigGasConsumer),
 		sdkante.NewSigVerificationDecorator(options.AccountKeeper, options.SignModeHandler),
 		sdkante.NewIncrementSequenceDecorator(options.AccountKeeper),
 		ibcante.NewRedundantRelayDecorator(options.IBCKeeper),
