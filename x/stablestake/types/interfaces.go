@@ -9,4 +9,5 @@ import (
 type StableStakeHooks interface {
 	AfterBond(ctx sdk.Context, sender string, shareAmount math.Int) error
 	AfterUnbond(ctx sdk.Context, sender string, shareAmount math.Int) error
+	AfterUpdateInterestStacked(ctx sdk.Context, address string, old math.Int, new math.Int) error
 }

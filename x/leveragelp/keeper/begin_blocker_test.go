@@ -157,10 +157,20 @@ func (suite KeeperTestSuite) TestLiquidatePositionSorted() {
 	suite.Require().Equal(health.String(), "1.333333333333333333") // slippage disabled on amm
 
 	// Check order in list
+	// suite.app.LeveragelpKeeper.IteratePoolPosIdsLiquidationSorted(suite.ctx, position.AmmPoolId, func(posId types.AddressId) bool {
+	// 	position, _ := k.GetPosition(suite.ctx, posId.Address, posId.Id)
+	// 	fmt.Printf("Address: %s, Id: %d, value: %s", position.Address, position.Id, position.PositionHealth.String())
+	// 	return true
+	// })
+
+	err = k.ProcessAddCollateral(suite.ctx, addr4.String(), position4.Id, sdk.NewInt(1000))
+	suite.Require().NoError(err)
+
+	// Check order in list
 	suite.app.LeveragelpKeeper.IteratePoolPosIdsLiquidationSorted(suite.ctx, position.AmmPoolId, func(posId types.AddressId) bool {
 		position, _ := k.GetPosition(suite.ctx, posId.Address, posId.Id)
 		fmt.Printf("Address: %s, Id: %d, value: %s", position.Address, position.Id, position.PositionHealth.String())
-		return true
+		return false
 	})
 
 	// Partial close, add collateral and add more lev should result in correct order
@@ -192,6 +202,7 @@ func (suite KeeperTestSuite) TestLiquidatePositionSorted() {
 	// suite.Require().Error(err)
 }
 
-// Test sorted liquidity flow
 // Add values
 // Edge cases
+
+// Test stop loss price
