@@ -198,14 +198,10 @@ func (suite KeeperTestSuite) TestLiquidatePositionSorted() {
 			LpAmount: position5.LeveragedLpAmount.Quo(sdk.NewInt(2)),
 		}
 	)
-	fmt.Printf("Repay lp1 %d %d\n", position5.Id, msg.LpAmount.Int64())
-	fmt.Printf("Position lp1 %d\n", position5.LeveragedLpAmount.Int64())
 	suite.ctx = suite.ctx.WithBlockTime(suite.ctx.BlockTime().Add(time.Hour))
 
 	_, _, err = k.CloseLong(suite.ctx, msg)
-	position5, _ = suite.app.LeveragelpKeeper.GetPositionWithId(suite.ctx, addr5, position5.Id)
 	suite.Require().NoError(err)
-	fmt.Printf("Position lp2 %d\n", position5.LeveragedLpAmount.Int64())
 
 	// Check order in list
 	suite.app.LeveragelpKeeper.IteratePoolPosIdsLiquidationSorted(suite.ctx, position.AmmPoolId, func(posId types.AddressId) bool {
