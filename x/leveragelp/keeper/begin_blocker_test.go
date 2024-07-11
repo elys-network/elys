@@ -154,11 +154,12 @@ func (suite KeeperTestSuite) TestLiquidatePositionSorted() {
 	suite.Require().Equal(health.String(), "1.333333333333333333") // slippage disabled on amm
 
 	// Check order in list
-	// suite.app.LeveragelpKeeper.IteratePoolPosIdsLiquidationSorted(suite.ctx, position.AmmPoolId, func(posId types.AddressId) bool {
-	// 	position, _ := k.GetPosition(suite.ctx, posId.Address, posId.Id)
-	// 	fmt.Printf("Address: %s, Id: %d, value: %s", position.Address, position.Id, position.PositionHealth.String())
-	// 	return true
-	// })
+	suite.app.LeveragelpKeeper.IteratePoolPosIdsLiquidationSorted(suite.ctx, position.AmmPoolId, func(posId types.AddressId) bool {
+		position, _ := k.GetPosition(suite.ctx, posId.Address, posId.Id)
+		health, _ := k.GetPositionHealth(suite.ctx, position, ammPool)
+		fmt.Printf("Address: %s, Id: %d, value: %s\n", position.Address, position.Id, health.String())
+		return false
+	})
 
 	err = k.ProcessAddCollateral(suite.ctx, addr4.String(), position4.Id, sdk.NewInt(1000))
 	suite.Require().NoError(err)
@@ -166,15 +167,57 @@ func (suite KeeperTestSuite) TestLiquidatePositionSorted() {
 	// Check order in list
 	suite.app.LeveragelpKeeper.IteratePoolPosIdsLiquidationSorted(suite.ctx, position.AmmPoolId, func(posId types.AddressId) bool {
 		position, _ := k.GetPosition(suite.ctx, posId.Address, posId.Id)
-		fmt.Printf("Address: %s, Id: %d, value: %s", position.Address, position.Id, position.PositionHealth.String())
+		health, _ := k.GetPositionHealth(suite.ctx, position, ammPool)
+		fmt.Printf("Address: %s, Id: %d, value: %s\n", position.Address, position.Id, health.String())
 		return false
 	})
 
-	// Partial close, and add more lev should result in correct order
+	// add more lev
+	k.OpenConsolidate(suite.ctx, position5, &types.MsgOpen{
+		Creator:          addr5.String(),
+		CollateralAsset:  "uusdc",
+		CollateralAmount: sdk.NewInt(1000),
+		AmmPoolId:        1,
+		Leverage:         sdk.NewDec(4),
+	})
+	suite.Require().NoError(err)
+
+	// Check order in list
+	suite.app.LeveragelpKeeper.IteratePoolPosIdsLiquidationSorted(suite.ctx, position.AmmPoolId, func(posId types.AddressId) bool {
+		position, _ := k.GetPosition(suite.ctx, posId.Address, posId.Id)
+		health, _ := k.GetPositionHealth(suite.ctx, position, ammPool)
+		fmt.Printf("Address: %s, Id: %d, value: %s\n", position.Address, position.Id, health.String())
+		return false
+	})
+
+	// Partial close.
+	var (
+		msg = &types.MsgClose{
+			Creator:  addr5.String(),
+			Id:       position5.Id,
+			LpAmount: position5.LeveragedLpAmount.Quo(sdk.NewInt(2)),
+		}
+	)
+	fmt.Printf("Repay lp1 %d %d\n", position5.Id, msg.LpAmount.Int64())
+	fmt.Printf("Position lp1 %d\n", position5.LeveragedLpAmount.Int64())
+	suite.ctx = suite.ctx.WithBlockTime(suite.ctx.BlockTime().Add(time.Hour))
+
+	_, _, err = k.CloseLong(suite.ctx, msg)
+	position5, _ = suite.app.LeveragelpKeeper.GetPositionWithId(suite.ctx, addr5, position5.Id)
+	suite.Require().NoError(err)
+	fmt.Printf("Position lp2 %d\n", position5.LeveragedLpAmount.Int64())
+
+	// Check order in list
+	suite.app.LeveragelpKeeper.IteratePoolPosIdsLiquidationSorted(suite.ctx, position.AmmPoolId, func(posId types.AddressId) bool {
+		position, _ := k.GetPosition(suite.ctx, posId.Address, posId.Id)
+		health, _ := k.GetPositionHealth(suite.ctx, position, ammPool)
+		fmt.Printf("Address: %s, Id: %d, value: %s\n", position.Address, position.Id, health.String())
+		return false
+	})
 }
 
 // Add values
 // Edge cases
 
 // Test stop loss price
-// Add stablestake update test
+// Add stablestake update hook test

@@ -26,7 +26,7 @@ func (suite KeeperTestSuite) OpenPosition(addr sdk.AccAddress) (*types.Position,
 		LeveragedLpAmount: sdk.ZeroInt(),
 		LeverageMax:       sdk.ZeroDec(),
 	}
-	poolInit := sdk.Coins{sdk.NewInt64Coin("uusdc", 100000), sdk.NewInt64Coin("uusdt", 100000)}
+	poolInit := sdk.Coins{sdk.NewInt64Coin("uusdc", 100000000), sdk.NewInt64Coin("uusdt", 100000000)}
 
 	err := suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, poolInit)
 	suite.Require().NoError(err)
