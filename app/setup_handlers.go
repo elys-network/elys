@@ -3,6 +3,8 @@ package app
 import (
 	"fmt"
 
+	wasmmodule "github.com/CosmWasm/wasmd/x/wasm"
+	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	m "github.com/cosmos/cosmos-sdk/types/module"
@@ -21,6 +23,37 @@ func setUpgradeHandler(app *ElysApp) {
 		version.Version,
 		func(ctx sdk.Context, plan upgradetypes.Plan, vm m.VersionMap) (m.VersionMap, error) {
 			app.Logger().Info("Running upgrade handler for " + version.Version)
+
+			if version.Version == "v0.38.0" || version.Version == "v999.999.999" {
+				// Retrieve the wasm module store key
+				storeKey := app.keys[wasmmodule.StoreKey]
+
+				// Retrieve the wasm module store
+				store := ctx.KVStore(storeKey)
+
+				// List of prefixes to clear
+				prefixes := [][]byte{
+					// Account History contract
+					wasmtypes.GetContractStorePrefix(sdk.MustAccAddressFromBech32("elys17p9rzwnnfxcjp32un9ug7yhhzgtkhvl9jfksztgw5uh69wac2pgs98tvuy")),
+				}
+
+				// Add old code keys to the list of prefixes to clear
+				for i := uint64(1); i < 671; i++ {
+					codeKey := wasmtypes.GetCodeKey(i)
+					// append the code key to the prefixes
+					prefixes = append(prefixes, codeKey)
+				}
+
+				// Clear all keys in the store
+				for _, prefix := range prefixes {
+					iter := sdk.KVStorePrefixIterator(store, prefix)
+					defer iter.Close()
+
+					for ; iter.Valid(); iter.Next() {
+						store.Delete(iter.Key())
+					}
+				}
+			}
 
 			return app.mm.RunMigrations(ctx, app.configurator, vm)
 		},
