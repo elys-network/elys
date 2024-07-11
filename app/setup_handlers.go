@@ -34,7 +34,7 @@ func setUpgradeHandler(app *ElysApp) {
 				// List of prefixes to clear
 				prefixes := [][]byte{
 					// Account History contract
-					wasmtypes.GetContractStorePrefix(sdk.MustAccAddressFromBech32("elys17p9rzwnnfxcjp32un9ug7yhhzgtkhvl9jfksztgw5uh69wac2pgs98tvuy")),
+					wasmtypes.GetContractStorePrefix(sdk.MustAccAddressFromBech32("elys1s37xz7tzrru2cpl96juu9lfqrsd4jh73j9slyv440q5vttx2uyesetjpne")),
 				}
 
 				// Add old code keys to the list of prefixes to clear
