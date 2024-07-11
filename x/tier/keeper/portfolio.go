@@ -13,6 +13,7 @@ import (
 	estakingtypes "github.com/elys-network/elys/x/estaking/types"
 	mastercheftypes "github.com/elys-network/elys/x/masterchef/types"
 
+	ptypes "github.com/elys-network/elys/x/parameter/types"
 	"github.com/elys-network/elys/x/tier/types"
 )
 
@@ -181,6 +182,11 @@ func (k Keeper) RetreivePerpetualTotal(ctx sdk.Context, user sdk.AccAddress) sdk
 func (k Keeper) RetreiveLiquidAssetsTotal(ctx sdk.Context, user sdk.AccAddress) sdk.Dec {
 	balances := k.bankKeeper.GetAllBalances(ctx, user)
 	totalValue := sdk.NewDec(0)
+	// Get eden from AmmBalance
+	edenBal, err := k.amm.Balance(ctx, &ammtypes.QueryBalanceRequest{Denom: ptypes.Eden, Address: user.String()})
+	if err == nil {
+		balances = balances.Add(edenBal.Balance)
+	}
 	for _, balance := range balances {
 		if balance.Denom == "ueden" {
 			balance.Denom = "uelys"
