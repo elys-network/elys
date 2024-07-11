@@ -1,36 +1,17 @@
-package app
+package ante
 
 import (
 	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/math"
-	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
-	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
 	"github.com/cosmos/cosmos-sdk/codec"
-	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	"github.com/cosmos/cosmos-sdk/x/auth/ante"
 	"github.com/cosmos/cosmos-sdk/x/authz"
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
-	ibcante "github.com/cosmos/ibc-go/v7/modules/core/ante"
-	ibckeeper "github.com/cosmos/ibc-go/v7/modules/core/keeper"
 	parameterkeeper "github.com/elys-network/elys/x/parameter/keeper"
 )
-
-// HandlerOptions extends the SDK's AnteHandler options by requiring the IBC
-// channel keeper.
-type HandlerOptions struct {
-	ante.HandlerOptions
-	Cdc               codec.BinaryCodec
-	StakingKeeper     *stakingkeeper.Keeper
-	BankKeeper        bankkeeper.Keeper
-	IBCKeeper         *ibckeeper.Keeper
-	WasmConfig        *wasmtypes.WasmConfig
-	ParameterKeeper   parameterkeeper.Keeper
-	TXCounterStoreKey storetypes.StoreKey
-}
 
 type MinCommissionDecorator struct {
 	sk  *stakingkeeper.Keeper
@@ -224,55 +205,4 @@ func (min MinCommissionDecorator) AnteHandle(
 	}
 
 	return next(ctx, tx, simulate)
-}
-
-// NewAnteHandler returns an AnteHandler that checks and increments sequence
-// numbers, checks signatures & account numbers, and deducts fees from the first
-// signer.
-func NewAnteHandler(options HandlerOptions) (sdk.AnteHandler, error) {
-	if options.AccountKeeper == nil {
-		return nil, errorsmod.Wrap(sdkerrors.ErrLogic, "account keeper is required for ante builder")
-	}
-
-	if options.BankKeeper == nil {
-		return nil, errorsmod.Wrap(sdkerrors.ErrLogic, "bank keeper is required for ante builder")
-	}
-
-	if options.SignModeHandler == nil {
-		return nil, errorsmod.Wrap(sdkerrors.ErrLogic, "sign mode handler is required for ante builder")
-	}
-
-	if options.WasmConfig == nil {
-		return nil, errorsmod.Wrap(sdkerrors.ErrLogic, "wasm config is required for ante builder")
-	}
-
-	if options.FeegrantKeeper == nil {
-		return nil, errorsmod.Wrap(sdkerrors.ErrLogic, "feegrant keeper is required for ante builder")
-	}
-
-	sigGasConsumer := options.SigGasConsumer
-	if sigGasConsumer == nil {
-		sigGasConsumer = ante.DefaultSigVerificationGasConsumer
-	}
-
-	anteDecorators := []sdk.AnteDecorator{
-		ante.NewSetUpContextDecorator(), // outermost AnteDecorator. SetUpContext must be called first
-		wasmkeeper.NewLimitSimulationGasDecorator(options.WasmConfig.SimulationGasLimit), // after setup context to enforce limits early
-		wasmkeeper.NewCountTXDecorator(options.TXCounterStoreKey),
-		NewMinCommissionDecorator(options.Cdc, options.StakingKeeper, options.BankKeeper, options.ParameterKeeper),
-		ante.NewExtensionOptionsDecorator(options.ExtensionOptionChecker),
-		ante.NewValidateBasicDecorator(),
-		ante.NewTxTimeoutHeightDecorator(),
-		ante.NewValidateMemoDecorator(options.AccountKeeper),
-		ante.NewConsumeGasForTxSizeDecorator(options.AccountKeeper),
-		ante.NewDeductFeeDecorator(options.AccountKeeper, options.BankKeeper, options.FeegrantKeeper, options.TxFeeChecker),
-		ante.NewSetPubKeyDecorator(options.AccountKeeper), // SetPubKeyDecorator must be called before all signature verification decorators
-		ante.NewValidateSigCountDecorator(options.AccountKeeper),
-		ante.NewSigGasConsumeDecorator(options.AccountKeeper, options.SigGasConsumer),
-		ante.NewSigVerificationDecorator(options.AccountKeeper, options.SignModeHandler),
-		ante.NewIncrementSequenceDecorator(options.AccountKeeper),
-		ibcante.NewRedundantRelayDecorator(options.IBCKeeper),
-	}
-
-	return sdk.ChainAnteDecorators(anteDecorators...), nil
 }
