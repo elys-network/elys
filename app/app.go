@@ -1064,6 +1064,7 @@ func NewElysApp(
 	app.StablestakeKeeper = *app.StablestakeKeeper.SetHooks(stablestakekeeper.NewMultiStableStakeHooks(
 		app.MasterchefKeeper.StableStakeHooks(),
 		app.TierKeeper.StableStakeHooks(),
+		app.LeveragelpKeeper.StableStakeHooks(),
 	))
 	stablestakeModule := stablestake.NewAppModule(appCodec, app.StablestakeKeeper, app.AccountKeeper, app.BankKeeper)
 

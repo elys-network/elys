@@ -34,7 +34,6 @@ var (
 	SQBeginBlockPrefix      = []byte{0x06}
 	LiquidationSortPrefix   = []byte{0x07} // Position liquidation sort prefix
 	StopLossSortPrefix      = []byte{0x08} // Position stop loss sort prefix
-	PositionSortPrefix      = []byte{0x08} // Position sort prefix
 )
 
 func KeyPrefix(p string) []byte {

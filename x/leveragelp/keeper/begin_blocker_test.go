@@ -212,8 +212,4 @@ func (suite KeeperTestSuite) TestLiquidatePositionSorted() {
 	})
 }
 
-// Add values
-// Edge cases
-
-// Test stop loss price
 // Add stablestake update hook test
