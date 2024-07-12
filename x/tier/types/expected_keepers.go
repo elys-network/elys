@@ -71,6 +71,7 @@ type AmmKeeper interface {
 		discount sdk.Dec,
 		overrideSwapFee sdk.Dec,
 	) (sdk.Dec, sdk.Dec, sdk.Coin, sdk.Dec, sdk.Dec, sdk.Coin, sdk.Dec, sdk.Dec, error)
+	Balance(goCtx context.Context, req *ammtypes.QueryBalanceRequest) (*ammtypes.QueryBalanceResponse, error)
 }
 
 type EstakingKeeper interface {
