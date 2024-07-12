@@ -15,7 +15,7 @@ type LeveragelpHooks interface {
 	// AfterLeveragelpPositionClosed is called after a position gets closed.
 	AfterLeveragelpPositionClosed(ctx sdk.Context, leveragelpPool Pool)
 
-	// AfterPoolCreated is called after CreatePool
+	// AfterAmmPoolCreated is called after CreatePool
 	AfterAmmPoolCreated(ctx sdk.Context, ammPool ammtypes.Pool)
 
 	// AfterJoinPool is called after JoinPool, JoinSwapExternAmountIn, and JoinSwapShareAmountOut
