@@ -47,7 +47,7 @@ func (suite KeeperTestSuite) TestCheckSameAssets() {
 		AmmPoolId:        1,
 		Leverage:         sdk.NewDec(1),
 	}
-	
+
 	// Expect no error
 	position = k.CheckSamePosition(suite.ctx, msg)
 	suite.Require().NotNil(position)

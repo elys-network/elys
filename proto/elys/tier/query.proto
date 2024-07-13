@@ -70,6 +70,12 @@ service Query {
     option (google.api.http).get = "/elys-network/elys/tier/get_amm_price/{denom}/{decimal}";
   
   }
+  
+  // Queries a list of GetConsolidatedPrice items.
+  rpc GetConsolidatedPrice (QueryGetConsolidatedPriceRequest) returns (QueryGetConsolidatedPriceResponse) {
+    option (google.api.http).get = "/elys-network/elys/tier/get_consolidated_price/{denom}";
+  
+  }
 }
 // QueryParamsRequest is request type for the Query/Params RPC method.
 message QueryParamsRequest {}
@@ -157,4 +163,10 @@ message QueryGetAmmPriceRequest {
 message QueryGetAmmPriceResponse {
   string total = 1 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
 }
+
+message QueryGetConsolidatedPriceRequest {
+  string denom = 1;
+}
+
+message QueryGetConsolidatedPriceResponse {}
 

@@ -222,6 +222,18 @@ func (k Keeper) RetreiveLeverageLpTotal(ctx sdk.Context, user sdk.AccAddress) sd
 	return totalValue
 }
 
+func (k Keeper) RetreiveConsolidatedPrice(ctx sdk.Context, denom string) (sdk.Dec, error) {
+	tokenPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, denom)
+	asset, found := k.assetProfileKeeper.GetEntryByDenom(ctx, denom)
+	if !found {
+		return sdk.ZeroDec(), types.ErrNotFound
+	}
+	if tokenPrice == sdk.ZeroDec() {
+		tokenPrice = k.CalcAmmPrice(ctx, asset.Denom, asset.Decimals)
+	}
+	return tokenPrice, nil
+}
+
 func (k Keeper) CalcAmmPrice(ctx sdk.Context, denom string, decimal uint64) sdk.Dec {
 	usdcDenom, found := k.assetProfileKeeper.GetUsdcDenom(ctx)
 	if !found {
