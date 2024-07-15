@@ -29,6 +29,8 @@ func GetQueryCmd(queryRoute string) *cobra.Command {
 	cmd.AddCommand(CmdNumberOfCommitments())
 	cmd.AddCommand(CmdCommittedTokensLocked())
 
+	cmd.AddCommand(CmdCommitmentVestingInfo())
+
 	// this line is used by starport scaffolding # 1
 
 	return cmd
