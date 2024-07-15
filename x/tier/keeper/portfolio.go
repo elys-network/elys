@@ -17,7 +17,7 @@ import (
 	"github.com/elys-network/elys/x/tier/types"
 )
 
-func (k Keeper) RetreiveAllPortfolio(ctx sdk.Context, user string) {
+func (k Keeper) RetrieveAllPortfolio(ctx sdk.Context, user string) {
 	// set today + user -> amount
 	sender := sdk.MustAccAddressFromBech32(user)
 	todayDate := k.GetDateFromBlock(ctx.BlockTime())
@@ -30,23 +30,23 @@ func (k Keeper) RetreiveAllPortfolio(ctx sdk.Context, user string) {
 	totalValue := sdk.NewDec(0)
 
 	// Liquid assets
-	liq := k.RetreiveLiquidAssetsTotal(ctx, sender)
+	liq := k.RetrieveLiquidAssetsTotal(ctx, sender)
 	totalValue = totalValue.Add(liq)
 
 	// Rewards
-	rew := k.RetreiveRewardsTotal(ctx, sender)
+	rew := k.RetrieveRewardsTotal(ctx, sender)
 	totalValue = totalValue.Add(rew)
 
 	// Perpetual
-	perp := k.RetreivePerpetualTotal(ctx, sender)
+	perp := k.RetrievePerpetualTotal(ctx, sender)
 	totalValue = totalValue.Add(perp)
 
 	// Staked+Pool assets
-	staked := k.RetreiveStakedAndPoolTotal(ctx, sender)
+	staked := k.RetrieveStakedAndPoolTotal(ctx, sender)
 	totalValue = totalValue.Add(staked)
 
 	// LeverageLp
-	lev := k.RetreiveLeverageLpTotal(ctx, sender)
+	lev := k.RetrieveLeverageLpTotal(ctx, sender)
 	totalValue = totalValue.Add(lev)
 
 	k.SetPortfolio(ctx, todayDate, sender.String(), types.Portfolio{
@@ -55,7 +55,7 @@ func (k Keeper) RetreiveAllPortfolio(ctx sdk.Context, user string) {
 	})
 }
 
-func (k Keeper) RetreiveStakedAndPoolTotal(ctx sdk.Context, user sdk.AccAddress) sdk.Dec {
+func (k Keeper) RetrieveStakedAndPoolTotal(ctx sdk.Context, user sdk.AccAddress) sdk.Dec {
 	totalValue := sdk.NewDec(0)
 	commitments := k.commitement.GetCommitments(ctx, user.String())
 	for _, commitment := range commitments.CommittedTokens {
@@ -116,7 +116,7 @@ func (k Keeper) RetreiveStakedAndPoolTotal(ctx sdk.Context, user sdk.AccAddress)
 	return totalValue
 }
 
-func (k Keeper) RetreiveRewardsTotal(ctx sdk.Context, user sdk.AccAddress) sdk.Dec {
+func (k Keeper) RetrieveRewardsTotal(ctx sdk.Context, user sdk.AccAddress) sdk.Dec {
 	totalValue := sdk.NewDec(0)
 	estaking, err1 := k.estaking.Rewards(ctx, &estakingtypes.QueryRewardsRequest{Address: user.String()})
 	masterchef, err2 := k.masterchef.UserPendingReward(ctx, &mastercheftypes.QueryUserPendingRewardRequest{User: user.String()})
@@ -159,7 +159,7 @@ func (k Keeper) RetreiveRewardsTotal(ctx sdk.Context, user sdk.AccAddress) sdk.D
 	return totalValue
 }
 
-func (k Keeper) RetreivePerpetualTotal(ctx sdk.Context, user sdk.AccAddress) sdk.Dec {
+func (k Keeper) RetrievePerpetualTotal(ctx sdk.Context, user sdk.AccAddress) sdk.Dec {
 	totalValue := sdk.NewDec(0)
 	perpetuals, _, err := k.perpetual.GetMTPsForAddress(ctx, user, &query.PageRequest{})
 	if err == nil {
@@ -179,7 +179,7 @@ func (k Keeper) RetreivePerpetualTotal(ctx sdk.Context, user sdk.AccAddress) sdk
 	return totalValue
 }
 
-func (k Keeper) RetreiveLiquidAssetsTotal(ctx sdk.Context, user sdk.AccAddress) sdk.Dec {
+func (k Keeper) RetrieveLiquidAssetsTotal(ctx sdk.Context, user sdk.AccAddress) sdk.Dec {
 	balances := k.bankKeeper.GetAllBalances(ctx, user)
 	totalValue := sdk.NewDec(0)
 	// Get eden from AmmBalance
@@ -205,7 +205,7 @@ func (k Keeper) RetreiveLiquidAssetsTotal(ctx sdk.Context, user sdk.AccAddress) 
 	return totalValue
 }
 
-func (k Keeper) RetreiveLeverageLpTotal(ctx sdk.Context, user sdk.AccAddress) sdk.Dec {
+func (k Keeper) RetrieveLeverageLpTotal(ctx sdk.Context, user sdk.AccAddress) sdk.Dec {
 	positions, _, err := k.leveragelp.GetPositionsForAddress(ctx, user, &query.PageRequest{})
 	totalValue := sdk.NewDec(0)
 	if err == nil {
@@ -222,7 +222,7 @@ func (k Keeper) RetreiveLeverageLpTotal(ctx sdk.Context, user sdk.AccAddress) sd
 	return totalValue
 }
 
-func (k Keeper) RetreiveConsolidatedPrice(ctx sdk.Context, denom string) (sdk.Dec, error) {
+func (k Keeper) RetrieveConsolidatedPrice(ctx sdk.Context, denom string) (sdk.Dec, error) {
 	tokenPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, denom)
 	asset, found := k.assetProfileKeeper.GetEntryByDenom(ctx, denom)
 	if !found {

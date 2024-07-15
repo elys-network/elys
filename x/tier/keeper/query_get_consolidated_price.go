@@ -16,7 +16,7 @@ func (k Keeper) GetConsolidatedPrice(goCtx context.Context, req *types.QueryGetC
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	resp, err := k.RetreiveConsolidatedPrice(ctx, req.Denom)
+	resp, err := k.RetrieveConsolidatedPrice(ctx, req.Denom)
 	if err != nil {
 		return nil, err
 	}

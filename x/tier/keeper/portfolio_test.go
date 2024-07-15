@@ -119,7 +119,7 @@ func TestGetPortfolioNative(t *testing.T) {
 	err = app.BankKeeper.SendCoinsFromModuleToAccount(ctx, ammtypes.ModuleName, addr[0], coins)
 	require.NoError(t, err)
 
-	tier.RetreiveAllPortfolio(ctx, addr[0].String())
+	tier.RetrieveAllPortfolio(ctx, addr[0].String())
 
 	portfolio, found := tier.GetPortfolio(ctx, addr[0].String(), tier.GetDateFromBlock(ctx.BlockTime()))
 	require.True(t, found)
@@ -193,7 +193,7 @@ func TestGetPortfolioAmm(t *testing.T) {
 	require.NoError(t, err)
 	require.Equal(t, resp.PoolID, uint64(1))
 
-	tier.RetreiveAllPortfolio(ctx, addr[0].String())
+	tier.RetrieveAllPortfolio(ctx, addr[0].String())
 
 	portfolio, found := tier.GetPortfolio(ctx, addr[0].String(), tier.GetDateFromBlock(ctx.BlockTime()))
 	require.True(t, found)
@@ -298,7 +298,7 @@ func TestGetPortfolioPerpetual(t *testing.T) {
 		SumCollateral:                  sdk.ZeroInt(),
 	})
 
-	tier.RetreiveAllPortfolio(ctx, addr[0].String())
+	tier.RetrieveAllPortfolio(ctx, addr[0].String())
 
 	portfolio, found := tier.GetPortfolio(ctx, addr[0].String(), tier.GetDateFromBlock(ctx.BlockTime()))
 	require.True(t, found)

@@ -12,18 +12,18 @@ func (k Keeper) AfterPoolCreated(ctx sdk.Context, sender sdk.AccAddress, poolId 
 
 // AfterJoinPool is called after JoinPool, JoinSwapExternAmountIn, and JoinSwapShareAmountOut
 func (k Keeper) AfterJoinPool(ctx sdk.Context, sender sdk.AccAddress, poolId uint64, enterCoins sdk.Coins, shareOutAmount math.Int) {
-	k.RetreiveAllPortfolio(ctx, sender.String())
+	k.RetrieveAllPortfolio(ctx, sender.String())
 }
 
 // AfterExitPool is called after ExitPool, ExitSwapShareAmountIn, and ExitSwapExternAmountOut
 func (k Keeper) AfterExitPool(ctx sdk.Context, sender sdk.AccAddress, poolId uint64, shareInAmount math.Int, exitCoins sdk.Coins) error {
-	k.RetreiveAllPortfolio(ctx, sender.String())
+	k.RetrieveAllPortfolio(ctx, sender.String())
 	return nil
 }
 
 // AfterSwap is called after SwapExactAmountIn and SwapExactAmountOut
 func (k Keeper) AfterSwap(ctx sdk.Context, sender sdk.AccAddress, poolId uint64, input sdk.Coins, output sdk.Coins) error {
-	k.RetreiveAllPortfolio(ctx, sender.String())
+	k.RetrieveAllPortfolio(ctx, sender.String())
 	return nil
 }
 
