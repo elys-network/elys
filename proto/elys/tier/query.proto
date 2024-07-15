@@ -21,7 +21,7 @@ service Query {
   
   // Queries a list of Portfolio items.
   rpc Portfolio    (QueryGetPortfolioRequest) returns (QueryGetPortfolioResponse) {
-    option (google.api.http).get = "/elys-network/elys/membershiptier/portfolio/{user}/{assetType}";
+    option (google.api.http).get = "/elys-network/elys/membershiptier/portfolio/{user}";
   
   }
   rpc PortfolioAll (QueryAllPortfolioRequest) returns (QueryAllPortfolioResponse) {
@@ -89,7 +89,6 @@ message QueryParamsResponse {
 
 message QueryGetPortfolioRequest {
   string user      = 1;
-  string assetType = 2;
 }
 
 message QueryGetPortfolioResponse {

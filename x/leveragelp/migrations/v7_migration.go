@@ -17,9 +17,13 @@ func (m Migrator) V7Migration(ctx sdk.Context) error {
 		m.keeper.DeletePoolPosIdsLiquidationSorted(ctx, pool.AmmPoolId)
 		m.keeper.DeletePoolPosIdsStopLossSorted(ctx, pool.AmmPoolId)
 	}
+	openCount := uint64(0)
 	for _, position := range positions {
 		m.keeper.SetSortedLiquidationAndStopLoss(ctx, position)
+		openCount++
 	}
+
+	m.keeper.SetOpenPositionCount(ctx, openCount)
 
 	// Liquidate <1.1 positions
 	// Q: What will happen if there won't be enough liquidity to return to users(as health for some positions must be below 1) ? Do we need to fill the pool ?
