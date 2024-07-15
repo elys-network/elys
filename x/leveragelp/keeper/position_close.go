@@ -12,14 +12,25 @@ func (k Keeper) ForceCloseLong(ctx sdk.Context, position types.Position, pool ty
 		return sdk.ZeroInt(), types.ErrInvalidCloseSize
 	}
 
+	// Old debt
+	oldDebt := k.stableKeeper.GetDebt(ctx, position.GetPositionAddress())
+
+	if position.LeveragedLpAmount.IsZero() {
+		err := k.masterchefKeeper.ClaimRewards(ctx, position.GetPositionAddress(), []uint64{position.AmmPoolId}, sdk.AccAddress(position.Address))
+		if err != nil {
+			return sdk.ZeroInt(), err
+		}
+		err = k.DestroyPosition(ctx, position.Address, position.Id, oldDebt.Borrowed.Add(oldDebt.InterestStacked).Sub(oldDebt.InterestPaid))
+		if err != nil {
+			return sdk.ZeroInt(), err
+		}
+	}
+
 	// Exit liquidity with collateral token
 	exitCoins, err := k.amm.ExitPool(ctx, position.GetPositionAddress(), position.AmmPoolId, lpAmount, sdk.Coins{}, position.Collateral.Denom)
 	if err != nil {
 		return sdk.ZeroInt(), err
 	}
-
-	// Old debt
-	oldDebt := k.stableKeeper.GetDebt(ctx, position.GetPositionAddress())
 
 	// Repay with interest
 	debt := k.stableKeeper.UpdateInterestStackedByAddress(ctx, position.GetPositionAddress())
@@ -75,12 +86,12 @@ func (k Keeper) ForceCloseLong(ctx sdk.Context, position types.Position, pool ty
 		if err != nil {
 			return sdk.ZeroInt(), err
 		}
-		err = k.DestroyPosition(ctx, position.Address, position.Id, oldDebt.Borrowed.Add(debt.InterestStacked).Sub(debt.InterestPaid))
+		err = k.DestroyPosition(ctx, position.Address, position.Id, oldDebt.Borrowed.Add(oldDebt.InterestStacked).Sub(oldDebt.InterestPaid))
 		if err != nil {
 			return sdk.ZeroInt(), err
 		}
 	} else {
-		k.SetPosition(ctx, &position, oldDebt.Borrowed.Add(debt.InterestStacked).Sub(debt.InterestPaid))
+		k.SetPosition(ctx, &position, oldDebt.Borrowed.Add(oldDebt.InterestStacked).Sub(oldDebt.InterestPaid))
 	}
 
 	// Hooks after leveragelp position closed

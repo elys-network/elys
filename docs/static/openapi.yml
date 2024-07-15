@@ -41525,43 +41525,51 @@ paths:
                 items:
                   type: object
                   properties:
-                    address:
-                      type: string
-                    collateral:
+                    position:
                       type: object
                       properties:
-                        denom:
+                        address:
                           type: string
-                        amount:
+                        collateral:
+                          type: object
+                          properties:
+                            denom:
+                              type: string
+                            amount:
+                              type: string
+                          description: >-
+                            Coin defines a token with a denomination and an
+                            amount.
+
+
+                            NOTE: The amount field is an Int which implements
+                            the custom method
+
+                            signatures required by gogoproto.
+                        liabilities:
                           type: string
-                      description: >-
-                        Coin defines a token with a denomination and an amount.
-
-
-                        NOTE: The amount field is an Int which implements the
-                        custom method
-
-                        signatures required by gogoproto.
-                    liabilities:
+                          title: For recording
+                        interest_paid:
+                          type: string
+                          title: For recording
+                        leverage:
+                          type: string
+                          title: For recording
+                        leveraged_lp_amount:
+                          type: string
+                        position_health:
+                          type: string
+                        id:
+                          type: string
+                          format: uint64
+                        amm_pool_id:
+                          type: string
+                          format: uint64
+                        stop_loss_price:
+                          type: string
+                    interest_rate_hour:
                       type: string
-                      title: For recording
-                    interest_paid:
-                      type: string
-                      title: For recording
-                    leverage:
-                      type: string
-                      title: For recording
-                    leveraged_lp_amount:
-                      type: string
-                    position_health:
-                      type: string
-                    id:
-                      type: string
-                      format: uint64
-                    amm_pool_id:
-                      type: string
-                      format: uint64
-                    stop_loss_price:
+                    interest_rate_hour_usd:
                       type: string
               pagination:
                 type: object
@@ -44997,6 +45005,40 @@ paths:
           required: true
           type: integer
           format: int32
+      tags:
+        - Query
+  /elys-network/elys/tier/get_consolidated_price/{denom}:
+    get:
+      summary: Queries a list of GetConsolidatedPrice items.
+      operationId: ElysTierGetConsolidatedPrice
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: denom
+          in: path
+          required: true
+          type: string
       tags:
         - Query
   /elys-network/elys/tier/leverage_lp_total/{user}:
@@ -87207,6 +87249,54 @@ definitions:
         format: uint64
       stop_loss_price:
         type: string
+  elys.leveragelp.PositionAndInterest:
+    type: object
+    properties:
+      position:
+        type: object
+        properties:
+          address:
+            type: string
+          collateral:
+            type: object
+            properties:
+              denom:
+                type: string
+              amount:
+                type: string
+            description: >-
+              Coin defines a token with a denomination and an amount.
+
+
+              NOTE: The amount field is an Int which implements the custom
+              method
+
+              signatures required by gogoproto.
+          liabilities:
+            type: string
+            title: For recording
+          interest_paid:
+            type: string
+            title: For recording
+          leverage:
+            type: string
+            title: For recording
+          leveraged_lp_amount:
+            type: string
+          position_health:
+            type: string
+          id:
+            type: string
+            format: uint64
+          amm_pool_id:
+            type: string
+            format: uint64
+          stop_loss_price:
+            type: string
+      interest_rate_hour:
+        type: string
+      interest_rate_hour_usd:
+        type: string
   elys.leveragelp.PositionResponse:
     type: object
     properties:
@@ -87333,43 +87423,50 @@ definitions:
         items:
           type: object
           properties:
-            address:
-              type: string
-            collateral:
+            position:
               type: object
               properties:
-                denom:
+                address:
                   type: string
-                amount:
+                collateral:
+                  type: object
+                  properties:
+                    denom:
+                      type: string
+                    amount:
+                      type: string
+                  description: >-
+                    Coin defines a token with a denomination and an amount.
+
+
+                    NOTE: The amount field is an Int which implements the custom
+                    method
+
+                    signatures required by gogoproto.
+                liabilities:
                   type: string
-              description: >-
-                Coin defines a token with a denomination and an amount.
-
-
-                NOTE: The amount field is an Int which implements the custom
-                method
-
-                signatures required by gogoproto.
-            liabilities:
+                  title: For recording
+                interest_paid:
+                  type: string
+                  title: For recording
+                leverage:
+                  type: string
+                  title: For recording
+                leveraged_lp_amount:
+                  type: string
+                position_health:
+                  type: string
+                id:
+                  type: string
+                  format: uint64
+                amm_pool_id:
+                  type: string
+                  format: uint64
+                stop_loss_price:
+                  type: string
+            interest_rate_hour:
               type: string
-              title: For recording
-            interest_paid:
-              type: string
-              title: For recording
-            leverage:
-              type: string
-              title: For recording
-            leveraged_lp_amount:
-              type: string
-            position_health:
-              type: string
-            id:
-              type: string
-              format: uint64
-            amm_pool_id:
-              type: string
-              format: uint64
-            stop_loss_price:
+            interest_rate_hour_usd:
               type: string
       pagination:
         type: object
@@ -89555,6 +89652,8 @@ definitions:
     properties:
       total:
         type: string
+  elys.tier.QueryGetConsolidatedPriceResponse:
+    type: object
   elys.tier.QueryGetPortfolioResponse:
     type: object
     properties:

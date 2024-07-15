@@ -16,7 +16,7 @@ func (k Keeper) StakedPool(goCtx context.Context, req *types.QueryStakedPoolRequ
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	sender := sdk.MustAccAddressFromBech32(req.User)
-	total := k.RetreiveStakedAndPoolTotal(ctx, sender)
+	total := k.RetrieveStakedAndPoolTotal(ctx, sender)
 
 	return &types.QueryStakedPoolResponse{
 		Total: total,

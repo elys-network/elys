@@ -16,7 +16,7 @@ func (k Keeper) LiquidTotal(goCtx context.Context, req *types.QueryLiquidTotalRe
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	sender := sdk.MustAccAddressFromBech32(req.User)
-	total := k.RetreiveLiquidAssetsTotal(ctx, sender)
+	total := k.RetrieveLiquidAssetsTotal(ctx, sender)
 
 	return &types.QueryLiquidTotalResponse{
 		Total: total,

@@ -16,7 +16,7 @@ func (k Keeper) RewardsTotal(goCtx context.Context, req *types.QueryRewardsTotal
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	sender := sdk.MustAccAddressFromBech32(req.User)
-	total := k.RetreiveRewardsTotal(ctx, sender)
+	total := k.RetrieveRewardsTotal(ctx, sender)
 
 	return &types.QueryRewardsTotalResponse{
 		Total: total,

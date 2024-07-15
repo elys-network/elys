@@ -7,12 +7,12 @@ import (
 )
 
 func (k Keeper) AfterBond(ctx sdk.Context, sender string, shareAmount math.Int) error {
-	k.RetreiveAllPortfolio(ctx, sender)
+	k.RetrieveAllPortfolio(ctx, sender)
 	return nil
 }
 
 func (k Keeper) AfterUnbond(ctx sdk.Context, sender string, shareAmount math.Int) error {
-	k.RetreiveAllPortfolio(ctx, sender)
+	k.RetrieveAllPortfolio(ctx, sender)
 	return nil
 }
 

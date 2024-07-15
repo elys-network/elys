@@ -9,16 +9,19 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-func (k Keeper) LeverageLpTotal(goCtx context.Context, req *types.QueryLeverageLpTotalRequest) (*types.QueryLeverageLpTotalResponse, error) {
+func (k Keeper) GetConsolidatedPrice(goCtx context.Context, req *types.QueryGetConsolidatedPriceRequest) (*types.QueryGetConsolidatedPriceResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	sender := sdk.MustAccAddressFromBech32(req.User)
-	total := k.RetrieveLeverageLpTotal(ctx, sender)
 
-	return &types.QueryLeverageLpTotalResponse{
-		Total: total,
+	resp, err := k.RetrieveConsolidatedPrice(ctx, req.Denom)
+	if err != nil {
+		return nil, err
+	}
+
+	return &types.QueryGetConsolidatedPriceResponse{
+		Price: resp,
 	}, nil
 }
