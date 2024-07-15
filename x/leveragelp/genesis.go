@@ -15,7 +15,7 @@ func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) 
 
 	// Set all the pool
 	for _, elem := range genState.PositionList {
-		k.SetPosition(ctx, &elem)
+		k.SetPosition(ctx, &elem, sdk.NewInt(0))
 	}
 
 	// Set genesis Position count

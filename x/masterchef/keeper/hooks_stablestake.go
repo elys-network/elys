@@ -27,3 +27,7 @@ func (h StableStakeHooks) AfterUnbond(ctx sdk.Context, sender string, shareAmoun
 	h.k.AfterWithdraw(ctx, stablestaketypes.PoolId, sender, shareAmount)
 	return nil
 }
+
+func (h StableStakeHooks) AfterUpdateInterestStacked(ctx sdk.Context, address string, old sdk.Int, new sdk.Int) error {
+	return nil
+}
