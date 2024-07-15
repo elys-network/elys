@@ -38,7 +38,7 @@ func (suite KeeperTestSuite) TestCheckSameAssets() {
 	SetupStableCoinPrices(suite.ctx, suite.app.OracleKeeper)
 
 	position := types.NewPosition(addr[0].String(), sdk.NewInt64Coin("USDC", 0), sdk.NewDec(5), 1)
-	k.SetPosition(suite.ctx, position)
+	k.SetPosition(suite.ctx, position, sdk.NewInt(0))
 
 	msg := &types.MsgOpen{
 		Creator:          addr[0].String(),
@@ -47,7 +47,7 @@ func (suite KeeperTestSuite) TestCheckSameAssets() {
 		AmmPoolId:        1,
 		Leverage:         sdk.NewDec(1),
 	}
-	
+
 	// Expect no error
 	position = k.CheckSamePosition(suite.ctx, msg)
 	suite.Require().NotNil(position)

@@ -26,18 +26,11 @@ func (k Keeper) BeginBlocker(ctx sdk.Context) {
 				continue
 			}
 			if k.IsPoolEnabled(ctx, pool.AmmPoolId) {
-				positions, _, _ := k.GetPositionsForPool(ctx, pool.AmmPoolId, nil)
-				for _, position := range positions {
-					k.LiquidatePositionIfUnhealthy(ctx, position, pool, ammPool)
-				}
-
 				// Liquidate positions liquidation health threshold
 				// Design
-				// - `Health = PositionValue / Debt`, PositionValue is based on LpToken price change
-				// - Debt growth speed is relying on debt.Borrowed.
-				// - Things are sorted by `LeveragedLpAmount / debt.Borrowed` per pool to liquidate efficiently
-
-				// TODO: should consider InterestStacked-InterestPaid amount
+				// - `Health = PositionValue / liability`, PositionValue is based on LpToken price change
+				// - Debt growth speed is relying on liability.
+				// - Things are sorted by `LeveragedLpAmount / liability` per pool to liquidate efficiently
 				k.IteratePoolPosIdsLiquidationSorted(ctx, pool.AmmPoolId, func(posId types.AddressId) bool {
 					position, err := k.GetPosition(ctx, posId.Address, posId.Id)
 					if err != nil {
@@ -80,8 +73,9 @@ func (k Keeper) LiquidatePositionIfUnhealthy(ctx sdk.Context, position *types.Po
 		ctx.Logger().Error(errors.Wrap(err, fmt.Sprintf("error updating position health: %s", position.String())).Error())
 		return false, true
 	}
+	debt := k.stableKeeper.GetDebt(ctx, position.GetPositionAddress())
 	position.PositionHealth = h
-	k.SetPosition(ctx, position)
+	k.SetPosition(ctx, position, debt.Borrowed.Add(debt.InterestStacked).Sub(debt.InterestPaid))
 
 	params := k.GetParams(ctx)
 	isHealthy = position.PositionHealth.GT(params.SafetyFactor)
@@ -119,8 +113,9 @@ func (k Keeper) ClosePositionIfUnderStopLossPrice(ctx sdk.Context, position *typ
 		ctx.Logger().Error(errors.Wrap(err, fmt.Sprintf("error updating position health: %s", position.String())).Error())
 		return false, true
 	}
+	debt := k.stableKeeper.GetDebt(ctx, position.GetPositionAddress())
 	position.PositionHealth = h
-	k.SetPosition(ctx, position)
+	k.SetPosition(ctx, position, debt.Borrowed.Add(debt.InterestStacked).Sub(debt.InterestPaid))
 
 	lpTokenPrice, err := ammPool.LpTokenPrice(ctx, k.oracleKeeper)
 	if err != nil {

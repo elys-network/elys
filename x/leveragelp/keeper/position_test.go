@@ -33,8 +33,38 @@ func TestSetGetPosition(t *testing.T) {
 			PositionHealth: sdk.NewDec(0),
 			Id:             0,
 		}
-		leveragelp.SetPosition(ctx, &position)
+		leveragelp.SetPosition(ctx, &position, sdk.NewInt(0))
 	}
+
+	positionCount := leveragelp.GetPositionCount(ctx)
+	require.Equal(t, positionCount, (uint64)(2))
+}
+
+func TestSetLiquidation(t *testing.T) {
+	app := simapp.InitElysTestApp(true)
+	ctx := app.BaseApp.NewContext(true, tmproto.Header{})
+
+	leveragelp := app.LeveragelpKeeper
+
+	// Generate 2 random accounts with 1000stake balanced
+	addr := simapp.AddTestAddrs(app, ctx, 2, sdk.NewInt(1000000))
+
+	for i := 0; i < 2; i++ {
+		position := types.Position{
+			Address:        addr[i].String(),
+			Collateral:     sdk.NewCoin(paramtypes.BaseCurrency, sdk.NewInt(0)),
+			Liabilities:    sdk.NewInt(0),
+			InterestPaid:   sdk.NewInt(0),
+			AmmPoolId:      1,
+			Leverage:       sdk.NewDec(0),
+			PositionHealth: sdk.NewDec(0),
+			Id:             0,
+		}
+		leveragelp.SetPosition(ctx, &position, sdk.NewInt(0))
+	}
+
+	debt := app.StablestakeKeeper.GetDebt(ctx, addr[0])
+	leveragelp.SetSortedLiquidation(ctx, addr[0].String(), debt.Borrowed.Add(debt.InterestStacked).Sub(debt.InterestPaid), sdk.NewInt(100))
 
 	positionCount := leveragelp.GetPositionCount(ctx)
 	require.Equal(t, positionCount, (uint64)(2))
@@ -120,7 +150,7 @@ func TestIteratePoolPosIdsLiquidationSorted(t *testing.T) {
 			LastInterestCalcTime: uint64(ctx.BlockTime().Unix()),
 		}
 		stablestake.SetDebt(ctx, debt)
-		leveragelp.SetPosition(ctx, &position)
+		leveragelp.SetPosition(ctx, &position, sdk.NewInt(0))
 	}
 
 	idsSorted := []uint64{}
@@ -201,7 +231,7 @@ func TestIteratePoolPosIdsStopLossSorted(t *testing.T) {
 			PositionHealth:    sdk.NewDec(0),
 			StopLossPrice:     math.LegacyDec(info.StopLossPrice),
 		}
-		leveragelp.SetPosition(ctx, &position)
+		leveragelp.SetPosition(ctx, &position, sdk.NewInt(0))
 	}
 
 	idsSorted := []uint64{}

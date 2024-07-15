@@ -18,6 +18,9 @@ func (k Keeper) ForceCloseLong(ctx sdk.Context, position types.Position, pool ty
 		return sdk.ZeroInt(), err
 	}
 
+	// Old debt
+	oldDebt := k.stableKeeper.GetDebt(ctx, position.GetPositionAddress())
+
 	// Repay with interest
 	debt := k.stableKeeper.UpdateInterestStackedByAddress(ctx, position.GetPositionAddress())
 
@@ -72,12 +75,12 @@ func (k Keeper) ForceCloseLong(ctx sdk.Context, position types.Position, pool ty
 		if err != nil {
 			return sdk.ZeroInt(), err
 		}
-		err = k.DestroyPosition(ctx, position.Address, position.Id)
+		err = k.DestroyPosition(ctx, position.Address, position.Id, oldDebt.Borrowed.Add(debt.InterestStacked).Sub(debt.InterestPaid))
 		if err != nil {
 			return sdk.ZeroInt(), err
 		}
 	} else {
-		k.SetPosition(ctx, &position)
+		k.SetPosition(ctx, &position, oldDebt.Borrowed.Add(debt.InterestStacked).Sub(debt.InterestPaid))
 	}
 
 	// Hooks after leveragelp position closed

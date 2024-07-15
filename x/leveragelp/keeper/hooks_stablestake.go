@@ -6,13 +6,8 @@ import (
 	stablestaketypes "github.com/elys-network/elys/x/stablestake/types"
 )
 
-func (k Keeper) AfterBond(ctx sdk.Context, sender string, shareAmount math.Int) error {
-	k.RetreiveAllPortfolio(ctx, sender)
-	return nil
-}
-
-func (k Keeper) AfterUnbond(ctx sdk.Context, sender string, shareAmount math.Int) error {
-	k.RetreiveAllPortfolio(ctx, sender)
+func (k Keeper) AfterUpdateInterestStacked(ctx sdk.Context, address string, old sdk.Int, new sdk.Int) error {
+	k.SetSortedLiquidation(ctx, address, old, new)
 	return nil
 }
 
@@ -29,15 +24,14 @@ func (k Keeper) StableStakeHooks() StableStakeHooks {
 }
 
 func (h StableStakeHooks) AfterBond(ctx sdk.Context, sender string, shareAmount math.Int) error {
-	h.k.AfterBond(ctx, sender, shareAmount)
 	return nil
 }
 
 func (h StableStakeHooks) AfterUnbond(ctx sdk.Context, sender string, shareAmount math.Int) error {
-	h.k.AfterUnbond(ctx, sender, shareAmount)
 	return nil
 }
 
 func (h StableStakeHooks) AfterUpdateInterestStacked(ctx sdk.Context, address string, old sdk.Int, new sdk.Int) error {
+	h.k.AfterUpdateInterestStacked(ctx, address, old, new)
 	return nil
 }

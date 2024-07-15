@@ -7,7 +7,7 @@ import (
 func (m Migrator) V4Migration(ctx sdk.Context) error {
 	positions := m.keeper.GetAllPositions(ctx)
 	for _, position := range positions {
-		m.keeper.SetPosition(ctx, &position)
+		m.keeper.SetPosition(ctx, &position, sdk.NewInt(0))
 	}
 	return nil
 }
