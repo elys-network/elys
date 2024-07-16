@@ -76,6 +76,12 @@ service Query {
     option (google.api.http).get = "/elys-network/elys/tier/get_consolidated_price/{denom}";
   
   }
+  
+  // Queries a list of Staked items.
+  rpc Staked (QueryStakedRequest) returns (QueryStakedResponse) {
+    option (google.api.http).get = "/elys-network/elys/tier/staked/{user}";
+  
+  }
 }
 // QueryParamsRequest is request type for the Query/Params RPC method.
 message QueryParamsRequest {}
@@ -88,7 +94,7 @@ message QueryParamsResponse {
 }
 
 message QueryGetPortfolioRequest {
-  string user      = 1;
+  string user = 1;
 }
 
 message QueryGetPortfolioResponse {
@@ -169,5 +175,15 @@ message QueryGetConsolidatedPriceRequest {
 
 message QueryGetConsolidatedPriceResponse {
   string price = 1 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+}
+
+message QueryStakedRequest {
+  string user = 1;
+}
+
+message QueryStakedResponse {
+  string commitments = 1 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+  string delegations = 2 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+  string unbondings = 3 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
 }
 
