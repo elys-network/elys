@@ -16,6 +16,7 @@ import (
 	mastercheftypes "github.com/elys-network/elys/x/masterchef/types"
 	oracletypes "github.com/elys-network/elys/x/oracle/types"
 	perpetualtypes "github.com/elys-network/elys/x/perpetual/types"
+	stablestaketypes "github.com/elys-network/elys/x/stablestake/types"
 )
 
 // AccountKeeper defines the expected account keeper used for simulations (noalias)
@@ -93,4 +94,8 @@ type StakingKeeper interface {
 
 type LeverageLpKeeper interface {
 	GetPositionsForAddress(ctx sdk.Context, positionAddress sdk.Address, pagination *query.PageRequest) ([]*leveragelptypes.PositionAndInterest, *query.PageResponse, error)
+}
+
+type StablestakeKeeper interface {
+	GetParams(ctx sdk.Context) (params stablestaketypes.Params)
 }

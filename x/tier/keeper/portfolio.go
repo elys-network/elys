@@ -45,7 +45,9 @@ func (k Keeper) RetrieveAllPortfolio(ctx sdk.Context, user string) {
 	staked := k.RetrievePoolTotal(ctx, sender)
 	totalValue = totalValue.Add(staked)
 
-	// TODO: Staked assets
+	// Staked assets
+	commit, delegations, unbondings := k.RetrieveStaked(ctx, sender)
+	totalValue = totalValue.Add(commit).Add(delegations).Add(unbondings)
 
 	// LeverageLp
 	lev := k.RetrieveLeverageLpTotal(ctx, sender)
@@ -85,10 +87,16 @@ func (k Keeper) RetrieveStaked(ctx sdk.Context, user sdk.AccAddress) (sdk.Dec, s
 	commitments := k.commitement.GetCommitments(ctx, user.String())
 	for _, commitment := range commitments.CommittedTokens {
 		if !strings.HasPrefix(commitment.Denom, "amm/pool") {
+			if strings.HasPrefix(commitment.Denom, "stablestake") {
+				tokenPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, ptypes.BaseCurrency)
+				params := k.stablestakeKeeper.GetParams(ctx)
+				usdValue := commitment.Amount.ToLegacyDec().Mul(params.RedemptionRate).Mul(tokenPrice)
+				totalCommit = totalCommit.Add(usdValue)
+				continue
+			}
 			if commitment.Denom == "ueden" {
 				commitment.Denom = "uelys"
 			}
-			// TODO: consider, udenb, ueden, stablestake/share
 			tokenPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, commitment.Denom)
 			asset, found := k.assetProfileKeeper.GetEntryByDenom(ctx, commitment.Denom)
 			if !found {
