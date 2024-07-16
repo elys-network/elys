@@ -102,7 +102,7 @@ func (k Keeper) RetrieveStaked(ctx sdk.Context, user sdk.AccAddress) (sdk.Dec, s
 			if !found {
 				continue
 			}
-			if tokenPrice == sdk.ZeroDec() {
+			if tokenPrice.Equal(sdk.ZeroDec()) {
 				tokenPrice = k.CalcAmmPrice(ctx, asset.Denom, asset.Decimals)
 			}
 			amount := commitment.Amount.ToLegacyDec()
@@ -116,7 +116,7 @@ func (k Keeper) RetrieveStaked(ctx sdk.Context, user sdk.AccAddress) (sdk.Dec, s
 	bondDenom := k.stakingKeeper.BondDenom(ctx)
 	tokenPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, bondDenom)
 	asset, found := k.assetProfileKeeper.GetEntryByDenom(ctx, bondDenom)
-	if tokenPrice == sdk.ZeroDec() {
+	if tokenPrice.Equal(sdk.ZeroDec()) {
 		tokenPrice = k.CalcAmmPrice(ctx, asset.Denom, asset.Decimals)
 	}
 	if found {
@@ -155,7 +155,7 @@ func (k Keeper) RetrieveRewardsTotal(ctx sdk.Context, user sdk.AccAddress) sdk.D
 			if !found {
 				continue
 			}
-			if tokenPrice == sdk.ZeroDec() {
+			if tokenPrice.Equal(sdk.ZeroDec()) {
 				tokenPrice = k.CalcAmmPrice(ctx, asset.Denom, asset.Decimals)
 			}
 			amount := balance.Amount.ToLegacyDec()
@@ -173,7 +173,7 @@ func (k Keeper) RetrieveRewardsTotal(ctx sdk.Context, user sdk.AccAddress) sdk.D
 			if !found {
 				continue
 			}
-			if tokenPrice == sdk.ZeroDec() {
+			if tokenPrice.Equal(sdk.ZeroDec()) {
 				tokenPrice = k.CalcAmmPrice(ctx, asset.Denom, asset.Decimals)
 			}
 			amount := balance.Amount.ToLegacyDec()
@@ -193,7 +193,7 @@ func (k Keeper) RetrievePerpetualTotal(ctx sdk.Context, user sdk.AccAddress) sdk
 				continue
 			}
 			tokenPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, asset.Denom)
-			if tokenPrice == sdk.ZeroDec() {
+			if tokenPrice.Equal(sdk.ZeroDec()) {
 				tokenPrice = k.CalcAmmPrice(ctx, asset.Denom, asset.Decimals)
 			}
 			amount := perpetual.Custody.ToLegacyDec()
@@ -220,7 +220,7 @@ func (k Keeper) RetrieveLiquidAssetsTotal(ctx sdk.Context, user sdk.AccAddress) 
 		if !found {
 			continue
 		}
-		if tokenPrice == sdk.ZeroDec() {
+		if tokenPrice.Equal(sdk.ZeroDec()) {
 			tokenPrice = k.CalcAmmPrice(ctx, balance.Denom, asset.Decimals)
 		}
 		amount := balance.Amount.ToLegacyDec()
@@ -255,7 +255,7 @@ func (k Keeper) RetrieveConsolidatedPrice(ctx sdk.Context, denom string) (sdk.De
 	if !found {
 		return sdk.ZeroDec(), types.ErrNotFound
 	}
-	if tokenPrice == sdk.ZeroDec() {
+	if tokenPrice.Equal(sdk.ZeroDec()) {
 		tokenPrice = k.CalcAmmPrice(ctx, asset.Denom, asset.Decimals)
 	}
 	return tokenPrice, nil
