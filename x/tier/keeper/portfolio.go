@@ -94,8 +94,8 @@ func (k Keeper) RetrieveStaked(ctx sdk.Context, user sdk.AccAddress) (sdk.Dec, s
 				totalCommit = totalCommit.Add(usdValue)
 				continue
 			}
-			if commitment.Denom == "ueden" {
-				commitment.Denom = "uelys"
+			if commitment.Denom == ptypes.Eden {
+				commitment.Denom = ptypes.Elys
 			}
 			tokenPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, commitment.Denom)
 			asset, found := k.assetProfileKeeper.GetEntryByDenom(ctx, commitment.Denom)
@@ -147,8 +147,8 @@ func (k Keeper) RetrieveRewardsTotal(ctx sdk.Context, user sdk.AccAddress) sdk.D
 
 	if err1 == nil {
 		for _, balance := range estaking.Total {
-			if balance.Denom == "ueden" {
-				balance.Denom = "uelys"
+			if balance.Denom == ptypes.Eden {
+				balance.Denom = ptypes.Elys
 			}
 			tokenPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, balance.Denom)
 			asset, found := k.assetProfileKeeper.GetEntryByDenom(ctx, balance.Denom)
@@ -165,8 +165,8 @@ func (k Keeper) RetrieveRewardsTotal(ctx sdk.Context, user sdk.AccAddress) sdk.D
 
 	if err2 == nil {
 		for _, balance := range masterchef.TotalRewards {
-			if balance.Denom == "ueden" {
-				balance.Denom = "uelys"
+			if balance.Denom == ptypes.Eden {
+				balance.Denom = ptypes.Elys
 			}
 			tokenPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, balance.Denom)
 			asset, found := k.assetProfileKeeper.GetEntryByDenom(ctx, balance.Denom)
@@ -212,8 +212,8 @@ func (k Keeper) RetrieveLiquidAssetsTotal(ctx sdk.Context, user sdk.AccAddress) 
 		balances = balances.Add(edenBal.Balance)
 	}
 	for _, balance := range balances {
-		if balance.Denom == "ueden" {
-			balance.Denom = "uelys"
+		if balance.Denom == ptypes.Eden {
+			balance.Denom = ptypes.Elys
 		}
 		tokenPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, balance.Denom)
 		asset, found := k.assetProfileKeeper.GetEntryByDenom(ctx, balance.Denom)
