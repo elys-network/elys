@@ -41,9 +41,11 @@ func (k Keeper) RetrieveAllPortfolio(ctx sdk.Context, user string) {
 	perp := k.RetrievePerpetualTotal(ctx, sender)
 	totalValue = totalValue.Add(perp)
 
-	// Staked+Pool assets
-	staked := k.RetrieveStakedAndPoolTotal(ctx, sender)
+	// Pool assets
+	staked := k.RetrievePoolTotal(ctx, sender)
 	totalValue = totalValue.Add(staked)
+
+	// TODO: Staked assets
 
 	// LeverageLp
 	lev := k.RetrieveLeverageLpTotal(ctx, sender)
@@ -55,7 +57,7 @@ func (k Keeper) RetrieveAllPortfolio(ctx sdk.Context, user string) {
 	})
 }
 
-func (k Keeper) RetrieveStakedAndPoolTotal(ctx sdk.Context, user sdk.AccAddress) sdk.Dec {
+func (k Keeper) RetrievePoolTotal(ctx sdk.Context, user sdk.AccAddress) sdk.Dec {
 	totalValue := sdk.NewDec(0)
 	commitments := k.commitement.GetCommitments(ctx, user.String())
 	for _, commitment := range commitments.CommittedTokens {
@@ -72,10 +74,21 @@ func (k Keeper) RetrieveStakedAndPoolTotal(ctx sdk.Context, user sdk.AccAddress)
 			info := k.amm.PoolExtraInfo(ctx, pool)
 			amount := commitment.Amount.ToLegacyDec()
 			totalValue = totalValue.Add(amount.Mul(info.LpTokenPrice).QuoInt(ammtypes.OneShare))
-		} else {
+		}
+	}
+
+	return totalValue
+}
+
+func (k Keeper) RetrieveStaked(ctx sdk.Context, user sdk.AccAddress) (sdk.Dec, sdk.Dec, sdk.Dec) {
+	totalCommit := sdk.NewDec(0)
+	commitments := k.commitement.GetCommitments(ctx, user.String())
+	for _, commitment := range commitments.CommittedTokens {
+		if !strings.HasPrefix(commitment.Denom, "amm/pool") {
 			if commitment.Denom == "ueden" {
 				commitment.Denom = "uelys"
 			}
+			// TODO: consider, udenb, ueden, stablestake/share
 			tokenPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, commitment.Denom)
 			asset, found := k.assetProfileKeeper.GetEntryByDenom(ctx, commitment.Denom)
 			if !found {
@@ -85,11 +98,12 @@ func (k Keeper) RetrieveStakedAndPoolTotal(ctx sdk.Context, user sdk.AccAddress)
 				tokenPrice = k.CalcAmmPrice(ctx, asset.Denom, asset.Decimals)
 			}
 			amount := commitment.Amount.ToLegacyDec()
-			totalValue = totalValue.Add(amount.Mul(tokenPrice))
+			totalCommit = totalCommit.Add(amount.Mul(tokenPrice))
 		}
 	}
 
 	// Delegations
+	totalDelegations := sdk.NewDec(0)
 	delegations := k.stakingKeeper.GetAllDelegatorDelegations(ctx, user)
 	bondDenom := k.stakingKeeper.BondDenom(ctx)
 	tokenPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, bondDenom)
@@ -100,20 +114,22 @@ func (k Keeper) RetrieveStakedAndPoolTotal(ctx sdk.Context, user sdk.AccAddress)
 	if found {
 		for _, delegation := range delegations {
 			amount := delegation.Shares
-			totalValue = totalValue.Add(amount.Mul(tokenPrice))
+			totalDelegations = totalDelegations.Add(amount.Mul(tokenPrice))
 		}
 	}
+
 	// Max could be 7 for an account
+	totalUnbondings := sdk.NewDec(0)
 	unbondingDelegations := k.stakingKeeper.GetUnbondingDelegations(ctx, user, 100)
 	if found {
 		for _, delegation := range unbondingDelegations {
 			for _, entry := range delegation.Entries {
 				amount := entry.Balance.ToLegacyDec()
-				totalValue = totalValue.Add(amount.Mul(tokenPrice))
+				totalUnbondings = totalUnbondings.Add(amount.Mul(tokenPrice))
 			}
 		}
 	}
-	return totalValue
+	return totalCommit, totalDelegations, totalUnbondings
 }
 
 func (k Keeper) RetrieveRewardsTotal(ctx sdk.Context, user sdk.AccAddress) sdk.Dec {

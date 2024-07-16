@@ -1,0 +1,273 @@
+{
+  "genesis_time": "2024-07-03T11:04:56.892841909Z",
+  "chain_id": "elystestnet-1",
+  "initial_height": "8471646",
+  "consensus_params": {
+    "block": {
+      "max_bytes": "4194304",
+      "max_gas": "60000000"
+    },
+    "evidence": {
+      "max_age_num_blocks": "100000",
+      "max_age_duration": "172800000000000",
+      "max_bytes": "1048576"
+    },
+    "validator": {
+      "pub_key_types": [
+        "ed25519"
+      ]
+    },
+    "version": {
+      "app": "0"
+    }
+  },
+  "validators": [
+    {
+      "address": "DEBD48CF40E59EA7EA969F5EC7DE9EBD7156CF88",
+      "pub_key": {
+        "type": "tendermint/PubKeyEd25519",
+        "value": "w64RUVEYgcpETxmifWSITMAsRdG469wvvg7/YMBYH+o="
+      },
+      "power": "50000000",
+      "name": "alice"
+    }
+  ],
+  "app_hash": "",
+  "app_state": {
+    "leveragelp": {
+      "address_whitelist": [],
+      "params": {
+        "epoch_length": "1",
+        "leverage_max": "10.000000000000000000",
+        "max_open_positions": "9999",
+        "pool_open_threshold": "0.200000000000000000",
+        "safety_factor": "1.100000000000000000",
+        "whitelisting_enabled": false
+      },
+      "pool_list": [
+        {
+          "amm_pool_id": "2",
+          "closed": false,
+          "enabled": true,
+          "health": "0.994245510429857096",
+          "leverage_max": "10.000000000000000000",
+          "leveraged_lp_amount": "10583137714233607693054"
+        },
+        {
+          "amm_pool_id": "3",
+          "closed": false,
+          "enabled": false,
+          "health": "0.999999775433845244",
+          "leverage_max": "10.000000000000000000",
+          "leveraged_lp_amount": "130721425584649582"
+        },
+        {
+          "amm_pool_id": "4",
+          "closed": false,
+          "enabled": true,
+          "health": "0.999458448488713925",
+          "leverage_max": "10.000000000000000000",
+          "leveraged_lp_amount": "1124064182446296638799"
+        },
+        {
+          "amm_pool_id": "5",
+          "closed": false,
+          "enabled": true,
+          "health": "0.999362011323530457",
+          "leverage_max": "10.000000000000000000",
+          "leveraged_lp_amount": "681981777629692082558"
+        },
+        {
+          "amm_pool_id": "6",
+          "closed": false,
+          "enabled": true,
+          "health": "0.998851516129824386",
+          "leverage_max": "10.000000000000000000",
+          "leveraged_lp_amount": "305985464726680697147"
+        }
+      ],
+      "position_list": [
+        {
+          "address": "elys12tzylat4udvjj56uuhu3vj2n4vgp7cf9fwna9w",
+          "amm_pool_id": "2",
+          "collateral": {
+            "amount": "80000000",
+            "denom": "ibc/2180E84E20F5679FCC760D8C165B60F42065DEF7F46A72B447CFF1B7DC6C0A65"
+          },
+          "id": "1",
+          "interest_paid": "0",
+          "leverage": "5.000000000000000000",
+          "leveraged_lp_amount": "360796443087948623184",
+          "liabilities": "320000000",
+          "position_health": "0.000000000000000000",
+          "stop_loss_price": "0.000000000000000000"
+        },
+        {
+          "address": "elys15vl033jzwvvkfvecy3a5f0hru5fp6sav585779",
+          "amm_pool_id": "3",
+          "collateral": {
+            "amount": "100000",
+            "denom": "ibc/2180E84E20F5679FCC760D8C165B60F42065DEF7F46A72B447CFF1B7DC6C0A65"
+          },
+          "id": "14",
+          "interest_paid": "0",
+          "leverage": "1.100000000000000000",
+          "leveraged_lp_amount": "6785182500623949",
+          "liabilities": "10000",
+          "position_health": "5.426300000000000000",
+          "stop_loss_price": "0.000000000000000000"
+        },
+        {
+          "address": "elys16xffmfa6k45j340cx5zyp66lqvuw62a0neaa7w",
+          "amm_pool_id": "2",
+          "collateral": {
+            "amount": "10000000",
+            "denom": "ibc/2180E84E20F5679FCC760D8C165B60F42065DEF7F46A72B447CFF1B7DC6C0A65"
+          },
+          "id": "17",
+          "interest_paid": "0",
+          "leverage": "5.000000000000000000",
+          "leveraged_lp_amount": "59769166765088466466",
+          "liabilities": "40000000",
+          "position_health": "0.000000000000000000",
+          "stop_loss_price": "0.000000000000000000"
+        },
+        {
+          "address": "elys1c69yrjgrka9yafg7wcx4a0kwru9jwvwq8kf7ek",
+          "amm_pool_id": "4",
+          "collateral": {
+            "amount": "200000000",
+            "denom": "ibc/2180E84E20F5679FCC760D8C165B60F42065DEF7F46A72B447CFF1B7DC6C0A65"
+          },
+          "id": "11",
+          "interest_paid": "0",
+          "leverage": "4.000000000000000000",
+          "leveraged_lp_amount": "1122547026044870836772",
+          "liabilities": "600000000",
+          "position_health": "0.000000000000000000",
+          "stop_loss_price": "0.000000000000000000"
+        },
+        {
+          "address": "elys1c69yrjgrka9yafg7wcx4a0kwru9jwvwq8kf7ek",
+          "amm_pool_id": "5",
+          "collateral": {
+            "amount": "200000000",
+            "denom": "ibc/2180E84E20F5679FCC760D8C165B60F42065DEF7F46A72B447CFF1B7DC6C0A65"
+          },
+          "id": "12",
+          "interest_paid": "0",
+          "leverage": "4.000000000000000000",
+          "leveraged_lp_amount": "681981777629692082558",
+          "liabilities": "600000000",
+          "position_health": "0.000000000000000000",
+          "stop_loss_price": "0.000000000000000000"
+        },
+        {
+          "address": "elys1c69yrjgrka9yafg7wcx4a0kwru9jwvwq8kf7ek",
+          "amm_pool_id": "2",
+          "collateral": {
+            "amount": "100000000",
+            "denom": "ibc/2180E84E20F5679FCC760D8C165B60F42065DEF7F46A72B447CFF1B7DC6C0A65"
+          },
+          "id": "20",
+          "interest_paid": "0",
+          "leverage": "5.000000000000000000",
+          "leveraged_lp_amount": "598309073830457818689",
+          "liabilities": "400000000",
+          "position_health": "0.000000000000000000",
+          "stop_loss_price": "0.000000000000000000"
+        },
+        {
+          "address": "elys1j7thfvsajmjldp0ujx9gpm48crf69r4uk9jsuu",
+          "amm_pool_id": "2",
+          "collateral": {
+            "amount": "10000000",
+            "denom": "ibc/2180E84E20F5679FCC760D8C165B60F42065DEF7F46A72B447CFF1B7DC6C0A65"
+          },
+          "id": "16",
+          "interest_paid": "0",
+          "leverage": "1.100000000000000000",
+          "leveraged_lp_amount": "13326828768839518844",
+          "liabilities": "1000000",
+          "position_health": "0.000000000000000000",
+          "stop_loss_price": "0.000000000000000000"
+        },
+        {
+          "address": "elys1skus4jcpdlnp5r50vjuld0lxa9972lc6rh94dh",
+          "amm_pool_id": "3",
+          "collateral": {
+            "amount": "10000000",
+            "denom": "ibc/2180E84E20F5679FCC760D8C165B60F42065DEF7F46A72B447CFF1B7DC6C0A65"
+          },
+          "id": "9",
+          "interest_paid": "0",
+          "leverage": "1.100000000000000000",
+          "leveraged_lp_amount": "5145331653535",
+          "liabilities": "8",
+          "position_health": "5.125000000000000000",
+          "stop_loss_price": "0.000000000000000000"
+        },
+        {
+          "address": "elys1u8c28343vvhwgwhf29w6hlcz73hvq7lwxmrl46",
+          "amm_pool_id": "2",
+          "collateral": {
+            "amount": "3000000000",
+            "denom": "ibc/2180E84E20F5679FCC760D8C165B60F42065DEF7F46A72B447CFF1B7DC6C0A65"
+          },
+          "id": "18",
+          "interest_paid": "0",
+          "leverage": "4.000000000000000000",
+          "leveraged_lp_amount": "9550936201781273265871",
+          "liabilities": "5000000640",
+          "position_health": "0.000000000000000000",
+          "stop_loss_price": "0.576000000000000000"
+        },
+        {
+          "address": "elys1u8c28343vvhwgwhf29w6hlcz73hvq7lwxmrl46",
+          "amm_pool_id": "6",
+          "collateral": {
+            "amount": "100000000",
+            "denom": "ibc/2180E84E20F5679FCC760D8C165B60F42065DEF7F46A72B447CFF1B7DC6C0A65"
+          },
+          "id": "19",
+          "interest_paid": "0",
+          "leverage": "3.000000000000000000",
+          "leveraged_lp_amount": "305985464726680697147",
+          "liabilities": "200000000",
+          "position_health": "0.000000000000000000",
+          "stop_loss_price": "0.000000000000000000"
+        },
+        {
+          "address": "elys1z8pmxnywk3afp5sj28zqgvzegkdezg6swezndw",
+          "amm_pool_id": "3",
+          "collateral": {
+            "amount": "1800000",
+            "denom": "ibc/2180E84E20F5679FCC760D8C165B60F42065DEF7F46A72B447CFF1B7DC6C0A65"
+          },
+          "id": "4",
+          "interest_paid": "0",
+          "leverage": "1.100000000000000000",
+          "leveraged_lp_amount": "123931097752372098",
+          "liabilities": "180000",
+          "position_health": "5.506022021488172616",
+          "stop_loss_price": "0.000000000000000000"
+        },
+        {
+          "address": "elys1z8pmxnywk3afp5sj28zqgvzegkdezg6swezndw",
+          "amm_pool_id": "4",
+          "collateral": {
+            "amount": "1000000",
+            "denom": "ibc/2180E84E20F5679FCC760D8C165B60F42065DEF7F46A72B447CFF1B7DC6C0A65"
+          },
+          "id": "5",
+          "interest_paid": "0",
+          "leverage": "1.100000000000000000",
+          "leveraged_lp_amount": "1517156401425802027",
+          "liabilities": "100000",
+          "position_health": "0.000000000000000000",
+          "stop_loss_price": "0.000000000000000000"
+        }
+      ]
+    }
+  }
+}
