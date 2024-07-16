@@ -43,10 +43,10 @@ func CheckTxFeeWithValidatorMinGasPrices(ctx sdk.Context, tx sdk.Tx) (sdk.Coins,
 					return nil, 0, errorsmod.Wrap(sdkerrors.ErrLogic, "invalid gas price")
 				}
 				minGasPrices = sdk.NewDecCoins(minGasPrice)
-			}
 
-			// print minGasPrices
-			ctx.Logger().Info("Minimum gas prices: " + minGasPrices.String())
+				// print minGasPrices
+				ctx.Logger().Info("Override minimum gas prices: " + minGasPrices.String())
+			}
 		}
 
 		if !minGasPrices.IsZero() {
