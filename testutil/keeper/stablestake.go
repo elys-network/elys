@@ -11,6 +11,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/store"
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/types/address"
 	typesparams "github.com/cosmos/cosmos-sdk/x/params/types"
 	"github.com/elys-network/elys/x/stablestake/keeper"
 	"github.com/elys-network/elys/x/stablestake/types"
@@ -29,6 +30,7 @@ func StablestakeKeeper(t testing.TB) (*keeper.Keeper, sdk.Context) {
 
 	registry := codectypes.NewInterfaceRegistry()
 	cdc := codec.NewProtoCodec(registry)
+	govAddress := sdk.AccAddress(address.Module("gov"))
 
 	paramsSubspace := typesparams.NewSubspace(cdc,
 		types.Amino,
@@ -40,6 +42,7 @@ func StablestakeKeeper(t testing.TB) (*keeper.Keeper, sdk.Context) {
 		cdc,
 		storeKey,
 		memStoreKey,
+		govAddress.String(),
 		paramsSubspace,
 		nil,
 		nil,
