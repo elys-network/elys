@@ -16,12 +16,11 @@ func (k Keeper) GetConsolidatedPrice(goCtx context.Context, req *types.QueryGetC
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	resp, err := k.RetrieveConsolidatedPrice(ctx, req.Denom)
-	if err != nil {
-		return nil, err
-	}
+	oracle, amm, oracleDec := k.RetrieveConsolidatedPrice(ctx, req.Denom)
 
 	return &types.QueryGetConsolidatedPriceResponse{
-		Price: resp,
+		AmmPrice:       amm,
+		OraclePrice:    oracle,
+		OraclePriceDec: oracleDec,
 	}, nil
 }

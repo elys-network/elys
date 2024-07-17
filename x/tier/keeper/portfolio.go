@@ -246,24 +246,31 @@ func (k Keeper) RetrieveLeverageLpTotal(ctx sdk.Context, user sdk.AccAddress) sd
 	return totalValue
 }
 
-func (k Keeper) RetrieveConsolidatedPrice(ctx sdk.Context, denom string) (sdk.Dec, error) {
+func (k Keeper) RetrieveConsolidatedPrice(ctx sdk.Context, denom string) (sdk.Dec, sdk.Dec, sdk.Dec) {
 	if denom == ptypes.Eden {
 		denom = ptypes.Elys
 	}
-	tokenPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, denom)
+	tokenPriceOracle := k.oracleKeeper.GetAssetPriceFromDenom(ctx, denom)
 	asset, found := k.assetProfileKeeper.GetEntryByDenom(ctx, denom)
 	if !found {
-		return sdk.ZeroDec(), types.ErrNotFound
+		tokenPriceOracle = sdk.NewDec(0)
 	}
-	if tokenPrice.Equal(sdk.ZeroDec()) {
-		tokenPrice = k.CalcAmmPrice(ctx, asset.Denom, asset.Decimals)
+	tokenPriceAmm := k.CalcAmmPrice(ctx, asset.Denom, asset.Decimals)
+	info, found := k.oracleKeeper.GetAssetInfo(ctx, denom)
+	tokenPriceOracleDec := sdk.ZeroDec()
+	if found {
+		tokenPriceOracleD, found := k.oracleKeeper.GetAssetPrice(ctx, info.Display)
+		if found {
+			tokenPriceOracleDec = tokenPriceOracleD.Price
+		}
 	}
-	return tokenPrice, nil
+
+	return tokenPriceOracle, tokenPriceAmm, tokenPriceOracleDec
 }
 
 func (k Keeper) CalcAmmPrice(ctx sdk.Context, denom string, decimal uint64) sdk.Dec {
 	usdcDenom, found := k.assetProfileKeeper.GetUsdcDenom(ctx)
-	if !found {
+	if !found || denom == usdcDenom {
 		return sdk.ZeroDec()
 	}
 	usdcPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, usdcDenom)
