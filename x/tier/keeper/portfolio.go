@@ -257,15 +257,15 @@ func (k Keeper) RetrieveConsolidatedPrice(ctx sdk.Context, denom string) (sdk.De
 	}
 	tokenPriceAmm := k.CalcAmmPrice(ctx, asset.Denom, asset.Decimals)
 	info, found := k.oracleKeeper.GetAssetInfo(ctx, denom)
-	if !found {
-		tokenPriceAmm = sdk.ZeroDec()
+	tokenPriceOracleDec := sdk.ZeroDec()
+	if found {
+		tokenPriceOracleD, found := k.oracleKeeper.GetAssetPrice(ctx, info.Display)
+		if found {
+			tokenPriceOracleDec = tokenPriceOracleD.Price
+		}
 	}
 
-	tokenPriceOracleDec, found := k.oracleKeeper.GetAssetPrice(ctx, info.Display)
-	if !found {
-		tokenPriceOracleDec.Price = sdk.ZeroDec()
-	}
-	return tokenPriceOracle, tokenPriceAmm, tokenPriceOracleDec.Price
+	return tokenPriceOracle, tokenPriceAmm, tokenPriceOracleDec
 }
 
 func (k Keeper) CalcAmmPrice(ctx sdk.Context, denom string, decimal uint64) sdk.Dec {
