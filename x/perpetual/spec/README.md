@@ -1,108 +1,29 @@
-<!--
-order: 1
--->
+# Perpetual module
 
-# Concepts
+The `perpetual` module in the Elys Network facilitates perpetual trading, allowing users to open and close leveraged positions on various assets without expiry dates. Positions, either long or short, are determined by the leverage applied and the amount of collateral provided. Leverage allows traders to borrow funds to open larger positions, amplifying potential profits and losses.
 
-The `perpetual` module in the Elys Network facilitates perpetual trading, allowing users to open and close positions on various assets. This guide provides an overview of the key concepts and mechanisms involved in the perpetual module.
+Collateral acts as a security deposit to cover potential losses, and if it falls below the maintenance margin, the position may be liquidated. The safety factor is a threshold to keep positions open, and position health indicates the risk level of a position. Liquidation occurs when the position's value drops below the safety factor, ensuring platform stability.
 
-## Key Concepts
+The funding rate is a periodic payment exchanged between long and short positions to align contract prices with underlying asset prices. Whitelisting controls access to the module, allowing only trusted participants to trade. The module has configurable parameters, such as leverage limits and interest rates, adjustable through governance proposals to maintain efficiency and security.
 
-### Perpetual Trading
+## Key Features
 
-Perpetual trading allows users to trade assets with leverage without the need for expiry dates on their positions. This type of trading is popular in the cryptocurrency market as it offers flexibility and continuous trading opportunities.
+- **Perpetual Trading**: Trade assets with leverage without expiry dates.
+- **Positions**: Open long or short leveraged positions based on collateral and leverage.
+- **Leverage**: Borrow funds to open larger positions, amplifying profits and losses.
+- **Collateral**: Security deposit to cover potential losses and prevent liquidation.
+- **Safety Factor**: Threshold to keep positions open and prevent liquidation.
+- **Position Health**: Metric indicating the risk level of a position.
+- **Liquidation**: Forcibly close positions below the safety factor to prevent further losses.
 
-### Positions
+For more detailed information, please refer to the individual sections listed in the contents below.
 
-A position in perpetual trading represents an open contract on an asset. Positions can be either long (betting that the asset price will rise) or short (betting that the asset price will fall). The size of the position is determined by the leverage applied and the amount of collateral provided.
+## Contents
 
-### Leverage
-
-Leverage allows traders to open positions larger than their collateral by borrowing funds. For example, with 5x leverage, a trader can open a position five times the size of their collateral. While leverage amplifies potential profits, it also increases potential losses.
-
-### Collateral
-
-Collateral is the amount of assets locked to open a leveraged position. It acts as a security deposit to cover potential losses. If the value of the position falls below the maintenance margin, the position may be liquidated to prevent further losses.
-
-### Safety Factor
-
-The safety factor is the threshold to keep a position open. If the position health value falls below this threshold, the position may be subject to liquidation.
-
-### Position Health
-
-Position health is a metric that indicates the risk level of a position. It is calculated based on the position's value, leverage, and collateral. Monitoring position health helps prevent excessive risk-taking and ensures the stability of the perpetual trading system.
-
-### Liquidation
-
-Liquidation occurs when a position's value drops below the safety factor. The position is forcibly closed to prevent further losses. This mechanism ensures the stability of the perpetual trading system and protects the platform from significant losses.
-
-### Funding Rate
-
-The funding rate is a periodic payment exchanged between long and short positions. It ensures that the perpetual contract price closely tracks the underlying asset price. When the funding rate is positive, longs pay shorts, and when it is negative, shorts pay longs.
-
-### Whitelisting
-
-Whitelisting is a mechanism to control access to the perpetual module. Only addresses that are whitelisted can participate in trading. This helps maintain the security and integrity of the platform by allowing only trusted participants.
-
-### Parameters
-
-The perpetual module has several configurable parameters that govern its operation. These include leverage limits, interest rates, maintenance margins, and more. These parameters can be updated through governance proposals to adapt to changing market conditions and ensure the module's efficiency and security.
-
-## Perpetual Module Overview
-
-The perpetual module supports perpetual trading on molecule token pools. Initially, isolated perpetual trading is supported, with plans to include cross perpetual trading in the future.
-
-### Pools
-
-Perpetual trading utilizes AMM (Automated Market Maker) pools and maintains position records. When a trader closes a position or it is liquidated, pool tokens are transferred to the perpetual trader for profit and loss (P&L).
-
-### Perpetual Limits
-
-Perpetual trading limits are based on the pool size. To maintain pool health, perpetual positions are restricted to ensure that no more than 50% of the pool's assets are borrowed.
-
-### Race Condition Between AMM and Perpetual
-
-Due to the possibility of pool balance insufficiency, a healthy buffer must be maintained when setting perpetual positions. The position should be auto-closed before the pool becomes insufficient to cover it. Any action affecting the position's health should trigger position closing.
-
-### Risks
-
-Perpetual trading will not be offered on shallow pools to mitigate risk.
-
-### Oracle
-
-The oracle should use average prices to prevent large liquidations caused by sudden, short-term price dumps. In cases where multiple oracle price sources are used, exceptions may need to be made for anomalies such as massive candle spikes from one source.
-
-### Reference Codebases for Perpetual
-
-- To Be Determined (TBD)
-
-### Notes
-
-- The perpetual code will serve as the base for LP leveraging, with the primary difference being that perpetual trading borrows from the pool liquidity itself, while LP leveraging borrows from base currency deposits.
-- Cross perpetual trading will enable interactions between perpetual positions and LP positions once implemented.
-
-## Transaction Commands
-
-The perpetual module supports various transaction commands for managing positions and parameters. Key commands include:
-
-- `open`: Opens a new perpetual position.
-- `close`: Closes an existing perpetual position.
-- `whitelist`: Adds an address to the whitelist.
-- `dewhitelist`: Removes an address from the whitelist.
-- `update-params`: Updates the module parameters through a governance proposal.
-
-## Query Commands
-
-Users can query various aspects of the perpetual module using the following commands:
-
-- `params`: Retrieves the current parameters of the module.
-- `get-positions`: Lists all open positions.
-- `get-positions-by-pool`: Lists positions for a specific pool.
-- `get-positions-for-address`: Lists positions for a specific address.
-- `get-status`: Retrieves the current status of the module.
-- `get-whitelist`: Lists all whitelisted addresses.
-- `is-whitelisted`: Checks if a specific address is whitelisted.
-- `list-pool`: Lists all available pools.
-- `show-pool`: Retrieves details of a specific pool.
-- `get-mtp`: Retrieves details of a specific margin trading position (MTP).
-- `open-estimation`: Provides an estimation for opening a position.
+1. **[Concepts](01_concepts.md)**
+2. **[Mechanisms](02_mechanisms.md)**
+3. **[Usage](03_usage.md)**
+4. **[Keeper](04_keeper.md)**
+5. **[Protobuf Definitions](05_protobuf_definitions.md)**
+6. **[Functions](06_functions.md)**
+7. **[Pool Status](07_pool_status.md)**

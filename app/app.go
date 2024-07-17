@@ -796,6 +796,7 @@ func NewElysApp(
 		appCodec,
 		keys[stablestaketypes.StoreKey],
 		keys[stablestaketypes.MemStoreKey],
+		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 		app.GetSubspace(stablestaketypes.ModuleName),
 		app.BankKeeper,
 		&app.CommitmentKeeper,
