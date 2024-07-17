@@ -1031,6 +1031,7 @@ func NewElysApp(
 		app.StakingKeeper,
 		app.PerpetualKeeper,
 		app.LeveragelpKeeper,
+		app.StablestakeKeeper,
 	)
 	tierModule := tiermodule.NewAppModule(appCodec, app.TierKeeper, app.AccountKeeper, app.BankKeeper)
 

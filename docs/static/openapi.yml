@@ -39972,6 +39972,25 @@ paths:
           description: A successful response.
           schema:
             type: object
+            properties:
+              total:
+                type: string
+              vesting_details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    totalVesting:
+                      type: string
+                    claimed:
+                      type: string
+                    vestedSoFar:
+                      type: string
+                    remaining_blocks:
+                      type: string
+                      format: int64
         default:
           description: An unexpected error response.
           schema:
@@ -44958,7 +44977,7 @@ paths:
           type: boolean
       tags:
         - Query
-  /elys-network/elys/membershiptier/portfolio/{user}/{assetType}:
+  /elys-network/elys/membershiptier/portfolio/{user}:
     get:
       summary: Queries a list of Portfolio items.
       operationId: ElysTierPortfolio
@@ -44990,10 +45009,6 @@ paths:
                   additionalProperties: {}
       parameters:
         - name: user
-          in: path
-          required: true
-          type: string
-        - name: assetType
           in: path
           required: true
           type: string
@@ -45201,6 +45216,40 @@ paths:
             properties:
               total:
                 type: string
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: user
+          in: path
+          required: true
+          type: string
+      tags:
+        - Query
+  /elys-network/elys/tier/staked/{user}:
+    get:
+      summary: Queries a list of Staked items.
+      operationId: ElysTierStaked
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
         default:
           description: An unexpected error response.
           schema:
@@ -86531,6 +86580,25 @@ definitions:
     description: Params defines the parameters for the module.
   elys.commitment.QueryCommitmentVestingInfoResponse:
     type: object
+    properties:
+      total:
+        type: string
+      vesting_details:
+        type: array
+        items:
+          type: object
+          properties:
+            id:
+              type: string
+            totalVesting:
+              type: string
+            claimed:
+              type: string
+            vestedSoFar:
+              type: string
+            remaining_blocks:
+              type: string
+              format: int64
   elys.commitment.QueryCommittedTokensLockedResponse:
     type: object
     properties:
@@ -86680,6 +86748,20 @@ definitions:
                   type: string
                   format: int64
         description: GenesisState defines the commitment module's genesis state.
+  elys.commitment.VestingDetails:
+    type: object
+    properties:
+      id:
+        type: string
+      totalVesting:
+        type: string
+      claimed:
+        type: string
+      vestedSoFar:
+        type: string
+      remaining_blocks:
+        type: string
+        format: int64
   elys.commitment.VestingInfo:
     type: object
     properties:
@@ -89733,6 +89815,8 @@ definitions:
     properties:
       total:
         type: string
+  elys.tier.QueryStakedResponse:
+    type: object
   elys.tokenomics.Airdrop:
     type: object
     properties:

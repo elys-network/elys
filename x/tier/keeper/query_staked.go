@@ -9,16 +9,19 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-func (k Keeper) StakedPool(goCtx context.Context, req *types.QueryStakedPoolRequest) (*types.QueryStakedPoolResponse, error) {
+func (k Keeper) Staked(goCtx context.Context, req *types.QueryStakedRequest) (*types.QueryStakedResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
-	ctx := sdk.UnwrapSDKContext(goCtx)
 	sender := sdk.MustAccAddressFromBech32(req.User)
-	total := k.RetrievePoolTotal(ctx, sender)
+	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	return &types.QueryStakedPoolResponse{
-		Total: total,
+	com, del, unbon := k.RetrieveStaked(ctx, sender)
+
+	return &types.QueryStakedResponse{
+		Commitments: com,
+		Delegations: del,
+		Unbondings:  unbon,
 	}, nil
 }
