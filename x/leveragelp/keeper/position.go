@@ -364,13 +364,10 @@ func (k Keeper) GetPositionsForAddress(ctx sdk.Context, positionAddress sdk.Addr
 		k.cdc.MustUnmarshal(value, &p)
 		var positionAndInterest types.PositionAndInterest
 		positionAndInterest.Position = &p
-		price, found := k.oracleKeeper.GetAssetPrice(ctx, p.Collateral.Denom)
-		if !found {
-			return fmt.Errorf("asset price not set: %s", price.Asset)
-		}
+		price := k.oracleKeeper.GetAssetPriceFromDenom(ctx, p.Collateral.Denom)
 		interestRateHour := params.InterestRate.Quo(hours)
 		positionAndInterest.InterestRateHour = interestRateHour
-		positionAndInterest.InterestRateHourUsd = interestRateHour.Mul(cosmosMath.LegacyDec(p.Liabilities.Mul(price.Price.RoundInt())))
+		positionAndInterest.InterestRateHourUsd = interestRateHour.Mul(cosmosMath.LegacyDec(p.Liabilities.Mul(price.RoundInt())))
 		debt := k.stableKeeper.UpdateInterestStackedByAddress(ctx, positionAndInterest.Position.GetPositionAddress())
 		positionAndInterest.Position.Liabilities = debt.Borrowed.Add(debt.InterestStacked).Sub(debt.InterestPaid)
 		positions = append(positions, &positionAndInterest)
