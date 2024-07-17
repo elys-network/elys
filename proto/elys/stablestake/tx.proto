@@ -3,6 +3,7 @@ syntax = "proto3";
 package elys.stablestake;
 
 import "gogoproto/gogo.proto";
+import "elys/stablestake/params.proto";
 
 option go_package = "github.com/elys-network/elys/x/stablestake/types";
 
@@ -10,6 +11,7 @@ option go_package = "github.com/elys-network/elys/x/stablestake/types";
 service Msg {
   rpc Bond(MsgBond) returns (MsgBondResponse);
   rpc Unbond(MsgUnbond) returns (MsgUnbondResponse);
+  rpc UpdateParams   (MsgUpdateParams  ) returns (MsgUpdateParamsResponse  );
 }
 message MsgBond {
   string creator = 1;
@@ -31,3 +33,14 @@ message MsgUnbond {
 
 message MsgUnbondResponse {}
 
+message MsgUpdateParams {
+  
+  // authority is the address that controls the module (defaults to x/gov unless
+  // overwritten).
+  string authority = 1;
+  
+  // NOTE: All parameters must be supplied.
+  Params params = 2;
+}
+
+message MsgUpdateParamsResponse {}

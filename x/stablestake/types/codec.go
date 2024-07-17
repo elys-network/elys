@@ -11,15 +11,15 @@ import (
 func RegisterCodec(cdc *codec.LegacyAmino) {
 	cdc.RegisterConcrete(&MsgBond{}, "stablestake/Stake", nil)
 	cdc.RegisterConcrete(&MsgUnbond{}, "stablestake/Unbond", nil)
+	cdc.RegisterConcrete(&MsgUpdateParams{}, "stablestake/UpdateParams", nil)
 	// this line is used by starport scaffolding # 2
 }
 
 func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 	registry.RegisterImplementations((*sdk.Msg)(nil),
 		&MsgBond{},
-	)
-	registry.RegisterImplementations((*sdk.Msg)(nil),
 		&MsgUnbond{},
+		&MsgUpdateParams{},
 	)
 	// this line is used by starport scaffolding # 3
 

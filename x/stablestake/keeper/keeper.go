@@ -17,6 +17,7 @@ type (
 		cdc                codec.BinaryCodec
 		storeKey           storetypes.StoreKey
 		memKey             storetypes.StoreKey
+		authority          string
 		paramstore         paramtypes.Subspace
 		bk                 types.BankKeeper
 		commitmentKeeper   *commitmentkeeper.Keeper
@@ -29,6 +30,7 @@ func NewKeeper(
 	cdc codec.BinaryCodec,
 	storeKey,
 	memKey storetypes.StoreKey,
+	authority string,
 	ps paramtypes.Subspace,
 	bk types.BankKeeper,
 	commitmentKeeper *commitmentkeeper.Keeper,
@@ -39,10 +41,16 @@ func NewKeeper(
 		ps = ps.WithKeyTable(types.ParamKeyTable())
 	}
 
+	// ensure that authority is a valid AccAddress
+	if _, err := sdk.AccAddressFromBech32(authority); err != nil {
+		panic("authority is not a valid acc address")
+	}
+
 	return &Keeper{
 		cdc:                cdc,
 		storeKey:           storeKey,
 		memKey:             memKey,
+		authority:          authority,
 		paramstore:         ps,
 		bk:                 bk,
 		commitmentKeeper:   commitmentKeeper,
