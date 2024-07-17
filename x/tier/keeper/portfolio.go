@@ -270,7 +270,7 @@ func (k Keeper) RetrieveConsolidatedPrice(ctx sdk.Context, denom string) (sdk.De
 
 func (k Keeper) CalcAmmPrice(ctx sdk.Context, denom string, decimal uint64) sdk.Dec {
 	usdcDenom, found := k.assetProfileKeeper.GetUsdcDenom(ctx)
-	if !found {
+	if !found || denom == usdcDenom {
 		return sdk.ZeroDec()
 	}
 	usdcPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, usdcDenom)
