@@ -23,7 +23,7 @@ func (k Keeper) AfterAmmPoolCreated(ctx sdk.Context, ammPool ammtypes.Pool, send
 	k.InitiateAccountedPool(ctx, ammPool)
 }
 
-// AfterJoinPool is called after JoinPool, JoinSwapExternAmountIn, and JoinSwapShareAmountOut
+// AfterAmmJoinPool is called after JoinPool, JoinSwapExternAmountIn, and JoinSwapShareAmountOut
 func (k Keeper) AfterAmmJoinPool(ctx sdk.Context, ammPool ammtypes.Pool, perpetualPool perpetualtypes.Pool, sender string) {
 	k.UpdateAccountedPool(ctx, ammPool, perpetualPool)
 }
