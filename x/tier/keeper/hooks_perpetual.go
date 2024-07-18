@@ -18,22 +18,22 @@ func (k Keeper) AfterPerpetualPositionClosed(ctx sdk.Context, ammPool ammtypes.P
 	k.RetrieveAllPortfolio(ctx, sender)
 }
 
-// AfterPoolCreated is called after CreatePool
+// AfterAmmPoolCreated is called after CreatePool
 func (k Keeper) AfterAmmPoolCreated(ctx sdk.Context, ammPool ammtypes.Pool, sender string) {
 	k.RetrieveAllPortfolio(ctx, sender)
 }
 
-// AfterJoinPool is called after JoinPool, JoinSwapExternAmountIn, and JoinSwapShareAmountOut
+// AfterAmmJoinPool is called after JoinPool, JoinSwapExternAmountIn, and JoinSwapShareAmountOut
 func (k Keeper) AfterAmmJoinPool(ctx sdk.Context, ammPool ammtypes.Pool, perpetualPool perpetualtypes.Pool, sender string) {
 	k.RetrieveAllPortfolio(ctx, sender)
 }
 
-// AfterExitPool is called after ExitPool, ExitSwapShareAmountIn, and ExitSwapExternAmountOut
+// AfterAmmExitPool is called after ExitPool, ExitSwapShareAmountIn, and ExitSwapExternAmountOut
 func (k Keeper) AfterAmmExitPool(ctx sdk.Context, ammPool ammtypes.Pool, perpetualPool perpetualtypes.Pool, sender string) {
 	k.RetrieveAllPortfolio(ctx, sender)
 }
 
-// AfterSwap is called after SwapExactAmountIn and SwapExactAmountOut
+// AfterAmmSwap is called after SwapExactAmountIn and SwapExactAmountOut
 func (k Keeper) AfterAmmSwap(ctx sdk.Context, ammPool ammtypes.Pool, perpetualPool perpetualtypes.Pool, sender string) {
 	k.RetrieveAllPortfolio(ctx, sender)
 }
