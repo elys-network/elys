@@ -32,15 +32,21 @@ jobs:
           echo "Latest tag: $LATEST_TAG"
 
       - name: Retrieve latest binary
+        # FIXME: override OLD_BINARY_PATH with NEW_BINARY_PATH to fix `panic: proto: Position: illegal tag 0 (wire type 1)` issue with Leverage LP module
         run: |
           DOWNLOAD_URL=https://github.com/elys-network/elys/releases/download/${LATEST_TAG}/elysd-${LATEST_TAG}-linux-amd64
           OLD_BINARY_PATH=/tmp/elysd-${LATEST_TAG}
-          curl -L $DOWNLOAD_URL -o $OLD_BINARY_PATH && chmod +x $OLD_BINARY_PATH
+          # curl -L $DOWNLOAD_URL -o $OLD_BINARY_PATH && chmod +x $OLD_BINARY_PATH
+          # create old git tag
+          git tag -f v0.39.0
+          # build old elys binary
+          make build
+          mv build/elysd $OLD_BINARY_PATH
           echo "OLD_BINARY_PATH=$OLD_BINARY_PATH" >> $GITHUB_ENV
 
       - name: Retrieve post upgrade snapshot generator binary
         run: |
-          POST_UPGRADE_SNAPSHOT_GENERATOR_VERSION=v0.2.6
+          POST_UPGRADE_SNAPSHOT_GENERATOR_VERSION=v0.2.7
           DOWNLOAD_URL=https://github.com/elys-network/post-upgrade-snapshot-generator/releases/download/${POST_UPGRADE_SNAPSHOT_GENERATOR_VERSION}/post-upgrade-snapshot-generator-${POST_UPGRADE_SNAPSHOT_GENERATOR_VERSION}-linux-amd64
           POST_UPGRADE_SNAPSHOT_GENERATOR_PATH=/tmp/post-upgrade-snapshot-generator-${POST_UPGRADE_SNAPSHOT_GENERATOR_VERSION}
           curl -L $DOWNLOAD_URL -o $POST_UPGRADE_SNAPSHOT_GENERATOR_PATH && chmod +x $POST_UPGRADE_SNAPSHOT_GENERATOR_PATH
