@@ -25,7 +25,7 @@ func (k Keeper) OpenEst(goCtx context.Context, req *types.QueryOpenEstRequest) (
 
 	return &types.QueryOpenEstResponse{
 		PositionSize:       shares,
-		WeightBalanceRatio: weightBalanceBonus,
+		WeightBalanceRatio: weightBalanceBonus.Abs(),
 		BorrowFee:          params.InterestRate,
 	}, nil
 }
@@ -59,7 +59,7 @@ func (k Keeper) CloseEst(goCtx context.Context, req *types.QueryCloseEstRequest)
 
 	return &types.QueryCloseEstResponse{
 		Liability:          position.Liabilities,
-		WeightBalanceRatio: weightBalanceBonus,
+		WeightBalanceRatio: weightBalanceBonus.Abs(),
 		AmountReturned:     userAmount,
 	}, nil
 }
