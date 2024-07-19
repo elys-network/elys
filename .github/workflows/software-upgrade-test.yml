@@ -152,7 +152,7 @@ jobs:
 
       - name: Chain snapshot and export
         run: |
-          GOMEMLIMIT=8GiB ${POST_UPGRADE_SNAPSHOT_GENERATOR_PATH} chain-snapshot-export \
+          GOMEMLIMIT=4GiB ${POST_UPGRADE_SNAPSHOT_GENERATOR_PATH} chain-snapshot-export \
             ${SNAPSHOT_FILE_PATH} \
             ${OLD_BINARY_PATH} \
             --timeout-next-block 100000 \
