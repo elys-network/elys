@@ -422,6 +422,11 @@ func (k Keeper) GetPositionWithId(ctx sdk.Context, positionAddress sdk.Address, 
 	return &position, true
 }
 
+// FIXME: currently we only avoid the error while loading and not entirely delete the corrupted key, value
+// This is done to ensure we don't delete everything.
+// After the upgrade that comes after 0.39.0
+// We need to uncomment it and remove any corrupted data with this logic
+
 // func (k Keeper) MigrateKeys(ctx sdk.Context) {
 // 	store := ctx.KVStore(k.storeKey)
 // 	iterator := sdk.KVStorePrefixIterator(store, types.PositionPrefix)
