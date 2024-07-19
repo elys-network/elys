@@ -169,7 +169,7 @@ jobs:
 
       - name: Create second validator
         run: |
-          GOMEMLIMIT=4GiB ${POST_UPGRADE_SNAPSHOT_GENERATOR_PATH} create-second-validator \
+          GOMEMLIMIT=16GiB ${POST_UPGRADE_SNAPSHOT_GENERATOR_PATH} create-second-validator \
             ${OLD_BINARY_PATH} \
             --timeout-next-block 100000 \
             --timeout-wait-for-node 100000
