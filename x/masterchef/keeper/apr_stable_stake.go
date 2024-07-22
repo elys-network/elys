@@ -72,7 +72,6 @@ func (k Keeper) CalculateStableStakeApr(ctx sdk.Context, query *types.QueryStabl
 		apr := stableStakeEdenAmount.
 			MulInt64(totalBlocksPerYear).
 			Mul(edenDenomPrice).
-			MulInt(sdk.NewInt(100)).
 			Quo(stableTvl)
 		return apr.TruncateInt(), nil
 	} else if query.Denom == ptypes.BaseCurrency {

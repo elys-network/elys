@@ -1,6 +1,8 @@
 package keeper
 
 import (
+	"fmt"
+
 	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -204,7 +206,7 @@ func (k Keeper) UpdateLPRewards(ctx sdk.Context) error {
 
 		// Calculate new Eden for this pool
 		newEdenAllocatedForPool := poolShare.MulInt(lpsEdenAmount)
-
+		
 		// Maximum eden APR - 30% by default
 		poolMaxEdenAmount := params.MaxEdenRewardAprLps.
 			Mul(proxyTVL).
@@ -524,8 +526,11 @@ func (k Keeper) UpdateAmmPoolAPR(ctx sdk.Context, totalBlocksPerYear int64, tota
 			return false
 		}
 
+		fmt.Print("pool tvl: ", tvl , "\n")
+
 		// Get pool Id
 		poolId := p.GetPoolId()
+		fmt.Print("pool id: ", poolId , "\n")
 
 		// Get pool info from incentive param
 		poolInfo, found := k.GetPool(ctx, poolId)
@@ -533,6 +538,7 @@ func (k Keeper) UpdateAmmPoolAPR(ctx sdk.Context, totalBlocksPerYear int64, tota
 			k.InitPoolParams(ctx, poolId)
 			poolInfo, _ = k.GetPool(ctx, poolId)
 		}
+		fmt.Print("pool info: ", poolInfo , "\n")
 
 		if tvl.IsZero() {
 			return false
