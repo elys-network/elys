@@ -6,7 +6,7 @@
 ```plaintext
 +------------+                  +------------+                  +-------------+                 
 |            |                  |            |                  |             |                
-| Depositors |                  | Borrowers  |                  | Liquidators |                
+| Depositors |                  | Borrowers  |                  | Watchers    |                
 |            |                  |            |                  |             |                  
 +-----+------+                  +-----+------+                  +-----+-------+               
       |                               |                               |                             
@@ -15,19 +15,19 @@
       |                               |                               |                              
 +-----v------+                  +-----v------+                  +-----v-------+                   
 |            |                  |            |                  |             |                 
-|  Stable    |<-----------------| Leverage   |<-----------------| Liquidation |
-|  Coin Pool |   Borrow coins   | Position   |   Monitor        |   Function  |   Monitor        
-|  Module    |                  | Module     |   positions      |             |   positions       
+|  Stable    |<-----------------| Leverage   |<-----------------| Liquidation/|
+|  Coin Pool |   Borrow coins   | Position   |   Monitor        |    Close    |   Monitor        
+|  Module    |                  | Module     |   positions      |    Function |   positions       
 +------------+                  +------------+                  +-------------+                  
       |                               |                               |                               
       |                               |                               |                                
-      |  Interest                      | Position health calculated   | If health < threshold, or certain price is met(stop loss)     
-      |                               | as lpAmount / debt            | trigger liquidation           
+      |  Interest                     | Position health calculated    | 1. If health < threshold, trigger liquidation
+      |                               | as lpAmount / debt            | 2. certain price is met(stop loss), close position       
       |                               |                               | and receive reward             
-      |                               |                               |                              
+      |                               |                               |                                  
 +-----v------+                  +-----v------+                  +-----v-------+                  
 |            |                  |            |                  |             |                   
-|  Depositor |                  |  Borrower  |                  |  Liquidator |                   
+|  Depositor |                  |  Borrower  |                  |  Watchers |                   
 |  Earns     |                  | Manages    |                  | Earns       |                  
 |  Interest  |                  | Position   |                  | Reward      |                  
 +------------+                  +------------+                  +-------------+                   
@@ -37,7 +37,8 @@
 
 - **Depositors** provide liquidity to the system and earn interest.
 - **Borrowers** take leveraged positions by borrowing from the pool.
-- **Liquidators** and **Bots** monitor positions and execute liquidations when necessary.
+- **Watchers**: Watchers are users and bots that monitor positions for liquidation or stop loss conditions.
+- **Bots**: Bots are automated programs specifically designed to efficiently handle these tasks.
 - The system rewards liquidators and bots for maintaining the health of the market.
 - The **Liquidation Function** is responsible for managing the logic of liquidations and distributing rewards.
 
