@@ -17,11 +17,12 @@ func (k Keeper) Staked(goCtx context.Context, req *types.QueryStakedRequest) (*t
 	sender := sdk.MustAccAddressFromBech32(req.User)
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	com, del, unbon := k.RetrieveStaked(ctx, sender)
+	com, del, unbon, totalVested := k.RetrieveStaked(ctx, sender)
 
 	return &types.QueryStakedResponse{
 		Commitments: com,
 		Delegations: del,
 		Unbondings:  unbon,
+		TotalVested: totalVested,
 	}, nil
 }
