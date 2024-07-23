@@ -10,7 +10,7 @@ on:
 
 jobs:
   create-new-snapshot:
-    runs-on: elys-runner
+    runs-on: elys-runner-x2
 
     steps:
       - name: Checkout repository
