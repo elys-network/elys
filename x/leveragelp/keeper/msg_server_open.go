@@ -33,7 +33,7 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen) (*types.MsgOpenRespons
 		return nil, err
 	}
 
-	if err := k.CheckPoolHealth(ctx, msg.AmmPoolId); err != nil {
+	if err = k.CheckPoolHealth(ctx, msg.AmmPoolId); err != nil {
 		return nil, err
 	}
 

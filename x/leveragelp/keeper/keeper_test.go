@@ -35,6 +35,33 @@ func (suite *KeeperTestSuite) SetupTest() {
 	suite.app = app
 }
 
+func (suite *KeeperTestSuite) EnableWhiteListing() {
+	params := suite.app.LeveragelpKeeper.GetParams(suite.ctx)
+	params.WhitelistingEnabled = true
+	err := suite.app.LeveragelpKeeper.SetParams(suite.ctx, &params)
+	if err != nil {
+		panic(err)
+	}
+}
+
+func (suite *KeeperTestSuite) DisableWhiteListing() {
+	params := suite.app.LeveragelpKeeper.GetParams(suite.ctx)
+	params.WhitelistingEnabled = false
+	err := suite.app.LeveragelpKeeper.SetParams(suite.ctx, &params)
+	if err != nil {
+		panic(err)
+	}
+}
+
+func (suite *KeeperTestSuite) SetMaxOpenPositions(value int64) {
+	params := suite.app.LeveragelpKeeper.GetParams(suite.ctx)
+	params.MaxOpenPositions = value
+	err := suite.app.LeveragelpKeeper.SetParams(suite.ctx, &params)
+	if err != nil {
+		panic(err)
+	}
+}
+
 func TestKeeperSuite(t *testing.T) {
 	suite.Run(t, new(KeeperTestSuite))
 }
