@@ -1,8 +1,6 @@
 package keeper
 
 import (
-	"fmt"
-
 	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -75,7 +73,6 @@ func (k Keeper) CalculateApr(ctx sdk.Context, query *types.QueryAprRequest) (mat
 			if err != nil {
 				return sdk.ZeroInt(), err
 			}
-			fmt.Print("int rate: ",params.InterestRate)
 			apr := params.InterestRate.Mul(res.BorrowRatio)
 			return apr.TruncateInt(), nil
 		} else {
