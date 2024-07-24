@@ -65,7 +65,6 @@ func computeLn(x sdk.Dec) sdk.Dec {
 }
 
 // PowerApproximation This uses formula z = exp(b * ComputeLn(a)) for a^b.
-// `terms` increases the accuracy of ComputeLn(a)
 func PowerApproximation(base sdk.Dec, exp sdk.Dec) sdk.Dec {
 	if !base.IsPositive() {
 		panic(fmt.Errorf("base must be greater than 0"))
