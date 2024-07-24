@@ -1,39 +1,64 @@
 package types
 
 import (
+	"errors"
 	"fmt"
-
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 var ln2 = sdk.MustNewDecFromStr("0.693147180559945309")
 
-func computeExp(x sdk.Dec) sdk.Dec {
-	result := sdk.OneDec()
-	factorial := int64(1)
+// ComputeExp For values > 22 this function panics to Int overflow because powerTerm have 77 digits
+// To extend the range of the function we can reduce the number of iterations at the cost of accuracy
+// Since we are only using to compute power approximation for base^exp, it will overflow if Ln(base) > 22,
+// which makes base should not be more than approx. 3.58 x 10^9 and exp is very close to 1
+func computeExp(x sdk.Dec) (result sdk.Dec, err error) {
+	defer func() {
+		if r := recover(); r != nil {
+			var ok bool
+			err, ok = r.(error)
+			if !ok {
+				err = errors.New("out of bounds")
+			}
+		}
+	}()
+	result = sdk.OneDec()
+	factorial := sdk.OneInt()
+	powerTerm := x
 
-	// n decide the accuracy, cannot be more than 20 because 21! > MaxInt64
-	// For increased accuracy, can use sdk.Int but then that would slow down the computation
-	// We can also store the value of the factorials to reduce computations
-	for n := int64(1); n <= int64(20); n++ {
-		factorial = factorial * n
-		term := x.Power(uint64(n)).QuoInt64(factorial)
+	//n decides the precision of the value, higher the n, greater is the accuracy
+	//it cannot be more than 57 as 58! > 2^256 and 2^256 is the max value sdk.Int can have because cap on bit length
+	for n := 1; n <= 57; n++ {
+		factorial = factorial.MulRaw(int64(n))
+		term := powerTerm.QuoInt(factorial)
 		result = result.Add(term)
+		if n < 57 {
+			powerTerm = powerTerm.Mul(x)
+		}
 	}
 
-	return result
+	return result, nil
 }
 
-func computeLn(x sdk.Dec) sdk.Dec {
+func computeLn(x sdk.Dec) (result sdk.Dec, err error) {
+	defer func() {
+		if r := recover(); r != nil {
+			var ok bool
+			err, ok = r.(error)
+			if !ok {
+				err = errors.New("out of bounds")
+			}
+		}
+	}()
 	if x.LTE(sdk.ZeroDec()) {
 		panic("x must be greater than 0")
 	}
 	if x.Equal(sdk.OneDec()) {
-		return sdk.ZeroDec()
+		return sdk.ZeroDec(), nil
 	}
 
 	// To bring x is in the range [0.5, 2]
-	// we use ln(x) = k * ln(2) + ln(y), where y is in [0.5, 2]
+	// we use ln(x) = k * ln(2) + ln(z), where z is in [0.5, 2]
 	k := 0
 	for x.GT(two) {
 		x = x.Quo(two)
@@ -43,133 +68,63 @@ func computeLn(x sdk.Dec) sdk.Dec {
 		x = x.MulInt64(2)
 		k--
 	}
-
 	y := x.Sub(sdk.OneDec())
-	result := sdk.ZeroDec()
-	// Ideally, this loop will not go till 100 iterations. This precision should be reached much before.
-	// Setting 100 terms to have an upper cap on the iterations.
-	for n := uint64(1); n <= 100; n++ {
+	result = sdk.ZeroDec()
+	yPower := y
+
+	// maximum value of y is 1
+	// Though n doesn't have upper cap, this iteration will break as |y| < 1,
+	// if y is very close to 1 it will large number of iterations
+	for n := uint64(1); ; n++ {
 		sign := sdk.NewInt(-1)
 		if (n+1)%2 == 0 {
 			sign = sdk.OneInt()
 		}
-		term := y.Power(n).MulInt(sign).QuoInt64(int64(n))
+		term := yPower.MulInt(sign).QuoInt64(int64(n))
 		result = result.Add(term)
-
+		// This won't work if y > 1 because absolute value of term is (y^n)/n,
+		// if y > 1, it's an increasing value
 		if powPrecision.GT(term.Abs()) {
 			break
 		}
+
+		yPower = yPower.Mul(y)
 	}
 
-	return result.Add(ln2.MulInt64(int64(k)))
+	return result.Add(ln2.MulInt64(int64(k))), nil
 }
 
-// PowerApproximation This uses formula z = exp(b * ComputeLn(a)) for a^b.
-func PowerApproximation(base sdk.Dec, exp sdk.Dec) sdk.Dec {
+// PowerApproximation This uses formula z = exp(b * Ln(a)) for a^b.
+// Important: This function fails when b * Ln(a) > 22,
+// since we are using it to calculate for 0 < b < 1, the upper cap on a is 3.58 x 10^9
+// However accuracy decreases fast when 'a' is large
+func PowerApproximation(base sdk.Dec, exp sdk.Dec) (sdk.Dec, error) {
 	if !base.IsPositive() {
-		panic(fmt.Errorf("base must be greater than 0"))
+		return sdk.Dec{}, fmt.Errorf("base must be greater than 0")
 	}
 	if exp.LTE(sdk.ZeroDec()) {
-		panic(fmt.Errorf("exp must be greater than 0"))
+		return sdk.Dec{}, fmt.Errorf("exp must be greater than 0")
 	}
 	if exp.IsZero() {
-		return sdk.OneDec()
+		return sdk.OneDec(), nil
 	}
 	if exp.Equal(sdk.OneDec()) {
-		return base
+		return base, nil
 	}
-	lnBase := computeLn(base)
-	expResult := computeExp(exp.Mul(lnBase))
-	return expResult
-}
-
-// Contract: 0 < base <= 2
-// 0 <= exp < 1.
-func PowApprox(base sdk.Dec, exp sdk.Dec, precision sdk.Dec) sdk.Dec {
-	if !base.IsPositive() {
-		panic(fmt.Errorf("base must be greater than 0"))
-	}
-
-	if exp.IsZero() {
-		return sdk.OneDec()
-	}
-
-	// Common case optimization
-	// Optimize for it being equal to one-half
 	if exp.Equal(one_half) {
 		output, err := base.ApproxSqrt()
 		if err != nil {
-			panic(err)
+			return sdk.Dec{}, err
 		}
-		return output
+		return output, nil
 	}
-	// TODO: Make an approx-equal function, and then check if exp * 3 = 1, and do a check accordingly
-
-	// We compute this via taking the maclaurin series of (1 + x)^a
-	// where x = base - 1.
-	// The maclaurin series of (1 + x)^a = sum_{k=0}^{infty} binom(a, k) x^k
-	// Binom(a, k) takes the natural continuation on the first parameter, namely that
-	// Binom(a, k) = N/D, where D = k!, and N = a(a-1)(a-2)...(a-k+1)
-	// Next we show that the absolute value of each term is less than the last term.
-	// Note that the change in term n's value vs term n + 1 is a multiplicative factor of
-	// v_n = x(a - n) / (n+1)
-	// So if |v_n| < 1, we know that each term has a lesser impact on the result than the last.
-	// For our bounds on |x| < 1, |a| < 1,
-	// it suffices to see for what n is |v_n| < 1,
-	// in the worst parameterization of x = 1, a = -1.
-	// v_n = |(-1 + epsilon - n) / (n+1)|
-	// So |v_n| is always less than 1, as n ranges over the integers.
-	//
-	// Note that term_n of the expansion is 1 * prod_{i=0}^{n-1} v_i
-	// The error if we stop the expansion at term_n is:
-	// error_n = sum_{k=n+1}^{infty} term_k
-	// At this point we further restrict a >= 0, so 0 <= a < 1.
-	// Now we take the _INCORRECT_ assumption that if term_n < p, then
-	// error_n < p.
-	// This assumption is obviously wrong.
-	// However our usages of this function don't use the full domain.
-	// With a > 0, |x| << 1, and p sufficiently low, perhaps this actually is true.
-
-	// TODO: Check with our parameterization
-	// TODO: If theres a bug, balancer is also wrong here :thonk:
-
-	base = base.Clone()
-	x, xneg := AbsDifferenceWithSign(base, one)
-	term := sdk.OneDec()
-	sum := sdk.OneDec()
-	negative := false
-
-	a := exp.Clone()
-	bigK := sdk.NewDec(0)
-	// TODO: Document this computation via taylor expansion
-	for i := int64(1); term.GTE(precision); i++ {
-		// At each iteration, we need two values, i and i-1.
-		// To avoid expensive big.Int allocation, we reuse bigK variable.
-		// On this line, bigK == i-1.
-		c, cneg := AbsDifferenceWithSign(a, bigK)
-		// On this line, bigK == i.
-		bigK.Set(sdk.NewDec(i)) // TODO: O(n) bigint allocation happens
-		term.MulMut(c).MulMut(x).QuoMut(bigK)
-
-		// a is mutated on absDifferenceWithSign, reset
-		a.Set(exp)
-
-		if term.IsZero() {
-			break
-		}
-		if xneg {
-			negative = !negative
-		}
-
-		if cneg {
-			negative = !negative
-		}
-
-		if negative {
-			sum.SubMut(term)
-		} else {
-			sum.AddMut(term)
-		}
+	lnBase, err := computeLn(base)
+	if err != nil {
+		return sdk.Dec{}, err
 	}
-	return sum
+	expResult, err := computeExp(exp.Mul(lnBase))
+	if err != nil {
+		return sdk.Dec{}, err
+	}
+	return expResult, nil
 }
