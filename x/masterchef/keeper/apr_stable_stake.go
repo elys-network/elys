@@ -80,7 +80,7 @@ func (k Keeper) CalculateStableStakeApr(ctx sdk.Context, query *types.QueryStabl
 		if err != nil {
 			return sdk.ZeroInt(), err
 		}
-		apr := params.InterestRate.Mul(res.BorrowRatio).MulInt(sdk.NewInt(100))
+		apr := params.InterestRate.Mul(res.BorrowRatio)
 		return apr.TruncateInt(), nil
 	}
 

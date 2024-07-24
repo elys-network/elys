@@ -1,6 +1,8 @@
 package keeper
 
 import (
+	"fmt"
+
 	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -73,7 +75,8 @@ func (k Keeper) CalculateApr(ctx sdk.Context, query *types.QueryAprRequest) (mat
 			if err != nil {
 				return sdk.ZeroInt(), err
 			}
-			apr := params.InterestRate.Mul(res.BorrowRatio).MulInt(sdk.NewInt(100))
+			fmt.Print("int rate: ",params.InterestRate)
+			apr := params.InterestRate.Mul(res.BorrowRatio)
 			return apr.TruncateInt(), nil
 		} else {
 			// Elys staking, Eden committed, EdenB committed.
@@ -110,14 +113,13 @@ func (k Keeper) CalculateApr(ctx sdk.Context, query *types.QueryAprRequest) (mat
 				QuoInt(params.DexRewardsStakers.NumBlocks)
 
 			apr := yearlyDexRewardAmount.
-				MulInt(sdk.NewInt(100)).
 				Quo(edenDenomPrice).
 				QuoInt(totalStakedSnapshot)
 
 			return apr.TruncateInt(), nil
 		}
 	} else if query.Denom == ptypes.EdenB {
-		apr := estakingParams.EdenBoostApr.MulInt(sdk.NewInt(100)).TruncateInt()
+		apr := estakingParams.EdenBoostApr.TruncateInt()
 		return apr, nil
 	}
 
