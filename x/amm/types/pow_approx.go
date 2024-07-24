@@ -6,6 +6,84 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
+var ln2 = sdk.MustNewDecFromStr("0.693147180559945309")
+
+func computeExp(x sdk.Dec) sdk.Dec {
+	result := sdk.OneDec()
+	factorial := int64(1)
+
+	// n decide the accuracy, cannot be more than 20 because 21! > MaxInt64
+	// For increased accuracy, can use sdk.Int but then that would slow down the computation
+	// We can also store the value of the factorials to reduce computations
+	for n := int64(1); n <= int64(20); n++ {
+		factorial = factorial * n
+		term := x.Power(uint64(n)).QuoInt64(factorial)
+		result = result.Add(term)
+	}
+
+	return result
+}
+
+func computeLn(x sdk.Dec) sdk.Dec {
+	if x.LTE(sdk.ZeroDec()) {
+		panic("x must be greater than 0")
+	}
+	if x.Equal(sdk.OneDec()) {
+		return sdk.ZeroDec()
+	}
+
+	// To bring x is in the range [0.5, 2]
+	// we use ln(x) = k * ln(2) + ln(y), where y is in [0.5, 2]
+	k := 0
+	for x.GT(two) {
+		x = x.Quo(two)
+		k++
+	}
+	for x.LT(sdk.OneDec().Quo(two)) {
+		x = x.MulInt64(2)
+		k--
+	}
+
+	y := x.Sub(sdk.OneDec())
+	result := sdk.ZeroDec()
+	// Ideally, this loop will not go till 100 iterations. This precision should be reached much before.
+	// Setting 100 terms to have an upper cap on the iterations.
+	for n := uint64(1); n <= 100; n++ {
+		sign := sdk.NewInt(-1)
+		if (n+1)%2 == 0 {
+			sign = sdk.OneInt()
+		}
+		term := y.Power(n).MulInt(sign).QuoInt64(int64(n))
+		result = result.Add(term)
+
+		if powPrecision.GT(term.Abs()) {
+			break
+		}
+	}
+
+	return result.Add(ln2.MulInt64(int64(k)))
+}
+
+// PowerApproximation This uses formula z = exp(b * ComputeLn(a)) for a^b.
+// `terms` increases the accuracy of ComputeLn(a)
+func PowerApproximation(base sdk.Dec, exp sdk.Dec) sdk.Dec {
+	if !base.IsPositive() {
+		panic(fmt.Errorf("base must be greater than 0"))
+	}
+	if exp.LTE(sdk.ZeroDec()) {
+		panic(fmt.Errorf("exp must be greater than 0"))
+	}
+	if exp.IsZero() {
+		return sdk.OneDec()
+	}
+	if exp.Equal(sdk.OneDec()) {
+		return base
+	}
+	lnBase := computeLn(base)
+	expResult := computeExp(exp.Mul(lnBase))
+	return expResult
+}
+
 // Contract: 0 < base <= 2
 // 0 <= exp < 1.
 func PowApprox(base sdk.Dec, exp sdk.Dec, precision sdk.Dec) sdk.Dec {

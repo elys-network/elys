@@ -45,7 +45,7 @@ func Pow(base sdk.Dec, exp sdk.Dec) sdk.Dec {
 		return integerPow
 	}
 
-	fractionalPow := PowApprox(base, fractional, powPrecision)
+	fractionalPow := PowerApproximation(base, fractional)
 
 	return integerPow.Mul(fractionalPow)
 }
