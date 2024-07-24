@@ -241,6 +241,15 @@ func (k Keeper) RetrieveLeverageLpTotal(ctx sdk.Context, user sdk.AccAddress) sd
 			info := k.amm.PoolExtraInfo(ctx, pool)
 			amount := position.Position.LeveragedLpAmount.ToLegacyDec()
 			totalValue = totalValue.Add(amount.Mul(info.LpTokenPrice).QuoInt(ammtypes.OneShare))
+			// USD value of debt
+			debt := k.stablestakeKeeper.GetDebt(ctx, position.GetPosition().GetPositionAddress())
+			usdcDenom, found := k.assetProfileKeeper.GetUsdcDenom(ctx)
+			if !found {
+				continue
+			}
+			usdcPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, usdcDenom)
+			liab := debt.Borrowed.ToLegacyDec().Sub(debt.InterestPaid.ToLegacyDec()).Sub(debt.InterestStacked.ToLegacyDec())
+			totalValue = totalValue.Sub(liab.Mul(usdcPrice))
 		}
 	}
 	return totalValue
