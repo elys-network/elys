@@ -152,7 +152,7 @@ jobs:
 
       - name: Chain snapshot and export
         run: |
-          GOMEMLIMIT=8GiB ${POST_UPGRADE_SNAPSHOT_GENERATOR_PATH} chain-snapshot-export \
+          ${POST_UPGRADE_SNAPSHOT_GENERATOR_PATH} chain-snapshot-export \
             ${SNAPSHOT_FILE_PATH} \
             ${OLD_BINARY_PATH} \
             --timeout-next-block 100000 \
@@ -161,7 +161,7 @@ jobs:
 
       - name: Chain initialization
         run: |
-          GOMEMLIMIT=8GiB ${POST_UPGRADE_SNAPSHOT_GENERATOR_PATH} chain-init \
+          ${POST_UPGRADE_SNAPSHOT_GENERATOR_PATH} chain-init \
             ${OLD_BINARY_PATH} \
             --timeout-next-block 100000 \
             --timeout-wait-for-node 100000
@@ -169,7 +169,7 @@ jobs:
 
       - name: Create second validator
         run: |
-          GOMEMLIMIT=16GiB ${POST_UPGRADE_SNAPSHOT_GENERATOR_PATH} create-second-validator \
+          ${POST_UPGRADE_SNAPSHOT_GENERATOR_PATH} create-second-validator \
             ${OLD_BINARY_PATH} \
             --timeout-next-block 100000 \
             --timeout-wait-for-node 100000
@@ -177,14 +177,14 @@ jobs:
 
       - name: Prepare validator data
         run: |
-          GOMEMLIMIT=8GiB ${POST_UPGRADE_SNAPSHOT_GENERATOR_PATH} prepare-validator-data \
+          ${POST_UPGRADE_SNAPSHOT_GENERATOR_PATH} prepare-validator-data \
             --timeout-next-block 100000 \
             --timeout-wait-for-node 100000
         if: steps.cache-submit-new-proposal.outputs.cache-hit != 'true'
 
       - name: Submit new proposal
         run: |
-          GOMEMLIMIT=8GiB ${POST_UPGRADE_SNAPSHOT_GENERATOR_PATH} submit-new-proposal \
+          ${POST_UPGRADE_SNAPSHOT_GENERATOR_PATH} submit-new-proposal \
             ${OLD_BINARY_PATH} \
             ${NEW_BINARY_PATH} \
             --timeout-next-block 100000 \
@@ -225,7 +225,7 @@ jobs:
 
       - name: Upgrade to new binary
         run: |
-          GOMEMLIMIT=8GiB ${POST_UPGRADE_SNAPSHOT_GENERATOR_PATH} upgrade-to-new-binary \
+          ${POST_UPGRADE_SNAPSHOT_GENERATOR_PATH} upgrade-to-new-binary \
             ${NEW_BINARY_PATH} \
             --timeout-next-block 100000 \
             --timeout-wait-for-node 100000
