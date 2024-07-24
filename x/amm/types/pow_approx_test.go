@@ -28,7 +28,7 @@ func TestPowApproximation(t *testing.T) {
 			count++
 		}
 	}
-	highInaccuracy := count < (iterations / 10)
-	require.True(t, highInaccuracy)
+	lowInaccuracy := count < (iterations / 10)
+	require.True(t, lowInaccuracy)
 
 }
