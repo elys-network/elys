@@ -6,12 +6,6 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-var (
-	ln2    = sdk.MustNewDecFromStr("0.693147180559945309")
-	invLn2 = sdk.MustNewDecFromStr("1.442695040888963407")
-	exp    = sdk.MustNewDecFromStr("2.718281828459045235")
-)
-
 func computeExp(x sdk.Dec) (sdk.Dec, error) {
 	if x.Equal(sdk.ZeroDec()) {
 		return sdk.OneDec(), nil
@@ -25,7 +19,7 @@ func computeExp(x sdk.Dec) (sdk.Dec, error) {
 	}
 
 	// Range reduction: x = k * ln(2) + y
-	k := x.Mul(invLn2).TruncateInt64()
+	k := x.Mul(inverseLn2).TruncateInt64()
 	y := x.Sub(sdk.NewDecFromInt(sdk.NewInt(k)).Mul(ln2))
 
 	expY := sdk.OneDec()
@@ -42,9 +36,9 @@ func computeExp(x sdk.Dec) (sdk.Dec, error) {
 
 	twoPowK := sdk.OneDec()
 	if k > 0 {
-		twoPowK = two.Power(uint64(k))
+		twoPowK = twoDec.Power(uint64(k))
 	} else if k < 0 {
-		twoPowK = sdk.OneDec().Quo(two.Power(uint64(-k)))
+		twoPowK = sdk.OneDec().Quo(twoDec.Power(uint64(-k)))
 	}
 
 	result := expY.Mul(twoPowK)
@@ -72,11 +66,11 @@ func computeLn(x sdk.Dec) (result sdk.Dec, err error) {
 	// To bring x is in the range [0.5, 2]
 	// we use ln(x) = k * ln(2) + ln(z), where z is in [0.5, 2]
 	k := 0
-	for x.GT(two) {
-		x = x.Quo(two)
+	for x.GT(twoDec) {
+		x = x.Quo(twoDec)
 		k++
 	}
-	for x.LT(sdk.OneDec().Quo(two)) {
+	for x.LT(sdk.OneDec().Quo(twoDec)) {
 		x = x.MulInt64(2)
 		k--
 	}
@@ -119,7 +113,7 @@ func PowerApproximation(base sdk.Dec, exp sdk.Dec) (sdk.Dec, error) {
 	if exp.Equal(sdk.OneDec()) {
 		return base, nil
 	}
-	if exp.Equal(one_half) {
+	if exp.Equal(oneHalf) {
 		output, err := base.ApproxSqrt()
 		if err != nil {
 			return sdk.Dec{}, err
