@@ -60,9 +60,9 @@ message MsgUpdateParams {
 message MsgUpdateParamsResponse {}
 
 message UpdatePool {
-  uint64 amm_pool_id = 2;
-      bool Enabled = 3;
-      bool Closed = 4;
+  uint64 amm_pool_id = 1;
+      bool Enabled = 2;
+      bool Closed = 3;
 }
 message MsgUpdatePools {
       string authority = 1;
@@ -101,3 +101,9 @@ message MsgAddCollateral {
 
 message MsgAddCollateralResponse {}
 
+message MsgAddPool {
+  string authority = 1;
+  Pool pool = 2[(gogoproto.nullable) = false];
+}
+
+message MsgAddPoolResponse {}
