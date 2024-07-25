@@ -6,36 +6,48 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-var ln2 = sdk.MustNewDecFromStr("0.693147180559945309")
+var (
+	ln2    = sdk.MustNewDecFromStr("0.693147180559945309")
+	invLn2 = sdk.MustNewDecFromStr("1.442695040888963407")
+	exp    = sdk.MustNewDecFromStr("2.718281828459045235")
+)
 
-// ComputeExp For values > 22 this function panics to Int overflow because powerTerm have 77 digits
-// To extend the range of the function we can reduce the number of iterations at the cost of accuracy
-// Since we are only using to compute power approximation for base^exp, it will overflow if Ln(base) > 22,
-// which makes base should not be more than approx. 3.58 x 10^9 and exp is very close to 1
-func computeExp(x sdk.Dec) (result sdk.Dec, err error) {
-	defer func() {
-		if r := recover(); r != nil {
-			var ok bool
-			err, ok = r.(error)
-			if !ok {
-				err = errors.New("out of bounds")
-			}
-		}
-	}()
-	result = sdk.OneDec()
-	factorial := sdk.OneInt()
-	powerTerm := x
+func computeExp(x sdk.Dec) (sdk.Dec, error) {
+	if x.Equal(sdk.ZeroDec()) {
+		return sdk.OneDec(), nil
+	}
+	if x.Equal(sdk.OneDec()) {
+		return exp, nil
+	}
+	// exp(-42) is approx 5.7 x 10^-19, smallest dec possible is 10^-18
+	if x.LTE(sdk.NewDecFromInt(sdk.NewInt(-42))) {
+		return sdk.ZeroDec(), nil
+	}
+
+	// Range reduction: x = k * ln(2) + y
+	k := x.Mul(invLn2).TruncateInt64()
+	y := x.Sub(sdk.NewDecFromInt(sdk.NewInt(k)).Mul(ln2))
+
+	expY := sdk.OneDec()
+	term := sdk.OneDec()
 
 	//n decides the precision of the value, higher the n, greater is the accuracy
-	//it cannot be more than 57 as 58! > 2^256 and 2^256 is the max value sdk.Int can have because cap on bit length
-	for n := 1; n <= 57; n++ {
-		factorial = factorial.MulRaw(int64(n))
-		term := powerTerm.QuoInt(factorial)
-		result = result.Add(term)
-		if n < 57 {
-			powerTerm = powerTerm.Mul(x)
+	for n := int64(1); n <= 100; n++ {
+		term = term.Mul(y).QuoInt64(n)
+		expY = expY.Add(term)
+		if term.Abs().LTE(powPrecision) {
+			break
 		}
 	}
+
+	twoPowK := sdk.OneDec()
+	if k > 0 {
+		twoPowK = two.Power(uint64(k))
+	} else if k < 0 {
+		twoPowK = sdk.OneDec().Quo(two.Power(uint64(-k)))
+	}
+
+	result := expY.Mul(twoPowK)
 
 	return result, nil
 }
@@ -94,10 +106,6 @@ func computeLn(x sdk.Dec) (result sdk.Dec, err error) {
 	return result.Add(ln2.MulInt64(int64(k))), nil
 }
 
-// PowerApproximation This uses formula z = exp(b * Ln(a)) for a^b.
-// Important: This function fails when b * Ln(a) > 22,
-// since we are using it to calculate for 0 < b < 1, the upper cap on a is 3.58 x 10^9
-// However accuracy decreases fast when 'a' is large
 func PowerApproximation(base sdk.Dec, exp sdk.Dec) (sdk.Dec, error) {
 	if !base.IsPositive() {
 		return sdk.Dec{}, fmt.Errorf("base must be greater than 0")
