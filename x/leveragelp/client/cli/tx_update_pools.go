@@ -48,7 +48,7 @@ func CmdUpdatePools() *cobra.Command {
 				return errors.New("signer address is missing")
 			}
 
-			pools, err := readPoolsJSON(args[0])
+			pool, err := readPoolsJSON(args[0])
 			if err != nil {
 				return err
 			}
@@ -56,7 +56,7 @@ func CmdUpdatePools() *cobra.Command {
 			govAddress := sdk.AccAddress(address.Module("gov"))
 			msg := types.NewMsgUpdatePools(
 				govAddress.String(),
-				pools,
+				pool,
 			)
 
 			if err := msg.ValidateBasic(); err != nil {
@@ -94,16 +94,16 @@ func CmdUpdatePools() *cobra.Command {
 	return cmd
 }
 
-func readPoolsJSON(filename string) ([]types.Pool, error) {
-	var pools []types.Pool
+func readPoolsJSON(filename string) (types.UpdatePool, error) {
+	var pool types.UpdatePool
 	bz, err := ioutil.ReadFile(filename)
 	if err != nil {
-		return []types.Pool{}, err
+		return types.UpdatePool{}, err
 	}
-	err = json.Unmarshal(bz, &pools)
+	err = json.Unmarshal(bz, &pool)
 	if err != nil {
-		return []types.Pool{}, err
+		return types.UpdatePool{}, err
 	}
 
-	return pools, nil
+	return pool, nil
 }

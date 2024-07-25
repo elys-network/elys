@@ -59,9 +59,14 @@ message MsgUpdateParams {
 
 message MsgUpdateParamsResponse {}
 
+message UpdatePool {
+  uint64 amm_pool_id = 2;
+      bool Enabled = 3;
+      bool Closed = 4;
+}
 message MsgUpdatePools {
-           string authority = 1;
-  repeated Pool   pools     = 2 [(gogoproto.nullable) = false];
+      string authority = 1;
+      UpdatePool pool = 2;
 }
 
 message MsgUpdatePoolsResponse {}
