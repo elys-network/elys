@@ -19,8 +19,8 @@ import (
 // Governance command
 func CmdUpdatePools() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "update-pools [pool.json]",
-		Short: "Update leveragelp pools",
+		Use:   "update-pool [pool.json]",
+		Short: "Update leveragelp pool",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)

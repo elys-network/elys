@@ -107,3 +107,10 @@ message MsgAddPool {
 }
 
 message MsgAddPoolResponse {}
+
+message MsgRemovePool {
+  string authority = 1;
+  uint64 id      = 2;
+}
+
+message MsgRemovePoolResponse {}
