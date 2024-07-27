@@ -615,7 +615,7 @@ func NewElysApp(
 	tokenomicsModule := tokenomicsmodule.NewAppModule(appCodec, app.TokenomicsKeeper, app.AccountKeeper, app.BankKeeper)
 
 	app.EstakingKeeper = *estakingmodulekeeper.NewKeeper(
-		cdc,
+		appCodec,
 		keys[estakingmoduletypes.StoreKey],
 		keys[estakingmoduletypes.MemStoreKey],
 		app.ParameterKeeper,

@@ -23,7 +23,7 @@ import (
 type (
 	Keeper struct {
 		*stakingkeeper.Keeper
-		cdc                *codec.LegacyAmino
+		cdc                codec.BinaryCodec
 		storeKey           storetypes.StoreKey
 		memKey             storetypes.StoreKey
 		parameterKeeper    types.ParameterKeeper
@@ -60,7 +60,7 @@ func init() {
 }
 
 func NewKeeper(
-	cdc *codec.LegacyAmino,
+	cdc codec.BinaryCodec,
 	storeKey,
 	memKey storetypes.StoreKey,
 	parameterKeeper types.ParameterKeeper,
