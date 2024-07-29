@@ -24,11 +24,12 @@ var (
 	// This is done so that smooth weight changes have enough precision to actually be smooth.
 	GuaranteedWeightPrecision int64 = 1 << 30
 
-	oneHalf    = sdk.MustNewDecFromStr("0.5")
-	twoDec     = sdk.MustNewDecFromStr("2")
-	ln2        = sdk.MustNewDecFromStr("0.693147180559945309")
-	inverseLn2 = sdk.MustNewDecFromStr("1.442695040888963407")
-	exp        = sdk.MustNewDecFromStr("2.718281828459045235")
+	oneHalf           = sdk.MustNewDecFromStr("0.5")
+	twoDec            = sdk.MustNewDecFromStr("2")
+	ln2               = sdk.MustNewDecFromStr("0.693147180559945309")
+	inverseLn2        = sdk.MustNewDecFromStr("1.442695040888963407")
+	euler             = sdk.MustNewDecFromStr("2.718281828459045235")
+	powIterationLimit = int64(150_000)
 
 	// PowPrecision Don't EVER change after initializing
 	// TODO: Analyze choice here.
