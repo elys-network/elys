@@ -200,7 +200,7 @@ func (msg *MsgAddPool) ValidateBasic() error {
 	return nil
 }
 
-func NewMsgAddPools(signer string, pool Pool) *MsgAddPool {
+func NewMsgAddPools(signer string, pool AddPool) *MsgAddPool {
 
 	return &MsgAddPool{
 		Authority: signer,

@@ -10,6 +10,7 @@ import (
 )
 
 func (k msgServer) AddPools(goCtx context.Context, msg *types.MsgAddPool) (*types.MsgAddPoolResponse, error) {
+	var newPool types.Pool
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	if k.authority != msg.Authority {
@@ -22,7 +23,11 @@ func (k msgServer) AddPools(goCtx context.Context, msg *types.MsgAddPool) (*type
 		_, found := k.GetPool(ctx, msg.Pool.AmmPoolId)
 
 		if !found {
-			k.SetPool(ctx, msg.Pool)
+			newPool.AmmPoolId = msg.Pool.AmmPoolId
+			newPool.Closed = msg.Pool.Closed
+			newPool.Enabled = msg.Pool.Enabled
+			newPool.LeverageMax = msg.Pool.LeverageMax
+			k.SetPool(ctx, newPool)
 		}
 	}
 

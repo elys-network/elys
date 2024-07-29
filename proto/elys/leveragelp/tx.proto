@@ -101,9 +101,19 @@ message MsgAddCollateral {
 
 message MsgAddCollateralResponse {}
 
+message AddPool {
+  uint64 amm_pool_id = 1;
+  bool enabled = 2;
+  bool closed = 3;
+  string leverage_max = 4 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+}
+
 message MsgAddPool {
   string authority = 1;
-  Pool pool = 2[(gogoproto.nullable) = false];
+  AddPool pool = 2[(gogoproto.nullable) = false];
 }
 
 message MsgAddPoolResponse {}
