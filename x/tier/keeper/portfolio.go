@@ -10,6 +10,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
+	commitmenttypes "github.com/elys-network/elys/x/commitment/types"
 	estakingtypes "github.com/elys-network/elys/x/estaking/types"
 	mastercheftypes "github.com/elys-network/elys/x/masterchef/types"
 
@@ -46,8 +47,8 @@ func (k Keeper) RetrieveAllPortfolio(ctx sdk.Context, user string) {
 	totalValue = totalValue.Add(staked)
 
 	// Staked assets
-	commit, delegations, unbondings := k.RetrieveStaked(ctx, sender)
-	totalValue = totalValue.Add(commit).Add(delegations).Add(unbondings)
+	commit, delegations, unbondings, totalVesting := k.RetrieveStaked(ctx, sender)
+	totalValue = totalValue.Add(commit).Add(delegations).Add(unbondings).Add(totalVesting)
 
 	// LeverageLp
 	lev := k.RetrieveLeverageLpTotal(ctx, sender)
@@ -82,9 +83,14 @@ func (k Keeper) RetrievePoolTotal(ctx sdk.Context, user sdk.AccAddress) sdk.Dec 
 	return totalValue
 }
 
-func (k Keeper) RetrieveStaked(ctx sdk.Context, user sdk.AccAddress) (sdk.Dec, sdk.Dec, sdk.Dec) {
+func (k Keeper) RetrieveStaked(ctx sdk.Context, user sdk.AccAddress) (sdk.Dec, sdk.Dec, sdk.Dec, sdk.Dec) {
 	totalCommit := sdk.NewDec(0)
 	commitments := k.commitement.GetCommitments(ctx, user.String())
+	totalVested := sdk.NewDec(0)
+	vestingResp, vestErr := k.commitement.CommitmentVestingInfo(ctx, &commitmenttypes.QueryCommitmentVestingInfoRequest{Address: user.String()})
+	if vestErr == nil {
+		totalVested = vestingResp.Total.ToLegacyDec()
+	}
 	for _, commitment := range commitments.CommittedTokens {
 		if !strings.HasPrefix(commitment.Denom, "amm/pool") {
 			if strings.HasPrefix(commitment.Denom, "stablestake") {
@@ -137,7 +143,7 @@ func (k Keeper) RetrieveStaked(ctx sdk.Context, user sdk.AccAddress) (sdk.Dec, s
 			}
 		}
 	}
-	return totalCommit, totalDelegations, totalUnbondings
+	return totalCommit, totalDelegations, totalUnbondings, totalVested
 }
 
 func (k Keeper) RetrieveRewardsTotal(ctx sdk.Context, user sdk.AccAddress) sdk.Dec {
