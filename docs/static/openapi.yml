@@ -40949,6 +40949,40 @@ paths:
           type: string
       tags:
         - Query
+  /elys-network/elys/leveragelp/committed_tokens_locked/{address}:
+    get:
+      summary: Queries a list of CommittedTokensLocked items.
+      operationId: ElysLeveragelpCommittedTokensLocked
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: address
+          in: path
+          required: true
+          type: string
+      tags:
+        - Query
   /elys-network/elys/leveragelp/is-whitelisted:
     get:
       summary: Queries a list of IsWhitelisted items.
@@ -45066,7 +45100,11 @@ paths:
           schema:
             type: object
             properties:
-              price:
+              ammPrice:
+                type: string
+              oraclePrice:
+                type: string
+              oraclePriceDec:
                 type: string
         default:
           description: An unexpected error response.
@@ -45250,6 +45288,13 @@ paths:
           description: A successful response.
           schema:
             type: object
+            properties:
+              commitments:
+                type: string
+              delegations:
+                type: string
+              unbondings:
+                type: string
         default:
           description: An unexpected error response.
           schema:
@@ -87743,6 +87788,8 @@ definitions:
         type: string
       amount_returned:
         type: string
+  elys.leveragelp.QueryCommittedTokensLockedResponse:
+    type: object
   elys.leveragelp.QueryGetPoolResponse:
     type: object
     properties:
@@ -89643,6 +89690,8 @@ definitions:
     type: object
   elys.stablestake.MsgUnbondResponse:
     type: object
+  elys.stablestake.MsgUpdateParamsResponse:
+    type: object
   elys.stablestake.Params:
     type: object
     properties:
@@ -89776,7 +89825,11 @@ definitions:
   elys.tier.QueryGetConsolidatedPriceResponse:
     type: object
     properties:
-      price:
+      ammPrice:
+        type: string
+      oraclePrice:
+        type: string
+      oraclePriceDec:
         type: string
   elys.tier.QueryGetPortfolioResponse:
     type: object
@@ -89817,6 +89870,13 @@ definitions:
         type: string
   elys.tier.QueryStakedResponse:
     type: object
+    properties:
+      commitments:
+        type: string
+      delegations:
+        type: string
+      unbondings:
+        type: string
   elys.tokenomics.Airdrop:
     type: object
     properties:
