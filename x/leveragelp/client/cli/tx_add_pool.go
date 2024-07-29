@@ -94,15 +94,15 @@ func CmdAddPools() *cobra.Command {
 	return cmd
 }
 
-func readPoolJSON(filename string) (types.Pool, error) {
-	var pool types.Pool
+func readPoolJSON(filename string) (types.AddPool, error) {
+	var pool types.AddPool
 	bz, err := ioutil.ReadFile(filename)
 	if err != nil {
-		return types.Pool{}, err
+		return types.AddPool{}, err
 	}
 	err = json.Unmarshal(bz, &pool)
 	if err != nil {
-		return types.Pool{}, err
+		return types.AddPool{}, err
 	}
 
 	return pool, nil
