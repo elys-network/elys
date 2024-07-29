@@ -14,7 +14,7 @@ var _ = strconv.Itoa(0)
 func CmdCommittedTokensLocked() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "committed-tokens-locked [address]",
-		Short: "Query committed-tokens-locked",
+		Short: "Show locked coins in commitment not unlockable for different leveragelp positions",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			reqAddress := args[0]
