@@ -60,13 +60,13 @@ message MsgUpdateParams {
 message MsgUpdateParamsResponse {}
 
 message UpdatePool {
-  uint64 amm_pool_id = 1;
+  uint64 pool_id = 1;
       bool Enabled = 2;
       bool Closed = 3;
 }
 message MsgUpdatePools {
       string authority = 1;
-      UpdatePool pool = 2;
+      UpdatePool UpdatePool = 2;
 }
 
 message MsgUpdatePoolsResponse {}

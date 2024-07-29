@@ -180,7 +180,7 @@ func NewMsgUpdatePools(signer string, pool UpdatePool) *MsgUpdatePools {
 
 	return &MsgUpdatePools{
 		Authority: signer,
-		Pool:     &pool,
+		UpdatePool:     &pool,
 	}
 }
 

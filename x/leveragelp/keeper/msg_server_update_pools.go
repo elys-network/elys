@@ -16,11 +16,11 @@ func (k msgServer) UpdatePools(goCtx context.Context, msg *types.MsgUpdatePools)
 		return nil, errorsmod.Wrapf(govtypes.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.authority, msg.Authority)
 	}
 
-	pool, found := k.GetPool(ctx, msg.Pool.AmmPoolId)
+	pool, found := k.GetPool(ctx, msg.UpdatePool.PoolId)
 
 	if found {
-		pool.Enabled = msg.Pool.Enabled
-		pool.Closed = msg.Pool.Closed
+		pool.Enabled = msg.UpdatePool.Enabled
+		pool.Closed = msg.UpdatePool.Closed
 		k.SetPool(ctx, pool)
 	}
 

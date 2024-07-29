@@ -16,10 +16,14 @@ func (k msgServer) AddPools(goCtx context.Context, msg *types.MsgAddPool) (*type
 		return nil, errorsmod.Wrapf(govtypes.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.authority, msg.Authority)
 	}
 
-	_, found := k.GetPool(ctx, msg.Pool.AmmPoolId)
+	pool, found := k.amm.GetPool(ctx, msg.Pool.AmmPoolId)
 
-	if !found {
-		k.SetPool(ctx, msg.Pool)
+	if found && pool.PoolParams.UseOracle {
+		_, found := k.GetPool(ctx, msg.Pool.AmmPoolId)
+
+		if !found {
+			k.SetPool(ctx, msg.Pool)
+		}
 	}
 
 	return &types.MsgAddPoolResponse{}, nil
