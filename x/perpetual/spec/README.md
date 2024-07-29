@@ -21,7 +21,7 @@ For more detailed information, please refer to the individual sections listed in
 ## Contents
 
 1. **[Concepts](01_concepts.md)**
-2. **[Mechanisms](02_mechanisms.md)**
+2. **[Mechanisms](02_mechanism.md)**
 3. **[Usage](03_usage.md)**
 4. **[Keeper](04_keeper.md)**
 5. **[Protobuf Definitions](05_protobuf_definitions.md)**
