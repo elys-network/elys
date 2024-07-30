@@ -43,17 +43,21 @@ func (k Keeper) OpenConsolidate(ctx sdk.Context, position *types.Position, msg *
 		return nil, errorsmod.Wrap(types.ErrPositionDisabled, fmt.Sprintf("poolId: %d", poolId))
 	}
 
+	collateralAmountDec := sdk.NewDecFromInt(msg.CollateralAmount)
+	position.Collateral = position.Collateral.Add(sdk.NewCoin(msg.CollateralAsset, msg.CollateralAmount))
+
+	position, err := k.ProcessOpenLong(ctx, position, position.Leverage, collateralAmountDec, poolId, msg)
+	if err != nil {
+		return nil, err
+	}
+
 	ammPool, err := k.GetAmmPool(ctx, poolId)
 	if err != nil {
 		return nil, err
 	}
 
-	collateralAmountDec := sdk.NewDecFromInt(msg.CollateralAmount)
-	position.Collateral = position.Collateral.Add(sdk.NewCoin(msg.CollateralAsset, msg.CollateralAmount))
-
-	position, err = k.ProcessOpenLong(ctx, position, position.Leverage, collateralAmountDec, poolId, msg)
-	if err != nil {
-		return nil, err
+	if k.hooks != nil {
+		k.hooks.AfterLeveragelpPositionModified(ctx, ammPool, pool)
 	}
 
 	event := sdk.NewEvent(types.EventOpen,
@@ -65,10 +69,6 @@ func (k Keeper) OpenConsolidate(ctx sdk.Context, position *types.Position, msg *
 		sdk.NewAttribute("health", position.PositionHealth.String()),
 	)
 	ctx.EventManager().EmitEvent(event)
-
-	if k.hooks != nil {
-		k.hooks.AfterLeveragelpPositionModified(ctx, ammPool, pool)
-	}
 
 	return &types.MsgOpenResponse{}, nil
 }
