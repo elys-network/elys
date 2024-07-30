@@ -6,20 +6,6 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-// Don't EVER change after initializing
-// TODO: Analyze choice here.
-var powPrecision, _ = sdk.NewDecFromStr("0.00000001")
-
-var (
-	one_half sdk.Dec = sdk.MustNewDecFromStr("0.5")
-	one      sdk.Dec = sdk.OneDec()
-	two      sdk.Dec = sdk.MustNewDecFromStr("2")
-
-	// https://www.wolframalpha.com/input?i=2.718281828459045235360287471352662498&assumption=%22ClashPrefs%22+-%3E+%7B%22Math%22%7D
-	// nolint: unused
-	// eulersNumber = sdk.MustNewDecFromStr("2.718281828459045235360287471352662498")
-)
-
 // Pow computes base^(exp)
 // However since the exponent is not an integer, we must do an approximation algorithm.
 // TODO: In the future, lets add some optimized routines for common exponents, e.g. for common wIn / wOut ratios
@@ -45,7 +31,10 @@ func Pow(base sdk.Dec, exp sdk.Dec) sdk.Dec {
 		return integerPow
 	}
 
-	fractionalPow := PowApprox(base, fractional, powPrecision)
+	fractionalPow, err := powerApproximation(base, fractional)
+	if err != nil {
+		panic(err)
+	}
 
 	return integerPow.Mul(fractionalPow)
 }

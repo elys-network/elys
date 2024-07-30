@@ -43,6 +43,7 @@ type OracleKeeper interface {
 
 type CommitmentKeeper interface {
 	GetCommitments(ctx sdk.Context, creator string) commitmenttypes.Commitments
+	CommitmentVestingInfo(goCtx context.Context, req *commitmenttypes.QueryCommitmentVestingInfoRequest) (*commitmenttypes.QueryCommitmentVestingInfoResponse, error)
 }
 
 type PerpetualKeeper interface {
@@ -99,4 +100,5 @@ type LeverageLpKeeper interface {
 
 type StablestakeKeeper interface {
 	GetParams(ctx sdk.Context) (params stablestaketypes.Params)
+	GetDebt(ctx sdk.Context, addr sdk.AccAddress) stablestaketypes.Debt
 }

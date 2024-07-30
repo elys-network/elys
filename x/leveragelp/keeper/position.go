@@ -219,8 +219,10 @@ func (k Keeper) GetAllPositions(ctx sdk.Context) []types.Position {
 	for ; iterator.Valid(); iterator.Next() {
 		var position types.Position
 		bytesValue := iterator.Value()
-		k.cdc.MustUnmarshal(bytesValue, &position)
-		positions = append(positions, position)
+		err := k.cdc.Unmarshal(bytesValue, &position)
+		if err == nil {
+			positions = append(positions, position)
+		}
 	}
 	return positions
 }
@@ -308,8 +310,10 @@ func (k Keeper) GetPositions(ctx sdk.Context, pagination *query.PageRequest) ([]
 
 	pageRes, err := query.Paginate(positionStore, pagination, func(key []byte, value []byte) error {
 		var position types.Position
-		k.cdc.MustUnmarshal(value, &position)
-		positionList = append(positionList, &position)
+		err := k.cdc.Unmarshal(value, &position)
+		if err == nil {
+			positionList = append(positionList, &position)
+		}
 		return nil
 	})
 
@@ -329,12 +333,13 @@ func (k Keeper) GetPositionsForPool(ctx sdk.Context, ammPoolId uint64, paginatio
 	}
 	pageRes, err := query.FilteredPaginate(positionStore, pagination, func(key []byte, value []byte, accumulate bool) (bool, error) {
 		var position types.Position
-		k.cdc.MustUnmarshal(value, &position)
-		if accumulate && position.AmmPoolId == ammPoolId {
-			positions = append(positions, &position)
-			return true, nil
+		err := k.cdc.Unmarshal(value, &position)
+		if err == nil {
+			if accumulate && position.AmmPoolId == ammPoolId {
+				positions = append(positions, &position)
+				return true, nil
+			}
 		}
-
 		return false, nil
 	})
 
@@ -416,3 +421,28 @@ func (k Keeper) GetPositionWithId(ctx sdk.Context, positionAddress sdk.Address, 
 	k.cdc.MustUnmarshal(res, &position)
 	return &position, true
 }
+
+// FIXME: currently we only avoid the error while loading and not entirely delete the corrupted key, value
+// This is done to ensure we don't delete everything.
+// After the upgrade that comes after 0.39.0
+// We need to uncomment it and remove any corrupted data with this logic
+
+// func (k Keeper) MigrateKeys(ctx sdk.Context) {
+// 	store := ctx.KVStore(k.storeKey)
+// 	iterator := sdk.KVStorePrefixIterator(store, types.PositionPrefix)
+// 	defer func(iterator sdk.Iterator) {
+// 		err := iterator.Close()
+// 		if err != nil {
+// 			panic(err)
+// 		}
+// 	}(iterator)
+
+// 	for ; iterator.Valid(); iterator.Next() {
+// 		var position types.Position
+// 		bytesValue := iterator.Value()
+// 		err := k.cdc.Unmarshal(bytesValue, &position)
+// 		if err != nil {
+// 			store.Delete(iterator.Key())
+// 		}
+// 	}
+// }

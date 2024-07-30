@@ -50,7 +50,7 @@ To maintain the stability and health of the pool, the following equations are us
 
 2. **Position Health and Liquidation Mechanism**:
 
-   $\text{Position Health} = \frac{\text{Position Value}}{\text{Borrowed Amount} + \text{Interest Staked} + \text{Interest Paid}}$
+   $\text{Position Health} = \frac{\text{Position Value}}{\text{Borrowed Amount} + \text{Interest Staked} - \text{Interest Paid}}$
 
    - **Position Value**: The current value of the leveraged position.
    - **Borrowed Amount**: The total amount of USDC borrowed from the StableStake module.
