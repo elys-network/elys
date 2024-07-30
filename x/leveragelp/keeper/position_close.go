@@ -63,13 +63,13 @@ func (k Keeper) ForceCloseLong(ctx sdk.Context, position types.Position, pool ty
 	pool.LeveragedLpAmount = pool.LeveragedLpAmount.Sub(lpAmount)
 	k.UpdatePoolHealth(ctx, &pool)
 
-	ammPool, found := k.amm.GetPool(ctx, position.AmmPoolId)
+	_, found := k.amm.GetPool(ctx, position.AmmPoolId)
 	if !found {
 		return sdk.ZeroInt(), types.ErrAmmPoolNotFound
 	}
 
 	// Update position health
-	positionHealth, err := k.GetPositionHealth(ctx, position, ammPool)
+	positionHealth, err := k.GetPositionHealth(ctx, position)
 	if err != nil {
 		return sdk.ZeroInt(), err
 	}

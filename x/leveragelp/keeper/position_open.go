@@ -34,7 +34,7 @@ func (k Keeper) OpenConsolidate(ctx sdk.Context, position *types.Position, msg *
 		return nil, types.ErrInvalidLeverage
 	}
 	poolId := position.AmmPoolId
-	pool, found := k.GetPool(ctx, poolId)
+	_, found := k.GetPool(ctx, poolId)
 	if !found {
 		return nil, errorsmod.Wrap(types.ErrPoolDoesNotExist, fmt.Sprintf("poolId: %d", poolId))
 	}
@@ -43,15 +43,10 @@ func (k Keeper) OpenConsolidate(ctx sdk.Context, position *types.Position, msg *
 		return nil, errorsmod.Wrap(types.ErrPositionDisabled, fmt.Sprintf("poolId: %d", poolId))
 	}
 
-	ammPool, err := k.GetAmmPool(ctx, poolId)
-	if err != nil {
-		return nil, err
-	}
-
 	collateralAmountDec := sdk.NewDecFromInt(msg.CollateralAmount)
 	position.Collateral = position.Collateral.Add(sdk.NewCoin(msg.CollateralAsset, msg.CollateralAmount))
 
-	position, err = k.ProcessOpenLong(ctx, position, position.Leverage, collateralAmountDec, poolId, msg)
+	position, err := k.ProcessOpenLong(ctx, position, position.Leverage, collateralAmountDec, poolId, msg)
 	if err != nil {
 		return nil, err
 	}
@@ -66,10 +61,6 @@ func (k Keeper) OpenConsolidate(ctx sdk.Context, position *types.Position, msg *
 	)
 	ctx.EventManager().EmitEvent(event)
 
-	if k.hooks != nil {
-		k.hooks.AfterLeveragelpPositionModified(ctx, ammPool, pool)
-	}
-
 	return &types.MsgOpenResponse{}, nil
 }
 
@@ -83,12 +74,6 @@ func (k Keeper) ProcessOpenLong(ctx sdk.Context, position *types.Position, lever
 	// Check if the pool is enabled.
 	if !k.IsPoolEnabled(ctx, poolId) {
 		return nil, errorsmod.Wrap(types.ErrPositionDisabled, fmt.Sprintf("poolId: %d", poolId))
-	}
-
-	// Fetch the corresponding AMM (Automated Market Maker) pool.
-	ammPool, err := k.GetAmmPool(ctx, poolId)
-	if err != nil {
-		return nil, err
 	}
 
 	baseCurrency, found := k.assetProfileKeeper.GetUsdcDenom(ctx)
@@ -107,7 +92,7 @@ func (k Keeper) ProcessOpenLong(ctx sdk.Context, position *types.Position, lever
 
 	// send collateral coins to Position address from Position owner address
 	positionOwner := sdk.MustAccAddressFromBech32(position.Address)
-	err = k.bankKeeper.SendCoins(ctx, positionOwner, position.GetPositionAddress(), sdk.Coins{sdk.NewCoin(msg.CollateralAsset, msg.CollateralAmount)})
+	err := k.bankKeeper.SendCoins(ctx, positionOwner, position.GetPositionAddress(), sdk.Coins{sdk.NewCoin(msg.CollateralAsset, msg.CollateralAmount)})
 	if err != nil {
 		return nil, err
 	}
@@ -130,7 +115,7 @@ func (k Keeper) ProcessOpenLong(ctx sdk.Context, position *types.Position, lever
 	k.UpdatePoolHealth(ctx, &pool)
 
 	// Get the Position health.
-	lr, err := k.GetPositionHealth(ctx, *position, ammPool)
+	lr, err := k.GetPositionHealth(ctx, *position)
 	if err != nil {
 		return nil, err
 	}

@@ -68,7 +68,7 @@ func (k Keeper) LiquidatePositionIfUnhealthy(ctx sdk.Context, position *types.Po
 			}
 		}
 	}()
-	h, err := k.GetPositionHealth(ctx, *position, ammPool)
+	h, err := k.GetPositionHealth(ctx, *position)
 	if err != nil {
 		ctx.Logger().Error(errors.Wrap(err, fmt.Sprintf("error updating position health: %s", position.String())).Error())
 		return false, true
@@ -108,7 +108,7 @@ func (k Keeper) ClosePositionIfUnderStopLossPrice(ctx sdk.Context, position *typ
 			}
 		}
 	}()
-	h, err := k.GetPositionHealth(ctx, *position, ammPool)
+	h, err := k.GetPositionHealth(ctx, *position)
 	if err != nil {
 		ctx.Logger().Error(errors.Wrap(err, fmt.Sprintf("error updating position health: %s", position.String())).Error())
 		return false, true
