@@ -94,10 +94,6 @@ func (k Keeper) ForceCloseLong(ctx sdk.Context, position types.Position, pool ty
 		k.SetPosition(ctx, &position, oldDebt.Borrowed.Add(oldDebt.InterestStacked).Sub(oldDebt.InterestPaid))
 	}
 
-	// Hooks after leveragelp position closed
-	if k.hooks != nil {
-		k.hooks.AfterLeveragelpPositionClosed(ctx, pool)
-	}
 	return repayAmount, nil
 }
 
