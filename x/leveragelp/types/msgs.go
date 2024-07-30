@@ -176,10 +176,35 @@ func (msg *MsgWhitelist) ValidateBasic() error {
 	return nil
 }
 
-func NewMsgUpdatePools(signer string, pools []Pool) *MsgUpdatePools {
+func NewMsgUpdatePools(signer string, pool UpdatePool) *MsgUpdatePools {
+
 	return &MsgUpdatePools{
 		Authority: signer,
-		Pools:     pools,
+		UpdatePool:     &pool,
+	}
+}
+
+func (msg *MsgAddPool) GetSigners() []sdk.AccAddress {
+	creator, err := sdk.AccAddressFromBech32(msg.Authority)
+	if err != nil {
+		panic(err)
+	}
+	return []sdk.AccAddress{creator}
+}
+
+func (msg *MsgAddPool) ValidateBasic() error {
+	_, err := sdk.AccAddressFromBech32(msg.Authority)
+	if err != nil {
+		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
+	}
+	return nil
+}
+
+func NewMsgAddPools(signer string, pool AddPool) *MsgAddPool {
+
+	return &MsgAddPool{
+		Authority: signer,
+		Pool:     pool,
 	}
 }
 

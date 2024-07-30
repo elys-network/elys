@@ -35,6 +35,11 @@ func (k Keeper) SetPool(ctx sdk.Context, pool types.Pool) {
 	store.Set(types.PoolKey(pool.AmmPoolId), b)
 }
 
+func (k Keeper) DeletePool(ctx sdk.Context, poolId uint64) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.PoolKeyPrefix))
+	store.Delete(types.PoolKey(poolId))
+}
+
 // GetPool returns a pool from its index
 func (k Keeper) GetPool(ctx sdk.Context, poolId uint64) (val types.Pool, found bool) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.PoolKeyPrefix))

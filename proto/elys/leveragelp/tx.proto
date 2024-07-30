@@ -59,9 +59,14 @@ message MsgUpdateParams {
 
 message MsgUpdateParamsResponse {}
 
+message UpdatePool {
+  uint64 pool_id = 1;
+      bool Enabled = 2;
+      bool Closed = 3;
+}
 message MsgUpdatePools {
-           string authority = 1;
-  repeated Pool   pools     = 2 [(gogoproto.nullable) = false];
+      string authority = 1;
+      UpdatePool UpdatePool = 2;
 }
 
 message MsgUpdatePoolsResponse {}
@@ -96,3 +101,26 @@ message MsgAddCollateral {
 
 message MsgAddCollateralResponse {}
 
+message AddPool {
+  uint64 amm_pool_id = 1;
+  bool enabled = 2;
+  bool closed = 3;
+  string leverage_max = 4 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message MsgAddPool {
+  string authority = 1;
+  AddPool pool = 2[(gogoproto.nullable) = false];
+}
+
+message MsgAddPoolResponse {}
+
+message MsgRemovePool {
+  string authority = 1;
+  uint64 id      = 2;
+}
+
+message MsgRemovePoolResponse {}
