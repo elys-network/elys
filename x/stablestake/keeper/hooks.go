@@ -36,14 +36,3 @@ func (mh MultiStableStakeHooks) AfterUnbond(ctx sdk.Context, sender string, shar
 	}
 	return nil
 }
-
-// Committed is called when staker committed his token
-func (mh MultiStableStakeHooks) AfterUpdateInterestStacked(ctx sdk.Context, address string, old math.Int, new math.Int) error {
-	for i := range mh {
-		err := mh[i].AfterUpdateInterestStacked(ctx, address, old, new)
-		if err != nil {
-			return err
-		}
-	}
-	return nil
-}
