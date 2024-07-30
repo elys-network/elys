@@ -20,7 +20,7 @@ func (k msgServer) RemovePool(goCtx context.Context, msg *types.MsgRemovePool) (
 
 	if found {
 		if pool.LeveragedLpAmount.GT(sdk.NewInt(0)) {
-			return nil, errorsmod.Wrap(types.ErrPoolLevrageAmountNotZero, pool.LeveragedLpAmount.String())
+			return nil, errorsmod.Wrap(types.ErrPoolLeverageAmountNotZero, pool.LeveragedLpAmount.String())
 		}
 		k.DeletePool(ctx, msg.Id)
 	}

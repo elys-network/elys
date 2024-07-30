@@ -27,6 +27,8 @@ func (k msgServer) AddPools(goCtx context.Context, msg *types.MsgAddPool) (*type
 			newPool.Closed = msg.Pool.Closed
 			newPool.Enabled = msg.Pool.Enabled
 			newPool.LeverageMax = msg.Pool.LeverageMax
+			newPool.Health = sdk.NewDec(0)
+			newPool.LeveragedLpAmount = sdk.NewInt(0)
 			k.SetPool(ctx, newPool)
 		}
 	}
