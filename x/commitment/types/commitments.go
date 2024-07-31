@@ -99,7 +99,6 @@ func (c *Commitments) DeductFromCommitted(denom string, amount math.Int, currTim
 			}
 			c.CommittedTokens[i].Lockups = newLockups
 			if lockedAmount.GT(c.CommittedTokens[i].Amount) {
-
 				return errors.Wrapf(ErrInsufficientWithdrawableTokens, "amount: %s denom: %s", amount, denom)
 			}
 			return nil
