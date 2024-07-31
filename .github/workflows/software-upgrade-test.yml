@@ -55,6 +55,7 @@ jobs:
       - name: Build new binary
         run: |
           # create new git tag
+          git tag -d v0.39.0
           git tag -f v999.999.999
           # build new elys binary
           make build
