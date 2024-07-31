@@ -24,7 +24,7 @@ const (
 	ParamsKey = "leveragelp_params"
 )
 
-const MaxPageLimit = 100
+const MaxPageLimit = 1000
 
 var (
 	PositionPrefix          = []byte{0x01}
