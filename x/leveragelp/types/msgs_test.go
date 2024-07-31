@@ -1,6 +1,7 @@
 package types
 
 import (
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"testing"
 
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
@@ -54,7 +55,12 @@ func TestMsgOpen_ValidateBasic(t *testing.T) {
 		}, {
 			name: "valid address",
 			msg: MsgOpen{
-				Creator: sample.AccAddress(),
+				Creator:          sample.AccAddress(),
+				CollateralAsset:  "uusdc",
+				CollateralAmount: sdk.NewInt(100),
+				AmmPoolId:        1,
+				Leverage:         sdk.OneDec().MulInt64(10),
+				StopLossPrice:    sdk.OneDec().MulInt64(10),
 			},
 		},
 	}
