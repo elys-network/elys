@@ -78,12 +78,7 @@ func (k Keeper) SetPosition(ctx sdk.Context, position *types.Position, oldDebt s
 }
 
 func (k Keeper) DestroyPosition(ctx sdk.Context, positionAddress string, id uint64, oldDebt sdk.Int) error {
-	key := types.GetPositionKey(positionAddress, id)
 	store := ctx.KVStore(k.storeKey)
-	if !store.Has(key) {
-		return types.ErrPositionDoesNotExist
-	}
-	store.Delete(key)
 
 	// Remove position sort keys
 	old, err := k.GetPosition(ctx, positionAddress, id)
@@ -97,8 +92,14 @@ func (k Keeper) DestroyPosition(ctx sdk.Context, positionAddress string, id uint
 		if len(stopLossKey) > 0 {
 			store.Delete(stopLossKey)
 		}
-		store.Delete([]byte(old.GetPositionAddress()))
+		store.Delete(old.GetPositionAddress())
 	}
+
+	key := types.GetPositionKey(positionAddress, id)
+	if !store.Has(key) {
+		return types.ErrPositionDoesNotExist
+	}
+	store.Delete(key)
 
 	// decrement open position count
 	openCount := k.GetOpenPositionCount(ctx)
