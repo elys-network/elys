@@ -16,7 +16,7 @@ func (k Keeper) ForceCloseLong(ctx sdk.Context, position types.Position, pool ty
 	oldDebt := k.stableKeeper.GetDebt(ctx, position.GetPositionAddress())
 
 	if position.LeveragedLpAmount.IsZero() {
-		err := k.masterchefKeeper.ClaimRewards(ctx, position.GetPositionAddress(), []uint64{position.AmmPoolId}, sdk.AccAddress(position.Address))
+		err := k.masterchefKeeper.ClaimRewards(ctx, position.GetPositionAddress(), []uint64{position.AmmPoolId}, sdk.MustAccAddressFromBech32(position.Address))
 		if err != nil {
 			return sdk.ZeroInt(), err
 		}
@@ -82,7 +82,7 @@ func (k Keeper) ForceCloseLong(ctx sdk.Context, position types.Position, pool ty
 	// Update leveragedLpAmount
 	position.LeveragedLpAmount = position.LeveragedLpAmount.Sub(lpAmount)
 	if position.LeveragedLpAmount.IsZero() {
-		err = k.masterchefKeeper.ClaimRewards(ctx, position.GetPositionAddress(), []uint64{position.AmmPoolId}, sdk.AccAddress(position.Address))
+		err = k.masterchefKeeper.ClaimRewards(ctx, position.GetPositionAddress(), []uint64{position.AmmPoolId}, sdk.MustAccAddressFromBech32(position.Address))
 		if err != nil {
 			return sdk.ZeroInt(), err
 		}
