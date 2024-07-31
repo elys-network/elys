@@ -81,14 +81,14 @@ func loadUpgradeStore(app *ElysApp) {
 		panic(fmt.Sprintf("Failed to read upgrade info from disk: %v", err))
 	}
 
-	fmt.Printf("Upgrade info: %+v\n", upgradeInfo)
+	app.Logger().Debug("Upgrade info", "info", upgradeInfo)
 
 	if shouldLoadUpgradeStore(app, upgradeInfo) {
 		storeUpgrades := storetypes.StoreUpgrades{
 			// Added: []string{},
 			// Deleted: []string{},
 		}
-		fmt.Printf("Setting store loader with height %d and store upgrades: %+v\n", upgradeInfo.Height, storeUpgrades)
+		app.Logger().Info("Setting store loader with height %d and store upgrades: %+v\n", upgradeInfo.Height, storeUpgrades)
 
 		// Use upgrade store loader for the initial loading of all stores when app starts,
 		// it checks if version == upgradeHeight and applies store upgrades before loading the stores,
@@ -96,12 +96,12 @@ func loadUpgradeStore(app *ElysApp) {
 		// instead the default which is the latest version that store last committed i.e 0 for new stores.
 		app.SetStoreLoader(upgradetypes.UpgradeStoreLoader(upgradeInfo.Height, &storeUpgrades))
 	} else {
-		fmt.Println("No need to load upgrade store.")
+		app.Logger().Debug("No need to load upgrade store.")
 	}
 }
 
 func shouldLoadUpgradeStore(app *ElysApp, upgradeInfo upgradetypes.Plan) bool {
 	currentHeight := app.LastBlockHeight()
-	fmt.Printf("Current block height: %d, Upgrade height: %d\n", currentHeight, upgradeInfo.Height)
+	app.Logger().Debug("Current block height: %d, Upgrade height: %d\n", currentHeight, upgradeInfo.Height)
 	return upgradeInfo.Name == version.Version && !app.UpgradeKeeper.IsSkipHeight(upgradeInfo.Height)
 }
