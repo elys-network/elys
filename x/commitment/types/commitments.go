@@ -3,6 +3,7 @@ package types
 import (
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 func (c Commitments) IsEmpty() bool {
@@ -98,7 +99,7 @@ func (c *Commitments) DeductFromCommitted(denom string, amount math.Int, currTim
 			}
 			c.CommittedTokens[i].Lockups = newLockups
 			if lockedAmount.GT(c.CommittedTokens[i].Amount) {
-				return ErrInsufficientWithdrawableTokens
+				return errors.Wrapf(ErrInsufficientWithdrawableTokens, "amount: %s denom: %s", amount, denom)
 			}
 			return nil
 		}

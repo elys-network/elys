@@ -18,7 +18,7 @@ var (
 	ErrCommitDisabled                 = errorsmod.Register(ModuleName, 1008, "commitment disabled for denom")
 	ErrWithdrawDisabled               = errorsmod.Register(ModuleName, 1009, "withdraw disabled for denom")
 	ErrExceedMaxVestings              = errorsmod.Register(ModuleName, 1010, "exceed maximum allowed vestings")
-	ErrInsufficientWithdrawableTokens = errorsmod.Register(ModuleName, 1011, "insufficient withdrawable tokens")
+	ErrInsufficientWithdrawableTokens = errorsmod.Register(ModuleName, 1011, "Once you deposit into the liquidity pool, your funds will be locked for 1 hour. During this time the withdrawal for this specific deposit won't be available")
 	ErrVestNowIsNotEnabled            = errorsmod.Register(ModuleName, 1012, "instant vesting is not enabled at this stage")
 	ErrUnsupportedWithdrawMode        = errorsmod.Register(ModuleName, 1013, "unsupported withdraw mode")
 	ErrUnsupportedUncommitToken       = errorsmod.Register(ModuleName, 1014, "unsupported uncommit token")
