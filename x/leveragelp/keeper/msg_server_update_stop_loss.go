@@ -20,18 +20,13 @@ func (k msgServer) UpdateStopLoss(goCtx context.Context, msg *types.MsgUpdateSto
 	}
 
 	poolId := position.AmmPoolId
-	pool, found := k.GetPool(ctx, poolId)
+	_, found = k.GetPool(ctx, poolId)
 	if !found {
 		return nil, errorsmod.Wrap(types.ErrPoolDoesNotExist, fmt.Sprintf("poolId: %d", poolId))
 	}
 
 	if !k.IsPoolEnabled(ctx, poolId) {
 		return nil, errorsmod.Wrap(types.ErrPositionDisabled, fmt.Sprintf("poolId: %d", poolId))
-	}
-
-	ammPool, err := k.GetAmmPool(ctx, poolId)
-	if err != nil {
-		return nil, err
 	}
 
 	debt := k.stableKeeper.GetDebt(ctx, position.GetPositionAddress())
@@ -48,10 +43,6 @@ func (k msgServer) UpdateStopLoss(goCtx context.Context, msg *types.MsgUpdateSto
 		sdk.NewAttribute("stop_loss", position.StopLossPrice.String()),
 	)
 	ctx.EventManager().EmitEvent(event)
-
-	if k.hooks != nil {
-		k.hooks.AfterLeveragelpPositionModified(ctx, ammPool, pool)
-	}
 
 	return &types.MsgUpdateStopLossResponse{}, nil
 }

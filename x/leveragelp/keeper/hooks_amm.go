@@ -34,21 +34,10 @@ func (k Keeper) CheckAmmPoolUsdcBalance(ctx sdk.Context, ammPool ammtypes.Pool) 
 
 // AfterPoolCreated is called after CreatePool
 func (k Keeper) AfterPoolCreated(ctx sdk.Context, sender sdk.AccAddress, ammPool ammtypes.Pool) {
-	if k.hooks != nil {
-		k.hooks.AfterAmmPoolCreated(ctx, ammPool)
-	}
 }
 
 // AfterJoinPool is called after JoinPool, JoinSwapExternAmountIn, and JoinSwapShareAmountOut
 func (k Keeper) AfterJoinPool(ctx sdk.Context, sender sdk.AccAddress, ammPool ammtypes.Pool, enterCoins sdk.Coins, shareOutAmount math.Int) {
-	leveragelpPool, found := k.GetPool(ctx, ammPool.PoolId)
-	if !found {
-		return
-	}
-
-	if k.hooks != nil {
-		k.hooks.AfterAmmJoinPool(ctx, ammPool, leveragelpPool)
-	}
 }
 
 // AfterExitPool is called after ExitPool, ExitSwapShareAmountIn, and ExitSwapExternAmountOut

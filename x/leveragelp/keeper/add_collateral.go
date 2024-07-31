@@ -33,12 +33,6 @@ func (k Keeper) ProcessAddCollateral(ctx sdk.Context, address string, id uint64,
 		return errorsmod.Wrap(types.ErrInvalidCollateral, fmt.Sprintf("Cannot add more than: %s", maxAllowedCollateral.String()))
 	}
 
-	// Fetch the corresponding AMM (Automated Market Maker) pool.
-	ammPool, err := k.GetAmmPool(ctx, position.AmmPoolId)
-	if err != nil {
-		return err
-	}
-
 	// send collateral coins to Position address from Position owner address
 	positionOwner := sdk.MustAccAddressFromBech32(position.Address)
 	err = k.bankKeeper.SendCoins(ctx, positionOwner, position.GetPositionAddress(), sdk.Coins{sdk.NewCoin(position.Collateral.Denom, collateral)})
@@ -55,7 +49,7 @@ func (k Keeper) ProcessAddCollateral(ctx sdk.Context, address string, id uint64,
 	k.UpdatePoolHealth(ctx, &pool)
 
 	// Update position health
-	positionHealth, err := k.GetPositionHealth(ctx, position, ammPool)
+	positionHealth, err := k.GetPositionHealth(ctx, position)
 	if err != nil {
 		return err
 	}
@@ -67,10 +61,6 @@ func (k Keeper) ProcessAddCollateral(ctx sdk.Context, address string, id uint64,
 	position.Collateral = position.Collateral.Add(sdk.NewCoin(position.Collateral.Denom, collateral))
 
 	k.SetPosition(ctx, &position, oldDebt.Borrowed.Add(oldDebt.InterestStacked).Sub(oldDebt.InterestPaid))
-
-	if k.hooks != nil {
-		k.hooks.AfterLeveragelpPositionModified(ctx, ammPool, pool)
-	}
 
 	return nil
 }

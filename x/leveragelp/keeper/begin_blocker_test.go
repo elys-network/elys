@@ -17,9 +17,9 @@ func (suite KeeperTestSuite) TestBeginBlocker() {
 	k := suite.app.LeveragelpKeeper
 	addr := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
 	position, _ := suite.OpenPosition(addr)
-	ammPool, found := suite.app.AmmKeeper.GetPool(suite.ctx, position.AmmPoolId)
+	_, found := suite.app.AmmKeeper.GetPool(suite.ctx, position.AmmPoolId)
 	suite.Require().True(found)
-	health, err := k.GetPositionHealth(suite.ctx, *position, ammPool)
+	health, err := k.GetPositionHealth(suite.ctx, *position)
 	suite.Require().NoError(err)
 	// suite.Require().Equal(health.String(), "1.221000000000000000") // slippage enabled on amm
 	suite.Require().Equal(health.String(), "1.250000000000000000") // slippage disabled on amm
@@ -27,7 +27,7 @@ func (suite KeeperTestSuite) TestBeginBlocker() {
 	suite.ctx = suite.ctx.WithBlockTime(suite.ctx.BlockTime().Add(time.Hour * 24 * 500))
 	suite.app.StablestakeKeeper.BeginBlocker(suite.ctx)
 	suite.app.StablestakeKeeper.UpdateInterestStackedByAddress(suite.ctx, sdk.AccAddress(position.GetPositionAddress()))
-	health, err = k.GetPositionHealth(suite.ctx, *position, ammPool)
+	health, err = k.GetPositionHealth(suite.ctx, *position)
 	suite.Require().NoError(err)
 	// suite.Require().Equal(health.String(), "1.024543738200125865") // slippage enabled on amm
 	suite.Require().Equal(health.String(), "1.025220422390814025") // slippage disabled on amm
@@ -46,7 +46,7 @@ func (suite KeeperTestSuite) TestLiquidatePositionIfUnhealthy() {
 	position, pool := suite.OpenPosition(addr)
 	ammPool, found := suite.app.AmmKeeper.GetPool(suite.ctx, position.AmmPoolId)
 	suite.Require().True(found)
-	health, err := k.GetPositionHealth(suite.ctx, *position, ammPool)
+	health, err := k.GetPositionHealth(suite.ctx, *position)
 	suite.Require().NoError(err)
 	// suite.Require().Equal(health.String(), "1.221000000000000000") // slippage enabled on amm
 	suite.Require().Equal(health.String(), "1.250000000000000000") // slippage disabled on amm
@@ -54,7 +54,7 @@ func (suite KeeperTestSuite) TestLiquidatePositionIfUnhealthy() {
 	suite.ctx = suite.ctx.WithBlockTime(suite.ctx.BlockTime().Add(time.Hour * 24 * 500))
 	suite.app.StablestakeKeeper.BeginBlocker(suite.ctx)
 	suite.app.StablestakeKeeper.UpdateInterestStackedByAddress(suite.ctx, sdk.AccAddress(position.GetPositionAddress()))
-	health, err = k.GetPositionHealth(suite.ctx, *position, ammPool)
+	health, err = k.GetPositionHealth(suite.ctx, *position)
 	suite.Require().NoError(err)
 	// suite.Require().Equal(health.String(), "1.024543738200125865") // slippage enabled on amm
 	suite.Require().Equal(health.String(), "1.025220422390814025") // slippage disabled on amm
@@ -137,28 +137,28 @@ func (suite KeeperTestSuite) TestLiquidatePositionSorted() {
 	})
 	suite.Require().NoError(err)
 
-	ammPool, found := suite.app.AmmKeeper.GetPool(suite.ctx, position3.AmmPoolId)
+	_, found := suite.app.AmmKeeper.GetPool(suite.ctx, position3.AmmPoolId)
 	suite.Require().True(found)
-	health, err := k.GetPositionHealth(suite.ctx, *position3, ammPool)
+	health, err := k.GetPositionHealth(suite.ctx, *position3)
 	suite.Require().NoError(err)
 	suite.Require().Equal(health.String(), "2.000000000000000000") // slippage disabled on amm
 
-	health, err = k.GetPositionHealth(suite.ctx, *position, ammPool)
+	health, err = k.GetPositionHealth(suite.ctx, *position)
 	suite.Require().NoError(err)
 	suite.Require().Equal(health.String(), "1.250000000000000000") // slippage disabled on amm
 
-	health, err = k.GetPositionHealth(suite.ctx, *position4, ammPool)
+	health, err = k.GetPositionHealth(suite.ctx, *position4)
 	suite.Require().NoError(err)
 	suite.Require().Equal(health.String(), "1.200000000000000000") // slippage disabled on amm
 
-	health, err = k.GetPositionHealth(suite.ctx, *position5, ammPool)
+	health, err = k.GetPositionHealth(suite.ctx, *position5)
 	suite.Require().NoError(err)
 	suite.Require().Equal(health.String(), "1.333333333333333333") // slippage disabled on amm
 
 	// Check order in list
 	suite.app.LeveragelpKeeper.IteratePoolPosIdsLiquidationSorted(suite.ctx, position.AmmPoolId, func(posId types.AddressId) bool {
 		position, _ := k.GetPosition(suite.ctx, posId.Address, posId.Id)
-		health, _ := k.GetPositionHealth(suite.ctx, position, ammPool)
+		health, _ := k.GetPositionHealth(suite.ctx, position)
 		fmt.Printf("Address: %s, Id: %d, value: %s\n", position.Address, position.Id, health.String())
 		return false
 	})
@@ -169,7 +169,7 @@ func (suite KeeperTestSuite) TestLiquidatePositionSorted() {
 	// Check order in list
 	suite.app.LeveragelpKeeper.IteratePoolPosIdsLiquidationSorted(suite.ctx, position.AmmPoolId, func(posId types.AddressId) bool {
 		position, _ := k.GetPosition(suite.ctx, posId.Address, posId.Id)
-		health, _ := k.GetPositionHealth(suite.ctx, position, ammPool)
+		health, _ := k.GetPositionHealth(suite.ctx, position)
 		fmt.Printf("Address: %s, Id: %d, value: %s\n", position.Address, position.Id, health.String())
 		return false
 	})
@@ -187,7 +187,7 @@ func (suite KeeperTestSuite) TestLiquidatePositionSorted() {
 	// Check order in list
 	suite.app.LeveragelpKeeper.IteratePoolPosIdsLiquidationSorted(suite.ctx, position.AmmPoolId, func(posId types.AddressId) bool {
 		position, _ := k.GetPosition(suite.ctx, posId.Address, posId.Id)
-		health, _ := k.GetPositionHealth(suite.ctx, position, ammPool)
+		health, _ := k.GetPositionHealth(suite.ctx, position)
 		fmt.Printf("Address: %s, Id: %d, value: %s\n", position.Address, position.Id, health.String())
 		return false
 	})
@@ -208,7 +208,7 @@ func (suite KeeperTestSuite) TestLiquidatePositionSorted() {
 	// Check order in list
 	suite.app.LeveragelpKeeper.IteratePoolPosIdsLiquidationSorted(suite.ctx, position.AmmPoolId, func(posId types.AddressId) bool {
 		position, _ := k.GetPosition(suite.ctx, posId.Address, posId.Id)
-		health, _ := k.GetPositionHealth(suite.ctx, position, ammPool)
+		health, _ := k.GetPositionHealth(suite.ctx, position)
 		fmt.Printf("Address: %s, Id: %d, value: %s\n", position.Address, position.Id, health.String())
 		return false
 	})
