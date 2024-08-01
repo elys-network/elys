@@ -48,9 +48,32 @@ func (k Keeper) SetInterest(ctx sdk.Context, block uint64, interest types.Intere
 	}
 }
 
-func (k Keeper) GetInterest(ctx sdk.Context, startBlock uint64, endBlock uint64) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.DebtPrefixKey)
+func (k Keeper) GetInterest(ctx sdk.Context, startBlock uint64, startTime uint64, borrowed sdk.Dec) sdk.Int {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.InterestPrefixKey)
 
+	if store.Has(sdk.Uint64ToBigEndian(startBlock-1)) && store.Has(sdk.Uint64ToBigEndian(uint64(ctx.BlockHeight()))) {
+		bz := store.Get(sdk.Uint64ToBigEndian(startBlock - 1))
+		startInterestBlock := types.InterestBlock{}
+		k.cdc.MustUnmarshal(bz, &startInterestBlock)
+
+		bz = store.Get(sdk.Uint64ToBigEndian(uint64(ctx.BlockHeight())))
+		endInterestBlock := types.InterestBlock{}
+		k.cdc.MustUnmarshal(bz, &endInterestBlock)
+
+		totalInterest := endInterestBlock.InterestRate.Sub(startInterestBlock.InterestRate)
+		numberOfBlocks := ctx.BlockHeight() - int64(startBlock) + 1
+
+		newInterest := borrowed.Mul(totalInterest).
+			Mul(sdk.NewDec(ctx.BlockTime().Unix() - int64(startTime))).
+			Quo(sdk.NewDec(numberOfBlocks)).
+			Quo(sdk.NewDec(86400 * 365)).
+			RoundInt()
+		return newInterest
+	}
+	// if startBlock-1 is not and cur_block is
+	// if start is and end is not
+	// both are not
+	return sdk.NewInt(0)
 }
 
 func (k Keeper) SetDebt(ctx sdk.Context, debt types.Debt) {
