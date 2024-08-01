@@ -18,6 +18,7 @@ func (suite KeeperTestSuite) OpenPosition(addr sdk.AccAddress) (*types.Position,
 	SetupCoinPrices(suite.ctx, suite.app.OracleKeeper)
 	poolAddr := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
 	treasuryAddr := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
+	amount := int64(10_000_000)
 	pool := types.Pool{
 		AmmPoolId:         1,
 		Enabled:           true,
@@ -26,7 +27,7 @@ func (suite KeeperTestSuite) OpenPosition(addr sdk.AccAddress) (*types.Position,
 		LeveragedLpAmount: sdk.ZeroInt(),
 		LeverageMax:       sdk.ZeroDec(),
 	}
-	poolInit := sdk.Coins{sdk.NewInt64Coin("uusdc", 100000), sdk.NewInt64Coin("uusdt", 100000)}
+	poolInit := sdk.Coins{sdk.NewInt64Coin("uusdc", amount), sdk.NewInt64Coin("uusdt", amount)}
 
 	err := suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, poolInit)
 	suite.Require().NoError(err)
@@ -64,14 +65,14 @@ func (suite KeeperTestSuite) OpenPosition(addr sdk.AccAddress) (*types.Position,
 	k.SetPool(suite.ctx, pool)
 	suite.app.AmmKeeper.SetDenomLiquidity(suite.ctx, ammtypes.DenomLiquidity{
 		Denom:     "uusdc",
-		Liquidity: sdk.NewInt(100000),
+		Liquidity: sdk.NewInt(amount),
 	})
 	suite.app.AmmKeeper.SetDenomLiquidity(suite.ctx, ammtypes.DenomLiquidity{
 		Denom:     "uusdt",
-		Liquidity: sdk.NewInt(100000),
+		Liquidity: sdk.NewInt(amount),
 	})
 
-	usdcToken := sdk.NewInt64Coin("uusdc", 100000)
+	usdcToken := sdk.NewInt64Coin("uusdc", amount*20)
 	err = suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, sdk.Coins{usdcToken})
 	suite.Require().NoError(err)
 	err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, addr, sdk.Coins{usdcToken})
@@ -80,7 +81,7 @@ func (suite KeeperTestSuite) OpenPosition(addr sdk.AccAddress) (*types.Position,
 	stableMsgServer := stablestakekeeper.NewMsgServerImpl(suite.app.StablestakeKeeper)
 	_, err = stableMsgServer.Bond(sdk.WrapSDKContext(suite.ctx), &stablestaketypes.MsgBond{
 		Creator: addr.String(),
-		Amount:  sdk.NewInt(10000),
+		Amount:  sdk.NewInt(amount * 10),
 	})
 	suite.Require().NoError(err)
 
@@ -88,7 +89,7 @@ func (suite KeeperTestSuite) OpenPosition(addr sdk.AccAddress) (*types.Position,
 	position, err := k.OpenLong(suite.ctx, &types.MsgOpen{
 		Creator:          addr.String(),
 		CollateralAsset:  "uusdc",
-		CollateralAmount: sdk.NewInt(1000),
+		CollateralAmount: sdk.NewInt(amount).QuoRaw(1000),
 		AmmPoolId:        1,
 		Leverage:         sdk.NewDec(5),
 	})
