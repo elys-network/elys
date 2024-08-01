@@ -399,11 +399,11 @@ func (k Keeper) GetPositionHealth(ctx sdk.Context, position types.Position) (sdk
 	for _, commitment := range commitments.CommittedTokens {
 		cacheCtx, _ := ctx.CacheContext()
 		cacheCtx = cacheCtx.WithBlockTime(cacheCtx.BlockTime().Add(time.Hour))
-		exitCoins, _, err := k.amm.ExitPool(cacheCtx, position.GetPositionAddress(), position.AmmPoolId, commitment.Amount, sdk.Coins{}, depositDenom)
+		_, exitCoinsAfterExitFee, err := k.amm.ExitPool(cacheCtx, position.GetPositionAddress(), position.AmmPoolId, commitment.Amount, sdk.Coins{}, depositDenom)
 		if err != nil {
 			return sdk.ZeroDec(), err
 		}
-		positionVal = positionVal.Add(sdk.NewDecFromInt(exitCoins.AmountOf(depositDenom)))
+		positionVal = positionVal.Add(sdk.NewDecFromInt(exitCoinsAfterExitFee.AmountOf(depositDenom)))
 	}
 
 	lr := positionVal.Quo(sdk.NewDecFromBigInt(xl.BigInt()))
