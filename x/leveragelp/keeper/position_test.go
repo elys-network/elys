@@ -142,12 +142,13 @@ func TestIteratePoolPosIdsLiquidationSorted(t *testing.T) {
 			PositionHealth:    sdk.NewDec(0),
 		}
 		debt := stablestaketypes.Debt{
-			Address:              position.GetPositionAddress().String(),
-			Borrowed:             info.Borrowed,
-			InterestPaid:         math.ZeroInt(),
-			InterestStacked:      math.ZeroInt(),
-			BorrowTime:           uint64(ctx.BlockTime().Unix()),
-			LastInterestCalcTime: uint64(ctx.BlockTime().Unix()),
+			Address:               position.GetPositionAddress().String(),
+			Borrowed:              info.Borrowed,
+			InterestPaid:          math.ZeroInt(),
+			InterestStacked:       math.ZeroInt(),
+			BorrowTime:            uint64(ctx.BlockTime().Unix()),
+			LastInterestCalcTime:  uint64(ctx.BlockTime().Unix()),
+			LastInterestCalcBlock: uint64(ctx.BlockHeight()),
 		}
 		stablestake.SetDebt(ctx, debt)
 		leveragelp.SetPosition(ctx, &position, sdk.NewInt(0))

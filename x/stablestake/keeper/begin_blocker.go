@@ -2,6 +2,7 @@ package keeper
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/elys-network/elys/x/stablestake/types"
 )
 
 func (k Keeper) BeginBlocker(ctx sdk.Context) {
@@ -13,8 +14,7 @@ func (k Keeper) BeginBlocker(ctx sdk.Context) {
 		params := k.GetParams(ctx)
 		rate := k.InterestRateComputation(ctx)
 		params.InterestRate = rate
-		// TODO: store interest rate per block or when it is changed for more accurate calculation
-		// store cumulative, define ds
+		k.SetInterest(ctx, uint64(ctx.BlockHeight()), types.InterestBlock{InterestRate: rate, BlockTime: ctx.BlockTime().Unix()})
 		k.SetParams(ctx, params)
 	}
 }

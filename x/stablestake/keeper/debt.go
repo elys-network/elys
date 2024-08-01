@@ -13,12 +13,13 @@ func (k Keeper) GetDebt(ctx sdk.Context, addr sdk.AccAddress) types.Debt {
 	bz := store.Get([]byte(addr.String()))
 	if len(bz) == 0 {
 		return types.Debt{
-			Address:              addr.String(),
-			Borrowed:             sdk.ZeroInt(),
-			InterestPaid:         sdk.ZeroInt(),
-			InterestStacked:      sdk.ZeroInt(),
-			BorrowTime:           uint64(ctx.BlockTime().Unix()),
-			LastInterestCalcTime: uint64(ctx.BlockTime().Unix()),
+			Address:               addr.String(),
+			Borrowed:              sdk.ZeroInt(),
+			InterestPaid:          sdk.ZeroInt(),
+			InterestStacked:       sdk.ZeroInt(),
+			BorrowTime:            uint64(ctx.BlockTime().Unix()),
+			LastInterestCalcTime:  uint64(ctx.BlockTime().Unix()),
+			LastInterestCalcBlock: uint64(ctx.BlockHeight()),
 		}
 	}
 
@@ -33,14 +34,17 @@ func (k Keeper) UpdateInterestStackedByAddress(ctx sdk.Context, addr sdk.AccAddr
 	return debt
 }
 
-func (k Keeper) SetInterest(ctx sdk.Context, block uint64, interest sdk.Dec) {
+func (k Keeper) SetInterest(ctx sdk.Context, block uint64, interest types.InterestBlock) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.InterestPrefixKey)
 	if store.Has(sdk.Uint64ToBigEndian(block - 1)) {
 		res := store.Get(sdk.Uint64ToBigEndian(block - 1))
 		prev := sdk.MustNewDecFromStr(string(res))
-		store.Set(sdk.Uint64ToBigEndian(block), []byte((interest.Add(prev)).String()))
+		interest.InterestRate = interest.InterestRate.Add(prev)
+		bz := k.cdc.MustMarshal(&interest)
+		store.Set(sdk.Uint64ToBigEndian(block), bz)
 	} else {
-		store.Set(sdk.Uint64ToBigEndian(block), []byte(interest.String()))
+		bz := k.cdc.MustMarshal(&interest)
+		store.Set(sdk.Uint64ToBigEndian(block), bz)
 	}
 }
 
@@ -86,6 +90,7 @@ func (k Keeper) UpdateInterestStacked(ctx sdk.Context, debt types.Debt) types.De
 
 	debt.InterestStacked = debt.InterestStacked.Add(newInterest)
 	debt.LastInterestCalcTime = uint64(ctx.BlockTime().Unix())
+	debt.LastInterestCalcBlock = uint64(ctx.BlockHeight())
 	k.SetDebt(ctx, debt)
 
 	params.TotalValue = params.TotalValue.Add(newInterest)
