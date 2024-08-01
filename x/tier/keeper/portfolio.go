@@ -94,7 +94,11 @@ func (k Keeper) RetrieveStaked(ctx sdk.Context, user sdk.AccAddress) (sdk.Dec, s
 	for _, commitment := range commitments.CommittedTokens {
 		if !strings.HasPrefix(commitment.Denom, "amm/pool") {
 			if strings.HasPrefix(commitment.Denom, "stablestake") {
-				tokenPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, ptypes.BaseCurrency)
+				usdcDenom, found := k.assetProfileKeeper.GetUsdcDenom(ctx)
+				if !found {
+					continue
+				}
+				tokenPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, usdcDenom)
 				params := k.stablestakeKeeper.GetParams(ctx)
 				usdValue := commitment.Amount.ToLegacyDec().Mul(params.RedemptionRate).Mul(tokenPrice)
 				totalCommit = totalCommit.Add(usdValue)
