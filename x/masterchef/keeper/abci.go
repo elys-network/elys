@@ -204,7 +204,7 @@ func (k Keeper) UpdateLPRewards(ctx sdk.Context) error {
 
 		// Calculate new Eden for this pool
 		newEdenAllocatedForPool := poolShare.MulInt(lpsEdenAmount)
-		
+
 		// Maximum eden APR - 30% by default
 		poolMaxEdenAmount := params.MaxEdenRewardAprLps.
 			Mul(proxyTVL).
