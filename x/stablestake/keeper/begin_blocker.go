@@ -14,6 +14,7 @@ func (k Keeper) BeginBlocker(ctx sdk.Context) {
 		rate := k.InterestRateComputation(ctx)
 		params.InterestRate = rate
 		// TODO: store interest rate per block or when it is changed for more accurate calculation
+		// store cumulative, define ds
 		k.SetParams(ctx, params)
 	}
 }

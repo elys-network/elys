@@ -15,6 +15,7 @@ const (
 )
 
 var DebtPrefixKey = []byte{0x01}
+var InterestPrefixKey = []byte{0x02}
 
 func KeyPrefix(p string) []byte {
 	return []byte(p)

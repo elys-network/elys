@@ -33,6 +33,22 @@ func (k Keeper) UpdateInterestStackedByAddress(ctx sdk.Context, addr sdk.AccAddr
 	return debt
 }
 
+func (k Keeper) SetInterest(ctx sdk.Context, block uint64, interest sdk.Dec) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.InterestPrefixKey)
+	if store.Has(sdk.Uint64ToBigEndian(block - 1)) {
+		res := store.Get(sdk.Uint64ToBigEndian(block - 1))
+		prev := sdk.MustNewDecFromStr(string(res))
+		store.Set(sdk.Uint64ToBigEndian(block), []byte((interest.Add(prev)).String()))
+	} else {
+		store.Set(sdk.Uint64ToBigEndian(block), []byte(interest.String()))
+	}
+}
+
+func (k Keeper) GetInterest(ctx sdk.Context, startBlock uint64, endBlock uint64) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.DebtPrefixKey)
+
+}
+
 func (k Keeper) SetDebt(ctx sdk.Context, debt types.Debt) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.DebtPrefixKey)
 	bz := k.cdc.MustMarshal(&debt)
