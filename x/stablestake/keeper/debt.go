@@ -51,8 +51,9 @@ func (k Keeper) SetInterest(ctx sdk.Context, block uint64, interest types.Intere
 func (k Keeper) GetInterest(ctx sdk.Context, startBlock uint64, startTime uint64, borrowed sdk.Dec) sdk.Int {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.InterestPrefixKey)
 
-	if store.Has(sdk.Uint64ToBigEndian(startBlock-1)) && store.Has(sdk.Uint64ToBigEndian(uint64(ctx.BlockHeight()))) {
-		bz := store.Get(sdk.Uint64ToBigEndian(startBlock - 1))
+	// note: exclude start block
+	if store.Has(sdk.Uint64ToBigEndian(startBlock)) && store.Has(sdk.Uint64ToBigEndian(uint64(ctx.BlockHeight()))) {
+		bz := store.Get(sdk.Uint64ToBigEndian(startBlock))
 		startInterestBlock := types.InterestBlock{}
 		k.cdc.MustUnmarshal(bz, &startInterestBlock)
 
@@ -61,7 +62,7 @@ func (k Keeper) GetInterest(ctx sdk.Context, startBlock uint64, startTime uint64
 		k.cdc.MustUnmarshal(bz, &endInterestBlock)
 
 		totalInterest := endInterestBlock.InterestRate.Sub(startInterestBlock.InterestRate)
-		numberOfBlocks := ctx.BlockHeight() - int64(startBlock) + 1
+		numberOfBlocks := ctx.BlockHeight() - int64(startBlock)
 
 		newInterest := borrowed.Mul(totalInterest).
 			Mul(sdk.NewDec(ctx.BlockTime().Unix() - int64(startTime))).
