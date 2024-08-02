@@ -88435,6 +88435,8 @@ definitions:
     type: object
   elys.oracle.MsgAddPriceFeedersResponse:
     type: object
+  elys.oracle.MsgCreateAssetInfoResponse:
+    type: object
   elys.oracle.MsgDeletePriceFeederResponse:
     type: object
   elys.oracle.MsgFeedMultiplePricesResponse:
