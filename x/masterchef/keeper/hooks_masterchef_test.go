@@ -169,7 +169,7 @@ func TestHookMasterchef(t *testing.T) {
 	// check length of pools
 	require.Equal(t, len(pools), 1)
 
-	_, err = amm.ExitPool(ctx, addr[0], pools[0].PoolId, math.NewIntWithDecimal(1, 21), sdk.NewCoins(), "")
+	_, _, err = amm.ExitPool(ctx, addr[0], pools[0].PoolId, math.NewIntWithDecimal(1, 21), sdk.NewCoins(), "")
 	require.NoError(t, err)
 
 	// new user join pool with same shares
@@ -255,7 +255,7 @@ func TestHookMasterchef(t *testing.T) {
 	require.Len(t, res.TotalRewards, 0)
 
 	// first user exit pool
-	_, err = amm.ExitPool(ctx, addr[1], pools[0].PoolId, share.Quo(math.NewInt(2)), sdk.NewCoins(), "")
+	_, _, err = amm.ExitPool(ctx, addr[1], pools[0].PoolId, share.Quo(math.NewInt(2)), sdk.NewCoins(), "")
 	require.NoError(t, err)
 
 	// check rewards after 100 block
