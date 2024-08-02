@@ -2,6 +2,7 @@ package keeper_test
 
 import (
 	"testing"
+	"time"
 
 	"github.com/cometbft/cometbft/crypto/ed25519"
 	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
@@ -68,6 +69,10 @@ func (suite *KeeperTestSuite) SetupTest() {
 
 func (suite *KeeperTestSuite) ResetSuite() {
 	suite.SetupTest()
+}
+
+func (suite *KeeperTestSuite) AddBlockTime(d time.Duration) {
+	suite.ctx = suite.ctx.WithBlockTime(suite.ctx.BlockTime().Add(d))
 }
 
 func (suite *KeeperTestSuite) EnableWhiteListing() {

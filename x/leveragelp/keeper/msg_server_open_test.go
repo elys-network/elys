@@ -12,7 +12,7 @@ import (
 	stabletypes "github.com/elys-network/elys/x/stablestake/types"
 )
 
-func initialize(suite *KeeperTestSuite, addresses []sdk.AccAddress) {
+func initializeForOpen(suite *KeeperTestSuite, addresses []sdk.AccAddress, asset1, asset2 string) {
 	fee := sdk.MustNewDecFromStr("0.0002")
 	issueAmount := sdk.NewInt(10_000_000_000_000)
 	for _, address := range addresses {
@@ -45,11 +45,11 @@ func initialize(suite *KeeperTestSuite, addresses []sdk.AccAddress) {
 		},
 		PoolAssets: []ammtypes.PoolAsset{
 			{
-				Token:  sdk.NewInt64Coin(ptypes.ATOM, 100_000_000),
+				Token:  sdk.NewInt64Coin(asset1, 100_000_000),
 				Weight: sdk.NewInt(50),
 			},
 			{
-				Token:  sdk.NewInt64Coin(ptypes.BaseCurrency, 1000_000_000),
+				Token:  sdk.NewInt64Coin(asset2, 1000_000_000),
 				Weight: sdk.NewInt(50),
 			},
 		},
@@ -80,7 +80,9 @@ func (suite *KeeperTestSuite) TestOpen_PoolWithBaseCurrencyAsset() {
 	SetupCoinPrices(suite.ctx, suite.app.OracleKeeper)
 	//SetupCoinPrices(suite.ctx, suite.app.OracleKeeper, []string{ptypes.Elys, ptypes.ATOM, "uusdt"})
 	addresses := simapp.AddTestAddrs(suite.app, suite.ctx, 10, sdk.NewInt(1000000))
-	initialize(suite, addresses)
+	asset1 := ptypes.ATOM
+	asset2 := ptypes.BaseCurrency
+	initializeForOpen(suite, addresses, asset1, asset2)
 	testCases := []struct {
 		name                 string
 		input                *types.MsgOpen
@@ -284,7 +286,7 @@ func (suite *KeeperTestSuite) TestOpen_PoolWithBaseCurrencyAsset() {
 			func() {
 				suite.ResetSuite()
 				SetupCoinPrices(suite.ctx, suite.app.OracleKeeper)
-				initialize(suite, addresses)
+				initializeForOpen(suite, addresses, asset1, asset2)
 				suite.SetSafetyFactor(sdk.MustNewDecFromStr("1.1"))
 				suite.SetPoolThreshold(sdk.MustNewDecFromStr("0.2"))
 			},
@@ -330,6 +332,51 @@ func (suite *KeeperTestSuite) TestOpen_PoolWithBaseCurrencyAsset() {
 			types.ErrInvalidPosition.Wrapf("pool health too low to open new positions").Error(),
 			func() {
 				suite.SetPoolThreshold(sdk.OneDec())
+			},
+		},
+	}
+
+	for _, tc := range testCases {
+		suite.Run(tc.name, func() {
+			tc.prerequisiteFunction()
+			_, err := suite.app.LeveragelpKeeper.Open(suite.ctx, tc.input)
+			if tc.expectErr {
+				suite.Require().Error(err)
+				suite.Require().Contains(err.Error(), tc.expectErrMsg)
+			} else {
+				suite.Require().NoError(err)
+			}
+		})
+	}
+}
+
+func (suite *KeeperTestSuite) TestOpen_PoolWithoutBaseCurrencyAsset() {
+	suite.ResetSuite()
+	// not adding uusdc asset info and price yet
+	AddCoinPrices(suite.ctx, suite.app.OracleKeeper, []string{ptypes.Elys, ptypes.ATOM, "uusdt"})
+	addresses := simapp.AddTestAddrs(suite.app, suite.ctx, 10, sdk.NewInt(1000000))
+	asset1 := ptypes.ATOM
+	asset2 := ptypes.Elys
+	initializeForOpen(suite, addresses, asset1, asset2)
+	testCases := []struct {
+		name                 string
+		input                *types.MsgOpen
+		expectErr            bool
+		expectErrMsg         string
+		prerequisiteFunction func()
+	}{
+		{"Fail to do JoinPoolNoSwap",
+			&types.MsgOpen{
+				Creator:          addresses[0].String(),
+				CollateralAsset:  ptypes.BaseCurrency,
+				CollateralAmount: sdk.NewInt(10000000),
+				AmmPoolId:        1,
+				Leverage:         sdk.MustNewDecFromStr("2.0"),
+				StopLossPrice:    sdk.MustNewDecFromStr("50.0"),
+			},
+			true,
+			"token price not set",
+			func() {
 			},
 		},
 	}
