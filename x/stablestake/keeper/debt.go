@@ -37,15 +37,32 @@ func (k Keeper) UpdateInterestStackedByAddress(ctx sdk.Context, addr sdk.AccAddr
 func (k Keeper) SetInterest(ctx sdk.Context, block uint64, interest types.InterestBlock) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.InterestPrefixKey)
 	if store.Has(sdk.Uint64ToBigEndian(block - 1)) {
-		res := store.Get(sdk.Uint64ToBigEndian(block - 1))
-		prev := sdk.MustNewDecFromStr(string(res))
-		interest.InterestRate = interest.InterestRate.Add(prev)
-		bz := k.cdc.MustMarshal(&interest)
+		lastBlock := types.InterestBlock{}
+		bz := store.Get(sdk.Uint64ToBigEndian(block - 1))
+		k.cdc.MustUnmarshal(bz, &lastBlock)
+		interest.InterestRate = interest.InterestRate.Add(lastBlock.InterestRate)
+
+		bz = k.cdc.MustMarshal(&interest)
 		store.Set(sdk.Uint64ToBigEndian(block), bz)
 	} else {
 		bz := k.cdc.MustMarshal(&interest)
 		store.Set(sdk.Uint64ToBigEndian(block), bz)
 	}
+}
+
+func (k Keeper) GetAllInterest(ctx sdk.Context) []types.InterestBlock {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.InterestPrefixKey)
+	iterator := sdk.KVStorePrefixIterator(store, nil)
+	defer iterator.Close()
+
+	interests := []types.InterestBlock{}
+	for ; iterator.Valid(); iterator.Next() {
+		interest := types.InterestBlock{}
+		k.cdc.MustUnmarshal(iterator.Value(), &interest)
+
+		interests = append(interests, interest)
+	}
+	return interests
 }
 
 func (k Keeper) GetInterest(ctx sdk.Context, startBlock uint64, startTime uint64, borrowed sdk.Dec) sdk.Int {
@@ -54,7 +71,7 @@ func (k Keeper) GetInterest(ctx sdk.Context, startBlock uint64, startTime uint64
 	startBlockKey := sdk.Uint64ToBigEndian(startBlock)
 
 	// note: exclude start block
-	if store.Has(startBlockKey) && store.Has(currentBlockKey) {
+	if store.Has(startBlockKey) && store.Has(currentBlockKey) && startBlock != uint64(ctx.BlockHeight()) {
 		bz := store.Get(startBlockKey)
 		startInterestBlock := types.InterestBlock{}
 		k.cdc.MustUnmarshal(bz, &startInterestBlock)
@@ -66,7 +83,8 @@ func (k Keeper) GetInterest(ctx sdk.Context, startBlock uint64, startTime uint64
 		totalInterest := endInterestBlock.InterestRate.Sub(startInterestBlock.InterestRate)
 		numberOfBlocks := ctx.BlockHeight() - int64(startBlock)
 
-		newInterest := borrowed.Mul(totalInterest).
+		newInterest := borrowed.
+			Mul(totalInterest).
 			Mul(sdk.NewDec(ctx.BlockTime().Unix() - int64(startTime))).
 			Quo(sdk.NewDec(numberOfBlocks)).
 			Quo(sdk.NewDec(86400 * 365)).
