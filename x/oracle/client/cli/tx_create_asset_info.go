@@ -16,7 +16,7 @@ var _ = strconv.Itoa(0)
 func CmdCreateAssetInfo() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "create-asset-info [denom] [display] [band-ticker] [elys-ticker] [decimal]",
-		Short: "Broadcast message create-asset-info",
+		Short: "create a new asset info",
 		Args:  cobra.ExactArgs(5),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			argDenom := args[0]
