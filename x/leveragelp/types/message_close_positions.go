@@ -9,7 +9,7 @@ const TypeMsgClosePositions = "close_positions"
 
 var _ sdk.Msg = &MsgClosePositions{}
 
-func NewMsgClosePositions(creator string, liquidate string, stoploss string) *MsgClosePositions {
+func NewMsgClosePositions(creator string, liquidate []*PositionRequest, stoploss []*PositionRequest) *MsgClosePositions {
 	return &MsgClosePositions{
 		Creator:   creator,
 		Liquidate: liquidate,
