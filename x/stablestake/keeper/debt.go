@@ -50,14 +50,16 @@ func (k Keeper) SetInterest(ctx sdk.Context, block uint64, interest types.Intere
 
 func (k Keeper) GetInterest(ctx sdk.Context, startBlock uint64, startTime uint64, borrowed sdk.Dec) sdk.Int {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.InterestPrefixKey)
+	currentBlockKey := sdk.Uint64ToBigEndian(uint64(ctx.BlockHeight()))
+	startBlockKey := sdk.Uint64ToBigEndian(startBlock)
 
 	// note: exclude start block
-	if store.Has(sdk.Uint64ToBigEndian(startBlock)) && store.Has(sdk.Uint64ToBigEndian(uint64(ctx.BlockHeight()))) {
-		bz := store.Get(sdk.Uint64ToBigEndian(startBlock))
+	if store.Has(startBlockKey) && store.Has(currentBlockKey) {
+		bz := store.Get(startBlockKey)
 		startInterestBlock := types.InterestBlock{}
 		k.cdc.MustUnmarshal(bz, &startInterestBlock)
 
-		bz = store.Get(sdk.Uint64ToBigEndian(uint64(ctx.BlockHeight())))
+		bz = store.Get(currentBlockKey)
 		endInterestBlock := types.InterestBlock{}
 		k.cdc.MustUnmarshal(bz, &endInterestBlock)
 
@@ -71,10 +73,49 @@ func (k Keeper) GetInterest(ctx sdk.Context, startBlock uint64, startTime uint64
 			RoundInt()
 		return newInterest
 	}
-	// if startBlock-1 is not and cur_block is
-	// if start is and end is not
-	// both are not
-	return sdk.NewInt(0)
+
+	if !store.Has(currentBlockKey) {
+		params := k.GetParams(ctx)
+		newInterest := borrowed.Mul(params.InterestRate).
+			Mul(sdk.NewDec(ctx.BlockTime().Unix() - int64(startTime))).
+			Quo(sdk.NewDec(86400 * 365)).
+			RoundInt()
+		return newInterest
+	}
+
+	if !store.Has(startBlockKey) {
+		iterator := sdk.KVStorePrefixIterator(store, nil)
+		defer iterator.Close()
+
+		lastStoredBlock := uint64(0)
+		if iterator.Valid() {
+			interestBlock := types.InterestBlock{}
+			lastStoredBlock = sdk.BigEndianToUint64(iterator.Key())
+			k.cdc.MustUnmarshal(iterator.Value(), &interestBlock)
+		}
+		if lastStoredBlock > startBlock {
+			bz := store.Get(currentBlockKey)
+			endInterestBlock := types.InterestBlock{}
+			k.cdc.MustUnmarshal(bz, &endInterestBlock)
+
+			totalInterest := endInterestBlock.InterestRate
+			numberOfBlocks := ctx.BlockHeight() - int64(startBlock) + 1
+
+			newInterest := borrowed.Mul(totalInterest).
+				Mul(sdk.NewDec(ctx.BlockTime().Unix() - int64(startTime))).
+				Quo(sdk.NewDec(numberOfBlocks)).
+				Quo(sdk.NewDec(86400 * 365)).
+				RoundInt()
+			return newInterest
+		}
+	}
+	params := k.GetParams(ctx)
+	newInterest := borrowed.
+		Mul(params.InterestRate).
+		Mul(sdk.NewDec(ctx.BlockTime().Unix() - int64(startTime))).
+		Quo(sdk.NewDec(86400 * 365)).
+		RoundInt()
+	return newInterest
 }
 
 func (k Keeper) SetDebt(ctx sdk.Context, debt types.Debt) {
