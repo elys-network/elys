@@ -8,6 +8,8 @@ import "gogoproto/gogo.proto";
 import "elys/leveragelp/params.proto";
 import "elys/leveragelp/types.proto";
 import "elys/leveragelp/pool.proto";
+import "elys/leveragelp/query.proto";
+
 
 // Msg defines the Msg service.
 service Msg {
@@ -126,8 +128,8 @@ message MsgRemovePoolResponse {}
 
 message MsgClosePositions {
   string creator   = 1;
-  string liquidate = 2;
-  string stoploss  = 3;
+  repeated PositionRequest liquidate = 2;
+  repeated PositionRequest stoploss  = 3;
 }
 
 message MsgClosePositionsResponse {}
