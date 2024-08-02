@@ -74,16 +74,7 @@ func (k Keeper) GetInterest(ctx sdk.Context, startBlock uint64, startTime uint64
 		return newInterest
 	}
 
-	if !store.Has(currentBlockKey) {
-		params := k.GetParams(ctx)
-		newInterest := borrowed.Mul(params.InterestRate).
-			Mul(sdk.NewDec(ctx.BlockTime().Unix() - int64(startTime))).
-			Quo(sdk.NewDec(86400 * 365)).
-			RoundInt()
-		return newInterest
-	}
-
-	if !store.Has(startBlockKey) {
+	if !store.Has(startBlockKey) && store.Has(currentBlockKey) {
 		iterator := sdk.KVStorePrefixIterator(store, nil)
 		defer iterator.Close()
 
@@ -147,11 +138,7 @@ func (k Keeper) AllDebts(ctx sdk.Context) []types.Debt {
 
 func (k Keeper) UpdateInterestStacked(ctx sdk.Context, debt types.Debt) types.Debt {
 	params := k.GetParams(ctx)
-	newInterest := sdk.NewDecFromInt(debt.Borrowed).
-		Mul(params.InterestRate).
-		Mul(sdk.NewDec(ctx.BlockTime().Unix() - int64(debt.LastInterestCalcTime))).
-		Quo(sdk.NewDec(86400 * 365)).
-		RoundInt()
+	newInterest := k.GetInterest(ctx, debt.LastInterestCalcBlock, debt.LastInterestCalcTime, debt.Borrowed.ToLegacyDec())
 
 	debt.InterestStacked = debt.InterestStacked.Add(newInterest)
 	debt.LastInterestCalcTime = uint64(ctx.BlockTime().Unix())
