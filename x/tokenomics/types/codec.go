@@ -2,20 +2,25 @@ package types
 
 import (
 	"github.com/cosmos/cosmos-sdk/codec"
+	"github.com/cosmos/cosmos-sdk/codec/legacy"
 	cdctypes "github.com/cosmos/cosmos-sdk/codec/types"
+	cryptocodec "github.com/cosmos/cosmos-sdk/crypto/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/msgservice"
+	authzcodec "github.com/cosmos/cosmos-sdk/x/authz/codec"
+	govcodec "github.com/cosmos/cosmos-sdk/x/gov/codec"
+	groupcodec "github.com/cosmos/cosmos-sdk/x/group/codec"
 )
 
 func RegisterCodec(cdc *codec.LegacyAmino) {
-	cdc.RegisterConcrete(&MsgCreateAirdrop{}, "tokenomics/CreateAirdrop", nil)
-	cdc.RegisterConcrete(&MsgUpdateAirdrop{}, "tokenomics/UpdateAirdrop", nil)
-	cdc.RegisterConcrete(&MsgDeleteAirdrop{}, "tokenomics/DeleteAirdrop", nil)
-	cdc.RegisterConcrete(&MsgClaimAirdrop{}, "tokenomics/ClaimAirdrop", nil)
-	cdc.RegisterConcrete(&MsgUpdateGenesisInflation{}, "tokenomics/UpdateGenesisInflation", nil)
-	cdc.RegisterConcrete(&MsgCreateTimeBasedInflation{}, "tokenomics/CreateTimeBasedInflation", nil)
-	cdc.RegisterConcrete(&MsgUpdateTimeBasedInflation{}, "tokenomics/UpdateTimeBasedInflation", nil)
-	cdc.RegisterConcrete(&MsgDeleteTimeBasedInflation{}, "tokenomics/DeleteTimeBasedInflation", nil)
+	legacy.RegisterAminoMsg(cdc, &MsgCreateAirdrop{}, "tokenomics/CreateAirdrop")
+	legacy.RegisterAminoMsg(cdc, &MsgUpdateAirdrop{}, "tokenomics/UpdateAirdrop")
+	legacy.RegisterAminoMsg(cdc, &MsgDeleteAirdrop{}, "tokenomics/DeleteAirdrop")
+	legacy.RegisterAminoMsg(cdc, &MsgClaimAirdrop{}, "tokenomics/ClaimAirdrop")
+	legacy.RegisterAminoMsg(cdc, &MsgUpdateGenesisInflation{}, "tokenomics/UpdateGenesisInflation")
+	legacy.RegisterAminoMsg(cdc, &MsgCreateTimeBasedInflation{}, "tokenomics/CreateTimeBasedInflation")
+	legacy.RegisterAminoMsg(cdc, &MsgUpdateTimeBasedInflation{}, "tokenomics/UpdateTimeBasedInflation")
+	legacy.RegisterAminoMsg(cdc, &MsgDeleteTimeBasedInflation{}, "tokenomics/DeleteTimeBasedInflation")
 	// this line is used by starport scaffolding # 2
 }
 
@@ -43,3 +48,15 @@ var (
 	Amino     = codec.NewLegacyAmino()
 	ModuleCdc = codec.NewProtoCodec(cdctypes.NewInterfaceRegistry())
 )
+
+func init() {
+    RegisterCodec(Amino)
+    cryptocodec.RegisterCrypto(Amino)
+    sdk.RegisterLegacyAminoCodec(Amino)
+
+    // Register all Amino interfaces and concrete types on the authz  and gov Amino codec so that this can later be
+    // used to properly serialize MsgGrant, MsgExec and MsgSubmitProposal instances
+    RegisterCodec(authzcodec.Amino)
+    RegisterCodec(govcodec.Amino)
+    RegisterCodec(groupcodec.Amino)
+}
