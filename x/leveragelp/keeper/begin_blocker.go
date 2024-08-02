@@ -68,7 +68,7 @@ func (k Keeper) LiquidatePositionIfUnhealthy(ctx sdk.Context, position *types.Po
 			}
 		}
 	}()
-	// TODO: Add accumulated interest here using GetInterest function from stablestake or update interest
+	k.stableKeeper.UpdateInterestStackedByAddress(ctx, position.GetPositionAddress())
 	h, err := k.GetPositionHealth(ctx, *position)
 	if err != nil {
 		ctx.Logger().Error(errors.Wrap(err, fmt.Sprintf("error updating position health: %s", position.String())).Error())
