@@ -9,20 +9,21 @@ import (
 	"github.com/elys-network/elys/x/leveragelp/types"
 )
 
-func (k msgServer) UpdatePools(goCtx context.Context, msg *types.MsgUpdatePools) (*types.MsgUpdatePoolsResponse, error) {
+func (k msgServer) RemovePool(goCtx context.Context, msg *types.MsgRemovePool) (*types.MsgAddPoolResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	if k.authority != msg.Authority {
 		return nil, errorsmod.Wrapf(govtypes.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.authority, msg.Authority)
 	}
 
-	pool, found := k.GetPool(ctx, msg.UpdatePool.PoolId)
+	pool, found := k.GetPool(ctx, msg.Id)
 
 	if found {
-		pool.Enabled = msg.UpdatePool.Enabled
-		pool.Closed = msg.UpdatePool.Closed
-		k.SetPool(ctx, pool)
+		if pool.LeveragedLpAmount.GT(sdk.NewInt(0)) {
+			return nil, errorsmod.Wrap(types.ErrPoolLeverageAmountNotZero, pool.LeveragedLpAmount.String())
+		}
+		k.DeletePool(ctx, msg.Id)
 	}
 
-	return &types.MsgUpdatePoolsResponse{}, nil
+	return &types.MsgAddPoolResponse{}, nil
 }

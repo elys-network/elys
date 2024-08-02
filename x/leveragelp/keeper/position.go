@@ -9,7 +9,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
-	ammtypes "github.com/elys-network/elys/x/amm/types"
 	"github.com/elys-network/elys/x/leveragelp/types"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -79,12 +78,7 @@ func (k Keeper) SetPosition(ctx sdk.Context, position *types.Position, oldDebt s
 }
 
 func (k Keeper) DestroyPosition(ctx sdk.Context, positionAddress string, id uint64, oldDebt sdk.Int) error {
-	key := types.GetPositionKey(positionAddress, id)
 	store := ctx.KVStore(k.storeKey)
-	if !store.Has(key) {
-		return types.ErrPositionDoesNotExist
-	}
-	store.Delete(key)
 
 	// Remove position sort keys
 	old, err := k.GetPosition(ctx, positionAddress, id)
@@ -98,8 +92,14 @@ func (k Keeper) DestroyPosition(ctx sdk.Context, positionAddress string, id uint
 		if len(stopLossKey) > 0 {
 			store.Delete(stopLossKey)
 		}
-		store.Delete([]byte(old.GetPositionAddress()))
+		store.Delete(old.GetPositionAddress())
 	}
+
+	key := types.GetPositionKey(positionAddress, id)
+	if !store.Has(key) {
+		return types.ErrPositionDoesNotExist
+	}
+	store.Delete(key)
 
 	// decrement open position count
 	openCount := k.GetOpenPositionCount(ctx)
@@ -385,7 +385,7 @@ func (k Keeper) GetPositionsForAddress(ctx sdk.Context, positionAddress sdk.Addr
 	return positions, pageRes, nil
 }
 
-func (k Keeper) GetPositionHealth(ctx sdk.Context, position types.Position, ammPool ammtypes.Pool) (sdk.Dec, error) {
+func (k Keeper) GetPositionHealth(ctx sdk.Context, position types.Position) (sdk.Dec, error) {
 	debt := k.stableKeeper.GetDebt(ctx, position.GetPositionAddress())
 	xl := debt.Borrowed.Add(debt.InterestStacked).Sub(debt.InterestPaid)
 
@@ -399,7 +399,7 @@ func (k Keeper) GetPositionHealth(ctx sdk.Context, position types.Position, ammP
 	for _, commitment := range commitments.CommittedTokens {
 		cacheCtx, _ := ctx.CacheContext()
 		cacheCtx = cacheCtx.WithBlockTime(cacheCtx.BlockTime().Add(time.Hour))
-		exitCoins, err := k.amm.ExitPool(cacheCtx, position.GetPositionAddress(), ammPool.PoolId, commitment.Amount, sdk.Coins{}, depositDenom)
+		exitCoins, err := k.amm.ExitPool(cacheCtx, position.GetPositionAddress(), position.AmmPoolId, commitment.Amount, sdk.Coins{}, depositDenom)
 		if err != nil {
 			return sdk.ZeroDec(), err
 		}

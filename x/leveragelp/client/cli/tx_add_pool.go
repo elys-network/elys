@@ -17,10 +17,10 @@ import (
 )
 
 // Governance command
-func CmdUpdatePools() *cobra.Command {
+func CmdAddPools() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "update-pool [pool.json]",
-		Short: "Update leveragelp pool",
+		Use:   "add-pool pool.json",
+		Short: "Add leveragelp pool",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
@@ -48,13 +48,13 @@ func CmdUpdatePools() *cobra.Command {
 				return errors.New("signer address is missing")
 			}
 
-			pool, err := readPoolsJSON(args[0])
+			pool, err := readPoolJSON(args[0])
 			if err != nil {
 				return err
 			}
 
 			govAddress := sdk.AccAddress(address.Module("gov"))
-			msg := types.NewMsgUpdatePools(
+			msg := types.NewMsgAddPools(
 				govAddress.String(),
 				pool,
 			)
@@ -94,15 +94,15 @@ func CmdUpdatePools() *cobra.Command {
 	return cmd
 }
 
-func readPoolsJSON(filename string) (types.UpdatePool, error) {
-	var pool types.UpdatePool
+func readPoolJSON(filename string) (types.AddPool, error) {
+	var pool types.AddPool
 	bz, err := ioutil.ReadFile(filename)
 	if err != nil {
-		return types.UpdatePool{}, err
+		return types.AddPool{}, err
 	}
 	err = json.Unmarshal(bz, &pool)
 	if err != nil {
-		return types.UpdatePool{}, err
+		return types.AddPool{}, err
 	}
 
 	return pool, nil

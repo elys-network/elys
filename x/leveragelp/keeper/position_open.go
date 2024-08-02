@@ -34,7 +34,7 @@ func (k Keeper) OpenConsolidate(ctx sdk.Context, position *types.Position, msg *
 		return nil, types.ErrInvalidLeverage
 	}
 	poolId := position.AmmPoolId
-	pool, found := k.GetPool(ctx, poolId)
+	_, found := k.GetPool(ctx, poolId)
 	if !found {
 		return nil, errorsmod.Wrap(types.ErrPoolDoesNotExist, fmt.Sprintf("poolId: %d", poolId))
 	}
@@ -49,15 +49,6 @@ func (k Keeper) OpenConsolidate(ctx sdk.Context, position *types.Position, msg *
 	position, err := k.ProcessOpenLong(ctx, position, position.Leverage, collateralAmountDec, poolId, msg)
 	if err != nil {
 		return nil, err
-	}
-
-	ammPool, err := k.GetAmmPool(ctx, poolId)
-	if err != nil {
-		return nil, err
-	}
-
-	if k.hooks != nil {
-		k.hooks.AfterLeveragelpPositionModified(ctx, ammPool, pool)
 	}
 
 	event := sdk.NewEvent(types.EventOpen,
@@ -85,12 +76,6 @@ func (k Keeper) ProcessOpenLong(ctx sdk.Context, position *types.Position, lever
 		return nil, errorsmod.Wrap(types.ErrPositionDisabled, fmt.Sprintf("poolId: %d", poolId))
 	}
 
-	// Fetch the corresponding AMM (Automated Market Maker) pool.
-	ammPool, err := k.GetAmmPool(ctx, poolId)
-	if err != nil {
-		return nil, err
-	}
-
 	baseCurrency, found := k.assetProfileKeeper.GetUsdcDenom(ctx)
 	if !found {
 		return nil, errorsmod.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency)
@@ -107,7 +92,7 @@ func (k Keeper) ProcessOpenLong(ctx sdk.Context, position *types.Position, lever
 
 	// send collateral coins to Position address from Position owner address
 	positionOwner := sdk.MustAccAddressFromBech32(position.Address)
-	err = k.bankKeeper.SendCoins(ctx, positionOwner, position.GetPositionAddress(), sdk.Coins{sdk.NewCoin(msg.CollateralAsset, msg.CollateralAmount)})
+	err := k.bankKeeper.SendCoins(ctx, positionOwner, position.GetPositionAddress(), sdk.Coins{sdk.NewCoin(msg.CollateralAsset, msg.CollateralAmount)})
 	if err != nil {
 		return nil, err
 	}
@@ -130,7 +115,7 @@ func (k Keeper) ProcessOpenLong(ctx sdk.Context, position *types.Position, lever
 	k.UpdatePoolHealth(ctx, &pool)
 
 	// Get the Position health.
-	lr, err := k.GetPositionHealth(ctx, *position, ammPool)
+	lr, err := k.GetPositionHealth(ctx, *position)
 	if err != nil {
 		return nil, err
 	}
