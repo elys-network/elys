@@ -119,7 +119,13 @@ func (suite KeeperTestSuite) TestForceCloseLong() {
 	k := suite.app.LeveragelpKeeper
 	addr := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
 	position, pool := suite.OpenPosition(addr)
-	repayAmount := math.NewInt(4000)
+	timeDifference := suite.ctx.BlockTime().Add(time.Hour).Unix() - suite.ctx.BlockTime().Unix()
+	interestRate := suite.app.StablestakeKeeper.GetParams(suite.ctx).InterestRate
+	borrowed := position.Leverage.Sub(sdk.OneDec()).MulInt(position.Collateral.Amount)
+	repayAmount := borrowed.Add(borrowed.
+		Mul(interestRate).
+		Mul(sdk.NewDec(timeDifference)).
+		Quo(sdk.NewDec(86400 * 365))).RoundInt()
 
 	suite.ctx = suite.ctx.WithBlockTime(suite.ctx.BlockTime().Add(time.Hour))
 	repayAmountOut, err := k.ForceCloseLong(suite.ctx, *position, pool, position.LeveragedLpAmount)
@@ -131,8 +137,13 @@ func (suite KeeperTestSuite) TestForceCloseLongPartial() {
 	k := suite.app.LeveragelpKeeper
 	addr := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
 	position, pool := suite.OpenPosition(addr)
-	repayAmount := math.NewInt(4000)
-
+	timeDifference := suite.ctx.BlockTime().Add(time.Hour).Unix() - suite.ctx.BlockTime().Unix()
+	interestRate := suite.app.StablestakeKeeper.GetParams(suite.ctx).InterestRate
+	borrowed := position.Leverage.Sub(sdk.OneDec()).MulInt(position.Collateral.Amount)
+	repayAmount := borrowed.Add(borrowed.
+		Mul(interestRate).
+		Mul(sdk.NewDec(timeDifference)).
+		Quo(sdk.NewDec(86400 * 365))).RoundInt()
 	suite.ctx = suite.ctx.WithBlockTime(suite.ctx.BlockTime().Add(time.Hour))
 	// close 50%
 	repayAmountOut, err := k.ForceCloseLong(suite.ctx, *position, pool, position.LeveragedLpAmount.Quo(sdk.NewInt(2)))
@@ -149,13 +160,13 @@ func (suite KeeperTestSuite) TestHealthDecreaseForInterest() {
 	health, err := k.GetPositionHealth(suite.ctx, *position)
 	suite.Require().NoError(err)
 	// suite.Require().Equal(health.String(), "1.221000000000000000") // slippage enabled on amm
-	suite.Require().Equal(health.String(), "1.250000000000000000") // slippage disabled on amm
+	suite.Require().Equal("1.250000000000000000", health.String()) // slippage disabled on amm
 
 	suite.ctx = suite.ctx.WithBlockTime(suite.ctx.BlockTime().Add(time.Hour * 24 * 365))
 	suite.app.StablestakeKeeper.BeginBlocker(suite.ctx)
-	suite.app.StablestakeKeeper.UpdateInterestStackedByAddress(suite.ctx, sdk.AccAddress(position.GetPositionAddress()))
+	suite.app.StablestakeKeeper.UpdateInterestStackedByAddress(suite.ctx, position.GetPositionAddress())
 	health, err = k.GetPositionHealth(suite.ctx, *position)
 	suite.Require().NoError(err)
 	// suite.Require().Equal(health.String(), "0.610500000000000000") // slippage enabled on amm
-	suite.Require().Equal(health.String(), "1.077586206896551724") // slippage disabled on amm
+	suite.Require().Equal("1.096491228070175439", health.String()) // slippage disabled on amm
 }
