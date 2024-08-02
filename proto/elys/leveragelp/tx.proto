@@ -20,6 +20,7 @@ service Msg {
   rpc Dewhitelist    (MsgDewhitelist   ) returns (MsgDewhitelistResponse   );
   rpc UpdateStopLoss (MsgUpdateStopLoss) returns (MsgUpdateStopLossResponse);
   rpc AddCollateral  (MsgAddCollateral ) returns (MsgAddCollateralResponse );
+  rpc ClosePositions (MsgClosePositions) returns (MsgClosePositionsResponse);
 }
 message MsgOpen {
   string creator           = 1;
@@ -61,12 +62,13 @@ message MsgUpdateParamsResponse {}
 
 message UpdatePool {
   uint64 pool_id = 1;
-      bool Enabled = 2;
-      bool Closed = 3;
+  bool   Enabled = 2;
+  bool   Closed  = 3;
 }
+
 message MsgUpdatePools {
-      string authority = 1;
-      UpdatePool UpdatePool = 2;
+  string     authority  = 1;
+  UpdatePool UpdatePool = 2;
 }
 
 message MsgUpdatePoolsResponse {}
@@ -94,33 +96,39 @@ message MsgUpdateStopLoss {
 message MsgUpdateStopLossResponse {}
 
 message MsgAddCollateral {
-  string creator = 1;
-  uint64 id      = 2;
+  string creator    = 1;
+  uint64 id         = 2;
   string collateral = 3 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false];
 }
 
 message MsgAddCollateralResponse {}
 
 message AddPool {
-  uint64 amm_pool_id = 1;
-  bool enabled = 2;
-  bool closed = 3;
-  string leverage_max = 4 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
-    (gogoproto.nullable) = false
-  ];
+  uint64 amm_pool_id  = 1;
+  bool   enabled      = 2;
+  bool   closed       = 3;
+  string leverage_max = 4 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
 }
 
 message MsgAddPool {
-  string authority = 1;
-  AddPool pool = 2[(gogoproto.nullable) = false];
+  string  authority = 1;
+  AddPool pool      = 2 [(gogoproto.nullable) = false];
 }
 
 message MsgAddPoolResponse {}
 
 message MsgRemovePool {
   string authority = 1;
-  uint64 id      = 2;
+  uint64 id        = 2;
 }
 
 message MsgRemovePoolResponse {}
+
+message MsgClosePositions {
+  string creator   = 1;
+  string liquidate = 2;
+  string stoploss  = 3;
+}
+
+message MsgClosePositionsResponse {}
+

@@ -16,6 +16,6 @@ func (k Keeper) BeginBlocker(ctx sdk.Context) {
 		params.InterestRate = rate
 		k.SetParams(ctx, params)
 	}
-
+	// TODO: Remove old data, should keep data of 3 years or we could do last block which is required by debt
 	k.SetInterest(ctx, uint64(ctx.BlockHeight()), types.InterestBlock{InterestRate: params.InterestRate, BlockTime: ctx.BlockTime().Unix()})
 }

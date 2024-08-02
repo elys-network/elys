@@ -17,6 +17,7 @@ func RegisterCodec(cdc *codec.LegacyAmino) {
 	cdc.RegisterConcrete(&MsgClaimRewards{}, "leveragelp/ClaimRewards", nil)
 	cdc.RegisterConcrete(&MsgUpdateStopLoss{}, "leveragelp/UpdateStopLoss", nil)
 	cdc.RegisterConcrete(&MsgAddCollateral{}, "leveragelp/AddCollateral", nil)
+	cdc.RegisterConcrete(&MsgClosePositions{}, "leveragelp/ClosePositions", nil)
 	// this line is used by starport scaffolding # 2
 }
 
@@ -34,6 +35,9 @@ func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 
 	registry.RegisterImplementations((*sdk.Msg)(nil),
 		&MsgAddCollateral{},
+	)
+	registry.RegisterImplementations((*sdk.Msg)(nil),
+		&MsgClosePositions{},
 	)
 	// this line is used by starport scaffolding # 3
 
