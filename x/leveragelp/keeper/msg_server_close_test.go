@@ -1,7 +1,6 @@
 package keeper_test
 
 import (
-	"fmt"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 	simapp "github.com/elys-network/elys/app"
@@ -108,7 +107,7 @@ func (suite *KeeperTestSuite) TestClose() {
 				LpAmount: sdk.NewInt(0),
 			},
 			true,
-			"insufficient withdrawable tokens",
+			"your funds will be locked for 1 hour",
 			func() {
 				msg := types.MsgOpen{
 					Creator:          addresses[0].String(),
@@ -128,15 +127,11 @@ func (suite *KeeperTestSuite) TestClose() {
 			&types.MsgClose{
 				Creator:  addresses[0].String(),
 				Id:       1,
-				LpAmount: sdk.MustNewDecFromStr("9997999787743811730").TruncateInt(),
+				LpAmount: sdk.NewInt(0),
 			},
 			false,
 			"",
 			func() {
-				poolB, _ := suite.app.LeveragelpKeeper.GetAmmPool(suite.ctx, 1)
-				fmt.Println("Before Open total shares: " + poolB.TotalShares.String())
-				tvlB, _ := poolB.TVL(suite.ctx, suite.app.OracleKeeper)
-				fmt.Println("Before Open TVL: " + tvlB.String())
 				msg := types.MsgOpen{
 					Creator:          addresses[0].String(),
 					CollateralAsset:  ptypes.BaseCurrency,
@@ -146,21 +141,34 @@ func (suite *KeeperTestSuite) TestClose() {
 					StopLossPrice:    sdk.MustNewDecFromStr("50.0"),
 				}
 				_, err := suite.app.LeveragelpKeeper.Open(suite.ctx, &msg)
-				poolA, _ := suite.app.LeveragelpKeeper.GetAmmPool(suite.ctx, 1)
-				fmt.Println("After Open total shares: " + poolA.TotalShares.String())
-				tvlA, _ := poolA.TVL(suite.ctx, suite.app.OracleKeeper)
-				fmt.Println("After Open TVL: " + tvlA.String())
 				if err != nil {
 					panic(err)
 				}
-				position, err := suite.app.LeveragelpKeeper.GetPosition(suite.ctx, addresses[0].String(), 1)
-				if err != nil {
-					panic(err)
-				}
-				fmt.Println("LP AMOUNT: " + position.LeveragedLpAmount.String())
-				fmt.Println("LP AMOUNT VALUE: " + tvlA.Mul(position.LeveragedLpAmount.ToLegacyDec()).Quo(poolA.TotalShares.Amount.ToLegacyDec()).String())
 				suite.AddBlockTime(time.Hour)
-				fmt.Println("Sender: " + addresses[0].String())
+			},
+		},
+		{"Closing partial position",
+			&types.MsgClose{
+				Creator:  addresses[0].String(),
+				Id:       2,
+				LpAmount: sdk.MustNewDecFromStr("9997999787743811730").TruncateInt(),
+			},
+			false,
+			"",
+			func() {
+				msg := types.MsgOpen{
+					Creator:          addresses[0].String(),
+					CollateralAsset:  ptypes.BaseCurrency,
+					CollateralAmount: sdk.NewInt(10000000),
+					AmmPoolId:        1,
+					Leverage:         sdk.MustNewDecFromStr("2.0"),
+					StopLossPrice:    sdk.MustNewDecFromStr("50.0"),
+				}
+				_, err := suite.app.LeveragelpKeeper.Open(suite.ctx, &msg)
+				if err != nil {
+					panic(err)
+				}
+				suite.AddBlockTime(time.Hour)
 			},
 		},
 	}

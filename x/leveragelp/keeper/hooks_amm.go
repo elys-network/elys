@@ -22,11 +22,11 @@ func (k Keeper) CheckAmmPoolUsdcBalance(ctx sdk.Context, ammPool ammtypes.Pool) 
 		Quo(sdk.NewDecFromInt(ammPool.TotalShares.Amount))
 
 	depositDenom := k.stableKeeper.GetDepositDenom(ctx)
+	price := k.oracleKeeper.GetAssetPriceFromDenom(ctx, depositDenom)
+
 	for _, asset := range ammPool.PoolAssets {
-		if asset.Token.Denom == depositDenom {
-			if asset.Token.Amount.LT(leverageLpTvl.RoundInt()) {
-				return types.ErrInsufficientUsdcAfterOp
-			}
+		if asset.Token.Denom == depositDenom && price.MulInt(asset.Token.Amount).LT(leverageLpTvl) {
+			return types.ErrInsufficientUsdcAfterOp
 		}
 	}
 	return nil
