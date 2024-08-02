@@ -68,7 +68,6 @@ func (k Keeper) LiquidatePositionIfUnhealthy(ctx sdk.Context, position *types.Po
 			}
 		}
 	}()
-	k.stableKeeper.UpdateInterestStackedByAddress(ctx, position.GetPositionAddress())
 	h, err := k.GetPositionHealth(ctx, *position)
 	if err != nil {
 		ctx.Logger().Error(errors.Wrap(err, fmt.Sprintf("error updating position health: %s", position.String())).Error())
