@@ -1,7 +1,6 @@
 package keeper_test
 
 import (
-	"strconv"
 	"testing"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -12,11 +11,9 @@ import (
 	"github.com/elys-network/elys/x/stablestake/types"
 )
 
-// Prevent strconv unused error
-var _ = strconv.IntSize
-
 func createNInterest(keeper *keeper.Keeper, ctx sdk.Context, n int) ([]types.InterestBlock, int64) {
 	items := make([]types.InterestBlock, n)
+	ctx = ctx.WithBlockHeight(1000)
 	curBlock := ctx.BlockHeight()
 	for i := range items {
 		items[i].InterestRate = sdk.NewDec(int64(i))
@@ -33,6 +30,16 @@ func TestInterestGet(t *testing.T) {
 	_, lastBlock := createNInterest(keeper, ctx, 10)
 	ctx = ctx.WithBlockHeight(lastBlock)
 
+	// 1st case
 	res := keeper.GetInterest(ctx, uint64(ctx.BlockHeight()-2), uint64(ctx.BlockTime().Unix()-1), sdk.NewDec(86400*365))
 	require.Equal(t, res.Int64(), int64(8))
+
+	// 2nd case
+	res = keeper.GetInterest(ctx, uint64(ctx.BlockHeight()-20), uint64(ctx.BlockTime().Unix()-1), sdk.NewDec(86400*365))
+	require.Equal(t, res.Int64(), int64(2))
+
+	// 3rd case
+	ctx = ctx.WithBlockHeight(ctx.BlockHeight() + 1000)
+	res = keeper.GetInterest(ctx, uint64(ctx.BlockHeight()-20), uint64(ctx.BlockTime().Unix()-1), sdk.NewDec(86400*365))
+	require.Equal(t, res.Int64(), int64(0))
 }

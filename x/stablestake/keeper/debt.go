@@ -96,13 +96,13 @@ func (k Keeper) GetInterest(ctx sdk.Context, startBlock uint64, startTime uint64
 		iterator := sdk.KVStorePrefixIterator(store, nil)
 		defer iterator.Close()
 
-		lastStoredBlock := uint64(0)
+		firstStoredBlock := uint64(0)
 		if iterator.Valid() {
 			interestBlock := types.InterestBlock{}
-			lastStoredBlock = sdk.BigEndianToUint64(iterator.Key())
+			firstStoredBlock = sdk.BigEndianToUint64(iterator.Key())
 			k.cdc.MustUnmarshal(iterator.Value(), &interestBlock)
 		}
-		if lastStoredBlock > startBlock {
+		if firstStoredBlock > startBlock {
 			bz := store.Get(currentBlockKey)
 			endInterestBlock := types.InterestBlock{}
 			k.cdc.MustUnmarshal(bz, &endInterestBlock)
