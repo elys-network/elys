@@ -61,6 +61,7 @@ type StableStakeKeeper interface {
 	Borrow(ctx sdk.Context, addr sdk.AccAddress, amount sdk.Coin) error
 	Repay(ctx sdk.Context, addr sdk.AccAddress, amount sdk.Coin) error
 	TVL(ctx sdk.Context, oracleKeeper stablestaketypes.OracleKeeper, baseCurrency string) math.LegacyDec
+	GetInterest(ctx sdk.Context, startBlock uint64, startTime uint64, borrowed sdk.Dec) sdk.Int
 }
 
 type CommitmentKeeper interface {
