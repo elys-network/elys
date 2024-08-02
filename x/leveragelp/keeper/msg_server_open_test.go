@@ -160,7 +160,7 @@ func (suite *KeeperTestSuite) TestOpen_PoolWithBaseCurrencyAsset() {
 				StopLossPrice:    sdk.MustNewDecFromStr("100.0"),
 			},
 			expectErr:    true,
-			expectErrMsg: types.ErrPoolDoesNotExist.Wrapf("poolId: %d", 2).Error(),
+			expectErrMsg: "invalid pool id",
 			prerequisiteFunction: func() {
 				pool := types.NewPool(2)
 				suite.app.LeveragelpKeeper.SetPool(suite.ctx, pool)
@@ -261,7 +261,7 @@ func (suite *KeeperTestSuite) TestOpen_PoolWithBaseCurrencyAsset() {
 			&types.MsgOpen{
 				Creator:          addresses[0].String(),
 				CollateralAsset:  ptypes.BaseCurrency,
-				CollateralAmount: sdk.NewInt(10000000000),
+				CollateralAmount: sdk.NewInt(10_000_000_000),
 				AmmPoolId:        1,
 				Leverage:         sdk.MustNewDecFromStr("2.0"),
 				StopLossPrice:    sdk.MustNewDecFromStr("100.0"),
@@ -276,7 +276,7 @@ func (suite *KeeperTestSuite) TestOpen_PoolWithBaseCurrencyAsset() {
 			&types.MsgOpen{
 				Creator:          addresses[0].String(),
 				CollateralAsset:  ptypes.BaseCurrency,
-				CollateralAmount: sdk.NewInt(10000000),
+				CollateralAmount: sdk.NewInt(10_000_000),
 				AmmPoolId:        1,
 				Leverage:         sdk.MustNewDecFromStr("2.0"),
 				StopLossPrice:    sdk.MustNewDecFromStr("50.0"),
