@@ -312,6 +312,8 @@ func (k Keeper) GetPositions(ctx sdk.Context, pagination *query.PageRequest) ([]
 		var position types.Position
 		err := k.cdc.Unmarshal(value, &position)
 		if err == nil {
+			debt := k.stableKeeper.GetDebt(ctx, position.GetPositionAddress())
+			position.Liabilities = k.stableKeeper.GetInterest(ctx, debt.LastInterestCalcBlock, debt.LastInterestCalcTime, debt.Borrowed.ToLegacyDec())
 			positionList = append(positionList, &position)
 		}
 		return nil
