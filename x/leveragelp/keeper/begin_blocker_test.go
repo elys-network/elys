@@ -17,7 +17,7 @@ func (suite KeeperTestSuite) TestBeginBlocker() {
 	health, err := k.GetPositionHealth(suite.ctx, *position)
 	suite.Require().NoError(err)
 	// suite.Require().Equal(health.String(), "1.221000000000000000") // slippage enabled on amm
-	suite.Require().Equal(health.String(), "1.250000000000000000") // slippage disabled on amm
+	suite.Require().Equal("1.250000000000000000", health.String()) // slippage disabled on amm
 
 	suite.ctx = suite.ctx.WithBlockTime(suite.ctx.BlockTime().Add(time.Hour * 24 * 500))
 	suite.app.StablestakeKeeper.BeginBlocker(suite.ctx)
@@ -25,7 +25,7 @@ func (suite KeeperTestSuite) TestBeginBlocker() {
 	health, err = k.GetPositionHealth(suite.ctx, *position)
 	suite.Require().NoError(err)
 	// suite.Require().Equal(health.String(), "1.024543738200125865") // slippage enabled on amm
-	suite.Require().Equal(health.String(), "1.025220422390814025") // slippage disabled on amm
+	suite.Require().Equal("1.048855698433009587", health.String()) // slippage disabled on amm
 
 	params := k.GetParams(suite.ctx)
 	params.SafetyFactor = sdk.NewDecWithPrec(11, 1)
@@ -52,7 +52,7 @@ func (suite KeeperTestSuite) TestLiquidatePositionIfUnhealthy() {
 	health, err = k.GetPositionHealth(suite.ctx, *position)
 	suite.Require().NoError(err)
 	// suite.Require().Equal(health.String(), "1.024543738200125865") // slippage enabled on amm
-	suite.Require().Equal(health.String(), "1.025220422390814025") // slippage disabled on amm
+	suite.Require().Equal("1.048855698433009587", health.String()) // slippage disabled on amm
 
 	cacheCtx, _ := suite.ctx.CacheContext()
 	params := k.GetParams(cacheCtx)

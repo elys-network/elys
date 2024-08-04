@@ -51,5 +51,7 @@ func (k Keeper) ExitPoolEst(
 		return sdk.Coins{}, math.LegacyZeroDec(), err
 	}
 
-	return exitCoins, weightBalanceBonus, nil
+	exitFeeCoins := PortionCoins(exitCoins, pool.PoolParams.ExitFee)
+
+	return exitCoins.Sub(exitFeeCoins...), weightBalanceBonus, nil
 }

@@ -2,21 +2,26 @@ package types
 
 import (
 	"github.com/cosmos/cosmos-sdk/codec"
+	"github.com/cosmos/cosmos-sdk/codec/legacy"
 	cdctypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	// this line is used by starport scaffolding # 1
+	cryptocodec "github.com/cosmos/cosmos-sdk/crypto/codec"
 	"github.com/cosmos/cosmos-sdk/types/msgservice"
+	authzcodec "github.com/cosmos/cosmos-sdk/x/authz/codec"
+	govcodec "github.com/cosmos/cosmos-sdk/x/gov/codec"
+	groupcodec "github.com/cosmos/cosmos-sdk/x/group/codec"
 )
 
 func RegisterCodec(cdc *codec.LegacyAmino) {
-	cdc.RegisterConcrete(&MsgUpdateWasmConfig{}, "parameter/UpdateWasmConfig", nil)
+	legacy.RegisterAminoMsg(cdc, &MsgUpdateWasmConfig{}, "parameter/UpdateWasmConfig")
 	// this line is used by starport scaffolding # 2
-	cdc.RegisterConcrete(&MsgUpdateMinCommission{}, "parameter/MsgUpdateMinCommission", nil)
-	cdc.RegisterConcrete(&MsgUpdateMaxVotingPower{}, "parameter/MsgUpdateMaxVotingPower", nil)
-	cdc.RegisterConcrete(&MsgUpdateMinSelfDelegation{}, "parameter/MsgUpdateMinSelfDelegation", nil)
-	cdc.RegisterConcrete(&MsgUpdateBrokerAddress{}, "parameter/MsgUpdateBrokerAddress", nil)
-	cdc.RegisterConcrete(&MsgUpdateTotalBlocksPerYear{}, "parameter/MsgUpdateTotalBlocksPerYear", nil)
+	legacy.RegisterAminoMsg(cdc, &MsgUpdateMinCommission{}, "parameter/MsgUpdateMinCommission")
+	legacy.RegisterAminoMsg(cdc, &MsgUpdateMaxVotingPower{}, "parameter/MsgUpdateMaxVotingPower")
+	legacy.RegisterAminoMsg(cdc, &MsgUpdateMinSelfDelegation{}, "parameter/MsgUpdateMinSelfDelegation")
+	legacy.RegisterAminoMsg(cdc, &MsgUpdateBrokerAddress{}, "parameter/MsgUpdateBrokerAddress")
+	legacy.RegisterAminoMsg(cdc, &MsgUpdateTotalBlocksPerYear{}, "parameter/MsgUpdateTotalBlocksPerYear")
 	// this line is used by starport scaffolding # 2
 }
 
@@ -40,3 +45,15 @@ var (
 	Amino     = codec.NewLegacyAmino()
 	ModuleCdc = codec.NewProtoCodec(cdctypes.NewInterfaceRegistry())
 )
+
+func init() {
+    RegisterCodec(Amino)
+    cryptocodec.RegisterCrypto(Amino)
+    sdk.RegisterLegacyAminoCodec(Amino)
+
+    // Register all Amino interfaces and concrete types on the authz  and gov Amino codec so that this can later be
+    // used to properly serialize MsgGrant, MsgExec and MsgSubmitProposal instances
+    RegisterCodec(authzcodec.Amino)
+    RegisterCodec(govcodec.Amino)
+    RegisterCodec(groupcodec.Amino)
+}
