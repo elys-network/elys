@@ -227,76 +227,6 @@ func (k Keeper) GetAllPositions(ctx sdk.Context) []types.Position {
 	return positions
 }
 
-func (k Keeper) IteratePoolPosIdsLiquidationSorted(ctx sdk.Context, poolId uint64, fn func(posId types.AddressId) bool) {
-	store := ctx.KVStore(k.storeKey)
-	iterator := sdk.KVStorePrefixIterator(store, types.GetLiquidationSortPrefix(poolId))
-	defer func(iterator sdk.Iterator) {
-		err := iterator.Close()
-		if err != nil {
-			panic(err)
-		}
-	}(iterator)
-
-	for ; iterator.Valid(); iterator.Next() {
-		addrId := types.AddressId{}
-		k.cdc.MustUnmarshal(iterator.Value(), &addrId)
-		stop := fn(addrId)
-		if stop {
-			return
-		}
-	}
-}
-
-func (k Keeper) IteratePoolPosIdsStopLossSorted(ctx sdk.Context, poolId uint64, fn func(posId types.AddressId) bool) {
-	store := ctx.KVStore(k.storeKey)
-	iterator := sdk.KVStorePrefixIterator(store, types.GetStopLossSortPrefix(poolId))
-	defer func(iterator sdk.Iterator) {
-		err := iterator.Close()
-		if err != nil {
-			panic(err)
-		}
-	}(iterator)
-
-	for ; iterator.Valid(); iterator.Next() {
-		addrId := types.AddressId{}
-		k.cdc.MustUnmarshal(iterator.Value(), &addrId)
-		stop := fn(addrId)
-		if stop {
-			return
-		}
-	}
-}
-
-func (k Keeper) DeletePoolPosIdsLiquidationSorted(ctx sdk.Context, poolId uint64) {
-	store := ctx.KVStore(k.storeKey)
-	iterator := sdk.KVStorePrefixIterator(store, types.GetLiquidationSortPrefix(poolId))
-	defer func(iterator sdk.Iterator) {
-		err := iterator.Close()
-		if err != nil {
-			panic(err)
-		}
-	}(iterator)
-
-	for ; iterator.Valid(); iterator.Next() {
-		store.Delete(iterator.Key())
-	}
-}
-
-func (k Keeper) DeletePoolPosIdsStopLossSorted(ctx sdk.Context, poolId uint64) {
-	store := ctx.KVStore(k.storeKey)
-	iterator := sdk.KVStorePrefixIterator(store, types.GetStopLossSortPrefix(poolId))
-	defer func(iterator sdk.Iterator) {
-		err := iterator.Close()
-		if err != nil {
-			panic(err)
-		}
-	}(iterator)
-
-	for ; iterator.Valid(); iterator.Next() {
-		store.Delete(iterator.Key())
-	}
-}
-
 func (k Keeper) GetPositions(ctx sdk.Context, pagination *query.PageRequest) ([]*types.Position, *query.PageResponse, error) {
 	var positionList []*types.Position
 	store := ctx.KVStore(k.storeKey)
@@ -424,27 +354,53 @@ func (k Keeper) GetPositionWithId(ctx sdk.Context, positionAddress sdk.Address, 
 	return &position, true
 }
 
-// FIXME: currently we only avoid the error while loading and not entirely delete the corrupted key, value
-// This is done to ensure we don't delete everything.
-// After the upgrade that comes after 0.39.0
-// We need to uncomment it and remove any corrupted data with this logic
+// TODO: remove all functions below after upgrade
+func (k Keeper) DeleteCorruptedKeys(ctx sdk.Context) {
+	store := ctx.KVStore(k.storeKey)
+	iterator := sdk.KVStorePrefixIterator(store, types.PositionPrefix)
+	defer func(iterator sdk.Iterator) {
+		err := iterator.Close()
+		if err != nil {
+			panic(err)
+		}
+	}(iterator)
 
-// func (k Keeper) MigrateKeys(ctx sdk.Context) {
-// 	store := ctx.KVStore(k.storeKey)
-// 	iterator := sdk.KVStorePrefixIterator(store, types.PositionPrefix)
-// 	defer func(iterator sdk.Iterator) {
-// 		err := iterator.Close()
-// 		if err != nil {
-// 			panic(err)
-// 		}
-// 	}(iterator)
+	for ; iterator.Valid(); iterator.Next() {
+		var position types.Position
+		bytesValue := iterator.Value()
+		err := k.cdc.Unmarshal(bytesValue, &position)
+		if err != nil {
+			store.Delete(iterator.Key())
+		}
+	}
+}
 
-// 	for ; iterator.Valid(); iterator.Next() {
-// 		var position types.Position
-// 		bytesValue := iterator.Value()
-// 		err := k.cdc.Unmarshal(bytesValue, &position)
-// 		if err != nil {
-// 			store.Delete(iterator.Key())
-// 		}
-// 	}
-// }
+func (k Keeper) DeletePoolPosIdsLiquidationSorted(ctx sdk.Context, poolId uint64) {
+	store := ctx.KVStore(k.storeKey)
+	iterator := sdk.KVStorePrefixIterator(store, types.GetLiquidationSortPrefix(poolId))
+	defer func(iterator sdk.Iterator) {
+		err := iterator.Close()
+		if err != nil {
+			panic(err)
+		}
+	}(iterator)
+
+	for ; iterator.Valid(); iterator.Next() {
+		store.Delete(iterator.Key())
+	}
+}
+
+func (k Keeper) DeletePoolPosIdsStopLossSorted(ctx sdk.Context, poolId uint64) {
+	store := ctx.KVStore(k.storeKey)
+	iterator := sdk.KVStorePrefixIterator(store, types.GetStopLossSortPrefix(poolId))
+	defer func(iterator sdk.Iterator) {
+		err := iterator.Close()
+		if err != nil {
+			panic(err)
+		}
+	}(iterator)
+
+	for ; iterator.Valid(); iterator.Next() {
+		store.Delete(iterator.Key())
+	}
+}
