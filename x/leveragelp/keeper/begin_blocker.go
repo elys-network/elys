@@ -18,6 +18,7 @@ func (k Keeper) BeginBlocker(ctx sdk.Context) {
 
 	if epochPosition == 0 { // if epoch has passed
 		pools := k.GetAllPools(ctx)
+		// TODO: Optimise fallback system by dividing traversal in multiple blocks
 
 		for _, pool := range pools {
 			ammPool, err := k.GetAmmPool(ctx, pool.AmmPoolId)
@@ -26,35 +27,14 @@ func (k Keeper) BeginBlocker(ctx sdk.Context) {
 				continue
 			}
 			if k.IsPoolEnabled(ctx, pool.AmmPoolId) {
-				// Liquidate positions liquidation health threshold
-				// Design
-				// - `Health = PositionValue / liability`, PositionValue is based on LpToken price change
-				// - Debt growth speed is relying on liability.
-				// - Things are sorted by `LeveragedLpAmount / liability` per pool to liquidate efficiently
-				k.IteratePoolPosIdsLiquidationSorted(ctx, pool.AmmPoolId, func(posId types.AddressId) bool {
-					position, err := k.GetPosition(ctx, posId.Address, posId.Id)
-					if err != nil {
-						return false
+				positions := k.GetAllPositions(ctx)
+				for _, position := range positions {
+					isHealthy, _ := k.LiquidatePositionIfUnhealthy(ctx, &position, pool, ammPool)
+					if !isHealthy {
+						continue
 					}
-					isHealthy, earlyReturn := k.LiquidatePositionIfUnhealthy(ctx, &position, pool, ammPool)
-					if !earlyReturn && isHealthy {
-						return true
-					}
-					return false
-				})
-
-				// Close stopLossPrice reached positions
-				k.IteratePoolPosIdsStopLossSorted(ctx, pool.AmmPoolId, func(posId types.AddressId) bool {
-					position, err := k.GetPosition(ctx, posId.Address, posId.Id)
-					if err != nil {
-						return false
-					}
-					underStopLossPrice, earlyReturn := k.ClosePositionIfUnderStopLossPrice(ctx, &position, pool, ammPool)
-					if !earlyReturn && underStopLossPrice {
-						return true
-					}
-					return false
-				})
+					k.ClosePositionIfUnderStopLossPrice(ctx, &position, pool, ammPool)
+				}
 			}
 		}
 	}
