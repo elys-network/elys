@@ -15,10 +15,10 @@ import (
 )
 
 func RegisterCodec(cdc *codec.LegacyAmino) {
-	legacy.RegisterAminoMsg(cdc, &MsgUpdateParams{}, "estaking/UpdateParams")
-	legacy.RegisterAminoMsg(cdc, &MsgWithdrawReward{}, "estaking/WithdrawReward")
-	legacy.RegisterAminoMsg(cdc, &MsgWithdrawElysStakingRewards{}, "estaking/WithdrawElysStakingRewards")
-	legacy.RegisterAminoMsg(cdc, &MsgWithdrawAllRewards{}, "estaking/MsgWithdrawAllRewards")
+	legacy.RegisterAminoMsg(cdc, &MsgUpdateParams{}, "elys/estaking/MsgUpdateParams")
+	legacy.RegisterAminoMsg(cdc, &MsgWithdrawReward{}, "elys/estaking/MsgWithdrawReward")
+	legacy.RegisterAminoMsg(cdc, &MsgWithdrawElysStakingRewards{}, "elys/estaking/MsgWithdrawElysStakingRewards")
+	legacy.RegisterAminoMsg(cdc, &MsgWithdrawAllRewards{}, "elys/estaking/MsgWithdrawAllRewards")
 	// this line is used by starport scaffolding # 2
 }
 

@@ -13,18 +13,18 @@ import (
 )
 
 func RegisterCodec(cdc *codec.LegacyAmino) {
-	legacy.RegisterAminoMsg(cdc, &MsgCommitClaimedRewards{}, "commitment/CommitClaimedRewards")
-	legacy.RegisterAminoMsg(cdc, &MsgUncommitTokens{}, "commitment/UncommitTokens")
-	legacy.RegisterAminoMsg(cdc, &MsgClaimReward{}, "commitment/ClaimReward")
-	legacy.RegisterAminoMsg(cdc, &MsgVest{}, "commitment/Vest")
-	legacy.RegisterAminoMsg(cdc, &MsgClaimVesting{}, "commitment/ClaimVesting")
-	legacy.RegisterAminoMsg(cdc, &MsgCancelVest{}, "commitment/CancelVest")
-	legacy.RegisterAminoMsg(cdc, &MsgVestNow{}, "commitment/VestNow")
-	legacy.RegisterAminoMsg(cdc, &MsgUpdateVestingInfo{}, "commitment/UpdateVestingInfo")
-	legacy.RegisterAminoMsg(cdc, &MsgVestLiquid{}, "commitment/VestLiquid")
-	legacy.RegisterAminoMsg(cdc, &MsgClaimRewards{}, "commitment/ClaimRewards")
-	legacy.RegisterAminoMsg(cdc, &MsgStake{}, "commitment/Stake")
-	legacy.RegisterAminoMsg(cdc, &MsgUnstake{}, "commitment/Unstake")
+	legacy.RegisterAminoMsg(cdc, &MsgCommitClaimedRewards{}, "elys/commitment/MsgCommitClaimedRewards")
+	legacy.RegisterAminoMsg(cdc, &MsgUncommitTokens{}, "elys/commitment/MsgUncommitTokens")
+	legacy.RegisterAminoMsg(cdc, &MsgClaimReward{}, "elys/commitment/MsgClaimReward")
+	legacy.RegisterAminoMsg(cdc, &MsgVest{}, "elys/commitment/MsgVest")
+	legacy.RegisterAminoMsg(cdc, &MsgClaimVesting{}, "elys/commitment/MsgClaimVesting")
+	legacy.RegisterAminoMsg(cdc, &MsgCancelVest{}, "elys/commitment/MsgCancelVest")
+	legacy.RegisterAminoMsg(cdc, &MsgVestNow{}, "elys/commitment/MsgVestNow")
+	legacy.RegisterAminoMsg(cdc, &MsgUpdateVestingInfo{}, "elys/commitment/MsgUpdateVestingInfo")
+	legacy.RegisterAminoMsg(cdc, &MsgVestLiquid{}, "elys/commitment/MsgVestLiquid")
+	legacy.RegisterAminoMsg(cdc, &MsgClaimRewards{}, "elys/commitment/MsgClaimRewards")
+	legacy.RegisterAminoMsg(cdc, &MsgStake{}, "elys/commitment/MsgStake")
+	legacy.RegisterAminoMsg(cdc, &MsgUnstake{}, "elys/commitment/MsgUnstake")
 	// this line is used by starport scaffolding # 2
 }
 

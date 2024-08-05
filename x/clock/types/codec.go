@@ -32,8 +32,8 @@ func init() {
 
 // RegisterLegacyAminoCodec registers concrete types on the LegacyAmino codec
 func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
-	cdc.RegisterConcrete(Params{}, "elys/x/clock/Params", nil)
-	legacy.RegisterAminoMsg(cdc, &MsgUpdateParams{}, "elys/x/clock/MsgUpdateParams")
+	cdc.RegisterConcrete(Params{}, "elys/clock/Params", nil)
+	legacy.RegisterAminoMsg(cdc, &MsgUpdateParams{}, "elys/clock/MsgUpdateParams")
 }
 
 func RegisterInterfaces(registry types.InterfaceRegistry) {

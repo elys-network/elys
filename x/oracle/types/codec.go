@@ -13,15 +13,15 @@ import (
 )
 
 func RegisterCodec(cdc *codec.LegacyAmino) {
-	legacy.RegisterAminoMsg(cdc, &MsgFeedPrice{}, "oracle/FeedPrice")
-	legacy.RegisterAminoMsg(cdc, &MsgSetPriceFeeder{}, "oracle/SetPriceFeeder")
-	legacy.RegisterAminoMsg(cdc, &MsgDeletePriceFeeder{}, "oracle/DeletePriceFeeder")
-	legacy.RegisterAminoMsg(cdc, &MsgFeedMultiplePrices{}, "oracle/FeedMultiplePrices")
-	legacy.RegisterAminoMsg(cdc, &MsgAddAssetInfo{}, "oracle/AddAssetInfo")
-	legacy.RegisterAminoMsg(cdc, &MsgRemoveAssetInfo{}, "oracle/RemoveAssetInfo")
-	legacy.RegisterAminoMsg(cdc, &MsgAddPriceFeeders{}, "oracle/AddPriceFeeders")
-	legacy.RegisterAminoMsg(cdc, &MsgRemovePriceFeeders{}, "oracle/RemovePriceFeeders")
-	legacy.RegisterAminoMsg(cdc, &MsgUpdateParams{}, "oracle/UpdateParams")
+	legacy.RegisterAminoMsg(cdc, &MsgFeedPrice{}, "elys/oracle/MsgFeedPrice")
+	legacy.RegisterAminoMsg(cdc, &MsgSetPriceFeeder{}, "elys/oracle/MsgSetPriceFeeder")
+	legacy.RegisterAminoMsg(cdc, &MsgDeletePriceFeeder{}, "elys/oracle/MsgDeletePriceFeeder")
+	legacy.RegisterAminoMsg(cdc, &MsgFeedMultiplePrices{}, "elys/oracle/MsgFeedMultiplePrices")
+	legacy.RegisterAminoMsg(cdc, &MsgAddAssetInfo{}, "elys/oracle/MsgAddAssetInfo")
+	legacy.RegisterAminoMsg(cdc, &MsgRemoveAssetInfo{}, "elys/oracle/MsgRemoveAssetInfo")
+	legacy.RegisterAminoMsg(cdc, &MsgAddPriceFeeders{}, "elys/oracle/MsgAddPriceFeeders")
+	legacy.RegisterAminoMsg(cdc, &MsgRemovePriceFeeders{}, "elys/oracle/MsgRemovePriceFeeders")
+	legacy.RegisterAminoMsg(cdc, &MsgUpdateParams{}, "elys/oracle/MsgUpdateParams")
 	// this line is used by starport scaffolding # 2
 }
 

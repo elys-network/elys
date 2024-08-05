@@ -13,15 +13,15 @@ import (
 )
 
 func RegisterCodec(cdc *codec.LegacyAmino) {
-	legacy.RegisterAminoMsg(cdc, &MsgCreatePool{}, "amm/CreatePool")
-	legacy.RegisterAminoMsg(cdc, &MsgJoinPool{}, "amm/JoinPool")
-	legacy.RegisterAminoMsg(cdc, &MsgExitPool{}, "amm/ExitPool")
-	legacy.RegisterAminoMsg(cdc, &MsgSwapExactAmountIn{}, "amm/SwapExactAmountIn")
-	legacy.RegisterAminoMsg(cdc, &MsgSwapExactAmountOut{}, "amm/SwapExactAmountOut")
-	legacy.RegisterAminoMsg(cdc, &MsgSwapByDenom{}, "amm/SwapByDenom")
-	legacy.RegisterAminoMsg(cdc, &MsgFeedMultipleExternalLiquidity{}, "amm/FeedMultipleExternalLiquidity")
-	legacy.RegisterAminoMsg(cdc, &MsgUpdatePoolParams{}, "amm/UpdatePoolParams")
-	legacy.RegisterAminoMsg(cdc, &MsgUpdateParams{}, "amm/UpdateParams")
+	legacy.RegisterAminoMsg(cdc, &MsgCreatePool{}, "elys/amm/MsgCreatePool")
+	legacy.RegisterAminoMsg(cdc, &MsgJoinPool{}, "elys/amm/MsgJoinPool")
+	legacy.RegisterAminoMsg(cdc, &MsgExitPool{}, "elys/amm/MsgExitPool")
+	legacy.RegisterAminoMsg(cdc, &MsgSwapExactAmountIn{}, "elys/amm/MsgSwapExactAmountIn")
+	legacy.RegisterAminoMsg(cdc, &MsgSwapExactAmountOut{}, "elys/amm/MsgSwapExactAmountOut")
+	legacy.RegisterAminoMsg(cdc, &MsgSwapByDenom{}, "elys/amm/MsgSwapByDenom")
+	legacy.RegisterAminoMsg(cdc, &MsgFeedMultipleExternalLiquidity{}, "elys/amm/MsgFeedMultipleExternalLiquidity")
+	legacy.RegisterAminoMsg(cdc, &MsgUpdatePoolParams{}, "elys/amm/MsgUpdatePoolParams")
+	legacy.RegisterAminoMsg(cdc, &MsgUpdateParams{}, "elys/amm/MsgUpdateParams")
 	// this line is used by starport scaffolding # 2
 }
 
