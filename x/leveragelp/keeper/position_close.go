@@ -42,6 +42,12 @@ func (k Keeper) ForceCloseLong(ctx sdk.Context, position types.Position, pool ty
 
 	repayAmount := debt.Borrowed.Add(debt.InterestStacked).Sub(debt.InterestPaid).Mul(lpAmount).Quo(position.LeveragedLpAmount)
 
+	// Check if position has enough coins to repay else repay partial
+	bal := k.bankKeeper.GetBalance(ctx, position.GetPositionAddress(), position.Collateral.Denom)
+	if bal.Amount.LT(repayAmount) {
+		repayAmount = bal.Amount
+	}
+
 	err = k.stableKeeper.Repay(ctx, position.GetPositionAddress(), sdk.NewCoin(position.Collateral.Denom, repayAmount))
 	if err != nil {
 		return sdk.ZeroInt(), err
