@@ -2,7 +2,6 @@ package keeper
 
 import (
 	"fmt"
-	"math"
 	"time"
 
 	cosmosMath "cosmossdk.io/math"
@@ -113,60 +112,6 @@ func (k Keeper) DestroyPosition(ctx sdk.Context, positionAddress string, id uint
 	return nil
 }
 
-// Set sorted liquidation
-func (k Keeper) SetSortedLiquidation(ctx sdk.Context, address string, old sdk.Int, new sdk.Int) {
-	store := ctx.KVStore(k.storeKey)
-	if store.Has([]byte(address)) {
-		key := store.Get([]byte(address))
-		if !store.Has(key) {
-			return
-		}
-		res := store.Get(key)
-		var position types.Position
-		k.cdc.MustUnmarshal(res, &position)
-		// Make sure liability changes are handled properly here, this should always be updated whenever liability is changed
-		liquidationKey := types.GetLiquidationSortKey(position.AmmPoolId, position.LeveragedLpAmount, old, position.Id)
-		if len(liquidationKey) > 0 && store.Has(liquidationKey) {
-			store.Delete(liquidationKey)
-		}
-
-		// Add position sort keys
-		addrId := types.AddressId{
-			Id:      position.Id,
-			Address: position.Address,
-		}
-		bz := k.cdc.MustMarshal(&addrId)
-		liquidationKey = types.GetLiquidationSortKey(position.AmmPoolId, position.LeveragedLpAmount, new, position.Id)
-		if len(liquidationKey) > 0 {
-			store.Set(liquidationKey, bz)
-		}
-	}
-}
-
-// Change DS for migration
-func (k Keeper) SetSortedLiquidationAndStopLoss(ctx sdk.Context, position types.Position) {
-	store := ctx.KVStore(k.storeKey)
-	key := types.GetPositionKey(position.Address, position.Id)
-	// for stablestake hook
-	store.Set([]byte(position.GetPositionAddress()), key)
-
-	// Add position sort keys
-	addrId := types.AddressId{
-		Id:      position.Id,
-		Address: position.Address,
-	}
-	bz := k.cdc.MustMarshal(&addrId)
-	debt := k.stableKeeper.UpdateInterestStackedByAddress(ctx, position.GetPositionAddress())
-	liquidationKey := types.GetLiquidationSortKey(position.AmmPoolId, position.LeveragedLpAmount, debt.Borrowed.Sub(debt.InterestPaid).Add(debt.InterestStacked), position.Id)
-	if len(liquidationKey) > 0 {
-		store.Set(liquidationKey, bz)
-	}
-	stopLossKey := types.GetStopLossSortKey(position.AmmPoolId, position.StopLossPrice, position.Id)
-	if len(stopLossKey) > 0 {
-		store.Set(stopLossKey, bz)
-	}
-}
-
 // Set Open Position count
 func (k Keeper) SetOpenPositionCount(ctx sdk.Context, count uint64) {
 	store := ctx.KVStore(k.storeKey)
@@ -234,8 +179,12 @@ func (k Keeper) GetPositions(ctx sdk.Context, pagination *query.PageRequest) ([]
 
 	if pagination == nil {
 		pagination = &query.PageRequest{
-			Limit: math.MaxUint64 - 1,
+			Limit: types.MaxPageLimit,
 		}
+	}
+
+	if pagination.Limit > types.MaxPageLimit {
+		return nil, nil, status.Error(codes.InvalidArgument, fmt.Sprintf("page size greater than max %d", types.MaxPageLimit))
 	}
 
 	pageRes, err := query.Paginate(positionStore, pagination, func(key []byte, value []byte) error {
@@ -260,9 +209,14 @@ func (k Keeper) GetPositionsForPool(ctx sdk.Context, ammPoolId uint64, paginatio
 
 	if pagination == nil {
 		pagination = &query.PageRequest{
-			Limit: math.MaxUint64 - 1,
+			Limit: types.MaxPageLimit,
 		}
 	}
+
+	if pagination.Limit > types.MaxPageLimit {
+		return nil, nil, status.Error(codes.InvalidArgument, fmt.Sprintf("page size greater than max %d", types.MaxPageLimit))
+	}
+
 	pageRes, err := query.FilteredPaginate(positionStore, pagination, func(key []byte, value []byte, accumulate bool) (bool, error) {
 		var position types.Position
 		err := k.cdc.Unmarshal(value, &position)

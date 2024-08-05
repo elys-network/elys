@@ -62,10 +62,6 @@ func TestSetLiquidation(t *testing.T) {
 		}
 		leveragelp.SetPosition(ctx, &position, sdk.NewInt(0))
 	}
-
-	debt := app.StablestakeKeeper.GetDebt(ctx, addr[0])
-	leveragelp.SetSortedLiquidation(ctx, addr[0].String(), debt.Borrowed.Add(debt.InterestStacked).Sub(debt.InterestPaid), sdk.NewInt(100))
-
 	positionCount := leveragelp.GetPositionCount(ctx)
 	require.Equal(t, positionCount, (uint64)(2))
 }
