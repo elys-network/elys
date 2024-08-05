@@ -7,7 +7,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
-	ammkeeper "github.com/elys-network/elys/x/amm/keeper"
 	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
 	"github.com/elys-network/elys/x/leveragelp/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
@@ -399,25 +398,19 @@ func (k Keeper) GetPositionHealth(ctx sdk.Context, position types.Position) (sdk
 		return sdk.Dec{}, errorsmod.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency)
 	}
 
-	ammPool, err := k.GetAmmPool(ctx, position.GetAmmPoolId())
-	if err != nil {
-		return sdk.Dec{}, nil
-	}
-
-	leveragedLpAmount := sdk.ZeroDec()
+	leveragedLpAmount := sdk.ZeroInt()
 	commitments := k.commKeeper.GetCommitments(ctx, position.GetPositionAddress().String())
 
 	for _, commitment := range commitments.CommittedTokens {
-		leveragedLpAmount = leveragedLpAmount.Add(commitment.Amount.ToLegacyDec())
+		leveragedLpAmount = leveragedLpAmount.Add(commitment.Amount)
 	}
 
-	exitCoins, _, err := ammPool.CalcExitPoolCoinsFromShares(ctx, k.oracleKeeper, k.accountedPoolKeeper, leveragedLpAmount.TruncateInt(), baseCurrency)
+	exitCoinsAfterFee, _, err := k.amm.ExitPoolEst(ctx, position.GetAmmPoolId(), leveragedLpAmount, baseCurrency)
 	if err != nil {
 		return sdk.Dec{}, err
 	}
 
-	exitFeeCoins := ammkeeper.PortionCoins(exitCoins, ammPool.PoolParams.ExitFee)
-	exitAmountAfterFee := exitCoins.Sub(exitFeeCoins...).AmountOf(baseCurrency)
+	exitAmountAfterFee := exitCoinsAfterFee.AmountOf(baseCurrency)
 
 	health := exitAmountAfterFee.ToLegacyDec().Quo(debtAmount.ToLegacyDec())
 
