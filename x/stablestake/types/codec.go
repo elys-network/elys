@@ -15,9 +15,9 @@ import (
 )
 
 func RegisterCodec(cdc *codec.LegacyAmino) {
-	legacy.RegisterAminoMsg(cdc, &MsgBond{}, "elys/stablestake/MsgBond")
-	legacy.RegisterAminoMsg(cdc, &MsgUnbond{}, "elys/stablestake/MsgUnbond")
-	legacy.RegisterAminoMsg(cdc, &MsgUpdateParams{}, "elys/stablestake/MsgUpdateParams")
+	legacy.RegisterAminoMsg(cdc, &MsgBond{}, "stablestake/MsgBond")
+	legacy.RegisterAminoMsg(cdc, &MsgUnbond{}, "stablestake/MsgUnbond")
+	legacy.RegisterAminoMsg(cdc, &MsgUpdateParams{}, "stablestake/MsgUpdateParams")
 	// this line is used by starport scaffolding # 2
 }
 

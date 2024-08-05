@@ -15,13 +15,13 @@ import (
 )
 
 func RegisterCodec(cdc *codec.LegacyAmino) {
-	legacy.RegisterAminoMsg(cdc, &MsgUpdateWasmConfig{}, "elys/parameter/MsgUpdateWasmConfig")
+	legacy.RegisterAminoMsg(cdc, &MsgUpdateWasmConfig{}, "parameter/MsgUpdateWasmConfig")
 	// this line is used by starport scaffolding # 2
-	legacy.RegisterAminoMsg(cdc, &MsgUpdateMinCommission{}, "elys/parameter/MsgUpdateMinCommission")
-	legacy.RegisterAminoMsg(cdc, &MsgUpdateMaxVotingPower{}, "elys/parameter/MsgUpdateMaxVotingPower")
-	legacy.RegisterAminoMsg(cdc, &MsgUpdateMinSelfDelegation{}, "elys/parameter/MsgUpdateMinSelfDelegation")
-	legacy.RegisterAminoMsg(cdc, &MsgUpdateBrokerAddress{}, "elys/parameter/MsgUpdateBrokerAddress")
-	legacy.RegisterAminoMsg(cdc, &MsgUpdateTotalBlocksPerYear{}, "elys/parameter/MsgUpdateTotalBlocksPerYear")
+	legacy.RegisterAminoMsg(cdc, &MsgUpdateMinCommission{}, "parameter/MsgUpdateMinCommission")
+	legacy.RegisterAminoMsg(cdc, &MsgUpdateMaxVotingPower{}, "parameter/MsgUpdateMaxVotingPower")
+	legacy.RegisterAminoMsg(cdc, &MsgUpdateMinSelfDelegation{}, "parameter/MsgUpdateMinSelfDelegation")
+	legacy.RegisterAminoMsg(cdc, &MsgUpdateBrokerAddress{}, "parameter/MsgUpdateBrokerAddress")
+	legacy.RegisterAminoMsg(cdc, &MsgUpdateTotalBlocksPerYear{}, "parameter/MsgUpdateTotalBlocksPerYear")
 	// this line is used by starport scaffolding # 2
 }
 

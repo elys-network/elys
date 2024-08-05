@@ -13,7 +13,7 @@ import (
 )
 
 func RegisterCodec(cdc *codec.LegacyAmino) {
-	legacy.RegisterAminoMsg(cdc, &MsgUpdateParams{}, "elys/burner/MsgUpdateParams")
+	legacy.RegisterAminoMsg(cdc, &MsgUpdateParams{}, "burner/MsgUpdateParams")
 	// this line is used by starport scaffolding # 2
 }
 

@@ -13,12 +13,12 @@ import (
 )
 
 func RegisterCodec(cdc *codec.LegacyAmino) {
-	legacy.RegisterAminoMsg(cdc, &MsgOpen{}, "elys/perpetual/MsgOpen")
-	legacy.RegisterAminoMsg(cdc, &MsgClose{}, "elys/perpetual/MsgClose")
-	legacy.RegisterAminoMsg(cdc, &MsgUpdateParams{}, "elys/perpetual/MsgUpdateParams")
-	legacy.RegisterAminoMsg(cdc, &MsgWhitelist{}, "elys/perpetual/MsgWhitelist")
-	legacy.RegisterAminoMsg(cdc, &MsgDewhitelist{}, "elys/perpetual/MsgDewhitelist")
-	legacy.RegisterAminoMsg(cdc, &MsgAddCollateral{}, "elys/perpetual/MsgAddCollateral")
+	legacy.RegisterAminoMsg(cdc, &MsgOpen{}, "perpetual/MsgOpen")
+	legacy.RegisterAminoMsg(cdc, &MsgClose{}, "perpetual/MsgClose")
+	legacy.RegisterAminoMsg(cdc, &MsgUpdateParams{}, "perpetual/MsgUpdateParams")
+	legacy.RegisterAminoMsg(cdc, &MsgWhitelist{}, "perpetual/MsgWhitelist")
+	legacy.RegisterAminoMsg(cdc, &MsgDewhitelist{}, "perpetual/MsgDewhitelist")
+	legacy.RegisterAminoMsg(cdc, &MsgAddCollateral{}, "perpetual/MsgAddCollateral")
 	// this line is used by starport scaffolding # 2
 }
 

@@ -13,18 +13,18 @@ import (
 )
 
 func RegisterCodec(cdc *codec.LegacyAmino) {
-	legacy.RegisterAminoMsg(cdc, &MsgCommitClaimedRewards{}, "elys/commitment/MsgCommitClaimedRewards")
-	legacy.RegisterAminoMsg(cdc, &MsgUncommitTokens{}, "elys/commitment/MsgUncommitTokens")
-	legacy.RegisterAminoMsg(cdc, &MsgClaimReward{}, "elys/commitment/MsgClaimReward")
-	legacy.RegisterAminoMsg(cdc, &MsgVest{}, "elys/commitment/MsgVest")
-	legacy.RegisterAminoMsg(cdc, &MsgClaimVesting{}, "elys/commitment/MsgClaimVesting")
-	legacy.RegisterAminoMsg(cdc, &MsgCancelVest{}, "elys/commitment/MsgCancelVest")
-	legacy.RegisterAminoMsg(cdc, &MsgVestNow{}, "elys/commitment/MsgVestNow")
-	legacy.RegisterAminoMsg(cdc, &MsgUpdateVestingInfo{}, "elys/commitment/MsgUpdateVestingInfo")
-	legacy.RegisterAminoMsg(cdc, &MsgVestLiquid{}, "elys/commitment/MsgVestLiquid")
-	legacy.RegisterAminoMsg(cdc, &MsgClaimRewards{}, "elys/commitment/MsgClaimRewards")
-	legacy.RegisterAminoMsg(cdc, &MsgStake{}, "elys/commitment/MsgStake")
-	legacy.RegisterAminoMsg(cdc, &MsgUnstake{}, "elys/commitment/MsgUnstake")
+	legacy.RegisterAminoMsg(cdc, &MsgCommitClaimedRewards{}, "commitment/MsgCommitClaimedRewards")
+	legacy.RegisterAminoMsg(cdc, &MsgUncommitTokens{}, "commitment/MsgUncommitTokens")
+	legacy.RegisterAminoMsg(cdc, &MsgClaimReward{}, "commitment/MsgClaimReward")
+	legacy.RegisterAminoMsg(cdc, &MsgVest{}, "commitment/MsgVest")
+	legacy.RegisterAminoMsg(cdc, &MsgClaimVesting{}, "commitment/MsgClaimVesting")
+	legacy.RegisterAminoMsg(cdc, &MsgCancelVest{}, "commitment/MsgCancelVest")
+	legacy.RegisterAminoMsg(cdc, &MsgVestNow{}, "commitment/MsgVestNow")
+	legacy.RegisterAminoMsg(cdc, &MsgUpdateVestingInfo{}, "commitment/MsgUpdateVestingInfo")
+	legacy.RegisterAminoMsg(cdc, &MsgVestLiquid{}, "commitment/MsgVestLiquid")
+	legacy.RegisterAminoMsg(cdc, &MsgClaimRewards{}, "commitment/MsgClaimRewards")
+	legacy.RegisterAminoMsg(cdc, &MsgStake{}, "commitment/MsgStake")
+	legacy.RegisterAminoMsg(cdc, &MsgUnstake{}, "commitment/MsgUnstake")
 	// this line is used by starport scaffolding # 2
 }
 

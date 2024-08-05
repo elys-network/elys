@@ -13,14 +13,14 @@ import (
 )
 
 func RegisterCodec(cdc *codec.LegacyAmino) {
-	legacy.RegisterAminoMsg(cdc, &MsgCreateAirdrop{}, "elys/tokenomics/MsgCreateAirdrop")
-	legacy.RegisterAminoMsg(cdc, &MsgUpdateAirdrop{}, "elys/tokenomics/MsgUpdateAirdrop")
-	legacy.RegisterAminoMsg(cdc, &MsgDeleteAirdrop{}, "elys/tokenomics/MsgDeleteAirdrop")
-	legacy.RegisterAminoMsg(cdc, &MsgClaimAirdrop{}, "elys/tokenomics/MsgClaimAirdrop")
-	legacy.RegisterAminoMsg(cdc, &MsgUpdateGenesisInflation{}, "elys/tokenomics/MsgUpdateGenesisInflation")
-	legacy.RegisterAminoMsg(cdc, &MsgCreateTimeBasedInflation{}, "elys/tokenomics/MsgCreateTimeBasedInflation")
-	legacy.RegisterAminoMsg(cdc, &MsgUpdateTimeBasedInflation{}, "elys/tokenomics/MsgUpdateTimeBasedInflation")
-	legacy.RegisterAminoMsg(cdc, &MsgDeleteTimeBasedInflation{}, "elys/tokenomics/MsgDeleteTimeBasedInflation")
+	legacy.RegisterAminoMsg(cdc, &MsgCreateAirdrop{}, "tokenomics/MsgCreateAirdrop")
+	legacy.RegisterAminoMsg(cdc, &MsgUpdateAirdrop{}, "tokenomics/MsgUpdateAirdrop")
+	legacy.RegisterAminoMsg(cdc, &MsgDeleteAirdrop{}, "tokenomics/MsgDeleteAirdrop")
+	legacy.RegisterAminoMsg(cdc, &MsgClaimAirdrop{}, "tokenomics/MsgClaimAirdrop")
+	legacy.RegisterAminoMsg(cdc, &MsgUpdateGenesisInflation{}, "tokenomics/MsgUpdateGenesisInflation")
+	legacy.RegisterAminoMsg(cdc, &MsgCreateTimeBasedInflation{}, "tokenomics/MsgCreateTimeBasedInflation")
+	legacy.RegisterAminoMsg(cdc, &MsgUpdateTimeBasedInflation{}, "tokenomics/MsgUpdateTimeBasedInflation")
+	legacy.RegisterAminoMsg(cdc, &MsgDeleteTimeBasedInflation{}, "tokenomics/MsgDeleteTimeBasedInflation")
 	// this line is used by starport scaffolding # 2
 }
 

@@ -40958,6 +40958,43 @@ paths:
           description: A successful response.
           schema:
             type: object
+            properties:
+              address:
+                type: string
+              locked_committed:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    denom:
+                      type: string
+                    amount:
+                      type: string
+                  description: >-
+                    Coin defines a token with a denomination and an amount.
+
+
+                    NOTE: The amount field is an Int which implements the custom
+                    method
+
+                    signatures required by gogoproto.
+              total_committed:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    denom:
+                      type: string
+                    amount:
+                      type: string
+                  description: >-
+                    Coin defines a token with a denomination and an amount.
+
+
+                    NOTE: The amount field is an Int which implements the custom
+                    method
+
+                    signatures required by gogoproto.
         default:
           description: An unexpected error response.
           schema:
@@ -45294,6 +45331,8 @@ paths:
               delegations:
                 type: string
               unbondings:
+                type: string
+              totalVested:
                 type: string
         default:
           description: An unexpected error response.
@@ -87790,6 +87829,37 @@ definitions:
         type: string
   elys.leveragelp.QueryCommittedTokensLockedResponse:
     type: object
+    properties:
+      address:
+        type: string
+      locked_committed:
+        type: array
+        items:
+          type: object
+          properties:
+            denom:
+              type: string
+            amount:
+              type: string
+          description: |-
+            Coin defines a token with a denomination and an amount.
+
+            NOTE: The amount field is an Int which implements the custom method
+            signatures required by gogoproto.
+      total_committed:
+        type: array
+        items:
+          type: object
+          properties:
+            denom:
+              type: string
+            amount:
+              type: string
+          description: |-
+            Coin defines a token with a denomination and an amount.
+
+            NOTE: The amount field is an Int which implements the custom method
+            signatures required by gogoproto.
   elys.leveragelp.QueryGetPoolResponse:
     type: object
     properties:
@@ -87894,6 +87964,16 @@ definitions:
       lifetime_position_count:
         type: string
         format: uint64
+  elys.leveragelp.UpdatePool:
+    type: object
+    properties:
+      pool_id:
+        type: string
+        format: uint64
+      Enabled:
+        type: boolean
+      Closed:
+        type: boolean
   elys.leveragelp.WhitelistResponse:
     type: object
     properties:
@@ -89876,6 +89956,8 @@ definitions:
       delegations:
         type: string
       unbondings:
+        type: string
+      totalVested:
         type: string
   elys.tokenomics.Airdrop:
     type: object

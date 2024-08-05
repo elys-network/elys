@@ -15,11 +15,11 @@ import (
 )
 
 func RegisterCodec(cdc *codec.LegacyAmino) {
-	legacy.RegisterAminoMsg(cdc, &MsgAddExternalIncentive{}, "elys/masterchef/MsgAddExternalIncentive")
-	legacy.RegisterAminoMsg(cdc, &MsgClaimRewards{}, "elys/masterchef/MsgClaimRewards")
-	legacy.RegisterAminoMsg(cdc, &MsgUpdateParams{}, "elys/masterchef/MsgUpdateParams")
-	legacy.RegisterAminoMsg(cdc, &MsgUpdatePoolMultipliers{}, "elys/masterchef/MsgUpdatePoolMultipliers")
-	legacy.RegisterAminoMsg(cdc, &MsgAddExternalRewardDenom{}, "elys/masterchef/MsgAddExternalRewardDenom")
+	legacy.RegisterAminoMsg(cdc, &MsgAddExternalIncentive{}, "masterchef/MsgAddExternalIncentive")
+	legacy.RegisterAminoMsg(cdc, &MsgClaimRewards{}, "masterchef/MsgClaimRewards")
+	legacy.RegisterAminoMsg(cdc, &MsgUpdateParams{}, "masterchef/MsgUpdateParams")
+	legacy.RegisterAminoMsg(cdc, &MsgUpdatePoolMultipliers{}, "masterchef/MsgUpdatePoolMultipliers")
+	legacy.RegisterAminoMsg(cdc, &MsgAddExternalRewardDenom{}, "masterchef/MsgAddExternalRewardDenom")
 	// this line is used by starport scaffolding # 2
 }
 

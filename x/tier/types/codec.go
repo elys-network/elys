@@ -13,7 +13,7 @@ import (
 )
 
 func RegisterCodec(cdc *codec.LegacyAmino) {
-	legacy.RegisterAminoMsg(cdc, &MsgSetPortfolio{}, "elys/tier/MsgSetPortfolio")
+	legacy.RegisterAminoMsg(cdc, &MsgSetPortfolio{}, "tier/MsgSetPortfolio")
 	// this line is used by starport scaffolding # 2
 }
 

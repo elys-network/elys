@@ -13,15 +13,15 @@ import (
 )
 
 func RegisterCodec(cdc *codec.LegacyAmino) {
-	legacy.RegisterAminoMsg(cdc,&MsgOpen{}, "elys/leveragelp/MsgOpen")
-	legacy.RegisterAminoMsg(cdc,&MsgClose{}, "elys/leveragelp/MsgClose")
-	legacy.RegisterAminoMsg(cdc,&MsgUpdateParams{}, "elys/leveragelp/MsgUpdateParams")
-	legacy.RegisterAminoMsg(cdc,&MsgUpdatePools{}, "elys/leveragelp/MsgUpdatePools")
-	legacy.RegisterAminoMsg(cdc,&MsgWhitelist{}, "elys/leveragelp/MsgWhitelist")
-	legacy.RegisterAminoMsg(cdc,&MsgDewhitelist{}, "elys/leveragelp/MsgDewhitelist")
-	legacy.RegisterAminoMsg(cdc,&MsgClaimRewards{}, "elys/leveragelp/MsgClaimRewards")
-	legacy.RegisterAminoMsg(cdc,&MsgUpdateStopLoss{}, "elys/leveragelp/MsgUpdateStopLoss")
-	legacy.RegisterAminoMsg(cdc,&MsgAddCollateral{}, "elys/leveragelp/MsgAddCollateral")
+	legacy.RegisterAminoMsg(cdc,&MsgOpen{}, "leveragelp/MsgOpen")
+	legacy.RegisterAminoMsg(cdc,&MsgClose{}, "leveragelp/MsgClose")
+	legacy.RegisterAminoMsg(cdc,&MsgUpdateParams{}, "leveragelp/MsgUpdateParams")
+	legacy.RegisterAminoMsg(cdc,&MsgUpdatePools{}, "leveragelp/MsgUpdatePools")
+	legacy.RegisterAminoMsg(cdc,&MsgWhitelist{}, "leveragelp/MsgWhitelist")
+	legacy.RegisterAminoMsg(cdc,&MsgDewhitelist{}, "leveragelp/MsgDewhitelist")
+	legacy.RegisterAminoMsg(cdc,&MsgClaimRewards{}, "leveragelp/MsgClaimRewards")
+	legacy.RegisterAminoMsg(cdc,&MsgUpdateStopLoss{}, "leveragelp/MsgUpdateStopLoss")
+	legacy.RegisterAminoMsg(cdc,&MsgAddCollateral{}, "leveragelp/MsgAddCollateral")
 	// this line is used by starport scaffolding # 2
 }
 
