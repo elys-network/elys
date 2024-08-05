@@ -15,17 +15,6 @@ func (k Keeper) ForceCloseLong(ctx sdk.Context, position types.Position, pool ty
 	// Old debt
 	oldDebt := k.stableKeeper.GetDebt(ctx, position.GetPositionAddress())
 
-	if position.LeveragedLpAmount.IsZero() {
-		err := k.masterchefKeeper.ClaimRewards(ctx, position.GetPositionAddress(), []uint64{position.AmmPoolId}, sdk.MustAccAddressFromBech32(position.Address))
-		if err != nil {
-			return sdk.ZeroInt(), err
-		}
-		err = k.DestroyPosition(ctx, position.Address, position.Id, oldDebt.Borrowed.Add(oldDebt.InterestStacked).Sub(oldDebt.InterestPaid))
-		if err != nil {
-			return sdk.ZeroInt(), err
-		}
-	}
-
 	// Exit liquidity with collateral token
 	_, exitCoinsAfterExitFee, err := k.amm.ExitPool(ctx, position.GetPositionAddress(), position.AmmPoolId, lpAmount, sdk.Coins{}, position.Collateral.Denom)
 	if err != nil {
