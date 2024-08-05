@@ -85,8 +85,6 @@ func (k Keeper) ProcessOpenLong(ctx sdk.Context, position *types.Position, lever
 		return nil, types.ErrOnlyBaseCurrencyAllowed
 	}
 
-	oldDebt := k.stableKeeper.GetDebt(ctx, position.GetPositionAddress())
-
 	// Calculate the leveraged amount based on the collateral provided and the leverage.
 	leveragedAmount := sdk.NewInt(collateralAmountDec.Mul(leverage).TruncateInt().Int64())
 
@@ -131,7 +129,7 @@ func (k Keeper) ProcessOpenLong(ctx sdk.Context, position *types.Position, lever
 	position.Liabilities = position.Liabilities.Add(borrowCoin.Amount)
 	position.PositionHealth = lr
 
-	k.SetPosition(ctx, position, oldDebt.Borrowed.Add(oldDebt.InterestStacked).Sub(oldDebt.InterestPaid))
+	k.SetPosition(ctx, position)
 
 	return position, nil
 }

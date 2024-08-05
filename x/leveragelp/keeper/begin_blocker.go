@@ -53,9 +53,8 @@ func (k Keeper) LiquidatePositionIfUnhealthy(ctx sdk.Context, position *types.Po
 		ctx.Logger().Error(errors.Wrap(err, fmt.Sprintf("error updating position health: %s", position.String())).Error())
 		return false, true
 	}
-	debt := k.stableKeeper.GetDebt(ctx, position.GetPositionAddress())
 	position.PositionHealth = h
-	k.SetPosition(ctx, position, debt.Borrowed.Add(debt.InterestStacked).Sub(debt.InterestPaid))
+	k.SetPosition(ctx, position)
 
 	params := k.GetParams(ctx)
 	isHealthy = position.PositionHealth.GT(params.SafetyFactor)
@@ -93,9 +92,8 @@ func (k Keeper) ClosePositionIfUnderStopLossPrice(ctx sdk.Context, position *typ
 		ctx.Logger().Error(errors.Wrap(err, fmt.Sprintf("error updating position health: %s", position.String())).Error())
 		return false, true
 	}
-	debt := k.stableKeeper.GetDebt(ctx, position.GetPositionAddress())
 	position.PositionHealth = h
-	k.SetPosition(ctx, position, debt.Borrowed.Add(debt.InterestStacked).Sub(debt.InterestPaid))
+	k.SetPosition(ctx, position)
 
 	lpTokenPrice, err := ammPool.LpTokenPrice(ctx, k.oracleKeeper)
 	if err != nil {

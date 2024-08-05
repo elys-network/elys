@@ -33,7 +33,7 @@ func TestSetGetPosition(t *testing.T) {
 			PositionHealth: sdk.NewDec(0),
 			Id:             0,
 		}
-		leveragelp.SetPosition(ctx, &position, sdk.NewInt(0))
+		leveragelp.SetPosition(ctx, &position)
 	}
 
 	positionCount := leveragelp.GetPositionCount(ctx)
@@ -60,7 +60,7 @@ func TestSetLiquidation(t *testing.T) {
 			PositionHealth: sdk.NewDec(0),
 			Id:             0,
 		}
-		leveragelp.SetPosition(ctx, &position, sdk.NewInt(0))
+		leveragelp.SetPosition(ctx, &position)
 	}
 	positionCount := leveragelp.GetPositionCount(ctx)
 	require.Equal(t, positionCount, (uint64)(2))
@@ -147,7 +147,7 @@ func TestIteratePoolPosIdsLiquidationSorted(t *testing.T) {
 			LastInterestCalcBlock: uint64(ctx.BlockHeight()),
 		}
 		stablestake.SetDebt(ctx, debt)
-		leveragelp.SetPosition(ctx, &position, sdk.NewInt(0))
+		leveragelp.SetPosition(ctx, &position)
 	}
 }
 
@@ -214,6 +214,6 @@ func TestIteratePoolPosIdsStopLossSorted(t *testing.T) {
 			PositionHealth:    sdk.NewDec(0),
 			StopLossPrice:     math.LegacyDec(info.StopLossPrice),
 		}
-		leveragelp.SetPosition(ctx, &position, sdk.NewInt(0))
+		leveragelp.SetPosition(ctx, &position)
 	}
 }

@@ -12,15 +12,12 @@ func (k Keeper) ForceCloseLong(ctx sdk.Context, position types.Position, pool ty
 		return sdk.ZeroInt(), types.ErrInvalidCloseSize
 	}
 
-	// Old debt
-	oldDebt := k.stableKeeper.GetDebt(ctx, position.GetPositionAddress())
-
 	if position.LeveragedLpAmount.IsZero() {
 		err := k.masterchefKeeper.ClaimRewards(ctx, position.GetPositionAddress(), []uint64{position.AmmPoolId}, sdk.MustAccAddressFromBech32(position.Address))
 		if err != nil {
 			return sdk.ZeroInt(), err
 		}
-		err = k.DestroyPosition(ctx, position.Address, position.Id, oldDebt.Borrowed.Add(oldDebt.InterestStacked).Sub(oldDebt.InterestPaid))
+		err = k.DestroyPosition(ctx, position.Address, position.Id)
 		if err != nil {
 			return sdk.ZeroInt(), err
 		}
@@ -86,12 +83,12 @@ func (k Keeper) ForceCloseLong(ctx sdk.Context, position types.Position, pool ty
 		if err != nil {
 			return sdk.ZeroInt(), err
 		}
-		err = k.DestroyPosition(ctx, position.Address, position.Id, oldDebt.Borrowed.Add(oldDebt.InterestStacked).Sub(oldDebt.InterestPaid))
+		err = k.DestroyPosition(ctx, position.Address, position.Id)
 		if err != nil {
 			return sdk.ZeroInt(), err
 		}
 	} else {
-		k.SetPosition(ctx, &position, oldDebt.Borrowed.Add(oldDebt.InterestStacked).Sub(oldDebt.InterestPaid))
+		k.SetPosition(ctx, &position)
 	}
 
 	return repayAmount, nil
