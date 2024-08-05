@@ -390,6 +390,9 @@ func (k Keeper) GetPositionsForAddress(ctx sdk.Context, positionAddress sdk.Addr
 func (k Keeper) GetPositionHealth(ctx sdk.Context, position types.Position) (sdk.Dec, error) {
 	debt := k.stableKeeper.GetDebt(ctx, position.GetPositionAddress())
 	debtAmount := debt.Borrowed.Add(debt.InterestStacked).Sub(debt.InterestPaid)
+	if debtAmount.IsZero() {
+		return sdk.ZeroDec(), nil
+	}
 
 	baseCurrency, found := k.assetProfileKeeper.GetUsdcDenom(ctx)
 	if !found {
@@ -414,7 +417,7 @@ func (k Keeper) GetPositionHealth(ctx sdk.Context, position types.Position) (sdk
 	}
 
 	exitFeeCoins := ammkeeper.PortionCoins(exitCoins, ammPool.PoolParams.ExitFee)
-	exitAmountAfterFee := exitFeeCoins.AmountOf(baseCurrency)
+	exitAmountAfterFee := exitCoins.Sub(exitFeeCoins...).AmountOf(baseCurrency)
 
 	health := exitAmountAfterFee.ToLegacyDec().Quo(debtAmount.ToLegacyDec())
 
