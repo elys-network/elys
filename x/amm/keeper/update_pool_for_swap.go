@@ -1,6 +1,8 @@
 package keeper
 
 import (
+	"fmt"
+
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/amm/types"
@@ -9,6 +11,7 @@ import (
 // UpdatePoolForSwap takes a pool, sender, and tokenIn, tokenOut amounts
 // It then updates the pool's balances to the new reserve amounts, and
 // sends the in tokens from the sender to the pool, and the out tokens from the pool to the sender.
+
 func (k Keeper) UpdatePoolForSwap(
 	ctx sdk.Context,
 	pool types.Pool,
@@ -54,6 +57,7 @@ func (k Keeper) UpdatePoolForSwap(
 
 	// Send coins to recipient
 	err = k.bankKeeper.SendCoins(ctx, poolAddr, recipient, sdk.Coins{tokenOut})
+	fmt.Print("err: ", err)
 	if err != nil {
 		return sdk.ZeroInt(), err
 	}

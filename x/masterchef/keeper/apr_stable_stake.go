@@ -10,7 +10,7 @@ import (
 	stabletypes "github.com/elys-network/elys/x/stablestake/types"
 )
 
-func (k Keeper) CalculateStableStakeApr(ctx sdk.Context, query *types.QueryStableStakeAprRequest) (math.Int, error) {
+func (k Keeper) CalculateStableStakeApr(ctx sdk.Context, query *types.QueryStableStakeAprRequest) (math.LegacyDec, error) {
 	// Fetch incentive params
 	params := k.GetParams(ctx)
 
@@ -21,22 +21,22 @@ func (k Keeper) CalculateStableStakeApr(ctx sdk.Context, query *types.QueryStabl
 	if query.Denom == ptypes.Eden {
 		lpIncentive := params.LpIncentives
 		if lpIncentive == nil || lpIncentive.EdenAmountPerYear.IsNil() {
-			return sdk.ZeroInt(), nil
+			return sdk.ZeroDec(), nil
 		}
 
 		totalBlocksPerYear := k.parameterKeeper.GetParams(ctx).TotalBlocksPerYear
 		if totalBlocksPerYear == 0 {
-			return sdk.ZeroInt(), nil
+			return sdk.ZeroDec(), nil
 		}
 
 		baseCurrency, found := k.assetProfileKeeper.GetUsdcDenom(ctx)
 		if !found {
-			return sdk.ZeroInt(), errorsmod.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency)
+			return sdk.ZeroDec(), errorsmod.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency)
 		}
 
 		stableTvl := k.stableKeeper.TVL(ctx, k.oracleKeeper, baseCurrency)
 		if stableTvl.IsZero() {
-			return sdk.ZeroInt(), nil
+			return sdk.ZeroDec(), nil
 		}
 
 		// Calculate total Proxy TVL
@@ -49,13 +49,13 @@ func (k Keeper) CalculateStableStakeApr(ctx sdk.Context, query *types.QueryStabl
 		// Get pool info from incentive param
 		poolInfo, found := k.GetPool(ctx, uint64(stabletypes.PoolId))
 		if !found {
-			return sdk.ZeroInt(), nil
+			return sdk.ZeroDec(), nil
 		}
 
 		// Calculate Proxy TVL share considering multiplier
 		proxyTVL := stableTvl.Mul(poolInfo.Multiplier)
 		if totalProxyTVL.IsZero() {
-			return sdk.ZeroInt(), nil
+			return sdk.ZeroDec(), nil
 		}
 		stableStakePoolShare := proxyTVL.Quo(totalProxyTVL)
 
@@ -73,16 +73,16 @@ func (k Keeper) CalculateStableStakeApr(ctx sdk.Context, query *types.QueryStabl
 			MulInt64(totalBlocksPerYear).
 			Mul(edenDenomPrice).
 			Quo(stableTvl)
-		return apr.TruncateInt(), nil
+		return apr, nil
 	} else if query.Denom == ptypes.BaseCurrency {
 		params := k.stableKeeper.GetParams(ctx)
 		res, err := k.stableKeeper.BorrowRatio(ctx, &stabletypes.QueryBorrowRatioRequest{})
 		if err != nil {
-			return sdk.ZeroInt(), err
+			return sdk.ZeroDec(), err
 		}
 		apr := params.InterestRate.Mul(res.BorrowRatio)
-		return apr.TruncateInt(), nil
+		return apr, nil
 	}
 
-	return sdk.ZeroInt(), nil
+	return sdk.ZeroDec(), nil
 }
