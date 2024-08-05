@@ -76,17 +76,6 @@ func (k Keeper) ForceCloseLong(ctx sdk.Context, position types.Position, pool ty
 		return sdk.ZeroInt(), types.ErrAmmPoolNotFound
 	}
 
-	// Update position health
-	positionHealth, err := k.GetPositionHealth(ctx, position)
-	if err != nil {
-		return sdk.ZeroInt(), err
-	}
-	position.PositionHealth = positionHealth
-
-	// Update Liabilities
-	debt = k.stableKeeper.UpdateInterestStackedByAddress(ctx, position.GetPositionAddress())
-	position.Liabilities = debt.Borrowed
-
 	// Update leveragedLpAmount
 	position.LeveragedLpAmount = position.LeveragedLpAmount.Sub(lpAmount)
 	if position.LeveragedLpAmount.IsZero() {
@@ -99,6 +88,16 @@ func (k Keeper) ForceCloseLong(ctx sdk.Context, position types.Position, pool ty
 			return sdk.ZeroInt(), err
 		}
 	} else {
+		// Update position health
+		positionHealth, err := k.GetPositionHealth(ctx, position)
+		if err != nil {
+			return sdk.ZeroInt(), err
+		}
+		position.PositionHealth = positionHealth
+
+		// Update Liabilities
+		debt = k.stableKeeper.UpdateInterestStackedByAddress(ctx, position.GetPositionAddress())
+		position.Liabilities = debt.Borrowed
 		k.SetPosition(ctx, &position, oldDebt.Borrowed.Add(oldDebt.InterestStacked).Sub(oldDebt.InterestPaid))
 	}
 

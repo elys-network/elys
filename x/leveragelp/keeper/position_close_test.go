@@ -133,6 +133,24 @@ func (suite KeeperTestSuite) TestForceCloseLong() {
 	suite.Require().Equal(repayAmount.String(), repayAmountOut.String())
 }
 
+func (suite KeeperTestSuite) TestForceCloseLongWithNoFullRepayment() {
+	k := suite.app.LeveragelpKeeper
+	addr := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
+	position, pool := suite.OpenPosition(addr)
+	timeDifference := suite.ctx.BlockTime().Add(time.Hour*24*365*5).Unix() - suite.ctx.BlockTime().Unix()
+	interestRate := suite.app.StablestakeKeeper.GetParams(suite.ctx).InterestRate
+	borrowed := position.Leverage.Sub(sdk.OneDec()).MulInt(position.Collateral.Amount)
+	repayAmount := borrowed.Add(borrowed.
+		Mul(interestRate).
+		Mul(sdk.NewDec(timeDifference)).
+		Quo(sdk.NewDec(86400 * 365))).RoundInt()
+
+	suite.ctx = suite.ctx.WithBlockTime(suite.ctx.BlockTime().Add(time.Hour * 24 * 365 * 5))
+	repayAmountOut, err := k.ForceCloseLong(suite.ctx, *position, pool, position.LeveragedLpAmount)
+	suite.Require().NoError(err)
+	suite.Require().Greater(repayAmount.String(), repayAmountOut.String())
+}
+
 func (suite KeeperTestSuite) TestForceCloseLongPartial() {
 	k := suite.app.LeveragelpKeeper
 	addr := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
