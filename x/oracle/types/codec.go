@@ -2,21 +2,26 @@ package types
 
 import (
 	"github.com/cosmos/cosmos-sdk/codec"
+	"github.com/cosmos/cosmos-sdk/codec/legacy"
 	cdctypes "github.com/cosmos/cosmos-sdk/codec/types"
+	cryptocodec "github.com/cosmos/cosmos-sdk/crypto/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/msgservice"
+	authzcodec "github.com/cosmos/cosmos-sdk/x/authz/codec"
+	govcodec "github.com/cosmos/cosmos-sdk/x/gov/codec"
+	groupcodec "github.com/cosmos/cosmos-sdk/x/group/codec"
 )
 
 func RegisterCodec(cdc *codec.LegacyAmino) {
-	cdc.RegisterConcrete(&MsgFeedPrice{}, "oracle/FeedPrice", nil)
-	cdc.RegisterConcrete(&MsgSetPriceFeeder{}, "oracle/SetPriceFeeder", nil)
-	cdc.RegisterConcrete(&MsgDeletePriceFeeder{}, "oracle/DeletePriceFeeder", nil)
-	cdc.RegisterConcrete(&MsgFeedMultiplePrices{}, "oracle/FeedMultiplePrices", nil)
-	cdc.RegisterConcrete(&MsgAddAssetInfo{}, "oracle/AddAssetInfo", nil)
-	cdc.RegisterConcrete(&MsgRemoveAssetInfo{}, "oracle/RemoveAssetInfo", nil)
-	cdc.RegisterConcrete(&MsgAddPriceFeeders{}, "oracle/AddPriceFeeders", nil)
-	cdc.RegisterConcrete(&MsgRemovePriceFeeders{}, "oracle/RemovePriceFeeders", nil)
-	cdc.RegisterConcrete(&MsgUpdateParams{}, "oracle/UpdateParams", nil)
+	legacy.RegisterAminoMsg(cdc, &MsgFeedPrice{}, "oracle/FeedPrice")
+	legacy.RegisterAminoMsg(cdc, &MsgSetPriceFeeder{}, "oracle/SetPriceFeeder")
+	legacy.RegisterAminoMsg(cdc, &MsgDeletePriceFeeder{}, "oracle/DeletePriceFeeder")
+	legacy.RegisterAminoMsg(cdc, &MsgFeedMultiplePrices{}, "oracle/FeedMultiplePrices")
+	legacy.RegisterAminoMsg(cdc, &MsgAddAssetInfo{}, "oracle/AddAssetInfo")
+	legacy.RegisterAminoMsg(cdc, &MsgRemoveAssetInfo{}, "oracle/RemoveAssetInfo")
+	legacy.RegisterAminoMsg(cdc, &MsgAddPriceFeeders{}, "oracle/AddPriceFeeders")
+	legacy.RegisterAminoMsg(cdc, &MsgRemovePriceFeeders{}, "oracle/RemovePriceFeeders")
+	legacy.RegisterAminoMsg(cdc, &MsgUpdateParams{}, "oracle/UpdateParams")
 	// this line is used by starport scaffolding # 2
 }
 
@@ -42,3 +47,15 @@ var (
 	Amino     = codec.NewLegacyAmino()
 	ModuleCdc = codec.NewProtoCodec(cdctypes.NewInterfaceRegistry())
 )
+
+func init() {
+    RegisterCodec(Amino)
+    cryptocodec.RegisterCrypto(Amino)
+    sdk.RegisterLegacyAminoCodec(Amino)
+
+    // Register all Amino interfaces and concrete types on the authz  and gov Amino codec so that this can later be
+    // used to properly serialize MsgGrant, MsgExec and MsgSubmitProposal instances
+    RegisterCodec(authzcodec.Amino)
+    RegisterCodec(govcodec.Amino)
+    RegisterCodec(groupcodec.Amino)
+}
