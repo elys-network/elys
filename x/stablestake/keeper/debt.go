@@ -50,6 +50,14 @@ func (k Keeper) SetInterest(ctx sdk.Context, block uint64, interest types.Intere
 	}
 }
 
+func (k Keeper) DeleteInterest(ctx sdk.Context, delBlock int64) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.InterestPrefixKey)
+	key := sdk.Uint64ToBigEndian(uint64(delBlock))
+	if store.Has(key) {
+		store.Delete([]byte(key))
+	}
+}
+
 func (k Keeper) GetAllInterest(ctx sdk.Context) []types.InterestBlock {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.InterestPrefixKey)
 	iterator := sdk.KVStorePrefixIterator(store, nil)

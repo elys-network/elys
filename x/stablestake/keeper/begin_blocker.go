@@ -5,6 +5,8 @@ import (
 	"github.com/elys-network/elys/x/stablestake/types"
 )
 
+var numBlocks = 15768000 // Number of blocks in 2 year assuming block time 4 seconds
+
 func (k Keeper) BeginBlocker(ctx sdk.Context) {
 	// check if epoch has passed then execute
 	epochLength := k.GetEpochLength(ctx)
@@ -16,6 +18,11 @@ func (k Keeper) BeginBlocker(ctx sdk.Context) {
 		params.InterestRate = rate
 		k.SetParams(ctx, params)
 	}
-	// TODO: Remove old data, should keep data of 3 years or we could do last block which is required by debt
 	k.SetInterest(ctx, uint64(ctx.BlockHeight()), types.InterestBlock{InterestRate: params.InterestRate, BlockTime: ctx.BlockTime().Unix()})
+
+	// Remove old data, should keep data of 2 years
+	if numBlocks < int(ctx.BlockHeight()) {
+		delBlock := ctx.BlockHeight() - int64(numBlocks)
+		k.DeleteInterest(ctx, delBlock)
+	}
 }
