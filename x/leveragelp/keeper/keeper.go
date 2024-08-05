@@ -19,17 +19,18 @@ import (
 
 type (
 	Keeper struct {
-		cdc                codec.BinaryCodec
-		storeKey           storetypes.StoreKey
-		memKey             storetypes.StoreKey
-		authority          string
-		amm                types.AmmKeeper
-		bankKeeper         types.BankKeeper
-		oracleKeeper       ammtypes.OracleKeeper
-		stableKeeper       types.StableStakeKeeper
-		commKeeper         types.CommitmentKeeper
-		assetProfileKeeper types.AssetProfileKeeper
-		masterchefKeeper   types.MasterchefKeeper
+		cdc                 codec.BinaryCodec
+		storeKey            storetypes.StoreKey
+		memKey              storetypes.StoreKey
+		authority           string
+		amm                 types.AmmKeeper
+		bankKeeper          types.BankKeeper
+		oracleKeeper        ammtypes.OracleKeeper
+		stableKeeper        types.StableStakeKeeper
+		commKeeper          types.CommitmentKeeper
+		assetProfileKeeper  types.AssetProfileKeeper
+		masterchefKeeper    types.MasterchefKeeper
+		accountedPoolKeeper types.AccountedPoolKeeper
 
 		hooks ammtypes.AmmHooks
 	}
@@ -47,6 +48,7 @@ func NewKeeper(
 	commitmentKeeper types.CommitmentKeeper,
 	assetProfileKeeper types.AssetProfileKeeper,
 	masterchefKeeper types.MasterchefKeeper,
+	accountedPoolKeeper types.AccountedPoolKeeper,
 ) *Keeper {
 	// ensure that authority is a valid AccAddress
 	if _, err := sdk.AccAddressFromBech32(authority); err != nil {
@@ -54,17 +56,18 @@ func NewKeeper(
 	}
 
 	keeper := &Keeper{
-		cdc:                cdc,
-		storeKey:           storeKey,
-		memKey:             memKey,
-		authority:          authority,
-		amm:                amm,
-		bankKeeper:         bk,
-		oracleKeeper:       oracleKeeper,
-		stableKeeper:       stableKeeper,
-		commKeeper:         commitmentKeeper,
-		assetProfileKeeper: assetProfileKeeper,
-		masterchefKeeper:   masterchefKeeper,
+		cdc:                 cdc,
+		storeKey:            storeKey,
+		memKey:              memKey,
+		authority:           authority,
+		amm:                 amm,
+		bankKeeper:          bk,
+		oracleKeeper:        oracleKeeper,
+		stableKeeper:        stableKeeper,
+		commKeeper:          commitmentKeeper,
+		assetProfileKeeper:  assetProfileKeeper,
+		masterchefKeeper:    masterchefKeeper,
+		accountedPoolKeeper: accountedPoolKeeper,
 	}
 
 	return keeper

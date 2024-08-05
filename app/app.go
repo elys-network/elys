@@ -1013,6 +1013,7 @@ func NewElysApp(
 		app.CommitmentKeeper,
 		app.AssetprofileKeeper,
 		app.MasterchefKeeper,
+		app.AccountedPoolKeeper,
 	)
 	leveragelpModule := leveragelpmodule.NewAppModule(appCodec, app.LeveragelpKeeper, app.AccountKeeper, app.BankKeeper)
 
