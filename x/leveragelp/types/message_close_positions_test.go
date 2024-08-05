@@ -26,6 +26,55 @@ func TestMsgClosePositions_ValidateBasic(t *testing.T) {
 				Creator: sample.AccAddress(),
 			},
 		},
+		{
+			name: "invalid address liquidations",
+			msg: MsgClosePositions{
+				Creator: sample.AccAddress(),
+				Liquidate: []*PositionRequest{
+					{
+						Address: "invalid address",
+						Id:      uint64(1),
+					},
+				},
+			},
+			err: sdkerrors.ErrInvalidAddress,
+		}, {
+			name: "valid address liquidations",
+			msg: MsgClosePositions{
+				Creator: sample.AccAddress(),
+				Liquidate: []*PositionRequest{
+					{
+						Address: sample.AccAddress(),
+						Id:      uint64(1),
+					},
+				},
+			},
+		},
+		{
+			name: "invalid address stoploss",
+			msg: MsgClosePositions{
+				Creator: sample.AccAddress(),
+				Stoploss: []*PositionRequest{
+					{
+						Address: "invalid address",
+						Id:      uint64(1),
+					},
+				},
+			},
+			err: sdkerrors.ErrInvalidAddress,
+		},
+		{
+			name: "valid address stoploss",
+			msg: MsgClosePositions{
+				Creator: sample.AccAddress(),
+				Stoploss: []*PositionRequest{
+					{
+						Address: sample.AccAddress(),
+						Id:      uint64(1),
+					},
+				},
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

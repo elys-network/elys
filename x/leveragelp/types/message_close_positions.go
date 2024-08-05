@@ -43,5 +43,17 @@ func (msg *MsgClosePositions) ValidateBasic() error {
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
 	}
+	for _, liquidation := range msg.Liquidate {
+		_, err := sdk.AccAddressFromBech32(liquidation.Address)
+		if err != nil {
+			return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid liquidation address (%s)", err)
+		}
+	}
+	for _, stoploss := range msg.Stoploss {
+		_, err := sdk.AccAddressFromBech32(stoploss.Address)
+		if err != nil {
+			return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid stoploss address (%s)", err)
+		}
+	}
 	return nil
 }

@@ -25,7 +25,7 @@ func CmdClosePositions() *cobra.Command {
 				return err
 			}
 
-			liquidate, err := readJSON(args[0])
+			liquidate, err := readPositionRequestJSON(args[0])
 			if err != nil {
 				return err
 			}
@@ -35,7 +35,7 @@ func CmdClosePositions() *cobra.Command {
 				liqudiatePtrs = append(liqudiatePtrs, &liquidate[i])
 			}
 
-			stopLoss, err := readJSON(args[0])
+			stopLoss, err := readPositionRequestJSON(args[1])
 			if err != nil {
 				return err
 			}
@@ -62,7 +62,7 @@ func CmdClosePositions() *cobra.Command {
 	return cmd
 }
 
-func readJSON(filename string) ([]types.PositionRequest, error) {
+func readPositionRequestJSON(filename string) ([]types.PositionRequest, error) {
 	var positions []types.PositionRequest
 	bz, err := ioutil.ReadFile(filename)
 	if err != nil {

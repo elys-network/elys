@@ -36,12 +36,7 @@ func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 		&MsgDewhitelist{},
 		&MsgClaimRewards{},
 		&MsgUpdateStopLoss{},
-	)
-
-	registry.RegisterImplementations((*sdk.Msg)(nil),
 		&MsgAddCollateral{},
-	)
-	registry.RegisterImplementations((*sdk.Msg)(nil),
 		&MsgClosePositions{},
 	)
 	// this line is used by starport scaffolding # 3
