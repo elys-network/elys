@@ -44,8 +44,11 @@ func (k Keeper) ForceCloseLong(ctx sdk.Context, position types.Position, pool ty
 
 	// Check if position has enough coins to repay else repay partial
 	bal := k.bankKeeper.GetBalance(ctx, position.GetPositionAddress(), position.Collateral.Denom)
+	userAmount := sdk.ZeroInt()
 	if bal.Amount.LT(repayAmount) {
 		repayAmount = bal.Amount
+	} else {
+		userAmount = exitCoinsAfterExitFee[0].Amount.Sub(repayAmount)
 	}
 
 	err = k.stableKeeper.Repay(ctx, position.GetPositionAddress(), sdk.NewCoin(position.Collateral.Denom, repayAmount))
@@ -53,7 +56,6 @@ func (k Keeper) ForceCloseLong(ctx sdk.Context, position types.Position, pool ty
 		return sdk.ZeroInt(), err
 	}
 
-	userAmount := exitCoinsAfterExitFee[0].Amount.Sub(repayAmount)
 	if userAmount.IsNegative() {
 		return sdk.ZeroInt(), types.ErrNegUserAmountAfterRepay
 	}
