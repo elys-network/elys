@@ -15,7 +15,7 @@ import (
 )
 
 func RegisterCodec(cdc *codec.LegacyAmino) {
-	legacy.RegisterAminoMsg(cdc, &MsgUpdateWasmConfig{}, "parameter/UpdateWasmConfig")
+	legacy.RegisterAminoMsg(cdc, &MsgUpdateWasmConfig{}, "parameter/MsgUpdateWasmConfig")
 	// this line is used by starport scaffolding # 2
 	legacy.RegisterAminoMsg(cdc, &MsgUpdateMinCommission{}, "parameter/MsgUpdateMinCommission")
 	legacy.RegisterAminoMsg(cdc, &MsgUpdateMaxVotingPower{}, "parameter/MsgUpdateMaxVotingPower")
@@ -43,7 +43,7 @@ func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 
 var (
 	Amino     = codec.NewLegacyAmino()
-	ModuleCdc = codec.NewProtoCodec(cdctypes.NewInterfaceRegistry())
+	ModuleCdc = codec.NewAminoCodec(Amino)
 )
 
 func init() {

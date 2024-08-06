@@ -15,11 +15,11 @@ import (
 )
 
 func RegisterCodec(cdc *codec.LegacyAmino) {
-	legacy.RegisterAminoMsg(cdc, &MsgAddExternalIncentive{}, "masterchef/AddExternalIncentive",)
-	legacy.RegisterAminoMsg(cdc, &MsgClaimRewards{}, "masterchef/ClaimRewards",)
-	legacy.RegisterAminoMsg(cdc, &MsgUpdateParams{}, "masterchef/UpdateParams",)
-	legacy.RegisterAminoMsg(cdc, &MsgUpdatePoolMultipliers{}, "masterchef/UpdatePoolMultipliers",)
-	legacy.RegisterAminoMsg(cdc, &MsgAddExternalRewardDenom{}, "masterchef/AddExternalRewardDenom",)
+	legacy.RegisterAminoMsg(cdc, &MsgAddExternalIncentive{}, "masterchef/MsgAddExternalIncentive")
+	legacy.RegisterAminoMsg(cdc, &MsgClaimRewards{}, "masterchef/MsgClaimRewards")
+	legacy.RegisterAminoMsg(cdc, &MsgUpdateParams{}, "masterchef/MsgUpdateParams")
+	legacy.RegisterAminoMsg(cdc, &MsgUpdatePoolMultipliers{}, "masterchef/MsgUpdatePoolMultipliers")
+	legacy.RegisterAminoMsg(cdc, &MsgAddExternalRewardDenom{}, "masterchef/MsgAddExternalRewardDenom")
 	// this line is used by starport scaffolding # 2
 }
 
@@ -38,7 +38,7 @@ func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 
 var (
 	Amino     = codec.NewLegacyAmino()
-	ModuleCdc = codec.NewProtoCodec(cdctypes.NewInterfaceRegistry())
+	ModuleCdc = codec.NewAminoCodec(Amino)
 )
 
 func init() {
