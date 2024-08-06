@@ -31,12 +31,20 @@ func (k Keeper) ForceCloseLong(ctx sdk.Context, position types.Position, pool ty
 
 	repayAmount := debt.Borrowed.Add(debt.InterestStacked).Sub(debt.InterestPaid).Mul(lpAmount).Quo(position.LeveragedLpAmount)
 
+	// Check if position has enough coins to repay else repay partial
+	bal := k.bankKeeper.GetBalance(ctx, position.GetPositionAddress(), position.Collateral.Denom)
+	userAmount := sdk.ZeroInt()
+	if bal.Amount.LT(repayAmount) {
+		repayAmount = bal.Amount
+	} else {
+		userAmount = exitCoinsAfterExitFee[0].Amount.Sub(repayAmount)
+	}
+
 	err = k.stableKeeper.Repay(ctx, position.GetPositionAddress(), sdk.NewCoin(position.Collateral.Denom, repayAmount))
 	if err != nil {
 		return sdk.ZeroInt(), err
 	}
 
-	userAmount := exitCoinsAfterExitFee[0].Amount.Sub(repayAmount)
 	if userAmount.IsNegative() {
 		return sdk.ZeroInt(), types.ErrNegUserAmountAfterRepay
 	}
@@ -57,17 +65,6 @@ func (k Keeper) ForceCloseLong(ctx sdk.Context, position types.Position, pool ty
 		return sdk.ZeroInt(), types.ErrAmmPoolNotFound
 	}
 
-	// Update position health
-	positionHealth, err := k.GetPositionHealth(ctx, position)
-	if err != nil {
-		return sdk.ZeroInt(), err
-	}
-	position.PositionHealth = positionHealth
-
-	// Update Liabilities
-	debt = k.stableKeeper.UpdateInterestStackedByAddress(ctx, position.GetPositionAddress())
-	position.Liabilities = debt.Borrowed
-
 	// Update leveragedLpAmount
 	position.LeveragedLpAmount = position.LeveragedLpAmount.Sub(lpAmount)
 	if position.LeveragedLpAmount.IsZero() {
@@ -80,6 +77,16 @@ func (k Keeper) ForceCloseLong(ctx sdk.Context, position types.Position, pool ty
 			return sdk.ZeroInt(), err
 		}
 	} else {
+		// Update position health
+		positionHealth, err := k.GetPositionHealth(ctx, position)
+		if err != nil {
+			return sdk.ZeroInt(), err
+		}
+		position.PositionHealth = positionHealth
+
+		// Update Liabilities
+		debt = k.stableKeeper.UpdateInterestStackedByAddress(ctx, position.GetPositionAddress())
+		position.Liabilities = debt.Borrowed
 		k.SetPosition(ctx, &position, oldDebt.Borrowed.Add(oldDebt.InterestStacked).Sub(oldDebt.InterestPaid))
 	}
 
