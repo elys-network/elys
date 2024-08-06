@@ -13,9 +13,9 @@ import (
 )
 
 func RegisterCodec(cdc *codec.LegacyAmino) {
-	legacy.RegisterAminoMsg(cdc, &MsgCreateEntry{}, "assetprofile/CreateEntry")
-	legacy.RegisterAminoMsg(cdc, &MsgUpdateEntry{}, "assetprofile/UpdateEntry")
-	legacy.RegisterAminoMsg(cdc, &MsgDeleteEntry{}, "assetprofile/DeleteEntry")
+	legacy.RegisterAminoMsg(cdc, &MsgCreateEntry{}, "assetprofile/MsgCreateEntry")
+	legacy.RegisterAminoMsg(cdc, &MsgUpdateEntry{}, "assetprofile/MsgUpdateEntry")
+	legacy.RegisterAminoMsg(cdc, &MsgDeleteEntry{}, "assetprofile/MsgDeleteEntry")
 	legacy.RegisterAminoMsg(cdc, &MsgAddEntry{}, "assetprofile/AddEntry")
 	// this line is used by starport scaffolding # 2
 }
@@ -36,7 +36,7 @@ func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 
 var (
 	Amino     = codec.NewLegacyAmino()
-	ModuleCdc = codec.NewProtoCodec(cdctypes.NewInterfaceRegistry())
+	ModuleCdc = codec.NewAminoCodec(Amino)
 )
 
 func init() {

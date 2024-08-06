@@ -13,7 +13,7 @@ import (
 )
 
 func RegisterCodec(cdc *codec.LegacyAmino) {
-	legacy.RegisterAminoMsg(cdc, &MsgSetPortfolio{}, "membershiptier/SetPortfolio")
+	legacy.RegisterAminoMsg(cdc, &MsgSetPortfolio{}, "tier/MsgSetPortfolio")
 	// this line is used by starport scaffolding # 2
 }
 
@@ -28,7 +28,7 @@ func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 
 var (
 	Amino     = codec.NewLegacyAmino()
-	ModuleCdc = codec.NewProtoCodec(cdctypes.NewInterfaceRegistry())
+	ModuleCdc = codec.NewAminoCodec(Amino)
 )
 
 func init() {
