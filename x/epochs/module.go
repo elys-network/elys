@@ -50,7 +50,9 @@ func (AppModuleBasic) Name() string {
 }
 
 // RegisterLegacyAminoCodec registers a legacy amino codec
-func (AppModuleBasic) RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {}
+func (AppModuleBasic) RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
+	types.RegisterCodec(cdc)
+}
 
 // RegisterInterfaces registers the module's interface types
 func (AppModuleBasic) RegisterInterfaces(_ cdctypes.InterfaceRegistry) {}
