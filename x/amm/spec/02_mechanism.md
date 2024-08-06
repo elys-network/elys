@@ -46,7 +46,7 @@ Exiting with a swap requires paying both exit and swap fees.
            ```shareRatio = exitShares / poolTotalShares``` The exit amount for each pool asset is then determined by multiplying this shareRatio by the respective amount of each asset in the pool.
   2. For an oracle pool with given exit token denom, exit token amount is calculated by calculating value of each LP token in the pool and then multiplied by exit share amount. 
      A `weightBreakingFee` is also applied which is calculated if distance from desired weight ratio increases after exiting the pool. `weightBreakingFee = WeightBreakingFeeMultiplier x [ ((weightIn x targetWeightOut) / (weightOut x targetWeightIn)) ^  WeightBreakingFeeExponent ]`
-     where `weightIn = 1 - weightOut`, `weightOut = weight of asset in the pool in terms of value`, `targetWeightIn = 1 - targetWeightOut` and `targetWeightOut = wright of asset in the pool in terms of amount`
+     where `weightIn = 1 - weightOut`, `weightOut = weight of asset in the pool in terms of value`, `targetWeightIn = 1 - targetWeightOut` and `targetWeightOut = weight of asset in the pool in terms of amount`
 
 In both the methods an `exitFee` is applied before finally transferring it to the user. 
 ### Swap
