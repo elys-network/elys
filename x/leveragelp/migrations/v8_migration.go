@@ -38,5 +38,19 @@ func (m Migrator) V8Migration(ctx sdk.Context) error {
 	}
 
 	m.keeper.SetOpenPositionCount(ctx, openCount)
+
+	// reset params
+	legacy := m.keeper.GetLegacyParams(ctx)
+	params := types.Params{
+		LeverageMax:         legacy.LeverageMax,
+		EpochLength:         legacy.EpochLength,
+		MaxOpenPositions:    legacy.MaxOpenPositions,
+		PoolOpenThreshold:   legacy.PoolOpenThreshold,
+		SafetyFactor:        legacy.SafetyFactor,
+		WhitelistingEnabled: legacy.WhitelistingEnabled,
+		FallbackEnabled:     false,
+		NumberPerBlock:      1000,
+	}
+	m.keeper.SetParams(ctx, &params)
 	return nil
 }

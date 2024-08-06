@@ -15,8 +15,9 @@ func (k Keeper) BeginBlocker(ctx sdk.Context) {
 	// check if epoch has passed then execute
 	epochLength := k.GetEpochLength(ctx)
 	epochPosition := k.GetEpochPosition(ctx, epochLength)
+	params := k.GetParams(ctx)
 
-	if epochPosition == 0 { // if epoch has passed
+	if epochPosition == 0 && params.FallbackEnabled { // if epoch has passed
 		pools := k.GetAllPools(ctx)
 		// TODO: Optimise fallback system by dividing traversal in multiple blocks
 

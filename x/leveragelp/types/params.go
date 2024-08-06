@@ -38,6 +38,8 @@ func NewParams() Params {
 		PoolOpenThreshold:   sdk.NewDecWithPrec(2, 1),  // 0.2
 		SafetyFactor:        sdk.NewDecWithPrec(11, 1), // 1.1
 		WhitelistingEnabled: false,
+		FallbackEnabled:     false,
+		NumberPerBlock:      1000,
 	}
 }
 
