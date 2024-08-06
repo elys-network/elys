@@ -2,13 +2,15 @@ package keeper
 
 import (
 	"fmt"
-	"time"
 
+	errorsmod "cosmossdk.io/errors"
 	cosmosMath "cosmossdk.io/math"
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
+	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
 	"github.com/elys-network/elys/x/leveragelp/types"
+	ptypes "github.com/elys-network/elys/x/parameter/types"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -226,27 +228,33 @@ func (k Keeper) GetPositionsForAddress(ctx sdk.Context, positionAddress sdk.Addr
 
 func (k Keeper) GetPositionHealth(ctx sdk.Context, position types.Position) (sdk.Dec, error) {
 	debt := k.stableKeeper.GetDebt(ctx, position.GetPositionAddress())
-	xl := debt.Borrowed.Add(debt.InterestStacked).Sub(debt.InterestPaid)
-
-	if xl.IsZero() {
+	debtAmount := debt.Borrowed.Add(debt.InterestStacked).Sub(debt.InterestPaid)
+	if debtAmount.IsZero() {
 		return sdk.ZeroDec(), nil
 	}
 
-	commitments := k.commKeeper.GetCommitments(ctx, position.GetPositionAddress().String())
-	positionVal := sdk.ZeroDec()
-	depositDenom := k.stableKeeper.GetDepositDenom(ctx)
-	for _, commitment := range commitments.CommittedTokens {
-		cacheCtx, _ := ctx.CacheContext()
-		cacheCtx = cacheCtx.WithBlockTime(cacheCtx.BlockTime().Add(time.Hour))
-		_, exitCoinsAfterExitFee, err := k.amm.ExitPool(cacheCtx, position.GetPositionAddress(), position.AmmPoolId, commitment.Amount, sdk.Coins{}, depositDenom)
-		if err != nil {
-			return sdk.ZeroDec(), err
-		}
-		positionVal = positionVal.Add(sdk.NewDecFromInt(exitCoinsAfterExitFee.AmountOf(depositDenom)))
+	baseCurrency, found := k.assetProfileKeeper.GetUsdcDenom(ctx)
+	if !found {
+		return sdk.Dec{}, errorsmod.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency)
 	}
 
-	lr := positionVal.Quo(sdk.NewDecFromBigInt(xl.BigInt()))
-	return lr, nil
+	leveragedLpAmount := sdk.ZeroInt()
+	commitments := k.commKeeper.GetCommitments(ctx, position.GetPositionAddress().String())
+
+	for _, commitment := range commitments.CommittedTokens {
+		leveragedLpAmount = leveragedLpAmount.Add(commitment.Amount)
+	}
+
+	exitCoinsAfterFee, _, err := k.amm.ExitPoolEst(ctx, position.GetAmmPoolId(), leveragedLpAmount, baseCurrency)
+	if err != nil {
+		return sdk.Dec{}, err
+	}
+
+	exitAmountAfterFee := exitCoinsAfterFee.AmountOf(baseCurrency)
+
+	health := exitAmountAfterFee.ToLegacyDec().Quo(debtAmount.ToLegacyDec())
+
+	return health, nil
 }
 
 func (k Keeper) GetPositionWithId(ctx sdk.Context, positionAddress sdk.Address, Id uint64) (*types.Position, bool) {
