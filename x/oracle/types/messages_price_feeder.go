@@ -40,7 +40,7 @@ func (msg *MsgSetPriceFeeder) GetSigners() []sdk.AccAddress {
 }
 
 func (msg *MsgSetPriceFeeder) GetSignBytes() []byte {
-	bz := ModuleCdc.MustMarshalJSON(msg)
+	bz := ModuleAminoCdc.MustMarshalJSON(msg)
 	return sdk.MustSortJSON(bz)
 }
 
@@ -79,7 +79,7 @@ func (msg *MsgDeletePriceFeeder) GetSigners() []sdk.AccAddress {
 }
 
 func (msg *MsgDeletePriceFeeder) GetSignBytes() []byte {
-	bz := ModuleCdc.MustMarshalJSON(msg)
+	bz := ModuleAminoCdc.MustMarshalJSON(msg)
 	return sdk.MustSortJSON(bz)
 }
 

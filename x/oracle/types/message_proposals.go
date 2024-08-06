@@ -33,7 +33,7 @@ func (msg *MsgUpdateParams) GetSigners() []sdk.AccAddress {
 }
 
 func (msg *MsgUpdateParams) GetSignBytes() []byte {
-	bz := ModuleCdc.MustMarshalJSON(msg)
+	bz := ModuleAminoCdc.MustMarshalJSON(msg)
 	return sdk.MustSortJSON(bz)
 }
 
@@ -82,7 +82,7 @@ func (msg *MsgAddAssetInfo) GetSigners() []sdk.AccAddress {
 }
 
 func (msg *MsgAddAssetInfo) GetSignBytes() []byte {
-	bz := ModuleCdc.MustMarshalJSON(msg)
+	bz := ModuleAminoCdc.MustMarshalJSON(msg)
 	return sdk.MustSortJSON(bz)
 }
 
@@ -121,7 +121,7 @@ func (msg *MsgRemoveAssetInfo) GetSigners() []sdk.AccAddress {
 }
 
 func (msg *MsgRemoveAssetInfo) GetSignBytes() []byte {
-	bz := ModuleCdc.MustMarshalJSON(msg)
+	bz := ModuleAminoCdc.MustMarshalJSON(msg)
 	return sdk.MustSortJSON(bz)
 }
 
@@ -161,7 +161,7 @@ func (msg *MsgAddPriceFeeders) GetSigners() []sdk.AccAddress {
 }
 
 func (msg *MsgAddPriceFeeders) GetSignBytes() []byte {
-	bz := ModuleCdc.MustMarshalJSON(msg)
+	bz := ModuleAminoCdc.MustMarshalJSON(msg)
 	return sdk.MustSortJSON(bz)
 }
 
@@ -200,7 +200,7 @@ func (msg *MsgRemovePriceFeeders) GetSigners() []sdk.AccAddress {
 }
 
 func (msg *MsgRemovePriceFeeders) GetSignBytes() []byte {
-	bz := ModuleCdc.MustMarshalJSON(msg)
+	bz := ModuleAminoCdc.MustMarshalJSON(msg)
 	return sdk.MustSortJSON(bz)
 }
 

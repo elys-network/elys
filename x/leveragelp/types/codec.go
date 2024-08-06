@@ -13,15 +13,15 @@ import (
 )
 
 func RegisterCodec(cdc *codec.LegacyAmino) {
-	legacy.RegisterAminoMsg(cdc,&MsgOpen{}, "leveragelp/MsgOpen")
-	legacy.RegisterAminoMsg(cdc,&MsgClose{}, "leveragelp/MsgClose")
-	legacy.RegisterAminoMsg(cdc,&MsgUpdateParams{}, "leveragelp/MsgUpdateParams")
-	legacy.RegisterAminoMsg(cdc,&MsgUpdatePools{}, "leveragelp/MsgUpdatePools")
-	legacy.RegisterAminoMsg(cdc,&MsgWhitelist{}, "leveragelp/MsgWhitelist")
-	legacy.RegisterAminoMsg(cdc,&MsgDewhitelist{}, "leveragelp/MsgDewhitelist")
-	legacy.RegisterAminoMsg(cdc,&MsgClaimRewards{}, "leveragelp/MsgClaimRewards")
-	legacy.RegisterAminoMsg(cdc,&MsgUpdateStopLoss{}, "leveragelp/MsgUpdateStopLoss")
-	legacy.RegisterAminoMsg(cdc,&MsgAddCollateral{}, "leveragelp/MsgAddCollateral")
+	legacy.RegisterAminoMsg(cdc, &MsgOpen{}, "leveragelp/MsgOpen")
+	legacy.RegisterAminoMsg(cdc, &MsgClose{}, "leveragelp/MsgClose")
+	legacy.RegisterAminoMsg(cdc, &MsgUpdateParams{}, "leveragelp/MsgUpdateParams")
+	legacy.RegisterAminoMsg(cdc, &MsgUpdatePools{}, "leveragelp/MsgUpdatePools")
+	legacy.RegisterAminoMsg(cdc, &MsgWhitelist{}, "leveragelp/MsgWhitelist")
+	legacy.RegisterAminoMsg(cdc, &MsgDewhitelist{}, "leveragelp/MsgDewhitelist")
+	legacy.RegisterAminoMsg(cdc, &MsgClaimRewards{}, "leveragelp/MsgClaimRewards")
+	legacy.RegisterAminoMsg(cdc, &MsgUpdateStopLoss{}, "leveragelp/MsgUpdateStopLoss")
+	legacy.RegisterAminoMsg(cdc, &MsgAddCollateral{}, "leveragelp/MsgAddCollateral")
 	// this line is used by starport scaffolding # 2
 }
 
@@ -46,18 +46,18 @@ func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 }
 
 var (
-	Amino     = codec.NewLegacyAmino()
-	ModuleCdc = codec.NewAminoCodec(Amino)
+	amino     = codec.NewLegacyAmino()
+	ModuleCdc = codec.NewAminoCodec(amino)
 )
 
 func init() {
-    RegisterCodec(Amino)
-    cryptocodec.RegisterCrypto(Amino)
-    sdk.RegisterLegacyAminoCodec(Amino)
+	RegisterCodec(amino)
+	cryptocodec.RegisterCrypto(amino)
+	sdk.RegisterLegacyAminoCodec(amino)
 
-    // Register all Amino interfaces and concrete types on the authz  and gov Amino codec so that this can later be
-    // used to properly serialize MsgGrant, MsgExec and MsgSubmitProposal instances
-    RegisterCodec(authzcodec.Amino)
-    RegisterCodec(govcodec.Amino)
-    RegisterCodec(groupcodec.Amino)
+	// Register all Amino interfaces and concrete types on the authz  and gov Amino codec so that this can later be
+	// used to properly serialize MsgGrant, MsgExec and MsgSubmitProposal instances
+	RegisterCodec(authzcodec.Amino)
+	RegisterCodec(govcodec.Amino)
+	RegisterCodec(groupcodec.Amino)
 }
