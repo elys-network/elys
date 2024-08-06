@@ -12,10 +12,8 @@ import (
 )
 
 var (
-	amino = codec.NewLegacyAmino()
-	// retro compatibility purpose with the test interface
-	Amino    = amino
-	AminoCdc = codec.NewAminoCodec(amino)
+	amino     = codec.NewLegacyAmino()
+	ModuleCdc = codec.NewAminoCodec(amino)
 )
 
 func init() {
@@ -32,8 +30,8 @@ func init() {
 
 // RegisterLegacyAminoCodec registers concrete types on the LegacyAmino codec
 func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
-	cdc.RegisterConcrete(Params{}, "elys/x/clock/Params", nil)
-	legacy.RegisterAminoMsg(cdc, &MsgUpdateParams{}, "elys/x/clock/MsgUpdateParams")
+	cdc.RegisterConcrete(Params{}, "clock/Params", nil)
+	legacy.RegisterAminoMsg(cdc, &MsgUpdateParams{}, "clock/MsgUpdateParams")
 }
 
 func RegisterInterfaces(registry types.InterfaceRegistry) {

@@ -75,6 +75,6 @@ func (suite *KeeperTestSuite) TestApplyExitPoolStateChange_WithdrawFromCommitmen
 	suite.Require().True(lpTokenBalance.Amount.Equal(sdk.ZeroInt()))
 
 	ctx = ctx.WithBlockTime(ctx.BlockTime().Add(time.Hour))
-	err = app.AmmKeeper.ApplyExitPoolStateChange(ctx, pool, addrs[0], pool.TotalShares.Amount, coins)
+	_, err = app.AmmKeeper.ApplyExitPoolStateChange(ctx, pool, addrs[0], pool.TotalShares.Amount, coins)
 	suite.Require().NoError(err)
 }

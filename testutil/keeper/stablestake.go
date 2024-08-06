@@ -33,7 +33,7 @@ func StablestakeKeeper(t testing.TB) (*keeper.Keeper, sdk.Context) {
 	govAddress := sdk.AccAddress(address.Module("gov"))
 
 	paramsSubspace := typesparams.NewSubspace(cdc,
-		types.Amino,
+		types.ModuleCdc.LegacyAmino,
 		storeKey,
 		memStoreKey,
 		"StablestakeParams",

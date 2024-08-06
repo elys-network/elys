@@ -2,6 +2,7 @@ package keeper_test
 
 import (
 	"testing"
+	"time"
 
 	"github.com/cometbft/cometbft/crypto/ed25519"
 	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
@@ -15,8 +16,39 @@ import (
 	"github.com/stretchr/testify/suite"
 )
 
+type assetPriceInfo struct {
+	denom   string
+	display string
+	price   sdk.Dec
+}
+
 const (
 	initChain = true
+)
+
+var (
+	priceMap = map[string]assetPriceInfo{
+		"uusdc": {
+			denom:   ptypes.BaseCurrency,
+			display: "USDC",
+			price:   sdk.OneDec(),
+		},
+		"uusdt": {
+			denom:   "uusdt",
+			display: "USDT",
+			price:   sdk.OneDec(),
+		},
+		"uelys": {
+			denom:   ptypes.Elys,
+			display: "ELYS",
+			price:   sdk.MustNewDecFromStr("3.0"),
+		},
+		"uatom": {
+			denom:   ptypes.ATOM,
+			display: "ATOM",
+			price:   sdk.MustNewDecFromStr("6.0"),
+		},
+	}
 )
 
 type KeeperTestSuite struct {
@@ -35,62 +67,119 @@ func (suite *KeeperTestSuite) SetupTest() {
 	suite.app = app
 }
 
+func (suite *KeeperTestSuite) ResetSuite() {
+	suite.SetupTest()
+}
+
+func (suite *KeeperTestSuite) AddBlockTime(d time.Duration) {
+	suite.ctx = suite.ctx.WithBlockTime(suite.ctx.BlockTime().Add(d))
+}
+
+func (suite *KeeperTestSuite) EnableWhiteListing() {
+	params := suite.app.LeveragelpKeeper.GetParams(suite.ctx)
+	params.WhitelistingEnabled = true
+	err := suite.app.LeveragelpKeeper.SetParams(suite.ctx, &params)
+	if err != nil {
+		panic(err)
+	}
+}
+
+func (suite *KeeperTestSuite) DisableWhiteListing() {
+	params := suite.app.LeveragelpKeeper.GetParams(suite.ctx)
+	params.WhitelistingEnabled = false
+	err := suite.app.LeveragelpKeeper.SetParams(suite.ctx, &params)
+	if err != nil {
+		panic(err)
+	}
+}
+
+func (suite *KeeperTestSuite) SetMaxOpenPositions(value int64) {
+	params := suite.app.LeveragelpKeeper.GetParams(suite.ctx)
+	params.MaxOpenPositions = value
+	err := suite.app.LeveragelpKeeper.SetParams(suite.ctx, &params)
+	if err != nil {
+		panic(err)
+	}
+}
+
+func (suite *KeeperTestSuite) SetPoolThreshold(value sdk.Dec) {
+	params := suite.app.LeveragelpKeeper.GetParams(suite.ctx)
+	params.PoolOpenThreshold = value
+	err := suite.app.LeveragelpKeeper.SetParams(suite.ctx, &params)
+	if err != nil {
+		panic(err)
+	}
+}
+
+func (suite *KeeperTestSuite) SetSafetyFactor(value sdk.Dec) {
+	params := suite.app.LeveragelpKeeper.GetParams(suite.ctx)
+	params.SafetyFactor = value
+	err := suite.app.LeveragelpKeeper.SetParams(suite.ctx, &params)
+	if err != nil {
+		panic(err)
+	}
+}
+
+func (suite *KeeperTestSuite) EnablePool(poolId uint64) {
+	pool, found := suite.app.LeveragelpKeeper.GetPool(suite.ctx, poolId)
+	if !found {
+		panic("pool not found")
+	}
+	pool.Enabled = true
+	suite.app.LeveragelpKeeper.SetPool(suite.ctx, pool)
+}
+
+func (suite *KeeperTestSuite) DisablePool(poolId uint64) {
+	pool, found := suite.app.LeveragelpKeeper.GetPool(suite.ctx, poolId)
+	if !found {
+		panic("pool not found")
+	}
+	pool.Enabled = false
+	suite.app.LeveragelpKeeper.SetPool(suite.ctx, pool)
+}
+
 func TestKeeperSuite(t *testing.T) {
 	suite.Run(t, new(KeeperTestSuite))
 }
 
-func SetupStableCoinPrices(ctx sdk.Context, oracle oraclekeeper.Keeper) {
+func SetupCoinPrices(ctx sdk.Context, oracle oraclekeeper.Keeper) {
 	// prices set for USDT and USDC
 	provider := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
-	oracle.SetAssetInfo(ctx, oracletypes.AssetInfo{
-		Denom:   ptypes.BaseCurrency,
-		Display: "USDC",
-		Decimal: 6,
-	})
-	oracle.SetAssetInfo(ctx, oracletypes.AssetInfo{
-		Denom:   "uusdt",
-		Display: "USDT",
-		Decimal: 6,
-	})
-	oracle.SetAssetInfo(ctx, oracletypes.AssetInfo{
-		Denom:   ptypes.Elys,
-		Display: "ELYS",
-		Decimal: 6,
-	})
-	oracle.SetAssetInfo(ctx, oracletypes.AssetInfo{
-		Denom:   ptypes.ATOM,
-		Display: "ATOM",
-		Decimal: 6,
-	})
 
-	oracle.SetPrice(ctx, oracletypes.Price{
-		Asset:     "USDC",
-		Price:     sdk.NewDec(1000000),
-		Source:    "elys",
-		Provider:  provider.String(),
-		Timestamp: uint64(ctx.BlockTime().Unix()),
-	})
-	oracle.SetPrice(ctx, oracletypes.Price{
-		Asset:     "USDT",
-		Price:     sdk.NewDec(1000000),
-		Source:    "elys",
-		Provider:  provider.String(),
-		Timestamp: uint64(ctx.BlockTime().Unix()),
-	})
-	oracle.SetPrice(ctx, oracletypes.Price{
-		Asset:     "ELYS",
-		Price:     sdk.NewDec(100),
-		Source:    "elys",
-		Provider:  provider.String(),
-		Timestamp: uint64(ctx.BlockTime().Unix()),
-	})
-	oracle.SetPrice(ctx, oracletypes.Price{
-		Asset:     "ATOM",
-		Price:     sdk.NewDec(100),
-		Source:    "atom",
-		Provider:  provider.String(),
-		Timestamp: uint64(ctx.BlockTime().Unix()),
-	})
+	for _, v := range priceMap {
+		oracle.SetAssetInfo(ctx, oracletypes.AssetInfo{
+			Denom:   v.denom,
+			Display: v.display,
+			Decimal: 6,
+		})
+		oracle.SetPrice(ctx, oracletypes.Price{
+			Asset:     v.display,
+			Price:     v.price,
+			Source:    "elys",
+			Provider:  provider.String(),
+			Timestamp: uint64(ctx.BlockTime().Unix()),
+		})
+	}
+}
+
+func AddCoinPrices(ctx sdk.Context, oracle oraclekeeper.Keeper, denoms []string) {
+	// prices set for USDT and USDC
+	provider := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
+
+	for _, v := range denoms {
+		oracle.SetAssetInfo(ctx, oracletypes.AssetInfo{
+			Denom:   priceMap[v].denom,
+			Display: priceMap[v].display,
+			Decimal: 6,
+		})
+		oracle.SetPrice(ctx, oracletypes.Price{
+			Asset:     priceMap[v].display,
+			Price:     priceMap[v].price,
+			Source:    "elys",
+			Provider:  provider.String(),
+			Timestamp: uint64(ctx.BlockTime().Unix()),
+		})
+	}
 }
 
 func TestGetAllWhitelistedAddress(t *testing.T) {
