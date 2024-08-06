@@ -79,7 +79,3 @@ type MasterchefKeeper interface {
 	ClaimRewards(ctx sdk.Context, sender sdk.AccAddress, poolIds []uint64, recipient sdk.AccAddress) error
 	UserPoolPendingReward(ctx sdk.Context, user sdk.AccAddress, poolId uint64) sdk.Coins
 }
-
-type AccountedPoolKeeper interface {
-	GetAccountedBalance(sdk.Context, uint64, string) math.Int
-}
