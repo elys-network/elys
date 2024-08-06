@@ -15,9 +15,9 @@ import (
 )
 
 func RegisterCodec(cdc *codec.LegacyAmino) {
-	legacy.RegisterAminoMsg(cdc, &MsgUpdateParams{}, "estaking/UpdateParams")
-	legacy.RegisterAminoMsg(cdc, &MsgWithdrawReward{}, "estaking/WithdrawReward")
-	legacy.RegisterAminoMsg(cdc, &MsgWithdrawElysStakingRewards{}, "estaking/WithdrawElysStakingRewards")
+	legacy.RegisterAminoMsg(cdc, &MsgUpdateParams{}, "estaking/MsgUpdateParams")
+	legacy.RegisterAminoMsg(cdc, &MsgWithdrawReward{}, "estaking/MsgWithdrawReward")
+	legacy.RegisterAminoMsg(cdc, &MsgWithdrawElysStakingRewards{}, "estaking/MsgWithdrawElysStakingRewards")
 	legacy.RegisterAminoMsg(cdc, &MsgWithdrawAllRewards{}, "estaking/MsgWithdrawAllRewards")
 	// this line is used by starport scaffolding # 2
 }

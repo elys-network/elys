@@ -13,12 +13,12 @@ import (
 )
 
 func RegisterCodec(cdc *codec.LegacyAmino) {
-	legacy.RegisterAminoMsg(cdc, &MsgOpen{}, "perpetual/Open")
-	legacy.RegisterAminoMsg(cdc, &MsgClose{}, "perpetual/Close")
-	legacy.RegisterAminoMsg(cdc, &MsgUpdateParams{}, "perpetual/UpdateParams")
-	legacy.RegisterAminoMsg(cdc, &MsgWhitelist{}, "perpetual/Whitelist")
-	legacy.RegisterAminoMsg(cdc, &MsgDewhitelist{}, "perpetual/Dewhitelist")
-	legacy.RegisterAminoMsg(cdc, &MsgAddCollateral{}, "perpetual/AddCollateral")
+	legacy.RegisterAminoMsg(cdc, &MsgOpen{}, "perpetual/MsgOpen")
+	legacy.RegisterAminoMsg(cdc, &MsgClose{}, "perpetual/MsgClose")
+	legacy.RegisterAminoMsg(cdc, &MsgUpdateParams{}, "perpetual/MsgUpdateParams")
+	legacy.RegisterAminoMsg(cdc, &MsgWhitelist{}, "perpetual/MsgWhitelist")
+	legacy.RegisterAminoMsg(cdc, &MsgDewhitelist{}, "perpetual/MsgDewhitelist")
+	legacy.RegisterAminoMsg(cdc, &MsgAddCollateral{}, "perpetual/MsgAddCollateral")
 	// this line is used by starport scaffolding # 2
 }
 
@@ -38,7 +38,7 @@ func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 
 var (
 	Amino     = codec.NewLegacyAmino()
-	ModuleCdc = codec.NewProtoCodec(cdctypes.NewInterfaceRegistry())
+	ModuleCdc = codec.NewAminoCodec(Amino)
 )
 
 func init() {
