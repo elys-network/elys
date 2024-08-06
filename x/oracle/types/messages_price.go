@@ -43,7 +43,7 @@ func (msg *MsgFeedPrice) GetSigners() []sdk.AccAddress {
 }
 
 func (msg *MsgFeedPrice) GetSignBytes() []byte {
-	bz := ModuleCdc.MustMarshalJSON(msg)
+	bz := ModuleAminoCdc.MustMarshalJSON(msg)
 	return sdk.MustSortJSON(bz)
 }
 

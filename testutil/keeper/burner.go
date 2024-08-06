@@ -34,7 +34,7 @@ func BurnerKeeper(t testing.TB) (*keeper.Keeper, sdk.Context, *mocks.BankKeeper)
 	cdc := codec.NewProtoCodec(registry)
 
 	paramsSubspace := typesparams.NewSubspace(cdc,
-		types.Amino,
+		types.ModuleCdc.LegacyAmino,
 		storeKey,
 		memStoreKey,
 		"BurnerParams",
