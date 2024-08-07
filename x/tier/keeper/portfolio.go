@@ -48,6 +48,12 @@ func (k Keeper) RetrieveAllPortfolio(ctx sdk.Context, user string) {
 
 	// Staked assets
 	commit, delegations, unbondings, totalVesting := k.RetrieveStaked(ctx, sender)
+	// convert vesting to usd
+	baseCurrency, found := k.assetProfileKeeper.GetUsdcDenom(ctx)
+	if found {
+		edenDenomPrice := k.amm.GetEdenDenomPrice(ctx, baseCurrency)
+		totalVesting = totalVesting.Mul(edenDenomPrice)
+	}
 	totalValue = totalValue.Add(commit).Add(delegations).Add(unbondings).Add(totalVesting)
 
 	// LeverageLp
@@ -351,6 +357,8 @@ func (k Keeper) GetMembershipTier(ctx sdk.Context, user string) (total_portfoili
 		totalPort, found := k.GetPortfolio(ctx, user, d.Format("2006-01-02"))
 		if found && totalPort.LT(minTotal) {
 			minTotal = totalPort
+		} else if !found {
+			minTotal = sdk.NewDec(0)
 		}
 	}
 
