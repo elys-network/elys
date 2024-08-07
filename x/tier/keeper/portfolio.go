@@ -48,6 +48,12 @@ func (k Keeper) RetrieveAllPortfolio(ctx sdk.Context, user string) {
 
 	// Staked assets
 	commit, delegations, unbondings, totalVesting := k.RetrieveStaked(ctx, sender)
+	// convert vesting to usd
+	baseCurrency, found := k.assetProfileKeeper.GetUsdcDenom(ctx)
+	if found {
+		edenDenomPrice := k.amm.GetEdenDenomPrice(ctx, baseCurrency)
+		totalVesting = totalVesting.Mul(edenDenomPrice)
+	}
 	totalValue = totalValue.Add(commit).Add(delegations).Add(unbondings).Add(totalVesting)
 
 	// LeverageLp
@@ -89,11 +95,7 @@ func (k Keeper) RetrieveStaked(ctx sdk.Context, user sdk.AccAddress) (sdk.Dec, s
 	totalVested := sdk.NewDec(0)
 	vestingResp, vestErr := k.commitement.CommitmentVestingInfo(ctx, &commitmenttypes.QueryCommitmentVestingInfoRequest{Address: user.String()})
 	if vestErr == nil {
-		baseCurrency, found := k.assetProfileKeeper.GetUsdcDenom(ctx)
-		if found {
-			edenDenomPrice := k.amm.GetEdenDenomPrice(ctx, baseCurrency)
-			totalVested = vestingResp.Total.ToLegacyDec().Mul(edenDenomPrice)
-		}
+		totalVested = vestingResp.Total.ToLegacyDec()
 	}
 	for _, commitment := range commitments.CommittedTokens {
 		if !strings.HasPrefix(commitment.Denom, "amm/pool") {
