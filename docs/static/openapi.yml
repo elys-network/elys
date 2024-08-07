@@ -86193,6 +86193,8 @@ definitions:
         type: boolean
       withdraw_enabled:
         type: boolean
+  elys.assetprofile.MsgAddEntryResponse:
+    type: object
   elys.assetprofile.MsgCreateEntryResponse:
     type: object
   elys.assetprofile.MsgDeleteEntryResponse:
@@ -88434,6 +88436,8 @@ definitions:
   elys.oracle.MsgAddAssetInfoResponse:
     type: object
   elys.oracle.MsgAddPriceFeedersResponse:
+    type: object
+  elys.oracle.MsgCreateAssetInfoResponse:
     type: object
   elys.oracle.MsgDeletePriceFeederResponse:
     type: object

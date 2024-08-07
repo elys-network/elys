@@ -9,6 +9,10 @@ import (
 	"github.com/elys-network/elys/x/assetprofile/types"
 )
 
+const (
+	listSeparator = ","
+)
+
 // GetTxCmd returns the transaction commands for this module
 func GetTxCmd() *cobra.Command {
 	cmd := &cobra.Command{
@@ -19,6 +23,7 @@ func GetTxCmd() *cobra.Command {
 		RunE:                       client.ValidateCmd,
 	}
 
+	cmd.AddCommand(CmdAddEntry())
 	// this line is used by starport scaffolding # 1
 
 	return cmd

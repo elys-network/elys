@@ -20,23 +20,6 @@ func (k msgServer) UpdateParams(goCtx context.Context, msg *types.MsgUpdateParam
 	return &types.MsgUpdateParamsResponse{}, nil
 }
 
-func (k msgServer) AddAssetInfo(goCtx context.Context, msg *types.MsgAddAssetInfo) (*types.MsgAddAssetInfoResponse, error) {
-	ctx := sdk.UnwrapSDKContext(goCtx)
-	if k.authority != msg.Authority {
-		return nil, errors.Wrapf(govtypes.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.authority, msg.Authority)
-	}
-
-	k.Keeper.SetAssetInfo(ctx, types.AssetInfo{
-		Denom:      msg.Denom,
-		Display:    msg.Display,
-		BandTicker: msg.BandTicker,
-		ElysTicker: msg.ElysTicker,
-		Decimal:    msg.Decimal,
-	})
-
-	return &types.MsgAddAssetInfoResponse{}, nil
-}
-
 func (k msgServer) RemoveAssetInfo(goCtx context.Context, msg *types.MsgRemoveAssetInfo) (*types.MsgRemoveAssetInfoResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	if k.authority != msg.Authority {

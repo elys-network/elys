@@ -17,11 +17,11 @@ func RegisterCodec(cdc *codec.LegacyAmino) {
 	legacy.RegisterAminoMsg(cdc, &MsgSetPriceFeeder{}, "oracle/MsgSetPriceFeeder")
 	legacy.RegisterAminoMsg(cdc, &MsgDeletePriceFeeder{}, "oracle/MsgDeletePriceFeeder")
 	legacy.RegisterAminoMsg(cdc, &MsgFeedMultiplePrices{}, "oracle/MsgFeedMultiplePrices")
-	legacy.RegisterAminoMsg(cdc, &MsgAddAssetInfo{}, "oracle/MsgAddAssetInfo")
 	legacy.RegisterAminoMsg(cdc, &MsgRemoveAssetInfo{}, "oracle/MsgRemoveAssetInfo")
 	legacy.RegisterAminoMsg(cdc, &MsgAddPriceFeeders{}, "oracle/MsgAddPriceFeeders")
 	legacy.RegisterAminoMsg(cdc, &MsgRemovePriceFeeders{}, "oracle/MsgRemovePriceFeeders")
 	legacy.RegisterAminoMsg(cdc, &MsgUpdateParams{}, "oracle/MsgUpdateParams")
+	legacy.RegisterAminoMsg(cdc, &MsgCreateAssetInfo{}, "oracle/CreateAssetInfo")
 	// this line is used by starport scaffolding # 2
 }
 
@@ -31,13 +31,15 @@ func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 		&MsgSetPriceFeeder{},
 		&MsgDeletePriceFeeder{},
 		&MsgFeedMultiplePrices{},
-		&MsgAddAssetInfo{},
 		&MsgRemoveAssetInfo{},
 		&MsgAddPriceFeeders{},
 		&MsgRemovePriceFeeders{},
 		&MsgUpdateParams{},
 	)
 
+	registry.RegisterImplementations((*sdk.Msg)(nil),
+		&MsgCreateAssetInfo{},
+	)
 	// this line is used by starport scaffolding # 3
 
 	msgservice.RegisterMsgServiceDesc(registry, &_Msg_serviceDesc)

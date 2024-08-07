@@ -3,65 +3,44 @@ syntax = "proto3";
 package elys.assetprofile;
 
 import "elys/assetprofile/entry.proto";
+import "elys/assetprofile/add_entry.proto";
 
 option go_package = "github.com/elys-network/elys/x/assetprofile/types";
 
 // Msg defines the Msg service.
 service Msg {
-  rpc CreateEntry (MsgCreateEntry) returns (MsgCreateEntryResponse);
   rpc UpdateEntry (MsgUpdateEntry) returns (MsgUpdateEntryResponse);
   rpc DeleteEntry (MsgDeleteEntry) returns (MsgDeleteEntryResponse);
-}
-message MsgCreateEntry {
-           string authority                =  1;
-           string base_denom                =  2;
-           uint64 decimals                 =  3;
-           string denom                    =  4;
-           string path                     =  5;
-           string ibc_channel_id             =  6;
-           string ibc_counterparty_channel_id =  7;
-           string display_name              =  8;
-           string display_symbol            =  9;
-           string network                  = 10;
-           string address                  = 11;
-           string external_symbol           = 12;
-           string transfer_limit            = 13;
-  repeated string permissions              = 14;
-           string unit_denom                = 15;
-           string ibc_counterparty_denom     = 16;
-           string ibc_counterparty_chain_id   = 17;
-           bool commit_enabled = 18;
-           bool withdraw_enabled = 19;
+  rpc AddEntry    (MsgAddEntry   ) returns (MsgAddEntryResponse   );
 }
 
-message MsgCreateEntryResponse {}
 
 message MsgUpdateEntry {
-           string authority                =  1;
-           string base_denom                =  2;
-           uint64 decimals                 =  3;
-           string denom                    =  4;
-           string path                     =  5;
-           string ibc_channel_id             =  6;
+           string authority                   =  1;
+           string base_denom                  =  2;
+           uint64 decimals                    =  3;
+           string denom                       =  4;
+           string path                        =  5;
+           string ibc_channel_id              =  6;
            string ibc_counterparty_channel_id =  7;
-           string display_name              =  8;
-           string display_symbol            =  9;
-           string network                  = 10;
-           string address                  = 11;
-           string external_symbol           = 12;
-           string transfer_limit            = 13;
-  repeated string permissions              = 14;
-           string unit_denom                = 15;
-           string ibc_counterparty_denom     = 16;
+           string display_name                =  8;
+           string display_symbol              =  9;
+           string network                     = 10;
+           string address                     = 11;
+           string external_symbol             = 12;
+           string transfer_limit              = 13;
+  repeated string permissions                 = 14;
+           string unit_denom                  = 15;
+           string ibc_counterparty_denom      = 16;
            string ibc_counterparty_chain_id   = 17;
-           bool commit_enabled = 18;
-           bool withdraw_enabled = 19;
+           bool   commit_enabled              = 18;
+           bool   withdraw_enabled            = 19;
 }
 
 message MsgUpdateEntryResponse {}
 
 message MsgDeleteEntry {
-  string authority = 1;
+  string authority  = 1;
   string base_denom = 2;
 }
 

@@ -15,26 +15,6 @@ import (
 	"github.com/elys-network/elys/x/assetprofile/types"
 )
 
-func TestEntryMsgServerCreate(t *testing.T) {
-	k, ctx := keepertest.AssetprofileKeeper(t)
-	srv := keeper.NewMsgServerImpl(*k)
-	wctx := sdk.WrapSDKContext(ctx)
-	authority := authtypes.NewModuleAddress(govtypes.ModuleName).String()
-	for i := 0; i < 5; i++ {
-		expected := &types.MsgCreateEntry{
-			Authority: authority,
-			BaseDenom: strconv.Itoa(i),
-		}
-		_, err := srv.CreateEntry(wctx, expected)
-		require.NoError(t, err)
-		rst, found := k.GetEntry(ctx,
-			expected.BaseDenom,
-		)
-		require.True(t, found)
-		require.Equal(t, expected.Authority, rst.Authority)
-	}
-}
-
 func TestEntryMsgServerUpdate(t *testing.T) {
 	authority := authtypes.NewModuleAddress(govtypes.ModuleName).String()
 
@@ -71,11 +51,10 @@ func TestEntryMsgServerUpdate(t *testing.T) {
 			k, ctx := keepertest.AssetprofileKeeper(t)
 			srv := keeper.NewMsgServerImpl(*k)
 			wctx := sdk.WrapSDKContext(ctx)
-			expected := &types.MsgCreateEntry{
-				Authority: authority,
+			expected := &types.MsgAddEntry{
 				BaseDenom: strconv.Itoa(0),
 			}
-			_, err := srv.CreateEntry(wctx, expected)
+			_, err := srv.AddEntry(wctx, expected)
 			require.NoError(t, err)
 
 			_, err = srv.UpdateEntry(wctx, tc.request)
@@ -83,11 +62,11 @@ func TestEntryMsgServerUpdate(t *testing.T) {
 				require.ErrorIs(t, err, tc.err)
 			} else {
 				require.NoError(t, err)
-				rst, found := k.GetEntry(ctx,
+				_, found := k.GetEntry(ctx,
 					expected.BaseDenom,
 				)
 				require.True(t, found)
-				require.Equal(t, expected.Authority, rst.Authority)
+				//require.Equal(t, expected.Authority, rst.Authority)
 			}
 		})
 	}
@@ -130,8 +109,7 @@ func TestEntryMsgServerDelete(t *testing.T) {
 			srv := keeper.NewMsgServerImpl(*k)
 			wctx := sdk.WrapSDKContext(ctx)
 
-			_, err := srv.CreateEntry(wctx, &types.MsgCreateEntry{
-				Authority: authority,
+			_, err := srv.AddEntry(wctx, &types.MsgAddEntry{
 				BaseDenom: strconv.Itoa(0),
 			})
 			require.NoError(t, err)

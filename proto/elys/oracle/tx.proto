@@ -1,4 +1,5 @@
 syntax = "proto3";
+
 package elys.oracle;
 
 import "gogoproto/gogo.proto";
@@ -8,89 +9,97 @@ import "elys/oracle/asset_info.proto";
 import "elys/oracle/price.proto";
 import "elys/oracle/price_feeder.proto";
 import "elys/oracle/params.proto";
+
 // this line is used by starport scaffolding # proto/tx/import
 
 option go_package = "github.com/elys-network/elys/x/oracle/types";
 
 // Msg defines the Msg service.
 service Msg {
-  rpc FeedPrice(MsgFeedPrice) returns (MsgFeedPriceResponse);
-  rpc FeedMultiplePrices(MsgFeedMultiplePrices) returns (MsgFeedMultiplePricesResponse);
-  rpc SetPriceFeeder(MsgSetPriceFeeder) returns (MsgSetPriceFeederResponse);
-  rpc DeletePriceFeeder(MsgDeletePriceFeeder) returns (MsgDeletePriceFeederResponse);
+  rpc FeedPrice          (MsgFeedPrice         ) returns (MsgFeedPriceResponse         );
+  rpc FeedMultiplePrices (MsgFeedMultiplePrices) returns (MsgFeedMultiplePricesResponse);
+  rpc SetPriceFeeder     (MsgSetPriceFeeder    ) returns (MsgSetPriceFeederResponse    );
+  rpc DeletePriceFeeder  (MsgDeletePriceFeeder ) returns (MsgDeletePriceFeederResponse );
+  
   // proposals
-  rpc AddAssetInfo(MsgAddAssetInfo) returns (MsgAddAssetInfoResponse);
-  rpc RemoveAssetInfo(MsgRemoveAssetInfo) returns (MsgRemoveAssetInfoResponse);
-  rpc AddPriceFeeders(MsgAddPriceFeeders) returns (MsgAddPriceFeedersResponse);
-  rpc RemovePriceFeeders(MsgRemovePriceFeeders) returns (MsgRemovePriceFeedersResponse);
-  rpc UpdateParams(MsgUpdateParams) returns (MsgUpdateParamsResponse);
+  rpc RemoveAssetInfo    (MsgRemoveAssetInfo   ) returns (MsgRemoveAssetInfoResponse   );
+  rpc AddPriceFeeders    (MsgAddPriceFeeders   ) returns (MsgAddPriceFeedersResponse   );
+  rpc RemovePriceFeeders (MsgRemovePriceFeeders) returns (MsgRemovePriceFeedersResponse);
+  rpc UpdateParams       (MsgUpdateParams      ) returns (MsgUpdateParamsResponse      );
+  
   // this line is used by starport scaffolding # proto/tx/rpc
+  rpc CreateAssetInfo (MsgCreateAssetInfo) returns (MsgCreateAssetInfoResponse);
 }
-
 message MsgFeedPrice {
-  string asset = 1;
-  string price = 2 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
-    (gogoproto.nullable) = false
-  ];
-  string source = 3;
+  string asset    = 1;
+  string price    = 2 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+  string source   = 3;
   string provider = 4;
 }
+
 message MsgFeedPriceResponse {}
 
 message MsgSetPriceFeeder {
-  string feeder = 1;
-  bool is_active = 2;
+  string feeder    = 1;
+  bool   is_active = 2;
 }
+
 message MsgSetPriceFeederResponse {}
 
 message MsgDeletePriceFeeder {
   string feeder = 1;
 }
+
 message MsgDeletePriceFeederResponse {}
 
 message MsgFeedMultiplePrices {
-  string creator = 1;
-  repeated Price prices = 2 [ (gogoproto.nullable) = false ];
+           string creator = 1;
+  repeated Price  prices  = 2 [(gogoproto.nullable) = false];
 }
 
-message MsgFeedMultiplePricesResponse {
-}
+message MsgFeedMultiplePricesResponse {}
 
-message MsgAddAssetInfo {
-  string authority = 1;
-  string denom = 2;
-  string display = 3;
-  string band_ticker = 4;
-  string elys_ticker = 5;
-  uint64 decimal = 6;
-}
-message MsgAddAssetInfoResponse {}
 
 message MsgRemoveAssetInfo {
   string authority = 1;
-  string denom = 2;
+  string denom     = 2;
 }
+
 message MsgRemoveAssetInfoResponse {}
 
 message MsgAddPriceFeeders {
-  string authority = 1;
-  repeated string feeders = 2;
+           string authority = 1;
+  repeated string feeders   = 2;
 }
+
 message MsgAddPriceFeedersResponse {}
 
 message MsgRemovePriceFeeders {
-  string authority = 1;
-  repeated string feeders = 2;
+           string authority = 1;
+  repeated string feeders   = 2;
 }
+
 message MsgRemovePriceFeedersResponse {}
 
 message MsgUpdateParams {
   string authority = 1;
+  
   // NOTE: All parameters must be supplied.
-  Params params = 2 [ (gogoproto.nullable) = false ];
+  Params params = 2 [(gogoproto.nullable) = false];
 }
 
 message MsgUpdateParamsResponse {}
 
+
 // this line is used by starport scaffolding # proto/tx/message
+message MsgCreateAssetInfo {
+  string creator    = 1;
+  string denom      = 2;
+  string display    = 3;
+  string bandTicker = 4;
+  string elysTicker = 5;
+  uint64 decimal    = 6;
+}
+
+message MsgCreateAssetInfoResponse {}
+
