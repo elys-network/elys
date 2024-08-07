@@ -1443,14 +1443,6 @@ func (app *ElysApp) Name() string { return app.BaseApp.Name() }
 
 // BeginBlocker application updates every begin block
 func (app *ElysApp) BeginBlocker(ctx sdk.Context, req abci.RequestBeginBlock) abci.ResponseBeginBlock {
-	if ctx.BlockHeight() == 8504600 {
-		ctx.Logger().Info("Reached block height 8504600, applying permissions changes to masterchef module")
-		// update permissions to masterchef module
-		oldModuleAccount := app.AccountKeeper.GetModuleAccount(ctx, masterchefmoduletypes.ModuleName)
-		oldModuleAccount.(*authtypes.ModuleAccount).Permissions = []string{authtypes.Minter, authtypes.Burner}
-		app.AccountKeeper.SetModuleAccount(ctx, oldModuleAccount)
-	}
-
 	return app.mm.BeginBlock(ctx, req)
 }
 
