@@ -16,7 +16,6 @@ func (k msgServer) ClosePositions(goCtx context.Context, msg *types.MsgClosePosi
 		if err != nil {
 			continue
 		}
-		k.stableKeeper.UpdateInterestStackedByAddress(ctx, position.GetPositionAddress())
 		pool, found := k.GetPool(ctx, position.AmmPoolId)
 		ammPool, err := k.GetAmmPool(ctx, position.AmmPoolId)
 		if !found || err != nil {
@@ -31,7 +30,6 @@ func (k msgServer) ClosePositions(goCtx context.Context, msg *types.MsgClosePosi
 		if err != nil {
 			continue
 		}
-		k.stableKeeper.UpdateInterestStackedByAddress(ctx, position.GetPositionAddress())
 		pool, found := k.GetPool(ctx, position.AmmPoolId)
 		ammPool, err := k.GetAmmPool(ctx, position.AmmPoolId)
 		if !found || err != nil {

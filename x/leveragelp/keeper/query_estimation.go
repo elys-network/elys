@@ -47,14 +47,14 @@ func (k Keeper) CloseEst(goCtx context.Context, req *types.QueryCloseEstRequest)
 	}
 
 	// Repay with interest
-	debt := k.stableKeeper.UpdateInterestStackedByAddress(ctx, position.GetPositionAddress())
+	debt := k.stableKeeper.GetDebtWithUpdatedInterestStacked(ctx, position.GetPositionAddress())
 
 	// Ensure position.LeveragedLpAmount is not zero to avoid division by zero
 	if position.LeveragedLpAmount.IsZero() {
 		return nil, types.ErrAmountTooLow
 	}
 
-	repayAmount := debt.Borrowed.Add(debt.InterestStacked).Sub(debt.InterestPaid).Mul(req.LpAmount).Quo(position.LeveragedLpAmount)
+	repayAmount := debt.GetTotalLiablities().Mul(req.LpAmount).Quo(position.LeveragedLpAmount)
 	userAmount := exitCoins[0].Amount.Sub(repayAmount)
 
 	return &types.QueryCloseEstResponse{
