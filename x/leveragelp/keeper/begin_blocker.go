@@ -22,18 +22,18 @@ func (k Keeper) BeginBlocker(ctx sdk.Context) {
 		pageReq := &query.PageRequest{
 			Limit: uint64(params.NumberPerBlock),
 		}
-		storedKey := k.GetTraversalKey(ctx)
-		if storedKey != nil {
-			pageReq.Key = storedKey
+		offset, found := k.GetOffset(ctx)
+		if found {
+			pageReq.Offset = offset
 		}
 		positions, pageRes, err := k.GetPositions(ctx, pageReq)
 		if err != nil {
 			ctx.Logger().Error(errors.Wrap(err, fmt.Sprintf("error fetching paginated positions")).Error())
 		}
-		if pageRes.NextKey == nil {
-			k.DeleteTraversalKey(ctx)
+		if offset+uint64(params.NumberPerBlock) > pageRes.GetTotal() {
+			k.DeleteOffset(ctx)
 		} else {
-			k.SetTraversalKey(ctx, pageRes.NextKey)
+			k.SetOffset(ctx, offset+uint64(params.NumberPerBlock))
 		}
 
 		for _, position := range positions {

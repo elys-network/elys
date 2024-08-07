@@ -90,18 +90,24 @@ func (k Keeper) GetPositionCount(ctx sdk.Context) uint64 {
 	return count
 }
 
-func (k Keeper) SetTraversalKey(ctx sdk.Context, key []byte) {
+func (k Keeper) SetOffset(ctx sdk.Context, offset uint64) {
 	store := ctx.KVStore(k.storeKey)
-	store.Set(types.TraversalKeyPrefix, key)
+	store.Set(types.OffsetKeyPrefix, types.GetUint64Bytes(offset))
 }
 
-func (k Keeper) GetTraversalKey(ctx sdk.Context) []byte {
-	return ctx.KVStore(k.storeKey).Get(types.TraversalKeyPrefix)
+func (k Keeper) GetOffset(ctx sdk.Context) (uint64, bool) {
+	store := ctx.KVStore(k.storeKey)
+	if store.Has(types.OffsetKeyPrefix) {
+		res := store.Get(types.OffsetKeyPrefix)
+		return types.GetUint64FromBytes(res), true
+	} else {
+		return 0, false
+	}
 }
 
-func (k Keeper) DeleteTraversalKey(ctx sdk.Context) {
+func (k Keeper) DeleteOffset(ctx sdk.Context) {
 	store := ctx.KVStore(k.storeKey)
-	store.Delete(types.TraversalKeyPrefix)
+	store.Delete(types.OffsetKeyPrefix)
 }
 
 func (k Keeper) GetOpenPositionCount(ctx sdk.Context) uint64 {
