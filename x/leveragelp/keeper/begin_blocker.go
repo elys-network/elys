@@ -18,25 +18,22 @@ func (k Keeper) BeginBlocker(ctx sdk.Context) {
 	params := k.GetParams(ctx)
 
 	if epochPosition == 0 && params.FallbackEnabled { // if epoch has passed
-		pools := k.GetAllPools(ctx)
-		// TODO: Optimise fallback system by dividing traversal in multiple blocks
-
-		for _, pool := range pools {
+		positions := k.GetAllPositions(ctx)
+		for _, position := range positions {
+			pool, found := k.GetPool(ctx, position.AmmPoolId)
+			if !found {
+				continue
+			}
 			ammPool, err := k.GetAmmPool(ctx, pool.AmmPoolId)
 			if err != nil {
 				ctx.Logger().Error(errors.Wrap(err, fmt.Sprintf("error getting amm pool: %d", pool.AmmPoolId)).Error())
 				continue
 			}
-			if k.IsPoolEnabled(ctx, pool.AmmPoolId) {
-				positions := k.GetAllPositions(ctx)
-				for _, position := range positions {
-					isHealthy, _ := k.LiquidatePositionIfUnhealthy(ctx, &position, pool, ammPool)
-					if !isHealthy {
-						continue
-					}
-					k.ClosePositionIfUnderStopLossPrice(ctx, &position, pool, ammPool)
-				}
+			isHealthy, _ := k.LiquidatePositionIfUnhealthy(ctx, &position, pool, ammPool)
+			if !isHealthy {
+				continue
 			}
+			k.ClosePositionIfUnderStopLossPrice(ctx, &position, pool, ammPool)
 		}
 	}
 }
