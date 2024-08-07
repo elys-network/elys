@@ -20,7 +20,7 @@ type (
 		paramstore paramtypes.Subspace
 
 		parameterKeeper     types.ParameterKeeper
-		cmk                 types.CommitmentKeeper
+		commitmentKeeper    types.CommitmentKeeper
 		amm                 types.AmmKeeper
 		oracleKeeper        types.OracleKeeper
 		assetProfileKeeper  types.AssetProfileKeeper
@@ -57,7 +57,7 @@ func NewKeeper(
 		memKey:              memKey,
 		paramstore:          ps,
 		parameterKeeper:     parameterKeeper,
-		cmk:                 ck,
+		commitmentKeeper:    ck,
 		amm:                 amm,
 		oracleKeeper:        ok,
 		assetProfileKeeper:  ap,

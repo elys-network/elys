@@ -214,7 +214,7 @@ func (k Keeper) UpdateLPRewards(ctx sdk.Context) error {
 		// Use min amount (eden allocation from tokenomics and max apr based eden amount)
 		newEdenAllocatedForPool = sdk.MinDec(newEdenAllocatedForPool, poolMaxEdenAmount)
 		if newEdenAllocatedForPool.IsPositive() {
-			err = k.cmk.MintCoins(ctx, types.ModuleName, sdk.Coins{sdk.NewCoin(ptypes.Eden, newEdenAllocatedForPool.TruncateInt())})
+			err = k.commitmentKeeper.MintCoins(ctx, types.ModuleName, sdk.Coins{sdk.NewCoin(ptypes.Eden, newEdenAllocatedForPool.TruncateInt())})
 			if err != nil {
 				return err
 			}
