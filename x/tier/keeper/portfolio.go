@@ -89,7 +89,11 @@ func (k Keeper) RetrieveStaked(ctx sdk.Context, user sdk.AccAddress) (sdk.Dec, s
 	totalVested := sdk.NewDec(0)
 	vestingResp, vestErr := k.commitement.CommitmentVestingInfo(ctx, &commitmenttypes.QueryCommitmentVestingInfoRequest{Address: user.String()})
 	if vestErr == nil {
-		totalVested = vestingResp.Total.ToLegacyDec()
+		baseCurrency, found := k.assetProfileKeeper.GetUsdcDenom(ctx)
+		if found {
+			edenDenomPrice := k.amm.GetEdenDenomPrice(ctx, baseCurrency)
+			totalVested = vestingResp.Total.ToLegacyDec().Mul(edenDenomPrice)
+		}
 	}
 	for _, commitment := range commitments.CommittedTokens {
 		if !strings.HasPrefix(commitment.Denom, "amm/pool") {
