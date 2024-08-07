@@ -4,8 +4,8 @@
 NAME?=elys
 BINARY?=$(NAME)d
 COMMIT:=$(shell git log -1 --format='%H')
-VERSION:=v999.999.999
-GOFLAGS:=$(shell git describe --tags --match 'v*' --abbrev=8 | sed 's/-g/-/' | sed 's/-[0-9]*-/-/')
+VERSION:=$(shell git describe --tags --match 'v*' --abbrev=8 | sed 's/-g/-/' | sed 's/-[0-9]*-/-/')
+GOFLAGS:=""
 
 # if rocksdb env variable is set, add the tag
 ifdef ROCKSDB
