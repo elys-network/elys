@@ -5,6 +5,7 @@ import (
 	"strconv"
 
 	"github.com/cosmos/cosmos-sdk/types/errors"
+	"github.com/cosmos/cosmos-sdk/types/query"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	"github.com/elys-network/elys/x/leveragelp/types"
 
@@ -18,7 +19,23 @@ func (k Keeper) BeginBlocker(ctx sdk.Context) {
 	params := k.GetParams(ctx)
 
 	if epochPosition == 0 && params.FallbackEnabled { // if epoch has passed
-		positions := k.GetAllPositions(ctx)
+		pageReq := &query.PageRequest{
+			Limit: uint64(params.NumberPerBlock),
+		}
+		storedKey := k.GetTraversalKey(ctx)
+		if storedKey != nil {
+			pageReq.Key = storedKey
+		}
+		positions, pageRes, err := k.GetPositions(ctx, pageReq)
+		if err != nil {
+			ctx.Logger().Error(errors.Wrap(err, fmt.Sprintf("error fetching paginated positions")).Error())
+		}
+		if pageRes.NextKey == nil {
+			k.DeleteTraversalKey(ctx)
+		} else {
+			k.SetTraversalKey(ctx, pageRes.NextKey)
+		}
+
 		for _, position := range positions {
 			pool, found := k.GetPool(ctx, position.AmmPoolId)
 			if !found {
@@ -29,11 +46,11 @@ func (k Keeper) BeginBlocker(ctx sdk.Context) {
 				ctx.Logger().Error(errors.Wrap(err, fmt.Sprintf("error getting amm pool: %d", pool.AmmPoolId)).Error())
 				continue
 			}
-			isHealthy, _ := k.LiquidatePositionIfUnhealthy(ctx, &position, pool, ammPool)
+			isHealthy, _ := k.LiquidatePositionIfUnhealthy(ctx, position, pool, ammPool)
 			if !isHealthy {
 				continue
 			}
-			k.ClosePositionIfUnderStopLossPrice(ctx, &position, pool, ammPool)
+			k.ClosePositionIfUnderStopLossPrice(ctx, position, pool, ammPool)
 		}
 	}
 }

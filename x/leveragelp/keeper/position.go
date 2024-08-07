@@ -90,6 +90,20 @@ func (k Keeper) GetPositionCount(ctx sdk.Context) uint64 {
 	return count
 }
 
+func (k Keeper) SetTraversalKey(ctx sdk.Context, key []byte) {
+	store := ctx.KVStore(k.storeKey)
+	store.Set(types.TraversalKeyPrefix, key)
+}
+
+func (k Keeper) GetTraversalKey(ctx sdk.Context) []byte {
+	return ctx.KVStore(k.storeKey).Get(types.TraversalKeyPrefix)
+}
+
+func (k Keeper) DeleteTraversalKey(ctx sdk.Context) {
+	store := ctx.KVStore(k.storeKey)
+	store.Delete(types.TraversalKeyPrefix)
+}
+
 func (k Keeper) GetOpenPositionCount(ctx sdk.Context) uint64 {
 	var count uint64
 	countBz := ctx.KVStore(k.storeKey).Get(types.OpenPositionCountPrefix)
