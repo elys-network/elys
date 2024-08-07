@@ -351,6 +351,8 @@ func (k Keeper) GetMembershipTier(ctx sdk.Context, user string) (total_portfoili
 		totalPort, found := k.GetPortfolio(ctx, user, d.Format("2006-01-02"))
 		if found && totalPort.LT(minTotal) {
 			minTotal = totalPort
+		} else if !found {
+			minTotal = sdk.NewDec(0)
 		}
 	}
 
