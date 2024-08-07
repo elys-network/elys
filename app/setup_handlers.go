@@ -23,7 +23,7 @@ func setUpgradeHandler(app *ElysApp) {
 		func(ctx sdk.Context, plan upgradetypes.Plan, vm m.VersionMap) (m.VersionMap, error) {
 			app.Logger().Info("Running upgrade handler for " + version.Version)
 
-			if version.Version == "v0.41.0" || version.Version == "v999.999.999" {
+			if version.Version == "v0.41.1" || version.Version == "v999.999.999" {
 
 				app.Logger().Info("Deleting proposals with ID < 258")
 				store := ctx.KVStore(app.keys[govtypes.StoreKey])
