@@ -30,7 +30,7 @@ func (k Keeper) BeginBlocker(ctx sdk.Context) {
 		if err != nil {
 			ctx.Logger().Error(errors.Wrap(err, fmt.Sprintf("error fetching paginated positions")).Error())
 		}
-		if offset+uint64(params.NumberPerBlock) > pageRes.GetTotal() {
+		if offset+uint64(params.NumberPerBlock) >= pageRes.GetTotal() {
 			k.DeleteOffset(ctx)
 		} else {
 			k.SetOffset(ctx, offset+uint64(params.NumberPerBlock))

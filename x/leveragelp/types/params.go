@@ -80,6 +80,12 @@ func (p Params) Validate() error {
 	if err := validateWhitelistingEnabled(p.WhitelistingEnabled); err != nil {
 		return err
 	}
+	if err := validateNumberOfBlocks(p.NumberPerBlock); err != nil {
+		return err
+	}
+	if err := validateFallbackEnabled(p.FallbackEnabled); err != nil {
+		return err
+	}
 	return nil
 }
 
@@ -175,6 +181,28 @@ func validatePoolOpenThreshold(i interface{}) error {
 	}
 	if v.IsNegative() {
 		return fmt.Errorf("pool open threshold must be positive: %s", v)
+	}
+
+	return nil
+}
+
+func validateNumberOfBlocks(i interface{}) error {
+	v, ok := i.(int64)
+	if !ok {
+		return fmt.Errorf("invalid parameter type: %T", i)
+	}
+
+	if v > MaxPageLimit {
+		return fmt.Errorf("number of positions per block should not exceed page limit: %d, number of positions: %d", MaxPageLimit, v)
+	}
+
+	return nil
+}
+
+func validateFallbackEnabled(i interface{}) error {
+	_, ok := i.(bool)
+	if !ok {
+		return fmt.Errorf("invalid parameter type: %T", i)
 	}
 
 	return nil
