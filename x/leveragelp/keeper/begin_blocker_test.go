@@ -21,7 +21,7 @@ func (suite KeeperTestSuite) TestBeginBlocker() {
 
 	suite.ctx = suite.ctx.WithBlockTime(suite.ctx.BlockTime().Add(time.Hour * 24 * 500))
 	suite.app.StablestakeKeeper.BeginBlocker(suite.ctx)
-	suite.app.StablestakeKeeper.UpdateInterestStackedByAddress(suite.ctx, sdk.AccAddress(position.GetPositionAddress()))
+	suite.app.StablestakeKeeper.GetDebtWithUpdatedInterestStacked(suite.ctx, sdk.AccAddress(position.GetPositionAddress()))
 	health, err = k.GetPositionHealth(suite.ctx, *position)
 	suite.Require().NoError(err)
 	// suite.Require().Equal(health.String(), "1.024543738200125865") // slippage enabled on amm
@@ -48,7 +48,7 @@ func (suite KeeperTestSuite) TestLiquidatePositionIfUnhealthy() {
 
 	suite.ctx = suite.ctx.WithBlockTime(suite.ctx.BlockTime().Add(time.Hour * 24 * 500))
 	suite.app.StablestakeKeeper.BeginBlocker(suite.ctx)
-	suite.app.StablestakeKeeper.UpdateInterestStackedByAddress(suite.ctx, sdk.AccAddress(position.GetPositionAddress()))
+	suite.app.StablestakeKeeper.GetDebtWithUpdatedInterestStacked(suite.ctx, sdk.AccAddress(position.GetPositionAddress()))
 	health, err = k.GetPositionHealth(suite.ctx, *position)
 	suite.Require().NoError(err)
 	// suite.Require().Equal(health.String(), "1.024543738200125865") // slippage enabled on amm

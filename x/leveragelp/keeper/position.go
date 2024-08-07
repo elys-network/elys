@@ -146,8 +146,8 @@ func (k Keeper) GetPositions(ctx sdk.Context, pagination *query.PageRequest) ([]
 		var position types.Position
 		err := k.cdc.Unmarshal(value, &position)
 		if err == nil {
-			debt := k.stableKeeper.GetDebt(ctx, position.GetPositionAddress())
-			position.Liabilities = k.stableKeeper.GetInterest(ctx, debt.LastInterestCalcBlock, debt.LastInterestCalcTime, debt.Borrowed.ToLegacyDec())
+			debt := k.stableKeeper.GetDebtWithUpdatedInterestStacked(ctx, position.GetPositionAddress())
+			position.Liabilities = debt.GetTotalLiablities()
 			positionList = append(positionList, &position)
 		}
 		return nil
@@ -214,8 +214,8 @@ func (k Keeper) GetPositionsForAddress(ctx sdk.Context, positionAddress sdk.Addr
 		interestRateHour := params.InterestRate.Quo(hours)
 		positionAndInterest.InterestRateHour = interestRateHour
 		positionAndInterest.InterestRateHourUsd = interestRateHour.Mul(cosmosMath.LegacyDec(p.Liabilities.Mul(price.RoundInt())))
-		debt := k.stableKeeper.UpdateInterestStackedByAddress(ctx, positionAndInterest.Position.GetPositionAddress())
-		positionAndInterest.Position.Liabilities = debt.Borrowed.Add(debt.InterestStacked).Sub(debt.InterestPaid)
+		debt := k.stableKeeper.GetDebtWithUpdatedInterestStacked(ctx, positionAndInterest.Position.GetPositionAddress())
+		positionAndInterest.Position.Liabilities = debt.GetTotalLiablities()
 		positions = append(positions, &positionAndInterest)
 		return nil
 	})
@@ -227,8 +227,8 @@ func (k Keeper) GetPositionsForAddress(ctx sdk.Context, positionAddress sdk.Addr
 }
 
 func (k Keeper) GetPositionHealth(ctx sdk.Context, position types.Position) (sdk.Dec, error) {
-	debt := k.stableKeeper.GetDebt(ctx, position.GetPositionAddress())
-	debtAmount := debt.Borrowed.Add(debt.InterestStacked).Sub(debt.InterestPaid)
+	debt := k.stableKeeper.GetDebtWithUpdatedInterestStacked(ctx, position.GetPositionAddress())
+	debtAmount := debt.GetTotalLiablities()
 	if debtAmount.IsZero() {
 		return sdk.ZeroDec(), nil
 	}
