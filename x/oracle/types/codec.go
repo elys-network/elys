@@ -17,7 +17,6 @@ func RegisterCodec(cdc *codec.LegacyAmino) {
 	legacy.RegisterAminoMsg(cdc, &MsgSetPriceFeeder{}, "oracle/MsgSetPriceFeeder")
 	legacy.RegisterAminoMsg(cdc, &MsgDeletePriceFeeder{}, "oracle/MsgDeletePriceFeeder")
 	legacy.RegisterAminoMsg(cdc, &MsgFeedMultiplePrices{}, "oracle/MsgFeedMultiplePrices")
-	legacy.RegisterAminoMsg(cdc, &MsgAddAssetInfo{}, "oracle/MsgAddAssetInfo")
 	legacy.RegisterAminoMsg(cdc, &MsgRemoveAssetInfo{}, "oracle/MsgRemoveAssetInfo")
 	legacy.RegisterAminoMsg(cdc, &MsgAddPriceFeeders{}, "oracle/MsgAddPriceFeeders")
 	legacy.RegisterAminoMsg(cdc, &MsgRemovePriceFeeders{}, "oracle/MsgRemovePriceFeeders")
@@ -32,7 +31,6 @@ func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 		&MsgSetPriceFeeder{},
 		&MsgDeletePriceFeeder{},
 		&MsgFeedMultiplePrices{},
-		&MsgAddAssetInfo{},
 		&MsgRemoveAssetInfo{},
 		&MsgAddPriceFeeders{},
 		&MsgRemovePriceFeeders{},

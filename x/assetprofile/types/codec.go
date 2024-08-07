@@ -13,7 +13,6 @@ import (
 )
 
 func RegisterCodec(cdc *codec.LegacyAmino) {
-	legacy.RegisterAminoMsg(cdc, &MsgCreateEntry{}, "assetprofile/MsgCreateEntry")
 	legacy.RegisterAminoMsg(cdc, &MsgUpdateEntry{}, "assetprofile/MsgUpdateEntry")
 	legacy.RegisterAminoMsg(cdc, &MsgDeleteEntry{}, "assetprofile/MsgDeleteEntry")
 	legacy.RegisterAminoMsg(cdc, &MsgAddEntry{}, "assetprofile/AddEntry")
@@ -22,7 +21,6 @@ func RegisterCodec(cdc *codec.LegacyAmino) {
 
 func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 	registry.RegisterImplementations((*sdk.Msg)(nil),
-		&MsgCreateEntry{},
 		&MsgUpdateEntry{},
 		&MsgDeleteEntry{},
 	)
