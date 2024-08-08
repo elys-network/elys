@@ -54,7 +54,11 @@ func GetUint64FromBytes(bz []byte) uint64 {
 	return binary.BigEndian.Uint64(bz)
 }
 
-func GetWhitelistKey(address string) []byte {
+func GetWhitelistKey(acc sdk.AccAddress) []byte {
+	return append(WhitelistPrefix, address.MustLengthPrefix(acc)...)
+}
+
+func GetLegacyWhitelistKey(address string) []byte {
 	return append(WhitelistPrefix, []byte(address)...)
 }
 

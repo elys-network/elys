@@ -80,7 +80,7 @@ func (k Keeper) SetPosition(ctx sdk.Context, position *types.Position, oldDebt s
 	store.Set(key, k.cdc.MustMarshal(position))
 
 	// for stablestake hook
-	store.Set([]byte(position.GetPositionAddress()), key)
+	store.Set(position.GetPositionAddress(), key)
 
 	// Add position sort keys
 	addrId := types.AddressId{
@@ -170,7 +170,7 @@ func (k Keeper) SetSortedLiquidationAndStopLoss(ctx sdk.Context, position types.
 	store := ctx.KVStore(k.storeKey)
 	key := types.GetPositionKey(position.GetCreatorAddress(), position.Id)
 	// for stablestake hook
-	store.Set([]byte(position.GetPositionAddress()), key)
+	store.Set(position.GetPositionAddress(), key)
 
 	// Add position sort keys
 	addrId := types.AddressId{
