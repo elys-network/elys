@@ -302,7 +302,7 @@ func (k Keeper) DeleteCorruptedKeys(ctx sdk.Context) {
 		var position types.Position
 		bytesValue := iterator.Value()
 		err := k.cdc.Unmarshal(bytesValue, &position)
-		if err != nil {
+		if err != nil || position.Id == 0 {
 			store.Delete(iterator.Key())
 		}
 	}

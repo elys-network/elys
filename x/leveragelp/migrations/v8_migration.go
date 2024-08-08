@@ -49,7 +49,7 @@ func (m Migrator) V8Migration(ctx sdk.Context) error {
 		SafetyFactor:        legacy.SafetyFactor,
 		WhitelistingEnabled: legacy.WhitelistingEnabled,
 		FallbackEnabled:     false,
-		NumberPerBlock:      10000,
+		NumberPerBlock:      100,
 	}
 	m.keeper.SetParams(ctx, &params)
 	return nil
