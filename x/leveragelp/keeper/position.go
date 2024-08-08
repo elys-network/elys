@@ -154,7 +154,8 @@ func (k Keeper) GetPositions(ctx sdk.Context, pagination *query.PageRequest) ([]
 
 	if pagination == nil {
 		pagination = &query.PageRequest{
-			Limit: types.MaxPageLimit,
+			Limit:      types.MaxPageLimit,
+			CountTotal: true,
 		}
 	}
 

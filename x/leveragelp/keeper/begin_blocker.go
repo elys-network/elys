@@ -20,17 +20,16 @@ func (k Keeper) BeginBlocker(ctx sdk.Context) {
 
 	if epochPosition == 0 && params.FallbackEnabled { // if epoch has passed
 		pageReq := &query.PageRequest{
-			Limit: uint64(params.NumberPerBlock),
+			Limit:      uint64(params.NumberPerBlock),
+			CountTotal: true,
 		}
-		offset, found := k.GetOffset(ctx)
-		if found {
-			pageReq.Offset = offset
-		}
-		positions, pageRes, err := k.GetPositions(ctx, pageReq)
+		offset, _ := k.GetOffset(ctx)
+		pageReq.Offset = offset
+		positions, _, err := k.GetPositions(ctx, pageReq)
 		if err != nil {
 			ctx.Logger().Error(errors.Wrap(err, fmt.Sprintf("error fetching paginated positions")).Error())
 		}
-		if offset+uint64(params.NumberPerBlock) >= pageRes.GetTotal() {
+		if offset+uint64(params.NumberPerBlock) >= k.GetOpenPositionCount(ctx) {
 			k.DeleteOffset(ctx)
 		} else {
 			k.SetOffset(ctx, offset+uint64(params.NumberPerBlock))

@@ -25,6 +25,9 @@ func (k Keeper) OpenLong(ctx sdk.Context, msg *types.MsgOpen) (*types.Position, 
 	position.StopLossPrice = msg.StopLossPrice
 	k.SetPositionCount(ctx, position.Id)
 
+	openCount := k.GetOpenPositionCount(ctx)
+	k.SetOpenPositionCount(ctx, openCount+1)
+
 	// Call the function to process the open long logic.
 	return k.ProcessOpenLong(ctx, position, leverage, collateralAmountDec, msg.AmmPoolId, msg)
 }
