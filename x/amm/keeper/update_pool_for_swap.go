@@ -1,8 +1,6 @@
 package keeper
 
 import (
-	"fmt"
-
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/amm/types"
@@ -57,7 +55,6 @@ func (k Keeper) UpdatePoolForSwap(
 
 	// Send coins to recipient
 	err = k.bankKeeper.SendCoins(ctx, poolAddr, recipient, sdk.Coins{tokenOut})
-	fmt.Print("err: ", err)
 	if err != nil {
 		return sdk.ZeroInt(), err
 	}
@@ -100,7 +97,10 @@ func (k Keeper) UpdatePoolForSwap(
 
 	types.EmitSwapEvent(ctx, sender, recipient, pool.GetPoolId(), tokensIn, tokensOut)
 	if k.hooks != nil {
-		k.hooks.AfterSwap(ctx, sender, pool, tokensIn, tokensOut)
+		err = k.hooks.AfterSwap(ctx, sender, pool, tokensIn, tokensOut)
+		if err != nil {
+			return math.ZeroInt(), err
+		}
 	}
 	k.RecordTotalLiquidityIncrease(ctx, tokensIn)
 	k.RecordTotalLiquidityDecrease(ctx, tokensOut)
