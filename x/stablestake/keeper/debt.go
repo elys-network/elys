@@ -7,7 +7,7 @@ import (
 	"github.com/elys-network/elys/x/stablestake/types"
 )
 
-func (k Keeper) getDebtWithoutUpdatedInterestStacked(ctx sdk.Context, addr sdk.AccAddress) types.Debt {
+func (k Keeper) GetDebtWithoutUpdatedInterestStacked(ctx sdk.Context, addr sdk.AccAddress) types.Debt {
 	debt := types.Debt{}
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.DebtPrefixKey)
 	bz := store.Get([]byte(addr.String()))
@@ -28,7 +28,7 @@ func (k Keeper) getDebtWithoutUpdatedInterestStacked(ctx sdk.Context, addr sdk.A
 }
 
 func (k Keeper) GetDebtWithUpdatedInterestStacked(ctx sdk.Context, addr sdk.AccAddress) types.Debt {
-	debt := k.getDebtWithoutUpdatedInterestStacked(ctx, addr)
+	debt := k.GetDebtWithoutUpdatedInterestStacked(ctx, addr)
 	debt = k.UpdateInterestStacked(ctx, debt)
 	return debt
 }

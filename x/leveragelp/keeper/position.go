@@ -154,8 +154,7 @@ func (k Keeper) GetPositions(ctx sdk.Context, pagination *query.PageRequest) ([]
 
 	if pagination == nil {
 		pagination = &query.PageRequest{
-			Limit:      types.MaxPageLimit,
-			CountTotal: true,
+			Limit: types.MaxPageLimit,
 		}
 	}
 
@@ -167,8 +166,8 @@ func (k Keeper) GetPositions(ctx sdk.Context, pagination *query.PageRequest) ([]
 		var position types.Position
 		err := k.cdc.Unmarshal(value, &position)
 		if err == nil {
-			debt := k.stableKeeper.GetDebtWithUpdatedInterestStacked(ctx, position.GetPositionAddress())
-			position.Liabilities = debt.GetTotalLiablities()
+			debt := k.stableKeeper.GetDebtWithoutUpdatedInterestStacked(ctx, position.GetPositionAddress())
+			position.Liabilities = debt.GetTotalLiablities().Add(k.stableKeeper.GetInterest(ctx, debt.LastInterestCalcBlock, debt.LastInterestCalcTime, debt.Borrowed.ToLegacyDec()))
 			positionList = append(positionList, &position)
 		}
 		return nil
@@ -235,8 +234,8 @@ func (k Keeper) GetPositionsForAddress(ctx sdk.Context, positionAddress sdk.Addr
 		interestRateHour := params.InterestRate.Quo(hours)
 		positionAndInterest.InterestRateHour = interestRateHour
 		positionAndInterest.InterestRateHourUsd = interestRateHour.Mul(cosmosMath.LegacyDec(p.Liabilities.Mul(price.RoundInt())))
-		debt := k.stableKeeper.GetDebtWithUpdatedInterestStacked(ctx, positionAndInterest.Position.GetPositionAddress())
-		positionAndInterest.Position.Liabilities = debt.GetTotalLiablities()
+		debt := k.stableKeeper.GetDebtWithoutUpdatedInterestStacked(ctx, positionAndInterest.Position.GetPositionAddress())
+		positionAndInterest.Position.Liabilities = debt.GetTotalLiablities().Add(k.stableKeeper.GetInterest(ctx, debt.LastInterestCalcBlock, debt.LastInterestCalcTime, debt.Borrowed.ToLegacyDec()))
 		positions = append(positions, &positionAndInterest)
 		return nil
 	})
