@@ -31,8 +31,8 @@ func (k Keeper) BeginBlocker(ctx sdk.Context) {
 				// - `Health = PositionValue / liability`, PositionValue is based on LpToken price change
 				// - Debt growth speed is relying on liability.
 				// - Things are sorted by `LeveragedLpAmount / liability` per pool to liquidate efficiently
-				k.IteratePoolPosIdsLiquidationSorted(ctx, pool.AmmPoolId, func(posId types.AddressId) bool {
-					position, err := k.GetPosition(ctx, posId.Address, posId.Id)
+				k.IteratePoolPosIdsLiquidationSorted(ctx, pool.AmmPoolId, func(addressId types.AddressId) bool {
+					position, err := k.GetPosition(ctx, addressId.GetPositionCreatorAddress(), addressId.Id)
 					if err != nil {
 						return false
 					}
@@ -44,8 +44,8 @@ func (k Keeper) BeginBlocker(ctx sdk.Context) {
 				})
 
 				// Close stopLossPrice reached positions
-				k.IteratePoolPosIdsStopLossSorted(ctx, pool.AmmPoolId, func(posId types.AddressId) bool {
-					position, err := k.GetPosition(ctx, posId.Address, posId.Id)
+				k.IteratePoolPosIdsStopLossSorted(ctx, pool.AmmPoolId, func(addressId types.AddressId) bool {
+					position, err := k.GetPosition(ctx, addressId.GetPositionCreatorAddress(), addressId.Id)
 					if err != nil {
 						return false
 					}

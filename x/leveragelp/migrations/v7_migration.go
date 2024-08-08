@@ -34,7 +34,7 @@ func (m Migrator) V7Migration(ctx sdk.Context) error {
 			continue
 		}
 		m.keeper.IteratePoolPosIdsLiquidationSorted(ctx, pool.AmmPoolId, func(posId types.AddressId) bool {
-			position, err := m.keeper.GetPosition(ctx, posId.Address, posId.Id)
+			position, err := m.keeper.GetLegacyPosition(ctx, posId.Address, posId.Id)
 			if err != nil {
 				return false
 			}
@@ -47,7 +47,7 @@ func (m Migrator) V7Migration(ctx sdk.Context) error {
 
 		// Close stopLossPrice reached positions
 		m.keeper.IteratePoolPosIdsStopLossSorted(ctx, pool.AmmPoolId, func(posId types.AddressId) bool {
-			position, err := m.keeper.GetPosition(ctx, posId.Address, posId.Id)
+			position, err := m.keeper.GetLegacyPosition(ctx, posId.Address, posId.Id)
 			if err != nil {
 				return false
 			}

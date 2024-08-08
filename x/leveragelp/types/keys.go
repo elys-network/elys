@@ -5,6 +5,8 @@ import (
 	"strconv"
 
 	"cosmossdk.io/math"
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/types/address"
 )
 
 const (
@@ -56,8 +58,16 @@ func GetWhitelistKey(address string) []byte {
 	return append(WhitelistPrefix, []byte(address)...)
 }
 
-func GetPositionKey(address string, id uint64) []byte {
+func GetPositionKey(creator sdk.AccAddress, id uint64) []byte {
+	return append(PositionPrefix, append(address.MustLengthPrefix(creator), GetUint64Bytes(id)...)...)
+}
+
+func GetLegacyPositionKey(address string, id uint64) []byte {
 	return append(PositionPrefix, append([]byte(address), GetUint64Bytes(id)...)...)
+}
+
+func GetPositionPrefixForAddress(creator sdk.AccAddress) []byte {
+	return append(PositionPrefix, address.MustLengthPrefix(creator)...)
 }
 
 func GetLiquidationSortPrefix(poolId uint64) []byte {
@@ -113,8 +123,4 @@ func GetStopLossSortKey(poolId uint64, stopLossPrice math.LegacyDec, id uint64) 
 	lengthPrefix := GetUint64Bytes(uint64(len(bytes)))
 	posIdSuffix := GetUint64Bytes(id)
 	return append(append(append(poolIdPrefix, lengthPrefix...), bytes...), posIdSuffix...)
-}
-
-func GetPositionPrefixForAddress(address string) []byte {
-	return append(PositionPrefix, []byte(address)...)
 }

@@ -36,7 +36,7 @@ func (suite KeeperTestSuite) TestBeginBlocker() {
 	params.SafetyFactor = sdk.NewDecWithPrec(11, 1)
 	k.SetParams(suite.ctx, &params)
 	k.BeginBlocker(suite.ctx)
-	_, err = k.GetPosition(suite.ctx, position.Address, position.Id)
+	_, err = k.GetPosition(suite.ctx, position.GetCreatorAddress(), position.Id)
 	suite.Require().Error(err)
 }
 
@@ -66,7 +66,7 @@ func (suite KeeperTestSuite) TestLiquidatePositionIfUnhealthy() {
 	isHealthy, earlyReturn := k.LiquidatePositionIfUnhealthy(cacheCtx, position, pool, ammPool)
 	suite.Require().False(isHealthy)
 	suite.Require().False(earlyReturn)
-	_, err = k.GetPosition(cacheCtx, position.Address, position.Id)
+	_, err = k.GetPosition(cacheCtx, position.GetCreatorAddress(), position.Id)
 	suite.Require().Error(err)
 
 	cacheCtx, _ = suite.ctx.CacheContext()
@@ -75,7 +75,7 @@ func (suite KeeperTestSuite) TestLiquidatePositionIfUnhealthy() {
 	underStopLossPrice, earlyReturn := k.ClosePositionIfUnderStopLossPrice(cacheCtx, position, pool, ammPool)
 	suite.Require().True(underStopLossPrice)
 	suite.Require().False(earlyReturn)
-	_, err = k.GetPosition(cacheCtx, position.Address, position.Id)
+	_, err = k.GetPosition(cacheCtx, position.GetCreatorAddress(), position.Id)
 	suite.Require().Error(err)
 }
 
@@ -157,9 +157,9 @@ func (suite KeeperTestSuite) TestLiquidatePositionSorted() {
 
 	// Check order in list
 	suite.app.LeveragelpKeeper.IteratePoolPosIdsLiquidationSorted(suite.ctx, position.AmmPoolId, func(posId types.AddressId) bool {
-		position, _ := k.GetPosition(suite.ctx, posId.Address, posId.Id)
+		position, _ := k.GetPosition(suite.ctx, posId.GetPositionCreatorAddress(), posId.Id)
 		health, _ := k.GetPositionHealth(suite.ctx, position)
-		fmt.Printf("Address: %s, Id: %d, value: %s\n", position.Address, position.Id, health.String())
+		fmt.Printf("Address: %s, Id: %d, value: %s\n", position.GetCreatorAddress(), position.Id, health.String())
 		return false
 	})
 
@@ -168,9 +168,9 @@ func (suite KeeperTestSuite) TestLiquidatePositionSorted() {
 
 	// Check order in list
 	suite.app.LeveragelpKeeper.IteratePoolPosIdsLiquidationSorted(suite.ctx, position.AmmPoolId, func(posId types.AddressId) bool {
-		position, _ := k.GetPosition(suite.ctx, posId.Address, posId.Id)
+		position, _ := k.GetPosition(suite.ctx, posId.GetPositionCreatorAddress(), posId.Id)
 		health, _ := k.GetPositionHealth(suite.ctx, position)
-		fmt.Printf("Address: %s, Id: %d, value: %s\n", position.Address, position.Id, health.String())
+		fmt.Printf("Address: %s, Id: %d, value: %s\n", position.GetCreatorAddress(), position.Id, health.String())
 		return false
 	})
 
@@ -186,9 +186,9 @@ func (suite KeeperTestSuite) TestLiquidatePositionSorted() {
 
 	// Check order in list
 	suite.app.LeveragelpKeeper.IteratePoolPosIdsLiquidationSorted(suite.ctx, position.AmmPoolId, func(posId types.AddressId) bool {
-		position, _ := k.GetPosition(suite.ctx, posId.Address, posId.Id)
+		position, _ := k.GetPosition(suite.ctx, posId.GetPositionCreatorAddress(), posId.Id)
 		health, _ := k.GetPositionHealth(suite.ctx, position)
-		fmt.Printf("Address: %s, Id: %d, value: %s\n", position.Address, position.Id, health.String())
+		fmt.Printf("Address: %s, Id: %d, value: %s\n", position.GetCreatorAddress(), position.Id, health.String())
 		return false
 	})
 
@@ -207,9 +207,9 @@ func (suite KeeperTestSuite) TestLiquidatePositionSorted() {
 
 	// Check order in list
 	suite.app.LeveragelpKeeper.IteratePoolPosIdsLiquidationSorted(suite.ctx, position.AmmPoolId, func(posId types.AddressId) bool {
-		position, _ := k.GetPosition(suite.ctx, posId.Address, posId.Id)
+		position, _ := k.GetPosition(suite.ctx, posId.GetPositionCreatorAddress(), posId.Id)
 		health, _ := k.GetPositionHealth(suite.ctx, position)
-		fmt.Printf("Address: %s, Id: %d, value: %s\n", position.Address, position.Id, health.String())
+		fmt.Printf("Address: %s, Id: %d, value: %s\n", position.GetCreatorAddress(), position.Id, health.String())
 		return false
 	})
 }

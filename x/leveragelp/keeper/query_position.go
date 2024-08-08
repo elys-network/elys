@@ -16,8 +16,8 @@ func (k Keeper) Position(goCtx context.Context, req *types.PositionRequest) (*ty
 	}
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
-
-	position, err := k.GetPosition(ctx, req.Address, req.Id)
+	creator := sdk.MustAccAddressFromBech32(req.Address)
+	position, err := k.GetPosition(ctx, creator, req.Id)
 	if err != nil {
 		return nil, err
 	}
@@ -38,7 +38,8 @@ func (k Keeper) LiquidationPrice(goCtx context.Context, req *types.QueryLiquidat
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	position, err := k.GetPosition(ctx, req.Address, req.PositionId)
+	creator := sdk.MustAccAddressFromBech32(req.Address)
+	position, err := k.GetPosition(ctx, creator, req.PositionId)
 	if err != nil {
 		return nil, err
 	}
