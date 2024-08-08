@@ -164,12 +164,10 @@ func (k Keeper) GetPositions(ctx sdk.Context, pagination *query.PageRequest) ([]
 
 	pageRes, err := query.Paginate(positionStore, pagination, func(key []byte, value []byte) error {
 		var position types.Position
-		err := k.cdc.Unmarshal(value, &position)
-		if err == nil {
-			debt := k.stableKeeper.GetDebtWithoutUpdatedInterestStacked(ctx, position.GetPositionAddress())
-			position.Liabilities = debt.GetTotalLiablities().Add(k.stableKeeper.GetInterest(ctx, debt.LastInterestCalcBlock, debt.LastInterestCalcTime, debt.Borrowed.ToLegacyDec()))
-			positionList = append(positionList, &position)
-		}
+		k.cdc.Unmarshal(value, &position)
+		debt := k.stableKeeper.GetDebtWithoutUpdatedInterestStacked(ctx, position.GetPositionAddress())
+		position.Liabilities = debt.GetTotalLiablities().Add(k.stableKeeper.GetInterest(ctx, debt.LastInterestCalcBlock, debt.LastInterestCalcTime, debt.Borrowed.ToLegacyDec()))
+		positionList = append(positionList, &position)
 		return nil
 	})
 
