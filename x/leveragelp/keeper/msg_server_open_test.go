@@ -379,6 +379,25 @@ func (suite *KeeperTestSuite) TestOpen_PoolWithoutBaseCurrencyAsset() {
 			func() {
 			},
 		},
+		{"Open Position",
+			&types.MsgOpen{
+				Creator:          addresses[0].String(),
+				CollateralAsset:  ptypes.BaseCurrency,
+				CollateralAmount: sdk.NewInt(10_000_000),
+				AmmPoolId:        1,
+				Leverage:         sdk.MustNewDecFromStr("2.0"),
+				StopLossPrice:    sdk.MustNewDecFromStr("50.0"),
+			},
+			true,
+			"can't find the PoolAsset",
+			func() {
+				suite.ResetSuite()
+				SetupCoinPrices(suite.ctx, suite.app.OracleKeeper)
+				initializeForOpen(suite, addresses, asset1, asset2)
+				suite.SetSafetyFactor(sdk.MustNewDecFromStr("1.1"))
+				suite.SetPoolThreshold(sdk.MustNewDecFromStr("0.2"))
+			},
+		},
 	}
 
 	for _, tc := range testCases {

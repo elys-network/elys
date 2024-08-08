@@ -49,7 +49,7 @@ func initializeForClose(suite *KeeperTestSuite, addresses []sdk.AccAddress, asse
 				Weight: sdk.NewInt(50),
 			},
 			{
-				Token:  sdk.NewInt64Coin(asset2, 1000_000_000),
+				Token:  sdk.NewInt64Coin(asset2, 100_000_000),
 				Weight: sdk.NewInt(50),
 			},
 		},
@@ -82,6 +82,9 @@ func (suite *KeeperTestSuite) TestClose() {
 	asset1 := ptypes.ATOM
 	asset2 := ptypes.BaseCurrency
 	initializeForClose(suite, addresses, asset1, asset2)
+	leverage := sdk.MustNewDecFromStr("2.0")
+	collateralAmount := sdk.NewInt(10000000)
+	leverageLPShares := sdk.MustNewDecFromStr("20000095238095238100").TruncateInt()
 	testCases := []struct {
 		name                 string
 		input                *types.MsgClose
@@ -112,15 +115,148 @@ func (suite *KeeperTestSuite) TestClose() {
 				msg := types.MsgOpen{
 					Creator:          addresses[0].String(),
 					CollateralAsset:  ptypes.BaseCurrency,
-					CollateralAmount: sdk.NewInt(10000000),
+					CollateralAmount: collateralAmount,
 					AmmPoolId:        1,
-					Leverage:         sdk.MustNewDecFromStr("2.0"),
+					Leverage:         leverage,
 					StopLossPrice:    sdk.MustNewDecFromStr("50.0"),
 				}
 				_, err := suite.app.LeveragelpKeeper.Open(suite.ctx, &msg)
 				if err != nil {
 					panic(err)
 				}
+			},
+		},
+		{"Repay amount is greater than exit amount",
+			&types.MsgClose{
+				Creator:  addresses[0].String(),
+				Id:       1,
+				LpAmount: leverageLPShares.QuoRaw(2),
+			},
+			false,
+			"",
+			func() {
+				msg := types.MsgOpen{
+					Creator:          addresses[0].String(),
+					CollateralAsset:  ptypes.BaseCurrency,
+					CollateralAmount: collateralAmount,
+					AmmPoolId:        1,
+					Leverage:         leverage,
+					StopLossPrice:    sdk.MustNewDecFromStr("50.0"),
+				}
+				_, err := suite.app.LeveragelpKeeper.Open(suite.ctx, &msg)
+				if err != nil {
+					panic(err)
+				}
+				suite.AddBlockTime(1000000 * time.Hour)
+			},
+		},
+		{"Invalid Leverage LP shares amount to close",
+			&types.MsgClose{
+				Creator:  addresses[0].String(),
+				Id:       1,
+				LpAmount: leverageLPShares.MulRaw(2),
+			},
+			true,
+			types.ErrInvalidCloseSize.Error(),
+			func() {
+				suite.ResetSuite()
+				SetupCoinPrices(suite.ctx, suite.app.OracleKeeper)
+				initializeForClose(suite, addresses, asset1, asset2)
+				msg := types.MsgOpen{
+					Creator:          addresses[0].String(),
+					CollateralAsset:  ptypes.BaseCurrency,
+					CollateralAmount: collateralAmount,
+					AmmPoolId:        1,
+					Leverage:         leverage,
+					StopLossPrice:    sdk.MustNewDecFromStr("50.0"),
+				}
+				_, err := suite.app.LeveragelpKeeper.Open(suite.ctx, &msg)
+				if err != nil {
+					panic(err)
+				}
+				suite.AddBlockTime(time.Hour)
+			},
+		},
+		{"Position Health is lower than safety factor and closing partially, should close fully",
+			&types.MsgClose{
+				Creator:  addresses[0].String(),
+				Id:       1,
+				LpAmount: leverageLPShares.QuoRaw(2000000),
+			},
+			false,
+			"",
+			func() {
+				suite.ResetSuite()
+				SetupCoinPrices(suite.ctx, suite.app.OracleKeeper)
+				initializeForClose(suite, addresses, asset1, asset2)
+				msg := types.MsgOpen{
+					Creator:          addresses[0].String(),
+					CollateralAsset:  ptypes.BaseCurrency,
+					CollateralAmount: collateralAmount,
+					AmmPoolId:        1,
+					Leverage:         leverage,
+					StopLossPrice:    sdk.MustNewDecFromStr("50.0"),
+				}
+				_, err := suite.app.LeveragelpKeeper.Open(suite.ctx, &msg)
+				if err != nil {
+					panic(err)
+				}
+				suite.AddBlockTime(1000000 * time.Hour)
+			},
+		},
+		//{"Position LP amount is 0",
+		//	&types.MsgClose{
+		//		Creator:  addresses[0].String(),
+		//		Id:       1,
+		//		LpAmount: leverageLPShares.QuoRaw(2000000),
+		//	},
+		//	false,
+		//	"",
+		//	func() {
+		//		suite.ResetSuite()
+		//		SetupCoinPrices(suite.ctx, suite.app.OracleKeeper)
+		//		initializeForClose(suite, addresses, asset1, asset2)
+		//		msg := types.MsgOpen{
+		//			Creator:          addresses[0].String(),
+		//			CollateralAsset:  ptypes.BaseCurrency,
+		//			CollateralAmount: collateralAmount,
+		//			AmmPoolId:        1,
+		//			Leverage:         leverage,
+		//			StopLossPrice:    sdk.MustNewDecFromStr("50.0"),
+		//		}
+		//		_, err := suite.app.LeveragelpKeeper.Open(suite.ctx, &msg)
+		//		if err != nil {
+		//			panic(err)
+		//		}
+		//		//position := suite.app.LeveragelpKeeper.GetPosition(suite.ctx, .String())
+		//		suite.AddBlockTime(1000000 * time.Hour)
+		//	},
+		//},
+		{"Closing partial position",
+			&types.MsgClose{
+				Creator:  addresses[0].String(),
+				Id:       1,
+				LpAmount: leverageLPShares.QuoRaw(2),
+			},
+			false,
+			"",
+			func() {
+				suite.ResetSuite()
+				SetupCoinPrices(suite.ctx, suite.app.OracleKeeper)
+				initializeForClose(suite, addresses, asset1, asset2)
+				msg := types.MsgOpen{
+					Creator:          addresses[0].String(),
+					CollateralAsset:  ptypes.BaseCurrency,
+					CollateralAmount: collateralAmount,
+					AmmPoolId:        1,
+					Leverage:         leverage,
+					StopLossPrice:    sdk.MustNewDecFromStr("50.0"),
+				}
+				_, err := suite.app.LeveragelpKeeper.Open(suite.ctx, &msg)
+				if err != nil {
+					panic(err)
+				}
+				suite.AddBlockTime(time.Hour)
 			},
 		},
 		{"Closing whole position",
@@ -132,43 +268,6 @@ func (suite *KeeperTestSuite) TestClose() {
 			false,
 			"",
 			func() {
-				msg := types.MsgOpen{
-					Creator:          addresses[0].String(),
-					CollateralAsset:  ptypes.BaseCurrency,
-					CollateralAmount: sdk.NewInt(10000000),
-					AmmPoolId:        1,
-					Leverage:         sdk.MustNewDecFromStr("2.0"),
-					StopLossPrice:    sdk.MustNewDecFromStr("50.0"),
-				}
-				_, err := suite.app.LeveragelpKeeper.Open(suite.ctx, &msg)
-				if err != nil {
-					panic(err)
-				}
-				suite.AddBlockTime(time.Hour)
-			},
-		},
-		{"Closing partial position",
-			&types.MsgClose{
-				Creator:  addresses[0].String(),
-				Id:       2,
-				LpAmount: sdk.MustNewDecFromStr("9997999787743811730").TruncateInt(),
-			},
-			false,
-			"",
-			func() {
-				msg := types.MsgOpen{
-					Creator:          addresses[0].String(),
-					CollateralAsset:  ptypes.BaseCurrency,
-					CollateralAmount: sdk.NewInt(10000000),
-					AmmPoolId:        1,
-					Leverage:         sdk.MustNewDecFromStr("2.0"),
-					StopLossPrice:    sdk.MustNewDecFromStr("50.0"),
-				}
-				_, err := suite.app.LeveragelpKeeper.Open(suite.ctx, &msg)
-				if err != nil {
-					panic(err)
-				}
-				suite.AddBlockTime(time.Hour)
 			},
 		},
 	}

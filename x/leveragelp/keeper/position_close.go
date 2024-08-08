@@ -106,9 +106,15 @@ func (k Keeper) CloseLong(ctx sdk.Context, msg *types.MsgClose) (*types.Position
 		return nil, sdk.ZeroInt(), errorsmod.Wrap(types.ErrInvalidBorrowingAsset, "invalid pool id")
 	}
 
-	// If lpAmount is lower than zero, close full amount
+	positionHealth, err := k.GetPositionHealth(ctx, position)
+	if err != nil {
+		return nil, sdk.ZeroInt(), err
+	}
+	safetyFactor := k.GetSafetyFactor(ctx)
+
+	// If lpAmount is lower than zero or position is unhealthy, close full amount
 	lpAmount := msg.LpAmount
-	if lpAmount.IsNil() || lpAmount.LTE(sdk.ZeroInt()) {
+	if lpAmount.IsNil() || lpAmount.LTE(sdk.ZeroInt()) || positionHealth.LTE(safetyFactor) {
 		lpAmount = position.LeveragedLpAmount
 	}
 
