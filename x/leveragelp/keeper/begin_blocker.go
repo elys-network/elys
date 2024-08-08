@@ -28,6 +28,7 @@ func (k Keeper) BeginBlocker(ctx sdk.Context) {
 		positions, _, err := k.GetPositions(ctx, pageReq)
 		if err != nil {
 			ctx.Logger().Error(errors.Wrap(err, fmt.Sprintf("error fetching paginated positions")).Error())
+			return
 		}
 		if offset+uint64(params.NumberPerBlock) >= k.GetOpenPositionCount(ctx) {
 			k.DeleteOffset(ctx)
