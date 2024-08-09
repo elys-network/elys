@@ -237,12 +237,19 @@ jobs:
 
       - name: Upload snapshot
         env:
-          R2_ACCESS_KEY: ${{ secrets.R2_ACCESS_KEY }}
-          R2_SECRET_KEY: ${{ secrets.R2_SECRET_KEY }}
-          R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
           R2_BUCKET_NAME: ${{ secrets.R2_BUCKET_NAME }}
+          RCLONE_CONFIG_R2_TYPE: s3
+          RCLONE_CONFIG_R2_PROVIDER: Cloudflare
+          RCLONE_CONFIG_R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY }}
+          RCLONE_CONFIG_R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_KEY }}
+          RCLONE_CONFIG_R2_REGION: enam
+          RCLONE_CONFIG_R2_ENDPOINT: ${{ secrets.R2_ENDPOINT }}
         run: |
-          ${POST_UPGRADE_SNAPSHOT_GENERATOR_PATH} upload-snapshot $NEW_SNAPSHOT_PATH
+          # install rclone
+          sudo -v ; curl https://rclone.org/install.sh | sudo bash
+
+          # copy snapshot to r2
+          rclone copy "${NEW_SNAPSHOT_PATH}" r2:${R2_BUCKET_NAME}/
 
       - name: Info about the snapshot
         run: |
