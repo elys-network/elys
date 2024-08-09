@@ -131,6 +131,7 @@ func (k Keeper) ProcessOpenLong(ctx sdk.Context, position *types.Position, lever
 	position.LeveragedLpAmount = position.LeveragedLpAmount.Add(shares)
 	position.Liabilities = position.Liabilities.Add(borrowCoin.Amount)
 	position.PositionHealth = lr
+	position.StopLossPrice = msg.StopLossPrice
 
 	k.SetPosition(ctx, position)
 
