@@ -18,9 +18,7 @@ const (
 	// MemStoreKey defines the in-memory store key
 	MemStoreKey = "mem_estaking"
 
-	// ParamsKey is the prefix to retrieve all Params
-	ParamsKey = "Params/value/"
-
+	LegacyParamsKey                = "Params/value/"
 	LegacyElysStakedKeyPrefix      = "ElysStaked/value/"
 	LegacyElysStakeChangeKeyPrefix = "ElysStakeChanged/value/"
 )
@@ -28,10 +26,11 @@ const (
 var (
 	ElysStakedKeyPrefix      = []byte{0x01}
 	ElysStakeChangeKeyPrefix = []byte{0x02}
+	ParamsKeyPrefix          = []byte{0x03}
 )
 
 // remove after migration
-func KeyPrefix(p string) []byte {
+func LegacyKeyPrefix(p string) []byte {
 	return []byte(p)
 }
 

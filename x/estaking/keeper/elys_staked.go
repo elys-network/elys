@@ -54,7 +54,7 @@ func (k Keeper) GetAllElysStaked(ctx sdk.Context) (list []types.ElysStaked) {
 
 // remove after migration
 func (k Keeper) GetAllLegacyElysStaked(ctx sdk.Context) (list []types.ElysStaked) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.LegacyElysStakedKeyPrefix))
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.LegacyKeyPrefix(types.LegacyElysStakedKeyPrefix))
 	iterator := sdk.KVStorePrefixIterator(store, []byte{})
 
 	defer iterator.Close()
@@ -70,6 +70,6 @@ func (k Keeper) GetAllLegacyElysStaked(ctx sdk.Context) (list []types.ElysStaked
 
 // remove after migration
 func (k Keeper) DeleteLegacyElysStaked(ctx sdk.Context, address string) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.LegacyElysStakedKeyPrefix))
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.LegacyKeyPrefix(types.LegacyElysStakedKeyPrefix))
 	store.Delete(types.LegacyElysStakedKey(address))
 }
