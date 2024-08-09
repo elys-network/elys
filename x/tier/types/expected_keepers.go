@@ -102,5 +102,6 @@ type LeverageLpKeeper interface {
 
 type StablestakeKeeper interface {
 	GetParams(ctx sdk.Context) (params stablestaketypes.Params)
-	GetDebt(ctx sdk.Context, addr sdk.AccAddress) stablestaketypes.Debt
+	GetDebtWithUpdatedInterestStacked(ctx sdk.Context, addr sdk.AccAddress) stablestaketypes.Debt
+	GetDebtWithoutUpdatedInterestStacked(ctx sdk.Context, addr sdk.AccAddress) stablestaketypes.Debt
 }

@@ -7,6 +7,11 @@ option go_package = "github.com/elys-network/elys/x/leveragelp/types";
 import "gogoproto/gogo.proto";
 import "cosmos/base/v1beta1/coin.proto";
 
+message PositionRequest {
+  string address = 1;
+  uint64 id      = 2;
+}
+
 message Position {
   string address = 1;
   cosmos.base.v1beta1.Coin collateral = 2 [(gogoproto.nullable) = false];

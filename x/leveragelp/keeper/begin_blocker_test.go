@@ -1,12 +1,12 @@
 package keeper_test
 
 import (
-	"fmt"
 	"time"
 
 	"cosmossdk.io/math"
 	"github.com/cometbft/cometbft/crypto/ed25519"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/types/query"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 	"github.com/elys-network/elys/x/leveragelp/types"
 	stablestakekeeper "github.com/elys-network/elys/x/stablestake/keeper"
@@ -26,7 +26,7 @@ func (suite KeeperTestSuite) TestBeginBlocker() {
 
 	suite.ctx = suite.ctx.WithBlockTime(suite.ctx.BlockTime().Add(time.Hour * 24 * 500))
 	suite.app.StablestakeKeeper.BeginBlocker(suite.ctx)
-	suite.app.StablestakeKeeper.UpdateInterestStackedByAddress(suite.ctx, sdk.AccAddress(position.GetPositionAddress()))
+	suite.app.StablestakeKeeper.GetDebtWithUpdatedInterestStacked(suite.ctx, sdk.AccAddress(position.GetPositionAddress()))
 	health, err = k.GetPositionHealth(suite.ctx, *position)
 	suite.Require().NoError(err)
 	// suite.Require().Equal(health.String(), "1.024543738200125865") // slippage enabled on amm
@@ -53,7 +53,7 @@ func (suite KeeperTestSuite) TestLiquidatePositionIfUnhealthy() {
 
 	suite.ctx = suite.ctx.WithBlockTime(suite.ctx.BlockTime().Add(time.Hour * 24 * 500))
 	suite.app.StablestakeKeeper.BeginBlocker(suite.ctx)
-	suite.app.StablestakeKeeper.UpdateInterestStackedByAddress(suite.ctx, sdk.AccAddress(position.GetPositionAddress()))
+	suite.app.StablestakeKeeper.GetDebtWithUpdatedInterestStacked(suite.ctx, sdk.AccAddress(position.GetPositionAddress()))
 	health, err = k.GetPositionHealth(suite.ctx, *position)
 	suite.Require().NoError(err)
 	// suite.Require().Equal(health.String(), "1.024543738200125865") // slippage enabled on amm
@@ -71,7 +71,7 @@ func (suite KeeperTestSuite) TestLiquidatePositionIfUnhealthy() {
 
 	cacheCtx, _ = suite.ctx.CacheContext()
 	position.StopLossPrice = math.LegacyNewDec(100000)
-	k.SetPosition(cacheCtx, position, sdk.NewInt(0))
+	k.SetPosition(cacheCtx, position)
 	underStopLossPrice, earlyReturn := k.ClosePositionIfUnderStopLossPrice(cacheCtx, position, pool, ammPool)
 	suite.Require().True(underStopLossPrice)
 	suite.Require().False(earlyReturn)
@@ -79,7 +79,7 @@ func (suite KeeperTestSuite) TestLiquidatePositionIfUnhealthy() {
 	suite.Require().Error(err)
 }
 
-func (suite KeeperTestSuite) TestLiquidatePositionSorted() {
+func (suite KeeperTestSuite) TestFallback() {
 	k := suite.app.LeveragelpKeeper
 	addr := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
 	position, _ := suite.OpenPosition(addr)
@@ -155,63 +155,21 @@ func (suite KeeperTestSuite) TestLiquidatePositionSorted() {
 	suite.Require().NoError(err)
 	suite.Require().Equal(health.String(), "1.333333333333333333") // slippage disabled on amm
 
-	// Check order in list
-	suite.app.LeveragelpKeeper.IteratePoolPosIdsLiquidationSorted(suite.ctx, position.AmmPoolId, func(posId types.AddressId) bool {
-		position, _ := k.GetPosition(suite.ctx, posId.Address, posId.Id)
-		health, _ := k.GetPositionHealth(suite.ctx, position)
-		fmt.Printf("Address: %s, Id: %d, value: %s\n", position.Address, position.Id, health.String())
-		return false
-	})
+	params := k.GetParams(suite.ctx)
+	params.NumberPerBlock = 2
+	params.FallbackEnabled = true
+	k.SetParams(suite.ctx, &params)
 
-	err = k.ProcessAddCollateral(suite.ctx, addr4.String(), position4.Id, sdk.NewInt(1000))
+	// Add a lot of interest to decrease position health
+	suite.ctx = suite.ctx.WithBlockTime(suite.ctx.BlockTime().Add(time.Hour * 24 * 2000))
+
+	// Should traverse 2 and delete
+	k.BeginBlocker(suite.ctx)
+
+	total := k.GetOpenPositionCount(suite.ctx)
+	suite.Require().Equal(total, uint64(2))
+
+	res, _, err := k.GetPositions(suite.ctx, &query.PageRequest{Limit: 10})
 	suite.Require().NoError(err)
-
-	// Check order in list
-	suite.app.LeveragelpKeeper.IteratePoolPosIdsLiquidationSorted(suite.ctx, position.AmmPoolId, func(posId types.AddressId) bool {
-		position, _ := k.GetPosition(suite.ctx, posId.Address, posId.Id)
-		health, _ := k.GetPositionHealth(suite.ctx, position)
-		fmt.Printf("Address: %s, Id: %d, value: %s\n", position.Address, position.Id, health.String())
-		return false
-	})
-
-	// add more lev
-	k.OpenConsolidate(suite.ctx, position5, &types.MsgOpen{
-		Creator:          addr5.String(),
-		CollateralAsset:  "uusdc",
-		CollateralAmount: sdk.NewInt(1000),
-		AmmPoolId:        1,
-		Leverage:         sdk.NewDec(4),
-	})
-	suite.Require().NoError(err)
-
-	// Check order in list
-	suite.app.LeveragelpKeeper.IteratePoolPosIdsLiquidationSorted(suite.ctx, position.AmmPoolId, func(posId types.AddressId) bool {
-		position, _ := k.GetPosition(suite.ctx, posId.Address, posId.Id)
-		health, _ := k.GetPositionHealth(suite.ctx, position)
-		fmt.Printf("Address: %s, Id: %d, value: %s\n", position.Address, position.Id, health.String())
-		return false
-	})
-
-	// Partial close.
-	var (
-		msg = &types.MsgClose{
-			Creator:  addr5.String(),
-			Id:       position5.Id,
-			LpAmount: position5.LeveragedLpAmount.Quo(sdk.NewInt(2)),
-		}
-	)
-	suite.ctx = suite.ctx.WithBlockTime(suite.ctx.BlockTime().Add(time.Hour))
-
-	_, _, err = k.CloseLong(suite.ctx, msg)
-	suite.Require().NoError(err)
-
-	// Check order in list
-	suite.app.LeveragelpKeeper.IteratePoolPosIdsLiquidationSorted(suite.ctx, position.AmmPoolId, func(posId types.AddressId) bool {
-		position, _ := k.GetPosition(suite.ctx, posId.Address, posId.Id)
-		health, _ := k.GetPositionHealth(suite.ctx, position)
-		fmt.Printf("Address: %s, Id: %d, value: %s\n", position.Address, position.Id, health.String())
-		return false
-	})
+	suite.Require().Equal(len(res), 2)
 }
-
-// Add stablestake update hook test
