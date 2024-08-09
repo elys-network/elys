@@ -31,7 +31,7 @@ func MasterchefKeeper(t testing.TB) (*keeper.Keeper, sdk.Context) {
 	cdc := codec.NewProtoCodec(registry)
 
 	paramsSubspace := typesparams.NewSubspace(cdc,
-		types.Amino,
+		types.ModuleCdc.LegacyAmino,
 		storeKey,
 		memStoreKey,
 		"MasterchefParams",

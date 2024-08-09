@@ -2,21 +2,26 @@ package types
 
 import (
 	"github.com/cosmos/cosmos-sdk/codec"
+	"github.com/cosmos/cosmos-sdk/codec/legacy"
 	cdctypes "github.com/cosmos/cosmos-sdk/codec/types"
+	cryptocodec "github.com/cosmos/cosmos-sdk/crypto/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/msgservice"
+	authzcodec "github.com/cosmos/cosmos-sdk/x/authz/codec"
+	govcodec "github.com/cosmos/cosmos-sdk/x/gov/codec"
+	groupcodec "github.com/cosmos/cosmos-sdk/x/group/codec"
 )
 
 func RegisterCodec(cdc *codec.LegacyAmino) {
-	cdc.RegisterConcrete(&MsgOpen{}, "leveragelp/Open", nil)
-	cdc.RegisterConcrete(&MsgClose{}, "leveragelp/Close", nil)
-	cdc.RegisterConcrete(&MsgUpdateParams{}, "leveragelp/UpdateParams", nil)
-	cdc.RegisterConcrete(&MsgUpdatePools{}, "leveragelp/UpdatePools", nil)
-	cdc.RegisterConcrete(&MsgWhitelist{}, "leveragelp/Whitelist", nil)
-	cdc.RegisterConcrete(&MsgDewhitelist{}, "leveragelp/Dewhitelist", nil)
-	cdc.RegisterConcrete(&MsgClaimRewards{}, "leveragelp/ClaimRewards", nil)
-	cdc.RegisterConcrete(&MsgUpdateStopLoss{}, "leveragelp/UpdateStopLoss", nil)
-	cdc.RegisterConcrete(&MsgAddCollateral{}, "leveragelp/AddCollateral", nil)
+	legacy.RegisterAminoMsg(cdc, &MsgOpen{}, "leveragelp/MsgOpen")
+	legacy.RegisterAminoMsg(cdc, &MsgClose{}, "leveragelp/MsgClose")
+	legacy.RegisterAminoMsg(cdc, &MsgUpdateParams{}, "leveragelp/MsgUpdateParams")
+	legacy.RegisterAminoMsg(cdc, &MsgUpdatePools{}, "leveragelp/MsgUpdatePools")
+	legacy.RegisterAminoMsg(cdc, &MsgWhitelist{}, "leveragelp/MsgWhitelist")
+	legacy.RegisterAminoMsg(cdc, &MsgDewhitelist{}, "leveragelp/MsgDewhitelist")
+	legacy.RegisterAminoMsg(cdc, &MsgClaimRewards{}, "leveragelp/MsgClaimRewards")
+	legacy.RegisterAminoMsg(cdc, &MsgUpdateStopLoss{}, "leveragelp/MsgUpdateStopLoss")
+	legacy.RegisterAminoMsg(cdc, &MsgAddCollateral{}, "leveragelp/MsgAddCollateral")
 	// this line is used by starport scaffolding # 2
 }
 
@@ -41,6 +46,18 @@ func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 }
 
 var (
-	Amino     = codec.NewLegacyAmino()
-	ModuleCdc = codec.NewProtoCodec(cdctypes.NewInterfaceRegistry())
+	amino     = codec.NewLegacyAmino()
+	ModuleCdc = codec.NewAminoCodec(amino)
 )
+
+func init() {
+	RegisterCodec(amino)
+	cryptocodec.RegisterCrypto(amino)
+	sdk.RegisterLegacyAminoCodec(amino)
+
+	// Register all Amino interfaces and concrete types on the authz  and gov Amino codec so that this can later be
+	// used to properly serialize MsgGrant, MsgExec and MsgSubmitProposal instances
+	RegisterCodec(authzcodec.Amino)
+	RegisterCodec(govcodec.Amino)
+	RegisterCodec(groupcodec.Amino)
+}

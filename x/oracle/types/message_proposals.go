@@ -33,60 +33,11 @@ func (msg *MsgUpdateParams) GetSigners() []sdk.AccAddress {
 }
 
 func (msg *MsgUpdateParams) GetSignBytes() []byte {
-	bz := ModuleCdc.MustMarshalJSON(msg)
+	bz := ModuleAminoCdc.MustMarshalJSON(msg)
 	return sdk.MustSortJSON(bz)
 }
 
 func (msg *MsgUpdateParams) ValidateBasic() error {
-	_, err := sdk.AccAddressFromBech32(msg.Authority)
-	if err != nil {
-		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid authority address (%s)", err)
-	}
-	return nil
-}
-
-var _ sdk.Msg = &MsgAddAssetInfo{}
-
-func NewMsgAddAssetInfo(
-	authority string,
-	denom string,
-	display string,
-	bandTicker string,
-	elysTicker string,
-	decimal uint64,
-) *MsgAddAssetInfo {
-	return &MsgAddAssetInfo{
-		Authority:  authority,
-		Denom:      denom,
-		Display:    display,
-		BandTicker: bandTicker,
-		ElysTicker: elysTicker,
-		Decimal:    decimal,
-	}
-}
-
-func (msg *MsgAddAssetInfo) Route() string {
-	return RouterKey
-}
-
-func (msg *MsgAddAssetInfo) Type() string {
-	return TypeMsgAddAssetInfo
-}
-
-func (msg *MsgAddAssetInfo) GetSigners() []sdk.AccAddress {
-	creator, err := sdk.AccAddressFromBech32(msg.Authority)
-	if err != nil {
-		panic(err)
-	}
-	return []sdk.AccAddress{creator}
-}
-
-func (msg *MsgAddAssetInfo) GetSignBytes() []byte {
-	bz := ModuleCdc.MustMarshalJSON(msg)
-	return sdk.MustSortJSON(bz)
-}
-
-func (msg *MsgAddAssetInfo) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Authority)
 	if err != nil {
 		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid authority address (%s)", err)
@@ -121,7 +72,7 @@ func (msg *MsgRemoveAssetInfo) GetSigners() []sdk.AccAddress {
 }
 
 func (msg *MsgRemoveAssetInfo) GetSignBytes() []byte {
-	bz := ModuleCdc.MustMarshalJSON(msg)
+	bz := ModuleAminoCdc.MustMarshalJSON(msg)
 	return sdk.MustSortJSON(bz)
 }
 
@@ -161,7 +112,7 @@ func (msg *MsgAddPriceFeeders) GetSigners() []sdk.AccAddress {
 }
 
 func (msg *MsgAddPriceFeeders) GetSignBytes() []byte {
-	bz := ModuleCdc.MustMarshalJSON(msg)
+	bz := ModuleAminoCdc.MustMarshalJSON(msg)
 	return sdk.MustSortJSON(bz)
 }
 
@@ -200,7 +151,7 @@ func (msg *MsgRemovePriceFeeders) GetSigners() []sdk.AccAddress {
 }
 
 func (msg *MsgRemovePriceFeeders) GetSignBytes() []byte {
-	bz := ModuleCdc.MustMarshalJSON(msg)
+	bz := ModuleAminoCdc.MustMarshalJSON(msg)
 	return sdk.MustSortJSON(bz)
 }
 

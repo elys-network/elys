@@ -40958,6 +40958,43 @@ paths:
           description: A successful response.
           schema:
             type: object
+            properties:
+              address:
+                type: string
+              locked_committed:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    denom:
+                      type: string
+                    amount:
+                      type: string
+                  description: >-
+                    Coin defines a token with a denomination and an amount.
+
+
+                    NOTE: The amount field is an Int which implements the custom
+                    method
+
+                    signatures required by gogoproto.
+              total_committed:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    denom:
+                      type: string
+                    amount:
+                      type: string
+                  description: >-
+                    Coin defines a token with a denomination and an amount.
+
+
+                    NOTE: The amount field is an Int which implements the custom
+                    method
+
+                    signatures required by gogoproto.
         default:
           description: An unexpected error response.
           schema:
@@ -45294,6 +45331,8 @@ paths:
               delegations:
                 type: string
               unbondings:
+                type: string
+              totalVested:
                 type: string
         default:
           description: An unexpected error response.
@@ -86154,6 +86193,8 @@ definitions:
         type: boolean
       withdraw_enabled:
         type: boolean
+  elys.assetprofile.MsgAddEntryResponse:
+    type: object
   elys.assetprofile.MsgCreateEntryResponse:
     type: object
   elys.assetprofile.MsgDeleteEntryResponse:
@@ -87790,6 +87831,37 @@ definitions:
         type: string
   elys.leveragelp.QueryCommittedTokensLockedResponse:
     type: object
+    properties:
+      address:
+        type: string
+      locked_committed:
+        type: array
+        items:
+          type: object
+          properties:
+            denom:
+              type: string
+            amount:
+              type: string
+          description: |-
+            Coin defines a token with a denomination and an amount.
+
+            NOTE: The amount field is an Int which implements the custom method
+            signatures required by gogoproto.
+      total_committed:
+        type: array
+        items:
+          type: object
+          properties:
+            denom:
+              type: string
+            amount:
+              type: string
+          description: |-
+            Coin defines a token with a denomination and an amount.
+
+            NOTE: The amount field is an Int which implements the custom method
+            signatures required by gogoproto.
   elys.leveragelp.QueryGetPoolResponse:
     type: object
     properties:
@@ -87894,6 +87966,16 @@ definitions:
       lifetime_position_count:
         type: string
         format: uint64
+  elys.leveragelp.UpdatePool:
+    type: object
+    properties:
+      pool_id:
+        type: string
+        format: uint64
+      Enabled:
+        type: boolean
+      Closed:
+        type: boolean
   elys.leveragelp.WhitelistResponse:
     type: object
     properties:
@@ -88352,6 +88434,8 @@ definitions:
   elys.oracle.MsgAddAssetInfoResponse:
     type: object
   elys.oracle.MsgAddPriceFeedersResponse:
+    type: object
+  elys.oracle.MsgCreateAssetInfoResponse:
     type: object
   elys.oracle.MsgDeletePriceFeederResponse:
     type: object
@@ -89876,6 +89960,8 @@ definitions:
       delegations:
         type: string
       unbondings:
+        type: string
+      totalVested:
         type: string
   elys.tokenomics.Airdrop:
     type: object

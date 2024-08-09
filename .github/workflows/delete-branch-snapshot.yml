@@ -12,7 +12,7 @@ jobs:
     steps:
       - name: Retrieve post upgrade snapshot generator binary
         run: |
-          POST_UPGRADE_SNAPSHOT_GENERATOR_VERSION=v0.2.9
+          POST_UPGRADE_SNAPSHOT_GENERATOR_VERSION=v0.3.2
           DOWNLOAD_URL=https://github.com/elys-network/post-upgrade-snapshot-generator/releases/download/${POST_UPGRADE_SNAPSHOT_GENERATOR_VERSION}/post-upgrade-snapshot-generator-${POST_UPGRADE_SNAPSHOT_GENERATOR_VERSION}-linux-amd64
           POST_UPGRADE_SNAPSHOT_GENERATOR_PATH=/tmp/post-upgrade-snapshot-generator-${POST_UPGRADE_SNAPSHOT_GENERATOR_VERSION}
           curl -L $DOWNLOAD_URL -o $POST_UPGRADE_SNAPSHOT_GENERATOR_PATH && chmod +x $POST_UPGRADE_SNAPSHOT_GENERATOR_PATH
@@ -22,7 +22,7 @@ jobs:
         env:
           R2_ACCESS_KEY: ${{ secrets.R2_ACCESS_KEY }}
           R2_SECRET_KEY: ${{ secrets.R2_SECRET_KEY }}
-          R2_ENDPOINT: ${{ secrets.R2_ENDPOINT }}
+          R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
           R2_BUCKET_NAME: ${{ secrets.R2_BUCKET_NAME }}
         run: |
           SANITIZED_EVENT_REF=${{ github.event.ref }}

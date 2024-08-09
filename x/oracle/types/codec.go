@@ -2,21 +2,26 @@ package types
 
 import (
 	"github.com/cosmos/cosmos-sdk/codec"
+	"github.com/cosmos/cosmos-sdk/codec/legacy"
 	cdctypes "github.com/cosmos/cosmos-sdk/codec/types"
+	cryptocodec "github.com/cosmos/cosmos-sdk/crypto/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/msgservice"
+	authzcodec "github.com/cosmos/cosmos-sdk/x/authz/codec"
+	govcodec "github.com/cosmos/cosmos-sdk/x/gov/codec"
+	groupcodec "github.com/cosmos/cosmos-sdk/x/group/codec"
 )
 
 func RegisterCodec(cdc *codec.LegacyAmino) {
-	cdc.RegisterConcrete(&MsgFeedPrice{}, "oracle/FeedPrice", nil)
-	cdc.RegisterConcrete(&MsgSetPriceFeeder{}, "oracle/SetPriceFeeder", nil)
-	cdc.RegisterConcrete(&MsgDeletePriceFeeder{}, "oracle/DeletePriceFeeder", nil)
-	cdc.RegisterConcrete(&MsgFeedMultiplePrices{}, "oracle/FeedMultiplePrices", nil)
-	cdc.RegisterConcrete(&MsgAddAssetInfo{}, "oracle/AddAssetInfo", nil)
-	cdc.RegisterConcrete(&MsgRemoveAssetInfo{}, "oracle/RemoveAssetInfo", nil)
-	cdc.RegisterConcrete(&MsgAddPriceFeeders{}, "oracle/AddPriceFeeders", nil)
-	cdc.RegisterConcrete(&MsgRemovePriceFeeders{}, "oracle/RemovePriceFeeders", nil)
-	cdc.RegisterConcrete(&MsgUpdateParams{}, "oracle/UpdateParams", nil)
+	legacy.RegisterAminoMsg(cdc, &MsgFeedPrice{}, "oracle/MsgFeedPrice")
+	legacy.RegisterAminoMsg(cdc, &MsgSetPriceFeeder{}, "oracle/MsgSetPriceFeeder")
+	legacy.RegisterAminoMsg(cdc, &MsgDeletePriceFeeder{}, "oracle/MsgDeletePriceFeeder")
+	legacy.RegisterAminoMsg(cdc, &MsgFeedMultiplePrices{}, "oracle/MsgFeedMultiplePrices")
+	legacy.RegisterAminoMsg(cdc, &MsgRemoveAssetInfo{}, "oracle/MsgRemoveAssetInfo")
+	legacy.RegisterAminoMsg(cdc, &MsgAddPriceFeeders{}, "oracle/MsgAddPriceFeeders")
+	legacy.RegisterAminoMsg(cdc, &MsgRemovePriceFeeders{}, "oracle/MsgRemovePriceFeeders")
+	legacy.RegisterAminoMsg(cdc, &MsgUpdateParams{}, "oracle/MsgUpdateParams")
+	legacy.RegisterAminoMsg(cdc, &MsgCreateAssetInfo{}, "oracle/CreateAssetInfo")
 	// this line is used by starport scaffolding # 2
 }
 
@@ -26,19 +31,34 @@ func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 		&MsgSetPriceFeeder{},
 		&MsgDeletePriceFeeder{},
 		&MsgFeedMultiplePrices{},
-		&MsgAddAssetInfo{},
 		&MsgRemoveAssetInfo{},
 		&MsgAddPriceFeeders{},
 		&MsgRemovePriceFeeders{},
 		&MsgUpdateParams{},
 	)
 
+	registry.RegisterImplementations((*sdk.Msg)(nil),
+		&MsgCreateAssetInfo{},
+	)
 	// this line is used by starport scaffolding # 3
 
 	msgservice.RegisterMsgServiceDesc(registry, &_Msg_serviceDesc)
 }
 
 var (
-	Amino     = codec.NewLegacyAmino()
-	ModuleCdc = codec.NewProtoCodec(cdctypes.NewInterfaceRegistry())
+	amino          = codec.NewLegacyAmino()
+	ModuleAminoCdc = codec.NewAminoCodec(amino)
+	ModuleCdc      = codec.NewProtoCodec(cdctypes.NewInterfaceRegistry())
 )
+
+func init() {
+	RegisterCodec(amino)
+	cryptocodec.RegisterCrypto(amino)
+	sdk.RegisterLegacyAminoCodec(amino)
+
+	// Register all Amino interfaces and concrete types on the authz  and gov Amino codec so that this can later be
+	// used to properly serialize MsgGrant, MsgExec and MsgSubmitProposal instances
+	RegisterCodec(authzcodec.Amino)
+	RegisterCodec(govcodec.Amino)
+	RegisterCodec(groupcodec.Amino)
+}

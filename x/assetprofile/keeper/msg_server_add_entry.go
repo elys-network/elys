@@ -4,31 +4,20 @@ import (
 	"context"
 	"strings"
 
-	"cosmossdk.io/errors"
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	ibctransfertypes "github.com/cosmos/ibc-go/v7/modules/apps/transfer/types"
 	"github.com/elys-network/elys/x/assetprofile/types"
 )
 
-func (k msgServer) UpdateEntry(goCtx context.Context, msg *types.MsgUpdateEntry) (*types.MsgUpdateEntryResponse, error) {
-	if k.authority != msg.Authority {
-		return nil, errors.Wrapf(govtypes.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.authority, msg.Authority)
-	}
-
+func (k msgServer) AddEntry(goCtx context.Context, msg *types.MsgAddEntry) (*types.MsgAddEntryResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	// Check if the value exists
-	entry, isFound := k.GetEntry(ctx, msg.BaseDenom)
-	if !isFound {
-		return nil, errorsmod.Wrap(sdkerrors.ErrKeyNotFound, "entry not set")
-	}
-
-	// Checks if the the msg authority is the same as the current owner
-	if msg.Authority != entry.Authority {
-		return nil, errorsmod.Wrap(sdkerrors.ErrUnauthorized, "incorrect owner")
+	// Check if the entry already exists
+	_, isFound := k.GetEntry(ctx, msg.BaseDenom)
+	if isFound {
+		return nil, errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "entry already set")
 	}
 
 	// check the validity of ibc denom & channel
@@ -43,8 +32,8 @@ func (k msgServer) UpdateEntry(goCtx context.Context, msg *types.MsgUpdateEntry)
 		}
 	}
 
-	entry = types.Entry{
-		Authority:                msg.Authority,
+	entry := types.Entry{
+		Authority:                k.authority,
 		BaseDenom:                msg.BaseDenom,
 		Decimals:                 msg.Decimals,
 		Denom:                    msg.Denom,
@@ -66,29 +55,5 @@ func (k msgServer) UpdateEntry(goCtx context.Context, msg *types.MsgUpdateEntry)
 	}
 
 	k.SetEntry(ctx, entry)
-
-	return &types.MsgUpdateEntryResponse{}, nil
-}
-
-func (k msgServer) DeleteEntry(goCtx context.Context, msg *types.MsgDeleteEntry) (*types.MsgDeleteEntryResponse, error) {
-	if k.authority != msg.Authority {
-		return nil, errors.Wrapf(govtypes.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.authority, msg.Authority)
-	}
-
-	ctx := sdk.UnwrapSDKContext(goCtx)
-
-	// Check if the value exists
-	entry, isFound := k.GetEntry(ctx, msg.BaseDenom)
-	if !isFound {
-		return nil, errorsmod.Wrap(sdkerrors.ErrKeyNotFound, "entry not set")
-	}
-
-	// Checks if the the msg authority is the same as the current owner
-	if msg.Authority != entry.Authority {
-		return nil, errorsmod.Wrap(sdkerrors.ErrUnauthorized, "incorrect owner")
-	}
-
-	k.RemoveEntry(ctx, msg.BaseDenom)
-
-	return &types.MsgDeleteEntryResponse{}, nil
+	return &types.MsgAddEntryResponse{}, nil
 }

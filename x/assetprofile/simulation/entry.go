@@ -23,8 +23,7 @@ func SimulateMsgCreateEntry(
 		simAccount, _ := simtypes.RandomAcc(r, accs)
 
 		i := r.Int()
-		msg := &types.MsgCreateEntry{
-			Authority: simAccount.Address.String(),
+		msg := &types.MsgAddEntry{
 			BaseDenom: strconv.Itoa(i),
 		}
 
