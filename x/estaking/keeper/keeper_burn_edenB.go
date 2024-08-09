@@ -13,8 +13,8 @@ func (k Keeper) BurnEdenBFromElysUnstaking(ctx sdk.Context, delegator sdk.AccAdd
 	commitments := k.commKeeper.GetCommitments(ctx, delAddr)
 
 	// Get previous amount
-	prevElysStaked := k.GetElysStaked(ctx, delAddr)
-	if prevElysStaked.IsZero() {
+	prevElysStaked := k.GetElysStaked(ctx, delegator)
+	if prevElysStaked.Amount.IsZero() {
 		return
 	}
 
@@ -23,7 +23,7 @@ func (k Keeper) BurnEdenBFromElysUnstaking(ctx sdk.Context, delegator sdk.AccAdd
 
 	// If not unstaked,
 	// should return nil otherwise it will break staking module
-	if delAmount.GTE(prevElysStaked) {
+	if delAmount.GTE(prevElysStaked.Amount) {
 		return
 	}
 
@@ -37,10 +37,10 @@ func (k Keeper) BurnEdenBFromElysUnstaking(ctx sdk.Context, delegator sdk.AccAdd
 	totalEdenB := edenBCommitted.Add(edenBClaimed)
 
 	// Unstaked
-	unstakedElys := prevElysStaked.Sub(delAmount)
+	unstakedElys := prevElysStaked.Amount.Sub(delAmount)
 
 	unstakedElysDec := sdk.NewDecFromInt(unstakedElys)
-	edenCommittedAndElysStakedDec := sdk.NewDecFromInt(edenCommitted.Add(prevElysStaked))
+	edenCommittedAndElysStakedDec := sdk.NewDecFromInt(edenCommitted.Add(prevElysStaked.Amount))
 	edenBToBurn := sdk.ZeroDec()
 	if edenCommittedAndElysStakedDec.GT(sdk.ZeroDec()) {
 		edenBToBurn = unstakedElysDec.Quo(edenCommittedAndElysStakedDec).MulInt(totalEdenB)
@@ -64,7 +64,8 @@ func (k Keeper) BurnEdenBFromEdenUncommitted(ctx sdk.Context, delegator string, 
 	// TODO: Claim all delegation rewards
 
 	// Get elys staked amount
-	elysStaked := k.GetElysStaked(ctx, delegator)
+	delegatorAccountAddress := sdk.MustAccAddressFromBech32(delegator)
+	elysStaked := k.GetElysStaked(ctx, delegatorAccountAddress)
 	commitments := k.commKeeper.GetCommitments(ctx, delegator)
 	edenCommitted := commitments.GetCommittedAmountForDenom(ptypes.Eden)
 
@@ -76,7 +77,7 @@ func (k Keeper) BurnEdenBFromEdenUncommitted(ctx sdk.Context, delegator string, 
 	unclaimedAmtDec := sdk.NewDecFromInt(uncommitAmt)
 	// This formula shud be applied before eden uncommitted or elys staked is removed from eden committed amount and elys staked amount respectively
 	// So add uncommitted amount to committed eden bucket in calculation.
-	edenCommittedAndElysStakedDec := sdk.NewDecFromInt(edenCommitted.Add(elysStaked).Add(uncommitAmt))
+	edenCommittedAndElysStakedDec := sdk.NewDecFromInt(edenCommitted.Add(elysStaked.Amount).Add(uncommitAmt))
 	if edenCommittedAndElysStakedDec.IsZero() {
 		return nil
 	}

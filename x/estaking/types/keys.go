@@ -1,5 +1,10 @@
 package types
 
+import (
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/types/address"
+)
+
 const (
 	// ModuleName defines the module name
 	ModuleName = "estaking"
@@ -16,16 +21,24 @@ const (
 	// ParamsKey is the prefix to retrieve all Params
 	ParamsKey = "Params/value/"
 
-	ElysStakedKeyPrefix      = "ElysStaked/value/"
+	LegacyElysStakedKeyPrefix = "ElysStaked/value/"
+
 	ElysStakeChangeKeyPrefix = "ElysStakeChanged/value/"
+)
+
+var (
+	ElysStakedKeyPrefix = []byte{0x01}
 )
 
 func KeyPrefix(p string) []byte {
 	return []byte(p)
 }
 
-// ElysStakedKey returns the store key to retrieve a ElysStaked from the address fields
-func ElysStakedKey(address string) []byte {
+func GetElysStakedKey(acc sdk.AccAddress) []byte {
+	return append(ElysStakedKeyPrefix, address.MustLengthPrefix(acc)...)
+}
+
+func LegacyElysStakedKey(address string) []byte {
 	var key []byte
 
 	addressBytes := []byte(address)
