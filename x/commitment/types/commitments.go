@@ -101,6 +101,9 @@ func (c *Commitments) DeductFromCommitted(denom string, amount math.Int, currTim
 			if lockedAmount.GT(c.CommittedTokens[i].Amount) {
 				return errors.Wrapf(ErrInsufficientWithdrawableTokens, "amount: %s denom: %s", amount, denom)
 			}
+			if c.CommittedTokens[i].Amount.IsZero() {
+				c.CommittedTokens = append(c.CommittedTokens[:i], c.CommittedTokens[i+1:]...)
+			}
 			return nil
 		}
 	}
