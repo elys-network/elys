@@ -1,7 +1,7 @@
 # Fallback System Specification
 
 ## Overview
-The fallback system is designed to handle position liquidations and closings in cases where the regular process(incentivized liquidation system) is either delayed or skipped. It systematically traverses a defined number of blocks to ensure that unhealthy positions are liquidated and positions are closed if they fall under a specified stop-loss price.
+The fallback system is designed to handle position liquidations and closings in cases where the regular process(incentivized liquidation system) is either delayed or skipped. It systematically traverses a defined number of positions in a block to ensure that unhealthy positions are liquidated and positions are closed if they fall under a specified stop-loss price.
 
 ## Functionality
 
