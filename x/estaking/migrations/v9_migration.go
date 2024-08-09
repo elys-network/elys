@@ -11,5 +11,11 @@ func (m Migrator) V9Migration(ctx sdk.Context) error {
 		m.keeper.DeleteLegacyElysStaked(ctx, elysStaked.Address)
 	}
 
+	allElysStakeChange := m.keeper.GetAllLegacyElysStakeChange(ctx)
+	for _, elysStakeChange := range allElysStakeChange {
+		m.keeper.SetElysStakeChange(ctx, elysStakeChange)
+		m.keeper.DeleteLegacyElysStakeChange(ctx, elysStakeChange)
+	}
+
 	return nil
 }

@@ -21,15 +21,16 @@ const (
 	// ParamsKey is the prefix to retrieve all Params
 	ParamsKey = "Params/value/"
 
-	LegacyElysStakedKeyPrefix = "ElysStaked/value/"
-
-	ElysStakeChangeKeyPrefix = "ElysStakeChanged/value/"
+	LegacyElysStakedKeyPrefix      = "ElysStaked/value/"
+	LegacyElysStakeChangeKeyPrefix = "ElysStakeChanged/value/"
 )
 
 var (
-	ElysStakedKeyPrefix = []byte{0x01}
+	ElysStakedKeyPrefix      = []byte{0x01}
+	ElysStakeChangeKeyPrefix = []byte{0x02}
 )
 
+// remove after migration
 func KeyPrefix(p string) []byte {
 	return []byte(p)
 }
@@ -38,6 +39,11 @@ func GetElysStakedKey(acc sdk.AccAddress) []byte {
 	return append(ElysStakedKeyPrefix, address.MustLengthPrefix(acc)...)
 }
 
+func GetElysStakeChangeKey(acc sdk.AccAddress) []byte {
+	return append(ElysStakeChangeKeyPrefix, address.MustLengthPrefix(acc)...)
+}
+
+// remove after migration
 func LegacyElysStakedKey(address string) []byte {
 	var key []byte
 
