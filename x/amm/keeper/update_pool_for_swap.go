@@ -9,6 +9,7 @@ import (
 // UpdatePoolForSwap takes a pool, sender, and tokenIn, tokenOut amounts
 // It then updates the pool's balances to the new reserve amounts, and
 // sends the in tokens from the sender to the pool, and the out tokens from the pool to the sender.
+
 func (k Keeper) UpdatePoolForSwap(
 	ctx sdk.Context,
 	pool types.Pool,
@@ -96,7 +97,10 @@ func (k Keeper) UpdatePoolForSwap(
 
 	types.EmitSwapEvent(ctx, sender, recipient, pool.GetPoolId(), tokensIn, tokensOut)
 	if k.hooks != nil {
-		k.hooks.AfterSwap(ctx, sender, pool, tokensIn, tokensOut)
+		err = k.hooks.AfterSwap(ctx, sender, pool, tokensIn, tokensOut)
+		if err != nil {
+			return math.ZeroInt(), err
+		}
 	}
 	k.RecordTotalLiquidityIncrease(ctx, tokensIn)
 	k.RecordTotalLiquidityDecrease(ctx, tokensOut)
