@@ -249,7 +249,7 @@ jobs:
           curl https://rclone.org/install.sh | sudo bash
 
           # copy snapshot to r2
-          rclone copy "${NEW_SNAPSHOT_PATH}" r2:${R2_BUCKET_NAME}/
+          rclone -vv copy "${NEW_SNAPSHOT_PATH}" r2:${R2_BUCKET_NAME}/
 
       - name: Info about the snapshot
         run: |
