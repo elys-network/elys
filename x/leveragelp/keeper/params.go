@@ -52,3 +52,16 @@ func (k Keeper) GetParams(ctx sdk.Context) (params types.Params) {
 	k.cdc.MustUnmarshal(bz, &params)
 	return params
 }
+
+// GetParams get all parameters as types.Params
+func (k Keeper) GetLegacyParams(ctx sdk.Context) (params types.LegacyParams) {
+	store := ctx.KVStore(k.storeKey)
+
+	b := store.Get([]byte(types.ParamsKey))
+	if b == nil {
+		return
+	}
+
+	k.cdc.MustUnmarshal(b, &params)
+	return
+}

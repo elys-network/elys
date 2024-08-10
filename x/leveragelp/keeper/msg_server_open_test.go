@@ -178,6 +178,7 @@ func (suite *KeeperTestSuite) TestOpen_PoolWithBaseCurrencyAsset() {
 			true,
 			types.ErrPositionDisabled.Wrapf("poolId: %d", 1).Error(),
 			func() {
+				suite.SetMaxOpenPositions(1000)
 				suite.DisablePool(1)
 			},
 		},

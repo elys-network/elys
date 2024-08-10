@@ -29,9 +29,8 @@ func (k msgServer) UpdateStopLoss(goCtx context.Context, msg *types.MsgUpdateSto
 		return nil, errorsmod.Wrap(types.ErrPositionDisabled, fmt.Sprintf("poolId: %d", poolId))
 	}
 
-	debt := k.stableKeeper.GetDebt(ctx, position.GetPositionAddress())
 	position.StopLossPrice = msg.Price
-	k.SetPosition(ctx, position, debt.Borrowed.Add(debt.InterestStacked).Sub(debt.InterestPaid))
+	k.SetPosition(ctx, position)
 
 	event := sdk.NewEvent(types.EventOpen,
 		sdk.NewAttribute("id", strconv.FormatInt(int64(position.Id), 10)),

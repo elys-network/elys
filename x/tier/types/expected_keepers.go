@@ -3,6 +3,7 @@ package types
 import (
 	"context"
 
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	query "github.com/cosmos/cosmos-sdk/types/query"
 	"github.com/cosmos/cosmos-sdk/x/auth/types"
@@ -75,6 +76,7 @@ type AmmKeeper interface {
 		overrideSwapFee sdk.Dec,
 	) (sdk.Dec, sdk.Dec, sdk.Coin, sdk.Dec, sdk.Dec, sdk.Coin, sdk.Dec, sdk.Dec, error)
 	Balance(goCtx context.Context, req *ammtypes.QueryBalanceRequest) (*ammtypes.QueryBalanceResponse, error)
+	GetEdenDenomPrice(ctx sdk.Context, baseCurrency string) math.LegacyDec
 }
 
 type EstakingKeeper interface {
@@ -100,5 +102,6 @@ type LeverageLpKeeper interface {
 
 type StablestakeKeeper interface {
 	GetParams(ctx sdk.Context) (params stablestaketypes.Params)
-	GetDebt(ctx sdk.Context, addr sdk.AccAddress) stablestaketypes.Debt
+	GetDebtWithUpdatedInterestStacked(ctx sdk.Context, addr sdk.AccAddress) stablestaketypes.Debt
+	GetDebtWithoutUpdatedInterestStacked(ctx sdk.Context, addr sdk.AccAddress) stablestaketypes.Debt
 }
