@@ -3,6 +3,7 @@ package keeper_test
 import (
 	"errors"
 
+	"github.com/cosmos/cosmos-sdk/crypto/keys/ed25519"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	simapp "github.com/elys-network/elys/app"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
@@ -12,16 +13,18 @@ import (
 func (suite KeeperTestSuite) TestCheckUserAuthorization() {
 	// Create an instance of Keeper with the mock checker
 	k := suite.app.LeveragelpKeeper
-	msg := &types.MsgOpen{Creator: "whitelistedUser"}
+	pk := ed25519.GenPrivKey().PubKey()
+	creator := sdk.AccAddress(pk.Address())
+	msg := &types.MsgOpen{Creator: creator.String()}
 
 	params := k.GetParams(suite.ctx)
 	params.WhitelistingEnabled = true
 	k.SetParams(suite.ctx, &params)
-	k.WhitelistAddress(suite.ctx, msg.Creator)
+	k.WhitelistAddress(suite.ctx, creator)
 	err := k.CheckUserAuthorization(suite.ctx, msg)
 	suite.Require().NoError(err)
 
-	k.DewhitelistAddress(suite.ctx, msg.Creator)
+	k.DewhitelistAddress(suite.ctx, creator)
 	err = k.CheckUserAuthorization(suite.ctx, msg)
 	suite.Require().Error(err)
 

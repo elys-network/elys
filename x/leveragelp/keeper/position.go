@@ -15,7 +15,7 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-func (k Keeper) GetPosition(ctx sdk.Context, positionAddress string, id uint64) (types.Position, error) {
+func (k Keeper) GetPosition(ctx sdk.Context, positionAddress sdk.AccAddress, id uint64) (types.Position, error) {
 	var position types.Position
 	key := types.GetPositionKey(positionAddress, id)
 	store := ctx.KVStore(k.storeKey)
@@ -27,10 +27,31 @@ func (k Keeper) GetPosition(ctx sdk.Context, positionAddress string, id uint64) 
 	return position, nil
 }
 
+// remove after migration
+func (k Keeper) GetLegacyPosition(ctx sdk.Context, positionAddress string, id uint64) (types.Position, error) {
+	var position types.Position
+	key := types.GetLegacyPositionKey(positionAddress, id)
+	store := ctx.KVStore(k.storeKey)
+	if !store.Has(key) {
+		return position, types.ErrPositionDoesNotExist
+	}
+	bz := store.Get(key)
+	k.cdc.MustUnmarshal(bz, &position)
+	return position, nil
+}
+
+// remove after migration
+func (k Keeper) DeleteLegacyPosition(ctx sdk.Context, positionAddress string, id uint64) {
+	key := types.GetLegacyPositionKey(positionAddress, id)
+	store := ctx.KVStore(k.storeKey)
+	store.Delete(key)
+}
+
 func (k Keeper) SetPosition(ctx sdk.Context, position *types.Position) {
 	store := ctx.KVStore(k.storeKey)
 	count := k.GetPositionCount(ctx)
 	openCount := k.GetOpenPositionCount(ctx)
+	creator := sdk.MustAccAddressFromBech32(position.Address)
 
 	if position.Id == 0 {
 		// increment global id count
@@ -42,11 +63,11 @@ func (k Keeper) SetPosition(ctx sdk.Context, position *types.Position) {
 		k.SetOpenPositionCount(ctx, openCount)
 	}
 
-	key := types.GetPositionKey(position.Address, position.Id)
+	key := types.GetPositionKey(creator, position.Id)
 	store.Set(key, k.cdc.MustMarshal(position))
 }
 
-func (k Keeper) DestroyPosition(ctx sdk.Context, positionAddress string, id uint64) error {
+func (k Keeper) DestroyPosition(ctx sdk.Context, positionAddress sdk.AccAddress, id uint64) error {
 	store := ctx.KVStore(k.storeKey)
 
 	key := types.GetPositionKey(positionAddress, id)
@@ -205,11 +226,11 @@ func (k Keeper) GetPositionsForPool(ctx sdk.Context, ammPoolId uint64, paginatio
 	return positions, pageRes, err
 }
 
-func (k Keeper) GetPositionsForAddress(ctx sdk.Context, positionAddress sdk.Address, pagination *query.PageRequest) ([]*types.PositionAndInterest, *query.PageResponse, error) {
+func (k Keeper) GetPositionsForAddress(ctx sdk.Context, positionAddress sdk.AccAddress, pagination *query.PageRequest) ([]*types.PositionAndInterest, *query.PageResponse, error) {
 	var positions []*types.PositionAndInterest
 
 	store := ctx.KVStore(k.storeKey)
-	positionStore := prefix.NewStore(store, types.GetPositionPrefixForAddress(positionAddress.String()))
+	positionStore := prefix.NewStore(store, types.GetPositionPrefixForAddress(positionAddress))
 
 	if pagination == nil {
 		pagination = &query.PageRequest{
@@ -275,9 +296,9 @@ func (k Keeper) GetPositionHealth(ctx sdk.Context, position types.Position) (sdk
 	return health, nil
 }
 
-func (k Keeper) GetPositionWithId(ctx sdk.Context, positionAddress sdk.Address, Id uint64) (*types.Position, bool) {
+func (k Keeper) GetPositionWithId(ctx sdk.Context, positionAddress sdk.AccAddress, Id uint64) (*types.Position, bool) {
 	store := ctx.KVStore(k.storeKey)
-	key := types.GetPositionKey(positionAddress.String(), Id)
+	key := types.GetPositionKey(positionAddress, Id)
 	if !store.Has(key) {
 		return nil, false
 	}

@@ -15,7 +15,7 @@ func (k msgServer) ClaimRewards(goCtx context.Context, msg *types.MsgClaimReward
 	}
 
 	for _, id := range msg.Ids {
-		position, err := k.GetPosition(ctx, msg.Sender, id)
+		position, err := k.GetPosition(ctx, sender, id)
 		if err != nil {
 			return nil, err
 		}

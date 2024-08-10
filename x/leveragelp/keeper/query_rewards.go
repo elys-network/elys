@@ -19,7 +19,8 @@ func (k Keeper) Rewards(goCtx context.Context, req *types.QueryRewardsRequest) (
 	totalRewards := sdk.Coins{}
 	rewardInfos := []*types.RewardInfo{}
 	for _, id := range req.Ids {
-		position, err := k.GetPosition(ctx, req.Address, id)
+		creator := sdk.MustAccAddressFromBech32(req.Address)
+		position, err := k.GetPosition(ctx, creator, id)
 		if err != nil {
 			return &types.QueryRewardsResponse{}, nil
 		}
