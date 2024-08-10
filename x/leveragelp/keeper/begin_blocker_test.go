@@ -36,7 +36,7 @@ func (suite KeeperTestSuite) TestBeginBlocker() {
 	params.SafetyFactor = sdk.NewDecWithPrec(11, 1)
 	k.SetParams(suite.ctx, &params)
 	k.BeginBlocker(suite.ctx)
-	_, err = k.GetPosition(suite.ctx, position.Address, position.Id)
+	_, err = k.GetPosition(suite.ctx, position.GetCreatorAddress(), position.Id)
 	suite.Require().Error(err)
 }
 
@@ -66,7 +66,7 @@ func (suite KeeperTestSuite) TestLiquidatePositionIfUnhealthy() {
 	isHealthy, earlyReturn := k.LiquidatePositionIfUnhealthy(cacheCtx, position, pool, ammPool)
 	suite.Require().False(isHealthy)
 	suite.Require().False(earlyReturn)
-	_, err = k.GetPosition(cacheCtx, position.Address, position.Id)
+	_, err = k.GetPosition(cacheCtx, position.GetCreatorAddress(), position.Id)
 	suite.Require().Error(err)
 
 	cacheCtx, _ = suite.ctx.CacheContext()
@@ -75,7 +75,7 @@ func (suite KeeperTestSuite) TestLiquidatePositionIfUnhealthy() {
 	underStopLossPrice, earlyReturn := k.ClosePositionIfUnderStopLossPrice(cacheCtx, position, pool, ammPool)
 	suite.Require().True(underStopLossPrice)
 	suite.Require().False(earlyReturn)
-	_, err = k.GetPosition(cacheCtx, position.Address, position.Id)
+	_, err = k.GetPosition(cacheCtx, position.GetCreatorAddress(), position.Id)
 	suite.Require().Error(err)
 }
 
