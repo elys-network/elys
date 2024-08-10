@@ -5,6 +5,7 @@ import (
 	"strconv"
 
 	"github.com/cosmos/cosmos-sdk/types/errors"
+	"github.com/cosmos/cosmos-sdk/types/query"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	"github.com/elys-network/elys/x/leveragelp/types"
 
@@ -15,47 +16,41 @@ func (k Keeper) BeginBlocker(ctx sdk.Context) {
 	// check if epoch has passed then execute
 	epochLength := k.GetEpochLength(ctx)
 	epochPosition := k.GetEpochPosition(ctx, epochLength)
+	params := k.GetParams(ctx)
 
-	if epochPosition == 0 { // if epoch has passed
-		pools := k.GetAllPools(ctx)
+	if epochPosition == 0 && params.FallbackEnabled { // if epoch has passed
+		pageReq := &query.PageRequest{
+			Limit:      uint64(params.NumberPerBlock),
+			CountTotal: true,
+		}
+		offset, _ := k.GetOffset(ctx)
+		pageReq.Offset = offset
+		positions, _, err := k.GetPositions(ctx, pageReq)
+		if err != nil {
+			ctx.Logger().Error(errors.Wrap(err, fmt.Sprintf("error fetching paginated positions")).Error())
+			return
+		}
+		if offset+uint64(params.NumberPerBlock) >= k.GetOpenPositionCount(ctx) {
+			k.DeleteOffset(ctx)
+		} else {
+			k.SetOffset(ctx, offset+uint64(params.NumberPerBlock))
+		}
 
-		for _, pool := range pools {
+		for _, position := range positions {
+			pool, found := k.GetPool(ctx, position.AmmPoolId)
+			if !found {
+				continue
+			}
 			ammPool, err := k.GetAmmPool(ctx, pool.AmmPoolId)
 			if err != nil {
 				ctx.Logger().Error(errors.Wrap(err, fmt.Sprintf("error getting amm pool: %d", pool.AmmPoolId)).Error())
 				continue
 			}
-			if k.IsPoolEnabled(ctx, pool.AmmPoolId) {
-				// Liquidate positions liquidation health threshold
-				// Design
-				// - `Health = PositionValue / liability`, PositionValue is based on LpToken price change
-				// - Debt growth speed is relying on liability.
-				// - Things are sorted by `LeveragedLpAmount / liability` per pool to liquidate efficiently
-				k.IteratePoolPosIdsLiquidationSorted(ctx, pool.AmmPoolId, func(posId types.AddressId) bool {
-					position, err := k.GetPosition(ctx, posId.Address, posId.Id)
-					if err != nil {
-						return false
-					}
-					isHealthy, earlyReturn := k.LiquidatePositionIfUnhealthy(ctx, &position, pool, ammPool)
-					if !earlyReturn && isHealthy {
-						return true
-					}
-					return false
-				})
-
-				// Close stopLossPrice reached positions
-				k.IteratePoolPosIdsStopLossSorted(ctx, pool.AmmPoolId, func(posId types.AddressId) bool {
-					position, err := k.GetPosition(ctx, posId.Address, posId.Id)
-					if err != nil {
-						return false
-					}
-					underStopLossPrice, earlyReturn := k.ClosePositionIfUnderStopLossPrice(ctx, &position, pool, ammPool)
-					if !earlyReturn && underStopLossPrice {
-						return true
-					}
-					return false
-				})
+			isHealthy, _ := k.LiquidatePositionIfUnhealthy(ctx, position, pool, ammPool)
+			if !isHealthy {
+				continue
 			}
+			k.ClosePositionIfUnderStopLossPrice(ctx, position, pool, ammPool)
 		}
 	}
 }
@@ -73,9 +68,8 @@ func (k Keeper) LiquidatePositionIfUnhealthy(ctx sdk.Context, position *types.Po
 		ctx.Logger().Error(errors.Wrap(err, fmt.Sprintf("error updating position health: %s", position.String())).Error())
 		return false, true
 	}
-	debt := k.stableKeeper.GetDebt(ctx, position.GetPositionAddress())
 	position.PositionHealth = h
-	k.SetPosition(ctx, position, debt.Borrowed.Add(debt.InterestStacked).Sub(debt.InterestPaid))
+	k.SetPosition(ctx, position)
 
 	params := k.GetParams(ctx)
 	isHealthy = position.PositionHealth.GT(params.SafetyFactor)
@@ -113,9 +107,8 @@ func (k Keeper) ClosePositionIfUnderStopLossPrice(ctx sdk.Context, position *typ
 		ctx.Logger().Error(errors.Wrap(err, fmt.Sprintf("error updating position health: %s", position.String())).Error())
 		return false, true
 	}
-	debt := k.stableKeeper.GetDebt(ctx, position.GetPositionAddress())
 	position.PositionHealth = h
-	k.SetPosition(ctx, position, debt.Borrowed.Add(debt.InterestStacked).Sub(debt.InterestPaid))
+	k.SetPosition(ctx, position)
 
 	lpTokenPrice, err := ammPool.LpTokenPrice(ctx, k.oracleKeeper)
 	if err != nil {

@@ -63,7 +63,7 @@ func TestBurnEdenBFromEdenUncommitted(t *testing.T) {
 	app, genAccount, _ := simapp.InitElysTestAppWithGenAccount()
 	ctx := app.BaseApp.NewContext(true, tmproto.Header{})
 
-	ek, cmk := app.EstakingKeeper, app.CommitmentKeeper
+	ek, commitmentKeeper := app.EstakingKeeper, app.CommitmentKeeper
 
 	var committed sdk.Coins
 	var unclaimed sdk.Coins
@@ -91,7 +91,7 @@ func TestBurnEdenBFromEdenUncommitted(t *testing.T) {
 	commitment.Claimed = commitment.Claimed.Add(committed...)
 	app.CommitmentKeeper.SetCommitments(ctx, commitment)
 
-	msgServer := commkeeper.NewMsgServerImpl(cmk)
+	msgServer := commkeeper.NewMsgServerImpl(commitmentKeeper)
 	_, err = msgServer.CommitClaimedRewards(ctx, &ctypes.MsgCommitClaimedRewards{
 		Creator: genAccount.String(),
 		Amount:  sdk.NewInt(1000),

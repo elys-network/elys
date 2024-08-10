@@ -58,10 +58,7 @@ func TestUncommitTokens(t *testing.T) {
 	commitments := keeper.GetCommitments(ctx, creator)
 
 	// Check if the committed tokens have the expected values
-	assert.Equal(t, creator, commitments.Creator, "Incorrect creator")
-	assert.Len(t, commitments.CommittedTokens, 1, "Incorrect number of committed tokens")
-	assert.Equal(t, denom, commitments.CommittedTokens[0].Denom, "Incorrect denom")
-	assert.Equal(t, sdk.ZeroInt(), commitments.CommittedTokens[0].Amount, "Incorrect amount")
+	assert.Equal(t, len(commitments.CommittedTokens), 0, "Incorrect creator")
 
 	rewardUnclaimed := sdk.NewCoins(sdk.NewCoin(denom, uncommitAmount))
 

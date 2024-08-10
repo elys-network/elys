@@ -163,7 +163,7 @@ func (k Keeper) ClaimRewards(ctx sdk.Context, sender sdk.AccAddress, poolIds []u
 	}
 
 	// Transfer rewards (Eden/EdenB is transferred through commitment module)
-	err := k.cmk.SendCoinsFromModuleToAccount(ctx, types.ModuleName, recipient, coins)
+	err := k.commitmentKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, recipient, coins)
 	if err != nil {
 		return err
 	}

@@ -68,7 +68,7 @@ func (k Keeper) GetAllLegacyElysStaked(ctx sdk.Context) (list []types.ElysStaked
 	return
 }
 
-// remove after migration
+// TODO: remove all legacy prefixes and functions after migration
 func (k Keeper) DeleteLegacyElysStaked(ctx sdk.Context, address string) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.LegacyKeyPrefix(types.LegacyElysStakedKeyPrefix))
 	store.Delete(types.LegacyElysStakedKey(address))
