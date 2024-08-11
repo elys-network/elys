@@ -23,9 +23,9 @@ type CommitmentKeeper interface {
 	// Update commitment
 	SetCommitments(sdk.Context, ctypes.Commitments)
 	// Get commitment
-	GetCommitments(sdk.Context, string) ctypes.Commitments
+	GetCommitments(sdk.Context, sdk.AccAddress) ctypes.Commitments
 	// Burn eden boost
-	BurnEdenBoost(ctx sdk.Context, creator string, denom string, amount math.Int) error
+	BurnEdenBoost(ctx sdk.Context, creator sdk.AccAddress, denom string, amount math.Int) error
 }
 
 // Staking keeper

@@ -19,7 +19,7 @@ func (k Keeper) GetPoolTotalCommit(ctx sdk.Context, poolId uint64) math.Int {
 }
 
 func (k Keeper) GetPoolBalance(ctx sdk.Context, poolId uint64, user string) math.Int {
-	commitments := k.commitmentKeeper.GetCommitments(ctx, user)
+	commitments := k.commitmentKeeper.GetCommitments(ctx, sdk.MustAccAddressFromBech32(user))
 	shareDenom := stablestaketypes.GetShareDenom()
 	if poolId != stablestaketypes.PoolId {
 		shareDenom = ammtypes.GetPoolShareDenom(poolId)

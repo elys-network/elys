@@ -65,7 +65,7 @@ type StableStakeKeeper interface {
 }
 
 type CommitmentKeeper interface {
-	GetCommitments(ctx sdk.Context, creator string) commitmenttypes.Commitments
+	GetCommitments(ctx sdk.Context, creator sdk.AccAddress) commitmenttypes.Commitments
 }
 
 // AssetProfileKeeper defines the expected interface needed to retrieve denom info

@@ -49,10 +49,11 @@ func TestDepositLiquidTokens(t *testing.T) {
 	keeper.SetCommitments(ctx, commitments)
 
 	// Deposit liquid eden to become claimed state
-	keeper.DepositLiquidTokensClaimed(ctx, ptypes.Eden, sdk.NewInt(100), creator.String())
+	err = keeper.DepositLiquidTokensClaimed(ctx, ptypes.Eden, sdk.NewInt(100), creator)
+	require.NoError(t, err)
 
 	// Check if the deposit tokens were added to commitments
-	newCommitments := keeper.GetCommitments(ctx, creator.String())
+	newCommitments := keeper.GetCommitments(ctx, creator)
 
 	// Check if the claimed tokens were updated correctly
 	claimed := newCommitments.GetClaimedForDenom(ptypes.Eden)
