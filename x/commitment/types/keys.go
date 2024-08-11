@@ -18,13 +18,13 @@ const (
 	// MemStoreKey defines the in-memory store key
 	MemStoreKey = "mem_commitment"
 
-	// ParamsKey is the prefix to retrieve all Params
-	ParamsKey                  = "Params/value/"
+	LegacyParamsKey            = "Params/value/"
 	LegacyCommitmentsKeyPrefix = "Commitments/value/"
 )
 
 var (
 	CommitmentsKeyPrefix = []byte{0x01}
+	ParamsKey            = []byte{0x02}
 )
 
 func LegacyKeyPrefix(p string) []byte {
