@@ -33,7 +33,7 @@ func TestEstakingExtendedFunctions(t *testing.T) {
 	require.Equal(t, totalBonded.String(), "1000000")
 
 	// set commitments
-	commitments := app.CommitmentKeeper.GetCommitments(ctx, addr.String())
+	commitments := app.CommitmentKeeper.GetCommitments(ctx, addr)
 	commitments.AddClaimed(sdk.NewInt64Coin(ptypes.Eden, 1000_000))
 	app.CommitmentKeeper.SetCommitments(ctx, commitments)
 	app.AssetprofileKeeper.SetEntry(ctx, assetprofiletypes.Entry{
