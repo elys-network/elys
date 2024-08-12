@@ -21,8 +21,9 @@ func (k msgServer) UpdatePools(goCtx context.Context, msg *types.MsgUpdatePools)
 	if found {
 		pool.Enabled = msg.UpdatePool.Enabled
 		pool.Closed = msg.UpdatePool.Closed
-		k.SetPool(ctx, pool)
 	}
+
+	k.SetPool(ctx, pool)
 
 	return &types.MsgUpdatePoolsResponse{}, nil
 }
