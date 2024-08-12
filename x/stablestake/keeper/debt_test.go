@@ -81,7 +81,7 @@ func (suite *KeeperTestSuite) TestDebt() {
 			// Pay partial
 			suite.app.StablestakeKeeper.Repay(suite.ctx, sender, sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(10)))
 
-			res := suite.app.StablestakeKeeper.GetDebtWithUpdatedInterestStacked(suite.ctx, sender)
+			res := suite.app.StablestakeKeeper.UpdateInterestAndGetDebt(suite.ctx, sender)
 			suite.Require().Equal(res.Borrowed.String(), "1000")
 			suite.Require().Equal(res.InterestStacked.String(), "10000")
 			suite.Require().Equal(res.InterestPaid.String(), "10")
@@ -89,7 +89,7 @@ func (suite *KeeperTestSuite) TestDebt() {
 			// Pay rest, ensure we don't pay multiple times
 			err = suite.app.StablestakeKeeper.Repay(suite.ctx, sender, sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(10990)))
 			suite.Require().NoError(err)
-			res = suite.app.StablestakeKeeper.GetDebtWithUpdatedInterestStacked(suite.ctx, sender)
+			res = suite.app.StablestakeKeeper.UpdateInterestAndGetDebt(suite.ctx, sender)
 			suite.Require().Equal(res.Borrowed.String(), "0")
 			suite.Require().Equal(res.InterestStacked.String(), "0")
 			suite.Require().Equal(res.InterestPaid.String(), "0")
