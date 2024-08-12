@@ -2,7 +2,6 @@ package keeper
 
 import (
 	errorsmod "cosmossdk.io/errors"
-	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
 	commitmenttypes "github.com/elys-network/elys/x/commitment/types"
@@ -12,18 +11,18 @@ import (
 	stabletypes "github.com/elys-network/elys/x/stablestake/types"
 )
 
-func (k Keeper) CalculateApr(ctx sdk.Context, query *types.QueryAprRequest) (math.Int, error) {
+func (k Keeper) CalculateApr(ctx sdk.Context, query *types.QueryAprRequest) (sdk.Dec, error) {
 	masterchefParams := k.masterchef.GetParams(ctx)
 	estakingParams := k.estaking.GetParams(ctx)
 
 	// If we don't have enough params
 	if estakingParams.StakeIncentives == nil || masterchefParams.LpIncentives == nil {
-		return sdk.ZeroInt(), errorsmod.Wrap(types.ErrNoInflationaryParams, "no inflationary params available")
+		return sdk.ZeroDec(), errorsmod.Wrap(types.ErrNoInflationaryParams, "no inflationary params available")
 	}
 
 	baseCurrency, found := k.assetProfileKeeper.GetUsdcDenom(ctx)
 	if !found {
-		return sdk.ZeroInt(), errorsmod.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency)
+		return sdk.ZeroDec(), errorsmod.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency)
 	}
 
 	stkIncentive := estakingParams.StakeIncentives
@@ -41,15 +40,15 @@ func (k Keeper) CalculateApr(ctx sdk.Context, query *types.QueryAprRequest) (mat
 
 			// Ensure totalStakedSnapshot is not zero to avoid division by zero
 			if totalStakedSnapshot.IsZero() {
-				return sdk.ZeroInt(), nil
+				return sdk.ZeroDec(), nil
 			}
 
 			if stkIncentive == nil || stkIncentive.EdenAmountPerYear.IsNil() {
-				return sdk.ZeroInt(), nil
+				return sdk.ZeroDec(), nil
 			}
 
 			// Calculate
-			stakersEdenAmount := stkIncentive.EdenAmountPerYear.Quo(sdk.NewInt(totalBlocksPerYear))
+			stakersEdenAmount := stkIncentive.EdenAmountPerYear.Quo(sdk.NewInt(totalBlocksPerYear)).ToLegacyDec()
 
 			// Maximum eden APR - 30% by default
 			stakersMaxEdenAmount := estakingParams.MaxEdenRewardAprStakers.
@@ -57,12 +56,12 @@ func (k Keeper) CalculateApr(ctx sdk.Context, query *types.QueryAprRequest) (mat
 				QuoInt64(totalBlocksPerYear)
 
 			// Use min amount (eden allocation from tokenomics and max apr based eden amount)
-			stakersEdenAmount = sdk.MinInt(stakersEdenAmount, stakersMaxEdenAmount.TruncateInt())
+			stakersEdenAmount = sdk.MinDec(stakersEdenAmount, stakersMaxEdenAmount)
 
 			// For Eden reward Apr for elys staking
 			apr := stakersEdenAmount.
-				Mul(sdk.NewInt(totalBlocksPerYear)).
-				Quo(totalStakedSnapshot)
+				Mul(sdk.NewDec(totalBlocksPerYear)).
+				Quo(sdk.NewDecFromInt(totalStakedSnapshot))
 
 			return apr, nil
 		}
@@ -71,28 +70,28 @@ func (k Keeper) CalculateApr(ctx sdk.Context, query *types.QueryAprRequest) (mat
 			params := k.stableKeeper.GetParams(ctx)
 			res, err := k.stableKeeper.BorrowRatio(ctx, &stabletypes.QueryBorrowRatioRequest{})
 			if err != nil {
-				return sdk.ZeroInt(), err
+				return sdk.ZeroDec(), err
 			}
 			apr := params.InterestRate.Mul(res.BorrowRatio)
-			return apr.TruncateInt(), nil
+			return apr, nil
 		} else {
 			// Elys staking, Eden committed, EdenB committed.
 			params := k.estaking.GetParams(ctx)
 			amount := params.DexRewardsStakers.Amount
 			if amount.IsZero() {
-				return sdk.ZeroInt(), nil
+				return sdk.ZeroDec(), nil
 			}
 
 			// If no rewards were given.
 			if params.DexRewardsStakers.NumBlocks.IsZero() {
-				return sdk.ZeroInt(), nil
+				return sdk.ZeroDec(), nil
 			}
 
 			// Calc Eden price in usdc
 			// We put Elys as denom as Eden won't be avaialble in amm pool and has the same value as Elys
 			edenDenomPrice := k.amm.GetEdenDenomPrice(ctx, baseCurrency)
 			if edenDenomPrice.IsZero() {
-				return sdk.ZeroInt(), nil
+				return sdk.ZeroDec(), nil
 			}
 
 			// Update total committed states
@@ -100,7 +99,7 @@ func (k Keeper) CalculateApr(ctx sdk.Context, query *types.QueryAprRequest) (mat
 
 			// Ensure totalStakedSnapshot is not zero to avoid division by zero
 			if totalStakedSnapshot.IsZero() {
-				return sdk.ZeroInt(), nil
+				return sdk.ZeroDec(), nil
 			}
 
 			usdcDenomPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, baseCurrency)
@@ -112,13 +111,13 @@ func (k Keeper) CalculateApr(ctx sdk.Context, query *types.QueryAprRequest) (mat
 			apr := yearlyDexRewardAmount.
 				Quo(edenDenomPrice).
 				QuoInt(totalStakedSnapshot)
-
-			return apr.TruncateInt(), nil
+			
+			return apr, nil
 		}
 	} else if query.Denom == ptypes.EdenB {
-		apr := estakingParams.EdenBoostApr.TruncateInt()
+		apr := estakingParams.EdenBoostApr
 		return apr, nil
 	}
 
-	return sdk.ZeroInt(), nil
+	return sdk.ZeroDec(), nil
 }
