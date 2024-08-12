@@ -48,7 +48,7 @@ func (k Keeper) CalculateApr(ctx sdk.Context, query *types.QueryAprRequest) (sdk
 			}
 
 			// Calculate
-			stakersEdenAmount := stkIncentive.EdenAmountPerYear.Quo(sdk.NewInt(totalBlocksPerYear))
+			stakersEdenAmount := stkIncentive.EdenAmountPerYear.Quo(sdk.NewInt(totalBlocksPerYear)).ToLegacyDec()
 
 			// Maximum eden APR - 30% by default
 			stakersMaxEdenAmount := estakingParams.MaxEdenRewardAprStakers.
@@ -56,14 +56,14 @@ func (k Keeper) CalculateApr(ctx sdk.Context, query *types.QueryAprRequest) (sdk
 				QuoInt64(totalBlocksPerYear)
 
 			// Use min amount (eden allocation from tokenomics and max apr based eden amount)
-			stakersEdenAmount = sdk.MinInt(stakersEdenAmount, stakersMaxEdenAmount.TruncateInt())
+			stakersEdenAmount = sdk.MinDec(stakersEdenAmount, stakersMaxEdenAmount)
 
 			// For Eden reward Apr for elys staking
 			apr := stakersEdenAmount.
-				Mul(sdk.NewInt(totalBlocksPerYear)).
-				Quo(totalStakedSnapshot)
+				Mul(sdk.NewDec(totalBlocksPerYear)).
+				Quo(sdk.NewDecFromInt(totalStakedSnapshot))
 
-			return apr.ToLegacyDec(), nil
+			return apr, nil
 		}
 	} else if query.Denom == ptypes.BaseCurrency {
 		if query.WithdrawType == commitmenttypes.EarnType_USDC_PROGRAM {
@@ -111,7 +111,7 @@ func (k Keeper) CalculateApr(ctx sdk.Context, query *types.QueryAprRequest) (sdk
 			apr := yearlyDexRewardAmount.
 				Quo(edenDenomPrice).
 				QuoInt(totalStakedSnapshot)
-
+			
 			return apr, nil
 		}
 	} else if query.Denom == ptypes.EdenB {
