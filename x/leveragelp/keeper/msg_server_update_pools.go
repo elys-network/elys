@@ -18,10 +18,12 @@ func (k msgServer) UpdatePools(goCtx context.Context, msg *types.MsgUpdatePools)
 
 	pool, found := k.GetPool(ctx, msg.UpdatePool.PoolId)
 
-	if found {
-		pool.Enabled = msg.UpdatePool.Enabled
-		pool.Closed = msg.UpdatePool.Closed
+	if !found {
+		pool.AmmPoolId = msg.UpdatePool.PoolId
 	}
+
+	pool.Enabled = msg.UpdatePool.Enabled
+	pool.Closed = msg.UpdatePool.Closed
 
 	k.SetPool(ctx, pool)
 
