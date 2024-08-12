@@ -258,7 +258,7 @@ func (k Keeper) RetrieveLeverageLpTotal(ctx sdk.Context, user sdk.AccAddress) sd
 			amount := position.Position.LeveragedLpAmount.ToLegacyDec()
 			totalValue = totalValue.Add(amount.Mul(info.LpTokenPrice).QuoInt(ammtypes.OneShare))
 			// USD value of debt
-			debt := k.stablestakeKeeper.GetDebtWithUpdatedInterestStacked(ctx, position.GetPosition().GetPositionAddress())
+			debt := k.stablestakeKeeper.GetDebt(ctx, position.GetPosition().GetPositionAddress())
 			usdcDenom, found := k.assetProfileKeeper.GetUsdcDenom(ctx)
 			if !found {
 				continue

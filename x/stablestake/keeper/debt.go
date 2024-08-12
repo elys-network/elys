@@ -7,7 +7,7 @@ import (
 	"github.com/elys-network/elys/x/stablestake/types"
 )
 
-func (k Keeper) GetDebtWithoutUpdatedInterestStacked(ctx sdk.Context, addr sdk.AccAddress) types.Debt {
+func (k Keeper) getDebt(ctx sdk.Context, addr sdk.AccAddress) types.Debt {
 	debt := types.Debt{}
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.DebtPrefixKey)
 	bz := store.Get([]byte(addr.String()))
@@ -27,8 +27,14 @@ func (k Keeper) GetDebtWithoutUpdatedInterestStacked(ctx sdk.Context, addr sdk.A
 	return debt
 }
 
-func (k Keeper) GetDebtWithUpdatedInterestStacked(ctx sdk.Context, addr sdk.AccAddress) types.Debt {
-	debt := k.GetDebtWithoutUpdatedInterestStacked(ctx, addr)
+func (k Keeper) GetDebt(ctx sdk.Context, addr sdk.AccAddress) types.Debt {
+	debt := k.getDebt(ctx, addr)
+	debt.InterestStacked = debt.InterestStacked.Add(k.GetInterest(ctx, debt.LastInterestCalcBlock, debt.LastInterestCalcTime, debt.Borrowed.ToLegacyDec()))
+	return debt
+}
+
+func (k Keeper) UpdateInterestAndGetDebt(ctx sdk.Context, addr sdk.AccAddress) types.Debt {
+	debt := k.getDebt(ctx, addr)
 	debt = k.UpdateInterestStacked(ctx, debt)
 	return debt
 }
@@ -192,7 +198,7 @@ func (k Keeper) Borrow(ctx sdk.Context, addr sdk.AccAddress, amount sdk.Coin) er
 		return types.ErrMaxBorrowAmount
 	}
 
-	debt := k.GetDebtWithUpdatedInterestStacked(ctx, addr)
+	debt := k.UpdateInterestAndGetDebt(ctx, addr)
 	debt.Borrowed = debt.Borrowed.Add(amount.Amount)
 	k.SetDebt(ctx, debt)
 	return k.bk.SendCoinsFromModuleToAccount(ctx, types.ModuleName, addr, sdk.Coins{amount})
@@ -210,7 +216,7 @@ func (k Keeper) Repay(ctx sdk.Context, addr sdk.AccAddress, amount sdk.Coin) err
 	}
 
 	// calculate latest interest stacked
-	debt := k.GetDebtWithUpdatedInterestStacked(ctx, addr)
+	debt := k.UpdateInterestAndGetDebt(ctx, addr)
 
 	// repay interest
 	interestPayAmount := debt.InterestStacked.Sub(debt.InterestPaid)

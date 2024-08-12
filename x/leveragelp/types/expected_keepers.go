@@ -56,8 +56,8 @@ type BankKeeper interface {
 type StableStakeKeeper interface {
 	GetParams(ctx sdk.Context) stablestaketypes.Params
 	GetDepositDenom(ctx sdk.Context) string
-	GetDebtWithUpdatedInterestStacked(ctx sdk.Context, addr sdk.AccAddress) stablestaketypes.Debt
-	GetDebtWithoutUpdatedInterestStacked(ctx sdk.Context, addr sdk.AccAddress) stablestaketypes.Debt
+	GetDebt(ctx sdk.Context, addr sdk.AccAddress) stablestaketypes.Debt
+	UpdateInterestAndGetDebt(ctx sdk.Context, addr sdk.AccAddress) stablestaketypes.Debt
 	Borrow(ctx sdk.Context, addr sdk.AccAddress, amount sdk.Coin) error
 	Repay(ctx sdk.Context, addr sdk.AccAddress, amount sdk.Coin) error
 	TVL(ctx sdk.Context, oracleKeeper stablestaketypes.OracleKeeper, baseCurrency string) math.LegacyDec

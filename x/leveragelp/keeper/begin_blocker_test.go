@@ -26,7 +26,7 @@ func (suite KeeperTestSuite) TestBeginBlocker() {
 
 	suite.ctx = suite.ctx.WithBlockTime(suite.ctx.BlockTime().Add(time.Hour * 24 * 500))
 	suite.app.StablestakeKeeper.BeginBlocker(suite.ctx)
-	suite.app.StablestakeKeeper.GetDebtWithUpdatedInterestStacked(suite.ctx, sdk.AccAddress(position.GetPositionAddress()))
+	suite.app.StablestakeKeeper.UpdateInterestAndGetDebt(suite.ctx, sdk.AccAddress(position.GetPositionAddress()))
 	health, err = k.GetPositionHealth(suite.ctx, *position)
 	suite.Require().NoError(err)
 	// suite.Require().Equal(health.String(), "1.024543738200125865") // slippage enabled on amm
@@ -34,7 +34,8 @@ func (suite KeeperTestSuite) TestBeginBlocker() {
 
 	params := k.GetParams(suite.ctx)
 	params.SafetyFactor = sdk.NewDecWithPrec(11, 1)
-	k.SetParams(suite.ctx, &params)
+	err = k.SetParams(suite.ctx, &params)
+	suite.Require().NoError(err)
 	k.BeginBlocker(suite.ctx)
 	_, err = k.GetPosition(suite.ctx, position.Address, position.Id)
 	suite.Require().Error(err)
@@ -53,7 +54,7 @@ func (suite KeeperTestSuite) TestLiquidatePositionIfUnhealthy() {
 
 	suite.ctx = suite.ctx.WithBlockTime(suite.ctx.BlockTime().Add(time.Hour * 24 * 500))
 	suite.app.StablestakeKeeper.BeginBlocker(suite.ctx)
-	suite.app.StablestakeKeeper.GetDebtWithUpdatedInterestStacked(suite.ctx, sdk.AccAddress(position.GetPositionAddress()))
+	suite.app.StablestakeKeeper.UpdateInterestAndGetDebt(suite.ctx, sdk.AccAddress(position.GetPositionAddress()))
 	health, err = k.GetPositionHealth(suite.ctx, *position)
 	suite.Require().NoError(err)
 	// suite.Require().Equal(health.String(), "1.024543738200125865") // slippage enabled on amm
@@ -62,7 +63,8 @@ func (suite KeeperTestSuite) TestLiquidatePositionIfUnhealthy() {
 	cacheCtx, _ := suite.ctx.CacheContext()
 	params := k.GetParams(cacheCtx)
 	params.SafetyFactor = sdk.NewDecWithPrec(11, 1)
-	k.SetParams(cacheCtx, &params)
+	err = k.SetParams(cacheCtx, &params)
+	suite.Require().NoError(err)
 	isHealthy, earlyReturn := k.LiquidatePositionIfUnhealthy(cacheCtx, position, pool, ammPool)
 	suite.Require().False(isHealthy)
 	suite.Require().False(earlyReturn)
@@ -158,7 +160,8 @@ func (suite KeeperTestSuite) TestFallback() {
 	params := k.GetParams(suite.ctx)
 	params.NumberPerBlock = 2
 	params.FallbackEnabled = true
-	k.SetParams(suite.ctx, &params)
+	err = k.SetParams(suite.ctx, &params)
+	suite.Require().NoError(err)
 
 	// Add a lot of interest to decrease position health
 	suite.ctx = suite.ctx.WithBlockTime(suite.ctx.BlockTime().Add(time.Hour * 24 * 2000))
