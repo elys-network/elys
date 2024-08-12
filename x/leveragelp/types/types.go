@@ -11,7 +11,6 @@ func NewPosition(signer string, collateral sdk.Coin, leverage sdk.Dec, poolId ui
 		Address:           signer,
 		Collateral:        collateral,
 		Liabilities:       sdk.ZeroInt(),
-		InterestPaid:      sdk.ZeroInt(),
 		Leverage:          leverage,
 		PositionHealth:    sdk.ZeroDec(),
 		AmmPoolId:         poolId,
