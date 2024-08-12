@@ -159,7 +159,7 @@ func (k Keeper) AddCollateralToMtp(ctx sdk.Context, msg *types.MsgAddCollateral)
 	// Update consolidated collateral amount
 	k.OpenLongChecker.CalcMTPConsolidateCollateral(ctx, &mtp, baseCurrency)
 
-	// Calculate consolidate liabiltiy and update consolidate leverage
+	// Calculate consolidate liability and update consolidate leverage
 	mtp.ConsolidateLeverage = types.CalcMTPConsolidateLiability(&mtp)
 
 	// Set MTP
