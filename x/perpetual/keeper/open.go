@@ -33,6 +33,9 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen, isBroker bool) (*types
 		return nil, err
 	}
 
+	// check if existing mtp to consolidate
+	existingMtp := k.OpenChecker.CheckSameAssetPosition(ctx, msg)
+
 	if err := k.OpenChecker.CheckMaxOpenPositions(ctx); err != nil {
 		return nil, err
 	}
@@ -63,8 +66,6 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen, isBroker bool) (*types
 		return nil, errorsmod.Wrap(types.ErrInvalidPosition, msg.Position.String())
 	}
 
-	// check if existing mtp to consolidate
-	existingMtp := k.OpenChecker.CheckSameAssetPosition(ctx, msg)
 	if existingMtp != nil {
 		return k.OpenConsolidate(ctx, existingMtp, mtp, msg, baseCurrency)
 	}
