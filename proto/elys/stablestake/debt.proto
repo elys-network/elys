@@ -21,4 +21,5 @@ message Debt {
   ];
   uint64 borrow_time = 5;
   uint64 last_interest_calc_time = 6;
+  uint64 last_interest_calc_block = 7;
 }

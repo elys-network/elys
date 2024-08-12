@@ -12,24 +12,20 @@ func (k Keeper) ForceCloseLong(ctx sdk.Context, position types.Position, pool ty
 		return sdk.ZeroInt(), types.ErrInvalidCloseSize
 	}
 
-	// Old debt
-	oldDebt := k.stableKeeper.GetDebt(ctx, position.GetPositionAddress())
-
 	// Exit liquidity with collateral token
 	_, exitCoinsAfterExitFee, err := k.amm.ExitPool(ctx, position.GetPositionAddress(), position.AmmPoolId, lpAmount, sdk.Coins{}, position.Collateral.Denom)
 	if err != nil {
 		return sdk.ZeroInt(), err
 	}
 
-	// Repay with interest
-	debt := k.stableKeeper.UpdateInterestStackedByAddress(ctx, position.GetPositionAddress())
+	debt := k.stableKeeper.UpdateInterestAndGetDebt(ctx, position.GetPositionAddress())
 
 	// Ensure position.LeveragedLpAmount is not zero to avoid division by zero
 	if position.LeveragedLpAmount.IsZero() {
 		return sdk.ZeroInt(), types.ErrAmountTooLow
 	}
 
-	repayAmount := debt.Borrowed.Add(debt.InterestStacked).Sub(debt.InterestPaid).Mul(lpAmount).Quo(position.LeveragedLpAmount)
+	repayAmount := debt.GetTotalLiablities().Mul(lpAmount).Quo(position.LeveragedLpAmount)
 
 	// Check if position has enough coins to repay else repay partial
 	bal := k.bankKeeper.GetBalance(ctx, position.GetPositionAddress(), position.Collateral.Denom)
@@ -72,7 +68,7 @@ func (k Keeper) ForceCloseLong(ctx sdk.Context, position types.Position, pool ty
 		if err != nil {
 			return sdk.ZeroInt(), err
 		}
-		err = k.DestroyPosition(ctx, position.Address, position.Id, oldDebt.Borrowed.Add(oldDebt.InterestStacked).Sub(oldDebt.InterestPaid))
+		err = k.DestroyPosition(ctx, position.Address, position.Id)
 		if err != nil {
 			return sdk.ZeroInt(), err
 		}
@@ -85,9 +81,9 @@ func (k Keeper) ForceCloseLong(ctx sdk.Context, position types.Position, pool ty
 		position.PositionHealth = positionHealth
 
 		// Update Liabilities
-		debt = k.stableKeeper.UpdateInterestStackedByAddress(ctx, position.GetPositionAddress())
-		position.Liabilities = debt.Borrowed
-		k.SetPosition(ctx, &position, oldDebt.Borrowed.Add(oldDebt.InterestStacked).Sub(oldDebt.InterestPaid))
+		debt = k.stableKeeper.UpdateInterestAndGetDebt(ctx, position.GetPositionAddress())
+		position.Liabilities = debt.GetTotalLiablities()
+		k.SetPosition(ctx, &position)
 	}
 
 	return repayAmount, nil

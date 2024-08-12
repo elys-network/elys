@@ -25,10 +25,9 @@ func (k Keeper) ProcessAddCollateral(ctx sdk.Context, address string, id uint64,
 		return errorsmod.Wrap(types.ErrPositionDisabled, fmt.Sprintf("poolId: %d", position.AmmPoolId))
 	}
 
-	oldDebt := k.stableKeeper.GetDebt(ctx, position.GetPositionAddress())
 	// Check if collateral is not more than borrowed
-	debtBefore := k.stableKeeper.UpdateInterestStackedByAddress(ctx, position.GetPositionAddress())
-	maxAllowedCollateral := debtBefore.Borrowed.Add(debtBefore.InterestStacked).Sub(debtBefore.InterestPaid)
+	debtBefore := k.stableKeeper.UpdateInterestAndGetDebt(ctx, position.GetPositionAddress())
+	maxAllowedCollateral := debtBefore.GetTotalLiablities()
 	if collateral.GT(maxAllowedCollateral) {
 		return errorsmod.Wrap(types.ErrInvalidCollateral, fmt.Sprintf("Cannot add more than: %s", maxAllowedCollateral.String()))
 	}
@@ -56,11 +55,11 @@ func (k Keeper) ProcessAddCollateral(ctx sdk.Context, address string, id uint64,
 	position.PositionHealth = positionHealth
 
 	// Update Liabilities
-	debt := k.stableKeeper.UpdateInterestStackedByAddress(ctx, position.GetPositionAddress())
-	position.Liabilities = debt.Borrowed
+	debt := k.stableKeeper.UpdateInterestAndGetDebt(ctx, position.GetPositionAddress())
+	position.Liabilities = debt.GetTotalLiablities()
 	position.Collateral = position.Collateral.Add(sdk.NewCoin(position.Collateral.Denom, collateral))
 
-	k.SetPosition(ctx, &position, oldDebt.Borrowed.Add(oldDebt.InterestStacked).Sub(oldDebt.InterestPaid))
+	k.SetPosition(ctx, &position)
 
 	return nil
 }

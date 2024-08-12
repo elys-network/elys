@@ -264,7 +264,7 @@ func (k Keeper) RetrieveLeverageLpTotal(ctx sdk.Context, user sdk.AccAddress) sd
 				continue
 			}
 			usdcPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, usdcDenom)
-			liab := debt.Borrowed.ToLegacyDec().Sub(debt.InterestPaid.ToLegacyDec()).Sub(debt.InterestStacked.ToLegacyDec())
+			liab := debt.GetTotalLiablities().ToLegacyDec()
 			totalValue = totalValue.Sub(liab.Mul(usdcPrice))
 		}
 	}

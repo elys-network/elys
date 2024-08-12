@@ -6,6 +6,25 @@ import "gogoproto/gogo.proto";
 option go_package = "github.com/elys-network/elys/x/leveragelp/types";
 
 // Params defines the parameters for the module.
+message LegacyParams {
+  string leverage_max = 1 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  int64 max_open_positions = 2;
+  string pool_open_threshold = 3 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  string safety_factor = 4 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  bool whitelisting_enabled = 5;
+  int64 epoch_length = 6;
+}
+
+// Params defines the parameters for the module.
 message Params {
   option (gogoproto.goproto_stringer) = false;
   string leverage_max = 1 [
@@ -23,4 +42,6 @@ message Params {
   ];
   bool whitelisting_enabled = 5;
   int64 epoch_length = 6;
+  bool fallback_enabled = 7;
+  int64 number_per_block = 8; // Number of positions to process per block
 }

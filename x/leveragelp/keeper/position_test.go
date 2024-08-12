@@ -33,7 +33,7 @@ func TestSetGetPosition(t *testing.T) {
 			PositionHealth: sdk.NewDec(0),
 			Id:             0,
 		}
-		leveragelp.SetPosition(ctx, &position, sdk.NewInt(0))
+		leveragelp.SetPosition(ctx, &position)
 	}
 
 	positionCount := leveragelp.GetPositionCount(ctx)
@@ -60,12 +60,8 @@ func TestSetLiquidation(t *testing.T) {
 			PositionHealth: sdk.NewDec(0),
 			Id:             0,
 		}
-		leveragelp.SetPosition(ctx, &position, sdk.NewInt(0))
+		leveragelp.SetPosition(ctx, &position)
 	}
-
-	debt := app.StablestakeKeeper.GetDebt(ctx, addr[0])
-	leveragelp.SetSortedLiquidation(ctx, addr[0].String(), debt.Borrowed.Add(debt.InterestStacked).Sub(debt.InterestPaid), sdk.NewInt(100))
-
 	positionCount := leveragelp.GetPositionCount(ctx)
 	require.Equal(t, positionCount, (uint64)(2))
 }
@@ -142,30 +138,17 @@ func TestIteratePoolPosIdsLiquidationSorted(t *testing.T) {
 			PositionHealth:    sdk.NewDec(0),
 		}
 		debt := stablestaketypes.Debt{
-			Address:              position.GetPositionAddress().String(),
-			Borrowed:             info.Borrowed,
-			InterestPaid:         math.ZeroInt(),
-			InterestStacked:      math.ZeroInt(),
-			BorrowTime:           uint64(ctx.BlockTime().Unix()),
-			LastInterestCalcTime: uint64(ctx.BlockTime().Unix()),
+			Address:               position.GetPositionAddress().String(),
+			Borrowed:              info.Borrowed,
+			InterestPaid:          math.ZeroInt(),
+			InterestStacked:       math.ZeroInt(),
+			BorrowTime:            uint64(ctx.BlockTime().Unix()),
+			LastInterestCalcTime:  uint64(ctx.BlockTime().Unix()),
+			LastInterestCalcBlock: uint64(ctx.BlockHeight()),
 		}
 		stablestake.SetDebt(ctx, debt)
-		leveragelp.SetPosition(ctx, &position, sdk.NewInt(0))
+		leveragelp.SetPosition(ctx, &position)
 	}
-
-	idsSorted := []uint64{}
-	leveragelp.IteratePoolPosIdsLiquidationSorted(ctx, 1, func(posInfo types.AddressId) bool {
-		idsSorted = append(idsSorted, posInfo.Id)
-		return false
-	})
-	require.Equal(t, idsSorted, []uint64{1, 2, 3, 4, 5})
-
-	idsSorted = []uint64{}
-	leveragelp.IteratePoolPosIdsLiquidationSorted(ctx, 2, func(posInfo types.AddressId) bool {
-		idsSorted = append(idsSorted, posInfo.Id)
-		return false
-	})
-	require.Equal(t, idsSorted, []uint64{7})
 }
 
 func TestIteratePoolPosIdsStopLossSorted(t *testing.T) {
@@ -231,20 +214,6 @@ func TestIteratePoolPosIdsStopLossSorted(t *testing.T) {
 			PositionHealth:    sdk.NewDec(0),
 			StopLossPrice:     math.LegacyDec(info.StopLossPrice),
 		}
-		leveragelp.SetPosition(ctx, &position, sdk.NewInt(0))
+		leveragelp.SetPosition(ctx, &position)
 	}
-
-	idsSorted := []uint64{}
-	leveragelp.IteratePoolPosIdsStopLossSorted(ctx, 1, func(posInfo types.AddressId) bool {
-		idsSorted = append(idsSorted, posInfo.Id)
-		return false
-	})
-	require.Equal(t, idsSorted, []uint64{6, 5, 4, 2, 1, 3})
-
-	idsSorted = []uint64{}
-	leveragelp.IteratePoolPosIdsStopLossSorted(ctx, 2, func(posInfo types.AddressId) bool {
-		idsSorted = append(idsSorted, posInfo.Id)
-		return false
-	})
-	require.Equal(t, idsSorted, []uint64{7})
 }

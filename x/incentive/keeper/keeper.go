@@ -22,7 +22,7 @@ type (
 		storeKey            storetypes.StoreKey
 		memKey              storetypes.StoreKey
 		parameterKeeper     types.ParameterKeeper
-		cmk                 types.CommitmentKeeper
+		commitmentKeeper    types.CommitmentKeeper
 		stk                 types.StakingKeeper
 		authKeeper          types.AccountKeeper
 		bankKeeper          types.BankKeeper
@@ -64,7 +64,7 @@ func NewKeeper(
 		storeKey:            storeKey,
 		memKey:              memKey,
 		parameterKeeper:     parameterKeeper,
-		cmk:                 ck,
+		commitmentKeeper:    ck,
 		stk:                 sk,
 		authKeeper:          ak,
 		bankKeeper:          bk,
