@@ -21,9 +21,9 @@ func (m Migrator) V4Migration(ctx sdk.Context) error {
 	commitments = m.keeper.GetAllCommitments(ctx)
 	for _, c := range commitments {
 		newCommittedTokens := []*types.CommittedTokens{}
-		for _, commitments := range c.CommittedTokens {
-			if commitments.Amount.LTE(sdk.ZeroInt()) {
-				newCommittedTokens = append(newCommittedTokens, commitments)
+		for _, commitmentToken := range c.CommittedTokens {
+			if commitmentToken.Amount.LTE(sdk.ZeroInt()) {
+				newCommittedTokens = append(newCommittedTokens, commitmentToken)
 			}
 		}
 		c.CommittedTokens = newCommittedTokens
