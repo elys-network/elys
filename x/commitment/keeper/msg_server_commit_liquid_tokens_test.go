@@ -42,7 +42,7 @@ func TestCommitLiquidTokens(t *testing.T) {
 	require.NoError(t, err)
 
 	// Check if the tokens were deposited and unclaimed balance was updated
-	commitments := keeper.GetCommitments(ctx, creator.String())
+	commitments := keeper.GetCommitments(ctx, creator)
 
 	committedBalance := commitments.GetCommittedAmountForDenom(denom)
 	require.Equal(t, sdk.NewInt(100), committedBalance, "committed balance did not update correctly")

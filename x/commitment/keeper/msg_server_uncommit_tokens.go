@@ -23,7 +23,7 @@ func (k Keeper) UncommitTokens(ctx sdk.Context, addr sdk.AccAddress, denom strin
 	}
 
 	// Get the Commitments for the creator
-	commitments := k.GetCommitments(ctx, addr.String())
+	commitments := k.GetCommitments(ctx, addr)
 
 	if denom == ptypes.Eden {
 		err := k.hooks.BeforeEdenCommitChange(ctx, addr)
@@ -54,7 +54,7 @@ func (k Keeper) UncommitTokens(ctx sdk.Context, addr sdk.AccAddress, denom strin
 	k.SetCommitments(ctx, commitments)
 
 	// Emit Hook commitment changed
-	err = k.CommitmentChanged(ctx, addr.String(), sdk.Coins{sdk.NewCoin(denom, amount)})
+	err = k.CommitmentChanged(ctx, addr, sdk.Coins{sdk.NewCoin(denom, amount)})
 	if err != nil {
 		return err
 	}
@@ -77,7 +77,7 @@ func (k Keeper) UncommitTokens(ctx sdk.Context, addr sdk.AccAddress, denom strin
 
 	// Emit Hook if Eden is uncommitted
 	if denom == ptypes.Eden {
-		err = k.EdenUncommitted(ctx, addr.String(), sdk.NewCoin(denom, amount))
+		err = k.EdenUncommitted(ctx, addr, sdk.NewCoin(denom, amount))
 		if err != nil {
 			return err
 		}

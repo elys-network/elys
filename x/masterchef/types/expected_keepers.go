@@ -19,10 +19,10 @@ import (
 // CommitmentKeeper
 type CommitmentKeeper interface {
 	IterateCommitments(sdk.Context, func(ctypes.Commitments) (stop bool))
-	GetCommitments(sdk.Context, string) ctypes.Commitments
+	GetCommitments(sdk.Context, sdk.AccAddress) ctypes.Commitments
 	SetCommitments(sdk.Context, ctypes.Commitments)
 	MintCoins(ctx sdk.Context, moduleName string, amt sdk.Coins) error
-	BurnEdenBoost(ctx sdk.Context, creator string, denom string, amount math.Int) error
+	BurnEdenBoost(ctx sdk.Context, creator sdk.AccAddress, denom string, amount math.Int) error
 	SendCoinsFromModuleToAccount(ctx sdk.Context, senderModule string, recipientAddr sdk.AccAddress, amt sdk.Coins) error
 	GetParams(sdk.Context) ctypes.Params
 }

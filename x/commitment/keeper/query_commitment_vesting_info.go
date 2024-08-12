@@ -16,7 +16,8 @@ func (k Keeper) CommitmentVestingInfo(goCtx context.Context, req *types.QueryCom
 	}
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	commitment := k.GetCommitments(ctx, req.Address)
+	address := sdk.MustAccAddressFromBech32(req.Address)
+	commitment := k.GetCommitments(ctx, address)
 	vestingTokens := commitment.GetVestingTokens()
 
 	totalVesting := sdk.ZeroInt()

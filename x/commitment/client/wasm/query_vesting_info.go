@@ -12,9 +12,8 @@ import (
 )
 
 func (oq *Querier) queryVestingInfo(ctx sdk.Context, query *commitmenttypes.QueryVestingInfoRequest) ([]byte, error) {
-	addr := query.Address
-
-	commitment := oq.keeper.GetCommitments(ctx, addr)
+	address := sdk.MustAccAddressFromBech32(query.Address)
+	commitment := oq.keeper.GetCommitments(ctx, address)
 	vestingTokens := commitment.GetVestingTokens()
 
 	baseCurrency, found := oq.assetKeeper.GetUsdcDenom(ctx)

@@ -79,7 +79,8 @@ func (suite *KeeperTestSuite) TestDebt() {
 			suite.ctx = suite.ctx.WithBlockTime(suite.ctx.BlockTime().Add(time.Hour * 24 * 365))
 
 			// Pay partial
-			suite.app.StablestakeKeeper.Repay(suite.ctx, sender, sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(10)))
+			err = suite.app.StablestakeKeeper.Repay(suite.ctx, sender, sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(10)))
+			suite.Require().NoError(err)
 
 			res := suite.app.StablestakeKeeper.UpdateInterestAndGetDebt(suite.ctx, sender)
 			suite.Require().Equal(res.Borrowed.String(), "1000")

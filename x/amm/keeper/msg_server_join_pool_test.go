@@ -172,7 +172,8 @@ func (suite *KeeperTestSuite) TestMsgServerJoinPool() {
 				},
 				TotalWeight: sdk.ZeroInt(),
 			}
-			suite.app.AmmKeeper.SetPool(suite.ctx, pool)
+			err = suite.app.AmmKeeper.SetPool(suite.ctx, pool)
+			suite.Require().NoError(err)
 
 			// execute function
 			msgServer := keeper.NewMsgServerImpl(suite.app.AmmKeeper)
@@ -202,7 +203,7 @@ func (suite *KeeperTestSuite) TestMsgServerJoinPool() {
 				suite.Require().Equal(balances.String(), tc.expSenderBalance.String())
 
 				// check lp token commitment
-				commitments := suite.app.CommitmentKeeper.GetCommitments(suite.ctx, sender.String())
+				commitments := suite.app.CommitmentKeeper.GetCommitments(suite.ctx, sender)
 				suite.Require().Len(commitments.CommittedTokens, 1)
 				suite.Require().Equal(commitments.CommittedTokens[0].Denom, "amm/pool/1")
 				suite.Require().Equal(commitments.CommittedTokens[0].Amount.String(), tc.shareOutAmount.String())

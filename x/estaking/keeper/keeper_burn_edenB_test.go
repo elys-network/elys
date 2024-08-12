@@ -87,7 +87,7 @@ func TestBurnEdenBFromEdenUncommitted(t *testing.T) {
 	// Set assetprofile entry for denom
 	app.AssetprofileKeeper.SetEntry(ctx, assetprofiletypes.Entry{BaseDenom: ptypes.Eden, CommitEnabled: true, WithdrawEnabled: true})
 
-	commitment := app.CommitmentKeeper.GetCommitments(ctx, genAccount.String())
+	commitment := app.CommitmentKeeper.GetCommitments(ctx, genAccount)
 	commitment.Claimed = commitment.Claimed.Add(committed...)
 	app.CommitmentKeeper.SetCommitments(ctx, commitment)
 

@@ -137,7 +137,7 @@ func TestWithdrawReward_EdenValidator(t *testing.T) {
 	addr := sdk.MustAccAddressFromBech32(delegations[0].DelegatorAddress)
 
 	// set commitments
-	commitments := app.CommitmentKeeper.GetCommitments(ctx, addr.String())
+	commitments := app.CommitmentKeeper.GetCommitments(ctx, addr)
 	commitments.AddClaimed(sdk.NewInt64Coin(ptypes.Eden, 1000_000))
 	app.CommitmentKeeper.SetCommitments(ctx, commitments)
 	app.AssetprofileKeeper.SetEntry(ctx, assetprofiletypes.Entry{
@@ -201,7 +201,7 @@ func TestWithdrawReward_EdenBValidator(t *testing.T) {
 	addr := sdk.MustAccAddressFromBech32(delegations[0].DelegatorAddress)
 
 	// set commitments
-	commitments := app.CommitmentKeeper.GetCommitments(ctx, addr.String())
+	commitments := app.CommitmentKeeper.GetCommitments(ctx, addr)
 	commitments.AddClaimed(sdk.NewInt64Coin(ptypes.EdenB, 1000_000))
 	app.CommitmentKeeper.SetCommitments(ctx, commitments)
 	app.AssetprofileKeeper.SetEntry(ctx, assetprofiletypes.Entry{

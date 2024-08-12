@@ -68,7 +68,7 @@ func (k Keeper) RetrieveAllPortfolio(ctx sdk.Context, user string) {
 
 func (k Keeper) RetrievePoolTotal(ctx sdk.Context, user sdk.AccAddress) sdk.Dec {
 	totalValue := sdk.NewDec(0)
-	commitments := k.commitement.GetCommitments(ctx, user.String())
+	commitments := k.commitement.GetCommitments(ctx, user)
 	for _, commitment := range commitments.CommittedTokens {
 		// Pool balance
 		if strings.HasPrefix(commitment.Denom, "amm/pool") {
@@ -91,7 +91,7 @@ func (k Keeper) RetrievePoolTotal(ctx sdk.Context, user sdk.AccAddress) sdk.Dec 
 
 func (k Keeper) RetrieveStaked(ctx sdk.Context, user sdk.AccAddress) (sdk.Dec, sdk.Dec, sdk.Dec, sdk.Dec) {
 	totalCommit := sdk.NewDec(0)
-	commitments := k.commitement.GetCommitments(ctx, user.String())
+	commitments := k.commitement.GetCommitments(ctx, user)
 	totalVested := sdk.NewDec(0)
 	vestingResp, vestErr := k.commitement.CommitmentVestingInfo(ctx, &commitmenttypes.QueryCommitmentVestingInfoRequest{Address: user.String()})
 	if vestErr == nil {

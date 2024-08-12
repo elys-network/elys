@@ -105,7 +105,8 @@ func (k msgServer) ClaimAirdrop(goCtx context.Context, msg *types.MsgClaimAirdro
 	}
 
 	// Add commitments
-	commitments := k.commitmentKeeper.GetCommitments(ctx, msg.Sender)
+	sender := sdk.MustAccAddressFromBech32(msg.Sender)
+	commitments := k.commitmentKeeper.GetCommitments(ctx, sender)
 	commitments.AddClaimed(sdk.NewCoin(ptypes.Eden, sdk.NewInt(int64(airdrop.Amount))))
 	k.commitmentKeeper.SetCommitments(ctx, commitments)
 

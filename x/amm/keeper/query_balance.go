@@ -18,20 +18,18 @@ func (k Keeper) Balance(goCtx context.Context, req *types.QueryBalanceRequest) (
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	denom := req.Denom
-	addr := req.Address
-	address, err := sdk.AccAddressFromBech32(addr)
+	address, err := sdk.AccAddressFromBech32(req.Address)
 	if err != nil {
 		return nil, sdkerrors.ErrInvalidAddress
 	}
 
 	// Calculates balance in bank module
 	// For Eden/EdenB, calculates commitment claimed amount
-	balance := k.bankKeeper.GetBalance(ctx, address, denom)
-	if denom == paramtypes.Eden || denom == paramtypes.EdenB {
-		commitment := k.commitmentKeeper.GetCommitments(ctx, addr)
-		claimed := commitment.GetClaimedForDenom(denom)
-		balance = sdk.NewCoin(denom, claimed)
+	balance := k.bankKeeper.GetBalance(ctx, address, req.Denom)
+	if req.Denom == paramtypes.Eden || req.Denom == paramtypes.EdenB {
+		commitment := k.commitmentKeeper.GetCommitments(ctx, address)
+		claimed := commitment.GetClaimedForDenom(req.Denom)
+		balance = sdk.NewCoin(req.Denom, claimed)
 	}
 
 	return &types.QueryBalanceResponse{
