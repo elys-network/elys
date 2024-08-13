@@ -20,8 +20,7 @@ const (
 	// MemStoreKey defines the in-memory store key
 	MemStoreKey = "mem_masterchef"
 
-	ParamsKey = "ParamsKey"
-
+	LegacyParamsKey                       = "LegacyParamsKey"
 	LegacyUserRewardInfoKeyPrefix         = "UserRewardInfo"
 	LegacyPoolInfoKeyPrefix               = "PoolInfo"
 	LegacyExternalIncentiveIndexKeyPrefix = "IndexExternalIncentive"
@@ -31,12 +30,13 @@ const (
 )
 
 var (
-	UserRewardInfoKeyPrefix         = []byte{0x01}
-	PoolInfoKeyPrefix               = []byte{0x02}
-	ExternalIncentiveIndexKeyPrefix = []byte{0x03}
-	ExternalIncentiveKeyPrefix      = []byte{0x04}
-	PoolRewardInfoKeyPrefix         = []byte{0x05}
-	PoolRewardsAccumKeyPrefix       = []byte{0x06}
+	ParamsKey                       = []byte{0x01}
+	UserRewardInfoKeyPrefix         = []byte{0x02}
+	PoolInfoKeyPrefix               = []byte{0x03}
+	ExternalIncentiveIndexKeyPrefix = []byte{0x04}
+	ExternalIncentiveKeyPrefix      = []byte{0x05}
+	PoolRewardInfoKeyPrefix         = []byte{0x06}
+	PoolRewardsAccumKeyPrefix       = []byte{0x07}
 )
 
 func KeyPrefix(p string) []byte {
