@@ -22,22 +22,21 @@ const (
 
 	ParamsKey = "ParamsKey"
 
-	LegacyPoolInfoKeyPrefix = "PoolInfo"
-
-	ExternalIncentiveIndexKeyPrefix = "IndexExternalIncentive"
+	LegacyUserRewardInfoKeyPrefix         = "UserRewardInfo"
+	LegacyPoolInfoKeyPrefix               = "PoolInfo"
+	LegacyExternalIncentiveIndexKeyPrefix = "IndexExternalIncentive"
 
 	ExternalIncentiveKeyPrefix = "ExternalIncentive"
 
 	PoolRewardInfoKeyPrefix = "PoolRewardInfo"
 
-	LegacyUserRewardInfoKeyPrefix = "UserRewardInfo"
-
 	PoolRewardsAccumKeyPrefix = "PoolRewardsAccum"
 )
 
 var (
-	UserRewardInfoKeyPrefix = []byte{0x01}
-	PoolInfoKeyPrefix       = []byte{0x02}
+	UserRewardInfoKeyPrefix         = []byte{0x01}
+	PoolInfoKeyPrefix               = []byte{0x02}
+	ExternalIncentiveIndexKeyPrefix = []byte{0x03}
 )
 
 func KeyPrefix(p string) []byte {
@@ -75,10 +74,10 @@ func ExternalIncentiveKey(incentiveId uint64) []byte {
 	return key
 }
 
-func ExternalIncentiveIndex() []byte {
+func LegacyExternalIncentiveIndex() []byte {
 	var key []byte
 
-	key = append(key, ExternalIncentiveIndexKeyPrefix...)
+	key = append(key, LegacyExternalIncentiveIndexKeyPrefix...)
 	return key
 }
 

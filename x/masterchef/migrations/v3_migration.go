@@ -18,5 +18,9 @@ func (m Migrator) V3Migration(ctx sdk.Context) error {
 		m.keeper.RemoveLegacyPoolInfo(ctx, legacyPoolInfo.PoolId)
 	}
 
+	externalIncentiveIndex := m.keeper.GetLegacyExternalIncentiveIndex(ctx)
+	m.keeper.SetExternalIncentiveIndex(ctx, externalIncentiveIndex)
+	m.keeper.RemoveLegacyExternalIncentiveIndex(ctx)
+
 	return nil
 }

@@ -7,14 +7,28 @@ import (
 )
 
 func (k Keeper) GetExternalIncentiveIndex(ctx sdk.Context) (index uint64) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.ExternalIncentiveIndexKeyPrefix))
-	index = sdk.BigEndianToUint64(store.Get(types.ExternalIncentiveIndex()))
+	store := ctx.KVStore(k.storeKey)
+	v := store.Get(types.ExternalIncentiveIndexKeyPrefix)
+	index = sdk.BigEndianToUint64(v)
 	return index
 }
 
 func (k Keeper) SetExternalIncentiveIndex(ctx sdk.Context, index uint64) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.ExternalIncentiveIndexKeyPrefix))
-	store.Set(types.ExternalIncentiveIndex(), sdk.Uint64ToBigEndian(index))
+	store := ctx.KVStore(k.storeKey)
+	store.Set(types.ExternalIncentiveIndexKeyPrefix, sdk.Uint64ToBigEndian(index))
+}
+
+// remove after migration
+func (k Keeper) GetLegacyExternalIncentiveIndex(ctx sdk.Context) (index uint64) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.LegacyExternalIncentiveIndexKeyPrefix))
+	index = sdk.BigEndianToUint64(store.Get(types.LegacyExternalIncentiveIndex()))
+	return index
+}
+
+// remove after migration
+func (k Keeper) RemoveLegacyExternalIncentiveIndex(ctx sdk.Context) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.LegacyExternalIncentiveIndexKeyPrefix))
+	store.Delete(types.LegacyExternalIncentiveIndex())
 }
 
 func (k Keeper) SetExternalIncentive(ctx sdk.Context, externalIncentive types.ExternalIncentive) {
