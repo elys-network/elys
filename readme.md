@@ -12,7 +12,7 @@
 
 ## Localnet Setup Guide
 
-This guide provides instructions on how to spin up a new localnet using the Elys network for development purposes. Follow these steps to set up your environment, build contracts, and deploy them to your localnet.
+This guide provides instructions on how to spin up a new localnet using the Elys network for development purposes. Follow these steps to set up your localnet environment.
 
 ### Prerequisites
 
