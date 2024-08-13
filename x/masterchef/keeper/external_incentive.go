@@ -32,14 +32,16 @@ func (k Keeper) RemoveLegacyExternalIncentiveIndex(ctx sdk.Context) {
 }
 
 func (k Keeper) SetExternalIncentive(ctx sdk.Context, externalIncentive types.ExternalIncentive) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.ExternalIncentiveKeyPrefix))
+	store := ctx.KVStore(k.storeKey)
+	key := types.GetExternalIncentiveKey(externalIncentive.Id)
 	b := k.cdc.MustMarshal(&externalIncentive)
-	store.Set(types.ExternalIncentiveKey(externalIncentive.Id), b)
+	store.Set(key, b)
 }
 
 func (k Keeper) GetExternalIncentive(ctx sdk.Context, id uint64) (val types.ExternalIncentive, found bool) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.ExternalIncentiveKeyPrefix))
-	b := store.Get(types.ExternalIncentiveKey(id))
+	store := ctx.KVStore(k.storeKey)
+	key := types.GetExternalIncentiveKey(id)
+	b := store.Get(key)
 	if b == nil {
 		return val, false
 	}
@@ -49,12 +51,33 @@ func (k Keeper) GetExternalIncentive(ctx sdk.Context, id uint64) (val types.Exte
 }
 
 func (k Keeper) RemoveExternalIncentive(ctx sdk.Context, id uint64) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.ExternalIncentiveKeyPrefix))
-	store.Delete(types.ExternalIncentiveKey(id))
+	store := ctx.KVStore(k.storeKey)
+	key := types.GetExternalIncentiveKey(id)
+	store.Delete(key)
 }
 
 func (k Keeper) GetAllExternalIncentives(ctx sdk.Context) (list []types.ExternalIncentive) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.ExternalIncentiveKeyPrefix))
+	store := ctx.KVStore(k.storeKey)
+	iterator := sdk.KVStorePrefixIterator(store, types.ExternalIncentiveKeyPrefix)
+
+	defer iterator.Close()
+
+	for ; iterator.Valid(); iterator.Next() {
+		var val types.ExternalIncentive
+		k.cdc.MustUnmarshal(iterator.Value(), &val)
+		list = append(list, val)
+	}
+
+	return
+}
+
+func (k Keeper) DeleteLegacyExternalIncentive(ctx sdk.Context, id uint64) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.LegacyExternalIncentiveKeyPrefix))
+	store.Delete(types.LegacyExternalIncentiveKey(id))
+}
+
+func (k Keeper) GetAllLegacyExternalIncentives(ctx sdk.Context) (list []types.ExternalIncentive) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.LegacyExternalIncentiveKeyPrefix))
 	iterator := sdk.KVStorePrefixIterator(store, []byte{})
 
 	defer iterator.Close()

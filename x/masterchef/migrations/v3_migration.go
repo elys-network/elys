@@ -22,5 +22,11 @@ func (m Migrator) V3Migration(ctx sdk.Context) error {
 	m.keeper.SetExternalIncentiveIndex(ctx, externalIncentiveIndex)
 	m.keeper.RemoveLegacyExternalIncentiveIndex(ctx)
 
+	externalIncentives := m.keeper.GetAllLegacyExternalIncentives(ctx)
+	for _, externalIncentive := range externalIncentives {
+		m.keeper.SetExternalIncentive(ctx, externalIncentive)
+		m.keeper.DeleteLegacyExternalIncentive(ctx, externalIncentive.Id)
+	}
+
 	return nil
 }
