@@ -58,7 +58,7 @@ func (k Keeper) GetRewardDenoms(ctx sdk.Context, poolId uint64) []string {
 	rewardDenoms[k.GetBaseCurrencyDenom(ctx)] = true
 	keys := []string{ptypes.Eden, k.GetBaseCurrencyDenom(ctx)}
 
-	poolInfo, found := k.GetPool(ctx, poolId)
+	poolInfo, found := k.GetPoolInfo(ctx, poolId)
 	if !found {
 		return []string{}
 	}

@@ -176,7 +176,7 @@ func (k msgServer) ClaimRewards(goCtx context.Context, msg *types.MsgClaimReward
 	sender := sdk.MustAccAddressFromBech32(msg.Sender)
 
 	if len(msg.PoolIds) == 0 {
-		allPools := k.GetAllPools(ctx)
+		allPools := k.GetAllPoolInfos(ctx)
 		for _, pool := range allPools {
 			msg.PoolIds = append(msg.PoolIds, pool.PoolId)
 		}

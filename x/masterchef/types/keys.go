@@ -22,7 +22,7 @@ const (
 
 	ParamsKey = "ParamsKey"
 
-	PoolInfoKeyPrefix = "PoolInfo"
+	LegacyPoolInfoKeyPrefix = "PoolInfo"
 
 	ExternalIncentiveIndexKeyPrefix = "IndexExternalIncentive"
 
@@ -37,19 +37,29 @@ const (
 
 var (
 	UserRewardInfoKeyPrefix = []byte{0x01}
+	PoolInfoKeyPrefix       = []byte{0x02}
 )
 
 func KeyPrefix(p string) []byte {
 	return []byte(p)
 }
 
-func PoolInfoKey(poolId uint64) []byte {
+func LegacyPoolInfoKey(poolId uint64) []byte {
 	var key []byte
 
 	poolIdBytes := make([]byte, 8)
 	binary.BigEndian.PutUint64(poolIdBytes, poolId)
 	key = append(key, poolIdBytes...)
 	key = append(key, []byte("/")...)
+
+	return key
+}
+
+func GetPoolInfoKey(poolId uint64) []byte {
+	key := PoolInfoKeyPrefix
+	poolIdBytes := make([]byte, 8)
+	binary.BigEndian.PutUint64(poolIdBytes, poolId)
+	key = append(key, poolIdBytes...)
 
 	return key
 }

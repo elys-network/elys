@@ -25,7 +25,7 @@ func (k Keeper) ExternalIncentive(goCtx context.Context, req *types.QueryExterna
 func (k Keeper) PoolInfo(goCtx context.Context, req *types.QueryPoolInfoRequest) (*types.QueryPoolInfoResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	poolInfo, found := k.GetPool(ctx, req.PoolId)
+	poolInfo, found := k.GetPoolInfo(ctx, req.PoolId)
 	if !found {
 		return nil, status.Error(codes.InvalidArgument, "invalid pool id")
 	}
@@ -83,7 +83,7 @@ func (k Keeper) UserPendingReward(goCtx context.Context, req *types.QueryUserPen
 	totalRewards := sdk.NewCoins()
 	rewardsInfos := []*types.RewardInfo{}
 
-	for _, pool := range k.GetAllPools(ctx) {
+	for _, pool := range k.GetAllPoolInfos(ctx) {
 		poolRewards := k.UserPoolPendingReward(ctx, user, pool.PoolId)
 		rewardsInfos = append(rewardsInfos,
 			&types.RewardInfo{

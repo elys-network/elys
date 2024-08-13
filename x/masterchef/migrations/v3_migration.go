@@ -12,5 +12,11 @@ func (m Migrator) V3Migration(ctx sdk.Context) error {
 		m.keeper.DeleteLegacyUserRewardInfo(ctx, legacyUserRewardInfo.User, legacyUserRewardInfo.PoolId, legacyUserRewardInfo.RewardDenom)
 	}
 
+	legacyPoolInfos := m.keeper.GetAllLegacyPoolInfos(ctx)
+	for _, legacyPoolInfo := range legacyPoolInfos {
+		m.keeper.SetPoolInfo(ctx, legacyPoolInfo)
+		m.keeper.RemoveLegacyPoolInfo(ctx, legacyPoolInfo.PoolId)
+	}
+
 	return nil
 }

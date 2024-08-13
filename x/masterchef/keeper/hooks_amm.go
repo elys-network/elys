@@ -9,7 +9,7 @@ import (
 
 // AfterPoolCreated is called after CreatePool
 func (k Keeper) AfterPoolCreated(ctx sdk.Context, sender sdk.AccAddress, poolId uint64) {
-	_, found := k.GetPool(ctx, poolId)
+	_, found := k.GetPoolInfo(ctx, poolId)
 	if found {
 		return
 	}
@@ -32,7 +32,7 @@ func (k Keeper) AfterPoolCreated(ctx sdk.Context, sender sdk.AccAddress, poolId 
 		// external reward denoms on the pool
 		ExternalRewardDenoms: []string{},
 	}
-	k.SetPool(ctx, poolInfo)
+	k.SetPoolInfo(ctx, poolInfo)
 }
 
 // AfterJoinPool is called after JoinPool, JoinSwapExternAmountIn, and JoinSwapShareAmountOut

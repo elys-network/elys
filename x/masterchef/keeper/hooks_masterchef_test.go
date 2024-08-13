@@ -306,6 +306,6 @@ func TestHookMasterchef(t *testing.T) {
 	require.NoError(t, err)
 	require.Len(t, res.TotalRewards, 0)
 
-	pool, _ := mk.GetPool(ctx, pools[0].PoolId)
+	pool, _ := mk.GetPoolInfo(ctx, pools[0].PoolId)
 	require.Equal(t, pool.ExternalIncentiveApr.String(), "4204.799481351999973502")
 }
