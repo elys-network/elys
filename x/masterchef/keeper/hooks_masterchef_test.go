@@ -176,11 +176,11 @@ func TestHookMasterchef(t *testing.T) {
 	share := ammtypes.InitPoolSharesSupply.Mul(math.NewIntWithDecimal(1, 5))
 	t.Log(mk.GetPoolTotalCommit(ctx, pools[0].PoolId))
 	require.Equal(t, mk.GetPoolTotalCommit(ctx, pools[0].PoolId).String(), "10002000000000000000000000")
-	require.Equal(t, mk.GetPoolBalance(ctx, pools[0].PoolId, addr[0].String()).String(), "10000000000000000000000000")
+	require.Equal(t, mk.GetPoolBalance(ctx, pools[0].PoolId, addr[0]).String(), "10000000000000000000000000")
 	_, _, err = amm.JoinPoolNoSwap(ctx, addr[1], pools[0].PoolId, share, sdk.NewCoins(sdk.NewCoin(ptypes.Elys, sdk.NewInt(10000000)), sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(10000000))))
 	require.NoError(t, err)
 	require.Equal(t, mk.GetPoolTotalCommit(ctx, pools[0].PoolId).String(), "20002000000000000000000000")
-	require.Equal(t, mk.GetPoolBalance(ctx, pools[0].PoolId, addr[1].String()), share)
+	require.Equal(t, mk.GetPoolBalance(ctx, pools[0].PoolId, addr[1]), share)
 
 	atomToken := sdk.NewCoins(sdk.NewCoin("uatom", math.NewIntWithDecimal(100000000, 6)))
 	err = app.BankKeeper.MintCoins(ctx, ammtypes.ModuleName, atomToken)

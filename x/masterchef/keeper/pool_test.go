@@ -57,8 +57,7 @@ func TestPool(t *testing.T) {
 		},
 	}
 	for _, pool := range pools {
-		err := app.MasterchefKeeper.SetPool(ctx, pool)
-		require.NoError(t, err)
+		app.MasterchefKeeper.SetPool(ctx, pool)
 	}
 	for _, pool := range pools {
 		info, found := app.MasterchefKeeper.GetPool(ctx, pool.PoolId)
@@ -119,8 +118,7 @@ func TestUpdatePoolMultipliers(t *testing.T) {
 		},
 	}
 	for _, pool := range pools {
-		err := app.MasterchefKeeper.SetPool(ctx, pool)
-		require.NoError(t, err)
+		app.MasterchefKeeper.SetPool(ctx, pool)
 	}
 	for _, pool := range pools {
 		info, found := app.MasterchefKeeper.GetPool(ctx, pool.PoolId)
