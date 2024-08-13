@@ -17,7 +17,7 @@ func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) 
 	}
 
 	for _, elem := range genState.PoolInfos {
-		k.SetPool(ctx, elem)
+		k.SetPoolInfo(ctx, elem)
 	}
 
 	for _, elem := range genState.PoolRewardInfos {
@@ -39,7 +39,7 @@ func ExportGenesis(ctx sdk.Context, k keeper.Keeper) *types.GenesisState {
 	genesis.Params = k.GetParams(ctx)
 	genesis.ExternalIncentives = k.GetAllExternalIncentives(ctx)
 	genesis.ExternalIncentiveIndex = k.GetExternalIncentiveIndex(ctx)
-	genesis.PoolInfos = k.GetAllPools(ctx)
+	genesis.PoolInfos = k.GetAllPoolInfos(ctx)
 	genesis.PoolRewardInfos = k.GetAllPoolRewardInfos(ctx)
 	genesis.UserRewardInfos = k.GetAllUserRewardInfos(ctx)
 	genesis.PoolRewardsAccum = k.GetAllPoolRewardsAccum(ctx)

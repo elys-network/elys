@@ -71,12 +71,16 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen, isBroker bool) (*types
 	}
 
 	// calc and update open price
-	k.OpenChecker.UpdateOpenPrice(ctx, mtp, ammPool, baseCurrency)
+	err = k.OpenChecker.UpdateOpenPrice(ctx, mtp, ammPool, baseCurrency)
+	if err != nil {
+		return nil, err
+	}
 
 	k.OpenChecker.EmitOpenEvent(ctx, mtp)
 
+	creator := sdk.MustAccAddressFromBech32(msg.Creator)
 	if k.hooks != nil {
-		k.hooks.AfterPerpetualPositionOpen(ctx, ammPool, pool, msg.Creator)
+		k.hooks.AfterPerpetualPositionOpen(ctx, ammPool, pool, creator)
 	}
 
 	return &types.MsgOpenResponse{

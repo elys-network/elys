@@ -46,7 +46,7 @@ func (k Keeper) CalculateStableStakeApr(ctx sdk.Context, query *types.QueryStabl
 		edenDenomPrice := k.amm.GetEdenDenomPrice(ctx, baseCurrency)
 
 		// Get pool info from incentive param
-		poolInfo, found := k.GetPool(ctx, uint64(stabletypes.PoolId))
+		poolInfo, found := k.GetPoolInfo(ctx, uint64(stabletypes.PoolId))
 		if !found {
 			return sdk.ZeroDec(), nil
 		}
