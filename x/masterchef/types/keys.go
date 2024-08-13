@@ -2,6 +2,7 @@ package types
 
 import (
 	"encoding/binary"
+	"github.com/cosmos/cosmos-sdk/types/address"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
@@ -29,9 +30,13 @@ const (
 
 	PoolRewardInfoKeyPrefix = "PoolRewardInfo"
 
-	UserRewardInfoKeyPrefix = "UserRewardInfo"
+	LegacyUserRewardInfoKeyPrefix = "UserRewardInfo"
 
 	PoolRewardsAccumKeyPrefix = "PoolRewardsAccum"
+)
+
+var (
+	UserRewardInfoKeyPrefix = []byte{0x01}
 )
 
 func KeyPrefix(p string) []byte {
@@ -80,7 +85,7 @@ func PoolRewardInfoKey(poolId uint64, rewardDenom string) []byte {
 	return key
 }
 
-func UserRewardInfoKey(user string, poolId uint64, rewardDenom string) []byte {
+func LegacyUserRewardInfoKey(user string, poolId uint64, rewardDenom string) []byte {
 	var key []byte
 
 	key = append(key, user...)
@@ -91,6 +96,20 @@ func UserRewardInfoKey(user string, poolId uint64, rewardDenom string) []byte {
 	key = append(key, []byte("/")...)
 	key = append(key, rewardDenom...)
 	key = append(key, []byte("/")...)
+
+	return key
+}
+
+func GetUserRewardInfoKey(user sdk.AccAddress, poolId uint64, rewardDenom string) []byte {
+	key := UserRewardInfoKeyPrefix
+
+	key = append(key, address.MustLengthPrefix(user)...)
+	key = append(key, []byte("/")...)
+	poolIdBytes := make([]byte, 8)
+	binary.BigEndian.PutUint64(poolIdBytes, poolId)
+	key = append(key, poolIdBytes...)
+	key = append(key, []byte("/")...)
+	key = append(key, rewardDenom...)
 
 	return key
 }

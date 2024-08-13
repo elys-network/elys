@@ -119,7 +119,7 @@ func TestGetPortfolioNative(t *testing.T) {
 	err = app.BankKeeper.SendCoinsFromModuleToAccount(ctx, ammtypes.ModuleName, addr[0], coins)
 	require.NoError(t, err)
 
-	tier.RetrieveAllPortfolio(ctx, addr[0].String())
+	tier.RetrieveAllPortfolio(ctx, addr[0])
 
 	portfolio, found := tier.GetPortfolio(ctx, addr[0].String(), tier.GetDateFromBlock(ctx.BlockTime()))
 	require.True(t, found)
@@ -193,7 +193,7 @@ func TestGetPortfolioAmm(t *testing.T) {
 	require.NoError(t, err)
 	require.Equal(t, resp.PoolID, uint64(1))
 
-	tier.RetrieveAllPortfolio(ctx, addr[0].String())
+	tier.RetrieveAllPortfolio(ctx, addr[0])
 
 	portfolio, found := tier.GetPortfolio(ctx, addr[0].String(), tier.GetDateFromBlock(ctx.BlockTime()))
 	require.True(t, found)
@@ -280,7 +280,7 @@ func TestGetPortfolioPerpetual(t *testing.T) {
 	require.NoError(t, err)
 	require.Equal(t, resp.PoolID, uint64(1))
 
-	perpetual.SetMTP(ctx, &perpetualtypes.MTP{
+	err = perpetual.SetMTP(ctx, &perpetualtypes.MTP{
 		Address:                        addr[0].String(),
 		CollateralAsset:                ptypes.BaseCurrency,
 		CustodyAsset:                   ptypes.Elys,
@@ -297,8 +297,9 @@ func TestGetPortfolioPerpetual(t *testing.T) {
 		ConsolidateLeverage:            sdk.ZeroDec(),
 		SumCollateral:                  sdk.ZeroInt(),
 	})
+	require.NoError(t, err)
 
-	tier.RetrieveAllPortfolio(ctx, addr[0].String())
+	tier.RetrieveAllPortfolio(ctx, addr[0])
 
 	portfolio, found := tier.GetPortfolio(ctx, addr[0].String(), tier.GetDateFromBlock(ctx.BlockTime()))
 	require.True(t, found)

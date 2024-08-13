@@ -1,0 +1,16 @@
+package migrations
+
+import (
+	sdk "github.com/cosmos/cosmos-sdk/types"
+)
+
+func (m Migrator) V3Migration(ctx sdk.Context) error {
+	legacyUserRewardInfos := m.keeper.GetAllLegacyUserRewardInfos(ctx)
+
+	for _, legacyUserRewardInfo := range legacyUserRewardInfos {
+		m.keeper.SetUserRewardInfo(ctx, legacyUserRewardInfo)
+		m.keeper.DeleteLegacyUserRewardInfo(ctx, legacyUserRewardInfo.User, legacyUserRewardInfo.PoolId, legacyUserRewardInfo.RewardDenom)
+	}
+
+	return nil
+}

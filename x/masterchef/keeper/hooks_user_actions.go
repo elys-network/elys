@@ -6,7 +6,7 @@ import (
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
 
-func (k Keeper) AfterDepositPerReward(ctx sdk.Context, poolId uint64, rewardDenom string, user string, amount math.Int) {
+func (k Keeper) AfterDepositPerReward(ctx sdk.Context, poolId uint64, rewardDenom string, user sdk.AccAddress, amount math.Int) {
 	k.UpdateUserRewardPending(
 		ctx,
 		poolId,
@@ -23,13 +23,13 @@ func (k Keeper) AfterDepositPerReward(ctx sdk.Context, poolId uint64, rewardDeno
 	)
 }
 
-func (k Keeper) AfterDeposit(ctx sdk.Context, poolId uint64, user string, amount math.Int) {
+func (k Keeper) AfterDeposit(ctx sdk.Context, poolId uint64, user sdk.AccAddress, amount math.Int) {
 	for _, rewardDenom := range k.GetRewardDenoms(ctx, poolId) {
 		k.AfterDepositPerReward(ctx, poolId, rewardDenom, user, amount)
 	}
 }
 
-func (k Keeper) AfterWithdrawPerReward(ctx sdk.Context, poolId uint64, rewardDenom string, user string, amount math.Int) {
+func (k Keeper) AfterWithdrawPerReward(ctx sdk.Context, poolId uint64, rewardDenom string, user sdk.AccAddress, amount math.Int) {
 	k.UpdateUserRewardPending(
 		ctx,
 		poolId,
@@ -46,7 +46,7 @@ func (k Keeper) AfterWithdrawPerReward(ctx sdk.Context, poolId uint64, rewardDen
 	)
 }
 
-func (k Keeper) AfterWithdraw(ctx sdk.Context, poolId uint64, user string, amount math.Int) {
+func (k Keeper) AfterWithdraw(ctx sdk.Context, poolId uint64, user sdk.AccAddress, amount math.Int) {
 	for _, rewardDenom := range k.GetRewardDenoms(ctx, poolId) {
 		k.AfterWithdrawPerReward(ctx, poolId, rewardDenom, user, amount)
 	}

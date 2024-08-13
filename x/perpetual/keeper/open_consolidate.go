@@ -42,12 +42,16 @@ func (k Keeper) OpenConsolidate(ctx sdk.Context, existingMtp *types.MTP, newMtp 
 	}
 
 	// calc and update open price
-	k.UpdateOpenPrice(ctx, existingMtp, ammPool, baseCurrency)
+	err = k.UpdateOpenPrice(ctx, existingMtp, ammPool, baseCurrency)
+	if err != nil {
+		return nil, err
+	}
 
 	k.EmitOpenEvent(ctx, existingMtp)
 
+	creator := sdk.MustAccAddressFromBech32(msg.Creator)
 	if k.hooks != nil {
-		k.hooks.AfterPerpetualPositionModified(ctx, ammPool, pool, msg.Creator)
+		k.hooks.AfterPerpetualPositionModified(ctx, ammPool, pool, creator)
 	}
 
 	return &types.MsgOpenResponse{

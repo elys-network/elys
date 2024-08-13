@@ -6,11 +6,10 @@ import (
 	"github.com/elys-network/elys/x/masterchef/types"
 )
 
-func (k Keeper) SetPoolRewardInfo(ctx sdk.Context, poolReward types.PoolRewardInfo) error {
+func (k Keeper) SetPoolRewardInfo(ctx sdk.Context, poolReward types.PoolRewardInfo) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.PoolRewardInfoKeyPrefix))
 	b := k.cdc.MustMarshal(&poolReward)
 	store.Set(types.PoolRewardInfoKey(poolReward.PoolId, poolReward.RewardDenom), b)
-	return nil
 }
 
 func (k Keeper) GetPoolRewardInfo(ctx sdk.Context, poolId uint64, rewardDenom string) (val types.PoolRewardInfo, found bool) {

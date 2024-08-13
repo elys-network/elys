@@ -48,8 +48,9 @@ func (k Keeper) CloseLong(ctx sdk.Context, msg *types.MsgClose, baseCurrency str
 	}
 
 	// Hooks after perpetual position closed
+	creator := sdk.MustAccAddressFromBech32(msg.Creator)
 	if k.hooks != nil {
-		k.hooks.AfterPerpetualPositionClosed(ctx, ammPool, pool, msg.Creator)
+		k.hooks.AfterPerpetualPositionClosed(ctx, ammPool, pool, creator)
 	}
 
 	return &mtp, repayAmt, nil
