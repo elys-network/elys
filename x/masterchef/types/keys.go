@@ -26,8 +26,7 @@ const (
 	LegacyPoolInfoKeyPrefix               = "PoolInfo"
 	LegacyExternalIncentiveIndexKeyPrefix = "IndexExternalIncentive"
 	LegacyExternalIncentiveKeyPrefix      = "ExternalIncentive"
-
-	PoolRewardInfoKeyPrefix = "PoolRewardInfo"
+	LegacyPoolRewardInfoKeyPrefix         = "PoolRewardInfo"
 
 	PoolRewardsAccumKeyPrefix = "PoolRewardsAccum"
 )
@@ -37,6 +36,7 @@ var (
 	PoolInfoKeyPrefix               = []byte{0x02}
 	ExternalIncentiveIndexKeyPrefix = []byte{0x03}
 	ExternalIncentiveKeyPrefix      = []byte{0x04}
+	PoolRewardInfoKeyPrefix         = []byte{0x05}
 )
 
 func KeyPrefix(p string) []byte {
@@ -91,7 +91,7 @@ func LegacyExternalIncentiveIndex() []byte {
 	return key
 }
 
-func PoolRewardInfoKey(poolId uint64, rewardDenom string) []byte {
+func LegacyPoolRewardInfoKey(poolId uint64, rewardDenom string) []byte {
 	var key []byte
 
 	poolIdBytes := make([]byte, 8)
@@ -100,6 +100,18 @@ func PoolRewardInfoKey(poolId uint64, rewardDenom string) []byte {
 	key = append(key, []byte("/")...)
 	key = append(key, rewardDenom...)
 	key = append(key, []byte("/")...)
+
+	return key
+}
+
+func GetPoolRewardInfoKey(poolId uint64, rewardDenom string) []byte {
+	key := PoolRewardInfoKeyPrefix
+
+	poolIdBytes := make([]byte, 8)
+	binary.BigEndian.PutUint64(poolIdBytes, poolId)
+	key = append(key, poolIdBytes...)
+	key = append(key, []byte("/")...)
+	key = append(key, rewardDenom...)
 
 	return key
 }

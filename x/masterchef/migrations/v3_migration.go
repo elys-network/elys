@@ -28,5 +28,11 @@ func (m Migrator) V3Migration(ctx sdk.Context) error {
 		m.keeper.DeleteLegacyExternalIncentive(ctx, externalIncentive.Id)
 	}
 
+	legacyPoolRewardInfos := m.keeper.GetAllLegacyPoolRewardInfos(ctx)
+	for _, legacyPoolRewardInfo := range legacyPoolRewardInfos {
+		m.keeper.SetPoolRewardInfo(ctx, legacyPoolRewardInfo)
+		m.keeper.DeleteLegacyPoolRewardInfo(ctx, legacyPoolRewardInfo.PoolId, legacyPoolRewardInfo.RewardDenom)
+	}
+
 	return nil
 }
