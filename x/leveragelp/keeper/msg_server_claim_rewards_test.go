@@ -87,7 +87,6 @@ func (suite *KeeperTestSuite) TestMsgServerClaimRewards() {
 	asset2 := ptypes.BaseCurrency
 	leverage := sdk.MustNewDecFromStr("2.0")
 	collateralAmount := sdk.NewInt(10000000)
-	//leverageLPShares := sdk.MustNewDecFromStr("20000095238095238100").TruncateInt()
 	testCases := []struct {
 		name                 string
 		input                *types.MsgClaimRewards
