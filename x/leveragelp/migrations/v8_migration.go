@@ -11,13 +11,6 @@ import (
 
 func (m Migrator) V8Migration(ctx sdk.Context) error {
 
-	// keys migrations
-	//whitelistAddressStrings := m.keeper.GetAllLegacyWhitelistedAddress(ctx)
-	//for _, addressString := range whitelistAddressStrings {
-	// m.keeper.WhitelistAddress(ctx, sdk.MustAccAddressFromBech32(addressString)) // Not needed as whitelisting disabled on TestNet
-	//m.keeper.DeleteLegacyWhitelistedAddress(ctx, addressString)
-	//}
-
 	// Traverse positions and update lp amount and health
 	// Update data structure
 	positions := m.keeper.GetAllPositions(ctx)
@@ -69,6 +62,13 @@ func (m Migrator) V8Migration(ctx sdk.Context) error {
 	for _, position := range positions {
 		m.keeper.SetPosition(ctx, &position)
 		m.keeper.DeleteLegacyPosition(ctx, position.Address, position.Id)
+	}
+
+	//keys migrations
+	whitelistAddressStrings := m.keeper.GetAllLegacyWhitelistedAddress(ctx)
+	for _, addressString := range whitelistAddressStrings {
+		m.keeper.WhitelistAddress(ctx, sdk.MustAccAddressFromBech32(addressString)) // Not needed as whitelisting disabled on TestNet
+		m.keeper.DeleteLegacyWhitelistedAddress(ctx, addressString)
 	}
 	return nil
 }
