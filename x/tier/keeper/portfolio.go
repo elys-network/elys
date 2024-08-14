@@ -56,7 +56,7 @@ func (k Keeper) RetrieveAllPortfolio(ctx sdk.Context, user sdk.AccAddress) {
 	totalValue = totalValue.Add(commit).Add(delegations).Add(unbondings).Add(totalVesting)
 
 	// LeverageLp
-	_, _, lev := k.RetrieveLeverageLpTotal(ctx, sender)
+	_, _, lev := k.RetrieveLeverageLpTotal(ctx, user)
 
 	totalValue = totalValue.Add(lev)
 
