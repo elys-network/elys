@@ -23,7 +23,7 @@ type CommitmentKeeperI interface {
 	SetCommitments(ctx sdk.Context, commitments types.Commitments)
 
 	// Get commitment
-	GetCommitments(sdk.Context, string) types.Commitments
+	GetCommitments(sdk.Context, sdk.AccAddress) types.Commitments
 }
 
 var _ CommitmentKeeperI = Keeper{}
@@ -87,7 +87,7 @@ func (k *Keeper) SetHooks(eh types.CommitmentHooks) *Keeper {
 }
 
 func (k Keeper) GetAllBalances(ctx sdk.Context, addr sdk.AccAddress) sdk.Coins {
-	commitments := k.GetCommitments(ctx, addr.String())
+	commitments := k.GetCommitments(ctx, addr)
 	edenEdenBAmounts := sdk.Coins{}
 	edenEdenBAmounts = edenEdenBAmounts.Add(sdk.NewCoin(ptypes.Eden, commitments.Claimed.AmountOf(ptypes.Eden)))
 	edenEdenBAmounts = edenEdenBAmounts.Add(sdk.NewCoin(ptypes.EdenB, commitments.Claimed.AmountOf(ptypes.EdenB)))
@@ -105,7 +105,7 @@ func (k Keeper) BlockedAddr(addr sdk.AccAddress) bool {
 }
 
 func (k Keeper) AddEdenEdenBOnAccount(ctx sdk.Context, addr sdk.AccAddress, amt sdk.Coins) sdk.Coins {
-	commitments := k.GetCommitments(ctx, addr.String())
+	commitments := k.GetCommitments(ctx, addr)
 	if amt.AmountOf(ptypes.Eden).IsPositive() {
 		coin := sdk.NewCoin(ptypes.Eden, amt.AmountOf(ptypes.Eden))
 		amt = amt.Sub(coin)
@@ -124,7 +124,7 @@ func (k Keeper) AddEdenEdenBOnAccount(ctx sdk.Context, addr sdk.AccAddress, amt 
 
 func (k Keeper) AddEdenEdenBOnModule(ctx sdk.Context, moduleName string, amt sdk.Coins) sdk.Coins {
 	addr := authtypes.NewModuleAddress(moduleName)
-	commitments := k.GetCommitments(ctx, addr.String())
+	commitments := k.GetCommitments(ctx, addr)
 	if amt.AmountOf(ptypes.Eden).IsPositive() {
 		coin := sdk.NewCoin(ptypes.Eden, amt.AmountOf(ptypes.Eden))
 		amt = amt.Sub(coin)
@@ -143,7 +143,7 @@ func (k Keeper) AddEdenEdenBOnModule(ctx sdk.Context, moduleName string, amt sdk
 
 func (k Keeper) SubEdenEdenBOnModule(ctx sdk.Context, moduleName string, amt sdk.Coins) (sdk.Coins, error) {
 	addr := authtypes.NewModuleAddress(moduleName)
-	commitments := k.GetCommitments(ctx, addr.String())
+	commitments := k.GetCommitments(ctx, addr)
 	if amt.AmountOf(ptypes.Eden).IsPositive() {
 		coin := sdk.NewCoin(ptypes.Eden, amt.AmountOf(ptypes.Eden))
 		amt = amt.Sub(coin)

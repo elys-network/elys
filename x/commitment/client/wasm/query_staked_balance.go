@@ -18,32 +18,30 @@ func (oq *Querier) queryStakedBalanceOfDenom(ctx sdk.Context, query *ammtypes.Qu
 		edenDenomPrice = oq.ammKeeper.GetEdenDenomPrice(ctx, baseCurrency)
 	}
 
-	denom := query.Denom
-	addr := query.Address
 	address, err := sdk.AccAddressFromBech32(query.Address)
 	if err != nil {
 		return nil, errorsmod.Wrap(err, "invalid address")
 	}
 
 	bondedAmt := oq.stakingKeeper.GetDelegatorBonded(ctx, address)
-	balance := sdk.NewCoin(denom, bondedAmt)
+	balance := sdk.NewCoin(query.Denom, bondedAmt)
 	usdAmount := edenDenomPrice.MulInt(balance.Amount)
 	lockups := make([]commitmenttypes.Lockup, 0)
 
-	if denom != ptypes.Elys {
-		commitment := oq.keeper.GetCommitments(ctx, addr)
-		if denom == ptypes.BaseCurrency {
-			denom = stabletypes.GetShareDenom()
+	if query.Denom != ptypes.Elys {
+		commitment := oq.keeper.GetCommitments(ctx, address)
+		if query.Denom == ptypes.BaseCurrency {
+			query.Denom = stabletypes.GetShareDenom()
 		}
 
-		committedToken := commitment.GetCommittedAmountForDenom(denom)
-		lockups = commitment.GetCommittedLockUpsForDenom(denom)
-		balance = sdk.NewCoin(denom, committedToken)
-		if denom == ptypes.Eden || denom == ptypes.EdenB {
+		committedToken := commitment.GetCommittedAmountForDenom(query.Denom)
+		lockups = commitment.GetCommittedLockUpsForDenom(query.Denom)
+		balance = sdk.NewCoin(query.Denom, committedToken)
+		if query.Denom == ptypes.Eden || query.Denom == ptypes.EdenB {
 			usdAmount = edenDenomPrice.MulInt(balance.Amount)
 		}
 
-		if denom == stabletypes.GetShareDenom() {
+		if query.Denom == stabletypes.GetShareDenom() {
 			stableShareDenomPrice := oq.stableKeeper.ShareDenomPrice(ctx, oq.oracleKeeper, baseCurrency)
 			usdAmount = stableShareDenomPrice.MulInt(balance.Amount)
 		}

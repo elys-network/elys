@@ -23,7 +23,7 @@ func (k Keeper) SetCommitments(ctx sdk.Context, commitments types.Commitments) {
 The `GetCommitments` function retrieves a commitment entry from the store based on the creator's address.
 
 ```go
-func (k Keeper) GetCommitments(ctx sdk.Context, creator string) types.Commitments {
+func (k Keeper) GetCommitments(ctx sdk.Context, creator sdk.AccAddress) types.Commitments {
     // Implementation here
 }
 ```

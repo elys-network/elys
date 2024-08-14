@@ -24,13 +24,13 @@ type BankKeeper interface {
 }
 
 type CommitmentKeeper interface {
-	GetCommitments(ctx sdk.Context, creator string) commitmenttypes.Commitments
+	GetCommitments(ctx sdk.Context, creator sdk.AccAddress) commitmenttypes.Commitments
 	GetParams(ctx sdk.Context) commitmenttypes.Params
 	GetAllBalances(ctx sdk.Context, addr sdk.AccAddress) sdk.Coins
 	MintCoins(ctx sdk.Context, moduleName string, amt sdk.Coins) error
 	SendCoinsFromModuleToModule(ctx sdk.Context, senderModule string, recipientModule string, amt sdk.Coins) error
 	SetCommitments(sdk.Context, commitmenttypes.Commitments)
-	BurnEdenBoost(ctx sdk.Context, creator string, denom string, amount math.Int) error
+	BurnEdenBoost(ctx sdk.Context, creator sdk.AccAddress, denom string, amount math.Int) error
 }
 
 type DistrKeeper interface {

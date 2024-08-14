@@ -138,10 +138,10 @@ func (k msgServer) AddExternalIncentive(goCtx context.Context, msg *types.MsgAdd
 func (k Keeper) ClaimRewards(ctx sdk.Context, sender sdk.AccAddress, poolIds []uint64, recipient sdk.AccAddress) error {
 	coins := sdk.NewCoins()
 	for _, poolId := range poolIds {
-		k.AfterWithdraw(ctx, poolId, sender.String(), sdk.ZeroInt())
+		k.AfterWithdraw(ctx, poolId, sender, sdk.ZeroInt())
 
 		for _, rewardDenom := range k.GetRewardDenoms(ctx, poolId) {
-			userRewardInfo, found := k.GetUserRewardInfo(ctx, sender.String(), poolId, rewardDenom)
+			userRewardInfo, found := k.GetUserRewardInfo(ctx, sender, poolId, rewardDenom)
 			if found && userRewardInfo.RewardPending.IsPositive() {
 				coin := sdk.NewCoin(rewardDenom, userRewardInfo.RewardPending.TruncateInt())
 				coins = coins.Add(coin)
@@ -176,7 +176,7 @@ func (k msgServer) ClaimRewards(goCtx context.Context, msg *types.MsgClaimReward
 	sender := sdk.MustAccAddressFromBech32(msg.Sender)
 
 	if len(msg.PoolIds) == 0 {
-		allPools := k.GetAllPools(ctx)
+		allPools := k.GetAllPoolInfos(ctx)
 		for _, pool := range allPools {
 			msg.PoolIds = append(msg.PoolIds, pool.PoolId)
 		}

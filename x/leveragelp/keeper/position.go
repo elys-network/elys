@@ -261,7 +261,7 @@ func (k Keeper) GetPositionHealth(ctx sdk.Context, position types.Position) (sdk
 	}
 
 	leveragedLpAmount := sdk.ZeroInt()
-	commitments := k.commKeeper.GetCommitments(ctx, position.GetPositionAddress().String())
+	commitments := k.commKeeper.GetCommitments(ctx, position.GetPositionAddress())
 
 	for _, commitment := range commitments.CommittedTokens {
 		leveragedLpAmount = leveragedLpAmount.Add(commitment.Amount)

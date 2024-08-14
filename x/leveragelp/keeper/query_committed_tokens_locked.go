@@ -31,7 +31,7 @@ func (k Keeper) CommittedTokensLocked(goCtx context.Context, req *types.QueryCom
 	totalLocked, totalCommitted := sdk.Coins{}, sdk.Coins{}
 	for _, positionAndInterest := range listPositionAndInterest {
 
-		commitments := k.commKeeper.GetCommitments(ctx, positionAndInterest.Position.GetPositionAddress().String())
+		commitments := k.commKeeper.GetCommitments(ctx, positionAndInterest.Position.GetPositionAddress())
 		tl, tc := commitments.CommittedTokensLocked(ctx)
 
 		totalLocked = totalLocked.Add(tl...)

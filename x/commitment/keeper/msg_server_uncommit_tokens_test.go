@@ -55,7 +55,7 @@ func TestUncommitTokens(t *testing.T) {
 	require.NoError(t, err)
 
 	// Check if the committed tokens have been added to the store
-	commitments := keeper.GetCommitments(ctx, creator)
+	commitments := keeper.GetCommitments(ctx, sdk.MustAccAddressFromBech32(creator))
 
 	// Check if the committed tokens have the expected values
 	assert.Equal(t, len(commitments.CommittedTokens), 0, "Incorrect creator")

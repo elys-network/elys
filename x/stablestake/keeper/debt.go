@@ -30,6 +30,8 @@ func (k Keeper) getDebt(ctx sdk.Context, addr sdk.AccAddress) types.Debt {
 func (k Keeper) GetDebt(ctx sdk.Context, addr sdk.AccAddress) types.Debt {
 	debt := k.getDebt(ctx, addr)
 	debt.InterestStacked = debt.InterestStacked.Add(k.GetInterest(ctx, debt.LastInterestCalcBlock, debt.LastInterestCalcTime, debt.Borrowed.ToLegacyDec()))
+	debt.LastInterestCalcTime = uint64(ctx.BlockTime().Unix())
+	debt.LastInterestCalcBlock = uint64(ctx.BlockHeight())
 	return debt
 }
 
