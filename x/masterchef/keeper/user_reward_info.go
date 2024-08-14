@@ -53,16 +53,18 @@ func (k Keeper) DeleteLegacyUserRewardInfo(ctx sdk.Context, user string, poolId 
 }
 
 // remove after migration
-func (k Keeper) GetAllLegacyUserRewardInfos(ctx sdk.Context) (list []types.UserRewardInfo) {
+func (k Keeper) MigrateFromV2UserRewardInfos(ctx sdk.Context) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.LegacyUserRewardInfoKeyPrefix))
 	iterator := sdk.KVStorePrefixIterator(store, []byte{})
 
 	defer iterator.Close()
 
 	for ; iterator.Valid(); iterator.Next() {
-		var val types.UserRewardInfo
-		k.cdc.MustUnmarshal(iterator.Value(), &val)
-		list = append(list, val)
+		var legacyUserRewardInfo types.UserRewardInfo
+		k.cdc.MustUnmarshal(iterator.Value(), &legacyUserRewardInfo)
+
+		k.SetUserRewardInfo(ctx, legacyUserRewardInfo)
+		k.DeleteLegacyUserRewardInfo(ctx, legacyUserRewardInfo.User, legacyUserRewardInfo.PoolId, legacyUserRewardInfo.RewardDenom)
 	}
 
 	return
