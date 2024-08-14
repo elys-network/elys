@@ -111,7 +111,7 @@ func (k Keeper) CalculateApr(ctx sdk.Context, query *types.QueryAprRequest) (sdk
 			apr := yearlyDexRewardAmount.
 				Quo(edenDenomPrice).
 				QuoInt(totalStakedSnapshot)
-			
+
 			return apr, nil
 		}
 	} else if query.Denom == ptypes.EdenB {
