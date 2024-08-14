@@ -164,7 +164,10 @@ func (k Keeper) GetPositions(ctx sdk.Context, pagination *query.PageRequest) ([]
 
 	pageRes, err := query.Paginate(positionStore, pagination, func(key []byte, value []byte) error {
 		var position types.Position
-		k.cdc.Unmarshal(value, &position)
+		err := k.cdc.Unmarshal(value, &position)
+		if err != nil {
+			return err
+		}
 		debt := k.stableKeeper.GetDebt(ctx, position.GetPositionAddress())
 		position.Liabilities = debt.GetTotalLiablities()
 		positionList = append(positionList, &position)
@@ -244,6 +247,7 @@ func (k Keeper) GetPositionsForAddress(ctx sdk.Context, positionAddress sdk.Addr
 	return positions, pageRes, nil
 }
 
+// GetPositionHealth Should not be used in queries as UpdateInterestAndGetDebt updates KVStore as well
 func (k Keeper) GetPositionHealth(ctx sdk.Context, position types.Position) (sdk.Dec, error) {
 	debt := k.stableKeeper.UpdateInterestAndGetDebt(ctx, position.GetPositionAddress())
 	debtAmount := debt.GetTotalLiablities()
