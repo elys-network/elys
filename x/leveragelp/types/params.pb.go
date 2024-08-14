@@ -26,7 +26,6 @@ const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
 // Params defines the parameters for the module.
 type LegacyParams struct {
-	// option (gogoproto.goproto_stringer) = false;
 	LeverageMax         github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,1,opt,name=leverage_max,json=leverageMax,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"leverage_max"`
 	MaxOpenPositions    int64                                  `protobuf:"varint,2,opt,name=max_open_positions,json=maxOpenPositions,proto3" json:"max_open_positions,omitempty"`
 	PoolOpenThreshold   github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,3,opt,name=pool_open_threshold,json=poolOpenThreshold,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"pool_open_threshold"`
