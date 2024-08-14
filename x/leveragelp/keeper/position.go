@@ -28,19 +28,6 @@ func (k Keeper) GetPosition(ctx sdk.Context, positionAddress sdk.AccAddress, id 
 }
 
 // remove after migration
-func (k Keeper) GetLegacyPosition(ctx sdk.Context, positionAddress string, id uint64) (types.Position, error) {
-	var position types.Position
-	key := types.GetLegacyPositionKey(positionAddress, id)
-	store := ctx.KVStore(k.storeKey)
-	if !store.Has(key) {
-		return position, types.ErrPositionDoesNotExist
-	}
-	bz := store.Get(key)
-	k.cdc.MustUnmarshal(bz, &position)
-	return position, nil
-}
-
-// remove after migration
 func (k Keeper) DeleteLegacyPosition(ctx sdk.Context, positionAddress string, id uint64) {
 	key := types.GetLegacyPositionKey(positionAddress, id)
 	store := ctx.KVStore(k.storeKey)
@@ -148,6 +135,27 @@ func (k Keeper) GetPositionIterator(ctx sdk.Context) sdk.Iterator {
 }
 
 func (k Keeper) GetAllPositions(ctx sdk.Context) []types.Position {
+	var positions []types.Position
+	iterator := k.GetPositionIterator(ctx)
+	defer func(iterator sdk.Iterator) {
+		err := iterator.Close()
+		if err != nil {
+			panic(err)
+		}
+	}(iterator)
+
+	for ; iterator.Valid(); iterator.Next() {
+		var position types.Position
+		bytesValue := iterator.Value()
+		err := k.cdc.Unmarshal(bytesValue, &position)
+		if err == nil {
+			positions = append(positions, position)
+		}
+	}
+	return positions
+}
+
+func (k Keeper) GetAllLegacyPositions(ctx sdk.Context) []types.Position {
 	var positions []types.Position
 	iterator := k.GetPositionIterator(ctx)
 	defer func(iterator sdk.Iterator) {
