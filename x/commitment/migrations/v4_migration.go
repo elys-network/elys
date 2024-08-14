@@ -22,7 +22,7 @@ func (m Migrator) V4Migration(ctx sdk.Context) error {
 	for _, c := range commitments {
 		newCommittedTokens := []*types.CommittedTokens{}
 		for _, commitmentToken := range c.CommittedTokens {
-			if commitmentToken.Amount.LTE(sdk.ZeroInt()) {
+			if commitmentToken.Amount.GT(sdk.ZeroInt()) {
 				newCommittedTokens = append(newCommittedTokens, commitmentToken)
 			}
 		}
