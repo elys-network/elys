@@ -5,6 +5,7 @@ import (
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 	simapp "github.com/elys-network/elys/app"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
+	"github.com/elys-network/elys/x/leveragelp/keeper"
 	"github.com/elys-network/elys/x/leveragelp/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 	stablekeeper "github.com/elys-network/elys/x/stablestake/keeper"
@@ -213,7 +214,8 @@ func (suite *KeeperTestSuite) TestMsgServerAddCollateral() {
 	for _, tc := range testCases {
 		suite.Run(tc.name, func() {
 			tc.prerequisiteFunction()
-			_, err := suite.app.LeveragelpKeeper.AddCollateralToPosition(suite.ctx, tc.input)
+			msgServer := keeper.NewMsgServerImpl(suite.app.LeveragelpKeeper)
+			_, err := msgServer.AddCollateral(suite.ctx, tc.input)
 			if tc.expectErr {
 				suite.Require().Error(err)
 				suite.Require().Contains(err.Error(), tc.expectErrMsg)

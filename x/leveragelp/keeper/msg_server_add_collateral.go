@@ -10,11 +10,6 @@ import (
 
 func (k msgServer) AddCollateral(goCtx context.Context, msg *types.MsgAddCollateral) (*types.MsgAddCollateralResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-
-	return k.AddCollateralToPosition(ctx, msg)
-}
-
-func (k Keeper) AddCollateralToPosition(ctx sdk.Context, msg *types.MsgAddCollateral) (*types.MsgAddCollateralResponse, error) {
 	err := k.ProcessAddCollateral(ctx, msg.Creator, msg.Id, msg.Collateral)
 	if err != nil {
 		return nil, err
