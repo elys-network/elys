@@ -32,7 +32,7 @@ func (position Position) Validate() error {
 	return nil
 }
 
-func (position Position) GetCreatorAddress() sdk.AccAddress {
+func (position Position) GetOwnerAddress() sdk.AccAddress {
 	return sdk.MustAccAddressFromBech32(position.Address)
 }
 

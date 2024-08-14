@@ -155,27 +155,6 @@ func (k Keeper) GetAllPositions(ctx sdk.Context) []types.Position {
 	return positions
 }
 
-func (k Keeper) GetAllLegacyPositions(ctx sdk.Context) []types.Position {
-	var positions []types.Position
-	iterator := k.GetPositionIterator(ctx)
-	defer func(iterator sdk.Iterator) {
-		err := iterator.Close()
-		if err != nil {
-			panic(err)
-		}
-	}(iterator)
-
-	for ; iterator.Valid(); iterator.Next() {
-		var position types.Position
-		bytesValue := iterator.Value()
-		err := k.cdc.Unmarshal(bytesValue, &position)
-		if err == nil {
-			positions = append(positions, position)
-		}
-	}
-	return positions
-}
-
 func (k Keeper) GetPositions(ctx sdk.Context, pagination *query.PageRequest) ([]*types.Position, *query.PageResponse, error) {
 	var positionList []*types.Position
 	store := ctx.KVStore(k.storeKey)
