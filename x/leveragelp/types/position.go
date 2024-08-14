@@ -44,3 +44,7 @@ func GetPositionAddress(positionId uint64) sdk.AccAddress {
 func (p Position) GetPositionAddress() sdk.AccAddress {
 	return GetPositionAddress(p.Id)
 }
+
+func (p Position) GetOwnerAddress() sdk.AccAddress {
+	return sdk.MustAccAddressFromBech32(p.Address)
+}
