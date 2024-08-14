@@ -288,6 +288,25 @@ func (k Keeper) RetrieveLeverageLpTotalAssets(ctx sdk.Context, user sdk.AccAddre
 	return totalValue
 }
 
+func (k Keeper) RetrieveTotalBorrows(ctx sdk.Context, user sdk.AccAddress) sdk.Dec {
+	positions, _, err := k.leveragelp.GetPositionsForAddress(ctx, user, &query.PageRequest{})
+	totalBorrows := sdk.NewDec(0)
+	if err == nil {
+		for _, position := range positions {
+			// USD value of debt
+			debt := k.stablestakeKeeper.GetDebt(ctx, position.GetPosition().GetPositionAddress())
+			usdcDenom, found := k.assetProfileKeeper.GetUsdcDenom(ctx)
+			if !found {
+				continue
+			}
+			usdcPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, usdcDenom)
+			liab := debt.GetTotalLiablities().ToLegacyDec()
+			totalBorrows = totalBorrows.Add(liab.Mul(usdcPrice))
+		}
+	}
+	return totalBorrows
+}
+
 func (k Keeper) RetrieveConsolidatedPrice(ctx sdk.Context, denom string) (sdk.Dec, sdk.Dec, sdk.Dec) {
 	if denom == ptypes.Eden {
 		denom = ptypes.Elys
