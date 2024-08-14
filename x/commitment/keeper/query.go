@@ -17,7 +17,8 @@ func (k Keeper) ShowCommitments(goCtx context.Context, req *types.QueryShowCommi
 	}
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	val := k.GetCommitments(ctx, req.Creator)
+	creator := sdk.MustAccAddressFromBech32(req.Creator)
+	val := k.GetCommitments(ctx, creator)
 	return &types.QueryShowCommitmentsResponse{Commitments: val}, nil
 }
 
@@ -37,7 +38,8 @@ func (k Keeper) CommittedTokensLocked(goCtx context.Context, req *types.QueryCom
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	commitments := k.GetCommitments(ctx, req.Address)
+	address := sdk.MustAccAddressFromBech32(req.Address)
+	commitments := k.GetCommitments(ctx, address)
 	totalLocked, totalCommitted := commitments.CommittedTokensLocked(ctx)
 	return &types.QueryCommittedTokensLockedResponse{
 		Address:         req.Address,

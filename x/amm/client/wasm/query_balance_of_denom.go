@@ -10,17 +10,15 @@ import (
 )
 
 func (oq *Querier) queryBalanceOfDenom(ctx sdk.Context, query *types.QueryBalanceRequest) ([]byte, error) {
-	denom := query.Denom
-	addr := query.Address
 	address, err := sdk.AccAddressFromBech32(query.Address)
 	if err != nil {
 		return nil, errorsmod.Wrap(err, "invalid address")
 	}
-	balance := oq.bankKeeper.GetBalance(ctx, address, denom)
-	if denom != paramtypes.Elys {
-		commitment := oq.commitmentKeeper.GetCommitments(ctx, addr)
-		claimed := commitment.GetClaimedForDenom(denom)
-		balance = sdk.NewCoin(denom, claimed)
+	balance := oq.bankKeeper.GetBalance(ctx, address, query.Denom)
+	if query.Denom != paramtypes.Elys {
+		commitment := oq.commitmentKeeper.GetCommitments(ctx, address)
+		claimed := commitment.GetClaimedForDenom(query.Denom)
+		balance = sdk.NewCoin(query.Denom, claimed)
 	}
 
 	res := types.QueryBalanceResponse{

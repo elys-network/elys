@@ -18,12 +18,11 @@ import (
 	"github.com/elys-network/elys/x/tier/types"
 )
 
-func (k Keeper) RetrieveAllPortfolio(ctx sdk.Context, user string) {
+func (k Keeper) RetrieveAllPortfolio(ctx sdk.Context, user sdk.AccAddress) {
 	// set today + user -> amount
-	sender := sdk.MustAccAddressFromBech32(user)
 	todayDate := k.GetDateFromBlock(ctx.BlockTime())
 
-	_, found := k.GetPortfolio(ctx, user, todayDate)
+	_, found := k.GetPortfolio(ctx, user.String(), todayDate)
 	if found {
 		return
 	}
@@ -31,23 +30,23 @@ func (k Keeper) RetrieveAllPortfolio(ctx sdk.Context, user string) {
 	totalValue := sdk.NewDec(0)
 
 	// Liquid assets
-	liq := k.RetrieveLiquidAssetsTotal(ctx, sender)
+	liq := k.RetrieveLiquidAssetsTotal(ctx, user)
 	totalValue = totalValue.Add(liq)
 
 	// Rewards
-	rew := k.RetrieveRewardsTotal(ctx, sender)
+	rew := k.RetrieveRewardsTotal(ctx, user)
 	totalValue = totalValue.Add(rew)
 
 	// Perpetual
-	perp := k.RetrievePerpetualTotal(ctx, sender)
+	perp := k.RetrievePerpetualTotal(ctx, user)
 	totalValue = totalValue.Add(perp)
 
 	// Pool assets
-	staked := k.RetrievePoolTotal(ctx, sender)
+	staked := k.RetrievePoolTotal(ctx, user)
 	totalValue = totalValue.Add(staked)
 
 	// Staked assets
-	commit, delegations, unbondings, totalVesting := k.RetrieveStaked(ctx, sender)
+	commit, delegations, unbondings, totalVesting := k.RetrieveStaked(ctx, user)
 	// convert vesting to usd
 	baseCurrency, found := k.assetProfileKeeper.GetUsdcDenom(ctx)
 	if found {
@@ -58,17 +57,18 @@ func (k Keeper) RetrieveAllPortfolio(ctx sdk.Context, user string) {
 
 	// LeverageLp
 	_, _, lev := k.RetrieveLeverageLpTotal(ctx, sender)
+
 	totalValue = totalValue.Add(lev)
 
-	k.SetPortfolio(ctx, todayDate, sender.String(), types.Portfolio{
-		Creator:   user,
+	k.SetPortfolio(ctx, todayDate, user.String(), types.Portfolio{
+		Creator:   user.String(),
 		Portfolio: totalValue,
 	})
 }
 
 func (k Keeper) RetrievePoolTotal(ctx sdk.Context, user sdk.AccAddress) sdk.Dec {
 	totalValue := sdk.NewDec(0)
-	commitments := k.commitement.GetCommitments(ctx, user.String())
+	commitments := k.commitement.GetCommitments(ctx, user)
 	for _, commitment := range commitments.CommittedTokens {
 		// Pool balance
 		if strings.HasPrefix(commitment.Denom, "amm/pool") {
@@ -91,7 +91,7 @@ func (k Keeper) RetrievePoolTotal(ctx sdk.Context, user sdk.AccAddress) sdk.Dec 
 
 func (k Keeper) RetrieveStaked(ctx sdk.Context, user sdk.AccAddress) (sdk.Dec, sdk.Dec, sdk.Dec, sdk.Dec) {
 	totalCommit := sdk.NewDec(0)
-	commitments := k.commitement.GetCommitments(ctx, user.String())
+	commitments := k.commitement.GetCommitments(ctx, user)
 	totalVested := sdk.NewDec(0)
 	vestingResp, vestErr := k.commitement.CommitmentVestingInfo(ctx, &commitmenttypes.QueryCommitmentVestingInfoRequest{Address: user.String()})
 	if vestErr == nil {

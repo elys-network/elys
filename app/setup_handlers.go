@@ -7,8 +7,14 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	m "github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/cosmos/cosmos-sdk/version"
-	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
+)
+
+const (
+	// make sure to update these when you upgrade the version
+	NextVersion = "v0.42.0"
+
+	LocalNetVersion = "v999.999.999"
 )
 
 func SetupHandlers(app *ElysApp) {
@@ -23,13 +29,9 @@ func setUpgradeHandler(app *ElysApp) {
 		func(ctx sdk.Context, plan upgradetypes.Plan, vm m.VersionMap) (m.VersionMap, error) {
 			app.Logger().Info("Running upgrade handler for " + version.Version)
 
-			if version.Version == "v0.41.1" || version.Version == "v999.999.999" {
+			if version.Version == NextVersion || version.Version == LocalNetVersion {
 
-				app.Logger().Info("Deleting proposals with ID < 258")
-				store := ctx.KVStore(app.keys[govtypes.StoreKey])
-				for i := uint64(1); i < 258; i++ {
-					store.Delete(govtypes.ProposalKey(i))
-				}
+				// Add any logic here to run when the chain is upgraded to the new version
 
 			}
 

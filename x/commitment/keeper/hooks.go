@@ -15,7 +15,7 @@ func NewMultiCommitmentHooks(hooks ...types.CommitmentHooks) MultiCommitmentHook
 }
 
 // Committed is called when staker committed his token
-func (mh MultiCommitmentHooks) CommitmentChanged(ctx sdk.Context, creator string, amount sdk.Coins) error {
+func (mh MultiCommitmentHooks) CommitmentChanged(ctx sdk.Context, creator sdk.AccAddress, amount sdk.Coins) error {
 	for i := range mh {
 		err := mh[i].CommitmentChanged(ctx, creator, amount)
 		if err != nil {
@@ -26,7 +26,7 @@ func (mh MultiCommitmentHooks) CommitmentChanged(ctx sdk.Context, creator string
 }
 
 // Committed is called when staker committed his token
-func (mh MultiCommitmentHooks) EdenUncommitted(ctx sdk.Context, creator string, amount sdk.Coin) error {
+func (mh MultiCommitmentHooks) EdenUncommitted(ctx sdk.Context, creator sdk.AccAddress, amount sdk.Coin) error {
 	for i := range mh {
 		err := mh[i].EdenUncommitted(ctx, creator, amount)
 		if err != nil {
@@ -77,7 +77,7 @@ func (mh MultiCommitmentHooks) BeforeEdenBCommitChange(ctx sdk.Context, addr sdk
 }
 
 // Committed executes the indicated for committed hook
-func (k Keeper) CommitmentChanged(ctx sdk.Context, creator string, amount sdk.Coins) error {
+func (k Keeper) CommitmentChanged(ctx sdk.Context, creator sdk.AccAddress, amount sdk.Coins) error {
 	if k.hooks == nil {
 		return nil
 	}
@@ -85,7 +85,7 @@ func (k Keeper) CommitmentChanged(ctx sdk.Context, creator string, amount sdk.Co
 }
 
 // Committed executes the indicated for committed hook
-func (k Keeper) EdenUncommitted(ctx sdk.Context, creator string, amount sdk.Coin) error {
+func (k Keeper) EdenUncommitted(ctx sdk.Context, creator sdk.AccAddress, amount sdk.Coin) error {
 	if k.hooks == nil {
 		return nil
 	}

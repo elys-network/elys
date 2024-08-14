@@ -8,8 +8,8 @@ import "gogoproto/gogo.proto";
 
 enum Position {
   UNSPECIFIED = 0;
-  LONG        = 1;
-  SHORT       = 2;
+  LONG = 1;
+  SHORT = 2;
 }
 
 message MTP {
@@ -18,7 +18,7 @@ message MTP {
   string trading_asset = 3;
   string liabilities_asset = 4;
   string custody_asset = 5;
-  string collateral   = 6 [
+  string collateral = 6 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
     (gogoproto.nullable) = false
   ];
@@ -38,7 +38,7 @@ message MTP {
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
     (gogoproto.nullable) = false
   ];
-  string custody   = 11 [
+  string custody = 11 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
     (gogoproto.nullable) = false
   ];
@@ -101,6 +101,6 @@ message MTP {
   ];
 }
 
-message WhiteList { 
-  repeated string validator_list = 1; 
+message WhiteList {
+  repeated string validator_list = 1;
 }

@@ -22,7 +22,7 @@ func (k Keeper) Position(goCtx context.Context, req *types.PositionRequest) (*ty
 		return nil, err
 	}
 
-	commitments := k.commKeeper.GetCommitments(ctx, position.GetPositionAddress().String())
+	commitments := k.commKeeper.GetCommitments(ctx, position.GetPositionAddress())
 	totalLocked, _ := commitments.CommittedTokensLocked(ctx)
 
 	return &types.PositionResponse{

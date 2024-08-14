@@ -164,7 +164,10 @@ func (k Keeper) GetPositions(ctx sdk.Context, pagination *query.PageRequest) ([]
 
 	pageRes, err := query.Paginate(positionStore, pagination, func(key []byte, value []byte) error {
 		var position types.Position
-		k.cdc.Unmarshal(value, &position)
+		err := k.cdc.Unmarshal(value, &position)
+		if err != nil {
+			return err
+		}
 		debt := k.stableKeeper.GetDebt(ctx, position.GetPositionAddress())
 		position.Liabilities = debt.GetTotalLiablities()
 		positionList = append(positionList, &position)
@@ -257,7 +260,7 @@ func (k Keeper) GetPositionHealth(ctx sdk.Context, position types.Position) (sdk
 	}
 
 	leveragedLpAmount := sdk.ZeroInt()
-	commitments := k.commKeeper.GetCommitments(ctx, position.GetPositionAddress().String())
+	commitments := k.commKeeper.GetCommitments(ctx, position.GetPositionAddress())
 
 	for _, commitment := range commitments.CommittedTokens {
 		leveragedLpAmount = leveragedLpAmount.Add(commitment.Amount)
