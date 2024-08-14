@@ -83,9 +83,6 @@ service Query {
   
   }
 
-  rpc QueryTotalBorrows (QueryTotalBorrowsRequest) returns (QueryTotalBorrowsResponse) {
-    option (google.api.http).get = "/elys-network/elys/tier/total_borrows/{user}";
-  }
 }
 // QueryParamsRequest is request type for the Query/Params RPC method.
 message QueryParamsRequest {}
@@ -129,7 +126,8 @@ message QueryLeverageLpTotalRequest {
 }
 
 message QueryLeverageLpTotalResponse {
-  string total = 1 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+  string total_value = 1 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+  string total_borrows = 2 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
 }
 
 message QueryRewardsTotalRequest {
@@ -194,10 +192,3 @@ message QueryStakedResponse {
   string totalVested = 4 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
 }
 
-message QueryTotalBorrowsRequest {
-  string user = 1;
-}
-
-message QueryTotalBorrowsResponse {
-  string total = 1 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
-}

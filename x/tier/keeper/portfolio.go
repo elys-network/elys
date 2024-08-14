@@ -57,7 +57,7 @@ func (k Keeper) RetrieveAllPortfolio(ctx sdk.Context, user string) {
 	totalValue = totalValue.Add(commit).Add(delegations).Add(unbondings).Add(totalVesting)
 
 	// LeverageLp
-	lev := k.RetrieveLeverageLpTotal(ctx, sender)
+	_, _, lev := k.RetrieveLeverageLpTotal(ctx, sender)
 	totalValue = totalValue.Add(lev)
 
 	k.SetPortfolio(ctx, todayDate, sender.String(), types.Portfolio{
@@ -245,9 +245,11 @@ func (k Keeper) RetrieveLiquidAssetsTotal(ctx sdk.Context, user sdk.AccAddress) 
 	return totalValue
 }
 
-func (k Keeper) RetrieveLeverageLpTotal(ctx sdk.Context, user sdk.AccAddress) sdk.Dec {
+func (k Keeper) RetrieveLeverageLpTotal(ctx sdk.Context, user sdk.AccAddress) (sdk.Dec, sdk.Dec, sdk.Dec) {
 	positions, _, err := k.leveragelp.GetPositionsForAddress(ctx, user, &query.PageRequest{})
 	totalValue := sdk.NewDec(0)
+	totalBorrow := sdk.NewDec(0)
+	netValue := sdk.NewDec(0)
 	if err == nil {
 		for _, position := range positions {
 			pool, found := k.amm.GetPool(ctx, position.Position.AmmPoolId)
@@ -265,46 +267,11 @@ func (k Keeper) RetrieveLeverageLpTotal(ctx sdk.Context, user sdk.AccAddress) sd
 			}
 			usdcPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, usdcDenom)
 			liab := debt.GetTotalLiablities().ToLegacyDec()
-			totalValue = totalValue.Sub(liab.Mul(usdcPrice))
+			totalBorrow = totalBorrow.Add(liab.Mul(usdcPrice))
 		}
+		netValue = totalValue.Sub(totalBorrow)
 	}
-	return totalValue
-}
-
-func (k Keeper) RetrieveLeverageLpTotalAssets(ctx sdk.Context, user sdk.AccAddress) sdk.Dec {
-	positions, _, err := k.leveragelp.GetPositionsForAddress(ctx, user, &query.PageRequest{})
-	totalValue := sdk.NewDec(0)
-	if err == nil {
-		for _, position := range positions {
-			pool, found := k.amm.GetPool(ctx, position.Position.AmmPoolId)
-			if !found {
-				continue
-			}
-			info := k.amm.PoolExtraInfo(ctx, pool)
-			amount := position.Position.LeveragedLpAmount.ToLegacyDec()
-			totalValue = totalValue.Add(amount.Mul(info.LpTokenPrice).QuoInt(ammtypes.OneShare))
-		}
-	}
-	return totalValue
-}
-
-func (k Keeper) RetrieveTotalBorrows(ctx sdk.Context, user sdk.AccAddress) sdk.Dec {
-	positions, _, err := k.leveragelp.GetPositionsForAddress(ctx, user, &query.PageRequest{})
-	totalBorrows := sdk.NewDec(0)
-	if err == nil {
-		for _, position := range positions {
-			// USD value of debt
-			debt := k.stablestakeKeeper.GetDebt(ctx, position.GetPosition().GetPositionAddress())
-			usdcDenom, found := k.assetProfileKeeper.GetUsdcDenom(ctx)
-			if !found {
-				continue
-			}
-			usdcPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, usdcDenom)
-			liab := debt.GetTotalLiablities().ToLegacyDec()
-			totalBorrows = totalBorrows.Add(liab.Mul(usdcPrice))
-		}
-	}
-	return totalBorrows
+	return totalValue, totalBorrow, netValue
 }
 
 func (k Keeper) RetrieveConsolidatedPrice(ctx sdk.Context, denom string) (sdk.Dec, sdk.Dec, sdk.Dec) {
