@@ -21,7 +21,7 @@ func (m Migrator) V8Migration(ctx sdk.Context) error {
 	// keys migrations
 	whitelistAddressStrings := m.keeper.GetAllLegacyWhitelistedAddress(ctx)
 	for _, addressString := range whitelistAddressStrings {
-		m.keeper.WhitelistAddress(ctx, sdk.MustAccAddressFromBech32(addressString))
+		// m.keeper.WhitelistAddress(ctx, sdk.MustAccAddressFromBech32(addressString)) // Not needed as whitelisting disabled on TestNet
 		m.keeper.DeleteLegacyWhitelistedAddress(ctx, addressString)
 	}
 
