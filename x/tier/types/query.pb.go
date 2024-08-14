@@ -1292,6 +1292,7 @@ type QueryClient interface {
 	GetConsolidatedPrice(ctx context.Context, in *QueryGetConsolidatedPriceRequest, opts ...grpc.CallOption) (*QueryGetConsolidatedPriceResponse, error)
 	// Queries a list of Staked items.
 	Staked(ctx context.Context, in *QueryStakedRequest, opts ...grpc.CallOption) (*QueryStakedResponse, error)
+	// Queries total borrow val in usd.
 	QueryTotalBorrows(ctx context.Context, in *QueryTotalBorrowsRequest, opts ...grpc.CallOption) (*QueryTotalBorrowsResponse, error)
 }
 
