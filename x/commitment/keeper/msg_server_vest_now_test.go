@@ -79,7 +79,7 @@ func TestVestNow(t *testing.T) {
 	_, err := msgServer.VestNow(ctx, msg)
 	require.NoError(t, err)
 
-	updatedCommitments := keeper.GetCommitments(ctx, creator)
+	updatedCommitments := keeper.GetCommitments(ctx, creatorAddr)
 
 	claimedBalance := updatedCommitments.GetClaimedForDenom(denom)
 	assert.Equal(t, sdk.NewInt(2000), claimedBalance)

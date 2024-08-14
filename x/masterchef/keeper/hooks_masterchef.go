@@ -18,7 +18,7 @@ func (k Keeper) GetPoolTotalCommit(ctx sdk.Context, poolId uint64) math.Int {
 	return params.TotalCommitted.AmountOf(shareDenom)
 }
 
-func (k Keeper) GetPoolBalance(ctx sdk.Context, poolId uint64, user string) math.Int {
+func (k Keeper) GetPoolBalance(ctx sdk.Context, poolId uint64, user sdk.AccAddress) math.Int {
 	commitments := k.commitmentKeeper.GetCommitments(ctx, user)
 	shareDenom := stablestaketypes.GetShareDenom()
 	if poolId != stablestaketypes.PoolId {
@@ -50,7 +50,7 @@ func (k Keeper) UpdateAccPerShare(ctx sdk.Context, poolId uint64, rewardDenom st
 	k.SetPoolRewardInfo(ctx, poolRewardInfo)
 }
 
-func (k Keeper) UpdateUserRewardPending(ctx sdk.Context, poolId uint64, rewardDenom string, user string, isDeposit bool, amount math.Int) {
+func (k Keeper) UpdateUserRewardPending(ctx sdk.Context, poolId uint64, rewardDenom string, user sdk.AccAddress, isDeposit bool, amount math.Int) {
 	poolRewardInfo, found := k.GetPoolRewardInfo(ctx, poolId, rewardDenom)
 	if !found {
 		poolRewardInfo = types.PoolRewardInfo{
@@ -64,7 +64,7 @@ func (k Keeper) UpdateUserRewardPending(ctx sdk.Context, poolId uint64, rewardDe
 	userRewardInfo, found := k.GetUserRewardInfo(ctx, user, poolId, rewardDenom)
 	if !found {
 		userRewardInfo = types.UserRewardInfo{
-			User:          user,
+			User:          user.String(),
 			PoolId:        poolId,
 			RewardDenom:   rewardDenom,
 			RewardDebt:    sdk.NewDec(0),
@@ -90,7 +90,7 @@ func (k Keeper) UpdateUserRewardPending(ctx sdk.Context, poolId uint64, rewardDe
 	k.SetUserRewardInfo(ctx, userRewardInfo)
 }
 
-func (k Keeper) UpdateUserRewardDebt(ctx sdk.Context, poolId uint64, rewardDenom string, user string) {
+func (k Keeper) UpdateUserRewardDebt(ctx sdk.Context, poolId uint64, rewardDenom string, user sdk.AccAddress) {
 	poolRewardInfo, found := k.GetPoolRewardInfo(ctx, poolId, rewardDenom)
 	if !found {
 		poolRewardInfo = types.PoolRewardInfo{
@@ -104,7 +104,7 @@ func (k Keeper) UpdateUserRewardDebt(ctx sdk.Context, poolId uint64, rewardDenom
 	userRewardInfo, found := k.GetUserRewardInfo(ctx, user, poolId, rewardDenom)
 	if !found {
 		userRewardInfo = types.UserRewardInfo{
-			User:          user,
+			User:          user.String(),
 			PoolId:        poolId,
 			RewardDenom:   rewardDenom,
 			RewardDebt:    sdk.NewDec(0),

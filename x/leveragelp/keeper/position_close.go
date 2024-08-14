@@ -18,7 +18,7 @@ func (k Keeper) ForceCloseLong(ctx sdk.Context, position types.Position, pool ty
 		return sdk.ZeroInt(), err
 	}
 
-	debt := k.stableKeeper.GetDebtWithUpdatedInterestStacked(ctx, position.GetPositionAddress())
+	debt := k.stableKeeper.UpdateInterestAndGetDebt(ctx, position.GetPositionAddress())
 
 	// Ensure position.LeveragedLpAmount is not zero to avoid division by zero
 	if position.LeveragedLpAmount.IsZero() {
@@ -82,7 +82,7 @@ func (k Keeper) ForceCloseLong(ctx sdk.Context, position types.Position, pool ty
 		position.PositionHealth = positionHealth
 
 		// Update Liabilities
-		debt = k.stableKeeper.GetDebtWithUpdatedInterestStacked(ctx, position.GetPositionAddress())
+		debt = k.stableKeeper.UpdateInterestAndGetDebt(ctx, position.GetPositionAddress())
 		position.Liabilities = debt.GetTotalLiablities()
 		k.SetPosition(ctx, &position)
 	}

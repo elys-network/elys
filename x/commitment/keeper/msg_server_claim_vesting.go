@@ -14,8 +14,8 @@ func (k msgServer) ClaimVesting(goCtx context.Context, msg *types.MsgClaimVestin
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	// Get the Commitments for the sender
-	commitments := k.GetCommitments(ctx, msg.Sender)
 	sender := sdk.MustAccAddressFromBech32(msg.Sender)
+	commitments := k.GetCommitments(ctx, sender)
 
 	newClaims := sdk.Coins{}
 	for i, vesting := range commitments.VestingTokens {

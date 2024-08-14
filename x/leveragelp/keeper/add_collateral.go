@@ -27,7 +27,7 @@ func (k Keeper) ProcessAddCollateral(ctx sdk.Context, address string, id uint64,
 	}
 
 	// Check if collateral is not more than borrowed
-	debtBefore := k.stableKeeper.GetDebtWithUpdatedInterestStacked(ctx, position.GetPositionAddress())
+	debtBefore := k.stableKeeper.UpdateInterestAndGetDebt(ctx, position.GetPositionAddress())
 	maxAllowedCollateral := debtBefore.GetTotalLiablities()
 	if collateral.GT(maxAllowedCollateral) {
 		return errorsmod.Wrap(types.ErrInvalidCollateral, fmt.Sprintf("Cannot add more than: %s", maxAllowedCollateral.String()))
@@ -56,7 +56,7 @@ func (k Keeper) ProcessAddCollateral(ctx sdk.Context, address string, id uint64,
 	position.PositionHealth = positionHealth
 
 	// Update Liabilities
-	debt := k.stableKeeper.GetDebtWithUpdatedInterestStacked(ctx, position.GetPositionAddress())
+	debt := k.stableKeeper.UpdateInterestAndGetDebt(ctx, position.GetPositionAddress())
 	position.Liabilities = debt.GetTotalLiablities()
 	position.Collateral = position.Collateral.Add(sdk.NewCoin(position.Collateral.Denom, collateral))
 

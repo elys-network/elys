@@ -34,7 +34,7 @@ func (suite KeeperTestSuite) OpenPosition(addr sdk.AccAddress) (*types.Position,
 	err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, poolAddr, poolInit)
 	suite.Require().NoError(err)
 
-	suite.app.AmmKeeper.SetPool(suite.ctx, ammtypes.Pool{
+	err = suite.app.AmmKeeper.SetPool(suite.ctx, ammtypes.Pool{
 		PoolId:            1,
 		Address:           poolAddr.String(),
 		RebalanceTreasury: treasuryAddr.String(),
@@ -62,6 +62,7 @@ func (suite KeeperTestSuite) OpenPosition(addr sdk.AccAddress) (*types.Position,
 		},
 		TotalWeight: sdk.NewInt(20),
 	})
+	suite.Require().NoError(err)
 	k.SetPool(suite.ctx, pool)
 	suite.app.AmmKeeper.SetDenomLiquidity(suite.ctx, ammtypes.DenomLiquidity{
 		Denom:     "uusdc",
@@ -182,7 +183,7 @@ func (suite KeeperTestSuite) TestHealthDecreaseForInterest() {
 
 	suite.ctx = suite.ctx.WithBlockTime(suite.ctx.BlockTime().Add(time.Hour * 24 * 365))
 	suite.app.StablestakeKeeper.BeginBlocker(suite.ctx)
-	suite.app.StablestakeKeeper.GetDebtWithUpdatedInterestStacked(suite.ctx, position.GetPositionAddress())
+	suite.app.StablestakeKeeper.UpdateInterestAndGetDebt(suite.ctx, position.GetPositionAddress())
 	health, err = k.GetPositionHealth(suite.ctx, *position)
 	suite.Require().NoError(err)
 	// suite.Require().Equal(health.String(), "0.610500000000000000") // slippage enabled on amm

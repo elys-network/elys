@@ -85,7 +85,7 @@ func TestLiquidVestWithExceed(t *testing.T) {
 	require.NoError(t, err)
 
 	// Check if the vesting tokens were added to commitments
-	newCommitments := keeper.GetCommitments(ctx, vestMsg.Creator)
+	newCommitments := keeper.GetCommitments(ctx, creator)
 	require.Len(t, newCommitments.VestingTokens, 1, "vesting tokens were not added")
 
 	// Check if the claimed tokens were updated correctly

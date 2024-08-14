@@ -245,6 +245,7 @@ func TestOpen_Successful(t *testing.T) {
 	var (
 		ctx = sdk.Context{} // Mock or setup a context
 		msg = &types.MsgOpen{
+			Creator:      "cosmos10duudma7ef9849ee42zhe5q4t4fmk0z99uuh92",
 			Position:     types.Position_SHORT,
 			TradingAsset: "uatom",
 			Collateral:   sdk.NewCoin(ptypes.BaseCurrency, sdk.OneInt()),

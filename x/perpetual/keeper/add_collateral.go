@@ -137,7 +137,10 @@ func (k Keeper) AddCollateralToMtp(ctx sdk.Context, msg *types.MsgAddCollateral)
 	k.SetPool(ctx, pool)
 
 	// calc and update open price
-	k.OpenChecker.UpdateOpenPrice(ctx, &mtp, ammPool, baseCurrency)
+	err = k.OpenChecker.UpdateOpenPrice(ctx, &mtp, ammPool, baseCurrency)
+	if err != nil {
+		return nil, err
+	}
 
 	// Update the pool health.
 	if err = k.OpenLongChecker.UpdatePoolHealth(ctx, &pool); err != nil {
@@ -157,18 +160,25 @@ func (k Keeper) AddCollateralToMtp(ctx sdk.Context, msg *types.MsgAddCollateral)
 	}
 
 	// Update consolidated collateral amount
-	k.OpenLongChecker.CalcMTPConsolidateCollateral(ctx, &mtp, baseCurrency)
+	err = k.OpenLongChecker.CalcMTPConsolidateCollateral(ctx, &mtp, baseCurrency)
+	if err != nil {
+		return nil, err
+	}
 
-	// Calculate consolidate liabiltiy and update consolidate leverage
+	// Calculate consolidate liability and update consolidate leverage
 	mtp.ConsolidateLeverage = types.CalcMTPConsolidateLiability(&mtp)
 
 	// Set MTP
-	k.OpenLongChecker.SetMTP(ctx, &mtp)
+	err = k.OpenLongChecker.SetMTP(ctx, &mtp)
+	if err != nil {
+		return nil, err
+	}
 
 	k.EmitOpenEvent(ctx, &mtp)
 
+	creator := sdk.MustAccAddressFromBech32(msg.Creator)
 	if k.hooks != nil {
-		k.hooks.AfterPerpetualPositionModified(ctx, ammPool, pool, msg.Creator)
+		k.hooks.AfterPerpetualPositionModified(ctx, ammPool, pool, creator)
 	}
 
 	return &types.MsgAddCollateralResponse{}, nil

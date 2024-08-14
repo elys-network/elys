@@ -28,7 +28,8 @@ func (k msgServer) CommitClaimedRewards(goCtx context.Context, msg *types.MsgCom
 	k.SetParams(ctx, params)
 
 	// Get the Commitments for the creator
-	commitments := k.GetCommitments(ctx, msg.Creator)
+	creator := sdk.MustAccAddressFromBech32(msg.Creator)
+	commitments := k.GetCommitments(ctx, creator)
 
 	if msg.Denom == ptypes.Eden {
 		if commitments.GetCommittedAmountForDenom(ptypes.Eden).IsPositive() {
@@ -71,7 +72,7 @@ func (k msgServer) CommitClaimedRewards(goCtx context.Context, msg *types.MsgCom
 	k.SetCommitments(ctx, commitments)
 
 	// Emit Hook commitment changed
-	err = k.CommitmentChanged(ctx, msg.Creator, sdk.Coins{sdk.NewCoin(msg.Denom, msg.Amount)})
+	err = k.CommitmentChanged(ctx, creator, sdk.Coins{sdk.NewCoin(msg.Denom, msg.Amount)})
 	if err != nil {
 		return nil, err
 	}

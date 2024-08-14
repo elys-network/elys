@@ -12,7 +12,7 @@ import (
 )
 
 // accounting the liquid token as a claimed token in commitment module.
-func (k Keeper) DepositLiquidTokensClaimed(ctx sdk.Context, denom string, amount math.Int, sender string) error {
+func (k Keeper) DepositLiquidTokensClaimed(ctx sdk.Context, denom string, amount math.Int, sender sdk.AccAddress) error {
 	assetProfile, found := k.assetProfileKeeper.GetEntry(ctx, denom)
 	if !found {
 		return errorsmod.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "denom: %s", denom)
@@ -24,13 +24,8 @@ func (k Keeper) DepositLiquidTokensClaimed(ctx sdk.Context, denom string, amount
 
 	depositCoins := sdk.NewCoins(sdk.NewCoin(denom, amount))
 
-	addr, err := sdk.AccAddressFromBech32(sender)
-	if err != nil {
-		return errorsmod.Wrap(sdkerrors.ErrInvalidAddress, "unable to convert address from bech32")
-	}
-
 	// send the deposited coins to the module
-	err = k.bankKeeper.SendCoinsFromAccountToModule(ctx, addr, types.ModuleName, depositCoins)
+	err := k.bankKeeper.SendCoinsFromAccountToModule(ctx, sender, types.ModuleName, depositCoins)
 	if err != nil {
 		return errorsmod.Wrap(sdkerrors.ErrInsufficientFunds, fmt.Sprintf("unable to send deposit tokens: %v", depositCoins))
 	}

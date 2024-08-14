@@ -65,7 +65,7 @@ func (suite *KeeperTestSuite) TestMsgServerBond() {
 				suite.Require().Equal(balances.String(), tc.expSenderBalance.String())
 
 				// check committed tokens
-				commitments := suite.app.CommitmentKeeper.GetCommitments(suite.ctx, sender.String())
+				commitments := suite.app.CommitmentKeeper.GetCommitments(suite.ctx, sender)
 				suite.Require().Len(commitments.CommittedTokens, 1)
 				suite.Require().Equal(commitments.CommittedTokens[0].Amount.String(), tc.expSenderCommit.Amount.String())
 				suite.Require().Equal(commitments.CommittedTokens[0].Denom, tc.expSenderCommit.Denom)

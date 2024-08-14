@@ -35,8 +35,7 @@ func TestPoolRewardInfo(t *testing.T) {
 		},
 	}
 	for _, rewardInfo := range poolRewardInfos {
-		err := app.MasterchefKeeper.SetPoolRewardInfo(ctx, rewardInfo)
-		require.NoError(t, err)
+		app.MasterchefKeeper.SetPoolRewardInfo(ctx, rewardInfo)
 	}
 	for _, rewardInfo := range poolRewardInfos {
 		info, found := app.MasterchefKeeper.GetPoolRewardInfo(ctx, rewardInfo.PoolId, rewardInfo.RewardDenom)

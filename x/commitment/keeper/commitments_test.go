@@ -22,13 +22,13 @@ func TestKeeper_SetGetRemoveCommitments(t *testing.T) {
 	keeper.SetCommitments(ctx, commitments)
 
 	// Test GetCommitments
-	retrievedCommitments := keeper.GetCommitments(ctx, addr.String())
+	retrievedCommitments := keeper.GetCommitments(ctx, addr)
 	assert.Equal(t, commitments, retrievedCommitments)
 
 	// Test RemoveCommitments
-	keeper.RemoveCommitments(ctx, addr.String())
+	keeper.RemoveCommitments(ctx, addr)
 
 	// Test that commitments are removed
-	commitments = keeper.GetCommitments(ctx, addr.String())
+	commitments = keeper.GetCommitments(ctx, addr)
 	assert.True(t, commitments.IsEmpty())
 }

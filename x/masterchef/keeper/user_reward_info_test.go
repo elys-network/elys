@@ -41,18 +41,18 @@ func TestUserRewardInfo(t *testing.T) {
 		},
 	}
 	for _, rewardInfo := range userRewardInfos {
-		err := app.MasterchefKeeper.SetUserRewardInfo(ctx, rewardInfo)
-		require.NoError(t, err)
+		app.MasterchefKeeper.SetUserRewardInfo(ctx, rewardInfo)
+
 	}
 	for _, rewardInfo := range userRewardInfos {
-		info, found := app.MasterchefKeeper.GetUserRewardInfo(ctx, rewardInfo.User, rewardInfo.PoolId, rewardInfo.RewardDenom)
+		info, found := app.MasterchefKeeper.GetUserRewardInfo(ctx, rewardInfo.GetUserAccount(), rewardInfo.PoolId, rewardInfo.RewardDenom)
 		require.True(t, found)
 		require.Equal(t, info, rewardInfo)
 	}
 	rewardInfosStored := app.MasterchefKeeper.GetAllUserRewardInfos(ctx)
 	require.Len(t, rewardInfosStored, 3)
 
-	app.MasterchefKeeper.RemoveUserRewardInfo(ctx, userRewardInfos[0].User, userRewardInfos[0].PoolId, userRewardInfos[0].RewardDenom)
+	app.MasterchefKeeper.RemoveUserRewardInfo(ctx, userRewardInfos[0].GetUserAccount(), userRewardInfos[0].PoolId, userRewardInfos[0].RewardDenom)
 	rewardInfosStored = app.MasterchefKeeper.GetAllUserRewardInfos(ctx)
 	require.Len(t, rewardInfosStored, 2)
 }

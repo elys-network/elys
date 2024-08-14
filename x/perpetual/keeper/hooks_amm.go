@@ -9,7 +9,7 @@ import (
 // AfterPoolCreated is called after CreatePool
 func (k Keeper) AfterPoolCreated(ctx sdk.Context, sender sdk.AccAddress, ammPool ammtypes.Pool) {
 	if k.hooks != nil {
-		k.hooks.AfterAmmPoolCreated(ctx, ammPool, sender.String())
+		k.hooks.AfterAmmPoolCreated(ctx, ammPool, sender)
 	}
 }
 
@@ -21,7 +21,7 @@ func (k Keeper) AfterJoinPool(ctx sdk.Context, sender sdk.AccAddress, ammPool am
 	}
 
 	if k.hooks != nil {
-		k.hooks.AfterAmmJoinPool(ctx, ammPool, perpetualPool, sender.String())
+		k.hooks.AfterAmmJoinPool(ctx, ammPool, perpetualPool, sender)
 	}
 }
 
@@ -33,7 +33,7 @@ func (k Keeper) AfterExitPool(ctx sdk.Context, sender sdk.AccAddress, ammPool am
 	}
 
 	if k.hooks != nil {
-		k.hooks.AfterAmmExitPool(ctx, ammPool, perpetualPool, sender.String())
+		k.hooks.AfterAmmExitPool(ctx, ammPool, perpetualPool, sender)
 	}
 	return nil
 }
@@ -45,7 +45,7 @@ func (k Keeper) AfterSwap(ctx sdk.Context, sender sdk.AccAddress, ammPool ammtyp
 		return nil
 	}
 	if k.hooks != nil {
-		k.hooks.AfterAmmSwap(ctx, ammPool, perpetualPool, sender.String())
+		k.hooks.AfterAmmSwap(ctx, ammPool, perpetualPool, sender)
 	}
 	return nil
 }
