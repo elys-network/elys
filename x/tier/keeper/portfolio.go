@@ -271,6 +271,23 @@ func (k Keeper) RetrieveLeverageLpTotal(ctx sdk.Context, user sdk.AccAddress) sd
 	return totalValue
 }
 
+func (k Keeper) RetrieveLeverageLpTotalAssets(ctx sdk.Context, user sdk.AccAddress) sdk.Dec {
+	positions, _, err := k.leveragelp.GetPositionsForAddress(ctx, user, &query.PageRequest{})
+	totalValue := sdk.NewDec(0)
+	if err == nil {
+		for _, position := range positions {
+			pool, found := k.amm.GetPool(ctx, position.Position.AmmPoolId)
+			if !found {
+				continue
+			}
+			info := k.amm.PoolExtraInfo(ctx, pool)
+			amount := position.Position.LeveragedLpAmount.ToLegacyDec()
+			totalValue = totalValue.Add(amount.Mul(info.LpTokenPrice).QuoInt(ammtypes.OneShare))
+		}
+	}
+	return totalValue
+}
+
 func (k Keeper) RetrieveConsolidatedPrice(ctx sdk.Context, denom string) (sdk.Dec, sdk.Dec, sdk.Dec) {
 	if denom == ptypes.Eden {
 		denom = ptypes.Elys
