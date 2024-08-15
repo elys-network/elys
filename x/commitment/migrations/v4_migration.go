@@ -20,6 +20,14 @@ func (m Migrator) V4Migration(ctx sdk.Context) error {
 
 	commitments = m.keeper.GetAllCommitments(ctx)
 	for _, c := range commitments {
+		// claim >= vestedSoFar fix
+		for _, vesting := range c.VestingTokens {
+			vestedSoFar := vesting.VestedSoFar(ctx)
+			if vesting.ClaimedAmount.GT(vestedSoFar) {
+				vesting.ClaimedAmount = vestedSoFar
+			}
+		}
+
 		newCommittedTokens := []*types.CommittedTokens{}
 		for _, commitmentToken := range c.CommittedTokens {
 			if commitmentToken.Amount.GT(sdk.ZeroInt()) {
