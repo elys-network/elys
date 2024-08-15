@@ -14,8 +14,10 @@ func (k Keeper) SetUserRewardInfo(ctx sdk.Context, userReward types.UserRewardIn
 }
 
 func (k Keeper) GetUserRewardInfo(ctx sdk.Context, user sdk.AccAddress, poolId uint64, rewardDenom string) (val types.UserRewardInfo, found bool) {
-	store := ctx.KVStore(k.storeKey)
-	key := types.GetUserRewardInfoKey(user, poolId, rewardDenom)
+	//store := ctx.KVStore(k.storeKey)
+	//key := types.GetUserRewardInfoKey(user, poolId, rewardDenom)
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.LegacyUserRewardInfoKeyPrefix))
+	key := types.LegacyUserRewardInfoKey(user.String(), poolId, rewardDenom)
 	b := store.Get(key)
 	if b == nil {
 		return val, false
@@ -25,11 +27,11 @@ func (k Keeper) GetUserRewardInfo(ctx sdk.Context, user sdk.AccAddress, poolId u
 	return val, true
 }
 
-func (k Keeper) RemoveUserRewardInfo(ctx sdk.Context, user sdk.AccAddress, poolId uint64, rewardDenom string) {
-	store := ctx.KVStore(k.storeKey)
-	key := types.GetUserRewardInfoKey(user, poolId, rewardDenom)
-	store.Delete(key)
-}
+//func (k Keeper) RemoveUserRewardInfo(ctx sdk.Context, user sdk.AccAddress, poolId uint64, rewardDenom string) {
+//	store := ctx.KVStore(k.storeKey)
+//	key := types.GetUserRewardInfoKey(user, poolId, rewardDenom)
+//	store.Delete(key)
+//}
 
 func (k Keeper) GetAllUserRewardInfos(ctx sdk.Context) (list []types.UserRewardInfo) {
 	store := ctx.KVStore(k.storeKey)
@@ -47,25 +49,25 @@ func (k Keeper) GetAllUserRewardInfos(ctx sdk.Context) (list []types.UserRewardI
 }
 
 // remove after migration
-func (k Keeper) DeleteLegacyUserRewardInfo(ctx sdk.Context, user string, poolId uint64, rewardDenom string) {
+func (k Keeper) RemoveUserRewardInfo(ctx sdk.Context, user string, poolId uint64, rewardDenom string) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.LegacyUserRewardInfoKeyPrefix))
 	store.Delete(types.LegacyUserRewardInfoKey(user, poolId, rewardDenom))
 }
 
 // remove after migration
-func (k Keeper) MigrateFromV2UserRewardInfos(ctx sdk.Context) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.LegacyUserRewardInfoKeyPrefix))
-	iterator := sdk.KVStorePrefixIterator(store, []byte{})
-
-	defer iterator.Close()
-
-	for ; iterator.Valid(); iterator.Next() {
-		var legacyUserRewardInfo types.UserRewardInfo
-		k.cdc.MustUnmarshal(iterator.Value(), &legacyUserRewardInfo)
-
-		k.SetUserRewardInfo(ctx, legacyUserRewardInfo)
-		k.DeleteLegacyUserRewardInfo(ctx, legacyUserRewardInfo.User, legacyUserRewardInfo.PoolId, legacyUserRewardInfo.RewardDenom)
-	}
-
-	return
-}
+//func (k Keeper) MigrateFromV2UserRewardInfos(ctx sdk.Context) {
+//	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.LegacyUserRewardInfoKeyPrefix))
+//	iterator := sdk.KVStorePrefixIterator(store, []byte{})
+//
+//	defer iterator.Close()
+//
+//	for ; iterator.Valid(); iterator.Next() {
+//		var legacyUserRewardInfo types.UserRewardInfo
+//		k.cdc.MustUnmarshal(iterator.Value(), &legacyUserRewardInfo)
+//
+//		k.SetUserRewardInfo(ctx, legacyUserRewardInfo)
+//		k.DeleteLegacyUserRewardInfo(ctx, legacyUserRewardInfo.User, legacyUserRewardInfo.PoolId, legacyUserRewardInfo.RewardDenom)
+//	}
+//
+//	return
+//}

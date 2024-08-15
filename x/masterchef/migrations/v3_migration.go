@@ -9,7 +9,7 @@ func (m Migrator) V3Migration(ctx sdk.Context) error {
 	m.keeper.SetParams(ctx, params)
 	m.keeper.DeleteLegacyParams(ctx)
 
-	m.keeper.MigrateFromV2UserRewardInfos(ctx)
+	//m.keeper.MigrateFromV2UserRewardInfos(ctx)
 
 	legacyPoolInfos := m.keeper.GetAllLegacyPoolInfos(ctx)
 	for _, legacyPoolInfo := range legacyPoolInfos {
