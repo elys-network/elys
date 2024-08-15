@@ -7,9 +7,11 @@ import (
 )
 
 func (k Keeper) SetUserRewardInfo(ctx sdk.Context, userReward types.UserRewardInfo) {
-	store := ctx.KVStore(k.storeKey)
+	//store := ctx.KVStore(k.storeKey)
 	b := k.cdc.MustMarshal(&userReward)
-	key := types.GetUserRewardInfoKey(userReward.GetUserAccount(), userReward.GetPoolId(), userReward.GetRewardDenom())
+	//key := types.GetUserRewardInfoKey(userReward.GetUserAccount(), userReward.GetPoolId(), userReward.GetRewardDenom())
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.LegacyUserRewardInfoKeyPrefix))
+	key := types.LegacyUserRewardInfoKey(userReward.User, userReward.PoolId, userReward.RewardDenom)
 	store.Set(key, b)
 }
 
@@ -34,8 +36,10 @@ func (k Keeper) GetUserRewardInfo(ctx sdk.Context, user sdk.AccAddress, poolId u
 //}
 
 func (k Keeper) GetAllUserRewardInfos(ctx sdk.Context) (list []types.UserRewardInfo) {
-	store := ctx.KVStore(k.storeKey)
-	iterator := sdk.KVStorePrefixIterator(store, types.UserRewardInfoKeyPrefix)
+	//store := ctx.KVStore(k.storeKey)
+	//iterator := sdk.KVStorePrefixIterator(store, types.UserRewardInfoKeyPrefix)
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.LegacyUserRewardInfoKeyPrefix))
+	iterator := sdk.KVStorePrefixIterator(store, []byte{})
 
 	defer iterator.Close()
 
