@@ -20,7 +20,7 @@ const (
 	// MemStoreKey defines the in-memory store key
 	MemStoreKey = "mem_masterchef"
 
-	LegacyParamsKey                       = "LegacyParamsKey"
+	LegacyParamsKeyPrefix                 = "ParamsKey"
 	LegacyUserRewardInfoKeyPrefix         = "UserRewardInfo"
 	LegacyPoolInfoKeyPrefix               = "PoolInfo"
 	LegacyExternalIncentiveIndexKeyPrefix = "IndexExternalIncentive"

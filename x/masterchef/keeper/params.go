@@ -28,7 +28,7 @@ func (k Keeper) SetParams(ctx sdk.Context, params types.Params) {
 func (k Keeper) GetLegacyParams(ctx sdk.Context) (params types.Params) {
 	store := ctx.KVStore(k.storeKey)
 
-	b := store.Get([]byte(types.LegacyParamsKey))
+	b := store.Get([]byte(types.LegacyParamsKeyPrefix))
 	if b == nil {
 		return
 	}
@@ -39,6 +39,6 @@ func (k Keeper) GetLegacyParams(ctx sdk.Context) (params types.Params) {
 
 func (k Keeper) DeleteLegacyParams(ctx sdk.Context) (params types.Params) {
 	store := ctx.KVStore(k.storeKey)
-	store.Delete([]byte(types.LegacyParamsKey))
+	store.Delete([]byte(types.LegacyParamsKeyPrefix))
 	return
 }
