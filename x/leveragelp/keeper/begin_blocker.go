@@ -79,7 +79,7 @@ func (k Keeper) LiquidatePositionIfUnhealthy(ctx sdk.Context, position *types.Po
 
 	repayAmount, err := k.ForceCloseLong(ctx, *position, pool, position.LeveragedLpAmount)
 	if err != nil {
-		ctx.Logger().Error(errors.Wrap(err, "error executing liquidation").Error())
+		ctx.Logger().Debug(errors.Wrap(err, "error executing liquidation").Error())
 		return isHealthy, true
 	}
 	ctx.EventManager().EmitEvent(sdk.NewEvent(types.EventClose,

@@ -12,7 +12,7 @@ func (k msgServer) ClosePositions(goCtx context.Context, msg *types.MsgClosePosi
 
 	// Handle liquidations
 	for _, val := range msg.Liquidate {
-		position, err := k.GetPosition(ctx, val.Address, val.Id)
+		position, err := k.GetPosition(ctx, val.GetAccountAddress(), val.Id)
 		if err != nil {
 			continue
 		}
@@ -26,7 +26,7 @@ func (k msgServer) ClosePositions(goCtx context.Context, msg *types.MsgClosePosi
 
 	// Handle stop loss
 	for _, val := range msg.Stoploss {
-		position, err := k.GetPosition(ctx, val.Address, val.Id)
+		position, err := k.GetPosition(ctx, val.GetAccountAddress(), val.Id)
 		if err != nil {
 			continue
 		}

@@ -4,7 +4,6 @@ import (
 	"context"
 	"strconv"
 
-	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/leveragelp/types"
 )
@@ -16,14 +15,8 @@ func (k msgServer) Close(goCtx context.Context, msg *types.MsgClose) (*types.Msg
 }
 
 func (k Keeper) Close(ctx sdk.Context, msg *types.MsgClose) (*types.MsgCloseResponse, error) {
-	position, err := k.GetPosition(ctx, msg.Creator, msg.Id)
-	if err != nil {
-		return nil, err
-	}
 
-	var closedPosition *types.Position
-	var repayAmount math.Int
-	closedPosition, repayAmount, err = k.CloseLong(ctx, msg)
+	closedPosition, repayAmount, err := k.CloseLong(ctx, msg)
 	if err != nil {
 		return nil, err
 	}
@@ -35,7 +28,7 @@ func (k Keeper) Close(ctx sdk.Context, msg *types.MsgClose) (*types.MsgCloseResp
 		sdk.NewAttribute("repay_amount", repayAmount.String()),
 		sdk.NewAttribute("leverage", closedPosition.Leverage.String()),
 		sdk.NewAttribute("liabilities", closedPosition.Liabilities.String()),
-		sdk.NewAttribute("interest_paid", position.InterestPaid.String()),
+		sdk.NewAttribute("interest_paid", closedPosition.InterestPaid.String()),
 		sdk.NewAttribute("health", closedPosition.PositionHealth.String()),
 	))
 
