@@ -59,6 +59,7 @@ func (k Keeper) RemoveUserRewardInfo(ctx sdk.Context, user string, poolId uint64
 }
 
 // remove after migration
+// TODO: Optimise user reward info KV
 //func (k Keeper) MigrateFromV2UserRewardInfos(ctx sdk.Context) {
 //	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.LegacyUserRewardInfoKeyPrefix))
 //	iterator := sdk.KVStorePrefixIterator(store, []byte{})
