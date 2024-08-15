@@ -10,6 +10,7 @@ import (
 )
 
 func (m Migrator) V8Migration(ctx sdk.Context) error {
+
 	// Traverse positions and update lp amount and health
 	// Update data structure
 	positions := m.keeper.GetAllPositions(ctx)
@@ -51,6 +52,17 @@ func (m Migrator) V8Migration(ctx sdk.Context) error {
 		FallbackEnabled:     false,
 		NumberPerBlock:      100,
 	}
-	m.keeper.SetParams(ctx, &params)
+	err := m.keeper.SetParams(ctx, &params)
+	if err != nil {
+		return err
+	}
+
+	// keys migrations after deleting corrupted keys
+	positions = m.keeper.GetAllPositions(ctx)
+	for _, position := range positions {
+		m.keeper.SetPosition(ctx, &position)
+		m.keeper.DeleteLegacyPosition(ctx, position.Address, position.Id)
+	}
+
 	return nil
 }
