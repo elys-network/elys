@@ -14,12 +14,6 @@ func (m Migrator) V8Migration(ctx sdk.Context) error {
 	// Traverse positions and update lp amount and health
 	// Update data structure
 	positions := m.keeper.GetAllPositions(ctx)
-	pools := m.keeper.GetAllPools(ctx)
-	for _, pool := range pools {
-		m.keeper.DeletePoolPosIdsLiquidationSorted(ctx, pool.AmmPoolId)
-		m.keeper.DeletePoolPosIdsStopLossSorted(ctx, pool.AmmPoolId)
-	}
-	m.keeper.DeleteCorruptedKeys(ctx)
 
 	openCount := uint64(0)
 	for _, position := range positions {
@@ -61,7 +55,6 @@ func (m Migrator) V8Migration(ctx sdk.Context) error {
 	positions = m.keeper.GetAllPositions(ctx)
 	for _, position := range positions {
 		m.keeper.SetPosition(ctx, &position)
-		m.keeper.DeleteLegacyPosition(ctx, position.Address, position.Id)
 	}
 
 	return nil
