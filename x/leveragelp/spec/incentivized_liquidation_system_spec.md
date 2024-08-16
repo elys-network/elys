@@ -33,7 +33,9 @@ function IncentivizedCheckAndLiquidate(ctx, positionId, liquidator):
 ## Note
 If a user reports an incorrect position for liquidation, they will incur the extra fees associated with the transaction.
 
-## Incentive value (TODO)
-- Fixed vs proportional
-    - Fixed Incentive: A fixed incentive means that liquidators receive a predetermined reward amount for each successful liquidation, regardless of the size of the position.
-    - Proportional Incentive with Minimum Threshold: A proportional incentive means that the reward is a percentage of the liquidated position's assets. To ensure fairness and adequate motivation, a minimum reward threshold is set.
+## Incentives
+1. ***Dynamic Reward Mechanism***: The liquidator's reward is dynamically calculated based on the safety factor of the liquidated position. This creates a direct correlation between the risk taken by the liquidator and the reward received.
+2. ***Safety Factor Threshold***: For positions liquidated with a safety factor slightly above 1 (e.g., 1.05), the liquidator is entitled to the excess collateral. Specifically, if a position's safety factor is 1.05 at the time of liquidation, the liquidator receives the additional 5% of the position's value as a reward.
+3. ***Internal Bots***: In addition to allowing external users and bots to participate in liquidations, we will also run our own bots. These internal bots will serve as a safeguard to ensure that no undercollateralized position goes unnoticed or unliquidated, providing an additional layer of security for the system.
+
+This incentive structure ensures that liquidators are adequately compensated for their role in maintaining market stability. The dynamic and competitive nature of the rewards encourages continuous monitoring and swift action, contributing to the overall health of the leverage market.
