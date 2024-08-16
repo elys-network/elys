@@ -31,8 +31,6 @@ import (
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
 
-const Bech32Prefix = "elys"
-
 // Initiate a new ElysApp object - Common function used by the following 2 functions.
 func InitiateNewElysApp(opts ...wasm.Option) *ElysApp {
 	db := dbm.NewMemDB()
@@ -247,7 +245,7 @@ func initAccountWithCoins(app *ElysApp, ctx sdk.Context, addr sdk.AccAddress, co
 
 // Add testing commitments
 func AddTestCommitment(app *ElysApp, ctx sdk.Context, address sdk.AccAddress, committed sdk.Coins) {
-	commitment := app.CommitmentKeeper.GetCommitments(ctx, address.String())
+	commitment := app.CommitmentKeeper.GetCommitments(ctx, address)
 
 	for _, c := range committed {
 		commitment.AddCommittedTokens(c.Denom, c.Amount, uint64(ctx.BlockTime().Unix()))

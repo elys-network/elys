@@ -8,17 +8,18 @@ import (
 	"github.com/elys-network/elys/x/masterchef/types"
 )
 
-func (k Keeper) SetPool(ctx sdk.Context, pool types.PoolInfo) error {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.PoolInfoKeyPrefix))
+func (k Keeper) SetPoolInfo(ctx sdk.Context, pool types.PoolInfo) {
+	store := ctx.KVStore(k.storeKey)
+	key := types.GetPoolInfoKey(pool.GetPoolId())
 	b := k.cdc.MustMarshal(&pool)
-	store.Set(types.PoolInfoKey(pool.PoolId), b)
-	return nil
+	store.Set(key, b)
 }
 
-func (k Keeper) GetPool(ctx sdk.Context, poolId uint64) (val types.PoolInfo, found bool) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.PoolInfoKeyPrefix))
+func (k Keeper) GetPoolInfo(ctx sdk.Context, poolId uint64) (val types.PoolInfo, found bool) {
+	store := ctx.KVStore(k.storeKey)
+	key := types.GetPoolInfoKey(poolId)
 
-	b := store.Get(types.PoolInfoKey(poolId))
+	b := store.Get(key)
 	if b == nil {
 		return val, false
 	}
@@ -27,13 +28,34 @@ func (k Keeper) GetPool(ctx sdk.Context, poolId uint64) (val types.PoolInfo, fou
 	return val, true
 }
 
-func (k Keeper) RemovePool(ctx sdk.Context, poolId uint64) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.PoolInfoKeyPrefix))
-	store.Delete(types.PoolInfoKey(poolId))
+func (k Keeper) RemovePoolInfo(ctx sdk.Context, poolId uint64) {
+	store := ctx.KVStore(k.storeKey)
+	key := types.GetPoolInfoKey(poolId)
+	store.Delete(key)
 }
 
-func (k Keeper) GetAllPools(ctx sdk.Context) (list []types.PoolInfo) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.PoolInfoKeyPrefix))
+func (k Keeper) GetAllPoolInfos(ctx sdk.Context) (list []types.PoolInfo) {
+	store := ctx.KVStore(k.storeKey)
+	iterator := sdk.KVStorePrefixIterator(store, types.PoolInfoKeyPrefix)
+
+	defer iterator.Close()
+
+	for ; iterator.Valid(); iterator.Next() {
+		var val types.PoolInfo
+		k.cdc.MustUnmarshal(iterator.Value(), &val)
+		list = append(list, val)
+	}
+
+	return
+}
+
+func (k Keeper) RemoveLegacyPoolInfo(ctx sdk.Context, poolId uint64) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.LegacyPoolInfoKeyPrefix))
+	store.Delete(types.LegacyPoolInfoKey(poolId))
+}
+
+func (k Keeper) GetAllLegacyPoolInfos(ctx sdk.Context) (list []types.PoolInfo) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.LegacyPoolInfoKeyPrefix))
 	iterator := sdk.KVStorePrefixIterator(store, []byte{})
 
 	defer iterator.Close()
@@ -54,10 +76,10 @@ func (k Keeper) UpdatePoolMultipliers(ctx sdk.Context, poolMultipliers []types.P
 
 	// Update pool multiplier
 	for _, pm := range poolMultipliers {
-		p, found := k.GetPool(ctx, pm.PoolId)
+		p, found := k.GetPoolInfo(ctx, pm.PoolId)
 		if found {
 			p.Multiplier = pm.Multiplier
-			k.SetPool(ctx, p)
+			k.SetPoolInfo(ctx, p)
 
 			ctx.EventManager().EmitEvents(sdk.Events{
 				sdk.NewEvent(

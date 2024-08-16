@@ -131,6 +131,10 @@ func (c *Commitments) SubClaimed(amount sdk.Coin) error {
 	return nil
 }
 
+func (c Commitments) GetCreatorAccount() sdk.AccAddress {
+	return sdk.MustAccAddressFromBech32(c.Creator)
+}
+
 func (vesting *VestingTokens) VestedSoFar(ctx sdk.Context) math.Int {
 	totalBlocks := ctx.BlockHeight() - vesting.StartBlock
 	if totalBlocks > vesting.NumBlocks {

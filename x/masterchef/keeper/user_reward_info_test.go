@@ -41,11 +41,11 @@ func TestUserRewardInfo(t *testing.T) {
 		},
 	}
 	for _, rewardInfo := range userRewardInfos {
-		err := app.MasterchefKeeper.SetUserRewardInfo(ctx, rewardInfo)
-		require.NoError(t, err)
+		app.MasterchefKeeper.SetUserRewardInfo(ctx, rewardInfo)
+
 	}
 	for _, rewardInfo := range userRewardInfos {
-		info, found := app.MasterchefKeeper.GetUserRewardInfo(ctx, rewardInfo.User, rewardInfo.PoolId, rewardInfo.RewardDenom)
+		info, found := app.MasterchefKeeper.GetUserRewardInfo(ctx, rewardInfo.GetUserAccount(), rewardInfo.PoolId, rewardInfo.RewardDenom)
 		require.True(t, found)
 		require.Equal(t, info, rewardInfo)
 	}

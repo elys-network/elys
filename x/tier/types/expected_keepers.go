@@ -43,7 +43,7 @@ type OracleKeeper interface {
 }
 
 type CommitmentKeeper interface {
-	GetCommitments(ctx sdk.Context, creator string) commitmenttypes.Commitments
+	GetCommitments(ctx sdk.Context, creator sdk.AccAddress) commitmenttypes.Commitments
 	CommitmentVestingInfo(goCtx context.Context, req *commitmenttypes.QueryCommitmentVestingInfoRequest) (*commitmenttypes.QueryCommitmentVestingInfoResponse, error)
 }
 
@@ -97,7 +97,7 @@ type StakingKeeper interface {
 }
 
 type LeverageLpKeeper interface {
-	GetPositionsForAddress(ctx sdk.Context, positionAddress sdk.Address, pagination *query.PageRequest) ([]*leveragelptypes.PositionAndInterest, *query.PageResponse, error)
+	GetPositionsForAddress(ctx sdk.Context, positionAddress sdk.AccAddress, pagination *query.PageRequest) ([]*leveragelptypes.PositionAndInterest, *query.PageResponse, error)
 }
 
 type StablestakeKeeper interface {

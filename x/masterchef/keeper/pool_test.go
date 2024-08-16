@@ -57,19 +57,18 @@ func TestPool(t *testing.T) {
 		},
 	}
 	for _, pool := range pools {
-		err := app.MasterchefKeeper.SetPool(ctx, pool)
-		require.NoError(t, err)
+		app.MasterchefKeeper.SetPoolInfo(ctx, pool)
 	}
 	for _, pool := range pools {
-		info, found := app.MasterchefKeeper.GetPool(ctx, pool.PoolId)
+		info, found := app.MasterchefKeeper.GetPoolInfo(ctx, pool.PoolId)
 		require.True(t, found)
 		require.Equal(t, info, pool)
 	}
-	poolStored := app.MasterchefKeeper.GetAllPools(ctx)
+	poolStored := app.MasterchefKeeper.GetAllPoolInfos(ctx)
 	require.Len(t, poolStored, 3)
 
-	app.MasterchefKeeper.RemovePool(ctx, pools[0].PoolId)
-	poolStored = app.MasterchefKeeper.GetAllPools(ctx)
+	app.MasterchefKeeper.RemovePoolInfo(ctx, pools[0].PoolId)
+	poolStored = app.MasterchefKeeper.GetAllPoolInfos(ctx)
 	require.Len(t, poolStored, 2)
 }
 
@@ -119,11 +118,10 @@ func TestUpdatePoolMultipliers(t *testing.T) {
 		},
 	}
 	for _, pool := range pools {
-		err := app.MasterchefKeeper.SetPool(ctx, pool)
-		require.NoError(t, err)
+		app.MasterchefKeeper.SetPoolInfo(ctx, pool)
 	}
 	for _, pool := range pools {
-		info, found := app.MasterchefKeeper.GetPool(ctx, pool.PoolId)
+		info, found := app.MasterchefKeeper.GetPoolInfo(ctx, pool.PoolId)
 		require.True(t, found)
 		require.Equal(t, info.Multiplier, sdk.OneDec())
 	}
@@ -143,7 +141,7 @@ func TestUpdatePoolMultipliers(t *testing.T) {
 	success := app.MasterchefKeeper.UpdatePoolMultipliers(ctx, poolMultipliers)
 	require.True(t, success)
 	for _, pool := range pools {
-		info, found := app.MasterchefKeeper.GetPool(ctx, pool.PoolId)
+		info, found := app.MasterchefKeeper.GetPoolInfo(ctx, pool.PoolId)
 		require.True(t, found)
 		require.Equal(t, info.Multiplier, sdk.OneDec().Add(sdk.OneDec()))
 	}

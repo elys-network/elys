@@ -10,7 +10,8 @@ import (
 
 // Increase collateral, repay with additional collateral, update debt, liability and health
 func (k Keeper) ProcessAddCollateral(ctx sdk.Context, address string, id uint64, collateral sdk.Int) error {
-	position, err := k.GetPosition(ctx, address, id)
+	creator := sdk.MustAccAddressFromBech32(address)
+	position, err := k.GetPosition(ctx, creator, id)
 	if err != nil {
 		return err
 	}
@@ -33,8 +34,7 @@ func (k Keeper) ProcessAddCollateral(ctx sdk.Context, address string, id uint64,
 	}
 
 	// send collateral coins to Position address from Position owner address
-	positionOwner := sdk.MustAccAddressFromBech32(position.Address)
-	err = k.bankKeeper.SendCoins(ctx, positionOwner, position.GetPositionAddress(), sdk.Coins{sdk.NewCoin(position.Collateral.Denom, collateral)})
+	err = k.bankKeeper.SendCoins(ctx, position.GetOwnerAddress(), position.GetPositionAddress(), sdk.Coins{sdk.NewCoin(position.Collateral.Denom, collateral)})
 	if err != nil {
 		return err
 	}

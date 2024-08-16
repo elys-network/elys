@@ -24,7 +24,8 @@ func (k msgServer) CancelVest(goCtx context.Context, msg *types.MsgCancelVest) (
 	}
 
 	// Get the Commitments for the creator
-	commitments := k.GetCommitments(ctx, msg.Creator)
+	creator := sdk.MustAccAddressFromBech32(msg.Creator)
+	commitments := k.GetCommitments(ctx, creator)
 
 	remainingToCancel := msg.Amount
 

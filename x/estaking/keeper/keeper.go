@@ -182,7 +182,7 @@ func (k Keeper) IterateValidators(ctx sdk.Context,
 func (k Keeper) Delegation(ctx sdk.Context, addrDel sdk.AccAddress, addrVal sdk.ValAddress) stakingtypes.DelegationI {
 	params := k.GetParams(ctx)
 	if addrVal.String() == params.EdenCommitVal {
-		commitments := k.commKeeper.GetCommitments(ctx, addrDel.String())
+		commitments := k.commKeeper.GetCommitments(ctx, addrDel)
 		edenCommit := commitments.GetCommittedAmountForDenom(ptypes.Eden)
 		if edenCommit.IsZero() {
 			return nil
@@ -195,7 +195,7 @@ func (k Keeper) Delegation(ctx sdk.Context, addrDel sdk.AccAddress, addrVal sdk.
 	}
 
 	if addrVal.String() == params.EdenbCommitVal {
-		commitments := k.commKeeper.GetCommitments(ctx, addrDel.String())
+		commitments := k.commKeeper.GetCommitments(ctx, addrDel)
 		edenBCommit := commitments.GetCommittedAmountForDenom(ptypes.EdenB)
 		if edenBCommit.IsZero() {
 			return nil
@@ -219,7 +219,7 @@ func (k Keeper) IterateDelegations(ctx sdk.Context, delegator sdk.AccAddress,
 	fn func(index int64, delegation stakingtypes.DelegationI) (stop bool)) {
 
 	params := k.GetParams(ctx)
-	commitments := k.commKeeper.GetCommitments(ctx, delegator.String())
+	commitments := k.commKeeper.GetCommitments(ctx, delegator)
 	edenCommit := commitments.GetCommittedAmountForDenom(ptypes.Eden)
 	edenBCommit := commitments.GetCommittedAmountForDenom(ptypes.EdenB)
 	if edenCommit.IsPositive() {

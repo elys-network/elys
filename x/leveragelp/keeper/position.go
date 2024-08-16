@@ -15,7 +15,7 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-func (k Keeper) GetPosition(ctx sdk.Context, positionAddress string, id uint64) (types.Position, error) {
+func (k Keeper) GetPosition(ctx sdk.Context, positionAddress sdk.AccAddress, id uint64) (types.Position, error) {
 	var position types.Position
 	key := types.GetPositionKey(positionAddress, id)
 	store := ctx.KVStore(k.storeKey)
@@ -31,6 +31,7 @@ func (k Keeper) SetPosition(ctx sdk.Context, position *types.Position) {
 	store := ctx.KVStore(k.storeKey)
 	count := k.GetPositionCount(ctx)
 	openCount := k.GetOpenPositionCount(ctx)
+	creator := sdk.MustAccAddressFromBech32(position.Address)
 
 	if position.Id == 0 {
 		// increment global id count
@@ -42,11 +43,11 @@ func (k Keeper) SetPosition(ctx sdk.Context, position *types.Position) {
 		k.SetOpenPositionCount(ctx, openCount)
 	}
 
-	key := types.GetPositionKey(position.Address, position.Id)
+	key := types.GetPositionKey(creator, position.Id)
 	store.Set(key, k.cdc.MustMarshal(position))
 }
 
-func (k Keeper) DestroyPosition(ctx sdk.Context, positionAddress string, id uint64) error {
+func (k Keeper) DestroyPosition(ctx sdk.Context, positionAddress sdk.AccAddress, id uint64) error {
 	store := ctx.KVStore(k.storeKey)
 
 	key := types.GetPositionKey(positionAddress, id)
@@ -164,7 +165,10 @@ func (k Keeper) GetPositions(ctx sdk.Context, pagination *query.PageRequest) ([]
 
 	pageRes, err := query.Paginate(positionStore, pagination, func(key []byte, value []byte) error {
 		var position types.Position
-		k.cdc.Unmarshal(value, &position)
+		err := k.cdc.Unmarshal(value, &position)
+		if err != nil {
+			return err
+		}
 		debt := k.stableKeeper.GetDebt(ctx, position.GetPositionAddress())
 		position.Liabilities = debt.GetTotalLiablities()
 		positionList = append(positionList, &position)
@@ -205,11 +209,11 @@ func (k Keeper) GetPositionsForPool(ctx sdk.Context, ammPoolId uint64, paginatio
 	return positions, pageRes, err
 }
 
-func (k Keeper) GetPositionsForAddress(ctx sdk.Context, positionAddress sdk.Address, pagination *query.PageRequest) ([]*types.PositionAndInterest, *query.PageResponse, error) {
+func (k Keeper) GetPositionsForAddress(ctx sdk.Context, positionAddress sdk.AccAddress, pagination *query.PageRequest) ([]*types.PositionAndInterest, *query.PageResponse, error) {
 	var positions []*types.PositionAndInterest
 
 	store := ctx.KVStore(k.storeKey)
-	positionStore := prefix.NewStore(store, types.GetPositionPrefixForAddress(positionAddress.String()))
+	positionStore := prefix.NewStore(store, types.GetPositionPrefixForAddress(positionAddress))
 
 	if pagination == nil {
 		pagination = &query.PageRequest{
@@ -244,6 +248,7 @@ func (k Keeper) GetPositionsForAddress(ctx sdk.Context, positionAddress sdk.Addr
 	return positions, pageRes, nil
 }
 
+// GetPositionHealth Should not be used in queries as UpdateInterestAndGetDebt updates KVStore as well
 func (k Keeper) GetPositionHealth(ctx sdk.Context, position types.Position) (sdk.Dec, error) {
 	debt := k.stableKeeper.UpdateInterestAndGetDebt(ctx, position.GetPositionAddress())
 	debtAmount := debt.GetTotalLiablities()
@@ -257,7 +262,7 @@ func (k Keeper) GetPositionHealth(ctx sdk.Context, position types.Position) (sdk
 	}
 
 	leveragedLpAmount := sdk.ZeroInt()
-	commitments := k.commKeeper.GetCommitments(ctx, position.GetPositionAddress().String())
+	commitments := k.commKeeper.GetCommitments(ctx, position.GetPositionAddress())
 
 	for _, commitment := range commitments.CommittedTokens {
 		leveragedLpAmount = leveragedLpAmount.Add(commitment.Amount)
@@ -275,9 +280,9 @@ func (k Keeper) GetPositionHealth(ctx sdk.Context, position types.Position) (sdk
 	return health, nil
 }
 
-func (k Keeper) GetPositionWithId(ctx sdk.Context, positionAddress sdk.Address, Id uint64) (*types.Position, bool) {
+func (k Keeper) GetPositionWithId(ctx sdk.Context, positionAddress sdk.AccAddress, Id uint64) (*types.Position, bool) {
 	store := ctx.KVStore(k.storeKey)
-	key := types.GetPositionKey(positionAddress.String(), Id)
+	key := types.GetPositionKey(positionAddress, Id)
 	if !store.Has(key) {
 		return nil, false
 	}
@@ -310,7 +315,7 @@ func (k Keeper) GetAllLegacyPositions(ctx sdk.Context) []types.LegacyPosition {
 
 func (k Keeper) DeleteLegacyPosition(ctx sdk.Context, positionAddress string, id uint64) error {
 	store := ctx.KVStore(k.storeKey)
-	key := types.GetPositionKey(positionAddress, id)
+	key := types.GetPositionKey(sdk.MustAccAddressFromBech32(positionAddress), id)
 	if !store.Has(key) {
 		return types.ErrPositionDoesNotExist
 	}

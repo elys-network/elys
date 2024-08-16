@@ -14,7 +14,8 @@ import (
 // mainly utilized for Eden
 func (k msgServer) Vest(goCtx context.Context, msg *types.MsgVest) (*types.MsgVestResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	err := k.ProcessTokenVesting(ctx, msg.Denom, msg.Amount, msg.Creator)
+	creator := sdk.MustAccAddressFromBech32(msg.Creator)
+	err := k.ProcessTokenVesting(ctx, msg.Denom, msg.Amount, creator)
 	if err != nil {
 		return &types.MsgVestResponse{}, err
 	}
@@ -25,7 +26,7 @@ func (k msgServer) Vest(goCtx context.Context, msg *types.MsgVest) (*types.MsgVe
 // Vesting token
 // Check if vesting entity count is not exceeding the maximum and if it is fine, creates a new vesting entity
 // Deduct from unclaimed bucket. If it is insufficent, deduct from committed bucket as well.
-func (k Keeper) ProcessTokenVesting(ctx sdk.Context, denom string, amount math.Int, creator string) error {
+func (k Keeper) ProcessTokenVesting(ctx sdk.Context, denom string, amount math.Int, creator sdk.AccAddress) error {
 	vestingInfo, _ := k.GetVestingInfo(ctx, denom)
 
 	if vestingInfo == nil {
@@ -62,7 +63,7 @@ func (k Keeper) ProcessTokenVesting(ctx sdk.Context, denom string, amount math.I
 	ctx.EventManager().EmitEvent(
 		sdk.NewEvent(
 			types.EventTypeCommitmentChanged,
-			sdk.NewAttribute(types.AttributeCreator, creator),
+			sdk.NewAttribute(types.AttributeCreator, creator.String()),
 			sdk.NewAttribute(types.AttributeAmount, amount.String()),
 			sdk.NewAttribute(types.AttributeDenom, denom),
 		),

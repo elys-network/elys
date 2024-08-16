@@ -15,7 +15,8 @@ func (k Keeper) IsWhitelisted(goCtx context.Context, req *types.IsWhitelistedReq
 	}
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	isWhitelisted := k.CheckIfWhitelisted(ctx, req.Address)
+	accountAddress := sdk.MustAccAddressFromBech32(req.Address)
+	isWhitelisted := k.CheckIfWhitelisted(ctx, accountAddress)
 
 	return &types.IsWhitelistedResponse{
 		Address:       req.Address,

@@ -7,9 +7,8 @@ import (
 )
 
 // Process commitmentChanged hook
-func (k Keeper) CommitmentChanged(ctx sdk.Context, creator string, amount sdk.Coins) error {
+func (k Keeper) CommitmentChanged(ctx sdk.Context, creator sdk.AccAddress, amount sdk.Coins) error {
 	params := k.GetParams(ctx)
-	addr := sdk.MustAccAddressFromBech32(creator)
 
 	if !amount.AmountOf(ptypes.Eden).IsZero() {
 		edenValAddr, err := sdk.ValAddressFromBech32(params.EdenCommitVal)
@@ -17,14 +16,14 @@ func (k Keeper) CommitmentChanged(ctx sdk.Context, creator string, amount sdk.Co
 			return err
 		}
 
-		del := k.Delegation(ctx, addr, edenValAddr)
+		del := k.Delegation(ctx, creator, edenValAddr)
 		if del == nil {
-			err = k.Keeper.Hooks().BeforeDelegationRemoved(ctx, addr, edenValAddr)
+			err = k.Keeper.Hooks().BeforeDelegationRemoved(ctx, creator, edenValAddr)
 			if err != nil {
 				return err
 			}
 		} else {
-			err = k.Keeper.Hooks().AfterDelegationModified(ctx, addr, edenValAddr)
+			err = k.Keeper.Hooks().AfterDelegationModified(ctx, creator, edenValAddr)
 			if err != nil {
 				return err
 			}
@@ -37,14 +36,14 @@ func (k Keeper) CommitmentChanged(ctx sdk.Context, creator string, amount sdk.Co
 			return err
 		}
 
-		del := k.Delegation(ctx, addr, edenBValAddr)
+		del := k.Delegation(ctx, creator, edenBValAddr)
 		if del == nil {
-			err = k.Keeper.Hooks().BeforeDelegationRemoved(ctx, addr, edenBValAddr)
+			err = k.Keeper.Hooks().BeforeDelegationRemoved(ctx, creator, edenBValAddr)
 			if err != nil {
 				return err
 			}
 		} else {
-			err = k.Keeper.Hooks().AfterDelegationModified(ctx, addr, edenBValAddr)
+			err = k.Keeper.Hooks().AfterDelegationModified(ctx, creator, edenBValAddr)
 			if err != nil {
 				return err
 			}
@@ -54,7 +53,7 @@ func (k Keeper) CommitmentChanged(ctx sdk.Context, creator string, amount sdk.Co
 }
 
 // Process eden uncommitted hook
-func (k Keeper) EdenUncommitted(ctx sdk.Context, creator string, amount sdk.Coin) error {
+func (k Keeper) EdenUncommitted(ctx sdk.Context, creator sdk.AccAddress, amount sdk.Coin) error {
 	return k.BurnEdenBFromEdenUncommitted(ctx, creator, amount.Amount)
 }
 
@@ -143,12 +142,12 @@ func (k Keeper) CommitmentHooks() CommitmentHooks {
 }
 
 // CommitmentChanged implements CommentmentHook
-func (h CommitmentHooks) CommitmentChanged(ctx sdk.Context, creator string, amount sdk.Coins) error {
+func (h CommitmentHooks) CommitmentChanged(ctx sdk.Context, creator sdk.AccAddress, amount sdk.Coins) error {
 	return h.k.CommitmentChanged(ctx, creator, amount)
 }
 
 // EdenUncommitted implements EdenUncommitted
-func (h CommitmentHooks) EdenUncommitted(ctx sdk.Context, creator string, amount sdk.Coin) error {
+func (h CommitmentHooks) EdenUncommitted(ctx sdk.Context, creator sdk.AccAddress, amount sdk.Coin) error {
 	return h.k.EdenUncommitted(ctx, creator, amount)
 }
 

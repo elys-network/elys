@@ -74,17 +74,17 @@ func (k Keeper) Logger(ctx sdk.Context) log.Logger {
 	return ctx.Logger().With("module", fmt.Sprintf("x/%s", types.ModuleName))
 }
 
-func (k Keeper) WhitelistAddress(ctx sdk.Context, address string) {
+func (k Keeper) WhitelistAddress(ctx sdk.Context, address sdk.AccAddress) {
 	store := ctx.KVStore(k.storeKey)
-	store.Set(types.GetWhitelistKey(address), []byte(address))
+	store.Set(types.GetWhitelistKey(address), address)
 }
 
-func (k Keeper) DewhitelistAddress(ctx sdk.Context, address string) {
+func (k Keeper) DewhitelistAddress(ctx sdk.Context, address sdk.AccAddress) {
 	store := ctx.KVStore(k.storeKey)
 	store.Delete(types.GetWhitelistKey(address))
 }
 
-func (k Keeper) CheckIfWhitelisted(ctx sdk.Context, address string) bool {
+func (k Keeper) CheckIfWhitelisted(ctx sdk.Context, address sdk.AccAddress) bool {
 	store := ctx.KVStore(k.storeKey)
 	return store.Has(types.GetWhitelistKey(address))
 }
@@ -148,7 +148,25 @@ func (k Keeper) GetWhitelistAddressIterator(ctx sdk.Context) sdk.Iterator {
 	return sdk.KVStorePrefixIterator(store, types.WhitelistPrefix)
 }
 
-func (k Keeper) GetAllWhitelistedAddress(ctx sdk.Context) []string {
+func (k Keeper) GetAllWhitelistedAddress(ctx sdk.Context) []sdk.AccAddress {
+	var list []sdk.AccAddress
+	iterator := k.GetWhitelistAddressIterator(ctx)
+	defer func(iterator sdk.Iterator) {
+		err := iterator.Close()
+		if err != nil {
+			panic(err)
+		}
+	}(iterator)
+
+	for ; iterator.Valid(); iterator.Next() {
+		list = append(list, iterator.Value())
+	}
+
+	return list
+}
+
+// remove after migration
+func (k Keeper) GetAllLegacyWhitelistedAddress(ctx sdk.Context) []string {
 	var list []string
 	iterator := k.GetWhitelistAddressIterator(ctx)
 	defer func(iterator sdk.Iterator) {
@@ -165,8 +183,14 @@ func (k Keeper) GetAllWhitelistedAddress(ctx sdk.Context) []string {
 	return list
 }
 
-func (k Keeper) GetWhitelistedAddress(ctx sdk.Context, pagination *query.PageRequest) ([]string, *query.PageResponse, error) {
-	var list []string
+// remove after migration
+func (k Keeper) DeleteLegacyWhitelistedAddress(ctx sdk.Context, address string) {
+	store := ctx.KVStore(k.storeKey)
+	store.Delete(types.GetLegacyWhitelistKey(address))
+}
+
+func (k Keeper) GetWhitelistedAddress(ctx sdk.Context, pagination *query.PageRequest) ([]sdk.AccAddress, *query.PageResponse, error) {
+	var list []sdk.AccAddress
 	store := ctx.KVStore(k.storeKey)
 	prefixStore := prefix.NewStore(store, types.WhitelistPrefix)
 
@@ -177,7 +201,7 @@ func (k Keeper) GetWhitelistedAddress(ctx sdk.Context, pagination *query.PageReq
 	}
 
 	pageRes, err := query.Paginate(prefixStore, pagination, func(key []byte, value []byte) error {
-		list = append(list, string(value))
+		list = append(list, value)
 		return nil
 	})
 

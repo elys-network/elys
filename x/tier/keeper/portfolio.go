@@ -18,12 +18,11 @@ import (
 	"github.com/elys-network/elys/x/tier/types"
 )
 
-func (k Keeper) RetrieveAllPortfolio(ctx sdk.Context, user string) {
+func (k Keeper) RetrieveAllPortfolio(ctx sdk.Context, user sdk.AccAddress) {
 	// set today + user -> amount
-	sender := sdk.MustAccAddressFromBech32(user)
 	todayDate := k.GetDateFromBlock(ctx.BlockTime())
 
-	_, found := k.GetPortfolio(ctx, user, todayDate)
+	_, found := k.GetPortfolio(ctx, user.String(), todayDate)
 	if found {
 		return
 	}
@@ -31,23 +30,23 @@ func (k Keeper) RetrieveAllPortfolio(ctx sdk.Context, user string) {
 	totalValue := sdk.NewDec(0)
 
 	// Liquid assets
-	liq := k.RetrieveLiquidAssetsTotal(ctx, sender)
+	liq := k.RetrieveLiquidAssetsTotal(ctx, user)
 	totalValue = totalValue.Add(liq)
 
 	// Rewards
-	rew := k.RetrieveRewardsTotal(ctx, sender)
+	rew := k.RetrieveRewardsTotal(ctx, user)
 	totalValue = totalValue.Add(rew)
 
 	// Perpetual
-	perp := k.RetrievePerpetualTotal(ctx, sender)
+	perp := k.RetrievePerpetualTotal(ctx, user)
 	totalValue = totalValue.Add(perp)
 
 	// Pool assets
-	staked := k.RetrievePoolTotal(ctx, sender)
+	staked := k.RetrievePoolTotal(ctx, user)
 	totalValue = totalValue.Add(staked)
 
 	// Staked assets
-	commit, delegations, unbondings, totalVesting := k.RetrieveStaked(ctx, sender)
+	commit, delegations, unbondings, totalVesting := k.RetrieveStaked(ctx, user)
 	// convert vesting to usd
 	baseCurrency, found := k.assetProfileKeeper.GetUsdcDenom(ctx)
 	if found {
@@ -57,18 +56,19 @@ func (k Keeper) RetrieveAllPortfolio(ctx sdk.Context, user string) {
 	totalValue = totalValue.Add(commit).Add(delegations).Add(unbondings).Add(totalVesting)
 
 	// LeverageLp
-	lev := k.RetrieveLeverageLpTotal(ctx, sender)
+	_, _, lev := k.RetrieveLeverageLpTotal(ctx, user)
+
 	totalValue = totalValue.Add(lev)
 
-	k.SetPortfolio(ctx, todayDate, sender.String(), types.Portfolio{
-		Creator:   user,
+	k.SetPortfolio(ctx, todayDate, user.String(), types.Portfolio{
+		Creator:   user.String(),
 		Portfolio: totalValue,
 	})
 }
 
 func (k Keeper) RetrievePoolTotal(ctx sdk.Context, user sdk.AccAddress) sdk.Dec {
 	totalValue := sdk.NewDec(0)
-	commitments := k.commitement.GetCommitments(ctx, user.String())
+	commitments := k.commitement.GetCommitments(ctx, user)
 	for _, commitment := range commitments.CommittedTokens {
 		// Pool balance
 		if strings.HasPrefix(commitment.Denom, "amm/pool") {
@@ -91,7 +91,7 @@ func (k Keeper) RetrievePoolTotal(ctx sdk.Context, user sdk.AccAddress) sdk.Dec 
 
 func (k Keeper) RetrieveStaked(ctx sdk.Context, user sdk.AccAddress) (sdk.Dec, sdk.Dec, sdk.Dec, sdk.Dec) {
 	totalCommit := sdk.NewDec(0)
-	commitments := k.commitement.GetCommitments(ctx, user.String())
+	commitments := k.commitement.GetCommitments(ctx, user)
 	totalVested := sdk.NewDec(0)
 	vestingResp, vestErr := k.commitement.CommitmentVestingInfo(ctx, &commitmenttypes.QueryCommitmentVestingInfoRequest{Address: user.String()})
 	if vestErr == nil {
@@ -245,9 +245,11 @@ func (k Keeper) RetrieveLiquidAssetsTotal(ctx sdk.Context, user sdk.AccAddress) 
 	return totalValue
 }
 
-func (k Keeper) RetrieveLeverageLpTotal(ctx sdk.Context, user sdk.AccAddress) sdk.Dec {
+func (k Keeper) RetrieveLeverageLpTotal(ctx sdk.Context, user sdk.AccAddress) (sdk.Dec, sdk.Dec, sdk.Dec) {
 	positions, _, err := k.leveragelp.GetPositionsForAddress(ctx, user, &query.PageRequest{})
 	totalValue := sdk.NewDec(0)
+	totalBorrow := sdk.NewDec(0)
+	netValue := sdk.NewDec(0)
 	if err == nil {
 		for _, position := range positions {
 			pool, found := k.amm.GetPool(ctx, position.Position.AmmPoolId)
@@ -265,10 +267,11 @@ func (k Keeper) RetrieveLeverageLpTotal(ctx sdk.Context, user sdk.AccAddress) sd
 			}
 			usdcPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, usdcDenom)
 			liab := debt.GetTotalLiablities().ToLegacyDec()
-			totalValue = totalValue.Sub(liab.Mul(usdcPrice))
+			totalBorrow = totalBorrow.Add(liab.Mul(usdcPrice))
 		}
+		netValue = totalValue.Sub(totalBorrow)
 	}
-	return totalValue
+	return totalValue, totalBorrow, netValue
 }
 
 func (k Keeper) RetrieveConsolidatedPrice(ctx sdk.Context, denom string) (sdk.Dec, sdk.Dec, sdk.Dec) {

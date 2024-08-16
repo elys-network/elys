@@ -36,14 +36,14 @@ func (k Keeper) CommitLiquidTokens(ctx sdk.Context, addr sdk.AccAddress, denom s
 	k.SetParams(ctx, params)
 
 	// Get the Commitments for the creator
-	commitments := k.GetCommitments(ctx, addr.String())
+	commitments := k.GetCommitments(ctx, addr)
 
 	// Update the commitments
 	commitments.AddCommittedTokens(denom, amount, lockUntil)
 	k.SetCommitments(ctx, commitments)
 
 	// Emit Hook commitment changed
-	err = k.CommitmentChanged(ctx, addr.String(), sdk.Coins{sdk.NewCoin(denom, amount)})
+	err = k.CommitmentChanged(ctx, addr, sdk.Coins{sdk.NewCoin(denom, amount)})
 	if err != nil {
 		return err
 	}
