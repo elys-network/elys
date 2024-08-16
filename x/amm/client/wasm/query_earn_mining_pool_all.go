@@ -63,7 +63,7 @@ func (oq *Querier) generateEarnPool(ctx sdk.Context, ammPool *types.Pool, filter
 	perpetualPercent := sdk.ZeroDec()
 	isLeverageLpEnabled := false
 
-	poolInfo, found := oq.masterchefKeeper.GetPool(ctx, ammPool.PoolId)
+	poolInfo, found := oq.masterchefKeeper.GetPoolInfo(ctx, ammPool.PoolId)
 	if found {
 		rewardsApr = poolInfo.DexApr.Add(poolInfo.EdenApr)
 	}

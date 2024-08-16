@@ -9,7 +9,7 @@ import (
 func (k Keeper) GetParams(ctx sdk.Context) (params types.Params) {
 	store := ctx.KVStore(k.storeKey)
 
-	b := store.Get([]byte(types.ParamsKey))
+	b := store.Get(types.ParamsKey)
 	if b == nil {
 		return
 	}
@@ -22,5 +22,23 @@ func (k Keeper) GetParams(ctx sdk.Context) (params types.Params) {
 func (k Keeper) SetParams(ctx sdk.Context, params types.Params) {
 	store := ctx.KVStore(k.storeKey)
 	b := k.cdc.MustMarshal(&params)
-	store.Set([]byte(types.ParamsKey), b)
+	store.Set(types.ParamsKey, b)
+}
+
+func (k Keeper) GetLegacyParams(ctx sdk.Context) (params types.Params) {
+	store := ctx.KVStore(k.storeKey)
+
+	b := store.Get([]byte(types.LegacyParamsKeyPrefix))
+	if b == nil {
+		return
+	}
+
+	k.cdc.MustUnmarshal(b, &params)
+	return
+}
+
+func (k Keeper) DeleteLegacyParams(ctx sdk.Context) (params types.Params) {
+	store := ctx.KVStore(k.storeKey)
+	store.Delete([]byte(types.LegacyParamsKeyPrefix))
+	return
 }

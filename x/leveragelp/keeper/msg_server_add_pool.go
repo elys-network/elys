@@ -17,9 +17,9 @@ func (k msgServer) AddPools(goCtx context.Context, msg *types.MsgAddPool) (*type
 		return nil, errorsmod.Wrapf(govtypes.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.authority, msg.Authority)
 	}
 
-	pool, found := k.amm.GetPool(ctx, msg.Pool.AmmPoolId)
+	pool, ammFound := k.amm.GetPool(ctx, msg.Pool.AmmPoolId)
 
-	if found && pool.PoolParams.UseOracle {
+	if ammFound && pool.PoolParams.UseOracle {
 		_, found := k.GetPool(ctx, msg.Pool.AmmPoolId)
 
 		if !found {

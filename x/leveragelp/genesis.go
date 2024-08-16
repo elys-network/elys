@@ -25,7 +25,7 @@ func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) 
 
 	// Set all the whitelisted
 	for _, elem := range genState.AddressWhitelist {
-		k.WhitelistAddress(ctx, elem)
+		k.WhitelistAddress(ctx, sdk.MustAccAddressFromBech32(elem))
 	}
 
 	// this line is used by starport scaffolding # genesis/module/init
@@ -42,7 +42,12 @@ func ExportGenesis(ctx sdk.Context, k keeper.Keeper) *types.GenesisState {
 
 	genesis.PoolList = k.GetAllPools(ctx)
 	genesis.PositionList = k.GetAllPositions(ctx)
-	genesis.AddressWhitelist = k.GetAllWhitelistedAddress(ctx)
+	whitelist := k.GetAllWhitelistedAddress(ctx)
+	whitelistAddressStrings := make([]string, len(whitelist))
+	for i, whitelistAddress := range whitelist {
+		whitelistAddressStrings[i] = whitelistAddress.String()
+	}
+	genesis.AddressWhitelist = whitelistAddressStrings
 
 	return genesis
 }

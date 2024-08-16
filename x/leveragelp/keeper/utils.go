@@ -11,7 +11,8 @@ import (
 )
 
 func (k Keeper) CheckUserAuthorization(ctx sdk.Context, msg *types.MsgOpen) error {
-	if k.IsWhitelistingEnabled(ctx) && !k.CheckIfWhitelisted(ctx, msg.Creator) {
+	creator := sdk.MustAccAddressFromBech32(msg.Creator)
+	if k.IsWhitelistingEnabled(ctx) && !k.CheckIfWhitelisted(ctx, creator) {
 		return errorsmod.Wrap(types.ErrUnauthorised, "unauthorised")
 	}
 	return nil

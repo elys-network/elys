@@ -15,7 +15,7 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-func (k Keeper) GetPosition(ctx sdk.Context, positionAddress string, id uint64) (types.Position, error) {
+func (k Keeper) GetPosition(ctx sdk.Context, positionAddress sdk.AccAddress, id uint64) (types.Position, error) {
 	var position types.Position
 	key := types.GetPositionKey(positionAddress, id)
 	store := ctx.KVStore(k.storeKey)
@@ -31,6 +31,7 @@ func (k Keeper) SetPosition(ctx sdk.Context, position *types.Position) {
 	store := ctx.KVStore(k.storeKey)
 	count := k.GetPositionCount(ctx)
 	openCount := k.GetOpenPositionCount(ctx)
+	creator := sdk.MustAccAddressFromBech32(position.Address)
 
 	if position.Id == 0 {
 		// increment global id count
@@ -42,11 +43,11 @@ func (k Keeper) SetPosition(ctx sdk.Context, position *types.Position) {
 		k.SetOpenPositionCount(ctx, openCount)
 	}
 
-	key := types.GetPositionKey(position.Address, position.Id)
+	key := types.GetPositionKey(creator, position.Id)
 	store.Set(key, k.cdc.MustMarshal(position))
 }
 
-func (k Keeper) DestroyPosition(ctx sdk.Context, positionAddress string, id uint64) error {
+func (k Keeper) DestroyPosition(ctx sdk.Context, positionAddress sdk.AccAddress, id uint64) error {
 	store := ctx.KVStore(k.storeKey)
 
 	key := types.GetPositionKey(positionAddress, id)
@@ -208,11 +209,11 @@ func (k Keeper) GetPositionsForPool(ctx sdk.Context, ammPoolId uint64, paginatio
 	return positions, pageRes, err
 }
 
-func (k Keeper) GetPositionsForAddress(ctx sdk.Context, positionAddress sdk.Address, pagination *query.PageRequest) ([]*types.PositionAndInterest, *query.PageResponse, error) {
+func (k Keeper) GetPositionsForAddress(ctx sdk.Context, positionAddress sdk.AccAddress, pagination *query.PageRequest) ([]*types.PositionAndInterest, *query.PageResponse, error) {
 	var positions []*types.PositionAndInterest
 
 	store := ctx.KVStore(k.storeKey)
-	positionStore := prefix.NewStore(store, types.GetPositionPrefixForAddress(positionAddress.String()))
+	positionStore := prefix.NewStore(store, types.GetPositionPrefixForAddress(positionAddress))
 
 	if pagination == nil {
 		pagination = &query.PageRequest{
@@ -247,6 +248,7 @@ func (k Keeper) GetPositionsForAddress(ctx sdk.Context, positionAddress sdk.Addr
 	return positions, pageRes, nil
 }
 
+// GetPositionHealth Should not be used in queries as UpdateInterestAndGetDebt updates KVStore as well
 func (k Keeper) GetPositionHealth(ctx sdk.Context, position types.Position) (sdk.Dec, error) {
 	debt := k.stableKeeper.UpdateInterestAndGetDebt(ctx, position.GetPositionAddress())
 	debtAmount := debt.GetTotalLiablities()
@@ -278,9 +280,9 @@ func (k Keeper) GetPositionHealth(ctx sdk.Context, position types.Position) (sdk
 	return health, nil
 }
 
-func (k Keeper) GetPositionWithId(ctx sdk.Context, positionAddress sdk.Address, Id uint64) (*types.Position, bool) {
+func (k Keeper) GetPositionWithId(ctx sdk.Context, positionAddress sdk.AccAddress, Id uint64) (*types.Position, bool) {
 	store := ctx.KVStore(k.storeKey)
-	key := types.GetPositionKey(positionAddress.String(), Id)
+	key := types.GetPositionKey(positionAddress, Id)
 	if !store.Has(key) {
 		return nil, false
 	}
@@ -288,6 +290,37 @@ func (k Keeper) GetPositionWithId(ctx sdk.Context, positionAddress sdk.Address, 
 	var position types.Position
 	k.cdc.MustUnmarshal(res, &position)
 	return &position, true
+}
+
+func (k Keeper) GetAllLegacyPositions(ctx sdk.Context) []types.LegacyPosition {
+	var positions []types.LegacyPosition
+	iterator := k.GetPositionIterator(ctx)
+	defer func(iterator sdk.Iterator) {
+		err := iterator.Close()
+		if err != nil {
+			panic(err)
+		}
+	}(iterator)
+
+	for ; iterator.Valid(); iterator.Next() {
+		var position types.LegacyPosition
+		bytesValue := iterator.Value()
+		err := k.cdc.Unmarshal(bytesValue, &position)
+		if err == nil {
+			positions = append(positions, position)
+		}
+	}
+	return positions
+}
+
+func (k Keeper) DeleteLegacyPosition(ctx sdk.Context, positionAddress string, id uint64) error {
+	store := ctx.KVStore(k.storeKey)
+	key := types.GetPositionKey(sdk.MustAccAddressFromBech32(positionAddress), id)
+	if !store.Has(key) {
+		return types.ErrPositionDoesNotExist
+	}
+	store.Delete(key)
+	return nil
 }
 
 // TODO: remove all functions below after upgrade
