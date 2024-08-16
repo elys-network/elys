@@ -27,13 +27,6 @@ func (k Keeper) GetPosition(ctx sdk.Context, positionAddress sdk.AccAddress, id 
 	return position, nil
 }
 
-// remove after migration
-func (k Keeper) DeleteLegacyPosition(ctx sdk.Context, positionAddress string, id uint64) {
-	key := types.GetLegacyPositionKey(positionAddress, id)
-	store := ctx.KVStore(k.storeKey)
-	store.Delete(key)
-}
-
 func (k Keeper) SetPosition(ctx sdk.Context, position *types.Position) {
 	store := ctx.KVStore(k.storeKey)
 	count := k.GetPositionCount(ctx)
@@ -297,55 +290,4 @@ func (k Keeper) GetPositionWithId(ctx sdk.Context, positionAddress sdk.AccAddres
 	var position types.Position
 	k.cdc.MustUnmarshal(res, &position)
 	return &position, true
-}
-
-// TODO: remove all functions below after upgrade
-func (k Keeper) DeleteCorruptedKeys(ctx sdk.Context) {
-	store := ctx.KVStore(k.storeKey)
-	iterator := sdk.KVStorePrefixIterator(store, types.PositionPrefix)
-	defer func(iterator sdk.Iterator) {
-		err := iterator.Close()
-		if err != nil {
-			panic(err)
-		}
-	}(iterator)
-
-	for ; iterator.Valid(); iterator.Next() {
-		var position types.Position
-		bytesValue := iterator.Value()
-		err := k.cdc.Unmarshal(bytesValue, &position)
-		if err != nil || position.Id == 0 {
-			store.Delete(iterator.Key())
-		}
-	}
-}
-
-func (k Keeper) DeletePoolPosIdsLiquidationSorted(ctx sdk.Context, poolId uint64) {
-	store := ctx.KVStore(k.storeKey)
-	iterator := sdk.KVStorePrefixIterator(store, types.GetLiquidationSortPrefix(poolId))
-	defer func(iterator sdk.Iterator) {
-		err := iterator.Close()
-		if err != nil {
-			panic(err)
-		}
-	}(iterator)
-
-	for ; iterator.Valid(); iterator.Next() {
-		store.Delete(iterator.Key())
-	}
-}
-
-func (k Keeper) DeletePoolPosIdsStopLossSorted(ctx sdk.Context, poolId uint64) {
-	store := ctx.KVStore(k.storeKey)
-	iterator := sdk.KVStorePrefixIterator(store, types.GetStopLossSortPrefix(poolId))
-	defer func(iterator sdk.Iterator) {
-		err := iterator.Close()
-		if err != nil {
-			panic(err)
-		}
-	}(iterator)
-
-	for ; iterator.Valid(); iterator.Next() {
-		store.Delete(iterator.Key())
-	}
 }
