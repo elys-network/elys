@@ -15,7 +15,6 @@ func (k msgServer) Close(goCtx context.Context, msg *types.MsgClose) (*types.Msg
 }
 
 func (k Keeper) Close(ctx sdk.Context, msg *types.MsgClose) (*types.MsgCloseResponse, error) {
-
 	closedPosition, repayAmount, err := k.CloseLong(ctx, msg)
 	if err != nil {
 		return nil, err
@@ -28,7 +27,6 @@ func (k Keeper) Close(ctx sdk.Context, msg *types.MsgClose) (*types.MsgCloseResp
 		sdk.NewAttribute("repay_amount", repayAmount.String()),
 		sdk.NewAttribute("leverage", closedPosition.Leverage.String()),
 		sdk.NewAttribute("liabilities", closedPosition.Liabilities.String()),
-		sdk.NewAttribute("interest_paid", closedPosition.InterestPaid.String()),
 		sdk.NewAttribute("health", closedPosition.PositionHealth.String()),
 	))
 

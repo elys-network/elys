@@ -27,13 +27,6 @@ func (k Keeper) GetPosition(ctx sdk.Context, positionAddress sdk.AccAddress, id 
 	return position, nil
 }
 
-// remove after migration
-func (k Keeper) DeleteLegacyPosition(ctx sdk.Context, positionAddress string, id uint64) {
-	key := types.GetLegacyPositionKey(positionAddress, id)
-	store := ctx.KVStore(k.storeKey)
-	store.Delete(key)
-}
-
 func (k Keeper) SetPosition(ctx sdk.Context, position *types.Position) {
 	store := ctx.KVStore(k.storeKey)
 	count := k.GetPositionCount(ctx)
@@ -297,6 +290,37 @@ func (k Keeper) GetPositionWithId(ctx sdk.Context, positionAddress sdk.AccAddres
 	var position types.Position
 	k.cdc.MustUnmarshal(res, &position)
 	return &position, true
+}
+
+func (k Keeper) GetAllLegacyPositions(ctx sdk.Context) []types.LegacyPosition {
+	var positions []types.LegacyPosition
+	iterator := k.GetPositionIterator(ctx)
+	defer func(iterator sdk.Iterator) {
+		err := iterator.Close()
+		if err != nil {
+			panic(err)
+		}
+	}(iterator)
+
+	for ; iterator.Valid(); iterator.Next() {
+		var position types.LegacyPosition
+		bytesValue := iterator.Value()
+		err := k.cdc.Unmarshal(bytesValue, &position)
+		if err == nil {
+			positions = append(positions, position)
+		}
+	}
+	return positions
+}
+
+func (k Keeper) DeleteLegacyPosition(ctx sdk.Context, positionAddress string, id uint64) error {
+	store := ctx.KVStore(k.storeKey)
+	key := types.GetPositionKey(sdk.MustAccAddressFromBech32(positionAddress), id)
+	if !store.Has(key) {
+		return types.ErrPositionDoesNotExist
+	}
+	store.Delete(key)
+	return nil
 }
 
 // TODO: remove all functions below after upgrade
