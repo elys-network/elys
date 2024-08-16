@@ -280,7 +280,7 @@ $ %s tx masterchef claim-rewards --from mykey --pool-ids [pool-ids]
 			poolIds := []uint64{}
 
 			poolIdsString, err := cmd.Flags().GetString(FlagPoolIds)
-			if err != nil {
+			if err == nil {
 				poolIdsArray := strings.Split(poolIdsString, ",")
 				for _, poolIdStr := range poolIdsArray {
 					poolId, err := strconv.ParseUint(poolIdStr, 10, 64)
