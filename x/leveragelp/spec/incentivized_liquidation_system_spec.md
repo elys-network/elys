@@ -19,7 +19,7 @@ function IncentivizedCheckAndLiquidate(ctx, positionId, liquidator):
     position = getPosition(ctx, positionId)
     health = calculateHealth(position)
 
-    if health < LIQUIDATION_THRESHOLD or lp_price <= stop_loss_price:
+    if health < LIQUIDATION_THRESHOLD or lp_price <= (stop_loss_price * 1.01):
         executeLiquidation(ctx, position)
         rewardLiquidator(ctx, liquidator)
 ```
