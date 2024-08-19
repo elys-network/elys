@@ -70,11 +70,6 @@ func (k Keeper) MigrateFromV3UserRewardInfos(ctx sdk.Context) {
 		}
 	}
 
-	err := iterator.Close()
-	if err != nil {
-		panic(err)
-	}
-
 	k.deleteLegacyUserRewardInfos(ctx, keysToDelete)
 	return
 }
