@@ -53,30 +53,33 @@ func (k Keeper) MigrateFromV3UserRewardInfos(ctx sdk.Context) {
 
 	defer iterator.Close()
 
+	keysToDelete := [][]byte{}
 	for ; iterator.Valid(); iterator.Next() {
 		var userRewardInfo types.UserRewardInfo
 		k.cdc.MustUnmarshal(iterator.Value(), &userRewardInfo)
 
+		keysToDelete = append(keysToDelete, iterator.Key())
+
 		if !userRewardInfo.RewardPending.IsZero() || !userRewardInfo.RewardDebt.IsZero() {
 			k.SetUserRewardInfo(ctx, userRewardInfo)
 		}
+
+		if len(keysToDelete) == 100_000 {
+			k.deleteLegacyUserRewardInfos(ctx, keysToDelete)
+		}
 	}
-	k.deleteLegacyUserRewardInfos(ctx)
+
+	if len(keysToDelete) != 0 {
+		k.deleteLegacyUserRewardInfos(ctx, keysToDelete)
+	}
 	return
 }
 
-func (k Keeper) deleteLegacyUserRewardInfos(ctx sdk.Context) {
+func (k Keeper) deleteLegacyUserRewardInfos(ctx sdk.Context, keysToDelete [][]byte) {
 	store := ctx.KVStore(k.storeKey)
 	iterator := sdk.KVStorePrefixIterator(store, types.KeyPrefix(types.LegacyUserRewardInfoKeyPrefix))
 
 	defer iterator.Close()
-
-	// would take approx 1600 MB of ram, max key length 136 bytes * 12M keys
-	keysToDelete := [][]byte{}
-
-	for ; iterator.Valid(); iterator.Next() {
-		keysToDelete = append(keysToDelete, iterator.Key())
-	}
 
 	for _, key := range keysToDelete {
 		store.Delete(key)
