@@ -78,10 +78,6 @@ func (k Keeper) MigrateFromV3UserRewardInfos(ctx sdk.Context) {
 
 func (k Keeper) deleteLegacyUserRewardInfos(ctx sdk.Context, keysToDelete [][]byte) {
 	store := ctx.KVStore(k.storeKey)
-	iterator := sdk.KVStorePrefixIterator(store, types.KeyPrefix(types.LegacyUserRewardInfoKeyPrefix))
-
-	defer iterator.Close()
-
 	for _, key := range keysToDelete {
 		store.Delete(key)
 	}
