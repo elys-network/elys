@@ -70,7 +70,7 @@ func (h AmmHooks) AfterPoolCreated(ctx sdk.Context, sender sdk.AccAddress, pool 
 }
 
 // AfterJoinPool is called after JoinPool, JoinSwapExternAmountIn, and JoinSwapShareAmountOut
-func (h AmmHooks) AfterJoinPool(ctx sdk.Context, sender sdk.AccAddress, pool ammtypes.Pool, enterCoins sdk.Coins, shareOutAmount math.Int) error  {
+func (h AmmHooks) AfterJoinPool(ctx sdk.Context, sender sdk.AccAddress, pool ammtypes.Pool, enterCoins sdk.Coins, shareOutAmount math.Int) error {
 	return h.k.AfterJoinPool(ctx, sender, pool, enterCoins, shareOutAmount)
 }
 

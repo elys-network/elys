@@ -41183,6 +41183,12 @@ paths:
                   epoch_length:
                     type: string
                     format: int64
+                  fallback_enabled:
+                    type: boolean
+                  number_per_block:
+                    type: string
+                    format: int64
+                    title: Number of positions to process per block
             description: ParamsResponse is response type for the Query/Params RPC method.
         default:
           description: An unexpected error response.
@@ -41421,9 +41427,6 @@ paths:
                   liabilities:
                     type: string
                     title: For recording
-                  interest_paid:
-                    type: string
-                    title: For recording
                   leverage:
                     type: string
                     title: For recording
@@ -41504,9 +41507,6 @@ paths:
 
                         signatures required by gogoproto.
                     liabilities:
-                      type: string
-                      title: For recording
-                    interest_paid:
                       type: string
                       title: For recording
                     leverage:
@@ -41673,9 +41673,6 @@ paths:
                         liabilities:
                           type: string
                           title: For recording
-                        interest_paid:
-                          type: string
-                          title: For recording
                         leverage:
                           type: string
                           title: For recording
@@ -41837,9 +41834,6 @@ paths:
 
                         signatures required by gogoproto.
                     liabilities:
-                      type: string
-                      title: For recording
-                    interest_paid:
                       type: string
                       title: For recording
                     leverage:
@@ -45178,7 +45172,9 @@ paths:
           schema:
             type: object
             properties:
-              total:
+              total_value:
+                type: string
+              total_borrows:
                 type: string
         default:
           description: An unexpected error response.
@@ -86195,8 +86191,6 @@ definitions:
         type: boolean
   elys.assetprofile.MsgAddEntryResponse:
     type: object
-  elys.assetprofile.MsgCreateEntryResponse:
-    type: object
   elys.assetprofile.MsgDeleteEntryResponse:
     type: object
   elys.assetprofile.MsgUpdateEntryResponse:
@@ -87381,6 +87375,12 @@ definitions:
       epoch_length:
         type: string
         format: int64
+      fallback_enabled:
+        type: boolean
+      number_per_block:
+        type: string
+        format: int64
+        title: Number of positions to process per block
     description: Params defines the parameters for the module.
   elys.leveragelp.ParamsResponse:
     type: object
@@ -87403,6 +87403,12 @@ definitions:
           epoch_length:
             type: string
             format: int64
+          fallback_enabled:
+            type: boolean
+          number_per_block:
+            type: string
+            format: int64
+            title: Number of positions to process per block
     description: ParamsResponse is response type for the Query/Params RPC method.
   elys.leveragelp.Pool:
     type: object
@@ -87438,9 +87444,6 @@ definitions:
           NOTE: The amount field is an Int which implements the custom method
           signatures required by gogoproto.
       liabilities:
-        type: string
-        title: For recording
-      interest_paid:
         type: string
         title: For recording
       leverage:
@@ -87484,9 +87487,6 @@ definitions:
           liabilities:
             type: string
             title: For recording
-          interest_paid:
-            type: string
-            title: For recording
           leverage:
             type: string
             title: For recording
@@ -87506,6 +87506,14 @@ definitions:
         type: string
       interest_rate_hour_usd:
         type: string
+  elys.leveragelp.PositionRequest:
+    type: object
+    properties:
+      address:
+        type: string
+      id:
+        type: string
+        format: uint64
   elys.leveragelp.PositionResponse:
     type: object
     properties:
@@ -87530,9 +87538,6 @@ definitions:
 
               signatures required by gogoproto.
           liabilities:
-            type: string
-            title: For recording
-          interest_paid:
             type: string
             title: For recording
           leverage:
@@ -87578,9 +87583,6 @@ definitions:
 
                 signatures required by gogoproto.
             liabilities:
-              type: string
-              title: For recording
-            interest_paid:
               type: string
               title: For recording
             leverage:
@@ -87655,9 +87657,6 @@ definitions:
                 liabilities:
                   type: string
                   title: For recording
-                interest_paid:
-                  type: string
-                  title: For recording
                 leverage:
                   type: string
                   title: For recording
@@ -87729,9 +87728,6 @@ definitions:
 
                 signatures required by gogoproto.
             liabilities:
-              type: string
-              title: For recording
-            interest_paid:
               type: string
               title: For recording
             leverage:
@@ -88433,8 +88429,6 @@ definitions:
         items:
           type: string
           format: uint64
-  elys.oracle.MsgAddAssetInfoResponse:
-    type: object
   elys.oracle.MsgAddPriceFeedersResponse:
     type: object
   elys.oracle.MsgCreateAssetInfoResponse:
@@ -88782,6 +88776,8 @@ definitions:
   elys.parameter.MsgUpdateMinCommissionResponse:
     type: object
   elys.parameter.MsgUpdateMinSelfDelegationResponse:
+    type: object
+  elys.parameter.MsgUpdateRewardsDataLifetimeResponse:
     type: object
   elys.parameter.MsgUpdateTotalBlocksPerYearResponse:
     type: object
@@ -89925,7 +89921,9 @@ definitions:
   elys.tier.QueryLeverageLpTotalResponse:
     type: object
     properties:
-      total:
+      total_value:
+        type: string
+      total_borrows:
         type: string
   elys.tier.QueryLiquidTotalResponse:
     type: object

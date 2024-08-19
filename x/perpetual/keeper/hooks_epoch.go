@@ -6,12 +6,12 @@ import (
 )
 
 // BeforeEpochStart performs a no-op
-func (k Keeper) BeforeEpochStart(ctx sdk.Context, epochIdentifier string, epochNumber int64) error{
+func (k Keeper) BeforeEpochStart(ctx sdk.Context, epochIdentifier string, epochNumber int64) error {
 	return nil
 }
 
 // AfterEpochEnd distributes vested tokens at the end of each epoch
-func (k Keeper) AfterEpochEnd(ctx sdk.Context, epochIdentifier string, _ int64) error{
+func (k Keeper) AfterEpochEnd(ctx sdk.Context, epochIdentifier string, _ int64) error {
 	params := k.GetParams(ctx)
 	if epochIdentifier == params.InvariantCheckEpoch {
 		err := k.InvariantCheck(ctx)
