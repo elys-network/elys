@@ -52,7 +52,7 @@ func (k Keeper) MigrateFromV3UserRewardInfos(ctx sdk.Context) {
 
 	defer iterator.Close()
 
-	keysToDelete := [][]byte{}
+	//keysToDelete := [][]byte{}
 	for ; iterator.Valid(); iterator.Next() {
 		var userRewardInfo types.UserRewardInfo
 		k.cdc.MustUnmarshal(iterator.Value(), &userRewardInfo)
@@ -61,24 +61,26 @@ func (k Keeper) MigrateFromV3UserRewardInfos(ctx sdk.Context) {
 			k.SetUserRewardInfo(ctx, userRewardInfo)
 		}
 
-		key := types.GetLegacyUserRewardInfoKey(userRewardInfo.User, userRewardInfo.PoolId, userRewardInfo.RewardDenom)
-		keysToDelete = append(keysToDelete, key)
-
-		if len(keysToDelete) == 100_000 {
-			k.deleteLegacyUserRewardInfos(ctx, keysToDelete)
-			keysToDelete = [][]byte{}
-		}
+		//key := types.GetLegacyUserRewardInfoKey(userRewardInfo.User, userRewardInfo.PoolId, userRewardInfo.RewardDenom)
+		//keysToDelete = append(keysToDelete, key)
+		//
+		//if len(keysToDelete) == 100_000 {
+		//	k.deleteLegacyUserRewardInfos(ctx, keysToDelete)
+		//	keysToDelete = [][]byte{}
+		//}
 	}
 
-	k.deleteLegacyUserRewardInfos(ctx, keysToDelete)
+	//k.deleteLegacyUserRewardInfos(ctx, keysToDelete)
 	return
 }
 
-func (k Keeper) deleteLegacyUserRewardInfos(ctx sdk.Context, keysToDelete [][]byte) {
-	store := ctx.KVStore(k.storeKey)
-	for _, key := range keysToDelete {
-		store.Delete(key)
-	}
+// workflow failing when deleting legacy keys (excessive time may be) even when deleting in blocks, locally working. Try in next upgrade
 
-	return
-}
+//func (k Keeper) deleteLegacyUserRewardInfos(ctx sdk.Context, keysToDelete [][]byte) {
+//	store := ctx.KVStore(k.storeKey)
+//	for _, key := range keysToDelete {
+//		store.Delete(key)
+//	}
+//
+//	return
+//}
