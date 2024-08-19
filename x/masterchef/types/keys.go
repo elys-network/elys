@@ -114,6 +114,20 @@ func GetPoolRewardInfoKey(poolId uint64, rewardDenom string) []byte {
 	return key
 }
 
+func GetLegacyUserRewardInfoKey(user string, poolId uint64, rewardDenom string) []byte {
+	key := KeyPrefix(LegacyUserRewardInfoKeyPrefix)
+
+	key = append(key, user...)
+	key = append(key, []byte("/")...)
+	poolIdBytes := sdk.Uint64ToBigEndian(poolId)
+	key = append(key, poolIdBytes...)
+	key = append(key, []byte("/")...)
+	key = append(key, rewardDenom...)
+	key = append(key, []byte("/")...)
+
+	return key
+}
+
 func GetUserRewardInfoKey(user sdk.AccAddress, poolId uint64, rewardDenom string) []byte {
 	key := UserRewardInfoKeyPrefix
 
