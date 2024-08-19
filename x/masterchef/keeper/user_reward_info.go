@@ -7,19 +7,15 @@ import (
 )
 
 func (k Keeper) SetUserRewardInfo(ctx sdk.Context, userReward types.UserRewardInfo) {
-	//store := ctx.KVStore(k.storeKey)
+	store := ctx.KVStore(k.storeKey)
 	b := k.cdc.MustMarshal(&userReward)
-	//key := types.GetUserRewardInfoKey(userReward.GetUserAccount(), userReward.GetPoolId(), userReward.GetRewardDenom())
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.LegacyUserRewardInfoKeyPrefix))
-	key := types.LegacyUserRewardInfoKey(userReward.User, userReward.PoolId, userReward.RewardDenom)
+	key := types.GetUserRewardInfoKey(userReward.GetUserAccount(), userReward.GetPoolId(), userReward.GetRewardDenom())
 	store.Set(key, b)
 }
 
 func (k Keeper) GetUserRewardInfo(ctx sdk.Context, user sdk.AccAddress, poolId uint64, rewardDenom string) (val types.UserRewardInfo, found bool) {
-	//store := ctx.KVStore(k.storeKey)
-	//key := types.GetUserRewardInfoKey(user, poolId, rewardDenom)
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.LegacyUserRewardInfoKeyPrefix))
-	key := types.LegacyUserRewardInfoKey(user.String(), poolId, rewardDenom)
+	store := ctx.KVStore(k.storeKey)
+	key := types.GetUserRewardInfoKey(user, poolId, rewardDenom)
 	b := store.Get(key)
 	if b == nil {
 		return val, false
@@ -29,17 +25,15 @@ func (k Keeper) GetUserRewardInfo(ctx sdk.Context, user sdk.AccAddress, poolId u
 	return val, true
 }
 
-//func (k Keeper) RemoveUserRewardInfo(ctx sdk.Context, user sdk.AccAddress, poolId uint64, rewardDenom string) {
-//	store := ctx.KVStore(k.storeKey)
-//	key := types.GetUserRewardInfoKey(user, poolId, rewardDenom)
-//	store.Delete(key)
-//}
+func (k Keeper) RemoveUserRewardInfo(ctx sdk.Context, user sdk.AccAddress, poolId uint64, rewardDenom string) {
+	store := ctx.KVStore(k.storeKey)
+	key := types.GetUserRewardInfoKey(user, poolId, rewardDenom)
+	store.Delete(key)
+}
 
 func (k Keeper) GetAllUserRewardInfos(ctx sdk.Context) (list []types.UserRewardInfo) {
-	//store := ctx.KVStore(k.storeKey)
-	//iterator := sdk.KVStorePrefixIterator(store, types.UserRewardInfoKeyPrefix)
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.LegacyUserRewardInfoKeyPrefix))
-	iterator := sdk.KVStorePrefixIterator(store, []byte{})
+	store := ctx.KVStore(k.storeKey)
+	iterator := sdk.KVStorePrefixIterator(store, types.UserRewardInfoKeyPrefix)
 
 	defer iterator.Close()
 
@@ -53,26 +47,40 @@ func (k Keeper) GetAllUserRewardInfos(ctx sdk.Context) (list []types.UserRewardI
 }
 
 // remove after migration
-func (k Keeper) RemoveUserRewardInfo(ctx sdk.Context, user string, poolId uint64, rewardDenom string) {
+func (k Keeper) MigrateFromV3UserRewardInfos(ctx sdk.Context) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.LegacyUserRewardInfoKeyPrefix))
-	store.Delete(types.LegacyUserRewardInfoKey(user, poolId, rewardDenom))
+	iterator := sdk.KVStorePrefixIterator(store, []byte{})
+
+	defer iterator.Close()
+
+	for ; iterator.Valid(); iterator.Next() {
+		var userRewardInfo types.UserRewardInfo
+		k.cdc.MustUnmarshal(iterator.Value(), &userRewardInfo)
+
+		if !userRewardInfo.RewardPending.IsZero() || !userRewardInfo.RewardDebt.IsZero() {
+			k.SetUserRewardInfo(ctx, userRewardInfo)
+		}
+	}
+	k.deleteLegacyUserRewardInfos(ctx)
+	return
 }
 
-// remove after migration
-// TODO: Optimise user reward info KV
-//func (k Keeper) MigrateFromV2UserRewardInfos(ctx sdk.Context) {
-//	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.LegacyUserRewardInfoKeyPrefix))
-//	iterator := sdk.KVStorePrefixIterator(store, []byte{})
-//
-//	defer iterator.Close()
-//
-//	for ; iterator.Valid(); iterator.Next() {
-//		var legacyUserRewardInfo types.UserRewardInfo
-//		k.cdc.MustUnmarshal(iterator.Value(), &legacyUserRewardInfo)
-//
-//		k.SetUserRewardInfo(ctx, legacyUserRewardInfo)
-//		k.DeleteLegacyUserRewardInfo(ctx, legacyUserRewardInfo.User, legacyUserRewardInfo.PoolId, legacyUserRewardInfo.RewardDenom)
-//	}
-//
-//	return
-//}
+func (k Keeper) deleteLegacyUserRewardInfos(ctx sdk.Context) {
+	store := ctx.KVStore(k.storeKey)
+	iterator := sdk.KVStorePrefixIterator(store, types.KeyPrefix(types.LegacyUserRewardInfoKeyPrefix))
+
+	defer iterator.Close()
+
+	// would take approx 1600 MB of ram, max key length 136 bytes * 12M keys
+	keysToDelete := [][]byte{}
+
+	for ; iterator.Valid(); iterator.Next() {
+		keysToDelete = append(keysToDelete, iterator.Key())
+	}
+
+	for _, key := range keysToDelete {
+		store.Delete(key)
+	}
+
+	return
+}
