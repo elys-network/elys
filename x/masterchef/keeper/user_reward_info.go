@@ -52,7 +52,6 @@ func (k Keeper) MigrateFromV3UserRewardInfos(ctx sdk.Context) {
 
 	defer iterator.Close()
 
-	keysToDelete := [][]byte{}
 	for ; iterator.Valid(); iterator.Next() {
 		var userRewardInfo types.UserRewardInfo
 		k.cdc.MustUnmarshal(iterator.Value(), &userRewardInfo)
@@ -62,21 +61,6 @@ func (k Keeper) MigrateFromV3UserRewardInfos(ctx sdk.Context) {
 		}
 
 		key := types.GetLegacyUserRewardInfoKey(userRewardInfo.User, userRewardInfo.PoolId, userRewardInfo.RewardDenom)
-		keysToDelete = append(keysToDelete, key)
-
-		if len(keysToDelete) == 10_000 {
-			k.deleteLegacyUserRewardInfos(ctx, keysToDelete)
-			keysToDelete = [][]byte{}
-		}
-	}
-
-	k.deleteLegacyUserRewardInfos(ctx, keysToDelete)
-	return
-}
-
-func (k Keeper) deleteLegacyUserRewardInfos(ctx sdk.Context, keysToDelete [][]byte) {
-	store := ctx.KVStore(k.storeKey)
-	for _, key := range keysToDelete {
 		store.Delete(key)
 	}
 
