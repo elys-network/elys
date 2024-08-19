@@ -4,16 +4,23 @@ order: 1
 
 # Concepts
 
-`masterchef` module is to support rewards distribution to liquidity providers.
+The masterchef module is designed to facilitate rewards distribution to liquidity providers. The term masterchef is derived from a widely recognized reward distribution mechanism used in EVM chains, such as the [Sushiswap Masterchef reward distribution mechanism](https://dev.to/heymarkkop/understanding-sushiswaps-masterchef-staking-rewards-1m6f).
 
-The terminology `masterchef` came from the common reward distribution mechanism in EVM chains, e.g. [sushiswap masterchef reward distribution mechanism](https://dev.to/heymarkkop/understanding-sushiswaps-masterchef-staking-rewards-1m6f).
+The masterchef module distributes rewards on a per-block basis. The sources of these rewards include:
 
-Masterchef is distributing rewards per block. There's Eden allocation, based on tokenomics to liquidity providers.
-
-The source of rewards are from `Eden` allocation, `DEX revenue` (USDC) and `Gas fees` (All gas fees are swapped to USDC on amm pools before distribution.)
+- Eden Allocation: Governed by the tokenomics module.
+- DEX Revenue (USDC): Generated from decentralized exchange operations.
+- Gas Fees: All gas fees are swapped to USDC via AMM pools before distribution.
 
 ## Flow
 
-1. Allocation of eden in based on tokenmics module which is capped allocation of eden for 50% Apr (Note: multiplier is applied on APR cap, e.g. if multiplier is 1.5 cap's increased to 75% APR)
-2. Every block, gas and swap fee rewards are distributed to liquidity providers - liquidity provider tokens are all locked in `commitment` module as part of liquidity addition and reward calculation's done based on committed lp tokens in `commitment` module.
-3. Reward is splitted based on proxy TVL which is `TVL * multiplier` (USDC stable pool's included as one of pools with lower multiplier)
+1. Eden Allocation:
+    - Eden is allocated based on the tokenomics module, with a capped APR set at 50%.
+    - This cap can be adjusted using a multiplier; for example, a multiplier of 1.5 increases the APR cap to 75%.
+2. Rewards Distribution:
+    - Rewards from gas fees and swap fees are distributed to liquidity providers on a per-block basis.
+    - All liquidity provider tokens are locked within the commitment module, where they contribute to liquidity and are used for reward calculations.
+    - Rewards are calculated based on the committed LP tokens within the commitment module.
+3. Reward Splitting:
+    - Rewards are distributed based on the proxy TVL, calculated as TVL * multiplier.
+    - The USDC stable pool is included in the TVL calculation, but it is assigned a lower multiplier compared to other pools.
