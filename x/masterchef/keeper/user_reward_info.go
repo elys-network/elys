@@ -66,6 +66,7 @@ func (k Keeper) MigrateFromV3UserRewardInfos(ctx sdk.Context) {
 
 		if len(keysToDelete) == 100_000 {
 			k.deleteLegacyUserRewardInfos(ctx, keysToDelete)
+			keysToDelete = [][]byte{}
 		}
 	}
 
