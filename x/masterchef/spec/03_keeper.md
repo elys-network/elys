@@ -8,7 +8,8 @@ order: 3
 
 The `Masterchef` module's keeper handles the distribution of LP rewards and external incentives. It ensures that rewards are properly calculated and distributed and that necessary adjustments to staking parameters are made regularly.
 
-At every block, iteration of LP pools' done and Eden rewards are calculated based on proxy TVL. Pool proxy TVL is expressed as `Pool TVL * Pool Multiplier`.
+At each block, iteration of LP pools is done and Eden rewards are calculated based on proxy TVL.
+`Pool proxy TVL = Pool TVL * Pool Multiplier`
 
 When rewards are distributed to a pool, `UpdateAccPerShare` is called and it updates `PoolRewardInfo` object which includes pool accumulated reward per share.
 
