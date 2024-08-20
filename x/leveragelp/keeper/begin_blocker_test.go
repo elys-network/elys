@@ -65,7 +65,7 @@ func (suite KeeperTestSuite) TestLiquidatePositionIfUnhealthy() {
 	params.SafetyFactor = sdk.NewDecWithPrec(11, 1)
 	err = k.SetParams(cacheCtx, &params)
 	suite.Require().NoError(err)
-	isHealthy, earlyReturn, _ := k.LiquidatePositionIfUnhealthy(cacheCtx, position, pool, ammPool)
+	isHealthy, earlyReturn, _, _ := k.LiquidatePositionIfUnhealthy(cacheCtx, position, pool, ammPool)
 	suite.Require().False(isHealthy)
 	suite.Require().False(earlyReturn)
 	_, err = k.GetPosition(cacheCtx, position.GetOwnerAddress(), position.Id)

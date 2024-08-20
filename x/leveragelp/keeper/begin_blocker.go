@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strconv"
 
+	"cosmossdk.io/math"
 	"github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/cosmos/cosmos-sdk/types/query"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
@@ -46,7 +47,7 @@ func (k Keeper) BeginBlocker(ctx sdk.Context) {
 				ctx.Logger().Error(errors.Wrap(err, fmt.Sprintf("error getting amm pool: %d", pool.AmmPoolId)).Error())
 				continue
 			}
-			isHealthy, _, _ := k.LiquidatePositionIfUnhealthy(ctx, position, pool, ammPool)
+			isHealthy, _, _, _ := k.LiquidatePositionIfUnhealthy(ctx, position, pool, ammPool)
 			if !isHealthy {
 				continue
 			}
@@ -55,7 +56,7 @@ func (k Keeper) BeginBlocker(ctx sdk.Context) {
 	}
 }
 
-func (k Keeper) LiquidatePositionIfUnhealthy(ctx sdk.Context, position *types.Position, pool types.Pool, ammPool ammtypes.Pool) (isHealthy, earlyReturn bool, err error) {
+func (k Keeper) LiquidatePositionIfUnhealthy(ctx sdk.Context, position *types.Position, pool types.Pool, ammPool ammtypes.Pool) (isHealthy, earlyReturn bool, health math.LegacyDec, err error) {
 	defer func() {
 		if r := recover(); r != nil {
 			if msg, ok := r.(string); ok {
@@ -66,7 +67,7 @@ func (k Keeper) LiquidatePositionIfUnhealthy(ctx sdk.Context, position *types.Po
 	h, err := k.GetPositionHealth(ctx, *position)
 	if err != nil {
 		ctx.Logger().Error(errors.Wrap(err, fmt.Sprintf("error updating position health: %s", position.String())).Error())
-		return false, true, err
+		return false, true, sdk.ZeroDec(), err
 	}
 	position.PositionHealth = h
 	k.SetPosition(ctx, position)
@@ -74,13 +75,13 @@ func (k Keeper) LiquidatePositionIfUnhealthy(ctx sdk.Context, position *types.Po
 	params := k.GetParams(ctx)
 	isHealthy = position.PositionHealth.GT(params.SafetyFactor)
 	if isHealthy {
-		return isHealthy, false, err
+		return isHealthy, false, h, err
 	}
 
 	repayAmount, err := k.ForceCloseLong(ctx, *position, pool, position.LeveragedLpAmount)
 	if err != nil {
 		ctx.Logger().Debug(errors.Wrap(err, "error executing liquidation").Error())
-		return isHealthy, true, err
+		return isHealthy, true, h, err
 	}
 	ctx.EventManager().EmitEvent(sdk.NewEvent(types.EventClose,
 		sdk.NewAttribute("id", strconv.FormatInt(int64(position.Id), 10)),
@@ -91,7 +92,7 @@ func (k Keeper) LiquidatePositionIfUnhealthy(ctx sdk.Context, position *types.Po
 		sdk.NewAttribute("liabilities", position.Liabilities.String()),
 		sdk.NewAttribute("health", position.PositionHealth.String()),
 	))
-	return isHealthy, false, nil
+	return isHealthy, false, h, nil
 }
 
 func (k Keeper) ClosePositionIfUnderStopLossPrice(ctx sdk.Context, position *types.Position, pool types.Pool, ammPool ammtypes.Pool) (underStopLossPrice, earlyReturn bool, err error) {
