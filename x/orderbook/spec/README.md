@@ -32,9 +32,6 @@ The Orderbook module will replicate and extend the functionalities currently ava
    - Create perpetual limit open order
    - Create perpetual stop-loss order
 
-5. **Leverage LP Market Orders**
-   - Create leverage LP market open order
-
 ### Order Cancellation
 
 1. **Spot Orders**
@@ -64,7 +61,7 @@ The Orderbook module will replicate and extend the functionalities currently ava
 
 - **Open Participation:** Any address can participate in submitting orders for execution. The process is designed to be permissionless, similar to the liquidation system.
 
-### Anti-Spam Measures
+### Incentive and Penalty
 
 - **Penalties for Invalid Submissions:**
 
@@ -75,6 +72,14 @@ The Orderbook module will replicate and extend the functionalities currently ava
 - **Rewards for Valid Submissions:**
   - Participants will receive a percentage of the operation value as a reward for successfully executed orders.
   - Example: For a spot limit buy order, the order is executed 1% before the order price, and the 1% value is given to the participant as a reward, with the remaining output sent to the order creator.
+
+### Margin of Error
+
+To account for brief fluctuations in asset price, a margin of error is introduced:
+
+- **Margin Error Rate**: Set at 1%.
+- **Application**:
+  - **Order Price**: If the order price is within 1% above the market price, the order will not be executed, and the deposit will be returned without penalty.
 
 ## Integration with Indexer
 
