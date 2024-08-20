@@ -24,6 +24,10 @@ const (
 	// TODO: Determine the simulation weight value
 	defaultWeightMsgUpdateWasmConfig int = 100
 
+	opWeightMsgUpdateRewardsDataLifetime = "op_weight_msg_update_rewards_data_lifetime"
+	// TODO: Determine the simulation weight value
+	defaultWeightMsgUpdateRewardsDataLifetime int = 100
+
 	// this line is used by starport scaffolding # simapp/module/const
 )
 

@@ -7,22 +7,24 @@ import (
 )
 
 // AfterPoolCreated is called after CreatePool
-func (k Keeper) AfterPoolCreated(ctx sdk.Context, sender sdk.AccAddress, ammPool ammtypes.Pool) {
+func (k Keeper) AfterPoolCreated(ctx sdk.Context, sender sdk.AccAddress, ammPool ammtypes.Pool) error {
 	if k.hooks != nil {
 		k.hooks.AfterAmmPoolCreated(ctx, ammPool, sender)
 	}
+	return nil
 }
 
 // AfterJoinPool is called after JoinPool, JoinSwapExternAmountIn, and JoinSwapShareAmountOut
-func (k Keeper) AfterJoinPool(ctx sdk.Context, sender sdk.AccAddress, ammPool ammtypes.Pool, enterCoins sdk.Coins, shareOutAmount math.Int) {
+func (k Keeper) AfterJoinPool(ctx sdk.Context, sender sdk.AccAddress, ammPool ammtypes.Pool, enterCoins sdk.Coins, shareOutAmount math.Int) error {
 	perpetualPool, found := k.GetPool(ctx, ammPool.PoolId)
 	if !found {
-		return
+		return nil
 	}
 
 	if k.hooks != nil {
 		k.hooks.AfterAmmJoinPool(ctx, ammPool, perpetualPool, sender)
 	}
+	return nil
 }
 
 // AfterExitPool is called after ExitPool, ExitSwapShareAmountIn, and ExitSwapExternAmountOut
@@ -63,13 +65,13 @@ func (k Keeper) AmmHooks() AmmHooks {
 }
 
 // AfterPoolCreated is called after CreatePool
-func (h AmmHooks) AfterPoolCreated(ctx sdk.Context, sender sdk.AccAddress, pool ammtypes.Pool) {
-	h.k.AfterPoolCreated(ctx, sender, pool)
+func (h AmmHooks) AfterPoolCreated(ctx sdk.Context, sender sdk.AccAddress, pool ammtypes.Pool) error {
+	return h.k.AfterPoolCreated(ctx, sender, pool)
 }
 
 // AfterJoinPool is called after JoinPool, JoinSwapExternAmountIn, and JoinSwapShareAmountOut
-func (h AmmHooks) AfterJoinPool(ctx sdk.Context, sender sdk.AccAddress, pool ammtypes.Pool, enterCoins sdk.Coins, shareOutAmount math.Int) {
-	h.k.AfterJoinPool(ctx, sender, pool, enterCoins, shareOutAmount)
+func (h AmmHooks) AfterJoinPool(ctx sdk.Context, sender sdk.AccAddress, pool ammtypes.Pool, enterCoins sdk.Coins, shareOutAmount math.Int) error {
+	return h.k.AfterJoinPool(ctx, sender, pool, enterCoins, shareOutAmount)
 }
 
 // AfterExitPool is called after ExitPool, ExitSwapShareAmountIn, and ExitSwapExternAmountOut

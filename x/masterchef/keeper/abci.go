@@ -14,6 +14,9 @@ import (
 
 // EndBlocker of amm module
 func (k Keeper) EndBlocker(ctx sdk.Context) {
+
+	k.DeleteLegacyUserRewardInfos(ctx, 10_000)
+
 	// distribute LP rewards
 	k.ProcessLPRewardDistribution(ctx)
 	// distribute external rewards
@@ -165,7 +168,7 @@ func (k Keeper) UpdateLPRewards(ctx sdk.Context) error {
 	// Proxy TVL
 	// Multiplier on each liquidity pool
 	// We have 3 pools of 20, 30, 40 TVL
-	// We have mulitplier of 0.3, 0.5, 1.0
+	// We have multiplier of 0.3, 0.5, 1.0
 	// Proxy TVL = 20*0.3+30*0.5+40*1.0
 	totalProxyTVL := k.CalculateProxyTVL(ctx, baseCurrency)
 

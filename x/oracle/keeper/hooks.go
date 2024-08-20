@@ -13,16 +13,16 @@ import (
 	"github.com/elys-network/elys/x/oracle/types"
 )
 
-func (k Keeper) BeforeEpochStart(ctx sdk.Context, epochIdentifier string, epochNumber int64) {
+func (k Keeper) BeforeEpochStart(ctx sdk.Context, epochIdentifier string, epochNumber int64) error {
 	params := k.GetParams(ctx)
 	if epochIdentifier == params.BandEpoch {
 		if params.BandChannelSource == "" {
-			return
+			return nil
 		}
 		sourcePort := types.PortID
 		channelCap, ok := k.scopedKeeper.GetCapability(ctx, host.ChannelCapabilityPath(sourcePort, params.BandChannelSource))
 		if !ok {
-			return
+			return nil
 		}
 
 		assetInfos := k.GetAllAssetInfo(ctx)
@@ -34,7 +34,7 @@ func (k Keeper) BeforeEpochStart(ctx sdk.Context, epochIdentifier string, epochN
 		}
 
 		if len(symbols) == 0 {
-			return
+			return nil
 		}
 		encodedCalldata := obi.MustEncode(types.BandPriceCallData{
 			Symbols:    symbols,
@@ -53,12 +53,15 @@ func (k Keeper) BeforeEpochStart(ctx sdk.Context, epochIdentifier string, epochN
 
 		_, err := k.channelKeeper.SendPacket(ctx, channelCap, sourcePort, params.BandChannelSource, clienttypes.NewHeight(0, 0), uint64(ctx.BlockTime().UnixNano()+int64(10*time.Minute)), packetData.GetBytes())
 		if err != nil {
-			return
+			return err
 		}
 	}
+	return nil
 }
 
-func (k Keeper) AfterEpochEnd(ctx sdk.Context, epochIdentifier string, epochNumber int64) {}
+func (k Keeper) AfterEpochEnd(ctx sdk.Context, epochIdentifier string, epochNumber int64) error {
+	return nil
+}
 
 // Hooks wrapper struct
 type Hooks struct {
@@ -72,10 +75,10 @@ func (k Keeper) Hooks() Hooks {
 }
 
 // epochs hooks
-func (h Hooks) BeforeEpochStart(ctx sdk.Context, epochIdentifier string, epochNumber int64) {
-	h.k.BeforeEpochStart(ctx, epochIdentifier, epochNumber)
+func (h Hooks) BeforeEpochStart(ctx sdk.Context, epochIdentifier string, epochNumber int64) error {
+	return h.k.BeforeEpochStart(ctx, epochIdentifier, epochNumber)
 }
 
-func (h Hooks) AfterEpochEnd(ctx sdk.Context, epochIdentifier string, epochNumber int64) {
-	h.k.AfterEpochEnd(ctx, epochIdentifier, epochNumber)
+func (h Hooks) AfterEpochEnd(ctx sdk.Context, epochIdentifier string, epochNumber int64) error {
+	return h.k.AfterEpochEnd(ctx, epochIdentifier, epochNumber)
 }

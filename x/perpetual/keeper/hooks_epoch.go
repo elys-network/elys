@@ -6,19 +6,21 @@ import (
 )
 
 // BeforeEpochStart performs a no-op
-func (k Keeper) BeforeEpochStart(ctx sdk.Context, epochIdentifier string, epochNumber int64) {
+func (k Keeper) BeforeEpochStart(ctx sdk.Context, epochIdentifier string, epochNumber int64) error {
+	return nil
 }
 
 // AfterEpochEnd distributes vested tokens at the end of each epoch
-func (k Keeper) AfterEpochEnd(ctx sdk.Context, epochIdentifier string, _ int64) {
+func (k Keeper) AfterEpochEnd(ctx sdk.Context, epochIdentifier string, _ int64) error {
 	params := k.GetParams(ctx)
 	if epochIdentifier == params.InvariantCheckEpoch {
 		err := k.InvariantCheck(ctx)
 		if err != nil {
 			ctx.Logger().Error("Perpetual: Invariant check failure", "err", err)
-			return
+			return err
 		}
 	}
+	return nil
 }
 
 // ___________________________________________________________________________________________________
@@ -36,11 +38,11 @@ func (k Keeper) Hooks() Hooks {
 }
 
 // BeforeEpochStart implements EpochHooks
-func (h Hooks) BeforeEpochStart(ctx sdk.Context, epochIdentifier string, epochNumber int64) {
-	h.k.BeforeEpochStart(ctx, epochIdentifier, epochNumber)
+func (h Hooks) BeforeEpochStart(ctx sdk.Context, epochIdentifier string, epochNumber int64) error {
+	return h.k.BeforeEpochStart(ctx, epochIdentifier, epochNumber)
 }
 
 // AfterEpochEnd implements EpochHooks
-func (h Hooks) AfterEpochEnd(ctx sdk.Context, epochIdentifier string, epochNumber int64) {
-	h.k.AfterEpochEnd(ctx, epochIdentifier, epochNumber)
+func (h Hooks) AfterEpochEnd(ctx sdk.Context, epochIdentifier string, epochNumber int64) error {
+	return h.k.AfterEpochEnd(ctx, epochIdentifier, epochNumber)
 }

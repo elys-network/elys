@@ -2,9 +2,7 @@ package types
 
 import (
 	"encoding/binary"
-	"strconv"
 
-	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/address"
 )
@@ -59,73 +57,10 @@ func GetWhitelistKey(acc sdk.AccAddress) []byte {
 	return append(WhitelistPrefix, address.MustLengthPrefix(acc)...)
 }
 
-func GetLegacyWhitelistKey(address string) []byte {
-	return append(WhitelistPrefix, []byte(address)...)
-}
-
 func GetPositionKey(creator sdk.AccAddress, id uint64) []byte {
 	return append(PositionPrefix, append(address.MustLengthPrefix(creator), GetUint64Bytes(id)...)...)
 }
 
-func GetLegacyPositionKey(address string, id uint64) []byte {
-	return append(PositionPrefix, append([]byte(address), GetUint64Bytes(id)...)...)
-}
-
 func GetPositionPrefixForAddress(creator sdk.AccAddress) []byte {
 	return append(PositionPrefix, address.MustLengthPrefix(creator)...)
-}
-
-func GetLiquidationSortPrefix(poolId uint64) []byte {
-	return append(LiquidationSortPrefix, GetUint64Bytes(poolId)...)
-}
-
-func GetLiquidationSortKey(poolId uint64, lpAmount math.Int, borrowed math.Int, id uint64) []byte {
-	poolIdPrefix := GetLiquidationSortPrefix(poolId)
-	if lpAmount.IsZero() || borrowed.IsZero() {
-		return []byte{}
-	}
-
-	// default precision is 18
-	// final string = decimalvalue + positionId(consistentlength)
-	sortDec := math.LegacyNewDecFromInt(lpAmount).QuoInt(borrowed)
-	paddedPosition := IntToStringWithPadding(id)
-	bytes := []byte(sortDec.String() + paddedPosition)
-	return append(poolIdPrefix, bytes...)
-}
-
-func IntToStringWithPadding(position uint64) string {
-	// Define the desired length of the output string
-	const length = 9
-
-	// Convert the integer to a string
-	str := strconv.FormatUint(position, 18)
-
-	// Calculate the number of leading zeros needed
-	padding := length - len(str)
-
-	// Create the leading zeros string
-	leadingZeros := ""
-	for i := 0; i < padding; i++ {
-		leadingZeros += "0"
-	}
-
-	// Concatenate leading zeros with the original number string
-	result := leadingZeros + str
-	return result
-}
-
-func GetStopLossSortPrefix(poolId uint64) []byte {
-	return append(StopLossSortPrefix, GetUint64Bytes(poolId)...)
-}
-
-func GetStopLossSortKey(poolId uint64, stopLossPrice math.LegacyDec, id uint64) []byte {
-	poolIdPrefix := GetStopLossSortPrefix(poolId)
-	if stopLossPrice.IsNil() || !stopLossPrice.IsPositive() {
-		return []byte{}
-	}
-
-	bytes := stopLossPrice.BigInt().Bytes()
-	lengthPrefix := GetUint64Bytes(uint64(len(bytes)))
-	posIdSuffix := GetUint64Bytes(id)
-	return append(append(append(poolIdPrefix, lengthPrefix...), bytes...), posIdSuffix...)
 }

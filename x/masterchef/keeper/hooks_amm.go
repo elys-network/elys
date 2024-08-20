@@ -8,10 +8,10 @@ import (
 )
 
 // AfterPoolCreated is called after CreatePool
-func (k Keeper) AfterPoolCreated(ctx sdk.Context, sender sdk.AccAddress, poolId uint64) {
+func (k Keeper) AfterPoolCreated(ctx sdk.Context, sender sdk.AccAddress, poolId uint64) error {
 	_, found := k.GetPoolInfo(ctx, poolId)
 	if found {
-		return
+		return nil
 	}
 	// Initiate a new pool info
 	poolInfo := types.PoolInfo{
@@ -33,11 +33,13 @@ func (k Keeper) AfterPoolCreated(ctx sdk.Context, sender sdk.AccAddress, poolId 
 		ExternalRewardDenoms: []string{},
 	}
 	k.SetPoolInfo(ctx, poolInfo)
+	return nil
 }
 
 // AfterJoinPool is called after JoinPool, JoinSwapExternAmountIn, and JoinSwapShareAmountOut
-func (k Keeper) AfterJoinPool(ctx sdk.Context, sender sdk.AccAddress, poolId uint64, enterCoins sdk.Coins, shareOutAmount math.Int) {
+func (k Keeper) AfterJoinPool(ctx sdk.Context, sender sdk.AccAddress, poolId uint64, enterCoins sdk.Coins, shareOutAmount math.Int) error {
 	k.AfterDeposit(ctx, poolId, sender, shareOutAmount)
+	return nil
 }
 
 // AfterExitPool is called after ExitPool, ExitSwapShareAmountIn, and ExitSwapExternAmountOut
@@ -65,13 +67,13 @@ func (k Keeper) AmmHooks() AmmHooks {
 }
 
 // AfterPoolCreated is called after CreatePool
-func (h AmmHooks) AfterPoolCreated(ctx sdk.Context, sender sdk.AccAddress, pool ammtypes.Pool) {
-	h.k.AfterPoolCreated(ctx, sender, pool.PoolId)
+func (h AmmHooks) AfterPoolCreated(ctx sdk.Context, sender sdk.AccAddress, pool ammtypes.Pool) error {
+	return h.k.AfterPoolCreated(ctx, sender, pool.PoolId)
 }
 
 // AfterJoinPool is called after JoinPool, JoinSwapExternAmountIn, and JoinSwapShareAmountOut
-func (h AmmHooks) AfterJoinPool(ctx sdk.Context, sender sdk.AccAddress, pool ammtypes.Pool, enterCoins sdk.Coins, shareOutAmount math.Int) {
-	h.k.AfterJoinPool(ctx, sender, pool.PoolId, enterCoins, shareOutAmount)
+func (h AmmHooks) AfterJoinPool(ctx sdk.Context, sender sdk.AccAddress, pool ammtypes.Pool, enterCoins sdk.Coins, shareOutAmount math.Int) error {
+	return h.k.AfterJoinPool(ctx, sender, pool.PoolId, enterCoins, shareOutAmount)
 }
 
 // AfterExitPool is called after ExitPool, ExitSwapShareAmountIn, and ExitSwapExternAmountOut

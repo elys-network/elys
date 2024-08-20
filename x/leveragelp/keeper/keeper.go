@@ -183,12 +183,6 @@ func (k Keeper) GetAllLegacyWhitelistedAddress(ctx sdk.Context) []string {
 	return list
 }
 
-// remove after migration
-func (k Keeper) DeleteLegacyWhitelistedAddress(ctx sdk.Context, address string) {
-	store := ctx.KVStore(k.storeKey)
-	store.Delete(types.GetLegacyWhitelistKey(address))
-}
-
 func (k Keeper) GetWhitelistedAddress(ctx sdk.Context, pagination *query.PageRequest) ([]sdk.AccAddress, *query.PageResponse, error) {
 	var list []sdk.AccAddress
 	store := ctx.KVStore(k.storeKey)
