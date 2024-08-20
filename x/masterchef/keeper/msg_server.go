@@ -3,6 +3,8 @@ package keeper
 import (
 	"context"
 	"fmt"
+	"strconv"
+	"strings"
 
 	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/math"
@@ -137,6 +139,7 @@ func (k msgServer) AddExternalIncentive(goCtx context.Context, msg *types.MsgAdd
 
 func (k Keeper) ClaimRewards(ctx sdk.Context, sender sdk.AccAddress, poolIds []uint64, recipient sdk.AccAddress) error {
 	coins := sdk.NewCoins()
+	rewardPoolIds := []string{}
 	for _, poolId := range poolIds {
 		k.AfterWithdraw(ctx, poolId, sender, sdk.ZeroInt())
 
@@ -145,22 +148,27 @@ func (k Keeper) ClaimRewards(ctx sdk.Context, sender sdk.AccAddress, poolIds []u
 			if found && userRewardInfo.RewardPending.IsPositive() {
 				coin := sdk.NewCoin(rewardDenom, userRewardInfo.RewardPending.TruncateInt())
 				coins = coins.Add(coin)
+				rewardPoolIds = append(rewardPoolIds, strconv.FormatUint(poolId, 10))
 
 				userRewardInfo.RewardPending = sdk.ZeroDec()
-				k.SetUserRewardInfo(ctx, userRewardInfo)
-
-				ctx.EventManager().EmitEvents(sdk.Events{
-					sdk.NewEvent(
-						types.TypeEvtClaimRewards,
-						sdk.NewAttribute(types.AttributeSender, sender.String()),
-						sdk.NewAttribute(types.AttributeRecipient, recipient.String()),
-						sdk.NewAttribute(types.AttributePoolId, fmt.Sprintf("%d", poolId)),
-						sdk.NewAttribute(sdk.AttributeKeyAmount, coin.String()),
-					),
-				})
+				if userRewardInfo.RewardDebt.IsZero() {
+					k.RemoveUserRewardInfo(ctx, userRewardInfo.GetUserAccount(), userRewardInfo.PoolId, userRewardInfo.RewardDenom)
+				} else {
+					k.SetUserRewardInfo(ctx, userRewardInfo)
+				}
 			}
 		}
 	}
+
+	ctx.EventManager().EmitEvents(sdk.Events{
+		sdk.NewEvent(
+			types.TypeEvtClaimRewards,
+			sdk.NewAttribute(types.AttributeSender, sender.String()),
+			sdk.NewAttribute(types.AttributeRecipient, recipient.String()),
+			sdk.NewAttribute(types.AttributePoolIds, strings.Join(rewardPoolIds, ",")),
+			sdk.NewAttribute(sdk.AttributeKeyAmount, coins.String()),
+		),
+	})
 
 	// Transfer rewards (Eden/EdenB is transferred through commitment module)
 	err := k.commitmentKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, recipient, coins)

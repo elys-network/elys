@@ -16,6 +16,7 @@ import (
 
 func RegisterCodec(cdc *codec.LegacyAmino) {
 	legacy.RegisterAminoMsg(cdc, &MsgUpdateWasmConfig{}, "parameter/MsgUpdateWasmConfig")
+	cdc.RegisterConcrete(&MsgUpdateRewardsDataLifetime{}, "parameter/UpdateRewardsDataLifetime", nil)
 	// this line is used by starport scaffolding # 2
 	legacy.RegisterAminoMsg(cdc, &MsgUpdateMinCommission{}, "parameter/MsgUpdateMinCommission")
 	legacy.RegisterAminoMsg(cdc, &MsgUpdateMaxVotingPower{}, "parameter/MsgUpdateMaxVotingPower")
@@ -35,6 +36,9 @@ func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 	)
 	registry.RegisterImplementations((*sdk.Msg)(nil),
 		&MsgUpdateWasmConfig{},
+	)
+	registry.RegisterImplementations((*sdk.Msg)(nil),
+		&MsgUpdateRewardsDataLifetime{},
 	)
 	// this line is used by starport scaffolding # 3
 

@@ -6,12 +6,13 @@ option go_package = "github.com/elys-network/elys/x/parameter/types";
 
 // Msg defines the Msg service.
 service Msg {
-  rpc UpdateMinCommission      (MsgUpdateMinCommission     ) returns (MsgUpdateMinCommissionResponse     );
-  rpc UpdateMaxVotingPower     (MsgUpdateMaxVotingPower    ) returns (MsgUpdateMaxVotingPowerResponse    );
-  rpc UpdateMinSelfDelegation  (MsgUpdateMinSelfDelegation ) returns (MsgUpdateMinSelfDelegationResponse );
-  rpc UpdateBrokerAddress      (MsgUpdateBrokerAddress     ) returns (MsgUpdateBrokerAddressResponse     );
-  rpc UpdateTotalBlocksPerYear (MsgUpdateTotalBlocksPerYear) returns (MsgUpdateTotalBlocksPerYearResponse);
-  rpc UpdateWasmConfig         (MsgUpdateWasmConfig        ) returns (MsgUpdateWasmConfigResponse        );
+  rpc UpdateMinCommission       (MsgUpdateMinCommission      ) returns (MsgUpdateMinCommissionResponse      );
+  rpc UpdateMaxVotingPower      (MsgUpdateMaxVotingPower     ) returns (MsgUpdateMaxVotingPowerResponse     );
+  rpc UpdateMinSelfDelegation   (MsgUpdateMinSelfDelegation  ) returns (MsgUpdateMinSelfDelegationResponse  );
+  rpc UpdateBrokerAddress       (MsgUpdateBrokerAddress      ) returns (MsgUpdateBrokerAddressResponse      );
+  rpc UpdateTotalBlocksPerYear  (MsgUpdateTotalBlocksPerYear ) returns (MsgUpdateTotalBlocksPerYearResponse );
+  rpc UpdateWasmConfig          (MsgUpdateWasmConfig         ) returns (MsgUpdateWasmConfigResponse         );
+  rpc UpdateRewardsDataLifetime (MsgUpdateRewardsDataLifetime) returns (MsgUpdateRewardsDataLifetimeResponse);
 }
 message MsgUpdateMinCommission {
   string creator        = 1;
@@ -56,4 +57,11 @@ message MsgUpdateWasmConfig {
 }
 
 message MsgUpdateWasmConfigResponse {}
+
+message MsgUpdateRewardsDataLifetime {
+  string creator             = 1;
+  string rewardsDataLifetime = 2;
+}
+
+message MsgUpdateRewardsDataLifetimeResponse {}
 
