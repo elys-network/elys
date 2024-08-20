@@ -27,7 +27,7 @@ func (k msgServer) ClosePositions(goCtx context.Context, msg *types.MsgClosePosi
 		}
 		isHealthy, isEarly, health, err := k.LiquidatePositionIfUnhealthy(ctx, &position, pool, ammPool)
 		// position is liquidated
-		if isHealthy && !isEarly {
+		if !isHealthy && !isEarly {
 			leftToLiquidate--
 		} else if err != nil {
 			// Add log about error or not liquidated
