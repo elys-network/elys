@@ -14,6 +14,9 @@ import (
 
 // EndBlocker of amm module
 func (k Keeper) EndBlocker(ctx sdk.Context) {
+
+	k.DeleteLegacyUserRewardInfos(ctx, 10_000)
+
 	// distribute LP rewards
 	k.ProcessLPRewardDistribution(ctx)
 	// distribute external rewards
