@@ -20,8 +20,17 @@ func (k Keeper) QueryPositionsByPool(goCtx context.Context, req *types.Positions
 		return nil, err
 	}
 
+	updatedLeveragePositions := []*types.QueryPosition{}
+	for i ,position := range positions {
+		updated_leverage :=  position.LeveragedLpAmount.Quo(position.LeveragedLpAmount.Sub(position.Liabilities))
+		updatedLeveragePositions[i] = &types.QueryPosition{
+			Position: position,
+			UpdatedLeverage: updated_leverage,
+		}
+	}
+
 	return &types.PositionsByPoolResponse{
-		Positions:  positions,
+		Positions:  updatedLeveragePositions,
 		Pagination: pageRes,
 	}, nil
 }

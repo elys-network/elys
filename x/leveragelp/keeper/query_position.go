@@ -21,12 +21,19 @@ func (k Keeper) Position(goCtx context.Context, req *types.PositionRequest) (*ty
 	if err != nil {
 		return nil, err
 	}
+	updatedLeveragePosition := types.QueryPosition{}
+
+	updated_leverage := position.LeveragedLpAmount.Quo(position.LeveragedLpAmount.Sub(position.Liabilities))
+	updatedLeveragePosition = types.QueryPosition{
+		Position: &position,
+		UpdatedLeverage: updated_leverage,
+	}
 
 	commitments := k.commKeeper.GetCommitments(ctx, position.GetPositionAddress())
 	totalLocked, _ := commitments.CommittedTokensLocked(ctx)
 
 	return &types.PositionResponse{
-		Position:      &position,
+		Position:      &updatedLeveragePosition,
 		LockedLpToken: totalLocked.AmountOf(ammtypes.GetPoolShareDenom(position.AmmPoolId)),
 	}, nil
 }
