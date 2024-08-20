@@ -21,7 +21,7 @@ func (k msgServer) ClosePositions(goCtx context.Context, msg *types.MsgClosePosi
 		if !found || err != nil {
 			continue
 		}
-		_, _ = k.LiquidatePositionIfUnhealthy(ctx, &position, pool, ammPool)
+		_, _, err = k.LiquidatePositionIfUnhealthy(ctx, &position, pool, ammPool)
 	}
 
 	// Handle stop loss
@@ -35,7 +35,7 @@ func (k msgServer) ClosePositions(goCtx context.Context, msg *types.MsgClosePosi
 		if !found || err != nil {
 			continue
 		}
-		_, _ = k.ClosePositionIfUnderStopLossPrice(ctx, &position, pool, ammPool)
+		_, _, err = k.ClosePositionIfUnderStopLossPrice(ctx, &position, pool, ammPool)
 	}
 
 	return &types.MsgClosePositionsResponse{}, nil

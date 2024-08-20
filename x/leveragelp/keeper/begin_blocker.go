@@ -46,7 +46,7 @@ func (k Keeper) BeginBlocker(ctx sdk.Context) {
 				ctx.Logger().Error(errors.Wrap(err, fmt.Sprintf("error getting amm pool: %d", pool.AmmPoolId)).Error())
 				continue
 			}
-			isHealthy, _ := k.LiquidatePositionIfUnhealthy(ctx, position, pool, ammPool)
+			isHealthy, _, _ := k.LiquidatePositionIfUnhealthy(ctx, position, pool, ammPool)
 			if !isHealthy {
 				continue
 			}
@@ -55,7 +55,7 @@ func (k Keeper) BeginBlocker(ctx sdk.Context) {
 	}
 }
 
-func (k Keeper) LiquidatePositionIfUnhealthy(ctx sdk.Context, position *types.Position, pool types.Pool, ammPool ammtypes.Pool) (isHealthy, earlyReturn bool) {
+func (k Keeper) LiquidatePositionIfUnhealthy(ctx sdk.Context, position *types.Position, pool types.Pool, ammPool ammtypes.Pool) (isHealthy, earlyReturn bool, err error) {
 	defer func() {
 		if r := recover(); r != nil {
 			if msg, ok := r.(string); ok {
@@ -66,7 +66,7 @@ func (k Keeper) LiquidatePositionIfUnhealthy(ctx sdk.Context, position *types.Po
 	h, err := k.GetPositionHealth(ctx, *position)
 	if err != nil {
 		ctx.Logger().Error(errors.Wrap(err, fmt.Sprintf("error updating position health: %s", position.String())).Error())
-		return false, true
+		return false, true, err
 	}
 	position.PositionHealth = h
 	k.SetPosition(ctx, position)
@@ -74,13 +74,13 @@ func (k Keeper) LiquidatePositionIfUnhealthy(ctx sdk.Context, position *types.Po
 	params := k.GetParams(ctx)
 	isHealthy = position.PositionHealth.GT(params.SafetyFactor)
 	if isHealthy {
-		return isHealthy, false
+		return isHealthy, false, err
 	}
 
 	repayAmount, err := k.ForceCloseLong(ctx, *position, pool, position.LeveragedLpAmount)
 	if err != nil {
 		ctx.Logger().Debug(errors.Wrap(err, "error executing liquidation").Error())
-		return isHealthy, true
+		return isHealthy, true, err
 	}
 	ctx.EventManager().EmitEvent(sdk.NewEvent(types.EventClose,
 		sdk.NewAttribute("id", strconv.FormatInt(int64(position.Id), 10)),
@@ -91,10 +91,10 @@ func (k Keeper) LiquidatePositionIfUnhealthy(ctx sdk.Context, position *types.Po
 		sdk.NewAttribute("liabilities", position.Liabilities.String()),
 		sdk.NewAttribute("health", position.PositionHealth.String()),
 	))
-	return isHealthy, false
+	return isHealthy, false, nil
 }
 
-func (k Keeper) ClosePositionIfUnderStopLossPrice(ctx sdk.Context, position *types.Position, pool types.Pool, ammPool ammtypes.Pool) (underStopLossPrice, earlyReturn bool) {
+func (k Keeper) ClosePositionIfUnderStopLossPrice(ctx sdk.Context, position *types.Position, pool types.Pool, ammPool ammtypes.Pool) (underStopLossPrice, earlyReturn bool, err error) {
 	defer func() {
 		if r := recover(); r != nil {
 			if msg, ok := r.(string); ok {
@@ -105,25 +105,25 @@ func (k Keeper) ClosePositionIfUnderStopLossPrice(ctx sdk.Context, position *typ
 	h, err := k.GetPositionHealth(ctx, *position)
 	if err != nil {
 		ctx.Logger().Error(errors.Wrap(err, fmt.Sprintf("error updating position health: %s", position.String())).Error())
-		return false, true
+		return false, true, err
 	}
 	position.PositionHealth = h
 	k.SetPosition(ctx, position)
 
 	lpTokenPrice, err := ammPool.LpTokenPrice(ctx, k.oracleKeeper)
 	if err != nil {
-		return false, true
+		return false, true, err
 	}
 
 	underStopLossPrice = !position.StopLossPrice.IsNil() && lpTokenPrice.LTE(position.StopLossPrice)
 	if !underStopLossPrice {
-		return underStopLossPrice, false
+		return underStopLossPrice, false, err
 	}
 
 	repayAmount, err := k.ForceCloseLong(ctx, *position, pool, position.LeveragedLpAmount)
 	if err != nil {
 		ctx.Logger().Error(errors.Wrap(err, "error executing close for stopLossPrice").Error())
-		return underStopLossPrice, true
+		return underStopLossPrice, true, err
 	}
 	ctx.EventManager().EmitEvent(sdk.NewEvent(types.EventClose,
 		sdk.NewAttribute("id", strconv.FormatInt(int64(position.Id), 10)),
@@ -134,5 +134,5 @@ func (k Keeper) ClosePositionIfUnderStopLossPrice(ctx sdk.Context, position *typ
 		sdk.NewAttribute("liabilities", position.Liabilities.String()),
 		sdk.NewAttribute("health", position.PositionHealth.String()),
 	))
-	return underStopLossPrice, false
+	return underStopLossPrice, false, err
 }
