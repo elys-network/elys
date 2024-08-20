@@ -62,8 +62,12 @@ func (k msgServer) ClosePositions(goCtx context.Context, msg *types.MsgClosePosi
 	}
 
 	ctx.EventManager().EmitEvent(sdk.NewEvent(types.EventClosePositions,
+		sdk.NewAttribute("liquidations_total", strconv.Itoa(len(msg.Liquidate))),
+		sdk.NewAttribute("liquidations_not_liquidated", strconv.Itoa(leftToLiquidate)),
 		sdk.NewAttribute("liquidations", strings.Join(liqLog, "\n")),
 		sdk.NewAttribute("stop_loss", strings.Join(closeLog, "\n")),
+		sdk.NewAttribute("stop_loss_total", strconv.Itoa(len(msg.Liquidate))),
+		sdk.NewAttribute("stop_loss_not_closed", strconv.Itoa(leftToClose)),
 	))
 
 	return &types.MsgClosePositionsResponse{}, nil
