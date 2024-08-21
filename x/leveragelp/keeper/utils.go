@@ -67,7 +67,7 @@ func (k Keeper) GetAmmPool(ctx sdk.Context, poolId uint64) (ammtypes.Pool, error
 
 func (k Keeper) GetLeverageLpUpdatedLeverage(ctx sdk.Context, positions []*types.Position) ([]*types.QueryPosition, error) {
 	updatedLeveragePositions := []*types.QueryPosition{}
-	for i, position := range positions {
+	for _, position := range positions {
 		baseCurrency, found := k.assetProfileKeeper.GetUsdcDenom(ctx)
 		if !found {
 			return nil, errorsmod.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency)
@@ -83,10 +83,10 @@ func (k Keeper) GetLeverageLpUpdatedLeverage(ctx sdk.Context, positions []*types
 
 		position.PositionHealth = exitAmountAfterFee.ToLegacyDec().Quo(position.Liabilities.ToLegacyDec())
 
-		updatedLeveragePositions[i] = &types.QueryPosition{
+		updatedLeveragePositions = append(updatedLeveragePositions ,&types.QueryPosition{
 			Position:        position,
 			UpdatedLeverage: updated_leverage,
-		}
+		})
 	}
 	return updatedLeveragePositions, nil
 }
