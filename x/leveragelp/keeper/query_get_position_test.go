@@ -1,8 +1,7 @@
 package keeper_test
 
 import (
-	"fmt"
-
+	"cosmossdk.io/math"
 	"github.com/cometbft/cometbft/crypto/ed25519"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
@@ -92,7 +91,8 @@ func (suite KeeperTestSuite) TestQ() {
 	})
 
 	res, _ := k.Position(suite.ctx, &types.PositionRequest{Address: addr.String(), Id: position.Id})
+	expected := math.NewInt(5)
 
-	fmt.Print(res)
 	suite.Require().Equal(position, res.Position.Position)
+	suite.Require().Equal(expected, res.Position.UpdatedLeverage)
 }
