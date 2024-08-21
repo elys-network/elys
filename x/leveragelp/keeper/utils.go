@@ -82,6 +82,8 @@ func (k Keeper) GetLeverageLpUpdatedLeverage(ctx sdk.Context, positions []*types
 		price := k.oracleKeeper.GetAssetPriceFromDenom(ctx, position.Collateral.Denom)
 		updated_leverage := exitAmountAfterFee.Quo(exitAmountAfterFee.Sub(position.Liabilities.Mul(price.TruncateInt())))
 
+		position.PositionHealth = exitAmountAfterFee.ToLegacyDec().Quo(position.Liabilities.ToLegacyDec().Mul(price))
+
 		updatedLeveragePositions[i] = &types.QueryPosition{
 			Position:        position,
 			UpdatedLeverage: updated_leverage,
