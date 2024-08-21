@@ -7,7 +7,9 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
+	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
 	"github.com/elys-network/elys/x/leveragelp/types"
+	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
 
 func (k Keeper) CheckUserAuthorization(ctx sdk.Context, msg *types.MsgOpen) error {
@@ -61,4 +63,29 @@ func (k Keeper) GetAmmPool(ctx sdk.Context, poolId uint64) (ammtypes.Pool, error
 		return ammPool, errorsmod.Wrap(types.ErrPoolDoesNotExist, fmt.Sprintf("poolId: %d", poolId))
 	}
 	return ammPool, nil
+}
+
+func (k Keeper) GetLeverageLpUpdatedLeverage(ctx sdk.Context, positions []*types.Position) ([]*types.QueryPosition, error) {
+	updatedLeveragePositions := []*types.QueryPosition{}
+	for i, position := range positions {
+		baseCurrency, found := k.assetProfileKeeper.GetUsdcDenom(ctx)
+		if !found {
+			return nil, errorsmod.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency)
+		}
+		exitCoinsAfterFee, _, err := k.amm.ExitPoolEst(ctx, position.GetAmmPoolId(), position.LeveragedLpAmount, baseCurrency)
+		if err != nil {
+			return nil, err
+		}
+
+		exitAmountAfterFee := exitCoinsAfterFee.AmountOf(baseCurrency)
+
+		price := k.oracleKeeper.GetAssetPriceFromDenom(ctx, position.Collateral.Denom)
+		updated_leverage := exitAmountAfterFee.Quo(exitAmountAfterFee.Sub(position.Liabilities.Mul(price.TruncateInt())))
+
+		updatedLeveragePositions[i] = &types.QueryPosition{
+			Position:        position,
+			UpdatedLeverage: updated_leverage,
+		}
+	}
+	return updatedLeveragePositions, nil
 }

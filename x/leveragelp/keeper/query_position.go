@@ -2,9 +2,7 @@ package keeper
 
 import (
 	"context"
-	"fmt"
-
-	errorsmod "cosmossdk.io/errors"
+	
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	"github.com/elys-network/elys/x/leveragelp/types"
@@ -23,31 +21,20 @@ func (k Keeper) Position(goCtx context.Context, req *types.PositionRequest) (*ty
 	if err != nil {
 		return nil, err
 	}
-	updatedLeveragePosition := types.QueryPosition{}
 
-	pool, found := k.amm.GetPool(ctx, position.AmmPoolId)
-	if !found {
-		return nil, errorsmod.Wrap(ammtypes.ErrPoolNotFound, fmt.Sprintf("poolId: %d", position.AmmPoolId))
-	}
-	lp_price, err := pool.LpTokenPrice(ctx, k.oracleKeeper)
+	var positions = []*types.Position{}
+	positions = append(positions, &position)
+	
+	updatedLeveragePosition, err := k.GetLeverageLpUpdatedLeverage(ctx, positions) 
 	if err != nil {
 		return nil, err
-	}
-
-	lp_usd_price := position.LeveragedLpAmount.Mul(lp_price.TruncateInt())
-	price := k.oracleKeeper.GetAssetPriceFromDenom(ctx, position.Collateral.Denom)
-	updated_leverage := lp_usd_price.Quo(lp_usd_price.Sub(position.Liabilities.Mul(price.TruncateInt())))
-	
-	updatedLeveragePosition = types.QueryPosition{
-		Position:        &position,
-		UpdatedLeverage: updated_leverage,
 	}
 
 	commitments := k.commKeeper.GetCommitments(ctx, position.GetPositionAddress())
 	totalLocked, _ := commitments.CommittedTokensLocked(ctx)
 
 	return &types.PositionResponse{
-		Position:      &updatedLeveragePosition,
+		Position:      updatedLeveragePosition[0],
 		LockedLpToken: totalLocked.AmountOf(ammtypes.GetPoolShareDenom(position.AmmPoolId)),
 	}, nil
 }
