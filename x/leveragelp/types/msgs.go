@@ -22,7 +22,9 @@ var (
 	_ sdk.Msg = &MsgOpen{}
 	_ sdk.Msg = &MsgUpdateParams{}
 	_ sdk.Msg = &MsgWhitelist{}
+	_ sdk.Msg = &MsgAddPool{}
 	_ sdk.Msg = &MsgUpdatePools{}
+	_ sdk.Msg = &MsgRemovePool{}
 	_ sdk.Msg = &MsgDewhitelist{}
 	_ sdk.Msg = &MsgClaimRewards{}
 )
@@ -219,6 +221,22 @@ func NewMsgAddPools(signer string, pool AddPool) *MsgAddPool {
 		Authority: signer,
 		Pool:      pool,
 	}
+}
+
+func (msg *MsgRemovePool) GetSigners() []sdk.AccAddress {
+	creator, err := sdk.AccAddressFromBech32(msg.Authority)
+	if err != nil {
+		panic(err)
+	}
+	return []sdk.AccAddress{creator}
+}
+
+func (msg *MsgRemovePool) ValidateBasic() error {
+	_, err := sdk.AccAddressFromBech32(msg.Authority)
+	if err != nil {
+		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
+	}
+	return nil
 }
 
 func (msg *MsgUpdatePools) Route() string {

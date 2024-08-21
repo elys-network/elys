@@ -9,7 +9,7 @@ import (
 	"github.com/elys-network/elys/x/leveragelp/types"
 )
 
-func (k msgServer) RemovePool(goCtx context.Context, msg *types.MsgRemovePool) (*types.MsgAddPoolResponse, error) {
+func (k msgServer) RemovePool(goCtx context.Context, msg *types.MsgRemovePool) (*types.MsgRemovePoolResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	if k.authority != msg.Authority {
@@ -25,5 +25,5 @@ func (k msgServer) RemovePool(goCtx context.Context, msg *types.MsgRemovePool) (
 		k.DeletePool(ctx, msg.Id)
 	}
 
-	return &types.MsgAddPoolResponse{}, nil
+	return &types.MsgRemovePoolResponse{}, nil
 }
