@@ -61,7 +61,6 @@ func initializeForAddPool(suite *KeeperTestSuite, addresses []sdk.AccAddress, as
 func (suite *KeeperTestSuite) TestAdd_Pool() {
 	suite.ResetSuite()
 	SetupCoinPrices(suite.ctx, suite.app.OracleKeeper)
-	//SetupCoinPrices(suite.ctx, suite.app.OracleKeeper, []string{ptypes.Elys, ptypes.ATOM, "uusdt"})
 	addresses := simapp.AddTestAddrs(suite.app, suite.ctx, 10, sdk.NewInt(1000000))
 	asset1 := ptypes.ATOM
 	asset2 := ptypes.BaseCurrency
