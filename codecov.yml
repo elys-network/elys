@@ -6,7 +6,7 @@ component_management:
         branches:
           - "!main"
   individual_components:
-    - component_id: module_leverage_lp # this is an identifier that should not be changed
-      name: leverage_lp # this is a display name, and can be changed freely
+    - component_id: module_leverage_lp_transactions # this is an identifier that should not be changed
+      name: leverage_lp_transactions # this is a display name, and can be changed freely
       paths:
-        - ./x/leveragelp/**
+        - ./x/leveragelp/msg_server*
