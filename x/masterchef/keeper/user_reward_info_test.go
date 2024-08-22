@@ -52,7 +52,7 @@ func TestUserRewardInfo(t *testing.T) {
 	rewardInfosStored := app.MasterchefKeeper.GetAllUserRewardInfos(ctx)
 	require.Len(t, rewardInfosStored, 3)
 
-	app.MasterchefKeeper.RemoveUserRewardInfo(ctx, userRewardInfos[0].User, userRewardInfos[0].PoolId, userRewardInfos[0].RewardDenom)
+	app.MasterchefKeeper.RemoveUserRewardInfo(ctx, userRewardInfos[0].GetUserAccount(), userRewardInfos[0].PoolId, userRewardInfos[0].RewardDenom)
 	rewardInfosStored = app.MasterchefKeeper.GetAllUserRewardInfos(ctx)
 	require.Len(t, rewardInfosStored, 2)
 }

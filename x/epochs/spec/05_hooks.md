@@ -29,7 +29,7 @@ func (k Keeper) BeforeEpochStart(ctx sdk.Context, identifier string, epochNumber
 
 ## Recieving Hooks
 
-When other modules (outside of `x/epochs`) recieve hooks, they need to filter the value `epochIdentifier`, and only do executions for a specific `epochIdentifier`.
+When other modules (outside of `x/epochs`) receive hooks, they need to filter the value `epochIdentifier`, and only do executions for a specific `epochIdentifier`.
 
 The filtered values from `epochIdentifier` could be stored in the `Params` of other modules, so they can be modified by governance.
 

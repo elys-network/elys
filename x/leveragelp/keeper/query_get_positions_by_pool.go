@@ -20,8 +20,13 @@ func (k Keeper) QueryPositionsByPool(goCtx context.Context, req *types.Positions
 		return nil, err
 	}
 
+	updatedLeveragePositions, err := k.GetLeverageLpUpdatedLeverage(ctx, positions)
+	if err != nil {
+		return nil, err
+	}
+
 	return &types.PositionsByPoolResponse{
-		Positions:  positions,
+		Positions:  updatedLeveragePositions,
 		Pagination: pageRes,
 	}, nil
 }
