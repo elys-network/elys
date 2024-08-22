@@ -114,8 +114,8 @@ func GetPoolRewardInfoKey(poolId uint64, rewardDenom string) []byte {
 	return key
 }
 
-func LegacyUserRewardInfoKey(user string, poolId uint64, rewardDenom string) []byte {
-	var key []byte
+func GetLegacyUserRewardInfoKey(user string, poolId uint64, rewardDenom string) []byte {
+	key := KeyPrefix(LegacyUserRewardInfoKeyPrefix)
 
 	key = append(key, user...)
 	key = append(key, []byte("/")...)

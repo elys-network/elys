@@ -24,9 +24,13 @@ func (k Keeper) QueryPositions(goCtx context.Context, req *types.PositionsReques
 	if err != nil {
 		return nil, err
 	}
+	updatedLeveragePositions, err := k.GetLeverageLpUpdatedLeverage(ctx, positions)
+	if err != nil {
+		return nil, err
+	}
 
 	return &types.PositionsResponse{
-		Positions:  positions,
+		Positions:  updatedLeveragePositions,
 		Pagination: page,
 	}, nil
 }

@@ -6,10 +6,10 @@ import (
 )
 
 // BeforeEpochStart performs a no-op
-func (k Keeper) BeforeEpochStart(_ sdk.Context, _ string, _ int64) error  {return nil}
+func (k Keeper) BeforeEpochStart(_ sdk.Context, _ string, _ int64) error { return nil }
 
 // AfterEpochEnd distributes vested tokens at the end of each epoch
-func (k Keeper) AfterEpochEnd(ctx sdk.Context, epochIdentifier string, _ int64) error {return nil}
+func (k Keeper) AfterEpochEnd(ctx sdk.Context, epochIdentifier string, _ int64) error { return nil }
 
 // ___________________________________________________________________________________________________
 

@@ -6,7 +6,7 @@ import (
 )
 
 // BeforeEpochStart performs a no-op
-func (k Keeper) BeforeEpochStart(ctx sdk.Context, epochIdentifier string, epochNumber int64)error {
+func (k Keeper) BeforeEpochStart(ctx sdk.Context, epochIdentifier string, epochNumber int64) error {
 	return nil
 }
 

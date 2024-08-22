@@ -2,7 +2,7 @@ package keeper
 
 import (
 	"context"
-
+	
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	"github.com/elys-network/elys/x/leveragelp/types"
@@ -22,11 +22,19 @@ func (k Keeper) Position(goCtx context.Context, req *types.PositionRequest) (*ty
 		return nil, err
 	}
 
+	var positions = []*types.Position{}
+	positions = append(positions, &position)
+	
+	updatedLeveragePosition, err := k.GetLeverageLpUpdatedLeverage(ctx, positions) 
+	if err != nil {
+		return nil, err
+	}
+
 	commitments := k.commKeeper.GetCommitments(ctx, position.GetPositionAddress())
 	totalLocked, _ := commitments.CommittedTokensLocked(ctx)
 
 	return &types.PositionResponse{
-		Position:      &position,
+		Position:      updatedLeveragePosition[0],
 		LockedLpToken: totalLocked.AmountOf(ammtypes.GetPoolShareDenom(position.AmmPoolId)),
 	}, nil
 }
