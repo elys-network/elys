@@ -9,68 +9,68 @@ component_management:
     - component_id: module_leverage_lp_transactions # this is an identifier that should not be changed
       name: leverage_lp_transactions # this is a display name, and can be changed freely
       paths:
-        - ./x/leveragelp/msg_server*
+        - ./x/leveragelp/**/msg_server*
     - component_id: module_accountedpool_transactions
       name: accountedpool_transactions
       paths:
-        - ./x/accountedpool/msg_server*
+        - ./x/accountedpool/**/msg_server*
     - component_id: module_amm_transactions
       name: amm_transactions
       paths:
-        - ./x/amm/msg_server*
+        - ./x/amm/**/msg_server*
     - component_id: module_assetprofile_transactions
       name: assetprofile_transactions
       paths:
-        - ./x/assetprofile/msg_server*
+        - ./x/assetprofile/**/msg_server*
     - component_id: module_burner_transactions
       name: burner_transactions
       paths:
-        - ./x/burner/msg_server*
+        - ./x/burner/**/msg_server*
     - component_id: module_clock_transactions
       name: clock_transactions
       paths:
-        - ./x/clock/msg_server*
+        - ./x/clock/**/msg_server*
     - component_id: module_commitment_transactions
       name: commitment_transactions
       paths:
-        - ./x/commitment/msg_server*
+        - ./x/commitment/**/msg_server*
     - component_id: module_epochs_transactions
       name: epochs_transactions
       paths:
-        - ./x/epochs/msg_server*
+        - ./x/epochs/**/msg_server*
     - component_id: module_estaking_transactions
       name: estaking_transactions
       paths:
-        - ./x/estaking/msg_server*
+        - ./x/estaking/**/msg_server*
     - component_id: module_incentive_transactions
       name: incentive_transactions
       paths:
-        - ./x/incentive/msg_server*
+        - ./x/incentive/**/msg_server*
     - component_id: module_masterchef_transactions
       name: masterchef_transactions
       paths:
-        - ./x/masterchef/msg_server*
+        - ./x/masterchef/**/msg_server*
     - component_id: module_oracle_transactions
       name: oracle_transactions
       paths:
-        - ./x/oracle/msg_server*
+        - ./x/oracle/**/msg_server*
     - component_id: module_parameter_transactions
       name: parameter_transactions
       paths:
-        - ./x/parameter/msg_server*
+        - ./x/parameter/**/msg_server*
     - component_id: module_stablestake_transactions
       name: stablestake_transactions
       paths:
-        - ./x/stablestake/msg_server*
+        - ./x/stablestake/**/msg_server*
     - component_id: module_tier_transactions
       name: tier_transactions
       paths:
-        - ./x/tier/msg_server*
+        - ./x/tier/**/msg_server*
     - component_id: module_tokenomics_transactions
       name: tokenomics_transactions
       paths:
-        - ./x/tokenomics/msg_server*
+        - ./x/tokenomics/**/msg_server*
     - component_id: module_transferhook_transactions
       name: transferhook_transactions
       paths:
-        - ./x/transferhook/msg_server*
+        - ./x/transferhook/**/msg_server*
