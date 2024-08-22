@@ -251,6 +251,6 @@ message QueryCommittedTokensLockedResponse {
 
 message QueryPosition {
   Position position        = 1;
-  string   updated_leverage = 2 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false];
+  string   updated_leverage = 2 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
 }
 
