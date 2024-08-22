@@ -9,70 +9,142 @@ component_management:
         branches:
           - "!main"
   individual_components:
+    # Leverage LP
     - component_id: module_leverage_lp_transactions # this is an identifier that should not be changed
       name: leverage_lp_transactions # this is a display name, and can be changed freely
       paths:
         - ./x/leveragelp/**/msg_server*
+    - component_id: module_leverage_lp_lifecycle
+      name: leverage_lp_lifecycle
+      paths:
+        - ./x/leveragelp/**/abci*
+        - ./x/leveragelp/**/*blocker*
+    # Accounted pool
     - component_id: module_accountedpool_transactions
       name: accountedpool_transactions
       paths:
         - ./x/accountedpool/**/msg_server*
+    - component_id: module_accountedpool_lifecycle
+      name: accountedpool_lifecycle
+      paths:
+        - ./x/accountedpool/**/abci*
+        - ./x/accountedpool/**/*blocker*
+    # amm
     - component_id: module_amm_transactions
       name: amm_transactions
       paths:
         - ./x/amm/**/msg_server*
+    - component_id: module_amm_lifecycle
+      name: amm_lifecycle
+      paths:
+        - ./x/amm/**/abci*
+        - ./x/amm/**/*blocker*
+    # Asset profile
     - component_id: module_assetprofile_transactions
       name: assetprofile_transactions
       paths:
         - ./x/assetprofile/**/msg_server*
+    - component_id: module_assetprofile_lifecycle
+      name: assetprofile_lifecycle
+      paths:
+        - ./x/assetprofile/**/abci*
+        - ./x/assetprofile/**/*blocker*
+    # Burner
     - component_id: module_burner_transactions
       name: burner_transactions
       paths:
         - ./x/burner/**/msg_server*
+    # Clock
     - component_id: module_clock_transactions
       name: clock_transactions
       paths:
         - ./x/clock/**/msg_server*
+    - component_id: module_clock_lifecycle
+      name: clock_lifecycle
+      paths:
+        - ./x/clock/**/abci*
+        - ./x/clock/**/*blocker*
+    # Commitment
     - component_id: module_commitment_transactions
       name: commitment_transactions
       paths:
         - ./x/commitment/**/msg_server*
+    - component_id: module_commitment_lifecycle
+      name: commitment_lifecycle
+      paths:
+        - ./x/commitment/**/abci*
+        - ./x/commitment/**/*blocker*
+    # epochs
     - component_id: module_epochs_transactions
       name: epochs_transactions
       paths:
         - ./x/epochs/**/msg_server*
+    - component_id: module_epochs_lifecycle
+      name: epochs_lifecycle
+      paths:
+        - ./x/epochs/**/abci*
+        - ./x/epochs/**/*blocker*
+    # estaking
     - component_id: module_estaking_transactions
       name: estaking_transactions
       paths:
         - ./x/estaking/**/msg_server*
+    - component_id: module_estaking_lifecycle
+      name: estaking_lifecycle
+      paths:
+        - ./x/estaking/**/abci*
+        - ./x/estaking/**/*blocker*
+    # incentive
     - component_id: module_incentive_transactions
       name: incentive_transactions
       paths:
         - ./x/incentive/**/msg_server*
+    - component_id: module_incentive_lifecycle
+      name: incentive_lifecycle
+      paths:
+        - ./x/incentive/**/abci*
+        - ./x/incentive/**/*blocker*
+    # masterchef
     - component_id: module_masterchef_transactions
       name: masterchef_transactions
       paths:
         - ./x/masterchef/**/msg_server*
+    - component_id: module_masterchef_lifecycle
+      name: masterchef_lifecycle
+      paths:
+        - ./x/masterchef/**/abci*
+        - ./x/masterchef/**/*blocker*
+    # oracle
     - component_id: module_oracle_transactions
       name: oracle_transactions
       paths:
         - ./x/oracle/**/msg_server*
+    - component_id: module_oracle_lifecycle
+      name: oracle_lifecycle
+      paths:
+        - ./x/oracle/**/abci*
+        - ./x/oracle/**/*blocker*
+    # parameter
     - component_id: module_parameter_transactions
       name: parameter_transactions
       paths:
         - ./x/parameter/**/msg_server*
+    # stablestake
     - component_id: module_stablestake_transactions
       name: stablestake_transactions
       paths:
         - ./x/stablestake/**/msg_server*
+    # tier
     - component_id: module_tier_transactions
       name: tier_transactions
       paths:
         - ./x/tier/**/msg_server*
+    # tokenomics
     - component_id: module_tokenomics_transactions
       name: tokenomics_transactions
       paths:
         - ./x/tokenomics/**/msg_server*
+    # transferhook
     - component_id: module_transferhook_transactions
       name: transferhook_transactions
       paths:
