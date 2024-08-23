@@ -52,7 +52,7 @@ func (suite KeeperTestSuite) TestCheckSameAssets() {
 	}
 
 	// Expect no error
-	position = k.CheckSamePosition(suite.ctx, msg)
+	position, _ = k.CheckSamePosition(suite.ctx, msg)
 	suite.Require().NotNil(position)
 }
 

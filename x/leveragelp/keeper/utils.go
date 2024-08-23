@@ -20,18 +20,18 @@ func (k Keeper) CheckUserAuthorization(ctx sdk.Context, msg *types.MsgOpen) erro
 	return nil
 }
 
-func (k Keeper) CheckSamePosition(ctx sdk.Context, msg *types.MsgOpen) *types.Position {
+func (k Keeper) CheckSamePosition(ctx sdk.Context, msg *types.MsgOpen) (*types.Position, error) {
 	positions, _, err := k.GetPositionsForAddress(ctx, sdk.MustAccAddressFromBech32(msg.Creator), &query.PageRequest{})
 	if err != nil {
-		return nil
+		return nil, err
 	}
 	for _, position := range positions {
 		if position.Position.AmmPoolId == msg.AmmPoolId && position.Position.Collateral.Denom == msg.CollateralAsset {
-			return position.Position
+			return position.Position, nil
 		}
 	}
 
-	return nil
+	return nil, nil
 }
 
 func (k Keeper) CheckPoolHealth(ctx sdk.Context, poolId uint64) error {

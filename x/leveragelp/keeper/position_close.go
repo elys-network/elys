@@ -65,10 +65,8 @@ func (k Keeper) ForceCloseLong(ctx sdk.Context, position types.Position, pool ty
 	// Update leveragedLpAmount
 	position.LeveragedLpAmount = position.LeveragedLpAmount.Sub(lpAmount)
 	if position.LeveragedLpAmount.IsZero() {
-		err = k.masterchefKeeper.ClaimRewards(ctx, position.GetPositionAddress(), []uint64{position.AmmPoolId}, positionOwner)
-		if err != nil {
-			return sdk.ZeroInt(), err
-		}
+		// As we have already exited the pool, we need to delete the position
+		k.masterchefKeeper.ClaimRewards(ctx, position.GetPositionAddress(), []uint64{position.AmmPoolId}, positionOwner)
 		err = k.DestroyPosition(ctx, positionOwner, position.Id)
 		if err != nil {
 			return sdk.ZeroInt(), err
@@ -76,10 +74,9 @@ func (k Keeper) ForceCloseLong(ctx sdk.Context, position types.Position, pool ty
 	} else {
 		// Update position health
 		positionHealth, err := k.GetPositionHealth(ctx, position)
-		if err != nil {
-			return sdk.ZeroInt(), err
+		if err == nil {
+			position.PositionHealth = positionHealth
 		}
-		position.PositionHealth = positionHealth
 
 		// Update Liabilities
 		debt = k.stableKeeper.UpdateInterestAndGetDebt(ctx, position.GetPositionAddress())
