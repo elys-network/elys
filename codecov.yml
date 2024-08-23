@@ -1,6 +1,9 @@
 comment:
   layout: "header, diff, flags, components" # show component info in the PR comment
 
+ignore:
+  - "**/*.pb*"
+
 component_management:
   default_rules: # default rules that will be inherited by all components
     statuses:
@@ -27,7 +30,6 @@ component_management:
       name: leveragelp_queries
       paths:
         - ./x/leveragelp/**/*query*
-    # Accounted pool
     - component_id: module_accountedpool_transactions
       name: accountedpool_transactions
       paths:
