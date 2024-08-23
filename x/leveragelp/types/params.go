@@ -184,7 +184,7 @@ func validateNumberOfBlocks(i interface{}) error {
 	}
 
 	if v < 0 {
-		return fmt.Errorf("number of positions per block must be positive: %s", v)
+		return fmt.Errorf("number of positions per block must be positive: %d", v)
 	}
 
 	if v > MaxPageLimit {

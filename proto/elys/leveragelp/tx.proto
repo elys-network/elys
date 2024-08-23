@@ -93,7 +93,7 @@ message MsgDewhitelistResponse {}
 
 message MsgUpdateStopLoss {
   string creator = 1;
-  int32  position = 2;
+  uint64  position = 2;
   string price = 3 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
 }
 

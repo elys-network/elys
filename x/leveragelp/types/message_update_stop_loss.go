@@ -9,7 +9,7 @@ const TypeMsgUpdateStopLoss = "update_stop_loss"
 
 var _ sdk.Msg = &MsgUpdateStopLoss{}
 
-func NewMsgUpdateStopLoss(creator string, position int32, price sdk.Dec) *MsgUpdateStopLoss {
+func NewMsgUpdateStopLoss(creator string, position uint64, price sdk.Dec) *MsgUpdateStopLoss {
 	return &MsgUpdateStopLoss{
 		Creator:  creator,
 		Position: position,

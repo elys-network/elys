@@ -13,7 +13,7 @@ import (
 func (k msgServer) UpdateStopLoss(goCtx context.Context, msg *types.MsgUpdateStopLoss) (*types.MsgUpdateStopLossResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	position, found := k.GetPositionWithId(ctx, sdk.MustAccAddressFromBech32(msg.Creator), uint64(msg.Position))
+	position, found := k.GetPositionWithId(ctx, sdk.MustAccAddressFromBech32(msg.Creator), msg.Position)
 	if !found {
 		return nil, errorsmod.Wrap(types.ErrPositionDoesNotExist, fmt.Sprintf("positionId: %d", msg.Position))
 
