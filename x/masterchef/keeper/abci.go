@@ -355,8 +355,13 @@ func (k Keeper) CollectGasFees(ctx sdk.Context, baseCurrency string) sdk.DecCoin
 
 	// Send coins to protocol revenue address
 	if protocolGasFeeCoins.IsAllPositive() {
-		protocolRevenueAddress := sdk.MustAccAddressFromBech32(params.ProtocolRevenueAddress)
-		err := k.bankKeeper.SendCoinsFromModuleToAccount(ctx, authtypes.FeeCollectorName, protocolRevenueAddress, protocolGasFeeCoins)
+		protocolRevenueAddress, err := sdk.AccAddressFromBech32(params.ProtocolRevenueAddress)
+		if err != nil {
+			// Handle the error by skipping the fee distribution
+			ctx.Logger().Error("Invalid protocol revenue address", "error", err)
+			return gasFeesForLpsDec
+		}
+		err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, authtypes.FeeCollectorName, protocolRevenueAddress, protocolGasFeeCoins)
 		if err != nil {
 			panic(err)
 		}
