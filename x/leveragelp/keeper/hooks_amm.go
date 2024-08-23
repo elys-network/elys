@@ -10,7 +10,7 @@ import (
 func (k Keeper) CheckAmmPoolUsdcBalance(ctx sdk.Context, ammPool ammtypes.Pool) error {
 	leveragelpPool, found := k.GetPool(ctx, ammPool.PoolId)
 	if !found {
-		return nil
+		return types.ErrPoolDoesNotExist
 	}
 
 	tvl, err := ammPool.TVL(ctx, k.oracleKeeper)

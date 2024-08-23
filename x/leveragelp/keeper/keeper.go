@@ -165,24 +165,6 @@ func (k Keeper) GetAllWhitelistedAddress(ctx sdk.Context) []sdk.AccAddress {
 	return list
 }
 
-// remove after migration
-func (k Keeper) GetAllLegacyWhitelistedAddress(ctx sdk.Context) []string {
-	var list []string
-	iterator := k.GetWhitelistAddressIterator(ctx)
-	defer func(iterator sdk.Iterator) {
-		err := iterator.Close()
-		if err != nil {
-			panic(err)
-		}
-	}(iterator)
-
-	for ; iterator.Valid(); iterator.Next() {
-		list = append(list, (string)(iterator.Value()))
-	}
-
-	return list
-}
-
 func (k Keeper) GetWhitelistedAddress(ctx sdk.Context, pagination *query.PageRequest) ([]sdk.AccAddress, *query.PageResponse, error) {
 	var list []sdk.AccAddress
 	store := ctx.KVStore(k.storeKey)

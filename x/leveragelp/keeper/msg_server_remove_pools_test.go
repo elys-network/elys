@@ -53,6 +53,19 @@ func (suite *KeeperTestSuite) TestRemove_Pool() {
 			prerequisiteFunction: func() {
 			},
 		},
+		{name: "non zero pool leveraged amount",
+			input: &types.MsgRemovePool{
+				Authority: "cosmos10d07y265gmmuvt4z0w9aw880jnsr700j6zn9kn",
+				Id:        1,
+			},
+			expectErr:    true,
+			expectErrMsg: "pool leverage amount is greater than zero",
+			prerequisiteFunction: func() {
+				pool := types.NewPool(1)
+				pool.LeveragedLpAmount = sdk.OneInt()
+				suite.app.LeveragelpKeeper.SetPool(suite.ctx, pool)
+			},
+		},
 		{name: "success",
 			input: &types.MsgRemovePool{
 				Authority: "cosmos10d07y265gmmuvt4z0w9aw880jnsr700j6zn9kn",
@@ -61,6 +74,9 @@ func (suite *KeeperTestSuite) TestRemove_Pool() {
 			expectErr:    false,
 			expectErrMsg: "",
 			prerequisiteFunction: func() {
+				pool := types.NewPool(1)
+				pool.LeveragedLpAmount = sdk.ZeroInt()
+				suite.app.LeveragelpKeeper.SetPool(suite.ctx, pool)
 			},
 		},
 	}
