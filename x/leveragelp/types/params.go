@@ -39,7 +39,7 @@ func NewParams() Params {
 		SafetyFactor:        sdk.NewDecWithPrec(11, 1), // 1.1
 		WhitelistingEnabled: false,
 		FallbackEnabled:     true,
-		NumberPerBlock:      1000,
+		NumberPerBlock:      (int64)(1000),
 	}
 }
 
