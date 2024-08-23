@@ -10,12 +10,12 @@ component_management:
           - "!main"
   individual_components:
     # Leverage LP
-    - component_id: module_leverage_lp_transactions # this is an identifier that should not be changed
-      name: leverage_lp_transactions # this is a display name, and can be changed freely
+    - component_id: module_leveragelp_transactions # this is an identifier that should not be changed
+      name: leveragelp_transactions # this is a display name, and can be changed freely
       paths:
         - ./x/leveragelp/**/msg_server*
-    - component_id: module_leverage_lp_lifecycle
-      name: leverage_lp_lifecycle
+    - component_id: module_leveragelp_lifecycle
+      name: leveragelp_lifecycle
       paths:
         - ./x/leveragelp/**/abci*
         - ./x/leveragelp/**/*blocker*
@@ -23,6 +23,10 @@ component_management:
       name: leveragelp_keeper
       paths:
         - ./x/leveragelp/**/keeper*
+    - component_id: module_leveragelp_queries
+      name: leveragelp_queries
+      paths:
+        - ./x/leveragelp/**/*query*
     # Accounted pool
     - component_id: module_accountedpool_transactions
       name: accountedpool_transactions
@@ -33,10 +37,10 @@ component_management:
       paths:
         - ./x/accountedpool/**/abci*
         - ./x/accountedpool/**/*blocker*
-    - component_id: module_accountedpool_keeper
-      name: accountedpool_keeper
+    - component_id: module_accountedpool_queries
+      name: accountedpool_queries
       paths:
-        - ./x/accountedpool/**/keeper*
+        - ./x/accountedpool/**/*query*
     # amm
     - component_id: module_amm_transactions
       name: amm_transactions
@@ -51,6 +55,10 @@ component_management:
       name: amm_keeper
       paths:
         - ./x/amm/**/keeper*
+    - component_id: module_amm_queries
+      name: amm_queries
+      paths:
+        - ./x/amm/**/*query*
     # Asset profile
     - component_id: module_assetprofile_transactions
       name: assetprofile_transactions
@@ -65,6 +73,10 @@ component_management:
       name: assetprofile_keeper
       paths:
         - ./x/assetprofile/**/keeper*
+    - component_id: module_assetprofile_queries
+      name: assetprofile_queries
+      paths:
+        - ./x/assetprofile/**/*query*
     # Burner
     - component_id: module_burner_transactions
       name: burner_transactions
@@ -79,6 +91,10 @@ component_management:
       name: burner_keeper
       paths:
         - ./x/burner/**/keeper*
+    - component_id: module_burner_queries
+      name: burner_queries
+      paths:
+        - ./x/burner/**/*query*
     # Clock
     - component_id: module_clock_transactions
       name: clock_transactions
@@ -93,6 +109,10 @@ component_management:
       name: clock_keeper
       paths:
         - ./x/clock/**/keeper*
+    - component_id: module_clock_queries
+      name: clock_queries
+      paths:
+        - ./x/clock/**/*query*
     # Commitment
     - component_id: module_commitment_transactions
       name: commitment_transactions
@@ -107,6 +127,10 @@ component_management:
       name: commitment_keeper
       paths:
         - ./x/commitment/**/keeper*
+    - component_id: module_commitment_queries
+      name: commitment_queries
+      paths:
+        - ./x/commitment/**/*query*
     # epochs
     - component_id: module_epochs_transactions
       name: epochs_transactions
@@ -121,6 +145,10 @@ component_management:
       name: epochs_keeper
       paths:
         - ./x/epochs/**/keeper*
+    - component_id: module_epochs_queries
+      name: epochs_queries
+      paths:
+        - ./x/epochs/**/*query*
     # estaking
     - component_id: module_estaking_transactions
       name: estaking_transactions
@@ -135,6 +163,10 @@ component_management:
       name: estaking_keeper
       paths:
         - ./x/estaking/**/keeper*
+    - component_id: module_estaking_queries
+      name: estaking_queries
+      paths:
+        - ./x/estaking/**/*query*
     # incentive
     - component_id: module_incentive_transactions
       name: incentive_transactions
@@ -149,6 +181,10 @@ component_management:
       name: incentive_keeper
       paths:
         - ./x/incentive/**/keeper*
+    - component_id: module_incentive_queries
+      name: incentive_queries
+      paths:
+        - ./x/incentive/**/*query*
     # masterchef
     - component_id: module_masterchef_transactions
       name: masterchef_transactions
@@ -163,6 +199,10 @@ component_management:
       name: masterchef_keeper
       paths:
         - ./x/masterchef/**/keeper*
+    - component_id: module_masterchef_queries
+      name: masterchef_queries
+      paths:
+        - ./x/masterchef/**/*query*
     # oracle
     - component_id: module_oracle_transactions
       name: oracle_transactions
@@ -177,6 +217,10 @@ component_management:
       name: oracle_keeper
       paths:
         - ./x/oracle/**/keeper*
+    - component_id: module_oracle_queries
+      name: oracle_queries
+      paths:
+        - ./x/oracle/**/*query*
     # parameter
     - component_id: module_parameter_transactions
       name: parameter_transactions
@@ -191,6 +235,10 @@ component_management:
       name: parameter_keeper
       paths:
         - ./x/parameter/**/keeper*
+    - component_id: module_parameter_queries
+      name: parameter_queries
+      paths:
+        - ./x/parameter/**/*query*
     # stablestake
     - component_id: module_stablestake_transactions
       name: stablestake_transactions
@@ -205,6 +253,10 @@ component_management:
       name: stablestake_keeper
       paths:
         - ./x/stablestake/**/keeper*
+    - component_id: module_stablestake_queries
+      name: stablestake_queries
+      paths:
+        - ./x/stablestake/**/*query*
     # tier
     - component_id: module_tier_transactions
       name: tier_transactions
@@ -219,6 +271,10 @@ component_management:
       name: tier_keeper
       paths:
         - ./x/tier/**/keeper*
+    - component_id: module_tier_queries
+      name: tier_queries
+      paths:
+        - ./x/tier/**/*query*
     # tokenomics
     - component_id: module_tokenomics_transactions
       name: tokenomics_transactions
@@ -233,6 +289,10 @@ component_management:
       name: tokenomics_keeper
       paths:
         - ./x/tokenomics/**/keeper*
+    - component_id: module_tokenomics_queries
+      name: tokenomics_queries
+      paths:
+        - ./x/tokenomics/**/*query*
     # transferhook
     - component_id: module_transferhook_transactions
       name: transferhook_transactions
@@ -247,3 +307,7 @@ component_management:
       name: transferhook_keeper
       paths:
         - ./x/transferhook/**/keeper*
+    - component_id: module_transferhook_queries
+      name: transferhook_queries
+      paths:
+        - ./x/transferhook/**/*query*
