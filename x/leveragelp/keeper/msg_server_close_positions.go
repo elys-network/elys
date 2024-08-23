@@ -36,7 +36,7 @@ func (k msgServer) ClosePositions(goCtx context.Context, msg *types.MsgClosePosi
 
 	// Handle stop loss
 	closeLog := []string{}
-	for _, val := range msg.Stoploss {
+	for _, val := range msg.StopLoss {
 		position, err := k.GetPosition(ctx, val.GetAccountAddress(), val.Id)
 		if err != nil {
 			continue

@@ -17,8 +17,8 @@ service Msg {
   rpc Close          (MsgClose) returns (MsgCloseResponse);
   rpc ClaimRewards   (MsgClaimRewards) returns (MsgClaimRewardsResponse);
   rpc UpdateParams   (MsgUpdateParams) returns (MsgUpdateParamsResponse);
-  rpc AddPools       (MsgAddPool) returns (MsgAddPoolResponse);
-  rpc UpdatePools    (MsgUpdatePools) returns (MsgUpdatePoolsResponse);
+  rpc AddPool       (MsgAddPool) returns (MsgAddPoolResponse);
+  rpc UpdatePool    (MsgUpdatePool) returns (MsgUpdatePoolResponse);
   rpc RemovePool    (MsgRemovePool) returns (MsgRemovePoolResponse);
   rpc Whitelist      (MsgWhitelist) returns (MsgWhitelistResponse);
   rpc Dewhitelist    (MsgDewhitelist) returns (MsgDewhitelistResponse);
@@ -70,12 +70,12 @@ message UpdatePool {
   bool   Closed = 3;
 }
 
-message MsgUpdatePools {
+message MsgUpdatePool {
   string     authority = 1;
   UpdatePool UpdatePool = 2;
 }
 
-message MsgUpdatePoolsResponse {}
+message MsgUpdatePoolResponse {}
 
 message MsgWhitelist {
   string authority = 1;
@@ -131,7 +131,7 @@ message MsgRemovePoolResponse {}
 message MsgClosePositions {
   string creator = 1;
   repeated PositionRequest liquidate = 2;
-  repeated PositionRequest stoploss = 3;
+  repeated PositionRequest stop_loss = 3;
 }
 
 message MsgClosePositionsResponse {}

@@ -107,7 +107,7 @@ func (suite *KeeperTestSuite) TestAdd_Pool() {
 		suite.Run(tc.name, func() {
 			tc.prerequisiteFunction()
 			msgServer := keeper.NewMsgServerImpl(suite.app.LeveragelpKeeper)
-			_, err := msgServer.AddPools(suite.ctx, tc.input)
+			_, err := msgServer.AddPool(suite.ctx, tc.input)
 			if tc.expectErr {
 				suite.Require().Error(err)
 				suite.Require().Contains(err.Error(), tc.expectErrMsg)

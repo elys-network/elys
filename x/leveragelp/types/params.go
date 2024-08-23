@@ -1,7 +1,7 @@
 package types
 
 import (
-	fmt "fmt"
+	"fmt"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
@@ -145,7 +145,7 @@ func validateSafetyFactor(i interface{}) error {
 	if v.IsNil() {
 		return fmt.Errorf("safety factor must be not nil")
 	}
-	if v.IsNegative() {
+	if !v.IsPositive() {
 		return fmt.Errorf("safety factor must be positive: %s", v)
 	}
 
@@ -170,7 +170,7 @@ func validatePoolOpenThreshold(i interface{}) error {
 	if v.IsNil() {
 		return fmt.Errorf("pool open threshold must be not nil")
 	}
-	if v.IsNegative() {
+	if !v.IsPositive() {
 		return fmt.Errorf("pool open threshold must be positive: %s", v)
 	}
 

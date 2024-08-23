@@ -38,13 +38,13 @@ func (suite *KeeperTestSuite) TestUpdate_Pool() {
 	initializeForUpdatePool(suite, addresses, asset1, asset2)
 	testCases := []struct {
 		name                 string
-		input                *types.MsgUpdatePools
+		input                *types.MsgUpdatePool
 		expectErr            bool
 		expectErrMsg         string
 		prerequisiteFunction func()
 	}{
 		{name: "not allowed invalid authority",
-			input: &types.MsgUpdatePools{
+			input: &types.MsgUpdatePool{
 				Authority: addresses[0].String(),
 				UpdatePool: &types.UpdatePool{
 					PoolId:  1,
@@ -58,7 +58,7 @@ func (suite *KeeperTestSuite) TestUpdate_Pool() {
 			},
 		},
 		{name: "success",
-			input: &types.MsgUpdatePools{
+			input: &types.MsgUpdatePool{
 				Authority: "cosmos10d07y265gmmuvt4z0w9aw880jnsr700j6zn9kn",
 				UpdatePool: &types.UpdatePool{
 					PoolId:  1,
@@ -77,7 +77,7 @@ func (suite *KeeperTestSuite) TestUpdate_Pool() {
 		suite.Run(tc.name, func() {
 			tc.prerequisiteFunction()
 			msgServer := keeper.NewMsgServerImpl(suite.app.LeveragelpKeeper)
-			_, err := msgServer.UpdatePools(suite.ctx, tc.input)
+			_, err := msgServer.UpdatePool(suite.ctx, tc.input)
 			if tc.expectErr {
 				suite.Require().Error(err)
 				suite.Require().Contains(err.Error(), tc.expectErrMsg)

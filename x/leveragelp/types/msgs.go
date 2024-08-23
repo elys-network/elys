@@ -12,7 +12,7 @@ const (
 	TypeMsgClose        = "close"
 	TypeMsgUpdateParams = "update_params"
 	TypeMsgWhitelist    = "whitelist"
-	TypeMsgUpdatePools  = "update_pools"
+	TypeMsgUpdatePool   = "update_pool"
 	TypeMsgDewhitelist  = "dewhitelist"
 	TypeMsgClaimRewards = "claim_rewards"
 )
@@ -23,7 +23,7 @@ var (
 	_ sdk.Msg = &MsgUpdateParams{}
 	_ sdk.Msg = &MsgWhitelist{}
 	_ sdk.Msg = &MsgAddPool{}
-	_ sdk.Msg = &MsgUpdatePools{}
+	_ sdk.Msg = &MsgUpdatePool{}
 	_ sdk.Msg = &MsgRemovePool{}
 	_ sdk.Msg = &MsgDewhitelist{}
 	_ sdk.Msg = &MsgClaimRewards{}
@@ -191,9 +191,9 @@ func (msg *MsgWhitelist) ValidateBasic() error {
 	return nil
 }
 
-func NewMsgUpdatePools(signer string, pool UpdatePool) *MsgUpdatePools {
+func NewMsgUpdatePool(signer string, pool UpdatePool) *MsgUpdatePool {
 
-	return &MsgUpdatePools{
+	return &MsgUpdatePool{
 		Authority:  signer,
 		UpdatePool: &pool,
 	}
@@ -239,15 +239,15 @@ func (msg *MsgRemovePool) ValidateBasic() error {
 	return nil
 }
 
-func (msg *MsgUpdatePools) Route() string {
+func (msg *MsgUpdatePool) Route() string {
 	return RouterKey
 }
 
-func (msg *MsgUpdatePools) Type() string {
-	return TypeMsgUpdatePools
+func (msg *MsgUpdatePool) Type() string {
+	return TypeMsgUpdatePool
 }
 
-func (msg *MsgUpdatePools) GetSigners() []sdk.AccAddress {
+func (msg *MsgUpdatePool) GetSigners() []sdk.AccAddress {
 	authority, err := sdk.AccAddressFromBech32(msg.Authority)
 	if err != nil {
 		panic(err)
@@ -255,12 +255,12 @@ func (msg *MsgUpdatePools) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{authority}
 }
 
-func (msg *MsgUpdatePools) GetSignBytes() []byte {
+func (msg *MsgUpdatePool) GetSignBytes() []byte {
 	bz := ModuleCdc.MustMarshalJSON(msg)
 	return sdk.MustSortJSON(bz)
 }
 
-func (msg *MsgUpdatePools) ValidateBasic() error {
+func (msg *MsgUpdatePool) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Authority)
 	if err != nil {
 		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)

@@ -141,18 +141,18 @@ func TestMsgWhitelist_ValidateBasic(t *testing.T) {
 func TestMsgUpdatePools_ValidateBasic(t *testing.T) {
 	tests := []struct {
 		name string
-		msg  MsgUpdatePools
+		msg  MsgUpdatePool
 		err  error
 	}{
 		{
 			name: "invalid address",
-			msg: MsgUpdatePools{
+			msg: MsgUpdatePool{
 				Authority: "invalid_address",
 			},
 			err: sdkerrors.ErrInvalidAddress,
 		}, {
 			name: "valid address",
-			msg: MsgUpdatePools{
+			msg: MsgUpdatePool{
 				Authority: sample.AccAddress(),
 			},
 		},

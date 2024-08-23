@@ -9,7 +9,7 @@ import (
 	"github.com/elys-network/elys/x/leveragelp/types"
 )
 
-func (k msgServer) AddPools(goCtx context.Context, msg *types.MsgAddPool) (*types.MsgAddPoolResponse, error) {
+func (k msgServer) AddPool(goCtx context.Context, msg *types.MsgAddPool) (*types.MsgAddPoolResponse, error) {
 	var newPool types.Pool
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
