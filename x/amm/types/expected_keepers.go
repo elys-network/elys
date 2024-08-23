@@ -57,3 +57,7 @@ type AssetProfileKeeper interface {
 type AccountedPoolKeeper interface {
 	GetAccountedBalance(sdk.Context, uint64, string) math.Int
 }
+
+type TierKeeper interface {
+	
+}

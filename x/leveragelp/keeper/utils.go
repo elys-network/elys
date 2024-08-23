@@ -26,8 +26,8 @@ func (k Keeper) CheckSamePosition(ctx sdk.Context, msg *types.MsgOpen) *types.Po
 		return nil
 	}
 	for _, position := range positions {
-		if position.Position.AmmPoolId == msg.AmmPoolId && position.Position.Collateral.Denom == msg.CollateralAsset {
-			return position.Position
+		if position.Position.Position.AmmPoolId == msg.AmmPoolId && position.Position.Position.Collateral.Denom == msg.CollateralAsset {
+			return position.Position.Position
 		}
 	}
 

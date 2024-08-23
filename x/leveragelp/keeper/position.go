@@ -231,13 +231,17 @@ func (k Keeper) GetPositionsForAddress(ctx sdk.Context, positionAddress sdk.AccA
 		var p types.Position
 		k.cdc.MustUnmarshal(value, &p)
 		var positionAndInterest types.PositionAndInterest
-		positionAndInterest.Position = &p
+		updatedLeveragePosition, err := k.GetLeverageLpUpdatedLeverage(ctx, []*types.Position{&p})
+		if err != nil {
+			return err
+		}
+		positionAndInterest.Position = updatedLeveragePosition[0]
 		price := k.oracleKeeper.GetAssetPriceFromDenom(ctx, p.Collateral.Denom)
 		interestRateHour := params.InterestRate.Quo(hours)
 		positionAndInterest.InterestRateHour = interestRateHour
 		positionAndInterest.InterestRateHourUsd = interestRateHour.Mul(cosmosMath.LegacyDec(p.Liabilities.Mul(price.RoundInt())))
-		debt := k.stableKeeper.GetDebt(ctx, positionAndInterest.Position.GetPositionAddress())
-		positionAndInterest.Position.Liabilities = debt.GetTotalLiablities()
+		debt := k.stableKeeper.GetDebt(ctx, positionAndInterest.Position.Position.GetPositionAddress())
+		positionAndInterest.Position.Position.Liabilities = debt.GetTotalLiablities()
 		positions = append(positions, &positionAndInterest)
 		return nil
 	})
