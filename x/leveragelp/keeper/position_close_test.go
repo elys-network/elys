@@ -25,7 +25,7 @@ func (suite KeeperTestSuite) OpenPosition(addr sdk.AccAddress) (*types.Position,
 		Closed:            false,
 		Health:            sdk.ZeroDec(),
 		LeveragedLpAmount: sdk.ZeroInt(),
-		LeverageMax:       sdk.ZeroDec(),
+		LeverageMax:       sdk.OneDec().MulInt64(10),
 	}
 	poolInit := sdk.Coins{sdk.NewInt64Coin("uusdc", amount), sdk.NewInt64Coin("uusdt", amount)}
 

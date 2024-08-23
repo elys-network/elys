@@ -61,9 +61,10 @@ func (suite *KeeperTestSuite) TestUpdate_Pool() {
 			input: &types.MsgUpdatePool{
 				Authority: "cosmos10d07y265gmmuvt4z0w9aw880jnsr700j6zn9kn",
 				UpdatePool: &types.UpdatePool{
-					PoolId:  1,
-					Enabled: false,
-					Closed:  false,
+					PoolId:      1,
+					Enabled:     false,
+					Closed:      false,
+					LeverageMax: sdk.OneDec().MulInt64(10),
 				},
 			},
 			expectErr:    false,
