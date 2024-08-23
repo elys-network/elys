@@ -13,8 +13,12 @@ import (
 
 func (k Keeper) OpenLong(ctx sdk.Context, msg *types.MsgOpen) (*types.Position, error) {
 	// Determine the maximum leverage available and compute the effective leverage to be used.
-	maxLeverage := k.GetMaxLeverageParam(ctx)
-	leverage := sdk.MinDec(msg.Leverage, maxLeverage)
+	pool, found := k.GetPool(ctx, msg.AmmPoolId)
+	if !found {
+		return nil, errorsmod.Wrap(types.ErrPoolDoesNotExist, fmt.Sprintf("poolId: %d", msg.AmmPoolId))
+	}
+	// pool.LeverageMax is set when adding pool with MinDec(params.LeverageMax, addPoolMsg.Leverage)
+	leverage := sdk.MinDec(msg.Leverage, pool.LeverageMax)
 
 	// Convert the collateral amount into a decimal format.
 	collateralAmountDec := sdk.NewDecFromBigInt(msg.CollateralAmount.BigInt())

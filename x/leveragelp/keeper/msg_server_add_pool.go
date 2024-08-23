@@ -23,10 +23,13 @@ func (k msgServer) AddPool(goCtx context.Context, msg *types.MsgAddPool) (*types
 		_, found := k.GetPool(ctx, msg.Pool.AmmPoolId)
 
 		if !found {
+			maxLeverageAllowed := k.GetMaxLeverageParam(ctx)
+			leverage := sdk.MinDec(msg.Pool.LeverageMax, maxLeverageAllowed)
+
 			newPool.AmmPoolId = msg.Pool.AmmPoolId
 			newPool.Closed = msg.Pool.Closed
 			newPool.Enabled = msg.Pool.Enabled
-			newPool.LeverageMax = msg.Pool.LeverageMax
+			newPool.LeverageMax = leverage
 			newPool.Health = sdk.NewDec(0)
 			newPool.LeveragedLpAmount = sdk.NewInt(0)
 			k.SetPool(ctx, newPool)

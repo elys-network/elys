@@ -3,6 +3,7 @@ package types
 import (
 	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/math"
+	"fmt"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
@@ -12,6 +13,8 @@ const (
 	TypeMsgClose        = "close"
 	TypeMsgUpdateParams = "update_params"
 	TypeMsgWhitelist    = "whitelist"
+	TypeMsgAddPool      = "add_pool"
+	TypeMsgRemovePool   = "remove_pool"
 	TypeMsgUpdatePool   = "update_pool"
 	TypeMsgDewhitelist  = "dewhitelist"
 	TypeMsgClaimRewards = "claim_rewards"
@@ -63,6 +66,10 @@ func (msg *MsgClose) ValidateBasic() error {
 	if err != nil {
 		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
 	}
+
+	if !msg.LpAmount.IsPositive() {
+		return fmt.Errorf("invalid lp amount: needs to be positive")
+	}
 	return nil
 }
 
@@ -108,13 +115,14 @@ func (msg *MsgOpen) ValidateBasic() error {
 		return ErrLeverageTooSmall
 	}
 	collateralCoin := sdk.NewCoin(msg.CollateralAsset, msg.CollateralAmount)
-	err = collateralCoin.Validate()
-	if err != nil {
-		return ErrInvalidCollateralAsset.Wrapf("(%s)", err)
-	}
-	// coin.Validate() does not check if amount is 0
+	// sdk.NewCoin already coin.Validate(), but it does not check if amount is 0
 	if collateralCoin.IsZero() {
 		return ErrInvalidCollateralAsset.Wrapf("(amount cannot be equal to 0)")
+	}
+
+	// 0 StopLoss price is allowed. It means not set
+	if msg.StopLossPrice.IsNegative() {
+		return fmt.Errorf("stop loss price cannot be negative")
 	}
 	return nil
 }
@@ -136,6 +144,9 @@ func (msg *MsgUpdateParams) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Authority)
 	if err != nil {
 		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
+	}
+	if err = msg.Params.Validate(); err != nil {
+		return fmt.Errorf("invalid params: %s", err)
 	}
 	return nil
 }
@@ -162,9 +173,7 @@ func NewMsgWhitelist(signer string, whitelistedAddress string) *MsgWhitelist {
 	}
 }
 
-func (msg *MsgWhitelist) Route() string {
-	return RouterKey
-}
+func (msg *MsgWhitelist) Route() string { return RouterKey }
 
 func (msg *MsgWhitelist) Type() string {
 	return TypeMsgWhitelist
@@ -188,15 +197,22 @@ func (msg *MsgWhitelist) ValidateBasic() error {
 	if err != nil {
 		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
 	}
+	_, err = sdk.AccAddressFromBech32(msg.WhitelistedAddress)
+	if err != nil {
+		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid whitelist address (%s)", err)
+	}
 	return nil
 }
 
-func NewMsgUpdatePool(signer string, pool UpdatePool) *MsgUpdatePool {
+func (msg *MsgAddPool) Route() string {
+	return RouterKey
+}
 
-	return &MsgUpdatePool{
-		Authority:  signer,
-		UpdatePool: &pool,
-	}
+func (msg *MsgAddPool) Type() string { return TypeMsgAddPool }
+
+func (msg *MsgAddPool) GetSignBytes() []byte {
+	bz := ModuleCdc.MustMarshalJSON(msg)
+	return sdk.MustSortJSON(bz)
 }
 
 func (msg *MsgAddPool) GetSigners() []sdk.AccAddress {
@@ -212,15 +228,32 @@ func (msg *MsgAddPool) ValidateBasic() error {
 	if err != nil {
 		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
 	}
+
+	if msg.Pool.LeverageMax.LTE(sdk.OneDec()) {
+		return ErrLeverageTooSmall
+	}
 	return nil
 }
 
-func NewMsgAddPools(signer string, pool AddPool) *MsgAddPool {
+func NewMsgAddPool(signer string, pool AddPool) *MsgAddPool {
 
 	return &MsgAddPool{
 		Authority: signer,
 		Pool:      pool,
 	}
+}
+
+func (msg *MsgRemovePool) Route() string {
+	return RouterKey
+}
+
+func (msg *MsgRemovePool) Type() string {
+	return TypeMsgRemovePool
+}
+
+func (msg *MsgRemovePool) GetSignBytes() []byte {
+	bz := ModuleCdc.MustMarshalJSON(msg)
+	return sdk.MustSortJSON(bz)
 }
 
 func (msg *MsgRemovePool) GetSigners() []sdk.AccAddress {
@@ -239,13 +272,23 @@ func (msg *MsgRemovePool) ValidateBasic() error {
 	return nil
 }
 
-func (msg *MsgUpdatePool) Route() string {
-	return RouterKey
+func NewMsgRemovePool(signer string, poolId uint64) *MsgRemovePool {
+	return &MsgRemovePool{
+		Authority: signer,
+		Id:        poolId,
+	}
 }
 
-func (msg *MsgUpdatePool) Type() string {
-	return TypeMsgUpdatePool
+func NewMsgUpdatePool(signer string, pool UpdatePool) *MsgUpdatePool {
+	return &MsgUpdatePool{
+		Authority:  signer,
+		UpdatePool: &pool,
+	}
 }
+
+func (msg *MsgUpdatePool) Route() string { return RouterKey }
+
+func (msg *MsgUpdatePool) Type() string { return TypeMsgUpdatePool }
 
 func (msg *MsgUpdatePool) GetSigners() []sdk.AccAddress {
 	authority, err := sdk.AccAddressFromBech32(msg.Authority)
@@ -264,6 +307,9 @@ func (msg *MsgUpdatePool) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Authority)
 	if err != nil {
 		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
+	}
+	if msg.UpdatePool.LeverageMax.LTE(sdk.OneDec()) {
+		return ErrLeverageTooSmall
 	}
 	return nil
 }
@@ -301,6 +347,10 @@ func (msg *MsgDewhitelist) ValidateBasic() error {
 	if err != nil {
 		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
 	}
+	_, err = sdk.AccAddressFromBech32(msg.WhitelistedAddress)
+	if err != nil {
+		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid whitelisted address (%s)", err)
+	}
 	return nil
 }
 
@@ -335,7 +385,20 @@ func (msg *MsgClaimRewards) GetSignBytes() []byte {
 func (msg *MsgClaimRewards) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Sender)
 	if err != nil {
-		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
+		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid sender address (%s)", err)
+	}
+
+	if len(msg.Ids) == 0 {
+		return errorsmod.Wrapf(sdkerrors.ErrInvalidRequest, "empty ids")
+	}
+
+	poolIdsMap := make(map[uint64]bool)
+	for _, id := range msg.Ids {
+		if poolIdsMap[id] {
+			return errorsmod.Wrapf(sdkerrors.ErrInvalidRequest, "duplicate pool id %d", id)
+		} else {
+			poolIdsMap[id] = true
+		}
 	}
 	return nil
 }
