@@ -19,6 +19,10 @@ component_management:
       paths:
         - ./x/leveragelp/**/abci*
         - ./x/leveragelp/**/*blocker*
+    - component_id: module_leveragelp_keeper
+      name: leveragelp_keeper
+      paths:
+        - ./x/leveragelp/**/keeper*
     # Accounted pool
     - component_id: module_accountedpool_transactions
       name: accountedpool_transactions
@@ -29,6 +33,10 @@ component_management:
       paths:
         - ./x/accountedpool/**/abci*
         - ./x/accountedpool/**/*blocker*
+    - component_id: module_accountedpool_keeper
+      name: accountedpool_keeper
+      paths:
+        - ./x/accountedpool/**/keeper*
     # amm
     - component_id: module_amm_transactions
       name: amm_transactions
