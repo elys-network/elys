@@ -39,6 +39,10 @@ component_management:
       paths:
         - ./x/amm/**/abci*
         - ./x/amm/**/*blocker*
+    - component_id: module_amm_keeper
+      name: amm_keeper
+      paths:
+        - ./x/amm/**/keeper*
     # Asset profile
     - component_id: module_assetprofile_transactions
       name: assetprofile_transactions
@@ -49,11 +53,24 @@ component_management:
       paths:
         - ./x/assetprofile/**/abci*
         - ./x/assetprofile/**/*blocker*
+    - component_id: module_assetprofile_keeper
+      name: assetprofile_keeper
+      paths:
+        - ./x/assetprofile/**/keeper*
     # Burner
     - component_id: module_burner_transactions
       name: burner_transactions
       paths:
         - ./x/burner/**/msg_server*
+    - component_id: module_burner_lifecycle
+      name: burner_lifecycle
+      paths:
+        - ./x/burner/**/abci*
+        - ./x/burner/**/*blocker*
+    - component_id: module_burner_keeper
+      name: burner_keeper
+      paths:
+        - ./x/burner/**/keeper*
     # Clock
     - component_id: module_clock_transactions
       name: clock_transactions
@@ -64,6 +81,10 @@ component_management:
       paths:
         - ./x/clock/**/abci*
         - ./x/clock/**/*blocker*
+    - component_id: module_clock_keeper
+      name: clock_keeper
+      paths:
+        - ./x/clock/**/keeper*
     # Commitment
     - component_id: module_commitment_transactions
       name: commitment_transactions
@@ -74,6 +95,10 @@ component_management:
       paths:
         - ./x/commitment/**/abci*
         - ./x/commitment/**/*blocker*
+    - component_id: module_commitment_keeper
+      name: commitment_keeper
+      paths:
+        - ./x/commitment/**/keeper*
     # epochs
     - component_id: module_epochs_transactions
       name: epochs_transactions
@@ -84,6 +109,10 @@ component_management:
       paths:
         - ./x/epochs/**/abci*
         - ./x/epochs/**/*blocker*
+    - component_id: module_epochs_keeper
+      name: epochs_keeper
+      paths:
+        - ./x/epochs/**/keeper*
     # estaking
     - component_id: module_estaking_transactions
       name: estaking_transactions
@@ -94,6 +123,10 @@ component_management:
       paths:
         - ./x/estaking/**/abci*
         - ./x/estaking/**/*blocker*
+    - component_id: module_estaking_keeper
+      name: estaking_keeper
+      paths:
+        - ./x/estaking/**/keeper*
     # incentive
     - component_id: module_incentive_transactions
       name: incentive_transactions
@@ -104,6 +137,10 @@ component_management:
       paths:
         - ./x/incentive/**/abci*
         - ./x/incentive/**/*blocker*
+    - component_id: module_incentive_keeper
+      name: incentive_keeper
+      paths:
+        - ./x/incentive/**/keeper*
     # masterchef
     - component_id: module_masterchef_transactions
       name: masterchef_transactions
@@ -114,6 +151,10 @@ component_management:
       paths:
         - ./x/masterchef/**/abci*
         - ./x/masterchef/**/*blocker*
+    - component_id: module_masterchef_keeper
+      name: masterchef_keeper
+      paths:
+        - ./x/masterchef/**/keeper*
     # oracle
     - component_id: module_oracle_transactions
       name: oracle_transactions
@@ -124,6 +165,10 @@ component_management:
       paths:
         - ./x/oracle/**/abci*
         - ./x/oracle/**/*blocker*
+    - component_id: module_oracle_keeper
+      name: oracle_keeper
+      paths:
+        - ./x/oracle/**/keeper*
     # parameter
     - component_id: module_parameter_transactions
       name: parameter_transactions
@@ -134,6 +179,10 @@ component_management:
       paths:
         - ./x/parameter/**/abci*
         - ./x/parameter/**/*blocker*
+    - component_id: module_parameter_keeper
+      name: parameter_keeper
+      paths:
+        - ./x/parameter/**/keeper*
     # stablestake
     - component_id: module_stablestake_transactions
       name: stablestake_transactions
@@ -144,6 +193,10 @@ component_management:
       paths:
         - ./x/stablestake/**/abci*
         - ./x/stablestake/**/*blocker*
+    - component_id: module_stablestake_keeper
+      name: stablestake_keeper
+      paths:
+        - ./x/stablestake/**/keeper*
     # tier
     - component_id: module_tier_transactions
       name: tier_transactions
@@ -154,6 +207,10 @@ component_management:
       paths:
         - ./x/tier/**/abci*
         - ./x/tier/**/*blocker*
+    - component_id: module_tier_keeper
+      name: tier_keeper
+      paths:
+        - ./x/tier/**/keeper*
     # tokenomics
     - component_id: module_tokenomics_transactions
       name: tokenomics_transactions
@@ -164,6 +221,10 @@ component_management:
       paths:
         - ./x/tokenomics/**/abci*
         - ./x/tokenomics/**/*blocker*
+    - component_id: module_tokenomics_keeper
+      name: tokenomics_keeper
+      paths:
+        - ./x/tokenomics/**/keeper*
     # transferhook
     - component_id: module_transferhook_transactions
       name: transferhook_transactions
@@ -174,3 +235,7 @@ component_management:
       paths:
         - ./x/transferhook/**/abci*
         - ./x/transferhook/**/*blocker*
+    - component_id: module_transferhook_keeper
+      name: transferhook_keeper
+      paths:
+        - ./x/transferhook/**/keeper*
