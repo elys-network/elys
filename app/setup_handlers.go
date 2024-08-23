@@ -12,7 +12,7 @@ import (
 
 const (
 	// make sure to update these when you upgrade the version
-	NextVersion = "v0.42.0"
+	NextVersion = "v0.43.1"
 
 	LocalNetVersion = "v999.999.999"
 )

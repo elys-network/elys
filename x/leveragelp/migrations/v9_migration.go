@@ -8,6 +8,8 @@ import (
 func (m Migrator) V9Migration(ctx sdk.Context) error {
 	positions := m.keeper.GetAllLegacyPositions(ctx)
 
+	ctx.Logger().Info("Migrating positions from legacy to new format")
+
 	for _, position := range positions {
 		new_position := types.Position{
 			Address:           position.Address,

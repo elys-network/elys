@@ -79,11 +79,16 @@ func (k Keeper) GetLeverageLpUpdatedLeverage(ctx sdk.Context, positions []*types
 
 		exitAmountAfterFee := exitCoinsAfterFee.AmountOf(baseCurrency)
 
-		updated_leverage := exitAmountAfterFee.Quo(exitAmountAfterFee.Sub(position.Liabilities))
+		updated_leverage := sdk.ZeroDec()
+		denomimator := exitAmountAfterFee.ToLegacyDec().Sub(position.Liabilities.ToLegacyDec())
+		if denomimator.IsPositive() {
+			updated_leverage = exitAmountAfterFee.ToLegacyDec().Quo(denomimator)
+		}
+		if position.Liabilities.IsPositive() {
+			position.PositionHealth = exitAmountAfterFee.ToLegacyDec().Quo(position.Liabilities.ToLegacyDec())
+		}
 
-		position.PositionHealth = exitAmountAfterFee.ToLegacyDec().Quo(position.Liabilities.ToLegacyDec())
-
-		updatedLeveragePositions = append(updatedLeveragePositions ,&types.QueryPosition{
+		updatedLeveragePositions = append(updatedLeveragePositions, &types.QueryPosition{
 			Position:        position,
 			UpdatedLeverage: updated_leverage,
 		})
