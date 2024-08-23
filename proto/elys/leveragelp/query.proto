@@ -102,12 +102,6 @@ service Query {
     option (google.api.http).get = "/elys-network/elys/leveragelp/committed_tokens_locked/{address}";
   
   }
-  
-  // Queries a list of GetAdd items.
-  rpc GetAdd (QueryGetAddRequest) returns (QueryGetAddResponse) {
-    option (google.api.http).get = "/elys-network/elys/leveragelp/get_add/{id}";
-  
-  }
 }
 // ParamsRequest is request type for the Query/Params RPC method.
 message ParamsRequest {}
@@ -258,12 +252,3 @@ message QueryPosition {
   Position position         = 1;
   string   updated_leverage = 2 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
 }
-
-message QueryGetAddRequest {
-  int32 id = 1;
-}
-
-message QueryGetAddResponse {
-  string   address = 1;
-}
-
