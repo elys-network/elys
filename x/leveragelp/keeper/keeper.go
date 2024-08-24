@@ -31,7 +31,7 @@ type (
 		assetProfileKeeper types.AssetProfileKeeper
 		masterchefKeeper   types.MasterchefKeeper
 
-		hooks ammtypes.AmmHooks
+		hooks    types.LeverageLpHooks
 	}
 )
 
@@ -200,4 +200,15 @@ func (k Keeper) GetWhitelistedAddress(ctx sdk.Context, pagination *query.PageReq
 	})
 
 	return list, pageRes, err
+}
+
+// SetHooks set the epoch hooks
+func (k *Keeper) SetHooks(eh types.LeverageLpHooks) *Keeper {
+	if k.hooks != nil {
+		panic("cannot set leveragelp hooks twice")
+	}
+
+	k.hooks = eh
+
+	return k
 }
