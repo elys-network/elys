@@ -55,6 +55,13 @@ func (k msgServer) ClosePositions(goCtx context.Context, msg *types.MsgClosePosi
 		}
 	}
 
+	if k.hooks != nil {
+		err := k.hooks.AfterLeverageLpPositionClose(ctx, sdk.MustAccAddressFromBech32(msg.Creator))
+		if err != nil {
+			return nil, err
+		}
+	}
+
 	ctx.EventManager().EmitEvent(sdk.NewEvent(types.EventClosePositions,
 		sdk.NewAttribute("liquidations", strings.Join(liqLog, "\n")),
 		sdk.NewAttribute("stop_loss", strings.Join(closeLog, "\n")),
