@@ -3,6 +3,7 @@ package keeper
 import (
 	"fmt"
 
+	cosmosMath "cosmossdk.io/math"
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
@@ -26,8 +27,8 @@ func (k Keeper) CheckSamePosition(ctx sdk.Context, msg *types.MsgOpen) *types.Po
 		return nil
 	}
 	for _, position := range positions {
-		if position.Position.Position.AmmPoolId == msg.AmmPoolId && position.Position.Position.Collateral.Denom == msg.CollateralAsset {
-			return position.Position.Position
+		if position.AmmPoolId == msg.AmmPoolId && position.Collateral.Denom == msg.CollateralAsset {
+			return position
 		}
 	}
 
@@ -94,4 +95,21 @@ func (k Keeper) GetLeverageLpUpdatedLeverage(ctx sdk.Context, positions []*types
 		})
 	}
 	return updatedLeveragePositions, nil
+}
+
+func (k Keeper) GetInterestRateUsd(ctx sdk.Context, positions []*types.QueryPosition) ([]*types.PositionAndInterest, error) {
+	positions_and_interest := []*types.PositionAndInterest{}
+	params := k.stableKeeper.GetParams(ctx)
+	hours := cosmosMath.LegacyNewDec(365 * 24)
+
+	for _, position := range positions {
+		var positionAndInterest types.PositionAndInterest
+		price := k.oracleKeeper.GetAssetPriceFromDenom(ctx, position.Position.Collateral.Denom)
+		interestRateHour := params.InterestRate.Quo(hours)
+		positionAndInterest.InterestRateHour = interestRateHour
+		positionAndInterest.InterestRateHourUsd = interestRateHour.Mul(cosmosMath.LegacyDec(position.Position.Liabilities.Mul(price.RoundInt())))
+		positions_and_interest = append(positions_and_interest, &positionAndInterest)
+	}
+
+	return positions_and_interest, nil
 }

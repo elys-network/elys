@@ -97,7 +97,7 @@ type StakingKeeper interface {
 }
 
 type LeverageLpKeeper interface {
-	GetPositionsForAddress(ctx sdk.Context, positionAddress sdk.AccAddress, pagination *query.PageRequest) ([]*leveragelptypes.PositionAndInterest, *query.PageResponse, error)
+	GetPositionsForAddress(ctx sdk.Context, positionAddress sdk.AccAddress, pagination *query.PageRequest) ([]*leveragelptypes.Position, *query.PageResponse, error)
 }
 
 type StablestakeKeeper interface {

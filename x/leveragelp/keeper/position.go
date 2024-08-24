@@ -4,7 +4,6 @@ import (
 	"fmt"
 
 	errorsmod "cosmossdk.io/errors"
-	cosmosMath "cosmossdk.io/math"
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
@@ -209,8 +208,8 @@ func (k Keeper) GetPositionsForPool(ctx sdk.Context, ammPoolId uint64, paginatio
 	return positions, pageRes, err
 }
 
-func (k Keeper) GetPositionsForAddress(ctx sdk.Context, positionAddress sdk.AccAddress, pagination *query.PageRequest) ([]*types.PositionAndInterest, *query.PageResponse, error) {
-	var positions []*types.PositionAndInterest
+func (k Keeper) GetPositionsForAddress(ctx sdk.Context, positionAddress sdk.AccAddress, pagination *query.PageRequest) ([]*types.Position, *query.PageResponse, error) {
+	var positions []*types.Position
 
 	store := ctx.KVStore(k.storeKey)
 	positionStore := prefix.NewStore(store, types.GetPositionPrefixForAddress(positionAddress))
@@ -225,24 +224,12 @@ func (k Keeper) GetPositionsForAddress(ctx sdk.Context, positionAddress sdk.AccA
 		return nil, nil, status.Error(codes.InvalidArgument, fmt.Sprintf("page size greater than max %d", types.MaxPageLimit))
 	}
 
-	params := k.stableKeeper.GetParams(ctx)
-	hours := cosmosMath.LegacyNewDec(365 * 24)
 	pageRes, err := query.Paginate(positionStore, pagination, func(key []byte, value []byte) error {
-		var p types.Position
-		k.cdc.MustUnmarshal(value, &p)
-		var positionAndInterest types.PositionAndInterest
-		updatedLeveragePosition, err := k.GetLeverageLpUpdatedLeverage(ctx, []*types.Position{&p})
-		if err != nil {
-			return err
-		}
-		positionAndInterest.Position = updatedLeveragePosition[0]
-		price := k.oracleKeeper.GetAssetPriceFromDenom(ctx, p.Collateral.Denom)
-		interestRateHour := params.InterestRate.Quo(hours)
-		positionAndInterest.InterestRateHour = interestRateHour
-		positionAndInterest.InterestRateHourUsd = interestRateHour.Mul(cosmosMath.LegacyDec(p.Liabilities.Mul(price.RoundInt())))
-		debt := k.stableKeeper.GetDebt(ctx, positionAndInterest.Position.Position.GetPositionAddress())
-		positionAndInterest.Position.Position.Liabilities = debt.GetTotalLiablities()
-		positions = append(positions, &positionAndInterest)
+		var position types.Position
+		k.cdc.MustUnmarshal(value, &position)
+		debt := k.stableKeeper.GetDebt(ctx, position.GetPositionAddress())
+		position.Liabilities = debt.GetTotalLiablities()
+		positions = append(positions, &position)
 		return nil
 	})
 	if err != nil {
