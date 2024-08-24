@@ -10,7 +10,7 @@ import (
 	stablestaketypes "github.com/elys-network/elys/x/stablestake/types"
 )
 
-func (suite KeeperTestSuite) TestQ() {
+func (suite KeeperTestSuite) TestQueryGetPosition() {
 	k := suite.app.LeveragelpKeeper
 	SetupCoinPrices(suite.ctx, suite.app.OracleKeeper)
 	addr := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
