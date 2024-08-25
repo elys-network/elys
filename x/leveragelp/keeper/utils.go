@@ -104,6 +104,7 @@ func (k Keeper) GetInterestRateUsd(ctx sdk.Context, positions []*types.QueryPosi
 
 	for _, position := range positions {
 		var positionAndInterest types.PositionAndInterest
+		positionAndInterest.Position = position
 		price := k.oracleKeeper.GetAssetPriceFromDenom(ctx, position.Position.Collateral.Denom)
 		interestRateHour := params.InterestRate.Quo(hours)
 		positionAndInterest.InterestRateHour = interestRateHour
