@@ -1069,6 +1069,10 @@ func NewElysApp(
 	))
 	stablestakeModule := stablestake.NewAppModule(appCodec, app.StablestakeKeeper, app.AccountKeeper, app.BankKeeper)
 
+	app.LeveragelpKeeper = *app.LeveragelpKeeper.SetHooks(leveragelpmoduletypes.NewMultiLeverageLpHooks(
+		app.TierKeeper.LeverageLpHooks(),
+	))
+
 	app.EstakingKeeper.SetHooks(
 		stakingtypes.NewMultiStakingHooks(
 			// insert staking hooks receivers here
