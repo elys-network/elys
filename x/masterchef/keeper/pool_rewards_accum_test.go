@@ -134,7 +134,7 @@ func TestAddPoolRewardsAccum(t *testing.T) {
 
 				// Check forward
 				forwardEden := k.ForwardEdenCalc(ctx, tt.poolId)
-				require.Equal(t, sdk.MustNewDecFromStr("86400").Mul(tt.edenReward), forwardEden)
+				require.Equal(t, sdk.MustNewDecFromStr("21600").Mul(tt.edenReward), forwardEden)
 			}
 		})
 	}

@@ -137,7 +137,7 @@ func (k Keeper) ForwardEdenCalc(ctx sdk.Context, poolId uint64) sdk.Dec {
 
 	if len(lastTwo) == 2 {
 		diff := lastTwo[1].EdenReward.Sub(lastTwo[0].EdenReward)
-		return diff.MulInt64(86400)
+		return diff.MulInt64(21600)
 	}
 
 	// Return zero if there are not enough entries
