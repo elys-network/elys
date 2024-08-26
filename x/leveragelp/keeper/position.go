@@ -366,6 +366,8 @@ func (k Keeper) MigrateData(ctx sdk.Context) {
 
 			if repayAmount.IsPositive() {
 				k.stableKeeper.Repay(ctx, position.GetPositionAddress(), sdk.NewCoin(position.Collateral.Denom, repayAmount))
+			} else {
+				userAmount = bal.Amount
 			}
 
 			positionOwner := sdk.MustAccAddressFromBech32(position.Address)

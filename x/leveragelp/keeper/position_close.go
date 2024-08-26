@@ -41,6 +41,8 @@ func (k Keeper) ForceCloseLong(ctx sdk.Context, position types.Position, pool ty
 		if err != nil {
 			return sdk.ZeroInt(), err
 		}
+	} else {
+		userAmount = bal.Amount
 	}
 
 	positionOwner := sdk.MustAccAddressFromBech32(position.Address)
