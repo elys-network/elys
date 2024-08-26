@@ -36,9 +36,11 @@ func (k Keeper) ForceCloseLong(ctx sdk.Context, position types.Position, pool ty
 		userAmount = exitCoinsAfterExitFee[0].Amount.Sub(repayAmount)
 	}
 
-	err = k.stableKeeper.Repay(ctx, position.GetPositionAddress(), sdk.NewCoin(position.Collateral.Denom, repayAmount))
-	if err != nil {
-		return sdk.ZeroInt(), err
+	if repayAmount.IsPositive() {
+		err = k.stableKeeper.Repay(ctx, position.GetPositionAddress(), sdk.NewCoin(position.Collateral.Denom, repayAmount))
+		if err != nil {
+			return sdk.ZeroInt(), err
+		}
 	}
 
 	positionOwner := sdk.MustAccAddressFromBech32(position.Address)
