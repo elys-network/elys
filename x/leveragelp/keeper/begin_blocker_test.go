@@ -70,7 +70,7 @@ func (suite *KeeperTestSuite) TestBeginBlocker() {
 			},
 		},
 		{
-			"multiple closing positions in same amm pool, one is for stop loss",
+			"multiple closing positions in same amm pool, one is for stop loss, others are for low health",
 			func() *types.Position {
 				suite.ResetSuite()
 				SetupCoinPrices(suite.ctx, suite.app.OracleKeeper)
@@ -174,7 +174,6 @@ func (suite *KeeperTestSuite) TestBeginBlocker() {
 			tc.postValidateFunction()
 		})
 	}
-
 }
 
 func (suite *KeeperTestSuite) TestCheckAndLiquidateUnhealthyPosition() {
