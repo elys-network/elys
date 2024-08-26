@@ -162,10 +162,12 @@ func (k Keeper) PoolRewards(goCtx context.Context, req *types.QueryPoolRewardsRe
 func (k *Keeper) generatePoolRewards(ctx sdk.Context, ammPool *ammtypes.Pool) types.PoolRewards {
 	// Get rewards amount
 	rewardsUsd, rewardCoins := k.GetDailyRewardsAmountForPool(ctx, ammPool.PoolId)
+	edenForward := sdk.NewCoin(ptypes.Eden, k.masterchef.ForwardEdenCalc(ctx, ammPool.PoolId).RoundInt())
 
 	return types.PoolRewards{
 		PoolId:      ammPool.PoolId,
 		RewardsUsd:  rewardsUsd,
 		RewardCoins: rewardCoins,
+		EdenForward: edenForward,
 	}
 }
