@@ -37,26 +37,39 @@ func (k Keeper) BeginBlocker(ctx sdk.Context) {
 			k.SetOffset(ctx, offset+uint64(params.NumberPerBlock))
 		}
 
+		poolMap := make(map[uint64]types.Pool)
+		ammPoolMap := make(map[uint64]ammtypes.Pool)
 		for _, position := range positions {
-			pool, found := k.GetPool(ctx, position.AmmPoolId)
+			pool, found := poolMap[position.AmmPoolId]
 			if !found {
+				leveragePool, poolFound := k.GetPool(ctx, position.AmmPoolId)
+				if !poolFound {
+					ctx.Logger().Error(fmt.Sprintf("pool not found for id: %d", position.AmmPoolId))
+					continue
+				}
+				poolMap[position.AmmPoolId] = leveragePool
+
+				ammPool, poolErr := k.GetAmmPool(ctx, position.AmmPoolId)
+				if poolErr != nil {
+					ctx.Logger().Error(fmt.Sprintf("error getting for amm pool %d: %s", position.AmmPoolId, poolErr.Error()))
+					continue
+				}
+				ammPoolMap[position.AmmPoolId] = ammPool
+			}
+			pool = poolMap[position.AmmPoolId]
+			ammPool := ammPoolMap[position.AmmPoolId]
+			isHealthy, closeAttempted, _, err := k.CheckAndLiquidateUnhealthyPosition(ctx, position, pool, ammPool)
+			if err == nil {
 				continue
 			}
-			ammPool, err := k.GetAmmPool(ctx, pool.AmmPoolId)
-			if err != nil {
-				ctx.Logger().Error(errors.Wrap(err, fmt.Sprintf("error getting amm pool: %d", pool.AmmPoolId)).Error())
-				continue
+			if isHealthy && !closeAttempted {
+				_, _, _ = k.CheckAndCloseAtStopLoss(ctx, position, pool, ammPool)
 			}
-			isHealthy, _, _, _ := k.LiquidatePositionIfUnhealthy(ctx, position, pool, ammPool)
-			if !isHealthy {
-				continue
-			}
-			k.ClosePositionIfUnderStopLossPrice(ctx, position, pool, ammPool)
 		}
 	}
 }
 
-func (k Keeper) LiquidatePositionIfUnhealthy(ctx sdk.Context, position *types.Position, pool types.Pool, ammPool ammtypes.Pool) (isHealthy, earlyReturn bool, health math.LegacyDec, err error) {
+func (k Keeper) CheckAndLiquidateUnhealthyPosition(ctx sdk.Context, position *types.Position, pool types.Pool, ammPool ammtypes.Pool) (isHealthy, closeAttempted bool, health math.LegacyDec, err error) {
 	defer func() {
 		if r := recover(); r != nil {
 			if msg, ok := r.(string); ok {
@@ -67,7 +80,7 @@ func (k Keeper) LiquidatePositionIfUnhealthy(ctx sdk.Context, position *types.Po
 	h, err := k.GetPositionHealth(ctx, *position)
 	if err != nil {
 		ctx.Logger().Error(errors.Wrap(err, fmt.Sprintf("error updating position health: %s", position.String())).Error())
-		return false, true, sdk.ZeroDec(), err
+		return false, false, sdk.ZeroDec(), err
 	}
 	position.PositionHealth = h
 	k.SetPosition(ctx, position)
@@ -75,7 +88,7 @@ func (k Keeper) LiquidatePositionIfUnhealthy(ctx sdk.Context, position *types.Po
 	params := k.GetParams(ctx)
 	isHealthy = position.PositionHealth.GT(params.SafetyFactor)
 	if isHealthy {
-		return isHealthy, false, h, err
+		return isHealthy, false, h, fmt.Errorf("position is healthy to close")
 	}
 
 	repayAmount, err := k.ForceCloseLong(ctx, *position, pool, position.LeveragedLpAmount)
@@ -92,10 +105,10 @@ func (k Keeper) LiquidatePositionIfUnhealthy(ctx sdk.Context, position *types.Po
 		sdk.NewAttribute("liabilities", position.Liabilities.String()),
 		sdk.NewAttribute("health", position.PositionHealth.String()),
 	))
-	return isHealthy, false, h, nil
+	return isHealthy, true, h, nil
 }
 
-func (k Keeper) ClosePositionIfUnderStopLossPrice(ctx sdk.Context, position *types.Position, pool types.Pool, ammPool ammtypes.Pool) (underStopLossPrice, earlyReturn bool, err error) {
+func (k Keeper) CheckAndCloseAtStopLoss(ctx sdk.Context, position *types.Position, pool types.Pool, ammPool ammtypes.Pool) (underStopLossPrice, closeAttempted bool, err error) {
 	defer func() {
 		if r := recover(); r != nil {
 			if msg, ok := r.(string); ok {
@@ -106,19 +119,19 @@ func (k Keeper) ClosePositionIfUnderStopLossPrice(ctx sdk.Context, position *typ
 	h, err := k.GetPositionHealth(ctx, *position)
 	if err != nil {
 		ctx.Logger().Error(errors.Wrap(err, fmt.Sprintf("error updating position health: %s", position.String())).Error())
-		return false, true, err
+		return false, false, err
 	}
 	position.PositionHealth = h
 	k.SetPosition(ctx, position)
 
 	lpTokenPrice, err := ammPool.LpTokenPrice(ctx, k.oracleKeeper)
 	if err != nil {
-		return false, true, err
+		return false, false, err
 	}
 
 	underStopLossPrice = !position.StopLossPrice.IsNil() && lpTokenPrice.LTE(position.StopLossPrice)
 	if !underStopLossPrice {
-		return underStopLossPrice, false, err
+		return underStopLossPrice, false, fmt.Errorf("position loss price is not <= lp token price")
 	}
 
 	repayAmount, err := k.ForceCloseLong(ctx, *position, pool, position.LeveragedLpAmount)
@@ -135,5 +148,5 @@ func (k Keeper) ClosePositionIfUnderStopLossPrice(ctx sdk.Context, position *typ
 		sdk.NewAttribute("liabilities", position.Liabilities.String()),
 		sdk.NewAttribute("health", position.PositionHealth.String()),
 	))
-	return underStopLossPrice, false, err
+	return underStopLossPrice, true, nil
 }

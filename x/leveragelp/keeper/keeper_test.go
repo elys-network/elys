@@ -71,6 +71,10 @@ func (suite *KeeperTestSuite) ResetSuite() {
 	suite.SetupTest()
 }
 
+func (suite *KeeperTestSuite) SetCurrentHeight(h int64) {
+	suite.ctx = suite.ctx.WithBlockHeight(h)
+}
+
 func (suite *KeeperTestSuite) AddBlockTime(d time.Duration) {
 	suite.ctx = suite.ctx.WithBlockTime(suite.ctx.BlockTime().Add(d))
 }
@@ -179,6 +183,13 @@ func AddCoinPrices(ctx sdk.Context, oracle oraclekeeper.Keeper, denoms []string)
 			Provider:  provider.String(),
 			Timestamp: uint64(ctx.BlockTime().Unix()),
 		})
+	}
+}
+
+func RemovePrices(ctx sdk.Context, oracle oraclekeeper.Keeper, denoms []string) {
+	for _, v := range denoms {
+		oracle.RemoveAssetInfo(ctx, v)
+		oracle.RemovePrice(ctx, priceMap[v].display, "elys", uint64(ctx.BlockTime().Unix()))
 	}
 }
 
