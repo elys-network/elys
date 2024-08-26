@@ -120,7 +120,7 @@ func (suite *KeeperTestSuite) TestMsgServerAddCollateral() {
 			types.ErrPositionDoesNotExist.Error(),
 			func() {
 				suite.ResetSuite()
-				SetupCoinPrices(suite.ctx, suite.app.OracleKeeper)
+				suite.SetupCoinPrices(suite.ctx)
 				initializeForAddCollateral(suite, addresses, asset1, asset2, false)
 			},
 			func(msg *types.MsgAddCollateral) {
@@ -137,7 +137,7 @@ func (suite *KeeperTestSuite) TestMsgServerAddCollateral() {
 			types.ErrPoolDoesNotExist.Error(),
 			func() {
 				suite.ResetSuite()
-				SetupCoinPrices(suite.ctx, suite.app.OracleKeeper)
+				suite.SetupCoinPrices(suite.ctx)
 				initializeForAddCollateral(suite, addresses, asset1, asset2, true)
 				openPosition(suite, addresses[0], collateralAmount, leverage)
 				suite.app.LeveragelpKeeper.DeletePool(suite.ctx, 1)
@@ -156,7 +156,7 @@ func (suite *KeeperTestSuite) TestMsgServerAddCollateral() {
 			types.ErrPositionDisabled.Error(),
 			func() {
 				suite.ResetSuite()
-				SetupCoinPrices(suite.ctx, suite.app.OracleKeeper)
+				suite.SetupCoinPrices(suite.ctx)
 				initializeForAddCollateral(suite, addresses, asset1, asset2, true)
 				openPosition(suite, addresses[0], collateralAmount, leverage)
 				pool, _ := suite.app.LeveragelpKeeper.GetPool(suite.ctx, 1)
@@ -177,7 +177,7 @@ func (suite *KeeperTestSuite) TestMsgServerAddCollateral() {
 			types.ErrInvalidCollateral.Error(),
 			func() {
 				suite.ResetSuite()
-				SetupCoinPrices(suite.ctx, suite.app.OracleKeeper)
+				suite.SetupCoinPrices(suite.ctx)
 				initializeForAddCollateral(suite, addresses, asset1, asset2, true)
 				openPosition(suite, addresses[0], collateralAmount, leverage)
 			},
@@ -195,7 +195,7 @@ func (suite *KeeperTestSuite) TestMsgServerAddCollateral() {
 			"spendable balance  is smaller",
 			func() {
 				suite.ResetSuite()
-				SetupCoinPrices(suite.ctx, suite.app.OracleKeeper)
+				suite.SetupCoinPrices(suite.ctx)
 				initializeForAddCollateral(suite, addresses, asset1, asset2, true)
 				openPosition(suite, addresses[0], collateralAmount, leverage)
 				amount := suite.app.BankKeeper.GetBalance(suite.ctx, addresses[0], "uusdc")
@@ -218,7 +218,7 @@ func (suite *KeeperTestSuite) TestMsgServerAddCollateral() {
 			"",
 			func() {
 				suite.ResetSuite()
-				SetupCoinPrices(suite.ctx, suite.app.OracleKeeper)
+				suite.SetupCoinPrices(suite.ctx)
 				initializeForAddCollateral(suite, addresses, asset1, asset2, true)
 				openPosition(suite, addresses[0], collateralAmount, leverage)
 			},

@@ -77,7 +77,7 @@ func initializeForClose(suite *KeeperTestSuite, addresses []sdk.AccAddress, asse
 
 func (suite *KeeperTestSuite) TestClose() {
 	suite.ResetSuite()
-	SetupCoinPrices(suite.ctx, suite.app.OracleKeeper)
+	suite.SetupCoinPrices(suite.ctx)
 	addresses := simapp.AddTestAddrs(suite.app, suite.ctx, 10, sdk.NewInt(1000000))
 	asset1 := ptypes.ATOM
 	asset2 := ptypes.BaseCurrency
@@ -163,7 +163,7 @@ func (suite *KeeperTestSuite) TestClose() {
 			types.ErrInvalidCloseSize.Error(),
 			func() {
 				suite.ResetSuite()
-				SetupCoinPrices(suite.ctx, suite.app.OracleKeeper)
+				suite.SetupCoinPrices(suite.ctx)
 				initializeForClose(suite, addresses, asset1, asset2)
 				msg := types.MsgOpen{
 					Creator:          addresses[0].String(),
@@ -190,7 +190,7 @@ func (suite *KeeperTestSuite) TestClose() {
 			"",
 			func() {
 				suite.ResetSuite()
-				SetupCoinPrices(suite.ctx, suite.app.OracleKeeper)
+				suite.SetupCoinPrices(suite.ctx)
 				initializeForClose(suite, addresses, asset1, asset2)
 				msg := types.MsgOpen{
 					Creator:          addresses[0].String(),
@@ -219,7 +219,7 @@ func (suite *KeeperTestSuite) TestClose() {
 			"",
 			func() {
 				suite.ResetSuite()
-				SetupCoinPrices(suite.ctx, suite.app.OracleKeeper)
+				suite.SetupCoinPrices(suite.ctx)
 				initializeForClose(suite, addresses, asset1, asset2)
 				msg := types.MsgOpen{
 					Creator:          addresses[0].String(),
@@ -248,7 +248,7 @@ func (suite *KeeperTestSuite) TestClose() {
 			"",
 			func() {
 				suite.ResetSuite()
-				SetupCoinPrices(suite.ctx, suite.app.OracleKeeper)
+				suite.SetupCoinPrices(suite.ctx)
 				initializeForClose(suite, addresses, asset1, asset2)
 				msg := types.MsgOpen{
 					Creator:          addresses[0].String(),

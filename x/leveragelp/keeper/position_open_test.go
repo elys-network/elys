@@ -12,7 +12,7 @@ import (
 
 func (suite KeeperTestSuite) TestOpenLong() {
 	k := suite.app.LeveragelpKeeper
-	SetupCoinPrices(suite.ctx, suite.app.OracleKeeper)
+	suite.SetupCoinPrices(suite.ctx)
 	addr := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
 	poolAddr := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
 	treasuryAddr := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())

@@ -23,7 +23,7 @@ func (suite *KeeperTestSuite) TestBeginBlocker() {
 			"CheckAndLiquidateUnhealthyPosition returns error: token prices not set",
 			func() *types.Position {
 				suite.ResetSuite()
-				SetupCoinPrices(suite.ctx, suite.app.OracleKeeper)
+				suite.SetupCoinPrices(suite.ctx)
 				openMsg1 := types.MsgOpen{
 					Creator:          addresses[1].String(),
 					CollateralAsset:  "uusdc",
@@ -62,7 +62,7 @@ func (suite *KeeperTestSuite) TestBeginBlocker() {
 				_, err = suite.app.LeveragelpKeeper.OpenLong(suite.ctx, &openMsg3)
 				suite.Require().NoError(err)
 				// doing this before gives panic
-				RemovePrices(suite.ctx, suite.app.OracleKeeper, []string{"uusdc"})
+				suite.RemovePrices(suite.ctx, []string{"uusdc"})
 				return position1
 			},
 			func() {
@@ -73,7 +73,7 @@ func (suite *KeeperTestSuite) TestBeginBlocker() {
 			"multiple closing positions in same amm pool, one is for stop loss, others are for low health",
 			func() *types.Position {
 				suite.ResetSuite()
-				SetupCoinPrices(suite.ctx, suite.app.OracleKeeper)
+				suite.SetupCoinPrices(suite.ctx)
 				openMsg1 := types.MsgOpen{
 					Creator:          addresses[1].String(),
 					CollateralAsset:  "uusdc",
@@ -124,7 +124,7 @@ func (suite *KeeperTestSuite) TestBeginBlocker() {
 			"pool not found in leveragelp",
 			func() *types.Position {
 				suite.ResetSuite()
-				SetupCoinPrices(suite.ctx, suite.app.OracleKeeper)
+				suite.SetupCoinPrices(suite.ctx)
 				openMsg1 := types.MsgOpen{
 					Creator:          addresses[1].String(),
 					CollateralAsset:  "uusdc",
@@ -147,7 +147,7 @@ func (suite *KeeperTestSuite) TestBeginBlocker() {
 			"pool not found in amm",
 			func() *types.Position {
 				suite.ResetSuite()
-				SetupCoinPrices(suite.ctx, suite.app.OracleKeeper)
+				suite.SetupCoinPrices(suite.ctx)
 				openMsg1 := types.MsgOpen{
 					Creator:          addresses[1].String(),
 					CollateralAsset:  "uusdc",
@@ -194,7 +194,7 @@ func (suite *KeeperTestSuite) TestCheckAndLiquidateUnhealthyPosition() {
 			"token price not set: uusdc",
 			func() *types.Position {
 				suite.ResetSuite()
-				SetupCoinPrices(suite.ctx, suite.app.OracleKeeper)
+				suite.SetupCoinPrices(suite.ctx)
 				openMsg := types.MsgOpen{
 					Creator:          addresses[1].String(),
 					CollateralAsset:  "uusdc",
@@ -207,7 +207,7 @@ func (suite *KeeperTestSuite) TestCheckAndLiquidateUnhealthyPosition() {
 				position, err := suite.app.LeveragelpKeeper.OpenLong(suite.ctx, &openMsg)
 				suite.Require().NoError(err)
 				// doing this before gives panic
-				RemovePrices(suite.ctx, suite.app.OracleKeeper, []string{"uusdc"})
+				suite.RemovePrices(suite.ctx, []string{"uusdc"})
 				return position
 			},
 			func(isHealthy, closeAttempted bool) {
@@ -221,7 +221,7 @@ func (suite *KeeperTestSuite) TestCheckAndLiquidateUnhealthyPosition() {
 			"position is healthy to close",
 			func() *types.Position {
 				suite.ResetSuite()
-				SetupCoinPrices(suite.ctx, suite.app.OracleKeeper)
+				suite.SetupCoinPrices(suite.ctx)
 				initializeForOpen(suite, addresses, asset1, asset2)
 				openMsg := types.MsgOpen{
 					Creator:          addresses[1].String(),
@@ -246,7 +246,7 @@ func (suite *KeeperTestSuite) TestCheckAndLiquidateUnhealthyPosition() {
 			"funds will be locked for 1 hour",
 			func() *types.Position {
 				suite.ResetSuite()
-				SetupCoinPrices(suite.ctx, suite.app.OracleKeeper)
+				suite.SetupCoinPrices(suite.ctx)
 				initializeForOpen(suite, addresses, asset1, asset2)
 				openMsg := types.MsgOpen{
 					Creator:          addresses[1].String(),
@@ -275,7 +275,7 @@ func (suite *KeeperTestSuite) TestCheckAndLiquidateUnhealthyPosition() {
 			"",
 			func() *types.Position {
 				suite.ResetSuite()
-				SetupCoinPrices(suite.ctx, suite.app.OracleKeeper)
+				suite.SetupCoinPrices(suite.ctx)
 				initializeForOpen(suite, addresses, asset1, asset2)
 				openMsg := types.MsgOpen{
 					Creator:          addresses[1].String(),
@@ -339,7 +339,7 @@ func (suite *KeeperTestSuite) TestCheckAndCloseAtStopLoss() {
 			"token price not set: uusdc",
 			func() *types.Position {
 				suite.ResetSuite()
-				SetupCoinPrices(suite.ctx, suite.app.OracleKeeper)
+				suite.SetupCoinPrices(suite.ctx)
 				openMsg := types.MsgOpen{
 					Creator:          addresses[1].String(),
 					CollateralAsset:  "uusdc",
@@ -352,7 +352,7 @@ func (suite *KeeperTestSuite) TestCheckAndCloseAtStopLoss() {
 				position, err := suite.app.LeveragelpKeeper.OpenLong(suite.ctx, &openMsg)
 				suite.Require().NoError(err)
 				// doing this before gives panic
-				RemovePrices(suite.ctx, suite.app.OracleKeeper, []string{"uusdc"})
+				suite.RemovePrices(suite.ctx, []string{"uusdc"})
 				return position
 			},
 			func(underStopLossPrice, closeAttempted bool) {
@@ -366,7 +366,7 @@ func (suite *KeeperTestSuite) TestCheckAndCloseAtStopLoss() {
 			"position loss price is not <= lp token price",
 			func() *types.Position {
 				suite.ResetSuite()
-				SetupCoinPrices(suite.ctx, suite.app.OracleKeeper)
+				suite.SetupCoinPrices(suite.ctx)
 				initializeForOpen(suite, addresses, asset1, asset2)
 				openMsg := types.MsgOpen{
 					Creator:          addresses[1].String(),
@@ -392,7 +392,7 @@ func (suite *KeeperTestSuite) TestCheckAndCloseAtStopLoss() {
 			"funds will be locked for 1 hour",
 			func() *types.Position {
 				suite.ResetSuite()
-				SetupCoinPrices(suite.ctx, suite.app.OracleKeeper)
+				suite.SetupCoinPrices(suite.ctx)
 				initializeForOpen(suite, addresses, asset1, asset2)
 				openMsg := types.MsgOpen{
 					Creator:          addresses[1].String(),
@@ -417,7 +417,7 @@ func (suite *KeeperTestSuite) TestCheckAndCloseAtStopLoss() {
 			"",
 			func() *types.Position {
 				suite.ResetSuite()
-				SetupCoinPrices(suite.ctx, suite.app.OracleKeeper)
+				suite.SetupCoinPrices(suite.ctx)
 				initializeForOpen(suite, addresses, asset1, asset2)
 				openMsg := types.MsgOpen{
 					Creator:          addresses[1].String(),

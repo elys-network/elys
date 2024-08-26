@@ -77,7 +77,7 @@ func initializeForOpen(suite *KeeperTestSuite, addresses []sdk.AccAddress, asset
 
 func (suite *KeeperTestSuite) TestOpen_PoolWithBaseCurrencyAsset() {
 	suite.ResetSuite()
-	SetupCoinPrices(suite.ctx, suite.app.OracleKeeper)
+	suite.SetupCoinPrices(suite.ctx)
 	addresses := simapp.AddTestAddrs(suite.app, suite.ctx, 10, sdk.NewInt(1000000))
 	asset1 := ptypes.ATOM
 	asset2 := ptypes.BaseCurrency
@@ -181,7 +181,7 @@ func (suite *KeeperTestSuite) TestOpen_PoolWithBaseCurrencyAsset() {
 				pool := types.NewPool(2)
 				pool.Enabled = true
 				suite.app.LeveragelpKeeper.SetPool(suite.ctx, pool)
-				RemovePrices(suite.ctx, suite.app.OracleKeeper, []string{"uusdc"})
+				suite.RemovePrices(suite.ctx, []string{"uusdc"})
 			},
 		},
 		{name: "AMM Pool not found",
@@ -196,7 +196,7 @@ func (suite *KeeperTestSuite) TestOpen_PoolWithBaseCurrencyAsset() {
 			expectErr:    true,
 			expectErrMsg: "invalid pool id",
 			prerequisiteFunction: func() {
-				SetupCoinPrices(suite.ctx, suite.app.OracleKeeper)
+				suite.SetupCoinPrices(suite.ctx)
 			},
 		},
 		{"Pool Disabled",
@@ -257,7 +257,7 @@ func (suite *KeeperTestSuite) TestOpen_PoolWithBaseCurrencyAsset() {
 			true,
 			types.ErrInvalidPosition.Wrapf("pool health too low to open new positions").Error(),
 			func() {
-				AddCoinPrices(suite.ctx, suite.app.OracleKeeper, []string{ptypes.BaseCurrency})
+				suite.AddCoinPrices(suite.ctx, []string{ptypes.BaseCurrency})
 				suite.SetPoolThreshold(sdk.OneDec())
 			},
 		},
@@ -319,7 +319,7 @@ func (suite *KeeperTestSuite) TestOpen_PoolWithBaseCurrencyAsset() {
 			"",
 			func() {
 				suite.ResetSuite()
-				SetupCoinPrices(suite.ctx, suite.app.OracleKeeper)
+				suite.SetupCoinPrices(suite.ctx)
 				initializeForOpen(suite, addresses, asset1, asset2)
 				suite.SetSafetyFactor(sdk.MustNewDecFromStr("1.1"))
 				suite.SetPoolThreshold(sdk.MustNewDecFromStr("0.2"))
@@ -387,7 +387,7 @@ func (suite *KeeperTestSuite) TestOpen_PoolWithBaseCurrencyAsset() {
 func (suite *KeeperTestSuite) TestOpen_PoolWithoutBaseCurrencyAsset() {
 	suite.ResetSuite()
 	// not adding uusdc asset info and price yet
-	AddCoinPrices(suite.ctx, suite.app.OracleKeeper, []string{ptypes.Elys, ptypes.ATOM, "uusdt"})
+	suite.AddCoinPrices(suite.ctx, []string{ptypes.Elys, ptypes.ATOM, "uusdt"})
 	addresses := simapp.AddTestAddrs(suite.app, suite.ctx, 10, sdk.NewInt(1000000))
 	asset1 := ptypes.ATOM
 	asset2 := ptypes.Elys
@@ -426,7 +426,7 @@ func (suite *KeeperTestSuite) TestOpen_PoolWithoutBaseCurrencyAsset() {
 			"can't find the PoolAsset",
 			func() {
 				suite.ResetSuite()
-				SetupCoinPrices(suite.ctx, suite.app.OracleKeeper)
+				suite.SetupCoinPrices(suite.ctx)
 				initializeForOpen(suite, addresses, asset1, asset2)
 				suite.SetSafetyFactor(sdk.MustNewDecFromStr("1.1"))
 				suite.SetPoolThreshold(sdk.MustNewDecFromStr("0.2"))

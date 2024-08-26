@@ -33,7 +33,7 @@ func (suite *KeeperTestSuite) TestCloseositions() {
 			},
 			func() *types.Position {
 				suite.ResetSuite()
-				SetupCoinPrices(suite.ctx, suite.app.OracleKeeper)
+				suite.SetupCoinPrices(suite.ctx)
 				openMsg1 := types.MsgOpen{
 					Creator:          addresses[1].String(),
 					CollateralAsset:  "uusdc",
@@ -52,7 +52,7 @@ func (suite *KeeperTestSuite) TestCloseositions() {
 				position1, err := suite.app.LeveragelpKeeper.OpenLong(suite.ctx, &openMsg1)
 				suite.Require().NoError(err)
 				// doing this before gives panic
-				RemovePrices(suite.ctx, suite.app.OracleKeeper, []string{"uusdc"})
+				suite.RemovePrices(suite.ctx, []string{"uusdc"})
 				return position1
 			},
 			func() {
@@ -73,7 +73,7 @@ func (suite *KeeperTestSuite) TestCloseositions() {
 			},
 			func() *types.Position {
 				suite.ResetSuite()
-				SetupCoinPrices(suite.ctx, suite.app.OracleKeeper)
+				suite.SetupCoinPrices(suite.ctx)
 				openMsg1 := types.MsgOpen{
 					Creator:          addresses[1].String(),
 					CollateralAsset:  "uusdc",
@@ -92,7 +92,7 @@ func (suite *KeeperTestSuite) TestCloseositions() {
 				position1, err := suite.app.LeveragelpKeeper.OpenLong(suite.ctx, &openMsg1)
 				suite.Require().NoError(err)
 				// doing this before gives panic
-				RemovePrices(suite.ctx, suite.app.OracleKeeper, []string{"uusdc"})
+				suite.RemovePrices(suite.ctx, []string{"uusdc"})
 				return position1
 			},
 			func() {
@@ -113,7 +113,7 @@ func (suite *KeeperTestSuite) TestCloseositions() {
 			},
 			func() *types.Position {
 				suite.ResetSuite()
-				SetupCoinPrices(suite.ctx, suite.app.OracleKeeper)
+				suite.SetupCoinPrices(suite.ctx)
 				openMsg1 := types.MsgOpen{
 					Creator:          addresses[1].String(),
 					CollateralAsset:  "uusdc",
@@ -146,7 +146,7 @@ func (suite *KeeperTestSuite) TestCloseositions() {
 			},
 			func() *types.Position {
 				suite.ResetSuite()
-				SetupCoinPrices(suite.ctx, suite.app.OracleKeeper)
+				suite.SetupCoinPrices(suite.ctx)
 				openMsg1 := types.MsgOpen{
 					Creator:          addresses[1].String(),
 					CollateralAsset:  "uusdc",
@@ -179,7 +179,7 @@ func (suite *KeeperTestSuite) TestCloseositions() {
 			},
 			func() *types.Position {
 				suite.ResetSuite()
-				SetupCoinPrices(suite.ctx, suite.app.OracleKeeper)
+				suite.SetupCoinPrices(suite.ctx)
 				openMsg1 := types.MsgOpen{
 					Creator:          addresses[1].String(),
 					CollateralAsset:  "uusdc",
@@ -212,7 +212,7 @@ func (suite *KeeperTestSuite) TestCloseositions() {
 			},
 			func() *types.Position {
 				suite.ResetSuite()
-				SetupCoinPrices(suite.ctx, suite.app.OracleKeeper)
+				suite.SetupCoinPrices(suite.ctx)
 				openMsg1 := types.MsgOpen{
 					Creator:          addresses[1].String(),
 					CollateralAsset:  "uusdc",
@@ -245,7 +245,7 @@ func (suite *KeeperTestSuite) TestCloseositions() {
 			},
 			func() *types.Position {
 				suite.ResetSuite()
-				SetupCoinPrices(suite.ctx, suite.app.OracleKeeper)
+				suite.SetupCoinPrices(suite.ctx)
 				openMsg1 := types.MsgOpen{
 					Creator:          addresses[1].String(),
 					CollateralAsset:  "uusdc",
@@ -277,7 +277,7 @@ func (suite *KeeperTestSuite) TestCloseositions() {
 			},
 			func() *types.Position {
 				suite.ResetSuite()
-				SetupCoinPrices(suite.ctx, suite.app.OracleKeeper)
+				suite.SetupCoinPrices(suite.ctx)
 				openMsg1 := types.MsgOpen{
 					Creator:          addresses[1].String(),
 					CollateralAsset:  "uusdc",
