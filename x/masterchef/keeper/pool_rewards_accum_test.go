@@ -71,3 +71,62 @@ func TestPoolRewardsAccum(t *testing.T) {
 	accum = app.MasterchefKeeper.LastPoolRewardsAccum(ctx, 1)
 	require.Equal(t, accum, accums[1])
 }
+
+func TestAddPoolRewardsAccum(t *testing.T) {
+	app := simapp.InitElysTestApp(true)
+	ctx := app.BaseApp.NewContext(true, tmproto.Header{})
+	k := app.MasterchefKeeper
+
+	tests := []struct {
+		name       string
+		poolId     uint64
+		timestamp  uint64
+		height     int64
+		dexReward  math.LegacyDec
+		gasReward  math.LegacyDec
+		edenReward math.LegacyDec
+	}{
+		{
+			name:       "Add rewards to new pool",
+			poolId:     1,
+			timestamp:  uint64(time.Now().Unix()),
+			height:     100,
+			dexReward:  math.LegacyNewDec(10),
+			gasReward:  math.LegacyNewDec(5),
+			edenReward: math.LegacyNewDec(3),
+		},
+		{
+			name:       "Add rewards to existing pool",
+			poolId:     1,
+			timestamp:  uint64(time.Now().Unix()) + 3600, // 1 hour later
+			height:     200,
+			dexReward:  math.LegacyNewDec(20),
+			gasReward:  math.LegacyNewDec(10),
+			edenReward: math.LegacyNewDec(6),
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			k.AddPoolRewardsAccum(ctx, tt.poolId, tt.timestamp, tt.height, tt.dexReward, tt.gasReward, tt.edenReward)
+
+			accum, err := k.GetPoolRewardsAccum(ctx, tt.poolId, tt.timestamp)
+			require.NoError(t, err)
+
+			require.Equal(t, tt.poolId, accum.PoolId)
+			require.Equal(t, tt.timestamp, accum.Timestamp)
+			require.Equal(t, tt.height, accum.BlockHeight)
+
+			if tt.name == "Add rewards to new pool" {
+				require.Equal(t, tt.dexReward, accum.DexReward)
+				require.Equal(t, tt.gasReward, accum.GasReward)
+				require.Equal(t, tt.edenReward, accum.EdenReward)
+			} else {
+				// For existing pool, rewards should be cumulative
+				require.Equal(t, math.LegacyNewDec(30), accum.DexReward)
+				require.Equal(t, math.LegacyNewDec(15), accum.GasReward)
+				require.Equal(t, math.LegacyNewDec(9), accum.EdenReward)
+			}
+		})
+	}
+}
