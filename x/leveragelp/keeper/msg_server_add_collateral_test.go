@@ -108,6 +108,7 @@ func (suite *KeeperTestSuite) TestMsgServerAddCollateral() {
 		expectErr            bool
 		expectErrMsg         string
 		prerequisiteFunction func()
+		postValidateFunc     func(msg *types.MsgAddCollateral)
 	}{
 		{"position not found",
 			&types.MsgAddCollateral{
@@ -121,6 +122,9 @@ func (suite *KeeperTestSuite) TestMsgServerAddCollateral() {
 				suite.ResetSuite()
 				SetupCoinPrices(suite.ctx, suite.app.OracleKeeper)
 				initializeForAddCollateral(suite, addresses, asset1, asset2, false)
+			},
+			func(msg *types.MsgAddCollateral) {
+
 			},
 		},
 		{"pool not found",
@@ -137,6 +141,9 @@ func (suite *KeeperTestSuite) TestMsgServerAddCollateral() {
 				initializeForAddCollateral(suite, addresses, asset1, asset2, true)
 				openPosition(suite, addresses[0], collateralAmount, leverage)
 				suite.app.LeveragelpKeeper.DeletePool(suite.ctx, 1)
+			},
+			func(msg *types.MsgAddCollateral) {
+
 			},
 		},
 		{"pool not enabled",
@@ -156,6 +163,9 @@ func (suite *KeeperTestSuite) TestMsgServerAddCollateral() {
 				pool.Enabled = false
 				suite.app.LeveragelpKeeper.SetPool(suite.ctx, pool)
 			},
+			func(msg *types.MsgAddCollateral) {
+
+			},
 		},
 		{"repaying more than allowed",
 			&types.MsgAddCollateral{
@@ -170,6 +180,9 @@ func (suite *KeeperTestSuite) TestMsgServerAddCollateral() {
 				SetupCoinPrices(suite.ctx, suite.app.OracleKeeper)
 				initializeForAddCollateral(suite, addresses, asset1, asset2, true)
 				openPosition(suite, addresses[0], collateralAmount, leverage)
+			},
+			func(msg *types.MsgAddCollateral) {
+
 			},
 		},
 		{"balance too low to repay",
@@ -190,6 +203,8 @@ func (suite *KeeperTestSuite) TestMsgServerAddCollateral() {
 				if err != nil {
 					panic(err)
 				}
+			},
+			func(msg *types.MsgAddCollateral) {
 
 			},
 		},
@@ -207,6 +222,10 @@ func (suite *KeeperTestSuite) TestMsgServerAddCollateral() {
 				initializeForAddCollateral(suite, addresses, asset1, asset2, true)
 				openPosition(suite, addresses[0], collateralAmount, leverage)
 			},
+			func(msg *types.MsgAddCollateral) {
+				position, _ := suite.app.LeveragelpKeeper.GetPosition(suite.ctx, addresses[0], 1)
+				suite.Require().True(position.Collateral.Amount.Equal(msg.Collateral.Add(collateralAmount)))
+			},
 		},
 	}
 
@@ -221,6 +240,7 @@ func (suite *KeeperTestSuite) TestMsgServerAddCollateral() {
 			} else {
 				suite.Require().NoError(err)
 			}
+			tc.postValidateFunc(tc.input)
 		})
 	}
 }

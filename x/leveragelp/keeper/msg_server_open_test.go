@@ -78,7 +78,6 @@ func initializeForOpen(suite *KeeperTestSuite, addresses []sdk.AccAddress, asset
 func (suite *KeeperTestSuite) TestOpen_PoolWithBaseCurrencyAsset() {
 	suite.ResetSuite()
 	SetupCoinPrices(suite.ctx, suite.app.OracleKeeper)
-	//SetupCoinPrices(suite.ctx, suite.app.OracleKeeper, []string{ptypes.Elys, ptypes.ATOM, "uusdt"})
 	addresses := simapp.AddTestAddrs(suite.app, suite.ctx, 10, sdk.NewInt(1000000))
 	asset1 := ptypes.ATOM
 	asset2 := ptypes.BaseCurrency
@@ -147,7 +146,42 @@ func (suite *KeeperTestSuite) TestOpen_PoolWithBaseCurrencyAsset() {
 			expectErr:    true,
 			expectErrMsg: types.ErrPoolDoesNotExist.Wrapf("poolId: %d", 100).Error(),
 			prerequisiteFunction: func() {
-				suite.SetMaxOpenPositions(2)
+				suite.SetMaxOpenPositions(3)
+			},
+		},
+		{name: "Pool not enabled",
+			input: &types.MsgOpen{
+				Creator:          addresses[0].String(),
+				CollateralAsset:  ptypes.BaseCurrency,
+				CollateralAmount: sdk.NewInt(1000),
+				AmmPoolId:        2,
+				Leverage:         sdk.MustNewDecFromStr("2.0"),
+				StopLossPrice:    sdk.MustNewDecFromStr("100.0"),
+			},
+			expectErr:    true,
+			expectErrMsg: "leveragelp not enabled for pool",
+			prerequisiteFunction: func() {
+				pool := types.NewPool(2)
+				pool.Enabled = false
+				suite.app.LeveragelpKeeper.SetPool(suite.ctx, pool)
+			},
+		},
+		{name: "base currency not found",
+			input: &types.MsgOpen{
+				Creator:          addresses[0].String(),
+				CollateralAsset:  ptypes.BaseCurrency,
+				CollateralAmount: sdk.NewInt(1000),
+				AmmPoolId:        2,
+				Leverage:         sdk.MustNewDecFromStr("2.0"),
+				StopLossPrice:    sdk.MustNewDecFromStr("100.0"),
+			},
+			expectErr:    true,
+			expectErrMsg: "invalid pool id",
+			prerequisiteFunction: func() {
+				pool := types.NewPool(2)
+				pool.Enabled = true
+				suite.app.LeveragelpKeeper.SetPool(suite.ctx, pool)
+				RemovePrices(suite.ctx, suite.app.OracleKeeper, []string{"uusdc"})
 			},
 		},
 		{name: "AMM Pool not found",
@@ -162,8 +196,7 @@ func (suite *KeeperTestSuite) TestOpen_PoolWithBaseCurrencyAsset() {
 			expectErr:    true,
 			expectErrMsg: "invalid pool id",
 			prerequisiteFunction: func() {
-				pool := types.NewPool(2)
-				suite.app.LeveragelpKeeper.SetPool(suite.ctx, pool)
+				SetupCoinPrices(suite.ctx, suite.app.OracleKeeper)
 			},
 		},
 		{"Pool Disabled",
