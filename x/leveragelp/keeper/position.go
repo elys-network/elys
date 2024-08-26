@@ -337,7 +337,6 @@ func (k Keeper) MigrateData(ctx sdk.Context) {
 		bytesValue := iterator.Value()
 		err := k.cdc.Unmarshal(bytesValue, &position)
 		if err == nil {
-			// Check commitments match with lev.lpmount
 			leveragedLpAmount := sdk.ZeroInt()
 			commitments := k.commKeeper.GetCommitments(ctx, position.GetPositionAddress())
 
