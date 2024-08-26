@@ -41,12 +41,12 @@ func (k Keeper) OpenConsolidate(ctx sdk.Context, position *types.Position, msg *
 		return nil, types.ErrInvalidLeverage
 	}
 	poolId := position.AmmPoolId
-	_, found := k.GetPool(ctx, poolId)
+	pool, found := k.GetPool(ctx, poolId)
 	if !found {
 		return nil, errorsmod.Wrap(types.ErrPoolDoesNotExist, fmt.Sprintf("poolId: %d", poolId))
 	}
 
-	if !k.IsPoolEnabled(ctx, poolId) {
+	if !pool.Enabled {
 		return nil, errorsmod.Wrap(types.ErrPositionDisabled, fmt.Sprintf("poolId: %d", poolId))
 	}
 
@@ -79,7 +79,7 @@ func (k Keeper) ProcessOpenLong(ctx sdk.Context, position *types.Position, lever
 	}
 
 	// Check if the pool is enabled.
-	if !k.IsPoolEnabled(ctx, poolId) {
+	if !pool.Enabled {
 		return nil, errorsmod.Wrap(types.ErrPositionDisabled, fmt.Sprintf("poolId: %d", poolId))
 	}
 
