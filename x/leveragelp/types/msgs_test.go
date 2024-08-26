@@ -362,10 +362,9 @@ func TestMsgRemovePool(t *testing.T) {
 
 func TestMsgUpdatePool(t *testing.T) {
 	updatePool := types.UpdatePool{
-		PoolId:      1,
-		Enabled:     false,
-		Closed:      false,
-		LeverageMax: sdk.OneDec().MulInt64(2),
+		PoolId:  1,
+		Enabled: false,
+		Closed:  false,
 	}
 	msg := types.NewMsgUpdatePool(sample.AccAddress(), updatePool)
 	require.Equal(t, msg.Route(), types.RouterKey)
@@ -393,28 +392,6 @@ func TestMsgUpdatePool(t *testing.T) {
 				msg.Authority = "invalid_address"
 			},
 			errMsg: "invalid creator address",
-		},
-		{
-			name: "leverage is 0",
-			setter: func() {
-				msg.Authority = sample.AccAddress()
-				msg.UpdatePool.LeverageMax = sdk.ZeroDec()
-			},
-			errMsg: types.ErrLeverageTooSmall.Error(),
-		},
-		{
-			name: "leverage is < 0",
-			setter: func() {
-				msg.UpdatePool.LeverageMax = sdk.OneDec().MulInt64(-1)
-			},
-			errMsg: types.ErrLeverageTooSmall.Error(),
-		},
-		{
-			name: "leverage is 1",
-			setter: func() {
-				msg.UpdatePool.LeverageMax = sdk.OneDec()
-			},
-			errMsg: types.ErrLeverageTooSmall.Error(),
 		},
 	}
 	for _, tt := range tests {

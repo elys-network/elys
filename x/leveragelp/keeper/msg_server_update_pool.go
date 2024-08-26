@@ -19,12 +19,8 @@ func (k msgServer) UpdatePool(goCtx context.Context, msg *types.MsgUpdatePool) (
 	pool, found := k.GetPool(ctx, msg.UpdatePool.PoolId)
 
 	if found {
-		maxLeverageAllowed := k.GetMaxLeverageParam(ctx)
-		leverage := sdk.MinDec(msg.UpdatePool.LeverageMax, maxLeverageAllowed)
-
 		pool.Enabled = msg.UpdatePool.Enabled
 		pool.Closed = msg.UpdatePool.Closed
-		pool.LeverageMax = leverage
 		k.SetPool(ctx, pool)
 	}
 
