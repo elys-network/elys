@@ -6,6 +6,7 @@ import (
 
 	"cosmossdk.io/math"
 	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	simapp "github.com/elys-network/elys/app"
 	"github.com/elys-network/elys/x/masterchef/types"
 	"github.com/stretchr/testify/require"
@@ -121,11 +122,19 @@ func TestAddPoolRewardsAccum(t *testing.T) {
 				require.Equal(t, tt.dexReward, accum.DexReward)
 				require.Equal(t, tt.gasReward, accum.GasReward)
 				require.Equal(t, tt.edenReward, accum.EdenReward)
+
+				// Check forward
+				forwardEden := k.ForwardEdenCalc(ctx, tt.poolId)
+				require.Equal(t, sdk.ZeroDec(), forwardEden)
 			} else {
 				// For existing pool, rewards should be cumulative
 				require.Equal(t, math.LegacyNewDec(30), accum.DexReward)
 				require.Equal(t, math.LegacyNewDec(15), accum.GasReward)
 				require.Equal(t, math.LegacyNewDec(9), accum.EdenReward)
+
+				// Check forward
+				forwardEden := k.ForwardEdenCalc(ctx, tt.poolId)
+				require.Equal(t, sdk.MustNewDecFromStr("86400").Mul(tt.edenReward), forwardEden)
 			}
 		})
 	}

@@ -136,7 +136,7 @@ func (k Keeper) ForwardEdenCalc(ctx sdk.Context, poolId uint64) sdk.Dec {
 	}
 
 	if len(lastTwo) == 2 {
-		diff := lastTwo[0].EdenReward.Sub(lastTwo[1].EdenReward)
+		diff := lastTwo[1].EdenReward.Sub(lastTwo[0].EdenReward)
 		return diff.MulInt64(86400)
 	}
 
