@@ -344,6 +344,12 @@ func (k Keeper) MigrateData(ctx sdk.Context) {
 			for _, commitment := range commitments.CommittedTokens {
 				leveragedLpAmount = leveragedLpAmount.Add(commitment.Amount)
 			}
+			pool, found := k.GetPool(ctx, position.AmmPoolId)
+			if found {
+				pool.LeveragedLpAmount = pool.LeveragedLpAmount.Add(leveragedLpAmount)
+				pool.Health = k.CalculatePoolHealth(ctx, &pool)
+				k.SetPool(ctx, pool)
+			}
 
 			// Repay any balance, delete position
 			debt := k.stableKeeper.UpdateInterestAndGetDebt(ctx, position.GetPositionAddress())
