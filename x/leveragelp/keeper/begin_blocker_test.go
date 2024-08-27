@@ -363,7 +363,7 @@ func (suite *KeeperTestSuite) TestCheckAndCloseAtStopLoss() {
 		{
 			"stop loss price > current price",
 			true,
-			"position loss price is not <= lp token price",
+			"position stop loss price is not <= lp token price",
 			func() *types.Position {
 				suite.ResetSuite()
 				suite.SetupCoinPrices(suite.ctx)
