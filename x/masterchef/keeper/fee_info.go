@@ -37,6 +37,18 @@ func (k Keeper) AddEdenInfo(ctx sdk.Context, eden sdk.Dec) {
 	k.SetFeeInfo(ctx, info, dateString)
 }
 
+// Deletes fee info that is older than 8 days
+func (k Keeper) DeleteFeeInfo(ctx sdk.Context) {
+	store := ctx.KVStore(k.storeKey)
+	currentTime := ctx.BlockTime().AddDate(0, 0, -8)
+	dateString := currentTime.Format("2006-01-02") // YYYY-MM-DD format
+	key := types.GetFeeInfoKey(dateString)
+
+	if store.Has(key) {
+		store.Delete(key)
+	}
+}
+
 func (k Keeper) SetFeeInfo(ctx sdk.Context, info types.FeeInfo, timestamp string) {
 	store := ctx.KVStore(k.storeKey)
 

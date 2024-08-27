@@ -16,6 +16,7 @@ import (
 func (k Keeper) EndBlocker(ctx sdk.Context) {
 
 	k.DeleteLegacyUserRewardInfos(ctx, 10_000)
+	k.DeleteFeeInfo(ctx)
 
 	// distribute LP rewards
 	k.ProcessLPRewardDistribution(ctx)
