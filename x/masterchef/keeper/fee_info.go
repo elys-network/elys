@@ -52,16 +52,16 @@ func (k Keeper) GetFeeInfo(ctx sdk.Context, timestamp string) (val types.FeeInfo
 	b := store.Get(key)
 	if b == nil {
 		return types.FeeInfo{
-			GasLp:        sdk.NewInt(0),
-			GasStakers:   sdk.NewInt(0),
-			GasProtocol:  sdk.NewInt(0),
-			DexLp:        sdk.NewInt(0),
-			DexStakers:   sdk.NewInt(0),
-			DexProtocol:  sdk.NewInt(0),
-			PerpLp:       sdk.NewInt(0),
-			PerpStakers:  sdk.NewInt(0),
-			PerpProtocol: sdk.NewInt(0),
-			EdenLp:       sdk.NewInt(0),
+			GasLp:        sdk.ZeroInt(),
+			GasStakers:   sdk.ZeroInt(),
+			GasProtocol:  sdk.ZeroInt(),
+			DexLp:        sdk.ZeroInt(),
+			DexStakers:   sdk.ZeroInt(),
+			DexProtocol:  sdk.ZeroInt(),
+			PerpLp:       sdk.ZeroInt(),
+			PerpStakers:  sdk.ZeroInt(),
+			PerpProtocol: sdk.ZeroInt(),
+			EdenLp:       sdk.ZeroInt(),
 		}
 	}
 
