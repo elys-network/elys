@@ -13,11 +13,7 @@ func (k Keeper) ShowFeeInfo(goCtx context.Context, req *types.QueryShowFeeInfoRe
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
-
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	// TODO: Process the query
-	_ = ctx
-
-	return &types.QueryShowFeeInfoResponse{}, nil
+	return &types.QueryShowFeeInfoResponse{FeeInfo: k.GetFeeInfo(ctx, req.Date)}, nil
 }
