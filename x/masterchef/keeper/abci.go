@@ -235,6 +235,8 @@ func (k Keeper) UpdateLPRewards(ctx sdk.Context) error {
 			dexRewardsAllocatedForPool = sdk.NewDec(0)
 		}
 
+		k.AddEdenInfo(ctx, newEdenAllocatedForPool)
+
 		// Distribute Eden
 		k.UpdateAccPerShare(ctx, pool.PoolId, ptypes.Eden, newEdenAllocatedForPool.TruncateInt())
 		// Distribute Gas fees + Dex rewards (USDC)
@@ -342,6 +344,8 @@ func (k Keeper) CollectGasFees(ctx sdk.Context, baseCurrency string) sdk.DecCoin
 	gasFeesForStakersDec := gasFeeCollectedDec.MulDecTruncate(params.RewardPortionForStakers)
 	gasFeesForProtocolDec := gasFeeCollectedDec.Sub(gasFeesForLpsDec).Sub(gasFeesForStakersDec)
 
+	k.AddFeeInfo(ctx, gasFeesForLpsDec.AmountOf(baseCurrency), gasFeesForStakersDec.AmountOf(baseCurrency), gasFeesForProtocolDec.AmountOf(baseCurrency), true)
+
 	lpsGasFeeCoins, _ := gasFeesForLpsDec.TruncateDecimal()
 	protocolGasFeeCoins, _ := gasFeesForProtocolDec.TruncateDecimal()
 
@@ -406,6 +410,11 @@ func (k Keeper) CollectDEXRevenue(ctx sdk.Context) (sdk.Coins, sdk.DecCoins, map
 		stakerRevenueCoins, _ := revenuePortionForStakers.TruncateDecimal()
 		protocolRevenueCoins, _ := revenuePortionForProtocol.TruncateDecimal()
 
+		baseCurrency, found := k.assetProfileKeeper.GetUsdcDenom(ctx)
+		if found {
+			k.AddFeeInfo(ctx, revenuePortionForLPs.AmountOf(baseCurrency), revenuePortionForStakers.AmountOf(baseCurrency), revenuePortionForProtocol.AmountOf(baseCurrency), false)
+		}
+
 		// Send coins to fee collector name
 		if stakerRevenueCoins.IsAllPositive() {
 			err := k.bankKeeper.SendCoinsFromModuleToModule(ctx, types.ModuleName, authtypes.FeeCollectorName, stakerRevenueCoins)
@@ -423,8 +432,10 @@ func (k Keeper) CollectDEXRevenue(ctx sdk.Context) (sdk.Coins, sdk.DecCoins, map
 			}
 		}
 
-		// Store revenue portion for Lps temporarilly
-		rewardsPerPool[poolId] = revenuePortionForLPs.AmountOf(ptypes.BaseCurrency)
+		// Store revenue portion for Lps temporarily
+		if found {
+			rewardsPerPool[poolId] = revenuePortionForLPs.AmountOf(baseCurrency)
+		}
 
 		// Sum total collected amount
 		amountTotalCollected = amountTotalCollected.Add(revenue...)
