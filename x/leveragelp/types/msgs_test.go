@@ -37,20 +37,12 @@ func TestMsgClose(t *testing.T) {
 			errMsg: "invalid creator address",
 		},
 		{
-			name: "lp is 0",
-			setter: func() {
-				msg.Creator = sample.AccAddress()
-				msg.LpAmount = sdk.ZeroInt()
-			},
-			errMsg: "invalid lp amount: needs to be positive",
-		},
-		{
 			name: "lp is < 0",
 			setter: func() {
 				msg.Creator = sample.AccAddress()
 				msg.LpAmount = sdk.OneInt().MulRaw(-1)
 			},
-			errMsg: "invalid lp amount: needs to be positive",
+			errMsg: "invalid lp amount: cannot be negative",
 		},
 	}
 	for _, tt := range tests {
