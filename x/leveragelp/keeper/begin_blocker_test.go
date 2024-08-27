@@ -16,7 +16,7 @@ import (
 func (suite KeeperTestSuite) TestBeginBlocker() {
 	k := suite.app.LeveragelpKeeper
 	addr := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
-	position, _ := suite.OpenPosition(addr)
+	position, _, _ := suite.OpenPosition(addr)
 	_, found := suite.app.AmmKeeper.GetPool(suite.ctx, position.AmmPoolId)
 	suite.Require().True(found)
 	health, err := k.GetPositionHealth(suite.ctx, *position)
@@ -44,7 +44,7 @@ func (suite KeeperTestSuite) TestBeginBlocker() {
 func (suite KeeperTestSuite) TestLiquidatePositionIfUnhealthy() {
 	k := suite.app.LeveragelpKeeper
 	addr := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
-	position, pool := suite.OpenPosition(addr)
+	position, _, pool := suite.OpenPosition(addr)
 	ammPool, found := suite.app.AmmKeeper.GetPool(suite.ctx, position.AmmPoolId)
 	suite.Require().True(found)
 	health, err := k.GetPositionHealth(suite.ctx, *position)
@@ -84,7 +84,7 @@ func (suite KeeperTestSuite) TestLiquidatePositionIfUnhealthy() {
 func (suite KeeperTestSuite) TestFallback() {
 	k := suite.app.LeveragelpKeeper
 	addr := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
-	position, _ := suite.OpenPosition(addr)
+	position, _, _ := suite.OpenPosition(addr)
 
 	// open positions with other addresses
 	addr2 := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
