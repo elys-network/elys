@@ -2,6 +2,7 @@ package types
 
 import (
 	"encoding/binary"
+
 	"github.com/cosmos/cosmos-sdk/types/address"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -37,6 +38,7 @@ var (
 	ExternalIncentiveKeyPrefix      = []byte{0x05}
 	PoolRewardInfoKeyPrefix         = []byte{0x06}
 	PoolRewardsAccumKeyPrefix       = []byte{0x07}
+	FeeInfoKeyPrefix                = []byte{0x08}
 )
 
 func KeyPrefix(p string) []byte {
@@ -159,4 +161,11 @@ func GetPoolRewardsAccumKey(poolId uint64, timestamp uint64) []byte {
 	key := GetPoolRewardsAccumPrefix(poolId)
 	key = append(key, []byte("/")...)
 	return append(key, sdk.Uint64ToBigEndian(timestamp)...)
+}
+
+// Timestamp will be a date in the format of YYYY-MM-DD
+func GetFeeInfoKey(timestamp string) []byte {
+	key := FeeInfoKeyPrefix
+	key = append(key, []byte("/")...)
+	return append(key, []byte(timestamp)...)
 }
