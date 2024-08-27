@@ -3,7 +3,6 @@ package keeper
 import (
 	"context"
 	"fmt"
-	ammtypes "github.com/elys-network/elys/x/amm/types"
 	"strings"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -13,8 +12,6 @@ import (
 func (k msgServer) ClosePositions(goCtx context.Context, msg *types.MsgClosePositions) (*types.MsgClosePositionsResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	poolMap := make(map[uint64]types.Pool)
-	ammPoolMap := make(map[uint64]ammtypes.Pool)
 	// Handle liquidations
 	liqLog := []string{}
 	for _, val := range msg.Liquidate {
@@ -23,22 +20,14 @@ func (k msgServer) ClosePositions(goCtx context.Context, msg *types.MsgClosePosi
 			continue
 		}
 
-		pool, found := poolMap[position.AmmPoolId]
-		if !found {
-			leveragePool, poolFound := k.GetPool(ctx, position.AmmPoolId)
-			if !poolFound {
-				continue
-			}
-			poolMap[position.AmmPoolId] = leveragePool
-
-			ammPool, poolErr := k.GetAmmPool(ctx, position.AmmPoolId)
-			if poolErr != nil {
-				continue
-			}
-			ammPoolMap[position.AmmPoolId] = ammPool
+		pool, poolFound := k.GetPool(ctx, position.AmmPoolId)
+		if !poolFound {
+			continue
 		}
-		pool = poolMap[position.AmmPoolId]
-		ammPool := ammPoolMap[position.AmmPoolId]
+		ammPool, poolErr := k.GetAmmPool(ctx, position.AmmPoolId)
+		if poolErr != nil {
+			continue
+		}
 
 		_, _, _, err = k.CheckAndLiquidateUnhealthyPosition(ctx, &position, pool, ammPool)
 		if err != nil {
@@ -55,23 +44,14 @@ func (k msgServer) ClosePositions(goCtx context.Context, msg *types.MsgClosePosi
 			continue
 		}
 
-		pool, found := poolMap[position.AmmPoolId]
-		if !found {
-			leveragePool, poolFound := k.GetPool(ctx, position.AmmPoolId)
-			if !poolFound {
-				continue
-			}
-			poolMap[position.AmmPoolId] = leveragePool
-
-			ammPool, poolErr := k.GetAmmPool(ctx, position.AmmPoolId)
-			if poolErr != nil {
-				continue
-			}
-			ammPoolMap[position.AmmPoolId] = ammPool
+		pool, poolFound := k.GetPool(ctx, position.AmmPoolId)
+		if !poolFound {
+			continue
 		}
-		pool = poolMap[position.AmmPoolId]
-		ammPool := ammPoolMap[position.AmmPoolId]
-
+		ammPool, poolErr := k.GetAmmPool(ctx, position.AmmPoolId)
+		if poolErr != nil {
+			continue
+		}
 		_, _, err = k.CheckAndCloseAtStopLoss(ctx, &position, pool, ammPool)
 		if err != nil {
 			// Add log about error or not closed

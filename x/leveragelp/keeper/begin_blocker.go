@@ -37,27 +37,18 @@ func (k Keeper) BeginBlocker(ctx sdk.Context) {
 			k.SetOffset(ctx, offset+uint64(params.NumberPerBlock))
 		}
 
-		poolMap := make(map[uint64]types.Pool)
-		ammPoolMap := make(map[uint64]ammtypes.Pool)
 		for _, position := range positions {
-			pool, found := poolMap[position.AmmPoolId]
+			pool, found := k.GetPool(ctx, position.AmmPoolId)
 			if !found {
-				leveragePool, poolFound := k.GetPool(ctx, position.AmmPoolId)
-				if !poolFound {
-					ctx.Logger().Error(fmt.Sprintf("pool not found for id: %d", position.AmmPoolId))
-					continue
-				}
-				poolMap[position.AmmPoolId] = leveragePool
-
-				ammPool, poolErr := k.GetAmmPool(ctx, position.AmmPoolId)
-				if poolErr != nil {
-					ctx.Logger().Error(fmt.Sprintf("error getting for amm pool %d: %s", position.AmmPoolId, poolErr.Error()))
-					continue
-				}
-				ammPoolMap[position.AmmPoolId] = ammPool
+				ctx.Logger().Error(fmt.Sprintf("pool not found for id: %d", position.AmmPoolId))
+				continue
 			}
-			pool = poolMap[position.AmmPoolId]
-			ammPool := ammPoolMap[position.AmmPoolId]
+			ammPool, poolErr := k.GetAmmPool(ctx, pool.AmmPoolId)
+			if poolErr != nil {
+				ctx.Logger().Error(fmt.Sprintf("error getting for amm pool %d: %s", position.AmmPoolId, poolErr.Error()))
+				continue
+			}
+
 			isHealthy, closeAttempted, _, err := k.CheckAndLiquidateUnhealthyPosition(ctx, position, pool, ammPool)
 			if err == nil {
 				continue
