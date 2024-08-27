@@ -40,7 +40,7 @@ func (suite KeeperTestSuite) TestCheckSameAssets() {
 	addr := simapp.AddTestAddrs(app, suite.ctx, 1, sdk.NewInt(1000000))
 	SetupCoinPrices(suite.ctx, suite.app.OracleKeeper)
 
-	position := types.NewPosition(addr[0].String(), sdk.NewInt64Coin("USDC", 0), sdk.NewDec(5), 1)
+	position := types.NewPosition(addr[0].String(), sdk.NewInt64Coin("USDC", 0), 1)
 	k.SetPosition(suite.ctx, position)
 
 	msg := &types.MsgOpen{

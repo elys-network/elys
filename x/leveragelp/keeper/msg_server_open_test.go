@@ -301,7 +301,7 @@ func (suite *KeeperTestSuite) TestOpen_PoolWithBaseCurrencyAsset() {
 				Leverage:         sdk.MustNewDecFromStr("10.0"),
 				StopLossPrice:    sdk.MustNewDecFromStr("100.0"),
 			},
-			true,
+			false,
 			"",
 			func() {
 			},

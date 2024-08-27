@@ -9,12 +9,11 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 )
 
-func NewPosition(signer string, collateral sdk.Coin, leverage sdk.Dec, poolId uint64) *Position {
+func NewPosition(signer string, collateral sdk.Coin, poolId uint64) *Position {
 	return &Position{
 		Address:           signer,
 		Collateral:        collateral,
 		Liabilities:       sdk.ZeroInt(),
-		Leverage:          leverage,
 		PositionHealth:    sdk.ZeroDec(),
 		AmmPoolId:         poolId,
 		LeveragedLpAmount: sdk.ZeroInt(),

@@ -88,7 +88,6 @@ func (k Keeper) LiquidatePositionIfUnhealthy(ctx sdk.Context, position *types.Po
 		sdk.NewAttribute("address", position.Address),
 		sdk.NewAttribute("collateral", position.Collateral.String()),
 		sdk.NewAttribute("repay_amount", repayAmount.String()),
-		sdk.NewAttribute("leverage", position.Leverage.String()),
 		sdk.NewAttribute("liabilities", position.Liabilities.String()),
 		sdk.NewAttribute("health", position.PositionHealth.String()),
 	))
@@ -131,7 +130,6 @@ func (k Keeper) ClosePositionIfUnderStopLossPrice(ctx sdk.Context, position *typ
 		sdk.NewAttribute("address", position.Address),
 		sdk.NewAttribute("collateral", position.Collateral.String()),
 		sdk.NewAttribute("repay_amount", repayAmount.String()),
-		sdk.NewAttribute("leverage", position.Leverage.String()),
 		sdk.NewAttribute("liabilities", position.Liabilities.String()),
 		sdk.NewAttribute("health", position.PositionHealth.String()),
 	))

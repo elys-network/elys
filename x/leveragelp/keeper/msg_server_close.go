@@ -25,7 +25,6 @@ func (k Keeper) Close(ctx sdk.Context, msg *types.MsgClose) (*types.MsgCloseResp
 		sdk.NewAttribute("address", closedPosition.Address),
 		sdk.NewAttribute("collateral", closedPosition.Collateral.String()),
 		sdk.NewAttribute("repay_amount", repayAmount.String()),
-		sdk.NewAttribute("leverage", closedPosition.Leverage.String()),
 		sdk.NewAttribute("liabilities", closedPosition.Liabilities.String()),
 		sdk.NewAttribute("health", closedPosition.PositionHealth.String()),
 	))
