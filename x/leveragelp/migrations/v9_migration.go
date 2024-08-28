@@ -15,7 +15,6 @@ func (m Migrator) V9Migration(ctx sdk.Context) error {
 			Address:           position.Address,
 			Collateral:        position.Collateral,
 			Liabilities:       position.Liabilities,
-			Leverage:          position.Leverage,
 			LeveragedLpAmount: position.LeveragedLpAmount,
 			PositionHealth:    position.PositionHealth,
 			Id:                position.Id,
