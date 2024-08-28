@@ -137,6 +137,10 @@ func (k Keeper) ForwardEdenCalc(ctx sdk.Context, poolId uint64) sdk.Dec {
 
 	if len(lastTwo) == 2 {
 		diff := lastTwo[1].EdenReward.Sub(lastTwo[0].EdenReward)
+		// Here we are assuming average block time of 4s
+		// 1 DAY = 86400
+		// Note: This calculation maybe used in FE, the idea is to
+		// give estimated numbers of rewards that a user will get
 		return diff.MulInt64(21600)
 	}
 
