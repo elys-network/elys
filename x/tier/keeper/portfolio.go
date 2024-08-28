@@ -38,7 +38,7 @@ func (k Keeper) RetrieveAllPortfolio(ctx sdk.Context, user sdk.AccAddress) {
 	totalValue = totalValue.Add(rew)
 
 	// Perpetual
-	perp := k.RetrievePerpetualTotal(ctx, user)
+	_, _, perp := k.RetrievePerpetualTotal(ctx, user)
 	totalValue = totalValue.Add(perp)
 
 	// Pool assets
