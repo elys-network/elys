@@ -236,7 +236,9 @@ func (k Keeper) UpdateLPRewards(ctx sdk.Context) error {
 		}
 
 		// Distribute Eden
-		k.UpdateAccPerShare(ctx, pool.PoolId, ptypes.Eden, newEdenAllocatedForPool.TruncateInt())
+		if pool.EnableEdenRewards {
+			k.UpdateAccPerShare(ctx, pool.PoolId, ptypes.Eden, newEdenAllocatedForPool.TruncateInt())
+		}
 		// Distribute Gas fees + Dex rewards (USDC)
 		k.UpdateAccPerShare(ctx, pool.PoolId, k.GetBaseCurrencyDenom(ctx), gasRewardsAllocatedForPool.Add(dexRewardsAllocatedForPool).TruncateInt())
 

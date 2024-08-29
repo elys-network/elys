@@ -10,4 +10,5 @@ import (
 var (
 	ErrNoInflationaryParams     = errorsmod.Register(ModuleName, 1, "no inflationary rewards params")
 	ErrPoolRewardsAccumNotFound = errorsmod.Register(ModuleName, 2, "pool rewards accumulation not found")
+	ErrPoolNotFound             = errorsmod.Register(ModuleName, 3, "pool not found")
 )

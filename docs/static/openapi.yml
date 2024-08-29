@@ -41407,40 +41407,46 @@ paths:
               position:
                 type: object
                 properties:
-                  address:
-                    type: string
-                  collateral:
+                  position:
                     type: object
                     properties:
-                      denom:
+                      address:
                         type: string
-                      amount:
+                      collateral:
+                        type: object
+                        properties:
+                          denom:
+                            type: string
+                          amount:
+                            type: string
+                        description: >-
+                          Coin defines a token with a denomination and an
+                          amount.
+
+
+                          NOTE: The amount field is an Int which implements the
+                          custom method
+
+                          signatures required by gogoproto.
+                      liabilities:
                         type: string
-                    description: >-
-                      Coin defines a token with a denomination and an amount.
-
-
-                      NOTE: The amount field is an Int which implements the
-                      custom method
-
-                      signatures required by gogoproto.
-                  liabilities:
-                    type: string
-                    title: For recording
-                  leverage:
-                    type: string
-                    title: For recording
-                  leveraged_lp_amount:
-                    type: string
-                  position_health:
-                    type: string
-                  id:
-                    type: string
-                    format: uint64
-                  amm_pool_id:
-                    type: string
-                    format: uint64
-                  stop_loss_price:
+                        title: For recording
+                      leverage:
+                        type: string
+                        title: For recording
+                      leveraged_lp_amount:
+                        type: string
+                      position_health:
+                        type: string
+                      id:
+                        type: string
+                        format: uint64
+                      amm_pool_id:
+                        type: string
+                        format: uint64
+                      stop_loss_price:
+                        type: string
+                  updated_leverage:
                     type: string
               locked_lp_token:
                 type: string
@@ -41489,40 +41495,46 @@ paths:
                 items:
                   type: object
                   properties:
-                    address:
-                      type: string
-                    collateral:
+                    position:
                       type: object
                       properties:
-                        denom:
+                        address:
                           type: string
-                        amount:
+                        collateral:
+                          type: object
+                          properties:
+                            denom:
+                              type: string
+                            amount:
+                              type: string
+                          description: >-
+                            Coin defines a token with a denomination and an
+                            amount.
+
+
+                            NOTE: The amount field is an Int which implements
+                            the custom method
+
+                            signatures required by gogoproto.
+                        liabilities:
                           type: string
-                      description: >-
-                        Coin defines a token with a denomination and an amount.
-
-
-                        NOTE: The amount field is an Int which implements the
-                        custom method
-
-                        signatures required by gogoproto.
-                    liabilities:
-                      type: string
-                      title: For recording
-                    leverage:
-                      type: string
-                      title: For recording
-                    leveraged_lp_amount:
-                      type: string
-                    position_health:
-                      type: string
-                    id:
-                      type: string
-                      format: uint64
-                    amm_pool_id:
-                      type: string
-                      format: uint64
-                    stop_loss_price:
+                          title: For recording
+                        leverage:
+                          type: string
+                          title: For recording
+                        leveraged_lp_amount:
+                          type: string
+                        position_health:
+                          type: string
+                        id:
+                          type: string
+                          format: uint64
+                        amm_pool_id:
+                          type: string
+                          format: uint64
+                        stop_loss_price:
+                          type: string
+                    updated_leverage:
                       type: string
               pagination:
                 type: object
@@ -41816,40 +41828,46 @@ paths:
                 items:
                   type: object
                   properties:
-                    address:
-                      type: string
-                    collateral:
+                    position:
                       type: object
                       properties:
-                        denom:
+                        address:
                           type: string
-                        amount:
+                        collateral:
+                          type: object
+                          properties:
+                            denom:
+                              type: string
+                            amount:
+                              type: string
+                          description: >-
+                            Coin defines a token with a denomination and an
+                            amount.
+
+
+                            NOTE: The amount field is an Int which implements
+                            the custom method
+
+                            signatures required by gogoproto.
+                        liabilities:
                           type: string
-                      description: >-
-                        Coin defines a token with a denomination and an amount.
-
-
-                        NOTE: The amount field is an Int which implements the
-                        custom method
-
-                        signatures required by gogoproto.
-                    liabilities:
-                      type: string
-                      title: For recording
-                    leverage:
-                      type: string
-                      title: For recording
-                    leveraged_lp_amount:
-                      type: string
-                    position_health:
-                      type: string
-                    id:
-                      type: string
-                      format: uint64
-                    amm_pool_id:
-                      type: string
-                      format: uint64
-                    stop_loss_price:
+                          title: For recording
+                        leverage:
+                          type: string
+                          title: For recording
+                        leveraged_lp_amount:
+                          type: string
+                        position_health:
+                          type: string
+                        id:
+                          type: string
+                          format: uint64
+                        amm_pool_id:
+                          type: string
+                          format: uint64
+                        stop_loss_price:
+                          type: string
+                    updated_leverage:
                       type: string
               pagination:
                 type: object
@@ -42500,6 +42518,9 @@ paths:
                     items:
                       type: string
                     title: external reward denoms on the pool
+                  enable_eden_rewards:
+                    type: boolean
+                    title: Enabled or disabled eden rewards
         default:
           description: An unexpected error response.
           schema:
@@ -87331,6 +87352,18 @@ definitions:
                   method
 
                   signatures required by gogoproto.
+  elys.leveragelp.AddPool:
+    type: object
+    properties:
+      amm_pool_id:
+        type: string
+        format: uint64
+      enabled:
+        type: boolean
+      closed:
+        type: boolean
+      leverage_max:
+        type: string
   elys.leveragelp.IsWhitelistedResponse:
     type: object
     properties:
@@ -87339,6 +87372,8 @@ definitions:
       is_whitelisted:
         type: boolean
   elys.leveragelp.MsgAddCollateralResponse:
+    type: object
+  elys.leveragelp.MsgAddPoolResponse:
     type: object
   elys.leveragelp.MsgClaimRewardsResponse:
     type: object
@@ -87349,6 +87384,8 @@ definitions:
   elys.leveragelp.MsgDewhitelistResponse:
     type: object
   elys.leveragelp.MsgOpenResponse:
+    type: object
+  elys.leveragelp.MsgRemovePoolResponse:
     type: object
   elys.leveragelp.MsgUpdateParamsResponse:
     type: object
@@ -87520,40 +87557,45 @@ definitions:
       position:
         type: object
         properties:
-          address:
-            type: string
-          collateral:
+          position:
             type: object
             properties:
-              denom:
+              address:
                 type: string
-              amount:
+              collateral:
+                type: object
+                properties:
+                  denom:
+                    type: string
+                  amount:
+                    type: string
+                description: >-
+                  Coin defines a token with a denomination and an amount.
+
+
+                  NOTE: The amount field is an Int which implements the custom
+                  method
+
+                  signatures required by gogoproto.
+              liabilities:
                 type: string
-            description: >-
-              Coin defines a token with a denomination and an amount.
-
-
-              NOTE: The amount field is an Int which implements the custom
-              method
-
-              signatures required by gogoproto.
-          liabilities:
-            type: string
-            title: For recording
-          leverage:
-            type: string
-            title: For recording
-          leveraged_lp_amount:
-            type: string
-          position_health:
-            type: string
-          id:
-            type: string
-            format: uint64
-          amm_pool_id:
-            type: string
-            format: uint64
-          stop_loss_price:
+                title: For recording
+              leverage:
+                type: string
+                title: For recording
+              leveraged_lp_amount:
+                type: string
+              position_health:
+                type: string
+              id:
+                type: string
+                format: uint64
+              amm_pool_id:
+                type: string
+                format: uint64
+              stop_loss_price:
+                type: string
+          updated_leverage:
             type: string
       locked_lp_token:
         type: string
@@ -87565,40 +87607,45 @@ definitions:
         items:
           type: object
           properties:
-            address:
-              type: string
-            collateral:
+            position:
               type: object
               properties:
-                denom:
+                address:
                   type: string
-                amount:
+                collateral:
+                  type: object
+                  properties:
+                    denom:
+                      type: string
+                    amount:
+                      type: string
+                  description: >-
+                    Coin defines a token with a denomination and an amount.
+
+
+                    NOTE: The amount field is an Int which implements the custom
+                    method
+
+                    signatures required by gogoproto.
+                liabilities:
                   type: string
-              description: >-
-                Coin defines a token with a denomination and an amount.
-
-
-                NOTE: The amount field is an Int which implements the custom
-                method
-
-                signatures required by gogoproto.
-            liabilities:
-              type: string
-              title: For recording
-            leverage:
-              type: string
-              title: For recording
-            leveraged_lp_amount:
-              type: string
-            position_health:
-              type: string
-            id:
-              type: string
-              format: uint64
-            amm_pool_id:
-              type: string
-              format: uint64
-            stop_loss_price:
+                  title: For recording
+                leverage:
+                  type: string
+                  title: For recording
+                leveraged_lp_amount:
+                  type: string
+                position_health:
+                  type: string
+                id:
+                  type: string
+                  format: uint64
+                amm_pool_id:
+                  type: string
+                  format: uint64
+                stop_loss_price:
+                  type: string
+            updated_leverage:
               type: string
       pagination:
         type: object
@@ -87710,40 +87757,45 @@ definitions:
         items:
           type: object
           properties:
-            address:
-              type: string
-            collateral:
+            position:
               type: object
               properties:
-                denom:
+                address:
                   type: string
-                amount:
+                collateral:
+                  type: object
+                  properties:
+                    denom:
+                      type: string
+                    amount:
+                      type: string
+                  description: >-
+                    Coin defines a token with a denomination and an amount.
+
+
+                    NOTE: The amount field is an Int which implements the custom
+                    method
+
+                    signatures required by gogoproto.
+                liabilities:
                   type: string
-              description: >-
-                Coin defines a token with a denomination and an amount.
-
-
-                NOTE: The amount field is an Int which implements the custom
-                method
-
-                signatures required by gogoproto.
-            liabilities:
-              type: string
-              title: For recording
-            leverage:
-              type: string
-              title: For recording
-            leveraged_lp_amount:
-              type: string
-            position_health:
-              type: string
-            id:
-              type: string
-              format: uint64
-            amm_pool_id:
-              type: string
-              format: uint64
-            stop_loss_price:
+                  title: For recording
+                leverage:
+                  type: string
+                  title: For recording
+                leveraged_lp_amount:
+                  type: string
+                position_health:
+                  type: string
+                id:
+                  type: string
+                  format: uint64
+                amm_pool_id:
+                  type: string
+                  format: uint64
+                stop_loss_price:
+                  type: string
+            updated_leverage:
               type: string
       pagination:
         type: object
@@ -87892,6 +87944,49 @@ definitions:
       weight_balance_ratio:
         type: string
       borrow_fee:
+        type: string
+  elys.leveragelp.QueryPosition:
+    type: object
+    properties:
+      position:
+        type: object
+        properties:
+          address:
+            type: string
+          collateral:
+            type: object
+            properties:
+              denom:
+                type: string
+              amount:
+                type: string
+            description: >-
+              Coin defines a token with a denomination and an amount.
+
+
+              NOTE: The amount field is an Int which implements the custom
+              method
+
+              signatures required by gogoproto.
+          liabilities:
+            type: string
+            title: For recording
+          leverage:
+            type: string
+            title: For recording
+          leveraged_lp_amount:
+            type: string
+          position_health:
+            type: string
+          id:
+            type: string
+            format: uint64
+          amm_pool_id:
+            type: string
+            format: uint64
+          stop_loss_price:
+            type: string
+      updated_leverage:
         type: string
   elys.leveragelp.QueryRewardsResponse:
     type: object
@@ -88051,6 +88146,8 @@ definitions:
     type: object
   elys.masterchef.MsgClaimRewardsResponse:
     type: object
+  elys.masterchef.MsgTogglePoolEdenRewardsResponse:
+    type: object
   elys.masterchef.MsgUpdateParamsResponse:
     type: object
   elys.masterchef.MsgUpdatePoolMultipliersResponse:
@@ -88141,6 +88238,9 @@ definitions:
         items:
           type: string
         title: external reward denoms on the pool
+      enable_eden_rewards:
+        type: boolean
+        title: Enabled or disabled eden rewards
   elys.masterchef.PoolMultiplier:
     type: object
     properties:
@@ -88286,6 +88386,9 @@ definitions:
             items:
               type: string
             title: external reward denoms on the pool
+          enable_eden_rewards:
+            type: boolean
+            title: Enabled or disabled eden rewards
   elys.masterchef.QueryPoolRewardInfoResponse:
     type: object
     properties:

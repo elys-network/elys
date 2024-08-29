@@ -20,6 +20,7 @@ func RegisterCodec(cdc *codec.LegacyAmino) {
 	legacy.RegisterAminoMsg(cdc, &MsgUpdateParams{}, "masterchef/MsgUpdateParams")
 	legacy.RegisterAminoMsg(cdc, &MsgUpdatePoolMultipliers{}, "masterchef/MsgUpdatePoolMultipliers")
 	legacy.RegisterAminoMsg(cdc, &MsgAddExternalRewardDenom{}, "masterchef/MsgAddExternalRewardDenom")
+	legacy.RegisterAminoMsg(cdc, &MsgTogglePoolEdenRewards{}, "masterchef/TogglePoolEdenRewards")
 	// this line is used by starport scaffolding # 2
 }
 
@@ -30,6 +31,9 @@ func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 		&MsgUpdateParams{},
 		&MsgUpdatePoolMultipliers{},
 		&MsgAddExternalRewardDenom{},
+	)
+	registry.RegisterImplementations((*sdk.Msg)(nil),
+		&MsgTogglePoolEdenRewards{},
 	)
 	// this line is used by starport scaffolding # 3
 

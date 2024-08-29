@@ -36,6 +36,8 @@ message PoolInfo {
   ];
   // external reward denoms on the pool
   repeated string external_reward_denoms = 8;
+  // Enable or disable eden rewards
+  bool enable_eden_rewards = 9;
 }
 
 message PoolRewardInfo {
