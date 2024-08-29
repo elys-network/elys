@@ -19,10 +19,20 @@ func (k Keeper) QueryPositionsForAddress(goCtx context.Context, req *types.Posit
 		return nil, err
 	}
 
-	positions, pageRes, err := k.GetPositionsForAddress(sdk.UnwrapSDKContext(goCtx), addr, req.Pagination)
+	res, pageRes, err := k.GetPositionsForAddress(sdk.UnwrapSDKContext(goCtx), addr, req.Pagination)
 	if err != nil {
 		return nil, err
 	}
 
-	return &types.PositionsForAddressResponse{Positions: positions, Pagination: pageRes}, nil
+	query_positions, err := k.GetLeverageLpUpdatedLeverage(sdk.UnwrapSDKContext(goCtx), res)
+	if err != nil {
+		return nil, err
+	}
+
+	positions_and_intrest, err := k.GetInterestRateUsd(sdk.UnwrapSDKContext(goCtx), query_positions)
+	if err != nil {
+		return nil, err
+	}
+
+	return &types.PositionsForAddressResponse{Positions: positions_and_intrest, Pagination: pageRes}, nil
 }

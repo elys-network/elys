@@ -47,6 +47,13 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen) (*types.MsgOpenRespons
 		return nil, err
 	}
 
+	if k.hooks != nil {
+		err := k.hooks.AfterLeverageLpPositionOpen(ctx, sdk.MustAccAddressFromBech32(msg.Creator))
+		if err != nil {
+			return nil, err
+		}
+	}
+
 	event := sdk.NewEvent(types.EventOpen,
 		sdk.NewAttribute("id", strconv.FormatInt(int64(position.Id), 10)),
 		sdk.NewAttribute("address", position.Address),

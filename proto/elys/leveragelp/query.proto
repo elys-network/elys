@@ -248,7 +248,3 @@ message QueryCommittedTokensLockedResponse {
   repeated cosmos.base.v1beta1.Coin total_committed  = 3 [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"];
 }
 
-message QueryPosition {
-  Position position         = 1;
-  string   updated_leverage = 2 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
-}
