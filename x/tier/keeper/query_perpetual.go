@@ -16,9 +16,10 @@ func (k Keeper) Perpetual(goCtx context.Context, req *types.QueryPerpetualReques
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	sender := sdk.MustAccAddressFromBech32(req.User)
-	total := k.RetrievePerpetualTotal(ctx, sender)
+	total, borrow, _ := k.RetrievePerpetualTotal(ctx, sender)
 
 	return &types.QueryPerpetualResponse{
-		Total: total,
+		TotalValue:   total,
+		TotalBorrows: borrow,
 	}, nil
 }
