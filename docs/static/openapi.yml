@@ -42307,6 +42307,35 @@ paths:
           format: uint64
       tags:
         - Query
+  /elys-network/elys/masterchef/list_fee_info:
+    get:
+      summary: Queries a list of ListFeeInfo items.
+      operationId: ElysMasterchefListFeeInfo
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      tags:
+        - Query
   /elys-network/elys/masterchef/params:
     get:
       summary: Parameters queries the parameters of the module.
@@ -42628,6 +42657,40 @@ paths:
         - name: reward_denom
           in: query
           required: false
+          type: string
+      tags:
+        - Query
+  /elys-network/elys/masterchef/show_fee_info/{date}:
+    get:
+      summary: Queries a list of ShowFeeInfo items.
+      operationId: ElysMasterchefShowFeeInfo
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: date
+          in: path
+          required: true
           type: string
       tags:
         - Query
@@ -88316,6 +88379,8 @@ definitions:
           apr:
             type: string
         description: ExternalIncentive defines the external incentives.
+  elys.masterchef.QueryListFeeInfoResponse:
+    type: object
   elys.masterchef.QueryParamsResponse:
     type: object
     properties:
@@ -88431,6 +88496,8 @@ definitions:
           last_updated_block:
             type: string
             format: uint64
+  elys.masterchef.QueryShowFeeInfoResponse:
+    type: object
   elys.masterchef.QueryStableStakeAprResponse:
     type: object
     properties:
