@@ -8,7 +8,6 @@ import "cosmos/base/v1beta1/coin.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
 import "elys/leveragelp/params.proto";
 import "elys/leveragelp/types.proto";
-
 import "elys/leveragelp/pool.proto";
 
 option go_package = "github.com/elys-network/elys/x/leveragelp/types";
@@ -119,7 +118,7 @@ message PositionsRequest {
 }
 
 message PositionsResponse {
-  repeated QueryPosition                               positions  = 1;
+  repeated QueryPosition                          positions  = 1;
            cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
@@ -129,7 +128,7 @@ message PositionsByPoolRequest {
 }
 
 message PositionsByPoolResponse {
-  repeated QueryPosition                               positions  = 1;
+  repeated QueryPosition                          positions  = 1;
            cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
@@ -187,7 +186,7 @@ message QueryAllPoolResponse {
 
 message PositionResponse {
   QueryPosition position        = 1;
-  string   locked_lp_token = 2 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false];
+  string        locked_lp_token = 2 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false];
 }
 
 message QueryLiquidationPriceRequest {
@@ -244,13 +243,12 @@ message QueryCommittedTokensLockedRequest {
 }
 
 message QueryCommittedTokensLockedResponse {
-  string address = 1;
+           string                   address          = 1;
   repeated cosmos.base.v1beta1.Coin locked_committed = 2 [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"];
   repeated cosmos.base.v1beta1.Coin total_committed  = 3 [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"];
 }
 
 message QueryPosition {
-  Position position        = 1;
+  Position position         = 1;
   string   updated_leverage = 2 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
 }
-
