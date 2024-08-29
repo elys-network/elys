@@ -292,7 +292,7 @@ func (suite *KeeperTestSuite) TestOpen_PoolWithBaseCurrencyAsset() {
 				suite.SetPoolThreshold(sdk.MustNewDecFromStr("0.2"))
 			},
 		},
-		{"Add on already open position Long but with different leverage",
+		{"Add on already open position Long but with different leverage 10",
 			&types.MsgOpen{
 				Creator:          addresses[0].String(),
 				CollateralAsset:  ptypes.BaseCurrency,
@@ -306,17 +306,46 @@ func (suite *KeeperTestSuite) TestOpen_PoolWithBaseCurrencyAsset() {
 			func() {
 			},
 		},
-		{"Add on already open position Long",
+		{"Add on already open position Long but with different leverage 20",
 			&types.MsgOpen{
 				Creator:          addresses[0].String(),
 				CollateralAsset:  ptypes.BaseCurrency,
 				CollateralAmount: sdk.NewInt(1000),
 				AmmPoolId:        1,
-				Leverage:         sdk.MustNewDecFromStr("2.0"),
+				Leverage:         sdk.MustNewDecFromStr("20.0"),
 				StopLossPrice:    sdk.MustNewDecFromStr("100.0"),
 			},
 			false,
 			"",
+			func() {
+			},
+		},
+		{"Add on already open position Long but with different leverage 1, increase position health",
+			&types.MsgOpen{
+				Creator:          addresses[0].String(),
+				CollateralAsset:  ptypes.BaseCurrency,
+				CollateralAmount: sdk.NewInt(1000000),
+				AmmPoolId:        1,
+				Leverage:         sdk.MustNewDecFromStr("1.0"),
+				StopLossPrice:    sdk.MustNewDecFromStr("100.0"),
+			},
+			false,
+			"",
+			func() {
+				suite.SetSafetyFactor(sdk.MustNewDecFromStr("2.0"))
+			},
+		},
+		{"Add on already open position Long but with different leverage 30",
+			&types.MsgOpen{
+				Creator:          addresses[0].String(),
+				CollateralAsset:  ptypes.BaseCurrency,
+				CollateralAmount: sdk.NewInt(1000000),
+				AmmPoolId:        1,
+				Leverage:         sdk.MustNewDecFromStr("30.0"),
+				StopLossPrice:    sdk.MustNewDecFromStr("100.0"),
+			},
+			true,
+			types.ErrPositionUnhealthy.Error(),
 			func() {
 			},
 		},
@@ -332,6 +361,7 @@ func (suite *KeeperTestSuite) TestOpen_PoolWithBaseCurrencyAsset() {
 			true,
 			types.ErrInvalidPosition.Wrapf("pool health too low to open new positions").Error(),
 			func() {
+				suite.SetSafetyFactor(sdk.MustNewDecFromStr("1.0"))
 				suite.SetPoolThreshold(sdk.OneDec())
 			},
 		},

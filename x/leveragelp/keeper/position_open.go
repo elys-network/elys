@@ -75,7 +75,7 @@ func (k Keeper) ProcessOpenLong(ctx sdk.Context, position *types.Position, poolI
 
 	// Calculate the leveraged amount based on the collateral provided and the leverage.
 	leveragedAmount := sdk.NewInt(collateralAmountDec.Mul(leverage).TruncateInt().Int64())
-	
+
 	// send collateral coins to Position address from Position owner address
 	positionOwner := sdk.MustAccAddressFromBech32(position.Address)
 	err := k.bankKeeper.SendCoins(ctx, positionOwner, position.GetPositionAddress(), sdk.Coins{sdk.NewCoin(msg.CollateralAsset, msg.CollateralAmount)})
@@ -86,9 +86,11 @@ func (k Keeper) ProcessOpenLong(ctx sdk.Context, position *types.Position, poolI
 
 	// borrow leveragedAmount - collateralAmount
 	borrowCoin := sdk.NewCoin(msg.CollateralAsset, leveragedAmount.Sub(msg.CollateralAmount))
-	err = k.stableKeeper.Borrow(ctx, position.GetPositionAddress(), borrowCoin)
-	if err != nil {
-		return nil, err
+	if borrowCoin.Amount.GT(sdk.ZeroInt()) {
+		err = k.stableKeeper.Borrow(ctx, position.GetPositionAddress(), borrowCoin)
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	_, shares, err := k.amm.JoinPoolNoSwap(ctx, position.GetPositionAddress(), poolId, sdk.OneInt(), sdk.Coins{leverageCoin})
