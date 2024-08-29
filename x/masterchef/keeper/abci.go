@@ -15,7 +15,6 @@ import (
 // EndBlocker of amm module
 func (k Keeper) EndBlocker(ctx sdk.Context) {
 
-	k.DeleteLegacyUserRewardInfos(ctx, 10_000)
 	k.DeleteFeeInfo(ctx)
 
 	// distribute LP rewards
@@ -123,21 +122,17 @@ func (k Keeper) ProcessUpdateIncentiveParams(ctx sdk.Context) {
 			continue
 		}
 
-		totalBlocksPerYear := sdk.NewInt(int64(inflation.EndBlockHeight - inflation.StartBlockHeight + 1))
+		totalBlocksPerYear := inflation.EndBlockHeight - inflation.StartBlockHeight + 1
 
 		// If totalBlocksPerYear is zero, we skip this inflation to avoid division by zero
-		if totalBlocksPerYear == sdk.ZeroInt() {
+		if totalBlocksPerYear == 0 {
 			continue
 		}
-		blocksDistributed := sdk.NewInt(ctx.BlockHeight() - int64(inflation.StartBlockHeight))
+		blocksDistributed := ctx.BlockHeight() - int64(inflation.StartBlockHeight)
 
 		params.LpIncentives = &types.IncentiveInfo{
 			// reward amount in eden for 1 year
 			EdenAmountPerYear: sdk.NewInt(int64(inflation.Inflation.LmRewards)),
-			// starting block height of the distribution
-			DistributionStartBlock: sdk.NewInt(int64(inflation.StartBlockHeight)),
-			// distribution duration - block number per year
-			TotalBlocksPerYear: totalBlocksPerYear,
 			// number of blocks distributed
 			BlocksDistributed: blocksDistributed,
 		}
