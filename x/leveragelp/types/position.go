@@ -28,7 +28,7 @@ func (position Position) Validate() error {
 	if position.Id == 0 {
 		return errorsmod.Wrap(ErrPositionInvalid, "position id cannot be 0")
 	}
-	if position.LeveragedLpAmount.IsPositive() {
+	if position.LeveragedLpAmount.IsNegative() {
 		return errorsmod.Wrap(ErrPositionInvalid, "leveraged lp amount cannot be negative")
 	}
 	if !position.Collateral.IsValid() {
