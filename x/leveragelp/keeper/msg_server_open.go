@@ -20,7 +20,10 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen) (*types.MsgOpenRespons
 	}
 
 	// Check if it is the same direction position for the same trader.
-	if position := k.CheckSamePosition(ctx, msg); position != nil {
+	if position, err := k.CheckSamePosition(ctx, msg); position != nil {
+		if err != nil {
+			return nil, err
+		}
 		response, err := k.OpenConsolidate(ctx, position, msg)
 		if err != nil {
 			return nil, err
@@ -42,6 +45,13 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen) (*types.MsgOpenRespons
 
 	if err = k.CheckPoolHealth(ctx, msg.AmmPoolId); err != nil {
 		return nil, err
+	}
+
+	if k.hooks != nil {
+		err := k.hooks.AfterLeverageLpPositionOpen(ctx, sdk.MustAccAddressFromBech32(msg.Creator))
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	event := sdk.NewEvent(types.EventOpen,

@@ -35,6 +35,14 @@ func (k Keeper) OpenConsolidate(ctx sdk.Context, position *types.Position, msg *
 		return nil, err
 	}
 
+	if k.hooks != nil {
+		err := k.hooks.AfterLeverageLpPositionOpenConsolidate(ctx, sdk.MustAccAddressFromBech32(msg.Creator))
+		if err != nil {
+			return nil, err
+		}
+
+	}
+
 	event := sdk.NewEvent(types.EventOpen,
 		sdk.NewAttribute("id", strconv.FormatInt(int64(position.Id), 10)),
 		sdk.NewAttribute("address", position.Address),
@@ -60,7 +68,7 @@ func (k Keeper) ProcessOpenLong(ctx sdk.Context, position *types.Position, poolI
 	}
 
 	// Check if the pool is enabled.
-	if !k.IsPoolEnabled(ctx, poolId) {
+	if !pool.Enabled {
 		return nil, errorsmod.Wrap(types.ErrPositionDisabled, fmt.Sprintf("poolId: %d", poolId))
 	}
 

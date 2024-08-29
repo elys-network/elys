@@ -31,7 +31,7 @@ type (
 		assetProfileKeeper types.AssetProfileKeeper
 		masterchefKeeper   types.MasterchefKeeper
 
-		hooks ammtypes.AmmHooks
+		hooks    types.LeverageLpHooks
 	}
 )
 
@@ -91,8 +91,11 @@ func (k Keeper) CheckIfWhitelisted(ctx sdk.Context, address sdk.AccAddress) bool
 
 // Swap estimation using amm CalcInAmtGivenOut function
 func (k Keeper) EstimateSwapGivenOut(ctx sdk.Context, tokenOutAmount sdk.Coin, tokenInDenom string, ammPool ammtypes.Pool) (math.Int, error) {
-	leveragelpEnabled := k.IsPoolEnabled(ctx, ammPool.PoolId)
-	if !leveragelpEnabled {
+	pool, found := k.GetPool(ctx, ammPool.PoolId)
+	if !found {
+		return math.Int{}, fmt.Errorf("pool %d not found", ammPool.PoolId)
+	}
+	if !pool.Enabled {
 		return sdk.ZeroInt(), errorsmod.Wrap(types.ErrLeveragelpDisabled, "Leveragelp disabled pool")
 	}
 
@@ -165,24 +168,6 @@ func (k Keeper) GetAllWhitelistedAddress(ctx sdk.Context) []sdk.AccAddress {
 	return list
 }
 
-// remove after migration
-func (k Keeper) GetAllLegacyWhitelistedAddress(ctx sdk.Context) []string {
-	var list []string
-	iterator := k.GetWhitelistAddressIterator(ctx)
-	defer func(iterator sdk.Iterator) {
-		err := iterator.Close()
-		if err != nil {
-			panic(err)
-		}
-	}(iterator)
-
-	for ; iterator.Valid(); iterator.Next() {
-		list = append(list, (string)(iterator.Value()))
-	}
-
-	return list
-}
-
 func (k Keeper) GetWhitelistedAddress(ctx sdk.Context, pagination *query.PageRequest) ([]sdk.AccAddress, *query.PageResponse, error) {
 	var list []sdk.AccAddress
 	store := ctx.KVStore(k.storeKey)
@@ -200,4 +185,15 @@ func (k Keeper) GetWhitelistedAddress(ctx sdk.Context, pagination *query.PageReq
 	})
 
 	return list, pageRes, err
+}
+
+// SetHooks set the leveragelp hooks
+func (k *Keeper) SetHooks(lh types.LeverageLpHooks) *Keeper {
+	if k.hooks != nil {
+		panic("cannot set leveragelp hooks twice")
+	}
+
+	k.hooks = lh
+
+	return k
 }

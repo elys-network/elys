@@ -54,7 +54,7 @@ func CmdAddPools() *cobra.Command {
 			}
 
 			govAddress := sdk.AccAddress(address.Module("gov"))
-			msg := types.NewMsgAddPools(
+			msg := types.NewMsgAddPool(
 				govAddress.String(),
 				pool,
 			)

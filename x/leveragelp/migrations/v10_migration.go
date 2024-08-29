@@ -2,28 +2,16 @@ package migrations
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/x/leveragelp/types"
 )
 
 func (m Migrator) V10Migration(ctx sdk.Context) error {
-	positions := m.keeper.GetAllLegacyPositions(ctx)
-
-	ctx.Logger().Info("Migrating positions from legacy to new format")
-
-	for _, position := range positions {
-		new_position := types.Position{
-			Address:           position.Address,
-			Collateral:        position.Collateral,
-			Liabilities:       position.Liabilities,
-			LeveragedLpAmount: position.LeveragedLpAmount,
-			PositionHealth:    position.PositionHealth,
-			Id:                position.Id,
-			AmmPoolId:         position.AmmPoolId,
-			StopLossPrice:     position.StopLossPrice,
-		}
-		m.keeper.DeleteLegacyPosition(ctx, position.Address, position.Id)
-		m.keeper.SetPosition(ctx, &new_position)
+	pools := m.keeper.GetAllPools(ctx)
+	// Reset pools
+	for _, pool := range pools {
+		pool.LeveragedLpAmount = sdk.NewInt(0)
+		m.keeper.SetPool(ctx, pool)
 	}
 
+	m.keeper.MigrateData(ctx)
 	return nil
 }

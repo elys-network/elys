@@ -119,7 +119,7 @@ func (suite *KeeperTestSuite) TestMsgServerClaimRewards() {
 			types.ErrPositionDoesNotExist.Error(),
 			func() {
 				suite.ResetSuite()
-				SetupCoinPrices(suite.ctx, suite.app.OracleKeeper)
+				suite.SetupCoinPrices(suite.ctx)
 				initializeForClaimRewards(suite, addresses, asset1, asset2, false)
 			},
 		},
@@ -132,7 +132,7 @@ func (suite *KeeperTestSuite) TestMsgServerClaimRewards() {
 			"insufficient funds",
 			func() {
 				suite.ResetSuite()
-				SetupCoinPrices(suite.ctx, suite.app.OracleKeeper)
+				suite.SetupCoinPrices(suite.ctx)
 				initializeForClaimRewards(suite, addresses, asset1, asset2, true)
 				openPosition(suite, addresses[0], collateralAmount, leverage)
 				moduleAddress := address.Module("masterchef")
@@ -159,7 +159,7 @@ func (suite *KeeperTestSuite) TestMsgServerClaimRewards() {
 			"",
 			func() {
 				suite.ResetSuite()
-				SetupCoinPrices(suite.ctx, suite.app.OracleKeeper)
+				suite.SetupCoinPrices(suite.ctx)
 				initializeForClaimRewards(suite, addresses, asset1, asset2, true)
 				openPosition(suite, addresses[0], collateralAmount, leverage)
 			},

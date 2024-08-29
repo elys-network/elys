@@ -222,23 +222,23 @@ func (m *LegacyPosition) GetAmmPoolId() uint64 {
 	return 0
 }
 
-type AddressId struct {
-	Address string `protobuf:"bytes,1,opt,name=address,proto3" json:"address,omitempty"`
-	Id      uint64 `protobuf:"varint,2,opt,name=id,proto3" json:"id,omitempty"`
+type QueryPosition struct {
+	Position        *Position                              `protobuf:"bytes,1,opt,name=position,proto3" json:"position,omitempty"`
+	UpdatedLeverage github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,2,opt,name=updated_leverage,json=updatedLeverage,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"updated_leverage"`
 }
 
-func (m *AddressId) Reset()         { *m = AddressId{} }
-func (m *AddressId) String() string { return proto.CompactTextString(m) }
-func (*AddressId) ProtoMessage()    {}
-func (*AddressId) Descriptor() ([]byte, []int) {
+func (m *QueryPosition) Reset()         { *m = QueryPosition{} }
+func (m *QueryPosition) String() string { return proto.CompactTextString(m) }
+func (*QueryPosition) ProtoMessage()    {}
+func (*QueryPosition) Descriptor() ([]byte, []int) {
 	return fileDescriptor_992d513dd201f55b, []int{3}
 }
-func (m *AddressId) XXX_Unmarshal(b []byte) error {
+func (m *QueryPosition) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *AddressId) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *QueryPosition) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_AddressId.Marshal(b, m, deterministic)
+		return xxx_messageInfo_QueryPosition.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -248,34 +248,27 @@ func (m *AddressId) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return b[:n], nil
 	}
 }
-func (m *AddressId) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_AddressId.Merge(m, src)
+func (m *QueryPosition) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryPosition.Merge(m, src)
 }
-func (m *AddressId) XXX_Size() int {
+func (m *QueryPosition) XXX_Size() int {
 	return m.Size()
 }
-func (m *AddressId) XXX_DiscardUnknown() {
-	xxx_messageInfo_AddressId.DiscardUnknown(m)
+func (m *QueryPosition) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryPosition.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_AddressId proto.InternalMessageInfo
+var xxx_messageInfo_QueryPosition proto.InternalMessageInfo
 
-func (m *AddressId) GetAddress() string {
+func (m *QueryPosition) GetPosition() *Position {
 	if m != nil {
-		return m.Address
+		return m.Position
 	}
-	return ""
-}
-
-func (m *AddressId) GetId() uint64 {
-	if m != nil {
-		return m.Id
-	}
-	return 0
+	return nil
 }
 
 type PositionAndInterest struct {
-	Position            *Position                              `protobuf:"bytes,1,opt,name=position,proto3" json:"position,omitempty"`
+	Position            *QueryPosition                         `protobuf:"bytes,1,opt,name=position,proto3" json:"position,omitempty"`
 	InterestRateHour    github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,2,opt,name=interest_rate_hour,json=interestRateHour,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"interest_rate_hour"`
 	InterestRateHourUsd github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,3,opt,name=interest_rate_hour_usd,json=interestRateHourUsd,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"interest_rate_hour_usd"`
 }
@@ -313,7 +306,7 @@ func (m *PositionAndInterest) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_PositionAndInterest proto.InternalMessageInfo
 
-func (m *PositionAndInterest) GetPosition() *Position {
+func (m *PositionAndInterest) GetPosition() *QueryPosition {
 	if m != nil {
 		return m.Position
 	}
@@ -324,7 +317,7 @@ func init() {
 	proto.RegisterType((*PositionRequest)(nil), "elys.leveragelp.PositionRequest")
 	proto.RegisterType((*Position)(nil), "elys.leveragelp.Position")
 	proto.RegisterType((*LegacyPosition)(nil), "elys.leveragelp.LegacyPosition")
-	proto.RegisterType((*AddressId)(nil), "elys.leveragelp.AddressId")
+	proto.RegisterType((*QueryPosition)(nil), "elys.leveragelp.QueryPosition")
 	proto.RegisterType((*PositionAndInterest)(nil), "elys.leveragelp.PositionAndInterest")
 }
 
@@ -594,7 +587,7 @@ func (m *LegacyPosition) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *AddressId) Marshal() (dAtA []byte, err error) {
+func (m *QueryPosition) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -604,25 +597,35 @@ func (m *AddressId) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *AddressId) MarshalTo(dAtA []byte) (int, error) {
+func (m *QueryPosition) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *AddressId) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *QueryPosition) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if m.Id != 0 {
-		i = encodeVarintTypes(dAtA, i, uint64(m.Id))
-		i--
-		dAtA[i] = 0x10
+	{
+		size := m.UpdatedLeverage.Size()
+		i -= size
+		if _, err := m.UpdatedLeverage.MarshalTo(dAtA[i:]); err != nil {
+			return 0, err
+		}
+		i = encodeVarintTypes(dAtA, i, uint64(size))
 	}
-	if len(m.Address) > 0 {
-		i -= len(m.Address)
-		copy(dAtA[i:], m.Address)
-		i = encodeVarintTypes(dAtA, i, uint64(len(m.Address)))
+	i--
+	dAtA[i] = 0x12
+	if m.Position != nil {
+		{
+			size, err := m.Position.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintTypes(dAtA, i, uint64(size))
+		}
 		i--
 		dAtA[i] = 0xa
 	}
@@ -771,19 +774,18 @@ func (m *LegacyPosition) Size() (n int) {
 	return n
 }
 
-func (m *AddressId) Size() (n int) {
+func (m *QueryPosition) Size() (n int) {
 	if m == nil {
 		return 0
 	}
 	var l int
 	_ = l
-	l = len(m.Address)
-	if l > 0 {
+	if m.Position != nil {
+		l = m.Position.Size()
 		n += 1 + l + sovTypes(uint64(l))
 	}
-	if m.Id != 0 {
-		n += 1 + sovTypes(uint64(m.Id))
-	}
+	l = m.UpdatedLeverage.Size()
+	n += 1 + l + sovTypes(uint64(l))
 	return n
 }
 
@@ -1523,7 +1525,7 @@ func (m *LegacyPosition) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *AddressId) Unmarshal(dAtA []byte) error {
+func (m *QueryPosition) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -1546,15 +1548,51 @@ func (m *AddressId) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: AddressId: wiretype end group for non-group")
+			return fmt.Errorf("proto: QueryPosition: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: AddressId: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: QueryPosition: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Address", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Position", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTypes
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthTypes
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthTypes
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Position == nil {
+				m.Position = &Position{}
+			}
+			if err := m.Position.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field UpdatedLeverage", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -1582,27 +1620,10 @@ func (m *AddressId) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Address = string(dAtA[iNdEx:postIndex])
+			if err := m.UpdatedLeverage.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
 			iNdEx = postIndex
-		case 2:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
-			}
-			m.Id = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTypes
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.Id |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
 		default:
 			iNdEx = preIndex
 			skippy, err := skipTypes(dAtA[iNdEx:])
@@ -1683,7 +1704,7 @@ func (m *PositionAndInterest) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			if m.Position == nil {
-				m.Position = &Position{}
+				m.Position = &QueryPosition{}
 			}
 			if err := m.Position.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err

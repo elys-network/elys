@@ -31,20 +31,20 @@ func initializeForUpdatePool(suite *KeeperTestSuite, addresses []sdk.AccAddress,
 
 func (suite *KeeperTestSuite) TestUpdate_Pool() {
 	suite.ResetSuite()
-	SetupCoinPrices(suite.ctx, suite.app.OracleKeeper)
+	suite.SetupCoinPrices(suite.ctx)
 	addresses := simapp.AddTestAddrs(suite.app, suite.ctx, 10, sdk.NewInt(1000000))
 	asset1 := ptypes.ATOM
 	asset2 := ptypes.BaseCurrency
 	initializeForUpdatePool(suite, addresses, asset1, asset2)
 	testCases := []struct {
 		name                 string
-		input                *types.MsgUpdatePools
+		input                *types.MsgUpdatePool
 		expectErr            bool
 		expectErrMsg         string
 		prerequisiteFunction func()
 	}{
 		{name: "not allowed invalid authority",
-			input: &types.MsgUpdatePools{
+			input: &types.MsgUpdatePool{
 				Authority: addresses[0].String(),
 				UpdatePool: &types.UpdatePool{
 					PoolId:  1,
@@ -58,7 +58,7 @@ func (suite *KeeperTestSuite) TestUpdate_Pool() {
 			},
 		},
 		{name: "success",
-			input: &types.MsgUpdatePools{
+			input: &types.MsgUpdatePool{
 				Authority: "cosmos10d07y265gmmuvt4z0w9aw880jnsr700j6zn9kn",
 				UpdatePool: &types.UpdatePool{
 					PoolId:  1,
@@ -77,7 +77,7 @@ func (suite *KeeperTestSuite) TestUpdate_Pool() {
 		suite.Run(tc.name, func() {
 			tc.prerequisiteFunction()
 			msgServer := keeper.NewMsgServerImpl(suite.app.LeveragelpKeeper)
-			_, err := msgServer.UpdatePools(suite.ctx, tc.input)
+			_, err := msgServer.UpdatePool(suite.ctx, tc.input)
 			if tc.expectErr {
 				suite.Require().Error(err)
 				suite.Require().Contains(err.Error(), tc.expectErrMsg)

@@ -398,8 +398,8 @@ var xxx_messageInfo_MsgUpdateParamsResponse proto.InternalMessageInfo
 
 type UpdatePool struct {
 	PoolId  uint64 `protobuf:"varint,1,opt,name=pool_id,json=poolId,proto3" json:"pool_id,omitempty"`
-	Enabled bool   `protobuf:"varint,2,opt,name=Enabled,proto3" json:"Enabled,omitempty"`
-	Closed  bool   `protobuf:"varint,3,opt,name=Closed,proto3" json:"Closed,omitempty"`
+	Enabled bool   `protobuf:"varint,2,opt,name=enabled,proto3" json:"enabled,omitempty"`
+	Closed  bool   `protobuf:"varint,3,opt,name=closed,proto3" json:"closed,omitempty"`
 }
 
 func (m *UpdatePool) Reset()         { *m = UpdatePool{} }
@@ -456,23 +456,23 @@ func (m *UpdatePool) GetClosed() bool {
 	return false
 }
 
-type MsgUpdatePools struct {
+type MsgUpdatePool struct {
 	Authority  string      `protobuf:"bytes,1,opt,name=authority,proto3" json:"authority,omitempty"`
 	UpdatePool *UpdatePool `protobuf:"bytes,2,opt,name=UpdatePool,proto3" json:"UpdatePool,omitempty"`
 }
 
-func (m *MsgUpdatePools) Reset()         { *m = MsgUpdatePools{} }
-func (m *MsgUpdatePools) String() string { return proto.CompactTextString(m) }
-func (*MsgUpdatePools) ProtoMessage()    {}
-func (*MsgUpdatePools) Descriptor() ([]byte, []int) {
+func (m *MsgUpdatePool) Reset()         { *m = MsgUpdatePool{} }
+func (m *MsgUpdatePool) String() string { return proto.CompactTextString(m) }
+func (*MsgUpdatePool) ProtoMessage()    {}
+func (*MsgUpdatePool) Descriptor() ([]byte, []int) {
 	return fileDescriptor_307315ea7a77a411, []int{9}
 }
-func (m *MsgUpdatePools) XXX_Unmarshal(b []byte) error {
+func (m *MsgUpdatePool) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgUpdatePools) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgUpdatePool) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgUpdatePools.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgUpdatePool.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -482,47 +482,47 @@ func (m *MsgUpdatePools) XXX_Marshal(b []byte, deterministic bool) ([]byte, erro
 		return b[:n], nil
 	}
 }
-func (m *MsgUpdatePools) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgUpdatePools.Merge(m, src)
+func (m *MsgUpdatePool) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgUpdatePool.Merge(m, src)
 }
-func (m *MsgUpdatePools) XXX_Size() int {
+func (m *MsgUpdatePool) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgUpdatePools) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgUpdatePools.DiscardUnknown(m)
+func (m *MsgUpdatePool) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgUpdatePool.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgUpdatePools proto.InternalMessageInfo
+var xxx_messageInfo_MsgUpdatePool proto.InternalMessageInfo
 
-func (m *MsgUpdatePools) GetAuthority() string {
+func (m *MsgUpdatePool) GetAuthority() string {
 	if m != nil {
 		return m.Authority
 	}
 	return ""
 }
 
-func (m *MsgUpdatePools) GetUpdatePool() *UpdatePool {
+func (m *MsgUpdatePool) GetUpdatePool() *UpdatePool {
 	if m != nil {
 		return m.UpdatePool
 	}
 	return nil
 }
 
-type MsgUpdatePoolsResponse struct {
+type MsgUpdatePoolResponse struct {
 }
 
-func (m *MsgUpdatePoolsResponse) Reset()         { *m = MsgUpdatePoolsResponse{} }
-func (m *MsgUpdatePoolsResponse) String() string { return proto.CompactTextString(m) }
-func (*MsgUpdatePoolsResponse) ProtoMessage()    {}
-func (*MsgUpdatePoolsResponse) Descriptor() ([]byte, []int) {
+func (m *MsgUpdatePoolResponse) Reset()         { *m = MsgUpdatePoolResponse{} }
+func (m *MsgUpdatePoolResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgUpdatePoolResponse) ProtoMessage()    {}
+func (*MsgUpdatePoolResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_307315ea7a77a411, []int{10}
 }
-func (m *MsgUpdatePoolsResponse) XXX_Unmarshal(b []byte) error {
+func (m *MsgUpdatePoolResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgUpdatePoolsResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgUpdatePoolResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgUpdatePoolsResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgUpdatePoolResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -532,17 +532,17 @@ func (m *MsgUpdatePoolsResponse) XXX_Marshal(b []byte, deterministic bool) ([]by
 		return b[:n], nil
 	}
 }
-func (m *MsgUpdatePoolsResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgUpdatePoolsResponse.Merge(m, src)
+func (m *MsgUpdatePoolResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgUpdatePoolResponse.Merge(m, src)
 }
-func (m *MsgUpdatePoolsResponse) XXX_Size() int {
+func (m *MsgUpdatePoolResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgUpdatePoolsResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgUpdatePoolsResponse.DiscardUnknown(m)
+func (m *MsgUpdatePoolResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgUpdatePoolResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgUpdatePoolsResponse proto.InternalMessageInfo
+var xxx_messageInfo_MsgUpdatePoolResponse proto.InternalMessageInfo
 
 type MsgWhitelist struct {
 	Authority          string `protobuf:"bytes,1,opt,name=authority,proto3" json:"authority,omitempty"`
@@ -722,7 +722,7 @@ var xxx_messageInfo_MsgDewhitelistResponse proto.InternalMessageInfo
 
 type MsgUpdateStopLoss struct {
 	Creator  string                                 `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
-	Position int32                                  `protobuf:"varint,2,opt,name=position,proto3" json:"position,omitempty"`
+	Position uint64                                 `protobuf:"varint,2,opt,name=position,proto3" json:"position,omitempty"`
 	Price    github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,3,opt,name=price,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"price"`
 }
 
@@ -766,7 +766,7 @@ func (m *MsgUpdateStopLoss) GetCreator() string {
 	return ""
 }
 
-func (m *MsgUpdateStopLoss) GetPosition() int32 {
+func (m *MsgUpdateStopLoss) GetPosition() uint64 {
 	if m != nil {
 		return m.Position
 	}
@@ -1049,7 +1049,7 @@ var xxx_messageInfo_MsgRemovePoolResponse proto.InternalMessageInfo
 type MsgClosePositions struct {
 	Creator   string             `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
 	Liquidate []*PositionRequest `protobuf:"bytes,2,rep,name=liquidate,proto3" json:"liquidate,omitempty"`
-	Stoploss  []*PositionRequest `protobuf:"bytes,3,rep,name=stoploss,proto3" json:"stoploss,omitempty"`
+	StopLoss  []*PositionRequest `protobuf:"bytes,3,rep,name=stop_loss,json=stopLoss,proto3" json:"stop_loss,omitempty"`
 }
 
 func (m *MsgClosePositions) Reset()         { *m = MsgClosePositions{} }
@@ -1099,9 +1099,9 @@ func (m *MsgClosePositions) GetLiquidate() []*PositionRequest {
 	return nil
 }
 
-func (m *MsgClosePositions) GetStoploss() []*PositionRequest {
+func (m *MsgClosePositions) GetStopLoss() []*PositionRequest {
 	if m != nil {
-		return m.Stoploss
+		return m.StopLoss
 	}
 	return nil
 }
@@ -1152,8 +1152,8 @@ func init() {
 	proto.RegisterType((*MsgUpdateParams)(nil), "elys.leveragelp.MsgUpdateParams")
 	proto.RegisterType((*MsgUpdateParamsResponse)(nil), "elys.leveragelp.MsgUpdateParamsResponse")
 	proto.RegisterType((*UpdatePool)(nil), "elys.leveragelp.UpdatePool")
-	proto.RegisterType((*MsgUpdatePools)(nil), "elys.leveragelp.MsgUpdatePools")
-	proto.RegisterType((*MsgUpdatePoolsResponse)(nil), "elys.leveragelp.MsgUpdatePoolsResponse")
+	proto.RegisterType((*MsgUpdatePool)(nil), "elys.leveragelp.MsgUpdatePool")
+	proto.RegisterType((*MsgUpdatePoolResponse)(nil), "elys.leveragelp.MsgUpdatePoolResponse")
 	proto.RegisterType((*MsgWhitelist)(nil), "elys.leveragelp.MsgWhitelist")
 	proto.RegisterType((*MsgWhitelistResponse)(nil), "elys.leveragelp.MsgWhitelistResponse")
 	proto.RegisterType((*MsgDewhitelist)(nil), "elys.leveragelp.MsgDewhitelist")
@@ -1255,8 +1255,8 @@ type MsgClient interface {
 	Close(ctx context.Context, in *MsgClose, opts ...grpc.CallOption) (*MsgCloseResponse, error)
 	ClaimRewards(ctx context.Context, in *MsgClaimRewards, opts ...grpc.CallOption) (*MsgClaimRewardsResponse, error)
 	UpdateParams(ctx context.Context, in *MsgUpdateParams, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
-	AddPools(ctx context.Context, in *MsgAddPool, opts ...grpc.CallOption) (*MsgAddPoolResponse, error)
-	UpdatePools(ctx context.Context, in *MsgUpdatePools, opts ...grpc.CallOption) (*MsgUpdatePoolsResponse, error)
+	AddPool(ctx context.Context, in *MsgAddPool, opts ...grpc.CallOption) (*MsgAddPoolResponse, error)
+	UpdatePool(ctx context.Context, in *MsgUpdatePool, opts ...grpc.CallOption) (*MsgUpdatePoolResponse, error)
 	RemovePool(ctx context.Context, in *MsgRemovePool, opts ...grpc.CallOption) (*MsgRemovePoolResponse, error)
 	Whitelist(ctx context.Context, in *MsgWhitelist, opts ...grpc.CallOption) (*MsgWhitelistResponse, error)
 	Dewhitelist(ctx context.Context, in *MsgDewhitelist, opts ...grpc.CallOption) (*MsgDewhitelistResponse, error)
@@ -1308,18 +1308,18 @@ func (c *msgClient) UpdateParams(ctx context.Context, in *MsgUpdateParams, opts 
 	return out, nil
 }
 
-func (c *msgClient) AddPools(ctx context.Context, in *MsgAddPool, opts ...grpc.CallOption) (*MsgAddPoolResponse, error) {
+func (c *msgClient) AddPool(ctx context.Context, in *MsgAddPool, opts ...grpc.CallOption) (*MsgAddPoolResponse, error) {
 	out := new(MsgAddPoolResponse)
-	err := c.cc.Invoke(ctx, "/elys.leveragelp.Msg/AddPools", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/elys.leveragelp.Msg/AddPool", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *msgClient) UpdatePools(ctx context.Context, in *MsgUpdatePools, opts ...grpc.CallOption) (*MsgUpdatePoolsResponse, error) {
-	out := new(MsgUpdatePoolsResponse)
-	err := c.cc.Invoke(ctx, "/elys.leveragelp.Msg/UpdatePools", in, out, opts...)
+func (c *msgClient) UpdatePool(ctx context.Context, in *MsgUpdatePool, opts ...grpc.CallOption) (*MsgUpdatePoolResponse, error) {
+	out := new(MsgUpdatePoolResponse)
+	err := c.cc.Invoke(ctx, "/elys.leveragelp.Msg/UpdatePool", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1377,8 +1377,8 @@ type MsgServer interface {
 	Close(context.Context, *MsgClose) (*MsgCloseResponse, error)
 	ClaimRewards(context.Context, *MsgClaimRewards) (*MsgClaimRewardsResponse, error)
 	UpdateParams(context.Context, *MsgUpdateParams) (*MsgUpdateParamsResponse, error)
-	AddPools(context.Context, *MsgAddPool) (*MsgAddPoolResponse, error)
-	UpdatePools(context.Context, *MsgUpdatePools) (*MsgUpdatePoolsResponse, error)
+	AddPool(context.Context, *MsgAddPool) (*MsgAddPoolResponse, error)
+	UpdatePool(context.Context, *MsgUpdatePool) (*MsgUpdatePoolResponse, error)
 	RemovePool(context.Context, *MsgRemovePool) (*MsgRemovePoolResponse, error)
 	Whitelist(context.Context, *MsgWhitelist) (*MsgWhitelistResponse, error)
 	Dewhitelist(context.Context, *MsgDewhitelist) (*MsgDewhitelistResponse, error)
@@ -1402,11 +1402,11 @@ func (*UnimplementedMsgServer) ClaimRewards(ctx context.Context, req *MsgClaimRe
 func (*UnimplementedMsgServer) UpdateParams(ctx context.Context, req *MsgUpdateParams) (*MsgUpdateParamsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateParams not implemented")
 }
-func (*UnimplementedMsgServer) AddPools(ctx context.Context, req *MsgAddPool) (*MsgAddPoolResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method AddPools not implemented")
+func (*UnimplementedMsgServer) AddPool(ctx context.Context, req *MsgAddPool) (*MsgAddPoolResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AddPool not implemented")
 }
-func (*UnimplementedMsgServer) UpdatePools(ctx context.Context, req *MsgUpdatePools) (*MsgUpdatePoolsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UpdatePools not implemented")
+func (*UnimplementedMsgServer) UpdatePool(ctx context.Context, req *MsgUpdatePool) (*MsgUpdatePoolResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdatePool not implemented")
 }
 func (*UnimplementedMsgServer) RemovePool(ctx context.Context, req *MsgRemovePool) (*MsgRemovePoolResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RemovePool not implemented")
@@ -1500,38 +1500,38 @@ func _Msg_UpdateParams_Handler(srv interface{}, ctx context.Context, dec func(in
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Msg_AddPools_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Msg_AddPool_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(MsgAddPool)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MsgServer).AddPools(ctx, in)
+		return srv.(MsgServer).AddPool(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/elys.leveragelp.Msg/AddPools",
+		FullMethod: "/elys.leveragelp.Msg/AddPool",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).AddPools(ctx, req.(*MsgAddPool))
+		return srv.(MsgServer).AddPool(ctx, req.(*MsgAddPool))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Msg_UpdatePools_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgUpdatePools)
+func _Msg_UpdatePool_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgUpdatePool)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MsgServer).UpdatePools(ctx, in)
+		return srv.(MsgServer).UpdatePool(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/elys.leveragelp.Msg/UpdatePools",
+		FullMethod: "/elys.leveragelp.Msg/UpdatePool",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).UpdatePools(ctx, req.(*MsgUpdatePools))
+		return srv.(MsgServer).UpdatePool(ctx, req.(*MsgUpdatePool))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1647,12 +1647,12 @@ var _Msg_serviceDesc = grpc.ServiceDesc{
 			Handler:    _Msg_UpdateParams_Handler,
 		},
 		{
-			MethodName: "AddPools",
-			Handler:    _Msg_AddPools_Handler,
+			MethodName: "AddPool",
+			Handler:    _Msg_AddPool_Handler,
 		},
 		{
-			MethodName: "UpdatePools",
-			Handler:    _Msg_UpdatePools_Handler,
+			MethodName: "UpdatePool",
+			Handler:    _Msg_UpdatePool_Handler,
 		},
 		{
 			MethodName: "RemovePool",
@@ -2026,7 +2026,7 @@ func (m *UpdatePool) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *MsgUpdatePools) Marshal() (dAtA []byte, err error) {
+func (m *MsgUpdatePool) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -2036,12 +2036,12 @@ func (m *MsgUpdatePools) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgUpdatePools) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgUpdatePool) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgUpdatePools) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgUpdatePool) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -2068,7 +2068,7 @@ func (m *MsgUpdatePools) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *MsgUpdatePoolsResponse) Marshal() (dAtA []byte, err error) {
+func (m *MsgUpdatePoolResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -2078,12 +2078,12 @@ func (m *MsgUpdatePoolsResponse) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgUpdatePoolsResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgUpdatePoolResponse) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgUpdatePoolsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgUpdatePoolResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -2478,10 +2478,10 @@ func (m *MsgClosePositions) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if len(m.Stoploss) > 0 {
-		for iNdEx := len(m.Stoploss) - 1; iNdEx >= 0; iNdEx-- {
+	if len(m.StopLoss) > 0 {
+		for iNdEx := len(m.StopLoss) - 1; iNdEx >= 0; iNdEx-- {
 			{
-				size, err := m.Stoploss[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				size, err := m.StopLoss[iNdEx].MarshalToSizedBuffer(dAtA[:i])
 				if err != nil {
 					return 0, err
 				}
@@ -2685,7 +2685,7 @@ func (m *UpdatePool) Size() (n int) {
 	return n
 }
 
-func (m *MsgUpdatePools) Size() (n int) {
+func (m *MsgUpdatePool) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -2702,7 +2702,7 @@ func (m *MsgUpdatePools) Size() (n int) {
 	return n
 }
 
-func (m *MsgUpdatePoolsResponse) Size() (n int) {
+func (m *MsgUpdatePoolResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -2875,8 +2875,8 @@ func (m *MsgClosePositions) Size() (n int) {
 			n += 1 + l + sovTx(uint64(l))
 		}
 	}
-	if len(m.Stoploss) > 0 {
-		for _, e := range m.Stoploss {
+	if len(m.StopLoss) > 0 {
+		for _, e := range m.StopLoss {
 			l = e.Size()
 			n += 1 + l + sovTx(uint64(l))
 		}
@@ -3854,7 +3854,7 @@ func (m *UpdatePool) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *MsgUpdatePools) Unmarshal(dAtA []byte) error {
+func (m *MsgUpdatePool) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -3877,10 +3877,10 @@ func (m *MsgUpdatePools) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgUpdatePools: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgUpdatePool: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgUpdatePools: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgUpdatePool: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -3972,7 +3972,7 @@ func (m *MsgUpdatePools) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *MsgUpdatePoolsResponse) Unmarshal(dAtA []byte) error {
+func (m *MsgUpdatePoolResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -3995,10 +3995,10 @@ func (m *MsgUpdatePoolsResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgUpdatePoolsResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgUpdatePoolResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgUpdatePoolsResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgUpdatePoolResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		default:
@@ -4425,7 +4425,7 @@ func (m *MsgUpdateStopLoss) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.Position |= int32(b&0x7F) << shift
+				m.Position |= uint64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -5091,7 +5091,7 @@ func (m *MsgClosePositions) Unmarshal(dAtA []byte) error {
 			iNdEx = postIndex
 		case 3:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Stoploss", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field StopLoss", wireType)
 			}
 			var msglen int
 			for shift := uint(0); ; shift += 7 {
@@ -5118,8 +5118,8 @@ func (m *MsgClosePositions) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Stoploss = append(m.Stoploss, &PositionRequest{})
-			if err := m.Stoploss[len(m.Stoploss)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+			m.StopLoss = append(m.StopLoss, &PositionRequest{})
+			if err := m.StopLoss[len(m.StopLoss)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex

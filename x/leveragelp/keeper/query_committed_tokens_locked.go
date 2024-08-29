@@ -22,16 +22,16 @@ func (k Keeper) CommittedTokensLocked(goCtx context.Context, req *types.QueryCom
 		return nil, err
 	}
 
-	listPositionAndInterest, _, err := k.GetPositionsForAddress(ctx, address, nil)
+	positions, _, err := k.GetPositionsForAddress(ctx, address, nil)
 
 	if err != nil {
 		return nil, err
 	}
 
 	totalLocked, totalCommitted := sdk.Coins{}, sdk.Coins{}
-	for _, positionAndInterest := range listPositionAndInterest {
+	for _, position := range positions {
 
-		commitments := k.commKeeper.GetCommitments(ctx, positionAndInterest.Position.GetPositionAddress())
+		commitments := k.commKeeper.GetCommitments(ctx, position.GetPositionAddress())
 		tl, tc := commitments.CommittedTokensLocked(ctx)
 
 		totalLocked = totalLocked.Add(tl...)

@@ -16,7 +16,9 @@ func RegisterCodec(cdc *codec.LegacyAmino) {
 	legacy.RegisterAminoMsg(cdc, &MsgOpen{}, "leveragelp/MsgOpen")
 	legacy.RegisterAminoMsg(cdc, &MsgClose{}, "leveragelp/MsgClose")
 	legacy.RegisterAminoMsg(cdc, &MsgUpdateParams{}, "leveragelp/MsgUpdateParams")
-	legacy.RegisterAminoMsg(cdc, &MsgUpdatePools{}, "leveragelp/MsgUpdatePools")
+	legacy.RegisterAminoMsg(cdc, &MsgAddPool{}, "leveragelp/MsgAddPool")
+	legacy.RegisterAminoMsg(cdc, &MsgUpdatePool{}, "leveragelp/MsgUpdatePool")
+	legacy.RegisterAminoMsg(cdc, &MsgRemovePool{}, "leveragelp/MsgRemovePool")
 	legacy.RegisterAminoMsg(cdc, &MsgWhitelist{}, "leveragelp/MsgWhitelist")
 	legacy.RegisterAminoMsg(cdc, &MsgDewhitelist{}, "leveragelp/MsgDewhitelist")
 	legacy.RegisterAminoMsg(cdc, &MsgClaimRewards{}, "leveragelp/MsgClaimRewards")
@@ -31,7 +33,9 @@ func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 		&MsgOpen{},
 		&MsgClose{},
 		&MsgUpdateParams{},
-		&MsgUpdatePools{},
+		&MsgAddPool{},
+		&MsgUpdatePool{},
+		&MsgRemovePool{},
 		&MsgWhitelist{},
 		&MsgDewhitelist{},
 		&MsgClaimRewards{},

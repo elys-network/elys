@@ -46,11 +46,11 @@ func CmdClosePositions() *cobra.Command {
 			}
 
 			msg := types.NewMsgClosePositions(
-				clientCtx.GetFromAddress().String(),
+				clientCtx.GetFromAddress(),
 				liqudiatePtrs,
 				stoplossPtrs,
 			)
-			if err := msg.ValidateBasic(); err != nil {
+			if err = msg.ValidateBasic(); err != nil {
 				return err
 			}
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
