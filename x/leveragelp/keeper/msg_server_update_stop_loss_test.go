@@ -2,19 +2,17 @@ package keeper_test
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/types/address"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 	simapp "github.com/elys-network/elys/app"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	"github.com/elys-network/elys/x/leveragelp/keeper"
 	"github.com/elys-network/elys/x/leveragelp/types"
-	mastercheftypes "github.com/elys-network/elys/x/masterchef/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 	stablekeeper "github.com/elys-network/elys/x/stablestake/keeper"
 	stabletypes "github.com/elys-network/elys/x/stablestake/types"
 )
 
-func initializeForClaimRewards(suite *KeeperTestSuite, addresses []sdk.AccAddress, asset1, asset2 string, createAmmPool bool) {
+func initializeForUpdateStopLoss(suite *KeeperTestSuite, addresses []sdk.AccAddress, asset1, asset2 string, openPosition bool) {
 	fee := sdk.MustNewDecFromStr("0.0002")
 	issueAmount := sdk.NewInt(10_000_000_000_000)
 	for _, address := range addresses {
@@ -56,21 +54,17 @@ func initializeForClaimRewards(suite *KeeperTestSuite, addresses []sdk.AccAddres
 			},
 		},
 	}
-	if createAmmPool {
-		poolId, err := suite.app.AmmKeeper.CreatePool(suite.ctx, &msgCreatePool)
-		if err != nil {
-			panic(err)
-		}
-
-		suite.app.LeveragelpKeeper.SetPool(suite.ctx, types.NewPool(poolId))
-
+	poolId, err := suite.app.AmmKeeper.CreatePool(suite.ctx, &msgCreatePool)
+	if err != nil {
+		panic(err)
 	}
+	suite.app.LeveragelpKeeper.SetPool(suite.ctx, types.NewPool(poolId))
 	msgBond := stabletypes.MsgBond{
 		Creator: addresses[1].String(),
 		Amount:  issueAmount.QuoRaw(20),
 	}
 	stableStakeMsgServer := stablekeeper.NewMsgServerImpl(suite.app.StablestakeKeeper)
-	_, err := stableStakeMsgServer.Bond(suite.ctx, &msgBond)
+	_, err = stableStakeMsgServer.Bond(suite.ctx, &msgBond)
 	if err != nil {
 		panic(err)
 	}
@@ -79,73 +73,103 @@ func initializeForClaimRewards(suite *KeeperTestSuite, addresses []sdk.AccAddres
 	if err != nil {
 		panic(err)
 	}
-}
 
-func (suite *KeeperTestSuite) TestMsgServerClaimRewards() {
+	if openPosition {
+		openMsg := &types.MsgOpen{
+			Creator:          addresses[0].String(),
+			CollateralAsset:  "uusdc",
+			CollateralAmount: sdk.OneInt().MulRaw(1000_0000),
+			AmmPoolId:        1,
+			Leverage:         sdk.OneDec().MulInt64(2),
+			StopLossPrice:    sdk.ZeroDec(),
+		}
+		_, err = suite.app.LeveragelpKeeper.Open(suite.ctx, openMsg)
+		if err != nil {
+			panic(err)
+		}
+	}
+}
+func (suite *KeeperTestSuite) TestUpdateSyopLoss() {
 	addresses := simapp.AddTestAddrs(suite.app, suite.ctx, 10, sdk.NewInt(1000000))
 	asset1 := ptypes.ATOM
 	asset2 := ptypes.BaseCurrency
-	leverage := sdk.MustNewDecFromStr("2.0")
-	collateralAmount := sdk.NewInt(10000000)
 	testCases := []struct {
 		name                 string
-		input                *types.MsgClaimRewards
+		input                *types.MsgUpdateStopLoss
 		expectErr            bool
 		expectErrMsg         string
 		prerequisiteFunction func()
+		postValidateFunc     func()
 	}{
-		{"position not found",
-			&types.MsgClaimRewards{
-				Sender: addresses[0].String(),
-				Ids:    []uint64{1},
+		{name: "position not found",
+			input: &types.MsgUpdateStopLoss{
+				Creator:  addresses[0].String(),
+				Position: 2,
+				Price:    sdk.OneDec().MulInt64(10),
 			},
-			true,
-			types.ErrPositionDoesNotExist.Error(),
-			func() {
+			expectErr:    true,
+			expectErrMsg: types.ErrPositionDoesNotExist.Error(),
+			prerequisiteFunction: func() {
 				suite.ResetSuite()
 				suite.SetupCoinPrices(suite.ctx)
-				initializeForClaimRewards(suite, addresses, asset1, asset2, false)
+				initializeForUpdateStopLoss(suite, addresses, asset1, asset2, false)
+			},
+			postValidateFunc: func() {
 			},
 		},
-		{"module is out of funds",
-			&types.MsgClaimRewards{
-				Sender: addresses[0].String(),
-				Ids:    []uint64{1},
+		{name: "pool not found",
+			input: &types.MsgUpdateStopLoss{
+				Creator:  addresses[0].String(),
+				Position: 1,
+				Price:    sdk.OneDec().MulInt64(10),
 			},
-			true,
-			"insufficient funds",
-			func() {
+			expectErr:    true,
+			expectErrMsg: types.ErrPoolDoesNotExist.Error(),
+			prerequisiteFunction: func() {
 				suite.ResetSuite()
 				suite.SetupCoinPrices(suite.ctx)
-				initializeForClaimRewards(suite, addresses, asset1, asset2, true)
-				openPosition(suite, addresses[0], collateralAmount, leverage)
-				moduleAddress := address.Module("masterchef")
-				balances := suite.app.BankKeeper.GetAllBalances(suite.ctx, moduleAddress)
-				err := suite.app.BankKeeper.SendCoins(suite.ctx, moduleAddress, addresses[2], balances)
-				if err != nil {
-					panic(err)
-				}
-				positonAddress := types.GetPositionAddress(1)
-				suite.app.MasterchefKeeper.SetUserRewardInfo(suite.ctx, mastercheftypes.UserRewardInfo{
-					User:          positonAddress.String(),
-					PoolId:        1,
-					RewardDenom:   "uusdc",
-					RewardPending: sdk.MustNewDecFromStr("100"),
-				})
+				initializeForUpdateStopLoss(suite, addresses, asset1, asset2, true)
+				suite.app.LeveragelpKeeper.RemovePool(suite.ctx, 1)
+			},
+			postValidateFunc: func() {
 			},
 		},
-		{"positive case",
-			&types.MsgClaimRewards{
-				Sender: addresses[0].String(),
-				Ids:    []uint64{1},
+		{name: "pool not enabled",
+			input: &types.MsgUpdateStopLoss{
+				Creator:  addresses[0].String(),
+				Position: 1,
+				Price:    sdk.OneDec().MulInt64(10),
 			},
-			false,
-			"",
-			func() {
+			expectErr:    true,
+			expectErrMsg: types.ErrPositionDisabled.Error(),
+			prerequisiteFunction: func() {
 				suite.ResetSuite()
 				suite.SetupCoinPrices(suite.ctx)
-				initializeForClaimRewards(suite, addresses, asset1, asset2, true)
-				openPosition(suite, addresses[0], collateralAmount, leverage)
+				initializeForUpdateStopLoss(suite, addresses, asset1, asset2, true)
+				pool := types.NewPool(1)
+				pool.Enabled = false
+				suite.app.LeveragelpKeeper.SetPool(suite.ctx, pool)
+			},
+			postValidateFunc: func() {
+			},
+		},
+		{name: "success",
+			input: &types.MsgUpdateStopLoss{
+				Creator:  addresses[0].String(),
+				Position: 1,
+				Price:    sdk.OneDec().MulInt64(10),
+			},
+			expectErr:    false,
+			expectErrMsg: "",
+			prerequisiteFunction: func() {
+				suite.ResetSuite()
+				suite.SetupCoinPrices(suite.ctx)
+				initializeForUpdateStopLoss(suite, addresses, asset1, asset2, true)
+			},
+			postValidateFunc: func() {
+				position, found := suite.app.LeveragelpKeeper.GetPositionWithId(suite.ctx, addresses[0], 1)
+				suite.Require().True(found)
+				suite.Require().Equal(position.StopLossPrice, sdk.OneDec().MulInt64(10))
 			},
 		},
 	}
@@ -154,13 +178,14 @@ func (suite *KeeperTestSuite) TestMsgServerClaimRewards() {
 		suite.Run(tc.name, func() {
 			tc.prerequisiteFunction()
 			msgServer := keeper.NewMsgServerImpl(suite.app.LeveragelpKeeper)
-			_, err := msgServer.ClaimRewards(suite.ctx, tc.input)
+			_, err := msgServer.UpdateStopLoss(suite.ctx, tc.input)
 			if tc.expectErr {
 				suite.Require().Error(err)
 				suite.Require().Contains(err.Error(), tc.expectErrMsg)
 			} else {
 				suite.Require().NoError(err)
 			}
+			tc.postValidateFunc()
 		})
 	}
 }

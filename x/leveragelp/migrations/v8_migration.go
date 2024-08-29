@@ -26,7 +26,7 @@ func (m Migrator) V8Migration(ctx sdk.Context) error {
 			ctx.Logger().Error(errors.Wrap(err, fmt.Sprintf("error getting amm pool: %d", pool.AmmPoolId)).Error())
 			continue
 		}
-		isHealthy, _, _, _ := m.keeper.LiquidatePositionIfUnhealthy(ctx, &position, pool, ammPool)
+		isHealthy, _, _, _ := m.keeper.CheckAndLiquidateUnhealthyPosition(ctx, &position, pool, ammPool)
 		if isHealthy {
 			openCount++
 		}

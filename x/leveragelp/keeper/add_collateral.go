@@ -22,7 +22,7 @@ func (k Keeper) ProcessAddCollateral(ctx sdk.Context, address string, id uint64,
 	}
 
 	// Check if the pool is enabled.
-	if !k.IsPoolEnabled(ctx, position.AmmPoolId) {
+	if !pool.Enabled {
 		return errorsmod.Wrap(types.ErrPositionDisabled, fmt.Sprintf("poolId: %d", position.AmmPoolId))
 	}
 

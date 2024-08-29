@@ -12,14 +12,17 @@ import (
 
 func (suite KeeperTestSuite) TestQ() {
 	k := suite.app.LeveragelpKeeper
-	SetupCoinPrices(suite.ctx, suite.app.OracleKeeper)
+	suite.SetupCoinPrices(suite.ctx)
 	addr := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
 	poolAddr := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
 	treasuryAddr := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
 	pool := types.Pool{
-		AmmPoolId: 1,
-		Enabled:   true,
-		Closed:    false,
+		AmmPoolId:         1,
+		Enabled:           true,
+		Closed:            false,
+		Health:            sdk.ZeroDec(),
+		LeveragedLpAmount: sdk.ZeroInt(),
+		LeverageMax:       sdk.OneDec().MulInt64(10),
 	}
 	poolInit := sdk.Coins{sdk.NewInt64Coin("uusdc", 100000), sdk.NewInt64Coin("uusdt", 100000)}
 

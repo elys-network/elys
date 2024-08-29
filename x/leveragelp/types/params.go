@@ -1,7 +1,7 @@
 package types
 
 import (
-	fmt "fmt"
+	"fmt"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
@@ -104,8 +104,8 @@ func validateLeverageMax(i interface{}) error {
 	if v.IsNil() {
 		return fmt.Errorf("leverage max must be not nil")
 	}
-	if v.IsNegative() {
-		return fmt.Errorf("leverage max must be positive: %s", v)
+	if !v.GT(sdk.OneDec()) {
+		return fmt.Errorf("leverage max must be greater than 1: %s", v)
 	}
 	if v.GT(sdk.NewDec(10)) {
 		return fmt.Errorf("leverage max too large: %s", v)
@@ -145,17 +145,8 @@ func validateSafetyFactor(i interface{}) error {
 	if v.IsNil() {
 		return fmt.Errorf("safety factor must be not nil")
 	}
-	if v.IsNegative() {
+	if !v.IsPositive() {
 		return fmt.Errorf("safety factor must be positive: %s", v)
-	}
-
-	return nil
-}
-
-func validateIncrementalInterestPaymentEnabled(i interface{}) error {
-	_, ok := i.(bool)
-	if !ok {
-		return fmt.Errorf("invalid parameter type: %T", i)
 	}
 
 	return nil
@@ -179,7 +170,7 @@ func validatePoolOpenThreshold(i interface{}) error {
 	if v.IsNil() {
 		return fmt.Errorf("pool open threshold must be not nil")
 	}
-	if v.IsNegative() {
+	if !v.IsPositive() {
 		return fmt.Errorf("pool open threshold must be positive: %s", v)
 	}
 
@@ -190,6 +181,10 @@ func validateNumberOfBlocks(i interface{}) error {
 	v, ok := i.(int64)
 	if !ok {
 		return fmt.Errorf("invalid parameter type: %T", i)
+	}
+
+	if v < 0 {
+		return fmt.Errorf("number of positions per block must be positive: %d", v)
 	}
 
 	if v > MaxPageLimit {

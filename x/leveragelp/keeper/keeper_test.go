@@ -9,7 +9,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	simapp "github.com/elys-network/elys/app"
-	oraclekeeper "github.com/elys-network/elys/x/oracle/keeper"
 	oracletypes "github.com/elys-network/elys/x/oracle/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 	"github.com/stretchr/testify/require"
@@ -69,6 +68,10 @@ func (suite *KeeperTestSuite) SetupTest() {
 
 func (suite *KeeperTestSuite) ResetSuite() {
 	suite.SetupTest()
+}
+
+func (suite *KeeperTestSuite) SetCurrentHeight(h int64) {
+	suite.ctx = suite.ctx.WithBlockHeight(h)
 }
 
 func (suite *KeeperTestSuite) AddBlockTime(d time.Duration) {
@@ -142,17 +145,17 @@ func TestKeeperSuite(t *testing.T) {
 	suite.Run(t, new(KeeperTestSuite))
 }
 
-func SetupCoinPrices(ctx sdk.Context, oracle oraclekeeper.Keeper) {
+func (suite *KeeperTestSuite) SetupCoinPrices(ctx sdk.Context) {
 	// prices set for USDT and USDC
 	provider := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
 
 	for _, v := range priceMap {
-		oracle.SetAssetInfo(ctx, oracletypes.AssetInfo{
+		suite.app.OracleKeeper.SetAssetInfo(ctx, oracletypes.AssetInfo{
 			Denom:   v.denom,
 			Display: v.display,
 			Decimal: 6,
 		})
-		oracle.SetPrice(ctx, oracletypes.Price{
+		suite.app.OracleKeeper.SetPrice(ctx, oracletypes.Price{
 			Asset:     v.display,
 			Price:     v.price,
 			Source:    "elys",
@@ -162,23 +165,30 @@ func SetupCoinPrices(ctx sdk.Context, oracle oraclekeeper.Keeper) {
 	}
 }
 
-func AddCoinPrices(ctx sdk.Context, oracle oraclekeeper.Keeper, denoms []string) {
+func (suite *KeeperTestSuite) AddCoinPrices(ctx sdk.Context, denoms []string) {
 	// prices set for USDT and USDC
 	provider := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
 
 	for _, v := range denoms {
-		oracle.SetAssetInfo(ctx, oracletypes.AssetInfo{
+		suite.app.OracleKeeper.SetAssetInfo(ctx, oracletypes.AssetInfo{
 			Denom:   priceMap[v].denom,
 			Display: priceMap[v].display,
 			Decimal: 6,
 		})
-		oracle.SetPrice(ctx, oracletypes.Price{
+		suite.app.OracleKeeper.SetPrice(ctx, oracletypes.Price{
 			Asset:     priceMap[v].display,
 			Price:     priceMap[v].price,
 			Source:    "elys",
 			Provider:  provider.String(),
 			Timestamp: uint64(ctx.BlockTime().Unix()),
 		})
+	}
+}
+
+func (suite *KeeperTestSuite) RemovePrices(ctx sdk.Context, denoms []string) {
+	for _, v := range denoms {
+		suite.app.OracleKeeper.RemoveAssetInfo(ctx, v)
+		suite.app.OracleKeeper.RemovePrice(ctx, priceMap[v].display, "elys", uint64(ctx.BlockTime().Unix()))
 	}
 }
 

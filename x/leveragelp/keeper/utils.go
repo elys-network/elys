@@ -40,7 +40,7 @@ func (k Keeper) CheckPoolHealth(ctx sdk.Context, poolId uint64) error {
 		return errorsmod.Wrap(types.ErrInvalidBorrowingAsset, "invalid collateral asset")
 	}
 
-	if !k.IsPoolEnabled(ctx, poolId) || k.IsPoolClosed(ctx, poolId) {
+	if !pool.Enabled || pool.Closed {
 		return errorsmod.Wrap(types.ErrPositionDisabled, "pool is disabled or closed")
 	}
 

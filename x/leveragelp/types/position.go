@@ -18,15 +18,31 @@ func NewPosition(signer string, collateral sdk.Coin, leverage sdk.Dec, poolId ui
 		PositionHealth:    sdk.ZeroDec(),
 		AmmPoolId:         poolId,
 		LeveragedLpAmount: sdk.ZeroInt(),
+		StopLossPrice:     sdk.ZeroDec(),
 	}
 }
 
 func (position Position) Validate() error {
-	if position.Address == "" {
-		return errorsmod.Wrap(ErrPositionInvalid, "no address specified")
+	if _, err := sdk.AccAddressFromBech32(position.Address); err != nil {
+		return errorsmod.Wrap(ErrPositionInvalid, err.Error())
 	}
 	if position.Id == 0 {
-		return errorsmod.Wrap(ErrPositionInvalid, "no id specified")
+		return errorsmod.Wrap(ErrPositionInvalid, "position id cannot be 0")
+	}
+	if position.LeveragedLpAmount.IsNegative() {
+		return errorsmod.Wrap(ErrPositionInvalid, "leveraged lp amount cannot be negative")
+	}
+	if !position.Leverage.GT(sdk.OneDec()) {
+		return errorsmod.Wrapf(ErrPositionInvalid, "leverage must be greater than 1")
+	}
+	if !position.Collateral.IsValid() {
+		return errorsmod.Wrap(ErrPositionInvalid, "invalid collateral coin")
+	}
+	if position.StopLossPrice.IsNegative() {
+		return errorsmod.Wrapf(ErrPositionInvalid, "stop loss price cannot be negative")
+	}
+	if position.Liabilities.IsNegative() {
+		return errorsmod.Wrap(ErrPositionInvalid, "liabilities cannot be negative")
 	}
 
 	return nil

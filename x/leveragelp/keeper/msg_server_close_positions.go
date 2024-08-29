@@ -2,7 +2,7 @@ package keeper
 
 import (
 	"context"
-	"strconv"
+	"fmt"
 	"strings"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -19,39 +19,43 @@ func (k msgServer) ClosePositions(goCtx context.Context, msg *types.MsgClosePosi
 		if err != nil {
 			continue
 		}
-		pool, found := k.GetPool(ctx, position.AmmPoolId)
-		ammPool, err := k.GetAmmPool(ctx, position.AmmPoolId)
-		if !found || err != nil {
+
+		pool, poolFound := k.GetPool(ctx, position.AmmPoolId)
+		if !poolFound {
 			continue
 		}
-		isHealthy, isEarly, health, err := k.LiquidatePositionIfUnhealthy(ctx, &position, pool, ammPool)
-		// position is liquidated
+		ammPool, poolErr := k.GetAmmPool(ctx, position.AmmPoolId)
+		if poolErr != nil {
+			continue
+		}
+
+		_, _, _, err = k.CheckAndLiquidateUnhealthyPosition(ctx, &position, pool, ammPool)
 		if err != nil {
 			// Add log about error or not liquidated
-			liqLog = append(liqLog, "Position: Address:%s Id:%d cannot be liquidated due to err: %s", position.Address, strconv.FormatUint(position.Id, 10), err.Error())
-		} else if !(!isHealthy && !isEarly) {
-			liqLog = append(liqLog, "Position: Address:%s Id:%s is healthy: %s", position.Address, strconv.FormatUint(position.Id, 10), health.String())
+			liqLog = append(liqLog, fmt.Sprintf("Position: Address:%s Id:%d cannot be liquidated due to err: %s", position.Address, position.Id, err.Error()))
 		}
 	}
 
 	// Handle stop loss
 	closeLog := []string{}
-	for _, val := range msg.Stoploss {
+	for _, val := range msg.StopLoss {
 		position, err := k.GetPosition(ctx, val.GetAccountAddress(), val.Id)
 		if err != nil {
 			continue
 		}
-		pool, found := k.GetPool(ctx, position.AmmPoolId)
-		ammPool, err := k.GetAmmPool(ctx, position.AmmPoolId)
-		if !found || err != nil {
+
+		pool, poolFound := k.GetPool(ctx, position.AmmPoolId)
+		if !poolFound {
 			continue
 		}
-		under, early, err := k.ClosePositionIfUnderStopLossPrice(ctx, &position, pool, ammPool)
+		ammPool, poolErr := k.GetAmmPool(ctx, position.AmmPoolId)
+		if poolErr != nil {
+			continue
+		}
+		_, _, err = k.CheckAndCloseAtStopLoss(ctx, &position, pool, ammPool)
 		if err != nil {
 			// Add log about error or not closed
-			closeLog = append(closeLog, "Position: Address:%s Id:%s cannot be liquidated due to err: %s", position.Address, strconv.FormatUint(position.Id, 10), err.Error())
-		} else if !(under && !early) {
-			closeLog = append(closeLog, "Position: Address:%s Id:%s is not under stop loss", position.Address, strconv.FormatUint(position.Id, 10))
+			closeLog = append(closeLog, fmt.Sprintf("Position: Address:%s Id:%d cannot be liquidated due to err: %s", position.Address, position.Id, err.Error()))
 		}
 	}
 
