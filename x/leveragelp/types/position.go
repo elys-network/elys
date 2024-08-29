@@ -31,9 +31,6 @@ func (position Position) Validate() error {
 	if position.LeveragedLpAmount.IsNegative() {
 		return errorsmod.Wrap(ErrPositionInvalid, "leveraged lp amount cannot be negative")
 	}
-	if !position.Leverage.GT(sdk.OneDec()) {
-		return errorsmod.Wrapf(ErrPositionInvalid, "leverage must be greater than 1")
-	}
 	if !position.Collateral.IsValid() {
 		return errorsmod.Wrap(ErrPositionInvalid, "invalid collateral coin")
 	}
