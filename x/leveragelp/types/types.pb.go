@@ -331,7 +331,7 @@ func (m *PositionAndInterest) Reset()         { *m = PositionAndInterest{} }
 func (m *PositionAndInterest) String() string { return proto.CompactTextString(m) }
 func (*PositionAndInterest) ProtoMessage()    {}
 func (*PositionAndInterest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_992d513dd201f55b, []int{5}
+	return fileDescriptor_992d513dd201f55b, []int{3}
 }
 func (m *PositionAndInterest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)

@@ -15,7 +15,7 @@ import (
 
 func (suite KeeperTestSuite) OpenPosition(addr sdk.AccAddress) (*types.Position, types.Pool) {
 	k := suite.app.LeveragelpKeeper
-	SetupCoinPrices(suite.ctx, suite.app.OracleKeeper)
+	suite.SetupCoinPrices(suite.ctx)
 	poolAddr := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
 	treasuryAddr := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
 	amount := int64(10_000_000)
@@ -25,7 +25,7 @@ func (suite KeeperTestSuite) OpenPosition(addr sdk.AccAddress) (*types.Position,
 		Closed:            false,
 		Health:            sdk.ZeroDec(),
 		LeveragedLpAmount: sdk.ZeroInt(),
-		LeverageMax:       sdk.ZeroDec(),
+		LeverageMax:       sdk.OneDec().MulInt64(10),
 	}
 	poolInit := sdk.Coins{sdk.NewInt64Coin("uusdc", amount), sdk.NewInt64Coin("uusdt", amount)}
 

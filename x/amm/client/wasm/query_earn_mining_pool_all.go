@@ -83,7 +83,7 @@ func (oq *Querier) generateEarnPool(ctx sdk.Context, ammPool *types.Pool, filter
 
 	leverageLpPool, found := oq.leveragelpKeeper.GetPool(ctx, ammPool.PoolId)
 	if found {
-		isLeverageLpEnabled = oq.leveragelpKeeper.IsPoolEnabled(ctx, ammPool.PoolId)
+		isLeverageLpEnabled = leverageLpPool.Enabled
 		leverageLpPercent = leverageLpPool.LeveragedLpAmount.ToLegacyDec().Quo(ammPool.TotalShares.Amount.ToLegacyDec()).Mul(sdk.NewDec(100))
 	}
 

@@ -1,4 +1,5 @@
 syntax = "proto3";
+
 package elys.masterchef;
 
 import "gogoproto/gogo.proto";
@@ -8,50 +9,65 @@ import "cosmos/base/v1beta1/coin.proto";
 import "elys/masterchef/params.proto";
 import "elys/masterchef/external_incentive.proto";
 import "elys/masterchef/pool.proto";
+import "elys/masterchef/types.proto";
 
 option go_package = "github.com/elys-network/elys/x/masterchef/types";
 
 // Query defines the gRPC querier service.
 service Query {
+  
   // Parameters queries the parameters of the module.
-  rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
+  rpc Params            (QueryParamsRequest           ) returns (QueryParamsResponse           ) {
     option (google.api.http).get = "/elys-network/elys/masterchef/params";
+  
   }
-
-  rpc ExternalIncentive(QueryExternalIncentiveRequest) returns (QueryExternalIncentiveResponse) {
+  rpc ExternalIncentive (QueryExternalIncentiveRequest) returns (QueryExternalIncentiveResponse) {
     option (google.api.http).get = "/elys-network/elys/masterchef/external_incentive";
+  
   }
-
-  rpc PoolInfo(QueryPoolInfoRequest) returns (QueryPoolInfoResponse) {
+  rpc PoolInfo          (QueryPoolInfoRequest         ) returns (QueryPoolInfoResponse         ) {
     option (google.api.http).get = "/elys-network/elys/masterchef/pool_info";
+  
   }
-
-  rpc PoolRewardInfo(QueryPoolRewardInfoRequest) returns (QueryPoolRewardInfoResponse) {
+  rpc PoolRewardInfo    (QueryPoolRewardInfoRequest   ) returns (QueryPoolRewardInfoResponse   ) {
     option (google.api.http).get = "/elys-network/elys/masterchef/pool_reward_info";
+  
   }
-
-  rpc UserRewardInfo(QueryUserRewardInfoRequest) returns (QueryUserRewardInfoResponse) {
+  rpc UserRewardInfo    (QueryUserRewardInfoRequest   ) returns (QueryUserRewardInfoResponse   ) {
     option (google.api.http).get = "/elys-network/elys/masterchef/user_reward_info";
+  
   }
-
-  rpc UserPendingReward(QueryUserPendingRewardRequest) returns (QueryUserPendingRewardResponse) {
+  rpc UserPendingReward (QueryUserPendingRewardRequest) returns (QueryUserPendingRewardResponse) {
     option (google.api.http).get = "/elys-network/elys/masterchef/pending_reward";
+  
   }
-
-  rpc StableStakeApr (QueryStableStakeAprRequest) returns (QueryStableStakeAprResponse) {
+  rpc StableStakeApr    (QueryStableStakeAprRequest   ) returns (QueryStableStakeAprResponse   ) {
     option (google.api.http).get = "/elys-network/elys/masterchef/stable_stake_apr/{denom}";
+  
   }
-
-  rpc PoolAprs (QueryPoolAprsRequest) returns (QueryPoolAprsResponse) {
+  rpc PoolAprs          (QueryPoolAprsRequest         ) returns (QueryPoolAprsResponse         ) {
     option (google.api.http).get = "/elys-network/elys/masterchef/pool_aprs";
+  
+  }
+  
+  // Queries a list of ShowFeeInfo items.
+  rpc ShowFeeInfo (QueryShowFeeInfoRequest) returns (QueryShowFeeInfoResponse) {
+    option (google.api.http).get = "/elys-network/elys/masterchef/show_fee_info/{date}";
+  
+  }
+  
+  // Queries a list of ListFeeInfo items.
+  rpc ListFeeInfo (QueryListFeeInfoRequest) returns (QueryListFeeInfoResponse) {
+    option (google.api.http).get = "/elys-network/elys/masterchef/list_fee_info";
+  
   }
 }
-
 // QueryParamsRequest is request type for the Query/Params RPC method.
 message QueryParamsRequest {}
 
 // QueryParamsResponse is response type for the Query/Params RPC method.
 message QueryParamsResponse {
+  
   // params holds all the parameters of this module.
   Params params = 1 [(gogoproto.nullable) = false];
 }
@@ -73,7 +89,7 @@ message QueryPoolInfoResponse {
 }
 
 message QueryPoolRewardInfoRequest {
-  uint64 pool_id = 1;
+  uint64 pool_id      = 1;
   string reward_denom = 2;
 }
 
@@ -82,8 +98,8 @@ message QueryPoolRewardInfoResponse {
 }
 
 message QueryUserRewardInfoRequest {
-  string user = 1;
-  uint64 pool_id = 2;
+  string user         = 1;
+  uint64 pool_id      = 2;
   string reward_denom = 3;
 }
 
@@ -96,20 +112,13 @@ message QueryUserPendingRewardRequest {
 }
 
 message RewardInfo {
-  uint64 pool_id = 1;
-  repeated cosmos.base.v1beta1.Coin reward = 2 [
-    (gogoproto.nullable) = false,
-    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
-  ];
+           uint64                   pool_id = 1;
+  repeated cosmos.base.v1beta1.Coin reward  = 2 [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"];
 }
 
 message QueryUserPendingRewardResponse {
-  repeated RewardInfo rewards = 1;
-
-  repeated cosmos.base.v1beta1.Coin total_rewards = 2 [
-    (gogoproto.nullable) = false,
-    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
-  ];
+  repeated RewardInfo               rewards       = 1;
+  repeated cosmos.base.v1beta1.Coin total_rewards = 2 [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"];
 }
 
 message QueryStableStakeAprRequest {
@@ -117,10 +126,7 @@ message QueryStableStakeAprRequest {
 }
 
 message QueryStableStakeAprResponse {
-  string apr = 1 [
-      (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
-      (gogoproto.nullable) = false
-  ]; 
+  string apr = 1 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
 }
 
 message QueryPoolAprsRequest {
@@ -128,23 +134,27 @@ message QueryPoolAprsRequest {
 }
 
 message QueryPoolAprsResponse {
-  repeated PoolApr data = 1 [
-    (gogoproto.nullable) = false
-  ];
+  repeated PoolApr data = 1 [(gogoproto.nullable) = false];
 }
 
 message PoolApr {
-  uint64 pool_id = 1;
-  string eden_apr = 2 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
-    (gogoproto.nullable) = false
-  ];
-  string usdc_apr = 3 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
-    (gogoproto.nullable) = false
-  ];
-  string total_apr = 4 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
-    (gogoproto.nullable) = false
-  ];
+  uint64 pool_id   = 1;
+  string eden_apr  = 2 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+  string usdc_apr  = 3 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+  string total_apr = 4 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
 }
+
+message QueryShowFeeInfoRequest {
+  string date = 1;
+}
+
+message QueryShowFeeInfoResponse {
+  FeeInfo fee_info = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryListFeeInfoRequest {}
+
+message QueryListFeeInfoResponse {
+  repeated FeeInfo fee_info = 1 [(gogoproto.nullable) = false];
+}
+

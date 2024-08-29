@@ -21,18 +21,18 @@ func (k Keeper) CheckUserAuthorization(ctx sdk.Context, msg *types.MsgOpen) erro
 	return nil
 }
 
-func (k Keeper) CheckSamePosition(ctx sdk.Context, msg *types.MsgOpen) *types.Position {
+func (k Keeper) CheckSamePosition(ctx sdk.Context, msg *types.MsgOpen) (*types.Position, error) {
 	positions, _, err := k.GetPositionsForAddress(ctx, sdk.MustAccAddressFromBech32(msg.Creator), &query.PageRequest{})
 	if err != nil {
-		return nil
+		return nil, err
 	}
 	for _, position := range positions {
 		if position.AmmPoolId == msg.AmmPoolId && position.Collateral.Denom == msg.CollateralAsset {
-			return position
+			return position, nil
 		}
 	}
 
-	return nil
+	return nil, nil
 }
 
 func (k Keeper) CheckPoolHealth(ctx sdk.Context, poolId uint64) error {
@@ -41,7 +41,7 @@ func (k Keeper) CheckPoolHealth(ctx sdk.Context, poolId uint64) error {
 		return errorsmod.Wrap(types.ErrInvalidBorrowingAsset, "invalid collateral asset")
 	}
 
-	if !k.IsPoolEnabled(ctx, poolId) || k.IsPoolClosed(ctx, poolId) {
+	if !pool.Enabled || pool.Closed {
 		return errorsmod.Wrap(types.ErrPositionDisabled, "pool is disabled or closed")
 	}
 

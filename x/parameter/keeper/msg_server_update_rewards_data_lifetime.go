@@ -21,6 +21,10 @@ func (k msgServer) UpdateRewardsDataLifetime(goCtx context.Context, msg *types.M
 		return nil, errorsmod.Wrapf(types.ErrInvalidRewardsDataLifecycle, "invalid data in rewards_data_lifecycle")
 	}
 
+	if !rewardsDataLifetime.IsPositive() {
+		return nil, errorsmod.Wrapf(types.ErrInvalidRewardsDataLifecycle, "rewards_data_lifecycle must be positive")
+	}
+
 	params := k.GetParams(ctx)
 	params.RewardsDataLifetime = rewardsDataLifetime.Int64()
 	k.SetParams(ctx, params)

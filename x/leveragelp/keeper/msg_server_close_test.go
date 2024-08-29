@@ -77,7 +77,7 @@ func initializeForClose(suite *KeeperTestSuite, addresses []sdk.AccAddress, asse
 
 func (suite *KeeperTestSuite) TestClose() {
 	suite.ResetSuite()
-	SetupCoinPrices(suite.ctx, suite.app.OracleKeeper)
+	suite.SetupCoinPrices(suite.ctx)
 	addresses := simapp.AddTestAddrs(suite.app, suite.ctx, 10, sdk.NewInt(1000000))
 	asset1 := ptypes.ATOM
 	asset2 := ptypes.BaseCurrency
@@ -91,6 +91,7 @@ func (suite *KeeperTestSuite) TestClose() {
 		expectErr            bool
 		expectErrMsg         string
 		prerequisiteFunction func()
+		postValidateFunc     func()
 	}{
 		{"No position to close",
 			&types.MsgClose{
@@ -100,6 +101,8 @@ func (suite *KeeperTestSuite) TestClose() {
 			},
 			true,
 			types.ErrPositionDoesNotExist.Error(),
+			func() {
+			},
 			func() {
 			},
 		},
@@ -121,9 +124,9 @@ func (suite *KeeperTestSuite) TestClose() {
 					StopLossPrice:    sdk.MustNewDecFromStr("50.0"),
 				}
 				_, err := suite.app.LeveragelpKeeper.Open(suite.ctx, &msg)
-				if err != nil {
-					panic(err)
-				}
+				suite.Require().NoError(err)
+			},
+			func() {
 			},
 		},
 		{"Repay amount is greater than exit amount",
@@ -144,10 +147,10 @@ func (suite *KeeperTestSuite) TestClose() {
 					StopLossPrice:    sdk.MustNewDecFromStr("50.0"),
 				}
 				_, err := suite.app.LeveragelpKeeper.Open(suite.ctx, &msg)
-				if err != nil {
-					panic(err)
-				}
+				suite.Require().NoError(err)
 				suite.AddBlockTime(1000000 * time.Hour)
+			},
+			func() {
 			},
 		},
 		{"Invalid Leverage LP shares amount to close",
@@ -160,7 +163,7 @@ func (suite *KeeperTestSuite) TestClose() {
 			types.ErrInvalidCloseSize.Error(),
 			func() {
 				suite.ResetSuite()
-				SetupCoinPrices(suite.ctx, suite.app.OracleKeeper)
+				suite.SetupCoinPrices(suite.ctx)
 				initializeForClose(suite, addresses, asset1, asset2)
 				msg := types.MsgOpen{
 					Creator:          addresses[0].String(),
@@ -171,10 +174,10 @@ func (suite *KeeperTestSuite) TestClose() {
 					StopLossPrice:    sdk.MustNewDecFromStr("50.0"),
 				}
 				_, err := suite.app.LeveragelpKeeper.Open(suite.ctx, &msg)
-				if err != nil {
-					panic(err)
-				}
+				suite.Require().NoError(err)
 				suite.AddBlockTime(time.Hour)
+			},
+			func() {
 			},
 		},
 		{"Position Health is lower than safety factor and closing partially, should close fully",
@@ -187,7 +190,7 @@ func (suite *KeeperTestSuite) TestClose() {
 			"",
 			func() {
 				suite.ResetSuite()
-				SetupCoinPrices(suite.ctx, suite.app.OracleKeeper)
+				suite.SetupCoinPrices(suite.ctx)
 				initializeForClose(suite, addresses, asset1, asset2)
 				msg := types.MsgOpen{
 					Creator:          addresses[0].String(),
@@ -198,10 +201,12 @@ func (suite *KeeperTestSuite) TestClose() {
 					StopLossPrice:    sdk.MustNewDecFromStr("50.0"),
 				}
 				_, err := suite.app.LeveragelpKeeper.Open(suite.ctx, &msg)
-				if err != nil {
-					panic(err)
-				}
+				suite.Require().NoError(err)
 				suite.AddBlockTime(1000000 * time.Hour)
+			},
+			func() {
+				_, err := suite.app.LeveragelpKeeper.GetPosition(suite.ctx, addresses[0], 1)
+				suite.Require().Contains(err.Error(), "position not found")
 			},
 		},
 		{"Position LP amount is 0",
@@ -214,7 +219,7 @@ func (suite *KeeperTestSuite) TestClose() {
 			"",
 			func() {
 				suite.ResetSuite()
-				SetupCoinPrices(suite.ctx, suite.app.OracleKeeper)
+				suite.SetupCoinPrices(suite.ctx)
 				initializeForClose(suite, addresses, asset1, asset2)
 				msg := types.MsgOpen{
 					Creator:          addresses[0].String(),
@@ -225,11 +230,12 @@ func (suite *KeeperTestSuite) TestClose() {
 					StopLossPrice:    sdk.MustNewDecFromStr("50.0"),
 				}
 				_, err := suite.app.LeveragelpKeeper.Open(suite.ctx, &msg)
-				if err != nil {
-					panic(err)
-				}
-				//position := suite.app.LeveragelpKeeper.GetPosition(suite.ctx, .String())
+				suite.Require().NoError(err)
 				suite.AddBlockTime(1000000 * time.Hour)
+			},
+			func() {
+				_, err := suite.app.LeveragelpKeeper.GetPosition(suite.ctx, addresses[0], 1)
+				suite.Require().Contains(err.Error(), "position not found")
 			},
 		},
 		{"Closing partial position",
@@ -242,7 +248,7 @@ func (suite *KeeperTestSuite) TestClose() {
 			"",
 			func() {
 				suite.ResetSuite()
-				SetupCoinPrices(suite.ctx, suite.app.OracleKeeper)
+				suite.SetupCoinPrices(suite.ctx)
 				initializeForClose(suite, addresses, asset1, asset2)
 				msg := types.MsgOpen{
 					Creator:          addresses[0].String(),
@@ -253,10 +259,12 @@ func (suite *KeeperTestSuite) TestClose() {
 					StopLossPrice:    sdk.MustNewDecFromStr("50.0"),
 				}
 				_, err := suite.app.LeveragelpKeeper.Open(suite.ctx, &msg)
-				if err != nil {
-					panic(err)
-				}
+				suite.Require().NoError(err)
 				suite.AddBlockTime(time.Hour)
+			},
+			func() {
+				position, _ := suite.app.LeveragelpKeeper.GetPosition(suite.ctx, addresses[0], 1)
+				suite.Require().Equal(position.LeveragedLpAmount, leverageLPShares.QuoRaw(2))
 			},
 		},
 		{"Closing whole position",
@@ -268,6 +276,10 @@ func (suite *KeeperTestSuite) TestClose() {
 			false,
 			"",
 			func() {
+			},
+			func() {
+				_, err := suite.app.LeveragelpKeeper.GetPosition(suite.ctx, addresses[0], 1)
+				suite.Require().Contains(err.Error(), "position not found")
 			},
 		},
 	}
@@ -290,6 +302,7 @@ func (suite *KeeperTestSuite) TestClose() {
 				}
 				suite.Require().NoError(err)
 			}
+			tc.postValidateFunc()
 		})
 	}
 }

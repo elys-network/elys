@@ -1,89 +1,144 @@
-package types
+package types_test
 
 import (
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/elys-network/elys/x/leveragelp/types"
 	"testing"
 
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/elys-network/elys/testutil/sample"
 	"github.com/stretchr/testify/require"
 )
 
-func TestMsgClosePositions_ValidateBasic(t *testing.T) {
+func TestMsgClosePositions(t *testing.T) {
+	creator := sdk.MustAccAddressFromBech32(sample.AccAddress())
+	liquidatePositions := []*types.PositionRequest{}
+	stoplossPositions := []*types.PositionRequest{}
+	msg := types.NewMsgClosePositions(creator, liquidatePositions, stoplossPositions)
+	require.Equal(t, msg.Route(), types.RouterKey)
+	require.Equal(t, msg.Type(), types.TypeMsgClosePositions)
+	require.Equal(t, msg.GetSigners(), []sdk.AccAddress{creator})
+	require.Equal(t, msg.GetSignBytes(), sdk.MustSortJSON(types.ModuleCdc.MustMarshalJSON(msg)))
+	msg.Creator = ""
+	require.PanicsWithError(t, "empty address string is not allowed", func() { msg.GetSigners() })
 	tests := []struct {
-		name string
-		msg  MsgClosePositions
-		err  error
+		name   string
+		setter func()
+		errMsg string
 	}{
 		{
 			name: "invalid address",
-			msg: MsgClosePositions{
-				Creator: "invalid_address",
+			setter: func() {
+				msg.Creator = "invalid_address"
 			},
-			err: sdkerrors.ErrInvalidAddress,
-		}, {
-			name: "valid address",
-			msg: MsgClosePositions{
-				Creator: sample.AccAddress(),
-			},
+			errMsg: "invalid creator address",
 		},
 		{
-			name: "invalid address liquidations",
-			msg: MsgClosePositions{
-				Creator: sample.AccAddress(),
-				Liquidate: []*PositionRequest{
-					{
-						Address: "invalid address",
-						Id:      uint64(1),
-					},
-				},
+			name: "liquidate and stoploss position requests both are empty",
+			setter: func() {
+				msg.Creator = sample.AccAddress()
 			},
-			err: sdkerrors.ErrInvalidAddress,
-		}, {
-			name: "valid address liquidations",
-			msg: MsgClosePositions{
-				Creator: sample.AccAddress(),
-				Liquidate: []*PositionRequest{
-					{
+			errMsg: "no liquidate or stoploss position requests",
+		},
+		{
+			name: "invalid liquidate position requests",
+			setter: func() {
+				msg.Liquidate = append(msg.Liquidate, &types.PositionRequest{
+					Address: "address",
+					Id:      1,
+				})
+			},
+			errMsg: "invalid liquidation address",
+		},
+		{
+			name: "repeated liquidate positions",
+			setter: func() {
+				msg.Liquidate = liquidatePositions
+				msg.Liquidate = append(msg.Liquidate,
+					&types.PositionRequest{
 						Address: sample.AccAddress(),
-						Id:      uint64(1),
+						Id:      1,
 					},
-				},
-			},
-		},
-		{
-			name: "invalid address stoploss",
-			msg: MsgClosePositions{
-				Creator: sample.AccAddress(),
-				Stoploss: []*PositionRequest{
-					{
-						Address: "invalid address",
-						Id:      uint64(1),
-					},
-				},
-			},
-			err: sdkerrors.ErrInvalidAddress,
-		},
-		{
-			name: "valid address stoploss",
-			msg: MsgClosePositions{
-				Creator: sample.AccAddress(),
-				Stoploss: []*PositionRequest{
-					{
+					&types.PositionRequest{
 						Address: sample.AccAddress(),
-						Id:      uint64(1),
-					},
-				},
+						Id:      1,
+					})
 			},
+			errMsg: "repeated liquidation id",
+		},
+		{
+			name: "invalid stoploss position requests",
+			setter: func() {
+				msg.Liquidate = liquidatePositions
+				msg.StopLoss = append(msg.StopLoss, &types.PositionRequest{
+					Address: "address",
+					Id:      1,
+				})
+			},
+			errMsg: "invalid stoploss address",
+		},
+		{
+			name: "repeated stoploss positions",
+			setter: func() {
+				msg.StopLoss = stoplossPositions
+				msg.StopLoss = append(msg.StopLoss,
+					&types.PositionRequest{
+						Address: sample.AccAddress(),
+						Id:      1,
+					},
+					&types.PositionRequest{
+						Address: sample.AccAddress(),
+						Id:      1,
+					})
+			},
+			errMsg: "repeated stoploss id",
+		},
+		{
+			name: "repeated stoploss and liquidate positions",
+			setter: func() {
+				msg.Liquidate = liquidatePositions
+				msg.Liquidate = append(msg.Liquidate,
+					&types.PositionRequest{
+						Address: sample.AccAddress(),
+						Id:      1,
+					})
+				msg.StopLoss = stoplossPositions
+				msg.StopLoss = append(msg.StopLoss,
+					&types.PositionRequest{
+						Address: sample.AccAddress(),
+						Id:      1,
+					})
+			},
+			errMsg: "repeated stoploss id",
+		},
+		{
+			name: "success",
+			setter: func() {
+				msg.Creator = creator.String()
+				msg.Liquidate = liquidatePositions
+				msg.Liquidate = append(msg.Liquidate,
+					&types.PositionRequest{
+						Address: sample.AccAddress(),
+						Id:      1,
+					})
+				msg.StopLoss = stoplossPositions
+				msg.StopLoss = append(msg.StopLoss,
+					&types.PositionRequest{
+						Address: sample.AccAddress(),
+						Id:      2,
+					})
+			},
+			errMsg: "",
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			err := tt.msg.ValidateBasic()
-			if tt.err != nil {
-				require.ErrorIs(t, err, tt.err)
-				return
+			tt.setter()
+			err := msg.ValidateBasic()
+			if tt.errMsg != "" {
+				require.ErrorContains(t, err, tt.errMsg)
+			} else {
+				require.NoError(t, err)
 			}
-			require.NoError(t, err)
 		})
 	}
 }

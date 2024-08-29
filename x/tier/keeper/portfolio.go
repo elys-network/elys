@@ -38,7 +38,7 @@ func (k Keeper) RetrieveAllPortfolio(ctx sdk.Context, user sdk.AccAddress) {
 	totalValue = totalValue.Add(rew)
 
 	// Perpetual
-	perp := k.RetrievePerpetualTotal(ctx, user)
+	_, _, perp := k.RetrievePerpetualTotal(ctx, user)
 	totalValue = totalValue.Add(perp)
 
 	// Pool assets
@@ -199,24 +199,20 @@ func (k Keeper) RetrieveRewardsTotal(ctx sdk.Context, user sdk.AccAddress) sdk.D
 	return totalValue
 }
 
-func (k Keeper) RetrievePerpetualTotal(ctx sdk.Context, user sdk.AccAddress) sdk.Dec {
-	totalValue := sdk.NewDec(0)
+func (k Keeper) RetrievePerpetualTotal(ctx sdk.Context, user sdk.AccAddress) (sdk.Dec, sdk.Dec, sdk.Dec) {
+	totalAssets := sdk.NewDec(0)
+	totalLiability := sdk.NewDec(0)
+	netValue := sdk.NewDec(0)
 	perpetuals, _, err := k.perpetual.GetMTPsForAddress(ctx, user, &query.PageRequest{})
 	if err == nil {
 		for _, perpetual := range perpetuals {
-			asset, found := k.assetProfileKeeper.GetEntryByDenom(ctx, perpetual.GetTradingAsset())
-			if !found {
-				continue
-			}
-			tokenPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, asset.Denom)
-			if tokenPrice.Equal(sdk.ZeroDec()) {
-				tokenPrice = k.CalcAmmPrice(ctx, asset.Denom, asset.Decimals)
-			}
-			amount := perpetual.Custody.ToLegacyDec()
-			totalValue = totalValue.Add((amount.Mul(tokenPrice)))
+			totalAssets = totalAssets.Add(k.CalculateUSDValue(ctx, perpetual.GetTradingAsset(), perpetual.Custody))
+			totalLiability = totalLiability.Add(k.CalculateUSDValue(ctx, perpetual.LiabilitiesAsset, perpetual.Liabilities))
+			totalLiability = totalLiability.Add(k.CalculateUSDValue(ctx, perpetual.CollateralAsset, perpetual.BorrowInterestUnpaidCollateral))
 		}
+		netValue = totalAssets.Sub(totalLiability)
 	}
-	return totalValue
+	return totalAssets, totalLiability, netValue
 }
 
 func (k Keeper) RetrieveLiquidAssetsTotal(ctx sdk.Context, user sdk.AccAddress) sdk.Dec {
@@ -315,6 +311,18 @@ func (k Keeper) CalcAmmPrice(ctx sdk.Context, denom string, decimal uint64) sdk.
 		return sdk.ZeroDec()
 	}
 	return spotPrice.Mul(usdcPrice)
+}
+
+func (k Keeper) CalculateUSDValue(ctx sdk.Context, denom string, amount sdk.Int) sdk.Dec {
+	asset, found := k.assetProfileKeeper.GetEntryByDenom(ctx, denom)
+	if !found {
+		sdk.ZeroDec()
+	}
+	tokenPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, denom)
+	if tokenPrice.Equal(sdk.ZeroDec()) {
+		tokenPrice = k.CalcAmmPrice(ctx, asset.Denom, asset.Decimals)
+	}
+	return sdk.NewDecFromInt(amount).Mul(tokenPrice)
 }
 
 // SetPortfolio set a specific portfolio in the store from its index

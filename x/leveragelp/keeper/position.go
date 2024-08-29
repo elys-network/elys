@@ -249,7 +249,7 @@ func (k Keeper) GetPositionHealth(ctx sdk.Context, position types.Position) (sdk
 
 	baseCurrency, found := k.assetProfileKeeper.GetUsdcDenom(ctx)
 	if !found {
-		return sdk.Dec{}, errorsmod.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency)
+		return sdk.ZeroDec(), errorsmod.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency)
 	}
 
 	leveragedLpAmount := sdk.ZeroInt()
@@ -261,7 +261,7 @@ func (k Keeper) GetPositionHealth(ctx sdk.Context, position types.Position) (sdk
 
 	exitCoinsAfterFee, _, err := k.amm.ExitPoolEst(ctx, position.GetAmmPoolId(), leveragedLpAmount, baseCurrency)
 	if err != nil {
-		return sdk.Dec{}, err
+		return sdk.ZeroDec(), err
 	}
 
 	exitAmountAfterFee := exitCoinsAfterFee.AmountOf(baseCurrency)
@@ -312,4 +312,67 @@ func (k Keeper) DeleteLegacyPosition(ctx sdk.Context, positionAddress string, id
 	}
 	store.Delete(key)
 	return nil
+}
+
+func (k Keeper) MigrateData(ctx sdk.Context) {
+	iterator := k.GetPositionIterator(ctx)
+	defer func(iterator sdk.Iterator) {
+		err := iterator.Close()
+		if err != nil {
+			panic(err)
+		}
+	}(iterator)
+
+	for ; iterator.Valid(); iterator.Next() {
+		var position types.Position
+		bytesValue := iterator.Value()
+		err := k.cdc.Unmarshal(bytesValue, &position)
+		if err == nil {
+			leveragedLpAmount := sdk.ZeroInt()
+			commitments := k.commKeeper.GetCommitments(ctx, position.GetPositionAddress())
+
+			for _, commitment := range commitments.CommittedTokens {
+				leveragedLpAmount = leveragedLpAmount.Add(commitment.Amount)
+			}
+			pool, found := k.GetPool(ctx, position.AmmPoolId)
+			if found {
+				pool.LeveragedLpAmount = pool.LeveragedLpAmount.Add(leveragedLpAmount)
+				pool.Health = k.CalculatePoolHealth(ctx, &pool)
+				k.SetPool(ctx, pool)
+			}
+
+			// Repay any balance, delete position
+			debt := k.stableKeeper.UpdateInterestAndGetDebt(ctx, position.GetPositionAddress())
+			repayAmount := debt.GetTotalLiablities()
+
+			// Check if position has enough coins to repay else repay partial
+			bal := k.bankKeeper.GetBalance(ctx, position.GetPositionAddress(), position.Collateral.Denom)
+			userAmount := sdk.ZeroInt()
+			if bal.Amount.LT(repayAmount) {
+				repayAmount = bal.Amount
+			} else {
+				userAmount = bal.Amount.Sub(repayAmount)
+			}
+
+			if repayAmount.IsPositive() {
+				k.stableKeeper.Repay(ctx, position.GetPositionAddress(), sdk.NewCoin(position.Collateral.Denom, repayAmount))
+			} else {
+				userAmount = bal.Amount
+			}
+
+			positionOwner := sdk.MustAccAddressFromBech32(position.Address)
+			if userAmount.IsPositive() {
+				k.bankKeeper.SendCoins(ctx, position.GetPositionAddress(), positionOwner, sdk.Coins{sdk.NewCoin(position.Collateral.Denom, userAmount)})
+			}
+
+			if leveragedLpAmount.IsZero() {
+				// Repay any balance, delete position
+				k.DestroyPosition(ctx, positionOwner, position.Id)
+			} else {
+				// Repay any balance and update position value
+				position.LeveragedLpAmount = leveragedLpAmount
+				k.SetPosition(ctx, &position)
+			}
+		}
+	}
 }

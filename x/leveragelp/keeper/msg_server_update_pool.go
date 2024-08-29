@@ -9,7 +9,7 @@ import (
 	"github.com/elys-network/elys/x/leveragelp/types"
 )
 
-func (k msgServer) UpdatePools(goCtx context.Context, msg *types.MsgUpdatePools) (*types.MsgUpdatePoolsResponse, error) {
+func (k msgServer) UpdatePool(goCtx context.Context, msg *types.MsgUpdatePool) (*types.MsgUpdatePoolResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	if k.authority != msg.Authority {
@@ -24,5 +24,5 @@ func (k msgServer) UpdatePools(goCtx context.Context, msg *types.MsgUpdatePools)
 		k.SetPool(ctx, pool)
 	}
 
-	return &types.MsgUpdatePoolsResponse{}, nil
+	return &types.MsgUpdatePoolResponse{}, nil
 }

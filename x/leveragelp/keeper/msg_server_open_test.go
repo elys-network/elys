@@ -78,8 +78,7 @@ func initializeForOpen(suite *KeeperTestSuite, addresses []sdk.AccAddress, asset
 
 func (suite *KeeperTestSuite) TestOpen_PoolWithBaseCurrencyAsset() {
 	suite.ResetSuite()
-	SetupCoinPrices(suite.ctx, suite.app.OracleKeeper)
-	//SetupCoinPrices(suite.ctx, suite.app.OracleKeeper, []string{ptypes.Elys, ptypes.ATOM, "uusdt"})
+	suite.SetupCoinPrices(suite.ctx)
 	addresses := simapp.AddTestAddrs(suite.app, suite.ctx, 10, sdk.NewInt(1000000))
 	asset1 := ptypes.ATOM
 	asset2 := ptypes.BaseCurrency
@@ -148,7 +147,42 @@ func (suite *KeeperTestSuite) TestOpen_PoolWithBaseCurrencyAsset() {
 			expectErr:    true,
 			expectErrMsg: types.ErrPoolDoesNotExist.Wrapf("poolId: %d", 100).Error(),
 			prerequisiteFunction: func() {
-				suite.SetMaxOpenPositions(2)
+				suite.SetMaxOpenPositions(3)
+			},
+		},
+		{name: "Pool not enabled",
+			input: &types.MsgOpen{
+				Creator:          addresses[0].String(),
+				CollateralAsset:  ptypes.BaseCurrency,
+				CollateralAmount: sdk.NewInt(1000),
+				AmmPoolId:        2,
+				Leverage:         sdk.MustNewDecFromStr("2.0"),
+				StopLossPrice:    sdk.MustNewDecFromStr("100.0"),
+			},
+			expectErr:    true,
+			expectErrMsg: "leveragelp not enabled for pool",
+			prerequisiteFunction: func() {
+				pool := types.NewPool(2)
+				pool.Enabled = false
+				suite.app.LeveragelpKeeper.SetPool(suite.ctx, pool)
+			},
+		},
+		{name: "base currency not found",
+			input: &types.MsgOpen{
+				Creator:          addresses[0].String(),
+				CollateralAsset:  ptypes.BaseCurrency,
+				CollateralAmount: sdk.NewInt(1000),
+				AmmPoolId:        2,
+				Leverage:         sdk.MustNewDecFromStr("2.0"),
+				StopLossPrice:    sdk.MustNewDecFromStr("100.0"),
+			},
+			expectErr:    true,
+			expectErrMsg: "invalid pool id",
+			prerequisiteFunction: func() {
+				pool := types.NewPool(2)
+				pool.Enabled = true
+				suite.app.LeveragelpKeeper.SetPool(suite.ctx, pool)
+				suite.RemovePrices(suite.ctx, []string{"uusdc"})
 			},
 		},
 		{name: "AMM Pool not found",
@@ -163,8 +197,7 @@ func (suite *KeeperTestSuite) TestOpen_PoolWithBaseCurrencyAsset() {
 			expectErr:    true,
 			expectErrMsg: "invalid pool id",
 			prerequisiteFunction: func() {
-				pool := types.NewPool(2)
-				suite.app.LeveragelpKeeper.SetPool(suite.ctx, pool)
+				suite.SetupCoinPrices(suite.ctx)
 			},
 		},
 		{"Pool Disabled",
@@ -225,7 +258,7 @@ func (suite *KeeperTestSuite) TestOpen_PoolWithBaseCurrencyAsset() {
 			true,
 			types.ErrInvalidPosition.Wrapf("pool health too low to open new positions").Error(),
 			func() {
-				AddCoinPrices(suite.ctx, suite.app.OracleKeeper, []string{ptypes.BaseCurrency})
+				suite.AddCoinPrices(suite.ctx, []string{ptypes.BaseCurrency})
 				suite.SetPoolThreshold(sdk.OneDec())
 			},
 		},
@@ -287,7 +320,7 @@ func (suite *KeeperTestSuite) TestOpen_PoolWithBaseCurrencyAsset() {
 			"",
 			func() {
 				suite.ResetSuite()
-				SetupCoinPrices(suite.ctx, suite.app.OracleKeeper)
+				suite.SetupCoinPrices(suite.ctx)
 				initializeForOpen(suite, addresses, asset1, asset2)
 				suite.SetSafetyFactor(sdk.MustNewDecFromStr("1.1"))
 				suite.SetPoolThreshold(sdk.MustNewDecFromStr("0.2"))
@@ -363,7 +396,7 @@ func (suite *KeeperTestSuite) TestOpen_PoolWithBaseCurrencyAsset() {
 func (suite *KeeperTestSuite) TestOpen_PoolWithoutBaseCurrencyAsset() {
 	suite.ResetSuite()
 	// not adding uusdc asset info and price yet
-	AddCoinPrices(suite.ctx, suite.app.OracleKeeper, []string{ptypes.Elys, ptypes.ATOM, "uusdt"})
+	suite.AddCoinPrices(suite.ctx, []string{ptypes.Elys, ptypes.ATOM, "uusdt"})
 	addresses := simapp.AddTestAddrs(suite.app, suite.ctx, 10, sdk.NewInt(1000000))
 	asset1 := ptypes.ATOM
 	asset2 := ptypes.Elys
@@ -402,7 +435,7 @@ func (suite *KeeperTestSuite) TestOpen_PoolWithoutBaseCurrencyAsset() {
 			"can't find the PoolAsset",
 			func() {
 				suite.ResetSuite()
-				SetupCoinPrices(suite.ctx, suite.app.OracleKeeper)
+				suite.SetupCoinPrices(suite.ctx)
 				initializeForOpen(suite, addresses, asset1, asset2)
 				suite.SetSafetyFactor(sdk.MustNewDecFromStr("1.1"))
 				suite.SetPoolThreshold(sdk.MustNewDecFromStr("0.2"))
