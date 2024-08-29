@@ -183,6 +183,7 @@ func (suite *KeeperTestSuite) TestOpen_PoolWithBaseCurrencyAsset() {
 				pool.Enabled = true
 				suite.app.LeveragelpKeeper.SetPool(suite.ctx, pool)
 				suite.RemovePrices(suite.ctx, []string{"uusdc"})
+				suite.SetMaxOpenPositions(20)
 			},
 		},
 		{name: "AMM Pool not found",

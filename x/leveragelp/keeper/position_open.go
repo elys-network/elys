@@ -94,7 +94,7 @@ func (k Keeper) ProcessOpenLong(ctx sdk.Context, position *types.Position, poolI
 
 	// borrow leveragedAmount - collateralAmount
 	borrowCoin := sdk.NewCoin(msg.CollateralAsset, leveragedAmount.Sub(msg.CollateralAmount))
-	if borrowCoin.Amount.GT(sdk.ZeroInt()) {
+	if borrowCoin.Amount.IsPositive() {
 		err = k.stableKeeper.Borrow(ctx, position.GetPositionAddress(), borrowCoin)
 		if err != nil {
 			return nil, err

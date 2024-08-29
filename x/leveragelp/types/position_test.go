@@ -61,6 +61,7 @@ func TestPosition(t *testing.T) {
 		{
 			name: "Collateral is invalid",
 			setter: func() {
+				position.LeveragedLpAmount = sdk.OneInt()
 				position.Collateral = sdk.Coin{"$$$$", sdk.OneInt()}
 			},
 			errMsg: "invalid collateral coin",
