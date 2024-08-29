@@ -2,7 +2,7 @@ package keeper
 
 import (
 	"context"
-	
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	"github.com/elys-network/elys/x/leveragelp/types"
@@ -24,8 +24,8 @@ func (k Keeper) Position(goCtx context.Context, req *types.PositionRequest) (*ty
 
 	var positions = []*types.Position{}
 	positions = append(positions, &position)
-	
-	updatedLeveragePosition, err := k.GetLeverageLpUpdatedLeverage(ctx, positions) 
+
+	updatedLeveragePosition, err := k.GetLeverageLpUpdatedLeverage(ctx, positions)
 	if err != nil {
 		return nil, err
 	}
