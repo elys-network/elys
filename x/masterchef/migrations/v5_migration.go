@@ -7,7 +7,7 @@ import (
 
 func (m Migrator) V5Migration(ctx sdk.Context) error {
 	legacyParams := m.keeper.GetLegacyParams(ctx)
-	params := m.keeper.GetParams(ctx)
+	params := types.Params{}
 	params.LpIncentives = &types.IncentiveInfo{
 		EdenAmountPerYear: legacyParams.LpIncentives.EdenAmountPerYear,
 		BlocksDistributed: legacyParams.LpIncentives.BlocksDistributed.Int64(),
