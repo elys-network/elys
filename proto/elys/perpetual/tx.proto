@@ -101,3 +101,11 @@ message MsgBrokerAddCollateral {
   int32  id      = 3;
   string owner   = 4;
 }
+
+message MsgUpdateStopLoss {
+  string creator = 1;
+  uint64 id = 2;
+  string price = 3 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+}
+
+message MsgUpdateStopLossResponse {}
