@@ -104,7 +104,7 @@ func (msg *MsgBrokerClose) ValidateBasic() error {
 	return nil
 }
 
-func NewMsgOpen(creator string, position Position, leverage sdk.Dec, tradingAsset string, collateral sdk.Coin, takeProfitPrice sdk.Dec) *MsgOpen {
+func NewMsgOpen(creator string, position Position, leverage sdk.Dec, tradingAsset string, collateral sdk.Coin, takeProfitPrice sdk.Dec, stopLossPrice sdk.Dec) *MsgOpen {
 	return &MsgOpen{
 		Creator:         creator,
 		Position:        position,
@@ -112,6 +112,7 @@ func NewMsgOpen(creator string, position Position, leverage sdk.Dec, tradingAsse
 		TradingAsset:    tradingAsset,
 		Collateral:      collateral,
 		TakeProfitPrice: takeProfitPrice,
+		StopLossPrice:   stopLossPrice,
 	}
 }
 
@@ -144,7 +145,7 @@ func (msg *MsgOpen) ValidateBasic() error {
 	return nil
 }
 
-func NewMsgBrokerOpen(creator string, position Position, leverage sdk.Dec, tradingAsset string, collateral sdk.Coin, takeProfitPrice sdk.Dec, owner string) *MsgBrokerOpen {
+func NewMsgBrokerOpen(creator string, position Position, leverage sdk.Dec, tradingAsset string, collateral sdk.Coin, takeProfitPrice sdk.Dec, owner string, stopLossPrice sdk.Dec) *MsgBrokerOpen {
 	return &MsgBrokerOpen{
 		Creator:         creator,
 		Position:        position,
@@ -153,6 +154,7 @@ func NewMsgBrokerOpen(creator string, position Position, leverage sdk.Dec, tradi
 		Collateral:      collateral,
 		TakeProfitPrice: takeProfitPrice,
 		Owner:           owner,
+		StopLossPrice:   stopLossPrice,
 	}
 }
 

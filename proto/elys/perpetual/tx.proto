@@ -29,6 +29,10 @@ message MsgOpen {
   string                   trading_asset     = 4;
   cosmos.base.v1beta1.Coin collateral        = 5 [(gogoproto.nullable)   = false                                   ] ;
   string                   take_profit_price = 6 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+  string stop_loss_price = 28 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
 }
 
 message MsgBrokerOpen {
@@ -39,6 +43,10 @@ message MsgBrokerOpen {
   cosmos.base.v1beta1.Coin collateral        = 5 [(gogoproto.nullable)   = false                                   ] ;
   string                   take_profit_price = 6 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
   string                   owner             = 7;
+  string stop_loss_price = 28 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
 }
 
 message MsgOpenResponse {

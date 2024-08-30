@@ -13,12 +13,12 @@ import (
 
 func CmdOpen() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "open [position] [leverage] [trading-asset] [collateral] [flags]",
+		Use:   "open [position] [leverage] [trading-asset] [collateral] [stop-loss-price][flags]",
 		Short: "Open perpetual position",
 		Example: `Infinte profitability:
-elysd tx perpetual open long 5 uatom 100000000uusdc --from=treasury --keyring-backend=test --chain-id=elystestnet-1 --yes --gas=1000000
+elysd tx perpetual open long 5 uatom 100000000uusdc 100.0 --from=treasury --keyring-backend=test --chain-id=elystestnet-1 --yes --gas=1000000
 Finite profitability:
-elysd tx perpetual open short 5 uatom 100000000uusdc --take-profit 100 --from=treasury --keyring-backend=test --chain-id=elystestnet-1 --yes --gas=1000000`,
+elysd tx perpetual open short 5 uatom 100000000uusdc 100.0 --take-profit 100 --from=treasury --keyring-backend=test --chain-id=elystestnet-1 --yes --gas=1000000`,
 		Args: cobra.ExactArgs(4),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			clientCtx, err := client.GetClientTxContext(cmd)
@@ -50,6 +50,11 @@ elysd tx perpetual open short 5 uatom 100000000uusdc --take-profit 100 --from=tr
 				return err
 			}
 
+			stopLossPrice, err := sdk.NewDecFromStr(args[5])
+			if err != nil {
+				return err
+			}
+
 			var takeProfitPrice sdk.Dec
 			if takeProfitPriceStr != types.InfinitePriceString {
 				takeProfitPrice, err = sdk.NewDecFromStr(takeProfitPriceStr)
@@ -70,6 +75,7 @@ elysd tx perpetual open short 5 uatom 100000000uusdc --take-profit 100 --from=tr
 				argTradingAsset,
 				argCollateral,
 				takeProfitPrice,
+				stopLossPrice,
 			)
 
 			if err := msg.ValidateBasic(); err != nil {
