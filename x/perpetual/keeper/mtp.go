@@ -198,7 +198,7 @@ func (k Keeper) GetOpenMTPCount(ctx sdk.Context) uint64 {
 	return count
 }
 
-func (k Keeper) V6Migration(ctx sdk.Context) {
+func (k Keeper) V6_MTPMigration(ctx sdk.Context) {
 	store := ctx.KVStore(k.storeKey)
 	iterator := k.GetMTPIterator(ctx)
 	defer iterator.Close()

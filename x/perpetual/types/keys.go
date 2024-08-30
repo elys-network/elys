@@ -21,6 +21,8 @@ const (
 
 	// ParamsKey is the prefix for parameters of perpetual module
 	ParamsKey = "perpetual_params"
+
+	LegacyPoolKeyPrefix = "Pool/value/"
 )
 
 const MaxPageLimit = 100
@@ -35,6 +37,7 @@ var (
 	MTPCountPrefix     = []byte{0x02}
 	OpenMTPCountPrefix = []byte{0x04}
 	WhitelistPrefix    = []byte{0x05}
+	PoolKeyPrefix      = []byte{0x06}
 )
 
 func KeyPrefix(p string) []byte {
@@ -63,6 +66,27 @@ func GetMTPKey(addr sdk.AccAddress, id uint64) []byte {
 
 func GetLegacyMTPKey(address string, id uint64) []byte {
 	return append(MTPPrefix, append([]byte(address), sdk.Uint64ToBigEndian(id)...)...)
+}
+
+func GetPoolKey(index uint64) []byte {
+	key := PoolKeyPrefix
+	return append(key, sdk.Uint64ToBigEndian(index)...)
+}
+
+func legacyPoolKey(index uint64) []byte {
+	var key []byte
+
+	indexBytes := make([]byte, 8)
+	binary.LittleEndian.PutUint64(indexBytes, index)
+	key = append(key, indexBytes...)
+	key = append(key, []byte("/")...)
+
+	return key
+}
+
+func GetLegacyPoolKey(index uint64) []byte {
+	key := KeyPrefix(LegacyPoolKeyPrefix)
+	return append(key, legacyPoolKey(index)...)
 }
 
 func GetMTPPrefixForAddress(address string) []byte {
