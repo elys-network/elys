@@ -30,12 +30,12 @@ func (k Keeper) SetMTP(ctx sdk.Context, mtp *types.MTP) error {
 	if err := mtp.Validate(); err != nil {
 		return err
 	}
-	key := types.GetMTPKey(mtp.Address, mtp.Id)
+	key := types.GetMTPKey(mtp.GetAccountAddress(), mtp.Id)
 	store.Set(key, k.cdc.MustMarshal(mtp))
 	return nil
 }
 
-func (k Keeper) DestroyMTP(ctx sdk.Context, mtpAddress string, id uint64) error {
+func (k Keeper) DestroyMTP(ctx sdk.Context, mtpAddress sdk.AccAddress, id uint64) error {
 	key := types.GetMTPKey(mtpAddress, id)
 	store := ctx.KVStore(k.storeKey)
 	if !store.Has(key) {
@@ -52,7 +52,7 @@ func (k Keeper) DestroyMTP(ctx sdk.Context, mtpAddress string, id uint64) error 
 	return nil
 }
 
-func (k Keeper) GetMTP(ctx sdk.Context, mtpAddress string, id uint64) (types.MTP, error) {
+func (k Keeper) GetMTP(ctx sdk.Context, mtpAddress sdk.AccAddress, id uint64) (types.MTP, error) {
 	var mtp types.MTP
 	key := types.GetMTPKey(mtpAddress, id)
 	store := ctx.KVStore(k.storeKey)
@@ -135,7 +135,7 @@ func (k Keeper) GetMTPsForPool(ctx sdk.Context, ammPoolId uint64, pagination *qu
 	return mtps, pageRes, err
 }
 
-func (k Keeper) GetMTPsForAddress(ctx sdk.Context, mtpAddress sdk.Address, pagination *query.PageRequest) ([]*types.MTP, *query.PageResponse, error) {
+func (k Keeper) GetMTPsForAddress(ctx sdk.Context, mtpAddress sdk.AccAddress, pagination *query.PageRequest) ([]*types.MTP, *query.PageResponse, error) {
 	var mtps []*types.MTP
 
 	store := ctx.KVStore(k.storeKey)
@@ -196,4 +196,20 @@ func (k Keeper) GetOpenMTPCount(ctx sdk.Context) uint64 {
 		count = types.GetUint64FromBytes(countBz)
 	}
 	return count
+}
+
+func (k Keeper) V6Migration(ctx sdk.Context) {
+	store := ctx.KVStore(k.storeKey)
+	iterator := k.GetMTPIterator(ctx)
+	defer iterator.Close()
+
+	for ; iterator.Valid(); iterator.Next() {
+		var mtp types.MTP
+		bz := iterator.Value()
+		k.cdc.MustUnmarshal(bz, &mtp)
+		legacyKey := types.GetLegacyMTPKey(mtp.Address, mtp.Id)
+		store.Delete(legacyKey)
+		newKey := types.GetMTPKey(mtp.GetAccountAddress(), mtp.Id)
+		store.Set(newKey, bz)
+	}
 }

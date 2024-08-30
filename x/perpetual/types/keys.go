@@ -1,6 +1,10 @@
 package types
 
-import "encoding/binary"
+import (
+	"encoding/binary"
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/types/address"
+)
 
 const (
 	// ModuleName defines the module name
@@ -53,8 +57,12 @@ func GetWhitelistKey(address string) []byte {
 	return append(WhitelistPrefix, []byte(address)...)
 }
 
-func GetMTPKey(address string, id uint64) []byte {
-	return append(MTPPrefix, append([]byte(address), GetUint64Bytes(id)...)...)
+func GetMTPKey(addr sdk.AccAddress, id uint64) []byte {
+	return append(MTPPrefix, append(address.MustLengthPrefix(addr), sdk.Uint64ToBigEndian(id)...)...)
+}
+
+func GetLegacyMTPKey(address string, id uint64) []byte {
+	return append(MTPPrefix, append([]byte(address), sdk.Uint64ToBigEndian(id)...)...)
 }
 
 func GetMTPPrefixForAddress(address string) []byte {
