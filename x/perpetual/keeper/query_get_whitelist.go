@@ -25,8 +25,13 @@ func (k Keeper) GetWhitelist(goCtx context.Context, req *types.WhitelistRequest)
 		return nil, err
 	}
 
+	whitelistAddresses := make([]string, len(whitelist))
+	for i, whitelistAddress := range whitelist {
+		whitelistAddresses[i] = whitelistAddress.String()
+	}
+
 	return &types.WhitelistResponse{
-		Whitelist:  whitelist,
+		Whitelist:  whitelistAddresses,
 		Pagination: page,
 	}, nil
 }

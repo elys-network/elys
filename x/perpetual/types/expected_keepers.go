@@ -11,7 +11,7 @@ import (
 //go:generate mockery --srcpkg . --name AuthorizationChecker --structname AuthorizationChecker --filename authorization_checker.go --with-expecter
 type AuthorizationChecker interface {
 	IsWhitelistingEnabled(ctx sdk.Context) bool
-	CheckIfWhitelisted(ctx sdk.Context, creator string) bool
+	CheckIfWhitelisted(ctx sdk.Context, creator sdk.AccAddress) bool
 }
 
 //go:generate mockery --srcpkg . --name PositionChecker --structname PositionChecker --filename position_checker.go --with-expecter

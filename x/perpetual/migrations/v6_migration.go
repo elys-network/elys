@@ -14,5 +14,7 @@ func (m Migrator) V6Migration(ctx sdk.Context) error {
 		m.keeper.RemoveLegacyPool(ctx, pool.AmmPoolId)
 	}
 
+	m.keeper.V6_MigrateWhitelistedAddress(ctx)
+
 	return nil
 }
