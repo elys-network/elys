@@ -19,8 +19,8 @@ func CmdUpdateStopLoss() *cobra.Command {
 		Short: "Broadcast message update-stop-loss",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
-			argPrice, ok := sdk.NewIntFromString(args[0])
-			if !ok {
+			argPrice, err := sdk.NewDecFromStr(args[0])
+			if err!=nil {
 				return errors.New("invalid stoploss amount")
 			}
 			positionId, err := strconv.Atoi(args[1])

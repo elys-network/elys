@@ -13,13 +13,13 @@ import (
 
 func CmdOpen() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "open [position] [leverage] [trading-asset] [collateral] [stop-loss-price][flags]",
+		Use:   "open [position] [leverage] [trading-asset] [collateral] [stop-loss-price] [flags]",
 		Short: "Open perpetual position",
 		Example: `Infinte profitability:
 elysd tx perpetual open long 5 uatom 100000000uusdc 100.0 --from=treasury --keyring-backend=test --chain-id=elystestnet-1 --yes --gas=1000000
 Finite profitability:
 elysd tx perpetual open short 5 uatom 100000000uusdc 100.0 --take-profit 100 --from=treasury --keyring-backend=test --chain-id=elystestnet-1 --yes --gas=1000000`,
-		Args: cobra.ExactArgs(4),
+		Args: cobra.ExactArgs(5),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
@@ -50,7 +50,7 @@ elysd tx perpetual open short 5 uatom 100000000uusdc 100.0 --take-profit 100 --f
 				return err
 			}
 
-			stopLossPrice, err := sdk.NewDecFromStr(args[5])
+			stopLossPrice, err := sdk.NewDecFromStr(args[4])
 			if err != nil {
 				return err
 			}
