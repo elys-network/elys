@@ -101,6 +101,22 @@ message MTP {
   ];
 }
 
+message InterestBlock {
+    string interest_rate = 1 [
+        (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+        (gogoproto.nullable) = false
+    ];
+    int64 block_time = 2;
+}
+
+message FundingRateBlock {
+    string funding_rate = 1 [
+        (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+        (gogoproto.nullable) = false
+    ];
+    int64 block_time = 2;
+}
+
 message WhiteList {
   repeated string validator_list = 1;
 }

@@ -36,6 +36,7 @@ func (k Keeper) BeginBlocker(ctx sdk.Context) {
 			continue
 		}
 		if k.IsPoolEnabled(ctx, pool.AmmPoolId) {
+			// TODO: update borrow interest rate, cumulative borrow interest rate store
 			rate, err := k.BorrowInterestRateComputation(ctx, pool)
 			if err != nil {
 				ctx.Logger().Error(err.Error())
@@ -47,6 +48,7 @@ func (k Keeper) BeginBlocker(ctx sdk.Context) {
 			if err != nil {
 				ctx.Logger().Error(err.Error())
 			}
+			// TODO: update funding rate, cumulative funding rate store
 			err = k.UpdateFundingRate(ctx, &pool)
 			if err != nil {
 				ctx.Logger().Error(err.Error())

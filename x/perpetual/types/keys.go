@@ -31,6 +31,8 @@ var (
 	MTPCountPrefix     = []byte{0x02}
 	OpenMTPCountPrefix = []byte{0x04}
 	WhitelistPrefix    = []byte{0x05}
+	InterestRatePrefix = []byte{0x06}
+	FundingRatePrefix  = []byte{0x07}
 )
 
 func KeyPrefix(p string) []byte {
@@ -59,4 +61,12 @@ func GetMTPKey(address string, id uint64) []byte {
 
 func GetMTPPrefixForAddress(address string) []byte {
 	return append(MTPPrefix, []byte(address)...)
+}
+
+func GetInterestRateKey(block uint64, pool uint64) []byte {
+	return append(InterestRatePrefix, append(GetUint64Bytes(block), GetUint64Bytes(pool)...)...)
+}
+
+func GetFundingRateKey(block uint64, pool uint64) []byte {
+	return append(FundingRatePrefix, append(GetUint64Bytes(block), GetUint64Bytes(pool)...)...)
 }
