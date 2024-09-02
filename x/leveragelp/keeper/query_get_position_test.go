@@ -10,16 +10,22 @@ import (
 	stablestaketypes "github.com/elys-network/elys/x/stablestake/types"
 )
 
-func (suite KeeperTestSuite) TestQ() {
+func (suite KeeperTestSuite) TestQueryGetPosition() {
 	k := suite.app.LeveragelpKeeper
-	SetupCoinPrices(suite.ctx, suite.app.OracleKeeper)
+	suite.SetupCoinPrices(suite.ctx)
 	addr := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
 	poolAddr := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
 	treasuryAddr := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
+	params := stablestaketypes.DefaultParams()
+	suite.app.StablestakeKeeper.SetParams(suite.ctx, params)
+
 	pool := types.Pool{
-		AmmPoolId: 1,
-		Enabled:   true,
-		Closed:    false,
+		AmmPoolId:         1,
+		Enabled:           true,
+		Closed:            false,
+		Health:            sdk.ZeroDec(),
+		LeveragedLpAmount: sdk.ZeroInt(),
+		LeverageMax:       sdk.OneDec().MulInt64(10),
 	}
 	poolInit := sdk.Coins{sdk.NewInt64Coin("uusdc", 100000), sdk.NewInt64Coin("uusdt", 100000)}
 
@@ -90,8 +96,22 @@ func (suite KeeperTestSuite) TestQ() {
 	})
 
 	res, _ := k.Position(suite.ctx, &types.PositionRequest{Address: addr.String(), Id: position.Id})
-	expected := sdk.NewDec(5)
+	updated_leverage := sdk.NewDec(5)
 
 	suite.Require().Equal(position, res.Position.Position)
-	suite.Require().Equal(expected, res.Position.UpdatedLeverage)
+	suite.Require().Equal(updated_leverage, res.Position.UpdatedLeverage)
+
+
+	expected := types.PositionAndInterest{
+		Position: &types.QueryPosition{
+			Position: position,
+			UpdatedLeverage: updated_leverage,
+		},
+		InterestRateHour: sdk.MustNewDecFromStr("0.000017123287671233"),
+		InterestRateHourUsd: sdk.ZeroDec(),
+	}
+	pos_for_address_res, _ := k.QueryPositionsForAddress(suite.ctx, &types.PositionsForAddressRequest{Address: addr.String(), Pagination: nil} )
+
+	suite.Require().Equal(expected.Position, pos_for_address_res.Positions[0].Position)
+	suite.Require().Equal(expected.InterestRateHour, pos_for_address_res.Positions[0].InterestRateHour)
 }

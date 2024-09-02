@@ -9,7 +9,7 @@ import "cosmos/base/v1beta1/coin.proto";
 
 message PositionRequest {
   string address = 1;
-  uint64 id      = 2;
+  uint64 id = 2;
 }
 
 message Position {
@@ -70,13 +70,13 @@ message LegacyPosition {
   ];
 }
 
-message AddressId {
-  string address = 1;
-  uint64 id = 2;
+message QueryPosition {
+  Position position        = 1;
+  string   updated_leverage = 2 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
 }
 
 message PositionAndInterest {
-  Position position = 1;
+  QueryPosition position = 1;
   string interest_rate_hour = 2 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false

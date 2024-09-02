@@ -60,7 +60,7 @@ func initializeForAddPool(suite *KeeperTestSuite, addresses []sdk.AccAddress, as
 
 func (suite *KeeperTestSuite) TestAdd_Pool() {
 	suite.ResetSuite()
-	SetupCoinPrices(suite.ctx, suite.app.OracleKeeper)
+	suite.SetupCoinPrices(suite.ctx)
 	addresses := simapp.AddTestAddrs(suite.app, suite.ctx, 10, sdk.NewInt(1000000))
 	asset1 := ptypes.ATOM
 	asset2 := ptypes.BaseCurrency
@@ -107,7 +107,7 @@ func (suite *KeeperTestSuite) TestAdd_Pool() {
 		suite.Run(tc.name, func() {
 			tc.prerequisiteFunction()
 			msgServer := keeper.NewMsgServerImpl(suite.app.LeveragelpKeeper)
-			_, err := msgServer.AddPools(suite.ctx, tc.input)
+			_, err := msgServer.AddPool(suite.ctx, tc.input)
 			if tc.expectErr {
 				suite.Require().Error(err)
 				suite.Require().Contains(err.Error(), tc.expectErrMsg)

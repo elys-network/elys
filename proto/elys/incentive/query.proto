@@ -102,6 +102,9 @@ message PoolRewards {
     (gogoproto.nullable) = false,
     (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
   ];
+  cosmos.base.v1beta1.Coin eden_forward = 4 [
+    (gogoproto.nullable) = false
+  ];
 }
 
 message QueryPoolRewardsResponse {

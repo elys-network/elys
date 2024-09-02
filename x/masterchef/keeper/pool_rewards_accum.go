@@ -122,6 +122,32 @@ func (k Keeper) LastPoolRewardsAccum(ctx sdk.Context, poolId uint64) types.PoolR
 	}
 }
 
+// Returns eden rewards using forward calc for 24 hours
+func (k Keeper) ForwardEdenCalc(ctx sdk.Context, poolId uint64) sdk.Dec {
+	store := ctx.KVStore(k.storeKey)
+	iter := sdk.KVStoreReversePrefixIterator(store, types.GetPoolRewardsAccumPrefix(poolId))
+	defer iter.Close()
+
+	var lastTwo []types.PoolRewardsAccum
+	for ; iter.Valid() && len(lastTwo) < 2; iter.Next() {
+		accum := types.PoolRewardsAccum{}
+		k.cdc.MustUnmarshal(iter.Value(), &accum)
+		lastTwo = append([]types.PoolRewardsAccum{accum}, lastTwo...)
+	}
+
+	if len(lastTwo) == 2 {
+		diff := lastTwo[1].EdenReward.Sub(lastTwo[0].EdenReward)
+		// Here we are assuming average block time of 4s
+		// 1 DAY = 86400
+		// Note: This calculation maybe used in FE, the idea is to
+		// give estimated numbers of rewards that a user will get
+		return diff.MulInt64(21600)
+	}
+
+	// Return zero if there are not enough entries
+	return sdk.ZeroDec()
+}
+
 func (k Keeper) AddPoolRewardsAccum(ctx sdk.Context, poolId, timestamp uint64, height int64, dexReward, gasReward, edenReward math.LegacyDec) {
 	lastAccum := k.LastPoolRewardsAccum(ctx, poolId)
 	lastAccum.Timestamp = timestamp

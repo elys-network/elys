@@ -13,8 +13,12 @@ import (
 
 func (k Keeper) OpenLong(ctx sdk.Context, msg *types.MsgOpen) (*types.Position, error) {
 	// Determine the maximum leverage available and compute the effective leverage to be used.
-	maxLeverage := k.GetMaxLeverageParam(ctx)
-	leverage := sdk.MinDec(msg.Leverage, maxLeverage)
+	pool, found := k.GetPool(ctx, msg.AmmPoolId)
+	if !found {
+		return nil, errorsmod.Wrap(types.ErrPoolDoesNotExist, fmt.Sprintf("poolId: %d", msg.AmmPoolId))
+	}
+	// pool.LeverageMax is set when adding pool with MinDec(params.LeverageMax, addPoolMsg.Leverage)
+	leverage := sdk.MinDec(msg.Leverage, pool.LeverageMax)
 
 	// Convert the collateral amount into a decimal format.
 	collateralAmountDec := sdk.NewDecFromBigInt(msg.CollateralAmount.BigInt())
@@ -37,12 +41,12 @@ func (k Keeper) OpenConsolidate(ctx sdk.Context, position *types.Position, msg *
 		return nil, types.ErrInvalidLeverage
 	}
 	poolId := position.AmmPoolId
-	_, found := k.GetPool(ctx, poolId)
+	pool, found := k.GetPool(ctx, poolId)
 	if !found {
 		return nil, errorsmod.Wrap(types.ErrPoolDoesNotExist, fmt.Sprintf("poolId: %d", poolId))
 	}
 
-	if !k.IsPoolEnabled(ctx, poolId) {
+	if !pool.Enabled {
 		return nil, errorsmod.Wrap(types.ErrPositionDisabled, fmt.Sprintf("poolId: %d", poolId))
 	}
 
@@ -52,6 +56,14 @@ func (k Keeper) OpenConsolidate(ctx sdk.Context, position *types.Position, msg *
 	position, err := k.ProcessOpenLong(ctx, position, position.Leverage, collateralAmountDec, poolId, msg)
 	if err != nil {
 		return nil, err
+	}
+
+	if k.hooks != nil {
+		err := k.hooks.AfterLeverageLpPositionOpenConsolidate(ctx, sdk.MustAccAddressFromBech32(msg.Creator))
+		if err != nil {
+			return nil, err
+		}
+
 	}
 
 	event := sdk.NewEvent(types.EventOpen,
@@ -75,7 +87,7 @@ func (k Keeper) ProcessOpenLong(ctx sdk.Context, position *types.Position, lever
 	}
 
 	// Check if the pool is enabled.
-	if !k.IsPoolEnabled(ctx, poolId) {
+	if !pool.Enabled {
 		return nil, errorsmod.Wrap(types.ErrPositionDisabled, fmt.Sprintf("poolId: %d", poolId))
 	}
 
