@@ -18,7 +18,7 @@ $$
 
 ### 3. **Component Descriptions**
 
-- **\*Liabilities**: The `Liabilities` represent the total amount of funds that the user has borrowed in the base currency. This value is stored in the user's Margin Trading Position (MTP) and is updated as the user borrows or repays funds.
+- **Liabilities**: The `Liabilities` represent the total amount of funds that the user has borrowed in the base currency. This value is stored in the user's Margin Trading Position (MTP) and is updated as the user borrows or repays funds.
 - **Unpaid Collateral**: The `Unpaid Collateral` refers to any interest amount that has accrued but not yet been paid. If the collateral is not in the base currency, it is converted to the base currency using an estimated swap value.
 - **Borrow Interest Rate**: The `Borrow Interest Rate` is the rate at which interest is accrued on the borrowed amount. It is expressed as a decimal. This rate is dynamically calculated and updated based on pool health.
 - **Epoch Position**: The `Epoch Position` refers to the current position within the epoch, which is a predefined time period over which interest accrual is calculated. The position helps prorate the interest if it’s being calculated mid-epoch. It is calculated based on the current time or block height relative to the start of the epoch.
@@ -31,29 +31,29 @@ $$
 
 2. **Calculate Liabilities with Unpaid Collateral:**
 
-   $$
-   \text{Total Liabilities} = \text{Liabilities} + \text{Unpaid Collateral}
-   $$
+$$
+\text{Total Liabilities} = \text{Liabilities} + \text{Unpaid Collateral}
+$$
 
 3. **Compute Initial Borrow Interest:**
 
-   $$
-   \text{Borrow Interest Initial} = \text{Total Liabilities} \times \text{Borrow Interest Rate}
-   $$
+$$
+\text{Borrow Interest Initial} = \text{Total Liabilities} \times \text{Borrow Interest Rate}
+$$
 
 4. **Prorate Borrow Interest Based on Epoch Position (if applicable):**
 
-   $$
-   \text{Prorated Borrow Interest} = \text{Borrow Interest Initial} \times \frac{\text{Epoch Position}}{\text{Epoch Length}}
-   $$
+$$
+\text{Prorated Borrow Interest} = \text{Borrow Interest Initial} \times \frac{\text{Epoch Position}}{\text{Epoch Length}}
+$$
 
 5. **Final Borrow Interest Calculation:**
 
-   $$
-   \text{Borrow Interest} = \left\lceil \text{Prorated Borrow Interest} \right\rceil \times \text{Take Profit Borrow Rate}
-   $$
+$$
+\text{Borrow Interest} = \left\lceil \text{Prorated Borrow Interest} \right\rceil \times \text{Take Profit Borrow Rate}
+$$
 
-   The **Take Profit Borrow Rate** is used as a reduction factor, where a value between 0 and 1 is applied to decrease the calculated borrow interest. For example, a rate of 0.9 would reduce the interest to 90% of the initially calculated value.
+The **Take Profit Borrow Rate** is used as a reduction factor, where a value between 0 and 1 is applied to decrease the calculated borrow interest. For example, a rate of 0.9 would reduce the interest to 90% of the initially calculated value.
 
 6. **Apply Minimum Interest Rule:** If the calculated interest is too low, ensure that a minimum of 1 unit is charged if the `Borrow Interest Rate` is not zero.
 
