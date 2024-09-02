@@ -1,16 +1,24 @@
-# Orderbook Module
+# TradeShield Module
 
-The purpose of this document is to specify the design and implementation of the new Orderbook native module for the Elys Network blockchain. The goal is to migrate the existing TradeShield (TS) CosmWasm contract functionalities to a native module to reduce the complexity and computational overhead, contributing to the reduction of block times to 1-2 seconds.
+The purpose of this document is to specify the design and implementation of the new TradeShield native module for the Elys Network blockchain. The goal is to migrate the existing TradeShield (TS) CosmWasm contract functionalities to a native module to reduce the complexity and computational overhead, contributing to the reduction of block times to 1-2 seconds.
 
 ## Objectives
 
-- **Reduce ABCI Logic:** Migrate TradeShield CW contract to a native Elys module to reduce ABCI logic, particularly in the `x/clock` end blocker, and move closer to achieving 1-2 seconds block time.
+- **Reduce ABCI Logic:** Migrate TradeShield CosmWasm contract to a native Elys module to reduce ABCI logic, particularly in the `x/clock` end blocker, and move closer to achieving 1-2 seconds block time.
 - **Simplify Codebase:** Eliminate bindings logic from the Elys repository related to CW contracts, simplifying the overall codebase.
 - **Optimize Performance:** Offload computationally heavy order execution checks from the chain to off-chain agents (bots), reducing block processing time.
 
+## Module Parameters
+
+The TradeShield module will have the following parameters:
+
+1. **Reward Percentage:** The percentage of the operation value that will be given to the participant as a reward for successfully executed orders. (Example: 0.1%)
+2. **Margin Error Rate:** The margin of error for order execution. If the order price is within this margin above the market price, the order will not be executed. (Example: 1%)
+3. **Minimum Deposit:** The minimum amount of Elys tokens that must be deposited along with the transaction. This deposit will be forfeited if any order in the submitted list does not meet the execution criteria.
+
 ## Functionalities
 
-The Orderbook module will replicate and extend the functionalities currently available in the TradeShield contract. The following functionalities will be supported:
+The TradeShield module will replicate and extend the functionalities currently available in the TradeShield contract. The following functionalities will be supported:
 
 ### Order Creation
 
@@ -31,6 +39,7 @@ The Orderbook module will replicate and extend the functionalities currently ava
 
    - Create perpetual limit open order
    - Create perpetual stop-loss order
+   - Create perpetual limit close order
 
 ### Order Cancellation
 
