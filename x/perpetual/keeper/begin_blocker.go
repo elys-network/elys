@@ -7,6 +7,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
+	"github.com/elys-network/elys/x/perpetual/types"
 )
 
 func (k Keeper) BeginBlocker(ctx sdk.Context) {
@@ -36,7 +37,6 @@ func (k Keeper) BeginBlocker(ctx sdk.Context) {
 			continue
 		}
 		if k.IsPoolEnabled(ctx, pool.AmmPoolId) {
-			// TODO: update borrow interest rate, cumulative borrow interest rate store
 			rate, err := k.BorrowInterestRateComputation(ctx, pool)
 			if err != nil {
 				ctx.Logger().Error(err.Error())
@@ -44,16 +44,27 @@ func (k Keeper) BeginBlocker(ctx sdk.Context) {
 			}
 			pool.BorrowInterestRate = rate
 			pool.LastHeightBorrowInterestRateComputed = currentHeight
+
+			k.SetBorrowRate(ctx, uint64(ctx.BlockHeight()), pool.AmmPoolId, types.InterestBlock{
+				InterestRate: rate,
+				BlockTime:    ctx.BlockTime().Unix(),
+			})
+
 			err = k.UpdatePoolHealth(ctx, &pool)
 			if err != nil {
 				ctx.Logger().Error(err.Error())
 			}
-			// TODO: update funding rate, cumulative funding rate store
 			err = k.UpdateFundingRate(ctx, &pool)
 			if err != nil {
 				ctx.Logger().Error(err.Error())
 			}
 
+			k.SetFundingRate(ctx, uint64(ctx.BlockHeight()), pool.AmmPoolId, types.FundingRateBlock{
+				FundingRate: pool.FundingRate,
+				BlockTime:   ctx.BlockTime().Unix(),
+			})
+
+			// TODO: Remove this and use cumulative funding rate and borrow interest rate
 			mtps, _, _ := k.GetMTPsForPool(ctx, pool.AmmPoolId, nil)
 			for _, mtp := range mtps {
 				err := BeginBlockerProcessMTP(ctx, k, mtp, pool, ammPool, baseCurrency, baseCurrencyDecimal)
