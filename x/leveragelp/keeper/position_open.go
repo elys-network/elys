@@ -13,6 +13,9 @@ import (
 
 func (k Keeper) OpenLong(ctx sdk.Context, msg *types.MsgOpen) (*types.Position, error) {
 	// Initialize a new Leveragelp Trading Position (Position).
+	if msg.Leverage.LTE(sdk.OneDec()) {
+		return nil, types.ErrLeverageTooSmall
+	}
 	position := types.NewPosition(msg.Creator, sdk.NewCoin(msg.CollateralAsset, msg.CollateralAmount), msg.AmmPoolId)
 	position.Id = k.GetPositionCount(ctx) + 1
 	position.StopLossPrice = msg.StopLossPrice
@@ -26,6 +29,10 @@ func (k Keeper) OpenLong(ctx sdk.Context, msg *types.MsgOpen) (*types.Position, 
 }
 
 func (k Keeper) OpenConsolidate(ctx sdk.Context, position *types.Position, msg *types.MsgOpen) (*types.MsgOpenResponse, error) {
+	if msg.Leverage.LT(sdk.OneDec()) {
+		return nil, types.ErrLeverageTooSmall
+	}
+	
 	poolId := position.AmmPoolId
 
 	position.Collateral = position.Collateral.Add(sdk.NewCoin(msg.CollateralAsset, msg.CollateralAmount))

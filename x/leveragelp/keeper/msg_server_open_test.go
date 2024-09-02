@@ -308,6 +308,20 @@ func (suite *KeeperTestSuite) TestOpen_PoolWithBaseCurrencyAsset() {
 				suite.SetSafetyFactor(sdk.OneDec().MulInt64(10))
 			},
 		},
+		{"Open new Position with leverage <=1",
+			&types.MsgOpen{
+				Creator:          addresses[0].String(),
+				CollateralAsset:  ptypes.BaseCurrency,
+				CollateralAmount: sdk.NewInt(1000),
+				AmmPoolId:        1,
+				Leverage:         sdk.MustNewDecFromStr("0.0"),
+				StopLossPrice:    sdk.MustNewDecFromStr("100.0"),
+			},
+			true,
+			"",
+			func() {
+			},
+		},
 		{"Open Position",
 			&types.MsgOpen{
 				Creator:          addresses[0].String(),
