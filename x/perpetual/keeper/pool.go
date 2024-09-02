@@ -86,7 +86,7 @@ func (k Keeper) GetAllBorrowRate(ctx sdk.Context) []types.InterestBlock {
 	return interests
 }
 
-func (k Keeper) GetBorrowRate(ctx sdk.Context, startBlock uint64, pool uint64, startTime uint64, borrowed sdk.Dec) sdk.Int {
+func (k Keeper) GetBorrowRate(ctx sdk.Context, startBlock uint64, pool uint64, startTime uint64, borrowed sdk.Dec) sdk.Dec {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.InterestRatePrefix)
 	currentBlockKey := types.GetInterestRateKey(uint64(ctx.BlockHeight()), pool)
 	startBlockKey := types.GetInterestRateKey(startBlock, pool)
@@ -108,8 +108,7 @@ func (k Keeper) GetBorrowRate(ctx sdk.Context, startBlock uint64, pool uint64, s
 			Mul(totalInterest).
 			Mul(sdk.NewDec(ctx.BlockTime().Unix() - int64(startTime))).
 			Quo(sdk.NewDec(numberOfBlocks)).
-			Quo(sdk.NewDec(86400 * 365)).
-			RoundInt()
+			Quo(sdk.NewDec(86400 * 365))
 		return newInterest
 	}
 
@@ -134,20 +133,18 @@ func (k Keeper) GetBorrowRate(ctx sdk.Context, startBlock uint64, pool uint64, s
 			newInterest := borrowed.Mul(totalInterest).
 				Mul(sdk.NewDec(ctx.BlockTime().Unix() - int64(startTime))).
 				Quo(sdk.NewDec(numberOfBlocks)).
-				Quo(sdk.NewDec(86400 * 365)).
-				RoundInt()
+				Quo(sdk.NewDec(86400 * 365))
 			return newInterest
 		}
 	}
 	params, found := k.GetPool(ctx, pool)
 	if !found {
-		return sdk.ZeroInt()
+		return sdk.ZeroDec()
 	}
 	newInterest := borrowed.
 		Mul(params.BorrowInterestRate).
 		Mul(sdk.NewDec(ctx.BlockTime().Unix() - int64(startTime))).
-		Quo(sdk.NewDec(86400 * 365)).
-		RoundInt()
+		Quo(sdk.NewDec(86400 * 365))
 	return newInterest
 }
 

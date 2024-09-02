@@ -14,7 +14,7 @@ import (
 	"github.com/elys-network/elys/x/perpetual/types"
 )
 
-func BeginBlockerProcessMTP(ctx sdk.Context, k Keeper, mtp *types.MTP, pool types.Pool, ammPool ammtypes.Pool, baseCurrency string, baseCurrencyDecimal uint64) error {
+func CheckAndLiquidateUnhealthyPosition(ctx sdk.Context, k Keeper, mtp *types.MTP, pool types.Pool, ammPool ammtypes.Pool, baseCurrency string, baseCurrencyDecimal uint64) error {
 	defer func() {
 		if r := recover(); r != nil {
 			if msg, ok := r.(string); ok {
@@ -41,9 +41,11 @@ func BeginBlockerProcessMTP(ctx sdk.Context, k Keeper, mtp *types.MTP, pool type
 	mtp.MtpHealth = h
 
 	// Handle Borrow Interest if within epoch position
-	if err := k.HandleBorrowInterest(ctx, mtp, &pool, ammPool); err != nil {
+	if _, err := k.SettleBorrowInterest(ctx, mtp, &pool, ammPool); err != nil {
 		return errors.Wrap(err, fmt.Sprintf("error handling borrow interest payment: %s", mtp.CollateralAsset))
 	}
+	// TODO: Handle Funding Fee Collection using cumulative funding rate
+	// TODO: Handle Funding Fee Distribution using cumulative funding rate
 	if err := k.HandleFundingFeeCollection(ctx, mtp, &pool, ammPool, baseCurrency); err != nil {
 		return errors.Wrap(err, fmt.Sprintf("error handling funding fee collection: %s", mtp.CollateralAsset))
 	}

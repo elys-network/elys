@@ -128,7 +128,7 @@ Defines various event emission functions used throughout the module, such as `Em
 
 ### Borrow Interest Handling
 
-`HandleBorrowInterest` and `HandleBorrowInterestPayment` manage the computation and payment of borrow interest for MTPs.
+`SettleBorrowInterest` and `SettleBorrowInterestPayment` manage the computation and payment of borrow interest for MTPs.
 
 ### Funding Fee Handling
 

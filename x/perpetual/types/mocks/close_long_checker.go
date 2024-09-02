@@ -244,8 +244,8 @@ func (_c *CloseLongChecker_GetPool_Call) RunAndReturn(run func(types.Context, ui
 	return _c
 }
 
-// HandleBorrowInterest provides a mock function with given fields: ctx, mtp, pool, ammPool
-func (_m *CloseLongChecker) HandleBorrowInterest(ctx types.Context, mtp *perpetualtypes.MTP, pool *perpetualtypes.Pool, ammPool ammtypes.Pool) error {
+// SettleBorrowInterest provides a mock function with given fields: ctx, mtp, pool, ammPool
+func (_m *CloseLongChecker) SettleBorrowInterest(ctx types.Context, mtp *perpetualtypes.MTP, pool *perpetualtypes.Pool, ammPool ammtypes.Pool) (math.Int, error) {
 	ret := _m.Called(ctx, mtp, pool, ammPool)
 
 	var r0 error
@@ -255,36 +255,36 @@ func (_m *CloseLongChecker) HandleBorrowInterest(ctx types.Context, mtp *perpetu
 		r0 = ret.Error(0)
 	}
 
-	return r0
+	return types.ZeroInt(), r0
 }
 
-// CloseLongChecker_HandleBorrowInterest_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'HandleBorrowInterest'
-type CloseLongChecker_HandleBorrowInterest_Call struct {
+// CloseLongChecker_SettleBorrowInterest_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'SettleBorrowInterest'
+type CloseLongChecker_SettleBorrowInterest_Call struct {
 	*mock.Call
 }
 
-// HandleBorrowInterest is a helper method to define mock.On call
+// SettleBorrowInterest is a helper method to define mock.On call
 //   - ctx types.Context
 //   - mtp *perpetualtypes.MTP
 //   - pool *perpetualtypes.Pool
 //   - ammPool ammtypes.Pool
-func (_e *CloseLongChecker_Expecter) HandleBorrowInterest(ctx interface{}, mtp interface{}, pool interface{}, ammPool interface{}) *CloseLongChecker_HandleBorrowInterest_Call {
-	return &CloseLongChecker_HandleBorrowInterest_Call{Call: _e.mock.On("HandleBorrowInterest", ctx, mtp, pool, ammPool)}
+func (_e *CloseLongChecker_Expecter) SettleBorrowInterest(ctx interface{}, mtp interface{}, pool interface{}, ammPool interface{}) *CloseLongChecker_SettleBorrowInterest_Call {
+	return &CloseLongChecker_SettleBorrowInterest_Call{Call: _e.mock.On("SettleBorrowInterest", ctx, mtp, pool, ammPool)}
 }
 
-func (_c *CloseLongChecker_HandleBorrowInterest_Call) Run(run func(ctx types.Context, mtp *perpetualtypes.MTP, pool *perpetualtypes.Pool, ammPool ammtypes.Pool)) *CloseLongChecker_HandleBorrowInterest_Call {
+func (_c *CloseLongChecker_SettleBorrowInterest_Call) Run(run func(ctx types.Context, mtp *perpetualtypes.MTP, pool *perpetualtypes.Pool, ammPool ammtypes.Pool)) *CloseLongChecker_SettleBorrowInterest_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		run(args[0].(types.Context), args[1].(*perpetualtypes.MTP), args[2].(*perpetualtypes.Pool), args[3].(ammtypes.Pool))
 	})
 	return _c
 }
 
-func (_c *CloseLongChecker_HandleBorrowInterest_Call) Return(_a0 error) *CloseLongChecker_HandleBorrowInterest_Call {
+func (_c *CloseLongChecker_SettleBorrowInterest_Call) Return(_a0 error) *CloseLongChecker_SettleBorrowInterest_Call {
 	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *CloseLongChecker_HandleBorrowInterest_Call) RunAndReturn(run func(types.Context, *perpetualtypes.MTP, *perpetualtypes.Pool, ammtypes.Pool) error) *CloseLongChecker_HandleBorrowInterest_Call {
+func (_c *CloseLongChecker_SettleBorrowInterest_Call) RunAndReturn(run func(types.Context, *perpetualtypes.MTP, *perpetualtypes.Pool, ammtypes.Pool) error) *CloseLongChecker_SettleBorrowInterest_Call {
 	_c.Call.Return(run)
 	return _c
 }
