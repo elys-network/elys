@@ -56,7 +56,7 @@ type OpenLongChecker interface {
 	Borrow(ctx sdk.Context, collateralAmount math.Int, custodyAmount math.Int, mtp *MTP, ammPool *ammtypes.Pool, pool *Pool, eta sdk.Dec, baseCurrency string, isBroker bool) error
 	UpdatePoolHealth(ctx sdk.Context, pool *Pool) error
 	TakeInCustody(ctx sdk.Context, mtp MTP, pool *Pool) error
-	UpdateMTPHealth(ctx sdk.Context, mtp MTP, ammPool ammtypes.Pool, baseCurrency string) (sdk.Dec, error)
+	GetMTPHealth(ctx sdk.Context, mtp MTP, ammPool ammtypes.Pool, baseCurrency string) (sdk.Dec, error)
 	GetSafetyFactor(ctx sdk.Context) sdk.Dec
 	SetPool(ctx sdk.Context, pool Pool)
 	CheckSameAssetPosition(ctx sdk.Context, msg *MsgOpen) *MTP
@@ -76,7 +76,7 @@ type OpenShortChecker interface {
 	Borrow(ctx sdk.Context, collateralAmount math.Int, custodyAmount math.Int, mtp *MTP, ammPool *ammtypes.Pool, pool *Pool, eta sdk.Dec, baseCurrency string, isBroker bool) error
 	UpdatePoolHealth(ctx sdk.Context, pool *Pool) error
 	TakeInCustody(ctx sdk.Context, mtp MTP, pool *Pool) error
-	UpdateMTPHealth(ctx sdk.Context, mtp MTP, ammPool ammtypes.Pool, baseCurrency string) (sdk.Dec, error)
+	GetMTPHealth(ctx sdk.Context, mtp MTP, ammPool ammtypes.Pool, baseCurrency string) (sdk.Dec, error)
 	GetSafetyFactor(ctx sdk.Context) sdk.Dec
 	SetPool(ctx sdk.Context, pool Pool)
 	CheckSameAssetPosition(ctx sdk.Context, msg *MsgOpen) *MTP

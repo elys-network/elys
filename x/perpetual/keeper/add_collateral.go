@@ -92,7 +92,7 @@ func (k Keeper) AddCollateralToMtp(ctx sdk.Context, msg *types.MsgAddCollateral)
 		return nil, err
 	}
 
-	h, err := k.UpdateMTPHealth(ctx, mtp, ammPool, baseCurrency) // set mtp in func or return h?
+	h, err := k.GetMTPHealth(ctx, mtp, ammPool, baseCurrency) // set mtp in func or return h?
 	if err != nil {
 		return nil, err
 	}
@@ -148,7 +148,7 @@ func (k Keeper) AddCollateralToMtp(ctx sdk.Context, msg *types.MsgAddCollateral)
 	}
 
 	// Update the MTP health.
-	lr, err := k.OpenLongChecker.UpdateMTPHealth(ctx, mtp, ammPool, baseCurrency)
+	lr, err := k.OpenLongChecker.GetMTPHealth(ctx, mtp, ammPool, baseCurrency)
 	if err != nil {
 		return nil, err
 	}

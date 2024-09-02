@@ -84,7 +84,7 @@ func (k Keeper) HandleFundingFeeCollection(ctx sdk.Context, mtp *types.MTP, pool
 	k.SetPool(ctx, *pool)
 
 	// update mtp health
-	_, err = k.UpdateMTPHealth(ctx, *mtp, ammPool, baseCurrency)
+	_, err = k.GetMTPHealth(ctx, *mtp, ammPool, baseCurrency)
 	if err != nil {
 		return err
 	}

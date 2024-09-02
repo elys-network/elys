@@ -1,17 +1,28 @@
 package keeper
 
 import (
+	"fmt"
+
+	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	"github.com/elys-network/elys/x/perpetual/types"
 )
 
-func (k Keeper) UpdateMTPHealth(ctx sdk.Context, mtp types.MTP, ammPool ammtypes.Pool, baseCurrency string) (sdk.Dec, error) {
+func (k Keeper) GetMTPHealth(ctx sdk.Context, mtp types.MTP, ammPool ammtypes.Pool, baseCurrency string) (sdk.Dec, error) {
 	xl := mtp.Liabilities
 
 	if xl.IsZero() {
 		return sdk.ZeroDec(), nil
 	}
+
+	pool, found := k.GetPool(ctx, mtp.AmmPoolId)
+	if !found {
+		return sdk.ZeroDec(), errorsmod.Wrap(types.ErrPoolDoesNotExist, fmt.Sprintf("pool %d not found", mtp.AmmPoolId))
+	}
+
+	pendingBorrowInterest := k.GetBorrowInterest(ctx, &mtp, &pool, ammPool)
+	mtp.BorrowInterestUnpaidCollateral = mtp.BorrowInterestUnpaidCollateral.Add(pendingBorrowInterest)
 
 	// if short position, convert liabilities to base currency
 	if mtp.Position == types.Position_SHORT {

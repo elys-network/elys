@@ -136,7 +136,7 @@ Defines various event emission functions used throughout the module, such as `Em
 
 ### Health Updates
 
-`UpdateMTPHealth` and `UpdatePoolHealth` ensure the health of MTPs and pools are calculated and maintained.
+`GetMTPHealth` and `UpdatePoolHealth` ensure the health of MTPs and pools are calculated and maintained.
 
 ### Utility Functions
 

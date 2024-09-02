@@ -24,7 +24,7 @@ func (k Keeper) SettleBorrowInterest(ctx sdk.Context, mtp *types.MTP, pool *type
 		ctx.Logger().Error(errorsmod.Wrap(err, "error executing incremental borrow interest payment").Error())
 	}
 
-	_, err = k.UpdateMTPHealth(ctx, *mtp, ammPool, baseCurrency)
+	_, err = k.GetMTPHealth(ctx, *mtp, ammPool, baseCurrency)
 	return finalBorrowInterestPayment, err
 }
 

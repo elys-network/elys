@@ -34,16 +34,15 @@ func CheckAndLiquidateUnhealthyPosition(ctx sdk.Context, k Keeper, mtp *types.MT
 	if err != nil {
 		return errors.Wrap(err, fmt.Sprintf("error calculating mtp take profit borrow rate: %s", mtp.String()))
 	}
-	h, err := k.UpdateMTPHealth(ctx, *mtp, ammPool, baseCurrency)
-	if err != nil {
-		return errors.Wrap(err, fmt.Sprintf("error updating mtp health: %s", mtp.String()))
-	}
-	mtp.MtpHealth = h
-
 	// Handle Borrow Interest if within epoch position
 	if _, err := k.SettleBorrowInterest(ctx, mtp, &pool, ammPool); err != nil {
 		return errors.Wrap(err, fmt.Sprintf("error handling borrow interest payment: %s", mtp.CollateralAsset))
 	}
+	h, err := k.GetMTPHealth(ctx, *mtp, ammPool, baseCurrency)
+	if err != nil {
+		return errors.Wrap(err, fmt.Sprintf("error updating mtp health: %s", mtp.String()))
+	}
+	mtp.MtpHealth = h
 	// TODO: Handle Funding Fee Collection using cumulative funding rate
 	// TODO: Handle Funding Fee Distribution using cumulative funding rate
 	if err := k.HandleFundingFeeCollection(ctx, mtp, &pool, ammPool, baseCurrency); err != nil {

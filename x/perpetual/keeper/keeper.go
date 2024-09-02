@@ -178,7 +178,7 @@ func (k Keeper) Borrow(ctx sdk.Context, collateralAmount math.Int, custodyAmount
 
 	mtp.Leverage = eta.Add(sdk.OneDec())
 
-	h, err := k.UpdateMTPHealth(ctx, *mtp, *ammPool, baseCurrency) // set mtp in func or return h?
+	h, err := k.GetMTPHealth(ctx, *mtp, *ammPool, baseCurrency) // set mtp in func or return h?
 	if err != nil {
 		return err
 	}

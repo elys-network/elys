@@ -82,7 +82,7 @@ func (k Keeper) ProcessOpenLong(ctx sdk.Context, mtp *types.MTP, leverage sdk.De
 	}
 
 	// Update the MTP health.
-	lr, err := k.OpenLongChecker.UpdateMTPHealth(ctx, *mtp, ammPool, baseCurrency)
+	lr, err := k.OpenLongChecker.GetMTPHealth(ctx, *mtp, ammPool, baseCurrency)
 	if err != nil {
 		return nil, err
 	}
