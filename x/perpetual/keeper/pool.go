@@ -86,64 +86,67 @@ func (k Keeper) GetAllBorrowRate(ctx sdk.Context) []types.InterestBlock {
 	return interests
 }
 
-// func (k Keeper) GetBorrowRate(ctx sdk.Context, startBlock uint64, startTime uint64, borrowed sdk.Dec) sdk.Int {
-// 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.InterestPrefixKey)
-// 	currentBlockKey := sdk.Uint64ToBigEndian(uint64(ctx.BlockHeight()))
-// 	startBlockKey := sdk.Uint64ToBigEndian(startBlock)
+func (k Keeper) GetBorrowRate(ctx sdk.Context, startBlock uint64, pool uint64, startTime uint64, borrowed sdk.Dec) sdk.Int {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.InterestRatePrefix)
+	currentBlockKey := types.GetInterestRateKey(uint64(ctx.BlockHeight()), pool)
+	startBlockKey := types.GetInterestRateKey(startBlock, pool)
 
-// 	// note: exclude start block
-// 	if store.Has(startBlockKey) && store.Has(currentBlockKey) && startBlock != uint64(ctx.BlockHeight()) {
-// 		bz := store.Get(startBlockKey)
-// 		startInterestBlock := types.InterestBlock{}
-// 		k.cdc.MustUnmarshal(bz, &startInterestBlock)
+	// note: exclude start block
+	if store.Has(startBlockKey) && store.Has(currentBlockKey) && startBlock != uint64(ctx.BlockHeight()) {
+		bz := store.Get(startBlockKey)
+		startInterestBlock := types.InterestBlock{}
+		k.cdc.MustUnmarshal(bz, &startInterestBlock)
 
-// 		bz = store.Get(currentBlockKey)
-// 		endInterestBlock := types.InterestBlock{}
-// 		k.cdc.MustUnmarshal(bz, &endInterestBlock)
+		bz = store.Get(currentBlockKey)
+		endInterestBlock := types.InterestBlock{}
+		k.cdc.MustUnmarshal(bz, &endInterestBlock)
 
-// 		totalInterest := endInterestBlock.InterestRate.Sub(startInterestBlock.InterestRate)
-// 		numberOfBlocks := ctx.BlockHeight() - int64(startBlock)
+		totalInterest := endInterestBlock.InterestRate.Sub(startInterestBlock.InterestRate)
+		numberOfBlocks := ctx.BlockHeight() - int64(startBlock)
 
-// 		newInterest := borrowed.
-// 			Mul(totalInterest).
-// 			Mul(sdk.NewDec(ctx.BlockTime().Unix() - int64(startTime))).
-// 			Quo(sdk.NewDec(numberOfBlocks)).
-// 			Quo(sdk.NewDec(86400 * 365)).
-// 			RoundInt()
-// 		return newInterest
-// 	}
+		newInterest := borrowed.
+			Mul(totalInterest).
+			Mul(sdk.NewDec(ctx.BlockTime().Unix() - int64(startTime))).
+			Quo(sdk.NewDec(numberOfBlocks)).
+			Quo(sdk.NewDec(86400 * 365)).
+			RoundInt()
+		return newInterest
+	}
 
-// 	if !store.Has(startBlockKey) && store.Has(currentBlockKey) {
-// 		iterator := sdk.KVStorePrefixIterator(store, nil)
-// 		defer iterator.Close()
+	if !store.Has(startBlockKey) && store.Has(currentBlockKey) {
+		iterator := sdk.KVStorePrefixIterator(store, nil)
+		defer iterator.Close()
 
-// 		firstStoredBlock := uint64(0)
-// 		if iterator.Valid() {
-// 			interestBlock := types.InterestBlock{}
-// 			firstStoredBlock = sdk.BigEndianToUint64(iterator.Key())
-// 			k.cdc.MustUnmarshal(iterator.Value(), &interestBlock)
-// 		}
-// 		if firstStoredBlock > startBlock {
-// 			bz := store.Get(currentBlockKey)
-// 			endInterestBlock := types.InterestBlock{}
-// 			k.cdc.MustUnmarshal(bz, &endInterestBlock)
+		firstStoredBlock := uint64(0)
+		if iterator.Valid() {
+			interestBlock := types.InterestBlock{}
+			firstStoredBlock = sdk.BigEndianToUint64(iterator.Key())
+			k.cdc.MustUnmarshal(iterator.Value(), &interestBlock)
+		}
+		if firstStoredBlock > startBlock {
+			bz := store.Get(currentBlockKey)
+			endInterestBlock := types.InterestBlock{}
+			k.cdc.MustUnmarshal(bz, &endInterestBlock)
 
-// 			totalInterest := endInterestBlock.InterestRate
-// 			numberOfBlocks := ctx.BlockHeight() - int64(startBlock) + 1
+			totalInterest := endInterestBlock.InterestRate
+			numberOfBlocks := ctx.BlockHeight() - int64(startBlock) + 1
 
-// 			newInterest := borrowed.Mul(totalInterest).
-// 				Mul(sdk.NewDec(ctx.BlockTime().Unix() - int64(startTime))).
-// 				Quo(sdk.NewDec(numberOfBlocks)).
-// 				Quo(sdk.NewDec(86400 * 365)).
-// 				RoundInt()
-// 			return newInterest
-// 		}
-// 	}
-// 	params := k.GetParams(ctx)
-// 	newInterest := borrowed.
-// 		Mul(params.InterestRate).
-// 		Mul(sdk.NewDec(ctx.BlockTime().Unix() - int64(startTime))).
-// 		Quo(sdk.NewDec(86400 * 365)).
-// 		RoundInt()
-// 	return newInterest
-// }
+			newInterest := borrowed.Mul(totalInterest).
+				Mul(sdk.NewDec(ctx.BlockTime().Unix() - int64(startTime))).
+				Quo(sdk.NewDec(numberOfBlocks)).
+				Quo(sdk.NewDec(86400 * 365)).
+				RoundInt()
+			return newInterest
+		}
+	}
+	params, found := k.GetPool(ctx, pool)
+	if !found {
+		return sdk.ZeroInt()
+	}
+	newInterest := borrowed.
+		Mul(params.BorrowInterestRate).
+		Mul(sdk.NewDec(ctx.BlockTime().Unix() - int64(startTime))).
+		Quo(sdk.NewDec(86400 * 365)).
+		RoundInt()
+	return newInterest
+}

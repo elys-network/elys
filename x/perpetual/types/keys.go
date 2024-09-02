@@ -64,9 +64,9 @@ func GetMTPPrefixForAddress(address string) []byte {
 }
 
 func GetInterestRateKey(block uint64, pool uint64) []byte {
-	return append(InterestRatePrefix, append(GetUint64Bytes(block), GetUint64Bytes(pool)...)...)
+	return append(GetUint64Bytes(block), GetUint64Bytes(pool)...)
 }
 
 func GetFundingRateKey(block uint64, pool uint64) []byte {
-	return append(FundingRatePrefix, append(GetUint64Bytes(block), GetUint64Bytes(pool)...)...)
+	return append(GetUint64Bytes(block), GetUint64Bytes(pool)...)
 }
