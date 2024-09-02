@@ -31,6 +31,7 @@ func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 		&MsgUpdateParams{},
 		&MsgUpdatePoolMultipliers{},
 		&MsgAddExternalRewardDenom{},
+		&MsgTogglePoolEdenRewards{},
 	)
 	registry.RegisterImplementations((*sdk.Msg)(nil),
 		&MsgTogglePoolEdenRewards{},
