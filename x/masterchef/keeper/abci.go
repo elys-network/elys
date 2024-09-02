@@ -122,10 +122,10 @@ func (k Keeper) ProcessUpdateIncentiveParams(ctx sdk.Context) {
 			continue
 		}
 
-		totalBlocksPerYear := inflation.EndBlockHeight - inflation.StartBlockHeight + 1
+		totalBlocks := inflation.EndBlockHeight - inflation.StartBlockHeight + 1
 
-		// If totalBlocksPerYear is zero, we skip this inflation to avoid division by zero
-		if totalBlocksPerYear == 0 {
+		// If totalBlocks is zero, we skip this inflation to avoid division by zero
+		if totalBlocks == 0 {
 			continue
 		}
 		blocksDistributed := ctx.BlockHeight() - int64(inflation.StartBlockHeight)
