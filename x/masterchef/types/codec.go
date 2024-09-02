@@ -33,9 +33,6 @@ func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 		&MsgAddExternalRewardDenom{},
 		&MsgTogglePoolEdenRewards{},
 	)
-	registry.RegisterImplementations((*sdk.Msg)(nil),
-		&MsgTogglePoolEdenRewards{},
-	)
 	// this line is used by starport scaffolding # 3
 
 	msgservice.RegisterMsgServiceDesc(registry, &_Msg_serviceDesc)
