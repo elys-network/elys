@@ -132,7 +132,7 @@ Defines various event emission functions used throughout the module, such as `Em
 
 ### Funding Fee Handling
 
-`HandleFundingFeeCollection` and `HandleFundingFeeDistribution` manage the collection and distribution of funding fees.
+`SettleFundingFeeCollection` and `HandleFundingFeeDistribution` manage the collection and distribution of funding fees.
 
 ### Health Updates
 

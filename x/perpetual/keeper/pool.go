@@ -193,7 +193,7 @@ func (k Keeper) GetAllFundingRate(ctx sdk.Context) []types.FundingRateBlock {
 	return fundings
 }
 
-func (k Keeper) GetFundingRate(ctx sdk.Context, startBlock uint64, pool uint64, startTime uint64, custody sdk.Dec) sdk.Int {
+func (k Keeper) GetFundingRate(ctx sdk.Context, startBlock uint64, pool uint64) sdk.Dec {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.FundingRatePrefix)
 	currentBlockKey := types.GetFundingRateKey(uint64(ctx.BlockHeight()), pool)
 	startBlockKey := types.GetFundingRateKey(startBlock, pool)
@@ -209,15 +209,7 @@ func (k Keeper) GetFundingRate(ctx sdk.Context, startBlock uint64, pool uint64, 
 		k.cdc.MustUnmarshal(bz, &endFundingBlock)
 
 		totalFunding := endFundingBlock.FundingRate.Sub(startFundingBlock.FundingRate)
-		numberOfBlocks := ctx.BlockHeight() - int64(startBlock)
-
-		newFunding := custody.
-			Mul(totalFunding).
-			Mul(sdk.NewDec(ctx.BlockTime().Unix() - int64(startTime))).
-			Quo(sdk.NewDec(numberOfBlocks)).
-			Quo(sdk.NewDec(86400 * 365)).
-			RoundInt()
-		return newFunding
+		return totalFunding
 	}
 
 	if !store.Has(startBlockKey) && store.Has(currentBlockKey) {
@@ -235,25 +227,13 @@ func (k Keeper) GetFundingRate(ctx sdk.Context, startBlock uint64, pool uint64, 
 			endFundingBlock := types.FundingRateBlock{}
 			k.cdc.MustUnmarshal(bz, &endFundingBlock)
 
-			totalFunding := endFundingBlock.FundingRate
-			numberOfBlocks := ctx.BlockHeight() - int64(startBlock) + 1
-
-			newFunding := custody.Mul(totalFunding).
-				Mul(sdk.NewDec(ctx.BlockTime().Unix() - int64(startTime))).
-				Quo(sdk.NewDec(numberOfBlocks)).
-				Quo(sdk.NewDec(86400 * 365)).
-				RoundInt()
-			return newFunding
+			return endFundingBlock.FundingRate
 		}
 	}
 	params, found := k.GetPool(ctx, pool)
 	if !found {
-		return sdk.ZeroInt()
+		return sdk.ZeroDec()
 	}
-	newFunding := custody.
-		Mul(params.BorrowInterestRate).
-		Mul(sdk.NewDec(ctx.BlockTime().Unix() - int64(startTime))).
-		Quo(sdk.NewDec(86400 * 365)).
-		RoundInt()
-	return newFunding
+
+	return params.BorrowInterestRate
 }

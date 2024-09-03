@@ -43,9 +43,12 @@ func CheckAndLiquidateUnhealthyPosition(ctx sdk.Context, k Keeper, mtp *types.MT
 		return errors.Wrap(err, fmt.Sprintf("error updating mtp health: %s", mtp.String()))
 	}
 	mtp.MtpHealth = h
-	// TODO: Handle Funding Fee Collection using cumulative funding rate
-	// TODO: Handle Funding Fee Distribution using cumulative funding rate
-	if err := k.HandleFundingFeeCollection(ctx, mtp, &pool, ammPool, baseCurrency); err != nil {
+	if err := k.SettleFundingFeeCollection(ctx, mtp, &pool, ammPool, baseCurrency); err != nil {
+		return errors.Wrap(err, fmt.Sprintf("error handling funding fee collection: %s", mtp.CollateralAsset))
+	}
+
+	// TODO: Consider edge case when funding address won't have enough balance to pay for the funding fee distribution
+	if err := k.SettleFundingFeeDistribution(ctx, mtp, &pool, ammPool, baseCurrency); err != nil {
 		return errors.Wrap(err, fmt.Sprintf("error handling funding fee collection: %s", mtp.CollateralAsset))
 	}
 

@@ -6,10 +6,10 @@ import (
 	"github.com/elys-network/elys/x/perpetual/types"
 )
 
-// HandleFundingFeeCollection handles funding fee collection
-func (k Keeper) HandleFundingFeeCollection(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, ammPool ammtypes.Pool, baseCurrency string) error {
+// SettleFundingFeeCollection handles funding fee collection
+func (k Keeper) SettleFundingFeeCollection(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, ammPool ammtypes.Pool, baseCurrency string) error {
 	// get funding rate
-	fundingRate := pool.FundingRate
+	fundingRate := k.GetFundingRate(ctx, mtp.LastInterestCalcBlock, mtp.AmmPoolId)
 
 	// if funding rate is zero, return
 	if fundingRate.IsZero() {
