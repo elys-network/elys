@@ -4,6 +4,7 @@ import (
 	"fmt"
 	gomath "math"
 
+	errorsmod "cosmossdk.io/errors"
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
@@ -61,6 +62,18 @@ func (k Keeper) GetMTP(ctx sdk.Context, mtpAddress string, id uint64) (types.MTP
 	}
 	bz := store.Get(key)
 	k.cdc.MustUnmarshal(bz, &mtp)
+	ammPool, found := k.amm.GetPool(ctx, mtp.AmmPoolId)
+	if !found {
+		return types.MTP{}, errorsmod.Wrap(types.ErrPoolDoesNotExist, "Pool does not exist")
+	}
+
+	mtp.BorrowInterestUnpaidCollateral = k.GetBorrowInterest(ctx, &mtp, ammPool).Add(mtp.BorrowInterestUnpaidCollateral)
+
+	mtpHealth, err := k.GetMTPHealth(ctx, mtp, ammPool, mtp.CustodyAsset)
+	if err == nil {
+		mtp.MtpHealth = mtpHealth
+	}
+
 	return mtp, nil
 }
 
@@ -83,6 +96,18 @@ func (k Keeper) GetAllMTPs(ctx sdk.Context) []types.MTP {
 		var mtp types.MTP
 		bytesValue := iterator.Value()
 		k.cdc.MustUnmarshal(bytesValue, &mtp)
+		ammPool, found := k.amm.GetPool(ctx, mtp.AmmPoolId)
+		if !found {
+			continue
+		}
+
+		mtp.BorrowInterestUnpaidCollateral = k.GetBorrowInterest(ctx, &mtp, ammPool).Add(mtp.BorrowInterestUnpaidCollateral)
+
+		mtpHealth, err := k.GetMTPHealth(ctx, mtp, ammPool, mtp.CustodyAsset)
+		if err == nil {
+			mtp.MtpHealth = mtpHealth
+		}
+
 		mtpList = append(mtpList, mtp)
 	}
 	return mtpList
@@ -102,6 +127,18 @@ func (k Keeper) GetMTPs(ctx sdk.Context, pagination *query.PageRequest) ([]*type
 	pageRes, err := query.Paginate(mtpStore, pagination, func(key []byte, value []byte) error {
 		var mtp types.MTP
 		k.cdc.MustUnmarshal(value, &mtp)
+		ammPool, found := k.amm.GetPool(ctx, mtp.AmmPoolId)
+		if !found {
+			return errorsmod.Wrap(types.ErrPoolDoesNotExist, "Pool does not exist")
+		}
+
+		mtp.BorrowInterestUnpaidCollateral = k.GetBorrowInterest(ctx, &mtp, ammPool).Add(mtp.BorrowInterestUnpaidCollateral)
+
+		mtpHealth, err := k.GetMTPHealth(ctx, mtp, ammPool, mtp.CustodyAsset)
+		if err == nil {
+			mtp.MtpHealth = mtpHealth
+		}
+
 		mtpList = append(mtpList, &mtp)
 		return nil
 	})
@@ -121,10 +158,23 @@ func (k Keeper) GetMTPsForPool(ctx sdk.Context, ammPoolId uint64, pagination *qu
 		}
 	}
 
+	ammPool, found := k.amm.GetPool(ctx, ammPoolId)
+	if !found {
+		return nil, nil, errorsmod.Wrap(types.ErrPoolDoesNotExist, "Pool does not exist")
+	}
+
 	pageRes, err := query.FilteredPaginate(mtpStore, pagination, func(key []byte, value []byte, accumulate bool) (bool, error) {
 		var mtp types.MTP
 		k.cdc.MustUnmarshal(value, &mtp)
 		if accumulate && mtp.AmmPoolId == ammPoolId {
+			// Interest
+			mtp.BorrowInterestUnpaidCollateral = k.GetBorrowInterest(ctx, &mtp, ammPool).Add(mtp.BorrowInterestUnpaidCollateral)
+
+			mtpHealth, err := k.GetMTPHealth(ctx, mtp, ammPool, mtp.CustodyAsset)
+			if err == nil {
+				mtp.MtpHealth = mtpHealth
+			}
+
 			mtps = append(mtps, &mtp)
 			return true, nil
 		}
@@ -154,6 +204,18 @@ func (k Keeper) GetMTPsForAddress(ctx sdk.Context, mtpAddress sdk.Address, pagin
 	pageRes, err := query.Paginate(mtpStore, pagination, func(key []byte, value []byte) error {
 		var mtp types.MTP
 		k.cdc.MustUnmarshal(value, &mtp)
+		ammPool, found := k.amm.GetPool(ctx, mtp.AmmPoolId)
+		if !found {
+			return errorsmod.Wrap(types.ErrPoolDoesNotExist, "Pool does not exist")
+		}
+
+		mtp.BorrowInterestUnpaidCollateral = k.GetBorrowInterest(ctx, &mtp, ammPool).Add(mtp.BorrowInterestUnpaidCollateral)
+
+		mtpHealth, err := k.GetMTPHealth(ctx, mtp, ammPool, mtp.CustodyAsset)
+		if err == nil {
+			mtp.MtpHealth = mtpHealth
+		}
+
 		mtps = append(mtps, &mtp)
 		return nil
 	})

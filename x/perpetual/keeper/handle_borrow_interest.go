@@ -17,7 +17,7 @@ func (k Keeper) SettleBorrowInterest(ctx sdk.Context, mtp *types.MTP, pool *type
 	}
 	baseCurrency := entry.Denom
 
-	borrowInterestPaymentInt := k.GetBorrowInterest(ctx, mtp, pool, ammPool)
+	borrowInterestPaymentInt := k.GetBorrowInterest(ctx, mtp, ammPool)
 	// pay interest+unpaid collateral amount
 	finalBorrowInterestPayment, err := k.IncrementalBorrowInterestPayment(ctx, borrowInterestPaymentInt, mtp, pool, ammPool, baseCurrency)
 	if err != nil {
@@ -28,7 +28,7 @@ func (k Keeper) SettleBorrowInterest(ctx sdk.Context, mtp *types.MTP, pool *type
 	return finalBorrowInterestPayment, err
 }
 
-func (k Keeper) GetBorrowInterest(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, ammPool ammtypes.Pool) math.Int {
+func (k Keeper) GetBorrowInterest(ctx sdk.Context, mtp *types.MTP, ammPool ammtypes.Pool) math.Int {
 	entry, found := k.assetProfileKeeper.GetEntry(ctx, ptypes.BaseCurrency)
 	if !found {
 		return sdk.ZeroInt()
@@ -52,6 +52,6 @@ func (k Keeper) GetBorrowInterest(ctx sdk.Context, mtp *types.MTP, pool *types.P
 	}
 
 	// Get interest
-	borrowInterestPayment := k.GetBorrowRate(ctx, mtp.LastInterestCalcBlock, pool.AmmPoolId, math.LegacyDec(mtp.Liabilities.Add(unpaidCollateral)))
+	borrowInterestPayment := k.GetBorrowRate(ctx, mtp.LastInterestCalcBlock, mtp.AmmPoolId, math.LegacyDec(mtp.Liabilities.Add(unpaidCollateral)))
 	return borrowInterestPayment.Mul(mtp.TakeProfitBorrowRate).TruncateInt()
 }
