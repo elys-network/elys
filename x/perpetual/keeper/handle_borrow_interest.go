@@ -52,6 +52,6 @@ func (k Keeper) GetBorrowInterest(ctx sdk.Context, mtp *types.MTP, pool *types.P
 	}
 
 	// Get interest
-	borrowInterestPayment := k.GetBorrowRate(ctx, mtp.LastInterestCalcBlock, pool.AmmPoolId, mtp.LastInterestCalcTime, math.LegacyDec(mtp.Liabilities.Add(unpaidCollateral)))
+	borrowInterestPayment := k.GetBorrowRate(ctx, mtp.LastInterestCalcBlock, pool.AmmPoolId, math.LegacyDec(mtp.Liabilities.Add(unpaidCollateral)))
 	return borrowInterestPayment.Mul(mtp.TakeProfitBorrowRate).TruncateInt()
 }
