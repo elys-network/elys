@@ -44,11 +44,12 @@ func (k Keeper) Portfolio(goCtx context.Context, req *types.QueryGetPortfolioReq
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	timestamp := k.GetDateFromBlock(ctx.BlockTime())
 
-	val, found := k.GetPortfolio(
-		ctx,
-		req.User,
-		timestamp,
-	)
+	user, err := sdk.AccAddressFromBech32(req.User)
+	if err != nil {
+		return nil, status.Error(codes.InvalidArgument, err.Error())
+	}
+
+	val, found := k.GetPortfolio(ctx, user, timestamp)
 	if !found {
 		return nil, status.Error(codes.NotFound, "not found")
 	}

@@ -201,8 +201,8 @@ func GenesisStateWithValSet(app *ElysApp) (GenesisState, *tmtypes.ValidatorSet, 
 
 type GenerateAccountStrategy func(int) []sdk.AccAddress
 
-// createRandomAccounts is a strategy used by addTestAddrs() in order to generated addresses in random order.
-func createRandomAccounts(accNum int) []sdk.AccAddress {
+// CreateRandomAccounts is a strategy used by addTestAddrs() in order to generated addresses in random order.
+func CreateRandomAccounts(accNum int) []sdk.AccAddress {
 	testAddrs := make([]sdk.AccAddress, accNum)
 	for i := 0; i < accNum; i++ {
 		pk := ed25519.GenPrivKey().PubKey()
@@ -215,7 +215,7 @@ func createRandomAccounts(accNum int) []sdk.AccAddress {
 // AddTestAddrs constructs and returns accNum amount of accounts with an
 // initial balance of accAmt in random order
 func AddTestAddrs(app *ElysApp, ctx sdk.Context, accNum int, accAmt math.Int) []sdk.AccAddress {
-	return addTestAddrs(app, ctx, accNum, accAmt, createRandomAccounts)
+	return addTestAddrs(app, ctx, accNum, accAmt, CreateRandomAccounts)
 }
 
 func addTestAddrs(app *ElysApp, ctx sdk.Context, accNum int, accAmt math.Int, strategy GenerateAccountStrategy) []sdk.AccAddress {

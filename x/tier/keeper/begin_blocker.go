@@ -12,4 +12,7 @@ func (k Keeper) BeginBlocker(ctx sdk.Context) {
 	deleteDate := dateToday.AddDate(0, 0, -8)
 	// Remove last 100 values at each block
 	k.RemovePortfolioLast(ctx, deleteDate.String(), 100)
+
+	// migration does not delete all older entries as we don't know whats last date is there
+	k.RemoveLegacyPortfolioCounted(ctx, deleteDate.String(), 100)
 }

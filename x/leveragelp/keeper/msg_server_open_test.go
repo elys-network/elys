@@ -1,7 +1,6 @@
 package keeper_test
 
 import (
-
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
@@ -374,14 +373,14 @@ func (suite *KeeperTestSuite) TestOpen_PoolWithBaseCurrencyAsset() {
 	for _, tc := range testCases {
 		suite.Run(tc.name, func() {
 			tc.prerequisiteFunction()
-			portfolio_old, found := suite.app.TierKeeper.GetPortfolio(suite.ctx, tc.input.Creator, suite.app.TierKeeper.GetDateFromBlock(suite.ctx.BlockTime()))
+			portfolio_old, found := suite.app.TierKeeper.GetPortfolio(suite.ctx, sdk.MustAccAddressFromBech32(tc.input.Creator), suite.app.TierKeeper.GetDateFromBlock(suite.ctx.BlockTime()))
 			_, err := suite.app.LeveragelpKeeper.Open(suite.ctx, tc.input)
 			if tc.expectErr {
 				suite.Require().Error(err)
 				suite.Require().Contains(err.Error(), tc.expectErrMsg)
 			} else {
 				// The new value of the portfolio after the hook is called.
-				portfolio_new, _ := suite.app.TierKeeper.GetPortfolio(suite.ctx, tc.input.Creator, suite.app.TierKeeper.GetDateFromBlock(suite.ctx.BlockTime()))
+				portfolio_new, _ := suite.app.TierKeeper.GetPortfolio(suite.ctx, sdk.MustAccAddressFromBech32(tc.input.Creator), suite.app.TierKeeper.GetDateFromBlock(suite.ctx.BlockTime()))
 				// Initially, there were no entries for the portfolio
 				if !found {
 					// The portfolio value changes after the hook is called.
