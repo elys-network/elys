@@ -137,6 +137,17 @@ func (msg *MsgOpen) ValidateBasic() error {
 	if err != nil {
 		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
 	}
+
+	//TODO: ValidateBasic msg.Leverage should be negative?
+
+	if len(msg.TradingAsset) == 0 {
+		return ErrTradingAssetIsEmpty
+	}
+
+	if msg.TakeProfitPrice.IsNegative() {
+		return ErrTakeProfitPriceIsNegative
+	}
+
 	return nil
 }
 
