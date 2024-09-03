@@ -1,9 +1,11 @@
 package types
 
 import (
-	fmt "fmt"
+	"fmt"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	"gopkg.in/yaml.v2"
 )
 
@@ -32,7 +34,7 @@ func DefaultParams() Params {
 		sdk.NewDecWithPrec(60, 2),
 		sdk.NewDecWithPrec(25, 2),
 		sdk.NewDecWithPrec(5, 1),
-		"elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3",
+		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 }
 
