@@ -36,17 +36,19 @@ func (k Keeper) GetBorrowInterest(ctx sdk.Context, mtp *types.MTP, pool *types.P
 	baseCurrency := entry.Denom
 	// Unpaid collateral
 	unpaidCollateral := sdk.ZeroInt()
-	if mtp.CollateralAsset == baseCurrency {
-		unpaidCollateral = unpaidCollateral.Add(mtp.BorrowInterestUnpaidCollateral)
-	} else {
-		// Liability is in base currency, so convert it to base currency
-		unpaidCollateralIn := sdk.NewCoin(mtp.CollateralAsset, mtp.BorrowInterestUnpaidCollateral)
-		C, err := k.EstimateSwapGivenOut(ctx, unpaidCollateralIn, baseCurrency, ammPool)
-		if err != nil {
-			return sdk.ZeroInt()
-		}
+	if mtp.BorrowInterestUnpaidCollateral.IsPositive() {
+		if mtp.CollateralAsset == baseCurrency {
+			unpaidCollateral = unpaidCollateral.Add(mtp.BorrowInterestUnpaidCollateral)
+		} else {
+			// Liability is in base currency, so convert it to base currency
+			unpaidCollateralIn := sdk.NewCoin(mtp.CollateralAsset, mtp.BorrowInterestUnpaidCollateral)
+			C, err := k.EstimateSwapGivenOut(ctx, unpaidCollateralIn, baseCurrency, ammPool)
+			if err != nil {
+				return sdk.ZeroInt()
+			}
 
-		unpaidCollateral = unpaidCollateral.Add(C)
+			unpaidCollateral = unpaidCollateral.Add(C)
+		}
 	}
 
 	// Get interest
