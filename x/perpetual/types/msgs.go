@@ -138,14 +138,28 @@ func (msg *MsgOpen) ValidateBasic() error {
 		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
 	}
 
-	//TODO: ValidateBasic msg.Leverage should be negative?
+	if msg.Position.String() != "LONG" && msg.Position.String() != "SHORT" {
+		return errorsmod.Wrap(ErrInvalidPosition, msg.Position.String())
+	}
+
+	if msg.Leverage.IsNil() {
+		return ErrInvalidLeverage
+	}
+
+	if msg.Leverage.IsNegative() {
+		return ErrInvalidLeverage
+	}
 
 	if len(msg.TradingAsset) == 0 {
 		return ErrTradingAssetIsEmpty
 	}
 
+	if msg.TakeProfitPrice.IsNil() {
+		return ErrInvalidTakeProfitPriceIsNegative
+	}
+
 	if msg.TakeProfitPrice.IsNegative() {
-		return ErrTakeProfitPriceIsNegative
+		return ErrInvalidTakeProfitPriceIsNegative
 	}
 
 	return nil

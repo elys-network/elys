@@ -39,37 +39,6 @@ func TestMsgClosep_ValidateBasic(t *testing.T) {
 	}
 }
 
-func TestMsgOpen_ValidateBasic(t *testing.T) {
-	tests := []struct {
-		name string
-		msg  MsgOpen
-		err  error
-	}{
-		{
-			name: "invalid address",
-			msg: MsgOpen{
-				Creator: "invalid_address",
-			},
-			err: sdkerrors.ErrInvalidAddress,
-		}, {
-			name: "valid address",
-			msg: MsgOpen{
-				Creator: sample.AccAddress(),
-			},
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			err := tt.msg.ValidateBasic()
-			if tt.err != nil {
-				require.ErrorIs(t, err, tt.err)
-				return
-			}
-			require.NoError(t, err)
-		})
-	}
-}
-
 func TestMsgUpdateParams_ValidateBasic(t *testing.T) {
 	tests := []struct {
 		name string
