@@ -8,6 +8,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
+	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
+	ptypes "github.com/elys-network/elys/x/parameter/types"
 	"github.com/elys-network/elys/x/perpetual/types"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -66,10 +68,15 @@ func (k Keeper) GetMTP(ctx sdk.Context, mtpAddress string, id uint64) (types.MTP
 	if !found {
 		return types.MTP{}, errorsmod.Wrap(types.ErrPoolDoesNotExist, "Pool does not exist")
 	}
+	entry, found := k.assetProfileKeeper.GetEntry(ctx, ptypes.BaseCurrency)
+	if !found {
+		return types.MTP{}, errorsmod.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency)
+	}
+	baseCurrency := entry.Denom
 
 	mtp.BorrowInterestUnpaidCollateral = k.GetBorrowInterest(ctx, &mtp, ammPool).Add(mtp.BorrowInterestUnpaidCollateral)
 
-	mtpHealth, err := k.GetMTPHealth(ctx, mtp, ammPool, mtp.CustodyAsset)
+	mtpHealth, err := k.GetMTPHealth(ctx, mtp, ammPool, baseCurrency)
 	if err == nil {
 		mtp.MtpHealth = mtpHealth
 	}
@@ -92,6 +99,12 @@ func (k Keeper) GetAllMTPs(ctx sdk.Context) []types.MTP {
 		}
 	}(iterator)
 
+	entry, found := k.assetProfileKeeper.GetEntry(ctx, ptypes.BaseCurrency)
+	if !found {
+		return []types.MTP{}
+	}
+	baseCurrency := entry.Denom
+
 	for ; iterator.Valid(); iterator.Next() {
 		var mtp types.MTP
 		bytesValue := iterator.Value()
@@ -103,7 +116,7 @@ func (k Keeper) GetAllMTPs(ctx sdk.Context) []types.MTP {
 
 		mtp.BorrowInterestUnpaidCollateral = k.GetBorrowInterest(ctx, &mtp, ammPool).Add(mtp.BorrowInterestUnpaidCollateral)
 
-		mtpHealth, err := k.GetMTPHealth(ctx, mtp, ammPool, mtp.CustodyAsset)
+		mtpHealth, err := k.GetMTPHealth(ctx, mtp, ammPool, baseCurrency)
 		if err == nil {
 			mtp.MtpHealth = mtpHealth
 		}
@@ -124,6 +137,12 @@ func (k Keeper) GetMTPs(ctx sdk.Context, pagination *query.PageRequest) ([]*type
 		}
 	}
 
+	entry, found := k.assetProfileKeeper.GetEntry(ctx, ptypes.BaseCurrency)
+	if !found {
+		return nil, nil, nil
+	}
+	baseCurrency := entry.Denom
+
 	pageRes, err := query.Paginate(mtpStore, pagination, func(key []byte, value []byte) error {
 		var mtp types.MTP
 		k.cdc.MustUnmarshal(value, &mtp)
@@ -134,7 +153,7 @@ func (k Keeper) GetMTPs(ctx sdk.Context, pagination *query.PageRequest) ([]*type
 
 		mtp.BorrowInterestUnpaidCollateral = k.GetBorrowInterest(ctx, &mtp, ammPool).Add(mtp.BorrowInterestUnpaidCollateral)
 
-		mtpHealth, err := k.GetMTPHealth(ctx, mtp, ammPool, mtp.CustodyAsset)
+		mtpHealth, err := k.GetMTPHealth(ctx, mtp, ammPool, baseCurrency)
 		if err == nil {
 			mtp.MtpHealth = mtpHealth
 		}
@@ -158,6 +177,12 @@ func (k Keeper) GetMTPsForPool(ctx sdk.Context, ammPoolId uint64, pagination *qu
 		}
 	}
 
+	entry, found := k.assetProfileKeeper.GetEntry(ctx, ptypes.BaseCurrency)
+	if !found {
+		return nil, nil, nil
+	}
+	baseCurrency := entry.Denom
+
 	ammPool, found := k.amm.GetPool(ctx, ammPoolId)
 	if !found {
 		return nil, nil, errorsmod.Wrap(types.ErrPoolDoesNotExist, "Pool does not exist")
@@ -170,7 +195,7 @@ func (k Keeper) GetMTPsForPool(ctx sdk.Context, ammPoolId uint64, pagination *qu
 			// Interest
 			mtp.BorrowInterestUnpaidCollateral = k.GetBorrowInterest(ctx, &mtp, ammPool).Add(mtp.BorrowInterestUnpaidCollateral)
 
-			mtpHealth, err := k.GetMTPHealth(ctx, mtp, ammPool, mtp.CustodyAsset)
+			mtpHealth, err := k.GetMTPHealth(ctx, mtp, ammPool, baseCurrency)
 			if err == nil {
 				mtp.MtpHealth = mtpHealth
 			}
@@ -201,6 +226,12 @@ func (k Keeper) GetMTPsForAddress(ctx sdk.Context, mtpAddress sdk.Address, pagin
 		return nil, nil, status.Error(codes.InvalidArgument, fmt.Sprintf("page size greater than max %d", types.MaxPageLimit))
 	}
 
+	entry, found := k.assetProfileKeeper.GetEntry(ctx, ptypes.BaseCurrency)
+	if !found {
+		return nil, nil, nil
+	}
+	baseCurrency := entry.Denom
+
 	pageRes, err := query.Paginate(mtpStore, pagination, func(key []byte, value []byte) error {
 		var mtp types.MTP
 		k.cdc.MustUnmarshal(value, &mtp)
@@ -211,7 +242,7 @@ func (k Keeper) GetMTPsForAddress(ctx sdk.Context, mtpAddress sdk.Address, pagin
 
 		mtp.BorrowInterestUnpaidCollateral = k.GetBorrowInterest(ctx, &mtp, ammPool).Add(mtp.BorrowInterestUnpaidCollateral)
 
-		mtpHealth, err := k.GetMTPHealth(ctx, mtp, ammPool, mtp.CustodyAsset)
+		mtpHealth, err := k.GetMTPHealth(ctx, mtp, ammPool, baseCurrency)
 		if err == nil {
 			mtp.MtpHealth = mtpHealth
 		}
