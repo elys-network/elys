@@ -39,7 +39,7 @@ func (k Keeper) CalculateStableStakeApr(ctx sdk.Context, query *types.QueryStabl
 		}
 
 		// Calculate total Proxy TVL
-		totalProxyTVL := k.CalculateProxyTVL(ctx, baseCurrency)
+		totalProxyTVL, _ := k.CalculateProxyTVL(ctx, baseCurrency)
 
 		edenAmount := lpIncentive.EdenAmountPerYear.Quo(sdk.NewInt(totalBlocksPerYear))
 

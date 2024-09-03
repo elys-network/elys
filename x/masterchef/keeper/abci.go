@@ -171,7 +171,7 @@ func (k Keeper) UpdateLPRewards(ctx sdk.Context) error {
 	// We have 3 pools of 20, 30, 40 TVL
 	// We have multiplier of 0.3, 0.5, 1.0
 	// Proxy TVL = 20*0.3+30*0.5+40*1.0
-	totalProxyTVL := k.CalculateProxyTVL(ctx, baseCurrency)
+	totalProxyTVL, totalProxyTvlEdenEnable := k.CalculateProxyTVL(ctx, baseCurrency)
 
 	// Ensure totalBlocksPerYear is not zero to avoid division by zero
 	totalBlocksPerYear := k.parameterKeeper.GetParams(ctx).TotalBlocksPerYear
@@ -202,12 +202,17 @@ func (k Keeper) UpdateLPRewards(ctx sdk.Context) error {
 		}
 
 		poolShare := sdk.ZeroDec()
+		poolShareEdenEnable := sdk.ZeroDec()
 		if totalProxyTVL.IsPositive() {
 			poolShare = proxyTVL.Quo(totalProxyTVL)
 		}
 
+		if totalProxyTvlEdenEnable.IsPositive() {
+			poolShareEdenEnable = proxyTVL.Quo(totalProxyTvlEdenEnable)
+		}
+
 		// Calculate new Eden for this pool
-		newEdenAllocatedForPool := poolShare.MulInt(lpsEdenAmount)
+		newEdenAllocatedForPool := poolShareEdenEnable.MulInt(lpsEdenAmount)
 
 		// Maximum eden APR - 30% by default
 		poolMaxEdenAmount := params.MaxEdenRewardAprLps.
@@ -216,11 +221,13 @@ func (k Keeper) UpdateLPRewards(ctx sdk.Context) error {
 			Quo(edenDenomPrice)
 
 		// Use min amount (eden allocation from tokenomics and max apr based eden amount)
-		newEdenAllocatedForPool = sdk.MinDec(newEdenAllocatedForPool, poolMaxEdenAmount)
-		if newEdenAllocatedForPool.IsPositive() {
-			err = k.commitmentKeeper.MintCoins(ctx, types.ModuleName, sdk.Coins{sdk.NewCoin(ptypes.Eden, newEdenAllocatedForPool.TruncateInt())})
-			if err != nil {
-				return err
+		if pool.EnableEdenRewards {
+			newEdenAllocatedForPool = sdk.MinDec(newEdenAllocatedForPool, poolMaxEdenAmount)
+			if newEdenAllocatedForPool.IsPositive() {
+				err = k.commitmentKeeper.MintCoins(ctx, types.ModuleName, sdk.Coins{sdk.NewCoin(ptypes.Eden, newEdenAllocatedForPool.TruncateInt())})
+				if err != nil {
+					return err
+				}
 			}
 		}
 
@@ -246,6 +253,11 @@ func (k Keeper) UpdateLPRewards(ctx sdk.Context) error {
 		k.UpdateAccPerShare(ctx, pool.PoolId, k.GetBaseCurrencyDenom(ctx), gasRewardsAllocatedForPool.Add(dexRewardsAllocatedForPool).TruncateInt())
 
 		// Track pool rewards accumulation
+		edenReward := newEdenAllocatedForPool
+		if !pool.EnableEdenRewards {
+			edenReward = sdk.ZeroDec()
+		}
+
 		k.AddPoolRewardsAccum(
 			ctx,
 			pool.PoolId,
@@ -253,7 +265,7 @@ func (k Keeper) UpdateLPRewards(ctx sdk.Context) error {
 			ctx.BlockHeight(),
 			dexRewardsAllocatedForPool,
 			gasRewardsAllocatedForPool,
-			newEdenAllocatedForPool,
+			edenReward,
 		)
 		params := k.parameterKeeper.GetParams(ctx)
 		dataLifetime := params.RewardsDataLifetime
@@ -265,10 +277,14 @@ func (k Keeper) UpdateLPRewards(ctx sdk.Context) error {
 			k.DeletePoolRewardsAccum(ctx, firstAccum)
 		}
 
-		pool.EdenApr = newEdenAllocatedForPool.
-			MulInt64(totalBlocksPerYear).
-			Mul(edenDenomPrice).
-			Quo(tvl)
+		if pool.EnableEdenRewards {
+			pool.EdenApr = newEdenAllocatedForPool.
+				MulInt64(totalBlocksPerYear).
+				Mul(edenDenomPrice).
+				Quo(tvl)
+		} else {
+			pool.EdenApr = sdk.ZeroDec()
+		}
 
 		k.SetPoolInfo(ctx, pool)
 	}
@@ -458,7 +474,7 @@ func (k Keeper) CollectDEXRevenue(ctx sdk.Context) (sdk.Coins, sdk.DecCoins, map
 }
 
 // Calculate Proxy TVL
-func (k Keeper) CalculateProxyTVL(ctx sdk.Context, baseCurrency string) sdk.Dec {
+func (k Keeper) CalculateProxyTVL(ctx sdk.Context, baseCurrency string) (sdk.Dec, sdk.Dec) {
 	// Ensure stablestakePoolParams exist
 	stableStakePoolId := uint64(stabletypes.PoolId)
 	_, found := k.GetPoolInfo(ctx, stableStakePoolId)
@@ -467,16 +483,22 @@ func (k Keeper) CalculateProxyTVL(ctx sdk.Context, baseCurrency string) sdk.Dec 
 	}
 
 	multipliedShareSum := sdk.ZeroDec()
+	multipliedShareSumOnlyEden := sdk.ZeroDec()
 	for _, pool := range k.GetAllPoolInfos(ctx) {
 		tvl := k.GetPoolTVL(ctx, pool.PoolId)
 		proxyTVL := tvl.Mul(pool.Multiplier)
 
 		// Calculate total pool share by TVL and multiplier
 		multipliedShareSum = multipliedShareSum.Add(proxyTVL)
+
+		/// Calculate total pool share by TVL and multiplier only when eden rewards is enable
+		if pool.EnableEdenRewards {
+			multipliedShareSumOnlyEden = multipliedShareSumOnlyEden.Add(proxyTVL)
+		}
 	}
 
 	// return total sum of TVL share using multiplier of all pools
-	return multipliedShareSum
+	return multipliedShareSum, multipliedShareSumOnlyEden
 }
 
 // InitPoolParams: creates a poolInfo at the time of pool creation.
