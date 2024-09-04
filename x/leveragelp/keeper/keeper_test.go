@@ -360,8 +360,6 @@ func (suite *KeeperTestSuite) TestCalculatePoolHealth() {
 	}
 	ammPool := ammtypes.Pool{PoolId: 1}
 	totalShares := sdk.NewInt(100)
-	// Generate 2 random accounts with 1000stake balanced
-	//addr := simapp.AddTestAddrs(app, ctx, 10, sdk.NewInt(1000000))
 
 	testCases := []struct {
 		name                 string
