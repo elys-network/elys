@@ -43,13 +43,10 @@ func (k msgServer) ClosePositions(goCtx context.Context, msg *types.MsgClosePosi
 	}
 
 	// TODO: Handle stop loss
-
 	ctx.EventManager().EmitEvent(sdk.NewEvent(types.EventClosePositions,
 		sdk.NewAttribute("liquidations", strings.Join(liqLog, "\n")),
 		//sdk.NewAttribute("stop_loss", strings.Join(closeLog, "\n")),
 	))
-
-	return &types.MsgClosePositionsResponse{}, nil
 
 	return &types.MsgClosePositionsResponse{}, nil
 }
