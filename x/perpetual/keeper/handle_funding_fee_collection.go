@@ -20,9 +20,11 @@ func (k Keeper) SettleFundingFeeCollection(ctx sdk.Context, mtp *types.MTP, pool
 	if (fundingRate.IsNegative() && mtp.Position == types.Position_LONG) || (fundingRate.IsPositive() && mtp.Position == types.Position_SHORT) {
 		return nil
 	}
-
 	// Calculate the take amount in custody asset
 	takeAmountCustodyAmount := types.CalcTakeAmount(mtp.Custody, mtp.CustodyAsset, fundingRate)
+	if !takeAmountCustodyAmount.IsPositive() {
+		return nil
+	}
 
 	// Build the take amount coin
 	takeAmountCustody := sdk.NewCoin(mtp.CustodyAsset, takeAmountCustodyAmount)

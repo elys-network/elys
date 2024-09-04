@@ -169,4 +169,14 @@ func TestCheckAndLiquidateUnhealthyPosition(t *testing.T) {
 		FundingFeeReceivedCustody:      sdk.NewInt(0),
 		OpenPrice:                      sdk.MustNewDecFromStr("10.050000157785002477"),
 	}, mtp)
+
+	// Increase borrowing rate to test liquidation
+	perpPool.BorrowInterestRate = sdk.MustNewDecFromStr("1.0")
+	mk.SetPool(ctx, perpPool)
+
+	err = mk.CheckAndLiquidateUnhealthyPosition(ctx, &mtp, perpPool, pool, ptypes.BaseCurrency, 6)
+	require.NoError(t, err)
+
+	mtps = mk.GetAllMTPs(ctx)
+	require.Equal(t, len(mtps), 0)
 }
