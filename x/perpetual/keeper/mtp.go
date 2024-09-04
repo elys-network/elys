@@ -4,11 +4,9 @@ import (
 	"fmt"
 	gomath "math"
 
-	errorsmod "cosmossdk.io/errors"
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
-	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 	"github.com/elys-network/elys/x/perpetual/types"
 	"google.golang.org/grpc/codes"
@@ -66,11 +64,11 @@ func (k Keeper) GetMTP(ctx sdk.Context, mtpAddress string, id uint64) (types.MTP
 	k.cdc.MustUnmarshal(bz, &mtp)
 	ammPool, found := k.amm.GetPool(ctx, mtp.AmmPoolId)
 	if !found {
-		return types.MTP{}, errorsmod.Wrap(types.ErrPoolDoesNotExist, "Pool does not exist")
+		return mtp, nil
 	}
 	entry, found := k.assetProfileKeeper.GetEntry(ctx, ptypes.BaseCurrency)
 	if !found {
-		return types.MTP{}, errorsmod.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency)
+		return mtp, nil
 	}
 	baseCurrency := entry.Denom
 
@@ -120,24 +118,28 @@ func (k Keeper) GetMTPs(ctx sdk.Context, pagination *query.PageRequest) ([]*type
 	}
 
 	entry, found := k.assetProfileKeeper.GetEntry(ctx, ptypes.BaseCurrency)
+	realTime := true
 	if !found {
-		return nil, nil, nil
+		realTime = false
 	}
 	baseCurrency := entry.Denom
 
 	pageRes, err := query.Paginate(mtpStore, pagination, func(key []byte, value []byte) error {
 		var mtp types.MTP
 		k.cdc.MustUnmarshal(value, &mtp)
+
 		ammPool, found := k.amm.GetPool(ctx, mtp.AmmPoolId)
 		if !found {
-			return errorsmod.Wrap(types.ErrPoolDoesNotExist, "Pool does not exist")
+			realTime = false
 		}
 
-		mtp.BorrowInterestUnpaidCollateral = k.GetBorrowInterest(ctx, &mtp, ammPool).Add(mtp.BorrowInterestUnpaidCollateral)
+		if realTime {
+			mtp.BorrowInterestUnpaidCollateral = k.GetBorrowInterest(ctx, &mtp, ammPool).Add(mtp.BorrowInterestUnpaidCollateral)
 
-		mtpHealth, err := k.GetMTPHealth(ctx, mtp, ammPool, baseCurrency)
-		if err == nil {
-			mtp.MtpHealth = mtpHealth
+			mtpHealth, err := k.GetMTPHealth(ctx, mtp, ammPool, baseCurrency)
+			if err == nil {
+				mtp.MtpHealth = mtpHealth
+			}
 		}
 
 		mtpList = append(mtpList, &mtp)
@@ -160,26 +162,29 @@ func (k Keeper) GetMTPsForPool(ctx sdk.Context, ammPoolId uint64, pagination *qu
 	}
 
 	entry, found := k.assetProfileKeeper.GetEntry(ctx, ptypes.BaseCurrency)
+	realTime := true
 	if !found {
-		return nil, nil, nil
+		realTime = false
 	}
 	baseCurrency := entry.Denom
 
 	ammPool, found := k.amm.GetPool(ctx, ammPoolId)
 	if !found {
-		return nil, nil, errorsmod.Wrap(types.ErrPoolDoesNotExist, "Pool does not exist")
+		realTime = false
 	}
 
 	pageRes, err := query.FilteredPaginate(mtpStore, pagination, func(key []byte, value []byte, accumulate bool) (bool, error) {
 		var mtp types.MTP
 		k.cdc.MustUnmarshal(value, &mtp)
 		if accumulate && mtp.AmmPoolId == ammPoolId {
-			// Interest
-			mtp.BorrowInterestUnpaidCollateral = k.GetBorrowInterest(ctx, &mtp, ammPool).Add(mtp.BorrowInterestUnpaidCollateral)
+			if realTime {
+				// Interest
+				mtp.BorrowInterestUnpaidCollateral = k.GetBorrowInterest(ctx, &mtp, ammPool).Add(mtp.BorrowInterestUnpaidCollateral)
 
-			mtpHealth, err := k.GetMTPHealth(ctx, mtp, ammPool, baseCurrency)
-			if err == nil {
-				mtp.MtpHealth = mtpHealth
+				mtpHealth, err := k.GetMTPHealth(ctx, mtp, ammPool, baseCurrency)
+				if err == nil {
+					mtp.MtpHealth = mtpHealth
+				}
 			}
 
 			mtps = append(mtps, &mtp)
@@ -209,8 +214,9 @@ func (k Keeper) GetMTPsForAddress(ctx sdk.Context, mtpAddress sdk.Address, pagin
 	}
 
 	entry, found := k.assetProfileKeeper.GetEntry(ctx, ptypes.BaseCurrency)
+	realTime := true
 	if !found {
-		return nil, nil, nil
+		realTime = false
 	}
 	baseCurrency := entry.Denom
 
@@ -219,14 +225,16 @@ func (k Keeper) GetMTPsForAddress(ctx sdk.Context, mtpAddress sdk.Address, pagin
 		k.cdc.MustUnmarshal(value, &mtp)
 		ammPool, found := k.amm.GetPool(ctx, mtp.AmmPoolId)
 		if !found {
-			return errorsmod.Wrap(types.ErrPoolDoesNotExist, "Pool does not exist")
+			realTime = false
 		}
 
-		mtp.BorrowInterestUnpaidCollateral = k.GetBorrowInterest(ctx, &mtp, ammPool).Add(mtp.BorrowInterestUnpaidCollateral)
+		if realTime {
+			mtp.BorrowInterestUnpaidCollateral = k.GetBorrowInterest(ctx, &mtp, ammPool).Add(mtp.BorrowInterestUnpaidCollateral)
 
-		mtpHealth, err := k.GetMTPHealth(ctx, mtp, ammPool, baseCurrency)
-		if err == nil {
-			mtp.MtpHealth = mtpHealth
+			mtpHealth, err := k.GetMTPHealth(ctx, mtp, ammPool, baseCurrency)
+			if err == nil {
+				mtp.MtpHealth = mtpHealth
+			}
 		}
 
 		mtps = append(mtps, &mtp)
