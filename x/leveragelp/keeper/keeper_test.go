@@ -264,8 +264,6 @@ func (suite *KeeperTestSuite) TestEstimateSwapGivenOut() {
 
 	leveragelp := app.LeveragelpKeeper
 
-	// Generate 2 random accounts with 1000stake balanced
-	//addr := simapp.AddTestAddrs(app, ctx, 10, sdk.NewInt(1000000))
 
 	testCases := []struct {
 		name                 string
