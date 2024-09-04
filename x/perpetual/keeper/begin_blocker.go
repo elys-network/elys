@@ -20,7 +20,7 @@ func (k Keeper) BeginBlocker(ctx sdk.Context) {
 
 			k.SetBorrowRate(ctx, uint64(ctx.BlockHeight()), pool.AmmPoolId, types.InterestBlock{
 				InterestRate: rate,
-				BlockTime:    ctx.BlockTime().Unix(),
+				BlockHeight:  ctx.BlockHeight(),
 			})
 
 			err = k.UpdatePoolHealth(ctx, &pool)
@@ -34,7 +34,7 @@ func (k Keeper) BeginBlocker(ctx sdk.Context) {
 
 			k.SetFundingRate(ctx, uint64(ctx.BlockHeight()), pool.AmmPoolId, types.FundingRateBlock{
 				FundingRate: pool.FundingRate,
-				BlockTime:   ctx.BlockTime().Unix(),
+				BlockHeight: ctx.BlockHeight(),
 			})
 		}
 		k.SetPool(ctx, pool)

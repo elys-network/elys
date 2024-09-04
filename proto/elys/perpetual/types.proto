@@ -108,7 +108,7 @@ message InterestBlock {
         (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
         (gogoproto.nullable) = false
     ];
-    int64 block_time = 2;
+    int64 block_height = 2;
 }
 
 message FundingRateBlock {
@@ -116,7 +116,7 @@ message FundingRateBlock {
         (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
         (gogoproto.nullable) = false
     ];
-    int64 block_time = 2;
+    int64 block_height = 2;
 }
 
 message WhiteList {

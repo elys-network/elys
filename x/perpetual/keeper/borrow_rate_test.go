@@ -17,7 +17,7 @@ func createNBorrowRate(keeper *keeper.Keeper, ctx sdk.Context, n int) ([]types.I
 	curBlock := ctx.BlockHeight()
 	for i := range items {
 		items[i].InterestRate = sdk.NewDec(int64(i + 1)) // Start from 1 to avoid zero interest
-		items[i].BlockTime = int64(i * 10)
+		items[i].BlockHeight = int64(i * 10)
 
 		curBlock++
 		keeper.SetBorrowRate(ctx, uint64(curBlock), 1, items[i]) // Assuming pool ID 1
