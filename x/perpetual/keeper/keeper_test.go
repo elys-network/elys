@@ -60,8 +60,8 @@ func TestGetAllWhitelistedAddress(t *testing.T) {
 	addr := simapp.AddTestAddrs(app, ctx, 2, sdk.NewInt(1000000))
 
 	// Set whitelisted addresses
-	perpetual.WhitelistAddress(ctx, addr[0].String())
-	perpetual.WhitelistAddress(ctx, addr[1].String())
+	perpetual.WhitelistAddress(ctx, addr[0])
+	perpetual.WhitelistAddress(ctx, addr[1])
 
 	// Get all whitelisted addresses
 	whitelisted := perpetual.GetAllWhitelistedAddress(ctx)

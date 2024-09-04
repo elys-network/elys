@@ -21,7 +21,7 @@ func TestCheckUserAuthorization_WhitelistingEnabledUserWhitelisted(t *testing.T)
 	}
 
 	ctx := sdk.Context{} // mock or setup a context
-	msg := &types.MsgOpen{Creator: "whitelistedUser"}
+	msg := &types.MsgOpen{Creator: "cosmos1xv9tklw7d82sezh9haa573wufgy59vmwe6xxe5"}
 
 	// Mock behavior
 	mockChecker.On("IsWhitelistingEnabled", ctx).Return(true)

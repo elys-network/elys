@@ -138,21 +138,21 @@ func (_c *CloseLongChecker_GetAmmPool_Call) RunAndReturn(run func(types.Context,
 }
 
 // GetMTP provides a mock function with given fields: ctx, mtpAddress, id
-func (_m *CloseLongChecker) GetMTP(ctx types.Context, mtpAddress string, id uint64) (perpetualtypes.MTP, error) {
+func (_m *CloseLongChecker) GetMTP(ctx types.Context, mtpAddress types.AccAddress, id uint64) (perpetualtypes.MTP, error) {
 	ret := _m.Called(ctx, mtpAddress, id)
 
 	var r0 perpetualtypes.MTP
 	var r1 error
-	if rf, ok := ret.Get(0).(func(types.Context, string, uint64) (perpetualtypes.MTP, error)); ok {
+	if rf, ok := ret.Get(0).(func(types.Context, types.AccAddress, uint64) (perpetualtypes.MTP, error)); ok {
 		return rf(ctx, mtpAddress, id)
 	}
-	if rf, ok := ret.Get(0).(func(types.Context, string, uint64) perpetualtypes.MTP); ok {
+	if rf, ok := ret.Get(0).(func(types.Context, types.AccAddress, uint64) perpetualtypes.MTP); ok {
 		r0 = rf(ctx, mtpAddress, id)
 	} else {
 		r0 = ret.Get(0).(perpetualtypes.MTP)
 	}
 
-	if rf, ok := ret.Get(1).(func(types.Context, string, uint64) error); ok {
+	if rf, ok := ret.Get(1).(func(types.Context, types.AccAddress, uint64) error); ok {
 		r1 = rf(ctx, mtpAddress, id)
 	} else {
 		r1 = ret.Error(1)
@@ -174,9 +174,9 @@ func (_e *CloseLongChecker_Expecter) GetMTP(ctx interface{}, mtpAddress interfac
 	return &CloseLongChecker_GetMTP_Call{Call: _e.mock.On("GetMTP", ctx, mtpAddress, id)}
 }
 
-func (_c *CloseLongChecker_GetMTP_Call) Run(run func(ctx types.Context, mtpAddress string, id uint64)) *CloseLongChecker_GetMTP_Call {
+func (_c *CloseLongChecker_GetMTP_Call) Run(run func(ctx types.Context, mtpAddress types.AccAddress, id uint64)) *CloseLongChecker_GetMTP_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(types.Context), args[1].(string), args[2].(uint64))
+		run(args[0].(types.Context), args[1].(types.AccAddress), args[2].(uint64))
 	})
 	return _c
 }
@@ -186,7 +186,7 @@ func (_c *CloseLongChecker_GetMTP_Call) Return(_a0 perpetualtypes.MTP, _a1 error
 	return _c
 }
 
-func (_c *CloseLongChecker_GetMTP_Call) RunAndReturn(run func(types.Context, string, uint64) (perpetualtypes.MTP, error)) *CloseLongChecker_GetMTP_Call {
+func (_c *CloseLongChecker_GetMTP_Call) RunAndReturn(run func(types.Context, types.AccAddress, uint64) (perpetualtypes.MTP, error)) *CloseLongChecker_GetMTP_Call {
 	_c.Call.Return(run)
 	return _c
 }
