@@ -99,28 +99,10 @@ func (k Keeper) GetAllMTPs(ctx sdk.Context) []types.MTP {
 		}
 	}(iterator)
 
-	entry, found := k.assetProfileKeeper.GetEntry(ctx, ptypes.BaseCurrency)
-	if !found {
-		return []types.MTP{}
-	}
-	baseCurrency := entry.Denom
-
 	for ; iterator.Valid(); iterator.Next() {
 		var mtp types.MTP
 		bytesValue := iterator.Value()
 		k.cdc.MustUnmarshal(bytesValue, &mtp)
-		ammPool, found := k.amm.GetPool(ctx, mtp.AmmPoolId)
-		if !found {
-			continue
-		}
-
-		mtp.BorrowInterestUnpaidCollateral = k.GetBorrowInterest(ctx, &mtp, ammPool).Add(mtp.BorrowInterestUnpaidCollateral)
-
-		mtpHealth, err := k.GetMTPHealth(ctx, mtp, ammPool, baseCurrency)
-		if err == nil {
-			mtp.MtpHealth = mtpHealth
-		}
-
 		mtpList = append(mtpList, mtp)
 	}
 	return mtpList
