@@ -9,43 +9,46 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestNewMsgOpen(t *testing.T) {
+func TestNewMsgBrokerOpen(t *testing.T) {
 
 	accAdress := sample.AccAddress()
-	got := NewMsgOpen(
+	owner := sample.AccAddress()
+	got := NewMsgBrokerOpen(
 		accAdress,
 		Position_LONG,
 		sdk.NewDec(200),
 		"uatom",
 		sdk.NewCoin("uusdc", sdk.NewInt(2000)),
 		sdk.NewDec(100),
+		owner,
 	)
 
-	want := &MsgOpen{
+	want := &MsgBrokerOpen{
 		Creator:         accAdress,
 		Position:        Position_LONG,
 		Leverage:        sdk.NewDec(200),
 		TradingAsset:    "uatom",
 		Collateral:      sdk.NewCoin("uusdc", sdk.NewInt(2000)),
 		TakeProfitPrice: sdk.NewDec(100),
+		Owner:           owner,
 	}
 
 	assert.Equal(t, want, got)
 }
 
-func TestMsgOpen_Route(t *testing.T) {
-	msg := MsgOpen{}
+func TestMsgBrokerOpen_Route(t *testing.T) {
+	msg := MsgBrokerOpen{}
 	assert.Equal(t, "perpetual", msg.Route())
 }
 
-func TestMsgOpen_Type(t *testing.T) {
-	msg := MsgOpen{}
-	assert.Equal(t, "open", msg.Type())
+func TestMsgBrokerOpen_Type(t *testing.T) {
+	msg := MsgBrokerOpen{}
+	assert.Equal(t, "broker_open", msg.Type())
 }
 
-func TestMsgOpen_GetSigners(t *testing.T) {
+func TestMsgBrokerOpen_GetSigners(t *testing.T) {
 	accAdress := sample.AccAddress()
-	msg := MsgOpen{Creator: accAdress}
+	msg := MsgBrokerOpen{Creator: accAdress}
 
 	creator, err := sdk.AccAddressFromBech32(accAdress)
 	if err != nil {
@@ -55,26 +58,45 @@ func TestMsgOpen_GetSigners(t *testing.T) {
 	assert.Equal(t, []sdk.AccAddress{creator}, msg.GetSigners())
 }
 
-func TestMsgOpen_ValidateBasic(t *testing.T) {
+func TestMsgBrokerOpen_GetSignBytes(t *testing.T) {
+	accAdress := sample.AccAddress()
+	msg := MsgBrokerOpen{Creator: accAdress}
+
+	bz := ModuleCdc.MustMarshalJSON(&msg)
+	b := sdk.MustSortJSON(bz)
+
+	assert.Equal(t, b, msg.GetSignBytes())
+}
+
+func TestMsgBrokerOpen_ValidateBasic(t *testing.T) {
 
 	type Test struct {
 		title string
-		msg   MsgOpen
+		msg   MsgBrokerOpen
 		want  error
 	}
 
 	tableTest := []Test{
 		{
 			title: "invalid address",
-			msg: MsgOpen{
+			msg: MsgBrokerOpen{
 				Creator: "invalid",
 			},
 			want: sdkerrors.ErrInvalidAddress,
 		},
 		{
+			title: "invalid owner",
+			msg: MsgBrokerOpen{
+				Creator: sample.AccAddress(),
+				Owner:   "invalid",
+			},
+			want: sdkerrors.ErrInvalidAddress,
+		},
+		{
 			title: "invalid position",
-			msg: MsgOpen{
+			msg: MsgBrokerOpen{
 				Creator:      sample.AccAddress(),
+				Owner:        sample.AccAddress(),
 				Position:     Position_UNSPECIFIED,
 				TradingAsset: "",
 			},
@@ -82,8 +104,9 @@ func TestMsgOpen_ValidateBasic(t *testing.T) {
 		},
 		{
 			title: "leverage is nil",
-			msg: MsgOpen{
+			msg: MsgBrokerOpen{
 				Creator:      sample.AccAddress(),
+				Owner:        sample.AccAddress(),
 				Position:     Position_LONG,
 				TradingAsset: "uatom",
 			},
@@ -91,8 +114,9 @@ func TestMsgOpen_ValidateBasic(t *testing.T) {
 		},
 		{
 			title: "invalid leverage",
-			msg: MsgOpen{
+			msg: MsgBrokerOpen{
 				Creator:      sample.AccAddress(),
+				Owner:        sample.AccAddress(),
 				Position:     Position_LONG,
 				TradingAsset: "uatom",
 				Leverage:     sdk.NewDec(-200),
@@ -101,8 +125,9 @@ func TestMsgOpen_ValidateBasic(t *testing.T) {
 		},
 		{
 			title: "trading asset is empty",
-			msg: MsgOpen{
+			msg: MsgBrokerOpen{
 				Creator:      sample.AccAddress(),
+				Owner:        sample.AccAddress(),
 				Position:     Position_LONG,
 				TradingAsset: "",
 				Leverage:     sdk.NewDec(200),
@@ -111,8 +136,9 @@ func TestMsgOpen_ValidateBasic(t *testing.T) {
 		},
 		{
 			title: "take profit price is nil",
-			msg: MsgOpen{
+			msg: MsgBrokerOpen{
 				Creator:      sample.AccAddress(),
+				Owner:        sample.AccAddress(),
 				Position:     Position_SHORT,
 				TradingAsset: "uatom",
 				Leverage:     sdk.NewDec(200),
@@ -121,8 +147,9 @@ func TestMsgOpen_ValidateBasic(t *testing.T) {
 		},
 		{
 			title: "take profit price is negative",
-			msg: MsgOpen{
+			msg: MsgBrokerOpen{
 				Creator:         sample.AccAddress(),
+				Owner:           sample.AccAddress(),
 				Position:        Position_SHORT,
 				TradingAsset:    "uatom",
 				TakeProfitPrice: sdk.NewDec(-10),
@@ -132,8 +159,9 @@ func TestMsgOpen_ValidateBasic(t *testing.T) {
 		},
 		{
 			title: "successful",
-			msg: MsgOpen{
+			msg: MsgBrokerOpen{
 				Creator:         sample.AccAddress(),
+				Owner:           sample.AccAddress(),
 				Position:        Position_LONG,
 				TradingAsset:    "uatom",
 				TakeProfitPrice: sdk.NewDec(10),
