@@ -1,6 +1,8 @@
 package cli
 
 import (
+	"encoding/json"
+	"io/ioutil"
 	"strconv"
 
 	"github.com/cosmos/cosmos-sdk/client"
@@ -18,20 +20,38 @@ func CmdClosePositions() *cobra.Command {
 		Short: "Broadcast message close-positions",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
-			argLiquidate := args[0]
-			argStoploss := args[1]
 
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
 				return err
 			}
 
+			liquidate, err := readPositionRequestJSON(args[0])
+			if err != nil {
+				return err
+			}
+			// Convert to slice of pointers
+			var liqudiatePtrs []*types.PositionRequest
+			for i := range liquidate {
+				liqudiatePtrs = append(liqudiatePtrs, &liquidate[i])
+			}
+
+			stopLoss, err := readPositionRequestJSON(args[1])
+			if err != nil {
+				return err
+			}
+			// Convert to slice of pointers
+			var stoplossPtrs []*types.PositionRequest
+			for i := range stopLoss {
+				stoplossPtrs = append(stoplossPtrs, &stopLoss[i])
+			}
+
 			msg := types.NewMsgClosePositions(
 				clientCtx.GetFromAddress().String(),
-				argLiquidate,
-				argStoploss,
+				liqudiatePtrs,
+				stoplossPtrs,
 			)
-			if err := msg.ValidateBasic(); err != nil {
+			if err = msg.ValidateBasic(); err != nil {
 				return err
 			}
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
@@ -41,4 +61,18 @@ func CmdClosePositions() *cobra.Command {
 	flags.AddTxFlagsToCmd(cmd)
 
 	return cmd
+}
+
+func readPositionRequestJSON(filename string) ([]types.PositionRequest, error) {
+	var positions []types.PositionRequest
+	bz, err := ioutil.ReadFile(filename)
+	if err != nil {
+		return []types.PositionRequest{}, err
+	}
+	err = json.Unmarshal(bz, &positions)
+	if err != nil {
+		return []types.PositionRequest{}, err
+	}
+
+	return positions, nil
 }
