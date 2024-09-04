@@ -3,8 +3,8 @@ package keeper
 import (
 	"fmt"
 
-	cosmosMath "cosmossdk.io/math"
 	errorsmod "cosmossdk.io/errors"
+	cosmosMath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
@@ -90,8 +90,8 @@ func (k Keeper) GetLeverageLpUpdatedLeverage(ctx sdk.Context, positions []*types
 		}
 
 		updatedLeveragePositions = append(updatedLeveragePositions, &types.QueryPosition{
-			Position:        position,
-			UpdatedLeverage: updated_leverage,
+			Position:         position,
+			UpdatedLeverage:  updated_leverage,
 			PositionUsdValue: exitAmountAfterFee,
 		})
 	}

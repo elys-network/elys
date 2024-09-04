@@ -11,15 +11,16 @@ import "elys/perpetual/types.proto";
 
 // Msg defines the Msg service.
 service Msg {
-  rpc Open                (MsgOpen               ) returns (MsgOpenResponse               );
-  rpc BrokerOpen          (MsgBrokerOpen         ) returns (MsgOpenResponse               );
-  rpc Close               (MsgClose              ) returns (MsgCloseResponse              );
-  rpc BrokerClose         (MsgBrokerClose        ) returns (MsgCloseResponse              );
-  rpc UpdateParams        (MsgUpdateParams       ) returns (MsgUpdateParamsResponse       );
-  rpc Whitelist           (MsgWhitelist          ) returns (MsgWhitelistResponse          );
-  rpc Dewhitelist         (MsgDewhitelist        ) returns (MsgDewhitelistResponse        );
-  rpc AddCollateral       (MsgAddCollateral      ) returns (MsgAddCollateralResponse      );
-  rpc BrokerAddCollateral (MsgBrokerAddCollateral) returns (MsgAddCollateralResponse);
+  rpc Open                (MsgOpen               ) returns (MsgOpenResponse          );
+  rpc BrokerOpen          (MsgBrokerOpen         ) returns (MsgOpenResponse          );
+  rpc Close               (MsgClose              ) returns (MsgCloseResponse         );
+  rpc BrokerClose         (MsgBrokerClose        ) returns (MsgCloseResponse         );
+  rpc UpdateParams        (MsgUpdateParams       ) returns (MsgUpdateParamsResponse  );
+  rpc Whitelist           (MsgWhitelist          ) returns (MsgWhitelistResponse     );
+  rpc Dewhitelist         (MsgDewhitelist        ) returns (MsgDewhitelistResponse   );
+  rpc AddCollateral       (MsgAddCollateral      ) returns (MsgAddCollateralResponse );
+  rpc BrokerAddCollateral (MsgBrokerAddCollateral) returns (MsgAddCollateralResponse );
+  rpc ClosePositions      (MsgClosePositions     ) returns (MsgClosePositionsResponse);
 }
 message MsgOpen {
   string                   creator           = 1;
@@ -101,3 +102,12 @@ message MsgBrokerAddCollateral {
   int32  id      = 3;
   string owner   = 4;
 }
+
+message MsgClosePositions {
+  string creator   = 1;
+  string liquidate = 2;
+  string stoploss  = 3;
+}
+
+message MsgClosePositionsResponse {}
+

@@ -31,7 +31,7 @@ type (
 		assetProfileKeeper types.AssetProfileKeeper
 		masterchefKeeper   types.MasterchefKeeper
 
-		hooks    types.LeverageLpHooks
+		hooks types.LeverageLpHooks
 	}
 )
 
