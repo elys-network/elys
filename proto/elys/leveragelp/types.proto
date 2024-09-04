@@ -73,6 +73,10 @@ message LegacyPosition {
 message QueryPosition {
   Position position        = 1;
   string   updated_leverage = 2 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+  string position_usd_value = 3 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
 }
 
 message PositionAndInterest {
