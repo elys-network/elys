@@ -104,9 +104,9 @@ message MsgBrokerAddCollateral {
 }
 
 message MsgClosePositions {
-  string creator   = 1;
-  string liquidate = 2;
-  string stoploss  = 3;
+  string creator = 1;
+  repeated PositionRequest liquidate = 2;
+  repeated PositionRequest stop_loss = 3;
 }
 
 message MsgClosePositionsResponse {}
