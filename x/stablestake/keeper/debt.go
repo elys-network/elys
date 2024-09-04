@@ -57,6 +57,12 @@ func (k Keeper) SetInterest(ctx sdk.Context, block uint64, interest types.Intere
 	}
 }
 
+func (k Keeper) SetInterestBlock(ctx sdk.Context, interest types.InterestBlock) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.InterestPrefixKey)
+	bz := k.cdc.MustMarshal(&interest)
+	store.Set(sdk.Uint64ToBigEndian(uint64(interest.BlockTime)), bz)
+}
+
 func (k Keeper) DeleteInterest(ctx sdk.Context, delBlock int64) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.InterestPrefixKey)
 	key := sdk.Uint64ToBigEndian(uint64(delBlock))
