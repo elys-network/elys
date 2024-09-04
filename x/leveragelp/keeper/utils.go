@@ -92,6 +92,7 @@ func (k Keeper) GetLeverageLpUpdatedLeverage(ctx sdk.Context, positions []*types
 		updatedLeveragePositions = append(updatedLeveragePositions, &types.QueryPosition{
 			Position:        position,
 			UpdatedLeverage: updated_leverage,
+			PositionUsdValue: exitAmountAfterFee,
 		})
 	}
 	return updatedLeveragePositions, nil
