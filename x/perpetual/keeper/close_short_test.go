@@ -27,14 +27,14 @@ func TestCloseShort_MtpNotFound(t *testing.T) {
 	var (
 		ctx = sdk.Context{} // Mock or setup a context
 		msg = &types.MsgClose{
-			Creator: "creator",
+			Creator: "cosmos1xv9tklw7d82sezh9haa573wufgy59vmwe6xxe5",
 			Id:      1,
 			Amount:  sdk.NewInt(100),
 		}
 	)
 
 	// Mock behavior
-	mockChecker.On("GetMTP", ctx, msg.Creator, msg.Id).Return(types.MTP{}, types.ErrMTPDoesNotExist)
+	mockChecker.On("GetMTP", ctx, sdk.MustAccAddressFromBech32(msg.Creator), msg.Id).Return(types.MTP{}, types.ErrMTPDoesNotExist)
 
 	_, _, err := k.CloseShort(ctx, msg, ptypes.BaseCurrency)
 
@@ -55,7 +55,7 @@ func TestCloseShort_InvalidCloseSize(t *testing.T) {
 	var (
 		ctx = sdk.Context{} // Mock or setup a context
 		msg = &types.MsgClose{
-			Creator: "creator",
+			Creator: "cosmos1xv9tklw7d82sezh9haa573wufgy59vmwe6xxe5",
 			Id:      1,
 			Amount:  sdk.NewInt(100),
 		}
@@ -66,7 +66,7 @@ func TestCloseShort_InvalidCloseSize(t *testing.T) {
 	)
 
 	// Mock behavior
-	mockChecker.On("GetMTP", ctx, msg.Creator, msg.Id).Return(mtp, nil)
+	mockChecker.On("GetMTP", ctx, sdk.MustAccAddressFromBech32(msg.Creator), msg.Id).Return(mtp, nil)
 
 	_, _, err := k.CloseShort(ctx, msg, ptypes.BaseCurrency)
 
@@ -87,7 +87,7 @@ func TestCloseShort_PoolNotFound(t *testing.T) {
 	var (
 		ctx = sdk.Context{} // Mock or setup a context
 		msg = &types.MsgClose{
-			Creator: "creator",
+			Creator: "cosmos1xv9tklw7d82sezh9haa573wufgy59vmwe6xxe5",
 			Id:      1,
 			Amount:  sdk.NewInt(100),
 		}
@@ -98,7 +98,7 @@ func TestCloseShort_PoolNotFound(t *testing.T) {
 	)
 
 	// Mock behavior
-	mockChecker.On("GetMTP", ctx, msg.Creator, msg.Id).Return(mtp, nil)
+	mockChecker.On("GetMTP", ctx, sdk.MustAccAddressFromBech32(msg.Creator), msg.Id).Return(mtp, nil)
 	mockChecker.On("GetPool", ctx, mtp.AmmPoolId).Return(types.Pool{}, false)
 
 	_, _, err := k.CloseShort(ctx, msg, ptypes.BaseCurrency)
@@ -120,7 +120,7 @@ func TestCloseShort_AmmPoolNotFound(t *testing.T) {
 	var (
 		ctx = sdk.Context{} // Mock or setup a context
 		msg = &types.MsgClose{
-			Creator: "creator",
+			Creator: "cosmos1xv9tklw7d82sezh9haa573wufgy59vmwe6xxe5",
 			Id:      1,
 			Amount:  sdk.NewInt(100),
 		}
@@ -131,7 +131,7 @@ func TestCloseShort_AmmPoolNotFound(t *testing.T) {
 	)
 
 	// Mock behavior
-	mockChecker.On("GetMTP", ctx, msg.Creator, msg.Id).Return(mtp, nil)
+	mockChecker.On("GetMTP", ctx, sdk.MustAccAddressFromBech32(msg.Creator), msg.Id).Return(mtp, nil)
 	mockChecker.On("GetPool", ctx, mtp.AmmPoolId).Return(types.Pool{}, true)
 	mockChecker.On("GetAmmPool", ctx, mtp.AmmPoolId, mtp.CustodyAsset).Return(ammtypes.Pool{}, errorsmod.Wrap(types.ErrPoolDoesNotExist, mtp.CustodyAsset))
 
@@ -154,7 +154,7 @@ func TestCloseShort_ErrorHandleBorrowInterest(t *testing.T) {
 	var (
 		ctx = sdk.Context{} // Mock or setup a context
 		msg = &types.MsgClose{
-			Creator: "creator",
+			Creator: "cosmos1xv9tklw7d82sezh9haa573wufgy59vmwe6xxe5",
 			Id:      1,
 			Amount:  sdk.NewInt(100),
 		}
@@ -170,7 +170,7 @@ func TestCloseShort_ErrorHandleBorrowInterest(t *testing.T) {
 	)
 
 	// Mock behavior
-	mockChecker.On("GetMTP", ctx, msg.Creator, msg.Id).Return(mtp, nil)
+	mockChecker.On("GetMTP", ctx, sdk.MustAccAddressFromBech32(msg.Creator), msg.Id).Return(mtp, nil)
 	mockChecker.On("GetPool", ctx, mtp.AmmPoolId).Return(pool, true)
 	mockChecker.On("GetAmmPool", ctx, mtp.AmmPoolId, mtp.CustodyAsset).Return(ammPool, nil)
 	mockChecker.On("HandleBorrowInterest", ctx, &mtp, &pool, ammPool).Return(errors.New("error executing handle borrow interest"))
@@ -194,7 +194,7 @@ func TestCloseShort_ErrorTakeOutCustody(t *testing.T) {
 	var (
 		ctx = sdk.Context{} // Mock or setup a context
 		msg = &types.MsgClose{
-			Creator: "creator",
+			Creator: "cosmos1xv9tklw7d82sezh9haa573wufgy59vmwe6xxe5",
 			Id:      1,
 			Amount:  sdk.NewInt(100),
 		}
@@ -210,7 +210,7 @@ func TestCloseShort_ErrorTakeOutCustody(t *testing.T) {
 	)
 
 	// Mock behavior
-	mockChecker.On("GetMTP", ctx, msg.Creator, msg.Id).Return(mtp, nil)
+	mockChecker.On("GetMTP", ctx, sdk.MustAccAddressFromBech32(msg.Creator), msg.Id).Return(mtp, nil)
 	mockChecker.On("GetPool", ctx, mtp.AmmPoolId).Return(pool, true)
 	mockChecker.On("GetAmmPool", ctx, mtp.AmmPoolId, mtp.CustodyAsset).Return(ammPool, nil)
 	mockChecker.On("HandleBorrowInterest", ctx, &mtp, &pool, ammPool).Return(nil)
@@ -235,7 +235,7 @@ func TestCloseShort_ErrorEstimateAndRepay(t *testing.T) {
 	var (
 		ctx = sdk.Context{} // Mock or setup a context
 		msg = &types.MsgClose{
-			Creator: "creator",
+			Creator: "cosmos1xv9tklw7d82sezh9haa573wufgy59vmwe6xxe5",
 			Id:      1,
 			Amount:  sdk.NewInt(100),
 		}
@@ -251,7 +251,7 @@ func TestCloseShort_ErrorEstimateAndRepay(t *testing.T) {
 	)
 
 	// Mock behavior
-	mockChecker.On("GetMTP", ctx, msg.Creator, msg.Id).Return(mtp, nil)
+	mockChecker.On("GetMTP", ctx, sdk.MustAccAddressFromBech32(msg.Creator), msg.Id).Return(mtp, nil)
 	mockChecker.On("GetPool", ctx, mtp.AmmPoolId).Return(pool, true)
 	mockChecker.On("GetAmmPool", ctx, mtp.AmmPoolId, mtp.CustodyAsset).Return(ammPool, nil)
 	mockChecker.On("HandleBorrowInterest", ctx, &mtp, &pool, ammPool).Return(nil)
@@ -294,7 +294,7 @@ func TestCloseShort_SuccessfulClosingLongPosition(t *testing.T) {
 	)
 
 	// Mock behavior
-	mockChecker.On("GetMTP", ctx, msg.Creator, msg.Id).Return(mtp, nil)
+	mockChecker.On("GetMTP", ctx, sdk.MustAccAddressFromBech32(msg.Creator), msg.Id).Return(mtp, nil)
 	mockChecker.On("GetPool", ctx, mtp.AmmPoolId).Return(pool, true)
 	mockChecker.On("GetAmmPool", ctx, mtp.AmmPoolId, mtp.CustodyAsset).Return(ammPool, nil)
 	mockChecker.On("HandleBorrowInterest", ctx, &mtp, &pool, ammPool).Return(nil)

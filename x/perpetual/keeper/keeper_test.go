@@ -72,13 +72,13 @@ func TestGetAllWhitelistedAddress(t *testing.T) {
 	// If addr[0] is whitelisted
 	require.Contains(t,
 		whitelisted,
-		addr[0].String(),
+		addr[0],
 	)
 
 	// If addr[1] is whitelisted
 	require.Contains(t,
 		whitelisted,
-		addr[1].String(),
+		addr[1],
 	)
 }
 

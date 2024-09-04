@@ -25,7 +25,7 @@ func TestCheckUserAuthorization_WhitelistingEnabledUserWhitelisted(t *testing.T)
 
 	// Mock behavior
 	mockChecker.On("IsWhitelistingEnabled", ctx).Return(true)
-	mockChecker.On("CheckIfWhitelisted", ctx, "whitelistedUser").Return(true)
+	mockChecker.On("CheckIfWhitelisted", ctx, sdk.MustAccAddressFromBech32("cosmos1xv9tklw7d82sezh9haa573wufgy59vmwe6xxe5")).Return(true)
 
 	err := k.CheckUserAuthorization(ctx, msg)
 
@@ -44,11 +44,11 @@ func TestCheckUserAuthorization_WhitelistingEnabledUserNotWhitelisted(t *testing
 	}
 
 	ctx := sdk.Context{} // mock or setup a context
-	msg := &types.MsgOpen{Creator: "nonWhitelistedUser"}
+	msg := &types.MsgOpen{Creator: "cosmos1xv9tklw7d82sezh9haa573wufgy59vmwe6xxe5"}
 
 	// Mock behavior
 	mockChecker.On("IsWhitelistingEnabled", ctx).Return(true)
-	mockChecker.On("CheckIfWhitelisted", ctx, "nonWhitelistedUser").Return(false)
+	mockChecker.On("CheckIfWhitelisted", ctx, sdk.MustAccAddressFromBech32("cosmos1xv9tklw7d82sezh9haa573wufgy59vmwe6xxe5")).Return(false)
 
 	err := k.CheckUserAuthorization(ctx, msg)
 
