@@ -207,9 +207,9 @@ func (k Keeper) V6_MTPMigration(ctx sdk.Context) {
 		var mtp types.MTP
 		bz := iterator.Value()
 		k.cdc.MustUnmarshal(bz, &mtp)
-		legacyKey := types.GetLegacyMTPKey(mtp.Address, mtp.Id)
-		store.Delete(legacyKey)
 		newKey := types.GetMTPKey(mtp.GetAccountAddress(), mtp.Id)
 		store.Set(newKey, bz)
+		legacyKey := types.GetLegacyMTPKey(mtp.Address, mtp.Id)
+		store.Delete(legacyKey)
 	}
 }
