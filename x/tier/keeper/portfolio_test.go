@@ -37,8 +37,9 @@ func createNPortfolio(keeper *keeper.Keeper, ctx sdk.Context, n int) []types.Por
 	for i := range items {
 		items[i].Creator = addresses[i].String()
 		items[i].Portfolio = sdk.NewDec(1000)
+		items[i].Date = keeper.GetDateFromContext(ctx)
 
-		keeper.SetPortfolio(ctx, keeper.GetDateFromBlock(ctx.BlockTime()), items[i])
+		keeper.SetPortfolio(ctx, items[i])
 	}
 	return items
 }
@@ -49,7 +50,7 @@ func TestPortfolioGet(t *testing.T) {
 	for _, item := range items {
 		_, found := keeper.GetPortfolio(ctx,
 			sdk.MustAccAddressFromBech32(item.Creator),
-			keeper.GetDateFromBlock(ctx.BlockTime()),
+			keeper.GetDateFromContext(ctx),
 		)
 		require.True(t, found)
 	}
@@ -59,19 +60,19 @@ func TestPortfolioRemoveLast(t *testing.T) {
 	keeper, ctx := keepertest.MembershiptierKeeper(t)
 	items := createNPortfolio(keeper, ctx, 10)
 	count := keeper.RemovePortfolioLast(ctx,
-		keeper.GetDateFromBlock(ctx.BlockTime()),
+		keeper.GetDateFromContext(ctx),
 		100,
 	)
 	_, found := keeper.GetPortfolio(ctx,
 		sdk.MustAccAddressFromBech32(items[9].Creator),
-		keeper.GetDateFromBlock(ctx.BlockTime()),
+		keeper.GetDateFromContext(ctx),
 	)
 	require.Equal(t, count, uint64(10))
 	require.False(t, found)
 
 	// Try to remove again
 	count = keeper.RemovePortfolioLast(ctx,
-		keeper.GetDateFromBlock(ctx.BlockTime()),
+		keeper.GetDateFromContext(ctx),
 		100,
 	)
 	require.Equal(t, count, uint64(0))
@@ -107,7 +108,7 @@ func TestGetPortfolioNative(t *testing.T) {
 
 	tier.RetrieveAllPortfolio(ctx, addr[0])
 
-	portfolio, found := tier.GetPortfolio(ctx, addr[0], tier.GetDateFromBlock(ctx.BlockTime()))
+	portfolio, found := tier.GetPortfolio(ctx, addr[0], tier.GetDateFromContext(ctx))
 	require.True(t, found)
 	require.Equal(t, portfolio, sdk.NewDec(101000))
 }
@@ -181,7 +182,7 @@ func TestGetPortfolioAmm(t *testing.T) {
 
 	tier.RetrieveAllPortfolio(ctx, addr[0])
 
-	portfolio, found := tier.GetPortfolio(ctx, addr[0], tier.GetDateFromBlock(ctx.BlockTime()))
+	portfolio, found := tier.GetPortfolio(ctx, addr[0], tier.GetDateFromContext(ctx))
 	require.True(t, found)
 	require.Equal(t, portfolio, sdk.NewDec(100100))
 }
@@ -195,13 +196,16 @@ func TestPortfolioGetDiscount(t *testing.T) {
 		for i := range items {
 			items[i].Creator = addresses[i].String()
 			items[i].Portfolio = sdk.NewDec(400000)
+			items[i].Date = keeper.GetDateFromContext(ctx)
 
-			keeper.SetPortfolio(ctx, keeper.GetDateFromBlock(ctx.BlockTime()), items[i])
+			keeper.SetPortfolio(ctx, items[i])
 		}
 	}
 
 	items[9].Portfolio = sdk.NewDec(500)
-	keeper.SetPortfolio(ctx, keeper.GetDateFromBlock(ctx.BlockTime()), items[9])
+	items[9].Date = keeper.GetDateFromContext(ctx)
+
+	keeper.SetPortfolio(ctx, items[9])
 
 	_, _, discount := keeper.GetMembershipTier(ctx, sdk.MustAccAddressFromBech32(items[0].Creator))
 	require.Equal(t, discount, uint64(20))
@@ -288,7 +292,7 @@ func TestGetPortfolioPerpetual(t *testing.T) {
 
 	tier.RetrieveAllPortfolio(ctx, addr[0])
 
-	portfolio, found := tier.GetPortfolio(ctx, addr[0], tier.GetDateFromBlock(ctx.BlockTime()))
+	portfolio, found := tier.GetPortfolio(ctx, addr[0], tier.GetDateFromContext(ctx))
 	require.True(t, found)
 	require.Equal(t, portfolio, sdk.NewDec(10099100))
 }

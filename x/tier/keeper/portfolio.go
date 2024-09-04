@@ -20,7 +20,7 @@ import (
 
 func (k Keeper) RetrieveAllPortfolio(ctx sdk.Context, user sdk.AccAddress) {
 	// set today + user -> amount
-	todayDate := k.GetDateFromBlock(ctx.BlockTime())
+	todayDate := k.GetDateFromContext(ctx)
 
 	_, found := k.GetPortfolio(ctx, user, todayDate)
 	if found {
@@ -60,10 +60,7 @@ func (k Keeper) RetrieveAllPortfolio(ctx sdk.Context, user sdk.AccAddress) {
 
 	totalValue = totalValue.Add(lev)
 
-	k.SetPortfolio(ctx, todayDate, types.Portfolio{
-		Creator:   user.String(),
-		Portfolio: totalValue,
-	})
+	k.SetPortfolio(ctx, types.NewPortfolioWithContextDate(todayDate, user, totalValue))
 }
 
 func (k Keeper) RetrievePoolTotal(ctx sdk.Context, user sdk.AccAddress) sdk.Dec {
@@ -326,9 +323,9 @@ func (k Keeper) CalculateUSDValue(ctx sdk.Context, denom string, amount sdk.Int)
 }
 
 // SetPortfolio set a specific portfolio in the store from its index
-func (k Keeper) SetPortfolio(ctx sdk.Context, date string, portfolio types.Portfolio) {
+func (k Keeper) SetPortfolio(ctx sdk.Context, portfolio types.Portfolio) {
 	store := ctx.KVStore(k.storeKey)
-	key := types.GetPortfolioKey(date, portfolio.GetCreatorAddress())
+	key := types.GetPortfolioKey(portfolio.Date, portfolio.GetCreatorAddress())
 	b := k.cdc.MustMarshal(&portfolio)
 	store.Set(key, b)
 }
@@ -415,13 +412,22 @@ func (k Keeper) GetAllPortfolio(ctx sdk.Context) (list []types.Portfolio) {
 	return
 }
 
-func (k Keeper) GetDateFromBlock(blockTime time.Time) string {
+func (k Keeper) GetDateFromContext(ctx sdk.Context) string {
+	contextTime := ctx.BlockTime()
 	// Extract the year, month, and day
-	year, month, day := blockTime.Date()
+	year, month, day := contextTime.Date()
 	// Create a new time.Time object with the extracted date and time set to midnight
-	blockDate := time.Date(year, month, day, 0, 0, 0, 0, blockTime.Location())
+	contextDate := time.Date(year, month, day, 0, 0, 0, 0, contextTime.Location())
 	// Format the date as a string in the "%Y-%m-%d" format
-	return blockDate.Format("2006-01-02")
+	return contextDate.Format(types.DateFormat)
+}
+
+func (k Keeper) GetDateAfterDaysFromContext(ctx sdk.Context, n int) string {
+	contextTime := ctx.BlockTime()
+	year, month, day := contextTime.Date()
+	contextDate := time.Date(year, month, day, 0, 0, 0, 0, contextTime.Location())
+	resultDate := contextDate.AddDate(0, 0, n)
+	return resultDate.Format(types.DateFormat)
 }
 
 func GetPoolIdFromShareDenom(shareDenom string) (uint64, error) {
@@ -440,6 +446,7 @@ func Pow10(decimal uint64) (value sdk.Dec) {
 	return
 }
 
+// remove after migrations
 func (k Keeper) GetLegacyPortfolios(ctx sdk.Context, date string) (list []types.Portfolio) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(date))
 	iterator := sdk.KVStorePrefixIterator(store, []byte{})
@@ -447,9 +454,9 @@ func (k Keeper) GetLegacyPortfolios(ctx sdk.Context, date string) (list []types.
 	defer iterator.Close()
 
 	for ; iterator.Valid(); iterator.Next() {
-		var val types.Portfolio
+		var val types.LegacyPortfolio
 		k.cdc.MustUnmarshal(iterator.Value(), &val)
-		list = append(list, val)
+		list = append(list, types.NewPortfolioWithContextDate(date, sdk.MustAccAddressFromBech32(val.Creator), val.Portfolio))
 	}
 	return
 }
