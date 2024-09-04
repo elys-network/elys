@@ -57,12 +57,6 @@ func (k Keeper) SetInterest(ctx sdk.Context, block uint64, interest types.Intere
 	}
 }
 
-func (k Keeper) SetInterestBlock(ctx sdk.Context, interest types.InterestBlock) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.InterestPrefixKey)
-	bz := k.cdc.MustMarshal(&interest)
-	store.Set(sdk.Uint64ToBigEndian(uint64(interest.BlockTime)), bz)
-}
-
 func (k Keeper) DeleteInterest(ctx sdk.Context, delBlock int64) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.InterestPrefixKey)
 	key := sdk.Uint64ToBigEndian(uint64(delBlock))
@@ -82,6 +76,27 @@ func (k Keeper) GetAllInterest(ctx sdk.Context) []types.InterestBlock {
 		k.cdc.MustUnmarshal(iterator.Value(), &interest)
 
 		interests = append(interests, interest)
+	}
+	return interests
+}
+
+func (k Keeper) GetAllLegacyInterest(ctx sdk.Context) []types.InterestBlock {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.InterestPrefixKey)
+	iterator := sdk.KVStorePrefixIterator(store, nil)
+	defer iterator.Close()
+
+	interests := []types.InterestBlock{}
+	for ; iterator.Valid(); iterator.Next() {
+		interest := types.LegacyInterestBlock{}
+		k.cdc.MustUnmarshal(iterator.Value(), &interest)
+
+		block := iterator.Key()
+		newInterest := types.InterestBlock{}
+		newInterest.InterestRate = interest.InterestRate
+		newInterest.BlockTime = interest.BlockTime
+		newInterest.BlockHeight = sdk.BigEndianToUint64(block)
+
+		interests = append(interests, newInterest)
 	}
 	return interests
 }
