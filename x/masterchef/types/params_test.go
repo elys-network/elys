@@ -2,6 +2,8 @@ package types_test
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	"github.com/elys-network/elys/x/masterchef/types"
 	"github.com/stretchr/testify/require"
 	"gopkg.in/yaml.v2"
@@ -9,7 +11,7 @@ import (
 )
 
 func TestDefaultParams(t *testing.T) {
-	require.Equal(t, types.DefaultParams(), types.NewParams(nil, sdk.NewDecWithPrec(60, 2), sdk.NewDecWithPrec(25, 2), sdk.NewDecWithPrec(5, 1), "elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3"))
+	require.Equal(t, types.DefaultParams(), types.NewParams(nil, sdk.NewDecWithPrec(60, 2), sdk.NewDecWithPrec(25, 2), sdk.NewDecWithPrec(5, 1), authtypes.NewModuleAddress(govtypes.ModuleName).String()))
 	output, err := yaml.Marshal(types.DefaultParams())
 	require.NoError(t, err)
 	require.Equal(t, types.DefaultParams().String(), string(output))
