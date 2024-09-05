@@ -199,8 +199,7 @@ func (suite KeeperTestSuite) TestPositionHealth() {
 	suite.Require().True(found)
 	health, err := k.GetPositionHealth(suite.ctx, *position)
 	suite.Require().NoError(err)
-	// suite.Require().Equal(health.String(), "1.221000000000000000") // slippage enabled on amm
-	suite.Require().Equal("1.250000000000000000", health.String()) // slippage disabled on amm
+	suite.Require().Equal("1.250000000000000000", health.String())
 
 	//setting position debt/liablities to zero
 	debt := suite.app.StablestakeKeeper.GetDebt(suite.ctx, position.GetPositionAddress())

@@ -90,8 +90,8 @@ func (k Keeper) GetLeverageLpUpdatedLeverage(ctx sdk.Context, positions []*types
 		}
 
 		updatedLeveragePositions = append(updatedLeveragePositions, &types.QueryPosition{
-			Position:        position,
-			UpdatedLeverage: updated_leverage,
+			Position:         position,
+			UpdatedLeverage:  updated_leverage,
 			PositionUsdValue: sdk.NewDecFromIntWithPrec(exitAmountAfterFee, 6),
 		})
 	}
@@ -116,10 +116,8 @@ func (k Keeper) GetInterestRateUsd(ctx sdk.Context, positions []*types.QueryPosi
 	return positions_and_interest, nil
 }
 
-//migrating eixsting position and setting position health to max dec when liablities is zero
+// migrating eixsting position and setting position health to max dec when liablities is zero
 func (k Keeper) MigratePositionHealth(ctx sdk.Context) {
-	
-	var positions []types.Position
 	iterator := k.GetPositionIterator(ctx)
 	defer func(iterator sdk.Iterator) {
 		err := iterator.Close()
@@ -133,15 +131,11 @@ func (k Keeper) MigratePositionHealth(ctx sdk.Context) {
 		bytesValue := iterator.Value()
 		err := k.cdc.Unmarshal(bytesValue, &position)
 		if err == nil {
-			positions = append(positions, position)
-		}
-	}
-
-	for _, position := range positions {
-		positionHealth, err := k.GetPositionHealth(ctx,position)
-		if err == nil {
-			position.PositionHealth = positionHealth
-			k.SetPosition(ctx, &position)
+			positionHealth, err := k.GetPositionHealth(ctx, position)
+			if err == nil {
+				position.PositionHealth = positionHealth
+				k.SetPosition(ctx, &position)
+			}
 		}
 	}
 }
