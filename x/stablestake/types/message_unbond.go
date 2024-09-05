@@ -1,6 +1,8 @@
 package types
 
 import (
+	fmt "fmt"
+
 	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -43,6 +45,9 @@ func (msg *MsgUnbond) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
 		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
+	}
+	if !msg.Amount.IsPositive() {
+		return fmt.Errorf("Unbond amount should be positive (%s)", msg.Amount.String())
 	}
 	return nil
 }
