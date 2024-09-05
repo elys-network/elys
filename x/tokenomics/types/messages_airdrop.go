@@ -100,6 +100,22 @@ func (msg *MsgUpdateAirdrop) ValidateBasic() error {
 	if err != nil {
 		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid authority address (%s)", err)
 	}
+
+	// Validate Intent is not empty
+	if len(msg.Intent) == 0 {
+		return errorsmod.Wrap(sdkerrors.ErrUnknownRequest, "intent cannot be empty")
+	}
+
+	// Validate Amount is positive
+	if msg.Amount <= 0 {
+		return errorsmod.Wrap(sdkerrors.ErrInvalidCoins, "amount must be positive")
+	}
+
+	// Validate Expiry
+	if msg.Expiry <= 0 {
+		return errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "expiry must be a positive timestamp")
+	}
+
 	return nil
 }
 
@@ -141,6 +157,12 @@ func (msg *MsgDeleteAirdrop) ValidateBasic() error {
 	if err != nil {
 		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid authority address (%s)", err)
 	}
+
+	// Validate Intent is not empty
+	if len(msg.Intent) == 0 {
+		return errorsmod.Wrap(sdkerrors.ErrUnknownRequest, "intent cannot be empty")
+	}
+
 	return nil
 }
 
