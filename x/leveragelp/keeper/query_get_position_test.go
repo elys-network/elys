@@ -105,7 +105,7 @@ func (suite KeeperTestSuite) TestQueryGetPosition() {
 		Position: &types.QueryPosition{
 			Position:         position,
 			UpdatedLeverage:  updated_leverage,
-			PositionUsdValue: sdk.NewInt(5000),
+			PositionUsdValue: sdk.NewDec(5000).Quo(sdk.NewDec(1000000)),
 		},
 		InterestRateHour:    sdk.MustNewDecFromStr("0.000017123287671233"),
 		InterestRateHourUsd: sdk.ZeroDec(),
