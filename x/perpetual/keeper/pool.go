@@ -3,6 +3,9 @@ package keeper
 import (
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	atypes "github.com/elys-network/elys/x/assetprofile/types"
+	ptypes "github.com/elys-network/elys/x/parameter/types"
+
 	"github.com/elys-network/elys/x/perpetual/types"
 )
 
@@ -10,6 +13,14 @@ import (
 func (k Keeper) RemovePool(ctx sdk.Context, index uint64) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.PoolKeyPrefix))
 	store.Delete(types.PoolKey(index))
+}
+
+func (k Keeper) GetBaseCurreny(ctx sdk.Context) (atypes.Entry, bool) {
+	baseCurrency, found := k.assetProfileKeeper.GetEntry(ctx, ptypes.BaseCurrency)
+	if !found {
+		return atypes.Entry{}, false
+	}
+	return baseCurrency, true
 }
 
 // GetPool returns a pool from its index

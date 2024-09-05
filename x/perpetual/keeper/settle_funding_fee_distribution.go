@@ -6,6 +6,7 @@ import (
 	"github.com/elys-network/elys/x/perpetual/types"
 )
 
+// TODO: Think about funding rate algo, edge cases
 func (k Keeper) SettleFundingFeeDistribution(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, ammPool ammtypes.Pool, baseCurrency string) error {
 	// get funding rate
 	fundingRate := k.GetFundingRate(ctx, mtp.LastFundingCalcBlock, mtp.AmmPoolId)
