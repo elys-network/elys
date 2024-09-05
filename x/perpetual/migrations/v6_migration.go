@@ -6,7 +6,6 @@ import (
 )
 
 func (m Migrator) V6Migration(ctx sdk.Context) error {
-	// reset mtps
 	mtps := m.keeper.GetAllLegacyMTPs(ctx)
 	for _, mtp := range mtps {
 		newMtp := types.MTP{
