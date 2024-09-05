@@ -42,8 +42,8 @@ func (msg *MsgUpdateRewardsDataLifetime) ValidateBasic() error {
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
 	}
-	_, ok := sdk.NewIntFromString(msg.RewardsDataLifetime)
-	if !ok {
+	res, ok := sdk.NewIntFromString(msg.RewardsDataLifetime)
+	if !ok || !res.IsPositive() {
 		return sdkerrors.Wrapf(ErrInvalidRewardsDataLifecycle, "invalid data in rewards_data_lifecycle")
 	}
 	return nil

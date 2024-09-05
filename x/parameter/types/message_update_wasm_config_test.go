@@ -32,6 +32,36 @@ func TestMsgUpdateWasmConfig_ValidateBasic(t *testing.T) {
 				WasmMaxProposalWasmSize: "1",
 			},
 		},
+		{
+			name: "invalid WasmMaxLabelSize",
+			msg: MsgUpdateWasmConfig{
+				Creator:                 sample.AccAddress(),
+				WasmMaxLabelSize:        "-1",
+				WasmMaxSize:             "1",
+				WasmMaxProposalWasmSize: "1",
+			},
+			err: sdkerrors.ErrInvalidRequest,
+		},
+		{
+			name: "invalid WasmMaxSize",
+			msg: MsgUpdateWasmConfig{
+				Creator:                 sample.AccAddress(),
+				WasmMaxLabelSize:        "1",
+				WasmMaxSize:             "-1",
+				WasmMaxProposalWasmSize: "1",
+			},
+			err: sdkerrors.ErrInvalidRequest,
+		},
+		{
+			name: "invalid WasmMaxProposalWasmSize",
+			msg: MsgUpdateWasmConfig{
+				Creator:                 sample.AccAddress(),
+				WasmMaxLabelSize:        "1",
+				WasmMaxSize:             "1",
+				WasmMaxProposalWasmSize: "-1",
+			},
+			err: sdkerrors.ErrInvalidRequest,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
