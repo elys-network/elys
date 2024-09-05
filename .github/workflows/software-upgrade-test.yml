@@ -43,6 +43,7 @@ jobs:
           git tag -f ${LATEST_TAG}
           make build
           mv ./build/elysd $OLD_BINARY_PATH
+          git tag -d ${LATEST_TAG}
 
           echo "OLD_BINARY_PATH=$OLD_BINARY_PATH" >> $GITHUB_ENV
 
