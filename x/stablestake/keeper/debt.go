@@ -80,6 +80,27 @@ func (k Keeper) GetAllInterest(ctx sdk.Context) []types.InterestBlock {
 	return interests
 }
 
+func (k Keeper) GetAllLegacyInterest(ctx sdk.Context) []types.InterestBlock {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.InterestPrefixKey)
+	iterator := sdk.KVStorePrefixIterator(store, nil)
+	defer iterator.Close()
+
+	interests := []types.InterestBlock{}
+	for ; iterator.Valid(); iterator.Next() {
+		interest := types.LegacyInterestBlock{}
+		k.cdc.MustUnmarshal(iterator.Value(), &interest)
+
+		block := iterator.Key()
+		newInterest := types.InterestBlock{}
+		newInterest.InterestRate = interest.InterestRate
+		newInterest.BlockTime = interest.BlockTime
+		newInterest.BlockHeight = sdk.BigEndianToUint64(block)
+
+		interests = append(interests, newInterest)
+	}
+	return interests
+}
+
 func (k Keeper) GetInterest(ctx sdk.Context, startBlock uint64, startTime uint64, borrowed sdk.Dec) sdk.Int {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.InterestPrefixKey)
 	currentBlockKey := sdk.Uint64ToBigEndian(uint64(ctx.BlockHeight()))
