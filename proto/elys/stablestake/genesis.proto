@@ -3,10 +3,14 @@ package elys.stablestake;
 
 import "gogoproto/gogo.proto";
 import "elys/stablestake/params.proto";
+import "elys/stablestake/debt.proto";
+import "elys/stablestake/types.proto";
 
 option go_package = "github.com/elys-network/elys/x/stablestake/types";
 
 // GenesisState defines the stablestake module's genesis state.
 message GenesisState {
   Params params = 1 [(gogoproto.nullable) = false];
+  repeated Debt debt_list = 2 [(gogoproto.nullable) = false];
+  repeated InterestBlock interest_list = 3 [(gogoproto.nullable) = false];
 }
