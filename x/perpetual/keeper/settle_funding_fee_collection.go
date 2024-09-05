@@ -21,7 +21,7 @@ func (k Keeper) SettleFundingFeeCollection(ctx sdk.Context, mtp *types.MTP, pool
 		return nil
 	}
 	// Calculate the take amount in custody asset
-	takeAmountCustodyAmount := types.CalcTakeAmount(mtp.Custody, mtp.CustodyAsset, fundingRate)
+	takeAmountCustodyAmount := types.CalcTakeAmount(mtp.Custody, fundingRate)
 	if !takeAmountCustodyAmount.IsPositive() {
 		return nil
 	}

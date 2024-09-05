@@ -21,16 +21,20 @@ func (k Keeper) SettleFundingFeeDistribution(ctx sdk.Context, mtp *types.MTP, po
 		return err
 	}
 
+	totalCustody := sdk.ZeroInt()
+
 	// account liabilities from long position
 	liabilitiesLong := sdk.ZeroInt()
 	for _, asset := range pool.PoolAssetsLong {
 		liabilitiesLong = liabilitiesLong.Add(asset.Liabilities)
+		totalCustody = totalCustody.Add(asset.Custody)
 	}
 
 	// account liabilities from short position
 	liabilitiesShort := sdk.ZeroInt()
 	for _, asset := range pool.PoolAssetsShort {
 		liabilitiesShort = liabilitiesShort.Add(asset.Liabilities)
+		totalCustody = totalCustody.Add(asset.Custody)
 	}
 
 	// get funding fee collection address
@@ -44,6 +48,8 @@ func (k Keeper) SettleFundingFeeDistribution(ctx sdk.Context, mtp *types.MTP, po
 		return nil
 	}
 
+	// Total fund collected should be
+	totalFund := types.CalcTakeAmount(totalCustody, fundingRate)
 	// calc funding fee share
 	fundingFeeShare := sdk.ZeroDec()
 	if fundingRate.IsNegative() && mtp.Position == types.Position_LONG {
@@ -67,8 +73,11 @@ func (k Keeper) SettleFundingFeeDistribution(ctx sdk.Context, mtp *types.MTP, po
 	}
 
 	// calculate funding fee amount
-	// TODO: Update funding amount here
-	fundingFeeAmount := sdk.NewCoin(baseCurrency, sdk.NewDecFromInt(balance.Amount).Mul(fundingFeeShare).TruncateInt())
+	fundingFeeAmount := sdk.NewCoin(baseCurrency, sdk.NewDecFromInt(totalFund).Mul(fundingFeeShare).TruncateInt())
+
+	if balance.Amount.LT(fundingFeeAmount.Amount) {
+		return nil
+	}
 
 	// transfer funding fee amount to mtp address
 	if err := k.bankKeeper.SendCoins(ctx, fundingFeeCollectionAddress, mtpAddress, sdk.NewCoins(fundingFeeAmount)); err != nil {
