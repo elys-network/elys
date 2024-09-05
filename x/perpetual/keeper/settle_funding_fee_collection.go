@@ -9,7 +9,7 @@ import (
 // SettleFundingFeeCollection handles funding fee collection
 func (k Keeper) SettleFundingFeeCollection(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, ammPool ammtypes.Pool, baseCurrency string) error {
 	// get funding rate
-	fundingRate := k.GetFundingRate(ctx, mtp.LastInterestCalcBlock, mtp.AmmPoolId)
+	fundingRate := k.GetFundingRate(ctx, mtp.LastFundingCalcBlock, mtp.AmmPoolId)
 
 	// if funding rate is zero, return
 	if fundingRate.IsZero() {
@@ -75,6 +75,9 @@ func (k Keeper) SettleFundingFeeCollection(ctx sdk.Context, mtp *types.MTP, pool
 	if err != nil {
 		return err
 	}
+
+	mtp.LastFundingCalcBlock = uint64(ctx.BlockHeight())
+	mtp.LastFundingCalcTime = uint64(ctx.BlockTime().Unix())
 
 	// apply changes to mtp object
 	err = k.SetMTP(ctx, mtp)

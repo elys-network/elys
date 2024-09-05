@@ -8,7 +8,7 @@ import (
 
 func (k Keeper) SettleFundingFeeDistribution(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, ammPool ammtypes.Pool, baseCurrency string) error {
 	// get funding rate
-	fundingRate := k.GetFundingRate(ctx, mtp.LastInterestCalcBlock, mtp.AmmPoolId)
+	fundingRate := k.GetFundingRate(ctx, mtp.LastFundingCalcBlock, mtp.AmmPoolId)
 
 	// if funding rate is negative and mtp position is short or funding rate is positive and mtp position is long, return
 	if (fundingRate.IsNegative() && mtp.Position == types.Position_SHORT) || (fundingRate.IsPositive() && mtp.Position == types.Position_LONG) {
@@ -67,6 +67,7 @@ func (k Keeper) SettleFundingFeeDistribution(ctx sdk.Context, mtp *types.MTP, po
 	}
 
 	// calculate funding fee amount
+	// TODO: Update funding amount here
 	fundingFeeAmount := sdk.NewCoin(baseCurrency, sdk.NewDecFromInt(balance.Amount).Mul(fundingFeeShare).TruncateInt())
 
 	// transfer funding fee amount to mtp address
@@ -86,6 +87,9 @@ func (k Keeper) SettleFundingFeeDistribution(ctx sdk.Context, mtp *types.MTP, po
 
 	// add payment to total funding fee paid in custody asset
 	mtp.FundingFeeReceivedCustody = mtp.FundingFeeReceivedCustody.Add(fundingFeeAmount.Amount)
+
+	mtp.LastFundingCalcBlock = uint64(ctx.BlockHeight())
+	mtp.LastFundingCalcTime = uint64(ctx.BlockTime().Unix())
 
 	return nil
 }

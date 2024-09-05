@@ -101,6 +101,8 @@ message MTP {
   ];
   uint64 last_interest_calc_time = 28;
   uint64 last_interest_calc_block = 29;
+  uint64 last_funding_calc_time = 30;
+  uint64 last_funding_calc_block = 31;
 }
 
 message InterestBlock {
