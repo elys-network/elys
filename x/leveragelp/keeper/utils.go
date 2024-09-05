@@ -3,8 +3,8 @@ package keeper
 import (
 	"fmt"
 
-	cosmosMath "cosmossdk.io/math"
 	errorsmod "cosmossdk.io/errors"
+	cosmosMath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
@@ -114,4 +114,33 @@ func (k Keeper) GetInterestRateUsd(ctx sdk.Context, positions []*types.QueryPosi
 	}
 
 	return positions_and_interest, nil
+}
+
+//migrating eixsting position and setting position health to max dec when liablities is zero
+func (k Keeper) MigratePositionHealth(ctx sdk.Context) {
+	
+	var positions []types.Position
+	iterator := k.GetPositionIterator(ctx)
+	defer func(iterator sdk.Iterator) {
+		err := iterator.Close()
+		if err != nil {
+			panic(err)
+		}
+	}(iterator)
+
+	for ; iterator.Valid(); iterator.Next() {
+		var position types.Position
+		bytesValue := iterator.Value()
+		err := k.cdc.Unmarshal(bytesValue, &position)
+		if err == nil {
+			positions = append(positions, position)
+		}
+	}
+
+	for _, position := range positions {
+		if position.Liabilities.IsZero() {
+			position.PositionHealth = sdk.MaxSortableDec
+		}
+		k.SetPosition(ctx, &position)
+	}
 }
