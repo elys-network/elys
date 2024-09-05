@@ -168,6 +168,7 @@ func TestCheckAndLiquidateUnhealthyPosition(t *testing.T) {
 		FundingFeeReceivedCollateral:   sdk.NewInt(0),
 		FundingFeeReceivedCustody:      sdk.NewInt(0),
 		OpenPrice:                      sdk.MustNewDecFromStr("10.050000157785002477"),
+		LastInterestCalcTime:           uint64(ctx.BlockTime().Unix()),
 	}, mtp)
 
 	// Increase borrowing rate to test liquidation
