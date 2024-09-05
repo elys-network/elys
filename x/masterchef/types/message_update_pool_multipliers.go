@@ -37,5 +37,9 @@ func (msg *MsgUpdatePoolMultipliers) ValidateBasic() error {
 		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid sender address (%s)", err)
 	}
 
+	if len(msg.PoolMultipliers) == 0 {
+		return errorsmod.Wrapf(ErrInvalidPoolMultiplier, "pool multipliers is empty")
+	}
+
 	return nil
 }
