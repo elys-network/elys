@@ -138,9 +138,10 @@ func (k Keeper) MigratePositionHealth(ctx sdk.Context) {
 	}
 
 	for _, position := range positions {
-		if position.Liabilities.IsZero() {
-			position.PositionHealth = sdk.MaxSortableDec
+		positionHealth, err := k.GetPositionHealth(ctx,position)
+		if err == nil {
+			position.PositionHealth = positionHealth
+			k.SetPosition(ctx, &position)
 		}
-		k.SetPosition(ctx, &position)
 	}
 }
