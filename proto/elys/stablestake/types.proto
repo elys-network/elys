@@ -25,4 +25,13 @@ message InterestBlock {
         (gogoproto.nullable) = false
     ];
     int64 block_time = 2;
+    uint64 block_height = 3;
+}
+
+message LegacyInterestBlock {
+    string interest_rate = 1 [
+        (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+        (gogoproto.nullable) = false
+    ];
+    int64 block_time = 2;
 }
