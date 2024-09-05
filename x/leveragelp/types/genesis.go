@@ -2,6 +2,7 @@ package types
 
 import (
 	"fmt"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
@@ -48,7 +49,7 @@ func (gs GenesisState) Validate() error {
 	whitelistMap := make(map[string]struct{})
 	for _, elem := range gs.AddressWhitelist {
 		index := elem
-		if _, ok := positionIndexMap[index]; ok {
+		if _, ok := whitelistMap[index]; ok {
 			return fmt.Errorf("duplicated index for pool")
 		}
 		whitelistMap[index] = struct{}{}
