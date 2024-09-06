@@ -82,6 +82,12 @@ func (k Keeper) GetMTP(ctx sdk.Context, mtpAddress string, id uint64) (types.MTP
 	return mtp, nil
 }
 
+func (k Keeper) DoesMTPExist(ctx sdk.Context, mtpAddress string, id uint64) bool {
+	key := types.GetMTPKey(mtpAddress, id)
+	store := ctx.KVStore(k.storeKey)
+	return store.Has(key)
+}
+
 func (k Keeper) GetMTPIterator(ctx sdk.Context) sdk.Iterator {
 	store := ctx.KVStore(k.storeKey)
 	return sdk.KVStorePrefixIterator(store, types.MTPPrefix)

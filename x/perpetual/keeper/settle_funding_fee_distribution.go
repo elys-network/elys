@@ -7,19 +7,19 @@ import (
 )
 
 // TODO: Think about funding rate algo, edge cases
-func (k Keeper) SettleFundingFeeDistribution(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, ammPool ammtypes.Pool, baseCurrency string) error {
+func (k Keeper) SettleFundingFeeDistribution(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, ammPool ammtypes.Pool, baseCurrency string) (sdk.Coin, error) {
 	// get funding rate
 	fundingRate := k.GetFundingRate(ctx, mtp.LastFundingCalcBlock, mtp.AmmPoolId)
 
 	// if funding rate is negative and mtp position is short or funding rate is positive and mtp position is long, return
 	if (fundingRate.IsNegative() && mtp.Position == types.Position_SHORT) || (fundingRate.IsPositive() && mtp.Position == types.Position_LONG) {
-		return nil
+		return sdk.Coin{}, nil
 	}
 
 	// get mtp address
 	mtpAddress, err := sdk.AccAddressFromBech32(mtp.Address)
 	if err != nil {
-		return err
+		return sdk.Coin{}, err
 	}
 
 	totalCustodyLong := sdk.ZeroInt()
@@ -47,11 +47,11 @@ func (k Keeper) SettleFundingFeeDistribution(ctx sdk.Context, mtp *types.MTP, po
 
 	// if balance is zero, return
 	if balance.IsZero() {
-		return nil
+		return sdk.Coin{}, nil
 	}
 
 	// Total fund collected should be
-	totalFund := sdk.ZeroInt()
+	var totalFund sdk.Int
 	if fundingRate.IsNegative() {
 		// short pays long
 		totalFund = types.CalcTakeAmount(totalCustodyShort, fundingRate)
@@ -64,33 +64,33 @@ func (k Keeper) SettleFundingFeeDistribution(ctx sdk.Context, mtp *types.MTP, po
 	if fundingRate.IsNegative() && mtp.Position == types.Position_LONG {
 		// Ensure liabilitiesLong is not zero to avoid division by zero
 		if liabilitiesLong.IsZero() {
-			return types.ErrAmountTooLow
+			return sdk.Coin{}, types.ErrAmountTooLow
 		}
 		fundingFeeShare = sdk.NewDecFromInt(mtp.Liabilities).Quo(sdk.NewDecFromInt(liabilitiesLong))
 	}
 	if fundingRate.IsPositive() && mtp.Position == types.Position_SHORT {
 		// Ensure liabilitiesShort is not zero to avoid division by zero
 		if liabilitiesShort.IsZero() {
-			return types.ErrAmountTooLow
+			return sdk.Coin{}, types.ErrAmountTooLow
 		}
 		fundingFeeShare = sdk.NewDecFromInt(mtp.Liabilities).Quo(sdk.NewDecFromInt(liabilitiesShort))
 	}
 
 	// if funding fee share is zero, skip mtp
 	if fundingFeeShare.IsZero() {
-		return nil
+		return sdk.Coin{}, nil
 	}
 
 	// calculate funding fee amount
 	fundingFeeAmount := sdk.NewCoin(baseCurrency, sdk.NewDecFromInt(totalFund).Mul(fundingFeeShare).TruncateInt())
+	toPay := sdk.Coin{}
 
 	if balance.Amount.LT(fundingFeeAmount.Amount) {
-		// TODO: store the funding fee amount to be paid for later
-		return nil
+		toPay = fundingFeeAmount
 	} else {
 		// transfer funding fee amount to mtp address
 		if err := k.bankKeeper.SendCoins(ctx, fundingFeeCollectionAddress, mtpAddress, sdk.NewCoins(fundingFeeAmount)); err != nil {
-			return err
+			return sdk.Coin{}, err
 		}
 	}
 
@@ -98,7 +98,7 @@ func (k Keeper) SettleFundingFeeDistribution(ctx sdk.Context, mtp *types.MTP, po
 	// Swap the take amount to collateral asset
 	fundingFeeCollateralAmount, err := k.EstimateSwap(ctx, fundingFeeAmount, mtp.CollateralAsset, ammPool)
 	if err != nil {
-		return err
+		return sdk.Coin{}, err
 	}
 
 	// TODO: What's the use of below fields ? should this be considered in MTP.Custody ?
@@ -112,5 +112,5 @@ func (k Keeper) SettleFundingFeeDistribution(ctx sdk.Context, mtp *types.MTP, po
 	mtp.LastFundingCalcBlock = uint64(ctx.BlockHeight())
 	mtp.LastFundingCalcTime = uint64(ctx.BlockTime().Unix())
 
-	return nil
+	return toPay, nil
 }

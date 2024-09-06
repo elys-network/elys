@@ -33,6 +33,7 @@ var (
 	WhitelistPrefix    = []byte{0x05}
 	InterestRatePrefix = []byte{0x06}
 	FundingRatePrefix  = []byte{0x07}
+	ToPayPrefix        = []byte{0x08}
 )
 
 func KeyPrefix(p string) []byte {

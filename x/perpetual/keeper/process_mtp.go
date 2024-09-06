@@ -47,8 +47,8 @@ func (k Keeper) CheckAndLiquidateUnhealthyPosition(ctx sdk.Context, mtp *types.M
 		return errors.Wrap(err, fmt.Sprintf("error handling funding fee collection: %s", mtp.CollateralAsset))
 	}
 
-	// TODO: Consider edge case when funding address won't have enough balance to pay for the funding fee distribution
-	if err := k.SettleFundingFeeDistribution(ctx, mtp, &pool, ammPool, baseCurrency); err != nil {
+	_, err = k.SettleFundingFeeDistribution(ctx, mtp, &pool, ammPool, baseCurrency)
+	if err != nil {
 		return errors.Wrap(err, fmt.Sprintf("error handling funding fee collection: %s", mtp.CollateralAsset))
 	}
 
@@ -105,6 +105,12 @@ func (k Keeper) CheckAndLiquidateUnhealthyPosition(ctx sdk.Context, mtp *types.M
 	default:
 		return errors.Wrap(types.ErrInvalidPosition, fmt.Sprintf("invalid position type: %s", mtp.Position))
 	}
+
+	// found = k.DoesMTPExist(ctx, mtp.Address, mtp.Id)
+	// empty := sdk.Coin{}
+	// if !found && toPay != empty {
+	// 	// TODO: Should we pay the funding fee to position owner
+	// }
 
 	if err == nil {
 		// Emit event if position was closed
