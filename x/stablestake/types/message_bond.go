@@ -1,8 +1,6 @@
 package types
 
 import (
-	fmt "fmt"
-
 	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -47,7 +45,7 @@ func (msg *MsgBond) ValidateBasic() error {
 		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
 	}
 	if !msg.Amount.IsPositive() {
-		return fmt.Errorf("Bond amount should be positive (%s)", msg.Amount.String())
+		return errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "Bond amount should be positive: "+msg.Amount.String())
 	}
 	return nil
 }
