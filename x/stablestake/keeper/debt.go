@@ -9,7 +9,7 @@ import (
 
 func (k Keeper) getDebt(ctx sdk.Context, addr sdk.AccAddress) (debt types.Debt) {
 	store := ctx.KVStore(k.storeKey)
-	key := types.GetDebtKey(debt.GetOwnerAccount())
+	key := types.GetDebtKey(addr)
 	bz := store.Get(key)
 	if len(bz) == 0 {
 		return types.Debt{
