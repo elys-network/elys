@@ -12,5 +12,11 @@ func (m Migrator) V3Migration(ctx sdk.Context) error {
 		m.keeper.SetInterest(ctx, interest.BlockHeight, interest)
 	}
 
+	debts := m.keeper.GetAllLegacyDebts(ctx)
+	for _, debt := range debts {
+		m.keeper.SetDebt(ctx, debt)
+		m.keeper.DeleteLegacyDebt(ctx, debt)
+	}
+
 	return nil
 }
