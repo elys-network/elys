@@ -18,12 +18,18 @@ func TestMsgCreateAirdrop_ValidateBasic(t *testing.T) {
 			name: "invalid address",
 			msg: MsgCreateAirdrop{
 				Authority: "invalid_address",
+				Intent:    "Airdrop for early adopters",
+				Amount:    1000,
+				Expiry:    1672531199,
 			},
 			err: sdkerrors.ErrInvalidAddress,
 		}, {
 			name: "valid address",
 			msg: MsgCreateAirdrop{
 				Authority: sample.AccAddress(),
+				Intent:    "Airdrop for early adopters",
+				Amount:    1000,
+				Expiry:    1672531199,
 			},
 		},
 	}

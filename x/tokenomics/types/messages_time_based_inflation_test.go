@@ -17,14 +17,79 @@ func TestMsgCreateTimeBasedInflation_ValidateBasic(t *testing.T) {
 		{
 			name: "invalid address",
 			msg: MsgCreateTimeBasedInflation{
-				Authority: "invalid_address",
+				Authority:        "invalid_address",
+				StartBlockHeight: 100,
+				EndBlockHeight:   200,
+				Description:      "Valid description",
+				Inflation: &InflationEntry{
+					LmRewards:         1000,
+					IcsStakingRewards: 500,
+					CommunityFund:     300,
+					StrategicReserve:  200,
+					TeamTokensVested:  100,
+				},
 			},
 			err: sdkerrors.ErrInvalidAddress,
 		}, {
 			name: "valid address",
 			msg: MsgCreateTimeBasedInflation{
-				Authority: sample.AccAddress(),
+				Authority:        sample.AccAddress(),
+				StartBlockHeight: 100,
+				EndBlockHeight:   200,
+				Description:      "Valid description",
+				Inflation: &InflationEntry{
+					LmRewards:         1000,
+					IcsStakingRewards: 500,
+					CommunityFund:     300,
+					StrategicReserve:  200,
+					TeamTokensVested:  100,
+				},
 			},
+		},
+		{
+			name: "end block height before start block height",
+			msg: MsgCreateTimeBasedInflation{
+				Authority:        sample.AccAddress(),
+				StartBlockHeight: 200,
+				EndBlockHeight:   100,
+				Description:      "Valid description",
+				Inflation: &InflationEntry{
+					LmRewards:         1000,
+					IcsStakingRewards: 500,
+					CommunityFund:     300,
+					StrategicReserve:  200,
+					TeamTokensVested:  100,
+				},
+			},
+			err: sdkerrors.ErrInvalidRequest,
+		},
+		{
+			name: "empty description",
+			msg: MsgCreateTimeBasedInflation{
+				Authority:        sample.AccAddress(),
+				StartBlockHeight: 100,
+				EndBlockHeight:   200,
+				Description:      "",
+				Inflation: &InflationEntry{
+					LmRewards:         1000,
+					IcsStakingRewards: 500,
+					CommunityFund:     300,
+					StrategicReserve:  200,
+					TeamTokensVested:  100,
+				},
+			},
+			err: sdkerrors.ErrInvalidRequest,
+		},
+		{
+			name: "nil inflation entry",
+			msg: MsgCreateTimeBasedInflation{
+				Authority:        sample.AccAddress(),
+				StartBlockHeight: 100,
+				EndBlockHeight:   200,
+				Description:      "Valid description",
+				Inflation:        nil,
+			},
+			err: sdkerrors.ErrInvalidRequest,
 		},
 	}
 	for _, tt := range tests {
