@@ -75,6 +75,12 @@ func (k Keeper) GetAllInterest(ctx sdk.Context) []types.InterestBlock {
 		interest := types.InterestBlock{}
 		k.cdc.MustUnmarshal(iterator.Value(), &interest)
 
+		// FIXME: remove this in the next upgrade
+		if interest.BlockHeight == 0 {
+			block := iterator.Key()
+			interest.BlockHeight = sdk.BigEndianToUint64(block)
+		}
+
 		interests = append(interests, interest)
 	}
 	return interests
