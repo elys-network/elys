@@ -85,12 +85,13 @@ func (k Keeper) SettleFundingFeeDistribution(ctx sdk.Context, mtp *types.MTP, po
 	fundingFeeAmount := sdk.NewCoin(baseCurrency, sdk.NewDecFromInt(totalFund).Mul(fundingFeeShare).TruncateInt())
 
 	if balance.Amount.LT(fundingFeeAmount.Amount) {
+		// TODO: store the funding fee amount to be paid for later
 		return nil
-	}
-
-	// transfer funding fee amount to mtp address
-	if err := k.bankKeeper.SendCoins(ctx, fundingFeeCollectionAddress, mtpAddress, sdk.NewCoins(fundingFeeAmount)); err != nil {
-		return err
+	} else {
+		// transfer funding fee amount to mtp address
+		if err := k.bankKeeper.SendCoins(ctx, fundingFeeCollectionAddress, mtpAddress, sdk.NewCoins(fundingFeeAmount)); err != nil {
+			return err
+		}
 	}
 
 	// update received funding fee accounting buckets
@@ -99,6 +100,8 @@ func (k Keeper) SettleFundingFeeDistribution(ctx sdk.Context, mtp *types.MTP, po
 	if err != nil {
 		return err
 	}
+
+	// TODO: What's the use of below fields ? should this be considered in MTP.Custody ?
 
 	// add payment to total funding fee paid in collateral asset
 	mtp.FundingFeeReceivedCollateral = mtp.FundingFeeReceivedCollateral.Add(fundingFeeCollateralAmount)

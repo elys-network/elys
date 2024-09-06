@@ -46,8 +46,22 @@ func (k Keeper) GetMTPHealth(ctx sdk.Context, mtp types.MTP, ammPool ammtypes.Po
 		}
 	}
 
+	// Funding rate payment consideration
+	// get funding rate
+	fundingRate := k.GetFundingRate(ctx, mtp.LastFundingCalcBlock, mtp.AmmPoolId)
+	var takeAmountCustodyAmount sdk.Int
+	// if funding rate is zero, return
+	if fundingRate.IsZero() {
+		takeAmountCustodyAmount = sdk.ZeroInt()
+	} else if (fundingRate.IsNegative() && mtp.Position == types.Position_LONG) || (fundingRate.IsPositive() && mtp.Position == types.Position_SHORT) {
+		takeAmountCustodyAmount = sdk.ZeroInt()
+	} else {
+		// Calculate the take amount in custody asset
+		takeAmountCustodyAmount = types.CalcTakeAmount(mtp.Custody, fundingRate)
+	}
+
 	// if short position, custody asset is already in base currency
-	custodyAmtInBaseCurrency := mtp.Custody
+	custodyAmtInBaseCurrency := mtp.Custody.Sub(takeAmountCustodyAmount)
 
 	if mtp.Position == types.Position_LONG {
 		custodyAmt := sdk.NewCoin(mtp.CustodyAsset, mtp.Custody)
