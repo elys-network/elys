@@ -113,13 +113,33 @@ func TestMsgUpdateTimeBasedInflation_ValidateBasic(t *testing.T) {
 		{
 			name: "invalid address",
 			msg: MsgUpdateTimeBasedInflation{
-				Authority: "invalid_address",
+				Authority:        "invalid_address",
+				StartBlockHeight: 100,
+				EndBlockHeight:   200,
+				Description:      "Valid description",
+				Inflation: &InflationEntry{
+					LmRewards:         1000,
+					IcsStakingRewards: 500,
+					CommunityFund:     300,
+					StrategicReserve:  200,
+					TeamTokensVested:  100,
+				},
 			},
 			err: sdkerrors.ErrInvalidAddress,
 		}, {
 			name: "valid address",
 			msg: MsgUpdateTimeBasedInflation{
-				Authority: sample.AccAddress(),
+				Authority:        sample.AccAddress(),
+				StartBlockHeight: 100,
+				EndBlockHeight:   200,
+				Description:      "Valid description",
+				Inflation: &InflationEntry{
+					LmRewards:         1000,
+					IcsStakingRewards: 500,
+					CommunityFund:     300,
+					StrategicReserve:  200,
+					TeamTokensVested:  100,
+				},
 			},
 		},
 	}
@@ -144,13 +164,17 @@ func TestMsgDeleteTimeBasedInflation_ValidateBasic(t *testing.T) {
 		{
 			name: "invalid address",
 			msg: MsgDeleteTimeBasedInflation{
-				Authority: "invalid_address",
+				Authority:        "invalid_address",
+				StartBlockHeight: 100,
+				EndBlockHeight:   200,
 			},
 			err: sdkerrors.ErrInvalidAddress,
 		}, {
 			name: "valid address",
 			msg: MsgDeleteTimeBasedInflation{
-				Authority: sample.AccAddress(),
+				Authority:        sample.AccAddress(),
+				StartBlockHeight: 100,
+				EndBlockHeight:   200,
 			},
 		},
 	}
