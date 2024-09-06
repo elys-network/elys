@@ -35,7 +35,7 @@ func TestMsgAddEntry_ValidateBasic(t *testing.T) {
 			name: "invalid decimal",
 			msg: MsgAddEntry{
 				Creator:   sample.AccAddress(),
-				Decimals:  4,
+				Decimals:  3,
 				BaseDenom: "uusdc",
 			},
 			err: ErrDecimalsInvalid,
