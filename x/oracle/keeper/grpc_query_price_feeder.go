@@ -20,7 +20,7 @@ func (k Keeper) PriceFeederAll(c context.Context, req *types.QueryAllPriceFeeder
 	ctx := sdk.UnwrapSDKContext(c)
 
 	store := ctx.KVStore(k.storeKey)
-	priceFeederStore := prefix.NewStore(store, types.KeyPrefix(types.PriceFeederKeyPrefix))
+	priceFeederStore := prefix.NewStore(store, types.KeyPrefix(types.LegacyPriceFeederKeyPrefix))
 
 	pageRes, err := query.Paginate(priceFeederStore, req.Pagination, func(key []byte, value []byte) error {
 		var priceFeeder types.PriceFeeder
@@ -44,7 +44,11 @@ func (k Keeper) PriceFeeder(c context.Context, req *types.QueryGetPriceFeederReq
 	}
 	ctx := sdk.UnwrapSDKContext(c)
 
-	val, found := k.GetPriceFeeder(ctx, req.Feeder)
+	feeder, err := sdk.AccAddressFromBech32(req.Feeder)
+	if err != nil {
+		return nil, status.Error(codes.InvalidArgument, err.Error())
+	}
+	val, found := k.GetPriceFeeder(ctx, feeder)
 	if !found {
 		return nil, status.Error(codes.NotFound, "not found")
 	}

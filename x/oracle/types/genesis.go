@@ -69,7 +69,7 @@ func (gs GenesisState) Validate() error {
 	priceFeederIndexMap := make(map[string]struct{})
 
 	for _, elem := range gs.PriceFeeders {
-		index := string(PriceFeederKey(elem.Feeder))
+		index := string(LegacyPriceFeederKey(elem.Feeder))
 		if _, ok := priceFeederIndexMap[index]; ok {
 			return fmt.Errorf("duplicated index for priceFeeder")
 		}

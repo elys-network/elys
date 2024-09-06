@@ -39,7 +39,7 @@ type OracleKeeper interface {
 	GetAssetInfo(ctx sdk.Context, denom string) (val oracletypes.AssetInfo, found bool)
 	GetAssetPrice(ctx sdk.Context, asset string) (oracletypes.Price, bool)
 	GetAssetPriceFromDenom(ctx sdk.Context, denom string) sdk.Dec
-	GetPriceFeeder(ctx sdk.Context, feeder string) (val oracletypes.PriceFeeder, found bool)
+	GetPriceFeeder(ctx sdk.Context, feeder sdk.AccAddress) (val oracletypes.PriceFeeder, found bool)
 }
 
 type CommitmentKeeper interface {
