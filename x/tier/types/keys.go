@@ -17,3 +17,7 @@ const (
 func KeyPrefix(p string) []byte {
 	return []byte(p)
 }
+
+var (
+	ParamKeyPrefix = []byte{0x02}
+)

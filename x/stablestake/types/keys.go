@@ -14,8 +14,11 @@ const (
 	MemStoreKey = "mem_stablestake"
 )
 
-var DebtPrefixKey = []byte{0x01}
-var InterestPrefixKey = []byte{0x02}
+var (
+	DebtPrefixKey     = []byte{0x01}
+	InterestPrefixKey = []byte{0x02}
+	ParamKeyPrefix    = []byte{0x03}
+)
 
 func KeyPrefix(p string) []byte {
 	return []byte(p)

@@ -30,6 +30,11 @@ func TestParamsValidate(t *testing.T) {
 			types.NewParams([]string(nil), 1),
 			true,
 		},
+		{
+			"duplicate addresses",
+			types.NewParams([]string{"cosmos10duudma7ef9849ee42zhe5q4t4fmk0z99uuh92", "cosmos1xv9tklw7d82sezh9haa573wufgy59vmwe6xxe5", "cosmos10duudma7ef9849ee42zhe5q4t4fmk0z99uuh92"}, 100_001),
+			true,
+		},
 	}
 
 	for _, tc := range testCases {

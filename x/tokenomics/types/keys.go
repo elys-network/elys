@@ -21,3 +21,7 @@ func KeyPrefix(p string) []byte {
 const (
 	GenesisInflationKey = "GenesisInflation/value/"
 )
+
+var (
+	ParamKeyPrefix = []byte{0x01}
+)

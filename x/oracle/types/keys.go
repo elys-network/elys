@@ -25,6 +25,8 @@ const (
 )
 
 var (
+	ParamKeyPrefix = []byte{0x01}
+
 	// PortKey defines the key to store the port ID in store
 	PortKey = KeyPrefix("oracle-port-")
 	// AssetInfoKeyPrefix is the prefix to retrieve all AssetInfo
