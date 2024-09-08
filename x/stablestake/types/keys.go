@@ -20,10 +20,8 @@ const (
 )
 
 var (
-	LegacyDebtPrefixKey = []byte{0x01} // Making it legacy for easier migration
-
+	DebtPrefixKey     = []byte{0x01}
 	InterestPrefixKey = []byte{0x02}
-	DebtPrefixKey     = []byte{0x03}
 )
 
 func KeyPrefix(p string) []byte {
@@ -32,4 +30,8 @@ func KeyPrefix(p string) []byte {
 
 func GetDebtKey(owner sdk.AccAddress) []byte {
 	return append(DebtPrefixKey, address.MustLengthPrefix(owner)...)
+}
+
+func GetLegacyDebtKey(owner string) []byte {
+	return append(DebtPrefixKey, []byte(owner)...)
 }
