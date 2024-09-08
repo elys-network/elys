@@ -5,9 +5,12 @@ import (
 )
 
 func (m Migrator) V3Migration(ctx sdk.Context) error {
-	params := m.keeper.GetParams(ctx)
-	params.InterestRateMin = sdk.NewDecWithPrec(10, 2) // 10%
-	params.InterestRateMax = sdk.NewDecWithPrec(50, 2) // 50%
-	m.keeper.SetParams(ctx, params)
+	// Migrate the interest blocks
+	interests := m.keeper.GetAllLegacyInterest(ctx)
+
+	for _, interest := range interests {
+		m.keeper.SetInterest(ctx, interest.BlockHeight, interest)
+	}
+
 	return nil
 }
