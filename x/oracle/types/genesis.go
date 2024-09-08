@@ -66,14 +66,13 @@ func (gs GenesisState) Validate() error {
 		priceIndexMap[index] = struct{}{}
 	}
 	// Check for duplicated index in priceFeeder
-	priceFeederIndexMap := make(map[string]struct{})
+	priceFeederIndexMap := make(map[string]bool)
 
 	for _, elem := range gs.PriceFeeders {
-		index := string(LegacyPriceFeederKey(elem.Feeder))
-		if _, ok := priceFeederIndexMap[index]; ok {
+		if priceFeederIndexMap[elem.Feeder] {
 			return fmt.Errorf("duplicated index for priceFeeder")
 		}
-		priceFeederIndexMap[index] = struct{}{}
+		priceFeederIndexMap[elem.Feeder] = true
 	}
 	// this line is used by starport scaffolding # genesis/types/validate
 

@@ -20,7 +20,7 @@ func (k Keeper) PriceFeederAll(c context.Context, req *types.QueryAllPriceFeeder
 	ctx := sdk.UnwrapSDKContext(c)
 
 	store := ctx.KVStore(k.storeKey)
-	priceFeederStore := prefix.NewStore(store, types.KeyPrefix(types.LegacyPriceFeederKeyPrefix))
+	priceFeederStore := prefix.NewStore(store, types.PriceFeederPrefixKey)
 
 	pageRes, err := query.Paginate(priceFeederStore, req.Pagination, func(key []byte, value []byte) error {
 		var priceFeeder types.PriceFeeder

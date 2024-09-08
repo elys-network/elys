@@ -1014,7 +1014,6 @@ func NewElysApp(
 		app.AssetprofileKeeper,
 		app.MasterchefKeeper,
 	)
-	
 
 	app.TierKeeper = *tiermodulekeeper.NewKeeper(
 		appCodec,
@@ -1073,7 +1072,7 @@ func NewElysApp(
 		app.TierKeeper.LeverageLpHooks(),
 	))
 	leveragelpModule := leveragelpmodule.NewAppModule(appCodec, app.LeveragelpKeeper, app.AccountKeeper, app.BankKeeper)
-	
+
 	app.EstakingKeeper.SetHooks(
 		stakingtypes.NewMultiStakingHooks(
 			// insert staking hooks receivers here

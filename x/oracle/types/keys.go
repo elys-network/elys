@@ -31,8 +31,7 @@ var (
 	// AssetInfoKeyPrefix is the prefix to retrieve all AssetInfo
 	AssetInfoKeyPrefix = "AssetInfo/value/"
 	// PriceKeyPrefix is the prefix to retrieve all Price
-	PriceKeyPrefix = "Price/value/"
-	// LegacyPriceFeederKeyPrefix is the prefix to retrieve all PriceFeeder
+	PriceKeyPrefix             = "Price/value/"
 	LegacyPriceFeederKeyPrefix = "PriceFeeder/value/"
 
 	PriceFeederPrefixKey = []byte{0x01}
@@ -79,7 +78,6 @@ func GetPriceFeederKey(feeder sdk.AccAddress) []byte {
 	return key
 }
 
-// LegacyPriceFeederKey returns the store key to retrieve a PriceFeeder from the feeder fields
 func LegacyPriceFeederKey(feeder string) []byte {
 	key := KeyPrefix(LegacyPriceFeederKeyPrefix)
 
