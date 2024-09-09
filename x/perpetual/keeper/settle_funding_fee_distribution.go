@@ -51,13 +51,14 @@ func (k Keeper) SettleFundingFeeDistribution(ctx sdk.Context, mtp *types.MTP, po
 	}
 
 	// Total fund collected should be
-	var totalFund sdk.Int
+	long, short := k.GetFundingDistributionValue(ctx, uint64(ctx.BlockHeight()), pool.AmmPoolId)
+	var totalFund sdk.Dec
 	if fundingRate.IsNegative() {
 		// short pays long
-		totalFund = types.CalcTakeAmount(totalCustodyShort, fundingRate)
+		totalFund = long
 	} else {
 		// long pays short
-		totalFund = types.CalcTakeAmount(totalCustodyLong, fundingRate)
+		totalFund = short
 	}
 	// calc funding fee share
 	fundingFeeShare := sdk.ZeroDec()
@@ -82,7 +83,7 @@ func (k Keeper) SettleFundingFeeDistribution(ctx sdk.Context, mtp *types.MTP, po
 	}
 
 	// calculate funding fee amount
-	fundingFeeAmount := sdk.NewCoin(baseCurrency, sdk.NewDecFromInt(totalFund).Mul(fundingFeeShare).TruncateInt())
+	fundingFeeAmount := sdk.NewCoin(baseCurrency, totalFund.Mul(fundingFeeShare).TruncateInt())
 	toPay := sdk.Coin{}
 
 	if balance.Amount.LT(fundingFeeAmount.Amount) {
@@ -100,8 +101,6 @@ func (k Keeper) SettleFundingFeeDistribution(ctx sdk.Context, mtp *types.MTP, po
 	if err != nil {
 		return sdk.Coin{}, err
 	}
-
-	// TODO: What's the use of below fields ? should this be considered in MTP.Custody ?
 
 	// add payment to total funding fee paid in collateral asset
 	mtp.FundingFeeReceivedCollateral = mtp.FundingFeeReceivedCollateral.Add(fundingFeeCollateralAmount)
