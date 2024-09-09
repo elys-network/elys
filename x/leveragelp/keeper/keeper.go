@@ -31,7 +31,7 @@ type (
 		assetProfileKeeper types.AssetProfileKeeper
 		masterchefKeeper   types.MasterchefKeeper
 
-		hooks    types.LeverageLpHooks
+		hooks types.LeverageLpHooks
 	}
 )
 
@@ -96,10 +96,10 @@ func (k Keeper) EstimateSwapGivenOut(ctx sdk.Context, tokenOutAmount sdk.Coin, t
 		return math.Int{}, fmt.Errorf("pool %d not found", ammPool.PoolId)
 	}
 	if !pool.Enabled {
-		return sdk.ZeroInt(), errorsmod.Wrap(types.ErrLeveragelpDisabled, "Leveragelp disabled pool")
+		return sdk.ZeroInt(), errorsmod.Wrap(types.ErrLeveragelpDisabled, fmt.Sprintf("pool %d", ammPool.PoolId))
 	}
 
-	tokensOut := sdk.Coins{tokenOutAmount}
+	tokensOut := sdk.NewCoins(tokenOutAmount)
 	// Estimate swap
 	snapshot := k.amm.GetPoolSnapshotOrSet(ctx, ammPool)
 	swapResult, _, err := k.amm.CalcInAmtGivenOut(ctx, ammPool.PoolId, k.oracleKeeper, &snapshot, tokensOut, tokenInDenom, sdk.ZeroDec())
@@ -130,20 +130,6 @@ func (k Keeper) CalculatePoolHealth(ctx sdk.Context, pool *types.Pool) sdk.Dec {
 
 	return sdk.NewDecFromBigInt(ammPool.TotalShares.Amount.Sub(pool.LeveragedLpAmount).BigInt()).
 		Quo(sdk.NewDecFromBigInt(ammPool.TotalShares.Amount.BigInt()))
-}
-
-func (k Keeper) TakeFundPayment(ctx sdk.Context, returnAmount math.Int, returnAsset string, takePercentage sdk.Dec, fundAddr sdk.AccAddress, ammPool *ammtypes.Pool) (math.Int, error) {
-	returnAmountDec := sdk.NewDecFromBigInt(returnAmount.BigInt())
-	takeAmount := sdk.NewIntFromBigInt(takePercentage.Mul(returnAmountDec).TruncateInt().BigInt())
-
-	if !takeAmount.IsZero() {
-		takeCoins := sdk.NewCoins(sdk.NewCoin(returnAsset, sdk.NewIntFromBigInt(takeAmount.BigInt())))
-		err := k.bankKeeper.SendCoinsFromModuleToAccount(ctx, ammPool.Address, fundAddr, takeCoins)
-		if err != nil {
-			return sdk.ZeroInt(), err
-		}
-	}
-	return takeAmount, nil
 }
 
 func (k Keeper) GetWhitelistAddressIterator(ctx sdk.Context) sdk.Iterator {
