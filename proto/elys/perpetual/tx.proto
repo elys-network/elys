@@ -21,6 +21,7 @@ service Msg {
   rpc AddCollateral       (MsgAddCollateral      ) returns (MsgAddCollateralResponse      );
   rpc BrokerAddCollateral (MsgBrokerAddCollateral) returns (MsgAddCollateralResponse      );
   rpc UpdateStopLoss      (MsgUpdateStopLoss     ) returns (MsgUpdateStopLossResponse     );
+  rpc ClosePositions      (MsgClosePositions     ) returns (MsgClosePositionsResponse     );
 }
 message MsgOpen {
   string                   creator           = 1;
@@ -118,3 +119,11 @@ message MsgUpdateStopLoss {
 }
 
 message MsgUpdateStopLossResponse {}
+
+message MsgClosePositions {
+  string creator = 1;
+  repeated PositionRequest liquidate = 2;
+  repeated PositionRequest stop_loss = 3;
+}
+
+message MsgClosePositionsResponse {}
