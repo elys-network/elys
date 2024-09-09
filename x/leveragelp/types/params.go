@@ -107,9 +107,6 @@ func validateLeverageMax(i interface{}) error {
 	if !v.GT(sdk.OneDec()) {
 		return fmt.Errorf("leverage max must be greater than 1: %s", v)
 	}
-	if v.GT(sdk.NewDec(10)) {
-		return fmt.Errorf("leverage max too large: %s", v)
-	}
 
 	return nil
 }
