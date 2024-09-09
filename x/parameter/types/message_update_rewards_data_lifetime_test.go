@@ -17,14 +17,23 @@ func TestMsgUpdateRewardsDataLifetime_ValidateBasic(t *testing.T) {
 		{
 			name: "invalid address",
 			msg: MsgUpdateRewardsDataLifetime{
-				Creator: "invalid_address",
+				Creator:             "invalid_address",
+				RewardsDataLifetime: "1",
 			},
 			err: sdkerrors.ErrInvalidAddress,
 		}, {
 			name: "valid address",
 			msg: MsgUpdateRewardsDataLifetime{
-				Creator: sample.AccAddress(),
+				Creator:             sample.AccAddress(),
+				RewardsDataLifetime: "1",
 			},
+		}, {
+			name: "invalid reward lifecycle",
+			msg: MsgUpdateRewardsDataLifetime{
+				Creator:             sample.AccAddress(),
+				RewardsDataLifetime: "abcd",
+			},
+			err: ErrInvalidRewardsDataLifecycle,
 		},
 	}
 	for _, tt := range tests {
