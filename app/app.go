@@ -1014,7 +1014,6 @@ func NewElysApp(
 		app.AssetprofileKeeper,
 		app.MasterchefKeeper,
 	)
-	
 
 	app.TierKeeper = *tiermodulekeeper.NewKeeper(
 		appCodec,
@@ -1073,7 +1072,7 @@ func NewElysApp(
 		app.TierKeeper.LeverageLpHooks(),
 	))
 	leveragelpModule := leveragelpmodule.NewAppModule(appCodec, app.LeveragelpKeeper, app.AccountKeeper, app.BankKeeper)
-	
+
 	app.EstakingKeeper.SetHooks(
 		stakingtypes.NewMultiStakingHooks(
 			// insert staking hooks receivers here
@@ -1164,14 +1163,14 @@ func NewElysApp(
 		burnerModule,
 		ammModule,
 		parameterModule,
-		perpetualModule,
+		stablestakeModule,
 		accountedPoolModule,
 		transferhookModule,
 		clockModule,
-		stablestakeModule,
 		leveragelpModule,
 		masterchefModule,
 		estakingModule,
+		perpetualModule,
 		tierModule,
 		// this line is used by starport scaffolding # stargate/app/appModule
 	)
