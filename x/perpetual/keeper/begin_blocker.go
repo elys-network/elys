@@ -32,9 +32,23 @@ func (k Keeper) BeginBlocker(ctx sdk.Context) {
 				ctx.Logger().Error(err.Error())
 			}
 
+			// account custody from long position
+			totalCustodyLong := sdk.ZeroInt()
+			for _, asset := range pool.PoolAssetsLong {
+				totalCustodyLong = totalCustodyLong.Add(asset.Custody)
+			}
+
+			// account custody from short position
+			totalCustodyShort := sdk.ZeroInt()
+			for _, asset := range pool.PoolAssetsShort {
+				totalCustodyShort = totalCustodyShort.Add(asset.Custody)
+			}
+
 			k.SetFundingRate(ctx, uint64(ctx.BlockHeight()), pool.AmmPoolId, types.FundingRateBlock{
-				FundingRate: pool.FundingRate,
-				BlockHeight: ctx.BlockHeight(),
+				FundingRate:       pool.FundingRate,
+				BlockHeight:       ctx.BlockHeight(),
+				TotalCustodyLong:  totalCustodyLong,
+				TotalCustodyShort: totalCustodyShort,
 			})
 		}
 		k.SetPool(ctx, pool)
