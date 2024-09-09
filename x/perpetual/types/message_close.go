@@ -7,27 +7,27 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
-const TypeMsgVestLiquid = "vest_liquid"
+const TypeMsgClose = "close"
 
-var _ sdk.Msg = &MsgVestLiquid{}
+var _ sdk.Msg = &MsgClose{}
 
-func NewMsgVestLiquid(creator string, amount math.Int, denom string) *MsgVestLiquid {
-	return &MsgVestLiquid{
+func NewMsgClose(creator string, id uint64, amount math.Int) *MsgClose {
+	return &MsgClose{
 		Creator: creator,
+		Id:      id,
 		Amount:  amount,
-		Denom:   denom,
 	}
 }
 
-func (msg *MsgVestLiquid) Route() string {
+func (msg *MsgClose) Route() string {
 	return RouterKey
 }
 
-func (msg *MsgVestLiquid) Type() string {
-	return TypeMsgVestLiquid
+func (msg *MsgClose) Type() string {
+	return TypeMsgClose
 }
 
-func (msg *MsgVestLiquid) GetSigners() []sdk.AccAddress {
+func (msg *MsgClose) GetSigners() []sdk.AccAddress {
 	creator, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
 		panic(err)
@@ -35,24 +35,23 @@ func (msg *MsgVestLiquid) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{creator}
 }
 
-func (msg *MsgVestLiquid) GetSignBytes() []byte {
+func (msg *MsgClose) GetSignBytes() []byte {
 	bz := ModuleCdc.MustMarshalJSON(msg)
 	return sdk.MustSortJSON(bz)
 }
 
-func (msg *MsgVestLiquid) ValidateBasic() error {
+func (msg *MsgClose) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
 		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
 	}
 
 	if msg.Amount.IsNil() {
-		return errorsmod.Wrapf(ErrInvalidAmount, "Amount can not be nil")
+		return ErrInvalidAmount
 	}
 
 	if msg.Amount.IsNegative() {
-		return errorsmod.Wrapf(ErrInvalidAmount, "Amount can not be negative")
+		return ErrInvalidAmount
 	}
-
 	return nil
 }

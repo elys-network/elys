@@ -45,7 +45,7 @@ func (k msgServer) performUnstakeElys(ctx sdk.Context, msg *types.MsgUnstake) er
 
 	validator_address, err := sdk.ValAddressFromBech32(msg.ValidatorAddress)
 	if err != nil {
-		return errorsmod.Wrap(err, "invalid address")
+		return errorsmod.Wrap(err, "invalid validator address")
 	}
 
 	amount := sdk.NewCoin(msg.Asset, msg.Amount)
