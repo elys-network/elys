@@ -14,5 +14,8 @@ func (m Migrator) V3Migration(ctx sdk.Context) error {
 
 	m.keeper.V6_DebtMigration(ctx)
 
+	params := m.keeper.GetLegacyParams(ctx)
+	m.keeper.SetParams(ctx, params)
+
 	return nil
 }

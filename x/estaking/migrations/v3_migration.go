@@ -8,9 +8,11 @@ import (
 func (m Migrator) V3Migration(ctx sdk.Context) error {
 	legacyParams := m.keeper.GetLegacyParams(ctx)
 	params := types.Params{}
-	params.StakeIncentives = &types.IncentiveInfo{
-		EdenAmountPerYear: legacyParams.StakeIncentives.EdenAmountPerYear,
-		BlocksDistributed: legacyParams.StakeIncentives.BlocksDistributed.Int64(),
+	if legacyParams.StakeIncentives != nil {
+		params.StakeIncentives = &types.IncentiveInfo{
+			EdenAmountPerYear: legacyParams.StakeIncentives.EdenAmountPerYear,
+			BlocksDistributed: legacyParams.StakeIncentives.BlocksDistributed.Int64(),
+		}
 	}
 	params.EdenCommitVal = legacyParams.EdenCommitVal
 	params.EdenbCommitVal = legacyParams.EdenbCommitVal
