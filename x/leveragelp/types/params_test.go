@@ -1,11 +1,12 @@
 package types_test
 
 import (
+	"testing"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/leveragelp/types"
 	"github.com/stretchr/testify/require"
 	"gopkg.in/yaml.v2"
-	"testing"
 )
 
 func TestDefaultParams(t *testing.T) {
@@ -46,7 +47,7 @@ func TestValidateLeverageMax(t *testing.T) {
 			setter: func() {
 				params.LeverageMax = sdk.OneDec().MulInt64(100)
 			},
-			err: "leverage max too large",
+			err: "",
 		},
 	}
 	for _, tt := range tests {

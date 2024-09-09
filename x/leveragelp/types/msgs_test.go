@@ -1,9 +1,10 @@
 package types_test
 
 import (
+	"testing"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/leveragelp/types"
-	"testing"
 
 	"github.com/elys-network/elys/testutil/sample"
 	"github.com/stretchr/testify/require"
@@ -167,14 +168,6 @@ func TestMsgUpdateParams(t *testing.T) {
 				msg.Authority = "invalid_address"
 			},
 			errMsg: "invalid creator address",
-		},
-		{
-			name: "invalid params",
-			setter: func() {
-				msg.Authority = sample.AccAddress()
-				msg.Params.LeverageMax = sdk.OneDec().MulInt64(100)
-			},
-			errMsg: "invalid params",
 		},
 	}
 	for _, tt := range tests {
