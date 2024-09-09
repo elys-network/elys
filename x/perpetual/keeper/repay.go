@@ -169,7 +169,7 @@ func (k Keeper) Repay(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, ammPool
 
 	mtp.Custody = mtp.Custody.Sub(amount)
 	if mtp.Custody.IsZero() {
-		err = k.DestroyMTP(ctx, mtp.Address, mtp.Id)
+		err = k.DestroyMTP(ctx, mtp.GetAccountAddress(), mtp.Id)
 		if err != nil {
 			return err
 		}

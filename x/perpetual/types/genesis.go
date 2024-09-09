@@ -22,20 +22,20 @@ func DefaultGenesis() *GenesisState {
 // failure.
 func (gs GenesisState) Validate() error {
 	// Check for duplicated index in pool
-	poolIndexMap := make(map[string]struct{})
+	poolIndexMap := make(map[uint64]bool)
 
 	for _, elem := range gs.PoolList {
-		index := string(PoolKey(elem.AmmPoolId))
-		if _, ok := poolIndexMap[index]; ok {
+		index := elem.AmmPoolId
+		if found := poolIndexMap[elem.AmmPoolId]; found {
 			return fmt.Errorf("duplicated index for pool")
 		}
-		poolIndexMap[index] = struct{}{}
+		poolIndexMap[index] = true
 	}
 	// Check for duplicated index in mtp
 	mtpIndexMap := make(map[string]struct{})
 
 	for _, elem := range gs.MtpList {
-		key := GetMTPKey(elem.Address, elem.Id)
+		key := GetMTPKey(elem.GetAccountAddress(), elem.Id)
 		index := string(key)
 		if _, ok := mtpIndexMap[index]; ok {
 			return fmt.Errorf("duplicated index for pool")

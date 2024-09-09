@@ -21,7 +21,8 @@ func (k msgServer) ClosePositions(goCtx context.Context, msg *types.MsgClosePosi
 	// Handle liquidations
 	liqLog := []string{}
 	for _, val := range msg.Liquidate {
-		position, err := k.GetMTP(ctx, val.Address, val.Id)
+		owner := sdk.MustAccAddressFromBech32(val.Address)
+		position, err := k.GetMTP(ctx, owner, val.Id)
 		if err != nil {
 			continue
 		}

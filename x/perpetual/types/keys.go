@@ -1,6 +1,11 @@
 package types
 
-import "encoding/binary"
+import (
+	"encoding/binary"
+
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/types/address"
+)
 
 const (
 	// ModuleName defines the module name
@@ -17,6 +22,8 @@ const (
 
 	// ParamsKey is the prefix for parameters of perpetual module
 	ParamsKey = "perpetual_params"
+
+	LegacyPoolKeyPrefix = "Pool/value/"
 )
 
 const MaxPageLimit = 100
@@ -31,9 +38,11 @@ var (
 	MTPCountPrefix     = []byte{0x02}
 	OpenMTPCountPrefix = []byte{0x04}
 	WhitelistPrefix    = []byte{0x05}
-	InterestRatePrefix = []byte{0x06}
-	FundingRatePrefix  = []byte{0x07}
-	ToPayPrefix        = []byte{0x08}
+	PoolKeyPrefix      = []byte{0x06}
+
+	InterestRatePrefix = []byte{0x07}
+	FundingRatePrefix  = []byte{0x08}
+	ToPayPrefix        = []byte{0x09}
 )
 
 func KeyPrefix(p string) []byte {
@@ -52,12 +61,41 @@ func GetUint64FromBytes(bz []byte) uint64 {
 	return binary.BigEndian.Uint64(bz)
 }
 
-func GetWhitelistKey(address string) []byte {
+func GetWhitelistKey(addr sdk.AccAddress) []byte {
+	return append(WhitelistPrefix, address.MustLengthPrefix(addr)...)
+}
+
+func GetLegacyWhitelistKey(address string) []byte {
 	return append(WhitelistPrefix, []byte(address)...)
 }
 
-func GetMTPKey(address string, id uint64) []byte {
-	return append(MTPPrefix, append([]byte(address), GetUint64Bytes(id)...)...)
+func GetMTPKey(addr sdk.AccAddress, id uint64) []byte {
+	return append(MTPPrefix, append(address.MustLengthPrefix(addr), sdk.Uint64ToBigEndian(id)...)...)
+}
+
+func GetLegacyMTPKey(address string, id uint64) []byte {
+	return append(MTPPrefix, append([]byte(address), sdk.Uint64ToBigEndian(id)...)...)
+}
+
+func GetPoolKey(index uint64) []byte {
+	key := PoolKeyPrefix
+	return append(key, sdk.Uint64ToBigEndian(index)...)
+}
+
+func legacyPoolKey(index uint64) []byte {
+	var key []byte
+
+	indexBytes := make([]byte, 8)
+	binary.LittleEndian.PutUint64(indexBytes, index)
+	key = append(key, indexBytes...)
+	key = append(key, []byte("/")...)
+
+	return key
+}
+
+func GetLegacyPoolKey(index uint64) []byte {
+	key := KeyPrefix(LegacyPoolKeyPrefix)
+	return append(key, legacyPoolKey(index)...)
 }
 
 func GetMTPPrefixForAddress(address string) []byte {

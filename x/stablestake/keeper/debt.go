@@ -7,10 +7,10 @@ import (
 	"github.com/elys-network/elys/x/stablestake/types"
 )
 
-func (k Keeper) getDebt(ctx sdk.Context, addr sdk.AccAddress) types.Debt {
-	debt := types.Debt{}
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.DebtPrefixKey)
-	bz := store.Get([]byte(addr.String()))
+func (k Keeper) getDebt(ctx sdk.Context, addr sdk.AccAddress) (debt types.Debt) {
+	store := ctx.KVStore(k.storeKey)
+	key := types.GetDebtKey(addr)
+	bz := store.Get(key)
 	if len(bz) == 0 {
 		return types.Debt{
 			Address:               addr.String(),
@@ -24,7 +24,7 @@ func (k Keeper) getDebt(ctx sdk.Context, addr sdk.AccAddress) types.Debt {
 	}
 
 	k.cdc.MustUnmarshal(bz, &debt)
-	return debt
+	return
 }
 
 func (k Keeper) GetDebt(ctx sdk.Context, addr sdk.AccAddress) types.Debt {
@@ -39,6 +39,35 @@ func (k Keeper) UpdateInterestAndGetDebt(ctx sdk.Context, addr sdk.AccAddress) t
 	debt := k.getDebt(ctx, addr)
 	debt = k.UpdateInterestStacked(ctx, debt)
 	return debt
+}
+
+func (k Keeper) SetDebt(ctx sdk.Context, debt types.Debt) {
+	store := ctx.KVStore(k.storeKey)
+	key := types.GetDebtKey(debt.GetOwnerAccount())
+	bz := k.cdc.MustMarshal(&debt)
+	store.Set(key, bz)
+}
+
+func (k Keeper) DeleteDebt(ctx sdk.Context, debt types.Debt) {
+	store := ctx.KVStore(k.storeKey)
+	key := types.GetDebtKey(debt.GetOwnerAccount())
+	store.Delete(key)
+}
+
+func (k Keeper) GetAllDebts(ctx sdk.Context) []types.Debt {
+	store := ctx.KVStore(k.storeKey)
+
+	iterator := sdk.KVStorePrefixIterator(store, types.DebtPrefixKey)
+	defer iterator.Close()
+
+	debts := []types.Debt{}
+	for ; iterator.Valid(); iterator.Next() {
+		debt := types.Debt{}
+		k.cdc.MustUnmarshal(iterator.Value(), &debt)
+
+		debts = append(debts, debt)
+	}
+	return debts
 }
 
 func (k Keeper) SetInterest(ctx sdk.Context, block uint64, interest types.InterestBlock) {
@@ -169,31 +198,20 @@ func (k Keeper) GetInterest(ctx sdk.Context, startBlock uint64, startTime uint64
 	return newInterest
 }
 
-func (k Keeper) SetDebt(ctx sdk.Context, debt types.Debt) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.DebtPrefixKey)
-	bz := k.cdc.MustMarshal(&debt)
-	store.Set([]byte(debt.Address), bz)
-}
-
-func (k Keeper) DeleteDebt(ctx sdk.Context, debt types.Debt) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.DebtPrefixKey)
-	store.Delete([]byte(debt.Address))
-}
-
-func (k Keeper) AllDebts(ctx sdk.Context) []types.Debt {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.DebtPrefixKey)
-
-	iterator := sdk.KVStorePrefixIterator(store, nil)
+func (k Keeper) V6_DebtMigration(ctx sdk.Context) {
+	store := ctx.KVStore(k.storeKey)
+	iterator := sdk.KVStorePrefixIterator(store, types.DebtPrefixKey)
 	defer iterator.Close()
 
-	debts := []types.Debt{}
 	for ; iterator.Valid(); iterator.Next() {
-		debt := types.Debt{}
-		k.cdc.MustUnmarshal(iterator.Value(), &debt)
-
-		debts = append(debts, debt)
+		var debt types.Debt
+		bz := iterator.Value()
+		k.cdc.MustUnmarshal(bz, &debt)
+		newKey := types.GetDebtKey(debt.GetOwnerAccount())
+		store.Set(newKey, bz)
+		legacyKey := types.GetLegacyDebtKey(debt.Address)
+		store.Delete(legacyKey)
 	}
-	return debts
 }
 
 func (k Keeper) UpdateInterestStacked(ctx sdk.Context, debt types.Debt) types.Debt {

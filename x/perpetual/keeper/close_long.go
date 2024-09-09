@@ -9,7 +9,8 @@ import (
 
 func (k Keeper) CloseLong(ctx sdk.Context, msg *types.MsgClose, baseCurrency string) (*types.MTP, math.Int, error) {
 	// Retrieve MTP
-	mtp, err := k.CloseLongChecker.GetMTP(ctx, msg.Creator, msg.Id)
+	creator := sdk.MustAccAddressFromBech32(msg.Creator)
+	mtp, err := k.CloseLongChecker.GetMTP(ctx, creator, msg.Id)
 	if err != nil {
 		return nil, sdk.ZeroInt(), err
 	}
@@ -48,7 +49,6 @@ func (k Keeper) CloseLong(ctx sdk.Context, msg *types.MsgClose, baseCurrency str
 	}
 
 	// Hooks after perpetual position closed
-	creator := sdk.MustAccAddressFromBech32(msg.Creator)
 	if k.hooks != nil {
 		k.hooks.AfterPerpetualPositionClosed(ctx, ammPool, pool, creator)
 	}

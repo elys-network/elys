@@ -46,7 +46,7 @@ func TestPortfolioQuerySingle(t *testing.T) {
 			// TODO: update, should be empty
 			desc: "KeyNotFound",
 			request: &types.QueryGetPortfolioRequest{
-				User: strconv.Itoa(100000),
+				User: "cosmos1f5wt5hm3yj2x5etpqjzwzaar6cjhr0hvfcwn5s",
 			},
 			err: status.Error(codes.NotFound, "not found"),
 		},

@@ -16,9 +16,13 @@ func (k Keeper) MTP(goCtx context.Context, req *types.MTPRequest) (*types.MTPRes
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	mtp, err := k.GetMTP(ctx, req.Address, req.Id)
+	creator, err := sdk.AccAddressFromBech32(req.Address)
 	if err != nil {
-		return &types.MTPResponse{}, nil
+		return &types.MTPResponse{}, err
+	}
+	mtp, err := k.GetMTP(ctx, creator, req.Id)
+	if err != nil {
+		return &types.MTPResponse{}, err
 	}
 
 	return &types.MTPResponse{Mtp: &mtp}, nil
