@@ -2,7 +2,7 @@
 order: 9
 -->
 
-# Funding Rate Calculation and Payment
+# Funding Calculation and Payment
 
 The funding rate is a critical mechanism in the perpetual contracts system designed to incentivize traders to take positions that counterbalance the market trend. This helps to maintain a balanced market, encouraging traders to engage in positions where the liabilities of long and short traders are not too heavily skewed in one direction.
 
@@ -61,12 +61,30 @@ The collected funding fees act as the source for redistribution to the traders, 
 
 ### 5. **Funding Fee Distribution**
 
-Once collected, the funding fees are redistributed as follows:
+The distribution of funding fees is based on the calculated funding rate and serves to reward traders who are taking positions opposite the market trend.
 
-- If the funding rate is positive, **long traders pay short traders**.
-- If the funding rate is negative, **short traders pay long traders**.
+- **Funding Rate Direction**:  
+  The funding rate determines **which side of the market receives the collected funding payments**.
+  - **Positive funding rate**: Short traders receive payments.
+  - **Negative funding rate**: Long traders receive payments.
 
-The goal of this redistribution is to create financial incentives that encourage traders to take positions that go against the dominant market direction, thus helping to correct imbalances in the open interest.
+However, the **actual distribution amount** is not directly proportional to the funding rate alone. Instead, the amount that each position receives is calculated based on the size of that position relative to the total liabilities on the side that is receiving the funding payments.
 
-For more technical details on how the redistribution process works, refer to the following code reference:  
+The formula for determining the amount distributed to each position is as follows:
+
+```
+payment_to_position = (position_liabilities / pool_liabilities) * total_funding_collected
+```
+
+Where:
+
+- **`position_liabilities`**: The liabilities (position size) of the individual trader receiving the funding payment.
+- **`pool_liabilities`**: The total liabilities on the side of the market receiving the funding payment (long or short, depending on the funding rate direction).
+- **`total_funding_collected`**: The total amount of funding fees collected during the block.
+
+#### Example:
+
+- If a trader holds 10% of the total liabilities on the receiving side, they will receive 10% of the total collected funding fees.
+
+For more details on how the funding fees are distributed, refer to the following code reference:  
 [Funding Fee Distribution Code](https://github.com/elys-network/elys/blob/main/x/perpetual/keeper/handle_funding_fee_distribution.go).
