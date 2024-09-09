@@ -17,14 +17,70 @@ func TestMsgAddEntry_ValidateBasic(t *testing.T) {
 		{
 			name: "invalid address",
 			msg: MsgAddEntry{
-				Creator: "invalid_address",
+				Creator:   "invalid_address",
+				Decimals:  6,
+				BaseDenom: "uusdc",
 			},
 			err: sdkerrors.ErrInvalidAddress,
-		}, {
+		},
+		{
 			name: "valid address",
 			msg: MsgAddEntry{
-				Creator: sample.AccAddress(),
+				Creator:   sample.AccAddress(),
+				Decimals:  6,
+				BaseDenom: "uusdc",
 			},
+		},
+		{
+			name: "invalid decimal",
+			msg: MsgAddEntry{
+				Creator:   sample.AccAddress(),
+				Decimals:  3,
+				BaseDenom: "uusdc",
+			},
+			err: ErrDecimalsInvalid,
+		},
+		{
+			name: "invalid decimal",
+			msg: MsgAddEntry{
+				Creator:   sample.AccAddress(),
+				Decimals:  19,
+				BaseDenom: "uusdc",
+			},
+			err: ErrDecimalsInvalid,
+		},
+		{
+			name: "valid decimal",
+			msg: MsgAddEntry{
+				Creator:   sample.AccAddress(),
+				Decimals:  6,
+				BaseDenom: "uusdc",
+			},
+		},
+		{
+			name: "valid decimal",
+			msg: MsgAddEntry{
+				Creator:   sample.AccAddress(),
+				Decimals:  12,
+				BaseDenom: "uusdc",
+			},
+		},
+		{
+			name: "valid decimal",
+			msg: MsgAddEntry{
+				Creator:   sample.AccAddress(),
+				Decimals:  18,
+				BaseDenom: "uusdc",
+			},
+		},
+		{
+			name: "invalid base denom",
+			msg: MsgAddEntry{
+				Creator:   sample.AccAddress(),
+				Decimals:  18,
+				BaseDenom: "",
+			},
+			err: ErrInvalidBaseDenom,
 		},
 	}
 	for _, tt := range tests {

@@ -18,12 +18,30 @@ func TestMsgUpdateGenesisInflation_ValidateBasic(t *testing.T) {
 			name: "invalid address",
 			msg: MsgUpdateGenesisInflation{
 				Authority: "invalid_address",
+				Inflation: &InflationEntry{
+					LmRewards:         1000,
+					IcsStakingRewards: 500,
+					CommunityFund:     300,
+					StrategicReserve:  200,
+					TeamTokensVested:  100,
+				},
+				SeedVesting:           100,
+				StrategicSalesVesting: 200,
 			},
 			err: sdkerrors.ErrInvalidAddress,
 		}, {
 			name: "valid address",
 			msg: MsgUpdateGenesisInflation{
 				Authority: sample.AccAddress(),
+				Inflation: &InflationEntry{
+					LmRewards:         1000,
+					IcsStakingRewards: 500,
+					CommunityFund:     300,
+					StrategicReserve:  200,
+					TeamTokensVested:  100,
+				},
+				SeedVesting:           100,
+				StrategicSalesVesting: 200,
 			},
 		},
 	}

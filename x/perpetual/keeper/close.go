@@ -10,7 +10,8 @@ import (
 )
 
 func (k Keeper) Close(ctx sdk.Context, msg *types.MsgClose) (*types.MsgCloseResponse, error) {
-	mtp, err := k.GetMTP(ctx, msg.Creator, msg.Id)
+	creator := sdk.MustAccAddressFromBech32(msg.Creator)
+	mtp, err := k.GetMTP(ctx, creator, msg.Id)
 	if err != nil {
 		return nil, err
 	}

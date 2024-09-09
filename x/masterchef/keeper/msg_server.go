@@ -94,9 +94,7 @@ func (k msgServer) AddExternalIncentive(goCtx context.Context, msg *types.MsgAdd
 	for _, rewardDenom := range params.SupportedRewardDenoms {
 		if msg.RewardDenom == rewardDenom.Denom {
 			found = true
-			if msg.AmountPerBlock.Mul(
-				sdk.NewInt(int64(msg.ToBlock - msg.FromBlock)),
-			).LT(rewardDenom.MinAmount) {
+			if msg.AmountPerBlock.Mul(sdk.NewInt(msg.ToBlock - msg.FromBlock)).LT(rewardDenom.MinAmount) {
 				return nil, status.Error(codes.InvalidArgument, "too small amount")
 			}
 			break
@@ -202,6 +200,10 @@ func (k msgServer) UpdateParams(goCtx context.Context, msg *types.MsgUpdateParam
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	if k.authority != msg.Authority {
 		return nil, errorsmod.Wrapf(govtypes.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.authority, msg.Authority)
+	}
+
+	if k.CheckBlockedAddress(msg.Params) {
+		return nil, fmt.Errorf("protocol revenue address is blocked")
 	}
 
 	k.SetParams(ctx, msg.Params)

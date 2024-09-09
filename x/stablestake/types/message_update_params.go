@@ -43,5 +43,9 @@ func (msg *MsgUpdateParams) ValidateBasic() error {
 	if err != nil {
 		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
 	}
+	err = msg.Params.Validate()
+	if err != nil {
+		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid params (%s)", err)
+	}
 	return nil
 }

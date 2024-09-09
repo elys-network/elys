@@ -69,6 +69,10 @@ func (mtp MTP) Validate() error {
 	return nil
 }
 
+func (mtp MTP) GetAccountAddress() sdk.AccAddress {
+	return sdk.MustAccAddressFromBech32(mtp.Address)
+}
+
 // Generate a new perpetual collateral wallet per position
 func NewPerpetualCollateralAddress(positionId uint64) sdk.AccAddress {
 	key := append([]byte("perpetual_collateral"), sdk.Uint64ToBigEndian(positionId)...)

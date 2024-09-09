@@ -80,6 +80,14 @@ func (msg *MsgUpdateEntry) ValidateBasic() error {
 	if err != nil {
 		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid authority address (%s)", err)
 	}
+
+	if msg.Decimals < 6 || msg.Decimals > 18 {
+		return ErrDecimalsInvalid
+	}
+
+	if len(msg.BaseDenom) == 0 {
+		return ErrInvalidBaseDenom
+	}
 	return nil
 }
 
@@ -120,6 +128,10 @@ func (msg *MsgDeleteEntry) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Authority)
 	if err != nil {
 		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid authority address (%s)", err)
+	}
+
+	if len(msg.BaseDenom) == 0 {
+		return ErrInvalidBaseDenom
 	}
 	return nil
 }

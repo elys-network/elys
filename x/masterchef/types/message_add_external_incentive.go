@@ -37,5 +37,21 @@ func (msg *MsgAddExternalIncentive) ValidateBasic() error {
 		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid sender address (%s)", err)
 	}
 
+	if msg.FromBlock >= msg.ToBlock {
+		return ErrInvalidBlockRange
+	}
+
+	if msg.AmountPerBlock.IsNil() {
+		return errorsmod.Wrapf(ErrInvalidAmountPerBlock, "amount per block is nil")
+	}
+
+	if msg.AmountPerBlock.IsZero() {
+		return errorsmod.Wrapf(ErrInvalidAmountPerBlock, "amount per block is zero")
+	}
+
+	if msg.AmountPerBlock.IsNegative() {
+		return errorsmod.Wrapf(ErrInvalidAmountPerBlock, "amount per block is negative")
+	}
+
 	return nil
 }

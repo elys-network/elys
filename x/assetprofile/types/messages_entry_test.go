@@ -24,6 +24,8 @@ func TestMsgUpdateEntry_ValidateBasic(t *testing.T) {
 			name: "valid address",
 			msg: MsgUpdateEntry{
 				Authority: sample.AccAddress(),
+				Decimals:  6,
+				BaseDenom: "uusdc",
 			},
 		},
 	}
@@ -55,6 +57,7 @@ func TestMsgDeleteEntry_ValidateBasic(t *testing.T) {
 			name: "valid address",
 			msg: MsgDeleteEntry{
 				Authority: sample.AccAddress(),
+				BaseDenom: "uusdc",
 			},
 		},
 	}

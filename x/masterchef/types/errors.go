@@ -10,4 +10,8 @@ import (
 var (
 	ErrNoInflationaryParams     = errorsmod.Register(ModuleName, 1, "no inflationary rewards params")
 	ErrPoolRewardsAccumNotFound = errorsmod.Register(ModuleName, 2, "pool rewards accumulation not found")
+	ErrInvalidBlockRange        = errorsmod.Register(ModuleName, 3, "invalid block range")
+	ErrInvalidAmountPerBlock    = errorsmod.Register(ModuleName, 4, "error invalid amount per block")
+	ErrInvalidMinAmount         = errorsmod.Register(ModuleName, 5, "error invalid min amount")
+	ErrInvalidPoolMultiplier    = errorsmod.Register(ModuleName, 6, "error invalid pool multiplier")
 )

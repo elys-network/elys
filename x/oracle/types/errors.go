@@ -15,4 +15,5 @@ var (
 	ErrPriceFeederNotActive = errorsmod.Register(ModuleName, 1504, "price feeder is not active")
 	ErrNotModuleAdmin       = errorsmod.Register(ModuleName, 1505, "not a module admin")
 	ErrAssetWasCreated      = errorsmod.Register(ModuleName, 1506, "asset already exists")
+	ErrInvalidPrice         = errorsmod.Register(ModuleName, 1507, "error invalid price")
 )

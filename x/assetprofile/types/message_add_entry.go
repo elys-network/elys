@@ -59,5 +59,14 @@ func (msg *MsgAddEntry) ValidateBasic() error {
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
 	}
+
+	if msg.Decimals < 6 || msg.Decimals > 18 {
+		return ErrDecimalsInvalid
+	}
+
+	if len(msg.BaseDenom) == 0 {
+		return ErrInvalidBaseDenom
+	}
+
 	return nil
 }

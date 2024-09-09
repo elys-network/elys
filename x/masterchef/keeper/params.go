@@ -25,20 +25,18 @@ func (k Keeper) SetParams(ctx sdk.Context, params types.Params) {
 	store.Set(types.ParamsKey, b)
 }
 
-func (k Keeper) GetLegacyParams(ctx sdk.Context) (params types.Params) {
+func (k Keeper) CheckBlockedAddress(params types.Params) bool {
+	return k.bankKeeper.BlockedAddr(sdk.MustAccAddressFromBech32(params.ProtocolRevenueAddress))
+}
+
+func (k Keeper) GetLegacyParams(ctx sdk.Context) (params types.LegacyParams) {
 	store := ctx.KVStore(k.storeKey)
 
-	b := store.Get([]byte(types.LegacyParamsKeyPrefix))
+	b := store.Get(types.ParamsKey)
 	if b == nil {
 		return
 	}
 
 	k.cdc.MustUnmarshal(b, &params)
-	return
-}
-
-func (k Keeper) DeleteLegacyParams(ctx sdk.Context) (params types.Params) {
-	store := ctx.KVStore(k.storeKey)
-	store.Delete([]byte(types.LegacyParamsKeyPrefix))
 	return
 }

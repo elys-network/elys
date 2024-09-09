@@ -22,11 +22,11 @@ func (_m *AuthorizationChecker) EXPECT() *AuthorizationChecker_Expecter {
 }
 
 // CheckIfWhitelisted provides a mock function with given fields: ctx, creator
-func (_m *AuthorizationChecker) CheckIfWhitelisted(ctx types.Context, creator string) bool {
+func (_m *AuthorizationChecker) CheckIfWhitelisted(ctx types.Context, creator types.AccAddress) bool {
 	ret := _m.Called(ctx, creator)
 
 	var r0 bool
-	if rf, ok := ret.Get(0).(func(types.Context, string) bool); ok {
+	if rf, ok := ret.Get(0).(func(types.Context, types.AccAddress) bool); ok {
 		r0 = rf(ctx, creator)
 	} else {
 		r0 = ret.Get(0).(bool)
@@ -47,9 +47,9 @@ func (_e *AuthorizationChecker_Expecter) CheckIfWhitelisted(ctx interface{}, cre
 	return &AuthorizationChecker_CheckIfWhitelisted_Call{Call: _e.mock.On("CheckIfWhitelisted", ctx, creator)}
 }
 
-func (_c *AuthorizationChecker_CheckIfWhitelisted_Call) Run(run func(ctx types.Context, creator string)) *AuthorizationChecker_CheckIfWhitelisted_Call {
+func (_c *AuthorizationChecker_CheckIfWhitelisted_Call) Run(run func(ctx types.Context, creator types.AccAddress)) *AuthorizationChecker_CheckIfWhitelisted_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(types.Context), args[1].(string))
+		run(args[0].(types.Context), args[1].(types.AccAddress))
 	})
 	return _c
 }
@@ -59,7 +59,7 @@ func (_c *AuthorizationChecker_CheckIfWhitelisted_Call) Return(_a0 bool) *Author
 	return _c
 }
 
-func (_c *AuthorizationChecker_CheckIfWhitelisted_Call) RunAndReturn(run func(types.Context, string) bool) *AuthorizationChecker_CheckIfWhitelisted_Call {
+func (_c *AuthorizationChecker_CheckIfWhitelisted_Call) RunAndReturn(run func(types.Context, types.AccAddress) bool) *AuthorizationChecker_CheckIfWhitelisted_Call {
 	_c.Call.Return(run)
 	return _c
 }
