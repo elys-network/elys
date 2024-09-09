@@ -2,6 +2,8 @@ package types
 
 import (
 	"fmt"
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 
 	host "github.com/cosmos/ibc-go/v7/modules/core/24-host"
 )
@@ -31,7 +33,7 @@ func DefaultGenesis() *GenesisState {
 		Prices: []Price{},
 		PriceFeeders: []PriceFeeder{
 			{
-				Feeder:   "elys1mxk8wmns33vs6yynsaeud2k97xkl5dqlkjv3j9",
+				Feeder:   authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 				IsActive: true,
 			},
 		},
