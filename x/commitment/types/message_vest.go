@@ -45,5 +45,14 @@ func (msg *MsgVest) ValidateBasic() error {
 	if err != nil {
 		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
 	}
+
+	if msg.Amount.IsNil() {
+		return errorsmod.Wrapf(ErrInvalidAmount, "Amount can not be nil")
+	}
+
+	if msg.Amount.IsNegative() {
+		return errorsmod.Wrapf(ErrInvalidAmount, "Amount can not be negative")
+	}
+
 	return nil
 }

@@ -42,5 +42,14 @@ func (msg *MsgUpdateParams) ValidateBasic() error {
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
 	}
+
+	if msg.Params == nil {
+		return sdkerrors.Wrapf(ErrInvalidParams, "params is nil")
+	}
+
+	if len(msg.Params.EpochIdentifier) == 0 {
+		return ErrInvalidEpochIdentifier
+	}
+
 	return nil
 }

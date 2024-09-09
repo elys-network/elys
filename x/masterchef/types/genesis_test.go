@@ -22,6 +22,7 @@ func TestGenesisState_Validate(t *testing.T) {
 	}
 	for _, tc := range tests {
 		t.Run(tc.desc, func(t *testing.T) {
+			tc.genState.Params.ProtocolRevenueAddress = "cosmos1vjclnpz4hydg0nv5xn2xtfvg52dlnslnndyh0a"
 			err := tc.genState.Validate()
 			if tc.valid {
 				require.NoError(t, err)

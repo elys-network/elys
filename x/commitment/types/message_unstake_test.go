@@ -3,6 +3,7 @@ package types
 import (
 	"testing"
 
+	"cosmossdk.io/math"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/elys-network/elys/testutil/sample"
 	"github.com/stretchr/testify/require"
@@ -24,6 +25,7 @@ func TestMsgUnstake_ValidateBasic(t *testing.T) {
 			name: "valid address",
 			msg: MsgUnstake{
 				Creator: sample.AccAddress(),
+				Amount:  math.NewInt(200),
 			},
 		},
 	}

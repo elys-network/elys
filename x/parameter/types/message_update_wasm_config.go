@@ -44,5 +44,22 @@ func (msg *MsgUpdateWasmConfig) ValidateBasic() error {
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
 	}
+	res, ok := sdk.NewIntFromString(msg.WasmMaxLabelSize)
+
+	if !ok || !res.IsPositive() {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "wasm max label size must be a positive integer")
+	}
+
+	res, ok = sdk.NewIntFromString(msg.WasmMaxProposalWasmSize)
+
+	if !ok || !res.IsPositive() {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "wasm max proposal wasm size must be a positive integer")
+	}
+
+	res, ok = sdk.NewIntFromString(msg.WasmMaxSize)
+
+	if !ok || !res.IsPositive() {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "wasm max size must be a positive integer")
+	}
 	return nil
 }

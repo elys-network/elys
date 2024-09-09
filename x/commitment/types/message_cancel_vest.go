@@ -5,6 +5,7 @@ import (
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
 
 const TypeMsgCancelVest = "cancel_vest"
@@ -45,5 +46,18 @@ func (msg *MsgCancelVest) ValidateBasic() error {
 	if err != nil {
 		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
 	}
+
+	if msg.Denom != ptypes.Eden {
+		return errorsmod.Wrapf(ErrInvalidDenom, "denom: %s", msg.Denom)
+	}
+
+	if msg.Amount.IsNil() {
+		return errorsmod.Wrapf(ErrInvalidAmount, "Amount can not be nil")
+	}
+
+	if msg.Amount.IsNegative() {
+		return errorsmod.Wrapf(ErrInvalidAmount, "Amount can not be negative")
+	}
+
 	return nil
 }

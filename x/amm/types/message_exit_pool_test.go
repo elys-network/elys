@@ -3,6 +3,7 @@ package types_test
 import (
 	"testing"
 
+	"cosmossdk.io/math"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/elys-network/elys/testutil/sample"
 	"github.com/elys-network/elys/x/amm/types"
@@ -18,13 +19,15 @@ func TestMsgExitPool_ValidateBasic(t *testing.T) {
 		{
 			name: "invalid address",
 			msg: types.MsgExitPool{
-				Sender: "invalid_address",
+				Sender:        "invalid_address",
+				ShareAmountIn: math.NewInt(100),
 			},
 			err: sdkerrors.ErrInvalidAddress,
 		}, {
 			name: "valid address",
 			msg: types.MsgExitPool{
-				Sender: sample.AccAddress(),
+				Sender:        sample.AccAddress(),
+				ShareAmountIn: math.NewInt(100),
 			},
 		},
 	}

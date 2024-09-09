@@ -8,5 +8,6 @@ import (
 
 // x/burner module sentinel errors
 var (
-	ErrSample = errorsmod.Register(ModuleName, 1100, "sample error")
+	ErrInvalidEpochIdentifier = errorsmod.Register(ModuleName, 1, "invalid epoch identifier")
+	ErrInvalidParams          = errorsmod.Register(ModuleName, 2, "invalid param")
 )

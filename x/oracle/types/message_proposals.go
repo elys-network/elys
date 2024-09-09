@@ -121,6 +121,14 @@ func (msg *MsgAddPriceFeeders) ValidateBasic() error {
 	if err != nil {
 		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid authority address (%s)", err)
 	}
+
+	for _, feeder := range msg.Feeders {
+		_, err := sdk.AccAddressFromBech32(feeder)
+		if err != nil {
+			return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid feeder address (%s)", err)
+		}
+	}
+
 	return nil
 }
 
@@ -160,5 +168,13 @@ func (msg *MsgRemovePriceFeeders) ValidateBasic() error {
 	if err != nil {
 		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid authority address (%s)", err)
 	}
+
+	for _, feeder := range msg.Feeders {
+		_, err := sdk.AccAddressFromBech32(feeder)
+		if err != nil {
+			return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid feeder address (%s)", err)
+		}
+	}
+
 	return nil
 }

@@ -37,6 +37,7 @@ var (
 	ErrSwapFeeShouldNotExceedTwoPercent = errors.Register(ModuleName, 109, "swap fee should not exceed 2%")
 	ErrExitFeeShouldNotExceedTwoPercent = errors.Register(ModuleName, 110, "exit fee should not exceed 2%")
 	ErrFeeShouldNotBeNegative           = errors.Register(ModuleName, 111, "fee should not be negative")
+	ErrInvalidShareAmountOut            = errors.Register(ModuleName, 112, "invalid share amount out")
 )
 
 const (

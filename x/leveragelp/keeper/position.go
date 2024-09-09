@@ -248,7 +248,7 @@ func (k Keeper) GetPositionHealth(ctx sdk.Context, position types.Position) (sdk
 	debt := k.stableKeeper.UpdateInterestAndGetDebt(ctx, position.GetPositionAddress())
 	debtAmount := debt.GetTotalLiablities()
 	if debtAmount.IsZero() {
-		return sdk.ZeroDec(), nil
+		return sdk.MaxSortableDec, nil
 	}
 
 	baseCurrency, found := k.assetProfileKeeper.GetUsdcDenom(ctx)

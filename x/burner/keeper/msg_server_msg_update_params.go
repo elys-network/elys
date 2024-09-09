@@ -16,6 +16,10 @@ func (k msgServer) UpdateParams(goCtx context.Context, msg *types.MsgUpdateParam
 		return nil, errorsmod.Wrapf(govtypes.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.authority, msg.Authority)
 	}
 
+	if len(msg.Params.EpochIdentifier) == 0 {
+		return nil, types.ErrInvalidEpochIdentifier
+	}
+
 	params := k.GetParams(ctx)
 	params.EpochIdentifier = msg.Params.EpochIdentifier
 	k.SetParams(ctx, params)
