@@ -42,11 +42,11 @@ func TestGenesis(t *testing.T) {
 		},
 		PriceFeeders: []types.PriceFeeder{
 			{
-				Feeder:   "elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3",
+				Feeder:   "cosmos10d07y265gmmuvt4z0w9aw880jnsr700j6zn9kn",
 				IsActive: true,
 			},
 			{
-				Feeder:   "elys12tzylat4udvjj56uuhu3vj2n4vgp7cf9fwna9w",
+				Feeder:   "cosmos16plylpsgxechajltx9yeseqexzdzut9g8vla4k",
 				IsActive: false,
 			},
 		},

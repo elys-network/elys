@@ -2,6 +2,7 @@ package types
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/types/address"
 )
 
 const (
@@ -30,9 +31,10 @@ var (
 	// AssetInfoKeyPrefix is the prefix to retrieve all AssetInfo
 	AssetInfoKeyPrefix = "AssetInfo/value/"
 	// PriceKeyPrefix is the prefix to retrieve all Price
-	PriceKeyPrefix = "Price/value/"
-	// PriceFeederKeyPrefix is the prefix to retrieve all PriceFeeder
-	PriceFeederKeyPrefix = "PriceFeeder/value/"
+	PriceKeyPrefix             = "Price/value/"
+	LegacyPriceFeederKeyPrefix = "PriceFeeder/value/"
+
+	PriceFeederPrefixKey = []byte{0x01}
 )
 
 func KeyPrefix(p string) []byte {
@@ -69,9 +71,15 @@ func PriceKey(asset, source string, timestamp uint64) []byte {
 	return key
 }
 
-// PriceFeederKey returns the store key to retrieve a PriceFeeder from the feeder fields
-func PriceFeederKey(feeder string) []byte {
-	key := KeyPrefix(PriceFeederKeyPrefix)
+func GetPriceFeederKey(feeder sdk.AccAddress) []byte {
+	key := PriceFeederPrefixKey
+	key = append(key, address.MustLengthPrefix(feeder)...)
+
+	return key
+}
+
+func LegacyPriceFeederKey(feeder string) []byte {
+	key := KeyPrefix(LegacyPriceFeederKeyPrefix)
 
 	indexBytes := []byte(feeder)
 	key = append(key, indexBytes...)

@@ -43,7 +43,7 @@ func LiquidityRatioFromPriceDepth(depth sdk.Dec) sdk.Dec {
 func (k msgServer) FeedMultipleExternalLiquidity(goCtx context.Context, msg *types.MsgFeedMultipleExternalLiquidity) (*types.MsgFeedMultipleExternalLiquidityResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	feeder, found := k.oracleKeeper.GetPriceFeeder(ctx, msg.Sender)
+	feeder, found := k.oracleKeeper.GetPriceFeeder(ctx, sdk.MustAccAddressFromBech32(msg.Sender))
 	if !found {
 		return nil, oracletypes.ErrNotAPriceFeeder
 	}
