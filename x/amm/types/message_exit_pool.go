@@ -46,5 +46,14 @@ func (msg *MsgExitPool) ValidateBasic() error {
 	if err != nil {
 		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid sender address (%s)", err)
 	}
+
+	if msg.ShareAmountIn.IsNil() {
+		return ErrInvalidShareAmountOut
+	}
+
+	if msg.ShareAmountIn.IsNegative() {
+		return ErrInvalidShareAmountOut
+	}
+
 	return nil
 }

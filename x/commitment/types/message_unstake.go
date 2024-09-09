@@ -5,6 +5,7 @@ import (
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	paramtypes "github.com/elys-network/elys/x/parameter/types"
 )
 
 const TypeMsgUnstake = "unstake"
@@ -46,5 +47,21 @@ func (msg *MsgUnstake) ValidateBasic() error {
 	if err != nil {
 		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
 	}
+
+	if msg.Amount.IsNil() {
+		return errorsmod.Wrapf(ErrInvalidAmount, "Amount can not be nil")
+	}
+
+	if msg.Amount.IsNegative() {
+		return errorsmod.Wrapf(ErrInvalidAmount, "Amount can not be negative")
+	}
+
+	if msg.Asset == paramtypes.Elys {
+		_, err := sdk.ValAddressFromBech32(msg.ValidatorAddress)
+		if err != nil {
+			return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid validator address  (%s)", err)
+		}
+	}
+
 	return nil
 }

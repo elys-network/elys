@@ -189,3 +189,26 @@ func (suite KeeperTestSuite) TestHealthDecreaseForInterest() {
 	// suite.Require().Equal(health.String(), "0.610500000000000000") // slippage enabled on amm
 	suite.Require().Equal("1.096491228070175439", health.String()) // slippage disabled on amm
 }
+
+// test positionHealth should be maxDec when liablities is zero
+func (suite KeeperTestSuite) TestPositionHealth() {
+	k := suite.app.LeveragelpKeeper
+	addr := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
+	position, _ := suite.OpenPosition(addr)
+	_, found := suite.app.AmmKeeper.GetPool(suite.ctx, position.AmmPoolId)
+	suite.Require().True(found)
+	health, err := k.GetPositionHealth(suite.ctx, *position)
+	suite.Require().NoError(err)
+	suite.Require().Equal("1.250000000000000000", health.String())
+
+	//setting position debt/liablities to zero
+	debt := suite.app.StablestakeKeeper.GetDebt(suite.ctx, position.GetPositionAddress())
+	debt.Borrowed = sdk.ZeroInt()
+	debt.InterestStacked = sdk.ZeroInt()
+	debt.InterestPaid = sdk.ZeroInt()
+	suite.app.StablestakeKeeper.SetDebt(suite.ctx, debt)
+
+	//get position health
+	positionHealth, _ := suite.app.LeveragelpKeeper.GetPositionHealth(suite.ctx, *position)
+	suite.Require().Equal(sdk.MaxSortableDec, positionHealth)
+}

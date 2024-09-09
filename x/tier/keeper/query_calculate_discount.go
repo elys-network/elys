@@ -17,7 +17,12 @@ func (k Keeper) CalculateDiscount(goCtx context.Context, req *types.QueryCalcula
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	portfolio, tier, discount := k.GetMembershipTier(ctx, req.User)
+	user, err := sdk.AccAddressFromBech32(req.User)
+	if err != nil {
+		return nil, status.Error(codes.InvalidArgument, err.Error())
+	}
+
+	portfolio, tier, discount := k.GetMembershipTier(ctx, user)
 
 	return &types.QueryCalculateDiscountResponse{
 		Discount:  strconv.FormatUint(discount, 10),

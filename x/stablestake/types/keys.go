@@ -1,5 +1,10 @@
 package types
 
+import (
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/types/address"
+)
+
 const (
 	// ModuleName defines the module name
 	ModuleName = "stablestake"
@@ -22,4 +27,12 @@ var (
 
 func KeyPrefix(p string) []byte {
 	return []byte(p)
+}
+
+func GetDebtKey(owner sdk.AccAddress) []byte {
+	return append(DebtPrefixKey, address.MustLengthPrefix(owner)...)
+}
+
+func GetLegacyDebtKey(owner string) []byte {
+	return append(DebtPrefixKey, []byte(owner)...)
 }

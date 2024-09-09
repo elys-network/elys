@@ -42,5 +42,9 @@ func (msg *MsgSetPortfolio) ValidateBasic() error {
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
 	}
+	_, err = sdk.AccAddressFromBech32(msg.User)
+	if err != nil {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid user address (%s)", err)
+	}
 	return nil
 }

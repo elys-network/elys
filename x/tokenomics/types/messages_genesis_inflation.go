@@ -47,5 +47,36 @@ func (msg *MsgUpdateGenesisInflation) ValidateBasic() error {
 	if err != nil {
 		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid authority address (%s)", err)
 	}
+
+	// Validate Inflation is not nil and its fields are positive
+	if msg.Inflation == nil {
+		return errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "inflation entry cannot be nil")
+	}
+	if msg.Inflation.LmRewards <= 0 {
+		return errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "lm rewards must be positive")
+	}
+	if msg.Inflation.IcsStakingRewards <= 0 {
+		return errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "ics staking rewards must be positive")
+	}
+	if msg.Inflation.CommunityFund <= 0 {
+		return errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "community fund must be positive")
+	}
+	if msg.Inflation.StrategicReserve <= 0 {
+		return errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "strategic reserve must be positive")
+	}
+	if msg.Inflation.TeamTokensVested <= 0 {
+		return errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "team tokens vested must be positive")
+	}
+
+	// Validate SeedVesting is positive
+	if msg.SeedVesting <= 0 {
+		return errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "seed vesting must be positive")
+	}
+
+	// Validate StrategicSalesVesting is positive
+	if msg.StrategicSalesVesting <= 0 {
+		return errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "strategic sales vesting must be positive")
+	}
+
 	return nil
 }

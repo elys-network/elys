@@ -16,7 +16,7 @@ func (k Keeper) OpenConsolidateShort(ctx sdk.Context, poolId uint64, existingMtp
 	}
 
 	// Destroy new MTP
-	if err := k.DestroyMTP(ctx, newMtp.Address, newMtp.Id); err != nil {
+	if err := k.DestroyMTP(ctx, newMtp.GetAccountAddress(), newMtp.Id); err != nil {
 		return nil, err
 	}
 
