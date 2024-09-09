@@ -3,6 +3,7 @@ package types_test
 import (
 	"testing"
 
+	"cosmossdk.io/math"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/elys-network/elys/testutil/sample"
 	"github.com/elys-network/elys/x/amm/types"
@@ -24,7 +25,8 @@ func TestMsgJoinPool_ValidateBasic(t *testing.T) {
 		}, {
 			name: "valid address",
 			msg: types.MsgJoinPool{
-				Sender: sample.AccAddress(),
+				Sender:         sample.AccAddress(),
+				ShareAmountOut: math.NewInt(100),
 			},
 		},
 	}

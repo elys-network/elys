@@ -1,9 +1,10 @@
 package masterchef_test
 
 import (
+	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
+	simapp "github.com/elys-network/elys/app"
 	"testing"
 
-	keepertest "github.com/elys-network/elys/testutil/keeper"
 	"github.com/elys-network/elys/testutil/nullify"
 	"github.com/elys-network/elys/x/masterchef"
 	"github.com/elys-network/elys/x/masterchef/types"
@@ -11,15 +12,17 @@ import (
 )
 
 func TestGenesis(t *testing.T) {
+	app := simapp.InitElysTestApp(true)
+
 	genesisState := types.GenesisState{
 		Params: types.DefaultParams(),
 
 		// this line is used by starport scaffolding # genesis/test/state
 	}
-
-	k, ctx := keepertest.MasterchefKeeper(t)
-	masterchef.InitGenesis(ctx, *k, genesisState)
-	got := masterchef.ExportGenesis(ctx, *k)
+	ctx := app.BaseApp.NewContext(true, tmproto.Header{})
+	k := app.MasterchefKeeper
+	masterchef.InitGenesis(ctx, k, genesisState)
+	got := masterchef.ExportGenesis(ctx, k)
 	require.NotNil(t, got)
 
 	nullify.Fill(&genesisState)

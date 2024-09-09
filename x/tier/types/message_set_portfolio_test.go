@@ -18,12 +18,14 @@ func TestMsgSetPortfolio_ValidateBasic(t *testing.T) {
 			name: "invalid address",
 			msg: MsgSetPortfolio{
 				Creator: "invalid_address",
+				User:    sample.AccAddress(),
 			},
 			err: sdkerrors.ErrInvalidAddress,
 		}, {
 			name: "valid address",
 			msg: MsgSetPortfolio{
 				Creator: sample.AccAddress(),
+				User:    sample.AccAddress(),
 			},
 		},
 	}

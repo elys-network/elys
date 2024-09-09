@@ -18,12 +18,18 @@ func TestMsgCreateAirdrop_ValidateBasic(t *testing.T) {
 			name: "invalid address",
 			msg: MsgCreateAirdrop{
 				Authority: "invalid_address",
+				Intent:    "Airdrop for early adopters",
+				Amount:    1000,
+				Expiry:    1672531199,
 			},
 			err: sdkerrors.ErrInvalidAddress,
 		}, {
 			name: "valid address",
 			msg: MsgCreateAirdrop{
 				Authority: sample.AccAddress(),
+				Intent:    "Airdrop for early adopters",
+				Amount:    1000,
+				Expiry:    1672531199,
 			},
 		},
 	}
@@ -49,12 +55,18 @@ func TestMsgUpdateAirdrop_ValidateBasic(t *testing.T) {
 			name: "invalid address",
 			msg: MsgUpdateAirdrop{
 				Authority: "invalid_address",
+				Intent:    "Airdrop for early adopters",
+				Amount:    1000,
+				Expiry:    1672531199,
 			},
 			err: sdkerrors.ErrInvalidAddress,
 		}, {
 			name: "valid address",
 			msg: MsgUpdateAirdrop{
 				Authority: sample.AccAddress(),
+				Intent:    "Airdrop for early adopters",
+				Amount:    1000,
+				Expiry:    1672531199,
 			},
 		},
 	}
@@ -80,12 +92,14 @@ func TestMsgDeleteAirdrop_ValidateBasic(t *testing.T) {
 			name: "invalid address",
 			msg: MsgDeleteAirdrop{
 				Authority: "invalid_address",
+				Intent:    "Airdrop for early adopters",
 			},
 			err: sdkerrors.ErrInvalidAddress,
 		}, {
 			name: "valid address",
 			msg: MsgDeleteAirdrop{
 				Authority: sample.AccAddress(),
+				Intent:    "Airdrop for early adopters",
 			},
 		},
 	}

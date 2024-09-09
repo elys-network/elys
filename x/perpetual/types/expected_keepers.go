@@ -11,7 +11,7 @@ import (
 //go:generate mockery --srcpkg . --name AuthorizationChecker --structname AuthorizationChecker --filename authorization_checker.go --with-expecter
 type AuthorizationChecker interface {
 	IsWhitelistingEnabled(ctx sdk.Context) bool
-	CheckIfWhitelisted(ctx sdk.Context, creator string) bool
+	CheckIfWhitelisted(ctx sdk.Context, creator sdk.AccAddress) bool
 }
 
 //go:generate mockery --srcpkg . --name PositionChecker --structname PositionChecker --filename position_checker.go --with-expecter
@@ -86,7 +86,7 @@ type OpenShortChecker interface {
 
 //go:generate mockery --srcpkg . --name CloseLongChecker --structname CloseLongChecker --filename close_long_checker.go --with-expecter
 type CloseLongChecker interface {
-	GetMTP(ctx sdk.Context, mtpAddress string, id uint64) (MTP, error)
+	GetMTP(ctx sdk.Context, mtpAddress sdk.AccAddress, id uint64) (MTP, error)
 	GetPool(
 		ctx sdk.Context,
 		poolId uint64,
@@ -99,7 +99,7 @@ type CloseLongChecker interface {
 
 //go:generate mockery --srcpkg . --name CloseShortChecker --structname CloseShortChecker --filename close_short_checker.go --with-expecter
 type CloseShortChecker interface {
-	GetMTP(ctx sdk.Context, mtpAddress string, id uint64) (MTP, error)
+	GetMTP(ctx sdk.Context, mtpAddress sdk.AccAddress, id uint64) (MTP, error)
 	GetPool(
 		ctx sdk.Context,
 		poolId uint64,

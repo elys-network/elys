@@ -37,5 +37,13 @@ func (msg *MsgAddExternalRewardDenom) ValidateBasic() error {
 		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid sender address (%s)", err)
 	}
 
+	if msg.MinAmount.IsNil() {
+		return errorsmod.Wrapf(ErrInvalidMinAmount, "min amount is nil")
+	}
+
+	if msg.MinAmount.IsNegative() {
+		return errorsmod.Wrapf(ErrInvalidMinAmount, "min amount is negative")
+	}
+
 	return nil
 }
