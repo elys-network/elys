@@ -12,16 +12,16 @@ func (k Keeper) OpenConsolidate(ctx sdk.Context, existingMtp *types.MTP, newMtp 
 	}
 
 	poolId := existingMtp.AmmPoolId
-	pool, found := k.OpenLongChecker.GetPool(ctx, poolId)
+	pool, found := k.GetPool(ctx, poolId)
 	if !found {
 		return nil, errorsmod.Wrap(types.ErrPoolDoesNotExist, newMtp.CustodyAsset)
 	}
 
-	if !k.OpenLongChecker.IsPoolEnabled(ctx, poolId) {
+	if !k.IsPoolEnabled(ctx, poolId) {
 		return nil, errorsmod.Wrap(types.ErrMTPDisabled, existingMtp.CustodyAsset)
 	}
 
-	ammPool, err := k.OpenLongChecker.GetAmmPool(ctx, poolId, existingMtp.CustodyAsset)
+	ammPool, err := k.GetAmmPool(ctx, poolId, existingMtp.CustodyAsset)
 	if err != nil {
 		return nil, err
 	}

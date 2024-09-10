@@ -10,7 +10,7 @@ import (
 func (k Keeper) CloseLong(ctx sdk.Context, msg *types.MsgClose, baseCurrency string) (*types.MTP, math.Int, error) {
 	// Retrieve MTP
 	creator := sdk.MustAccAddressFromBech32(msg.Creator)
-	mtp, err := k.CloseLongChecker.GetMTP(ctx, creator, msg.Id)
+	mtp, err := k.GetMTP(ctx, creator, msg.Id)
 	if err != nil {
 		return nil, sdk.ZeroInt(), err
 	}
@@ -20,30 +20,30 @@ func (k Keeper) CloseLong(ctx sdk.Context, msg *types.MsgClose, baseCurrency str
 	}
 
 	// Retrieve Pool
-	pool, found := k.CloseLongChecker.GetPool(ctx, mtp.AmmPoolId)
+	pool, found := k.GetPool(ctx, mtp.AmmPoolId)
 	if !found {
 		return nil, sdk.ZeroInt(), errorsmod.Wrap(types.ErrInvalidBorrowingAsset, "invalid pool id")
 	}
 
 	// Retrieve AmmPool
-	ammPool, err := k.CloseLongChecker.GetAmmPool(ctx, mtp.AmmPoolId, mtp.CustodyAsset)
+	ammPool, err := k.GetAmmPool(ctx, mtp.AmmPoolId, mtp.CustodyAsset)
 	if err != nil {
 		return nil, sdk.ZeroInt(), err
 	}
 
 	// Handle Borrow Interest if within epoch position
-	if err := k.CloseLongChecker.HandleBorrowInterest(ctx, &mtp, &pool, ammPool); err != nil {
+	if err := k.HandleBorrowInterest(ctx, &mtp, &pool, ammPool); err != nil {
 		return nil, sdk.ZeroInt(), err
 	}
 
 	// Take out custody
-	err = k.CloseLongChecker.TakeOutCustody(ctx, mtp, &pool, msg.Amount)
+	err = k.TakeOutCustody(ctx, mtp, &pool, msg.Amount)
 	if err != nil {
 		return nil, sdk.ZeroInt(), err
 	}
 
 	// Estimate swap and repay
-	repayAmt, err := k.CloseLongChecker.EstimateAndRepay(ctx, mtp, pool, ammPool, msg.Amount, baseCurrency)
+	repayAmt, err := k.EstimateAndRepay(ctx, mtp, pool, ammPool, msg.Amount, baseCurrency)
 	if err != nil {
 		return nil, sdk.ZeroInt(), err
 	}

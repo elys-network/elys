@@ -27,18 +27,18 @@ func (k Keeper) AddCollateralToMtp(ctx sdk.Context, msg *types.MsgAddCollateral)
 	}
 
 	// Fetch the pool associated with the given pool ID.
-	pool, found := k.OpenLongChecker.GetPool(ctx, mtp.AmmPoolId)
+	pool, found := k.GetPool(ctx, mtp.AmmPoolId)
 	if !found {
 		return nil, errorsmod.Wrap(types.ErrPoolDoesNotExist, mtp.TradingAsset)
 	}
 
 	// Check if the pool is enabled.
-	if !k.OpenLongChecker.IsPoolEnabled(ctx, mtp.AmmPoolId) {
+	if !k.IsPoolEnabled(ctx, mtp.AmmPoolId) {
 		return nil, errorsmod.Wrap(types.ErrMTPDisabled, mtp.TradingAsset)
 	}
 
 	// Fetch the corresponding AMM (Automated Market Maker) pool.
-	ammPool, err := k.OpenLongChecker.GetAmmPool(ctx, mtp.AmmPoolId, mtp.TradingAsset)
+	ammPool, err := k.GetAmmPool(ctx, mtp.AmmPoolId, mtp.TradingAsset)
 	if err != nil {
 		return nil, err
 	}
@@ -60,7 +60,7 @@ func (k Keeper) AddCollateralToMtp(ctx sdk.Context, msg *types.MsgAddCollateral)
 		etaAmt := liabilitiesDec.TruncateInt()
 		etaAmtToken := sdk.NewCoin(mtp.CollateralAsset, etaAmt)
 		// Calculate base currency amount given atom out amount and we use it liabilty amount in base currency
-		liabilityAmt, err := k.OpenLongChecker.EstimateSwapGivenOut(ctx, etaAmtToken, baseCurrency, ammPool)
+		liabilityAmt, err := k.EstimateSwapGivenOut(ctx, etaAmtToken, baseCurrency, ammPool)
 		if err != nil {
 			return nil, err
 		}
@@ -71,7 +71,7 @@ func (k Keeper) AddCollateralToMtp(ctx sdk.Context, msg *types.MsgAddCollateral)
 	// If position is short, liabilities should be swapped to liabilities asset
 	if mtp.Position == types.Position_SHORT {
 		liabilitiesAmtTokenIn := sdk.NewCoin(baseCurrency, liabilitiesDec.TruncateInt())
-		liabilitiesAmt, err := k.OpenShortChecker.EstimateSwap(ctx, liabilitiesAmtTokenIn, mtp.LiabilitiesAsset, ammPool)
+		liabilitiesAmt, err := k.EstimateSwap(ctx, liabilitiesAmtTokenIn, mtp.LiabilitiesAsset, ammPool)
 		if err != nil {
 			return nil, err
 		}
@@ -138,30 +138,30 @@ func (k Keeper) AddCollateralToMtp(ctx sdk.Context, msg *types.MsgAddCollateral)
 	k.SetPool(ctx, pool)
 
 	// calc and update open price
-	err = k.OpenChecker.UpdateOpenPrice(ctx, &mtp, ammPool, baseCurrency)
+	err = k.UpdateOpenPrice(ctx, &mtp, ammPool, baseCurrency)
 	if err != nil {
 		return nil, err
 	}
 
 	// Update the pool health.
-	if err = k.OpenLongChecker.UpdatePoolHealth(ctx, &pool); err != nil {
+	if err = k.UpdatePoolHealth(ctx, &pool); err != nil {
 		return nil, err
 	}
 
 	// Update the MTP health.
-	lr, err := k.OpenLongChecker.UpdateMTPHealth(ctx, mtp, ammPool, baseCurrency)
+	lr, err := k.UpdateMTPHealth(ctx, mtp, ammPool, baseCurrency)
 	if err != nil {
 		return nil, err
 	}
 
 	// Check if the MTP is unhealthy
-	safetyFactor := k.OpenLongChecker.GetSafetyFactor(ctx)
+	safetyFactor := k.GetSafetyFactor(ctx)
 	if lr.LTE(safetyFactor) {
 		return nil, types.ErrMTPUnhealthy
 	}
 
 	// Update consolidated collateral amount
-	err = k.OpenLongChecker.CalcMTPConsolidateCollateral(ctx, &mtp, baseCurrency)
+	err = k.CalcMTPConsolidateCollateral(ctx, &mtp, baseCurrency)
 	if err != nil {
 		return nil, err
 	}
@@ -170,7 +170,7 @@ func (k Keeper) AddCollateralToMtp(ctx sdk.Context, msg *types.MsgAddCollateral)
 	mtp.ConsolidateLeverage = types.CalcMTPConsolidateLiability(&mtp)
 
 	// Set MTP
-	err = k.OpenLongChecker.SetMTP(ctx, &mtp)
+	err = k.SetMTP(ctx, &mtp)
 	if err != nil {
 		return nil, err
 	}

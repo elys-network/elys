@@ -29,36 +29,36 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen, isBroker bool) (*types
 		return nil, errorsmod.Wrap(types.ErrInvalidPosition, msg.Position.String())
 	}
 
-	if err := k.OpenChecker.CheckUserAuthorization(ctx, msg); err != nil {
+	if err := k.CheckUserAuthorization(ctx, msg); err != nil {
 		return nil, err
 	}
 
 	// check if existing mtp to consolidate
-	existingMtp := k.OpenChecker.CheckSameAssetPosition(ctx, msg)
+	existingMtp := k.CheckSameAssetPosition(ctx, msg)
 
-	if err := k.OpenChecker.CheckMaxOpenPositions(ctx); err != nil {
+	if err := k.CheckMaxOpenPositions(ctx); err != nil {
 		return nil, err
 	}
 
 	// Get pool id, amm pool, and perpetual pool
-	poolId, ammPool, pool, err := k.OpenChecker.PreparePools(ctx, msg.Collateral.Denom, msg.TradingAsset)
+	poolId, ammPool, pool, err := k.PreparePools(ctx, msg.Collateral.Denom, msg.TradingAsset)
 	if err != nil {
 		return nil, err
 	}
 
-	if err := k.OpenChecker.CheckPoolHealth(ctx, poolId); err != nil {
+	if err := k.CheckPoolHealth(ctx, poolId); err != nil {
 		return nil, err
 	}
 
 	var mtp *types.MTP
 	switch msg.Position {
 	case types.Position_LONG:
-		mtp, err = k.OpenChecker.OpenLong(ctx, poolId, msg, baseCurrency, isBroker)
+		mtp, err = k.OpenLong(ctx, poolId, msg, baseCurrency, isBroker)
 		if err != nil {
 			return nil, err
 		}
 	case types.Position_SHORT:
-		mtp, err = k.OpenChecker.OpenShort(ctx, poolId, msg, baseCurrency, isBroker)
+		mtp, err = k.OpenShort(ctx, poolId, msg, baseCurrency, isBroker)
 		if err != nil {
 			return nil, err
 		}
@@ -71,12 +71,12 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen, isBroker bool) (*types
 	}
 
 	// calc and update open price
-	err = k.OpenChecker.UpdateOpenPrice(ctx, mtp, ammPool, baseCurrency)
+	err = k.UpdateOpenPrice(ctx, mtp, ammPool, baseCurrency)
 	if err != nil {
 		return nil, err
 	}
 
-	k.OpenChecker.EmitOpenEvent(ctx, mtp)
+	k.EmitOpenEvent(ctx, mtp)
 
 	creator := sdk.MustAccAddressFromBech32(msg.Creator)
 	if k.hooks != nil {

@@ -7,7 +7,7 @@ import (
 )
 
 func (k Keeper) CheckMaxOpenPositions(ctx sdk.Context) error {
-	if k.PositionChecker.GetOpenMTPCount(ctx) >= (uint64)(k.PositionChecker.GetMaxOpenPositions(ctx)) {
+	if k.GetOpenMTPCount(ctx) >= k.GetMaxOpenPositions(ctx) {
 		return errorsmod.Wrap(types.ErrMaxOpenPositions, "cannot open new positions")
 	}
 	return nil

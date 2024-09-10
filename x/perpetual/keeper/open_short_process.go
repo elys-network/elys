@@ -8,18 +8,18 @@ import (
 
 func (k Keeper) ProcessOpenShort(ctx sdk.Context, mtp *types.MTP, leverage sdk.Dec, eta sdk.Dec, collateralAmountDec sdk.Dec, poolId uint64, msg *types.MsgOpen, baseCurrency string, isBroker bool) (*types.MTP, error) {
 	// Fetch the pool associated with the given pool ID.
-	pool, found := k.OpenShortChecker.GetPool(ctx, poolId)
+	pool, found := k.GetPool(ctx, poolId)
 	if !found {
 		return nil, errorsmod.Wrap(types.ErrPoolDoesNotExist, mtp.TradingAsset)
 	}
 
 	// Check if the pool is enabled.
-	if !k.OpenShortChecker.IsPoolEnabled(ctx, poolId) {
+	if !k.IsPoolEnabled(ctx, poolId) {
 		return nil, errorsmod.Wrap(types.ErrMTPDisabled, mtp.TradingAsset)
 	}
 
 	// Fetch the corresponding AMM (Automated Market Maker) pool.
-	ammPool, err := k.OpenShortChecker.GetAmmPool(ctx, poolId, mtp.TradingAsset)
+	ammPool, err := k.GetAmmPool(ctx, poolId, mtp.TradingAsset)
 	if err != nil {
 		return nil, err
 	}
@@ -32,7 +32,7 @@ func (k Keeper) ProcessOpenShort(ctx sdk.Context, mtp *types.MTP, leverage sdk.D
 	}
 
 	// Check minimum liabilities.
-	err = k.OpenShortChecker.CheckMinLiabilities(ctx, msg.Collateral, eta, ammPool, mtp.CustodyAsset, baseCurrency)
+	err = k.CheckMinLiabilities(ctx, msg.Collateral, eta, ammPool, mtp.CustodyAsset, baseCurrency)
 	if err != nil {
 		return nil, err
 	}
@@ -46,41 +46,41 @@ func (k Keeper) ProcessOpenShort(ctx sdk.Context, mtp *types.MTP, leverage sdk.D
 	}
 
 	// Borrow the asset the user wants to short.
-	err = k.OpenShortChecker.Borrow(ctx, msg.Collateral.Amount, custodyAmount, mtp, &ammPool, &pool, eta, baseCurrency, isBroker)
+	err = k.Borrow(ctx, msg.Collateral.Amount, custodyAmount, mtp, &ammPool, &pool, eta, baseCurrency, isBroker)
 	if err != nil {
 		return nil, err
 	}
 
 	// Update the pool health.
-	if err = k.OpenShortChecker.UpdatePoolHealth(ctx, &pool); err != nil {
+	if err = k.UpdatePoolHealth(ctx, &pool); err != nil {
 		return nil, err
 	}
 
 	// Take custody from the pool balance.
-	if err = k.OpenShortChecker.TakeInCustody(ctx, *mtp, &pool); err != nil {
+	if err = k.TakeInCustody(ctx, *mtp, &pool); err != nil {
 		return nil, err
 	}
 
 	// Update the MTP health.
-	lr, err := k.OpenShortChecker.UpdateMTPHealth(ctx, *mtp, ammPool, baseCurrency)
+	lr, err := k.UpdateMTPHealth(ctx, *mtp, ammPool, baseCurrency)
 	if err != nil {
 		return nil, err
 	}
 
 	// Check if the MTP is unhealthy
-	safetyFactor := k.OpenShortChecker.GetSafetyFactor(ctx)
+	safetyFactor := k.GetSafetyFactor(ctx)
 	if lr.LTE(safetyFactor) {
 		return nil, types.ErrMTPUnhealthy
 	}
 
 	// Update consolidated collateral amount
-	k.OpenShortChecker.CalcMTPConsolidateCollateral(ctx, mtp, baseCurrency)
+	k.CalcMTPConsolidateCollateral(ctx, mtp, baseCurrency)
 
 	// Calculate consolidate liabiltiy and update consolidate leverage
 	mtp.ConsolidateLeverage = types.CalcMTPConsolidateLiability(mtp)
 
 	// Set MTP
-	k.OpenShortChecker.SetMTP(ctx, mtp)
+	k.SetMTP(ctx, mtp)
 
 	// Return the updated Perpetual Trading Position (MTP).
 	return mtp, nil

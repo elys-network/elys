@@ -11,6 +11,10 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func (suite *PerpetualKeeperTestSuite) TestCheckSameAssetPosition() {
+
+}
+
 func TestCheckSameAssetPosition_NewPosition(t *testing.T) {
 	app := simapp.InitElysTestApp(true)
 	ctx := app.BaseApp.NewContext(true, tmproto.Header{})

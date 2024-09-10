@@ -1,78 +1,52 @@
 package keeper_test
 
 import (
-	"errors"
-	"testing"
-
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/x/perpetual/keeper"
 	"github.com/elys-network/elys/x/perpetual/types"
-	"github.com/elys-network/elys/x/perpetual/types/mocks"
-	"github.com/stretchr/testify/assert"
 )
 
-func TestCheckMaxOpenPositions_OpenPositionsBelowMax(t *testing.T) {
-	// Setup the mock checker
-	mockChecker := new(mocks.PositionChecker)
-
-	// Create an instance of Keeper with the mock checker
-	k := keeper.Keeper{
-		PositionChecker: mockChecker,
+func (suite *PerpetualKeeperTestSuite) TestCheckMaxOpenPositions() {
+	params := types.DefaultParams()
+	params.MaxOpenPositions = 2
+	err := suite.app.PerpetualKeeper.SetParams(suite.ctx, &params)
+	suite.Require().NoError(err)
+	testCases := []struct {
+		name                 string
+		expectErrMsg         string
+		prerequisiteFunction func()
+	}{
+		{
+			"Open Positions Below Max",
+			"",
+			func() {
+				suite.app.PerpetualKeeper.SetOpenMTPCount(suite.ctx, 1)
+			},
+		},
+		{
+			"Open Positions Equal Max",
+			types.ErrMaxOpenPositions.Error(),
+			func() {
+				suite.app.PerpetualKeeper.SetOpenMTPCount(suite.ctx, 2)
+			},
+		},
+		{
+			"Open Positions Exceed Max",
+			types.ErrMaxOpenPositions.Error(),
+			func() {
+				suite.app.PerpetualKeeper.SetOpenMTPCount(suite.ctx, 3)
+			},
+		},
 	}
 
-	ctx := sdk.Context{} // mock or setup a context
-
-	// Mock behavior
-	mockChecker.On("GetOpenMTPCount", ctx).Return(uint64(5))
-	mockChecker.On("GetMaxOpenPositions", ctx).Return(uint64(10))
-
-	err := k.CheckMaxOpenPositions(ctx)
-
-	// Expect no error
-	assert.Nil(t, err)
-	mockChecker.AssertExpectations(t)
-}
-
-func TestCheckMaxOpenPositions_OpenPositionsEqualToMax(t *testing.T) {
-	// Setup the mock checker
-	mockChecker := new(mocks.PositionChecker)
-
-	// Create an instance of Keeper with the mock checker
-	k := keeper.Keeper{
-		PositionChecker: mockChecker,
+	for _, tc := range testCases {
+		suite.Run(tc.name, func() {
+			tc.prerequisiteFunction()
+			err = suite.app.PerpetualKeeper.CheckMaxOpenPositions(suite.ctx)
+			if tc.expectErrMsg != "" {
+				suite.Require().Error(err)
+				suite.Require().Contains(err.Error(), tc.expectErrMsg)
+			} else {
+				suite.Require().NoError(err)
+			}
+		})
 	}
-
-	ctx := sdk.Context{} // mock or setup a context
-
-	// Mock behavior
-	mockChecker.On("GetOpenMTPCount", ctx).Return(uint64(10))
-	mockChecker.On("GetMaxOpenPositions", ctx).Return(uint64(10))
-
-	err := k.CheckMaxOpenPositions(ctx)
-
-	// Expect an error about max open positions
-	assert.True(t, errors.Is(err, types.ErrMaxOpenPositions))
-	mockChecker.AssertExpectations(t)
-}
-
-func TestCheckMaxOpenPositions_OpenPositionsExceedMax(t *testing.T) {
-	// Setup the mock checker
-	mockChecker := new(mocks.PositionChecker)
-
-	// Create an instance of Keeper with the mock checker
-	k := keeper.Keeper{
-		PositionChecker: mockChecker,
-	}
-
-	ctx := sdk.Context{} // mock or setup a context
-
-	// Mock behavior
-	mockChecker.On("GetOpenMTPCount", ctx).Return(uint64(11))
-	mockChecker.On("GetMaxOpenPositions", ctx).Return(uint64(10))
-
-	err := k.CheckMaxOpenPositions(ctx)
-
-	// Expect an error about max open positions
-	assert.True(t, errors.Is(err, types.ErrMaxOpenPositions))
-	mockChecker.AssertExpectations(t)
 }

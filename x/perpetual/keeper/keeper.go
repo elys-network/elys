@@ -18,15 +18,6 @@ import (
 
 type (
 	Keeper struct {
-		types.AuthorizationChecker
-		types.PositionChecker
-		types.PoolChecker
-		types.OpenChecker
-		types.OpenLongChecker
-		types.OpenShortChecker
-		types.CloseLongChecker
-		types.CloseShortChecker
-
 		cdc                codec.BinaryCodec
 		storeKey           storetypes.StoreKey
 		memKey             storetypes.StoreKey
@@ -39,6 +30,17 @@ type (
 
 		hooks types.PerpetualHooks
 	}
+)
+
+var (
+	_ types.AuthorizationChecker = &Keeper{}
+	_ types.PositionChecker      = &Keeper{}
+	_ types.PoolChecker          = &Keeper{}
+	_ types.OpenChecker          = &Keeper{}
+	_ types.OpenLongChecker      = &Keeper{}
+	_ types.OpenShortChecker     = &Keeper{}
+	_ types.CloseLongChecker     = &Keeper{}
+	_ types.CloseShortChecker    = &Keeper{}
 )
 
 func NewKeeper(
@@ -68,16 +70,6 @@ func NewKeeper(
 		assetProfileKeeper: assetProfileKeeper,
 		parameterKeeper:    parameterKeeper,
 	}
-
-	keeper.AuthorizationChecker = keeper
-	keeper.PositionChecker = keeper
-	keeper.PoolChecker = keeper
-	keeper.OpenChecker = keeper
-	keeper.OpenLongChecker = keeper
-	keeper.OpenShortChecker = keeper
-	keeper.CloseLongChecker = keeper
-	keeper.CloseShortChecker = keeper
-
 	return keeper
 }
 
@@ -136,7 +128,7 @@ func (k Keeper) Borrow(ctx sdk.Context, collateralAmount math.Int, custodyAmount
 		etaAmt := liabilitiesDec.TruncateInt()
 		etaAmtToken := sdk.NewCoin(mtp.CollateralAsset, etaAmt)
 		// Calculate base currency amount given atom out amount and we use it liabilty amount in base currency
-		liabilityAmt, err := k.OpenLongChecker.EstimateSwapGivenOut(ctx, etaAmtToken, baseCurrency, *ammPool)
+		liabilityAmt, err := k.EstimateSwapGivenOut(ctx, etaAmtToken, baseCurrency, *ammPool)
 		if err != nil {
 			return err
 		}
@@ -147,7 +139,7 @@ func (k Keeper) Borrow(ctx sdk.Context, collateralAmount math.Int, custodyAmount
 	// If position is short, liabilities should be swapped to liabilities asset
 	if mtp.Position == types.Position_SHORT {
 		liabilitiesAmtTokenIn := sdk.NewCoin(baseCurrency, liabilitiesDec.TruncateInt())
-		liabilitiesAmt, err := k.OpenShortChecker.EstimateSwap(ctx, liabilitiesAmtTokenIn, mtp.LiabilitiesAsset, *ammPool)
+		liabilitiesAmt, err := k.EstimateSwap(ctx, liabilitiesAmtTokenIn, mtp.LiabilitiesAsset, *ammPool)
 		if err != nil {
 			return err
 		}
@@ -459,7 +451,7 @@ func (k Keeper) CheckMinLiabilities(ctx sdk.Context, collateralAmount sdk.Coin, 
 		outAmt := liabilitiesDec.TruncateInt()
 		outAmtToken := sdk.NewCoin(collateralAmount.Denom, outAmt)
 
-		inAmt, err := k.OpenLongChecker.EstimateSwapGivenOut(ctx, outAmtToken, baseCurrency, ammPool)
+		inAmt, err := k.EstimateSwapGivenOut(ctx, outAmtToken, baseCurrency, ammPool)
 		if err != nil {
 			return types.ErrBorrowTooLow
 		}

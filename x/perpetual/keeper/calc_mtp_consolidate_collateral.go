@@ -11,7 +11,7 @@ func (k Keeper) CalcMTPConsolidateCollateral(ctx sdk.Context, mtp *types.MTP, ba
 		consolidateCollateral = consolidateCollateral.Add(mtp.Collateral)
 	} else {
 		// swap into base currency
-		_, ammPool, _, err := k.OpenChecker.PreparePools(ctx, mtp.CollateralAsset, mtp.CustodyAsset)
+		_, ammPool, _, err := k.PreparePools(ctx, mtp.CollateralAsset, mtp.CustodyAsset)
 		if err != nil {
 			return err
 		}
