@@ -21,7 +21,7 @@ func (k Keeper) OpenConsolidate(ctx sdk.Context, existingMtp *types.MTP, newMtp 
 		return nil, errorsmod.Wrap(types.ErrMTPDisabled, existingMtp.CustodyAsset)
 	}
 
-	ammPool, err := k.GetAmmPool(ctx, poolId, existingMtp.CustodyAsset)
+	ammPool, err := k.GetAmmPool(ctx, poolId)
 	if err != nil {
 		return nil, err
 	}

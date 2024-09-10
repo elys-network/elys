@@ -26,7 +26,7 @@ func (k Keeper) CloseShort(ctx sdk.Context, msg *types.MsgClose, baseCurrency st
 	}
 
 	// Retrieve AmmPool
-	ammPool, err := k.GetAmmPool(ctx, mtp.AmmPoolId, mtp.CustodyAsset)
+	ammPool, err := k.GetAmmPool(ctx, mtp.AmmPoolId)
 	if err != nil {
 		return nil, sdk.ZeroInt(), err
 	}

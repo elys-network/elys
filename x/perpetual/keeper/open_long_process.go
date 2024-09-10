@@ -19,7 +19,7 @@ func (k Keeper) ProcessOpenLong(ctx sdk.Context, mtp *types.MTP, leverage sdk.De
 	}
 
 	// Fetch the corresponding AMM (Automated Market Maker) pool.
-	ammPool, err := k.GetAmmPool(ctx, poolId, mtp.TradingAsset)
+	ammPool, err := k.GetAmmPool(ctx, poolId)
 	if err != nil {
 		return nil, err
 	}
@@ -94,13 +94,19 @@ func (k Keeper) ProcessOpenLong(ctx sdk.Context, mtp *types.MTP, leverage sdk.De
 	}
 
 	// Update consolidated collateral amount
-	k.CalcMTPConsolidateCollateral(ctx, mtp, baseCurrency)
+	err = k.CalcMTPConsolidateCollateral(ctx, mtp, baseCurrency)
+	if err != nil {
+		return nil, err
+	}
 
 	// Calculate consolidate liabiltiy and update consolidate leverage
 	mtp.ConsolidateLeverage = types.CalcMTPConsolidateLiability(mtp)
 
 	// Set MTP
-	k.SetMTP(ctx, mtp)
+	err = k.SetMTP(ctx, mtp)
+	if err != nil {
+		return nil, err
+	}
 
 	return mtp, nil
 }

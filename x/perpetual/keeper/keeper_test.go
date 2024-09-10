@@ -1,6 +1,8 @@
 package keeper_test
 
 import (
+	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
+	ammtypes "github.com/elys-network/elys/x/amm/types"
 	"testing"
 	"time"
 
@@ -84,42 +86,42 @@ func (suite *PerpetualKeeperTestSuite) AddBlockTime(d time.Duration) {
 	suite.ctx = suite.ctx.WithBlockTime(suite.ctx.BlockTime().Add(d))
 }
 
-func (suite *PerpetualKeeperTestSuite) SetupCoinPrices(ctx sdk.Context) {
+func (suite *PerpetualKeeperTestSuite) SetupCoinPrices() {
 	// prices set for USDT and USDC
 	provider := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
 
 	for _, v := range priceMap {
-		suite.app.OracleKeeper.SetAssetInfo(ctx, oracletypes.AssetInfo{
+		suite.app.OracleKeeper.SetAssetInfo(suite.ctx, oracletypes.AssetInfo{
 			Denom:   v.denom,
 			Display: v.display,
 			Decimal: 6,
 		})
-		suite.app.OracleKeeper.SetPrice(ctx, oracletypes.Price{
+		suite.app.OracleKeeper.SetPrice(suite.ctx, oracletypes.Price{
 			Asset:     v.display,
 			Price:     v.price,
 			Source:    "elys",
 			Provider:  provider.String(),
-			Timestamp: uint64(ctx.BlockTime().Unix()),
+			Timestamp: uint64(suite.ctx.BlockTime().Unix()),
 		})
 	}
 }
 
-func (suite *PerpetualKeeperTestSuite) AddCoinPrices(ctx sdk.Context, denoms []string) {
+func (suite *PerpetualKeeperTestSuite) AddCoinPrices(denoms []string) {
 	// prices set for USDT and USDC
 	provider := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
 
 	for _, v := range denoms {
-		suite.app.OracleKeeper.SetAssetInfo(ctx, oracletypes.AssetInfo{
+		suite.app.OracleKeeper.SetAssetInfo(suite.ctx, oracletypes.AssetInfo{
 			Denom:   priceMap[v].denom,
 			Display: priceMap[v].display,
 			Decimal: 6,
 		})
-		suite.app.OracleKeeper.SetPrice(ctx, oracletypes.Price{
+		suite.app.OracleKeeper.SetPrice(suite.ctx, oracletypes.Price{
 			Asset:     priceMap[v].display,
 			Price:     priceMap[v].price,
 			Source:    "elys",
 			Provider:  provider.String(),
-			Timestamp: uint64(ctx.BlockTime().Unix()),
+			Timestamp: uint64(suite.ctx.BlockTime().Unix()),
 		})
 	}
 }
@@ -129,6 +131,65 @@ func (suite *PerpetualKeeperTestSuite) RemovePrices(ctx sdk.Context, denoms []st
 		suite.app.OracleKeeper.RemoveAssetInfo(ctx, v)
 		suite.app.OracleKeeper.RemovePrice(ctx, priceMap[v].display, "elys", uint64(ctx.BlockTime().Unix()))
 	}
+}
+
+func (suite *PerpetualKeeperTestSuite) AddAccounts(n int) []sdk.AccAddress {
+	issueAmount := sdk.NewInt(1000_000_000_000)
+	addresses := simapp.AddTestAddrs(suite.app, suite.ctx, n, issueAmount)
+	for _, address := range addresses {
+		coins := sdk.NewCoins(
+			sdk.NewCoin(ptypes.ATOM, issueAmount),
+			sdk.NewCoin(ptypes.Elys, issueAmount),
+			sdk.NewCoin(ptypes.BaseCurrency, issueAmount),
+		)
+		err := suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, coins)
+		if err != nil {
+			panic(err)
+		}
+		err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, address, coins)
+		if err != nil {
+			panic(err)
+		}
+	}
+	return addresses
+}
+
+func (suite *PerpetualKeeperTestSuite) SetAndGetAmmPool(creator sdk.AccAddress, poolId uint64, useOracle bool, swapFee, exitFee sdk.Dec, asset2 string, tokenAmount sdk.Int) ammtypes.Pool {
+	ammPool := ammtypes.Pool{
+		PoolId:            poolId,
+		Address:           ammtypes.NewPoolAddress(poolId).String(),
+		RebalanceTreasury: ammtypes.NewPoolRebalanceTreasury(poolId).String(),
+		PoolParams: ammtypes.PoolParams{
+			UseOracle:                   useOracle,
+			ExternalLiquidityRatio:      sdk.NewDec(2),
+			WeightBreakingFeeMultiplier: sdk.ZeroDec(),
+			WeightBreakingFeeExponent:   sdk.NewDecWithPrec(25, 1), // 2.5
+			WeightRecoveryFeePortion:    sdk.NewDecWithPrec(10, 2), // 10%
+			ThresholdWeightDifference:   sdk.ZeroDec(),
+			SwapFee:                     swapFee,
+			ExitFee:                     exitFee,
+			FeeDenom:                    ptypes.BaseCurrency,
+		},
+		TotalShares: sdk.NewCoin("pool/1", sdk.NewInt(100)),
+		PoolAssets: []ammtypes.PoolAsset{
+			{
+				Token:  sdk.NewCoin(ptypes.BaseCurrency, tokenAmount),
+				Weight: sdk.NewInt(10),
+			},
+			{
+				Token:  sdk.NewCoin(asset2, tokenAmount),
+				Weight: sdk.NewInt(10),
+			},
+		},
+		TotalWeight: sdk.ZeroInt(),
+	}
+
+	err := suite.app.AmmKeeper.SetPool(suite.ctx, ammPool)
+	suite.Require().NoError(err)
+
+	err = suite.app.BankKeeper.SendCoins(suite.ctx, creator, ammtypes.NewPoolAddress(poolId), sdk.NewCoins(sdk.NewCoin(ptypes.BaseCurrency, tokenAmount), sdk.NewCoin(asset2, tokenAmount)))
+	suite.Require().NoError(err)
+	return ammPool
 }
 
 func TestSetGetMTP(t *testing.T) {

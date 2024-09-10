@@ -49,7 +49,7 @@ type OpenLongChecker interface {
 	GetMaxLeverageParam(ctx sdk.Context) sdk.Dec
 	GetPool(ctx sdk.Context, poolId uint64) (Pool, bool)
 	IsPoolEnabled(ctx sdk.Context, poolId uint64) bool
-	GetAmmPool(ctx sdk.Context, poolId uint64, tradingAsset string) (ammtypes.Pool, error)
+	GetAmmPool(ctx sdk.Context, poolId uint64) (ammtypes.Pool, error)
 	CheckMinLiabilities(ctx sdk.Context, collateralTokenAmt sdk.Coin, eta sdk.Dec, ammPool ammtypes.Pool, borrowAsset string, baseCurrency string) error
 	EstimateSwap(ctx sdk.Context, leveragedAmtTokenIn sdk.Coin, borrowAsset string, ammPool ammtypes.Pool) (math.Int, error)
 	EstimateSwapGivenOut(ctx sdk.Context, tokenOutAmount sdk.Coin, tokenInDenom string, ammPool ammtypes.Pool) (math.Int, error)
@@ -69,7 +69,7 @@ type OpenShortChecker interface {
 	GetMaxLeverageParam(ctx sdk.Context) sdk.Dec
 	GetPool(ctx sdk.Context, poolId uint64) (Pool, bool)
 	IsPoolEnabled(ctx sdk.Context, poolId uint64) bool
-	GetAmmPool(ctx sdk.Context, poolId uint64, tradingAsset string) (ammtypes.Pool, error)
+	GetAmmPool(ctx sdk.Context, poolId uint64) (ammtypes.Pool, error)
 	CheckMinLiabilities(ctx sdk.Context, collateralTokenAmt sdk.Coin, eta sdk.Dec, ammPool ammtypes.Pool, borrowAsset string, baseCurrency string) error
 	EstimateSwap(ctx sdk.Context, leveragedAmtTokenIn sdk.Coin, borrowAsset string, ammPool ammtypes.Pool) (math.Int, error)
 	EstimateSwapGivenOut(ctx sdk.Context, tokenOutAmount sdk.Coin, tokenInDenom string, ammPool ammtypes.Pool) (math.Int, error)
@@ -91,7 +91,7 @@ type CloseLongChecker interface {
 		ctx sdk.Context,
 		poolId uint64,
 	) (val Pool, found bool)
-	GetAmmPool(ctx sdk.Context, poolId uint64, tradingAsset string) (ammtypes.Pool, error)
+	GetAmmPool(ctx sdk.Context, poolId uint64) (ammtypes.Pool, error)
 	HandleBorrowInterest(ctx sdk.Context, mtp *MTP, pool *Pool, ammPool ammtypes.Pool) error
 	TakeOutCustody(ctx sdk.Context, mtp MTP, pool *Pool, amount math.Int) error
 	EstimateAndRepay(ctx sdk.Context, mtp MTP, pool Pool, ammPool ammtypes.Pool, amount math.Int, baseCurrency string) (math.Int, error)
@@ -104,7 +104,7 @@ type CloseShortChecker interface {
 		ctx sdk.Context,
 		poolId uint64,
 	) (val Pool, found bool)
-	GetAmmPool(ctx sdk.Context, poolId uint64, tradingAsset string) (ammtypes.Pool, error)
+	GetAmmPool(ctx sdk.Context, poolId uint64) (ammtypes.Pool, error)
 	HandleBorrowInterest(ctx sdk.Context, mtp *MTP, pool *Pool, ammPool ammtypes.Pool) error
 	TakeOutCustody(ctx sdk.Context, mtp MTP, pool *Pool, amount math.Int) error
 	EstimateAndRepay(ctx sdk.Context, mtp MTP, pool Pool, ammPool ammtypes.Pool, amount math.Int, baseCurrency string) (math.Int, error)

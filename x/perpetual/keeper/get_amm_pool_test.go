@@ -1,28 +1,14 @@
 package keeper_test
 
 import (
-	"errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 	"github.com/elys-network/elys/x/perpetual/types"
-	"github.com/stretchr/testify/assert"
 )
 
-func (suie *PerpetualKeeperTestSuite) TestGetAmmPool_PoolNotFound() {
-	borrowAsset := "testAsset"
-
-	_, err := suie.app.PerpetualKeeper.GetAmmPool(suie.ctx, 1, borrowAsset)
-
-	// Expect no error and the first pool ID to be returned
-	assert.True(suie.T(), errors.Is(err, types.ErrPoolDoesNotExist))
-}
-
-func (suie *PerpetualKeeperTestSuite) TestGetAmmPool_PoolFound() {
-	collateralAsset := ptypes.BaseCurrency
-	borrowAsset := "testAsset"
-
-	expectedPool := ammtypes.Pool{
+func (suite *PerpetualKeeperTestSuite) TestGetAmmPool() {
+	ammPool := ammtypes.Pool{
 		PoolId:            1,
 		Address:           "",
 		RebalanceTreasury: "",
@@ -34,27 +20,54 @@ func (suie *PerpetualKeeperTestSuite) TestGetAmmPool_PoolFound() {
 			WeightRecoveryFeePortion:    sdk.NewDecWithPrec(10, 2), // 10%
 			ThresholdWeightDifference:   sdk.ZeroDec(),
 			SwapFee:                     sdk.ZeroDec(),
+			ExitFee:                     sdk.ZeroDec(),
 			FeeDenom:                    ptypes.BaseCurrency,
 		},
-		TotalShares: sdk.Coin{},
+		TotalShares: sdk.NewCoin("pool/1", sdk.NewInt(100)),
 		PoolAssets: []ammtypes.PoolAsset{
 			{
-				Token:  sdk.NewCoin(collateralAsset, sdk.NewInt(10000)),
+				Token:  sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(10000)),
 				Weight: sdk.NewInt(10),
 			},
 			{
-				Token:  sdk.NewCoin(borrowAsset, sdk.NewInt(10000)),
+				Token:  sdk.NewCoin("borrowAsset", sdk.NewInt(10000)),
 				Weight: sdk.NewInt(10),
 			},
 		},
 		TotalWeight: sdk.ZeroInt(),
 	}
-	err := suie.app.AmmKeeper.SetPool(suie.ctx, expectedPool)
-	suie.Require().NoError(err)
+	testCases := []struct {
+		name                 string
+		expectErrMsg         string
+		prerequisiteFunction func()
+	}{
+		{
+			"pool not found",
+			types.ErrPoolDoesNotExist.Error(),
+			func() {
+			},
+		},
+		{
+			"pool found",
+			"",
+			func() {
+				err := suite.app.AmmKeeper.SetPool(suite.ctx, ammPool)
+				suite.Require().NoError(err)
+			},
+		},
+	}
 
-	pool, err := suie.app.PerpetualKeeper.GetAmmPool(suie.ctx, 1, borrowAsset)
-
-	// Expect no error and the correct pool to be returned
-	assert.Nil(suie.T(), err)
-	assert.Equal(suie.T(), expectedPool.PoolId, pool.PoolId)
+	for _, tc := range testCases {
+		suite.Run(tc.name, func() {
+			tc.prerequisiteFunction()
+			pool, err := suite.app.PerpetualKeeper.GetAmmPool(suite.ctx, 1)
+			if tc.expectErrMsg != "" {
+				suite.Require().Error(err)
+				suite.Require().Contains(err.Error(), tc.expectErrMsg)
+			} else {
+				suite.Require().NoError(err)
+				suite.Require().Equal(ammPool, pool)
+			}
+		})
+	}
 }

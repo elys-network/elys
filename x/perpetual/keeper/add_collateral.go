@@ -38,7 +38,7 @@ func (k Keeper) AddCollateralToMtp(ctx sdk.Context, msg *types.MsgAddCollateral)
 	}
 
 	// Fetch the corresponding AMM (Automated Market Maker) pool.
-	ammPool, err := k.GetAmmPool(ctx, mtp.AmmPoolId, mtp.TradingAsset)
+	ammPool, err := k.GetAmmPool(ctx, mtp.AmmPoolId)
 	if err != nil {
 		return nil, err
 	}
