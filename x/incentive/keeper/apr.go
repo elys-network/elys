@@ -83,7 +83,7 @@ func (k Keeper) CalculateApr(ctx sdk.Context, query *types.QueryAprRequest) (sdk
 			}
 
 			// If no rewards were given.
-			if params.DexRewardsStakers.NumBlocks.IsZero() {
+			if params.DexRewardsStakers.NumBlocks == 0 {
 				return sdk.ZeroDec(), nil
 			}
 
@@ -106,7 +106,7 @@ func (k Keeper) CalculateApr(ctx sdk.Context, query *types.QueryAprRequest) (sdk
 			yearlyDexRewardAmount := amount.
 				Mul(usdcDenomPrice).
 				MulInt64(totalBlocksPerYear).
-				QuoInt(params.DexRewardsStakers.NumBlocks)
+				QuoInt64(params.DexRewardsStakers.NumBlocks)
 
 			apr := yearlyDexRewardAmount.
 				Quo(edenDenomPrice).

@@ -264,7 +264,6 @@ func (suite *KeeperTestSuite) TestEstimateSwapGivenOut() {
 
 	leveragelp := app.LeveragelpKeeper
 
-
 	testCases := []struct {
 		name                 string
 		tokenOutAmount       sdk.Coin

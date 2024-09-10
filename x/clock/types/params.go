@@ -10,6 +10,8 @@ import (
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
 )
 
+const MinimumContractGasLimit = uint64(100_000)
+
 var (
 	KeyContractAddressesIdentifier = []byte("ContractAddresses")
 	KeyContractGasLimitIdentifier  = []byte("ContractGasLimit")
@@ -49,13 +51,15 @@ func NewParams(
 
 // Validate performs basic validation.
 func (p Params) Validate() error {
-	minimumGas := uint64(100_000)
-	if p.ContractGasLimit < minimumGas {
+
+	if p.ContractGasLimit < MinimumContractGasLimit {
 		return errorsmod.Wrapf(
 			sdkerrors.ErrInvalidRequest,
-			"invalid contract gas limit: %d. Must be above %d", p.ContractGasLimit, minimumGas,
+			"invalid contract gas limit: %d. Must be above %d", p.ContractGasLimit, MinimumContractGasLimit,
 		)
 	}
+
+	contractAddressesMap := make(map[string]bool)
 
 	for _, addr := range p.ContractAddresses {
 		// Valid address check
@@ -67,19 +71,12 @@ func (p Params) Validate() error {
 		}
 
 		// duplicate address check
-		count := 0
-		for _, addr2 := range p.ContractAddresses {
-			if addr == addr2 {
-				count++
-			}
-
-			if count > 1 {
-				return errorsmod.Wrapf(
-					sdkerrors.ErrInvalidAddress,
-					"duplicate contract address: %s", addr,
-				)
-			}
+		if contractAddressesMap[addr] {
+			return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "duplicate contract address: %s", addr)
+		} else {
+			contractAddressesMap[addr] = true
 		}
+
 	}
 
 	return nil

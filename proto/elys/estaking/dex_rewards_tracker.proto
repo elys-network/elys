@@ -10,6 +10,17 @@ import "gogoproto/gogo.proto";
 // amount here is in USDC
 message DexRewardsTracker {
   // Number of blocks since start of epoch (distribution epoch)
+  int64 num_blocks = 1;
+  // Accumulated amount at distribution epoch - recalculated at every
+  // distribution epoch
+  string amount = 2 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message LegacyDexRewardsTracker {
+  // Number of blocks since start of epoch (distribution epoch)
   string num_blocks = 1 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
     (gogoproto.nullable) = false
