@@ -222,7 +222,6 @@ func (k Keeper) GetAllFundingRate(ctx sdk.Context) []types.FundingRateBlock {
 	return fundings
 }
 
-// TODO: funding rate should be considered without subtraction, last value should be considered
 func (k Keeper) GetFundingRate(ctx sdk.Context, startBlock uint64, pool uint64) sdk.Dec {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.FundingRatePrefix)
 	currentBlockKey := types.GetFundingRateKey(uint64(ctx.BlockHeight()), pool)

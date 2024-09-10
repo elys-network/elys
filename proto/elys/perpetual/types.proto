@@ -218,6 +218,16 @@ message FundingRateBlock {
     ];
 }
 
+message ToPay {
+  string asset_balance = 1 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+  string asset_denom =  2;
+  string address = 3;
+  uint64 id = 4;
+}
+
 message WhiteList {
   repeated string validator_list = 1;
 }

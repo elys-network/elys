@@ -82,11 +82,11 @@ func (k Keeper) GetMTP(ctx sdk.Context, mtpAddress sdk.AccAddress, id uint64) (t
 	return mtp, nil
 }
 
-// func (k Keeper) DoesMTPExist(ctx sdk.Context, mtpAddress string, id uint64) bool {
-// 	key := types.GetMTPKey(mtpAddress, id)
-// 	store := ctx.KVStore(k.storeKey)
-// 	return store.Has(key)
-// }
+func (k Keeper) DoesMTPExist(ctx sdk.Context, mtpAddress sdk.AccAddress, id uint64) bool {
+	key := types.GetMTPKey(mtpAddress, id)
+	store := ctx.KVStore(k.storeKey)
+	return store.Has(key)
+}
 
 func (k Keeper) GetMTPIterator(ctx sdk.Context) sdk.Iterator {
 	store := ctx.KVStore(k.storeKey)
@@ -304,6 +304,16 @@ func (k Keeper) GetOpenMTPCount(ctx sdk.Context) uint64 {
 		count = types.GetUint64FromBytes(countBz)
 	}
 	return count
+}
+
+// TODO: Handle to pay with a claim message or in begin blocker
+func (k Keeper) SetToPay(ctx sdk.Context, toPay *types.ToPay) error {
+	store := ctx.KVStore(k.storeKey)
+	address := sdk.MustAccAddressFromBech32(toPay.Address)
+
+	key := types.GetToPayKey(address, toPay.Id)
+	store.Set(key, k.cdc.MustMarshal(toPay))
+	return nil
 }
 
 func (k Keeper) V6_MTPMigration(ctx sdk.Context) {

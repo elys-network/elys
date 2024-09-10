@@ -47,7 +47,7 @@ func (k Keeper) CheckAndLiquidateUnhealthyPosition(ctx sdk.Context, mtp *types.M
 		return errors.Wrap(err, fmt.Sprintf("error handling funding fee collection: %s", mtp.CollateralAsset))
 	}
 
-	_, err = k.SettleFundingFeeDistribution(ctx, mtp, &pool, ammPool, baseCurrency)
+	toPay, err := k.SettleFundingFeeDistribution(ctx, mtp, &pool, ammPool, baseCurrency)
 	if err != nil {
 		return errors.Wrap(err, fmt.Sprintf("error handling funding fee collection: %s", mtp.CollateralAsset))
 	}
@@ -106,17 +106,23 @@ func (k Keeper) CheckAndLiquidateUnhealthyPosition(ctx sdk.Context, mtp *types.M
 		return errors.Wrap(types.ErrInvalidPosition, fmt.Sprintf("invalid position type: %s", mtp.Position))
 	}
 
-	// found = k.DoesMTPExist(ctx, mtp.Address, mtp.Id)
-	// empty := sdk.Coin{}
-	// if !found && toPay != empty {
-	// 	// TODO: Should we pay the funding fee to position owner
-	// }
-
 	if err == nil {
 		// Emit event if position was closed
 		k.EmitForceClose(ctx, mtp, repayAmount, "")
 	} else {
 		return errors.Wrap(err, "error executing force close")
+	}
+
+	senderAddress, _ := sdk.AccAddressFromBech32(mtp.Address)
+	found = k.DoesMTPExist(ctx, senderAddress, mtp.Id)
+	empty := sdk.Coin{}
+	if !found && toPay != empty {
+		k.SetToPay(ctx, &types.ToPay{
+			AssetDenom:   toPay.Denom,
+			AssetBalance: toPay.Amount,
+			Address:      senderAddress.String(),
+			Id:           mtp.Id,
+		})
 	}
 
 	return nil
