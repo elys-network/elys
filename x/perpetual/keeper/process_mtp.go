@@ -15,13 +15,6 @@ import (
 )
 
 func (k Keeper) CheckAndLiquidateUnhealthyPosition(ctx sdk.Context, mtp *types.MTP, pool types.Pool, ammPool ammtypes.Pool, baseCurrency string, baseCurrencyDecimal uint64) error {
-	defer func() {
-		if r := recover(); r != nil {
-			if msg, ok := r.(string); ok {
-				ctx.Logger().Error(msg)
-			}
-		}
-	}()
 	var err error
 	// update mtp take profit liabilities
 	// calculate mtp take profit liabilities, delta x_tp_l = delta y_tp_c * current price (take profit liabilities = take profit custody * current price)

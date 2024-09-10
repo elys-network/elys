@@ -36,7 +36,7 @@ func TestCheckAndLiquidateUnhealthyPosition(t *testing.T) {
 	})
 
 	// Generate 1 random account with 1000stake balanced
-	addr := simapp.AddTestAddrs(app, ctx, 1, sdk.NewInt(1000000000000))
+	addr := simapp.AddTestAddrs(app, ctx, 3, sdk.NewInt(1000000000000))
 
 	// Create a pool
 	// Mint 100000USDC
@@ -129,6 +129,13 @@ func TestCheckAndLiquidateUnhealthyPosition(t *testing.T) {
 	err = mk.InvariantCheck(ctx)
 	require.Equal(t, err, nil)
 
+	// Set params
+	params := mk.GetParams(ctx)
+	params.FundingFeeCollectionAddress = addr[1].String()
+	params.IncrementalBorrowInterestPaymentFundAddress = addr[2].String()
+	params.IncrementalBorrowInterestPaymentFundPercentage = sdk.MustNewDecFromStr("0.0")
+	mk.SetParams(ctx, &params)
+
 	mtp := mtps[0]
 
 	perpPool, _ := mk.GetPool(ctx, pool.PoolId)
@@ -170,10 +177,6 @@ func TestCheckAndLiquidateUnhealthyPosition(t *testing.T) {
 		OpenPrice:                      sdk.MustNewDecFromStr("10.050000157785002477"),
 		LastInterestCalcTime:           uint64(ctx.BlockTime().Unix()),
 	}, mtp)
-
-	// Increase borrowing rate to test liquidation
-	perpPool.BorrowInterestRate = sdk.MustNewDecFromStr("1.0")
-	mk.SetPool(ctx, perpPool)
 
 	err = mk.CheckAndLiquidateUnhealthyPosition(ctx, &mtp, perpPool, pool, ptypes.BaseCurrency, 6)
 	require.NoError(t, err)
