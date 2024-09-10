@@ -8,9 +8,9 @@ import (
 
 const TypeMsgOpen = "open"
 
-var _ sdk.Msg = &MsgClose{}
+var _ sdk.Msg = &MsgOpen{}
 
-func NewMsgOpen(creator string, position Position, leverage sdk.Dec, tradingAsset string, collateral sdk.Coin, takeProfitPrice sdk.Dec) *MsgOpen {
+func NewMsgOpen(creator string, position Position, leverage sdk.Dec, tradingAsset string, collateral sdk.Coin, takeProfitPrice sdk.Dec,  stopLossPrice sdk.Dec) *MsgOpen {
 	return &MsgOpen{
 		Creator:         creator,
 		Position:        position,
@@ -18,6 +18,7 @@ func NewMsgOpen(creator string, position Position, leverage sdk.Dec, tradingAsse
 		TradingAsset:    tradingAsset,
 		Collateral:      collateral,
 		TakeProfitPrice: takeProfitPrice,
+		StopLossPrice:   stopLossPrice,
 	}
 }
 

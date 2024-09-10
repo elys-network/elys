@@ -28,6 +28,7 @@ func TestCheckSameAssetPosition_NewPosition(t *testing.T) {
 		Leverage:     sdk.NewDec(1),
 		TradingAsset: ptypes.ATOM,
 		Collateral:   sdk.NewCoin(ptypes.ATOM, sdk.NewInt(100)),
+		StopLossPrice: sdk.NewDec(100),
 	}
 
 	mtp = k.CheckSameAssetPosition(ctx, msg)

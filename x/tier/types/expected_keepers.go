@@ -48,7 +48,7 @@ type CommitmentKeeper interface {
 }
 
 type PerpetualKeeper interface {
-	GetMTPsForAddress(ctx sdk.Context, mtpAddress sdk.AccAddress, pagination *query.PageRequest) ([]*perpetualtypes.MTP, *query.PageResponse, error)
+	GetAllMTPsForAddress(ctx sdk.Context, mtpAddress sdk.AccAddress) []*perpetualtypes.MTP
 }
 
 // AssetProfileKeeper defines the expected interface needed to retrieve denom info
