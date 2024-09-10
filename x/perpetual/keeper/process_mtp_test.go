@@ -36,7 +36,7 @@ func TestCheckAndLiquidateUnhealthyPosition(t *testing.T) {
 	})
 
 	// Generate 1 random account with 1000stake balanced
-	addr := simapp.AddTestAddrs(app, ctx, 1, sdk.NewInt(1000000000000))
+	addr := simapp.AddTestAddrs(app, ctx, 3, sdk.NewInt(1000000000000))
 
 	// Create a pool
 	// Mint 100000USDC
@@ -98,6 +98,7 @@ func TestCheckAndLiquidateUnhealthyPosition(t *testing.T) {
 	poolAddress := sdk.MustAccAddressFromBech32(pool.GetAddress())
 	require.NoError(t, err)
 
+	app.BankKeeper.SendCoins(ctx, addr[0], poolAddress, sdk.NewCoins(sdk.NewCoin("stake", sdk.NewInt(1000000))))
 	// Balance check before create a perpetual position
 	balances := app.BankKeeper.GetAllBalances(ctx, poolAddress)
 	require.Equal(t, balances.AmountOf(ptypes.BaseCurrency), sdk.NewInt(100000000000))
@@ -130,9 +131,17 @@ func TestCheckAndLiquidateUnhealthyPosition(t *testing.T) {
 	err = mk.InvariantCheck(ctx)
 	require.Equal(t, err, nil)
 
+	// Set params
+	params := mk.GetParams(ctx)
+	params.FundingFeeCollectionAddress = addr[1].String()
+	params.IncrementalBorrowInterestPaymentFundAddress = addr[2].String()
+	params.IncrementalBorrowInterestPaymentFundPercentage = sdk.MustNewDecFromStr("0.5")
+	mk.SetParams(ctx, &params)
+
 	mtp := mtps[0]
 
 	perpPool, _ := mk.GetPool(ctx, pool.PoolId)
+
 	err = mk.CheckAndLiquidateUnhealthyPosition(ctx, &mtp, perpPool, pool, ptypes.BaseCurrency, 6)
 	require.NoError(t, err)
 
@@ -170,11 +179,9 @@ func TestCheckAndLiquidateUnhealthyPosition(t *testing.T) {
 		FundingFeeReceivedCustody:      sdk.NewInt(0),
 		OpenPrice:                      sdk.MustNewDecFromStr("10.050000157785002477"),
 		LastInterestCalcTime:           uint64(ctx.BlockTime().Unix()),
+		LastFundingCalcTime:            uint64(ctx.BlockTime().Unix()),
+		StopLossPrice:                  sdk.ZeroDec(),
 	}, mtp)
-
-	// Increase borrowing rate to test liquidation
-	perpPool.BorrowInterestRate = sdk.MustNewDecFromStr("1.0")
-	mk.SetPool(ctx, perpPool)
 
 	err = mk.CheckAndLiquidateUnhealthyPosition(ctx, &mtp, perpPool, pool, ptypes.BaseCurrency, 6)
 	require.NoError(t, err)
@@ -182,3 +189,5 @@ func TestCheckAndLiquidateUnhealthyPosition(t *testing.T) {
 	mtps = mk.GetAllMTPs(ctx)
 	require.Equal(t, len(mtps), 0)
 }
+
+// TODO: Add funding rate tests

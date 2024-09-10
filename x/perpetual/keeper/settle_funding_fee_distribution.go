@@ -46,7 +46,7 @@ func (k Keeper) SettleFundingFeeDistribution(ctx sdk.Context, mtp *types.MTP, po
 	long, short := k.GetFundingDistributionValue(ctx, uint64(ctx.BlockHeight()), pool.AmmPoolId)
 	var totalFund sdk.Dec
 	// calc funding fee share
-	fundingFeeShare := sdk.ZeroDec()
+	var fundingFeeShare sdk.Dec
 	if mtp.Position == types.Position_LONG {
 		// Ensure liabilitiesLong is not zero to avoid division by zero
 		if liabilitiesLong.IsZero() {
@@ -90,12 +90,8 @@ func (k Keeper) SettleFundingFeeDistribution(ctx sdk.Context, mtp *types.MTP, po
 
 	// add payment to total funding fee paid in collateral asset
 	mtp.FundingFeeReceivedCollateral = mtp.FundingFeeReceivedCollateral.Add(fundingFeeCollateralAmount)
-
 	// add payment to total funding fee paid in custody asset
 	mtp.FundingFeeReceivedCustody = mtp.FundingFeeReceivedCustody.Add(fundingFeeAmount.Amount)
-
-	mtp.LastFundingCalcBlock = uint64(ctx.BlockHeight())
-	mtp.LastFundingCalcTime = uint64(ctx.BlockTime().Unix())
 
 	return toPay, nil
 }
