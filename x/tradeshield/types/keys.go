@@ -12,11 +12,12 @@ const (
 
 	// MemStoreKey defines the in-memory store key
 	MemStoreKey = "mem_tradeshield"
-
-	// ParamsKey is the prefix for parameters of tradeshield module
-	ParamsKey = "tradeshield_params"
 )
 
 func KeyPrefix(p string) []byte {
 	return []byte(p)
 }
+
+var (
+	ParamsKey = []byte{0x01}
+)

@@ -16,7 +16,7 @@ func (k Keeper) SetParams(ctx sdk.Context, params *types.Params) error {
 	if err != nil {
 		return err
 	}
-	store.Set(types.KeyPrefix(types.ParamsKey), bz)
+	store.Set(types.ParamsKey, bz)
 
 	return nil
 }
@@ -24,7 +24,7 @@ func (k Keeper) SetParams(ctx sdk.Context, params *types.Params) error {
 // GetParams get all parameters as types.Params
 func (k Keeper) GetParams(ctx sdk.Context) (params types.Params) {
 	store := ctx.KVStore(k.storeKey)
-	bz := store.Get(types.KeyPrefix(types.ParamsKey))
+	bz := store.Get(types.ParamsKey)
 	if bz == nil {
 		return params
 	}
