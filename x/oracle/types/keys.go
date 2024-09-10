@@ -26,7 +26,8 @@ const (
 )
 
 var (
-	ParamKeyPrefix = []byte{0x01}
+	ParamKeyPrefix       = []byte{0x01}
+	PriceFeederPrefixKey = []byte{0x02}
 
 	// PortKey defines the key to store the port ID in store
 	PortKey = KeyPrefix("oracle-port-")
@@ -35,8 +36,6 @@ var (
 	// PriceKeyPrefix is the prefix to retrieve all Price
 	PriceKeyPrefix             = "Price/value/"
 	LegacyPriceFeederKeyPrefix = "PriceFeeder/value/"
-
-	PriceFeederPrefixKey = []byte{0x01}
 )
 
 func KeyPrefix(p string) []byte {
