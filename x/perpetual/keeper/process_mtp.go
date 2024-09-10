@@ -36,13 +36,10 @@ func (k Keeper) CheckAndLiquidateUnhealthyPosition(ctx sdk.Context, mtp *types.M
 		return errors.Wrap(err, fmt.Sprintf("error updating mtp health: %s", mtp.String()))
 	}
 	mtp.MtpHealth = h
-	if err := k.SettleFundingFeeCollection(ctx, mtp, &pool, ammPool, baseCurrency); err != nil {
-		return errors.Wrap(err, fmt.Sprintf("error handling funding fee collection: %s", mtp.CollateralAsset))
-	}
 
-	toPay, err := k.SettleFundingFeeDistribution(ctx, mtp, &pool, ammPool, baseCurrency)
+	toPay, err := k.SettleFunding(ctx, mtp, &pool, ammPool, baseCurrency)
 	if err != nil {
-		return errors.Wrap(err, fmt.Sprintf("error handling funding fee collection: %s", mtp.CollateralAsset))
+		return errors.Wrap(err, fmt.Sprintf("error handling funding fee: %s", mtp.CollateralAsset))
 	}
 
 	err = k.SetMTP(ctx, mtp)

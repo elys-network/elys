@@ -187,6 +187,9 @@ func (k Keeper) SetFundingRate(ctx sdk.Context, block uint64, pool uint64, fundi
 		funding.FundingAmountLong = funding.FundingAmountLong.Add(lastBlock.FundingAmountLong)
 		funding.FundingAmountShort = funding.FundingAmountShort.Add(lastBlock.FundingAmountShort)
 
+		funding.FundingRateLong = funding.FundingRateLong.Add(lastBlock.FundingRateLong)
+		funding.FundingRateShort = funding.FundingRateShort.Add(lastBlock.FundingRateShort)
+
 		bz = k.cdc.MustMarshal(&funding)
 		store.Set(key, bz)
 	} else {
@@ -222,7 +225,7 @@ func (k Keeper) GetAllFundingRate(ctx sdk.Context) []types.FundingRateBlock {
 	return fundings
 }
 
-func (k Keeper) GetFundingRate(ctx sdk.Context, startBlock uint64, pool uint64) sdk.Dec {
+func (k Keeper) GetFundingRate(ctx sdk.Context, startBlock uint64, pool uint64) (net sdk.Dec, long sdk.Dec, short sdk.Dec) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.FundingRatePrefix)
 	currentBlockKey := types.GetFundingRateKey(uint64(ctx.BlockHeight()), pool)
 	startBlockKey := types.GetFundingRateKey(startBlock, pool)
@@ -238,7 +241,9 @@ func (k Keeper) GetFundingRate(ctx sdk.Context, startBlock uint64, pool uint64) 
 		k.cdc.MustUnmarshal(bz, &endFundingBlock)
 
 		totalFunding := endFundingBlock.FundingRate.Sub(startFundingBlock.FundingRate)
-		return totalFunding
+		totalFundingLong := endFundingBlock.FundingRateLong.Sub(startFundingBlock.FundingRateLong)
+		totalFundingShort := endFundingBlock.FundingRateShort.Sub(startFundingBlock.FundingRateShort)
+		return totalFunding, totalFundingLong, totalFundingShort
 	}
 
 	if !store.Has(startBlockKey) && store.Has(currentBlockKey) {
@@ -256,15 +261,19 @@ func (k Keeper) GetFundingRate(ctx sdk.Context, startBlock uint64, pool uint64) 
 			endFundingBlock := types.FundingRateBlock{}
 			k.cdc.MustUnmarshal(bz, &endFundingBlock)
 
-			return endFundingBlock.FundingRate
+			return endFundingBlock.FundingRate, endFundingBlock.FundingRateLong, endFundingBlock.FundingRateShort
 		}
 	}
 	params, found := k.GetPool(ctx, pool)
 	if !found {
-		return sdk.ZeroDec()
+		return sdk.ZeroDec(), sdk.ZeroDec(), sdk.ZeroDec()
 	}
 
-	return params.BorrowInterestRate
+	if params.BorrowInterestRate.IsPositive() {
+		return params.BorrowInterestRate, params.BorrowInterestRate, sdk.ZeroDec()
+	} else {
+		return params.BorrowInterestRate, sdk.ZeroDec(), params.BorrowInterestRate
+	}
 }
 
 func (k Keeper) GetFundingDistributionValue(ctx sdk.Context, startBlock uint64, pool uint64) (long sdk.Dec, short sdk.Dec) {
