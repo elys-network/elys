@@ -47,6 +47,18 @@ func (m Migrator) V7Migration(ctx sdk.Context) error {
 		}
 		m.keeper.DeleteLegacyMTP(ctx, mtp.Address, mtp.Id)
 		m.keeper.SetMTP(ctx, &newMtp)
+
+		baseCurrency, _ := m.keeper.GetBaseCurreny(ctx)
+		pool, poolFound := m.keeper.GetPool(ctx, newMtp.AmmPoolId)
+		if !poolFound {
+			continue
+		}
+		ammPool, poolErr := m.keeper.GetAmmPool(ctx, newMtp.AmmPoolId, newMtp.TradingAsset)
+		if poolErr != nil {
+			continue
+		}
+
+		m.keeper.CheckAndLiquidateUnhealthyPosition(ctx, &newMtp, pool, ammPool, baseCurrency.Denom, baseCurrency.Decimals)
 	}
 	return nil
 }

@@ -135,15 +135,12 @@ func TestCheckAndLiquidateUnhealthyPosition(t *testing.T) {
 	params := mk.GetParams(ctx)
 	params.FundingFeeCollectionAddress = addr[1].String()
 	params.IncrementalBorrowInterestPaymentFundAddress = addr[2].String()
-	params.IncrementalBorrowInterestPaymentFundPercentage = sdk.MustNewDecFromStr("0.0")
+	params.IncrementalBorrowInterestPaymentFundPercentage = sdk.MustNewDecFromStr("0.5")
 	mk.SetParams(ctx, &params)
 
 	mtp := mtps[0]
 
 	perpPool, _ := mk.GetPool(ctx, pool.PoolId)
-	// Set funding rate zero
-	perpPool.FundingRate = sdk.ZeroDec()
-	mk.SetPool(ctx, perpPool)
 
 	err = mk.CheckAndLiquidateUnhealthyPosition(ctx, &mtp, perpPool, pool, ptypes.BaseCurrency, 6)
 	require.NoError(t, err)
