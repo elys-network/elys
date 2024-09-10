@@ -40,6 +40,7 @@ func TestGenerateOpenEvent(t *testing.T) {
 		FundingFeeReceivedCollateral:   sdk.OneInt(),
 		FundingFeeReceivedCustody:      sdk.OneInt(),
 		OpenPrice:                      sdk.NewDec(10),
+		StopLossPrice:                  sdk.NewDec(0),
 	}
 
 	event := types.GenerateOpenEvent(&testMTP)

@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	"fmt"
 
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -34,6 +35,11 @@ func (k msgServer) UpdateVestingInfo(goCtx context.Context, msg *types.MsgUpdate
 		params.VestingInfos[index].NumBlocks = msg.NumBlocks
 		params.VestingInfos[index].VestNowFactor = sdk.NewInt(msg.VestNowFactor)
 		params.VestingInfos[index].NumMaxVestings = msg.NumMaxVestings
+	}
+
+	err := params.Validate()
+	if err != nil {
+		return nil, fmt.Errorf("params validation failed: %s", err.Error())
 	}
 
 	// store params

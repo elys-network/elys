@@ -7,18 +7,24 @@ import (
 
 // GetParams get all parameters as types.Params
 func (k Keeper) GetParams(ctx sdk.Context) types.Params {
-	return types.NewParams(
-		k.EpochIdentifier(ctx),
-	)
+	store := ctx.KVStore(k.storeKey)
+	bz := store.Get(types.ParamsKeyPrefix)
+	if bz == nil {
+		return types.Params{}
+	}
+	var params types.Params
+	k.cdc.MustUnmarshal(bz, &params)
+	return params
 }
 
-// SetParams set the params
-func (k Keeper) SetParams(ctx sdk.Context, params types.Params) {
-	k.paramstore.SetParamSet(ctx, &params)
-}
-
-// EpochIdentifier returns the EpochIdentifier param
-func (k Keeper) EpochIdentifier(ctx sdk.Context) (res string) {
+func (k Keeper) GetLegacyParams(ctx sdk.Context) types.Params {
+	var res string
 	k.paramstore.Get(ctx, types.KeyEpochIdentifier, &res)
-	return
+	return types.NewParams(res)
+}
+
+func (k Keeper) SetParams(ctx sdk.Context, params *types.Params) {
+	store := ctx.KVStore(k.storeKey)
+	bz := k.cdc.MustMarshal(params)
+	store.Set(types.ParamsKeyPrefix, bz)
 }

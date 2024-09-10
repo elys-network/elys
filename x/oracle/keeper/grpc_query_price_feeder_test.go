@@ -1,6 +1,7 @@
 package keeper_test
 
 import (
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"strconv"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -39,7 +40,7 @@ func (suite *KeeperTestSuite) TestPriceFeederQuerySingle() {
 		{
 			desc: "KeyNotFound",
 			request: &types.QueryGetPriceFeederRequest{
-				Feeder: strconv.Itoa(100000),
+				Feeder: authtypes.NewModuleAddress(strconv.Itoa(100000)).String(),
 			},
 			err: status.Error(codes.NotFound, "not found"),
 		},

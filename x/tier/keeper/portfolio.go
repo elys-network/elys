@@ -200,15 +200,13 @@ func (k Keeper) RetrievePerpetualTotal(ctx sdk.Context, user sdk.AccAddress) (sd
 	totalAssets := sdk.NewDec(0)
 	totalLiability := sdk.NewDec(0)
 	netValue := sdk.NewDec(0)
-	perpetuals, _, err := k.perpetual.GetMTPsForAddress(ctx, user, &query.PageRequest{})
-	if err == nil {
-		for _, perpetual := range perpetuals {
-			totalAssets = totalAssets.Add(k.CalculateUSDValue(ctx, perpetual.GetTradingAsset(), perpetual.Custody))
-			totalLiability = totalLiability.Add(k.CalculateUSDValue(ctx, perpetual.LiabilitiesAsset, perpetual.Liabilities))
-			totalLiability = totalLiability.Add(k.CalculateUSDValue(ctx, perpetual.CollateralAsset, perpetual.BorrowInterestUnpaidCollateral))
-		}
-		netValue = totalAssets.Sub(totalLiability)
+	perpetuals := k.perpetual.GetAllMTPsForAddress(ctx, user)
+	for _, perpetual := range perpetuals {
+		totalAssets = totalAssets.Add(k.CalculateUSDValue(ctx, perpetual.GetTradingAsset(), perpetual.Custody))
+		totalLiability = totalLiability.Add(k.CalculateUSDValue(ctx, perpetual.LiabilitiesAsset, perpetual.Liabilities))
+		totalLiability = totalLiability.Add(k.CalculateUSDValue(ctx, perpetual.CollateralAsset, perpetual.BorrowInterestUnpaidCollateral))
 	}
+	netValue = totalAssets.Sub(totalLiability)
 	return totalAssets, totalLiability, netValue
 }
 

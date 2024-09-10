@@ -12,7 +12,5 @@ func (m Migrator) V3Migration(ctx sdk.Context) error {
 		m.keeper.SetInterest(ctx, interest.BlockHeight, interest)
 	}
 
-	m.keeper.V6_DebtMigration(ctx)
-
 	return nil
 }

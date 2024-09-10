@@ -14,6 +14,10 @@ const (
 	MemStoreKey = "mem_burner"
 )
 
+var (
+	ParamsKeyPrefix = []byte{0x01}
+)
+
 func KeyPrefix(p string) []byte {
 	return []byte(p)
 }

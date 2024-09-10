@@ -22,6 +22,6 @@ func (k msgServer) UpdateParams(goCtx context.Context, msg *types.MsgUpdateParam
 
 	params := k.GetParams(ctx)
 	params.EpochIdentifier = msg.Params.EpochIdentifier
-	k.SetParams(ctx, params)
+	k.SetParams(ctx, &params)
 	return &types.MsgUpdateParamsResponse{}, nil
 }

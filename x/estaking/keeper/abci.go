@@ -69,20 +69,18 @@ func (k Keeper) ProcessUpdateIncentiveParams(ctx sdk.Context) {
 			continue
 		}
 
-		totalBlocksPerYear := sdk.NewInt(int64(inflation.EndBlockHeight - inflation.StartBlockHeight + 1))
+		totalBlocks := inflation.EndBlockHeight - inflation.StartBlockHeight + 1
 
-		// If totalBlocksPerYear is zero, we skip this inflation to avoid division by zero
-		if totalBlocksPerYear == sdk.ZeroInt() {
+		// If totalBlocks is zero, we skip this inflation to avoid division by zero
+		if totalBlocks == 0 {
 			continue
 		}
 
 		// ------------- Stakers parameter -------------
-		blocksDistributed := sdk.NewInt(ctx.BlockHeight() - int64(inflation.StartBlockHeight))
+		blocksDistributed := ctx.BlockHeight() - int64(inflation.StartBlockHeight)
 		params.StakeIncentives = &types.IncentiveInfo{
-			EdenAmountPerYear:      sdk.NewInt(int64(inflation.Inflation.IcsStakingRewards)),
-			DistributionStartBlock: sdk.NewInt(int64(inflation.StartBlockHeight)),
-			TotalBlocksPerYear:     totalBlocksPerYear,
-			BlocksDistributed:      blocksDistributed,
+			EdenAmountPerYear: sdk.NewInt(int64(inflation.Inflation.IcsStakingRewards)),
+			BlocksDistributed: blocksDistributed,
 		}
 		k.SetParams(ctx, params)
 		return
@@ -134,7 +132,7 @@ func (k Keeper) UpdateStakersRewards(ctx sdk.Context) error {
 		RoundInt()
 
 	// Set block number and total dex rewards given
-	params.DexRewardsStakers.NumBlocks = sdk.OneInt()
+	params.DexRewardsStakers.NumBlocks = 1
 	params.DexRewardsStakers.Amount = dexRevenueStakersAmount
 	k.SetParams(ctx, params)
 

@@ -174,7 +174,7 @@ func (k Keeper) SetPriceFeeder(ctx sdk.Context, priceFeeder types.PriceFeeder) {
 
 func (
 
-k Keeper) GetPriceFeeder(ctx sdk.Context, feeder string) (val types.PriceFeeder, found bool) {
+k Keeper) GetPriceFeeder(ctx sdk.Context, feeder sdk.AccAddress) (val types.PriceFeeder, found bool) {
     store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.PriceFeederKeyPrefix))
     b := store.Get(types.PriceFeederKey(feeder))
     if b == nil {

@@ -9,7 +9,8 @@ import (
 
 func (k msgServer) SetPriceFeeder(goCtx context.Context, msg *types.MsgSetPriceFeeder) (*types.MsgSetPriceFeederResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	_, found := k.Keeper.GetPriceFeeder(ctx, msg.Feeder)
+	feederAccount := sdk.MustAccAddressFromBech32(msg.Feeder)
+	_, found := k.Keeper.GetPriceFeeder(ctx, feederAccount)
 	if !found {
 		return nil, types.ErrNotAPriceFeeder
 	}
@@ -22,10 +23,11 @@ func (k msgServer) SetPriceFeeder(goCtx context.Context, msg *types.MsgSetPriceF
 
 func (k msgServer) DeletePriceFeeder(goCtx context.Context, msg *types.MsgDeletePriceFeeder) (*types.MsgDeletePriceFeederResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	_, found := k.Keeper.GetPriceFeeder(ctx, msg.Feeder)
+	feederAccount := sdk.MustAccAddressFromBech32(msg.Feeder)
+	_, found := k.Keeper.GetPriceFeeder(ctx, feederAccount)
 	if !found {
 		return nil, types.ErrNotAPriceFeeder
 	}
-	k.RemovePriceFeeder(ctx, msg.Feeder)
+	k.RemovePriceFeeder(ctx, feederAccount)
 	return &types.MsgDeletePriceFeederResponse{}, nil
 }

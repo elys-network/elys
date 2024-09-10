@@ -9,11 +9,12 @@ import (
 func (suite *PerpetualKeeperTestSuite) TestCheckSameAssetPosition() {
 	addr := suite.AddAccounts(1)
 	msg := &types.MsgOpen{
-		Creator:      addr[0].String(),
-		Position:     types.Position_LONG,
-		Leverage:     sdk.NewDec(1),
-		TradingAsset: ptypes.ATOM,
-		Collateral:   sdk.NewCoin(ptypes.ATOM, sdk.NewInt(100)),
+		Creator:       addr[0].String(),
+		Position:      types.Position_LONG,
+		Leverage:      sdk.NewDec(1),
+		TradingAsset:  ptypes.ATOM,
+		Collateral:    sdk.NewCoin(ptypes.ATOM, sdk.NewInt(100)),
+		StopLossPrice: sdk.NewDec(100),
 	}
 
 	mtp := types.NewMTP(addr[0].String(), ptypes.BaseCurrency, ptypes.ATOM, ptypes.BaseCurrency, ptypes.ATOM, types.Position_LONG, sdk.NewDec(5), sdk.MustNewDecFromStr(types.TakeProfitPriceDefault), 1)

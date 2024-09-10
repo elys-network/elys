@@ -2,6 +2,8 @@ package types
 
 import (
 	"fmt"
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 
 	host "github.com/cosmos/ibc-go/v7/modules/core/24-host"
 )
@@ -31,7 +33,7 @@ func DefaultGenesis() *GenesisState {
 		Prices: []Price{},
 		PriceFeeders: []PriceFeeder{
 			{
-				Feeder:   "elys1mxk8wmns33vs6yynsaeud2k97xkl5dqlkjv3j9",
+				Feeder:   authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 				IsActive: true,
 			},
 		},
@@ -66,14 +68,13 @@ func (gs GenesisState) Validate() error {
 		priceIndexMap[index] = struct{}{}
 	}
 	// Check for duplicated index in priceFeeder
-	priceFeederIndexMap := make(map[string]struct{})
+	priceFeederIndexMap := make(map[string]bool)
 
 	for _, elem := range gs.PriceFeeders {
-		index := string(PriceFeederKey(elem.Feeder))
-		if _, ok := priceFeederIndexMap[index]; ok {
+		if priceFeederIndexMap[elem.Feeder] {
 			return fmt.Errorf("duplicated index for priceFeeder")
 		}
-		priceFeederIndexMap[index] = struct{}{}
+		priceFeederIndexMap[elem.Feeder] = true
 	}
 	// this line is used by starport scaffolding # genesis/types/validate
 

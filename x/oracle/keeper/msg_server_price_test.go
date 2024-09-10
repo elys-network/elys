@@ -1,6 +1,7 @@
 package keeper_test
 
 import (
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"strconv"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -13,7 +14,7 @@ func (suite *KeeperTestSuite) TestPriceMsgServerCreate() {
 	k, ctx := suite.app.OracleKeeper, suite.ctx
 	srv := keeper.NewMsgServerImpl(k)
 	wctx := sdk.WrapSDKContext(ctx)
-	creator := "A"
+	creator := authtypes.NewModuleAddress("A").String()
 	suite.app.OracleKeeper.SetPriceFeeder(ctx, types.PriceFeeder{
 		Feeder:   creator,
 		IsActive: true,

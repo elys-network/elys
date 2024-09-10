@@ -50,10 +50,8 @@ func TestQueryRewards(t *testing.T) {
 
 	params := estakingKeeper.GetParams(ctx)
 	params.StakeIncentives = &types.IncentiveInfo{
-		EdenAmountPerYear:      sdk.NewInt(1000_000_000_000_000),
-		DistributionStartBlock: sdk.NewInt(0),
-		TotalBlocksPerYear:     sdk.NewInt(6307200),
-		BlocksDistributed:      sdk.NewInt(1),
+		EdenAmountPerYear: sdk.NewInt(1000_000_000_000_000),
+		BlocksDistributed: 1,
 	}
 	params.MaxEdenRewardAprStakers = sdk.NewDec(1000_000)
 	estakingKeeper.SetParams(ctx, params)

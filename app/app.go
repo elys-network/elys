@@ -1014,7 +1014,6 @@ func NewElysApp(
 		app.AssetprofileKeeper,
 		app.MasterchefKeeper,
 	)
-	
 
 	app.TierKeeper = *tiermodulekeeper.NewKeeper(
 		appCodec,
@@ -1073,7 +1072,7 @@ func NewElysApp(
 		app.TierKeeper.LeverageLpHooks(),
 	))
 	leveragelpModule := leveragelpmodule.NewAppModule(appCodec, app.LeveragelpKeeper, app.AccountKeeper, app.BankKeeper)
-	
+
 	app.EstakingKeeper.SetHooks(
 		stakingtypes.NewMultiStakingHooks(
 			// insert staking hooks receivers here
@@ -1164,14 +1163,14 @@ func NewElysApp(
 		burnerModule,
 		ammModule,
 		parameterModule,
-		perpetualModule,
+		stablestakeModule,
 		accountedPoolModule,
 		transferhookModule,
 		clockModule,
-		stablestakeModule,
 		leveragelpModule,
 		masterchefModule,
 		estakingModule,
+		perpetualModule,
 		tierModule,
 		// this line is used by starport scaffolding # stargate/app/appModule
 	)
@@ -1320,7 +1319,22 @@ func NewElysApp(
 	app.mm.SetOrderExportGenesis(genesisModuleOrder...)
 
 	// Uncomment if you want to set a custom migration order here.
-	// app.mm.SetOrderMigrations(custom order)
+	customOrder := module.DefaultMigrationsOrder(app.mm.ModuleNames())
+	stablestakeIndex := -1
+	leveragelpIndex := -1
+	for i := range customOrder {
+		if customOrder[i] == stablestaketypes.ModuleName {
+			stablestakeIndex = i
+		}
+		if customOrder[i] == leveragelpmoduletypes.ModuleName {
+			leveragelpIndex = i
+		}
+	}
+	if stablestakeIndex != -1 && leveragelpIndex != -1 {
+		customOrder[leveragelpIndex] = stablestaketypes.ModuleName
+		customOrder[stablestakeIndex] = leveragelpmoduletypes.ModuleName
+	}
+	app.mm.SetOrderMigrations(customOrder...)
 
 	app.mm.RegisterInvariants(app.CrisisKeeper)
 	app.configurator = module.NewConfigurator(app.appCodec, app.MsgServiceRouter(), app.GRPCQueryRouter())

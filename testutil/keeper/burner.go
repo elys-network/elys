@@ -55,7 +55,8 @@ func BurnerKeeper(t testing.TB) (*keeper.Keeper, sdk.Context, *mocks.BankKeeper)
 	ctx := sdk.NewContext(stateStore, tmproto.Header{}, false, log.NewNopLogger())
 
 	// Initialize params
-	k.SetParams(ctx, types.DefaultParams())
+	params := k.GetParams(ctx)
+	k.SetParams(ctx, &params)
 
 	return k, ctx, bankKeeper
 }

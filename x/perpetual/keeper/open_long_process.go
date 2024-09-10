@@ -101,6 +101,7 @@ func (k Keeper) ProcessOpenLong(ctx sdk.Context, mtp *types.MTP, leverage sdk.De
 
 	// Calculate consolidate liabiltiy and update consolidate leverage
 	mtp.ConsolidateLeverage = types.CalcMTPConsolidateLiability(mtp)
+	mtp.StopLossPrice = msg.StopLossPrice
 
 	// Set MTP
 	err = k.SetMTP(ctx, mtp)

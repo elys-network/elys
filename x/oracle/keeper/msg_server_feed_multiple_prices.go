@@ -10,7 +10,8 @@ import (
 func (k msgServer) FeedMultiplePrices(goCtx context.Context, msg *types.MsgFeedMultiplePrices) (*types.MsgFeedMultiplePricesResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	feeder, found := k.Keeper.GetPriceFeeder(ctx, msg.Creator)
+	creator := sdk.MustAccAddressFromBech32(msg.Creator)
+	feeder, found := k.Keeper.GetPriceFeeder(ctx, creator)
 	if !found {
 		return nil, types.ErrNotAPriceFeeder
 	}

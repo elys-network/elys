@@ -203,10 +203,6 @@ func validateLeverageMax(i interface{}) error {
 	if v.IsNegative() {
 		return fmt.Errorf("leverage max must be positive: %s", v)
 	}
-	if v.GT(sdk.NewDec(10)) {
-		return fmt.Errorf("leverage max too large: %s", v)
-	}
-
 	return nil
 }
 

@@ -12,9 +12,6 @@ const (
 
 	// MemStoreKey defines the in-memory store key
 	MemStoreKey = "mem_poolaccounted"
-
-	// ParamsKey is the prefix for parameters of poolaccounted module
-	ParamsKey = "poolaccounted_params"
 )
 
 func KeyPrefix(p string) []byte {

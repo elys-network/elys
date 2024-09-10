@@ -2,6 +2,7 @@ package types
 
 import (
 	"cosmossdk.io/math"
+	"fmt"
 	"gopkg.in/yaml.v2"
 )
 
@@ -23,6 +24,12 @@ func DefaultParams() Params {
 
 // Validate validates the set of params
 func (p Params) Validate() error {
+	if p.PoolCreationFee.IsNil() {
+		return fmt.Errorf("pool creation fee must not be empty")
+	}
+	if p.PoolCreationFee.IsNegative() {
+		return fmt.Errorf("pool creation fee must be positive")
+	}
 	return nil
 }
 

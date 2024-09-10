@@ -59,6 +59,7 @@ func networkWithMTPObjects(t *testing.T, n int) (*network.Network, []*types.MTP)
 			FundingFeeReceivedCollateral:   sdk.NewInt(0),
 			FundingFeeReceivedCustody:      sdk.NewInt(0),
 			OpenPrice:                      sdk.NewDec(0),
+			StopLossPrice:                  sdk.NewDec(0),
 		}
 
 		mtps = append(mtps, &mtp)

@@ -7,11 +7,10 @@ import "elys/estaking/dex_rewards_tracker.proto";
 
 option go_package = "github.com/elys-network/elys/x/estaking/types";
 
-// Params defines the parameters for the module.
-message Params {
+message LegacyParams {
   option (gogoproto.goproto_stringer) = false;
 
-  IncentiveInfo stake_incentives = 1;
+  LegacyIncentiveInfo stake_incentives = 1;
   string eden_commit_val = 2;
   string edenb_commit_val = 3;
   // Maximum eden reward apr for stakers - [0 - 0.3]
@@ -24,5 +23,25 @@ message Params {
     (gogoproto.nullable) = false
   ];
   // Tracking dex rewards given to stakers
-  DexRewardsTracker dex_rewards_stakers = 7 [ (gogoproto.nullable) = false ];
+  LegacyDexRewardsTracker dex_rewards_stakers = 7 [(gogoproto.nullable) = false];
+}
+
+// Params defines the parameters for the module.
+message Params {
+  option (gogoproto.goproto_stringer) = false;
+
+  IncentiveInfo stake_incentives = 1;
+  string eden_commit_val = 2;
+  string edenb_commit_val = 3;
+  // Maximum eden reward apr for stakers - [0 - 0.3]
+  string max_eden_reward_apr_stakers = 4 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  string eden_boost_apr = 5 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  // Tracking dex rewards given to stakers
+  DexRewardsTracker dex_rewards_stakers = 6 [(gogoproto.nullable) = false];
 }

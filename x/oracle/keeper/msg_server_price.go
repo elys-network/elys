@@ -10,7 +10,8 @@ import (
 func (k msgServer) FeedPrice(goCtx context.Context, msg *types.MsgFeedPrice) (*types.MsgFeedPriceResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	feeder, found := k.Keeper.GetPriceFeeder(ctx, msg.Provider)
+	provider := sdk.MustAccAddressFromBech32(msg.Provider)
+	feeder, found := k.Keeper.GetPriceFeeder(ctx, provider)
 	if !found {
 		return nil, types.ErrNotAPriceFeeder
 	}
