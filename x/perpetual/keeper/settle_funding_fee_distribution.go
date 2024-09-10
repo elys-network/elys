@@ -90,12 +90,8 @@ func (k Keeper) SettleFundingFeeDistribution(ctx sdk.Context, mtp *types.MTP, po
 
 	// add payment to total funding fee paid in collateral asset
 	mtp.FundingFeeReceivedCollateral = mtp.FundingFeeReceivedCollateral.Add(fundingFeeCollateralAmount)
-
 	// add payment to total funding fee paid in custody asset
 	mtp.FundingFeeReceivedCustody = mtp.FundingFeeReceivedCustody.Add(fundingFeeAmount.Amount)
-
-	mtp.LastFundingCalcBlock = uint64(ctx.BlockHeight())
-	mtp.LastFundingCalcTime = uint64(ctx.BlockTime().Unix())
 
 	return toPay, nil
 }

@@ -270,9 +270,9 @@ func (k Keeper) GetFundingRate(ctx sdk.Context, startBlock uint64, pool uint64) 
 	}
 
 	if params.BorrowInterestRate.IsPositive() {
-		return params.BorrowInterestRate, params.BorrowInterestRate, sdk.ZeroDec()
+		return params.FundingRate, params.FundingRate, sdk.ZeroDec()
 	} else {
-		return params.BorrowInterestRate, sdk.ZeroDec(), params.BorrowInterestRate
+		return params.FundingRate, sdk.ZeroDec(), params.FundingRate
 	}
 }
 
