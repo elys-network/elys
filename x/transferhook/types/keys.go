@@ -13,3 +13,7 @@ const (
 	// QuerierRoute defines the module's query routing key
 	QuerierRoute = ModuleName
 )
+
+var (
+	ParamKeyPrefix = []byte{0x01}
+)

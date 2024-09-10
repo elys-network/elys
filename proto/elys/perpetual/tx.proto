@@ -11,15 +11,16 @@ import "elys/perpetual/types.proto";
 
 // Msg defines the Msg service.
 service Msg {
-  rpc Open                (MsgOpen               ) returns (MsgOpenResponse          );
-  rpc BrokerOpen          (MsgBrokerOpen         ) returns (MsgOpenResponse          );
-  rpc Close               (MsgClose              ) returns (MsgCloseResponse         );
-  rpc BrokerClose         (MsgBrokerClose        ) returns (MsgCloseResponse         );
-  rpc UpdateParams        (MsgUpdateParams       ) returns (MsgUpdateParamsResponse  );
-  rpc Whitelist           (MsgWhitelist          ) returns (MsgWhitelistResponse     );
-  rpc Dewhitelist         (MsgDewhitelist        ) returns (MsgDewhitelistResponse   );
-  rpc AddCollateral       (MsgAddCollateral      ) returns (MsgAddCollateralResponse );
-  rpc BrokerAddCollateral (MsgBrokerAddCollateral) returns (MsgAddCollateralResponse );
+  rpc Open                (MsgOpen               ) returns (MsgOpenResponse               );
+  rpc BrokerOpen          (MsgBrokerOpen         ) returns (MsgOpenResponse               );
+  rpc Close               (MsgClose              ) returns (MsgCloseResponse              );
+  rpc BrokerClose         (MsgBrokerClose        ) returns (MsgCloseResponse              );
+  rpc UpdateParams        (MsgUpdateParams       ) returns (MsgUpdateParamsResponse       );
+  rpc Whitelist           (MsgWhitelist          ) returns (MsgWhitelistResponse          );
+  rpc Dewhitelist         (MsgDewhitelist        ) returns (MsgDewhitelistResponse        );
+  rpc AddCollateral       (MsgAddCollateral      ) returns (MsgAddCollateralResponse      );
+  rpc BrokerAddCollateral (MsgBrokerAddCollateral) returns (MsgAddCollateralResponse      );
+  rpc UpdateStopLoss      (MsgUpdateStopLoss     ) returns (MsgUpdateStopLossResponse     );
   rpc ClosePositions      (MsgClosePositions     ) returns (MsgClosePositionsResponse);
 }
 message MsgOpen {
@@ -29,6 +30,10 @@ message MsgOpen {
   string                   trading_asset     = 4;
   cosmos.base.v1beta1.Coin collateral        = 5 [(gogoproto.nullable)   = false                                   ] ;
   string                   take_profit_price = 6 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+  string stop_loss_price = 28 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
 }
 
 message MsgBrokerOpen {
@@ -39,6 +44,10 @@ message MsgBrokerOpen {
   cosmos.base.v1beta1.Coin collateral        = 5 [(gogoproto.nullable)   = false                                   ] ;
   string                   take_profit_price = 6 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
   string                   owner             = 7;
+  string stop_loss_price = 28 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
 }
 
 message MsgOpenResponse {
@@ -111,3 +120,10 @@ message MsgClosePositions {
 
 message MsgClosePositionsResponse {}
 
+message MsgUpdateStopLoss {
+  string creator = 1;
+  uint64 id = 2;
+  string price = 3 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+}
+
+message MsgUpdateStopLossResponse {}

@@ -138,7 +138,7 @@ func (k Keeper) GetMTPs(ctx sdk.Context, pagination *query.PageRequest) ([]*type
 
 	if pagination == nil {
 		pagination = &query.PageRequest{
-			Limit: gomath.MaxUint64 - 1,
+			Limit: types.MaxPageLimit,
 		}
 	}
 
@@ -222,11 +222,28 @@ func (k Keeper) GetMTPsForPool(ctx sdk.Context, ammPoolId uint64, pagination *qu
 	return mtps, pageRes, err
 }
 
-func (k Keeper) GetMTPsForAddress(ctx sdk.Context, mtpAddress sdk.AccAddress, pagination *query.PageRequest) ([]*types.MTP, *query.PageResponse, error) {
+func (k Keeper) GetAllMTPsForAddress(ctx sdk.Context, mtpAddress sdk.AccAddress) []*types.MTP {
 	var mtps []*types.MTP
 
 	store := ctx.KVStore(k.storeKey)
-	mtpStore := prefix.NewStore(store, types.GetMTPPrefixForAddress(mtpAddress.String()))
+	iterator := sdk.KVStorePrefixIterator(store, types.GetMTPPrefixForAddress(mtpAddress))
+
+	defer iterator.Close()
+
+	for ; iterator.Valid(); iterator.Next() {
+		var mtp types.MTP
+		bytesValue := iterator.Value()
+		k.cdc.MustUnmarshal(bytesValue, &mtp)
+		mtps = append(mtps, &mtp)
+	}
+	return mtps
+}
+
+func (k Keeper) GetMTPsForAddressWithPagination(ctx sdk.Context, mtpAddress sdk.AccAddress, pagination *query.PageRequest) ([]*types.MTP, *query.PageResponse, error) {
+	var mtps []*types.MTP
+
+	store := ctx.KVStore(k.storeKey)
+	mtpStore := prefix.NewStore(store, types.GetMTPPrefixForAddress(mtpAddress))
 
 	if pagination == nil {
 		pagination = &query.PageRequest{
@@ -314,6 +331,38 @@ func (k Keeper) SetToPay(ctx sdk.Context, toPay *types.ToPay) error {
 	key := types.GetToPayKey(address, toPay.Id)
 	store.Set(key, k.cdc.MustMarshal(toPay))
 	return nil
+}
+
+func (k Keeper) DeleteLegacyMTP(ctx sdk.Context, mtpaddress string, id uint64) error {
+	store := ctx.KVStore(k.storeKey)
+	key := types.GetMTPKey(sdk.MustAccAddressFromBech32(mtpaddress), id)
+	if !store.Has(key) {
+		return types.ErrMTPDoesNotExist
+	}
+	store.Delete(key)
+	return nil
+}
+
+func (k Keeper) GetAllLegacyMTP(ctx sdk.Context) []types.LegacyMTP {
+	var mtps []types.LegacyMTP
+	iterator := k.GetMTPIterator(ctx)
+	defer func(iterator sdk.Iterator) {
+		err := iterator.Close()
+		if err != nil {
+			panic(err)
+		}
+	}(iterator)
+
+	for ; iterator.Valid(); iterator.Next() {
+		var mtp types.LegacyMTP
+		bytesValue := iterator.Value()
+		err := k.cdc.Unmarshal(bytesValue, &mtp)
+		if err == nil {
+			mtps = append(mtps, mtp)
+		}
+	}
+
+	return mtps
 }
 
 func (k Keeper) V6_MTPMigration(ctx sdk.Context) {

@@ -19,6 +19,7 @@ func TestNewMsgOpen(t *testing.T) {
 		"uatom",
 		sdk.NewCoin("uusdc", sdk.NewInt(2000)),
 		sdk.NewDec(100),
+		sdk.NewDec(0),
 	)
 
 	want := &MsgOpen{
@@ -28,6 +29,7 @@ func TestNewMsgOpen(t *testing.T) {
 		TradingAsset:    "uatom",
 		Collateral:      sdk.NewCoin("uusdc", sdk.NewInt(2000)),
 		TakeProfitPrice: sdk.NewDec(100),
+		StopLossPrice:   sdk.NewDec(0),
 	}
 
 	assert.Equal(t, want, got)
