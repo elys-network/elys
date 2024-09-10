@@ -100,6 +100,7 @@ func TestCheckBalanceInvariant_InvalidBalance(t *testing.T) {
 		ptypes.ATOM,
 		sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(100000000)),
 		sdk.MustNewDecFromStr(perpetualtypes.TakeProfitPriceDefault),
+		sdk.NewDec(100),
 	)
 
 	_, err = mk.Open(ctx, msg2, false)

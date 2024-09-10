@@ -198,6 +198,38 @@ func (k Keeper) GetOpenMTPCount(ctx sdk.Context) uint64 {
 	return count
 }
 
+func (k Keeper) DeleteLegacyMTP(ctx sdk.Context, mtpaddress string, id uint64) error {
+	store := ctx.KVStore(k.storeKey)
+	key := types.GetMTPKey(sdk.MustAccAddressFromBech32(mtpaddress), id)
+	if !store.Has(key) {
+		return types.ErrMTPDoesNotExist
+	}
+	store.Delete(key)
+	return nil
+}
+
+func (k Keeper) GetAllLegacyMTP(ctx sdk.Context) []types.LegacyMTP {
+	var mtps []types.LegacyMTP
+	iterator := k.GetMTPIterator(ctx)
+	defer func(iterator sdk.Iterator) {
+		err := iterator.Close()
+		if err != nil {
+			panic(err)
+		}
+	}(iterator)
+
+	for ; iterator.Valid(); iterator.Next() {
+		var mtp types.LegacyMTP
+		bytesValue := iterator.Value()
+		err := k.cdc.Unmarshal(bytesValue, &mtp)
+		if err == nil {
+			mtps = append(mtps, mtp)
+		}
+	}
+
+	return mtps
+}
+
 func (k Keeper) V6_MTPMigration(ctx sdk.Context) {
 	store := ctx.KVStore(k.storeKey)
 	iterator := k.GetMTPIterator(ctx)

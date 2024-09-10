@@ -19,6 +19,7 @@ func RegisterCodec(cdc *codec.LegacyAmino) {
 	legacy.RegisterAminoMsg(cdc, &MsgWhitelist{}, "perpetual/MsgWhitelist")
 	legacy.RegisterAminoMsg(cdc, &MsgDewhitelist{}, "perpetual/MsgDewhitelist")
 	legacy.RegisterAminoMsg(cdc, &MsgAddCollateral{}, "perpetual/MsgAddCollateral")
+	legacy.RegisterAminoMsg(cdc, &MsgUpdateStopLoss{}, "perpetual/MsgUpdateStopLoss")
 	// this line is used by starport scaffolding # 2
 }
 
@@ -30,6 +31,7 @@ func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 		&MsgWhitelist{},
 		&MsgDewhitelist{},
 		&MsgAddCollateral{},
+		&MsgUpdateStopLoss{},
 	)
 	// this line is used by starport scaffolding # 3
 

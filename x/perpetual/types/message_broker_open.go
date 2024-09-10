@@ -8,7 +8,7 @@ import (
 
 const TypeMsgBrokerOpen = "broker_open"
 
-func NewMsgBrokerOpen(creator string, position Position, leverage sdk.Dec, tradingAsset string, collateral sdk.Coin, takeProfitPrice sdk.Dec, owner string) *MsgBrokerOpen {
+func NewMsgBrokerOpen(creator string, position Position, leverage sdk.Dec, tradingAsset string, collateral sdk.Coin, takeProfitPrice sdk.Dec, owner string,  stopLossPrice sdk.Dec) *MsgBrokerOpen {
 	return &MsgBrokerOpen{
 		Creator:         creator,
 		Position:        position,
@@ -17,6 +17,7 @@ func NewMsgBrokerOpen(creator string, position Position, leverage sdk.Dec, tradi
 		Collateral:      collateral,
 		TakeProfitPrice: takeProfitPrice,
 		Owner:           owner,
+		StopLossPrice:   stopLossPrice,
 	}
 }
 
