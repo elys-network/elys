@@ -40,13 +40,12 @@ func TradeshieldKeeper(t testing.TB) (*keeper.Keeper, sdk.Context) {
 		cdc,
 		storeKey,
 		memStoreKey,
-		paramsSubspace,
 	)
 
 	ctx := sdk.NewContext(stateStore, tmproto.Header{}, false, log.NewNopLogger())
 
 	// Initialize params
-	k.SetParams(ctx, types.DefaultParams())
+	k.SetParams(ctx, &types.DefaultParams())
 
 	return k, ctx
 }

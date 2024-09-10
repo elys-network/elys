@@ -200,6 +200,7 @@ import (
 	tradeshieldmodule "github.com/elys-network/elys/x/tradeshield"
 	tradeshieldmodulekeeper "github.com/elys-network/elys/x/tradeshield/keeper"
 	tradeshieldmoduletypes "github.com/elys-network/elys/x/tradeshield/types"
+
 	// this line is used by starport scaffolding # stargate/app/moduleImport
 
 	"github.com/elys-network/elys/docs"
@@ -1045,7 +1046,6 @@ func NewElysApp(
 		appCodec,
 		keys[tradeshieldmoduletypes.StoreKey],
 		keys[tradeshieldmoduletypes.MemStoreKey],
-		app.GetSubspace(tradeshieldmoduletypes.ModuleName),
 	)
 	tradeshieldModule := tradeshieldmodule.NewAppModule(appCodec, app.TradeshieldKeeper, app.AccountKeeper, app.BankKeeper)
 
