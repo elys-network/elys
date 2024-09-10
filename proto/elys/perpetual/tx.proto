@@ -20,6 +20,7 @@ service Msg {
   rpc Dewhitelist         (MsgDewhitelist        ) returns (MsgDewhitelistResponse   );
   rpc AddCollateral       (MsgAddCollateral      ) returns (MsgAddCollateralResponse );
   rpc BrokerAddCollateral (MsgBrokerAddCollateral) returns (MsgAddCollateralResponse );
+  rpc UpdateStopLoss      (MsgUpdateStopLoss     ) returns (MsgUpdateStopLossResponse);
   rpc ClosePositions      (MsgClosePositions     ) returns (MsgClosePositionsResponse);
 }
 message MsgOpen {
@@ -111,6 +112,14 @@ message MsgBrokerAddCollateral {
   string owner   = 4;
 }
 
+message MsgClosePositions {
+  string creator = 1;
+  repeated PositionRequest liquidate = 2;
+  repeated PositionRequest stop_loss = 3;
+}
+
+message MsgClosePositionsResponse {}
+
 message MsgUpdateStopLoss {
   string creator = 1;
   uint64 id = 2;
@@ -119,11 +128,4 @@ message MsgUpdateStopLoss {
 
 message MsgUpdateStopLossResponse {}
 
-message MsgClosePositions {
-  string creator = 1;
-  repeated PositionRequest liquidate = 2;
-  repeated PositionRequest stop_loss = 3;
-}
-
-message MsgClosePositionsResponse {}
 
