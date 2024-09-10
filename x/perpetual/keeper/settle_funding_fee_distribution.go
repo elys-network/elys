@@ -8,14 +8,6 @@ import (
 
 // TODO: Think about funding rate algo, edge cases
 func (k Keeper) SettleFundingFeeDistribution(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, ammPool ammtypes.Pool, baseCurrency string) (sdk.Coin, error) {
-	// get funding rate
-	fundingRate := k.GetFundingRate(ctx, mtp.LastFundingCalcBlock, mtp.AmmPoolId)
-
-	// if funding rate is negative and mtp position is short or funding rate is positive and mtp position is long, return
-	if (fundingRate.IsNegative() && mtp.Position == types.Position_SHORT) || (fundingRate.IsPositive() && mtp.Position == types.Position_LONG) {
-		return sdk.Coin{}, nil
-	}
-
 	// get mtp address
 	mtpAddress, err := sdk.AccAddressFromBech32(mtp.Address)
 	if err != nil {
@@ -53,28 +45,22 @@ func (k Keeper) SettleFundingFeeDistribution(ctx sdk.Context, mtp *types.MTP, po
 	// Total fund collected should be
 	long, short := k.GetFundingDistributionValue(ctx, uint64(ctx.BlockHeight()), pool.AmmPoolId)
 	var totalFund sdk.Dec
-	if fundingRate.IsNegative() {
-		// short pays long
-		totalFund = long
-	} else {
-		// long pays short
-		totalFund = short
-	}
 	// calc funding fee share
 	fundingFeeShare := sdk.ZeroDec()
-	if fundingRate.IsNegative() && mtp.Position == types.Position_LONG {
+	if mtp.Position == types.Position_LONG {
 		// Ensure liabilitiesLong is not zero to avoid division by zero
 		if liabilitiesLong.IsZero() {
 			return sdk.Coin{}, types.ErrAmountTooLow
 		}
 		fundingFeeShare = sdk.NewDecFromInt(mtp.Liabilities).Quo(sdk.NewDecFromInt(liabilitiesLong))
-	}
-	if fundingRate.IsPositive() && mtp.Position == types.Position_SHORT {
+		totalFund = short
+	} else {
 		// Ensure liabilitiesShort is not zero to avoid division by zero
 		if liabilitiesShort.IsZero() {
 			return sdk.Coin{}, types.ErrAmountTooLow
 		}
 		fundingFeeShare = sdk.NewDecFromInt(mtp.Liabilities).Quo(sdk.NewDecFromInt(liabilitiesShort))
+		totalFund = long
 	}
 
 	// if funding fee share is zero, skip mtp

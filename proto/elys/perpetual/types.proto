@@ -208,11 +208,11 @@ message FundingRateBlock {
         (gogoproto.nullable) = false
     ];
     int64 block_height = 2;
-    string total_custody_long = 3 [
+    string funding_amount_short = 3 [
       (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
       (gogoproto.nullable) = false
     ];
-    string total_custody_short = 4 [
+    Position funding_amount_long = 4 [
       (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
       (gogoproto.nullable) = false
     ];

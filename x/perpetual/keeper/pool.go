@@ -184,8 +184,8 @@ func (k Keeper) SetFundingRate(ctx sdk.Context, block uint64, pool uint64, fundi
 		bz := store.Get(prev)
 		k.cdc.MustUnmarshal(bz, &lastBlock)
 		funding.FundingRate = funding.FundingRate.Add(lastBlock.FundingRate)
-		funding.TotalCustodyLong = funding.TotalCustodyLong.Add(lastBlock.TotalCustodyLong)
-		funding.TotalCustodyShort = funding.TotalCustodyShort.Add(lastBlock.TotalCustodyShort)
+		funding.FundingAmountLong = funding.FundingAmountLong.Add(lastBlock.FundingAmountLong)
+		funding.FundingAmountShort = funding.FundingAmountShort.Add(lastBlock.FundingAmountShort)
 
 		bz = k.cdc.MustMarshal(&funding)
 		store.Set(key, bz)
@@ -282,10 +282,10 @@ func (k Keeper) GetFundingDistributionValue(ctx sdk.Context, startBlock uint64, 
 		endFundingBlock := types.FundingRateBlock{}
 		k.cdc.MustUnmarshal(bz, &endFundingBlock)
 
-		totalCustodyLong := endFundingBlock.TotalCustodyLong.Sub(startFundingBlock.TotalCustodyLong)
+		totalCustodyLong := endFundingBlock.FundingAmountLong.Sub(startFundingBlock.FundingAmountLong)
 		numberOfBlocks := ctx.BlockHeight() - int64(startBlock)
 
-		totalCustodyShort := endFundingBlock.TotalCustodyShort.Sub(startFundingBlock.TotalCustodyShort)
+		totalCustodyShort := endFundingBlock.FundingAmountShort.Sub(startFundingBlock.FundingAmountShort)
 
 		return totalCustodyLong.ToLegacyDec().Quo(sdk.NewDec(numberOfBlocks)), totalCustodyShort.ToLegacyDec().Quo(sdk.NewDec(numberOfBlocks))
 	}
@@ -306,8 +306,8 @@ func (k Keeper) GetFundingDistributionValue(ctx sdk.Context, startBlock uint64, 
 			k.cdc.MustUnmarshal(bz, &endFundingBlock)
 
 			numberOfBlocks := ctx.BlockHeight() - int64(startBlock) + 1
-			totalCustodyLong := endFundingBlock.TotalCustodyLong
-			totalCustodyShort := endFundingBlock.TotalCustodyShort
+			totalCustodyLong := endFundingBlock.FundingAmountLong
+			totalCustodyShort := endFundingBlock.FundingAmountShort
 			return totalCustodyLong.ToLegacyDec().Quo(sdk.NewDec(numberOfBlocks)), totalCustodyShort.ToLegacyDec().Quo(sdk.NewDec(numberOfBlocks))
 		}
 	}

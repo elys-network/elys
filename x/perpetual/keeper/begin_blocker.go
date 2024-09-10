@@ -44,11 +44,19 @@ func (k Keeper) BeginBlocker(ctx sdk.Context) {
 				totalCustodyShort = totalCustodyShort.Add(asset.Custody)
 			}
 
+			fundingAmountLong := types.CalcTakeAmount(totalCustodyLong, pool.FundingRate)
+			fundingAmountShort := sdk.ZeroInt()
+
+			// if funding rate is negative, collect from short position
+			if pool.FundingRate.IsNegative() {
+				fundingAmountShort = types.CalcTakeAmount(totalCustodyShort, pool.FundingRate)
+				fundingAmountLong = sdk.ZeroInt()
+			}
 			k.SetFundingRate(ctx, uint64(ctx.BlockHeight()), pool.AmmPoolId, types.FundingRateBlock{
-				FundingRate:       pool.FundingRate,
-				BlockHeight:       ctx.BlockHeight(),
-				TotalCustodyLong:  totalCustodyLong,
-				TotalCustodyShort: totalCustodyShort,
+				FundingRate:        pool.FundingRate,
+				BlockHeight:        ctx.BlockHeight(),
+				FundingAmountShort: fundingAmountShort,
+				FundingAmountLong:  fundingAmountLong,
 			})
 		}
 		k.SetPool(ctx, pool)
