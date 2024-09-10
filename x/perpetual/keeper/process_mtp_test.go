@@ -111,6 +111,7 @@ func TestCheckAndLiquidateUnhealthyPosition(t *testing.T) {
 		ptypes.ATOM,
 		sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(100000000)),
 		sdk.MustNewDecFromStr(types.TakeProfitPriceDefault),
+		sdk.ZeroDec(),
 	)
 
 	_, err = mk.Open(ctx, msg2, false)

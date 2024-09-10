@@ -127,3 +127,28 @@ func (k Keeper) CheckAndLiquidateUnhealthyPosition(ctx sdk.Context, mtp *types.M
 
 	return nil
 }
+
+
+func (k Keeper) CheckAndCloseAtStopLoss(ctx sdk.Context, mtp *types.MTP, pool types.Pool, ammPool ammtypes.Pool, baseCurrency string, baseCurrencyDecimal uint64) error  {
+	defer func() {
+		if r := recover(); r != nil {
+			if msg, ok := r.(string); ok {
+				ctx.Logger().Error(msg)
+			}
+		}
+	}()
+
+	lpTokenPrice, err := ammPool.LpTokenPrice(ctx, k.oracleKeeper)
+	if err != nil {
+		return err
+	}
+
+	underStopLossPrice := !mtp.StopLossPrice.IsNil() && lpTokenPrice.LTE(mtp.StopLossPrice)
+	if !underStopLossPrice {
+		return fmt.Errorf("mtp stop loss price is not <= lp token price")
+	}
+
+	
+	
+	return nil
+}

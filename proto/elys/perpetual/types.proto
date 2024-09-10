@@ -188,10 +188,14 @@ message MTP {
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
-  uint64 last_interest_calc_time = 28;
-  uint64 last_interest_calc_block = 29;
-  uint64 last_funding_calc_time = 30;
-  uint64 last_funding_calc_block = 31;
+  string stop_loss_price = 28 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  uint64 last_interest_calc_time = 29;
+  uint64 last_interest_calc_block = 30;
+  uint64 last_funding_calc_time = 31;
+  uint64 last_funding_calc_block = 32;
 }
 
 message InterestBlock {
