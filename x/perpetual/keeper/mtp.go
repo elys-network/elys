@@ -7,6 +7,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
+	ptypes "github.com/elys-network/elys/x/parameter/types"
 	"github.com/elys-network/elys/x/perpetual/types"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -61,7 +62,30 @@ func (k Keeper) GetMTP(ctx sdk.Context, mtpAddress sdk.AccAddress, id uint64) (t
 	}
 	bz := store.Get(key)
 	k.cdc.MustUnmarshal(bz, &mtp)
+	ammPool, found := k.amm.GetPool(ctx, mtp.AmmPoolId)
+	if !found {
+		return mtp, nil
+	}
+	entry, found := k.assetProfileKeeper.GetEntry(ctx, ptypes.BaseCurrency)
+	if !found {
+		return mtp, nil
+	}
+	baseCurrency := entry.Denom
+
+	mtp.BorrowInterestUnpaidCollateral = k.GetBorrowInterest(ctx, &mtp, ammPool).Add(mtp.BorrowInterestUnpaidCollateral)
+
+	mtpHealth, err := k.GetMTPHealth(ctx, mtp, ammPool, baseCurrency)
+	if err == nil {
+		mtp.MtpHealth = mtpHealth
+	}
+
 	return mtp, nil
+}
+
+func (k Keeper) DoesMTPExist(ctx sdk.Context, mtpAddress sdk.AccAddress, id uint64) bool {
+	key := types.GetMTPKey(mtpAddress, id)
+	store := ctx.KVStore(k.storeKey)
+	return store.Has(key)
 }
 
 func (k Keeper) GetMTPIterator(ctx sdk.Context) sdk.Iterator {
@@ -88,6 +112,25 @@ func (k Keeper) GetAllMTPs(ctx sdk.Context) []types.MTP {
 	return mtpList
 }
 
+func (k Keeper) GetAllLegacyMTPs(ctx sdk.Context) []types.LegacyMTP {
+	var mtpList []types.LegacyMTP
+	iterator := k.GetMTPIterator(ctx)
+	defer func(iterator sdk.Iterator) {
+		err := iterator.Close()
+		if err != nil {
+			panic(err)
+		}
+	}(iterator)
+
+	for ; iterator.Valid(); iterator.Next() {
+		var mtp types.LegacyMTP
+		bytesValue := iterator.Value()
+		k.cdc.MustUnmarshal(bytesValue, &mtp)
+		mtpList = append(mtpList, mtp)
+	}
+	return mtpList
+}
+
 func (k Keeper) GetMTPs(ctx sdk.Context, pagination *query.PageRequest) ([]*types.MTP, *query.PageResponse, error) {
 	var mtpList []*types.MTP
 	store := ctx.KVStore(k.storeKey)
@@ -99,9 +142,31 @@ func (k Keeper) GetMTPs(ctx sdk.Context, pagination *query.PageRequest) ([]*type
 		}
 	}
 
+	entry, found := k.assetProfileKeeper.GetEntry(ctx, ptypes.BaseCurrency)
+	realTime := true
+	if !found {
+		realTime = false
+	}
+	baseCurrency := entry.Denom
+
 	pageRes, err := query.Paginate(mtpStore, pagination, func(key []byte, value []byte) error {
 		var mtp types.MTP
 		k.cdc.MustUnmarshal(value, &mtp)
+
+		ammPool, found := k.amm.GetPool(ctx, mtp.AmmPoolId)
+		if !found {
+			realTime = false
+		}
+
+		if realTime {
+			mtp.BorrowInterestUnpaidCollateral = k.GetBorrowInterest(ctx, &mtp, ammPool).Add(mtp.BorrowInterestUnpaidCollateral)
+
+			mtpHealth, err := k.GetMTPHealth(ctx, mtp, ammPool, baseCurrency)
+			if err == nil {
+				mtp.MtpHealth = mtpHealth
+			}
+		}
+
 		mtpList = append(mtpList, &mtp)
 		return nil
 	})
@@ -121,10 +186,32 @@ func (k Keeper) GetMTPsForPool(ctx sdk.Context, ammPoolId uint64, pagination *qu
 		}
 	}
 
+	entry, found := k.assetProfileKeeper.GetEntry(ctx, ptypes.BaseCurrency)
+	realTime := true
+	if !found {
+		realTime = false
+	}
+	baseCurrency := entry.Denom
+
+	ammPool, found := k.amm.GetPool(ctx, ammPoolId)
+	if !found {
+		realTime = false
+	}
+
 	pageRes, err := query.FilteredPaginate(mtpStore, pagination, func(key []byte, value []byte, accumulate bool) (bool, error) {
 		var mtp types.MTP
 		k.cdc.MustUnmarshal(value, &mtp)
 		if accumulate && mtp.AmmPoolId == ammPoolId {
+			if realTime {
+				// Interest
+				mtp.BorrowInterestUnpaidCollateral = k.GetBorrowInterest(ctx, &mtp, ammPool).Add(mtp.BorrowInterestUnpaidCollateral)
+
+				mtpHealth, err := k.GetMTPHealth(ctx, mtp, ammPool, baseCurrency)
+				if err == nil {
+					mtp.MtpHealth = mtpHealth
+				}
+			}
+
 			mtps = append(mtps, &mtp)
 			return true, nil
 		}
@@ -151,9 +238,30 @@ func (k Keeper) GetMTPsForAddress(ctx sdk.Context, mtpAddress sdk.AccAddress, pa
 		return nil, nil, status.Error(codes.InvalidArgument, fmt.Sprintf("page size greater than max %d", types.MaxPageLimit))
 	}
 
+	entry, found := k.assetProfileKeeper.GetEntry(ctx, ptypes.BaseCurrency)
+	realTime := true
+	if !found {
+		realTime = false
+	}
+	baseCurrency := entry.Denom
+
 	pageRes, err := query.Paginate(mtpStore, pagination, func(key []byte, value []byte) error {
 		var mtp types.MTP
 		k.cdc.MustUnmarshal(value, &mtp)
+		ammPool, found := k.amm.GetPool(ctx, mtp.AmmPoolId)
+		if !found {
+			realTime = false
+		}
+
+		if realTime {
+			mtp.BorrowInterestUnpaidCollateral = k.GetBorrowInterest(ctx, &mtp, ammPool).Add(mtp.BorrowInterestUnpaidCollateral)
+
+			mtpHealth, err := k.GetMTPHealth(ctx, mtp, ammPool, baseCurrency)
+			if err == nil {
+				mtp.MtpHealth = mtpHealth
+			}
+		}
+
 		mtps = append(mtps, &mtp)
 		return nil
 	})
@@ -228,6 +336,16 @@ func (k Keeper) GetAllLegacyMTP(ctx sdk.Context) []types.LegacyMTP {
 	}
 
 	return mtps
+}
+
+// TODO: Handle to pay with a claim message or in begin blocker
+func (k Keeper) SetToPay(ctx sdk.Context, toPay *types.ToPay) error {
+	store := ctx.KVStore(k.storeKey)
+	address := sdk.MustAccAddressFromBech32(toPay.Address)
+
+	key := types.GetToPayKey(address, toPay.Id)
+	store.Set(key, k.cdc.MustMarshal(toPay))
+	return nil
 }
 
 func (k Keeper) V6_MTPMigration(ctx sdk.Context) {

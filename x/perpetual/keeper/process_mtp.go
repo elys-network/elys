@@ -14,7 +14,7 @@ import (
 	"github.com/elys-network/elys/x/perpetual/types"
 )
 
-func BeginBlockerProcessMTP(ctx sdk.Context, k Keeper, mtp *types.MTP, pool types.Pool, ammPool ammtypes.Pool, baseCurrency string, baseCurrencyDecimal uint64) error {
+func (k Keeper) CheckAndLiquidateUnhealthyPosition(ctx sdk.Context, mtp *types.MTP, pool types.Pool, ammPool ammtypes.Pool, baseCurrency string, baseCurrencyDecimal uint64) error {
 	defer func() {
 		if r := recover(); r != nil {
 			if msg, ok := r.(string); ok {
@@ -24,7 +24,7 @@ func BeginBlockerProcessMTP(ctx sdk.Context, k Keeper, mtp *types.MTP, pool type
 	}()
 	var err error
 	// update mtp take profit liabilities
-	// calculate mtp take profit liablities, delta x_tp_l = delta y_tp_c * current price (take profit liabilities = take profit custody * current price)
+	// calculate mtp take profit liabilities, delta x_tp_l = delta y_tp_c * current price (take profit liabilities = take profit custody * current price)
 	mtp.TakeProfitLiabilities, err = k.CalcMTPTakeProfitLiability(ctx, mtp, baseCurrency)
 	if err != nil {
 		return errors.Wrap(err, fmt.Sprintf("error calculating mtp take profit liabilities: %s", mtp.String()))
@@ -34,17 +34,21 @@ func BeginBlockerProcessMTP(ctx sdk.Context, k Keeper, mtp *types.MTP, pool type
 	if err != nil {
 		return errors.Wrap(err, fmt.Sprintf("error calculating mtp take profit borrow rate: %s", mtp.String()))
 	}
-	h, err := k.UpdateMTPHealth(ctx, *mtp, ammPool, baseCurrency)
+	// Handle Borrow Interest if within epoch position
+	if _, err := k.SettleBorrowInterest(ctx, mtp, &pool, ammPool); err != nil {
+		return errors.Wrap(err, fmt.Sprintf("error handling borrow interest payment: %s", mtp.CollateralAsset))
+	}
+	h, err := k.GetMTPHealth(ctx, *mtp, ammPool, baseCurrency)
 	if err != nil {
 		return errors.Wrap(err, fmt.Sprintf("error updating mtp health: %s", mtp.String()))
 	}
 	mtp.MtpHealth = h
-
-	// Handle Borrow Interest if within epoch position
-	if err := k.HandleBorrowInterest(ctx, mtp, &pool, ammPool); err != nil {
-		return errors.Wrap(err, fmt.Sprintf("error handling borrow interest payment: %s", mtp.CollateralAsset))
+	if err := k.SettleFundingFeeCollection(ctx, mtp, &pool, ammPool, baseCurrency); err != nil {
+		return errors.Wrap(err, fmt.Sprintf("error handling funding fee collection: %s", mtp.CollateralAsset))
 	}
-	if err := k.HandleFundingFeeCollection(ctx, mtp, &pool, ammPool, baseCurrency); err != nil {
+
+	toPay, err := k.SettleFundingFeeDistribution(ctx, mtp, &pool, ammPool, baseCurrency)
+	if err != nil {
 		return errors.Wrap(err, fmt.Sprintf("error handling funding fee collection: %s", mtp.CollateralAsset))
 	}
 
@@ -107,6 +111,18 @@ func BeginBlockerProcessMTP(ctx sdk.Context, k Keeper, mtp *types.MTP, pool type
 		k.EmitForceClose(ctx, mtp, repayAmount, "")
 	} else {
 		return errors.Wrap(err, "error executing force close")
+	}
+
+	senderAddress, _ := sdk.AccAddressFromBech32(mtp.Address)
+	found = k.DoesMTPExist(ctx, senderAddress, mtp.Id)
+	empty := sdk.Coin{}
+	if !found && toPay != empty {
+		k.SetToPay(ctx, &types.ToPay{
+			AssetDenom:   toPay.Denom,
+			AssetBalance: toPay.Amount,
+			Address:      senderAddress.String(),
+			Id:           mtp.Id,
+		})
 	}
 
 	return nil

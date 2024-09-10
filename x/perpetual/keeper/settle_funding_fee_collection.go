@@ -6,10 +6,10 @@ import (
 	"github.com/elys-network/elys/x/perpetual/types"
 )
 
-// HandleFundingFeeCollection handles funding fee collection
-func (k Keeper) HandleFundingFeeCollection(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, ammPool ammtypes.Pool, baseCurrency string) error {
+// SettleFundingFeeCollection handles funding fee collection
+func (k Keeper) SettleFundingFeeCollection(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, ammPool ammtypes.Pool, baseCurrency string) error {
 	// get funding rate
-	fundingRate := pool.FundingRate
+	fundingRate := k.GetFundingRate(ctx, mtp.LastFundingCalcBlock, mtp.AmmPoolId)
 
 	// if funding rate is zero, return
 	if fundingRate.IsZero() {
@@ -20,9 +20,11 @@ func (k Keeper) HandleFundingFeeCollection(ctx sdk.Context, mtp *types.MTP, pool
 	if (fundingRate.IsNegative() && mtp.Position == types.Position_LONG) || (fundingRate.IsPositive() && mtp.Position == types.Position_SHORT) {
 		return nil
 	}
-
 	// Calculate the take amount in custody asset
-	takeAmountCustodyAmount := types.CalcTakeAmount(mtp.Custody, mtp.CustodyAsset, fundingRate)
+	takeAmountCustodyAmount := types.CalcTakeAmount(mtp.Custody, fundingRate)
+	if !takeAmountCustodyAmount.IsPositive() {
+		return nil
+	}
 
 	// Build the take amount coin
 	takeAmountCustody := sdk.NewCoin(mtp.CustodyAsset, takeAmountCustodyAmount)
@@ -74,6 +76,9 @@ func (k Keeper) HandleFundingFeeCollection(ctx sdk.Context, mtp *types.MTP, pool
 		return err
 	}
 
+	mtp.LastFundingCalcBlock = uint64(ctx.BlockHeight())
+	mtp.LastFundingCalcTime = uint64(ctx.BlockTime().Unix())
+
 	// apply changes to mtp object
 	err = k.SetMTP(ctx, mtp)
 	if err != nil {
@@ -84,7 +89,7 @@ func (k Keeper) HandleFundingFeeCollection(ctx sdk.Context, mtp *types.MTP, pool
 	k.SetPool(ctx, *pool)
 
 	// update mtp health
-	_, err = k.UpdateMTPHealth(ctx, *mtp, ammPool, baseCurrency)
+	_, err = k.GetMTPHealth(ctx, *mtp, ammPool, baseCurrency)
 	if err != nil {
 		return err
 	}
