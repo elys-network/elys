@@ -52,7 +52,7 @@ func (k msgServer) RemovePriceFeeders(goCtx context.Context, msg *types.MsgRemov
 	}
 
 	for _, feeder := range msg.Feeders {
-		k.Keeper.RemovePriceFeeder(ctx, feeder)
+		k.Keeper.RemovePriceFeeder(ctx, sdk.MustAccAddressFromBech32(feeder))
 	}
 	return &types.MsgRemovePriceFeedersResponse{}, nil
 }
