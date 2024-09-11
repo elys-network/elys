@@ -11,6 +11,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/store"
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	typesparams "github.com/cosmos/cosmos-sdk/x/params/types"
 	"github.com/elys-network/elys/x/masterchef/keeper"
 	"github.com/elys-network/elys/x/masterchef/types"
@@ -51,7 +53,7 @@ func MasterchefKeeper(t testing.TB) (*keeper.Keeper, sdk.Context) {
 		nil,
 		nil,
 		nil,
-		"",
+		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 
 	ctx := sdk.NewContext(stateStore, tmproto.Header{}, false, log.NewNopLogger())

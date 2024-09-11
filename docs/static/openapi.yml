@@ -42595,6 +42595,9 @@ paths:
                     items:
                       type: string
                     title: external reward denoms on the pool
+                  enable_eden_rewards:
+                    type: boolean
+                    title: Enabled or disabled eden rewards
         default:
           description: An unexpected error response.
           schema:
@@ -88408,6 +88411,8 @@ definitions:
     type: object
   elys.masterchef.MsgClaimRewardsResponse:
     type: object
+  elys.masterchef.MsgTogglePoolEdenRewardsResponse:
+    type: object
   elys.masterchef.MsgUpdateParamsResponse:
     type: object
   elys.masterchef.MsgUpdatePoolMultipliersResponse:
@@ -88491,6 +88496,9 @@ definitions:
         items:
           type: string
         title: external reward denoms on the pool
+      enable_eden_rewards:
+        type: boolean
+        title: Enabled or disabled eden rewards
   elys.masterchef.PoolMultiplier:
     type: object
     properties:
@@ -88658,6 +88666,9 @@ definitions:
             items:
               type: string
             title: external reward denoms on the pool
+          enable_eden_rewards:
+            type: boolean
+            title: Enabled or disabled eden rewards
   elys.masterchef.QueryPoolRewardInfoResponse:
     type: object
     properties:
