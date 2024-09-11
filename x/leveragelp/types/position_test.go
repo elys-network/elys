@@ -13,7 +13,7 @@ import (
 
 func TestPosition(t *testing.T) {
 	creator := sample.AccAddress()
-	position := types.NewPosition(creator, sdk.NewCoin("uusdc", sdk.OneInt()), sdk.OneDec().MulInt64(2), 1)
+	position := types.NewPosition(creator, sdk.NewCoin("uusdc", sdk.OneInt()), 1)
 	require.Equal(t, position.GetOwnerAddress(), sdk.MustAccAddressFromBech32(creator))
 	require.Equal(t, position.GetPositionAddress(), authtypes.NewModuleAddress(fmt.Sprintf("leveragelp/%d", position.Id)))
 	tests := []struct {
@@ -59,24 +59,9 @@ func TestPosition(t *testing.T) {
 			errMsg: "leveraged lp amount cannot be negative",
 		},
 		{
-			name: "leverage is = 1",
-			setter: func() {
-				position.LeveragedLpAmount = sdk.OneInt()
-				position.Leverage = sdk.OneDec()
-			},
-			errMsg: "leverage must be greater than 1",
-		},
-		{
-			name: "leverage is < 1",
-			setter: func() {
-				position.Leverage = sdk.ZeroDec()
-			},
-			errMsg: "leverage must be greater than 1",
-		},
-		{
 			name: "Collateral is invalid",
 			setter: func() {
-				position.Leverage = sdk.MustNewDecFromStr("1.01")
+				position.LeveragedLpAmount = sdk.OneInt()
 				position.Collateral = sdk.Coin{"$$$$", sdk.OneInt()}
 			},
 			errMsg: "invalid collateral coin",

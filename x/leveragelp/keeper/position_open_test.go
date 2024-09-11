@@ -95,7 +95,6 @@ func (suite KeeperTestSuite) TestOpenLong() {
 	suite.Require().Equal(position.Address, addr.String())
 	suite.Require().Equal(position.Collateral.String(), "1000uusdc")
 	suite.Require().Equal(position.Liabilities.String(), "4000")
-	suite.Require().Equal(position.Leverage.String(), "5.000000000000000000")
 	// suite.Require().Equal(position.LeveragedLpAmount.String(), "49390000000000000") // slippage enabled on amm
 	suite.Require().Equal(position.LeveragedLpAmount.String(), "50000000000000000") // slippage disabled on amm
 	// suite.Require().Equal(position.PositionHealth.String(), "1.221000000000000000") // slippage enabled on amm
@@ -118,7 +117,6 @@ func (suite KeeperTestSuite) TestOpenLong() {
 	suite.Require().Equal(position2.Address, addr.String())
 	suite.Require().Equal(position2.Collateral.String(), "2000uusdc")
 	suite.Require().Equal(position2.Liabilities.String(), "8000")
-	suite.Require().Equal(position2.Leverage.String(), "5.000000000000000000")
 	// suite.Require().Equal(position2.LeveragedLpAmount.String(), "98805291560975610") // slippage enabled on amm
 	suite.Require().Equal(position2.LeveragedLpAmount.String(), "100000000000000000") // slippage disabled on amm
 	// suite.Require().Equal(position2.PositionHealth.String(), "1.210375000000000000") // slippage enabled on amm

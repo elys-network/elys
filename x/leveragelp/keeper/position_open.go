@@ -12,19 +12,11 @@ import (
 )
 
 func (k Keeper) OpenLong(ctx sdk.Context, msg *types.MsgOpen) (*types.Position, error) {
-	// Determine the maximum leverage available and compute the effective leverage to be used.
-	pool, found := k.GetPool(ctx, msg.AmmPoolId)
-	if !found {
-		return nil, errorsmod.Wrap(types.ErrPoolDoesNotExist, fmt.Sprintf("poolId: %d", msg.AmmPoolId))
-	}
-	// pool.LeverageMax is set when adding pool with MinDec(params.LeverageMax, addPoolMsg.Leverage)
-	leverage := sdk.MinDec(msg.Leverage, pool.LeverageMax)
-
-	// Convert the collateral amount into a decimal format.
-	collateralAmountDec := sdk.NewDecFromBigInt(msg.CollateralAmount.BigInt())
-
 	// Initialize a new Leveragelp Trading Position (Position).
-	position := types.NewPosition(msg.Creator, sdk.NewCoin(msg.CollateralAsset, msg.CollateralAmount), leverage, msg.AmmPoolId)
+	if msg.Leverage.LTE(sdk.OneDec()) {
+		return nil, types.ErrLeverageTooSmall
+	}
+	position := types.NewPosition(msg.Creator, sdk.NewCoin(msg.CollateralAsset, msg.CollateralAmount), msg.AmmPoolId)
 	position.Id = k.GetPositionCount(ctx) + 1
 	position.StopLossPrice = msg.StopLossPrice
 	k.SetPositionCount(ctx, position.Id)
@@ -33,27 +25,19 @@ func (k Keeper) OpenLong(ctx sdk.Context, msg *types.MsgOpen) (*types.Position, 
 	k.SetOpenPositionCount(ctx, openCount+1)
 
 	// Call the function to process the open long logic.
-	return k.ProcessOpenLong(ctx, position, leverage, collateralAmountDec, msg.AmmPoolId, msg)
+	return k.ProcessOpenLong(ctx, position, msg.AmmPoolId, msg)
 }
 
 func (k Keeper) OpenConsolidate(ctx sdk.Context, position *types.Position, msg *types.MsgOpen) (*types.MsgOpenResponse, error) {
-	if !position.Leverage.Equal(msg.Leverage) {
-		return nil, types.ErrInvalidLeverage
+	if msg.Leverage.LT(sdk.OneDec()) {
+		return nil, types.ErrLeverageTooSmall
 	}
+	
 	poolId := position.AmmPoolId
-	pool, found := k.GetPool(ctx, poolId)
-	if !found {
-		return nil, errorsmod.Wrap(types.ErrPoolDoesNotExist, fmt.Sprintf("poolId: %d", poolId))
-	}
 
-	if !pool.Enabled {
-		return nil, errorsmod.Wrap(types.ErrPositionDisabled, fmt.Sprintf("poolId: %d", poolId))
-	}
-
-	collateralAmountDec := sdk.NewDecFromInt(msg.CollateralAmount)
 	position.Collateral = position.Collateral.Add(sdk.NewCoin(msg.CollateralAsset, msg.CollateralAmount))
 
-	position, err := k.ProcessOpenLong(ctx, position, position.Leverage, collateralAmountDec, poolId, msg)
+	position, err := k.ProcessOpenLong(ctx, position, poolId, msg)
 	if err != nil {
 		return nil, err
 	}
@@ -70,7 +54,6 @@ func (k Keeper) OpenConsolidate(ctx sdk.Context, position *types.Position, msg *
 		sdk.NewAttribute("id", strconv.FormatInt(int64(position.Id), 10)),
 		sdk.NewAttribute("address", position.Address),
 		sdk.NewAttribute("collateral", position.Collateral.String()),
-		sdk.NewAttribute("leverage", position.Leverage.String()),
 		sdk.NewAttribute("liabilities", position.Liabilities.String()),
 		sdk.NewAttribute("health", position.PositionHealth.String()),
 	)
@@ -79,7 +62,12 @@ func (k Keeper) OpenConsolidate(ctx sdk.Context, position *types.Position, msg *
 	return &types.MsgOpenResponse{}, nil
 }
 
-func (k Keeper) ProcessOpenLong(ctx sdk.Context, position *types.Position, leverage sdk.Dec, collateralAmountDec sdk.Dec, poolId uint64, msg *types.MsgOpen) (*types.Position, error) {
+func (k Keeper) ProcessOpenLong(ctx sdk.Context, position *types.Position, poolId uint64, msg *types.MsgOpen) (*types.Position, error) {
+	collateralAmountDec := sdk.NewDecFromInt(msg.CollateralAmount)
+	// Determine the maximum leverage available and compute the effective leverage to be used.
+	maxLeverage := k.GetMaxLeverageParam(ctx)
+	leverage := sdk.MinDec(msg.Leverage, maxLeverage)
+
 	// Fetch the pool associated with the given pool ID.
 	pool, found := k.GetPool(ctx, poolId)
 	if !found {
@@ -113,9 +101,11 @@ func (k Keeper) ProcessOpenLong(ctx sdk.Context, position *types.Position, lever
 
 	// borrow leveragedAmount - collateralAmount
 	borrowCoin := sdk.NewCoin(msg.CollateralAsset, leveragedAmount.Sub(msg.CollateralAmount))
-	err = k.stableKeeper.Borrow(ctx, position.GetPositionAddress(), borrowCoin)
-	if err != nil {
-		return nil, err
+	if borrowCoin.Amount.IsPositive() {
+		err = k.stableKeeper.Borrow(ctx, position.GetPositionAddress(), borrowCoin)
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	_, shares, err := k.amm.JoinPoolNoSwap(ctx, position.GetPositionAddress(), poolId, sdk.OneInt(), sdk.Coins{leverageCoin})

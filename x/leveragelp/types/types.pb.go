@@ -81,12 +81,11 @@ type Position struct {
 	Address           string                                 `protobuf:"bytes,1,opt,name=address,proto3" json:"address,omitempty"`
 	Collateral        types.Coin                             `protobuf:"bytes,2,opt,name=collateral,proto3" json:"collateral"`
 	Liabilities       github_com_cosmos_cosmos_sdk_types.Int `protobuf:"bytes,3,opt,name=liabilities,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"liabilities"`
-	Leverage          github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,4,opt,name=leverage,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"leverage"`
-	LeveragedLpAmount github_com_cosmos_cosmos_sdk_types.Int `protobuf:"bytes,5,opt,name=leveraged_lp_amount,json=leveragedLpAmount,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"leveraged_lp_amount"`
-	PositionHealth    github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,6,opt,name=position_health,json=positionHealth,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"position_health"`
-	Id                uint64                                 `protobuf:"varint,7,opt,name=id,proto3" json:"id,omitempty"`
-	AmmPoolId         uint64                                 `protobuf:"varint,8,opt,name=amm_pool_id,json=ammPoolId,proto3" json:"amm_pool_id,omitempty"`
-	StopLossPrice     github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,9,opt,name=stop_loss_price,json=stopLossPrice,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"stop_loss_price"`
+	LeveragedLpAmount github_com_cosmos_cosmos_sdk_types.Int `protobuf:"bytes,4,opt,name=leveraged_lp_amount,json=leveragedLpAmount,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"leveraged_lp_amount"`
+	PositionHealth    github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,5,opt,name=position_health,json=positionHealth,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"position_health"`
+	Id                uint64                                 `protobuf:"varint,6,opt,name=id,proto3" json:"id,omitempty"`
+	AmmPoolId         uint64                                 `protobuf:"varint,7,opt,name=amm_pool_id,json=ammPoolId,proto3" json:"amm_pool_id,omitempty"`
+	StopLossPrice     github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,8,opt,name=stop_loss_price,json=stopLossPrice,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"stop_loss_price"`
 }
 
 func (m *Position) Reset()         { *m = Position{} }
@@ -154,13 +153,12 @@ type LegacyPosition struct {
 	Address           string                                 `protobuf:"bytes,1,opt,name=address,proto3" json:"address,omitempty"`
 	Collateral        types.Coin                             `protobuf:"bytes,2,opt,name=collateral,proto3" json:"collateral"`
 	Liabilities       github_com_cosmos_cosmos_sdk_types.Int `protobuf:"bytes,3,opt,name=liabilities,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"liabilities"`
-	InterestPaid      github_com_cosmos_cosmos_sdk_types.Int `protobuf:"bytes,4,opt,name=interest_paid,json=interestPaid,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"interest_paid"`
-	Leverage          github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,5,opt,name=leverage,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"leverage"`
-	LeveragedLpAmount github_com_cosmos_cosmos_sdk_types.Int `protobuf:"bytes,6,opt,name=leveraged_lp_amount,json=leveragedLpAmount,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"leveraged_lp_amount"`
-	PositionHealth    github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,7,opt,name=position_health,json=positionHealth,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"position_health"`
-	Id                uint64                                 `protobuf:"varint,8,opt,name=id,proto3" json:"id,omitempty"`
-	AmmPoolId         uint64                                 `protobuf:"varint,9,opt,name=amm_pool_id,json=ammPoolId,proto3" json:"amm_pool_id,omitempty"`
-	StopLossPrice     github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,10,opt,name=stop_loss_price,json=stopLossPrice,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"stop_loss_price"`
+	Leverage          github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,4,opt,name=leverage,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"leverage"`
+	LeveragedLpAmount github_com_cosmos_cosmos_sdk_types.Int `protobuf:"bytes,5,opt,name=leveraged_lp_amount,json=leveragedLpAmount,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"leveraged_lp_amount"`
+	PositionHealth    github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,6,opt,name=position_health,json=positionHealth,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"position_health"`
+	Id                uint64                                 `protobuf:"varint,7,opt,name=id,proto3" json:"id,omitempty"`
+	AmmPoolId         uint64                                 `protobuf:"varint,8,opt,name=amm_pool_id,json=ammPoolId,proto3" json:"amm_pool_id,omitempty"`
+	StopLossPrice     github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,9,opt,name=stop_loss_price,json=stopLossPrice,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"stop_loss_price"`
 }
 
 func (m *LegacyPosition) Reset()         { *m = LegacyPosition{} }
@@ -434,16 +432,16 @@ func (m *Position) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i = encodeVarintTypes(dAtA, i, uint64(size))
 	}
 	i--
-	dAtA[i] = 0x4a
+	dAtA[i] = 0x42
 	if m.AmmPoolId != 0 {
 		i = encodeVarintTypes(dAtA, i, uint64(m.AmmPoolId))
 		i--
-		dAtA[i] = 0x40
+		dAtA[i] = 0x38
 	}
 	if m.Id != 0 {
 		i = encodeVarintTypes(dAtA, i, uint64(m.Id))
 		i--
-		dAtA[i] = 0x38
+		dAtA[i] = 0x30
 	}
 	{
 		size := m.PositionHealth.Size()
@@ -454,21 +452,11 @@ func (m *Position) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i = encodeVarintTypes(dAtA, i, uint64(size))
 	}
 	i--
-	dAtA[i] = 0x32
+	dAtA[i] = 0x2a
 	{
 		size := m.LeveragedLpAmount.Size()
 		i -= size
 		if _, err := m.LeveragedLpAmount.MarshalTo(dAtA[i:]); err != nil {
-			return 0, err
-		}
-		i = encodeVarintTypes(dAtA, i, uint64(size))
-	}
-	i--
-	dAtA[i] = 0x2a
-	{
-		size := m.Leverage.Size()
-		i -= size
-		if _, err := m.Leverage.MarshalTo(dAtA[i:]); err != nil {
 			return 0, err
 		}
 		i = encodeVarintTypes(dAtA, i, uint64(size))
@@ -534,16 +522,16 @@ func (m *LegacyPosition) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i = encodeVarintTypes(dAtA, i, uint64(size))
 	}
 	i--
-	dAtA[i] = 0x52
+	dAtA[i] = 0x4a
 	if m.AmmPoolId != 0 {
 		i = encodeVarintTypes(dAtA, i, uint64(m.AmmPoolId))
 		i--
-		dAtA[i] = 0x48
+		dAtA[i] = 0x40
 	}
 	if m.Id != 0 {
 		i = encodeVarintTypes(dAtA, i, uint64(m.Id))
 		i--
-		dAtA[i] = 0x40
+		dAtA[i] = 0x38
 	}
 	{
 		size := m.PositionHealth.Size()
@@ -554,7 +542,7 @@ func (m *LegacyPosition) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i = encodeVarintTypes(dAtA, i, uint64(size))
 	}
 	i--
-	dAtA[i] = 0x3a
+	dAtA[i] = 0x32
 	{
 		size := m.LeveragedLpAmount.Size()
 		i -= size
@@ -564,21 +552,11 @@ func (m *LegacyPosition) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i = encodeVarintTypes(dAtA, i, uint64(size))
 	}
 	i--
-	dAtA[i] = 0x32
+	dAtA[i] = 0x2a
 	{
 		size := m.Leverage.Size()
 		i -= size
 		if _, err := m.Leverage.MarshalTo(dAtA[i:]); err != nil {
-			return 0, err
-		}
-		i = encodeVarintTypes(dAtA, i, uint64(size))
-	}
-	i--
-	dAtA[i] = 0x2a
-	{
-		size := m.InterestPaid.Size()
-		i -= size
-		if _, err := m.InterestPaid.MarshalTo(dAtA[i:]); err != nil {
 			return 0, err
 		}
 		i = encodeVarintTypes(dAtA, i, uint64(size))
@@ -766,8 +744,6 @@ func (m *Position) Size() (n int) {
 	n += 1 + l + sovTypes(uint64(l))
 	l = m.Liabilities.Size()
 	n += 1 + l + sovTypes(uint64(l))
-	l = m.Leverage.Size()
-	n += 1 + l + sovTypes(uint64(l))
 	l = m.LeveragedLpAmount.Size()
 	n += 1 + l + sovTypes(uint64(l))
 	l = m.PositionHealth.Size()
@@ -796,8 +772,6 @@ func (m *LegacyPosition) Size() (n int) {
 	l = m.Collateral.Size()
 	n += 1 + l + sovTypes(uint64(l))
 	l = m.Liabilities.Size()
-	n += 1 + l + sovTypes(uint64(l))
-	l = m.InterestPaid.Size()
 	n += 1 + l + sovTypes(uint64(l))
 	l = m.Leverage.Size()
 	n += 1 + l + sovTypes(uint64(l))
@@ -1087,40 +1061,6 @@ func (m *Position) Unmarshal(dAtA []byte) error {
 			iNdEx = postIndex
 		case 4:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Leverage", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTypes
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthTypes
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthTypes
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if err := m.Leverage.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		case 5:
-			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field LeveragedLpAmount", wireType)
 			}
 			var stringLen uint64
@@ -1153,7 +1093,7 @@ func (m *Position) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			iNdEx = postIndex
-		case 6:
+		case 5:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field PositionHealth", wireType)
 			}
@@ -1187,7 +1127,7 @@ func (m *Position) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			iNdEx = postIndex
-		case 7:
+		case 6:
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
 			}
@@ -1206,7 +1146,7 @@ func (m *Position) Unmarshal(dAtA []byte) error {
 					break
 				}
 			}
-		case 8:
+		case 7:
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field AmmPoolId", wireType)
 			}
@@ -1225,7 +1165,7 @@ func (m *Position) Unmarshal(dAtA []byte) error {
 					break
 				}
 			}
-		case 9:
+		case 8:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field StopLossPrice", wireType)
 			}
@@ -1410,40 +1350,6 @@ func (m *LegacyPosition) Unmarshal(dAtA []byte) error {
 			iNdEx = postIndex
 		case 4:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field InterestPaid", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTypes
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthTypes
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthTypes
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if err := m.InterestPaid.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		case 5:
-			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Leverage", wireType)
 			}
 			var stringLen uint64
@@ -1476,7 +1382,7 @@ func (m *LegacyPosition) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			iNdEx = postIndex
-		case 6:
+		case 5:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field LeveragedLpAmount", wireType)
 			}
@@ -1510,7 +1416,7 @@ func (m *LegacyPosition) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			iNdEx = postIndex
-		case 7:
+		case 6:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field PositionHealth", wireType)
 			}
@@ -1544,7 +1450,7 @@ func (m *LegacyPosition) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			iNdEx = postIndex
-		case 8:
+		case 7:
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
 			}
@@ -1563,7 +1469,7 @@ func (m *LegacyPosition) Unmarshal(dAtA []byte) error {
 					break
 				}
 			}
-		case 9:
+		case 8:
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field AmmPoolId", wireType)
 			}
@@ -1582,7 +1488,7 @@ func (m *LegacyPosition) Unmarshal(dAtA []byte) error {
 					break
 				}
 			}
-		case 10:
+		case 9:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field StopLossPrice", wireType)
 			}

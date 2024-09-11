@@ -32,5 +32,5 @@ var (
 	ErrInvalidLeverage           = errorsmod.Register(ModuleName, 39, "leverage should be same as existing position")
 	ErrInvalidCollateral         = errorsmod.Register(ModuleName, 40, "collateral should not be more than total liability")
 	ErrPoolLeverageAmountNotZero = errorsmod.Register(ModuleName, 41, "pool leverage amount is greater than zero")
-	ErrLeverageTooSmall          = errorsmod.Register(ModuleName, 42, "leverage should be more than 1")
+	ErrLeverageTooSmall          = errorsmod.Register(ModuleName, 42, "leverage should be more than or equal to 1")
 )
