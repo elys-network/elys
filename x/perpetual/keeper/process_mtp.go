@@ -127,17 +127,28 @@ func (k Keeper) CheckAndCloseAtStopLoss(ctx sdk.Context, mtp *types.MTP, pool ty
 		}
 	}()
 
-	lpTokenPrice, err := ammPool.LpTokenPrice(ctx, k.oracleKeeper)
-	if err != nil {
-		return err
+	tradingAssetPrice, found := k.oracleKeeper.GetAssetPrice(ctx, mtp.TradingAsset)
+	if !found {
+		return fmt.Errorf("asset price not found")
 	}
 
-	underStopLossPrice := !mtp.StopLossPrice.IsNil() && lpTokenPrice.LTE(mtp.StopLossPrice)
-	if !underStopLossPrice {
-		return fmt.Errorf("mtp stop loss price is not <= lp token price")
+	if mtp.Position == types.Position_LONG {
+		underStopLossPrice := !mtp.StopLossPrice.IsNil() && tradingAssetPrice.Price.LTE(mtp.StopLossPrice)
+		if !underStopLossPrice {
+			return fmt.Errorf("mtp stop loss price is not <=  token price")
+		}
+	}else {
+		underStopLossPrice := !mtp.StopLossPrice.IsNil() && tradingAssetPrice.Price.GTE(mtp.StopLossPrice)
+		if !underStopLossPrice {
+			return fmt.Errorf("mtp stop loss price is not =>  token price")
+		}
 	}
+	
 
-	var repayAmount math.Int
+	var (
+		repayAmount math.Int
+		err         error
+	)
 	switch mtp.Position {
 	case types.Position_LONG:
 		repayAmount, err = k.ForceCloseLong(ctx, mtp, &pool, true, baseCurrency)
