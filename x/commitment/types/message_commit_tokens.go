@@ -46,8 +46,12 @@ func (msg *MsgCommitClaimedRewards) ValidateBasic() error {
 		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid creator address: %v", err)
 	}
 
+	if msg.Amount.IsNil() {
+		return errorsmod.Wrapf(ErrInvalidAmount, "Amount can not be nil")
+	}
+
 	if msg.Amount.IsNegative() {
-		return errorsmod.Wrapf(ErrInvalidAmount, "Amount cannot be negative")
+		return errorsmod.Wrapf(ErrInvalidAmount, "Amount can not be negative")
 	}
 
 	return nil

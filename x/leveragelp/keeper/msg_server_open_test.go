@@ -1,7 +1,6 @@
 package keeper_test
 
 import (
-
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
@@ -183,6 +182,7 @@ func (suite *KeeperTestSuite) TestOpen_PoolWithBaseCurrencyAsset() {
 				pool.Enabled = true
 				suite.app.LeveragelpKeeper.SetPool(suite.ctx, pool)
 				suite.RemovePrices(suite.ctx, []string{"uusdc"})
+				suite.SetMaxOpenPositions(20)
 			},
 		},
 		{name: "AMM Pool not found",
@@ -307,6 +307,20 @@ func (suite *KeeperTestSuite) TestOpen_PoolWithBaseCurrencyAsset() {
 				suite.SetSafetyFactor(sdk.OneDec().MulInt64(10))
 			},
 		},
+		{"Open new Position with leverage <=1",
+			&types.MsgOpen{
+				Creator:          addresses[0].String(),
+				CollateralAsset:  ptypes.BaseCurrency,
+				CollateralAmount: sdk.NewInt(1000),
+				AmmPoolId:        1,
+				Leverage:         sdk.MustNewDecFromStr("0.0"),
+				StopLossPrice:    sdk.MustNewDecFromStr("100.0"),
+			},
+			true,
+			"",
+			func() {
+			},
+		},
 		{"Open Position",
 			&types.MsgOpen{
 				Creator:          addresses[0].String(),
@@ -326,7 +340,7 @@ func (suite *KeeperTestSuite) TestOpen_PoolWithBaseCurrencyAsset() {
 				suite.SetPoolThreshold(sdk.MustNewDecFromStr("0.2"))
 			},
 		},
-		{"Add on already open position Long but with different leverage",
+		{"Add on already open position Long but with different leverage 10",
 			&types.MsgOpen{
 				Creator:          addresses[0].String(),
 				CollateralAsset:  ptypes.BaseCurrency,
@@ -335,22 +349,51 @@ func (suite *KeeperTestSuite) TestOpen_PoolWithBaseCurrencyAsset() {
 				Leverage:         sdk.MustNewDecFromStr("10.0"),
 				StopLossPrice:    sdk.MustNewDecFromStr("100.0"),
 			},
-			true,
+			false,
 			"",
 			func() {
 			},
 		},
-		{"Add on already open position Long",
+		{"Add on already open position Long but with different leverage 20",
 			&types.MsgOpen{
 				Creator:          addresses[0].String(),
 				CollateralAsset:  ptypes.BaseCurrency,
 				CollateralAmount: sdk.NewInt(1000),
 				AmmPoolId:        1,
-				Leverage:         sdk.MustNewDecFromStr("2.0"),
+				Leverage:         sdk.MustNewDecFromStr("20.0"),
 				StopLossPrice:    sdk.MustNewDecFromStr("100.0"),
 			},
 			false,
 			"",
+			func() {
+			},
+		},
+		{"Add on already open position Long but with different leverage 1, increase position health",
+			&types.MsgOpen{
+				Creator:          addresses[0].String(),
+				CollateralAsset:  ptypes.BaseCurrency,
+				CollateralAmount: sdk.NewInt(1000000),
+				AmmPoolId:        1,
+				Leverage:         sdk.MustNewDecFromStr("1.0"),
+				StopLossPrice:    sdk.MustNewDecFromStr("100.0"),
+			},
+			false,
+			"",
+			func() {
+				suite.SetSafetyFactor(sdk.MustNewDecFromStr("2.0"))
+			},
+		},
+		{"Add on already open position Long but with different leverage 30",
+			&types.MsgOpen{
+				Creator:          addresses[0].String(),
+				CollateralAsset:  ptypes.BaseCurrency,
+				CollateralAmount: sdk.NewInt(1000000),
+				AmmPoolId:        1,
+				Leverage:         sdk.MustNewDecFromStr("30.0"),
+				StopLossPrice:    sdk.MustNewDecFromStr("100.0"),
+			},
+			true,
+			types.ErrPositionUnhealthy.Error(),
 			func() {
 			},
 		},
@@ -366,6 +409,7 @@ func (suite *KeeperTestSuite) TestOpen_PoolWithBaseCurrencyAsset() {
 			true,
 			types.ErrInvalidPosition.Wrapf("pool health too low to open new positions").Error(),
 			func() {
+				suite.SetSafetyFactor(sdk.MustNewDecFromStr("1.0"))
 				suite.SetPoolThreshold(sdk.OneDec())
 			},
 		},
@@ -374,14 +418,14 @@ func (suite *KeeperTestSuite) TestOpen_PoolWithBaseCurrencyAsset() {
 	for _, tc := range testCases {
 		suite.Run(tc.name, func() {
 			tc.prerequisiteFunction()
-			portfolio_old, found := suite.app.TierKeeper.GetPortfolio(suite.ctx, tc.input.Creator, suite.app.TierKeeper.GetDateFromBlock(suite.ctx.BlockTime()))
+			portfolio_old, found := suite.app.TierKeeper.GetPortfolio(suite.ctx, sdk.MustAccAddressFromBech32(tc.input.Creator), suite.app.TierKeeper.GetDateFromContext(suite.ctx))
 			_, err := suite.app.LeveragelpKeeper.Open(suite.ctx, tc.input)
 			if tc.expectErr {
 				suite.Require().Error(err)
 				suite.Require().Contains(err.Error(), tc.expectErrMsg)
 			} else {
 				// The new value of the portfolio after the hook is called.
-				portfolio_new, _ := suite.app.TierKeeper.GetPortfolio(suite.ctx, tc.input.Creator, suite.app.TierKeeper.GetDateFromBlock(suite.ctx.BlockTime()))
+				portfolio_new, _ := suite.app.TierKeeper.GetPortfolio(suite.ctx, sdk.MustAccAddressFromBech32(tc.input.Creator), suite.app.TierKeeper.GetDateFromContext(suite.ctx))
 				// Initially, there were no entries for the portfolio
 				if !found {
 					// The portfolio value changes after the hook is called.

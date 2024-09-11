@@ -27,10 +27,11 @@ func TestOpenPosition(t *testing.T) {
 	// Tendermint RPC calls.
 	// ...
 	args := []string{
-		"open",
+		"long",
 		"1.5",
 		"uatom",
 		"1000" + ptypes.BaseCurrency,
+		"100.0",
 		"--from=" + val.Address.String(),
 		"-y",
 	}

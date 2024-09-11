@@ -24,6 +24,9 @@ func TestMsgUpdateParams_ValidateBasic(t *testing.T) {
 			name: "valid address",
 			msg: MsgUpdateParams{
 				Authority: sample.AccAddress(),
+				Params: &Params{
+					EpochIdentifier: "tenseconds",
+				},
 			},
 		},
 	}

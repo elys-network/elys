@@ -9,12 +9,11 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 )
 
-func NewPosition(signer string, collateral sdk.Coin, leverage sdk.Dec, poolId uint64) *Position {
+func NewPosition(signer string, collateral sdk.Coin, poolId uint64) *Position {
 	return &Position{
 		Address:           signer,
 		Collateral:        collateral,
 		Liabilities:       sdk.ZeroInt(),
-		Leverage:          leverage,
 		PositionHealth:    sdk.ZeroDec(),
 		AmmPoolId:         poolId,
 		LeveragedLpAmount: sdk.ZeroInt(),
@@ -31,9 +30,6 @@ func (position Position) Validate() error {
 	}
 	if position.LeveragedLpAmount.IsNegative() {
 		return errorsmod.Wrap(ErrPositionInvalid, "leveraged lp amount cannot be negative")
-	}
-	if !position.Leverage.GT(sdk.OneDec()) {
-		return errorsmod.Wrapf(ErrPositionInvalid, "leverage must be greater than 1")
 	}
 	if !position.Collateral.IsValid() {
 		return errorsmod.Wrap(ErrPositionInvalid, "invalid collateral coin")

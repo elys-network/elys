@@ -2,18 +2,15 @@ package keeper
 
 import (
 	"fmt"
-	gomath "math"
 	"math/big"
 
 	"github.com/cometbft/cometbft/libs/log"
 	"github.com/cosmos/cosmos-sdk/codec"
-	"github.com/cosmos/cosmos-sdk/store/prefix"
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/math"
-	"github.com/cosmos/cosmos-sdk/types/query"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	pkeeper "github.com/elys-network/elys/x/parameter/keeper"
 	"github.com/elys-network/elys/x/perpetual/types"
@@ -86,11 +83,6 @@ func NewKeeper(
 
 func (k Keeper) Logger(ctx sdk.Context) log.Logger {
 	return ctx.Logger().With("module", fmt.Sprintf("x/%s", types.ModuleName))
-}
-
-func (k Keeper) CheckIfWhitelisted(ctx sdk.Context, address string) bool {
-	store := ctx.KVStore(k.storeKey)
-	return store.Has(types.GetWhitelistKey(address))
 }
 
 // Swap estimation using amm CalcInAmtGivenOut function
@@ -178,7 +170,7 @@ func (k Keeper) Borrow(ctx sdk.Context, collateralAmount math.Int, custodyAmount
 
 	mtp.Leverage = eta.Add(sdk.OneDec())
 
-	h, err := k.UpdateMTPHealth(ctx, *mtp, *ammPool, baseCurrency) // set mtp in func or return h?
+	h, err := k.GetMTPHealth(ctx, *mtp, *ammPool, baseCurrency) // set mtp in func or return h?
 	if err != nil {
 		return err
 	}
@@ -512,63 +504,18 @@ func (k Keeper) TakeFundPayment(ctx sdk.Context, returnAmount math.Int, returnAs
 
 	if !takeAmount.IsZero() {
 		takeCoins := sdk.NewCoins(sdk.NewCoin(returnAsset, sdk.NewIntFromBigInt(takeAmount.BigInt())))
-		err := k.bankKeeper.SendCoinsFromModuleToAccount(ctx, ammPool.Address, fundAddr, takeCoins)
+
+		ammPoolAddr, err := sdk.AccAddressFromBech32(ammPool.Address)
+		if err != nil {
+			return sdk.ZeroInt(), err
+		}
+		err = k.bankKeeper.SendCoins(ctx, ammPoolAddr, fundAddr, takeCoins)
+		//err := k.bankKeeper.SendCoinsFromModuleToAccount(ctx, ammPool.Address, fundAddr, takeCoins)
 		if err != nil {
 			return sdk.ZeroInt(), err
 		}
 	}
 	return takeAmount, nil
-}
-
-func (k Keeper) GetWhitelistAddressIterator(ctx sdk.Context) sdk.Iterator {
-	store := ctx.KVStore(k.storeKey)
-	return sdk.KVStorePrefixIterator(store, types.WhitelistPrefix)
-}
-
-func (k Keeper) GetAllWhitelistedAddress(ctx sdk.Context) []string {
-	var list []string
-	iterator := k.GetWhitelistAddressIterator(ctx)
-	defer func(iterator sdk.Iterator) {
-		err := iterator.Close()
-		if err != nil {
-			panic(err)
-		}
-	}(iterator)
-
-	for ; iterator.Valid(); iterator.Next() {
-		list = append(list, (string)(iterator.Value()))
-	}
-
-	return list
-}
-
-func (k Keeper) GetWhitelistedAddress(ctx sdk.Context, pagination *query.PageRequest) ([]string, *query.PageResponse, error) {
-	var list []string
-	store := ctx.KVStore(k.storeKey)
-	prefixStore := prefix.NewStore(store, types.WhitelistPrefix)
-
-	if pagination == nil {
-		pagination = &query.PageRequest{
-			Limit: gomath.MaxUint64 - 1,
-		}
-	}
-
-	pageRes, err := query.Paginate(prefixStore, pagination, func(key []byte, value []byte) error {
-		list = append(list, string(value))
-		return nil
-	})
-
-	return list, pageRes, err
-}
-
-func (k Keeper) WhitelistAddress(ctx sdk.Context, address string) {
-	store := ctx.KVStore(k.storeKey)
-	store.Set(types.GetWhitelistKey(address), []byte(address))
-}
-
-func (k Keeper) DewhitelistAddress(ctx sdk.Context, address string) {
-	store := ctx.KVStore(k.storeKey)
-	store.Delete(types.GetWhitelistKey(address))
 }
 
 // Set the perpetual hooks.

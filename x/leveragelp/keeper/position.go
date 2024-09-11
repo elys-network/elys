@@ -23,6 +23,8 @@ func (k Keeper) GetPosition(ctx sdk.Context, positionAddress sdk.AccAddress, id 
 	}
 	bz := store.Get(key)
 	k.cdc.MustUnmarshal(bz, &position)
+	debt := k.stableKeeper.GetDebt(ctx, position.GetPositionAddress())
+	position.Liabilities = debt.GetTotalLiablities()
 	return position, nil
 }
 
@@ -141,6 +143,8 @@ func (k Keeper) GetAllPositions(ctx sdk.Context) []types.Position {
 		bytesValue := iterator.Value()
 		err := k.cdc.Unmarshal(bytesValue, &position)
 		if err == nil {
+			debt := k.stableKeeper.GetDebt(ctx, position.GetPositionAddress())
+			position.Liabilities = debt.GetTotalLiablities()
 			positions = append(positions, position)
 		}
 	}
@@ -244,7 +248,7 @@ func (k Keeper) GetPositionHealth(ctx sdk.Context, position types.Position) (sdk
 	debt := k.stableKeeper.UpdateInterestAndGetDebt(ctx, position.GetPositionAddress())
 	debtAmount := debt.GetTotalLiablities()
 	if debtAmount.IsZero() {
-		return sdk.ZeroDec(), nil
+		return sdk.MaxSortableDec, nil
 	}
 
 	baseCurrency, found := k.assetProfileKeeper.GetUsdcDenom(ctx)

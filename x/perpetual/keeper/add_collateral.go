@@ -16,7 +16,8 @@ func (k Keeper) AddCollateralToMtp(ctx sdk.Context, msg *types.MsgAddCollateral)
 	baseCurrency := entry.Denom
 
 	// Load existing position
-	mtp, err := k.GetMTP(ctx, msg.Creator, msg.Id)
+	creator := sdk.MustAccAddressFromBech32(msg.Creator)
+	mtp, err := k.GetMTP(ctx, creator, msg.Id)
 	if err != nil {
 		return nil, err
 	}
@@ -92,7 +93,7 @@ func (k Keeper) AddCollateralToMtp(ctx sdk.Context, msg *types.MsgAddCollateral)
 		return nil, err
 	}
 
-	h, err := k.UpdateMTPHealth(ctx, mtp, ammPool, baseCurrency) // set mtp in func or return h?
+	h, err := k.GetMTPHealth(ctx, mtp, ammPool, baseCurrency) // set mtp in func or return h?
 	if err != nil {
 		return nil, err
 	}
@@ -148,7 +149,7 @@ func (k Keeper) AddCollateralToMtp(ctx sdk.Context, msg *types.MsgAddCollateral)
 	}
 
 	// Update the MTP health.
-	lr, err := k.OpenLongChecker.UpdateMTPHealth(ctx, mtp, ammPool, baseCurrency)
+	lr, err := k.OpenLongChecker.GetMTPHealth(ctx, mtp, ammPool, baseCurrency)
 	if err != nil {
 		return nil, err
 	}
@@ -176,7 +177,6 @@ func (k Keeper) AddCollateralToMtp(ctx sdk.Context, msg *types.MsgAddCollateral)
 
 	k.EmitOpenEvent(ctx, &mtp)
 
-	creator := sdk.MustAccAddressFromBech32(msg.Creator)
 	if k.hooks != nil {
 		k.hooks.AfterPerpetualPositionModified(ctx, ammPool, pool, creator)
 	}

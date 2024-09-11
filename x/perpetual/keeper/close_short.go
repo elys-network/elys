@@ -9,7 +9,8 @@ import (
 
 func (k Keeper) CloseShort(ctx sdk.Context, msg *types.MsgClose, baseCurrency string) (*types.MTP, math.Int, error) {
 	// Retrieve MTP
-	mtp, err := k.CloseShortChecker.GetMTP(ctx, msg.Creator, msg.Id)
+	creator := sdk.MustAccAddressFromBech32(msg.Creator)
+	mtp, err := k.CloseShortChecker.GetMTP(ctx, creator, msg.Id)
 	if err != nil {
 		return nil, sdk.ZeroInt(), err
 	}
@@ -31,7 +32,7 @@ func (k Keeper) CloseShort(ctx sdk.Context, msg *types.MsgClose, baseCurrency st
 	}
 
 	// Handle Borrow Interest if within epoch position
-	if err := k.CloseShortChecker.HandleBorrowInterest(ctx, &mtp, &pool, ammPool); err != nil {
+	if _, err := k.CloseShortChecker.SettleBorrowInterest(ctx, &mtp, &pool, ammPool); err != nil {
 		return nil, sdk.ZeroInt(), err
 	}
 
@@ -47,7 +48,6 @@ func (k Keeper) CloseShort(ctx sdk.Context, msg *types.MsgClose, baseCurrency st
 		return nil, sdk.ZeroInt(), err
 	}
 
-	creator := sdk.MustAccAddressFromBech32(msg.Creator)
 	// Hooks after perpetual position closed
 	if k.hooks != nil {
 		k.hooks.AfterPerpetualPositionClosed(ctx, ammPool, pool, creator)

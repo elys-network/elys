@@ -13,7 +13,7 @@ import (
 	stablestaketypes "github.com/elys-network/elys/x/stablestake/types"
 )
 
-func (suite KeeperTestSuite) OpenPosition(addr sdk.AccAddress) (*types.Position, types.Pool) {
+func (suite KeeperTestSuite) OpenPosition(addr sdk.AccAddress) (*types.Position, sdk.Dec, types.Pool) {
 	k := suite.app.LeveragelpKeeper
 	suite.SetupCoinPrices(suite.ctx)
 	poolAddr := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
@@ -86,16 +86,17 @@ func (suite KeeperTestSuite) OpenPosition(addr sdk.AccAddress) (*types.Position,
 	})
 	suite.Require().NoError(err)
 
+	leverage := sdk.NewDec(5)
 	// open a position
 	position, err := k.OpenLong(suite.ctx, &types.MsgOpen{
 		Creator:          addr.String(),
 		CollateralAsset:  "uusdc",
 		CollateralAmount: sdk.NewInt(amount).QuoRaw(1000),
 		AmmPoolId:        1,
-		Leverage:         sdk.NewDec(5),
+		Leverage:         leverage,
 	})
 	suite.Require().NoError(err)
-	return position, pool
+	return position, leverage, pool
 }
 
 func (suite KeeperTestSuite) TestCloseLong() {
@@ -119,10 +120,10 @@ func (suite KeeperTestSuite) TestCloseLong() {
 func (suite KeeperTestSuite) TestForceCloseLong() {
 	k := suite.app.LeveragelpKeeper
 	addr := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
-	position, pool := suite.OpenPosition(addr)
+	position, leverage, pool := suite.OpenPosition(addr)
 	timeDifference := suite.ctx.BlockTime().Add(time.Hour).Unix() - suite.ctx.BlockTime().Unix()
 	interestRate := suite.app.StablestakeKeeper.GetParams(suite.ctx).InterestRate
-	borrowed := position.Leverage.Sub(sdk.OneDec()).MulInt(position.Collateral.Amount)
+	borrowed := leverage.Sub(sdk.OneDec()).MulInt(position.Collateral.Amount)
 	repayAmount := borrowed.Add(borrowed.
 		Mul(interestRate).
 		Mul(sdk.NewDec(timeDifference)).
@@ -137,10 +138,10 @@ func (suite KeeperTestSuite) TestForceCloseLong() {
 func (suite KeeperTestSuite) TestForceCloseLongWithNoFullRepayment() {
 	k := suite.app.LeveragelpKeeper
 	addr := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
-	position, pool := suite.OpenPosition(addr)
+	position, leverage, pool := suite.OpenPosition(addr)
 	timeDifference := suite.ctx.BlockTime().Add(time.Hour*24*365*5).Unix() - suite.ctx.BlockTime().Unix()
 	interestRate := suite.app.StablestakeKeeper.GetParams(suite.ctx).InterestRate
-	borrowed := position.Leverage.Sub(sdk.OneDec()).MulInt(position.Collateral.Amount)
+	borrowed := leverage.Sub(sdk.OneDec()).MulInt(position.Collateral.Amount)
 	repayAmount := borrowed.Add(borrowed.
 		Mul(interestRate).
 		Mul(sdk.NewDec(timeDifference)).
@@ -155,10 +156,10 @@ func (suite KeeperTestSuite) TestForceCloseLongWithNoFullRepayment() {
 func (suite KeeperTestSuite) TestForceCloseLongPartial() {
 	k := suite.app.LeveragelpKeeper
 	addr := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
-	position, pool := suite.OpenPosition(addr)
+	position, leverage, pool := suite.OpenPosition(addr)
 	timeDifference := suite.ctx.BlockTime().Add(time.Hour).Unix() - suite.ctx.BlockTime().Unix()
 	interestRate := suite.app.StablestakeKeeper.GetParams(suite.ctx).InterestRate
-	borrowed := position.Leverage.Sub(sdk.OneDec()).MulInt(position.Collateral.Amount)
+	borrowed := leverage.Sub(sdk.OneDec()).MulInt(position.Collateral.Amount)
 	repayAmount := borrowed.Add(borrowed.
 		Mul(interestRate).
 		Mul(sdk.NewDec(timeDifference)).
@@ -173,7 +174,7 @@ func (suite KeeperTestSuite) TestForceCloseLongPartial() {
 func (suite KeeperTestSuite) TestHealthDecreaseForInterest() {
 	k := suite.app.LeveragelpKeeper
 	addr := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
-	position, _ := suite.OpenPosition(addr)
+	position, _, _ := suite.OpenPosition(addr)
 	_, found := suite.app.AmmKeeper.GetPool(suite.ctx, position.AmmPoolId)
 	suite.Require().True(found)
 	health, err := k.GetPositionHealth(suite.ctx, *position)
@@ -188,4 +189,27 @@ func (suite KeeperTestSuite) TestHealthDecreaseForInterest() {
 	suite.Require().NoError(err)
 	// suite.Require().Equal(health.String(), "0.610500000000000000") // slippage enabled on amm
 	suite.Require().Equal("1.096491228070175439", health.String()) // slippage disabled on amm
+}
+
+// test positionHealth should be maxDec when liablities is zero
+func (suite KeeperTestSuite) TestPositionHealth() {
+	k := suite.app.LeveragelpKeeper
+	addr := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
+	position, _, _ := suite.OpenPosition(addr)
+	_, found := suite.app.AmmKeeper.GetPool(suite.ctx, position.AmmPoolId)
+	suite.Require().True(found)
+	health, err := k.GetPositionHealth(suite.ctx, *position)
+	suite.Require().NoError(err)
+	suite.Require().Equal("1.250000000000000000", health.String())
+
+	//setting position debt/liablities to zero
+	debt := suite.app.StablestakeKeeper.GetDebt(suite.ctx, position.GetPositionAddress())
+	debt.Borrowed = sdk.ZeroInt()
+	debt.InterestStacked = sdk.ZeroInt()
+	debt.InterestPaid = sdk.ZeroInt()
+	suite.app.StablestakeKeeper.SetDebt(suite.ctx, debt)
+
+	//get position health
+	positionHealth, _ := suite.app.LeveragelpKeeper.GetPositionHealth(suite.ctx, *position)
+	suite.Require().Equal(sdk.MaxSortableDec, positionHealth)
 }

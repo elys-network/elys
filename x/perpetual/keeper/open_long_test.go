@@ -315,7 +315,7 @@ func TestOpenLong_LeverageRatioLessThanSafetyFactor(t *testing.T) {
 
 	lr := math.LegacyNewDec(50)
 
-	mockChecker.On("UpdateMTPHealth", ctx, *mtp, ammPool, ptypes.BaseCurrency).Return(lr, nil)
+	mockChecker.On("GetMTPHealth", ctx, *mtp, ammPool, ptypes.BaseCurrency).Return(lr, nil)
 	mockChecker.On("GetSafetyFactor", ctx).Return(sdk.NewDec(100))
 
 	_, err := k.OpenLong(ctx, ammPool.PoolId, msg, ptypes.BaseCurrency, false)
@@ -385,7 +385,7 @@ func TestOpenLong_Success(t *testing.T) {
 
 	lr := math.LegacyNewDec(50)
 
-	mockChecker.On("UpdateMTPHealth", ctx, *mtp, ammPool, ptypes.BaseCurrency).Return(lr, nil)
+	mockChecker.On("GetMTPHealth", ctx, *mtp, ammPool, ptypes.BaseCurrency).Return(lr, nil)
 
 	safetyFactor := math.LegacyNewDec(10)
 
@@ -497,6 +497,7 @@ func TestOpenLong_BaseCurrency_Collateral(t *testing.T) {
 		ptypes.ATOM,
 		sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(100000000)),
 		sdk.MustNewDecFromStr(types.TakeProfitPriceDefault),
+		sdk.NewDec(100),
 	)
 
 	_, err = mk.Open(ctx, msg2, false)
@@ -546,6 +547,7 @@ func TestOpenLong_BaseCurrency_Collateral(t *testing.T) {
 		FundingFeeReceivedCollateral:   sdk.NewInt(0),
 		FundingFeeReceivedCustody:      sdk.NewInt(0),
 		OpenPrice:                      sdk.MustNewDecFromStr("10.050000157785002477"),
+		StopLossPrice:                  sdk.NewDec(100),
 	}, mtp)
 }
 
@@ -634,6 +636,7 @@ func TestOpenLong_ATOM_Collateral(t *testing.T) {
 		ptypes.ATOM,
 		sdk.NewCoin(ptypes.ATOM, sdk.NewInt(10000000)),
 		sdk.MustNewDecFromStr(types.TakeProfitPriceDefault),
+		sdk.NewDec(100),
 	)
 
 	_, err = mk.Open(ctx, msg2, false)
@@ -683,5 +686,6 @@ func TestOpenLong_ATOM_Collateral(t *testing.T) {
 		FundingFeeReceivedCollateral:   sdk.NewInt(0),
 		FundingFeeReceivedCustody:      sdk.NewInt(0),
 		OpenPrice:                      sdk.MustNewDecFromStr("10.313531340000000000"),
+		StopLossPrice:                  sdk.NewDec(100),
 	}, mtp)
 }

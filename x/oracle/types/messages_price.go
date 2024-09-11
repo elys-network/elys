@@ -52,5 +52,14 @@ func (msg *MsgFeedPrice) ValidateBasic() error {
 	if err != nil {
 		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
 	}
+
+	if msg.Price.IsNil() {
+		return errorsmod.Wrapf(ErrInvalidPrice, "price is nil")
+	}
+
+	if msg.Price.IsNegative() {
+		return errorsmod.Wrapf(ErrInvalidPrice, "price is negative")
+	}
+
 	return nil
 }

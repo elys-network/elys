@@ -197,6 +197,10 @@ import (
 
 	ante "github.com/elys-network/elys/app/ante"
 
+	tradeshieldmodule "github.com/elys-network/elys/x/tradeshield"
+	tradeshieldmodulekeeper "github.com/elys-network/elys/x/tradeshield/keeper"
+	tradeshieldmoduletypes "github.com/elys-network/elys/x/tradeshield/types"
+
 	// this line is used by starport scaffolding # stargate/app/moduleImport
 
 	"github.com/elys-network/elys/docs"
@@ -300,6 +304,7 @@ var (
 		masterchefmodule.AppModuleBasic{},
 		estakingmodule.AppModuleBasic{},
 		tiermodule.AppModuleBasic{},
+		tradeshieldmodule.AppModuleBasic{},
 		// this line is used by starport scaffolding # stargate/app/moduleBasic
 	)
 
@@ -411,6 +416,8 @@ type ElysApp struct {
 	EstakingKeeper estakingmodulekeeper.Keeper
 
 	TierKeeper tiermodulekeeper.Keeper
+
+	TradeshieldKeeper tradeshieldmodulekeeper.Keeper
 	// this line is used by starport scaffolding # stargate/app/keeperDeclaration
 
 	// mm is the module manager
@@ -491,6 +498,7 @@ func NewElysApp(
 		masterchefmoduletypes.StoreKey,
 		estakingmoduletypes.StoreKey,
 		tiermoduletypes.StoreKey,
+		tradeshieldmoduletypes.StoreKey,
 		// this line is used by starport scaffolding # stargate/app/storeKey
 	)
 	tkeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey, ammmoduletypes.TStoreKey)
@@ -1014,7 +1022,6 @@ func NewElysApp(
 		app.AssetprofileKeeper,
 		app.MasterchefKeeper,
 	)
-	
 
 	app.TierKeeper = *tiermodulekeeper.NewKeeper(
 		appCodec,
@@ -1034,6 +1041,13 @@ func NewElysApp(
 		app.StablestakeKeeper,
 	)
 	tierModule := tiermodule.NewAppModule(appCodec, app.TierKeeper, app.AccountKeeper, app.BankKeeper)
+
+	app.TradeshieldKeeper = *tradeshieldmodulekeeper.NewKeeper(
+		appCodec,
+		keys[tradeshieldmoduletypes.StoreKey],
+		keys[tradeshieldmoduletypes.MemStoreKey],
+	)
+	tradeshieldModule := tradeshieldmodule.NewAppModule(appCodec, app.TradeshieldKeeper, app.AccountKeeper, app.BankKeeper)
 
 	// this line is used by starport scaffolding # stargate/app/keeperDefinition
 
@@ -1073,7 +1087,7 @@ func NewElysApp(
 		app.TierKeeper.LeverageLpHooks(),
 	))
 	leveragelpModule := leveragelpmodule.NewAppModule(appCodec, app.LeveragelpKeeper, app.AccountKeeper, app.BankKeeper)
-	
+
 	app.EstakingKeeper.SetHooks(
 		stakingtypes.NewMultiStakingHooks(
 			// insert staking hooks receivers here
@@ -1164,15 +1178,16 @@ func NewElysApp(
 		burnerModule,
 		ammModule,
 		parameterModule,
-		perpetualModule,
+		stablestakeModule,
 		accountedPoolModule,
 		transferhookModule,
 		clockModule,
-		stablestakeModule,
 		leveragelpModule,
 		masterchefModule,
 		estakingModule,
+		perpetualModule,
 		tierModule,
+		tradeshieldModule,
 		// this line is used by starport scaffolding # stargate/app/appModule
 	)
 
@@ -1222,6 +1237,7 @@ func NewElysApp(
 		masterchefmoduletypes.ModuleName,
 		estakingmoduletypes.ModuleName,
 		tiermoduletypes.ModuleName,
+		tradeshieldmoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/beginBlockers
 	)
 
@@ -1266,6 +1282,7 @@ func NewElysApp(
 		masterchefmoduletypes.ModuleName,
 		estakingmoduletypes.ModuleName,
 		tiermoduletypes.ModuleName,
+		tradeshieldmoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/endBlockers
 	)
 
@@ -1314,13 +1331,29 @@ func NewElysApp(
 		masterchefmoduletypes.ModuleName,
 		estakingmoduletypes.ModuleName,
 		tiermoduletypes.ModuleName,
+		tradeshieldmoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/initGenesis
 	}
 	app.mm.SetOrderInitGenesis(genesisModuleOrder...)
 	app.mm.SetOrderExportGenesis(genesisModuleOrder...)
 
 	// Uncomment if you want to set a custom migration order here.
-	// app.mm.SetOrderMigrations(custom order)
+	customOrder := module.DefaultMigrationsOrder(app.mm.ModuleNames())
+	stablestakeIndex := -1
+	leveragelpIndex := -1
+	for i := range customOrder {
+		if customOrder[i] == stablestaketypes.ModuleName {
+			stablestakeIndex = i
+		}
+		if customOrder[i] == leveragelpmoduletypes.ModuleName {
+			leveragelpIndex = i
+		}
+	}
+	if stablestakeIndex != -1 && leveragelpIndex != -1 {
+		customOrder[leveragelpIndex] = stablestaketypes.ModuleName
+		customOrder[stablestakeIndex] = leveragelpmoduletypes.ModuleName
+	}
+	app.mm.SetOrderMigrations(customOrder...)
 
 	app.mm.RegisterInvariants(app.CrisisKeeper)
 	app.configurator = module.NewConfigurator(app.appCodec, app.MsgServiceRouter(), app.GRPCQueryRouter())

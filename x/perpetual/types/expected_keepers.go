@@ -11,7 +11,7 @@ import (
 //go:generate mockery --srcpkg . --name AuthorizationChecker --structname AuthorizationChecker --filename authorization_checker.go --with-expecter
 type AuthorizationChecker interface {
 	IsWhitelistingEnabled(ctx sdk.Context) bool
-	CheckIfWhitelisted(ctx sdk.Context, creator string) bool
+	CheckIfWhitelisted(ctx sdk.Context, creator sdk.AccAddress) bool
 }
 
 //go:generate mockery --srcpkg . --name PositionChecker --structname PositionChecker --filename position_checker.go --with-expecter
@@ -56,7 +56,7 @@ type OpenLongChecker interface {
 	Borrow(ctx sdk.Context, collateralAmount math.Int, custodyAmount math.Int, mtp *MTP, ammPool *ammtypes.Pool, pool *Pool, eta sdk.Dec, baseCurrency string, isBroker bool) error
 	UpdatePoolHealth(ctx sdk.Context, pool *Pool) error
 	TakeInCustody(ctx sdk.Context, mtp MTP, pool *Pool) error
-	UpdateMTPHealth(ctx sdk.Context, mtp MTP, ammPool ammtypes.Pool, baseCurrency string) (sdk.Dec, error)
+	GetMTPHealth(ctx sdk.Context, mtp MTP, ammPool ammtypes.Pool, baseCurrency string) (sdk.Dec, error)
 	GetSafetyFactor(ctx sdk.Context) sdk.Dec
 	SetPool(ctx sdk.Context, pool Pool)
 	CheckSameAssetPosition(ctx sdk.Context, msg *MsgOpen) *MTP
@@ -76,7 +76,7 @@ type OpenShortChecker interface {
 	Borrow(ctx sdk.Context, collateralAmount math.Int, custodyAmount math.Int, mtp *MTP, ammPool *ammtypes.Pool, pool *Pool, eta sdk.Dec, baseCurrency string, isBroker bool) error
 	UpdatePoolHealth(ctx sdk.Context, pool *Pool) error
 	TakeInCustody(ctx sdk.Context, mtp MTP, pool *Pool) error
-	UpdateMTPHealth(ctx sdk.Context, mtp MTP, ammPool ammtypes.Pool, baseCurrency string) (sdk.Dec, error)
+	GetMTPHealth(ctx sdk.Context, mtp MTP, ammPool ammtypes.Pool, baseCurrency string) (sdk.Dec, error)
 	GetSafetyFactor(ctx sdk.Context) sdk.Dec
 	SetPool(ctx sdk.Context, pool Pool)
 	CheckSameAssetPosition(ctx sdk.Context, msg *MsgOpen) *MTP
@@ -86,26 +86,26 @@ type OpenShortChecker interface {
 
 //go:generate mockery --srcpkg . --name CloseLongChecker --structname CloseLongChecker --filename close_long_checker.go --with-expecter
 type CloseLongChecker interface {
-	GetMTP(ctx sdk.Context, mtpAddress string, id uint64) (MTP, error)
+	GetMTP(ctx sdk.Context, mtpAddress sdk.AccAddress, id uint64) (MTP, error)
 	GetPool(
 		ctx sdk.Context,
 		poolId uint64,
 	) (val Pool, found bool)
 	GetAmmPool(ctx sdk.Context, poolId uint64, tradingAsset string) (ammtypes.Pool, error)
-	HandleBorrowInterest(ctx sdk.Context, mtp *MTP, pool *Pool, ammPool ammtypes.Pool) error
+	SettleBorrowInterest(ctx sdk.Context, mtp *MTP, pool *Pool, ammPool ammtypes.Pool) (math.Int, error)
 	TakeOutCustody(ctx sdk.Context, mtp MTP, pool *Pool, amount math.Int) error
 	EstimateAndRepay(ctx sdk.Context, mtp MTP, pool Pool, ammPool ammtypes.Pool, amount math.Int, baseCurrency string) (math.Int, error)
 }
 
 //go:generate mockery --srcpkg . --name CloseShortChecker --structname CloseShortChecker --filename close_short_checker.go --with-expecter
 type CloseShortChecker interface {
-	GetMTP(ctx sdk.Context, mtpAddress string, id uint64) (MTP, error)
+	GetMTP(ctx sdk.Context, mtpAddress sdk.AccAddress, id uint64) (MTP, error)
 	GetPool(
 		ctx sdk.Context,
 		poolId uint64,
 	) (val Pool, found bool)
 	GetAmmPool(ctx sdk.Context, poolId uint64, tradingAsset string) (ammtypes.Pool, error)
-	HandleBorrowInterest(ctx sdk.Context, mtp *MTP, pool *Pool, ammPool ammtypes.Pool) error
+	SettleBorrowInterest(ctx sdk.Context, mtp *MTP, pool *Pool, ammPool ammtypes.Pool) (math.Int, error)
 	TakeOutCustody(ctx sdk.Context, mtp MTP, pool *Pool, amount math.Int) error
 	EstimateAndRepay(ctx sdk.Context, mtp MTP, pool Pool, ammPool ammtypes.Pool, amount math.Int, baseCurrency string) (math.Int, error)
 }

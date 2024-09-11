@@ -36,7 +36,7 @@ func (k Keeper) Repay(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, ammPool
 	}
 
 	var err error
-	mtp.MtpHealth, err = k.UpdateMTPHealth(ctx, *mtp, ammPool, baseCurrency)
+	mtp.MtpHealth, err = k.GetMTPHealth(ctx, *mtp, ammPool, baseCurrency)
 	if err != nil {
 		return err
 	}
@@ -169,7 +169,7 @@ func (k Keeper) Repay(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, ammPool
 
 	mtp.Custody = mtp.Custody.Sub(amount)
 	if mtp.Custody.IsZero() {
-		err = k.DestroyMTP(ctx, mtp.Address, mtp.Id)
+		err = k.DestroyMTP(ctx, mtp.GetAccountAddress(), mtp.Id)
 		if err != nil {
 			return err
 		}

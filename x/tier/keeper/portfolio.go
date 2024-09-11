@@ -1,12 +1,12 @@
 package keeper
 
 import (
+	"github.com/cosmos/cosmos-sdk/store/prefix"
 	"math"
 	"strconv"
 	"strings"
 	"time"
 
-	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
@@ -20,9 +20,9 @@ import (
 
 func (k Keeper) RetrieveAllPortfolio(ctx sdk.Context, user sdk.AccAddress) {
 	// set today + user -> amount
-	todayDate := k.GetDateFromBlock(ctx.BlockTime())
+	todayDate := k.GetDateFromContext(ctx)
 
-	_, found := k.GetPortfolio(ctx, user.String(), todayDate)
+	_, found := k.GetPortfolio(ctx, user, todayDate)
 	if found {
 		return
 	}
@@ -60,10 +60,7 @@ func (k Keeper) RetrieveAllPortfolio(ctx sdk.Context, user sdk.AccAddress) {
 
 	totalValue = totalValue.Add(lev)
 
-	k.SetPortfolio(ctx, todayDate, user.String(), types.Portfolio{
-		Creator:   user.String(),
-		Portfolio: totalValue,
-	})
+	k.SetPortfolio(ctx, types.NewPortfolioWithContextDate(todayDate, user, totalValue))
 }
 
 func (k Keeper) RetrievePoolTotal(ctx sdk.Context, user sdk.AccAddress) sdk.Dec {
@@ -203,15 +200,13 @@ func (k Keeper) RetrievePerpetualTotal(ctx sdk.Context, user sdk.AccAddress) (sd
 	totalAssets := sdk.NewDec(0)
 	totalLiability := sdk.NewDec(0)
 	netValue := sdk.NewDec(0)
-	perpetuals, _, err := k.perpetual.GetMTPsForAddress(ctx, user, &query.PageRequest{})
-	if err == nil {
-		for _, perpetual := range perpetuals {
-			totalAssets = totalAssets.Add(k.CalculateUSDValue(ctx, perpetual.GetTradingAsset(), perpetual.Custody))
-			totalLiability = totalLiability.Add(k.CalculateUSDValue(ctx, perpetual.LiabilitiesAsset, perpetual.Liabilities))
-			totalLiability = totalLiability.Add(k.CalculateUSDValue(ctx, perpetual.CollateralAsset, perpetual.BorrowInterestUnpaidCollateral))
-		}
-		netValue = totalAssets.Sub(totalLiability)
+	perpetuals := k.perpetual.GetAllMTPsForAddress(ctx, user)
+	for _, perpetual := range perpetuals {
+		totalAssets = totalAssets.Add(k.CalculateUSDValue(ctx, perpetual.GetTradingAsset(), perpetual.Custody))
+		totalLiability = totalLiability.Add(k.CalculateUSDValue(ctx, perpetual.LiabilitiesAsset, perpetual.Liabilities))
+		totalLiability = totalLiability.Add(k.CalculateUSDValue(ctx, perpetual.CollateralAsset, perpetual.BorrowInterestUnpaidCollateral))
 	}
+	netValue = totalAssets.Sub(totalLiability)
 	return totalAssets, totalLiability, netValue
 }
 
@@ -326,39 +321,27 @@ func (k Keeper) CalculateUSDValue(ctx sdk.Context, denom string, amount sdk.Int)
 }
 
 // SetPortfolio set a specific portfolio in the store from its index
-func (k Keeper) SetPortfolio(ctx sdk.Context, todayDate string, user string, portfolio types.Portfolio) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(todayDate))
+func (k Keeper) SetPortfolio(ctx sdk.Context, portfolio types.Portfolio) {
+	store := ctx.KVStore(k.storeKey)
+	key := types.GetPortfolioKey(portfolio.Date, portfolio.GetCreatorAddress())
 	b := k.cdc.MustMarshal(&portfolio)
-	store.Set(types.PortfolioKey(
-		user,
-	), b)
+	store.Set(key, b)
 }
 
 // GetPortfolio returns a portfolio from its index
-func (k Keeper) GetPortfolio(
-	ctx sdk.Context,
-	user string,
-	timestamp string,
-) (sdk.Dec, bool) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(timestamp))
-
-	found := store.Has(types.PortfolioKey(
-		user,
-	))
-
-	if !found {
-		return sdk.NewDec(0), false
+func (k Keeper) GetPortfolio(ctx sdk.Context, user sdk.AccAddress, date string) (sdk.Dec, bool) {
+	store := ctx.KVStore(k.storeKey)
+	key := types.GetPortfolioKey(date, user)
+	portfolioBytes := store.Get(key)
+	if portfolioBytes == nil {
+		return sdk.ZeroDec(), false
 	}
-
-	portfolio := store.Get(types.PortfolioKey(
-		user,
-	))
 	var val types.Portfolio
-	k.cdc.MustUnmarshal(portfolio, &val)
+	k.cdc.MustUnmarshal(portfolioBytes, &val)
 	return val.Portfolio, true
 }
 
-func (k Keeper) GetMembershipTier(ctx sdk.Context, user string) (total_portfoilio sdk.Dec, tier string, discount uint64) {
+func (k Keeper) GetMembershipTier(ctx sdk.Context, user sdk.AccAddress) (total_portfoilio sdk.Dec, tier string, discount uint64) {
 	year, month, day := ctx.BlockTime().Date()
 	dateToday := time.Date(year, month, day, 0, 0, 0, 0, ctx.BlockTime().Location())
 	startDate := dateToday.AddDate(0, 0, -7)
@@ -393,26 +376,10 @@ func (k Keeper) GetMembershipTier(ctx sdk.Context, user string) (total_portfoili
 	return minTotal, "bronze", 0
 }
 
-// RemovePortfolio removes a portfolio from the store
-func (k Keeper) RemovePortfolio(
-	ctx sdk.Context,
-	user string,
-	timestamp string,
-) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(timestamp))
-	store.Delete(types.PortfolioKey(
-		user,
-	))
-}
-
 // RemovePortfolioLast removes a portfolio from the store with a specific date
-func (k Keeper) RemovePortfolioLast(
-	ctx sdk.Context,
-	timestamp string,
-	num uint64,
-) uint64 {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(timestamp))
-	iterator := sdk.KVStorePrefixIterator(store, []byte{})
+func (k Keeper) RemovePortfolioLast(ctx sdk.Context, date string, num uint64) uint64 {
+	store := ctx.KVStore(k.storeKey)
+	iterator := sdk.KVStorePrefixIterator(store, types.GetPortfolioByDateIteratorKey(date))
 
 	defer iterator.Close()
 	count := 0
@@ -428,9 +395,9 @@ func (k Keeper) RemovePortfolioLast(
 }
 
 // GetAllPortfolio returns all portfolio
-func (k Keeper) GetAllPortfolio(ctx sdk.Context, timestamp string) (list []types.Portfolio) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(timestamp))
-	iterator := sdk.KVStorePrefixIterator(store, []byte{})
+func (k Keeper) GetAllPortfolio(ctx sdk.Context) (list []types.Portfolio) {
+	store := ctx.KVStore(k.storeKey)
+	iterator := sdk.KVStorePrefixIterator(store, types.PortfolioKeyPrefix)
 
 	defer iterator.Close()
 
@@ -443,13 +410,22 @@ func (k Keeper) GetAllPortfolio(ctx sdk.Context, timestamp string) (list []types
 	return
 }
 
-func (k Keeper) GetDateFromBlock(blockTime time.Time) string {
+func (k Keeper) GetDateFromContext(ctx sdk.Context) string {
+	contextTime := ctx.BlockTime()
 	// Extract the year, month, and day
-	year, month, day := blockTime.Date()
+	year, month, day := contextTime.Date()
 	// Create a new time.Time object with the extracted date and time set to midnight
-	blockDate := time.Date(year, month, day, 0, 0, 0, 0, blockTime.Location())
+	contextDate := time.Date(year, month, day, 0, 0, 0, 0, contextTime.Location())
 	// Format the date as a string in the "%Y-%m-%d" format
-	return blockDate.Format("2006-01-02")
+	return contextDate.Format(types.DateFormat)
+}
+
+func (k Keeper) GetDateAfterDaysFromContext(ctx sdk.Context, n int) string {
+	contextTime := ctx.BlockTime()
+	year, month, day := contextTime.Date()
+	contextDate := time.Date(year, month, day, 0, 0, 0, 0, contextTime.Location())
+	resultDate := contextDate.AddDate(0, 0, n)
+	return resultDate.Format(types.DateFormat)
 }
 
 func GetPoolIdFromShareDenom(shareDenom string) (uint64, error) {
@@ -464,6 +440,42 @@ func Pow10(decimal uint64) (value sdk.Dec) {
 	value = sdk.NewDec(1)
 	for i := 0; i < int(decimal); i++ {
 		value = value.Mul(sdk.NewDec(10))
+	}
+	return
+}
+
+// remove after migrations
+func (k Keeper) GetLegacyPortfolios(ctx sdk.Context, date string) (list []types.Portfolio) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(date))
+	iterator := sdk.KVStorePrefixIterator(store, []byte{})
+
+	defer iterator.Close()
+
+	for ; iterator.Valid(); iterator.Next() {
+		var val types.LegacyPortfolio
+		k.cdc.MustUnmarshal(iterator.Value(), &val)
+		list = append(list, types.NewPortfolioWithContextDate(date, sdk.MustAccAddressFromBech32(val.Creator), val.Portfolio))
+	}
+	return
+}
+
+func (k Keeper) RemoveLegacyPortfolio(ctx sdk.Context, date string, user string) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(date))
+	store.Delete(types.PortfolioKey(user))
+}
+
+func (k Keeper) RemoveLegacyPortfolioCounted(ctx sdk.Context, date string, num uint64) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(date))
+	iterator := sdk.KVStorePrefixIterator(store, []byte{})
+
+	defer iterator.Close()
+	count := uint64(0)
+	for ; iterator.Valid(); iterator.Next() {
+		count++
+		store.Delete(iterator.Key())
+		if count == num {
+			break
+		}
 	}
 	return
 }
