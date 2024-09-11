@@ -197,6 +197,10 @@ import (
 
 	ante "github.com/elys-network/elys/app/ante"
 
+	tradeshieldmodule "github.com/elys-network/elys/x/tradeshield"
+	tradeshieldmodulekeeper "github.com/elys-network/elys/x/tradeshield/keeper"
+	tradeshieldmoduletypes "github.com/elys-network/elys/x/tradeshield/types"
+
 	// this line is used by starport scaffolding # stargate/app/moduleImport
 
 	"github.com/elys-network/elys/docs"
@@ -300,6 +304,7 @@ var (
 		masterchefmodule.AppModuleBasic{},
 		estakingmodule.AppModuleBasic{},
 		tiermodule.AppModuleBasic{},
+		tradeshieldmodule.AppModuleBasic{},
 		// this line is used by starport scaffolding # stargate/app/moduleBasic
 	)
 
@@ -411,6 +416,8 @@ type ElysApp struct {
 	EstakingKeeper estakingmodulekeeper.Keeper
 
 	TierKeeper tiermodulekeeper.Keeper
+
+	TradeshieldKeeper tradeshieldmodulekeeper.Keeper
 	// this line is used by starport scaffolding # stargate/app/keeperDeclaration
 
 	// mm is the module manager
@@ -491,6 +498,7 @@ func NewElysApp(
 		masterchefmoduletypes.StoreKey,
 		estakingmoduletypes.StoreKey,
 		tiermoduletypes.StoreKey,
+		tradeshieldmoduletypes.StoreKey,
 		// this line is used by starport scaffolding # stargate/app/storeKey
 	)
 	tkeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey, ammmoduletypes.TStoreKey)
@@ -1034,6 +1042,13 @@ func NewElysApp(
 	)
 	tierModule := tiermodule.NewAppModule(appCodec, app.TierKeeper, app.AccountKeeper, app.BankKeeper)
 
+	app.TradeshieldKeeper = *tradeshieldmodulekeeper.NewKeeper(
+		appCodec,
+		keys[tradeshieldmoduletypes.StoreKey],
+		keys[tradeshieldmoduletypes.MemStoreKey],
+	)
+	tradeshieldModule := tradeshieldmodule.NewAppModule(appCodec, app.TradeshieldKeeper, app.AccountKeeper, app.BankKeeper)
+
 	// this line is used by starport scaffolding # stargate/app/keeperDefinition
 
 	/**** IBC Routing ****/
@@ -1172,6 +1187,7 @@ func NewElysApp(
 		estakingModule,
 		perpetualModule,
 		tierModule,
+		tradeshieldModule,
 		// this line is used by starport scaffolding # stargate/app/appModule
 	)
 
@@ -1221,6 +1237,7 @@ func NewElysApp(
 		masterchefmoduletypes.ModuleName,
 		estakingmoduletypes.ModuleName,
 		tiermoduletypes.ModuleName,
+		tradeshieldmoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/beginBlockers
 	)
 
@@ -1265,6 +1282,7 @@ func NewElysApp(
 		masterchefmoduletypes.ModuleName,
 		estakingmoduletypes.ModuleName,
 		tiermoduletypes.ModuleName,
+		tradeshieldmoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/endBlockers
 	)
 
@@ -1313,6 +1331,7 @@ func NewElysApp(
 		masterchefmoduletypes.ModuleName,
 		estakingmoduletypes.ModuleName,
 		tiermoduletypes.ModuleName,
+		tradeshieldmoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/initGenesis
 	}
 	app.mm.SetOrderInitGenesis(genesisModuleOrder...)

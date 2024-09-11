@@ -42375,16 +42375,10 @@ paths:
                       eden_amount_per_year:
                         type: string
                         title: reward amount in eden for 1 year
-                      distribution_start_block:
-                        type: string
-                        title: starting block height of the distribution
-                      total_blocks_per_year:
-                        type: string
-                        title: distribution duration - block number per year
                       blocks_distributed:
                         type: string
+                        format: int64
                         title: blocks distributed
-                    title: Incentive Info
                   reward_portion_for_lps:
                     type: string
                     description: >-
@@ -45116,6 +45110,8 @@ paths:
                 items:
                   type: object
                   properties:
+                    date:
+                      type: string
                     creator:
                       type: string
                     portfolio:
@@ -46066,6 +46062,42 @@ paths:
           required: true
           type: string
           format: uint64
+      tags:
+        - Query
+  /elys-network/elys/tradeshield/params:
+    get:
+      summary: Parameters queries the parameters of the module.
+      operationId: ElysTradeshieldParams
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              params:
+                description: params holds all the parameters of this module.
+                type: object
+            description: >-
+              QueryParamsResponse is response type for the Query/Params RPC
+              method.
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
       tags:
         - Query
   /elys-network/elys/transferhook/params:
@@ -88366,16 +88398,10 @@ definitions:
       eden_amount_per_year:
         type: string
         title: reward amount in eden for 1 year
-      distribution_start_block:
-        type: string
-        title: starting block height of the distribution
-      total_blocks_per_year:
-        type: string
-        title: distribution duration - block number per year
       blocks_distributed:
         type: string
+        format: int64
         title: blocks distributed
-    title: Incentive Info
   elys.masterchef.MsgAddExternalIncentiveResponse:
     type: object
   elys.masterchef.MsgAddExternalRewardDenomResponse:
@@ -88395,16 +88421,10 @@ definitions:
           eden_amount_per_year:
             type: string
             title: reward amount in eden for 1 year
-          distribution_start_block:
-            type: string
-            title: starting block height of the distribution
-          total_blocks_per_year:
-            type: string
-            title: distribution duration - block number per year
           blocks_distributed:
             type: string
+            format: int64
             title: blocks distributed
-        title: Incentive Info
       reward_portion_for_lps:
         type: string
         description: >-
@@ -88430,7 +88450,6 @@ definitions:
               type: string
       protocol_revenue_address:
         type: string
-    description: Params defines the parameters for the module.
   elys.masterchef.PoolApr:
     type: object
     properties:
@@ -88559,16 +88578,10 @@ definitions:
               eden_amount_per_year:
                 type: string
                 title: reward amount in eden for 1 year
-              distribution_start_block:
-                type: string
-                title: starting block height of the distribution
-              total_blocks_per_year:
-                type: string
-                title: distribution duration - block number per year
               blocks_distributed:
                 type: string
+                format: int64
                 title: blocks distributed
-            title: Incentive Info
           reward_portion_for_lps:
             type: string
             description: >-
@@ -90265,6 +90278,8 @@ definitions:
   elys.tier.Portfolio:
     type: object
     properties:
+      date:
+        type: string
       creator:
         type: string
       portfolio:
@@ -90277,6 +90292,8 @@ definitions:
         items:
           type: object
           properties:
+            date:
+              type: string
             creator:
               type: string
             portfolio:
@@ -90687,6 +90704,16 @@ definitions:
             format: uint64
       authority:
         type: string
+  elys.tradeshield.Params:
+    type: object
+    description: Params defines the parameters for the module.
+  elys.tradeshield.QueryParamsResponse:
+    type: object
+    properties:
+      params:
+        description: params holds all the parameters of this module.
+        type: object
+    description: QueryParamsResponse is response type for the Query/Params RPC method.
   elys.transferhook.Params:
     type: object
     properties:
