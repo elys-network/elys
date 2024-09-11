@@ -21,6 +21,7 @@ func TestNewMsgBrokerOpen(t *testing.T) {
 		sdk.NewCoin("uusdc", sdk.NewInt(2000)),
 		sdk.NewDec(100),
 		owner,
+		sdk.ZeroDec(),
 	)
 
 	want := &MsgBrokerOpen{
@@ -31,6 +32,7 @@ func TestNewMsgBrokerOpen(t *testing.T) {
 		Collateral:      sdk.NewCoin("uusdc", sdk.NewInt(2000)),
 		TakeProfitPrice: sdk.NewDec(100),
 		Owner:           owner,
+		StopLossPrice:   sdk.ZeroDec(),
 	}
 
 	assert.Equal(t, want, got)

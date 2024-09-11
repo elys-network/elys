@@ -37,6 +37,7 @@ func TestGenesisState_Validate(t *testing.T) {
 						Denom: "1",
 					},
 				},
+				Params: types.DefaultParams(),
 				// this line is used by starport scaffolding # types/genesis/validField
 			},
 			valid: true,
@@ -52,6 +53,7 @@ func TestGenesisState_Validate(t *testing.T) {
 						PoolId: 0,
 					},
 				},
+				Params: types.DefaultParams(),
 			},
 			valid: false,
 		},
@@ -66,6 +68,7 @@ func TestGenesisState_Validate(t *testing.T) {
 						Denom: "0",
 					},
 				},
+				Params: types.DefaultParams(),
 			},
 			valid: false,
 		},

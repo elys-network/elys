@@ -25,6 +25,7 @@ func KeyPrefix(p string) []byte {
 
 var (
 	PortfolioKeyPrefix = []byte{0x01}
+	ParamKeyPrefix     = []byte{0x02}
 )
 
 func PortfolioKey(

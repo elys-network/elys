@@ -17,7 +17,7 @@ func TestShouldBurnTokens(t *testing.T) {
 	params := types.Params{
 		EpochIdentifier: "test_epoch",
 	}
-	k.SetParams(ctx, params)
+	k.SetParams(ctx, &params)
 
 	require.True(t, k.ShouldBurnTokens(ctx, "test_epoch"))
 	require.False(t, k.ShouldBurnTokens(ctx, "invalid_epoch"))

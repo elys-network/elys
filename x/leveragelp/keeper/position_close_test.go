@@ -210,6 +210,6 @@ func (suite KeeperTestSuite) TestPositionHealth() {
 	suite.app.StablestakeKeeper.SetDebt(suite.ctx, debt)
 
 	//get position health
-	positionHealth, _ := suite.app.LeveragelpKeeper.GetPositionHealth(suite.ctx, *position )
+	positionHealth, _ := suite.app.LeveragelpKeeper.GetPositionHealth(suite.ctx, *position)
 	suite.Require().Equal(sdk.MaxSortableDec, positionHealth)
 }

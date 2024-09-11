@@ -62,7 +62,7 @@ func (k Keeper) ProcessOpenShort(ctx sdk.Context, mtp *types.MTP, leverage sdk.D
 	}
 
 	// Update the MTP health.
-	lr, err := k.OpenShortChecker.UpdateMTPHealth(ctx, *mtp, ammPool, baseCurrency)
+	lr, err := k.OpenShortChecker.GetMTPHealth(ctx, *mtp, ammPool, baseCurrency)
 	if err != nil {
 		return nil, err
 	}
@@ -79,6 +79,7 @@ func (k Keeper) ProcessOpenShort(ctx sdk.Context, mtp *types.MTP, leverage sdk.D
 	// Calculate consolidate liabiltiy and update consolidate leverage
 	mtp.ConsolidateLeverage = types.CalcMTPConsolidateLiability(mtp)
 
+	mtp.StopLossPrice = msg.StopLossPrice
 	// Set MTP
 	k.OpenShortChecker.SetMTP(ctx, mtp)
 

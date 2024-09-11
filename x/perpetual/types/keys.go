@@ -2,6 +2,7 @@ package types
 
 import (
 	"encoding/binary"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/address"
 )
@@ -38,6 +39,10 @@ var (
 	OpenMTPCountPrefix = []byte{0x04}
 	WhitelistPrefix    = []byte{0x05}
 	PoolKeyPrefix      = []byte{0x06}
+
+	InterestRatePrefix = []byte{0x07}
+	FundingRatePrefix  = []byte{0x08}
+	ToPayPrefix        = []byte{0x09}
 )
 
 func KeyPrefix(p string) []byte {
@@ -72,6 +77,10 @@ func GetLegacyMTPKey(address string, id uint64) []byte {
 	return append(MTPPrefix, append([]byte(address), sdk.Uint64ToBigEndian(id)...)...)
 }
 
+func GetMTPPrefixForAddress(addr sdk.AccAddress) []byte {
+	return append(MTPPrefix, address.MustLengthPrefix(addr)...)
+}
+
 func GetPoolKey(index uint64) []byte {
 	key := PoolKeyPrefix
 	return append(key, sdk.Uint64ToBigEndian(index)...)
@@ -93,6 +102,14 @@ func GetLegacyPoolKey(index uint64) []byte {
 	return append(key, legacyPoolKey(index)...)
 }
 
-func GetMTPPrefixForAddress(address string) []byte {
-	return append(MTPPrefix, []byte(address)...)
+func GetInterestRateKey(block uint64, pool uint64) []byte {
+	return append(GetUint64Bytes(block), GetUint64Bytes(pool)...)
+}
+
+func GetFundingRateKey(block uint64, pool uint64) []byte {
+	return append(GetUint64Bytes(block), GetUint64Bytes(pool)...)
+}
+
+func GetToPayKey(addr sdk.AccAddress, id uint64) []byte {
+	return append(ToPayPrefix, append(address.MustLengthPrefix(addr), sdk.Uint64ToBigEndian(id)...)...)
 }

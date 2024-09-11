@@ -1,30 +1,52 @@
 package keeper
 
 import (
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	"github.com/elys-network/elys/x/perpetual/types"
 )
 
-// HandleFundingFeeCollection handles funding fee collection
-func (k Keeper) HandleFundingFeeCollection(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, ammPool ammtypes.Pool, baseCurrency string) error {
+// SettleFunding handles funding fee collection and distribution
+func (k Keeper) SettleFunding(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, ammPool ammtypes.Pool, baseCurrency string) (sdk.Coin, error) {
+
+	err := k.SettleFundingFeeCollection(ctx, mtp, pool, ammPool, baseCurrency)
+	if err != nil {
+		return sdk.Coin{}, err
+	}
+
+	toPay, err := k.SettleFundingFeeDistribution(ctx, mtp, pool, ammPool, baseCurrency)
+	if err != nil {
+		return sdk.Coin{}, err
+	}
+
+	mtp.LastFundingCalcBlock = uint64(ctx.BlockHeight())
+	mtp.LastFundingCalcTime = uint64(ctx.BlockTime().Unix())
+
+	// apply changes to mtp object
+	err = k.SetMTP(ctx, mtp)
+	if err != nil {
+		return sdk.Coin{}, err
+	}
+
+	return toPay, nil
+}
+
+func (k Keeper) SettleFundingFeeCollection(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, ammPool ammtypes.Pool, baseCurrency string) error {
 	// get funding rate
-	fundingRate := pool.FundingRate
+	_, longRate, shortRate := k.GetFundingRate(ctx, mtp.LastFundingCalcBlock, mtp.AmmPoolId)
 
-	// if funding rate is zero, return
-	if fundingRate.IsZero() {
-		return nil
+	var takeAmountCustodyAmount math.Int
+	if mtp.Position == types.Position_LONG {
+		takeAmountCustodyAmount = types.CalcTakeAmount(mtp.Custody, longRate)
+	} else {
+		takeAmountCustodyAmount = types.CalcTakeAmount(mtp.Custody, shortRate)
 	}
-
-	// if funding rate is negative and mtp position is long or funding rate is positive and mtp position is short, return
-	if (fundingRate.IsNegative() && mtp.Position == types.Position_LONG) || (fundingRate.IsPositive() && mtp.Position == types.Position_SHORT) {
-		return nil
-	}
-
 	// Calculate the take amount in custody asset
-	takeAmountCustodyAmount := types.CalcTakeAmount(mtp.Custody, mtp.CustodyAsset, fundingRate)
+	if !takeAmountCustodyAmount.IsPositive() {
+		return nil
+	}
 
-	// Build the take amount coin
 	takeAmountCustody := sdk.NewCoin(mtp.CustodyAsset, takeAmountCustodyAmount)
 
 	// Swap the take amount to collateral asset
@@ -84,7 +106,7 @@ func (k Keeper) HandleFundingFeeCollection(ctx sdk.Context, mtp *types.MTP, pool
 	k.SetPool(ctx, *pool)
 
 	// update mtp health
-	_, err = k.UpdateMTPHealth(ctx, *mtp, ammPool, baseCurrency)
+	_, err = k.GetMTPHealth(ctx, *mtp, ammPool, baseCurrency)
 	if err != nil {
 		return err
 	}

@@ -131,11 +131,11 @@ func (_m *CloseLongChecker) GetPool(ctx types.Context, poolId uint64) (perpetual
 }
 
 // HandleBorrowInterest provides a mock function with given fields: ctx, mtp, pool, ammPool
-func (_m *CloseLongChecker) HandleBorrowInterest(ctx types.Context, mtp *perpetualtypes.MTP, pool *perpetualtypes.Pool, ammPool ammtypes.Pool) error {
+func (_m *CloseLongChecker) SettleBorrowInterest(ctx types.Context, mtp *perpetualtypes.MTP, pool *perpetualtypes.Pool, ammPool ammtypes.Pool) (math.Int, error) {
 	ret := _m.Called(ctx, mtp, pool, ammPool)
 
 	if len(ret) == 0 {
-		panic("no return value specified for HandleBorrowInterest")
+		panic("no return value specified for SettleBorrowInterest")
 	}
 
 	var r0 error
@@ -145,7 +145,7 @@ func (_m *CloseLongChecker) HandleBorrowInterest(ctx types.Context, mtp *perpetu
 		r0 = ret.Error(0)
 	}
 
-	return r0
+	return types.ZeroInt(), r0
 }
 
 // TakeOutCustody provides a mock function with given fields: ctx, mtp, pool, amount
