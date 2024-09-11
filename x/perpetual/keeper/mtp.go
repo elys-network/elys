@@ -365,16 +365,6 @@ func (k Keeper) GetAllLegacyMTP(ctx sdk.Context) []types.LegacyMTP {
 	return mtps
 }
 
-// TODO: Handle to pay with a claim message or in begin blocker
-func (k Keeper) SetToPay(ctx sdk.Context, toPay *types.ToPay) error {
-	store := ctx.KVStore(k.storeKey)
-	address := sdk.MustAccAddressFromBech32(toPay.Address)
-
-	key := types.GetToPayKey(address, toPay.Id)
-	store.Set(key, k.cdc.MustMarshal(toPay))
-	return nil
-}
-
 func (k Keeper) V6_MTPMigration(ctx sdk.Context) {
 	store := ctx.KVStore(k.storeKey)
 	iterator := k.GetMTPIterator(ctx)
