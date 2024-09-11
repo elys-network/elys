@@ -121,7 +121,7 @@ func (am AppModule) RegisterServices(cfg module.Configurator) {
 	if err != nil {
 		panic(err)
 	}
-	err := cfg.RegisterMigration(types.ModuleName, 11, m.V12Migration)
+	err = cfg.RegisterMigration(types.ModuleName, 11, m.V12Migration)
 	if err != nil {
 		panic(err)
 	}
