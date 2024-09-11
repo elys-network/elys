@@ -6,7 +6,7 @@ import (
 )
 
 func (m Migrator) V5Migration(ctx sdk.Context) error {
-	pools := m.keeper.GetAllPoolInfos(ctx)
+	pools := m.keeper.GetAllLegacyPoolInfos(ctx)
 
 	ctx.Logger().Info("Migration: Adding enable eden rewards field")
 
@@ -26,7 +26,7 @@ func (m Migrator) V5Migration(ctx sdk.Context) error {
 			EnableEdenRewards:    true,
 		}
 
-		m.keeper.RemovePoolInfo(ctx, pool.PoolId)
+		m.keeper.RemoveLegacyPoolInfo(ctx, pool.PoolId)
 		m.keeper.SetPoolInfo(ctx, newPool)
 	}
 	return nil

@@ -150,7 +150,36 @@ func (am AppModule) ExportGenesis(ctx sdk.Context, cdc codec.JSONCodec) json.Raw
 func (AppModule) ConsensusVersion() uint64 { return 5 }
 
 // BeginBlock contains the logic that is automatically triggered at the beginning of each block
-func (am AppModule) BeginBlock(_ sdk.Context, _ abci.RequestBeginBlock) {}
+func (am AppModule) BeginBlock(ctx sdk.Context, _ abci.RequestBeginBlock) {
+
+	if ctx.BlockHeight() == 2 {
+		k := am.keeper
+
+		pools := k.GetAllLegacyPoolInfos(ctx)
+
+		ctx.Logger().Info("Migration: Adding enable eden rewards field")
+
+		for _, pool := range pools {
+
+			ctx.Logger().Debug("pool", pool)
+
+			newPool := types.PoolInfo{
+				PoolId:               pool.PoolId,
+				RewardWallet:         pool.RewardWallet,
+				Multiplier:           pool.Multiplier,
+				EdenApr:              pool.EdenApr,
+				DexApr:               pool.DexApr,
+				GasApr:               pool.GasApr,
+				ExternalIncentiveApr: pool.ExternalIncentiveApr,
+				ExternalRewardDenoms: pool.ExternalRewardDenoms,
+				EnableEdenRewards:    true,
+			}
+
+			k.RemoveLegacyPoolInfo(ctx, pool.PoolId)
+			k.SetPoolInfo(ctx, newPool)
+		}
+	}
+}
 
 // EndBlock contains the logic that is automatically triggered at the end of each block
 func (am AppModule) EndBlock(ctx sdk.Context, _ abci.RequestEndBlock) []abci.ValidatorUpdate {
