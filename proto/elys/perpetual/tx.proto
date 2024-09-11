@@ -11,16 +11,16 @@ import "elys/perpetual/types.proto";
 
 // Msg defines the Msg service.
 service Msg {
-  rpc Open                (MsgOpen               ) returns (MsgOpenResponse          );
-  rpc BrokerOpen          (MsgBrokerOpen         ) returns (MsgOpenResponse          );
-  rpc Close               (MsgClose              ) returns (MsgCloseResponse         );
-  rpc BrokerClose         (MsgBrokerClose        ) returns (MsgCloseResponse         );
-  rpc UpdateParams        (MsgUpdateParams       ) returns (MsgUpdateParamsResponse  );
-  rpc Whitelist           (MsgWhitelist          ) returns (MsgWhitelistResponse     );
-  rpc Dewhitelist         (MsgDewhitelist        ) returns (MsgDewhitelistResponse   );
-  rpc AddCollateral       (MsgAddCollateral      ) returns (MsgAddCollateralResponse );
-  rpc BrokerAddCollateral (MsgBrokerAddCollateral) returns (MsgAddCollateralResponse );
-  rpc UpdateStopLoss      (MsgUpdateStopLoss     ) returns (MsgUpdateStopLossResponse);
+  rpc Open                (MsgOpen               ) returns (MsgOpenResponse               );
+  rpc BrokerOpen          (MsgBrokerOpen         ) returns (MsgOpenResponse               );
+  rpc Close               (MsgClose              ) returns (MsgCloseResponse              );
+  rpc BrokerClose         (MsgBrokerClose        ) returns (MsgCloseResponse              );
+  rpc UpdateParams        (MsgUpdateParams       ) returns (MsgUpdateParamsResponse       );
+  rpc Whitelist           (MsgWhitelist          ) returns (MsgWhitelistResponse          );
+  rpc Dewhitelist         (MsgDewhitelist        ) returns (MsgDewhitelistResponse        );
+  rpc AddCollateral       (MsgAddCollateral      ) returns (MsgAddCollateralResponse      );
+  rpc BrokerAddCollateral (MsgBrokerAddCollateral) returns (MsgAddCollateralResponse      );
+  rpc UpdateStopLoss      (MsgUpdateStopLoss     ) returns (MsgUpdateStopLossResponse     );
   rpc ClosePositions      (MsgClosePositions     ) returns (MsgClosePositionsResponse);
 }
 message MsgOpen {
@@ -127,5 +127,3 @@ message MsgUpdateStopLoss {
 }
 
 message MsgUpdateStopLossResponse {}
-
-
