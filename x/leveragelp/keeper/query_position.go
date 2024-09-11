@@ -21,7 +21,7 @@ func (k Keeper) Position(goCtx context.Context, req *types.PositionRequest) (*ty
 	if err != nil {
 		return nil, err
 	}
-	updatedLeveragePosition, err := k.GetLeverageLpUpdatedLeverage(ctx, []*types.Position{&position}) 
+	updatedLeveragePosition, err := k.GetLeverageLpUpdatedLeverage(ctx, []*types.Position{&position})
 
 	if err != nil {
 		return nil, err
