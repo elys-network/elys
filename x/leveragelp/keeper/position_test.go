@@ -28,7 +28,6 @@ func TestSetGetPosition(t *testing.T) {
 			Collateral:     sdk.NewCoin(paramtypes.BaseCurrency, sdk.NewInt(0)),
 			Liabilities:    sdk.NewInt(0),
 			AmmPoolId:      1,
-			Leverage:       sdk.NewDec(0),
 			PositionHealth: sdk.NewDec(0),
 			Id:             0,
 		}
@@ -54,7 +53,6 @@ func TestSetLiquidation(t *testing.T) {
 			Collateral:     sdk.NewCoin(paramtypes.BaseCurrency, sdk.NewInt(0)),
 			Liabilities:    sdk.NewInt(0),
 			AmmPoolId:      1,
-			Leverage:       sdk.NewDec(0),
 			PositionHealth: sdk.NewDec(0),
 			Id:             0,
 		}
@@ -131,7 +129,6 @@ func TestIteratePoolPosIdsLiquidationSorted(t *testing.T) {
 			Collateral:        sdk.NewCoin(paramtypes.BaseCurrency, sdk.NewInt(0)),
 			Liabilities:       sdk.NewInt(0),
 			AmmPoolId:         info.PoolId,
-			Leverage:          sdk.NewDec(2),
 			PositionHealth:    sdk.NewDec(0),
 		}
 		debt := stablestaketypes.Debt{
@@ -206,7 +203,6 @@ func TestIteratePoolPosIdsStopLossSorted(t *testing.T) {
 			Collateral:        sdk.NewCoin(paramtypes.BaseCurrency, sdk.NewInt(0)),
 			Liabilities:       sdk.NewInt(0),
 			AmmPoolId:         info.PoolId,
-			Leverage:          sdk.NewDec(2),
 			PositionHealth:    sdk.NewDec(0),
 			StopLossPrice:     math.LegacyDec(info.StopLossPrice),
 		}

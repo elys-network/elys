@@ -33,8 +33,6 @@ func (m *Messenger) HandleMsg(ctx sdk.Context, contractAddr sdk.AccAddress, cont
 		return m.msgClaimRewards(ctx, contractAddr, msg.LeveragelpClaimRewards)
 	case msg.LeveragelpUpdateStopLoss != nil:
 		return m.msgUpdateStopLoss(ctx, contractAddr, msg.LeveragelpUpdateStopLoss)
-	case msg.LeveragelpAddCollateral != nil:
-		return m.msgAddCollateral(ctx, contractAddr, msg.LeveragelpAddCollateral)
 	default:
 		// This handler cannot handle the message
 		return nil, nil, wasmbindingstypes.ErrCannotHandleMsg
