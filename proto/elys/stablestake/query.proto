@@ -1,30 +1,56 @@
 syntax = "proto3";
+
 package elys.stablestake;
 
 import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
 import "elys/stablestake/params.proto";
+import "elys/stablestake/types.proto";
+import "elys/stablestake/debt.proto";
+
 
 option go_package = "github.com/elys-network/elys/x/stablestake/types";
 
 // Query defines the gRPC querier service.
 service Query {
+  
   // Parameters queries the parameters of the module.
-  rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
+  rpc Params (QueryParamsRequest) returns (QueryParamsResponse) {
     option (google.api.http).get = "/elys-network/elys/stablestake/params";
+  
   }
+  
   // BorrowRatio queries the borrow ratio compared to total deposit
-  rpc BorrowRatio(QueryBorrowRatioRequest) returns (QueryBorrowRatioResponse) {
+  rpc BorrowRatio (QueryBorrowRatioRequest) returns (QueryBorrowRatioResponse) {
     option (google.api.http).get = "/elys-network/elys/stablestake/borrow-ratio";
+  
+  }
+  
+  // Queries a list of QueryGetInterest items.
+  rpc QueryGetInterest (QueryQueryGetInterestRequest) returns (QueryQueryGetInterestResponse) {
+    option (google.api.http).get = "/elys-network/elys/stablestake/query_get_interest";
+  
+  }
+  
+  // Queries a list of QueryGetAllInterest items.
+  rpc QueryGetAllInterest (QueryQueryGetAllInterestRequest) returns (QueryQueryGetAllInterestResponse) {
+    option (google.api.http).get = "/elys-network/elys/stablestake/query_get_all_interest";
+  
+  }
+  
+  // Queries a list of QueryGetDebt items.
+  rpc QueryGetDebt (QueryQueryGetDebtRequest) returns (QueryQueryGetDebtResponse) {
+    option (google.api.http).get = "/elys-network/elys/stablestake/query_get_debt";
+  
   }
 }
-
 // QueryParamsRequest is request type for the Query/Params RPC method.
 message QueryParamsRequest {}
 
 // QueryParamsResponse is response type for the Query/Params RPC method.
 message QueryParamsResponse {
+  
   // params holds all the parameters of this module.
   Params params = 1 [(gogoproto.nullable) = false];
 }
@@ -34,16 +60,31 @@ message QueryBorrowRatioRequest {}
 
 // QueryBorrowRatioResponse is response type for the Query/BorrowRatio RPC method.
 message QueryBorrowRatioResponse {
-  string total_deposit = 1 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
-    (gogoproto.nullable) = false
-  ];
-  string total_borrow = 2 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
-    (gogoproto.nullable) = false
-  ];
-  string borrow_ratio = 3 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
-    (gogoproto.nullable) = false
-  ];
+  string total_deposit = 1 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false];
+  string total_borrow  = 2 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false];
+  string borrow_ratio  = 3 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
 }
+
+message QueryQueryGetInterestRequest {
+  string owner = 1;
+}
+
+message QueryQueryGetInterestResponse {
+  string interest = 1 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false];
+}
+
+message QueryQueryGetAllInterestRequest {}
+
+message QueryQueryGetAllInterestResponse {
+  repeated InterestBlock interest_blocks = 1;
+}
+
+message QueryQueryGetDebtRequest {
+  string owner = 1;
+}
+
+message QueryQueryGetDebtResponse {
+  Debt debt = 1 [(gogoproto.nullable) = false];
+  Debt debt_interest = 2 [(gogoproto.nullable) = false];
+}
+
