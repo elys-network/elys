@@ -1,9 +1,10 @@
 package types
 
 import (
+	"fmt"
+
 	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/math"
-	"fmt"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
@@ -229,7 +230,7 @@ func (msg *MsgAddPool) ValidateBasic() error {
 		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
 	}
 
-	if msg.Pool.LeverageMax.LTE(sdk.OneDec()) {
+	if msg.Pool.LeverageMax.LT(sdk.OneDec()) {
 		return ErrLeverageTooSmall
 	}
 	return nil
