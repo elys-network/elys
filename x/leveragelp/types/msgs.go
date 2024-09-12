@@ -111,7 +111,7 @@ func (msg *MsgOpen) ValidateBasic() error {
 		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
 	}
 	// leverage should be greater than 1
-	if msg.Leverage.LTE(sdk.OneDec()) {
+	if msg.Leverage.LT(sdk.OneDec()) {
 		return ErrLeverageTooSmall
 	}
 	collateralCoin := sdk.NewCoin(msg.CollateralAsset, msg.CollateralAmount)
