@@ -110,7 +110,7 @@ func (msg *MsgOpen) ValidateBasic() error {
 	if err != nil {
 		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
 	}
-	// leverage should be greater than 1
+	// leverage should be greater than or equal to 1
 	if msg.Leverage.LT(sdk.OneDec()) {
 		return ErrLeverageTooSmall
 	}
