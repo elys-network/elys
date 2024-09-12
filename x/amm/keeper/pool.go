@@ -87,6 +87,7 @@ func (k Keeper) GetBestPoolWithDenoms(ctx sdk.Context, denoms []string, usesOrac
 	maxTvl := sdk.NewDec(-1)
 	bestPool := types.Pool{}
 	for _, p := range pools {
+		// If usesOracle is false, function filters in all pools.
 		if usesOracle && !p.PoolParams.UseOracle {
 			continue
 		}
