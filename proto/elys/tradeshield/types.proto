@@ -1,0 +1,46 @@
+syntax = "proto3";
+
+package elys.tradeshield;
+
+option go_package = "github.com/elys-network/elys/x/tradeshield/types";
+
+import "gogoproto/gogo.proto";
+import "cosmos/base/v1beta1/coin.proto";
+
+enum SpotOrderType {
+    STOPLOSS = 0;
+    LIMITSELL = 1;
+    LIMITBUY = 2;
+    MARKETBUY = 3;
+}
+
+enum Status {
+    PENDING = 0;
+    EXECUTED = 1;
+    CANCLED = 2;
+}
+
+message OrderPrice {
+    string base_denom = 1;
+    string quote_denom = 2;
+    string rate = 3 [
+        (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+        (gogoproto.nullable) = false
+    ];
+}
+
+message Date {
+    uint64 height = 1;
+    uint64 timestamp = 2;
+}
+
+message SpotOrder {
+    SpotOrderType order_type = 1;
+    uint64 order_id = 2;
+    OrderPrice order_price = 3;
+    cosmos.base.v1beta1.Coin order_amount = 4 [(gogoproto.nullable) = false];
+    string owner_address = 5;
+    string order_target_denom = 6;
+    Status status = 7;
+    Date date = 8;
+}
