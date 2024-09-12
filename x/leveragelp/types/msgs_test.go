@@ -288,7 +288,7 @@ func TestMsgAddPool(t *testing.T) {
 			setter: func() {
 				msg.Pool.LeverageMax = sdk.OneDec()
 			},
-			errMsg: "",
+			errMsg: types.ErrLeverageTooSmall.Error(),
 		},
 	}
 	for _, tt := range tests {

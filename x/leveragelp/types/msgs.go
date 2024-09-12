@@ -230,7 +230,7 @@ func (msg *MsgAddPool) ValidateBasic() error {
 		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
 	}
 
-	if msg.Pool.LeverageMax.LT(sdk.OneDec()) {
+	if msg.Pool.LeverageMax.LTE(sdk.OneDec()) {
 		return ErrLeverageTooSmall
 	}
 	return nil
