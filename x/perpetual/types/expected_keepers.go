@@ -123,7 +123,7 @@ type AccountKeeper interface {
 //go:generate mockery --srcpkg . --name AmmKeeper --structname AmmKeeper --filename amm_keeper.go --with-expecter
 type AmmKeeper interface {
 	// Get first pool id that contains all denoms in pool assets
-	GetBestPoolWithDenoms(ctx sdk.Context, denoms []string) (pool ammtypes.Pool, found bool)
+	GetBestPoolWithDenoms(ctx sdk.Context, denoms []string, usesOracle bool) (pool ammtypes.Pool, found bool)
 	// GetPool returns a pool from its index
 	GetPool(sdk.Context, uint64) (ammtypes.Pool, bool)
 	// Get all pools

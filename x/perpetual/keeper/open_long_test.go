@@ -455,8 +455,15 @@ func TestOpenLong_BaseCurrency_Collateral(t *testing.T) {
 	argExitFee := sdk.MustNewDecFromStr("0.0")
 
 	poolParams := &ammtypes.PoolParams{
-		SwapFee: argSwapFee,
-		ExitFee: argExitFee,
+		UseOracle:                   true,
+		ExternalLiquidityRatio:      sdk.NewDec(2),
+		WeightBreakingFeeMultiplier: sdk.ZeroDec(),
+		WeightBreakingFeeExponent:   sdk.NewDecWithPrec(25, 1), // 2.5
+		WeightRecoveryFeePortion:    sdk.NewDecWithPrec(10, 2), // 10%
+		ThresholdWeightDifference:   sdk.ZeroDec(),
+		SwapFee:                     argSwapFee,
+		ExitFee:                     argExitFee,
+		FeeDenom:                    ptypes.BaseCurrency,
 	}
 
 	msg := ammtypes.NewMsgCreatePool(
@@ -530,11 +537,11 @@ func TestOpenLong_BaseCurrency_Collateral(t *testing.T) {
 		BorrowInterestPaidCollateral:   sdk.NewInt(0),
 		BorrowInterestPaidCustody:      sdk.NewInt(0),
 		BorrowInterestUnpaidCollateral: sdk.NewInt(0),
-		Custody:                        sdk.NewInt(49751243),
-		TakeProfitLiabilities:          sdk.NewInt(495049497),
-		TakeProfitCustody:              sdk.NewInt(49751243),
+		Custody:                        sdk.NewInt(486520593),
+		TakeProfitLiabilities:          sdk.NewInt(473929244),
+		TakeProfitCustody:              sdk.NewInt(486520593),
 		Leverage:                       sdk.NewDec(5),
-		MtpHealth:                      sdk.MustNewDecFromStr("1.249999982500000000"),
+		MtpHealth:                      sdk.MustNewDecFromStr("1.250000057500000000"),
 		Position:                       types.Position_LONG,
 		Id:                             uint64(1),
 		AmmPoolId:                      uint64(1),
@@ -546,7 +553,7 @@ func TestOpenLong_BaseCurrency_Collateral(t *testing.T) {
 		FundingFeePaidCustody:          sdk.NewInt(0),
 		FundingFeeReceivedCollateral:   sdk.NewInt(0),
 		FundingFeeReceivedCustody:      sdk.NewInt(0),
-		OpenPrice:                      sdk.MustNewDecFromStr("10.050000157785002477"),
+		OpenPrice:                      sdk.MustNewDecFromStr("1.027705727555914576"),
 		StopLossPrice:                  sdk.NewDec(100),
 	}, mtp)
 }
@@ -594,8 +601,15 @@ func TestOpenLong_ATOM_Collateral(t *testing.T) {
 	argExitFee := sdk.MustNewDecFromStr("0.0")
 
 	poolParams := &ammtypes.PoolParams{
-		SwapFee: argSwapFee,
-		ExitFee: argExitFee,
+		UseOracle:                   true,
+		ExternalLiquidityRatio:      sdk.NewDec(2),
+		WeightBreakingFeeMultiplier: sdk.ZeroDec(),
+		WeightBreakingFeeExponent:   sdk.NewDecWithPrec(25, 1), // 2.5
+		WeightRecoveryFeePortion:    sdk.NewDecWithPrec(10, 2), // 10%
+		ThresholdWeightDifference:   sdk.ZeroDec(),
+		SwapFee:                     argSwapFee,
+		ExitFee:                     argExitFee,
+		FeeDenom:                    ptypes.BaseCurrency,
 	}
 
 	msg := ammtypes.NewMsgCreatePool(
@@ -665,27 +679,27 @@ func TestOpenLong_ATOM_Collateral(t *testing.T) {
 		LiabilitiesAsset:               "uusdc",
 		CustodyAsset:                   "uatom",
 		Collateral:                     sdk.NewInt(10000000),
-		Liabilities:                    sdk.NewInt(416666667),
+		Liabilities:                    sdk.NewInt(40905431),
 		BorrowInterestPaidCollateral:   sdk.NewInt(0),
 		BorrowInterestPaidCustody:      sdk.NewInt(0),
 		BorrowInterestUnpaidCollateral: sdk.NewInt(0),
 		Custody:                        sdk.NewInt(50000000),
-		TakeProfitLiabilities:          sdk.NewInt(476190476),
+		TakeProfitLiabilities:          sdk.NewInt(48671331),
 		TakeProfitCustody:              sdk.NewInt(50000000),
 		Leverage:                       sdk.NewDec(5),
-		MtpHealth:                      sdk.MustNewDecFromStr("1.263157894989473684"),
+		MtpHealth:                      sdk.MustNewDecFromStr("1.257169811998802800"),
 		Position:                       types.Position_LONG,
 		Id:                             uint64(1),
 		AmmPoolId:                      uint64(1),
 		ConsolidateLeverage:            sdk.NewDec(4),
-		SumCollateral:                  sdk.NewInt(101010102),
+		SumCollateral:                  sdk.NewInt(10055388),
 		TakeProfitPrice:                sdk.MustNewDecFromStr(types.TakeProfitPriceDefault),
 		TakeProfitBorrowRate:           sdk.MustNewDecFromStr("1.0"),
 		FundingFeePaidCollateral:       sdk.NewInt(0),
 		FundingFeePaidCustody:          sdk.NewInt(0),
 		FundingFeeReceivedCollateral:   sdk.NewInt(0),
 		FundingFeeReceivedCustody:      sdk.NewInt(0),
-		OpenPrice:                      sdk.MustNewDecFromStr("10.313531340000000000"),
+		OpenPrice:                      sdk.MustNewDecFromStr("1.017016260000000000"),
 		StopLossPrice:                  sdk.NewDec(100),
 	}, mtp)
 }

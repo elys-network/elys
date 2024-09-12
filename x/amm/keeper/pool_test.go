@@ -98,11 +98,11 @@ func TestGetBestPoolWithDenoms(t *testing.T) {
 	}
 
 	// Test case where pool is found
-	pool, found := keeper.GetBestPoolWithDenoms(ctx, []string{"denom2", "usdc"})
+	pool, found := keeper.GetBestPoolWithDenoms(ctx, []string{"denom2", "usdc"}, false)
 	require.True(t, found)
 	require.Equal(t, uint64(2), pool.PoolId)
 
 	// Test case where pool is not found
-	_, found = keeper.GetBestPoolWithDenoms(ctx, []string{"nonexistent", "usdc"})
+	_, found = keeper.GetBestPoolWithDenoms(ctx, []string{"nonexistent", "usdc"}, false)
 	require.False(t, found)
 }

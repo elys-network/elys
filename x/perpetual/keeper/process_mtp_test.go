@@ -72,8 +72,15 @@ func TestCheckAndLiquidateUnhealthyPosition(t *testing.T) {
 	argExitFee := sdk.MustNewDecFromStr("0.0")
 
 	poolParams := &ammtypes.PoolParams{
-		SwapFee: argSwapFee,
-		ExitFee: argExitFee,
+		UseOracle:                   true,
+		ExternalLiquidityRatio:      sdk.NewDec(2),
+		WeightBreakingFeeMultiplier: sdk.ZeroDec(),
+		WeightBreakingFeeExponent:   sdk.NewDecWithPrec(25, 1), // 2.5
+		WeightRecoveryFeePortion:    sdk.NewDecWithPrec(10, 2), // 10%
+		ThresholdWeightDifference:   sdk.ZeroDec(),
+		SwapFee:                     argSwapFee,
+		ExitFee:                     argExitFee,
+		FeeDenom:                    ptypes.BaseCurrency,
 	}
 
 	msg := ammtypes.NewMsgCreatePool(
@@ -164,11 +171,11 @@ func TestCheckAndLiquidateUnhealthyPosition(t *testing.T) {
 		BorrowInterestPaidCollateral:   sdk.NewInt(0),
 		BorrowInterestPaidCustody:      sdk.NewInt(0),
 		BorrowInterestUnpaidCollateral: sdk.NewInt(0),
-		Custody:                        sdk.NewInt(49751243),
-		TakeProfitLiabilities:          sdk.NewInt(495049497),
-		TakeProfitCustody:              sdk.NewInt(49751243),
+		Custody:                        sdk.NewInt(486520593),
+		TakeProfitLiabilities:          sdk.NewInt(473929244),
+		TakeProfitCustody:              sdk.NewInt(486520593),
 		Leverage:                       sdk.NewDec(5),
-		MtpHealth:                      sdk.MustNewDecFromStr("1.249999982500000000"),
+		MtpHealth:                      sdk.MustNewDecFromStr("1.250000057500000000"),
 		Position:                       types.Position_LONG,
 		Id:                             uint64(1),
 		AmmPoolId:                      uint64(1),
@@ -180,7 +187,7 @@ func TestCheckAndLiquidateUnhealthyPosition(t *testing.T) {
 		FundingFeePaidCustody:          sdk.NewInt(0),
 		FundingFeeReceivedCollateral:   sdk.NewInt(0),
 		FundingFeeReceivedCustody:      sdk.NewInt(0),
-		OpenPrice:                      sdk.MustNewDecFromStr("10.050000157785002477"),
+		OpenPrice:                      sdk.MustNewDecFromStr("1.027705727555914576"),
 		LastInterestCalcTime:           uint64(ctx.BlockTime().Unix()),
 		LastFundingCalcTime:            uint64(ctx.BlockTime().Unix()),
 		StopLossPrice:                  sdk.ZeroDec(),
@@ -248,8 +255,15 @@ func TestCheckAndLiquidateStopLossPosition(t *testing.T) {
 	argExitFee := sdk.MustNewDecFromStr("0.0")
 
 	poolParams := &ammtypes.PoolParams{
-		SwapFee: argSwapFee,
-		ExitFee: argExitFee,
+		UseOracle:                   true,
+		ExternalLiquidityRatio:      sdk.NewDec(2),
+		WeightBreakingFeeMultiplier: sdk.ZeroDec(),
+		WeightBreakingFeeExponent:   sdk.NewDecWithPrec(25, 1), // 2.5
+		WeightRecoveryFeePortion:    sdk.NewDecWithPrec(10, 2), // 10%
+		ThresholdWeightDifference:   sdk.ZeroDec(),
+		SwapFee:                     argSwapFee,
+		ExitFee:                     argExitFee,
+		FeeDenom:                    ptypes.BaseCurrency,
 	}
 
 	msg := ammtypes.NewMsgCreatePool(

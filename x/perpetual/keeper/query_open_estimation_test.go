@@ -45,7 +45,7 @@ func TestOpenEstimation_Long5XAtom100Usdc(t *testing.T) {
 	poolAssets := []ammtypes.PoolAsset{
 		{
 			Weight: sdk.NewInt(50),
-			Token:  sdk.NewCoin(ptypes.ATOM, sdk.NewInt(10000000000)),
+			Token:  sdk.NewCoin(ptypes.ATOM, sdk.NewInt(600000000000)),
 		},
 		{
 			Weight: sdk.NewInt(50),
@@ -57,8 +57,15 @@ func TestOpenEstimation_Long5XAtom100Usdc(t *testing.T) {
 	argExitFee := sdk.MustNewDecFromStr("0.0")
 
 	poolParams := &ammtypes.PoolParams{
-		SwapFee: argSwapFee,
-		ExitFee: argExitFee,
+		UseOracle:                   true,
+		ExternalLiquidityRatio:      sdk.NewDec(2),
+		WeightBreakingFeeMultiplier: sdk.ZeroDec(),
+		WeightBreakingFeeExponent:   sdk.NewDecWithPrec(25, 1), // 2.5
+		WeightRecoveryFeePortion:    sdk.NewDecWithPrec(10, 2), // 10%
+		ThresholdWeightDifference:   sdk.ZeroDec(),
+		SwapFee:                     argSwapFee,
+		ExitFee:                     argExitFee,
+		FeeDenom:                    ptypes.BaseCurrency,
 	}
 
 	msg := ammtypes.NewMsgCreatePool(
@@ -92,18 +99,18 @@ func TestOpenEstimation_Long5XAtom100Usdc(t *testing.T) {
 		Leverage:           sdk.MustNewDecFromStr("5.0"),
 		TradingAsset:       ptypes.ATOM,
 		Collateral:         sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(100000000)),
-		MinCollateral:      sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(83333334)),
+		MinCollateral:      sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(8333334)),
 		ValidCollateral:    true,
-		PositionSize:       sdk.NewCoin(ptypes.ATOM, sdk.NewInt(49701739)),
+		PositionSize:       sdk.NewCoin(ptypes.ATOM, sdk.NewInt(499136435)),
 		SwapFee:            sdk.MustNewDecFromStr("0.001000000000000000"),
 		Discount:           sdk.MustNewDecFromStr("0.000000000000000000"),
-		OpenPrice:          sdk.MustNewDecFromStr("10.00000000000000000"),
+		OpenPrice:          sdk.MustNewDecFromStr("1.000000000000000000"),
 		TakeProfitPrice:    sdk.MustNewDecFromStr("20.00000000000000000"),
-		LiquidationPrice:   sdk.MustNewDecFromStr("7.987997965222102188"),
-		EstimatedPnl:       sdk.NewInt(24701739),
+		LiquidationPrice:   sdk.MustNewDecFromStr("0.799653976372211738"),
+		EstimatedPnl:       sdk.NewInt(474136435),
 		EstimatedPnlDenom:  ptypes.ATOM,
-		AvailableLiquidity: sdk.NewCoin(ptypes.ATOM, sdk.NewInt(10000000000)),
-		Slippage:           sdk.MustNewDecFromStr("0.004970173980965165"),
+		AvailableLiquidity: sdk.NewCoin(ptypes.ATOM, sdk.NewInt(600000000000)),
+		Slippage:           sdk.MustNewDecFromStr("0.000727856000000000"),
 		WeightBalanceRatio: sdk.MustNewDecFromStr("0.000000000000000000"),
 		BorrowInterestRate: sdk.MustNewDecFromStr("0.000000000000000000"),
 		FundingRate:        sdk.MustNewDecFromStr("0.000000000000000000"),
@@ -166,8 +173,15 @@ func TestOpenEstimation_Long5XAtom10Atom(t *testing.T) {
 	argExitFee := sdk.MustNewDecFromStr("0.0")
 
 	poolParams := &ammtypes.PoolParams{
-		SwapFee: argSwapFee,
-		ExitFee: argExitFee,
+		UseOracle:                   true,
+		ExternalLiquidityRatio:      sdk.NewDec(2),
+		WeightBreakingFeeMultiplier: sdk.ZeroDec(),
+		WeightBreakingFeeExponent:   sdk.NewDecWithPrec(25, 1), // 2.5
+		WeightRecoveryFeePortion:    sdk.NewDecWithPrec(10, 2), // 10%
+		ThresholdWeightDifference:   sdk.ZeroDec(),
+		SwapFee:                     argSwapFee,
+		ExitFee:                     argExitFee,
+		FeeDenom:                    ptypes.BaseCurrency,
 	}
 
 	msg := ammtypes.NewMsgCreatePool(
@@ -201,22 +215,22 @@ func TestOpenEstimation_Long5XAtom10Atom(t *testing.T) {
 		Leverage:           sdk.MustNewDecFromStr("5.0"),
 		TradingAsset:       ptypes.ATOM,
 		Collateral:         sdk.NewCoin(ptypes.ATOM, sdk.NewInt(10000000)),
-		MinCollateral:      sdk.NewCoin(ptypes.ATOM, sdk.NewInt(84333333)),
-		ValidCollateral:    false,
-		PositionSize:       sdk.NewCoin(ptypes.ATOM, sdk.NewInt(49602977)),
+		MinCollateral:      sdk.NewCoin(ptypes.ATOM, sdk.NewInt(9333333)),
+		ValidCollateral:    true,
+		PositionSize:       sdk.NewCoin(ptypes.ATOM, sdk.NewInt(49858958)),
 		SwapFee:            sdk.MustNewDecFromStr("0.001000000000000000"),
 		Discount:           sdk.MustNewDecFromStr("0.000000000000000000"),
-		OpenPrice:          sdk.MustNewDecFromStr("10.00000000000000000"),
+		OpenPrice:          sdk.MustNewDecFromStr("1.000000000000000000"),
 		TakeProfitPrice:    sdk.MustNewDecFromStr("20.00000000000000000"),
-		LiquidationPrice:   sdk.MustNewDecFromStr("7.988017957067375210"),
-		EstimatedPnl:       sdk.NewInt(29142917),
+		LiquidationPrice:   sdk.MustNewDecFromStr("0.799662359570370484"),
+		EstimatedPnl:       sdk.NewInt(47361232),
 		EstimatedPnlDenom:  ptypes.ATOM,
 		AvailableLiquidity: sdk.NewCoin(ptypes.ATOM, sdk.NewInt(10000000000)),
-		Slippage:           sdk.MustNewDecFromStr("0.004960297727194615"),
+		Slippage:           sdk.MustNewDecFromStr("0.000686040302239768"),
 		WeightBalanceRatio: sdk.MustNewDecFromStr("0.000000000000000000"),
 		BorrowInterestRate: sdk.MustNewDecFromStr("0.000000000000000000"),
 		FundingRate:        sdk.MustNewDecFromStr("0.000000000000000000"),
-		PriceImpact:        sdk.MustNewDecFromStr("0.005955342879283360"),
+		PriceImpact:        sdk.MustNewDecFromStr("0.001685356924966457"),
 	}, res)
 }
 
@@ -275,8 +289,15 @@ func TestOpenEstimation_Short5XAtom10Usdc(t *testing.T) {
 	argExitFee := sdk.MustNewDecFromStr("0.0")
 
 	poolParams := &ammtypes.PoolParams{
-		SwapFee: argSwapFee,
-		ExitFee: argExitFee,
+		UseOracle:                   true,
+		ExternalLiquidityRatio:      sdk.NewDec(2),
+		WeightBreakingFeeMultiplier: sdk.ZeroDec(),
+		WeightBreakingFeeExponent:   sdk.NewDecWithPrec(25, 1), // 2.5
+		WeightRecoveryFeePortion:    sdk.NewDecWithPrec(10, 2), // 10%
+		ThresholdWeightDifference:   sdk.ZeroDec(),
+		SwapFee:                     argSwapFee,
+		ExitFee:                     argExitFee,
+		FeeDenom:                    ptypes.BaseCurrency,
 	}
 
 	msg := ammtypes.NewMsgCreatePool(
@@ -310,21 +331,21 @@ func TestOpenEstimation_Short5XAtom10Usdc(t *testing.T) {
 		Leverage:           sdk.MustNewDecFromStr("5.0"),
 		TradingAsset:       ptypes.ATOM,
 		Collateral:         sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(100000000)),
-		MinCollateral:      sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(84333333)),
+		MinCollateral:      sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(9333333)),
 		ValidCollateral:    true,
 		PositionSize:       sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(500000000)),
 		SwapFee:            sdk.MustNewDecFromStr("0.001000000000000000"),
 		Discount:           sdk.MustNewDecFromStr("0.000000000000000000"),
-		OpenPrice:          sdk.MustNewDecFromStr("10.000000000000000000"),
+		OpenPrice:          sdk.MustNewDecFromStr("1.000000000000000000"),
 		TakeProfitPrice:    sdk.MustNewDecFromStr("2.000000000000000000"),
-		LiquidationPrice:   sdk.MustNewDecFromStr("12.000000000000000000"),
-		EstimatedPnl:       sdk.NewInt(200000000),
+		LiquidationPrice:   sdk.MustNewDecFromStr("1.200000000000000000"),
+		EstimatedPnl:       sdk.NewInt(-250000000),
 		EstimatedPnlDenom:  ptypes.BaseCurrency,
 		AvailableLiquidity: sdk.NewCoin(ptypes.ATOM, sdk.NewInt(10000000000)),
-		Slippage:           sdk.MustNewDecFromStr("0.004970173980965165"),
+		Slippage:           sdk.MustNewDecFromStr("0.006806806000000000"),
 		WeightBalanceRatio: sdk.MustNewDecFromStr("0.000000000000000000"),
 		BorrowInterestRate: sdk.MustNewDecFromStr("0.000000000000000000"),
 		FundingRate:        sdk.MustNewDecFromStr("0.000000000000000000"),
-		PriceImpact:        sdk.MustNewDecFromStr("0.005965220000000000"),
+		PriceImpact:        sdk.MustNewDecFromStr("0.007800000000000000"),
 	}, res)
 }
