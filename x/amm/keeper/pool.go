@@ -79,14 +79,17 @@ func (k Keeper) PoolExists(ctx sdk.Context, poolId uint64) bool {
 	return b != nil
 }
 
-// GetBestPoolWithDenoms returns the first pool id that contains all specified denominations
-func (k Keeper) GetBestPoolWithDenoms(ctx sdk.Context, denoms []string) (pool types.Pool, found bool) {
+// GetBestPoolWithDenoms returns the first highest TVL pool id that contains all specified denominations
+func (k Keeper) GetBestPoolWithDenoms(ctx sdk.Context, denoms []string, usesOracle bool) (pool types.Pool, found bool) {
 	// Get all pools
 	pools := k.GetAllPool(ctx)
 
 	maxTvl := sdk.NewDec(-1)
 	bestPool := types.Pool{}
 	for _, p := range pools {
+		if usesOracle && !p.PoolParams.UseOracle {
+			continue
+		}
 		// If the number of assets in the pool is less than the number of denoms, skip
 		if len(p.PoolAssets) < len(denoms) {
 			continue

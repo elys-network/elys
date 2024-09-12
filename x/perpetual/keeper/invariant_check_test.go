@@ -58,8 +58,9 @@ func TestCheckBalanceInvariant_InvalidBalance(t *testing.T) {
 	argExitFee := sdk.MustNewDecFromStr("0.0")
 
 	poolParams := &ammtypes.PoolParams{
-		SwapFee: argSwapFee,
-		ExitFee: argExitFee,
+		SwapFee:   argSwapFee,
+		ExitFee:   argExitFee,
+		UseOracle: true,
 	}
 
 	msg := types.NewMsgCreatePool(
@@ -129,7 +130,7 @@ func TestCheckBalanceInvariant_InvalidBalance(t *testing.T) {
 	require.NoError(t, err)
 
 	balances = app.BankKeeper.GetAllBalances(ctx, poolAddress)
-	require.Equal(t, balances.AmountOf(ptypes.BaseCurrency), sdk.NewInt(10045454552))
+	require.Equal(t, balances.AmountOf(ptypes.BaseCurrency), sdk.NewInt(10058834115))
 	require.Equal(t, balances.AmountOf(ptypes.ATOM), sdk.NewInt(1000000000))
 
 	// Check balance invariant check

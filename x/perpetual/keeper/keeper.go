@@ -2,8 +2,6 @@ package keeper
 
 import (
 	"fmt"
-	"math/big"
-
 	"github.com/cometbft/cometbft/libs/log"
 	"github.com/cosmos/cosmos-sdk/codec"
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
@@ -442,7 +440,6 @@ func (k Keeper) BorrowInterestRateComputation(ctx sdk.Context, pool types.Pool) 
 }
 
 func (k Keeper) CheckMinLiabilities(ctx sdk.Context, collateralAmount sdk.Coin, eta sdk.Dec, ammPool ammtypes.Pool, custodyAsset string, baseCurrency string) error {
-	var borrowInterestRational, liabilitiesRational, rate big.Rat
 	minBorrowInterestRate := k.GetBorrowInterestRateMin(ctx)
 
 	// Ensure minBorrowInterestRate is not zero to avoid division by zero
@@ -452,7 +449,7 @@ func (k Keeper) CheckMinLiabilities(ctx sdk.Context, collateralAmount sdk.Coin, 
 
 	collateralAmountDec := sdk.NewDecFromInt(collateralAmount.Amount)
 	liabilitiesDec := collateralAmountDec.Mul(eta)
-	liabilities := sdk.NewUint(liabilitiesDec.TruncateInt().Uint64())
+	liabilities := sdk.NewInt(liabilitiesDec.TruncateInt64())
 
 	// liabilty has to be always in base currency
 	if collateralAmount.Denom != baseCurrency {
@@ -463,14 +460,10 @@ func (k Keeper) CheckMinLiabilities(ctx sdk.Context, collateralAmount sdk.Coin, 
 		if err != nil {
 			return types.ErrBorrowTooLow
 		}
-		liabilities = sdk.NewUint(inAmt.Uint64())
+		liabilities = sdk.NewInt(inAmt.Int64())
 	}
-	rate.SetFloat64(minBorrowInterestRate.MustFloat64())
-	liabilitiesRational.SetInt(liabilities.BigInt())
-	borrowInterestRational.Mul(&rate, &liabilitiesRational)
-
-	borrowInterestNew := borrowInterestRational.Num().Quo(borrowInterestRational.Num(), borrowInterestRational.Denom())
-	samplePayment := sdk.NewInt(borrowInterestNew.Int64())
+	minBorrowedInterest := liabilities.ToLegacyDec().Mul(minBorrowInterestRate)
+	samplePayment := sdk.NewInt(minBorrowedInterest.TruncateInt64())
 	if samplePayment.IsZero() {
 		return types.ErrBorrowTooLow
 	}

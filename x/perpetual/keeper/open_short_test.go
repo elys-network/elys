@@ -442,8 +442,9 @@ func TestOpenShort_BaseCurrency_Collateral(t *testing.T) {
 	argExitFee := sdk.MustNewDecFromStr("0.0")
 
 	poolParams := &ammtypes.PoolParams{
-		SwapFee: argSwapFee,
-		ExitFee: argExitFee,
+		SwapFee:   argSwapFee,
+		ExitFee:   argExitFee,
+		UseOracle: true,
 	}
 
 	msg := ammtypes.NewMsgCreatePool(
@@ -513,7 +514,7 @@ func TestOpenShort_BaseCurrency_Collateral(t *testing.T) {
 		LiabilitiesAsset:               "uatom",
 		CustodyAsset:                   "uusdc",
 		Collateral:                     sdk.NewInt(100000000),
-		Liabilities:                    sdk.NewInt(39840637),
+		Liabilities:                    sdk.NewInt(66312841),
 		BorrowInterestPaidCollateral:   sdk.NewInt(0),
 		BorrowInterestPaidCustody:      sdk.NewInt(0),
 		BorrowInterestUnpaidCollateral: sdk.NewInt(0),
@@ -521,7 +522,7 @@ func TestOpenShort_BaseCurrency_Collateral(t *testing.T) {
 		TakeProfitLiabilities:          sdk.NewInt(497512437),
 		TakeProfitCustody:              sdk.NewInt(500000000),
 		Leverage:                       sdk.NewDec(5),
-		MtpHealth:                      sdk.MustNewDecFromStr("1.250000012500000125"),
+		MtpHealth:                      sdk.MustNewDecFromStr("1.250000003125000008"),
 		Position:                       types.Position_SHORT,
 		Id:                             uint64(1),
 		AmmPoolId:                      uint64(1),
@@ -533,7 +534,7 @@ func TestOpenShort_BaseCurrency_Collateral(t *testing.T) {
 		FundingFeePaidCustody:          sdk.NewInt(0),
 		FundingFeeReceivedCollateral:   sdk.NewInt(0),
 		FundingFeeReceivedCustody:      sdk.NewInt(0),
-		OpenPrice:                      sdk.MustNewDecFromStr("9.986190535983191415"),
+		OpenPrice:                      sdk.MustNewDecFromStr("5.989024603088393841"),
 		StopLossPrice:                  sdk.NewDec(100),
 	}, mtp)
 }
@@ -581,8 +582,9 @@ func TestOpenShort_ATOM_Collateral(t *testing.T) {
 	argExitFee := sdk.MustNewDecFromStr("0.0")
 
 	poolParams := &ammtypes.PoolParams{
-		SwapFee: argSwapFee,
-		ExitFee: argExitFee,
+		SwapFee:   argSwapFee,
+		ExitFee:   argExitFee,
+		UseOracle: true,
 	}
 
 	msg := ammtypes.NewMsgCreatePool(
