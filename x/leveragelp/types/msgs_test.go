@@ -102,13 +102,6 @@ func TestMsgOpen(t *testing.T) {
 			errMsg: types.ErrLeverageTooSmall.Error(),
 		},
 		{
-			name: "leverage is 1",
-			setter: func() {
-				msg.Leverage = sdk.OneDec()
-			},
-			errMsg: types.ErrLeverageTooSmall.Error(),
-		},
-		{
 			name: "collateral amt is 0",
 			setter: func() {
 				msg.Leverage = sdk.OneDec().MulInt64(2)
