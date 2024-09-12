@@ -305,7 +305,7 @@ func TestOpenShort_LeverageRatioLessThanSafetyFactor(t *testing.T) {
 
 	lr := math.LegacyNewDec(50)
 
-	mockChecker.On("UpdateMTPHealth", ctx, *mtp, ammPool, ptypes.BaseCurrency).Return(lr, nil)
+	mockChecker.On("GetMTPHealth", ctx, *mtp, ammPool, ptypes.BaseCurrency).Return(lr, nil)
 	mockChecker.On("GetSafetyFactor", ctx).Return(sdk.NewDec(100))
 
 	_, err := k.OpenShort(ctx, ammPool.PoolId, msg, ptypes.BaseCurrency, false)
@@ -372,7 +372,7 @@ func TestOpenShort_Success(t *testing.T) {
 
 	lr := math.LegacyNewDec(50)
 
-	mockChecker.On("UpdateMTPHealth", ctx, *mtp, ammPool, ptypes.BaseCurrency).Return(lr, nil)
+	mockChecker.On("GetMTPHealth", ctx, *mtp, ammPool, ptypes.BaseCurrency).Return(lr, nil)
 
 	safetyFactor := math.LegacyNewDec(10)
 

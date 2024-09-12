@@ -21,5 +21,30 @@ func (m Migrator) V5Migration(ctx sdk.Context) error {
 	params.ProtocolRevenueAddress = legacyParams.ProtocolRevenueAddress
 
 	m.keeper.SetParams(ctx, params)
+
+	// Migrate pool infos
+	pools := m.keeper.GetAllLegacyPoolInfos(ctx)
+
+	ctx.Logger().Info("Migration: Adding enable eden rewards field")
+
+	for _, pool := range pools {
+
+		ctx.Logger().Debug("pool", pool)
+
+		newPool := types.PoolInfo{
+			PoolId:               pool.PoolId,
+			RewardWallet:         pool.RewardWallet,
+			Multiplier:           pool.Multiplier,
+			EdenApr:              pool.EdenApr,
+			DexApr:               pool.DexApr,
+			GasApr:               pool.GasApr,
+			ExternalIncentiveApr: pool.ExternalIncentiveApr,
+			ExternalRewardDenoms: pool.ExternalRewardDenoms,
+			EnableEdenRewards:    true,
+		}
+
+		m.keeper.RemoveLegacyPoolInfo(ctx, pool.PoolId)
+		m.keeper.SetPoolInfo(ctx, newPool)
+	}
 	return nil
 }

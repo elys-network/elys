@@ -142,7 +142,7 @@ func TestCloseShort_AmmPoolNotFound(t *testing.T) {
 	mockChecker.AssertExpectations(t)
 }
 
-func TestCloseShort_ErrorHandleBorrowInterest(t *testing.T) {
+func TestCloseShort_ErrorSettleBorrowInterest(t *testing.T) {
 	// Setup the mock checker
 	mockChecker := new(mocks.CloseShortChecker)
 
@@ -173,7 +173,7 @@ func TestCloseShort_ErrorHandleBorrowInterest(t *testing.T) {
 	mockChecker.On("GetMTP", ctx, sdk.MustAccAddressFromBech32(msg.Creator), msg.Id).Return(mtp, nil)
 	mockChecker.On("GetPool", ctx, mtp.AmmPoolId).Return(pool, true)
 	mockChecker.On("GetAmmPool", ctx, mtp.AmmPoolId, mtp.CustodyAsset).Return(ammPool, nil)
-	mockChecker.On("HandleBorrowInterest", ctx, &mtp, &pool, ammPool).Return(errors.New("error executing handle borrow interest"))
+	mockChecker.On("SettleBorrowInterest", ctx, &mtp, &pool, ammPool).Return(errors.New("error executing handle borrow interest"))
 
 	_, _, err := k.CloseShort(ctx, msg, ptypes.BaseCurrency)
 
@@ -213,7 +213,7 @@ func TestCloseShort_ErrorTakeOutCustody(t *testing.T) {
 	mockChecker.On("GetMTP", ctx, sdk.MustAccAddressFromBech32(msg.Creator), msg.Id).Return(mtp, nil)
 	mockChecker.On("GetPool", ctx, mtp.AmmPoolId).Return(pool, true)
 	mockChecker.On("GetAmmPool", ctx, mtp.AmmPoolId, mtp.CustodyAsset).Return(ammPool, nil)
-	mockChecker.On("HandleBorrowInterest", ctx, &mtp, &pool, ammPool).Return(nil)
+	mockChecker.On("SettleBorrowInterest", ctx, &mtp, &pool, ammPool).Return(nil)
 	mockChecker.On("TakeOutCustody", ctx, mtp, &pool, msg.Amount).Return(errors.New("error executing take out custody"))
 
 	_, _, err := k.CloseShort(ctx, msg, ptypes.BaseCurrency)
@@ -254,7 +254,7 @@ func TestCloseShort_ErrorEstimateAndRepay(t *testing.T) {
 	mockChecker.On("GetMTP", ctx, sdk.MustAccAddressFromBech32(msg.Creator), msg.Id).Return(mtp, nil)
 	mockChecker.On("GetPool", ctx, mtp.AmmPoolId).Return(pool, true)
 	mockChecker.On("GetAmmPool", ctx, mtp.AmmPoolId, mtp.CustodyAsset).Return(ammPool, nil)
-	mockChecker.On("HandleBorrowInterest", ctx, &mtp, &pool, ammPool).Return(nil)
+	mockChecker.On("SettleBorrowInterest", ctx, &mtp, &pool, ammPool).Return(nil)
 	mockChecker.On("TakeOutCustody", ctx, mtp, &pool, msg.Amount).Return(nil)
 	mockChecker.On("EstimateAndRepay", ctx, mtp, pool, ammPool, msg.Amount, ptypes.BaseCurrency).Return(math.Int{}, errors.New("error executing estimate and repay"))
 
@@ -297,7 +297,7 @@ func TestCloseShort_SuccessfulClosingLongPosition(t *testing.T) {
 	mockChecker.On("GetMTP", ctx, sdk.MustAccAddressFromBech32(msg.Creator), msg.Id).Return(mtp, nil)
 	mockChecker.On("GetPool", ctx, mtp.AmmPoolId).Return(pool, true)
 	mockChecker.On("GetAmmPool", ctx, mtp.AmmPoolId, mtp.CustodyAsset).Return(ammPool, nil)
-	mockChecker.On("HandleBorrowInterest", ctx, &mtp, &pool, ammPool).Return(nil)
+	mockChecker.On("SettleBorrowInterest", ctx, &mtp, &pool, ammPool).Return(nil)
 	mockChecker.On("TakeOutCustody", ctx, mtp, &pool, msg.Amount).Return(nil)
 	mockChecker.On("EstimateAndRepay", ctx, mtp, pool, ammPool, msg.Amount, ptypes.BaseCurrency).Return(repayAmount, nil)
 

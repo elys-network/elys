@@ -168,7 +168,7 @@ func (k Keeper) Borrow(ctx sdk.Context, collateralAmount math.Int, custodyAmount
 
 	mtp.Leverage = eta.Add(sdk.OneDec())
 
-	h, err := k.UpdateMTPHealth(ctx, *mtp, *ammPool, baseCurrency) // set mtp in func or return h?
+	h, err := k.GetMTPHealth(ctx, *mtp, *ammPool, baseCurrency) // set mtp in func or return h?
 	if err != nil {
 		return err
 	}
@@ -497,7 +497,13 @@ func (k Keeper) TakeFundPayment(ctx sdk.Context, returnAmount math.Int, returnAs
 
 	if !takeAmount.IsZero() {
 		takeCoins := sdk.NewCoins(sdk.NewCoin(returnAsset, sdk.NewIntFromBigInt(takeAmount.BigInt())))
-		err := k.bankKeeper.SendCoinsFromModuleToAccount(ctx, ammPool.Address, fundAddr, takeCoins)
+
+		ammPoolAddr, err := sdk.AccAddressFromBech32(ammPool.Address)
+		if err != nil {
+			return sdk.ZeroInt(), err
+		}
+		err = k.bankKeeper.SendCoins(ctx, ammPoolAddr, fundAddr, takeCoins)
+		//err := k.bankKeeper.SendCoinsFromModuleToAccount(ctx, ammPool.Address, fundAddr, takeCoins)
 		if err != nil {
 			return sdk.ZeroInt(), err
 		}

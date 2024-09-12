@@ -6,11 +6,11 @@ import (
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
-	"github.com/elys-network/elys/x/leveragelp/keeper"
-	"github.com/elys-network/elys/x/leveragelp/types"
+	"github.com/elys-network/elys/x/perpetual/keeper"
+	"github.com/elys-network/elys/x/perpetual/types"
 )
 
-func SimulateMsgAddCollateral(
+func SimulateMsgClosePositions(
 	ak types.AccountKeeper,
 	bk types.BankKeeper,
 	k keeper.Keeper,
@@ -18,12 +18,12 @@ func SimulateMsgAddCollateral(
 	return func(r *rand.Rand, app *baseapp.BaseApp, ctx sdk.Context, accs []simtypes.Account, chainID string,
 	) (simtypes.OperationMsg, []simtypes.FutureOperation, error) {
 		simAccount, _ := simtypes.RandomAcc(r, accs)
-		msg := &types.MsgAddCollateral{
+		msg := &types.MsgClosePositions{
 			Creator: simAccount.Address.String(),
 		}
 
-		// TODO: Handling the AddCollateral simulation
+		// TODO: Handling the ClosePositions simulation
 
-		return simtypes.NoOpMsg(types.ModuleName, msg.Type(), "AddCollateral simulation not implemented"), nil, nil
+		return simtypes.NoOpMsg(types.ModuleName, msg.Type(), "ClosePositions simulation not implemented"), nil, nil
 	}
 }

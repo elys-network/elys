@@ -1,0 +1,12 @@
+syntax = "proto3";
+package elys.tradeshield;
+
+import "gogoproto/gogo.proto";
+import "elys/tradeshield/params.proto";
+
+option go_package = "github.com/elys-network/elys/x/tradeshield/types";
+
+// GenesisState defines the tradeshield module's genesis state.
+message GenesisState {
+  Params params = 1 [(gogoproto.nullable) = false];
+}

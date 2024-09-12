@@ -14,7 +14,7 @@ func NewPool(poolId uint64) Pool {
 		Health:                               sdk.NewDec(100),
 		Enabled:                              true,
 		Closed:                               false,
-		BorrowInterestRate:                   sdk.NewDecFromIntWithPrec(sdk.NewInt(1), 1),
+		BorrowInterestRate:                   sdk.MustNewDecFromStr("0.000000000000000001"),
 		PoolAssetsLong:                       []PoolAsset{},
 		PoolAssetsShort:                      []PoolAsset{},
 		LastHeightBorrowInterestRateComputed: 0,

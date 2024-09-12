@@ -165,10 +165,6 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 			weightMsgAddCollateral = defaultWeightMsgAddCollateral
 		},
 	)
-	operations = append(operations, simulation.NewWeightedOperation(
-		weightMsgAddCollateral,
-		leveragelpsimulation.SimulateMsgAddCollateral(am.accountKeeper, am.bankKeeper, am.keeper),
-	))
 
 	var weightMsgClosePositions int
 	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgClosePositions, &weightMsgClosePositions, nil,

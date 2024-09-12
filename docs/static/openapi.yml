@@ -40814,6 +40814,21 @@ paths:
                           custom method
 
                           signatures required by gogoproto.
+                    eden_forward:
+                      type: object
+                      properties:
+                        denom:
+                          type: string
+                        amount:
+                          type: string
+                      description: >-
+                        Coin defines a token with a denomination and an amount.
+
+
+                        NOTE: The amount field is an Int which implements the
+                        custom method
+
+                        signatures required by gogoproto.
         default:
           description: An unexpected error response.
           schema:
@@ -41018,41 +41033,6 @@ paths:
           in: path
           required: true
           type: string
-      tags:
-        - Query
-  /elys-network/elys/leveragelp/get_add/{id}:
-    get:
-      summary: Queries a list of GetAdd items.
-      operationId: ElysLeveragelpGetAdd
-      responses:
-        '200':
-          description: A successful response.
-          schema:
-            type: object
-        default:
-          description: An unexpected error response.
-          schema:
-            type: object
-            properties:
-              code:
-                type: integer
-                format: int32
-              message:
-                type: string
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    '@type':
-                      type: string
-                  additionalProperties: {}
-      parameters:
-        - name: id
-          in: path
-          required: true
-          type: integer
-          format: int32
       tags:
         - Query
   /elys-network/elys/leveragelp/is-whitelisted:
@@ -41483,6 +41463,8 @@ paths:
                         type: string
                   updated_leverage:
                     type: string
+                  position_usd_value:
+                    type: string
               locked_lp_token:
                 type: string
         default:
@@ -41570,6 +41552,8 @@ paths:
                         stop_loss_price:
                           type: string
                     updated_leverage:
+                      type: string
+                    position_usd_value:
                       type: string
               pagination:
                 type: object
@@ -41699,41 +41683,48 @@ paths:
                     position:
                       type: object
                       properties:
-                        address:
-                          type: string
-                        collateral:
+                        position:
                           type: object
                           properties:
-                            denom:
+                            address:
                               type: string
-                            amount:
+                            collateral:
+                              type: object
+                              properties:
+                                denom:
+                                  type: string
+                                amount:
+                                  type: string
+                              description: >-
+                                Coin defines a token with a denomination and an
+                                amount.
+
+
+                                NOTE: The amount field is an Int which
+                                implements the custom method
+
+                                signatures required by gogoproto.
+                            liabilities:
                               type: string
-                          description: >-
-                            Coin defines a token with a denomination and an
-                            amount.
-
-
-                            NOTE: The amount field is an Int which implements
-                            the custom method
-
-                            signatures required by gogoproto.
-                        liabilities:
+                              title: For recording
+                            leverage:
+                              type: string
+                              title: For recording
+                            leveraged_lp_amount:
+                              type: string
+                            position_health:
+                              type: string
+                            id:
+                              type: string
+                              format: uint64
+                            amm_pool_id:
+                              type: string
+                              format: uint64
+                            stop_loss_price:
+                              type: string
+                        updated_leverage:
                           type: string
-                          title: For recording
-                        leverage:
-                          type: string
-                          title: For recording
-                        leveraged_lp_amount:
-                          type: string
-                        position_health:
-                          type: string
-                        id:
-                          type: string
-                          format: uint64
-                        amm_pool_id:
-                          type: string
-                          format: uint64
-                        stop_loss_price:
+                        position_usd_value:
                           type: string
                     interest_rate_hour:
                       type: string
@@ -41903,6 +41894,8 @@ paths:
                         stop_loss_price:
                           type: string
                     updated_leverage:
+                      type: string
+                    position_usd_value:
                       type: string
               pagination:
                 type: object
@@ -42316,6 +42309,32 @@ paths:
           description: A successful response.
           schema:
             type: object
+            properties:
+              fee_info:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    gas_lp:
+                      type: string
+                    gas_stakers:
+                      type: string
+                    gas_protocol:
+                      type: string
+                    dex_lp:
+                      type: string
+                    dex_stakers:
+                      type: string
+                    dex_protocol:
+                      type: string
+                    perp_lp:
+                      type: string
+                    perp_stakers:
+                      type: string
+                    perp_protocol:
+                      type: string
+                    eden_lp:
+                      type: string
         default:
           description: An unexpected error response.
           schema:
@@ -42356,16 +42375,10 @@ paths:
                       eden_amount_per_year:
                         type: string
                         title: reward amount in eden for 1 year
-                      distribution_start_block:
-                        type: string
-                        title: starting block height of the distribution
-                      total_blocks_per_year:
-                        type: string
-                        title: distribution duration - block number per year
                       blocks_distributed:
                         type: string
+                        format: int64
                         title: blocks distributed
-                    title: Incentive Info
                   reward_portion_for_lps:
                     type: string
                     description: >-
@@ -42582,6 +42595,9 @@ paths:
                     items:
                       type: string
                     title: external reward denoms on the pool
+                  enable_eden_rewards:
+                    type: boolean
+                    title: Enabled or disabled eden rewards
         default:
           description: An unexpected error response.
           schema:
@@ -42669,6 +42685,30 @@ paths:
           description: A successful response.
           schema:
             type: object
+            properties:
+              fee_info:
+                type: object
+                properties:
+                  gas_lp:
+                    type: string
+                  gas_stakers:
+                    type: string
+                  gas_protocol:
+                    type: string
+                  dex_lp:
+                    type: string
+                  dex_stakers:
+                    type: string
+                  dex_protocol:
+                    type: string
+                  perp_lp:
+                    type: string
+                  perp_stakers:
+                    type: string
+                  perp_protocol:
+                    type: string
+                  eden_lp:
+                    type: string
         default:
           description: An unexpected error response.
           schema:
@@ -43601,6 +43641,12 @@ paths:
                     type: string
                   open_price:
                     type: string
+                  last_interest_calc_time:
+                    type: string
+                    format: uint64
+                  last_interest_calc_block:
+                    type: string
+                    format: uint64
         default:
           description: An unexpected error response.
           schema:
@@ -43709,6 +43755,12 @@ paths:
                       type: string
                     open_price:
                       type: string
+                    last_interest_calc_time:
+                      type: string
+                      format: uint64
+                    last_interest_calc_block:
+                      type: string
+                      format: uint64
               pagination:
                 type: object
                 properties:
@@ -43897,6 +43949,12 @@ paths:
                       type: string
                     open_price:
                       type: string
+                    last_interest_calc_time:
+                      type: string
+                      format: uint64
+                    last_interest_calc_block:
+                      type: string
+                      format: uint64
               pagination:
                 type: object
                 properties:
@@ -44601,6 +44659,12 @@ paths:
                       type: string
                     open_price:
                       type: string
+                    last_interest_calc_time:
+                      type: string
+                      format: uint64
+                    last_interest_calc_block:
+                      type: string
+                      format: uint64
               pagination:
                 type: object
                 properties:
@@ -45049,6 +45113,8 @@ paths:
                 items:
                   type: object
                   properties:
+                    date:
+                      type: string
                     creator:
                       type: string
                     portfolio:
@@ -45364,7 +45430,9 @@ paths:
           schema:
             type: object
             properties:
-              total:
+              total_value:
+                type: string
+              total_borrows:
                 type: string
         default:
           description: An unexpected error response.
@@ -45997,6 +46065,42 @@ paths:
           required: true
           type: string
           format: uint64
+      tags:
+        - Query
+  /elys-network/elys/tradeshield/params:
+    get:
+      summary: Parameters queries the parameters of the module.
+      operationId: ElysTradeshieldParams
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              params:
+                description: params holds all the parameters of this module.
+                type: object
+            description: >-
+              QueryParamsResponse is response type for the Query/Params RPC
+              method.
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
       tags:
         - Query
   /elys-network/elys/transferhook/params:
@@ -87389,6 +87493,18 @@ definitions:
 
             NOTE: The amount field is an Int which implements the custom method
             signatures required by gogoproto.
+      eden_forward:
+        type: object
+        properties:
+          denom:
+            type: string
+          amount:
+            type: string
+        description: |-
+          Coin defines a token with a denomination and an amount.
+
+          NOTE: The amount field is an Int which implements the custom method
+          signatures required by gogoproto.
   elys.incentive.QueryAprResponse:
     type: object
     properties:
@@ -87447,6 +87563,21 @@ definitions:
                   method
 
                   signatures required by gogoproto.
+            eden_forward:
+              type: object
+              properties:
+                denom:
+                  type: string
+                amount:
+                  type: string
+              description: >-
+                Coin defines a token with a denomination and an amount.
+
+
+                NOTE: The amount field is an Int which implements the custom
+                method
+
+                signatures required by gogoproto.
   elys.leveragelp.AddPool:
     type: object
     properties:
@@ -87484,7 +87615,7 @@ definitions:
     type: object
   elys.leveragelp.MsgUpdateParamsResponse:
     type: object
-  elys.leveragelp.MsgUpdatePoolsResponse:
+  elys.leveragelp.MsgUpdatePoolResponse:
     type: object
   elys.leveragelp.MsgUpdateStopLossResponse:
     type: object
@@ -87599,40 +87730,47 @@ definitions:
       position:
         type: object
         properties:
-          address:
-            type: string
-          collateral:
+          position:
             type: object
             properties:
-              denom:
+              address:
                 type: string
-              amount:
+              collateral:
+                type: object
+                properties:
+                  denom:
+                    type: string
+                  amount:
+                    type: string
+                description: >-
+                  Coin defines a token with a denomination and an amount.
+
+
+                  NOTE: The amount field is an Int which implements the custom
+                  method
+
+                  signatures required by gogoproto.
+              liabilities:
                 type: string
-            description: >-
-              Coin defines a token with a denomination and an amount.
-
-
-              NOTE: The amount field is an Int which implements the custom
-              method
-
-              signatures required by gogoproto.
-          liabilities:
+                title: For recording
+              leverage:
+                type: string
+                title: For recording
+              leveraged_lp_amount:
+                type: string
+              position_health:
+                type: string
+              id:
+                type: string
+                format: uint64
+              amm_pool_id:
+                type: string
+                format: uint64
+              stop_loss_price:
+                type: string
+          updated_leverage:
             type: string
-            title: For recording
-          leverage:
-            type: string
-            title: For recording
-          leveraged_lp_amount:
-            type: string
-          position_health:
-            type: string
-          id:
-            type: string
-            format: uint64
-          amm_pool_id:
-            type: string
-            format: uint64
-          stop_loss_price:
+          position_usd_value:
             type: string
       interest_rate_hour:
         type: string
@@ -87692,6 +87830,8 @@ definitions:
                 type: string
           updated_leverage:
             type: string
+          position_usd_value:
+            type: string
       locked_lp_token:
         type: string
   elys.leveragelp.PositionsByPoolResponse:
@@ -87742,6 +87882,8 @@ definitions:
                   type: string
             updated_leverage:
               type: string
+            position_usd_value:
+              type: string
       pagination:
         type: object
         properties:
@@ -87779,40 +87921,47 @@ definitions:
             position:
               type: object
               properties:
-                address:
-                  type: string
-                collateral:
+                position:
                   type: object
                   properties:
-                    denom:
+                    address:
                       type: string
-                    amount:
+                    collateral:
+                      type: object
+                      properties:
+                        denom:
+                          type: string
+                        amount:
+                          type: string
+                      description: >-
+                        Coin defines a token with a denomination and an amount.
+
+
+                        NOTE: The amount field is an Int which implements the
+                        custom method
+
+                        signatures required by gogoproto.
+                    liabilities:
                       type: string
-                  description: >-
-                    Coin defines a token with a denomination and an amount.
-
-
-                    NOTE: The amount field is an Int which implements the custom
-                    method
-
-                    signatures required by gogoproto.
-                liabilities:
+                      title: For recording
+                    leverage:
+                      type: string
+                      title: For recording
+                    leveraged_lp_amount:
+                      type: string
+                    position_health:
+                      type: string
+                    id:
+                      type: string
+                      format: uint64
+                    amm_pool_id:
+                      type: string
+                      format: uint64
+                    stop_loss_price:
+                      type: string
+                updated_leverage:
                   type: string
-                  title: For recording
-                leverage:
-                  type: string
-                  title: For recording
-                leveraged_lp_amount:
-                  type: string
-                position_health:
-                  type: string
-                id:
-                  type: string
-                  format: uint64
-                amm_pool_id:
-                  type: string
-                  format: uint64
-                stop_loss_price:
+                position_usd_value:
                   type: string
             interest_rate_hour:
               type: string
@@ -87891,6 +88040,8 @@ definitions:
                 stop_loss_price:
                   type: string
             updated_leverage:
+              type: string
+            position_usd_value:
               type: string
       pagination:
         type: object
@@ -88007,8 +88158,6 @@ definitions:
 
             NOTE: The amount field is an Int which implements the custom method
             signatures required by gogoproto.
-  elys.leveragelp.QueryGetAddResponse:
-    type: object
   elys.leveragelp.QueryGetPoolResponse:
     type: object
     properties:
@@ -88084,6 +88233,8 @@ definitions:
           stop_loss_price:
             type: string
       updated_leverage:
+        type: string
+      position_usd_value:
         type: string
   elys.leveragelp.QueryRewardsResponse:
     type: object
@@ -88162,9 +88313,9 @@ definitions:
       pool_id:
         type: string
         format: uint64
-      Enabled:
+      enabled:
         type: boolean
-      Closed:
+      closed:
         type: boolean
   elys.leveragelp.WhitelistResponse:
     type: object
@@ -88221,27 +88372,46 @@ definitions:
       apr:
         type: string
     description: ExternalIncentive defines the external incentives.
+  elys.masterchef.FeeInfo:
+    type: object
+    properties:
+      gas_lp:
+        type: string
+      gas_stakers:
+        type: string
+      gas_protocol:
+        type: string
+      dex_lp:
+        type: string
+      dex_stakers:
+        type: string
+      dex_protocol:
+        type: string
+      perp_lp:
+        type: string
+      perp_stakers:
+        type: string
+      perp_protocol:
+        type: string
+      eden_lp:
+        type: string
   elys.masterchef.IncentiveInfo:
     type: object
     properties:
       eden_amount_per_year:
         type: string
         title: reward amount in eden for 1 year
-      distribution_start_block:
-        type: string
-        title: starting block height of the distribution
-      total_blocks_per_year:
-        type: string
-        title: distribution duration - block number per year
       blocks_distributed:
         type: string
+        format: int64
         title: blocks distributed
-    title: Incentive Info
   elys.masterchef.MsgAddExternalIncentiveResponse:
     type: object
   elys.masterchef.MsgAddExternalRewardDenomResponse:
     type: object
   elys.masterchef.MsgClaimRewardsResponse:
+    type: object
+  elys.masterchef.MsgTogglePoolEdenRewardsResponse:
     type: object
   elys.masterchef.MsgUpdateParamsResponse:
     type: object
@@ -88256,16 +88426,10 @@ definitions:
           eden_amount_per_year:
             type: string
             title: reward amount in eden for 1 year
-          distribution_start_block:
-            type: string
-            title: starting block height of the distribution
-          total_blocks_per_year:
-            type: string
-            title: distribution duration - block number per year
           blocks_distributed:
             type: string
+            format: int64
             title: blocks distributed
-        title: Incentive Info
       reward_portion_for_lps:
         type: string
         description: >-
@@ -88291,7 +88455,6 @@ definitions:
               type: string
       protocol_revenue_address:
         type: string
-    description: Params defines the parameters for the module.
   elys.masterchef.PoolApr:
     type: object
     properties:
@@ -88333,6 +88496,9 @@ definitions:
         items:
           type: string
         title: external reward denoms on the pool
+      enable_eden_rewards:
+        type: boolean
+        title: Enabled or disabled eden rewards
   elys.masterchef.PoolMultiplier:
     type: object
     properties:
@@ -88381,6 +88547,32 @@ definitions:
         description: ExternalIncentive defines the external incentives.
   elys.masterchef.QueryListFeeInfoResponse:
     type: object
+    properties:
+      fee_info:
+        type: array
+        items:
+          type: object
+          properties:
+            gas_lp:
+              type: string
+            gas_stakers:
+              type: string
+            gas_protocol:
+              type: string
+            dex_lp:
+              type: string
+            dex_stakers:
+              type: string
+            dex_protocol:
+              type: string
+            perp_lp:
+              type: string
+            perp_stakers:
+              type: string
+            perp_protocol:
+              type: string
+            eden_lp:
+              type: string
   elys.masterchef.QueryParamsResponse:
     type: object
     properties:
@@ -88394,16 +88586,10 @@ definitions:
               eden_amount_per_year:
                 type: string
                 title: reward amount in eden for 1 year
-              distribution_start_block:
-                type: string
-                title: starting block height of the distribution
-              total_blocks_per_year:
-                type: string
-                title: distribution duration - block number per year
               blocks_distributed:
                 type: string
+                format: int64
                 title: blocks distributed
-            title: Incentive Info
           reward_portion_for_lps:
             type: string
             description: >-
@@ -88480,6 +88666,9 @@ definitions:
             items:
               type: string
             title: external reward denoms on the pool
+          enable_eden_rewards:
+            type: boolean
+            title: Enabled or disabled eden rewards
   elys.masterchef.QueryPoolRewardInfoResponse:
     type: object
     properties:
@@ -88498,6 +88687,30 @@ definitions:
             format: uint64
   elys.masterchef.QueryShowFeeInfoResponse:
     type: object
+    properties:
+      fee_info:
+        type: object
+        properties:
+          gas_lp:
+            type: string
+          gas_stakers:
+            type: string
+          gas_protocol:
+            type: string
+          dex_lp:
+            type: string
+          dex_stakers:
+            type: string
+          dex_protocol:
+            type: string
+          perp_lp:
+            type: string
+          perp_stakers:
+            type: string
+          perp_protocol:
+            type: string
+          eden_lp:
+            type: string
   elys.masterchef.QueryStableStakeAprResponse:
     type: object
     properties:
@@ -89106,6 +89319,12 @@ definitions:
         type: string
       open_price:
         type: string
+      last_interest_calc_time:
+        type: string
+        format: uint64
+      last_interest_calc_block:
+        type: string
+        format: uint64
   elys.perpetual.MTPResponse:
     type: object
     properties:
@@ -89175,7 +89394,15 @@ definitions:
             type: string
           open_price:
             type: string
+          last_interest_calc_time:
+            type: string
+            format: uint64
+          last_interest_calc_block:
+            type: string
+            format: uint64
   elys.perpetual.MsgAddCollateralResponse:
+    type: object
+  elys.perpetual.MsgClosePositionsResponse:
     type: object
   elys.perpetual.MsgCloseResponse:
     type: object
@@ -89460,6 +89687,12 @@ definitions:
               type: string
             open_price:
               type: string
+            last_interest_calc_time:
+              type: string
+              format: uint64
+            last_interest_calc_block:
+              type: string
+              format: uint64
       pagination:
         type: object
         properties:
@@ -89557,6 +89790,12 @@ definitions:
               type: string
             open_price:
               type: string
+            last_interest_calc_time:
+              type: string
+              format: uint64
+            last_interest_calc_block:
+              type: string
+              format: uint64
       pagination:
         type: object
         properties:
@@ -89654,6 +89893,12 @@ definitions:
               type: string
             open_price:
               type: string
+            last_interest_calc_time:
+              type: string
+              format: uint64
+            last_interest_calc_block:
+              type: string
+              format: uint64
       pagination:
         type: object
         properties:
@@ -90044,6 +90289,8 @@ definitions:
   elys.tier.Portfolio:
     type: object
     properties:
+      date:
+        type: string
       creator:
         type: string
       portfolio:
@@ -90056,6 +90303,8 @@ definitions:
         items:
           type: object
           properties:
+            date:
+              type: string
             creator:
               type: string
             portfolio:
@@ -90136,7 +90385,9 @@ definitions:
   elys.tier.QueryPerpetualResponse:
     type: object
     properties:
-      total:
+      total_value:
+        type: string
+      total_borrows:
         type: string
   elys.tier.QueryRewardsTotalResponse:
     type: object
@@ -90464,6 +90715,16 @@ definitions:
             format: uint64
       authority:
         type: string
+  elys.tradeshield.Params:
+    type: object
+    description: Params defines the parameters for the module.
+  elys.tradeshield.QueryParamsResponse:
+    type: object
+    properties:
+      params:
+        description: params holds all the parameters of this module.
+        type: object
+    description: QueryParamsResponse is response type for the Query/Params RPC method.
   elys.transferhook.Params:
     type: object
     properties:

@@ -677,8 +677,8 @@ func (_c *OpenLongChecker_TakeInCustody_Call) RunAndReturn(run func(types.Contex
 	return _c
 }
 
-// UpdateMTPHealth provides a mock function with given fields: ctx, mtp, ammPool, baseCurrency
-func (_m *OpenLongChecker) UpdateMTPHealth(ctx types.Context, mtp perpetualtypes.MTP, ammPool ammtypes.Pool, baseCurrency string) (math.LegacyDec, error) {
+// GetMTPHealth provides a mock function with given fields: ctx, mtp, ammPool, baseCurrency
+func (_m *OpenLongChecker) GetMTPHealth(ctx types.Context, mtp perpetualtypes.MTP, ammPool ammtypes.Pool, baseCurrency string) (math.LegacyDec, error) {
 	ret := _m.Called(ctx, mtp, ammPool, baseCurrency)
 
 	var r0 math.LegacyDec
@@ -701,33 +701,33 @@ func (_m *OpenLongChecker) UpdateMTPHealth(ctx types.Context, mtp perpetualtypes
 	return r0, r1
 }
 
-// OpenLongChecker_UpdateMTPHealth_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'UpdateMTPHealth'
-type OpenLongChecker_UpdateMTPHealth_Call struct {
+// OpenLongChecker_GetMTPHealth_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetMTPHealth'
+type OpenLongChecker_GetMTPHealth_Call struct {
 	*mock.Call
 }
 
-// UpdateMTPHealth is a helper method to define mock.On call
+// GetMTPHealth is a helper method to define mock.On call
 //   - ctx types.Context
 //   - mtp perpetualtypes.MTP
 //   - ammPool ammtypes.Pool
 //   - baseCurrency string
-func (_e *OpenLongChecker_Expecter) UpdateMTPHealth(ctx interface{}, mtp interface{}, ammPool interface{}, baseCurrency interface{}) *OpenLongChecker_UpdateMTPHealth_Call {
-	return &OpenLongChecker_UpdateMTPHealth_Call{Call: _e.mock.On("UpdateMTPHealth", ctx, mtp, ammPool, baseCurrency)}
+func (_e *OpenLongChecker_Expecter) GetMTPHealth(ctx interface{}, mtp interface{}, ammPool interface{}, baseCurrency interface{}) *OpenLongChecker_GetMTPHealth_Call {
+	return &OpenLongChecker_GetMTPHealth_Call{Call: _e.mock.On("GetMTPHealth", ctx, mtp, ammPool, baseCurrency)}
 }
 
-func (_c *OpenLongChecker_UpdateMTPHealth_Call) Run(run func(ctx types.Context, mtp perpetualtypes.MTP, ammPool ammtypes.Pool, baseCurrency string)) *OpenLongChecker_UpdateMTPHealth_Call {
+func (_c *OpenLongChecker_GetMTPHealth_Call) Run(run func(ctx types.Context, mtp perpetualtypes.MTP, ammPool ammtypes.Pool, baseCurrency string)) *OpenLongChecker_GetMTPHealth_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		run(args[0].(types.Context), args[1].(perpetualtypes.MTP), args[2].(ammtypes.Pool), args[3].(string))
 	})
 	return _c
 }
 
-func (_c *OpenLongChecker_UpdateMTPHealth_Call) Return(_a0 math.LegacyDec, _a1 error) *OpenLongChecker_UpdateMTPHealth_Call {
+func (_c *OpenLongChecker_GetMTPHealth_Call) Return(_a0 math.LegacyDec, _a1 error) *OpenLongChecker_GetMTPHealth_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *OpenLongChecker_UpdateMTPHealth_Call) RunAndReturn(run func(types.Context, perpetualtypes.MTP, ammtypes.Pool, string) (math.LegacyDec, error)) *OpenLongChecker_UpdateMTPHealth_Call {
+func (_c *OpenLongChecker_GetMTPHealth_Call) RunAndReturn(run func(types.Context, perpetualtypes.MTP, ammtypes.Pool, string) (math.LegacyDec, error)) *OpenLongChecker_GetMTPHealth_Call {
 	_c.Call.Return(run)
 	return _c
 }
