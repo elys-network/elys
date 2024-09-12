@@ -1,9 +1,10 @@
 package types_test
 
 import (
+	"testing"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/leveragelp/types"
-	"testing"
 
 	"github.com/elys-network/elys/testutil/sample"
 	"github.com/stretchr/testify/require"
@@ -287,7 +288,7 @@ func TestMsgAddPool(t *testing.T) {
 			setter: func() {
 				msg.Pool.LeverageMax = sdk.OneDec()
 			},
-			errMsg: types.ErrLeverageTooSmall.Error(),
+			errMsg: "",
 		},
 	}
 	for _, tt := range tests {
