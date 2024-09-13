@@ -54,6 +54,10 @@ const (
 	// TODO: Determine the simulation weight value
 	defaultWeightMsgClosePositions int = 100
 
+	opWeightMsgUpdatePool = "op_weight_msg_update_pool"
+	// TODO: Determine the simulation weight value
+	defaultWeightMsgUpdatePool int = 100
+
 	// this line is used by starport scaffolding # simapp/module/const
 )
 
@@ -164,6 +168,17 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 	operations = append(operations, simulation.NewWeightedOperation(
 		weightMsgClosePositions,
 		perpetualsimulation.SimulateMsgClosePositions(am.accountKeeper, am.bankKeeper, am.keeper),
+	))
+
+	var weightMsgUpdatePool int
+	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgUpdatePool, &weightMsgUpdatePool, nil,
+		func(_ *rand.Rand) {
+			weightMsgUpdatePool = defaultWeightMsgUpdatePool
+		},
+	)
+	operations = append(operations, simulation.NewWeightedOperation(
+		weightMsgUpdatePool,
+		perpetualsimulation.SimulateMsgUpdatePool(am.accountKeeper, am.bankKeeper, am.keeper),
 	))
 
 	// this line is used by starport scaffolding # simapp/module/operation
