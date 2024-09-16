@@ -21,7 +21,7 @@ func (k Keeper) PendingSpotOrderAll(goCtx context.Context, req *types.QueryAllPe
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	store := ctx.KVStore(k.storeKey)
-	pendingSpotOrderStore := prefix.NewStore(store, types.KeyPrefix(types.PendingSpotOrderKey))
+	pendingSpotOrderStore := prefix.NewStore(store, types.PendingSpotOrderKey)
 
 	pageRes, err := query.Paginate(pendingSpotOrderStore, req.Pagination, func(key []byte, value []byte) error {
 		var pendingSpotOrder types.SpotOrder

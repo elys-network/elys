@@ -11,7 +11,7 @@ import (
 // GetPendingSpotOrderCount get the total number of pendingSpotOrder
 func (k Keeper) GetPendingSpotOrderCount(ctx sdk.Context) uint64 {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), []byte{})
-	byteKey := types.KeyPrefix(types.PendingSpotOrderCountKey)
+	byteKey := types.PendingSpotOrderCountKey
 	bz := store.Get(byteKey)
 
 	// Count doesn't exist: no element
@@ -26,7 +26,7 @@ func (k Keeper) GetPendingSpotOrderCount(ctx sdk.Context) uint64 {
 // SetPendingSpotOrderCount set the total number of pendingSpotOrder
 func (k Keeper) SetPendingSpotOrderCount(ctx sdk.Context, count uint64) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), []byte{})
-	byteKey := types.KeyPrefix(types.PendingSpotOrderCountKey)
+	byteKey := types.PendingSpotOrderCountKey
 	bz := make([]byte, 8)
 	binary.BigEndian.PutUint64(bz, count)
 	store.Set(byteKey, bz)
@@ -43,7 +43,7 @@ func (k Keeper) AppendPendingSpotOrder(
 	// Set the ID of the appended value
 	pendingSpotOrder.OrderId = count
 
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.PendingSpotOrderKey))
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.PendingSpotOrderKey)
 	appendedValue := k.cdc.MustMarshal(&pendingSpotOrder)
 	store.Set(GetPendingSpotOrderIDBytes(pendingSpotOrder.OrderId), appendedValue)
 
@@ -55,14 +55,14 @@ func (k Keeper) AppendPendingSpotOrder(
 
 // SetPendingSpotOrder set a specific pendingSpotOrder in the store
 func (k Keeper) SetPendingSpotOrder(ctx sdk.Context, pendingSpotOrder types.SpotOrder) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.PendingSpotOrderKey))
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.PendingSpotOrderKey)
 	b := k.cdc.MustMarshal(&pendingSpotOrder)
 	store.Set(GetPendingSpotOrderIDBytes(pendingSpotOrder.OrderId), b)
 }
 
 // GetPendingSpotOrder returns a pendingSpotOrder from its id
 func (k Keeper) GetPendingSpotOrder(ctx sdk.Context, id uint64) (val types.SpotOrder, found bool) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.PendingSpotOrderKey))
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.PendingSpotOrderKey)
 	b := store.Get(GetPendingSpotOrderIDBytes(id))
 	if b == nil {
 		return val, false
@@ -73,13 +73,13 @@ func (k Keeper) GetPendingSpotOrder(ctx sdk.Context, id uint64) (val types.SpotO
 
 // RemovePendingSpotOrder removes a pendingSpotOrder from the store
 func (k Keeper) RemovePendingSpotOrder(ctx sdk.Context, id uint64) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.PendingSpotOrderKey))
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.PendingSpotOrderKey)
 	store.Delete(GetPendingSpotOrderIDBytes(id))
 }
 
 // GetAllPendingSpotOrder returns all pendingSpotOrder
 func (k Keeper) GetAllPendingSpotOrder(ctx sdk.Context) (list []types.SpotOrder) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.PendingSpotOrderKey))
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.PendingSpotOrderKey)
 	iterator := sdk.KVStorePrefixIterator(store, []byte{})
 
 	defer iterator.Close()
