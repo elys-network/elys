@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"encoding/binary"
+	"errors"
 
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -103,4 +104,76 @@ func GetPendingPerpetualOrderIDBytes(id uint64) []byte {
 // GetPendingPerpetualOrderIDFromBytes returns ID in uint64 format from a byte array
 func GetPendingPerpetualOrderIDFromBytes(bz []byte) uint64 {
 	return binary.BigEndian.Uint64(bz)
+}
+
+func (k Keeper) BinarySearch(ctx sdk.Context, orderPrice sdk.Dec, orders []uint64) (int, error) {
+	low, high := 0, len(orders)
+	for low < high {
+		mid := (low + high) / 2
+		// Get order price
+		order, found := k.GetPendingPerpetualOrder(ctx, orders[mid])
+		if !found {
+			return 0, types.ErrOrderNotFound
+		}
+		if order.TriggerPrice.Rate.LT(orderPrice) {
+			low = mid + 1
+		} else {
+			high = mid
+		}
+	}
+	return low, nil
+}
+
+func (k Keeper) InsertSortedOrder(ctx sdk.Context, newOrder types.PerpetualOrder) error {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.SortedPerpetualOrderKey)
+
+	key, err := types.GenPerpKey(newOrder)
+	if err != nil {
+		return err
+	}
+	bz := store.Get([]byte(key))
+
+	var orderIds []uint64
+	if bz != nil {
+		orderIds, err = decodeUint64Slice(bz)
+		if err != nil {
+			return err
+		}
+	}
+
+	index, err := k.BinarySearch(ctx, newOrder.TriggerPrice.Rate, orderIds)
+	if err != nil {
+		return err
+	}
+
+	if len(orderIds) <= index {
+		orderIds = append(orderIds, newOrder.OrderId)
+	} else {
+		orderIds = append(orderIds[:index+1], orderIds[index:]...)
+		orderIds[index] = newOrder.OrderId
+	}
+
+	bz = encodeUint64Slice(orderIds)
+
+	store.Set([]byte(key), bz)
+	return nil
+}
+
+func encodeUint64Slice(slice []uint64) []byte {
+	buf := make([]byte, 8*len(slice))
+	for i, v := range slice {
+		binary.BigEndian.PutUint64(buf[i*8:], v)
+	}
+	return buf
+}
+
+func decodeUint64Slice(bz []byte) ([]uint64, error) {
+	if len(bz)%8 != 0 {
+		return nil, errors.New("invalid byte slice length")
+	}
+	slice := make([]uint64, len(bz)/8)
+	for i := range slice {
+		slice[i] = binary.BigEndian.Uint64(bz[i*8:])
+	}
+	return slice, nil
 }
