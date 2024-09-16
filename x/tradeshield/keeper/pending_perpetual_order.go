@@ -163,8 +163,26 @@ func (k Keeper) InsertPerptualSortedOrder(ctx sdk.Context, newOrder types.Perpet
 	return nil
 }
 
+func (k Keeper) GetAllSortedPerpetualOrder(ctx sdk.Context) (list [][]uint64, err error) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.SortedPerpetualOrderKey)
+	iterator := sdk.KVStorePrefixIterator(store, []byte{})
+
+	defer iterator.Close()
+
+	for ; iterator.Valid(); iterator.Next() {
+		var orderIds []uint64
+		orderIds, err := types.DecodeUint64Slice(iterator.Value())
+		if err != nil {
+			return nil, err
+		}
+		list = append(list, orderIds)
+	}
+
+	return
+}
+
 // RemoveSortedOrder removes an order from the sorted order list.
-func (k Keeper) RemovePerpetualSortedOrder(ctx sdk.Context, orderID uint64, positionID uint64) error {
+func (k Keeper) RemovePerpetualSortedOrder(ctx sdk.Context, orderID uint64) error {
 	order, found := k.GetPendingPerpetualOrder(ctx, orderID)
 	if !found {
 		return types.ErrOrderNotFound
