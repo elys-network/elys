@@ -106,7 +106,7 @@ func GetPendingPerpetualOrderIDFromBytes(bz []byte) uint64 {
 	return binary.BigEndian.Uint64(bz)
 }
 
-func (k Keeper) BinarySearch(ctx sdk.Context, orderPrice sdk.Dec, orders []uint64) (int, error) {
+func (k Keeper) PerpetualBinarySearch(ctx sdk.Context, orderPrice sdk.Dec, orders []uint64) (int, error) {
 	low, high := 0, len(orders)
 	for low < high {
 		mid := (low + high) / 2
@@ -124,7 +124,7 @@ func (k Keeper) BinarySearch(ctx sdk.Context, orderPrice sdk.Dec, orders []uint6
 	return low, nil
 }
 
-func (k Keeper) InsertSortedOrder(ctx sdk.Context, newOrder types.PerpetualOrder) error {
+func (k Keeper) InsertPerptualSortedOrder(ctx sdk.Context, newOrder types.PerpetualOrder) error {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.SortedPerpetualOrderKey)
 
 	key, err := types.GenPerpKey(newOrder)
@@ -141,7 +141,7 @@ func (k Keeper) InsertSortedOrder(ctx sdk.Context, newOrder types.PerpetualOrder
 		}
 	}
 
-	index, err := k.BinarySearch(ctx, newOrder.TriggerPrice.Rate, orderIds)
+	index, err := k.PerpetualBinarySearch(ctx, newOrder.TriggerPrice.Rate, orderIds)
 	if err != nil {
 		return err
 	}
@@ -160,7 +160,7 @@ func (k Keeper) InsertSortedOrder(ctx sdk.Context, newOrder types.PerpetualOrder
 }
 
 // RemoveSortedOrder removes an order from the sorted order list.
-func (k Keeper) RemoveSortedOrder(ctx sdk.Context, orderID uint64, positionID uint64) error {
+func (k Keeper) RemovePerpetualSortedOrder(ctx sdk.Context, orderID uint64, positionID uint64) error {
 	order, found := k.GetPendingPerpetualOrder(ctx, orderID)
 	if !found {
 		return types.ErrOrderNotFound
@@ -186,7 +186,7 @@ func (k Keeper) RemoveSortedOrder(ctx sdk.Context, orderID uint64, positionID ui
 	}
 
 	// Find the index of the order ID in the sorted order list
-	index, err := k.BinarySearch(ctx, order.TriggerPrice.Rate, orderIds)
+	index, err := k.PerpetualBinarySearch(ctx, order.TriggerPrice.Rate, orderIds)
 	if err != nil {
 		return err
 	}

@@ -34,6 +34,19 @@ var (
 	SortedPerpetualOrderKey       = []byte{0x07}
 )
 
+func GenSpotKey(order SpotOrder) (string, error) {
+	if order.OrderType == SpotOrderType_MARKETBUY {
+		return "", errors.New("cannot generate a key on a market order")
+	}
+	if order.OrderPrice != nil {
+		return fmt.Sprintf("%s\n%s\n%s",
+			order.OrderType,
+			order.OrderPrice.BaseDenom,
+			order.OrderPrice.QuoteDenom), nil
+	}
+	return "", errors.New("order price not found")
+}
+
 func GenPerpKey(order PerpetualOrder) (string, error) {
 	if order.PerpetualOrderType == PerpetualOrderType_MARKETCLOSE || order.PerpetualOrderType == PerpetualOrderType_MARKETOPEN {
 		return "", errors.New("cannot generate a key on a market order")

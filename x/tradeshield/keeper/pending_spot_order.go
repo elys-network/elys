@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"encoding/binary"
+	"errors"
 
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -103,4 +104,108 @@ func GetPendingSpotOrderIDBytes(id uint64) []byte {
 // GetPendingSpotOrderIDFromBytes returns ID in uint64 format from a byte array
 func GetPendingSpotOrderIDFromBytes(bz []byte) uint64 {
 	return binary.BigEndian.Uint64(bz)
+}
+
+func (k Keeper) SpotBinarySearch(ctx sdk.Context, orderPrice sdk.Dec, orders []uint64) (int, error) {
+	low, high := 0, len(orders)
+	for low < high {
+		mid := (low + high) / 2
+		// Get order price
+		order, found := k.GetPendingSpotOrder(ctx, orders[mid])
+		if !found {
+			return 0, types.ErrOrderNotFound
+		}
+		if order.OrderPrice.Rate.LT(orderPrice) {
+			low = mid + 1
+		} else {
+			high = mid
+		}
+	}
+	return low, nil
+}
+
+func (k Keeper) InsertSpotSortedOrder(ctx sdk.Context, newOrder types.SpotOrder) error {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.SortedSpotOrderKey)
+
+	key, err := types.GenSpotKey(newOrder)
+	if err != nil {
+		return err
+	}
+	bz := store.Get([]byte(key))
+
+	var orderIds []uint64
+	if bz != nil {
+		orderIds, err = types.DecodeUint64Slice(bz)
+		if err != nil {
+			return err
+		}
+	}
+
+	index, err := k.SpotBinarySearch(ctx, newOrder.OrderPrice.Rate, orderIds)
+	if err != nil {
+		return err
+	}
+
+	if len(orderIds) <= index {
+		orderIds = append(orderIds, newOrder.OrderId)
+	} else {
+		orderIds = append(orderIds[:index+1], orderIds[index:]...)
+		orderIds[index] = newOrder.OrderId
+	}
+
+	bz = types.EncodeUint64Slice(orderIds)
+
+	store.Set([]byte(key), bz)
+	return nil
+}
+
+// RemoveSortedOrder removes an order from the sorted order list.
+func (k Keeper) RemoveSpotSortedOrder(ctx sdk.Context, orderID uint64, positionID uint64) error {
+	order, found := k.GetPendingSpotOrder(ctx, orderID)
+	if !found {
+		return types.ErrOrderNotFound
+	}
+
+	// Generate the key for the order
+	key, err := types.GenSpotKey(order)
+	if err != nil {
+		return err
+	}
+
+	// Load the sorted order IDs using the key
+	sortedStore := prefix.NewStore(ctx.KVStore(k.storeKey), types.SortedSpotOrderKey)
+	bz := sortedStore.Get([]byte(key))
+
+	if bz == nil {
+		return errors.New("sorted order IDs not found")
+	}
+
+	orderIds, err := types.DecodeUint64Slice(bz)
+	if err != nil {
+		return err
+	}
+
+	// Find the index of the order ID in the sorted order list
+	index, err := k.SpotBinarySearch(ctx, order.OrderPrice.Rate, orderIds)
+	if err != nil {
+		return err
+	}
+
+	sizeOfVec := len(orderIds)
+	for index < sizeOfVec && orderIds[index] != orderID {
+		index++
+	}
+
+	if index >= sizeOfVec {
+		return errors.New("order ID not found in sorted order list")
+	}
+
+	// Remove the order ID from the list
+	orderIds = append(orderIds[:index], orderIds[index+1:]...)
+
+	// Save the updated list back to storage
+	encodedOrderIds := types.EncodeUint64Slice(orderIds)
+
+	sortedStore.Set([]byte(key), encodedOrderIds)
+	return nil
 }
