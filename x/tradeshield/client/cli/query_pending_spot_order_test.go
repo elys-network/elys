@@ -17,13 +17,16 @@ import (
 	"github.com/elys-network/elys/x/tradeshield/types"
 )
 
-func networkWithPendingSpotOrderObjects(t *testing.T, n int) (*network.Network, []types.PendingSpotOrder) {
+func networkWithPendingSpotOrderObjects(t *testing.T, n int) (*network.Network, []types.SpotOrder) {
 	t.Helper()
 	cfg := network.DefaultConfig()
 	state := types.GenesisState{}
 	for i := 0; i < n; i++ {
-		pendingSpotOrder := types.PendingSpotOrder{
-			Id: uint64(i),
+		pendingSpotOrder := types.SpotOrder{
+			OrderType:    types.SpotOrderType_MARKETBUY, // Assuming a BUY order type
+			OrderId:      uint64(i + 1),
+			OwnerAddress: fmt.Sprintf("address%d", i+1),
+			Status:       types.Status_PENDING, // Assuming a PENDING status
 		}
 		nullify.Fill(&pendingSpotOrder)
 		state.PendingSpotOrderList = append(state.PendingSpotOrderList, pendingSpotOrder)
@@ -46,11 +49,11 @@ func TestShowPendingSpotOrder(t *testing.T) {
 		id   string
 		args []string
 		err  error
-		obj  types.PendingSpotOrder
+		obj  types.SpotOrder
 	}{
 		{
 			desc: "found",
-			id:   fmt.Sprintf("%d", objs[0].Id),
+			id:   fmt.Sprintf("%d", objs[0].OrderId),
 			args: common,
 			obj:  objs[0],
 		},

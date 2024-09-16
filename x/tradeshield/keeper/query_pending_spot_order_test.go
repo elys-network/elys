@@ -27,12 +27,12 @@ func TestPendingSpotOrderQuerySingle(t *testing.T) {
 	}{
 		{
 			desc:     "First",
-			request:  &types.QueryGetPendingSpotOrderRequest{Id: msgs[0].Id},
+			request:  &types.QueryGetPendingSpotOrderRequest{Id: msgs[0].OrderId},
 			response: &types.QueryGetPendingSpotOrderResponse{PendingSpotOrder: msgs[0]},
 		},
 		{
 			desc:     "Second",
-			request:  &types.QueryGetPendingSpotOrderRequest{Id: msgs[1].Id},
+			request:  &types.QueryGetPendingSpotOrderRequest{Id: msgs[1].OrderId},
 			response: &types.QueryGetPendingSpotOrderResponse{PendingSpotOrder: msgs[1]},
 		},
 		{

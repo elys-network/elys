@@ -22,12 +22,12 @@ func TestGenesisState_Validate(t *testing.T) {
 			desc: "valid genesis state",
 			genState: &types.GenesisState{
 
-				PendingSpotOrderList: []types.PendingSpotOrder{
+				PendingSpotOrderList: []types.SpotOrder{
 					{
-						Id: 0,
+						OrderId: 0,
 					},
 					{
-						Id: 1,
+						OrderId: 1,
 					},
 				},
 				PendingSpotOrderCount: 2,
@@ -38,12 +38,12 @@ func TestGenesisState_Validate(t *testing.T) {
 		{
 			desc: "duplicated pendingSpotOrder",
 			genState: &types.GenesisState{
-				PendingSpotOrderList: []types.PendingSpotOrder{
+				PendingSpotOrderList: []types.SpotOrder{
 					{
-						Id: 0,
+						OrderId: 0,
 					},
 					{
-						Id: 0,
+						OrderId: 0,
 					},
 				},
 			},
@@ -52,9 +52,9 @@ func TestGenesisState_Validate(t *testing.T) {
 		{
 			desc: "invalid pendingSpotOrder count",
 			genState: &types.GenesisState{
-				PendingSpotOrderList: []types.PendingSpotOrder{
+				PendingSpotOrderList: []types.SpotOrder{
 					{
-						Id: 1,
+						OrderId: 1,
 					},
 				},
 				PendingSpotOrderCount: 0,

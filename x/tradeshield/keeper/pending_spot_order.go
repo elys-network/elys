@@ -35,17 +35,17 @@ func (k Keeper) SetPendingSpotOrderCount(ctx sdk.Context, count uint64) {
 // AppendPendingSpotOrder appends a pendingSpotOrder in the store with a new id and update the count
 func (k Keeper) AppendPendingSpotOrder(
 	ctx sdk.Context,
-	pendingSpotOrder types.PendingSpotOrder,
+	pendingSpotOrder types.SpotOrder,
 ) uint64 {
 	// Create the pendingSpotOrder
 	count := k.GetPendingSpotOrderCount(ctx)
 
 	// Set the ID of the appended value
-	pendingSpotOrder.Id = count
+	pendingSpotOrder.OrderId = count
 
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.PendingSpotOrderKey))
 	appendedValue := k.cdc.MustMarshal(&pendingSpotOrder)
-	store.Set(GetPendingSpotOrderIDBytes(pendingSpotOrder.Id), appendedValue)
+	store.Set(GetPendingSpotOrderIDBytes(pendingSpotOrder.OrderId), appendedValue)
 
 	// Update pendingSpotOrder count
 	k.SetPendingSpotOrderCount(ctx, count+1)
@@ -54,14 +54,14 @@ func (k Keeper) AppendPendingSpotOrder(
 }
 
 // SetPendingSpotOrder set a specific pendingSpotOrder in the store
-func (k Keeper) SetPendingSpotOrder(ctx sdk.Context, pendingSpotOrder types.PendingSpotOrder) {
+func (k Keeper) SetPendingSpotOrder(ctx sdk.Context, pendingSpotOrder types.SpotOrder) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.PendingSpotOrderKey))
 	b := k.cdc.MustMarshal(&pendingSpotOrder)
-	store.Set(GetPendingSpotOrderIDBytes(pendingSpotOrder.Id), b)
+	store.Set(GetPendingSpotOrderIDBytes(pendingSpotOrder.OrderId), b)
 }
 
 // GetPendingSpotOrder returns a pendingSpotOrder from its id
-func (k Keeper) GetPendingSpotOrder(ctx sdk.Context, id uint64) (val types.PendingSpotOrder, found bool) {
+func (k Keeper) GetPendingSpotOrder(ctx sdk.Context, id uint64) (val types.SpotOrder, found bool) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.PendingSpotOrderKey))
 	b := store.Get(GetPendingSpotOrderIDBytes(id))
 	if b == nil {
@@ -78,14 +78,14 @@ func (k Keeper) RemovePendingSpotOrder(ctx sdk.Context, id uint64) {
 }
 
 // GetAllPendingSpotOrder returns all pendingSpotOrder
-func (k Keeper) GetAllPendingSpotOrder(ctx sdk.Context) (list []types.PendingSpotOrder) {
+func (k Keeper) GetAllPendingSpotOrder(ctx sdk.Context) (list []types.SpotOrder) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.PendingSpotOrderKey))
 	iterator := sdk.KVStorePrefixIterator(store, []byte{})
 
 	defer iterator.Close()
 
 	for ; iterator.Valid(); iterator.Next() {
-		var val types.PendingSpotOrder
+		var val types.SpotOrder
 		k.cdc.MustUnmarshal(iterator.Value(), &val)
 		list = append(list, val)
 	}

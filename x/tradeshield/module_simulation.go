@@ -46,14 +46,14 @@ func (AppModule) GenerateGenesisState(simState *module.SimulationState) {
 	}
 	tradeshieldGenesis := types.GenesisState{
 		Params: types.DefaultParams(),
-		PendingSpotOrderList: []types.PendingSpotOrder{
+		PendingSpotOrderList: []types.SpotOrder{
 			{
-				Id:      0,
-				Creator: sample.AccAddress(),
+				OrderId:      0,
+				OwnerAddress: sample.AccAddress(),
 			},
 			{
-				Id:      1,
-				Creator: sample.AccAddress(),
+				OrderId:      1,
+				OwnerAddress: sample.AccAddress(),
 			},
 		},
 		PendingSpotOrderCount: 2,

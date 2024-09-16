@@ -11,10 +11,10 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func createNPendingSpotOrder(keeper *keeper.Keeper, ctx sdk.Context, n int) []types.PendingSpotOrder {
-	items := make([]types.PendingSpotOrder, n)
+func createNPendingSpotOrder(keeper *keeper.Keeper, ctx sdk.Context, n int) []types.SpotOrder {
+	items := make([]types.SpotOrder, n)
 	for i := range items {
-		items[i].Id = keeper.AppendPendingSpotOrder(ctx, items[i])
+		items[i].OrderId = keeper.AppendPendingSpotOrder(ctx, items[i])
 	}
 	return items
 }
@@ -23,7 +23,7 @@ func TestPendingSpotOrderGet(t *testing.T) {
 	keeper, ctx := keepertest.TradeshieldKeeper(t)
 	items := createNPendingSpotOrder(keeper, ctx, 10)
 	for _, item := range items {
-		got, found := keeper.GetPendingSpotOrder(ctx, item.Id)
+		got, found := keeper.GetPendingSpotOrder(ctx, item.OrderId)
 		require.True(t, found)
 		require.Equal(t,
 			nullify.Fill(&item),
@@ -36,8 +36,8 @@ func TestPendingSpotOrderRemove(t *testing.T) {
 	keeper, ctx := keepertest.TradeshieldKeeper(t)
 	items := createNPendingSpotOrder(keeper, ctx, 10)
 	for _, item := range items {
-		keeper.RemovePendingSpotOrder(ctx, item.Id)
-		_, found := keeper.GetPendingSpotOrder(ctx, item.Id)
+		keeper.RemovePendingSpotOrder(ctx, item.OrderId)
+		_, found := keeper.GetPendingSpotOrder(ctx, item.OrderId)
 		require.False(t, found)
 	}
 }

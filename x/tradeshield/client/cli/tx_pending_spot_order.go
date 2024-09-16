@@ -10,20 +10,20 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// TODO: Add message in other task
 func CmdCreatePendingSpotOrder() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "create-pending-spot-order [order]",
 		Short: "Create a new pending-spot-order",
-		Args:  cobra.ExactArgs(1),
+		Args:  cobra.ExactArgs(0),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
-			argOrder := args[0]
 
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
 				return err
 			}
 
-			msg := types.NewMsgCreatePendingSpotOrder(clientCtx.GetFromAddress().String(), argOrder)
+			msg := types.NewMsgCreatePendingSpotOrder(clientCtx.GetFromAddress().String())
 			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}

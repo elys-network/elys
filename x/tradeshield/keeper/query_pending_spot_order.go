@@ -17,14 +17,14 @@ func (k Keeper) PendingSpotOrderAll(goCtx context.Context, req *types.QueryAllPe
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
-	var pendingSpotOrders []types.PendingSpotOrder
+	var pendingSpotOrders []types.SpotOrder
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	store := ctx.KVStore(k.storeKey)
 	pendingSpotOrderStore := prefix.NewStore(store, types.KeyPrefix(types.PendingSpotOrderKey))
 
 	pageRes, err := query.Paginate(pendingSpotOrderStore, req.Pagination, func(key []byte, value []byte) error {
-		var pendingSpotOrder types.PendingSpotOrder
+		var pendingSpotOrder types.SpotOrder
 		if err := k.cdc.Unmarshal(value, &pendingSpotOrder); err != nil {
 			return err
 		}

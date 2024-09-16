@@ -17,13 +17,13 @@ func TestMsgCreatePendingSpotOrder_ValidateBasic(t *testing.T) {
 		{
 			name: "invalid address",
 			msg: MsgCreatePendingSpotOrder{
-				Creator: "invalid_address",
+				OwnerAddress: "invalid_address",
 			},
 			err: sdkerrors.ErrInvalidAddress,
 		}, {
 			name: "valid address",
 			msg: MsgCreatePendingSpotOrder{
-				Creator: sample.AccAddress(),
+				OwnerAddress: sample.AccAddress(),
 			},
 		},
 	}

@@ -22,7 +22,7 @@ func SimulateMsgCreatePendingSpotOrder(
 		simAccount, _ := simtypes.RandomAcc(r, accs)
 
 		msg := &types.MsgCreatePendingSpotOrder{
-			Creator: simAccount.Address.String(),
+			OwnerAddress: simAccount.Address.String(),
 		}
 
 		txCtx := simulation.OperationInput{
@@ -52,13 +52,13 @@ func SimulateMsgUpdatePendingSpotOrder(
 	) (simtypes.OperationMsg, []simtypes.FutureOperation, error) {
 		var (
 			simAccount          = simtypes.Account{}
-			pendingSpotOrder    = types.PendingSpotOrder{}
+			pendingSpotOrder    = types.SpotOrder{}
 			msg                 = &types.MsgUpdatePendingSpotOrder{}
 			allPendingSpotOrder = k.GetAllPendingSpotOrder(ctx)
 			found               = false
 		)
 		for _, obj := range allPendingSpotOrder {
-			simAccount, found = FindAccount(accs, obj.Creator)
+			simAccount, found = FindAccount(accs, obj.OwnerAddress)
 			if found {
 				pendingSpotOrder = obj
 				break
@@ -68,7 +68,7 @@ func SimulateMsgUpdatePendingSpotOrder(
 			return simtypes.NoOpMsg(types.ModuleName, msg.Type(), "pendingSpotOrder creator not found"), nil, nil
 		}
 		msg.Creator = simAccount.Address.String()
-		msg.Id = pendingSpotOrder.Id
+		msg.Id = pendingSpotOrder.OrderId
 
 		txCtx := simulation.OperationInput{
 			R:               r,
@@ -97,13 +97,13 @@ func SimulateMsgDeletePendingSpotOrder(
 	) (simtypes.OperationMsg, []simtypes.FutureOperation, error) {
 		var (
 			simAccount          = simtypes.Account{}
-			pendingSpotOrder    = types.PendingSpotOrder{}
+			pendingSpotOrder    = types.SpotOrder{}
 			msg                 = &types.MsgUpdatePendingSpotOrder{}
 			allPendingSpotOrder = k.GetAllPendingSpotOrder(ctx)
 			found               = false
 		)
 		for _, obj := range allPendingSpotOrder {
-			simAccount, found = FindAccount(accs, obj.Creator)
+			simAccount, found = FindAccount(accs, obj.OwnerAddress)
 			if found {
 				pendingSpotOrder = obj
 				break
@@ -113,7 +113,7 @@ func SimulateMsgDeletePendingSpotOrder(
 			return simtypes.NoOpMsg(types.ModuleName, msg.Type(), "pendingSpotOrder creator not found"), nil, nil
 		}
 		msg.Creator = simAccount.Address.String()
-		msg.Id = pendingSpotOrder.Id
+		msg.Id = pendingSpotOrder.OrderId
 
 		txCtx := simulation.OperationInput{
 			R:               r,

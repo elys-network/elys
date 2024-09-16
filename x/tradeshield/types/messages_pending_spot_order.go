@@ -13,10 +13,23 @@ const (
 
 var _ sdk.Msg = &MsgCreatePendingSpotOrder{}
 
-func NewMsgCreatePendingSpotOrder(creator string, order string) *MsgCreatePendingSpotOrder {
+// func NewMsgCreatePendingSpotOrder(ownerAddress string, orderType SpotOrderType,
+// 	orderPrice OrderPrice, orderAmount sdk.Coin,
+// 	orderTargetDenom string, status Status, date Date) *MsgCreatePendingSpotOrder {
+// 	return &MsgCreatePendingSpotOrder{
+// 		OrderType:        orderType,
+// 		OrderPrice:       &orderPrice,
+// 		OrderAmount:      &orderAmount,
+// 		OwnerAddress:     ownerAddress,
+// 		OrderTargetDenom: orderTargetDenom,
+// 		Status:           status,
+// 		Date:             &date,
+// 	}
+// }
+
+func NewMsgCreatePendingSpotOrder(ownerAddress string) *MsgCreatePendingSpotOrder {
 	return &MsgCreatePendingSpotOrder{
-		Creator: creator,
-		Order:   order,
+		OwnerAddress: ownerAddress,
 	}
 }
 
@@ -29,7 +42,7 @@ func (msg *MsgCreatePendingSpotOrder) Type() string {
 }
 
 func (msg *MsgCreatePendingSpotOrder) GetSigners() []sdk.AccAddress {
-	creator, err := sdk.AccAddressFromBech32(msg.Creator)
+	creator, err := sdk.AccAddressFromBech32(msg.OwnerAddress)
 	if err != nil {
 		panic(err)
 	}
@@ -42,7 +55,7 @@ func (msg *MsgCreatePendingSpotOrder) GetSignBytes() []byte {
 }
 
 func (msg *MsgCreatePendingSpotOrder) ValidateBasic() error {
-	_, err := sdk.AccAddressFromBech32(msg.Creator)
+	_, err := sdk.AccAddressFromBech32(msg.OwnerAddress)
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
 	}

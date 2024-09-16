@@ -13,7 +13,7 @@ func TestPendingSpotOrderMsgServerCreate(t *testing.T) {
 	srv, ctx := setupMsgServer(t)
 	creator := "A"
 	for i := 0; i < 5; i++ {
-		resp, err := srv.CreatePendingSpotOrder(ctx, &types.MsgCreatePendingSpotOrder{Creator: creator})
+		resp, err := srv.CreatePendingSpotOrder(ctx, &types.MsgCreatePendingSpotOrder{OwnerAddress: creator})
 		require.NoError(t, err)
 		require.Equal(t, i, int(resp.Id))
 	}
@@ -45,7 +45,7 @@ func TestPendingSpotOrderMsgServerUpdate(t *testing.T) {
 	for _, tc := range tests {
 		t.Run(tc.desc, func(t *testing.T) {
 			srv, ctx := setupMsgServer(t)
-			_, err := srv.CreatePendingSpotOrder(ctx, &types.MsgCreatePendingSpotOrder{Creator: creator})
+			_, err := srv.CreatePendingSpotOrder(ctx, &types.MsgCreatePendingSpotOrder{OwnerAddress: creator})
 			require.NoError(t, err)
 
 			_, err = srv.UpdatePendingSpotOrder(ctx, tc.request)
@@ -85,7 +85,7 @@ func TestPendingSpotOrderMsgServerDelete(t *testing.T) {
 		t.Run(tc.desc, func(t *testing.T) {
 			srv, ctx := setupMsgServer(t)
 
-			_, err := srv.CreatePendingSpotOrder(ctx, &types.MsgCreatePendingSpotOrder{Creator: creator})
+			_, err := srv.CreatePendingSpotOrder(ctx, &types.MsgCreatePendingSpotOrder{OwnerAddress: creator})
 			require.NoError(t, err)
 			_, err = srv.DeletePendingSpotOrder(ctx, tc.request)
 			if tc.err != nil {

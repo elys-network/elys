@@ -14,12 +14,12 @@ func TestGenesis(t *testing.T) {
 	genesisState := types.GenesisState{
 		Params: types.DefaultParams(),
 
-		PendingSpotOrderList: []types.PendingSpotOrder{
+		PendingSpotOrderList: []types.SpotOrder{
 			{
-				Id: 0,
+				OrderId: 0,
 			},
 			{
-				Id: 1,
+				OrderId: 1,
 			},
 		},
 		PendingSpotOrderCount: 2,
