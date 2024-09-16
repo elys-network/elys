@@ -10,7 +10,7 @@ import (
 
 func (k Keeper) GetBestPool(ctx sdk.Context, collateralAsset string, tradingAsset string) (uint64, error) {
 	denoms := []string{collateralAsset, tradingAsset}
-	pool, found := k.amm.GetBestPoolWithDenoms(ctx, denoms)
+	pool, found := k.amm.GetBestPoolWithDenoms(ctx, denoms, true)
 	if !found {
 		return 0, errorsmod.Wrap(types.ErrPoolDoesNotExist, fmt.Sprintf("%s", denoms))
 	}

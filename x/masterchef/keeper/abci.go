@@ -310,7 +310,7 @@ func (k Keeper) ConvertGasFeesToUsdc(ctx sdk.Context, baseCurrency string) sdk.C
 		}
 
 		// Find a pool that can convert tokenIn to usdc
-		pool, found := k.amm.GetBestPoolWithDenoms(ctx, []string{tokenIn.Denom, baseCurrency})
+		pool, found := k.amm.GetBestPoolWithDenoms(ctx, []string{tokenIn.Denom, baseCurrency}, false)
 		if !found {
 			continue
 		}

@@ -41,7 +41,7 @@ func TestGetBestPool_ValidPoolID(t *testing.T) {
 		Address:           "",
 		RebalanceTreasury: "",
 		PoolParams: ammtypes.PoolParams{
-			UseOracle:                   false,
+			UseOracle:                   true,
 			ExternalLiquidityRatio:      sdk.NewDec(2),
 			WeightBreakingFeeMultiplier: sdk.ZeroDec(),
 			WeightBreakingFeeExponent:   sdk.NewDecWithPrec(25, 1), // 2.5
