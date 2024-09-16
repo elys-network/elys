@@ -9,7 +9,11 @@ import (
 	grpc1 "github.com/cosmos/gogoproto/grpc"
 	proto "github.com/cosmos/gogoproto/proto"
 	grpc "google.golang.org/grpc"
+	codes "google.golang.org/grpc/codes"
+	status "google.golang.org/grpc/status"
+	io "io"
 	math "math"
+	math_bits "math/bits"
 )
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -23,19 +27,320 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
+type MsgCreatePendingSpotOrder struct {
+	Creator string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
+	Order   string `protobuf:"bytes,2,opt,name=order,proto3" json:"order,omitempty"`
+}
+
+func (m *MsgCreatePendingSpotOrder) Reset()         { *m = MsgCreatePendingSpotOrder{} }
+func (m *MsgCreatePendingSpotOrder) String() string { return proto.CompactTextString(m) }
+func (*MsgCreatePendingSpotOrder) ProtoMessage()    {}
+func (*MsgCreatePendingSpotOrder) Descriptor() ([]byte, []int) {
+	return fileDescriptor_0534a5eaf85a8c0b, []int{0}
+}
+func (m *MsgCreatePendingSpotOrder) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgCreatePendingSpotOrder) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgCreatePendingSpotOrder.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgCreatePendingSpotOrder) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgCreatePendingSpotOrder.Merge(m, src)
+}
+func (m *MsgCreatePendingSpotOrder) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgCreatePendingSpotOrder) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgCreatePendingSpotOrder.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgCreatePendingSpotOrder proto.InternalMessageInfo
+
+func (m *MsgCreatePendingSpotOrder) GetCreator() string {
+	if m != nil {
+		return m.Creator
+	}
+	return ""
+}
+
+func (m *MsgCreatePendingSpotOrder) GetOrder() string {
+	if m != nil {
+		return m.Order
+	}
+	return ""
+}
+
+type MsgCreatePendingSpotOrderResponse struct {
+	Id uint64 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+}
+
+func (m *MsgCreatePendingSpotOrderResponse) Reset()         { *m = MsgCreatePendingSpotOrderResponse{} }
+func (m *MsgCreatePendingSpotOrderResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgCreatePendingSpotOrderResponse) ProtoMessage()    {}
+func (*MsgCreatePendingSpotOrderResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_0534a5eaf85a8c0b, []int{1}
+}
+func (m *MsgCreatePendingSpotOrderResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgCreatePendingSpotOrderResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgCreatePendingSpotOrderResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgCreatePendingSpotOrderResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgCreatePendingSpotOrderResponse.Merge(m, src)
+}
+func (m *MsgCreatePendingSpotOrderResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgCreatePendingSpotOrderResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgCreatePendingSpotOrderResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgCreatePendingSpotOrderResponse proto.InternalMessageInfo
+
+func (m *MsgCreatePendingSpotOrderResponse) GetId() uint64 {
+	if m != nil {
+		return m.Id
+	}
+	return 0
+}
+
+type MsgUpdatePendingSpotOrder struct {
+	Creator string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
+	Id      uint64 `protobuf:"varint,2,opt,name=id,proto3" json:"id,omitempty"`
+	Order   string `protobuf:"bytes,3,opt,name=order,proto3" json:"order,omitempty"`
+}
+
+func (m *MsgUpdatePendingSpotOrder) Reset()         { *m = MsgUpdatePendingSpotOrder{} }
+func (m *MsgUpdatePendingSpotOrder) String() string { return proto.CompactTextString(m) }
+func (*MsgUpdatePendingSpotOrder) ProtoMessage()    {}
+func (*MsgUpdatePendingSpotOrder) Descriptor() ([]byte, []int) {
+	return fileDescriptor_0534a5eaf85a8c0b, []int{2}
+}
+func (m *MsgUpdatePendingSpotOrder) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgUpdatePendingSpotOrder) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgUpdatePendingSpotOrder.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgUpdatePendingSpotOrder) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgUpdatePendingSpotOrder.Merge(m, src)
+}
+func (m *MsgUpdatePendingSpotOrder) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgUpdatePendingSpotOrder) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgUpdatePendingSpotOrder.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgUpdatePendingSpotOrder proto.InternalMessageInfo
+
+func (m *MsgUpdatePendingSpotOrder) GetCreator() string {
+	if m != nil {
+		return m.Creator
+	}
+	return ""
+}
+
+func (m *MsgUpdatePendingSpotOrder) GetId() uint64 {
+	if m != nil {
+		return m.Id
+	}
+	return 0
+}
+
+func (m *MsgUpdatePendingSpotOrder) GetOrder() string {
+	if m != nil {
+		return m.Order
+	}
+	return ""
+}
+
+type MsgUpdatePendingSpotOrderResponse struct {
+}
+
+func (m *MsgUpdatePendingSpotOrderResponse) Reset()         { *m = MsgUpdatePendingSpotOrderResponse{} }
+func (m *MsgUpdatePendingSpotOrderResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgUpdatePendingSpotOrderResponse) ProtoMessage()    {}
+func (*MsgUpdatePendingSpotOrderResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_0534a5eaf85a8c0b, []int{3}
+}
+func (m *MsgUpdatePendingSpotOrderResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgUpdatePendingSpotOrderResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgUpdatePendingSpotOrderResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgUpdatePendingSpotOrderResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgUpdatePendingSpotOrderResponse.Merge(m, src)
+}
+func (m *MsgUpdatePendingSpotOrderResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgUpdatePendingSpotOrderResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgUpdatePendingSpotOrderResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgUpdatePendingSpotOrderResponse proto.InternalMessageInfo
+
+type MsgDeletePendingSpotOrder struct {
+	Creator string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
+	Id      uint64 `protobuf:"varint,2,opt,name=id,proto3" json:"id,omitempty"`
+}
+
+func (m *MsgDeletePendingSpotOrder) Reset()         { *m = MsgDeletePendingSpotOrder{} }
+func (m *MsgDeletePendingSpotOrder) String() string { return proto.CompactTextString(m) }
+func (*MsgDeletePendingSpotOrder) ProtoMessage()    {}
+func (*MsgDeletePendingSpotOrder) Descriptor() ([]byte, []int) {
+	return fileDescriptor_0534a5eaf85a8c0b, []int{4}
+}
+func (m *MsgDeletePendingSpotOrder) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgDeletePendingSpotOrder) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgDeletePendingSpotOrder.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgDeletePendingSpotOrder) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgDeletePendingSpotOrder.Merge(m, src)
+}
+func (m *MsgDeletePendingSpotOrder) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgDeletePendingSpotOrder) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgDeletePendingSpotOrder.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgDeletePendingSpotOrder proto.InternalMessageInfo
+
+func (m *MsgDeletePendingSpotOrder) GetCreator() string {
+	if m != nil {
+		return m.Creator
+	}
+	return ""
+}
+
+func (m *MsgDeletePendingSpotOrder) GetId() uint64 {
+	if m != nil {
+		return m.Id
+	}
+	return 0
+}
+
+type MsgDeletePendingSpotOrderResponse struct {
+}
+
+func (m *MsgDeletePendingSpotOrderResponse) Reset()         { *m = MsgDeletePendingSpotOrderResponse{} }
+func (m *MsgDeletePendingSpotOrderResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgDeletePendingSpotOrderResponse) ProtoMessage()    {}
+func (*MsgDeletePendingSpotOrderResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_0534a5eaf85a8c0b, []int{5}
+}
+func (m *MsgDeletePendingSpotOrderResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgDeletePendingSpotOrderResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgDeletePendingSpotOrderResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgDeletePendingSpotOrderResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgDeletePendingSpotOrderResponse.Merge(m, src)
+}
+func (m *MsgDeletePendingSpotOrderResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgDeletePendingSpotOrderResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgDeletePendingSpotOrderResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgDeletePendingSpotOrderResponse proto.InternalMessageInfo
+
+func init() {
+	proto.RegisterType((*MsgCreatePendingSpotOrder)(nil), "elys.tradeshield.MsgCreatePendingSpotOrder")
+	proto.RegisterType((*MsgCreatePendingSpotOrderResponse)(nil), "elys.tradeshield.MsgCreatePendingSpotOrderResponse")
+	proto.RegisterType((*MsgUpdatePendingSpotOrder)(nil), "elys.tradeshield.MsgUpdatePendingSpotOrder")
+	proto.RegisterType((*MsgUpdatePendingSpotOrderResponse)(nil), "elys.tradeshield.MsgUpdatePendingSpotOrderResponse")
+	proto.RegisterType((*MsgDeletePendingSpotOrder)(nil), "elys.tradeshield.MsgDeletePendingSpotOrder")
+	proto.RegisterType((*MsgDeletePendingSpotOrderResponse)(nil), "elys.tradeshield.MsgDeletePendingSpotOrderResponse")
+}
+
 func init() { proto.RegisterFile("elys/tradeshield/tx.proto", fileDescriptor_0534a5eaf85a8c0b) }
 
 var fileDescriptor_0534a5eaf85a8c0b = []byte{
-	// 131 bytes of a gzipped FileDescriptorProto
+	// 334 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x92, 0x4c, 0xcd, 0xa9, 0x2c,
 	0xd6, 0x2f, 0x29, 0x4a, 0x4c, 0x49, 0x2d, 0xce, 0xc8, 0x4c, 0xcd, 0x49, 0xd1, 0x2f, 0xa9, 0xd0,
-	0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x17, 0x12, 0x00, 0x49, 0xe9, 0x21, 0x49, 0x19, 0xb1, 0x72, 0x31,
-	0xfb, 0x16, 0xa7, 0x3b, 0x79, 0x9d, 0x78, 0x24, 0xc7, 0x78, 0xe1, 0x91, 0x1c, 0xe3, 0x83, 0x47,
-	0x72, 0x8c, 0x13, 0x1e, 0xcb, 0x31, 0x5c, 0x78, 0x2c, 0xc7, 0x70, 0xe3, 0xb1, 0x1c, 0x43, 0x94,
-	0x41, 0x7a, 0x66, 0x49, 0x46, 0x69, 0x92, 0x5e, 0x72, 0x7e, 0xae, 0x3e, 0x48, 0xb7, 0x6e, 0x5e,
-	0x6a, 0x49, 0x79, 0x7e, 0x51, 0x36, 0x98, 0xa3, 0x5f, 0x81, 0x6a, 0x4f, 0x65, 0x41, 0x6a, 0x71,
-	0x12, 0x1b, 0xd8, 0x2e, 0x63, 0x40, 0x00, 0x00, 0x00, 0xff, 0xff, 0xea, 0x04, 0x20, 0x91, 0x88,
-	0x00, 0x00, 0x00,
+	0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x17, 0x12, 0x00, 0x49, 0xe9, 0x21, 0x49, 0x49, 0x69, 0x62, 0x28,
+	0x2e, 0x48, 0xcd, 0x4b, 0xc9, 0xcc, 0x4b, 0x8f, 0x2f, 0x2e, 0xc8, 0x2f, 0x89, 0xcf, 0x2f, 0x4a,
+	0x49, 0x2d, 0x82, 0x68, 0x56, 0xf2, 0xe6, 0x92, 0xf4, 0x2d, 0x4e, 0x77, 0x2e, 0x4a, 0x4d, 0x2c,
+	0x49, 0x0d, 0x80, 0x28, 0x0a, 0x2e, 0xc8, 0x2f, 0xf1, 0x07, 0x29, 0x11, 0x92, 0xe0, 0x62, 0x4f,
+	0x06, 0xc9, 0xe4, 0x17, 0x49, 0x30, 0x2a, 0x30, 0x6a, 0x70, 0x06, 0xc1, 0xb8, 0x42, 0x22, 0x5c,
+	0xac, 0x60, 0x53, 0x24, 0x98, 0xc0, 0xe2, 0x10, 0x8e, 0x92, 0x31, 0x97, 0x22, 0x4e, 0xc3, 0x82,
+	0x52, 0x8b, 0x0b, 0xf2, 0xf3, 0x8a, 0x53, 0x85, 0xf8, 0xb8, 0x98, 0x32, 0x53, 0xc0, 0xe6, 0xb1,
+	0x04, 0x31, 0x65, 0xa6, 0x28, 0x45, 0x83, 0x5d, 0x10, 0x5a, 0x90, 0x42, 0x9a, 0x0b, 0x20, 0xc6,
+	0x30, 0xc1, 0x8c, 0x41, 0xb8, 0x88, 0x19, 0xd9, 0x45, 0xca, 0x60, 0x17, 0x61, 0x37, 0x1c, 0xe6,
+	0x22, 0x25, 0x57, 0xb0, 0x0b, 0x5c, 0x52, 0x73, 0x52, 0x29, 0x71, 0x01, 0xd4, 0x2e, 0xec, 0xc6,
+	0xc0, 0xec, 0x32, 0xfa, 0xc9, 0xc4, 0xc5, 0xec, 0x5b, 0x9c, 0x2e, 0x54, 0xc5, 0x25, 0x86, 0x23,
+	0xd0, 0xb5, 0xf5, 0xd0, 0xe3, 0x53, 0x0f, 0x67, 0xa0, 0x4a, 0x19, 0x93, 0xa0, 0x18, 0x1e, 0x03,
+	0x55, 0x5c, 0x62, 0x38, 0x82, 0x1b, 0xbb, 0xdd, 0xd8, 0x15, 0xe3, 0xb0, 0x1b, 0x7f, 0x58, 0x83,
+	0xec, 0xc6, 0x11, 0xd0, 0xd8, 0xed, 0xc6, 0xae, 0x18, 0x87, 0xdd, 0xf8, 0xc3, 0xde, 0xc9, 0xeb,
+	0xc4, 0x23, 0x39, 0xc6, 0x0b, 0x8f, 0xe4, 0x18, 0x1f, 0x3c, 0x92, 0x63, 0x9c, 0xf0, 0x58, 0x8e,
+	0xe1, 0xc2, 0x63, 0x39, 0x86, 0x1b, 0x8f, 0xe5, 0x18, 0xa2, 0x0c, 0xd2, 0x33, 0x4b, 0x32, 0x4a,
+	0x93, 0xf4, 0x92, 0xf3, 0x73, 0xf5, 0x41, 0x06, 0xeb, 0xe6, 0xa5, 0x96, 0x94, 0xe7, 0x17, 0x65,
+	0x83, 0x39, 0xfa, 0x15, 0xa8, 0xf9, 0xae, 0xb2, 0x20, 0xb5, 0x38, 0x89, 0x0d, 0x9c, 0x7d, 0x8c,
+	0x01, 0x01, 0x00, 0x00, 0xff, 0xff, 0x00, 0x60, 0xde, 0x29, 0x98, 0x03, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -50,6 +355,9 @@ const _ = grpc.SupportPackageIsVersion4
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type MsgClient interface {
+	CreatePendingSpotOrder(ctx context.Context, in *MsgCreatePendingSpotOrder, opts ...grpc.CallOption) (*MsgCreatePendingSpotOrderResponse, error)
+	UpdatePendingSpotOrder(ctx context.Context, in *MsgUpdatePendingSpotOrder, opts ...grpc.CallOption) (*MsgUpdatePendingSpotOrderResponse, error)
+	DeletePendingSpotOrder(ctx context.Context, in *MsgDeletePendingSpotOrder, opts ...grpc.CallOption) (*MsgDeletePendingSpotOrderResponse, error)
 }
 
 type msgClient struct {
@@ -60,22 +368,1019 @@ func NewMsgClient(cc grpc1.ClientConn) MsgClient {
 	return &msgClient{cc}
 }
 
+func (c *msgClient) CreatePendingSpotOrder(ctx context.Context, in *MsgCreatePendingSpotOrder, opts ...grpc.CallOption) (*MsgCreatePendingSpotOrderResponse, error) {
+	out := new(MsgCreatePendingSpotOrderResponse)
+	err := c.cc.Invoke(ctx, "/elys.tradeshield.Msg/CreatePendingSpotOrder", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) UpdatePendingSpotOrder(ctx context.Context, in *MsgUpdatePendingSpotOrder, opts ...grpc.CallOption) (*MsgUpdatePendingSpotOrderResponse, error) {
+	out := new(MsgUpdatePendingSpotOrderResponse)
+	err := c.cc.Invoke(ctx, "/elys.tradeshield.Msg/UpdatePendingSpotOrder", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) DeletePendingSpotOrder(ctx context.Context, in *MsgDeletePendingSpotOrder, opts ...grpc.CallOption) (*MsgDeletePendingSpotOrderResponse, error) {
+	out := new(MsgDeletePendingSpotOrderResponse)
+	err := c.cc.Invoke(ctx, "/elys.tradeshield.Msg/DeletePendingSpotOrder", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // MsgServer is the server API for Msg service.
 type MsgServer interface {
+	CreatePendingSpotOrder(context.Context, *MsgCreatePendingSpotOrder) (*MsgCreatePendingSpotOrderResponse, error)
+	UpdatePendingSpotOrder(context.Context, *MsgUpdatePendingSpotOrder) (*MsgUpdatePendingSpotOrderResponse, error)
+	DeletePendingSpotOrder(context.Context, *MsgDeletePendingSpotOrder) (*MsgDeletePendingSpotOrderResponse, error)
 }
 
 // UnimplementedMsgServer can be embedded to have forward compatible implementations.
 type UnimplementedMsgServer struct {
 }
 
+func (*UnimplementedMsgServer) CreatePendingSpotOrder(ctx context.Context, req *MsgCreatePendingSpotOrder) (*MsgCreatePendingSpotOrderResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreatePendingSpotOrder not implemented")
+}
+func (*UnimplementedMsgServer) UpdatePendingSpotOrder(ctx context.Context, req *MsgUpdatePendingSpotOrder) (*MsgUpdatePendingSpotOrderResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdatePendingSpotOrder not implemented")
+}
+func (*UnimplementedMsgServer) DeletePendingSpotOrder(ctx context.Context, req *MsgDeletePendingSpotOrder) (*MsgDeletePendingSpotOrderResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeletePendingSpotOrder not implemented")
+}
+
 func RegisterMsgServer(s grpc1.Server, srv MsgServer) {
 	s.RegisterService(&_Msg_serviceDesc, srv)
+}
+
+func _Msg_CreatePendingSpotOrder_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgCreatePendingSpotOrder)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).CreatePendingSpotOrder(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/elys.tradeshield.Msg/CreatePendingSpotOrder",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).CreatePendingSpotOrder(ctx, req.(*MsgCreatePendingSpotOrder))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_UpdatePendingSpotOrder_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgUpdatePendingSpotOrder)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).UpdatePendingSpotOrder(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/elys.tradeshield.Msg/UpdatePendingSpotOrder",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).UpdatePendingSpotOrder(ctx, req.(*MsgUpdatePendingSpotOrder))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_DeletePendingSpotOrder_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgDeletePendingSpotOrder)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).DeletePendingSpotOrder(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/elys.tradeshield.Msg/DeletePendingSpotOrder",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).DeletePendingSpotOrder(ctx, req.(*MsgDeletePendingSpotOrder))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 var _Msg_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "elys.tradeshield.Msg",
 	HandlerType: (*MsgServer)(nil),
-	Methods:     []grpc.MethodDesc{},
-	Streams:     []grpc.StreamDesc{},
-	Metadata:    "elys/tradeshield/tx.proto",
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "CreatePendingSpotOrder",
+			Handler:    _Msg_CreatePendingSpotOrder_Handler,
+		},
+		{
+			MethodName: "UpdatePendingSpotOrder",
+			Handler:    _Msg_UpdatePendingSpotOrder_Handler,
+		},
+		{
+			MethodName: "DeletePendingSpotOrder",
+			Handler:    _Msg_DeletePendingSpotOrder_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "elys/tradeshield/tx.proto",
 }
+
+func (m *MsgCreatePendingSpotOrder) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgCreatePendingSpotOrder) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgCreatePendingSpotOrder) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Order) > 0 {
+		i -= len(m.Order)
+		copy(dAtA[i:], m.Order)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Order)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Creator) > 0 {
+		i -= len(m.Creator)
+		copy(dAtA[i:], m.Creator)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Creator)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgCreatePendingSpotOrderResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgCreatePendingSpotOrderResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgCreatePendingSpotOrderResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Id != 0 {
+		i = encodeVarintTx(dAtA, i, uint64(m.Id))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgUpdatePendingSpotOrder) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgUpdatePendingSpotOrder) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgUpdatePendingSpotOrder) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Order) > 0 {
+		i -= len(m.Order)
+		copy(dAtA[i:], m.Order)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Order)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if m.Id != 0 {
+		i = encodeVarintTx(dAtA, i, uint64(m.Id))
+		i--
+		dAtA[i] = 0x10
+	}
+	if len(m.Creator) > 0 {
+		i -= len(m.Creator)
+		copy(dAtA[i:], m.Creator)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Creator)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgUpdatePendingSpotOrderResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgUpdatePendingSpotOrderResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgUpdatePendingSpotOrderResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgDeletePendingSpotOrder) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgDeletePendingSpotOrder) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgDeletePendingSpotOrder) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Id != 0 {
+		i = encodeVarintTx(dAtA, i, uint64(m.Id))
+		i--
+		dAtA[i] = 0x10
+	}
+	if len(m.Creator) > 0 {
+		i -= len(m.Creator)
+		copy(dAtA[i:], m.Creator)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Creator)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgDeletePendingSpotOrderResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgDeletePendingSpotOrderResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgDeletePendingSpotOrderResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	return len(dAtA) - i, nil
+}
+
+func encodeVarintTx(dAtA []byte, offset int, v uint64) int {
+	offset -= sovTx(v)
+	base := offset
+	for v >= 1<<7 {
+		dAtA[offset] = uint8(v&0x7f | 0x80)
+		v >>= 7
+		offset++
+	}
+	dAtA[offset] = uint8(v)
+	return base
+}
+func (m *MsgCreatePendingSpotOrder) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Creator)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.Order)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	return n
+}
+
+func (m *MsgCreatePendingSpotOrderResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Id != 0 {
+		n += 1 + sovTx(uint64(m.Id))
+	}
+	return n
+}
+
+func (m *MsgUpdatePendingSpotOrder) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Creator)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	if m.Id != 0 {
+		n += 1 + sovTx(uint64(m.Id))
+	}
+	l = len(m.Order)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	return n
+}
+
+func (m *MsgUpdatePendingSpotOrderResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	return n
+}
+
+func (m *MsgDeletePendingSpotOrder) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Creator)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	if m.Id != 0 {
+		n += 1 + sovTx(uint64(m.Id))
+	}
+	return n
+}
+
+func (m *MsgDeletePendingSpotOrderResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	return n
+}
+
+func sovTx(x uint64) (n int) {
+	return (math_bits.Len64(x|1) + 6) / 7
+}
+func sozTx(x uint64) (n int) {
+	return sovTx(uint64((x << 1) ^ uint64((int64(x) >> 63))))
+}
+func (m *MsgCreatePendingSpotOrder) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgCreatePendingSpotOrder: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgCreatePendingSpotOrder: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Creator", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Creator = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Order", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Order = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgCreatePendingSpotOrderResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgCreatePendingSpotOrderResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgCreatePendingSpotOrderResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
+			}
+			m.Id = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Id |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgUpdatePendingSpotOrder) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgUpdatePendingSpotOrder: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgUpdatePendingSpotOrder: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Creator", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Creator = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
+			}
+			m.Id = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Id |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Order", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Order = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgUpdatePendingSpotOrderResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgUpdatePendingSpotOrderResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgUpdatePendingSpotOrderResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgDeletePendingSpotOrder) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgDeletePendingSpotOrder: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgDeletePendingSpotOrder: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Creator", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Creator = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
+			}
+			m.Id = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Id |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgDeletePendingSpotOrderResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgDeletePendingSpotOrderResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgDeletePendingSpotOrderResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func skipTx(dAtA []byte) (n int, err error) {
+	l := len(dAtA)
+	iNdEx := 0
+	depth := 0
+	for iNdEx < l {
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return 0, ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return 0, io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= (uint64(b) & 0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		wireType := int(wire & 0x7)
+		switch wireType {
+		case 0:
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return 0, ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return 0, io.ErrUnexpectedEOF
+				}
+				iNdEx++
+				if dAtA[iNdEx-1] < 0x80 {
+					break
+				}
+			}
+		case 1:
+			iNdEx += 8
+		case 2:
+			var length int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return 0, ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return 0, io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				length |= (int(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if length < 0 {
+				return 0, ErrInvalidLengthTx
+			}
+			iNdEx += length
+		case 3:
+			depth++
+		case 4:
+			if depth == 0 {
+				return 0, ErrUnexpectedEndOfGroupTx
+			}
+			depth--
+		case 5:
+			iNdEx += 4
+		default:
+			return 0, fmt.Errorf("proto: illegal wireType %d", wireType)
+		}
+		if iNdEx < 0 {
+			return 0, ErrInvalidLengthTx
+		}
+		if depth == 0 {
+			return iNdEx, nil
+		}
+	}
+	return 0, io.ErrUnexpectedEOF
+}
+
+var (
+	ErrInvalidLengthTx        = fmt.Errorf("proto: negative length found during unmarshaling")
+	ErrIntOverflowTx          = fmt.Errorf("proto: integer overflow")
+	ErrUnexpectedEndOfGroupTx = fmt.Errorf("proto: unexpected end of group")
+)

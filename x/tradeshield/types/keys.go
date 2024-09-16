@@ -21,3 +21,8 @@ func KeyPrefix(p string) []byte {
 var (
 	ParamsKey = []byte{0x01}
 )
+
+const (
+	PendingSpotOrderKey      = "PendingSpotOrder/value/"
+	PendingSpotOrderCountKey = "PendingSpotOrder/count/"
+)

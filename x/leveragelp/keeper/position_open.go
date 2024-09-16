@@ -32,7 +32,7 @@ func (k Keeper) OpenConsolidate(ctx sdk.Context, position *types.Position, msg *
 	if msg.Leverage.LT(sdk.OneDec()) {
 		return nil, types.ErrLeverageTooSmall
 	}
-	
+
 	poolId := position.AmmPoolId
 
 	position.Collateral = position.Collateral.Add(sdk.NewCoin(msg.CollateralAsset, msg.CollateralAmount))

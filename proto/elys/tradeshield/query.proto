@@ -1,26 +1,58 @@
 syntax = "proto3";
+
 package elys.tradeshield;
 
 import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
 import "elys/tradeshield/params.proto";
+import "elys/tradeshield/types.proto";
 
 option go_package = "github.com/elys-network/elys/x/tradeshield/types";
 
 // Query defines the gRPC querier service.
 service Query {
+  
   // Parameters queries the parameters of the module.
-  rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
+  rpc Params (QueryParamsRequest) returns (QueryParamsResponse) {
     option (google.api.http).get = "/elys-network/elys/tradeshield/params";
+  
+  }
+  
+  // Queries a list of PendingSpotOrder items.
+  rpc PendingSpotOrder    (QueryGetPendingSpotOrderRequest) returns (QueryGetPendingSpotOrderResponse) {
+    option (google.api.http).get = "/elys-network/elys/tradeshield/pending_spot_order/{id}";
+  
+  }
+  rpc PendingSpotOrderAll (QueryAllPendingSpotOrderRequest) returns (QueryAllPendingSpotOrderResponse) {
+    option (google.api.http).get = "/elys-network/elys/tradeshield/pending_spot_order";
+  
   }
 }
-
 // QueryParamsRequest is request type for the Query/Params RPC method.
 message QueryParamsRequest {}
 
 // QueryParamsResponse is response type for the Query/Params RPC method.
 message QueryParamsResponse {
+  
   // params holds all the parameters of this module.
   Params params = 1 [(gogoproto.nullable) = false];
 }
+
+message QueryGetPendingSpotOrderRequest {
+  uint64 id = 1;
+}
+
+message QueryGetPendingSpotOrderResponse {
+  SpotOrder PendingSpotOrder = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryAllPendingSpotOrderRequest {
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+message QueryAllPendingSpotOrderResponse {
+  repeated SpotOrder                       PendingSpotOrder = 1 [(gogoproto.nullable) = false];
+           cosmos.base.query.v1beta1.PageResponse pagination       = 2;
+}
+

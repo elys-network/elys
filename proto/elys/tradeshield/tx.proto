@@ -1,7 +1,43 @@
 syntax = "proto3";
+
 package elys.tradeshield;
+
+import "elys/tradeshield/types.proto";
 
 option go_package = "github.com/elys-network/elys/x/tradeshield/types";
 
 // Msg defines the Msg service.
-service Msg {}
+service Msg {
+  rpc CreatePendingSpotOrder (MsgCreatePendingSpotOrder) returns (MsgCreatePendingSpotOrderResponse);
+  rpc UpdatePendingSpotOrder (MsgUpdatePendingSpotOrder) returns (MsgUpdatePendingSpotOrderResponse);
+  rpc DeletePendingSpotOrder (MsgDeletePendingSpotOrder) returns (MsgDeletePendingSpotOrderResponse);
+}
+message MsgCreatePendingSpotOrder {
+  SpotOrderType order_type = 1;
+  OrderPrice order_price = 3;
+  cosmos.base.v1beta1.Coin order_amount = 4 [(gogoproto.nullable) = false];
+  string owner_address = 5;
+  string order_target_denom = 6;
+  Status status = 7;
+  Date date = 8;
+}
+
+message MsgCreatePendingSpotOrderResponse {
+  uint64 id = 1;
+}
+
+message MsgUpdatePendingSpotOrder {
+  string creator = 1;
+  uint64 id      = 2;
+  string order   = 3;
+}
+
+message MsgUpdatePendingSpotOrderResponse {}
+
+message MsgDeletePendingSpotOrder {
+  string creator = 1;
+  uint64 id      = 2;
+}
+
+message MsgDeletePendingSpotOrderResponse {}
+

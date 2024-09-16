@@ -137,13 +137,12 @@ func (k Keeper) CheckAndCloseAtStopLoss(ctx sdk.Context, mtp *types.MTP, pool ty
 		if !underStopLossPrice {
 			return fmt.Errorf("mtp stop loss price is not <=  token price")
 		}
-	}else {
+	} else {
 		underStopLossPrice := !mtp.StopLossPrice.IsNil() && tradingAssetPrice.Price.GTE(mtp.StopLossPrice)
 		if !underStopLossPrice {
 			return fmt.Errorf("mtp stop loss price is not =>  token price")
 		}
 	}
-	
 
 	var (
 		repayAmount math.Int
