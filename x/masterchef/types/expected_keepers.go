@@ -84,7 +84,7 @@ type AmmKeeper interface {
 		swapFeeOut sdk.Dec,
 		weightBalanceBonus sdk.Dec,
 	) (math.Int, error)
-	GetBestPoolWithDenoms(ctx sdk.Context, denoms []string) (pool ammtypes.Pool, found bool)
+	GetBestPoolWithDenoms(ctx sdk.Context, denoms []string, usesOracle bool) (pool ammtypes.Pool, found bool)
 	// GetPool returns a pool from its index
 	GetPool(sdk.Context, uint64) (ammtypes.Pool, bool)
 	// Get all pools
