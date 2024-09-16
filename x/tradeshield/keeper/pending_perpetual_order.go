@@ -16,8 +16,12 @@ func (k Keeper) GetPendingPerpetualOrderCount(ctx sdk.Context) uint64 {
 	bz := store.Get(byteKey)
 
 	// Count doesn't exist: no element
+	// Set count
 	if bz == nil {
-		return 0
+		bz := make([]byte, 8)
+		binary.BigEndian.PutUint64(bz, 1)
+		store.Set(byteKey, bz)
+		return 1
 	}
 
 	// Parse bytes

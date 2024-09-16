@@ -16,8 +16,12 @@ func (k Keeper) GetPendingSpotOrderCount(ctx sdk.Context) uint64 {
 	bz := store.Get(byteKey)
 
 	// Count doesn't exist: no element
+	// Set count
 	if bz == nil {
-		return 0
+		bz := make([]byte, 8)
+		binary.BigEndian.PutUint64(bz, 1)
+		store.Set(byteKey, bz)
+		return 1
 	}
 
 	// Parse bytes
@@ -159,8 +163,27 @@ func (k Keeper) InsertSpotSortedOrder(ctx sdk.Context, newOrder types.SpotOrder)
 	return nil
 }
 
+// GetAllPendingSpotOrder returns all pendingSpotOrder
+func (k Keeper) GetAllSortedSpotOrder(ctx sdk.Context) (list [][]uint64, err error) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.SortedSpotOrderKey)
+	iterator := sdk.KVStorePrefixIterator(store, []byte{})
+
+	defer iterator.Close()
+
+	for ; iterator.Valid(); iterator.Next() {
+		var orderIds []uint64
+		orderIds, err := types.DecodeUint64Slice(iterator.Value())
+		if err != nil {
+			return nil, err
+		}
+		list = append(list, orderIds)
+	}
+
+	return
+}
+
 // RemoveSortedOrder removes an order from the sorted order list.
-func (k Keeper) RemoveSpotSortedOrder(ctx sdk.Context, orderID uint64, positionID uint64) error {
+func (k Keeper) RemoveSpotSortedOrder(ctx sdk.Context, orderID uint64) error {
 	order, found := k.GetPendingSpotOrder(ctx, orderID)
 	if !found {
 		return types.ErrOrderNotFound
