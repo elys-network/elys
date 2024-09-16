@@ -10,7 +10,8 @@ const DefaultIndex uint64 = 1
 // DefaultGenesis returns the default genesis state
 func DefaultGenesis() *GenesisState {
 	return &GenesisState{
-		PendingSpotOrderList: []SpotOrder{},
+		PendingSpotOrderList:      []SpotOrder{},
+		PendingPerpetualOrderList: []PerpetualOrder{},
 		// this line is used by starport scaffolding # genesis/types/default
 		Params: DefaultParams(),
 	}
@@ -30,6 +31,18 @@ func (gs GenesisState) Validate() error {
 			return fmt.Errorf("pendingSpotOrder id should be lower or equal than the last id")
 		}
 		pendingSpotOrderIdMap[elem.OrderId] = true
+	}
+	// Check for duplicated ID in pendingPerpetualOrder
+	pendingPerpetualOrderIdMap := make(map[uint64]bool)
+	pendingPerpetualOrderCount := gs.GetPendingPerpetualOrderCount()
+	for _, elem := range gs.PendingPerpetualOrderList {
+		if _, ok := pendingPerpetualOrderIdMap[elem.OrderId]; ok {
+			return fmt.Errorf("duplicated id for pendingPerpetualOrder")
+		}
+		if elem.OrderId >= pendingPerpetualOrderCount {
+			return fmt.Errorf("pendingPerpetualOrder id should be lower or equal than the last id")
+		}
+		pendingPerpetualOrderIdMap[elem.OrderId] = true
 	}
 	// this line is used by starport scaffolding # genesis/types/validate
 

@@ -23,6 +23,15 @@ func TestGenesis(t *testing.T) {
 			},
 		},
 		PendingSpotOrderCount: 2,
+		PendingPerpetualOrderList: []types.PerpetualOrder{
+			{
+				OrderId: 0,
+			},
+			{
+				OrderId: 1,
+			},
+		},
+		PendingPerpetualOrderCount: 2,
 		// this line is used by starport scaffolding # genesis/test/state
 	}
 
@@ -36,5 +45,7 @@ func TestGenesis(t *testing.T) {
 
 	require.ElementsMatch(t, genesisState.PendingSpotOrderList, got.PendingSpotOrderList)
 	require.Equal(t, genesisState.PendingSpotOrderCount, got.PendingSpotOrderCount)
+	require.ElementsMatch(t, genesisState.PendingPerpetualOrderList, got.PendingPerpetualOrderList)
+	require.Equal(t, genesisState.PendingPerpetualOrderCount, got.PendingPerpetualOrderCount)
 	// this line is used by starport scaffolding # genesis/test/assert
 }

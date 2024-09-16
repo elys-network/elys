@@ -31,6 +31,15 @@ func TestGenesisState_Validate(t *testing.T) {
 					},
 				},
 				PendingSpotOrderCount: 2,
+				PendingPerpetualOrderList: []types.PerpetualOrder{
+					{
+						OrderId: 0,
+					},
+					{
+						OrderId: 1,
+					},
+				},
+				PendingPerpetualOrderCount: 2,
 				// this line is used by starport scaffolding # types/genesis/validField
 			},
 			valid: true,
@@ -58,6 +67,32 @@ func TestGenesisState_Validate(t *testing.T) {
 					},
 				},
 				PendingSpotOrderCount: 0,
+			},
+			valid: false,
+		},
+		{
+			desc: "duplicated pendingPerpetualOrder",
+			genState: &types.GenesisState{
+				PendingPerpetualOrderList: []types.PerpetualOrder{
+					{
+						OrderId: 0,
+					},
+					{
+						OrderId: 0,
+					},
+				},
+			},
+			valid: false,
+		},
+		{
+			desc: "invalid pendingPerpetualOrder count",
+			genState: &types.GenesisState{
+				PendingPerpetualOrderList: []types.PerpetualOrder{
+					{
+						OrderId: 1,
+					},
+				},
+				PendingPerpetualOrderCount: 0,
 			},
 			valid: false,
 		},

@@ -23,3 +23,8 @@ var (
 	PendingSpotOrderKey      = []byte{0x02}
 	PendingSpotOrderCountKey = []byte{0x03}
 )
+
+const (
+	PendingPerpetualOrderKey      = "PendingPerpetualOrder/value/"
+	PendingPerpetualOrderCountKey = "PendingPerpetualOrder/count/"
+)

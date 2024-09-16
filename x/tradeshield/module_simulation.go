@@ -35,6 +35,18 @@ const (
 	// TODO: Determine the simulation weight value
 	defaultWeightMsgDeletePendingSpotOrder int = 100
 
+	opWeightMsgCreatePendingPerpetualOrder = "op_weight_msg_pending_perpetual_order"
+	// TODO: Determine the simulation weight value
+	defaultWeightMsgCreatePendingPerpetualOrder int = 100
+
+	opWeightMsgUpdatePendingPerpetualOrder = "op_weight_msg_pending_perpetual_order"
+	// TODO: Determine the simulation weight value
+	defaultWeightMsgUpdatePendingPerpetualOrder int = 100
+
+	opWeightMsgDeletePendingPerpetualOrder = "op_weight_msg_pending_perpetual_order"
+	// TODO: Determine the simulation weight value
+	defaultWeightMsgDeletePendingPerpetualOrder int = 100
+
 	// this line is used by starport scaffolding # simapp/module/const
 )
 
@@ -57,6 +69,17 @@ func (AppModule) GenerateGenesisState(simState *module.SimulationState) {
 			},
 		},
 		PendingSpotOrderCount: 2,
+		PendingPerpetualOrderList: []types.PerpetualOrder{
+			{
+				OrderId:      0,
+				OwnerAddress: sample.AccAddress(),
+			},
+			{
+				OrderId:      1,
+				OwnerAddress: sample.AccAddress(),
+			},
+		},
+		PendingPerpetualOrderCount: 2,
 		// this line is used by starport scaffolding # simapp/module/genesisState
 	}
 	simState.GenState[types.ModuleName] = simState.Cdc.MustMarshalJSON(&tradeshieldGenesis)
@@ -107,6 +130,39 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 		tradeshieldsimulation.SimulateMsgDeletePendingSpotOrder(am.accountKeeper, am.bankKeeper, am.keeper),
 	))
 
+	var weightMsgCreatePendingPerpetualOrder int
+	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgCreatePendingPerpetualOrder, &weightMsgCreatePendingPerpetualOrder, nil,
+		func(_ *rand.Rand) {
+			weightMsgCreatePendingPerpetualOrder = defaultWeightMsgCreatePendingPerpetualOrder
+		},
+	)
+	operations = append(operations, simulation.NewWeightedOperation(
+		weightMsgCreatePendingPerpetualOrder,
+		tradeshieldsimulation.SimulateMsgCreatePendingPerpetualOrder(am.accountKeeper, am.bankKeeper, am.keeper),
+	))
+
+	var weightMsgUpdatePendingPerpetualOrder int
+	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgUpdatePendingPerpetualOrder, &weightMsgUpdatePendingPerpetualOrder, nil,
+		func(_ *rand.Rand) {
+			weightMsgUpdatePendingPerpetualOrder = defaultWeightMsgUpdatePendingPerpetualOrder
+		},
+	)
+	operations = append(operations, simulation.NewWeightedOperation(
+		weightMsgUpdatePendingPerpetualOrder,
+		tradeshieldsimulation.SimulateMsgUpdatePendingPerpetualOrder(am.accountKeeper, am.bankKeeper, am.keeper),
+	))
+
+	var weightMsgDeletePendingPerpetualOrder int
+	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgDeletePendingPerpetualOrder, &weightMsgDeletePendingPerpetualOrder, nil,
+		func(_ *rand.Rand) {
+			weightMsgDeletePendingPerpetualOrder = defaultWeightMsgDeletePendingPerpetualOrder
+		},
+	)
+	operations = append(operations, simulation.NewWeightedOperation(
+		weightMsgDeletePendingPerpetualOrder,
+		tradeshieldsimulation.SimulateMsgDeletePendingPerpetualOrder(am.accountKeeper, am.bankKeeper, am.keeper),
+	))
+
 	// this line is used by starport scaffolding # simapp/module/operation
 
 	return operations
@@ -136,6 +192,30 @@ func (am AppModule) ProposalMsgs(simState module.SimulationState) []simtypes.Wei
 			defaultWeightMsgDeletePendingSpotOrder,
 			func(r *rand.Rand, ctx sdk.Context, accs []simtypes.Account) sdk.Msg {
 				tradeshieldsimulation.SimulateMsgDeletePendingSpotOrder(am.accountKeeper, am.bankKeeper, am.keeper)
+				return nil
+			},
+		),
+		simulation.NewWeightedProposalMsg(
+			opWeightMsgCreatePendingPerpetualOrder,
+			defaultWeightMsgCreatePendingPerpetualOrder,
+			func(r *rand.Rand, ctx sdk.Context, accs []simtypes.Account) sdk.Msg {
+				tradeshieldsimulation.SimulateMsgCreatePendingPerpetualOrder(am.accountKeeper, am.bankKeeper, am.keeper)
+				return nil
+			},
+		),
+		simulation.NewWeightedProposalMsg(
+			opWeightMsgUpdatePendingPerpetualOrder,
+			defaultWeightMsgUpdatePendingPerpetualOrder,
+			func(r *rand.Rand, ctx sdk.Context, accs []simtypes.Account) sdk.Msg {
+				tradeshieldsimulation.SimulateMsgUpdatePendingPerpetualOrder(am.accountKeeper, am.bankKeeper, am.keeper)
+				return nil
+			},
+		),
+		simulation.NewWeightedProposalMsg(
+			opWeightMsgDeletePendingPerpetualOrder,
+			defaultWeightMsgDeletePendingPerpetualOrder,
+			func(r *rand.Rand, ctx sdk.Context, accs []simtypes.Account) sdk.Msg {
+				tradeshieldsimulation.SimulateMsgDeletePendingPerpetualOrder(am.accountKeeper, am.bankKeeper, am.keeper)
 				return nil
 			},
 		),
