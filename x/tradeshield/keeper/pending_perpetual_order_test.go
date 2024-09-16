@@ -1,6 +1,7 @@
 package keeper_test
 
 import (
+	"fmt"
 	"testing"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -15,6 +16,19 @@ import (
 func createNPendingPerpetualOrder(keeper *keeper.Keeper, ctx sdk.Context, n int) []types.PerpetualOrder {
 	items := make([]types.PerpetualOrder, n)
 	for i := range items {
+		items[i] = types.PerpetualOrder{
+			OrderId:            0,
+			OwnerAddress:       fmt.Sprintf("address%d", i),
+			PerpetualOrderType: types.PerpetualOrderType_LIMITCLOSE,
+			Position:           types.PerpetualPosition_LONG,
+			TriggerPrice:       &types.OrderPrice{Rate: sdk.NewDec(1), BaseDenom: "base", QuoteDenom: "quote"},
+			Collateral:         sdk.Coin{Denom: "denom", Amount: sdk.NewInt(10)},
+			TradingAsset:       "asset",
+			Leverage:           sdk.NewDec(int64(i)),
+			TakeProfitPrice:    sdk.NewDec(1),
+			PositionId:         uint64(i),
+			Status:             types.Status_PENDING,
+		}
 		items[i].OrderId = keeper.AppendPendingPerpetualOrder(ctx, items[i])
 	}
 	return items
@@ -56,7 +70,7 @@ func TestPendingPerpetualOrderCount(t *testing.T) {
 	keeper, ctx := keepertest.TradeshieldKeeper(t)
 	items := createNPendingPerpetualOrder(keeper, ctx, 10)
 	count := uint64(len(items))
-	require.Equal(t, count, keeper.GetPendingSpotOrderCount(ctx)-1)
+	require.Equal(t, count, keeper.GetPendingPerpetualOrderCount(ctx)-1)
 }
 
 func TestSortedPerpetualOrder(t *testing.T) {

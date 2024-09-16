@@ -76,7 +76,8 @@ message PerpetualOrder {
         (gogoproto.nullable) = false
     ];
     string take_profit_price = 9 [
-        (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec"
+        (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+        (gogoproto.nullable) = false
     ];
     uint64 position_id = 10;
     Status status = 11;
