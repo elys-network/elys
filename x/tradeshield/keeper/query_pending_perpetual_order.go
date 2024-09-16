@@ -21,7 +21,7 @@ func (k Keeper) PendingPerpetualOrderAll(goCtx context.Context, req *types.Query
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	store := ctx.KVStore(k.storeKey)
-	pendingPerpetualOrderStore := prefix.NewStore(store, types.KeyPrefix(types.PendingPerpetualOrderKey))
+	pendingPerpetualOrderStore := prefix.NewStore(store, types.PendingPerpetualOrderKey)
 
 	pageRes, err := query.Paginate(pendingPerpetualOrderStore, req.Pagination, func(key []byte, value []byte) error {
 		var pendingPerpetualOrder types.PerpetualOrder

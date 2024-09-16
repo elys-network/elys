@@ -19,12 +19,9 @@ func KeyPrefix(p string) []byte {
 }
 
 var (
-	ParamsKey                = []byte{0x01}
-	PendingSpotOrderKey      = []byte{0x02}
-	PendingSpotOrderCountKey = []byte{0x03}
-)
-
-const (
-	PendingPerpetualOrderKey      = "PendingPerpetualOrder/value/"
-	PendingPerpetualOrderCountKey = "PendingPerpetualOrder/count/"
+	ParamsKey                     = []byte{0x01}
+	PendingSpotOrderKey           = []byte{0x02}
+	PendingSpotOrderCountKey      = []byte{0x03}
+	PendingPerpetualOrderKey      = []byte{0x04}
+	PendingPerpetualOrderCountKey = []byte{0x05}
 )
