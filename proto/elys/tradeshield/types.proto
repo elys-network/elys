@@ -36,14 +36,14 @@ message Date {
 }
 
 message SpotOrder {
-    SpotOrderType spot_order_type = 1 [(gogoproto.nullable) = false];
-    uint64 order_id = 2 [(gogoproto.nullable) = false];
-    OrderPrice order_price = 3 [(gogoproto.nullable) = false];
+    SpotOrderType order_type = 1;
+    uint64 order_id = 2;
+    OrderPrice order_price = 3;
     cosmos.base.v1beta1.Coin order_amount = 4 [(gogoproto.nullable) = false];
-    string owner_address = 5 [(gogoproto.nullable) = false];
-    string order_target_denom = 6 [(gogoproto.nullable) = false];
-    Status status = 7 [(gogoproto.nullable) = false];
-    Date date = 8 [(gogoproto.nullable) = false];
+    string owner_address = 5;
+    string order_target_denom = 6;
+    Status status = 7;
+    Date date = 8;
 }
 
 // Perpetual Order
@@ -64,13 +64,13 @@ enum PerpetualPosition {
 }
 
 message PerpetualOrder {
-    uint64 order_id = 1 [(gogoproto.nullable) = false];
-    string owner_address = 2 [(gogoproto.nullable) = false];
-    PerpetualOrderType perpetual_order_type = 3 [(gogoproto.nullable) = false];
-    PerpetualPosition position = 4 [(gogoproto.nullable) = false];
+    uint64 order_id = 1;
+    string owner_address = 2;
+    PerpetualOrderType perpetual_order_type = 3;
+    PerpetualPosition position = 4;
     OrderPrice trigger_price = 5;
     cosmos.base.v1beta1.Coin collateral = 6 [(gogoproto.nullable) = false];
-    string trading_asset = 7 [(gogoproto.nullable) = false];
+    string trading_asset = 7;
     string leverage = 8 [
         (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
         (gogoproto.nullable) = false
@@ -79,5 +79,5 @@ message PerpetualOrder {
         (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec"
     ];
     uint64 position_id = 10;
-    Status status = 11 [(gogoproto.nullable) = false];
+    Status status = 11;
 }
