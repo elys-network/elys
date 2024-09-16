@@ -1,6 +1,7 @@
 package types
 
 import (
+	"encoding/binary"
 	"errors"
 	"fmt"
 )
@@ -45,4 +46,23 @@ func GenPerpKey(order PerpetualOrder) (string, error) {
 			order.TriggerPrice.QuoteDenom), nil
 	}
 	return "", errors.New("trigger price not found")
+}
+
+func EncodeUint64Slice(slice []uint64) []byte {
+	buf := make([]byte, 8*len(slice))
+	for i, v := range slice {
+		binary.BigEndian.PutUint64(buf[i*8:], v)
+	}
+	return buf
+}
+
+func DecodeUint64Slice(bz []byte) ([]uint64, error) {
+	if len(bz)%8 != 0 {
+		return nil, errors.New("invalid byte slice length")
+	}
+	slice := make([]uint64, len(bz)/8)
+	for i := range slice {
+		slice[i] = binary.BigEndian.Uint64(bz[i*8:])
+	}
+	return slice, nil
 }

@@ -135,7 +135,7 @@ func (k Keeper) InsertSortedOrder(ctx sdk.Context, newOrder types.PerpetualOrder
 
 	var orderIds []uint64
 	if bz != nil {
-		orderIds, err = decodeUint64Slice(bz)
+		orderIds, err = types.DecodeUint64Slice(bz)
 		if err != nil {
 			return err
 		}
@@ -153,27 +153,59 @@ func (k Keeper) InsertSortedOrder(ctx sdk.Context, newOrder types.PerpetualOrder
 		orderIds[index] = newOrder.OrderId
 	}
 
-	bz = encodeUint64Slice(orderIds)
+	bz = types.EncodeUint64Slice(orderIds)
 
 	store.Set([]byte(key), bz)
 	return nil
 }
 
-func encodeUint64Slice(slice []uint64) []byte {
-	buf := make([]byte, 8*len(slice))
-	for i, v := range slice {
-		binary.BigEndian.PutUint64(buf[i*8:], v)
+// RemoveSortedOrder removes an order from the sorted order list.
+func (k Keeper) RemoveSortedOrder(ctx sdk.Context, orderID uint64, positionID uint64) error {
+	order, found := k.GetPendingPerpetualOrder(ctx, orderID)
+	if !found {
+		return types.ErrOrderNotFound
 	}
-	return buf
-}
 
-func decodeUint64Slice(bz []byte) ([]uint64, error) {
-	if len(bz)%8 != 0 {
-		return nil, errors.New("invalid byte slice length")
+	// Generate the key for the order
+	key, err := types.GenPerpKey(order)
+	if err != nil {
+		return err
 	}
-	slice := make([]uint64, len(bz)/8)
-	for i := range slice {
-		slice[i] = binary.BigEndian.Uint64(bz[i*8:])
+
+	// Load the sorted order IDs using the key
+	sortedStore := prefix.NewStore(ctx.KVStore(k.storeKey), types.SortedPerpetualOrderKey)
+	bz := sortedStore.Get([]byte(key))
+
+	if bz == nil {
+		return errors.New("sorted order IDs not found")
 	}
-	return slice, nil
+
+	orderIds, err := types.DecodeUint64Slice(bz)
+	if err != nil {
+		return err
+	}
+
+	// Find the index of the order ID in the sorted order list
+	index, err := k.BinarySearch(ctx, order.TriggerPrice.Rate, orderIds)
+	if err != nil {
+		return err
+	}
+
+	sizeOfVec := len(orderIds)
+	for index < sizeOfVec && orderIds[index] != orderID {
+		index++
+	}
+
+	if index >= sizeOfVec {
+		return errors.New("order ID not found in sorted order list")
+	}
+
+	// Remove the order ID from the list
+	orderIds = append(orderIds[:index], orderIds[index+1:]...)
+
+	// Save the updated list back to storage
+	encodedOrderIds := types.EncodeUint64Slice(orderIds)
+
+	sortedStore.Set([]byte(key), encodedOrderIds)
+	return nil
 }
