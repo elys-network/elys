@@ -18,10 +18,7 @@ func (k Keeper) GetPendingPerpetualOrderCount(ctx sdk.Context) uint64 {
 	// Count doesn't exist: no element
 	// Set count
 	if bz == nil {
-		bz := make([]byte, 8)
-		binary.BigEndian.PutUint64(bz, 1)
-		store.Set(byteKey, bz)
-		return 1
+		return 0
 	}
 
 	// Parse bytes
@@ -44,6 +41,11 @@ func (k Keeper) AppendPendingPerpetualOrder(
 ) uint64 {
 	// Create the pendingPerpetualOrder
 	count := k.GetPendingPerpetualOrderCount(ctx)
+
+	if count == 0 {
+		k.SetPendingPerpetualOrderCount(ctx, uint64(1))
+		count = 1
+	}
 
 	// Set the ID of the appended value
 	pendingPerpetualOrder.OrderId = count
