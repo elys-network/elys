@@ -3,6 +3,7 @@ syntax = "proto3";
 package elys.tradeshield;
 
 import "elys/tradeshield/types.proto";
+import "elys/tradeshield/params.proto";
 import "cosmos/base/v1beta1/coin.proto";
 
 option go_package = "github.com/elys-network/elys/x/tradeshield/types";
@@ -15,6 +16,7 @@ service Msg {
   rpc CreatePendingPerpetualOrder (MsgCreatePendingPerpetualOrder) returns (MsgCreatePendingPerpetualOrderResponse);
   rpc UpdatePendingPerpetualOrder (MsgUpdatePendingPerpetualOrder) returns (MsgUpdatePendingPerpetualOrderResponse);
   rpc DeletePendingPerpetualOrder (MsgDeletePendingPerpetualOrder) returns (MsgDeletePendingPerpetualOrderResponse);
+  rpc UpdateParams                (MsgUpdateParams               ) returns (MsgUpdateParamsResponse               );
 }
 message MsgCreatePendingSpotOrder {
   SpotOrderType            order_type         = 1;
@@ -68,4 +70,14 @@ message MsgDeletePendingPerpetualOrder {
 }
 
 message MsgDeletePendingPerpetualOrderResponse {}
+
+message MsgUpdateParams {
+  // authority is the address that controls the module (defaults to x/gov unless overwritten).
+  string authority = 1;
+
+  // NOTE: All parameters must be supplied.
+  Params params = 2;
+}
+
+message MsgUpdateParamsResponse {}
 
