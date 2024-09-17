@@ -19,7 +19,7 @@ func SimulateMsgUpdateParams(
 	) (simtypes.OperationMsg, []simtypes.FutureOperation, error) {
 		simAccount, _ := simtypes.RandomAcc(r, accs)
 		msg := &types.MsgUpdateParams{
-			Creator: simAccount.Address.String(),
+			Authority: simAccount.Address.String(),
 		}
 
 		// TODO: Handling the UpdateParams simulation

@@ -17,13 +17,13 @@ func TestMsgUpdateParams_ValidateBasic(t *testing.T) {
 		{
 			name: "invalid address",
 			msg: MsgUpdateParams{
-				Creator: "invalid_address",
+				Authority: "invalid_address",
 			},
 			err: sdkerrors.ErrInvalidAddress,
 		}, {
 			name: "valid address",
 			msg: MsgUpdateParams{
-				Creator: sample.AccAddress(),
+				Authority: sample.AccAddress(),
 			},
 		},
 	}
