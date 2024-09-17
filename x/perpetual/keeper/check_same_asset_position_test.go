@@ -23,11 +23,11 @@ func TestCheckSameAssetPosition_NewPosition(t *testing.T) {
 	assert.Nil(t, err)
 
 	msg := &types.MsgOpen{
-		Creator:      addr[0].String(),
-		Position:     types.Position_SHORT,
-		Leverage:     sdk.NewDec(1),
-		TradingAsset: ptypes.ATOM,
-		Collateral:   sdk.NewCoin(ptypes.ATOM, sdk.NewInt(100)),
+		Creator:       addr[0].String(),
+		Position:      types.Position_SHORT,
+		Leverage:      sdk.NewDec(1),
+		TradingAsset:  ptypes.ATOM,
+		Collateral:    sdk.NewCoin(ptypes.ATOM, sdk.NewInt(100)),
 		StopLossPrice: sdk.NewDec(100),
 	}
 

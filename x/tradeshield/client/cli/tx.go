@@ -30,6 +30,12 @@ func GetTxCmd() *cobra.Command {
 		RunE:                       client.ValidateCmd,
 	}
 
+	cmd.AddCommand(CmdCreatePendingSpotOrder())
+	cmd.AddCommand(CmdUpdatePendingSpotOrder())
+	cmd.AddCommand(CmdDeletePendingSpotOrder())
+	cmd.AddCommand(CmdCreatePendingPerpetualOrder())
+	cmd.AddCommand(CmdUpdatePendingPerpetualOrder())
+	cmd.AddCommand(CmdDeletePendingPerpetualOrder())
 	// this line is used by starport scaffolding # 1
 
 	return cmd

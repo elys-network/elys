@@ -7,15 +7,15 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
-const TypeMsgUpdateStopLoss= "update_stop_loss"
+const TypeMsgUpdateStopLoss = "update_stop_loss"
 
 var _ sdk.Msg = &MsgUpdateStopLoss{}
 
 func NewMsgUpdateStopLoss(creator string, id uint64, price sdk.Dec) *MsgUpdateStopLoss {
 	return &MsgUpdateStopLoss{
-		Creator:  creator,
-		Id: id,
-		Price:    price,
+		Creator: creator,
+		Id:      id,
+		Price:   price,
 	}
 }
 
