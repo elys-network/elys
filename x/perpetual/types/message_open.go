@@ -10,7 +10,7 @@ const TypeMsgOpen = "open"
 
 var _ sdk.Msg = &MsgOpen{}
 
-func NewMsgOpen(creator string, position Position, leverage sdk.Dec, tradingAsset string, collateral sdk.Coin, takeProfitPrice sdk.Dec,  stopLossPrice sdk.Dec) *MsgOpen {
+func NewMsgOpen(creator string, position Position, leverage sdk.Dec, tradingAsset string, collateral sdk.Coin, takeProfitPrice sdk.Dec, stopLossPrice sdk.Dec) *MsgOpen {
 	return &MsgOpen{
 		Creator:         creator,
 		Position:        position,

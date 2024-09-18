@@ -8,5 +8,6 @@ import (
 
 // x/tradeshield module sentinel errors
 var (
-	ErrSample = sdkerrors.Register(ModuleName, 1100, "sample error")
+	ErrSample        = sdkerrors.Register(ModuleName, 1100, "sample error")
+	ErrOrderNotFound = sdkerrors.Register(ModuleName, 1101, "order not found")
 )

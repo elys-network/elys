@@ -19,12 +19,82 @@ func TestGenesisState_Validate(t *testing.T) {
 			valid:    true,
 		},
 		{
-			desc:     "valid genesis state",
+			desc: "valid genesis state",
 			genState: &types.GenesisState{
 
+				PendingSpotOrderList: []types.SpotOrder{
+					{
+						OrderId: 0,
+					},
+					{
+						OrderId: 1,
+					},
+				},
+				PendingSpotOrderCount: 2,
+				PendingPerpetualOrderList: []types.PerpetualOrder{
+					{
+						OrderId: 0,
+					},
+					{
+						OrderId: 1,
+					},
+				},
+				PendingPerpetualOrderCount: 2,
 				// this line is used by starport scaffolding # types/genesis/validField
 			},
 			valid: true,
+		},
+		{
+			desc: "duplicated pendingSpotOrder",
+			genState: &types.GenesisState{
+				PendingSpotOrderList: []types.SpotOrder{
+					{
+						OrderId: 0,
+					},
+					{
+						OrderId: 0,
+					},
+				},
+			},
+			valid: false,
+		},
+		{
+			desc: "invalid pendingSpotOrder count",
+			genState: &types.GenesisState{
+				PendingSpotOrderList: []types.SpotOrder{
+					{
+						OrderId: 1,
+					},
+				},
+				PendingSpotOrderCount: 0,
+			},
+			valid: false,
+		},
+		{
+			desc: "duplicated pendingPerpetualOrder",
+			genState: &types.GenesisState{
+				PendingPerpetualOrderList: []types.PerpetualOrder{
+					{
+						OrderId: 0,
+					},
+					{
+						OrderId: 0,
+					},
+				},
+			},
+			valid: false,
+		},
+		{
+			desc: "invalid pendingPerpetualOrder count",
+			genState: &types.GenesisState{
+				PendingPerpetualOrderList: []types.PerpetualOrder{
+					{
+						OrderId: 1,
+					},
+				},
+				PendingPerpetualOrderCount: 0,
+			},
+			valid: false,
 		},
 		// this line is used by starport scaffolding # types/genesis/testcase
 	}
