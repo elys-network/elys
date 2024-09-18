@@ -1046,6 +1046,7 @@ func NewElysApp(
 		appCodec,
 		keys[tradeshieldmoduletypes.StoreKey],
 		keys[tradeshieldmoduletypes.MemStoreKey],
+		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 	tradeshieldModule := tradeshieldmodule.NewAppModule(appCodec, app.TradeshieldKeeper, app.AccountKeeper, app.BankKeeper)
 

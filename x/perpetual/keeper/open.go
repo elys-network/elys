@@ -45,6 +45,9 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen, isBroker bool) (*types
 	if err != nil {
 		return nil, err
 	}
+	if !ammPool.PoolParams.UseOracle {
+		return nil, types.ErrPoolHasToBeOracle
+	}
 
 	if err := k.OpenChecker.CheckPoolHealth(ctx, poolId); err != nil {
 		return nil, err

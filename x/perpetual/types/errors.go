@@ -33,4 +33,5 @@ var (
 	ErrInvalidTakeProfitPriceIsNegative = errorsmod.Register(ModuleName, 38, "error invalid profit price ")
 	ErrTradingAssetIsEmpty              = errorsmod.Register(ModuleName, 39, "error trading asset is empty")
 	ErrInvalidAmount                    = errorsmod.Register(ModuleName, 40, "invalid amount")
+	ErrPoolHasToBeOracle                = errorsmod.Register(ModuleName, 41, "pool has to be oracle enabled")
 )
