@@ -9,8 +9,6 @@ import (
 )
 
 func RegisterCodec(cdc *codec.LegacyAmino) {
-	legacy.RegisterAminoMsg(cdc, &MsgCreatePendingSpotOrder{}, "perpetual/MsgUpdateStopLoss")
-
 	legacy.RegisterAminoMsg(cdc, &MsgCreatePendingSpotOrder{}, "tradeshield/CreatePendingSpotOrder")
 	legacy.RegisterAminoMsg(cdc, &MsgUpdatePendingSpotOrder{}, "tradeshield/UpdatePendingSpotOrder")
 	legacy.RegisterAminoMsg(cdc, &MsgDeletePendingSpotOrder{}, "tradeshield/DeletePendingSpotOrder")
