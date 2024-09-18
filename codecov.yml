@@ -313,3 +313,21 @@ component_management:
       name: transferhook_queries
       paths:
         - ./x/transferhook/**/*query*
+    # tradeshield
+    - component_id: module_tradeshield_transactions
+      name: tradeshield_transactions
+      paths:
+        - ./x/tradeshield/**/msg_server*
+    - component_id: module_tradeshield_lifecycle
+      name: tradeshield_lifecycle
+      paths:
+        - ./x/tradeshield/**/abci*
+        - ./x/tradeshield/**/*blocker*
+    - component_id: module_tradeshield_keeper
+      name: tradeshield_keeper
+      paths:
+        - ./x/tradeshield/**/keeper*
+    - component_id: module_tradeshield_queries
+      name: tradeshield_queries
+      paths:
+        - ./x/tradeshield/**/*query*
