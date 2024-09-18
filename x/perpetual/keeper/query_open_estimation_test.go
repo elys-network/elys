@@ -2,7 +2,7 @@ package keeper_test
 
 import (
 	"testing"
-	
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
@@ -443,6 +443,19 @@ func TestOpenEstimation_WrongAsset(t *testing.T) {
 	})
 
 	assert.Error(t, err)
+	assert.Equal(t, "invalid operation: the borrowed asset cannot be the base currency: invalid borrowing asset", err.Error())
+
+	_, err = mk.OpenEstimation(ctx, &types.QueryOpenEstimationRequest{
+		Position:        types.Position_LONG,
+		Leverage:        sdk.MustNewDecFromStr("5.0"),
+		TradingAsset:    ptypes.ATOM,
+		Collateral:      sdk.NewCoin(ptypes.Eden, sdk.NewInt(10000000)),
+		Discount:        sdk.MustNewDecFromStr("0.0"),
+		TakeProfitPrice: sdk.MustNewDecFromStr("20.0"),
+	})
+
+	assert.Error(t, err)
+	assert.Equal(t, "invalid collateral: collateral must either match the borrowed asset or be the base currency: invalid borrowing asset", err.Error())
 
 	_, err = mk.OpenEstimation(ctx, &types.QueryOpenEstimationRequest{
 		Position:        types.Position_SHORT,
@@ -453,5 +466,18 @@ func TestOpenEstimation_WrongAsset(t *testing.T) {
 		TakeProfitPrice: sdk.MustNewDecFromStr("20.0"),
 	})
 
-	assert.Error(t, err)
+	assert.Error(t, err) 
+	assert.Equal(t, "borrowing not allowed: cannot take a short position against the base currency: invalid borrowing asset", err.Error()) 
+
+	_, err = mk.OpenEstimation(ctx, &types.QueryOpenEstimationRequest{
+		Position:        types.Position_SHORT,
+		Leverage:        sdk.MustNewDecFromStr("5.0"),
+		TradingAsset:    ptypes.ATOM,
+		Collateral:      sdk.NewCoin(ptypes.ATOM, sdk.NewInt(10000000)),
+		Discount:        sdk.MustNewDecFromStr("0.0"),
+		TakeProfitPrice: sdk.MustNewDecFromStr("20.0"),
+	})
+
+	assert.Error(t, err) 
+	assert.Equal(t, "invalid operation: collateral asset cannot be identical to the borrowed asset for a short position: invalid collateral asset", err.Error())
 }
