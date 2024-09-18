@@ -2,19 +2,22 @@ package types
 
 import (
 	"github.com/cosmos/cosmos-sdk/codec"
+	"github.com/cosmos/cosmos-sdk/codec/legacy"
 	cdctypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/msgservice"
 )
 
 func RegisterCodec(cdc *codec.LegacyAmino) {
-	cdc.RegisterConcrete(&MsgCreatePendingSpotOrder{}, "tradeshield/CreatePendingSpotOrder", nil)
-	cdc.RegisterConcrete(&MsgUpdatePendingSpotOrder{}, "tradeshield/UpdatePendingSpotOrder", nil)
-	cdc.RegisterConcrete(&MsgDeletePendingSpotOrder{}, "tradeshield/DeletePendingSpotOrder", nil)
-	cdc.RegisterConcrete(&MsgCreatePendingPerpetualOrder{}, "tradeshield/CreatePendingPerpetualOrder", nil)
-	cdc.RegisterConcrete(&MsgUpdatePendingPerpetualOrder{}, "tradeshield/UpdatePendingPerpetualOrder", nil)
-	cdc.RegisterConcrete(&MsgDeletePendingPerpetualOrder{}, "tradeshield/DeletePendingPerpetualOrder", nil)
-	cdc.RegisterConcrete(&MsgUpdateParams{}, "tradeshield/UpdateParams", nil)
+	legacy.RegisterAminoMsg(cdc, &MsgCreatePendingSpotOrder{}, "perpetual/MsgUpdateStopLoss")
+
+	legacy.RegisterAminoMsg(cdc, &MsgCreatePendingSpotOrder{}, "tradeshield/CreatePendingSpotOrder")
+	legacy.RegisterAminoMsg(cdc, &MsgUpdatePendingSpotOrder{}, "tradeshield/UpdatePendingSpotOrder")
+	legacy.RegisterAminoMsg(cdc, &MsgDeletePendingSpotOrder{}, "tradeshield/DeletePendingSpotOrder")
+	legacy.RegisterAminoMsg(cdc, &MsgCreatePendingPerpetualOrder{}, "tradeshield/CreatePendingPerpetualOrder")
+	legacy.RegisterAminoMsg(cdc, &MsgUpdatePendingPerpetualOrder{}, "tradeshield/UpdatePendingPerpetualOrder")
+	legacy.RegisterAminoMsg(cdc, &MsgDeletePendingPerpetualOrder{}, "tradeshield/DeletePendingPerpetualOrder")
+	legacy.RegisterAminoMsg(cdc, &MsgUpdateParams{}, "tradeshield/UpdateParams")
 	// this line is used by starport scaffolding # 2
 }
 
@@ -28,8 +31,6 @@ func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 		&MsgCreatePendingPerpetualOrder{},
 		&MsgUpdatePendingPerpetualOrder{},
 		&MsgDeletePendingPerpetualOrder{},
-	)
-	registry.RegisterImplementations((*sdk.Msg)(nil),
 		&MsgUpdateParams{},
 	)
 	// this line is used by starport scaffolding # 3
