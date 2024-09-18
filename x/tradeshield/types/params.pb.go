@@ -26,7 +26,6 @@ const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
 // Params defines the parameters for the module.
 type Params struct {
-	// TODO: Add gov proposal message to set this values
 	MarketOrderEnabled   bool   `protobuf:"varint,1,opt,name=market_order_enabled,json=marketOrderEnabled,proto3" json:"market_order_enabled,omitempty"`
 	StakeEnabled         bool   `protobuf:"varint,2,opt,name=stake_enabled,json=stakeEnabled,proto3" json:"stake_enabled,omitempty"`
 	ProcessOrdersEnabled bool   `protobuf:"varint,3,opt,name=process_orders_enabled,json=processOrdersEnabled,proto3" json:"process_orders_enabled,omitempty"`

@@ -2,12 +2,13 @@ package migrations
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/elys-network/elys/x/tradeshield/types"
 )
 
 func (m Migrator) V2Migration(ctx sdk.Context) error {
 
-	// params := m.keeper.GetLegacyParams(ctx)
-	// m.keeper.SetParams(ctx, params)
+	params := types.DefaultParams()
+	m.keeper.SetParams(ctx, &params)
 
 	return nil
 }
