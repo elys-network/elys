@@ -46095,6 +46095,32 @@ paths:
               params:
                 description: params holds all the parameters of this module.
                 type: object
+                properties:
+                  market_order_enabled:
+                    type: boolean
+                    title: 'TODO: Add gov proposal message to set this values'
+                  stake_enabled:
+                    type: boolean
+                  process_orders_enabled:
+                    type: boolean
+                  swap_enabled:
+                    type: boolean
+                  perpetual_enabled:
+                    type: boolean
+                  reward_enabled:
+                    type: boolean
+                  leverage_enabled:
+                    type: boolean
+                  limit_process_order:
+                    type: string
+                    format: uint64
+                  reward_percentage:
+                    type: string
+                    title: For incentive system v2
+                  margin_error:
+                    type: string
+                  minimum_deposit:
+                    type: string
             description: >-
               QueryParamsResponse is response type for the Query/Params RPC
               method.
@@ -46132,13 +46158,68 @@ paths:
                 items:
                   type: object
                   properties:
-                    id:
+                    order_id:
                       type: string
                       format: uint64
-                    order:
+                    owner_address:
                       type: string
-                    creator:
+                    perpetual_order_type:
                       type: string
+                      enum:
+                        - LIMITOPEN
+                        - LIMITCLOSE
+                        - MARKETOPEN
+                        - MARKETCLOSE
+                        - STOPLOSSPERP
+                      default: LIMITOPEN
+                      title: Perpetual Order
+                    position:
+                      type: string
+                      enum:
+                        - UNSPECIFIED
+                        - LONG
+                        - SHORT
+                      default: UNSPECIFIED
+                    trigger_price:
+                      type: object
+                      properties:
+                        base_denom:
+                          type: string
+                        quote_denom:
+                          type: string
+                        rate:
+                          type: string
+                    collateral:
+                      type: object
+                      properties:
+                        denom:
+                          type: string
+                        amount:
+                          type: string
+                      description: >-
+                        Coin defines a token with a denomination and an amount.
+
+
+                        NOTE: The amount field is an Int which implements the
+                        custom method
+
+                        signatures required by gogoproto.
+                    trading_asset:
+                      type: string
+                    leverage:
+                      type: string
+                    take_profit_price:
+                      type: string
+                    position_id:
+                      type: string
+                      format: uint64
+                    status:
+                      type: string
+                      enum:
+                        - PENDING
+                        - EXECUTED
+                        - CANCLED
+                      default: PENDING
               pagination:
                 type: object
                 properties:
@@ -46257,13 +46338,68 @@ paths:
               PendingPerpetualOrder:
                 type: object
                 properties:
-                  id:
+                  order_id:
                     type: string
                     format: uint64
-                  order:
+                  owner_address:
                     type: string
-                  creator:
+                  perpetual_order_type:
                     type: string
+                    enum:
+                      - LIMITOPEN
+                      - LIMITCLOSE
+                      - MARKETOPEN
+                      - MARKETCLOSE
+                      - STOPLOSSPERP
+                    default: LIMITOPEN
+                    title: Perpetual Order
+                  position:
+                    type: string
+                    enum:
+                      - UNSPECIFIED
+                      - LONG
+                      - SHORT
+                    default: UNSPECIFIED
+                  trigger_price:
+                    type: object
+                    properties:
+                      base_denom:
+                        type: string
+                      quote_denom:
+                        type: string
+                      rate:
+                        type: string
+                  collateral:
+                    type: object
+                    properties:
+                      denom:
+                        type: string
+                      amount:
+                        type: string
+                    description: >-
+                      Coin defines a token with a denomination and an amount.
+
+
+                      NOTE: The amount field is an Int which implements the
+                      custom method
+
+                      signatures required by gogoproto.
+                  trading_asset:
+                    type: string
+                  leverage:
+                    type: string
+                  take_profit_price:
+                    type: string
+                  position_id:
+                    type: string
+                    format: uint64
+                  status:
+                    type: string
+                    enum:
+                      - PENDING
+                      - EXECUTED
+                      - CANCLED
+                    default: PENDING
         default:
           description: An unexpected error response.
           schema:
@@ -91209,6 +91345,8 @@ definitions:
     type: object
   elys.tradeshield.MsgDeletePendingSpotOrderResponse:
     type: object
+  elys.tradeshield.MsgUpdateParamsResponse:
+    type: object
   elys.tradeshield.MsgUpdatePendingPerpetualOrderResponse:
     type: object
   elys.tradeshield.MsgUpdatePendingSpotOrderResponse:
@@ -91224,17 +91362,112 @@ definitions:
         type: string
   elys.tradeshield.Params:
     type: object
-    description: Params defines the parameters for the module.
-  elys.tradeshield.PendingPerpetualOrder:
-    type: object
     properties:
-      id:
+      market_order_enabled:
+        type: boolean
+        title: 'TODO: Add gov proposal message to set this values'
+      stake_enabled:
+        type: boolean
+      process_orders_enabled:
+        type: boolean
+      swap_enabled:
+        type: boolean
+      perpetual_enabled:
+        type: boolean
+      reward_enabled:
+        type: boolean
+      leverage_enabled:
+        type: boolean
+      limit_process_order:
         type: string
         format: uint64
-      order:
+      reward_percentage:
         type: string
-      creator:
+        title: For incentive system v2
+      margin_error:
         type: string
+      minimum_deposit:
+        type: string
+    description: Params defines the parameters for the module.
+  elys.tradeshield.PerpetualOrder:
+    type: object
+    properties:
+      order_id:
+        type: string
+        format: uint64
+      owner_address:
+        type: string
+      perpetual_order_type:
+        type: string
+        enum:
+          - LIMITOPEN
+          - LIMITCLOSE
+          - MARKETOPEN
+          - MARKETCLOSE
+          - STOPLOSSPERP
+        default: LIMITOPEN
+        title: Perpetual Order
+      position:
+        type: string
+        enum:
+          - UNSPECIFIED
+          - LONG
+          - SHORT
+        default: UNSPECIFIED
+      trigger_price:
+        type: object
+        properties:
+          base_denom:
+            type: string
+          quote_denom:
+            type: string
+          rate:
+            type: string
+      collateral:
+        type: object
+        properties:
+          denom:
+            type: string
+          amount:
+            type: string
+        description: |-
+          Coin defines a token with a denomination and an amount.
+
+          NOTE: The amount field is an Int which implements the custom method
+          signatures required by gogoproto.
+      trading_asset:
+        type: string
+      leverage:
+        type: string
+      take_profit_price:
+        type: string
+      position_id:
+        type: string
+        format: uint64
+      status:
+        type: string
+        enum:
+          - PENDING
+          - EXECUTED
+          - CANCLED
+        default: PENDING
+  elys.tradeshield.PerpetualOrderType:
+    type: string
+    enum:
+      - LIMITOPEN
+      - LIMITCLOSE
+      - MARKETOPEN
+      - MARKETCLOSE
+      - STOPLOSSPERP
+    default: LIMITOPEN
+    title: Perpetual Order
+  elys.tradeshield.PerpetualPosition:
+    type: string
+    enum:
+      - UNSPECIFIED
+      - LONG
+      - SHORT
+    default: UNSPECIFIED
   elys.tradeshield.QueryAllPendingPerpetualOrderResponse:
     type: object
     properties:
@@ -91243,13 +91476,68 @@ definitions:
         items:
           type: object
           properties:
-            id:
+            order_id:
               type: string
               format: uint64
-            order:
+            owner_address:
               type: string
-            creator:
+            perpetual_order_type:
               type: string
+              enum:
+                - LIMITOPEN
+                - LIMITCLOSE
+                - MARKETOPEN
+                - MARKETCLOSE
+                - STOPLOSSPERP
+              default: LIMITOPEN
+              title: Perpetual Order
+            position:
+              type: string
+              enum:
+                - UNSPECIFIED
+                - LONG
+                - SHORT
+              default: UNSPECIFIED
+            trigger_price:
+              type: object
+              properties:
+                base_denom:
+                  type: string
+                quote_denom:
+                  type: string
+                rate:
+                  type: string
+            collateral:
+              type: object
+              properties:
+                denom:
+                  type: string
+                amount:
+                  type: string
+              description: >-
+                Coin defines a token with a denomination and an amount.
+
+
+                NOTE: The amount field is an Int which implements the custom
+                method
+
+                signatures required by gogoproto.
+            trading_asset:
+              type: string
+            leverage:
+              type: string
+            take_profit_price:
+              type: string
+            position_id:
+              type: string
+              format: uint64
+            status:
+              type: string
+              enum:
+                - PENDING
+                - EXECUTED
+                - CANCLED
+              default: PENDING
       pagination:
         type: object
         properties:
@@ -91372,13 +91660,68 @@ definitions:
       PendingPerpetualOrder:
         type: object
         properties:
-          id:
+          order_id:
             type: string
             format: uint64
-          order:
+          owner_address:
             type: string
-          creator:
+          perpetual_order_type:
             type: string
+            enum:
+              - LIMITOPEN
+              - LIMITCLOSE
+              - MARKETOPEN
+              - MARKETCLOSE
+              - STOPLOSSPERP
+            default: LIMITOPEN
+            title: Perpetual Order
+          position:
+            type: string
+            enum:
+              - UNSPECIFIED
+              - LONG
+              - SHORT
+            default: UNSPECIFIED
+          trigger_price:
+            type: object
+            properties:
+              base_denom:
+                type: string
+              quote_denom:
+                type: string
+              rate:
+                type: string
+          collateral:
+            type: object
+            properties:
+              denom:
+                type: string
+              amount:
+                type: string
+            description: >-
+              Coin defines a token with a denomination and an amount.
+
+
+              NOTE: The amount field is an Int which implements the custom
+              method
+
+              signatures required by gogoproto.
+          trading_asset:
+            type: string
+          leverage:
+            type: string
+          take_profit_price:
+            type: string
+          position_id:
+            type: string
+            format: uint64
+          status:
+            type: string
+            enum:
+              - PENDING
+              - EXECUTED
+              - CANCLED
+            default: PENDING
   elys.tradeshield.QueryGetPendingSpotOrderResponse:
     type: object
     properties:
@@ -91447,6 +91790,32 @@ definitions:
       params:
         description: params holds all the parameters of this module.
         type: object
+        properties:
+          market_order_enabled:
+            type: boolean
+            title: 'TODO: Add gov proposal message to set this values'
+          stake_enabled:
+            type: boolean
+          process_orders_enabled:
+            type: boolean
+          swap_enabled:
+            type: boolean
+          perpetual_enabled:
+            type: boolean
+          reward_enabled:
+            type: boolean
+          leverage_enabled:
+            type: boolean
+          limit_process_order:
+            type: string
+            format: uint64
+          reward_percentage:
+            type: string
+            title: For incentive system v2
+          margin_error:
+            type: string
+          minimum_deposit:
+            type: string
     description: QueryParamsResponse is response type for the Query/Params RPC method.
   elys.tradeshield.SpotOrder:
     type: object
