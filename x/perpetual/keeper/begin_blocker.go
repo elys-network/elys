@@ -69,4 +69,29 @@ func (k Keeper) BeginBlocker(ctx sdk.Context) {
 		}
 		k.SetPool(ctx, pool)
 	}
+
+	// Handle toPay
+	err := k.HandleToPay(ctx)
+	if err != nil {
+		ctx.Logger().Error(err.Error())
+	}
+}
+
+func (k Keeper) HandleToPay(ctx sdk.Context) error {
+	toPays := k.GetAllToPay(ctx)
+	// get funding fee collection address
+	fundingFeeCollectionAddress := k.GetFundingFeeCollectionAddress(ctx)
+
+	for _, toPay := range toPays {
+		balance := k.bankKeeper.GetBalance(ctx, fundingFeeCollectionAddress, toPay.AssetDenom)
+		if balance.Amount.LT(toPay.AssetBalance) {
+			break
+		} else {
+			// transfer funding fee amount to mtp address
+			if err := k.bankKeeper.SendCoins(ctx, fundingFeeCollectionAddress, sdk.AccAddress(toPay.Address), sdk.NewCoins(sdk.NewCoin(toPay.AssetDenom, toPay.AssetBalance))); err != nil {
+				return err
+			}
+		}
+	}
+	return nil
 }
