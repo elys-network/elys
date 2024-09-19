@@ -79,6 +79,10 @@ func (k Keeper) BeginBlocker(ctx sdk.Context) {
 
 func (k Keeper) HandleToPay(ctx sdk.Context) error {
 	toPays := k.GetAllToPayStore(ctx)
+
+	if len(toPays) == 0 {
+		return nil
+	}
 	// get funding fee collection address
 	fundingFeeCollectionAddress := k.GetFundingFeeCollectionAddress(ctx)
 
