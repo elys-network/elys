@@ -3,7 +3,6 @@ package keeper
 import (
 	"fmt"
 
-	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/masterchef/types"
 )
@@ -50,18 +49,19 @@ func (k Keeper) GetAllPoolInfos(ctx sdk.Context) (list []types.PoolInfo) {
 }
 
 func (k Keeper) RemoveLegacyPoolInfo(ctx sdk.Context, poolId uint64) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.LegacyPoolInfoKeyPrefix))
-	store.Delete(types.LegacyPoolInfoKey(poolId))
+	store := ctx.KVStore(k.storeKey)
+	key := types.GetPoolInfoKey(poolId)
+	store.Delete(key)
 }
 
-func (k Keeper) GetAllLegacyPoolInfos(ctx sdk.Context) (list []types.PoolInfo) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.LegacyPoolInfoKeyPrefix))
-	iterator := sdk.KVStorePrefixIterator(store, []byte{})
+func (k Keeper) GetAllLegacyPoolInfos(ctx sdk.Context) (list []types.LegacyPoolInfo) {
+	store := ctx.KVStore(k.storeKey)
+	iterator := sdk.KVStorePrefixIterator(store, types.PoolInfoKeyPrefix)
 
 	defer iterator.Close()
 
 	for ; iterator.Valid(); iterator.Next() {
-		var val types.PoolInfo
+		var val types.LegacyPoolInfo
 		k.cdc.MustUnmarshal(iterator.Value(), &val)
 		list = append(list, val)
 	}

@@ -70,6 +70,34 @@ This document describes the workflow for opening and closing a leveraged liquidi
   - **Destination**: User's wallet (position owner)
   - **Amount**: Remaining collateral after settling the debt
 
+## 3. Maintaining and Updating Leveraged Lp Position
+
+### Step 1: Initiate Position Opening
+
+- **Action**: User decides to update a leveraged LP position.
+- **Trigger**: User sends a request to update a position.
+
+### Step 2: Send Collateral Amount and Leverage
+
+- **Action**: The user sends a collateral amount from their address to the position address.
+- **Details**:
+  - **Source**: User's wallet (position owner)
+  - **Destination**: Position address
+  - **Amount**: Collateral specified by the user
+  - **Leverage**: Leverage specified by the user
+
+### Step 3: Send Borrowed Amount
+
+- **Action**: The system sends the borrowed amount from the stable stake pool to the position address.
+- **Details**:
+  - **Source**: Stable stake pool
+  - **Destination**: Position address
+  - **Amount**: Borrowed funds required for leverage
+
+
+
+
+
 # Components Involved
 
 1. **User**: The entity initiating the opening and closing of leveraged LP positions.

@@ -28,7 +28,15 @@ func (k Keeper) Pools(goCtx context.Context, req *types.QueryAllPoolRequest) (*t
 			return err
 		}
 
-		pools = append(pools, pool)
+		ammPool, found := k.amm.GetPool(ctx, pool.AmmPoolId)
+		if !found {
+			return types.ErrPoolDoesNotExist
+		}
+
+		if ammPool.PoolParams.UseOracle {
+			pools = append(pools, pool)
+		}
+
 		return nil
 	})
 	if err != nil {

@@ -78,25 +78,17 @@ message Position {
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
     (gogoproto.nullable) = false
   ]; // For recording
-  string interest_paid = 4 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
-    (gogoproto.nullable) = false
-  ]; // For recording
-  string leverage = 5 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
-    (gogoproto.nullable) = false
-  ]; // For recording
-  string leveraged_lp_amount = 6 [
+  string leveraged_lp_amount = 4 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
     (gogoproto.nullable) = false
   ];
-  string position_health = 7 [
+  string position_health = 5 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
-  uint64 id = 8;
-  uint64 amm_pool_id = 9;
-  string stop_loss_price = 10 [
+  uint64 id = 6;
+  uint64 amm_pool_id = 7;
+  string stop_loss_price = 8 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];

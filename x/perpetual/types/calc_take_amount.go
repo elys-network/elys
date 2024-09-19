@@ -6,7 +6,7 @@ import (
 )
 
 // CalcTakeAmount calculates the take amount in the custody asset based on the funding rate
-func CalcTakeAmount(custodyAmount math.Int, custodyAsset string, fundingRate sdk.Dec) math.Int {
+func CalcTakeAmount(custodyAmount math.Int, fundingRate sdk.Dec) math.Int {
 	absoluteFundingRate := fundingRate.Abs()
 
 	// Calculate the take amount

@@ -20,7 +20,6 @@ var _ LeverageLpHooks = MultiLeverageLpHooks{}
 // combine multiple leverageLp hooks, all hook functions are run in array sequence.
 type MultiLeverageLpHooks []LeverageLpHooks
 
-
 func NewMultiLeverageLpHooks(hooks ...LeverageLpHooks) MultiLeverageLpHooks {
 	return hooks
 }
@@ -35,7 +34,6 @@ func (h MultiLeverageLpHooks) AfterLeverageLpPositionOpen(ctx sdk.Context, sende
 	return nil
 }
 
-
 func (h MultiLeverageLpHooks) AfterLeverageLpPositionClose(ctx sdk.Context, sender sdk.AccAddress) error {
 	for i := range h {
 		err := h[i].AfterLeverageLpPositionClose(ctx, sender)
@@ -45,7 +43,6 @@ func (h MultiLeverageLpHooks) AfterLeverageLpPositionClose(ctx sdk.Context, send
 	}
 	return nil
 }
-
 
 func (h MultiLeverageLpHooks) AfterLeverageLpPositionOpenConsolidate(ctx sdk.Context, sender sdk.AccAddress) error {
 	for i := range h {

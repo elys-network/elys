@@ -31,6 +31,8 @@ func (k Keeper) AfterPoolCreated(ctx sdk.Context, sender sdk.AccAddress, poolId 
 		ExternalIncentiveApr: math.LegacyZeroDec(),
 		// external reward denoms on the pool
 		ExternalRewardDenoms: []string{},
+		// Eden rewards is false by default
+		EnableEdenRewards: false,
 	}
 	k.SetPoolInfo(ctx, poolInfo)
 	return nil

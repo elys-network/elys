@@ -36,7 +36,6 @@ func (k msgServer) UpdateStopLoss(goCtx context.Context, msg *types.MsgUpdateSto
 		sdk.NewAttribute("id", strconv.FormatInt(int64(position.Id), 10)),
 		sdk.NewAttribute("address", position.Address),
 		sdk.NewAttribute("collateral", position.Collateral.String()),
-		sdk.NewAttribute("leverage", position.Leverage.String()),
 		sdk.NewAttribute("liabilities", position.Liabilities.String()),
 		sdk.NewAttribute("health", position.PositionHealth.String()),
 		sdk.NewAttribute("stop_loss", position.StopLossPrice.String()),

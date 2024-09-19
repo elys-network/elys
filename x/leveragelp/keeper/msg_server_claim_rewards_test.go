@@ -81,6 +81,22 @@ func initializeForClaimRewards(suite *KeeperTestSuite, addresses []sdk.AccAddres
 	}
 }
 
+func openPosition(suite *KeeperTestSuite, address sdk.AccAddress, collateralAmount sdk.Int, leverage sdk.Dec) {
+	msg := types.MsgOpen{
+		Creator:          address.String(),
+		CollateralAsset:  ptypes.BaseCurrency,
+		CollateralAmount: collateralAmount,
+		AmmPoolId:        1,
+		Leverage:         leverage,
+		StopLossPrice:    sdk.MustNewDecFromStr("50.0"),
+	}
+	_, err := suite.app.LeveragelpKeeper.Open(suite.ctx, &msg)
+	if err != nil {
+		panic(err)
+	}
+	return
+}
+
 func (suite *KeeperTestSuite) TestMsgServerClaimRewards() {
 	addresses := simapp.AddTestAddrs(suite.app, suite.ctx, 10, sdk.NewInt(1000000))
 	asset1 := ptypes.ATOM

@@ -1,9 +1,10 @@
 package types
 
 import (
+	"fmt"
+
 	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/math"
-	"fmt"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
@@ -110,8 +111,8 @@ func (msg *MsgOpen) ValidateBasic() error {
 	if err != nil {
 		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
 	}
-	// leverage should be greater than 1
-	if msg.Leverage.LTE(sdk.OneDec()) {
+	// leverage should be greater than or equal to 1
+	if msg.Leverage.LT(sdk.OneDec()) {
 		return ErrLeverageTooSmall
 	}
 	collateralCoin := sdk.NewCoin(msg.CollateralAsset, msg.CollateralAmount)

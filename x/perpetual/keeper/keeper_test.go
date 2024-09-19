@@ -304,35 +304,48 @@ func SetupStableCoinPrices(ctx sdk.Context, oracle oraclekeeper.Keeper) {
 		Display: "ATOM",
 		Decimal: 6,
 	})
+	oracle.SetAssetInfo(ctx, oracletypes.AssetInfo{
+		Denom:   "uatom",
+		Display: "uatom",
+		Decimal: 6,
+	})
 
 	oracle.SetPrice(ctx, oracletypes.Price{
 		Asset:     "USDC",
-		Price:     sdk.NewDec(1000000),
+		Price:     sdk.NewDec(1),
 		Source:    "elys",
 		Provider:  provider.String(),
 		Timestamp: uint64(ctx.BlockTime().Unix()),
 	})
 	oracle.SetPrice(ctx, oracletypes.Price{
 		Asset:     "USDT",
-		Price:     sdk.NewDec(1000000),
+		Price:     sdk.NewDec(1),
 		Source:    "elys",
 		Provider:  provider.String(),
 		Timestamp: uint64(ctx.BlockTime().Unix()),
 	})
 	oracle.SetPrice(ctx, oracletypes.Price{
 		Asset:     "ELYS",
-		Price:     sdk.NewDec(100),
+		Price:     sdk.NewDec(23),
 		Source:    "elys",
 		Provider:  provider.String(),
 		Timestamp: uint64(ctx.BlockTime().Unix()),
 	})
 	oracle.SetPrice(ctx, oracletypes.Price{
 		Asset:     "ATOM",
-		Price:     sdk.NewDec(100),
+		Price:     sdk.NewDec(6),
 		Source:    "atom",
 		Provider:  provider.String(),
 		Timestamp: uint64(ctx.BlockTime().Unix()),
 	})
+	oracle.SetPrice(ctx, oracletypes.Price{
+		Asset:     "uatom",
+		Price:     sdk.NewDec(1),
+		Source:    "uatom",
+		Provider:  provider.String(),
+		Timestamp: uint64(ctx.BlockTime().Unix()),
+	})
+
 }
 
 func (suite *PerpetualKeeperTestSuite) TestCheckMinLiabilities() {

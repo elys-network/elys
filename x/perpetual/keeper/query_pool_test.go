@@ -3,16 +3,76 @@ package keeper_test
 import (
 	"testing"
 
+	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/types/query"
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
+	simapp "github.com/elys-network/elys/app"
 	keepertest "github.com/elys-network/elys/testutil/keeper"
 	"github.com/elys-network/elys/testutil/nullify"
+	ammtypes "github.com/elys-network/elys/x/amm/types"
+	"github.com/elys-network/elys/x/perpetual/keeper"
 	"github.com/elys-network/elys/x/perpetual/types"
+	"github.com/elys-network/elys/x/perpetual/types/mocks"
 )
+
+func TestPools_InvalidRequest(t *testing.T) {
+	mockAmm := new(mocks.AmmKeeper)
+	k := keeper.NewKeeper(nil, nil, nil, "cosmos1ysxv266l8w76lq0vy44ktzajdr9u9yhlxzlvga", mockAmm, nil, nil, nil, nil)
+	ctx := sdk.Context{}
+	_, err := k.Pools(ctx, nil)
+
+	assert.ErrorIs(t, err, status.Error(codes.InvalidArgument, "invalid request"))
+}
+
+func TestPools_ErrPoolDoesNotExist(t *testing.T) {
+
+	app := simapp.InitElysTestApp(true)
+	ctx := app.BaseApp.NewContext(true, tmproto.Header{})
+
+	app.PerpetualKeeper.SetPool(ctx, types.Pool{
+		AmmPoolId: uint64(23),
+	})
+
+	_, err := app.PerpetualKeeper.Pools(ctx, &types.QueryAllPoolRequest{})
+	assert.Equal(t, "rpc error: code = Internal desc = pool does not exist", err.Error())
+}
+
+func TestPools_Success(t *testing.T) {
+
+	app := simapp.InitElysTestApp(true)
+	ctx := app.BaseApp.NewContext(true, tmproto.Header{})
+
+	app.PerpetualKeeper.SetPool(ctx, types.Pool{
+		AmmPoolId: uint64(1),
+	})
+
+	app.PerpetualKeeper.SetPool(ctx, types.Pool{
+		AmmPoolId: uint64(2),
+	})
+
+	app.AmmKeeper.SetPool(ctx, ammtypes.Pool{
+		PoolId: uint64(1),
+		PoolParams: ammtypes.PoolParams{
+			UseOracle: true,
+		},
+	})
+
+	app.AmmKeeper.SetPool(ctx, ammtypes.Pool{
+		PoolId: uint64(2),
+		PoolParams: ammtypes.PoolParams{
+			UseOracle: false,
+		},
+	})
+
+	response, err := app.PerpetualKeeper.Pools(ctx, &types.QueryAllPoolRequest{})
+	assert.Nil(t, err)
+	assert.Len(t, response.Pool, 1)
+
+}
 
 func TestPoolQuerySingle(t *testing.T) {
 	keeper, ctx := keepertest.PerpetualKeeper(t)
@@ -64,60 +124,4 @@ func TestPoolQuerySingle(t *testing.T) {
 			}
 		})
 	}
-}
-
-func TestPoolQueryPaginated(t *testing.T) {
-	keeper, ctx := keepertest.PerpetualKeeper(t)
-	wctx := sdk.WrapSDKContext(ctx)
-	msgs := createNPool(keeper, ctx, 5)
-
-	request := func(next []byte, offset, limit uint64, total bool) *types.QueryAllPoolRequest {
-		return &types.QueryAllPoolRequest{
-			Pagination: &query.PageRequest{
-				Key:        next,
-				Offset:     offset,
-				Limit:      limit,
-				CountTotal: total,
-			},
-		}
-	}
-	t.Run("ByOffset", func(t *testing.T) {
-		step := 2
-		for i := 0; i < len(msgs); i += step {
-			resp, err := keeper.Pools(wctx, request(nil, uint64(i), uint64(step), false))
-			require.NoError(t, err)
-			require.LessOrEqual(t, len(resp.Pool), step)
-			require.Subset(t,
-				nullify.Fill(msgs),
-				nullify.Fill(resp.Pool),
-			)
-		}
-	})
-	t.Run("ByKey", func(t *testing.T) {
-		step := 2
-		var next []byte
-		for i := 0; i < len(msgs); i += step {
-			resp, err := keeper.Pools(wctx, request(next, 0, uint64(step), false))
-			require.NoError(t, err)
-			require.LessOrEqual(t, len(resp.Pool), step)
-			require.Subset(t,
-				nullify.Fill(msgs),
-				nullify.Fill(resp.Pool),
-			)
-			next = resp.Pagination.NextKey
-		}
-	})
-	t.Run("Total", func(t *testing.T) {
-		resp, err := keeper.Pools(wctx, request(nil, 0, 0, true))
-		require.NoError(t, err)
-		require.Equal(t, len(msgs), int(resp.Pagination.Total))
-		require.ElementsMatch(t,
-			nullify.Fill(msgs),
-			nullify.Fill(resp.Pool),
-		)
-	})
-	t.Run("InvalidRequest", func(t *testing.T) {
-		_, err := keeper.Pools(wctx, nil)
-		require.ErrorIs(t, err, status.Error(codes.InvalidArgument, "invalid request"))
-	})
 }

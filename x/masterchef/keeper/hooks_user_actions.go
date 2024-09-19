@@ -3,6 +3,7 @@ package keeper
 import (
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/elys-network/elys/x/parameter/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
 
@@ -56,11 +57,15 @@ func (k Keeper) GetRewardDenoms(ctx sdk.Context, poolId uint64) []string {
 	rewardDenoms := make(map[string]bool)
 	rewardDenoms[ptypes.Eden] = true
 	rewardDenoms[k.GetBaseCurrencyDenom(ctx)] = true
-	keys := []string{ptypes.Eden, k.GetBaseCurrencyDenom(ctx)}
+	keys := []string{k.GetBaseCurrencyDenom(ctx)}
 
 	poolInfo, found := k.GetPoolInfo(ctx, poolId)
 	if !found {
 		return []string{}
+	}
+
+	if poolInfo.EnableEdenRewards {
+		keys = append(keys, types.Eden)
 	}
 
 	for _, denom := range poolInfo.ExternalRewardDenoms {

@@ -11,7 +11,7 @@ func (m Migrator) V7Migration(ctx sdk.Context) error {
 	ctx.Logger().Info("Migrating positions from legacy to new format")
 
 	for _, mtp := range mtps {
-		new_mtp := types.MTP{
+		newMtp := types.MTP{
 			Address:                        mtp.Address,
 			CollateralAsset:                mtp.CollateralAsset,
 			TradingAsset:                   mtp.TradingAsset,
@@ -40,9 +40,25 @@ func (m Migrator) V7Migration(ctx sdk.Context) error {
 			FundingFeeReceivedCustody:      mtp.FundingFeeReceivedCustody,
 			OpenPrice:                      mtp.OpenPrice,
 			StopLossPrice:                  sdk.NewDec(0),
+			LastInterestCalcTime:           uint64(ctx.BlockTime().Unix()),
+			LastInterestCalcBlock:          uint64(ctx.BlockHeight()),
+			LastFundingCalcTime:            uint64(ctx.BlockTime().Unix()),
+			LastFundingCalcBlock:           uint64(ctx.BlockHeight()),
 		}
 		m.keeper.DeleteLegacyMTP(ctx, mtp.Address, mtp.Id)
-		m.keeper.SetMTP(ctx, &new_mtp)
+		m.keeper.SetMTP(ctx, &newMtp)
+
+		baseCurrency, _ := m.keeper.GetBaseCurreny(ctx)
+		pool, poolFound := m.keeper.GetPool(ctx, newMtp.AmmPoolId)
+		if !poolFound {
+			continue
+		}
+		ammPool, poolErr := m.keeper.GetAmmPool(ctx, newMtp.AmmPoolId, newMtp.TradingAsset)
+		if poolErr != nil {
+			continue
+		}
+
+		m.keeper.CheckAndLiquidateUnhealthyPosition(ctx, &newMtp, pool, ammPool, baseCurrency.Denom, baseCurrency.Decimals)
 	}
 	return nil
 }

@@ -9,7 +9,7 @@ import (
 // Estimate the price : eg, 1 Eden -> x usdc
 func (k Keeper) EstimatePrice(ctx sdk.Context, tokenInDenom, baseCurrency string) math.LegacyDec {
 	// Find a pool that can convert tokenIn to usdc
-	pool, found := k.GetBestPoolWithDenoms(ctx, []string{tokenInDenom, baseCurrency})
+	pool, found := k.GetBestPoolWithDenoms(ctx, []string{tokenInDenom, baseCurrency}, false)
 	if !found {
 		return sdk.ZeroDec()
 	}

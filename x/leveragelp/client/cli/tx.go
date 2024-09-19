@@ -28,7 +28,6 @@ func GetTxCmd() *cobra.Command {
 	cmd.AddCommand(CmdDewhitelist())
 	cmd.AddCommand(CmdClaimRewards())
 	cmd.AddCommand(CmdUpdateStopLoss())
-	cmd.AddCommand(CmdAddCollateral())
 	cmd.AddCommand(CmdClosePositions())
 	// this line is used by starport scaffolding # 1
 

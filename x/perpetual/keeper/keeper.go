@@ -2,8 +2,6 @@ package keeper
 
 import (
 	"fmt"
-	"math/big"
-
 	"github.com/cometbft/cometbft/libs/log"
 	"github.com/cosmos/cosmos-sdk/codec"
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
@@ -156,7 +154,7 @@ func (k Keeper) Borrow(ctx sdk.Context, collateralAmount math.Int, custodyAmount
 	mtp.TakeProfitLiabilities = takeProfitLiabilities
 	mtp.Leverage = eta.Add(sdk.OneDec())
 
-	h, err := k.UpdateMTPHealth(ctx, *mtp, *ammPool, baseCurrency) // set mtp in func or return h?
+	h, err := k.GetMTPHealth(ctx, *mtp, *ammPool, baseCurrency) // set mtp in func or return h?
 	if err != nil {
 		return err
 	}
@@ -426,7 +424,6 @@ func (k Keeper) BorrowInterestRateComputation(ctx sdk.Context, pool types.Pool) 
 }
 
 func (k Keeper) CheckMinLiabilities(ctx sdk.Context, collateralAmount sdk.Coin, eta sdk.Dec, ammPool ammtypes.Pool, custodyAsset string, baseCurrency string) error {
-	var borrowInterestRational, liabilitiesRational, rate big.Rat
 	minBorrowInterestRate := k.GetBorrowInterestRateMin(ctx)
 
 	// Ensure minBorrowInterestRate is not zero to avoid division by zero
@@ -436,7 +433,7 @@ func (k Keeper) CheckMinLiabilities(ctx sdk.Context, collateralAmount sdk.Coin, 
 
 	collateralAmountDec := sdk.NewDecFromInt(collateralAmount.Amount)
 	liabilitiesDec := collateralAmountDec.Mul(eta)
-	liabilities := sdk.NewUint(liabilitiesDec.TruncateInt().Uint64())
+	liabilities := sdk.NewInt(liabilitiesDec.TruncateInt64())
 
 	// liabilty has to be always in base currency
 	if collateralAmount.Denom != baseCurrency {
@@ -447,14 +444,10 @@ func (k Keeper) CheckMinLiabilities(ctx sdk.Context, collateralAmount sdk.Coin, 
 		if err != nil {
 			return fmt.Errorf("CheckMinLiabilities failed: EstimateSwapGivenOut: %s", err.Error())
 		}
-		liabilities = sdk.NewUint(inAmt.Uint64())
+		liabilities = sdk.NewInt(inAmt.Int64())
 	}
-	rate.SetFloat64(minBorrowInterestRate.MustFloat64())
-	liabilitiesRational.SetInt(liabilities.BigInt())
-	borrowInterestRational.Mul(&rate, &liabilitiesRational)
-
-	borrowInterestNew := borrowInterestRational.Num().Quo(borrowInterestRational.Num(), borrowInterestRational.Denom())
-	samplePayment := sdk.NewInt(borrowInterestNew.Int64())
+	minBorrowedInterest := liabilities.ToLegacyDec().Mul(minBorrowInterestRate)
+	samplePayment := sdk.NewInt(minBorrowedInterest.TruncateInt64())
 	if samplePayment.IsZero() {
 		return fmt.Errorf("interest payment on borrowed amount is zero")
 	}
@@ -488,7 +481,13 @@ func (k Keeper) TakeFundPayment(ctx sdk.Context, returnAmount math.Int, returnAs
 
 	if !takeAmount.IsZero() {
 		takeCoins := sdk.NewCoins(sdk.NewCoin(returnAsset, sdk.NewIntFromBigInt(takeAmount.BigInt())))
-		err := k.bankKeeper.SendCoinsFromModuleToAccount(ctx, ammPool.Address, fundAddr, takeCoins)
+
+		ammPoolAddr, err := sdk.AccAddressFromBech32(ammPool.Address)
+		if err != nil {
+			return sdk.ZeroInt(), err
+		}
+		err = k.bankKeeper.SendCoins(ctx, ammPoolAddr, fundAddr, takeCoins)
+		//err := k.bankKeeper.SendCoinsFromModuleToAccount(ctx, ammPool.Address, fundAddr, takeCoins)
 		if err != nil {
 			return sdk.ZeroInt(), err
 		}

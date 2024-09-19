@@ -8,7 +8,7 @@ import (
 func (suite KeeperTestSuite) TestCheckAmmPoolUsdcBalance() {
 	k := suite.app.LeveragelpKeeper
 	addr := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
-	_, pool := suite.OpenPosition(addr)
+	_, _, pool := suite.OpenPosition(addr)
 
 	ammPool, found := suite.app.AmmKeeper.GetPool(suite.ctx, pool.AmmPoolId)
 	suite.Require().True(found)

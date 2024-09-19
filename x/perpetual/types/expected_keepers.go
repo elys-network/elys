@@ -56,7 +56,7 @@ type OpenLongChecker interface {
 	Borrow(ctx sdk.Context, collateralAmount math.Int, custodyAmount math.Int, mtp *MTP, ammPool *ammtypes.Pool, pool *Pool, eta sdk.Dec, baseCurrency string, isBroker bool) error
 	UpdatePoolHealth(ctx sdk.Context, pool *Pool)
 	TakeInCustody(ctx sdk.Context, mtp MTP, pool *Pool) error
-	UpdateMTPHealth(ctx sdk.Context, mtp MTP, ammPool ammtypes.Pool, baseCurrency string) (sdk.Dec, error)
+	GetMTPHealth(ctx sdk.Context, mtp MTP, ammPool ammtypes.Pool, baseCurrency string) (sdk.Dec, error)
 	GetSafetyFactor(ctx sdk.Context) sdk.Dec
 	SetPool(ctx sdk.Context, pool Pool)
 	CheckSameAssetPosition(ctx sdk.Context, msg *MsgOpen) *MTP
@@ -76,7 +76,7 @@ type OpenShortChecker interface {
 	Borrow(ctx sdk.Context, collateralAmount math.Int, custodyAmount math.Int, mtp *MTP, ammPool *ammtypes.Pool, pool *Pool, eta sdk.Dec, baseCurrency string, isBroker bool) error
 	UpdatePoolHealth(ctx sdk.Context, pool *Pool)
 	TakeInCustody(ctx sdk.Context, mtp MTP, pool *Pool) error
-	UpdateMTPHealth(ctx sdk.Context, mtp MTP, ammPool ammtypes.Pool, baseCurrency string) (sdk.Dec, error)
+	GetMTPHealth(ctx sdk.Context, mtp MTP, ammPool ammtypes.Pool, baseCurrency string) (sdk.Dec, error)
 	GetSafetyFactor(ctx sdk.Context) sdk.Dec
 	SetPool(ctx sdk.Context, pool Pool)
 	CheckSameAssetPosition(ctx sdk.Context, msg *MsgOpen) *MTP
@@ -92,7 +92,7 @@ type CloseLongChecker interface {
 		poolId uint64,
 	) (val Pool, found bool)
 	GetAmmPool(ctx sdk.Context, poolId uint64) (ammtypes.Pool, error)
-	HandleBorrowInterest(ctx sdk.Context, mtp *MTP, pool *Pool, ammPool ammtypes.Pool) error
+	SettleBorrowInterest(ctx sdk.Context, mtp *MTP, pool *Pool, ammPool ammtypes.Pool) (math.Int, error)
 	TakeOutCustody(ctx sdk.Context, mtp MTP, pool *Pool, amount math.Int) error
 	EstimateAndRepay(ctx sdk.Context, mtp MTP, pool Pool, ammPool ammtypes.Pool, amount math.Int, baseCurrency string) (math.Int, error)
 }
@@ -105,7 +105,7 @@ type CloseShortChecker interface {
 		poolId uint64,
 	) (val Pool, found bool)
 	GetAmmPool(ctx sdk.Context, poolId uint64) (ammtypes.Pool, error)
-	HandleBorrowInterest(ctx sdk.Context, mtp *MTP, pool *Pool, ammPool ammtypes.Pool) error
+	SettleBorrowInterest(ctx sdk.Context, mtp *MTP, pool *Pool, ammPool ammtypes.Pool) (math.Int, error)
 	TakeOutCustody(ctx sdk.Context, mtp MTP, pool *Pool, amount math.Int) error
 	EstimateAndRepay(ctx sdk.Context, mtp MTP, pool Pool, ammPool ammtypes.Pool, amount math.Int, baseCurrency string) (math.Int, error)
 }
@@ -123,7 +123,7 @@ type AccountKeeper interface {
 //go:generate mockery --srcpkg . --name AmmKeeper --structname AmmKeeper --filename amm_keeper.go --with-expecter
 type AmmKeeper interface {
 	// Get first pool id that contains all denoms in pool assets
-	GetBestPoolWithDenoms(ctx sdk.Context, denoms []string) (pool ammtypes.Pool, found bool)
+	GetBestPoolWithDenoms(ctx sdk.Context, denoms []string, usesOracle bool) (pool ammtypes.Pool, found bool)
 	// GetPool returns a pool from its index
 	GetPool(sdk.Context, uint64) (ammtypes.Pool, bool)
 	// Get all pools

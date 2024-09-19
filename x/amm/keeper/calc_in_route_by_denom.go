@@ -12,7 +12,7 @@ func (k Keeper) CalcInRouteByDenom(ctx sdk.Context, denomIn string, denomOut str
 	var route []*types.SwapAmountInRoute
 
 	// Check for a direct pool between the denoms
-	if pool, found := k.GetBestPoolWithDenoms(ctx, []string{denomIn, denomOut}); found {
+	if pool, found := k.GetBestPoolWithDenoms(ctx, []string{denomIn, denomOut}, false); found {
 		// If the pool exists, return the route
 		route = append(route, &types.SwapAmountInRoute{
 			PoolId:        pool.PoolId,
@@ -22,7 +22,7 @@ func (k Keeper) CalcInRouteByDenom(ctx sdk.Context, denomIn string, denomOut str
 	}
 
 	// Find pool for initial denom to base currency
-	pool, found := k.GetBestPoolWithDenoms(ctx, []string{denomIn, baseCurrency})
+	pool, found := k.GetBestPoolWithDenoms(ctx, []string{denomIn, baseCurrency}, false)
 	if !found {
 		return nil, fmt.Errorf("no available pool for %s to base currency", denomIn)
 	}
@@ -33,7 +33,7 @@ func (k Keeper) CalcInRouteByDenom(ctx sdk.Context, denomIn string, denomOut str
 	})
 
 	// Find pool for base currency to target denom
-	pool, found = k.GetBestPoolWithDenoms(ctx, []string{baseCurrency, denomOut})
+	pool, found = k.GetBestPoolWithDenoms(ctx, []string{baseCurrency, denomOut}, false)
 	if !found {
 		return nil, fmt.Errorf("no available pool for base currency to %s", denomOut)
 	}

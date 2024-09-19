@@ -107,6 +107,38 @@ func TestOpen_ErrorPreparePools(t *testing.T) {
 	mockChecker.AssertExpectations(t)
 }
 
+func TestOpen_ErrPoolHasToBeOracle(t *testing.T) {
+	// Setup the mock checker
+	mockChecker := new(mocks.OpenChecker)
+	mockAssetProfile := new(mocks.AssetProfileKeeper)
+
+	k := keeper.NewKeeper(nil, nil, nil, "cosmos1ysxv266l8w76lq0vy44ktzajdr9u9yhlxzlvga", nil, nil, nil, mockAssetProfile, nil)
+	k.OpenChecker = mockChecker
+
+	var (
+		ctx = sdk.Context{} // Mock or setup a context
+		msg = &types.MsgOpen{
+			Position:     types.Position_LONG,
+			TradingAsset: "uelys",
+			Collateral:   sdk.NewCoin(ptypes.BaseCurrency, sdk.OneInt()),
+		}
+		poolId = uint64(1)
+	)
+
+	// Mock behavior
+	mockAssetProfile.On("GetEntry", ctx, ptypes.BaseCurrency).Return(assetprofiletypes.Entry{BaseDenom: ptypes.BaseCurrency, Denom: ptypes.BaseCurrency}, true)
+	mockChecker.On("CheckUserAuthorization", ctx, msg).Return(nil)
+	mockChecker.On("CheckSameAssetPosition", ctx, msg).Return(nil)
+	mockChecker.On("CheckMaxOpenPositions", ctx).Return(nil)
+	mockChecker.On("PreparePools", ctx, msg.Collateral.Denom, msg.TradingAsset).Return(poolId, ammtypes.Pool{PoolParams: ammtypes.PoolParams{UseOracle: false}}, types.Pool{}, nil)
+
+	_, err := k.Open(ctx, msg, false)
+
+	assert.ErrorIs(t, types.ErrPoolHasToBeOracle, err)
+	mockAssetProfile.AssertExpectations(t)
+	mockChecker.AssertExpectations(t)
+}
+
 func TestOpen_ErrorCheckPoolHealth(t *testing.T) {
 	// Setup the mock checker
 	mockChecker := new(mocks.OpenChecker)
@@ -130,7 +162,7 @@ func TestOpen_ErrorCheckPoolHealth(t *testing.T) {
 	mockChecker.On("CheckUserAuthorization", ctx, msg).Return(nil)
 	mockChecker.On("CheckSameAssetPosition", ctx, msg).Return(nil)
 	mockChecker.On("CheckMaxOpenPositions", ctx).Return(nil)
-	mockChecker.On("PreparePools", ctx, msg.Collateral.Denom, msg.TradingAsset).Return(poolId, ammtypes.Pool{}, types.Pool{}, nil)
+	mockChecker.On("PreparePools", ctx, msg.Collateral.Denom, msg.TradingAsset).Return(poolId, ammtypes.Pool{PoolParams: ammtypes.PoolParams{UseOracle: true}}, types.Pool{}, nil)
 	mockChecker.On("CheckPoolHealth", ctx, poolId).Return(errorsmod.Wrap(types.ErrInvalidBorrowingAsset, "invalid collateral asset"))
 
 	_, err := k.Open(ctx, msg, false)
@@ -189,7 +221,7 @@ func TestOpen_ErrorOpenLong(t *testing.T) {
 	mockChecker.On("CheckUserAuthorization", ctx, msg).Return(nil)
 	mockChecker.On("CheckSameAssetPosition", ctx, msg).Return(nil)
 	mockChecker.On("CheckMaxOpenPositions", ctx).Return(nil)
-	mockChecker.On("PreparePools", ctx, msg.Collateral.Denom, msg.TradingAsset).Return(poolId, ammtypes.Pool{}, types.Pool{}, nil)
+	mockChecker.On("PreparePools", ctx, msg.Collateral.Denom, msg.TradingAsset).Return(poolId, ammtypes.Pool{PoolParams: ammtypes.PoolParams{UseOracle: true}}, types.Pool{}, nil)
 	mockChecker.On("CheckPoolHealth", ctx, poolId).Return(nil)
 	mockChecker.On("OpenLong", ctx, poolId, msg, ptypes.BaseCurrency, false).Return(&types.MTP{}, errors.New("error executing open long"))
 
@@ -223,7 +255,7 @@ func TestOpen_ErrorOpenShort(t *testing.T) {
 	mockChecker.On("CheckUserAuthorization", ctx, msg).Return(nil)
 	mockChecker.On("CheckSameAssetPosition", ctx, msg).Return(nil)
 	mockChecker.On("CheckMaxOpenPositions", ctx).Return(nil)
-	mockChecker.On("PreparePools", ctx, msg.Collateral.Denom, msg.TradingAsset).Return(poolId, ammtypes.Pool{}, types.Pool{}, nil)
+	mockChecker.On("PreparePools", ctx, msg.Collateral.Denom, msg.TradingAsset).Return(poolId, ammtypes.Pool{PoolParams: ammtypes.PoolParams{UseOracle: true}}, types.Pool{}, nil)
 	mockChecker.On("CheckPoolHealth", ctx, poolId).Return(nil)
 	mockChecker.On("OpenShort", ctx, poolId, msg, ptypes.BaseCurrency, false).Return(&types.MTP{}, errors.New("error executing open short"))
 
@@ -259,10 +291,10 @@ func TestOpen_Successful(t *testing.T) {
 	mockChecker.On("CheckUserAuthorization", ctx, msg).Return(nil)
 	mockChecker.On("CheckSameAssetPosition", ctx, msg).Return(nil)
 	mockChecker.On("CheckMaxOpenPositions", ctx).Return(nil)
-	mockChecker.On("PreparePools", ctx, msg.Collateral.Denom, msg.TradingAsset).Return(poolId, ammtypes.Pool{}, types.Pool{}, nil)
+	mockChecker.On("PreparePools", ctx, msg.Collateral.Denom, msg.TradingAsset).Return(poolId, ammtypes.Pool{PoolParams: ammtypes.PoolParams{UseOracle: true}}, types.Pool{}, nil)
 	mockChecker.On("CheckPoolHealth", ctx, poolId).Return(nil)
 	mockChecker.On("OpenShort", ctx, poolId, msg, ptypes.BaseCurrency, false).Return(mtp, nil)
-	mockChecker.On("UpdateOpenPrice", ctx, mtp, ammtypes.Pool{}, ptypes.BaseCurrency).Return(nil)
+	mockChecker.On("UpdateOpenPrice", ctx, mtp, ammtypes.Pool{PoolParams: ammtypes.PoolParams{UseOracle: true}}, ptypes.BaseCurrency).Return(nil)
 	mockChecker.On("EmitOpenEvent", ctx, mtp).Return()
 
 	_, err := k.Open(ctx, msg, false)

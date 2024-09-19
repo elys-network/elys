@@ -103,14 +103,14 @@ func (suite KeeperTestSuite) TestQueryGetPosition() {
 
 	expected := types.PositionAndInterest{
 		Position: &types.QueryPosition{
-			Position: position,
-			UpdatedLeverage: updated_leverage,
+			Position:         position,
+			UpdatedLeverage:  updated_leverage,
 			PositionUsdValue: sdk.NewDec(5000).Quo(sdk.NewDec(1000000)),
 		},
-		InterestRateHour: sdk.MustNewDecFromStr("0.000017123287671233"),
+		InterestRateHour:    sdk.MustNewDecFromStr("0.000017123287671233"),
 		InterestRateHourUsd: sdk.ZeroDec(),
 	}
-	pos_for_address_res, _ := k.QueryPositionsForAddress(suite.ctx, &types.PositionsForAddressRequest{Address: addr.String(), Pagination: nil} )
+	pos_for_address_res, _ := k.QueryPositionsForAddress(suite.ctx, &types.PositionsForAddressRequest{Address: addr.String(), Pagination: nil})
 
 	suite.Require().Equal(expected.Position, pos_for_address_res.Positions[0].Position)
 	suite.Require().True(expected.InterestRateHour.Equal(pos_for_address_res.Positions[0].InterestRateHour))

@@ -60,7 +60,7 @@ func (k Keeper) ProcessOpenShort(ctx sdk.Context, mtp *types.MTP, leverage sdk.D
 	}
 
 	// Update the MTP health.
-	lr, err := k.UpdateMTPHealth(ctx, *mtp, ammPool, baseCurrency)
+	lr, err := k.GetMTPHealth(ctx, *mtp, ammPool, baseCurrency)
 	if err != nil {
 		return nil, err
 	}

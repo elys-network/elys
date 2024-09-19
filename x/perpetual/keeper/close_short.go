@@ -32,7 +32,7 @@ func (k Keeper) CloseShort(ctx sdk.Context, msg *types.MsgClose, baseCurrency st
 	}
 
 	// Handle Borrow Interest if within epoch position
-	if err := k.HandleBorrowInterest(ctx, &mtp, &pool, ammPool); err != nil {
+	if _, err = k.SettleBorrowInterest(ctx, &mtp, &pool, ammPool); err != nil {
 		return nil, sdk.ZeroInt(), err
 	}
 
