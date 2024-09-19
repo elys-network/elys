@@ -88,9 +88,10 @@ func (k Keeper) HandleToPay(ctx sdk.Context) error {
 			break
 		} else {
 			// transfer funding fee amount to mtp address
-			if err := k.bankKeeper.SendCoins(ctx, fundingFeeCollectionAddress, sdk.AccAddress(toPay.Address), sdk.NewCoins(sdk.NewCoin(toPay.AssetDenom, toPay.AssetBalance))); err != nil {
+			if err := k.bankKeeper.SendCoins(ctx, fundingFeeCollectionAddress, sdk.MustAccAddressFromBech32(toPay.Address), sdk.NewCoins(sdk.NewCoin(toPay.AssetDenom, toPay.AssetBalance))); err != nil {
 				return err
 			}
+			k.DeleteToPay(ctx, sdk.MustAccAddressFromBech32(toPay.Address), toPay.Id)
 		}
 	}
 	return nil
