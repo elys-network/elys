@@ -54,7 +54,7 @@ type OpenLongChecker interface {
 	EstimateSwap(ctx sdk.Context, leveragedAmtTokenIn sdk.Coin, borrowAsset string, ammPool ammtypes.Pool) (math.Int, error)
 	EstimateSwapGivenOut(ctx sdk.Context, tokenOutAmount sdk.Coin, tokenInDenom string, ammPool ammtypes.Pool) (math.Int, error)
 	Borrow(ctx sdk.Context, collateralAmount math.Int, custodyAmount math.Int, mtp *MTP, ammPool *ammtypes.Pool, pool *Pool, eta sdk.Dec, baseCurrency string, isBroker bool) error
-	UpdatePoolHealth(ctx sdk.Context, pool *Pool) error
+	UpdatePoolHealth(ctx sdk.Context, pool *Pool)
 	TakeInCustody(ctx sdk.Context, mtp MTP, pool *Pool) error
 	UpdateMTPHealth(ctx sdk.Context, mtp MTP, ammPool ammtypes.Pool, baseCurrency string) (sdk.Dec, error)
 	GetSafetyFactor(ctx sdk.Context) sdk.Dec
@@ -74,7 +74,7 @@ type OpenShortChecker interface {
 	EstimateSwap(ctx sdk.Context, leveragedAmtTokenIn sdk.Coin, borrowAsset string, ammPool ammtypes.Pool) (math.Int, error)
 	EstimateSwapGivenOut(ctx sdk.Context, tokenOutAmount sdk.Coin, tokenInDenom string, ammPool ammtypes.Pool) (math.Int, error)
 	Borrow(ctx sdk.Context, collateralAmount math.Int, custodyAmount math.Int, mtp *MTP, ammPool *ammtypes.Pool, pool *Pool, eta sdk.Dec, baseCurrency string, isBroker bool) error
-	UpdatePoolHealth(ctx sdk.Context, pool *Pool) error
+	UpdatePoolHealth(ctx sdk.Context, pool *Pool)
 	TakeInCustody(ctx sdk.Context, mtp MTP, pool *Pool) error
 	UpdateMTPHealth(ctx sdk.Context, mtp MTP, ammPool ammtypes.Pool, baseCurrency string) (sdk.Dec, error)
 	GetSafetyFactor(ctx sdk.Context) sdk.Dec

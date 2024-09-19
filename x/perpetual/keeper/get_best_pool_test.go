@@ -30,7 +30,7 @@ func (suite *PerpetualKeeperTestSuite) TestGetBestPool() {
 			ptypes.ATOM,
 			types.ErrPoolDoesNotExist.Error(),
 			func() {
-				_ = suite.SetAndGetAmmPool(addr[0], 1, false, sdk.ZeroDec(), sdk.ZeroDec(), ptypes.ATOM, amount)
+				_ = suite.SetAndGetAmmPool(addr[0], 1, false, sdk.ZeroDec(), sdk.ZeroDec(), ptypes.ATOM, amount, amount)
 			},
 		},
 		{
@@ -38,7 +38,7 @@ func (suite *PerpetualKeeperTestSuite) TestGetBestPool() {
 			ptypes.ATOM,
 			"",
 			func() {
-				expectAmmPool = suite.SetAndGetAmmPool(addr[0], 2, true, sdk.ZeroDec(), sdk.ZeroDec(), ptypes.ATOM, amount)
+				expectAmmPool = suite.SetAndGetAmmPool(addr[0], 2, true, sdk.ZeroDec(), sdk.ZeroDec(), ptypes.ATOM, amount, amount)
 			},
 		},
 		{
@@ -46,7 +46,7 @@ func (suite *PerpetualKeeperTestSuite) TestGetBestPool() {
 			ptypes.ATOM,
 			"",
 			func() {
-				expectAmmPool = suite.SetAndGetAmmPool(addr[0], 3, true, sdk.ZeroDec(), sdk.ZeroDec(), ptypes.ATOM, amount.MulRaw(10))
+				expectAmmPool = suite.SetAndGetAmmPool(addr[0], 3, true, sdk.ZeroDec(), sdk.ZeroDec(), ptypes.ATOM, amount.MulRaw(10), amount.MulRaw(10))
 			},
 		},
 	}

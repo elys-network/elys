@@ -129,7 +129,7 @@ func TestMsgOpen_ValidateBasic(t *testing.T) {
 				TradingAsset: "uatom",
 				Leverage:     sdk.NewDec(200),
 			},
-			want: ErrInvalidTakeProfitPriceIsNegative,
+			want: ErrInvalidTakeProfitPrice,
 		},
 		{
 			title: "take profit price is negative",
@@ -140,7 +140,7 @@ func TestMsgOpen_ValidateBasic(t *testing.T) {
 				TakeProfitPrice: sdk.NewDec(-10),
 				Leverage:        sdk.NewDec(200),
 			},
-			want: ErrInvalidTakeProfitPriceIsNegative,
+			want: ErrInvalidTakeProfitPrice,
 		},
 		{
 			title: "successful",

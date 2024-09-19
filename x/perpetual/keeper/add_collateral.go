@@ -144,9 +144,7 @@ func (k Keeper) AddCollateralToMtp(ctx sdk.Context, msg *types.MsgAddCollateral)
 	}
 
 	// Update the pool health.
-	if err = k.UpdatePoolHealth(ctx, &pool); err != nil {
-		return nil, err
-	}
+	k.UpdatePoolHealth(ctx, &pool)
 
 	// Update the MTP health.
 	lr, err := k.UpdateMTPHealth(ctx, mtp, ammPool, baseCurrency)

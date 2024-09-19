@@ -3,6 +3,8 @@ package keeper_test
 import (
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
+	ammtypes "github.com/elys-network/elys/x/amm/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 	"github.com/elys-network/elys/x/perpetual/types"
 )
@@ -11,12 +13,18 @@ func (suite *PerpetualKeeperTestSuite) TestOpenLong() {
 	suite.SetupCoinPrices()
 	addr := suite.AddAccounts(10)
 	amount := sdk.NewInt(1000)
+	poolCreator := addr[0]
+	positionCreator := addr[1]
+	poolId := uint64(1)
+	var ammPool ammtypes.Pool
 	msg := &types.MsgOpen{
-		Creator:      addr[0].String(),
-		Leverage:     math.LegacyNewDec(2),
-		Position:     types.Position_LONG,
-		TradingAsset: ptypes.ATOM,
-		Collateral:   sdk.NewCoin(ptypes.BaseCurrency, amount),
+		Creator:         positionCreator.String(),
+		Leverage:        math.LegacyNewDec(2),
+		Position:        types.Position_LONG,
+		TradingAsset:    ptypes.ATOM,
+		Collateral:      sdk.NewCoin(ptypes.BaseCurrency, amount),
+		TakeProfitPrice: sdk.ZeroDec(),
+		StopLossPrice:   sdk.ZeroDec(),
 	}
 	testCases := []struct {
 		name                 string
@@ -28,8 +36,197 @@ func (suite *PerpetualKeeperTestSuite) TestOpenLong() {
 		{
 			"pool not found",
 			types.ErrPoolDoesNotExist.Error(),
-			true,
+			false,
 			func() {
+			},
+			func(mtp *types.MTP) {
+			},
+		},
+		{
+			"pool is disabled",
+			"perpetual not enabled for pool",
+			false,
+			func() {
+				ammPool = suite.SetAndGetAmmPool(poolCreator, poolId, true, sdk.ZeroDec(), sdk.ZeroDec(), ptypes.ATOM, amount.MulRaw(10), amount.MulRaw(10))
+				pool := types.NewPool(poolId)
+				err := pool.InitiatePool(suite.ctx, &ammPool)
+				suite.Require().NoError(err)
+				pool.Enabled = false
+				suite.app.PerpetualKeeper.SetPool(suite.ctx, pool)
+			},
+			func(mtp *types.MTP) {
+			},
+		},
+		{
+			"amm pool not found",
+			"pool does not exist",
+			false,
+			func() {
+				pool, found := suite.app.PerpetualKeeper.GetPool(suite.ctx, 1)
+				suite.Require().True(found)
+				pool.Enabled = true
+				suite.app.PerpetualKeeper.SetPool(suite.ctx, pool)
+				suite.app.AmmKeeper.RemovePool(suite.ctx, ammPool.PoolId)
+			},
+			func(mtp *types.MTP) {
+			},
+		},
+		{
+			"collateral asset neither base currency nor present in the pool",
+			"(uelys) does not exist in the pool",
+			false,
+			func() {
+				err := suite.app.AmmKeeper.SetPool(suite.ctx, ammPool)
+				suite.Require().NoError(err)
+				msg.Collateral.Denom = ptypes.Elys
+			},
+			func(mtp *types.MTP) {
+			},
+		},
+		{
+			"collateral is same as trading asset but pool doesn't have enough depth",
+			"borrowed amount is higher than pool depth",
+			false,
+			func() {
+				msg.Collateral.Denom = ptypes.ATOM
+				params := suite.app.PerpetualKeeper.GetParams(suite.ctx)
+				params.BorrowInterestRateMin = sdk.ZeroDec()
+				err := suite.app.PerpetualKeeper.SetParams(suite.ctx, &params)
+				suite.Require().NoError(err)
+			},
+			func(mtp *types.MTP) {
+			},
+		},
+		{
+			"collateral amount is too high",
+			"borrowed amount is higher than pool depth",
+			false,
+			func() {
+				msg.Collateral.Denom = ptypes.BaseCurrency
+				msg.Collateral.Amount = msg.Collateral.Amount.MulRaw(1000_000_000)
+			},
+			func(mtp *types.MTP) {
+			},
+		},
+		{
+			"minimum liabilities is 0",
+			"minimum borrow interest rate is zero",
+			false,
+			func() {
+				msg.Collateral.Amount = msg.Collateral.Amount.QuoRaw(1000_000_000)
+				params := suite.app.PerpetualKeeper.GetParams(suite.ctx)
+				params.BorrowInterestRateMin = sdk.ZeroDec()
+				err := suite.app.PerpetualKeeper.SetParams(suite.ctx, &params)
+				suite.Require().NoError(err)
+			},
+			func(mtp *types.MTP) {
+			},
+		},
+		{
+			"Borrow fails: lack of funds",
+			"user does not have enough balance of the required coin",
+			false,
+			func() {
+				params := suite.app.PerpetualKeeper.GetParams(suite.ctx)
+				params.BorrowInterestRateMin = sdk.MustNewDecFromStr("0.12")
+				err := suite.app.PerpetualKeeper.SetParams(suite.ctx, &params)
+				suite.Require().NoError(err)
+				err = suite.app.BankKeeper.SendCoinsFromAccountToModule(suite.ctx, positionCreator, govtypes.ModuleName, sdk.NewCoins(sdk.NewCoin(ptypes.BaseCurrency, suite.GetAccountIssueAmount())))
+				suite.Require().NoError(err)
+			},
+			func(mtp *types.MTP) {
+			},
+		},
+		{
+			"success: collateral USDC, trading asset ATOM, stop loss price 0, TakeProfitPrice 0",
+			"",
+			false,
+			func() {
+				err := suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, govtypes.ModuleName, positionCreator, sdk.NewCoins(sdk.NewCoin(ptypes.BaseCurrency, suite.GetAccountIssueAmount())))
+				suite.Require().NoError(err)
+				msg.Collateral.Denom = ptypes.BaseCurrency
+				msg.Collateral.Amount = amount
+				msg.TradingAsset = ptypes.ATOM
+			},
+			func(mtp *types.MTP) {
+			},
+		},
+		{
+			"success: collateral ATOM, trading asset ATOM, stop loss price 0, TakeProfitPrice 0",
+			"",
+			false,
+			func() {
+				tokensIn := sdk.NewCoins(sdk.NewCoin(ptypes.ATOM, sdk.NewInt(1000_000_000)), sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(1000_000_000)))
+				suite.AddLiquidity(ammPool, addr[3], tokensIn)
+				msg.Creator = addr[2].String()
+				msg.Collateral.Denom = ptypes.ATOM
+				msg.Collateral.Amount = amount
+				msg.TradingAsset = ptypes.ATOM
+				msg.Leverage = sdk.OneDec().MulInt64(2)
+			},
+			func(mtp *types.MTP) {
+			},
+		},
+		{
+			"success: collateral USDC, trading asset USDC, stop loss price 0, TakeProfitPrice 0",
+			"",
+			false,
+			func() {
+				msg.Creator = addr[2].String()
+				msg.Collateral.Denom = ptypes.BaseCurrency
+				msg.Collateral.Amount = amount
+				msg.TradingAsset = ptypes.BaseCurrency
+				msg.Leverage = sdk.OneDec().MulInt64(2)
+			},
+			func(mtp *types.MTP) {
+			},
+		},
+		{
+			"success: collateral ATOM, trading asset USDC, stop loss price 0, TakeProfitPrice 0",
+			"",
+			false,
+			func() {
+				tokensIn := sdk.NewCoins(sdk.NewCoin(ptypes.ATOM, sdk.NewInt(1000_000_000)), sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(1000_000_000)))
+				suite.AddLiquidity(ammPool, addr[5], tokensIn)
+				msg.Creator = addr[4].String()
+				msg.Collateral.Denom = ptypes.ATOM
+				msg.Collateral.Amount = amount
+				msg.TradingAsset = ptypes.BaseCurrency
+				msg.Leverage = sdk.OneDec().MulInt64(2)
+
+				params := suite.app.PerpetualKeeper.GetParams(suite.ctx)
+				params.SafetyFactor = sdk.MustNewDecFromStr("0.01")
+				err := suite.app.PerpetualKeeper.SetParams(suite.ctx, &params)
+				suite.Require().NoError(err)
+			},
+			func(mtp *types.MTP) {
+			},
+		},
+		{
+			"collateral is USDC, trading asset is ATOM, amm pool has enough USDC but not enough ATOM",
+			"amount too low",
+			false,
+			func() {
+				suite.ResetSuite()
+				suite.SetupCoinPrices()
+				addr = suite.AddAccounts(10)
+				poolCreator = addr[0]
+				positionCreator = addr[1]
+				ammPool = suite.SetAndGetAmmPool(poolCreator, poolId, true, sdk.ZeroDec(), sdk.ZeroDec(), ptypes.ATOM, amount.MulRaw(1000), sdk.NewInt(2))
+				pool := types.NewPool(poolId)
+				err := pool.InitiatePool(suite.ctx, &ammPool)
+				suite.Require().NoError(err)
+				pool.Enabled = true
+				suite.app.PerpetualKeeper.SetPool(suite.ctx, pool)
+				params := suite.app.PerpetualKeeper.GetParams(suite.ctx)
+				params.BorrowInterestRateMin = sdk.MustNewDecFromStr("0.12")
+				err = suite.app.PerpetualKeeper.SetParams(suite.ctx, &params)
+				suite.Require().NoError(err)
+
+				msg.Creator = positionCreator.String()
+				msg.Collateral.Denom = ptypes.BaseCurrency
+				msg.Collateral.Amount = amount
+				msg.TradingAsset = ptypes.ATOM
 			},
 			func(mtp *types.MTP) {
 			},
@@ -39,7 +236,9 @@ func (suite *PerpetualKeeperTestSuite) TestOpenLong() {
 	for _, tc := range testCases {
 		suite.Run(tc.name, func() {
 			tc.prerequisiteFunction()
-			mtp, err := suite.app.PerpetualKeeper.OpenLong(suite.ctx, 1, msg, ptypes.BaseCurrency, tc.isBroker)
+			err := msg.ValidateBasic()
+			suite.Require().NoError(err)
+			mtp, err := suite.app.PerpetualKeeper.OpenLong(suite.ctx, poolId, msg, ptypes.BaseCurrency, tc.isBroker)
 			if tc.expectErrMsg != "" {
 				suite.Require().Error(err)
 				suite.Require().Contains(err.Error(), tc.expectErrMsg)
@@ -51,91 +250,6 @@ func (suite *PerpetualKeeperTestSuite) TestOpenLong() {
 	}
 }
 
-//func TestOpenLong_PoolDisabled(t *testing.T) {
-//	// Setup the mock checker
-//	mockChecker := new(mocks.OpenLongChecker)
-//
-//	// Create an instance of Keeper with the mock checker
-//	k := keeper.Keeper{
-//		OpenLongChecker: mockChecker,
-//	}
-//
-//	var (
-//		ctx = sdk.Context{} // Mock or setup a context
-//		msg = &types.MsgOpen{
-//			Leverage:     math.LegacyNewDec(10),
-//			TradingAsset: "bbb",
-//			Collateral:   sdk.NewCoin("aaa", math.NewInt(1)),
-//		}
-//		poolId = uint64(42)
-//	)
-//
-//	// Mock behaviors
-//	mockChecker.On("GetMaxLeverageParam", ctx).Return(msg.Leverage)
-//	mockChecker.On("GetPool", ctx, poolId).Return(types.Pool{}, true)
-//	mockChecker.On("IsPoolEnabled", ctx, poolId).Return(false)
-//
-//	_, err := k.OpenLong(ctx, poolId, msg, ptypes.BaseCurrency, false)
-//
-//	// Expect an error about the pool being disabled
-//	assert.True(t, errors.Is(err, types.ErrMTPDisabled))
-//	mockChecker.AssertExpectations(t)
-//}
-//
-//func TestOpenLong_InsufficientLiabilities(t *testing.T) {
-//	// Setup the mock checker
-//	mockChecker := new(mocks.OpenLongChecker)
-//
-//	// Create an instance of Keeper with the mock checker
-//	k := keeper.Keeper{
-//		OpenLongChecker: mockChecker,
-//	}
-//
-//	var (
-//		ctx = sdk.Context{} // Mock or setup a context
-//		msg = &types.MsgOpen{
-//			Creator:      "",
-//			Leverage:     math.LegacyNewDec(2),
-//			Position:     types.Position_LONG,
-//			TradingAsset: "uatom",
-//			Collateral:   sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(1000)),
-//		}
-//		ammPool = ammtypes.Pool{
-//			PoolId: uint64(42),
-//			PoolAssets: []ammtypes.PoolAsset{
-//				{
-//					Token:  sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(10000)),
-//					Weight: sdk.NewInt(50),
-//				},
-//				{
-//					Token:  sdk.NewCoin("uatom", sdk.NewInt(10000)),
-//					Weight: sdk.NewInt(50),
-//				},
-//			},
-//		}
-//		pool = types.Pool{
-//			AmmPoolId: ammPool.PoolId,
-//		}
-//	)
-//
-//	// Mock the behaviors to get to the CheckMinLiabilities check
-//	mockChecker.On("GetMaxLeverageParam", ctx).Return(msg.Leverage)
-//	mockChecker.On("GetPool", ctx, ammPool.PoolId).Return(pool, true)
-//	mockChecker.On("IsPoolEnabled", ctx, ammPool.PoolId).Return(true)
-//	mockChecker.On("GetAmmPool", ctx, ammPool.PoolId, msg.TradingAsset).Return(ammPool, nil) // Assuming a valid pool is returned
-//
-//	// Mock the behavior where CheckMinLiabilities returns an error indicating insufficient liabilities
-//	liabilityError := errors.New("insufficient liabilities")
-//
-//	mockChecker.On("CheckMinLiabilities", ctx, msg.Collateral, sdk.NewDec(1), ammPool, msg.TradingAsset, ptypes.BaseCurrency).Return(liabilityError)
-//
-//	_, err := k.OpenLong(ctx, ammPool.PoolId, msg, ptypes.BaseCurrency, false)
-//
-//	// Expect the custom error indicating insufficient liabilities
-//	assert.True(t, errors.Is(err, liabilityError))
-//	mockChecker.AssertExpectations(t)
-//}
-//
 //func TestOpenLong_InsufficientAmmPoolBalanceForCustody(t *testing.T) {
 //	// Setup the mock checker
 //	mockChecker := new(mocks.OpenLongChecker)
@@ -210,7 +324,7 @@ func (suite *PerpetualKeeperTestSuite) TestOpenLong() {
 //			Position:        types.Position_LONG,
 //			TradingAsset:    "uatom",
 //			Collateral:      sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(1000)),
-//			TakeProfitPrice: sdk.MustNewDecFromStr(types.TakeProfitPriceDefault),
+//			TakeProfitPrice: sdk.NewDecFromInt(types.TakeProfitPriceDefault),
 //		}
 //		ammPool = ammtypes.Pool{
 //			PoolId: uint64(42),
@@ -245,7 +359,7 @@ func (suite *PerpetualKeeperTestSuite) TestOpenLong() {
 //
 //	mockChecker.On("EstimateSwap", ctx, leveragedAmtTokenIn, msg.TradingAsset, ammPool).Return(custodyAmount, nil)
 //
-//	mtp := types.NewMTP(msg.Creator, msg.Collateral.Denom, msg.TradingAsset, msg.Collateral.Denom, msg.TradingAsset, msg.Position, msg.Leverage, sdk.MustNewDecFromStr(types.TakeProfitPriceDefault), ammPool.PoolId)
+//	mtp := types.NewMTP(msg.Creator, msg.Collateral.Denom, msg.TradingAsset, msg.Collateral.Denom, msg.TradingAsset, msg.Position, msg.Leverage, sdk.NewDecFromInt(types.TakeProfitPriceDefault), ammPool.PoolId)
 //
 //	borrowError := errors.New("borrow error")
 //	mockChecker.On("Borrow", ctx, msg.Collateral.Amount, custodyAmount, mtp, &ammPool, &pool, eta, ptypes.BaseCurrency, false).Return(borrowError)
@@ -274,7 +388,7 @@ func (suite *PerpetualKeeperTestSuite) TestOpenLong() {
 //			Position:        types.Position_LONG,
 //			TradingAsset:    "uatom",
 //			Collateral:      sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(1000)),
-//			TakeProfitPrice: sdk.MustNewDecFromStr(types.TakeProfitPriceDefault),
+//			TakeProfitPrice: sdk.NewDecFromInt(types.TakeProfitPriceDefault),
 //		}
 //		ammPool = ammtypes.Pool{
 //			PoolId: uint64(42),
@@ -309,7 +423,7 @@ func (suite *PerpetualKeeperTestSuite) TestOpenLong() {
 //
 //	mockChecker.On("EstimateSwap", ctx, leveragedAmtTokenIn, msg.TradingAsset, ammPool).Return(custodyAmount, nil)
 //
-//	mtp := types.NewMTP(msg.Creator, msg.Collateral.Denom, msg.TradingAsset, msg.Collateral.Denom, msg.TradingAsset, msg.Position, msg.Leverage, sdk.MustNewDecFromStr(types.TakeProfitPriceDefault), ammPool.PoolId)
+//	mtp := types.NewMTP(msg.Creator, msg.Collateral.Denom, msg.TradingAsset, msg.Collateral.Denom, msg.TradingAsset, msg.Position, msg.Leverage, sdk.NewDecFromInt(types.TakeProfitPriceDefault), ammPool.PoolId)
 //
 //	mockChecker.On("Borrow", ctx, msg.Collateral.Amount, custodyAmount, mtp, &ammPool, &pool, eta, ptypes.BaseCurrency, false).Return(nil)
 //	mockChecker.On("UpdatePoolHealth", ctx, &pool).Return(nil)
@@ -344,7 +458,7 @@ func (suite *PerpetualKeeperTestSuite) TestOpenLong() {
 //			Position:        types.Position_LONG,
 //			TradingAsset:    "uatom",
 //			Collateral:      sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(1000)),
-//			TakeProfitPrice: sdk.MustNewDecFromStr(types.TakeProfitPriceDefault),
+//			TakeProfitPrice: sdk.NewDecFromInt(types.TakeProfitPriceDefault),
 //		}
 //		ammPool = ammtypes.Pool{
 //			PoolId: uint64(42),
@@ -379,7 +493,7 @@ func (suite *PerpetualKeeperTestSuite) TestOpenLong() {
 //
 //	mockChecker.On("EstimateSwap", ctx, leveragedAmtTokenIn, msg.TradingAsset, ammPool).Return(custodyAmount, nil)
 //
-//	mtp := types.NewMTP(msg.Creator, msg.Collateral.Denom, msg.TradingAsset, msg.Collateral.Denom, msg.TradingAsset, msg.Position, msg.Leverage, sdk.MustNewDecFromStr(types.TakeProfitPriceDefault), ammPool.PoolId)
+//	mtp := types.NewMTP(msg.Creator, msg.Collateral.Denom, msg.TradingAsset, msg.Collateral.Denom, msg.TradingAsset, msg.Position, msg.Leverage, sdk.NewDecFromInt(types.TakeProfitPriceDefault), ammPool.PoolId)
 //
 //	mockChecker.On("Borrow", ctx, msg.Collateral.Amount, custodyAmount, mtp, &ammPool, &pool, eta, ptypes.BaseCurrency, false).Return(nil)
 //	mockChecker.On("UpdatePoolHealth", ctx, &pool).Return(nil)
@@ -498,7 +612,7 @@ func (suite *PerpetualKeeperTestSuite) TestOpenLong() {
 //		sdk.NewDec(5),
 //		ptypes.ATOM,
 //		sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(100000000)),
-//		sdk.MustNewDecFromStr(types.TakeProfitPriceDefault),
+//		sdk.NewDecFromInt(types.TakeProfitPriceDefault),
 //	)
 //
 //	_, err = mk.Open(ctx, msg2, false)
@@ -541,7 +655,7 @@ func (suite *PerpetualKeeperTestSuite) TestOpenLong() {
 //		AmmPoolId:                      uint64(1),
 //		ConsolidateLeverage:            sdk.NewDec(4),
 //		SumCollateral:                  sdk.NewInt(100000000),
-//		TakeProfitPrice:                sdk.MustNewDecFromStr(types.TakeProfitPriceDefault),
+//		TakeProfitPrice:                sdk.NewDecFromInt(types.TakeProfitPriceDefault),
 //		TakeProfitBorrowRate:           sdk.MustNewDecFromStr("1.0"),
 //		FundingFeePaidCollateral:       sdk.NewInt(0),
 //		FundingFeePaidCustody:          sdk.NewInt(0),
@@ -635,7 +749,7 @@ func (suite *PerpetualKeeperTestSuite) TestOpenLong() {
 //		sdk.NewDec(5),
 //		ptypes.ATOM,
 //		sdk.NewCoin(ptypes.ATOM, sdk.NewInt(10000000)),
-//		sdk.MustNewDecFromStr(types.TakeProfitPriceDefault),
+//		sdk.NewDecFromInt(types.TakeProfitPriceDefault),
 //	)
 //
 //	_, err = mk.Open(ctx, msg2, false)
@@ -678,7 +792,7 @@ func (suite *PerpetualKeeperTestSuite) TestOpenLong() {
 //		AmmPoolId:                      uint64(1),
 //		ConsolidateLeverage:            sdk.NewDec(4),
 //		SumCollateral:                  sdk.NewInt(101010102),
-//		TakeProfitPrice:                sdk.MustNewDecFromStr(types.TakeProfitPriceDefault),
+//		TakeProfitPrice:                sdk.NewDecFromInt(types.TakeProfitPriceDefault),
 //		TakeProfitBorrowRate:           sdk.MustNewDecFromStr("1.0"),
 //		FundingFeePaidCollateral:       sdk.NewInt(0),
 //		FundingFeePaidCustody:          sdk.NewInt(0),

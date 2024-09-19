@@ -17,7 +17,7 @@ func (suite *PerpetualKeeperTestSuite) TestCheckSameAssetPosition() {
 		StopLossPrice: sdk.NewDec(100),
 	}
 
-	mtp := types.NewMTP(addr[0].String(), ptypes.BaseCurrency, ptypes.ATOM, ptypes.BaseCurrency, ptypes.ATOM, types.Position_LONG, sdk.NewDec(5), sdk.MustNewDecFromStr(types.TakeProfitPriceDefault), 1)
+	mtp := types.NewMTP(addr[0].String(), ptypes.BaseCurrency, ptypes.ATOM, ptypes.BaseCurrency, ptypes.ATOM, types.Position_LONG, sdk.NewDec(5), sdk.NewDecFromInt(types.TakeProfitPriceDefault), 1)
 
 	testCases := []struct {
 		name                 string
@@ -40,9 +40,19 @@ func (suite *PerpetualKeeperTestSuite) TestCheckSameAssetPosition() {
 			},
 		},
 		{
+			"mtp not found because collateral is different",
+			false,
+			func() {
+				msg.Position = types.Position_LONG
+				err := suite.app.PerpetualKeeper.SetMTP(suite.ctx, mtp)
+				suite.Require().NoError(err)
+			},
+		},
+		{
 			"mtp found",
 			true,
 			func() {
+				msg.Collateral = sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(100))
 			},
 		},
 	}

@@ -72,9 +72,7 @@ func (k Keeper) ProcessOpenLong(ctx sdk.Context, mtp *types.MTP, leverage sdk.De
 	}
 
 	// Update the pool health.
-	if err = k.UpdatePoolHealth(ctx, &pool); err != nil {
-		return nil, err
-	}
+	k.UpdatePoolHealth(ctx, &pool)
 
 	// Take custody from the pool balance.
 	if err = k.TakeInCustody(ctx, *mtp, &pool); err != nil {

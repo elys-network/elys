@@ -3,6 +3,7 @@ package types
 import (
 	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/math"
+	"fmt"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
@@ -46,7 +47,7 @@ func (p *Pool) GetPoolAsset(position Position, assetDenom string) *PoolAsset {
 func (p *Pool) UpdateBalance(ctx sdk.Context, assetDenom string, amount math.Int, isIncrease bool, position Position) error {
 	poolAsset := p.GetPoolAsset(position, assetDenom)
 	if poolAsset == nil {
-		return errorsmod.Wrap(sdkerrors.ErrInvalidCoins, "invalid asset denom")
+		return fmt.Errorf("pool asset %s does not exist", assetDenom)
 	}
 
 	if isIncrease {

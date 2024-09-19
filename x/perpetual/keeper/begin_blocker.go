@@ -43,10 +43,7 @@ func (k Keeper) BeginBlocker(ctx sdk.Context) {
 			}
 			pool.BorrowInterestRate = rate
 			pool.LastHeightBorrowInterestRateComputed = currentHeight
-			err = k.UpdatePoolHealth(ctx, &pool)
-			if err != nil {
-				ctx.Logger().Error(err.Error())
-			}
+			k.UpdatePoolHealth(ctx, &pool)
 			err = k.UpdateFundingRate(ctx, &pool)
 			if err != nil {
 				ctx.Logger().Error(err.Error())

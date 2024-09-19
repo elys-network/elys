@@ -3,6 +3,8 @@ package keeper_test
 import (
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
+	"sort"
+	"strings"
 	"testing"
 	"time"
 
@@ -133,8 +135,12 @@ func (suite *PerpetualKeeperTestSuite) RemovePrices(ctx sdk.Context, denoms []st
 	}
 }
 
+func (suite *PerpetualKeeperTestSuite) GetAccountIssueAmount() sdk.Int {
+	return sdk.NewInt(1000_000_000_000)
+}
+
 func (suite *PerpetualKeeperTestSuite) AddAccounts(n int) []sdk.AccAddress {
-	issueAmount := sdk.NewInt(1000_000_000_000)
+	issueAmount := suite.GetAccountIssueAmount()
 	addresses := simapp.AddTestAddrs(suite.app, suite.ctx, n, issueAmount)
 	for _, address := range addresses {
 		coins := sdk.NewCoins(
@@ -154,7 +160,20 @@ func (suite *PerpetualKeeperTestSuite) AddAccounts(n int) []sdk.AccAddress {
 	return addresses
 }
 
-func (suite *PerpetualKeeperTestSuite) SetAndGetAmmPool(creator sdk.AccAddress, poolId uint64, useOracle bool, swapFee, exitFee sdk.Dec, asset2 string, tokenAmount sdk.Int) ammtypes.Pool {
+func (suite *PerpetualKeeperTestSuite) SetAndGetAmmPool(creator sdk.AccAddress, poolId uint64, useOracle bool, swapFee, exitFee sdk.Dec, asset2 string, baseTokenAmount, assetAmount sdk.Int) ammtypes.Pool {
+	poolAssets := []ammtypes.PoolAsset{
+		{
+			Token:  sdk.NewCoin(ptypes.BaseCurrency, baseTokenAmount),
+			Weight: sdk.NewInt(10),
+		},
+		{
+			Token:  sdk.NewCoin(asset2, assetAmount),
+			Weight: sdk.NewInt(10),
+		},
+	}
+	sort.Slice(poolAssets, func(i, j int) bool {
+		return strings.Compare(poolAssets[i].Token.Denom, poolAssets[j].Token.Denom) <= 0
+	})
 	ammPool := ammtypes.Pool{
 		PoolId:            poolId,
 		Address:           ammtypes.NewPoolAddress(poolId).String(),
@@ -171,27 +190,30 @@ func (suite *PerpetualKeeperTestSuite) SetAndGetAmmPool(creator sdk.AccAddress, 
 			FeeDenom:                    ptypes.BaseCurrency,
 		},
 		TotalShares: sdk.NewCoin("pool/1", sdk.NewInt(100)),
-		PoolAssets: []ammtypes.PoolAsset{
-			{
-				Token:  sdk.NewCoin(ptypes.BaseCurrency, tokenAmount),
-				Weight: sdk.NewInt(10),
-			},
-			{
-				Token:  sdk.NewCoin(asset2, tokenAmount),
-				Weight: sdk.NewInt(10),
-			},
-		},
+		PoolAssets:  poolAssets,
 		TotalWeight: sdk.ZeroInt(),
 	}
 
 	err := suite.app.AmmKeeper.SetPool(suite.ctx, ammPool)
 	suite.Require().NoError(err)
 
-	err = suite.app.BankKeeper.SendCoins(suite.ctx, creator, ammtypes.NewPoolAddress(poolId), sdk.NewCoins(sdk.NewCoin(ptypes.BaseCurrency, tokenAmount), sdk.NewCoin(asset2, tokenAmount)))
+	err = suite.app.BankKeeper.SendCoins(suite.ctx, creator, ammtypes.NewPoolAddress(poolId), sdk.NewCoins(sdk.NewCoin(ptypes.BaseCurrency, baseTokenAmount), sdk.NewCoin(asset2, assetAmount)))
 	suite.Require().NoError(err)
 	return ammPool
 }
 
+func (suite *PerpetualKeeperTestSuite) AddLiquidity(ammPool ammtypes.Pool, provider sdk.AccAddress, tokensIn sdk.Coins) {
+	numShares, _, err := ammPool.CalcJoinPoolNoSwapShares(tokensIn)
+	suite.Require().NoError(err)
+	err = suite.app.BankKeeper.SendCoins(suite.ctx, provider, sdk.MustAccAddressFromBech32(ammPool.GetAddress()), tokensIn)
+	suite.Require().NoError(err)
+	err = suite.app.AmmKeeper.MintPoolShareToAccount(suite.ctx, ammPool, provider, numShares)
+	suite.Require().NoError(err)
+	ammPool.IncreaseLiquidity(numShares, tokensIn)
+	err = suite.app.AmmKeeper.SetPool(suite.ctx, ammPool)
+	suite.Require().NoError(err)
+
+}
 func TestSetGetMTP(t *testing.T) {
 	app := simapp.InitElysTestApp(true)
 	ctx := app.BaseApp.NewContext(true, tmproto.Header{})
@@ -311,4 +333,100 @@ func SetupStableCoinPrices(ctx sdk.Context, oracle oraclekeeper.Keeper) {
 		Provider:  provider.String(),
 		Timestamp: uint64(ctx.BlockTime().Unix()),
 	})
+}
+
+func (suite *PerpetualKeeperTestSuite) TestCheckMinLiabilities() {
+	suite.SetupCoinPrices()
+	addr := suite.AddAccounts(10)
+	collateralAmount := sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(1000_000))
+	leverage := sdk.NewDec(3)
+	custodyAsset := ptypes.ATOM
+	zeroFeePool := suite.SetAndGetAmmPool(addr[0], 1, true, sdk.ZeroDec(), sdk.ZeroDec(), ptypes.ATOM, sdk.OneInt().MulRaw(1000_000_000), sdk.OneInt().MulRaw(1000_000_000))
+	testCases := []struct {
+		name                 string
+		expectErrMsg         string
+		prerequisiteFunction func()
+	}{
+		{
+			"minBorrowInterestRate is 0",
+			"minimum borrow interest rate is zero",
+			func() {
+				param := suite.app.PerpetualKeeper.GetParams(suite.ctx)
+				param.BorrowInterestRateMin = sdk.ZeroDec()
+				err := suite.app.PerpetualKeeper.SetParams(suite.ctx, &param)
+				suite.Require().NoError(err)
+			},
+		},
+		{
+			"liabilities are 0",
+			"interest payment on borrowed amount is zero",
+			func() {
+				param := suite.app.PerpetualKeeper.GetParams(suite.ctx)
+				param.BorrowInterestRateMin = sdk.MustNewDecFromStr("0.000000030000000000")
+				err := suite.app.PerpetualKeeper.SetParams(suite.ctx, &param)
+				suite.Require().NoError(err)
+				collateralAmount.Amount = sdk.ZeroInt()
+			},
+		},
+		{
+			"collateralAmount is too low to have any significant interest payment amount",
+			"interest payment on borrowed amount is zero",
+			func() {
+				collateralAmount.Amount = sdk.NewInt(100_000)
+			},
+		},
+		{
+			"interests are too low giving 0 interest payment amount ",
+			"interest payment on borrowed amount is zero",
+			func() {
+				collateralAmount.Amount = sdk.NewInt(100_000)
+			},
+		},
+		{
+			"collateral Denom is not base currency",
+			"",
+			func() {
+				param := suite.app.PerpetualKeeper.GetParams(suite.ctx)
+				param.BorrowInterestRateMin = sdk.MustNewDecFromStr("0.12")
+				err := suite.app.PerpetualKeeper.SetParams(suite.ctx, &param)
+				suite.Require().NoError(err)
+				collateralAmount.Denom = ptypes.ATOM
+				collateralAmount.Amount = sdk.NewInt(100_000_000)
+			},
+		},
+		{
+			"collateral Denom is not base currency but swap fails because pool not enabled",
+			"CheckMinLiabilities failed: EstimateSwapGivenOut",
+			func() {
+				suite.RemovePrices(suite.ctx, []string{ptypes.ATOM})
+			},
+		},
+		{
+			"collateral Denom is base currency",
+			"",
+			func() {
+				suite.SetupCoinPrices()
+				collateralAmount.Denom = ptypes.BaseCurrency
+			},
+		},
+		{
+			"custodyAsset is base currency",
+			"",
+			func() {
+				custodyAsset = ptypes.BaseCurrency
+			},
+		},
+	}
+	for _, tc := range testCases {
+		suite.Run(tc.name, func() {
+			tc.prerequisiteFunction()
+			err := suite.app.PerpetualKeeper.CheckMinLiabilities(suite.ctx, collateralAmount, leverage.Sub(sdk.OneDec()), zeroFeePool, custodyAsset, ptypes.BaseCurrency)
+			if tc.expectErrMsg != "" {
+				suite.Require().Error(err)
+				suite.Require().Contains(err.Error(), tc.expectErrMsg)
+			} else {
+				suite.Require().NoError(err)
+			}
+		})
+	}
 }

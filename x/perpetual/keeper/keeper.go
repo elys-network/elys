@@ -99,16 +99,10 @@ func (k Keeper) EstimateSwapGivenOut(ctx sdk.Context, tokenOutAmount sdk.Coin, t
 }
 
 func (k Keeper) Borrow(ctx sdk.Context, collateralAmount math.Int, custodyAmount math.Int, mtp *types.MTP, ammPool *ammtypes.Pool, pool *types.Pool, eta sdk.Dec, baseCurrency string, isBroker bool) error {
-	senderAddress, err := sdk.AccAddressFromBech32(mtp.Address)
-	if err != nil {
-		return err
-	}
+	senderAddress := sdk.MustAccAddressFromBech32(mtp.Address)
 	// if isBroker is true, then retrieve broker address and assign it to senderAddress
 	if isBroker {
-		brokerAddress, err := sdk.AccAddressFromBech32(k.parameterKeeper.GetParams(ctx).BrokerAddress)
-		if err != nil {
-			return err
-		}
+		brokerAddress := sdk.MustAccAddressFromBech32(k.parameterKeeper.GetParams(ctx).BrokerAddress)
 		senderAddress = brokerAddress
 	}
 
@@ -155,11 +149,11 @@ func (k Keeper) Borrow(ctx sdk.Context, collateralAmount math.Int, custodyAmount
 	mtp.TakeProfitCustody = types.CalcMTPTakeProfitCustody(mtp)
 
 	// calculate mtp take profit liabilities, delta x_tp_l = delta y_tp_c * current price (take profit liabilities = take profit custody * current price)
-	mtp.TakeProfitLiabilities, err = k.CalcMTPTakeProfitLiability(ctx, mtp, baseCurrency)
+	takeProfitLiabilities, err := k.CalcMTPTakeProfitLiability(ctx, mtp, baseCurrency)
 	if err != nil {
 		return err
 	}
-
+	mtp.TakeProfitLiabilities = takeProfitLiabilities
 	mtp.Leverage = eta.Add(sdk.OneDec())
 
 	h, err := k.UpdateMTPHealth(ctx, *mtp, *ammPool, baseCurrency) // set mtp in func or return h?
@@ -208,11 +202,9 @@ func (k Keeper) Borrow(ctx sdk.Context, collateralAmount math.Int, custodyAmount
 	return k.SetMTP(ctx, mtp)
 }
 
-func (k Keeper) UpdatePoolHealth(ctx sdk.Context, pool *types.Pool) error {
+func (k Keeper) UpdatePoolHealth(ctx sdk.Context, pool *types.Pool) {
 	pool.Health = k.CalculatePoolHealth(ctx, pool)
 	k.SetPool(ctx, *pool)
-
-	return nil
 }
 
 func (k Keeper) CalculatePoolHealthByPosition(ctx sdk.Context, pool *types.Pool, ammPool ammtypes.Pool, position types.Position) sdk.Dec {
@@ -254,11 +246,11 @@ func (k Keeper) CalculatePoolHealth(ctx sdk.Context, pool *types.Pool) sdk.Dec {
 func (k Keeper) TakeInCustody(ctx sdk.Context, mtp types.MTP, pool *types.Pool) error {
 	err := pool.UpdateBalance(ctx, mtp.CustodyAsset, mtp.Custody, false, mtp.Position)
 	if err != nil {
-		return nil
+		return err
 	}
 	err = pool.UpdateCustody(ctx, mtp.CustodyAsset, mtp.Custody, true, mtp.Position)
 	if err != nil {
-		return nil
+		return err
 	}
 
 	k.SetPool(ctx, *pool)
@@ -439,7 +431,7 @@ func (k Keeper) CheckMinLiabilities(ctx sdk.Context, collateralAmount sdk.Coin, 
 
 	// Ensure minBorrowInterestRate is not zero to avoid division by zero
 	if minBorrowInterestRate.IsZero() {
-		return types.ErrAmountTooLow
+		return fmt.Errorf("minimum borrow interest rate is zero")
 	}
 
 	collateralAmountDec := sdk.NewDecFromInt(collateralAmount.Amount)
@@ -453,7 +445,7 @@ func (k Keeper) CheckMinLiabilities(ctx sdk.Context, collateralAmount sdk.Coin, 
 
 		inAmt, err := k.EstimateSwapGivenOut(ctx, outAmtToken, baseCurrency, ammPool)
 		if err != nil {
-			return types.ErrBorrowTooLow
+			return fmt.Errorf("CheckMinLiabilities failed: EstimateSwapGivenOut: %s", err.Error())
 		}
 		liabilities = sdk.NewUint(inAmt.Uint64())
 	}
@@ -464,7 +456,7 @@ func (k Keeper) CheckMinLiabilities(ctx sdk.Context, collateralAmount sdk.Coin, 
 	borrowInterestNew := borrowInterestRational.Num().Quo(borrowInterestRational.Num(), borrowInterestRational.Denom())
 	samplePayment := sdk.NewInt(borrowInterestNew.Int64())
 	if samplePayment.IsZero() {
-		return types.ErrBorrowTooLow
+		return fmt.Errorf("interest payment on borrowed amount is zero")
 	}
 
 	// If collateral is not base currency, custody amount is already checked in HasSufficientBalance function.
@@ -484,7 +476,7 @@ func (k Keeper) CheckMinLiabilities(ctx sdk.Context, collateralAmount sdk.Coin, 
 	// swap borrow interest payment to custody asset
 	_, err := k.EstimateSwap(ctx, samplePaymentTokenIn, custodyAsset, ammPool)
 	if err != nil {
-		return types.ErrBorrowTooLow
+		return fmt.Errorf("CheckMinLiabilities failed: EstimateSwap: %s", err.Error())
 	}
 
 	return nil

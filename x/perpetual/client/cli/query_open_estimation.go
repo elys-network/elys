@@ -52,10 +52,7 @@ func CmdOpenEstimation() *cobra.Command {
 					return errors.New("invalid take profit price")
 				}
 			} else {
-				takeProfitPrice, err = sdk.NewDecFromStr(types.TakeProfitPriceDefault)
-				if err != nil {
-					return errors.New("failed to set default take profit price")
-				}
+				takeProfitPrice = sdk.NewDecFromInt(types.TakeProfitPriceDefault)
 			}
 
 			clientCtx, err := client.GetClientQueryContext(cmd)

@@ -52,9 +52,7 @@ func (k Keeper) ProcessOpenShort(ctx sdk.Context, mtp *types.MTP, leverage sdk.D
 	}
 
 	// Update the pool health.
-	if err = k.UpdatePoolHealth(ctx, &pool); err != nil {
-		return nil, err
-	}
+	k.UpdatePoolHealth(ctx, &pool)
 
 	// Take custody from the pool balance.
 	if err = k.TakeInCustody(ctx, *mtp, &pool); err != nil {
@@ -74,14 +72,20 @@ func (k Keeper) ProcessOpenShort(ctx sdk.Context, mtp *types.MTP, leverage sdk.D
 	}
 
 	// Update consolidated collateral amount
-	k.CalcMTPConsolidateCollateral(ctx, mtp, baseCurrency)
+	err = k.CalcMTPConsolidateCollateral(ctx, mtp, baseCurrency)
+	if err != nil {
+		return nil, err
+	}
 
 	// Calculate consolidate liabiltiy and update consolidate leverage
 	mtp.ConsolidateLeverage = types.CalcMTPConsolidateLiability(mtp)
 
 	mtp.StopLossPrice = msg.StopLossPrice
 	// Set MTP
-	k.SetMTP(ctx, mtp)
+	err = k.SetMTP(ctx, mtp)
+	if err != nil {
+		return nil, err
+	}
 
 	// Return the updated Perpetual Trading Position (MTP).
 	return mtp, nil
