@@ -1,11 +1,12 @@
 package keeper
 
 import (
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/perpetual/types"
 )
 
-func (k Keeper) UpdateNetOpenInterest(ctx sdk.Context, pool *types.Pool) error {
+func (k Keeper) GetNetOpenInterest(pool types.Pool) math.Int {
 	assetLiabilitiesLong := sdk.ZeroInt()
 	assetLiabilitiesShort := sdk.ZeroInt()
 
@@ -17,6 +18,6 @@ func (k Keeper) UpdateNetOpenInterest(ctx sdk.Context, pool *types.Pool) error {
 		assetLiabilitiesShort = assetLiabilitiesShort.Add(asset.Liabilities)
 	}
 
-	pool.NetOpenInterest = assetLiabilitiesLong.Sub(assetLiabilitiesShort)
-	return nil
+	netOpenInterest := assetLiabilitiesLong.Sub(assetLiabilitiesShort)
+	return netOpenInterest
 }

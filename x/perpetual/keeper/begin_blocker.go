@@ -66,13 +66,7 @@ func (k Keeper) BeginBlocker(ctx sdk.Context) {
 				FundingRateLong:    fundingRateLong,
 				FundingRateShort:   fundingRateShort,
 			})
-
-			err = k.UpdateNetOpenInterest(ctx, &pool)
-			if err != nil {
-				ctx.Logger().Error(err.Error())
-			}
 		}
-
 		k.SetPool(ctx, pool)
 	}
 }

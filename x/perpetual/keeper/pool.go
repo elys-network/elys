@@ -60,14 +60,14 @@ func (k Keeper) GetAllPools(ctx sdk.Context) (list []types.Pool) {
 	return
 }
 
-func (k Keeper) GetAllLegacyPools(ctx sdk.Context) (list []types.LegacyPool) {
-	store := ctx.KVStore(k.storeKey)
-	iterator := sdk.KVStorePrefixIterator(store, types.PoolKeyPrefix)
+func (k Keeper) GetAllLegacyPools(ctx sdk.Context) (list []types.Pool) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.LegacyPoolKeyPrefix))
+	iterator := sdk.KVStorePrefixIterator(store, []byte{})
 
 	defer iterator.Close()
 
 	for ; iterator.Valid(); iterator.Next() {
-		var val types.LegacyPool
+		var val types.Pool
 		k.cdc.MustUnmarshal(iterator.Value(), &val)
 		list = append(list, val)
 	}
@@ -77,8 +77,7 @@ func (k Keeper) GetAllLegacyPools(ctx sdk.Context) (list []types.LegacyPool) {
 
 func (k Keeper) RemoveLegacyPool(ctx sdk.Context, index uint64) {
 	store := ctx.KVStore(k.storeKey)
-	key := types.GetLegacyPoolKey(index)
-	store.Delete(key)
+	store.Delete(types.GetLegacyPoolKey(index))
 }
 
 func (k Keeper) SetBorrowRate(ctx sdk.Context, block uint64, pool uint64, interest types.InterestBlock) {

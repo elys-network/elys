@@ -19,7 +19,6 @@ func NewPool(poolId uint64) Pool {
 		PoolAssetsShort:                      []PoolAsset{},
 		LastHeightBorrowInterestRateComputed: 0,
 		FundingRate:                          sdk.ZeroDec(),
-		NetOpenInterest:                      sdk.ZeroInt(),
 	}
 }
 

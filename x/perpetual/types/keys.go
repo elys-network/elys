@@ -98,8 +98,8 @@ func legacyPoolKey(index uint64) []byte {
 }
 
 func GetLegacyPoolKey(index uint64) []byte {
-	key := PoolKeyPrefix
-	return append(key, sdk.Uint64ToBigEndian(index)...)
+	key := KeyPrefix(LegacyPoolKeyPrefix)
+	return append(key, legacyPoolKey(index)...)
 }
 
 func GetInterestRateKey(block uint64, pool uint64) []byte {
