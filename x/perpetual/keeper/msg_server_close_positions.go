@@ -36,7 +36,6 @@ func (k msgServer) ClosePositions(goCtx context.Context, msg *types.MsgClosePosi
 			continue
 		}
 
-		// TODO: Handle error for specific position, revert changes for that if error occurs
 		err = k.CheckAndLiquidateUnhealthyPosition(ctx, &position, pool, ammPool, baseCurrency.Denom, baseCurrency.Decimals)
 		if err != nil {
 			// Add log about error or not liquidated
