@@ -372,13 +372,13 @@ func TestOpenEstimation_WrongAsset(t *testing.T) {
 		Decimals:  6,
 	})
 
-	// Generate 1 random account with 1000stake balanced
+	// Generate 1 random account with 1000000000000stake balanced
 	addr := simapp.AddTestAddrs(app, ctx, 1, sdk.NewInt(1000000000000))
 
 	// Create a pool
 	// Mint 10000USDC
 	usdcToken := []sdk.Coin{sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(1000000000000))}
-	// Mint 100000ATOM
+	// Mint ATOM
 	atomToken := []sdk.Coin{sdk.NewCoin(ptypes.ATOM, sdk.NewInt(1000000000000))}
 
 	err := app.BankKeeper.MintCoins(ctx, ammtypes.ModuleName, usdcToken)
