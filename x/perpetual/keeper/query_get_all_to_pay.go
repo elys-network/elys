@@ -16,8 +16,14 @@ func (k Keeper) GetAllToPay(goCtx context.Context, req *types.QueryGetAllToPayRe
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	// TODO: Process the query
-	_ = ctx
+	res := k.GetAllToPayStore(ctx)
 
-	return &types.QueryGetAllToPayResponse{}, nil
+	var toPay []*types.ToPay
+	for _, item := range res {
+		toPay = append(toPay, &item)
+	}
+
+	return &types.QueryGetAllToPayResponse{
+		ToPay: toPay,
+	}, nil
 }

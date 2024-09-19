@@ -211,5 +211,7 @@ message QueryOpenEstimationResponse {
 
 message QueryGetAllToPayRequest {}
 
-message QueryGetAllToPayResponse {}
+message QueryGetAllToPayResponse {
+  repeated ToPay to_pay = 1;
+}
 
