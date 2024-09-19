@@ -78,7 +78,7 @@ func (k Keeper) BeginBlocker(ctx sdk.Context) {
 }
 
 func (k Keeper) HandleToPay(ctx sdk.Context) error {
-	toPays := k.GetAllToPay(ctx)
+	toPays := k.GetAllToPayStore(ctx)
 	// get funding fee collection address
 	fundingFeeCollectionAddress := k.GetFundingFeeCollectionAddress(ctx)
 
@@ -91,7 +91,10 @@ func (k Keeper) HandleToPay(ctx sdk.Context) error {
 			if err := k.bankKeeper.SendCoins(ctx, fundingFeeCollectionAddress, sdk.MustAccAddressFromBech32(toPay.Address), sdk.NewCoins(sdk.NewCoin(toPay.AssetDenom, toPay.AssetBalance))); err != nil {
 				return err
 			}
-			k.DeleteToPay(ctx, sdk.MustAccAddressFromBech32(toPay.Address), toPay.Id)
+			err := k.DeleteToPay(ctx, sdk.MustAccAddressFromBech32(toPay.Address), toPay.Id)
+			if err != nil {
+				return err
+			}
 		}
 	}
 	return nil

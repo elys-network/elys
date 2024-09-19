@@ -332,7 +332,7 @@ func (k Keeper) SetToPay(ctx sdk.Context, toPay *types.ToPay) error {
 	return nil
 }
 
-func (k Keeper) GetAllToPay(ctx sdk.Context) []types.ToPay {
+func (k Keeper) GetAllToPayStore(ctx sdk.Context) []types.ToPay {
 	var toPays []types.ToPay
 	store := ctx.KVStore(k.storeKey)
 	iterator := sdk.KVStorePrefixIterator(store, types.ToPayPrefix)
