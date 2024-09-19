@@ -52,7 +52,7 @@ func networkWithMTPObjects(t *testing.T, n int) (*network.Network, []*types.MTP)
 			AmmPoolId:                      (uint64)(i + 1),
 			ConsolidateLeverage:            sdk.ZeroDec(),
 			SumCollateral:                  sdk.ZeroInt(),
-			TakeProfitPrice:                sdk.NewDecFromInt(types.TakeProfitPriceDefault),
+			TakeProfitPrice:                types.TakeProfitPriceDefault,
 			TakeProfitBorrowRate:           sdk.OneDec(),
 			FundingFeePaidCollateral:       sdk.NewInt(0),
 			FundingFeePaidCustody:          sdk.NewInt(0),

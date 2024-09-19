@@ -17,7 +17,7 @@ func (suite *PerpetualKeeperTestSuite) TestCheckSameAssetPosition() {
 		StopLossPrice: sdk.NewDec(100),
 	}
 
-	mtp := types.NewMTP(addr[0].String(), ptypes.BaseCurrency, ptypes.ATOM, ptypes.BaseCurrency, ptypes.ATOM, types.Position_LONG, sdk.NewDec(5), sdk.NewDecFromInt(types.TakeProfitPriceDefault), 1)
+	mtp := types.NewMTP(addr[0].String(), ptypes.BaseCurrency, ptypes.ATOM, ptypes.BaseCurrency, ptypes.ATOM, types.Position_LONG, sdk.NewDec(5), types.TakeProfitPriceDefault, 1)
 
 	testCases := []struct {
 		name                 string

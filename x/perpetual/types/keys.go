@@ -33,7 +33,7 @@ const (
 )
 
 var (
-	TakeProfitPriceDefault, _ = sdk.NewIntFromString("10000000000000000000000000000000000000000") // 10^40
+	TakeProfitPriceDefault = sdk.MustNewDecFromStr("10000000000000000000000000000000000000000") // 10^40
 )
 
 var (

@@ -62,7 +62,7 @@ elysd tx perpetual open short 5 uatom 100000000uusdc 100.0 --take-profit 100 --f
 					return errors.New("invalid take profit price")
 				}
 			} else {
-				takeProfitPrice = sdk.NewDecFromInt(types.TakeProfitPriceDefault)
+				takeProfitPrice = types.TakeProfitPriceDefault
 			}
 
 			msg := types.NewMsgOpen(

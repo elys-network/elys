@@ -1,5 +1,5 @@
 package types
 
 func IsTakeProfitPriceInifite(mtp *MTP) bool {
-	return mtp.TakeProfitPrice.TruncateInt().Equal(TakeProfitPriceDefault)
+	return mtp.TakeProfitPrice.Equal(TakeProfitPriceDefault)
 }
