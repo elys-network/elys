@@ -72,12 +72,12 @@ func (k Keeper) GetMTP(ctx sdk.Context, mtpAddress sdk.AccAddress, id uint64) (t
 	}
 	baseCurrency := entry.Denom
 
-	mtp.BorrowInterestUnpaidCollateral = k.GetBorrowInterest(ctx, &mtp, ammPool).Add(mtp.BorrowInterestUnpaidCollateral)
-
 	mtpHealth, err := k.GetMTPHealth(ctx, mtp, ammPool, baseCurrency)
 	if err == nil {
 		mtp.MtpHealth = mtpHealth
 	}
+
+	mtp.BorrowInterestUnpaidCollateral = k.GetBorrowInterest(ctx, &mtp, ammPool).Add(mtp.BorrowInterestUnpaidCollateral)
 
 	return mtp, nil
 }
@@ -159,12 +159,12 @@ func (k Keeper) GetMTPs(ctx sdk.Context, pagination *query.PageRequest) ([]*type
 		}
 
 		if realTime {
-			mtp.BorrowInterestUnpaidCollateral = k.GetBorrowInterest(ctx, &mtp, ammPool).Add(mtp.BorrowInterestUnpaidCollateral)
-
 			mtpHealth, err := k.GetMTPHealth(ctx, mtp, ammPool, baseCurrency)
 			if err == nil {
 				mtp.MtpHealth = mtpHealth
 			}
+
+			mtp.BorrowInterestUnpaidCollateral = k.GetBorrowInterest(ctx, &mtp, ammPool).Add(mtp.BorrowInterestUnpaidCollateral)
 		}
 
 		mtpList = append(mtpList, &mtp)
@@ -204,12 +204,12 @@ func (k Keeper) GetMTPsForPool(ctx sdk.Context, ammPoolId uint64, pagination *qu
 		if accumulate && mtp.AmmPoolId == ammPoolId {
 			if realTime {
 				// Interest
-				mtp.BorrowInterestUnpaidCollateral = k.GetBorrowInterest(ctx, &mtp, ammPool).Add(mtp.BorrowInterestUnpaidCollateral)
-
 				mtpHealth, err := k.GetMTPHealth(ctx, mtp, ammPool, baseCurrency)
 				if err == nil {
 					mtp.MtpHealth = mtpHealth
 				}
+
+				mtp.BorrowInterestUnpaidCollateral = k.GetBorrowInterest(ctx, &mtp, ammPool).Add(mtp.BorrowInterestUnpaidCollateral)
 			}
 
 			mtps = append(mtps, &mtp)
@@ -271,12 +271,12 @@ func (k Keeper) GetMTPsForAddressWithPagination(ctx sdk.Context, mtpAddress sdk.
 		}
 
 		if realTime {
-			mtp.BorrowInterestUnpaidCollateral = k.GetBorrowInterest(ctx, &mtp, ammPool).Add(mtp.BorrowInterestUnpaidCollateral)
-
 			mtpHealth, err := k.GetMTPHealth(ctx, mtp, ammPool, baseCurrency)
 			if err == nil {
 				mtp.MtpHealth = mtpHealth
 			}
+
+			mtp.BorrowInterestUnpaidCollateral = k.GetBorrowInterest(ctx, &mtp, ammPool).Add(mtp.BorrowInterestUnpaidCollateral)
 		}
 
 		mtps = append(mtps, &mtp)
