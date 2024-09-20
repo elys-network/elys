@@ -174,8 +174,8 @@ func (k Keeper) GetMTPs(ctx sdk.Context, pagination *query.PageRequest) ([]*type
 	return mtpList, pageRes, err
 }
 
-func (k Keeper) GetMTPsForPool(ctx sdk.Context, ammPoolId uint64, pagination *query.PageRequest) ([]*types.MTP, *query.PageResponse, error) {
-	var mtps []*types.MTP
+func (k Keeper) GetMTPsForPool(ctx sdk.Context, ammPoolId uint64, pagination *query.PageRequest) ([]*types.MtpAndPrice, *query.PageResponse, error) {
+	var mtps []*types.MtpAndPrice
 
 	store := ctx.KVStore(k.storeKey)
 	mtpStore := prefix.NewStore(store, types.MTPPrefix)
@@ -212,7 +212,11 @@ func (k Keeper) GetMTPsForPool(ctx sdk.Context, ammPoolId uint64, pagination *qu
 				mtp.BorrowInterestUnpaidCollateral = k.GetBorrowInterest(ctx, &mtp, ammPool).Add(mtp.BorrowInterestUnpaidCollateral)
 			}
 
-			mtps = append(mtps, &mtp)
+			trading_asset_price := k.oracleKeeper.GetAssetPriceFromDenom(ctx, mtp.TradingAsset)
+			mtps = append(mtps, &types.MtpAndPrice{
+				Mtp: &mtp,
+				TradingAssetPrice: trading_asset_price,
+			})
 			return true, nil
 		}
 
@@ -239,8 +243,8 @@ func (k Keeper) GetAllMTPsForAddress(ctx sdk.Context, mtpAddress sdk.AccAddress)
 	return mtps
 }
 
-func (k Keeper) GetMTPsForAddressWithPagination(ctx sdk.Context, mtpAddress sdk.AccAddress, pagination *query.PageRequest) ([]*types.MTP, *query.PageResponse, error) {
-	var mtps []*types.MTP
+func (k Keeper) GetMTPsForAddressWithPagination(ctx sdk.Context, mtpAddress sdk.AccAddress, pagination *query.PageRequest) ([]*types.MtpAndPrice, *query.PageResponse, error) {
+	var mtps []*types.MtpAndPrice
 
 	store := ctx.KVStore(k.storeKey)
 	mtpStore := prefix.NewStore(store, types.GetMTPPrefixForAddress(mtpAddress))
@@ -279,7 +283,12 @@ func (k Keeper) GetMTPsForAddressWithPagination(ctx sdk.Context, mtpAddress sdk.
 			mtp.BorrowInterestUnpaidCollateral = k.GetBorrowInterest(ctx, &mtp, ammPool).Add(mtp.BorrowInterestUnpaidCollateral)
 		}
 
-		mtps = append(mtps, &mtp)
+		trading_asset_price := k.oracleKeeper.GetAssetPriceFromDenom(ctx, mtp.TradingAsset)
+
+		mtps = append(mtps, &types.MtpAndPrice{
+			Mtp: &mtp,
+			TradingAssetPrice: trading_asset_price,
+		})
 		return nil
 	})
 	if err != nil {

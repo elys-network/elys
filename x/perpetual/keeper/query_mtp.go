@@ -25,5 +25,7 @@ func (k Keeper) MTP(goCtx context.Context, req *types.MTPRequest) (*types.MTPRes
 		return &types.MTPResponse{}, err
 	}
 
-	return &types.MTPResponse{Mtp: &mtp}, nil
+	trading_asset_price := k.oracleKeeper.GetAssetPriceFromDenom(ctx, mtp.TradingAsset)
+
+	return &types.MTPResponse{Mtp: &types.MtpAndPrice{Mtp: &mtp, TradingAssetPrice: trading_asset_price}}, nil
 }
