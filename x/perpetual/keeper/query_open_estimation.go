@@ -18,7 +18,7 @@ func (k Keeper) OpenEstimation(goCtx context.Context, req *types.QueryOpenEstima
 	}
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	
+
 	// get swap fee param
 	swapFee := k.GetSwapFee(ctx)
 
@@ -80,9 +80,9 @@ func (k Keeper) OpenEstimation(goCtx context.Context, req *types.QueryOpenEstima
 		return nil, errorsmod.Wrapf(types.ErrCalcMinCollateral, "error calculating min collateral: %s", err.Error())
 	}
 
-	// check req.TakeProfitPrice not zero to prevent division by zero
+	// if req.TakeProfitPrice is zero then set it to default
 	if req.TakeProfitPrice.IsZero() {
-		return nil, errorsmod.Wrapf(types.ErrAmountTooLow, "take profit price is zero")
+		req.TakeProfitPrice = sdk.MustNewDecFromStr(types.TakeProfitPriceDefault)
 	}
 
 	// calculate liabilities amount
