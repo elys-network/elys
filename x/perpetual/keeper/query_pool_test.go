@@ -77,7 +77,7 @@ func TestPools_Success(t *testing.T) {
 func TestPoolQuerySingle(t *testing.T) {
 	keeper, ctx := keepertest.PerpetualKeeper(t)
 	wctx := sdk.WrapSDKContext(ctx)
-	msgs := createNPool(keeper, ctx, 2)
+	msgs := createNPoolResponse(keeper, ctx, 2)
 	tests := []struct {
 		desc     string
 		request  *types.QueryGetPoolRequest
