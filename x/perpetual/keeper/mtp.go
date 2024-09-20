@@ -131,8 +131,8 @@ func (k Keeper) GetAllLegacyMTPs(ctx sdk.Context) []types.LegacyMTP {
 	return mtpList
 }
 
-func (k Keeper) GetMTPs(ctx sdk.Context, pagination *query.PageRequest) ([]*types.MTP, *query.PageResponse, error) {
-	var mtpList []*types.MTP
+func (k Keeper) GetMTPs(ctx sdk.Context, pagination *query.PageRequest) ([]*types.MtpAndPrice, *query.PageResponse, error) {
+	var mtpList []*types.MtpAndPrice
 	store := ctx.KVStore(k.storeKey)
 	mtpStore := prefix.NewStore(store, types.MTPPrefix)
 
@@ -167,7 +167,12 @@ func (k Keeper) GetMTPs(ctx sdk.Context, pagination *query.PageRequest) ([]*type
 			mtp.BorrowInterestUnpaidCollateral = k.GetBorrowInterest(ctx, &mtp, ammPool).Add(mtp.BorrowInterestUnpaidCollateral)
 		}
 
-		mtpList = append(mtpList, &mtp)
+		trading_asset_price := k.oracleKeeper.GetAssetPriceFromDenom(ctx, mtp.TradingAsset)
+
+		mtpList = append(mtpList, &types.MtpAndPrice{
+			Mtp: &mtp,
+			TradingAssetPrice: trading_asset_price,
+		})
 		return nil
 	})
 
