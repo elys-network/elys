@@ -376,6 +376,61 @@ func (_c *OpenShortChecker_GetAmmPool_Call) RunAndReturn(run func(types.Context,
 	return _c
 }
 
+// GetMTPHealth provides a mock function with given fields: ctx, mtp, ammPool, baseCurrency
+func (_m *OpenShortChecker) GetMTPHealth(ctx types.Context, mtp perpetualtypes.MTP, ammPool ammtypes.Pool, baseCurrency string) (math.LegacyDec, error) {
+	ret := _m.Called(ctx, mtp, ammPool, baseCurrency)
+
+	var r0 math.LegacyDec
+	var r1 error
+	if rf, ok := ret.Get(0).(func(types.Context, perpetualtypes.MTP, ammtypes.Pool, string) (math.LegacyDec, error)); ok {
+		return rf(ctx, mtp, ammPool, baseCurrency)
+	}
+	if rf, ok := ret.Get(0).(func(types.Context, perpetualtypes.MTP, ammtypes.Pool, string) math.LegacyDec); ok {
+		r0 = rf(ctx, mtp, ammPool, baseCurrency)
+	} else {
+		r0 = ret.Get(0).(math.LegacyDec)
+	}
+
+	if rf, ok := ret.Get(1).(func(types.Context, perpetualtypes.MTP, ammtypes.Pool, string) error); ok {
+		r1 = rf(ctx, mtp, ammPool, baseCurrency)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// OpenShortChecker_GetMTPHealth_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetMTPHealth'
+type OpenShortChecker_GetMTPHealth_Call struct {
+	*mock.Call
+}
+
+// GetMTPHealth is a helper method to define mock.On call
+//   - ctx types.Context
+//   - mtp perpetualtypes.MTP
+//   - ammPool ammtypes.Pool
+//   - baseCurrency string
+func (_e *OpenShortChecker_Expecter) GetMTPHealth(ctx interface{}, mtp interface{}, ammPool interface{}, baseCurrency interface{}) *OpenShortChecker_GetMTPHealth_Call {
+	return &OpenShortChecker_GetMTPHealth_Call{Call: _e.mock.On("GetMTPHealth", ctx, mtp, ammPool, baseCurrency)}
+}
+
+func (_c *OpenShortChecker_GetMTPHealth_Call) Run(run func(ctx types.Context, mtp perpetualtypes.MTP, ammPool ammtypes.Pool, baseCurrency string)) *OpenShortChecker_GetMTPHealth_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(types.Context), args[1].(perpetualtypes.MTP), args[2].(ammtypes.Pool), args[3].(string))
+	})
+	return _c
+}
+
+func (_c *OpenShortChecker_GetMTPHealth_Call) Return(_a0 math.LegacyDec, _a1 error) *OpenShortChecker_GetMTPHealth_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *OpenShortChecker_GetMTPHealth_Call) RunAndReturn(run func(types.Context, perpetualtypes.MTP, ammtypes.Pool, string) (math.LegacyDec, error)) *OpenShortChecker_GetMTPHealth_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // GetMaxLeverageParam provides a mock function with given fields: ctx
 func (_m *OpenShortChecker) GetMaxLeverageParam(ctx types.Context) math.LegacyDec {
 	ret := _m.Called(ctx)
@@ -673,61 +728,6 @@ func (_c *OpenShortChecker_TakeInCustody_Call) Return(_a0 error) *OpenShortCheck
 }
 
 func (_c *OpenShortChecker_TakeInCustody_Call) RunAndReturn(run func(types.Context, perpetualtypes.MTP, *perpetualtypes.Pool) error) *OpenShortChecker_TakeInCustody_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// GetMTPHealth provides a mock function with given fields: ctx, mtp, ammPool, baseCurrency
-func (_m *OpenShortChecker) GetMTPHealth(ctx types.Context, mtp perpetualtypes.MTP, ammPool ammtypes.Pool, baseCurrency string) (math.LegacyDec, error) {
-	ret := _m.Called(ctx, mtp, ammPool, baseCurrency)
-
-	var r0 math.LegacyDec
-	var r1 error
-	if rf, ok := ret.Get(0).(func(types.Context, perpetualtypes.MTP, ammtypes.Pool, string) (math.LegacyDec, error)); ok {
-		return rf(ctx, mtp, ammPool, baseCurrency)
-	}
-	if rf, ok := ret.Get(0).(func(types.Context, perpetualtypes.MTP, ammtypes.Pool, string) math.LegacyDec); ok {
-		r0 = rf(ctx, mtp, ammPool, baseCurrency)
-	} else {
-		r0 = ret.Get(0).(math.LegacyDec)
-	}
-
-	if rf, ok := ret.Get(1).(func(types.Context, perpetualtypes.MTP, ammtypes.Pool, string) error); ok {
-		r1 = rf(ctx, mtp, ammPool, baseCurrency)
-	} else {
-		r1 = ret.Error(1)
-	}
-
-	return r0, r1
-}
-
-// OpenShortChecker_GetMTPHealth_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetMTPHealth'
-type OpenShortChecker_GetMTPHealth_Call struct {
-	*mock.Call
-}
-
-// GetMTPHealth is a helper method to define mock.On call
-//   - ctx types.Context
-//   - mtp perpetualtypes.MTP
-//   - ammPool ammtypes.Pool
-//   - baseCurrency string
-func (_e *OpenShortChecker_Expecter) GetMTPHealth(ctx interface{}, mtp interface{}, ammPool interface{}, baseCurrency interface{}) *OpenShortChecker_GetMTPHealth_Call {
-	return &OpenShortChecker_GetMTPHealth_Call{Call: _e.mock.On("GetMTPHealth", ctx, mtp, ammPool, baseCurrency)}
-}
-
-func (_c *OpenShortChecker_GetMTPHealth_Call) Run(run func(ctx types.Context, mtp perpetualtypes.MTP, ammPool ammtypes.Pool, baseCurrency string)) *OpenShortChecker_GetMTPHealth_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(types.Context), args[1].(perpetualtypes.MTP), args[2].(ammtypes.Pool), args[3].(string))
-	})
-	return _c
-}
-
-func (_c *OpenShortChecker_GetMTPHealth_Call) Return(_a0 math.LegacyDec, _a1 error) *OpenShortChecker_GetMTPHealth_Call {
-	_c.Call.Return(_a0, _a1)
-	return _c
-}
-
-func (_c *OpenShortChecker_GetMTPHealth_Call) RunAndReturn(run func(types.Context, perpetualtypes.MTP, ammtypes.Pool, string) (math.LegacyDec, error)) *OpenShortChecker_GetMTPHealth_Call {
 	_c.Call.Return(run)
 	return _c
 }

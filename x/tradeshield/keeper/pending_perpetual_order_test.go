@@ -162,3 +162,118 @@ func TestSortedPerpetualOrder(t *testing.T) {
 	// Should store in sorted order
 	assert.Equal(t, res, [][]uint64{{1, 3, 4}})
 }
+
+// TestExecuteLimitOpenOrder
+func TestExecuteLimitOpenOrder(t *testing.T) {
+	keeper, ctx := keepertest.TradeshieldKeeper(t)
+	order := types.PerpetualOrder{
+		OwnerAddress:       "address",
+		OrderId:            0,
+		PerpetualOrderType: types.PerpetualOrderType_LIMITOPEN,
+		TriggerPrice: &types.OrderPrice{
+			BaseDenom:  "base",
+			QuoteDenom: "quote",
+			Rate:       sdk.NewDec(1),
+		},
+	}
+
+	keeper.AppendPendingPerpetualOrder(ctx, order)
+
+	err := keeper.ExecuteLimitOpenOrder(ctx, order)
+	require.NoError(t, err)
+
+	_, found := keeper.GetPendingPerpetualOrder(ctx, 1)
+	require.False(t, found)
+}
+
+// TestExecuteLimitCloseOrder
+func TestExecuteLimitCloseOrder(t *testing.T) {
+	keeper, ctx := keepertest.TradeshieldKeeper(t)
+	order := types.PerpetualOrder{
+		OwnerAddress:       "address",
+		OrderId:            0,
+		PerpetualOrderType: types.PerpetualOrderType_LIMITCLOSE,
+		TriggerPrice: &types.OrderPrice{
+			BaseDenom:  "base",
+			QuoteDenom: "quote",
+			Rate:       sdk.NewDec(1),
+		},
+	}
+
+	keeper.AppendPendingPerpetualOrder(ctx, order)
+
+	err := keeper.ExecuteLimitCloseOrder(ctx, order)
+	require.NoError(t, err)
+
+	_, found := keeper.GetPendingPerpetualOrder(ctx, 1)
+	require.False(t, found)
+}
+
+// TestExecuteMarketOpenOrder
+func TestExecuteMarketOpenOrder(t *testing.T) {
+	keeper, ctx := keepertest.TradeshieldKeeper(t)
+	order := types.PerpetualOrder{
+		OwnerAddress:       "address",
+		OrderId:            0,
+		PerpetualOrderType: types.PerpetualOrderType_MARKETOPEN,
+		TriggerPrice: &types.OrderPrice{
+			BaseDenom:  "base",
+			QuoteDenom: "quote",
+			Rate:       sdk.NewDec(1),
+		},
+	}
+
+	keeper.AppendPendingPerpetualOrder(ctx, order)
+
+	err := keeper.ExecuteMarketOpenOrder(ctx, order)
+	require.NoError(t, err)
+
+	_, found := keeper.GetPendingPerpetualOrder(ctx, 1)
+	require.False(t, found)
+}
+
+// TestExecuteMarketCloseOrder
+func TestExecuteMarketCloseOrder(t *testing.T) {
+	keeper, ctx := keepertest.TradeshieldKeeper(t)
+	order := types.PerpetualOrder{
+		OwnerAddress:       "address",
+		OrderId:            0,
+		PerpetualOrderType: types.PerpetualOrderType_MARKETCLOSE,
+		TriggerPrice: &types.OrderPrice{
+			BaseDenom:  "base",
+			QuoteDenom: "quote",
+			Rate:       sdk.NewDec(1),
+		},
+	}
+
+	keeper.AppendPendingPerpetualOrder(ctx, order)
+
+	err := keeper.ExecuteMarketCloseOrder(ctx, order)
+	require.NoError(t, err)
+
+	_, found := keeper.GetPendingPerpetualOrder(ctx, 1)
+	require.False(t, found)
+}
+
+// TestExecuteStopLossPerpetualOrder
+func TestExecuteStopLossPerpetualOrder(t *testing.T) {
+	keeper, ctx := keepertest.TradeshieldKeeper(t)
+	order := types.PerpetualOrder{
+		OwnerAddress:       "address",
+		OrderId:            0,
+		PerpetualOrderType: types.PerpetualOrderType_STOPLOSSPERP,
+		TriggerPrice: &types.OrderPrice{
+			BaseDenom:  "base",
+			QuoteDenom: "quote",
+			Rate:       sdk.NewDec(1),
+		},
+	}
+
+	keeper.AppendPendingPerpetualOrder(ctx, order)
+
+	err := keeper.ExecuteStopLossPerpetualOrder(ctx, order)
+	require.NoError(t, err)
+
+	_, found := keeper.GetPendingPerpetualOrder(ctx, 1)
+	require.False(t, found)
+}

@@ -17,6 +17,7 @@ service Msg {
   rpc UpdatePendingPerpetualOrder (MsgUpdatePendingPerpetualOrder) returns (MsgUpdatePendingPerpetualOrderResponse);
   rpc DeletePendingPerpetualOrder (MsgDeletePendingPerpetualOrder) returns (MsgDeletePendingPerpetualOrderResponse);
   rpc UpdateParams                (MsgUpdateParams               ) returns (MsgUpdateParamsResponse               );
+  rpc ExecuteOrders               (MsgExecuteOrders              ) returns (MsgExecuteOrdersResponse              );
 }
 message MsgCreatePendingSpotOrder {
   SpotOrderType            order_type         = 1;
@@ -72,12 +73,21 @@ message MsgDeletePendingPerpetualOrder {
 message MsgDeletePendingPerpetualOrderResponse {}
 
 message MsgUpdateParams {
+  
   // authority is the address that controls the module (defaults to x/gov unless overwritten).
   string authority = 1;
-
+  
   // NOTE: All parameters must be supplied.
   Params params = 2;
 }
 
 message MsgUpdateParamsResponse {}
+
+message MsgExecuteOrders {
+           string creator            = 1;
+  repeated uint64 spot_order_ids       = 2;
+  repeated uint64 perpetual_order_ids = 3;
+}
+
+message MsgExecuteOrdersResponse {}
 

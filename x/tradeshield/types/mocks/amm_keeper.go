@@ -280,230 +280,57 @@ func (_c *AmmKeeper_CalcSwapEstimationByDenom_Call) RunAndReturn(run func(types.
 	return _c
 }
 
-// GetAllPool provides a mock function with given fields: _a0
-func (_m *AmmKeeper) GetAllPool(_a0 types.Context) []ammtypes.Pool {
-	ret := _m.Called(_a0)
+// SwapByDenom provides a mock function with given fields: ctx, msg
+func (_m *AmmKeeper) SwapByDenom(ctx types.Context, msg *ammtypes.MsgSwapByDenom) (*ammtypes.MsgSwapByDenomResponse, error) {
+	ret := _m.Called(ctx, msg)
 
-	var r0 []ammtypes.Pool
-	if rf, ok := ret.Get(0).(func(types.Context) []ammtypes.Pool); ok {
-		r0 = rf(_a0)
+	var r0 *ammtypes.MsgSwapByDenomResponse
+	var r1 error
+	if rf, ok := ret.Get(0).(func(types.Context, *ammtypes.MsgSwapByDenom) (*ammtypes.MsgSwapByDenomResponse, error)); ok {
+		return rf(ctx, msg)
+	}
+	if rf, ok := ret.Get(0).(func(types.Context, *ammtypes.MsgSwapByDenom) *ammtypes.MsgSwapByDenomResponse); ok {
+		r0 = rf(ctx, msg)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).([]ammtypes.Pool)
+			r0 = ret.Get(0).(*ammtypes.MsgSwapByDenomResponse)
 		}
 	}
 
-	return r0
-}
-
-// AmmKeeper_GetAllPool_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetAllPool'
-type AmmKeeper_GetAllPool_Call struct {
-	*mock.Call
-}
-
-// GetAllPool is a helper method to define mock.On call
-//   - _a0 types.Context
-func (_e *AmmKeeper_Expecter) GetAllPool(_a0 interface{}) *AmmKeeper_GetAllPool_Call {
-	return &AmmKeeper_GetAllPool_Call{Call: _e.mock.On("GetAllPool", _a0)}
-}
-
-func (_c *AmmKeeper_GetAllPool_Call) Run(run func(_a0 types.Context)) *AmmKeeper_GetAllPool_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(types.Context))
-	})
-	return _c
-}
-
-func (_c *AmmKeeper_GetAllPool_Call) Return(_a0 []ammtypes.Pool) *AmmKeeper_GetAllPool_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *AmmKeeper_GetAllPool_Call) RunAndReturn(run func(types.Context) []ammtypes.Pool) *AmmKeeper_GetAllPool_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// GetBestPoolWithDenoms provides a mock function with given fields: ctx, denoms, usesOracle
-func (_m *AmmKeeper) GetBestPoolWithDenoms(ctx types.Context, denoms []string, usesOracle bool) (ammtypes.Pool, bool) {
-	ret := _m.Called(ctx, denoms, usesOracle)
-
-	var r0 ammtypes.Pool
-	var r1 bool
-	if rf, ok := ret.Get(0).(func(types.Context, []string, bool) (ammtypes.Pool, bool)); ok {
-		return rf(ctx, denoms, usesOracle)
-	}
-	if rf, ok := ret.Get(0).(func(types.Context, []string, bool) ammtypes.Pool); ok {
-		r0 = rf(ctx, denoms, usesOracle)
+	if rf, ok := ret.Get(1).(func(types.Context, *ammtypes.MsgSwapByDenom) error); ok {
+		r1 = rf(ctx, msg)
 	} else {
-		r0 = ret.Get(0).(ammtypes.Pool)
-	}
-
-	if rf, ok := ret.Get(1).(func(types.Context, []string, bool) bool); ok {
-		r1 = rf(ctx, denoms, usesOracle)
-	} else {
-		r1 = ret.Get(1).(bool)
+		r1 = ret.Error(1)
 	}
 
 	return r0, r1
 }
 
-// AmmKeeper_GetBestPoolWithDenoms_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetBestPoolWithDenoms'
-type AmmKeeper_GetBestPoolWithDenoms_Call struct {
+// AmmKeeper_SwapByDenom_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'SwapByDenom'
+type AmmKeeper_SwapByDenom_Call struct {
 	*mock.Call
 }
 
-// GetBestPoolWithDenoms is a helper method to define mock.On call
+// SwapByDenom is a helper method to define mock.On call
 //   - ctx types.Context
-//   - denoms []string
-//   - usesOracle bool
-func (_e *AmmKeeper_Expecter) GetBestPoolWithDenoms(ctx interface{}, denoms interface{}, usesOracle interface{}) *AmmKeeper_GetBestPoolWithDenoms_Call {
-	return &AmmKeeper_GetBestPoolWithDenoms_Call{Call: _e.mock.On("GetBestPoolWithDenoms", ctx, denoms, usesOracle)}
+//   - msg *ammtypes.MsgSwapByDenom
+func (_e *AmmKeeper_Expecter) SwapByDenom(ctx interface{}, msg interface{}) *AmmKeeper_SwapByDenom_Call {
+	return &AmmKeeper_SwapByDenom_Call{Call: _e.mock.On("SwapByDenom", ctx, msg)}
 }
 
-func (_c *AmmKeeper_GetBestPoolWithDenoms_Call) Run(run func(ctx types.Context, denoms []string, usesOracle bool)) *AmmKeeper_GetBestPoolWithDenoms_Call {
+func (_c *AmmKeeper_SwapByDenom_Call) Run(run func(ctx types.Context, msg *ammtypes.MsgSwapByDenom)) *AmmKeeper_SwapByDenom_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(types.Context), args[1].([]string), args[2].(bool))
+		run(args[0].(types.Context), args[1].(*ammtypes.MsgSwapByDenom))
 	})
 	return _c
 }
 
-func (_c *AmmKeeper_GetBestPoolWithDenoms_Call) Return(pool ammtypes.Pool, found bool) *AmmKeeper_GetBestPoolWithDenoms_Call {
-	_c.Call.Return(pool, found)
-	return _c
-}
-
-func (_c *AmmKeeper_GetBestPoolWithDenoms_Call) RunAndReturn(run func(types.Context, []string, bool) (ammtypes.Pool, bool)) *AmmKeeper_GetBestPoolWithDenoms_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// GetPool provides a mock function with given fields: _a0, _a1
-func (_m *AmmKeeper) GetPool(_a0 types.Context, _a1 uint64) (ammtypes.Pool, bool) {
-	ret := _m.Called(_a0, _a1)
-
-	var r0 ammtypes.Pool
-	var r1 bool
-	if rf, ok := ret.Get(0).(func(types.Context, uint64) (ammtypes.Pool, bool)); ok {
-		return rf(_a0, _a1)
-	}
-	if rf, ok := ret.Get(0).(func(types.Context, uint64) ammtypes.Pool); ok {
-		r0 = rf(_a0, _a1)
-	} else {
-		r0 = ret.Get(0).(ammtypes.Pool)
-	}
-
-	if rf, ok := ret.Get(1).(func(types.Context, uint64) bool); ok {
-		r1 = rf(_a0, _a1)
-	} else {
-		r1 = ret.Get(1).(bool)
-	}
-
-	return r0, r1
-}
-
-// AmmKeeper_GetPool_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetPool'
-type AmmKeeper_GetPool_Call struct {
-	*mock.Call
-}
-
-// GetPool is a helper method to define mock.On call
-//   - _a0 types.Context
-//   - _a1 uint64
-func (_e *AmmKeeper_Expecter) GetPool(_a0 interface{}, _a1 interface{}) *AmmKeeper_GetPool_Call {
-	return &AmmKeeper_GetPool_Call{Call: _e.mock.On("GetPool", _a0, _a1)}
-}
-
-func (_c *AmmKeeper_GetPool_Call) Run(run func(_a0 types.Context, _a1 uint64)) *AmmKeeper_GetPool_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(types.Context), args[1].(uint64))
-	})
-	return _c
-}
-
-func (_c *AmmKeeper_GetPool_Call) Return(_a0 ammtypes.Pool, _a1 bool) *AmmKeeper_GetPool_Call {
+func (_c *AmmKeeper_SwapByDenom_Call) Return(_a0 *ammtypes.MsgSwapByDenomResponse, _a1 error) *AmmKeeper_SwapByDenom_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *AmmKeeper_GetPool_Call) RunAndReturn(run func(types.Context, uint64) (ammtypes.Pool, bool)) *AmmKeeper_GetPool_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// GetPoolSnapshotOrSet provides a mock function with given fields: ctx, pool
-func (_m *AmmKeeper) GetPoolSnapshotOrSet(ctx types.Context, pool ammtypes.Pool) ammtypes.Pool {
-	ret := _m.Called(ctx, pool)
-
-	var r0 ammtypes.Pool
-	if rf, ok := ret.Get(0).(func(types.Context, ammtypes.Pool) ammtypes.Pool); ok {
-		r0 = rf(ctx, pool)
-	} else {
-		r0 = ret.Get(0).(ammtypes.Pool)
-	}
-
-	return r0
-}
-
-// AmmKeeper_GetPoolSnapshotOrSet_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetPoolSnapshotOrSet'
-type AmmKeeper_GetPoolSnapshotOrSet_Call struct {
-	*mock.Call
-}
-
-// GetPoolSnapshotOrSet is a helper method to define mock.On call
-//   - ctx types.Context
-//   - pool ammtypes.Pool
-func (_e *AmmKeeper_Expecter) GetPoolSnapshotOrSet(ctx interface{}, pool interface{}) *AmmKeeper_GetPoolSnapshotOrSet_Call {
-	return &AmmKeeper_GetPoolSnapshotOrSet_Call{Call: _e.mock.On("GetPoolSnapshotOrSet", ctx, pool)}
-}
-
-func (_c *AmmKeeper_GetPoolSnapshotOrSet_Call) Run(run func(ctx types.Context, pool ammtypes.Pool)) *AmmKeeper_GetPoolSnapshotOrSet_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(types.Context), args[1].(ammtypes.Pool))
-	})
-	return _c
-}
-
-func (_c *AmmKeeper_GetPoolSnapshotOrSet_Call) Return(val ammtypes.Pool) *AmmKeeper_GetPoolSnapshotOrSet_Call {
-	_c.Call.Return(val)
-	return _c
-}
-
-func (_c *AmmKeeper_GetPoolSnapshotOrSet_Call) RunAndReturn(run func(types.Context, ammtypes.Pool) ammtypes.Pool) *AmmKeeper_GetPoolSnapshotOrSet_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// IterateLiquidityPools provides a mock function with given fields: _a0, _a1
-func (_m *AmmKeeper) IterateLiquidityPools(_a0 types.Context, _a1 func(ammtypes.Pool) bool) {
-	_m.Called(_a0, _a1)
-}
-
-// AmmKeeper_IterateLiquidityPools_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'IterateLiquidityPools'
-type AmmKeeper_IterateLiquidityPools_Call struct {
-	*mock.Call
-}
-
-// IterateLiquidityPools is a helper method to define mock.On call
-//   - _a0 types.Context
-//   - _a1 func(ammtypes.Pool) bool
-func (_e *AmmKeeper_Expecter) IterateLiquidityPools(_a0 interface{}, _a1 interface{}) *AmmKeeper_IterateLiquidityPools_Call {
-	return &AmmKeeper_IterateLiquidityPools_Call{Call: _e.mock.On("IterateLiquidityPools", _a0, _a1)}
-}
-
-func (_c *AmmKeeper_IterateLiquidityPools_Call) Run(run func(_a0 types.Context, _a1 func(ammtypes.Pool) bool)) *AmmKeeper_IterateLiquidityPools_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(types.Context), args[1].(func(ammtypes.Pool) bool))
-	})
-	return _c
-}
-
-func (_c *AmmKeeper_IterateLiquidityPools_Call) Return() *AmmKeeper_IterateLiquidityPools_Call {
-	_c.Call.Return()
-	return _c
-}
-
-func (_c *AmmKeeper_IterateLiquidityPools_Call) RunAndReturn(run func(types.Context, func(ammtypes.Pool) bool)) *AmmKeeper_IterateLiquidityPools_Call {
+func (_c *AmmKeeper_SwapByDenom_Call) RunAndReturn(run func(types.Context, *ammtypes.MsgSwapByDenom) (*ammtypes.MsgSwapByDenomResponse, error)) *AmmKeeper_SwapByDenom_Call {
 	_c.Call.Return(run)
 	return _c
 }

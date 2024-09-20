@@ -119,7 +119,7 @@ func (k Keeper) PerpetualBinarySearch(ctx sdk.Context, orderPrice sdk.Dec, order
 		// Get order price
 		order, found := k.GetPendingPerpetualOrder(ctx, orders[mid])
 		if !found {
-			return 0, types.ErrOrderNotFound
+			return 0, types.ErrPerpetualOrderNotFound
 		}
 		if order.TriggerPrice.Rate.LT(orderPrice) {
 			low = mid + 1
@@ -187,7 +187,7 @@ func (k Keeper) GetAllSortedPerpetualOrder(ctx sdk.Context) (list [][]uint64, er
 func (k Keeper) RemovePerpetualSortedOrder(ctx sdk.Context, orderID uint64) error {
 	order, found := k.GetPendingPerpetualOrder(ctx, orderID)
 	if !found {
-		return types.ErrOrderNotFound
+		return types.ErrPerpetualOrderNotFound
 	}
 
 	// Generate the key for the order
@@ -232,4 +232,34 @@ func (k Keeper) RemovePerpetualSortedOrder(ctx sdk.Context, orderID uint64) erro
 
 	sortedStore.Set([]byte(key), encodedOrderIds)
 	return nil
+}
+
+// ExecuteLimitOpenOrder executes a limit open order
+func (k Keeper) ExecuteLimitOpenOrder(ctx sdk.Context, order types.PerpetualOrder) error {
+	// throws not implemented error
+	return errors.New("not implemented")
+}
+
+// ExecuteLimitCloseOrder executes a limit close order
+func (k Keeper) ExecuteLimitCloseOrder(ctx sdk.Context, order types.PerpetualOrder) error {
+	// throws not implemented error
+	return errors.New("not implemented")
+}
+
+// ExecuteMarketOpenOrder executes a market open order
+func (k Keeper) ExecuteMarketOpenOrder(ctx sdk.Context, order types.PerpetualOrder) error {
+	// throws not implemented error
+	return errors.New("not implemented")
+}
+
+// ExecuteMarketCloseOrder executes a market close order
+func (k Keeper) ExecuteMarketCloseOrder(ctx sdk.Context, order types.PerpetualOrder) error {
+	// throws not implemented error
+	return errors.New("not implemented")
+}
+
+// ExecuteStopLossPerpetualOrder executes a stop loss order
+func (k Keeper) ExecuteStopLossPerpetualOrder(ctx sdk.Context, order types.PerpetualOrder) error {
+	// throws not implemented error
+	return errors.New("not implemented")
 }

@@ -134,3 +134,135 @@ func TestSortedSpotOrder(t *testing.T) {
 	// Should store in sorted order
 	assert.Equal(t, res, [][]uint64{{1, 3}})
 }
+
+// TestExecuteStopLossSpotOrder
+func TestExecuteStopLossSpotOrder(t *testing.T) {
+	keeper, ctx := keepertest.TradeshieldKeeper(t)
+
+	// Set to main storage
+	keeper.AppendPendingSpotOrder(ctx, types.SpotOrder{
+		OwnerAddress: "address",
+		OrderId:      0,
+		OrderType:    types.SpotOrderType_STOPLOSS,
+		OrderPrice: &types.OrderPrice{
+			BaseDenom:  "base",
+			QuoteDenom: "quote",
+			Rate:       sdk.NewDec(1),
+		},
+	})
+
+	order, _ := keeper.GetPendingSpotOrder(ctx, 1)
+
+	err := keeper.InsertSpotSortedOrder(ctx, order)
+	require.NoError(t, err)
+
+	err = keeper.ExecuteStopLossSpotOrder(ctx, order)
+	require.NoError(t, err)
+
+	// Should remove from sorted order
+	res, _ := keeper.GetAllSortedSpotOrder(ctx)
+	assert.Equal(t, res, [][]uint64{})
+
+	// Should remove from main storage
+	_, found := keeper.GetPendingSpotOrder(ctx, 1)
+	assert.False(t, found)
+}
+
+// TestExecuteLimitSellOrder
+func TestExecuteLimitSellOrder(t *testing.T) {
+	keeper, ctx := keepertest.TradeshieldKeeper(t)
+
+	// Set to main storage
+	keeper.AppendPendingSpotOrder(ctx, types.SpotOrder{
+		OwnerAddress: "address",
+		OrderId:      0,
+		OrderType:    types.SpotOrderType_LIMITSELL,
+		OrderPrice: &types.OrderPrice{
+			BaseDenom:  "base",
+			QuoteDenom: "quote",
+			Rate:       sdk.NewDec(1),
+		},
+	})
+
+	order, _ := keeper.GetPendingSpotOrder(ctx, 1)
+
+	err := keeper.InsertSpotSortedOrder(ctx, order)
+	require.NoError(t, err)
+
+	err = keeper.ExecuteLimitSellOrder(ctx, order)
+	require.NoError(t, err)
+
+	// Should remove from sorted order
+	res, _ := keeper.GetAllSortedSpotOrder(ctx)
+	assert.Equal(t, res, [][]uint64{})
+
+	// Should remove from main storage
+	_, found := keeper.GetPendingSpotOrder(ctx, 1)
+	assert.False(t, found)
+}
+
+// TestExecuteLimitBuyOrder
+func TestExecuteLimitBuyOrder(t *testing.T) {
+	keeper, ctx := keepertest.TradeshieldKeeper(t)
+
+	// Set to main storage
+	keeper.AppendPendingSpotOrder(ctx, types.SpotOrder{
+		OwnerAddress: "address",
+		OrderId:      0,
+		OrderType:    types.SpotOrderType_LIMITBUY,
+		OrderPrice: &types.OrderPrice{
+			BaseDenom:  "base",
+			QuoteDenom: "quote",
+			Rate:       sdk.NewDec(1),
+		},
+	})
+
+	order, _ := keeper.GetPendingSpotOrder(ctx, 1)
+
+	err := keeper.InsertSpotSortedOrder(ctx, order)
+	require.NoError(t, err)
+
+	err = keeper.ExecuteLimitBuyOrder(ctx, order)
+	require.NoError(t, err)
+
+	// Should remove from sorted order
+	res, _ := keeper.GetAllSortedSpotOrder(ctx)
+	assert.Equal(t, res, [][]uint64{})
+
+	// Should remove from main storage
+	_, found := keeper.GetPendingSpotOrder(ctx, 1)
+	assert.False(t, found)
+}
+
+// TestExecuteMarketBuyOrder
+func TestExecuteMarketBuyOrder(t *testing.T) {
+	keeper, ctx := keepertest.TradeshieldKeeper(t)
+
+	// Set to main storage
+	keeper.AppendPendingSpotOrder(ctx, types.SpotOrder{
+		OwnerAddress: "address",
+		OrderId:      0,
+		OrderType:    types.SpotOrderType_MARKETBUY,
+		OrderPrice: &types.OrderPrice{
+			BaseDenom:  "base",
+			QuoteDenom: "quote",
+			Rate:       sdk.NewDec(1),
+		},
+	})
+
+	order, _ := keeper.GetPendingSpotOrder(ctx, 1)
+
+	err := keeper.InsertSpotSortedOrder(ctx, order)
+	require.NoError(t, err)
+
+	err = keeper.ExecuteMarketBuyOrder(ctx, order)
+	require.NoError(t, err)
+
+	// Should remove from sorted order
+	res, _ := keeper.GetAllSortedSpotOrder(ctx)
+	assert.Equal(t, res, [][]uint64{})
+
+	// Should remove from main storage
+	_, found := keeper.GetPendingSpotOrder(ctx, 1)
+	assert.False(t, found)
+}

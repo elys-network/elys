@@ -17,6 +17,7 @@ type (
 		storeKey  storetypes.StoreKey
 		memKey    storetypes.StoreKey
 		authority string
+		amm       types.AmmKeeper
 	}
 )
 

@@ -6,6 +6,7 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	ammtypes "github.com/elys-network/elys/x/amm/types"
 	"github.com/elys-network/elys/x/tradeshield/types"
 )
 
@@ -119,7 +120,7 @@ func (k Keeper) SpotBinarySearch(ctx sdk.Context, orderPrice sdk.Dec, orders []u
 		// Get order price
 		order, found := k.GetPendingSpotOrder(ctx, orders[mid])
 		if !found {
-			return 0, types.ErrOrderNotFound
+			return 0, types.ErrSpotOrderNotFound
 		}
 		if order.OrderPrice.Rate.LT(orderPrice) {
 			low = mid + 1
@@ -188,7 +189,7 @@ func (k Keeper) GetAllSortedSpotOrder(ctx sdk.Context) (list [][]uint64, err err
 func (k Keeper) RemoveSpotSortedOrder(ctx sdk.Context, orderID uint64) error {
 	order, found := k.GetPendingSpotOrder(ctx, orderID)
 	if !found {
-		return types.ErrOrderNotFound
+		return types.ErrSpotOrderNotFound
 	}
 
 	// Generate the key for the order
@@ -232,5 +233,39 @@ func (k Keeper) RemoveSpotSortedOrder(ctx sdk.Context, orderID uint64) error {
 	encodedOrderIds := types.EncodeUint64Slice(orderIds)
 
 	sortedStore.Set([]byte(key), encodedOrderIds)
+	return nil
+}
+
+// ExecuteStopLossSpotOrder executes a stop loss order
+func (k Keeper) ExecuteStopLossSpotOrder(ctx sdk.Context, order types.SpotOrder) error {
+	// throws not implemented error
+	return errors.New("not implemented")
+}
+
+// ExecuteLimitSellOrder executes a limit sell order
+func (k Keeper) ExecuteLimitSellOrder(ctx sdk.Context, order types.SpotOrder) error {
+	// throws not implemented error
+	return errors.New("not implemented")
+}
+
+// ExecuteLimitBuyOrder executes a limit buy order
+func (k Keeper) ExecuteLimitBuyOrder(ctx sdk.Context, order types.SpotOrder) error {
+	// throws not implemented error
+	return errors.New("not implemented")
+}
+
+// ExecuteMarketBuyOrder executes a market buy order
+func (k Keeper) ExecuteMarketBuyOrder(ctx sdk.Context, order types.SpotOrder) error {
+	// Swap the order amount with the target denom
+	k.amm.SwapByDenom(ctx, &ammtypes.MsgSwapByDenom{
+		Sender:    order.OwnerAddress,
+		Recipient: order.OwnerAddress,
+		Amount:    order.OrderAmount,
+		DenomIn:   order.OrderAmount.Denom,
+		DenomOut:  order.OrderTargetDenom,
+		Discount:  sdk.ZeroDec(),
+		MinAmount: sdk.NewCoin(order.OrderTargetDenom, sdk.ZeroInt()),
+	})
+
 	return nil
 }
