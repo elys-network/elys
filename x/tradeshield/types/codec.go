@@ -31,8 +31,6 @@ func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 		&MsgUpdatePendingPerpetualOrder{},
 		&MsgDeletePendingPerpetualOrder{},
 		&MsgUpdateParams{},
-	)
-	registry.RegisterImplementations((*sdk.Msg)(nil),
 		&MsgExecuteOrders{},
 	)
 	// this line is used by starport scaffolding # 3
