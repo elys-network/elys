@@ -43509,6 +43509,35 @@ paths:
                   additionalProperties: {}
       tags:
         - Query
+  /elys-network/elys/perpetual/get_all_to_pay:
+    get:
+      summary: Queries a list of GetAllToPay items.
+      operationId: ElysPerpetualGetAllToPay
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      tags:
+        - Query
   /elys-network/elys/perpetual/is-whitelisted:
     get:
       summary: Is an address whitelisted?
@@ -46098,7 +46127,6 @@ paths:
                 properties:
                   market_order_enabled:
                     type: boolean
-                    title: 'TODO: Add gov proposal message to set this values'
                   stake_enabled:
                     type: boolean
                   process_orders_enabled:
@@ -90621,6 +90649,8 @@ definitions:
                    repeated Bar results = 1;
                    PageResponse page = 2;
            }
+  elys.perpetual.QueryGetAllToPayResponse:
+    type: object
   elys.perpetual.QueryGetPoolResponse:
     type: object
     properties:
@@ -91365,7 +91395,6 @@ definitions:
     properties:
       market_order_enabled:
         type: boolean
-        title: 'TODO: Add gov proposal message to set this values'
       stake_enabled:
         type: boolean
       process_orders_enabled:
@@ -91793,7 +91822,6 @@ definitions:
         properties:
           market_order_enabled:
             type: boolean
-            title: 'TODO: Add gov proposal message to set this values'
           stake_enabled:
             type: boolean
           process_orders_enabled:
