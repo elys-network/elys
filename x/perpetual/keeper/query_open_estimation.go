@@ -18,7 +18,7 @@ func (k Keeper) OpenEstimation(goCtx context.Context, req *types.QueryOpenEstima
 	}
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	
+
 	// get swap fee param
 	swapFee := k.GetSwapFee(ctx)
 
@@ -128,6 +128,9 @@ func (k Keeper) OpenEstimation(goCtx context.Context, req *types.QueryOpenEstima
 		fundingRate = pool.FundingRate
 	}
 
+	borrowFee := borrowInterestRate.MulInt(leveragedAmount.Sub(collateralAmountInBaseCurrency.Amount))
+	fundingFee := fundingRate.MulInt(leveragedAmount)
+
 	return &types.QueryOpenEstimationResponse{
 		Position:           req.Position,
 		Leverage:           req.Leverage,
@@ -149,5 +152,13 @@ func (k Keeper) OpenEstimation(goCtx context.Context, req *types.QueryOpenEstima
 		PriceImpact:        priceImpact,
 		BorrowInterestRate: borrowInterestRate,
 		FundingRate:        fundingRate,
+		BorrowFee: sdk.Coin{
+			Denom:  baseCurrency,
+			Amount: borrowFee.TruncateInt(),
+		},
+		FundingFee: sdk.Coin{
+			Denom:  baseCurrency,
+			Amount: fundingFee.TruncateInt(),
+		},
 	}, nil
 }
