@@ -69,7 +69,7 @@ func (p Pool) CalcInAmtGivenOut(
 
 	amountInWithoutSlippage := sdk.NewDecFromInt(tokenOut.Amount).Quo(rate)
 	if tokenAmountIn.IsZero(){
-		return sdk.Coin{}, sdk.ZeroDec(), nil
+		return sdk.Coin{}, sdk.ZeroDec(), ErrAmountTooLow
 	} 
 	slippage = sdk.OneDec().Sub(amountInWithoutSlippage.Quo(tokenAmountIn))
 
