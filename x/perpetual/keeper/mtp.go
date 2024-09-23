@@ -167,11 +167,14 @@ func (k Keeper) GetMTPs(ctx sdk.Context, pagination *query.PageRequest) ([]*type
 			mtp.BorrowInterestUnpaidCollateral = k.GetBorrowInterest(ctx, &mtp, ammPool).Add(mtp.BorrowInterestUnpaidCollateral)
 		}
 
-		trading_asset_price := k.oracleKeeper.GetAssetPriceFromDenom(ctx, mtp.TradingAsset)
+		trading_asset_price, found := k.oracleKeeper.GetAssetPrice(ctx, mtp.TradingAsset)
+		if !found {
+			return fmt.Errorf("asset price not found")
+		}
 
 		mtpList = append(mtpList, &types.MtpAndPrice{
-			Mtp: &mtp,
-			TradingAssetPrice: trading_asset_price,
+			Mtp:               &mtp,
+			TradingAssetPrice: trading_asset_price.Price,
 		})
 		return nil
 	})
@@ -217,10 +220,13 @@ func (k Keeper) GetMTPsForPool(ctx sdk.Context, ammPoolId uint64, pagination *qu
 				mtp.BorrowInterestUnpaidCollateral = k.GetBorrowInterest(ctx, &mtp, ammPool).Add(mtp.BorrowInterestUnpaidCollateral)
 			}
 
-			trading_asset_price := k.oracleKeeper.GetAssetPriceFromDenom(ctx, mtp.TradingAsset)
+			trading_asset_price, found := k.oracleKeeper.GetAssetPrice(ctx, mtp.TradingAsset)
+			if !found {
+				return false, fmt.Errorf("asset price not found")
+			}
 			mtps = append(mtps, &types.MtpAndPrice{
-				Mtp: &mtp,
-				TradingAssetPrice: trading_asset_price,
+				Mtp:               &mtp,
+				TradingAssetPrice: trading_asset_price.Price,
 			})
 			return true, nil
 		}
@@ -288,11 +294,14 @@ func (k Keeper) GetMTPsForAddressWithPagination(ctx sdk.Context, mtpAddress sdk.
 			mtp.BorrowInterestUnpaidCollateral = k.GetBorrowInterest(ctx, &mtp, ammPool).Add(mtp.BorrowInterestUnpaidCollateral)
 		}
 
-		trading_asset_price := k.oracleKeeper.GetAssetPriceFromDenom(ctx, mtp.TradingAsset)
+		trading_asset_price, found := k.oracleKeeper.GetAssetPrice(ctx, mtp.TradingAsset)
+		if !found {
+			return fmt.Errorf("asset price not found")
+		}
 
 		mtps = append(mtps, &types.MtpAndPrice{
-			Mtp: &mtp,
-			TradingAssetPrice: trading_asset_price,
+			Mtp:               &mtp,
+			TradingAssetPrice: trading_asset_price.Price,
 		})
 		return nil
 	})

@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	"fmt"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/perpetual/types"
@@ -25,7 +26,10 @@ func (k Keeper) MTP(goCtx context.Context, req *types.MTPRequest) (*types.MTPRes
 		return &types.MTPResponse{}, err
 	}
 
-	trading_asset_price := k.oracleKeeper.GetAssetPriceFromDenom(ctx, mtp.TradingAsset)
+	trading_asset_price, found := k.oracleKeeper.GetAssetPrice(ctx, mtp.TradingAsset)
+	if !found {
+		return nil, fmt.Errorf("asset price not found")
+	}
 
-	return &types.MTPResponse{Mtp: &types.MtpAndPrice{Mtp: &mtp, TradingAssetPrice: trading_asset_price}}, nil
+	return &types.MTPResponse{Mtp: &types.MtpAndPrice{Mtp: &mtp, TradingAssetPrice: trading_asset_price.Price}}, nil
 }
