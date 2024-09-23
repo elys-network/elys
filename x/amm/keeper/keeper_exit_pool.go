@@ -14,6 +14,7 @@ func (k Keeper) ExitPool(
 	shareInAmount math.Int,
 	tokenOutMins sdk.Coins,
 	tokenOutDenom string,
+	isLiquidation bool,
 ) (exitCoins, exitCoinsAfterExitFee sdk.Coins, err error) {
 	pool, poolExists := k.GetPool(ctx, poolId)
 	if !poolExists {
@@ -36,7 +37,7 @@ func (k Keeper) ExitPool(
 			exitCoins, tokenOutMins)
 	}
 
-	exitCoinsAfterExitFee, err = k.ApplyExitPoolStateChange(ctx, pool, sender, shareInAmount, exitCoins)
+	exitCoinsAfterExitFee, err = k.ApplyExitPoolStateChange(ctx, pool, sender, shareInAmount, exitCoins, isLiquidation)
 	if err != nil {
 		return sdk.Coins{}, sdk.Coins{}, err
 	}
