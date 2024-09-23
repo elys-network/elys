@@ -18,6 +18,12 @@ func (k msgServer) ClosePositions(goCtx context.Context, msg *types.MsgClosePosi
 		return nil, nil
 	}
 
+	// Handle toPay
+	err := k.HandleToPay(ctx)
+	if err != nil {
+		ctx.Logger().Error(err.Error())
+	}
+
 	// Handle liquidations
 	liqLog := []string{}
 	for _, val := range msg.Liquidate {

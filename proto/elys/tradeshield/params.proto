@@ -8,5 +8,27 @@ option go_package = "github.com/elys-network/elys/x/tradeshield/types";
 // Params defines the parameters for the module.
 message Params {
   option (gogoproto.goproto_stringer) = false;
-  
+
+  bool market_order_enabled = 1;
+  bool stake_enabled = 2;
+  bool process_orders_enabled = 3;
+  bool swap_enabled = 4;
+  bool perpetual_enabled = 5;
+  bool reward_enabled = 6;
+  bool leverage_enabled = 7;
+  uint64 limit_process_order = 8;
+
+  // For incentive system v2
+  string reward_percentage = 9 [
+        (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+        (gogoproto.nullable) = false
+  ];
+  string margin_error = 10 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  string minimum_deposit = 11 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
 }

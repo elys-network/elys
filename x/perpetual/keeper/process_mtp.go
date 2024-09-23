@@ -16,6 +16,7 @@ import (
 
 func (k Keeper) CheckAndLiquidateUnhealthyPosition(ctx sdk.Context, mtp *types.MTP, pool types.Pool, ammPool ammtypes.Pool, baseCurrency string, baseCurrencyDecimal uint64) error {
 	var err error
+
 	// update mtp take profit liabilities
 	// calculate mtp take profit liabilities, delta x_tp_l = delta y_tp_c * current price (take profit liabilities = take profit custody * current price)
 	mtp.TakeProfitLiabilities, err = k.CalcMTPTakeProfitLiability(ctx, mtp, baseCurrency)
@@ -137,13 +138,12 @@ func (k Keeper) CheckAndCloseAtStopLoss(ctx sdk.Context, mtp *types.MTP, pool ty
 		if !underStopLossPrice {
 			return fmt.Errorf("mtp stop loss price is not <=  token price")
 		}
-	}else {
+	} else {
 		underStopLossPrice := !mtp.StopLossPrice.IsNil() && tradingAssetPrice.Price.GTE(mtp.StopLossPrice)
 		if !underStopLossPrice {
 			return fmt.Errorf("mtp stop loss price is not =>  token price")
 		}
 	}
-	
 
 	var (
 		repayAmount math.Int
@@ -165,5 +165,32 @@ func (k Keeper) CheckAndCloseAtStopLoss(ctx sdk.Context, mtp *types.MTP, pool ty
 		return errors.Wrap(err, "error executing force close")
 	}
 
+	return nil
+}
+
+func (k Keeper) HandleToPay(ctx sdk.Context) error {
+	toPays := k.GetAllToPayStore(ctx)
+
+	if len(toPays) == 0 {
+		return nil
+	}
+	// get funding fee collection address
+	fundingFeeCollectionAddress := k.GetFundingFeeCollectionAddress(ctx)
+
+	for _, toPay := range toPays {
+		balance := k.bankKeeper.GetBalance(ctx, fundingFeeCollectionAddress, toPay.AssetDenom)
+		if balance.Amount.LT(toPay.AssetBalance) {
+			break
+		} else {
+			// transfer funding fee amount to mtp address
+			if err := k.bankKeeper.SendCoins(ctx, fundingFeeCollectionAddress, sdk.MustAccAddressFromBech32(toPay.Address), sdk.NewCoins(sdk.NewCoin(toPay.AssetDenom, toPay.AssetBalance))); err != nil {
+				return err
+			}
+			err := k.DeleteToPay(ctx, sdk.MustAccAddressFromBech32(toPay.Address), toPay.Id)
+			if err != nil {
+				return err
+			}
+		}
+	}
 	return nil
 }

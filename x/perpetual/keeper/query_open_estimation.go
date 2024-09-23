@@ -29,6 +29,19 @@ func (k Keeper) OpenEstimation(goCtx context.Context, req *types.QueryOpenEstima
 	}
 	baseCurrency := entry.Denom
 
+	switch req.Position {
+	case types.Position_LONG:
+		if err := types.CheckLongAssets(req.Collateral.Denom, req.TradingAsset, baseCurrency); err != nil {
+			return nil, err
+		}
+	case types.Position_SHORT:
+		if err := types.CheckShortAssets(req.Collateral.Denom, req.TradingAsset, baseCurrency); err != nil {
+			return nil, err
+		}
+	default:
+		return nil, errorsmod.Wrap(types.ErrInvalidPosition, req.Position.String())
+	}
+
 	// retrieve denom in decimals
 	entry, found = k.assetProfileKeeper.GetEntryByDenom(ctx, req.Collateral.Denom)
 	if !found {

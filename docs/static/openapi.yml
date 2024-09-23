@@ -40541,16 +40541,10 @@ paths:
                       eden_amount_per_year:
                         type: string
                         title: reward amount in eden for 1 year
-                      distribution_start_block:
-                        type: string
-                        title: starting block height of the distribution
-                      total_blocks_per_year:
-                        type: string
-                        title: distribution duration - block number per year
                       blocks_distributed:
                         type: string
+                        format: int64
                         title: blocks distributed
-                    title: Incentive Info
                   eden_commit_val:
                     type: string
                   edenb_commit_val:
@@ -40566,6 +40560,7 @@ paths:
                     properties:
                       num_blocks:
                         type: string
+                        format: int64
                         title: >-
                           Number of blocks since start of epoch (distribution
                           epoch)
@@ -41446,9 +41441,6 @@ paths:
                       liabilities:
                         type: string
                         title: For recording
-                      leverage:
-                        type: string
-                        title: For recording
                       leveraged_lp_amount:
                         type: string
                       position_health:
@@ -41534,9 +41526,6 @@ paths:
 
                             signatures required by gogoproto.
                         liabilities:
-                          type: string
-                          title: For recording
-                        leverage:
                           type: string
                           title: For recording
                         leveraged_lp_amount:
@@ -41707,9 +41696,6 @@ paths:
                             liabilities:
                               type: string
                               title: For recording
-                            leverage:
-                              type: string
-                              title: For recording
                             leveraged_lp_amount:
                               type: string
                             position_health:
@@ -41876,9 +41862,6 @@ paths:
 
                             signatures required by gogoproto.
                         liabilities:
-                          type: string
-                          title: For recording
-                        leverage:
                           type: string
                           title: For recording
                         leveraged_lp_amount:
@@ -42597,7 +42580,7 @@ paths:
                     title: external reward denoms on the pool
                   enable_eden_rewards:
                     type: boolean
-                    title: Enabled or disabled eden rewards
+                    title: Enable or disable eden rewards
         default:
           description: An unexpected error response.
           schema:
@@ -43526,6 +43509,35 @@ paths:
                   additionalProperties: {}
       tags:
         - Query
+  /elys-network/elys/perpetual/get_all_to_pay:
+    get:
+      summary: Queries a list of GetAllToPay items.
+      operationId: ElysPerpetualGetAllToPay
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      tags:
+        - Query
   /elys-network/elys/perpetual/is-whitelisted:
     get:
       summary: Is an address whitelisted?
@@ -43641,10 +43653,18 @@ paths:
                     type: string
                   open_price:
                     type: string
+                  stop_loss_price:
+                    type: string
                   last_interest_calc_time:
                     type: string
                     format: uint64
                   last_interest_calc_block:
+                    type: string
+                    format: uint64
+                  last_funding_calc_time:
+                    type: string
+                    format: uint64
+                  last_funding_calc_block:
                     type: string
                     format: uint64
         default:
@@ -43755,10 +43775,18 @@ paths:
                       type: string
                     open_price:
                       type: string
+                    stop_loss_price:
+                      type: string
                     last_interest_calc_time:
                       type: string
                       format: uint64
                     last_interest_calc_block:
+                      type: string
+                      format: uint64
+                    last_funding_calc_time:
+                      type: string
+                      format: uint64
+                    last_funding_calc_block:
                       type: string
                       format: uint64
               pagination:
@@ -43949,10 +43977,18 @@ paths:
                       type: string
                     open_price:
                       type: string
+                    stop_loss_price:
+                      type: string
                     last_interest_calc_time:
                       type: string
                       format: uint64
                     last_interest_calc_block:
+                      type: string
+                      format: uint64
+                    last_funding_calc_time:
+                      type: string
+                      format: uint64
+                    last_funding_calc_block:
                       type: string
                       format: uint64
               pagination:
@@ -44659,10 +44695,18 @@ paths:
                       type: string
                     open_price:
                       type: string
+                    stop_loss_price:
+                      type: string
                     last_interest_calc_time:
                       type: string
                       format: uint64
                     last_interest_calc_block:
+                      type: string
+                      format: uint64
+                    last_funding_calc_time:
+                      type: string
+                      format: uint64
+                    last_funding_calc_block:
                       type: string
                       format: uint64
               pagination:
@@ -46080,6 +46124,31 @@ paths:
               params:
                 description: params holds all the parameters of this module.
                 type: object
+                properties:
+                  market_order_enabled:
+                    type: boolean
+                  stake_enabled:
+                    type: boolean
+                  process_orders_enabled:
+                    type: boolean
+                  swap_enabled:
+                    type: boolean
+                  perpetual_enabled:
+                    type: boolean
+                  reward_enabled:
+                    type: boolean
+                  leverage_enabled:
+                    type: boolean
+                  limit_process_order:
+                    type: string
+                    format: uint64
+                  reward_percentage:
+                    type: string
+                    title: For incentive system v2
+                  margin_error:
+                    type: string
+                  minimum_deposit:
+                    type: string
             description: >-
               QueryParamsResponse is response type for the Query/Params RPC
               method.
@@ -46101,6 +46170,558 @@ paths:
                     '@type':
                       type: string
                   additionalProperties: {}
+      tags:
+        - Query
+  /elys-network/elys/tradeshield/pending_perpetual_order:
+    get:
+      operationId: ElysTradeshieldPendingPerpetualOrderAll
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              PendingPerpetualOrder:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    order_id:
+                      type: string
+                      format: uint64
+                    owner_address:
+                      type: string
+                    perpetual_order_type:
+                      type: string
+                      enum:
+                        - LIMITOPEN
+                        - LIMITCLOSE
+                        - MARKETOPEN
+                        - MARKETCLOSE
+                        - STOPLOSSPERP
+                      default: LIMITOPEN
+                      title: Perpetual Order
+                    position:
+                      type: string
+                      enum:
+                        - UNSPECIFIED
+                        - LONG
+                        - SHORT
+                      default: UNSPECIFIED
+                    trigger_price:
+                      type: object
+                      properties:
+                        base_denom:
+                          type: string
+                        quote_denom:
+                          type: string
+                        rate:
+                          type: string
+                    collateral:
+                      type: object
+                      properties:
+                        denom:
+                          type: string
+                        amount:
+                          type: string
+                      description: >-
+                        Coin defines a token with a denomination and an amount.
+
+
+                        NOTE: The amount field is an Int which implements the
+                        custom method
+
+                        signatures required by gogoproto.
+                    trading_asset:
+                      type: string
+                    leverage:
+                      type: string
+                    take_profit_price:
+                      type: string
+                    position_id:
+                      type: string
+                      format: uint64
+                    status:
+                      type: string
+                      enum:
+                        - PENDING
+                        - EXECUTED
+                        - CANCLED
+                      default: PENDING
+              pagination:
+                type: object
+                properties:
+                  next_key:
+                    type: string
+                    format: byte
+                    description: |-
+                      next_key is the key to be passed to PageRequest.key to
+                      query the next page most efficiently. It will be empty if
+                      there are no more results.
+                  total:
+                    type: string
+                    format: uint64
+                    title: >-
+                      total is total number of results available if
+                      PageRequest.count_total
+
+                      was set, its value is undefined otherwise
+                description: >-
+                  PageResponse is to be embedded in gRPC response messages where
+                  the
+
+                  corresponding request message has used PageRequest.
+
+                   message SomeResponse {
+                           repeated Bar results = 1;
+                           PageResponse page = 2;
+                   }
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: pagination.key
+          description: |-
+            key is a value returned in PageResponse.next_key to begin
+            querying the next page most efficiently. Only one of offset or key
+            should be set.
+          in: query
+          required: false
+          type: string
+          format: byte
+        - name: pagination.offset
+          description: >-
+            offset is a numeric offset that can be used when key is unavailable.
+
+            It is less efficient than using key. Only one of offset or key
+            should
+
+            be set.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.limit
+          description: >-
+            limit is the total number of results to be returned in the result
+            page.
+
+            If left empty it will default to a value to be set by each app.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.count_total
+          description: >-
+            count_total is set to true  to indicate that the result set should
+            include
+
+            a count of the total number of items available for pagination in
+            UIs.
+
+            count_total is only respected when offset is used. It is ignored
+            when key
+
+            is set.
+          in: query
+          required: false
+          type: boolean
+        - name: pagination.reverse
+          description: >-
+            reverse is set to true if results are to be returned in the
+            descending order.
+
+
+            Since: cosmos-sdk 0.43
+          in: query
+          required: false
+          type: boolean
+      tags:
+        - Query
+  /elys-network/elys/tradeshield/pending_perpetual_order/{id}:
+    get:
+      summary: Queries a list of PendingPerpetualOrder items.
+      operationId: ElysTradeshieldPendingPerpetualOrder
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              PendingPerpetualOrder:
+                type: object
+                properties:
+                  order_id:
+                    type: string
+                    format: uint64
+                  owner_address:
+                    type: string
+                  perpetual_order_type:
+                    type: string
+                    enum:
+                      - LIMITOPEN
+                      - LIMITCLOSE
+                      - MARKETOPEN
+                      - MARKETCLOSE
+                      - STOPLOSSPERP
+                    default: LIMITOPEN
+                    title: Perpetual Order
+                  position:
+                    type: string
+                    enum:
+                      - UNSPECIFIED
+                      - LONG
+                      - SHORT
+                    default: UNSPECIFIED
+                  trigger_price:
+                    type: object
+                    properties:
+                      base_denom:
+                        type: string
+                      quote_denom:
+                        type: string
+                      rate:
+                        type: string
+                  collateral:
+                    type: object
+                    properties:
+                      denom:
+                        type: string
+                      amount:
+                        type: string
+                    description: >-
+                      Coin defines a token with a denomination and an amount.
+
+
+                      NOTE: The amount field is an Int which implements the
+                      custom method
+
+                      signatures required by gogoproto.
+                  trading_asset:
+                    type: string
+                  leverage:
+                    type: string
+                  take_profit_price:
+                    type: string
+                  position_id:
+                    type: string
+                    format: uint64
+                  status:
+                    type: string
+                    enum:
+                      - PENDING
+                      - EXECUTED
+                      - CANCLED
+                    default: PENDING
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+          format: uint64
+      tags:
+        - Query
+  /elys-network/elys/tradeshield/pending_spot_order:
+    get:
+      operationId: ElysTradeshieldPendingSpotOrderAll
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              PendingSpotOrder:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    order_type:
+                      type: string
+                      enum:
+                        - STOPLOSS
+                        - LIMITSELL
+                        - LIMITBUY
+                        - MARKETBUY
+                      default: STOPLOSS
+                      title: Spot order
+                    order_id:
+                      type: string
+                      format: uint64
+                    order_price:
+                      type: object
+                      properties:
+                        base_denom:
+                          type: string
+                        quote_denom:
+                          type: string
+                        rate:
+                          type: string
+                    order_amount:
+                      type: object
+                      properties:
+                        denom:
+                          type: string
+                        amount:
+                          type: string
+                      description: >-
+                        Coin defines a token with a denomination and an amount.
+
+
+                        NOTE: The amount field is an Int which implements the
+                        custom method
+
+                        signatures required by gogoproto.
+                    owner_address:
+                      type: string
+                    order_target_denom:
+                      type: string
+                    status:
+                      type: string
+                      enum:
+                        - PENDING
+                        - EXECUTED
+                        - CANCLED
+                      default: PENDING
+                    date:
+                      type: object
+                      properties:
+                        height:
+                          type: string
+                          format: uint64
+                        timestamp:
+                          type: string
+                          format: uint64
+              pagination:
+                type: object
+                properties:
+                  next_key:
+                    type: string
+                    format: byte
+                    description: |-
+                      next_key is the key to be passed to PageRequest.key to
+                      query the next page most efficiently. It will be empty if
+                      there are no more results.
+                  total:
+                    type: string
+                    format: uint64
+                    title: >-
+                      total is total number of results available if
+                      PageRequest.count_total
+
+                      was set, its value is undefined otherwise
+                description: >-
+                  PageResponse is to be embedded in gRPC response messages where
+                  the
+
+                  corresponding request message has used PageRequest.
+
+                   message SomeResponse {
+                           repeated Bar results = 1;
+                           PageResponse page = 2;
+                   }
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: pagination.key
+          description: |-
+            key is a value returned in PageResponse.next_key to begin
+            querying the next page most efficiently. Only one of offset or key
+            should be set.
+          in: query
+          required: false
+          type: string
+          format: byte
+        - name: pagination.offset
+          description: >-
+            offset is a numeric offset that can be used when key is unavailable.
+
+            It is less efficient than using key. Only one of offset or key
+            should
+
+            be set.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.limit
+          description: >-
+            limit is the total number of results to be returned in the result
+            page.
+
+            If left empty it will default to a value to be set by each app.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.count_total
+          description: >-
+            count_total is set to true  to indicate that the result set should
+            include
+
+            a count of the total number of items available for pagination in
+            UIs.
+
+            count_total is only respected when offset is used. It is ignored
+            when key
+
+            is set.
+          in: query
+          required: false
+          type: boolean
+        - name: pagination.reverse
+          description: >-
+            reverse is set to true if results are to be returned in the
+            descending order.
+
+
+            Since: cosmos-sdk 0.43
+          in: query
+          required: false
+          type: boolean
+      tags:
+        - Query
+  /elys-network/elys/tradeshield/pending_spot_order/{id}:
+    get:
+      summary: Queries a list of PendingSpotOrder items.
+      operationId: ElysTradeshieldPendingSpotOrder
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              PendingSpotOrder:
+                type: object
+                properties:
+                  order_type:
+                    type: string
+                    enum:
+                      - STOPLOSS
+                      - LIMITSELL
+                      - LIMITBUY
+                      - MARKETBUY
+                    default: STOPLOSS
+                    title: Spot order
+                  order_id:
+                    type: string
+                    format: uint64
+                  order_price:
+                    type: object
+                    properties:
+                      base_denom:
+                        type: string
+                      quote_denom:
+                        type: string
+                      rate:
+                        type: string
+                  order_amount:
+                    type: object
+                    properties:
+                      denom:
+                        type: string
+                      amount:
+                        type: string
+                    description: >-
+                      Coin defines a token with a denomination and an amount.
+
+
+                      NOTE: The amount field is an Int which implements the
+                      custom method
+
+                      signatures required by gogoproto.
+                  owner_address:
+                    type: string
+                  order_target_denom:
+                    type: string
+                  status:
+                    type: string
+                    enum:
+                      - PENDING
+                      - EXECUTED
+                      - CANCLED
+                    default: PENDING
+                  date:
+                    type: object
+                    properties:
+                      height:
+                        type: string
+                        format: uint64
+                      timestamp:
+                        type: string
+                        format: uint64
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+          format: uint64
       tags:
         - Query
   /elys-network/elys/transferhook/params:
@@ -87233,6 +87854,7 @@ definitions:
     properties:
       num_blocks:
         type: string
+        format: int64
         title: Number of blocks since start of epoch (distribution epoch)
       amount:
         type: string
@@ -87248,16 +87870,10 @@ definitions:
       eden_amount_per_year:
         type: string
         title: reward amount in eden for 1 year
-      distribution_start_block:
-        type: string
-        title: starting block height of the distribution
-      total_blocks_per_year:
-        type: string
-        title: distribution duration - block number per year
       blocks_distributed:
         type: string
+        format: int64
         title: blocks distributed
-    title: Incentive Info
   elys.estaking.MsgUpdateParamsResponse:
     type: object
     description: >-
@@ -87332,16 +87948,10 @@ definitions:
           eden_amount_per_year:
             type: string
             title: reward amount in eden for 1 year
-          distribution_start_block:
-            type: string
-            title: starting block height of the distribution
-          total_blocks_per_year:
-            type: string
-            title: distribution duration - block number per year
           blocks_distributed:
             type: string
+            format: int64
             title: blocks distributed
-        title: Incentive Info
       eden_commit_val:
         type: string
       edenb_commit_val:
@@ -87357,6 +87967,7 @@ definitions:
         properties:
           num_blocks:
             type: string
+            format: int64
             title: Number of blocks since start of epoch (distribution epoch)
           amount:
             type: string
@@ -87384,16 +87995,10 @@ definitions:
               eden_amount_per_year:
                 type: string
                 title: reward amount in eden for 1 year
-              distribution_start_block:
-                type: string
-                title: starting block height of the distribution
-              total_blocks_per_year:
-                type: string
-                title: distribution duration - block number per year
               blocks_distributed:
                 type: string
+                format: int64
                 title: blocks distributed
-            title: Incentive Info
           eden_commit_val:
             type: string
           edenb_commit_val:
@@ -87409,6 +88014,7 @@ definitions:
             properties:
               num_blocks:
                 type: string
+                format: int64
                 title: Number of blocks since start of epoch (distribution epoch)
               amount:
                 type: string
@@ -87597,8 +88203,6 @@ definitions:
         type: string
       is_whitelisted:
         type: boolean
-  elys.leveragelp.MsgAddCollateralResponse:
-    type: object
   elys.leveragelp.MsgAddPoolResponse:
     type: object
   elys.leveragelp.MsgClaimRewardsResponse:
@@ -87709,9 +88313,6 @@ definitions:
       liabilities:
         type: string
         title: For recording
-      leverage:
-        type: string
-        title: For recording
       leveraged_lp_amount:
         type: string
       position_health:
@@ -87751,9 +88352,6 @@ definitions:
 
                   signatures required by gogoproto.
               liabilities:
-                type: string
-                title: For recording
-              leverage:
                 type: string
                 title: For recording
               leveraged_lp_amount:
@@ -87813,9 +88411,6 @@ definitions:
               liabilities:
                 type: string
                 title: For recording
-              leverage:
-                type: string
-                title: For recording
               leveraged_lp_amount:
                 type: string
               position_health:
@@ -87863,9 +88458,6 @@ definitions:
 
                     signatures required by gogoproto.
                 liabilities:
-                  type: string
-                  title: For recording
-                leverage:
                   type: string
                   title: For recording
                 leveraged_lp_amount:
@@ -87944,9 +88536,6 @@ definitions:
                     liabilities:
                       type: string
                       title: For recording
-                    leverage:
-                      type: string
-                      title: For recording
                     leveraged_lp_amount:
                       type: string
                     position_health:
@@ -88022,9 +88611,6 @@ definitions:
 
                     signatures required by gogoproto.
                 liabilities:
-                  type: string
-                  title: For recording
-                leverage:
                   type: string
                   title: For recording
                 leveraged_lp_amount:
@@ -88215,9 +88801,6 @@ definitions:
 
               signatures required by gogoproto.
           liabilities:
-            type: string
-            title: For recording
-          leverage:
             type: string
             title: For recording
           leveraged_lp_amount:
@@ -88498,7 +89081,7 @@ definitions:
         title: external reward denoms on the pool
       enable_eden_rewards:
         type: boolean
-        title: Enabled or disabled eden rewards
+        title: Enable or disable eden rewards
   elys.masterchef.PoolMultiplier:
     type: object
     properties:
@@ -88668,7 +89251,7 @@ definitions:
             title: external reward denoms on the pool
           enable_eden_rewards:
             type: boolean
-            title: Enabled or disabled eden rewards
+            title: Enable or disable eden rewards
   elys.masterchef.QueryPoolRewardInfoResponse:
     type: object
     properties:
@@ -89319,10 +89902,18 @@ definitions:
         type: string
       open_price:
         type: string
+      stop_loss_price:
+        type: string
       last_interest_calc_time:
         type: string
         format: uint64
       last_interest_calc_block:
+        type: string
+        format: uint64
+      last_funding_calc_time:
+        type: string
+        format: uint64
+      last_funding_calc_block:
         type: string
         format: uint64
   elys.perpetual.MTPResponse:
@@ -89394,10 +89985,18 @@ definitions:
             type: string
           open_price:
             type: string
+          stop_loss_price:
+            type: string
           last_interest_calc_time:
             type: string
             format: uint64
           last_interest_calc_block:
+            type: string
+            format: uint64
+          last_funding_calc_time:
+            type: string
+            format: uint64
+          last_funding_calc_block:
             type: string
             format: uint64
   elys.perpetual.MsgAddCollateralResponse:
@@ -89421,6 +90020,8 @@ definitions:
         type: string
         format: uint64
   elys.perpetual.MsgUpdateParamsResponse:
+    type: object
+  elys.perpetual.MsgUpdateStopLossResponse:
     type: object
   elys.perpetual.MsgWhitelistResponse:
     type: object
@@ -89616,6 +90217,14 @@ definitions:
       - LONG
       - SHORT
     default: UNSPECIFIED
+  elys.perpetual.PositionRequest:
+    type: object
+    properties:
+      address:
+        type: string
+      id:
+        type: string
+        format: uint64
   elys.perpetual.PositionsByPoolResponse:
     type: object
     properties:
@@ -89687,10 +90296,18 @@ definitions:
               type: string
             open_price:
               type: string
+            stop_loss_price:
+              type: string
             last_interest_calc_time:
               type: string
               format: uint64
             last_interest_calc_block:
+              type: string
+              format: uint64
+            last_funding_calc_time:
+              type: string
+              format: uint64
+            last_funding_calc_block:
               type: string
               format: uint64
       pagination:
@@ -89790,10 +90407,18 @@ definitions:
               type: string
             open_price:
               type: string
+            stop_loss_price:
+              type: string
             last_interest_calc_time:
               type: string
               format: uint64
             last_interest_calc_block:
+              type: string
+              format: uint64
+            last_funding_calc_time:
+              type: string
+              format: uint64
+            last_funding_calc_block:
               type: string
               format: uint64
       pagination:
@@ -89893,10 +90518,18 @@ definitions:
               type: string
             open_price:
               type: string
+            stop_loss_price:
+              type: string
             last_interest_calc_time:
               type: string
               format: uint64
             last_interest_calc_block:
+              type: string
+              format: uint64
+            last_funding_calc_time:
+              type: string
+              format: uint64
+            last_funding_calc_block:
               type: string
               format: uint64
       pagination:
@@ -90016,6 +90649,8 @@ definitions:
                    repeated Bar results = 1;
                    PageResponse page = 2;
            }
+  elys.perpetual.QueryGetAllToPayResponse:
+    type: object
   elys.perpetual.QueryGetPoolResponse:
     type: object
     properties:
@@ -90715,16 +91350,573 @@ definitions:
             format: uint64
       authority:
         type: string
+  elys.tradeshield.Date:
+    type: object
+    properties:
+      height:
+        type: string
+        format: uint64
+      timestamp:
+        type: string
+        format: uint64
+  elys.tradeshield.MsgCreatePendingPerpetualOrderResponse:
+    type: object
+    properties:
+      id:
+        type: string
+        format: uint64
+  elys.tradeshield.MsgCreatePendingSpotOrderResponse:
+    type: object
+    properties:
+      id:
+        type: string
+        format: uint64
+  elys.tradeshield.MsgDeletePendingPerpetualOrderResponse:
+    type: object
+  elys.tradeshield.MsgDeletePendingSpotOrderResponse:
+    type: object
+  elys.tradeshield.MsgUpdateParamsResponse:
+    type: object
+  elys.tradeshield.MsgUpdatePendingPerpetualOrderResponse:
+    type: object
+  elys.tradeshield.MsgUpdatePendingSpotOrderResponse:
+    type: object
+  elys.tradeshield.OrderPrice:
+    type: object
+    properties:
+      base_denom:
+        type: string
+      quote_denom:
+        type: string
+      rate:
+        type: string
   elys.tradeshield.Params:
     type: object
+    properties:
+      market_order_enabled:
+        type: boolean
+      stake_enabled:
+        type: boolean
+      process_orders_enabled:
+        type: boolean
+      swap_enabled:
+        type: boolean
+      perpetual_enabled:
+        type: boolean
+      reward_enabled:
+        type: boolean
+      leverage_enabled:
+        type: boolean
+      limit_process_order:
+        type: string
+        format: uint64
+      reward_percentage:
+        type: string
+        title: For incentive system v2
+      margin_error:
+        type: string
+      minimum_deposit:
+        type: string
     description: Params defines the parameters for the module.
+  elys.tradeshield.PerpetualOrder:
+    type: object
+    properties:
+      order_id:
+        type: string
+        format: uint64
+      owner_address:
+        type: string
+      perpetual_order_type:
+        type: string
+        enum:
+          - LIMITOPEN
+          - LIMITCLOSE
+          - MARKETOPEN
+          - MARKETCLOSE
+          - STOPLOSSPERP
+        default: LIMITOPEN
+        title: Perpetual Order
+      position:
+        type: string
+        enum:
+          - UNSPECIFIED
+          - LONG
+          - SHORT
+        default: UNSPECIFIED
+      trigger_price:
+        type: object
+        properties:
+          base_denom:
+            type: string
+          quote_denom:
+            type: string
+          rate:
+            type: string
+      collateral:
+        type: object
+        properties:
+          denom:
+            type: string
+          amount:
+            type: string
+        description: |-
+          Coin defines a token with a denomination and an amount.
+
+          NOTE: The amount field is an Int which implements the custom method
+          signatures required by gogoproto.
+      trading_asset:
+        type: string
+      leverage:
+        type: string
+      take_profit_price:
+        type: string
+      position_id:
+        type: string
+        format: uint64
+      status:
+        type: string
+        enum:
+          - PENDING
+          - EXECUTED
+          - CANCLED
+        default: PENDING
+  elys.tradeshield.PerpetualOrderType:
+    type: string
+    enum:
+      - LIMITOPEN
+      - LIMITCLOSE
+      - MARKETOPEN
+      - MARKETCLOSE
+      - STOPLOSSPERP
+    default: LIMITOPEN
+    title: Perpetual Order
+  elys.tradeshield.PerpetualPosition:
+    type: string
+    enum:
+      - UNSPECIFIED
+      - LONG
+      - SHORT
+    default: UNSPECIFIED
+  elys.tradeshield.QueryAllPendingPerpetualOrderResponse:
+    type: object
+    properties:
+      PendingPerpetualOrder:
+        type: array
+        items:
+          type: object
+          properties:
+            order_id:
+              type: string
+              format: uint64
+            owner_address:
+              type: string
+            perpetual_order_type:
+              type: string
+              enum:
+                - LIMITOPEN
+                - LIMITCLOSE
+                - MARKETOPEN
+                - MARKETCLOSE
+                - STOPLOSSPERP
+              default: LIMITOPEN
+              title: Perpetual Order
+            position:
+              type: string
+              enum:
+                - UNSPECIFIED
+                - LONG
+                - SHORT
+              default: UNSPECIFIED
+            trigger_price:
+              type: object
+              properties:
+                base_denom:
+                  type: string
+                quote_denom:
+                  type: string
+                rate:
+                  type: string
+            collateral:
+              type: object
+              properties:
+                denom:
+                  type: string
+                amount:
+                  type: string
+              description: >-
+                Coin defines a token with a denomination and an amount.
+
+
+                NOTE: The amount field is an Int which implements the custom
+                method
+
+                signatures required by gogoproto.
+            trading_asset:
+              type: string
+            leverage:
+              type: string
+            take_profit_price:
+              type: string
+            position_id:
+              type: string
+              format: uint64
+            status:
+              type: string
+              enum:
+                - PENDING
+                - EXECUTED
+                - CANCLED
+              default: PENDING
+      pagination:
+        type: object
+        properties:
+          next_key:
+            type: string
+            format: byte
+            description: |-
+              next_key is the key to be passed to PageRequest.key to
+              query the next page most efficiently. It will be empty if
+              there are no more results.
+          total:
+            type: string
+            format: uint64
+            title: >-
+              total is total number of results available if
+              PageRequest.count_total
+
+              was set, its value is undefined otherwise
+        description: |-
+          PageResponse is to be embedded in gRPC response messages where the
+          corresponding request message has used PageRequest.
+
+           message SomeResponse {
+                   repeated Bar results = 1;
+                   PageResponse page = 2;
+           }
+  elys.tradeshield.QueryAllPendingSpotOrderResponse:
+    type: object
+    properties:
+      PendingSpotOrder:
+        type: array
+        items:
+          type: object
+          properties:
+            order_type:
+              type: string
+              enum:
+                - STOPLOSS
+                - LIMITSELL
+                - LIMITBUY
+                - MARKETBUY
+              default: STOPLOSS
+              title: Spot order
+            order_id:
+              type: string
+              format: uint64
+            order_price:
+              type: object
+              properties:
+                base_denom:
+                  type: string
+                quote_denom:
+                  type: string
+                rate:
+                  type: string
+            order_amount:
+              type: object
+              properties:
+                denom:
+                  type: string
+                amount:
+                  type: string
+              description: >-
+                Coin defines a token with a denomination and an amount.
+
+
+                NOTE: The amount field is an Int which implements the custom
+                method
+
+                signatures required by gogoproto.
+            owner_address:
+              type: string
+            order_target_denom:
+              type: string
+            status:
+              type: string
+              enum:
+                - PENDING
+                - EXECUTED
+                - CANCLED
+              default: PENDING
+            date:
+              type: object
+              properties:
+                height:
+                  type: string
+                  format: uint64
+                timestamp:
+                  type: string
+                  format: uint64
+      pagination:
+        type: object
+        properties:
+          next_key:
+            type: string
+            format: byte
+            description: |-
+              next_key is the key to be passed to PageRequest.key to
+              query the next page most efficiently. It will be empty if
+              there are no more results.
+          total:
+            type: string
+            format: uint64
+            title: >-
+              total is total number of results available if
+              PageRequest.count_total
+
+              was set, its value is undefined otherwise
+        description: |-
+          PageResponse is to be embedded in gRPC response messages where the
+          corresponding request message has used PageRequest.
+
+           message SomeResponse {
+                   repeated Bar results = 1;
+                   PageResponse page = 2;
+           }
+  elys.tradeshield.QueryGetPendingPerpetualOrderResponse:
+    type: object
+    properties:
+      PendingPerpetualOrder:
+        type: object
+        properties:
+          order_id:
+            type: string
+            format: uint64
+          owner_address:
+            type: string
+          perpetual_order_type:
+            type: string
+            enum:
+              - LIMITOPEN
+              - LIMITCLOSE
+              - MARKETOPEN
+              - MARKETCLOSE
+              - STOPLOSSPERP
+            default: LIMITOPEN
+            title: Perpetual Order
+          position:
+            type: string
+            enum:
+              - UNSPECIFIED
+              - LONG
+              - SHORT
+            default: UNSPECIFIED
+          trigger_price:
+            type: object
+            properties:
+              base_denom:
+                type: string
+              quote_denom:
+                type: string
+              rate:
+                type: string
+          collateral:
+            type: object
+            properties:
+              denom:
+                type: string
+              amount:
+                type: string
+            description: >-
+              Coin defines a token with a denomination and an amount.
+
+
+              NOTE: The amount field is an Int which implements the custom
+              method
+
+              signatures required by gogoproto.
+          trading_asset:
+            type: string
+          leverage:
+            type: string
+          take_profit_price:
+            type: string
+          position_id:
+            type: string
+            format: uint64
+          status:
+            type: string
+            enum:
+              - PENDING
+              - EXECUTED
+              - CANCLED
+            default: PENDING
+  elys.tradeshield.QueryGetPendingSpotOrderResponse:
+    type: object
+    properties:
+      PendingSpotOrder:
+        type: object
+        properties:
+          order_type:
+            type: string
+            enum:
+              - STOPLOSS
+              - LIMITSELL
+              - LIMITBUY
+              - MARKETBUY
+            default: STOPLOSS
+            title: Spot order
+          order_id:
+            type: string
+            format: uint64
+          order_price:
+            type: object
+            properties:
+              base_denom:
+                type: string
+              quote_denom:
+                type: string
+              rate:
+                type: string
+          order_amount:
+            type: object
+            properties:
+              denom:
+                type: string
+              amount:
+                type: string
+            description: >-
+              Coin defines a token with a denomination and an amount.
+
+
+              NOTE: The amount field is an Int which implements the custom
+              method
+
+              signatures required by gogoproto.
+          owner_address:
+            type: string
+          order_target_denom:
+            type: string
+          status:
+            type: string
+            enum:
+              - PENDING
+              - EXECUTED
+              - CANCLED
+            default: PENDING
+          date:
+            type: object
+            properties:
+              height:
+                type: string
+                format: uint64
+              timestamp:
+                type: string
+                format: uint64
   elys.tradeshield.QueryParamsResponse:
     type: object
     properties:
       params:
         description: params holds all the parameters of this module.
         type: object
+        properties:
+          market_order_enabled:
+            type: boolean
+          stake_enabled:
+            type: boolean
+          process_orders_enabled:
+            type: boolean
+          swap_enabled:
+            type: boolean
+          perpetual_enabled:
+            type: boolean
+          reward_enabled:
+            type: boolean
+          leverage_enabled:
+            type: boolean
+          limit_process_order:
+            type: string
+            format: uint64
+          reward_percentage:
+            type: string
+            title: For incentive system v2
+          margin_error:
+            type: string
+          minimum_deposit:
+            type: string
     description: QueryParamsResponse is response type for the Query/Params RPC method.
+  elys.tradeshield.SpotOrder:
+    type: object
+    properties:
+      order_type:
+        type: string
+        enum:
+          - STOPLOSS
+          - LIMITSELL
+          - LIMITBUY
+          - MARKETBUY
+        default: STOPLOSS
+        title: Spot order
+      order_id:
+        type: string
+        format: uint64
+      order_price:
+        type: object
+        properties:
+          base_denom:
+            type: string
+          quote_denom:
+            type: string
+          rate:
+            type: string
+      order_amount:
+        type: object
+        properties:
+          denom:
+            type: string
+          amount:
+            type: string
+        description: |-
+          Coin defines a token with a denomination and an amount.
+
+          NOTE: The amount field is an Int which implements the custom method
+          signatures required by gogoproto.
+      owner_address:
+        type: string
+      order_target_denom:
+        type: string
+      status:
+        type: string
+        enum:
+          - PENDING
+          - EXECUTED
+          - CANCLED
+        default: PENDING
+      date:
+        type: object
+        properties:
+          height:
+            type: string
+            format: uint64
+          timestamp:
+            type: string
+            format: uint64
+  elys.tradeshield.SpotOrderType:
+    type: string
+    enum:
+      - STOPLOSS
+      - LIMITSELL
+      - LIMITBUY
+      - MARKETBUY
+    default: STOPLOSS
+    title: Spot order
+  elys.tradeshield.Status:
+    type: string
+    enum:
+      - PENDING
+      - EXECUTED
+      - CANCLED
+    default: PENDING
   elys.transferhook.Params:
     type: object
     properties:
