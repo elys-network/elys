@@ -1,0 +1,51 @@
+package cli
+
+import (
+	"errors"
+	"strconv"
+
+	"cosmossdk.io/math"
+	"github.com/cosmos/cosmos-sdk/client"
+	"github.com/cosmos/cosmos-sdk/client/flags"
+	"github.com/cosmos/cosmos-sdk/client/tx"
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/elys-network/elys/x/perpetual/types"
+	"github.com/spf13/cobra"
+)
+
+func CmdUpdateTakeProfitPrice() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "update-take-profit-price [id] [amount]",
+		Short: "Broadcast message update-take-profit-price",
+		Args:  cobra.ExactArgs(2),
+		RunE: func(cmd *cobra.Command, args []string) (err error) {
+			argPrice, err := sdk.NewDecFromStr(args[0])
+			if err != nil {
+				return errors.New("invalid take profit amount")
+			}
+			positionId, err := strconv.Atoi(args[1])
+			if err != nil {
+				return err
+			}
+
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			msg := types.NewMsgUpdateTakeProfitPrice(
+				clientCtx.GetFromAddress().String(),
+				uint64(positionId),
+				math.LegacyDec(argPrice),
+			)
+			if err := msg.ValidateBasic(); err != nil {
+				return err
+			}
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+
+	return cmd
+}
