@@ -45,6 +45,18 @@ func (k msgServer) UpdateTakeProfitPrice(goCtx context.Context, msg *types.MsgUp
 		return nil, err
 	}
 
+	// All take profit liability has to be in liabilities asset
+	err = pool.UpdateTakeProfitLiabilities(ctx, mtp.LiabilitiesAsset, mtp.TakeProfitLiabilities, true, mtp.Position)
+	if err != nil {
+		return nil, err
+	}
+
+	// All take profit custody has to be in custody asset
+	err = pool.UpdateTakeProfitCustody(ctx, mtp.CustodyAsset, mtp.TakeProfitCustody, true, mtp.Position)
+	if err != nil {
+		return nil, err
+	}
+
 	k.SetMTP(ctx, &mtp)
 
 	event := sdk.NewEvent(types.EventOpen,
