@@ -18,7 +18,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TradeshieldKeeper(t testing.TB) (*keeper.Keeper, sdk.Context) {
+func TradeshieldKeeper(t testing.TB) (*keeper.Keeper, sdk.Context, *mocks.AmmKeeper, *mocks.TierKeeper, *mocks.PerpetualKeeper) {
 	storeKey := sdk.NewKVStoreKey(types.StoreKey)
 	memStoreKey := storetypes.NewMemoryStoreKey(types.MemStoreKey)
 
@@ -52,5 +52,5 @@ func TradeshieldKeeper(t testing.TB) (*keeper.Keeper, sdk.Context) {
 	params := types.DefaultParams()
 	k.SetParams(ctx, &params)
 
-	return k, ctx
+	return k, ctx, ammKeeper, tierKeeper, perpetualKeeper
 }

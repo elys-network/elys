@@ -265,11 +265,8 @@ func (k Keeper) ExecuteStopLossOrder(ctx sdk.Context, order types.SpotOrder) err
 		MinAmount: sdk.NewCoin(order.OrderTargetDenom, sdk.ZeroInt()),
 	})
 
-	// Remove the order from the sorted order list
-	err = k.RemoveSpotSortedOrder(ctx, order.OrderId)
-	if err != nil {
-		return err
-	}
+	// Remove the order from the pending order list
+	k.RemovePendingSpotOrder(ctx, order.OrderId)
 
 	return nil
 }
@@ -303,11 +300,8 @@ func (k Keeper) ExecuteLimitSellOrder(ctx sdk.Context, order types.SpotOrder) er
 		MinAmount: sdk.NewCoin(order.OrderTargetDenom, sdk.ZeroInt()),
 	})
 
-	// Remove the order from the sorted order list
-	err = k.RemoveSpotSortedOrder(ctx, order.OrderId)
-	if err != nil {
-		return err
-	}
+	// Remove the order from the pending order list
+	k.RemovePendingSpotOrder(ctx, order.OrderId)
 
 	return nil
 }
@@ -341,11 +335,8 @@ func (k Keeper) ExecuteLimitBuyOrder(ctx sdk.Context, order types.SpotOrder) err
 		MinAmount: sdk.NewCoin(order.OrderTargetDenom, sdk.ZeroInt()),
 	})
 
-	// Remove the order from the sorted order list
-	err = k.RemoveSpotSortedOrder(ctx, order.OrderId)
-	if err != nil {
-		return err
-	}
+	// Remove the order from the pending order list
+	k.RemovePendingSpotOrder(ctx, order.OrderId)
 
 	return nil
 }
@@ -369,11 +360,8 @@ func (k Keeper) ExecuteMarketBuyOrder(ctx sdk.Context, order types.SpotOrder) er
 		MinAmount: sdk.NewCoin(order.OrderTargetDenom, sdk.ZeroInt()),
 	})
 
-	// Remove the order from the sorted order list
-	err = k.RemoveSpotSortedOrder(ctx, order.OrderId)
-	if err != nil {
-		return err
-	}
+	// Remove the order from the pending order list
+	k.RemovePendingSpotOrder(ctx, order.OrderId)
 
 	return nil
 }

@@ -6,6 +6,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	keepertest "github.com/elys-network/elys/testutil/keeper"
 	"github.com/elys-network/elys/testutil/nullify"
+	ammtypes "github.com/elys-network/elys/x/amm/types"
 	"github.com/elys-network/elys/x/tradeshield/keeper"
 	"github.com/elys-network/elys/x/tradeshield/types"
 	"github.com/stretchr/testify/assert"
@@ -21,7 +22,7 @@ func createNPendingSpotOrder(keeper *keeper.Keeper, ctx sdk.Context, n int) []ty
 }
 
 func TestPendingSpotOrderGet(t *testing.T) {
-	keeper, ctx := keepertest.TradeshieldKeeper(t)
+	keeper, ctx, _, _, _ := keepertest.TradeshieldKeeper(t)
 	items := createNPendingSpotOrder(keeper, ctx, 10)
 	for _, item := range items {
 		got, found := keeper.GetPendingSpotOrder(ctx, item.OrderId)
@@ -34,7 +35,7 @@ func TestPendingSpotOrderGet(t *testing.T) {
 }
 
 func TestPendingSpotOrderRemove(t *testing.T) {
-	keeper, ctx := keepertest.TradeshieldKeeper(t)
+	keeper, ctx, _, _, _ := keepertest.TradeshieldKeeper(t)
 	items := createNPendingSpotOrder(keeper, ctx, 10)
 	for _, item := range items {
 		keeper.RemovePendingSpotOrder(ctx, item.OrderId)
@@ -44,7 +45,7 @@ func TestPendingSpotOrderRemove(t *testing.T) {
 }
 
 func TestPendingSpotOrderGetAll(t *testing.T) {
-	keeper, ctx := keepertest.TradeshieldKeeper(t)
+	keeper, ctx, _, _, _ := keepertest.TradeshieldKeeper(t)
 	items := createNPendingSpotOrder(keeper, ctx, 10)
 	require.ElementsMatch(t,
 		nullify.Fill(items),
@@ -53,14 +54,14 @@ func TestPendingSpotOrderGetAll(t *testing.T) {
 }
 
 func TestPendingSpotOrderCount(t *testing.T) {
-	keeper, ctx := keepertest.TradeshieldKeeper(t)
+	keeper, ctx, _, _, _ := keepertest.TradeshieldKeeper(t)
 	items := createNPendingSpotOrder(keeper, ctx, 10)
 	count := uint64(len(items))
 	require.Equal(t, count, keeper.GetPendingSpotOrderCount(ctx)-1)
 }
 
 func TestSortedSpotOrder(t *testing.T) {
-	keeper, ctx := keepertest.TradeshieldKeeper(t)
+	keeper, ctx, _, _, _ := keepertest.TradeshieldKeeper(t)
 
 	// Set to main storage
 	keeper.AppendPendingSpotOrder(ctx, types.SpotOrder{
@@ -137,11 +138,26 @@ func TestSortedSpotOrder(t *testing.T) {
 
 // TestExecuteStopLossOrder
 func TestExecuteStopLossOrder(t *testing.T) {
-	keeper, ctx := keepertest.TradeshieldKeeper(t)
+	keeper, ctx, ammKeeper, tierKeeper, _ := keepertest.TradeshieldKeeper(t)
+
+	address := sdk.AccAddress([]byte("address"))
+
+	tierKeeper.On("CalculateUSDValue", ctx, "base", sdk.NewInt(1)).Return(sdk.NewDec(1))
+	tierKeeper.On("CalculateUSDValue", ctx, "quote", sdk.NewInt(1)).Return(sdk.NewDec(1))
+	tierKeeper.On("GetMembershipTier", ctx, address).Return(sdk.NewDec(10), "tier", uint64(10))
+	ammKeeper.On("SwapByDenom", ctx, &ammtypes.MsgSwapByDenom{
+		Sender:    address.String(),
+		Amount:    sdk.NewCoin("base", sdk.NewInt(1)),
+		MinAmount: sdk.NewCoin("quote", sdk.ZeroInt()),
+		DenomIn:   "base",
+		DenomOut:  "quote",
+		Discount:  sdk.MustNewDecFromStr("0.1"),
+		Recipient: address.String(),
+	}).Return(&ammtypes.MsgSwapByDenomResponse{}, nil)
 
 	// Set to main storage
 	keeper.AppendPendingSpotOrder(ctx, types.SpotOrder{
-		OwnerAddress: "address",
+		OwnerAddress: address.String(),
 		OrderId:      0,
 		OrderType:    types.SpotOrderType_STOPLOSS,
 		OrderPrice: &types.OrderPrice{
@@ -149,19 +165,18 @@ func TestExecuteStopLossOrder(t *testing.T) {
 			QuoteDenom: "quote",
 			Rate:       sdk.NewDec(1),
 		},
+		OrderTargetDenom: "quote",
+		OrderAmount:      sdk.NewCoin("base", sdk.NewInt(1)),
 	})
 
 	order, _ := keeper.GetPendingSpotOrder(ctx, 1)
 
-	err := keeper.InsertSpotSortedOrder(ctx, order)
+	err := keeper.ExecuteStopLossOrder(ctx, order)
 	require.NoError(t, err)
 
-	err = keeper.ExecuteStopLossOrder(ctx, order)
-	require.NoError(t, err)
-
-	// Should remove from sorted order
-	res, _ := keeper.GetAllSortedSpotOrder(ctx)
-	assert.Equal(t, res, [][]uint64{})
+	// Should remove from pending order list
+	res := keeper.GetAllPendingSpotOrder(ctx)
+	assert.Equal(t, res, []types.SpotOrder(nil))
 
 	// Should remove from main storage
 	_, found := keeper.GetPendingSpotOrder(ctx, 1)
@@ -170,11 +185,26 @@ func TestExecuteStopLossOrder(t *testing.T) {
 
 // TestExecuteLimitSellOrder
 func TestExecuteLimitSellOrder(t *testing.T) {
-	keeper, ctx := keepertest.TradeshieldKeeper(t)
+	keeper, ctx, ammKeeper, tierKeeper, _ := keepertest.TradeshieldKeeper(t)
+
+	address := sdk.AccAddress([]byte("address"))
+
+	tierKeeper.On("CalculateUSDValue", ctx, "base", sdk.NewInt(1)).Return(sdk.NewDec(1))
+	tierKeeper.On("CalculateUSDValue", ctx, "quote", sdk.NewInt(1)).Return(sdk.NewDec(1))
+	tierKeeper.On("GetMembershipTier", ctx, address).Return(sdk.NewDec(10), "tier", uint64(10))
+	ammKeeper.On("SwapByDenom", ctx, &ammtypes.MsgSwapByDenom{
+		Sender:    address.String(),
+		Amount:    sdk.NewCoin("base", sdk.NewInt(1)),
+		MinAmount: sdk.NewCoin("quote", sdk.ZeroInt()),
+		DenomIn:   "base",
+		DenomOut:  "quote",
+		Discount:  sdk.MustNewDecFromStr("0.1"),
+		Recipient: address.String(),
+	}).Return(&ammtypes.MsgSwapByDenomResponse{}, nil)
 
 	// Set to main storage
 	keeper.AppendPendingSpotOrder(ctx, types.SpotOrder{
-		OwnerAddress: "address",
+		OwnerAddress: address.String(),
 		OrderId:      0,
 		OrderType:    types.SpotOrderType_LIMITSELL,
 		OrderPrice: &types.OrderPrice{
@@ -182,19 +212,18 @@ func TestExecuteLimitSellOrder(t *testing.T) {
 			QuoteDenom: "quote",
 			Rate:       sdk.NewDec(1),
 		},
+		OrderTargetDenom: "quote",
+		OrderAmount:      sdk.NewCoin("base", sdk.NewInt(1)),
 	})
 
 	order, _ := keeper.GetPendingSpotOrder(ctx, 1)
 
-	err := keeper.InsertSpotSortedOrder(ctx, order)
+	err := keeper.ExecuteLimitSellOrder(ctx, order)
 	require.NoError(t, err)
 
-	err = keeper.ExecuteLimitSellOrder(ctx, order)
-	require.NoError(t, err)
-
-	// Should remove from sorted order
-	res, _ := keeper.GetAllSortedSpotOrder(ctx)
-	assert.Equal(t, res, [][]uint64{})
+	// Should remove from pending order list
+	res := keeper.GetAllPendingSpotOrder(ctx)
+	assert.Equal(t, res, []types.SpotOrder(nil))
 
 	// Should remove from main storage
 	_, found := keeper.GetPendingSpotOrder(ctx, 1)
@@ -203,11 +232,26 @@ func TestExecuteLimitSellOrder(t *testing.T) {
 
 // TestExecuteLimitBuyOrder
 func TestExecuteLimitBuyOrder(t *testing.T) {
-	keeper, ctx := keepertest.TradeshieldKeeper(t)
+	keeper, ctx, ammKeeper, tierKeeper, _ := keepertest.TradeshieldKeeper(t)
+
+	address := sdk.AccAddress([]byte("address"))
+
+	tierKeeper.On("CalculateUSDValue", ctx, "base", sdk.NewInt(1)).Return(sdk.NewDec(1))
+	tierKeeper.On("CalculateUSDValue", ctx, "quote", sdk.NewInt(1)).Return(sdk.NewDec(1))
+	tierKeeper.On("GetMembershipTier", ctx, address).Return(sdk.NewDec(10), "tier", uint64(10))
+	ammKeeper.On("SwapByDenom", ctx, &ammtypes.MsgSwapByDenom{
+		Sender:    address.String(),
+		Amount:    sdk.NewCoin("base", sdk.NewInt(1)),
+		MinAmount: sdk.NewCoin("quote", sdk.ZeroInt()),
+		DenomIn:   "base",
+		DenomOut:  "quote",
+		Discount:  sdk.MustNewDecFromStr("0.1"),
+		Recipient: address.String(),
+	}).Return(&ammtypes.MsgSwapByDenomResponse{}, nil)
 
 	// Set to main storage
 	keeper.AppendPendingSpotOrder(ctx, types.SpotOrder{
-		OwnerAddress: "address",
+		OwnerAddress: address.String(),
 		OrderId:      0,
 		OrderType:    types.SpotOrderType_LIMITBUY,
 		OrderPrice: &types.OrderPrice{
@@ -215,19 +259,18 @@ func TestExecuteLimitBuyOrder(t *testing.T) {
 			QuoteDenom: "quote",
 			Rate:       sdk.NewDec(1),
 		},
+		OrderTargetDenom: "quote",
+		OrderAmount:      sdk.NewCoin("base", sdk.NewInt(1)),
 	})
 
 	order, _ := keeper.GetPendingSpotOrder(ctx, 1)
 
-	err := keeper.InsertSpotSortedOrder(ctx, order)
+	err := keeper.ExecuteLimitBuyOrder(ctx, order)
 	require.NoError(t, err)
 
-	err = keeper.ExecuteLimitBuyOrder(ctx, order)
-	require.NoError(t, err)
-
-	// Should remove from sorted order
-	res, _ := keeper.GetAllSortedSpotOrder(ctx)
-	assert.Equal(t, res, [][]uint64{})
+	// Should remove from pending order list
+	res := keeper.GetAllPendingSpotOrder(ctx)
+	assert.Equal(t, res, []types.SpotOrder(nil))
 
 	// Should remove from main storage
 	_, found := keeper.GetPendingSpotOrder(ctx, 1)
@@ -236,11 +279,24 @@ func TestExecuteLimitBuyOrder(t *testing.T) {
 
 // TestExecuteMarketBuyOrder
 func TestExecuteMarketBuyOrder(t *testing.T) {
-	keeper, ctx := keepertest.TradeshieldKeeper(t)
+	keeper, ctx, ammKeeper, tierKeeper, _ := keepertest.TradeshieldKeeper(t)
+
+	address := sdk.AccAddress([]byte("address"))
+
+	tierKeeper.On("GetMembershipTier", ctx, address).Return(sdk.NewDec(10), "tier", uint64(10))
+	ammKeeper.On("SwapByDenom", ctx, &ammtypes.MsgSwapByDenom{
+		Sender:    address.String(),
+		Amount:    sdk.NewCoin("base", sdk.NewInt(1)),
+		MinAmount: sdk.NewCoin("quote", sdk.ZeroInt()),
+		DenomIn:   "base",
+		DenomOut:  "quote",
+		Discount:  sdk.MustNewDecFromStr("0.1"),
+		Recipient: address.String(),
+	}).Return(&ammtypes.MsgSwapByDenomResponse{}, nil)
 
 	// Set to main storage
 	keeper.AppendPendingSpotOrder(ctx, types.SpotOrder{
-		OwnerAddress: "address",
+		OwnerAddress: address.String(),
 		OrderId:      0,
 		OrderType:    types.SpotOrderType_MARKETBUY,
 		OrderPrice: &types.OrderPrice{
@@ -248,19 +304,18 @@ func TestExecuteMarketBuyOrder(t *testing.T) {
 			QuoteDenom: "quote",
 			Rate:       sdk.NewDec(1),
 		},
+		OrderTargetDenom: "quote",
+		OrderAmount:      sdk.NewCoin("base", sdk.NewInt(1)),
 	})
 
 	order, _ := keeper.GetPendingSpotOrder(ctx, 1)
 
-	err := keeper.InsertSpotSortedOrder(ctx, order)
+	err := keeper.ExecuteMarketBuyOrder(ctx, order)
 	require.NoError(t, err)
 
-	err = keeper.ExecuteMarketBuyOrder(ctx, order)
-	require.NoError(t, err)
-
-	// Should remove from sorted order
-	res, _ := keeper.GetAllSortedSpotOrder(ctx)
-	assert.Equal(t, res, [][]uint64{})
+	// Should remove from pending order list
+	res := keeper.GetAllPendingSpotOrder(ctx)
+	assert.Equal(t, res, []types.SpotOrder(nil))
 
 	// Should remove from main storage
 	_, found := keeper.GetPendingSpotOrder(ctx, 1)

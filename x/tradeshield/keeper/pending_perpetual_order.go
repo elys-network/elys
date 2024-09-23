@@ -242,6 +242,8 @@ func (k Keeper) ExecuteLimitOpenOrder(ctx sdk.Context, order types.PerpetualOrde
 		return err
 	}
 
+	found := false
+
 	switch order.Position {
 	case types.PerpetualPosition_LONG:
 		if marketPrice.LTE(order.TriggerPrice.Rate) {
@@ -257,6 +259,8 @@ func (k Keeper) ExecuteLimitOpenOrder(ctx sdk.Context, order types.PerpetualOrde
 			if err != nil {
 				return err
 			}
+
+			found = true
 		}
 	case types.PerpetualPosition_SHORT:
 		if marketPrice.GTE(order.TriggerPrice.Rate) {
@@ -272,7 +276,16 @@ func (k Keeper) ExecuteLimitOpenOrder(ctx sdk.Context, order types.PerpetualOrde
 			if err != nil {
 				return err
 			}
+
+			found = true
 		}
+	}
+
+	if found {
+		// Remove the order from the pending order list
+		k.RemovePendingPerpetualOrder(ctx, order.OrderId)
+
+		return nil
 	}
 
 	// skip the order
@@ -286,6 +299,8 @@ func (k Keeper) ExecuteLimitCloseOrder(ctx sdk.Context, order types.PerpetualOrd
 		return err
 	}
 
+	found := false
+
 	switch order.Position {
 	case types.PerpetualPosition_LONG:
 		if marketPrice.GTE(order.TriggerPrice.Rate) {
@@ -297,6 +312,8 @@ func (k Keeper) ExecuteLimitCloseOrder(ctx sdk.Context, order types.PerpetualOrd
 			if err != nil {
 				return err
 			}
+
+			found = true
 		}
 	case types.PerpetualPosition_SHORT:
 		if marketPrice.LTE(order.TriggerPrice.Rate) {
@@ -308,7 +325,16 @@ func (k Keeper) ExecuteLimitCloseOrder(ctx sdk.Context, order types.PerpetualOrd
 			if err != nil {
 				return err
 			}
+
+			found = true
 		}
+	}
+
+	if found {
+		// Remove the order from the pending order list
+		k.RemovePendingPerpetualOrder(ctx, order.OrderId)
+
+		return nil
 	}
 
 	// skip the order
@@ -330,6 +356,9 @@ func (k Keeper) ExecuteMarketOpenOrder(ctx sdk.Context, order types.PerpetualOrd
 		return err
 	}
 
+	// Remove the order from the pending order list
+	k.RemovePendingPerpetualOrder(ctx, order.OrderId)
+
 	return nil
 }
 
@@ -343,6 +372,9 @@ func (k Keeper) ExecuteMarketCloseOrder(ctx sdk.Context, order types.PerpetualOr
 	if err != nil {
 		return err
 	}
+
+	// Remove the order from the pending order list
+	k.RemovePendingPerpetualOrder(ctx, order.OrderId)
 
 	return nil
 }
