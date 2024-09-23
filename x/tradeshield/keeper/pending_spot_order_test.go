@@ -135,8 +135,8 @@ func TestSortedSpotOrder(t *testing.T) {
 	assert.Equal(t, res, [][]uint64{{1, 3}})
 }
 
-// TestExecuteStopLossSpotOrder
-func TestExecuteStopLossSpotOrder(t *testing.T) {
+// TestExecuteStopLossOrder
+func TestExecuteStopLossOrder(t *testing.T) {
 	keeper, ctx := keepertest.TradeshieldKeeper(t)
 
 	// Set to main storage
@@ -156,7 +156,7 @@ func TestExecuteStopLossSpotOrder(t *testing.T) {
 	err := keeper.InsertSpotSortedOrder(ctx, order)
 	require.NoError(t, err)
 
-	err = keeper.ExecuteStopLossSpotOrder(ctx, order)
+	err = keeper.ExecuteStopLossOrder(ctx, order)
 	require.NoError(t, err)
 
 	// Should remove from sorted order

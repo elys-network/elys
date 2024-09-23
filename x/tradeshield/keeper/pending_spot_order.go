@@ -237,25 +237,127 @@ func (k Keeper) RemoveSpotSortedOrder(ctx sdk.Context, orderID uint64) error {
 }
 
 // ExecuteStopLossSpotOrder executes a stop loss order
-func (k Keeper) ExecuteStopLossSpotOrder(ctx sdk.Context, order types.SpotOrder) error {
-	// throws not implemented error
-	return errors.New("not implemented")
+func (k Keeper) ExecuteStopLossOrder(ctx sdk.Context, order types.SpotOrder) error {
+	marketPrice, err := k.GetAssetPriceFromDenomInToDenomOut(ctx, order.OrderPrice.BaseDenom, order.OrderPrice.QuoteDenom)
+	if err != nil {
+		return err
+	}
+
+	if marketPrice.GT(order.OrderPrice.Rate) {
+		// skip the order
+		return nil
+	}
+
+	// Get the discount for the user
+	discount, err := k.GetUserDiscount(ctx, order.OwnerAddress)
+	if err != nil {
+		return err
+	}
+
+	// Swap the order amount with the target denom
+	k.amm.SwapByDenom(ctx, &ammtypes.MsgSwapByDenom{
+		Sender:    order.OwnerAddress,
+		Recipient: order.OwnerAddress,
+		Amount:    order.OrderAmount,
+		DenomIn:   order.OrderPrice.BaseDenom,
+		DenomOut:  order.OrderPrice.QuoteDenom,
+		Discount:  discount,
+		MinAmount: sdk.NewCoin(order.OrderTargetDenom, sdk.ZeroInt()),
+	})
+
+	// Remove the order from the sorted order list
+	err = k.RemoveSpotSortedOrder(ctx, order.OrderId)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 // ExecuteLimitSellOrder executes a limit sell order
 func (k Keeper) ExecuteLimitSellOrder(ctx sdk.Context, order types.SpotOrder) error {
-	// throws not implemented error
-	return errors.New("not implemented")
+	marketPrice, err := k.GetAssetPriceFromDenomInToDenomOut(ctx, order.OrderPrice.BaseDenom, order.OrderPrice.QuoteDenom)
+	if err != nil {
+		return err
+	}
+
+	if marketPrice.LT(order.OrderPrice.Rate) {
+		// skip the order
+		return nil
+	}
+
+	// Get the discount for the user
+	discount, err := k.GetUserDiscount(ctx, order.OwnerAddress)
+	if err != nil {
+		return err
+	}
+
+	// Swap the order amount with the target denom
+	k.amm.SwapByDenom(ctx, &ammtypes.MsgSwapByDenom{
+		Sender:    order.OwnerAddress,
+		Recipient: order.OwnerAddress,
+		Amount:    order.OrderAmount,
+		DenomIn:   order.OrderPrice.BaseDenom,
+		DenomOut:  order.OrderPrice.QuoteDenom,
+		Discount:  discount,
+		MinAmount: sdk.NewCoin(order.OrderTargetDenom, sdk.ZeroInt()),
+	})
+
+	// Remove the order from the sorted order list
+	err = k.RemoveSpotSortedOrder(ctx, order.OrderId)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 // ExecuteLimitBuyOrder executes a limit buy order
 func (k Keeper) ExecuteLimitBuyOrder(ctx sdk.Context, order types.SpotOrder) error {
-	// throws not implemented error
-	return errors.New("not implemented")
+	marketPrice, err := k.GetAssetPriceFromDenomInToDenomOut(ctx, order.OrderPrice.BaseDenom, order.OrderPrice.QuoteDenom)
+	if err != nil {
+		return err
+	}
+
+	if marketPrice.GT(order.OrderPrice.Rate) {
+		// skip the order
+		return nil
+	}
+
+	// Get the discount for the user
+	discount, err := k.GetUserDiscount(ctx, order.OwnerAddress)
+	if err != nil {
+		return err
+	}
+
+	// Swap the order amount with the target denom
+	k.amm.SwapByDenom(ctx, &ammtypes.MsgSwapByDenom{
+		Sender:    order.OwnerAddress,
+		Recipient: order.OwnerAddress,
+		Amount:    order.OrderAmount,
+		DenomIn:   order.OrderPrice.BaseDenom,
+		DenomOut:  order.OrderPrice.QuoteDenom,
+		Discount:  discount,
+		MinAmount: sdk.NewCoin(order.OrderTargetDenom, sdk.ZeroInt()),
+	})
+
+	// Remove the order from the sorted order list
+	err = k.RemoveSpotSortedOrder(ctx, order.OrderId)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 // ExecuteMarketBuyOrder executes a market buy order
 func (k Keeper) ExecuteMarketBuyOrder(ctx sdk.Context, order types.SpotOrder) error {
+	// Get the discount for the user
+	discount, err := k.GetUserDiscount(ctx, order.OwnerAddress)
+	if err != nil {
+		return err
+	}
+
 	// Swap the order amount with the target denom
 	k.amm.SwapByDenom(ctx, &ammtypes.MsgSwapByDenom{
 		Sender:    order.OwnerAddress,
@@ -263,9 +365,15 @@ func (k Keeper) ExecuteMarketBuyOrder(ctx sdk.Context, order types.SpotOrder) er
 		Amount:    order.OrderAmount,
 		DenomIn:   order.OrderAmount.Denom,
 		DenomOut:  order.OrderTargetDenom,
-		Discount:  sdk.ZeroDec(),
+		Discount:  discount,
 		MinAmount: sdk.NewCoin(order.OrderTargetDenom, sdk.ZeroInt()),
 	})
+
+	// Remove the order from the sorted order list
+	err = k.RemoveSpotSortedOrder(ctx, order.OrderId)
+	if err != nil {
+		return err
+	}
 
 	return nil
 }

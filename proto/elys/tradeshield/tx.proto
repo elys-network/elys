@@ -2,6 +2,7 @@ syntax = "proto3";
 
 package elys.tradeshield;
 
+import "gogoproto/gogo.proto";
 import "elys/tradeshield/types.proto";
 import "elys/tradeshield/params.proto";
 import "cosmos/base/v1beta1/coin.proto";
@@ -21,53 +22,67 @@ service Msg {
 }
 message MsgCreatePendingSpotOrder {
   SpotOrderType            order_type         = 1;
-  OrderPrice               order_price        = 3;
-  cosmos.base.v1beta1.Coin order_amount       = 4;
-  string                   owner_address      = 5;
-  string                   order_target_denom = 6;
-  Status                   status             = 7;
-  Date                     date               = 8;
+  OrderPrice               order_price        = 2;
+  cosmos.base.v1beta1.Coin order_amount       = 3;
+  string                   owner_address      = 4;
+  string                   order_target_denom = 5;
 }
 
 message MsgCreatePendingSpotOrderResponse {
-  uint64 id = 1;
+  uint64 order_id = 1;
 }
 
 message MsgUpdatePendingSpotOrder {
-  string creator = 1;
-  uint64 id      = 2;
-  string order   = 3;
+  string owner_address = 1;
+  uint64 order_id      = 2;
+  OrderPrice               order_price        = 3;
 }
 
 message MsgUpdatePendingSpotOrderResponse {}
 
 message MsgDeletePendingSpotOrder {
-  string creator = 1;
-  uint64 id      = 2;
+  string owner_address = 1;
+  uint64 order_id      = 2;
 }
 
 message MsgDeletePendingSpotOrderResponse {}
 
 message MsgCreatePendingPerpetualOrder {
-  string creator = 1;
-  string order   = 2;
+  PerpetualOrderType order_type = 1;
+  OrderPrice trigger_price = 2;
+  cosmos.base.v1beta1.Coin collateral = 3 [(gogoproto.nullable) = false];
+  string owner_address = 4;
+  string trading_asset = 5;
+  PerpetualPosition position = 6;
+  string leverage = 7 [
+      (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+      (gogoproto.nullable) = false
+  ];
+  string take_profit_price = 8 [
+      (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+      (gogoproto.nullable) = false
+  ];
+  string stop_loss_price = 9 [
+      (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+      (gogoproto.nullable) = false
+  ];
 }
 
 message MsgCreatePendingPerpetualOrderResponse {
-  uint64 id = 1;
+  uint64 order_id = 1;
 }
 
 message MsgUpdatePendingPerpetualOrder {
-  string creator = 1;
-  uint64 id      = 2;
-  string order   = 3;
+  string owner_address = 1;
+  uint64 order_id      = 2;
+  OrderPrice order_price = 3;
 }
 
 message MsgUpdatePendingPerpetualOrderResponse {}
 
 message MsgDeletePendingPerpetualOrder {
-  string creator = 1;
-  uint64 id      = 2;
+  string owner_address = 1;
+  uint64 order_id      = 2;
 }
 
 message MsgDeletePendingPerpetualOrderResponse {}

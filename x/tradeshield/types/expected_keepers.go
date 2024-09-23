@@ -4,6 +4,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
+	perpetualtypes "github.com/elys-network/elys/x/perpetual/types"
 )
 
 // AccountKeeper defines the expected account keeper used for simulations (noalias)
@@ -22,31 +23,23 @@ type BankKeeper interface {
 //
 //go:generate mockery --srcpkg . --name AmmKeeper --structname AmmKeeper --filename amm_keeper.go --with-expecter
 type AmmKeeper interface {
-	CalcOutAmtGivenIn(ctx sdk.Context, poolId uint64, oracle ammtypes.OracleKeeper, snapshot *ammtypes.Pool, tokensIn sdk.Coins, tokenOutDenom string, swapFee sdk.Dec) (sdk.Coin, sdk.Dec, error)
-	CalcInAmtGivenOut(ctx sdk.Context, poolId uint64, oracle ammtypes.OracleKeeper, snapshot *ammtypes.Pool, tokensOut sdk.Coins, tokenInDenom string, swapFee sdk.Dec) (tokenIn sdk.Coin, slippage sdk.Dec, err error)
-
-	CalcSwapEstimationByDenom(
-		ctx sdk.Context,
-		amount sdk.Coin,
-		denomIn string,
-		denomOut string,
-		baseCurrency string,
-		discount sdk.Dec,
-		overrideSwapFee sdk.Dec,
-		decimals uint64,
-	) (
-		inRoute []*ammtypes.SwapAmountInRoute,
-		outRoute []*ammtypes.SwapAmountOutRoute,
-		outAmount sdk.Coin,
-		spotPrice sdk.Dec,
-		swapFee sdk.Dec,
-		discountOut sdk.Dec,
-		availableLiquidity sdk.Coin,
-		slippage sdk.Dec,
-		weightBonus sdk.Dec,
-		priceImpact sdk.Dec,
-		err error,
-	)
-
 	SwapByDenom(ctx sdk.Context, msg *ammtypes.MsgSwapByDenom) (*ammtypes.MsgSwapByDenomResponse, error)
+}
+
+// TierKeeper defines the expected interface needed to get tier information
+//
+//go:generate mockery --srcpkg . --name TierKeeper --structname TierKeeper --filename tier_keeper.go --with-expecter
+type TierKeeper interface {
+	GetMembershipTier(ctx sdk.Context, user sdk.AccAddress) (total_portfolio sdk.Dec, tier string, discount uint64)
+
+	CalculateUSDValue(ctx sdk.Context, denom string, amount sdk.Int) sdk.Dec
+}
+
+// PerpetualKeeper defines the expected interface needed to open and close perpetual positions
+//
+//go:generate mockery --srcpkg . --name PerpetualKeeper --structname PerpetualKeeper --filename perpetual_keeper.go --with-expecter
+type PerpetualKeeper interface {
+	Open(ctx sdk.Context, msg *perpetualtypes.MsgOpen, isBroker bool) (*perpetualtypes.MsgOpenResponse, error)
+
+	Close(ctx sdk.Context, msg *perpetualtypes.MsgClose) (*perpetualtypes.MsgCloseResponse, error)
 }

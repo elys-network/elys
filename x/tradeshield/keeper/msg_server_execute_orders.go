@@ -24,7 +24,7 @@ func (k msgServer) ExecuteOrders(goCtx context.Context, msg *types.MsgExecuteOrd
 		switch spotOrder.OrderType {
 		case types.SpotOrderType_STOPLOSS:
 			// execute the stop loss order
-			err = k.ExecuteStopLossSpotOrder(ctx, spotOrder)
+			err = k.ExecuteStopLossOrder(ctx, spotOrder)
 		case types.SpotOrderType_LIMITSELL:
 			// execute the limit sell order
 			err = k.ExecuteLimitSellOrder(ctx, spotOrder)
@@ -66,9 +66,6 @@ func (k msgServer) ExecuteOrders(goCtx context.Context, msg *types.MsgExecuteOrd
 		case types.PerpetualOrderType_MARKETCLOSE:
 			// execute the market close order
 			err = k.ExecuteMarketCloseOrder(ctx, perpetualOrder)
-		case types.PerpetualOrderType_STOPLOSSPERP:
-			// execute the stop loss perpetual order
-			err = k.ExecuteStopLossPerpetualOrder(ctx, perpetualOrder)
 		}
 
 		// return the error if any

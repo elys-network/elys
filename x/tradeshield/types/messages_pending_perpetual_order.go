@@ -13,10 +13,9 @@ const (
 
 var _ sdk.Msg = &MsgCreatePendingPerpetualOrder{}
 
-func NewMsgCreatePendingPerpetualOrder(creator string, order string) *MsgCreatePendingPerpetualOrder {
+func NewMsgCreatePendingPerpetualOrder(creator string) *MsgCreatePendingPerpetualOrder {
 	return &MsgCreatePendingPerpetualOrder{
-		Creator: creator,
-		Order:   order,
+		OwnerAddress: creator,
 	}
 }
 
@@ -29,7 +28,7 @@ func (msg *MsgCreatePendingPerpetualOrder) Type() string {
 }
 
 func (msg *MsgCreatePendingPerpetualOrder) GetSigners() []sdk.AccAddress {
-	creator, err := sdk.AccAddressFromBech32(msg.Creator)
+	creator, err := sdk.AccAddressFromBech32(msg.OwnerAddress)
 	if err != nil {
 		panic(err)
 	}
@@ -42,20 +41,20 @@ func (msg *MsgCreatePendingPerpetualOrder) GetSignBytes() []byte {
 }
 
 func (msg *MsgCreatePendingPerpetualOrder) ValidateBasic() error {
-	_, err := sdk.AccAddressFromBech32(msg.Creator)
+	_, err := sdk.AccAddressFromBech32(msg.OwnerAddress)
 	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid owner address (%s)", err)
 	}
 	return nil
 }
 
 var _ sdk.Msg = &MsgUpdatePendingPerpetualOrder{}
 
-func NewMsgUpdatePendingPerpetualOrder(creator string, id uint64, order string) *MsgUpdatePendingPerpetualOrder {
+func NewMsgUpdatePendingPerpetualOrder(creator string, id uint64, orderPrice *OrderPrice) *MsgUpdatePendingPerpetualOrder {
 	return &MsgUpdatePendingPerpetualOrder{
-		Id:      id,
-		Creator: creator,
-		Order:   order,
+		OrderId:      id,
+		OwnerAddress: creator,
+		OrderPrice:   orderPrice,
 	}
 }
 
@@ -68,7 +67,7 @@ func (msg *MsgUpdatePendingPerpetualOrder) Type() string {
 }
 
 func (msg *MsgUpdatePendingPerpetualOrder) GetSigners() []sdk.AccAddress {
-	creator, err := sdk.AccAddressFromBech32(msg.Creator)
+	creator, err := sdk.AccAddressFromBech32(msg.OwnerAddress)
 	if err != nil {
 		panic(err)
 	}
@@ -81,7 +80,7 @@ func (msg *MsgUpdatePendingPerpetualOrder) GetSignBytes() []byte {
 }
 
 func (msg *MsgUpdatePendingPerpetualOrder) ValidateBasic() error {
-	_, err := sdk.AccAddressFromBech32(msg.Creator)
+	_, err := sdk.AccAddressFromBech32(msg.OwnerAddress)
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
 	}
@@ -92,8 +91,8 @@ var _ sdk.Msg = &MsgDeletePendingPerpetualOrder{}
 
 func NewMsgDeletePendingPerpetualOrder(creator string, id uint64) *MsgDeletePendingPerpetualOrder {
 	return &MsgDeletePendingPerpetualOrder{
-		Id:      id,
-		Creator: creator,
+		OrderId:      id,
+		OwnerAddress: creator,
 	}
 }
 func (msg *MsgDeletePendingPerpetualOrder) Route() string {
@@ -105,7 +104,7 @@ func (msg *MsgDeletePendingPerpetualOrder) Type() string {
 }
 
 func (msg *MsgDeletePendingPerpetualOrder) GetSigners() []sdk.AccAddress {
-	creator, err := sdk.AccAddressFromBech32(msg.Creator)
+	creator, err := sdk.AccAddressFromBech32(msg.OwnerAddress)
 	if err != nil {
 		panic(err)
 	}
@@ -118,9 +117,9 @@ func (msg *MsgDeletePendingPerpetualOrder) GetSignBytes() []byte {
 }
 
 func (msg *MsgDeletePendingPerpetualOrder) ValidateBasic() error {
-	_, err := sdk.AccAddressFromBech32(msg.Creator)
+	_, err := sdk.AccAddressFromBech32(msg.OwnerAddress)
 	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid owner address (%s)", err)
 	}
 	return nil
 }

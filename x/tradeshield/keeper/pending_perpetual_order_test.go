@@ -28,6 +28,7 @@ func createNPendingPerpetualOrder(keeper *keeper.Keeper, ctx sdk.Context, n int)
 			TakeProfitPrice:    sdk.NewDec(1),
 			PositionId:         uint64(i),
 			Status:             types.Status_PENDING,
+			StopLossPrice:      sdk.NewDec(1),
 		}
 		items[i].OrderId = keeper.AppendPendingPerpetualOrder(ctx, items[i])
 	}
@@ -249,29 +250,6 @@ func TestExecuteMarketCloseOrder(t *testing.T) {
 	keeper.AppendPendingPerpetualOrder(ctx, order)
 
 	err := keeper.ExecuteMarketCloseOrder(ctx, order)
-	require.NoError(t, err)
-
-	_, found := keeper.GetPendingPerpetualOrder(ctx, 1)
-	require.False(t, found)
-}
-
-// TestExecuteStopLossPerpetualOrder
-func TestExecuteStopLossPerpetualOrder(t *testing.T) {
-	keeper, ctx := keepertest.TradeshieldKeeper(t)
-	order := types.PerpetualOrder{
-		OwnerAddress:       "address",
-		OrderId:            0,
-		PerpetualOrderType: types.PerpetualOrderType_STOPLOSSPERP,
-		TriggerPrice: &types.OrderPrice{
-			BaseDenom:  "base",
-			QuoteDenom: "quote",
-			Rate:       sdk.NewDec(1),
-		},
-	}
-
-	keeper.AppendPendingPerpetualOrder(ctx, order)
-
-	err := keeper.ExecuteStopLossPerpetualOrder(ctx, order)
 	require.NoError(t, err)
 
 	_, found := keeper.GetPendingPerpetualOrder(ctx, 1)

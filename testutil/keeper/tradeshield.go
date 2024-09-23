@@ -14,6 +14,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/address"
 	"github.com/elys-network/elys/x/tradeshield/keeper"
 	"github.com/elys-network/elys/x/tradeshield/types"
+	"github.com/elys-network/elys/x/tradeshield/types/mocks"
 	"github.com/stretchr/testify/require"
 )
 
@@ -31,11 +32,18 @@ func TradeshieldKeeper(t testing.TB) (*keeper.Keeper, sdk.Context) {
 	cdc := codec.NewProtoCodec(registry)
 	govAddress := sdk.AccAddress(address.Module("gov"))
 
+	ammKeeper := mocks.NewAmmKeeper(t)
+	tierKeeper := mocks.NewTierKeeper(t)
+	perpetualKeeper := mocks.NewPerpetualKeeper(t)
+
 	k := keeper.NewKeeper(
 		cdc,
 		storeKey,
 		memStoreKey,
 		govAddress.String(),
+		ammKeeper,
+		tierKeeper,
+		perpetualKeeper,
 	)
 
 	ctx := sdk.NewContext(stateStore, tmproto.Header{}, false, log.NewNopLogger())

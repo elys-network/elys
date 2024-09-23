@@ -6,6 +6,7 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	perpetualtypes "github.com/elys-network/elys/x/perpetual/types"
 	"github.com/elys-network/elys/x/tradeshield/types"
 )
 
@@ -236,30 +237,112 @@ func (k Keeper) RemovePerpetualSortedOrder(ctx sdk.Context, orderID uint64) erro
 
 // ExecuteLimitOpenOrder executes a limit open order
 func (k Keeper) ExecuteLimitOpenOrder(ctx sdk.Context, order types.PerpetualOrder) error {
-	// throws not implemented error
-	return errors.New("not implemented")
+	marketPrice, err := k.GetAssetPriceFromDenomInToDenomOut(ctx, order.TriggerPrice.BaseDenom, order.TriggerPrice.QuoteDenom)
+	if err != nil {
+		return err
+	}
+
+	switch order.Position {
+	case types.PerpetualPosition_LONG:
+		if marketPrice.LTE(order.TriggerPrice.Rate) {
+			_, err := k.perpetual.Open(ctx, &perpetualtypes.MsgOpen{
+				Creator:         order.OwnerAddress,
+				Position:        perpetualtypes.Position(order.Position),
+				Leverage:        order.Leverage,
+				TradingAsset:    order.TradingAsset,
+				Collateral:      order.Collateral,
+				TakeProfitPrice: order.TakeProfitPrice,
+				StopLossPrice:   order.StopLossPrice,
+			}, false)
+			if err != nil {
+				return err
+			}
+		}
+	case types.PerpetualPosition_SHORT:
+		if marketPrice.GTE(order.TriggerPrice.Rate) {
+			_, err := k.perpetual.Open(ctx, &perpetualtypes.MsgOpen{
+				Creator:         order.OwnerAddress,
+				Position:        perpetualtypes.Position(order.Position),
+				Leverage:        order.Leverage,
+				TradingAsset:    order.TradingAsset,
+				Collateral:      order.Collateral,
+				TakeProfitPrice: order.TakeProfitPrice,
+				StopLossPrice:   order.StopLossPrice,
+			}, false)
+			if err != nil {
+				return err
+			}
+		}
+	}
+
+	// skip the order
+	return nil
 }
 
 // ExecuteLimitCloseOrder executes a limit close order
 func (k Keeper) ExecuteLimitCloseOrder(ctx sdk.Context, order types.PerpetualOrder) error {
-	// throws not implemented error
-	return errors.New("not implemented")
+	marketPrice, err := k.GetAssetPriceFromDenomInToDenomOut(ctx, order.TriggerPrice.BaseDenom, order.TriggerPrice.QuoteDenom)
+	if err != nil {
+		return err
+	}
+
+	switch order.Position {
+	case types.PerpetualPosition_LONG:
+		if marketPrice.GTE(order.TriggerPrice.Rate) {
+			_, err := k.perpetual.Close(ctx, &perpetualtypes.MsgClose{
+				Creator: order.OwnerAddress,
+				Id:      order.PositionId,
+				Amount:  sdk.ZeroInt(),
+			})
+			if err != nil {
+				return err
+			}
+		}
+	case types.PerpetualPosition_SHORT:
+		if marketPrice.LTE(order.TriggerPrice.Rate) {
+			_, err := k.perpetual.Close(ctx, &perpetualtypes.MsgClose{
+				Creator: order.OwnerAddress,
+				Id:      order.PositionId,
+				Amount:  sdk.ZeroInt(),
+			})
+			if err != nil {
+				return err
+			}
+		}
+	}
+
+	// skip the order
+	return nil
 }
 
 // ExecuteMarketOpenOrder executes a market open order
 func (k Keeper) ExecuteMarketOpenOrder(ctx sdk.Context, order types.PerpetualOrder) error {
-	// throws not implemented error
-	return errors.New("not implemented")
+	_, err := k.perpetual.Open(ctx, &perpetualtypes.MsgOpen{
+		Creator:         order.OwnerAddress,
+		Position:        perpetualtypes.Position(order.Position),
+		Leverage:        order.Leverage,
+		TradingAsset:    order.TradingAsset,
+		Collateral:      order.Collateral,
+		TakeProfitPrice: order.TakeProfitPrice,
+		StopLossPrice:   order.StopLossPrice,
+	}, false)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 // ExecuteMarketCloseOrder executes a market close order
 func (k Keeper) ExecuteMarketCloseOrder(ctx sdk.Context, order types.PerpetualOrder) error {
-	// throws not implemented error
-	return errors.New("not implemented")
-}
+	_, err := k.perpetual.Close(ctx, &perpetualtypes.MsgClose{
+		Creator: order.OwnerAddress,
+		Id:      order.PositionId,
+		Amount:  sdk.ZeroInt(),
+	})
+	if err != nil {
+		return err
+	}
 
-// ExecuteStopLossPerpetualOrder executes a stop loss order
-func (k Keeper) ExecuteStopLossPerpetualOrder(ctx sdk.Context, order types.PerpetualOrder) error {
-	// throws not implemented error
-	return errors.New("not implemented")
+	return nil
 }
