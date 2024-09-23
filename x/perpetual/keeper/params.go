@@ -33,6 +33,17 @@ func (k Keeper) GetParams(ctx sdk.Context) (params types.Params) {
 	return params
 }
 
+func (k Keeper) GetLeagcyParams(ctx sdk.Context) (params types.LegacyParams) {
+	store := ctx.KVStore(k.storeKey)
+	bz := store.Get(types.KeyPrefix(types.ParamsKey))
+	if bz == nil {
+		return params
+	}
+
+	k.cdc.MustUnmarshal(bz, &params)
+	return params
+}
+
 func (k Keeper) GetMaxLeverageParam(ctx sdk.Context) sdk.Dec {
 	return k.GetParams(ctx).LeverageMax
 }

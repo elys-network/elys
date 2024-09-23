@@ -18,38 +18,38 @@ service Query {
   rpc Params (ParamsRequest) returns (ParamsResponse) {
     option (google.api.http).get = "/elys-network/elys/perpetual/params";
   }
-  
+
   // Queries a list of positions.
   rpc GetPositions (PositionsRequest) returns (PositionsResponse) {
     option (google.api.http).get = "/elys-network/elys/perpetual/positions/{pagination.key}";
   }
-  
+
   // Queries a list of mtp positions by pool.
   rpc GetPositionsByPool (PositionsByPoolRequest) returns (PositionsByPoolResponse) {
     option (google.api.http).get = "/elys-network/elys/perpetual/mtps-by-pool/{amm_pool_id}/{pagination.key}";
   }
-  
+
   // Retuns the total number of open and lifetime mtps.
   rpc GetStatus (StatusRequest) returns (StatusResponse) {
     option (google.api.http).get = "/elys-network/elys/perpetual/status";
   }
-  
+
   // Queries a list of mtp positions for a given address.
   rpc GetPositionsForAddress (PositionsForAddressRequest) returns (PositionsForAddressResponse) {
     option (google.api.http).get = "/elys-network/elys/perpetual/mtps-for-address/{address}/{pagination.key}";
   }
-  
+
   // Queries a list of whitelisted addresses.
   rpc GetWhitelist (WhitelistRequest) returns (WhitelistResponse) {
     option (google.api.http).get = "/elys-network/elys/perpetual/whitelist/{pagination.key}";
-  
+
   }
-  
+
   // Is an address whitelisted?
   rpc IsWhitelisted (IsWhitelistedRequest) returns (IsWhitelistedResponse) {
     option (google.api.http).get = "/elys-network/elys/perpetual/is-whitelisted";
   }
-  
+
   // Queries a single pool given its index.
   rpc Pool  (QueryGetPoolRequest) returns (QueryGetPoolResponse) {
     option (google.api.http).get = "/elys-network/elys/perpetual/pool/{index}";
@@ -59,12 +59,12 @@ service Query {
   rpc Pools (QueryAllPoolRequest) returns (QueryAllPoolResponse) {
     option (google.api.http).get = "/elys-network/elys/perpetual/pool/{pagination.key}";
   }
-  
+
   // Queries a single mtp position given its address and id.
   rpc MTP (MTPRequest) returns (MTPResponse) {
     option (google.api.http).get = "/elys-network/elys/perpetual/mtp/{address}/{id}";
   }
-  
+
   // Queries an estimation of a new open position details.
   rpc OpenEstimation (QueryOpenEstimationRequest) returns (QueryOpenEstimationResponse) {
     option (google.api.http).get = "/elys-network/elys/perpetual/open-estimation";
@@ -84,35 +84,35 @@ message PositionsRequest {
 }
 
 message PositionsResponse {
-  repeated MTP                                    mtps       = 1;
-           cosmos.base.query.v1beta1.PageResponse pagination = 2;
+  repeated MTP                                    mtps = 1;
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
 message PositionsByPoolRequest {
   uint64                                amm_pool_id = 1;
-  cosmos.base.query.v1beta1.PageRequest pagination  = 2;
+  cosmos.base.query.v1beta1.PageRequest pagination = 2;
 }
 
 message PositionsByPoolResponse {
-  repeated MTP                                    mtps       = 1;
-           cosmos.base.query.v1beta1.PageResponse pagination = 2;
+  repeated MTP                                    mtps = 1;
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
 message StatusRequest {}
 
 message StatusResponse {
-  uint64 open_mtp_count     = 1;
+  uint64 open_mtp_count = 1;
   uint64 lifetime_mtp_count = 2;
 }
 
 message PositionsForAddressRequest {
-  string                                address    = 1;
+  string                                address = 1;
   cosmos.base.query.v1beta1.PageRequest pagination = 2;
 }
 
 message PositionsForAddressResponse {
-  repeated MTP                                    mtps       = 1;
-           cosmos.base.query.v1beta1.PageResponse pagination = 2;
+  repeated MTP                                    mtps = 1;
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
 message WhitelistRequest {
@@ -120,8 +120,8 @@ message WhitelistRequest {
 }
 
 message WhitelistResponse {
-  repeated string                                 whitelist  = 1;
-           cosmos.base.query.v1beta1.PageResponse pagination = 2;
+  repeated string                                 whitelist = 1;
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
 message IsWhitelistedRequest {
@@ -129,7 +129,7 @@ message IsWhitelistedRequest {
 }
 
 message IsWhitelistedResponse {
-  string address        = 1;
+  string address = 1;
   bool   is_whitelisted = 2;
 }
 
@@ -146,13 +146,13 @@ message QueryAllPoolRequest {
 }
 
 message QueryAllPoolResponse {
-  repeated Pool                                   pool       = 1 [(gogoproto.nullable) = false];
-           cosmos.base.query.v1beta1.PageResponse pagination = 2;
+  repeated Pool                                   pool = 1 [(gogoproto.nullable) = false];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
 message MTPRequest {
   string address = 1;
-  uint64 id      = 2;
+  uint64 id = 2;
 }
 
 message MTPResponse {
@@ -160,39 +160,38 @@ message MTPResponse {
 }
 
 message QueryOpenEstimationRequest {
-  Position position         = 1;
-  string   leverage         = 2 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
-  string trading_asset    = 3;
-  cosmos.base.v1beta1.Coin collateral     = 4 [(gogoproto.nullable)   = false                                   ] ;
-  string discount   = 5 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
-  string   take_profit_price  = 6 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+  Position position = 1;
+  string leverage = 2 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+  string trading_asset = 3;
+  cosmos.base.v1beta1.Coin collateral = 4 [(gogoproto.nullable) = false] ;
+  string discount = 5 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+  string take_profit_price = 6 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
 }
 
 message QueryOpenEstimationResponse {
-  Position position         = 1;
-  string   leverage         = 2 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
-  string   trading_asset      = 3;
-  cosmos.base.v1beta1.Coin collateral     = 4 [(gogoproto.nullable)   = false                                   ] ;
-  cosmos.base.v1beta1.Coin min_collateral     = 5 [(gogoproto.nullable)   = false                                   ] ;
-  bool valid_collateral = 6;
-  cosmos.base.v1beta1.Coin position_size = 7 [(gogoproto.nullable)   = false                                   ] ;
-  string   swap_fee         = 8 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
-  string   discount   = 9 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
-  string   open_price  = 10 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
-  string   take_profit_price  = 11 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
-  string   liquidation_price  = 12 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
-  string   estimated_pnl = 13 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false];
-  string   estimated_pnl_denom = 14;
-  cosmos.base.v1beta1.Coin available_liquidity  = 15 [(gogoproto.nullable)   = false                                   ] ;
-  string                               slippage = 16 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
-  string                   weight_balance_ratio = 17 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
-  string borrow_interest_rate = 18 [
+  Position position = 1;
+  string   leverage = 2 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+  string   trading_asset = 3;
+  cosmos.base.v1beta1.Coin collateral = 4 [(gogoproto.nullable) = false] ;
+  string   interest_amount = 5 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin position_size = 6 [(gogoproto.nullable) = false] ;
+  string   swap_fee = 7 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+  string   discount = 8 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+  string   open_price = 9 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+  string   take_profit_price = 10 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+  string   liquidation_price = 11 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+  string   estimated_pnl = 12 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false];
+  string   estimated_pnl_denom = 13;
+  cosmos.base.v1beta1.Coin available_liquidity = 14 [(gogoproto.nullable) = false] ;
+  string                               slippage = 15 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+  string                   weight_balance_ratio = 16 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+  string borrow_interest_rate = 17 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
-  string funding_rate = 19 [
+  string funding_rate = 18 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
-  string price_impact = 20 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+  string price_impact = 19 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
 }

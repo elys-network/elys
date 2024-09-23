@@ -40,6 +40,7 @@ var (
 	KeyFundingFeeMaxRate                              = []byte("FundingFeeMaxRate")
 	KeyFundingFeeCollectionAddress                    = []byte("FundingFeeCollectionAddress")
 	KeySwapFee                                        = []byte("SwapFee")
+	KeyMinBorrowInterestAmount                        = []byte("MinBorrowInterestAmount")
 )
 
 // ParamKeyTable the param key table for launch module
@@ -60,6 +61,7 @@ func NewParams() Params {
 		BorrowInterestRateIncrease:                     sdk.NewDecWithPrec(33, 10),
 		BorrowInterestRateMax:                          sdk.NewDecWithPrec(27, 7),
 		BorrowInterestRateMin:                          sdk.NewDecWithPrec(3, 8),
+		MinBorrowInterestAmount:                        sdk.NewInt(5_000_000),
 		EpochLength:                                    (int64)(1),
 		ForceCloseFundAddress:                          ZeroAddress,
 		ForceCloseFundPercentage:                       sdk.OneDec(),
@@ -107,6 +109,7 @@ func (p *Params) ParamSetPairs() paramtypes.ParamSetPairs {
 		paramtypes.NewParamSetPair(KeyFundingFeeMaxRate, &p.FundingFeeMaxRate, validateBorrowInterestRateMax),
 		paramtypes.NewParamSetPair(KeyFundingFeeCollectionAddress, &p.FundingFeeCollectionAddress, validateFundingFeeCollectionAddress),
 		paramtypes.NewParamSetPair(KeySwapFee, &p.SwapFee, validateSwapFee),
+		paramtypes.NewParamSetPair(KeyMinBorrowInterestAmount, &p.MinBorrowInterestAmount, validateMinBorrowInterestAmount),
 	}
 }
 
@@ -182,11 +185,19 @@ func (p Params) Validate() error {
 	if err := validateSwapFee(p.SwapFee); err != nil {
 		return err
 	}
+	if err := validateMinBorrowInterestAmount(p.MinBorrowInterestAmount); err != nil {
+		return err
+	}
 	return nil
 }
 
 // String implements the Stringer interface.
 func (p Params) String() string {
+	out, _ := yaml.Marshal(p)
+	return string(out)
+}
+
+func (p LegacyParams) String() string {
 	out, _ := yaml.Marshal(p)
 	return string(out)
 }
@@ -500,6 +511,21 @@ func validateSwapFee(i interface{}) error {
 	}
 	if v.IsNegative() {
 		return fmt.Errorf("swap fee must be positive: %s", v)
+	}
+
+	return nil
+}
+
+func validateMinBorrowInterestAmount(i interface{}) error {
+	v, ok := i.(sdk.Int)
+	if !ok {
+		return fmt.Errorf("invalid parameter type: %T", i)
+	}
+	if v.IsNil() {
+		return fmt.Errorf("MinBorrowInterestAmount must be not nil")
+	}
+	if v.IsNegative() {
+		return fmt.Errorf("MinBorrowInterestAmount must be positive: %s", v)
 	}
 
 	return nil
