@@ -26,7 +26,11 @@ func (k Keeper) MTP(goCtx context.Context, req *types.MTPRequest) (*types.MTPRes
 		return &types.MTPResponse{}, err
 	}
 
-	trading_asset_price, found := k.oracleKeeper.GetAssetPrice(ctx, mtp.TradingAsset)
+	info, found := k.oracleKeeper.GetAssetInfo(ctx, mtp.TradingAsset)
+	if !found {
+		return nil, fmt.Errorf("asset not found")
+	}
+	trading_asset_price, found := k.oracleKeeper.GetAssetPrice(ctx, info.Display)
 	if !found {
 		return nil, fmt.Errorf("asset price not found")
 	}

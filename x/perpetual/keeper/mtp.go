@@ -167,7 +167,11 @@ func (k Keeper) GetMTPs(ctx sdk.Context, pagination *query.PageRequest) ([]*type
 			mtp.BorrowInterestUnpaidCollateral = k.GetBorrowInterest(ctx, &mtp, ammPool).Add(mtp.BorrowInterestUnpaidCollateral)
 		}
 
-		trading_asset_price, found := k.oracleKeeper.GetAssetPrice(ctx, mtp.TradingAsset)
+		info, found := k.oracleKeeper.GetAssetInfo(ctx, mtp.TradingAsset)
+		if !found {
+			return fmt.Errorf("asset not found")
+		}
+		trading_asset_price, found := k.oracleKeeper.GetAssetPrice(ctx, info.Display)
 		if !found {
 			return fmt.Errorf("asset price not found")
 		}
@@ -220,7 +224,11 @@ func (k Keeper) GetMTPsForPool(ctx sdk.Context, ammPoolId uint64, pagination *qu
 				mtp.BorrowInterestUnpaidCollateral = k.GetBorrowInterest(ctx, &mtp, ammPool).Add(mtp.BorrowInterestUnpaidCollateral)
 			}
 
-			trading_asset_price, found := k.oracleKeeper.GetAssetPrice(ctx, mtp.TradingAsset)
+			info, found := k.oracleKeeper.GetAssetInfo(ctx, mtp.TradingAsset)
+			if !found {
+				return false, fmt.Errorf("asset not found")
+			}
+			trading_asset_price, found := k.oracleKeeper.GetAssetPrice(ctx, info.Display)
 			if !found {
 				return false, fmt.Errorf("asset price not found")
 			}
@@ -294,7 +302,11 @@ func (k Keeper) GetMTPsForAddressWithPagination(ctx sdk.Context, mtpAddress sdk.
 			mtp.BorrowInterestUnpaidCollateral = k.GetBorrowInterest(ctx, &mtp, ammPool).Add(mtp.BorrowInterestUnpaidCollateral)
 		}
 
-		trading_asset_price, found := k.oracleKeeper.GetAssetPrice(ctx, mtp.TradingAsset)
+		info, found := k.oracleKeeper.GetAssetInfo(ctx, mtp.TradingAsset)
+		if !found {
+			return fmt.Errorf("asset not found")
+		}
+		trading_asset_price, found := k.oracleKeeper.GetAssetPrice(ctx, info.Display)
 		if !found {
 			return fmt.Errorf("asset price not found")
 		}
