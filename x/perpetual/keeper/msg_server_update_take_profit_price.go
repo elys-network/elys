@@ -8,6 +8,8 @@ import (
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/perpetual/types"
+	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
+	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
 
 func (k msgServer) UpdateTakeProfitPrice(goCtx context.Context, msg *types.MsgUpdateTakeProfitPrice) (*types.MsgUpdateTakeProfitPriceResponse, error) {
@@ -30,7 +32,19 @@ func (k msgServer) UpdateTakeProfitPrice(goCtx context.Context, msg *types.MsgUp
 		return nil, errorsmod.Wrap(types.ErrPerpetualDisabled, fmt.Sprintf("poolId: %d", poolId))
 	}
 
+	entry, found := k.assetProfileKeeper.GetEntry(ctx, ptypes.BaseCurrency)
+	if !found {
+		return nil, errorsmod.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency)
+	}
+	baseCurrency := entry.Denom
+
 	mtp.TakeProfitPrice = msg.Price
+	mtp.TakeProfitCustody = types.CalcMTPTakeProfitCustody(&mtp)
+	mtp.TakeProfitLiabilities, err = k.CalcMTPTakeProfitLiability(ctx, &mtp, baseCurrency)
+	if err != nil {
+		return nil, err
+	}
+
 	k.SetMTP(ctx, &mtp)
 
 	event := sdk.NewEvent(types.EventOpen,
