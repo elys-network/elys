@@ -21,6 +21,27 @@ func createNPool(keeper *keeper.Keeper, ctx sdk.Context, n int) []types.Pool {
 	return items
 }
 
+func createNPoolResponse(keeper *keeper.Keeper, ctx sdk.Context, n int) []types.PoolResponse {
+	items := make([]types.PoolResponse, n)
+	for i := range items {
+		items[i] = types.PoolResponse{
+			AmmPoolId:                            uint64(i),
+			Health:                               sdk.NewDec(100),
+			Enabled:                              true,
+			Closed:                               false,
+			BorrowInterestRate:                   sdk.MustNewDecFromStr("0.000000000000000001"),
+			PoolAssetsLong:                       []types.PoolAsset{},
+			PoolAssetsShort:                      []types.PoolAsset{},
+			LastHeightBorrowInterestRateComputed: 0,
+			FundingRate:                          sdk.ZeroDec(),
+			NetOpenInterest:                      sdk.ZeroInt(),
+		}
+
+		keeper.SetPool(ctx, types.NewPool(uint64(i)))
+	}
+	return items
+}
+
 func TestPoolGet(t *testing.T) {
 	keeper, ctx := keepertest.PerpetualKeeper(t)
 	items := createNPool(keeper, ctx, 10)

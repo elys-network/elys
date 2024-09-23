@@ -72,12 +72,12 @@ func (k Keeper) GetMTP(ctx sdk.Context, mtpAddress sdk.AccAddress, id uint64) (t
 	}
 	baseCurrency := entry.Denom
 
-	mtp.BorrowInterestUnpaidCollateral = k.GetBorrowInterest(ctx, &mtp, ammPool).Add(mtp.BorrowInterestUnpaidCollateral)
-
 	mtpHealth, err := k.GetMTPHealth(ctx, mtp, ammPool, baseCurrency)
 	if err == nil {
 		mtp.MtpHealth = mtpHealth
 	}
+
+	mtp.BorrowInterestUnpaidCollateral = k.GetBorrowInterest(ctx, &mtp, ammPool).Add(mtp.BorrowInterestUnpaidCollateral)
 
 	return mtp, nil
 }
@@ -159,12 +159,12 @@ func (k Keeper) GetMTPs(ctx sdk.Context, pagination *query.PageRequest) ([]*type
 		}
 
 		if realTime {
-			mtp.BorrowInterestUnpaidCollateral = k.GetBorrowInterest(ctx, &mtp, ammPool).Add(mtp.BorrowInterestUnpaidCollateral)
-
 			mtpHealth, err := k.GetMTPHealth(ctx, mtp, ammPool, baseCurrency)
 			if err == nil {
 				mtp.MtpHealth = mtpHealth
 			}
+
+			mtp.BorrowInterestUnpaidCollateral = k.GetBorrowInterest(ctx, &mtp, ammPool).Add(mtp.BorrowInterestUnpaidCollateral)
 		}
 
 		mtpList = append(mtpList, &mtp)
@@ -204,12 +204,12 @@ func (k Keeper) GetMTPsForPool(ctx sdk.Context, ammPoolId uint64, pagination *qu
 		if accumulate && mtp.AmmPoolId == ammPoolId {
 			if realTime {
 				// Interest
-				mtp.BorrowInterestUnpaidCollateral = k.GetBorrowInterest(ctx, &mtp, ammPool).Add(mtp.BorrowInterestUnpaidCollateral)
-
 				mtpHealth, err := k.GetMTPHealth(ctx, mtp, ammPool, baseCurrency)
 				if err == nil {
 					mtp.MtpHealth = mtpHealth
 				}
+
+				mtp.BorrowInterestUnpaidCollateral = k.GetBorrowInterest(ctx, &mtp, ammPool).Add(mtp.BorrowInterestUnpaidCollateral)
 			}
 
 			mtps = append(mtps, &mtp)
@@ -271,12 +271,12 @@ func (k Keeper) GetMTPsForAddressWithPagination(ctx sdk.Context, mtpAddress sdk.
 		}
 
 		if realTime {
-			mtp.BorrowInterestUnpaidCollateral = k.GetBorrowInterest(ctx, &mtp, ammPool).Add(mtp.BorrowInterestUnpaidCollateral)
-
 			mtpHealth, err := k.GetMTPHealth(ctx, mtp, ammPool, baseCurrency)
 			if err == nil {
 				mtp.MtpHealth = mtpHealth
 			}
+
+			mtp.BorrowInterestUnpaidCollateral = k.GetBorrowInterest(ctx, &mtp, ammPool).Add(mtp.BorrowInterestUnpaidCollateral)
 		}
 
 		mtps = append(mtps, &mtp)
@@ -323,13 +323,37 @@ func (k Keeper) GetOpenMTPCount(ctx sdk.Context) uint64 {
 	return count
 }
 
-// TODO: Handle to pay with a claim message or in begin blocker
 func (k Keeper) SetToPay(ctx sdk.Context, toPay *types.ToPay) error {
 	store := ctx.KVStore(k.storeKey)
 	address := sdk.MustAccAddressFromBech32(toPay.Address)
 
 	key := types.GetToPayKey(address, toPay.Id)
 	store.Set(key, k.cdc.MustMarshal(toPay))
+	return nil
+}
+
+func (k Keeper) GetAllToPayStore(ctx sdk.Context) []types.ToPay {
+	var toPays []types.ToPay
+	store := ctx.KVStore(k.storeKey)
+	iterator := sdk.KVStorePrefixIterator(store, types.ToPayPrefix)
+	defer iterator.Close()
+
+	for ; iterator.Valid(); iterator.Next() {
+		var toPay types.ToPay
+		bytesValue := iterator.Value()
+		k.cdc.MustUnmarshal(bytesValue, &toPay)
+		toPays = append(toPays, toPay)
+	}
+	return toPays
+}
+
+func (k Keeper) DeleteToPay(ctx sdk.Context, address sdk.AccAddress, id uint64) error {
+	store := ctx.KVStore(k.storeKey)
+	key := types.GetToPayKey(address, id)
+	if !store.Has(key) {
+		return types.ErrToPayDoesNotExist
+	}
+	store.Delete(key)
 	return nil
 }
 

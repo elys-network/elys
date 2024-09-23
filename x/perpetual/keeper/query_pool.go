@@ -16,7 +16,7 @@ func (k Keeper) Pools(goCtx context.Context, req *types.QueryAllPoolRequest) (*t
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
-	var pools []types.Pool
+	var pools []types.PoolResponse
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	store := ctx.KVStore(k.storeKey)
@@ -28,7 +28,26 @@ func (k Keeper) Pools(goCtx context.Context, req *types.QueryAllPoolRequest) (*t
 			return err
 		}
 
-		pools = append(pools, pool)
+		ammPool, found := k.amm.GetPool(ctx, pool.AmmPoolId)
+		if !found {
+			return types.ErrPoolDoesNotExist
+		}
+
+		if ammPool.PoolParams.UseOracle {
+			pools = append(pools, types.PoolResponse{
+				AmmPoolId:                            pool.AmmPoolId,
+				Health:                               pool.Health,
+				Enabled:                              pool.Enabled,
+				Closed:                               pool.Closed,
+				BorrowInterestRate:                   pool.BorrowInterestRate,
+				PoolAssetsLong:                       pool.PoolAssetsLong,
+				PoolAssetsShort:                      pool.PoolAssetsShort,
+				LastHeightBorrowInterestRateComputed: pool.LastHeightBorrowInterestRateComputed,
+				FundingRate:                          pool.FundingRate,
+				NetOpenInterest:                      k.GetNetOpenInterest(pool),
+			})
+		}
+
 		return nil
 	})
 	if err != nil {
@@ -52,5 +71,18 @@ func (k Keeper) Pool(goCtx context.Context, req *types.QueryGetPoolRequest) (*ty
 		return nil, status.Error(codes.NotFound, "not found")
 	}
 
-	return &types.QueryGetPoolResponse{Pool: val}, nil
+	pool := types.PoolResponse{
+		AmmPoolId:                            val.AmmPoolId,
+		Health:                               val.Health,
+		Enabled:                              val.Enabled,
+		Closed:                               val.Closed,
+		BorrowInterestRate:                   val.BorrowInterestRate,
+		PoolAssetsLong:                       val.PoolAssetsLong,
+		PoolAssetsShort:                      val.PoolAssetsShort,
+		LastHeightBorrowInterestRateComputed: val.LastHeightBorrowInterestRateComputed,
+		FundingRate:                          val.FundingRate,
+		NetOpenInterest:                      k.GetNetOpenInterest(val),
+	}
+
+	return &types.QueryGetPoolResponse{Pool: pool}, nil
 }

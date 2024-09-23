@@ -4,6 +4,7 @@ import (
 	fmt "fmt"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
 	epochtypes "github.com/elys-network/elys/x/epochs/types"
 	"gopkg.in/yaml.v2"
@@ -11,9 +12,7 @@ import (
 
 var _ paramtypes.ParamSet = (*Params)(nil)
 
-const (
-	ZeroAddress = "elys1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqnrec2l"
-)
+var ZeroAddress = authtypes.NewModuleAddress("zero").String()
 
 var (
 	KeyLeverageMax                                    = []byte("LeverageMax")

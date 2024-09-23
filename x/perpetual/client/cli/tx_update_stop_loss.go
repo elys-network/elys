@@ -20,7 +20,7 @@ func CmdUpdateStopLoss() *cobra.Command {
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			argPrice, err := sdk.NewDecFromStr(args[0])
-			if err!=nil {
+			if err != nil {
 				return errors.New("invalid stoploss amount")
 			}
 			positionId, err := strconv.Atoi(args[1])
@@ -36,7 +36,7 @@ func CmdUpdateStopLoss() *cobra.Command {
 			msg := types.NewMsgUpdateStopLoss(
 				clientCtx.GetFromAddress().String(),
 				uint64(positionId),
-			    math.LegacyDec(argPrice),
+				math.LegacyDec(argPrice),
 			)
 			if err := msg.ValidateBasic(); err != nil {
 				return err

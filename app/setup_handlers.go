@@ -7,12 +7,13 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	m "github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/cosmos/cosmos-sdk/version"
+	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 )
 
 const (
 	// make sure to update these when you upgrade the version
-	NextVersion = "v0.45.1"
+	NextVersion = "v0.46.0"
 
 	LocalNetVersion = "v999.999.999"
 )
@@ -33,6 +34,11 @@ func setUpgradeHandler(app *ElysApp) {
 
 				// Add any logic here to run when the chain is upgraded to the new version
 
+				app.Logger().Info("Deleting proposals with ID < 274")
+				store := ctx.KVStore(app.keys[govtypes.StoreKey])
+				for i := uint64(1); i < 274; i++ {
+					store.Delete(govtypes.ProposalKey(i))
+				}
 			}
 
 			return app.mm.RunMigrations(ctx, app.configurator, vm)
