@@ -72,6 +72,7 @@ func NewParams() Params {
 		PoolOpenThreshold:                              sdk.OneDec(),
 		SafetyFactor:                                   sdk.MustNewDecFromStr("1.050000000000000000"), // 5%
 		WhitelistingEnabled:                            false,
+		MaxLimitOrder:                                  (int64)(500),
 	}
 }
 
