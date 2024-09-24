@@ -25,7 +25,7 @@ func (k Keeper) ExternalIncentive(goCtx context.Context, req *types.QueryExterna
 func (k Keeper) PoolInfo(goCtx context.Context, req *types.QueryPoolInfoRequest) (*types.QueryPoolInfoResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	poolInfo, found := k.GetPool(ctx, req.PoolId)
+	poolInfo, found := k.GetPoolInfo(ctx, req.PoolId)
 	if !found {
 		return nil, status.Error(codes.InvalidArgument, "invalid pool id")
 	}
@@ -46,8 +46,8 @@ func (k Keeper) PoolRewardInfo(goCtx context.Context, req *types.QueryPoolReward
 
 func (k Keeper) UserRewardInfo(goCtx context.Context, req *types.QueryUserRewardInfoRequest) (*types.QueryUserRewardInfoResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-
-	userRewardInfo, found := k.GetUserRewardInfo(ctx, req.User, req.PoolId, req.RewardDenom)
+	user := sdk.MustAccAddressFromBech32(req.User)
+	userRewardInfo, found := k.GetUserRewardInfo(ctx, user, req.PoolId, req.RewardDenom)
 	if !found {
 		return nil, status.Error(codes.InvalidArgument, "invalid pool id or denom")
 	}
@@ -56,11 +56,11 @@ func (k Keeper) UserRewardInfo(goCtx context.Context, req *types.QueryUserReward
 }
 
 func (k Keeper) UserPoolPendingReward(ctx sdk.Context, user sdk.AccAddress, poolId uint64) sdk.Coins {
-	k.AfterWithdraw(ctx, poolId, user.String(), sdk.ZeroInt())
+	k.AfterWithdraw(ctx, poolId, user, sdk.ZeroInt())
 
 	poolRewards := sdk.NewCoins()
 	for _, rewardDenom := range k.GetRewardDenoms(ctx, poolId) {
-		userRewardInfo, found := k.GetUserRewardInfo(ctx, user.String(), poolId, rewardDenom)
+		userRewardInfo, found := k.GetUserRewardInfo(ctx, user, poolId, rewardDenom)
 		if found && userRewardInfo.RewardPending.IsPositive() {
 			poolRewards = poolRewards.Add(
 				sdk.NewCoin(
@@ -83,7 +83,7 @@ func (k Keeper) UserPendingReward(goCtx context.Context, req *types.QueryUserPen
 	totalRewards := sdk.NewCoins()
 	rewardsInfos := []*types.RewardInfo{}
 
-	for _, pool := range k.GetAllPools(ctx) {
+	for _, pool := range k.GetAllPoolInfos(ctx) {
 		poolRewards := k.UserPoolPendingReward(ctx, user, pool.PoolId)
 		rewardsInfos = append(rewardsInfos,
 			&types.RewardInfo{

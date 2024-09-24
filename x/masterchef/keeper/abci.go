@@ -47,7 +47,7 @@ func (k Keeper) ProcessExternalRewardsDistribution(ctx sdk.Context) {
 	externalIncentives := k.GetAllExternalIncentives(ctx)
 	externalIncentiveAprs := make(map[uint64]math.LegacyDec)
 	for _, externalIncentive := range externalIncentives {
-		pool, found := k.GetPool(ctx, externalIncentive.PoolId)
+		pool, found := k.GetPoolInfo(ctx, externalIncentive.PoolId)
 		if !found {
 			continue
 		}
@@ -64,7 +64,7 @@ func (k Keeper) ProcessExternalRewardsDistribution(ctx sdk.Context) {
 			}
 			if !hasRewardDenom {
 				pool.ExternalRewardDenoms = append(pool.ExternalRewardDenoms, externalIncentive.RewardDenom)
-				k.SetPool(ctx, pool)
+				k.SetPoolInfo(ctx, pool)
 			}
 
 			tvl := k.GetPoolTVL(ctx, pool.PoolId)
@@ -85,7 +85,7 @@ func (k Keeper) ProcessExternalRewardsDistribution(ctx sdk.Context) {
 				poolExternalApr = poolExternalApr.Add(apr)
 				externalIncentiveAprs[pool.PoolId] = poolExternalApr
 				pool.ExternalIncentiveApr = poolExternalApr
-				k.SetPool(ctx, pool)
+				k.SetPoolInfo(ctx, pool)
 			}
 		}
 
@@ -189,7 +189,7 @@ func (k Keeper) UpdateLPRewards(ctx sdk.Context) error {
 	}
 
 	// Distribute Eden / USDC Rewards
-	for _, pool := range k.GetAllPools(ctx) {
+	for _, pool := range k.GetAllPoolInfos(ctx) {
 		var err error
 		tvl := k.GetPoolTVL(ctx, pool.PoolId)
 		proxyTVL := tvl.Mul(pool.Multiplier)
@@ -262,7 +262,7 @@ func (k Keeper) UpdateLPRewards(ctx sdk.Context) error {
 			Mul(edenDenomPrice).
 			Quo(tvl)
 
-		k.SetPool(ctx, pool)
+		k.SetPoolInfo(ctx, pool)
 	}
 
 	// Update APR for amm pools
@@ -439,13 +439,13 @@ func (k Keeper) CollectDEXRevenue(ctx sdk.Context) (sdk.Coins, sdk.DecCoins, map
 func (k Keeper) CalculateProxyTVL(ctx sdk.Context, baseCurrency string) sdk.Dec {
 	// Ensure stablestakePoolParams exist
 	stableStakePoolId := uint64(stabletypes.PoolId)
-	_, found := k.GetPool(ctx, stableStakePoolId)
+	_, found := k.GetPoolInfo(ctx, stableStakePoolId)
 	if !found {
 		k.InitStableStakePoolParams(ctx, stableStakePoolId)
 	}
 
 	multipliedShareSum := sdk.ZeroDec()
-	for _, pool := range k.GetAllPools(ctx) {
+	for _, pool := range k.GetAllPoolInfos(ctx) {
 		tvl := k.GetPoolTVL(ctx, pool.PoolId)
 		proxyTVL := tvl.Mul(pool.Multiplier)
 
@@ -459,7 +459,7 @@ func (k Keeper) CalculateProxyTVL(ctx sdk.Context, baseCurrency string) sdk.Dec 
 
 // InitPoolParams: creates a poolInfo at the time of pool creation.
 func (k Keeper) InitPoolParams(ctx sdk.Context, poolId uint64) bool {
-	_, found := k.GetPool(ctx, poolId)
+	_, found := k.GetPoolInfo(ctx, poolId)
 	if !found {
 		poolInfo := types.PoolInfo{
 			// reward amount
@@ -479,7 +479,7 @@ func (k Keeper) InitPoolParams(ctx sdk.Context, poolId uint64) bool {
 			// external reward denoms on the pool
 			ExternalRewardDenoms: []string{},
 		}
-		k.SetPool(ctx, poolInfo)
+		k.SetPoolInfo(ctx, poolInfo)
 	}
 
 	return true
@@ -487,7 +487,7 @@ func (k Keeper) InitPoolParams(ctx sdk.Context, poolId uint64) bool {
 
 // InitStableStakePoolMultiplier: create a stable stake pool information responding to the pool creation.
 func (k Keeper) InitStableStakePoolParams(ctx sdk.Context, poolId uint64) bool {
-	_, found := k.GetPool(ctx, poolId)
+	_, found := k.GetPoolInfo(ctx, poolId)
 	if !found {
 		poolInfo := types.PoolInfo{
 			// reward amount
@@ -507,7 +507,7 @@ func (k Keeper) InitStableStakePoolParams(ctx sdk.Context, poolId uint64) bool {
 			// external reward denoms on the pool
 			ExternalRewardDenoms: []string{},
 		}
-		k.SetPool(ctx, poolInfo)
+		k.SetPoolInfo(ctx, poolInfo)
 	}
 
 	return true
@@ -528,10 +528,10 @@ func (k Keeper) UpdateAmmPoolAPR(ctx sdk.Context, totalBlocksPerYear int64, tota
 		poolId := p.GetPoolId()
 
 		// Get pool info from incentive param
-		poolInfo, found := k.GetPool(ctx, poolId)
+		poolInfo, found := k.GetPoolInfo(ctx, poolId)
 		if !found {
 			k.InitPoolParams(ctx, poolId)
-			poolInfo, _ = k.GetPool(ctx, poolId)
+			poolInfo, _ = k.GetPoolInfo(ctx, poolId)
 		}
 
 		if tvl.IsZero() {
@@ -570,7 +570,7 @@ func (k Keeper) UpdateAmmPoolAPR(ctx sdk.Context, totalBlocksPerYear int64, tota
 				Mul(usdcDenomPrice).
 				Quo(tvl)
 		}
-		k.SetPool(ctx, poolInfo)
+		k.SetPoolInfo(ctx, poolInfo)
 		return false
 	})
 }
