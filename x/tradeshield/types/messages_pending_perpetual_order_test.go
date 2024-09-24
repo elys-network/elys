@@ -17,13 +17,13 @@ func TestMsgCreatePendingPerpetualOrder_ValidateBasic(t *testing.T) {
 		{
 			name: "invalid address",
 			msg: MsgCreatePendingPerpetualOrder{
-				Creator: "invalid_address",
+				OwnerAddress: "invalid_address",
 			},
 			err: sdkerrors.ErrInvalidAddress,
 		}, {
 			name: "valid address",
 			msg: MsgCreatePendingPerpetualOrder{
-				Creator: sample.AccAddress(),
+				OwnerAddress: sample.AccAddress(),
 			},
 		},
 	}
@@ -48,13 +48,13 @@ func TestMsgUpdatePendingPerpetualOrder_ValidateBasic(t *testing.T) {
 		{
 			name: "invalid address",
 			msg: MsgUpdatePendingPerpetualOrder{
-				Creator: "invalid_address",
+				OwnerAddress: "invalid_address",
 			},
 			err: sdkerrors.ErrInvalidAddress,
 		}, {
 			name: "valid address",
 			msg: MsgUpdatePendingPerpetualOrder{
-				Creator: sample.AccAddress(),
+				OwnerAddress: sample.AccAddress(),
 			},
 		},
 	}
@@ -79,13 +79,13 @@ func TestMsgDeletePendingPerpetualOrder_ValidateBasic(t *testing.T) {
 		{
 			name: "invalid address",
 			msg: MsgDeletePendingPerpetualOrder{
-				Creator: "invalid_address",
+				OwnerAddress: "invalid_address",
 			},
 			err: sdkerrors.ErrInvalidAddress,
 		}, {
 			name: "valid address",
 			msg: MsgDeletePendingPerpetualOrder{
-				Creator: sample.AccAddress(),
+				OwnerAddress: sample.AccAddress(),
 			},
 		},
 	}
