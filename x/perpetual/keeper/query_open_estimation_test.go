@@ -466,8 +466,8 @@ func TestOpenEstimation_WrongAsset(t *testing.T) {
 		TakeProfitPrice: sdk.MustNewDecFromStr("20.0"),
 	})
 
-	assert.Error(t, err) 
-	assert.Equal(t, "borrowing not allowed: cannot take a short position against the base currency: invalid borrowing asset", err.Error()) 
+	assert.Error(t, err)
+	assert.Equal(t, "borrowing not allowed: cannot take a short position against the base currency: invalid borrowing asset", err.Error())
 
 	_, err = mk.OpenEstimation(ctx, &types.QueryOpenEstimationRequest{
 		Position:        types.Position_SHORT,
@@ -478,6 +478,6 @@ func TestOpenEstimation_WrongAsset(t *testing.T) {
 		TakeProfitPrice: sdk.MustNewDecFromStr("20.0"),
 	})
 
-	assert.Error(t, err) 
+	assert.Error(t, err)
 	assert.Equal(t, "invalid operation: collateral asset cannot be identical to the borrowed asset for a short position: invalid collateral asset", err.Error())
 }

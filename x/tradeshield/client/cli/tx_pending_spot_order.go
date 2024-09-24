@@ -40,21 +40,20 @@ func CmdUpdatePendingSpotOrder() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "update-pending-spot-order [id] [order]",
 		Short: "Update a pending-spot-order",
-		Args:  cobra.ExactArgs(2),
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			id, err := strconv.ParseUint(args[0], 10, 64)
 			if err != nil {
 				return err
 			}
 
-			argOrder := args[1]
-
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
 				return err
 			}
 
-			msg := types.NewMsgUpdatePendingSpotOrder(clientCtx.GetFromAddress().String(), id, argOrder)
+			// TODO: Add order price definition in other task
+			msg := types.NewMsgUpdatePendingSpotOrder(clientCtx.GetFromAddress().String(), id, &types.OrderPrice{})
 			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}

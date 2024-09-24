@@ -10,6 +10,19 @@ import (
 func (k msgServer) SwapExactAmountOut(goCtx context.Context, msg *types.MsgSwapExactAmountOut) (*types.MsgSwapExactAmountOutResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
+	// Swap event is handled elsewhere
+	ctx.EventManager().EmitEvents(sdk.Events{
+		sdk.NewEvent(
+			sdk.EventTypeMessage,
+			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
+			sdk.NewAttribute(sdk.AttributeKeySender, msg.Sender),
+		),
+	})
+
+	return k.Keeper.SwapExactAmountOut(ctx, msg)
+}
+
+func (k Keeper) SwapExactAmountOut(ctx sdk.Context, msg *types.MsgSwapExactAmountOut) (*types.MsgSwapExactAmountOutResponse, error) {
 	sender, err := sdk.AccAddressFromBech32(msg.Sender)
 	if err != nil {
 		return nil, err
@@ -28,15 +41,6 @@ func (k msgServer) SwapExactAmountOut(goCtx context.Context, msg *types.MsgSwapE
 	lastSwapIndex := k.GetLastSwapRequestIndex(ctx)
 	k.SetSwapExactAmountOutRequests(ctx, msg, lastSwapIndex+1)
 	k.SetLastSwapRequestIndex(ctx, lastSwapIndex+1)
-
-	// Swap event is handled elsewhere
-	ctx.EventManager().EmitEvents(sdk.Events{
-		sdk.NewEvent(
-			sdk.EventTypeMessage,
-			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
-			sdk.NewAttribute(sdk.AttributeKeySender, msg.Sender),
-		),
-	})
 
 	return &types.MsgSwapExactAmountOutResponse{
 		TokenInAmount: tokenInAmount,

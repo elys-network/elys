@@ -32,7 +32,7 @@ type (
 		parameterKeeper    *pkeeper.Keeper
 		amm                types.AmmKeeper
 		bankKeeper         types.BankKeeper
-		oracleKeeper       ammtypes.OracleKeeper
+		oracleKeeper       types.OracleKeeper
 		assetProfileKeeper types.AssetProfileKeeper
 
 		hooks types.PerpetualHooks
@@ -46,7 +46,7 @@ func NewKeeper(
 	authority string,
 	amm types.AmmKeeper,
 	bk types.BankKeeper,
-	oracleKeeper ammtypes.OracleKeeper,
+	oracleKeeper types.OracleKeeper,
 	assetProfileKeeper types.AssetProfileKeeper,
 	parameterKeeper *pkeeper.Keeper,
 ) *Keeper {
