@@ -6,16 +6,72 @@ import (
 	"github.com/elys-network/elys/x/perpetual/types"
 )
 
-func (k Keeper) GetNetOpenInterest(pool types.Pool) math.Int {
+func (k Keeper) GetNetOpenInterest(ctx sdk.Context, pool types.Pool) math.Int {
 	assetLiabilitiesLong := sdk.ZeroInt()
 	assetLiabilitiesShort := sdk.ZeroInt()
 
+	uusdc, found := k.assetProfileKeeper.GetEntry(ctx, "uusdc")
+
+	if !found {
+		return sdk.ZeroInt()
+	}
+
 	for _, asset := range pool.PoolAssetsLong {
-		assetLiabilitiesLong = assetLiabilitiesLong.Add(asset.Liabilities)
+
+		if uusdc.Denom == asset.AssetDenom {
+			assetLiabilitiesLong = assetLiabilitiesLong.Add(asset.Liabilities)
+		} else {
+
+			if asset.Liabilities.IsZero() {
+				continue
+			}
+
+			coin := sdk.NewCoin(asset.AssetDenom, asset.Liabilities)
+
+			ammPool, err := k.GetAmmPool(ctx, pool.AmmPoolId, asset.AssetDenom)
+
+			if err != nil {
+				return sdk.ZeroInt()
+			}
+
+			l, err := k.EstimateSwap(ctx, coin, uusdc.Denom, ammPool)
+
+			if err != nil {
+				return sdk.ZeroInt()
+			}
+
+			assetLiabilitiesLong = assetLiabilitiesLong.Add(l)
+		}
+
 	}
 
 	for _, asset := range pool.PoolAssetsShort {
-		assetLiabilitiesShort = assetLiabilitiesShort.Add(asset.Liabilities)
+
+		if uusdc.Denom == asset.AssetDenom {
+			assetLiabilitiesShort = assetLiabilitiesShort.Add(asset.Liabilities)
+		} else {
+
+			if asset.Liabilities.IsZero() {
+				continue
+			}
+
+			coin := sdk.NewCoin(asset.AssetDenom, asset.Liabilities)
+
+			ammPool, err := k.GetAmmPool(ctx, pool.AmmPoolId, asset.AssetDenom)
+
+			if err != nil {
+				return sdk.ZeroInt()
+			}
+
+			l, err := k.EstimateSwap(ctx, coin, uusdc.Denom, ammPool)
+
+			if err != nil {
+				return sdk.ZeroInt()
+			}
+
+			assetLiabilitiesShort = assetLiabilitiesShort.Add(l)
+		}
+
 	}
 
 	netOpenInterest := assetLiabilitiesLong.Sub(assetLiabilitiesShort)
