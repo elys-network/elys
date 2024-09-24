@@ -12,7 +12,7 @@ func (k Keeper) BeforeDelegationCreated(ctx sdk.Context, delAddr sdk.AccAddress,
 
 // Updating portfolio on delegation changes
 func (k Keeper) AfterDelegationModified(ctx sdk.Context, delAddr sdk.AccAddress, valAddr sdk.ValAddress) error {
-	k.RetrieveAllPortfolio(ctx, delAddr.String())
+	k.RetrieveAllPortfolio(ctx, delAddr)
 	return nil
 }
 

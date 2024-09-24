@@ -70,12 +70,12 @@ func TestCalculatePoolAprs(t *testing.T) {
 	require.NoError(t, err)
 	require.Equal(t, resp.PoolID, uint64(1))
 
-	poolInfo, found := mk.GetPool(ctx, resp.PoolID)
+	poolInfo, found := mk.GetPoolInfo(ctx, resp.PoolID)
 	require.True(t, found)
 
 	poolInfo.DexApr = sdk.NewDecWithPrec(1, 2)  // 1%
 	poolInfo.EdenApr = sdk.NewDecWithPrec(2, 2) // 2%
-	mk.SetPool(ctx, poolInfo)
+	mk.SetPoolInfo(ctx, poolInfo)
 
 	// When passing empty array
 	aprs := mk.CalculatePoolAprs(ctx, []uint64{})

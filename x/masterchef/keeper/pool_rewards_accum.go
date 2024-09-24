@@ -31,7 +31,27 @@ func (k Keeper) DeletePoolRewardsAccum(ctx sdk.Context, accum types.PoolRewardsA
 }
 
 func (k Keeper) GetAllPoolRewardsAccum(ctx sdk.Context) (list []types.PoolRewardsAccum) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.PoolRewardsAccumKeyPrefix))
+	store := ctx.KVStore(k.storeKey)
+	iterator := sdk.KVStorePrefixIterator(store, types.PoolRewardsAccumKeyPrefix)
+
+	defer iterator.Close()
+
+	for ; iterator.Valid(); iterator.Next() {
+		var val types.PoolRewardsAccum
+		k.cdc.MustUnmarshal(iterator.Value(), &val)
+		list = append(list, val)
+	}
+
+	return
+}
+
+func (k Keeper) DeleteLegacyPoolRewardsAccum(ctx sdk.Context, accum types.PoolRewardsAccum) {
+	store := ctx.KVStore(k.storeKey)
+	store.Delete(types.GetLegacyPoolRewardsAccumKey(accum.PoolId, accum.Timestamp))
+}
+
+func (k Keeper) GetAllLegacyPoolRewardsAccum(ctx sdk.Context) (list []types.PoolRewardsAccum) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.LegacyPoolRewardsAccumKeyPrefix))
 	iterator := sdk.KVStorePrefixIterator(store, []byte{})
 
 	defer iterator.Close()
@@ -47,7 +67,7 @@ func (k Keeper) GetAllPoolRewardsAccum(ctx sdk.Context) (list []types.PoolReward
 
 func (k Keeper) IterateAllPoolRewardsAccum(ctx sdk.Context, handler func(accum types.PoolRewardsAccum) (stop bool)) {
 	store := ctx.KVStore(k.storeKey)
-	iter := sdk.KVStorePrefixIterator(store, []byte(types.PoolRewardsAccumKeyPrefix))
+	iter := sdk.KVStorePrefixIterator(store, types.PoolRewardsAccumKeyPrefix)
 	defer iter.Close()
 	for ; iter.Valid(); iter.Next() {
 		accum := types.PoolRewardsAccum{}

@@ -284,7 +284,7 @@ func TestCloseLong_SuccessfulClosingLongPosition(t *testing.T) {
 	var (
 		ctx = sdk.Context{} // Mock or setup a context
 		msg = &types.MsgClose{
-			Creator: "creator",
+			Creator: "cosmos10duudma7ef9849ee42zhe5q4t4fmk0z99uuh92",
 			Id:      1,
 			Amount:  sdk.NewInt(100),
 		}

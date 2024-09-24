@@ -14,11 +14,11 @@ func (k msgServer) Bond(goCtx context.Context, msg *types.MsgBond) (*types.MsgBo
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	params := k.GetParams(ctx)
-	sender := sdk.MustAccAddressFromBech32(msg.Creator)
+	creator := sdk.MustAccAddressFromBech32(msg.Creator)
 
 	depositDenom := k.GetDepositDenom(ctx)
 	depositCoin := sdk.NewCoin(depositDenom, msg.Amount)
-	err := k.bk.SendCoinsFromAccountToModule(ctx, sender, types.ModuleName, sdk.Coins{depositCoin})
+	err := k.bk.SendCoinsFromAccountToModule(ctx, creator, types.ModuleName, sdk.Coins{depositCoin})
 	if err != nil {
 		return nil, err
 	}
@@ -35,7 +35,7 @@ func (k msgServer) Bond(goCtx context.Context, msg *types.MsgBond) (*types.MsgBo
 		return nil, err
 	}
 
-	err = k.bk.SendCoinsFromModuleToAccount(ctx, types.ModuleName, sender, shareCoins)
+	err = k.bk.SendCoinsFromModuleToAccount(ctx, types.ModuleName, creator, shareCoins)
 	if err != nil {
 		return nil, err
 	}
@@ -69,7 +69,7 @@ func (k msgServer) Bond(goCtx context.Context, msg *types.MsgBond) (*types.MsgBo
 	}
 
 	// Commit LP token
-	err = k.commitmentKeeper.CommitLiquidTokens(ctx, sender, shareDenom, shareAmount, 0)
+	err = k.commitmentKeeper.CommitLiquidTokens(ctx, creator, shareDenom, shareAmount, 0)
 	if err != nil {
 		return nil, err
 	}
@@ -78,7 +78,7 @@ func (k msgServer) Bond(goCtx context.Context, msg *types.MsgBond) (*types.MsgBo
 	k.SetParams(ctx, params)
 
 	if k.hooks != nil {
-		err := k.hooks.AfterBond(ctx, msg.Creator, shareAmount)
+		err = k.hooks.AfterBond(ctx, creator, shareAmount)
 		if err != nil {
 			return nil, err
 		}
