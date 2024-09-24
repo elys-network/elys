@@ -18,16 +18,15 @@ func (k Keeper) GetNetOpenInterest(ctx sdk.Context, pool types.Pool) math.Int {
 
 	for _, asset := range pool.PoolAssetsLong {
 
+		if asset.Liabilities.IsZero() {
+			continue
+		}
+
 		if uusdc.Denom == asset.AssetDenom {
 			assetLiabilitiesLong = assetLiabilitiesLong.Add(asset.Liabilities)
 		} else {
 
-			if asset.Liabilities.IsZero() {
-				continue
-			}
-
 			coin := sdk.NewCoin(asset.AssetDenom, asset.Liabilities)
-
 			ammPool, err := k.GetAmmPool(ctx, pool.AmmPoolId, asset.AssetDenom)
 
 			if err != nil {
@@ -35,7 +34,6 @@ func (k Keeper) GetNetOpenInterest(ctx sdk.Context, pool types.Pool) math.Int {
 			}
 
 			l, err := k.OpenLongChecker.EstimateSwapGivenOut(ctx, coin, uusdc.Denom, ammPool)
-
 			if err != nil {
 				return sdk.ZeroInt()
 			}
@@ -47,24 +45,22 @@ func (k Keeper) GetNetOpenInterest(ctx sdk.Context, pool types.Pool) math.Int {
 
 	for _, asset := range pool.PoolAssetsShort {
 
+		if asset.Liabilities.IsZero() {
+			continue
+		}
+
 		if uusdc.Denom == asset.AssetDenom {
 			assetLiabilitiesShort = assetLiabilitiesShort.Add(asset.Liabilities)
 		} else {
 
-			if asset.Liabilities.IsZero() {
-				continue
-			}
-
 			coin := sdk.NewCoin(asset.AssetDenom, asset.Liabilities)
-
 			ammPool, err := k.GetAmmPool(ctx, pool.AmmPoolId, asset.AssetDenom)
 
 			if err != nil {
 				return sdk.ZeroInt()
 			}
 
-			l, err := k.OpenShortChecker.EstimateSwapGivenOut(ctx, coin, uusdc.Denom, ammPool)
-
+			l, err := k.OpenLongChecker.EstimateSwapGivenOut(ctx, coin, uusdc.Denom, ammPool)
 			if err != nil {
 				return sdk.ZeroInt()
 			}

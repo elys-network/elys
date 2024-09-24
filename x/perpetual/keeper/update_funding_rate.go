@@ -17,13 +17,12 @@ func (k Keeper) UpdateFundingRate(ctx sdk.Context, pool *types.Pool) error {
 
 	liabilitiesLong := sdk.ZeroInt()
 	for _, asset := range *poolAssetsLong {
-
+		if asset.Liabilities.IsZero() {
+			continue
+		}
 		if uusdc.Denom == asset.AssetDenom {
 			liabilitiesLong = liabilitiesLong.Add(asset.Liabilities)
 		} else {
-			if asset.Liabilities.IsZero() {
-				continue
-			}
 			coin := sdk.NewCoin(asset.AssetDenom, asset.Liabilities)
 			ammPool, err := k.GetAmmPool(ctx, pool.AmmPoolId, asset.AssetDenom)
 
@@ -41,22 +40,23 @@ func (k Keeper) UpdateFundingRate(ctx sdk.Context, pool *types.Pool) error {
 
 	liabilitiesShort := sdk.ZeroInt()
 	for _, asset := range *poolAssetsShort {
+		if asset.Liabilities.IsZero() {
+			continue
+		}
 		if uusdc.Denom == asset.AssetDenom {
 			liabilitiesShort = liabilitiesShort.Add(asset.Liabilities)
 		} else {
-			if asset.Liabilities.IsZero() {
-				continue
-			}
 			coin := sdk.NewCoin(asset.AssetDenom, asset.Liabilities)
 			ammPool, err := k.GetAmmPool(ctx, pool.AmmPoolId, asset.AssetDenom)
+			if err != nil {
+				return err
+			}
 
+			l, err := k.OpenLongChecker.EstimateSwapGivenOut(ctx, coin, uusdc.Denom, ammPool)
 			if err != nil {
 				return err
 			}
-			l, err := k.OpenShortChecker.EstimateSwapGivenOut(ctx, coin, uusdc.Denom, ammPool)
-			if err != nil {
-				return err
-			}
+
 			liabilitiesShort = liabilitiesShort.Add(l)
 		}
 	}
