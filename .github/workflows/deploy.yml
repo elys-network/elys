@@ -2,16 +2,16 @@ name: Deploy in devnet
 on:
   push:
     branches:
-      - main
+      - devnet
 jobs:
   deploy:
     runs-on: ubuntu-latest
     environment: devnet 
     env:
-      BRANCH_NAME: ${{ github.head_ref || github.ref_name }} 
+      BRANCH_NAME: devnet
       NAME: elys
       COMMIT: ${{ github.sha }}
-      VERSION: 
+      VERSION:
       BINARY: 
       DBENGINE: pebbledb
       COSMWASM_VERSION:
@@ -56,6 +56,7 @@ jobs:
           -X github.com/cosmos/cosmos-sdk/version.Commit=${COMMIT} \
           -X github.com/cosmos/cosmos-sdk/types.DBBackend=${DBENGINE} \
           -X github.com/cosmos/cosmos-sdk/version.BuildTags=netgo,ledger,muslc,osusergo,${DBENGINE} \
+          -X github.com/elys-network/elys/app.NextVersion=${VERSION} \
           -w -s \
           -linkmode=external \
           -extldflags '-Wl,-z,muldefs -static -lm'" -tags "ledger,${DBENGINE}" ./cmd/${BINARY}
