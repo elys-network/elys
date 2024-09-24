@@ -10,11 +10,11 @@ import (
 	"github.com/elys-network/elys/x/amm/types"
 )
 
-// SwapExactAmountOut is a method for swapping to get an exact number of tokens out of a pool,
+// InternalSwapExactAmountOut is a method for swapping to get an exact number of tokens out of a pool,
 // using the provided swapFee.
 // This is intended to allow different swap fees as determined by multi-hops,
 // or when recovering from chain liveness failures.
-func (k Keeper) SwapExactAmountOut(
+func (k Keeper) InternalSwapExactAmountOut(
 	ctx sdk.Context,
 	sender sdk.AccAddress,
 	recipient sdk.AccAddress,

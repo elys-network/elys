@@ -112,7 +112,7 @@ func (k Keeper) RouteExactAmountOut(ctx sdk.Context,
 		// Calculate the total discounted swap fee
 		totalDiscountedSwapFee = totalDiscountedSwapFee.Add(swapFee)
 
-		_tokenInAmount, swapErr := k.SwapExactAmountOut(ctx, sender, recipient, pool, route.TokenInDenom, insExpected[i], _tokenOut, swapFee)
+		_tokenInAmount, swapErr := k.InternalSwapExactAmountOut(ctx, sender, recipient, pool, route.TokenInDenom, insExpected[i], _tokenOut, swapFee)
 		if swapErr != nil {
 			return math.Int{}, sdk.ZeroDec(), sdk.ZeroDec(), swapErr
 		}

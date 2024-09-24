@@ -19,51 +19,54 @@ import (
 	"github.com/elys-network/elys/x/perpetual/types"
 )
 
-func networkWithMTPObjects(t *testing.T, n int) (*network.Network, []*types.MTP) {
+func networkWithMTPObjects(t *testing.T, n int) (*network.Network, []*types.MtpAndPrice) {
 	t.Helper()
 	app := simapp.InitElysTestApp(true)
 	ctx := app.BaseApp.NewContext(true, tmproto.Header{})
 	state := types.GenesisState{}
 
-	mtps := make([]*types.MTP, 0)
+	mtps := make([]*types.MtpAndPrice, 0)
 	// Generate n random accounts with 1000000stake balanced
 	addr := simapp.AddTestAddrs(app, ctx, n, sdk.NewInt(1000000))
 
 	cfg := network.DefaultConfig()
 	for i := 0; i < n; i++ {
-		mtp := types.MTP{
-			Address:                        addr[i].String(),
-			CollateralAsset:                ptypes.BaseCurrency,
-			TradingAsset:                   "ATOM",
-			LiabilitiesAsset:               ptypes.BaseCurrency,
-			CustodyAsset:                   "ATOM",
-			Collateral:                     sdk.NewInt(0),
-			Liabilities:                    sdk.NewInt(0),
-			BorrowInterestPaidCollateral:   sdk.NewInt(0),
-			BorrowInterestPaidCustody:      sdk.NewInt(0),
-			BorrowInterestUnpaidCollateral: sdk.NewInt(0),
-			Custody:                        sdk.NewInt(0),
-			TakeProfitLiabilities:          sdk.NewInt(0),
-			TakeProfitCustody:              sdk.NewInt(0),
-			Leverage:                       sdk.NewDec(0),
-			MtpHealth:                      sdk.NewDec(0),
-			Position:                       types.Position_LONG,
-			Id:                             (uint64)(i + 1),
-			AmmPoolId:                      (uint64)(i + 1),
-			ConsolidateLeverage:            sdk.ZeroDec(),
-			SumCollateral:                  sdk.ZeroInt(),
-			TakeProfitPrice:                sdk.MustNewDecFromStr(types.TakeProfitPriceDefault),
-			TakeProfitBorrowRate:           sdk.OneDec(),
-			FundingFeePaidCollateral:       sdk.NewInt(0),
-			FundingFeePaidCustody:          sdk.NewInt(0),
-			FundingFeeReceivedCollateral:   sdk.NewInt(0),
-			FundingFeeReceivedCustody:      sdk.NewInt(0),
-			OpenPrice:                      sdk.NewDec(0),
-			StopLossPrice:                  sdk.NewDec(0),
+		mtp := types.MtpAndPrice{
+			Mtp: &types.MTP{
+				Address:                        addr[i].String(),
+				CollateralAsset:                ptypes.BaseCurrency,
+				TradingAsset:                   "ATOM",
+				LiabilitiesAsset:               ptypes.BaseCurrency,
+				CustodyAsset:                   "ATOM",
+				Collateral:                     sdk.NewInt(0),
+				Liabilities:                    sdk.NewInt(0),
+				BorrowInterestPaidCollateral:   sdk.NewInt(0),
+				BorrowInterestPaidCustody:      sdk.NewInt(0),
+				BorrowInterestUnpaidCollateral: sdk.NewInt(0),
+				Custody:                        sdk.NewInt(0),
+				TakeProfitLiabilities:          sdk.NewInt(0),
+				TakeProfitCustody:              sdk.NewInt(0),
+				Leverage:                       sdk.NewDec(0),
+				MtpHealth:                      sdk.NewDec(0),
+				Position:                       types.Position_LONG,
+				Id:                             (uint64)(i + 1),
+				AmmPoolId:                      (uint64)(i + 1),
+				ConsolidateLeverage:            sdk.ZeroDec(),
+				SumCollateral:                  sdk.ZeroInt(),
+				TakeProfitPrice:                sdk.MustNewDecFromStr(types.TakeProfitPriceDefault),
+				TakeProfitBorrowRate:           sdk.OneDec(),
+				FundingFeePaidCollateral:       sdk.NewInt(0),
+				FundingFeePaidCustody:          sdk.NewInt(0),
+				FundingFeeReceivedCollateral:   sdk.NewInt(0),
+				FundingFeeReceivedCustody:      sdk.NewInt(0),
+				OpenPrice:                      sdk.NewDec(0),
+				StopLossPrice:                  sdk.NewDec(0),
+			},
+			TradingAssetPrice: sdk.NewDec(0),
 		}
 
 		mtps = append(mtps, &mtp)
-		state.MtpList = append(state.MtpList, mtp)
+		state.MtpList = append(state.MtpList, *mtp.Mtp)
 	}
 
 	buf, err := cfg.Codec.MarshalJSON(&state)
@@ -87,19 +90,19 @@ func TestShowMTP(t *testing.T) {
 
 		args []string
 		err  error
-		obj  *types.MTP
+		obj  *types.MtpAndPrice
 	}{
 		{
 			desc:    "found",
-			addr:    objs[0].Address,
-			idIndex: objs[0].Id,
+			addr:    objs[0].Mtp.Address,
+			idIndex: objs[0].Mtp.Id,
 
 			args: common,
 			obj:  objs[0],
 		},
 		{
 			desc:    "not found",
-			addr:    objs[0].Address,
+			addr:    objs[0].Mtp.Address,
 			idIndex: (uint64)(100000),
 
 			args: common,

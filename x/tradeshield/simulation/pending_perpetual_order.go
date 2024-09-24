@@ -22,7 +22,7 @@ func SimulateMsgCreatePendingPerpetualOrder(
 		simAccount, _ := simtypes.RandomAcc(r, accs)
 
 		msg := &types.MsgCreatePendingPerpetualOrder{
-			Creator: simAccount.Address.String(),
+			OwnerAddress: simAccount.Address.String(),
 		}
 
 		txCtx := simulation.OperationInput{
@@ -65,10 +65,10 @@ func SimulateMsgUpdatePendingPerpetualOrder(
 			}
 		}
 		if !found {
-			return simtypes.NoOpMsg(types.ModuleName, msg.Type(), "pendingPerpetualOrder creator not found"), nil, nil
+			return simtypes.NoOpMsg(types.ModuleName, msg.Type(), "pendingPerpetualOrder owner not found"), nil, nil
 		}
-		msg.Creator = simAccount.Address.String()
-		msg.Id = pendingPerpetualOrder.OrderId
+		msg.OwnerAddress = simAccount.Address.String()
+		msg.OrderId = pendingPerpetualOrder.OrderId
 
 		txCtx := simulation.OperationInput{
 			R:               r,
@@ -110,10 +110,10 @@ func SimulateMsgDeletePendingPerpetualOrder(
 			}
 		}
 		if !found {
-			return simtypes.NoOpMsg(types.ModuleName, msg.Type(), "pendingPerpetualOrder creator not found"), nil, nil
+			return simtypes.NoOpMsg(types.ModuleName, msg.Type(), "pendingPerpetualOrder owner not found"), nil, nil
 		}
-		msg.Creator = simAccount.Address.String()
-		msg.Id = pendingPerpetualOrder.OrderId
+		msg.OwnerAddress = simAccount.Address.String()
+		msg.OrderId = pendingPerpetualOrder.OrderId
 
 		txCtx := simulation.OperationInput{
 			R:               r,

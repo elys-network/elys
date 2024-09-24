@@ -65,6 +65,9 @@ func (p Pool) CalcOutAmtGivenIn(
 	if err != nil {
 		return sdk.Coin{}, sdk.ZeroDec(), err
 	}
+	if tokenAmountOut.IsZero(){
+		return sdk.Coin{}, sdk.ZeroDec(), ErrAmountTooLow
+	} 
 
 	rate, err := p.GetTokenARate(ctx, oracle, snapshot, tokenIn.Denom, tokenOutDenom, accountedPool)
 	if err != nil {
@@ -77,7 +80,7 @@ func (p Pool) CalcOutAmtGivenIn(
 	if amountOutWithoutSlippage.IsZero() {
 		return sdk.Coin{}, sdk.ZeroDec(), errorsmod.Wrapf(ErrInvalidMathApprox, "amount out without slippage must be positive")
 	}
-
+	
 	slippage := sdk.OneDec().Sub(tokenAmountOut.Quo(amountOutWithoutSlippage))
 
 	// We ignore the decimal component, as we round down the token amount out.

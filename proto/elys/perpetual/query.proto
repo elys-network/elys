@@ -87,6 +87,14 @@ service Query {
 
   }
 }
+
+message MtpAndPrice {
+  MTP mtp =1;
+  string trading_asset_price = 2 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+}
 // ParamsRequest is request type for the Query/Params RPC method.
 message ParamsRequest {}
 
@@ -102,8 +110,8 @@ message PositionsRequest {
 }
 
 message PositionsResponse {
-  repeated MTP                                    mtps = 1;
-  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+  repeated MtpAndPrice                                    mtps       = 1;
+           cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
 message PositionsByPoolRequest {
@@ -112,8 +120,8 @@ message PositionsByPoolRequest {
 }
 
 message PositionsByPoolResponse {
-  repeated MTP                                    mtps = 1;
-  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+  repeated MtpAndPrice                                    mtps       = 1;
+           cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
 message StatusRequest {}
@@ -129,8 +137,8 @@ message PositionsForAddressRequest {
 }
 
 message PositionsForAddressResponse {
-  repeated MTP                                    mtps = 1;
-  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+  repeated MtpAndPrice                                    mtps       = 1;
+           cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
 message WhitelistRequest {
@@ -174,7 +182,7 @@ message MTPRequest {
 }
 
 message MTPResponse {
-  MTP mtp = 1;
+  MtpAndPrice mtp = 1;
 }
 
 message QueryOpenEstimationRequest {

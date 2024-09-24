@@ -14,7 +14,15 @@ func (k msgServer) CreatePendingPerpetualOrder(goCtx context.Context, msg *types
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	var pendingPerpetualOrder = types.PerpetualOrder{
-		OwnerAddress: msg.Creator,
+		PerpetualOrderType: msg.OrderType,
+		TriggerPrice:       msg.TriggerPrice,
+		Collateral:         msg.Collateral,
+		OwnerAddress:       msg.OwnerAddress,
+		TradingAsset:       msg.TradingAsset,
+		Position:           msg.Position,
+		Leverage:           msg.Leverage,
+		TakeProfitPrice:    msg.TakeProfitPrice,
+		StopLossPrice:      msg.StopLossPrice,
 	}
 
 	id := k.AppendPendingPerpetualOrder(
@@ -23,7 +31,7 @@ func (k msgServer) CreatePendingPerpetualOrder(goCtx context.Context, msg *types
 	)
 
 	return &types.MsgCreatePendingPerpetualOrderResponse{
-		Id: id,
+		OrderId: id,
 	}, nil
 }
 
@@ -31,17 +39,17 @@ func (k msgServer) UpdatePendingPerpetualOrder(goCtx context.Context, msg *types
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	var pendingPerpetualOrder = types.PerpetualOrder{
-		OwnerAddress: msg.Creator,
+		OwnerAddress: msg.OwnerAddress,
 	}
 
 	// Checks that the element exists
-	val, found := k.GetPendingPerpetualOrder(ctx, msg.Id)
+	val, found := k.GetPendingPerpetualOrder(ctx, msg.OrderId)
 	if !found {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, fmt.Sprintf("key %d doesn't exist", msg.Id))
+		return nil, sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, fmt.Sprintf("key %d doesn't exist", msg.OrderId))
 	}
 
 	// Checks if the msg creator is the same as the current owner
-	if msg.Creator != val.OwnerAddress {
+	if msg.OwnerAddress != val.OwnerAddress {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "incorrect owner")
 	}
 
@@ -54,17 +62,17 @@ func (k msgServer) DeletePendingPerpetualOrder(goCtx context.Context, msg *types
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	// Checks that the element exists
-	val, found := k.GetPendingPerpetualOrder(ctx, msg.Id)
+	val, found := k.GetPendingPerpetualOrder(ctx, msg.OrderId)
 	if !found {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, fmt.Sprintf("key %d doesn't exist", msg.Id))
+		return nil, sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, fmt.Sprintf("key %d doesn't exist", msg.OrderId))
 	}
 
 	// Checks if the msg creator is the same as the current owner
-	if msg.Creator != val.OwnerAddress {
+	if msg.OwnerAddress != val.OwnerAddress {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "incorrect owner")
 	}
 
-	k.RemovePendingPerpetualOrder(ctx, msg.Id)
+	k.RemovePendingPerpetualOrder(ctx, msg.OrderId)
 
 	return &types.MsgDeletePendingPerpetualOrderResponse{}, nil
 }

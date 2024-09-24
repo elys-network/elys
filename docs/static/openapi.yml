@@ -43518,6 +43518,21 @@ paths:
           description: A successful response.
           schema:
             type: object
+            properties:
+              to_pay:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    asset_balance:
+                      type: string
+                    asset_denom:
+                      type: string
+                    address:
+                      type: string
+                    id:
+                      type: string
+                      format: uint64
         default:
           description: An unexpected error response.
           schema:
@@ -90651,6 +90666,21 @@ definitions:
            }
   elys.perpetual.QueryGetAllToPayResponse:
     type: object
+    properties:
+      to_pay:
+        type: array
+        items:
+          type: object
+          properties:
+            asset_balance:
+              type: string
+            asset_denom:
+              type: string
+            address:
+              type: string
+            id:
+              type: string
+              format: uint64
   elys.perpetual.QueryGetPoolResponse:
     type: object
     properties:
@@ -90809,6 +90839,18 @@ definitions:
         type: string
         format: uint64
       lifetime_mtp_count:
+        type: string
+        format: uint64
+  elys.perpetual.ToPay:
+    type: object
+    properties:
+      asset_balance:
+        type: string
+      asset_denom:
+        type: string
+      address:
+        type: string
+      id:
         type: string
         format: uint64
   elys.perpetual.WhitelistResponse:
@@ -91374,6 +91416,8 @@ definitions:
   elys.tradeshield.MsgDeletePendingPerpetualOrderResponse:
     type: object
   elys.tradeshield.MsgDeletePendingSpotOrderResponse:
+    type: object
+  elys.tradeshield.MsgExecuteOrdersResponse:
     type: object
   elys.tradeshield.MsgUpdateParamsResponse:
     type: object
