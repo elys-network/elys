@@ -76,4 +76,5 @@ message Params {
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
+  int64 max_limit_order = 24;
 }
