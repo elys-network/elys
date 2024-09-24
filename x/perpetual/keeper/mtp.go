@@ -172,13 +172,15 @@ func (k Keeper) GetMTPs(ctx sdk.Context, pagination *query.PageRequest) ([]*type
 			return fmt.Errorf("asset not found")
 		}
 		trading_asset_price, found := k.oracleKeeper.GetAssetPrice(ctx, info.Display)
-		if !found {
-			return fmt.Errorf("asset price not found")
+		asset_price := sdk.ZeroDec()
+		// If not found set trading_asset_price to zero
+		if found {
+			asset_price = trading_asset_price.Price
 		}
 
 		mtpList = append(mtpList, &types.MtpAndPrice{
 			Mtp:               &mtp,
-			TradingAssetPrice: trading_asset_price.Price,
+			TradingAssetPrice: asset_price,
 		})
 		return nil
 	})
@@ -229,12 +231,14 @@ func (k Keeper) GetMTPsForPool(ctx sdk.Context, ammPoolId uint64, pagination *qu
 				return false, fmt.Errorf("asset not found")
 			}
 			trading_asset_price, found := k.oracleKeeper.GetAssetPrice(ctx, info.Display)
-			if !found {
-				return false, fmt.Errorf("asset price not found")
+			asset_price := sdk.ZeroDec()
+			// If not found set trading_asset_price to zero
+			if found {
+				asset_price = trading_asset_price.Price
 			}
 			mtps = append(mtps, &types.MtpAndPrice{
 				Mtp:               &mtp,
-				TradingAssetPrice: trading_asset_price.Price,
+				TradingAssetPrice: asset_price,
 			})
 			return true, nil
 		}
@@ -307,13 +311,15 @@ func (k Keeper) GetMTPsForAddressWithPagination(ctx sdk.Context, mtpAddress sdk.
 			return fmt.Errorf("asset not found")
 		}
 		trading_asset_price, found := k.oracleKeeper.GetAssetPrice(ctx, info.Display)
-		if !found {
-			return fmt.Errorf("asset price not found")
+		asset_price := sdk.ZeroDec()
+		// If not found set trading_asset_price to zero
+		if found {
+			asset_price = trading_asset_price.Price
 		}
 
 		mtps = append(mtps, &types.MtpAndPrice{
 			Mtp:               &mtp,
-			TradingAssetPrice: trading_asset_price.Price,
+			TradingAssetPrice: asset_price,
 		})
 		return nil
 	})
