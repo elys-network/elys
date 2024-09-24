@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/cometbft/cometbft/crypto/ed25519"
 	tmcli "github.com/cometbft/cometbft/libs/cli"
 	clitestutil "github.com/cosmos/cosmos-sdk/testutil/cli"
 	"github.com/stretchr/testify/require"
@@ -14,6 +15,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	simapp "github.com/elys-network/elys/app"
 	"github.com/elys-network/elys/testutil/network"
+	oracletypes "github.com/elys-network/elys/x/oracle/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 	"github.com/elys-network/elys/x/perpetual/client/cli"
 	"github.com/elys-network/elys/x/perpetual/types"
@@ -72,6 +74,30 @@ func networkWithMTPObjects(t *testing.T, n int) (*network.Network, []*types.MtpA
 	buf, err := cfg.Codec.MarshalJSON(&state)
 	require.NoError(t, err)
 	cfg.GenesisState[types.ModuleName] = buf
+
+	// Set oracle price and info
+	provider := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
+	stateOracle := oracletypes.GenesisState{}
+	stateOracle.Prices = append(stateOracle.Prices, oracletypes.Price{
+		Asset:       "ATOM",
+		Price:       sdk.NewDec(4),
+		Source:      oracletypes.BAND,
+		Provider:    provider.String(),
+		Timestamp:   uint64(ctx.BlockTime().Unix()),
+		BlockHeight: uint64(ctx.BlockHeight()),
+	})
+	stateOracle.Params = oracletypes.DefaultParams()
+	stateOracle.PortId = "portid"
+	stateOracle.AssetInfos = append(stateOracle.AssetInfos, oracletypes.AssetInfo{
+		Denom:      "ATOM",
+		Display:    "ATOM",
+		Decimal:    6,
+		BandTicker: "ATOM",
+	})
+
+	bufO, err := cfg.Codec.MarshalJSON(&stateOracle)
+	require.NoError(t, err)
+	cfg.GenesisState[oracletypes.ModuleName] = bufO
 	return network.New(t, cfg), mtps
 }
 
