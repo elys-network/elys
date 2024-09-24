@@ -6,6 +6,7 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	atypes "github.com/elys-network/elys/x/assetprofile/types"
+	oracletypes "github.com/elys-network/elys/x/oracle/types"
 )
 
 //go:generate mockery --srcpkg . --name AuthorizationChecker --structname AuthorizationChecker --filename authorization_checker.go --with-expecter
@@ -185,4 +186,11 @@ type AssetProfileKeeper interface {
 	GetEntry(ctx sdk.Context, baseDenom string) (val atypes.Entry, found bool)
 	// GetEntryByDenom returns a entry from its denom value
 	GetEntryByDenom(ctx sdk.Context, denom string) (val atypes.Entry, found bool)
+}
+
+type OracleKeeper interface {
+	GetAssetPrice(ctx sdk.Context, asset string) (oracletypes.Price, bool)
+	GetAssetPriceFromDenom(ctx sdk.Context, denom string) sdk.Dec
+	GetPriceFeeder(ctx sdk.Context, feeder sdk.AccAddress) (val oracletypes.PriceFeeder, found bool)
+	GetAssetInfo(ctx sdk.Context, denom string) (val oracletypes.AssetInfo, found bool)
 }
