@@ -40,6 +40,7 @@ var (
 	KeyFundingFeeCollectionAddress                    = []byte("FundingFeeCollectionAddress")
 	KeySwapFee                                        = []byte("SwapFee")
 	KeyMinBorrowInterestAmount                        = []byte("MinBorrowInterestAmount")
+	KeyMaxLimitOrder                                  = []byte("MaxLimitOrder")
 )
 
 // ParamKeyTable the param key table for launch module
@@ -110,6 +111,7 @@ func (p *Params) ParamSetPairs() paramtypes.ParamSetPairs {
 		paramtypes.NewParamSetPair(KeyFundingFeeCollectionAddress, &p.FundingFeeCollectionAddress, validateFundingFeeCollectionAddress),
 		paramtypes.NewParamSetPair(KeySwapFee, &p.SwapFee, validateSwapFee),
 		paramtypes.NewParamSetPair(KeyMinBorrowInterestAmount, &p.MinBorrowInterestAmount, validateMinBorrowInterestAmount),
+		paramtypes.NewParamSetPair(KeyMaxLimitOrder, &p.MaxLimitOrder, validateMaxLimitOrder),
 	}
 }
 
@@ -526,6 +528,15 @@ func validateMinBorrowInterestAmount(i interface{}) error {
 	}
 	if v.IsNegative() {
 		return fmt.Errorf("MinBorrowInterestAmount must be positive: %s", v)
+	}
+
+	return nil
+}
+
+func validateMaxLimitOrder (i interface{}) error {
+	_, ok := i.(int64)
+	if !ok {
+		return fmt.Errorf("invalid parameter type: %T", i)
 	}
 
 	return nil
