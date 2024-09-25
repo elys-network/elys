@@ -16,7 +16,7 @@ func (k msgServer) Unbond(goCtx context.Context, msg *types.MsgUnbond) (*types.M
 	shareDenom := types.GetShareDenom()
 
 	// Withdraw committed LP tokens
-	err := k.commitmentKeeper.UncommitTokens(ctx, creator, shareDenom, msg.Amount)
+	err := k.commitmentKeeper.UncommitTokens(ctx, creator, shareDenom, msg.Amount, false)
 	if err != nil {
 		return nil, err
 	}

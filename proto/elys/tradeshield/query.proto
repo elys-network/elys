@@ -54,7 +54,7 @@ message QueryGetPendingSpotOrderRequest {
 }
 
 message QueryGetPendingSpotOrderResponse {
-  SpotOrder PendingSpotOrder = 1 [(gogoproto.nullable) = false];
+  SpotOrder pending_spot_order = 1 [(gogoproto.nullable) = false];
 }
 
 message QueryAllPendingSpotOrderRequest {
@@ -62,7 +62,7 @@ message QueryAllPendingSpotOrderRequest {
 }
 
 message QueryAllPendingSpotOrderResponse {
-  repeated SpotOrder                              PendingSpotOrder = 1 [(gogoproto.nullable) = false];
+  repeated SpotOrder                              pending_spot_order = 1 [(gogoproto.nullable) = false];
            cosmos.base.query.v1beta1.PageResponse pagination       = 2;
 }
 
@@ -71,7 +71,7 @@ message QueryGetPendingPerpetualOrderRequest {
 }
 
 message QueryGetPendingPerpetualOrderResponse {
-  PerpetualOrder PendingPerpetualOrder = 1 [(gogoproto.nullable) = false];
+  PerpetualOrder pending_perpetual_order = 1 [(gogoproto.nullable) = false];
 }
 
 message QueryAllPendingPerpetualOrderRequest {
@@ -79,7 +79,7 @@ message QueryAllPendingPerpetualOrderRequest {
 }
 
 message QueryAllPendingPerpetualOrderResponse {
-  repeated PerpetualOrder                  PendingPerpetualOrder = 1 [(gogoproto.nullable) = false];
+  repeated PerpetualOrder                  pending_perpetual_order = 1 [(gogoproto.nullable) = false];
            cosmos.base.query.v1beta1.PageResponse pagination            = 2;
 }
 

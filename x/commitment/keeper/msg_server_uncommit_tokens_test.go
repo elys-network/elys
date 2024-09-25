@@ -51,7 +51,7 @@ func TestUncommitTokens(t *testing.T) {
 	require.NoError(t, err)
 
 	// Call the UncommitTokens function
-	err = keeper.UncommitTokens(ctx, addr[0], denom, uncommitAmount)
+	err = keeper.UncommitTokens(ctx, addr[0], denom, uncommitAmount, false)
 	require.NoError(t, err)
 
 	// Check if the committed tokens have been added to the store
