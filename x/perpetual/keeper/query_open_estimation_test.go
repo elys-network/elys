@@ -115,6 +115,8 @@ func TestOpenEstimation_Long5XAtom100Usdc(t *testing.T) {
 		BorrowInterestRate: sdk.MustNewDecFromStr("0.000000000000000000"),
 		FundingRate:        sdk.MustNewDecFromStr("0.000000000000000000"),
 		PriceImpact:        sdk.MustNewDecFromStr("0.000000000000000000"),
+		BorrowFee:          sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(0)),
+		FundingFee:         sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(0)),
 	}, res)
 }
 
@@ -230,6 +232,8 @@ func TestOpenEstimation_Long5XAtom10Atom(t *testing.T) {
 		BorrowInterestRate: sdk.MustNewDecFromStr("0.000000000000000000"),
 		FundingRate:        sdk.MustNewDecFromStr("0.000000000000000000"),
 		PriceImpact:        sdk.MustNewDecFromStr("0.001685356924966457"),
+		BorrowFee:          sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(0)),
+		FundingFee:         sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(0)),
 	}, res)
 }
 
@@ -345,6 +349,8 @@ func TestOpenEstimation_Short5XAtom10Usdc(t *testing.T) {
 		BorrowInterestRate: sdk.MustNewDecFromStr("0.000000000000000000"),
 		FundingRate:        sdk.MustNewDecFromStr("0.000000000000000000"),
 		PriceImpact:        sdk.MustNewDecFromStr("0.007800000000000000"),
+		BorrowFee:          sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(0)),
+		FundingFee:         sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(0)),
 	}, res)
 }
 
