@@ -22,30 +22,6 @@ jobs:
     steps:
       - name: Checking repository
         uses: actions/checkout@v4
-      - name: Retry mechanism - Check if a previous deployment is running
-        run: |
-          MAX_RETRIES=3  # Try for 15 minutes (3 * 5 minutes)
-          RETRIES=0
-          
-          while [ $RETRIES -lt $MAX_RETRIES ]; do
-            DEPLOY_STATUS=$(curl -s "https://api.github.com/repos/${{ github.repository }}/actions/runs?branch=devnet&status=in_progress&event=push" \
-                            | jq '.workflow_runs | length')
-          
-            if [ "$DEPLOY_STATUS" -eq 0 ]; then
-              echo "No previous deployments running. Proceeding with deployment."
-              break
-            else
-              echo "Previous deployment is still running. Waiting for 5 minutes before retrying..."
-              RETRIES=$((RETRIES+1))
-              sleep 300  # Wait for 5 minutes (300 seconds)
-            fi
-          done
-          
-          if [ $RETRIES -ge $MAX_RETRIES ]; then
-            echo "Deployment still running after 30 minutes. Exiting."
-            exit 1
-          fi
-
       - name: Setting variables
         run: |
           VER=v${{ github.sha }}
