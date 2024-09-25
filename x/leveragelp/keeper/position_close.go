@@ -27,6 +27,11 @@ func (k Keeper) ForceCloseLong(ctx sdk.Context, position types.Position, pool ty
 
 	repayAmount := debt.GetTotalLiablities().Mul(lpAmount).Quo(position.LeveragedLpAmount)
 
+	// Set collateral to same % as reduction in LP position
+	ratio := lpAmount.ToLegacyDec().Quo(position.LeveragedLpAmount.ToLegacyDec())
+	collateralLeft := position.Collateral.Amount.Sub(position.Collateral.Amount.ToLegacyDec().Mul(ratio).TruncateInt())
+	position.Collateral.Amount = collateralLeft
+
 	// Check if position has enough coins to repay else repay partial
 	bal := k.bankKeeper.GetBalance(ctx, position.GetPositionAddress(), position.Collateral.Denom)
 	userAmount := sdk.ZeroInt()
