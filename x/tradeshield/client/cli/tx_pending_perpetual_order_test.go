@@ -19,7 +19,7 @@ func TestCreatePendingPerpetualOrder(t *testing.T) {
 	val := net.Validators[0]
 	ctx := val.ClientCtx
 
-	fields := []string{"xyz"}
+	fields := []string{}
 	tests := []struct {
 		desc string
 		args []string

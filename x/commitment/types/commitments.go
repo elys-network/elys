@@ -81,7 +81,7 @@ func (c Commitments) CommittedTokensLocked(ctx sdk.Context) (sdk.Coins, sdk.Coin
 	return totalLocked, totalCommitted
 }
 
-func (c *Commitments) DeductFromCommitted(denom string, amount math.Int, currTime uint64) error {
+func (c *Commitments) DeductFromCommitted(denom string, amount math.Int, currTime uint64, isLiquidation bool) error {
 	for i, token := range c.CommittedTokens {
 		if token.Denom == denom {
 			c.CommittedTokens[i].Amount = token.Amount.Sub(amount)
@@ -92,7 +92,7 @@ func (c *Commitments) DeductFromCommitted(denom string, amount math.Int, currTim
 			newLockups := []Lockup{}
 			lockedAmount := sdk.ZeroInt()
 			for _, lockup := range token.Lockups {
-				if lockup.UnlockTimestamp > currTime {
+				if lockup.UnlockTimestamp > currTime && !isLiquidation {
 					newLockups = append(newLockups, lockup)
 					lockedAmount = lockedAmount.Add(lockup.Amount)
 				}

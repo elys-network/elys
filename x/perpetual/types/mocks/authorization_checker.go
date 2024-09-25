@@ -42,7 +42,7 @@ type AuthorizationChecker_CheckIfWhitelisted_Call struct {
 
 // CheckIfWhitelisted is a helper method to define mock.On call
 //   - ctx types.Context
-//   - creator string
+//   - creator types.AccAddress
 func (_e *AuthorizationChecker_Expecter) CheckIfWhitelisted(ctx interface{}, creator interface{}) *AuthorizationChecker_CheckIfWhitelisted_Call {
 	return &AuthorizationChecker_CheckIfWhitelisted_Call{Call: _e.mock.On("CheckIfWhitelisted", ctx, creator)}
 }
