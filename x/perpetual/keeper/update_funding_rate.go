@@ -15,57 +15,24 @@ func (k Keeper) UpdateFundingRate(ctx sdk.Context, pool *types.Pool) error {
 		return types.ErrDenomNotFound
 	}
 
-	liabilitiesLong := sdk.ZeroInt()
-	for _, asset := range *poolAssetsLong {
-		if asset.Liabilities.IsZero() {
-			continue
-		}
-		if uusdc.Denom == asset.AssetDenom {
-			liabilitiesLong = liabilitiesLong.Add(asset.Liabilities)
-		} else {
-			coin := sdk.NewCoin(asset.AssetDenom, asset.Liabilities)
-			ammPool, err := k.GetAmmPool(ctx, pool.AmmPoolId, asset.AssetDenom)
+	var err error
 
-			if err != nil {
-				return err
-			}
-			l, err := k.OpenLongChecker.EstimateSwapGivenOut(ctx, coin, uusdc.Denom, ammPool)
-			if err != nil {
-				return err
-			}
-			liabilitiesLong = liabilitiesLong.Add(l)
-		}
-
+	// Calculate liabilities for long and short assets using the separate helper function
+	assetLiabilitiesLong, err := k.CalcTotalLiabilities(ctx, *poolAssetsLong, pool.AmmPoolId, uusdc.Denom)
+	if err != nil {
+		return err
 	}
 
-	liabilitiesShort := sdk.ZeroInt()
-	for _, asset := range *poolAssetsShort {
-		if asset.Liabilities.IsZero() {
-			continue
-		}
-		if uusdc.Denom == asset.AssetDenom {
-			liabilitiesShort = liabilitiesShort.Add(asset.Liabilities)
-		} else {
-			coin := sdk.NewCoin(asset.AssetDenom, asset.Liabilities)
-			ammPool, err := k.GetAmmPool(ctx, pool.AmmPoolId, asset.AssetDenom)
-			if err != nil {
-				return err
-			}
-
-			l, err := k.OpenLongChecker.EstimateSwapGivenOut(ctx, coin, uusdc.Denom, ammPool)
-			if err != nil {
-				return err
-			}
-
-			liabilitiesShort = liabilitiesShort.Add(l)
-		}
+	assetLiabilitiesShort, err := k.CalcTotalLiabilities(ctx, *poolAssetsShort, pool.AmmPoolId, uusdc.Denom)
+	if err != nil {
+		return err
 	}
 
 	// get params
 	params := k.GetParams(ctx)
 
 	// calculate and update funding fee
-	pool.FundingRate = types.CalcFundingRate(liabilitiesLong, liabilitiesShort, params.FundingFeeBaseRate, params.FundingFeeMaxRate, params.FundingFeeMinRate)
+	pool.FundingRate = types.CalcFundingRate(assetLiabilitiesLong, assetLiabilitiesShort, params.FundingFeeBaseRate, params.FundingFeeMaxRate, params.FundingFeeMinRate)
 
 	return nil
 }

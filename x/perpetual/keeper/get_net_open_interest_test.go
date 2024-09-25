@@ -13,10 +13,6 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-type getNetOpenInterestTest struct {
-	Title string
-}
-
 func TestNotFound_GetNetOpenInterest(t *testing.T) {
 	mockChecker := new(mocks.OpenLongChecker)
 	mockAssetProfile := new(mocks.AssetProfileKeeper)
@@ -59,21 +55,21 @@ func TestSuccess_GetNetOpenInterest(t *testing.T) {
 	got := k.GetNetOpenInterest(ctx, types.Pool{
 		AmmPoolId: 2,
 		PoolAssetsLong: []types.PoolAsset{
-			types.PoolAsset{
+			{
 				AssetDenom:  "ibc/2180E84E20F5679FCC760D8C165B60F42065DEF7F46A72B447CFF1B7DC6C0A65",
 				Liabilities: sdk.NewInt(2000),
 			},
-			types.PoolAsset{
+			{
 				AssetDenom:  "ibc/B4314D0E670CB43C88A5DCA09F76E5E812BD831CC2FEC6E434C9E5A9D1F57953",
-				Liabilities: sdk.NewInt(0),
+				Liabilities: sdk.ZeroInt(),
 			},
 		},
 		PoolAssetsShort: []types.PoolAsset{
-			types.PoolAsset{
+			{
 				AssetDenom:  "ibc/2180E84E20F5679FCC760D8C165B60F42065DEF7F46A72B447CFF1B7DC6C0A65",
-				Liabilities: sdk.NewInt(0),
+				Liabilities: sdk.ZeroInt(),
 			},
-			types.PoolAsset{
+			{
 				AssetDenom:  "ibc/B4314D0E670CB43C88A5DCA09F76E5E812BD831CC2FEC6E434C9E5A9D1F57953",
 				Liabilities: sdk.NewInt(2000),
 			},
@@ -110,11 +106,11 @@ func TestSuccess2_GetNetOpenInterest(t *testing.T) {
 	got := k.GetNetOpenInterest(ctx, types.Pool{
 		AmmPoolId: 2,
 		PoolAssetsLong: []types.PoolAsset{
-			types.PoolAsset{
+			{
 				AssetDenom:  "ibc/2180E84E20F5679FCC760D8C165B60F42065DEF7F46A72B447CFF1B7DC6C0A65",
-				Liabilities: sdk.NewInt(0),
+				Liabilities: sdk.ZeroInt(),
 			},
-			types.PoolAsset{
+			{
 				AssetDenom:  "ibc/B4314D0E670CB43C88A5DCA09F76E5E812BD831CC2FEC6E434C9E5A9D1F57953",
 				Liabilities: sdk.NewInt(2000),
 			},
@@ -124,9 +120,9 @@ func TestSuccess2_GetNetOpenInterest(t *testing.T) {
 				AssetDenom:  "ibc/2180E84E20F5679FCC760D8C165B60F42065DEF7F46A72B447CFF1B7DC6C0A65",
 				Liabilities: sdk.NewInt(500),
 			},
-			types.PoolAsset{
+			{
 				AssetDenom:  "ibc/B4314D0E670CB43C88A5DCA09F76E5E812BD831CC2FEC6E434C9E5A9D1F57953",
-				Liabilities: sdk.NewInt(0),
+				Liabilities: sdk.ZeroInt(),
 			},
 		},
 	})
@@ -161,11 +157,11 @@ func TestErrorLongPoolNotFound_GetNetOpenInterest(t *testing.T) {
 	got := k.GetNetOpenInterest(ctx, types.Pool{
 		AmmPoolId: 2,
 		PoolAssetsLong: []types.PoolAsset{
-			types.PoolAsset{
+			{
 				AssetDenom:  "ibc/2180E84E20F5679FCC760D8C165B60F42065DEF7F46A72B447CFF1B7DC6C0A65",
-				Liabilities: sdk.NewInt(0),
+				Liabilities: sdk.ZeroInt(),
 			},
-			types.PoolAsset{
+			{
 				AssetDenom:  "ibc/B4314D0E670CB43C88A5DCA09F76E5E812BD831CC2FEC6E434C9E5A9D1F57953",
 				Liabilities: sdk.NewInt(2000),
 			},
@@ -175,14 +171,14 @@ func TestErrorLongPoolNotFound_GetNetOpenInterest(t *testing.T) {
 				AssetDenom:  "ibc/2180E84E20F5679FCC760D8C165B60F42065DEF7F46A72B447CFF1B7DC6C0A65",
 				Liabilities: sdk.NewInt(500),
 			},
-			types.PoolAsset{
+			{
 				AssetDenom:  "ibc/B4314D0E670CB43C88A5DCA09F76E5E812BD831CC2FEC6E434C9E5A9D1F57953",
-				Liabilities: sdk.NewInt(0),
+				Liabilities: sdk.ZeroInt(),
 			},
 		},
 	})
 
-	assert.Equal(t, got, sdk.NewInt(0))
+	assert.Equal(t, got, sdk.ZeroInt())
 }
 
 func TestErrorLongEstimateSwapGivenOut_GetNetOpenInterest(t *testing.T) {
@@ -212,11 +208,11 @@ func TestErrorLongEstimateSwapGivenOut_GetNetOpenInterest(t *testing.T) {
 	got := k.GetNetOpenInterest(ctx, types.Pool{
 		AmmPoolId: 2,
 		PoolAssetsLong: []types.PoolAsset{
-			types.PoolAsset{
+			{
 				AssetDenom:  "ibc/2180E84E20F5679FCC760D8C165B60F42065DEF7F46A72B447CFF1B7DC6C0A65",
-				Liabilities: sdk.NewInt(0),
+				Liabilities: sdk.ZeroInt(),
 			},
-			types.PoolAsset{
+			{
 				AssetDenom:  "ibc/B4314D0E670CB43C88A5DCA09F76E5E812BD831CC2FEC6E434C9E5A9D1F57953",
 				Liabilities: sdk.NewInt(2000),
 			},
@@ -226,14 +222,14 @@ func TestErrorLongEstimateSwapGivenOut_GetNetOpenInterest(t *testing.T) {
 				AssetDenom:  "ibc/2180E84E20F5679FCC760D8C165B60F42065DEF7F46A72B447CFF1B7DC6C0A65",
 				Liabilities: sdk.NewInt(500),
 			},
-			types.PoolAsset{
+			{
 				AssetDenom:  "ibc/B4314D0E670CB43C88A5DCA09F76E5E812BD831CC2FEC6E434C9E5A9D1F57953",
-				Liabilities: sdk.NewInt(0),
+				Liabilities: sdk.ZeroInt(),
 			},
 		},
 	})
 
-	assert.Equal(t, got, sdk.NewInt(0))
+	assert.Equal(t, got, sdk.ZeroInt())
 }
 
 func TestErrorShortPoolNotFound_GetNetOpenInterest(t *testing.T) {
@@ -263,21 +259,21 @@ func TestErrorShortPoolNotFound_GetNetOpenInterest(t *testing.T) {
 	got := k.GetNetOpenInterest(ctx, types.Pool{
 		AmmPoolId: 2,
 		PoolAssetsLong: []types.PoolAsset{
-			types.PoolAsset{
+			{
 				AssetDenom:  "ibc/2180E84E20F5679FCC760D8C165B60F42065DEF7F46A72B447CFF1B7DC6C0A65",
 				Liabilities: sdk.NewInt(2000),
 			},
-			types.PoolAsset{
+			{
 				AssetDenom:  "ibc/B4314D0E670CB43C88A5DCA09F76E5E812BD831CC2FEC6E434C9E5A9D1F57953",
-				Liabilities: sdk.NewInt(0),
+				Liabilities: sdk.ZeroInt(),
 			},
 		},
 		PoolAssetsShort: []types.PoolAsset{
-			types.PoolAsset{
+			{
 				AssetDenom:  "ibc/2180E84E20F5679FCC760D8C165B60F42065DEF7F46A72B447CFF1B7DC6C0A65",
-				Liabilities: sdk.NewInt(0),
+				Liabilities: sdk.ZeroInt(),
 			},
-			types.PoolAsset{
+			{
 				AssetDenom:  "ibc/B4314D0E670CB43C88A5DCA09F76E5E812BD831CC2FEC6E434C9E5A9D1F57953",
 				Liabilities: sdk.NewInt(2000),
 			},
