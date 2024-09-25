@@ -33,6 +33,7 @@ func (m Migrator) V8Migration(ctx sdk.Context) error {
 	params.PoolOpenThreshold = legacyParams.PoolOpenThreshold
 	params.SafetyFactor = legacyParams.SafetyFactor
 	params.WhitelistingEnabled = legacyParams.WhitelistingEnabled
+	params.MaxLimitOrder = types.NewParams().MaxLimitOrder
 
 	err := m.keeper.SetParams(ctx, &params)
 	if err != nil {
