@@ -60,7 +60,7 @@ func (k Keeper) GetNetOpenInterest(ctx sdk.Context, pool types.Pool) math.Int {
 				return sdk.ZeroInt()
 			}
 
-			l, err := k.OpenLongChecker.EstimateSwapGivenOut(ctx, coin, uusdc.Denom, ammPool)
+			estimatedSwap, err := k.OpenLongChecker.EstimateSwapGivenOut(ctx, coin, uusdc.Denom, ammPool)
 			if err != nil {
 				return sdk.ZeroInt()
 			}
