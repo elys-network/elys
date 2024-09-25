@@ -191,3 +191,7 @@ func (k Keeper) GetSwapFee(ctx sdk.Context) sdk.Dec {
 func (k Keeper) GetEpochLength(ctx sdk.Context) int64 {
 	return k.GetParams(ctx).EpochLength
 }
+
+func (k Keeper) GetMaxLimitOrder(ctx sdk.Context) int64 {
+	return k.GetParams(ctx).MaxLimitOrder
+}

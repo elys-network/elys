@@ -40,6 +40,7 @@ var (
 	KeyFundingFeeCollectionAddress                    = []byte("FundingFeeCollectionAddress")
 	KeySwapFee                                        = []byte("SwapFee")
 	KeyMinBorrowInterestAmount                        = []byte("MinBorrowInterestAmount")
+	KeyMaxLimitOrder                                  = []byte("MaxLimitOrder")
 )
 
 // ParamKeyTable the param key table for launch module
@@ -74,6 +75,7 @@ func NewParams() Params {
 		PoolOpenThreshold:                              sdk.OneDec(),
 		SafetyFactor:                                   sdk.MustNewDecFromStr("1.050000000000000000"), // 5%
 		WhitelistingEnabled:                            false,
+		MaxLimitOrder:                                  (int64)(500),
 	}
 }
 
@@ -109,6 +111,7 @@ func (p *Params) ParamSetPairs() paramtypes.ParamSetPairs {
 		paramtypes.NewParamSetPair(KeyFundingFeeCollectionAddress, &p.FundingFeeCollectionAddress, validateFundingFeeCollectionAddress),
 		paramtypes.NewParamSetPair(KeySwapFee, &p.SwapFee, validateSwapFee),
 		paramtypes.NewParamSetPair(KeyMinBorrowInterestAmount, &p.MinBorrowInterestAmount, validateMinBorrowInterestAmount),
+		paramtypes.NewParamSetPair(KeyMaxLimitOrder, &p.MaxLimitOrder, validateMaxLimitOrder),
 	}
 }
 
@@ -185,6 +188,9 @@ func (p Params) Validate() error {
 		return err
 	}
 	if err := validateMinBorrowInterestAmount(p.MinBorrowInterestAmount); err != nil {
+		return err
+	}
+	if err := validateMaxLimitOrder(p.MaxLimitOrder); err!=nil {
 		return err
 	}
 	return nil
@@ -527,5 +533,16 @@ func validateMinBorrowInterestAmount(i interface{}) error {
 		return fmt.Errorf("MinBorrowInterestAmount must be positive: %s", v)
 	}
 
+	return nil
+}
+
+func validateMaxLimitOrder (i interface{}) error {
+	v, ok := i.(int64)
+	if !ok {
+		return fmt.Errorf("invalid parameter type: %T", i)
+	}
+	if v < 0 {
+		return fmt.Errorf("MaxLimitOrder should not be -ve: %d", v)
+	}
 	return nil
 }
