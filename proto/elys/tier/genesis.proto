@@ -11,6 +11,6 @@ option go_package = "github.com/elys-network/elys/x/tier/types";
 // GenesisState defines the tier module's genesis state.
 message GenesisState {
            Params    params        = 1 [(gogoproto.nullable) = false];
-  repeated Portfolio portfolioList = 2 [(gogoproto.nullable) = false];
+  repeated Portfolio portfolio_list = 2 [(gogoproto.nullable) = false];
 }
 
