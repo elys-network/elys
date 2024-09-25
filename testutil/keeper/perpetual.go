@@ -14,6 +14,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/address"
 	"github.com/elys-network/elys/x/perpetual/keeper"
 	"github.com/elys-network/elys/x/perpetual/types"
+	"github.com/elys-network/elys/x/perpetual/types/mocks"
 	"github.com/stretchr/testify/require"
 )
 
@@ -31,6 +32,8 @@ func PerpetualKeeper(t testing.TB) (*keeper.Keeper, sdk.Context) {
 	cdc := codec.NewProtoCodec(registry)
 	govAddress := sdk.AccAddress(address.Module("gov"))
 
+	assetProfileKeeper := mocks.NewAssetProfileKeeper(t)
+
 	k := keeper.NewKeeper(
 		cdc,
 		storeKey,
@@ -39,7 +42,7 @@ func PerpetualKeeper(t testing.TB) (*keeper.Keeper, sdk.Context) {
 		nil,
 		nil,
 		nil,
-		nil,
+		assetProfileKeeper,
 		nil,
 	)
 
