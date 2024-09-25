@@ -71,7 +71,7 @@ message UpdatePool {
 
 message MsgUpdatePool {
   string     authority = 1;
-  UpdatePool UpdatePool = 2;
+  UpdatePool update_pool = 2;
 }
 
 message MsgUpdatePoolResponse {}

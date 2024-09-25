@@ -60,7 +60,7 @@ message MsgUpdateWasmConfigResponse {}
 
 message MsgUpdateRewardsDataLifetime {
   string creator             = 1;
-  string rewardsDataLifetime = 2;
+  string rewards_data_lifetime = 2;
 }
 
 message MsgUpdateRewardsDataLifetimeResponse {}

@@ -44338,6 +44338,9 @@ paths:
                     type: string
                   swap_fee:
                     type: string
+                  max_limit_order:
+                    type: string
+                    format: int64
             description: ParamsResponse is response type for the Query/Params RPC method.
         default:
           description: An unexpected error response.

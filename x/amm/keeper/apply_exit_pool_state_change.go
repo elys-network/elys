@@ -6,12 +6,12 @@ import (
 	"github.com/elys-network/elys/x/amm/types"
 )
 
-func (k Keeper) ApplyExitPoolStateChange(ctx sdk.Context, pool types.Pool, exiter sdk.AccAddress, numShares math.Int, exitCoins sdk.Coins) (sdk.Coins, error) {
+func (k Keeper) ApplyExitPoolStateChange(ctx sdk.Context, pool types.Pool, exiter sdk.AccAddress, numShares math.Int, exitCoins sdk.Coins, isLiquidation bool) (sdk.Coins, error) {
 	// Withdraw exit amount of token from commitment module to exiter's wallet.
 	poolShareDenom := types.GetPoolShareDenom(pool.GetPoolId())
 
 	// Withdraw committed LP tokens
-	err := k.commitmentKeeper.UncommitTokens(ctx, exiter, poolShareDenom, numShares)
+	err := k.commitmentKeeper.UncommitTokens(ctx, exiter, poolShareDenom, numShares, isLiquidation)
 	if err != nil {
 		return sdk.Coins{}, err
 	}

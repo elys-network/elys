@@ -74,13 +74,7 @@ func (k Keeper) OpenEstimation(goCtx context.Context, req *types.QueryOpenEstima
 	// invert openPrice if collateral is not in base currency
 	openPrice = sdk.OneDec().Quo(openPrice)
 
-	// calculate min collateral
-	minCollateral, err := k.CalcMinCollateral(ctx, req.Leverage, openPrice, decimals)
-	if err != nil {
-		return nil, errorsmod.Wrapf(types.ErrCalcMinCollateral, "error calculating min collateral: %s", err.Error())
-	}
-
-	// if req.TakeProfitPrice is zero then set it to default
+	// check req.TakeProfitPrice not zero to prevent division by zero
 	if req.TakeProfitPrice.IsZero() {
 		req.TakeProfitPrice = sdk.MustNewDecFromStr(types.TakeProfitPriceDefault)
 	}
@@ -131,13 +125,21 @@ func (k Keeper) OpenEstimation(goCtx context.Context, req *types.QueryOpenEstima
 	borrowFee := borrowInterestRate.MulInt(leveragedAmount.Sub(collateralAmountInBaseCurrency.Amount))
 	fundingFee := fundingRate.MulInt(leveragedAmount)
 
+	ammPool, err := k.GetAmmPool(ctx, poolId, "")
+	if err != nil {
+		return nil, err
+	}
+	liabilitiesAsset := baseCurrency
+	custodyAsset := req.TradingAsset
+	mtp := types.NewMTP("", req.Collateral.Denom, req.TradingAsset, liabilitiesAsset, custodyAsset, req.Position, req.Leverage, req.TakeProfitPrice, poolId)
+	interestAmount := k.GetBorrowInterest(ctx, mtp, ammPool)
+
 	return &types.QueryOpenEstimationResponse{
 		Position:           req.Position,
 		Leverage:           req.Leverage,
 		TradingAsset:       req.TradingAsset,
 		Collateral:         req.Collateral,
-		MinCollateral:      sdk.NewCoin(req.Collateral.Denom, minCollateral),
-		ValidCollateral:    req.Collateral.Amount.GTE(minCollateral),
+		InterestAmount:     interestAmount,
 		PositionSize:       positionSize,
 		SwapFee:            swapFee,
 		Discount:           discount,

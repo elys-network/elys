@@ -1166,20 +1166,6 @@ func (m *QueryOpenEstimationResponse) GetCollateral() types.Coin {
 	return types.Coin{}
 }
 
-func (m *QueryOpenEstimationResponse) GetMinCollateral() types.Coin {
-	if m != nil {
-		return m.MinCollateral
-	}
-	return types.Coin{}
-}
-
-func (m *QueryOpenEstimationResponse) GetValidCollateral() bool {
-	if m != nil {
-		return m.ValidCollateral
-	}
-	return false
-}
-
 func (m *QueryOpenEstimationResponse) GetPositionSize() types.Coin {
 	if m != nil {
 		return m.PositionSize
@@ -2951,7 +2937,7 @@ func (m *QueryOpenEstimationResponse) MarshalToSizedBuffer(dAtA []byte) (int, er
 	i--
 	dAtA[i] = 0x1
 	i--
-	dAtA[i] = 0xa2
+	dAtA[i] = 0x9a
 	{
 		size := m.FundingRate.Size()
 		i -= size
@@ -2963,7 +2949,7 @@ func (m *QueryOpenEstimationResponse) MarshalToSizedBuffer(dAtA []byte) (int, er
 	i--
 	dAtA[i] = 0x1
 	i--
-	dAtA[i] = 0x9a
+	dAtA[i] = 0x92
 	{
 		size := m.BorrowInterestRate.Size()
 		i -= size
@@ -2975,7 +2961,7 @@ func (m *QueryOpenEstimationResponse) MarshalToSizedBuffer(dAtA []byte) (int, er
 	i--
 	dAtA[i] = 0x1
 	i--
-	dAtA[i] = 0x92
+	dAtA[i] = 0x8a
 	{
 		size := m.WeightBalanceRatio.Size()
 		i -= size
@@ -2987,7 +2973,7 @@ func (m *QueryOpenEstimationResponse) MarshalToSizedBuffer(dAtA []byte) (int, er
 	i--
 	dAtA[i] = 0x1
 	i--
-	dAtA[i] = 0x8a
+	dAtA[i] = 0x82
 	{
 		size := m.Slippage.Size()
 		i -= size
@@ -2997,9 +2983,7 @@ func (m *QueryOpenEstimationResponse) MarshalToSizedBuffer(dAtA []byte) (int, er
 		i = encodeVarintQuery(dAtA, i, uint64(size))
 	}
 	i--
-	dAtA[i] = 0x1
-	i--
-	dAtA[i] = 0x82
+	dAtA[i] = 0x7a
 	{
 		size, err := m.AvailableLiquidity.MarshalToSizedBuffer(dAtA[:i])
 		if err != nil {
@@ -3009,13 +2993,13 @@ func (m *QueryOpenEstimationResponse) MarshalToSizedBuffer(dAtA []byte) (int, er
 		i = encodeVarintQuery(dAtA, i, uint64(size))
 	}
 	i--
-	dAtA[i] = 0x7a
+	dAtA[i] = 0x72
 	if len(m.EstimatedPnlDenom) > 0 {
 		i -= len(m.EstimatedPnlDenom)
 		copy(dAtA[i:], m.EstimatedPnlDenom)
 		i = encodeVarintQuery(dAtA, i, uint64(len(m.EstimatedPnlDenom)))
 		i--
-		dAtA[i] = 0x72
+		dAtA[i] = 0x6a
 	}
 	{
 		size := m.EstimatedPnl.Size()
@@ -3026,7 +3010,7 @@ func (m *QueryOpenEstimationResponse) MarshalToSizedBuffer(dAtA []byte) (int, er
 		i = encodeVarintQuery(dAtA, i, uint64(size))
 	}
 	i--
-	dAtA[i] = 0x6a
+	dAtA[i] = 0x62
 	{
 		size := m.LiquidationPrice.Size()
 		i -= size
@@ -3036,7 +3020,7 @@ func (m *QueryOpenEstimationResponse) MarshalToSizedBuffer(dAtA []byte) (int, er
 		i = encodeVarintQuery(dAtA, i, uint64(size))
 	}
 	i--
-	dAtA[i] = 0x62
+	dAtA[i] = 0x5a
 	{
 		size := m.TakeProfitPrice.Size()
 		i -= size
@@ -3046,7 +3030,7 @@ func (m *QueryOpenEstimationResponse) MarshalToSizedBuffer(dAtA []byte) (int, er
 		i = encodeVarintQuery(dAtA, i, uint64(size))
 	}
 	i--
-	dAtA[i] = 0x5a
+	dAtA[i] = 0x52
 	{
 		size := m.OpenPrice.Size()
 		i -= size
@@ -3056,7 +3040,7 @@ func (m *QueryOpenEstimationResponse) MarshalToSizedBuffer(dAtA []byte) (int, er
 		i = encodeVarintQuery(dAtA, i, uint64(size))
 	}
 	i--
-	dAtA[i] = 0x52
+	dAtA[i] = 0x4a
 	{
 		size := m.Discount.Size()
 		i -= size
@@ -3066,7 +3050,7 @@ func (m *QueryOpenEstimationResponse) MarshalToSizedBuffer(dAtA []byte) (int, er
 		i = encodeVarintQuery(dAtA, i, uint64(size))
 	}
 	i--
-	dAtA[i] = 0x4a
+	dAtA[i] = 0x42
 	{
 		size := m.SwapFee.Size()
 		i -= size
@@ -3076,7 +3060,7 @@ func (m *QueryOpenEstimationResponse) MarshalToSizedBuffer(dAtA []byte) (int, er
 		i = encodeVarintQuery(dAtA, i, uint64(size))
 	}
 	i--
-	dAtA[i] = 0x42
+	dAtA[i] = 0x3a
 	{
 		size, err := m.PositionSize.MarshalToSizedBuffer(dAtA[:i])
 		if err != nil {
@@ -3086,23 +3070,13 @@ func (m *QueryOpenEstimationResponse) MarshalToSizedBuffer(dAtA []byte) (int, er
 		i = encodeVarintQuery(dAtA, i, uint64(size))
 	}
 	i--
-	dAtA[i] = 0x3a
-	if m.ValidCollateral {
-		i--
-		if m.ValidCollateral {
-			dAtA[i] = 1
-		} else {
-			dAtA[i] = 0
-		}
-		i--
-		dAtA[i] = 0x30
-	}
+	dAtA[i] = 0x32
 	{
-		size, err := m.MinCollateral.MarshalToSizedBuffer(dAtA[:i])
-		if err != nil {
+		size := m.InterestAmount.Size()
+		i -= size
+		if _, err := m.InterestAmount.MarshalTo(dAtA[i:]); err != nil {
 			return 0, err
 		}
-		i -= size
 		i = encodeVarintQuery(dAtA, i, uint64(size))
 	}
 	i--
@@ -3682,11 +3656,8 @@ func (m *QueryOpenEstimationResponse) Size() (n int) {
 	}
 	l = m.Collateral.Size()
 	n += 1 + l + sovQuery(uint64(l))
-	l = m.MinCollateral.Size()
+	l = m.InterestAmount.Size()
 	n += 1 + l + sovQuery(uint64(l))
-	if m.ValidCollateral {
-		n += 2
-	}
 	l = m.PositionSize.Size()
 	n += 1 + l + sovQuery(uint64(l))
 	l = m.SwapFee.Size()
@@ -3708,7 +3679,7 @@ func (m *QueryOpenEstimationResponse) Size() (n int) {
 	l = m.AvailableLiquidity.Size()
 	n += 1 + l + sovQuery(uint64(l))
 	l = m.Slippage.Size()
-	n += 2 + l + sovQuery(uint64(l))
+	n += 1 + l + sovQuery(uint64(l))
 	l = m.WeightBalanceRatio.Size()
 	n += 2 + l + sovQuery(uint64(l))
 	l = m.BorrowInterestRate.Size()
@@ -6173,9 +6144,9 @@ func (m *QueryOpenEstimationResponse) Unmarshal(dAtA []byte) error {
 			iNdEx = postIndex
 		case 5:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field MinCollateral", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field InterestAmount", wireType)
 			}
-			var msglen int
+			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowQuery
@@ -6185,46 +6156,27 @@ func (m *QueryOpenEstimationResponse) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				msglen |= int(b&0x7F) << shift
+				stringLen |= uint64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
-			if msglen < 0 {
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
 				return ErrInvalidLengthQuery
 			}
-			postIndex := iNdEx + msglen
+			postIndex := iNdEx + intStringLen
 			if postIndex < 0 {
 				return ErrInvalidLengthQuery
 			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if err := m.MinCollateral.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+			if err := m.InterestAmount.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
 		case 6:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field ValidCollateral", wireType)
-			}
-			var v int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowQuery
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				v |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			m.ValidCollateral = bool(v != 0)
-		case 7:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field PositionSize", wireType)
 			}
@@ -6257,7 +6209,7 @@ func (m *QueryOpenEstimationResponse) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			iNdEx = postIndex
-		case 8:
+		case 7:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field SwapFee", wireType)
 			}
@@ -6291,7 +6243,7 @@ func (m *QueryOpenEstimationResponse) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			iNdEx = postIndex
-		case 9:
+		case 8:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Discount", wireType)
 			}
@@ -6325,7 +6277,7 @@ func (m *QueryOpenEstimationResponse) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			iNdEx = postIndex
-		case 10:
+		case 9:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field OpenPrice", wireType)
 			}
@@ -6359,7 +6311,7 @@ func (m *QueryOpenEstimationResponse) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			iNdEx = postIndex
-		case 11:
+		case 10:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field TakeProfitPrice", wireType)
 			}
@@ -6393,7 +6345,7 @@ func (m *QueryOpenEstimationResponse) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			iNdEx = postIndex
-		case 12:
+		case 11:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field LiquidationPrice", wireType)
 			}
@@ -6427,7 +6379,7 @@ func (m *QueryOpenEstimationResponse) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			iNdEx = postIndex
-		case 13:
+		case 12:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field EstimatedPnl", wireType)
 			}
@@ -6461,7 +6413,7 @@ func (m *QueryOpenEstimationResponse) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			iNdEx = postIndex
-		case 14:
+		case 13:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field EstimatedPnlDenom", wireType)
 			}
@@ -6493,7 +6445,7 @@ func (m *QueryOpenEstimationResponse) Unmarshal(dAtA []byte) error {
 			}
 			m.EstimatedPnlDenom = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 15:
+		case 14:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field AvailableLiquidity", wireType)
 			}
@@ -6526,7 +6478,7 @@ func (m *QueryOpenEstimationResponse) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			iNdEx = postIndex
-		case 16:
+		case 15:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Slippage", wireType)
 			}
@@ -6560,7 +6512,7 @@ func (m *QueryOpenEstimationResponse) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			iNdEx = postIndex
-		case 17:
+		case 16:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field WeightBalanceRatio", wireType)
 			}
@@ -6594,7 +6546,7 @@ func (m *QueryOpenEstimationResponse) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			iNdEx = postIndex
-		case 18:
+		case 17:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field BorrowInterestRate", wireType)
 			}
@@ -6628,7 +6580,7 @@ func (m *QueryOpenEstimationResponse) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			iNdEx = postIndex
-		case 19:
+		case 18:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field FundingRate", wireType)
 			}
@@ -6662,7 +6614,7 @@ func (m *QueryOpenEstimationResponse) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			iNdEx = postIndex
-		case 20:
+		case 19:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field PriceImpact", wireType)
 			}
