@@ -12,7 +12,7 @@ import (
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
 
-func (k Keeper) UncommitTokens(ctx sdk.Context, addr sdk.AccAddress, denom string, amount math.Int) error {
+func (k Keeper) UncommitTokens(ctx sdk.Context, addr sdk.AccAddress, denom string, amount math.Int, isLiquidation bool) error {
 	assetProfile, found := k.assetProfileKeeper.GetEntry(ctx, denom)
 	if !found {
 		return errorsmod.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "denom: %s", denom)
@@ -40,7 +40,7 @@ func (k Keeper) UncommitTokens(ctx sdk.Context, addr sdk.AccAddress, denom strin
 	}
 
 	// Deduct from committed tokens
-	err := commitments.DeductFromCommitted(denom, amount, uint64(ctx.BlockTime().Unix()))
+	err := commitments.DeductFromCommitted(denom, amount, uint64(ctx.BlockTime().Unix()), isLiquidation)
 	if err != nil {
 		return err
 	}
@@ -107,7 +107,7 @@ func (k msgServer) UncommitTokens(goCtx context.Context, msg *types.MsgUncommitT
 		return nil, types.ErrUnsupportedUncommitToken
 	}
 
-	err = k.Keeper.UncommitTokens(ctx, addr, msg.Denom, msg.Amount)
+	err = k.Keeper.UncommitTokens(ctx, addr, msg.Denom, msg.Amount, false)
 	if err != nil {
 		return nil, err
 	}

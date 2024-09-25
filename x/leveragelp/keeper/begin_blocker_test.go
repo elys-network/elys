@@ -241,9 +241,9 @@ func (suite *KeeperTestSuite) TestCheckAndLiquidateUnhealthyPosition() {
 			},
 		},
 		{
-			"closing position before 1 hour",
-			true,
-			"funds will be locked for 1 hour",
+			"success", // liquidating position before lockup period should be successful
+			false,
+			"",
 			func() *types.Position {
 				suite.ResetSuite()
 				suite.SetupCoinPrices(suite.ctx)
@@ -251,7 +251,7 @@ func (suite *KeeperTestSuite) TestCheckAndLiquidateUnhealthyPosition() {
 				openMsg := types.MsgOpen{
 					Creator:          addresses[1].String(),
 					CollateralAsset:  "uusdc",
-					CollateralAmount: sdk.NewInt(1000_000_000),
+					CollateralAmount: sdk.NewInt(1000_000),
 					AmmPoolId:        1,
 					Leverage:         leverage,
 					StopLossPrice:    sdk.NewDec(2),

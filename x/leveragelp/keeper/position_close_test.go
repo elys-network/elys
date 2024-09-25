@@ -130,7 +130,7 @@ func (suite KeeperTestSuite) TestForceCloseLong() {
 		Quo(sdk.NewDec(86400 * 365))).RoundInt()
 
 	suite.ctx = suite.ctx.WithBlockTime(suite.ctx.BlockTime().Add(time.Hour))
-	repayAmountOut, err := k.ForceCloseLong(suite.ctx, *position, pool, position.LeveragedLpAmount)
+	repayAmountOut, err := k.ForceCloseLong(suite.ctx, *position, pool, position.LeveragedLpAmount, false)
 	suite.Require().NoError(err)
 	suite.Require().Equal(repayAmount.String(), repayAmountOut.String())
 }
@@ -148,7 +148,7 @@ func (suite KeeperTestSuite) TestForceCloseLongWithNoFullRepayment() {
 		Quo(sdk.NewDec(86400 * 365))).RoundInt()
 
 	suite.ctx = suite.ctx.WithBlockTime(suite.ctx.BlockTime().Add(time.Hour * 24 * 365 * 5))
-	repayAmountOut, err := k.ForceCloseLong(suite.ctx, *position, pool, position.LeveragedLpAmount)
+	repayAmountOut, err := k.ForceCloseLong(suite.ctx, *position, pool, position.LeveragedLpAmount, false)
 	suite.Require().NoError(err)
 	suite.Require().Greater(repayAmount.String(), repayAmountOut.String())
 }
@@ -166,7 +166,7 @@ func (suite KeeperTestSuite) TestForceCloseLongPartial() {
 		Quo(sdk.NewDec(86400 * 365))).RoundInt()
 	suite.ctx = suite.ctx.WithBlockTime(suite.ctx.BlockTime().Add(time.Hour))
 	// close 50%
-	repayAmountOut, err := k.ForceCloseLong(suite.ctx, *position, pool, position.LeveragedLpAmount.Quo(sdk.NewInt(2)))
+	repayAmountOut, err := k.ForceCloseLong(suite.ctx, *position, pool, position.LeveragedLpAmount.Quo(sdk.NewInt(2)), false)
 	suite.Require().NoError(err)
 	suite.Require().Equal(repayAmount.Quo(sdk.NewInt(2)).String(), repayAmountOut.String())
 }
