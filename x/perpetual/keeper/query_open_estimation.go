@@ -125,22 +125,25 @@ func (k Keeper) OpenEstimation(goCtx context.Context, req *types.QueryOpenEstima
 	borrowFee := borrowInterestRate.MulInt(leveragedAmount.Sub(collateralAmountInBaseCurrency.Amount))
 	fundingFee := fundingRate.MulInt(leveragedAmount)
 
-	if req.Position == types.Position_LONG {
-		if fundingFee.IsNegative() {
-			// if funding fee is negative long earns
-			fundingFee = fundingFee.Abs()
-		}
-		if fundingFee.IsPositive() {
-			// long would pay short
-			fundingFee = fundingFee.Mul(sdk.NewDec(-1))
-		}
+	// | funding rate        |   direction     |  funding fee               |
+	// ----------------------------------------------------------------------
+	// | +ve                 |   LONG          |  amount to pay per block   |
+	// | +ve                 |   SHORT         |  amount to earn per block  |
+	// | -ve                 |   LONG          |  amount to earn per block  |
+	// | -ve                 |   SHORT         |  amount to pay per block   |
+	if req.Position == types.Position_LONG && fundingRate.IsPositive() {
+		// long pays
+		fundingFee = fundingFee.Abs()
+	} else if req.Position == types.Position_SHORT && fundingRate.IsPositive() {
+		// short earns
+		fundingFee = fundingFee.Neg()
+	} else if req.Position == types.Position_LONG && fundingRate.IsNegative() {
+		// long earns
+		fundingFee = fundingFee.Neg()
+	} else if req.Position == types.Position_SHORT && fundingRate.IsNegative() {
+		// short pays
+		fundingFee = fundingFee.Abs()
 	}
-// | funding rate        |   direction     |  funding fee          | 
-// -----------------------------------------------------------------
-// | +ve                 |   LONG     |  amount to pay per block   |
-// | +ve                 |   SHORT    |  amount to earn per block  |
-// | -ve                 |   LONG     |  amount to earn per block  |
-// | -ve                 |   SHORT    |  amount to pay per block   |
 
 	ammPool, err := k.GetAmmPool(ctx, poolId, "")
 	if err != nil {
