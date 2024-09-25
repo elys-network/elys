@@ -18,8 +18,6 @@ func (k msgServer) CreatePendingSpotOrder(goCtx context.Context, msg *types.MsgC
 		OrderPrice:   msg.OrderPrice,
 		OrderAmount:  *msg.OrderAmount,
 		OwnerAddress: msg.OwnerAddress,
-		Status:       msg.Status,
-		Date:         msg.Date,
 	}
 
 	id := k.AppendPendingSpotOrder(
@@ -28,7 +26,7 @@ func (k msgServer) CreatePendingSpotOrder(goCtx context.Context, msg *types.MsgC
 	)
 
 	return &types.MsgCreatePendingSpotOrderResponse{
-		Id: id,
+		OrderId: id,
 	}, nil
 }
 
@@ -42,17 +40,17 @@ func (k msgServer) DeletePendingSpotOrder(goCtx context.Context, msg *types.MsgD
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	// Checks that the element exists
-	val, found := k.GetPendingSpotOrder(ctx, msg.Id)
+	val, found := k.GetPendingSpotOrder(ctx, msg.OrderId)
 	if !found {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, fmt.Sprintf("key %d doesn't exist", msg.Id))
+		return nil, sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, fmt.Sprintf("key %d doesn't exist", msg.OrderId))
 	}
 
 	// Checks if the msg creator is the same as the current owner
-	if msg.Creator != val.OwnerAddress {
+	if msg.OwnerAddress != val.OwnerAddress {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "incorrect owner")
 	}
 
-	k.RemovePendingSpotOrder(ctx, msg.Id)
+	k.RemovePendingSpotOrder(ctx, msg.OrderId)
 
 	return &types.MsgDeletePendingSpotOrderResponse{}, nil
 }

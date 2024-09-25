@@ -48,13 +48,13 @@ func TestMsgUpdatePendingSpotOrder_ValidateBasic(t *testing.T) {
 		{
 			name: "invalid address",
 			msg: MsgUpdatePendingSpotOrder{
-				Creator: "invalid_address",
+				OwnerAddress: "invalid_address",
 			},
 			err: sdkerrors.ErrInvalidAddress,
 		}, {
 			name: "valid address",
 			msg: MsgUpdatePendingSpotOrder{
-				Creator: sample.AccAddress(),
+				OwnerAddress: sample.AccAddress(),
 			},
 		},
 	}
@@ -79,13 +79,13 @@ func TestMsgDeletePendingSpotOrder_ValidateBasic(t *testing.T) {
 		{
 			name: "invalid address",
 			msg: MsgDeletePendingSpotOrder{
-				Creator: "invalid_address",
+				OwnerAddress: "invalid_address",
 			},
 			err: sdkerrors.ErrInvalidAddress,
 		}, {
 			name: "valid address",
 			msg: MsgDeletePendingSpotOrder{
-				Creator: sample.AccAddress(),
+				OwnerAddress: sample.AccAddress(),
 			},
 		},
 	}

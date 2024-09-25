@@ -32,10 +32,10 @@ func TestShowMTPByAddress(t *testing.T) {
 	}{
 		{
 			desc:    "found",
-			address: objs[0].Address,
+			address: objs[0].Mtp.Address,
 
 			args: common,
-			obj:  objs[0],
+			obj:  objs[0].Mtp,
 		},
 		{
 			desc:    "not found",

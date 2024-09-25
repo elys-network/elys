@@ -1,11 +1,12 @@
 package keeper
 
 import (
-	"github.com/cosmos/cosmos-sdk/store/prefix"
 	"math"
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/cosmos/cosmos-sdk/store/prefix"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
@@ -341,7 +342,7 @@ func (k Keeper) GetPortfolio(ctx sdk.Context, user sdk.AccAddress, date string) 
 	return val.Portfolio, true
 }
 
-func (k Keeper) GetMembershipTier(ctx sdk.Context, user sdk.AccAddress) (total_portfoilio sdk.Dec, tier string, discount uint64) {
+func (k Keeper) GetMembershipTier(ctx sdk.Context, user sdk.AccAddress) (total_portfolio sdk.Dec, tier string, discount uint64) {
 	year, month, day := ctx.BlockTime().Date()
 	dateToday := time.Date(year, month, day, 0, 0, 0, 0, ctx.BlockTime().Location())
 	startDate := dateToday.AddDate(0, 0, -7)

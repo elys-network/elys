@@ -32,10 +32,10 @@ func TestShowMTPByPool(t *testing.T) {
 	}{
 		{
 			desc:      "found",
-			ammPoolId: objs[0].AmmPoolId,
+			ammPoolId: objs[0].Mtp.AmmPoolId,
 
 			args: common,
-			obj:  objs[0],
+			obj:  objs[0].Mtp,
 		},
 		{
 			desc:      "not found",

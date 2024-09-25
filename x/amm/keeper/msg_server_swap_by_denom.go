@@ -13,6 +13,10 @@ import (
 func (k msgServer) SwapByDenom(goCtx context.Context, msg *types.MsgSwapByDenom) (*types.MsgSwapByDenomResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
+	return k.Keeper.SwapByDenom(ctx, msg)
+}
+
+func (k Keeper) SwapByDenom(ctx sdk.Context, msg *types.MsgSwapByDenom) (*types.MsgSwapByDenomResponse, error) {
 	_, err := sdk.AccAddressFromBech32(msg.Sender)
 	if err != nil {
 		return nil, err
@@ -43,7 +47,7 @@ func (k msgServer) SwapByDenom(goCtx context.Context, msg *types.MsgSwapByDenom)
 		}
 
 		res, err := k.SwapExactAmountIn(
-			sdk.WrapSDKContext(ctx),
+			ctx,
 			&types.MsgSwapExactAmountIn{
 				Sender:            msg.Sender,
 				Recipient:         msg.Recipient,
@@ -82,7 +86,7 @@ func (k msgServer) SwapByDenom(goCtx context.Context, msg *types.MsgSwapByDenom)
 		}
 
 		res, err := k.SwapExactAmountOut(
-			sdk.WrapSDKContext(ctx),
+			ctx,
 			&types.MsgSwapExactAmountOut{
 				Sender:           msg.Sender,
 				Routes:           route,
