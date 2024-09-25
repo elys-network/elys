@@ -65,7 +65,7 @@ func (k Keeper) GetNetOpenInterest(ctx sdk.Context, pool types.Pool) math.Int {
 				return sdk.ZeroInt()
 			}
 
-			assetLiabilitiesShort = assetLiabilitiesShort.Add(l)
+			assetLiabilitiesShort = assetLiabilitiesShort.Add(estimatedSwap)
 		}
 
 	}
