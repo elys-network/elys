@@ -48,7 +48,6 @@ func networkWithMTPObjects(t *testing.T, n int) (*network.Network, []*types.MtpA
 				Custody:                        sdk.NewInt(0),
 				TakeProfitLiabilities:          sdk.NewInt(0),
 				TakeProfitCustody:              sdk.NewInt(0),
-				Leverage:                       sdk.NewDec(0),
 				MtpHealth:                      sdk.NewDec(0),
 				Position:                       types.Position_LONG,
 				Id:                             (uint64)(i + 1),

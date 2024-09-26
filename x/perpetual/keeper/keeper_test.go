@@ -35,7 +35,6 @@ func TestSetGetMTP(t *testing.T) {
 			BorrowInterestPaidCustody:      sdk.NewInt(0),
 			BorrowInterestUnpaidCollateral: sdk.NewInt(0),
 			Custody:                        sdk.NewInt(0),
-			Leverage:                       sdk.NewDec(0),
 			MtpHealth:                      sdk.NewDec(0),
 			Position:                       types.Position_LONG,
 			Id:                             0,

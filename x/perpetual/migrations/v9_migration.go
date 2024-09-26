@@ -5,7 +5,7 @@ import (
 	"github.com/elys-network/elys/x/perpetual/types"
 )
 
-func (m Migrator) V7Migration(ctx sdk.Context) error {
+func (m Migrator) V9Migration(ctx sdk.Context) error {
 	mtps := m.keeper.GetAllLegacyMTP(ctx)
 
 	ctx.Logger().Info("Migrating positions from legacy to new format")
@@ -38,11 +38,11 @@ func (m Migrator) V7Migration(ctx sdk.Context) error {
 			FundingFeeReceivedCollateral:   mtp.FundingFeeReceivedCollateral,
 			FundingFeeReceivedCustody:      mtp.FundingFeeReceivedCustody,
 			OpenPrice:                      mtp.OpenPrice,
-			StopLossPrice:                  sdk.NewDec(0),
-			LastInterestCalcTime:           uint64(ctx.BlockTime().Unix()),
-			LastInterestCalcBlock:          uint64(ctx.BlockHeight()),
-			LastFundingCalcTime:            uint64(ctx.BlockTime().Unix()),
-			LastFundingCalcBlock:           uint64(ctx.BlockHeight()),
+			StopLossPrice:                  mtp.StopLossPrice,
+			LastInterestCalcTime:           mtp.LastInterestCalcTime,
+			LastInterestCalcBlock:          mtp.LastInterestCalcBlock,
+			LastFundingCalcTime:            mtp.LastFundingCalcTime,
+			LastFundingCalcBlock:           mtp.LastFundingCalcBlock,
 		}
 		m.keeper.DeleteLegacyMTP(ctx, mtp.Address, mtp.Id)
 		m.keeper.SetMTP(ctx, &newMtp)

@@ -10,26 +10,6 @@ func (k Keeper) OpenConsolidateLong(ctx sdk.Context, poolId uint64, existingMtp 
 	existingMtp.Custody = existingMtp.Custody.Add(newMtp.Custody)
 	existingMtp.Liabilities = existingMtp.Liabilities.Add(newMtp.Liabilities)
 
-	ammPool, err := k.OpenLongChecker.GetAmmPool(ctx, existingMtp.AmmPoolId, existingMtp.CustodyAsset)
-	if err != nil {
-		return nil, err
-	}
-
-	custodyAmtTokenIn := sdk.NewCoin(existingMtp.CustodyAsset, existingMtp.Custody)
-	repayAmount, err := k.EstimateSwap(ctx, custodyAmtTokenIn, existingMtp.CollateralAsset, ammPool)
-	if err != nil {
-		return nil, err
-	}
-
-	unpaidCollateralIn := sdk.NewCoin(existingMtp.CollateralAsset, existingMtp.BorrowInterestUnpaidCollateral)
-	C, _ := k.EstimateSwapGivenOut(ctx, unpaidCollateralIn, existingMtp.TradingAsset, ammPool)
-
-	updated_leverage := sdk.ZeroDec()
-	denominator := repayAmount.Sub(existingMtp.Liabilities).Sub(C)
-	if denominator.IsPositive() {
-		updated_leverage = repayAmount.ToLegacyDec().Quo(denominator.ToLegacyDec())
-	}
-	existingMtp.Leverage = updated_leverage
 	// Set existing MTP
 	if err := k.SetMTP(ctx, existingMtp); err != nil {
 		return nil, err
