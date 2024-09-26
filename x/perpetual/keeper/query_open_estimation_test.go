@@ -100,14 +100,13 @@ func TestOpenEstimation_Long5XAtom100Usdc(t *testing.T) {
 		Leverage:           sdk.MustNewDecFromStr("5.0"),
 		TradingAsset:       ptypes.ATOM,
 		Collateral:         sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(100000000)),
-		MinCollateral:      sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(8333334)),
-		ValidCollateral:    true,
 		PositionSize:       sdk.NewCoin(ptypes.ATOM, sdk.NewInt(499136435)),
 		SwapFee:            sdk.MustNewDecFromStr("0.001000000000000000"),
 		Discount:           sdk.MustNewDecFromStr("0.000000000000000000"),
 		OpenPrice:          sdk.MustNewDecFromStr("1.000000000000000000"),
 		TakeProfitPrice:    sdk.MustNewDecFromStr("20.00000000000000000"),
 		LiquidationPrice:   sdk.MustNewDecFromStr("0.799653976372211738"),
+		InterestAmount:     types.NewParams().MinBorrowInterestAmount,
 		EstimatedPnl:       sdk.NewInt(474136435),
 		EstimatedPnlDenom:  ptypes.ATOM,
 		AvailableLiquidity: sdk.NewCoin(ptypes.ATOM, sdk.NewInt(600000000000)),
@@ -116,6 +115,8 @@ func TestOpenEstimation_Long5XAtom100Usdc(t *testing.T) {
 		BorrowInterestRate: sdk.MustNewDecFromStr("0.000000000000000000"),
 		FundingRate:        sdk.MustNewDecFromStr("0.000000000000000000"),
 		PriceImpact:        sdk.MustNewDecFromStr("0.000000000000000000"),
+		BorrowFee:          sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(0)),
+		FundingFee:         sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(0)),
 	}, res)
 }
 
@@ -216,8 +217,6 @@ func TestOpenEstimation_Long5XAtom10Atom(t *testing.T) {
 		Leverage:           sdk.MustNewDecFromStr("5.0"),
 		TradingAsset:       ptypes.ATOM,
 		Collateral:         sdk.NewCoin(ptypes.ATOM, sdk.NewInt(10000000)),
-		MinCollateral:      sdk.NewCoin(ptypes.ATOM, sdk.NewInt(9333333)),
-		ValidCollateral:    true,
 		PositionSize:       sdk.NewCoin(ptypes.ATOM, sdk.NewInt(49858958)),
 		SwapFee:            sdk.MustNewDecFromStr("0.001000000000000000"),
 		Discount:           sdk.MustNewDecFromStr("0.000000000000000000"),
@@ -226,12 +225,15 @@ func TestOpenEstimation_Long5XAtom10Atom(t *testing.T) {
 		LiquidationPrice:   sdk.MustNewDecFromStr("0.799662359570370484"),
 		EstimatedPnl:       sdk.NewInt(47361232),
 		EstimatedPnlDenom:  ptypes.ATOM,
+		InterestAmount:     types.NewParams().MinBorrowInterestAmount,
 		AvailableLiquidity: sdk.NewCoin(ptypes.ATOM, sdk.NewInt(10000000000)),
 		Slippage:           sdk.MustNewDecFromStr("0.000686040302239768"),
 		WeightBalanceRatio: sdk.MustNewDecFromStr("0.000000000000000000"),
 		BorrowInterestRate: sdk.MustNewDecFromStr("0.000000000000000000"),
 		FundingRate:        sdk.MustNewDecFromStr("0.000000000000000000"),
 		PriceImpact:        sdk.MustNewDecFromStr("0.001685356924966457"),
+		BorrowFee:          sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(0)),
+		FundingFee:         sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(0)),
 	}, res)
 }
 
@@ -332,8 +334,6 @@ func TestOpenEstimation_Short5XAtom10Usdc(t *testing.T) {
 		Leverage:           sdk.MustNewDecFromStr("5.0"),
 		TradingAsset:       ptypes.ATOM,
 		Collateral:         sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(100000000)),
-		MinCollateral:      sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(9333333)),
-		ValidCollateral:    true,
 		PositionSize:       sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(500000000)),
 		SwapFee:            sdk.MustNewDecFromStr("0.001000000000000000"),
 		Discount:           sdk.MustNewDecFromStr("0.000000000000000000"),
@@ -342,12 +342,15 @@ func TestOpenEstimation_Short5XAtom10Usdc(t *testing.T) {
 		LiquidationPrice:   sdk.MustNewDecFromStr("1.200000000000000000"),
 		EstimatedPnl:       sdk.NewInt(-250000000),
 		EstimatedPnlDenom:  ptypes.BaseCurrency,
+		InterestAmount:     types.NewParams().MinBorrowInterestAmount,
 		AvailableLiquidity: sdk.NewCoin(ptypes.ATOM, sdk.NewInt(10000000000)),
 		Slippage:           sdk.MustNewDecFromStr("0.006806806000000000"),
 		WeightBalanceRatio: sdk.MustNewDecFromStr("0.000000000000000000"),
 		BorrowInterestRate: sdk.MustNewDecFromStr("0.000000000000000000"),
 		FundingRate:        sdk.MustNewDecFromStr("0.000000000000000000"),
 		PriceImpact:        sdk.MustNewDecFromStr("0.007800000000000000"),
+		BorrowFee:          sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(0)),
+		FundingFee:         sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(0)),
 	}, res)
 }
 
