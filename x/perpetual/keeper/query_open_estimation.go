@@ -74,13 +74,7 @@ func (k Keeper) OpenEstimation(goCtx context.Context, req *types.QueryOpenEstima
 	// invert openPrice if collateral is not in base currency
 	openPrice = sdk.OneDec().Quo(openPrice)
 
-	// calculate min collateral
-	minCollateral, err := k.CalcMinCollateral(ctx, req.Leverage, openPrice, decimals)
-	if err != nil {
-		return nil, errorsmod.Wrapf(types.ErrCalcMinCollateral, "error calculating min collateral: %s", err.Error())
-	}
-
-	// if req.TakeProfitPrice is zero then set it to default
+	// check req.TakeProfitPrice not zero to prevent division by zero
 	if req.TakeProfitPrice.IsZero() {
 		req.TakeProfitPrice = sdk.MustNewDecFromStr(types.TakeProfitPriceDefault)
 	}
@@ -128,13 +122,44 @@ func (k Keeper) OpenEstimation(goCtx context.Context, req *types.QueryOpenEstima
 		fundingRate = pool.FundingRate
 	}
 
+	borrowFee := borrowInterestRate.MulInt(leveragedAmount.Sub(collateralAmountInBaseCurrency.Amount))
+	fundingFee := fundingRate.MulInt(leveragedAmount)
+
+	// | funding rate        |   direction     |  funding fee               |
+	// ----------------------------------------------------------------------
+	// | +ve                 |   LONG          |  amount to pay per block   |
+	// | +ve                 |   SHORT         |  amount to earn per block  |
+	// | -ve                 |   LONG          |  amount to earn per block  |
+	// | -ve                 |   SHORT         |  amount to pay per block   |
+	if req.Position == types.Position_LONG && fundingRate.IsPositive() {
+		// long pays
+		fundingFee = fundingFee.Abs()
+	} else if req.Position == types.Position_SHORT && fundingRate.IsPositive() {
+		// short earns
+		fundingFee = fundingFee.Neg()
+	} else if req.Position == types.Position_LONG && fundingRate.IsNegative() {
+		// long earns
+		fundingFee = fundingFee.Neg()
+	} else if req.Position == types.Position_SHORT && fundingRate.IsNegative() {
+		// short pays
+		fundingFee = fundingFee.Abs()
+	}
+
+	ammPool, err := k.GetAmmPool(ctx, poolId, "")
+	if err != nil {
+		return nil, err
+	}
+	liabilitiesAsset := baseCurrency
+	custodyAsset := req.TradingAsset
+	mtp := types.NewMTP("", req.Collateral.Denom, req.TradingAsset, liabilitiesAsset, custodyAsset, req.Position, req.Leverage, req.TakeProfitPrice, poolId)
+	interestAmount := k.GetBorrowInterest(ctx, mtp, ammPool)
+
 	return &types.QueryOpenEstimationResponse{
 		Position:           req.Position,
 		Leverage:           req.Leverage,
 		TradingAsset:       req.TradingAsset,
 		Collateral:         req.Collateral,
-		MinCollateral:      sdk.NewCoin(req.Collateral.Denom, minCollateral),
-		ValidCollateral:    req.Collateral.Amount.GTE(minCollateral),
+		InterestAmount:     interestAmount,
 		PositionSize:       positionSize,
 		SwapFee:            swapFee,
 		Discount:           discount,
@@ -149,5 +174,13 @@ func (k Keeper) OpenEstimation(goCtx context.Context, req *types.QueryOpenEstima
 		PriceImpact:        priceImpact,
 		BorrowInterestRate: borrowInterestRate,
 		FundingRate:        fundingRate,
+		BorrowFee: sdk.Coin{
+			Denom:  baseCurrency,
+			Amount: borrowFee.TruncateInt(),
+		},
+		FundingFee: sdk.Coin{
+			Denom:  baseCurrency,
+			Amount: fundingFee.TruncateInt(),
+		},
 	}, nil
 }

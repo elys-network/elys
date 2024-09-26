@@ -181,7 +181,7 @@ func (k Keeper) BurnEdenBoost(ctx sdk.Context, creator sdk.AccAddress, denom str
 	}
 
 	// Subtract the amount from the committed balance
-	err = commitments.DeductFromCommitted(denom, amount, uint64(ctx.BlockTime().Unix()))
+	err = commitments.DeductFromCommitted(denom, amount, uint64(ctx.BlockTime().Unix()), false)
 	if err != nil {
 		return err
 	}
