@@ -22,13 +22,10 @@ func (k Keeper) OpenConsolidateLong(ctx sdk.Context, poolId uint64, existingMtp 
 	}
 
 	unpaidCollateralIn := sdk.NewCoin(existingMtp.CollateralAsset, existingMtp.BorrowInterestUnpaidCollateral)
-	C, err := k.EstimateSwapGivenOut(ctx, unpaidCollateralIn, existingMtp.TradingAsset, ammPool)
-	if err != nil {
-		return nil, err
-	}
+	C, _ := k.EstimateSwapGivenOut(ctx, unpaidCollateralIn, existingMtp.TradingAsset, ammPool)
 
 	updated_leverage := sdk.ZeroDec()
-	denominator := repayAmount.Sub(C)
+	denominator := repayAmount.Sub(existingMtp.Liabilities).Sub(C)
 	if denominator.IsPositive() {
 		updated_leverage = repayAmount.ToLegacyDec().Quo(denominator.ToLegacyDec())
 	}
