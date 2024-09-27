@@ -156,6 +156,7 @@ func (k Keeper) UpdateLPRewards(ctx sdk.Context) error {
 
 	// Collect Gas fees + swap fees
 	gasFeesForLpsDec := k.CollectGasFees(ctx, baseCurrency)
+	gasFeesForLpsDec = gasFeesForLpsDec.Add(k.CollectPerpRevenue(ctx, baseCurrency)...)
 	_, _, rewardsPerPool := k.CollectDEXRevenue(ctx)
 
 	// USDC amount in sdk.Dec type
