@@ -14,11 +14,13 @@ var _ = strconv.Itoa(0)
 
 func CmdCloseEstimation() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "close-estimation [position-id]",
+		Use:   "close-estimation [address] [position-id]",
 		Short: "Query close-estimation",
-		Args:  cobra.ExactArgs(1),
+		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
-			reqPositionId, err := cast.ToUint64E(args[0])
+			reqAddress := args[0]
+
+			reqPositionId, err := cast.ToUint64E(args[1])
 			if err != nil {
 				return err
 			}
@@ -31,7 +33,7 @@ func CmdCloseEstimation() *cobra.Command {
 			queryClient := types.NewQueryClient(clientCtx)
 
 			params := &types.QueryCloseEstimationRequest{
-
+				Address:    reqAddress,
 				PositionId: reqPositionId,
 			}
 
