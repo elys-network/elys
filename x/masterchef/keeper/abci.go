@@ -387,6 +387,24 @@ func (k Keeper) CollectGasFees(ctx sdk.Context, baseCurrency string) sdk.DecCoin
 	return gasFeesForLpsDec
 }
 
+// TODO
+// Collect all Perpetual module revenues to Perpetual revenue wallet,
+// while tracking the 60% of it for LPs reward distribution
+// transfer collected fees from different wallets(liquidity pool, perpetual module etc) to the distribution module account
+// Coins are not in usdc, so convert them to usdc
+func (k Keeper) CollectPerpRevenue(ctx sdk.Context) (sdk.Coins, sdk.DecCoins) {
+	// Total colllected revenue amount
+	amountTotalCollected := sdk.Coins{}
+	amountLPsCollected := sdk.DecCoins{}
+
+	// Collect Perpetual module revenues
+	// Assume this is already in USDC.
+	// Collect all revenue to Perpetual revenue wallet
+	// transfer collected fees from different wallets(liquidity pool, perpetual module etc) to the distribution module account
+	// Assume this is already in USDC.
+	return amountTotalCollected, amountLPsCollected
+}
+
 // Collect all DEX revenues to DEX revenue wallet,
 // while tracking the 60% of it for LPs reward distribution
 // transfer collected fees from different wallets(liquidity pool, perpetual module etc) to the distribution module account
